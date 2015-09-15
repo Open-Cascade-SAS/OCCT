@@ -5479,9 +5479,11 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       __FILE__, visos, group);
 
   theCommands.Add("vdisplay",
-              "vdisplay [-noupdate|-update] [-local] [-mutable] [-overlay|-underlay]"
-      "\n\t\t:          [-trsfPers flags] [-trsfPersPos X Y [Z]] [-3d|-2d|-2dTopDown]"
+              "vdisplay [-noupdate|-update] [-local] [-mutable] [-neutral]"
+      "\n\t\t:          [-trsfPers {pan|zoom|rotate|trihedron|full|none}=none] [-trsfPersPos X Y [Z]] [-3d|-2d|-2dTopDown]"
       "\n\t\t:          [-dispMode mode] [-highMode mode]"
+      "\n\t\t:          [-layer index] [-top|-topmost|-overlay|-underlay]"
+      "\n\t\t:          [-redisplay]"
       "\n\t\t:          name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects."
       "\n\t\t: Option -local enables displaying of objects in local"
@@ -5489,12 +5491,19 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t: if there is not any."
       "\n\t\t:  -noupdate    suppresses viewer redraw call."
       "\n\t\t:  -mutable     enables optimizations for mutable objects."
-      "\n\t\t:  -overlay     draws objects in overlay."
-      "\n\t\t:  -underlay    draws objects in underlay."
+      "\n\t\t:  -neutral     draws objects in main viewer."
+      "\n\t\t:  -layer       sets z-layer for objects. It can use -overlay|-underlay|-top|-topmost instead of -layer index for the default z-layers."
+      "\n\t\t:  -top         draws objects on top of main presentations but below topmost."
+      "\n\t\t:  -topmost     draws in overlay for 3D presentations with independent Depth."
+      "\n\t\t:  -overlay     draws objects in overlay for 2D presentations (On-Screen-Display)."
+      "\n\t\t:  -underlay    draws objects in underlay for 2D presentations (On-Screen-Display)."
       "\n\t\t:  -selectable|-noselect controls selection of objects."
-      "\n\t\t:  -trsfPers    sets a transform persistence flags."
+      "\n\t\t:  -trsfPers    sets a transform persistence flags. Flag 'full' is pan, zoom and rotate."
       "\n\t\t:  -trsfPersPos sets an anchor point for transform persistence."
-      "\n\t\t:  -2d|-2dTopDown displays object in screen coordinates.",
+      "\n\t\t:  -2d|-2dTopDown displays object in screen coordinates."
+      "\n\t\t:  -dispmode sets display mode for objects."
+      "\n\t\t:  -highmode sets hilight mode for objects."
+      "\n\t\t:  -redisplay recomputes presentation of objects.",
       __FILE__, VDisplay2, group);
 
   theCommands.Add ("vupdate",
@@ -5670,11 +5679,22 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VSetInteriorStyle,group);
 
   theCommands.Add("vsensdis",
-		  "vardisp           : display active entities",
-		  __FILE__,VDispSensi,group);
+      "vsensdis : Display active entities (sensitive entities of one of the standard types corresponding to active selection modes)."
+      "\n\t\t: Standard entity types are those defined in Select3D package:"
+      "\n\t\t: - sensitive box"
+      "\n\t\t: - sensitive face"
+      "\n\t\t: - sensitive curve"
+      "\n\t\t: - sensitive segment"
+      "\n\t\t: - sensitive circle"
+      "\n\t\t: - sensitive point"
+      "\n\t\t: - sensitive triangulation"
+      "\n\t\t: - sensitive triangle"
+      "\n\t\t: Custom(application - defined) sensitive entity types are not processed by this command.",
+      __FILE__,VDispSensi,group);
+
   theCommands.Add("vsensera",
-		  "vardisp           : erase  active entities",
-		  __FILE__,VClearSensi,group);
+      "vsensera : erase active entities",
+      __FILE__,VClearSensi,group);
 
   theCommands.Add("vselprecision",
 		  "vselprecision [-unset] [tolerance_value]"
@@ -5683,20 +5703,23 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VSelPrecision,group);
 
   theCommands.Add("vperf",
-		  "vperf: vperf  ShapeName 1/0(Transfo/Location) 1/0(Primitives sensibles ON/OFF)",
-		  __FILE__,VPerf,group);
+      "vperf: vperf  ShapeName 1/0(Transfo/Location) 1/0(Primitives sensibles ON/OFF)"
+      "\n\t\t: Tests the animation of an object along a predefined trajectory.",
+      __FILE__,VPerf,group);
 
   theCommands.Add("vanimation",
 		  "vanimation CrankArmFile CylinderHeadFile PropellerFile EngineBlockFile",
 		  __FILE__,VAnimation,group);
 
   theCommands.Add("vsetshading",
-		  "vsetshading  : vsetshading name Quality(default=0.0008) ",
-		  __FILE__,VShading,group);
+      "vsetshading  : vsetshading name Quality(default=0.0008) "
+      "\n\t\t: Sets deflection coefficient that defines the quality of the shape’s representation in the shading mode.",
+      __FILE__,VShading,group);
 
   theCommands.Add("vunsetshading",
-		  "vunsetshading :vunsetshading name ",
-		  __FILE__,VShading,group);
+      "vunsetshading :vunsetshading name "
+      "\n\t\t: Sets default deflection coefficient (0.0008) that defines the quality of the shape’s representation in the shading mode.",
+      __FILE__,VShading,group);
 
   theCommands.Add ("vtexture",
                    "\n'vtexture NameOfShape [TextureFile | IdOfTexture]\n"
@@ -5743,12 +5766,22 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  VTexture,group);
 
   theCommands.Add("vsetam",
-		  "vsetActivatedModes: vsetam mode(1->7)  ",
-		  __FILE__,VActivatedMode,group);
+      "vsetam [shapename] mode"
+      "\n\t\t: Activates selection mode for all selected or named shapes."
+      "\n\t\t: Mod can be:"
+      "\n\t\t:   0 - for shape itself" 
+      "\n\t\t:   1 - vertices"
+      "\n\t\t:   2 - edges"
+      "\n\t\t:   3 - wires"
+      "\n\t\t:   4 - faces"
+      "\n\t\t:   5 - shells"
+      "\n\t\t:   6 - solids"
+      "\n\t\t:   7 - compounds"
+      __FILE__,VActivatedMode,group);
 
   theCommands.Add("vunsetam",
-		  "vunsetActivatedModes:   vunsetam  ",
-		  __FILE__,VActivatedMode,group);
+      "vunsetam : Deactivates all selection modes for all shapes.",
+      __FILE__,VActivatedMode,group);
 
   theCommands.Add("vstate",
       "vstate [-entities] [-hasSelected] [name1] ... [nameN]"
@@ -5765,7 +5798,9 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  "vtypes : list of known types and signatures in AIS - To be Used in vpickobject command for selection with filters",
 		  VIOTypes,group);
 
-  theCommands.Add("vr", "vr : reading of the shape",
+  theCommands.Add("vr",
+      "vr filename"
+      "\n\t\t: Reads shape from BREP-format file and displays it in the viewer. ",
 		  __FILE__,vr, group);
 
   theCommands.Add("vpickselected", "vpickselected [name]: extract selected shape.",

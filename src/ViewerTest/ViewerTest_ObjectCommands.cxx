@@ -6224,39 +6224,54 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
 {
   const char *group ="AISObjects";
   theCommands.Add("vtrihedron",
-    "vtrihedron         : vtrihedron name [Xo] [Yo] [Zo] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw] ",
+    "vtrihedron         : vtrihedron name [Xo] [Yo] [Zo] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw] "
+    "\n\t\t: Creates a new *AIS_Trihedron* object. If no argument is set, the default trihedron (0XYZ) is created.",
     __FILE__,VTrihedron,group);
 
   theCommands.Add("vtri2d",
-    "vtri2d Name Selection in the viewer only ",
+    "vtri2d Name"
+    "\n\t\t: Creates a plane with a 2D trihedron from an interactively selected face.",
     __FILE__,VTrihedron2D ,group);
 
   theCommands.Add("vplanetri",
-    "vplanetri Name Selection in the viewer only ",
+    "vplanetri name"
+    "\n\t\t: Create a plane from a trihedron selection. If no arguments are set, the default",
     __FILE__,VPlaneTrihedron ,group);
 
   theCommands.Add("vsize",
-    "vsize       : vsize [name(Default=Current)] [size(Default=100)] ",
+    "vsize       : vsize [name(Default=Current)] [size(Default=100)] "
+    "\n\t\t: Changes the size of a named or selected trihedron."
+    "\n\t\t: If the name is not defined: it affects the selected trihedrons otherwise nothing is done."
+    "\n\t\t: If the value is not defined: it is set to 100 by default.",
     __FILE__,VSize,group);
 
   theCommands.Add("vaxis",
-    "vaxis nom [Xa] [Ya] [Za] [Xb] [Yb] [Zb]",
+    "vaxis name [Xa] [Ya] [Za] [Xb] [Yb] [Zb]"
+    "\n\t\t: Creates an axis. If  the values are not defined, an axis is created by interactive selection of two vertices or one edge",
     __FILE__,VAxisBuilder,group);
 
   theCommands.Add("vaxispara",
-    "vaxispara  nom ",
+    "vaxispara name "
+    "\n\t\t: Creates an axis by interactive selection of an edge and a vertex.",
     __FILE__,VAxisBuilder,group);
 
   theCommands.Add("vaxisortho",
-    "vaxisotho  nom ",
+    "vaxisortho name "
+    "\n\t\t: Creates an axis by interactive selection of an edge and a vertex. The axis will be orthogonal to the selected edge.",
     __FILE__,VAxisBuilder,group);
 
   theCommands.Add("vpoint",
-    "vpoint  PointName [Xa] [Ya] [Za] ",
+    "vpoint  PointName [Xa] [Ya] [Za] "
+    "\n\t\t: Creates a point from coordinates. If the values are not defined,"
+    "\n\t\t: a point is created by interactive selection of a vertice or an edge (in the center of the edge).",
     __FILE__,VPointBuilder,group);
 
   theCommands.Add("vplane",
-    "vplane  PlaneName [AxisName/PlaneName/PointName] [PointName/PointName/PointName] [Nothing/Nothing/PointName] [TypeOfSensitivity]",
+    "vplane  PlaneName [AxisName/PlaneName/PointName] [PointName/PointName/PointName] [Nothing/Nothing/PointName] [TypeOfSensitivity {0|1}]"
+    "\n\t\t: Creates a plane from named or interactively selected entities."
+    "\n\t\t: TypeOfSensitivity:"
+    "\n\t\t:   0 - Interior"
+    "\n\t\t:   1 - Boundary",
     __FILE__,VPlaneBuilder,group);
 
   theCommands.Add ("vchangeplane", "vchangeplane usage: \n"
@@ -6274,19 +6289,24 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VChangePlane, group);
 
   theCommands.Add("vplanepara",
-    "vplanepara  PlaneName  ",
+    "vplanepara  PlaneName  "
+    "\n\t\t: Creates a plane from interactively selected vertex and face.",
     __FILE__,VPlaneBuilder,group);
 
   theCommands.Add("vplaneortho",
-    "vplaneortho  PlaneName  ",
+    "vplaneortho  PlaneName  "
+    "\n\t\t: Creates a plane from interactive selected face and coplanar edge. ",
     __FILE__,VPlaneBuilder,group);
 
   theCommands.Add("vline",
-    "vline: vline LineName [Xa/PointName] [Ya/PointName] [Za] [Xb] [Yb] [Zb]  ",
+    "vline LineName [Xa/PointName] [Ya/PointName] [Za] [Xb] [Yb] [Zb]  "
+    "\n\t\t: Creates a line from coordinates, named or interactively selected vertices. ",
     __FILE__,VLineBuilder,group);
 
   theCommands.Add("vcircle",
-    "vcircle CircleName [PointName PointName PointName IsFilled]\n\t\t\t\t\t[PlaneName PointName Radius IsFilled]",
+    "vcircle CircleName [PointName PointName PointName IsFilled]\n\t\t\t\t\t[PlaneName PointName Radius IsFilled]"
+    "\n\t\t: Creates a circle from named or interactively selected entities."
+    "\n\t\t: Parameter IsFilled is defined as 0 or 1.",
     __FILE__,VCircleBuilder,group);
 
   theCommands.Add ("vdrawtext",
@@ -6331,8 +6351,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VDrawPArray,group);
 
   theCommands.Add("vconnect", 
-    "vconnect : assembly_name Xo Yo Zo object1 object2 ..."
-    "  Makes an assembly of object instances located in point (Xo Yo Zo).",
+    "vconnect name Xo Yo Zo object1 object2 ... [color=NAME]"
+    "\n\t\t: Creates and displays AIS_ConnectedInteractive object from input object and location.",
     __FILE__, VConnect, group);
 
   theCommands.Add("vconnectto",
@@ -6387,11 +6407,13 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VSelectionPrevious, group);
 
   theCommands.Add("vtriangle",
-    "vtriangle Name PointName PointName PointName", 
+    "vtriangle Name PointName PointName PointName"
+    "\n\t\t: Creates and displays a filled triangle from named points.", 
     __FILE__, VTriangle,group);
 
   theCommands.Add("vsegment",
-    "vsegment Name PointName PointName", 
+    "vsegment Name PointName PointName"
+    "\n\t\t: Creates and displays a segment from named points.", 
     __FILE__, VSegment,group);
 
   theCommands.Add("vobjzlayer",

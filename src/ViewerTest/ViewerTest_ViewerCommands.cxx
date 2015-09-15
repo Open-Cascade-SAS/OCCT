@@ -8750,7 +8750,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vrepaint        : vrepaint, force redraw",
     __FILE__,VRepaint,group);
   theCommands.Add("vclear",
-    "vclear          : vclear",
+    "vclear          : vclear"
+    "\n\t\t: remove all the object from the viewer",
     __FILE__,VClear,group);
   theCommands.Add("vsetbg",
     "vsetbg          : vsetbg imagefile [filltype] : Load image as background",
@@ -8970,7 +8971,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "- 1) single click selection\n"
     "- 2) selection with rectangle having corners at pixel positions (x1,y1) and (x2,y2)\n"
     "- 3) selection with polygon having corners in pixel positions (x1,y1), (x2,y2),...,(xn,yn)\n"
-    "- 4) -allowoverlap determines will partially included objects be selected in rectangular selection"
+    "- 4) -allowoverlap manages overlap and inclusion detection in rectangular selection.\n"
+    "     If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined rectangle will be detected,\n"
+    "     otherwise algorithm will chose only fully included sensitives. Default behavior is to detect only full inclusion. "
     " (partial inclusion - overlap - is not allowed by default)\n"
     "- 5) any of these selections with shift button pressed",
     __FILE__, VSelect, group);
@@ -9004,7 +9007,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "- gets or sets ZClipping mode, width and depth",
     __FILE__,VZClipping,group);
   theCommands.Add ("vnbselected",
-    "vnbselected", __FILE__, VNbSelected, group);
+    "vnbselected"
+    "\n\t\t: Returns number of selected objects", __FILE__, VNbSelected, group);
   theCommands.Add ("vcamera",
               "vcamera [-ortho] [-projtype]"
       "\n\t\t:         [-persp]"
@@ -9040,7 +9044,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "   vzrange [znear] [zfar] - applies provided values to view",
     __FILE__,VZRange, group);
   theCommands.Add("vantialiasing",
-    "vantialiasing 1|0",
+    "vantialiasing 1|0"
+    "\n\t\t: Switches altialiasing on or off",
     __FILE__,VAntialiasing,group);
   theCommands.Add ("vpurgedisplay",
     "vpurgedisplay"
