@@ -187,6 +187,10 @@ public:
                                                           TCollection_AsciiString&       theName,
                                                           TCollection_AsciiString&       theValue);
 
+  //! Parses boolean argument.
+  //! Handles either flag specified by 0|1 or on|off.
+  Standard_EXPORT static Standard_Boolean ParseOnOff (Standard_CString  theArg,
+                                                      Standard_Boolean& theIsOn);
 private:
 
   //! Returns a window class that implements standard behavior of

@@ -149,8 +149,6 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
                                            Standard_Boolean theReplaceIfExists = Standard_True);
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext();
-extern Standard_Boolean parseOnOff (Standard_CString  theArg,
-                                    Standard_Boolean& theIsOn);
 
 
 //==============================================================================
@@ -5469,7 +5467,7 @@ static int TextToBRep (Draw_Interpretor& /*theDI*/,
         return 1;
       }
 
-      parseOnOff (theArgVec[anArgIt], anIsCompositeCurve);
+      ViewerTest::ParseOnOff (theArgVec[anArgIt], anIsCompositeCurve);
     }
     else if (aParam == "-plane")
     {

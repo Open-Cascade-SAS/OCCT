@@ -95,26 +95,6 @@
   #include <tk.h>
 #endif
 
-inline Standard_Boolean parseOnOff (Standard_CString  theArg,
-                                    Standard_Boolean& theIsOn)
-{
-  TCollection_AsciiString aFlag (theArg);
-  aFlag.LowerCase();
-  if (aFlag == "on"
-   || aFlag == "1")
-  {
-    theIsOn = Standard_True;
-    return Standard_True;
-  }
-  else if (aFlag == "off"
-        || aFlag == "0")
-  {
-    theIsOn = Standard_False;
-    return Standard_True;
-  }
-  return Standard_False;
-}
-
 // Auxiliary definitions
 static const char THE_KEY_DELETE = 127;
 
@@ -5193,7 +5173,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toShowWarns = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toShowWarns))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toShowWarns))
       {
         --anArgIter;
       }
@@ -5209,7 +5189,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toShow = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toShow))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toShow))
       {
         --anArgIter;
       }
@@ -5225,7 +5205,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toSuppress = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toSuppress))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toSuppress))
       {
         --anArgIter;
       }
@@ -5239,7 +5219,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toSync = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toSync))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toSync))
       {
         --anArgIter;
       }
@@ -5252,13 +5232,13 @@ static int VGlDebug (Draw_Interpretor& theDI,
     else if (anArgCase == "-debug")
     {
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnableDebug))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnableDebug))
       {
         --anArgIter;
       }
       aDefCaps->contextDebug = toEnableDebug;
     }
-    else if (parseOnOff (anArg, toEnableDebug)
+    else if (ViewerTest::ParseOnOff (anArg, toEnableDebug)
           && (anArgIter + 1 == theArgNb))
     {
       // simple alias to turn on almost everything
@@ -5363,7 +5343,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5373,7 +5353,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5383,7 +5363,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5394,7 +5374,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5404,7 +5384,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5415,7 +5395,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5428,7 +5408,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5443,7 +5423,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -5458,7 +5438,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -7418,7 +7398,7 @@ static int VStereo (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -7429,7 +7409,7 @@ static int VStereo (Draw_Interpretor& theDI,
     {
       Standard_Boolean toDisable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toDisable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toDisable))
       {
         --anArgIter;
       }
@@ -8305,7 +8285,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -8322,7 +8302,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -8338,7 +8318,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -8354,7 +8334,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -8370,7 +8350,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -8391,7 +8371,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !parseOnOff (theArgVec[anArgIter], toEnable))
+        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -8407,7 +8387,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !parseOnOff (theArgVec[anArgIter], toEnable))
+        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }

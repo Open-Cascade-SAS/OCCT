@@ -156,6 +156,30 @@ Standard_Integer ViewerTest::ParseColor (Standard_Integer  theArgNb,
 }
 
 //=======================================================================
+//function : ParseOnOff
+//purpose  :
+//=======================================================================
+Standard_Boolean ViewerTest::ParseOnOff (Standard_CString  theArg,
+                                         Standard_Boolean& theIsOn)
+{
+  TCollection_AsciiString aFlag(theArg);
+  aFlag.LowerCase();
+  if (aFlag == "on"
+   || aFlag == "1")
+  {
+    theIsOn = Standard_True;
+    return Standard_True;
+  }
+  else if (aFlag == "off"
+        || aFlag == "0")
+  {
+    theIsOn = Standard_False;
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
 //function : GetTypeNames
 //purpose  :
 //=======================================================================
