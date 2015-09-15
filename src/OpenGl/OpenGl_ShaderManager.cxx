@@ -866,9 +866,11 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
       continue;
     }
 
-    aParams.Init (anIndex == 0 || theAspect->DistinguishingMode() != TOn
-                ? theAspect->IntFront()
-                : theAspect->IntBack());
+    const OPENGL_SURF_PROP& aProp = anIndex == 0 || theAspect->DistinguishingMode() != TOn
+                                  ? theAspect->IntFront()
+                                  : theAspect->IntBack();
+    aParams.Init (aProp);
+    aParams.Diffuse.a() = aProp.trans;
     theProgram->SetUniform (theCtx, aLoc, OpenGl_Material::NbOfVec4(),
                             aParams.Packed());
   }
@@ -1388,14 +1390,15 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (const Standard
       EOL"  Specular = vec3 (0.0);"
       EOL"  vec3 aPoint = thePoint.xyz / thePoint.w;"
     + aLightsLoop
-    + EOL"  vec4 aMaterialAmbient  = " + aGetMatAmbient
-    + EOL"  vec4 aMaterialDiffuse  = " + aGetMatDiffuse
-    + EOL"  vec4 aMaterialSpecular = theIsFront ? occFrontMaterial_Specular() : occBackMaterial_Specular();"
-      EOL"  vec4 aMaterialEmission = theIsFront ? occFrontMaterial_Emission() : occBackMaterial_Emission();"
-      EOL"  return vec4 (Ambient,  1.0) * aMaterialAmbient"
-      EOL"       + vec4 (Diffuse,  1.0) * aMaterialDiffuse"
-      EOL"       + vec4 (Specular, 1.0) * aMaterialSpecular"
-      EOL"                              + aMaterialEmission;"
+    + EOL"  vec4 aMatAmbient  = " + aGetMatAmbient
+    + EOL"  vec4 aMatDiffuse  = " + aGetMatDiffuse
+    + EOL"  vec4 aMatSpecular = theIsFront ? occFrontMaterial_Specular() : occBackMaterial_Specular();"
+      EOL"  vec4 aMatEmission = theIsFront ? occFrontMaterial_Emission() : occBackMaterial_Emission();"
+      EOL"  vec3 aColor = Ambient  * aMatAmbient.rgb"
+      EOL"              + Diffuse  * aMatDiffuse.rgb"
+      EOL"              + Specular * aMatSpecular.rgb"
+      EOL"                         + aMatEmission.rgb;"
+      EOL"  return vec4 (aColor, aMatDiffuse.a);"
       EOL"}";
 }
 
