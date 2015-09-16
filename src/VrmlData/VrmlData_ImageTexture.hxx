@@ -63,6 +63,12 @@ class VrmlData_ImageTexture : public VrmlData_Texture
   Standard_EXPORT virtual VrmlData_ErrorStatus
                         Read    (VrmlData_InBuffer& theBuffer);
 
+  /**
+   * Write the Node to output stream.
+   */
+  Standard_EXPORT virtual VrmlData_ErrorStatus
+                        Write   (const char * thePrefix) const;
+
  protected:
   // ---------- PROTECTED METHODS ----------
 
