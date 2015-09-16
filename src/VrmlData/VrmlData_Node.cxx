@@ -32,19 +32,6 @@
 #pragma warning (disable:4996)
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 static VrmlData_Scene MyDefaultScene;
 
 //=======================================================================
@@ -575,12 +562,10 @@ Standard_Boolean VrmlData_Appearance::IsDefault () const
   Standard_Boolean aResult (Standard_True);
   if (myMaterial.IsNull() == Standard_False)
     aResult = myMaterial->IsDefault();
-  if (aResult == Standard_False)
-    if (myTexture.IsNull() == Standard_False)
-      aResult = myTexture->IsDefault();
-  if (aResult == Standard_False)
-    if (myTTransform.IsNull() == Standard_False)
-      aResult = myTTransform->IsDefault();
+  if (aResult && myTexture.IsNull() == Standard_False)
+    aResult = myTexture->IsDefault();
+  if (aResult && myTTransform.IsNull() == Standard_False)
+    aResult = myTTransform->IsDefault();
   return aResult;
 }
 
@@ -648,3 +633,31 @@ VrmlData_ErrorStatus VrmlData_ImageTexture::Read (VrmlData_InBuffer& theBuffer)
   return aStatus;
 }
 
+//=======================================================================
+//function : Write
+//purpose  : 
+//=======================================================================
+
+VrmlData_ErrorStatus VrmlData_ImageTexture::Write(const char *thePrefix)  const
+{
+  VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
+  const VrmlData_Scene& aScene = Scene();
+  static char header[] = "ImageTexture {";
+  if (aScene.IsDummyWrite() == Standard_False &&
+      OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
+  {
+    TCollection_AsciiString url = "\"";
+    url += URL().First();
+    url += "\"";
+
+    try {
+      aStatus = aScene.WriteLine("url ", url.ToCString());
+    }
+    catch (...)
+    {
+      
+    }
+    aStatus = WriteClosing();
+  }
+  return aStatus;
+}
