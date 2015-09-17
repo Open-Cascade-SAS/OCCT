@@ -82,7 +82,11 @@ public:
   //! parameter FirstParameter on C2.
   Standard_EXPORT void TrimmedSquareDistances (Standard_Real& dist11, Standard_Real& distP12, Standard_Real& distP21, Standard_Real& distP22, gp_Pnt2d& P11, gp_Pnt2d& P12, gp_Pnt2d& P21, gp_Pnt2d& P22) const;
 
+  //! Set flag for single extrema computation. Works on parametric solver only.
+  Standard_EXPORT void SetSingleSolutionFlag (const Standard_Boolean theSingleSolutionFlag);
 
+  //! Get flag for single extrema computation. Works on parametric solver only.
+  Standard_EXPORT Standard_Boolean GetSingleSolutionFlag () const;
 
 
 protected:
@@ -98,7 +102,7 @@ protected:
 private:
 
 
-
+  Standard_Boolean myIsFindSingleSolution; // Default value is false.
   Standard_Boolean myDone;
   Standard_Boolean myIsPar;
   Extrema_SequenceOfPOnCurv2d mypoints;

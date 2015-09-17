@@ -53,8 +53,9 @@
 //purpose  : 
 //=======================================================================
 Extrema_ExtCC::Extrema_ExtCC (const Standard_Real TolC1,
-			                    const Standard_Real TolC2) :
-			                      myDone (Standard_False)
+                              const Standard_Real TolC2)
+: myIsFindSingleSolution(Standard_False),
+  myDone (Standard_False)
 {
   myC[0] = 0; myC[1] = 0;
   myTol[0] = TolC1; myTol[1] = TolC2;
@@ -65,15 +66,16 @@ Extrema_ExtCC::Extrema_ExtCC (const Standard_Real TolC1,
 //purpose  : 
 //=======================================================================
 
-Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1, 
-			       const Adaptor3d_Curve& C2,
-			       const Standard_Real      U1,
-			       const Standard_Real      U2,
-			       const Standard_Real      V1,
-			       const Standard_Real      V2,
-			       const Standard_Real      TolC1,
-			       const Standard_Real      TolC2)
-: myECC(C1, C2, U1, U2, V1, V2),
+Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
+                             const Adaptor3d_Curve& C2,
+                             const Standard_Real      U1,
+                             const Standard_Real      U2,
+                             const Standard_Real      V1,
+                             const Standard_Real      V2,
+                             const Standard_Real      TolC1,
+                             const Standard_Real      TolC2)
+: myIsFindSingleSolution(Standard_False),
+  myECC(C1, C2, U1, U2, V1, V2),
   myDone (Standard_False)
 {
   SetCurve (1, C1, U1, U2);
@@ -90,10 +92,11 @@ Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
 //=======================================================================
 
 Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1, 
-			       const Adaptor3d_Curve& C2,
-			       const Standard_Real      TolC1,
-			       const Standard_Real      TolC2)
-: myECC(C1, C2),
+                             const Adaptor3d_Curve& C2,
+                             const Standard_Real      TolC1,
+                             const Standard_Real      TolC2)
+: myIsFindSingleSolution(Standard_False),
+  myECC(C1, C2),
   myDone (Standard_False)
 {
   SetCurve (1, C1, C1.FirstParameter(), C1.LastParameter());
@@ -165,6 +168,7 @@ void Extrema_ExtCC::Perform()
   myECC.SetParams(*((Adaptor3d_Curve*)myC[0]), 
                   *((Adaptor3d_Curve*)myC[1]), myInf[0], mySup[0], myInf[1], mySup[1]);
   myECC.SetTolerance(Min(myTol[0], myTol[1]));
+  myECC.SetSingleSolutionFlag(GetSingleSolutionFlag());
   myDone = Standard_False;
   mypoints.Clear();
   mySqDist.Clear();
@@ -719,4 +723,22 @@ void Extrema_ExtCC::Results(const Extrema_ECC&   AlgExt,
       }
     }
   }
+}
+
+//=======================================================================
+//function : SetSingleSolutionFlag
+//purpose  : 
+//=======================================================================
+void Extrema_ExtCC::SetSingleSolutionFlag(const Standard_Boolean theFlag)
+{
+  myIsFindSingleSolution = theFlag;
+}
+
+//=======================================================================
+//function : GetSingleSolutionFlag
+//purpose  : 
+//=======================================================================
+Standard_Boolean Extrema_ExtCC::GetSingleSolutionFlag() const
+{
+  return myIsFindSingleSolution;
 }

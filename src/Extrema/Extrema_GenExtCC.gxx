@@ -97,7 +97,8 @@ private:
 //purpose  : 
 //=======================================================================
 Extrema_GenExtCC::Extrema_GenExtCC()
-: myParallel(Standard_False),
+: myIsFindSingleSolution(Standard_False),
+  myParallel(Standard_False),
   myCurveMinTol(Precision::PConfusion()),
   myLowBorder(1,2),
   myUppBorder(1,2),
@@ -112,7 +113,8 @@ Extrema_GenExtCC::Extrema_GenExtCC()
 //=======================================================================
 Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
                                    const Curve2& C2)
-: myParallel(Standard_False),
+: myIsFindSingleSolution(Standard_False),
+  myParallel(Standard_False),
   myCurveMinTol(Precision::PConfusion()),
   myLowBorder(1,2),
   myUppBorder(1,2),
@@ -136,7 +138,8 @@ Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
                                    const Standard_Real Usup,
                                    const Standard_Real Vinf,
                                    const Standard_Real Vsup)
-: myParallel(Standard_False),
+: myIsFindSingleSolution(Standard_False),
+  myParallel(Standard_False),
   myCurveMinTol(Precision::PConfusion()),
   myLowBorder(1,2),
   myUppBorder(1,2),
@@ -204,6 +207,7 @@ void Extrema_GenExtCC::Perform()
   Standard_Real aValueTol = 1.0e-2;
   Standard_Real aSameTol = myCurveMinTol / (aDiscTol);
   aFinder.SetTol(aDiscTol, aSameTol);
+  aFinder.SetFunctionalMinimalValue(0.0); // Best disntance cannot be lower than 0.0
 
   // Size computed to have cell index inside of int32 value.
   const Standard_Real aCellSize = Max(anIntervals1.Upper() - anIntervals1.Lower(),
@@ -228,7 +232,7 @@ void Extrema_GenExtCC::Perform()
       aSecondBorderInterval(2) = anIntervals2(j + 1);
 
       aFinder.SetLocalParams(aFirstBorderInterval, aSecondBorderInterval);
-      aFinder.Perform();
+      aFinder.Perform(GetSingleSolutionFlag());
 
       // Check that solution found on current interval is not worse than previous.
       aCurrF = aFinder.GetF();
@@ -387,4 +391,22 @@ void Extrema_GenExtCC::Points(const Standard_Integer N,
 
   P1.SetValues(myPoints1(N), Tool1::Value(*((Curve1*)myC[0]), myPoints1(N)));
   P2.SetValues(myPoints2(N), Tool2::Value(*((Curve2*)myC[1]), myPoints2(N)));
+}
+
+//=======================================================================
+//function : SetSingleSolutionFlag
+//purpose  : 
+//=======================================================================
+void Extrema_GenExtCC::SetSingleSolutionFlag(const Standard_Boolean theFlag)
+{
+  myIsFindSingleSolution = theFlag;
+}
+
+//=======================================================================
+//function : GetSingleSolutionFlag
+//purpose  : 
+//=======================================================================
+Standard_Boolean Extrema_GenExtCC::GetSingleSolutionFlag() const
+{
+  return myIsFindSingleSolution;
 }

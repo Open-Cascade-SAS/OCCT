@@ -65,6 +65,7 @@ void BRepExtrema_ExtCC::Perform(const TopoDS_Edge& E1)
   BRep_Tool::Range(E1,U1,U2);
   myExtCC.SetCurve (1, HC->Curve(), U1, U2);
   myExtCC.SetTolerance(1, Tol);
+  myExtCC.SetSingleSolutionFlag(Standard_True);
   myExtCC.Perform();
 }
 

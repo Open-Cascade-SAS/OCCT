@@ -55,7 +55,13 @@ public:
   Standard_EXPORT void SetParams (const Adaptor3d_Curve& C1, const Adaptor3d_Curve& C2, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real Vinf, const Standard_Real Vsup);
   
   Standard_EXPORT void SetTolerance (const Standard_Real Tol);
-  
+
+  //! Set flag for single extrema computation. Works on parametric solver only.
+  Standard_EXPORT void SetSingleSolutionFlag (const Standard_Boolean theSingleSolutionFlag);
+
+  //! Get flag for single extrema computation. Works on parametric solver only.
+  Standard_EXPORT Standard_Boolean GetSingleSolutionFlag () const;
+
   Standard_EXPORT void Perform();
   
   Standard_EXPORT Standard_Boolean IsDone() const;
@@ -80,7 +86,7 @@ protected:
 private:
 
 
-
+  Standard_Boolean myIsFindSingleSolution; // Default value is false.
   Standard_Boolean myParallel;
   Standard_Real myCurveMinTol;
   math_Vector myLowBorder;

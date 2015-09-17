@@ -54,6 +54,7 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myFunc = theFunc;
   myC = theC;
   myIsFindSingleSolution = Standard_False;
+  myFunctionalMinimalValue = -Precision::Infinite();
   myZ = -1;
   mySolCount = 0;
 
@@ -247,6 +248,13 @@ void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
       myE3 = - maxLength * myTol * myC / 4.0;
   }
 
+  // Search single solution and current solution in its neighbourhood.
+  if (CheckFunctionalStopCriteria())
+  {
+    myDone = Standard_True;
+    return;
+  }
+
   isFirstCellFilterInvoke = Standard_True;
   computeGlobalExtremum(myN);
 
@@ -409,7 +417,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
   Standard_Real r;
   Standard_Boolean isReached = Standard_False;
 
-  for(myX(j) = myA(j) + myE1; 
+  for(myX(j) = myA(j) + myE1;
      (myX(j) < myB(j) + myE1) && (!isReached);
       myX(j) += myV(j))
   {
@@ -418,6 +426,9 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       myX(j) = myB(j);
       isReached = Standard_True;
     }
+
+    if (CheckFunctionalStopCriteria())
+      return; // Best possible value is obtained.
 
     if (j == 1)
     {
@@ -462,6 +473,9 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
 
         isFirstCellFilterInvoke = Standard_True;
       }
+
+      if (CheckFunctionalStopCriteria())
+        return; // Best possible value is obtained.
 
       aRealStep = myE2 + Abs(myF - d) / myC;
       myV(1) = Min(aRealStep, myMaxV(1));
@@ -589,6 +603,24 @@ Standard_Real math_GlobOptMin::GetF()
 }
 
 //=======================================================================
+//function : SetFunctionalMinimalValue
+//purpose  :
+//=======================================================================
+void math_GlobOptMin::SetFunctionalMinimalValue(const Standard_Real theMinimalValue)
+{
+  myFunctionalMinimalValue = theMinimalValue;
+}
+
+//=======================================================================
+//function : GetFunctionalMinimalValue
+//purpose  :
+//=======================================================================
+Standard_Real math_GlobOptMin::GetFunctionalMinimalValue()
+{
+  return myFunctionalMinimalValue;
+}
+
+//=======================================================================
 //function : IsDone
 //purpose  :
 //=======================================================================
@@ -620,4 +652,18 @@ void math_GlobOptMin::initCellSize()
     myCellSize(anIdx - 1) = (myGlobB(anIdx) - myGlobA(anIdx))
       * Precision::PConfusion() / (2.0 * Sqrt(2.0));
   }
+}
+
+//=======================================================================
+//function : CheckFunctionalStopCriteria
+//purpose  :
+//=======================================================================
+Standard_Boolean math_GlobOptMin::CheckFunctionalStopCriteria()
+{
+  // Search single solution and current solution in its neighbourhood.
+  if (myIsFindSingleSolution &&
+      Abs (myF - myFunctionalMinimalValue) < mySameTol * 0.01)
+    return Standard_True;
+
+  return Standard_False;
 }

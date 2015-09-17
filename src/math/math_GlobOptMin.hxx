@@ -141,7 +141,13 @@ public:
   //! Return solution theIndex, 1 <= theIndex <= NbExtrema.
   Standard_EXPORT void Points(const Standard_Integer theIndex, math_Vector& theSol);
 
-  Standard_Boolean isDone();
+  Standard_EXPORT Standard_Boolean isDone();
+
+  //! Set functional minimal value.
+  Standard_EXPORT void SetFunctionalMinimalValue(const Standard_Real theMinimalValue);
+
+  //! Get functional minimal value.
+  Standard_EXPORT Standard_Real GetFunctionalMinimalValue();
 
 private:
 
@@ -153,6 +159,10 @@ private:
   Standard_Boolean computeLocalExtremum(const math_Vector& thePnt, Standard_Real& theVal, math_Vector& theOutPnt);
 
   void computeGlobalExtremum(Standard_Integer theIndex);
+
+  //! Check possibility to stop computations.
+  //! Find single solution + in neighbourhood of best possible solution.
+  Standard_Boolean CheckFunctionalStopCriteria();
 
   //! Computes starting value / approximation:
   //! myF - initial best value.
@@ -180,6 +190,7 @@ private:
                            // default value is 1.0e-7.
   Standard_Real myC; //Lipschitz constant, default 9
   Standard_Boolean myIsFindSingleSolution; // Default value is false.
+  Standard_Real myFunctionalMinimalValue; // Default value is -Precision::Infinite
 
   // Output.
   Standard_Boolean myDone;

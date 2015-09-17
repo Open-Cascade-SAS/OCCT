@@ -1,0 +1,37 @@
+puts "========"
+puts "OCC26674"
+puts "========"
+puts ""
+#################################################
+# Performance regression in BRepExtrema_DistShapeShape in OCCT 6.9.0 in compare with OCCT 6.7.1
+#################################################
+
+set max_time 1
+
+restore [locate_data_file OCC26674-face.brep] a1
+restore [locate_data_file OCC26674-shell.brep] a2
+
+dchrono cr reset
+dchrono cr start
+
+distmini dd a1 a2
+
+dchrono cr stop
+
+set log [dchrono cr show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $log full z
+puts "$z"
+
+if { $z > ${max_time} } {
+    puts "Elapsed time of BRepExtrema_DistShapeShape is more than ${max_time} seconds - Error"
+} else {
+    puts "Elapsed time of BRepExtrema_DistShapeShape is less than ${max_time} seconds - OK"
+}
+
+regexp {([-0-9.+eE]+)$} [dump dd_val] full dist
+
+set expected_dist 0.0
+set tol_abs_dist 1.0e-07
+set tol_rel_dist 0.0
+checkreal "Dump of dd_val" ${dist} ${expected_dist} ${tol_abs_dist} ${tol_rel_dist}
