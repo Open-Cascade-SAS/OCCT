@@ -180,7 +180,7 @@ static Standard_Integer mksurface(Draw_Interpretor& , Standard_Integer n, const 
 // mkplane
 //=======================================================================
 
-static Standard_Integer mkplane(Draw_Interpretor& , Standard_Integer n, const char** a)
+static Standard_Integer mkplane(Draw_Interpretor& theDI, Standard_Integer n, const char** a)
 {
   if (n < 3) return 1;
 
@@ -192,9 +192,30 @@ static Standard_Integer mkplane(Draw_Interpretor& , Standard_Integer n, const ch
     OnlyPlane =  !strcmp(a[3],"1");
   }
 
-  TopoDS_Face F = BRepBuilderAPI_MakeFace(TopoDS::Wire(S), OnlyPlane);
+  BRepBuilderAPI_MakeFace aMF(TopoDS::Wire(S), OnlyPlane);
 
-  DBRep::Set(a[1],F);
+  switch(aMF.Error())
+  {
+  case BRepBuilderAPI_FaceDone:
+    DBRep::Set(a[1],aMF.Face());
+    break;
+  case BRepLib_NoFace:
+    theDI << "Error. mkplane has been finished with \"No Face\" status.\n";
+    break;
+  case BRepLib_NotPlanar:
+    theDI << "Error. mkplane has been finished with \"Not Planar\" status.\n";
+    break;
+  case BRepLib_CurveProjectionFailed:
+    theDI << "Error. mkplane has been finished with \"Fail in projection curve\" status.\n";
+    break;
+  case BRepLib_ParametersOutOfRange:
+    theDI << "Error. mkplane has been finished with \"Parameters are out of range\" status.\n";
+    break;
+  default:
+    theDI << "Error. Undefined status. Please check the code.\n";
+    break;
+  }
+
   return 0;
 }
 
