@@ -385,7 +385,7 @@ void OpenGl_View::Redraw()
   #if !defined(GL_ES_VERSION_2_0)
     aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
   #endif
-    if (!redrawImmediate (aProjectType, aMainFbos[0], anImmFbos[0]))
+    if (!redrawImmediate (Graphic3d_Camera::Projection_MonoLeftEye, aMainFbos[0], anImmFbos[0]))
     {
       toSwap = false;
     }
@@ -400,7 +400,7 @@ void OpenGl_View::Redraw()
     redraw (Graphic3d_Camera::Projection_MonoRightEye, aMainFbos[1]);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
-    if (!redrawImmediate (aProjectType, aMainFbos[1], anImmFbos[1]))
+    if (!redrawImmediate (Graphic3d_Camera::Projection_MonoRightEye, aMainFbos[1], anImmFbos[1]))
     {
       toSwap = false;
     }

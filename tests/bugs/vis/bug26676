@@ -1,0 +1,31 @@
+puts "============"
+puts "CR26676"
+puts "============"
+puts ""
+
+##########################################################################################
+# 0026676: Visualization, Ray Tracing - correct rendering if stereo pair
+##########################################################################################
+
+vinit View1 w=400 h=400
+vclear
+
+box b 1 2 50
+vraytrace 0
+vaxo
+vsetdispmode 1
+vdisplay b
+vcamera -persp
+vfit
+vrotate 0 -1.2 0
+vzoom 1.2
+
+vstereo -anaglyph redCyan
+vcamera -iod
+vcamera -iod 0.3
+
+vraytrace 1
+
+vselect 200 350
+
+vdump ${imagedir}/${casename}.png -stereo blend

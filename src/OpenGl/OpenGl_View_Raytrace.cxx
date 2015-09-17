@@ -1722,17 +1722,13 @@ void OpenGl_View::updateCamera (const OpenGl_Mat4& theOrientation,
 
       aDirect = aDirect - aOrigin;
 
-      GLdouble aInvLen = 1.0 / sqrt (aDirect.x() * aDirect.x() +
-                                     aDirect.y() * aDirect.y() +
-                                     aDirect.z() * aDirect.z());
-
       theOrigins[aOriginIndex++] = OpenGl_Vec3 (static_cast<GLfloat> (aOrigin.x()),
                                                 static_cast<GLfloat> (aOrigin.y()),
                                                 static_cast<GLfloat> (aOrigin.z()));
 
-      theDirects[aDirectIndex++] = OpenGl_Vec3 (static_cast<GLfloat> (aDirect.x() * aInvLen),
-                                                static_cast<GLfloat> (aDirect.y() * aInvLen),
-                                                static_cast<GLfloat> (aDirect.z() * aInvLen));
+      theDirects[aDirectIndex++] = OpenGl_Vec3 (static_cast<GLfloat> (aDirect.x()),
+                                                static_cast<GLfloat> (aDirect.y()),
+                                                static_cast<GLfloat> (aDirect.z()));
     }
   }
 }
