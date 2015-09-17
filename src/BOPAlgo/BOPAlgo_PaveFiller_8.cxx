@@ -15,7 +15,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPCol_ListOfInteger.hxx>
@@ -39,7 +38,6 @@
 #include <gp_Pnt2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -58,10 +56,10 @@ static
 //function : ProcessDE
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::ProcessDE()
+void BOPAlgo_PaveFiller::ProcessDE()
 {
   Standard_Integer nF, aNb, nE, nV, nVSD, aNbPB;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   Handle(BOPDS_PaveBlock) aPBD;
   BOPCol_ListIteratorOfListOfInteger aItLI;
   //
@@ -70,7 +68,8 @@ static
   // 1. Find degnerated edges
   //-----------------------------------------------------scope f
   //
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPDS_ListOfPaveBlock aLPBOut(aAllocator);
   //
   aNb=myDS->NbSourceShapes();

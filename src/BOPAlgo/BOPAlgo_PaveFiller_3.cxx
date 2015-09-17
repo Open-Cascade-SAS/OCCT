@@ -54,7 +54,6 @@
 #include <IntTools_SequenceOfRanges.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <IntTools_Tools.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <Precision.hxx>
 #include <TopoDS_Compound.hxx>
@@ -291,11 +290,12 @@ void BOPAlgo_PaveFiller::PerformEE()
   Standard_Real aTS11, aTS12, aTS21, aTS22, aT11, aT12, aT21, aT22;
   TopAbs_ShapeEnum aType;
   BOPDS_ListIteratorOfListOfPaveBlock aIt1, aIt2;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   BOPDS_MapOfPaveBlock aMPBToUpdate;
   BOPAlgo_VectorOfEdgeEdge aVEdgeEdge;
   BOPDS_MapIteratorOfMapOfPaveBlock aItPB; 
   //
+  aAllocator=NCollection_BaseAllocator::CommonBaseAllocator();
   //-----------------------------------------------------scope f
   BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock aMPBLPB(100, aAllocator);
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMVCPB(100, aAllocator);

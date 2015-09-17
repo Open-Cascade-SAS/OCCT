@@ -19,7 +19,6 @@
 #include <BOPAlgo_Section.hxx>
 #include <BOPTest_Objects.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_IncAllocator.hxx>
 
 static Handle(NCollection_BaseAllocator)& Allocator1();
 
@@ -42,8 +41,8 @@ class BOPTest_Session {
   void Init() {
     Handle(NCollection_BaseAllocator) pA1, pA2;
     //
-    pA1=new NCollection_IncAllocator;
-    pA2=new NCollection_IncAllocator;
+    pA1=NCollection_BaseAllocator::CommonBaseAllocator();
+    pA2=NCollection_BaseAllocator::CommonBaseAllocator();
     //
     myPaveFiller=new BOPAlgo_PaveFiller(pA1);
     myBuilderDefault=new BOPAlgo_Builder(pA2);
@@ -279,6 +278,6 @@ Standard_Real BOPTest_Objects::FuzzyValue()
 Handle(NCollection_BaseAllocator)& Allocator1() 
 {
   static Handle(NCollection_BaseAllocator) sAL1=
-    new NCollection_IncAllocator;
+    NCollection_BaseAllocator::CommonBaseAllocator();
   return sAL1;
 }

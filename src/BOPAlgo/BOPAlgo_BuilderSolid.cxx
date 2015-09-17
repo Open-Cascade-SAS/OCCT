@@ -46,7 +46,6 @@
 #include <gp_Vec.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
@@ -437,7 +436,8 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   myErrorStatus=0;
   myLoops.Clear();
   //
-  aAlr=new NCollection_IncAllocator();
+  aAlr=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPAlgo_ShellSplitter aSSp(aAlr);
   //
   // 1. Shells Usual

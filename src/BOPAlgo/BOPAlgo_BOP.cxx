@@ -30,7 +30,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
@@ -340,7 +339,8 @@ void BOPAlgo_BOP::Perform()
     }
   }
   //
-  aAllocator=new NCollection_IncAllocator;
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPCol_ListOfShape aLS(aAllocator);
   //
   aItLS.Initialize(myArguments);

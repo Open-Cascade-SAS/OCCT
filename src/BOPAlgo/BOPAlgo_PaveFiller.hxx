@@ -124,6 +124,8 @@ protected:
   Standard_EXPORT virtual void PerformFZ();
   
   Standard_EXPORT virtual void PerformZZ();
+
+  Standard_EXPORT virtual void PerformSZ(const TopAbs_ShapeEnum aTS);
   
   Standard_EXPORT void TreatVerticesEE();
   

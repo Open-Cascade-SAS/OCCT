@@ -67,7 +67,6 @@
 #include <IntTools_SequenceOfPntOn2Faces.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <IntTools_Tools.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -351,13 +350,14 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   Standard_Integer i, nF1, nF2, aNbC, aNbP, j;
   Standard_Integer nV1, nV2;
   Standard_Real aTolR3D, aT1, aT2, aTol;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   TopoDS_Edge aES;
   Handle(BOPDS_PaveBlock) aPBOut;
   //
   //-----------------------------------------------------scope f
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_ListOfInteger aLSE(aAllocator), aLBV(aAllocator);
   BOPCol_MapOfInteger aMVOnIn(100, aAllocator), aMF(100, aAllocator),
@@ -595,7 +595,6 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   aDMExEdges.Clear();
   aMI.Clear();
   aDMI.Clear();
-  aAllocator.Nullify();
 }
 
 //=======================================================================

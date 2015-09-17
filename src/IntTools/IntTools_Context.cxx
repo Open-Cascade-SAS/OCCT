@@ -35,7 +35,6 @@
 #include <IntTools_FClass2d.hxx>
 #include <IntTools_SurfaceRangeLocalizeData.hxx>
 #include <IntTools_Tools.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <TopAbs_State.hxx>
@@ -54,7 +53,7 @@
 //=======================================================================
 IntTools_Context::IntTools_Context()
 :
-  myAllocator(new NCollection_IncAllocator()),
+  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myFClass2dMap(100, myAllocator),
   myProjPSMap(100, myAllocator),
   myProjPCMap(100, myAllocator),

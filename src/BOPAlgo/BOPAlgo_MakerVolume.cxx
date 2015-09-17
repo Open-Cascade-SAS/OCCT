@@ -12,7 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_MakerVolume.hxx>
@@ -23,7 +22,6 @@
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Solid.hxx>
 
@@ -73,7 +71,8 @@ void BOPAlgo_MakerVolume::Perform()
     }
   }
   //
-  Handle(NCollection_BaseAllocator) aAllocator = new NCollection_IncAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator = 
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPAlgo_PaveFiller* pPF = new BOPAlgo_PaveFiller(aAllocator);
   //
   if (!myIntersect) {

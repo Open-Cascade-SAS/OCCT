@@ -47,7 +47,6 @@
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>

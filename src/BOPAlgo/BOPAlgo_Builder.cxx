@@ -21,7 +21,6 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TopoDS_Compound.hxx>
@@ -251,7 +250,8 @@ void BOPAlgo_Builder::Perform()
     }
   }
   //
-  Handle(NCollection_BaseAllocator) aAllocator=new NCollection_IncAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPAlgo_PaveFiller* pPF=new BOPAlgo_PaveFiller(aAllocator);
   //

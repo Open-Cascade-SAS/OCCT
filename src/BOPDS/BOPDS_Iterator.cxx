@@ -26,7 +26,6 @@
 #include <BOPDS_MapOfPassKeyBoolean.hxx>
 #include <BOPDS_PassKeyBoolean.hxx>
 #include <BOPDS_Tools.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -272,11 +271,11 @@ void BOPDS_Iterator::Intersect()
   Standard_Integer aNb, i, aNbR, iTi, iTj;
   Standard_Integer i1, i2, aNbSD, iX, j, iR;
   TopAbs_ShapeEnum aTi, aTj;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfInteger aIt;
   //
   //-----------------------------------------------------scope_1 f
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPDS_MapOfPassKeyBoolean aMPKXB(100, aAllocator);
   BOPDS_PassKeyBoolean aPKXB; 
@@ -375,6 +374,5 @@ void BOPDS_Iterator::Intersect()
   //
   aMPKXB.Clear();
   aVTSR.Clear();
-  aAllocator.Nullify();
   //-----------------------------------------------------scope_1 t
 }

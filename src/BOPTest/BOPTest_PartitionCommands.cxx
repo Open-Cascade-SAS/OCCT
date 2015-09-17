@@ -25,7 +25,6 @@
 #include <Draw.hxx>
 #include <Draw_Color.hxx>
 #include <DrawTrSurf.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <OSD_Timer.hxx>
 #include <TopoDS_Shape.hxx>
 

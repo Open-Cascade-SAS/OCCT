@@ -19,7 +19,6 @@
 //
 #include <Precision.hxx>
 //
-#include <NCollection_IncAllocator.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 //
 #include <Bnd_Box.hxx>
@@ -253,7 +252,7 @@ class BOPAlgo_FillIn3DParts : public BOPAlgo_Algo  {
 //=======================================================================
 void BOPAlgo_FillIn3DParts::Perform() 
 {
-  Handle(NCollection_IncAllocator) aAlr1;
+  Handle(NCollection_BaseAllocator) aAlr1;
   BOPAlgo_Algo::UserBreak();
   //  
   Standard_Integer aNbFP, k, nFP, iIsIN;
@@ -262,7 +261,8 @@ void BOPAlgo_FillIn3DParts::Perform()
   BOPCol_ListIteratorOfListOfShape aItLS;
   BOPCol_BoxBndTreeSelector aSelector; 
   //
-  aAlr1=new NCollection_IncAllocator();
+  aAlr1=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_ListOfShape aLFP(aAlr1);
   BOPCol_ListOfShape aLCBF(aAlr1);
@@ -518,10 +518,11 @@ void BOPAlgo_Builder::FillImagesSolids()
   if (!bHasSolids) {
     return;
   }
+  // 
+  Handle(NCollection_BaseAllocator) aAlr;
   //
-  Handle(NCollection_IncAllocator) aAlr;
+  aAlr=NCollection_BaseAllocator::CommonBaseAllocator();
   //
-  aAlr=new NCollection_IncAllocator();
   BOPCol_DataMapOfShapeListOfShape theInParts(100, aAlr);
   BOPCol_DataMapOfShapeShape theDraftSolids(100, aAlr);
   //
@@ -543,7 +544,7 @@ void BOPAlgo_Builder::FillIn3DParts
 {
   Standard_Boolean bHasImage;
   Standard_Integer i, k, aNbS, aNbLIF, aNbFIN, aNbVSB, aNbVFIP;
-  Handle(NCollection_IncAllocator) aAlr0;
+  Handle(NCollection_BaseAllocator) aAlr0;
   TopoDS_Solid aSD;
   TopoDS_Iterator aIt;
   BRep_Builder aBB; 
@@ -551,7 +552,8 @@ void BOPAlgo_Builder::FillIn3DParts
   BOPCol_ListIteratorOfListOfInteger aItLI, aItLI1;
   BOPCol_ListIteratorOfListOfShape aItLS;
   //
-  aAlr0=new NCollection_IncAllocator();
+  aAlr0=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_MapOfShape aMFence(100, aAlr0);
   BOPAlgo_VectorOfShapeBox aVSB(256, aAlr0);
@@ -802,8 +804,8 @@ void BOPAlgo_Builder::BuildSplitSolids
   TopExp_Explorer aExp;
   BOPCol_ListIteratorOfListOfShape aIt;
   //
-  Handle(NCollection_IncAllocator) aAlr0;
-  aAlr0=new NCollection_IncAllocator();
+  Handle(NCollection_BaseAllocator) aAlr0;
+  aAlr0=NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_ListOfShape aSFS(aAlr0), aLSEmpty(aAlr0);
   BOPCol_MapOfShape aMFence(100, aAlr0);
@@ -869,10 +871,7 @@ void BOPAlgo_Builder::BuildSplitSolids
       aSFS.Append(aF);
     }
     //
-    // 1.3 Build new solids   
-    Handle(NCollection_IncAllocator) aAlr1;
-    aAlr1=new NCollection_IncAllocator();  
-    //
+    // 1.3 Build new solids  
     BOPAlgo_BuilderSolid& aBS=aVBS.Append1();
     aBS.SetSolid(aSolid);
     aBS.SetShapes(aSFS);
@@ -934,9 +933,9 @@ void BOPAlgo_Builder::FillInternalShapes()
   BRep_Builder aBB;
   BOPCol_ListIteratorOfListOfShape aIt, aIt1;
   //
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   //-----------------------------------------------------scope f
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_IndexedDataMapOfShapeListOfShape aMSx(100, aAllocator);
   BOPCol_IndexedMapOfShape aMx(100, aAllocator);
