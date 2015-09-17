@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC26616"
+puts "========"
+puts ""
+############################################
+# Memory leak in IntTools_Context::Hatcher
+############################################
+
+restore [locate_data_file OCC26635_t0.brep] t0
+restore [locate_data_file OCC26635_t1.brep] t1
+bfuse res t0 t1
+set m0 [meminfo w]
+repeat 10 {bfuse res t0 t1}
+set m1 [meminfo w]
+if {[expr {$m1 - $m0}] > 1048576} {
+  puts "ERROR: OCC26616 is reproduced. Memory leak has been detected."
+}
