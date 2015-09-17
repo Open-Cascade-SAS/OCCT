@@ -426,7 +426,10 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
     }
     while (!anObjToClear.IsEmpty())
     {
-      anObjToClear.FindKey (anObjToClear.Size())->ClearSelected();
+      const Handle(AIS_InteractiveObject)& anObj = anObjToClear.FindKey (anObjToClear.Size());
+      const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
+      myMainPM->Unhighlight (anObj, aHiMode);
+      anObj->ClearSelected();
       anObjToClear.RemoveLast();
     }
 

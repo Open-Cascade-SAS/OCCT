@@ -908,6 +908,13 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
 
   for( i=1; i<=len; i++ )
   {
+    if (theOwners.Value (i) == GlobalSelOwner())
+    {
+      const Standard_Integer aHiMode = HasHilightMode() ? HilightMode() : 0;
+      const Quantity_NameOfColor aSelColor = GetContext().IsNull() ? Quantity_NOC_GRAY80 : GetContext()->SelectionColor();
+      thePM->Color (this, aSelColor, aHiMode);
+      continue;
+    }
     anOwner = Handle (MeshVS_MeshEntityOwner)::DownCast ( theOwners.Value ( i ) );
     if ( !anOwner.IsNull() )
     {
@@ -1016,6 +1023,16 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
                                           const Quantity_NameOfColor Color,
                                           const Handle(SelectMgr_EntityOwner)& Owner)
 {
+  if (Owner.IsNull())
+    return;
+
+  if (Owner == GlobalSelOwner())
+  {
+    Standard_Integer aHiMode = HasHilightMode() ? HilightMode() : 0;
+    PM->Color (this, Color, aHiMode, NULL, Graphic3d_ZLayerId_Top);
+    return;
+  }
+
   if ( myHilighter.IsNull() )
     return;
 
@@ -1028,8 +1045,6 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
   if( HasPresentation() )
     aHilightPrs->SetTransformPersistence( Presentation()->TransformPersistenceMode(), Presentation()->TransformPersistencePoint() );
   //----------------
-
-  if( Owner.IsNull() ) return;
 
   const Standard_Boolean isMeshEntityOwner = Owner->IsKind ( STANDARD_TYPE ( MeshVS_MeshEntityOwner ) );
   const Standard_Boolean isWholeMeshOwner =

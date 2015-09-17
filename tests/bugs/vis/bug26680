@@ -1,0 +1,36 @@
+puts "============"
+puts "CR26680"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - Changed behavior of mesh visualization and selection in OMF sample"
+##########################################################################################
+
+pload VISUALIZATION XDE
+
+vinit
+meshfromstl m [locate_data_file bug26680.stl]
+meshcolors m elem2 1
+
+vselmode 0 1
+
+vmoveto 200 200
+if {[vreadpixel 197 257 name] != "CYAN1 1"} {
+  puts "ERROR: presentation for dynamic highlight of the object is wrong!"
+}
+vmoveto 0 0
+if {[vreadpixel 197 257 name] != "BLUE2 1"} {
+  puts "ERROR: the object is not unhighlighted after dynamic highlight!"
+}
+
+vselect 200 200
+if {[vreadpixel 197 257 name] != "GRAY80 1"} {
+  puts "ERROR: presentation for selection highlight is wrong!"
+}
+vselect 0 0
+if {[vreadpixel 197 257 name] != "BLUE2 1"} {
+  puts "ERROR: the object is not unhighlighted after selection highlight!"
+}
+
+set only_screen 1
