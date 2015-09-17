@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC26196"
+puts "========"
+puts ""
+#################################################
+# Wrong result obtained by projection algorithm
+#################################################
+
+restore [locate_data_file OCC26196-Face.brep] f
+
+explode f e
+mkcurve c f_1
+mksurface s f
+trim st s 1.33305 4.31185 -1.56174 0.415831
+project c2d c st
+
+set bug_info [dump c2d]
+set bug_info [string trim [string range $bug_info [expr {[string first "KnotsPoles :" $bug_info] + 12}] [string length $bug_info]]]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "Knots :" $bug_info] - 1}]]]
+set bug_info_length [llength $bug_info]
+
+set beg_X [lindex $bug_info 2]
+set beg_X [string range $beg_X 0 [expr {[string length $beg_X] - 2}]]
+set beg_Y [lindex $bug_info 3]
+
+set end_X [lindex $bug_info [expr {$bug_info_length - 2}]]
+set end_X [string range $end_X 0 [expr {[string length $end_X] - 2}]]
+set end_Y [lindex $bug_info [expr {$bug_info_length - 1}]]
+
+if {$beg_X > $end_X} {
+  set diff_X [expr {$beg_X - $end_X}]
+} else {
+  set diff_X [expr {$end_X - $beg_X}]
+}
+if {$beg_Y > $end_Y} {
+  set diff_Y [expr {$beg_Y - $end_Y}]
+} else {
+  set diff_Y [expr {$end_Y - $beg_Y}]
+}
+
+if {$diff_X > 1.e-06 || $diff_Y > 1.e-06} {
+  puts "ERROR: OCC26196 is reproduced. Projection is wrong."
+}

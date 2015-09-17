@@ -94,6 +94,65 @@ struct aFuncStruct
 };
 
 //=======================================================================
+//function : computePeriodicity
+//purpose  : Compute period information on adaptor.
+//=======================================================================
+static void computePeriodicity(const Handle(Adaptor3d_HSurface)& theSurf,
+                               Standard_Real &theUPeriod,
+                               Standard_Real &theVPeriod)
+{
+  theUPeriod = 0.0;
+  theVPeriod = 0.0;
+
+  // Compute once information about periodicity.
+  // Param space may be reduced in case of rectangular trimmed surface,
+  // in this case really trimmed bounds should be set as unperiodic.
+  Standard_Real aTrimF, aTrimL, aBaseF, aBaseL, aDummyF, aDummyL;
+  Handle(Geom_Surface) aS = GeomAdaptor::MakeSurface(theSurf->Surface(), Standard_False); // Not trim.
+  // U param space.
+  if (theSurf->IsUPeriodic())
+  {
+    theUPeriod = theSurf->UPeriod();
+  }
+  else if(theSurf->IsUClosed())
+  {
+    theUPeriod = theSurf->LastUParameter() - theSurf->FirstUParameter();
+  }
+  if (theUPeriod != 0.0)
+  {
+    aTrimF = theSurf->FirstUParameter(); // Trimmed first
+    aTrimL = theSurf->LastUParameter(); // Trimmed last
+    aS->Bounds(aBaseF, aBaseL, aDummyF, aDummyL); // Non-trimmed values.
+    if (Abs (aBaseF - aTrimF) + Abs (aBaseL - aTrimL) > Precision::PConfusion())
+    {
+      // Param space reduced.
+      theUPeriod = 0.0;
+    }
+  }
+
+  // V param space.
+  if (theSurf->IsVPeriodic())
+  {
+    theVPeriod = theSurf->VPeriod();
+  }
+  else if(theSurf->IsVClosed())
+  {
+    theVPeriod = theSurf->LastVParameter() - theSurf->FirstVParameter();
+  }
+  if (theVPeriod != 0.0)
+  {
+    aTrimF = theSurf->FirstVParameter(); // Trimmed first
+    aTrimL = theSurf->LastVParameter(); // Trimmed last
+    aS->Bounds(aDummyF, aDummyL, aBaseF, aBaseL); // Non-trimmed values.
+    if (Abs (aBaseF - aTrimF) + Abs (aBaseL - aTrimL) > Precision::PConfusion())
+    {
+      // Param space reduced.
+      theVPeriod = 0.0;
+    }
+  }
+}
+
+//=======================================================================
 //function : aFuncValue
 //purpose  : compute functional value in (theU,theV) point
 //=======================================================================
@@ -128,7 +187,6 @@ static Standard_Real anOrthogSqValue(const gp_Pnt& aBasePnt,
 //purpose  : (OCC217 - apo)- Compute Point2d that project on polar surface(<Surf>) 3D<Curve>
 //            <InitCurve2d> use for calculate start 2D point.
 //=======================================================================
-
 static gp_Pnt2d Function_Value(const Standard_Real theU,
                                const aFuncStruct& theData)
 {
@@ -236,10 +294,8 @@ static gp_Pnt2d Function_Value(const Standard_Real theU,
   Standard_Real uperiod = theData.myPeriod[0],
                 vperiod = theData.myPeriod[1],
                 u, v;
-  // U0 and V0 are the points within the initialized period 
-  // (periode with u and v),
-  // U1 and V1 are the points for construction of tops
-  
+
+  // U0 and V0 are the points within the initialized period.
   if(U0 < Uinf)
   {
     if(!uperiod)
@@ -280,8 +336,8 @@ static gp_Pnt2d Function_Value(const Standard_Real theU,
       V0 += decalV*vperiod;
     }
   }
-  
-  // The surface around U0 is reduced.
+
+  // The surface around (U0,V0) is reduced.
   Standard_Real uLittle = (Usup - Uinf)/10, vLittle = (Vsup - Vinf)/10;
   Standard_Real uInfLi = 0, vInfLi = 0,uSupLi = 0, vSupLi = 0;
   if((U0 - Uinf) > uLittle) uInfLi = U0 - uLittle; else uInfLi = Uinf;
@@ -372,18 +428,7 @@ class ProjLib_PolarFunction : public AppCont_Function
     myNbPnt = 0;
     myNbPnt2d = 1;
 
-    myStruct.myPeriod[0] = 0.0;
-    myStruct.myPeriod[1] = 0.0;
-
-    // Compute once information about periodicity.
-    if(Surf->IsUPeriodic() || Surf->IsUClosed())
-    {
-      myStruct.myPeriod[0] =  Surf->LastUParameter() - Surf->FirstUParameter();
-    }
-    if(Surf->IsVPeriodic() || Surf->IsVClosed())
-    {
-      myStruct.myPeriod[1] = Surf->LastVParameter() - Surf->FirstVParameter();
-    }
+    computePeriodicity(Surf, myStruct.myPeriod[0], myStruct.myPeriod[1]);
 
     myStruct.myCurve = C;
     myStruct.myInitCurve2d = InitialCurve2d;
@@ -766,6 +811,8 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform
 	}
       }
 
+      Standard_Real anUPeriod, anVPeriod;
+      computePeriodicity(S, anUPeriod, anVPeriod);
       Standard_Integer NbC = LOfBSpline2d.Extent();
       Handle(Geom2d_BSplineCurve) CurBS;
       CurBS = Handle(Geom2d_BSplineCurve)::DownCast(LOfBSpline2d.First());
@@ -780,22 +827,18 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform
         gp_Pnt2d aC2Beg = BS->Pole(1); // Beginning of C2.
         Standard_Real anUJump = 0.0, anVJump = 0.0;
 
-        if (S->IsUPeriodic() || S->IsUClosed())
+        if (anUPeriod > 0.0 &&
+            Abs (aC1End.X() - aC2Beg.X()) > (anUPeriod ) / 2.01)
         {
-          if (Abs (aC1End.X() - aC2Beg.X()) > (S->LastUParameter() - S->FirstUParameter() ) / 2.01)
-          {
-            Standard_Real aMultCoeff =  aC2Beg.X() < aC1End.X() ? 1.0 : -1.0;
-            anUJump = (S->LastUParameter() - S->FirstUParameter() ) * aMultCoeff;
-          }
+          Standard_Real aMultCoeff =  aC2Beg.X() < aC1End.X() ? 1.0 : -1.0;
+          anUJump = (anUPeriod) * aMultCoeff;
         }
 
-        if (S->IsVPeriodic() || S->IsVClosed())
+        if (anVPeriod &&
+            Abs (aC1End.Y() - aC2Beg.Y()) > (anVPeriod) / 2.01)
         {
-          if (Abs (aC1End.Y() - aC2Beg.Y()) > (S->LastVParameter() - S->FirstVParameter() ) / 2.01)
-          {
-            Standard_Real aMultCoeff =  aC2Beg.Y() < aC1End.Y() ? 1.0 : -1.0;
-            anVJump = (S->LastVParameter() - S->FirstVParameter() ) * aMultCoeff;
-          }
+          Standard_Real aMultCoeff =  aC2Beg.Y() < aC1End.Y() ? 1.0 : -1.0;
+          anVJump = (anVPeriod) * aMultCoeff;
         }
 
         CurBS = Concat(CurBS,BS, anUJump, anVJump);
@@ -832,14 +875,9 @@ Handle(Adaptor2d_HCurve2d)
   Standard_Real TolU = Surf->UResolution(Tol3d), TolV = Surf->VResolution(Tol3d);
   Standard_Real DistTol3d = 100.0*Tol3d;
 
-  Standard_Real uperiod = 0., vperiod = 0.;
-  if(Surf->IsUPeriodic() || Surf->IsUClosed())
-    uperiod = Surf->LastUParameter() - Surf->FirstUParameter(); 
-  
-  if(Surf->IsVPeriodic() || Surf->IsVClosed())
-    vperiod = Surf->LastVParameter() - Surf->FirstVParameter(); 
+  Standard_Real uperiod = 0.0, vperiod = 0.0;
+  computePeriodicity(Surf, uperiod, vperiod);
 
-  
   // NO myTol is Tol2d !!!!
   //Standard_Real TolU = myTolerance, TolV = myTolerance;
   //Standard_Real Tol3d = 100*myTolerance; // At random Balthazar.
