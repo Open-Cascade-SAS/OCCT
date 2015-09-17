@@ -246,7 +246,8 @@ void BRepMesh_IncrementalMesh::discretizeFreeEdges()
 
     BRepAdaptor_Curve aCurve(aEdge);
     GCPnts_TangentialDeflection aDiscret(aCurve, aCurve.FirstParameter(),
-      aCurve.LastParameter(), myAngle, aEdgeDeflection, 2, myMinSize);
+      aCurve.LastParameter(), myAngle, aEdgeDeflection, 2, 
+      Precision::PConfusion(), myMinSize);
 
     Standard_Integer aNodesNb = aDiscret.NbPoints();
     TColgp_Array1OfPnt   aNodes  (1, aNodesNb);

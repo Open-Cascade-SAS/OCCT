@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC26532"
+puts "========"
+puts ""
+#######################################################################
+# Meshing of edge with minSize parameter leads to incorrect result
+#######################################################################
+
+restore [locate_data_file bug26533_aal2.brep] a
+
+vinit
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+# with min size
+# => ugly curve
+vclear
+incmesh a 0.3 -min 0.06
+vdisplay a
+vdump ${imagedir}/${casename}_2.png
+
+# without min size
+# => nice curve
+vclear
+incmesh a 0.3
+vdisplay a
+vdump ${imagedir}/${casename}_3.png
