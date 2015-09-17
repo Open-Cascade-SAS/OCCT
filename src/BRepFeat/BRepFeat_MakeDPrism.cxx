@@ -72,24 +72,20 @@ extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
 static void MajMap(const TopoDS_Shape&,
-		   const LocOpe_DPrism&,
-		   TopTools_DataMapOfShapeListOfShape&, // myMap
-		   TopoDS_Shape&,  // myFShape
-		   TopoDS_Shape&); // myLShape
+  const LocOpe_DPrism&,
+  TopTools_DataMapOfShapeListOfShape&, // myMap
+  TopoDS_Shape&,  // myFShape
+  TopoDS_Shape&); // myLShape
 
 static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
-			       const TopoDS_Face& theSkface,
-			       const TopoDS_Shape& theSFrom,
-			       const TopoDS_Shape& theSUntil);
+  const TopoDS_Face& theSkface,
+  const TopoDS_Shape& theSFrom,
+  const TopoDS_Shape& theSUntil);
 
 static Standard_Integer SensOfPrism(const Handle(Geom_Curve) C,
-				    const TopoDS_Shape& Until);
+  const TopoDS_Shape& Until);
 
 static Handle(Geom_Curve) TestCurve(const TopoDS_Face&);
-
-static Standard_Boolean ToFuse(const TopoDS_Face& ,
-			       const TopoDS_Face&);
-
 
 
 //=======================================================================
@@ -98,12 +94,12 @@ static Standard_Boolean ToFuse(const TopoDS_Face& ,
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
-			       const TopoDS_Face&     Pbase,
-			       const TopoDS_Face&     Skface,
-			       const Standard_Real    Angle,
-			       const Standard_Integer Mode,
-			       const Standard_Boolean Modify)
-	
+  const TopoDS_Face&     Pbase,
+  const TopoDS_Face&     Skface,
+  const Standard_Real    Angle,
+  const Standard_Integer Mode,
+  const Standard_Boolean Modify)
+
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
@@ -156,7 +152,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
     if (myFuse)  cout << " Fuse" << endl;
     if (!myFuse)  cout << " Cut" << endl;
     if (!myModify) cout << " Modify = 0" << endl;
-//    cout <<" Angle = " << myAngle << endl;
+    //    cout <<" Angle = " << myAngle << endl;
   }
 #endif 
 }
@@ -168,7 +164,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
-			     const TopoDS_Face& F)
+  const TopoDS_Face& F)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
@@ -229,7 +225,7 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
   PerfSelectionValid();
 
   Standard_Real theheight = Height/cos(myAngle);
-//  myPbase.Orientation(TopAbs_FORWARD);
+  //  myPbase.Orientation(TopAbs_FORWARD);
 
   LocOpe_DPrism theDPrism(myPbase,theheight,myAngle);
   TopoDS_Shape VraiDPrism = theDPrism.Shape();
@@ -248,37 +244,7 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
     return;
   }
 
-  TopoDS_Face FFace;
-  
-  Standard_Boolean found = Standard_False;
-
-  if(!mySkface.IsNull() || !mySlface.IsEmpty()) {
-    if(myLShape.ShapeType() == TopAbs_WIRE) {
-      TopExp_Explorer ex1(VraiDPrism, TopAbs_FACE);
-      for(; ex1.More(); ex1.Next()) {
-	TopExp_Explorer ex2(ex1.Current(), TopAbs_WIRE);
-	for(; ex2.More(); ex2.Next()) {
-	  if(ex2.Current().IsSame(myLShape)) {
-	    FFace = TopoDS::Face(ex1.Current());
-	    found = Standard_True;
-	    break;
-	  }
-	}
-	if(found) break;
-      }
-    }
-    
-    TopExp_Explorer anExp(mySbase, TopAbs_FACE);
-    for(; anExp.More(); anExp.Next()) {
-      const TopoDS_Face& ff = TopoDS::Face(anExp.Current());
-      if(ToFuse(ff, FFace)) {
-	TopTools_DataMapOfShapeListOfShape sl;
-	break;
-      }
-    }
-  }
-
-// management of gluing faces 
+  // management of gluing faces 
 
   GluedFacesValid();
 
@@ -289,7 +255,7 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
     GlobalPerform();
   }
 
-// if there is no gluing -> call topological operations
+  // if there is no gluing -> call topological operations
   if(!myJustGluer) {
     if(myFuse == 1) {
       //modified by NIZNHY-PKV Thu Mar 21 17:32:17 2002 f
@@ -338,7 +304,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
   if (!exp.More()) {
     Standard_ConstructionError::Raise();
   }
-//  myPbase.Orientation(TopAbs_FORWARD);
+  //  myPbase.Orientation(TopAbs_FORWARD);
 
   myGluedF.Clear();
   myPerfSelection = BRepFeat_SelectionU;
@@ -393,13 +359,13 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
     TopAbs_Orientation Or;
     if (ASI.IsDone() && ASI.NbPoints(1) >=1) { 
       if (myFuse == 1) {
-	Or = ASI.Point(1,1).Orientation();
+        Or = ASI.Point(1,1).Orientation();
       }
       else {
-	Or = ASI.Point(1,ASI.NbPoints(1)).Orientation();
+        Or = ASI.Point(1,ASI.NbPoints(1)).Orientation();
       }     
-//      Standard_Real prm = ASI.Point(1,1).Parameter();
-//      if(prm < 0) Or = TopAbs::Reverse(Or);
+      //      Standard_Real prm = ASI.Point(1,1).Parameter();
+      //      if(prm < 0) Or = TopAbs::Reverse(Or);
       TopoDS_Face FUntil = ASI.Point(1,1).Face();
       TopoDS_Shape Comp;
       bB.MakeCompound(TopoDS::Compound(Comp));
@@ -416,30 +382,30 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
       TopExp_Explorer ex(trP.Shape(), TopAbs_SOLID);
       TopoDS_Shape Cutsh = ex.Current();
       if(myFuse == 1) {
-	//modified by NIZNHY-PKV Thu Mar 21 17:34:09 2002 f
-	//BRepAlgo_Fuse f(mySbase, Cutsh);
-	//myShape = f.Shape();
-	//UpdateDescendants(f.Builder(), myShape, Standard_False);
-	BRepAlgoAPI_Fuse f(mySbase, Cutsh);
-	myShape = f.Shape();
-	UpdateDescendants(f, myShape, Standard_False);
-	//modified by NIZNHY-PKV Thu Mar 21 17:34:13 2002 t
-	Done();
+        //modified by NIZNHY-PKV Thu Mar 21 17:34:09 2002 f
+        //BRepAlgo_Fuse f(mySbase, Cutsh);
+        //myShape = f.Shape();
+        //UpdateDescendants(f.Builder(), myShape, Standard_False);
+        BRepAlgoAPI_Fuse f(mySbase, Cutsh);
+        myShape = f.Shape();
+        UpdateDescendants(f, myShape, Standard_False);
+        //modified by NIZNHY-PKV Thu Mar 21 17:34:13 2002 t
+        Done();
       }
       else if(myFuse == 0) {
-	//modified by NIZNHY-PKV Thu Mar 21 17:34:56 2002 f
-	//BRepAlgo_Cut c(mySbase, Cutsh);
-	//myShape = c.Shape();
-	//UpdateDescendants(c.Builder(), myShape, Standard_False);
-	BRepAlgoAPI_Cut c(mySbase, Cutsh);
-	myShape = c.Shape();
-	UpdateDescendants(c, myShape, Standard_False);
-	//modified by NIZNHY-PKV Thu Mar 21 17:34:59 2002 t
-	Done();
+        //modified by NIZNHY-PKV Thu Mar 21 17:34:56 2002 f
+        //BRepAlgo_Cut c(mySbase, Cutsh);
+        //myShape = c.Shape();
+        //UpdateDescendants(c.Builder(), myShape, Standard_False);
+        BRepAlgoAPI_Cut c(mySbase, Cutsh);
+        myShape = c.Shape();
+        UpdateDescendants(c, myShape, Standard_False);
+        //modified by NIZNHY-PKV Thu Mar 21 17:34:59 2002 t
+        Done();
       }
       else {
-	myShape = Cutsh;
-	Done();	
+        myShape = Cutsh;
+        Done();	
       }
     }         
   }
@@ -461,7 +427,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
-				  const TopoDS_Shape& Until)
+  const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
@@ -483,7 +449,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
       if (myJustGluer) return;
     }
   }
-//  myPbase.Orientation(TopAbs_FORWARD);
+  //  myPbase.Orientation(TopAbs_FORWARD);
 
   myGluedF.Clear();
   myPerfSelection = BRepFeat_SelectionFU;
@@ -525,13 +491,13 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
 
   if(!Trff) {
     MajMap(myPbase,theDPrism,myMap,myFShape,myLShape);
-    
+
     // Make systematically dprism 
     myGShape = VraiDPrism;
     GeneratedShapeValid();
 
-  // management of gluing faces 
-	//	  mySbase, myPbase, mySlface, theDPrism, myGluedF);
+    // management of gluing faces 
+    //	  mySbase, myPbase, mySlface, theDPrism, myGluedF);
     GluedFacesValid();
     theDPrism.Curves(myCurves);
     myBCurve = theDPrism.BarycCurve();
@@ -561,13 +527,13 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
     //direction of dprism
     if (ASI1.IsDone() && ASI1.NbPoints(1) >=1) {
       if (myFuse == 1) {
-	OrU = ASI1.Point(1,1).Orientation();
+        OrU = ASI1.Point(1,1).Orientation();
       }
       else {
-	OrU = ASI1.Point(1,ASI1.NbPoints(1)).Orientation();
+        OrU = ASI1.Point(1,ASI1.NbPoints(1)).Orientation();
       }
-//      Standard_Real prm = ASI1.Point(1,1).Parameter();
-//      if(prm < 0) OrU = TopAbs::Reverse(OrU);
+      //      Standard_Real prm = ASI1.Point(1,1).Parameter();
+      //      if(prm < 0) OrU = TopAbs::Reverse(OrU);
       FUntil = ASI1.Point(1,1).Face();
     }
     else {
@@ -577,7 +543,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
     }
     if (ASI2.IsDone() && ASI2.NbPoints(1) >=1) {
       OrF = ASI2.Point(1,1).Orientation();
-//      Standard_Real prm = ASI2.Point(1,1).Parameter();
+      //      Standard_Real prm = ASI2.Point(1,1).Parameter();
       OrF = TopAbs::Reverse(OrF);
       FFrom = ASI2.Point(1,1).Face();
     }
@@ -659,7 +625,7 @@ void BRepFeat_MakeDPrism::PerformUntilEnd()
   mySFrom.Nullify();
   ShapeFromValid();
   Standard_Real Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
-//  myPbase.Orientation(TopAbs_FORWARD);
+  //  myPbase.Orientation(TopAbs_FORWARD);
 
   LocOpe_DPrism theDPrism(myPbase, Height, myAngle);  
   TopoDS_Shape VraiDPrism = theDPrism.Shape();
@@ -697,7 +663,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
   if (!exp.More()) {
     Standard_ConstructionError::Raise();
   }
-//  myPbase.Orientation(TopAbs_FORWARD);
+  //  myPbase.Orientation(TopAbs_FORWARD);
   myPerfSelection = BRepFeat_SelectionShU;
   PerfSelectionValid();
   mySFrom.Nullify();
@@ -760,23 +726,23 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
       OrF = ASI2.Point(1,1).Orientation();
       OrF = TopAbs::Reverse(OrF);	  
       for(Standard_Integer iii = 1; iii <= jj; iii++) {
-	if(ASI2.Point(1,iii).Parameter() < prm) {
-	  prm = ASI2.Point(1,iii).Parameter();
-	  FFrom = ASI2.Point(1, iii).Face(); 
-	  OrF = ASI2.Point(1,iii).Orientation();
-	  OrF = TopAbs::Reverse(OrF);	  
-	}
+        if(ASI2.Point(1,iii).Parameter() < prm) {
+          prm = ASI2.Point(1,iii).Parameter();
+          FFrom = ASI2.Point(1, iii).Face(); 
+          OrF = ASI2.Point(1,iii).Orientation();
+          OrF = TopAbs::Reverse(OrF);	  
+        }
       }
       Handle(Geom_Surface) S = BRep_Tool::Surface(FFrom);
       if (S->DynamicType() == 
-	  STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-	S = Handle(Geom_RectangularTrimmedSurface)::
-	  DownCast(S)->BasisSurface();
+        STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
+          S = Handle(Geom_RectangularTrimmedSurface)::
+            DownCast(S)->BasisSurface();
       }
       BRepLib_MakeFace fac(S, Precision::Confusion());
       mySFrom = fac.Face();  
       Trf = TransformShapeFU(0);
-//      FFrom = TopoDS::Face(mySFrom);      
+      //      FFrom = TopoDS::Face(mySFrom);      
     }
 
     TopoDS_Shape Comp;
@@ -856,7 +822,7 @@ void BRepFeat_MakeDPrism::PerformThruAll()
   }
 
   PerfSelectionValid();
-//  myPbase.Orientation(TopAbs_FORWARD);
+  //  myPbase.Orientation(TopAbs_FORWARD);
   myGluedF.Clear();
   GluedFacesValid();
 
@@ -896,7 +862,7 @@ void BRepFeat_MakeDPrism::PerformThruAll()
 //=======================================================================
 
 void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
-					     const Standard_Real Height)
+  const Standard_Real Height)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
@@ -912,7 +878,7 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
   if (!exp.More()) {
     Standard_ConstructionError::Raise();
   }
-//  myPbase.Orientation(TopAbs_FORWARD);
+  //  myPbase.Orientation(TopAbs_FORWARD);
   myGluedF.Clear();
   myPerfSelection = BRepFeat_NoSelection;
   PerfSelectionValid();
@@ -963,13 +929,13 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
     TopAbs_Orientation Or;
     if (ASI.IsDone() && ASI.NbPoints(1) >=1) {
       if (myFuse == 1) {
-	Or = ASI.Point(1,1).Orientation();
+        Or = ASI.Point(1,1).Orientation();
       }
       else {
-	Or = ASI.Point(1,ASI.NbPoints(1)).Orientation();
+        Or = ASI.Point(1,ASI.NbPoints(1)).Orientation();
       }
-//      Standard_Real prm = ASI.Point(1,1).Parameter();
-//      if(prm < 0) Or = TopAbs::Reverse(Or);
+      //      Standard_Real prm = ASI.Point(1,1).Parameter();
+      //      if(prm < 0) Or = TopAbs::Reverse(Or);
       TopoDS_Face FUntil = ASI.Point(1,1).Face();
       TopoDS_Shape Comp;
       BRep_Builder B;
@@ -981,30 +947,30 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
       BRepAlgoAPI_Cut trP(VraiDPrism,Comp);
       //modified by NIZNHY-PKV Thu Mar 21 17:47:21 2002 t
       if(myFuse == 1) {
-	//modified by NIZNHY-PKV Thu Mar 21 17:47:42 2002 f
-	//BRepAlgo_Fuse f(mySbase, trP.Shape());
-	//myShape = f.Shape();
-	//UpdateDescendants(f.Builder(), myShape, Standard_False);
-	BRepAlgoAPI_Fuse f(mySbase, trP.Shape());
-	myShape = f.Shape();
-	UpdateDescendants(f, myShape, Standard_False);
-	//modified by NIZNHY-PKV Thu Mar 21 17:47:49 2002 t
-	Done();
+        //modified by NIZNHY-PKV Thu Mar 21 17:47:42 2002 f
+        //BRepAlgo_Fuse f(mySbase, trP.Shape());
+        //myShape = f.Shape();
+        //UpdateDescendants(f.Builder(), myShape, Standard_False);
+        BRepAlgoAPI_Fuse f(mySbase, trP.Shape());
+        myShape = f.Shape();
+        UpdateDescendants(f, myShape, Standard_False);
+        //modified by NIZNHY-PKV Thu Mar 21 17:47:49 2002 t
+        Done();
       }
       else if(myFuse == 0) {
-	//modified by NIZNHY-PKV Thu Mar 21 17:48:18 2002 f
-	//BRepAlgo_Cut c(mySbase, trP.Shape());
-	//myShape = c.Shape();
-	//UpdateDescendants(c.Builder(), myShape, Standard_False);
-	BRepAlgoAPI_Cut c(mySbase, trP.Shape());
-	myShape = c.Shape();
-	UpdateDescendants(c, myShape, Standard_False);
-	//modified by NIZNHY-PKV Thu Mar 21 17:48:26 2002 t
-	Done();
+        //modified by NIZNHY-PKV Thu Mar 21 17:48:18 2002 f
+        //BRepAlgo_Cut c(mySbase, trP.Shape());
+        //myShape = c.Shape();
+        //UpdateDescendants(c.Builder(), myShape, Standard_False);
+        BRepAlgoAPI_Cut c(mySbase, trP.Shape());
+        myShape = c.Shape();
+        UpdateDescendants(c, myShape, Standard_False);
+        //modified by NIZNHY-PKV Thu Mar 21 17:48:26 2002 t
+        Done();
       }
       else {
-	myShape = trP.Shape();
-	Done();	
+        myShape = trP.Shape();
+        Done();	
       }
     }             
   }
@@ -1055,60 +1021,61 @@ void BRepFeat_MakeDPrism::BossEdges (const Standard_Integer signature)
       myTopEdges.Append(EE);  
     }
   }
-  
+
   // Edges Bottom    
   if (signature < 0) {
-// Attention check if TgtEdges is important
+    // Attention check if TgtEdges is important
     myLatEdges = NewEdges();
   }
   else if (signature > 0) {
     if ( !myShape.IsNull() ) {
       TopTools_MapOfShape MapE;
       Standard_Boolean Found;
-      
+
       TopExp_Explorer ExpF;
       for (ExpF.Init(myShape,TopAbs_FACE);ExpF.More();ExpF.Next()) {
-	Found = Standard_False;
-	const TopoDS_Face& FF = TopoDS::Face(ExpF.Current());	
-	for (itLS.Initialize(theLastShape);itLS.More();itLS.Next()) {
-	  const TopoDS_Face& TopFace = TopoDS::Face(itLS.Value());
-	  if (!FF.IsSame(TopFace)) {
-	    for (ExpE.Init(FF,TopAbs_EDGE);ExpE.More() && !Found ;ExpE.Next()) {
-	      const TopoDS_Edge& E1 = TopoDS::Edge(ExpE.Current());
-	      TopoDS_Vertex V1,V2;
-	      TopExp::Vertices (E1,V1,V2);
-	      TopTools_ListIteratorOfListOfShape it(myTopEdges);
-	      for (;it.More() && !Found ; it.Next()) {
-		TopoDS_Edge E2 = TopoDS::Edge(it.Value());
-		TopoDS_Vertex VT1,VT2;
-		TopExp::Vertices (E2,VT1,VT2);
-		
-		if (V1.IsSame(VT1) || V1.IsSame(VT2) || V2.IsSame(VT1) || V2.IsSame(VT2)) {
-		  Found = Standard_True;
-		  TopExp_Explorer ExpE2;
-		  for (ExpE2.Init(FF,TopAbs_EDGE);ExpE2.More();ExpE2.Next()) {
-		    const TopoDS_Edge& E3 = TopoDS::Edge(ExpE2.Current());
-		    if (MapE.Contains(E3)) { 
-		      MapE.Remove(E3); }
-		    else  {
-		      MapE.Add(E3);}
-		  }
-		}
-	      }
-	    }
-	  }
-	}
+        Found = Standard_False;
+        const TopoDS_Face& FF = TopoDS::Face(ExpF.Current());	
+        for (itLS.Initialize(theLastShape);itLS.More();itLS.Next()) {
+          const TopoDS_Face& TopFace = TopoDS::Face(itLS.Value());
+          if (!FF.IsSame(TopFace)) {
+            TopExp_Explorer ExpE;
+            for (ExpE.Init(FF,TopAbs_EDGE);ExpE.More() && !Found ;ExpE.Next()) {
+              const TopoDS_Edge& E1 = TopoDS::Edge(ExpE.Current());
+              TopoDS_Vertex V1,V2;
+              TopExp::Vertices (E1,V1,V2);
+              TopTools_ListIteratorOfListOfShape it(myTopEdges);
+              for (;it.More() && !Found ; it.Next()) {
+                TopoDS_Edge E2 = TopoDS::Edge(it.Value());
+                TopoDS_Vertex VT1,VT2;
+                TopExp::Vertices (E2,VT1,VT2);
+
+                if (V1.IsSame(VT1) || V1.IsSame(VT2) || V2.IsSame(VT1) || V2.IsSame(VT2)) {
+                  Found = Standard_True;
+                  TopExp_Explorer ExpE2;
+                  for (ExpE2.Init(FF,TopAbs_EDGE);ExpE2.More();ExpE2.Next()) {
+                    const TopoDS_Edge& E3 = TopoDS::Edge(ExpE2.Current());
+                    if (MapE.Contains(E3)) { 
+                      MapE.Remove(E3); }
+                    else  {
+                      MapE.Add(E3);}
+                  }
+                }
+              }
+            }
+          }
+        }
       }
-    
+
       TopTools_ListIteratorOfListOfShape it(myTopEdges);
       for (;it.More() ; it.Next()) {
-	if (MapE.Contains(it.Value())) {MapE.Remove(it.Value()); }
+        if (MapE.Contains(it.Value())) {MapE.Remove(it.Value()); }
       }
-      
+
       TopTools_MapIteratorOfMapOfShape itMap;
       for (itMap.Initialize(MapE);itMap.More();itMap.Next()) {
-	if (!BRep_Tool::Degenerated(TopoDS::Edge(itMap.Key())))
-	  myLatEdges.Append(itMap.Key());
+        if (!BRep_Tool::Degenerated(TopoDS::Edge(itMap.Key())))
+          myLatEdges.Append(itMap.Key());
       }
     }
   }
@@ -1151,9 +1118,9 @@ Handle(Geom_Curve) BRepFeat_MakeDPrism::BarycCurve()
 //=======================================================================
 
 static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
-			       const TopoDS_Face&  theSkface, // face de sketch
-			       const TopoDS_Shape& theSFrom,  // shape from
-			       const TopoDS_Shape& theSUntil) // shape until
+  const TopoDS_Face&  theSkface, // face de sketch
+  const TopoDS_Shape& theSFrom,  // shape from
+  const TopoDS_Shape& theSUntil) // shape until
 {
   Bnd_Box Box;
   BRepBndLib::Add(theSbase,Box);
@@ -1167,18 +1134,18 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
   Standard_Real c[6];
 
   Box.Get(c[0],c[2],c[4],c[1],c[3],c[5]);
-//  Standard_Real parmin=c[0], parmax = c[0];
-//  for(Standard_Integer i = 0 ; i < 6; i++) {
-//    if(c[i] > parmax) parmax = c[i];
-//    if(c[i] < parmin ) parmin = c[i];    
-//  }
-//  Standard_Real Height = abs(2.*(parmax - parmin));
-//  return(2.*Height);
-//#ifndef OCCT_DEBUG
+  //  Standard_Real parmin=c[0], parmax = c[0];
+  //  for(Standard_Integer i = 0 ; i < 6; i++) {
+  //    if(c[i] > parmax) parmax = c[i];
+  //    if(c[i] < parmin ) parmin = c[i];    
+  //  }
+  //  Standard_Real Height = abs(2.*(parmax - parmin));
+  //  return(2.*Height);
+  //#ifndef OCCT_DEBUG
   Standard_Real par = Max(  Max( fabs(c[1] - c[0]), fabs(c[3] - c[2]) ), fabs(c[5] - c[4]) );
-//#else
-//  Standard_Real par = Max(  Max( abs(c[1] - c[0]), abs(c[3] - c[2]) ), abs(c[5] - c[4]) );
-//#endif
+  //#else
+  //  Standard_Real par = Max(  Max( abs(c[1] - c[0]), abs(c[3] - c[2]) ), abs(c[5] - c[4]) );
+  //#endif
 #ifdef OCCT_DEBUG
   cout << "Height = > " <<  par  << endl;
 #endif
@@ -1189,12 +1156,12 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
 
 
 
- //=======================================================================
+//=======================================================================
 //function : SensOfPrism
 //purpose  : determine the direction of prism generation
 //=======================================================================
 Standard_Integer SensOfPrism(const Handle(Geom_Curve) C,
-			     const TopoDS_Shape& Until)
+  const TopoDS_Shape& Until)
 {
   LocOpe_CSIntersector ASI1(Until);
   TColGeom_SequenceOfCurve scur;
@@ -1210,7 +1177,7 @@ Standard_Integer SensOfPrism(const Handle(Geom_Curve) C,
     }
   }
   else if(BRepFeat::ParametricBarycenter(Until,C) < 0) {
-      sens = -1;
+    sens = -1;
   }
   else {}
   return sens;
@@ -1222,10 +1189,10 @@ Standard_Integer SensOfPrism(const Handle(Geom_Curve) C,
 //=======================================================================
 
 static void MajMap(const TopoDS_Shape& theB,
-		   const LocOpe_DPrism& theP,
-		   TopTools_DataMapOfShapeListOfShape& theMap, // myMap
-		   TopoDS_Shape& theFShape,  // myFShape
-		   TopoDS_Shape& theLShape) // myLShape
+  const LocOpe_DPrism& theP,
+  TopTools_DataMapOfShapeListOfShape& theMap, // myMap
+  TopoDS_Shape& theFShape,  // myFShape
+  TopoDS_Shape& theLShape) // myLShape
 {
   TopExp_Explorer exp;
   if(!theP.FirstShape().IsNull()) {    
@@ -1235,11 +1202,11 @@ static void MajMap(const TopoDS_Shape& theB,
       TopTools_ListOfShape thelist;
       theMap.Bind(theFShape, thelist);
       for (exp.Init(theP.FirstShape(),TopAbs_FACE);exp.More();exp.Next()) {
-	theMap(theFShape).Append(exp.Current());
+        theMap(theFShape).Append(exp.Current());
       }
     }
   }
-  
+
   if(!theP.LastShape().IsNull()) {    
     exp.Init(theP.LastShape(),TopAbs_WIRE);
     if (exp.More()) {
@@ -1247,7 +1214,7 @@ static void MajMap(const TopoDS_Shape& theB,
       TopTools_ListOfShape thelist1;
       theMap.Bind(theLShape, thelist1);
       for (exp.Init(theP.LastShape(),TopAbs_FACE);exp.More();exp.Next()) {
-	theMap(theLShape).Append(exp.Current());
+        theMap(theLShape).Append(exp.Current());
       }
     }
   }
@@ -1294,71 +1261,4 @@ static Handle(Geom_Curve) TestCurve(const TopoDS_Face& Base)
   Handle(Geom_Line) theLin = new Geom_Line(theAx);
   return theLin;
 }
-
-
-
-
-
-//=======================================================================
-//function : ToFuse
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean ToFuse(const TopoDS_Face& F1,
-			const TopoDS_Face& F2)
-{
-  if (F1.IsNull() || F2.IsNull()) {
-    return Standard_False;
-  }
-
-  Handle(Geom_Surface) S1,S2;
-  TopLoc_Location loc1, loc2;
-  Handle(Standard_Type) typS1,typS2;
-  const Standard_Real tollin = Precision::Confusion();
-  const Standard_Real tolang = Precision::Angular();
-
-  S1 = BRep_Tool::Surface(F1,loc1);
-  S2 = BRep_Tool::Surface(F2,loc2);
-
-  typS1 = S1->DynamicType();
-  typS2 = S2->DynamicType();
-
-  if (typS1 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S1 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S1)->BasisSurface();
-    typS1 = S1->DynamicType();
-  }
-
-  if (typS2 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S2 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S2)->BasisSurface();
-    typS2 = S2->DynamicType();
-  }
-
-  if (typS1 != typS2) {
-    return Standard_False;
-  }
-
-
-  Standard_Boolean ValRet = Standard_False;
-  if (typS1 == STANDARD_TYPE(Geom_Plane)) {
-    S1 = BRep_Tool::Surface(F1);  // to apply the location.
-    S2 = BRep_Tool::Surface(F2);
-    gp_Pln pl1( Handle(Geom_Plane)::DownCast (S1)->Pln());
-    gp_Pln pl2( Handle(Geom_Plane)::DownCast (S2)->Pln());
-
-    if (pl1.Position().IsCoplanar(pl2.Position(),tollin,tolang)) {
-      ValRet = Standard_True;
-    }
-  }
-
-  return ValRet;
-}
-
-
-
-
-
-
-
-
-
 
