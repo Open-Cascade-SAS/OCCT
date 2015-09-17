@@ -53,9 +53,11 @@ is
 	--          Curve from Adaptor3d
       returns Curve from Geom;
       
-      MakeSurface( S : Surface from Adaptor3d)
+      MakeSurface( S : Surface from Adaptor3d; theTrimFlag: Boolean = Standard_True)
 	---Purpose: Build a Geom_Surface using the informations from the 
 	--          Surface from Adaptor3d
+        -- @param theS - Surface adaptor to convert.
+        -- @param theTrimFlag - True if perform trim surface values by adaptor and false otherwise.
       returns Surface from Geom;
       
 end GeomAdaptor;

@@ -100,8 +100,8 @@ Handle(Geom_Curve) GeomAdaptor::MakeCurve (const Adaptor3d_Curve& HC)
 //function : MakeSurface
 //purpose  : 
 //=======================================================================
-
-Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS)
+Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
+                                              const Standard_Boolean theTrimFlag)
 {
   Handle(Geom_Surface) S;
 
@@ -147,7 +147,7 @@ Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS)
 
   case GeomAbs_OffsetSurface:
     S = new Geom_OffsetSurface(GeomAdaptor::MakeSurface(HS.BasisSurface()->Surface()),
-			       HS.OffsetValue());
+                               HS.OffsetValue());
     break;
 
   case GeomAbs_OtherSurface:
@@ -155,7 +155,7 @@ Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS)
     break;
   }
 
-  if ( S.IsNull() )
+  if ( S.IsNull() || !theTrimFlag)
     return S;
 
   // trim the surface if necassary.
