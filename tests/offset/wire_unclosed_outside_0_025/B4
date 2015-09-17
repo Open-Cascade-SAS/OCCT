@@ -2,8 +2,8 @@ puts "TODO OCC25109 ALL: Faulty shapes in variables"
 
 restore [locate_data_file case_3_wire2.brep] s
 
-set length 957.647
-set nbsh_v 86
-set nbsh_e 86
+set length 946.063
+set nbsh_v 79
+set nbsh_e 79
 set nbsh_w 2
 
