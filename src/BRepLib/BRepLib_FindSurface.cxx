@@ -118,6 +118,7 @@ static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
 {
   try
   {
+    OCC_CATCH_SIGNALS
     // get a wire theShape 
     TopExp_Explorer aWireExp( theShape, TopAbs_WIRE );
     if ( !aWireExp.More() ) {
@@ -225,7 +226,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
           if (SS.IsNull()) {
             break;
           }
-          if (SS == mySurface) {
+          if ((SS == mySurface) && (L.IsEqual(myLocation))) {
             break;
           }
           SS.Nullify();
