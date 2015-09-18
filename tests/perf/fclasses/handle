@@ -1,4 +1,3 @@
-puts "TODO OCC26471 Linux: Error: OCCT DownCast is expected to be faster!"
 puts "TODO OCC24023 ALL: Checking local reference of handle to base type to temporary handle object"
 
 puts "========"
