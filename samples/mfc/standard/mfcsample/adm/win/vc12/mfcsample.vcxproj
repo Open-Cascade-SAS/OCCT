@@ -252,7 +252,7 @@
       <AdditionalLibraryDirectories>$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>../../../../win64\vc12\bin/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>../../../../win32\vc12\lib/mfcsample.lib</ImportLibrary>
+      <ImportLibrary>../../../../win64\vc12\lib/mfcsample.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>

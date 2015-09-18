@@ -24,6 +24,10 @@ if not "%1" == "" (
         set VCVER=vc11
         set EXT=vcxproj
         set "VCVARS=%VS110COMNTOOLS%..\..\VC\vcvarsall.bat"
+    ) else if /I "%1" == "vc12" (
+        set VCVER=vc12
+        set EXT=vcxproj
+        set "VCVARS=%VS120COMNTOOLS%..\..\VC\vcvarsall.bat"
     ) else (
         echo Error: first argument ^(%1^) should specify supported version of Visual C++,
         echo one of: vc8 ^(VS 2005 SP1^), vc9 ^(VS 2008 SP1^), vc10 ^(VS 2010^) or vc11 ^(VS 2012^)
