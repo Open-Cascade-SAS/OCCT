@@ -172,10 +172,10 @@ public:
 
   const TEL_COLOUR* HighlightColor;
 
-  const OpenGl_AspectLine*   SetAspectLine   (const OpenGl_AspectLine*   theAspect);
-  const OpenGl_AspectFace*   SetAspectFace   (const OpenGl_AspectFace*   theAspect);
-  const OpenGl_AspectMarker* SetAspectMarker (const OpenGl_AspectMarker* theAspect);
-  const OpenGl_AspectText*   SetAspectText   (const OpenGl_AspectText*   theAspect);
+  Standard_EXPORT const OpenGl_AspectLine*   SetAspectLine   (const OpenGl_AspectLine*   theAspect);
+  Standard_EXPORT const OpenGl_AspectFace*   SetAspectFace   (const OpenGl_AspectFace*   theAspect);
+  Standard_EXPORT const OpenGl_AspectMarker* SetAspectMarker (const OpenGl_AspectMarker* theAspect);
+  Standard_EXPORT const OpenGl_AspectText*   SetAspectText   (const OpenGl_AspectText*   theAspect);
 
   void SetTextParam (const OpenGl_TextParam* theParam) { TextParam_set = theParam; }
 
