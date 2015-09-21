@@ -211,7 +211,7 @@ static void derivatives(Standard_Integer MaxOrder,
 Handle(Geom_Geometry) Geom_OffsetSurface::Copy () const {
 
   Handle(OffsetSurface) S;
-  S = new OffsetSurface (basisSurf, offsetValue);
+  S = new OffsetSurface (basisSurf, offsetValue, Standard_True);
   return S;
 }
 

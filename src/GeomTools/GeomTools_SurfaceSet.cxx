@@ -923,7 +923,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   GeomTools::GetReal(IS, O);
   Handle(Geom_Surface) BS;
   GeomTools_SurfaceSet::ReadSurface(IS,BS);
-  S = new Geom_OffsetSurface(BS,O);
+  S = new Geom_OffsetSurface(BS,O,Standard_True);
   return IS;
 }
 
