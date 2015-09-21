@@ -454,7 +454,7 @@ class NCollection_IndexedMap : public NCollection_BaseMap
   }
 
   //! Destructor
-  ~NCollection_IndexedMap (void)
+  virtual ~NCollection_IndexedMap (void)
   { Clear(); }
 
   //! Size

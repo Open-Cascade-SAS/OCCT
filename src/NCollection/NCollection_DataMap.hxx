@@ -359,7 +359,7 @@ class NCollection_DataMap : public NCollection_BaseMap
   }
 
   //! Destructor
-  ~NCollection_DataMap (void)
+  virtual ~NCollection_DataMap (void)
   { Clear(); }
 
   //! Size

@@ -119,6 +119,11 @@ public:
   const Handle(NCollection_BaseAllocator)& Allocator() const 
   { return myAllocator; }
 
+  // ******** Destructor
+  // Purpose: defines virtual interface
+  virtual ~NCollection_BaseList (void)
+  {}
+
  protected:
   // --------- PROTECTED METHODS ----------
 

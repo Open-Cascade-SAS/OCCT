@@ -115,6 +115,9 @@ public:
     myAllocator = (theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator);
   }
 
+  //! Destructor
+  virtual ~NCollection_BaseSequence() {}
+
   Standard_EXPORT void   ClearSeq    (NCollection_DelSeqNode fDel);
   Standard_EXPORT void   PAppend     (NCollection_SeqNode *);
   Standard_EXPORT void   PAppend     (NCollection_BaseSequence& S);

@@ -184,6 +184,9 @@ protected: //! @name protected methods
     myData = allocMemBlocks (myCapacity);
   }
 
+  //! Destructor
+  virtual ~NCollection_BaseVector() {}
+
   //! @return pointer to memory where to put the new item
   Standard_EXPORT void* expandV (const Standard_Integer theIndex);
 

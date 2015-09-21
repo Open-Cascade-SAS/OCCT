@@ -34,6 +34,8 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Virtual destructor, for safe inheritance
+  virtual ~math_Function () {}
   
   //! Computes the value of the function <F> for a given value of
   //! variable <X>.
@@ -56,28 +58,6 @@ public:
   //! to save the current state of the function and to return
   //! an Integer that allows retrieval of the state.
   Standard_EXPORT virtual Standard_Integer GetStateNumber();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _math_Function_HeaderFile

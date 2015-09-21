@@ -166,6 +166,9 @@ public:
     myAllocator = (theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator);
   }
 
+  //! Destructor
+  virtual ~NCollection_BaseMap() {}
+
   //! BeginResize
   Standard_EXPORT Standard_Boolean BeginResize 
     (const Standard_Integer  NbBuckets,

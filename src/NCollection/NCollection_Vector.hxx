@@ -165,7 +165,7 @@ public: //! @name public methods
   }
 
   //! Destructor
-  ~NCollection_Vector()
+  virtual ~NCollection_Vector()
   {
     for (Standard_Integer anItemIter = 0; anItemIter < myCapacity; ++anItemIter)
     {

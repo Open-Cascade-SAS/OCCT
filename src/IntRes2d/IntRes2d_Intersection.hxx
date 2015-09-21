@@ -86,6 +86,9 @@ protected:
     IntRes2d_Intersection();
   
     IntRes2d_Intersection(const IntRes2d_Intersection& Other);
+
+  //! Destructor is protected, for safe inheritance
+  ~IntRes2d_Intersection () {}
   
   Standard_EXPORT void SetValues (const IntRes2d_Intersection& Inter);
   

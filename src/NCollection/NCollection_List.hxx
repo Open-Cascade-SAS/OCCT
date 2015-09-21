@@ -271,7 +271,7 @@ public:
   { PReverse(); }
 
   //! Destructor - clears the List
-  ~NCollection_List (void)
+  virtual ~NCollection_List (void)
   { Clear(); }
 
  private:

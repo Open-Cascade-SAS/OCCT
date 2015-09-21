@@ -68,15 +68,14 @@ public:
   //! Dump all the fields.
   Standard_EXPORT void Dump() const;
 
-
-
-
 protected:
-
   
   //! Empty Constructor;
   Standard_EXPORT IntCurveSurface_Intersection();
   
+  //! Destructor is protected, for safe inheritance
+  ~IntCurveSurface_Intersection() {}
+
   //! Internal method
   //! copy the <Inter> fields to <me>
   Standard_EXPORT void SetValues (const IntCurveSurface_Intersection& Inter);

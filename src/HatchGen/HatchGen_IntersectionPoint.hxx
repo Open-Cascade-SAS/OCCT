@@ -80,17 +80,16 @@ public:
   
   //! Dump of the point on element.
   Standard_EXPORT virtual void Dump (const Standard_Integer Index = 0) const = 0;
-  Standard_EXPORT virtual ~HatchGen_IntersectionPoint();
-
-
-
 
 protected:
-
   
   //! Creates an empty intersection point.
   Standard_EXPORT HatchGen_IntersectionPoint();
 
+  //! Destructor is protected for safer inheritance
+  ~HatchGen_IntersectionPoint() {}
+
+protected:
 
   Standard_Integer myIndex;
   Standard_Real myParam;
@@ -99,20 +98,6 @@ protected:
   TopAbs_State myAfter;
   Standard_Boolean mySegBeg;
   Standard_Boolean mySegEnd;
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _HatchGen_IntersectionPoint_HeaderFile

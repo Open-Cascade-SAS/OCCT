@@ -90,9 +90,12 @@ public:
 
 protected:
 
-  
+  //! Empty constructor
   Standard_EXPORT Intf_Interference(const Standard_Boolean Self);
   
+  //! Destructor is protected, for safer inheritance
+  ~Intf_Interference () {}
+
   //! Only one argument for the intersection.
   Standard_EXPORT void SelfInterference (const Standard_Boolean Self);
 

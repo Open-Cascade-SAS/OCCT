@@ -325,7 +325,7 @@ public:
   { ChangeValue (theIndex) = theItem; }
 
   // ******** Destructor - clears the Sequence
-  ~NCollection_Sequence (void)
+  virtual ~NCollection_Sequence (void)
   { Clear(); }
 
  private:
