@@ -1,0 +1,11 @@
+puts "========================"                                                                                      
+puts "0026671: Infinite loop in ShapeFix_Wire::FixSelfIntersection()"
+puts "========================"                                                                                      
+
+cpulimit 20
+igesbrep [locate_data_file bug26671.igs] result *
+
+checkshape result
+tolerance result
+
+set 2dviewer 1
