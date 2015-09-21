@@ -911,7 +911,8 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
         //%15 pdn 06.04.99 repeat until fixed CTS18546-2 entity 777
         
         // if the tolerance was modified we should recheck the result, if it was enough
-        if ( LastFixStatus ( ShapeExtend_DONE7 ) ) num--;
+        if ( LastFixStatus ( ShapeExtend_DONE7 ) ) //num--;
+          FixIntersectingEdges ( num );
         continue;
       }
 
@@ -929,10 +930,10 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
       else {
 	//#86 rln 22.03.99
 	//%15 pdn 06.04.99 repeat until fixed CTS18546-2 entity 777
-	//FixIntersectingEdges ( num );
+	FixIntersectingEdges ( num );
 	/*if ( LastFixStatus ( ShapeExtend_DONE7 ) )*/
         // Always revisit the fixed edge
-        num--;
+        //num--;
       }
     }
   }
