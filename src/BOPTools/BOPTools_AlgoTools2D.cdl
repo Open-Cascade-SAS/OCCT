@@ -158,6 +158,12 @@ is
               theE : Edge from TopoDS; 
               theF : Face from TopoDS); 
 	      
+    BuildPCurveForEdgeOnPlane(myclass; 
+              theE : Edge from TopoDS; 
+              theF : Face from TopoDS; 
+              theC2D: out Curve from Geom2d;
+              bToUpdate: out Boolean);
+
     BuildPCurveForEdgesOnPlane(myclass; 
               theLE : ListOfShape from BOPCol; 
               theF : Face from TopoDS);
