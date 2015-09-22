@@ -7,7 +7,7 @@ Modeling Data {#occt_user_guides__modeling_data}
 
 Modeling Data supplies data structures to represent 2D and 3D geometric models. 
 
-This manual explains how to use Modeling Data. For advanced information on modeling data, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>.     
+This manual explains how to use Modeling Data. For advanced information on modeling data, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @section occt_modat_1 Geometry Utilities
 

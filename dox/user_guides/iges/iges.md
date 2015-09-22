@@ -15,7 +15,7 @@ Please, note:
   * an IGES entity is an entity in the IGES normal sense.
   * a root entity is the highest level entity of any given type, e.g. type 144 for surfaces and type 186 for solids. Roots are not referenced by other entities.
 
-This manual mainly explains how  to convert an IGES file to an Open CASCADE Technology (**OCCT**) shape and  vice versa. It provides basic documentation on conversion. For advanced  information on conversion, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a> 
+This manual mainly explains how  to convert an IGES file to an Open CASCADE Technology (**OCCT**) shape and  vice versa. It provides basic documentation on conversion. For advanced  information on conversion, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 IGES files produced in accordance with IGES standard versions up to and including version 5.3 can be read. IGES files that are produced by this  interface conform to IGES version 5.3 (Initial Graphics Exchange Specification,  IGES 5.3. ANS US PRO/IPO-100-1996). 
 

@@ -7,8 +7,7 @@ OCAF  {#occt_user_guides__ocaf}
 
 This manual explains how to use the Open CASCADE Application Framework (OCAF).
 It provides basic documentation on using OCAF. For advanced information on OCAF 
-and its applications, see our offerings on our web site at 
-<a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a> 
+and its applications, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 OCAF (the Open CASCADE Application Framework) is a RAD (Rapid Application Development) framework used for 
 specifying and organizing application data. To do this, OCAF provides: 

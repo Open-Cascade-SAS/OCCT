@@ -5,7 +5,7 @@ Foundation Classes  {#occt_user_guides__foundation_classes}
 
 @section occt_fcug_1 Introduction
 
-This manual explains how to use Open CASCADE Technology (**OCCT**)  Foundation Classes. It provides basic documentation on foundation classes. For  advanced information on foundation classes and their applications, see the offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>.
+This manual explains how to use Open CASCADE Technology (**OCCT**)  Foundation Classes. It provides basic documentation on foundation classes. For  advanced information on foundation classes and their applications, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
    
 Foundation Classes provide a variety of general-purpose  services such as automated dynamic memory management (manipulation of objects  by handle), collections, exception handling, genericity by down-casting and  plug-in creation. 
 
