@@ -31,8 +31,6 @@
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_ViewManager.hxx>
 
 void V3d_Viewer::UpdateLights() {
 
@@ -45,7 +43,7 @@ void V3d_Viewer::SetLightOn( const Handle(V3d_Light)& TheLight ) {
 
 
   if(!MyActiveLights.Contains(TheLight)) {
-//    V3d_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
+//    V3d_BadValue_Raise_if( MyActiveLights.Extent() >= MyDriver->InquireLightLimit(),
 //				 "too many lights");
       MyActiveLights.Append(TheLight) ;
   }
@@ -66,7 +64,7 @@ void V3d_Viewer::SetLightOn() {
 
   for (InitDefinedLights();MoreDefinedLights();NextDefinedLights()) {
     if(!MyActiveLights.Contains(DefinedLight())) {
-//      V3d_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
+//      V3d_BadValue_Raise_if( MyActiveLights.Extent() >= MyDriver->InquireLightLimit(),
 //				   "too many lights");
       MyActiveLights.Append(DefinedLight());
       for (InitActiveViews();MoreActiveViews();NextActiveViews()) {

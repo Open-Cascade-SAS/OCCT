@@ -24,7 +24,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-class Visual3d_View;
+class Graphic3d_CView;
 
 //! Class that stores style for one graduated trihedron axis such as colors, lengths and customization flags.
 //! It is used in Graphic3d_GraduatedTrihedron.
@@ -111,7 +111,7 @@ class Graphic3d_GraduatedTrihedron
 {
 public:
 
-  typedef void (*MinMaxValuesCallback) (Visual3d_View*);
+  typedef void (*MinMaxValuesCallback) (Graphic3d_CView*);
 
 public:
 
@@ -138,7 +138,7 @@ public:
     myAxes (0) = Graphic3d_AxisAspect ("X", Quantity_NOC_RED, Quantity_NOC_RED);
     myAxes (1) = Graphic3d_AxisAspect ("Y", Quantity_NOC_GREEN, Quantity_NOC_GREEN);
     myAxes (2) = Graphic3d_AxisAspect ("Z", Quantity_NOC_BLUE1, Quantity_NOC_BLUE1);
-    PtrVisual3dView = NULL;
+    PtrView    = NULL;
   }
 
 public:
@@ -196,7 +196,7 @@ public:
 public:
 
   MinMaxValuesCallback CubicAxesCallback; //!< Callback function to define boundary box of displayed objects
-  Visual3d_View*       PtrVisual3dView;
+  Graphic3d_CView*     PtrView;
 
 protected:
 

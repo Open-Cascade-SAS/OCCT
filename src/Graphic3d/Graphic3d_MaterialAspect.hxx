@@ -95,14 +95,6 @@ public:
   //! one of reflection modes (ambient, diffuse, specular or emissive)
   //! enabled. See also SetReflectionModeOn() and SetReflectionModeOff() methods.
   //!
-  //! NOTE: In order for transparency specified through this method to
-  //! take effect, it is necessary to enable transparency
-  //! in the viewer. This can be done either directly -
-  //! see Visual3d_ViewManager::SetTransparency(Standard_Boolean),
-  //! or indirectly - by calling AIS_InteractiveObject::SetTransparency()
-  //! before an object is added to an interactive context, or by
-  //! calling AIS_InteractiveContext::SetTransparency() for a given
-  //! interactive object already displayed.
   //! Category: Methods to modify the class definition
   //! Warning: Raises MaterialDefinitionError if <AValue> is a
   //! negative value or greater than 1.0.

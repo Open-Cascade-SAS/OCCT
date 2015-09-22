@@ -28,8 +28,6 @@
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
-#include <Visual3d_ViewManager.hxx>
 
 // =======================================================================
 // function : Grid
@@ -206,10 +204,6 @@ void V3d_Viewer::SetRectangularGridGraphicValues (const Quantity_Length theXSize
                                                   const Quantity_Length theOffSet)
 {
   myRGrid->SetGraphicValues (theXSize, theYSize, theOffSet);
-  for (InitActiveViews(); MoreActiveViews(); NextActiveViews())
-  {
-    ActiveView()->SetGridGraphicValues (myRGrid);
-  }
   Update();
 }
 
@@ -231,10 +225,6 @@ void V3d_Viewer::SetCircularGridGraphicValues (const Quantity_Length theRadius,
                                                const Quantity_Length theOffSet)
 {
   myCGrid->SetGraphicValues (theRadius, theOffSet);
-  for (InitActiveViews(); MoreActiveViews(); NextActiveViews())
-  {
-    ActiveView()->SetGridGraphicValues (myCGrid);
-  }
   Update();
 }
 
@@ -267,7 +257,7 @@ void V3d_Viewer::SetGridEcho (const Handle(Graphic3d_AspectMarker3d)& theMarker)
 {
   if (myGridEchoStructure.IsNull())
   {
-    myGridEchoStructure = new Graphic3d_Structure (Viewer());
+    myGridEchoStructure = new Graphic3d_Structure (StructureManager());
     myGridEchoGroup     = myGridEchoStructure->NewGroup();
   }
 
@@ -298,7 +288,7 @@ void V3d_Viewer::ShowGridEcho (const Handle(V3d_View)& theView,
 
   if (myGridEchoStructure.IsNull())
   {
-    myGridEchoStructure = new Graphic3d_Structure (Viewer());
+    myGridEchoStructure = new Graphic3d_Structure (StructureManager());
     myGridEchoGroup     = myGridEchoStructure->NewGroup();
 
     myGridEchoAspect    = new Graphic3d_AspectMarker3d (Aspect_TOM_STAR, Quantity_Color (Quantity_NOC_GRAY90), 3.0);

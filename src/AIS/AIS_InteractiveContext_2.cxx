@@ -687,7 +687,7 @@ Standard_Integer AIS_InteractiveContext::PurgeDisplay()
 //=======================================================================
 Standard_Integer AIS_InteractiveContext::PurgeViewer(const Handle(V3d_Viewer)& Vwr)
 {
-  Handle(Graphic3d_StructureManager) GSM = Vwr->Viewer();
+  Handle(Graphic3d_StructureManager) GSM = Vwr->StructureManager();
   Standard_Integer NbCleared(0);
   Graphic3d_MapOfStructure SOS;
   GSM->DisplayedStructures(SOS);

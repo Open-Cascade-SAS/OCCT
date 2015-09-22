@@ -183,7 +183,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
   {
     const Handle (SelectMgr_SelectableObject)& anObj = mySelectableObjects.GetObjectById (anObjectIdx);
 
-    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
 
     for (anObj->Init(); anObj->More(); anObj->Next())
     {
@@ -200,7 +200,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
   {
     const Handle (SelectMgr_SelectableObject)& anObj = mySelectableObjectsTrsfPers.GetObjectById (anObjectIdx);
 
-    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
 
     if (!anObj->TransformPersistence().Flags || (anObj->TransformPersistence().Flags & Graphic3d_TMF_2d))
     {
@@ -261,7 +261,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Select
     ClearSensitive (theView);
   }
 
-  Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+  Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
 
   ComputeSensitivePrs (aStruct, theSel, theTrsf, Graphic3d_TransformPers());
 

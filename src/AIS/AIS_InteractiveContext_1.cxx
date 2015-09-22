@@ -52,7 +52,6 @@
 #include <V3d_SpotLight.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
 
 typedef NCollection_DataMap<Handle(AIS_InteractiveObject), NCollection_Handle<SelectMgr_SequenceOfOwner> > AIS_MapOfObjSelectedOwners;
 

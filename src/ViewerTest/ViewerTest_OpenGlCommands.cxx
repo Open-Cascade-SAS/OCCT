@@ -43,7 +43,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 
@@ -428,8 +427,8 @@ static int VImmediateFront (Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  Graphic3d_CView* aCView = (Graphic3d_CView* )(ViewerTest::CurrentView()->View()->CView());
-  aDriver->SetImmediateModeDrawToFront (*aCView, atoi(theArgVec[1]) != 0);
+  ViewerTest::CurrentView()->View()->SetImmediateModeDrawToFront (atoi(theArgVec[1]) != 0);
+
   return 0;
 }
 
@@ -452,7 +451,7 @@ static int VGlInfo (Draw_Interpretor& theDI,
 
   if (theArgNb <= 1)
   {
-    Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aView->View()->GraphicDriver());
+    Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aView->Viewer()->Driver());
     if (aDriver.IsNull())
     {
       std::cerr << "Error: view does not use OpenGL.\n";

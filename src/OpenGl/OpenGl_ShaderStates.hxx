@@ -16,12 +16,12 @@
 #ifndef _OpenGl_State_HeaderFile
 #define _OpenGl_State_HeaderFile
 
+#include <Graphic3d_TypeOfSurfaceDetail.hxx>
 #include <InterfaceGraphic_tgl_all.hxx>
 #include <NCollection_List.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Light.hxx>
 #include <OpenGl_Vec.hxx>
-#include <Visual3d_TypeOfSurfaceDetail.hxx>
 
 //! Defines interface for OpenGL state.
 class OpenGl_StateInterface
@@ -189,21 +189,21 @@ class OpenGl_SurfaceDetailState : public OpenGl_StateInterface
 public:
 
   //! Creates new surface detail state.
-  OpenGl_SurfaceDetailState (const Visual3d_TypeOfSurfaceDetail theDetail = Visual3d_TOD_NONE)
+  OpenGl_SurfaceDetailState (const Graphic3d_TypeOfSurfaceDetail theDetail = Graphic3d_TOD_NONE)
   : myDetail (theDetail)
   {
     //
   }
 
   //! Sets new surface detail.
-  void Set (const Visual3d_TypeOfSurfaceDetail theDetail) { myDetail = theDetail; }
+  void Set (const Graphic3d_TypeOfSurfaceDetail theDetail) { myDetail = theDetail; }
 
   //! Returns surface detail.
-  const Visual3d_TypeOfSurfaceDetail Detail() const { return myDetail; }
+  const Graphic3d_TypeOfSurfaceDetail Detail() const { return myDetail; }
 
 private:
 
-  Visual3d_TypeOfSurfaceDetail myDetail; //!< OCCT surface detail
+  Graphic3d_TypeOfSurfaceDetail myDetail; //!< OCCT surface detail
 
 };
 

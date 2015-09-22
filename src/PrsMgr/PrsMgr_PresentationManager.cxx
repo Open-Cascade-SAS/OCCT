@@ -15,7 +15,6 @@
 
 #include <Geom_Transformation.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
-#include <Graphic3d_StructureManager.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_PresentationShadow.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -28,14 +27,12 @@
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <V3d_View.hxx>
-#include <Visual3d_View.hxx>
-#include <Visual3d_ViewManager.hxx>
 
 // =======================================================================
 // function : PrsMgr_PresentationManager
 // purpose  :
 // =======================================================================
-PrsMgr_PresentationManager::PrsMgr_PresentationManager (const Handle(Visual3d_ViewManager)& theStructureManager)
+PrsMgr_PresentationManager::PrsMgr_PresentationManager (const Handle(Graphic3d_StructureManager)& theStructureManager)
 : myStructureManager (theStructureManager),
   myImmediateModeOn  (0),
   mySelectionColor   (Quantity_NOC_GRAY99)
@@ -346,7 +343,7 @@ void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& the
 {
   for (theViewer->InitActiveViews(); theViewer->MoreActiveViews(); theViewer->NextActiveViews())
   {
-    const Handle(Visual3d_View)& aView = theViewer->ActiveView()->View();
+    const Handle(Graphic3d_CView)& aView = theViewer->ActiveView()->View();
     for (PrsMgr_ListOfPresentations::Iterator anIter (myImmediateList); anIter.More(); anIter.Next())
     {
       const Handle(Prs3d_Presentation)& aPrs = anIter.Value();
@@ -365,7 +362,7 @@ void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& the
         aShadowPrs->Highlight (Aspect_TOHM_COLOR, aPrs->HighlightColor());
         myViewDependentImmediateList.Append (aShadowPrs);
       }
-      // handles custom highlight presentations which were defined in overriden
+      // handles custom highlight presentations which were defined in overridden
       // HilightOwnerWithColor method of a custom AIS objects and maintain its
       // visibility in different views on their own
       else if (aShadowPrs.IsNull())

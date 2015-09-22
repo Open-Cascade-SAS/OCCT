@@ -573,6 +573,10 @@ public: //! @name methods to alter or retrieve current state
     return myIsGlDebugCtx;
   }
 
+  Standard_EXPORT void EnableFeatures() const;
+
+  Standard_EXPORT void DisableFeatures() const;
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.

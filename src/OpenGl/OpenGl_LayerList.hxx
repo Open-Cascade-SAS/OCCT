@@ -63,7 +63,7 @@ public:
                      Standard_Boolean        isForChangePriority = Standard_False);
 
   //! Remove structure from structure list and return its previous priority
-  void RemoveStructure (const Handle(Graphic3d_Structure)& theStructure);
+  void RemoveStructure (const OpenGl_Structure* theStructure);
 
   //! Change structure z layer
   //! If the new layer is not presented, the structure will be displayed

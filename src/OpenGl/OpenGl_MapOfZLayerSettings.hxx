@@ -1,7 +1,4 @@
-// Created on: 1991-10-07
-// Created by: NW,JPB,CAL
-// Copyright (c) 1991-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef Visual3d_HSequenceOfLight_HeaderFile
-#define Visual3d_HSequenceOfLight_HeaderFile
+#ifndef _OpenGl_MapOfZLayerSettings_HeaderFile
+#define _OpenGl_MapOfZLayerSettings_HeaderFile
 
-#include <Visual3d_Light.hxx>
-#include <Visual3d_SequenceOfLight.hxx>
-#include <NCollection_DefineHSequence.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Map.hxx>
+#include <Graphic3d_ZLayerId.hxx>
+#include <Graphic3d_ZLayerSettings.hxx>
 
-DEFINE_HSEQUENCE(Visual3d_HSequenceOfLight, Visual3d_SequenceOfLight)
+typedef NCollection_DataMap<Graphic3d_ZLayerId, Graphic3d_ZLayerSettings> OpenGl_MapOfZLayerSettings;
 
-
-#endif
+#endif // _OpenGl_MapOfZLayerSettings_HeaderFile

@@ -2,5 +2,5 @@ D3DHost_GraphicDriver.hxx
 D3DHost_GraphicDriver.cxx
 D3DHost_FrameBuffer.hxx
 D3DHost_FrameBuffer.cxx
-D3DHost_Workspace.hxx
-D3DHost_Workspace.cxx
+D3DHost_View.hxx
+D3DHost_View.cxx

@@ -135,7 +135,7 @@ void OpenGl_Layer::InvalidateBVHData()
 void OpenGl_Layer::renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Standard_Integer aNbPriorities = myArray.Length();
-  const Standard_Integer aViewId       = theWorkspace->ActiveViewId();
+  const Standard_Integer aViewId       = theWorkspace->View()->Identification();
   for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
   {
     const OpenGl_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
@@ -189,11 +189,11 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
     }
   }
 
-  OpenGl_BVHTreeSelector& aSelector = theWorkspace->ActiveView()->BVHTreeSelector();
+  OpenGl_BVHTreeSelector& aSelector = theWorkspace->View()->BVHTreeSelector();
   traverse (aSelector);
 
   const Standard_Integer aNbPriorities = myArray.Length();
-  const Standard_Integer aViewId       = theWorkspace->ActiveViewId();
+  const Standard_Integer aViewId       = theWorkspace->View()->Identification();
   for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
   {
     const OpenGl_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);

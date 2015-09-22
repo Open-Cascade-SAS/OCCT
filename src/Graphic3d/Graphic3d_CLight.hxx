@@ -14,9 +14,10 @@
 #ifndef _Graphic3d_CLight_HeaderFile
 #define _Graphic3d_CLight_HeaderFile
 
-#include <InterfaceGraphic_Graphic3d.hxx>
-#include <InterfaceGraphic_Visual3d.hxx>
+#include <Graphic3d_TypeOfLightSource.hxx>
 #include <Graphic3d_Vec.hxx>
+#include <InterfaceGraphic_Graphic3d.hxx>
+#include <NCollection_List.hxx>
 
 //! Light definition
 struct Graphic3d_CLight
@@ -24,14 +25,14 @@ struct Graphic3d_CLight
 
 public:
 
-  Graphic3d_Vec4     Color;       //!< light color
-  Graphic3d_Vec4     Position;    //!< light position
-  Graphic3d_Vec4     Direction;   //!< direction of directional/spot light
-  Graphic3d_Vec4     Params;      //!< packed light parameters
-  Standard_Integer   Type;        //!< Visual3d_TypeOfLightSource enumeration
-  Standard_Boolean   IsHeadlight; //!< flag to mark head light
-  Standard_ShortReal Smoothness;  //!< radius (cone angle) for point (directional) light
-  Standard_ShortReal Intensity;   //!< intensity multiplier for light
+  Graphic3d_Vec4              Color;       //!< light color
+  Graphic3d_Vec4              Position;    //!< light position
+  Graphic3d_Vec4              Direction;   //!< direction of directional/spot light
+  Graphic3d_Vec4              Params;      //!< packed light parameters
+  Graphic3d_TypeOfLightSource Type;        //!< Graphic3d_TypeOfLightSource enumeration
+  Standard_Boolean            IsHeadlight; //!< flag to mark head light
+  Standard_ShortReal          Smoothness;  //!< radius (cone angle) for point (directional) light
+  Standard_ShortReal          Intensity;   //!< intensity multiplier for light
 
   //! Const attenuation factor of positional light source
   Standard_ShortReal  ConstAttenuation()  const { return Params.x();  }
@@ -62,7 +63,7 @@ public:
     Position      (0.0f, 0.0f, 0.0f, 1.0f),
     Direction     (0.0f, 0.0f, 0.0f, 0.0f),
     Params        (0.0f, 0.0f, 0.0f, 0.0f),
-    Type          (0),
+    Type          (Graphic3d_TOLS_AMBIENT),
     IsHeadlight   (Standard_False),
     Smoothness    (0.0f),
     Intensity     (1.0f)
@@ -75,5 +76,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 };
+
+typedef NCollection_List<Graphic3d_CLight> Graphic3d_ListOfCLight;
 
 #endif // Graphic3d_CLight_HeaderFile

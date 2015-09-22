@@ -26,7 +26,6 @@
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Text.hxx>
 
-class Visual3d_View;
 class OpenGl_View;
 
 //! This class allows to render Graduated Trihedron, i.e. trihedron with grid.
@@ -54,8 +53,7 @@ public:
   virtual void Release (OpenGl_Context* theCtx);
 
   //! Setup configuration.
-  void SetValues (const Handle(OpenGl_Context)&       theCtx,
-                  const Graphic3d_GraduatedTrihedron& theData);
+  void SetValues (const Graphic3d_GraduatedTrihedron& theData);
 
   //! Sets up-to-date values of scene bounding box.
   //! Can be used in callback mechanism to get up-to-date values.
@@ -130,6 +128,10 @@ private:
   };
 
 private:
+
+  //! Initialize or update GL resources for rendering trihedron.
+  //! @param theContext [in] the GL context.
+  void initGlResources (const Handle(OpenGl_Context)& theContext) const;
 
   //! Gets normal of the view out of user.
   //! @param theContext [in] OpenGL Context
@@ -211,11 +213,9 @@ protected: //! @name Scene bounding box values
 
 protected:
 
-  Axis myAxes[3]; //!< Axes for trihedron
-
-  Graphic3d_GraduatedTrihedron myData;
-
-  OpenGl_AspectLine myGridLineAspect; //!< Color grid properties
+  mutable Axis myAxes[3]; //!< Axes for trihedron
+  mutable Graphic3d_GraduatedTrihedron myData;
+  mutable OpenGl_AspectLine myGridLineAspect; //!< Color grid properties
 
 protected: //! @name Labels properties
 
@@ -224,6 +224,8 @@ protected: //! @name Labels properties
   mutable OpenGl_AspectText myAspectValues;
 
 private:
+
+  mutable Standard_Boolean myIsInitialized;
 
   enum AxisFlags
   {
@@ -237,7 +239,6 @@ private:
     XOZ_XYZ = 1 << 8,
     XYO_XYZ = 1 << 9
   };
-
 };
 
 #endif //_OpenGl_GraduatedTrihedron_Header

@@ -15,8 +15,6 @@
 
 #include <OpenGl_GlCore11.hxx>
 #include <InterfaceGraphic_Graphic3d.hxx>
-#include <InterfaceGraphic_Aspect.hxx>
-#include <InterfaceGraphic_Visual3d.hxx>
 
 #include <OpenGl_GraduatedTrihedron.hxx>
 
@@ -50,7 +48,8 @@ namespace
 // =======================================================================
 OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
 : myMin (0.0f, 0.0f, 0.0f),
-  myMax (100.0f, 100.0f, 100.0f)
+  myMax (100.0f, 100.0f, 100.0f),
+  myIsInitialized (Standard_False)
 {
   //
 }
@@ -59,38 +58,10 @@ OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
 // function : SetValues
 // purpose  :
 // =======================================================================
-void OpenGl_GraduatedTrihedron::SetValues (const Handle(OpenGl_Context)&       theCtx,
-                                           const Graphic3d_GraduatedTrihedron& theData)
+void OpenGl_GraduatedTrihedron::SetValues (const Graphic3d_GraduatedTrihedron& theData)
 {
-  Release (theCtx.operator->());
-  myData = theData;
-
-  // Initialize text label parameters for x, y, and z axes
-  myAxes[0] = Axis (myData.XAxisAspect(), OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
-  myAxes[1] = Axis (myData.YAxisAspect(), OpenGl_Vec3 (0.0f, 1.0f, 0.0f));
-  myAxes[2] = Axis (myData.ZAxisAspect(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
-
-  // Initialize constant primitives: text, arrows.
-  myAxes[0].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
-  myAxes[1].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
-  myAxes[2].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
-  for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
-  {
-    myAxes[anIt].Label.SetFontSize (theCtx, theData.NamesSize());
-  }
-
-  myLabelValues.SetFontSize (theCtx, theData.ValuesSize());
-
-  myAspectLabels.SetFontAspect (theData.NamesFontAspect());
-  myAspectLabels.ChangeFontName() = theData.NamesFont();
-
-  myAspectValues.SetFontAspect (theData.ValuesFontAspect());
-  myAspectValues.ChangeFontName() = theData.ValuesFont();
-
-  // Grid aspect
-  myGridLineAspect.ChangeColor().rgb[0] = (Standard_ShortReal) theData.GridColor().Red();
-  myGridLineAspect.ChangeColor().rgb[1] = (Standard_ShortReal) theData.GridColor().Green();
-  myGridLineAspect.ChangeColor().rgb[2] = (Standard_ShortReal) theData.GridColor().Blue();
+  myData          = theData;
+  myIsInitialized = Standard_False;
 }
 
 // =======================================================================
@@ -112,6 +83,45 @@ void OpenGl_GraduatedTrihedron::Release (OpenGl_Context* theCtx)
   myAxes[1].Release (theCtx);
   myAxes[2].Release (theCtx);
   myLabelValues.Release (theCtx);
+}
+
+// =======================================================================
+// function : initResources
+// purpose  :
+// =======================================================================
+void OpenGl_GraduatedTrihedron::initGlResources (const Handle(OpenGl_Context)& theCtx) const
+{
+  myAxes[0].Release     (theCtx.operator->());
+  myAxes[1].Release     (theCtx.operator->());
+  myAxes[2].Release     (theCtx.operator->());
+  myLabelValues.Release (theCtx.operator->());
+
+  // Initialize text label parameters for x, y, and z axes
+  myAxes[0] = Axis (myData.XAxisAspect(), OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
+  myAxes[1] = Axis (myData.YAxisAspect(), OpenGl_Vec3 (0.0f, 1.0f, 0.0f));
+  myAxes[2] = Axis (myData.ZAxisAspect(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
+
+  // Initialize constant primitives: text, arrows.
+  myAxes[0].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
+  myAxes[1].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
+  myAxes[2].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
+  for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
+  {
+    myAxes[anIt].Label.SetFontSize (theCtx, myData.NamesSize());
+  }
+
+  myLabelValues.SetFontSize (theCtx, myData.ValuesSize());
+
+  myAspectLabels.SetFontAspect (myData.NamesFontAspect());
+  myAspectLabels.ChangeFontName() = myData.NamesFont();
+
+  myAspectValues.SetFontAspect (myData.ValuesFontAspect());
+  myAspectValues.ChangeFontName() = myData.ValuesFont();
+
+  // Grid aspect
+  myGridLineAspect.ChangeColor().rgb[0] = (Standard_ShortReal) myData.GridColor().Red();
+  myGridLineAspect.ChangeColor().rgb[1] = (Standard_ShortReal) myData.GridColor().Green();
+  myGridLineAspect.ChangeColor().rgb[2] = (Standard_ShortReal) myData.GridColor().Blue();
 }
 
 // =======================================================================
@@ -546,6 +556,11 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
 void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  if (!myIsInitialized)
+  {
+    initGlResources (theWorkspace->GetGlContext());
+    myIsInitialized = Standard_True;
+  }
 
   // Update boundary box
   OpenGl_Vec3 anOldMin = myMin;
@@ -553,7 +568,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
 
   if (myData.CubicAxesCallback)
   {
-    myData.CubicAxesCallback (myData.PtrVisual3dView);
+    myData.CubicAxesCallback (myData.PtrView);
     if (!myAxes[0].Line.IsInitialized()
      || !myAxes[1].Line.IsInitialized()
      || !myAxes[2].Line.IsInitialized()

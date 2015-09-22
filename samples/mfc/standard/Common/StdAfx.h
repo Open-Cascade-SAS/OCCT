@@ -114,7 +114,6 @@
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-#include <Visual3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <WNT_Window.hxx>

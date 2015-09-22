@@ -17,14 +17,9 @@
 #ifndef _V3d_AmbientLight_HeaderFile
 #define _V3d_AmbientLight_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <V3d_Light.hxx>
-#include <Quantity_NameOfColor.hxx>
+
 class V3d_Viewer;
-
-
 class V3d_AmbientLight;
 DEFINE_STANDARD_HANDLE(V3d_AmbientLight, V3d_Light)
 
@@ -34,32 +29,12 @@ class V3d_AmbientLight : public V3d_Light
 
 public:
 
-  
-  //! Constructs an ambient light source in the viewer VM.
+  //! Constructs an ambient light source in the viewer.
   //! The default Color of this light source is WHITE.
-  Standard_EXPORT V3d_AmbientLight(const Handle(V3d_Viewer)& VM, const Quantity_NameOfColor Color = Quantity_NOC_WHITE);
-
-
-
+  Standard_EXPORT V3d_AmbientLight (const Handle(V3d_Viewer)& theViewer,
+                                    const Quantity_NameOfColor theColor = Quantity_NOC_WHITE);
 
   DEFINE_STANDARD_RTTI(V3d_AmbientLight,V3d_Light)
-
-protected:
-
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _V3d_AmbientLight_HeaderFile

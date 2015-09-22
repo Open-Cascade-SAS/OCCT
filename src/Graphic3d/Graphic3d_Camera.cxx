@@ -235,6 +235,11 @@ gp_Dir Graphic3d_Camera::Direction() const
 // =======================================================================
 void Graphic3d_Camera::SetScale (const Standard_Real theScale)
 {
+  if (Scale() == theScale)
+  {
+    return;
+  }
+
   myScale = theScale;
 
   switch (myProjType)
@@ -281,7 +286,7 @@ Standard_Real Graphic3d_Camera::Scale() const
 // =======================================================================
 void Graphic3d_Camera::SetProjectionType (const Projection theProjectionType)
 {
-  Projection anOldType = myProjType;
+  Projection anOldType = ProjectionType();
 
   if (anOldType == theProjectionType)
   {
@@ -311,7 +316,13 @@ void Graphic3d_Camera::SetProjectionType (const Projection theProjectionType)
 // =======================================================================
 void Graphic3d_Camera::SetFOVy (const Standard_Real theFOVy)
 {
+  if (FOVy() == theFOVy)
+  {
+    return;
+  }
+
   myFOVy = theFOVy;
+
   InvalidateProjection();
 }
 
@@ -329,6 +340,12 @@ void Graphic3d_Camera::SetZRange (const Standard_Real theZNear,
     Standard_ASSERT_RAISE (theZFar  > 0.0, "Only positive Z-Far is allowed for perspective camera");
   }
 
+  if (ZNear() == theZNear
+   && ZFar () == theZFar)
+  {
+    return;
+  }
+
   myZNear = theZNear;
   myZFar  = theZFar;
 
@@ -341,7 +358,13 @@ void Graphic3d_Camera::SetZRange (const Standard_Real theZNear,
 // =======================================================================
 void Graphic3d_Camera::SetAspect (const Standard_Real theAspect)
 {
+  if (Aspect() == theAspect)
+  {
+    return;
+  }
+
   myAspect = theAspect;
+
   InvalidateProjection();
 }
 
@@ -351,8 +374,15 @@ void Graphic3d_Camera::SetAspect (const Standard_Real theAspect)
 // =======================================================================
 void Graphic3d_Camera::SetZFocus(const FocusType theType, const Standard_Real theZFocus)
 {
+  if (ZFocusType() == theType
+   && ZFocus    () == theZFocus)
+  {
+    return;
+  }
+
   myZFocusType = theType;
-  myZFocus = theZFocus;
+  myZFocus     = theZFocus;
+
   InvalidateProjection();
 }
 
@@ -362,8 +392,15 @@ void Graphic3d_Camera::SetZFocus(const FocusType theType, const Standard_Real th
 // =======================================================================
 void Graphic3d_Camera::SetIOD (const IODType theType, const Standard_Real theIOD)
 {
+  if (IODType() == theType
+   && IOD    () == theIOD)
+  {
+    return;
+  }
+
   myIODType = theType;
-  myIOD = theIOD;
+  myIOD     = theIOD;
+
   InvalidateProjection();
 }
 

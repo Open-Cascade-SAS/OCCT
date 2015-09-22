@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_StructureManager.hxx>
@@ -79,10 +78,9 @@ void Graphic3d_GraphicDriver::PrintCStructure (const Graphic3d_CStructure& ACStr
 void Graphic3d_GraphicDriver::PrintCView (const Graphic3d_CView& ACView, const Standard_Integer AField) const {
 
   if (AField) {
-    cout << "\tws id " << ACView.WsId << ", "
-      << "view id " << ACView.ViewId << "\n";
-    cout << "\tXwindow id " << ACView.DefWindow.XWindow << ", "
-      << "activity " << ACView.Active << "\n";
+    cout << "view id " << ACView.Identification() << "\n";
+    cout << "\tXwindow id " << (ACView.Window().IsNull() ? 0 : ACView.Window()->NativeHandle()) << ", "
+      << "activity " << ACView.IsActive() << "\n";
     cout << flush;
   }
 

@@ -28,7 +28,6 @@
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_ViewManager.hxx>
 
 void V3d_Viewer::InitActiveViews() {
 myActiveViewsIterator.Initialize(MyActiveViews);

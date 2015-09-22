@@ -27,7 +27,6 @@
 #include <PrsMgr_Prs.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
-#include <Visual3d_View.hxx>
 
 namespace
 {
@@ -374,7 +373,7 @@ void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)&
 //=======================================================================
 Handle(Prs3d_Projector) PrsMgr_Presentation::Projector (const Handle(Graphic3d_DataStructureManager)& theProjector)
 {
-  Handle(Graphic3d_Camera) aCamera (Handle(Visual3d_View)::DownCast (theProjector)->Camera());
+  Handle(Graphic3d_Camera) aCamera = Handle(Graphic3d_CView)::DownCast (theProjector)->Camera();
   const gp_Dir aDir = aCamera->Direction().Reversed();
   const gp_Pnt anAt = aCamera->Center();
   const gp_Dir anUp = aCamera->Up();

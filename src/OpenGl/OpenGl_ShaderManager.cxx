@@ -206,7 +206,7 @@ const char THE_FRAG_CLIP_PLANES[] =
 // purpose  : Creates new empty shader manager
 // =======================================================================
 OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
-: myShadingModel (Visual3d_TOM_VERTEX),
+: myShadingModel (Graphic3d_TOSM_VERTEX),
   myContext  (theContext),
   myLastView (NULL)
 {
@@ -340,7 +340,7 @@ Standard_Boolean OpenGl_ShaderManager::IsEmpty() const
 // =======================================================================
 void OpenGl_ShaderManager::switchLightPrograms()
 {
-  TCollection_AsciiString aKey (myShadingModel == Visual3d_TOM_FRAGMENT ? "p_" : "g_");
+  TCollection_AsciiString aKey (myShadingModel == Graphic3d_TOSM_FRAGMENT ? "p_" : "g_");
   const OpenGl_ListOfLight* aLights = myLightSourceState.LightSources();
   if (aLights != NULL)
   {
@@ -348,15 +348,15 @@ void OpenGl_ShaderManager::switchLightPrograms()
     {
       switch (aLightIter.Value().Type)
       {
-        case Visual3d_TOLS_AMBIENT:
+        case Graphic3d_TOLS_AMBIENT:
           break; // skip ambient
-        case Visual3d_TOLS_DIRECTIONAL:
+        case Graphic3d_TOLS_DIRECTIONAL:
           aKey += "d";
           break;
-        case Visual3d_TOLS_POSITIONAL:
+        case Graphic3d_TOLS_POSITIONAL:
           aKey += "p";
           break;
-        case Visual3d_TOLS_SPOT:
+        case Graphic3d_TOLS_SPOT:
           aKey += "s";
           break;
       }
@@ -385,7 +385,7 @@ void OpenGl_ShaderManager::UpdateLightSourceStateTo (const OpenGl_ListOfLight* t
 // function : SetShadingModel
 // purpose  :
 // =======================================================================
-void OpenGl_ShaderManager::SetShadingModel (const Visual3d_TypeOfModel theModel)
+void OpenGl_ShaderManager::SetShadingModel (const Graphic3d_TypeOfShadingModel theModel)
 {
   myShadingModel = theModel;
   switchLightPrograms();
@@ -530,7 +530,7 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
   for (OpenGl_ListOfLight::Iterator anIter (*myLightSourceState.LightSources()); anIter.More(); anIter.Next())
   {
     const OpenGl_Light& aLight = anIter.Value();
-    if (aLight.Type == Visual3d_TOLS_AMBIENT)
+    if (aLight.Type == Graphic3d_TOLS_AMBIENT)
     {
       anAmbient += aLight.Color;
       continue;
@@ -546,10 +546,10 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
 
     OpenGl_ShaderLightParameters& aLightParams = aLightParamsArray[aLightsNb];
     aLightParams.Color    = aLight.Color;
-    aLightParams.Position = aLight.Type == Visual3d_TOLS_DIRECTIONAL
+    aLightParams.Position = aLight.Type == Graphic3d_TOLS_DIRECTIONAL
                          ? -aLight.Direction
                          :  aLight.Position;
-    if (aLight.Type == Visual3d_TOLS_SPOT)
+    if (aLight.Type == Graphic3d_TOLS_SPOT)
     {
       aLightParams.Direction = aLight.Direction;
     }
@@ -826,7 +826,7 @@ const OpenGl_SurfaceDetailState& OpenGl_ShaderManager::SurfaceDetailState() cons
 // function : UpdateSurfaceDetailStateTo
 // purpose  : Updates state of OCCT surface detail
 // =======================================================================
-void OpenGl_ShaderManager::UpdateSurfaceDetailStateTo (const Visual3d_TypeOfSurfaceDetail theDetail)
+void OpenGl_ShaderManager::UpdateSurfaceDetailStateTo (const Graphic3d_TypeOfSurfaceDetail theDetail)
 {
   mySurfaceDetailState.Set (theDetail);
   mySurfaceDetailState.Update();
@@ -1327,7 +1327,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
 // =======================================================================
 TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (const Standard_Boolean theHasVertColor)
 {
-  bool aLightsMap[Visual3d_TOLS_SPOT + 1] = { false, false, false, false };
+  bool aLightsMap[Graphic3d_TOLS_SPOT + 1] = { false, false, false, false };
   TCollection_AsciiString aLightsFunc, aLightsLoop;
   const OpenGl_ListOfLight* aLights = myLightSourceState.LightSources();
   if (aLights != NULL)
@@ -1337,16 +1337,16 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (const Standard
     {
       switch (aLightIter.Value().Type)
       {
-        case Visual3d_TOLS_AMBIENT:
+        case Graphic3d_TOLS_AMBIENT:
           --anIndex;
           break; // skip ambient
-        case Visual3d_TOLS_DIRECTIONAL:
+        case Graphic3d_TOLS_DIRECTIONAL:
           aLightsLoop = aLightsLoop + EOL"    directionalLight (" + anIndex + ", theNormal, theView, theIsFront);";
           break;
-        case Visual3d_TOLS_POSITIONAL:
+        case Graphic3d_TOLS_POSITIONAL:
           aLightsLoop = aLightsLoop + EOL"    pointLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
           break;
-        case Visual3d_TOLS_SPOT:
+        case Graphic3d_TOLS_SPOT:
           aLightsLoop = aLightsLoop + EOL"    spotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
           break;
       }
@@ -1360,10 +1360,10 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (const Standard
       aTypeBit = true;
       switch (aLightIter.Value().Type)
       {
-        case Visual3d_TOLS_AMBIENT:     break;
-        case Visual3d_TOLS_DIRECTIONAL: aLightsFunc += THE_FUNC_directionalLight; break;
-        case Visual3d_TOLS_POSITIONAL:  aLightsFunc += THE_FUNC_pointLight;       break;
-        case Visual3d_TOLS_SPOT:        aLightsFunc += THE_FUNC_spotLight;        break;
+        case Graphic3d_TOLS_AMBIENT:     break;
+        case Graphic3d_TOLS_DIRECTIONAL: aLightsFunc += THE_FUNC_directionalLight; break;
+        case Graphic3d_TOLS_POSITIONAL:  aLightsFunc += THE_FUNC_pointLight;       break;
+        case Graphic3d_TOLS_SPOT:        aLightsFunc += THE_FUNC_spotLight;        break;
       }
     }
   }

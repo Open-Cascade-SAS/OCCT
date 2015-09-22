@@ -52,7 +52,6 @@
 #include <TColStd_MapOfTransient.hxx>
 #include <TopoDS_Shape.hxx>
 #include <V3d_View.hxx>
-#include <Visual3d_View.hxx>
 
 static Standard_Integer GetHiMod(const Handle(AIS_InteractiveObject)& IO)
 {

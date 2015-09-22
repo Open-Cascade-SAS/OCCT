@@ -74,7 +74,7 @@ public:
 
 protected:
 
-  //! Invalidate Primitve Arrays.
+  //! Invalidate Primitive Arrays.
   void invalidate();
 
   void redraw(const Handle(OpenGl_Workspace)& theWorkspace) const;

@@ -35,8 +35,6 @@
 #include <ViewerTest_EventManager.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
-#include <Visual3d_View.hxx>
-#include <Visual3d_ViewManager.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_PositionalLight.hxx>
@@ -2608,7 +2606,7 @@ static int VZFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const
 
   if (theArgsNb == 1)
   {
-    aCurrentView->View()->ZFitAll();
+    aCurrentView->ZFitAll();
     aCurrentView->Redraw();
     return 0;
   }
@@ -2620,7 +2618,7 @@ static int VZFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const
     aScale = Draw::Atoi (theArgVec[1]);
   }
 
-  aCurrentView->View()->ZFitAll (aScale);
+  aCurrentView->ZFitAll (aScale);
   aCurrentView->Redraw();
 
   return 0;
@@ -3166,7 +3164,7 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
   aView->ZBufferTriedronSetup (anArrowColorX.Name(), anArrowColorY.Name(), anArrowColorZ.Name(),
                                aSizeRatio, anArrowDiam, aNbFacets);
   aView->TriedronDisplay (aPosition, aLabelsColor.Name(), aScale, aVisType);
-  aView->View()->ZFitAll();
+  aView->ZFitAll();
   return 0;
 }
 
@@ -3392,8 +3390,9 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
     return 1;
   }
 
-  try {
-    if (!V3dView->View()->Export (argv[1], anExpFormat))
+  try
+  {
+    if (!V3dView->Export (argv[1], anExpFormat))
     {
       di << "Error: export of image to " << aFormatStr << " failed!\n";
     }
@@ -4297,15 +4296,15 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
     {
       if (isTileSizeProvided)
       {
-        Graphic3d_CView* aCView = static_cast<Graphic3d_CView*> (ViewerTest::CurrentView()->View()->CView());
-        Graphic3d_PtrFrameBuffer anOldBuffer = static_cast<Graphic3d_PtrFrameBuffer> (aCView->ptrFBO);
-        aCView->ptrFBO = aView->View()->FBOCreate (aTileWidth, aTileHeight);
+        Handle(Graphic3d_CView) aGraphicView = ViewerTest::CurrentView()->View();
+        Graphic3d_PtrFrameBuffer anOldBuffer = aGraphicView->FBO();
+        Graphic3d_PtrFrameBuffer aNewBuffer  = aGraphicView->FBOCreate (aTileWidth, aTileHeight);
+        aGraphicView->SetFBO (aNewBuffer);
 
         isPrinted = aView->Print (anDC, 1, 1, 0, Aspect_PA_TILE);
 
-        Graphic3d_PtrFrameBuffer aNewBuffer = static_cast<Graphic3d_PtrFrameBuffer> (aCView->ptrFBO);
-        aView->View()->FBORelease (aNewBuffer);
-        aCView->ptrFBO = anOldBuffer;
+        aGraphicView->FBORelease (aNewBuffer);
+        aGraphicView->SetFBO (anOldBuffer);
       }
       else
       {
@@ -4313,7 +4312,7 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
       }
     }
 
-    // succesfully printed into an intermediate buffer
+    // successfully printed into an intermediate buffer
     if (isPrinted)
     {
       Image_PixMap aWrapper;
@@ -4574,9 +4573,9 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-// The Visual3d_LayerItem line item for "vlayerline" command
-// it provides a presentation of line with user-defined
-// linewidth, linetype and transparency.
+// The interactive presentation of 2d layer item
+// for "vlayerline" command it provides a presentation of
+// line with user-defined linewidth, linetype and transparency.
 class V3d_LineItem : public AIS_InteractiveObject
 {
 public:
@@ -6984,7 +6983,7 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
     return 1;
   }
 
-  Standard_Real aScale = aCurrentView->View()->AutoZFitScaleFactor();
+  Standard_Real aScale = aCurrentView->AutoZFitScaleFactor();
 
   if (theArgsNb > 3)
   {
@@ -6995,7 +6994,7 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
   if (theArgsNb < 2)
   {
     theDi << "Auto z-fit mode: " << "\n"
-          << "On: " << (aCurrentView->View()->AutoZFitMode() ? "enabled" : "disabled") << "\n"
+          << "On: " << (aCurrentView->AutoZFitMode() ? "enabled" : "disabled") << "\n"
           << "Scale: " << aScale << "\n";
     return 0;
   }
@@ -7007,8 +7006,8 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
     aScale = Draw::Atoi (theArgVec[2]);
   }
 
-  aCurrentView->View()->SetAutoZFitMode (isOn, aScale);
-  aCurrentView->View()->AutoZFit();
+  aCurrentView->SetAutoZFitMode (isOn, aScale);
+  aCurrentView->AutoZFit();
   aCurrentView->Redraw();
 
   return 0;
@@ -7222,7 +7221,7 @@ static int VCamera (Draw_Interpretor& theDI,
     }
   }
 
-  aView->View()->AutoZFit();
+  aView->AutoZFit();
   aView->Redraw();
 
   return 0;

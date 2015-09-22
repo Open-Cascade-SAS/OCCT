@@ -24,6 +24,7 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
+#include <InterfaceGraphic_Graphic3d.hxx>
 
 class Graphic3d_GraphicDriver;
 class Graphic3d_StructureManager;

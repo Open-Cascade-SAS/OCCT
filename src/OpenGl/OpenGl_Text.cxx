@@ -416,7 +416,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
       aTextAspect, aTextAspect->ShaderProgramRes (aCtx));
   }
 
-  myOrientationMatrix = theWorkspace->ActiveView()->Camera()->OrientationMatrix();
+  myOrientationMatrix = theWorkspace->View()->Camera()->OrientationMatrix();
   myProjMatrix.Convert (aCtx->ProjectionState.Current());
 
   // use highlight color or colors from aspect

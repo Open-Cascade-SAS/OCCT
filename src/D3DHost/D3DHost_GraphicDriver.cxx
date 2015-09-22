@@ -16,10 +16,7 @@
 #include <d3d9.h>
 
 #include <D3DHost_GraphicDriver.hxx>
-
-#include <D3DHost_Workspace.hxx>
-#include <OpenGl_CView.hxx>
-#include <Visual3d_View.hxx>
+#include <D3DHost_View.hxx>
 
 #ifdef _MSC_VER
   #pragma comment (lib, "D3D9.lib")
@@ -48,57 +45,19 @@ D3DHost_GraphicDriver::~D3DHost_GraphicDriver()
 // function : View
 // purpose  :
 // =======================================================================
-Standard_Boolean D3DHost_GraphicDriver::View (Graphic3d_CView& theCView)
+Handle(Graphic3d_CView) D3DHost_GraphicDriver::CreateView (const Handle(Graphic3d_StructureManager)& theMgr)
 {
-  Handle(OpenGl_Context) aShareCtx = GetSharedContext();
-  OpenGl_CView*          aCView = (OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL
-   && myMapOfView.Contains (aCView->View))
-  {
-    Handle(D3DHost_Workspace) anOldWS = Handle(D3DHost_Workspace)::DownCast (aCView->WS);
-    Handle(D3DHost_Workspace) aWS     = new D3DHost_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
-    theCView.ptrFBO = aWS->D3dWglBuffer().operator->();
-    aCView->WS = aWS;
-    aWS->SetActiveView (aCView->View, theCView.ViewId);
+  Handle(D3DHost_View) aView = new D3DHost_View (theMgr, this, myCaps, myDeviceLostFlag, &myStateCounter);
 
-    myMapOfWS.Remove (anOldWS);
-    myMapOfWS.Add    (aWS);
-    return Standard_True;
-  }
-
-  Handle(D3DHost_Workspace) aWS       = new D3DHost_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
-  Handle(OpenGl_View)       aView     = new OpenGl_View (theCView.Context, &myStateCounter);
-  myMapOfWS  .Add (aWS);
   myMapOfView.Add (aView);
 
-  aCView = new OpenGl_CView();
-  aCView->View = aView;
-  aCView->WS   = aWS;
-  theCView.ptrFBO  = aWS->D3dWglBuffer().operator->();
-  theCView.ptrView = aCView;
-  aWS->SetActiveView (aCView->View, theCView.ViewId);
-  return Standard_True;
-}
-
-// =======================================================================
-// function : D3dColorSurface
-// purpose  :
-// =======================================================================
-IDirect3DSurface9* D3DHost_GraphicDriver::D3dColorSurface (const Handle(Visual3d_View)& theView) const
-{
-  Graphic3d_CView* aCView = (Graphic3d_CView* )(theView->CView());
-  if (aCView == NULL
-   || aCView->ptrView == NULL)
+  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
   {
-    return NULL;
+    const Graphic3d_ZLayerId        aLayerID  = aLayerIt.Value();
+    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerID);
+    aView->AddZLayer         (aLayerID);
+    aView->SetZLayerSettings (aLayerID, aSettings);
   }
 
-  Handle(D3DHost_Workspace) aWS = Handle(D3DHost_Workspace)::DownCast (((OpenGl_CView* )aCView->ptrView)->WS);
-  if (aWS.IsNull()
-   || aWS->D3dWglBuffer().IsNull())
-  {
-    return NULL;
-  }
-
-  return aWS->D3dWglBuffer()->D3dColorSurface();
+  return aView;
 }

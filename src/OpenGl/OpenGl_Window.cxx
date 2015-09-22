@@ -131,20 +131,16 @@ namespace
 // purpose  :
 // =======================================================================
 OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
-                              const CALL_DEF_WINDOW&        theCWindow,
+                              const Handle(Aspect_Window)&  thePlatformWindow,
                               Aspect_RenderingContext       theGContext,
                               const Handle(OpenGl_Caps)&    theCaps,
                               const Handle(OpenGl_Context)& theShareCtx)
 : myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
-  myWidth   (theCWindow.dx),
-  myHeight  (theCWindow.dy),
+  myPlatformWindow (thePlatformWindow),
   mySwapInterval (theCaps->swapInterval)
 {
-  myBgColor.rgb[0] = theCWindow.Background.r;
-  myBgColor.rgb[1] = theCWindow.Background.g;
-  myBgColor.rgb[2] = theCWindow.Background.b;
-  myBgColor.rgb[3] = 1.0f;
+  myPlatformWindow->Size (myWidth, myHeight);
 
   Standard_Boolean isCoreProfile = Standard_False;
 
@@ -164,7 +160,10 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   if (theGContext == (EGLContext )EGL_NO_CONTEXT)
   {
     // create new surface
-    anEglSurf = eglCreateWindowSurface (anEglDisplay, anEglConfig, (EGLNativeWindowType )theCWindow.XWindow, NULL);
+    anEglSurf = eglCreateWindowSurface (anEglDisplay,
+                                        anEglConfig,
+                                        (EGLNativeWindowType )myPlatformWindow->NativeHandle(),
+                                        NULL);
     if (anEglSurf == EGL_NO_SURFACE)
     {
       Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL is unable to create surface for window!");
@@ -189,7 +188,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   myGlContext->Init ((Aspect_Drawable )anEglSurf, (Aspect_Display )anEglDisplay, (Aspect_RenderingContext )anEglContext, isCoreProfile);
 #elif defined(_WIN32)
   (void )theDriver;
-  HWND  aWindow   = (HWND )theCWindow.XWindow;
+  HWND  aWindow   = (HWND )myPlatformWindow->NativeHandle();
   HDC   aWindowDC = GetDC (aWindow);
   HGLRC aGContext = (HGLRC )theGContext;
 
@@ -438,7 +437,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 
   myGlContext->Init ((Aspect_Handle )aWindow, (Aspect_Handle )aWindowDC, (Aspect_RenderingContext )aGContext, isCoreProfile);
 #else
-  Window aParent = (Window )theCWindow.XWindow;
+  Window aParent = (Window )myPlatformWindow->NativeHandle();
   Window aWindow = 0;
 
   Display*   aDisp     = theDriver->GetDisplayConnection()->GetDisplay();
@@ -634,10 +633,11 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 
     Colormap cmap = XCreateColormap (aDisp, aParent, aVis->visual, AllocNone);
 
+    Quantity_Color aBgColor = myPlatformWindow->Background().Color();
     XColor color;
-    color.red   = (unsigned short) (myBgColor.rgb[0] * 0xFFFF);
-    color.green = (unsigned short) (myBgColor.rgb[1] * 0xFFFF);
-    color.blue  = (unsigned short) (myBgColor.rgb[2] * 0xFFFF);
+    color.red   = (unsigned short) (aBgColor.Red()   * 0xFFFF);
+    color.green = (unsigned short) (aBgColor.Green() * 0xFFFF);
+    color.blue  = (unsigned short) (aBgColor.Blue()  * 0xFFFF);
     color.flags = DoRed | DoGreen | DoBlue;
     XAllocColor (aDisp, cmap, &color);
 
@@ -751,7 +751,7 @@ Standard_Boolean OpenGl_Window::Activate()
 // function : Resize
 // purpose  : call_subr_resize
 // =======================================================================
-void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
+void OpenGl_Window::Resize()
 {
 #if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__)
   Display* aDisp = (Display* )myGlContext->myDisplay;
@@ -759,12 +759,16 @@ void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
     return;
 #endif
 
+  Standard_Integer aWidth  = 0;
+  Standard_Integer aHeight = 0;
+  myPlatformWindow->Size (aWidth, aHeight);
+
   // If the size is not changed - do nothing
-  if ((myWidth == theCWindow.dx) && (myHeight == theCWindow.dy))
+  if ((myWidth == aWidth) && (myHeight == aHeight))
     return;
 
-  myWidth  = theCWindow.dx;
-  myHeight = theCWindow.dy;
+  myWidth  = aWidth;
+  myHeight = aHeight;
 
 #if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__)
   XResizeWindow (aDisp, myGlContext->myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
@@ -802,28 +806,15 @@ void OpenGl_Window::ReadDepths (const Standard_Integer theX,     const Standard_
 
 #if !defined(GL_ES_VERSION_2_0)
   glRasterPos2i (theX, theY);
-  DisableFeatures();
+  myGlContext->DisableFeatures();
   glReadPixels (theX, theY, theWidth, theHeight, GL_DEPTH_COMPONENT, GL_FLOAT, theDepths);
-  EnableFeatures();
+  myGlContext->EnableFeatures();
 #endif
 
   myGlContext->WorldViewState.Pop();
   myGlContext->ProjectionState.Pop();
 
   myGlContext->ApplyProjectionMatrix();
-}
-
-// =======================================================================
-// function : SetBackgroundColor
-// purpose  : call_subr_set_background
-// =======================================================================
-void OpenGl_Window::SetBackgroundColor (const Standard_ShortReal theR,
-                                        const Standard_ShortReal theG,
-                                        const Standard_ShortReal theB)
-{
-  myBgColor.rgb[0] = theR;
-  myBgColor.rgb[1] = theG;
-  myBgColor.rgb[2] = theB;
 }
 
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
@@ -866,87 +857,17 @@ void OpenGl_Window::Init()
 #endif
 }
 
-#endif // !__APPLE__
-
 // =======================================================================
-// function : EnableFeatures
+// function : SetSwapInterval
 // purpose  :
 // =======================================================================
-void OpenGl_Window::EnableFeatures() const
+void OpenGl_Window::SetSwapInterval()
 {
-  //
-}
-
-// =======================================================================
-// function : DisableFeatures
-// purpose  :
-// =======================================================================
-void OpenGl_Window::DisableFeatures() const
-{
-#if !defined(GL_ES_VERSION_2_0)
-  glPixelTransferi (GL_MAP_COLOR, GL_FALSE);
-#endif
-
-  /*
-  * Disable stuff that's likely to slow down glDrawPixels.
-  * (Omit as much of this as possible, when you know in advance
-  * that the OpenGL state will already be set correctly.)
-  */
-  glDisable(GL_DITHER);
-  glDisable(GL_BLEND);
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_TEXTURE_2D);
-  glDisable(GL_STENCIL_TEST);
-
-#if !defined(GL_ES_VERSION_2_0)
-  glDisable(GL_LIGHTING);
-  glDisable(GL_ALPHA_TEST);
-  glDisable(GL_FOG);
-  glDisable(GL_LOGIC_OP);
-  glDisable(GL_TEXTURE_1D);
-
-  glPixelTransferi(GL_MAP_COLOR, GL_FALSE);
-  glPixelTransferi(GL_RED_SCALE, 1);
-  glPixelTransferi(GL_RED_BIAS, 0);
-  glPixelTransferi(GL_GREEN_SCALE, 1);
-  glPixelTransferi(GL_GREEN_BIAS, 0);
-  glPixelTransferi(GL_BLUE_SCALE, 1);
-  glPixelTransferi(GL_BLUE_BIAS, 0);
-  glPixelTransferi(GL_ALPHA_SCALE, 1);
-  glPixelTransferi(GL_ALPHA_BIAS, 0);
-
-  /*
-  * Disable extensions that could slow down glDrawPixels.
-  * (Actually, you should check for the presence of the proper
-  * extension before making these calls.  I've omitted that
-  * code for simplicity.)
-  */
-
-  if ((myGlContext->myGlVerMajor >= 1) && (myGlContext->myGlVerMinor >= 2))
+  if (mySwapInterval != myGlContext->caps->swapInterval)
   {
-#ifdef GL_EXT_convolution
-    if (myGlContext->CheckExtension ("GL_CONVOLUTION_1D_EXT"))
-      glDisable(GL_CONVOLUTION_1D_EXT);
-
-    if (myGlContext->CheckExtension ("GL_CONVOLUTION_2D_EXT"))
-      glDisable(GL_CONVOLUTION_2D_EXT);
-
-    if (myGlContext->CheckExtension ("GL_SEPARABLE_2D_EXT"))
-      glDisable(GL_SEPARABLE_2D_EXT);
-#endif
-
-#ifdef GL_EXT_histogram
-    if (myGlContext->CheckExtension ("GL_SEPARABLE_2D_EXT"))
-      glDisable(GL_HISTOGRAM_EXT);
-
-    if (myGlContext->CheckExtension ("GL_MINMAX_EXT"))
-      glDisable(GL_MINMAX_EXT);
-#endif
-
-#ifdef GL_EXT_texture3D
-    if (myGlContext->CheckExtension ("GL_TEXTURE_3D_EXT"))
-      glDisable(GL_TEXTURE_3D_EXT);
-#endif
+    mySwapInterval = myGlContext->caps->swapInterval;
+    myGlContext->SetSwapInterval (mySwapInterval);
   }
-#endif
 }
+
+#endif // !__APPLE__

@@ -14,10 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Visual3d_ViewManagerPtr_HeaderFile
-#define _Visual3d_ViewManagerPtr_HeaderFile
+#ifndef _Graphic3d_TypeOfBackfacingModel_HeaderFile
+#define _Graphic3d_TypeOfBackfacingModel_HeaderFile
 
-class Visual3d_ViewManager;
-typedef Visual3d_ViewManager* Visual3d_ViewManagerPtr;
+//! Modes of display of back faces in the view
+//!
+//! TOBM_AUTOMATIC graphic's structure setting is in use
+//! TOBM_FORCE     force display of back faces
+//! TOBM_DISABLE   disable display of back faces
+enum Graphic3d_TypeOfBackfacingModel
+{
+  Graphic3d_TOBM_AUTOMATIC,
+  Graphic3d_TOBM_FORCE,
+  Graphic3d_TOBM_DISABLE
+};
 
-#endif // _Visual3d_ViewManagerPtr_HeaderFile
+#endif // _Graphic3d_TypeOfBackfacingModel_HeaderFile

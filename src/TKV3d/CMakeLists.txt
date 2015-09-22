@@ -3,7 +3,6 @@ project(TKV3d)
 set (TOOLKIT_MODULES
   V3d
   Graphic3d
-  Visual3d
   Select3D
   Prs3d
   StdPrs

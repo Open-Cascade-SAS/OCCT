@@ -42,6 +42,7 @@ static Standard_Integer StructureManager_CurrentId = 0;
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 
 Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver)
+: myViewGenId (0, 31)
 {
 
 Standard_Real Coef;
@@ -81,17 +82,17 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
         Aspect_GenId theGenId(
           Standard_Integer (Structure_IDMIN+Coef*(StructureManager_CurrentId)),
           Standard_Integer (Structure_IDMIN+Coef*(StructureManager_CurrentId+1)-1));
-        MyStructGenId   = theGenId;
+        myStructGenId   = theGenId;
 
-        MyId                    = StructureManager_CurrentId;
+        myId                    = StructureManager_CurrentId;
 
-        MyAspectLine3d          = new Graphic3d_AspectLine3d ();
-        MyAspectText3d          = new Graphic3d_AspectText3d ();
-        MyAspectMarker3d        = new Graphic3d_AspectMarker3d ();
-        MyAspectFillArea3d      = new Graphic3d_AspectFillArea3d ();
+        myAspectLine3d          = new Graphic3d_AspectLine3d ();
+        myAspectText3d          = new Graphic3d_AspectText3d ();
+        myAspectMarker3d        = new Graphic3d_AspectMarker3d ();
+        myAspectFillArea3d      = new Graphic3d_AspectFillArea3d ();
 
-        MyUpdateMode            = Aspect_TOU_WAIT;
-        MyGraphicDriver         = theDriver;
+        myUpdateMode            = Aspect_TOU_WAIT;
+        myGraphicDriver         = theDriver;
 
 }
 
@@ -99,103 +100,150 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
 
 void Graphic3d_StructureManager::Destroy () {
 
-        MyDisplayedStructure.Clear ();
-        MyHighlightedStructure.Clear ();
-        StructureManager_ArrayId[MyId]  = 0;
+        myDisplayedStructure.Clear ();
+        myHighlightedStructure.Clear ();
+        myDefinedViews.Clear();
+        StructureManager_ArrayId[myId]  = 0;
 
 }
 
-//-Methods, in order
-
-void Graphic3d_StructureManager::SetUpdateMode (const Aspect_TypeOfUpdate AType) {
-
-        MyUpdateMode    = AType;
-
+// ========================================================================
+// function : SetUpdateMode
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::SetUpdateMode (const Aspect_TypeOfUpdate theType)
+{
+  myUpdateMode = theType;
 }
 
-Aspect_TypeOfUpdate Graphic3d_StructureManager::UpdateMode () const {
-
-        return (MyUpdateMode);
-
+// ========================================================================
+// function : UpdateMode
+// purpose  :
+// ========================================================================
+Aspect_TypeOfUpdate Graphic3d_StructureManager::UpdateMode() const
+{
+  return myUpdateMode;
 }
+
+// ========================================================================
+// function : Update
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Update (const Aspect_TypeOfUpdate theMode) const
+{
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->Update (theMode);
+  }
+}
+
+// ========================================================================
+// function : Remove
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Remove()
+{
+  // clear all structures whilst views are alive for correct GPU memory management
+  myDisplayedStructure.Clear();
+  myHighlightedStructure.Clear();
+
+  // clear list of managed views
+  myDefinedViews.Clear();
+}
+
+// ========================================================================
+// function : Erase
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Erase()
+{
+  for (Graphic3d_MapIteratorOfMapOfStructure anIt (myDisplayedStructure); anIt.More(); anIt.Next())
+  {
+    anIt.Key()->Erase();
+  }
+}
+
+
+
+
 
 void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX) {
 
-        MyAspectLine3d          = CTX;
+        myAspectLine3d          = CTX;
 
 }
 
 void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX) {
 
-        MyAspectFillArea3d      = CTX;
+        myAspectFillArea3d      = CTX;
 
 }
 
 void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX) {
 
-        MyAspectText3d          = CTX;
+        myAspectText3d          = CTX;
 
 }
 
 void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX) {
 
-        MyAspectMarker3d        = CTX;
+        myAspectMarker3d        = CTX;
 
 }
 
 void Graphic3d_StructureManager::PrimitivesAspect (Handle(Graphic3d_AspectLine3d)& CTXL, Handle(Graphic3d_AspectText3d)& CTXT, Handle(Graphic3d_AspectMarker3d)& CTXM, Handle(Graphic3d_AspectFillArea3d)& CTXF) const {
 
-        CTXL    = MyAspectLine3d;
-        CTXT    = MyAspectText3d;
-        CTXM    = MyAspectMarker3d;
-        CTXF    = MyAspectFillArea3d;
+        CTXL    = myAspectLine3d;
+        CTXT    = myAspectText3d;
+        CTXM    = myAspectMarker3d;
+        CTXF    = myAspectFillArea3d;
 
 }
 
 Handle(Graphic3d_AspectLine3d) Graphic3d_StructureManager::Line3dAspect () const {
 
-        return (MyAspectLine3d);
+        return (myAspectLine3d);
 
 }
 
 Handle(Graphic3d_AspectText3d) Graphic3d_StructureManager::Text3dAspect () const {
 
-        return (MyAspectText3d);
+        return (myAspectText3d);
 
 }
 
 Handle(Graphic3d_AspectMarker3d) Graphic3d_StructureManager::Marker3dAspect () const {
 
-        return (MyAspectMarker3d);
+        return (myAspectMarker3d);
 
 }
 
 Handle(Graphic3d_AspectFillArea3d) Graphic3d_StructureManager::FillArea3dAspect () const {
 
-        return (MyAspectFillArea3d);
+        return (myAspectFillArea3d);
 
 }
 
-void Graphic3d_StructureManager::Remove (const Standard_Integer AnId) {
+void Graphic3d_StructureManager::Remove (const Standard_Integer theId) {
 
-        MyStructGenId.Free (AnId);
+        myStructGenId.Free (theId);
 
 }
 
 void Graphic3d_StructureManager::DisplayedStructures (Graphic3d_MapOfStructure& SG) const {
 
-  SG.Assign(MyDisplayedStructure);
+  SG.Assign(myDisplayedStructure);
 
-  //JMBStandard_Integer Length  = MyDisplayedStructure.Length ();
+  //JMBStandard_Integer Length  = myDisplayedStructure.Length ();
 
   //JMBfor (Standard_Integer i=1; i<=Length; i++)
-  //JMB SG.Add (MyDisplayedStructure.Value (i));
+  //JMB SG.Add (myDisplayedStructure.Value (i));
 
 }
 
 Standard_Integer Graphic3d_StructureManager::NumberOfDisplayedStructures () const {
 
-Standard_Integer Length = MyDisplayedStructure.Extent ();
+Standard_Integer Length = myDisplayedStructure.Extent ();
 
         return (Length);
 
@@ -203,19 +251,19 @@ Standard_Integer Length = MyDisplayedStructure.Extent ();
 
 //Handle(Graphic3d_Structure) Graphic3d_StructureManager::DisplayedStructure (const Standard_Integer AnIndex) const {
 
-//return (MyDisplayedStructure.Value (AnIndex));
+//return (myDisplayedStructure.Value (AnIndex));
 
 //}
 
 void Graphic3d_StructureManager::HighlightedStructures (Graphic3d_MapOfStructure& SG) const {
 
-  SG.Assign(MyHighlightedStructure);
+  SG.Assign(myHighlightedStructure);
 
 }
 
 Standard_Integer Graphic3d_StructureManager::NewIdentification () {
 
-Standard_Integer Id     = MyStructGenId.Next ();
+Standard_Integer Id     = myStructGenId.Next ();
 
         return Id;
 
@@ -228,7 +276,7 @@ Handle(Graphic3d_Structure) Graphic3d_StructureManager::Identification (const St
 
   Handle(Graphic3d_Structure) StructNull;
  
-  Graphic3d_MapIteratorOfMapOfStructure it( MyDisplayedStructure);
+  Graphic3d_MapIteratorOfMapOfStructure it( myDisplayedStructure);
   
   Handle(Graphic3d_Structure) SGfound;
 
@@ -250,7 +298,7 @@ Handle(Graphic3d_Structure) Graphic3d_StructureManager::Identification (const St
 
 Standard_Integer Graphic3d_StructureManager::Identification () const {
  
-        return (MyId);
+        return (myId);
  
 }
 
@@ -268,7 +316,7 @@ Standard_Integer Graphic3d_StructureManager::CurrentId () {
 
 const Handle(Graphic3d_GraphicDriver)& Graphic3d_StructureManager::GraphicDriver () const {
 
-        return (MyGraphicDriver);
+        return (myGraphicDriver);
 
 }
 
@@ -277,7 +325,7 @@ void Graphic3d_StructureManager::RecomputeStructures()
   // Go through all unique structures including child (connected) ones and ensure that they are computed.
   Graphic3d_MapOfStructure aStructNetwork;
 
-  for (Graphic3d_MapIteratorOfMapOfStructure anIter(MyDisplayedStructure); anIter.More(); anIter.Next())
+  for (Graphic3d_MapIteratorOfMapOfStructure anIter(myDisplayedStructure); anIter.More(); anIter.Next())
   {
     Handle(Graphic3d_Structure) aStructure = anIter.Key();
     anIter.Key()->Network (anIter.Key(), Graphic3d_TOC_DESCENDANT, aStructNetwork);
@@ -319,4 +367,245 @@ Handle(Graphic3d_ViewAffinity) Graphic3d_StructureManager::ObjectAffinity (const
   Handle(Graphic3d_ViewAffinity) aResult;
   myRegisteredObjects.Find (theObject.operator->(), aResult);
   return aResult;
+}
+
+// ========================================================================
+// function : Identification
+// purpose  :
+// ========================================================================
+Standard_Integer Graphic3d_StructureManager::Identification (Graphic3d_CView* theView)
+{
+  if (myDefinedViews.Contains (theView))
+  {
+    return theView->Identification();
+  }
+
+  myDefinedViews.Add (theView);
+  return myViewGenId.Next();
+}
+
+// ========================================================================
+// function : UnIdentification
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::UnIdentification (Graphic3d_CView* theView)
+{
+  if (myDefinedViews.Contains (theView))
+  {
+    myDefinedViews.Swap (myDefinedViews.FindIndex (theView), myDefinedViews.Size());
+    myDefinedViews.RemoveLast();
+    myViewGenId.Free (theView->Identification());
+  }
+}
+
+// ========================================================================
+// function : DefinedViews
+// purpose  :
+// ========================================================================
+const Graphic3d_IndexedMapOfView& Graphic3d_StructureManager::DefinedViews() const
+{
+  return myDefinedViews;
+}
+
+// ========================================================================
+// function : MaxNumOfViews
+// purpose  :
+// ========================================================================
+Standard_Integer Graphic3d_StructureManager::MaxNumOfViews() const
+{
+  return myViewGenId.Upper() - myViewGenId.Lower() + 1;
+}
+
+// ========================================================================
+// function : ReCompute
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::ReCompute (const Handle(Graphic3d_Structure)& theStructure)
+{
+  if (!myDisplayedStructure.Contains (theStructure))
+  {
+    return;
+  }
+
+  // Recompute structure for all defined views
+  for (Standard_Integer aViewIt = 1; aViewIt <= myDefinedViews.Extent(); ++aViewIt)
+  {
+    ReCompute (theStructure, myDefinedViews (aViewIt));
+  }
+}
+
+// ========================================================================
+// function : ReCompute
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::ReCompute (const Handle(Graphic3d_Structure)& theStructure,
+                                            const Handle(Graphic3d_DataStructureManager)& theProjector)
+{
+  Handle(Graphic3d_CView) aView = Handle(Graphic3d_CView)::DownCast (theProjector);
+
+  if (aView.IsNull()
+   || !myDefinedViews.Contains (aView.operator->())
+   || !myDisplayedStructure.Contains (theStructure))
+  {
+    return;
+  }
+
+  aView->ReCompute (theStructure);
+}
+
+// ========================================================================
+// function : Clear
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Clear (const Handle(Graphic3d_Structure)& theStructure,
+                                        const Standard_Boolean theWithDestruction)
+{
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->Clear (theStructure, theWithDestruction);
+  }
+}
+
+// ========================================================================
+// function : Connect
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Connect (const Handle(Graphic3d_Structure)& theMother,
+                                          const Handle(Graphic3d_Structure)& theDaughter)
+{
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->Connect (theMother, theDaughter);
+  }
+}
+
+// ========================================================================
+// function : Disconnect
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Disconnect (const Handle(Graphic3d_Structure)& theMother,
+                                             const Handle(Graphic3d_Structure)& theDaughter)
+{
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->Disconnect (theMother, theDaughter);
+  }
+}
+
+// ========================================================================
+// function : Display
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Display (const Handle(Graphic3d_Structure)& theStructure)
+{
+  myDisplayedStructure.Add (theStructure);
+
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->Display (theStructure);
+  }
+}
+
+// ========================================================================
+// function : Erase
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Erase (const Handle(Graphic3d_Structure)& theStructure)
+{
+  myDisplayedStructure  .Remove(theStructure);
+  myHighlightedStructure.Remove (theStructure);
+
+  // Erase structure in all defined views
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->Erase (theStructure);
+  }
+}
+
+// ========================================================================
+// function : Erase
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::Highlight (const Handle(Graphic3d_Structure)& theStructure,
+                                            const Aspect_TypeOfHighlightMethod theMethod)
+{
+  myHighlightedStructure.Add (theStructure);
+
+  // Highlight in all defined views
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->Highlight (theStructure, theMethod);
+  }
+}
+
+// ========================================================================
+// function : UnHighlight
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::UnHighlight (const Handle(Graphic3d_Structure)& theStructure)
+{
+  myHighlightedStructure.Remove (theStructure);
+
+  // UnHighlight in all defined views
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->UnHighlight (theStructure);
+  }
+}
+
+// ========================================================================
+// function : UnHighlight
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::UnHighlight()
+{
+  for (Graphic3d_MapIteratorOfMapOfStructure anIt (myHighlightedStructure); anIt.More(); anIt.Next())
+  {
+    anIt.Key()->UnHighlight();
+  }
+}
+
+// ========================================================================
+// function : SetTransform
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::SetTransform (const Handle(Graphic3d_Structure)& theStructure,
+                                               const TColStd_Array2OfReal& theTrsf)
+{
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->SetTransform (theStructure, theTrsf);
+  }
+}
+
+// ========================================================================
+// function : ChangeDisplayPriority
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& theStructure,
+                                                        const Standard_Integer theOldPriority,
+                                                        const Standard_Integer theNewPriority)
+{
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->ChangePriority (theStructure, theOldPriority, theNewPriority);
+  }
+}
+
+//=======================================================================
+//function : ChangeZLayer
+//purpose  :
+//=======================================================================
+void Graphic3d_StructureManager::ChangeZLayer (const Handle(Graphic3d_Structure)& theStructure,
+                                               const Graphic3d_ZLayerId           theLayerId)
+{
+  if (!myDisplayedStructure.Contains (theStructure))
+  {
+    return;
+  }
+
+  for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->ChangeZLayer (theStructure, theLayerId);
+  }
 }

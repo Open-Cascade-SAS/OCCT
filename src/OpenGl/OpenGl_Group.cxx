@@ -18,6 +18,7 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Flipper.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
+#include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_StencilTest.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Text.hxx>

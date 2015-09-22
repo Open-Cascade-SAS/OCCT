@@ -24,6 +24,8 @@
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 
+#include <Standard_NotImplemented.hxx>
+
 #if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_FREEIMAGE)
   #include <NCollection_Handle.hxx>
   #include <FreeImagePlus.h>
@@ -38,10 +40,10 @@
 
 #ifndef HAVE_FREEIMAGE
 
-// ---------------------------------------------------------------
-// Function: initBitmapBuffer
-// Purpose:  init device independent bitmap to hold printing data
-// ---------------------------------------------------------------
+  // =======================================================================
+// function : initBitmapBuffer
+// purpose  : init device independent bitmap to hold printing data
+// =======================================================================
 static void initBitmapBuffer (const HDC theMemoryDC,
                               HBITMAP &theMemoryBmp,
                               const   Standard_Integer theBmpWidth,
@@ -70,10 +72,10 @@ static void initBitmapBuffer (const HDC theMemoryDC,
 
 #else /* HAVE_FREEIMAGE */
 
-// ---------------------------------------------------------------
-// Function: imagePasteDC
-// Purpose:  copy the data from image buffer to the device context
-// ---------------------------------------------------------------
+// =======================================================================
+// function : imagePasteDC
+// purpose  : copy the data from image buffer to the device context
+// =======================================================================
 static bool imagePasteDC(HDC theDstDC,    FipHandle theImage, int theOffsetX,
                          int theOffsetY,  int theWidth, int theHeight,
                          int theLeft = 0, int theTop = 0)
@@ -133,10 +135,10 @@ static bool imagePasteDC(HDC theDstDC,    FipHandle theImage, int theOffsetX,
   return true;
 }
 
-// ---------------------------------------------------------------
-// Function: imageStretchDC
-// Purpose:  copy pixels from image to dc by stretching them
-// ---------------------------------------------------------------
+// =======================================================================
+// function : imageStretchDC
+// purpose  : copy pixels from image to dc by stretching them
+// =======================================================================
 static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
                            int theOffsetY, int theWidth, int theHeight)
 {
@@ -165,10 +167,10 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
 
 #endif /* HAVE_FREEIMAGE */
 
-// ---------------------------------------------------------------
-// Function: getNearestPowOfTwo
-// Purpose:  get the nearest power of two for theNumber
-// ---------------------------------------------------------------
+// =======================================================================
+// function : getNearestPowOfTwo
+// purpose  : get the nearest power of two for theNumber
+// =======================================================================
 static GLsizei getNearestPowOfTwo (const GLsizei theNumber)
 {
   GLsizei aLast = 1;
@@ -176,10 +178,10 @@ static GLsizei getNearestPowOfTwo (const GLsizei theNumber)
   return aLast;
 }
 
-// ---------------------------------------------------------------
-// Function: getMaxFrameSize
-// Purpose:  get the maximum possible frame size
-// ---------------------------------------------------------------
+// =======================================================================
+// function : getMaxFrameSize
+// purpose  : get the maximum possible frame size
+// =======================================================================
 static void getMaxFrameSize(Standard_Integer& theWidth,
                             Standard_Integer& theHeight)
 {
@@ -197,11 +199,11 @@ static void getMaxFrameSize(Standard_Integer& theWidth,
   theHeight = (Standard_Integer)aMaxY;
 }
 
-// ---------------------------------------------------------------
-// Function: fitDimensionsRatio
-// Purpose:  calculate correct width/height ratio for theWidth and
-//           theHeight parameters
-// ---------------------------------------------------------------
+// =======================================================================
+// function : fitDimensionsRatio
+// purpose  : calculate correct width/height ratio for theWidth and
+//            theHeight parameters
+// =======================================================================
 static void fitDimensionsRatio (Standard_Integer& theWidth,
                                 Standard_Integer& theHeight,
                                 const Standard_Real theViewRatio)
@@ -214,11 +216,11 @@ static void fitDimensionsRatio (Standard_Integer& theWidth,
       theHeight = (Standard_Integer)(theWidth/theViewRatio);
 }
 
-// ---------------------------------------------------------------
-// Function: initBufferStretch
-// Purpose:  calculate initialization sizes for frame buffer
-//           when the stretch algorithm is selected
-// ---------------------------------------------------------------
+// =======================================================================
+// function : initBufferStretch
+// purpose  : calculate initialization sizes for frame buffer
+//            when the stretch algorithm is selected
+// =======================================================================
 static void initBufferStretch (Standard_Integer& theFrameWidth,
                                Standard_Integer& theFrameHeight,
                                const int theViewWidth,
@@ -246,11 +248,12 @@ static void initBufferStretch (Standard_Integer& theFrameWidth,
     theFrameHeight = (Standard_Integer)(theFrameHeight/aHeightRate);
   }
 }
-// ---------------------------------------------------------------
-// Function: initBufferTiling
-// Purpose:  calculate initialization sizes for frame buffer
-//           when the tile algorithm is selected
-// ---------------------------------------------------------------
+
+// =======================================================================
+// function : initBufferTiling
+// purpose  : calculate initialization sizes for frame buffer
+//            when the tile algorithm is selected
+// =======================================================================
 static void initBufferTiling (Standard_Integer& theFrameWidth,
                               Standard_Integer &theFrameHeight,
                               const int theViewWidth,
@@ -266,36 +269,28 @@ static void initBufferTiling (Standard_Integer& theFrameWidth,
 
 #endif /* _WIN32 */
 
-// ---------------------------------------------------------------
-// ---------------------------------------------------------------
-
-//call_togl_print
-
-Standard_Boolean OpenGl_Workspace::Print
-  (const Handle(OpenGl_PrinterContext)& thePrintContext,
-   const Graphic3d_CView& ACView,
-   const Aspect_Handle    hPrintDC,// const Aspect_Drawable hPrintDC,
-   const Standard_Boolean showBackground,
-   const Standard_CString filename,
-   const Aspect_PrintAlgo printAlgorithm,
-   const Standard_Real theScaleFactor)
+// =======================================================================
+// function : Print
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_View::Print (const Aspect_Handle    thePrinterDC,
+                                     const Standard_Boolean theToShowBackground,
+                                     const Standard_CString theFileName,
+                                     const Aspect_PrintAlgo thePrintAlgorithm,
+                                     const Standard_Real    theScaleFactor)
 {
-  if (thePrintContext.IsNull())
-  {
-    return Standard_False;
-  }
-
 #ifdef _WIN32
-
-  if (!Activate())
+  if (!myWorkspace->Activate())
   {
     //MessageBox (NULL, "Print failed: can't setup the view for printing.",
     //            "The operation couldn't be completed.", MB_OK);
     return Standard_False;
   }
 
+  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+
   // printer page dimensions
-  HDC hPrnDC = (HDC) hPrintDC;
+  HDC hPrnDC = (HDC) thePrinterDC;
   int devWidth  = GetDeviceCaps (hPrnDC, HORZRES);
   int devHeight = GetDeviceCaps (hPrnDC, VERTRES);
 
@@ -318,8 +313,8 @@ Standard_Boolean OpenGl_Workspace::Print
   Standard_Integer tempHeight = (Standard_Integer) devHeight;
 
   // view dimensions
-  int viewWidth  = myWidth;
-  int viewHeight = myHeight;
+  int viewWidth  = myWindow->Width();
+  int viewHeight = myWindow->Height();
   if (viewWidth == 0 || viewHeight == 0)
   {
     //MessageBox (NULL, "Print failed: can't setup the view for printing.",
@@ -348,11 +343,11 @@ Standard_Boolean OpenGl_Workspace::Print
 
   // Frame buffer initialization
   OpenGl_FrameBuffer* aFrameBuffer = NULL;
-  OpenGl_FrameBuffer* aPrevBuffer = (OpenGl_FrameBuffer*) ACView.ptrFBO;
+  OpenGl_FrameBuffer* aPrevBuffer = (OpenGl_FrameBuffer*)myFBO;
   Standard_Integer aFrameWidth (0),  aFrameHeight (0),
                    aPrevBufferX (0), aPrevBufferY (0);
 
-  bool IsTiling = (printAlgorithm == 1);
+  bool IsTiling = (thePrintAlgorithm == Aspect_PA_TILE);
 
   // try to use existing frame buffer
   if (aPrevBuffer)
@@ -384,7 +379,7 @@ Standard_Boolean OpenGl_Workspace::Print
       fipImage* anImagePtr = new fipImage (FIT_BITMAP, aFrameWidth,
                                            aFrameHeight, 24);
 
-      // if allocated succesfully
+      // if allocated successfully
       if (anImagePtr->isValid())
       {
         aViewImage  = anImagePtr;
@@ -445,14 +440,14 @@ Standard_Boolean OpenGl_Workspace::Print
         initBufferTiling (aFrameWidth, aFrameHeight, width, height);
 
       // try to initialize framebuffer
-      if (aFrameBuffer->Init (GetGlContext(), aFrameWidth, aFrameHeight))
+      if (aFrameBuffer->Init (aCtx, aFrameWidth, aFrameHeight))
       {
 #ifdef HAVE_FREEIMAGE
         // try to allocate fipImage and necessary resources
         fipImage* anImagePtr = new fipImage (FIT_BITMAP, aFrameWidth,
                                             aFrameHeight, 24);
 
-        // if allocated succesfully
+        // if allocated successfully
         if (anImagePtr->isValid())
         {
           aViewImage  = anImagePtr;
@@ -463,7 +458,7 @@ Standard_Boolean OpenGl_Workspace::Print
 
         if (!aViewBuffer)
         {
-          aFrameBuffer->Release (GetGlContext().operator->());
+          aFrameBuffer->Release (aCtx.operator->());
           aViewBuffer = NULL;
           aViewImage  = NULL;
         }
@@ -477,7 +472,7 @@ Standard_Boolean OpenGl_Workspace::Print
         {
           if (hViewBitmap)
             DeleteObject (hViewBitmap);
-          aFrameBuffer->Release (GetGlContext().operator->());
+          aFrameBuffer->Release (aCtx.operator->());
           hViewBitmap = NULL;
         }
         else
@@ -497,7 +492,7 @@ Standard_Boolean OpenGl_Workspace::Print
     if (aMaxWidth <= 1 || aMaxHeight <= 1)
     {
       MessageBox (NULL, "Print failed: can't allocate buffer for printing.",
-                  "The operation couldn't be completed.", MB_OK);
+                        "The operation couldn't be completed.", MB_OK);
 
       if (aFrameBuffer)
         delete aFrameBuffer;
@@ -511,11 +506,10 @@ Standard_Boolean OpenGl_Workspace::Print
   }
 
   // setup printing context and viewport
-  myPrintContext = thePrintContext;
+  myWorkspace->PrinterContext() = new OpenGl_PrinterContext();
+  myWorkspace->PrinterContext()->SetLayerViewport ((GLsizei )aFrameWidth, (GLsizei )aFrameHeight);
   GLint aViewPortBack[4];
   GLint anAlignBack = 1;
-  myPrintContext->SetLayerViewport ((GLsizei )aFrameWidth,
-                                    (GLsizei )aFrameHeight);
   glGetIntegerv (GL_VIEWPORT, aViewPortBack);
   glGetIntegerv (GL_PACK_ALIGNMENT, &anAlignBack);
   glPixelStorei (GL_PACK_ALIGNMENT, 4);
@@ -525,10 +519,10 @@ Standard_Boolean OpenGl_Workspace::Print
   DOCINFO di;
   if (GetObjectType (hPrnDC) == OBJ_DC)
   {
-    // Initalize printing procedure
+    // Initialize printing procedure
     di.cbSize = sizeof(DOCINFO);
     di.lpszDocName = "Open Cascade Document - print v3d view";
-    di.lpszOutput = filename;
+    di.lpszOutput = theFileName;
 
     // if can't print the document
     if (StartDoc (hPrnDC, &di) <= 0 || StartPage (hPrnDC) <= 0)
@@ -544,7 +538,7 @@ Standard_Boolean OpenGl_Workspace::Print
       DeleteDC (hMemDC);
 #endif
 
-      myPrintContext.Nullify();
+      myWorkspace->PrinterContext().Nullify();
       return Standard_False;
     }
   }
@@ -557,24 +551,25 @@ Standard_Boolean OpenGl_Workspace::Print
   bool isDone = true;
 
   // Set up status for printing
-  if (!showBackground)
-    NamedStatus |= OPENGL_NS_WHITEBACK;
+  if (!theToShowBackground)
+  {
+    myWorkspace->NamedStatus |= OPENGL_NS_WHITEBACK;
+  }
 
   // switch to mono camera for image dump
-  const Graphic3d_Camera::Projection aProjectType = myView->Camera()->ProjectionType() != Graphic3d_Camera::Projection_Stereo
-                                                  ? myView->Camera()->ProjectionType()
+  const Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType() != Graphic3d_Camera::Projection_Stereo
+                                                  ? myCamera->ProjectionType()
                                                   : Graphic3d_Camera::Projection_Perspective;
   if (!IsTiling)
   {
-    myPrintContext->SetScale ((GLfloat )aFrameWidth /viewWidth,
-                              (GLfloat )aFrameHeight/viewHeight);
-    redraw1 (ACView, aFrameBuffer, aProjectType);
+    myWorkspace->PrinterContext()->SetScale ((GLfloat )aFrameWidth /viewWidth, (GLfloat )aFrameHeight/viewHeight);
+    redraw (aProjectType, aFrameBuffer);
     if (!myTransientDrawToFront)
     {
       // render to FBO only if allowed to render to back buffer
       myBackBufferRestored = Standard_True;
       myIsImmediateDrawn   = Standard_False;
-      redrawImmediate (ACView, NULL, aProjectType, aFrameBuffer);
+      redrawImmediate (aProjectType, NULL, aFrameBuffer);
       myBackBufferRestored = Standard_False;
       myIsImmediateDrawn   = Standard_False;
     }
@@ -631,8 +626,7 @@ Standard_Boolean OpenGl_Workspace::Print
     // calculate and set the text scaling factor for printing context
     GLfloat aScaleRatex = (GLfloat)aFrameWidth /viewWidth;
     GLfloat aScaleRatey = (GLfloat)aFrameHeight/viewHeight;
-    myPrintContext->SetScale (aScaleRatex * (GLfloat )aScalex,
-                              aScaleRatey * (GLfloat )aScaley);
+    myWorkspace->PrinterContext()->SetScale (aScaleRatex * (GLfloat )aScalex, aScaleRatey * (GLfloat )aScaley);
 
     // initialize projection matrix for printer context
     TColStd_Array2OfReal aProj (0, 3, 0, 3);
@@ -674,7 +668,7 @@ Standard_Boolean OpenGl_Workspace::Print
         // set projection matrix
         aProj(0,0) = aScalex;
         aProj(1,1) = aScaley;
-        myPrintContext->SetProjTransformation (aProj);
+        myWorkspace->PrinterContext()->SetProjTransformation (aProj);
 
         // calculate cropped frame rect
         aTop    = (j == 0)         ? aPxCropy : 0;
@@ -682,13 +676,13 @@ Standard_Boolean OpenGl_Workspace::Print
                                      aFrameHeight;
 
         // draw to the offscreen buffer and capture the result
-        redraw1 (ACView, aFrameBuffer, aProjectType);
+        redraw (aProjectType, aFrameBuffer);
         if (!myTransientDrawToFront)
         {
           // render to FBO only if forces to render to back buffer
           myBackBufferRestored = Standard_True;
           myIsImmediateDrawn   = Standard_False;
-          redrawImmediate (ACView, NULL, aProjectType, aFrameBuffer);
+          redrawImmediate (aProjectType, NULL, aFrameBuffer);
           myBackBufferRestored = Standard_False;
           myIsImmediateDrawn   = Standard_False;
         }
@@ -738,7 +732,7 @@ Standard_Boolean OpenGl_Workspace::Print
 
   // return OpenGl to the previous state
   glPixelStorei (GL_PACK_ALIGNMENT, anAlignBack);
-  aFrameBuffer->UnbindBuffer (GetGlContext());
+  aFrameBuffer->UnbindBuffer (aCtx);
   glViewport (aViewPortBack[0], aViewPortBack[1],
               aViewPortBack[2], aViewPortBack[3]);
   if (aPrevBuffer)
@@ -747,7 +741,7 @@ Standard_Boolean OpenGl_Workspace::Print
   }
   else
   {
-    aFrameBuffer->Release (GetGlContext().operator->());
+    aFrameBuffer->Release (aCtx.operator->());
     delete aFrameBuffer;
   }
 
@@ -762,13 +756,13 @@ Standard_Boolean OpenGl_Workspace::Print
 #endif
 
   // Reset status after printing
-  NamedStatus &= ~OPENGL_NS_WHITEBACK;
-
-  myPrintContext.Nullify();
+  myWorkspace->NamedStatus &= ~OPENGL_NS_WHITEBACK;
+  myWorkspace->PrinterContext().Nullify();
   return (Standard_Boolean) isDone;
 
 #else // not _WIN32
-  myPrintContext.Nullify();
+  Standard_NotImplemented::Raise ("OpenGl_View::Print is implemented only on Windows");
+  myWorkspace->PrinterContext().Nullify();
   return Standard_False;
 #endif
 }

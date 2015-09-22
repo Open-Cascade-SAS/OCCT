@@ -16,10 +16,10 @@
 #define _Graphic3d_CAspectMarker_HeaderFile
 
 #include <Aspect_TypeOfMarker.hxx>
-#include <InterfaceGraphic_Visual3d.hxx>
 #include <Graphic3d_CTexture.hxx>
 #include <Graphic3d_MarkerImage.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
+#include <InterfaceGraphic_Graphic3d.hxx>
 
 class Graphic3d_CAspectMarker
 {

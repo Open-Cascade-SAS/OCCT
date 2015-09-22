@@ -78,6 +78,7 @@ set view_znear  0
 set view_zfar 150
 
 vviewparams -scale $view_scale -eye {*}$view_eye -at {*}$view_at -proj {*}$view_proj -up {*}$view_up
+vautozfit 0
 vzrange $view_znear $view_zfar
 
 set vconvert_1_view        [vconvert 1.0 view]

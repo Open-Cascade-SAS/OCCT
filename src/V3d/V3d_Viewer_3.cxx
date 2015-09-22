@@ -49,7 +49,6 @@
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_ViewManager.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -104,7 +103,7 @@ void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quan
   if(myDisplayPlane)
   {
     if(myPlaneStructure.IsNull()) {
-      myPlaneStructure = new Graphic3d_Structure(MyViewer);
+      myPlaneStructure = new Graphic3d_Structure(StructureManager());
       myPlaneStructure->SetInfiniteState(Standard_True);
       myPlaneStructure->Display();
     }

@@ -13,17 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <d3d9.h>
+#include <D3DHost_View.hxx>
 
-#include <D3DHost_Workspace.hxx>
-
+#include <D3DHost_GraphicDriver.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 // =======================================================================
 // function : d3dFormatError
 // purpose  :
 // =======================================================================
-TCollection_AsciiString D3DHost_Workspace::d3dFormatError (HRESULT theErrCode)
+TCollection_AsciiString D3DHost_View::d3dFormatError (HRESULT theErrCode)
 {
   switch (theErrCode)
   {
@@ -38,15 +37,15 @@ TCollection_AsciiString D3DHost_Workspace::d3dFormatError (HRESULT theErrCode)
 }
 
 // =======================================================================
-// function : D3DHost_Workspace
+// function : D3DHost_View
 // purpose  :
 // =======================================================================
-D3DHost_Workspace::D3DHost_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
-                                      const CALL_DEF_WINDOW&              theCWindow,
-                                      Aspect_RenderingContext             theGContext,
-                                      const Handle(OpenGl_Caps)&          theCaps,
-                                      const Handle(OpenGl_Context)&       theShareCtx)
-: OpenGl_Workspace (theDriver, theCWindow, theGContext, theCaps, theShareCtx),
+D3DHost_View::D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
+                            const Handle(D3DHost_GraphicDriver)& theDriver,
+                            const Handle(OpenGl_Caps)& theCaps,
+                            Standard_Boolean& theDeviceLostFlag,
+                            OpenGl_StateCounter* theCounter)
+: OpenGl_View (theMgr, theDriver, theCaps, theDeviceLostFlag, theCounter),
   myD3dLib      (NULL),
   myD3dDevice   (NULL),
   myRefreshRate (D3DPRESENT_RATE_DEFAULT),
@@ -64,20 +63,17 @@ D3DHost_Workspace::D3DHost_Workspace (const Handle(OpenGl_GraphicDriver)& theDri
   myD3dParams.AutoDepthStencilFormat     = D3DFMT_D16_LOCKABLE;
   myD3dParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
   myD3dParams.PresentationInterval       = D3DPRESENT_INTERVAL_DEFAULT;
-
-  d3dInit (theCWindow);
-  d3dCreateRenderTarget();
 }
 
 // =======================================================================
-// function : ~D3DHost_Workspace
+// function : ~D3DHost_View
 // purpose  :
 // =======================================================================
-D3DHost_Workspace::~D3DHost_Workspace()
+D3DHost_View::~D3DHost_View()
 {
   if (!myD3dWglFbo.IsNull())
   {
-    myD3dWglFbo->Release (myGlContext.operator->());
+    myD3dWglFbo->Release (myWorkspace->GetGlContext().operator->());
     myD3dWglFbo.Nullify();
   }
   if (myD3dDevice != NULL)
@@ -93,10 +89,39 @@ D3DHost_Workspace::~D3DHost_Workspace()
 }
 
 // =======================================================================
+// function : SetWindow
+// purpose  :
+// =======================================================================
+void D3DHost_View::SetWindow (const Handle(Aspect_Window)& theWindow,
+                              const Aspect_RenderingContext theContext,
+                              const Aspect_GraphicCallbackProc& theDisplayCB,
+                              const Standard_Address theClientData)
+{
+  if (!myD3dWglFbo.IsNull())
+  {
+    myD3dWglFbo->Release (myWorkspace->GetGlContext().operator->());
+    myD3dWglFbo.Nullify();
+  }
+  if (myD3dDevice != NULL)
+  {
+    myD3dDevice->Release();
+    myD3dDevice = NULL;
+  }
+
+  OpenGl_View::SetWindow (theWindow, theContext, theDisplayCB, theClientData);
+
+  if (!myWindow.IsNull())
+  {
+    d3dInit();
+    d3dCreateRenderTarget();
+  }
+}
+
+// =======================================================================
 // function : d3dInitLib
 // purpose  :
 // =======================================================================
-bool D3DHost_Workspace::d3dInitLib()
+bool D3DHost_View::d3dInitLib()
 {
   if (myD3dLib == NULL)
   {
@@ -127,15 +152,15 @@ bool D3DHost_Workspace::d3dInitLib()
 // function : d3dInit
 // purpose  :
 // =======================================================================
-bool D3DHost_Workspace::d3dInit (const CALL_DEF_WINDOW& theCWindow)
+bool D3DHost_View::d3dInit()
 {
   if (!d3dInitLib())
   {
-    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                              GL_DEBUG_TYPE_ERROR_ARB,
-                              0,
-                              GL_DEBUG_SEVERITY_HIGH_ARB,
-                              "Direct3DCreate9 failed!");
+    myWorkspace->GetGlContext()->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                              GL_DEBUG_TYPE_ERROR_ARB,
+                                              0,
+                                              GL_DEBUG_SEVERITY_HIGH_ARB,
+                                              "Direct3DCreate9 failed!");
     return false;
   }
 
@@ -148,13 +173,13 @@ bool D3DHost_Workspace::d3dInit (const CALL_DEF_WINDOW& theCWindow)
     myRefreshRate = myCurrMode.RefreshRate;
   }
   myD3dParams.Windowed         = TRUE;
-  myD3dParams.BackBufferWidth  = theCWindow.dx;
-  myD3dParams.BackBufferHeight = theCWindow.dy;
-  myD3dParams.hDeviceWindow    = (HWND )theCWindow.XWindow;
+  myD3dParams.BackBufferWidth  = myWindow->Width();
+  myD3dParams.BackBufferHeight = myWindow->Height();
+  myD3dParams.hDeviceWindow    = (HWND )myWindow->PlatformWindow()->NativeHandle();
 
   // create the Video Device
   HRESULT isOK = myD3dLib->CreateDevice (anAdapterId, D3DDEVTYPE_HAL,
-                                         (HWND )theCWindow.XWindow,
+                                         (HWND )myWindow->PlatformWindow()->NativeHandle(),
                                          D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED | D3DCREATE_FPU_PRESERVE,
                                          &myD3dParams, &myD3dDevice);
   if (isOK < 0)
@@ -169,7 +194,7 @@ bool D3DHost_Workspace::d3dInit (const CALL_DEF_WINDOW& theCWindow)
 // function : d3dReset
 // purpose  :
 // =======================================================================
-bool D3DHost_Workspace::d3dReset (const CALL_DEF_WINDOW& theCWindow)
+bool D3DHost_View::d3dReset()
 {
   if (myD3dDevice == NULL)
   {
@@ -177,9 +202,9 @@ bool D3DHost_Workspace::d3dReset (const CALL_DEF_WINDOW& theCWindow)
   }
 
   myD3dParams.Windowed         = TRUE;
-  myD3dParams.BackBufferWidth  = theCWindow.dx;
-  myD3dParams.BackBufferHeight = theCWindow.dy;
-  myD3dParams.hDeviceWindow    = (HWND )theCWindow.XWindow;
+  myD3dParams.BackBufferWidth  = myWindow->Width();
+  myD3dParams.BackBufferHeight = myWindow->Height();
+  myD3dParams.hDeviceWindow    = (HWND )myWindow->PlatformWindow()->NativeHandle();
   myD3dParams.FullScreen_RefreshRateInHz = !myD3dParams.Windowed ? myRefreshRate : 0;
 
   HRESULT isOK = myD3dDevice->Reset(&myD3dParams);
@@ -190,13 +215,17 @@ bool D3DHost_Workspace::d3dReset (const CALL_DEF_WINDOW& theCWindow)
 // function : d3dCreateRenderTarget
 // purpose  :
 // =======================================================================
-bool D3DHost_Workspace::d3dCreateRenderTarget()
+bool D3DHost_View::d3dCreateRenderTarget()
 {
   if (myD3dWglFbo.IsNull())
   {
     myD3dWglFbo = new D3DHost_FrameBuffer();
   }
-  if (!myD3dWglFbo->Init (myGlContext, myD3dDevice, myIsD3dEx, myWidth, myHeight))
+  if (!myD3dWglFbo->Init (myWorkspace->GetGlContext(),
+                          myD3dDevice,
+                          myIsD3dEx,
+                          myWindow->Width(),
+                          myWindow->Height()))
   {
     return false;
   }
@@ -209,7 +238,7 @@ bool D3DHost_Workspace::d3dCreateRenderTarget()
 // function : d3dBeginRender
 // purpose  :
 // =======================================================================
-void D3DHost_Workspace::d3dBeginRender()
+void D3DHost_View::d3dBeginRender()
 {
   if (myD3dDevice == NULL)
   {
@@ -225,7 +254,7 @@ void D3DHost_Workspace::d3dBeginRender()
 // function : d3dEndRender
 // purpose  :
 // =======================================================================
-void D3DHost_Workspace::d3dEndRender()
+void D3DHost_View::d3dEndRender()
 {
   if (myD3dDevice != NULL)
   {
@@ -237,7 +266,7 @@ void D3DHost_Workspace::d3dEndRender()
 // function : d3dSwap
 // purpose  :
 // =======================================================================
-bool D3DHost_Workspace::d3dSwap()
+bool D3DHost_View::d3dSwap()
 {
   if (myD3dDevice == NULL)
   {
@@ -249,11 +278,11 @@ bool D3DHost_Workspace::d3dSwap()
   {
     TCollection_ExtendedString aMsg = TCollection_ExtendedString()
       + "Direct3D9, Present device failed, " + d3dFormatError (isOK);
-    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                              GL_DEBUG_TYPE_ERROR_ARB,
-                              0,
-                              GL_DEBUG_SEVERITY_HIGH_ARB,
-                              aMsg);
+    myWorkspace->GetGlContext()->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                              GL_DEBUG_TYPE_ERROR_ARB,
+                                              0,
+                                              GL_DEBUG_SEVERITY_HIGH_ARB,
+                                              aMsg);
   }
   return isOK == D3D_OK;
 }
@@ -262,20 +291,21 @@ bool D3DHost_Workspace::d3dSwap()
 // function : Redraw
 // purpose  :
 // =======================================================================
-void D3DHost_Workspace::Redraw (const Graphic3d_CView& theCView)
+void D3DHost_View::Redraw()
 {
-  if (!Activate()
+  if (!myWorkspace->Activate()
     || myD3dDevice == NULL)
   {
     return;
   }
 
+  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   myToFlipOutput = Standard_True;
-  myD3dWglFbo->LockSurface   (myGlContext);
-  OpenGl_Workspace::Redraw (theCView);
-  myD3dWglFbo->UnlockSurface (myGlContext);
+  myD3dWglFbo->LockSurface   (aCtx);
+  OpenGl_View::Redraw();
+  myD3dWglFbo->UnlockSurface (aCtx);
   myToFlipOutput = Standard_False;
-  if (myGlContext->caps->buffersNoSwap)
+  if (aCtx->caps->buffersNoSwap)
   {
     return;
   }
@@ -296,27 +326,28 @@ void D3DHost_Workspace::Redraw (const Graphic3d_CView& theCView)
 // function : RedrawImmediate
 // purpose  :
 // =======================================================================
-void D3DHost_Workspace::RedrawImmediate (const Graphic3d_CView& theCView)
+void D3DHost_View::RedrawImmediate()
 {
+  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   if (!myTransientDrawToFront
    || !myBackBufferRestored
-   || (myGlContext->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
+   || (aCtx->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
   {
-    Redraw (theCView);
+    Redraw();
     return;
   }
-  else if (!Activate()
+  else if (!myWorkspace->Activate()
          || myD3dDevice == NULL)
   {
     return;
   }
 
   myToFlipOutput = Standard_True;
-  myD3dWglFbo->LockSurface   (myGlContext);
-  OpenGl_Workspace::RedrawImmediate (theCView);
-  myD3dWglFbo->UnlockSurface (myGlContext);
+  myD3dWglFbo->LockSurface   (aCtx);
+  OpenGl_View::RedrawImmediate();
+  myD3dWglFbo->UnlockSurface (aCtx);
   myToFlipOutput = Standard_False;
-  if (myGlContext->caps->buffersNoSwap)
+  if (aCtx->caps->buffersNoSwap)
   {
     return;
   }
@@ -337,24 +368,24 @@ void D3DHost_Workspace::RedrawImmediate (const Graphic3d_CView& theCView)
 // function : Resize
 // purpose  :
 // =======================================================================
-void D3DHost_Workspace::Resize (const CALL_DEF_WINDOW& theCWindow)
+void D3DHost_View::Resized()
 {
-  const Standard_Integer aWidthOld  = myWidth;
-  const Standard_Integer aHeightOld = myHeight;
-  OpenGl_Workspace::Resize (theCWindow);
-  if (aWidthOld  == myWidth
-   && aHeightOld == myHeight)
+  const Standard_Integer aWidthOld  = myWindow->Width();
+  const Standard_Integer aHeightOld = myWindow->Height();
+  OpenGl_View::Resized();
+  if (aWidthOld  == myWindow->Width()
+   && aHeightOld == myWindow->Height())
   {
     return;
   }
 
   if (!myD3dWglFbo.IsNull())
   {
-    myD3dWglFbo->Release (myGlContext.operator->());
+    myD3dWglFbo->Release (myWorkspace->GetGlContext().operator->());
   }
-  if (!myGlContext->caps->buffersNoSwap)
+  if (!myWorkspace->GetGlContext()->caps->buffersNoSwap)
   {
-    d3dReset (theCWindow);
+    d3dReset();
   }
   d3dCreateRenderTarget();
 }

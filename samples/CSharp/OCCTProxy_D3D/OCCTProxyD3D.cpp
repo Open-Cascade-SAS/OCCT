@@ -10,10 +10,10 @@
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <D3DHost_GraphicDriver.hxx>
+#include <D3DHost_View.hxx>
 //for object display
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
-#include <Visual3d_View.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 //topology
@@ -106,7 +106,7 @@ public:
     aWNTWindow->SetPos (0, 0, theWinSizeX, theWinSizeY);
     myView()->MustBeResized();
     myView()->Invalidate();
-    return System::IntPtr(myGraphicDriver()->D3dColorSurface (myView()->View()));
+    return System::IntPtr(Handle(D3DHost_View)::DownCast (myView()->View())->D3dColorSurface());
   }
 
   /// <summary>

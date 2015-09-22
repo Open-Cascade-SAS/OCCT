@@ -18,7 +18,6 @@
 #include <OpenGl_Flipper.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_Group.hxx>
-#include <OpenGl_CView.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_StencilTest.hxx>
 #include <OpenGl_Text.hxx>
@@ -26,9 +25,18 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
+#include <Aspect_IdentDefinitionError.hxx>
 #include <Message_Messenger.hxx>
 #include <OSD_Environment.hxx>
 #include <Standard_NotImplemented.hxx>
+
+#if defined(_WIN32)
+  #include <WNT_Window.hxx>
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  #include <Cocoa_Window.hxx>
+#else
+  #include <Xw_Window.hxx>
+#endif
 
 #if !defined(_WIN32) && !defined(__ANDROID__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   #include <X11/Xlib.h> // XOpenDisplay()
@@ -37,7 +45,6 @@
 #if defined(HAVE_EGL) || defined(__ANDROID__)
   #include <EGL/egl.h>
 #endif
-
 
 namespace
 {
@@ -59,7 +66,6 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
 #endif
   myCaps           (new OpenGl_Caps()),
   myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
-  myMapOfWS        (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myUserDrawCallback (NULL)
 {
@@ -89,6 +95,46 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   {
     Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: default context can not be initialized!");
   }
+
+  // default layers are always presented in display layer sequence it can not be removed
+  Graphic3d_ZLayerSettings anUnderlaySettings;
+  anUnderlaySettings.Flags = 0;
+  anUnderlaySettings.IsImmediate = false;
+  myLayerIds.Add             (Graphic3d_ZLayerId_BotOSD);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_BotOSD);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_BotOSD, anUnderlaySettings);
+
+  Graphic3d_ZLayerSettings aDefSettings;
+  aDefSettings.Flags = Graphic3d_ZLayerDepthTest
+                     | Graphic3d_ZLayerDepthWrite;
+  aDefSettings.IsImmediate = false;
+  myLayerIds.Add             (Graphic3d_ZLayerId_Default);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_Default);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Default, aDefSettings);
+
+  Graphic3d_ZLayerSettings aTopSettings;
+  aTopSettings.Flags = Graphic3d_ZLayerDepthTest
+                     | Graphic3d_ZLayerDepthWrite;
+  aTopSettings.IsImmediate = true;
+  myLayerIds.Add             (Graphic3d_ZLayerId_Top);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_Top);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Top, aTopSettings);
+
+  Graphic3d_ZLayerSettings aTopmostSettings;
+  aTopmostSettings.Flags = Graphic3d_ZLayerDepthTest
+                         | Graphic3d_ZLayerDepthWrite
+                         | Graphic3d_ZLayerDepthClear;
+  aTopmostSettings.IsImmediate = true;
+  myLayerIds.Add             (Graphic3d_ZLayerId_Topmost);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_Topmost);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Topmost, aTopmostSettings);
+
+  Graphic3d_ZLayerSettings anOsdSettings;
+  anOsdSettings.Flags = 0;
+  anOsdSettings.IsImmediate = true;
+  myLayerIds.Add             (Graphic3d_ZLayerId_TopOSD);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_TopOSD);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_TopOSD, anOsdSettings);
 }
 
 // =======================================================================
@@ -107,11 +153,17 @@ OpenGl_GraphicDriver::~OpenGl_GraphicDriver()
 void OpenGl_GraphicDriver::ReleaseContext()
 {
   Handle(OpenGl_Context) aCtxShared;
-  for (NCollection_Map<Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
-       aWindowIter.More(); aWindowIter.Next())
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
+       aViewIter.More(); aViewIter.Next())
   {
-    const Handle(OpenGl_Workspace)& aWindow = aWindowIter.ChangeValue();
-    const Handle(OpenGl_Context)&   aCtx    = aWindow->GetGlContext();
+    const Handle(OpenGl_View)& aView = aViewIter.ChangeValue();
+    const Handle(OpenGl_Window)& aWindow = aView->GlWindow();
+    if (aWindow.IsNull())
+    {
+      continue;
+    }
+
+    const Handle(OpenGl_Context)& aCtx = aWindow->GetGlContext();
     if (aCtx->MakeCurrent()
      && aCtxShared.IsNull())
     {
@@ -138,12 +190,17 @@ void OpenGl_GraphicDriver::ReleaseContext()
   }
   myDeviceLostFlag = myDeviceLostFlag || !myMapOfStructure.IsEmpty();
 
-  for (NCollection_Map<Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
-       aWindowIter.More(); aWindowIter.Next())
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
+       aViewIter.More(); aViewIter.Next())
   {
-    const Handle(OpenGl_Workspace)& aWindow = aWindowIter.ChangeValue();
-    const Handle(OpenGl_Context)&   aCtx    = aWindow->GetGlContext();
-    aCtx->forcedRelease();
+    const Handle(OpenGl_View)& aView = aViewIter.ChangeValue();
+    const Handle(OpenGl_Window)& aWindow = aView->GlWindow();
+    if (aWindow.IsNull())
+    {
+      continue;
+    }
+
+    aWindow->GetGlContext()->forcedRelease();
   }
 
 #if defined(HAVE_EGL) || defined(__ANDROID__)
@@ -364,13 +421,24 @@ void OpenGl_GraphicDriver::EnableVBO (const Standard_Boolean theToTurnOn)
 // =======================================================================
 const Handle(OpenGl_Context)& OpenGl_GraphicDriver::GetSharedContext() const
 {
-  if (myMapOfWS.IsEmpty())
+  if (myMapOfView.IsEmpty())
   {
     return TheNullGlCtx;
   }
 
-  NCollection_Map<Handle(OpenGl_Workspace)>::Iterator anIter (myMapOfWS);
-  return anIter.Value()->GetGlContext();
+  NCollection_Map<Handle(OpenGl_View)>::Iterator anIter (myMapOfView);
+  for (; anIter.More(); anIter.Next())
+  {
+    Handle(OpenGl_Window) aWindow = anIter.Value()->GlWindow();
+    if (aWindow.IsNull())
+    {
+      continue;
+    }
+
+    return aWindow->GetGlContext();
+  }
+
+  return TheNullGlCtx;
 }
 
 // =======================================================================
@@ -389,227 +457,6 @@ Standard_Boolean OpenGl_GraphicDriver::MemoryInfo (Standard_Size&           theF
   theFreeBytes = aGlCtx.AvailableMemory();
   theInfo      = aGlCtx.MemoryInfo();
   return !theInfo.IsEmpty();
-}
-
-// =======================================================================
-// function : SetImmediateModeDrawToFront
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_GraphicDriver::SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
-                                                                    const Standard_Boolean theDrawToFrontBuffer)
-{
-  if (theCView.ViewId == -1)
-  {
-    return Standard_False;
-  }
-
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    return aCView->WS->SetImmediateModeDrawToFront (theDrawToFrontBuffer);
-  }
-  return Standard_False;
-}
-
-// =======================================================================
-// function : Print
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_GraphicDriver::Print (const Graphic3d_CView& theCView,
-                                              const Aspect_Handle    thePrintDC,
-                                              const Standard_Boolean theToShowBackground,
-                                              const Standard_CString theFilename,
-                                              const Aspect_PrintAlgo thePrintAlgorithm,
-                                              const Standard_Real    theScaleFactor) const
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView == NULL
-   || !myPrintContext.IsNull())
-  {
-    return Standard_False;
-  }
-
-  Standard_Boolean isPrinted = Standard_False;
-  myPrintContext = new OpenGl_PrinterContext();
-#ifdef _WIN32
-  isPrinted = aCView->WS->Print (myPrintContext,
-                                 theCView,
-                                 thePrintDC,
-                                 theToShowBackground,
-                                 theFilename,
-                                 thePrintAlgorithm,
-                                 theScaleFactor);
-#else
-  Standard_NotImplemented::Raise ("OpenGl_GraphicDriver::Print is implemented only on Windows");
-#endif
-  myPrintContext.Nullify();
-  return isPrinted;
-}
-
-// =======================================================================
-// function : ZBufferTriedronSetup
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::ZBufferTriedronSetup (const Graphic3d_CView&     theCView,
-                                                 const Quantity_NameOfColor theXColor,
-                                                 const Quantity_NameOfColor theYColor,
-                                                 const Quantity_NameOfColor theZColor,
-                                                 const Standard_Real        theSizeRatio,
-                                                 const Standard_Real        theAxisDiametr,
-                                                 const Standard_Integer     theNbFacets)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView == NULL)
-  {
-    return;
-  }
-
-  OpenGl_Trihedron& aTrih = aCView->View->ChangeTrihedron();
-  aTrih.SetArrowsColors  (theXColor, theYColor, theZColor);
-  aTrih.SetSizeRatio     (theSizeRatio);
-  aTrih.SetNbFacets      (theNbFacets);
-  aTrih.SetArrowDiameter (theAxisDiametr);
-}
-
-// =======================================================================
-// function : TriedronDisplay
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::TriedronDisplay (const Graphic3d_CView&              theCView,
-                                            const Aspect_TypeOfTriedronPosition thePosition,
-                                            const Quantity_NameOfColor          theColor,
-                                            const Standard_Real                 theScale,
-                                            const Standard_Boolean              theAsWireframe)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->TriedronDisplay (thePosition, theColor, theScale, theAsWireframe);
-  }
-}
-
-// =======================================================================
-// function : TriedronErase
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::TriedronErase (const Graphic3d_CView& theCView)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->TriedronErase (aCView->WS->GetGlContext());
-  }
-}
-
-// =======================================================================
-// function : TriedronEcho
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::TriedronEcho (const Graphic3d_CView& ,
-                                         const Aspect_TypeOfTriedronEcho )
-{
-  // do nothing
-}
-
-// =======================================================================
-// function : Environment
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::Environment (const Graphic3d_CView& theCView)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView == NULL)
-  {
-    return;
-  }
-
-  aCView->View->SetTextureEnv    (aCView->WS->GetGlContext(), theCView.Context.TextureEnv);
-  aCView->View->SetSurfaceDetail ((Visual3d_TypeOfSurfaceDetail)theCView.Context.SurfaceDetail);
-}
-
-// =======================================================================
-// function : BackgroundImage
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::BackgroundImage (const Standard_CString  theFileName,
-                                            const Graphic3d_CView&  theCView,
-                                            const Aspect_FillMethod theFillStyle)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->CreateBackgroundTexture (theFileName, theFillStyle);
-  }
-}
-
-// =======================================================================
-// function : SetBgImageStyle
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::SetBgImageStyle (const Graphic3d_CView&  theCView,
-                                            const Aspect_FillMethod theFillStyle)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->SetBackgroundTextureStyle (theFillStyle);
-  }
-}
-
-// =======================================================================
-// function : SetBgGradientStyle
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::SetBgGradientStyle (const Graphic3d_CView&          theCView,
-                                               const Aspect_GradientFillMethod theFillType)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->SetBackgroundGradientType (theFillType);
-  }
-}
-
-// =======================================================================
-// function : GraduatedTrihedronDisplay
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::GraduatedTrihedronDisplay (const Graphic3d_CView&               theCView,
-                                                      const Graphic3d_GraduatedTrihedron& theCubic)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->GraduatedTrihedronDisplay (aCView->WS->GetGlContext(), theCubic);
-  }
-}
-
-// =======================================================================
-// function : GraduatedTrihedronErase
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::GraduatedTrihedronErase (const Graphic3d_CView& theCView)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->GraduatedTrihedronErase (aCView->WS->GetGlContext());
-  }
-}
-
-// =======================================================================
-// function : GraduatedTrihedronMinMaxValues
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Graphic3d_CView& theView,
-                                                           const Graphic3d_Vec3   theMin,
-                                                           const Graphic3d_Vec3   theMax)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->View->ChangeGraduatedTrihedron().SetMinMax (theMin, theMax);
-  }
 }
 
 // =======================================================================
@@ -660,4 +507,298 @@ void OpenGl_GraphicDriver::TextSize (const Standard_CString   theText,
   TCollection_ExtendedString anExtText = theText;
   NCollection_String aText = (Standard_Utf16Char* )anExtText.ToExtString();
   OpenGl_Text::StringSize (aCtx, aText, aTextAspect, aTextParam, theWidth, theAscent, theDescent);
+}
+
+//=======================================================================
+//function : AddZLayer
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_ZLayerId theLayerId)
+{
+  if (theLayerId < 1)
+  {
+    Standard_ASSERT_RAISE (theLayerId > 0,
+                           "OpenGl_GraphicDriver::AddZLayer, "
+                           "negative and zero IDs are reserved");
+  }
+
+  myLayerIds.Add    (theLayerId);
+  myLayerSeq.Append (theLayerId);
+
+  // Default z-layer settings
+  myMapOfZLayerSettings.Bind (theLayerId, Graphic3d_ZLayerSettings());
+
+  // Add layer to all views
+  NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
+  for (; aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->AddZLayer (theLayerId);
+  }
+}
+
+//=======================================================================
+//function : RemoveZLayer
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
+{
+  Standard_ASSERT_RAISE (theLayerId > 0,
+                         "OpenGl_GraphicDriver::AddZLayer, "
+                         "negative and zero IDs are reserved"
+                         "and can not be removed");
+
+  Standard_ASSERT_RAISE (myLayerIds.Contains (theLayerId),
+                         "OpenGl_GraphicDriver::RemoveZLayer, "
+                         "Layer with theLayerId does not exist");
+
+  // Remove layer from all of the views
+  NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
+  for (; aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->RemoveZLayer (theLayerId);
+  }
+
+  // Unset Z layer for all of the structures.
+  NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure);
+  for( ; aStructIt.More (); aStructIt.Next ())
+  {
+    OpenGl_Structure* aStruct = aStructIt.ChangeValue ();
+    if (aStruct->ZLayer() == theLayerId)
+      aStruct->SetZLayer (Graphic3d_ZLayerId_Default);
+  }
+
+  // Remove index
+  for (int aIdx = 1; aIdx <= myLayerSeq.Length (); aIdx++)
+  {
+    if (myLayerSeq (aIdx) == theLayerId)
+    {
+      myLayerSeq.Remove (aIdx);
+      break;
+    }
+  }
+
+  myMapOfZLayerSettings.UnBind (theLayerId);
+  myLayerIds.Remove  (theLayerId);
+}
+
+//=======================================================================
+//function : ZLayers
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::ZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
+{
+  theLayerSeq.Assign (myLayerSeq);
+}
+
+//=======================================================================
+//function : SetZLayerSettings
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::SetZLayerSettings (const Graphic3d_ZLayerId theLayerId,
+                                              const Graphic3d_ZLayerSettings& theSettings)
+{
+  // Change Z layer settings in all managed views
+  NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
+  for (; aViewIt.More(); aViewIt.Next())
+  {
+    aViewIt.Value()->SetZLayerSettings (theLayerId, theSettings);
+  }
+
+  if (myMapOfZLayerSettings.IsBound (theLayerId))
+  {
+    myMapOfZLayerSettings.ChangeFind (theLayerId) = theSettings;
+  }
+  else
+  {
+    myMapOfZLayerSettings.Bind (theLayerId, theSettings);
+  }
+}
+
+//=======================================================================
+//function : ZLayerSettings
+//purpose  :
+//=======================================================================
+Graphic3d_ZLayerSettings OpenGl_GraphicDriver::ZLayerSettings (const Graphic3d_ZLayerId theLayerId)
+{
+  Standard_ASSERT_RAISE (myLayerIds.Contains (theLayerId),
+                         "OpenGl_GraphicDriver::ZLayerSettings, "
+                         "Layer with theLayerId does not exist");
+
+  return myMapOfZLayerSettings.Find (theLayerId);
+}
+
+// =======================================================================
+// function : Structure
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_CStructure) OpenGl_GraphicDriver::CreateStructure (const Handle(Graphic3d_StructureManager)& theManager)
+{
+  Handle(OpenGl_Structure) aStructure = new OpenGl_Structure (theManager);
+  myMapOfStructure.Bind (aStructure->Id, aStructure.operator->());
+  return aStructure;
+}
+
+// =======================================================================
+// function : Structure
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::RemoveStructure (Handle(Graphic3d_CStructure)& theCStructure)
+{
+  OpenGl_Structure* aStructure = NULL;
+  if (!myMapOfStructure.Find (theCStructure->Id, aStructure))
+  {
+    return;
+  }
+
+  myMapOfStructure.UnBind (theCStructure->Id);
+  aStructure->Release (GetSharedContext());
+  theCStructure.Nullify();
+}
+
+// =======================================================================
+// function : View
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_CView) OpenGl_GraphicDriver::CreateView (const Handle(Graphic3d_StructureManager)& theMgr)
+{
+  Handle(OpenGl_View) aView = new OpenGl_View (theMgr, this, myCaps, myDeviceLostFlag, &myStateCounter);
+
+  myMapOfView.Add (aView);
+
+  for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+  {
+    const Graphic3d_ZLayerId        aLayerID  = aLayerIt.Value();
+    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerID);
+    aView->AddZLayer         (aLayerID);
+    aView->SetZLayerSettings (aLayerID, aSettings);
+  }
+
+  return aView;
+}
+
+// =======================================================================
+// function : RemoveView
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::RemoveView (const Handle(Graphic3d_CView)& theView)
+{
+  Handle(OpenGl_Context) aCtx = GetSharedContext();
+  Handle(OpenGl_View) aView   = Handle(OpenGl_View)::DownCast (theView);
+  if (aView.IsNull())
+  {
+    return;
+  }
+
+  if (!myMapOfView.Remove (aView))
+  {
+    return;
+  }
+
+  Handle(OpenGl_Window) aWindow = aView->GlWindow();
+  if (!aWindow.IsNull()
+    && aWindow->GetGlContext()->MakeCurrent())
+  {
+    aCtx = aWindow->GetGlContext();
+  }
+  else
+  {
+    // try to hijack another context if any
+    const Handle(OpenGl_Context)& anOtherCtx = GetSharedContext();
+    if (!anOtherCtx.IsNull()
+      && anOtherCtx != aWindow->GetGlContext())
+    {
+      aCtx = anOtherCtx;
+      aCtx->MakeCurrent();
+    }
+  }
+
+  aView->ReleaseGlResources (aCtx);
+  if (myMapOfView.IsEmpty())
+  {
+    // The last view removed but some objects still present.
+    // Release GL resources now without object destruction.
+    for (NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure);
+         aStructIt.More (); aStructIt.Next())
+    {
+      OpenGl_Structure* aStruct = aStructIt.ChangeValue();
+      aStruct->ReleaseGlResources (aCtx);
+    }
+    myDeviceLostFlag = !myMapOfStructure.IsEmpty();
+  }
+}
+
+// =======================================================================
+// function : Window
+// purpose  :
+// =======================================================================
+Handle(OpenGl_Window) OpenGl_GraphicDriver::CreateRenderWindow (const Handle(Aspect_Window)&  theWindow,
+                                                                const Aspect_RenderingContext theContext)
+{
+  Handle(OpenGl_Context) aShareCtx = GetSharedContext();
+  Handle(OpenGl_Window) aWindow = new OpenGl_Window (this, theWindow, theContext, myCaps, aShareCtx);
+  return aWindow;
+}
+
+//=======================================================================
+//function : ViewExists
+//purpose  :
+//=======================================================================
+Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& AWindow, Handle(Graphic3d_CView)& theView)
+{
+  Standard_Boolean isExist = Standard_False;
+
+  // Parse the list of views to find
+  // a view with the specified window
+
+#if defined(_WIN32)
+  const Handle(WNT_Window) THEWindow = Handle(WNT_Window)::DownCast (AWindow);
+  Aspect_Handle TheSpecifiedWindowId = THEWindow->HWindow ();
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  const Handle(Cocoa_Window) THEWindow = Handle(Cocoa_Window)::DownCast (AWindow);
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    UIView* TheSpecifiedWindowId = THEWindow->HView();
+  #else
+    NSView* TheSpecifiedWindowId = THEWindow->HView();
+  #endif
+#elif defined(__ANDROID__)
+  int TheSpecifiedWindowId = -1;
+#else
+  const Handle(Xw_Window) THEWindow = Handle(Xw_Window)::DownCast (AWindow);
+  int TheSpecifiedWindowId = int (THEWindow->XWindow ());
+#endif
+
+  NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
+  for(; aViewIt.More(); aViewIt.Next())
+  {
+    const Handle(OpenGl_View)& aView = aViewIt.Value();
+    if (aView->IsDefined() && aView->IsActive())
+    {
+      const Handle(Aspect_Window) AspectWindow = aView->Window();
+
+#if defined(_WIN32)
+      const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
+      Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+      const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
+      #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+        UIView* TheWindowIdOfView = theWindow->HView();
+      #else
+        NSView* TheWindowIdOfView = theWindow->HView();
+      #endif
+#elif defined(__ANDROID__)
+      int TheWindowIdOfView = 0;
+#else
+      const Handle(Xw_Window) theWindow = Handle(Xw_Window)::DownCast (AspectWindow);
+      int TheWindowIdOfView = int (theWindow->XWindow ());
+#endif  // WNT
+      // Comparaison on window IDs
+      if (TheWindowIdOfView == TheSpecifiedWindowId)
+      {
+        isExist = Standard_True;
+        theView = aView;
+      }
+    }
+  }
+
+  return isExist;
 }

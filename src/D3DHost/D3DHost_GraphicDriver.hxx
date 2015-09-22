@@ -18,9 +18,6 @@
 
 #include <OpenGl_GraphicDriver.hxx>
 
-class Visual3d_View;
-struct IDirect3DSurface9;
-
 //! This class defines D3D host for an OpenGl graphic driver
 class D3DHost_GraphicDriver : public OpenGl_GraphicDriver
 {
@@ -32,11 +29,8 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~D3DHost_GraphicDriver();
 
-  //! Create new view.
-  Standard_EXPORT virtual Standard_Boolean View (Graphic3d_CView& theCView);
-
-  //! Return D3D surface for specified view.
-  Standard_EXPORT IDirect3DSurface9* D3dColorSurface (const Handle(Visual3d_View)& theCView) const;
+  //! Create instance of D3D host view.
+  Standard_EXPORT virtual Handle(Graphic3d_CView) CreateView (const Handle(Graphic3d_StructureManager)& theMgr) Standard_OVERRIDE;
 
 public:
 

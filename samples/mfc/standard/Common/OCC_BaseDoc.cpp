@@ -42,7 +42,7 @@ void OCC_BaseDoc::ExportView (const Handle(V3d_View)& theView) const
       else if (!(aFileExt.CompareNoCase (L"svg"))) anExportFormat = Graphic3d_EF_SVG;
       else anExportFormat = Graphic3d_EF_PGF;
 
-      theView->View()->Export (aFileName.ToCString(), anExportFormat);
+      theView->Export (aFileName.ToCString(), anExportFormat);
     }
     else
     {

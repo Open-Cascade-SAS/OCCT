@@ -15,12 +15,14 @@
 #include <Aspect_Background.hxx>
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_Grid.hxx>
+#include <Aspect_IdentDefinitionError.hxx>
 #include <gp_Ax3.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Quantity_Color.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
@@ -29,12 +31,11 @@
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_View.hxx>
-#include <Visual3d_ViewManager.hxx>
 
-/*----------------------------------------------------------------------*/
-//-Constructor:
+// ========================================================================
+// function : V3d_Viewer
+// purpose  :
+// ========================================================================
 V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
                         const Standard_ExtString      theName,
                         const Standard_CString        theDomain,
@@ -51,6 +52,7 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
 myDriver (theDriver),
 myName (TCollection_ExtendedString (theName)),
 myDomain (TCollection_AsciiString (theDomain)),
+myStructureManager (new Graphic3d_StructureManager (theDriver)),
 MyDefinedViews(),
 MyActiveViews(),
 MyDefinedLights(),
@@ -65,13 +67,9 @@ myPrivilegedPlane (gp_Ax3 (gp_Pnt (0.,0.,0), gp_Dir (0.,0.,1.), gp_Dir (1.,0.,0.
 myDisplayPlane (Standard_False),
 myDisplayPlaneLength (theViewSize),
 myGridEcho (Standard_True),
-myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
+myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast()),
+myZLayerGenId (1, IntegerLast())
 {
-  MyViewer = new Visual3d_ViewManager (theDriver);
-  // san (16/09/2010): It has been decided to turn depth test ON
-  // by default, as this is important for new font rendering
-  // (without it, there are numerous texture rendering artefacts)
-  MyViewer->SetZBufferAuto (Standard_False);
   SetUpdateMode (theUpdateMode);
   SetDefaultViewSize (theViewSize);
   SetDefaultViewProj (theViewProj);
@@ -90,92 +88,169 @@ myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
   myGridType = Aspect_GT_Rectangular;
 }
 
-//-Methods, in order
-
-
+// ========================================================================
+// function : CreateView
+// purpose  :
+// ========================================================================
 Handle(V3d_View) V3d_Viewer::CreateView ()
 {
   return new V3d_View(this, MyDefaultTypeOfView);
 }
 
-void V3d_Viewer::SetViewOn( ) {
-
-  for (InitDefinedViews();MoreDefinedViews();NextDefinedViews()){
-    SetViewOn(ActiveView());};
-}
-
-void V3d_Viewer::SetViewOff( ) {
-
-  for (InitDefinedViews();MoreDefinedViews();NextDefinedViews()){
-    SetViewOff(ActiveView());};
-}
-
-void V3d_Viewer::SetViewOn( const Handle(V3d_View)& TheView ) {
-
-  Handle(Visual3d_View) MyView = TheView->View() ;
-  if( MyView->IsDefined() && !IsActive(TheView)) {
-    MyActiveViews.Append(TheView) ;
-    MyView->Activate();
-    for (InitActiveLights();MoreActiveLights();NextActiveLights()){
-      TheView->SetLightOn(ActiveLight());}
-    // Grid
-    TheView->SetGrid (myPrivilegedPlane, Grid ());
-    TheView->SetGridActivity (Grid ()->IsActive ());
-    // Update
-    MyView->Redraw() ;
+// ========================================================================
+// function : SetViewOn
+// purpose  :
+// ========================================================================
+void V3d_Viewer::SetViewOn()
+{
+  for (InitDefinedViews();MoreDefinedViews();NextDefinedViews())
+  {
+    SetViewOn (ActiveView());
   }
 }
 
-void V3d_Viewer::SetViewOff( const Handle(V3d_View)& TheView ) {
-
-  Handle(Visual3d_View) MyView =TheView->View(); 
-  if( MyView->IsDefined() && IsActive(TheView) ) {
-    MyActiveViews.Remove(TheView);
-    MyView->Deactivate() ;
+// ========================================================================
+// function : SetViewOff
+// purpose  :
+// ========================================================================
+void V3d_Viewer::SetViewOff()
+{
+  for (InitDefinedViews();MoreDefinedViews();NextDefinedViews())
+  {
+    SetViewOff (ActiveView());
   }
 }
 
-Standard_Boolean V3d_Viewer::ComputedMode() const {
+// ========================================================================
+// function : SetViewOn
+// purpose  :
+// ========================================================================
+void V3d_Viewer::SetViewOn (const Handle(V3d_View)& theView)
+{
+  Handle(Graphic3d_CView) aViewImpl = theView->View();
+  if (aViewImpl->IsDefined() && !IsActive (theView))
+  {
+    MyActiveViews.Append (theView);
+    aViewImpl->Activate();
+    for (InitActiveLights();MoreActiveLights();NextActiveLights())
+    {
+      theView->SetLightOn (ActiveLight());
+    }
+
+    theView->SetGrid (myPrivilegedPlane, Grid ());
+    theView->SetGridActivity (Grid ()->IsActive ());
+    theView->Redraw();
+  }
+}
+
+// ========================================================================
+// function : SetViewOff
+// purpose  :
+// ========================================================================
+void V3d_Viewer::SetViewOff (const Handle(V3d_View)& theView)
+{
+  Handle(Graphic3d_CView) aViewImpl = theView->View();
+  if (aViewImpl->IsDefined() && IsActive (theView))
+  {
+    MyActiveViews.Remove (theView);
+    aViewImpl->Deactivate() ;
+  }
+}
+
+// ========================================================================
+// function : ComputedMode
+// purpose  :
+// ========================================================================
+Standard_Boolean V3d_Viewer::ComputedMode() const
+{
   return myComputedMode;
 }
 
-Standard_Boolean V3d_Viewer::DefaultComputedMode() const {
+// ========================================================================
+// function : DefaultComputedMode
+// purpose  :
+// ========================================================================
+Standard_Boolean V3d_Viewer::DefaultComputedMode() const
+{
   return myDefaultComputedMode;
 }
 
+// ========================================================================
+// function : Update
+// purpose  :
+// ========================================================================
 void V3d_Viewer::Update()
 {
-  MyViewer->Update();
+  // Redraw() is still here for compatibility with old code.
+  // See comments, the method is deprecated - Redraw() should
+  // be used instead.
+  Redraw();
 }
 
+// ========================================================================
+// function : Redraw
+// purpose  :
+// ========================================================================
 void V3d_Viewer::Redraw()const
 {
-  MyViewer->Redraw();
+  TColStd_ListIteratorOfListOfTransient anIt (MyDefinedViews);
+  for (; anIt.More(); anIt.Next())
+  {
+    Handle(V3d_View)::DownCast (anIt.Value())->Redraw();
+  }
 }
 
+// ========================================================================
+// function : RedrawImmediate
+// purpose  :
+// ========================================================================
 void V3d_Viewer::RedrawImmediate() const
 {
-  MyViewer->RedrawImmediate();
+  TColStd_ListIteratorOfListOfTransient anIt (MyDefinedViews);
+  for (; anIt.More(); anIt.Next())
+  {
+    Handle(V3d_View)::DownCast (anIt.Value())->RedrawImmediate();
+  }
 }
 
+// ========================================================================
+// function : Invalidate
+// purpose  :
+// ========================================================================
 void V3d_Viewer::Invalidate() const
 {
-  MyViewer->Invalidate();
+  TColStd_ListIteratorOfListOfTransient anIt (MyDefinedViews);
+  for (; anIt.More(); anIt.Next())
+  {
+    Handle(V3d_View)::DownCast (anIt.Value())->Invalidate();
+  }
 }
 
-void V3d_Viewer::Remove() {
-
-  MyViewer->Remove();
+// ========================================================================
+// function : Remove
+// purpose  :
+// ========================================================================
+void V3d_Viewer::Remove()
+{
+  myStructureManager->Remove();
 }
 
-void V3d_Viewer::Erase() const {
-  
-  MyViewer->Erase();
+// ========================================================================
+// function : Erase
+// purpose  :
+// ========================================================================
+void V3d_Viewer::Erase() const
+{
+  myStructureManager->Erase();
 }
 
-void V3d_Viewer::UnHighlight() const {
-
-  //FMN MyViewer->UnHighlight();
+// ========================================================================
+// function : UnHighlight
+// purpose  :
+// ========================================================================
+void V3d_Viewer::UnHighlight() const
+{
+  myStructureManager->UnHighlight();
 }
 
 void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_TypeOfColor Type, const Standard_Real v1, const Standard_Real v2, const Standard_Real v3) {
@@ -236,12 +311,6 @@ void V3d_Viewer::SetDefaultVisualization(const V3d_TypeOfVisualization Type) {
 
   MyVisualization = Type ;
 }
-void V3d_Viewer::SetZBufferManagment(const Standard_Boolean Automatic) {
-  MyViewer->SetZBufferAuto (Automatic);
-}
-Standard_Boolean V3d_Viewer::ZBufferManagment() const {
-  return MyViewer->ZBufferAuto();
-}
 
 void V3d_Viewer::SetDefaultShadingModel(const V3d_TypeOfShadingModel Type) {
 
@@ -260,10 +329,13 @@ void V3d_Viewer::SetDefaultAngle(const Quantity_PlaneAngle Angle) {
 void V3d_Viewer::SetDefaultTypeOfView(const V3d_TypeOfView Type) {
   MyDefaultTypeOfView = Type;}
 
-
-void V3d_Viewer::SetUpdateMode(const V3d_TypeOfUpdate Mode) {
-  
-  MyViewer->SetUpdateMode((Aspect_TypeOfUpdate)Mode) ;
+// ========================================================================
+// function : SetUpdateMode
+// purpose  :
+// ========================================================================
+void V3d_Viewer::SetUpdateMode (const V3d_TypeOfUpdate theMode)
+{
+  myStructureManager->SetUpdateMode (static_cast<Aspect_TypeOfUpdate> (theMode));
 }
 
 void V3d_Viewer::DefaultBackgroundColor(const Quantity_TypeOfColor Type,Standard_Real &V1,Standard_Real &V2,Standard_Real &V3) const
@@ -306,24 +378,32 @@ Quantity_PlaneAngle V3d_Viewer::DefaultAngle() const {
   return MyDefaultAngle;
 }
 
-V3d_TypeOfUpdate V3d_Viewer::UpdateMode() const {
-
-  V3d_TypeOfUpdate Mode = (V3d_TypeOfUpdate) MyViewer->UpdateMode() ;
-  return Mode ;
+// ========================================================================
+// function : UpdateMode
+// purpose  :
+// ========================================================================
+V3d_TypeOfUpdate V3d_Viewer::UpdateMode() const
+{
+  return static_cast<V3d_TypeOfUpdate> (myStructureManager->UpdateMode());
 }
 
 Standard_Boolean V3d_Viewer::IfMoreViews() const {
   Standard_Boolean TheStatus = Standard_False ;
 
 #ifdef NEW
-  if( MyActiveViews->Length() < Visual3d_View::Limit() )
+  if (MyActiveViews->Length() < myDriver->InquireViewLimit())
 #endif /*NEW*/
     TheStatus = Standard_True ;
   return TheStatus ;
 }
 
-Handle(Visual3d_ViewManager) V3d_Viewer::Viewer() const {
-  return MyViewer ;
+// ========================================================================
+// function : StructureManager
+// purpose  :
+// ========================================================================
+Handle(Graphic3d_StructureManager) V3d_Viewer::StructureManager() const
+{
+  return myStructureManager;
 }
 
 Aspect_Background V3d_Viewer::GetBackgroundColor() const {
@@ -347,61 +427,79 @@ void V3d_Viewer::DelView( const Handle(V3d_View)& TheView ) {
 }
 
 //=======================================================================
-//function : SetZLayerSettings
-//purpose  :
-//=======================================================================
-
-void V3d_Viewer::SetZLayerSettings (const Standard_Integer theLayerId,
-                                    const Graphic3d_ZLayerSettings& theSettings)
-{
-  MyViewer->SetZLayerSettings (theLayerId, theSettings);
-}
-
-//=======================================================================
-//function : ZLayerSettings
-//purpose  :
-//=======================================================================
-
-Graphic3d_ZLayerSettings V3d_Viewer::ZLayerSettings (const Standard_Integer theLayerId)
-{
-  return MyViewer->ZLayerSettings (theLayerId);
-}
-
-//=======================================================================
 //function : AddZLayer
 //purpose  :
 //=======================================================================
-
 Standard_Boolean V3d_Viewer::AddZLayer (Standard_Integer& theLayerId)
 {
-  return MyViewer->AddZLayer (theLayerId);
+  try
+  {
+    OCC_CATCH_SIGNALS
+    theLayerId = myZLayerGenId.Next();
+  }
+  catch (Aspect_IdentDefinitionError)
+  {
+    // new index can't be generated
+    return Standard_False;
+  }
+
+  myLayerIds.Add (theLayerId);
+  myDriver->AddZLayer (theLayerId);
+
+  return Standard_True;
 }
 
 //=======================================================================
 //function : RemoveZLayer
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean V3d_Viewer::RemoveZLayer (const Standard_Integer theLayerId)
 {
-  return MyViewer->RemoveZLayer (theLayerId);
+  if (!myLayerIds.Contains (theLayerId)
+    || theLayerId < myZLayerGenId.Lower()
+    || theLayerId > myZLayerGenId.Upper())
+  {
+    return Standard_False;
+  }
+
+  myDriver->RemoveZLayer (theLayerId);
+  myLayerIds.Remove  (theLayerId);
+  myZLayerGenId.Free (theLayerId);
+
+  return Standard_True;
 }
 
 //=======================================================================
 //function : GetAllZLayers
 //purpose  :
 //=======================================================================
-
 void V3d_Viewer::GetAllZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
 {
-  MyViewer->GetAllZLayers (theLayerSeq);
+  myDriver->ZLayers (theLayerSeq);
+}
+
+//=======================================================================
+//function : SetZLayerSettings
+//purpose  :
+//=======================================================================
+void V3d_Viewer::SetZLayerSettings (const Standard_Integer theLayerId, const Graphic3d_ZLayerSettings& theSettings)
+{
+  myDriver->SetZLayerSettings (theLayerId, theSettings);
+}
+
+//=======================================================================
+//function : ZLayerSettings
+//purpose  :
+//=======================================================================
+Graphic3d_ZLayerSettings V3d_Viewer::ZLayerSettings (const Standard_Integer theLayerId)
+{
+  return myDriver->ZLayerSettings (theLayerId);
 }
 
 //=======================================================================
 //function : Domain
 //purpose  :
 //=======================================================================
-
 Standard_CString V3d_Viewer::Domain() const
 {
   return myDomain.ToCString();
@@ -411,7 +509,6 @@ Standard_CString V3d_Viewer::Domain() const
 //function : Driver
 //purpose  :
 //=======================================================================
-
 const Handle(Graphic3d_GraphicDriver)& V3d_Viewer::Driver() const
 {
   return myDriver;
@@ -421,7 +518,6 @@ const Handle(Graphic3d_GraphicDriver)& V3d_Viewer::Driver() const
 //function : NextName
 //purpose  :
 //=======================================================================
-
 Standard_ExtString V3d_Viewer::NextName() const
 {
   TCollection_ExtendedString aNextName = TCollection_ExtendedString (myName.ToExtString());
@@ -434,7 +530,6 @@ Standard_ExtString V3d_Viewer::NextName() const
 //function : IncrCount
 //purpose  :
 //=======================================================================
-
 void V3d_Viewer::IncrCount()
 {
   myNextCount++;

@@ -19,6 +19,7 @@
 #include <Aspect_Display.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_RenderingContext.hxx>
+#include <Standard_Handle.hxx>
 #include <Standard_Transient.hxx>
 
 // The flags below provide additional information to define the moment when

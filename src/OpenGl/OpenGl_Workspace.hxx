@@ -16,51 +16,29 @@
 #ifndef _OpenGl_Workspace_Header
 #define _OpenGl_Workspace_Header
 
-#include <map>
-#include <set>
-
-#include <OpenGl_Window.hxx>
-
-#include <TColStd_Array2OfReal.hxx>
-#include <Quantity_Color.hxx>
-#include <Graphic3d_CView.hxx>
-#include <Graphic3d_TypeOfComposition.hxx>
-#include <Graphic3d_TypeOfTexture.hxx>
 #include <Graphic3d_PtrFrameBuffer.hxx>
 #include <Graphic3d_BufferType.hxx>
 
-#include <Aspect_Handle.hxx>
-#include <Aspect_PrintAlgo.hxx>
-#include <Aspect_PolygonOffsetMode.hxx>
-
 #include <InterfaceGraphic_Graphic3d.hxx>
-#include <InterfaceGraphic_Visual3d.hxx>
-
-#include <NCollection_Sequence.hxx>
 
 #include <OpenGl_AspectFace.hxx>
+#include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_PrinterContext.hxx>
-#include <OpenGl_SceneGeometry.hxx>
-#include <OpenGl_TextParam.hxx>
 #include <OpenGl_RenderFilter.hxx>
-#include <OpenGl_Vec.hxx>
-#include <OpenGl_LineAttributes.hxx>
-#include <OpenGl_CappingAlgo.hxx>
-
-
 #include <OpenGl_ShaderObject.hxx>
 #include <OpenGl_ShaderProgram.hxx>
+#include <OpenGl_TextParam.hxx>
 #include <OpenGl_TextureBufferArb.hxx>
+#include <OpenGl_Vec.hxx>
+#include <OpenGl_Window.hxx>
 
 class OpenGl_AspectLine;
 class OpenGl_AspectMarker;
 class OpenGl_AspectText;
-class OpenGl_FrameBuffer;
-class OpenGl_Structure;
-class OpenGl_TriangleSet;
 class OpenGl_Element;
 class OpenGl_View;
 class Image_PixMap;
@@ -129,65 +107,38 @@ public:
 };
 
 class OpenGl_Workspace;
-DEFINE_STANDARD_HANDLE(OpenGl_Workspace,OpenGl_Window)
+DEFINE_STANDARD_HANDLE(OpenGl_Workspace,Standard_Transient)
 
-//! Represents window with GL context.
+//! Rendering workspace.
 //! Provides methods to render primitives and maintain GL state.
-class OpenGl_Workspace : public OpenGl_Window
+class OpenGl_Workspace : public Standard_Transient
 {
 public:
 
-  //! Main constructor - prepare GL context for specified window.
-  Standard_EXPORT OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
-                                    const CALL_DEF_WINDOW&        theCWindow,
-                                    Aspect_RenderingContext       theGContext,
-                                    const Handle(OpenGl_Caps)&    theCaps,
-                                    const Handle(OpenGl_Context)& theShareCtx);
+  //! Constructor of rendering workspace.
+  Standard_EXPORT OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow);
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_Workspace();
 
-  Standard_EXPORT void SetActiveView (const Handle(OpenGl_View)& theView,
-                                      const Standard_Integer     theViewId);
+  //! Activate rendering context.
+  Standard_EXPORT Standard_Boolean Activate();
 
-  const Handle(OpenGl_View)& ActiveView() const { return myView; }
+  OpenGl_View* View() const { return myView; }
 
-  Standard_Integer ActiveViewId() const { return myViewId; }
+  const Handle(OpenGl_Context)& GetGlContext() { return myGlContext; }
 
-  //! Redraw the window.
-  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView);
+  Standard_EXPORT Graphic3d_PtrFrameBuffer FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight);
 
-  Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
-  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView);
+  Standard_EXPORT void FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr);
 
-  //! Mark cached view content invalid (e.g. complete view redraw should be performed on next frame).
-  void Invalidate() { myBackBufferRestored = Standard_False; }
-
-  //! Return true if view content cache has been invalidated.
-  Standard_Boolean IsInvalidated() const { return !myBackBufferRestored; }
-
-  //! Special method to perform printing.
-  //! System-specific and currently only Win platform implemented.
-  Standard_Boolean Print (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                          const Graphic3d_CView& theCView,
-                          const Aspect_Handle    theHPrintDC,
-                          const Standard_Boolean theToShowBackground,
-                          const Standard_CString theFileName,
-                          const Aspect_PrintAlgo thePrintAlgorithm,
-                          const Standard_Real    theScaleFactor);
-
-  const Handle(OpenGl_PrinterContext)& PrinterContext() const
-  {
-    return myPrintContext;
-  }
-
-  void DisplayCallback (const Graphic3d_CView& theCView, int theReason);
-
-  Graphic3d_PtrFrameBuffer FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight);
-  void FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr);
   Standard_Boolean BufferDump (OpenGl_FrameBuffer*         theFBOPtr,
                                Image_PixMap&               theImage,
                                const Graphic3d_BufferType& theBufferType);
+
+  Standard_EXPORT Standard_Integer Width()  const;
+
+  Standard_EXPORT Standard_Integer Height() const;
 
   //! Setup Z-buffer usage flag (without affecting GL state!).
   //! Returns previously set flag.
@@ -198,15 +149,26 @@ public:
     return wasUsed;
   }
 
-  Standard_Boolean& UseZBuffer()    { return myUseZBuffer; }
-  Standard_Boolean& UseDepthWrite() { return myUseDepthWrite; }
-  Standard_Boolean& UseGLLight()    { return myUseGLLight; }
+  Handle(OpenGl_PrinterContext)& PrinterContext() { return myPrintContext; }
 
-  Standard_Integer AntiAliasingMode() const { return myAntiAliasingMode; }
+  //! @return true if usage of Z buffer is enabled.
+  Standard_Boolean& UseZBuffer() { return myUseZBuffer; }
+
+  //! @return true if depth writing is enabled.
+  Standard_Boolean& UseDepthWrite() { return myUseDepthWrite; }
+
+  //! @return true if usage of GL light is enabled.
+  Standard_EXPORT Standard_Boolean  UseGLLight() const;
+
+  //! @return true if antialiasing is enabled.
+  Standard_EXPORT Standard_Integer AntiAliasingMode() const;
+
+  //! @return true if clipping algorithm enabled
+  Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
+
+  Standard_Integer NamedStatus;
 
   //// RELATED TO STATUS ////
-
-  Standard_Integer   NamedStatus;
 
   const TEL_COLOUR* HighlightColor;
 
@@ -263,9 +225,6 @@ public:
   //! Returns currently applied polygon offset params.
   const TEL_POFFSET_PARAM& AppliedPolygonOffset() { return PolygonOffset_applied; }
 
-  //! @return true if clipping algorithm enabled
-  inline Standard_Boolean IsCullingEnabled() const { return myIsCullingEnabled; }
-
   //! Returns capping algorithm rendering filter.
   const Handle(OpenGl_CappingAlgoFilter)& DefaultCappingAlgoFilter() const
   {
@@ -286,43 +245,6 @@ public:
 
 protected:
 
-  //! Copy content of Back buffer to the Front buffer
-  void copyBackToFront();
-
-  //! Initialize blit quad.
-  Standard_EXPORT OpenGl_VertexBuffer* initBlitQuad (const Standard_Boolean theToFlip);
-
-  //! Blit image from/to specified buffers.
-  Standard_EXPORT bool blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
-                                    OpenGl_FrameBuffer*    theDrawFbo,
-                                    const Standard_Boolean theToFlip = Standard_False);
-
-  Standard_EXPORT virtual Standard_Boolean Activate();
-
-  void redraw1 (const Graphic3d_CView&               theCView,
-                OpenGl_FrameBuffer*                  theReadDrawFbo,
-                const Graphic3d_Camera::Projection   theProjection);
-
-  //! Setup default FBO.
-  void bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo = NULL);
-
-  //! Blend together views pair into stereo image.
-  void drawStereoPair (const Graphic3d_CView& theCView);
-
-  //! Blit snapshot containing main scene (myMainSceneFbos or BackBuffer)
-  //! into presentation buffer (myMainSceneFbos -> offscreen FBO or myMainSceneFbos -> BackBuffer or BackBuffer -> FrontBuffer),
-  //! and redraw immediate structures on top.
-  //!
-  //! When scene caching is disabled (myTransientDrawToFront, no double buffer in window, etc.),
-  //! the first step (blitting) will be skipped.
-  //!
-  //! @return false if immediate structures has been rendered directly into FrontBuffer and Buffer Swap should not be called.
-  bool redrawImmediate (const Graphic3d_CView& theCView,
-                        OpenGl_FrameBuffer*    theReadFbo,
-                        const Graphic3d_Camera::Projection theProjection,
-                        OpenGl_FrameBuffer*    theDrawFbo,
-                        const Standard_Boolean theIsPartialUpdate = Standard_False);
-
   void updateMaterial (const int theFlag);
 
   void setTextureParams (Handle(OpenGl_Texture)&                theTexture,
@@ -330,36 +252,15 @@ protected:
 
 protected: //! @name protected fields
 
-  //! Two framebuffers (left and right views) store cached main presentation
-  //! of the view (without presentation of immediate layers).
-  Handle(OpenGl_FrameBuffer) myMainSceneFbos[2];
-  //! Additional buffers for immediate layer in stereo mode.
-  Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2];
-  //! Special flag which is invalidated when myMainSceneFbos can not be blitted for some reason (e.g. driver bugs).
-  Standard_Boolean           myHasFboBlit;
-
-  //! Flag to draw result image upside-down
-  Standard_Boolean           myToFlipOutput;
-
-  //! Vertices for full-screen quad rendering.
-  OpenGl_VertexBuffer        myFullScreenQuad;
-  OpenGl_VertexBuffer        myFullScreenQuadFlip;
-
-  Handle(OpenGl_PrinterContext) myPrintContext;
-  Handle(OpenGl_View)           myView;
-  Handle(OpenGl_LineAttributes) myLineAttribs;
-  Standard_Integer       myViewId;
-  Standard_Integer       myAntiAliasingMode;
-  Standard_Boolean       myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
-  Standard_Boolean       myBackBufferRestored;
-  Standard_Boolean       myIsImmediateDrawn;     //!< flag indicates that immediate mode buffer contains some data
-  Standard_Boolean       myUseZBuffer;
-  Standard_Boolean       myUseDepthWrite;
-  Standard_Boolean       myUseGLLight;
-  Standard_Boolean       myIsCullingEnabled;     //!< frustum culling flag
-
-  unsigned int           myFrameCounter;         //!< redraw counter, for debugging
-
+  OpenGl_View*                     myView;
+  Handle(OpenGl_Window)            myWindow;
+  Handle(OpenGl_Context)           myGlContext;
+  Handle(OpenGl_PrinterContext)    myPrintContext;
+  Handle(OpenGl_LineAttributes)    myLineAttribs;
+  Standard_Integer                 myAntiAliasingMode;
+  Standard_Boolean                 myUseZBuffer;
+  Standard_Boolean                 myUseDepthWrite;
+  Standard_Boolean                 myUseGLLight;
   Handle(OpenGl_CappingAlgoFilter) myDefaultCappingAlgoFilter;
   OpenGl_AspectFace                myNoneCulling;
   OpenGl_AspectFace                myFrontCulling;
@@ -391,7 +292,7 @@ protected: //! @name fields related to status
 
 public: //! @name type definition
 
-  DEFINE_STANDARD_RTTI(OpenGl_Workspace, OpenGl_Window)
+  DEFINE_STANDARD_RTTI(OpenGl_Workspace, Standard_Transient)
   DEFINE_STANDARD_ALLOC
 
 };

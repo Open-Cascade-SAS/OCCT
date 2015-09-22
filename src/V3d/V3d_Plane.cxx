@@ -17,9 +17,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
-#include <Visual3d_ViewManager.hxx>
 #include <gp_Pln.hxx>
-
 
 // =======================================================================
 // function : V3d_Plane
@@ -63,7 +61,7 @@ void V3d_Plane::Display (const Handle(V3d_View)& theView,
     myGraphicStructure->Clear();
   }
 
-  myGraphicStructure = new Graphic3d_Structure (aViewer->Viewer());
+  myGraphicStructure = new Graphic3d_Structure (aViewer->StructureManager());
   Handle(Graphic3d_Group)            aGroup = myGraphicStructure->NewGroup();
   Handle(Graphic3d_AspectFillArea3d) anAsp  = new Graphic3d_AspectFillArea3d();
   Graphic3d_MaterialAspect aPlastic (Graphic3d_NOM_PLASTIC);

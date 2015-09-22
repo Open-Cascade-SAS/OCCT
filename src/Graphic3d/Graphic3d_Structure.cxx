@@ -53,7 +53,7 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
   myOwner                 (NULL),
   myVisual                (Graphic3d_TOS_ALL)
 {
-  myCStructure = theManager->GraphicDriver()->Structure (theManager);
+  myCStructure = theManager->GraphicDriver()->CreateStructure (theManager);
 
   // default aspects
   Handle(Graphic3d_AspectLine3d)     aAspectLine3d     = new Graphic3d_AspectLine3d();
@@ -2033,10 +2033,7 @@ void Graphic3d_Structure::Update() const
     return;
   }
 
-  if (myStructureManager->UpdateMode() == Aspect_TOU_ASAP)
-  {
-    myStructureManager->Update();
-  }
+  myStructureManager->Update (myStructureManager->UpdateMode());
 }
 
 //=============================================================================

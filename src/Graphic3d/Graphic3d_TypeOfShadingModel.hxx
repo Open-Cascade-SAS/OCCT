@@ -14,13 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef Visual3d_SequenceOfLight_HeaderFile
-#define Visual3d_SequenceOfLight_HeaderFile
+#ifndef _Graphic3d_TypeOfShadingModel_HeaderFile
+#define _Graphic3d_TypeOfShadingModel_HeaderFile
 
-#include <Visual3d_Light.hxx>
-#include <NCollection_Sequence.hxx>
+//! Definition of the rendering (colour shading) model
+//! Graphic3d_TOSM_NONE     No lighting, only white ambient light
+//! Graphic3d_TOSM_FACET    No interpolation, constant shading      (Flat    Shading)
+//! Graphic3d_TOSM_VERTEX   Interpolation of color based on normals (Gouraud Shading)
+//! Graphic3d_TOSM_FRAGMENT Interpolation of color based on normals (Phong   Shading)
+enum Graphic3d_TypeOfShadingModel
+{
+  Graphic3d_TOSM_NONE,
+  Graphic3d_TOSM_FACET,
+  Graphic3d_TOSM_VERTEX,
+  Graphic3d_TOSM_FRAGMENT
+};
 
-typedef NCollection_Sequence<Handle(Visual3d_Light)> Visual3d_SequenceOfLight;
-
-
-#endif
+#endif // _Graphic3d_TypeOfShadingModel_HeaderFile

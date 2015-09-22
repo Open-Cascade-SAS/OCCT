@@ -13,14 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_TextureParams.hxx>
+#include <OpenGl_View.hxx>
 
-#include <OpenGl_FrameBuffer.hxx>
+#include <Graphic3d_TextureParams.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_VertexBuffer.hxx>
-#include <OpenGl_View.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
-
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
 
@@ -1234,7 +1231,7 @@ Handle(OpenGl_ShaderProgram) OpenGl_View::initProgram (const Handle(OpenGl_Conte
 // function : initRaytraceResources
 // purpose  : Initializes OpenGL/GLSL shader programs
 // =======================================================================
-Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theCView, const Handle(OpenGl_Context)& theGlContext)
+Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context)& theGlContext)
 {
   if (myRaytraceInitStatus == OpenGl_RT_FAIL)
   {
@@ -1269,9 +1266,9 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
       }
     }
 
-    if (theCView.RenderParams.RaytracingDepth != myRaytraceParameters.NbBounces)
+    if (myRenderParams.RaytracingDepth != myRaytraceParameters.NbBounces)
     {
-      myRaytraceParameters.NbBounces = theCView.RenderParams.RaytracingDepth;
+      myRaytraceParameters.NbBounces = myRenderParams.RaytracingDepth;
       aToRebuildShaders = Standard_True;
     }
 
@@ -1281,15 +1278,15 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
       aToRebuildShaders = Standard_True;
     }
 
-    if (theCView.RenderParams.IsTransparentShadowEnabled != myRaytraceParameters.TransparentShadows)
+    if (myRenderParams.IsTransparentShadowEnabled != myRaytraceParameters.TransparentShadows)
     {
-      myRaytraceParameters.TransparentShadows = theCView.RenderParams.IsTransparentShadowEnabled;
+      myRaytraceParameters.TransparentShadows = myRenderParams.IsTransparentShadowEnabled;
       aToRebuildShaders = Standard_True;
     }
 
-    if (theCView.RenderParams.IsGlobalIlluminationEnabled != myRaytraceParameters.GlobalIllumination)
+    if (myRenderParams.IsGlobalIlluminationEnabled != myRaytraceParameters.GlobalIllumination)
     {
-      myRaytraceParameters.GlobalIllumination = theCView.RenderParams.IsGlobalIlluminationEnabled;
+      myRaytraceParameters.GlobalIllumination = myRenderParams.IsGlobalIlluminationEnabled;
       aToRebuildShaders = Standard_True;
     }
 
@@ -1347,7 +1344,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
       return safeFailBack ("Ray-tracing requires EXT_framebuffer_blit extension", theGlContext);
     }
 
-    myRaytraceParameters.NbBounces = theCView.RenderParams.RaytracingDepth;
+    myRaytraceParameters.NbBounces = myRenderParams.RaytracingDepth;
 
     TCollection_AsciiString aFolder = Graphic3d_ShaderProgram::ShadersFolder();
 
@@ -2071,11 +2068,12 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
 
   myRaytraceGeometry.Ambient = BVH_Vec4f (0.0f, 0.0f, 0.0f, 0.0f);
 
-  for (OpenGl_ListOfLight::Iterator aLightIter (myLights); aLightIter.More(); aLightIter.Next())
+  OpenGl_ListOfLight::Iterator aLightIter (myShadingModel == Graphic3d_TOSM_NONE ? OpenGl_NoShadingLight() : myLights);
+  for (; aLightIter.More(); aLightIter.Next())
   {
     const OpenGl_Light& aLight = aLightIter.Value();
 
-    if (aLight.Type == Visual3d_TOLS_AMBIENT)
+    if (aLight.Type == Graphic3d_TOLS_AMBIENT)
     {
       myRaytraceGeometry.Ambient += BVH_Vec4f (aLight.Color.r() * aLight.Intensity,
                                                aLight.Color.g() * aLight.Intensity,
@@ -2094,7 +2092,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
                          -aLight.Direction.z(),
                          0.0f);
 
-    if (aLight.Type != Visual3d_TOLS_DIRECTIONAL)
+    if (aLight.Type != Graphic3d_TOLS_DIRECTIONAL)
     {
       aPosition = BVH_Vec4f (aLight.Position.x(),
                              aLight.Position.y(),
@@ -2168,7 +2166,7 @@ Standard_Boolean OpenGl_View::updateRaytraceEnvironmentMap (const Handle(OpenGl_
     {
       aResult &= theGlContext->BindProgram (aProgram);
 
-      if (!myTextureEnv.IsNull() && mySurfaceDetail != Visual3d_TOD_NONE)
+      if (!myTextureEnv.IsNull() && mySurfaceDetail != Graphic3d_TOD_NONE)
       {
         myTextureEnv->Bind (theGlContext,
           GL_TEXTURE0 + OpenGl_RT_EnvironmentMapTexture);
@@ -2195,8 +2193,7 @@ Standard_Boolean OpenGl_View::updateRaytraceEnvironmentMap (const Handle(OpenGl_
 // function : setUniformState
 // purpose  : Sets uniform state for the given ray-tracing shader program
 // =======================================================================
-Standard_Boolean OpenGl_View::setUniformState (const Graphic3d_CView&        theCView,
-                                               const OpenGl_Vec3*            theOrigins,
+Standard_Boolean OpenGl_View::setUniformState (const OpenGl_Vec3*            theOrigins,
                                                const OpenGl_Vec3*            theDirects,
                                                const OpenGl_Mat4&            theUnviewMat,
                                                const Standard_Integer        theProgramId,
@@ -2245,14 +2242,14 @@ Standard_Boolean OpenGl_View::setUniformState (const Graphic3d_CView&        the
 
   // Set run-time rendering options
   theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uShadowsEnabled], theCView.RenderParams.IsShadowEnabled ?  1 : 0);
+    myUniformLocations[theProgramId][OpenGl_RT_uShadowsEnabled], myRenderParams.IsShadowEnabled ?  1 : 0);
   theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uReflectEnabled], theCView.RenderParams.IsReflectionEnabled ?  1 : 0);
+    myUniformLocations[theProgramId][OpenGl_RT_uReflectEnabled], myRenderParams.IsReflectionEnabled ?  1 : 0);
 
-  if (theCView.RenderParams.IsGlobalIlluminationEnabled)
+  if (myRenderParams.IsGlobalIlluminationEnabled)
   {
     theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBlockedRngEnabled], theCView.RenderParams.CoherentPathTracingMode ?  1 : 0);
+      myUniformLocations[theProgramId][OpenGl_RT_uBlockedRngEnabled], myRenderParams.CoherentPathTracingMode ?  1 : 0);
   }
 
   // Set array of 64-bit texture handles
@@ -2275,9 +2272,9 @@ Standard_Boolean OpenGl_View::setUniformState (const Graphic3d_CView&        the
   }
   else
   {
-    const OpenGl_Vec4 aBackColor (theCView.DefWindow.Background.r,
-                                  theCView.DefWindow.Background.g,
-                                  theCView.DefWindow.Background.b,
+    const OpenGl_Vec4 aBackColor (myBgColor.rgb[0],
+                                  myBgColor.rgb[1],
+                                  myBgColor.rgb[2],
                                   1.0f);
     theProgram->SetUniform (theGlContext,
       myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], aBackColor);
@@ -2286,7 +2283,7 @@ Standard_Boolean OpenGl_View::setUniformState (const Graphic3d_CView&        the
   }
 
   theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uSphereMapForBack], theCView.RenderParams.UseEnvironmentMapBackground ?  1 : 0);
+    myUniformLocations[theProgramId][OpenGl_RT_uSphereMapForBack], myRenderParams.UseEnvironmentMapBackground ?  1 : 0);
 
   return Standard_True;
 }
@@ -2345,8 +2342,7 @@ void OpenGl_View::unbindRaytraceTextures (const Handle(OpenGl_Context)& theGlCon
 // function : runRaytraceShaders
 // purpose  : Runs ray-tracing shader programs
 // =======================================================================
-Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        theCView,
-                                                  const Standard_Integer        theSizeX,
+Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        theSizeX,
                                                   const Standard_Integer        theSizeY,
                                                   const OpenGl_Vec3*            theOrigins,
                                                   const OpenGl_Vec3*            theDirects,
@@ -2381,7 +2377,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
 
     aRenderFramebuffer->BindBuffer (theGlContext);
   }
-  else if (theCView.RenderParams.IsAntialiasingEnabled) // if 2-pass ray-tracing is used
+  else if (myRenderParams.IsAntialiasingEnabled) // if 2-pass ray-tracing is used
   {
     myRaytraceFBO1->BindBuffer (theGlContext);
 
@@ -2390,8 +2386,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
 
   Standard_Boolean aResult = theGlContext->BindProgram (myRaytraceProgram);
 
-  aResult &= setUniformState (theCView,
-                              theOrigins,
+  aResult &= setUniformState (theOrigins,
                               theDirects,
                               theUnviewMat,
                               0, // ID of RT program
@@ -2438,14 +2433,13 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
 
     ++myAccumFrames;
   }
-  else if (theCView.RenderParams.IsAntialiasingEnabled)
+  else if (myRenderParams.IsAntialiasingEnabled)
   {
     myRaytraceFBO1->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
 
     aResult &= theGlContext->BindProgram (myPostFSAAProgram);
 
-    aResult &= setUniformState (theCView,
-                                theOrigins,
+    aResult &= setUniformState (theOrigins,
                                 theDirects,
                                 theUnviewMat,
                                 1, // ID of FSAA program
@@ -2521,13 +2515,12 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
 // function : raytrace
 // purpose  : Redraws the window using OpenGL/GLSL ray-tracing
 // =======================================================================
-Standard_Boolean OpenGl_View::raytrace (const Graphic3d_CView&        theCView,
-                                        const Standard_Integer        theSizeX,
+Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
                                         const Standard_Integer        theSizeY,
                                         OpenGl_FrameBuffer*           theReadDrawFbo,
                                         const Handle(OpenGl_Context)& theGlContext)
 {
-  if (!initRaytraceResources (theCView, theGlContext))
+  if (!initRaytraceResources (theGlContext))
   {
     return Standard_False;
   }
@@ -2582,8 +2575,7 @@ Standard_Boolean OpenGl_View::raytrace (const Graphic3d_CView&        theCView,
         0, GL_DEBUG_SEVERITY_MEDIUM_ARB, "Error: Failed to acquire OpenGL image textures");
     }
 
-    Standard_Boolean aResult = runRaytraceShaders (theCView,
-                                                   theSizeX,
+    Standard_Boolean aResult = runRaytraceShaders (theSizeX,
                                                    theSizeY,
                                                    aOrigins,
                                                    aDirects,

@@ -32,7 +32,6 @@ class V3d_View;
 class V3d_Viewer;
 class V3d_Viewer;
 class V3d_View;
-class V3d_LayerMgr;
 class V3d_Light;
 class V3d_AmbientLight;
 class V3d_PositionLight;
@@ -47,8 +46,7 @@ class V3d_ColorScaleLayerItem;
 
 //! This package contains the set of commands and services
 //! of the 3D Viewer. It provides a set of high level commands
-//! to control the views and viewing modes. This package is
-//! complementary to the Visual3D graphic package.
+//! to control the views and viewing modes.
 class V3d 
 {
 public:
@@ -100,7 +98,6 @@ private:
 
 friend class V3d_Viewer;
 friend class V3d_View;
-friend class V3d_LayerMgr;
 friend class V3d_Light;
 friend class V3d_AmbientLight;
 friend class V3d_PositionLight;

@@ -17,55 +17,59 @@
 #ifndef _V3d_Viewer_HeaderFile
 #define _V3d_Viewer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <V3d_ListOfTransient.hxx>
 #include <Aspect_Background.hxx>
+#include <Aspect_GenId.hxx>
 #include <Aspect_GradientBackground.hxx>
-#include <Standard_Real.hxx>
-#include <V3d_TypeOfOrientation.hxx>
-#include <V3d_TypeOfVisualization.hxx>
-#include <V3d_TypeOfShadingModel.hxx>
-#include <V3d_TypeOfSurfaceDetail.hxx>
-#include <Quantity_PlaneAngle.hxx>
-#include <V3d_TypeOfView.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
-#include <Standard_Boolean.hxx>
-#include <gp_Ax3.hxx>
-#include <Quantity_Length.hxx>
-#include <Aspect_GridType.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <MMgt_TShared.hxx>
-#include <Standard_ExtString.hxx>
-#include <Standard_CString.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <V3d_TypeOfUpdate.hxx>
-#include <Quantity_TypeOfColor.hxx>
-#include <Quantity_Parameter.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_GridDrawMode.hxx>
+#include <Aspect_GridType.hxx>
+
+#include <gp_Ax3.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
+
+#include <MMgt_TShared.hxx>
+
+#include <Standard.hxx>
+#include <Standard_Boolean.hxx>
+#include <Standard_CString.hxx>
+#include <Standard_ExtString.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_Type.hxx>
+
+#include <TColStd_MapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-class Graphic3d_GraphicDriver;
-class Visual3d_ViewManager;
-class V3d_Light;
-class Graphic3d_Structure;
-class V3d_RectangularGrid;
-class V3d_CircularGrid;
-class Graphic3d_Group;
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+
+#include <V3d_ListOfTransient.hxx>
+#include <V3d_TypeOfOrientation.hxx>
+#include <V3d_TypeOfShadingModel.hxx>
+#include <V3d_TypeOfSurfaceDetail.hxx>
+#include <V3d_TypeOfUpdate.hxx>
+#include <V3d_TypeOfView.hxx>
+#include <V3d_TypeOfVisualization.hxx>
+
+#include <Quantity_NameOfColor.hxx>
+#include <Quantity_Length.hxx>
+#include <Quantity_Parameter.hxx>
+#include <Quantity_PlaneAngle.hxx>
+#include <Quantity_TypeOfColor.hxx>
+
+class Aspect_Grid;
 class Graphic3d_AspectMarker3d;
+class Graphic3d_GraphicDriver;
+class Graphic3d_Group;
+class Graphic3d_Structure;
 class V3d_BadValue;
+class V3d_CircularGrid;
+class V3d_Light;
+class V3d_RectangularGrid;
 class V3d_View;
 class Quantity_Color;
-class gp_Ax3;
-class Aspect_Grid;
-class Aspect_Background;
-class Aspect_GradientBackground;
-
 
 class V3d_Viewer;
 DEFINE_STANDARD_HANDLE(V3d_Viewer, MMgt_TShared)
@@ -169,23 +173,9 @@ public:
   //! in the viewer.
   Standard_EXPORT void SetDefaultViewProj (const V3d_TypeOfOrientation Orientation);
   
-  //! Gives the default visualisation mode..
+  //! Gives the default visualization mode..
   Standard_EXPORT void SetDefaultVisualization (const V3d_TypeOfVisualization Type);
-  
-  //! defines the strategy concerning the ZBuffer activity.
-  //! If Automatic is true, ZBuffer will be activated or
-  //! deactivated depending on the fact that faces exist or
-  //! not in the Viewer. This will optimize the response time
-  //! in the case where only wireframe objects are displayed.
-  //! If Automatic is False, ZBuffer will be activated or
-  //! deactivated depending on the choice of SetVisualization
-  //! in each View.
-  //! Note that by default, the ZBufferManagment is not automatic.
-  Standard_EXPORT void SetZBufferManagment (const Standard_Boolean Automatic);
-  
-  //! returns the ZBuffer stategy choice.
-  Standard_EXPORT Standard_Boolean ZBufferManagment() const;
-  
+
   //! Gives the default type of SHADING.
   Standard_EXPORT void SetDefaultShadingModel (const V3d_TypeOfShadingModel Type);
   
@@ -198,7 +188,7 @@ public:
   //! up the viewer. This can be immediate <ASAP> or
   //! deferred <WAIT>. In this latter case, the views are
   //! updated when the method Update(me) is called.
-  Standard_EXPORT void SetUpdateMode (const V3d_TypeOfUpdate Mode);
+  Standard_EXPORT void SetUpdateMode (const V3d_TypeOfUpdate theMode);
   
   Standard_EXPORT void SetDefaultTypeOfView (const V3d_TypeOfView Type);
   
@@ -214,7 +204,7 @@ public:
   //! Activates all the lights defined in this viewer.
   Standard_EXPORT void SetLightOn();
   
-  //! Desactivate MyLight in this viewer.
+  //! Deactivates MyLight in this viewer.
   Standard_EXPORT void SetLightOff (const Handle(V3d_Light)& MyLight);
   
   //! Deactivate all the Lights defined in this viewer.
@@ -314,8 +304,8 @@ public:
   
   Standard_EXPORT Handle(V3d_Light) DefinedLight() const;
   
-  //! Returns the viewer associated to Visual3d .
-  Standard_EXPORT Handle(Visual3d_ViewManager) Viewer() const;
+  //! Returns the structure manager associated to this viewer.
+  Standard_EXPORT Handle(Graphic3d_StructureManager) StructureManager() const;
   
   //! Returns the Selected Light.
   Standard_EXPORT Handle(V3d_Light) CurrentSelectedLight() const;
@@ -417,13 +407,7 @@ public:
 
   //! Temporarly hide grid echo.
   Standard_EXPORT void HideGridEcho (const Handle(V3d_View)& theView);
-  
-  //! Sets the settings for a single Z layer.
-  Standard_EXPORT void SetZLayerSettings (const Standard_Integer theLayerId, const Graphic3d_ZLayerSettings& theSettings);
-  
-  //! Returns the settings of a single Z layer.
-  Standard_EXPORT Graphic3d_ZLayerSettings ZLayerSettings (const Standard_Integer theLayerId);
-  
+
   //! Add a new top-level Z layer to all managed views and get
   //! its ID as <theLayerId> value. The Z layers are controlled entirely
   //! by viewer, it is not possible to add a layer to a
@@ -431,41 +415,41 @@ public:
   //! not be created. The layer mechanism allows to display structures
   //! in higher layers in overlay of structures in lower layers.
   Standard_EXPORT Standard_Boolean AddZLayer (Standard_Integer& theLayerId);
-  
+
   //! Remove Z layer with ID <theLayerId>. Method returns
   //! Standard_False if the layer can not be removed or doesn't exists.
   //! By default, there are always default bottom-level layer that can't
   //! be removed.
   Standard_EXPORT Standard_Boolean RemoveZLayer (const Standard_Integer theLayerId);
-  
+
   //! Return all Z layer ids in sequence ordered by overlay level
   //! from lowest layer to highest ( foreground ). The first layer ID
   //! in sequence is the default layer that can't be removed.
   Standard_EXPORT void GetAllZLayers (TColStd_SequenceOfInteger& theLayerSeq) const;
-  
-  Standard_EXPORT const Handle(Graphic3d_GraphicDriver)& Driver() const;
-  
-  Standard_EXPORT Standard_ExtString NextName() const;
-  
-  Standard_EXPORT Standard_CString Domain() const;
 
+  //! Sets the settings for a single Z layer.
+  Standard_EXPORT void SetZLayerSettings (const Standard_Integer theLayerId, const Graphic3d_ZLayerSettings& theSettings);
+
+  //! Returns the settings of a single Z layer.
+  Standard_EXPORT Graphic3d_ZLayerSettings ZLayerSettings (const Standard_Integer theLayerId);
+
+  Standard_EXPORT const Handle(Graphic3d_GraphicDriver)& Driver() const;
+
+  Standard_EXPORT Standard_ExtString NextName() const;
+
+  Standard_EXPORT Standard_CString Domain() const;
 
 friend class V3d_View;
 friend class V3d_Light;
-
 
   DEFINE_STANDARD_RTTI(V3d_Viewer,MMgt_TShared)
 
 protected:
 
-  
   Standard_EXPORT void IncrCount();
-
-
 
 private:
 
-  
   //! Returns the default background colour.
   Standard_EXPORT Aspect_Background GetBackgroundColor() const;
   
@@ -480,11 +464,13 @@ private:
   
   Standard_EXPORT Standard_Boolean IsActive (const Handle(V3d_View)& aView) const;
 
+private:
+
   Standard_Integer myNextCount;
   Handle(Graphic3d_GraphicDriver) myDriver;
   TCollection_ExtendedString myName;
   TCollection_AsciiString myDomain;
-  Handle(Visual3d_ViewManager) MyViewer;
+  Handle(Graphic3d_StructureManager) myStructureManager;
   V3d_ListOfTransient MyDefinedViews;
   V3d_ListOfTransient MyActiveViews;
   V3d_ListOfTransient MyDefinedLights;
@@ -517,14 +503,8 @@ private:
   Handle(Graphic3d_Group) myGridEchoGroup;
   Handle(Graphic3d_AspectMarker3d) myGridEchoAspect;
   Graphic3d_Vertex myGridEchoLastVert;
-
-
+  TColStd_MapOfInteger myLayerIds;
+  Aspect_GenId myZLayerGenId;
 };
-
-
-
-
-
-
 
 #endif // _V3d_Viewer_HeaderFile

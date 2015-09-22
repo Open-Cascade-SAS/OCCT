@@ -14,24 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Visual3d_PickError_HeaderFile
-#define _Visual3d_PickError_HeaderFile
+#ifndef _Graphic3d_TypeOfVisualization_HeaderFile
+#define _Graphic3d_TypeOfVisualization_HeaderFile
 
-#include <Standard_Type.hxx>
-#include <Standard_DefineException.hxx>
-#include <Standard_SStream.hxx>
-#include <Standard_OutOfRange.hxx>
+//! Modes of visualisation of objects in a view
+//!
+//! TOV_WIREFRAME   wireframe visualisation
+//! TOV_SHADING     shaded visualisation
+enum Graphic3d_TypeOfVisualization
+{
+  Graphic3d_TOV_WIREFRAME,
+  Graphic3d_TOV_SHADING
+};
 
-class Visual3d_PickError;
-DEFINE_STANDARD_HANDLE(Visual3d_PickError, Standard_OutOfRange)
-
-#if !defined No_Exception && !defined No_Visual3d_PickError
-  #define Visual3d_PickError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Visual3d_PickError::Raise(MESSAGE);
-#else
-  #define Visual3d_PickError_Raise_if(CONDITION, MESSAGE)
-#endif
-
-DEFINE_STANDARD_EXCEPTION(Visual3d_PickError, Standard_OutOfRange)
-
-#endif // _Visual3d_PickError_HeaderFile
+#endif // _Graphic3d_TypeOfVisualization_HeaderFile

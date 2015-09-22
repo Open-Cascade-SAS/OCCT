@@ -18,6 +18,8 @@
 
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_StereoMode.hxx>
+#include <Graphic3d_TypeOfShadingModel.hxx>
+#include <Graphic3d_TypeOfSurfaceDetail.hxx>
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>
@@ -29,7 +31,7 @@
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_Texture.hxx>
-#include <Visual3d_TypeOfModel.hxx>
+
 
 class OpenGl_View;
 
@@ -257,7 +259,7 @@ public:
   Standard_EXPORT const OpenGl_SurfaceDetailState& SurfaceDetailState() const;
 
   //! Updates state of OCCT surface detail.
-  Standard_EXPORT void UpdateSurfaceDetailStateTo (const Visual3d_TypeOfSurfaceDetail theDetail);
+  Standard_EXPORT void UpdateSurfaceDetailStateTo (const Graphic3d_TypeOfSurfaceDetail theDetail);
 
 public:
 
@@ -272,8 +274,14 @@ public:
     myContext = theCtx;
   }
 
+  //! Returns true when provided context is the same as used one by shader manager.
+  bool IsSameContext (OpenGl_Context* theCtx) const
+  {
+    return myContext == theCtx;
+  }
+
   //! Sets shading model.
-  Standard_EXPORT void SetShadingModel(const Visual3d_TypeOfModel theModel);
+  Standard_EXPORT void SetShadingModel (const Graphic3d_TypeOfShadingModel theModel);
 
   //! Sets last view manger used with.
   //! Helps to handle matrix states in multi-view configurations.
@@ -301,7 +309,7 @@ protected:
     {
       aBits |= OpenGl_PO_ClipPlanes;
     }
-    if (theEnableEnvMap && mySurfaceDetailState.Detail() == Visual3d_TOD_ENVIRONMENT)
+    if (theEnableEnvMap && mySurfaceDetailState.Detail() == Graphic3d_TOD_ENVIRONMENT)
     {
       // Environment map overwrites material texture
       aBits |= OpenGl_PO_TextureEnv;
@@ -355,7 +363,7 @@ protected:
   Standard_Boolean prepareStdProgramLight (Handle(OpenGl_ShaderProgram)& theProgram,
                                            const Standard_Integer        theBits)
   {
-    return myShadingModel == Visual3d_TOM_FRAGMENT
+    return myShadingModel == Graphic3d_TOSM_FRAGMENT
          ? prepareStdProgramPhong   (theProgram, theBits)
          : prepareStdProgramGouraud (theProgram, theBits);
   }
@@ -385,7 +393,7 @@ protected:
 
 protected:
 
-  Visual3d_TypeOfModel               myShadingModel;       //!< lighting shading model
+  Graphic3d_TypeOfShadingModel       myShadingModel;       //!< lighting shading model
   OpenGl_ShaderProgramList           myProgramList;        //!< The list of shader programs
   Handle(OpenGl_SetOfShaderPrograms) myLightPrograms;      //!< pointer to active lighting programs matrix
   OpenGl_SetOfShaderPrograms         myFlatPrograms;       //!< programs matrix without  lighting

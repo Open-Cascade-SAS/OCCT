@@ -40,7 +40,7 @@ namespace
 void OpenGl_Trihedron::resetTransformations (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
-  const Handle(OpenGl_View)& aView    = theWorkspace->ActiveView();
+  const OpenGl_View*            aView    = theWorkspace->View();
   GLdouble anU = 1.0;
   GLdouble aV = 1.0;
   if (aView->Height() < aView->Width())

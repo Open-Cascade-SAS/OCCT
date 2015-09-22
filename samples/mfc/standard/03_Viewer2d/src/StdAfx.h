@@ -148,7 +148,6 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS.hxx>
-#include <Visual3d_ViewManager.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <WNT_Window.hxx>

@@ -1,3 +1,5 @@
+// Created on: 1991-10-07
+// Created by: NW,JPB,CAL
 // Copyright (c) 1991-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
@@ -12,47 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef InterfaceGraphic_AspectHeader
-#define InterfaceGraphic_AspectHeader
+#ifndef _Graphic3d_TypeOfSurfaceDetail_HeaderFile
+#define _Graphic3d_TypeOfSurfaceDetail_HeaderFile
 
-#include <Aspect_Drawable.hxx>
-#include <Aspect_RenderingContext.hxx>
+//! Modes of visualisation of objects in a view
+//!
+//! TOD_NONE        no texture mapping
+//! TOD_ENVIRONMENT only environnement mapping
+//! TOD_ALL     environnement + texture mapping
+enum Graphic3d_TypeOfSurfaceDetail
+{
+  Graphic3d_TOD_NONE,
+  Graphic3d_TOD_ENVIRONMENT,
+  Graphic3d_TOD_ALL
+};
 
-/* WINDOW */
-
-typedef struct {
-
-  int IsDefined;
-
-  Aspect_Drawable XWindow;
-  Aspect_Drawable XParentWindow;
-
-  int dx, dy;
-  int left, top;
-
-  struct {
-    float r, g, b;
-  } Background;
-
-} CALL_DEF_WINDOW;
-
-
-typedef struct {
-  int listIndex;
-  void*  layerData;
-} CALL_DEF_PTRLAYER, *call_def_ptrLayer;
-
-
-/* LAYER */
-
-typedef struct {
-  CALL_DEF_PTRLAYER* ptrLayer;
-  int layerType;
-  int attach;
-  int sizeDependent;
-  float ortho[4];
-  float viewport[2];
-
-} CALL_DEF_LAYER;
-
-#endif /* InterfaceGraphic_AspectHeader */
+#endif // _Graphic3d_TypeOfSurfaceDetail_HeaderFile

@@ -26,7 +26,6 @@
 
 #include <TColStd_Array2OfReal.hxx>
 #include <V3d_View.hxx>
-#include <Visual3d_View.hxx>
 
 #include <BRepOffsetAPI_Sewing.hxx>
 

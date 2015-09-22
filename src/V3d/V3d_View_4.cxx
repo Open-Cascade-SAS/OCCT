@@ -35,13 +35,14 @@
 #include <V3d_UnMapped.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
 
 #define MYEPSILON1 0.0001		// Comparison with 0.0
 #define MYEPSILON2 M_PI / 180.	// Delta between 2 angles
 
-/*----------------------------------------------------------------------*/
-
+//=============================================================================
+//function : SetGrid
+//purpose  :
+//=============================================================================
 void V3d_View::SetGrid (const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid)
 {
   MyPlane	= aPlane;
@@ -112,17 +113,20 @@ void V3d_View::SetGrid (const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid)
      }
 }
 
+//=============================================================================
+//function : SetGridActivity
+//purpose  :
+//=============================================================================
 void V3d_View::SetGridActivity (const Standard_Boolean AFlag)
 {
   if (AFlag) MyGrid->Activate ();
   else MyGrid->Deactivate ();
 }
 
-void V3d_View::SetGridGraphicValues (const Handle(Aspect_Grid)& )
-{
-}
-
-
+//=============================================================================
+//function : toPolarCoords
+//purpose  :
+//=============================================================================
 void toPolarCoords (const Standard_Real theX, const Standard_Real theY, 
                           Standard_Real& theR, Standard_Real& thePhi)
 {
@@ -130,6 +134,10 @@ void toPolarCoords (const Standard_Real theX, const Standard_Real theY,
   thePhi = ATan2 (theY, theX);  
 }
 
+//=============================================================================
+//function : toCartesianCoords
+//purpose  :
+//=============================================================================
 void toCartesianCoords (const Standard_Real theR, const Standard_Real thePhi, 
                               Standard_Real& theX, Standard_Real& theY)
 {
@@ -137,13 +145,18 @@ void toCartesianCoords (const Standard_Real theR, const Standard_Real thePhi,
   theY = theR * Sin (thePhi);
 }
 
+//=============================================================================
+//function : Compute
+//purpose  :
+//=============================================================================
 Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
 {
   Graphic3d_Vertex CurPoint, NewPoint;
   Standard_Real X1, Y1, Z1, X2, Y2, Z2;
   Standard_Real XPp, YPp;
+  Handle(Graphic3d_Camera) aCamera = Camera();
 
-  gp_Dir aRefPlane = myCamera->Direction().Reversed();
+  gp_Dir aRefPlane = aCamera->Direction().Reversed();
   X1 = aRefPlane.X(); Y1 = aRefPlane.Y(); Z1 = aRefPlane.Z();
   MyPlane.Direction ().Coord (X2, Y2, Z2);
 
@@ -193,9 +206,9 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
   AVertex.Coord (x1, y1, z1);
     
   // project ray from camera onto grid plane
-  gp_Vec aProjection  = myCamera->IsOrthographic()
-                      ? gp_Vec (myCamera->Direction())
-                      : gp_Vec (myCamera->Eye(), gp_Pnt (x1, y1, z1)).Normalized();
+  gp_Vec aProjection  = aCamera->IsOrthographic()
+                      ? gp_Vec (aCamera->Direction())
+                      : gp_Vec (aCamera->Eye(), gp_Pnt (x1, y1, z1)).Normalized();
   gp_Vec aPointOrigin = gp_Vec (gp_Pnt (x1, y1, z1), gp_Pnt (x0, y0, z0));
   Standard_Real aT    = aPointOrigin.Dot (aPlaneNormal) / aProjection.Dot (aPlaneNormal);
   aPointOnPlane       = gp_Vec (x1, y1, z1) + aProjection * aT;
@@ -249,45 +262,78 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
   return NewPoint;
 }
 
-// Triedron methods : the Triedron is a non-zoomable object.
-
-void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor XColor,
-                                    const Quantity_NameOfColor YColor,
-                                    const Quantity_NameOfColor ZColor,
-                                    const Standard_Real        SizeRatio,
-                                    const Standard_Real        AxisDiametr,
-                                    const Standard_Integer     NbFacettes)
+//=============================================================================
+//function : ZBufferTriedronSetup
+//purpose  :
+//=============================================================================
+void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor theXColor,
+                                    const Quantity_NameOfColor theYColor,
+                                    const Quantity_NameOfColor theZColor,
+                                    const Standard_Real        theSizeRatio,
+                                    const Standard_Real        theAxisDiametr,
+                                    const Standard_Integer     theNbFacettes)
 {
-  MyView->ZBufferTriedronSetup(XColor, YColor, ZColor, SizeRatio, AxisDiametr, NbFacettes);
+  myView->ZBufferTriedronSetup (theXColor,
+                                theYColor,
+                                theZColor,
+                                theSizeRatio,
+                                theAxisDiametr,
+                                theNbFacettes);
 }
 
-void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition APosition,
- const Quantity_NameOfColor AColor, const Standard_Real AScale, const V3d_TypeOfVisualization AMode )
+//=============================================================================
+//function : TriedronDisplay
+//purpose  :
+//=============================================================================
+void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
+                                const Quantity_NameOfColor theColor,
+                                const Standard_Real theScale,
+                                const V3d_TypeOfVisualization theMode)
 {
-  MyView->TriedronDisplay (APosition, AColor, AScale, (AMode == V3d_WIREFRAME));
+  myView->TriedronDisplay (thePosition, theColor, theScale, (theMode == V3d_WIREFRAME));
 }
 
-void V3d_View::TriedronErase ( )
+//=============================================================================
+//function : TriedronErase
+//purpose  :
+//=============================================================================
+void V3d_View::TriedronErase()
 {
-  MyView->TriedronErase ( );
+  myView->TriedronErase();
 }
 
-void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho AType )
+//=============================================================================
+//function : TriedronEcho
+//purpose  :
+//=============================================================================
+void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho theType)
 {
-  MyView->TriedronEcho (AType);
+  myView->TriedronEcho (theType);
 }
 
+//=============================================================================
+//function : GetGraduatedTrihedron
+//purpose  :
+//=============================================================================
 const Graphic3d_GraduatedTrihedron& V3d_View::GetGraduatedTrihedron() const
 {
-  return MyView->GetGraduatedTrihedron();
+  return myView->GetGraduatedTrihedron();
 }
 
+//=============================================================================
+//function : GraduatedTrihedronDisplay
+//purpose  :
+//=============================================================================
 void V3d_View::GraduatedTrihedronDisplay(const Graphic3d_GraduatedTrihedron& theTrihedronData)
 {
-  MyView->GraduatedTrihedronDisplay(theTrihedronData);
+  myView->GraduatedTrihedronDisplay (theTrihedronData);
 }
 
+//=============================================================================
+//function : GraduatedTrihedronErase
+//purpose  :
+//=============================================================================
 void V3d_View::GraduatedTrihedronErase()
 {
-  MyView->GraduatedTrihedronErase();
+  myView->GraduatedTrihedronErase();
 }

@@ -17,27 +17,25 @@
 #ifndef _PrsMgr_PresentationManager_HeaderFile
 #define _PrsMgr_PresentationManager_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
+#include <Graphic3d_NameOfMaterial.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_ZLayerId.hxx>
+#include <MMgt_TShared.hxx>
 #include <PrsMgr_ListOfPresentations.hxx>
 #include <Quantity_Color.hxx>
-#include <MMgt_TShared.hxx>
-#include <Standard_Boolean.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Graphic3d_NameOfMaterial.hxx>
-#include <Graphic3d_ZLayerId.hxx>
-class Visual3d_ViewManager;
-class V3d_Viewer;
-class Standard_NoSuchObject;
-class PrsMgr_PresentableObject;
-class Prs3d_Presentation;
-class Geom_Transformation;
-class Graphic3d_StructureManager;
-class Prs3d_ShadingAspect;
-class PrsMgr_Presentation;
+#include <Standard.hxx>
+#include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Type.hxx>
 
+class Geom_Transformation;
+class Prs3d_Presentation;
+class Prs3d_ShadingAspect;
+class PrsMgr_PresentableObject;
+class PrsMgr_Presentation;
+class Standard_NoSuchObject;
+class V3d_Viewer;
 
 class PrsMgr_PresentationManager;
 DEFINE_STANDARD_HANDLE(PrsMgr_PresentationManager, MMgt_TShared)
@@ -54,7 +52,7 @@ public:
   
 
   //! Creates a framework to manage displays and graphic entities with the 3D view theStructureManager.
-  Standard_EXPORT PrsMgr_PresentationManager(const Handle(Visual3d_ViewManager)& theStructureManager);
+  Standard_EXPORT PrsMgr_PresentationManager(const Handle(Graphic3d_StructureManager)& theStructureManager);
   
   //! Displays the presentation of the object in the given Presentation manager with the given mode.
   //! The mode should be enumerated by the object which inherits PresentableObject.
@@ -175,7 +173,7 @@ protected:
   //! Removes a presentation of the presentable object thePrsObject to this framework. thePrsObject has the display mode theMode.
   Standard_EXPORT Standard_Boolean RemovePresentation (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
 
-  Handle(Visual3d_ViewManager) myStructureManager;
+  Handle(Graphic3d_StructureManager) myStructureManager;
   Standard_Integer myImmediateModeOn;
   PrsMgr_ListOfPresentations myImmediateList;
   PrsMgr_ListOfPresentations myViewDependentImmediateList;

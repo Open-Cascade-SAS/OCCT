@@ -47,7 +47,6 @@
 #include <TopoDS_Shape.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
 
 #include <stdio.h>
 static TCollection_AsciiString AIS_Local_SelName(const Standard_Address address,

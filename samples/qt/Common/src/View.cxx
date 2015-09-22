@@ -17,7 +17,6 @@
 #include <QMdiSubWindow>
 #include <QStyleFactory>
 
-#include <Visual3d_View.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TextureEnv.hxx>
@@ -1147,7 +1146,7 @@ bool View::dump(Standard_CString theFile)
       exFormat = Graphic3d_EF_PGF;
     try
     {
-      myView->View()->Export( theFile, exFormat );
+      myView->Export( theFile, exFormat );
     }
     catch(...)
     {

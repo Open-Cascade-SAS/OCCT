@@ -259,10 +259,7 @@ void Graphic3d_Group::Update() const
     return;
   }
 
-  if (myStructure->StructureManager()->UpdateMode() == Aspect_TOU_ASAP)
-  {
-    myStructure->StructureManager()->Update();
-  }
+  myStructure->StructureManager()->Update (myStructure->StructureManager()->UpdateMode());
 }
 
 // =======================================================================

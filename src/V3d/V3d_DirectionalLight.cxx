@@ -51,42 +51,46 @@
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_ContextPick.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_ViewManager.hxx>
 
-//-Constructors
-V3d_DirectionalLight::V3d_DirectionalLight(const Handle(V3d_Viewer)& VM, const
-V3d_TypeOfOrientation Direction,const Quantity_NameOfColor Name,const Standard_Boolean Headlight):V3d_PositionLight(VM) { 
-  Quantity_Color C(Name) ;
-  Graphic3d_Vertex T(0.,0.,0.) ;
-  Graphic3d_Vertex P ;
-  Graphic3d_Vector V = V3d::GetProjAxis(Direction) ;
-  
-  MyType = V3d_DIRECTIONAL ;
-  MyLight = new Visual3d_Light(C,V, Headlight) ;
-  // The initial target is chosen at random
-  MyTarget = T;
-// Position is found
-  P.SetCoord(-V.X(),-V.Y(),-V.Z());
-  MyDisplayPosition = P; 
-
+// =======================================================================
+// function : V3d_DirectionalLight
+// purpose  :
+// =======================================================================
+V3d_DirectionalLight::V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
+                                            const V3d_TypeOfOrientation theDirection,
+                                            const Quantity_NameOfColor theColor,
+                                            const Standard_Boolean theIsHeadlight)
+: V3d_PositionLight (theViewer)
+{
+  Graphic3d_Vector aV = V3d::GetProjAxis (theDirection);
+  SetType (V3d_DIRECTIONAL);
+  SetColor (theColor);
+  SetHeadlight (theIsHeadlight);
+  SetTarget (0., 0., 0.);
+  SetPosition (-aV.X(), -aV.Y(), -aV.Z());
 }
 
-V3d_DirectionalLight::V3d_DirectionalLight(const Handle(V3d_Viewer)& VM,const Standard_Real Xt,const Standard_Real Yt,const Standard_Real Zt,const Standard_Real Xp,const Standard_Real Yp,const Standard_Real Zp,const Quantity_NameOfColor Name,const Standard_Boolean Headlight):V3d_PositionLight(VM) { 
-  Quantity_Color C(Name) ;
-  Graphic3d_Vertex T(Xt,Yt,Zt) ;
-  Graphic3d_Vertex P(Xp,Yp,Zp) ;
-  Graphic3d_Vector V(P,T);
-  
-  MyType = V3d_DIRECTIONAL ;
-  V.Normalize();
-  MyLight = new Visual3d_Light(C,V, Headlight) ;
-  MyTarget = T;
-  MyDisplayPosition = P;
+// =======================================================================
+// function : V3d_DirectionalLight
+// purpose  :
+// =======================================================================
+V3d_DirectionalLight::V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
+                                            const Standard_Real theXt,
+                                            const Standard_Real theYt,
+                                            const Standard_Real theZt,
+                                            const Standard_Real theXp,
+                                            const Standard_Real theYp,
+                                            const Standard_Real theZp,
+                                            const Quantity_NameOfColor theColor,
+                                            const Standard_Boolean theIsHeadlight)
+: V3d_PositionLight (theViewer)
+{
+  SetType (V3d_DIRECTIONAL);
+  SetColor (theColor);
+  SetHeadlight (theIsHeadlight);
+  SetTarget (theXt, theYt, theZt);
+  SetPosition (theXp, theYp, theZp);
 }
-
-//-Methods, in order
 
 // =======================================================================
 // function : SetSmoothAngle
@@ -94,49 +98,102 @@ V3d_DirectionalLight::V3d_DirectionalLight(const Handle(V3d_Viewer)& VM,const St
 // =======================================================================
 void V3d_DirectionalLight::SetSmoothAngle (const Standard_Real theValue)
 {
-  MyLight->SetSmoothAngle (theValue);
+  V3d_BadValue_Raise_if (theValue < 0.0 || theValue > M_PI / 2.0,
+    "Bad value for smoothing angle");
+
+  myLight.Smoothness = static_cast<Standard_ShortReal> (theValue);
 }
 
-void V3d_DirectionalLight::SetDirection(const V3d_TypeOfOrientation Direction) {
-
-  Graphic3d_Vector V = V3d::GetProjAxis(Direction) ;
-  MyLight->SetDirection(V) ;
+// =======================================================================
+// function : SetDirection
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::SetDirection (const V3d_TypeOfOrientation theDirection)
+{
+  Graphic3d_Vector aV = V3d::GetProjAxis (theDirection);
+  SetDirection (aV.X(), aV.Y(), aV.Z());
 }
 
-void V3d_DirectionalLight::SetDirection(const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz) {
+// =======================================================================
+// function : SetDirection
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::SetDirection (const Standard_Real theVx,
+                                         const Standard_Real theVy,
+                                         const Standard_Real theVz)
+{
+  V3d_BadValue_Raise_if (Sqrt (theVx * theVx + theVy * theVy + theVz * theVz) <= 0.,
+                         "V3d_DirectionalLight::SetDirection, "
+                         "null vector" );
 
-  V3d_BadValue_Raise_if( sqrt( Vx*Vx + Vy*Vy + Vz*Vz ) <= 0.,"V3d_DirectionalLight::SetDirection, null vector" );
+  Graphic3d_Vector aV (theVx, theVy, theVz);
+  aV.Normalize();
 
-  Graphic3d_Vector V(Vx,Vy,Vz) ;
-  V.Normalize() ;
-  MyLight->SetDirection(V) ;
+  myLight.Direction.x() = static_cast<Standard_ShortReal> (aV.X());
+  myLight.Direction.y() = static_cast<Standard_ShortReal> (aV.Y());
+  myLight.Direction.z() = static_cast<Standard_ShortReal> (aV.Z());
 }
 
-void V3d_DirectionalLight::SetDisplayPosition(const Standard_Real X, const Standard_Real Y, const Standard_Real Z) {
+// =======================================================================
+// function : SetDisplayPosition
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::SetDisplayPosition (const Standard_Real theX,
+                                               const Standard_Real theY,
+                                               const Standard_Real theZ)
+{
+  myDisplayPosition.SetCoord(theX, theY, theZ);
 
-  Standard_Real Xt,Yt,Zt;
+  Standard_Real aXt, aYt, aZt;
+  Target (aXt, aYt, aZt);
 
-  MyDisplayPosition.SetCoord(X,Y,Z) ;
-  MyTarget.Coord(Xt,Yt,Zt);
-  SetDirection(Xt-X,Yt-Y,Zt-Z);
+  Standard_Real aXd = aXt - theX;
+  Standard_Real aYd = aYt - theY;
+  Standard_Real aZd = aZt - theZ;
+  if (!Graphic3d_Vector (aXd, aYd, aZd).LengthZero())
+  {
+    SetDirection (aXd, aYd, aZd);
+  }
 }
 
-void V3d_DirectionalLight::SetPosition(const Standard_Real Xp, const Standard_Real Yp, const Standard_Real Zp) {
-
-  SetDisplayPosition (Xp,Yp,Zp);
+// =======================================================================
+// function : SetPosition
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::SetPosition (const Standard_Real theXp,
+                                        const Standard_Real theYp,
+                                        const Standard_Real theZp)
+{
+  SetDisplayPosition (theXp, theYp, theZp);
 }
 
-void V3d_DirectionalLight::Position(Standard_Real& Xp, Standard_Real& Yp, Standard_Real& Zp)const  {
-
-  DisplayPosition (Xp,Yp,Zp) ;
+// =======================================================================
+// function : Position
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::Position (Standard_Real& theXp,
+                                     Standard_Real& theYp,
+                                     Standard_Real& theZp) const
+{
+  DisplayPosition (theXp, theYp, theZp) ;
 }
 
-void V3d_DirectionalLight::DisplayPosition(Standard_Real& Xp, Standard_Real& Yp, Standard_Real& Zp)const  {
-
-  MyDisplayPosition.Coord(Xp,Yp,Zp) ;
+// =======================================================================
+// function : DisplayPosition
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::DisplayPosition (Standard_Real& theXp,
+                                            Standard_Real& theYp,
+                                            Standard_Real& theZp) const
+{
+  myDisplayPosition.Coord (theXp, theYp, theZp) ;
 }
 
-void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const Handle(V3d_View)& aView) const
+// =======================================================================
+// function : DisplayPosition
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& theSymbol, const Handle(V3d_View)& theView) const
 {
   Standard_Real Xi,Yi,Zi,Xf,Yf,Zf,Rayon,PXT,PYT,X,Y,Z,XT,YT,ZT;
   Standard_Real A,B,C,Dist,Beta,CosBeta,SinBeta,Coef,X1,Y1,Z1;
@@ -144,15 +201,15 @@ void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const
   Standard_Integer IXP,IYP,j;
   TColStd_Array2OfReal MatRot(0,2,0,2);
 
-  aView->Proj(VX,VY,VZ);
+  theView->Proj(VX,VY,VZ);
   this->DisplayPosition(Xi,Yi,Zi);
   Rayon = this->Radius();
-  aView->Project(Xi,Yi,Zi,PXT,PYT); 
-  aView->Convert(PXT,PYT,IXP,IYP);
+  theView->Project(Xi,Yi,Zi,PXT,PYT); 
+  theView->Convert(PXT,PYT,IXP,IYP);
 //  Coordinated 3d in the plane of projection of the source.
-  aView->Convert(IXP,IYP,XT,YT,ZT);
-  aView->Convert(PXT,PYT+Rayon,IXP,IYP);
-  aView->Convert(IXP,IYP,X,Y,Z);
+  theView->Convert(IXP,IYP,XT,YT,ZT);
+  theView->Convert(PXT,PYT+Rayon,IXP,IYP);
+  theView->Convert(IXP,IYP,X,Y,Z);
   X = X+Xi-XT; Y = Y+Yi-YT; Z = Z+Zi-ZT;
   Dist = Sqrt( Square(X-Xi) + Square(Y-Yi) + Square(Z-Zi) );
 //  Axis of rotation.
@@ -161,7 +218,7 @@ void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const
   C = (Z-Zi)/Dist;
 
 //  A sphere is drawn
-  V3d::CircleInPlane(gsymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
+  V3d::CircleInPlane(theSymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
   for( j=1 ; j<=3 ; j++ ) {
     Beta = j * M_PI / 4.;
     CosBeta = Cos(Beta);
@@ -184,7 +241,7 @@ void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const
     Y1 = VX * MatRot(1,0) + VY * MatRot(1,1) + VZ * MatRot(1,2);
     Z1 = VX * MatRot(2,0) + VY * MatRot(2,1) + VZ * MatRot(2,2);
     VX = X1 + Xi - Xf ; VY = Y1 + Yi - Yf ; VZ = Z1 + Zi - Zf;
-    V3d::CircleInPlane(gsymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
+    V3d::CircleInPlane(theSymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
   }
 
 //  The arrow is drawn
@@ -195,14 +252,18 @@ void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(Standard_ShortReal(Xi),Standard_ShortReal(Yi),Standard_ShortReal(Zi));
   aPrims->AddVertex(Standard_ShortReal(X),Standard_ShortReal(Y),Standard_ShortReal(Z));
-  gsymbol->AddPrimitiveArray(aPrims);
+  theSymbol->AddPrimitiveArray(aPrims);
 
-  V3d::ArrowOfRadius(gsymbol, X, Y, Z, DX, DY, DZ, M_PI / 15., Rayon / 20.);
+  V3d::ArrowOfRadius(theSymbol, X, Y, Z, DX, DY, DZ, M_PI / 15., Rayon / 20.);
 }
 
-void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
-                                    const V3d_TypeOfRepresentation TPres) {
-
+// =======================================================================
+// function : Display
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::Display (const Handle(V3d_View)& theView,
+                                    const V3d_TypeOfRepresentation theTPres)
+{
   Standard_Real X,Y,Z,Rayon;
   Standard_Real X0,Y0,Z0,VX,VY,VZ;
   Standard_Real X1,Y1,Z1;
@@ -216,37 +277,37 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
 //  Creation of a structure of non-markable elements (target, meridian and 
 //  parallel).
 
-    Pres = TPres;
-    Handle(V3d_Viewer) TheViewer = aView->Viewer();
+    Pres = theTPres;
+    Handle(V3d_Viewer) TheViewer = theView->Viewer();
     UpdSov = TheViewer->UpdateMode();
     TheViewer->SetUpdateMode(V3d_WAIT);
-    if (!MyGraphicStructure.IsNull()) {
-       MyGraphicStructure->Disconnect(MyGraphicStructure1);
-       MyGraphicStructure->Clear();
-       MyGraphicStructure1->Clear();
-       if (Pres == V3d_SAMELAST) Pres = MyTypeOfRepresentation;
+    if (!myGraphicStructure.IsNull()) {
+       myGraphicStructure->Disconnect(myGraphicStructure1);
+       myGraphicStructure->Clear();
+       myGraphicStructure1->Clear();
+       if (Pres == V3d_SAMELAST) Pres = myTypeOfRepresentation;
     }
     else {
       if (Pres == V3d_SAMELAST) Pres = V3d_SIMPLE;
-      Handle(Graphic3d_Structure) slight = new Graphic3d_Structure(TheViewer->Viewer());
-      MyGraphicStructure = slight;
-      Handle(Graphic3d_Structure) snopick = new Graphic3d_Structure(TheViewer->Viewer()); 
-      MyGraphicStructure1 = snopick;
+      Handle(Graphic3d_Structure) slight = new Graphic3d_Structure(TheViewer->StructureManager());
+      myGraphicStructure = slight;
+      Handle(Graphic3d_Structure) snopick = new Graphic3d_Structure(TheViewer->StructureManager()); 
+      myGraphicStructure1 = snopick;
     }
   
-  Handle(Graphic3d_Group) glight  = MyGraphicStructure->NewGroup();
+  Handle(Graphic3d_Group) glight  = myGraphicStructure->NewGroup();
   Handle(Graphic3d_Group) gsphere;
   if (Pres == V3d_COMPLETE
    || Pres == V3d_PARTIAL)
   {
-    gsphere = MyGraphicStructure->NewGroup();
+    gsphere = myGraphicStructure->NewGroup();
   }
   
-  Handle(Graphic3d_Group) gnopick = MyGraphicStructure1->NewGroup();
+  Handle(Graphic3d_Group) gnopick = myGraphicStructure1->NewGroup();
   
-  X0 = MyTarget.X();
-  Y0 = MyTarget.Y();
-  Z0 = MyTarget.Z();
+  X0 = myTarget.X();
+  Y0 = myTarget.Y();
+  Z0 = myTarget.Z();
 
 //Display of the position of the light.
 
@@ -255,14 +316,14 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
   Handle(Graphic3d_AspectLine3d) Asp1 = new Graphic3d_AspectLine3d();
   Asp1->SetColor(Col1);
   glight->SetPrimitivesAspect(Asp1);
-  this->Symbol(glight,aView);
+  this->Symbol(glight,theView);
   
   // Display of the markable sphere (limit at the circle).
 
   if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) {
     
     Rayon = this->Radius(); 
-    aView->Proj(VX,VY,VZ);
+    theView->Proj(VX,VY,VZ);
     V3d::CircleInPlane(gsphere,X0,Y0,Z0,VX,VY,VZ,Rayon);
     
 //Display of the meridian
@@ -273,7 +334,7 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
     gnopick->SetPrimitivesAspect(Asp2);
     
 //    Definition of the axis of circle
-    aView->Up(DXRef,DYRef,DZRef);
+    theView->Up(DXRef,DYRef,DZRef);
     this->DisplayPosition(X,Y,Z);
     DXini = X-X0; DYini = Y-Y0; DZini = Z-Z0;
     VX = DYRef*DZini - DZRef*DYini;
@@ -285,8 +346,8 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
 //  Display of the parallel
 
 //    Definition of the axis of circle
-    aView->Proj(VX,VY,VZ);
-    aView->Up(X1,Y1,Z1);
+    theView->Proj(VX,VY,VZ);
+    theView->Up(X1,Y1,Z1);
     DXRef = VY * Z1 - VZ * Y1;
     DYRef = VZ * X1 - VX * Z1;
     DZRef = VX * Y1 - VY * X1;
@@ -300,18 +361,22 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
     
   }
   
-  MyGraphicStructure->Connect(MyGraphicStructure1,Graphic3d_TOC_DESCENDANT);
+  myGraphicStructure->Connect(myGraphicStructure1,Graphic3d_TOC_DESCENDANT);
 //    cout << "MyGraphicStructure exploration \n" << flush; MyGraphicStructure->Exploration();
-  MyTypeOfRepresentation = Pres;
-  MyGraphicStructure->Display();
+  myTypeOfRepresentation = Pres;
+  myGraphicStructure->Display();
   TheViewer->SetUpdateMode(UpdSov);
 }
 
-void V3d_DirectionalLight::Direction(Standard_Real& Vx, Standard_Real& Vy, Standard_Real& Vz)const  {
-  
-  Quantity_Color C ;
-  Graphic3d_Vector V ;
-
-  MyLight->Values(C,V) ;
-  V.Coord(Vx,Vy,Vz) ;
+// =======================================================================
+// function : Direction
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::Direction (Standard_Real& theVx,
+                                      Standard_Real& theVy,
+                                      Standard_Real& theVz) const
+{
+  theVx = myLight.Direction.x();
+  theVy = myLight.Direction.y();
+  theVz = myLight.Direction.z();
 }

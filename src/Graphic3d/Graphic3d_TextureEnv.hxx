@@ -31,7 +31,7 @@ class TCollection_AsciiString;
 class Graphic3d_TextureEnv;
 DEFINE_STANDARD_HANDLE(Graphic3d_TextureEnv, Graphic3d_TextureRoot)
 
-//! This class provides environment texture usable only in Visual3d_ContextView
+//! This class provides environment texture.
 class Graphic3d_TextureEnv : public Graphic3d_TextureRoot
 {
 

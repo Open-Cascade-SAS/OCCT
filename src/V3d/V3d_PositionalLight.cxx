@@ -52,44 +52,49 @@
 #include <V3d_PositionalLight.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_ContextPick.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_ViewManager.hxx>
 
-//-Declarations
-//-Constructors
-V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2):V3d_PositionLight(VM) {
-
-  Quantity_Color C(Name) ;
-  Graphic3d_Vertex P(X,Y,Z) ;
-  Graphic3d_Vertex T(0.,0.,0.);
-
-  V3d_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
-			 "V3d_PositionalLight, bad coefficients");
-  
-  MyType = V3d_POSITIONAL ;
-  MyLight = new Visual3d_Light(C,P,A1,A2) ;
-  MyTarget = T;
-
+// =======================================================================
+// function : V3d_PositionalLight
+// purpose  :
+// =======================================================================
+V3d_PositionalLight::V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
+                                          const Standard_Real theX,
+                                          const Standard_Real theY,
+                                          const Standard_Real theZ,
+                                          const Quantity_NameOfColor theColor,
+                                          const Standard_Real theConstAttenuation,
+                                          const Standard_Real theLinearAttenuation)
+: V3d_PositionLight (theViewer)
+{
+  SetType (V3d_POSITIONAL);
+  SetColor (Quantity_Color (theColor));
+  SetTarget (0., 0., 0.);
+  SetPosition (theX, theY, theZ);
+  SetAttenuation (theConstAttenuation, theLinearAttenuation);
 }
 
-V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Standard_Real Xt, const Standard_Real Yt, const Standard_Real Zt, const Standard_Real Xp, const Standard_Real Yp, const Standard_Real Zp, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2):V3d_PositionLight(VM) {
-
-  Quantity_Color C(Name) ;
-  Graphic3d_Vertex T(Xt,Yt,Zt) ;
-  Graphic3d_Vertex P(Xp,Yp,Zp) ;
-  
-  V3d_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
-			 "V3d_PositionalLight, bad coefficients");
-  
-  MyType = V3d_POSITIONAL ;
-  MyLight = new Visual3d_Light(C,P,A1,A2) ;
-  MyTarget = T;
-  // Graphic structure is initialized during the display.
-
+// =======================================================================
+// function : V3d_PositionalLight
+// purpose  :
+// =======================================================================
+V3d_PositionalLight::V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
+                                          const Standard_Real theXt,
+                                          const Standard_Real theYt,
+                                          const Standard_Real theZt,
+                                          const Standard_Real theXp,
+                                          const Standard_Real theYp,
+                                          const Standard_Real theZp,
+                                          const Quantity_NameOfColor theColor,
+                                          const Standard_Real theConstAttenuation,
+                                          const Standard_Real theLinearAttenuation)
+: V3d_PositionLight (theViewer)
+{
+  SetType (V3d_POSITIONAL);
+  SetColor (Quantity_Color (theColor));
+  SetTarget (theXt, theYt, theZt);
+  SetPosition (theXp, theYp, theZp);
+  SetAttenuation (theConstAttenuation, theLinearAttenuation);
 }
-
-//-Methods, in order
 
 // =======================================================================
 // function : SetSmoothRadius
@@ -97,56 +102,86 @@ V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Sta
 // =======================================================================
 void V3d_PositionalLight::SetSmoothRadius (const Standard_Real theValue)
 {
-  MyLight->SetSmoothRadius (theValue);
+  V3d_BadValue_Raise_if (theValue < 0.0,
+    "V3d_PositionalLight::SetSmoothRadius,"
+    "Bad value for smoothing radius");
+
+  myLight.Smoothness = static_cast<Standard_ShortReal> (theValue);
 }
 
-void V3d_PositionalLight::SetPosition(const Standard_Real Xp, const Standard_Real Yp, const Standard_Real Zp) {
-  MyLight->SetPosition (Graphic3d_Vertex (Xp,Yp,Zp));
+// =======================================================================
+// function : SetPosition
+// purpose  :
+// =======================================================================
+void V3d_PositionalLight::SetPosition (const Standard_Real theXp,
+                                       const Standard_Real theYp,
+                                       const Standard_Real theZp)
+{
+  myLight.Position.x() = static_cast<Standard_ShortReal> (theXp);
+  myLight.Position.y() = static_cast<Standard_ShortReal> (theYp);
+  myLight.Position.z() = static_cast<Standard_ShortReal> (theZp);
 }
 
-void V3d_PositionalLight::SetAttenuation(const Standard_Real A1, const Standard_Real A2) {
+// =======================================================================
+// function : SetAttenuation
+// purpose  :
+// =======================================================================
+void V3d_PositionalLight::SetAttenuation (const Standard_Real theConstAttenuation,
+                                          const Standard_Real theLinearAttenuation)
+{
+  V3d_BadValue_Raise_if (theConstAttenuation < 0.
+                      || theConstAttenuation > 1.
+                      || theLinearAttenuation < 0.
+                      || theLinearAttenuation > 1.,
+    "V3d_PositionalLight::SetAttenuation, bad coefficients");
 
-
-  V3d_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
-			 "V3d_PositionalLight::SetAttenuation, bad coefficients");
-
-  MyLight->SetAttenuation1(A1) ;
-  MyLight->SetAttenuation2(A2) ;
+  myLight.ChangeConstAttenuation()  = static_cast<Standard_ShortReal> (theConstAttenuation);
+  myLight.ChangeLinearAttenuation() = static_cast<Standard_ShortReal> (theLinearAttenuation);
 }
 
-void V3d_PositionalLight::Position(Standard_Real& X, Standard_Real& Y, Standard_Real& Z)const  {
-  Quantity_Color C ;
-  Graphic3d_Vertex P ;
-  Standard_Real A1,A2 ;
-
-  MyLight->Values(C,P,A1,A2) ;
-  P.Coord(X,Y,Z) ;
+// =======================================================================
+// function : Position
+// purpose  :
+// =======================================================================
+void V3d_PositionalLight::Position (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
+{
+  theX = myLight.Position.x();
+  theY = myLight.Position.y();
+  theZ = myLight.Position.z();
 }
 
-void V3d_PositionalLight::Attenuation(Standard_Real& A1, Standard_Real& A2)const  {
-  Quantity_Color C ;
-  Graphic3d_Vertex P ;
-  
-  MyLight->Values(C,P,A1,A2) ;
+// =======================================================================
+// function : Attenuation
+// purpose  :
+// =======================================================================
+void V3d_PositionalLight::Attenuation (Standard_Real& theConstAttenuation,
+                                       Standard_Real& theLinearAttenuation) const
+{
+  theConstAttenuation  = myLight.ConstAttenuation();
+  theLinearAttenuation = myLight.LinearAttenuation();
 }
 
-void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const Handle(V3d_View)& aView) const {
-
+// =======================================================================
+// function : Symbol
+// purpose  :
+// =======================================================================
+void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& theSymbol, const Handle(V3d_View)& theView) const
+{
   Standard_Real Xi,Yi,Zi,Xf,Yf,Zf,Rayon,PXT,PYT,X,Y,Z,XT,YT,ZT;
   Standard_Real A,B,C,Dist,Beta,CosBeta,SinBeta,Coef,X1,Y1,Z1;
   Standard_Real VX,VY,VZ;
   Standard_Integer IXP,IYP,j;
   TColStd_Array2OfReal MatRot(0,2,0,2);
 
-  aView->Proj(VX,VY,VZ);
+  theView->Proj(VX,VY,VZ);
   this->Position(Xi,Yi,Zi);
   Rayon = this->Radius();
-  aView->Project(Xi,Yi,Zi,PXT,PYT); 
-  aView->Convert(PXT,PYT,IXP,IYP);
+  theView->Project(Xi,Yi,Zi,PXT,PYT); 
+  theView->Convert(PXT,PYT,IXP,IYP);
 //  3D Coordinate in the plane of projection of the source.
-  aView->Convert(IXP,IYP,XT,YT,ZT);
-  aView->Convert(PXT,PYT+Rayon,IXP,IYP);
-  aView->Convert(IXP,IYP,X,Y,Z);
+  theView->Convert(IXP,IYP,XT,YT,ZT);
+  theView->Convert(PXT,PYT+Rayon,IXP,IYP);
+  theView->Convert(IXP,IYP,X,Y,Z);
   X = X+Xi-XT; Y = Y+Yi-YT; Z = Z+Zi-ZT;
   Dist = Sqrt( Square(X-Xi) + Square(Y-Yi) + Square(Z-Zi) );
 //  Axis of rotation.
@@ -155,7 +190,7 @@ void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const 
   C = (Z-Zi)/Dist;
 
 //  A sphere is drawn
-  V3d::CircleInPlane(gsymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
+  V3d::CircleInPlane(theSymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
   for( j=1 ; j<=3 ; j++ ) {
     Beta = j * M_PI / 4.;
     CosBeta = Cos(Beta);
@@ -178,13 +213,16 @@ void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const 
     Y1 = VX * MatRot(1,0) + VY * MatRot(1,1) + VZ * MatRot(1,2);
     Z1 = VX * MatRot(2,0) + VY * MatRot(2,1) + VZ * MatRot(2,2);
     VX = X1 + Xi - Xf ; VY = Y1 + Yi - Yf ; VZ = Z1 + Zi - Zf;
-    V3d::CircleInPlane(gsymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
+    V3d::CircleInPlane(theSymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
   }
 }
 
-
-void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
-                                   const V3d_TypeOfRepresentation TPres )
+// =======================================================================
+// function : Display
+// purpose  :
+// =======================================================================
+void V3d_PositionalLight::Display (const Handle(V3d_View)& theView,
+                                   const V3d_TypeOfRepresentation theRepresentation)
 {
   Graphic3d_Vertex PText ;
   Standard_Real X,Y,Z,Rayon;
@@ -200,44 +238,44 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
 //  Creation of a structure snopick of non-markable elements (target, meridian and 
 //  parallel).
 
-  Pres = TPres;
-  Handle(V3d_Viewer) TheViewer = aView->Viewer();
+  Pres = theRepresentation;
+  Handle(V3d_Viewer) TheViewer = theView->Viewer();
   UpdSov = TheViewer->UpdateMode();
   TheViewer->SetUpdateMode(V3d_WAIT);
-  if (!MyGraphicStructure.IsNull()) {
-    MyGraphicStructure->Disconnect(MyGraphicStructure1);
-    MyGraphicStructure->Clear();
-    MyGraphicStructure1->Clear();
-    if (Pres == V3d_SAMELAST) Pres = MyTypeOfRepresentation;
+  if (!myGraphicStructure.IsNull()) {
+    myGraphicStructure->Disconnect(myGraphicStructure1);
+    myGraphicStructure->Clear();
+    myGraphicStructure1->Clear();
+    if (Pres == V3d_SAMELAST) Pres = myTypeOfRepresentation;
   }
   else {
     if (Pres == V3d_SAMELAST) Pres = V3d_SIMPLE;
-    Handle(Graphic3d_Structure) slight = new Graphic3d_Structure(TheViewer->Viewer());
-    MyGraphicStructure = slight;
-    Handle(Graphic3d_Structure) snopick = new Graphic3d_Structure(TheViewer->Viewer()); 
-    MyGraphicStructure1 = snopick;
+    Handle(Graphic3d_Structure) slight = new Graphic3d_Structure(TheViewer->StructureManager());
+    myGraphicStructure = slight;
+    Handle(Graphic3d_Structure) snopick = new Graphic3d_Structure(TheViewer->StructureManager()); 
+    myGraphicStructure1 = snopick;
   }
 
   Handle(Graphic3d_Group) gradius, gExtArrow, gIntArrow;
   if (Pres == V3d_COMPLETE)
   {
-    gradius   = MyGraphicStructure->NewGroup();
-    gExtArrow = MyGraphicStructure->NewGroup();
-    gIntArrow = MyGraphicStructure->NewGroup();
+    gradius   = myGraphicStructure->NewGroup();
+    gExtArrow = myGraphicStructure->NewGroup();
+    gIntArrow = myGraphicStructure->NewGroup();
   }
-  Handle(Graphic3d_Group) glight = MyGraphicStructure->NewGroup();
+  Handle(Graphic3d_Group) glight = myGraphicStructure->NewGroup();
   Handle(Graphic3d_Group) gsphere;
   if (Pres == V3d_COMPLETE
    || Pres == V3d_PARTIAL)
   {
-    gsphere = MyGraphicStructure->NewGroup();
+    gsphere = myGraphicStructure->NewGroup();
   }
   
-  Handle(Graphic3d_Group) gnopick = MyGraphicStructure1->NewGroup();
+  Handle(Graphic3d_Group) gnopick = myGraphicStructure1->NewGroup();
   
-  X0 = MyTarget.X();
-  Y0 = MyTarget.Y();
-  Z0 = MyTarget.Z();
+  X0 = myTarget.X();
+  Y0 = myTarget.Y();
+  Z0 = myTarget.Z();
   
 // Display of the position of the light.
 
@@ -246,14 +284,14 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
   Handle(Graphic3d_AspectLine3d) Asp1 = new Graphic3d_AspectLine3d();
   Asp1->SetColor(Col1);
   glight->SetPrimitivesAspect(Asp1);
-  this->Symbol(glight,aView);
+  this->Symbol(glight,theView);
 
 // Display of the markable sphere (limit at the cercle).
 
   if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) {
       
     Rayon = this->Radius();
-    aView->Proj(VX,VY,VZ);
+    theView->Proj(VX,VY,VZ);
     V3d::CircleInPlane(gsphere,X0,Y0,Z0,VX,VY,VZ,Rayon);
 
 // Display of the radius of the sphere (line + text)
@@ -278,7 +316,7 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
     gnopick->SetPrimitivesAspect(Asp2);
     
 //    Definition of the axis of circle
-    aView->Up(DXRef,DYRef,DZRef);
+    theView->Up(DXRef,DYRef,DZRef);
     this->Position(X,Y,Z);
     DXini = X-X0; DYini = Y-Y0; DZini = Z-Z0;
     VX = DYRef*DZini - DZRef*DYini;
@@ -290,8 +328,8 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
 //  Display of the parallel
 
 //  Definition of the axis of circle
-    aView->Proj(VX,VY,VZ);
-    aView->Up(X1,Y1,Z1);
+    theView->Proj(VX,VY,VZ);
+    theView->Up(X1,Y1,Z1);
     DXRef = VY * Z1 - VZ * Y1;
     DYRef = VZ * X1 - VX * Z1;
     DZRef = VX * Y1 - VY * X1;
@@ -304,8 +342,8 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
     V3d::CircleInPlane(gnopick,X0,Y0,Z0,VX,VY,VZ,Rayon);
   }
 
-  MyGraphicStructure->Connect(MyGraphicStructure1,Graphic3d_TOC_DESCENDANT);
-  MyTypeOfRepresentation = Pres;
-  MyGraphicStructure->Display();
+  myGraphicStructure->Connect(myGraphicStructure1,Graphic3d_TOC_DESCENDANT);
+  myTypeOfRepresentation = Pres;
+  myGraphicStructure->Display();
   TheViewer->SetUpdateMode(UpdSov);
 }

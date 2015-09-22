@@ -15,9 +15,9 @@
 #ifndef _Graphic3d_CAspectFillArea_HeaderFile
 #define _Graphic3d_CAspectFillArea_HeaderFile
 
-#include <InterfaceGraphic_Visual3d.hxx>
 #include <Graphic3d_CTexture.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
+#include <InterfaceGraphic_Graphic3d.hxx>
 
 class Graphic3d_CAspectFillArea
 {

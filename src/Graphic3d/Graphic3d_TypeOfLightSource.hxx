@@ -14,24 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Visual3d_TransformError_HeaderFile
-#define _Visual3d_TransformError_HeaderFile
+#ifndef _Graphic3d_TypeOfLightSource_HeaderFile
+#define _Graphic3d_TypeOfLightSource_HeaderFile
 
-#include <Standard_Type.hxx>
-#include <Standard_DefineException.hxx>
-#include <Standard_SStream.hxx>
-#include <Standard_OutOfRange.hxx>
+//! Definition of all the type of light sources
+//!
+//! TOLS_AMBIENT    ambient light
+//! TOLS_DIRECTIONAL    directional light
+//! TOLS_POSITIONAL positional light
+//! TOLS_SPOT       spot light
+enum Graphic3d_TypeOfLightSource
+{
+  Graphic3d_TOLS_AMBIENT,
+  Graphic3d_TOLS_DIRECTIONAL,
+  Graphic3d_TOLS_POSITIONAL,
+  Graphic3d_TOLS_SPOT
+};
 
-class Visual3d_TransformError;
-DEFINE_STANDARD_HANDLE(Visual3d_TransformError, Standard_OutOfRange)
-
-#if !defined No_Exception && !defined No_Visual3d_TransformError
-  #define Visual3d_TransformError_Raise_if(CONDITION, MESSAGE) \
-  if (CONDITION) Visual3d_TransformError::Raise(MESSAGE);
-#else
-  #define Visual3d_TransformError_Raise_if(CONDITION, MESSAGE)
-#endif
-
-DEFINE_STANDARD_EXCEPTION(Visual3d_TransformError, Standard_OutOfRange)
-
-#endif // _Visual3d_TransformError_HeaderFile
+#endif // _Graphic3d_TypeOfLightSource_HeaderFile

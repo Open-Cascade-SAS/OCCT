@@ -160,10 +160,9 @@ void OpenGl_LayerList::AddStructure (const OpenGl_Structure*  theStruct,
 //purpose  :
 //=======================================================================
 
-void OpenGl_LayerList::RemoveStructure (const Handle(Graphic3d_Structure)& theStructure)
+void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure* theStructure)
 {
-  const OpenGl_Structure*  aStruct  = reinterpret_cast<const OpenGl_Structure* > (theStructure->CStructure().operator->());
-  const Graphic3d_ZLayerId aLayerId = aStruct->ZLayer();
+  const Graphic3d_ZLayerId aLayerId = theStructure->ZLayer();
 
   Standard_Integer aSeqPos = myLayers.Lower();
   myLayerIds.Find (aLayerId, aSeqPos);
@@ -174,7 +173,7 @@ void OpenGl_LayerList::RemoveStructure (const Handle(Graphic3d_Structure)& theSt
   // remove structure from associated list
   // if the structure is not found there,
   // scan through layers and remove it
-  if (aLayer.Remove (aStruct, aPriority))
+  if (aLayer.Remove (theStructure, aPriority))
   {
     --myNbStructures;
     if (aLayer.LayerSettings().IsImmediate)
@@ -182,7 +181,7 @@ void OpenGl_LayerList::RemoveStructure (const Handle(Graphic3d_Structure)& theSt
       --myImmediateNbStructures;
     }
 
-    if (aStruct->IsRaytracable())
+    if (theStructure->IsRaytracable())
     {
       ++myModificationState;
     }
@@ -200,7 +199,7 @@ void OpenGl_LayerList::RemoveStructure (const Handle(Graphic3d_Structure)& theSt
       continue;
     }
 
-    if (aLayerEx.Remove (aStruct, aPriority))
+    if (aLayerEx.Remove (theStructure, aPriority))
     {
       --myNbStructures;
       if (aLayerEx.LayerSettings().IsImmediate)
@@ -208,7 +207,7 @@ void OpenGl_LayerList::RemoveStructure (const Handle(Graphic3d_Structure)& theSt
         --myImmediateNbStructures;
       }
 
-      if (aStruct->IsRaytracable())
+      if (theStructure->IsRaytracable())
       {
         ++myModificationState;
       }

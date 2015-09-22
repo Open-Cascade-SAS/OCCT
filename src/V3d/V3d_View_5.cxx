@@ -42,26 +42,39 @@
 #include <V3d_UnMapped.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
 
-//BUC61044 25/10/01 SAV ; added functionality to control gl depth testing from higher API
-//BUC61045 25/10/01 SAV ; added functionality to control gl lighting from higher API
-void V3d_View::EnableGLLight( const Standard_Boolean enable ) const
+//=============================================================================
+//function : EnableGLLight
+//purpose  :
+//=============================================================================
+void V3d_View::EnableGLLight (const Standard_Boolean theIsEnabled) const
 {
-  MyView->EnableGLLight( enable );
+  myView->SetGLLightEnabled (theIsEnabled);
 }
 
+//=============================================================================
+//function : IsGLLightEnabled
+//purpose  :
+//=============================================================================
 Standard_Boolean V3d_View::IsGLLightEnabled() const
 {
-  return MyView->IsGLLightEnabled();
+  return myView->IsGLLightEnabled();
 }
 
+//=============================================================================
+//function : RenderingParams
+//purpose  :
+//=============================================================================
 const Graphic3d_RenderingParams& V3d_View::RenderingParams() const
 {
-  return static_cast<Graphic3d_CView*> (MyView->CView())->RenderParams;
+  return myView->RenderingParams();
 }
 
+//=============================================================================
+//function : ChangeRenderingParams
+//purpose  :
+//=============================================================================
 Graphic3d_RenderingParams& V3d_View::ChangeRenderingParams()
 {
-  return static_cast<Graphic3d_CView*> (MyView->CView())->RenderParams;
+  return myView->ChangeRenderingParams();
 }

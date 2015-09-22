@@ -13,11 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_GlCore15.hxx>
-#include <OpenGl_ArbFBO.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <InterfaceGraphic.hxx>
 
+#include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_AspectMarker.hxx>
@@ -25,21 +25,25 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_GlCore15.hxx>
+#include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Sampler.hxx>
-#include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_Workspace.hxx>
+#include <OpenGl_Window.hxx>
 
 #include <Graphic3d_TextureParams.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 
-#if defined(_WIN32) && defined(HAVE_VIDEOCAPTURE)
-  #include <OpenGl_AVIWriter.hxx>
+#ifdef HAVE_GL2PS
+  #include <gl2ps.h>
+  /* OCC22216 NOTE: linker dependency can be switched off by undefining macro.
+     Pragma comment for gl2ps.lib is defined only here. */
+  #ifdef _MSC_VER
+  #pragma comment( lib, "gl2ps.lib" )
+  #endif
 #endif
-
 
 namespace
 {
@@ -136,28 +140,15 @@ void OpenGl_Material::Init (const OPENGL_SURF_PROP& theProp)
 // function : OpenGl_Workspace
 // purpose  :
 // =======================================================================
-OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
-                                    const CALL_DEF_WINDOW&        theCWindow,
-                                    Aspect_RenderingContext       theGContext,
-                                    const Handle(OpenGl_Caps)&    theCaps,
-                                    const Handle(OpenGl_Context)& theShareCtx)
-: OpenGl_Window (theDriver, theCWindow, theGContext, theCaps, theShareCtx),
-  NamedStatus (0),
+OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow)
+: NamedStatus (0),
   HighlightColor (&THE_WHITE_COLOR),
-  //
-  myHasFboBlit   (Standard_True),
-  myToFlipOutput (Standard_False),
-  //
-  myViewId               (-1),
-  myAntiAliasingMode     (3),
-  myTransientDrawToFront (Standard_True),
-  myBackBufferRestored   (Standard_False),
-  myIsImmediateDrawn     (Standard_False),
+  myView (theView),
+  myWindow (theWindow),
+  myGlContext (!theWindow.IsNull() ? theWindow->GetGlContext() : NULL),
   myUseZBuffer    (Standard_True),
   myUseDepthWrite (Standard_True),
   myUseGLLight (Standard_True),
-  myIsCullingEnabled (Standard_False),
-  myFrameCounter (0),
   //
   AspectLine_set (&myDefaultAspectLine),
   AspectLine_applied (NULL),
@@ -175,44 +166,35 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   myModelViewMatrix (myDefaultMatrix),
   PolygonOffset_applied (THE_DEFAULT_POFFSET)
 {
-  myGlContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-  myMainSceneFbos[0]      = new OpenGl_FrameBuffer();
-  myMainSceneFbos[1]      = new OpenGl_FrameBuffer();
-  myImmediateSceneFbos[0] = new OpenGl_FrameBuffer();
-  myImmediateSceneFbos[1] = new OpenGl_FrameBuffer();
-
-  if (!myGlContext->GetResource ("OpenGl_LineAttributes", myLineAttribs))
+  if (!myGlContext.IsNull() && myGlContext->MakeCurrent())
   {
-    // share and register for release once the resource is no longer used
-    myLineAttribs = new OpenGl_LineAttributes();
-    myGlContext->ShareResource ("OpenGl_LineAttributes", myLineAttribs);
-    myLineAttribs->Init (myGlContext);
-  }
+    myGlContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
-  // General initialization of the context
+    if (!myGlContext->GetResource ("OpenGl_LineAttributes", myLineAttribs))
+    {
+      // share and register for release once the resource is no longer used
+      myLineAttribs = new OpenGl_LineAttributes();
+      myGlContext->ShareResource ("OpenGl_LineAttributes", myLineAttribs);
+      myLineAttribs->Init (myGlContext);
+    }
 
-#if !defined(GL_ES_VERSION_2_0)
-  if (myGlContext->core11 != NULL)
-  {
-    // Eviter d'avoir les faces mal orientees en noir.
-    // Pourrait etre utiliser pour detecter les problemes d'orientation
-    glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    // General initialization of the context
 
-    // Optimisation pour le Fog et l'antialiasing
-    glHint (GL_FOG_HINT,            GL_FASTEST);
-    glHint (GL_POINT_SMOOTH_HINT,   GL_FASTEST);
-  }
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myGlContext->core11 != NULL)
+    {
+      // Eviter d'avoir les faces mal orientees en noir.
+      // Pourrait etre utiliser pour detecter les problemes d'orientation
+      glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-  glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
-  glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
-#endif
+      // Optimisation pour le Fog et l'antialiasing
+      glHint (GL_FOG_HINT,            GL_FASTEST);
+      glHint (GL_POINT_SMOOTH_HINT,   GL_FASTEST);
+    }
 
-  // AA mode
-  const char* anAaEnv = ::getenv ("CALL_OPENGL_ANTIALIASING_MODE");
-  if (anAaEnv != NULL)
-  {
-    int v;
-    if (sscanf (anAaEnv, "%d", &v) > 0) myAntiAliasingMode = v;
+    glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
+    glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+  #endif
   }
 
   myDefaultCappingAlgoFilter         = new OpenGl_CappingAlgoFilter();
@@ -220,38 +202,6 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   myNoneCulling.ChangeEdge()         = 0;
   myFrontCulling.ChangeCullingMode() = TelCullBack;
   myFrontCulling.ChangeEdge()        = 0;
-}
-
-// =======================================================================
-// function : SetActiveView
-// purpose  :
-// =======================================================================
-void OpenGl_Workspace::SetActiveView (const Handle(OpenGl_View)& theView,
-                                      const Standard_Integer     theViewId)
-{
-  myView   = theView;
-  myViewId = theViewId;
-}
-
-// =======================================================================
-// function : SetImmediateModeDrawToFront
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_Workspace::SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer)
-{
-  const Standard_Boolean aPrevMode = myTransientDrawToFront;
-  myTransientDrawToFront = theDrawToFrontBuffer;
-  return aPrevMode;
-}
-
-inline void nullifyGlResource (Handle(OpenGl_Resource)&      theResource,
-                               const Handle(OpenGl_Context)& theCtx)
-{
-  if (!theResource.IsNull())
-  {
-    theResource->Release (theCtx.operator->());
-    theResource.Nullify();
-  }
 }
 
 // =======================================================================
@@ -265,14 +215,6 @@ OpenGl_Workspace::~OpenGl_Workspace()
     myLineAttribs.Nullify();
     myGlContext->ReleaseResource ("OpenGl_LineAttributes", Standard_True);
   }
-
-  nullifyGlResource (myMainSceneFbos[0],      myGlContext);
-  nullifyGlResource (myMainSceneFbos[1],      myGlContext);
-  nullifyGlResource (myImmediateSceneFbos[0], myGlContext);
-  nullifyGlResource (myImmediateSceneFbos[1], myGlContext);
-
-  myFullScreenQuad    .Release (myGlContext.operator->());
-  myFullScreenQuadFlip.Release (myGlContext.operator->());
 }
 
 // =======================================================================
@@ -281,8 +223,10 @@ OpenGl_Workspace::~OpenGl_Workspace()
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::Activate()
 {
-  if (!OpenGl_Window::Activate())
+  if (myWindow.IsNull() || !myWindow->Activate())
+  {
     return Standard_False;
+  }
 
   ViewMatrix_applied      = &myDefaultMatrix;
   StructureMatrix_applied = &myDefaultMatrix;
@@ -482,12 +426,12 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
       }
       case Graphic3d_TOTM_SPRITE:
       {
-        if (GetGlContext()->core20fwd != NULL)
+        if (myGlContext->core20fwd != NULL)
         {
           glEnable  (GL_POINT_SPRITE);
           glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
           anEnvMode = GL_REPLACE;
-          GetGlContext()->core15->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+          myGlContext->core15->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
         }
         break;
       }
@@ -684,898 +628,714 @@ Handle(OpenGl_Texture) OpenGl_Workspace::EnableTexture (const Handle(OpenGl_Text
 }
 
 // =======================================================================
-// function : bindDefaultFbo
+// function : TelUpdatePolygonOffsets
 // purpose  :
 // =======================================================================
-void OpenGl_Workspace::bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo)
+static void TelUpdatePolygonOffsets (const TEL_POFFSET_PARAM& theOffsetData)
 {
-  OpenGl_FrameBuffer* anFbo = (theCustomFbo != NULL && theCustomFbo->IsValid())
-                            ?  theCustomFbo
-                            : (!myGlContext->DefaultFrameBuffer().IsNull()
-                             && myGlContext->DefaultFrameBuffer()->IsValid()
-                              ? myGlContext->DefaultFrameBuffer().operator->()
-                              : NULL);
-  if (anFbo != NULL)
+  if ((theOffsetData.mode & Aspect_POM_Fill) == Aspect_POM_Fill)
   {
-    anFbo->BindBuffer (myGlContext);
+    glEnable (GL_POLYGON_OFFSET_FILL);
   }
   else
   {
-  #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->SetReadDrawBuffer (GL_BACK);
-  #else
-    if (myGlContext->arbFBO != NULL)
-    {
-      myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
-    }
-  #endif
-  }
-  myGlContext->core11fwd->glViewport (0, 0, myWidth, myHeight);
-}
-
-// =======================================================================
-// function : initBlitQuad
-// purpose  :
-// =======================================================================
-OpenGl_VertexBuffer* OpenGl_Workspace::initBlitQuad (const Standard_Boolean theToFlip)
-{
-  OpenGl_VertexBuffer* aVerts = NULL;
-  if (!theToFlip)
-  {
-    aVerts = &myFullScreenQuad;
-    if (!aVerts->IsValid())
-    {
-      OpenGl_Vec4 aQuad[4] =
-      {
-        OpenGl_Vec4( 1.0f, -1.0f, 1.0f, 0.0f),
-        OpenGl_Vec4( 1.0f,  1.0f, 1.0f, 1.0f),
-        OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 0.0f),
-        OpenGl_Vec4(-1.0f,  1.0f, 0.0f, 1.0f)
-      };
-      aVerts->Init (myGlContext, 4, 4, aQuad[0].GetData());
-    }
-  }
-  else
-  {
-    aVerts = &myFullScreenQuadFlip;
-    if (!aVerts->IsValid())
-    {
-      OpenGl_Vec4 aQuad[4] =
-      {
-        OpenGl_Vec4( 1.0f, -1.0f, 1.0f, 1.0f),
-        OpenGl_Vec4( 1.0f,  1.0f, 1.0f, 0.0f),
-        OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 1.0f),
-        OpenGl_Vec4(-1.0f,  1.0f, 0.0f, 0.0f)
-      };
-      aVerts->Init (myGlContext, 4, 4, aQuad[0].GetData());
-    }
-  }
-  return aVerts;
-}
-
-// =======================================================================
-// function : blitBuffers
-// purpose  :
-// =======================================================================
-bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
-                                    OpenGl_FrameBuffer*    theDrawFbo,
-                                    const Standard_Boolean theToFlip)
-{
-  if (theReadFbo == NULL || myGlContext->IsFeedback())
-  {
-    return false;
-  }
-  else if (theReadFbo == theDrawFbo)
-  {
-    return true;
+    glDisable (GL_POLYGON_OFFSET_FILL);
   }
 
-  // clear destination before blitting
-  if (theDrawFbo != NULL
-  &&  theDrawFbo->IsValid())
-  {
-    theDrawFbo->BindBuffer (myGlContext);
-  }
-  else
-  {
-    myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
-  }
 #if !defined(GL_ES_VERSION_2_0)
-  myGlContext->core20fwd->glClearDepth  (1.0);
-#else
-  myGlContext->core20fwd->glClearDepthf (1.0f);
-#endif
-  myGlContext->core20fwd->glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-/*#if !defined(GL_ES_VERSION_2_0)
-  if (myGlContext->arbFBOBlit != NULL)
+  if ((theOffsetData.mode & Aspect_POM_Line) == Aspect_POM_Line)
   {
-    theReadFbo->BindReadBuffer (myGlContext);
-    if (theDrawFbo != NULL
-     && theDrawFbo->IsValid())
-    {
-      theDrawFbo->BindDrawBuffer (myGlContext);
-    }
-    else
-    {
-      myGlContext->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
-    }
-    // we don't copy stencil buffer here... does it matter for performance?
-    myGlContext->arbFBOBlit->glBlitFramebuffer (0, 0, theReadFbo->GetVPSizeX(), theReadFbo->GetVPSizeY(),
-                                                0, 0, theReadFbo->GetVPSizeX(), theReadFbo->GetVPSizeY(),
-                                                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-
-    if (theDrawFbo != NULL
-      && theDrawFbo->IsValid())
-    {
-      theDrawFbo->BindBuffer (myGlContext);
-    }
-    else
-    {
-      myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
-    }
+    glEnable (GL_POLYGON_OFFSET_LINE);
   }
   else
-#endif*/
   {
-    myGlContext->core20fwd->glDepthFunc (GL_ALWAYS);
-    myGlContext->core20fwd->glDepthMask (GL_TRUE);
-    myGlContext->core20fwd->glEnable (GL_DEPTH_TEST);
-
-    DisableTexture();
-
-    OpenGl_VertexBuffer* aVerts = initBlitQuad (theToFlip);
-    const Handle(OpenGl_ShaderManager)& aManager = myGlContext->ShaderManager();
-    if (aVerts->IsValid()
-     && aManager->BindFboBlitProgram())
-    {
-      theReadFbo->ColorTexture()       ->Bind   (myGlContext, GL_TEXTURE0 + 0);
-      theReadFbo->DepthStencilTexture()->Bind   (myGlContext, GL_TEXTURE0 + 1);
-      aVerts->BindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
-
-      myGlContext->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
-
-      aVerts->UnbindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
-      theReadFbo->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + 1);
-      theReadFbo->ColorTexture()       ->Unbind (myGlContext, GL_TEXTURE0 + 0);
-    }
-    else
-    {
-      TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-        + "Error! FBO blitting has failed";
-      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                GL_DEBUG_TYPE_ERROR_ARB,
-                                0,
-                                GL_DEBUG_SEVERITY_HIGH_ARB,
-                                aMsg);
-      myHasFboBlit = Standard_False;
-      theReadFbo->Release (myGlContext.operator->());
-      return true;
-    }
+    glDisable (GL_POLYGON_OFFSET_LINE);
   }
-  return true;
+
+  if ((theOffsetData.mode & Aspect_POM_Point) == Aspect_POM_Point)
+  {
+    glEnable (GL_POLYGON_OFFSET_POINT);
+  }
+  else
+  {
+    glDisable (GL_POLYGON_OFFSET_POINT);
+  }
+#endif
+
+  glPolygonOffset (theOffsetData.factor, theOffsetData.units);
 }
 
 // =======================================================================
-// function : drawStereoPair
+// function : updateMaterial
 // purpose  :
 // =======================================================================
-void OpenGl_Workspace::drawStereoPair (const Graphic3d_CView& theCView)
+void OpenGl_Workspace::updateMaterial (const int theFlag)
 {
-  OpenGl_FrameBuffer* aPair[2] =
+  // Case of hidden line
+  if (AspectFace_set->InteriorStyle() == Aspect_IS_HIDDENLINE)
   {
-    myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
-    myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL
-  };
-  if (aPair[0] == NULL
-  ||  aPair[1] == NULL
-  || !myTransientDrawToFront)
-  {
-    aPair[0] = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
-    aPair[1] = myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : NULL;
+    myAspectFaceHl = *AspectFace_set; // copy all values including line edge aspect
+    myAspectFaceHl.ChangeIntFront().matcol     = myView->BackgroundColor();
+    myAspectFaceHl.ChangeIntFront().color_mask = 0;
+    myAspectFaceHl.ChangeIntFront().color_mask = 0;
+
+    AspectFace_set = &myAspectFaceHl;
+    return;
   }
 
-  if (aPair[0] == NULL
-   || aPair[1] == NULL)
+  const OPENGL_SURF_PROP* aProps = &AspectFace_set->IntFront();
+  GLenum aFace = GL_FRONT_AND_BACK;
+  if (theFlag == TEL_BACK_MATERIAL)
+  {
+    aFace  = GL_BACK;
+    aProps = &AspectFace_set->IntBack();
+  }
+  else if (AspectFace_set->DistinguishingMode() == TOn
+        && !(NamedStatus & OPENGL_NS_RESMAT))
+  {
+    aFace = GL_FRONT;
+  }
+
+  myMatTmp.Init (*aProps);
+
+  // handling transparency
+  if (NamedStatus & OPENGL_NS_2NDPASSDO)
+  {
+    // second pass
+    myMatTmp.Diffuse.a() = aProps->env_reflexion;
+  }
+  else
+  {
+    if (aProps->env_reflexion != 0.0f)
+    {
+      // if the material reflects the environment scene, the second pass is needed
+      NamedStatus |= OPENGL_NS_2NDPASSNEED;
+    }
+
+    if (aProps->trans != 1.0f)
+    {
+      // render transparent
+      myMatTmp.Diffuse.a() = aProps->trans;
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable    (GL_BLEND);
+      if (myUseDepthWrite)
+      {
+        glDepthMask (GL_FALSE);
+      }
+    }
+    else
+    {
+      // render opaque
+      if ((NamedStatus & OPENGL_NS_ANTIALIASING) == 0)
+      {
+        glBlendFunc (GL_ONE, GL_ZERO);
+        glDisable   (GL_BLEND);
+      }
+      if (myUseDepthWrite)
+      {
+        glDepthMask (GL_TRUE);
+      }
+    }
+  }
+
+  // do not update material properties in case of zero reflection mode,
+  // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
+  if (aProps->color_mask == 0)
   {
     return;
   }
 
-  Standard_Boolean toReverse = theCView.RenderParams.ToReverseStereo;
-  const Standard_Boolean isOddY = (theCView.DefWindow.top + theCView.DefWindow.dy) % 2 == 1;
-  const Standard_Boolean isOddX =  theCView.DefWindow.left % 2 == 1;
-  if (isOddY
-   && (theCView.RenderParams.StereoMode == Graphic3d_StereoMode_RowInterlaced
-    || theCView.RenderParams.StereoMode == Graphic3d_StereoMode_ChessBoard))
+  // reset material
+  if (NamedStatus & OPENGL_NS_RESMAT)
   {
-    toReverse = !toReverse;
-  }
-  if (isOddX
-   && (theCView.RenderParams.StereoMode == Graphic3d_StereoMode_ColumnInterlaced
-    || theCView.RenderParams.StereoMode == Graphic3d_StereoMode_ChessBoard))
-  {
-    toReverse = !toReverse;
-  }
-
-  if (toReverse)
-  {
-    std::swap (aPair[0], aPair[1]);
-  }
-
-  myGlContext->core20fwd->glDepthFunc (GL_ALWAYS);
-  myGlContext->core20fwd->glDepthMask (GL_TRUE);
-  myGlContext->core20fwd->glEnable (GL_DEPTH_TEST);
-
-  DisableTexture();
-  OpenGl_VertexBuffer* aVerts = initBlitQuad (myToFlipOutput);
-
-  const Handle(OpenGl_ShaderManager)& aManager = myGlContext->ShaderManager();
-  if (aVerts->IsValid()
-   && aManager->BindStereoProgram (theCView.RenderParams.StereoMode))
-  {
-    if (theCView.RenderParams.StereoMode == Graphic3d_StereoMode_Anaglyph)
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myGlContext->core11 != NULL)
     {
-      OpenGl_Mat4 aFilterL, aFilterR;
-      aFilterL.SetDiagonal (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
-      aFilterR.SetDiagonal (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
-      switch (theCView.RenderParams.AnaglyphFilter)
-      {
-        case Graphic3d_RenderingParams::Anaglyph_RedCyan_Simple:
-        {
-          aFilterL.SetRow (0, Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f));
-          aFilterR.SetRow (1, Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
-          aFilterR.SetRow (2, Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f));
-          break;
-        }
-        case Graphic3d_RenderingParams::Anaglyph_RedCyan_Optimized:
-        {
-          aFilterL.SetRow (0, Graphic3d_Vec4 ( 0.4154f,      0.4710f,      0.16666667f, 0.0f));
-          aFilterL.SetRow (1, Graphic3d_Vec4 (-0.0458f,     -0.0484f,     -0.0257f,     0.0f));
-          aFilterL.SetRow (2, Graphic3d_Vec4 (-0.0547f,     -0.0615f,      0.0128f,     0.0f));
-          aFilterL.SetRow (3, Graphic3d_Vec4 ( 0.0f,         0.0f,         0.0f,        0.0f));
-          aFilterR.SetRow (0, Graphic3d_Vec4 (-0.01090909f, -0.03636364f, -0.00606061f, 0.0f));
-          aFilterR.SetRow (1, Graphic3d_Vec4 ( 0.37560000f,  0.73333333f,  0.01111111f, 0.0f));
-          aFilterR.SetRow (2, Graphic3d_Vec4 (-0.06510000f, -0.12870000f,  1.29710000f, 0.0f));
-          aFilterR.SetRow (3, Graphic3d_Vec4 ( 0.0f,                0.0f,  0.0f,        0.0f));
-          break;
-        }
-        case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Simple:
-        {
-          aFilterL.SetRow (0, Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f));
-          aFilterL.SetRow (1, Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
-          aFilterR.SetRow (2, Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f));
-          break;
-        }
-        case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Optimized:
-        {
-          aFilterL.SetRow (0, Graphic3d_Vec4 ( 1.062f, -0.205f,  0.299f, 0.0f));
-          aFilterL.SetRow (1, Graphic3d_Vec4 (-0.026f,  0.908f,  0.068f, 0.0f));
-          aFilterL.SetRow (2, Graphic3d_Vec4 (-0.038f, -0.173f,  0.022f, 0.0f));
-          aFilterL.SetRow (3, Graphic3d_Vec4 ( 0.0f,    0.0f,    0.0f,   0.0f));
-          aFilterR.SetRow (0, Graphic3d_Vec4 (-0.016f, -0.123f, -0.017f, 0.0f));
-          aFilterR.SetRow (1, Graphic3d_Vec4 ( 0.006f,  0.062f, -0.017f, 0.0f));
-          aFilterR.SetRow (2, Graphic3d_Vec4 ( 0.094f,  0.185f,  0.911f, 0.0f));
-          aFilterR.SetRow (3, Graphic3d_Vec4 ( 0.0f,    0.0f,    0.0f,   0.0f));
-          break;
-        }
-        case Graphic3d_RenderingParams::Anaglyph_GreenMagenta_Simple:
-        {
-          aFilterR.SetRow (0, Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f));
-          aFilterL.SetRow (1, Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
-          aFilterR.SetRow (2, Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f));
-          break;
-        }
-        case Graphic3d_RenderingParams::Anaglyph_UserDefined:
-        {
-          aFilterL = theCView.RenderParams.AnaglyphLeft;
-          aFilterR = theCView.RenderParams.AnaglyphRight;
-          break;
-        }
-      }
-      myGlContext->ActiveProgram()->SetUniform (myGlContext, "uMultL", aFilterL);
-      myGlContext->ActiveProgram()->SetUniform (myGlContext, "uMultR", aFilterR);
+      myGlContext->core11->glMaterialfv (aFace, GL_AMBIENT,   myMatTmp.Ambient.GetData());
+      myGlContext->core11->glMaterialfv (aFace, GL_DIFFUSE,   myMatTmp.Diffuse.GetData());
+      myGlContext->core11->glMaterialfv (aFace, GL_SPECULAR,  myMatTmp.Specular.GetData());
+      myGlContext->core11->glMaterialfv (aFace, GL_EMISSION,  myMatTmp.Emission.GetData());
+      myGlContext->core11->glMaterialf  (aFace, GL_SHININESS, myMatTmp.Shine());
+    }
+  #endif
+
+    if (theFlag == TEL_FRONT_MATERIAL)
+    {
+      myMatFront = myMatTmp;
+      myMatBack  = myMatTmp;
+    }
+    else
+    {
+      myMatBack = myMatTmp;
     }
 
-    aPair[0]->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + 0);
-    aPair[1]->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + 1);
-    aVerts->BindVertexAttrib (myGlContext, 0);
-
-    myGlContext->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
-
-    aVerts->UnbindVertexAttrib (myGlContext, 0);
-    aPair[1]->ColorTexture()->Unbind (myGlContext, GL_TEXTURE0 + 1);
-    aPair[0]->ColorTexture()->Unbind (myGlContext, GL_TEXTURE0 + 0);
+    NamedStatus &= ~OPENGL_NS_RESMAT;
+    return;
   }
-  else
+
+  // reduce updates
+  OpenGl_Material& anOld = (theFlag == TEL_FRONT_MATERIAL)
+                         ? myMatFront
+                         : myMatBack;
+#if !defined(GL_ES_VERSION_2_0)
+  if (myGlContext->core11 != NULL)
   {
-    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-      + "Error! Anaglyph has failed";
-    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                              GL_DEBUG_TYPE_ERROR_ARB,
-                              0,
-                              GL_DEBUG_SEVERITY_HIGH_ARB,
-                              aMsg);
+    if (myMatTmp.Ambient.r() != anOld.Ambient.r()
+     || myMatTmp.Ambient.g() != anOld.Ambient.g()
+     || myMatTmp.Ambient.b() != anOld.Ambient.b())
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_AMBIENT, myMatTmp.Ambient.GetData());
+    }
+    if (myMatTmp.Diffuse.r() != anOld.Diffuse.r()
+     || myMatTmp.Diffuse.g() != anOld.Diffuse.g()
+     || myMatTmp.Diffuse.b() != anOld.Diffuse.b()
+     || fabs (myMatTmp.Diffuse.a() - anOld.Diffuse.a()) > 0.01f)
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_DIFFUSE, myMatTmp.Diffuse.GetData());
+    }
+    if (myMatTmp.Specular.r() != anOld.Specular.r()
+     || myMatTmp.Specular.g() != anOld.Specular.g()
+     || myMatTmp.Specular.b() != anOld.Specular.b())
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_SPECULAR, myMatTmp.Specular.GetData());
+    }
+    if (myMatTmp.Emission.r() != anOld.Emission.r()
+     || myMatTmp.Emission.g() != anOld.Emission.g()
+     || myMatTmp.Emission.b() != anOld.Emission.b())
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_EMISSION, myMatTmp.Emission.GetData());
+    }
+    if (myMatTmp.Shine() != anOld.Shine())
+    {
+      myGlContext->core11->glMaterialf (aFace, GL_SHININESS, myMatTmp.Shine());
+    }
+  }
+#endif
+  anOld = myMatTmp;
+  if (aFace == GL_FRONT_AND_BACK)
+  {
+    myMatBack = myMatTmp;
   }
 }
 
 // =======================================================================
-// function : Redraw
+// function : SetAspectLine
 // purpose  :
 // =======================================================================
-void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView)
+const OpenGl_AspectLine * OpenGl_Workspace::SetAspectLine(const OpenGl_AspectLine *AnAspect)
 {
+  const OpenGl_AspectLine *AspectLine_old = AspectLine_set;
+  AspectLine_set = AnAspect;
+  return AspectLine_old;
+}
+
+// =======================================================================
+// function : SetAspectFace
+// purpose  :
+// =======================================================================
+const OpenGl_AspectFace * OpenGl_Workspace::SetAspectFace(const OpenGl_AspectFace *AnAspect)
+{
+  const OpenGl_AspectFace *AspectFace_old = AspectFace_set;
+  AspectFace_set = AnAspect;
+  return AspectFace_old;
+}
+
+// =======================================================================
+// function : SetAspectMarker
+// purpose  :
+// =======================================================================
+const OpenGl_AspectMarker * OpenGl_Workspace::SetAspectMarker(const OpenGl_AspectMarker *AnAspect)
+{
+  const OpenGl_AspectMarker *AspectMarker_old = AspectMarker_set;
+  AspectMarker_set = AnAspect;
+  return AspectMarker_old;
+}
+
+// =======================================================================
+// function : SetAspectText
+// purpose  :
+// =======================================================================
+const OpenGl_AspectText * OpenGl_Workspace::SetAspectText(const OpenGl_AspectText *AnAspect)
+{
+  const OpenGl_AspectText *AspectText_old = AspectText_set;
+  AspectText_set = AnAspect;
+  return AspectText_old;
+}
+
+// =======================================================================
+// function : AspectLine
+// purpose  :
+// =======================================================================
+const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean theWithApply)
+{
+  if (theWithApply)
+  {
+    AspectLine_applied = AspectLine_set;
+  }
+
+  return AspectLine_set;
+}
+
+// =======================================================================
+// function : AspectFace
+// purpose  :
+// =======================================================================
+const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean theToApply)
+{
+  if (!theToApply)
+  {
+    return AspectFace_set;
+  }
+
+  if (myView->BackfacingModel() == Graphic3d_TOBM_AUTOMATIC)
+  {
+    // manage back face culling mode, disable culling when clipping is enabled
+    TelCullMode aCullingMode = (myGlContext->Clipping().IsClippingOrCappingOn()
+                             || AspectFace_set->InteriorStyle() == Aspect_IS_HATCH)
+                             ? TelCullNone
+                             : (TelCullMode )AspectFace_set->CullingMode();
+    if (aCullingMode != TelCullNone
+     && !(NamedStatus & OPENGL_NS_2NDPASSDO))
+    {
+      // disable culling in case of translucent shading aspect
+      if (AspectFace_set->IntFront().trans != 1.0f)
+      {
+        aCullingMode = TelCullNone;
+      }
+    }
+    if (myCullingMode != aCullingMode)
+    {
+      myCullingMode = aCullingMode;
+      switch (myCullingMode)
+      {
+        case TelCullNone:
+        case TelCullUndefined:
+        {
+          glDisable (GL_CULL_FACE);
+          break;
+        }
+        case TelCullFront:
+        {
+          glCullFace (GL_FRONT);
+          glEnable (GL_CULL_FACE);
+          break;
+        }
+        case TelCullBack:
+        {
+          glCullFace (GL_BACK);
+          glEnable (GL_CULL_FACE);
+          break;
+        }
+      }
+    }
+  }
+
+  if (AspectFace_set == AspectFace_applied)
+  {
+    return AspectFace_set;
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  const Aspect_InteriorStyle anIntstyle = AspectFace_set->InteriorStyle();
+  if (AspectFace_applied == NULL || AspectFace_applied->InteriorStyle() != anIntstyle)
+  {
+    switch (anIntstyle)
+    {
+      case Aspect_IS_EMPTY:
+      case Aspect_IS_HOLLOW:
+      {
+        glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+        break;
+      }
+      case Aspect_IS_HATCH:
+      {
+        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+        myLineAttribs->SetTypeOfHatch (AspectFace_applied != NULL ? AspectFace_applied->Hatch() : TEL_HS_SOLID);
+        break;
+      }
+      case Aspect_IS_SOLID:
+      case Aspect_IS_HIDDENLINE:
+      {
+        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+        if (myGlContext->core11 != NULL)
+        {
+          glDisable (GL_POLYGON_STIPPLE);
+        }
+        break;
+      }
+      case Aspect_IS_POINT:
+      {
+        glPolygonMode (GL_FRONT_AND_BACK, GL_POINT);
+        break;
+      }
+    }
+  }
+
+  if (anIntstyle == Aspect_IS_HATCH)
+  {
+    const Tint hatchstyle = AspectFace_set->Hatch();
+    if (AspectFace_applied == NULL || AspectFace_applied->Hatch() != hatchstyle)
+    {
+      myLineAttribs->SetTypeOfHatch (hatchstyle);
+    }
+  }
+#endif
+
+  // Aspect_POM_None means: do not change current settings
+  if ((AspectFace_set->PolygonOffset().mode & Aspect_POM_None) != Aspect_POM_None)
+  {
+    if (PolygonOffset_applied.mode   != AspectFace_set->PolygonOffset().mode
+     || PolygonOffset_applied.factor != AspectFace_set->PolygonOffset().factor
+     || PolygonOffset_applied.units  != AspectFace_set->PolygonOffset().units)
+    {
+      SetPolygonOffset (AspectFace_set->PolygonOffset().mode,
+                        AspectFace_set->PolygonOffset().factor,
+                        AspectFace_set->PolygonOffset().units);
+    }
+  }
+
+  updateMaterial (TEL_FRONT_MATERIAL);
+  if (AspectFace_set->DistinguishingMode() == TOn)
+  {
+    updateMaterial (TEL_BACK_MATERIAL);
+  }
+
+  if ((NamedStatus & OPENGL_NS_FORBIDSETTEX) == 0)
+  {
+    if (AspectFace_set->DoTextureMap())
+    {
+      EnableTexture (AspectFace_set->TextureRes (myGlContext),
+                     AspectFace_set->TextureParams());
+    }
+    else
+    {
+      DisableTexture();
+    }
+  }
+
+  AspectFace_applied = AspectFace_set;
+  return AspectFace_set;
+}
+
+//=======================================================================
+//function : SetPolygonOffset
+//purpose  :
+//=======================================================================
+void OpenGl_Workspace::SetPolygonOffset (int theMode,
+                                         Standard_ShortReal theFactor,
+                                         Standard_ShortReal theUnits)
+{
+  PolygonOffset_applied.mode   = theMode;
+  PolygonOffset_applied.factor = theFactor;
+  PolygonOffset_applied.units  = theUnits;
+
+  TelUpdatePolygonOffsets (PolygonOffset_applied);
+}
+
+// =======================================================================
+// function : AspectMarker
+// purpose  :
+// =======================================================================
+const OpenGl_AspectMarker* OpenGl_Workspace::AspectMarker (const Standard_Boolean theToApply)
+{
+  if (theToApply && (AspectMarker_set != AspectMarker_applied))
+  {
+    if (!AspectMarker_applied || (AspectMarker_set->Scale() != AspectMarker_applied->Scale()))
+    {
+    #if !defined(GL_ES_VERSION_2_0)
+      glPointSize (AspectMarker_set->Scale());
+    #ifdef HAVE_GL2PS
+      gl2psPointSize (AspectMarker_set->Scale());
+    #endif
+    #endif
+    }
+    AspectMarker_applied = AspectMarker_set;
+  }
+  return AspectMarker_set;
+}
+
+// =======================================================================
+// function : AspectText
+// purpose  :
+// =======================================================================
+const OpenGl_AspectText* OpenGl_Workspace::AspectText (const Standard_Boolean theWithApply)
+{
+  if (theWithApply)
+  {
+    AspectText_applied = AspectText_set;
+    TextParam_applied  = TextParam_set;
+  }
+
+  return AspectText_set;
+}
+
+// =======================================================================
+// function : Width
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Workspace::Width()  const
+{
+  return !myView->GlWindow().IsNull() ? myView->GlWindow()->Width() : 0;
+}
+
+// =======================================================================
+// function : Height
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Workspace::Height() const
+{
+  return !myView->GlWindow().IsNull() ? myView->GlWindow()->Height() : 0;
+}
+
+// =======================================================================
+// function : UseGLLight
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Workspace::UseGLLight() const
+{
+  return myView->IsGLLightEnabled();
+}
+
+// =======================================================================
+// function : AntiAliasingMode
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Workspace::AntiAliasingMode() const
+{
+  return myView->IsAntialiasingEnabled();
+}
+
+// =======================================================================
+// function : IsCullingEnabled
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Workspace::IsCullingEnabled() const
+{
+  return myView->IsCullingEnabled();
+}
+
+// =======================================================================
+// function : FBOCreate
+// purpose  :
+// =======================================================================
+Graphic3d_PtrFrameBuffer OpenGl_Workspace::FBOCreate (const Standard_Integer theWidth,
+                                                      const Standard_Integer theHeight)
+{
+  // activate OpenGL context
   if (!Activate())
+    return NULL;
+
+  // create the FBO
+  const Handle(OpenGl_Context)& aCtx = GetGlContext();
+  OpenGl_FrameBuffer* aFrameBuffer = new OpenGl_FrameBuffer();
+  if (!aFrameBuffer->Init (aCtx, theWidth, theHeight))
+  {
+    aFrameBuffer->Release (aCtx.operator->());
+    delete aFrameBuffer;
+    return NULL;
+  }
+  return (Graphic3d_PtrFrameBuffer )aFrameBuffer;
+}
+
+// =======================================================================
+// function : FBORelease
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr)
+{
+  // activate OpenGL context
+  if (!Activate()
+   || theFBOPtr == NULL)
   {
     return;
   }
 
-  if (mySwapInterval != myGlContext->caps->swapInterval)
+  // release the object
+  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer*)theFBOPtr;
+  if (aFrameBuffer != NULL)
   {
-    mySwapInterval = myGlContext->caps->swapInterval;
-    myGlContext->SetSwapInterval (mySwapInterval);
+    aFrameBuffer->Release (GetGlContext().operator->());
   }
-
-  ++myFrameCounter;
-  myIsCullingEnabled = theCView.IsCullingEnabled;
-  const Graphic3d_StereoMode      aStereoMode  = theCView.RenderParams.StereoMode;
-  const Handle(Graphic3d_Camera)& aCamera      = myView->Camera();
-  Graphic3d_Camera::Projection    aProjectType = aCamera->ProjectionType();
-
-  // release pending GL resources
-  myGlContext->ReleaseDelayed();
-
-  // fetch OpenGl context state
-  myGlContext->FetchState();
-
-  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
-  bool toSwap = myGlContext->IsRender()
-            && !myGlContext->caps->buffersNoSwap
-            &&  aFrameBuffer == NULL;
-
-  Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
-  Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
-
-  if ( aFrameBuffer == NULL
-   && !myGlContext->DefaultFrameBuffer().IsNull()
-   &&  myGlContext->DefaultFrameBuffer()->IsValid())
-  {
-    aFrameBuffer = myGlContext->DefaultFrameBuffer().operator->();
-  }
-
-  if (myHasFboBlit
-   && (myTransientDrawToFront || aProjectType == Graphic3d_Camera::Projection_Stereo))
-  {
-    if (myMainSceneFbos[0]->GetVPSizeX() != aSizeX
-     || myMainSceneFbos[0]->GetVPSizeY() != aSizeY)
-    {
-      // prepare FBOs containing main scene
-      // for further blitting and rendering immediate presentations on top
-      if (myGlContext->core20fwd != NULL)
-      {
-        myMainSceneFbos[0]->Init (myGlContext, aSizeX, aSizeY);
-      }
-      if (!myGlContext->caps->useSystemBuffer && myMainSceneFbos[0]->IsValid())
-      {
-        myImmediateSceneFbos[0]->InitLazy (myGlContext, aSizeX, aSizeY);
-      }
-    }
-  }
-  else
-  {
-    myMainSceneFbos     [0]->Release (myGlContext.operator->());
-    myMainSceneFbos     [1]->Release (myGlContext.operator->());
-    myImmediateSceneFbos[0]->Release (myGlContext.operator->());
-    myImmediateSceneFbos[1]->Release (myGlContext.operator->());
-    myMainSceneFbos     [0]->ChangeViewport (0, 0);
-    myMainSceneFbos     [1]->ChangeViewport (0, 0);
-    myImmediateSceneFbos[0]->ChangeViewport (0, 0);
-    myImmediateSceneFbos[1]->ChangeViewport (0, 0);
-  }
-
-  if (aProjectType == Graphic3d_Camera::Projection_Stereo
-   && myMainSceneFbos[0]->IsValid())
-  {
-    myMainSceneFbos[1]->InitLazy (myGlContext, aSizeX, aSizeY);
-    if (!myMainSceneFbos[1]->IsValid())
-    {
-      // no enough memory?
-      aProjectType = Graphic3d_Camera::Projection_Perspective;
-    }
-    else if (!myTransientDrawToFront)
-    {
-      //
-    }
-    else if (!myGlContext->HasStereoBuffers()
-           || aStereoMode != Graphic3d_StereoMode_QuadBuffer)
-    {
-      myImmediateSceneFbos[0]->InitLazy (myGlContext, aSizeX, aSizeY);
-      myImmediateSceneFbos[1]->InitLazy (myGlContext, aSizeX, aSizeY);
-      if (!myImmediateSceneFbos[0]->IsValid()
-       || !myImmediateSceneFbos[1]->IsValid())
-      {
-        aProjectType = Graphic3d_Camera::Projection_Perspective;
-      }
-    }
-  }
-
-  if (aProjectType == Graphic3d_Camera::Projection_Stereo)
-  {
-    OpenGl_FrameBuffer* aMainFbos[2] =
-    {
-      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL,
-      myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : NULL
-    };
-    OpenGl_FrameBuffer* anImmFbos[2] =
-    {
-      myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
-      myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL
-    };
-
-    if (!myTransientDrawToFront)
-    {
-      anImmFbos[0] = aMainFbos[0];
-      anImmFbos[1] = aMainFbos[1];
-    }
-    else if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
-          || aStereoMode == Graphic3d_StereoMode_QuadBuffer)
-    {
-      anImmFbos[0] = NULL;
-      anImmFbos[1] = NULL;
-    }
-
-  #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
-  #endif
-    redraw1 (theCView, aMainFbos[0], Graphic3d_Camera::Projection_MonoLeftEye);
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
-  #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
-  #endif
-    if (!redrawImmediate (theCView, aMainFbos[0], aProjectType, anImmFbos[0]))
-    {
-      toSwap = false;
-    }
-    else if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
-          && toSwap)
-    {
-      myGlContext->SwapBuffers();
-    }
-
-  #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
-  #endif
-    redraw1 (theCView, aMainFbos[1], Graphic3d_Camera::Projection_MonoRightEye);
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
-    if (!redrawImmediate (theCView, aMainFbos[1], aProjectType, anImmFbos[1]))
-    {
-      toSwap = false;
-    }
-
-    if (anImmFbos[0] != NULL)
-    {
-      bindDefaultFbo (aFrameBuffer);
-      drawStereoPair (theCView);
-    }
-  }
-  else
-  {
-    OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
-    OpenGl_FrameBuffer* anImmFbo = aFrameBuffer;
-    if (!myGlContext->caps->useSystemBuffer && myImmediateSceneFbos[0]->IsValid())
-    {
-      anImmFbo = myImmediateSceneFbos[0].operator->();
-    }
-
-  #if !defined(GL_ES_VERSION_2_0)
-    if (aMainFbo     == NULL
-     && aFrameBuffer == NULL)
-    {
-      myGlContext->SetReadDrawBuffer (GL_BACK);
-    }
-  #endif
-    redraw1 (theCView, aMainFbo != NULL ? aMainFbo : aFrameBuffer, aProjectType);
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
-    if (!redrawImmediate (theCView, aMainFbo, aProjectType, anImmFbo))
-    {
-      toSwap = false;
-    }
-
-    if (anImmFbo != NULL
-     && anImmFbo != aFrameBuffer)
-    {
-      blitBuffers (anImmFbo, aFrameBuffer, myToFlipOutput);
-    }
-  }
-
-#if defined(_WIN32) && defined(HAVE_VIDEOCAPTURE)
-  if (OpenGl_AVIWriter_AllowWriting (theCView.DefWindow.XWindow))
-  {
-    GLint params[4];
-    glGetIntegerv (GL_VIEWPORT, params);
-    int nWidth  = params[2] & ~0x7;
-    int nHeight = params[3] & ~0x7;
-
-    const int nBitsPerPixel = 24;
-    GLubyte* aDumpData = new GLubyte[nWidth * nHeight * nBitsPerPixel / 8];
-
-    glPixelStorei (GL_PACK_ALIGNMENT, 1);
-    glReadPixels (0, 0, nWidth, nHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, aDumpData);
-    OpenGl_AVIWriter_AVIWriter (aDumpData, nWidth, nHeight, nBitsPerPixel);
-    delete[] aDumpData;
-  }
-#endif
-
-  // bind default FBO
-  bindDefaultFbo();
-
-  // Swap the buffers
-  if (toSwap)
-  {
-    GetGlContext()->SwapBuffers();
-    if (!myMainSceneFbos[0]->IsValid())
-    {
-      myBackBufferRestored = Standard_False;
-    }
-  }
-  else
-  {
-    myGlContext->core11fwd->glFlush();
-  }
-
-  // reset render mode state
-  myGlContext->FetchState();
+  delete aFrameBuffer;
 }
 
-// =======================================================================
-// function : redraw1
-// purpose  :
-// =======================================================================
-void OpenGl_Workspace::redraw1 (const Graphic3d_CView&               theCView,
-                                OpenGl_FrameBuffer*                  theReadDrawFbo,
-                                const Graphic3d_Camera::Projection   theProjection)
+inline bool getDataFormat (const Image_PixMap& theData,
+                           GLenum&             thePixelFormat,
+                           GLenum&             theDataType)
 {
-  if (myView.IsNull())
+  thePixelFormat = GL_RGB;
+  theDataType    = GL_UNSIGNED_BYTE;
+  switch (theData.Format())
   {
-    return;
-  }
-
-  if (theReadDrawFbo != NULL)
-  {
-    theReadDrawFbo->BindBuffer    (myGlContext);
-    theReadDrawFbo->SetupViewport (myGlContext);
-  }
-  else
-  {
-    myGlContext->core11fwd->glViewport (0, 0, myWidth, myHeight);
-  }
-
-  // request reset of material
-  NamedStatus |= OPENGL_NS_RESMAT;
-
-  myUseZBuffer    = Standard_True;
-  myUseDepthWrite = Standard_True;
-  GLbitfield toClear = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
-  glDepthFunc (GL_LEQUAL);
-  glDepthMask (GL_TRUE);
-  glEnable (GL_DEPTH_TEST);
-
-#if !defined(GL_ES_VERSION_2_0)
-  glClearDepth (1.0);
-#else
-  glClearDepthf (1.0f);
-#endif
-
-  if (NamedStatus & OPENGL_NS_WHITEBACK)
-  {
-    // set background to white
-    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
-  }
-  else
-  {
-    glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.0f);
-  }
-
-  glClear (toClear);
-
-  Handle(OpenGl_Workspace) aWS (this);
-  myView->Render (myPrintContext, aWS, theReadDrawFbo, theProjection, theCView, Standard_False);
-}
-
-// =======================================================================
-// function : copyBackToFront
-// purpose  :
-// =======================================================================
-void OpenGl_Workspace::copyBackToFront()
-{
-#if !defined(GL_ES_VERSION_2_0)
-
-  OpenGl_Mat4 aProjectMat;
-  Graphic3d_TransformUtils::Ortho2D (aProjectMat,
-    0.f, static_cast<GLfloat> (myWidth), 0.f, static_cast<GLfloat> (myHeight));
-
-  myGlContext->WorldViewState.Push();
-  myGlContext->ProjectionState.Push();
-
-  myGlContext->WorldViewState.SetIdentity();
-  myGlContext->ProjectionState.SetCurrent (aProjectMat);
-
-  myGlContext->ApplyProjectionMatrix();
-  myGlContext->ApplyWorldViewMatrix();
-
-  DisableFeatures();
-
-  switch (myGlContext->DrawBuffer())
-  {
-    case GL_BACK_LEFT:
-    {
-      myGlContext->SetReadBuffer (GL_BACK_LEFT);
-      myGlContext->SetDrawBuffer (GL_FRONT_LEFT);
-      break;
-    }
-    case GL_BACK_RIGHT:
-    {
-      myGlContext->SetReadBuffer (GL_BACK_RIGHT);
-      myGlContext->SetDrawBuffer (GL_FRONT_RIGHT);
-      break;
-    }
-    default:
-    {
-      myGlContext->SetReadBuffer (GL_BACK);
-      myGlContext->SetDrawBuffer (GL_FRONT);
-      break;
-    }
-  }
-
-  glRasterPos2i (0, 0);
-  glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_COLOR);
-  //glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_DEPTH);
-
-  EnableFeatures();
-
-  myGlContext->WorldViewState.Pop();
-  myGlContext->ProjectionState.Pop();
-  myGlContext->ApplyProjectionMatrix();
-
-  // read/write from front buffer now
-  myGlContext->SetReadBuffer (myGlContext->DrawBuffer());
-#endif
-  myIsImmediateDrawn = Standard_False;
-}
-
-// =======================================================================
-// function : DisplayCallback
-// purpose  :
-// =======================================================================
-void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
-                                        Standard_Integer       theReason)
-{
-  if (theCView.GDisplayCB == NULL)
-  {
-    return;
-  }
-
-  Aspect_GraphicCallbackStruct aCallData;
-  aCallData.reason    = theReason;
-  aCallData.glContext = myGlContext;
-  aCallData.wsID      = theCView.WsId;
-  aCallData.viewID    = theCView.ViewId;
-  aCallData.IsCoreProfile = (myGlContext->core11 == NULL);
-  theCView.GDisplayCB (theCView.DefWindow.XWindow, theCView.GClientData, &aCallData);
-}
-
-// =======================================================================
-// function : RedrawImmediate
-// purpose  :
-// =======================================================================
-void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView)
-{
-  if (!myTransientDrawToFront
-   || !myBackBufferRestored
-   || (myGlContext->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
-  {
-    Redraw (theCView);
-    return;
-  }
-  else if (!Activate())
-  {
-    return;
-  }
-
-  const Handle(Graphic3d_Camera)& aCamera      = myView->Camera();
-  Graphic3d_Camera::Projection    aProjectType = aCamera->ProjectionType();
-  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
-  if ( aFrameBuffer == NULL
-   && !myGlContext->DefaultFrameBuffer().IsNull()
-   &&  myGlContext->DefaultFrameBuffer()->IsValid())
-  {
-    aFrameBuffer = myGlContext->DefaultFrameBuffer().operator->();
-  }
-
-  const Graphic3d_StereoMode aStereoMode = theCView.RenderParams.StereoMode;
-  if (aProjectType == Graphic3d_Camera::Projection_Stereo)
-  {
-    if (myMainSceneFbos[0]->IsValid()
-    && !myMainSceneFbos[1]->IsValid())
-    {
-      aProjectType = Graphic3d_Camera::Projection_Perspective;
-    }
-  }
-
-  bool toSwap = false;
-  if (aProjectType == Graphic3d_Camera::Projection_Stereo)
-  {
-    OpenGl_FrameBuffer* aMainFbos[2] =
-    {
-      myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL,
-      myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : NULL
-    };
-    OpenGl_FrameBuffer* anImmFbos[2] =
-    {
-      myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
-      myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL
-    };
-    if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
-     || aStereoMode == Graphic3d_StereoMode_QuadBuffer)
-    {
-      anImmFbos[0] = NULL;
-      anImmFbos[1] = NULL;
-    }
-
-    if (myGlContext->arbFBO != NULL)
-    {
-      myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
-    }
   #if !defined(GL_ES_VERSION_2_0)
-    if (anImmFbos[0] == NULL)
-    {
-      myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
-    }
-  #endif
-    toSwap = redrawImmediate (theCView,
-                              aMainFbos[0],
-                              Graphic3d_Camera::Projection_MonoLeftEye,
-                              anImmFbos[0],
-                              Standard_True) || toSwap;
-    if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
-    &&  toSwap
-    && !myGlContext->caps->buffersNoSwap)
-    {
-      myGlContext->SwapBuffers();
-    }
-
-    if (myGlContext->arbFBO != NULL)
-    {
-      myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
-    }
-  #if !defined(GL_ES_VERSION_2_0)
-    if (anImmFbos[1] == NULL)
-    {
-      myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
-    }
-  #endif
-    toSwap = redrawImmediate (theCView,
-                              aMainFbos[1],
-                              Graphic3d_Camera::Projection_MonoRightEye,
-                              anImmFbos[1],
-                              Standard_True) || toSwap;
-    if (anImmFbos[0] != NULL)
-    {
-      bindDefaultFbo (aFrameBuffer);
-      drawStereoPair (theCView);
-    }
-  }
-  else
-  {
-    OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
-    OpenGl_FrameBuffer* anImmFbo = aFrameBuffer;
-    if (!myGlContext->caps->useSystemBuffer && myImmediateSceneFbos[0]->IsValid())
-    {
-      anImmFbo = myImmediateSceneFbos[0].operator->();
-    }
-  #if !defined(GL_ES_VERSION_2_0)
-    if (aMainFbo == NULL)
-    {
-      myGlContext->SetReadDrawBuffer (GL_BACK);
-    }
-  #endif
-    toSwap = redrawImmediate (theCView,
-                              aMainFbo,
-                              aProjectType,
-                              anImmFbo,
-                              Standard_True) || toSwap;
-    if (anImmFbo != NULL
-     && anImmFbo != aFrameBuffer)
-    {
-      blitBuffers (anImmFbo, aFrameBuffer, myToFlipOutput);
-    }
-  }
-
-  // bind default FBO
-  bindDefaultFbo();
-
-  if (toSwap
-  && !myGlContext->caps->buffersNoSwap)
-  {
-    myGlContext->SwapBuffers();
-  }
-  else
-  {
-    myGlContext->core11fwd->glFlush();
-  }
-}
-
-// =======================================================================
-// function : redrawImmediate
-// purpose  :
-// =======================================================================
-bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
-                                        OpenGl_FrameBuffer*    theReadFbo,
-                                        const Graphic3d_Camera::Projection theProjection,
-                                        OpenGl_FrameBuffer*    theDrawFbo,
-                                        const Standard_Boolean theIsPartialUpdate)
-{
-  GLboolean toCopyBackToFront = GL_FALSE;
-  if (!myTransientDrawToFront)
-  {
-    myBackBufferRestored = Standard_False;
-  }
-  else if (theReadFbo != NULL
-        && theReadFbo->IsValid()
-        && myGlContext->IsRender())
-  {
-    if (!blitBuffers (theReadFbo, theDrawFbo))
-    {
+    case Image_PixMap::ImgGray:
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_UNSIGNED_BYTE;
       return true;
-    }
+    case Image_PixMap::ImgGrayF:
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgBGR:
+      thePixelFormat = GL_BGR;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgBGRA:
+    case Image_PixMap::ImgBGR32:
+      thePixelFormat = GL_BGRA;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgBGRF:
+      thePixelFormat = GL_BGR;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgBGRAF:
+      thePixelFormat = GL_BGRA;
+      theDataType    = GL_FLOAT;
+      return true;
+  #else
+    case Image_PixMap::ImgGray:
+    case Image_PixMap::ImgGrayF:
+    case Image_PixMap::ImgBGR:
+    case Image_PixMap::ImgBGRA:
+    case Image_PixMap::ImgBGR32:
+    case Image_PixMap::ImgBGRF:
+    case Image_PixMap::ImgBGRAF:
+      return false;
+  #endif
+    case Image_PixMap::ImgRGB:
+      thePixelFormat = GL_RGB;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgRGBA:
+    case Image_PixMap::ImgRGB32:
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgRGBF:
+      thePixelFormat = GL_RGB;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgRGBAF:
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgAlpha:
+    case Image_PixMap::ImgAlphaF:
+      return false; // GL_ALPHA is no more supported in core context
+    case Image_PixMap::ImgUNKNOWN:
+      return false;
   }
-  else if (theDrawFbo == NULL)
+  return false;
+}
+
+// =======================================================================
+// function : getAligned
+// purpose  :
+// =======================================================================
+inline Standard_Size getAligned (const Standard_Size theNumber,
+                                 const Standard_Size theAlignment)
+{
+  return theNumber + theAlignment - 1 - (theNumber - 1) % theAlignment;
+}
+
+// =======================================================================
+// function : BufferDump
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFBOPtr,
+                                               Image_PixMap&               theImage,
+                                               const Graphic3d_BufferType& theBufferType)
+{
+  GLenum aFormat, aType;
+  if (theImage.IsEmpty()
+   || !getDataFormat (theImage, aFormat, aType)
+   || !Activate())
+  {
+    return Standard_False;
+  }
+#if !defined(GL_ES_VERSION_2_0)
+  GLint aReadBufferPrev = GL_BACK;
+  if (theBufferType == Graphic3d_BT_Depth
+   && aFormat != GL_DEPTH_COMPONENT)
+  {
+    return Standard_False;
+  }
+#endif
+
+  // bind FBO if used
+  if (theFBOPtr != NULL && theFBOPtr->IsValid())
+  {
+    theFBOPtr->BindBuffer (GetGlContext());
+  }
+  else
   {
   #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->core11fwd->glGetBooleanv (GL_DOUBLEBUFFER, &toCopyBackToFront);
+    glGetIntegerv (GL_READ_BUFFER, &aReadBufferPrev);
+    GLint aDrawBufferPrev = GL_BACK;
+    glGetIntegerv (GL_DRAW_BUFFER, &aDrawBufferPrev);
+    glReadBuffer (aDrawBufferPrev);
   #endif
-    if (toCopyBackToFront)
+  }
+
+  // setup alignment
+  const GLint anAligment   = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
+  bool isBatchCopy = !theImage.IsTopDown();
+
+  const GLint   anExtraBytes       = GLint(theImage.RowExtraBytes());
+  GLint         aPixelsWidth       = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
+  Standard_Size aSizeRowBytesEstim = getAligned (theImage.SizePixelBytes() * aPixelsWidth, anAligment);
+  if (anExtraBytes < anAligment)
+  {
+    aPixelsWidth = 0;
+  }
+  else if (aSizeRowBytesEstim != theImage.SizeRowBytes())
+  {
+    aPixelsWidth = 0;
+    isBatchCopy  = false;
+  }
+#if !defined(GL_ES_VERSION_2_0)
+  glPixelStorei (GL_PACK_ROW_LENGTH, aPixelsWidth);
+#else
+  if (aPixelsWidth != 0)
+  {
+    isBatchCopy = false;
+  }
+#endif
+
+  if (!isBatchCopy)
+  {
+    // copy row by row
+    for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
     {
-      if (!myView->HasImmediateStructures()
-       && !theIsPartialUpdate)
-      {
-        // prefer Swap Buffers within Redraw in compatibility mode (without FBO)
-        return true;
-      }
-      copyBackToFront();
-    }
-    else
-    {
-      myBackBufferRestored = Standard_False;
+      // Image_PixMap rows indexation always starts from the upper corner
+      // while order in memory depends on the flag and processed by ChangeRow() method
+      glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, theImage.ChangeRow (aRow));
     }
   }
   else
   {
-    myBackBufferRestored = Standard_False;
+    glReadPixels (0, 0, GLsizei (theImage.SizeX()), GLsizei (theImage.SizeY()), aFormat, aType, theImage.ChangeData());
   }
-  myIsImmediateDrawn = Standard_True;
 
-  Handle(OpenGl_Workspace) aWS (this);
-
-  myUseZBuffer    = Standard_True;
-  myUseDepthWrite = Standard_True;
-  glDepthFunc (GL_LEQUAL);
-  glDepthMask (GL_TRUE);
-  glEnable (GL_DEPTH_TEST);
+  glPixelStorei (GL_PACK_ALIGNMENT,  1);
 #if !defined(GL_ES_VERSION_2_0)
-  glClearDepth (1.0);
-#else
-  glClearDepthf (1.0f);
+  glPixelStorei (GL_PACK_ROW_LENGTH, 0);
 #endif
 
-  myView->Render (myPrintContext, aWS, theDrawFbo, theProjection,
-                  theCView, Standard_True);
-
-  return !toCopyBackToFront;
+  if (theFBOPtr != NULL && theFBOPtr->IsValid())
+  {
+    theFBOPtr->UnbindBuffer (GetGlContext());
+  }
+  else
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    glReadBuffer (aReadBufferPrev);
+  #endif
+  }
+  return Standard_True;
 }
-
 
 // =======================================================================
 // function : CanRender

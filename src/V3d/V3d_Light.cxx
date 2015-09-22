@@ -32,71 +32,102 @@
 #include <V3d_Light.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_Light.hxx>
 
-//-Declarations
-//-Aliases
-//-Global data definitions
-//-Local data definitions
-//-Constructors
-V3d_Light::V3d_Light(const Handle(V3d_Viewer)& VM) {
-
-	MyType = V3d_AMBIENT ;
-	VM->AddLight(this) ;
+// =======================================================================
+// function : V3d_Light
+// purpose  :
+// =======================================================================
+V3d_Light::V3d_Light (const Handle(V3d_Viewer)& theViewer)
+{
+  SetType (V3d_AMBIENT);
+  theViewer->AddLight (this);
 }
 
-//-Methods, in order
-
-Handle(Visual3d_Light) V3d_Light::Light() const {
-
-	return MyLight ;
+// =======================================================================
+// function : SetType
+// purpose  :
+// =======================================================================
+void V3d_Light::SetType (const V3d_TypeOfLight theType)
+{
+  myLight.Type = (Graphic3d_TypeOfLightSource)theType;
 }
 
-void V3d_Light::SetColor(const Quantity_TypeOfColor Type, const Standard_Real v1, const Standard_Real v2, const Standard_Real v3) {
-  Standard_Real V1 = v1 ;
-  Standard_Real V2 = v2 ;
-  Standard_Real V3 = v3 ;
-
-  if( V1 < 0. ) V1 = 0. ; else if( V1 > 1. ) V1 = 1. ;
-  if( V2 < 0. ) V2 = 0. ; else if( V2 > 1. ) V2 = 1. ;
-  if( V3 < 0. ) V3 = 0. ; else if( V3 > 1. ) V3 = 1. ;
-
-
-  Quantity_Color C(V1,V2,V3,Type) ;
-  MyLight->SetColor(C) ;
+// =======================================================================
+// function : SetColor
+// purpose  :
+// =======================================================================
+void V3d_Light::SetColor (const Quantity_TypeOfColor theType,
+                          const Standard_Real theValue1,
+                          const Standard_Real theValue2,
+                          const Standard_Real theValue3)
+{
+  Standard_Real aValue1 = Max (0., Min (1., theValue1));
+  Standard_Real aValue2 = Max (0., Min (1., theValue2));
+  Standard_Real aValue3 = Max (0., Min (1., theValue3));
+  Quantity_Color aColor (aValue1, aValue2, aValue3, theType);
+  SetColor (aColor);
 }
 
-void V3d_Light::SetColor(const Quantity_NameOfColor Name) {
-  Quantity_Color C(Name) ;
-  MyLight->SetColor(C) ;
+// =======================================================================
+// function : SetColor
+// purpose  :
+// =======================================================================
+void V3d_Light::SetColor (const Quantity_NameOfColor theName)
+{
+  SetColor (Quantity_Color (theName));
 }
 
-void V3d_Light::SetColor(const Quantity_Color& aColor) {
-  MyLight->SetColor(aColor) ;
+// =======================================================================
+// function : SetColor
+// purpose  :
+// =======================================================================
+void V3d_Light::SetColor (const Quantity_Color& theColor)
+{
+  myLight.Color.r() = static_cast<Standard_ShortReal> (theColor.Red());
+  myLight.Color.g() = static_cast<Standard_ShortReal> (theColor.Green());
+  myLight.Color.b() = static_cast<Standard_ShortReal> (theColor.Blue());
 }
 
-void V3d_Light::Color(const Quantity_TypeOfColor Type, Standard_Real& V1, Standard_Real& V2, Standard_Real& V3) const {
-
-  Quantity_Color C ;
-  C = MyLight->Color() ;
-  C.Values(V1,V2,V3,Type) ;
+// =======================================================================
+// function : Color
+// purpose  :
+// =======================================================================
+void V3d_Light::Color (const Quantity_TypeOfColor theType,
+                       Standard_Real& theValue1,
+                       Standard_Real& theValue2,
+                       Standard_Real& theValue3) const
+{
+  Color().Values (theValue1, theValue2, theValue3, theType);
 }
 
-void V3d_Light::Color(Quantity_NameOfColor& Name) const{
-
-  Quantity_Color C ;
-  C = MyLight->Color() ;
-  Name = C.Name();
+// =======================================================================
+// function : Color
+// purpose  :
+// =======================================================================
+void V3d_Light::Color (Quantity_NameOfColor& theName) const
+{
+  theName = Color().Name();
 }
 
-Quantity_Color V3d_Light::Color() const{
-
-  return MyLight->Color();
+// =======================================================================
+// function : Color
+// purpose  :
+// =======================================================================
+Quantity_Color V3d_Light::Color() const
+{
+  return Quantity_Color (Standard_Real (myLight.Color.r()),
+                         Standard_Real (myLight.Color.g()),
+                         Standard_Real (myLight.Color.b()),
+                         Quantity_TOC_RGB);
 }
 
-V3d_TypeOfLight V3d_Light::Type() const {
-
-  return MyType;
+// =======================================================================
+// function : Type
+// purpose  :
+// =======================================================================
+V3d_TypeOfLight V3d_Light::Type() const
+{
+  return (V3d_TypeOfLight)myLight.Type;
 }
 
 // =======================================================================
@@ -105,7 +136,11 @@ V3d_TypeOfLight V3d_Light::Type() const {
 // =======================================================================
 void V3d_Light::SetIntensity (const Standard_Real theValue)
 {
-  MyLight->SetIntensity (theValue);
+  Standard_ASSERT_RAISE (theValue > 0.,
+                         "V3d_Light::SetIntensity, "
+                         "Negative value for intensity");
+
+  myLight.Intensity = static_cast<Standard_ShortReal> (theValue);
 }
 
 // =======================================================================
@@ -114,7 +149,7 @@ void V3d_Light::SetIntensity (const Standard_Real theValue)
 // =======================================================================
 Standard_Real V3d_Light::Intensity() const
 {
-  return MyLight->Intensity();
+  return myLight.Intensity;
 }
 
 // =======================================================================
@@ -123,18 +158,31 @@ Standard_Real V3d_Light::Intensity() const
 // =======================================================================
 Standard_Real V3d_Light::Smoothness() const
 {
-  return MyLight->Smoothness();
+  return myLight.Smoothness;
 }
 
-Standard_Boolean V3d_Light::Headlight() const {
-  return MyLight->Headlight();
+// =======================================================================
+// function : Headlight
+// purpose  :
+// =======================================================================
+Standard_Boolean V3d_Light::Headlight() const
+{
+  return myLight.IsHeadlight;
 }
 
+// =======================================================================
+// function : SetHeadlight
+// purpose  :
+// =======================================================================
 void V3d_Light::SetHeadlight (const Standard_Boolean theValue)
 {
-  MyLight->SetHeadlight (theValue);
+  myLight.IsHeadlight = theValue;
 }
 
+// =======================================================================
+// function : SymetricPointOnSphere
+// purpose  :
+// =======================================================================
 void V3d_Light::SymetricPointOnSphere (const Handle(V3d_View)& aView, const Graphic3d_Vertex &Center, const Graphic3d_Vertex &aPoint, const Standard_Real Rayon, Standard_Real& X, Standard_Real& Y, Standard_Real& Z, Standard_Real& VX, Standard_Real& VY, Standard_Real& VZ ) {
 
   Standard_Real X0,Y0,Z0,XP,YP,ZP;
@@ -176,7 +224,16 @@ void V3d_Light::SymetricPointOnSphere (const Handle(V3d_View)& aView, const Grap
   }
 }
 
-Standard_Boolean V3d_Light::IsDisplayed() const {
-  if( MyGraphicStructure.IsNull() ) return Standard_False;
-  return MyGraphicStructure->IsDisplayed();
+// =======================================================================
+// function : IsDisplayed
+// purpose  :
+// =======================================================================
+Standard_Boolean V3d_Light::IsDisplayed() const
+{
+  if (myGraphicStructure.IsNull())
+  {
+    return Standard_False;
+  }
+
+  return myGraphicStructure->IsDisplayed();
 }

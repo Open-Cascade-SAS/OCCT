@@ -13,38 +13,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _D3DHost_Workspace_HeaderFile
-#define _D3DHost_Workspace_HeaderFile
+#ifndef _D3DHost_View_HeaderFile
+#define _D3DHost_View_HeaderFile
 
 #include <d3d9.h>
 
-#include <OpenGl_Workspace.hxx>
 #include <D3DHost_FrameBuffer.hxx>
+#include <OpenGl_View.hxx>
+#include <OpenGl_Workspace.hxx>
 
-//! The D3D host containing OpenGL viewer.
-class D3DHost_Workspace : public OpenGl_Workspace
+class D3DHost_GraphicDriver;
+
+//! The D3D host view implementation that overrides rendering methods.
+class D3DHost_View : public OpenGl_View
 {
 
 public:
 
-  //! Main constructor.
-  Standard_EXPORT D3DHost_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
-                                     const CALL_DEF_WINDOW&              theCWindow,
-                                     Aspect_RenderingContext             theGContext,
-                                     const Handle(OpenGl_Caps)&          theCaps,
-                                     const Handle(OpenGl_Context)&       theShareCtx);
+  //! Constructor.
+  Standard_EXPORT D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
+                                const Handle(D3DHost_GraphicDriver)& theDriver,
+                                const Handle(OpenGl_Caps)& theCaps,
+                                Standard_Boolean& theDeviceLostFlag,
+                                OpenGl_StateCounter* theCounter);
 
-  //! Destroy D3D connection and OpenGL workspace.
-  Standard_EXPORT virtual ~D3DHost_Workspace();
+  //! Default destructor.
+  Standard_EXPORT virtual ~D3DHost_View();
+
+  //! Creates and maps rendering window to the view.
+  //! @param theWindow [in] the window.
+  //! @param theContext [in] the rendering context. If NULL the context will be created internally.
+  //! @param theDisplayCB [in] the display callback function. If is not a NULL value, then the callback will be
+  //! invoked at the end of the OCC graphic traversal and just before the swap of buffers.
+  //! @param theClientData [in] the client data for the callback.
+  Standard_EXPORT virtual void SetWindow (const Handle(Aspect_Window)& theWindow,
+                                          const Aspect_RenderingContext theContext,
+                                          const Aspect_GraphicCallbackProc& theDisplayCB,
+                                          const Standard_Address theClientData) Standard_OVERRIDE;
 
   //! Resizes the window.
-  Standard_EXPORT virtual void Resize (const CALL_DEF_WINDOW& theCWindow) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Resized() Standard_OVERRIDE;
 
   //! Redraw the all content.
-  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Redraw() Standard_OVERRIDE;
 
   //! Redraw only immediate layer.
-  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView) Standard_OVERRIDE;
+  Standard_EXPORT virtual void RedrawImmediate() Standard_OVERRIDE;
 
 public:
 
@@ -57,6 +71,9 @@ public:
   //! Return D3D/WGL FBO.
   const Handle(D3DHost_FrameBuffer)& D3dWglBuffer() const { return myD3dWglFbo; }
 
+  //! Return D3D surface.
+  IDirect3DSurface9* D3dColorSurface() const { return myD3dWglFbo->D3dColorSurface(); }
+
 protected:
 
   //! Auxiliary method.
@@ -66,11 +83,11 @@ protected:
   Standard_EXPORT bool d3dInitLib();
 
   //! Initialize Direct3D output device.
-  Standard_EXPORT bool d3dInit (const CALL_DEF_WINDOW& theCWindow);
+  Standard_EXPORT bool d3dInit();
 
   //! Reset Direct3D output settings. Could be used to switch windowed/fullscreen modes.
   //! Use very carefully! Most objects should be released before and recreated after!
-  Standard_EXPORT bool d3dReset (const CALL_DEF_WINDOW& theCWindow);
+  Standard_EXPORT bool d3dReset();
 
   //! (Re-)create D3D surface.
   Standard_EXPORT bool d3dCreateRenderTarget();
@@ -97,10 +114,10 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(D3DHost_Workspace, OpenGl_Workspace)
+  DEFINE_STANDARD_RTTI(D3DHost_View, OpenGl_View)
 
 };
 
-DEFINE_STANDARD_HANDLE(D3DHost_Workspace, OpenGl_Workspace)
+DEFINE_STANDARD_HANDLE(D3DHost_View, OpenGl_View)
 
-#endif // _D3DHost_Workspace_HeaderFile
+#endif // #ifndef _D3DHost_View_HeaderFile

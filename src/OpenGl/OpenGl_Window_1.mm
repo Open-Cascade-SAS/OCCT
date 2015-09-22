@@ -54,33 +54,30 @@
 // purpose  :
 // =======================================================================
 OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
-                              const CALL_DEF_WINDOW&        theCWindow,
+                              const Handle(Aspect_Window)&  thePlatformWindow,
                               Aspect_RenderingContext       theGContext,
                               const Handle(OpenGl_Caps)&    theCaps,
                               const Handle(OpenGl_Context)& theShareCtx)
 : myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
-#if defined(__APPLE__)
-#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  myPlatformWindow (thePlatformWindow),
+#if defined(__APPLE__) && defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   myUIView (NULL),
 #endif
-  myWidthPt  (theCWindow.dx),
-  myHeightPt (theCWindow.dy),
-#endif
-  myWidth    (theCWindow.dx),
-  myHeight   (theCWindow.dy),
   mySwapInterval (theCaps->swapInterval)
 {
-  myBgColor.rgb[0] = theCWindow.Background.r;
-  myBgColor.rgb[1] = theCWindow.Background.g;
-  myBgColor.rgb[2] = theCWindow.Background.b;
-  myBgColor.rgb[3] = 1.0f;
+  myPlatformWindow->Size (myWidth, myHeight);
+
+#if defined(__APPLE__)
+  myWidthPt  = myWidth;
+  myHeightPt = myHeight;
+#endif
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   EAGLContext* aGLContext = theGContext;
   if (aGLContext == NULL)
   {
-    void* aViewPtr = (void* )theCWindow.XWindow;
+    void* aViewPtr = (void* )myPlatformWindow->NativeHandle();
 
     myUIView = (__bridge UIView* )aViewPtr;
     CAEAGLLayer* anEaglLayer = (CAEAGLLayer* )myUIView.layer;
@@ -204,7 +201,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
       myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
     }
 
-    NSView* aView = (NSView* )theCWindow.XWindow;
+    NSView* aView = (NSView* )myPlatformWindow->NativeHandle();
     [aGLContext setView: aView];
     isCore = (aTryCore == 1);
   }
@@ -248,17 +245,20 @@ OpenGl_Window::~OpenGl_Window()
 // function : Resize
 // purpose  : call_subr_resize
 // =======================================================================
-void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
+void OpenGl_Window::Resize()
 {
   // If the size is not changed - do nothing
-  if (myWidthPt  == theCWindow.dx
-   && myHeightPt == theCWindow.dy)
+  Standard_Integer aWidthPt  = 0;
+  Standard_Integer aHeightPt = 0;
+  myPlatformWindow->Size (aWidthPt, aHeightPt);
+  if (myWidthPt  == aWidthPt
+   && myHeightPt == aHeightPt)
   {
     return;
   }
 
-  myWidthPt  = theCWindow.dx;
-  myHeightPt = theCWindow.dy;
+  myWidthPt  = aWidthPt;
+  myHeightPt = aHeightPt;
 
   Init();
 }
@@ -352,6 +352,19 @@ void OpenGl_Window::Init()
     ::glMatrixMode (GL_MODELVIEW);
   }
 #endif
+}
+
+// =======================================================================
+// function : SetSwapInterval
+// purpose  :
+// =======================================================================
+void OpenGl_Window::SetSwapInterval()
+{
+  if (mySwapInterval != myGlContext->caps->swapInterval)
+  {
+    mySwapInterval = myGlContext->caps->swapInterval;
+    myGlContext->SetSwapInterval (mySwapInterval);
+  }
 }
 
 #endif // __APPLE__

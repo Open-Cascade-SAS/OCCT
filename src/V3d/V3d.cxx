@@ -35,8 +35,6 @@
 #include <V3d.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
-#include <Visual3d_ViewManager.hxx>
 
 Graphic3d_Vector V3d::GetProjAxis(const V3d_TypeOfOrientation Orientation) {
 Standard_Real Xpn=0,Ypn=0,Zpn=0 ;
@@ -238,7 +236,7 @@ void V3d::DrawSphere(const Handle(V3d_Viewer)& aViewer,const Quantity_Length ray
 {
   const Standard_Boolean inf = ray < 0;
   const Standard_Real aRadius = Standard_ShortReal(Abs(ray));
-  Handle(Graphic3d_Structure) Struct = new Graphic3d_Structure(aViewer->Viewer()) ;
+  Handle(Graphic3d_Structure) Struct = new Graphic3d_Structure(aViewer->StructureManager());
   Handle(Graphic3d_Group)     Group  = Struct->NewGroup();
 
   Handle(Graphic3d_AspectLine3d) LineAttrib = new Graphic3d_AspectLine3d() ;
