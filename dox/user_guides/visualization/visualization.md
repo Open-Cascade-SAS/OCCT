@@ -35,6 +35,8 @@ To answer different needs of CASCADE users, this User's Guide offers the followi
   
   * If the 3D services proposed in AIS meet your requirements, you  need only read chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>.   
   * If you need more detail, for example, a selection filter on another type of entity - you should  read chapter 2 <a href="#occt_visu_2">Fundamental Concepts</a>, chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>, and 4 <a href="#occt_visu_4">3D Presentations</a>. You may want to begin with the chapter presenting AIS.
+ 
+For advanced information on visualization algorithms, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.  
 
 @section occt_visu_2  Fundamental Concepts
 

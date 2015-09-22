@@ -5,7 +5,7 @@ Modeling Algorithms  {#occt_user_guides__modeling_algos}
 
 @section occt_modalg_1 Introduction
 
-This manual explains how  to use the Modeling Algorithms. It provides basic documentation on modeling  algorithms. For advanced information on Modeling Algorithms, see our offerings  on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a> 
+This manual explains how  to use the Modeling Algorithms. It provides basic documentation on modeling  algorithms. For advanced information on Modeling Algorithms, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 The Modeling Algorithms module brings together a  wide range of topological algorithms used in modeling. Along with these tools,  you will find the geometric algorithms, which they call. 
 
@@ -489,7 +489,7 @@ The Curves and Surfaces from Constraints component groups together high level fu
   * construction of plate surfaces
   * extension of a 3D curve or surface beyond its original bounds.
   
-OPEN CASCADE company also provides a product known as <a href="http://www.opencascade.org/support/products/ssp/">Surfaces from Scattered Points</a>, which allows constructing surfaces from scattered points. This algorithm accepts or constructs an initial B-Spline surface and looks for its deformation (finite elements method) which would satisfy the constraints. Using optimized computation methods, this algorithm is able to construct a surface from more than 500 000 points.
+OPEN CASCADE company also provides a product known as <a href="http://www.opencascade.com/content/surfaces-scattered-points">Surfaces from Scattered Points</a>, which allows constructing surfaces from scattered points. This algorithm accepts or constructs an initial B-Spline surface and looks for its deformation (finite elements method) which would satisfy the constraints. Using optimized computation methods, this algorithm is able to construct a surface from more than 500 000 points.
 
 SSP product is not supplied with Open CASCADE Technology, but can be purchased separately.
 
@@ -2878,8 +2878,8 @@ Open CASCADE Technology includes two mesh converters:
 - STL converter translates Open CASCADE shapes to STL files. STL (STtereoLithography) format is widely used for rapid prototyping.
 
 Open CASCADE SAS also offers Advanced Mesh Products:
-- <a href="http://www.opencascade.org/support/products/omf">Open CASCADE Mesh Framework (OMF)</a>
-- <a href="http://www.opencascade.org/support/products/emesh">Express Mesh</a>
+- <a href="http://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
+- <a href="http://www.opencascade.com/content/express-mesh">Express Mesh</a>
 
 Besides, we can efficiently help you in the fields of surface and volume meshing algorithms, mesh optimization algorithms etc. If you require a qualified advice about meshing algorithms, do not hesitate to benefit from the expertise of our team in that domain.
 

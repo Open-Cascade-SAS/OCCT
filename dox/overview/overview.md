@@ -3,6 +3,11 @@
 
 @tableofcontents
 
+@htmlonly<center>@endhtmlonly 
+@image html /resources/occt_logo.png
+@image latex /resources/occt_logo.png
+@htmlonly</center>@endhtmlonly
+
 @section OCCT_OVW_SECTION_1 Welcome
 
 Welcome to Open CASCADE Technology (OCCT), a software development platform 
@@ -10,12 +15,6 @@ providing services for 3D surface and solid modeling, CAD data exchange, and
 visualization. Most of OCCT functionality is available in the form of C++ 
 libraries. OCCT can be best applied in development of software dealing with 3D 
 modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
-
-@htmlonly<center>@endhtmlonly 
-http://www.opencascade.org
-@image html /resources/occt_logo.png
-@image latex /resources/occt_logo.png
-@htmlonly</center>@endhtmlonly
 
 @section OCCT_OVW_SECTION_2 Copyrights
 
@@ -170,42 +169,17 @@ See @ref occt_dev_guides__documentation "OCCT Documentation Guide" for details o
 To generate HTML documentation from sources contained in *dox* subdirectory, 
 you need to have Tcl and Doxygen 1.8.5 (or above) installed on your system.
 
-In Tcl prompt, cd to OCCT root folder and run 
+Use script **gendoc** (batch file on Windows, shell script on Linux / Mac OSX) to generate documentation.
 
-    tclsh> source dox/start.tcl
+To generate Overview documentation:
 
-On Windows you can also run batch script **gendoc.bat**.
+    cmd> gendoc -overview
 
+To generate Reference manual:
 
-**Generation of reference documentation**
+    cmd> gendoc -refman
 
-Reference documentation can be generated with help of WOK tool that 
-is available for download from www.opencascade.org and dev.opencascade.org sites.
-
-Prerequisites:
-
-  * Doxygen version 1.8.5 or higher
-  * Graphviz version 2.28.0 or higher
-
-Run WOK (cd \<WOK_INSTALL_DIR\>/site folder):
-
-* Using WOK TCL shell:
-      > wok_tclsh.sh
-
-* Using Emacs editor:
-      > wok_emacs.sh
-
-In the WOK prompt, step into your workbench:
-
-      > wokcd <your workbench>
-
-In your workbench, use **wgendoc** command with –h argument to get information about arguments of **wgendoc** command:
-
-      > wgendoc -h
-
-then run **wgendoc** command with required arguments, for instance:
-
-      > wgendoc -output=d:/occt/doc {-m=Draw Visualization}
+Run this command without arguments to get help on supported options.
 
 @section OCCT_OVW_SECTION_5 Requirements
 

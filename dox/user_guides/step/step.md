@@ -24,7 +24,7 @@ File translation is performed in the programming mode, via C++ calls.
 
 For testing the STEP component in DRAW Test Harness, a set of commands for reading and writing STEP files and analysis of relevant data are provided by the *TKXSDRAW* plugin. 
 
-See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
+See also our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @subsection occt_step_1_1 STEP Exchanges in Open Cascade technology
 

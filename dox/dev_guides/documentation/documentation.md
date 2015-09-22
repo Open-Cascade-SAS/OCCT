@@ -140,7 +140,8 @@ dev_guides/svn/svn.md
 
 @section  OCCT_DOC_SECTION_5 Additional Resources
 
-More information about OCCT can be found at http://www.opencascade.org
+More information about OCCT can be found at http://www.opencascade.com and http://dev.opencascade.org sites. 
+
 
 The information on formula syntax can be found at: 
 http://en.wikipedia.org/wiki/Help:Displaying_a_formula
