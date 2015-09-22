@@ -109,8 +109,14 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
 
   const Standard_Real aMinTolU = 0.1*Abs(Step*previousd2d.X()),
                       aMinTolV = 0.1*Abs(Step*previousd2d.Y());
+  const Standard_Real aTolU = (aMinTolU > 0.0) ? Min(tolerance(1), aMinTolU) : tolerance(1),
+                      aTolV = (aMinTolV > 0.0) ? Min(tolerance(2), aMinTolV) : tolerance(2);
 
-  if ((Abs(Du) < Min(tolerance(1), aMinTolU)) && (Abs(Dv) < Min(tolerance(2), aMinTolV)))
+  //If aMinTolU==0.0 then (Abs(Du) < aMinTolU) is equivalent of (Abs(Du) < 0.0).
+  //It is impossible. Therefore, this case should be processed separately.
+  //Analogicaly for aMinTolV.
+
+  if ((Abs(Du) < aTolU) && (Abs(Dv) < aTolV))
   {
     //Thin shapes (for which Ulast-Ufirst or/and Vlast-Vfirst is quite small)
     //exists (see bug #25820). In this case, step is quite small too.
