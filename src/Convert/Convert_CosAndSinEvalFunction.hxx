@@ -25,7 +25,7 @@ typedef void   Convert_CosAndSinEvalFunction(Standard_Real,
 					     const Standard_Integer,
 					     const TColgp_Array1OfPnt2d&,
 					     const TColStd_Array1OfReal&, 
-					     const TColStd_Array1OfInteger&,
+					     const TColStd_Array1OfInteger*,
 					     Standard_Real Result[2]) ; 
 
 #endif

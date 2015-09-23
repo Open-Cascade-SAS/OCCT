@@ -58,8 +58,8 @@ static void HermiteCoeff(const Handle(Geom_BSplineCurve)& BS,
   Index0   = BS->FirstUKnotIndex();
   Index1   = BS->LastUKnotIndex()-1;
 
-  BSplCLib::D1(0.0,Index0,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,Mults,Denom0,Deriv0);
-  BSplCLib::D1(1.0,Index1,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,Mults,Denom1,Deriv1);
+  BSplCLib::D1(0.0,Index0,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,&Mults,Denom0,Deriv0);
+  BSplCLib::D1(1.0,Index1,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,&Mults,Denom1,Deriv1);
   TAB(0) = 1/Denom0;                                                //Hermit coefficients
   TAB(1) = -Deriv0/(Denom0*Denom0);
   TAB(2) = -Deriv1/(Denom1*Denom1);
@@ -94,8 +94,8 @@ static void HermiteCoeff(const Handle(Geom2d_BSplineCurve)& BS,
   Index0   = BS->FirstUKnotIndex();
   Index1   = BS->LastUKnotIndex()-1;
 
-  BSplCLib::D1(0.0,Index0,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,Mults,Denom0,Deriv0);
-  BSplCLib::D1(1.0,Index1,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,Mults,Denom1,Deriv1);
+  BSplCLib::D1(0.0,Index0,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,&Mults,Denom0,Deriv0);
+  BSplCLib::D1(1.0,Index1,Degree,Periodic,Weights,BSplCLib::NoWeights(),Knots,&Mults,Denom1,Deriv1);
   TAB(0) = 1/Denom0;                                                //Hermit coefficients
   TAB(1) = -Deriv0/(Denom0*Denom0);
   TAB(2) = -Deriv1/(Denom1*Denom1);

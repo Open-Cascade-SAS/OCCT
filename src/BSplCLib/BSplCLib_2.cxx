@@ -62,7 +62,7 @@ struct BSplCLib_DataContainer
 void  BSplCLib::BuildEval(const Standard_Integer         Degree,
 			  const Standard_Integer         Index,
 			  const TColStd_Array1OfReal&    Poles, 
-			  const TColStd_Array1OfReal&    Weights,
+			  const TColStd_Array1OfReal*    Weights,
 			  Standard_Real&                 LP)
 {
   Standard_Integer PLower = Poles.Lower();
@@ -70,7 +70,7 @@ void  BSplCLib::BuildEval(const Standard_Integer         Degree,
   Standard_Integer i;
   Standard_Integer ip = PLower + Index - 1;
   Standard_Real w, *pole = &LP;
-  if (&Weights == NULL) {
+  if (Weights == NULL) {
     
     for (i = 0; i <= Degree; i++) {
       ip++;
@@ -84,7 +84,7 @@ void  BSplCLib::BuildEval(const Standard_Integer         Degree,
     for (i = 0; i <= Degree; i++) {
       ip++;
       if (ip > PUpper) ip = PLower;
-      pole[1] = w = Weights(ip);
+      pole[1] = w = (*Weights)(ip);
       pole[0] = Poles(ip) * w;
       pole += 2;
     }
@@ -105,9 +105,9 @@ static void PrepareEval
  const Standard_Integer         Degree,     
  const Standard_Boolean         Periodic,
  const TColStd_Array1OfReal&    Poles,  
- const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal*    Weights,
  const TColStd_Array1OfReal&    Knots,  
- const TColStd_Array1OfInteger& Mults,
+ const TColStd_Array1OfInteger* Mults,
  BSplCLib_DataContainer&        dc) 
 {                    
   // Set the Index
@@ -115,16 +115,16 @@ static void PrepareEval
   
   // make the knots
   BSplCLib::BuildKnots(Degree,index,Periodic,Knots,Mults,*dc.knots);
-  if (&Mults == NULL)
+  if (Mults == NULL)
     index -= Knots.Lower() + Degree;
   else
-    index = BSplCLib::PoleIndex(Degree,index,Periodic,Mults);
+    index = BSplCLib::PoleIndex(Degree,index,Periodic,*Mults);
   
   // check truly rational
-  rational = (&Weights != NULL);
+  rational = (Weights != NULL);
   if (rational) {
-    Standard_Integer WLower = Weights.Lower() + index;
-    rational = BSplCLib::IsRational(Weights, WLower, WLower + Degree);
+    Standard_Integer WLower = Weights->Lower() + index;
+    rational = BSplCLib::IsRational(*Weights, WLower, WLower + Degree);
   }
   
   // make the poles
@@ -149,9 +149,9 @@ void BSplCLib::D0
  const Standard_Integer         Degree,     
  const Standard_Boolean         Periodic,
  const TColStd_Array1OfReal&    Poles,  
- const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal*    Weights,
  const TColStd_Array1OfReal&    Knots,  
- const TColStd_Array1OfInteger& Mults,  
+ const TColStd_Array1OfInteger* Mults,  
  Standard_Real&                 P) 
 {                    
   Standard_Integer dim,index = Index;
@@ -175,9 +175,9 @@ void BSplCLib::D1
  const Standard_Integer         Degree,     
  const Standard_Boolean         Periodic,
  const TColStd_Array1OfReal&    Poles,  
- const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal*    Weights,
  const TColStd_Array1OfReal&    Knots,  
- const TColStd_Array1OfInteger& Mults,  
+ const TColStd_Array1OfInteger* Mults,  
  Standard_Real&                 P,
  Standard_Real&                 V) 
 {                    
@@ -207,9 +207,9 @@ void BSplCLib::D2
  const Standard_Integer         Degree,     
  const Standard_Boolean         Periodic,
  const TColStd_Array1OfReal&    Poles,  
- const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal*    Weights,
  const TColStd_Array1OfReal&    Knots,  
- const TColStd_Array1OfInteger& Mults,  
+ const TColStd_Array1OfInteger* Mults,  
  Standard_Real&                 P,
  Standard_Real&                 V1,
  Standard_Real&                 V2) 
@@ -242,9 +242,9 @@ void BSplCLib::D3
  const Standard_Integer         Degree,     
  const Standard_Boolean         Periodic,
  const TColStd_Array1OfReal&    Poles,  
- const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal*    Weights,
  const TColStd_Array1OfReal&    Knots,  
- const TColStd_Array1OfInteger& Mults,  
+ const TColStd_Array1OfInteger* Mults,  
  Standard_Real&                 P,
  Standard_Real&                 V1,
  Standard_Real&                 V2,
@@ -281,9 +281,9 @@ void BSplCLib::DN
  const Standard_Integer         Degree,     
  const Standard_Boolean         Periodic,
  const TColStd_Array1OfReal&    Poles,  
- const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal*    Weights,
  const TColStd_Array1OfReal&    Knots,  
- const TColStd_Array1OfInteger& Mults,  
+ const TColStd_Array1OfInteger* Mults,  
  Standard_Real&                 VN) 
 {                    
   Standard_Integer dim,index = Index;

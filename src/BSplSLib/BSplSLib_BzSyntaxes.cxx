@@ -30,9 +30,9 @@
 //=======================================================================
 
 void BSplSLib::PolesCoefficients (const TColgp_Array2OfPnt& Poles, 
-				  const TColStd_Array2OfReal& Weights, 
+				  const TColStd_Array2OfReal* Weights, 
 				  TColgp_Array2OfPnt& CachePoles, 
-				  TColStd_Array2OfReal& CacheWeights)
+				  TColStd_Array2OfReal* CacheWeights)
 {
   Standard_Integer i;
   Standard_Integer uclas = Poles.ColLength(); 
@@ -67,8 +67,8 @@ void BSplSLib::PolesCoefficients (const TColgp_Array2OfPnt& Poles,
 			 uclas - 1,vclas - 1,0,0,
 			 biduflatknots,bidvflatknots,
 			 Poles,Weights,
-			 CPoles,CWeights);
-    if (&Weights == NULL) {
+			 CPoles,&CWeights);
+    if (Weights == NULL) {
       
       for (ii = 1; ii <= uclas; ii++) {
 	
@@ -83,7 +83,7 @@ void BSplSLib::PolesCoefficients (const TColgp_Array2OfPnt& Poles,
 	
 	for (jj = 1; jj <= vclas; jj++) {
 	  CachePoles  (ii, jj) = CPoles  (jj, ii);
-	  CacheWeights(ii, jj) = CWeights(jj, ii);
+	  (*CacheWeights)(ii, jj) = CWeights(jj, ii);
 	}
       }
     }

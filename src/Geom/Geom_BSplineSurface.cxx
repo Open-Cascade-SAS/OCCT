@@ -383,9 +383,9 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
       
       BSplSLib::IncreaseDegree
 	(Standard_True, udeg, UDegree, uperiodic,
-	 poles->Array2(),weights->Array2(),
+	 poles->Array2(),&weights->Array2(),
 	 uknots->Array1(),umults->Array1(),
-	 npoles->ChangeArray2(),nweights->ChangeArray2(),
+	 npoles->ChangeArray2(),&nweights->ChangeArray2(),
 	 nknots->ChangeArray1(),nmults->ChangeArray1());
     }
     else {
@@ -394,7 +394,7 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
 	(Standard_True, udeg, UDegree, uperiodic,
 	 poles->Array2(),BSplSLib::NoWeights(),
 	 uknots->Array1(),umults->Array1(),
-	 npoles->ChangeArray2(),*((TColStd_Array2OfReal*) NULL),
+	 npoles->ChangeArray2(),BSplSLib::NoWeights(),
 	 nknots->ChangeArray1(),nmults->ChangeArray1());
     }
     udeg    = UDegree;
@@ -435,9 +435,9 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
       
       BSplSLib::IncreaseDegree
 	(Standard_False, vdeg, VDegree, vperiodic,
-	 poles->Array2(),weights->Array2(),
+	 poles->Array2(),&weights->Array2(),
 	 vknots->Array1(),vmults->Array1(),
-	 npoles->ChangeArray2(),nweights->ChangeArray2(),
+	 npoles->ChangeArray2(),&nweights->ChangeArray2(),
 	 nknots->ChangeArray1(),nmults->ChangeArray1());
     }
     else {
@@ -446,7 +446,7 @@ void Geom_BSplineSurface::IncreaseDegree (const Standard_Integer UDegree,
 	(Standard_False, vdeg, VDegree, vperiodic,
 	 poles->Array2(),BSplSLib::NoWeights(),
 	 vknots->Array1(),vmults->Array1(),
-	 npoles->ChangeArray2(),*((TColStd_Array2OfReal*) NULL),
+	 npoles->ChangeArray2(),BSplSLib::NoWeights(),
 	 nknots->ChangeArray1(),nmults->ChangeArray1());
     }
     vdeg    = VDegree;

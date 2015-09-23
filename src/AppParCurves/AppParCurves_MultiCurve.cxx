@@ -187,7 +187,7 @@ void AppParCurves_MultiCurve::Value (const Standard_Integer CuIndex,
     TabPoles(i) = tabPoint->Value(i).Point(CuIndex);
   } 
   
-  BSplCLib::D0 (U, TabPoles,PLib::NoWeights(), Pt);
+  BSplCLib::D0 (U, TabPoles,BSplCLib::NoWeights(), Pt);
 }
 
 
@@ -203,7 +203,7 @@ void AppParCurves_MultiCurve::Value (const Standard_Integer CuIndex,
     TabPole(i) = tabPoint->Value(i).Point2d(CuIndex);
   }
   
-  BSplCLib::D0 (U, TabPole, PLib::NoWeights(), Pt);
+  BSplCLib::D0 (U, TabPole, BSplCLib::NoWeights(), Pt);
 }
 
 
@@ -222,7 +222,7 @@ void AppParCurves_MultiCurve::D1 (const Standard_Integer CuIndex,
     TabPole(i) = tabPoint->Value(i).Point(CuIndex);
   }
 
-  BSplCLib::D1 (U, TabPole, PLib::NoWeights(), Pt, V1);
+  BSplCLib::D1 (U, TabPole, BSplCLib::NoWeights(), Pt, V1);
 }
 
 
@@ -242,7 +242,7 @@ void AppParCurves_MultiCurve::D2 (const Standard_Integer CuIndex,
     TabPole(i) = tabPoint->Value(i).Point(CuIndex);
   }
 
-  BSplCLib::D2 (U, TabPole, PLib::NoWeights(), Pt, V1, V2);
+  BSplCLib::D2 (U, TabPole, BSplCLib::NoWeights(), Pt, V1, V2);
 }
 
 
@@ -259,7 +259,7 @@ void AppParCurves_MultiCurve::D1 (const Standard_Integer CuIndex,
     TabPole(i) = tabPoint->Value(i).Point2d(CuIndex);
   }
 
-  BSplCLib::D1 (U, TabPole, PLib::NoWeights(), Pt, V1);
+  BSplCLib::D1 (U, TabPole, BSplCLib::NoWeights(), Pt, V1);
 }
 
 
@@ -279,7 +279,7 @@ void AppParCurves_MultiCurve::D2 (const Standard_Integer CuIndex,
     TabPole(i) = tabPoint->Value(i).Point2d(CuIndex);
   }
 
-  BSplCLib::D2(U, TabPole, PLib::NoWeights(), Pt, V1, V2);
+  BSplCLib::D2(U, TabPole, BSplCLib::NoWeights(), Pt, V1, V2);
 }
 
 

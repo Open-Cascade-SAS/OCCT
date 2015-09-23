@@ -770,7 +770,7 @@ public:
   Standard_EXPORT void Weights (TColStd_Array1OfReal& W) const;
   
   //! Returns the weights of the B-spline curve;
-  Standard_EXPORT const TColStd_Array1OfReal& Weights() const;
+  Standard_EXPORT const TColStd_Array1OfReal* Weights() const;
   
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform (const gp_Trsf& T);

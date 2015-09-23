@@ -207,8 +207,8 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_HCurve)& C,
       //Augmentation eventuelle du degre
       Standard_Integer Inc = MaxDeg - MC.Degree();
       if ( Inc > 0) {
-	BSplCLib::IncreaseDegree( Inc, LocalPoles, PLib::NoWeights(),
-				 TempPoles, PLib::NoWeights());
+	BSplCLib::IncreaseDegree( Inc, LocalPoles, BSplCLib::NoWeights(),
+				 TempPoles, BSplCLib::NoWeights());
 	  //mise a jour des poles de la PCurve
 	  for (Standard_Integer j = 1 ; j <= MaxDeg + 1; j++) {
 	    Poles.SetValue( Compt, TempPoles( j));

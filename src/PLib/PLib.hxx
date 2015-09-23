@@ -40,6 +40,9 @@ class PLib_DoubleJacobiPolynomial;
 //! PLib means Polynomial  functions library.  This pk
 //! provides  basic       computation    functions for
 //! polynomial functions.
+//! Note: weight arrays can be passed by pointer for
+//! some functions so that NULL pointer is valid.
+//! That means no weights passed.
 class PLib 
 {
 public:
@@ -48,11 +51,17 @@ public:
 
   
   //! Used as argument for a non rational functions
-    static TColStd_Array1OfReal& NoWeights();
+  inline static TColStd_Array1OfReal* NoWeights()
+  {
+    return NULL;
+  }
   
   //! Used as argument for a non rational functions
-    static TColStd_Array2OfReal& NoWeights2();
-  
+  inline static TColStd_Array2OfReal* NoWeights2()
+  {
+    return NULL;
+  }
+
   //! Copy in FP the coordinates of the poles.
   Standard_EXPORT static void SetPoles (const TColgp_Array1OfPnt& Poles, TColStd_Array1OfReal& FP);
   
@@ -272,27 +281,27 @@ public:
   //! / (|FirstParameter| +|LastParameter|)  < 1/100
   Standard_EXPORT static Standard_Boolean HermiteCoefficients (const Standard_Real FirstParameter, const Standard_Real LastParameter, const Standard_Integer FirstOrder, const Standard_Integer LastOrder, math_Matrix& MatrixCoefs);
   
-  Standard_EXPORT static void CoefficientsPoles (const TColgp_Array1OfPnt& Coefs, const TColStd_Array1OfReal& WCoefs, TColgp_Array1OfPnt& Poles, TColStd_Array1OfReal& WPoles);
+  Standard_EXPORT static void CoefficientsPoles (const TColgp_Array1OfPnt& Coefs, const TColStd_Array1OfReal* WCoefs, TColgp_Array1OfPnt& Poles, TColStd_Array1OfReal* WPoles);
   
-  Standard_EXPORT static void CoefficientsPoles (const TColgp_Array1OfPnt2d& Coefs, const TColStd_Array1OfReal& WCoefs, TColgp_Array1OfPnt2d& Poles, TColStd_Array1OfReal& WPoles);
+  Standard_EXPORT static void CoefficientsPoles (const TColgp_Array1OfPnt2d& Coefs, const TColStd_Array1OfReal* WCoefs, TColgp_Array1OfPnt2d& Poles, TColStd_Array1OfReal* WPoles);
   
-  Standard_EXPORT static void CoefficientsPoles (const TColStd_Array1OfReal& Coefs, const TColStd_Array1OfReal& WCoefs, TColStd_Array1OfReal& Poles, TColStd_Array1OfReal& WPoles);
+  Standard_EXPORT static void CoefficientsPoles (const TColStd_Array1OfReal& Coefs, const TColStd_Array1OfReal* WCoefs, TColStd_Array1OfReal& Poles, TColStd_Array1OfReal* WPoles);
   
-  Standard_EXPORT static void CoefficientsPoles (const Standard_Integer dim, const TColStd_Array1OfReal& Coefs, const TColStd_Array1OfReal& WCoefs, TColStd_Array1OfReal& Poles, TColStd_Array1OfReal& WPoles);
+  Standard_EXPORT static void CoefficientsPoles (const Standard_Integer dim, const TColStd_Array1OfReal& Coefs, const TColStd_Array1OfReal* WCoefs, TColStd_Array1OfReal& Poles, TColStd_Array1OfReal* WPoles);
   
-  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, TColgp_Array1OfPnt& Coeffs, TColStd_Array1OfReal& WCoeffs);
+  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, TColgp_Array1OfPnt& Coeffs, TColStd_Array1OfReal* WCoeffs);
   
-  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, TColgp_Array1OfPnt2d& Coeffs, TColStd_Array1OfReal& WCoeffs);
+  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, TColgp_Array1OfPnt2d& Coeffs, TColStd_Array1OfReal* WCoeffs);
   
-  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, TColStd_Array1OfReal& Coeffs, TColStd_Array1OfReal& WCoeffs);
+  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, TColStd_Array1OfReal& Coeffs, TColStd_Array1OfReal* WCoeffs);
   
-  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, const Standard_Integer dim, TColStd_Array1OfReal& Coeffs, TColStd_Array1OfReal& WCoeffs);
+  Standard_EXPORT static void Trimming (const Standard_Real U1, const Standard_Real U2, const Standard_Integer dim, TColStd_Array1OfReal& Coeffs, TColStd_Array1OfReal* WCoeffs);
   
-  Standard_EXPORT static void CoefficientsPoles (const TColgp_Array2OfPnt& Coefs, const TColStd_Array2OfReal& WCoefs, TColgp_Array2OfPnt& Poles, TColStd_Array2OfReal& WPoles);
+  Standard_EXPORT static void CoefficientsPoles (const TColgp_Array2OfPnt& Coefs, const TColStd_Array2OfReal* WCoefs, TColgp_Array2OfPnt& Poles, TColStd_Array2OfReal* WPoles);
   
-  Standard_EXPORT static void UTrimming (const Standard_Real U1, const Standard_Real U2, TColgp_Array2OfPnt& Coeffs, TColStd_Array2OfReal& WCoeffs);
+  Standard_EXPORT static void UTrimming (const Standard_Real U1, const Standard_Real U2, TColgp_Array2OfPnt& Coeffs, TColStd_Array2OfReal* WCoeffs);
   
-  Standard_EXPORT static void VTrimming (const Standard_Real V1, const Standard_Real V2, TColgp_Array2OfPnt& Coeffs, TColStd_Array2OfReal& WCoeffs);
+  Standard_EXPORT static void VTrimming (const Standard_Real V1, const Standard_Real V2, TColgp_Array2OfPnt& Coeffs, TColStd_Array2OfReal* WCoeffs);
   
   //! Compute the coefficients in the canonical base of the
   //! polynomial satisfying the given constraints
@@ -348,12 +357,5 @@ friend class PLib_HermitJacobi;
 friend class PLib_DoubleJacobiPolynomial;
 
 };
-
-
-#include <PLib.lxx>
-
-
-
-
 
 #endif // _PLib_HeaderFile

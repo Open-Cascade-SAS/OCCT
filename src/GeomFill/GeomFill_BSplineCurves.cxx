@@ -154,15 +154,15 @@ Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
   
   Standard_Integer NP,NK;
   if ( BSplCLib::PrepareInsertKnots(C1->Degree(),Standard_False,
-				    K1,M1,K2,M2,NP,NK,Precision::PConfusion(),
+				    K1,M1,K2,&M2,NP,NK,Precision::PConfusion(),
 				    Standard_False)) {
     TColgp_Array1OfPnt      NewP(1, NP);
     TColStd_Array1OfReal    NewW(1, NP);
     TColStd_Array1OfReal    NewK(1, NK);
     TColStd_Array1OfInteger NewM(1, NK);
     BSplCLib::InsertKnots(C1->Degree(),Standard_False,
-			  P1,W1,K1,M1,K2,M2,
-			  NewP,NewW,NewK,NewM,Precision::PConfusion(),
+			  P1,&W1,K1,M1,K2,&M2,
+			  NewP,&NewW,NewK,NewM,Precision::PConfusion(),
 			  Standard_False);
     if ( C1->IsRational()) {
       C1 = new Geom_BSplineCurve(NewP,NewW,NewK,NewM,C1->Degree());
@@ -171,8 +171,8 @@ Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
       C1 = new Geom_BSplineCurve(NewP,NewK,NewM,C1->Degree());
     }
     BSplCLib::InsertKnots(C2->Degree(),Standard_False,
-			  P2,W2,K2,M2,K1,M1,
-			  NewP,NewW,NewK,NewM,Precision::PConfusion(),
+			  P2,&W2,K2,M2,K1,&M1,
+			  NewP,&NewW,NewK,NewM,Precision::PConfusion(),
 			  Standard_False);
     if ( C2->IsRational()) {
       C2 = new Geom_BSplineCurve(NewP,NewW,NewK,NewM,C2->Degree());

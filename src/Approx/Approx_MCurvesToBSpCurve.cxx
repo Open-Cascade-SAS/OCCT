@@ -194,8 +194,8 @@ void Approx_MCurvesToBSpCurve::Perform
 	Inc = deg-mydegre;
 	TColgp_Array1OfPnt Points(1, deg+1);
 	if (Inc > 0) {
-	  BSplCLib::IncreaseDegree(deg, ThePoles, PLib::NoWeights(),
-				   Points, PLib::NoWeights());
+	  BSplCLib::IncreaseDegree(deg, ThePoles, BSplCLib::NoWeights(),
+				   Points, BSplCLib::NoWeights());
 	}
 	else {
 	  Points = ThePoles;
@@ -215,8 +215,8 @@ void Approx_MCurvesToBSpCurve::Perform
 	Inc = deg-mydegre;
 	TColgp_Array1OfPnt2d Points2d(1, deg+1);
 	if (Inc > 0) {
-	  BSplCLib::IncreaseDegree(deg, ThePoles2d, PLib::NoWeights(),
-				   Points2d, PLib::NoWeights());
+	  BSplCLib::IncreaseDegree(deg, ThePoles2d, BSplCLib::NoWeights(),
+				   Points2d, BSplCLib::NoWeights());
 	}
 	else {
 	  Points2d = ThePoles2d;

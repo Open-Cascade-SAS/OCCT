@@ -1839,8 +1839,8 @@ Handle(Geom2d_BSplineCurve)
       Standard_Integer Inc = MaxDeg - MC.Degree();
       if ( Inc > 0) {
 //	BSplCLib::IncreaseDegree( Inc, Poles2d, PLib::NoWeights(), 
-	BSplCLib::IncreaseDegree( MaxDeg, Poles2d, PLib::NoWeights(), 
-			 TempPoles, PLib::NoWeights());
+	BSplCLib::IncreaseDegree( MaxDeg, Poles2d, BSplCLib::NoWeights(), 
+			 TempPoles, BSplCLib::NoWeights());
 	//update of tops of the PCurve
 	for (Standard_Integer k = 1 ; k <= MaxDeg + 1; k++) {
 	  Poles.SetValue( Compt, TempPoles( k));

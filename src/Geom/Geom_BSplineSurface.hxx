@@ -991,7 +991,7 @@ public:
   
   //! Returns the weights of the B-spline surface.
   //! value and derivatives computation
-  Standard_EXPORT const TColStd_Array2OfReal& Weights() const;
+  Standard_EXPORT const TColStd_Array2OfReal* Weights() const;
   
   Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
   

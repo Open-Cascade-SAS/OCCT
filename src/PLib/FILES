@@ -1,6 +1,5 @@
 PLib.cxx
 PLib.hxx
-PLib.lxx
 PLib_Base.cxx
 PLib_Base.hxx
 PLib_DoubleJacobiPolynomial.cxx

@@ -96,7 +96,7 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
 			    Iknots->Array1(), 
 			    Imults->Array1(), 
 			    Npoles->ChangeArray1(),
-			    Nweight->ChangeArray1(),
+			    &Nweight->ChangeArray1(),
 			    Nknots->ChangeArray1(),
 			    Nmults->ChangeArray1() );
 

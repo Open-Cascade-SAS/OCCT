@@ -31,10 +31,6 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
-#ifndef NOWEIGHTS_CURVE
-#define NOWEIGHTS_CURVE (*((TColStd_Array1OfReal*) NULL))
-#endif
-
 //! \brief A cache class for B-spline curves.
 //!
 //! Defines all data, that can be cached on a span of B-spline curve.
@@ -54,7 +50,7 @@ public:
                                  const Standard_Boolean&        thePeriodic,
                                  const TColStd_Array1OfReal&    theFlatKnots,
                                  const TColgp_Array1OfPnt2d&    thePoles2d,
-                                 const TColStd_Array1OfReal&    theWeights = NOWEIGHTS_CURVE);
+                                 const TColStd_Array1OfReal*    theWeights = NULL);
   //! Constructor for caching of 3D curves
   //! \param theDegree     degree of the B-spline
   //! \param thePeriodic   identify the B-spline is periodic
@@ -65,7 +61,7 @@ public:
                                  const Standard_Boolean&        thePeriodic,
                                  const TColStd_Array1OfReal&    theFlatKnots,
                                  const TColgp_Array1OfPnt&      thePoles,
-                                 const TColStd_Array1OfReal&    theWeights = NOWEIGHTS_CURVE);
+                                 const TColStd_Array1OfReal*    theWeights = NULL);
 
   //! Verifies validity of the cache using flat parameter of the point
   //! \param theParameter parameter of the point placed in the span
@@ -83,7 +79,7 @@ public:
                                   const Standard_Boolean&        thePeriodic,
                                   const TColStd_Array1OfReal&    theFlatKnots,
                                   const TColgp_Array1OfPnt2d&    thePoles2d,
-                                  const TColStd_Array1OfReal&    theWeights = NOWEIGHTS_CURVE);
+                                  const TColStd_Array1OfReal*    theWeights = NULL);
   //! Recomputes the cache data for 3D curves. Does not verify validity of the cache
   //! \param theParameter  the value on the knot's axis to identify the span
   //! \param theDegree     degree of the B-spline
@@ -96,7 +92,7 @@ public:
                                   const Standard_Boolean&        thePeriodic,
                                   const TColStd_Array1OfReal&    theFlatKnots,
                                   const TColgp_Array1OfPnt&      thePoles,
-                                  const TColStd_Array1OfReal&    theWeights = NOWEIGHTS_CURVE);
+                                  const TColStd_Array1OfReal*    theWeights = NULL);
 
   //! Calculates the point on B-spline in the selected point
   //! \param[in]  theParameter parameter of calculation of the value

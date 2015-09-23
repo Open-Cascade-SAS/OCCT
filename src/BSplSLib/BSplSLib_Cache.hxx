@@ -29,10 +29,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-#ifndef NOWEIGHTS_SURF
-#define NOWEIGHTS_SURF (*((TColStd_Array2OfReal*) NULL))
-#endif
-
 //! \brief A cache class for B-spline surfaces.
 //!
 //! Defines all data, that can be cached on a span of B-spline surface.
@@ -58,7 +54,7 @@ public:
                                  const Standard_Boolean&        thePeriodicV,
                                  const TColStd_Array1OfReal&    theFlatKnotsV,
                                  const TColgp_Array2OfPnt&      thePoles,
-                                 const TColStd_Array2OfReal&    theWeights = NOWEIGHTS_SURF);
+                                 const TColStd_Array2OfReal*    theWeights = NULL);
 
   //! Verifies validity of the cache using parameters of the point
   //! \param theParameterU  first parameter of the point placed in the span
@@ -86,7 +82,7 @@ public:
                                   const Standard_Boolean&        thePeriodicV, 
                                   const TColStd_Array1OfReal&    theFlatKnotsV, 
                                   const TColgp_Array2OfPnt&      thePoles, 
-                                  const TColStd_Array2OfReal&    theWeights = NOWEIGHTS_SURF);
+                                  const TColStd_Array2OfReal*    theWeights = NULL);
 
   //! Calculates the point on B-spline for specified parameters
   //! \param[in]  theU      first parameter for calculation of the value

@@ -49,7 +49,7 @@ BSplSLib_Cache::BSplSLib_Cache(const Standard_Integer&        theDegreeU,
                                const Standard_Boolean&        thePeriodicV,
                                const TColStd_Array1OfReal&    theFlatKnotsV,
                                const TColgp_Array2OfPnt&      thePoles,
-                               const TColStd_Array2OfReal&    theWeights)
+                               const TColStd_Array2OfReal*    theWeights)
 {
   Standard_Real aU = theFlatKnotsU.Value(theFlatKnotsU.Lower() + theDegreeU);
   Standard_Real aV = theFlatKnotsV.Value(theFlatKnotsV.Lower() + theDegreeV);
@@ -107,7 +107,7 @@ void BSplSLib_Cache::BuildCache(const Standard_Real&           theParameterU,
                                 const Standard_Boolean&        thePeriodicV, 
                                 const TColStd_Array1OfReal&    theFlatKnotsV, 
                                 const TColgp_Array2OfPnt&      thePoles, 
-                                const TColStd_Array2OfReal&    theWeights)
+                                const TColStd_Array2OfReal*    theWeights)
 {
   // Normalize the parameters for periodical B-splines
   Standard_Real aNewParamU = theParameterU;
@@ -134,7 +134,7 @@ void BSplSLib_Cache::BuildCache(const Standard_Real&           theParameterU,
   Standard_Integer aMaxDegree = Max(theDegreeU, theDegreeV);
 
   // Change the size of cached data if needed
-  myIsRational = (&theWeights != NULL);
+  myIsRational = (theWeights != NULL);
   Standard_Integer aPWColNumber = myIsRational ? 4 : 3;
   if (theDegreeU > myDegree[0] || theDegreeV > myDegree[1])
     myPolesWeights = new TColStd_HArray2OfReal(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));

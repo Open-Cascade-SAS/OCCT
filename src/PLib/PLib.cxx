@@ -1331,9 +1331,9 @@ Standard_Boolean PLib::HermiteCoefficients(const Standard_Real FirstParameter,
 //=======================================================================
 
 void PLib::CoefficientsPoles (const TColgp_Array1OfPnt&   Coefs,
-			      const TColStd_Array1OfReal& WCoefs,
+			      const TColStd_Array1OfReal* WCoefs,
 			      TColgp_Array1OfPnt&         Poles, 
-			      TColStd_Array1OfReal&       Weights)
+			      TColStd_Array1OfReal*       Weights)
 {
   TColStd_Array1OfReal tempC(1,3*Coefs.Length());
   PLib::SetPoles(Coefs,tempC);
@@ -1349,9 +1349,9 @@ void PLib::CoefficientsPoles (const TColgp_Array1OfPnt&   Coefs,
 //=======================================================================
 
 void PLib::CoefficientsPoles (const TColgp_Array1OfPnt2d& Coefs,
-			      const TColStd_Array1OfReal& WCoefs,
+			      const TColStd_Array1OfReal* WCoefs,
 			      TColgp_Array1OfPnt2d&       Poles, 
-			      TColStd_Array1OfReal&       Weights)
+			      TColStd_Array1OfReal*       Weights)
 {
   TColStd_Array1OfReal tempC(1,2*Coefs.Length());
   PLib::SetPoles(Coefs,tempC);
@@ -1367,9 +1367,9 @@ void PLib::CoefficientsPoles (const TColgp_Array1OfPnt2d& Coefs,
 //=======================================================================
 
 void PLib::CoefficientsPoles (const TColStd_Array1OfReal& Coefs,
-			      const TColStd_Array1OfReal& WCoefs,
+			      const TColStd_Array1OfReal* WCoefs,
 			      TColStd_Array1OfReal&       Poles, 
-			      TColStd_Array1OfReal&       Weights)
+			      TColStd_Array1OfReal*       Weights)
 {
   PLib::CoefficientsPoles(1,Coefs,WCoefs,Poles,Weights);
 }
@@ -1381,11 +1381,11 @@ void PLib::CoefficientsPoles (const TColStd_Array1OfReal& Coefs,
 
 void PLib::CoefficientsPoles (const Standard_Integer      dim,
 			      const TColStd_Array1OfReal& Coefs,
-			      const TColStd_Array1OfReal& WCoefs,
+			      const TColStd_Array1OfReal* WCoefs,
 			      TColStd_Array1OfReal&       Poles, 
-			      TColStd_Array1OfReal&       Weights)
+			      TColStd_Array1OfReal*       Weights)
 {
-  Standard_Boolean rat = &WCoefs != NULL;
+  Standard_Boolean rat = WCoefs != NULL;
   Standard_Integer loc = Coefs.Lower();
   Standard_Integer lop = Poles.Lower();
   Standard_Integer lowc=0;
@@ -1398,8 +1398,8 @@ void PLib::CoefficientsPoles (const Standard_Integer      dim,
   Standard_Integer i,j,k; 
   //Les Extremites.
   if (rat) { 
-    lowc = WCoefs.Lower(); lowp = Weights.Lower();
-    upwc = WCoefs.Upper(); upwp = Weights.Upper();
+    lowc = WCoefs->Lower(); lowp = Weights->Lower();
+    upwc = WCoefs->Upper(); upwp = Weights->Upper();
   }
 
   for (i = 0; i < dim; i++){
@@ -1407,14 +1407,14 @@ void PLib::CoefficientsPoles (const Standard_Integer      dim,
     Poles (upp - i) = Coefs (upc - i);
   }
   if (rat) {
-    Weights (lowp) = WCoefs (lowc);
-    Weights (upwp) = WCoefs (upwc);
+    (*Weights) (lowp) = (*WCoefs) (lowc);
+    (*Weights) (upwp) = (*WCoefs) (upwc);
   }
   
   Standard_Real Cnp;
   for (i = 2; i < reflen; i++ ) {
     Cnp = PLib::Bin(reflen - 1, i - 1);
-    if (rat) Weights (lowp + i - 1) = WCoefs (lowc + i - 1) / Cnp;
+    if (rat) (*Weights)(lowp + i - 1) = (*WCoefs)(lowc + i - 1) / Cnp;
 
     for(j = 0; j < dim; j++){
       Poles(lop + dim * (i-1) + j)= Coefs(loc + dim * (i-1) + j) / Cnp;
@@ -1424,7 +1424,7 @@ void PLib::CoefficientsPoles (const Standard_Integer      dim,
   for (i = 1; i <= reflen - 1; i++) {
 
     for (j = reflen - 1; j >= i; j--) {
-      if (rat) Weights (lowp + j) += Weights (lowp + j -1);
+      if (rat) (*Weights)(lowp + j) += (*Weights)(lowp + j - 1);
 
       for(k = 0; k < dim; k++){
 	Poles(lop + dim * j + k) += Poles(lop + dim * (j - 1) + k);
@@ -1436,7 +1436,7 @@ void PLib::CoefficientsPoles (const Standard_Integer      dim,
     for (i = 1; i <= reflen; i++) {
 
       for(j = 0; j < dim; j++){
-	Poles(lop + dim * (i-1) + j) /= Weights(lowp + i -1);
+	Poles(lop + dim * (i-1) + j) /= (*Weights)(lowp + i -1);
       }
     }
   }
@@ -1450,7 +1450,7 @@ void PLib::CoefficientsPoles (const Standard_Integer      dim,
 void PLib::Trimming(const Standard_Real   U1, 
 		    const Standard_Real   U2, 
 		    TColgp_Array1OfPnt&   Coefs,
-		    TColStd_Array1OfReal& WCoefs)
+		    TColStd_Array1OfReal* WCoefs)
 {
   TColStd_Array1OfReal temp(1,3*Coefs.Length());
   PLib::SetPoles(Coefs,temp);
@@ -1466,7 +1466,7 @@ void PLib::Trimming(const Standard_Real   U1,
 void PLib::Trimming(const Standard_Real   U1, 
 		    const Standard_Real   U2, 
 		    TColgp_Array1OfPnt2d& Coefs,
-		    TColStd_Array1OfReal& WCoefs)
+		    TColStd_Array1OfReal* WCoefs)
 {
   TColStd_Array1OfReal temp(1,2*Coefs.Length());
   PLib::SetPoles(Coefs,temp);
@@ -1482,7 +1482,7 @@ void PLib::Trimming(const Standard_Real   U1,
 void PLib::Trimming(const Standard_Real   U1, 
 		    const Standard_Real   U2, 
 		    TColStd_Array1OfReal& Coefs,
-		    TColStd_Array1OfReal& WCoefs)
+		    TColStd_Array1OfReal* WCoefs)
 {
   PLib::Trimming(U1,U2,1,Coefs,WCoefs);
 }
@@ -1496,7 +1496,7 @@ void PLib::Trimming(const Standard_Real U1,
 		    const Standard_Real U2, 
 		    const Standard_Integer dim, 
 		    TColStd_Array1OfReal& Coefs,
-		    TColStd_Array1OfReal& WCoefs)
+		    TColStd_Array1OfReal* WCoefs)
 {
 
   // principe :
@@ -1508,12 +1508,12 @@ void PLib::Trimming(const Standard_Real U1,
   Standard_Integer indc, indw=0;
   Standard_Integer upc = Coefs.Upper() - dim + 1, upw=0;
   Standard_Integer len = Coefs.Length()/dim;
-  Standard_Boolean rat = &WCoefs != NULL;
+  Standard_Boolean rat = WCoefs != NULL;
 
   if (rat) {
-    if(len != WCoefs.Length())
+    if(len != WCoefs->Length())
       Standard_Failure::Raise("PLib::Trimming : nbcoefs/dim != nbweights !!!");
-    upw = WCoefs.Upper();
+    upw = WCoefs->Upper();
   }
   len --;
 
@@ -1526,7 +1526,7 @@ void PLib::Trimming(const Standard_Real U1,
     for( j = 0; j < dim; j++){
       Coefs(indc - dim + j) += U1 * Coefs(indc + j);
     }
-    if (rat) WCoefs(indw - 1) += U1 * WCoefs(indw);
+    if (rat) (*WCoefs)(indw - 1) += U1 * (*WCoefs)(indw);
     
     //calcul des coefficients intermediaires :
 
@@ -1539,7 +1539,7 @@ void PLib::Trimming(const Standard_Real U1,
       }
       if (rat) {
 	indw ++;
-        WCoefs(indw - 1) = U1 * WCoefs(indw) + lsp * WCoefs(indw - 1);
+        (*WCoefs)(indw - 1) = U1 * (*WCoefs)(indw) + lsp * (*WCoefs)(indw - 1);
       }
     }
 
@@ -1548,7 +1548,7 @@ void PLib::Trimming(const Standard_Real U1,
     for(j = 0; j < dim; j++){
       Coefs(upc + j) *= lsp;
     }
-    if (rat) WCoefs(upw) *= lsp;
+    if (rat) (*WCoefs)(upw) *= lsp;
   }
 }
 
@@ -1561,11 +1561,11 @@ void PLib::Trimming(const Standard_Real U1,
 //=======================================================================
 
 void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
-			      const TColStd_Array2OfReal& WCoefs,
+			      const TColStd_Array2OfReal* WCoefs,
 			      TColgp_Array2OfPnt&         Poles,
-			      TColStd_Array2OfReal&       Weights) 
+			      TColStd_Array2OfReal*       Weights) 
 {
-  Standard_Boolean rat = (&WCoefs != NULL);
+  Standard_Boolean rat = (WCoefs != NULL);
   Standard_Integer LowerRow  = Poles.LowerRow();
   Standard_Integer UpperRow  = Poles.UpperRow();
   Standard_Integer LowerCol  = Poles.LowerCol();
@@ -1587,7 +1587,7 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
   for (NPoleu = LowerRow; NPoleu <= UpperRow; NPoleu++){
     Poles (NPoleu, LowerCol) =  Coefs (NPoleu, LowerCol);
     if (rat) {
-      Weights (NPoleu, LowerCol) =  WCoefs (NPoleu, LowerCol);
+      (*Weights) (NPoleu, LowerCol) =  (*WCoefs) (NPoleu, LowerCol);
     }
 
     for (Col = LowerCol + 1; Col <= UpperCol - 1; Col++) {
@@ -1596,12 +1596,12 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
       Temp.Divide (Cnp);
       Poles (NPoleu, Col).SetXYZ (Temp);
       if (rat) {
-	Weights (NPoleu, Col) = WCoefs (NPoleu, Col) /  Cnp;
+	(*Weights) (NPoleu, Col) = (*WCoefs) (NPoleu, Col) /  Cnp;
       }
     }
     Poles (NPoleu, UpperCol) = Coefs (NPoleu, UpperCol);
     if (rat) {
-      Weights (NPoleu, UpperCol) = WCoefs (NPoleu, UpperCol);
+      (*Weights) (NPoleu, UpperCol) = (*WCoefs) (NPoleu, UpperCol);
     }
 
     for (I1 = 1; I1 <= RowLength - 1; I1++) {
@@ -1610,7 +1610,7 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
         Temp.SetLinearForm 
 	  (Poles (NPoleu, I2).XYZ(), Poles (NPoleu, I2-1).XYZ());
 	Poles (NPoleu, I2).SetXYZ (Temp);
-	if (rat) Weights(NPoleu, I2) += Weights(NPoleu, I2-1);
+	if (rat) (*Weights)(NPoleu, I2) += (*Weights)(NPoleu, I2-1);
       }
     } 
   }
@@ -1622,7 +1622,7 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
       Temp = Poles (Row, NPolev).XYZ();
       Temp.Divide (Cnp);
       Poles (Row, NPolev).SetXYZ (Temp);
-      if (rat) Weights(Row, NPolev) /= Cnp;
+      if (rat) (*Weights)(Row, NPolev) /= Cnp;
     }
 
     for (I1 = 1; I1 <= ColLength - 1; I1++) {
@@ -1631,7 +1631,7 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
         Temp.SetLinearForm 
 	  (Poles (I2, NPolev).XYZ(), Poles (I2-1, NPolev).XYZ());
 	Poles (I2, NPolev).SetXYZ (Temp);
-	if (rat) Weights(I2, NPolev) += Weights(I2-1, NPolev);
+	if (rat) (*Weights)(I2, NPolev) += (*Weights)(I2-1, NPolev);
       }
     }
   }
@@ -1640,7 +1640,7 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
     for (Row = LowerRow; Row <= UpperRow; Row++) {
 
       for (Col = LowerCol; Col <= UpperCol; Col++) {
-	W = Weights (Row, Col);
+	W = (*Weights) (Row, Col);
 	Temp = Poles(Row, Col).XYZ();
 	Temp.Divide (W);
 	Poles(Row, Col).SetXYZ (Temp);
@@ -1657,9 +1657,9 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
 void PLib::UTrimming(const Standard_Real U1, 
 		     const Standard_Real U2, 
 		     TColgp_Array2OfPnt& Coeffs, 
-		     TColStd_Array2OfReal& WCoeffs)
+		     TColStd_Array2OfReal* WCoeffs)
 {
-  Standard_Boolean rat = &WCoeffs != NULL;
+  Standard_Boolean rat = WCoeffs != NULL;
   Standard_Integer lr = Coeffs.LowerRow();
   Standard_Integer ur = Coeffs.UpperRow();
   Standard_Integer lc = Coeffs.LowerCol();
@@ -1671,14 +1671,14 @@ void PLib::UTrimming(const Standard_Real U1,
     Standard_Integer irow ;
     for ( irow = lr; irow <= ur; irow++) {
       Temp (irow) = Coeffs  (irow, icol);
-      if (rat) Temw (irow) = WCoeffs (irow, icol);
+      if (rat) Temw (irow) = (*WCoeffs) (irow, icol);
     }
-    if (rat) PLib::Trimming (U1, U2, Temp, Temw);
+    if (rat) PLib::Trimming (U1, U2, Temp, &Temw);
     else PLib::Trimming (U1, U2, Temp, PLib::NoWeights());
 
     for (irow = lr; irow <= ur; irow++) {
       Coeffs  (irow, icol) = Temp (irow);
-      if (rat) WCoeffs (irow, icol) = Temw (irow);
+      if (rat) (*WCoeffs) (irow, icol) = Temw (irow);
     }
   }
 }
@@ -1691,9 +1691,9 @@ void PLib::UTrimming(const Standard_Real U1,
 void PLib::VTrimming(const Standard_Real V1, 
 		     const Standard_Real V2, 
 		     TColgp_Array2OfPnt& Coeffs, 
-		     TColStd_Array2OfReal& WCoeffs)
+		     TColStd_Array2OfReal* WCoeffs)
 {
-  Standard_Boolean rat = &WCoeffs != NULL;
+  Standard_Boolean rat = WCoeffs != NULL;
   Standard_Integer lr = Coeffs.LowerRow();
   Standard_Integer ur = Coeffs.UpperRow();
   Standard_Integer lc = Coeffs.LowerCol();
@@ -1705,14 +1705,14 @@ void PLib::VTrimming(const Standard_Real V1,
     Standard_Integer icol ;
     for ( icol = lc; icol <= uc; icol++) {
       Temp (icol) = Coeffs  (irow, icol);
-      if (rat) Temw (icol) = WCoeffs (irow, icol);
+      if (rat) Temw (icol) = (*WCoeffs) (irow, icol);
     }
-    if (rat) PLib::Trimming (V1, V2, Temp, Temw);
+    if (rat) PLib::Trimming (V1, V2, Temp, &Temw);
     else PLib::Trimming (V1, V2, Temp, PLib::NoWeights());
 
     for (icol = lc; icol <= uc; icol++) {
       Coeffs  (irow, icol) = Temp (icol);
-      if (rat) WCoeffs (irow, icol) = Temw (icol);
+      if (rat) (*WCoeffs) (irow, icol) = Temw (icol);
     }
   }
 }

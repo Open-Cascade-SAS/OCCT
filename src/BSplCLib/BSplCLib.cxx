@@ -315,21 +315,21 @@ void BSplCLib::LocateParameter
 void BSplCLib::LocateParameter 
 (const Standard_Integer         Degree,
  const TColStd_Array1OfReal&    Knots,
- const TColStd_Array1OfInteger& Mults,
+ const TColStd_Array1OfInteger* Mults,
  const Standard_Real            U,
  const Standard_Boolean         Periodic,
  Standard_Integer&              KnotIndex,
  Standard_Real&                 NewU) 
 {
   Standard_Integer first,last;
-  if (&Mults) {
+  if (Mults) {
     if (Periodic) {
       first = Knots.Lower();
       last  = Knots.Upper();
     }
     else {
-      first = FirstUKnotIndex(Degree,Mults);
-      last  = LastUKnotIndex (Degree,Mults);
+      first = FirstUKnotIndex(Degree,*Mults);
+      last  = LastUKnotIndex (Degree,*Mults);
     }
   }
   else {
@@ -1453,14 +1453,14 @@ void BSplCLib::BuildKnots(const Standard_Integer         Degree,
 			  const Standard_Integer         Index,
 			  const Standard_Boolean         Periodic,
 			  const TColStd_Array1OfReal&    Knots,
-			  const TColStd_Array1OfInteger& Mults,
+			  const TColStd_Array1OfInteger* Mults,
 			  Standard_Real&                 LK)
 {
   Standard_Integer KLower = Knots.Lower();
   const Standard_Real * pkn = &Knots(KLower);
   pkn -= KLower;
   Standard_Real *knot = &LK;
-  if (&Mults == NULL) {
+  if (Mults == NULL) {
     switch (Degree) {
     case 1 : {
       Standard_Integer j = Index    ;
@@ -1544,9 +1544,9 @@ void BSplCLib::BuildKnots(const Standard_Integer         Degree,
     Standard_Integer i;
     Standard_Integer Deg1 = Degree - 1;
     Standard_Integer KUpper = Knots.Upper();
-    Standard_Integer MLower = Mults.Lower();
-    Standard_Integer MUpper = Mults.Upper();
-    const Standard_Integer * pmu = &Mults(MLower);
+    Standard_Integer MLower = Mults->Lower();
+    Standard_Integer MUpper = Mults->Upper();
+    const Standard_Integer * pmu = &(*Mults)(MLower);
     pmu -= MLower;
     Standard_Real dknot = 0;
     Standard_Integer ilow = Index    , mlow = 0;
@@ -1692,13 +1692,13 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
  const TColStd_Array1OfReal&    Knots,
  const TColStd_Array1OfInteger& Mults,
  const TColStd_Array1OfReal&    AddKnots,
- const TColStd_Array1OfInteger& AddMults,
+ const TColStd_Array1OfInteger* AddMults,
  Standard_Integer&              NbPoles,
  Standard_Integer&              NbKnots, 
  const Standard_Real            Tolerance,
  const Standard_Boolean         Add)
 {
-  Standard_Boolean addflat = &AddMults == NULL;
+  Standard_Boolean addflat = AddMults == NULL;
   
   Standard_Integer first,last;
   if (Periodic) {
@@ -1745,14 +1745,14 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
     }
 
     if (addflat) amult = 1;
-    else         amult = Max(0,AddMults(ak));
+    else         amult = Max(0,(*AddMults)(ak));
     
     while ((ak < AddKnots.Upper()) &&
 	   (Abs(au - AddKnots(ak+1)) <= Eps)) {
       ak++;
       if (Add) {
 	if (addflat) amult++;
-	else         amult += Max(0,AddMults(ak));
+	else         amult += Max(0,(*AddMults)(ak));
       }
     }
     
@@ -1875,14 +1875,14 @@ void BSplCLib::InsertKnots
  const TColStd_Array1OfReal&    Knots,    
  const TColStd_Array1OfInteger& Mults, 
  const TColStd_Array1OfReal&    AddKnots,    
- const TColStd_Array1OfInteger& AddMults, 
+ const TColStd_Array1OfInteger* AddMults, 
  TColStd_Array1OfReal&          NewPoles,
  TColStd_Array1OfReal&          NewKnots,    
  TColStd_Array1OfInteger&       NewMults, 
  const Standard_Real            Tolerance,
  const Standard_Boolean         Add)
 {
-  Standard_Boolean addflat  = &AddMults == NULL;
+  Standard_Boolean addflat  = AddMults == NULL;
   
   Standard_Integer i,k,mult,firstmult;
   Standard_Integer index,kn,curnk,curk;
@@ -1989,7 +1989,7 @@ void BSplCLib::InsertKnots
     else          length = Degree;
     
     if (addflat) depth = 1;
-    else         depth = Min(Degree,AddMults(kn));
+    else         depth = Min(Degree,(*AddMults)(kn));
 
     if (sameknot) {
       if (Add) {
@@ -2011,7 +2011,7 @@ void BSplCLib::InsertKnots
     }
     if (depth <= 0) continue;
     
-    BuildKnots(Degree,curnk,Periodic,nknots,nmults,*knots);
+    BuildKnots(Degree,curnk,Periodic,nknots,&nmults,*knots);
 
     // copy the poles
 
@@ -2083,7 +2083,7 @@ void BSplCLib::InsertKnots
       length = Degree - NewMults(curnk);
       depth  = firstmult;
 
-      BuildKnots(Degree,curnk,Periodic,NewKnots,NewMults,*knots);
+      BuildKnots(Degree,curnk,Periodic,NewKnots,&NewMults,*knots);
       TColStd_Array1OfReal npoles(NewPoles(NewPoles.Lower()),
 				  NewPoles.Lower(),
 				  NewPoles.Upper()-depth*Dimension);
@@ -2170,9 +2170,9 @@ Standard_Boolean BSplCLib::RemoveKnot
   // the new sequence of knots
   // is obtained from the knots at Index-1 and Index
   
-  BSplCLib::BuildKnots(Degree,TheIndex-1,Periodic,Knots,Mults,*knots);
+  BSplCLib::BuildKnots(Degree,TheIndex-1,Periodic,Knots,&Mults,*knots);
   index = PoleIndex(Degree,TheIndex-1,Periodic,Mults);
-  BSplCLib::BuildKnots(Degree,TheIndex,Periodic,Knots,Mults,knots[2*Degree]);
+  BSplCLib::BuildKnots(Degree,TheIndex,Periodic,Knots,&Mults,knots[2*Degree]);
 
   index += Mult;
 
@@ -2814,7 +2814,7 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
 
   K(1) = U1;  K(2) = U2;
   mm[0] = mm[1] = Degree;
-  if (!PrepareInsertKnots( Degree, Periodic, Knots, Mults, K, M, 
+  if (!PrepareInsertKnots( Degree, Periodic, Knots, Mults, K, &M, 
 			  nbpoles, nbknots, Epsilon( U1), 0))
     Standard_OutOfRange::Raise();
 
@@ -2826,7 +2826,7 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
 // do not allow the multiplicities to Add : they must be less than Degree
 //
   InsertKnots(Degree, Periodic, Dimension, Poles, Knots, Mults,
-	      K, M, TempPoles, TempKnots, TempMults, Epsilon(U1),
+	      K, &M, TempPoles, TempKnots, TempMults, Epsilon(U1),
 	      Standard_False);
 
   // find in TempPoles the index of the pole corresponding to U1
@@ -3608,8 +3608,8 @@ void  BSplCLib::TangExtendToConstraint
   TColStd_Array1OfReal ExtrapPoles(1,Csize*CDimension);
   Standard_Real * EPadr = &ExtrapPoles(1) ;
   PLib::CoefficientsPoles(CDimension,
-                          ExtraCoeffs,  PLib::NoWeights(),
-		          ExtrapPoles,  PLib::NoWeights());
+                          ExtraCoeffs, PLib::NoWeights(),
+                          ExtrapPoles, PLib::NoWeights());
 
 //  calculate the nodes of extension with multiplicities
   TColStd_Array1OfReal ExtrapNoeuds(1,2);
@@ -3911,7 +3911,7 @@ void  BSplCLib::TangExtendToConstraint
 void BSplCLib::Resolution(      Standard_Real&        Poles,
 			  const Standard_Integer      ArrayDimension,
 			  const Standard_Integer      NumPoles,
-			  const TColStd_Array1OfReal& Weights,
+			  const TColStd_Array1OfReal* Weights,
 			  const TColStd_Array1OfReal& FlatKnots,
 			  const Standard_Integer      Degree,
 			  const Standard_Real         Tolerance3D,
@@ -3932,8 +3932,8 @@ void BSplCLib::Resolution(      Standard_Real&        Poles,
   num_poles = FlatKnots.Length() - Deg1;
   switch (ArrayDimension) {
   case 2 : {
-    if (&Weights != NULL) {
-      const Standard_Real * WG = &Weights(Weights.Lower());
+    if (Weights != NULL) {
+      const Standard_Real * WG = &(*Weights)(Weights->Lower());
       min_weights = WG[0];
       
       for (ii = 1 ; ii < NumPoles ; ii++) {
@@ -4000,8 +4000,8 @@ void BSplCLib::Resolution(      Standard_Real&        Poles,
     break;
   }
   case 3 : {
-    if (&Weights != NULL) {
-      const Standard_Real * WG = &Weights(Weights.Lower());
+    if (Weights != NULL) {
+      const Standard_Real * WG = &(*Weights)(Weights->Lower());
       min_weights = WG[0];
       
       for (ii = 1 ; ii < NumPoles ; ii++) {
@@ -4077,8 +4077,8 @@ void BSplCLib::Resolution(      Standard_Real&        Poles,
     break;
   }
   case 4 : {
-    if (&Weights != NULL) {
-      const Standard_Real * WG = &Weights(Weights.Lower());
+    if (Weights != NULL) {
+      const Standard_Real * WG = &(*Weights)(Weights->Lower());
       min_weights = WG[0];
       
       for (ii = 1 ; ii < NumPoles ; ii++) {
@@ -4164,8 +4164,8 @@ void BSplCLib::Resolution(      Standard_Real&        Poles,
   }
     default : {
       Standard_Integer kk;
-      if (&Weights != NULL) {
-	const Standard_Real * WG = &Weights(Weights.Lower());
+      if (Weights != NULL) {
+        const Standard_Real * WG = &(*Weights)(Weights->Lower());
 	min_weights = WG[0];
 	
 	for (ii = 1 ; ii < NumPoles ; ii++) {

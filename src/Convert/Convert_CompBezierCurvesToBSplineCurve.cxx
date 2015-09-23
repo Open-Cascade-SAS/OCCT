@@ -169,8 +169,8 @@ void Convert_CompBezierCurvesToBSplineCurve::Perform()
     Inc = myDegree - Deg;
     if ( Inc > 0) {
       BSplCLib::IncreaseDegree(myDegree, 
-			       mySequence(i)->Array1(), PLib::NoWeights(), 
-			       Points, PLib::NoWeights());
+			       mySequence(i)->Array1(), BSplCLib::NoWeights(), 
+			       Points, BSplCLib::NoWeights());
     }
     else {
       Points = mySequence(i)->Array1();

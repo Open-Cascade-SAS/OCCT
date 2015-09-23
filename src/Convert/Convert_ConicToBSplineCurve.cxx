@@ -176,7 +176,7 @@ void CosAndSinRationalC1(Standard_Real Parameter,
 			  const Standard_Integer         EvalDegree,
 			  const TColgp_Array1OfPnt2d&    EvalPoles,
 			  const TColStd_Array1OfReal&    EvalKnots,
-			  const TColStd_Array1OfInteger& EvalMults,
+			  const TColStd_Array1OfInteger* EvalMults,
 			  Standard_Real Result[2]) 
 {
  gp_Pnt2d a_point ;
@@ -216,7 +216,7 @@ void  CosAndSinQuasiAngular(Standard_Real  Parameter,
 //			    const TColStd_Array1OfReal&    EvalKnots,
 			    const TColStd_Array1OfReal&    ,
 //			    const TColStd_Array1OfInteger& EvalMults,
-			    const TColStd_Array1OfInteger& ,
+			    const TColStd_Array1OfInteger* ,
 			    Standard_Real  Result[2])
 {
   Standard_Real 
@@ -249,7 +249,7 @@ void AlgorithmicCosAndSin(Standard_Integer               Degree,
 			  const Standard_Integer         EvalDegree,
 			  const TColgp_Array1OfPnt2d&    EvalPoles,
 			  const TColStd_Array1OfReal&    EvalKnots,
-			  const TColStd_Array1OfInteger& EvalMults,
+			  const TColStd_Array1OfInteger* EvalMults,
 			  Convert_CosAndSinEvalFunction  Evaluator,
 			  TColStd_Array1OfReal&          CosNumerator,
                           TColStd_Array1OfReal&          SinNumerator,
@@ -571,7 +571,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
 			 temp_degree,
 			 temp_poles,
 			 temp_knots,
-			 temp_mults,
+			 &temp_mults,
 			 *EvaluatorPtr,
 			 CosNumeratorPtr->ChangeArray1(),
 			 SinNumeratorPtr->ChangeArray1(),
@@ -744,9 +744,9 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
 		    temp_degree,
 		    Standard_False,
 		    temp_cos_ptr->Array1(),
-		    temp_denominator_ptr->Array1(),
+		    &temp_denominator_ptr->Array1(),
 		    temp_knots_ptr->Array1(),
-		    temp_mults_ptr->Array1(),
+		    &temp_mults_ptr->Array1(),
 		    value1) ;
 
        BSplCLib::D0(param,
@@ -754,9 +754,9 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
 		    temp_degree,
 		    Standard_False,
 		    temp_sin_ptr->Array1(),
-		    temp_denominator_ptr->Array1(),
+		    &temp_denominator_ptr->Array1(),
 		    temp_knots_ptr->Array1(),
-		    temp_mults_ptr->Array1(),
+		    &temp_mults_ptr->Array1(),
 		    value2) ;
        BSplCLib::D0(param,
 		    0,
@@ -765,7 +765,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
 		    temp_denominator_ptr->Array1(),
 		    BSplCLib::NoWeights(),
 		    temp_knots_ptr->Array1(),
-		    temp_mults_ptr->Array1(),
+		    &temp_mults_ptr->Array1(),
 		    value3) ;
      contact_order_array(ii) = 0 ;
      

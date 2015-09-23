@@ -143,7 +143,7 @@ AppParCurves_Gradient::
     for (k = 1; k <= nbP3d; k++) {
       for (l=1; l<=deg+1; l++) TabCoef(l) = TheCoef(l+i2);
       i2 += deg+1;
-      BSplCLib::CoefsD1(UF, TabCoef, PLib::NoWeights(), Pt, V1);
+      BSplCLib::CoefsD1(UF, TabCoef, BSplCLib::NoWeights(), Pt, V1);
       MyV = gp_Vec(Pt, TabP(k));
       FU += MyV*V1;
       DFU += V1.SquareMagnitude();
@@ -152,7 +152,7 @@ AppParCurves_Gradient::
     for (k = 1; k <= nbP2d; k++) {
       for (l=1; l<=deg+1; l++) TabCoef2d(l) = TheCoef2d(l+i2);
       i2 += deg+1;
-      BSplCLib::CoefsD1(UF, TabCoef2d, PLib::NoWeights(), Pt2d, V12d);
+      BSplCLib::CoefsD1(UF, TabCoef2d, BSplCLib::NoWeights(), Pt2d, V12d);
       MyV2d = gp_Vec2d(Pt2d, TabP2d(k));
       FU += MyV2d*V12d;
       DFU += V12d.SquareMagnitude();

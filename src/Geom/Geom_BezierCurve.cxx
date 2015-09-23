@@ -152,19 +152,19 @@ void Geom_BezierCurve::Increase (const Standard_Integer Deg)
     nweights = new TColStd_HArray1OfReal(1,Deg+1);
     BSplCLib::IncreaseDegree(Degree(), Deg, 0,
 			     poles->Array1(),
-			     weights->Array1(),
+			     &weights->Array1(),
 			     bidknots, bidmults,
 			     npoles->ChangeArray1(),
-			     nweights->ChangeArray1(),
+			     &nweights->ChangeArray1(),
 			     bidknots, bidmults);
   }
   else {
     BSplCLib::IncreaseDegree(Degree(), Deg, 0,
 			     poles->Array1(),
-			     *((TColStd_Array1OfReal*) NULL),
+			     BSplCLib::NoWeights(),
 			     bidknots, bidmults,
 			     npoles->ChangeArray1(),
-			     *((TColStd_Array1OfReal*) NULL),
+			     BSplCLib::NoWeights(),
 			     bidknots, bidmults);
   }
 
@@ -386,19 +386,16 @@ void Geom_BezierCurve::Segment(const Standard_Real U1, const Standard_Real U2)
   if(!CoefficientsOK(0.)) UpdateCoefficients(0.);
   if (IsRational()) {
     PLib::Trimming(U1,U2,coeffs->ChangeArray1(),
-		   wcoeffs->ChangeArray1());
+		   &wcoeffs->ChangeArray1());
     PLib::CoefficientsPoles(coeffs->Array1(),
-			    wcoeffs->Array1(),
+			    &wcoeffs->Array1(),
 			    poles->ChangeArray1(),
-			    weights->ChangeArray1());
+			    &weights->ChangeArray1());
   }
   else {
-    PLib::Trimming(U1,U2,coeffs->ChangeArray1(),
-		   *((TColStd_Array1OfReal*) NULL));
-    PLib::CoefficientsPoles(coeffs->Array1(),
-			    *((TColStd_Array1OfReal*) NULL),
-			    poles->ChangeArray1(),
-			    *((TColStd_Array1OfReal*) NULL));
+    PLib::Trimming(U1,U2,coeffs->ChangeArray1(), PLib::NoWeights());
+    PLib::CoefficientsPoles(coeffs->Array1(), PLib::NoWeights(),
+			                      poles->ChangeArray1(), PLib::NoWeights());
   }
   UpdateCoefficients();
 }
@@ -550,13 +547,11 @@ void Geom_BezierCurve::D0 (const Standard_Real U, gp_Pnt& P ) const
   if (IsRational())
     BSplCLib::CacheD0(U,Degree(),parametercache,spanlenghtcache,
 		      coeffs->Array1(),
-		      wcoeffs->Array1(),
+		      &wcoeffs->Array1(),
 		      P);
   else 
     BSplCLib::CacheD0(U,Degree(),parametercache,spanlenghtcache,
-		      coeffs->Array1(),
-		      *((TColStd_Array1OfReal*) NULL),P
-		      );
+		      coeffs->Array1(), BSplCLib::NoWeights(), P);
 }
 
 //=======================================================================
@@ -573,12 +568,12 @@ void Geom_BezierCurve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const
   if (IsRational())
     BSplCLib::CacheD1(U,Degree(),parametercache,spanlenghtcache,
 		      coeffs->Array1(),
-		      wcoeffs->Array1(),
+		      &wcoeffs->Array1(),
 		      P,V1);
   else 
     BSplCLib::CacheD1(U,Degree(),parametercache,spanlenghtcache,
 		      coeffs->Array1(),
-		      *((TColStd_Array1OfReal*) NULL),
+		      BSplCLib::NoWeights(),
 		      P,V1);
 }
 
@@ -599,12 +594,12 @@ void Geom_BezierCurve::D2 (const Standard_Real U,
   if (IsRational())
     BSplCLib::CacheD2(U,Degree(),parametercache,spanlenghtcache,
 		      coeffs->Array1(),
-		      wcoeffs->Array1(),
+		      &wcoeffs->Array1(),
 		      P,V1,V2);
   else 
     BSplCLib::CacheD2(U,Degree(),parametercache,spanlenghtcache,
 		      coeffs->Array1(),
-		      *((TColStd_Array1OfReal*) NULL),
+		      BSplCLib::NoWeights(),
 		      P,V1,V2);
 }
 
@@ -624,12 +619,12 @@ void Geom_BezierCurve::D3 (const Standard_Real U,
   if (IsRational())
     BSplCLib::CacheD3(U,Degree(),parametercache,spanlenghtcache,
 		      coeffs->Array1(),
-		      wcoeffs->Array1(),
+		      &wcoeffs->Array1(),
 		      P,V1,V2,V3);
   else 
     BSplCLib::CacheD3(U,Degree(),parametercache,spanlenghtcache,
 		      coeffs->Array1(),
-		      *((TColStd_Array1OfReal*) NULL),
+		      BSplCLib::NoWeights(),
 		      P,V1,V2,V3);
 }
 
@@ -652,14 +647,14 @@ gp_Vec Geom_BezierCurve::DN (const Standard_Real U,
 //    BSplCLib::DN(U,N,0,Degree(),0.,
     BSplCLib::DN(U,N,0,Degree(),Standard_False,
 		 poles->Array1(),
-		 weights->Array1(),
-		 bidknots,bidmults,V);
+		 &weights->Array1(),
+		 bidknots,&bidmults,V);
   else 
 //    BSplCLib::DN(U,N,0,Degree(),0.,
     BSplCLib::DN(U,N,0,Degree(),Standard_False,
 		 poles->Array1(),
-		 *((TColStd_Array1OfReal*) NULL),
-		 bidknots,bidmults,V);
+		 BSplCLib::NoWeights(),
+		 bidknots,&bidmults,V);
   return V;
 }
 
@@ -804,7 +799,7 @@ void Geom_BezierCurve::Resolution(const Standard_Real Tolerance3D,
     
     if (IsRational()) {  
       BSplCLib::Resolution(poles->Array1(),
-			   weights->Array1(),
+			   &weights->Array1(),
 			   poles->Length(),
 			   bidflatknots,
 			   Degree(),
@@ -902,15 +897,15 @@ void Geom_BezierCurve::UpdateCoefficients(const Standard_Real )
   if (IsRational())
     BSplCLib::BuildCache(parametercache,spanlenghtcache,0,Degree(),
 			 bidflatknots,poles->Array1(),
-			 weights->Array1(),
+			 &weights->Array1(),
 			 coeffs->ChangeArray1(),
-			 wcoeffs->ChangeArray1());
+			 &wcoeffs->ChangeArray1());
   else
     BSplCLib::BuildCache(parametercache,spanlenghtcache,0,Degree(),
 			 bidflatknots,poles->Array1(),
-			 *((TColStd_Array1OfReal*) NULL),
+			 BSplCLib::NoWeights(),
 			 coeffs->ChangeArray1(),
-			 *((TColStd_Array1OfReal*) NULL));
+			 BSplCLib::NoWeights());
   validcache = 1;
 }
 

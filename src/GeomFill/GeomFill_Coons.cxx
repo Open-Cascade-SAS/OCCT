@@ -106,15 +106,15 @@ void  GeomFill_Coons::Init(const TColgp_Array1OfPnt& P1,
   PLib::CoefficientsPoles(Coef, PLib::NoWeights(),
 			  Pole, PLib::NoWeights());
   if (NPolU > 4) {
-    BSplCLib::IncreaseDegree(NPolU-1, Pole, PLib::NoWeights(), 
-			     CoefU, PLib::NoWeights());
+    BSplCLib::IncreaseDegree(NPolU-1, Pole, BSplCLib::NoWeights(), 
+			     CoefU, BSplCLib::NoWeights());
   }
   else {
      CoefU = Pole;
   }
   if (NPolV > 4) {
-    BSplCLib::IncreaseDegree(NPolV-1, Pole, PLib::NoWeights(), 
-			     CoefV, PLib::NoWeights());
+    BSplCLib::IncreaseDegree(NPolV-1, Pole, BSplCLib::NoWeights(), 
+			     CoefV, BSplCLib::NoWeights());
   }
   else {
       CoefV = Pole;

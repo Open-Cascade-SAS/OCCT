@@ -195,21 +195,21 @@ void Geom2d_BSplineCurve::D0(const Standard_Real U,
   Standard_Integer aSpanIndex = 0;
   Standard_Real aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
     aSpanIndex--;
   if (rational) 
   {
     BSplCLib::D0(aNewU,aSpanIndex,deg,periodic,POLES,
-      weights->Array1(),
-      knots->Array1(), mults->Array1(),
+      &weights->Array1(),
+      knots->Array1(), &mults->Array1(),
       P);
   }
   else 
   {
     BSplCLib::D0(aNewU,aSpanIndex,deg,periodic,POLES,
-      *((TColStd_Array1OfReal*) NULL),
-      knots->Array1(), mults->Array1(),
+      BSplCLib::NoWeights(),
+      knots->Array1(), &mults->Array1(),
       P);
   }
 }
@@ -227,21 +227,21 @@ void Geom2d_BSplineCurve::D1(const Standard_Real U,
   Standard_Integer aSpanIndex = 0;
   Standard_Real aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
     aSpanIndex--;
   if (rational) 
   {
     BSplCLib::D1(aNewU,aSpanIndex,deg,periodic,POLES,
-      weights->Array1(),
-      knots->Array1(), mults->Array1(),
+      &weights->Array1(),
+      knots->Array1(), &mults->Array1(),
       P, V1);
   }
   else 
   {
     BSplCLib::D1(aNewU,aSpanIndex,deg,periodic,POLES,
-      *((TColStd_Array1OfReal*) NULL),
-      knots->Array1(), mults->Array1(),
+      BSplCLib::NoWeights(),
+      knots->Array1(), &mults->Array1(),
       P, V1);
   }
 }
@@ -259,21 +259,21 @@ void Geom2d_BSplineCurve::D2(const Standard_Real U,
   Standard_Integer aSpanIndex = 0;
   Standard_Real aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
     aSpanIndex--;
   if (rational) 
   {
     BSplCLib::D2(aNewU,aSpanIndex,deg,periodic,POLES,
-      weights->Array1(),
-      knots->Array1(), mults->Array1(),
+      &weights->Array1(),
+      knots->Array1(), &mults->Array1(),
       P, V1, V2);
   }
   else 
   {
     BSplCLib::D2(aNewU,aSpanIndex,deg,periodic,POLES,
-      *((TColStd_Array1OfReal*) NULL),
-      knots->Array1(), mults->Array1(),
+      BSplCLib::NoWeights(),
+      knots->Array1(), &mults->Array1(),
       P, V1, V2);
   }
 }
@@ -292,21 +292,21 @@ void Geom2d_BSplineCurve::D3(const Standard_Real U,
   Standard_Integer aSpanIndex = 0;
   Standard_Real aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
     aSpanIndex--;
   if (rational) 
   {
     BSplCLib::D3(aNewU,aSpanIndex,deg,periodic,POLES,
-      weights->Array1(),
-      knots->Array1(), mults->Array1(),
+      &weights->Array1(),
+      knots->Array1(), &mults->Array1(),
       P, V1, V2, V3);
   }
   else 
   {
     BSplCLib::D3(aNewU,aSpanIndex,deg,periodic,POLES,
-      *((TColStd_Array1OfReal*) NULL),
-      knots->Array1(), mults->Array1(),
+      BSplCLib::NoWeights(),
+      knots->Array1(), &mults->Array1(),
       P, V1, V2, V3);
   }
 }
@@ -323,12 +323,12 @@ gp_Vec2d Geom2d_BSplineCurve::DN(const Standard_Real    U,
 
   if ( rational ) {
     BSplCLib::DN(U,N,0,deg,periodic,POLES,
-      weights->Array1(),
-      FKNOTS,FMULTS,V);
+      &weights->Array1(),
+      FKNOTS,FMULTS, V);
   }
   else {
     BSplCLib::DN(U,N,0,deg,periodic,POLES,
-      *((TColStd_Array1OfReal*) NULL),
+      BSplCLib::NoWeights(),
       FKNOTS,FMULTS,V);
   }
   return V;
@@ -485,12 +485,12 @@ void  Geom2d_BSplineCurve::LocalD0
 
   if ( rational ) {
     BSplCLib::D0(u,index,deg,periodic,POLES,
-		 weights->Array1(),
+		 &weights->Array1(),
 		 FKNOTS,FMULTS,P);
   }
   else {
     BSplCLib::D0(u,index,deg,periodic,POLES,
-		 *((TColStd_Array1OfReal*) NULL),
+		 BSplCLib::NoWeights(),
 		 FKNOTS,FMULTS,P);
   }
 }
@@ -516,12 +516,12 @@ void Geom2d_BSplineCurve::LocalD1 (const Standard_Real    U,
   
   if (rational) {
     BSplCLib::D1(u,index,deg,periodic,POLES,
-		 weights->Array1(),
+		 &weights->Array1(),
 		 FKNOTS,FMULTS,P,V1);
   }
   else {
     BSplCLib::D1(u,index,deg,periodic,POLES,
-		 *((TColStd_Array1OfReal*) NULL),
+		 BSplCLib::NoWeights(),
 		 FKNOTS,FMULTS,P,V1);
   }
 }
@@ -549,12 +549,12 @@ void Geom2d_BSplineCurve::LocalD2
   
   if ( rational ) {
     BSplCLib::D2(u,index,deg,periodic,POLES,
-		 weights->Array1(),
+		 &weights->Array1(),
 		 FKNOTS,FMULTS,P,V1,V2);
   }
   else {
     BSplCLib::D2(u,index,deg,periodic,POLES,
-		 *((TColStd_Array1OfReal*) NULL),
+		 BSplCLib::NoWeights(),
 		 FKNOTS,FMULTS,P,V1,V2);
   }
 }
@@ -583,12 +583,12 @@ void Geom2d_BSplineCurve::LocalD3
   
   if ( rational ) {
     BSplCLib::D3(u,index,deg,periodic,POLES,
-		 weights->Array1(),
+		 &weights->Array1(),
 		 FKNOTS,FMULTS,P,V1,V2,V3);
   }
   else {
     BSplCLib::D3(u,index,deg,periodic,POLES,
-		 *((TColStd_Array1OfReal*) NULL),
+		 BSplCLib::NoWeights(),
 		 FKNOTS,FMULTS,P,V1,V2,V3);
   }
 }
@@ -616,12 +616,12 @@ gp_Vec2d Geom2d_BSplineCurve::LocalDN
 
   if ( rational ) {
     BSplCLib::DN(u,N,index,deg,periodic,POLES,
-		 weights->Array1(),
+		 &weights->Array1(),
 		 FKNOTS,FMULTS,V);
   }
   else {
     BSplCLib::DN(u,N,index,deg,periodic,POLES,
-		 *((TColStd_Array1OfReal*) NULL),
+		 BSplCLib::NoWeights(),
 		 FKNOTS,FMULTS,V);
   }
   return V;
@@ -750,10 +750,10 @@ void Geom2d_BSplineCurve::Weights
   }
 }
 
-const TColStd_Array1OfReal& Geom2d_BSplineCurve::Weights() const
+const TColStd_Array1OfReal* Geom2d_BSplineCurve::Weights() const
 {
   if (IsRational())
-    return weights->Array1();
+    return &weights->Array1();
   return BSplCLib::NoWeights();
 }
 
@@ -856,7 +856,7 @@ void Geom2d_BSplineCurve::Resolution(const Standard_Real ToleranceUV,
 	  new_weights(ii) = weights->Array1()(((ii-1) % poles->Length()) + 1) ;
 	}
 	BSplCLib::Resolution(new_poles,
-			     new_weights,
+			     &new_weights,
 			     new_poles.Length(),
 			     flatknots->Array1(),
 			     deg,
@@ -865,7 +865,7 @@ void Geom2d_BSplineCurve::Resolution(const Standard_Real ToleranceUV,
       }
       else {
 	BSplCLib::Resolution(new_poles,
-			     *((TColStd_Array1OfReal*) NULL),
+			     BSplCLib::NoWeights(),
 			     new_poles.Length(),
 			     flatknots->Array1(),
 			     deg,
@@ -876,7 +876,7 @@ void Geom2d_BSplineCurve::Resolution(const Standard_Real ToleranceUV,
     else {
       if (rational) {
 	BSplCLib::Resolution(poles->Array1(),
-			     weights->Array1(),
+			     &weights->Array1(),
 			     poles->Length(),
 			     flatknots->Array1(),
 			     deg,
@@ -885,7 +885,7 @@ void Geom2d_BSplineCurve::Resolution(const Standard_Real ToleranceUV,
       }
       else {
 	BSplCLib::Resolution(poles->Array1(),
-			     *((TColStd_Array1OfReal*) NULL),
+			     BSplCLib::NoWeights(),
 			     poles->Length(),
 			     flatknots->Array1(),
 			     deg,
