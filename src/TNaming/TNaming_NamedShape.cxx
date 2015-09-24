@@ -1015,10 +1015,12 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator
  const Standard_Integer            Trans,
  const Handle(TNaming_UsedShapes)& Shapes)
 :myTrans(Trans)
-{
-  Standard_Boolean  Old = Standard_True;  
-  TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
+{ 
+  Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+	                             "TNaming_NewShapeIterator::TNaming_NewShapeIterator aShape");  
+  TNaming_RefShape* RS = Shapes->Map().ChangeFind(aShape);  
   myNode = RS->FirstUse();
+  Standard_Boolean  Old(Standard_True); 
   SelectSameShape(myNode,Old,RS,myTrans);
 }
 
@@ -1034,10 +1036,12 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator
 :myTrans(Trans)
 {  
   Handle(TNaming_UsedShapes) Shapes;
-  if (access.Root().FindAttribute(TNaming_UsedShapes::GetID(),Shapes)) {
-    Standard_Boolean  Old = Standard_True;  
-    TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
+  if (access.Root().FindAttribute(TNaming_UsedShapes::GetID(),Shapes)) {    
+	Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+		                           "TNaming_NewShapeIterator::TNaming_NewShapeIterator aShape");
+    TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);	
     myNode = RS->FirstUse();
+	Standard_Boolean  Old(Standard_True);
     SelectSameShape(myNode,Old,RS,myTrans);
   }
 }
@@ -1050,14 +1054,16 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator
 TNaming_NewShapeIterator::TNaming_NewShapeIterator (const TNaming_Iterator& anIterator)
 :myTrans(anIterator.myTrans)
 {
-  Standard_Boolean Old = Standard_True;  
-  myNode = anIterator.myNode;
+  Standard_NoSuchObject_Raise_if(anIterator.myNode == 0L,
+                                 "TNaming_NewShapeIterator::TNaming_NewShapeIterator");
+  myNode = anIterator.myNode;  
   TNaming_RefShape* RS = myNode->myNew;
   if (RS == 0L) 
     myNode = 0L;  // No descendant
   else {    
     // il faut repartir de la premiere utilisation.
     myNode = RS->FirstUse();
+	Standard_Boolean Old(Standard_True);  
     SelectSameShape(myNode,Old,RS,myTrans);
   }
 }
@@ -1072,9 +1078,11 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator
  const Handle(TNaming_UsedShapes)& Shapes)
 :myTrans(-1)
 {
-  Standard_Boolean  Old = Standard_True;  
+  Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+		                         "TNaming_NewShapeIterator::TNaming_NewShapeIterator aShape");
   TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
   myNode = RS->FirstUse();
+   Standard_Boolean  Old(Standard_True);  
   SelectSameShape(myNode,Old,RS,myTrans);
 }
 
@@ -1090,8 +1098,10 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator
 {
   Handle(TNaming_UsedShapes) Shapes;
   if (access.Root().FindAttribute(TNaming_UsedShapes::GetID(),Shapes)) {
-    Standard_Boolean  Old = Standard_True;  
-    TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
+    Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+		                           "TNaming_NewShapeIterator::TNaming_NewShapeIterator aShape");
+    Standard_Boolean  Old(Standard_True);  
+    TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);	
     myNode = RS->FirstUse();
     SelectSameShape(myNode,Old,RS,myTrans);
   }
@@ -1105,7 +1115,8 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator
 TNaming_NewShapeIterator::TNaming_NewShapeIterator(const TNaming_NewShapeIterator& anIterator)
 :myTrans(anIterator.myTrans)
 {
-  Standard_Boolean Old = Standard_True;
+  Standard_NoSuchObject_Raise_if(anIterator.myNode == 0L,
+                                 "TNaming_NewShapeIterator::TNaming_NewShapeIterator");
   myNode = anIterator.myNode;
   TNaming_RefShape* RS = myNode->myNew;
   if (RS == 0L) 
@@ -1113,6 +1124,7 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator(const TNaming_NewShapeIterato
   else  {
     // il faut repartir de la premiere utilisation.
     myNode = RS->FirstUse();
+	Standard_Boolean Old(Standard_True);
     SelectSameShape(myNode,Old,RS,myTrans);
   }
 }
@@ -1124,9 +1136,9 @@ TNaming_NewShapeIterator::TNaming_NewShapeIterator(const TNaming_NewShapeIterato
 
 void TNaming_NewShapeIterator::Next() 
 {
-  Standard_Boolean  Old = Standard_True;
   TNaming_RefShape* RS  = myNode->myOld;
   myNode = myNode->NextSameShape(RS);
+  Standard_Boolean  Old(Standard_True);
   SelectSameShape(myNode,Old,RS,myTrans);
 }
 
@@ -1194,9 +1206,11 @@ TNaming_OldShapeIterator::TNaming_OldShapeIterator
  const Handle(TNaming_UsedShapes)& Shapes)
 :myTrans(Trans)
 {
-  Standard_Boolean  Old = Standard_False;
+  Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+		                         "TNaming_OldShapeIterator::TNaming_OldShapeIterator aShape");
   TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
   myNode = RS->FirstUse();
+  Standard_Boolean  Old(Standard_False);
   SelectSameShape(myNode,Old,RS,myTrans);
 }
 
@@ -1213,9 +1227,11 @@ TNaming_OldShapeIterator::TNaming_OldShapeIterator
 {
   Handle(TNaming_UsedShapes) Shapes;
   if (access.Root().FindAttribute(TNaming_UsedShapes::GetID(),Shapes)) {
-    Standard_Boolean  Old = Standard_False;
+	Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+		                           "TNaming_OldShapeIterator::TNaming_OldShapeIterator aShape");    
     TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
     myNode = RS->FirstUse();
+	Standard_Boolean  Old(Standard_False);
     SelectSameShape(myNode,Old,RS,myTrans);
   }
 }
@@ -1229,9 +1245,11 @@ TNaming_OldShapeIterator::TNaming_OldShapeIterator
  const Handle(TNaming_UsedShapes)& Shapes)
 :myTrans(-1)
 {  
-  Standard_Boolean  Old = Standard_False;
+  Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+		                         "TNaming_OldShapeIterator::TNaming_OldShapeIterator aShape"); 
   TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
   myNode = RS->FirstUse();
+  Standard_Boolean  Old(Standard_False);
   SelectSameShape(myNode,Old,RS,myTrans);
 }
 
@@ -1246,10 +1264,12 @@ TNaming_OldShapeIterator::TNaming_OldShapeIterator
 :myTrans(-1)
 {  
   Handle(TNaming_UsedShapes) Shapes;
-  if (access.Root().FindAttribute(TNaming_UsedShapes::GetID(),Shapes)) {  
-    Standard_Boolean  Old = Standard_False;
+  if (access.Root().FindAttribute(TNaming_UsedShapes::GetID(),Shapes)) {
+    Standard_NoSuchObject_Raise_if(!Shapes->Map().IsBound(aShape), 
+		                           "TNaming_OldShapeIterator::TNaming_OldShapeIterator aShape"); 
     TNaming_RefShape* RS  = Shapes->Map().ChangeFind(aShape);
     myNode = RS->FirstUse();
+	Standard_Boolean  Old(Standard_False);
     SelectSameShape(myNode,Old,RS,myTrans);
   }
 }
@@ -1262,14 +1282,16 @@ TNaming_OldShapeIterator::TNaming_OldShapeIterator
 TNaming_OldShapeIterator::TNaming_OldShapeIterator (const TNaming_Iterator& anIterator)
 :myTrans(anIterator.myTrans)
 {
-  Standard_Boolean Old = Standard_False;  
-  myNode = anIterator.myNode;
+  Standard_NoSuchObject_Raise_if(anIterator.myNode == 0L,
+				                 "TNaming_OldShapeIterator::TNaming_OldShapeIterator");
+  myNode = anIterator.myNode; 
   TNaming_RefShape* RS = myNode->myNew;
   if (RS == 0L) 
     myNode = 0L;  // No descendant
   else {    
     // il faut repartir de la premiere utilisation.
     myNode = RS->FirstUse();
+	Standard_Boolean Old(Standard_False);  
     SelectSameShape(myNode,Old,RS,myTrans);
   }
 }
@@ -1282,14 +1304,16 @@ TNaming_OldShapeIterator::TNaming_OldShapeIterator (const TNaming_Iterator& anIt
 TNaming_OldShapeIterator::TNaming_OldShapeIterator(const TNaming_OldShapeIterator& anIterator)
 :myTrans(anIterator.myTrans)
 {
-  Standard_Boolean Old = Standard_False;  
-  myNode = anIterator.myNode;
+  Standard_NoSuchObject_Raise_if(anIterator.myNode == 0L,
+				                 "TNaming_OldShapeIterator::TNaming_OldShapeIterator");
+  myNode = anIterator.myNode;  
   TNaming_RefShape* RS = myNode->myOld;
   if (RS == 0L) 
     myNode = 0L;  // No descendant
   else  {
     // il faut repartir de la premiere utilisation.
     myNode = RS->FirstUse();
+	Standard_Boolean Old(Standard_False);  
     SelectSameShape(myNode,Old,RS,myTrans);
   }
 }

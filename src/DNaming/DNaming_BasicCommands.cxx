@@ -465,7 +465,40 @@ static Standard_Integer DNaming_ImportShape (Draw_Interpretor& di,
   cout << "DNaming_NewShape : Error" << endl;
   return 1;  
 }
+//=======================================================================
+//function : CheckNSIter
+//purpose  : "CheckNSIter Doc  entry Shape new/old [1|0]"
+//=======================================================================
 
+static Standard_Integer CheckIter (Draw_Interpretor& di,
+				  Standard_Integer nb, 
+				  const char** arg) 
+{ 
+  if (nb > 3) { 
+    Handle(TDF_Data) aDF;
+	Standard_Boolean aNew(Standard_True);
+    if (!DDF::GetDF(arg[1],aDF)) return 1;
+	TDF_Label aLabel;
+	DDF::AddLabel(aDF, arg[2], aLabel);
+	TNaming_Builder aNB(aLabel);
+	const TopoDS_Shape& aShape = DBRep::Get(arg[3]);
+	aNB.Generated(aShape);
+	TNaming_Iterator aNameIter(aLabel);
+	if(nb == 5) aNew = (Standard_Boolean) atoi(arg[4]);
+	if(aNew) {
+	  TNaming_NewShapeIterator aNewShapeIter(aNameIter); 
+	  di << "DNaming_CheckIterator : New It is OK" << "\n";
+	} else {
+	  TNaming_OldShapeIterator oldShapeIter(aNameIter); 
+	  di << "DNaming_CheckIterator : Old It is OK" << "\n";
+	}
+	return 0;
+  } 
+  di << "DNaming_CheckIterator : Error" << "\n";
+  return 1;
+}
+
+//
 //=======================================================================
 //function : BasicCommands
 //purpose  : 
@@ -492,4 +525,6 @@ void  DNaming::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("Collect",     "Collect  df entry [onlymodif 0/1]",__FILE__,Collect ,        g);  
   theCommands.Add ("GeneratedShape", "Generatedshape df shape Generationentry [drawname]", __FILE__,Generatedshape,g);
   theCommands.Add("ImportShape", "ImportShape Doc Entry Shape [Name]",__FILE__,DNaming_ImportShape, g);  
+  //
+   theCommands.Add("CheckNSIter",    "CheckNSIter df entry shape new[1|0]",     __FILE__, CheckIter ,       g);  
 }

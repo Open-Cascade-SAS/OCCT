@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC26428"
+puts "============"
+puts ""
+###################################################################################
+# TNaming_Selector::Solve crash for empty named shape.
+###################################################################################
+
+NewDocument D BinOcaf
+
+box b 10 20 30
+
+CheckNSIter D 0:1 b 1
+
+CheckNSIter D 0:1 b 0
