@@ -573,3 +573,37 @@ Standard_Boolean& BRepTools_ReShape::ModeConsiderOrientation()
 {
   return myConsiderOrientation;
 }
+
+//=======================================================================
+//function : CopyVertex
+//purpose  : 
+//=======================================================================
+
+TopoDS_Vertex BRepTools_ReShape::CopyVertex(const TopoDS_Vertex& theV,
+                                            const Standard_Real theTol)
+{
+  return CopyVertex(theV, BRep_Tool::Pnt(theV), theTol);
+}
+
+//=======================================================================
+//function : CopyVertex
+//purpose  : 
+//=======================================================================
+
+TopoDS_Vertex BRepTools_ReShape::CopyVertex(const TopoDS_Vertex& theV,
+                                            const gp_Pnt& theNewPos,
+                                            const Standard_Real theTol)
+{
+  TopoDS_Vertex aVertexCopy;
+  Standard_Boolean isRecorded = IsRecorded(theV);
+  aVertexCopy = isRecorded ? TopoDS::Vertex(Apply(theV)) : TopoDS::Vertex(theV.EmptyCopied());
+
+  BRep_Builder B;
+  Standard_Real aNewTol = theTol > 0.0 ? theTol : BRep_Tool::Tolerance(theV);
+  B.UpdateVertex(aVertexCopy, theNewPos, aNewTol);
+
+  if (!isRecorded)
+    Replace(theV, aVertexCopy);
+
+  return aVertexCopy;
+}

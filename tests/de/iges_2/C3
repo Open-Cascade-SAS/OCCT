@@ -1,6 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
 
 set filename PRO11414-1.igs
@@ -12,11 +11,11 @@ CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 309  ( 309 )   Summary  = 14820  ( 14815 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 309  ( 309 )   FreeWire = 22  ( 22 )   FreeEdge  = 1789 ( 1789 )   SharedEdge = 6249  ( 6249 )
 TOLERANCE   : MaxTol   =     0.75178756  (   0.7517875657 )  AvgTol   =  0.001674556495  (  0.001679070069 )
-LABELS      : N0Labels = 2030  ( 2204 )  N1Labels = 8  ( 673 )  N2Labels = 0  ( 0 )   TotalLabels = 2038  ( 2877 )   NameLabels = 2030  ( 2204 )   ColorLabels = 2006  ( 2703 )   LayerLabels = 2006  ( 2703 )
+LABELS      : N0Labels = 2030  ( 2204 )  N1Labels = 8  ( 341 )  N2Labels = 0  ( 0 )   TotalLabels = 2038  ( 2545 )   NameLabels = 2030  ( 2204 )   ColorLabels = 2006  ( 2371 )   LayerLabels = 2006  ( 2371 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 12  ( 12 )
 COLORS      : Colors   = GRAY61 GREEN LIGHTSALMON2 MAGENTA1 MAGENTA3 RED ROSYBROWN SPRINGGREEN4 TURQUOISE TURQUOISE2 WHITE YELLOW  ( GRAY61 GREEN LIGHTSALMON2 MAGENTA1 MAGENTA3 RED ROSYBROWN SPRINGGREEN4 TURQUOISE TURQUOISE2 WHITE YELLOW )
-NLAYERS     : NLayers  = 5  ( 6 )
-LAYERS      : Layers   = 107 109 152 155 156  ( 107 109 150 152 155 156 )
+NLAYERS     : NLayers  = 5  ( 5 )
+LAYERS      : Layers   = 107 109 152 155 156  ( 107 109 152 155 156 )
 
 }

@@ -1079,7 +1079,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
   TopExp_Explorer exps;
   for (exps.Init(myShape, TopAbs_SHELL); exps.More(); exps.Next()) {
     TopoDS_Shell aShell = TopoDS::Shell(exps.Current());
-    
+
     // map of processed shapes
     TopTools_MapOfShape aProcessed;
 
@@ -1357,11 +1357,11 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             }
             else
             {
-              Handle(ShapeExtend_WireData) sbwd =
+            Handle(ShapeExtend_WireData) sbwd =
                 new ShapeExtend_WireData (aWire);
-              ShapeFix_WireSegment seg ( sbwd, TopAbs_REVERSED );
-              wires.Append(seg);
-            }
+            ShapeFix_WireSegment seg ( sbwd, TopAbs_REVERSED );
+            wires.Append(seg);
+          }
           }
 
           CompShell.DispatchWires ( parts,wires );
@@ -1415,6 +1415,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
       TopoDS_Shape aResult = myContext->Apply(aShell);
 
       ShapeFix_Edge sfe;
+      if (!myContext.IsNull()) sfe.SetContext(myContext);
       for (exp.Init(aResult,TopAbs_EDGE); exp.More(); exp.Next()) {
         TopoDS_Edge E = TopoDS::Edge(exp.Current());
         sfe.FixVertexTolerance (E);

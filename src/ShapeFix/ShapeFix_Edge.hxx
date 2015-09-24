@@ -31,7 +31,7 @@ class TopoDS_Face;
 class Geom_Surface;
 class TopLoc_Location;
 class ShapeAnalysis_Surface;
-
+class ShapeBuild_ReShape;
 
 class ShapeFix_Edge;
 DEFINE_STANDARD_HANDLE(ShapeFix_Edge, MMgt_TShared)
@@ -177,14 +177,17 @@ public:
   //! Returns the status (in the form of True/False) of last Fix
   Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status status) const;
 
+  //! Sets context
+  Standard_EXPORT void SetContext (const Handle(ShapeBuild_ReShape)& context);
 
-
+  //! Returns context
+  Handle(ShapeBuild_ReShape) Context() const;
 
   DEFINE_STANDARD_RTTI(ShapeFix_Edge,MMgt_TShared)
 
 protected:
 
-
+  Handle(ShapeBuild_ReShape) myContext;
   Standard_Integer myStatus;
   Handle(ShapeConstruct_ProjectCurveOnSurface) myProjector;
 

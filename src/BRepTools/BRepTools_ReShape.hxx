@@ -26,6 +26,7 @@
 #include <MMgt_TShared.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;
+class TopoDS_Vertex;
 
 
 class BRepTools_ReShape;
@@ -123,7 +124,19 @@ public:
   //! during replacing shapes.
   Standard_EXPORT virtual Standard_Boolean& ModeConsiderOrientation();
 
+  //! Returns modified copy of vertex if original one is not recorded or returns modified original vertex otherwise.
+  //@param theV - original vertex.
+  //@param theTol - new tolerance of vertex, optional.
+  Standard_EXPORT TopoDS_Vertex CopyVertex(const TopoDS_Vertex& theV,
+                                           const Standard_Real theTol = -1.0);
 
+  //! Returns modified copy of vertex if original one is not recorded or returns modified original vertex otherwise.
+  //@param theV - original vertex.
+  //@param theNewPos - new position for vertex copy.
+  //@param theTol - new tolerance of vertex.
+  Standard_EXPORT TopoDS_Vertex CopyVertex(const TopoDS_Vertex& theV,
+                                           const gp_Pnt& theNewPos,
+                                           const Standard_Real aTol);
 
 
   DEFINE_STANDARD_RTTI(BRepTools_ReShape,MMgt_TShared)

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC26656"
+puts "========"
+puts ""
+#######################################################################
+# ShapeFix_Face introduces extremely high vertex tolerance in the input shape
+#######################################################################
+
+restore [locate_data_file bug26656_unify.input.brep] i
+
+puts "\nBefore ShapeFix_Face"
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance i] full MaxTolerance_1
+
+set expected_MaxTolerance 2.0024548532087701e-07
+set tol_abs_MaxTolerance 5.0e-7
+set tol_rel_MaxTolerance 0.1
+
+puts "MaxTolerance_1 = $MaxTolerance_1"
+checkreal "MaxTolerance" ${MaxTolerance_1} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+unifysamedom r i
+
+puts "\nAfter ShapeFix_Face"
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance i] full MaxTolerance_2
+
+puts "MaxTolerance_2 = $MaxTolerance_2"
+checkreal "MaxTolerance" ${MaxTolerance_2} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}

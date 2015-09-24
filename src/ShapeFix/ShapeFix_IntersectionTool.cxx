@@ -837,7 +837,7 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
   //Standard_Real area2d = ShapeAnalysis::TotCross2D(sewd,face);
   //if(area2d<Precision::PConfusion()*Precision::PConfusion()) return Standard_False; //gka 06.09.04 BUG 6555
 
-  TopoDS_Shape SF = face;
+  TopoDS_Shape SF = Context()->Apply(face);
   Standard_Real MaxTolVert=0.0;
   for(TopExp_Explorer exp(SF,TopAbs_VERTEX); exp.More(); exp.Next()) { 
     Standard_Real tolV = BRep_Tool::Tolerance(TopoDS::Vertex(exp.Current()));

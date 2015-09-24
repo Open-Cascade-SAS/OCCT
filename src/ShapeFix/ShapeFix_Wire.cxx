@@ -337,7 +337,9 @@ Standard_Boolean ShapeFix_Wire::Perform()
 {
   ClearStatuses();
   if ( ! IsLoaded() ) return Standard_False;
-  
+
+  if ( !Context().IsNull() )
+    myFixEdge->SetContext( Context() );
 
   Standard_Integer Fixed = Standard_False;
   
@@ -415,7 +417,12 @@ Standard_Boolean ShapeFix_Wire::Perform()
   Handle(ShapeExtend_WireData) sbwd = WireData();
   for (Standard_Integer iedge = 1; iedge <= sbwd->NbEdges(); iedge++)
     if ( myFixEdge->FixVertexTolerance (sbwd->Edge (iedge)) ) 
+    {
       Fixed = Standard_True;
+    }
+
+  if (  !Context().IsNull() )
+    UpdateWire();
 
   return Fixed;
 }
@@ -776,7 +783,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
   }
 
   // fix same parameter
-  if ( isReady && NeedFix ( myFixSameParameterMode ) ) {
+  if ( isReady && NeedFix ( myFixSameParameterMode ) ){
     for ( i=1; i <= nb; i++ ) {
       // skl 28.10.2004 for OCC6366 - check SameRange
       ShapeAnalysis_Edge sae;
@@ -800,19 +807,24 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
 	myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL8 );
     }
   }
-    
+
   //:abv 10.06.02: porting C40 -> dev (CC670-12608.stp): moved from Perform()
   // Update with face is needed for plane surfaces (w/o stored pcurves)
-  if ( NeedFix ( myFixVertexToleranceMode ) ) {
-    for ( i=1; i <= nb; i++) {
+  if ( NeedFix ( myFixVertexToleranceMode ) )
+  {
+    for ( i=1; i <= nb; i++)
+    {
       myFixEdge->FixVertexTolerance (sbwd->Edge (i), face);
       if ( myFixEdge->Status ( ShapeExtend_DONE ) ) 
-	myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE8 );
+        myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE8 );
       if ( myFixEdge->Status ( ShapeExtend_FAIL ) ) 
-	myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL8 );
+        myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL8 );
     }
+    if (!Context().IsNull() )
+      UpdateWire();
   }
   
+
   return StatusEdgeCurves ( ShapeExtend_DONE );
 }
 
@@ -934,7 +946,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
       }
     }
   }
-  
+
   //pdn 17.03.99 S4135 to avoid regression fixing not adjacent intersection
   if ( NeedFix ( myFixNonAdjacentIntersectingEdgesMode ) ) {
 
@@ -2386,7 +2398,7 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
   Standard_Real a1, b1, a2, b2;
   BRep_Tool::Range ( E1, Face(), a1, b1 );
   BRep_Tool::Range ( E2, Face(), a2, b2 );
-  
+
   ShapeAnalysis_Edge sae;
   TopoDS_Vertex Vp = sae.FirstVertex ( E1 );
   TopoDS_Vertex V1 = sae.LastVertex  ( E1 );
@@ -2401,7 +2413,7 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
   Standard_Boolean IsCutLine = Standard_False;
 
   BRep_Builder B;
-  
+
   Standard_Integer nb = points3d.Length();
   for ( Standard_Integer i=1; i <= nb; i++ ) {
     const IntRes2d_IntersectionPoint &IP = points2d.Value(i);
@@ -2422,18 +2434,58 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
 
     Standard_Boolean locMayEdit = myTopoMode;
     // Always try to modify the tolerance firstly as a better solution
-    if ( /*! myTopoMode &&*/ newtol > tol ) {
+    if ( /*! myTopoMode &&*/ newtol > tol )
+    {
       Standard_Real te1 = rad + ComputeLocalDeviation (E1, pint, pnt,
         param1, ( isForward1 ? b1 : a1 ), Face() );
       Standard_Real te2 = rad + ComputeLocalDeviation (E2, pint, pnt, 
         ( isForward2 ? a2 : b2 ), param2, Face() );
       Standard_Real maxte = Max ( te1, te2 );
-      if ( maxte < MaxTolerance() && maxte < newtol ) {
-        if ( BRep_Tool::Tolerance(E1) < te1 || BRep_Tool::Tolerance(E2) < te2 ) {
+      if ( maxte < MaxTolerance() && maxte < newtol )
+      {
+        if ( BRep_Tool::Tolerance(E1) < te1 || BRep_Tool::Tolerance(E2) < te2 )
+        {
 #ifdef OCCT_DEBUG
           cout << "Warning: ShapeFix_Wire::FixIE: edges tolerance increased: (" <<
             te1 << ", " << te2 << ") / " << newtol << endl;
 #endif
+
+          // Make copy of edges.
+          if (!Context().IsNull())
+          {
+            // Intersection point of two base edges.
+            ShapeBuild_Edge aSBE;
+            TopoDS_Vertex VV1 = Context()->CopyVertex(V1);
+
+            TopoDS_Vertex VVp = Vp;
+            TopoDS_Vertex VVn = Vn;
+            if (Vp.IsSame(Vn))
+            {
+              // Should modify only one vertex.
+              VVp = Context()->CopyVertex(Vp);
+              VVn = VVp;
+            }
+            else
+            {
+              VVp = Context()->CopyVertex(Vp);
+              VVn = Context()->CopyVertex(Vn);
+            }
+
+            TopoDS_Edge EE1 = aSBE.CopyReplaceVertices(E1, VVp, VV1);
+            TopoDS_Edge EE2 = aSBE.CopyReplaceVertices(E2, VV1, VVn);
+
+            Context()->Replace(E1, EE1);
+            Context()->Replace(E2, EE2);
+
+            UpdateWire();
+            E1 = sbwd->Edge(n1);
+            E2 = sbwd->Edge(n2);
+            Vp = sae.FirstVertex ( E1 );
+            V1 = sae.LastVertex  ( E1 );
+            V2 = sae.FirstVertex ( E2 );
+            Vn = sae.LastVertex  ( E2 );
+          }
+
           B.UpdateEdge ( E1, 1.000001 * te1 );
           B.UpdateVertex ( sae.FirstVertex ( E1 ), 1.000001 * te1 );
           B.UpdateVertex ( sae.LastVertex  ( E1 ), 1.000001 * te1 );

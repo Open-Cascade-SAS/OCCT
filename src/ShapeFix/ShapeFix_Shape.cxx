@@ -227,6 +227,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   }
   case TopAbs_EDGE: {
     Handle(ShapeFix_Edge) sfe = FixEdgeTool();
+    sfe->SetContext(Context());
     if(sfe->FixVertexTolerance(TopoDS::Edge(S)))
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
     break;
@@ -238,9 +239,8 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
 
   // Switch to the second progress indication scope if it exists
   aPSentry.Next();
-  
-  myResult = Context()->Apply(S);  
 
+  myResult = Context()->Apply(S);
   if ( NeedFix(myFixSameParameterMode) )
   {
     SameParameter(myResult, Standard_False, theProgress);
@@ -262,9 +262,9 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
       TopExp_Explorer anExpE (myResult, TopAbs_EDGE);
       for ( ; anExpE.More(); anExpE.Next()) 
         sfe->FixVertexTolerance( TopoDS::Edge (anExpE.Current()));
-
     }
   }
+  myResult = Context()->Apply(myResult);
 
   if ( !fft.IsNull() )
     fft->FixSmallAreaWireMode() = savFixSmallAreaWireMode;
