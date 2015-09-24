@@ -4217,6 +4217,274 @@ Standard_Integer OCC26525 (Draw_Interpretor& di,
   return 0;
 }
 
+//=======================================================================
+//function : OCC24537
+//purpose  : Puts inverted numbers (in the sense of little/big endian inversion)
+//           from predefined arrays.
+//=======================================================================
+#include <FSD_BinaryFile.hxx>
+
+template<int size>
+inline const unsigned char* SizeRef ();
+
+template<>
+inline const unsigned char* SizeRef <8> ()
+{
+  static const unsigned char aSizeRef[] = {
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x02,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x05,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x06,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x07,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x08,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x09,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  return aSizeRef;
+}
+
+template<>
+inline const unsigned char* SizeRef <4> ()
+{
+  static const unsigned char aSizeRef[] = {
+    0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x02,
+    0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x04,
+    0x00,0x00,0x00,0x05,0x00,0x00,0x00,0x06,
+    0x00,0x00,0x00,0x07,0x00,0x00,0x00,0x08,
+    0x00,0x00,0x00,0x09,0x00,0x00,0x00,0x00};
+  return aSizeRef;
+}
+
+static Standard_Integer OCC24537(
+  Draw_Interpretor& theDI, 
+  Standard_Integer  argc, 
+  const char **     argv)
+{
+  std::ofstream aF;
+  if (argc > 1)
+  {
+    aF.open(argv[1]);
+    if (!aF.is_open())
+    {
+      cout << "cannot create file " << argv[1] << endl;
+      return 1;
+    }
+  }
+  Standard_Boolean isErr = Standard_False;
+  // 1. InverseInt
+  const unsigned char anIntRef[] = {
+    0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x02,
+    0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x04,
+    0x00,0x00,0x00,0x05,0x00,0x00,0x00,0x06,
+    0x00,0x00,0x00,0x07,0x00,0x00,0x00,0x08,
+    0x00,0x00,0x00,0x09,0x00,0x00,0x00,0x00};
+  Standard_Integer anIntArr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+  if (aF.is_open())
+  {
+    for(int i = 0; i < 10; ++i)
+    {
+      Standard_Integer anInv = FSD_BinaryFile::InverseInt(anIntArr[i]);
+      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
+    }
+  }
+  else
+  {
+    Standard_Integer anInv[10];
+    for(int i = 0; i < 10; ++i)
+      anInv[i] = FSD_BinaryFile::InverseInt(anIntArr[i]);
+    if (memcmp(anInv, anIntRef, sizeof(anIntRef)) != 0)
+    {
+      theDI << "Error: incorrect conversion of an integer value\n";
+      isErr = Standard_True;
+    }
+  }
+  
+  // 1a. Random InverseInt
+  const unsigned char aRndIntRef[] = {
+    0xFF,0xC2,0xF7,0x00,0xFF,0xFF,0xFB,0x2E,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,
+    0x00,0x00,0x04,0xD2,0x00,0x00,0x04,0xD3,
+    0xFF,0xFF,0xFD,0x1E,0xFF,0xFF,0xFF,0xFB,
+    0x00,0x00,0x03,0x8D,0x00,0x3D,0x09,0x00};
+  Standard_Integer aRndIntArr[] = {-4000000, -1234, 0, 1, 1234, 1235, -738, -5, 909, 4000000};
+  if (aF.is_open())
+  {
+    for(int i = 0; i < 10; ++i)
+    {
+      Standard_Integer anInv = FSD_BinaryFile::InverseInt(aRndIntArr[i]);
+      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
+    }
+  }
+  else
+  {
+    Standard_Integer anInv[10];
+    for(int i = 0; i < 10; ++i)
+      anInv[i] = FSD_BinaryFile::InverseInt(aRndIntArr[i]);
+    if (memcmp(anInv, aRndIntRef, sizeof(aRndIntRef)) != 0)
+    {
+      theDI << "Error: incorrect conversion of a dispersed integer value\n";
+      isErr = Standard_True;
+    }
+  }
+  
+  // 2. InverseReal
+  const unsigned char aRealRef[] = {
+    0x3F,0xF0,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x08,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x10,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x14,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x18,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x1C,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x20,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x22,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  const Standard_Real aRealArr[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 0.0};
+  if (aF.is_open())
+  {
+    for(int i = 0; i < 10; ++i)
+    {
+      Standard_Real anInv = FSD_BinaryFile::InverseReal(aRealArr[i]);
+      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
+    }
+  }
+  else
+  {
+    Standard_Real anInv[10];
+    for(int i = 0; i < 10; ++i)
+      anInv[i] = FSD_BinaryFile::InverseReal(aRealArr[i]);
+    if (memcmp(anInv, aRealRef, sizeof(aRealRef)) != 0)
+    {
+      theDI << "Error: incorrect conversion of a real value\n";
+      isErr = Standard_True;
+    }
+  }
+
+  // 2a. Random InverseReal
+  const unsigned char aRndRealRef[] = {
+    0xFE,0x37,0xE4,0x3C,0x88,0x00,0x75,0x9C,
+    0xBE,0x11,0x2E,0x0B,0xE8,0x26,0xD6,0x95,
+    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x3E,0x11,0x2E,0x0B,0xE8,0x26,0xD6,0x95,
+    0x3F,0xF0,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x40,0x09,0x21,0xDA,0x45,0x5B,0x53,0xE4,
+    0x54,0xB2,0x49,0xAD,0x25,0x94,0xC3,0x7D,
+    0x40,0x20,0x00,0x00,0x00,0x00,0x00,0x00,
+    0xC0,0x23,0xCC,0xCC,0xCC,0xCC,0xCC,0xCD,
+    0x40,0x23,0xCC,0xCC,0xCC,0xCC,0xCC,0xCD};
+  const Standard_Real aRndRealArr[] = {-1e300, -1.e-9, 0., 1.e-9, 1., 3.1415296, 1.e100, 8.0, -9.9, 9.9};
+  if (aF.is_open())
+  {
+    for(int i = 0; i < 10; ++i)
+    {
+      Standard_Real anInv = FSD_BinaryFile::InverseReal(aRndRealArr[i]);
+      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
+    }
+  }
+  else
+  {
+    Standard_Real anInv[10];
+    for(int i = 0; i < 10; ++i)
+      anInv[i] = FSD_BinaryFile::InverseReal(aRndRealArr[i]);
+    if (memcmp(anInv, aRndRealRef, sizeof(aRndRealRef)) != 0)
+    {
+      theDI << "Error: incorrect conversion of a dispersed real value\n";
+      isErr = Standard_True;
+    }
+  }
+
+  // 3. InverseShortReal
+  const unsigned char aShortRealRef[] = {
+    0x3F,0x80,0x00,0x00,0x40,0x00,0x00,0x00,
+    0x40,0x40,0x00,0x00,0x40,0x80,0x00,0x00,
+    0x40,0xA0,0x00,0x00,0x40,0xC0,0x00,0x00,
+    0x40,0xE0,0x00,0x00,0x41,0x00,0x00,0x00,
+    0x41,0x10,0x00,0x00,0x00,0x00,0x00,0x00};
+  const Standard_ShortReal aShortRealArr[] = {
+    1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 0.0f};
+  if (aF.is_open())
+  {
+    for(int i = 0; i < 10; ++i)
+    {
+      Standard_ShortReal anInv = FSD_BinaryFile::InverseShortReal(aShortRealArr[i]);
+      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
+    }
+  }
+  else
+  {
+    Standard_ShortReal anInv[10];
+    for(int i = 0; i < 10; ++i)
+      anInv[i] = FSD_BinaryFile::InverseShortReal(aShortRealArr[i]);
+    if (memcmp(anInv, aShortRealRef, sizeof(aShortRealRef)) != 0)
+    {
+      theDI << "Error: incorrect conversion of a short real value\n";
+      isErr = Standard_True;
+    }
+  }
+
+  // 3a. Random InverseShortReal
+  const unsigned char aRndShortRealRef[] = {
+    0xB0,0x89,0x70,0x5F,0x00,0x00,0x00,0x00,
+    0x30,0x89,0x70,0x5F,0x3F,0x80,0x00,0x00,
+    0x40,0x49,0x0E,0x56,0xC0,0xD6,0x66,0x66,
+    0x40,0xD6,0x66,0x66,0x42,0xC5,0xCC,0xCD,
+    0xC2,0xC7,0xCC,0xCD,0x42,0xC7,0xCC,0xCD};
+  const Standard_ShortReal aRndShortRealArr[] = {
+    -1.e-9f, 0.f, 1.e-9f, 1.f, 3.1415f, -6.7f, 6.7f, 98.9f, -99.9f, 99.9f};
+  if (aF.is_open())
+  {
+    for(int i = 0; i < 10; ++i)
+    {
+      Standard_ShortReal anInv = FSD_BinaryFile::InverseShortReal(aRndShortRealArr[i]);
+      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
+    }
+  }
+  else
+  {
+    Standard_ShortReal anInv[10];
+    for(int i = 0; i < 10; ++i)
+      anInv[i] = FSD_BinaryFile::InverseShortReal(aRndShortRealArr[i]);
+    if (memcmp(anInv, aRndShortRealRef, sizeof(aRndShortRealRef)) != 0)
+    {
+      theDI << "Error: incorrect conversion of a dispersed short real value\n";
+      isErr = Standard_True;
+    }
+  }
+
+  // 4. InverseSize
+  const Standard_Size aSizeArr[] = {1ul, 2ul, 3ul, 4ul, 5ul, 6ul, 7ul, 8ul, 9ul, 0ul};
+  if (aF.is_open())
+  {
+    for(int i = 0; i < 10; ++i)
+    {
+      Standard_Size anInv = FSD_BinaryFile::InverseSize(aSizeArr[i]);
+      aF.write(reinterpret_cast<char*>(&anInv), sizeof(anInv));
+    }
+  }
+  else
+  {
+    Standard_Size anInv[10];
+    const unsigned char* aSizeRef = SizeRef<sizeof(Standard_Size)>();
+    for(int i = 0; i < 10; ++i)
+      anInv[i] = FSD_BinaryFile::InverseSize(aSizeArr[i]);
+    if (memcmp(anInv, aSizeRef, sizeof(Standard_Size)*10) != 0)
+    {
+      theDI << "Error: incorrect conversion of a size value\n";
+      isErr = Standard_True;
+    }
+  }
+
+  if (!aF.is_open() && !isErr)
+    theDI << "Conversion was done OK";
+  if (aF.is_open())
+  {
+    cout << "the file " << argv[1] << " has been created" << endl;
+    aF.close();
+  }
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4308,5 +4576,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26313", "OCC26313 result shape", __FILE__, OCC26313, group);
   theCommands.Add ("OCC26525", "OCC26525 result edge face ", __FILE__, OCC26525, group);
 
+  theCommands.Add ("OCC24537", "OCC24537 [file]", __FILE__, OCC24537, group);
   return;
 }

@@ -24,6 +24,7 @@
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
+#include <FSD_BinaryFile.hxx>
 
 #define BP_INTSIZE         ((Standard_Integer)sizeof(Standard_Integer))
 #define BP_EXTCHARSIZE     ((Standard_Integer)sizeof(Standard_ExtCharacter))
@@ -1053,7 +1054,7 @@ void BinObjMgt_Persistent::inverseExtCharData
     Standard_ExtCharacter *aData = (Standard_ExtCharacter*)
       ( (char*) myData(anIndex) + anOffset);
     for (Standard_Integer i=0; i < aLenInPiece / BP_EXTCHARSIZE; i++)
-      aData[i] = InverseExtChar (aData[i]);
+      aData[i] = FSD_BinaryFile::InverseExtChar (aData[i]);
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE) {
@@ -1080,7 +1081,7 @@ void BinObjMgt_Persistent::inverseIntData
     Standard_Integer aLenInPiece = Min (aLen, BP_PIECESIZE - anOffset);
     Standard_Integer *aData = (Standard_Integer*) ((char*)myData(anIndex) + anOffset);
     for (Standard_Integer i=0; i < aLenInPiece / BP_INTSIZE; i++)
-      aData[i] = InverseInt (aData[i]);
+      aData[i] = FSD_BinaryFile::InverseInt (aData[i]);
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE) {
@@ -1103,22 +1104,30 @@ void BinObjMgt_Persistent::inverseRealData
   Standard_Integer anIndex = theIndex;
   Standard_Integer anOffset = theOffset;
   Standard_Integer aLen = theSize;
+
+  union {
+        Standard_Real*    aRealData;
+        Standard_Integer* aIntData;
+      } aWrapUnion;
+
   void *aPrevPtr = 0;
   while (aLen > 0) {
     Standard_Integer aLenInPiece = Min (aLen, BP_PIECESIZE - anOffset);
-    Standard_Real *aData = (Standard_Real*) ((char*)myData(anIndex) + anOffset);
+
+    aWrapUnion.aRealData = (Standard_Real*) ((char*)myData(anIndex) + anOffset);
+    
     if (aPrevPtr) {
       Standard_Integer aTmp;
-      aTmp = InverseInt (*(Standard_Integer*)aPrevPtr);
-      *(Standard_Integer*)aPrevPtr = InverseInt (*(Standard_Integer*)aData);
-      *(Standard_Integer*)aData = aTmp;
-      ((Standard_Integer*&)aData)++;
+      aTmp = FSD_BinaryFile::InverseInt (*(Standard_Integer*)aPrevPtr);
+      *(Standard_Integer*)aPrevPtr = FSD_BinaryFile::InverseInt (*aWrapUnion.aIntData);
+      *aWrapUnion.aIntData = aTmp;
+      aWrapUnion.aIntData++;
       aPrevPtr = 0;
     }
     for (Standard_Integer i=0; i < aLenInPiece / BP_REALSIZE; i++)
-      aData[i] = InverseReal (aData[i]);
+      aWrapUnion.aRealData[i] = FSD_BinaryFile::InverseReal(aWrapUnion.aRealData[i]);
     if (aLenInPiece % BP_REALSIZE)
-      aPrevPtr = &aData[aLenInPiece / BP_REALSIZE];
+      aPrevPtr = &aWrapUnion.aRealData[aLenInPiece / BP_REALSIZE];
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE) {
@@ -1146,7 +1155,7 @@ void BinObjMgt_Persistent::inverseShortRealData
     Standard_ShortReal *aData =
       (Standard_ShortReal *) ((char *)myData(anIndex) + anOffset);
     for (Standard_Integer i=0; i < aLenInPiece / BP_INTSIZE; i++)
-      aData[i] = InverseShortReal (aData[i]);
+      aData[i] = FSD_BinaryFile::InverseShortReal (aData[i]);
     aLen -= aLenInPiece;
     anOffset += aLenInPiece;
     if (anOffset >= BP_PIECESIZE) {

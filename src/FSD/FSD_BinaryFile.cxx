@@ -23,6 +23,7 @@
 #include <Storage_StreamWriteError.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <Standard_Assert.hxx>
 
 const Standard_CString MAGICNUMBER = "BINFILE";
 
@@ -190,7 +191,7 @@ void FSD_BinaryFile::SkipObject()
 
 Storage_BaseDriver& FSD_BinaryFile::PutReference(const Standard_Integer aValue)
 {
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   Standard_Integer t = InverseInt (aValue);
   
   if (!fwrite(&t,sizeof(Standard_Integer),1,myStream)) Storage_StreamWriteError::Raise();
@@ -218,7 +219,7 @@ Storage_BaseDriver& FSD_BinaryFile::PutCharacter(const Standard_Character aValue
 
 Storage_BaseDriver& FSD_BinaryFile::PutExtCharacter(const Standard_ExtCharacter aValue)
 {
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   Standard_ExtCharacter t = InverseExtChar (aValue);
 
   if (!fwrite(&t,sizeof(Standard_ExtCharacter),1,myStream)) Storage_StreamWriteError::Raise();
@@ -235,7 +236,7 @@ Storage_BaseDriver& FSD_BinaryFile::PutExtCharacter(const Standard_ExtCharacter 
 
 Storage_BaseDriver& FSD_BinaryFile::PutInteger(const Standard_Integer aValue)
 {
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   Standard_Integer t = InverseInt (aValue);
   
   if (!fwrite(&t,sizeof(Standard_Integer),1,myStream)) Storage_StreamWriteError::Raise();
@@ -253,7 +254,7 @@ Storage_BaseDriver& FSD_BinaryFile::PutInteger(const Standard_Integer aValue)
 
 Storage_BaseDriver& FSD_BinaryFile::PutBoolean(const Standard_Boolean aValue)
 {
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   Standard_Integer t = InverseInt ((Standard_Integer) aValue);
   
   if (!fwrite(&t,sizeof(Standard_Integer),1,myStream)) Storage_StreamWriteError::Raise();
@@ -270,7 +271,7 @@ Storage_BaseDriver& FSD_BinaryFile::PutBoolean(const Standard_Boolean aValue)
 
 Storage_BaseDriver& FSD_BinaryFile::PutReal(const Standard_Real aValue)
 {
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   Standard_Real t = InverseReal (aValue);
   
   if (!fwrite(&t,sizeof(Standard_Real),1,myStream)) Storage_StreamWriteError::Raise();
@@ -287,7 +288,7 @@ Storage_BaseDriver& FSD_BinaryFile::PutReal(const Standard_Real aValue)
 
 Storage_BaseDriver& FSD_BinaryFile::PutShortReal(const Standard_ShortReal aValue)
 {
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   Standard_ShortReal t = InverseShortReal (aValue);
 
   if (!fwrite(&t,sizeof(Standard_ShortReal),1,myStream)) Storage_StreamWriteError::Raise();
@@ -306,7 +307,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetReference(Standard_Integer& aValue)
 {
   if (!fread(&aValue,sizeof(Standard_Integer),1,myStream))
     Storage_StreamTypeMismatchError::Raise();
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseInt (aValue);
 #endif
   return *this;
@@ -333,7 +334,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetExtCharacter(Standard_ExtCharacter& aValu
 {
   if (!fread(&aValue,sizeof(Standard_ExtCharacter),1,myStream))
     Storage_StreamTypeMismatchError::Raise();
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseExtChar (aValue);
 #endif
   return *this;
@@ -348,7 +349,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetInteger(Standard_Integer& aValue)
 {
   if (!fread(&aValue,sizeof(Standard_Integer),1,myStream))
     Storage_StreamTypeMismatchError::Raise();
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseInt (aValue);
 #endif
   return *this;
@@ -363,7 +364,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetBoolean(Standard_Boolean& aValue)
 {
   if (!fread(&aValue,sizeof(Standard_Boolean),1,myStream))
     Storage_StreamTypeMismatchError::Raise();
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseInt ((Standard_Integer) aValue);
 #endif
   return *this;
@@ -378,7 +379,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetReal(Standard_Real& aValue)
 {
   if (!fread(&aValue,sizeof(Standard_Real),1,myStream))
     Storage_StreamTypeMismatchError::Raise();
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseReal (aValue);
 #endif
   return *this;
@@ -393,7 +394,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetShortReal(Standard_ShortReal& aValue)
 {
   if (!fread(&aValue,sizeof(Standard_ShortReal),1,myStream))
     Storage_StreamTypeMismatchError::Raise();
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseShortReal (aValue);
 #endif
   return *this;
@@ -418,12 +419,18 @@ void FSD_BinaryFile::Destroy()
 
 Storage_Error FSD_BinaryFile::BeginWriteInfoSection() 
 {
-  char ti[4];
-  ti[0] = 1;
-  ti[1] = 2;
-  ti[2] = 3;
-  ti[3] = 4;
-  myHeader.testindian = *((int*)ti);
+  union {
+    char ti2[4];
+    Standard_Integer aResult;
+  } aWrapUnion;
+
+  aWrapUnion.ti2[0] = 1;
+  aWrapUnion.ti2[1] = 2;
+  aWrapUnion.ti2[2] = 3;
+  aWrapUnion.ti2[3] = 4;
+
+  myHeader.testindian = aWrapUnion.aResult;
+
   if (!fwrite(FSD_BinaryFile::MagicNumber(),
               strlen(FSD_BinaryFile::MagicNumber()),
               1,
@@ -1108,7 +1115,7 @@ void FSD_BinaryFile::WriteExtendedString(const TCollection_ExtendedString& aStri
 
   if (size > 0) {
     Standard_ExtString anExtStr;
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
     TCollection_ExtendedString aCopy = aString;
     anExtStr = aCopy.ToExtString();
 
@@ -1142,7 +1149,7 @@ void FSD_BinaryFile::ReadExtendedString(TCollection_ExtendedString& aString)
     if (!fread(c,size*sizeof(Standard_ExtCharacter),1,myStream))
       Storage_StreamWriteError::Raise();
     c[size] = '\0';
-#if DO_INVERSE
+#if OCCT_BINARY_FILE_DO_INVERSE
     for (Standard_Integer i=0; i < size; i++)
       c[i] = InverseExtChar (c[i]);
 #endif
@@ -1207,4 +1214,81 @@ void FSD_BinaryFile::ReadHeader()
 Storage_Position FSD_BinaryFile::Tell()
 {
   return (Storage_Position) ftell(myStream);
+}
+
+//=======================================================================
+//function : InverseReal
+//purpose  : Inverses bytes in the real value
+//=======================================================================
+
+Standard_Real FSD_BinaryFile::InverseReal (const Standard_Real theValue)
+{
+  Standard_STATIC_ASSERT(sizeof(Standard_Real) == 2 * sizeof(Standard_Integer));
+  union {
+    Standard_Integer i[2];
+    Standard_Real    aValue;
+  } aWrapUnion;
+
+  aWrapUnion.aValue = theValue;
+
+  Standard_Integer aTemp = aWrapUnion.i[1];
+  aWrapUnion.i[1] = InverseInt(aWrapUnion.i[0]);
+  aWrapUnion.i[0] = InverseInt(aTemp);
+
+  return aWrapUnion.aValue;
+}
+
+//=======================================================================
+//function : InverseShortReal
+//purpose  : Inverses bytes in the short real value
+//=======================================================================
+
+Standard_ShortReal FSD_BinaryFile::InverseShortReal (const Standard_ShortReal theValue)
+{
+  Standard_STATIC_ASSERT(sizeof(Standard_ShortReal) == sizeof(Standard_Integer));
+  union {
+    Standard_ShortReal aValue;
+    Standard_Integer   aResult;
+  } aWrapUnion;
+
+  aWrapUnion.aValue  = theValue;
+  aWrapUnion.aResult = InverseInt (aWrapUnion.aResult);
+
+  return aWrapUnion.aValue;
+}
+
+//=======================================================================
+//function : InverseSize
+//purpose  : Inverses bytes in size_t type instance
+//=======================================================================
+
+template<int size>
+inline Standard_Size OCCT_InverseSizeSpecialized (const Standard_Size theValue, int);
+
+template<>
+inline Standard_Size OCCT_InverseSizeSpecialized <4> (const Standard_Size theValue, int)
+{
+  return FSD_BinaryFile::InverseInt(static_cast<Standard_Integer>(theValue));
+}
+
+template<>
+inline Standard_Size OCCT_InverseSizeSpecialized <8> (const Standard_Size theValue, int)
+{
+  union {
+    Standard_Integer i[2];
+    Standard_Size    aValue;
+  } aWrapUnion;
+
+  aWrapUnion.aValue = theValue;
+
+  Standard_Integer aTemp = aWrapUnion.i[1];
+  aWrapUnion.i[1] = FSD_BinaryFile::InverseInt(aWrapUnion.i[0]);
+  aWrapUnion.i[0] = FSD_BinaryFile::InverseInt(aTemp);
+
+  return aWrapUnion.aValue;
+}
+
+Standard_Size FSD_BinaryFile::InverseSize (const Standard_Size theValue)
+{
+  return OCCT_InverseSizeSpecialized <sizeof(Standard_Size)> (theValue, 0);
 }

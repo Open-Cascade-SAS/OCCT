@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC24537"
+puts "================"
+puts ""
+#######################################################################
+# GCC compiler warnings in byte order reversion code.
+# The matter of this test is to ensure correctness of work of the methods
+# (in the file FSD_FileHeader.hxx) of inversion of numbers between little/big endian.
+# Attention! The test is created for working on a little endian platform.
+#######################################################################
+
+pload QAcommands
+
+# The following command gives an error output if conversion is wrong
+OCC24537

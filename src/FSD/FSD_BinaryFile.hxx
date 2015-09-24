@@ -46,6 +46,18 @@ class TCollection_ExtendedString;
 class Storage_BaseDriver;
 
 
+// Macro that tells if bytes must be reversed when read/write 
+// data to/from a binary file. It is needed to provide binary file compatibility
+// between little and big endian platforms.
+#ifndef OCCT_BINARY_FILE_DO_INVERSE
+#if defined ( SOLARIS ) || defined ( IRIX )
+// Do inverse on big endian platform
+#define OCCT_BINARY_FILE_DO_INVERSE 1
+#else
+#define OCCT_BINARY_FILE_DO_INVERSE 0
+#endif
+#endif
+
 
 class FSD_BinaryFile  : public Storage_BaseDriver
 {
@@ -251,8 +263,30 @@ Storage_BaseDriver& operator >> (Standard_ShortReal& aValue)
   Destroy();
 }
 
+  ///Inverse bytes in integer value
+  static Standard_Integer InverseInt(const Standard_Integer theValue)
+  {
+    return (0 | (( theValue & 0x000000ff ) << 24 )
+              | (( theValue & 0x0000ff00 ) << 8  )
+              | (( theValue & 0x00ff0000 ) >> 8  )
+              | (( theValue >> 24 ) & 0x000000ff ) );
+  }
 
+  ///Inverse bytes in extended character value
+  static Standard_ExtCharacter InverseExtChar(const Standard_ExtCharacter theValue)
+  {
+    return (0 | (( theValue & 0x00ff ) << 8  )
+            |   (( theValue & 0xff00 ) >> 8  ) );
+  }
 
+  ///Inverse bytes in real value
+  Standard_EXPORT static Standard_Real InverseReal(const Standard_Real theValue);
+
+  ///Inverse bytes in short real value
+  Standard_EXPORT static Standard_ShortReal InverseShortReal(const Standard_ShortReal theValue);
+
+  ///Inverse bytes in size value
+  Standard_EXPORT static Standard_Size InverseSize(const Standard_Size theValue);
 
 protected:
 
