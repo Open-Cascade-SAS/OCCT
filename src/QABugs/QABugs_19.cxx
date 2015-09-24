@@ -4133,6 +4133,90 @@ static Standard_Integer OCC26313(Draw_Interpretor& di,Standard_Integer n,const c
   return 0;
 }
 
+//=======================================================================
+//function : OCC26525
+//purpose  : check number of intersection points
+//=======================================================================
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <IntCurveSurface_HInter.hxx>
+Standard_Integer OCC26525 (Draw_Interpretor& di, 
+                           Standard_Integer n, 
+                           const char** a)
+{
+  TopoDS_Shape aS1, aS2;
+  TopoDS_Edge aE; 
+  TopoDS_Face aF;
+
+  if (n<4)
+  {
+    di << " use OCC26525 r edge face \n";
+    return 1;
+  }
+
+  aS1 = DBRep::Get(a[2]);
+  aS2 = DBRep::Get(a[3]);
+
+  if (aS1.IsNull() || aS2.IsNull())
+  {
+    di << " Null shapes are not allowed \n";
+    return 0;
+  }
+  if (aS1.ShapeType()!=TopAbs_EDGE)
+  {
+    di << " Shape" << a[2] << " should be of type EDGE\n";
+    return 0;
+  }
+  if (aS2.ShapeType()!=TopAbs_FACE)
+  {
+    di << " Shape" << a[3] << " should be of type FACE\n";
+    return 0;
+  }
+
+  aE=TopoDS::Edge(aS1);
+  aF=TopoDS::Face(aS2);
+
+  char buf[128];
+  Standard_Boolean bIsDone;
+  Standard_Integer i, aNbPoints;
+  Standard_Real aU, aV, aT;
+  gp_Pnt aP;
+  BRepAdaptor_Curve aBAC;
+  BRepAdaptor_Surface aBAS;
+  IntCurveSurface_TransitionOnCurve aTC;
+  IntCurveSurface_HInter aHInter;
+
+  aBAC.Initialize(aE);
+  aBAS.Initialize(aF);
+
+  Handle(BRepAdaptor_HCurve) aHBAC=new BRepAdaptor_HCurve(aBAC);
+  Handle(BRepAdaptor_HSurface) aHBAS = new BRepAdaptor_HSurface(aBAS);
+
+  aHInter.Perform(aHBAC, aHBAS);
+  bIsDone=aHInter.IsDone();
+  if (!bIsDone)
+  {
+    di << " intersection is not done\n";
+    return 0;
+  }
+
+  aNbPoints=aHInter.NbPoints();
+  sprintf (buf, " Number of intersection points found: %d", aNbPoints);
+  di <<  buf << "\n";
+  for (i=1; i<=aNbPoints; ++i)
+  {
+    const IntCurveSurface_IntersectionPoint& aIP=aHInter.Point(i);
+    aIP.Values(aP, aU, aV, aT, aTC);
+    //
+    sprintf (buf, "point %s_%d %lg %lg %lg  ", a[1], i, aP.X(), aP.Y(), aP.Z());
+    di << buf << "\n";
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4222,6 +4306,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    __FILE__, OCC26462, group);
 
   theCommands.Add ("OCC26313", "OCC26313 result shape", __FILE__, OCC26313, group);
+  theCommands.Add ("OCC26525", "OCC26525 result edge face ", __FILE__, OCC26525, group);
 
   return;
 }

@@ -306,204 +306,65 @@ void IntCurveSurface_Inter::DoNewBounds(
 //purpose  : Decompose la surface si besoin est 
 //=======================================================================
 void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
-				    const TheSurface& surface) {
+                                    const TheSurface& surface)
+{
   ResetFields();
   done = Standard_True;
   Standard_Integer NbUOnS = TheSurfaceTool::NbUIntervals(surface,GeomAbs_C2);
   Standard_Integer NbVOnS = TheSurfaceTool::NbVIntervals(surface,GeomAbs_C2);
   Standard_Real U0,U1,V0,V1; 
-  
-  if(NbUOnS > 1) { 
+
+  if(NbUOnS > 1)
+  {
     TColStd_Array1OfReal TabU(1,NbUOnS+1);
     TheSurfaceTool::UIntervals(surface,TabU,GeomAbs_C2);
-    for(Standard_Integer iu = 1;iu <= NbUOnS; iu++) {
+    for(Standard_Integer iu = 1;iu <= NbUOnS; iu++)
+    {
       U0 = TabU.Value(iu);
       U1 = TabU.Value(iu+1);
-      if(NbVOnS > 1) { 
-	TColStd_Array1OfReal TabV(1,NbVOnS+1);
-	TheSurfaceTool::VIntervals(surface,TabV,GeomAbs_C2);
-	for(Standard_Integer iv = 1;iv <= NbVOnS; iv++) {
-	  V0 = TabV.Value(iv);
-	  V1 = TabV.Value(iv+1);
-	  Perform(curve,surface,U0,V0,U1,V1);
-	}
+      if(NbVOnS > 1)
+      {
+        TColStd_Array1OfReal TabV(1,NbVOnS+1);
+        TheSurfaceTool::VIntervals(surface,TabV,GeomAbs_C2);
+        for(Standard_Integer iv = 1;iv <= NbVOnS; iv++)
+        {
+          // More than one interval on U and V param space.
+          V0 = TabV.Value(iv);
+          V1 = TabV.Value(iv+1);
+          Perform(curve,surface,U0,V0,U1,V1);
+        }
       }
-      else { //------ composite en U     non composite en V
-	V0 = TheSurfaceTool::FirstVParameter(surface);
-	V1 = TheSurfaceTool::LastVParameter(surface);
-	Perform(curve,surface,U0,V0,U1,V1);
+      else
+      {
+        // More than one interval only on U param space.
+        V0 = TheSurfaceTool::FirstVParameter(surface);
+        V1 = TheSurfaceTool::LastVParameter(surface);
+        Perform(curve,surface,U0,V0,U1,V1);
       }
     }
   }
-  else if(NbVOnS > 1) { //---------- non composite en U  composite en V
+  else if(NbVOnS > 1)
+  {
+    // More than one interval only on V param space.
     U0 = TheSurfaceTool::FirstUParameter(surface);
     U1 = TheSurfaceTool::LastUParameter(surface);   
     TColStd_Array1OfReal TabV(1,NbVOnS+1);
     TheSurfaceTool::VIntervals(surface,TabV,GeomAbs_C2);
-    for(Standard_Integer iv = 1;iv <= NbVOnS; iv++) {
+    for(Standard_Integer iv = 1;iv <= NbVOnS; iv++)
+    {
       V0 = TabV.Value(iv);
       V1 = TabV.Value(iv+1);
       Perform(curve,surface,U0,V0,U1,V1);
     }
-  } 
-  else {
+  }
+  else
+  {
+    // One interval on U and V param space.
     V0 = TheSurfaceTool::FirstVParameter(surface);
     V1 = TheSurfaceTool::LastVParameter(surface);
     U0 = TheSurfaceTool::FirstUParameter(surface);
-    U1 = TheSurfaceTool::LastUParameter(surface); 
+    U1 = TheSurfaceTool::LastUParameter(surface);
 
-
-#if 0
-    //-- jgv patch (from)
-    //Computing of local bounds
-    Standard_Real LocalU0 = U0, LocalU1 = U1, LocalV0 = V0, LocalV1 = V1;
-    Standard_Real Umin = RealLast(), Vmin = RealLast(), Umax = RealFirst(), Vmax = RealFirst();
-    Bnd_Box CurveBox;
-    Standard_Integer i, j, k;
-    //Making GeomAdaptor_Curve
-    Standard_Real f = TheCurveTool::FirstParameter(curve);
-    Standard_Real l = TheCurveTool::LastParameter(curve);
-    GeomAbs_CurveType CurveType = TheCurveTool::GetType(curve);
-    Handle(Geom_Curve) theCurve;
-    switch (CurveType)
-      {
-      case GeomAbs_Line:
-	theCurve = new Geom_Line( TheCurveTool::Line(curve) );
-	break;
-      case GeomAbs_Circle:
-	theCurve = new Geom_Circle( TheCurveTool::Circle(curve) );
-	break;
-      case GeomAbs_Ellipse:
-	theCurve = new Geom_Ellipse( TheCurveTool::Ellipse(curve) );
-	break;
-      case GeomAbs_Hyperbola:
-	theCurve = new Geom_Hyperbola( TheCurveTool::Hyperbola(curve) );
-	break;
-      case GeomAbs_Parabola:
-	theCurve = new Geom_Parabola( TheCurveTool::Parabola(curve) );
-	break;
-      case GeomAbs_BezierCurve:
-	theCurve = TheCurveTool::Bezier(curve);
-	break;
-      case GeomAbs_BSplineCurve:
-	theCurve = TheCurveTool::BSpline(curve);
-	break;
-      }
-    if (!theCurve.IsNull())
-      {
-	GeomAdaptor_Curve GACurve( theCurve, f, l );
-	BndLib_Add3dCurve::Add( GACurve, Precision::Confusion(), CurveBox );
-      }
-    else
-      {
-	Standard_Integer nbp = TheCurveTool::NbSamples(curve,f,l);
-	Standard_Real delta = (f-l)/nbp;
-	for (i = 0; i <= nbp; i++)
-	  {
-	    gp_Pnt aPnt = TheCurveTool::Value(curve, f + i*delta);
-	    CurveBox.Add(aPnt);
-	  }
-      }
-    Standard_Real X[2], Y[2], Z[2];
-    CurveBox.Get( X[0], Y[0], Z[0], X[1], Y[1], Z[1] );
-    Standard_Real Ures = TheSurfaceTool::UResolution(surface, Precision::Confusion());
-    Standard_Real Vres = TheSurfaceTool::VResolution(surface, Precision::Confusion());
-    //Making GeomAdaptor_Surface
-    GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
-    Handle(Geom_Surface) theSurface;
-    switch (SurfaceType)
-      {
-      case GeomAbs_Plane:
-	theSurface = new Geom_Plane( TheSurfaceTool::Plane(surface) );
-	break;
-      case GeomAbs_Cylinder:
-	theSurface = new Geom_CylindricalSurface( TheSurfaceTool::Cylinder(surface) );
-	break;
-      case GeomAbs_Cone:
-	theSurface = new Geom_ConicalSurface( TheSurfaceTool::Cone(surface) );
-	break;
-      case GeomAbs_Torus:
-	theSurface = new Geom_ToroidalSurface( TheSurfaceTool::Torus(surface) );
-	break;
-      case GeomAbs_Sphere:
-	theSurface = new Geom_SphericalSurface( TheSurfaceTool::Sphere(surface) );
-	break;
-      case GeomAbs_BezierSurface:
-	theSurface = TheSurfaceTool::Bezier(surface);
-	break;
-      case GeomAbs_BSplineSurface:
-	theSurface = TheSurfaceTool::BSpline(surface);
-	break;
-      case GeomAbs_SurfaceOfRevolution:
-	{
-	  gp_Ax1 Axis = TheSurfaceTool::AxeOfRevolution(surface);
-	  Handle(Adaptor3d_HCurve) AdBC = TheSurfaceTool::BasisCurve(surface);
-	  Handle(Geom_Curve) BC = GetCurve(AdBC);
-	  if (!BC.IsNull())
-	    theSurface = new Geom_SurfaceOfRevolution( BC, Axis );
-	  break;
-	}
-      case GeomAbs_SurfaceOfExtrusion:
-	{
-	  gp_Dir Direction = TheSurfaceTool::Direction(surface);
-	  Handle(Adaptor3d_HCurve) AdBC = TheSurfaceTool::BasisCurve(surface);
-	  Handle(Geom_Curve) BC = GetCurve(AdBC);
-	  if (!BC.IsNull())
-	    theSurface = new Geom_SurfaceOfLinearExtrusion( BC, Direction );
-	  break;
-	}
-      case GeomAbs_OffsetSurface:
-	{
-	  Standard_Real OffsetValue = TheSurfaceTool::OffsetValue(surface);
-	  Handle(Adaptor3d_HSurface) AdBS = TheSurfaceTool::BasisSurface(surface);
-	  Handle(Geom_Surface) BS = GetSurface(AdBS);
-	  if (!BS.IsNull())
-	    theSurface = new Geom_OffsetSurface( BS, OffsetValue );
-	  break;
-	}
-      }
-    if (!theSurface.IsNull())
-      {
-	GeomAdaptor_Surface GASurface( theSurface );
-	Extrema_ExtPS Projector;
-	Projector.Initialize( GASurface, U0, U1, V0, V1, Ures, Vres );
-	for (i = 0; i <= 1; i++)
-	  for (j = 0; j <= 1; j++)
-	    for (k = 0; k <= 1; k++)
-	      {
-		gp_Pnt aPoint( X[i], Y[j], Z[k] );
-		Projector.Perform( aPoint );
-		if (Projector.IsDone() && Projector.NbExt() > 0)
-		  {
-		    Standard_Real mindist = RealLast();
-		    Standard_Integer minind, ind;
-		    for (ind = 1; ind <= Projector.NbExt(); ind++)
-		      {
-			Standard_Real dist = Projector.Value(ind);
-			if (dist < mindist)
-			  {
-			    mindist = dist;
-			    minind  = ind;
-			  }
-		      }
-		    Extrema_POnSurf pons = Projector.Point(minind);
-		    Standard_Real U, V;
-		    pons.Parameter( U, V );
-		    if (U < Umin) Umin = U;
-		    if (U > Umax) Umax = U;
-		    if (V < Vmin) Vmin = V;
-		    if (V > Vmax) Vmax = V;
-		  }
-	      }
-	Umin -= Ures; Umax += Ures; Vmin -= Vres; Vmax += Vres;
-	if (Umin > U0 && Umin <= U1) LocalU0 = Umin;
-	if (Umax < U1 && Umax >= U0) LocalU1 = Umax;
-	if (Vmin > V0 && Vmin <= V1) LocalV0 = Vmin;
-	if (Vmax < V1 && Vmax >= V0) LocalV1 = Vmax;
-	U0 = LocalU0; U1 = LocalU1; V0 = LocalV0; V1 = LocalV1;
-      }
-    //-- jgv patch (to)
-#endif
     Perform(curve,surface,U0,V0,U1,V1);
   }
 }
@@ -512,36 +373,49 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
 //purpose  : 
 //=======================================================================
 void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
-				    const TheSurface& surface,
-				    const Standard_Real U1,const Standard_Real V1,
-				    const Standard_Real U2,const Standard_Real V2) { 
+                                    const TheSurface& surface,
+                                    const Standard_Real U1,const Standard_Real V1,
+                                    const Standard_Real U2,const Standard_Real V2)
+{
+  // Protection from double type overflow.
+  // This may happen inside square magnitude computation based on normal,
+  // which was computed on bound parameteres (bug26525).
+  Standard_Real UU1 = U1, UU2 = U2, VV1 = V1, VV2 = V2;
+  if (U1 < -1.0e50)
+    UU1 = -1.0e50;
+  if (U2 >  1.0e50)
+    UU2 = 1.0e50;
+  if (V1 < -1.0e50)
+    VV1 = -1.0e50;
+  if (V2 >  1.0e50)
+    VV2 = 1.0e50;
 
   GeomAbs_CurveType CurveType = TheCurveTool::GetType(curve);
   
   switch(CurveType) { 
   case GeomAbs_Line:  
     { 
-      PerformConicSurf(TheCurveTool::Line(curve),curve,surface,U1,V1,U2,V2);
+      PerformConicSurf(TheCurveTool::Line(curve),curve,surface,UU1,VV1,UU2,VV2);
       break;
     }
   case GeomAbs_Circle: 
     { 
-      PerformConicSurf(TheCurveTool::Circle(curve),curve,surface,U1,V1,U2,V2);
+      PerformConicSurf(TheCurveTool::Circle(curve),curve,surface,UU1,VV1,UU2,VV2);
       break;
     }
   case GeomAbs_Ellipse: 
     { 
-      PerformConicSurf(TheCurveTool::Ellipse(curve),curve,surface,U1,V1,U2,V2);
+      PerformConicSurf(TheCurveTool::Ellipse(curve),curve,surface,UU1,VV1,UU2,VV2);
       break;
     }    
   case GeomAbs_Parabola:  
     {
-      PerformConicSurf(TheCurveTool::Parabola(curve),curve,surface,U1,V1,U2,V2);
+      PerformConicSurf(TheCurveTool::Parabola(curve),curve,surface,UU1,VV1,UU2,VV2);
       break;
     }
   case GeomAbs_Hyperbola: 
     {
-      PerformConicSurf(TheCurveTool::Hyperbola(curve),curve,surface,U1,V1,U2,V2);
+      PerformConicSurf(TheCurveTool::Hyperbola(curve),curve,surface,UU1,VV1,UU2,VV2);
       break;
     }
   default:    
@@ -568,7 +442,7 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
 
 // 	    IntCurveSurface_ThePolygon  polygon(curve,u1,u2,TheCurveTool::NbSamples(curve,u1,u2));
 	    IntCurveSurface_ThePolygon  polygon(curve, aPars->Array1());
-	    InternalPerform(curve,polygon,surface,U1,V1,U2,V2);
+	    InternalPerform(curve,polygon,surface,UU1,VV1,UU2,VV2);
 	  }
 	}
 	else {
@@ -583,7 +457,7 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
 
 // 	  IntCurveSurface_ThePolygon       polygon(curve,TheCurveTool::NbSamples(curve,u1,u2));
 	  IntCurveSurface_ThePolygon  polygon(curve, aPars->Array1());
-	  InternalPerform(curve,polygon,surface,U1,V1,U2,V2);
+	  InternalPerform(curve,polygon,surface,UU1,VV1,UU2,VV2);
 	}
       }
       else {   //-- la surface est une quadrique 
