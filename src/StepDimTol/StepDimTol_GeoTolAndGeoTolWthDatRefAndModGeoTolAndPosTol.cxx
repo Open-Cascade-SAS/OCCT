@@ -14,6 +14,7 @@
 
 #include <Standard_Type.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
+#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
 #include <StepDimTol_ModifiedGeometricTolerance.hxx>
@@ -40,6 +41,27 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::Init
    const Handle(TCollection_HAsciiString)& aDescription,
    const Handle(StepBasic_MeasureWithUnit)& aMagnitude,
    const Handle(StepRepr_ShapeAspect)& aTolerancedShapeAspect,
+   const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR,
+   const Handle(StepDimTol_ModifiedGeometricTolerance)& aMGT)
+{
+  SetName(aName);
+  SetDescription(aDescription);
+  SetMagnitude(aMagnitude);
+  SetTolerancedShapeAspect(aTolerancedShapeAspect);
+  myGeometricToleranceWithDatumReference = aGTWDR;
+  myModifiedGeometricTolerance = aMGT;
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::Init
+  (const Handle(TCollection_HAsciiString)& aName,
+   const Handle(TCollection_HAsciiString)& aDescription,
+   const Handle(StepBasic_MeasureWithUnit)& aMagnitude,
+   const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect,
    const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR,
    const Handle(StepDimTol_ModifiedGeometricTolerance)& aMGT)
 {

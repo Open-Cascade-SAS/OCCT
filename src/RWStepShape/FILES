@@ -173,6 +173,8 @@ RWStepShape_RWTransitionalShapeRepresentation.cxx
 RWStepShape_RWTransitionalShapeRepresentation.hxx
 RWStepShape_RWTypeQualifier.cxx
 RWStepShape_RWTypeQualifier.hxx
+RWStepShape_RWValueFormatTypeQualifier.cxx
+RWStepShape_RWValueFormatTypeQualifier.hxx
 RWStepShape_RWVertex.cxx
 RWStepShape_RWVertex.hxx
 RWStepShape_RWVertexLoop.cxx

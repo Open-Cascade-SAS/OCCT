@@ -645,6 +645,7 @@ static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 #include <StepDimTol_ConcentricityTolerance.hxx>
 #include <StepDimTol_CircularRunoutTolerance.hxx>
 #include <StepDimTol_CoaxialityTolerance.hxx>
+#include <StepDimTol_CylindricityTolerance.hxx>
 #include <StepDimTol_FlatnessTolerance.hxx>
 #include <StepDimTol_LineProfileTolerance.hxx>
 #include <StepDimTol_ParallelismTolerance.hxx>
@@ -678,9 +679,53 @@ static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 #include <StepFEA_SymmetricTensor42d.hxx>
 #include <StepFEA_SymmetricTensor43d.hxx>
 
+// Added by ika for GD&T AP242
+#include <StepRepr_Apex.hxx>
+#include <StepRepr_CentreOfSymmetry.hxx>
+#include <StepRepr_GeometricAlignment.hxx>
+#include <StepRepr_ParallelOffset.hxx>
+#include <StepRepr_PerpendicularTo.hxx>
+#include <StepRepr_Tangent.hxx>
+#include <StepAP242_GeometricItemSpecificUsage.hxx>
+#include <StepAP242_IdAttribute.hxx>
+#include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
+#include <StepRepr_AllAroundShapeAspect.hxx>
+#include <StepRepr_BetweenShapeAspect.hxx>
+#include <StepRepr_CompositeGroupShapeAspect.hxx>
+#include <StepRepr_ContinuosShapeAspect.hxx>
+#include <StepDimTol_GeometricToleranceWithDefinedAreaUnit.hxx>
+#include <StepDimTol_GeometricToleranceWithDefinedUnit.hxx>
+#include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
+#include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+#include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
+#include <StepDimTol_NonUniformZoneDefinition.hxx>
+#include <StepDimTol_ProjectedZoneDefinition.hxx>
+#include <StepDimTol_RunoutZoneDefinition.hxx>
+#include <StepDimTol_RunoutZoneOrientation.hxx>
+#include <StepDimTol_ToleranceZone.hxx>
+#include <StepDimTol_ToleranceZoneDefinition.hxx>
+#include <StepDimTol_ToleranceZoneForm.hxx>
+#include <StepShape_ValueFormatTypeQualifier.hxx>
+#include <StepDimTol_DatumReferenceCompartment.hxx>
+#include <StepDimTol_DatumReferenceElement.hxx>
+#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
+#include <StepDimTol_DatumSystem.hxx>
+#include <StepDimTol_GeneralDatumReference.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_IntegerRepresentationItem.hxx>
+#include <StepRepr_ValueRepresentationItem.hxx>
+
 
 static int init = 0;
-static Interface_DataMapOfTransientInteger types(500);
+static Interface_DataMapOfTransientInteger types(800);
 
 
 //=======================================================================
@@ -1287,6 +1332,7 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepBasic_DocumentProductEquivalence),601);
    
   //TR12J 4.06.2003 G&DT entities
+  types.Bind (STANDARD_TYPE(StepDimTol_CylindricityTolerance), 609);
   types.Bind (STANDARD_TYPE(StepShape_ShapeRepresentationWithParameters),610);
   types.Bind (STANDARD_TYPE(StepDimTol_AngularityTolerance),611);
   types.Bind (STANDARD_TYPE(StepDimTol_ConcentricityTolerance),612);
@@ -1321,6 +1367,50 @@ StepAP214_Protocol::StepAP214_Protocol ()
   // added by skl 10.02.2004 for TRJ13
   types.Bind (STANDARD_TYPE(StepBasic_ConversionBasedUnitAndMassUnit),650);
   types.Bind (STANDARD_TYPE(StepBasic_MassMeasureWithUnit), 651);
+
+  // Added by ika for GD&T AP242
+  types.Bind (STANDARD_TYPE(StepRepr_Apex), 660);
+  types.Bind (STANDARD_TYPE(StepRepr_CentreOfSymmetry), 661);
+  types.Bind (STANDARD_TYPE(StepRepr_GeometricAlignment), 662);
+  types.Bind (STANDARD_TYPE(StepRepr_PerpendicularTo), 663);
+  types.Bind (STANDARD_TYPE(StepRepr_Tangent), 664);
+  types.Bind (STANDARD_TYPE(StepRepr_ParallelOffset), 665);
+  types.Bind (STANDARD_TYPE(StepAP242_GeometricItemSpecificUsage), 666);
+  types.Bind (STANDARD_TYPE(StepAP242_IdAttribute), 667);
+  types.Bind (STANDARD_TYPE(StepAP242_ItemIdentifiedRepresentationUsage), 668);
+  types.Bind (STANDARD_TYPE(StepRepr_AllAroundShapeAspect), 669);
+  types.Bind (STANDARD_TYPE(StepRepr_BetweenShapeAspect), 670);
+  types.Bind (STANDARD_TYPE(StepRepr_CompositeGroupShapeAspect), 671);
+  types.Bind (STANDARD_TYPE(StepRepr_ContinuosShapeAspect), 672);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeometricToleranceWithDefinedAreaUnit), 673);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeometricToleranceWithDefinedUnit), 674);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeometricToleranceWithMaximumTolerance), 675);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeometricToleranceWithModifiers), 676);
+  types.Bind (STANDARD_TYPE(StepDimTol_UnequallyDisposedGeometricTolerance), 677);
+  types.Bind (STANDARD_TYPE(StepDimTol_NonUniformZoneDefinition), 678);
+  types.Bind (STANDARD_TYPE(StepDimTol_ProjectedZoneDefinition), 679);
+  types.Bind (STANDARD_TYPE(StepDimTol_RunoutZoneDefinition), 680);
+  types.Bind (STANDARD_TYPE(StepDimTol_RunoutZoneOrientation), 681);
+  types.Bind (STANDARD_TYPE(StepDimTol_ToleranceZone), 682);
+  types.Bind (STANDARD_TYPE(StepDimTol_ToleranceZoneDefinition), 683);
+  types.Bind (STANDARD_TYPE(StepDimTol_ToleranceZoneForm), 684);
+  types.Bind (STANDARD_TYPE(StepShape_ValueFormatTypeQualifier), 685);
+  types.Bind (STANDARD_TYPE(StepDimTol_DatumReferenceCompartment), 686);
+  types.Bind (STANDARD_TYPE(StepDimTol_DatumReferenceElement), 687);
+  types.Bind (STANDARD_TYPE(StepDimTol_DatumReferenceModifierWithValue), 688);
+  types.Bind (STANDARD_TYPE(StepDimTol_DatumSystem), 689);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeneralDatumReference), 690);
+  types.Bind (STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit), 691);
+  types.Bind (STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI), 692);
+  types.Bind (STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI), 693);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRef), 694);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod), 695);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMod), 696);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol), 697);
+  types.Bind (STANDARD_TYPE(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp), 698);
+  types.Bind (STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp), 699);
+  types.Bind (STANDARD_TYPE(StepRepr_IntegerRepresentationItem), 700);
+  types.Bind (STANDARD_TYPE(StepRepr_ValueRepresentationItem), 701);
 }
 
 //=======================================================================

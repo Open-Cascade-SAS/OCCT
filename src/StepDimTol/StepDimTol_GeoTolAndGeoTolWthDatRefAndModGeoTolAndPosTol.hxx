@@ -20,6 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <StepDimTol_GeometricTolerance.hxx>
+class StepDimTol_GeometricToleranceTarget;
 class StepDimTol_GeometricToleranceWithDatumReference;
 class StepDimTol_ModifiedGeometricTolerance;
 class StepDimTol_PositionTolerance;
@@ -41,7 +42,9 @@ public:
   Standard_EXPORT StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol();
   
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_MeasureWithUnit)& aMagnitude, const Handle(StepRepr_ShapeAspect)& aTolerancedShapeAspect, const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR, const Handle(StepDimTol_ModifiedGeometricTolerance)& aMGT);
-  
+
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_MeasureWithUnit)& aMagnitude, const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect, const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR, const Handle(StepDimTol_ModifiedGeometricTolerance)& aMGT);
+
   Standard_EXPORT void SetGeometricToleranceWithDatumReference (const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR);
   
   Standard_EXPORT Handle(StepDimTol_GeometricToleranceWithDatumReference) GetGeometricToleranceWithDatumReference() const;

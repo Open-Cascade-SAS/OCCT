@@ -19,18 +19,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 class StepBasic_LengthMeasureWithUnit;
-class StepRepr_MeasureRepresentationItem;
-class StepBasic_MeasureWithUnit;
-class StepRepr_RepresentationItem;
 
 
 class StepRepr_ReprItemAndLengthMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepRepr_ReprItemAndLengthMeasureWithUnit, StepRepr_RepresentationItem)
+DEFINE_STANDARD_HANDLE(StepRepr_ReprItemAndLengthMeasureWithUnit, StepRepr_ReprItemAndMeasureWithUnit)
 
 
-class StepRepr_ReprItemAndLengthMeasureWithUnit : public StepRepr_RepresentationItem
+class StepRepr_ReprItemAndLengthMeasureWithUnit : public StepRepr_ReprItemAndMeasureWithUnit
 {
 
 public:
@@ -38,44 +35,13 @@ public:
   
   Standard_EXPORT StepRepr_ReprItemAndLengthMeasureWithUnit();
   
-  Standard_EXPORT void Init (const Handle(StepBasic_MeasureWithUnit)& aMWU, const Handle(StepRepr_RepresentationItem)& aRI);
-  
   Standard_EXPORT void SetLengthMeasureWithUnit (const Handle(StepBasic_LengthMeasureWithUnit)& aLMWU);
   
   Standard_EXPORT Handle(StepBasic_LengthMeasureWithUnit) GetLengthMeasureWithUnit() const;
-  
-  Standard_EXPORT Handle(StepRepr_MeasureRepresentationItem) GetMeasureRepresentationItem() const;
-  
-  Standard_EXPORT void SetMeasureWithUnit (const Handle(StepBasic_MeasureWithUnit)& aMWU);
-  
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) GetMeasureWithUnit() const;
-  
-  Standard_EXPORT Handle(StepRepr_RepresentationItem) GetRepresentationItem() const;
 
-
-
-
-  DEFINE_STANDARD_RTTI(StepRepr_ReprItemAndLengthMeasureWithUnit,StepRepr_RepresentationItem)
-
-protected:
-
-
-
+  DEFINE_STANDARD_RTTI(StepRepr_ReprItemAndLengthMeasureWithUnit,StepRepr_ReprItemAndMeasureWithUnit)
 
 private:
-
-
   Handle(StepBasic_LengthMeasureWithUnit) myLengthMeasureWithUnit;
-  Handle(StepRepr_MeasureRepresentationItem) myMeasureRepresentationItem;
-  Handle(StepBasic_MeasureWithUnit) myMeasureWithUnit;
-
-
 };
-
-
-
-
-
-
-
 #endif // _StepRepr_ReprItemAndLengthMeasureWithUnit_HeaderFile

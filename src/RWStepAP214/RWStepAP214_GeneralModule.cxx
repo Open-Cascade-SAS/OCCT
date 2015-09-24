@@ -178,6 +178,7 @@
 #include <RWStepDimTol_RWCoaxialityTolerance.hxx>
 #include <RWStepDimTol_RWCommonDatum.hxx>
 #include <RWStepDimTol_RWConcentricityTolerance.hxx>
+#include <RWStepDimTol_RWCylindricityTolerance.hxx>
 #include <RWStepDimTol_RWDatum.hxx>
 #include <RWStepDimTol_RWDatumFeature.hxx>
 #include <RWStepDimTol_RWDatumReference.hxx>
@@ -705,6 +706,7 @@
 #include <StepDimTol_CoaxialityTolerance.hxx>
 #include <StepDimTol_CommonDatum.hxx>
 #include <StepDimTol_ConcentricityTolerance.hxx>
+#include <StepDimTol_CylindricityTolerance.hxx>
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_DatumFeature.hxx>
 #include <StepDimTol_DatumReference.hxx>
@@ -1216,6 +1218,98 @@
 // ptv 28.01.2003
 //  TR12J 04.06.2003 G&DT entities GKA 
 // added by skl 10.02.2004 for TRJ13
+#include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
+#include <RWStepBasic_RWConversionBasedUnitAndMassUnit.hxx>
+#include <StepBasic_MassMeasureWithUnit.hxx>
+#include <RWStepBasic_RWMassMeasureWithUnit.hxx>
+
+// Added by ika for GD&T AP242
+#include <RWStepRepr_RWApex.hxx>
+#include <RWStepRepr_RWCentreOfSymmetry.hxx>
+#include <RWStepRepr_RWGeometricAlignment.hxx>
+#include <RWStepRepr_RWParallelOffset.hxx>
+#include <RWStepRepr_RWPerpendicularTo.hxx>
+#include <RWStepRepr_RWTangent.hxx>
+#include <RWStepAP242_RWGeometricItemSpecificUsage.hxx>
+#include <RWStepAP242_RWIdAttribute.hxx>
+#include <RWStepAP242_RWItemIdentifiedRepresentationUsage.hxx>
+#include <RWStepRepr_RWAllAroundShapeAspect.hxx>
+#include <RWStepRepr_RWBetweenShapeAspect.hxx>
+#include <RWStepRepr_RWCompositeGroupShapeAspect.hxx>
+#include <RWStepRepr_RWContinuosShapeAspect.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithDefinedUnit.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithModifiers.hxx>
+#include <RWStepDimTol_RWUnequallyDisposedGeometricTolerance.hxx>
+#include <RWStepDimTol_RWNonUniformZoneDefinition.hxx>
+#include <RWStepDimTol_RWProjectedZoneDefinition.hxx>
+#include <RWStepDimTol_RWRunoutZoneDefinition.hxx>
+#include <RWStepDimTol_RWRunoutZoneOrientation.hxx>
+#include <RWStepDimTol_RWToleranceZone.hxx>
+#include <RWStepDimTol_RWToleranceZoneDefinition.hxx>
+#include <RWStepDimTol_RWToleranceZoneForm.hxx>
+#include <RWStepShape_RWValueFormatTypeQualifier.hxx>
+#include <RWStepDimTol_RWDatumReferenceCompartment.hxx>
+#include <RWStepDimTol_RWDatumReferenceElement.hxx>
+#include <RWStepDimTol_RWDatumReferenceModifierWithValue.hxx>
+#include <RWStepDimTol_RWDatumSystem.hxx>
+#include <RWStepDimTol_RWGeneralDatumReference.hxx>
+#include <RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include <RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI.hxx>
+#include <RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRef.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthMod.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
+#include <RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.hxx>
+#include <RWStepRepr_RWIntegerRepresentationItem.hxx>
+#include <RWStepRepr_RWValueRepresentationItem.hxx>
+
+#include <StepRepr_Apex.hxx>
+#include <StepRepr_CentreOfSymmetry.hxx>
+#include <StepRepr_GeometricAlignment.hxx>
+#include <StepRepr_ParallelOffset.hxx>
+#include <StepRepr_PerpendicularTo.hxx>
+#include <StepRepr_Tangent.hxx>
+#include <StepAP242_GeometricItemSpecificUsage.hxx>
+#include <StepAP242_IdAttribute.hxx>
+#include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
+#include <StepRepr_AllAroundShapeAspect.hxx>
+#include <StepRepr_BetweenShapeAspect.hxx>
+#include <StepRepr_CompositeGroupShapeAspect.hxx>
+#include <StepRepr_ContinuosShapeAspect.hxx>
+#include <StepDimTol_GeometricToleranceWithDefinedAreaUnit.hxx>
+#include <StepDimTol_GeometricToleranceWithDefinedUnit.hxx>
+#include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
+#include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+#include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
+#include <StepDimTol_NonUniformZoneDefinition.hxx>
+#include <StepDimTol_ProjectedZoneDefinition.hxx>
+#include <StepDimTol_RunoutZoneDefinition.hxx>
+#include <StepDimTol_RunoutZoneOrientation.hxx>
+#include <StepDimTol_ToleranceZone.hxx>
+#include <StepDimTol_ToleranceZoneDefinition.hxx>
+#include <StepDimTol_ToleranceZoneForm.hxx>
+#include <StepShape_ValueFormatTypeQualifier.hxx>
+#include <StepDimTol_DatumReferenceCompartment.hxx>
+#include <StepDimTol_DatumReferenceElement.hxx>
+#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
+#include <StepDimTol_DatumSystem.hxx>
+#include <StepDimTol_GeneralDatumReference.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_IntegerRepresentationItem.hxx>
+#include <StepRepr_ValueRepresentationItem.hxx>
+
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
 
@@ -4435,6 +4529,13 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
       break;
       
       //  TR12J 04.06.2003 G&DT entities GKA      
+    case 609:
+    {
+      DeclareAndCast(StepDimTol_CylindricityTolerance,anent,ent);
+      RWStepDimTol_RWCylindricityTolerance tool;
+      tool.Share(anent,iter);
+    }
+    break;
     case 610:
       {
         DeclareAndCast(StepShape_ShapeRepresentationWithParameters,anent,ent);
@@ -4634,8 +4735,242 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
 	tool.Share(anent,iter);
       }
       break;
-      
-      
+    case 660:
+      {
+        DeclareAndCast(StepRepr_Apex,anent,ent);
+        RWStepRepr_RWApex tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 661:
+      {
+        DeclareAndCast(StepRepr_CentreOfSymmetry,anent,ent);
+        RWStepRepr_RWCentreOfSymmetry tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 662:
+      {
+        DeclareAndCast(StepRepr_GeometricAlignment,anent,ent);
+        RWStepRepr_RWGeometricAlignment tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 663:
+      {
+        DeclareAndCast(StepRepr_PerpendicularTo,anent,ent);
+        RWStepRepr_RWPerpendicularTo tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 664:
+      {
+        DeclareAndCast(StepRepr_Tangent,anent,ent);
+        RWStepRepr_RWTangent tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 665:
+      {
+        DeclareAndCast(StepRepr_ParallelOffset,anent,ent);
+        RWStepRepr_RWParallelOffset tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 666:
+      {
+        DeclareAndCast(StepAP242_GeometricItemSpecificUsage,anent,ent);
+        RWStepAP242_RWGeometricItemSpecificUsage tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 667:
+      {
+        DeclareAndCast(StepAP242_IdAttribute,anent,ent);
+        RWStepAP242_RWIdAttribute tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 668:
+      {
+        DeclareAndCast(StepAP242_ItemIdentifiedRepresentationUsage,anent,ent);
+        RWStepAP242_RWItemIdentifiedRepresentationUsage tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 669:
+      {
+        DeclareAndCast(StepRepr_AllAroundShapeAspect,anent,ent);
+        RWStepRepr_RWAllAroundShapeAspect tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 670:
+      {
+        DeclareAndCast(StepRepr_BetweenShapeAspect,anent,ent);
+        RWStepRepr_RWBetweenShapeAspect tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 671:
+      {
+        DeclareAndCast(StepRepr_CompositeGroupShapeAspect,anent,ent);
+        RWStepRepr_RWCompositeGroupShapeAspect tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 672:
+      {
+        DeclareAndCast(StepRepr_ContinuosShapeAspect,anent,ent);
+        RWStepRepr_RWContinuosShapeAspect tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 673:
+      {
+        DeclareAndCast(StepDimTol_GeometricToleranceWithDefinedAreaUnit,anent,ent);
+        RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 674:
+      {
+        DeclareAndCast(StepDimTol_GeometricToleranceWithDefinedUnit,anent,ent);
+        RWStepDimTol_RWGeometricToleranceWithDefinedUnit tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 675:
+      {
+        DeclareAndCast(StepDimTol_GeometricToleranceWithMaximumTolerance,anent,ent);
+        RWStepDimTol_RWGeometricToleranceWithMaximumTolerance tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 676:
+      {
+        DeclareAndCast(StepDimTol_GeometricToleranceWithModifiers,anent,ent);
+        RWStepDimTol_RWGeometricToleranceWithModifiers tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 677:
+      {
+        DeclareAndCast(StepDimTol_UnequallyDisposedGeometricTolerance,anent,ent);
+        RWStepDimTol_RWUnequallyDisposedGeometricTolerance tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 678:
+      {
+        DeclareAndCast(StepDimTol_NonUniformZoneDefinition,anent,ent);
+        RWStepDimTol_RWNonUniformZoneDefinition tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 679:
+      {
+        DeclareAndCast(StepDimTol_ProjectedZoneDefinition,anent,ent);
+        RWStepDimTol_RWProjectedZoneDefinition tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 680:
+      {
+        DeclareAndCast(StepDimTol_RunoutZoneDefinition,anent,ent);
+        RWStepDimTol_RWRunoutZoneDefinition tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    //case 681: no shared attributes
+    case 682:
+      {
+        DeclareAndCast(StepDimTol_ToleranceZone,anent,ent);
+        RWStepDimTol_RWToleranceZone tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    case 683:
+      {
+        DeclareAndCast(StepDimTol_ToleranceZoneDefinition,anent,ent);
+        RWStepDimTol_RWToleranceZoneDefinition tool;
+        tool.Share(anent,iter);
+      }
+      break;
+    //case 684: no shared attributes
+    //case 685: no shared attributes
+    case 686 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceCompartment, anent, ent);
+      RWStepDimTol_RWDatumReferenceCompartment tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 687 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceElement, anent, ent);
+      RWStepDimTol_RWDatumReferenceElement tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  //case 688: no shared attributes
+  case 689 :
+    {
+      DeclareAndCast(StepDimTol_DatumSystem, anent, ent);
+      RWStepDimTol_RWDatumSystem tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 690 :
+    {
+      DeclareAndCast(StepDimTol_GeneralDatumReference, anent, ent);
+      RWStepDimTol_RWGeneralDatumReference tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 694:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRef,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRef tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 695:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 696:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMod,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMod tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 697:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 698:
+    {
+      DeclareAndCast(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp,anent,ent);
+      RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 699:
+    {
+      DeclareAndCast(StepRepr_CompShAspAndDatumFeatAndShAsp,anent,ent);
+      RWStepRepr_RWCompShAspAndDatumFeatAndShAsp tool;
+      tool.Share(anent,iter);
+    }
+    break;
+
     default : break;
     }
 }
@@ -6364,7 +6699,9 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
   case 601:
     ent = new StepBasic_DocumentProductEquivalence;
     break;
-    
+  case 609:
+    ent = new StepDimTol_CylindricityTolerance;
+    break;    
   case 610:
     ent = new StepShape_ShapeRepresentationWithParameters;
     break;
@@ -6454,8 +6791,133 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
   case 651 : 
     ent = new StepBasic_MassMeasureWithUnit;
     break;
-    
-    
+  case 660 : 
+    ent = new StepRepr_Apex;
+    break;
+  case 661 : 
+    ent = new StepRepr_CentreOfSymmetry;
+    break;
+  case 662 : 
+    ent = new StepRepr_GeometricAlignment;
+    break;
+  case 663 : 
+    ent = new StepRepr_PerpendicularTo;
+    break;
+  case 664 : 
+    ent = new StepRepr_Tangent;
+    break;
+  case 665 : 
+    ent = new StepRepr_ParallelOffset;
+    break;
+  case 666 : 
+    ent = new StepAP242_GeometricItemSpecificUsage;
+    break;
+  case 667 : 
+    ent = new StepAP242_IdAttribute;
+    break;
+  case 668 : 
+    ent = new StepAP242_ItemIdentifiedRepresentationUsage;
+    break;
+  case 669 : 
+    ent = new StepRepr_AllAroundShapeAspect;
+    break;
+  case 670 : 
+    ent = new StepRepr_BetweenShapeAspect;
+    break;
+  case 671 : 
+    ent = new StepRepr_CompositeGroupShapeAspect;
+    break;
+  case 672 : 
+    ent = new StepRepr_ContinuosShapeAspect;
+    break;
+  case 673 : 
+    ent = new StepDimTol_GeometricToleranceWithDefinedAreaUnit;
+    break;
+  case 674 : 
+    ent = new StepDimTol_GeometricToleranceWithDefinedUnit;
+    break;
+  case 675 : 
+    ent = new StepDimTol_GeometricToleranceWithMaximumTolerance;
+    break;
+  case 676 : 
+    ent = new StepDimTol_GeometricToleranceWithModifiers;
+    break;
+  case 677 : 
+    ent = new StepDimTol_UnequallyDisposedGeometricTolerance;
+    break;
+  case 678 : 
+    ent = new StepDimTol_NonUniformZoneDefinition;
+    break;
+  case 679 : 
+    ent = new StepDimTol_ProjectedZoneDefinition;
+    break;
+  case 680 : 
+    ent = new StepDimTol_RunoutZoneDefinition;
+    break;
+  case 681 : 
+    ent = new StepDimTol_RunoutZoneOrientation;
+    break;
+  case 682 : 
+    ent = new StepDimTol_ToleranceZone;
+    break;
+  case 683 : 
+    ent = new StepDimTol_ToleranceZoneDefinition;
+    break;
+  case 684 : 
+    ent = new StepDimTol_ToleranceZoneForm;
+    break;
+  case 685 : 
+    ent = new StepShape_ValueFormatTypeQualifier;
+    break;
+  case 686 : 
+    ent = new StepDimTol_DatumReferenceCompartment;
+    break;
+  case 687 : 
+    ent = new StepDimTol_DatumReferenceElement;
+    break;
+  case 688 : 
+    ent = new StepDimTol_DatumReferenceModifierWithValue;
+    break;
+  case 689 : 
+    ent = new StepDimTol_DatumSystem;
+    break;
+  case 690 : 
+    ent = new StepDimTol_GeneralDatumReference;
+    break;
+  case 691 : 
+    ent = new StepRepr_ReprItemAndPlaneAngleMeasureWithUnit;
+    break;
+  case 692 : 
+    ent = new StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI;
+    break;
+  case 693 : 
+    ent = new StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI;
+    break;
+  case 694 : 
+    ent = new StepDimTol_GeoTolAndGeoTolWthDatRef;
+    break;
+  case 695 : 
+    ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod;
+    break;
+  case 696 : 
+    ent = new StepDimTol_GeoTolAndGeoTolWthMod;
+    break;
+  case 697 : 
+    ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol;
+    break;
+  case 698 : 
+    ent = new StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp;
+    break;
+  case 699 : 
+    ent = new StepRepr_CompShAspAndDatumFeatAndShAsp;
+    break;
+  case 700:
+    ent = new StepRepr_IntegerRepresentationItem;
+    break;
+  case 701:
+    ent = new StepRepr_ValueRepresentationItem;
+    break;
+
   default: 
     return Standard_False;
   }
@@ -6964,6 +7426,7 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 496: return catsh;
   case 600:
   case 601: return cataux;
+  case 609:
   case 610: 
   case 611:
   case 612:
@@ -6993,6 +7456,48 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 636: return cataux;
   case 650: 
   case 651: return cataux;
+  case 660:
+  case 661:
+  case 662:
+  case 663:
+  case 664:
+  case 665: 
+  case 666:
+  case 667:
+  case 668:
+  case 669:
+  case 670:
+  case 671:
+  case 672: return catdr;
+  case 673:
+  case 674:
+  case 675:
+  case 676:
+  case 677:
+  case 678:
+  case 679:
+  case 680:
+  case 681:
+  case 682:
+  case 683:
+  case 684: return cataux;
+  case 685: return catdr;
+  case 686:
+  case 687:
+  case 688:
+  case 689:
+  case 690:
+  case 691:
+  case 692:
+  case 693:
+  case 694:
+  case 695:
+  case 696:
+  case 697: return cataux;
+  case 698:
+  case 699:
+  case 700:
+  case 701: return catdr;
     
   default : break;
   }

@@ -18,6 +18,7 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepDimTol_ModifiedGeometricTolerance.hxx>
+#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -38,6 +39,25 @@ void StepDimTol_ModifiedGeometricTolerance::Init (const Handle(TCollection_HAsci
                                                   const Handle(TCollection_HAsciiString) &aGeometricTolerance_Description,
                                                   const Handle(StepBasic_MeasureWithUnit) &aGeometricTolerance_Magnitude,
                                                   const Handle(StepRepr_ShapeAspect) &aGeometricTolerance_TolerancedShapeAspect,
+                                                  const StepDimTol_LimitCondition aModifier)
+{
+  StepDimTol_GeometricTolerance::Init(aGeometricTolerance_Name,
+                                      aGeometricTolerance_Description,
+                                      aGeometricTolerance_Magnitude,
+                                      aGeometricTolerance_TolerancedShapeAspect);
+
+  theModifier = aModifier;
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void StepDimTol_ModifiedGeometricTolerance::Init (const Handle(TCollection_HAsciiString) &aGeometricTolerance_Name,
+                                                  const Handle(TCollection_HAsciiString) &aGeometricTolerance_Description,
+                                                  const Handle(StepBasic_MeasureWithUnit) &aGeometricTolerance_Magnitude,
+                                                  const StepDimTol_GeometricToleranceTarget &aGeometricTolerance_TolerancedShapeAspect,
                                                   const StepDimTol_LimitCondition aModifier)
 {
   StepDimTol_GeometricTolerance::Init(aGeometricTolerance_Name,

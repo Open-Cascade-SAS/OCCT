@@ -20,9 +20,11 @@
 #include <Standard_Type.hxx>
 
 #include <StepDimTol_HArray1OfDatumReference.hxx>
+#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
+class StepDimTol_GeometricToleranceTarget;
 class StepRepr_ShapeAspect;
 
 
@@ -39,14 +41,23 @@ public:
   //! Empty constructor
   Standard_EXPORT StepDimTol_GeometricToleranceWithDatumReference();
   
-  //! Initialize all fields (own and inherited)
+  //! Initialize all fields (own and inherited) AP214
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aGeometricTolerance_Name, const Handle(TCollection_HAsciiString)& aGeometricTolerance_Description, const Handle(StepBasic_MeasureWithUnit)& aGeometricTolerance_Magnitude, const Handle(StepRepr_ShapeAspect)& aGeometricTolerance_TolerancedShapeAspect, const Handle(StepDimTol_HArray1OfDatumReference)& aDatumSystem);
+
+  //! Initialize all fields (own and inherited) AP242
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aGeometricTolerance_Name, const Handle(TCollection_HAsciiString)& aGeometricTolerance_Description, const Handle(StepBasic_MeasureWithUnit)& aGeometricTolerance_Magnitude, const StepDimTol_GeometricToleranceTarget& aGeometricTolerance_TolerancedShapeAspect, const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& aDatumSystem);
   
-  //! Returns field DatumSystem
+  //! Returns field DatumSystem AP214
   Standard_EXPORT Handle(StepDimTol_HArray1OfDatumReference) DatumSystem() const;
+
+  //! Returns field DatumSystem AP242
+  Standard_EXPORT Handle(StepDimTol_HArray1OfDatumSystemOrReference) DatumSystemAP242() const;
   
-  //! Set field DatumSystem
+  //! Set field DatumSystem AP214
   Standard_EXPORT void SetDatumSystem (const Handle(StepDimTol_HArray1OfDatumReference)& DatumSystem);
+  
+  //! Set field DatumSystem AP242
+  Standard_EXPORT void SetDatumSystem (const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& DatumSystem);
 
 
 
@@ -61,7 +72,7 @@ protected:
 private:
 
 
-  Handle(StepDimTol_HArray1OfDatumReference) theDatumSystem;
+  Handle(StepDimTol_HArray1OfDatumSystemOrReference) theDatumSystem;
 
 
 };

@@ -18,6 +18,7 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
+#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -37,7 +38,7 @@ StepDimTol_GeometricTolerance::StepDimTol_GeometricTolerance ()
 void StepDimTol_GeometricTolerance::Init (const Handle(TCollection_HAsciiString) &aName,
                                           const Handle(TCollection_HAsciiString) &aDescription,
                                           const Handle(StepBasic_MeasureWithUnit) &aMagnitude,
-                                          const Handle(StepRepr_ShapeAspect) &aTolerancedShapeAspect)
+                                          const StepDimTol_GeometricToleranceTarget &aTolerancedShapeAspect)
 {
 
   theName = aName;
@@ -47,6 +48,26 @@ void StepDimTol_GeometricTolerance::Init (const Handle(TCollection_HAsciiString)
   theMagnitude = aMagnitude;
 
   theTolerancedShapeAspect = aTolerancedShapeAspect;
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void StepDimTol_GeometricTolerance::Init (const Handle(TCollection_HAsciiString) &aName,
+                                          const Handle(TCollection_HAsciiString) &aDescription,
+                                          const Handle(StepBasic_MeasureWithUnit) &aMagnitude,
+                                          const Handle(StepRepr_ShapeAspect) &aTolerancedShapeAspect)
+{
+
+  theName = aName;
+
+  theDescription = aDescription;
+
+  theMagnitude = aMagnitude;
+
+  theTolerancedShapeAspect.SetValue(aTolerancedShapeAspect);
 }
 
 //=======================================================================
@@ -114,7 +135,7 @@ void StepDimTol_GeometricTolerance::SetMagnitude (const Handle(StepBasic_Measure
 //purpose  : 
 //=======================================================================
 
-Handle(StepRepr_ShapeAspect) StepDimTol_GeometricTolerance::TolerancedShapeAspect () const
+StepDimTol_GeometricToleranceTarget StepDimTol_GeometricTolerance::TolerancedShapeAspect () const
 {
   return theTolerancedShapeAspect;
 }
@@ -125,6 +146,16 @@ Handle(StepRepr_ShapeAspect) StepDimTol_GeometricTolerance::TolerancedShapeAspec
 //=======================================================================
 
 void StepDimTol_GeometricTolerance::SetTolerancedShapeAspect (const Handle(StepRepr_ShapeAspect) &aTolerancedShapeAspect)
+{
+  theTolerancedShapeAspect.SetValue(aTolerancedShapeAspect);
+}
+
+//=======================================================================
+//function : SetTolerancedShapeAspect
+//purpose  : 
+//=======================================================================
+
+void StepDimTol_GeometricTolerance::SetTolerancedShapeAspect (const StepDimTol_GeometricToleranceTarget &aTolerancedShapeAspect)
 {
   theTolerancedShapeAspect = aTolerancedShapeAspect;
 }

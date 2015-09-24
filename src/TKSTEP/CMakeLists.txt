@@ -14,6 +14,8 @@ set (TOOLKIT_MODULES
   STEPControl
   STEPSelections
   StepAP209
+  StepAP242
+  RWStepAP242
 )
 
 if (WIN32)

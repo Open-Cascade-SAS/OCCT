@@ -34,7 +34,7 @@ DEFINE_STANDARD_HANDLE(StepBasic_MeasureValueMember, StepData_SelectReal)
 //! solid_angle_measure,ratio_measure,parameter_value,
 //! context_dependent_measure,positive_length_measure,
 //! positive_plane_angle_measure,positive_ratio_measure,
-//! area_measure,volume_measure
+//! area_measure,volume_measure, count_measure
 class StepBasic_MeasureValueMember : public StepData_SelectReal
 {
 

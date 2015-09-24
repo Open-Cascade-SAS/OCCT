@@ -14,36 +14,16 @@
 
 #include <Standard_Type.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
-#include <StepBasic_MeasureWithUnit.hxx>
-#include <StepRepr_MeasureRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
 
 //=======================================================================
 //function : StepRepr_ReprItemAndLengthMeasureWithUnit
 //purpose  : 
 //=======================================================================
-StepRepr_ReprItemAndLengthMeasureWithUnit::StepRepr_ReprItemAndLengthMeasureWithUnit()
+StepRepr_ReprItemAndLengthMeasureWithUnit::StepRepr_ReprItemAndLengthMeasureWithUnit() : StepRepr_ReprItemAndMeasureWithUnit()
 {
   myLengthMeasureWithUnit = new StepBasic_LengthMeasureWithUnit();
-  myMeasureWithUnit = new StepBasic_MeasureWithUnit();
-  myMeasureRepresentationItem = new StepRepr_MeasureRepresentationItem();
 }
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepRepr_ReprItemAndLengthMeasureWithUnit::Init
-  (const Handle(StepBasic_MeasureWithUnit)& aMWU,
-   const Handle(StepRepr_RepresentationItem)& aRI) 
-{
-  myMeasureWithUnit = aMWU;
-  SetName(aRI->Name());
-}
-
 
 //=======================================================================
 //function : SetLengthMeasureWithUnit
@@ -67,55 +47,3 @@ Handle(StepBasic_LengthMeasureWithUnit) StepRepr_ReprItemAndLengthMeasureWithUni
 {
   return myLengthMeasureWithUnit;
 }
-
-
-//=======================================================================
-//function : GetMeasureRepresentationItem
-//purpose  : 
-//=======================================================================
-
-Handle(StepRepr_MeasureRepresentationItem) StepRepr_ReprItemAndLengthMeasureWithUnit::
-       GetMeasureRepresentationItem() const
-{
-  return myMeasureRepresentationItem;
-}
-
-
-//=======================================================================
-//function : SetMeasureWithUnit
-//purpose  : 
-//=======================================================================
-
-void StepRepr_ReprItemAndLengthMeasureWithUnit::SetMeasureWithUnit
-  (const Handle(StepBasic_MeasureWithUnit)& aMWU) 
-{
-  myMeasureWithUnit = aMWU;
-}
-
-
-//=======================================================================
-//function : GetMeasureWithUnit
-//purpose  : 
-//=======================================================================
-
-Handle(StepBasic_MeasureWithUnit) StepRepr_ReprItemAndLengthMeasureWithUnit::
-       GetMeasureWithUnit() const
-{
-  return myMeasureWithUnit;
-}
-
-
-//=======================================================================
-//function : GetRepresentationItem
-//purpose  : 
-//=======================================================================
-
-Handle(StepRepr_RepresentationItem) StepRepr_ReprItemAndLengthMeasureWithUnit::
-       GetRepresentationItem() const
-{
-  Handle(StepRepr_RepresentationItem) RI = new StepRepr_RepresentationItem();
-  RI->Init(Name());
-  return RI;
-}
-
-

@@ -1205,6 +1205,7 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <StepDimTol_ConcentricityTolerance.hxx>
 #include <StepDimTol_CircularRunoutTolerance.hxx>
 #include <StepDimTol_CoaxialityTolerance.hxx>
+#include <StepDimTol_CylindricityTolerance.hxx>
 #include <StepDimTol_FlatnessTolerance.hxx>
 #include <StepDimTol_LineProfileTolerance.hxx>
 #include <StepDimTol_ParallelismTolerance.hxx>
@@ -1236,6 +1237,7 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <RWStepDimTol_RWConcentricityTolerance.hxx>
 #include <RWStepDimTol_RWCircularRunoutTolerance.hxx>
 #include <RWStepDimTol_RWCoaxialityTolerance.hxx>
+#include <RWStepDimTol_RWCylindricityTolerance.hxx>
 #include <RWStepDimTol_RWFlatnessTolerance.hxx>
 #include <RWStepDimTol_RWLineProfileTolerance.hxx>
 #include <RWStepDimTol_RWParallelismTolerance.hxx>
@@ -1268,6 +1270,93 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <RWStepBasic_RWConversionBasedUnitAndMassUnit.hxx>
 #include <StepBasic_MassMeasureWithUnit.hxx>
 #include <RWStepBasic_RWMassMeasureWithUnit.hxx>
+
+// Added by ika for GD&T AP242
+#include <RWStepRepr_RWApex.hxx>
+#include <RWStepRepr_RWCentreOfSymmetry.hxx>
+#include <RWStepRepr_RWGeometricAlignment.hxx>
+#include <RWStepRepr_RWParallelOffset.hxx>
+#include <RWStepRepr_RWPerpendicularTo.hxx>
+#include <RWStepRepr_RWTangent.hxx>
+#include <RWStepAP242_RWGeometricItemSpecificUsage.hxx>
+#include <RWStepAP242_RWIdAttribute.hxx>
+#include <RWStepAP242_RWItemIdentifiedRepresentationUsage.hxx>
+#include <RWStepRepr_RWAllAroundShapeAspect.hxx>
+#include <RWStepRepr_RWBetweenShapeAspect.hxx>
+#include <RWStepRepr_RWCompositeGroupShapeAspect.hxx>
+#include <RWStepRepr_RWContinuosShapeAspect.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithDefinedUnit.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.hxx>
+#include <RWStepDimTol_RWGeometricToleranceWithModifiers.hxx>
+#include <RWStepDimTol_RWUnequallyDisposedGeometricTolerance.hxx>
+#include <RWStepDimTol_RWNonUniformZoneDefinition.hxx>
+#include <RWStepDimTol_RWProjectedZoneDefinition.hxx>
+#include <RWStepDimTol_RWRunoutZoneDefinition.hxx>
+#include <RWStepDimTol_RWRunoutZoneOrientation.hxx>
+#include <RWStepDimTol_RWToleranceZone.hxx>
+#include <RWStepDimTol_RWToleranceZoneDefinition.hxx>
+#include <RWStepDimTol_RWToleranceZoneForm.hxx>
+#include <RWStepShape_RWValueFormatTypeQualifier.hxx>
+#include <RWStepDimTol_RWDatumReferenceCompartment.hxx>
+#include <RWStepDimTol_RWDatumReferenceElement.hxx>
+#include <RWStepDimTol_RWDatumReferenceModifierWithValue.hxx>
+#include <RWStepDimTol_RWDatumSystem.hxx>
+#include <RWStepDimTol_RWGeneralDatumReference.hxx>
+#include <RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include <RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI.hxx>
+#include <RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRef.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthMod.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
+#include <RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.hxx>
+#include <RWStepRepr_RWIntegerRepresentationItem.hxx>
+#include <RWStepRepr_RWValueRepresentationItem.hxx>
+
+#include <StepRepr_Apex.hxx>
+#include <StepRepr_CentreOfSymmetry.hxx>
+#include <StepRepr_GeometricAlignment.hxx>
+#include <StepRepr_ParallelOffset.hxx>
+#include <StepRepr_PerpendicularTo.hxx>
+#include <StepRepr_Tangent.hxx>
+#include <StepAP242_GeometricItemSpecificUsage.hxx>
+#include <StepAP242_IdAttribute.hxx>
+#include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
+#include <StepRepr_AllAroundShapeAspect.hxx>
+#include <StepRepr_BetweenShapeAspect.hxx>
+#include <StepRepr_CompositeGroupShapeAspect.hxx>
+#include <StepRepr_ContinuosShapeAspect.hxx>
+#include <StepDimTol_GeometricToleranceWithDefinedAreaUnit.hxx>
+#include <StepDimTol_GeometricToleranceWithDefinedUnit.hxx>
+#include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
+#include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+#include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
+#include <StepDimTol_NonUniformZoneDefinition.hxx>
+#include <StepDimTol_ProjectedZoneDefinition.hxx>
+#include <StepDimTol_RunoutZoneDefinition.hxx>
+#include <StepDimTol_RunoutZoneOrientation.hxx>
+#include <StepDimTol_ToleranceZone.hxx>
+#include <StepDimTol_ToleranceZoneDefinition.hxx>
+#include <StepDimTol_ToleranceZoneForm.hxx>
+#include <StepShape_ValueFormatTypeQualifier.hxx>
+#include <StepDimTol_DatumReferenceCompartment.hxx>
+#include <StepDimTol_DatumReferenceElement.hxx>
+#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
+#include <StepDimTol_DatumSystem.hxx>
+#include <StepDimTol_GeneralDatumReference.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_IntegerRepresentationItem.hxx>
+#include <StepRepr_ValueRepresentationItem.hxx>
 
 
 // -- General Declarations (Recognize, StepType) ---
@@ -1840,6 +1929,7 @@ static TCollection_AsciiString Reco_AngularityTolerance("ANGULARITY_TOLERANCE");
 static TCollection_AsciiString Reco_ConcentricityTolerance("CONCENTRICITY_TOLERANCE");
 static TCollection_AsciiString Reco_CircularRunoutTolerance("CIRCULAR_RUNOUT_TOLERANCE");
 static TCollection_AsciiString Reco_CoaxialityTolerance("COAXIALITY_TOLERANCE");
+static TCollection_AsciiString Reco_CylindricityTolerance("CYLINDRICITY_TOLERANCE");
 static TCollection_AsciiString Reco_FlatnessTolerance("FLATNESS_TOLERANCE");
 static TCollection_AsciiString Reco_LineProfileTolerance("LINE_PROFILE_TOLERANCE");
 static TCollection_AsciiString Reco_ParallelismTolerance("PARALLELISM_TOLERANCE");
@@ -1861,6 +1951,40 @@ static TCollection_AsciiString Reco_CommonDatum("COMMON_DATUM");
 static TCollection_AsciiString Reco_DatumTarget("DATUM_TARGET");
 static TCollection_AsciiString Reco_PlacedDatumTargetFeature("PLACED_DATUM_TARGET_FEATURE");
 
+//Added by ika for GD&T AP242
+static TCollection_AsciiString Reco_Apex("APEX");
+static TCollection_AsciiString Reco_CentreOfSymmetry("CENTRE_OF_SYMMETRY");
+static TCollection_AsciiString Reco_GeometricAlignment("GEOMETRIC_ALIGNMENT");
+static TCollection_AsciiString Reco_PerpendicularTo("PERPENDICULAR_TO");
+static TCollection_AsciiString Reco_Tangent("TANGENT");
+static TCollection_AsciiString Reco_ParallelOffset("PARALLEL_OFFSET");
+static TCollection_AsciiString Reco_GeometricItemSpecificUsage("GEOMETRIC_ITEM_SPECIFIC_USAGE");
+static TCollection_AsciiString Reco_IdAttribute("ID_ATTRIBUTE");
+static TCollection_AsciiString Reco_ItemIdentifiedRepresentationUsage("ITEM_IDENTIFIED_REPRESENTATION_USAGE");
+static TCollection_AsciiString Reco_AllAroundShapeAspect("ALL_AROUND_SHAPE_ASPECT");
+static TCollection_AsciiString Reco_BetweenShapeAspect("BETWEEN_SHAPE_ASPECT");
+static TCollection_AsciiString Reco_CompositeGroupShapeAspect("COMPOSITE_GROUP_SHAPE_ASPECT");
+static TCollection_AsciiString Reco_ContinuosShapeAspect("CONTINUOUS_SHAPE_ASPECT");
+static TCollection_AsciiString Reco_GeometricToleranceWithDefinedAreaUnit("GEOMETRIC_TOLERANCE_WITH_DEFINED_AREA_UNIT");
+static TCollection_AsciiString Reco_GeometricToleranceWithDefinedUnit("GEOMETRIC_TOLERANCE_WITH_DEFINED_UNIT");
+static TCollection_AsciiString Reco_GeometricToleranceWithMaximumTolerance("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
+static TCollection_AsciiString Reco_GeometricToleranceWithModifiers("GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
+static TCollection_AsciiString Reco_UnequallyDisposedGeometricTolerance("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE");
+static TCollection_AsciiString Reco_NonUniformZoneDefinition("NON_UNIFORM_ZONE_DEFINITION");
+static TCollection_AsciiString Reco_ProjectedZoneDefinition("PROJECTED_ZONE_DEFINITION");
+static TCollection_AsciiString Reco_RunoutZoneDefinition("RUNOUT_ZONE_DEFINITION");
+static TCollection_AsciiString Reco_RunoutZoneOrientation("RUNOUT_ZONE_ORIENTATION");
+static TCollection_AsciiString Reco_ToleranceZone("TOLERANCE_ZONE");
+static TCollection_AsciiString Reco_ToleranceZoneDefinition("TOLERANCE_ZONE_DEFINITION");
+static TCollection_AsciiString Reco_ToleranceZoneForm("TOLERANCE_ZONE_FORM");
+static TCollection_AsciiString Reco_ValueFormatTypeQualifier("VALUE_FORMAT_TYPE_QUALIFIER");
+static TCollection_AsciiString Reco_DatumReferenceCompartment("DATUM_REFERENCE_COMPARTMENT");
+static TCollection_AsciiString Reco_DatumReferenceElement("DATUM_REFERENCE_ELEMENT");
+static TCollection_AsciiString Reco_DatumReferenceModifierWithValue("DATUM_REFERENCE_MODIFIER_WITH_VALUE");
+static TCollection_AsciiString Reco_DatumSystem("DATUM_SYSTEM");
+static TCollection_AsciiString Reco_GeneralDatumReference("GENERAL_DATUM_REFERENCE");
+static TCollection_AsciiString Reco_IntegerRepresentationItem("INTEGER_REPRESENTATION_ITEM");
+static TCollection_AsciiString Reco_ValueRepresentationItem("VALUE_REPRESENTATION_ITEM");
 
 // -- Definition of the libraries --
 
@@ -2441,6 +2565,7 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums->SetItem (Reco_DocumentProductEquivalence,601);  
   
   // Added by SKL 18.06.2003 for Dimensional Tolerances (CAX-IF TRJ11)
+  typenums->SetItem (Reco_CylindricityTolerance,609);
   typenums->SetItem (Reco_ShapeRepresentationWithParameters,610);
   typenums->SetItem (Reco_AngularityTolerance,611);
   typenums->SetItem (Reco_ConcentricityTolerance,612);
@@ -2468,6 +2593,41 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums->SetItem (Reco_PlacedDatumTargetFeature,634);
 
   typenums->SetItem (Reco_MassMeasureWithUnit,651);
+
+  //Added by ika for GD&T AP242
+  typenums->SetItem (Reco_Apex, 660);
+  typenums->SetItem (Reco_CentreOfSymmetry, 661);
+  typenums->SetItem (Reco_GeometricAlignment, 662);
+  typenums->SetItem (Reco_PerpendicularTo, 663);
+  typenums->SetItem (Reco_Tangent, 664);
+  typenums->SetItem (Reco_ParallelOffset, 665);
+  typenums->SetItem (Reco_GeometricItemSpecificUsage, 666);
+  typenums->SetItem (Reco_IdAttribute, 667);
+  typenums->SetItem (Reco_ItemIdentifiedRepresentationUsage, 668);
+  typenums->SetItem (Reco_AllAroundShapeAspect, 669);
+  typenums->SetItem (Reco_BetweenShapeAspect, 670);
+  typenums->SetItem (Reco_CompositeGroupShapeAspect, 671);
+  typenums->SetItem (Reco_ContinuosShapeAspect, 672);
+  typenums->SetItem (Reco_GeometricToleranceWithDefinedAreaUnit, 673);
+  typenums->SetItem (Reco_GeometricToleranceWithDefinedUnit, 674);
+  typenums->SetItem (Reco_GeometricToleranceWithMaximumTolerance, 675);
+  typenums->SetItem (Reco_GeometricToleranceWithModifiers, 676);
+  typenums->SetItem (Reco_UnequallyDisposedGeometricTolerance, 677);
+  typenums->SetItem (Reco_NonUniformZoneDefinition, 678);
+  typenums->SetItem (Reco_ProjectedZoneDefinition, 679);
+  typenums->SetItem (Reco_RunoutZoneDefinition, 680);
+  typenums->SetItem (Reco_RunoutZoneOrientation, 681);
+  typenums->SetItem (Reco_ToleranceZone, 682);
+  typenums->SetItem (Reco_ToleranceZoneDefinition, 683);
+  typenums->SetItem (Reco_ToleranceZoneForm, 684);
+  typenums->SetItem (Reco_ValueFormatTypeQualifier, 685);
+  typenums->SetItem (Reco_DatumReferenceCompartment, 686);
+  typenums->SetItem (Reco_DatumReferenceElement, 687);
+  typenums->SetItem (Reco_DatumReferenceModifierWithValue, 688);
+  typenums->SetItem (Reco_DatumSystem, 689);
+  typenums->SetItem (Reco_GeneralDatumReference, 690);
+  typenums->SetItem (Reco_IntegerRepresentationItem, 700);
+  typenums->SetItem (Reco_ValueRepresentationItem, 701);
 
 //    SHORT NAMES
 //    NB : la liste est celle de AP203
@@ -2852,268 +3012,390 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep
     
     if (NbComp == 7) {
       if ((types(1).IsEqual(StepType(48))) &&
-	  (types(2).IsEqual(StepType(38))) &&
-	  (types(3).IsEqual(StepType(84))) &&
-	  (types(4).IsEqual(StepType(144))) &&
-	  (types(5).IsEqual(StepType(239))) &&
-	  (types(6).IsEqual(StepType(247))) &&
-	  (types(7).IsEqual(StepType(311)))) {
-	return 319;
+          (types(2).IsEqual(StepType(38))) &&
+          (types(3).IsEqual(StepType(84))) &&
+          (types(4).IsEqual(StepType(144))) &&
+          (types(5).IsEqual(StepType(239))) &&
+          (types(6).IsEqual(StepType(247))) &&
+          (types(7).IsEqual(StepType(311)))) {
+        return 319;
       }
       else if ((types(1).IsEqual(StepType(48))) &&
-	       (types(2).IsEqual(StepType(38))) &&
-	       (types(3).IsEqual(StepType(39))) &&
-	       (types(4).IsEqual(StepType(84))) &&
-	       (types(5).IsEqual(StepType(144))) &&
-	       (types(6).IsEqual(StepType(239))) &&
-	       (types(7).IsEqual(StepType(247)))) {
-	return 320;
+               (types(2).IsEqual(StepType(38))) &&
+               (types(3).IsEqual(StepType(39))) &&
+               (types(4).IsEqual(StepType(84))) &&
+               (types(5).IsEqual(StepType(144))) &&
+               (types(6).IsEqual(StepType(239))) &&
+               (types(7).IsEqual(StepType(247)))) {
+        return 320;
       }
       else if ((types(1).IsEqual(StepType(48))) &&
-	       (types(2).IsEqual(StepType(38))) &&
-	       (types(3).IsEqual(StepType(84))) &&
-	       (types(4).IsEqual(StepType(144))) &&
-	       (types(5).IsEqual(StepType(236))) &&
-	       (types(6).IsEqual(StepType(239))) &&
-	       (types(7).IsEqual(StepType(247)))) {
-	return 321;
+              (types(2).IsEqual(StepType(38))) &&
+              (types(3).IsEqual(StepType(84))) &&
+              (types(4).IsEqual(StepType(144))) &&
+              (types(5).IsEqual(StepType(236))) &&
+              (types(6).IsEqual(StepType(239))) &&
+              (types(7).IsEqual(StepType(247)))) {
+       return 321;
       }
       else if ((types(1).IsEqual(StepType(43))) &&
-	       (types(2).IsEqual(StepType(48))) &&
-	       (types(3).IsEqual(StepType(38))) &&
-	       (types(4).IsEqual(StepType(84))) &&
-	       (types(5).IsEqual(StepType(144))) &&
-	       (types(6).IsEqual(StepType(239))) &&
-	       (types(7).IsEqual(StepType(247)))) {
-	return 322;
+               (types(2).IsEqual(StepType(48))) &&
+               (types(3).IsEqual(StepType(38))) &&
+               (types(4).IsEqual(StepType(84))) &&
+               (types(5).IsEqual(StepType(144))) &&
+               (types(6).IsEqual(StepType(239))) &&
+               (types(7).IsEqual(StepType(247)))) {
+        return 322;
       }
       else if ((types(1).IsEqual(StepType(49))) &&
-	       (types(2).IsEqual(StepType(40))) &&
-	       (types(3).IsEqual(StepType(41))) &&
-	       (types(4).IsEqual(StepType(144))) &&
-	       (types(5).IsEqual(StepType(240))) &&
-	       (types(6).IsEqual(StepType(247))) &&
-	       (types(7).IsEqual(StepType(271)))) {
-	return 323;
+               (types(2).IsEqual(StepType(40))) &&
+               (types(3).IsEqual(StepType(41))) &&
+               (types(4).IsEqual(StepType(144))) &&
+               (types(5).IsEqual(StepType(240))) &&
+               (types(6).IsEqual(StepType(247))) &&
+               (types(7).IsEqual(StepType(271)))) {
+        return 323;
       }
       else if ((types(1).IsEqual(StepType(49))) &&
-	       (types(2).IsEqual(StepType(40))) &&
-	       (types(3).IsEqual(StepType(144))) &&
-	       (types(4).IsEqual(StepType(240))) &&
-	       (types(5).IsEqual(StepType(247))) &&
-	       (types(6).IsEqual(StepType(271))) &&
-	       (types(7).IsEqual(StepType(312)))) {
-	return 324;
+               (types(2).IsEqual(StepType(40))) &&
+               (types(3).IsEqual(StepType(144))) &&
+               (types(4).IsEqual(StepType(240))) &&
+               (types(5).IsEqual(StepType(247))) &&
+               (types(6).IsEqual(StepType(271))) &&
+               (types(7).IsEqual(StepType(312)))) {
+        return 324;
       }
       else if ((types(1).IsEqual(StepType(49))) &&
-	       (types(2).IsEqual(StepType(40))) &&
-	       (types(3).IsEqual(StepType(144))) &&
-	       (types(4).IsEqual(StepType(237))) &&
-	       (types(5).IsEqual(StepType(240))) &&
-	       (types(6).IsEqual(StepType(247))) &&
-	       (types(7).IsEqual(StepType(271)))) {
-	return 325;
+               (types(2).IsEqual(StepType(40))) &&
+               (types(3).IsEqual(StepType(144))) &&
+               (types(4).IsEqual(StepType(237))) &&
+               (types(5).IsEqual(StepType(240))) &&
+               (types(6).IsEqual(StepType(247))) &&
+               (types(7).IsEqual(StepType(271)))) {
+        return 325;
       }
       else if ((types(1).IsEqual(StepType(44))) &&
-	       (types(2).IsEqual(StepType(49))) &&
-	       (types(3).IsEqual(StepType(40))) &&
-	       (types(4).IsEqual(StepType(144))) &&
-	       (types(5).IsEqual(StepType(240))) &&
-	       (types(6).IsEqual(StepType(247))) &&
-	       (types(7).IsEqual(StepType(271)))) {
-	return 326;
+               (types(2).IsEqual(StepType(49))) &&
+               (types(3).IsEqual(StepType(40))) &&
+               (types(4).IsEqual(StepType(144))) &&
+               (types(5).IsEqual(StepType(240))) &&
+               (types(6).IsEqual(StepType(247))) &&
+               (types(7).IsEqual(StepType(271)))) {
+        return 326;
       }
       else if ((types(1).IsEqual(StepType(40))) &&
-	       (types(2).IsEqual(StepType(41))) &&
-	       (types(3).IsEqual(StepType(49))) &&
-	       (types(4).IsEqual(StepType(144))) &&
-	       (types(5).IsEqual(StepType(240))) &&
-	       (types(6).IsEqual(StepType(247))) &&
-	       (types(7).IsEqual(StepType(271)))) {
-	return 323;
-      }
-    }
-    if (NbComp == 3) {
-      if ((types(1).IsEqual(StepType(158))) &&
-	  (types(2).IsEqual(StepType(169))) &&
-	  (types(3).IsEqual(StepType(264)))) {
-	return 327;
-      } //pdn t3d_opt
-      else if ((types(1).IsEqual(StepType(169))) &&
-	       (types(2).IsEqual(StepType(264))) &&
-	       (types(3).IsEqual(StepType(158)))) {
-	return 327;
-      }
-      else if ((types(1).IsEqual(StepType(169))) &&
-	       (types(2).IsEqual(StepType(201))) &&
-	       (types(3).IsEqual(StepType(264)))) {
-	return 328;
-      }
-      else if ((types(1).IsEqual(StepType(79))) &&
-	       (types(2).IsEqual(StepType(158))) &&
-	       (types(3).IsEqual(StepType(169)))) {
-	return 329;
-      }
-      else if ((types(1).IsEqual(StepType(79))) &&
-	       (types(2).IsEqual(StepType(169))) &&
-	       (types(3).IsEqual(StepType(201)))) {
-	return 330;
-      }
-      else if ((types(1).IsEqual(StepType(143))) &&
-	       (types(2).IsEqual(StepType(149))) &&
-	       (types(3).IsEqual(StepType(246)))) {
-	return 331;
-      }
-      // Added by FMA
-      else if ((types(1).IsEqual(StepType(79))) &&
-	       (types(2).IsEqual(StepType(169))) &&
-	       (types(3).IsEqual(StepType(336)))) {
-	return 334;
-      }
-      else if ((types(1).IsEqual(StepType(169))) &&
-	       (types(2).IsEqual(StepType(264))) &&
-	       (types(3).IsEqual(StepType(336)))) {
-	return 335;
-      }
-      else if ((types(1).IsEqual(StepType(143))) &&
-	       (types(2).IsEqual(StepType(188))) &&
-	       (types(3).IsEqual(StepType(246)))) {
-	return 338;
-      }
-      // full Rev4 (CKY 30-MARS-1997)
-      else if ((types(1).IsEqual(StepType(169))) &&
-	       (types(2).IsEqual(StepType(342))) &&
-	       (types(3).IsEqual(StepType(264)))) {
-	return 344;
-      }
-      else if ((types(1).IsEqual(StepType(169))) &&
-	       (types(2).IsEqual(StepType(264))) &&
-	       (types(3).IsEqual(StepType(343)))) {
-	return 345;
-      }
-      else if ((types(1).IsEqual(StepType(79))) &&
-	       (types(2).IsEqual(StepType(169))) &&
-	       (types(3).IsEqual(StepType(342)))) {
-	return 346;
-      }
-      else if ((types(1).IsEqual(StepType(79))) &&
-	       (types(2).IsEqual(StepType(169))) &&
-	       (types(3).IsEqual(StepType(343)))) {
-	return 347;
-      }
-      else if ((types(1).IsEqual(StepType(157))) &&
-	       (types(2).IsEqual(StepType(165))) &&
-	       (types(3).IsEqual(StepType(310)))) {
-	return 357; // LECTURE SEULEMENT (READ ONLY), origine CATIA. CKY 2-SEP-1997
-      }
-//      Additional non-alphabetic (CKY 5 MAI 1998)
-      else if ((types(1).IsEqual(StepType(169))) &&
-	       (types(2).IsEqual(StepType(158))) &&
-	       (types(3).IsEqual(StepType(264)))) {
-	return 327;
-      }
-//      CC1 -> CC2 (CKY 1-JUL-1998)
-      else if ((types(1).IsEqual(StepType(249))) &&
-	       (types(2).IsEqual(StepType(388))) &&
-	       (types(3).IsEqual(StepType(387)))) {
-	return 389;
-      }
-      else if ((types(1).IsEqual(StepType(407))) &&
-	       (types(2).IsEqual(StepType(169))) &&
-	       (types(3).IsEqual(StepType(264)))) {
-	return 409;
-      }
-      else if ((types(1).IsEqual(StepType(169))) &&
-	       (types(2).IsEqual(StepType(264))) &&
-	       (types(3).IsEqual(StepType(408)))) {
-	return 410;
-      }
-      else if ((types(1).IsEqual(StepType(407))) &&
-	       (types(2).IsEqual(StepType(79)))  &&
-	       (types(3).IsEqual(StepType(169)))) {
-	return 411;
-      }
-      else if ((types(1).IsEqual(StepType(79))) &&
-	       (types(2).IsEqual(StepType(169)))  &&
-	       (types(3).IsEqual(StepType(408)))) {
-	return 412;
-      }
-      // abv 11.07.00: CAX-IF TRJ4: k1_geo-ac.stp
-      else if ((types(1).IsEqual(StepType(98))) &&
-	       (types(2).IsEqual(StepType(245))) &&
-	       (types(3).IsEqual(StepType(262)))) {
-	return 463;
-      }
-      // CKY 25 APR 2001; CAX-IF TR7J (dim.tol.)
-      else if ((types(1).IsEqual(StepType(406))) &&
-	       (types(2).IsEqual(StepType(480))) &&
-	       (types(3).IsEqual(StepType(247)))) {
-	return 481;
-      }
-      else if ((types(1).IsEqual(StepType(501))) &&
-               (types(2).IsEqual(StepType(169))) &&
-               (types(3).IsEqual(StepType(264)))) {
-	return 574;
-      }
-      else if ((types(1).IsEqual(StepType(169))) &&
-               (types(2).IsEqual(StepType(264))) &&
-               (types(3).IsEqual(StepType(502)))) {
-	return 578;
-      }
-      else if ((types(1).IsEqual(StepType(79))) &&
-	       (types(2).IsEqual(StepType(501))) &&
-	       (types(3).IsEqual(StepType(169)))) {
-	return 650;
-      }
-    }
-    if (NbComp == 4) {
-      if ((types(1).IsEqual(StepType(161))) &&
-	  (types(2).IsEqual(StepType(189))) &&
-	  (types(3).IsEqual(StepType(247))) &&
-	  (types(4).IsEqual(StepType(304)))) {
-	return 332;
-      }
-      // Added by FMA
-      else if ((types(1).IsEqual(StepType(143)) &&
-		types(2).IsEqual(StepType(148)) &&
-		types(3).IsEqual(StepType(149)) &&
-		types(4).IsEqual(StepType(246)))) {
-	return 333;
+               (types(2).IsEqual(StepType(41))) &&
+               (types(3).IsEqual(StepType(49))) &&
+               (types(4).IsEqual(StepType(144))) &&
+               (types(5).IsEqual(StepType(240))) &&
+               (types(6).IsEqual(StepType(247))) &&
+               (types(7).IsEqual(StepType(271)))) {
+        return 323;
       }
     }
     // Added by FMA
-    if (NbComp == 6) {
+    else if (NbComp == 6) {
       if (types(1).IsEqual(StepType(52))  &&
-	  types(2).IsEqual(StepType(134)) &&
-	  types(3).IsEqual(StepType(144)) &&
-	  types(4).IsEqual(StepType(162)) &&
-	  types(5).IsEqual(StepType(247)) &&
-	  types(6).IsEqual(StepType(266))) {
-	return 337;
+          types(2).IsEqual(StepType(134)) &&
+          types(3).IsEqual(StepType(144)) &&
+          types(4).IsEqual(StepType(162)) &&
+          types(5).IsEqual(StepType(247)) &&
+          types(6).IsEqual(StepType(266))) {
+        return 337;
       }
     }
     else if (NbComp == 5) {
       //:n5 abv 15 Feb 99: S4132 complex type bounded_curve + surface_curve
       if ((types(1).IsEqual(StepType(48))) &&
-	  (types(2).IsEqual(StepType(84))) &&
-	  (types(3).IsEqual(StepType(144))) &&
-	  (types(4).IsEqual(StepType(247))) &&
-	  (types(5).IsEqual(StepType(272)))) {
-	return 358;
+          (types(2).IsEqual(StepType(84))) &&
+          (types(3).IsEqual(StepType(144))) &&
+          (types(4).IsEqual(StepType(247))) &&
+          (types(5).IsEqual(StepType(272)))) {
+        return 358;
+      }
+      else if ((types(1).IsEqual(StepType(157))) &&
+               (types(2).IsEqual(StepType(406))) &&
+               (types(3).IsEqual(StepType(165))) &&
+               (types(4).IsEqual(StepType(480))) &&
+               (types(5).IsEqual(StepType(247)))) {
+        return 692;
+      }
+      else if ((types(1).IsEqual(StepType(406))) &&
+               (types(2).IsEqual(StepType(165))) &&
+               (types(3).IsEqual(StepType(200))) &&
+               (types(4).IsEqual(StepType(480))) &&
+               (types(5).IsEqual(StepType(247)))) {
+        return 693;
       }
     }
     else if (NbComp == 4) {
-      if ((types(1).IsEqual(StepType(157))) &&
-	  (types(2).IsEqual(StepType(406))) &&
-	  (types(3).IsEqual(StepType(165))) &&
-	  (types(4).IsEqual(StepType(247)))) {
-	return 635;
+      if ((types(1).IsEqual(StepType(161))) &&
+          (types(2).IsEqual(StepType(189))) &&
+          (types(3).IsEqual(StepType(247))) &&
+          (types(4).IsEqual(StepType(304)))) {
+        return 332;
       }
-      if ((types(1).IsEqual(StepType(625))) &&
-	  (types(2).IsEqual(StepType(627))) &&
-	  (types(3).IsEqual(StepType(628))) &&
-	  (types(4).IsEqual(StepType(619)))) {
-	return 636;
+      // Added by FMA
+      else if ((types(1).IsEqual(StepType(143)) &&
+                types(2).IsEqual(StepType(148)) &&
+                types(3).IsEqual(StepType(149)) &&
+                types(4).IsEqual(StepType(246)))) {
+        return 333;
+      }
+
+      else if ((types(1).IsEqual(StepType(157))) &&
+               (types(2).IsEqual(StepType(406))) &&
+               (types(3).IsEqual(StepType(165))) &&
+               (types(4).IsEqual(StepType(247)))) {
+        return 635;
+      }
+      else if ((types(1).IsEqual(StepType(625))) &&
+               (types(2).IsEqual(StepType(627))) &&
+               (types(3).IsEqual(StepType(628))) &&
+               (types(4).IsEqual(StepType(619)))) {
+        return 636;
+      }
+      else if ((types(1).IsEqual(StepType(406))) &&
+               (types(2).IsEqual(StepType(165))) &&
+               (types(3).IsEqual(StepType(200))) &&
+               (types(4).IsEqual(StepType(247)))) {
+        return 691;
+      }
+      else if (((types(1).IsEqual(StepType(609)) ||
+                 types(1).IsEqual(StepType(611)) ||
+                 types(1).IsEqual(StepType(612)) ||
+                 types(1).IsEqual(StepType(613)) ||
+                 types(1).IsEqual(StepType(614)) ||
+                 types(1).IsEqual(StepType(615))) &&
+                types(2).IsEqual(StepType(625)) &&
+                types(3).IsEqual(StepType(627)) &&
+                types(4).IsEqual(StepType(676)))
+                ||
+               (types(1).IsEqual(StepType(625)) &&
+                types(2).IsEqual(StepType(627)) &&
+                types(3).IsEqual(StepType(676)) &&
+                (types(4).IsEqual(StepType(616)) ||
+                 types(4).IsEqual(StepType(617)) ||
+                 types(4).IsEqual(StepType(618)) ||
+                 types(4).IsEqual(StepType(619)) ||
+                 types(4).IsEqual(StepType(620)) ||
+                 types(4).IsEqual(StepType(621)) ||
+                 types(4).IsEqual(StepType(622)) ||
+                 types(4).IsEqual(StepType(623)) ||
+                 types(4).IsEqual(StepType(624))))) {
+        return 695;
+      }
+      else if (((types(1).IsEqual(StepType(609)) ||
+                 types(1).IsEqual(StepType(611)) ||
+                 types(1).IsEqual(StepType(612)) ||
+                 types(1).IsEqual(StepType(613)) ||
+                 types(1).IsEqual(StepType(614)) ||
+                 types(1).IsEqual(StepType(615))) &&
+                types(2).IsEqual(StepType(625)) &&
+                types(3).IsEqual(StepType(627)) &&
+                types(4).IsEqual(StepType(677)))
+                ||
+               (types(1).IsEqual(StepType(625)) &&
+                types(2).IsEqual(StepType(627)) &&
+                types(4).IsEqual(StepType(677)) &&
+                (types(3).IsEqual(StepType(616)) ||
+                 types(3).IsEqual(StepType(617)) ||
+                 types(3).IsEqual(StepType(618)) ||
+                 types(3).IsEqual(StepType(619)) ||
+                 types(3).IsEqual(StepType(620)) ||
+                 types(3).IsEqual(StepType(621)) ||
+                 types(3).IsEqual(StepType(622)) ||
+                 types(3).IsEqual(StepType(623)) ||
+                 types(3).IsEqual(StepType(624))))) {
+        return 697;
+      }
+      else if (types(1).IsEqual(StepType(671)) &&
+               types(2).IsEqual(StepType(470)) &&
+               types(3).IsEqual(StepType(630)) &&
+               types(4).IsEqual(StepType(258))) {
+        return 698;
+      }
+    }
+    else if (NbComp == 3) {
+      if ((types(1).IsEqual(StepType(158))) &&
+          (types(2).IsEqual(StepType(169))) &&
+          (types(3).IsEqual(StepType(264)))) {
+        return 327;
+      } //pdn t3d_opt
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(264))) &&
+               (types(3).IsEqual(StepType(158)))) {
+        return 327;
+      }
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(201))) &&
+               (types(3).IsEqual(StepType(264)))) {
+        return 328;
+      }
+      else if ((types(1).IsEqual(StepType(79))) &&
+               (types(2).IsEqual(StepType(158))) &&
+               (types(3).IsEqual(StepType(169)))) {
+        return 329;
+      }
+      else if ((types(1).IsEqual(StepType(79))) &&
+               (types(2).IsEqual(StepType(169))) &&
+               (types(3).IsEqual(StepType(201)))) {
+        return 330;
+      }
+      else if ((types(1).IsEqual(StepType(143))) &&
+               (types(2).IsEqual(StepType(149))) &&
+               (types(3).IsEqual(StepType(246)))) {
+        return 331;
+      }
+      // Added by FMA
+      else if ((types(1).IsEqual(StepType(79))) &&
+               (types(2).IsEqual(StepType(169))) &&
+               (types(3).IsEqual(StepType(336)))) {
+        return 334;
+      }
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(264))) &&
+               (types(3).IsEqual(StepType(336)))) {
+        return 335;
+      }
+      else if ((types(1).IsEqual(StepType(143))) &&
+               (types(2).IsEqual(StepType(188))) &&
+               (types(3).IsEqual(StepType(246)))) {
+        return 338;
+      }
+      // full Rev4 (CKY 30-MARS-1997)
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(342))) &&
+               (types(3).IsEqual(StepType(264)))) {
+        return 344;
+      }
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(264))) &&
+               (types(3).IsEqual(StepType(343)))) {
+        return 345;
+      }
+      else if ((types(1).IsEqual(StepType(79))) &&
+               (types(2).IsEqual(StepType(169))) &&
+               (types(3).IsEqual(StepType(342)))) {
+        return 346;
+      }
+      else if ((types(1).IsEqual(StepType(79))) &&
+               (types(2).IsEqual(StepType(169))) &&
+               (types(3).IsEqual(StepType(343)))) {
+        return 347;
+      }
+      else if ((types(1).IsEqual(StepType(157))) &&
+               (types(2).IsEqual(StepType(165))) &&
+               (types(3).IsEqual(StepType(310)))) {
+        return 357; // LECTURE SEULEMENT (READ ONLY), origine CATIA. CKY 2-SEP-1997
+      }
+//      Additional non-alphabetic (CKY 5 MAI 1998)
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(158))) &&
+               (types(3).IsEqual(StepType(264)))) {
+        return 327;
+      }
+//      CC1 -> CC2 (CKY 1-JUL-1998)
+      else if ((types(1).IsEqual(StepType(249))) &&
+               (types(2).IsEqual(StepType(388))) &&
+               (types(3).IsEqual(StepType(387)))) {
+        return 389;
+      }
+      else if ((types(1).IsEqual(StepType(407))) &&
+               (types(2).IsEqual(StepType(169))) &&
+               (types(3).IsEqual(StepType(264)))) {
+        return 409;
+      }
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(264))) &&
+               (types(3).IsEqual(StepType(408)))) {
+        return 410;
+      }
+      else if ((types(1).IsEqual(StepType(407))) &&
+               (types(2).IsEqual(StepType(79)))  &&
+               (types(3).IsEqual(StepType(169)))) {
+        return 411;
+      }
+      else if ((types(1).IsEqual(StepType(79))) &&
+               (types(2).IsEqual(StepType(169)))  &&
+               (types(3).IsEqual(StepType(408)))) {
+        return 412;
+      }
+      // abv 11.07.00: CAX-IF TRJ4: k1_geo-ac.stp
+      else if ((types(1).IsEqual(StepType(98))) &&
+               (types(2).IsEqual(StepType(245))) &&
+               (types(3).IsEqual(StepType(262)))) {
+        return 463;
+      }
+      // CKY 25 APR 2001; CAX-IF TR7J (dim.tol.)
+      else if ((types(1).IsEqual(StepType(406))) &&
+               (types(2).IsEqual(StepType(480))) &&
+               (types(3).IsEqual(StepType(247)))) {
+        return 481;
+      }
+      else if ((types(1).IsEqual(StepType(501))) &&
+               (types(2).IsEqual(StepType(169))) &&
+               (types(3).IsEqual(StepType(264)))) {
+        return 574;
+      }
+      else if ((types(1).IsEqual(StepType(169))) &&
+               (types(2).IsEqual(StepType(264))) &&
+               (types(3).IsEqual(StepType(502)))) {
+        return 578;
+      }
+      else if ((types(1).IsEqual(StepType(79))) &&
+               (types(2).IsEqual(StepType(501))) &&
+               (types(3).IsEqual(StepType(169)))) {
+        return 650;
+      }
+      else if (((types(1).IsEqual(StepType(609)) ||
+                 types(1).IsEqual(StepType(611)) ||
+                 types(1).IsEqual(StepType(612)) ||
+                 types(1).IsEqual(StepType(613)) ||
+                 types(1).IsEqual(StepType(614)) ||
+                 types(1).IsEqual(StepType(615))) &&
+                types(2).IsEqual(StepType(625)) &&
+                types(3).IsEqual(StepType(627)))
+                ||
+               (types(1).IsEqual(StepType(625)) &&
+                types(2).IsEqual(StepType(627)) &&
+                (types(3).IsEqual(StepType(616)) ||
+                 types(3).IsEqual(StepType(617)) ||
+                 types(3).IsEqual(StepType(618)) ||
+                 types(3).IsEqual(StepType(619)) ||
+                 types(3).IsEqual(StepType(620)) ||
+                 types(3).IsEqual(StepType(621)) ||
+                 types(3).IsEqual(StepType(622)) ||
+                 types(3).IsEqual(StepType(623)) ||
+                 types(3).IsEqual(StepType(624))))) {
+        return 694;
+      }
+      else if (((types(1).IsEqual(StepType(609)) ||
+                 types(1).IsEqual(StepType(611)) ||
+                 types(1).IsEqual(StepType(612)) ||
+                 types(1).IsEqual(StepType(613)) ||
+                 types(1).IsEqual(StepType(614)) ||
+                 types(1).IsEqual(StepType(615))) &&
+                types(2).IsEqual(StepType(625)) &&
+                types(3).IsEqual(StepType(676)))
+                ||
+               (types(1).IsEqual(StepType(625)) &&
+                types(2).IsEqual(StepType(676)) &&
+                (types(3).IsEqual(StepType(616)) ||
+                 types(3).IsEqual(StepType(617)) ||
+                 types(3).IsEqual(StepType(618)) ||
+                 types(3).IsEqual(StepType(619)) ||
+                 types(3).IsEqual(StepType(620)) ||
+                 types(3).IsEqual(StepType(621)) ||
+                 types(3).IsEqual(StepType(622)) ||
+                 types(3).IsEqual(StepType(623)) ||
+                 types(3).IsEqual(StepType(624))))) {
+        return 696;
+      }
+      else if (types(1).IsEqual(StepType(470)) &&
+               types(2).IsEqual(StepType(630)) &&
+               types(3).IsEqual(StepType(258))) {
+        return 699;
       }
     }
     return 0;
@@ -3204,6 +3486,24 @@ Standard_Boolean RWStepAP214_ReadWriteModule::IsComplex
     case 636:
       return Standard_True;
     case 650:
+      return Standard_True;
+    case 691:
+      return Standard_True;
+    case 692:
+      return Standard_True;
+    case 693:
+      return Standard_True;
+    case 694:
+      return Standard_True;
+    case 695:
+      return Standard_True;
+    case 696:
+      return Standard_True;
+    case 697:
+      return Standard_True;
+    case 698:
+      return Standard_True;
+    case 699:
       return Standard_True;
     default:
       return Standard_False;
@@ -3785,6 +4085,7 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 601: return Reco_DocumentProductEquivalence;
 
   // Added by SKL 18.06.2003 for Dimensional Tolerances (CAX-IF TRJ11)
+  case 609: return Reco_CylindricityTolerance;
   case 610: return Reco_ShapeRepresentationWithParameters;
   case 611: return Reco_AngularityTolerance;
   case 612: return Reco_ConcentricityTolerance;
@@ -3812,6 +4113,41 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 634: return Reco_PlacedDatumTargetFeature;
 
   case 651 : return Reco_MassMeasureWithUnit;
+
+  // Added by ika for GD&T AP242
+  case 660: return Reco_Apex;
+  case 661: return Reco_CentreOfSymmetry;
+  case 662: return Reco_GeometricAlignment;
+  case 663: return Reco_PerpendicularTo;
+  case 664: return Reco_Tangent;
+  case 665: return Reco_ParallelOffset;
+  case 666: return Reco_GeometricItemSpecificUsage;
+  case 667: return Reco_IdAttribute;
+  case 668: return Reco_ItemIdentifiedRepresentationUsage;
+  case 669: return Reco_AllAroundShapeAspect;
+  case 670: return Reco_BetweenShapeAspect;
+  case 671: return Reco_CompositeGroupShapeAspect;
+  case 672: return Reco_ContinuosShapeAspect;
+  case 673: return Reco_GeometricToleranceWithDefinedAreaUnit;
+  case 674: return Reco_GeometricToleranceWithDefinedUnit;
+  case 675: return Reco_GeometricToleranceWithMaximumTolerance;
+  case 676: return Reco_GeometricToleranceWithModifiers;
+  case 677: return Reco_UnequallyDisposedGeometricTolerance;
+  case 678: return Reco_NonUniformZoneDefinition;
+  case 679: return Reco_ProjectedZoneDefinition;
+  case 680: return Reco_RunoutZoneDefinition;
+  case 681: return Reco_RunoutZoneOrientation;
+  case 682: return Reco_ToleranceZone;
+  case 683: return Reco_ToleranceZoneDefinition;
+  case 684: return Reco_ToleranceZoneForm;
+  case 685: return Reco_ValueFormatTypeQualifier;
+  case 686: return Reco_DatumReferenceCompartment;
+  case 687: return Reco_DatumReferenceElement;
+  case 688: return Reco_DatumReferenceModifierWithValue;
+  case 689: return Reco_DatumSystem;
+  case 690: return Reco_GeneralDatumReference;
+  case 700: return Reco_IntegerRepresentationItem;
+  case 701: return Reco_ValueRepresentationItem;
 
   default : return PasReco;
   }
@@ -4054,7 +4390,60 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(const Standard_Integer
       types.Append (StepType(501));
       types.Append (StepType(169));
       break;
+    case 691:
+      types.Append (StepType(406));
+      types.Append (StepType(165));
+      types.Append (StepType(200));
+      types.Append (StepType(247));
+      break;
+    case 692:
+      types.Append (StepType(157));
+      types.Append (StepType(406));
+      types.Append (StepType(165));
+      types.Append (StepType(480));
+      types.Append (StepType(247));
+      break;
+    case 693:
+      types.Append (StepType(406));
+      types.Append (StepType(165));
+      types.Append (StepType(200));
+      types.Append (StepType(480));
+      types.Append (StepType(247));
+      break;
+    case 694:
+      types.Append (StepType(625));
+      types.Append (StepType(627));
+      types.Append (StepType(625));
+      break;
+    case 695:
+      types.Append (StepType(625));
+      types.Append (StepType(627));
+      types.Append (StepType(676));
+      types.Append (StepType(625));
+      break;
+    case 696:
+      types.Append (StepType(625));
+      types.Append (StepType(676));
+      types.Append (StepType(625));
+      break;
+    case 697:
+      types.Append (StepType(625));
+      types.Append (StepType(627));
+      types.Append (StepType(625));
+      types.Append (StepType(677));
+      break;
       default : return Standard_False;
+    case 698:
+      types.Append (StepType(671));
+      types.Append (StepType(470));
+      types.Append (StepType(630));
+      types.Append (StepType(258));
+      break;
+    case 699:
+      types.Append (StepType(470));
+      types.Append (StepType(630));
+      types.Append (StepType(258));
+      break;
     }
   return Standard_True;
 }
@@ -7184,11 +7573,23 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
 
       // Added by CKY 25 APR 2001 for CAX-IF TRJ7 (dimensional tolerances)
   case 470:
-  case 471:
-  case 472:  // same as ShapeAspect
     {
-      DeclareAndCast(StepRepr_ShapeAspect,anent,ent);
-      RWStepRepr_RWShapeAspect tool;
+      DeclareAndCast(StepRepr_CompositeShapeAspect,anent,ent);
+      RWStepRepr_RWCompositeShapeAspect tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 471:
+    {
+      DeclareAndCast(StepRepr_DerivedShapeAspect,anent,ent);
+      RWStepRepr_RWDerivedShapeAspect tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 472:
+    {
+      DeclareAndCast(StepRepr_Extension,anent,ent);
+      RWStepRepr_RWExtension tool;
       tool.ReadStep (data,num,ach,anent);
     }
     break;
@@ -7962,6 +8363,13 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
       tool.ReadStep (data,num,ach,anent);
     }
     break; 
+  case 609:
+    {
+      DeclareAndCast(StepDimTol_CylindricityTolerance,anent,ent);
+      RWStepDimTol_RWCylindricityTolerance tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
   case 610:  
     {
       DeclareAndCast(StepShape_ShapeRepresentationWithParameters,anent,ent);
@@ -8162,6 +8570,300 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
     {
       DeclareAndCast(StepBasic_MassMeasureWithUnit, anent, ent);
       RWStepBasic_RWMassMeasureWithUnit tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 660 :
+    {
+      DeclareAndCast(StepRepr_Apex, anent, ent);
+      RWStepRepr_RWApex tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 661 :
+    {
+      DeclareAndCast(StepRepr_CentreOfSymmetry, anent, ent);
+      RWStepRepr_RWCentreOfSymmetry tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 662 :
+    {
+      DeclareAndCast(StepRepr_GeometricAlignment, anent, ent);
+      RWStepRepr_RWGeometricAlignment tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 663 :
+    {
+      DeclareAndCast(StepRepr_PerpendicularTo, anent, ent);
+      RWStepRepr_RWPerpendicularTo tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 664 :
+    {
+      DeclareAndCast(StepRepr_Tangent, anent, ent);
+      RWStepRepr_RWTangent tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 665 :
+    {
+      DeclareAndCast(StepRepr_ParallelOffset, anent, ent);
+      RWStepRepr_RWParallelOffset tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 666 :
+    {
+      DeclareAndCast(StepAP242_GeometricItemSpecificUsage, anent, ent);
+      RWStepAP242_RWGeometricItemSpecificUsage tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 667 :
+    {
+      DeclareAndCast(StepAP242_IdAttribute, anent, ent);
+      RWStepAP242_RWIdAttribute tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 668 :
+    {
+      DeclareAndCast(StepAP242_ItemIdentifiedRepresentationUsage, anent, ent);
+      RWStepAP242_RWItemIdentifiedRepresentationUsage tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 669 :
+    {
+      DeclareAndCast(StepRepr_AllAroundShapeAspect, anent, ent);
+      RWStepRepr_RWAllAroundShapeAspect tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 670 :
+    {
+      DeclareAndCast(StepRepr_BetweenShapeAspect, anent, ent);
+      RWStepRepr_RWBetweenShapeAspect tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 671 :
+    {
+      DeclareAndCast(StepRepr_CompositeGroupShapeAspect, anent, ent);
+      RWStepRepr_RWCompositeGroupShapeAspect tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 672 :
+    {
+      DeclareAndCast(StepRepr_ContinuosShapeAspect, anent, ent);
+      RWStepRepr_RWContinuosShapeAspect tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 673 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithDefinedAreaUnit, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 674 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithDefinedUnit, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithDefinedUnit tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 675 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithMaximumTolerance, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithMaximumTolerance tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 676 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithModifiers, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithModifiers tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 677 :
+    {
+      DeclareAndCast(StepDimTol_UnequallyDisposedGeometricTolerance, anent, ent);
+      RWStepDimTol_RWUnequallyDisposedGeometricTolerance tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 678 :
+    {
+      DeclareAndCast(StepDimTol_NonUniformZoneDefinition, anent, ent);
+      RWStepDimTol_RWNonUniformZoneDefinition tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 679 :
+    {
+      DeclareAndCast(StepDimTol_ProjectedZoneDefinition, anent, ent);
+      RWStepDimTol_RWProjectedZoneDefinition tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 680 :
+    {
+      DeclareAndCast(StepDimTol_RunoutZoneDefinition, anent, ent);
+      RWStepDimTol_RWRunoutZoneDefinition tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 681 :
+    {
+      DeclareAndCast(StepDimTol_RunoutZoneOrientation, anent, ent);
+      RWStepDimTol_RWRunoutZoneOrientation tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 682 :
+    {
+      DeclareAndCast(StepDimTol_ToleranceZone, anent, ent);
+      RWStepDimTol_RWToleranceZone tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 683 :
+    {
+      DeclareAndCast(StepDimTol_ToleranceZoneDefinition, anent, ent);
+      RWStepDimTol_RWToleranceZoneDefinition tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 684 :
+    {
+      DeclareAndCast(StepDimTol_ToleranceZoneForm, anent, ent);
+      RWStepDimTol_RWToleranceZoneForm tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 685 :
+    {
+      DeclareAndCast(StepShape_ValueFormatTypeQualifier, anent, ent);
+      RWStepShape_RWValueFormatTypeQualifier tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 686 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceCompartment, anent, ent);
+      RWStepDimTol_RWDatumReferenceCompartment tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 687 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceElement, anent, ent);
+      RWStepDimTol_RWDatumReferenceElement tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 688 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceModifierWithValue, anent, ent);
+      RWStepDimTol_RWDatumReferenceModifierWithValue tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 689 :
+    {
+      DeclareAndCast(StepDimTol_DatumSystem, anent, ent);
+      RWStepDimTol_RWDatumSystem tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 690 :
+    {
+      DeclareAndCast(StepDimTol_GeneralDatumReference, anent, ent);
+      RWStepDimTol_RWGeneralDatumReference tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 691:
+    {
+      DeclareAndCast(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit,anent,ent);
+      RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 692:
+    {
+      DeclareAndCast(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI,anent,ent);
+      RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 693:
+    {
+      DeclareAndCast(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,anent,ent);
+      RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 694:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRef,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRef tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 695:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 696:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMod,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMod tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 697:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 698:
+    {
+      DeclareAndCast(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp,anent,ent);
+      RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 699:
+    {
+      DeclareAndCast(StepRepr_CompShAspAndDatumFeatAndShAsp,anent,ent);
+      RWStepRepr_RWCompShAspAndDatumFeatAndShAsp tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 700:
+    {
+      DeclareAndCast(StepRepr_IntegerRepresentationItem,anent,ent);
+      RWStepRepr_RWIntegerRepresentationItem tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+  case 701:
+    {
+      DeclareAndCast(StepRepr_ValueRepresentationItem,anent,ent);
+      RWStepRepr_RWValueRepresentationItem tool;
       tool.ReadStep (data,num,ach,anent);
     }
     break;
@@ -11574,11 +12276,23 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
 
       // Added by CKY 25 APR 2001 for CAX-IF TRJ7 (dimensional tolerances)
   case 470:
-  case 471:
-  case 472:  // same as ShapeAspect
     {
-      DeclareAndCast(StepRepr_ShapeAspect,anent,ent);
-      RWStepRepr_RWShapeAspect tool;
+      DeclareAndCast(StepRepr_CompositeShapeAspect,anent,ent);
+      RWStepRepr_RWCompositeShapeAspect tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 471:
+    {
+      DeclareAndCast(StepRepr_DerivedShapeAspect,anent,ent);
+      RWStepRepr_RWDerivedShapeAspect tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 472:
+    {
+      DeclareAndCast(StepRepr_Extension,anent,ent);
+      RWStepRepr_RWExtension tool;
       tool.WriteStep (SW,anent);
     }
     break;
@@ -12349,6 +13063,13 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
       tool.WriteStep (SW,anent);
     }
     break;
+  case 609:
+    {
+      DeclareAndCast(StepDimTol_CylindricityTolerance,anent,ent);
+      RWStepDimTol_RWCylindricityTolerance tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
   case 610:
     {
       DeclareAndCast(StepShape_ShapeRepresentationWithParameters,anent,ent);
@@ -12550,6 +13271,300 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     {
       DeclareAndCast(StepBasic_MassMeasureWithUnit, anent, ent);
       RWStepBasic_RWMassMeasureWithUnit tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 660 :
+    {
+      DeclareAndCast(StepRepr_Apex, anent, ent);
+      RWStepRepr_RWApex tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 661 :
+    {
+      DeclareAndCast(StepRepr_CentreOfSymmetry, anent, ent);
+      RWStepRepr_RWCentreOfSymmetry tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 662 :
+    {
+      DeclareAndCast(StepRepr_GeometricAlignment, anent, ent);
+      RWStepRepr_RWGeometricAlignment tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 663 :
+    {
+      DeclareAndCast(StepRepr_PerpendicularTo, anent, ent);
+      RWStepRepr_RWPerpendicularTo tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 664 :
+    {
+      DeclareAndCast(StepRepr_Tangent, anent, ent);
+      RWStepRepr_RWTangent tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 665 :
+    {
+      DeclareAndCast(StepRepr_ParallelOffset, anent, ent);
+      RWStepRepr_RWParallelOffset tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 666 :
+    {
+      DeclareAndCast(StepAP242_GeometricItemSpecificUsage, anent, ent);
+      RWStepAP242_RWGeometricItemSpecificUsage tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 667 :
+    {
+      DeclareAndCast(StepAP242_IdAttribute, anent, ent);
+      RWStepAP242_RWIdAttribute tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 668 :
+    {
+      DeclareAndCast(StepAP242_ItemIdentifiedRepresentationUsage, anent, ent);
+      RWStepAP242_RWItemIdentifiedRepresentationUsage tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 669 :
+    {
+      DeclareAndCast(StepRepr_AllAroundShapeAspect, anent, ent);
+      RWStepRepr_RWAllAroundShapeAspect tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 670 :
+    {
+      DeclareAndCast(StepRepr_BetweenShapeAspect, anent, ent);
+      RWStepRepr_RWBetweenShapeAspect tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 671 :
+    {
+      DeclareAndCast(StepRepr_CompositeGroupShapeAspect, anent, ent);
+      RWStepRepr_RWCompositeGroupShapeAspect tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 672 :
+    {
+      DeclareAndCast(StepRepr_ContinuosShapeAspect, anent, ent);
+      RWStepRepr_RWContinuosShapeAspect tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 673 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithDefinedAreaUnit, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 674 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithDefinedUnit, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithDefinedUnit tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 675 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithMaximumTolerance, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithMaximumTolerance tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 676 :
+    {
+      DeclareAndCast(StepDimTol_GeometricToleranceWithModifiers, anent, ent);
+      RWStepDimTol_RWGeometricToleranceWithModifiers tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 677 :
+    {
+      DeclareAndCast(StepDimTol_UnequallyDisposedGeometricTolerance, anent, ent);
+      RWStepDimTol_RWUnequallyDisposedGeometricTolerance tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 678 :
+    {
+      DeclareAndCast(StepDimTol_NonUniformZoneDefinition, anent, ent);
+      RWStepDimTol_RWNonUniformZoneDefinition tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 679 :
+    {
+      DeclareAndCast(StepDimTol_ProjectedZoneDefinition, anent, ent);
+      RWStepDimTol_RWProjectedZoneDefinition tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 680 :
+    {
+      DeclareAndCast(StepDimTol_RunoutZoneDefinition, anent, ent);
+      RWStepDimTol_RWRunoutZoneDefinition tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 681 :
+    {
+      DeclareAndCast(StepDimTol_RunoutZoneOrientation, anent, ent);
+      RWStepDimTol_RWRunoutZoneOrientation tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 682 :
+    {
+      DeclareAndCast(StepDimTol_ToleranceZone, anent, ent);
+      RWStepDimTol_RWToleranceZone tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 683 :
+    {
+      DeclareAndCast(StepDimTol_ToleranceZoneDefinition, anent, ent);
+      RWStepDimTol_RWToleranceZoneDefinition tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 684 :
+    {
+      DeclareAndCast(StepDimTol_ToleranceZoneForm, anent, ent);
+      RWStepDimTol_RWToleranceZoneForm tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 685 :
+    {
+      DeclareAndCast(StepShape_ValueFormatTypeQualifier, anent, ent);
+      RWStepShape_RWValueFormatTypeQualifier tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 686 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceCompartment, anent, ent);
+      RWStepDimTol_RWDatumReferenceCompartment tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 687 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceElement, anent, ent);
+      RWStepDimTol_RWDatumReferenceElement tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 688 :
+    {
+      DeclareAndCast(StepDimTol_DatumReferenceModifierWithValue, anent, ent);
+      RWStepDimTol_RWDatumReferenceModifierWithValue tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 689 :
+    {
+      DeclareAndCast(StepDimTol_DatumSystem, anent, ent);
+      RWStepDimTol_RWDatumSystem tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 690 :
+    {
+      DeclareAndCast(StepDimTol_GeneralDatumReference, anent, ent);
+      RWStepDimTol_RWGeneralDatumReference tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 691:
+    {
+      DeclareAndCast(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit,anent,ent);
+      RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 692:
+    {
+      DeclareAndCast(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI,anent,ent);
+      RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 693:
+    {
+      DeclareAndCast(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,anent,ent);
+      RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 694:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRef,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRef tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 695:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 696:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMod,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMod tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 697:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 698:
+    {
+      DeclareAndCast(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp,anent,ent);
+      RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 699:
+    {
+      DeclareAndCast(StepRepr_CompShAspAndDatumFeatAndShAsp,anent,ent);
+      RWStepRepr_RWCompShAspAndDatumFeatAndShAsp tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 700:
+    {
+      DeclareAndCast(StepRepr_IntegerRepresentationItem,anent,ent);
+      RWStepRepr_RWIntegerRepresentationItem tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 701:
+    {
+      DeclareAndCast(StepRepr_ValueRepresentationItem,anent,ent);
+      RWStepRepr_RWValueRepresentationItem tool;
       tool.WriteStep (SW,anent);
     }
     break;

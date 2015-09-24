@@ -22,9 +22,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_DatumReference.hxx>
+#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
-#include <StepDimTol_HArray1OfDatumReference.hxx>
-#include <StepRepr_ShapeAspect.hxx>
+#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWGeometricToleranceWithDatumReference
@@ -58,20 +58,20 @@ void RWStepDimTol_RWGeometricToleranceWithDatumReference::ReadStep (const Handle
   Handle(StepBasic_MeasureWithUnit) aGeometricTolerance_Magnitude;
   data->ReadEntity (num, 3, "geometric_tolerance.magnitude", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aGeometricTolerance_Magnitude);
 
-  Handle(StepRepr_ShapeAspect) aGeometricTolerance_TolerancedShapeAspect;
-  data->ReadEntity (num, 4, "geometric_tolerance.toleranced_shape_aspect", ach, STANDARD_TYPE(StepRepr_ShapeAspect), aGeometricTolerance_TolerancedShapeAspect);
+  StepDimTol_GeometricToleranceTarget aGeometricTolerance_TolerancedShapeAspect;
+  data->ReadEntity (num, 4, "geometric_tolerance.toleranced_shape_aspect", ach, aGeometricTolerance_TolerancedShapeAspect);
 
   // Own fields of GeometricToleranceWithDatumReference
 
-  Handle(StepDimTol_HArray1OfDatumReference) aDatumSystem;
+  Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
   Standard_Integer sub5 = 0;
   if ( data->ReadSubList (num, 5, "datum_system", ach, sub5) ) {
     Standard_Integer nb0 = data->NbParams(sub5);
-    aDatumSystem = new StepDimTol_HArray1OfDatumReference (1, nb0);
+    aDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference (1, nb0);
     Standard_Integer num2 = sub5;
     for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
-      Handle(StepDimTol_DatumReference) anIt0;
-      data->ReadEntity (num2, i0, "datum_reference", ach, STANDARD_TYPE(StepDimTol_DatumReference), anIt0);
+      StepDimTol_DatumSystemOrReference anIt0;
+      data->ReadEntity (num2, i0, "datum_system_or_reference", ach, anIt0);
       aDatumSystem->SetValue(i0, anIt0);
     }
   }
@@ -101,14 +101,14 @@ void RWStepDimTol_RWGeometricToleranceWithDatumReference::WriteStep (StepData_St
 
   SW.Send (ent->StepDimTol_GeometricTolerance::Magnitude());
 
-  SW.Send (ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect());
+  SW.Send (ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect().Value());
 
   // Own fields of GeometricToleranceWithDatumReference
 
   SW.OpenSub();
-  for (Standard_Integer i4=1; i4 <= ent->DatumSystem()->Length(); i4++ ) {
-    Handle(StepDimTol_DatumReference) Var0 = ent->DatumSystem()->Value(i4);
-    SW.Send (Var0);
+  for (Standard_Integer i4=1; i4 <= ent->DatumSystemAP242()->Length(); i4++ ) {
+    StepDimTol_DatumSystemOrReference Var0 = ent->DatumSystemAP242()->Value(i4);
+    SW.Send (Var0.Value());
   }
   SW.CloseSub();
 }
@@ -126,12 +126,12 @@ void RWStepDimTol_RWGeometricToleranceWithDatumReference::Share (const Handle(St
 
   iter.AddItem (ent->StepDimTol_GeometricTolerance::Magnitude());
 
-  iter.AddItem (ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect());
+  iter.AddItem (ent->StepDimTol_GeometricTolerance::TolerancedShapeAspect().Value());
 
   // Own fields of GeometricToleranceWithDatumReference
 
-  for (Standard_Integer i3=1; i3 <= ent->DatumSystem()->Length(); i3++ ) {
-    Handle(StepDimTol_DatumReference) Var0 = ent->DatumSystem()->Value(i3);
-    iter.AddItem (Var0);
+  for (Standard_Integer i3=1; i3 <= ent->DatumSystemAP242()->Length(); i3++ ) {
+    StepDimTol_DatumSystemOrReference Var0 = ent->DatumSystemAP242()->Value(i3);
+    iter.AddItem (Var0.Value());
   }
 }

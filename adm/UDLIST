@@ -311,6 +311,7 @@ n MoniTool
 n RWHeaderSection
 n RWStepAP203
 n RWStepAP214
+n RWStepAP242
 n RWStepBasic
 n RWStepDimTol
 n RWStepElement
@@ -328,6 +329,7 @@ n STEPSelections
 n StepAP203
 n StepAP209
 n StepAP214
+n StepAP242
 n StepBasic
 n StepData
 n StepDimTol

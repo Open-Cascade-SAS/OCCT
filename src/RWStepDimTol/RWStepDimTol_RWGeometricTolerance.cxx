@@ -22,7 +22,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
-#include <StepRepr_ShapeAspect.hxx>
+#include <StepDimTol_GeometricToleranceTarget.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWGeometricTolerance
@@ -56,8 +56,8 @@ void RWStepDimTol_RWGeometricTolerance::ReadStep (const Handle(StepData_StepRead
   Handle(StepBasic_MeasureWithUnit) aMagnitude;
   data->ReadEntity (num, 3, "magnitude", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aMagnitude);
 
-  Handle(StepRepr_ShapeAspect) aTolerancedShapeAspect;
-  data->ReadEntity (num, 4, "toleranced_shape_aspect", ach, STANDARD_TYPE(StepRepr_ShapeAspect), aTolerancedShapeAspect);
+  StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
+  data->ReadEntity (num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
 
   // Initialize entity
   ent->Init(aName,
@@ -83,7 +83,7 @@ void RWStepDimTol_RWGeometricTolerance::WriteStep (StepData_StepWriter& SW,
 
   SW.Send (ent->Magnitude());
 
-  SW.Send (ent->TolerancedShapeAspect());
+  SW.Send (ent->TolerancedShapeAspect().Value());
 }
 
 //=======================================================================
@@ -99,5 +99,5 @@ void RWStepDimTol_RWGeometricTolerance::Share (const Handle(StepDimTol_Geometric
 
   iter.AddItem (ent->Magnitude());
 
-  iter.AddItem (ent->TolerancedShapeAspect());
+  iter.AddItem (ent->TolerancedShapeAspect().Value());
 }

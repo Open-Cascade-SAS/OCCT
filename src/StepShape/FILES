@@ -15,6 +15,7 @@ StepShape_Array1OfFaceBound.hxx
 StepShape_Array1OfGeometricSetSelect.hxx
 StepShape_Array1OfOrientedClosedShell.hxx
 StepShape_Array1OfOrientedEdge.hxx
+StepShape_Array1OfShapeDimensionRepresentationItem.hxx
 StepShape_Array1OfShell.hxx
 StepShape_Array1OfValueQualifier.hxx
 StepShape_Block.cxx
@@ -118,6 +119,7 @@ StepShape_HArray1OfFaceBound.hxx
 StepShape_HArray1OfGeometricSetSelect.hxx
 StepShape_HArray1OfOrientedClosedShell.hxx
 StepShape_HArray1OfOrientedEdge.hxx
+StepShape_HArray1OfShapeDimensionRepresentationItem.hxx
 StepShape_HArray1OfShell.hxx
 StepShape_HArray1OfValueQualifier.hxx
 StepShape_LimitsAndFits.cxx
@@ -178,6 +180,8 @@ StepShape_ShapeDefinitionRepresentation.cxx
 StepShape_ShapeDefinitionRepresentation.hxx
 StepShape_ShapeDimensionRepresentation.cxx
 StepShape_ShapeDimensionRepresentation.hxx
+StepShape_ShapeDimensionRepresentationItem.cxx
+StepShape_ShapeDimensionRepresentationItem.hxx
 StepShape_ShapeRepresentation.cxx
 StepShape_ShapeRepresentation.hxx
 StepShape_ShapeRepresentationWithParameters.cxx
@@ -214,6 +218,8 @@ StepShape_TransitionalShapeRepresentation.cxx
 StepShape_TransitionalShapeRepresentation.hxx
 StepShape_TypeQualifier.cxx
 StepShape_TypeQualifier.hxx
+StepShape_ValueFormatTypeQualifier.cxx
+StepShape_ValueFormatTypeQualifier.hxx
 StepShape_ValueQualifier.cxx
 StepShape_ValueQualifier.hxx
 StepShape_Vertex.cxx
