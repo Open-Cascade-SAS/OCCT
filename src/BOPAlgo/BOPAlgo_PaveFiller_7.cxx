@@ -287,13 +287,28 @@ class BOPAlgo_BPC {
     myE=aE;
   }
   //
+  const TopoDS_Edge& GetEdge() const {
+    return myE;
+  }
+  const TopoDS_Face& GetFace() const {
+    return myF;
+  }
+  const Handle_Geom2d_Curve& GetCurve2d() const {
+    return myCurve;
+  }
+  Standard_Boolean IsToUpdate() const {
+    return myToUpdate;
+  }
+  //
   void Perform() {
-    BOPTools_AlgoTools2D::BuildPCurveForEdgeOnPlane (myE, myF);
+    BOPTools_AlgoTools2D::BuildPCurveForEdgeOnPlane (myE, myF, myCurve, myToUpdate);
   };
   //
  protected:
   TopoDS_Edge myE;
   TopoDS_Face myF;
+  Handle_Geom2d_Curve myCurve;
+  Standard_Boolean myToUpdate;
 };
 //=======================================================================
 typedef BOPCol_NCVector
@@ -731,6 +746,7 @@ void BOPAlgo_PaveFiller::Prepare()
     return;
   }
   //
+  // Build pcurves of edges on planes; first collect pairs edge-face.
   BOPAlgo_VectorOfBPC aVBPC;
   //
   for (i = 1; i <= aNbF; ++i) {
@@ -747,6 +763,17 @@ void BOPAlgo_PaveFiller::Prepare()
   //======================================================
   BOPAlgo_BPCCnt::Perform(myRunParallel, aVBPC);
   //======================================================
+
+  // pcurves are built, and now update edges
+  BRep_Builder aBB;
+  TopoDS_Edge E;
+  for (i = 0; i < aVBPC.Extent(); i++) {
+    const BOPAlgo_BPC& aBPC=aVBPC(i);
+    if (aBPC.IsToUpdate()) {
+      Standard_Real aTolE = BRep_Tool::Tolerance(aBPC.GetEdge());
+      aBB.UpdateEdge(aBPC.GetEdge(), aBPC.GetCurve2d(), aBPC.GetFace(), aTolE);
+    }
+  }
 }
 //=======================================================================
 //function : IsBasedOnPlane

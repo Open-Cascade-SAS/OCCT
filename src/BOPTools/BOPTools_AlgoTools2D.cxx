@@ -494,6 +494,21 @@ void BOPTools_AlgoTools2D::BuildPCurveForEdgeOnPlane
     aBB.UpdateEdge(aE, aC2D, aF, aTolE);
   }
 }
+
+//=======================================================================
+//function : BuildPCurveForEdgeOnPlane
+//purpose  : 
+//=======================================================================
+void BOPTools_AlgoTools2D::BuildPCurveForEdgeOnPlane 
+  (const TopoDS_Edge& aE,
+   const TopoDS_Face& aF,
+   Handle(Geom2d_Curve)& aC2D,
+   Standard_Boolean& bToUpdate)
+{
+  Standard_Real aT1, aT2;
+  aC2D=BRep_Tool_CurveOnSurface(aE, aF, aT1, aT2, bToUpdate);
+}
+
 //=======================================================================
 // function: BuildPCurveForEdgesOnPlane
 // purpose: 
