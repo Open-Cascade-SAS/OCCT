@@ -418,8 +418,8 @@ Handle(TopTools_HSequenceOfShape) Translate::importBREP( const QString& file )
 	Handle(TopTools_HSequenceOfShape) aSequence;
     TopoDS_Shape aShape;
 	BRep_Builder aBuilder;
-
-	Standard_Boolean result = BRepTools::Read( aShape, (Standard_CString)file.toLatin1().constData(), aBuilder );
+  TCollection_AsciiString  aFilePath = file.toUtf8().data();
+	Standard_Boolean result = BRepTools::Read( aShape, aFilePath.ToCString(), aBuilder );
 	if ( result )
     {
 	    aSequence = new TopTools_HSequenceOfShape();
@@ -431,8 +431,10 @@ Handle(TopTools_HSequenceOfShape) Translate::importBREP( const QString& file )
 Handle(TopTools_HSequenceOfShape) Translate::importIGES( const QString& file )
 {
     Handle(TopTools_HSequenceOfShape) aSequence;
+    TCollection_AsciiString  aFilePath = file.toUtf8().data();
+      
     IGESControl_Reader Reader;
-    int status = Reader.ReadFile( (Standard_CString)file.toLatin1().constData() );
+    int status = Reader.ReadFile(aFilePath.ToCString() );
 
     if ( status == IFSelect_RetDone )
     {
@@ -447,9 +449,9 @@ Handle(TopTools_HSequenceOfShape) Translate::importIGES( const QString& file )
 Handle(TopTools_HSequenceOfShape) Translate::importSTEP( const QString& file )
 {
 	Handle(TopTools_HSequenceOfShape) aSequence;
-
+  TCollection_AsciiString  aFilePath = file.toUtf8().data();
 	STEPControl_Reader aReader;
-	IFSelect_ReturnStatus status = aReader.ReadFile( (Standard_CString)file.toLatin1().constData() );
+	IFSelect_ReturnStatus status = aReader.ReadFile( aFilePath.ToCString() );
 	if ( status == IFSelect_RetDone )
     {
 	    //Interface_TraceFile::SetDefault();
