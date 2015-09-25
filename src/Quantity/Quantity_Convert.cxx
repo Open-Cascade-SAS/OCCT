@@ -115,7 +115,7 @@ Standard_Boolean Quantity_Convert::IsPhysicalQuantity
    Standard_Boolean Find = Standard_False; 
    while (i <= 68 && !Find) 
    {
-      if (IsSimilar(anEnum.ToCString(),theEnums[i-1])) 
+      if (IsEqual(anEnum.ToCString(),theEnums[i-1])) 
          Find = Standard_True;
       else 
          i++;

@@ -41,7 +41,7 @@ Standard_Boolean Standard_Transient::IsInstance(const Handle(Standard_Type) &ATy
 //
 Standard_Boolean Standard_Transient::IsInstance(const Standard_CString theTypeName) const
 {
-  return IsSimilar ( DynamicType()->Name(), theTypeName );
+  return IsEqual ( DynamicType()->Name(), theTypeName );
 }
 
 //

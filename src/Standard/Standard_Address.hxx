@@ -31,14 +31,6 @@ inline Standard_Integer HashCode (const Standard_Address Value,
   return HashCode( ( ( U.I[0] ^ U.I[1] ) & 0x7fffffff )  , Upper ) ;
 }
 
-
-//============================================================================
-//==== IsSimilar : Returns Standard_True if two booleans have the same value
-//============================================================================
-inline Standard_Boolean IsSimilar(const Standard_Address One
-				 ,const Standard_Address Two)
-{ return One == Two; }
-
 //============================================================================
 // IsEqual : Returns Standard_True if two CString have the same value
 //============================================================================

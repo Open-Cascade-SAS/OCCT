@@ -70,14 +70,6 @@ inline Standard_Boolean IsEqual (const Standard_Utf32Char theOne,
 #endif
 
 // ------------------------------------------------------------------
-// IsSimilar : Returns Standard_True if two integers are equal
-// ------------------------------------------------------------------
-inline Standard_Boolean IsSimilar (const Standard_Integer One, 
-				   const Standard_Integer Two)
-{ return One == Two; }
-
-
-// ------------------------------------------------------------------
 // IsEven : Returns Standard_True if an integer is even
 // ------------------------------------------------------------------
 inline Standard_Boolean IsEven (const Standard_Integer Value) 

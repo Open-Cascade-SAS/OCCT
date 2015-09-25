@@ -133,7 +133,6 @@ inline Standard_ShortReal     Min (const Standard_ShortReal Val1,
 // Methods from Standard_Entity class which are redefined:  
 //    - Hascode
 //    - IsEqual
-//    - IsSimilar
 // ===============================================
 
 // ==================================
@@ -147,13 +146,6 @@ __Standard_API Standard_Integer HashCode (const Standard_ShortReal, const Standa
 inline Standard_Boolean  IsEqual (const Standard_ShortReal Value1, 
 				  const Standard_ShortReal Value2) 
 { return Abs((Value1 - Value2)) < ShortRealSmall(); }
-
-//-------------------------------------------------------------------
-// IsSimilar : Returns Standard_True if two ShortReals are equal
-//-------------------------------------------------------------------
-inline Standard_Boolean  IsSimilar(const Standard_ShortReal One, 
-				   const Standard_ShortReal Two)
-{ return IsEqual (One,Two); }
 
 #endif
 

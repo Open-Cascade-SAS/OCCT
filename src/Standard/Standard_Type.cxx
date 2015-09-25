@@ -30,7 +30,7 @@ Standard_Boolean Standard_Type::SubType (const Handle(Standard_Type)& theOther) 
 
 Standard_Boolean Standard_Type::SubType (const Standard_CString theName) const
 {
-  return theName != 0 && (IsSimilar (myName, theName) || (! myParent.IsNull() && myParent->SubType (theName)));
+  return theName != 0 && (IsEqual (myName, theName) || (! myParent.IsNull() && myParent->SubType (theName)));
 }
 
 // ------------------------------------------------------------------

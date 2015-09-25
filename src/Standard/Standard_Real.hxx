@@ -25,7 +25,6 @@
 // Methods from Standard_Entity class which are redefined:  
 //    - Hascode
 //    - IsEqual
-//    - IsSimilar
 // ===============================================
 
 // ==================================
@@ -63,15 +62,6 @@ inline Standard_Real     Abs(const Standard_Real Value)
 inline Standard_Boolean  IsEqual (const Standard_Real Value1, 
 				  const Standard_Real Value2) 
 { return Abs((Value1 - Value2)) < RealSmall(); }
-
-//-------------------------------------------------------------------
-// IsSimilar : Returns Standard_True if two reals are equal
-//-------------------------------------------------------------------
-inline Standard_Boolean  IsSimilar(const Standard_Real One, 
-				  const Standard_Real Two)
-{ return IsEqual (One,Two); }
-
-
 
          //  *********************************** //
          //       Class methods                  //

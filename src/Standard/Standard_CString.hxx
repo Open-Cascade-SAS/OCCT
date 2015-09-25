@@ -32,8 +32,6 @@
 #  include <Standard_Integer.hxx>
 # endif
 
-inline Standard_Boolean IsSimilar(const Standard_CString One
-				 ,const Standard_CString Two);
 __Standard_API Standard_Integer HashCode (const Standard_CString,
                            const Standard_Integer);
 inline Standard_Integer HashCode (const Standard_CString,
@@ -54,9 +52,9 @@ __Standard_API int    Fprintf (FILE* theFile, const char* theFormat, ...);
 __Standard_API int    Sprintf (char* theBuffer, const char* theFormat, ...);
 
 //============================================================================
-//==== IsSimilar : Returns Standard_True if two booleans have the same value
+//==== IsEqual : Returns Standard_True if two booleans have the same value
 //============================================================================
-inline Standard_Boolean IsSimilar(const Standard_CString One
+inline Standard_Boolean IsEqual(const Standard_CString One
 				 ,const Standard_CString Two)
 {
   return (strcmp(One,Two) == 0);

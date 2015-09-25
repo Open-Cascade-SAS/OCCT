@@ -66,11 +66,4 @@ inline Standard_Boolean IsEqual(const Standard_ExtCharacter One,
 				const Standard_ExtCharacter Two)
 { return One == Two; }
 
-// ------------------------------------------------------------------
-// IsSimilar : Returns Standard_True if two characters have the same value
-// ------------------------------------------------------------------
-inline Standard_Boolean IsSimilar(const Standard_ExtCharacter One, 
-				  const Standard_ExtCharacter Two)
-{ return One == Two; }
-
 #endif
