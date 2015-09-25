@@ -255,7 +255,7 @@ Standard_Integer GenerateId()
 const Handle(MMgt_TShared)& IVtkDraw::WClass()
 {
   static Handle(MMgt_TShared) aWindowClass;
-#ifdef WNT
+#ifdef _WIN32
   if (aWindowClass.IsNull())
   {
     aWindowClass = new WNT_WClass ("GWVTK_Class", DefWindowProc,
@@ -302,7 +302,7 @@ void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
   if (isFirst)
   {
     SetDisplayConnection (new Aspect_DisplayConnection ());
-#ifdef WNT
+#ifdef _WIN32
     if (GetWindow().IsNull())
     {
       GetWindow() = new WNT_Window ("IVtkTest",
@@ -332,7 +332,7 @@ void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
     GetRenderer()->GetActiveCamera()->ParallelProjectionOn();
     aRenWin->SetSize (aPxWidth, aPxHeight);
 
-#ifdef WNT
+#ifdef _WIN32
     aRenWin->SetWindowId((void*)GetWindow()->HWindow());
 #else
     Window aWindowId = GetWindow()->XWindow();
