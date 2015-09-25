@@ -705,8 +705,7 @@ void AIS_InteractiveContext::EraseSelected (const Standard_Boolean theToUpdateVi
   aSelIter->Init();
   while (aSelIter->More())
   {
-    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aSelIter->Value());
-    Handle(AIS_InteractiveObject) anObj   = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter->Value());
 
     Erase (anObj, Standard_False);
     isFound = Standard_True;
