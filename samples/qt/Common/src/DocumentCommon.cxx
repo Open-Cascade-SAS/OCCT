@@ -237,4 +237,5 @@ void DocumentCommon::onDelete()
     myContext->EraseSelected (Standard_False);
     myContext->ClearSelected();
     getApplication()->onSelectionChanged();
+	myContext->UpdateCurrentViewer();
 }
