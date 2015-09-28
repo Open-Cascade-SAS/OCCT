@@ -12,6 +12,6 @@ bfuse res t0 t1
 set m0 [meminfo w]
 repeat 10 {bfuse res t0 t1}
 set m1 [meminfo w]
-if {[expr {$m1 - $m0}] > 1048576} {
+if {[expr {$m1 - $m0}] > 1572864} {
   puts "ERROR: OCC26616 is reproduced. Memory leak has been detected."
 }

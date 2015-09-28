@@ -6,16 +6,17 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
+
 set filename BUC40132.igs
 
 set ref_data {
 DATA        : Faulties = 6  ( 0 )  Warnings = 0  ( 0 )  Summary  = 6  ( 0 )
-TPSTAT      : Faulties = 12  ( 238 )  Warnings = 470  ( 2529 )  Summary  = 482  ( 2767 )
+TPSTAT      : Faulties = 12  ( 238 )  Warnings = 473  ( 2623 )  Summary  = 485  ( 2861 )
 CHECKSHAPE  : Wires    = 4  ( 4 )  Faces    = 4  ( 4 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1346  ( 1345 )   Summary  = 22215  ( 22296 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1346  ( 1345 )   FreeWire = 96  ( 170 )   FreeEdge  = 1061 ( 1061 )   SharedEdge = 9271  ( 9280 )
-TOLERANCE   : MaxTol   =   0.8099726869  (    1.367966665 )  AvgTol   =  0.008047307184  (  0.008376960654 )
-LABELS      : N0Labels = 27  ( 27 )  N1Labels = 2100  ( 6107 )  N2Labels = 0  ( 0 )   TotalLabels = 2127  ( 6134 )   NameLabels = 2127  ( 2596 )   ColorLabels = 2114  ( 6133 )   LayerLabels = 2114  ( 6133 )
+TOLERANCE   : MaxTol   =   0.8099726869  (    1.367966665 )  AvgTol   =  0.008043971398  (  0.008388581449 )
+LABELS      : N0Labels = 27  ( 27 )  N1Labels = 2100  ( 5101 )  N2Labels = 0  ( 0 )   TotalLabels = 2127  ( 5128 )   NameLabels = 2127  ( 2596 )   ColorLabels = 2114  ( 5127 )   LayerLabels = 2114  ( 5127 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 11  ( 12 )
 COLORS      : Colors   = BLUE1 CYAN1 CYAN2 DARKGOLDENROD GREEN MAGENTA1 PALEVIOLETRED1 RED TURQUOISE2 WHITE YELLOW  ( BLUE1 CYAN1 CYAN2 DARKGOLDENROD GRAY53 GREEN MAGENTA1 PALEVIOLETRED1 RED TURQUOISE2 WHITE YELLOW )
