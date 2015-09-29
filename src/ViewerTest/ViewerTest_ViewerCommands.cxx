@@ -8444,6 +8444,25 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         return 1;
       }
     }
+    else if (aFlag == "-resolution")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aResolution (theArgVec[anArgIter]);
+      if (aResolution.IsIntegerValue())
+      {
+        aView->ChangeRenderingParams().Resolution = static_cast<unsigned int> (Draw::Atoi (aResolution.ToCString()));
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at argument'" << anArg << "'.\n";
+        return 1;
+      }
+    }
     else
     {
       std::cout << "Error: wrong syntax, unknown flag '" << anArg << "'\n";
@@ -9164,6 +9183,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-env          on|off'  Enables/disables environment map background"
     "\n      '-shadingModel model'   Controls shading model from enumeration"
     "\n                              color, flat, gouraud, phong"
+    "\n      '-resolution   value'   Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
     "\n    Unlike vcaps, these parameters dramatically change visual properties."
     "\n    Command is intended to control presentation quality depending on"
     "\n    hardware capabilities and performance.",

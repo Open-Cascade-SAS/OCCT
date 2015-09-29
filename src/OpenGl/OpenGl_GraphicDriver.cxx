@@ -472,11 +472,12 @@ void OpenGl_GraphicDriver::SetBuffersNoSwap (const Standard_Boolean theIsNoSwap)
 // function : TextSize
 // purpose  :
 // =======================================================================
-void OpenGl_GraphicDriver::TextSize (const Standard_CString   theText,
-                                     const Standard_ShortReal theHeight,
-                                     Standard_ShortReal&      theWidth,
-                                     Standard_ShortReal&      theAscent,
-                                     Standard_ShortReal&      theDescent) const
+void OpenGl_GraphicDriver::TextSize (const Handle(Graphic3d_CView)& theView,
+                                     const Standard_CString         theText,
+                                     const Standard_ShortReal       theHeight,
+                                     Standard_ShortReal&            theWidth,
+                                     Standard_ShortReal&            theAscent,
+                                     Standard_ShortReal&            theDescent) const
 {
   const Handle(OpenGl_Context)& aCtx = GetSharedContext();
   if (aCtx.IsNull())
@@ -506,7 +507,7 @@ void OpenGl_GraphicDriver::TextSize (const Standard_CString   theText,
   aTextAspect.SetAspect(aDefaultContextText);
   TCollection_ExtendedString anExtText = theText;
   NCollection_String aText = (Standard_Utf16Char* )anExtText.ToExtString();
-  OpenGl_Text::StringSize (aCtx, aText, aTextAspect, aTextParam, theWidth, theAscent, theDescent);
+  OpenGl_Text::StringSize(aCtx, aText, aTextAspect, aTextParam, theView->RenderingParams().Resolution, theWidth, theAscent, theDescent);
 }
 
 //=======================================================================

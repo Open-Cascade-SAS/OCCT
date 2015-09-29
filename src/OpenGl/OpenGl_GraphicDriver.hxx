@@ -132,7 +132,12 @@ public:
 
 public:
 
-  Standard_EXPORT void TextSize (const Standard_CString AText,const Standard_ShortReal AHeight,Standard_ShortReal& AWidth,Standard_ShortReal& AnAscent,Standard_ShortReal& ADescent) const;
+  Standard_EXPORT void TextSize (const Handle(Graphic3d_CView)& theView,
+                                 const Standard_CString         theText,
+                                 const Standard_ShortReal       theHeight,
+                                 Standard_ShortReal&            theWidth,
+                                 Standard_ShortReal&            theAscent,
+                                 Standard_ShortReal&            theDescent) const;
 
   Standard_EXPORT Standard_Integer InquirePlaneLimit();
 

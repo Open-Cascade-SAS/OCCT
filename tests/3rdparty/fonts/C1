@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC26298 make font resolution configurable"
+puts "============"
+puts ""
+pload VISUALIZATION
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vclear
+vclose all
+
+vinit
+vtop
+
+vrenderparams -resolution 72
+
+vdrawtext t0 TopLeftText -pos -100 100 0 -font SansFont -color yellow -valign top -halign left
+vdrawtext t1 CenterText -pos 0 0 0 -font SansFont -color green -valign center -halign center
+vdrawtext t2 BottomRightText -pos 100 -100 0 -font SansFont -color red -valign bottom -halign right
+
+vfit
+
+vdump $imagedir/${casename}_1.png
+
+vrenderparams -resolution 96
+
+vdump $imagedir/${casename}_2.png
+
+vrenderparams -resolution 144
+
+vdump $imagedir/${casename}_3.png

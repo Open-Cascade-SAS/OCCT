@@ -25,6 +25,8 @@
 class Graphic3d_RenderingParams
 {
 public:
+  //! Default pixels density.
+  static const unsigned int THE_DEFAULT_RESOLUTION = 72u;
 
   //! Default number of samples per pixel.
   static const Standard_Integer THE_DEFAULT_SPP = 1;
@@ -60,7 +62,9 @@ public:
 
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
     AnaglyphFilter (Anaglyph_RedCyan_Optimized),
-    ToReverseStereo (Standard_False)
+    ToReverseStereo (Standard_False),
+
+    Resolution (THE_DEFAULT_RESOLUTION)
   {
     const Graphic3d_Vec4 aZero (0.0f, 0.0f, 0.0f, 0.0f);
     AnaglyphLeft .SetRow (0, Graphic3d_Vec4 (1.0f,  0.0f,  0.0f, 0.0f));
@@ -92,6 +96,12 @@ public:
   Graphic3d_Mat4          AnaglyphLeft;                //!< left  anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
   Graphic3d_Mat4          AnaglyphRight;               //!< right anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
   Standard_Boolean        ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
+
+  unsigned int            Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
+                                                       //!< (when defined in screen-space units rather than in 3D) to be properly displayed
+                                                       //!< on device (screen / printer). 72 is default value.
+                                                       //!< Note that using difference resolution in different Views in same Viewer
+                                                       //!< will lead to performance regression (for example, text will be recreated every time).
 
 };
 

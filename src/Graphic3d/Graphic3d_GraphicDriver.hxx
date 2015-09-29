@@ -99,8 +99,13 @@ public:
   
   virtual Standard_ShortReal DefaultTextHeight() const = 0;
   
-  //! call_togl_textsize2d
-  virtual void TextSize (const Standard_CString AText, const Standard_ShortReal AHeight, Standard_ShortReal& AWidth, Standard_ShortReal& AnAscent, Standard_ShortReal& ADescent) const = 0;
+  //! Computes text width.
+  virtual void TextSize (const Handle(Graphic3d_CView)& theView,
+                         const Standard_CString         theText,
+                         const Standard_ShortReal       theHeight,
+                         Standard_ShortReal&            theWidth,
+                         Standard_ShortReal&            theAscent,
+                         Standard_ShortReal&            theDescent) const = 0;
 
   //! Add a new top-level z layer with ID <theLayerId> for
   //! the view. Z layers allow drawing structures in higher layers

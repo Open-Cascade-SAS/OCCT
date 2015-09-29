@@ -25,6 +25,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
+#include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 
 #include <gp_Ax2.hxx>
@@ -75,12 +76,14 @@ public: //! @name methods for compatibility with layers
 
   //! Create key for shared resource
   Standard_EXPORT static TCollection_AsciiString FontKey (const OpenGl_AspectText& theAspect,
-                                                          const Standard_Integer   theHeight);
+                                                          const Standard_Integer   theHeight,
+                                                          const unsigned int       theResolution);
 
   //! Find shared resource for specified font or initialize new one
   Standard_EXPORT static Handle(OpenGl_Font) FindFont (const Handle(OpenGl_Context)& theCtx,
                                                        const OpenGl_AspectText&      theAspect,
                                                        const Standard_Integer        theHeight,
+                                                       const unsigned int            theResolution,
                                                        const TCollection_AsciiString theKey);
 
   //! Compute text width
@@ -88,6 +91,7 @@ public: //! @name methods for compatibility with layers
                                           const NCollection_String&     theText,
                                           const OpenGl_AspectText&      theTextAspect,
                                           const OpenGl_TextParam&       theParams,
+                                          const unsigned int            theResolution,
                                           Standard_ShortReal&           theWidth,
                                           Standard_ShortReal&           theAscent,
                                           Standard_ShortReal&           theDescent);
@@ -101,7 +105,8 @@ public: //! @name methods for compatibility with layers
   //! Perform rendering
   Standard_EXPORT void Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                                const Handle(OpenGl_Context)&        theCtx,
-                               const OpenGl_AspectText&             theTextAspect) const;
+                               const OpenGl_AspectText&             theTextAspect,
+                               const unsigned int                   theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
 
 protected:
 
@@ -132,7 +137,8 @@ private:
                const Handle(OpenGl_Context)&        theCtx,
                const OpenGl_AspectText&             theTextAspect,
                const TEL_COLOUR&                    theColorText,
-               const TEL_COLOUR&                    theColorSubs) const;
+               const TEL_COLOUR&                    theColorSubs,
+               const unsigned int                   theResolution) const;
 
 protected:
 

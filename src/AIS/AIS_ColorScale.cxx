@@ -776,9 +776,10 @@ Standard_Integer AIS_ColorScale::TextHeight (const TCollection_ExtendedString& t
 //=======================================================================
 void AIS_ColorScale::TextSize (const TCollection_ExtendedString& theText, const Standard_Integer theHeight, Standard_Integer& theWidth, Standard_Integer& theAscent, Standard_Integer& theDescent) const
 {
+  const Handle(Graphic3d_CView)& aView = GetContext()->CurrentViewer()->ActiveView()->View();
   Standard_ShortReal aWidth(10.0), anAscent(1.0), aDescent(1.0);
   TCollection_AsciiString aText (theText.ToExtString(), '?');
-  GetContext()->CurrentViewer()->Driver()->TextSize (aText.ToCString(),(Standard_ShortReal)theHeight,aWidth,anAscent,aDescent);
+  GetContext()->CurrentViewer()->Driver()->TextSize (aView, aText.ToCString(), (Standard_ShortReal)theHeight, aWidth, anAscent, aDescent);
   theWidth = (Standard_Integer)aWidth;
   theAscent = (Standard_Integer)anAscent;
   theDescent = (Standard_Integer)aDescent;

@@ -177,17 +177,11 @@ public:
   Standard_EXPORT const OpenGl_AspectMarker* SetAspectMarker (const OpenGl_AspectMarker* theAspect);
   Standard_EXPORT const OpenGl_AspectText*   SetAspectText   (const OpenGl_AspectText*   theAspect);
 
-  void SetTextParam (const OpenGl_TextParam* theParam) { TextParam_set = theParam; }
-
   //// THESE METHODS ARE EXPORTED AS THEY PROVIDE STATE INFO TO USERDRAW
   Standard_EXPORT const OpenGl_AspectLine*   AspectLine   (const Standard_Boolean theWithApply);
   Standard_EXPORT const OpenGl_AspectFace*   AspectFace   (const Standard_Boolean theWithApply);
   Standard_EXPORT const OpenGl_AspectMarker* AspectMarker (const Standard_Boolean theWithApply);
   Standard_EXPORT const OpenGl_AspectText*   AspectText   (const Standard_Boolean theWithApply);
-  inline const OpenGl_TextParam* AspectTextParams() const
-  {
-    return TextParam_applied;
-  }
 
   //! Clear the applied aspect state.
   void ResetAppliedAspect();
@@ -273,8 +267,6 @@ protected: //! @name fields related to status
   const OpenGl_AspectFace *AspectFace_set, *AspectFace_applied;
   const OpenGl_AspectMarker *AspectMarker_set, *AspectMarker_applied;
   const OpenGl_AspectText *AspectText_set, *AspectText_applied;
-
-  const OpenGl_TextParam *TextParam_set, *TextParam_applied;
 
   const OpenGl_Matrix* ViewMatrix_applied;
   const OpenGl_Matrix* StructureMatrix_applied;

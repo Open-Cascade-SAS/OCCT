@@ -112,7 +112,7 @@ public:
   //! @return true on success
   Standard_EXPORT bool Init (const NCollection_String& theFontPath,
                              const unsigned int        thePointSize,
-                             const unsigned int        theResolution = 72);
+                             const unsigned int        theResolution);
 
   //! Initialize the font.
   //! @param theFontName   the font name
