@@ -63,6 +63,7 @@
 #include <UnitsMethods.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 #include <XSAlgo_ToolContainer.hxx>
+#include <TopExp_Explorer.hxx>
 
 //=======================================================================
 //function : XSAlgo_AlgoContainer
@@ -427,19 +428,50 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const Handle(Transfer_TransientProc
     return;
 
   Standard_Integer i = ( startTPitem >0 ? startTPitem : 1 );
-  for ( ; i <= TP->NbMapped(); i++ ) {
+  for ( ; i <= TP->NbMapped(); i++ )
+  {
     Handle(Transfer_Binder) bnd = TP->MapItem ( i );
     Handle(TransferBRep_ShapeBinder) sb = Handle(TransferBRep_ShapeBinder)::DownCast ( bnd );
     if ( sb.IsNull() || sb->Result().IsNull() ) continue;
-      
+
     TopoDS_Shape orig = sb->Result();
-    if ( map.IsBound ( orig ) ) sb->SetResult ( map.Find ( orig ) );
+
+    if ( map.IsBound ( orig ) )
+    {
+      sb->SetResult ( map.Find ( orig ) );
+    }
     else if ( !orig.Location().IsIdentity() )
     {
       TopLoc_Location aNullLoc;
       TopoDS_Shape atmpSh = orig.Located(aNullLoc);
       if ( map.IsBound ( atmpSh ) ) sb->SetResult ( map.Find ( atmpSh ) );
     }
+    else
+    {
+      // Some of edges may be modified.
+      BRepTools_ReShape aReShape;
+      Standard_Boolean hasModifiedEdges = Standard_False;
+      TopExp_Explorer anExpSE(orig, TopAbs_EDGE);
+
+      // Remember modifications.
+      for( ; anExpSE.More() ; anExpSE.Next() )
+      {
+        if (  map.IsBound ( anExpSE.Current() ) )
+        {
+          hasModifiedEdges = Standard_True;
+          TopoDS_Shape aModifiedShape = map.Find( anExpSE.Current() );
+          aReShape.Replace(anExpSE.Current(), aModifiedShape);
+        }
+      }
+
+      // Apply modifications and store result in binder.
+      if (hasModifiedEdges)
+      {
+        TopoDS_Shape aRes = aReShape.Apply(orig);
+        sb->SetResult ( aRes );
+      }
+    }
+
       
     // update messages
     if ( ! msg.IsNull() ) {

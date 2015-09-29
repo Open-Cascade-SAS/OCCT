@@ -12,7 +12,7 @@ CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 426  ( 426 )   Summary  = 14321  ( 14321 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 426  ( 426 )   FreeWire = 265  ( 265 )   FreeEdge  = 2465 ( 2465 )   SharedEdge = 5781  ( 5781 )
 TOLERANCE   : MaxTol   =  0.09805261731  (  0.09805261731 )  AvgTol   =  0.0005286623368  (  0.0005262647535 )
-LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1739  ( 4511 )  N2Labels = 0  ( 0 )   TotalLabels = 1740  ( 4512 )   NameLabels = 1740  ( 2237 )   ColorLabels = 1739  ( 4511 )   LayerLabels = 1739  ( 4511 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1739  ( 5445 )  N2Labels = 0  ( 0 )   TotalLabels = 1740  ( 5446 )   NameLabels = 1740  ( 2237 )   ColorLabels = 1739  ( 5445 )   LayerLabels = 1739  ( 5445 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 2 )
 COLORS      : Colors   = TURQUOISE  ( TURQUOISE WHITE )

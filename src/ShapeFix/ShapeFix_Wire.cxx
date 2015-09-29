@@ -897,24 +897,27 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
     }
   }
   
-  if ( NeedFix ( myFixIntersectingEdgesMode ) ) {
+  if ( NeedFix ( myFixIntersectingEdgesMode ) )
+  {
     Standard_Integer num = ( myClosedMode ? 1 : 2 );
-    for ( ; nb >1 && num <= nb; num++ ) {
+    for ( ; nb >1 && num <= nb; num++ )
+    {
       FixIntersectingEdges ( num );
       if ( LastFixStatus ( ShapeExtend_FAIL1 ) ) 
-	myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
+        myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
       if ( LastFixStatus ( ShapeExtend_FAIL2 ) ) 
-	myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
+        myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
       if ( ! LastFixStatus ( ShapeExtend_DONE ) ) continue;
 
       if ( LastFixStatus ( ShapeExtend_DONE1 ) ) 
-	myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
+        myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
       if ( LastFixStatus ( ShapeExtend_DONE2 ) ) 
-	myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
+        myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
       if(LastFixStatus (ShapeExtend_DONE6))
-  myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE6 );
+        myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE6 );
 
-      if ( /*! myTopoMode ||*/ nb < 3 ) {
+      if ( /*! myTopoMode ||*/ nb < 3 )
+      {
         //#86 rln 22.03.99 sim2.igs, entity 4292: After fixing of self-intersecting
         //BRepCheck finds one more self-intersection not found by ShapeAnalysis
         //%15 pdn 06.04.99 repeat until fixed CTS18546-2 entity 777
@@ -928,24 +931,29 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
       if ( LastFixStatus ( ShapeExtend_DONE4 ) ) sbwd->Remove ( num );
       if ( LastFixStatus ( ShapeExtend_DONE3 ) ) sbwd->Remove ( num >1 ? num-1 : nb+num-1 );
       if ( LastFixStatus ( ShapeExtend_DONE4 ) ||
-           LastFixStatus ( ShapeExtend_DONE3 ) ) {
-	myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
-	num = ( myClosedMode ? 1 : 2 );
-	nb = sbwd->NbEdges();
+           LastFixStatus ( ShapeExtend_DONE3 ) )
+      {
+        myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
+        num = ( myClosedMode ? 1 : 2 );
+        nb = sbwd->NbEdges();
 #ifdef OCCT_DEBUG
-	cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Edge removed" << endl;
+        cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Edge removed" << endl;
 #endif
       }
-      else {
-	//#86 rln 22.03.99
-	//%15 pdn 06.04.99 repeat until fixed CTS18546-2 entity 777
-	FixIntersectingEdges ( num );
-	/*if ( LastFixStatus ( ShapeExtend_DONE7 ) )*/
+      else
+      {
+        //#86 rln 22.03.99
+        //%15 pdn 06.04.99 repeat until fixed CTS18546-2 entity 777
+        FixIntersectingEdges ( num );
+        /*if ( LastFixStatus ( ShapeExtend_DONE7 ) )*/
         // Always revisit the fixed edge
         //num--;
       }
     }
+    if ( !Context().IsNull())
+      UpdateWire();
   }
+
 
   //pdn 17.03.99 S4135 to avoid regression fixing not adjacent intersection
   if ( NeedFix ( myFixNonAdjacentIntersectingEdgesMode ) ) {
@@ -2393,6 +2401,12 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
   Standard_Integer n1 = ( n2  >1 ? n2-1 : sbwd->NbEdges() );
   TopoDS_Edge E1 = sbwd->Edge(n1);
   TopoDS_Edge E2 = sbwd->Edge(n2);
+  if ( !Context().IsNull() )
+  {
+    E1 = TopoDS::Edge(Context()->Apply(sbwd->Edge(n1))); 
+    E2 = TopoDS::Edge(Context()->Apply(sbwd->Edge(n2))); 
+  }
+
   Standard_Boolean isForward1 = ( E1.Orientation() == TopAbs_FORWARD );
   Standard_Boolean isForward2 = ( E2.Orientation() == TopAbs_FORWARD );
   Standard_Real a1, b1, a2, b2;
@@ -2411,6 +2425,7 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
   Standard_Real prevRange1 = RealLast(), prevRange2 = RealLast();
   Standard_Boolean cutEdge1 = Standard_False, cutEdge2 = Standard_False;
   Standard_Boolean IsCutLine = Standard_False;
+  Standard_Boolean isChangedEdge = Standard_False;
 
   BRep_Builder B;
 
@@ -2453,6 +2468,8 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
           // Make copy of edges.
           if (!Context().IsNull())
           {
+             isChangedEdge = Standard_True; // To avoid double copying of vertexes.
+
             // Intersection point of two base edges.
             ShapeBuild_Edge aSBE;
             TopoDS_Vertex VV1 = Context()->CopyVertex(V1);
@@ -2566,12 +2583,45 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
 
   if ( ! LastFixStatus ( ShapeExtend_DONE ) ) return Standard_False;
 
-  B.UpdateVertex ( V1, pnt, tol );
-  B.UpdateVertex ( V2, pnt, tol );
+  if (isChangedEdge)
+  {
+    B.UpdateVertex ( V1, pnt, tol );
+    B.UpdateVertex ( V2, pnt, tol );
+  }
+  else
+  {
+    if ( !Context().IsNull() )
+    {
+      if (V1.IsSame(V2) )
+      {
+        Context()->CopyVertex(V1, pnt, tol);
+      }
+      else
+      {
+        Context()->CopyVertex(V1, pnt, tol);
+        Context()->CopyVertex(V2, pnt, tol);
+      }
+    }
+    else
+    {
+      B.UpdateVertex ( V1, pnt, tol );
+      B.UpdateVertex ( V2, pnt, tol );
+    }
+  }
 
   //:h4: make edges SP (after all cuts: t4mug.stp #3730+#6460)
-  if ( cutEdge1 ) myFixEdge->FixSameParameter ( E1 );
-  if ( cutEdge2 && !IsCutLine ) myFixEdge->FixSameParameter ( E2 );
+  if ( cutEdge1 ) 
+  {
+    if ( !Context().IsNull() )
+      E1 = TopoDS::Edge(Context()->Apply(E1));
+    myFixEdge->FixSameParameter ( E1 );
+  }
+  if ( cutEdge2 && !IsCutLine )
+  {
+    if ( !Context().IsNull() )
+      E2 = TopoDS::Edge(Context()->Apply(E2));
+    myFixEdge->FixSameParameter ( E2 );
+  }
   if ( cutEdge1 || cutEdge2 ) {
     myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE7 );
   }

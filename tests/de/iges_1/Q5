@@ -1,7 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
-puts "TODO CR26656 Linux: Error : 1 differences with reference data found" 
 
 
 set filename 919-004-T02-01-FT-VL.igs
@@ -13,7 +12,7 @@ CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 406  ( 406 )   Summary  = 13718  ( 13718 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 406  ( 406 )   FreeWire = 275  ( 275 )   FreeEdge  = 2361 ( 2361 )   SharedEdge = 5553  ( 5553 )
 TOLERANCE   : MaxTol   =  0.08309604195  (  0.08309604195 )  AvgTol   =  0.0004559007514  (  0.0004699758829 )
-LABELS      : N0Labels = 2  ( 2 )  N1Labels = 1614  ( 4301 )  N2Labels = 0  ( 0 )   TotalLabels = 1616  ( 4303 )   NameLabels = 1614  ( 2096 )   ColorLabels = 1614  ( 4302 )   LayerLabels = 1614  ( 4302 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 1614  ( 5216 )  N2Labels = 0  ( 0 )   TotalLabels = 1616  ( 5218 )   NameLabels = 1614  ( 2096 )   ColorLabels = 1614  ( 5217 )   LayerLabels = 1614  ( 5217 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 2 )
 COLORS      : Colors   = TURQUOISE  ( TURQUOISE WHITE )

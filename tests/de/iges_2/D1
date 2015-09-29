@@ -2,7 +2,6 @@
 puts "TODO CR23096 ALL: DATA : Faulty" 
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR26656 Linux: Error : 1 differences with reference data found" 
 
 
 set filename support_rampe.igs
@@ -14,7 +13,7 @@ CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 169  ( 169 )   Summary  = 5348  ( 5348 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 169  ( 169 )   FreeWire = 49  ( 49 )   FreeEdge  = 945 ( 945 )   SharedEdge = 2041  ( 2041 )
 TOLERANCE   : MaxTol   =   0.1765497108  (   0.1765497101 )  AvgTol   =  0.0004116969813  (  0.0004153236787 )
-LABELS      : N0Labels = 1  ( 1 )  N1Labels = 981  ( 2033 )  N2Labels = 0  ( 0 )   TotalLabels = 982  ( 2034 )   NameLabels = 982  ( 1142 )   ColorLabels = 981  ( 2033 )   LayerLabels = 981  ( 2033 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 981  ( 2201 )  N2Labels = 0  ( 0 )   TotalLabels = 982  ( 2202 )   NameLabels = 982  ( 1142 )   ColorLabels = 981  ( 2201 )   LayerLabels = 981  ( 2201 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )
 COLORS      : Colors   = BLUE1 CYAN1 GREEN MAGENTA1 WHITE YELLOW  ( BLUE1 CYAN1 GREEN MAGENTA1 WHITE YELLOW )

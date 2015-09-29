@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR25013 ALL: Error : 1 differences with reference data found" 
+puts "TODO CR25013 ALL: Error : 2 differences with reference data found" 
 
 set LinuxDiff 1
 set filename pro5101.igs
@@ -12,7 +12,7 @@ CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 622  ( 311 )   Summary  = 23710  ( 11832 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 622  ( 622 )   FreeWire = 816  ( 816 )   FreeEdge  = 4824 ( 4824 )   SharedEdge = 10126  ( 5051 )
 TOLERANCE   : MaxTol   =   0.6427268663  (    4.452116544 )  AvgTol   =   0.01239717192  (   0.01380706073 )
-LABELS      : N0Labels = 7  ( 7 )  N1Labels = 379  ( 1004 )  N2Labels = 0  ( 0 )   TotalLabels = 386  ( 1011 )   NameLabels = 386  ( 1010 )   ColorLabels = 381  ( 1006 )   LayerLabels = 0  ( 0 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 379  ( 3264 )  N2Labels = 0  ( 0 )   TotalLabels = 386  ( 3271 )   NameLabels = 386  ( 1010 )   ColorLabels = 381  ( 3266 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )
 COLORS      : Colors   = WHITE  ( WHITE )
