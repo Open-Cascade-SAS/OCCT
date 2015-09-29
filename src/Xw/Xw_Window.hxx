@@ -50,11 +50,13 @@ public:
                              const Standard_Integer thePxLeft,
                              const Standard_Integer thePxTop,
                              const Standard_Integer thePxWidth,
-                             const Standard_Integer thePxHeight);
+                             const Standard_Integer thePxHeight,
+                             const Aspect_FBConfig  theFBConfig = NULL);
 
   //! Creates a wrapper over existing Window handle
   Standard_EXPORT Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
-                             const Window theXWin);
+                             const Window theXWin,
+                             const Aspect_FBConfig theFBConfig = NULL);
 
   //! Destroies the Window and all resourses attached to it
   Standard_EXPORT virtual void Destroy();
@@ -65,32 +67,32 @@ public:
   }
 
   //! Opens the window <me>
-  Standard_EXPORT virtual void Map() const;
+  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
 
   //! Closes the window <me>
-  Standard_EXPORT virtual void Unmap() const;
+  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
 
   //! Applies the resizing to the window <me>
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() const;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() const Standard_OVERRIDE;
 
   //! Apply the mapping change to the window <me>
-  Standard_EXPORT virtual Standard_Boolean DoMapping() const;
+  Standard_EXPORT virtual Standard_Boolean DoMapping() const Standard_OVERRIDE;
 
   //! Returns True if the window <me> is opened
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const;
+  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Quantity_Ratio Ratio() const;
+  Standard_EXPORT virtual Quantity_Ratio Ratio() const Standard_OVERRIDE;
 
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position (Standard_Integer& X1,
                                          Standard_Integer& Y1,
                                          Standard_Integer& X2,
-                                         Standard_Integer& Y2) const;
+                                         Standard_Integer& Y2) const Standard_OVERRIDE;
 
   //! Returns The Window SIZE in PIXEL
   Standard_EXPORT virtual void Size (Standard_Integer& theWidth,
-                                     Standard_Integer& theHeight) const;
+                                     Standard_Integer& theHeight) const Standard_OVERRIDE;
 
   //! @return native Window handle
   Standard_EXPORT Window XWindow() const;
@@ -99,21 +101,28 @@ public:
   Standard_EXPORT const Handle(Aspect_DisplayConnection)& DisplayConnection() const;
 
   //! @return native Window handle
-  virtual Aspect_Drawable NativeHandle() const
+  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
   {
     return (Aspect_Drawable )XWindow();
   }
 
   //! @return parent of native Window handle
-  virtual Aspect_Drawable NativeParentHandle() const
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE
   {
     return 0;
+  }
+
+  //! @return native Window FB config (GLXFBConfig on Xlib)
+  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE
+  {
+    return myFBConfig;
   }
 
 protected:
 
   Handle(Aspect_DisplayConnection) myDisplay; //!< X Display connection
   Window           myXWindow;  //!< XLib window handle
+  Aspect_FBConfig  myFBConfig; //!< GLXFBConfig
   Standard_Integer myXLeft;    //!< left   position in pixels
   Standard_Integer myYTop;     //!< top    position in pixels
   Standard_Integer myXRight;   //!< right  position in pixels

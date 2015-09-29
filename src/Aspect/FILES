@@ -19,6 +19,7 @@ Aspect_DisplayConnection.hxx
 Aspect_DisplayConnectionDefinitionError.hxx
 Aspect_Drawable.hxx
 Aspect_DriverDefinitionError.hxx
+Aspect_FBConfig.hxx
 Aspect_FillMethod.hxx
 Aspect_GenId.cxx
 Aspect_GenId.hxx

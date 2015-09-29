@@ -118,9 +118,37 @@ namespace
     return DefWindowProcW (theWin, theMsg, theParamW, theParamL);
   }
 #else
-  static Bool WaitForNotify (Display* theDisp, XEvent* theEv, char* theArg)
+
+  // GLX_ARB_create_context
+#ifndef GLX_CONTEXT_MAJOR_VERSION_ARB
+  #define GLX_CONTEXT_DEBUG_BIT_ARB         0x00000001
+  #define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
+  #define GLX_CONTEXT_MAJOR_VERSION_ARB     0x2091
+  #define GLX_CONTEXT_MINOR_VERSION_ARB     0x2092
+  #define GLX_CONTEXT_FLAGS_ARB             0x2094
+
+  // GLX_ARB_create_context_profile
+  #define GLX_CONTEXT_CORE_PROFILE_BIT_ARB  0x00000001
+  #define GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+  #define GLX_CONTEXT_PROFILE_MASK_ARB      0x9126
+#endif
+
+  //! Dummy XError handler which just skips errors
+  static int xErrorDummyHandler (Display*     /*theDisplay*/,
+                                 XErrorEvent* /*theErrorEvent*/)
   {
-    return (theEv->type == MapNotify) && (theEv->xmap.window == (Window )theArg);
+    return 0;
+  }
+
+  //! Auxiliary method to format list.
+  static void addMsgToList (TCollection_ExtendedString&       theList,
+                            const TCollection_ExtendedString& theMsg)
+  {
+    if (!theList.IsEmpty())
+    {
+      theList += ", ";
+    }
+    theList += theMsg;
   }
 #endif
 
@@ -437,235 +465,131 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 
   myGlContext->Init ((Aspect_Handle )aWindow, (Aspect_Handle )aWindowDC, (Aspect_RenderingContext )aGContext, isCoreProfile);
 #else
-  Window aParent = (Window )myPlatformWindow->NativeHandle();
-  Window aWindow = 0;
-
+  Window     aWindow   = (Window )myPlatformWindow->NativeHandle();
   Display*   aDisp     = theDriver->GetDisplayConnection()->GetDisplay();
   GLXContext aGContext = (GLXContext )theGContext;
+  GLXContext aSlaveCtx = !theShareCtx.IsNull() ? (GLXContext )theShareCtx->myGContext : NULL;
 
-  XWindowAttributes wattr;
-  XGetWindowAttributes (aDisp, aParent, &wattr);
-  const int scr = DefaultScreen (aDisp);
-
-  XVisualInfo* aVis = NULL;
+  XWindowAttributes aWinAttribs;
+  XGetWindowAttributes (aDisp, aWindow, &aWinAttribs);
+  XVisualInfo aVisInfo;
+  aVisInfo.visualid = aWinAttribs.visual->visualid;
+  aVisInfo.screen   = DefaultScreen (aDisp);
+  int aNbItems;
+  XVisualInfo* aVis = XGetVisualInfo (aDisp, VisualIDMask | VisualScreenMask, &aVisInfo, &aNbItems);
+  int isGl = 0;
+  if (aVis == NULL)
   {
-    unsigned long aVisInfoMask = VisualIDMask | VisualScreenMask;
-    XVisualInfo aVisInfo;
-    aVisInfo.visualid = wattr.visual->visualid;
-    aVisInfo.screen   = scr;
-    int aNbItems;
-    aVis = XGetVisualInfo (aDisp, aVisInfoMask, &aVisInfo, &aNbItems);
+    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: XGetVisualInfo is unable to choose needed configuration in existing OpenGL context. ");
+    return;
+  }
+  else if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0 || !isGl)
+  {
+    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: window Visual does not support GL rendering!");
+    return;
   }
 
-#if defined(__linux__) || defined(Linux) || defined(__APPLE__)
-  if (aVis != NULL)
+  // create new context
+  GLXFBConfig anFBConfig = myPlatformWindow->NativeFBConfig();
+  const char* aGlxExts   = glXQueryExtensionsString (aDisp, aVisInfo.screen);
+  if (myOwnGContext
+   && anFBConfig != NULL
+   && OpenGl_Context::CheckExtension (aGlxExts, "GLX_ARB_create_context_profile"))
   {
-    // check Visual for OpenGl context's parameters compatibility
-    int isGl = 0, isDoubleBuffer = 0, isRGBA = 0, isStereo = 0;
-    int aDepthSize = 0, aStencilSize = 0;
+    // Replace default XError handler to ignore errors.
+    // Warning - this is global for all threads!
+    typedef int (*xerrorhandler_t)(Display* , XErrorEvent* );
+    xerrorhandler_t anOldHandler = XSetErrorHandler(xErrorDummyHandler);
 
-    if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0)
-      isGl = 0;
-
-    if (glXGetConfig (aDisp, aVis, GLX_RGBA, &isRGBA) != 0)
-      isRGBA = 0;
-
-    if (glXGetConfig (aDisp, aVis, GLX_DOUBLEBUFFER, &isDoubleBuffer) != 0)
-      isDoubleBuffer = 0;
-
-    if (glXGetConfig (aDisp, aVis, GLX_STEREO, &isStereo) != 0)
-      isStereo = 0;
-
-    if (glXGetConfig (aDisp, aVis, GLX_DEPTH_SIZE, &aDepthSize) != 0)
-      aDepthSize = 0;
-
-    if (glXGetConfig (aDisp, aVis, GLX_STENCIL_SIZE, &aStencilSize) != 0)
-      aStencilSize = 0;
-
-    if (!isGl)
+    typedef GLXContext (*glXCreateContextAttribsARB_t)(Display* dpy, GLXFBConfig config,
+                                                       GLXContext share_context, Bool direct,
+                                                       const int* attrib_list);
+    glXCreateContextAttribsARB_t aCreateCtxProc = (glXCreateContextAttribsARB_t )glXGetProcAddress((const GLubyte* )"glXCreateContextAttribsARB");
+    if (!theCaps->contextCompatible)
     {
-      XFree (aVis);
-      aVis = NULL;
-      if (myOwnGContext)
+      int aCoreCtxAttribs[] =
       {
-        TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: window Visual does not support GL rendering!");
-        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                  GL_DEBUG_TYPE_OTHER_ARB,
-                                  0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 2,
+        GLX_CONTEXT_PROFILE_MASK_ARB,  GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+        GLX_CONTEXT_FLAGS_ARB,         theCaps->contextDebug ? GLX_CONTEXT_DEBUG_BIT_ARB : 0,
+        0, 0
+      };
+
+      // try to create the core profile of highest OpenGL version supported by OCCT
+      for (int aLowVer4 = 5; aLowVer4 >= 0 && aGContext == NULL; --aLowVer4)
+      {
+        aCoreCtxAttribs[1] = 4;
+        aCoreCtxAttribs[3] = aLowVer4;
+        aGContext = aCreateCtxProc (aDisp, anFBConfig, aSlaveCtx, True, aCoreCtxAttribs);
+      }
+      for (int aLowVer3 = 3; aLowVer3 >= 2 && aGContext == NULL; --aLowVer3)
+      {
+        aCoreCtxAttribs[1] = 3;
+        aCoreCtxAttribs[3] = aLowVer3;
+        aGContext = aCreateCtxProc (aDisp, anFBConfig, aSlaveCtx, True, aCoreCtxAttribs);
+      }
+      isCoreProfile = aGContext != NULL;
+    }
+
+    if (aGContext == NULL)
+    {
+      int aCtxAttribs[] =
+      {
+        GLX_CONTEXT_FLAGS_ARB, theCaps->contextDebug ? GLX_CONTEXT_DEBUG_BIT_ARB : 0,
+        0, 0
+      };
+      isCoreProfile = Standard_False;
+      aGContext = aCreateCtxProc (aDisp, anFBConfig, aSlaveCtx, True, aCtxAttribs);
+
+      if (aGContext != NULL
+      && !theCaps->contextCompatible)
+      {
+        TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: core profile creation failed.");
+        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
       }
     }
-    else
-    {
-      TCollection_ExtendedString aList;
-      if (aDepthSize < 1)
-      {
-        if (!aList.IsEmpty()) aList += ", ";
-        aList += "no depth buffer";
-      }
-      if (aStencilSize < 1)
-      {
-        if (!aList.IsEmpty()) aList += ", ";
-        aList += "no stencil buffer";
-      }
-      if (isRGBA == 0)
-      {
-        if (!aList.IsEmpty()) aList += ", ";
-        aList += "no RGBA color buffer";
-      }
-      if (isDoubleBuffer == 0)
-      {
-        if (!aList.IsEmpty()) aList += ", ";
-        aList += "no Double Buffer";
-      }
-      if (theCaps->contextStereo && isStereo == 0)
-      {
-        if (!aList.IsEmpty()) aList += ", ";
-        aList += "no Quad Buffer";
-      }
-      if (!theCaps->contextStereo && isStereo == 1)
-      {
-        if (!aList.IsEmpty()) aList += ", ";
-        aList += "extra Quad Buffer";
-      }
-      if (!aList.IsEmpty())
-      {
-        TCollection_ExtendedString aMsg = TCollection_ExtendedString ("OpenGl_Window::CreateWindow: window Visual is incomplete: ") + aList;
-        if (myOwnGContext)
-        {
-          XFree (aVis);
-          aVis = NULL;
-        }
-        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                  GL_DEBUG_TYPE_OTHER_ARB,
-                                  0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMsg);
-      }
-    }
+    XSetErrorHandler(anOldHandler);
   }
-#endif
 
-  if (!myOwnGContext)
+  if (myOwnGContext
+   && aGContext == NULL)
   {
-    if (aVis == NULL)
-    {
-      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: XGetVisualInfo is unable to choose needed configuration in existing OpenGL context. ");
-      return;
-    }
-
-    aWindow = aParent;
-  }
-  else
-  {
-    if (aVis == NULL)
-    {
-      int anIter = 0;
-      int anAttribs[13];
-      anAttribs[anIter++] = GLX_RGBA;
-
-      anAttribs[anIter++] = GLX_DEPTH_SIZE;
-      anAttribs[anIter++] = 1;
-
-      anAttribs[anIter++] = GLX_STENCIL_SIZE;
-      anAttribs[anIter++] = 1;
-
-      anAttribs[anIter++] = GLX_RED_SIZE;
-      anAttribs[anIter++] = (wattr.depth <= 8) ? 0 : 1;
-
-      anAttribs[anIter++] = GLX_GREEN_SIZE;
-      anAttribs[anIter++] = (wattr.depth <= 8) ? 0 : 1;
-
-      anAttribs[anIter++] = GLX_BLUE_SIZE;
-      anAttribs[anIter++] = (wattr.depth <= 8) ? 0 : 1;
-
-      anAttribs[anIter++] = GLX_DOUBLEBUFFER;
-
-      // warning: this flag may be set to None, so it need to be last in anAttribs
-      Standard_Integer aStereoFlagPos = anIter;
-      if (theCaps->contextStereo)
-        anAttribs[anIter++] = GLX_STEREO;
-
-      anAttribs[anIter++] = None;
-
-      aVis = glXChooseVisual (aDisp, scr, anAttribs);
-
-      // in case of failure try without stereo if any
-      if (aVis == NULL && theCaps->contextStereo)
-      {
-        TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: "
-                                         "glXChooseVisual is unable to find stereo supported pixel format. "
-                                         "Choosing similar non stereo format.");
-        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                  GL_DEBUG_TYPE_OTHER_ARB,
-                                  0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
-
-        anAttribs[aStereoFlagPos] = None;
-        aVis = glXChooseVisual (aDisp, scr, anAttribs);
-      }
-
-      if (aVis == NULL)
-      {
-        Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: glXChooseVisual failed.");
-        return;
-      }
-      else
-      {
-        TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: child window has been created with better Visual.");
-        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                  GL_DEBUG_TYPE_OTHER_ARB,
-                                  0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMsg);
-      }
-    }
-
-    if (!theShareCtx.IsNull())
-    {
-      // ctx est une copie du previous
-      aGContext = glXCreateContext (aDisp, aVis, (GLXContext )theShareCtx->myGContext, GL_TRUE);
-    }
-    else
-    {
-      aGContext = glXCreateContext (aDisp, aVis, NULL, GL_TRUE);
-    }
-
-    if (!aGContext)
+    aGContext = glXCreateContext (aDisp, aVis, aSlaveCtx, GL_TRUE);
+    if (aGContext == NULL)
     {
       Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: glXCreateContext failed.");
       return;
     }
+  }
 
-    Colormap cmap = XCreateColormap (aDisp, aParent, aVis->visual, AllocNone);
-
-    Quantity_Color aBgColor = myPlatformWindow->Background().Color();
-    XColor color;
-    color.red   = (unsigned short) (aBgColor.Red()   * 0xFFFF);
-    color.green = (unsigned short) (aBgColor.Green() * 0xFFFF);
-    color.blue  = (unsigned short) (aBgColor.Blue()  * 0xFFFF);
-    color.flags = DoRed | DoGreen | DoBlue;
-    XAllocColor (aDisp, cmap, &color);
-
-    XSetWindowAttributes cwa;
-    cwa.colormap         = cmap;
-    cwa.event_mask       = StructureNotifyMask;
-    cwa.border_pixel     = color.pixel;
-    cwa.background_pixel = color.pixel;
-
-    if (aVis->visualid == wattr.visual->visualid)
-    {
-      aWindow = aParent;
-    }
-    else
-    {
-      unsigned long mask = CWBackPixel | CWColormap | CWBorderPixel | CWEventMask;
-      aWindow = XCreateWindow (aDisp, aParent, 0, 0, myWidth, myHeight, 0/*bw*/, aVis->depth, InputOutput, aVis->visual, mask, &cwa);
-    }
-
-    XSetWindowBackground (aDisp, aWindow, cwa.background_pixel);
-    XClearWindow (aDisp, aWindow);
-
-    if (aWindow != aParent)
-    {
-      XEvent anEvent;
-      XMapWindow (aDisp, aWindow);
-      XIfEvent (aDisp, &anEvent, WaitForNotify, (char* )aWindow);
-    }
+  // check Visual for OpenGl context's parameters compatibility
+  TCollection_ExtendedString aList;
+  int isDoubleBuffer = 0, isRGBA = 0, isStereo = 0;
+  int aDepthSize = 0, aStencilSize = 0;
+  glXGetConfig (aDisp, aVis, GLX_RGBA,         &isRGBA);
+  glXGetConfig (aDisp, aVis, GLX_DOUBLEBUFFER, &isDoubleBuffer);
+  glXGetConfig (aDisp, aVis, GLX_STEREO,       &isStereo);
+  glXGetConfig (aDisp, aVis, GLX_DEPTH_SIZE,   &aDepthSize);
+  glXGetConfig (aDisp, aVis, GLX_STENCIL_SIZE, &aStencilSize);
+  if (aDepthSize < 1)      addMsgToList (aList, "no depth buffer");
+  if (aStencilSize < 1)    addMsgToList (aList, "no stencil buffer");
+  if (isRGBA == 0)         addMsgToList (aList, "no RGBA color buffer");
+  if (isDoubleBuffer == 0) addMsgToList (aList, "no Double Buffer");
+  if (theCaps->contextStereo && isStereo == 0)
+  {
+    addMsgToList (aList, "no Quad Buffer");
+  }
+  else if (!theCaps->contextStereo && isStereo == 1)
+  {
+    addMsgToList (aList, "extra Quad Buffer");
+  }
+  if (!aList.IsEmpty())
+  {
+    TCollection_ExtendedString aMsg = TCollection_ExtendedString ("OpenGl_Window::CreateWindow: window Visual is incomplete: ") + aList;
+    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                              GL_DEBUG_TYPE_OTHER_ARB,
+                              0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMsg);
   }
 
   myGlContext->Init ((Aspect_Drawable )aWindow, (Aspect_Display )aDisp, (Aspect_RenderingContext )aGContext, isCoreProfile);

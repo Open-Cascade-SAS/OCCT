@@ -21,6 +21,7 @@
 
 #include <Aspect_Background.hxx>
 #include <Aspect_GradientBackground.hxx>
+#include <Aspect_FBConfig.hxx>
 #include <Aspect_FillMethod.hxx>
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
@@ -113,8 +114,8 @@ public:
   //! Returns parent of native Window handle (HWND on Windows, Window with Xlib, and so on)
   Standard_EXPORT virtual Aspect_Drawable NativeParentHandle() const = 0;
 
-
-
+  //! Returns native Window FB config (GLXFBConfig on Xlib)
+  Standard_EXPORT virtual Aspect_FBConfig NativeFBConfig() const = 0;
 
   DEFINE_STANDARD_RTTI(Aspect_Window,MMgt_TShared)
 

@@ -87,32 +87,32 @@ public:
   }
 
   //! Opens the window <me>
-  Standard_EXPORT virtual void Map() const;
+  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
 
   //! Closes the window <me>
-  Standard_EXPORT virtual void Unmap() const;
+  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
 
   //! Applies the resizing to the window <me>
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() const;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() const Standard_OVERRIDE;
 
   //! Apply the mapping change to the window <me>
-  Standard_EXPORT virtual Standard_Boolean DoMapping() const;
+  Standard_EXPORT virtual Standard_Boolean DoMapping() const Standard_OVERRIDE;
 
   //! Returns True if the window <me> is opened
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const;
+  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Quantity_Ratio Ratio() const;
+  Standard_EXPORT virtual Quantity_Ratio Ratio() const Standard_OVERRIDE;
 
   //! Returns The Window POSITION in PIXEL
   Standard_EXPORT virtual void Position (Standard_Integer& X1,
                                          Standard_Integer& Y1,
                                          Standard_Integer& X2,
-                                         Standard_Integer& Y2) const;
+                                         Standard_Integer& Y2) const Standard_OVERRIDE;
 
   //! Returns The Window SIZE in PIXEL
   Standard_EXPORT virtual void Size (Standard_Integer& theWidth,
-                                     Standard_Integer& theHeight) const;
+                                     Standard_Integer& theHeight) const Standard_OVERRIDE;
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //! @return associated UIView
@@ -129,16 +129,19 @@ public:
 #endif
 
   //! @return native Window handle
-  virtual Aspect_Drawable NativeHandle() const
+  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
   {
     return (Aspect_Drawable )HView();
   }
 
   //! @return parent of native Window handle
-  virtual Aspect_Drawable NativeParentHandle() const
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE
   {
     return 0;
   }
+
+  //! Returns nothing on OS X
+  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
 protected:
 

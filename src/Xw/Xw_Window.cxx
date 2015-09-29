@@ -26,8 +26,7 @@ namespace
 {
 
   //! Search for RGBA double-buffered visual with stencil buffer.
-  //! Each size property should be a nonnegative minimum specification.
-  static int TheDoubleBuff[] =
+  static int TheDoubleBuffVisual[] =
   {
     GLX_RGBA,
     GLX_DEPTH_SIZE, 16,
@@ -36,8 +35,20 @@ namespace
     None
   };
 
-};
+  //! Search for RGBA double-buffered visual with stencil buffer.
+  static int TheDoubleBuffFBConfig[] =
+  {
+    GLX_X_RENDERABLE,  True,
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+    GLX_DEPTH_SIZE,    16,
+    GLX_STENCIL_SIZE,  1,
+    GLX_DOUBLEBUFFER,  True,
+    None
+  };
 
+}
 
 // =======================================================================
 // function : Xw_Window
@@ -48,10 +59,12 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
                       const Standard_Integer thePxLeft,
                       const Standard_Integer thePxTop,
                       const Standard_Integer thePxWidth,
-                      const Standard_Integer thePxHeight)
+                      const Standard_Integer thePxHeight,
+                      const Aspect_FBConfig  theFBConfig)
 : Aspect_Window(),
   myDisplay  (theXDisplay),
   myXWindow  (0),
+  myFBConfig (theFBConfig),
   myXLeft    (thePxLeft),
   myYTop     (thePxTop),
   myXRight   (thePxLeft + thePxWidth),
@@ -77,8 +90,37 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   Display* aDisp   = myDisplay->GetDisplay();
   int      aScreen = DefaultScreen(aDisp);
   Window   aParent = RootWindow   (aDisp, aScreen);
+  XVisualInfo* aVisInfo = NULL;
 
-  XVisualInfo* aVisInfo = glXChooseVisual (aDisp, aScreen, TheDoubleBuff);
+  if (myFBConfig == NULL)
+  {
+    // FBConfigs were added in GLX version 1.3
+    int aGlxMajor = 0;
+    int aGlxMinor = 0;
+    const bool hasFBCfg = glXQueryVersion (aDisp, &aGlxMajor, &aGlxMinor)
+                       && ((aGlxMajor == 1 && aGlxMinor >= 3) || (aGlxMajor > 1));
+    if (hasFBCfg)
+    {
+      int aFBCount = 0;
+      GLXFBConfig* aFBCfgList = NULL;
+      if (hasFBCfg)
+      {
+        aFBCfgList = glXChooseFBConfig (aDisp, aScreen, TheDoubleBuffFBConfig, &aFBCount);
+      }
+      if(aFBCfgList != NULL
+      && aFBCount >= 1)
+      {
+        myFBConfig = aFBCfgList[0];
+        aVisInfo   = glXGetVisualFromFBConfig (aDisp, myFBConfig);
+      }
+      XFree (aFBCfgList);
+    }
+  }
+
+  if (aVisInfo == NULL)
+  {
+    aVisInfo = glXChooseVisual (aDisp, aScreen, TheDoubleBuffVisual);
+  }
   if (aVisInfo == NULL)
   {
     Aspect_WindowDefinitionError::Raise ("Xw_Window, couldn't find compatible Visual (RGBA, double-buffered)");
@@ -133,10 +175,12 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
 // purpose  :
 // =======================================================================
 Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
-                      const Window theXWin)
+                      const Window theXWin,
+                      const Aspect_FBConfig theFBConfig)
 : Aspect_Window(),
   myDisplay  (theXDisplay),
   myXWindow  (theXWin),
+  myFBConfig (theFBConfig),
   myXLeft    (0),
   myYTop     (0),
   myXRight   (512),

@@ -68,7 +68,7 @@ public:
   Standard_EXPORT void SetCursor (const Aspect_Handle aCursor) const;
   
   //! Opens the window <me>.
-  Standard_EXPORT virtual void Map() const;
+  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
   
   //! Opens a window <me> according to <aMapMode>.
   //! This method is specific to Windows NT.
@@ -77,45 +77,46 @@ public:
   Standard_EXPORT void Map (const Standard_Integer aMapMode) const;
   
   //! Closes the window <me>.
-  Standard_EXPORT virtual void Unmap() const;
+  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
   
   //! Applies the resizing to the window <me>.
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() const;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() const Standard_OVERRIDE;
   
   //! Apply the mapping change to the window <me>
   //! and returns TRUE if the window is mapped at screen.
-    virtual Standard_Boolean DoMapping() const;
+  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE;
   
   //! Changes variables due to window position.
   Standard_EXPORT void SetPos (const Standard_Integer X, const Standard_Integer Y, const Standard_Integer X1, const Standard_Integer Y1);
   
   //! Returns True if the window <me> is opened
   //! and False if the window is closed.
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const;
+  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
   
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions.
-  Standard_EXPORT virtual Quantity_Ratio Ratio() const;
+  Standard_EXPORT virtual Quantity_Ratio Ratio() const Standard_OVERRIDE;
   
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position (Standard_Integer& X1, Standard_Integer& Y1, Standard_Integer& X2, Standard_Integer& Y2) const;
+  Standard_EXPORT virtual void Position (Standard_Integer& X1, Standard_Integer& Y1, Standard_Integer& X2, Standard_Integer& Y2) const Standard_OVERRIDE;
   
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size (Standard_Integer& Width, Standard_Integer& Height) const;
+  Standard_EXPORT virtual void Size (Standard_Integer& Width, Standard_Integer& Height) const Standard_OVERRIDE;
   
   //! Returns the Windows NT handle of the created window <me>.
-    Aspect_Handle HWindow() const;
+  Aspect_Handle HWindow() const;
   
   //! Returns the Windows NT handle parent of the created window <me>.
-    Aspect_Handle HParentWindow() const;
+  Aspect_Handle HParentWindow() const;
   
   //! Returns native Window handle (HWND)
-    virtual Aspect_Drawable NativeHandle() const;
+  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE;
   
   //! Returns parent of native Window handle (HWND on Windows, Window with Xlib, and so on)
-    virtual Aspect_Drawable NativeParentHandle() const;
+  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE;
 
-
+  //! Returns nothing on Windows
+  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
   DEFINE_STANDARD_RTTI(WNT_Window,Aspect_Window)
 
