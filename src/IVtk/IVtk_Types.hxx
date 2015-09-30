@@ -1,7 +1,7 @@
-// Created on: 2011-10-11 
+// Created on: 2011-10-11
 // Created by: Roman KOZLOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS 
-// 
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
 // This file is part of Open CASCADE Technology software library.
 //
 // This library is free software; you can redistribute it and/or modify it under
@@ -21,11 +21,22 @@
 #include <NCollection_TListIterator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <vtkType.h>
 
-typedef Standard_Size IVtk_IdType;
+#ifdef VTK_USE_64BIT_IDS
+#if defined(_WIN32) && !defined(_WIN64)
+#error "64-bit VTK library can not be linked for 32-bit target platform"
+#endif
+#else
+#ifdef _WIN64
+#error "32-bit VTK library can not be linked for 64-bit target platform"
+#endif
+#endif
 
+
+typedef vtkIdType IVtk_IdType;
 typedef IVtk_IdType IVtk_PointId;
 
 typedef IVtk_IdType IVtk_FaceId;
@@ -38,6 +49,7 @@ typedef NCollection_DataMap <IVtk_IdType, IVtk_ShapeIdList> IVtk_SubShapeMap;
 typedef NCollection_Map <IVtk_IdType> IVtk_IdTypeMap;
 
 typedef NCollection_List <gp_XY> IVtk_Pnt2dList;
+
 
 //! @enum IVtk_SelectionMode Selection modes for 3D shapes
 //!
