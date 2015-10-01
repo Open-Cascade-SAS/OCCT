@@ -35,7 +35,7 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep
         // sln 09.10.2001. BUC61003. Correction of looking for items of complex entity in case of them  do not saticfy to alphabetical order
         // CONVERSION_BASED_UNIT
 	Standard_Integer num = 0;//num0;
-	data->NamedForComplex("CONVERSION_BASED_UNIT CNBSUN",num0,num,ach);
+	data->NamedForComplex("CONVERSION_BASED_UNIT", "CNBSUN",num0,num,ach);
 	if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
        	Handle(TCollection_HAsciiString) aName;
 	data->ReadString (num,1,"name",ach,aName);
@@ -44,14 +44,14 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::ReadStep
         
         // NAMED_UNIT
         //num = 0; //gka TRJ9 c2-id-214.stp
-	data->NamedForComplex("NAMED_UNIT NMDUNT",num0,num,ach);
+	data->NamedForComplex("NAMED_UNIT", "NMDUNT",num0,num,ach);
         if (!data->CheckNbParams(num,1,ach,"named_unit")) return;
 	Handle(StepBasic_DimensionalExponents) aDimensions;
 	data->ReadEntity(num, 1,"dimensions", ach, STANDARD_TYPE(StepBasic_DimensionalExponents), aDimensions);
 
         // PLANE_ANGLE_UNIT
         //num = 0; //gka
-	data->NamedForComplex("PLANE_ANGLE_UNIT PLANUN",num0,num,ach);
+	data->NamedForComplex("PLANE_ANGLE_UNIT", "PLANUN",num0,num,ach);
         if (!data->CheckNbParams(num,0,ach,"plane_angle_unit")) return;
         
 	ent->Init(aDimensions,aName,aConversionFactor);

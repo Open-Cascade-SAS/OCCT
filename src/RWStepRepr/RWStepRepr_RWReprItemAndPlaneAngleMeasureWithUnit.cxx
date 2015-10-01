@@ -41,7 +41,7 @@ void RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit::ReadStep
 	 const Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit)& ent) const
 {
   Standard_Integer num = 0;//num0;
-  data->NamedForComplex("MEASURE_WITH_UNIT",num0,num,ach);
+  data->NamedForComplex("MEASURE_WITH_UNIT","MSWTUN",num0,num,ach);
   if (!data->CheckNbParams(num,2,ach,"measure_with_unit")) return;
   // --- own field : valueComponent ---
   Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
@@ -52,7 +52,7 @@ void RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit::ReadStep
   Handle(StepBasic_MeasureWithUnit) aMeasureWithUnit = new StepBasic_MeasureWithUnit;
   aMeasureWithUnit->Init(mvc, aUnitComponent);
 
-  data->NamedForComplex("REPRESENTATION_ITEM",num0,num,ach);
+  data->NamedForComplex("REPRESENTATION_ITEM","RPRITM",num0,num,ach);
   if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
   // --- own field : name ---
   Handle(TCollection_HAsciiString) aName;

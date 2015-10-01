@@ -48,7 +48,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep
    const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)& ent) const
 {
   Standard_Integer num = 0;//num0;
-  data->NamedForComplex("GEOMETRIC_TOLERANCE",num0,num,ach);
+  data->NamedForComplex("GEOMETRIC_TOLERANCE","GMTTLR",num0,num,ach);
   if (!data->CheckNbParams(num,4,ach,"geometric_tolerance")) return;
   // Own fields of GeometricTolerance
   Handle(TCollection_HAsciiString) aName;
@@ -60,7 +60,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
   data->ReadEntity (num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
 
-  data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE",num0,num,ach);
+  data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE","GTWDR",num0,num,ach);
   // Own fields of GeometricToleranceWithDatumReference
   Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
   Standard_Integer sub5 = 0;

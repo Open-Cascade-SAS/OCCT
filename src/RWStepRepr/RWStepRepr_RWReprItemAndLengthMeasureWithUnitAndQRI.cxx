@@ -44,7 +44,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::ReadStep
    const Handle(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)& ent) const
 {
   Standard_Integer num = 0;//num0;
-  data->NamedForComplex("MEASURE_WITH_UNIT",num0,num,ach);
+  data->NamedForComplex("MEASURE_WITH_UNIT","MSWTUN",num0,num,ach);
   if (!data->CheckNbParams(num,2,ach,"measure_with_unit")) return;
   // --- own field : valueComponent ---
   Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
@@ -55,7 +55,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::ReadStep
   Handle(StepBasic_MeasureWithUnit) aMeasureWithUnit = new StepBasic_MeasureWithUnit;
   aMeasureWithUnit->Init(mvc, aUnitComponent);
   
-  data->NamedForComplex("QUALIFIED_REPRESENTATION_ITEM",num0,num,ach);
+  data->NamedForComplex("QUALIFIED_REPRESENTATION_ITEM","QLRPIT",num0,num,ach);
   if (!data->CheckNbParams(num,1,ach,"qualified_representation_item")) return;
   // --- own field : qualifiers ---
   Handle(StepShape_HArray1OfValueQualifier) quals;
@@ -73,7 +73,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::ReadStep
   Handle(StepShape_QualifiedRepresentationItem) aQRI = new StepShape_QualifiedRepresentationItem();
   aQRI->SetQualifiers(quals);
 
-  data->NamedForComplex("REPRESENTATION_ITEM",num0,num,ach);
+  data->NamedForComplex("REPRESENTATION_ITEM","RPRITM",num0,num,ach);
   if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
   // --- own field : name ---
   Handle(TCollection_HAsciiString) aName;

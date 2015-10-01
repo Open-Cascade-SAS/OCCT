@@ -401,6 +401,43 @@ Standard_Boolean  StepData_StepReaderData::NamedForComplex
   return Standard_False;
 }
 
+//=======================================================================
+//function : NamedForComplex
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  StepData_StepReaderData::NamedForComplex
+  (const Standard_CString theName, const Standard_CString theShortName,
+   const Standard_Integer num0, Standard_Integer& num,
+   Handle(Interface_Check)& ach) const
+{
+  Standard_Integer n = (num <= 0 ? num0 : NextForComplex(num));
+  if ((n!=0) && !(stepstrcmp(RecordType(n).ToCString(),theName) &&
+                  stepstrcmp(RecordType(n).ToCString(), theShortName)))
+    {  num = n;  return Standard_True;  }
+  
+  if (n == 0) 
+    NamedForComplex (theName, theShortName, num0, n, ach);
+  //entities are not in alphabetical order
+  Handle(String) errmess = new String("Parameter n0.%d (%s) not a LIST");
+  sprintf (txtmes,errmess->ToCString(), num0, theName);
+  for (n = num0; n > 0; n = NextForComplex(n)) {
+    if (!(stepstrcmp(RecordType(n).ToCString(),theName) &&
+          stepstrcmp(RecordType(n).ToCString(), theShortName)))  {
+      num = n;
+      errmess = new String("Complex Record n0.%d, member type %s not in alphabetic order");
+      sprintf (txtmes,errmess->ToCString(), num0, theName);
+      ach->AddWarning(txtmes,errmess->ToCString());
+      return Standard_False;
+    }
+  }
+  num = 0;
+  errmess = new String("Complex Record n0.%d, member type %s not found");
+  sprintf (txtmes,errmess->ToCString(), num0, theName);
+  ach->AddFail (txtmes,errmess->ToCString());
+  return Standard_False;
+}
+
 //  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
 
 

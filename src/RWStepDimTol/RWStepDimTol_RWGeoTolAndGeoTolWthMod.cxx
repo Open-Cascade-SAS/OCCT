@@ -45,7 +45,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthMod::ReadStep
    const Handle(StepDimTol_GeoTolAndGeoTolWthMod)& ent) const
 {
   Standard_Integer num = 0;//num0;
-  data->NamedForComplex("GEOMETRIC_TOLERANCE",num0,num,ach);
+  data->NamedForComplex("GEOMETRIC_TOLERANCE","GMTTLR",num0,num,ach);
   if (!data->CheckNbParams(num,4,ach,"geometric_tolerance")) return;
   // Own fields of GeometricTolerance
   Handle(TCollection_HAsciiString) aName;

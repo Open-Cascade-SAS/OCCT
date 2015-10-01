@@ -37,7 +37,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep
         // --- Instance of plex componant RepresentationRelationship ---
 
         Standard_Integer num = 0;  // num0;
-        data->NamedForComplex("REPRESENTATION_RELATIONSHIP RPRRLT",num0,num,ach);
+        data->NamedForComplex("REPRESENTATION_RELATIONSHIP", "RPRRLT",num0,num,ach);
 
 	// --- Number of Parameter Control ---
 
@@ -70,7 +70,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep
 
         // --- Instance of plex componant RepresentationRelationshipWithTransformation ---
 
-        data->NamedForComplex("REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION RRWT",num0,num,ach);
+        data->NamedForComplex("REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION", "RRWT",num0,num,ach);
 	if (!data->CheckNbParams(num,1,ach,"representation_relationship_with_transformation")) return;
 
 	// --- own field : transformation_operator
@@ -81,7 +81,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep
 
         // --- Instance of plex componant ShapeRepresentationRelationship ---
 
-        data->NamedForComplex("SHAPE_REPRESENTATION_RELATIONSHIP SHRPRL",num0,num,ach);
+        data->NamedForComplex("SHAPE_REPRESENTATION_RELATIONSHIP", "SHRPRL",num0,num,ach);
 	if (!data->CheckNbParams(num,0,ach,"shape_representation_relationship")) return;
 
 	//--- Initialisation of the read entity ---

@@ -48,7 +48,7 @@ void RWStepBasic_RWConversionBasedUnitAndVolumeUnit::ReadStep(const Handle(StepD
   Handle(StepBasic_DimensionalExponents) aDimensions;
   data->ReadEntity(num, 1,"dimensions", ach, STANDARD_TYPE(StepBasic_DimensionalExponents), aDimensions);
   
-  data->NamedForComplex("VOLUME_UNIT",num0,num,ach);
+  data->NamedForComplex("VOLUME_UNIT","VLMUNT",num0,num,ach);
   if (!data->CheckNbParams(num,0,ach,"volume_unit")) return;
   
   ent->Init(aDimensions,aName,aConversionFactor);

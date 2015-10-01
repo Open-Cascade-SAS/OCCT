@@ -34,12 +34,12 @@ void RWStepBasic_RWSiUnitAndVolumeUnit::ReadStep(const Handle(StepData_StepReade
 						 const Handle(StepBasic_SiUnitAndVolumeUnit)& ent) const
 {
   Standard_Integer num = 0;
-  data->NamedForComplex("NAMED_UNIT NMDUNT",num0,num,ach);
+  data->NamedForComplex("NAMED_UNIT", "NMDUNT",num0,num,ach);
   if (!data->CheckNbParams(num,1,ach,"named_unit")) return;
   Handle(StepBasic_DimensionalExponents) aDimensions;
   data->ReadEntity(num, 1,"dimensions", ach, STANDARD_TYPE(StepBasic_DimensionalExponents), aDimensions);
   
-  data->NamedForComplex("SI_UNIT SUNT",num0,num,ach);
+  data->NamedForComplex("SI_UNIT", "SUNT",num0,num,ach);
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
   
   RWStepBasic_RWSiUnit reader;
@@ -73,7 +73,7 @@ void RWStepBasic_RWSiUnitAndVolumeUnit::ReadStep(const Handle(StepData_StepReade
     return;
   }
   
-  data->NamedForComplex("VOLUME_UNIT",num0,num,ach);
+  data->NamedForComplex("VOLUME_UNIT","VLMUNT",num0,num,ach);
   if (!data->CheckNbParams(num,0,ach,"volume_unit")) return;
   
   ent->Init(hasAprefix,aPrefix,aName);

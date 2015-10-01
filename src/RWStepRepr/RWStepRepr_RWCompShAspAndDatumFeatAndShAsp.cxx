@@ -42,7 +42,7 @@ void RWStepRepr_RWCompShAspAndDatumFeatAndShAsp::ReadStep
    const Handle(StepRepr_CompShAspAndDatumFeatAndShAsp)& ent) const
 {
   Standard_Integer num = 0;
-  data->NamedForComplex("SHAPE_ASPECT", num0, num, ach);
+  data->NamedForComplex("SHAPE_ASPECT","SHPASP", num0, num, ach);
   if (!data->CheckNbParams(num, 4, ach, "shape_aspect")) return;
 
   Handle(TCollection_HAsciiString) aName;

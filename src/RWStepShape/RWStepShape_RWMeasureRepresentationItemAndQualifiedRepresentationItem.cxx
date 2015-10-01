@@ -38,7 +38,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
   //  --- Instance of plex componant : MeasureReprItem
 
   Standard_Integer num = 0;
-  data->NamedForComplex("MEASURE_REPRESENTATION_ITEM",num0,num,ach);
+  data->NamedForComplex("MEASURE_REPRESENTATION_ITEM","MSRPIT",num0,num,ach);
 
   // --- Number of Parameter Control ---
 
@@ -55,7 +55,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
 
   //  --- Instance of plex componant : QualifiedReprItem
 
-  data->NamedForComplex("QUALIFIED_REPRESENTATION_ITEM",num0,num,ach);
+  data->NamedForComplex("QUALIFIED_REPRESENTATION_ITEM","QLRPIT",num0,num,ach);
 
   // --- Number of Parameter Control ---
 
@@ -78,7 +78,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
 
   //  --- Instance of plex componant : RepresentationItem
 
-  data->NamedForComplex("REPRESENTATION_ITEM",num0,num,ach);
+  data->NamedForComplex("REPRESENTATION_ITEM","RPRITM",num0,num,ach);
 
   if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
 

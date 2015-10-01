@@ -120,6 +120,23 @@ public:
   //! Returns True if alphabetic order, False else
   Standard_EXPORT Standard_Boolean NamedForComplex (const Standard_CString name, const Standard_Integer num0, Standard_Integer& num, Handle(Interface_Check)& ach) const;
   
+  //! Determines the first component which brings a given name, or
+  //! short name for a Complex Type Entity
+  //! <num0> is the very first record of this entity
+  //! <num> is given the last NextNamedForComplex, starts at zero
+  //! it is returned as the newly found number
+  //! Hence, in the normal case, NextNamedForComplex starts by num0
+  //! if <num> is zero, else by NextForComplex(num)
+  //! If the alphabetic order is not respected, it restarts from
+  //! num0 and loops on NextForComplex until finding <name>
+  //! In case of "non-alphabetic order", <ach> is filled with a
+  //! Warning for this name
+  //! In case of "not-found at all", <ach> is filled with a Fail,
+  //! and <num> is returned as zero
+  //!
+  //! Returns True if alphabetic order, False else
+  Standard_EXPORT Standard_Boolean NamedForComplex (const Standard_CString theName, const Standard_CString theShortName, const Standard_Integer num0, Standard_Integer& num, Handle(Interface_Check)& ach) const;
+
   //! Checks Count of Parameters of record <num> to equate <nbreq>
   //! If this Check is successful, returns True
   //! Else, fills <ach> with an Error Message then returns False

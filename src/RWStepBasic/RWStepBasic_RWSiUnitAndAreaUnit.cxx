@@ -34,15 +34,15 @@ void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const Handle(StepData_StepReaderD
 					       const Handle(StepBasic_SiUnitAndAreaUnit)& ent) const
 {
   Standard_Integer num = 0;
-  data->NamedForComplex("AREA_UNIT",num0,num,ach);
+  data->NamedForComplex("AREA_UNIT","ARUNT",num0,num,ach);
   if (!data->CheckNbParams(num,0,ach,"area_unit")) return;
 
-  data->NamedForComplex("NAMED_UNIT NMDUNT",num0,num,ach);
+  data->NamedForComplex("NAMED_UNIT", "NMDUNT",num0,num,ach);
   if (!data->CheckNbParams(num,1,ach,"named_unit")) return;
   Handle(StepBasic_DimensionalExponents) aDimensions;
   data->ReadEntity(num, 1,"dimensions", ach, STANDARD_TYPE(StepBasic_DimensionalExponents), aDimensions);
   
-  data->NamedForComplex("SI_UNIT SUNT",num0,num,ach);
+  data->NamedForComplex("SI_UNIT", "SUNT",num0,num,ach);
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
   
   RWStepBasic_RWSiUnit reader;
