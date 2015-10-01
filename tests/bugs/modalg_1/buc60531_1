@@ -10,6 +10,6 @@ checkshape pl1
 
 bcut result r1 pl1
 
-set square 115935
+set square 119983
 set 2dviewer 0
 

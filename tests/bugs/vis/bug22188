@@ -75,7 +75,7 @@ if { ${deflection_percent} > ${percent_max} } {
    puts "deflection: OK ${BugNumber}"
 }
 
-set square 33561.4
+set square 32416.7
 
 set nb_v_good 2
 set nb_e_good 3

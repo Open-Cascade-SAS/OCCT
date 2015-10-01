@@ -19,4 +19,4 @@ if { [catch { OCC22586 shape result } catch_result] } {
 }
 
 set 3dviewer 1 
-set square 11275.7
+set square 10975

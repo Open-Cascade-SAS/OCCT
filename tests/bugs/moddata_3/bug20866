@@ -26,7 +26,7 @@ if [catch { buildsweep result } ] {
   puts "Faulty ${BugNumber} : buildsweep is wrong"
 } else {
 
-    set square 1.87535e+06
+    set square 1.94998e+06
 
     set nb_v_good 161
     set nb_e_good 299

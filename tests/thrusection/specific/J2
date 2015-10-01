@@ -31,7 +31,7 @@ addsweep v2
 buildsweep result
 
 
-set square 1277.32
+set square 1259.14
 
 set nb_v_good 2
 set nb_e_good 3

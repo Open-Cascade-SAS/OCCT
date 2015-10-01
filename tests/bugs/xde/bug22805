@@ -20,6 +20,6 @@ if { [regexp {This shape seems to be valid} $info]} {
 }
 
 renamevar result_1 result
-set square 15121.2
+set square 14447.5
 set 3dviewer 0
 

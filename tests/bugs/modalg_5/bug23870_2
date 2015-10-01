@@ -20,7 +20,7 @@ wire profile profile
 
 pipe result spine profile 2 approx
 
-set square 8997.97
+set square 8772.95
 
 set nb_v_good 2
 set nb_e_good 3

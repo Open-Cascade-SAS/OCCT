@@ -40,7 +40,7 @@ puts "CPU_user_time=${CPU_user_time}"
 set CPU_user_time [expr ${CPU_user_time} / ${NbTests}]
 puts "CPU_user_time=${CPU_user_time}"
 
-set square 3.00597e+07
+set square 3.05118e+07
 
 # Analysis of "nbshapes res"
 set nb_v_good 61

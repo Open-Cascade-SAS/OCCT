@@ -14,7 +14,7 @@ tscale t 0.0507219 -0.0399294 -0.00324254 1000
 explode t e
 blend result t 2. t_3
 
-set square 3471.94
+set square 3545.26
 
 set nb_v_good 12
 set nb_e_good 14

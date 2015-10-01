@@ -19,7 +19,7 @@ stepread $imagedir/${test_image}.step sc2 *
 tpcompound sc2
 renamevar sc2 result
 
-set square 285636
+set square 271280
 
 set nb_v_good 2
 set nb_e_good 3

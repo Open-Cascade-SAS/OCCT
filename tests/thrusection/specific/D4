@@ -20,7 +20,7 @@ set isruled 0
 catch {thrusections result ${issolid} ${isruled} v1 w1 v2}
 
 
-set square 892.672
+set square 881.045
 
 set nb_v_good 2
 set nb_e_good 3

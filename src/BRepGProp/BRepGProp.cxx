@@ -47,7 +47,7 @@ void  BRepGProp::LinearProperties(const TopoDS_Shape& S, GProp_GProps& SProps){
   SProps = GProp_GProps(P);
 
   BRepAdaptor_Curve   BAC;
-//  Standard_Integer n,i;
+  //  Standard_Integer n,i;
   TopExp_Explorer ex;
   for (ex.Init(S,TopAbs_EDGE); ex.More(); ex.Next()) {
     BAC.Initialize(TopoDS::Edge(ex.Current()));
@@ -72,7 +72,9 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
   for (ex.Init(S,TopAbs_FACE), i = 1; ex.More(); ex.Next(), i++) {
     const TopoDS_Face& F = TopoDS::Face(ex.Current());
     BF.Load(F);
-    if(!BF.NaturalRestriction()) BD.Init(F);
+    TopoDS_Iterator aWIter(F);
+    Standard_Boolean IsNatRestr = !aWIter.More();
+    if(!IsNatRestr) BD.Init(F);
     if(Eps < 1.0) {
       G.Perform(BF, BD, Eps); 
       Error = G.GetEpsilon();
@@ -83,7 +85,7 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
 #endif
       }
     } else {
-      if(BF.NaturalRestriction()) G.Perform(BF);
+      if(IsNatRestr) G.Perform(BF);
       else G.Perform(BF, BD);
     }
     Props.Add(G);
@@ -133,20 +135,22 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
     const TopoDS_Face& F = TopoDS::Face(ex.Current());
     if ((F.Orientation() == TopAbs_FORWARD) || (F.Orientation() == TopAbs_REVERSED)){
       BF.Load(F);
-      if(!BF.NaturalRestriction()) BD.Init(F);
+      TopoDS_Iterator aWIter(F);
+      Standard_Boolean IsNatRestr = !aWIter.More();
+      if(!IsNatRestr) BD.Init(F);
       if(Eps < 1.0) {
-	G.Perform(BF, BD, Eps); 
-	Error = G.GetEpsilon();
-	if(ErrorMax < Error) {
-	  ErrorMax = Error;
+        G.Perform(BF, BD, Eps); 
+        Error = G.GetEpsilon();
+        if(ErrorMax < Error) {
+          ErrorMax = Error;
 #ifdef OCCT_DEBUG
-	  iErrorMax = i;
+          iErrorMax = i;
 #endif
-	}
+        }
       }
       else {
-	if(BF.NaturalRestriction()) G.Perform(BF);
-	else G.Perform(BF, BD);
+        if(IsNatRestr) G.Perform(BF);
+        else G.Perform(BF, BD);
       }
       Props.Add(G);
 #ifdef OCCT_DEBUG
@@ -178,7 +182,7 @@ void  BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, co
 //=======================================================================
 
 Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, 
-					  const Standard_Real Eps, const Standard_Boolean OnlyClosed)
+  const Standard_Real Eps, const Standard_Boolean OnlyClosed)
 { 
   // find the origin
   gp_Pnt P(0,0,0);  P.Transform(S.Location());
@@ -193,13 +197,13 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
     for (i = 1; ex.More(); ex.Next(), i++) {
       const TopoDS_Shape& Sh = ex.Current();
       if(BRep_Tool::IsClosed(Sh)) {
-	Error = volumeProperties(Sh,Props,Eps);
-	if(ErrorMax < Error) {
-	  ErrorMax = Error;
+        Error = volumeProperties(Sh,Props,Eps);
+        if(ErrorMax < Error) {
+          ErrorMax = Error;
 #ifdef OCCT_DEBUG
-	  iErrorMax = i;
+          iErrorMax = i;
 #endif
-	}
+        }
       }
     }
   } else ErrorMax = volumeProperties(S,Props,Eps);
@@ -218,15 +222,15 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
 //=======================================================================
 
 static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
-				              GProp_GProps     &theProps,
-					const Standard_Real     theTol,
-					const Standard_Boolean  IsUseSpan,
-					const Standard_Boolean  CGFlag,
-					const Standard_Boolean  IFlag)
+  GProp_GProps     &theProps,
+  const Standard_Real     theTol,
+  const Standard_Boolean  IsUseSpan,
+  const Standard_Boolean  CGFlag,
+  const Standard_Boolean  IFlag)
 {
   TopExp_Explorer  anExp;
   anExp.Init(theShape, TopAbs_FACE);
- 
+
   Standard_Real aTol = theTol;
 
   // Compute properties.
@@ -243,21 +247,23 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
     TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
     if (aFace.Orientation() == TopAbs_FORWARD ||
-	aFace.Orientation() == TopAbs_REVERSED) {
-      aPropFace.Load(aFace);
+      aFace.Orientation() == TopAbs_REVERSED) {
+        aPropFace.Load(aFace);
 
-      if(aPropFace.NaturalRestriction())
-	aLocalError = aVProps.Perform(aPropFace, aTol, CGFlag, IFlag);
-      else {
-	aPropDomain.Init(aFace);
-	aLocalError = aVProps.Perform(aPropFace, aPropDomain, aTol, CGFlag, IFlag);
-      }
+        TopoDS_Iterator aWIter(aFace);
+        Standard_Boolean IsNatRestr = !aWIter.More();
+        if(IsNatRestr)
+          aLocalError = aVProps.Perform(aPropFace, aTol, CGFlag, IFlag);
+        else {
+          aPropDomain.Init(aFace);
+          aLocalError = aVProps.Perform(aPropFace, aPropDomain, aTol, CGFlag, IFlag);
+        }
 
-      if (aLocalError < 0.)
-	return aLocalError;
+        if (aLocalError < 0.)
+          return aLocalError;
 
-      anError += aLocalError;
-      theProps.Add(aVProps);
+        anError += aLocalError;
+        theProps.Add(aVProps);
     }
   }
 
@@ -270,12 +276,12 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
 //=======================================================================
 
 Standard_Real BRepGProp::VolumePropertiesGK(const TopoDS_Shape     &S,
-					          GProp_GProps     &Props, 
-					    const Standard_Real     Eps,
-					    const Standard_Boolean  OnlyClosed,
-					    const Standard_Boolean  IsUseSpan,
-					    const Standard_Boolean  CGFlag,
-					    const Standard_Boolean  IFlag)
+  GProp_GProps     &Props, 
+  const Standard_Real     Eps,
+  const Standard_Boolean  OnlyClosed,
+  const Standard_Boolean  IsUseSpan,
+  const Standard_Boolean  CGFlag,
+  const Standard_Boolean  IFlag)
 { 
   gp_Pnt        P(0,0,0);
   Standard_Real anError = 0.;
@@ -297,7 +303,7 @@ Standard_Real BRepGProp::VolumePropertiesGK(const TopoDS_Shape     &S,
       BRepCheck_Status aStatus = aChecker.Closed(Standard_False);
 
       if(aStatus == BRepCheck_NoError) 
-	aClosedShells.Append(aShell);
+        aClosedShells.Append(aShell);
 
     }
 
@@ -315,11 +321,11 @@ Standard_Real BRepGProp::VolumePropertiesGK(const TopoDS_Shape     &S,
       aLocalError = volumePropertiesGK(aShell, Props, aTol, IsUseSpan, CGFlag, IFlag);
 
       if (aLocalError < 0)
-	return aLocalError;
+        return aLocalError;
 
       anError += aLocalError;
     }
-  
+
   } else
     anError = volumePropertiesGK(S, Props, Eps, IsUseSpan, CGFlag, IFlag);
 
@@ -334,12 +340,12 @@ Standard_Real BRepGProp::VolumePropertiesGK(const TopoDS_Shape     &S,
 //=======================================================================
 
 static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
-				              GProp_GProps     &theProps,
-					const gp_Pln           &thePln,
-					const Standard_Real     theTol,
-					const Standard_Boolean  IsUseSpan,
-					const Standard_Boolean  CGFlag,
-					const Standard_Boolean  IFlag)
+  GProp_GProps     &theProps,
+  const gp_Pln           &thePln,
+  const Standard_Real     theTol,
+  const Standard_Boolean  IsUseSpan,
+  const Standard_Boolean  CGFlag,
+  const Standard_Boolean  IFlag)
 {
   TopExp_Explorer  anExp;
   anExp.Init(theShape, TopAbs_FACE);
@@ -360,21 +366,23 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
     TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
     if (aFace.Orientation() == TopAbs_FORWARD ||
-	aFace.Orientation() == TopAbs_REVERSED) {
-      aPropFace.Load(aFace);
+      aFace.Orientation() == TopAbs_REVERSED) {
+        aPropFace.Load(aFace);
 
-      if(aPropFace.NaturalRestriction())
-	aLocalError = aVProps.Perform(aPropFace, thePln, aTol, CGFlag, IFlag);
-      else {
-	aPropDomain.Init(aFace);
-	aLocalError = aVProps.Perform(aPropFace, aPropDomain, thePln, aTol, CGFlag, IFlag);
-      }
+        TopoDS_Iterator aWIter(aFace);
+        Standard_Boolean IsNatRestr = !aWIter.More();
+        if(IsNatRestr)
+          aLocalError = aVProps.Perform(aPropFace, thePln, aTol, CGFlag, IFlag);
+        else {
+          aPropDomain.Init(aFace);
+          aLocalError = aVProps.Perform(aPropFace, aPropDomain, thePln, aTol, CGFlag, IFlag);
+        }
 
-      if (aLocalError < 0.)
-	return aLocalError;
+        if (aLocalError < 0.)
+          return aLocalError;
 
-      anError += aLocalError;
-      theProps.Add(aVProps);
+        anError += aLocalError;
+        theProps.Add(aVProps);
     }
   }
 
@@ -387,13 +395,13 @@ static Standard_Real volumePropertiesGK(const TopoDS_Shape     &theShape,
 //=======================================================================
 
 Standard_Real BRepGProp::VolumePropertiesGK(const TopoDS_Shape     &S,
-					          GProp_GProps     &Props,
-					    const gp_Pln           &thePln,
-					    const Standard_Real     Eps,
-					    const Standard_Boolean  OnlyClosed,
-					    const Standard_Boolean  IsUseSpan,
-					    const Standard_Boolean  CGFlag,
-					    const Standard_Boolean  IFlag)
+  GProp_GProps     &Props,
+  const gp_Pln           &thePln,
+  const Standard_Real     Eps,
+  const Standard_Boolean  OnlyClosed,
+  const Standard_Boolean  IsUseSpan,
+  const Standard_Boolean  CGFlag,
+  const Standard_Boolean  IFlag)
 { 
   gp_Pnt        P(0,0,0);
   Standard_Real anError = 0.;
@@ -415,7 +423,7 @@ Standard_Real BRepGProp::VolumePropertiesGK(const TopoDS_Shape     &S,
       BRepCheck_Status aStatus = aChecker.Closed(Standard_False);
 
       if(aStatus == BRepCheck_NoError) 
-	aClosedShells.Append(aShell);
+        aClosedShells.Append(aShell);
 
     }
 
@@ -433,7 +441,7 @@ Standard_Real BRepGProp::VolumePropertiesGK(const TopoDS_Shape     &S,
       aLocalError = volumePropertiesGK(aShell, Props, thePln, aTol, IsUseSpan, CGFlag, IFlag);
 
       if (aLocalError < 0)
-	return aLocalError;
+        return aLocalError;
 
       anError += aLocalError;
     }

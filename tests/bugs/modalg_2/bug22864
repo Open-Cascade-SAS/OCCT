@@ -95,7 +95,5 @@ if {${status} == 0} {
     puts "Faulty ${BugNumber}"
 }
 
-set square 6606.88
+set square 8464.91
 set 2dviewer 0
-
-

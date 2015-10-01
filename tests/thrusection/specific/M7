@@ -104,7 +104,7 @@ addsweep v5
 catch {buildsweep result}
 
 
-set square 270505
+set square 591941
 
 set nb_v_good 2
 set nb_e_good 33

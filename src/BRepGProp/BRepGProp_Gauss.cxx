@@ -584,7 +584,9 @@ Standard_Real BRepGProp_Gauss::Compute(
 
   //
   const Standard_Integer NumSubs = SUBS_POWER;
-  const Standard_Boolean isNaturalRestriction = theSurface.NaturalRestriction();
+  const TopoDS_Face& aF = theSurface.GetFace(); 
+  TopoDS_Iterator aWIter(aF);
+  const Standard_Boolean isNaturalRestriction = !aWIter.More(); //theSurface.NaturalRestriction();
 
   Standard_Real CIx, CIy, CIz, CIxy, CIxz, CIyz;
   Standard_Real CDim[2], CIxx[2], CIyy[2], CIzz[2];
@@ -1111,8 +1113,10 @@ void BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
   {
     theSurface.Load(theDomain.Value());
 
-    const Standard_Integer NbCGaussgp_Pnts =
+    Standard_Integer NbCGaussgp_Pnts =
       Min(theSurface.IntegrationOrder(), math::GaussPointsMax());
+
+    NbCGaussgp_Pnts = Max(NbCGaussgp_Pnts, NbGaussgp_Pnts);
 
     math_Vector GaussCP(1, NbCGaussgp_Pnts);
     math_Vector GaussCW(1, NbCGaussgp_Pnts);

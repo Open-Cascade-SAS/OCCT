@@ -1,0 +1,21 @@
+puts "=========="
+puts "OCC26607"
+puts "=========="
+puts ""
+###########################################
+# Wrong value of area.
+###########################################
+
+box b1 10 10 10
+box b2 20 0 0 10 10 10
+explode b1 f
+explode b2 f
+explode b1_5 
+explode b2_5 
+ 
+mksurface s b1_5 
+mkface fs s
+add b1_5_1 fs
+add b2_5_1 fs
+ 
+checkarea fs -200 1e-06 0.01

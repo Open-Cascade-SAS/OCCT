@@ -19,7 +19,7 @@ set setsweepOptions "-FR"
 set addsweepOptions ""
 set buildsweepOptions ""
 
-set square 27154.8
+set square 25522.2
 
 set nb_v_good 12
 set nb_e_good 20

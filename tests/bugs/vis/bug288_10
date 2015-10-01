@@ -10,7 +10,7 @@ set BugNumber OCC288
 
 restore [locate_data_file shading_151.brep] result
 
-set square 54328.8
+set square 52620.1
 
 set nb_v_good 20
 set nb_e_good 37

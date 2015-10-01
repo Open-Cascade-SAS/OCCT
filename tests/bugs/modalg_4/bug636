@@ -26,6 +26,5 @@ if [catch { buildsweep result } catch_result] {
     puts "OCC636 OK: function buildsweep works properly"
 }
 
-set square 3836.92
+set square 3934.22
 set 2dviewer 0
-

@@ -65,6 +65,9 @@ public:
   
   //! Returns Standard_True if the face is not trimmed.
     Standard_Boolean NaturalRestriction() const;
+
+  //! Returns the TopoDS face.
+  const TopoDS_Face& GetFace() const; 
   
   //! Returns the value of the boundary curve of the face.
     gp_Pnt2d Value2d (const Standard_Real U) const;
