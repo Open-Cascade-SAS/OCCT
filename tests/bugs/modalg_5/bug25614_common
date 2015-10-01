@@ -45,13 +45,13 @@ baddctools b2
 bapibop result 0
 
 set nb_v_good 1720
-set nb_e_good 3800
-set nb_w_good 1920
-set nb_f_good 1920
-set nb_sh_good 1
-set nb_sol_good 1
+set nb_e_good 4260
+set nb_w_good 3220
+set nb_f_good 3220
+set nb_sh_good 760
+set nb_sol_good 760
 set nb_compsol_good 0
 set nb_compound_good 1
-set nb_shape_good 9363
+set nb_shape_good 13941
 
 set 3dviewer 1

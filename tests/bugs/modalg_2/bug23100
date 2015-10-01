@@ -23,10 +23,10 @@ set nb_v_good 34
 set nb_e_good 62
 set nb_w_good 30
 set nb_f_good 29
-set nb_sh_good 1
+set nb_sh_good 0
 set nb_sol_good 0
 set nb_compsol_good 0
 set nb_compound_good 1
-set nb_shape_good 157
+set nb_shape_good 156
 
 set 3dviewer 1

@@ -13,8 +13,9 @@ bopfuse result
 
 set nb_v_good 2
 set nb_e_good 1
-set nb_w_good 1
-set nb_shape_good 5
+set nb_w_good 0
+set nb_shape_good 4
+
 set length 48.4459
 set command bopfuse
 

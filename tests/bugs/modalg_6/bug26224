@@ -25,11 +25,11 @@ Number of shapes in shape
  EDGE : 9
  WIRE : 1
  FACE : 1
- SHELL : 1
+ SHELL : 0
  SOLID : 0
  COMPSOLID : 0
  COMPOUND : 1
- SHAPE : 22
+ SHAPE : 21
 
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "result obtained by Common operator"

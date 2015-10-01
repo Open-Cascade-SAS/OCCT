@@ -45,6 +45,10 @@ typedef NCollection_IndexedDataMap
 //
 static
   TopAbs_ShapeEnum TypeToExplore(const Standard_Integer theDim);
+//
+static
+  void CollectContainers(const TopoDS_Shape& theS,
+                         BOPCol_ListOfShape& theLSC);
 
 
 //=======================================================================
@@ -141,7 +145,7 @@ void BOPAlgo_BOP::SetTools(const BOPCol_ListOfShape& theShapes)
 void BOPAlgo_BOP::CheckData()
 {
   Standard_Integer i, j, iDim, aNbArgs, aNbTools;
-  Standard_Boolean bFlag;
+  Standard_Boolean bFlag, bFuse;
   BOPCol_ListIteratorOfListOfShape aItLS;
   //
   myErrorStatus=0;
@@ -179,9 +183,18 @@ void BOPAlgo_BOP::CheckData()
     return;
   }
   //
-  // myDims
-  myDims[0]=-1;
-  myDims[1]=-1;
+  bFuse = (myOperation == BOPAlgo_FUSE);
+  //
+  // The rules for different types of operations are the following:
+  // 1. FUSE:   All arguments and tools should have the same dimension;
+  // 2. CUT:    The MAXIMAL dimension of the ARGUMENTS should be less
+  //            or equal to the MINIMAL dimension of the TOOLS;
+  // 3. CUT21:  The MINIMAL dimension of ARGUMENTS should be grater
+  //            or equal to the MAXIMAL dimension of the TOOLS;
+  // 4. COMMON: The arguments and tools could have any dimensions.
+  //
+  Standard_Integer iDimMin[2], iDimMax[2];
+  //
   for (i=0; i<2; ++i) {
     const BOPCol_ListOfShape& aLS=(!i)? myArguments : myTools;
     aItLS.Initialize(aLS);
@@ -200,11 +213,19 @@ void BOPAlgo_BOP::CheckData()
       }
       //
       if (!j) {
-        myDims[i]=iDim;
+        iDimMin[i] = iDim;
+        iDimMax[i] = iDim;
         continue;
       }
       //
-      if (iDim!=myDims[i]) { 
+      if (iDim < iDimMin[i]) {
+        iDimMin[i] = iDim;
+      }
+      else if (iDim > iDimMax[i]) {
+        iDimMax[i] = iDim;
+      }
+      //
+      if (bFuse && (iDimMin[i] != iDimMax[i])) {
         // non-homogenious argument
         myErrorStatus=13;
         return;
@@ -212,22 +233,16 @@ void BOPAlgo_BOP::CheckData()
     }
   }
   //
-  if (myDims[0]<myDims[1]) {
-    if (myOperation==BOPAlgo_FUSE ||
-        myOperation==BOPAlgo_CUT21) { 
-      // non-licit operation for the arguments
-      myErrorStatus=14;
-      return;
-    }
+  if (((myOperation == BOPAlgo_FUSE)  && (iDimMax[0] != iDimMax[1])) ||
+      ((myOperation == BOPAlgo_CUT)   && (iDimMax[0] >  iDimMin[1])) ||
+      ((myOperation == BOPAlgo_CUT21) && (iDimMin[0] <  iDimMax[1])) ) {
+    // non-licit operation for the arguments
+    myErrorStatus=14;
+    return;
   }
-  else if (myDims[0]>myDims[1]) {
-    if (myOperation==BOPAlgo_FUSE ||
-        myOperation==BOPAlgo_CUT) {
-      // non-licit operation for the arguments
-      myErrorStatus=14; 
-      return;
-    }
-  }
+  //
+  myDims[0] = iDimMin[0];
+  myDims[1] = iDimMin[1];
 }
 //=======================================================================
 //function : Prepare
@@ -500,198 +515,187 @@ void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
 //=======================================================================
 void BOPAlgo_BOP::BuildRC()
 {
-  Standard_Boolean bFlag1, bFlag2, bIsBound;
-  Standard_Integer aDmin;
-  TopAbs_ShapeEnum aTmin;
+  TopAbs_ShapeEnum aType;
   TopoDS_Compound aC;
   BRep_Builder aBB;
-  TopExp_Explorer aExp;
-  BOPCol_DataMapOfShapeShape aDMSSA;
-  BOPCol_ListIteratorOfListOfShape aItLS, aItIm; 
-  Standard_Boolean bHasInterf;
-  Standard_Integer iX;
-  BOPTools_IndexedDataMapOfSetShape aDMSTS;
   //
-  myErrorStatus=0;
+  myErrorStatus = 0;
   //
   aBB.MakeCompound(aC);
   //
   // A. Fuse
-  if (myOperation==BOPAlgo_FUSE) {
-    aTmin=TypeToExplore(myDims[0]);
-    aExp.Init(myShape, aTmin);
+  if (myOperation == BOPAlgo_FUSE) {
+    BOPCol_MapOfShape aMFence;
+    aType = TypeToExplore(myDims[0]);
+    TopExp_Explorer aExp(myShape, aType);
     for (; aExp.More(); aExp.Next()) {
-      const TopoDS_Shape& aS=aExp.Current();
-      aBB.Add(aC, aS);
+      const TopoDS_Shape& aS = aExp.Current();
+      if (aMFence.Add(aS)) {
+        aBB.Add(aC, aS);
+      }
     }
-    myRC=aC;
+    myRC = aC;
     return;
-  } 
-  //
-  aDmin=myDims[1];
-  if (myDims[0] < myDims[1]) {
-    aDmin=myDims[0];
   }
-  aTmin=TypeToExplore(aDmin);
   //
   // B. Common, Cut, Cut21
   //
-  bFlag1=(myOperation==BOPAlgo_COMMON || myOperation==BOPAlgo_CUT21);
-  bFlag2=(myOperation==BOPAlgo_CUT || myOperation==BOPAlgo_CUT21);
+  Standard_Integer i, j, aNb, iDim;
+  Standard_Boolean bCheckEdges, bContains, bCut21, bCommon;
+  BOPCol_IndexedMapOfShape aMArgs, aMTools;
+  BOPCol_IndexedMapOfShape aMArgsIm, aMToolsIm;
+  BOPCol_ListIteratorOfListOfShape aItLS;
   //
-  const BOPCol_ListOfShape& aLA=( bFlag1) ? myArguments : myTools;
-  aItLS.Initialize(aLA);
-  for (; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aSA=aItLS.Value();
+  for (i = 0; i < 2; ++i) {
+    const BOPCol_ListOfShape& aLS = !i ? myArguments : myTools;
+    BOPCol_IndexedMapOfShape& aMS = !i ? aMArgs : aMTools;
+    aItLS.Initialize(aLS);
+    for (; aItLS.More(); aItLS.Next()) {
+      const TopoDS_Shape& aS = aItLS.Value();
+      iDim = BOPTools_AlgoTools::Dimension(aS);
+      aType = TypeToExplore(iDim);
+      BOPTools::MapShapes(aS, aType, aMS);
+    }
+  }
+  //
+  bCheckEdges = Standard_False;
+  //
+  for (i = 0; i < 2; ++i) {
+    const BOPCol_IndexedMapOfShape& aMS = !i ? aMArgs : aMTools;
+    BOPCol_IndexedMapOfShape& aMSIm = !i ? aMArgsIm : aMToolsIm;
     //
-    if (myImages.IsBound(aSA)){
-      const BOPCol_ListOfShape& aLSAIm=myImages.Find(aSA);
-      aItIm.Initialize(aLSAIm);
-      for (; aItIm.More(); aItIm.Next()) {
-        const TopoDS_Shape& aSAIm=aItIm.Value();
-        aExp.Init(aSAIm, aTmin);
-        for (; aExp.More(); aExp.Next()) {
-          const TopoDS_Shape aSIm=aExp.Current();
-          aDMSSA.Bind(aSIm, aSIm);
+    aNb = aMS.Extent();
+    for (j = 1; j <= aNb; ++j) {
+      const TopoDS_Shape& aS = aMS(j);
+      aType = aS.ShapeType();
+      if (aType == TopAbs_EDGE) {
+        const TopoDS_Edge& aE = *(TopoDS_Edge*)&aS;
+        bCheckEdges = Standard_True;
+        if (BRep_Tool::Degenerated(aE)) {
+          continue;
         }
       }
+      //
+      if (myImages.IsBound(aS)) {
+        const BOPCol_ListOfShape& aLSIm = myImages.Find(aS);
+        aItLS.Initialize(aLSIm);
+        for (; aItLS.More(); aItLS.Next()) {
+          const TopoDS_Shape& aSIm = aItLS.Value();
+          aMSIm.Add(aSIm);
+        }
+      }
+      else {
+        aMSIm.Add(aS);
+      }
     }
+  }
+  //
+  // compare the maps and make the result
+  //
+  Standard_Integer iDimMin, iDimMax;
+  //
+  iDimMin = Min(myDims[0], myDims[1]);
+  bCommon = (myOperation == BOPAlgo_COMMON);
+  bCut21  = (myOperation == BOPAlgo_CUT21);
+  //
+  const BOPCol_IndexedMapOfShape& aMIt = bCut21 ? aMToolsIm : aMArgsIm;
+  const BOPCol_IndexedMapOfShape& aMCheck = bCut21 ? aMArgsIm : aMToolsIm;
+  //
+  BOPCol_IndexedMapOfShape aMCheckExp, aMItExp;
+  //
+  if (bCommon) {
+    aNb = aMIt.Extent();
+    for (i = 1; i <= aNb; ++i) {
+      const TopoDS_Shape& aS = aMIt(i);
+      iDimMax = BOPTools_AlgoTools::Dimension(aS);
+      for (iDim = iDimMin; iDim < iDimMax; ++iDim) {
+        aType = TypeToExplore(iDim);
+        BOPTools::MapShapes(aS, aType, aMItExp);
+      }
+      aMItExp.Add(aS);
+    }
+  }
+  else {
+    aMItExp = aMIt;
+  }
+  //
+  aNb = aMCheck.Extent();
+  for (i = 1; i <= aNb; ++i) {
+    const TopoDS_Shape& aS = aMCheck(i);
+    iDimMax = BOPTools_AlgoTools::Dimension(aS);
+    for (iDim = iDimMin; iDim < iDimMax; ++iDim) {
+      aType = TypeToExplore(iDim);
+      BOPTools::MapShapes(aS, aType, aMCheckExp);
+    }
+    aMCheckExp.Add(aS);
+  }
+  //
+  aNb = aMItExp.Extent();
+  for (i = 1; i <= aNb; ++i) {
+    const TopoDS_Shape& aS = aMItExp(i);
     //
+    bContains = aMCheckExp.Contains(aS);
+    if (bCommon) {
+      if (bContains) {
+        aBB.Add(aC, aS);
+      }
+    }
     else {
-      aExp.Init(aSA, aTmin);
+      if (!bContains) {
+        aBB.Add(aC, aS);
+      }
+    }
+  }
+  //
+  // filter result for COMMON operation
+  if (bCommon) {
+    BOPCol_MapOfShape aMFence;
+    TopExp_Explorer aExp;
+    TopoDS_Compound aCx;
+    aBB.MakeCompound(aCx);
+    //
+    for (iDim = 3; iDim >= iDimMin; --iDim) {
+      aType = TypeToExplore(iDim);
+      aExp.Init(aC, aType);
       for (; aExp.More(); aExp.Next()) {
-        const TopoDS_Shape aSIm=aExp.Current();
-        aDMSSA.Bind(aSIm, aSIm);
-        if (aTmin==TopAbs_SOLID) {
-          iX=myDS->Index(aSIm);
-          bHasInterf=myDS->HasInterf(iX);
-          if (!bHasInterf) {
-            BOPTools_Set aST;
-            //
-            aST.Add(aSIm, TopAbs_FACE);
-            //
-            aDMSTS.Add(aST, aSIm);
-          }
+        const TopoDS_Shape& aS = aExp.Current();
+        if (aMFence.Add(aS)) {
+          aBB.Add(aCx, aS);
+          BOPTools::MapShapes(aS, aMFence);
         }
       }
     }
-  } //for (; aItLS.More(); aItLS.Next())
+    aC = aCx;
+  }
   //
-  const BOPCol_ListOfShape& aLT=(!bFlag1) ? myArguments : myTools;
-  aItLS.Initialize(aLT);
-  for (; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aTShape =aItLS.Value();
-    if (myImages.IsBound(aTShape)){
-      const BOPCol_ListOfShape& aLSTIm=myImages.Find(aTShape);
-      aItIm.Initialize(aLSTIm);
-      for (; aItIm.More(); aItIm.Next()) {
-        const TopoDS_Shape& aSTIm=aItIm.Value();
-        aExp.Init(aSTIm, aTmin);
-        for (; aExp.More(); aExp.Next()) {
-          const TopoDS_Shape aSIm=aExp.Current();
-          // skip degenerated edges
-          if (aTmin==TopAbs_EDGE) {
-            const TopoDS_Edge& aEIm=*((TopoDS_Edge*)&aSIm);
-            if (BRep_Tool::Degenerated(aEIm)) {
-              continue;
-            }
-          }
-          //
-          bIsBound=aDMSSA.IsBound(aSIm);
-          if (!bFlag2) { // ie common
-            if (bIsBound) {
-              const TopoDS_Shape& aSImA=aDMSSA.Find(aSIm);
-              aBB.Add(aC, aSImA);
-            }
-          }
-          else {// ie cut or cut21
-            if (!bIsBound) {
-              aBB.Add(aC, aSIm);
-            }
-          }
-        }
-      }
-    }// if (myImages.IsBound(aST)){
-    else {
-      aExp.Init(aTShape, aTmin);
-      for (; aExp.More(); aExp.Next()) {
-        const TopoDS_Shape aSIm=aExp.Current();
-        // skip degenerated edges
-        if (aTmin==TopAbs_EDGE) {
-          const TopoDS_Edge& aEIm=*((TopoDS_Edge*)&aSIm);
-          if (BRep_Tool::Degenerated(aEIm)) {
-            continue;
-          }
-        }
-        bIsBound=aDMSSA.IsBound(aSIm);
-        if (!bFlag2) { // ie common
-          if (bIsBound) {
-            const TopoDS_Shape& aSImA=aDMSSA.Find(aSIm);
-            aBB.Add(aC, aSImA);
-          }
-          else {
-             if (aTmin==TopAbs_SOLID) {
-               BOPTools_Set aST;
-               //
-               aST.Add(aSIm, TopAbs_FACE);
-               //
-               if (aDMSTS.Contains(aST)) {
-                 const TopoDS_Shape& aSImA=aDMSTS.FindFromKey(aST);
-                 aBB.Add(aC, aSImA);
-               }
-             }
-          }
-        }
-        else {// ie cut or cut21
-          if (!bIsBound) {
-            if (aTmin==TopAbs_SOLID) {
-              BOPTools_Set aST;
-              //
-              aST.Add(aSIm, TopAbs_FACE);
-              //
-              bIsBound=aDMSTS.Contains(aST); 
-            }
-            //
-            if (!bIsBound) {
-              aBB.Add(aC, aSIm);
-            }
-          }
-        }
-      }
-    }
-  } //for (; aItLS.More(); aItLS.Next())
-  //
-  // the squats around degeneracy
-  if (aTmin!=TopAbs_EDGE) {
-    myRC=aC;
+  if (!bCheckEdges) {
+    myRC = aC;
     return;
   }
-  //---------------------------------------------------------
   //
   // The squats around degenerated edges
-  Standard_Integer i, aNbS, nVD;
-  TopAbs_ShapeEnum aType;
+  Standard_Integer nVD;
   BOPCol_IndexedMapOfShape aMVC;
   //
   // 1. Vertices of aC
   BOPTools::MapShapes(aC, TopAbs_VERTEX, aMVC);
   //
   // 2. DE candidates
-  aNbS=myDS->NbSourceShapes();
-  for (i=0; i<aNbS; ++i) {
-    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    aType=aSI.ShapeType();
-    if (aType!=aTmin) {
+  aNb = myDS->NbSourceShapes();
+  for (i = 0; i < aNb; ++i) {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    aType = aSI.ShapeType();
+    if (aType != TopAbs_EDGE) {
       continue;
     }
     //
-    const TopoDS_Edge& aE=*((TopoDS_Edge*)&aSI.Shape());
+    const TopoDS_Edge& aE = *((TopoDS_Edge*)&aSI.Shape());
     if (!BRep_Tool::Degenerated(aE)) {
       continue;
     }
     //
-    nVD=aSI.SubShapes().First();
-    const TopoDS_Shape& aVD=myDS->Shape(nVD);
+    nVD = aSI.SubShapes().First();
+    const TopoDS_Shape& aVD = myDS->Shape(nVD);
     //
     if (!aMVC.Contains(aVD)) {
       continue;
@@ -716,86 +720,120 @@ void BOPAlgo_BOP::BuildRC()
 //=======================================================================
 void BOPAlgo_BOP::BuildShape()
 {
-  Standard_Integer aDmin, aNbLCB;
-  TopAbs_ShapeEnum aT1, aT2, aTR;
-  TopoDS_Shape aR, aRC;
-  TopoDS_Iterator aIt;
-  BRep_Builder aBB;
-  BOPCol_ListOfShape aLCB;
-  BOPCol_ListIteratorOfListOfShape aItLCB;
-  //
-  myErrorStatus=0;
-  //
   BuildRC();
   //
-  aDmin=myDims[1];
-  if (myDims[0]<myDims[1]) {
-    aDmin=myDims[0];
-  }
-  //
-  if (!aDmin) {
-    myShape=myRC;
+  if ((myOperation == BOPAlgo_FUSE) && (myDims[0] == 3)) {
+    BuildSolid();
     return;
   }
   //
-  else if (aDmin==1 || aDmin==2) { //edges, faces 
-    aT1=TopAbs_VERTEX;
-    aT2=TopAbs_EDGE;
-    aTR=TopAbs_WIRE;
-    if (aDmin==2) {
-      aT1=TopAbs_EDGE;
-      aT2=TopAbs_FACE;
-      aTR=TopAbs_SHELL;
+  Standard_Integer i;
+  TopAbs_ShapeEnum aType, aT1, aT2;
+  TopTools_ListOfShape aLSC, aLCB;
+  BOPCol_ListIteratorOfListOfShape aItLS, aItLSIm, aItLCB;
+  TopoDS_Iterator aIt;
+  BRep_Builder aBB;
+  TopoDS_Shape aRC, aRCB;
+  //
+  TopoDS_Compound aResult;
+  aBB.MakeCompound(aResult);
+  //
+  BOPCol_MapOfShape aMSRC, aMFence;
+  BOPTools::MapShapes(myRC, aMSRC);
+  //
+  // collect images of containers
+  for (i = 0; i < 2; ++i) {
+    const BOPCol_ListOfShape& aLS = !i ? myArguments : myTools;
+    //
+    aItLS.Initialize(aLS);
+    for (; aItLS.More(); aItLS.Next()) {
+      const TopoDS_Shape& aS = aItLS.Value();
+      //
+      CollectContainers(aS, aLSC);
+    }
+  }
+  // make containers
+  aItLS.Initialize(aLSC);
+  for (; aItLS.More(); aItLS.Next()) {
+    const TopoDS_Shape& aSC = aItLS.Value();
+    //
+    BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aRC);
+    //
+    aIt.Initialize(aSC);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Shape& aS = aIt.Value();
+      if (myImages.IsBound(aS)) {
+        const TopTools_ListOfShape& aLSIm = myImages.Find(aS);
+        //
+        aItLSIm.Initialize(aLSIm);
+        for (; aItLSIm.More(); aItLSIm.Next()) {
+          const TopoDS_Shape& aSIm = aItLSIm.Value();
+          if (aMSRC.Contains(aSIm) && aMFence.Add(aSIm)) {
+            aBB.Add(aRC, aSIm);
+          }
+        }
+      }
+      else if (aMSRC.Contains(aS) && aMFence.Add(aS)) {
+        aBB.Add(aRC, aS);
+      }
     }
     //
-    BOPTools_AlgoTools::MakeConnexityBlocks
-      (myRC, aT1, aT2, aLCB);
-    aNbLCB=aLCB.Extent();
-    if (!aNbLCB) {
-      myShape=myRC;
-      return;
+    aType = aSC.ShapeType();
+    switch (aType) {
+      case TopAbs_WIRE: {
+        aT1 = TopAbs_VERTEX;
+        aT2 = TopAbs_EDGE;
+        break;
+      }
+      case TopAbs_SHELL: {
+        aT1 = TopAbs_EDGE;
+        aT2 = TopAbs_FACE;
+        break;
+      }
+      default: {
+        aT1 = TopAbs_FACE;
+        aT2 = TopAbs_SOLID;
+      }
     }
     //
-    BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aRC);  
+    aLCB.Clear();
+    BOPTools_AlgoTools::MakeConnexityBlocks(aRC, aT1, aT2, aLCB);
+    if (aLCB.IsEmpty()) {
+      continue;
+    }
     //
     aItLCB.Initialize(aLCB);
     for (; aItLCB.More(); aItLCB.Next()) {
-      BOPTools_AlgoTools::MakeContainer(aTR, aR);  
+      BOPTools_AlgoTools::MakeContainer(aType, aRCB);
       //
-      const TopoDS_Shape& aCB=aItLCB.Value();
+      const TopoDS_Shape& aCB = aItLCB.Value();
       aIt.Initialize(aCB);
       for (; aIt.More(); aIt.Next()) {
-        const TopoDS_Shape& aS=aIt.Value();
-        aBB.Add(aR, aS);
+        const TopoDS_Shape& aCBS = aIt.Value();
+        aBB.Add(aRCB, aCBS);
       }
       //
-      if (aTR==TopAbs_SHELL) {
-        BOPTools_AlgoTools::OrientFacesOnShell(aR);
+      if (aType == TopAbs_SHELL) {
+        BOPTools_AlgoTools::OrientFacesOnShell(aRCB);
       }
       //
-      aBB.Add(aRC, aR);
-    }
-    myShape=aRC;
-  }// elase if (aDmin==1 || aDmin==2) {
-  
-  else {//aDmin=3
-    Standard_Integer aNbObjs, aNbTools;
-    //
-    aNbObjs=myArguments.Extent();
-    aNbTools=myTools.Extent();
-    //
-    if (aNbObjs==1 && aNbTools==1) {
-      if (myOperation==BOPAlgo_FUSE) {
-        BuildSolid();
-      }
-      else {
-        myShape=myRC;
-      }
-    }
-    else {
-      BuildSolid();
+      aBB.Add(aResult, aRCB);
     }
   }
+  //
+  // add the rest of the shapes into result
+  BOPCol_MapOfShape aMSResult;
+  BOPTools::MapShapes(aResult, aMSResult);
+  //
+  aIt.Initialize(myRC);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS = aIt.Value();
+    if (!aMSResult.Contains(aS)) {
+      aBB.Add(aResult, aS);
+    }
+  }
+  //
+  myShape = aResult;
 }
 //=======================================================================
 //function : BuildSolid
@@ -1053,3 +1091,29 @@ TopAbs_ShapeEnum TypeToExplore(const Standard_Integer theDim)
   }
   return aRet;
 }
+//=======================================================================
+//function : CollectContainers
+//purpose  : 
+//=======================================================================
+void CollectContainers(const TopoDS_Shape& theS,
+                       BOPCol_ListOfShape& theLSC)
+{
+  TopAbs_ShapeEnum aType = theS.ShapeType();
+  if (aType == TopAbs_WIRE ||
+      aType == TopAbs_SHELL ||
+      aType == TopAbs_COMPSOLID) {
+    theLSC.Append(theS);
+    return;
+  }
+  //
+  if (aType != TopAbs_COMPOUND) {
+    return;
+  }
+  //
+  TopoDS_Iterator aIt(theS);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS = aIt.Value();
+    CollectContainers(aS, theLSC);
+  }
+}
+

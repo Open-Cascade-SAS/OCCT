@@ -1050,7 +1050,7 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 * There are two groups of arguments in BOA:
 	* Objects <i>(S1=S11, S12, ...)</i>;
 	* Tools <i>(S2=S21, S22, ...)</i>.
-* All arguments in a group should have the same dimension (see the Table).
+* The following table contains the values of dimension for different types of arguments:
 
 | No | Type of Argument	| Index of Type | Dimension |
 | :---- | :---- | :----- | :---- |
@@ -1063,8 +1063,9 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 | 7 | EDGE | 6 | 1 |
 | 8 | VERTEX | 7 | 0 |
 
-* For Boolean operation Fuse the arguments should have equal dimensions.
-* For Boolean operation Cut the dimension of *S2* should not be less then the dimension of *S1*.
+* For Boolean operation Fuse all arguments should have equal dimensions.
+* For Boolean operation Cut the minimal dimension of *S2* should not be less than the maximal dimension of *S1*.
+* For Boolean operation Common the arguments could have any dimension.
 
 @subsection occt_algorithms_9_3	Results. General Rules
 
@@ -1072,12 +1073,13 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 * The content of the result depends on the type of the operation (Common, Fuse, Cut12, Cut21) and the dimensions of the arguments. 
 * The result of the operation Fuse is defined for arguments *S1* and *S2* that have the same dimension value : *Dim(S1)=Dim(S2)*. If the arguments have different dimension values the result of the operation Fuse is not defined. The dimension of the result is equal to the dimension of the arguments. For example, it is impossible to fuse an edge and a face.
 * The result of the operation Fuse for arguments *S1* and *S2* contains the parts of arguments that have states **OUT** relative to the opposite arguments.
-* The result of the operations Fuse, Common, Cut12, Cut21  for arguments *S1* and *S2* having dimension value 3 (Solids) is refined by removing all possible internal faces to provide minimal number of solids.
-* The result of the operation Common for arguments *S1* and *S2* is defined for all values of the dimensions of the arguments. The dimension of the result is equal to the lower dimension of the arguments. For example, the result of the operation Common between edges cannot be a vertex. 
+* The result of the operation Fuse for arguments *S1* and *S2* having dimension value 3 (Solids) is refined by removing all possible internal faces to provide minimal number of solids.
+* The result of the operation Common for arguments *S1* and *S2* is defined for all values of the dimensions of the arguments. The result can contain the shapes of different dimension, but the minimal dimension of the result will be equal to the minimal dimension of the arguments. For example, the result of the operation Common between edges cannot be a vertex. 
 * The result of the operation Common for the arguments *S1* and *S2* contains the parts of the argument that have states **IN** and **ON** relative to the opposite argument.
-* The result of the operation Cut is defined for arguments *S1* and *S2* that have values of dimensions *Dim(S2)* that should not be less than *Dim(S1)*. The dimension of the result is equal to *Dim(S1)*. The result of the operation *Cut12* is not defined for other cases. For example, it is impossible to cut an edge from a solid, because a solid without an edge is not defined. 
+* The result of the operation Cut is defined for arguments *S1* and *S2* that have values of dimensions *Dim(S2)* that should not be less than *Dim(S1)*. The result can contain the shapes of different dimension, but the minimal dimension of the result will be equal to the minimal dimension of the objects *Dim(S1)*. The result of the operation *Cut12* is not defined for other cases. For example, it is impossible to cut an edge from a solid, because a solid without an edge is not defined. 
 * The result of the operation *Cut12* for arguments *S1* and *S2* contains the parts of argument *S1* that have state **OUT** relative to the opposite argument *S2*.
 * The result of the operation *Cut21* for arguments *S1* and *S2* contains the parts of argument *S2* that have state **OUT** relative to the opposite argument *S1*.
+* For the argumenst of collection type (WIRE, SHELL, COMPSOLID) the type will be passed in the result. For example, the result of Common operation between Shell and Wire will be compound containing Wire.
 
 @subsection occt_algorithms_9_4 Examples
 
@@ -1522,6 +1524,24 @@ Let us consider two solids *S1* and *S2* that have overlapping vertices:
 
 @figure{/user_guides/boolean_operations/images/boolean_image070.png}
 
+@subsubsection occt_algorithms_9_4_23	Case 23: A Shell and a Wire cut by a Solid.
+
+Let us consider Shell *Sh* and Wire *W* as the objects and Solid *S* as the tool:
+
+@figure{/user_guides/boolean_operations/images/boolean_image136.png}
+
+* The result of *Fuse* operation is not defined as the dimension of the arguments is not the same.
+ 	
+* The result of *Common* operation is a compound containing the parts of the initial Shell and Wire common for the Solid. The new Shell and Wire are created from the objects.
+
+@figure{/user_guides/boolean_operations/images/boolean_image137.png}	
+
+* The result of *Cut12* operation is a compound containing the parts of the initial Shell and Wire out of the Solid. The new Shell and Wire are created from the objects.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image138.png}	
+	
+* The result of *Cut21* operation is not defined as the objects have lower dimension than the tool. 
+
 
 @subsection occt_algorithms_9_5 Class BOPAlgo_BOP
 
@@ -1554,17 +1574,16 @@ The input data for this step is as follows:
 
 | No | Contents	| Implementation |
 | :---- | :---- | :------ |
-| 1 | For the Type of the Boolean operation Common, Cut and *myDim[0] < 3* | |
-| 1.1 |	Compute minimal dimension *Dmin = min(myDim[0], myDim[1])*	| *BOPAlgo_BOP:: BuildShape()* |
-| 1.2 |	Make connexity blocks from sub-shapes of *myRS*, taking into account the value of *Dmin* |	*BOPTools_Tools::MakeConnexityBlocks()* |
+| 1 | For the Type of the Boolean operation Common, Cut with any dimension and operation Fuse with *myDim[0] < 3* | |
+| 1.1 |	Find containers (WIRE, SHELL, COMPSOLID) in the arguments | *BOPAlgo_BOP:: BuildShape()* |
+| 1.2 |	Make connexity blocks from splits of each container that are in *myRC* |	*BOPTools_Tools::MakeConnexityBlocks()* |
 | 1.3 |	Build the result from shapes made from the connexity blocks | *BOPAlgo_BOP:: BuildShape()* |
-| 2	| For the Type of the Boolean operation Common, Cut and *myDim[0] = 3* | |	
-| 2.1 | *myShape = myRC* | BOPAlgo_BOP::BuildShape () |
-| 3	| For the Type of the Boolean operation Fuse and *myDim[0] = 3* | |	
-| 3.1 |	Find internal faces <i>(FWi)</i> in *myRC* | *BOPAlgo_BOP::BuildSolid()* |
-| 3.2 |	Collect all faces of *myRC* except for internal faces <i>(FWi) -> SFS</i> | *BOPAlgo_BOP::BuildSolid ()* |
-| 3.3 |	Build solids <i>(SDi)</i> from *SFS*. |	*BOPAlgo_BuilderSolid* |
-| 3.4 |	Add the solids <i>(SDi)</i> to the result	| |
+| 1.4 |	Add the remaining shapes from *myRC* to the result | *BOPAlgo_BOP:: BuildShape()* |
+| 2	| For the Type of the Boolean operation Fuse with *myDim[0] = 3* | |	
+| 2.1 |	Find internal faces <i>(FWi)</i> in *myRC* | *BOPAlgo_BOP::BuildSolid()* |
+| 2.2 |	Collect all faces of *myRC* except for internal faces <i>(FWi) -> SFS</i> | *BOPAlgo_BOP::BuildSolid ()* |
+| 2.3 |	Build solids <i>(SDi)</i> from *SFS*. |	*BOPAlgo_BuilderSolid* |
+| 2.4 |	Add the solids <i>(SDi)</i> to the result	| |
 
 @section occt_algorithms_10a Section Algorithm 
 

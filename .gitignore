@@ -58,5 +58,5 @@ Release
 /Makefile
 /libtool
 /stamp*
-/build
+/build*
 /install
