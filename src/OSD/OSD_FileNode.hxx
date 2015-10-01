@@ -18,16 +18,12 @@
 #define _OSD_FileNode_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <OSD_Path.hxx>
 #include <OSD_Error.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
+
 class OSD_OSDError;
 class Standard_ProgramError;
-class OSD_Path;
 class OSD_Protection;
 class Quantity_Date;
 
@@ -96,11 +92,7 @@ public:
   //! Returns error number if 'Failed' is TRUE.
   Standard_EXPORT Standard_Integer Error() const;
 
-
-
-
 protected:
-
   
   //! Creates FileNode object
   //! This is to be used with SetPath .
@@ -112,23 +104,14 @@ protected:
   //! If a name is not found, it raises a program error.
   Standard_EXPORT OSD_FileNode(const OSD_Path& Name);
 
+  //! Destructor is protected for safer inheritance
+  ~OSD_FileNode () {}
+
+protected:
 
   OSD_Path myPath;
   OSD_Error myError;
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
 
 
 #endif // _OSD_FileNode_HeaderFile

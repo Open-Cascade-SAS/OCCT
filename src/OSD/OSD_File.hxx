@@ -52,6 +52,9 @@ public:
   
   //! Instantiates the object file, storing its name
   Standard_EXPORT OSD_File(const OSD_Path& Name);
+
+  //! Unlocks and closes a file, deletes a descriptor and destructs a file object.
+  Standard_EXPORT ~OSD_File();
   
   //! CREATES a file if it doesn't already exists or empties
   //! an existing file.

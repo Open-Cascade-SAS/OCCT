@@ -700,9 +700,6 @@ int status;
 // Return lock of a file
 
 OSD_LockType  OSD_File::GetLock(){
- if (myFileChannel == -1)
-  Standard_ProgramError::Raise("OSD_File::GetLock : file is not open");
-
  return(myLock);
 }
 
@@ -762,19 +759,11 @@ TCollection_AsciiString PrinterName;
 // -------------------------------------------------------------------------- 
 
 Standard_Boolean OSD_File::IsOpen()const{
-
- if (myPath.Name().Length()==0)
-   Standard_ProgramError::Raise("OSD_File::IsOpen : empty file name");
-
  return (myFileChannel != -1);
 }
 
 
 Standard_Boolean OSD_File::IsLocked(){
-
- if (myPath.Name().Length()==0)
-   Standard_ProgramError::Raise("OSD_File::IsLocked : empty file name");
-
  return(myLock != OSD_NoLock); 
 }
 
@@ -2875,6 +2864,19 @@ Standard_Boolean OSD_File::IsExecutable()
 
 #endif /* _WIN32 */
 
+// ---------------------------------------------------------------------
+// Destructs a file object (unlocks and closes file if it is open)
+// ---------------------------------------------------------------------
+
+OSD_File::~OSD_File()
+{
+  if (IsOpen())
+  {
+    if (IsLocked())
+      UnLock();
+    Close();
+  }
+}
 
 // ---------------------------------------------------------------------
 // Read lines in a file while it is increasing.
