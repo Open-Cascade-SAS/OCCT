@@ -5,17 +5,20 @@
 PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+ <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|@X_COMPILER_BITNESS@'">
  <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
 PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+ <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|@X_COMPILER_BITNESS@'">
  <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
 PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+ <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
  </PropertyGroup>
 </Project>
