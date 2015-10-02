@@ -1039,6 +1039,7 @@ public:
 
   //! Unhighlights previously selected owners and marks them as not selected.
   //! Marks owner given as selected and highlights it.
+  //! Performs selection filters check.
   Standard_EXPORT void SetSelected (const Handle(SelectMgr_EntityOwner)& theOwners,
                                     const Standard_Boolean theToUpdateViewer = Standard_True);
 
@@ -1048,6 +1049,7 @@ public:
   //! Standard_False, the presentation of the Interactive
   //! Object activates the selection mode; the object is
   //! displayed but no viewer will be updated.
+  //! Performs selection filters check.
   Standard_EXPORT void SetSelected (const Handle(AIS_InteractiveObject)& theObject,
                                     const Standard_Boolean theToUpdateViewer = Standard_True);
 
@@ -1609,6 +1611,12 @@ private:
   //! automatically in all views of the viewer.
   void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
                           const Quantity_NameOfColor theSelColor);
+
+  //! Helper function that unhighlights all owners that are stored in current AIS_Selection.
+  //! The function updates global status and selection state of owner and interactive object.
+  //! If the parameter <theIsToHilightSubIntensity> is set to true, interactive objects with sub-intensity
+  //! switched on in AIS_GlobalStatus will be highlighted with context's sub-intensity color.
+  void unhighlightSelected (const Standard_Boolean theIsToHilightSubIntensity = Standard_False);
 
   AIS_DataMapOfIOStatus myObjects;
   Handle(SelectMgr_SelectionManager) mgrSelector;
