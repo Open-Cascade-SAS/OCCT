@@ -58,17 +58,16 @@ prism f5 l1 -5 8.6602540378443864 0
 prism f4 l2 0 -1 0
 compound f1 f2 f3 bc
 bfuse r bc f4
-explode r Sh
-renamevar r_1 r
 bcut r r f5
-explode r Sh
-renamevar r_1 r
 explode r e
 wire w r_4 r_1 r_20 r_21 r_22 r_23 r_24 r_25 r_26 r_7 r_30 r_31 r_32 r_33 r_27 r_28 r_29 r_11 r_38 r_34 r_35 r_36 r_37 r_16 r_17
 tcopy w w1
 tmirror w1 -6 0 0 0 1 0
 wire w w w1
 mkface w p w
+shape wsh Sh
+add w wsh
+renamevar wsh w
 donly w
 
 # construct complete snowflake
@@ -137,7 +136,7 @@ vfit
 
 # add dimension
 explode snowflake v
-vdimension length -length -shapes snowflake_89 snowflake_15 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
+vdimension length -length -shapes snowflake_64 snowflake_140 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
 
 if { [regexp HAVE_GL2PS [dversion]] } {
     puts "You can use command vexport to generate PDF: vexport your_file_path.pdf"
