@@ -87,7 +87,7 @@ class BOPCol_ContextFunctor
     static Standard_Integer HashCode(const Standard_ThreadId theKey,
                                      const Standard_Integer  Upper)
     {
-      return ::HashCode(reinterpret_cast<Standard_Address>(theKey), Upper);
+      return ::HashCode(theKey, Upper);
     }
 
     static Standard_Boolean IsEqual(const Standard_ThreadId theKey1,

@@ -23,6 +23,13 @@
 #include <windows.h>
 typedef DWORD Standard_ThreadId;
 
+inline Standard_Integer HashCode(const Standard_ThreadId Value,
+  const Standard_Integer Upper)
+{
+  // Size of int == size of unsigned long == 4 for WIN32 and WIN64
+  return HashCode((Standard_Integer)Value, Upper);
+}
+
 #else
 
 #include <pthread.h>
