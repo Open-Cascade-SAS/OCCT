@@ -44,9 +44,13 @@ class TopoDS_Vertex;
 //! i.e. each edge is connected to the previous one by
 //! its origin.
 //! If a wire is not closed returns only a segment of edges which
-//! length depends on started in exploration edge. If wire has
-//! singularities (for example, loops) WireExplorer can return not all
-//! edges in a wire. it depends on type of singularity.
+//! length depends on started in exploration edge. 
+//! Algorithm suggests that wire is valid and has no any defects, which 
+//! can stop edge exploration. Such defects can be loops, wrong orientation of edges
+//! (two edges go in to shared vertex or go out from shared vertex), branching of edges, 
+//! the presens of edges with INTERNAL or EXTERNAL orientation. If wire has
+//! such kind of defects WireExplorer can return not all
+//! edges in a wire. it depends on type of defect and position of starting edge.
 class BRepTools_WireExplorer 
 {
 public:
