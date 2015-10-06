@@ -49,7 +49,7 @@ LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam
       break;
 
     case WM_COMMAND :
-      CommandProc(hWndFrame, wParam, lParam);
+      CmdProc(hWndFrame, LOWORD(wParam), wParam, lParam);
       break;
       
     case WM_DESTROY :
@@ -85,13 +85,14 @@ BOOL CreateProc(HWND hWndFrame)
 /*--------------------------------------------------------------------------*\
 |  COMMAND PROCEDURE
 |  		Handler for message WM_COMMAND   
-|
+|     It is used when Draw_IsConsoleSubsystem = Standard_False
+|     i.e. in non-console mode (see _main_() in Draw_Main.cxx).
 \*--------------------------------------------------------------------------*/
-BOOL CommandProc(HWND hWndFrame, WPARAM wParam, LPARAM /*lParam*/)
+LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
   // Handle on window MDI
   HWND hWndClient = (HWND)GetWindowLongPtr (hWndFrame, CLIENTWND);
-  switch (LOWORD(wParam))
+  switch (wMsg)
 	{
 	  case IDM_WINDOW_NEXT :
 					if(hWndClient)
@@ -122,8 +123,8 @@ BOOL CommandProc(HWND hWndFrame, WPARAM wParam, LPARAM /*lParam*/)
 
 					DestroyProc(hWndFrame);
 					break;
-	}
-  return(TRUE);
+  }
+  return(0l);
 }
 
 

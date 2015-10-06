@@ -76,8 +76,7 @@ BOOL RegisterAppClass(HINSTANCE hInstance)
 
   // Enregistrement de la fenetre CommandWindow
   //------
-  wndClass.lpfnWndProc   = (WNDPROC)CommandProc((HWND)WndProc,(WPARAM)342,(LPARAM)443);
-  //wndClass.lpfnWndProc   = (WNDPROC)CommandProc;
+  wndClass.lpfnWndProc   = (WNDPROC)CmdProc;
   wndClass.hIcon         = 0;
   wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   wndClass.lpszMenuName  = NULL;
