@@ -30,7 +30,6 @@
 #include <GL/glx.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
-#include <X11/Xmu/StdCmap.h>
 #include <X11/Xlib.h>
 #include <Xw_Window.hxx>
 #include <QColormap>

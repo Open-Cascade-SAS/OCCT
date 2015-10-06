@@ -1,5 +1,6 @@
+@echo off
 REM Generation of vcproj files with qmake utilite
-REM Variable QTDIR and PATH to qmake executable must be defined without fail
+REM Variable QT_DIR and PATH to qmake executable must be defined without fail
 
 REM Use first argument to specify version of Visual Studio (vc8, vc9, or vc10),
 REM second argument specifies architecture) (win32 or win64)
