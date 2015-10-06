@@ -7,7 +7,6 @@ puts ""
 #######################################################################
 
 restore [locate_data_file bug25523_bad_loopback_step.brep] a
-nbshapes a
 
 checknbshapes a -vertex 30 -edge 54 -wire 32 -face 27 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 145 -m "Stator model"
 
@@ -18,7 +17,6 @@ catch { file delete ${aFile} }
 stepwrite a a ${aFile}
 
 stepread ${aFile} b *
-nbshapes b_1 ;# empty compound
 checknbshapes b_1 -vertex 30 -edge 54 -wire 32 -face 27 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 145 -m "Stator model"
 
 tpstat c ;# reports exception

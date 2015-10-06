@@ -1,4 +1,4 @@
-puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of "
 
 puts "============"
 puts "OCC10232"
@@ -24,15 +24,6 @@ puts "Finish boolean operation ..."
 
 set length 3331.35
 
-set nb_v_good 1197
-set nb_e_good 1182
-set nb_w_good 0
-set nb_f_good 0
-set nb_sh_good 0
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 2380
-
+checknbshapes result -vertex 1197 -edge 1182 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 2380
 set 2dviewer 1
 

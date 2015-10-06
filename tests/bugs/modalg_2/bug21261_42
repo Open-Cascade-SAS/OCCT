@@ -14,16 +14,7 @@ thickshell result s -5 i
 
 set square 44935.7
 
-set nb_v_good 16
-set nb_e_good 28
-set nb_w_good 14
-set nb_f_good 14
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 74
-
+checknbshapes result -vertex 16 -edge 28 -wire 14 -face 14 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 74
 
 
 vinit

@@ -21,14 +21,5 @@ bbuild result
 
 set square 134338
 
-set nb_v_good 108
-set nb_e_good 187
-set nb_w_good 94
-set nb_f_good 87
-set nb_sh_good 11
-set nb_sol_good 5
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 493
-
+checknbshapes result -vertex 108 -edge 187 -wire 94 -face 87 -shell 11 -solid 5 -compsolid 0 -compound 1 -shape 493
 set 2dviewer 1

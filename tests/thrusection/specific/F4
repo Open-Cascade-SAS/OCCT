@@ -1,5 +1,5 @@
 puts "TODO OCC7166 ALL: Faulty OCC7166 : result is not Closed shape"
-puts "TODO OCC7166 ALL: The resulting shape is WRONG "
+puts "TODO OCC7166 ALL: Error :  is WRONG because number of  "
 puts "============"
 puts "OCC7166"
 puts "============"
@@ -32,16 +32,7 @@ catch {thrusections result ${issolid} ${isruled} wc1 w1 wc2}
 
 set square 256.812
 
-set nb_v_good 6
-set nb_e_good 10
-set nb_w_good 4
-set nb_f_good 4
-set nb_sh_good 1
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 25
-
+checknbshapes result -vertex 6 -edge 10 -wire 4 -face 4 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 25
 
 
 set index [lsearch [whatis result] Closed]

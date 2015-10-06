@@ -39,7 +39,6 @@ if { [isdraw result] && $mist == 0} {
 		puts [format "Error : The resulting shape is an empty COMPOUND"]
 	    }
 	    puts [whatis result]
-	    puts [nbshapes result]
 	    puts [checksection result]
 	} else {
 	    puts [format "The resulting shape contains %s wires" $ll_w]

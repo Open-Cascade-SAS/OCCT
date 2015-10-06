@@ -1,3 +1,4 @@
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of "
 puts "TODO OCC12345 ALL: OCC9531: Faulty"
 
 puts "============"
@@ -42,61 +43,19 @@ if { ${IsOk} == 1} {
    }
 
    set good_square 5236.89
-   set good_vertex 5748
-   set good_edge 5680
-   set good_wire 915
-   set good_face 899
-   set good_shell 0
-   set good_solid 0
-   set good_compsolid 0
-   set good_compound 1
-   set good_shape 13243
 
-   set nb_info [nbshapes OCC9531a]
+   checknbshapes OCC9531a -vertex 5748 -edge 5680 -wire 915 -face 899 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 13243
+
    regexp {Mass +: +([-0-9.+eE]+)} [sprops OCC9531a] full sq1
-   regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_v1
-   regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full nb_e1
-   regexp {WIRE +: +([-0-9.+eE]+)} $nb_info full nb_w1
-   regexp {FACE +: +([-0-9.+eE]+)} $nb_info full nb_f1
-   regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full nb_sh1
-   regexp {SOLID +: +([-0-9.+eE]+)} $nb_info full nb_sol1
-   regexp {COMPSOLID +: +([-0-9.+eE]+)} $nb_info full nb_compsol1
-   regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full nb_compound1
-   regexp {SHAPE +: +([-0-9.+eE]+)} $nb_info full nb_shape1
-   if {$sq1 != $good_square
-      || $nb_v1 != $good_vertex
-      || $nb_e1 != $good_edge
-      || $nb_w1 != $good_wire
-      || $nb_f1 != $good_face
-      || $nb_sh1 != $good_shell
-      || $nb_sol1 != $good_solid
-      || $nb_compsol1 != $good_compsolid
-      || $compound1 != $good_compound
-      || $nb_shape1 != $good_shape } {
+
+   if {$sq1 != $good_square} {
       	 set IsOk 0
    }	
 
-   set nb_info [nbshapes OCC9531b]
+   checknbshapes OCC9531b -vertex 5748 -edge 5680 -wire 915 -face 899 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 13243
+
    regexp {Mass +: +([-0-9.+eE]+)} [sprops OCC9531b] full sq2
-   regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_v2
-   regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full nb_e2
-   regexp {WIRE +: +([-0-9.+eE]+)} $nb_info full nb_w2
-   regexp {FACE +: +([-0-9.+eE]+)} $nb_info full nb_f2
-   regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full nb_sh2
-   regexp {SOLID +: +([-0-9.+eE]+)} $nb_info full nb_sol2
-   regexp {COMPSOLID +: +([-0-9.+eE]+)} $nb_info full nb_compsol2
-   regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full nb_compound2
-   regexp {SHAPE +: +([-0-9.+eE]+)} $nb_info full nb_shape2
-   if {$sq2 != $good_square
-      || $nb_v2 != $good_vertex
-      || $nb_e2 != $good_edge
-      || $nb_w2 != $good_wire
-      || $nb_f2 != $good_face
-      || $nb_sh2 != $good_shell
-      || $nb_sol2 != $good_solid
-      || $nb_compsol2 != $good_compsolid
-      || $compound2 != $good_compound
-      || $nb_shape2 != $good_shape } {
+   if {$sq2 != $good_square} {
       	 set IsOk 0
    }	
 

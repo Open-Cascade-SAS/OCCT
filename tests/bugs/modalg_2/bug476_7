@@ -16,14 +16,5 @@ bop s1 s2
 bopcommon result
 
 set square 105.587
-set nb_v_good 15
-set nb_e_good 26
-set nb_w_good 12
-set nb_f_good 12
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 68
-
+checknbshapes result -vertex 15 -edge 26 -wire 12 -face 12 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 68
 set 2dviewer 0

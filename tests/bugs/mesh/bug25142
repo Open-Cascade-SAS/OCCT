@@ -16,8 +16,6 @@ bfillds
 bbuild r
 explode r
 
-nbshapes r
-
 # do all possible checks of validity
 tolerance r
 checkshape r

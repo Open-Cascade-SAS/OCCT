@@ -1,5 +1,5 @@
 puts "TODO OCC12345 ALL: Error : The command is not valid. The length is"
-puts "TODO OCC12345 ALL: Error : Result shape is WRONG because it must contains"
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of"
 
 puts "========================"
 puts " OCC248 "
@@ -14,8 +14,7 @@ restore [locate_data_file OCC248b.brep] b
 puts [bop a b]
 puts [bopcommon result]
 
-set nb_v_good 1
-set nb_e_good 0
+checknbshapes result -vertex 1 -edge 0
 set length 0
 set 2dviewer 0
  

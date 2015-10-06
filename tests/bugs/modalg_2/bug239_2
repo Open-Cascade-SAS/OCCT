@@ -12,8 +12,7 @@ restore [locate_data_file case_2_wire1.brep] b
 puts [bop a b]
 puts [boptuc result]
 
-set nb_v_good 18
-set nb_e_good 11
+checknbshapes result -vertex 18 -edge 11
 set length 2434.21
 set 2dviewer 0
  

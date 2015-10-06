@@ -1,4 +1,4 @@
-puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of"
 
 puts "============"
 puts "OCC21652"
@@ -20,14 +20,5 @@ if [catch { mkoffset resoffset a 1 0.9 } ] {
 
 set length 371.913
 
-set nb_v_good 93
-set nb_e_good 93
-set nb_w_good 1
-set nb_f_good 0
-set nb_sh_good 0
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 187
-}
+checknbshapes result -vertex 93 -edge 93 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 187}
 set 2dviewer 0

@@ -11,6 +11,6 @@ tpcompound result
 
 checkshape result
 
-set nb_f_good 192
+checknbshapes result -face 192
 
 set 2dviewer 0

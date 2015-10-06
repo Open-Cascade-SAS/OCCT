@@ -21,6 +21,5 @@ add se_1 Solid1
 shape result CS 
 add b2 result
 add Solid1 result
-nbshapes result
 
 set square 750

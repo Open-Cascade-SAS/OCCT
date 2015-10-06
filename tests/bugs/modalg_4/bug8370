@@ -14,16 +14,7 @@ igesread [locate_data_file OCC8370-part1.igs] result *
 
 set square 25310.8
 
-set nb_v_good 5060
-set nb_e_good 5105
-set nb_w_good 416
-set nb_f_good 399
-set nb_sh_good 0
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 10981
-
+checknbshapes result -vertex 5060 -edge 5105 -wire 416 -face 399 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10981
 vinit
 tclean result
 vsetdispmode 1

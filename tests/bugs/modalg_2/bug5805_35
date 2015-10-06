@@ -34,16 +34,7 @@ catch { OFFSETSHAPE $distance {s_3} $calcul $type }
 
 set square 915.469
 
-set nb_v_good 4
-set nb_e_good 6
-set nb_w_good 6
-set nb_f_good 5
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 23
-
+checknbshapes result -vertex 4 -edge 6 -wire 6 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 23
 
 set index [lsearch [whatis s] Closed]
 if {$index == -1} {

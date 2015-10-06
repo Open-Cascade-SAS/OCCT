@@ -24,14 +24,5 @@ bbuild result
 #These values must be equal to the analogical values in bug25292_23 and bug25292_24 of "bugs modalg_5" testgrid. 
 set square 31.6797
 
-set nb_v_good 10
-set nb_e_good 19
-set nb_w_good 13
-set nb_f_good 13
-set nb_sh_good 3
-set nb_sol_good 3
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 62
-
+checknbshapes result -vertex 10 -edge 19 -wire 13 -face 13 -shell 3 -solid 3 -compsolid 0 -compound 1 -shape 62
 set 3dviewer 1

@@ -1,4 +1,4 @@
-puts "TODO OCC24862 ALL: Error : Result shape is WRONG"
+puts "TODO OCC24862 ALL: Error :  is WRONG because number of"
 puts "TODO OCC24862 ALL: Error : The square of result shape is"
 puts "TODO OCC24682 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
@@ -39,16 +39,7 @@ catch { OFFSETSHAPE $distance {s_3} $calcul $type }
 
 set square 495.635
 
-set nb_v_good 2
-set nb_e_good 3
-set nb_w_good 3
-set nb_f_good 3
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 13
-
+checknbshapes result -vertex 2 -edge 3 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 13
 
 set index [lsearch [whatis s] Closed]
 if {$index == -1} {

@@ -14,7 +14,7 @@ restore [locate_data_file OCC6278-B.brep] b
 bfuse result a b
 explode result v
 
-set nb_v_good 4
+checknbshapes result -vertex 4
 
 set DumpList [dump result_2]
 if {[llength ${DumpList}] < 40} {

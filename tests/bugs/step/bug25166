@@ -11,14 +11,5 @@ tpcompound result
 
 set square 46280.7
 
-set nb_v_good 176
-set nb_e_good 176
-set nb_w_good 176
-set nb_f_good 168
-set nb_sh_good 168
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 2
-set nb_shape_good 866
-
+checknbshapes result -vertex 176 -edge 176 -wire 176 -face 168 -shell 168 -solid 0 -compsolid 0 -compound 2 -shape 866
 set 3dviewer 1

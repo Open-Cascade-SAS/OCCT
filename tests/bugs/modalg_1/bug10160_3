@@ -1,4 +1,4 @@
-puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+puts "TODO OCC11111 ALL: Error :  is WRONG because number of "
 puts "TODO OCC11111 ALL: Error : The square of result shape is"
 puts "============"
 puts "OCC10160"
@@ -43,14 +43,5 @@ puts "CPU_user_time=${CPU_user_time}"
 set square 2.36194e+07
 
 # Analysis of "nbshapes res"
-set nb_v_good 24
-set nb_e_good 34
-set nb_w_good 20
-set nb_f_good 19
-set nb_sh_good 4
-set nb_sol_good 4
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 106
-
+checknbshapes result -vertex 24 -edge 34 -wire 20 -face 19 -shell 4 -solid 4 -compsolid 0 -compound 1 -shape 106
 set 2dviewer 0

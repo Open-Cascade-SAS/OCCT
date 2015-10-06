@@ -19,6 +19,7 @@ scaleshape result a 10
 
 #statsh res
 
-set nb_sol_good 1
+checknbshapes result -solid 1
+
 set square 180000.
 set 2dviewer 0

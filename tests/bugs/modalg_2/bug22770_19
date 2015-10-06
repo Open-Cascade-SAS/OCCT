@@ -17,16 +17,7 @@ sewing result 1.1 a_2 b_1 -f
 
 set square 12
 
-set nb_v_good 8
-set nb_e_good 8
-set nb_w_good 2
-set nb_f_good 2
-set nb_sh_good 0
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 21
-
+checknbshapes result -vertex 8 -edge 8 -wire 2 -face 2 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 21
 checkmaxtol result -ref 9.9999999999999995e-008
 checknbshapes result -shell 0
 checkfreebounds result 8

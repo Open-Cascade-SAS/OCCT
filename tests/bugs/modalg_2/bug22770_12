@@ -14,16 +14,7 @@ sewing result a b -c
 
 set square 1.8847e+07
 
-set nb_v_good 1061
-set nb_e_good 1255
-set nb_w_good 273
-set nb_f_good 259
-set nb_sh_good 22
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 2871
-
+checknbshapes result -vertex 1061 -edge 1255 -wire 273 -face 259 -shell 22 -solid 0 -compsolid 0 -compound 1 -shape 2871
 checkmaxtol result -ref 0.0451323239933289
 checknbshapes result -shell 22
 checkfreebounds result 1031

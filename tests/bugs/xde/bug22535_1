@@ -18,14 +18,5 @@ vfit
 
 set square 14217.2
 
-set nb_v_good 6
-set nb_e_good 9
-set nb_w_good 3
-set nb_f_good 2
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 22
-
+checknbshapes result -vertex 6 -edge 9 -wire 3 -face 2 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 22
 set 3dviewer 1

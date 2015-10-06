@@ -18,7 +18,6 @@ bbuild result
 
 set square 470659
 
-# Analysis of "nbshapes res"
-set nb_sol_good 3
+checknbshapes result -solid 3
 
 set 2dviewer 1

@@ -16,18 +16,6 @@ baddcompound b2
 bfillds
 bbuild result
 
-nbshapes result -t
-#the number of solids should be 12 instead of 2
-
-set nbsh_t 1
-set nb_v_good 52
-set nb_e_good 105
-set nb_w_good 76
-set nb_f_good 70
-set nb_sh_good 12
-set nb_sol_good 12
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 328
+checknbshapes result -t -vertex 52 -edge 105 -wire 76 -face 70 -shell 12 -solid 12 -compsolid 0 -compound 1 -shape 328
 
 set 3dviewer 1

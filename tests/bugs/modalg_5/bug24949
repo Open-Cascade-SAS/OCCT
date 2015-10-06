@@ -18,14 +18,5 @@ pipe result c_1 c_2 2
 
 set square 188.689
 
-set nb_v_good 14
-set nb_e_good 19
-set nb_w_good 6
-set nb_f_good 6
-set nb_sh_good 1
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 46
-
+checknbshapes result -vertex 14 -edge 19 -wire 6 -face 6 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 46
 set 2dviewer 1

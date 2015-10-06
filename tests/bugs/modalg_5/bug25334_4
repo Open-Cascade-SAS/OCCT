@@ -22,14 +22,5 @@ fit
 
 set length 386.077
 
-set nb_v_good 2
-set nb_e_good 1
-set nb_w_good 1
-set nb_f_good 0
-set nb_sh_good 0
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good  0
-set nb_shape_good 4
-
+checknbshapes result -vertex 2 -edge 1 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 4
 set only_screen_axo 1

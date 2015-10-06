@@ -1,4 +1,4 @@
-puts "TODO OCC12345 ALL: Faulty OCC4648"
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of "
 
 puts "================"
 puts "OCC4648"
@@ -11,17 +11,6 @@ puts ""
 set BugNumber OCC4648
 
 igesbrep [locate_data_file annie_surf.igs] a *
-set info [nbshapes a]
-regexp {Mass +: +([-0-9.+eE]+)} [sprops a] full good_square
-regexp {VERTEX +: +([-0-9.+eE]+)} $info full good_vertex
-regexp {EDGE +: +([-0-9.+eE]+)} $info full good_edge
-regexp {WIRE +: +([-0-9.+eE]+)} $info full good_wire
-regexp {FACE +: +([-0-9.+eE]+)} $info full good_face
-regexp {SHELL +: +([-0-9.+eE]+)} $info full good_shell
-regexp {SOLID +: +([-0-9.+eE]+)} $info full good_solid
-regexp {COMPSOLID +: +([-0-9.+eE]+)} $info full good_compsolid
-regexp {COMPOUND +: +([-0-9.+eE]+)} $info full good_compound
-regexp {SHAPE +: +([-0-9.+eE]+)} $info full good_shape
 
 file delete ${imagedir}/annie
 stepwrite 0 a ${imagedir}/annie
@@ -34,30 +23,7 @@ if [catch { stepread ${imagedir}/annie b *} res] {
     puts "Faulty ${BugNumber} : stepread is wrong"
 } else {
     renamevar b_1 res
-    set info1 [nbshapes res]
-    regexp {Mass +: +([-0-9.+eE]+)} [sprops res] full sq
-    regexp {VERTEX +: +([-0-9.+eE]+)} $info1 full vertex
-    regexp {EDGE +: +([-0-9.+eE]+)} $info1 full edge
-    regexp {WIRE +: +([-0-9.+eE]+)} $info1 full wire
-    regexp {FACE +: +([-0-9.+eE]+)} $info1 full face
-    regexp {SHELL +: +([-0-9.+eE]+)} $info1 full shell
-    regexp {SOLID +: +([-0-9.+eE]+)} $info1 full solid
-    regexp {COMPSOLID +: +([-0-9.+eE]+)} $info1 full compsolid
-    regexp {COMPOUND +: +([-0-9.+eE]+)} $info1 full compound
-    regexp {SHAPE +: +([-0-9.+eE]+)} $info1 full shape
-	
-    if { $sq != $good_square
-	|| $vertex != $good_vertex
-	|| $edge != $good_edge
-	|| $wire != $good_wire
-	|| $face != $good_face
-	|| $shell != $good_shell
-	|| $solid != $good_solid
-	|| $compsolid != $good_compsolid
-	|| $compound != $good_compound
-	|| $shape != $good_shape } {
-	    puts "Faulty ${BugNumber}"
-    }
+    checknbshapes res -ref [nbshapes a]
 }
 
 file delete ${imagedir}/annie

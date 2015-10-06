@@ -15,7 +15,6 @@ restore [locate_data_file case_4_wire3.brep] b
 bop a b
 bopcommon result
 
-set nb_v_good 15
-set nb_e_good 10
+checknbshapes result -vertex 15 -edge 10
 set length 1150.78
 set 2dviewer 0

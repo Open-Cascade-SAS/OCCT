@@ -17,16 +17,7 @@ if [catch { chfi2d result f f_1 f_2 CDD 10. 10. } ] {
 } else {
 set length 267.795
 
-set nb_v_good 4
-set nb_e_good 3
-set nb_w_good 1
-set nb_f_good 1
-set nb_sh_good 0
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 9
-
+checknbshapes result -vertex 4 -edge 3 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 9
 }
 
 set 2dviewer 0

@@ -10,17 +10,6 @@ puts "========"
 restore [locate_data_file OCC184.brep] FaceBrep 
 checkshape FaceBrep
 
-set dum1 [nbshapes FaceBrep]
-regexp {VERTEX +: +([-0-9.+eE]+)} $dum1 full nb_v1
-regexp {EDGE +: +([-0-9.+eE]+)} $dum1 full nb_e1
-regexp {WIRE +: +([-0-9.+eE]+)} $dum1 full nb_w1
-regexp {FACE +: +([-0-9.+eE]+)} $dum1 full nb_f1
-regexp {SHELL +: +([-0-9.+eE]+)} $dum1 full nb_sh1
-regexp {SOLID +: +([-0-9.+eE]+)} $dum1 full nb_sol1
-regexp {COMPSOLID +: +([-0-9.+eE]+)} $dum1 full nb_compsol1
-regexp {COMPOUND +: +([-0-9.+eE]+)} $dum1 full nb_compound1
-regexp {SHAPE +: +([-0-9.+eE]+)} $dum1 full nb_shape1
-
 regexp {Mass +: +([-0-9.+eE]+)} [sprops FaceBrep] full square1
 
 catch {exec rm ${imagedir}/OCC184.igs}
@@ -32,31 +21,9 @@ igesbrep ${imagedir}/OCC184.igs FaceIGES *
 sewing result FaceIGES
 checkshape result
 
-set dum2 [nbshapes result]
-regexp {VERTEX +: +([-0-9.+eE]+)} $dum2 full nb_v2
-regexp {EDGE +: +([-0-9.+eE]+)} $dum2 full nb_e2
-regexp {WIRE +: +([-0-9.+eE]+)} $dum2 full nb_w2
-regexp {FACE +: +([-0-9.+eE]+)} $dum2 full nb_f2
-regexp {SHELL +: +([-0-9.+eE]+)} $dum2 full nb_sh2
-regexp {SOLID +: +([-0-9.+eE]+)} $dum2 full nb_sol2
-regexp {COMPSOLID +: +([-0-9.+eE]+)} $dum2 full nb_compsol2
-regexp {COMPOUND +: +([-0-9.+eE]+)} $dum2 full nb_compound2
-regexp {SHAPE +: +([-0-9.+eE]+)} $dum2 full nb_shape2
-
 regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full square2
 
-
-if { ${nb_v2} != ${nb_v1} 
-    || ${nb_e2} != ${nb_e1} 
-    || ${nb_w2} != ${nb_w1} 
-    || ${nb_f2} != ${nb_f1} 
-    || ${nb_sh2} != ${nb_sh1} 
-    || ${nb_sol2} != ${nb_sol1} 
-    || ${nb_compsol2} != ${nb_compsol1} 
-    || ${nb_compound2} != ${nb_compound1} 
-    || ${nb_shape2} != ${nb_shape1} } {
-    puts "Error : Number of shapes is faulty"
-}
+checknbshapes result -ref [nbshapes FaceBrep]
 
 if { ${square2} != ${square1} } {
    puts "Error : Square is not valid"

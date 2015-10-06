@@ -15,20 +15,17 @@ puts "##########################################################################
 puts "# (case /-/-T -R/-C/)"
 puts "###############################################################################"
 
-set setsweepOptions ""
-set addsweepOptions "-T -R"
-set buildsweepOptions "-C"
+checkshape s1
+checkshape s2
+
+mksweep s1
+
+addsweep s2 -T -R
+if [catch { buildsweep result -C} res] {
+  puts "Faulty OCC1477: buildsweep is wrong"
+}
 
 set square 24371.2
 
-set nb_v_good 20
-set nb_e_good 36
-set nb_w_good 16
-set nb_f_good 16
-set nb_sh_good 1
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 89
-
+checknbshapes result -vertex 20 -edge 36 -wire 16 -face 16 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 89
 set 2dviewer 0

@@ -14,14 +14,5 @@ bopcut result
 
 set square 31308.8
 
-set nb_v_good 26
-set nb_e_good 41
-set nb_w_good 17
-set nb_f_good 17
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 104
-
+checknbshapes result -vertex 26 -edge 41 -wire 17 -face 17 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 104
 set 3dviewer 1

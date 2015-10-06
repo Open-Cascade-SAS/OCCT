@@ -15,14 +15,7 @@ mkface f f
 bsection result sh f
 puts "Info: it should be 12 edges"
 
-set nb_info [nbshapes result]
-regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ne
-
-if { $ne != 12 } {                                         
-    puts "Faulty :Number of edges is wrong"                                                                               
-} else {
-    puts "Number of edges is OK"                                                                                                   
-}
+checknbshapes result -edge 12
 
 set length 33.6353
 set 2dviewer 0

@@ -30,14 +30,5 @@ bop r1 r2
 bopcut result
 
 set square 17292.5
-set nb_v_good 13
-set nb_e_good 26
-set nb_w_good 12
-set nb_f_good 11
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 65
-
+checknbshapes result -vertex 13 -edge 26 -wire 12 -face 11 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 65
 set 2dviewer 0

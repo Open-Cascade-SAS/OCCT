@@ -24,14 +24,5 @@ XGetOneShape result D
 
 set square 1.46159e+06
 
-set nb_v_good 1296
-set nb_e_good 2041
-set nb_w_good 826
-set nb_f_good 761
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 4926
-
+checknbshapes result -vertex 1296 -edge 2041 -wire 826 -face 761 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 4926
 set 2dviewer 0

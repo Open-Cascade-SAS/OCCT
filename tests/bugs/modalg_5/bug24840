@@ -12,14 +12,5 @@ explode c
 pipe result c_1 c_2 1
 checkshape result
 
-set nb_v_good 56
-set nb_e_good 130
-set nb_w_good 99
-set nb_f_good 99
-set nb_sh_good 24
-set nb_sol_good 24
-set nb_compsol_good 1
-set nb_compound_good 0
-set nb_shape_good 433
-
+checknbshapes result -vertex 56 -edge 130 -wire 99 -face 99 -shell 24 -solid 24 -compsolid 1 -compound 0 -shape 433
 set 2dviewer 1

@@ -44,15 +44,5 @@ bfillds
 bbop result 2
 
 set square 142845
-
-set nb_v_good 108
-set nb_e_good 168
-set nb_w_good 152
-set nb_f_good 86
-set nb_sh_good 7
-set nb_sol_good 7
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 529
-
+checknbshapes result -vertex 108 -edge 168 -wire 152 -face 86 -shell 7 -solid 7 -compsolid 0 -compound 1 -shape 529
 set 2dviewer 1

@@ -15,7 +15,7 @@ baddobjects b1 b2
 bfillds
 bbuild result
 
-set nb_v_good 4
+checknbshapes result -vertex 4
 
 set 2dviewer 0
 

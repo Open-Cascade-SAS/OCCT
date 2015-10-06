@@ -12,14 +12,5 @@ restore [locate_data_file bug24290_TheShape.brep] b2
 bop b1 b2
 bopsection result
 
-set nb_v_good 6
-set nb_e_good 6
-set nb_w_good 0
-set nb_f_good 0
-set nb_sh_good 0
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 13
-
+checknbshapes result -vertex 6 -edge 6 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 13
 set 2dviewer 1

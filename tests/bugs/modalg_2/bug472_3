@@ -23,8 +23,8 @@ checkshape b2
 
 bfuse result b1 b2
 
-set nb_v_good 66
-set nb_e_edge 107
+checknbshapes result -vertex 66 -edge 107
+
 set square 31657.5
 set 2dviewer 0
 

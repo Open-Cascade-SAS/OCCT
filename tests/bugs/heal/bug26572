@@ -8,8 +8,6 @@ puts ""
 
 restore [locate_data_file bug26572_issue_12_new_input.brep] s
 
-nbshapes s -t
-
 smallview
 donly s
 fit

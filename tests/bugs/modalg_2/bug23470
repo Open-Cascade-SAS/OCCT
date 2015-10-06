@@ -11,10 +11,7 @@ explode qe
 bop qe_1 qe_2
 bopfuse result
 
-set nb_v_good 2
-set nb_e_good 1
-set nb_w_good 0
-set nb_shape_good 4
+checknbshapes result -vertex 2 -edge 1 -wire 0 -shape 4
 
 set length 48.4459
 set command bopfuse

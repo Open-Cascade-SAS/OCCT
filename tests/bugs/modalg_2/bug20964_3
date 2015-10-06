@@ -22,15 +22,6 @@ puts "Finish boolean operation ..."
 
 set square 828829
 
-set nb_v_good 20
-set nb_e_good 32
-set nb_w_good 18
-set nb_f_good 16
-set nb_sh_good 3
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 91
-
+checknbshapes result -vertex 20 -edge 32 -wire 18 -face 16 -shell 3 -solid 1 -compsolid 0 -compound 1 -shape 91
 
 set 2dviewer 0

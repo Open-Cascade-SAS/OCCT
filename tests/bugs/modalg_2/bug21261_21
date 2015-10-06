@@ -1,6 +1,5 @@
 puts "TODO OCC25916 ALL: ERROR. Incorrect set of faces to remove, the remaining shell is not connected."
-puts "TODO OCC26556 ALL: result is not a topological shape!!!"
-puts "TODO OCC26556 ALL: Error: object with name 'result' does not exist!"
+puts "TODO OCC26556 ALL: Tcl Exception: Error : command \\\"nbshapes result\\\" gives an empty result"
 puts "TODO OCC25916 ALL: TEST INCOMPLETE"
 puts "========"
 puts "OCC21261"
@@ -18,16 +17,7 @@ thickshell result s -5
 
 set square 25639.3
 
-set nb_v_good 18
-set nb_e_good 31
-set nb_w_good 17
-set nb_f_good 15
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 83
-
+checknbshapes result -vertex 18 -edge 31 -wire 17 -face 15 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 83
 vinit
 vdisplay result
 vsetdispmode 0

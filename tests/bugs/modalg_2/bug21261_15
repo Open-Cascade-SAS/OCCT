@@ -1,6 +1,5 @@
 puts "TODO OCC25916 ALL: ERROR. C0 continuity of input data."
-puts "TODO OCC26556 ALL: result is not a topological shape!!!"
-puts "TODO OCC26556 ALL: Error: object with name 'result' does not exist!"
+puts "TODO OCC26556 ALL: Tcl Exception: Error : command \\\"nbshapes result\\\" gives an empty result"
 puts "TODO OCC25916 ALL: TEST INCOMPLETE"
 puts "========"
 puts "OCC21261"
@@ -18,16 +17,7 @@ thickshell result s -5
 
 set square 27432.4
 
-set nb_v_good 4
-set nb_e_good 6
-set nb_w_good 6
-set nb_f_good 4
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 22
-
+checknbshapes result -vertex 4 -edge 6 -wire 6 -face 4 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 22
 vinit
 vdisplay result
 vsetdispmode 0

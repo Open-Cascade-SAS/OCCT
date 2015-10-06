@@ -41,14 +41,5 @@ puts "CPU_user_time=${CPU_user_time}"
 set square 3.20326e+07
 
 # Analysis of "nbshapes res"
-set nb_v_good 116
-set nb_e_good 173
-set nb_w_good 67
-set nb_f_good 63
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 422
-
+checknbshapes result -vertex 116 -edge 173 -wire 67 -face 63 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 422
 set 2dviewer 0

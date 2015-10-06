@@ -1,6 +1,6 @@
 puts "TODO OCC25925 ALL: Faulty OCC5805 : result is not Closed shape"
-puts "TODO OCC25925 ALL: result is not a topological shape"
 puts "TODO OCC25925 ALL: TEST INCOMPLETE"
+puts "TODO OCC25925 ALL: Tcl Exception: Error : command \\\"nbshapes result\\\" gives an empty result"
 
 puts "============"
 puts "OCC5805"
@@ -36,20 +36,6 @@ set distance -0.001
 catch { OFFSETSHAPE $distance {} $calcul $type }
 # Null result
 
-
-set square 495.635
-
-set nb_v_good 2
-set nb_e_good 3
-set nb_w_good 3
-set nb_f_good 3
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 0
-set nb_shape_good 13
-
-
 set index [lsearch [whatis s] Closed]
 if {$index == -1} {
   puts "Faulty ${BugNumber} : s is not Closed shape"
@@ -62,5 +48,7 @@ if {$index == -1} {
   
 }
 
+checknbshapes result -vertex 2 -edge 3 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 13
 
+set square 495.635
 set 2dviewer 0

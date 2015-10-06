@@ -11,8 +11,6 @@ restore [locate_data_file bug26644_input.brep] a
 # 1
 checkarea a 158.466 1e-1 0.01
 
-nbshapes a -t
-
 vinit
 vsetdispmode 1
 vclear

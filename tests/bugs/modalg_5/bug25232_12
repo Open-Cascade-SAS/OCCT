@@ -13,14 +13,5 @@ mkvolume result b_3 b_4 b_2 b_5 -s
 
 set square 1.41057e+07
 
-set nb_v_good 12
-set nb_e_good 25
-set nb_w_good 18
-set nb_f_good 18
-set nb_sh_good 8
-set nb_sol_good 8
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 90
-
+checknbshapes result -vertex 12 -edge 25 -wire 18 -face 18 -shell 8 -solid 8 -compsolid 0 -compound 1 -shape 90
 set 2dviewer 1

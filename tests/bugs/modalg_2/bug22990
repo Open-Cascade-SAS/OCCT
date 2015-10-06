@@ -18,7 +18,8 @@ explode e e
 
 splitshape result s s_1 e_1 e_2
 
-set nb_f_good 3
+checknbshapes result -face 3
+
 set square 1256.64
 set 3dviewer 0
 

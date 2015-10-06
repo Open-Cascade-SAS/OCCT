@@ -13,14 +13,7 @@ checkshape S2
 
 bcut result S1 S2
 
-set nb_info [nbshapes result]
-regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full err
-regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full err1
+checknbshapes result -shell 1 -compound 1 -m "result should be a shell, but not a compound of faces"
 
-if { $err != 1 || $err1 != 1} {
-    puts "Faulty : result should be a shell, but not a compound of faces"
-} else {
-    puts "BUC60787 - OK"
-}
 set square 150200
 set 2dviewer 0

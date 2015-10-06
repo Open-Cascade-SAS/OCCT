@@ -18,10 +18,7 @@ bop f1 f2
 bopcut result
 
 set square 1178.1
-set nb_v_good 2
-set nb_e_good 4
-set nb_w_good 2
-set nb_f_good 2
+checknbshapes result -vertex 2 -edge 4 -wire 2 -face 2
 
 set 2dviewer 0
 

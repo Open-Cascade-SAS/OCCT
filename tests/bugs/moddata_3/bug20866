@@ -28,15 +28,7 @@ if [catch { buildsweep result } ] {
 
     set square 1.94998e+06
 
-    set nb_v_good 161
-    set nb_e_good 299
-    set nb_w_good 138
-    set nb_f_good 138
-    set nb_sh_good 1
-    set nb_sol_good 0
-    set nb_compsol_good 0
-    set nb_compound_good 0
-    set nb_shape_good 737
+    checknbshapes result -vertex 161 -edge 299 -wire 138 -face 138 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 737
 }
 set 2dviewer 0
 

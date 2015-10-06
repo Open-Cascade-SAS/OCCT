@@ -13,15 +13,8 @@ bop b1 b2
 bopfuse result
 
 set square 241.111
-set nb_v_good 16
-set nb_e_good 24
-set nb_w_good 12
-set nb_f_good 10
-set nb_sh_goodl 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 65
+
+checknbshapes result -vertex 16 -edge 24 -wire 12 -face 10 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 65
 
 set 2dviewer 0
 

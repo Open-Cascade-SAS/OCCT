@@ -11,8 +11,7 @@ restore [locate_data_file bug24628_shellcut2.brep] cut
 
 bsection result shell cut
 
-set nb_v_good 15
-set nb_e_good 14
+checknbshapes result -vertex 15 -edge 14
 
 set 2dviewer 1
 

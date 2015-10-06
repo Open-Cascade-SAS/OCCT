@@ -44,14 +44,5 @@ baddcompound b2
 
 bapibuild result
 
-set nb_v_good 2728
-set nb_e_good 7032
-set nb_w_good 5746
-set nb_f_good 5746
-set nb_sh_good 1441
-set nb_sol_good 1441
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 24135
-
+checknbshapes result -vertex 2728 -edge 7032 -wire 5746 -face 5746 -shell 1441 -solid 1441 -compsolid 0 -compound 1 -shape 24135
 set 3dviewer 1

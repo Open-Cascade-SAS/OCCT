@@ -1,5 +1,5 @@
 puts "TODO OCC12345 ALL: Error : The length of result shape is"
-puts "TODO OCC12345 ALL: Error : Result shape is WRONG because it must contains"
+puts "TODO OCC12345 ALL: Error :  is WRONG because number of"
 
 puts "========================"
 puts " OCC248 "
@@ -14,8 +14,7 @@ restore [locate_data_file OCC248b.brep] b
 puts [bop a b]
 puts [boptuc result]
 
-set nb_v_good 8
-set nb_e_good 8
+checknbshapes result -vertex 8 -edge 8
 set length 0
 set 2dviewer 0
  

@@ -1,5 +1,5 @@
 puts "TODO OCC21564 ALL: The square of result shape is"
-puts "TODO OCC21564 ALL: Result shape is WRONG because it must contains"
+puts "TODO OCC21564 ALL: Error :  is WRONG because number of "
 
 puts "============"
 puts "OCC22557"
@@ -26,15 +26,6 @@ puts "Finish boolean operation ..."
 
 set square 0.172993
 
-set nb_v_good 192
-set nb_e_good 288
-set nb_w_good 98
-set nb_f_good 98
-set nb_sh_good 1
-set nb_sol_good 1
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 679
-
+checknbshapes result -vertex 192 -edge 288 -wire 98 -face 98 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 679
 
 set 2dviewer 0

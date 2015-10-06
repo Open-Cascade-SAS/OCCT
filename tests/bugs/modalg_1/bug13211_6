@@ -30,14 +30,7 @@ bop r1 r2
 bopsection result
 
 set length 228.699
-set nb_v_good_vertex 13
-set nb_e_good_edge 15
-set nb_w_good_wire 0
-set nb_f_good_face 0
-set nb_sh_good_shell 0
-set nb_sol_good_solid 0
-set nb_compsol_good_compsolid 0
-set nb_compound_good_compound 1
-set nb_shape_good_shape 29
+
+checknbshapes result -vertex 13 -edge 15 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 29
 
 set 2dviewer 0

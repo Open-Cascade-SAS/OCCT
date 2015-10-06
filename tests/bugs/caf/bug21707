@@ -75,6 +75,7 @@ set Sel11 [AttachShape D Pr_10 ${Prism} ${Prism} 0]
 
 GetShape D $Cut1:2 result
 
-set nb_v_good 10
+checknbshapes result -vertex 10
+
 set 2dviewer 0
 

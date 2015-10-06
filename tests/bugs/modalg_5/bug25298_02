@@ -19,16 +19,7 @@ if [catch { openoffset resoffset a 1 -10 i } ] {
 
   set length 159.96
 
-  set nb_v_good 3
-  set nb_e_good 2
-  set nb_w_good 1
-  set nb_f_good 0
-  set nb_sh_good 0
-  set nb_sol_good 0
-  set nb_compsol_good 0
-  set nb_compound_good 0
-  set nb_shape_good 6
-
+  checknbshapes result -vertex 3 -edge 2 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 6
   display result
   fit
 }
