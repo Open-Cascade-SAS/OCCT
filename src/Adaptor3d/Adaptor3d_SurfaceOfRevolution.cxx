@@ -563,7 +563,7 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const
   //
   switch ( myBasisCurve->GetType()) {
   case GeomAbs_Line:    {
-    const gp_Ax1& Axe = (myBasisCurve->Line()).Position();
+    gp_Ax1 Axe = myBasisCurve->Line().Position();
     
     if (myAxis.IsParallel(Axe, TolAng)) {
       bRet=GeomAbs_Cylinder;
@@ -614,8 +614,8 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const
     Standard_Real MajorRadius, aR;
     gp_Lin aLin(myAxis);
     //
-    const gp_Circ& C=myBasisCurve->Circle();
-    const gp_Pnt& aLC=C.Location();
+    gp_Circ C = myBasisCurve->Circle();
+    const gp_Pnt& aLC = C.Location();
     aR=C.Radius();
     //
    
