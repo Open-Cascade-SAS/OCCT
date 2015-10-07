@@ -1305,6 +1305,7 @@ Standard_Real ResolutionCoeff(const BRepAdaptor_Curve& theBAC,
     break;
   case GeomAbs_Hyperbola :
   case GeomAbs_Parabola : 
+  case GeomAbs_OffsetCurve :
   case GeomAbs_OtherCurve :{
     Standard_Real k, kMin, aDist, aDt, aT1, aT2, aT;
     Standard_Integer aNbP, i;

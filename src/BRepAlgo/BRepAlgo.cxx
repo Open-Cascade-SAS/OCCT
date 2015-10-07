@@ -254,10 +254,7 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
         NewFpar = fpar;
         NewLpar = lpar;
         isSameCurve = Standard_True;
-      } else if (aType == CurType &&
-        aType != GeomAbs_BezierCurve &&
-        aType != GeomAbs_BSplineCurve &&
-        aType != GeomAbs_OtherCurve) {
+      } else if (aType == CurType) {
           switch (aType) {
           case GeomAbs_Line:
             {

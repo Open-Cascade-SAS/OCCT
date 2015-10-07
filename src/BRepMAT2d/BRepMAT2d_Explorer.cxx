@@ -31,6 +31,7 @@
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert.hxx>
@@ -597,6 +598,9 @@ GeomAbs_CurveType GetCurveType(const Handle(Geom2d_Curve)& theC2d)
   }
   else if ( TheType == STANDARD_TYPE(Geom2d_BSplineCurve)) {
     aTypeCurve = GeomAbs_BSplineCurve;
+  }
+  else if ( TheType == STANDARD_TYPE(Geom2d_OffsetCurve)) {
+    aTypeCurve = GeomAbs_OffsetCurve;
   }
   else {
     aTypeCurve = GeomAbs_OtherCurve;

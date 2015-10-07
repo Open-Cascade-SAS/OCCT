@@ -246,6 +246,7 @@ static void Project(ProjLib_Projector& P, Handle(Adaptor3d_HCurve)& C)
       break;
     case GeomAbs_BSplineCurve:
     case GeomAbs_BezierCurve:
+    case GeomAbs_OffsetCurve:
     case GeomAbs_OtherCurve:    // try the approximation
       break;
     default:

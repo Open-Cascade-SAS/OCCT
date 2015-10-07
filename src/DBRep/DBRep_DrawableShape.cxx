@@ -573,6 +573,7 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
 	      case GeomAbs_Hyperbola :
 	      case GeomAbs_BezierCurve :
 	      case GeomAbs_BSplineCurve :
+	      case GeomAbs_OffsetCurve :
 	      case GeomAbs_OtherCurve :
 		for (j = 1; j <= myDiscret/2; j++) {
 		  Handle(DBRep_Face) aLocalFace = F;	
@@ -697,6 +698,7 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
 	case GeomAbs_Hyperbola :
 	case GeomAbs_BezierCurve :
 	case GeomAbs_BSplineCurve :
+	case GeomAbs_OffsetCurve :
 	case GeomAbs_OtherCurve :
 	  for (j = 1; j <= myDiscret/2; j++) {
 	    Handle(DBRep_Edge) aLocaLEdge(E);

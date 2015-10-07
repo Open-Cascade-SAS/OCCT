@@ -729,6 +729,7 @@ Standard_Integer IntTools_BeanFaceIntersector::FastComputeExactIntersection()
   //
   if((aCT==GeomAbs_BezierCurve) ||
      (aCT==GeomAbs_BSplineCurve) ||
+     (aCT==GeomAbs_OffsetCurve) ||
      (aCT==GeomAbs_OtherCurve)) {
     return aresult;
   }

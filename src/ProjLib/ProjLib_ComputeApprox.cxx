@@ -868,6 +868,7 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
 
   Standard_Boolean CurvIsAnal = (CType != GeomAbs_BSplineCurve) &&
                                 (CType != GeomAbs_BezierCurve)  &&
+                                (CType != GeomAbs_OffsetCurve)  &&
                                 (CType != GeomAbs_OtherCurve)     ;
 
   Standard_Boolean simplecase = SurfIsAnal && CurvIsAnal;

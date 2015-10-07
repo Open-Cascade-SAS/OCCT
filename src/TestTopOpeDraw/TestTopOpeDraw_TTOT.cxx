@@ -185,6 +185,7 @@ void TestTopOpeDraw_TTOT::CurveToString
   case GeomAbs_Parabola            : N = "PARABOLA";          break;
   case GeomAbs_BezierCurve         : N = "BEZIER";       break;
   case GeomAbs_BSplineCurve        : N = "BSPLINE";      break;
+  case GeomAbs_OffsetCurve         : N = "OFFSET";       break;
   case GeomAbs_OtherCurve          : N = "OTHER";        break;
   default                          : N = "UNKNOWN";           break;  
   }

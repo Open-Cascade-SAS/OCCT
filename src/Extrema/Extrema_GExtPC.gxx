@@ -249,7 +249,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       mydone = Standard_True;
       break;
     }
-  case GeomAbs_OtherCurve:
+  default:
     {
       Standard_Boolean IntExtIsDone = Standard_False;
       Standard_Boolean IntIsNotValid;
@@ -310,6 +310,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
 
   // Postprocessing.
   if (type == GeomAbs_BSplineCurve ||
+      type == GeomAbs_OffsetCurve ||
       type == GeomAbs_OtherCurve)
   {
     // Additional checking if the point is on the first or last point of the curve

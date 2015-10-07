@@ -174,6 +174,7 @@ void TopOpeBRepBuild_Builder::PrintCur(const TopoDS_Edge& E)
   case GeomAbs_Parabola            : cout<<"PARABOLA";          break;
   case GeomAbs_BezierCurve         : cout<<"BEZIERCURVE";       break;
   case GeomAbs_BSplineCurve        : cout<<"BSPLINECURVE "<<GC.BSpline()->Degree(); break;
+  case GeomAbs_OffsetCurve         : cout<<"OFFSETCURVE";       break;
   case GeomAbs_OtherCurve          : cout<<"OTHERCURVE";        break;
   }
   cout.flush();

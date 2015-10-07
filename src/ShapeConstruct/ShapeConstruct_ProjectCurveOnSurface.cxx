@@ -427,8 +427,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
     case GeomAbs_BSplineCurve :
       c2d = Projector.BSpline();
       break;
-    case GeomAbs_BezierCurve :
-    case GeomAbs_OtherCurve :
+    default:
       // Not possible, handling added to avoid gcc warning.
       break;
     }

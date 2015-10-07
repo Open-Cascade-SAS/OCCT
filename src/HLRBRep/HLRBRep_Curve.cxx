@@ -85,6 +85,9 @@ HLRBRep_Curve::Parameter2d (const Standard_Real P3d) const
 
     case GeomAbs_Ellipse:
       return P3d + myOX;
+
+    default: // implemented to avoid gcc compiler warnings
+      break;
   }
   return P3d;
 }

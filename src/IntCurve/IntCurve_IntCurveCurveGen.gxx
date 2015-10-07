@@ -344,9 +344,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
 
       break;
 
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve:
-    case GeomAbs_OtherCurve: 
+    default: 
       {
         intconicurv.SetReversedParameters(Standard_False);
         intconicurv.Perform(TheCurveTool::Line(C1),D1,
@@ -471,9 +469,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
       }
       break;
 
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve:
-    case GeomAbs_OtherCurve:
+    default:
       {
         intconicurv.SetReversedParameters(Standard_False);
         intconicurv.Perform(TheCurveTool::Circle(C1),D1,
@@ -602,9 +598,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
         }
         break;
 
-      case GeomAbs_BezierCurve:
-      case GeomAbs_BSplineCurve:
-      case GeomAbs_OtherCurve:
+      default:
         {
           intconicurv.SetReversedParameters(Standard_False);
           intconicurv.Perform(TheCurveTool::Ellipse(C1),D1,
@@ -729,9 +723,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
       }
       break;
 
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve:
-    case GeomAbs_OtherCurve:
+    default:
       {
         intconicurv.SetReversedParameters(Standard_False);
         intconicurv.Perform(TheCurveTool::Parabola(C1),D1,
@@ -833,9 +825,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
       }
       break;
 
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve:
-    case GeomAbs_OtherCurve:
+    default:
       {
         intconicurv.SetReversedParameters(Standard_False);
         intconicurv.Perform(TheCurveTool::Hyperbola(C1),D1,
@@ -851,9 +841,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
     }
     break;
 
-  case GeomAbs_BezierCurve:
-  case GeomAbs_BSplineCurve:
-  case GeomAbs_OtherCurve:
+  default:
     switch (typ2)
     {
     case GeomAbs_Line:
@@ -952,9 +940,7 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
       }
       break;
 
-    case GeomAbs_BezierCurve:
-    case GeomAbs_BSplineCurve:
-    case GeomAbs_OtherCurve:
+    default:
       {
         intcurvcurv.SetReversedParameters(Standard_False);    
         intcurvcurv.Perform(C1,D1, C2,D2,TolConf,Tol);

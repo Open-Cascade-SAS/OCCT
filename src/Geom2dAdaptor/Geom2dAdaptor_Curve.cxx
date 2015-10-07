@@ -227,7 +227,7 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
     }
     else if ( TheType == STANDARD_TYPE(Geom2d_OffsetCurve))
     {
-      myTypeCurve = GeomAbs_OtherCurve;
+      myTypeCurve = GeomAbs_OffsetCurve;
       // Create nested adaptor for base curve
       Handle(Geom2d_Curve) aBase = Handle(Geom2d_OffsetCurve)::DownCast(myCurve)->BasisCurve();
       myOffsetBaseCurveAdaptor = new Geom2dAdaptor_HCurve(aBase);
@@ -252,7 +252,7 @@ GeomAbs_Shape Geom2dAdaptor_Curve::Continuity() const
   if (myTypeCurve == GeomAbs_BSplineCurve) {
     return LocalContinuity(myFirst, myLast);
   }
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve)){
+  else if (myTypeCurve == GeomAbs_OffsetCurve){
     GeomAbs_Shape S = 
       Handle(Geom2d_OffsetCurve)::DownCast (myCurve)->GetBasisCurveContinuity(); 
     switch(S){
@@ -364,7 +364,7 @@ Standard_Integer Geom2dAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
       }
     }
   }
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve)){
+  else if (myTypeCurve == GeomAbs_OffsetCurve){
     GeomAbs_Shape BaseS=GeomAbs_C0;
     switch(S){
     case GeomAbs_G1:
@@ -479,7 +479,7 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
       }
     }
   }
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve)){
+  else if (myTypeCurve == GeomAbs_OffsetCurve){
     GeomAbs_Shape BaseS=GeomAbs_C0;
     switch(S){
     case GeomAbs_G1:
@@ -575,7 +575,7 @@ gp_Pnt2d Geom2dAdaptor_Curve::Value(const Standard_Real U) const
 {
   if (myTypeCurve == GeomAbs_BSplineCurve)
     return ValueBSpline(U);
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve))
+  else if (myTypeCurve == GeomAbs_OffsetCurve)
     return ValueOffset(U);
 
   return myCurve->Value(U);
@@ -646,7 +646,7 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
     D0BSpline(U, P);
     return;
   }
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve))
+  else if (myTypeCurve == GeomAbs_OffsetCurve)
   {
     D0Offset(U, P);
     return;
@@ -709,7 +709,7 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U,
     D1BSpline(U, P, V);
     return;
   }
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve))
+  else if (myTypeCurve == GeomAbs_OffsetCurve)
   {
     D1Offset(U, P, V);
     return;
@@ -785,7 +785,7 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U,
     D2BSpline(U, P, V1, V2);
     return;
   }
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve))
+  else if (myTypeCurve == GeomAbs_OffsetCurve)
   {
     D2Offset(U, P, V1, V2);
     return;
@@ -866,7 +866,7 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
     D3BSpline(U, P, V1, V2, V3);
     return;
   }
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve))
+  else if (myTypeCurve == GeomAbs_OffsetCurve)
   {
     D3Offset(U, P, V1, V2, V3);
     return;
@@ -950,7 +950,7 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const Standard_Real U,
 {
   if (myTypeCurve == GeomAbs_BSplineCurve)
     return DNBSpline(U, N);
-  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve))
+  else if (myTypeCurve == GeomAbs_OffsetCurve)
     return DNOffset(U, N);
 
   return myCurve->DN(U, N);

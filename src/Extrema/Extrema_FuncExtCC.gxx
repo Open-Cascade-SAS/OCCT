@@ -125,6 +125,7 @@ myTol (thetol)
   {
   case GeomAbs_BezierCurve:
   case GeomAbs_BSplineCurve:
+  case GeomAbs_OffsetCurve:
   case GeomAbs_OtherCurve:
     myMaxDerivOrderC1 = MaxOrder;
     myTolC1 = SearchOfTolerance((Standard_Address)&C1);
@@ -139,6 +140,7 @@ myTol (thetol)
   {
   case GeomAbs_BezierCurve:
   case GeomAbs_BSplineCurve:
+  case GeomAbs_OffsetCurve:
   case GeomAbs_OtherCurve:
     myMaxDerivOrderC2 = MaxOrder;
     myTolC2 = SearchOfTolerance((Standard_Address)&C2);
@@ -162,6 +164,7 @@ void Extrema_FuncExtCC::SetCurve (const Standard_Integer theRank, const Curve1& 
       {
       case GeomAbs_BezierCurve:
       case GeomAbs_BSplineCurve:
+      case GeomAbs_OffsetCurve:
       case GeomAbs_OtherCurve:
         myMaxDerivOrderC1 = MaxOrder;
         myTolC1 = SearchOfTolerance((Standard_Address)&C);
@@ -179,6 +182,7 @@ void Extrema_FuncExtCC::SetCurve (const Standard_Integer theRank, const Curve1& 
       {
       case GeomAbs_BezierCurve:
       case GeomAbs_BSplineCurve:
+      case GeomAbs_OffsetCurve:
       case GeomAbs_OtherCurve:
         myMaxDerivOrderC2 = MaxOrder;
         myTolC2 = SearchOfTolerance((Standard_Address)&C);

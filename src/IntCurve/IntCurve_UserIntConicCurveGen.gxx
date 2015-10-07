@@ -388,9 +388,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Lin2d& Lin1,
     }
     break;
     
-  case GeomAbs_BezierCurve:  
-  case GeomAbs_BSplineCurve:  
-  case GeomAbs_OtherCurve: 
+  default: 
     {
       intconicurv.SetReversedParameters(Standard_False);
       intconicurv.Perform(Lin1,D1,C2,D2,TolConf,Tol);
@@ -483,9 +481,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Circ2d& Circ1,
     }
     break;
     
-  case GeomAbs_BezierCurve:  
-  case GeomAbs_BSplineCurve:  
-  case GeomAbs_OtherCurve:
+  default:
     {
       intconicurv.SetReversedParameters(Standard_False);
       intconicurv.Perform(Circ1,D1,C2,D2,TolConf,Tol);
@@ -578,9 +574,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Elips2d& Elips1,
     }
     break;
     
-  case GeomAbs_BezierCurve:  
-  case GeomAbs_BSplineCurve:  
-  case GeomAbs_OtherCurve:
+  default:
     {
       intconicurv.SetReversedParameters(Standard_False);
       intconicurv.Perform(Elips1,D1,C2,D2,TolConf,Tol);
@@ -673,9 +667,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Parab2d& Parab1,
     }
     break;
     
-  case GeomAbs_BezierCurve:  
-  case GeomAbs_BSplineCurve:  
-  case GeomAbs_OtherCurve:
+  default:
     {
       intconicurv.SetReversedParameters(Standard_False);
       intconicurv.Perform(Parab1,D1,C2,D2,TolConf,Tol);
@@ -768,9 +760,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Hypr2d& Hyper1,
     }
     break;
     
-  case GeomAbs_BezierCurve:  
-  case GeomAbs_BSplineCurve:  
-  case GeomAbs_OtherCurve:
+  default:
     {
       intconicurv.SetReversedParameters(Standard_False);
       intconicurv.Perform(Hyper1,D1,

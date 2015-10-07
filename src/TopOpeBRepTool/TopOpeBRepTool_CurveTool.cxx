@@ -154,7 +154,7 @@ Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(const ProjLib_ProjectedCurve& PC
   case GeomAbs_Parabola : C2D = new Geom2d_Parabola(PC.Parabola()); break;
   case GeomAbs_Hyperbola : C2D = new Geom2d_Hyperbola(PC.Hyperbola()); break;
   case GeomAbs_BSplineCurve : C2D = PC.BSpline(); break;
-  case GeomAbs_BezierCurve : case GeomAbs_OtherCurve : default :
+  default :
     Standard_NotImplemented::Raise("CurveTool::MakePCurve");
     break;
   }

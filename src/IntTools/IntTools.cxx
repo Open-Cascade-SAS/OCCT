@@ -119,6 +119,7 @@
     }
     if (aCurveType==GeomAbs_BSplineCurve||
 	aCurveType==GeomAbs_BezierCurve ||
+	aCurveType==GeomAbs_OffsetCurve ||
 	aCurveType==GeomAbs_Ellipse ||
 	aCurveType==GeomAbs_OtherCurve) { //modified by NIZNHY-PKV Fri Sep 24 09:52:42 2004ft
       continue;

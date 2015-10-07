@@ -236,12 +236,14 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
       // extra solutions those would cause *Exception*: incoherent intersection
       
       GeomAbs_CurveType CType = AC.GetType(), BisType = ABis.GetType();
-      Standard_Boolean	canElongateC = !(CType == GeomAbs_BezierCurve ||
-					 CType == GeomAbs_BSplineCurve ||
-					 CType == GeomAbs_OtherCurve);
-      Standard_Boolean canElongateBis = !(BisType == GeomAbs_BezierCurve ||
-					  BisType == GeomAbs_BSplineCurve ||
-					  BisType == GeomAbs_OtherCurve);
+      Standard_Boolean  canElongateC = !(CType == GeomAbs_BezierCurve  ||
+                                         CType == GeomAbs_BSplineCurve ||
+                                         CType == GeomAbs_OffsetCurve  ||
+                                         CType == GeomAbs_OtherCurve);
+      Standard_Boolean canElongateBis = !(BisType == GeomAbs_BezierCurve  ||
+                                          BisType == GeomAbs_BSplineCurve ||
+                                          BisType == GeomAbs_OffsetCurve  ||
+                                          BisType == GeomAbs_OtherCurve);
       
       Handle(Geom2d_TrimmedCurve) TBis = Handle(Geom2d_TrimmedCurve)::DownCast(Bis);
       Handle(Geom2d_TrimmedCurve) TC2d = Handle(Geom2d_TrimmedCurve)::DownCast(C2d);

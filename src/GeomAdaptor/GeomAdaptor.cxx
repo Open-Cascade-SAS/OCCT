@@ -80,7 +80,7 @@ Handle(Geom_Curve) GeomAdaptor::MakeCurve (const Adaptor3d_Curve& HC)
     C = Handle(Geom_BSplineCurve)::DownCast(HC.BSpline()->Copy());
     break;
 
-  case GeomAbs_OtherCurve:
+  default:
     Standard_DomainError::Raise("GeomAdaptor::MakeCurve : OtherCurve");
 
   }
