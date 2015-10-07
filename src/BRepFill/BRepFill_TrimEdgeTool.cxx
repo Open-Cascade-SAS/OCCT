@@ -38,6 +38,9 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopExp.hxx>
+#include <BRepAdaptor_Curve.hxx>
 
 #ifdef OCCT_DEBUG
 //#define DRAW
@@ -311,7 +314,12 @@ static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
 
 void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
                                           const TopoDS_Edge& Edge2,
+                                          const TopoDS_Shape& InitShape1,
+                                          const TopoDS_Shape& InitShape2,
+                                          const TopoDS_Vertex& End1,
+                                          const TopoDS_Vertex& End2,
                                           const GeomAbs_JoinType theJoinType,
+                                          const Standard_Boolean IsOpenResult,
                                           TColgp_SequenceOfPnt& Params)
 {
   Params.Clear();
@@ -563,19 +571,75 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
 
   NbPoints = Params.Length();
 
-  if (NbPoints > 0 && theJoinType == GeomAbs_Intersection)
+  //Now we define: if there are more than one point of intersection
+  //is it Ok ?
+  Standard_Real init_fpar = RealFirst(), init_lpar = RealLast();
+  if (NbPoints > 1 &&
+      theJoinType == GeomAbs_Intersection &&
+      InitShape1.ShapeType() != TopAbs_VERTEX &&
+      InitShape2.ShapeType() != TopAbs_VERTEX)
+  {
+    //definition of initial first and last parameters:
+    //this is inverse procedure to extension of parameters
+    //(see BRepFill_OffsetWire, function MakeOffset, case of Circle)
+    const TopoDS_Edge& InitEdge1 = TopoDS::Edge(InitShape1);
+    Standard_Boolean ToExtendFirstPar = Standard_True;
+    Standard_Boolean ToExtendLastPar  = Standard_True;
+    if (IsOpenResult)
+    {
+      TopoDS_Vertex V1, V2;
+      TopExp::Vertices(InitEdge1, V1, V2);
+      if (V1.IsSame(End1) ||
+          V1.IsSame(End2))
+        ToExtendFirstPar = Standard_False;
+      if (V2.IsSame(End1) ||
+          V2.IsSame(End2))
+        ToExtendLastPar  = Standard_False;
+    }
+    BRepAdaptor_Curve IC1(InitEdge1);
+    if (IC1.GetType() == GeomAbs_Circle)
+    {
+      Standard_Real Delta = 2*M_PI - IC1.LastParameter() + IC1.FirstParameter();
+      if (ToExtendFirstPar && ToExtendLastPar)
+        init_fpar = AC1.FirstParameter() + Delta/2;
+      else if (ToExtendFirstPar)
+        init_fpar = AC1.FirstParameter() + Delta;
+      else if (ToExtendLastPar)
+        init_fpar = AC1.FirstParameter();
+      init_lpar = init_fpar + IC1.LastParameter() - IC1.FirstParameter();
+    }
+  }
+  
+  
+  if (NbPoints > 1 && theJoinType == GeomAbs_Intersection)
   {
     //Remove all vertices with non-minimal parameter
+    //if they are out of initial range
     Standard_Integer imin = 1;
     for (i = 2; i <= NbPoints; i++)
       if (Params(i).X() < Params(imin).X())
         imin = i;
+
+    TColgp_SequenceOfPnt ParamsCopy = Params;
+    TColgp_SequenceOfPnt Points2Copy = Points2;
+    Params.Clear();
+    Points2.Clear();
+    for (i = 1; i <= ParamsCopy.Length(); i++)
+      if (imin == i ||
+          (ParamsCopy(i).Y() >= init_fpar && ParamsCopy(i).Y() <= init_lpar))
+      {
+        Params.Append(ParamsCopy(i));
+        Points2.Append(Points2Copy(i));
+      }
+
+    /*
     gp_Pnt Pnt1 = Params(imin);
     gp_Pnt Pnt2 = Points2(imin);
     Params.Clear();
     Points2.Clear();
     Params.Append(Pnt1);
     Points2.Append(Pnt2);
+    */
   }
   
   NbPoints = Params.Length();
