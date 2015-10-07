@@ -3478,10 +3478,13 @@ static int VColorScale (Draw_Interpretor& theDI,
 
   Standard_Real                   aMinRange    = aCS->GetMin();
   Standard_Real                   aMaxRange    = aCS->GetMax();
+  Standard_Integer                aWidth       = aCS->GetWidth();
+  Standard_Integer                aHeight      = aCS->GetHeight();
   Standard_Integer                aNbIntervals = aCS->GetNumberOfIntervals();
   Standard_Integer                aTextHeight  = aCS->GetTextHeight();
   Aspect_TypeOfColorScalePosition aLabPosition = aCS->GetLabelPosition();
-  gp_XY                           aPos (aCS->GetXPosition(), aCS->GetYPosition());
+  Standard_Integer                aPosX = aCS->GetXPosition();
+  Standard_Integer                aPosY = aCS->GetYPosition();
 
   ViewerTest_AutoUpdater anUpdateTool (aContext, aView);
 
@@ -3497,7 +3500,7 @@ static int VColorScale (Draw_Interpretor& theDI,
           << "Max range: " << aMaxRange << "\n"
           << "Number of intervals: " << aNbIntervals << "\n"
           << "Text height: " << aTextHeight << "\n"
-          << "Color scale position: " << aPos.X() <<" "<< aPos.Y()<< "\n"
+          << "Color scale position: " << aPosX <<" "<< aPosY<< "\n"
           << "Color scale title: " << aCS->GetTitle() << "\n"
           << "Label position: ";
     switch (aLabPosition)
@@ -3616,14 +3619,51 @@ static int VColorScale (Draw_Interpretor& theDI,
 
       TCollection_AsciiString aX (theArgVec[++anArgIter]);
       TCollection_AsciiString aY (theArgVec[++anArgIter]);
-      if (!aX.IsRealValue()
-       || !aY.IsRealValue())
+      if (!aX.IsIntegerValue()
+       || !aY.IsIntegerValue())
       {
-        std::cout << "Error: coordinates should be real values!\n";
+        std::cout << "Error: coordinates should be integer values!\n";
         return 1;
       }
 
-      aPos.SetCoord (aX.RealValue(), aY.RealValue());
+      aPosX = aX.IntegerValue();
+      aPosY = aY.IntegerValue();
+    }
+    else if (aFlag == "-width"
+          || aFlag == "-w")
+    {
+      if (anArgIter + 1 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aW (theArgVec[++anArgIter]);
+      if (!aW.IsIntegerValue())
+      {
+        std::cout << "Error: a width should be an integer value!\n";
+        return 1;
+      }
+
+      aWidth = aW.IntegerValue();
+    }
+    else if (aFlag == "-height"
+          || aFlag == "-h")
+    {
+      if (anArgIter + 1 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aH (theArgVec[++anArgIter]);
+      if (!aH.IsIntegerValue())
+      {
+        std::cout << "Error: a width should be an integer value!\n";
+        return 1;
+      }
+
+      aHeight = aH.IntegerValue();
     }
     else if (aFlag == "-color")
     {
@@ -3828,11 +3868,14 @@ static int VColorScale (Draw_Interpretor& theDI,
     else if (aFlag == "-demoversion"
           || aFlag == "-demo")
     {
-      aPos.SetCoord (0.0, 0.0);
+      aPosX        = 0;
+      aPosY        = 0;
       aTextHeight  = 16;
       aMinRange    = 0.0;
       aMaxRange    = 100;
       aNbIntervals = 10;
+      aWidth       = 0;
+      aHeight      = 0;
       aLabPosition = Aspect_TOCSP_RIGHT;
       aCS->SetColorType (Aspect_TOCSD_AUTO);
       aCS->SetLabelType (Aspect_TOCSD_AUTO);
@@ -3843,13 +3886,26 @@ static int VColorScale (Draw_Interpretor& theDI,
       return 1;
     }
   }
-
-  aCS->SetPosition          (aPos.X(), aPos.Y());
-  aCS->SetHeight            (0.95);
+  if (!aWidth || !aHeight)
+  {
+    Standard_Integer aWinWidth, aWinHeight;
+    aView->Window()->Size (aWinWidth, aWinHeight);
+    if (!aWidth)
+    {
+      aWidth = aWinWidth;
+    }
+    if (!aHeight)
+    {
+      aHeight = aWinHeight;
+    }
+  }
+  aCS->SetSize              (aWidth, aHeight);
+  aCS->SetPosition          (aPosX, aPosY);
   aCS->SetTextHeight        (aTextHeight);
   aCS->SetRange             (aMinRange, aMaxRange);
   aCS->SetNumberOfIntervals (aNbIntervals);
   aCS->SetLabelPosition     (aLabPosition);
+  aCS->SetBGColor           (aView->BackgroundColor());
   aCS->SetToUpdate();
   aContext->Display (aCS);
 

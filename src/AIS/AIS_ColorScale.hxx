@@ -147,40 +147,46 @@ public:
   Standard_EXPORT void SetLabelAtBorder (const Standard_Boolean theOn);
 
   //! Returns the size of color scale.
-  Standard_EXPORT void GetSize (Standard_Real& theWidth, Standard_Real& theHeight) const;
+  Standard_EXPORT void GetSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const;
 
   //! Returns the width of color scale.
-  Standard_EXPORT Standard_Real GetWidth() const { return myWidth; }
+  Standard_EXPORT Standard_Integer GetWidth() const { return myWidth; }
 
   //! Returns the height of color scale.
-  Standard_EXPORT Standard_Real GetHeight() const { return myHeight; }
+  Standard_EXPORT Standard_Integer GetHeight() const { return myHeight; }
+
+  //! Returns the background color of color scale.
+  const Quantity_Color& GetBgColor() const { return myBgColor; }
 
   //! Sets the size of color scale.
-  Standard_EXPORT void SetSize (const Standard_Real theWidth, const Standard_Real theHeight);
+  Standard_EXPORT void SetSize (const Standard_Integer theWidth, const Standard_Integer theHeight);
 
   //! Sets the width of color scale.
-  Standard_EXPORT void SetWidth (const Standard_Real theWidth);
+  Standard_EXPORT void SetWidth (const Standard_Integer theWidth);
 
   //! Sets the height of color scale.
-  Standard_EXPORT void SetHeight (const Standard_Real theHeight);
+  Standard_EXPORT void SetHeight (const Standard_Integer theHeight);
+
+  //! Sets the background color of color scale.
+  void SetBGColor (const Quantity_Color& theBgColor) { myBgColor = theBgColor; };
 
   //! Returns the position of color scale.
   Standard_EXPORT void GetPosition (Standard_Real& theX, Standard_Real& theY) const;
 
   //! Returns the X position of color scale.
-  Standard_EXPORT Standard_Real GetXPosition() const { return myXPos; }
+  Standard_EXPORT Standard_Integer GetXPosition() const { return myXPos; }
 
   //! Returns the height of color scale.
-  Standard_EXPORT Standard_Real GetYPosition() const { return myYPos; }
+  Standard_EXPORT Standard_Integer GetYPosition() const { return myYPos; }
 
   //! Sets the position of color scale.
-  Standard_EXPORT void SetPosition (const Standard_Real theX, const Standard_Real theY);
+  Standard_EXPORT void SetPosition (const Standard_Integer theX, const Standard_Integer theY);
 
   //! Sets the X position of color scale.
-  Standard_EXPORT void SetXPosition (const Standard_Real theX);
+  Standard_EXPORT void SetXPosition (const Standard_Integer theX);
 
   //! Sets the Y position of color scale.
-  Standard_EXPORT void SetYPosition (const Standard_Real theY);
+  Standard_EXPORT void SetYPosition (const Standard_Integer theY);
 
   //! Returns the height of text of color scale.
   Standard_EXPORT Standard_Integer GetTextHeight() const { return myTextHeight; }
@@ -265,10 +271,11 @@ private:
   TColStd_SequenceOfExtendedString myLabels;
   Aspect_TypeOfColorScalePosition myLabelPos;
   Aspect_TypeOfColorScalePosition myTitlePos;
-  Standard_Real myXPos;
-  Standard_Real myYPos;
-  Standard_Real myWidth;
-  Standard_Real myHeight;
+  Standard_Integer myXPos;
+  Standard_Integer myYPos;
+  Standard_Integer myWidth;
+  Standard_Integer myHeight;
   Standard_Integer myTextHeight;
+  Quantity_Color myBgColor;
 };
 #endif

@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC26312"
+puts "ColorScale doesn't work as expected."
+puts "============"
+puts ""
+
+vinit View1
+vclear
+vaxo
+
+# Disable ffp
+vcaps -ffp 0
+# draw color scale
+vcolorscale cs -demo
+vdump ${imagedir}/${casename}_View1.png
+
+#add more views
+vinit View2 w=300 h=500
+vinit View3 w=500 h=300
+
+# dump all views
+vactivate View2
+vcolorscale cs -height 500
+vdump ${imagedir}/${casename}_View2.png
+vactivate View3
+vcolorscale cs -height 300
+vdump ${imagedir}/${casename}_View3.png

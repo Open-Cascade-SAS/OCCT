@@ -57,9 +57,10 @@ myLabelPos (Aspect_TOCSP_RIGHT),
 myTitlePos (Aspect_TOCSP_CENTER),
 myXPos (0),
 myYPos (0),
-myWidth (0.2),
-myHeight (1),
-myTextHeight(20)
+myWidth (0),
+myHeight (0),
+myTextHeight(20),
+myBgColor (Quantity_NOC_BLACK)
 {
 }
 
@@ -351,7 +352,7 @@ void AIS_ColorScale::GetPosition (Standard_Real& theX, Standard_Real& theY) cons
 //function : SetPosition
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetPosition (const Standard_Real theX, const Standard_Real theY)
+void AIS_ColorScale::SetPosition (const Standard_Integer theX, const Standard_Integer theY)
 {
   if (myXPos == theX && myYPos == theY)
     return;
@@ -364,7 +365,7 @@ void AIS_ColorScale::SetPosition (const Standard_Real theX, const Standard_Real 
 //function : SetXPosition
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetXPosition (const Standard_Real theX)
+void AIS_ColorScale::SetXPosition (const Standard_Integer theX)
 {
   SetPosition (theX, GetYPosition());
 }
@@ -373,7 +374,7 @@ void AIS_ColorScale::SetXPosition (const Standard_Real theX)
 //function : SetYPosition
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetYPosition (const Standard_Real theY)
+void AIS_ColorScale::SetYPosition (const Standard_Integer theY)
 {
   SetPosition (GetXPosition(), theY);
 }
@@ -382,7 +383,7 @@ void AIS_ColorScale::SetYPosition (const Standard_Real theY)
 //function : GetSize
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::GetSize (Standard_Real& theWidth, Standard_Real& theHeight) const
+void AIS_ColorScale::GetSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
   theWidth = myWidth;
   theHeight = myHeight;
@@ -392,7 +393,7 @@ void AIS_ColorScale::GetSize (Standard_Real& theWidth, Standard_Real& theHeight)
 //function : SetSize
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetSize (const Standard_Real theWidth, const Standard_Real theHeight)
+void AIS_ColorScale::SetSize (const Standard_Integer theWidth, const Standard_Integer theHeight)
 {
   if (myWidth == theWidth && myHeight == theHeight)
     return;
@@ -405,7 +406,7 @@ void AIS_ColorScale::SetSize (const Standard_Real theWidth, const Standard_Real 
 //function : SetWidth
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetWidth (const Standard_Real theWidth)
+void AIS_ColorScale::SetWidth (const Standard_Integer theWidth)
 {
   SetSize (theWidth, GetHeight());
 }
@@ -414,7 +415,7 @@ void AIS_ColorScale::SetWidth (const Standard_Real theWidth)
 //function : SetHeight
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetHeight (const Standard_Real theHeight)
+void AIS_ColorScale::SetHeight (const Standard_Integer theHeight)
 {
   SetSize (GetWidth(), theHeight);
 }
@@ -546,11 +547,9 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
                              const Handle(Prs3d_Presentation)& thePresentation,
                              const Standard_Integer /*theMode*/)
 {
-  Standard_Integer aWinWidth(0), aWinHeight(0);
   Handle(V3d_Viewer) aViewer= GetContext()->CurrentViewer();
   aViewer->InitActiveViews();
-  aViewer->ActiveView()->Window()->Size (aWinWidth, aWinHeight);
-  Quantity_Color aBgColor = aViewer->ActiveView()->BackgroundColor();
+  Quantity_Color aBgColor = myBgColor;
   Standard_Integer aNum = GetNumberOfIntervals();
   Aspect_TypeOfColorScalePosition aLabPos = GetLabelPosition();
 
@@ -567,7 +566,7 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   if (aTitle.Length())
   {
     aTitleHeight += myTextHeight + aSpacer;
-    DrawText (thePresentation, aTitle, (Standard_Integer)myXPos + aSpacer, aWinHeight - ((Standard_Integer)myYPos - 2 * aSpacer + aTitleHeight), aFgColor);
+    DrawText (thePresentation, aTitle, (Standard_Integer)myXPos + aSpacer, myHeight - ((Standard_Integer)myYPos - 2 * aSpacer + aTitleHeight), aFgColor);
   }
 
   Standard_Boolean toReverse = IsReversed();
@@ -602,18 +601,18 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
 
   Standard_Integer aLabCount = aLabels.Length();
 
-  Standard_Real aSpc = ( aWinHeight - ( ( Min (aLabCount, 2) + Abs (aLabCount - aNum - 1) ) * aTextHeight ) - aTitleHeight );
+  Standard_Integer aSpc = ( myHeight - ( ( Min (aLabCount, 2) + Abs (aLabCount - aNum - 1) ) * aTextHeight ) - aTitleHeight );
   Standard_Real aVal = aSpc != 0 ? 1.0 * ( aLabCount - Min (aLabCount, 0) ) * aTextHeight / aSpc : 0;
   Standard_Real anIPart;
   Standard_Real anFPart = modf (aVal, &anIPart);
   Standard_Integer aFilter = (Standard_Integer)anIPart + ( anFPart != 0 ? 1 : 0 );
 
-  Standard_Real aStep = 1.0 * ( aWinHeight - (aLabCount - aNum + Abs (aLabCount - aNum - 1)) * aTextHeight - aTitleHeight ) / aNum;
+  Standard_Real aStep = 1.0 * ( myHeight - (aLabCount - aNum + Abs (aLabCount - aNum - 1)) * aTextHeight - aTitleHeight ) / aNum;
 
   Standard_Integer anAscent = 0;
-  Standard_Integer aColorWidth = Max (5, Min (20, aWinWidth - aTextWidth - 3 * aSpacer));
+  Standard_Integer aColorWidth = Max (5, Min (20, myWidth - aTextWidth - 3 * aSpacer));
   if (aLabPos == Aspect_TOCSP_CENTER || !toDrawLabel)
-    aColorWidth = aWinWidth - 2 * aSpacer;
+    aColorWidth += aTextWidth;
 
   // Draw colors
   Standard_Integer aX = (Standard_Integer)myXPos + aSpacer;
