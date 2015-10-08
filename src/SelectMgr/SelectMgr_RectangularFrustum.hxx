@@ -33,7 +33,7 @@ class SelectMgr_RectangularFrustum : public SelectMgr_Frustum<4>
 {
 public:
 
-  SelectMgr_RectangularFrustum() {};
+  SelectMgr_RectangularFrustum() : myScale (1.0) {};
 
   //! Builds volume according to the point and given pixel tolerance
   Standard_EXPORT virtual void Build (const gp_Pnt2d& thePoint) Standard_OVERRIDE;
@@ -138,6 +138,7 @@ private:
   gp_Pnt   myFarPickedPnt;              //!< 3d projection of user-picked selection point onto far view plane
   gp_Vec   myViewRayDir;
   gp_Pnt2d myMousePos;                  //!< Mouse coordinates
+  Standard_Real myScale;                //!< Scale factor of applied transformation, if there was any
 };
 
 #endif // _SelectMgr_RectangularFrustum_HeaderFile

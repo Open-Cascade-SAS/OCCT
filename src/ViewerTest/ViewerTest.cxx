@@ -4428,17 +4428,42 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   {
     theDI << "Detected entities:\n";
     Handle(StdSelect_ViewerSelector3d) aSelector = aCtx->HasOpenedContext() ? aCtx->LocalSelector() : aCtx->MainSelector();
+    SelectMgr_SelectingVolumeManager aMgr = aSelector->GetManager();
     for (aSelector->InitDetected(); aSelector->MoreDetected(); aSelector->NextDetected())
     {
       const Handle(SelectBasics_SensitiveEntity)& anEntity = aSelector->DetectedEntity();
       Handle(SelectMgr_EntityOwner) anOwner    = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
       Handle(AIS_InteractiveObject) anObj      = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-      SelectMgr_SelectingVolumeManager aMgr =
-        anObj->HasTransformation() ? aSelector->GetManager().ScaleAndTransform (1, anObj->InversedTransformation())
-                                   : aSelector->GetManager();
+      gp_Trsf anInvTrsf;
+      if (anObj->TransformPersistence().Flags)
+      {
+        const Graphic3d_Mat4d& aProjection = aMgr.ProjectionMatrix();
+        const Graphic3d_Mat4d& aWorldView  = aMgr.WorldViewMatrix();
+
+        Graphic3d_Mat4d aMat = anObj->TransformPersistence().Compute (aProjection, aWorldView, 0, 0);
+        anInvTrsf.SetValues (aMat.GetValue (0, 0), aMat.GetValue (0, 1), aMat.GetValue (0, 2), aMat.GetValue (0, 3),
+          aMat.GetValue (1, 0), aMat.GetValue (1, 1), aMat.GetValue (1, 2), aMat.GetValue (1, 3),
+          aMat.GetValue (2, 0), aMat.GetValue (2, 1), aMat.GetValue (2, 2), aMat.GetValue (2, 3));
+        anInvTrsf.Invert();
+      }
+      if (anObj->HasTransformation())
+      {
+        anInvTrsf = anObj->InversedTransformation() * anInvTrsf;
+      }
+      if (anEntity->HasInitLocation())
+      {
+        anInvTrsf = anEntity->InvInitLocation() * anInvTrsf;
+      }
+      const Standard_Integer aScale = anEntity->SensitivityFactor() < aSelector->PixelTolerance()
+        ? anEntity->SensitivityFactor() : 1;
+      const Standard_Boolean isToScaleAndTransform = anInvTrsf.Form() != gp_Identity || aScale != 1;
+      SelectMgr_SelectingVolumeManager anEntMgr =
+        isToScaleAndTransform ? aMgr.ScaleAndTransform (aScale, anInvTrsf)
+                              : aMgr;
       SelectBasics_PickResult aResult;
-      anEntity->Matches (aMgr, aResult);
-      gp_Pnt aDetectedPnt = aMgr.DetectedPoint (aResult.Depth());
+      anEntity->Matches (anEntMgr, aResult);
+      gp_Pnt aDetectedPnt = anInvTrsf.Form() == gp_Identity ?
+        anEntMgr.DetectedPoint (aResult.Depth()) : anEntMgr.DetectedPoint (aResult.Depth()).Transformed (anInvTrsf.Inverted());
 
       TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
       aName.LeftJustify (20, ' ');

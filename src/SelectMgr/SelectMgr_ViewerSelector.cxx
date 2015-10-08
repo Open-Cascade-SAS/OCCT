@@ -269,26 +269,25 @@ void SelectMgr_ViewerSelector::computeFrustum (const Handle(SelectBasics_Sensiti
                                                SelectMgr_FrustumCache&                     theCachedMgrs,
                                                SelectMgr_SelectingVolumeManager&           theResMgr)
 {
-  Standard_Integer aScale = 1;
-  const Standard_Boolean toScale = isToScaleFrustum (theEnt);
-  if (toScale)
+  Standard_Integer aScale = isToScaleFrustum (theEnt) ? sensitivity (theEnt) : 1;
+  const gp_Trsf aTrsfMtr = theEnt->HasInitLocation() ? theEnt->InvInitLocation() * theInvTrsf : theInvTrsf;
+  const Standard_Boolean toScale = aScale != 1;
+  const Standard_Boolean toTransform = aTrsfMtr.Form() != gp_Identity;
+  if (toScale && toTransform)
   {
-    aScale = sensitivity (theEnt);
-  }
-  if (theEnt->HasInitLocation())
-  {
-    theResMgr =
-      mySelectingVolumeMgr.ScaleAndTransform (aScale, theEnt->InvInitLocation() * theInvTrsf);
+    theResMgr = mySelectingVolumeMgr.ScaleAndTransform (aScale, aTrsfMtr);
   }
   else if (toScale)
   {
     if (!theCachedMgrs.IsBound (aScale))
     {
-      theCachedMgrs.Bind (aScale,
-        mySelectingVolumeMgr.ScaleAndTransform(aScale, theInvTrsf));
+      theCachedMgrs.Bind (aScale, mySelectingVolumeMgr.ScaleAndTransform (aScale, gp_Trsf()));
     }
-
     theResMgr = theCachedMgrs.Find (aScale);
+  }
+  else if (toTransform)
+  {
+    theResMgr = mySelectingVolumeMgr.ScaleAndTransform (1, aTrsfMtr);
   }
 }
 

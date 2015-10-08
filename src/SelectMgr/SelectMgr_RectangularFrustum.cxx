@@ -71,7 +71,7 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
   aTc = (Abs (aTn) < Precision::Confusion() ? 0.0 : aTn / aTd);
 
   gp_Pnt aClosestPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTc;
-  theDepth = myNearPickedPnt.Distance (aClosestPnt);
+  theDepth = myNearPickedPnt.Distance (aClosestPnt) * myScale;
 }
 
 // =======================================================================
@@ -109,7 +109,7 @@ void SelectMgr_RectangularFrustum::segmentPlaneIntersection (const gp_Vec& thePl
   }
 
   gp_Pnt aClosestPnt = myNearPickedPnt.XYZ() + anU * aParam;
-  theDepth = myNearPickedPnt.Distance (aClosestPnt);
+  theDepth = myNearPickedPnt.Distance (aClosestPnt) * myScale;
 }
 
 namespace
@@ -275,6 +275,8 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d &thePoint)
   // compute vertices projections onto frustum normals and
   // {i, j, k} vectors and store them to corresponding class fields
   cacheVertexProjections (this);
+
+  myScale = 1.0;
 }
 
 // =======================================================================
@@ -301,6 +303,8 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
   // compute vertices projections onto frustum normals and
   // {i, j, k} vectors and store them to corresponding class fields
   cacheVertexProjections (this);
+
+  myScale = 1.0;
 }
 
 // =======================================================================
@@ -382,6 +386,8 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAnd
     aRes->myEdgeDirs[4] = aRes->myVertices[0].XYZ() - aRes->myVertices[1].XYZ();
     // RightUpper
     aRes->myEdgeDirs[5] = aRes->myVertices[4].XYZ() - aRes->myVertices[5].XYZ();
+
+    aRes->myScale = 1.0 / theTrsf.ScaleFactor();
   }
 
   // compute frustum normals
@@ -441,7 +447,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt,
   gp_Pnt aDetectedPnt =
     myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * (aV.Dot (myViewRayDir.XYZ()) / myViewRayDir.Dot (myViewRayDir));
 
-  theDepth = aDetectedPnt.Distance (myNearPickedPnt);
+  theDepth = aDetectedPnt.Distance (myNearPickedPnt) * myScale;
 
   return Standard_True;
 }
@@ -567,7 +573,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
       // handle the case when triangle normal and selecting frustum direction are orthogonal: for this case, overlap
       // is detected correctly, and distance to triangle's plane can be measured as distance to its arbitrary vertex.
       const gp_XYZ aDiff = myNearPickedPnt.XYZ() - thePnt1.XYZ();
-      theDepth = aTriangleNormal.Dot (aDiff);
+      theDepth = aTriangleNormal.Dot (aDiff) * myScale;
       return Standard_True;
     }
 
@@ -585,7 +591,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
     if (isInterior)
     {
       gp_Pnt aDetectedPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTime;
-      theDepth = myNearPickedPnt.Distance (aDetectedPnt);
+      theDepth = myNearPickedPnt.Distance (aDetectedPnt) * myScale;
       return Standard_True;
     }
 
@@ -617,7 +623,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 // =======================================================================
 Standard_Real SelectMgr_RectangularFrustum::DistToGeometryCenter (const gp_Pnt& theCOG)
 {
-  return theCOG.Distance (myNearPickedPnt);
+  return theCOG.Distance (myNearPickedPnt) * myScale;
 }
 
 // =======================================================================
