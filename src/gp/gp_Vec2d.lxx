@@ -70,14 +70,11 @@ inline  const gp_XY& gp_Vec2d::XY () const
 { return coord; }
 
 inline Standard_Boolean gp_Vec2d::IsNormal
-(const gp_Vec2d& Other, 
- const Standard_Real AngularTolerance) const
+(const gp_Vec2d& theOther, 
+ const Standard_Real theAngularTolerance) const
 {
-  Standard_Real Ang = Angle(Other);
-  if (Ang < 0) Ang = - Ang;
-  Ang = M_PI / 2.0 - Angle(Other);
-  if (Ang < 0) Ang = - Ang;
-  return  Ang <= AngularTolerance;
+  const Standard_Real anAng = Abs(M_PI_2 - Abs(Angle(theOther)));
+  return !(anAng > theAngularTolerance);
 }    
 
 inline Standard_Boolean gp_Vec2d::IsOpposite
@@ -241,7 +238,7 @@ inline gp_Vec2d operator* (const Standard_Real Scalar,
 { return V.Multiplied(Scalar); }
 
 inline gp_Vec2d gp_Vec2d::GetNormal() const
-  {
+{
   return gp_Vec2d(this->Y(), (-1)*this->X());
-  }
+}
 

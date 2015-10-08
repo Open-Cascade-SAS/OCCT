@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC26750"
+puts "============"
+puts ""
+#############################################################################################
+## Method IsNormal(...) for gp_Vec2d returns FALSE if the angle between two vectors is equal to -90 degree (-M_PI/2 radian)
+#############################################################################################
+
+pload QAcommands
+
+OCC26750

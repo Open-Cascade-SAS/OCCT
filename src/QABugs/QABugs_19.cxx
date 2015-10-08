@@ -4485,6 +4485,41 @@ static Standard_Integer OCC24537(
   return 0;
 }
 
+//=======================================================================
+//function : OCC26750 
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC26750( Draw_Interpretor& theDI,
+                                  Standard_Integer  /*theNArg*/,
+                                  const char ** /*theArgVal*/)
+{
+  const gp_Vec2d aVec1(1.0, 0.0);
+  const gp_Vec2d aVec2(0.0, -1.0);
+
+  if(aVec1.IsNormal(aVec2, Precision::Angular()))
+  {
+    theDI << "gp_Vec2d OK. Vectors are normal.\n";
+  }
+  else
+  {
+    theDI << "Error in gp_Vec2d. Vectors should be normal.\n";
+  }
+
+  const gp_Dir2d aD1(1.0, 0.0);
+  const gp_Dir2d aD2(0.0, -1.0);
+
+  if(aD1.IsNormal(aD2, Precision::Angular()))
+  {
+    theDI << "gp_Dir2d OK. Vectors are normal.\n";
+  }
+  else
+  {
+    theDI << "Error in gp_Dir2d. Vectors should be normal.\n";
+  }
+  
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4577,5 +4612,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26525", "OCC26525 result edge face ", __FILE__, OCC26525, group);
 
   theCommands.Add ("OCC24537", "OCC24537 [file]", __FILE__, OCC24537, group);
+  theCommands.Add ("OCC26750", "OCC26750", __FILE__, OCC26750, group);
+
   return;
 }
