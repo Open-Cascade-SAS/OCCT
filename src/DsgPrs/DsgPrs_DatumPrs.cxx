@@ -45,6 +45,8 @@ void DsgPrs_DatumPrs::Add (const Handle(Prs3d_Presentation)& thePresentation,
   Quantity_Length anAxisLength;
   Quantity_Length anArrowAngle = theDrawer->ArrowAspect()->Angle();
 
+  const Standard_Boolean toDrawLabels = theDrawer->DatumAspect()->ToDrawLabels();
+
   Handle(Graphic3d_ArrayOfSegments) aPrims;
   if (aDatumAspect->DrawFirstAndSecondAxis())
   {
@@ -61,7 +63,10 @@ void DsgPrs_DatumPrs::Add (const Handle(Prs3d_Presentation)& thePresentation,
     Prs3d_Arrow::Draw(thePresentation,aPoint1,aXDir,anArrowAngle,anAxisLength/10.);
     aGroup->SetPrimitivesAspect(theDrawer->TextAspect()->Aspect());
     Graphic3d_Vertex aVertex1(aPoint1.X(),aPoint1.Y(),aPoint1.Z());
-    aGroup->Text(Standard_CString("X"), aVertex1,16.);
+    if (toDrawLabels)
+    {
+      aGroup->Text (Standard_CString ("X"), aVertex1, 16.0);
+    }
 
     anAxisLength = aDatumAspect->SecondAxisLength();
     const gp_Pnt aPoint2(anOrigin.XYZ() + aYDir.XYZ()*anAxisLength);
@@ -76,7 +81,10 @@ void DsgPrs_DatumPrs::Add (const Handle(Prs3d_Presentation)& thePresentation,
     Prs3d_Arrow::Draw(thePresentation,aPoint2,aYDir,anArrowAngle,anAxisLength/10.);
     aGroup->SetPrimitivesAspect(theDrawer->TextAspect()->Aspect());
     Graphic3d_Vertex aVertex2(aPoint2.X(),aPoint2.Y(),aPoint2.Z());
-    aGroup->Text(Standard_CString("Y"), aVertex2,16.);
+    if (toDrawLabels)
+    {
+      aGroup->Text (Standard_CString ("Y"), aVertex2, 16.0);
+    }
   }
   if (aDatumAspect->DrawThirdAxis())
   {
@@ -93,7 +101,9 @@ void DsgPrs_DatumPrs::Add (const Handle(Prs3d_Presentation)& thePresentation,
     Prs3d_Arrow::Draw(thePresentation,aPoint3,aZDir,anArrowAngle,anAxisLength/10.);
     aGroup->SetPrimitivesAspect(theDrawer->TextAspect()->Aspect());
     Graphic3d_Vertex aVertex3(aPoint3.X(),aPoint3.Y(),aPoint3.Z());
-    aGroup->Text(Standard_CString("Z"), aVertex3,16.);
+    if (toDrawLabels)
+    {
+      aGroup->Text (Standard_CString ("Z"), aVertex3, 16.0);
+    }
   }
 }
-

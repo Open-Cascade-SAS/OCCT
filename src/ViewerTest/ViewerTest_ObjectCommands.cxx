@@ -128,6 +128,7 @@
 #include <BRepExtrema_ExtPC.hxx>
 #include <BRepExtrema_ExtPF.hxx>
 
+#include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_VertexDrawMode.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -136,6 +137,7 @@
 
 #include <Image_AlienPixMap.hxx>
 #include <TColStd_HArray1OfAsciiString.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
 
 #ifdef _WIN32
 # define _CRT_SECURE_NO_DEPRECATE
@@ -241,47 +243,126 @@ static int VTrihedron2D (Draw_Interpretor& di, Standard_Integer argc, const char
 //Draw arg : vtrihedron  name  [Xo] [Yo] [Zo] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw]
 //==============================================================================
 
-static int VTrihedron (Draw_Interpretor& theDi,
+static int VTrihedron (Draw_Interpretor& /*theDi*/,
                        Standard_Integer  theArgsNb,
                        const char**      theArgVec)
 {
-  if (theArgsNb != 2 && theArgsNb != 5 && theArgsNb != 11)
+  if (theArgsNb < 2 || theArgsNb > 11)
   {
-    theDi << theArgVec[0] << " Syntax error\n";
+    std::cout << theArgVec[0] << " syntax error\n";
     return 1;
   }
 
+  // Parse parameters
+  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfArgs;
+  TCollection_AsciiString aParseKey;
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+  {
+    TCollection_AsciiString anArg (theArgVec [anArgIt]);
+
+    if (anArg.Value (1) == '-' && !anArg.IsRealValue())
+    {
+      aParseKey = anArg;
+      aParseKey.Remove (1);
+      aParseKey.LowerCase();
+      aMapOfArgs.Bind (aParseKey, new TColStd_HSequenceOfAsciiString);
+      continue;
+    }
+
+    if (aParseKey.IsEmpty())
+    {
+      continue;
+    }
+
+    aMapOfArgs(aParseKey)->Append (anArg);
+  }
+
+  // Check parameters
+  if ( (aMapOfArgs.IsBound ("xaxis") && !aMapOfArgs.IsBound ("zaxis"))
+    || (!aMapOfArgs.IsBound ("xaxis") && aMapOfArgs.IsBound ("zaxis")) )
+  {
+    std::cout << theArgVec[0] << " error: -xaxis and -yaxis parameters are to set together.\n";
+    return 1;
+  }
+
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)>::Iterator aMapIt (aMapOfArgs);
+       aMapIt.More(); aMapIt.Next())
+  {
+    const TCollection_AsciiString& aKey = aMapIt.Key();
+    const Handle(TColStd_HSequenceOfAsciiString)& anArgs = aMapIt.Value();
+
+    // Bool key, without arguments
+    if (aKey.IsEqual ("hidelabels") && anArgs->IsEmpty())
+    {
+      continue;
+    }
+
+    if ( (aKey.IsEqual ("xaxis") || aKey.IsEqual ("zaxis") || aKey.IsEqual ("origin")) && anArgs->Length() == 3
+      && anArgs->Value(1).IsRealValue() && anArgs->Value(2).IsRealValue() && anArgs->Value(3).IsRealValue() )
+    {
+      continue;
+    }
+  }
+
+  // Process parameters
   gp_Pnt anOrigin (0.0, 0.0, 0.0);
   gp_Dir aDirZ = gp::DZ();
   gp_Dir aDirX = gp::DX();
-  Standard_Integer anArgIter = 2; // 1st is an IO name
-  if (anArgIter < theArgsNb)
-  {
-    anOrigin.SetX (Draw::Atof (theArgVec[anArgIter++]));
-    anOrigin.SetY (Draw::Atof (theArgVec[anArgIter++]));
-    anOrigin.SetZ (Draw::Atof (theArgVec[anArgIter++]));
-    if (anArgIter < theArgsNb)
-    {
-      Standard_Real aX = Draw::Atof (theArgVec[anArgIter++]);
-      Standard_Real aY = Draw::Atof (theArgVec[anArgIter++]);
-      Standard_Real aZ = Draw::Atof (theArgVec[anArgIter++]);
-      aDirZ.SetCoord (aX, aY, aZ);
 
-      aX = Draw::Atof (theArgVec[anArgIter++]);
-      aY = Draw::Atof (theArgVec[anArgIter++]);
-      aZ = Draw::Atof (theArgVec[anArgIter++]);
-      aDirX.SetCoord (aX, aY, aZ);
-    }
+  Handle(TColStd_HSequenceOfAsciiString) aValues;
+
+  if (aMapOfArgs.Find ("origin", aValues))
+  {
+    anOrigin.SetX (aValues->Value(1).RealValue());
+    anOrigin.SetY (aValues->Value(2).RealValue());
+    anOrigin.SetZ (aValues->Value(3).RealValue());
+  }
+
+  Handle(TColStd_HSequenceOfAsciiString) aValues2;
+  if (aMapOfArgs.Find ("xaxis", aValues) && aMapOfArgs.Find ("zaxis", aValues2))
+  {
+    Standard_Real aX = aValues->Value(1).RealValue();
+    Standard_Real aY = aValues->Value(2).RealValue();
+    Standard_Real aZ = aValues->Value(3).RealValue();
+    aDirX.SetCoord (aX, aY, aZ);
+
+    aX = aValues->Value(1).RealValue();
+    aY = aValues->Value(2).RealValue();
+    aZ = aValues->Value(3).RealValue();
+    aDirZ.SetCoord (aX, aY, aZ);
   }
 
   if (!aDirZ.IsNormal (aDirX, M_PI / 180.0))
   {
-    theDi << theArgVec[0] << " - VectorX is not normal to VectorZ\n";
+    std::cout << theArgVec[0] << " error - VectorX is not normal to VectorZ\n";
     return 1;
   }
 
   Handle(Geom_Axis2Placement) aPlacement = new Geom_Axis2Placement (anOrigin, aDirZ, aDirX);
   Handle(AIS_Trihedron) aShape = new AIS_Trihedron (aPlacement);
+
+  if (aMapOfArgs.Find ("hidelabels", aValues))
+  {
+    const Handle(Prs3d_Drawer)& aDrawer = aShape->Attributes();
+
+    if(!aDrawer->HasOwnDatumAspect())
+    {
+      Handle(Prs3d_DatumAspect) aDefAspect = ViewerTest::GetAISContext()->DefaultDrawer()->DatumAspect();
+
+      Handle(Prs3d_DatumAspect) aDatumAspect = new Prs3d_DatumAspect();
+      aDatumAspect->FirstAxisAspect()->SetAspect (aDefAspect->FirstAxisAspect()->Aspect());
+      aDatumAspect->SecondAxisAspect()->SetAspect (aDefAspect->SecondAxisAspect()->Aspect());
+      aDatumAspect->ThirdAxisAspect()->SetAspect (aDefAspect->ThirdAxisAspect()->Aspect());
+      aDatumAspect->SetAxisLength (aDefAspect->FirstAxisLength(),
+                                   aDefAspect->SecondAxisLength(),
+                                   aDefAspect->ThirdAxisLength());
+
+      aDrawer->SetDatumAspect (aDatumAspect);
+    }
+
+    aDrawer->DatumAspect()->SetToDrawLabels (Standard_False);
+  }
+
   VDisplayAISObject (theArgVec[1], aShape);
   return 0;
 }
@@ -6223,8 +6304,9 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
 {
   const char *group ="AISObjects";
   theCommands.Add("vtrihedron",
-    "vtrihedron         : vtrihedron name [Xo] [Yo] [Zo] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw] "
-    "\n\t\t: Creates a new *AIS_Trihedron* object. If no argument is set, the default trihedron (0XYZ) is created.",
+    "vtrihedron         : vtrihedron name [ -origin x y z ] [ -zaxis u v w -xaxis u v w ] [ -hidelabels ]"
+    "\n\t\t: Creates a new *AIS_Trihedron* object. If no argument is set, the default trihedron (0XYZ) is created."
+     "\n\t\t: -hidelabels allows to draw trihedron without axes labels. By default, they are displayed.",
     __FILE__,VTrihedron,group);
 
   theCommands.Add("vtri2d",

@@ -17,19 +17,17 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Standard_Type.hxx>
 
-Prs3d_DatumAspect::Prs3d_DatumAspect () {
-
-  myFirstAxisAspect = new Prs3d_LineAspect
-      (Quantity_NOC_PEACHPUFF,Aspect_TOL_SOLID,1.);
-  mySecondAxisAspect = new Prs3d_LineAspect
-      (Quantity_NOC_PEACHPUFF,Aspect_TOL_SOLID,1.);
-  myThirdAxisAspect = new Prs3d_LineAspect
-      (Quantity_NOC_PEACHPUFF,Aspect_TOL_SOLID,1.);
-  myDrawFirstAndSecondAxis = Standard_True;
-  myDrawThirdAxis = Standard_True;
-  myFirstAxisLength = 10.;
-  mySecondAxisLength = 10.;
-  myThirdAxisLength = 10.;
+Prs3d_DatumAspect::Prs3d_DatumAspect()
+: myDrawFirstAndSecondAxis (Standard_True),
+  myDrawThirdAxis (Standard_True),
+  myToDrawLabels (Standard_True),
+  myFirstAxisLength (10.0),
+  mySecondAxisLength (10.0),
+  myThirdAxisLength (10.0)
+{
+  myFirstAxisAspect = new Prs3d_LineAspect (Quantity_NOC_PEACHPUFF,Aspect_TOL_SOLID, 1.0);
+  mySecondAxisAspect = new Prs3d_LineAspect (Quantity_NOC_PEACHPUFF,Aspect_TOL_SOLID, 1.0);
+  myThirdAxisAspect = new Prs3d_LineAspect (Quantity_NOC_PEACHPUFF,Aspect_TOL_SOLID, 1.0);
 }
 
 Handle(Prs3d_LineAspect) Prs3d_DatumAspect::FirstAxisAspect() const {
@@ -95,4 +93,22 @@ Quantity_Length Prs3d_DatumAspect::ThirdAxisLength () const {
 
   return myThirdAxisLength;
 
+}
+
+//=======================================================================
+//function : SetToDrawLabels
+//purpose  : 
+//=======================================================================
+void Prs3d_DatumAspect::SetToDrawLabels (const Standard_Boolean theToDraw)
+{
+  myToDrawLabels = theToDraw;
+}
+
+//=======================================================================
+//function : ToDrawLabels
+//purpose  : 
+//=======================================================================
+Standard_Boolean Prs3d_DatumAspect::ToDrawLabels() const
+{
+  return myToDrawLabels;
 }

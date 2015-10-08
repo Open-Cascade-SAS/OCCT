@@ -36,7 +36,6 @@ class Prs3d_DatumAspect : public Prs3d_BasicAspect
 
 public:
 
-  
   //! An empty framework to define the display of datums.
   Standard_EXPORT Prs3d_DatumAspect();
   
@@ -73,28 +72,25 @@ public:
   //! Returns the length of the displayed third axis.
   Standard_EXPORT Quantity_Length ThirdAxisLength() const;
 
+  //! Sets option to draw or not to draw text labels for axes
+  Standard_EXPORT void SetToDrawLabels (const Standard_Boolean theToDraw);
 
-
+  //! @return true if axes labels are drawn
+  Standard_EXPORT Standard_Boolean ToDrawLabels() const;
 
   DEFINE_STANDARD_RTTI(Prs3d_DatumAspect,Prs3d_BasicAspect)
 
-protected:
-
-
-
-
 private:
-
 
   Handle(Prs3d_LineAspect) myFirstAxisAspect;
   Handle(Prs3d_LineAspect) mySecondAxisAspect;
   Handle(Prs3d_LineAspect) myThirdAxisAspect;
   Standard_Boolean myDrawFirstAndSecondAxis;
   Standard_Boolean myDrawThirdAxis;
+  Standard_Boolean myToDrawLabels;
   Quantity_Length myFirstAxisLength;
   Quantity_Length mySecondAxisLength;
   Quantity_Length myThirdAxisLength;
-
 
 };
 

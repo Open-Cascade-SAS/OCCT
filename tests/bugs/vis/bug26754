@@ -1,0 +1,31 @@
+puts "================================================================"
+puts "CR26754"
+puts "Visualization - provide API to display AIS_Trihedron presentation without axes labels"
+puts "================================================================"
+puts ""
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+
+vinit
+vclear
+vaxo
+
+vtrihedron t -hidelabels
+vzoom 4
+
+vdump $anImage1
+
+set anX 204
+set anY 100
+
+vselect $anX $anY
+
+vdump $anImage2
+
+vselmode 2 1
+
+vselect $anX $anY
+
+vdump $anImage3 

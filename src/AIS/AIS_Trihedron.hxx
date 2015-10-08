@@ -168,9 +168,6 @@ public:
   //! Removes the non-default settings for width set in SetWidth.
   Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTI(AIS_Trihedron,AIS_InteractiveObject)
 
 protected:
@@ -189,6 +186,8 @@ private:
   
   Standard_EXPORT void LoadSubObjects();
 
+protected:
+
   Handle(Geom_Axis2Placement) myComponent;
   Handle(AIS_InteractiveObject) myShapes[7];
   Standard_Boolean myHasOwnSize;
@@ -196,8 +195,6 @@ private:
   Quantity_NameOfColor myOwnTextColor;
   Standard_Boolean myHasOwnArrowColor;
   Quantity_NameOfColor myOwnArrowColor;
-
-
 };
 
 
