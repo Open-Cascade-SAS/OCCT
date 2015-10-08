@@ -1,11 +1,8 @@
 Draft.cxx
 Draft.hxx
-Draft_DataMapIteratorOfDataMapOfEdgeEdgeInfo.hxx
-Draft_DataMapIteratorOfDataMapOfFaceFaceInfo.hxx
-Draft_DataMapIteratorOfDataMapOfVertexVertexInfo.hxx
-Draft_DataMapOfEdgeEdgeInfo.hxx
-Draft_DataMapOfFaceFaceInfo.hxx
-Draft_DataMapOfVertexVertexInfo.hxx
+Draft_IndexedDataMapOfEdgeEdgeInfo.hxx
+Draft_IndexedDataMapOfFaceFaceInfo.hxx
+Draft_IndexedDataMapOfVertexVertexInfo.hxx
 Draft_EdgeInfo.cxx
 Draft_EdgeInfo.hxx
 Draft_ErrorStatus.hxx

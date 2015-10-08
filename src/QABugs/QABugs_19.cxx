@@ -4485,6 +4485,97 @@ static Standard_Integer OCC24537(
   return 0;
 }
 
+
+#include <TopExp.hxx>
+#include <BRepOffsetAPI_DraftAngle.hxx>
+#include <vector>
+static TopoDS_Shape taper(const TopoDS_Shape &shape, const TopoDS_Face &face_a, const TopoDS_Face &face_b, Standard_Real angle)
+{
+  // Use maximum face-to-taper z-offset.
+  const gp_Pln neutral_plane(gp_Ax3(gp_Pnt(0.0, 0.0, 140.0), gp_Dir(0.0, 0.0, 1.0)));
+
+  // Draft angle needs to be in radians, and flipped to adhere to our own (arbitrary) draft
+  // angle definition.
+  const Standard_Real draft_angle = -(angle / 180.0) * M_PI;
+
+  // Add face to draft. The first argument indicates that all material added/removed during
+  // drafting is located below the neutral plane
+  BRepOffsetAPI_DraftAngle drafter(shape);
+  drafter.Add(face_a, gp_Dir(0.0, 0.0, -1.0), draft_angle, neutral_plane);
+  drafter.Add(face_b, gp_Dir(0.0, 0.0, -1.0), draft_angle, neutral_plane);
+  drafter.Build();
+
+  return drafter.Shape();
+}
+
+static void dumpShapeVertices(const TopoDS_Shape &shape, std::vector<Standard_Real>& coords)
+{
+  TopTools_IndexedMapOfShape shape_vertices;
+  TopExp::MapShapes(shape, TopAbs_VERTEX, shape_vertices);
+
+  for (Standard_Integer i = 1; i <= shape_vertices.Extent(); i++)
+  {
+    gp_Pnt p = BRep_Tool::Pnt(TopoDS::Vertex(shape_vertices(i)));
+    coords.push_back(p.X());
+    coords.push_back(p.Y());
+    coords.push_back(p.Z());
+  }
+}
+
+static void GetCoords(const Standard_CString& path_to_file, std::vector<Standard_Real>& coords)
+{
+  TopoDS_Shape shape;
+  BRep_Builder builder;
+  BRepTools::Read(shape, path_to_file, builder);
+  TopTools_IndexedMapOfShape shape_faces;
+  TopExp::MapShapes(shape, TopAbs_FACE, shape_faces);
+  TopoDS_Face face_a = TopoDS::Face(shape_faces(1));
+  TopoDS_Face face_b = TopoDS::Face(shape_faces(5));
+  dumpShapeVertices(taper(shape, face_a, face_b, 5.0), coords);
+}
+
+static Standard_Integer OCC26396 (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc < 2)
+  {
+    theDI << "Error: path to file is missing\n";
+    return 1;
+  }
+
+  const int maxInd = 50;
+
+  std::vector<Standard_Real> ref_coords;
+  ref_coords.reserve(100);
+  Standard_Boolean Stat = Standard_True;
+
+  GetCoords(theArgv[1], ref_coords);
+
+  std::vector<Standard_Real> coords;
+  coords.reserve(100);
+  for (int i = 1; i < maxInd; i++)
+  {
+    GetCoords(theArgv[1], coords);
+    if (coords.size() != ref_coords.size())
+    {
+      Stat = Standard_False;
+      break;
+    }
+    for (size_t j = 0; j < coords.size(); j++)
+      if (Abs(ref_coords[j] - coords[j]) > RealEpsilon())
+      {
+        Stat = Standard_False;
+        break;
+      }
+    coords.clear();
+  }
+  if (!Stat)
+    theDI << "Error: unstable results";
+  else
+    theDI << "test OK";
+
+  return 0;
+}
+
 //=======================================================================
 //function : OCC26750 
 //purpose  : 
@@ -4609,6 +4700,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    __FILE__, OCC26462, group);
 
   theCommands.Add ("OCC26313", "OCC26313 result shape", __FILE__, OCC26313, group);
+  theCommands.Add ("OCC26396", "OCC26396 shape_file_path", __FILE__, OCC26396, group);
   theCommands.Add ("OCC26525", "OCC26525 result edge face ", __FILE__, OCC26525, group);
 
   theCommands.Add ("OCC24537", "OCC24537 [file]", __FILE__, OCC24537, group);

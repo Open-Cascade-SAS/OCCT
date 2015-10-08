@@ -1,0 +1,8 @@
+puts "================"
+puts "OCC26396"
+puts "================"
+puts ""
+
+pload QAcommands
+
+OCC26396 [locate_data_file bug26396_shape.brep]

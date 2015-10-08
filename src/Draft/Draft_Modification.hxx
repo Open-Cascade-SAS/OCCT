@@ -20,9 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Draft_DataMapOfFaceFaceInfo.hxx>
-#include <Draft_DataMapOfEdgeEdgeInfo.hxx>
-#include <Draft_DataMapOfVertexVertexInfo.hxx>
+#include <Draft_IndexedDataMapOfFaceFaceInfo.hxx>
+#include <Draft_IndexedDataMapOfEdgeEdgeInfo.hxx>
+#include <Draft_IndexedDataMapOfVertexVertexInfo.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Draft_ErrorStatus.hxx>
@@ -184,9 +184,9 @@ private:
   
   Standard_EXPORT Handle(Geom_Surface) NewSurface (const Handle(Geom_Surface)& S, const TopAbs_Orientation OriS, const gp_Dir& Direction, const Standard_Real Angle, const gp_Pln& NeutralPlane);
 
-  Draft_DataMapOfFaceFaceInfo myFMap;
-  Draft_DataMapOfEdgeEdgeInfo myEMap;
-  Draft_DataMapOfVertexVertexInfo myVMap;
+  Draft_IndexedDataMapOfFaceFaceInfo myFMap;
+  Draft_IndexedDataMapOfEdgeEdgeInfo myEMap;
+  Draft_IndexedDataMapOfVertexVertexInfo myVMap;
   Standard_Boolean myComp;
   TopoDS_Shape myShape;
   TopoDS_Shape badShape;

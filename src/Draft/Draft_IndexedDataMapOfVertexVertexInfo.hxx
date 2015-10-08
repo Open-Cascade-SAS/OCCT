@@ -14,16 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef Draft_DataMapOfFaceFaceInfo_HeaderFile
-#define Draft_DataMapOfFaceFaceInfo_HeaderFile
+#ifndef Draft_IndexedDataMapOfVertexVertexInfo_HeaderFile
+#define Draft_IndexedDataMapOfVertexVertexInfo_HeaderFile
 
-#include <TopoDS_Face.hxx>
-#include <Draft_FaceInfo.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <Draft_VertexInfo.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Face,Draft_FaceInfo,TopTools_ShapeMapHasher> Draft_DataMapOfFaceFaceInfo;
-typedef NCollection_DataMap<TopoDS_Face,Draft_FaceInfo,TopTools_ShapeMapHasher>::Iterator Draft_DataMapIteratorOfDataMapOfFaceFaceInfo;
+typedef NCollection_IndexedDataMap<TopoDS_Vertex,Draft_VertexInfo,TopTools_ShapeMapHasher> Draft_IndexedDataMapOfVertexVertexInfo;
 
 
 #endif
