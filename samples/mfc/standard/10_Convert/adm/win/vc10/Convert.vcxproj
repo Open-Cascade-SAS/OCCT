@@ -92,7 +92,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)/inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;WNT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -116,7 +116,7 @@
       <AdditionalDependencies>FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc10\bin/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\win32\vc10\lib;$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win32\vc10\lib;$(CASROOT)/win32/vc10/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>.\win32\obj\$(TargetFileName).intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>../../../../win32\vc10\bin/Convert.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -137,7 +137,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)/inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;WNT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -161,7 +161,7 @@
       <AdditionalDependencies>FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc10\bin/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\lib;$(CASROOT)/win64/vc10/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>.\win64\obj\$(TargetFileName).intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>../../../../win64\vc10\bin/Convert.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -181,7 +181,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)/inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -205,7 +205,7 @@
       <AdditionalDependencies>FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc10\bind/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\win32\vc10\libd;$(CSF_OPT_LIB32D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win32\vc10\libd;$(CASROOT)/win32/vc10/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>.\win32\objd\$(TargetFileName).intermediate.manifest</ManifestFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>../../../../win32\vc10\bind/Convert.pdb</ProgramDatabaseFile>
@@ -225,7 +225,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)/inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN64;_WINDOWS;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -249,7 +249,7 @@
       <AdditionalDependencies>FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc10\bind/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\libd;$(CASROOT)/win64/vc10/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>.\win64\objd\$(TargetFileName).intermediate.manifest</ManifestFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>../../../../win64\vc10\bind/Convert.pdb</ProgramDatabaseFile>
