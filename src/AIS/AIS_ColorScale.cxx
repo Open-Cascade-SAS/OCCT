@@ -53,6 +53,7 @@ myColorType (Aspect_TOCSD_AUTO),
 myLabelType (Aspect_TOCSD_AUTO),
 myAtBorder (Standard_True),
 myReversed (Standard_False),
+myIsLogarithmic (Standard_False),
 myLabelPos (Aspect_TOCSP_RIGHT),
 myTitlePos (Aspect_TOCSP_CENTER),
 myXPos (0),
@@ -90,8 +91,7 @@ TCollection_ExtendedString AIS_ColorScale::GetLabel (const Standard_Integer theI
 
     return myLabels.Value (theIndex + 1);
   }
-
-  const Standard_Real           aVal    = GetNumber (theIndex);
+  Standard_Real aVal = IsLogarithmic() ? GetLogNumber(theIndex) : GetNumber (theIndex);
   const TCollection_AsciiString aFormat = Format();
   Standard_Character aBuf[1024];
   sprintf (aBuf, aFormat.ToCString(), aVal);
@@ -482,6 +482,21 @@ Standard_Real AIS_ColorScale::GetNumber (const Standard_Integer theIndex) const
   if (GetNumberOfIntervals() > 0)
     aNum = GetMin() + theIndex * ( Abs (GetMax() - GetMin()) / GetNumberOfIntervals() );
   return aNum;
+}
+
+//=======================================================================
+//function : GetLogNumber
+//purpose  :
+//=======================================================================
+Standard_Real AIS_ColorScale::GetLogNumber (const Standard_Integer theIndex) const
+{
+  if (GetNumberOfIntervals() > 0)
+  {
+    Standard_Real aMin = myMin > 0 ? myMin : 1.0;
+    Standard_Real aDivisor = std::pow (myMax/aMin, 1.0/myInterval);
+    return aMin*std::pow (aDivisor,theIndex);
+  }
+  return 0;
 }
 
 //=======================================================================

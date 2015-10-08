@@ -3448,6 +3448,11 @@ static int VColorScale (Draw_Interpretor& theDI,
     std::cout << "Error: no active view!\n";
     return 1;
   }
+  if (theArgNb <= 1)
+  {
+    std::cout << "Error: wrong syntax at command '" << theArgVec[0] << "'!\n";
+    return 1;
+  }
 
   Handle(AIS_ColorScale) aCS;
   // find object
@@ -3488,11 +3493,6 @@ static int VColorScale (Draw_Interpretor& theDI,
 
   ViewerTest_AutoUpdater anUpdateTool (aContext, aView);
 
-  if (theArgNb <= 1)
-  {
-    std::cout << "Error: wrong syntax at command '" << theArgVec[0] << "'!\n";
-    return 1;
-  }
   if (theArgNb <= 2)
   {
     theDI << "Color scale parameters for '"<< theArgVec[1] << "':\n"
@@ -3608,6 +3608,22 @@ static int VColorScale (Draw_Interpretor& theDI,
         std::cout << "Error: unknown position '" << aTextPosArg << "'!\n";
         return 1;
       }
+    }
+    else if (aFlag == "-logarithmic"
+          || aFlag == "-log")
+    {
+      if (anArgIter + 1 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+      Standard_Boolean IsLog;
+      if (!ViewerTest::ParseOnOff(theArgVec[++anArgIter], IsLog))
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+      aCS->SetLogarithmic (IsLog);
     }
     else if (aFlag == "-xy")
     {

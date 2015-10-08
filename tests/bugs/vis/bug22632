@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC25632"
+puts "Display logarithmic colorscale."
+puts "============"
+puts ""
+
+vinit View1
+vclear
+vaxo
+
+# create non-logarithmic color scale with range 0-1000 and 3 intervals
+vcolorscale cs -range 0 1000 3
+vdump ${imagedir}/${casename}_1.png
+
+# create logarithmic color scale with range 1-1000 and 3 intervals
+vcolorscale cs -range 0 1000 3 -log 1
+vdump ${imagedir}/${casename}_2.png
+
+# create logarithmic color scales with different ranges and intervals
+vcolorscale cs -range 5 200 4
+vdump ${imagedir}/${casename}_3.png
+
+vcolorscale cs -range 1 1568 8
+vdump ${imagedir}/${casename}_4.png
+
+vcolorscale cs -range 3 500 5
+vdump ${imagedir}/${casename}_5.png
+
+vcolorscale cs -range 1 1000 6
+vdump ${imagedir}/${casename}_6.png
+
