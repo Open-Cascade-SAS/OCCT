@@ -126,7 +126,7 @@ public:
   
     const gp_Dir& TangentAtLine (Standard_Integer& Index) const;
   
-  Standard_EXPORT IntWalk_StatusDeflection TestDeflection();
+  Standard_EXPORT   IntWalk_StatusDeflection TestDeflection (const IntImp_ConstIsoparametric ChoixIso) ;
   
   Standard_EXPORT Standard_Boolean TestArret (const Standard_Boolean DejaReparti, TColStd_Array1OfReal& Param, IntImp_ConstIsoparametric& ChoixIso);
   

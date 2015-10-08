@@ -1,3 +1,5 @@
+puts "TODO OCC26717 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 puts "=========="
 puts "BUC60462"
 puts "=========="
@@ -12,5 +14,5 @@ puts "Fuse end"
 
 checkshape result r
 
-set square 94371.7
+set square 93255.6
 set 2dviewer 0

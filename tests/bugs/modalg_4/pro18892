@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty : Result is BAD. Distance is more than MaxTolerance"
-puts "TODO OCC12345 ALL: Error : The length of result shape is"
-
 puts "=========="
 puts "PRO18892"
 puts "=========="
@@ -32,4 +29,4 @@ if { [expr $d > $MaxEdgeTolerance] || [expr $d > $MaxVertexTolerance] } {
     puts "Faulty : Result is BAD. Distance is more than MaxTolerance"
 }
 
-set length 0
+set length 6.46299

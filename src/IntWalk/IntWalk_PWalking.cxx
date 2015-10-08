@@ -1018,7 +1018,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
             LevelOfEmptyInmyIntersectionOn2S=0;
             if(LevelOfIterWithoutAppend < 10)
             {
-              Status = TestDeflection();
+              Status = TestDeflection(ChoixIso);
             }			
             else
             {
@@ -1758,7 +1758,7 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
         return bOutOfTangentZone;
       }
 
-      Status = TestDeflection();
+      Status = TestDeflection(ChoixIso);
 
       if(Status == IntWalk_OK) {
 
@@ -2782,7 +2782,7 @@ namespace {
   static const Standard_Real d = 7.0;
 }
 
-IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
+IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIsoparametric choixIso)
 
 // test if vector is observed by calculating an increase of vector 
 //     or the previous point and its tangent, the new calculated point and its  
@@ -2805,6 +2805,9 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
   IntWalk_StatusDeflection Status = IntWalk_OK;
   Standard_Real FlecheCourante ,Ratio;
 
+  // Caro1 and Caro2
+  const Handle(Adaptor3d_HSurface)& Caro1 = myIntersectionOn2S.Function().AuxillarSurface1();
+  const Handle(Adaptor3d_HSurface)& Caro2 = myIntersectionOn2S.Function().AuxillarSurface2();
 
   const IntSurf_PntOn2S& CurrentPoint = myIntersectionOn2S.Point(); 
   //==================================================================================
@@ -2858,6 +2861,56 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
     pasuv[1] = Max(5.*ResoV1,Min(1.5*pasuv[1],pasInit[1]));
     pasuv[2] = Max(5.*ResoU2,Min(1.5*pasuv[2],pasInit[2]));
     pasuv[3] = Max(5.*ResoV2,Min(1.5*pasuv[3],pasInit[3]));
+    //Compute local resolution: for OCC26717
+    if (Abs(pasuv[choixIso] - pasInit[choixIso]) <= Precision::Confusion())
+    {
+      Standard_Real CurU, CurV;
+      if (choixIso == IntImp_UIsoparametricOnCaro1 ||
+          choixIso == IntImp_VIsoparametricOnCaro1)
+        previousPoint.ParametersOnS1(CurU, CurV);
+      else
+        previousPoint.ParametersOnS2(CurU, CurV);
+      gp_Pnt CurPnt = (choixIso == IntImp_UIsoparametricOnCaro1 ||
+                       choixIso == IntImp_VIsoparametricOnCaro1)?
+        Adaptor3d_HSurfaceTool::Value(Caro1, CurU, CurV) :
+        Adaptor3d_HSurfaceTool::Value(Caro2, CurU, CurV);
+      gp_Pnt OffsetPnt;
+      switch(choixIso)
+      {
+      case IntImp_UIsoparametricOnCaro1:
+        OffsetPnt =
+          Adaptor3d_HSurfaceTool::Value(Caro1,
+                                        CurU + sensCheminement*pasuv[0],
+                                        CurV);
+        break;
+      case IntImp_VIsoparametricOnCaro1:
+        OffsetPnt =
+          Adaptor3d_HSurfaceTool::Value(Caro1,
+                                        CurU,
+                                        CurV + sensCheminement*pasuv[1]);
+        break;
+      case IntImp_UIsoparametricOnCaro2:
+        OffsetPnt =
+          Adaptor3d_HSurfaceTool::Value(Caro2,
+                                        CurU + sensCheminement*pasuv[2],
+                                        CurV);
+        break;
+      case IntImp_VIsoparametricOnCaro2:
+        OffsetPnt =
+          Adaptor3d_HSurfaceTool::Value(Caro2,
+                                        CurU,
+                                        CurV + sensCheminement*pasuv[3]);
+        break;
+      default:break;
+      }
+      Standard_Real RefDist = CurPnt.Distance(OffsetPnt);
+      Standard_Real LocalResol = 0.;
+      if (RefDist > gp::Resolution())
+        LocalResol = pasuv[choixIso] * tolconf / RefDist;
+      if (pasuv[choixIso] <= LocalResol)
+        pasuv[choixIso] = pasInit[choixIso] = 2*LocalResol;
+    }
+    ////////////////////////////////////////
     Status = IntWalk_PointConfondu;
   }
 
