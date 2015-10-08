@@ -55,7 +55,6 @@ Graphic3d_CStructure.cxx
 Graphic3d_CStructure.hxx
 Graphic3d_CStructurePtr.hxx
 Graphic3d_CTexture.hxx
-Graphic3d_CUserDraw.hxx
 Graphic3d_CView.cxx
 Graphic3d_CView.hxx
 Graphic3d_CycleError.hxx

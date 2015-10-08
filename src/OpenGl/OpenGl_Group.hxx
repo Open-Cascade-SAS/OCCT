@@ -87,11 +87,6 @@ public:
                                      const Graphic3d_VerticalTextAlignment   theVTA,
                                      const Standard_Boolean                  theToEvalMinMax) Standard_OVERRIDE;
 
-  //! Add UserDraw element using obsolete API
-  Standard_EXPORT virtual void UserDraw (const Standard_Address theObject,
-                                         const Standard_Boolean theToEvalMinMax,
-                                         const Standard_Boolean theContainsFacet);
-
   //! Add flipping element
   Standard_EXPORT virtual void SetFlippingOptions (const Standard_Boolean theIsEnabled,
                                                    const gp_Ax2&          theRefPlane);

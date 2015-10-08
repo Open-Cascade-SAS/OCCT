@@ -25,7 +25,6 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Graphic3d_CUserDraw.hxx>
 #include <Graphic3d_GroupDefinitionError.hxx>
 
 
@@ -269,36 +268,6 @@ void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
                          theVTA,
                          theToEvalMinMax);
 
-}
-
-// =======================================================================
-// function : UserDraw
-// purpose  :
-// =======================================================================
-void OpenGl_Group::UserDraw (const Standard_Address theObject,
-                             const Standard_Boolean theToEvalMinMax,
-                             const Standard_Boolean theContainsFacet)
-{
-  if (IsDeleted())
-  {
-    return;
-  }
-
-  OpenGl_Structure* aStruct = GlStruct();
-  if (aStruct->GlDriver()->UserDrawCallback() == NULL)
-  {
-    return;
-  }
-
-  Graphic3d_CUserDraw aUserDraw;
-  aUserDraw.Data   = theObject;
-  aUserDraw.Bounds = theToEvalMinMax ? &myBounds : NULL;
-  OpenGl_Element* aUserDrawElem = aStruct->GlDriver()->UserDrawCallback()(&aUserDraw);
-  if (aUserDrawElem != NULL)
-  {
-    AddElement (aUserDrawElem);
-  }
-  Graphic3d_Group::UserDraw (theObject, theToEvalMinMax, theContainsFacet);
 }
 
 // =======================================================================

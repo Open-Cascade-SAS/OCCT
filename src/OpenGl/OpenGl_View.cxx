@@ -15,7 +15,6 @@
 
 #include <OpenGl_View.hxx>
 
-#include <Aspect_GraphicCallbackProc.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_Window.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
@@ -107,9 +106,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myMainSceneFbos[1]      = new OpenGl_FrameBuffer();
   myImmediateSceneFbos[0] = new OpenGl_FrameBuffer();
   myImmediateSceneFbos[1] = new OpenGl_FrameBuffer();
-
-  myDisplayCallback.Func = NULL;
-  myDisplayCallback.Data = NULL;
 }
 
 // =======================================================================
@@ -234,17 +230,12 @@ Standard_Boolean OpenGl_View::SetImmediateModeDrawToFront (const Standard_Boolea
 // purpose  :
 // =======================================================================
 void OpenGl_View::SetWindow (const Handle(Aspect_Window)& theWindow,
-                             const Aspect_RenderingContext theContext,
-                             const Aspect_GraphicCallbackProc& theDisplayCB,
-                             const Standard_Address theClientData)
+                             const Aspect_RenderingContext theContext)
 {
   myWindow = myDriver->CreateRenderWindow (theWindow, theContext);
   Standard_ASSERT_RAISE (!myWindow.IsNull(),
                          "OpenGl_View::SetWindow, "
                          "Failed to create OpenGl window.");
-
-  myDisplayCallback.Func = theDisplayCB;
-  myDisplayCallback.Data = theClientData;
 
   myWorkspace = new OpenGl_Workspace (this, myWindow);
   myWorldViewProjState.Reset();

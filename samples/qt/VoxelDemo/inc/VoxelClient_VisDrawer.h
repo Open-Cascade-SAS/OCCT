@@ -19,7 +19,31 @@
 #include "Voxel_VisData.h"
 #include <Graphic3d_BndBox4f.hxx>
 
-#include <OpenGl_GraphicDriver.hxx>
+#include <Voxel_Prs.hxx>
+
+//! Voxel presentation using UserDraw.
+class VoxelClient_PrsGl : public Voxel_Prs
+{
+
+public:
+
+  //! Empty constructor.
+  VoxelClient_PrsGl() {}
+
+protected:
+
+  //! Override compute to create UserDraw element.
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)&           thePrs,
+                                        const Standard_Integer                      theMode) Standard_OVERRIDE;
+
+public:
+
+  DEFINE_STANDARD_RTTI(VoxelClient_PrsGl, Voxel_Prs)
+
+};
+
+DEFINE_STANDARD_HANDLE(VoxelClient_PrsGl, Voxel_Prs)
 
 class VoxelClient_VisDrawer
 {
@@ -28,8 +52,6 @@ public:
   class VisElement;
 
 public:
-
-  Standard_EXPORT static void Init (Handle(OpenGl_GraphicDriver)& theDriver);
 
 	Standard_EXPORT VoxelClient_VisDrawer(Voxel_VisData* theData);
 	Standard_EXPORT virtual ~VoxelClient_VisDrawer();

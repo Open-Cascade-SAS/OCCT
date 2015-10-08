@@ -123,16 +123,10 @@ public:
   Standard_EXPORT Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer) Standard_OVERRIDE;
 
   //! Creates and maps rendering window to the view.
-  //! @param theView [in] the view to associate with the window.
   //! @param theWindow [in] the window.
   //! @param theContext [in] the rendering context. If NULL the context will be created internally.
-  //! @param theDisplayCB [in] the display callback function. If is not a NULL value, then the callback will be
-  //! invoked at the end of the OCC graphic traversal and just before the swap of buffers.
-  //! @param theClientData [in] the client data for the callback.
-  Standard_EXPORT virtual void SetWindow (const Handle(Aspect_Window)& theWindow,
-                                          const Aspect_RenderingContext theContext,
-                                          const Aspect_GraphicCallbackProc& theDisplayCB,
-                                          const Standard_Address theClientData) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetWindow (const Handle(Aspect_Window)&  theWindow,
+                                          const Aspect_RenderingContext theContext) Standard_OVERRIDE;
 
   //! Returns window associated with the view.
   virtual Handle(Aspect_Window) Window() const Standard_OVERRIDE { return myWindow->PlatformWindow(); }
@@ -442,8 +436,6 @@ public:
 
   void SetBackgroundGradientType (const Aspect_GradientFillMethod AType);
 
-  void DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
-
   //! Returns list of OpenGL Z-layers.
   const OpenGl_LayerList& LayerList() const { return myZLayers; }
 
@@ -471,10 +463,11 @@ protected: //! @name Internal methods for managing GL resources
   //! Initializes OpenGl resource for environment texture.
   void initTextureEnv (const Handle(OpenGl_Context)& theContext);
 
-protected: //! @name Internal redrawing sub-routines
+protected: //! @name low-level redrawing sub-routines
 
   //! Redraws view for the given monographic camera projection, or left/right eye.
-  void redraw (const Graphic3d_Camera::Projection theProjection, OpenGl_FrameBuffer* theReadDrawFbo);
+  Standard_EXPORT virtual void redraw (const Graphic3d_Camera::Projection theProjection,
+                                       OpenGl_FrameBuffer*                theReadDrawFbo);
 
   //! Redraws view for the given monographic camera projection, or left/right eye.
   //!
@@ -488,30 +481,18 @@ protected: //! @name Internal redrawing sub-routines
   //!
   //! @return false if immediate structures has been rendered directly into FrontBuffer
   //! and Buffer Swap should not be called.
-  bool redrawImmediate (const Graphic3d_Camera::Projection theProjection,
-                        OpenGl_FrameBuffer* theReadFbo,
-                        OpenGl_FrameBuffer* theDrawFbo,
-                        const Standard_Boolean theIsPartialUpdate = Standard_False);
-
-  //! Copy content of Back buffer to the Front buffer.
-  void copyBackToFront();
-
-  //! Initialize blit quad.
-  OpenGl_VertexBuffer* initBlitQuad (const Standard_Boolean theToFlip);
+  Standard_EXPORT virtual bool redrawImmediate (const Graphic3d_Camera::Projection theProjection,
+                                                OpenGl_FrameBuffer* theReadFbo,
+                                                OpenGl_FrameBuffer* theDrawFbo,
+                                                const Standard_Boolean theIsPartialUpdate = Standard_False);
 
   //! Blit image from/to specified buffers.
-  bool blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
-                    OpenGl_FrameBuffer*    theDrawFbo,
-                    const Standard_Boolean theToFlip = Standard_False);
+  Standard_EXPORT bool blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
+                                    OpenGl_FrameBuffer*    theDrawFbo,
+                                    const Standard_Boolean theToFlip = Standard_False);
 
   //! Setup default FBO.
-  void bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo = NULL);
-
-  //! Blend together views pair into stereo image.
-  void drawStereoPair();
-
-  //! Invokes display callback.
-  void displayCallback (const Standard_Integer theReason);
+  Standard_EXPORT void bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo = NULL);
 
 protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
 
@@ -519,21 +500,24 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   //! @param theProjection [in] the projection that should be used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
-  void render (Graphic3d_Camera::Projection theProjection,
-               OpenGl_FrameBuffer*          theReadDrawFbo,
-               const Standard_Boolean       theToDrawImmediate);
+  Standard_EXPORT virtual void render (Graphic3d_Camera::Projection theProjection,
+                                       OpenGl_FrameBuffer*          theReadDrawFbo,
+                                       const Standard_Boolean       theToDrawImmediate);
 
   //! Renders the graphical scene.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
-  void renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
-                    const Standard_Boolean theToDrawImmediate);
+  Standard_EXPORT virtual void renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
+                                            const Standard_Boolean theToDrawImmediate);
+
+  //! Draw background (gradient / image)
+  Standard_EXPORT virtual void drawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
 
   //! Render set of structures presented in the view.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
-  void renderStructs (OpenGl_FrameBuffer*    theReadDrawFbo,
-                      const Standard_Boolean theToDrawImmediate);
+  Standard_EXPORT virtual void renderStructs (OpenGl_FrameBuffer*    theReadDrawFbo,
+                                              const Standard_Boolean theToDrawImmediate);
 
   //! Renders trihedron.
   void renderTrihedron (const Handle(OpenGl_Workspace) &theWorkspace);
@@ -554,6 +538,17 @@ private:
   //! Changes the priority of a structure within its Z layer in the specified view.
   Standard_EXPORT virtual void changePriority (const Handle(Graphic3d_CStructure)& theCStructure,
                                                const Standard_Integer theNewPriority) Standard_OVERRIDE;
+
+private:
+
+  //! Copy content of Back buffer to the Front buffer.
+  void copyBackToFront();
+
+  //! Initialize blit quad.
+  OpenGl_VertexBuffer* initBlitQuad (const Standard_Boolean theToFlip);
+
+  //! Blend together views pair into stereo image.
+  void drawStereoPair();
 
 protected:
 
@@ -602,12 +597,6 @@ protected:
   OpenGl_GraduatedTrihedron myGraduatedTrihedron;
 
   Handle(OpenGl_Texture) myTextureEnv;
-
-  struct
-  {
-    Aspect_GraphicCallbackProc Func;
-    Standard_Address           Data;
-  } myDisplayCallback;
 
 protected: //! @name Rendering properties
 

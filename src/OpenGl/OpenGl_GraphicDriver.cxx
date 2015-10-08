@@ -66,8 +66,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
 #endif
   myCaps           (new OpenGl_Caps()),
   myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
-  myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator()),
-  myUserDrawCallback (NULL)
+  myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator())
 {
 #if !defined(_WIN32) && !defined(__ANDROID__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (myDisplayConnection.IsNull())
@@ -386,15 +385,6 @@ Standard_Integer OpenGl_GraphicDriver::InquirePlaneLimit()
   // NOTE the 2 first planes are reserved for ZClipping
   const Handle(OpenGl_Context)& aCtx = GetSharedContext();
   return aCtx.IsNull() ? 0 : Max (aCtx->MaxClipPlanes() - 2, 0);
-}
-
-// =======================================================================
-// function : UserDrawCallback
-// purpose  :
-// =======================================================================
-OpenGl_GraphicDriver::OpenGl_UserDrawCallback_t& OpenGl_GraphicDriver::UserDrawCallback()
-{
-  return myUserDrawCallback;
 }
 
 // =======================================================================

@@ -202,9 +202,9 @@ void Viewer::setDegenerateMode(const bool on)
     AIS_ListIteratorOfListOfInteractive itri(displayed);
     for (; itri.More(); itri.Next())
     {
-        if (itri.Value()->DynamicType() == STANDARD_TYPE(Voxel_Prs))
+        Handle(Voxel_Prs) prs = Handle(Voxel_Prs)::DownCast(itri.Value());
+        if (!prs.IsNull())
         {
-            Handle(Voxel_Prs) prs = Handle(Voxel_Prs)::DownCast(itri.Value());
             prs->SetDegenerateMode(on);
             myView->Redraw();
             break;

@@ -33,7 +33,6 @@
 #include <Graphic3d_TextPath.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
-#include <Graphic3d_CUserDraw.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_ExportFormat.hxx>
@@ -194,12 +193,6 @@ public:
   Standard_EXPORT Standard_Boolean MemoryInfo (Standard_Size&           theFreeBytes,
                                                TCollection_AsciiString& theInfo) const;
 
-  //! UserDraw function prototype
-  typedef OpenGl_Element* (*OpenGl_UserDrawCallback_t )(const CALL_DEF_USERDRAW* );
-
-  //! Method to setup UserDraw callback
-  Standard_EXPORT OpenGl_UserDrawCallback_t& UserDrawCallback();
-
 public:
 
   //! Method to retrieve valid GL context.
@@ -228,7 +221,6 @@ protected:
   Handle(OpenGl_Caps)                                             myCaps;
   NCollection_Map<Handle(OpenGl_View)>                            myMapOfView;
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
-  OpenGl_UserDrawCallback_t                                       myUserDrawCallback;
 
 public:
 

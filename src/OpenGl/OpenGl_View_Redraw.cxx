@@ -149,10 +149,10 @@ static void bindLight (const OpenGl_Light&             theLight,
 #endif
 
 //=======================================================================
-//function : DrawBackground
+//function : drawBackground
 //purpose  :
 //=======================================================================
-void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
+void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
@@ -804,7 +804,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // Render background
   if (!theToDrawImmediate)
   {
-    DrawBackground (myWorkspace);
+    drawBackground (myWorkspace);
   }
 
 #if !defined(GL_ES_VERSION_2_0)
@@ -924,7 +924,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // Resetting GL parameters according to the default aspects
   // in order to synchronize GL state with the graphic driver state
   // before drawing auxiliary stuff (trihedrons, overlayer)
-  // and invoking optional callbacks
   myWorkspace->ResetAppliedAspect();
 
   aContext->ChangeClipping().RemoveAll();
@@ -957,12 +956,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
         glDisable (GL_CULL_FACE);
     }
   }
-
-  // ==============================================================
-  //      Step 5: Invoke callback after redraw
-  // ==============================================================
-
-  displayCallback (0);
 
   // ==============================================================
   //      Step 6: Keep shader manager informed about last View
@@ -1525,6 +1518,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
       aVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
       theReadFbo->DepthStencilTexture()->Unbind (aCtx, GL_TEXTURE0 + 1);
       theReadFbo->ColorTexture()       ->Unbind (aCtx, GL_TEXTURE0 + 0);
+      aCtx->BindProgram (NULL);
     }
     else
     {
@@ -1758,24 +1752,4 @@ void OpenGl_View::copyBackToFront()
   aCtx->SetReadBuffer (aCtx->DrawBuffer());
 #endif
   myIsImmediateDrawn = Standard_False;
-}
-
-// =======================================================================
-// function : displayCallback
-// purpose  :
-// =======================================================================
-void OpenGl_View::displayCallback (const Standard_Integer theReason)
-{
-  if (myDisplayCallback.Func == NULL)
-  {
-    return;
-  }
-
-  Aspect_GraphicCallbackStruct aCallData;
-  aCallData.reason    = theReason;
-  aCallData.glContext = myWorkspace->GetGlContext();
-  aCallData.wsID      = -1;
-  aCallData.viewID    = myId;
-  aCallData.IsCoreProfile = (myWorkspace->GetGlContext()->core11 == NULL);
-  myDisplayCallback.Func (myWindow->PlatformWindow()->NativeHandle(), myDisplayCallback.Data, &aCallData);
 }

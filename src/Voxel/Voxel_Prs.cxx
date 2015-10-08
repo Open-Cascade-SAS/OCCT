@@ -154,7 +154,8 @@ void Voxel_Prs::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresent
     }
   }
 
-  G->UserDraw(myVisData);
+  ///Handle(OpenGl_Group) aGroup = Handle(OpenGl_Group)::DownCast (G);
+  ///aGroup->AddElement (myVisData);
 }
 
 void Voxel_Prs::ComputeSelection(const Handle(SelectMgr_Selection)& /*theSelection*/,

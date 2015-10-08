@@ -14,7 +14,6 @@
 #ifndef _Graphic3d_CView_HeaderFile
 #define _Graphic3d_CView_HeaderFile
 
-#include <Aspect_GraphicCallbackProc.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_PrintAlgo.hxx>
 #include <Aspect_RenderingContext.hxx>
@@ -252,16 +251,10 @@ public:
   virtual Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer) = 0;
 
   //! Creates and maps rendering window to the view.
-  //! @param theView [in] the view to associate with the window.
   //! @param theWindow [in] the window.
   //! @param theContext [in] the rendering context. If NULL the context will be created internally.
-  //! @param theDisplayCB [in] the display callback function. If is not a NULL value, then the callback will be
-  //! invoked at the end of the OCC graphic traversal and just before the swap of buffers.
-  //! @param theClientData [in] the client data for the callback.
   virtual void SetWindow (const Handle(Aspect_Window)& theWindow,
-                          const Aspect_RenderingContext theContext = NULL,
-                          const Aspect_GraphicCallbackProc& theDisplayCB = NULL,
-                          const Standard_Address theClientData = NULL) = 0;
+                          const Aspect_RenderingContext theContext = NULL) = 0;
 
   //! Returns the window associated to the view.
   virtual Handle(Aspect_Window) Window() const = 0;

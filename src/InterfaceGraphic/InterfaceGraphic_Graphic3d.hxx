@@ -84,13 +84,4 @@ typedef struct
   CALL_DEF_POINT   Point;
 } CALL_DEF_TRANSFORM_PERSISTENCE;
 
-/* USERDRAW DATA */
-
-typedef struct {
-
-  void*               Data;
-  Graphic3d_BndBox4f* Bounds;
-
-} CALL_DEF_USERDRAW;
-
 #endif /* InterfaceGraphic_Graphic3dHeader */

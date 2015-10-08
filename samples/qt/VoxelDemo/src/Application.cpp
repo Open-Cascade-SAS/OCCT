@@ -322,8 +322,6 @@ Application::Application()
     myDisplayedZMin = -DBL_MAX;
     myDisplayedZMax =  DBL_MAX;
 
-	VoxelClient_VisDrawer::Init(myViewer->getGraphicDriver());
-
     resize( 450, 600 );
 
     myViewer->getIC()->SetAutoActivateSelection (Standard_False);
@@ -1858,7 +1856,7 @@ void Application::initPrs()
 {
 	if (myVoxels.IsNull())
     {
-		myVoxels = new Voxel_Prs;
+		myVoxels = new VoxelClient_PrsGl();
         myVoxels->SetDisplayMode(Voxel_VDM_POINTS);
         myVoxels->SetColor(Quantity_NOC_WHITE);
         myVoxels->SetPointSize(1.0);

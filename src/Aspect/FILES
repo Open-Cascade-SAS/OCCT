@@ -26,7 +26,6 @@ Aspect_GenId.hxx
 Aspect_GradientBackground.cxx
 Aspect_GradientBackground.hxx
 Aspect_GradientFillMethod.hxx
-Aspect_GraphicCallbackProc.hxx
 Aspect_GraphicDeviceDefinitionError.hxx
 Aspect_Grid.cxx
 Aspect_Grid.hxx

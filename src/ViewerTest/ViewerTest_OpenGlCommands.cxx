@@ -81,17 +81,9 @@ public:
     Handle(VUserDrawObj) myIObj;
 
   public:
-    Element (const Handle(VUserDrawObj)& theIObj,
-             Graphic3d_BndBox4f* theBounds)
-    : myIObj( theIObj )
-    {
-      if (!myIObj.IsNull())
-        myIObj->GetBounds(theBounds);
-    }
+    Element (const Handle(VUserDrawObj)& theIObj) : myIObj (theIObj) {}
 
-    virtual ~Element ()
-    {
-    }
+    virtual ~Element() {}
 
     virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const
     {
@@ -119,21 +111,28 @@ private:
 
     // Called by VUserDrawElement
     void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
-    void GetBounds(Graphic3d_BndBox4f* theBounds);
 
+private:
     GLfloat myCoords[6];
-
     friend class Element;
 };
 
-void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
-                           const Handle(Prs3d_Presentation)& thePresentation,
+void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                           const Handle(Prs3d_Presentation)& thePrs,
                            const Standard_Integer /*theMode*/)
 {
-  thePresentation->Clear();
+  thePrs->Clear();
 
-  Handle(Graphic3d_Group) aGrp = Prs3d_Root::CurrentGroup(thePresentation);
-  aGrp->UserDraw(this, Standard_True, Standard_True);
+  Graphic3d_Vec4 aBndMin (myCoords[0], myCoords[1], myCoords[2], 1.0f);
+  Graphic3d_Vec4 aBndMax (myCoords[3], myCoords[4], myCoords[5], 1.0f);
+  Handle(OpenGl_Group) aGroup = Handle(OpenGl_Group)::DownCast (thePrs->NewGroup());
+  aGroup->SetMinMaxValues (aBndMin.x(), aBndMin.y(), aBndMin.z(),
+                           aBndMax.x(), aBndMax.y(), aBndMax.z());
+  VUserDrawObj::Element* anElem = new VUserDrawObj::Element (this);
+  aGroup->AddElement(anElem);
+
+  // invalidate bounding box of the scene
+  thePrsMgr->StructureManager()->Update (thePrsMgr->StructureManager()->UpdateMode());
 }
 
 void VUserDrawObj::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
@@ -150,26 +149,12 @@ void VUserDrawObj::ComputeSelection (const Handle(SelectMgr_Selection)& theSelec
   theSelection->Add(aSensitive);
 }
 
-void VUserDrawObj::GetBounds(Graphic3d_BndBox4f* theBounds)
-{
-  if (theBounds)
-  {
-    Graphic3d_Vec4 aMinPt (myCoords[0], myCoords[1], myCoords[2], 1.0f);
-    Graphic3d_Vec4 aMaxPt (myCoords[3], myCoords[4], myCoords[5], 1.0f);
-    if (!theBounds->IsValid())
-    {
-      theBounds->Combine (Graphic3d_BndBox4f (aMinPt, aMaxPt));
-    }
-    else
-    {
-      theBounds->CornerMin() = aMinPt;
-      theBounds->CornerMax() = aMaxPt;
-    }
-  }
-}
-
 void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+  // this sample does not use GLSL programs - make sure it is disabled
+  Handle(OpenGl_Context) aCtx = theWorkspace->GetGlContext();
+  aCtx->BindProgram (NULL);
+
   // To test linking against OpenGl_Workspace and all aspect classes
   const OpenGl_AspectLine* aLA = theWorkspace->AspectLine(0);
   const OpenGl_AspectMarker* aMA = theWorkspace->AspectMarker(0);
@@ -178,9 +163,6 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   aTA->FontName();
   TEL_COLOUR aColor = theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT ?
     *(theWorkspace->HighlightColor) : aLA->Color();
-
-  // To test OpenGl_Window
-  //Handle(OpenGl_Context) aCtx = theWorkspace->GetGlContext();
 
   // Finally draw something to make sure UserDraw really works
   glPushAttrib(GL_ENABLE_BIT);
@@ -196,17 +178,6 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 }
 
 } // end of anonymous namespace
-
-OpenGl_Element* VUserDrawCallback(const CALL_DEF_USERDRAW * theUserDraw)
-{
-  Handle(VUserDrawObj) anIObj = (VUserDrawObj*)theUserDraw->Data;
-  if (anIObj.IsNull())
-  {
-    std::cout << "VUserDrawCallback error: null object passed, the custom scene element will not be rendered" << std::endl;
-  }
-
-  return new VUserDrawObj::Element(anIObj, theUserDraw->Bounds);
-}
 
 static Standard_Integer VUserDraw (Draw_Interpretor& di,
                                     Standard_Integer argc,
@@ -234,9 +205,6 @@ static Standard_Integer VUserDraw (Draw_Interpretor& di,
 
   TCollection_AsciiString aName (argv[1]);
   VDisplayAISObject(aName, Handle(AIS_InteractiveObject)());
-
-  // register the custom element factory function
-  aDriver->UserDrawCallback() = VUserDrawCallback;
 
   Handle(VUserDrawObj) anIObj = new VUserDrawObj();
   VDisplayAISObject(aName, anIObj);

@@ -127,7 +127,7 @@ protected:
 
 
 
-private:
+protected:
 
   
   Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection, const Standard_Integer theMode);

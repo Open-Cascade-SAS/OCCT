@@ -21,7 +21,6 @@
 #include <Aspect_FillMethod.hxx>
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_GradientFillMethod.hxx>
-#include <Aspect_GraphicCallbackProc.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_PrintAlgo.hxx>
 #include <Aspect_RenderingContext.hxx>
@@ -135,18 +134,10 @@ public:
   //! If <aContext> is not NULL the graphic context is used
   //! to draw something in this view.
   //! Otherwise an internal graphic context is created.
-  //! If <aDisplayCB> is not NULL then a user display CB is
-  //! call at the end of the OCC graphic traversal and just
-  //! before the swap of buffers. The <aClientData> is pass
-  //! to this call back.
-  //! Warning! raises MultiplyDefined from Standard
-  //! if the view is already activated in a window.
   //! Warning: The view is centered and resized to preserve
   //! the height/width ratio of the window.
   Standard_EXPORT void SetWindow (const Handle(Aspect_Window)& theWindow,
-                                  const Aspect_RenderingContext theContext = NULL,
-                                  const Aspect_GraphicCallbackProc& theDisplayCB = NULL,
-                                  const Standard_Address theClientData = NULL);
+                                  const Aspect_RenderingContext theContext = NULL);
 
   Standard_EXPORT void SetMagnify (const Handle(Aspect_Window)& theWindow,
                                    const Handle(V3d_View)& thePreviousView,

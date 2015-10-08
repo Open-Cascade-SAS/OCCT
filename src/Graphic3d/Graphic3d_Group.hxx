@@ -248,9 +248,6 @@ public:
   //! Creates a primitive array with single marker using AddPrimitiveArray().
   Standard_EXPORT void Marker (const Graphic3d_Vertex& thePoint, const Standard_Boolean theToEvalMinMax = Standard_True);
 
-  //! Creates a UserDraw primitive using obsolete API.
-  Standard_EXPORT virtual void UserDraw (const Standard_Address theObject, const Standard_Boolean theToEvalMinMax = Standard_True, const Standard_Boolean theContainsFacet = Standard_False);
-
   //! sets the stencil test to theIsEnabled state;
   Standard_EXPORT virtual void SetStencilTestOptions (const Standard_Boolean theIsEnabled) = 0;
 

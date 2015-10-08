@@ -245,10 +245,8 @@ void V3d_View::SetMagnify (const Handle(Aspect_Window)& theWindow,
 //function : SetWindow
 //purpose  :
 //=============================================================================
-void V3d_View::SetWindow (const Handle(Aspect_Window)&      theWindow,
-                          const Aspect_RenderingContext     theContext,
-                          const Aspect_GraphicCallbackProc& theDisplayCB,
-                          const Standard_Address            theClientData)
+void V3d_View::SetWindow (const Handle(Aspect_Window)&  theWindow,
+                          const Aspect_RenderingContext theContext)
 {
   if (myView->IsRemoved())
   {
@@ -257,7 +255,7 @@ void V3d_View::SetWindow (const Handle(Aspect_Window)&      theWindow,
 
   // method V3d_View::SetWindow() should assign the field MyWindow before calling Redraw()
   MyWindow = theWindow;
-  myView->SetWindow (theWindow, theContext, theDisplayCB, theClientData);
+  myView->SetWindow (theWindow, theContext);
   MyViewer->SetViewOn (this);
   SetRatio();
   Redraw();

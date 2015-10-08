@@ -33,7 +33,7 @@
 #include <gce_MakePln.hxx>
 #include <Quantity_Color.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Graphic3d_CUserDraw.hxx>
+#include <Prs3d_Root.hxx>
 
 #include <InterfaceGraphic_telem.hxx>
 #include <OpenGl_Element.hxx>
@@ -117,37 +117,25 @@ void VoxelClient_VisDrawer::VisElement::Render
 //purpose  : visdrawer element create callback, adds an element to graphic
 //           driver's structure
 //=======================================================================
-
-static OpenGl_Element* VisDrawerCallBack (const Graphic3d_CUserDraw* theUserDraw)
+void VoxelClient_PrsGl::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                                 const Handle(Prs3d_Presentation)&           thePrs,
+                                 const Standard_Integer                      theMode)
 {
-  if (theUserDraw == 0)
-    return 0;
+  if (myVisData == NULL)
+  {
+    return;
+  }
+  Voxel_Prs::Compute (thePrsMgr, thePrs, theMode);
 
-  // Retrieve the user structure
-  Voxel_VisData* aUserData = (Voxel_VisData*) (theUserDraw->Data);
+  Handle(OpenGl_Group) aGroup = Handle(OpenGl_Group)::DownCast (Prs3d_Root::CurrentGroup (thePrs));
+  VoxelClient_VisDrawer::VisElement* anElem = new VoxelClient_VisDrawer::VisElement ((Voxel_VisData* )myVisData);
+  aGroup->AddElement (anElem);
 
-  if (aUserData == 0)
-    return 0;
-
-  VoxelClient_VisDrawer::VisElement *aElem = 
-    new VoxelClient_VisDrawer::VisElement (aUserData);
-
-  if (theUserDraw->Bounds != 0)
-    aElem->EvaluateBounds (*(theUserDraw->Bounds));
-
-  return aElem;
-}
-
-/**************************************************************************/
-void VoxelClient_VisDrawer::Init (Handle(OpenGl_GraphicDriver)& theDriver)
-{
-    static Standard_Boolean isInitializeded(Standard_False);
-
-    if (!isInitializeded)
-    {
-        isInitializeded = Standard_True;
-        theDriver->UserDrawCallback() = VisDrawerCallBack;
-    }
+  Graphic3d_BndBox4f aMinMax;
+  anElem->EvaluateBounds (aMinMax);
+  aGroup->SetMinMaxValues (aMinMax.CornerMin().x(), aMinMax.CornerMin().y(), aMinMax.CornerMin().z(),
+                           aMinMax.CornerMax().x(), aMinMax.CornerMax().y(), aMinMax.CornerMax().z());
+  thePrsMgr->StructureManager()->Update (thePrsMgr->StructureManager()->UpdateMode());
 }
 
 /**************************************************************************/

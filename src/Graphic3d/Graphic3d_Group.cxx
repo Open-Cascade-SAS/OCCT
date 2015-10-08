@@ -1075,30 +1075,6 @@ void Graphic3d_Group::Marker (const Graphic3d_Vertex& thePoint,
 }
 
 // =======================================================================
-// function : UserDraw
-// purpose  :
-// =======================================================================
-void Graphic3d_Group::UserDraw (const Standard_Address /*theObject*/,
-                                const Standard_Boolean /*theToEvalMinMax*/,
-                                const Standard_Boolean theContainsFacet)
-{
-  if (IsDeleted())
-  {
-    return;
-  }
-
-  // Without this modification, the group assumes the primitive contains
-  // no polygons and does not require the Z-buffer for display.
-  if (!MyContainsFacet && theContainsFacet)
-  {
-    myStructure->GroupsWithFacet (1);
-    MyContainsFacet = Standard_True;
-  }
-
-  Update();
-}
-
-// =======================================================================
 // function : Text
 // purpose  :
 // =======================================================================
