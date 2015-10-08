@@ -247,13 +247,23 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
   Standard_Real v,dv = (V2-V1)/6.0;
   if(du<1e-12) du=1e-12;
   if(dv<1e-12) dv=1e-12;
+  Standard_Boolean IsNotUper = !surf->IsUPeriodic(), IsNotVper = !surf->IsVPeriodic();
   Standard_Integer NbPntCalc=0;
   if(myMapOfInter.IsBound(Face)) { 
     void *ptr = (void*)(myMapOfInter.Find(Face));
+    Standard_Boolean IsInside = Standard_True;
+    if(IsNotUper)
+    {
+      IsInside = (u_ >= U1) && (u_ <= U2);
+    }
+    if(IsNotVper)
+    {
+      IsInside &= (v_ >= V1) && (v_ <= V2);
+    }
     if(ptr) { 
       const IntCurvesFace_Intersector& TheIntersector = (*((IntCurvesFace_Intersector *)ptr));
       // Check if the point is already in the face
-      if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u_,v_))==TopAbs_IN) {
+      if(IsInside && (TheIntersector.ClassifyUVPoint(gp_Pnt2d(u_,v_))==TopAbs_IN)) {
         gp_Pnt aPnt;
         surf->D1(u_, v_, aPnt, theVecD1U, theVecD1V);
         if (aPnt.SquareDistance(APoint_) < Precision::Confusion() * Precision::Confusion())
@@ -429,6 +439,8 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
   Standard_Integer IndexPoint=0;
   Standard_Integer NbPointsOK=0;
   Standard_Integer NbFacesInSolid=0;
+  Standard_Boolean aRestr = Standard_True;
+  Standard_Boolean aTestInvert = Standard_False;
 
   for(;;) { 
     myFirstFace++; 
@@ -436,6 +448,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
     // look for point on face starting from myFirstFace
 //  Modified by skv - Thu Sep  4 14:31:12 2003 OCC578 Begin
 //     while (faceexplorer.More()) {
+    NbFacesInSolid = 0;
     for (; faceexplorer.More(); faceexplorer.Next()) {
 //  Modified by skv - Thu Sep  4 14:31:12 2003 OCC578 End
       NbFacesInSolid++;
@@ -443,7 +456,26 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
       face = TopoDS::Face(faceexplorer.Current());
 
       Handle(BRepAdaptor_HSurface) surf = new BRepAdaptor_HSurface();
-      surf->ChangeSurface().Initialize(face);
+      if(aTestInvert)
+      {
+        BRepTopAdaptor_FClass2d aClass(face, Precision::Confusion());
+        if(aClass.PerformInfinitePoint() == TopAbs_IN)
+        {
+          aRestr = Standard_False;
+          if(myMapOfInter.IsBound(face))
+          {
+            myMapOfInter.UnBind(face);
+            void *ptr = (void *)(new IntCurvesFace_Intersector(face, Precision::Confusion(),
+                                                               aRestr));
+            myMapOfInter.Bind(face,ptr);
+          }
+        }
+        else
+        {
+          aRestr = Standard_True;
+        }
+      }
+      surf->ChangeSurface().Initialize(face, aRestr);
       Standard_Real U1,V1,U2,V2;
       U1 = surf->FirstUParameter();
       V1 = surf->FirstVParameter();
@@ -452,7 +484,10 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
       face.Orientation(TopAbs_FORWARD);
       //
       //avoid process faces from uncorrected shells
-      if( Abs (U2 - U1) < 1.e-12 || Abs(V2 - V1) < 1.e-12) {
+      const Standard_Real eps = Precision::PConfusion();
+      Standard_Real epsU = Max(eps * Max(Abs(U2), Abs(U1)), eps);
+      Standard_Real epsV = Max(eps * Max(Abs(V2), Abs(V1)), eps);
+      if( Abs (U2 - U1) < epsU || Abs(V2 - V1) < epsV) {
         return 2;
       }
       //
@@ -622,6 +657,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
         return 0;
       }
     }
+    aTestInvert = Standard_True;
   } //-- for(;;) { ...  } 
 }
 

@@ -56,7 +56,11 @@ public:
   //! first point of the segment is near the face. In
   //! that case, the parameter of the intersection point
   //! on the line can be a negative value (greater than -Tol).
-  Standard_EXPORT IntCurvesFace_Intersector(const TopoDS_Face& F, const Standard_Real aTol);
+  //! If aRestr = true UV bounding box of face is used to restrict 
+  //! it's underlined surface,
+  //! otherwise surface is not restricted
+  Standard_EXPORT IntCurvesFace_Intersector(const TopoDS_Face& F, const Standard_Real aTol, 
+                                            const Standard_Boolean aRestr = Standard_True);
   
   //! Perform the intersection between the
   //! segment L and the loaded face.

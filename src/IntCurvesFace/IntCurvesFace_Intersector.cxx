@@ -55,7 +55,8 @@ GeomAbs_SurfaceType IntCurvesFace_Intersector::SurfaceType() const
 //purpose  : 
 //=======================================================================
 IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
-						     const Standard_Real aTol)
+                                                     const Standard_Real aTol,
+                                                     const Standard_Boolean aRestr)
 : 
   Tol(aTol),
   done(Standard_False),
@@ -65,7 +66,7 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
 { 
   BRepAdaptor_Surface surface;
   face = Face;
-  surface.Initialize(Face,Standard_True);
+  surface.Initialize(Face, aRestr);
   Hsurface = new BRepAdaptor_HSurface(surface);
   myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
   
