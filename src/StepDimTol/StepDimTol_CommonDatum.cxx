@@ -34,25 +34,25 @@ StepDimTol_CommonDatum::StepDimTol_CommonDatum ()
 //purpose  : 
 //=======================================================================
 
-void StepDimTol_CommonDatum::Init (const Handle(TCollection_HAsciiString) &aShapeAspect_Name,
-                                   const Handle(TCollection_HAsciiString) &aShapeAspect_Description,
-                                   const Handle(StepRepr_ProductDefinitionShape) &aShapeAspect_OfShape,
-                                   const StepData_Logical aShapeAspect_ProductDefinitional,
-                                   const Handle(TCollection_HAsciiString) &aDatum_Name,
-                                   const Handle(TCollection_HAsciiString) &aDatum_Description,
-                                   const Handle(StepRepr_ProductDefinitionShape) &aDatum_OfShape,
-                                   const StepData_Logical aDatum_ProductDefinitional,
-                                   const Handle(TCollection_HAsciiString) &aDatum_Identification)
+void StepDimTol_CommonDatum::Init (const Handle(TCollection_HAsciiString) &theShapeAspect_Name,
+                                   const Handle(TCollection_HAsciiString) &theShapeAspect_Description,
+                                   const Handle(StepRepr_ProductDefinitionShape) &theShapeAspect_OfShape,
+                                   const StepData_Logical theShapeAspect_ProductDefinitional,
+                                   const Handle(TCollection_HAsciiString) &theDatum_Name,
+                                   const Handle(TCollection_HAsciiString) &theDatum_Description,
+                                   const Handle(StepRepr_ProductDefinitionShape) &theDatum_OfShape,
+                                   const StepData_Logical theDatum_ProductDefinitional,
+                                   const Handle(TCollection_HAsciiString) &theDatum_Identification)
 {
-    StepRepr_CompositeShapeAspect::Init(aShapeAspect_Name,
-                                        aShapeAspect_Description,
-                                        aShapeAspect_OfShape,
-                                        aShapeAspect_ProductDefinitional);
-    theDatum->Init(aDatum_Name,
-                   aDatum_Description,
-                   aDatum_OfShape,
-                   aDatum_ProductDefinitional,
-                   aDatum_Identification);
+    StepRepr_CompositeShapeAspect::Init(theShapeAspect_Name,
+                                        theShapeAspect_Description,
+                                        theShapeAspect_OfShape,
+                                        theShapeAspect_ProductDefinitional);
+    myDatum->Init(theDatum_Name,
+                   theDatum_Description,
+                   theDatum_OfShape,
+                   theDatum_ProductDefinitional,
+                   theDatum_Identification);
 }
 
 //=======================================================================
@@ -62,7 +62,7 @@ void StepDimTol_CommonDatum::Init (const Handle(TCollection_HAsciiString) &aShap
 
 Handle(StepDimTol_Datum) StepDimTol_CommonDatum::Datum () const
 {
-  return theDatum;
+  return myDatum;
 }
 
 //=======================================================================
@@ -70,7 +70,7 @@ Handle(StepDimTol_Datum) StepDimTol_CommonDatum::Datum () const
 //purpose  : 
 //=======================================================================
 
-void StepDimTol_CommonDatum::SetDatum (const Handle(StepDimTol_Datum) &aDatum)
+void StepDimTol_CommonDatum::SetDatum (const Handle(StepDimTol_Datum) &theDatum)
 {
-  theDatum = aDatum;
+  myDatum = theDatum;
 }

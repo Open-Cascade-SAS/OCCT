@@ -31,5 +31,5 @@ void StepDimTol_RunoutZoneOrientation::Init(
   const Handle(StepBasic_PlaneAngleMeasureWithUnit)& theAngle)
 {
   // --- class own fields ---
-  angle = theAngle;
+  myAngle = theAngle;
 }

@@ -41,5 +41,5 @@ void StepDimTol_GeometricToleranceWithMaximumTolerance::
         const Handle(StepBasic_LengthMeasureWithUnit) &theMaximumUpperTolerance)
 {
   StepDimTol_GeometricToleranceWithModifiers::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect, theModifiers);
-  maximumUpperTolerance = theMaximumUpperTolerance;
+  myMaximumUpperTolerance = theMaximumUpperTolerance;
 }

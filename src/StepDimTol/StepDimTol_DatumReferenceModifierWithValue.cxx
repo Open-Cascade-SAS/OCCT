@@ -32,7 +32,7 @@ StepDimTol_DatumReferenceModifierWithValue::StepDimTol_DatumReferenceModifierWit
 void StepDimTol_DatumReferenceModifierWithValue::Init (const StepDimTol_DatumReferenceModifierType& theModifierType,
                                                        const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue)
 {
-  modifierType = theModifierType;
-  modifierValue = theModifierValue;
+  myModifierType = theModifierType;
+  myModifierValue = theModifierValue;
 }
     

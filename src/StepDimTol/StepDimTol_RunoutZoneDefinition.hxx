@@ -44,18 +44,18 @@ public:
   //! Returns field Orientation
   inline Handle(StepDimTol_RunoutZoneOrientation) Orientation () const
   {
-    return orientation;
+    return myOrientation;
   }
   
   //! Set field Orientation
   inline void SetOrientation (const Handle(StepDimTol_RunoutZoneOrientation) &theOrientation)
   {
-    orientation = theOrientation;
+    myOrientation = theOrientation;
   }
   
   DEFINE_STANDARD_RTTI(StepDimTol_ToleranceZoneDefinition, StepDimTol_ToleranceZoneDefinition)
 
 private: 
-  Handle(StepDimTol_RunoutZoneOrientation) orientation;
+  Handle(StepDimTol_RunoutZoneOrientation) myOrientation;
 };
 #endif // _StepDimTol_RunoutToleranceZone_HeaderFile

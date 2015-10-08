@@ -32,13 +32,13 @@ StepDimTol_DatumReference::StepDimTol_DatumReference ()
 //purpose  : 
 //=======================================================================
 
-void StepDimTol_DatumReference::Init (const Standard_Integer aPrecedence,
-                                      const Handle(StepDimTol_Datum) &aReferencedDatum)
+void StepDimTol_DatumReference::Init (const Standard_Integer thePrecedence,
+                                      const Handle(StepDimTol_Datum) &theReferencedDatum)
 {
 
-  thePrecedence = aPrecedence;
+  myPrecedence = thePrecedence;
 
-  theReferencedDatum = aReferencedDatum;
+  myReferencedDatum = theReferencedDatum;
 }
 
 //=======================================================================
@@ -48,7 +48,7 @@ void StepDimTol_DatumReference::Init (const Standard_Integer aPrecedence,
 
 Standard_Integer StepDimTol_DatumReference::Precedence () const
 {
-  return thePrecedence;
+  return myPrecedence;
 }
 
 //=======================================================================
@@ -56,9 +56,9 @@ Standard_Integer StepDimTol_DatumReference::Precedence () const
 //purpose  : 
 //=======================================================================
 
-void StepDimTol_DatumReference::SetPrecedence (const Standard_Integer aPrecedence)
+void StepDimTol_DatumReference::SetPrecedence (const Standard_Integer thePrecedence)
 {
-  thePrecedence = aPrecedence;
+  myPrecedence = thePrecedence;
 }
 
 //=======================================================================
@@ -68,7 +68,7 @@ void StepDimTol_DatumReference::SetPrecedence (const Standard_Integer aPrecedenc
 
 Handle(StepDimTol_Datum) StepDimTol_DatumReference::ReferencedDatum () const
 {
-  return theReferencedDatum;
+  return myReferencedDatum;
 }
 
 //=======================================================================
@@ -76,7 +76,7 @@ Handle(StepDimTol_Datum) StepDimTol_DatumReference::ReferencedDatum () const
 //purpose  : 
 //=======================================================================
 
-void StepDimTol_DatumReference::SetReferencedDatum (const Handle(StepDimTol_Datum) &aReferencedDatum)
+void StepDimTol_DatumReference::SetReferencedDatum (const Handle(StepDimTol_Datum) &theReferencedDatum)
 {
-  theReferencedDatum = aReferencedDatum;
+  myReferencedDatum = theReferencedDatum;
 }

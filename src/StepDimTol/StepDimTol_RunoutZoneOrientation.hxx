@@ -39,19 +39,19 @@ public:
   //! Returns field Angle
   inline Handle(StepBasic_PlaneAngleMeasureWithUnit) Angle()
   {
-    return angle;
+    return myAngle;
   }
   
   //! Set field Angle
   inline void SetAngle(const Handle(StepBasic_PlaneAngleMeasureWithUnit) &theAngle)
   {
-    angle = theAngle;
+    myAngle = theAngle;
   }
   
   DEFINE_STANDARD_RTTI(StepDimTol_RunoutZoneOrientation, MMgt_TShared)
   
 private:
-  Handle(StepBasic_PlaneAngleMeasureWithUnit) angle;
+  Handle(StepBasic_PlaneAngleMeasureWithUnit) myAngle;
 
 };
 #endif // _StepDimTol_RunoutZoneOrientation_HeaderFile

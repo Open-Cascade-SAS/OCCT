@@ -37,5 +37,5 @@ void StepDimTol_RunoutZoneDefinition:: Init (const Handle(StepDimTol_ToleranceZo
                                              const Handle(StepDimTol_RunoutZoneOrientation)& theOrientation)
 {
   StepDimTol_ToleranceZoneDefinition::Init(theZone, theBoundaries);
-  orientation = theOrientation;
+  myOrientation = theOrientation;
 }

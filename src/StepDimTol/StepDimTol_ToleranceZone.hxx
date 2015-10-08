@@ -51,49 +51,49 @@ public:
   //! Returns field DefiningTolerance
   inline Handle(StepDimTol_HArray1OfToleranceZoneTarget) DefiningTolerance () const
   {
-    return definingTolerance;
+    return myDefiningTolerance;
   }
   
   //! Set field DefiningTolerance
   inline void SetModifiers (const Handle(StepDimTol_HArray1OfToleranceZoneTarget) &theDefiningTolerance)
   {
-    definingTolerance = theDefiningTolerance;
+    myDefiningTolerance = theDefiningTolerance;
   }
   
   //! Returns number of Defining Tolerances
   inline Standard_Integer NbDefiningTolerances () const
   {  
-    return (definingTolerance.IsNull() ? 0 : definingTolerance->Length());
+    return (myDefiningTolerance.IsNull() ? 0 : myDefiningTolerance->Length());
   }
   
   //! Returns Defining Tolerance with the given number
-  inline StepDimTol_ToleranceZoneTarget DefiningToleranceValue(const Standard_Integer num) const
+  inline StepDimTol_ToleranceZoneTarget DefiningToleranceValue(const Standard_Integer theNum) const
   {  
-    return definingTolerance->Value(num);
+    return myDefiningTolerance->Value(theNum);
   }
   
   //! Sets Defining Tolerance with given number
-  inline void SetDefiningToleranceValue(const Standard_Integer num, const StepDimTol_ToleranceZoneTarget& theItem)
+  inline void SetDefiningToleranceValue(const Standard_Integer theNum, const StepDimTol_ToleranceZoneTarget& theItem)
   {  
-    definingTolerance->SetValue (num, theItem);
+    myDefiningTolerance->SetValue (theNum, theItem);
   }
   
   //! Returns field Form
   inline Handle(StepDimTol_ToleranceZoneForm) Form()
   {
-    return form;
+    return myForm;
   }
   
   //! Set field Form
   inline void SetForm(const Handle(StepDimTol_ToleranceZoneForm)& theForm)
   {
-    form = theForm;
+    myForm = theForm;
   }
   
   DEFINE_STANDARD_RTTI(StepDimTol_ToleranceZone, StepRepr_ShapeAspect)
 
 private: 
-  Handle(StepDimTol_HArray1OfToleranceZoneTarget) definingTolerance;
-  Handle(StepDimTol_ToleranceZoneForm) form;
+  Handle(StepDimTol_HArray1OfToleranceZoneTarget) myDefiningTolerance;
+  Handle(StepDimTol_ToleranceZoneForm) myForm;
 };
 #endif // _StepDimTol_ToleranceZone_HeaderFile

@@ -43,31 +43,31 @@ public:
   //! Returns field ModifierType
   inline StepDimTol_DatumReferenceModifierType ModifierType () const
   {
-    return modifierType;
+    return myModifierType;
   }
   
   //! Set field ModifierType
   inline void SetModifierType (const StepDimTol_DatumReferenceModifierType &theModifierType)
   {
-    modifierType = theModifierType;
+    myModifierType = theModifierType;
   }
   
   //! Returns field ModifierValue
   inline Handle(StepBasic_LengthMeasureWithUnit) ModifierValue()
   {
-    return modifierValue;
+    return myModifierValue;
   }
   
   //! Set field ModifierValue
   inline void SetModifierValue(const Handle(StepBasic_LengthMeasureWithUnit)& theModifierValue)
   {
-    modifierValue = theModifierValue;
+    myModifierValue = theModifierValue;
   }
   
   DEFINE_STANDARD_RTTI(StepDimTol_DatumReferenceModifierWithValue, MMgt_TShared)
 
 private: 
-  StepDimTol_DatumReferenceModifierType modifierType;
-  Handle(StepBasic_LengthMeasureWithUnit) modifierValue;
+  StepDimTol_DatumReferenceModifierType myModifierType;
+  Handle(StepBasic_LengthMeasureWithUnit) myModifierValue;
 };
 #endif // _StepDimTol_DatumReferenceModifierWithValue_HeaderFile

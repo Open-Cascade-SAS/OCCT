@@ -44,36 +44,36 @@ public:
   //! Returns field Constituents
   inline Handle(StepDimTol_HArray1OfDatumReferenceCompartment) Constituents()
   {
-    return constituents;
+    return myConstituents;
   }
   
   //! Set field Constituents
   inline void SetConstituents(const Handle(StepDimTol_HArray1OfDatumReferenceCompartment)& theConstituents)
   {
-    constituents = theConstituents;
+    myConstituents = theConstituents;
   }
   
   //! Returns number of Constituents
   inline Standard_Integer NbConstituents () const
   {  
-    return (constituents.IsNull() ? 0 : constituents->Length());
+    return (myConstituents.IsNull() ? 0 : myConstituents->Length());
   }
   
   //! Returns Constituents with the given number
   inline Handle(StepDimTol_DatumReferenceCompartment) ConstituentsValue(const Standard_Integer num) const
   {  
-    return constituents->Value(num);
+    return myConstituents->Value(num);
   }
   
   //! Sets Constituents with given number
   inline void ConstituentsValue(const Standard_Integer num, const Handle(StepDimTol_DatumReferenceCompartment)& theItem)
   {  
-    constituents->SetValue (num, theItem);
+    myConstituents->SetValue (num, theItem);
   }
   
   DEFINE_STANDARD_RTTI(StepDimTol_DatumSystem, StepRepr_ShapeAspect)
 
 private: 
-  Handle(StepDimTol_HArray1OfDatumReferenceCompartment) constituents;
+  Handle(StepDimTol_HArray1OfDatumReferenceCompartment) myConstituents;
 };
 #endif // _StepDimTol_DatumSystem_HeaderFile

@@ -39,5 +39,5 @@ void StepDimTol_UnequallyDisposedGeometricTolerance::Init (const Handle(TCollect
                                                            const Handle(StepBasic_LengthMeasureWithUnit) &theDisplacement)
 {
   StepDimTol_GeometricTolerance::Init( theName, theDescription, theMagnitude, theTolerancedShapeAspect);
-  displacement = theDisplacement;
+  myDisplacement = theDisplacement;
 }

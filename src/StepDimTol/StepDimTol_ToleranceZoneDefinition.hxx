@@ -45,49 +45,49 @@ public:
   //! Returns field Boundaries
   inline Handle(StepRepr_HArray1OfShapeAspect) Boundaries () const
   {
-    return boundaries;
+    return myBoundaries;
   }
   
   //! Set field Boundaries
   inline void SetBoundaries (const Handle(StepRepr_HArray1OfShapeAspect) &theBoundaries)
   {
-    boundaries = theBoundaries;
+    myBoundaries = theBoundaries;
   }
   
   //! Returns number of Boundaries
   inline Standard_Integer NbBoundaries () const
   {  
-    return (boundaries.IsNull() ? 0 : boundaries->Length());
+    return (myBoundaries.IsNull() ? 0 : myBoundaries->Length());
   }
   
   //! Returns Boundaries with the given number
-  inline Handle(StepRepr_ShapeAspect) BoundariesValue(const Standard_Integer num) const
+  inline Handle(StepRepr_ShapeAspect) BoundariesValue(const Standard_Integer theNum) const
   {  
-    return boundaries->Value(num);
+    return myBoundaries->Value(theNum);
   }
   
   //! Sets Boundaries with given number
-  inline void SetBoundariesValue(const Standard_Integer num, const Handle(StepRepr_ShapeAspect)& theItem)
+  inline void SetBoundariesValue(const Standard_Integer theNum, const Handle(StepRepr_ShapeAspect)& theItem)
   {  
-    boundaries->SetValue (num, theItem);
+    myBoundaries->SetValue (theNum, theItem);
   }
   
   //! Returns field Zone
   inline Handle(StepDimTol_ToleranceZone) Zone()
   {
-    return zone;
+    return myZone;
   }
   
   //! Set field Zone
   inline void SetZone(const Handle(StepDimTol_ToleranceZone)& theZone)
   {
-    zone = theZone;
+    myZone = theZone;
   }
   
   DEFINE_STANDARD_RTTI(StepDimTol_ToleranceZoneDefinition, MMgt_TShared)
 
 private: 
-  Handle(StepRepr_HArray1OfShapeAspect) boundaries;
-  Handle(StepDimTol_ToleranceZone) zone;
+  Handle(StepRepr_HArray1OfShapeAspect) myBoundaries;
+  Handle(StepDimTol_ToleranceZone) myZone;
 };
 #endif // _StepDimTol_ToleranceZoneDefinition_HeaderFile

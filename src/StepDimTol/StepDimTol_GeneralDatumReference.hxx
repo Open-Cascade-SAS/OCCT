@@ -41,61 +41,61 @@ public:
                                const Handle(StepRepr_ProductDefinitionShape)& theOfShape,
                                const StepData_Logical theProductDefinitional,
                                const StepDimTol_DatumOrCommonDatum& theBase,
-                               const Standard_Boolean hasModifiers,
+                               const Standard_Boolean theHasModifiers,
                                const Handle(StepDimTol_HArray1OfDatumReferenceModifier)& theModifiers);
   
   //! Returns field Base
   inline StepDimTol_DatumOrCommonDatum Base()
   {
-    return base;
+    return myBase;
   }
   
   //! Set field Base
   inline void SetBase(const StepDimTol_DatumOrCommonDatum& theBase)
   {
-    base = theBase;
+    myBase = theBase;
   }
   
   //! Indicates is field Modifiers exist
   inline Standard_Boolean HasModifiers() const
   {
-    return modifiers.IsNull();
+    return myModifiers.IsNull();
   }
   
   //! Returns field Modifiers
   inline Handle(StepDimTol_HArray1OfDatumReferenceModifier) Modifiers()
   {
-    return modifiers;
+    return myModifiers;
   }
   
   //! Set field Modifiers
   inline void SetModifiers(const Handle(StepDimTol_HArray1OfDatumReferenceModifier)& theModifiers)
   {
-    modifiers = theModifiers;
+    myModifiers = theModifiers;
   }
   
   //! Returns number of Modifiers
   inline Standard_Integer NbModifiers () const
   {  
-    return (modifiers.IsNull() ? 0 : modifiers->Length());
+    return (myModifiers.IsNull() ? 0 : myModifiers->Length());
   }
   
   //! Returns Modifiers with the given number
-  inline StepDimTol_DatumReferenceModifier ModifiersValue(const Standard_Integer num) const
+  inline StepDimTol_DatumReferenceModifier ModifiersValue(const Standard_Integer theNum) const
   {  
-    return modifiers->Value(num);
+    return myModifiers->Value(theNum);
   }
   
   //! Sets Modifiers with given number
-  inline void ModifiersValue(const Standard_Integer num, const StepDimTol_DatumReferenceModifier& theItem)
+  inline void ModifiersValue(const Standard_Integer theNum, const StepDimTol_DatumReferenceModifier& theItem)
   {  
-    modifiers->SetValue (num, theItem);
+    myModifiers->SetValue (theNum, theItem);
   }
   
   DEFINE_STANDARD_RTTI(StepDimTol_GeneralDatumReference, StepRepr_ShapeAspect)
 
 private: 
-  StepDimTol_DatumOrCommonDatum base;
-  Handle(StepDimTol_HArray1OfDatumReferenceModifier) modifiers;
+  StepDimTol_DatumOrCommonDatum myBase;
+  Handle(StepDimTol_HArray1OfDatumReferenceModifier) myModifiers;
 };
 #endif // _StepDimTol_GeneralDatumReference_HeaderFile

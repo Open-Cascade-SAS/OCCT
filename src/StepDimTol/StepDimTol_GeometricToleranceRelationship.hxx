@@ -38,31 +38,34 @@ public:
   Standard_EXPORT StepDimTol_GeometricToleranceRelationship();
   
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepDimTol_GeometricTolerance)& aRelatingGeometricTolerance, const Handle(StepDimTol_GeometricTolerance)& aRelatedGeometricTolerance);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, 
+    const Handle(TCollection_HAsciiString)& theDescription, 
+    const Handle(StepDimTol_GeometricTolerance)& theRelatingGeometricTolerance, 
+    const Handle(StepDimTol_GeometricTolerance)& theRelatedGeometricTolerance);
   
   //! Returns field Name
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
   
   //! Set field Name
-  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& Name);
+  Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& theName);
   
   //! Returns field Description
   Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
   
   //! Set field Description
-  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& theDescription);
   
   //! Returns field RelatingGeometricTolerance
   Standard_EXPORT Handle(StepDimTol_GeometricTolerance) RelatingGeometricTolerance() const;
   
   //! Set field RelatingGeometricTolerance
-  Standard_EXPORT void SetRelatingGeometricTolerance (const Handle(StepDimTol_GeometricTolerance)& RelatingGeometricTolerance);
+  Standard_EXPORT void SetRelatingGeometricTolerance (const Handle(StepDimTol_GeometricTolerance)& theRelatingGeometricTolerance);
   
   //! Returns field RelatedGeometricTolerance
   Standard_EXPORT Handle(StepDimTol_GeometricTolerance) RelatedGeometricTolerance() const;
   
   //! Set field RelatedGeometricTolerance
-  Standard_EXPORT void SetRelatedGeometricTolerance (const Handle(StepDimTol_GeometricTolerance)& RelatedGeometricTolerance);
+  Standard_EXPORT void SetRelatedGeometricTolerance (const Handle(StepDimTol_GeometricTolerance)& theRelatedGeometricTolerance);
 
 
 
@@ -77,10 +80,10 @@ protected:
 private:
 
 
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
-  Handle(StepDimTol_GeometricTolerance) theRelatingGeometricTolerance;
-  Handle(StepDimTol_GeometricTolerance) theRelatedGeometricTolerance;
+  Handle(TCollection_HAsciiString) myName;
+  Handle(TCollection_HAsciiString) myDescription;
+  Handle(StepDimTol_GeometricTolerance) myRelatingGeometricTolerance;
+  Handle(StepDimTol_GeometricTolerance) myRelatedGeometricTolerance;
 
 
 };

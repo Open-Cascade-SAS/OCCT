@@ -47,18 +47,18 @@ public:
   //! Returns field UnitSize
   inline Handle(StepBasic_LengthMeasureWithUnit) UnitSize () const
   {
-    return unitSize;
+    return myUnitSize;
   }
   
   //! Set field UnitSize
   inline void SetUnitSize (const Handle(StepBasic_LengthMeasureWithUnit) &theUnitSize)
   {
-    unitSize = theUnitSize;
+    myUnitSize = theUnitSize;
   } 
   
   DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceWithDefinedUnit, StepDimTol_GeometricTolerance)
 
 private: 
-  Handle(StepBasic_LengthMeasureWithUnit) unitSize;
+  Handle(StepBasic_LengthMeasureWithUnit) myUnitSize;
 };
 #endif // _StepDimTol_GeometricToleranceWithDefinedUnit_HeaderFile

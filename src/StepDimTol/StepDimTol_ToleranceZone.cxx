@@ -39,7 +39,7 @@ void StepDimTol_ToleranceZone::Init (const Handle(TCollection_HAsciiString)& the
                                      const Handle(StepDimTol_ToleranceZoneForm)& theForm)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
-  definingTolerance = theDefiningTolerance;
-  form = theForm;
+  myDefiningTolerance = theDefiningTolerance;
+  myForm = theForm;
 }
     

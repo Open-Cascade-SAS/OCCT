@@ -38,19 +38,19 @@ public:
   Standard_EXPORT StepDimTol_DatumReference();
   
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Standard_Integer aPrecedence, const Handle(StepDimTol_Datum)& aReferencedDatum);
+  Standard_EXPORT void Init (const Standard_Integer thePrecedence, const Handle(StepDimTol_Datum)& theReferencedDatum);
   
   //! Returns field Precedence
   Standard_EXPORT Standard_Integer Precedence() const;
   
   //! Set field Precedence
-  Standard_EXPORT void SetPrecedence (const Standard_Integer Precedence);
+  Standard_EXPORT void SetPrecedence (const Standard_Integer thePrecedence);
   
   //! Returns field ReferencedDatum
   Standard_EXPORT Handle(StepDimTol_Datum) ReferencedDatum() const;
   
   //! Set field ReferencedDatum
-  Standard_EXPORT void SetReferencedDatum (const Handle(StepDimTol_Datum)& ReferencedDatum);
+  Standard_EXPORT void SetReferencedDatum (const Handle(StepDimTol_Datum)& theReferencedDatum);
 
 
 
@@ -65,8 +65,8 @@ protected:
 private:
 
 
-  Standard_Integer thePrecedence;
-  Handle(StepDimTol_Datum) theReferencedDatum;
+  Standard_Integer myPrecedence;
+  Handle(StepDimTol_Datum) myReferencedDatum;
 
 
 };

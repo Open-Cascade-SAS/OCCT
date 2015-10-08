@@ -50,35 +50,35 @@ public:
   //! Returns field Modifiers
   inline Handle(StepDimTol_HArray1OfGeometricToleranceModifier) Modifiers () const
   {
-    return modifiers;
+    return myModifiers;
   }
   
   //! Set field Modifiers
   inline void SetModifiers (const Handle(StepDimTol_HArray1OfGeometricToleranceModifier) &theModifiers)
   {
-    modifiers = theModifiers;
+    myModifiers = theModifiers;
   }
   
   //! Returns number of modifiers
   inline Standard_Integer NbModifiers () const
   {  
-    return (modifiers.IsNull() ? 0 : modifiers->Length());
+    return (myModifiers.IsNull() ? 0 : myModifiers->Length());
   }
   
   //! Returns modifier with the given number
-  inline StepDimTol_GeometricToleranceModifier ModifierValue(const Standard_Integer num) const
+  inline StepDimTol_GeometricToleranceModifier ModifierValue(const Standard_Integer theNum) const
   {  
-    return modifiers->Value(num);
+    return myModifiers->Value(theNum);
   }
   
   //! Sets modifier with given number
-  inline void SetModifierValue(const Standard_Integer num, const StepDimTol_GeometricToleranceModifier theItem)
+  inline void SetModifierValue(const Standard_Integer theNum, const StepDimTol_GeometricToleranceModifier theItem)
   {  
-    modifiers->SetValue (num, theItem);
+    myModifiers->SetValue (theNum, theItem);
   }
   DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceWithModifiers, StepDimTol_GeometricTolerance)
 
 private: 
-  Handle(StepDimTol_HArray1OfGeometricToleranceModifier) modifiers;
+  Handle(StepDimTol_HArray1OfGeometricToleranceModifier) myModifiers;
 };
 #endif // _StepDimTol_GeometricToleranceWithModifiers_HeaderFile

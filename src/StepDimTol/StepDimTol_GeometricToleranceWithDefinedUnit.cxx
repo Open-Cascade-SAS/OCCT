@@ -39,7 +39,7 @@ void StepDimTol_GeometricToleranceWithDefinedUnit::Init (const Handle(TCollectio
                                                          const Handle(StepBasic_LengthMeasureWithUnit) &theUnitSize)
 {
   StepDimTol_GeometricTolerance::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect);
-  unitSize = theUnitSize;
+  myUnitSize = theUnitSize;
 }
 
 //=======================================================================
@@ -54,5 +54,5 @@ void StepDimTol_GeometricToleranceWithDefinedUnit::Init (const Handle(TCollectio
                                                          const Handle(StepBasic_LengthMeasureWithUnit) &theUnitSize)
 {
   StepDimTol_GeometricTolerance::Init(theName, theDescription, theMagnitude, theTolerancedShapeAspect);
-  unitSize = theUnitSize;
+  myUnitSize = theUnitSize;
 }

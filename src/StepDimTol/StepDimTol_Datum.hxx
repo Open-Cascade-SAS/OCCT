@@ -39,13 +39,17 @@ public:
   Standard_EXPORT StepDimTol_Datum();
   
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aShapeAspect_Name, const Handle(TCollection_HAsciiString)& aShapeAspect_Description, const Handle(StepRepr_ProductDefinitionShape)& aShapeAspect_OfShape, const StepData_Logical aShapeAspect_ProductDefinitional, const Handle(TCollection_HAsciiString)& aIdentification);
-  
+  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theShapeAspect_Name,
+                            const Handle(TCollection_HAsciiString)& theShapeAspect_Description,
+                            const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
+                            const StepData_Logical                  theShapeAspect_ProductDefinitional,
+                            const Handle(TCollection_HAsciiString)& theIdentification);
+
   //! Returns field Identification
   Standard_EXPORT Handle(TCollection_HAsciiString) Identification() const;
   
   //! Set field Identification
-  Standard_EXPORT void SetIdentification (const Handle(TCollection_HAsciiString)& Identification);
+  Standard_EXPORT void SetIdentification (const Handle(TCollection_HAsciiString)& theIdentification);
 
 
 
@@ -60,7 +64,7 @@ protected:
 private:
 
 
-  Handle(TCollection_HAsciiString) theIdentification;
+  Handle(TCollection_HAsciiString) myIdentification;
 
 
 };

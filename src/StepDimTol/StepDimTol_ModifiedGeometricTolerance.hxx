@@ -41,16 +41,24 @@ public:
   Standard_EXPORT StepDimTol_ModifiedGeometricTolerance();
   
   //! Initialize all fields (own and inherited) AP214
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aGeometricTolerance_Name, const Handle(TCollection_HAsciiString)& aGeometricTolerance_Description, const Handle(StepBasic_MeasureWithUnit)& aGeometricTolerance_Magnitude, const Handle(StepRepr_ShapeAspect)& aGeometricTolerance_TolerancedShapeAspect, const StepDimTol_LimitCondition aModifier);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theGeometricTolerance_Name, 
+    const Handle(TCollection_HAsciiString)& theGeometricTolerance_Description, 
+    const Handle(StepBasic_MeasureWithUnit)& theGeometricTolerance_Magnitude, 
+    const Handle(StepRepr_ShapeAspect)& theGeometricTolerance_TolerancedShapeAspect, 
+    const StepDimTol_LimitCondition theModifier);
 
   //! Initialize all fields (own and inherited) AP242
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aGeometricTolerance_Name, const Handle(TCollection_HAsciiString)& aGeometricTolerance_Description, const Handle(StepBasic_MeasureWithUnit)& aGeometricTolerance_Magnitude, const StepDimTol_GeometricToleranceTarget& aGeometricTolerance_TolerancedShapeAspect, const StepDimTol_LimitCondition aModifier);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theGeometricTolerance_Name, 
+    const Handle(TCollection_HAsciiString)& theGeometricTolerance_Description, 
+    const Handle(StepBasic_MeasureWithUnit)& theGeometricTolerance_Magnitude, 
+    const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect, 
+    const StepDimTol_LimitCondition theModifier);
 
   //! Returns field Modifier
   Standard_EXPORT StepDimTol_LimitCondition Modifier() const;
   
   //! Set field Modifier
-  Standard_EXPORT void SetModifier (const StepDimTol_LimitCondition Modifier);
+  Standard_EXPORT void SetModifier (const StepDimTol_LimitCondition theModifier);
 
 
 
@@ -65,7 +73,7 @@ protected:
 private:
 
 
-  StepDimTol_LimitCondition theModifier;
+  StepDimTol_LimitCondition myModifier;
 
 
 };

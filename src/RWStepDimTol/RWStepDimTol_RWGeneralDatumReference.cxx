@@ -101,7 +101,7 @@ void RWStepDimTol_RWGeneralDatumReference::ReadStep (const Handle(StepData_StepR
     Standard_Integer nbElements = data->NbParams(nbSub);
     aModifiers = new StepDimTol_HArray1OfDatumReferenceModifier (1, nbElements);
     for (Standard_Integer i = 1; i <= nbElements; i++) {
-      Interface_ParamType aType = data->ParamType (nbSub, i);
+      aType = data->ParamType (nbSub, i);
       if (aType == Interface_ParamIdent) {
         Handle(StepDimTol_DatumReferenceModifierWithValue) aDRMWV;
         data->ReadEntity(nbSub, i,"datum_reference_modifier_with_value", ach, STANDARD_TYPE(StepDimTol_DatumReferenceModifierWithValue), aDRMWV);

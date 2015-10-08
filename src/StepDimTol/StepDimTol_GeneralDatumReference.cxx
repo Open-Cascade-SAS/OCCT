@@ -36,14 +36,14 @@ void StepDimTol_GeneralDatumReference::Init (const Handle(TCollection_HAsciiStri
                                              const Handle(StepRepr_ProductDefinitionShape)& theOfShape,
                                              const StepData_Logical theProductDefinitional,
                                              const StepDimTol_DatumOrCommonDatum& theBase,
-                                             const Standard_Boolean hasModifiers,
+                                             const Standard_Boolean theHasModifiers,
                                              const Handle(StepDimTol_HArray1OfDatumReferenceModifier)& theModifiers)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
-  base = theBase;
-  if (hasModifiers)
-    modifiers = theModifiers;
+  myBase = theBase;
+  if (theHasModifiers)
+    myModifiers = theModifiers;
   else
-    modifiers.Nullify();
+    myModifiers.Nullify();
 }
     

@@ -31,5 +31,5 @@ void StepDimTol_ToleranceZoneForm::Init(
   const Handle(TCollection_HAsciiString)& theName)
 {
   // --- classe own fields ---
-  name = theName;
+  myName = theName;
 }
