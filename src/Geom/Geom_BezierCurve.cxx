@@ -732,6 +732,17 @@ void Geom_BezierCurve::Poles (TColgp_Array1OfPnt& P) const
   P = poles->Array1();
 }
 
+
+//=======================================================================
+//function : Poles
+//purpose  : 
+//=======================================================================
+
+const TColgp_Array1OfPnt& Geom_BezierCurve::Poles() const
+{
+  return poles->Array1();
+}
+
 //=======================================================================
 //function : Weight
 //purpose  : 

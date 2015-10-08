@@ -1,4 +1,4 @@
-puts "TODO OCC25917 ALL: Error : The command is not valid. The square is"
+puts "TODO OCC25917 ALL: Faulty shapes in variables faulty_1 to faulty_"
 if { [regexp {Debug mode} [dversion]] } {
   puts "TODO OCC25917 ALL: TEST INCOMPLETE"
   puts "TODO OCC25917 ALL: Tcl Exception"
@@ -21,5 +21,5 @@ checkshape b2
 
 bcommon result b1 b2
 
-set square 0
+set square 0.01
 set 2dviewer 0

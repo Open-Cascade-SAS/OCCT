@@ -1,0 +1,37 @@
+puts "========="
+puts "OCC26560"
+puts "========="
+puts ""
+#####################################################################
+## BRepBndLib build too large bounding box in Z direction for planar spline edge.
+#####################################################################
+
+restore [locate_data_file bug26560_planarspline.brep] b1
+
+set rr [bounding b1]
+regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $rr full v1_x v1_y v1_z v2_x v2_y v2_z
+
+set tol_abs 1.0e-4
+set tol_rel 0.0001
+
+set expected_v1_x -277.03883383200952
+checkreal "v1_x" ${v1_x} ${expected_v1_x} ${tol_abs} ${tol_rel}
+
+set expected_v1_y -562.56241861670651
+checkreal "v1_y" ${v1_y} ${expected_v1_y} ${tol_abs} ${tol_rel}
+
+set expected_v1_z -9.9999999999999995e-08
+checkreal "v1_z" ${v1_z} ${expected_v1_z} ${tol_abs} ${tol_rel}
+
+set expected_v2_x 20.000000100000001
+checkreal "v2_x" ${v2_x} ${expected_v2_x} ${tol_abs} ${tol_rel}
+
+set expected_v2_y -221.27317426638498
+checkreal "v2_y" ${v2_y} ${expected_v2_y} ${tol_abs} ${tol_rel}
+
+set expected_v2_z 9.9999999999999995e-08
+checkreal "v2_z" ${v2_z} ${expected_v2_z} ${tol_abs} ${tol_rel}
+
+smallview
+fit
+set only_screen_axo 1

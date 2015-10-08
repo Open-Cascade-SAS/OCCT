@@ -1,4 +1,4 @@
-// Created on: 1993-07-07
+;// Created on: 1993-07-07
 // Created by: Remi LEQUETTE
 // Copyright (c) 1993-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
@@ -31,6 +31,7 @@
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -236,6 +237,11 @@ public:
   
   //! Returns the parameters of the vertex on the face.
   Standard_EXPORT static gp_Pnt2d Parameters (const TopoDS_Vertex& V, const TopoDS_Face& F);
+
+  //! Returns the maximum tolerance of input shape subshapes.
+  //@param theShape    - Shape to search tolerance.
+  //@param theSubShape - Search subshape, only Face, Edge or Vertex are supported.
+  Standard_EXPORT static Standard_Real MaxTolerance (const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theSubShape);
 
 };
 

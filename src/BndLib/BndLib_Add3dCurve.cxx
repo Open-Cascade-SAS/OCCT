@@ -34,6 +34,70 @@
 #include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
+//function : reduceSplineBox
+//purpose  : This method intended to reduce box in case of 
+//           bezier and bspline curve.
+//=======================================================================
+static void reduceSplineBox(const Adaptor3d_Curve& theCurve,
+                            const Bnd_Box& theOrigBox,
+                            Bnd_Box & theReducedBox)
+{
+  // Guaranteed bounding box based on poles of bspline.
+  Bnd_Box aPolesBox;
+  Standard_Real aPolesXMin, aPolesYMin, aPolesZMin,
+                aPolesXMax, aPolesYMax, aPolesZMax;
+
+  if (theCurve.GetType() == GeomAbs_BSplineCurve)
+  {
+    Handle(Geom_BSplineCurve) aC = theCurve.BSpline();
+    const TColgp_Array1OfPnt& aPoles     = aC->Poles();
+
+    for(Standard_Integer anIdx  = aPoles.Lower();
+        anIdx <= aPoles.Upper();
+        ++anIdx)
+    {
+      aPolesBox.Add(aPoles.Value(anIdx));
+    }
+  }
+  if (theCurve.GetType() == GeomAbs_BezierCurve)
+  {
+    Handle(Geom_BezierCurve) aC = theCurve.Bezier();
+    const TColgp_Array1OfPnt& aPoles     = aC->Poles();
+
+    for(Standard_Integer anIdx  = aPoles.Lower();
+        anIdx <= aPoles.Upper();
+        ++anIdx)
+    {
+      aPolesBox.Add(aPoles.Value(anIdx));
+    }
+  }
+
+  aPolesBox.Get(aPolesXMin, aPolesYMin, aPolesZMin,
+                aPolesXMax, aPolesYMax, aPolesZMax);
+
+  Standard_Real x, y, z, X, Y, Z;
+  theOrigBox.Get(x, y, z, X, Y, Z);
+
+  // Left bound.
+  if (aPolesXMin > x)
+    x = aPolesXMin;
+  if (aPolesYMin > y)
+    y = aPolesYMin;
+  if (aPolesZMin > z)
+    z = aPolesZMin;
+
+  // Right bound.
+  if (aPolesXMax < X)
+    X = aPolesXMax;
+  if (aPolesYMax < Y)
+    Y = aPolesYMax;
+  if (aPolesZMax < Z)
+    Z = aPolesZMax;
+
+  theReducedBox.Update(x, y, z, X, Y, Z);
+}
+
+//=======================================================================
 //function : Add
 //purpose  : 
 //=======================================================================
@@ -116,17 +180,13 @@ void BndLib_Add3dCurve::Add( const Adaptor3d_Curve& C,
   case GeomAbs_BezierCurve: 
     {
       Handle(Geom_BezierCurve) Bz = C.Bezier();
-      //OCC566(apo)->
       Standard_Integer N = Bz->Degree();
       GeomAdaptor_Curve GACurve(Bz);
       Bnd_Box B1;
       tol = FillBox(B1,GACurve,U1,U2,N);
       B1.Enlarge(weakness*tol);
-      Standard_Real x, y, z, X, Y, Z;
-      B1.Get(x, y, z, X, Y, Z);
-      B.Update(x, y, z, X, Y, Z);
+      reduceSplineBox(C, B1, B);
       B.Enlarge(Tol);
-      //<-OCC566(apo)
       break;
     }
   case GeomAbs_BSplineCurve: 
@@ -168,9 +228,7 @@ void BndLib_Add3dCurve::Add( const Adaptor3d_Curve& C,
       if (!B1.IsVoid())
       {
         B1.Enlarge(weakness*tol);
-        Standard_Real x, y, z, X, Y, Z;
-        B1.Get(x, y, z, X, Y, Z);
-        B.Update(x, y, z, X, Y, Z);
+        reduceSplineBox(C, B1, B);
         B.Enlarge(Tol);
       }
       //<-OCC566(apo)

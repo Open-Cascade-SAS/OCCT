@@ -292,6 +292,9 @@ public:
   //!
   //! Raised if the length of P is not equal to the number of poles.
   Standard_EXPORT void Poles (TColgp_Array1OfPnt& P) const;
+
+    //! Returns all the poles of the curve.
+  Standard_EXPORT const TColgp_Array1OfPnt& Poles () const;
   
   //! Returns the weight of range Index.
   //! Raised if Index is not in the range [1, NbPoles]

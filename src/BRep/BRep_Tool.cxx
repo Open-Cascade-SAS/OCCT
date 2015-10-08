@@ -1538,3 +1538,41 @@ Standard_Boolean IsPlane(const Handle(Geom_Surface)& aS)
   return bRet;
 }
 
+//=======================================================================
+//function : MaxTolerance
+//purpose  : 
+//=======================================================================
+Standard_Real BRep_Tool::MaxTolerance (const TopoDS_Shape& theShape,
+                                       const TopAbs_ShapeEnum theSubShape)
+{
+  Standard_Real aTol = 0.0;
+
+  // Explorer Shape-Subshape.
+  TopExp_Explorer anExpSS(theShape, theSubShape);
+  if (theSubShape == TopAbs_FACE)
+  {
+    for( ; anExpSS.More() ;  anExpSS.Next() )
+    {
+      const TopoDS_Shape& aCurrentSubShape = anExpSS.Current();
+      aTol = Max(aTol, Tolerance(TopoDS::Face(aCurrentSubShape)));
+    }
+  }
+  else if (theSubShape == TopAbs_EDGE)
+  {
+    for( ; anExpSS.More() ;  anExpSS.Next() )
+    {
+      const TopoDS_Shape& aCurrentSubShape = anExpSS.Current();
+      aTol = Max(aTol, Tolerance(TopoDS::Edge(aCurrentSubShape)));
+    }
+  }
+  else if (theSubShape == TopAbs_VERTEX)
+  {
+    for( ; anExpSS.More() ;  anExpSS.Next() )
+    {
+      const TopoDS_Shape& aCurrentSubShape = anExpSS.Current();
+      aTol = Max(aTol, Tolerance(TopoDS::Vertex(aCurrentSubShape)));
+    }
+  }
+
+  return aTol;
+}

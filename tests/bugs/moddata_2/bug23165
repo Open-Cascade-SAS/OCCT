@@ -54,8 +54,8 @@ if {$index > -1} {
   set e1_good_y1 -0.010622244944394899
   set e1_good_z1 -3.0106222449443973
   set e1_good_x2 -17.589377755055537
-  set e1_good_y2 5.7106222251726582
-  set e1_good_z2 -1.6146050638816589
+  set e1_good_y2 5.700038816113608
+  set e1_good_z2 -1.6251884728673096
 
   set e1_x1_percent [GetPercent ${e1_x1} ${e1_good_x1}]
   set e1_y1_percent [GetPercent ${e1_y1} ${e1_good_y1}]
@@ -110,8 +110,8 @@ set good_x1 -17.6105835090592
 set good_y1 -4.7133570660117909
 set good_z1 -4.3679100133425806
 set good_x2 -17.589416490940806
-set good_y2 5.7105834892874094
-set good_z2 -1.6146437997669054
+set good_y2 5.7000000802283299
+set good_z2 -1.6252272087525899
 
 set x1_percent [GetPercent ${x1} ${good_x1}]
 set y1_percent [GetPercent ${y1} ${good_y1}]
