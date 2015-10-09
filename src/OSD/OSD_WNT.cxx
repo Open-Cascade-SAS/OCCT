@@ -28,13 +28,11 @@
 /***/
 static void Init ( void );
 /***/
-static DWORD dwLevel;
-/***/
 class Init_OSD_WNT {  // provides initialization
 
  public:
 
-  Init_OSD_WNT () { Init (); dwLevel = TlsAlloc (); }
+  Init_OSD_WNT () { Init (); }
 
 }; // end Init_OSD_WNT
 
@@ -897,7 +895,7 @@ void FreeAce ( PVOID pACE ) {
 /* Returns  : TRUE on success, FALSE otherwise                              */
 /******************************************************************************/
 /***/
-BOOL MoveDirectory ( LPCWSTR oldDir, LPCWSTR newDir ) {
+static BOOL MoveDirectory ( LPCWSTR oldDir, LPCWSTR newDir, DWORD& theRecurseLevel ) {
 
  PWIN32_FIND_DATAW    pFD;
  LPWSTR               pName;
@@ -909,12 +907,10 @@ BOOL MoveDirectory ( LPCWSTR oldDir, LPCWSTR newDir ) {
  BOOL                 fFind;
  BOOL                 retVal = FALSE;
  DIR_RESPONSE         response;
- DWORD                level;
 
- if (   (  level = ( DWORD )TlsGetValue ( dwLevel )  ) == NULL   ) {
+ if (theRecurseLevel == 0) {
 
-  ++level;
-  TlsSetValue (  dwLevel, ( LPVOID )level  );
+  ++theRecurseLevel;
 
   fFind = FALSE;
   driveSrc = driveDst = pathSrc = pathDst = NULL;
@@ -968,16 +964,14 @@ retry:
 
   if ( fFind ) {
     
-   --level;
-   TlsSetValue (  dwLevel, ( LPVOID )level  );
+   --theRecurseLevel;
    return retVal;
 
   }  // end if
  
  } else {
  
-  ++level;
-  TlsSetValue (  dwLevel, ( LPVOID )level  );
+  ++theRecurseLevel;
  
  }  // end else
 
@@ -1039,7 +1033,7 @@ retry:
 
      if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 
-       retVal = MoveDirectory ( pFullNameSrc, pFullNameDst );
+       retVal = MoveDirectory ( pFullNameSrc, pFullNameDst, theRecurseLevel );
        if (!retVal) break;
    
      } else {
@@ -1121,12 +1115,18 @@ retry_2:
   
  }  /* end if */
 
- --level;
- TlsSetValue (  dwLevel, ( LPVOID )level  );
+ --theRecurseLevel;
 
  return retVal;
 
 }  /* end MoveDirectory */
+
+BOOL MoveDirectory (LPCWSTR oldDir, LPCWSTR newDir)
+{
+  DWORD aRecurseLevel = 0;
+  return MoveDirectory (oldDir, newDir, aRecurseLevel);
+}
+
 /***/
 /******************************************************************************/
 /* Function : CopyDirectory                                                 */

@@ -115,9 +115,8 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
                          ".xprogress.bar create rectangle 2 2 2 21 -fill blue -tags progress;"
                          ".xprogress.bar create rectangle 2 2 2 21 -outline black -tags progress_next;"
                          "message .xprogress.text -width 400 -text \"Progress 0%%\";"
-                         "button .xprogress.stop -text \"Break\" -relief groove -width 9 -command {XProgress -stop %ld};"
-                         "pack .xprogress.bar .xprogress.text .xprogress.stop -side top;",
-               (long)(void*)this );
+                         "button .xprogress.stop -text \"Break\" -relief groove -width 9 -command {XProgress -stop %p};"
+                         "pack .xprogress.bar .xprogress.text .xprogress.stop -side top;", this );
       ((Draw_Interpretor*)myDraw)->Eval ( command );
       myShown = Standard_True;
     }
@@ -146,7 +145,7 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
 
 Standard_Boolean Draw_ProgressIndicator::UserBreak()
 {
-  if ( StopIndicator() == (long)(void*)this ) {
+  if ( StopIndicator() == this ) {
 //    cout << "Progress Indicator - User Break: " << StopIndicator() << ", " << (void*)this << endl;
     myBreak = Standard_True;
     ((Draw_Interpretor*)myDraw)->Eval ( "XProgress -stop 0" );
@@ -221,9 +220,9 @@ Standard_Boolean &Draw_ProgressIndicator::DefaultGraphMode ()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer &Draw_ProgressIndicator::StopIndicator () 
+Standard_Address &Draw_ProgressIndicator::StopIndicator ()
 {
-  static Standard_Integer stopIndicator = 0;
+  static Standard_Address stopIndicator = 0;
   return stopIndicator;
 }
 

@@ -282,50 +282,6 @@ int status;
  if (status == -1) myError.SetValue (errno, Iam, "SetProtection");
 }
 
-
-
-// Returns User Id
-
-Standard_Integer OSD_FileNode::UserId(){
-struct stat buffer;
-
-// if (myPath.Name().Length()==0)
-//  OSD_OSDError::Raise("OSD_FileNode::UserId : no name was given");
-
-// if (Failed()) Perror();
-
- /* Get File Informations */
-
- TCollection_AsciiString aBuffer;
- myPath.SystemName ( aBuffer );
- stat ( aBuffer.ToCString(), &buffer );
-
- return ( buffer.st_uid );
-}
-
-
-// Returns Group Id
-
-Standard_Integer OSD_FileNode::GroupId(){
-struct stat buffer;
-
-// if (myPath.Name().Length()==0)
-//  OSD_OSDError::Raise("OSD_FileNode::GroupId : no name was given");
-
-// if (Failed()) Perror();
-
- /* Get File Informations */
-
- TCollection_AsciiString aBuffer;
- myPath.SystemName ( aBuffer );
- stat ( aBuffer.ToCString(), &buffer );
-
- return ( buffer.st_gid );
-}
-
-
-
-
 // return the date of last access of file/directory
 
 Quantity_Date  OSD_FileNode::CreationMoment(){
@@ -805,81 +761,6 @@ Quantity_Date OSD_FileNode::CreationMoment () {
  return retVal;
 
 }  // end OSD_FileNode :: CreationMoment
-
-//=======================================================================
-//function : UserId
-//purpose  : 
-//=======================================================================
-
-Standard_Integer OSD_FileNode::UserId () {
-
- PSID                    pSIDowner = NULL;
- PSID                    retVal = NULL;
- BOOL                    fDefaulted;
- TCollection_AsciiString fName;
- PSECURITY_DESCRIPTOR    pSD;
-
- myPath.SystemName ( fName );
- TCollection_ExtendedString fNameW(fName);
-
- TEST_RAISE(  "UserId"  );
-
- if (   (  pSD = GetFileSecurityEx (
-                  (const wchar_t*) fNameW.ToExtString (),
-                  OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION
-                 )
-        ) != NULL                                                   &&
-        GetSecurityDescriptorOwner ( pSD, &pSIDowner, &fDefaulted ) &&
-        pSIDowner != NULL
- )
- 
-  retVal = CopySidEx ( pSIDowner );
-
- else
-
-  _osd_wnt_set_error ( myError, OSD_WFileNode );
-
- if ( pSD != NULL )
-
-  FreeFileSecurity ( pSD );
- 
- return ( Standard_Integer )retVal;
-
-}  // end OSD_FileNode :: UserId
-
-//=======================================================================
-//function : GroupId
-//purpose  : 
-//=======================================================================
-
-Standard_Integer OSD_FileNode::GroupId () {
-
- PGROUP_SID              retVal = NULL;
- TCollection_AsciiString fName;
- PSECURITY_DESCRIPTOR    pSD;
-
- myPath.SystemName ( fName );
- TCollection_ExtendedString fNameW(fName);
-
- TEST_RAISE(  "GroupId"  );
-
- if (   (  pSD = GetFileSecurityEx (
-                  (const wchar_t*) fNameW.ToExtString (),
-                  OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION
-                 )
-        ) != NULL
- ) {
-
-  retVal = AllocGroupSid ( pSD );
-  FreeFileSecurity ( pSD );
-
- } else
-
-  _osd_wnt_set_error ( myError, OSD_WFileNode );
-
- return ( Standard_Integer )retVal;
-
-}  // end OSD_FileNode :: GroupId
 
 //=======================================================================
 //function : Failed

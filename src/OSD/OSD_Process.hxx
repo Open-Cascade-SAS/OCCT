@@ -51,9 +51,6 @@ public:
   //! Gets system date.
   Standard_EXPORT Quantity_Date SystemDate();
   
-  //! Returns the 'User Id'.
-  Standard_EXPORT Standard_Integer UserId();
-  
   //! Returns the user name.
   Standard_EXPORT TCollection_AsciiString UserName();
   

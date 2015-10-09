@@ -74,12 +74,6 @@ public:
   //! same value.
   Standard_EXPORT Quantity_Date CreationMoment();
   
-  //! Returns User Identification.
-  Standard_EXPORT Standard_Integer UserId();
-  
-  //! Returns Group Identification.
-  Standard_EXPORT Standard_Integer GroupId();
-  
   //! Returns TRUE if an error occurs
   Standard_EXPORT Standard_Boolean Failed() const;
   

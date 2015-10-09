@@ -1241,7 +1241,9 @@ static Standard_Integer XProgress (Draw_Interpretor& di, Standard_Integer argc, 
     if ( argv[i][1] == 't' ) Draw_ProgressIndicator::DefaultTextMode() = turn;
     else if ( argv[i][1] == 'g' ) Draw_ProgressIndicator::DefaultGraphMode() = turn;
     else if ( ! strcmp ( argv[i], "-stop" ) && i+1 < argc ) {
-      Draw_ProgressIndicator::StopIndicator() = atol(argv[++i]);
+      Standard_Address aPtr = 0;
+      if (sscanf (argv[++i], "%p", &aPtr) == 1)
+        Draw_ProgressIndicator::StopIndicator() = aPtr;
       return 0;
     }
   }

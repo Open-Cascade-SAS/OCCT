@@ -17,15 +17,9 @@
 #define _Draw_ProgressIndicator_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Size.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <Draw_Interpretor.hxx>
-
 
 class Draw_ProgressIndicator;
 DEFINE_STANDARD_HANDLE(Draw_ProgressIndicator, Message_ProgressIndicator)
@@ -79,21 +73,13 @@ public:
   //! Get/Set default values for output modes
   Standard_EXPORT static Standard_Boolean& DefaultGraphMode();
   
-  //! Internal method for implementation of UserBreak mechanism
-  Standard_EXPORT static Standard_Integer& StopIndicator();
-
-
+  //! Internal method for implementation of UserBreak mechanism;
+  //! note that it uses static variable and thus not thread-safe! 
+  Standard_EXPORT static Standard_Address& StopIndicator();
 
   DEFINE_STANDARD_RTTI(Draw_ProgressIndicator,Message_ProgressIndicator)
 
-protected:
-
-
-
-
 private:
-
-
   Standard_Boolean myTextMode;
   Standard_Boolean myGraphMode;
   Standard_Address myDraw;
@@ -102,14 +88,6 @@ private:
   Standard_Integer myUpdateTime;
   Standard_Size myLastUpdate;
   Standard_Size myStartTime;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Draw_ProgressIndicator_HeaderFile

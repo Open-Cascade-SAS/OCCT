@@ -137,7 +137,7 @@ static DWORD WINAPI WNTthread_func (LPVOID data)
   WNTthread_data *adata = (WNTthread_data*)data;
   void* ret = adata->func ( adata->data );
   free ( adata );
-  return (DWORD)ret;
+  return PtrToLong (ret);
 }
 #endif
 
@@ -243,7 +243,7 @@ Standard_Boolean OSD_Thread::Wait (Standard_Address &result) const
   // and convert result of the thread execution to Standard_Address
   DWORD anExitCode;
   if ( GetExitCodeThread ( myThread, &anExitCode ) )
-    result = (Standard_Address)anExitCode;
+    result = ULongToPtr (anExitCode);
   return Standard_True;
 
 #else
@@ -273,7 +273,7 @@ Standard_Boolean OSD_Thread::Wait (const Standard_Integer time, Standard_Address
   {
     DWORD anExitCode;
     if ( GetExitCodeThread ( myThread, &anExitCode ) )
-      result = (Standard_Address)anExitCode;
+      result = ULongToPtr (anExitCode);
     return Standard_True;
   }
   else if (ret == WAIT_TIMEOUT)

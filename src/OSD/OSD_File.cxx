@@ -852,7 +852,7 @@ BOOL                 __fastcall _osd_wnt_sd_to_protection (
 BOOL                 __fastcall _osd_print (const Standard_PCharacter, const wchar_t* );
 
 static void      __fastcall _test_raise ( HANDLE, Standard_CString );
-static DWORDLONG __fastcall _get_line   ( Standard_PCharacter&, DWORD );
+static Standard_Integer __fastcall _get_line (Standard_PCharacter& buffer, DWORD dwBuffSize, LONG& theSeekPos);
 static int       __fastcall _get_buffer ( HANDLE, Standard_PCharacter&, DWORD, BOOL, BOOL );
 static DWORD     __fastcall _get_access_mask ( OSD_SingleProtection );
 static DWORD     __fastcall _get_dir_access_mask ( OSD_SingleProtection prt );
@@ -1068,14 +1068,12 @@ void OSD_File :: ReadLine (
                   const Standard_Integer NByte, Standard_Integer& NbyteRead
                  ) {
 
- DWORDLONG          status;
  DWORD              dwBytesRead;
  DWORD              dwDummy;
  Standard_Character peekChar;
  Standard_PCharacter ppeekChar;
  Standard_PCharacter cBuffer;
- Standard_CString   eos;
- DWORD              dwSeekPos;
+ LONG               aSeekPos;
 
  if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
    Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
@@ -1096,7 +1094,7 @@ void OSD_File :: ReadLine (
 
  if ( myIO & FLAG_FILE ) {
  
-  if (!ReadFile (myFileHandle, cBuffer, (DWORD)NByte, &dwBytesRead, NULL)) {  // an error occured
+  if (!ReadFile (myFileHandle, cBuffer, NByte, &dwBytesRead, NULL)) {  // an error occured
 
    _osd_wnt_set_error ( myError, OSD_WFile );   
    Buffer.Clear ();
@@ -1110,16 +1108,10 @@ void OSD_File :: ReadLine (
    
   } else {
    myIO &= ~FLAG_EOF ;  // if the file increased since last read (LD)
-   status = _get_line ( cBuffer, dwBytesRead );
+   NbyteRead = _get_line (cBuffer, dwBytesRead, aSeekPos);
 
-   dwSeekPos = LODWORD( status );
-   eos       = ( Standard_CString )HIDWORD( status );
-#ifdef VAC
-   if ( (__int64) status == (__int64) -1 ) {  // last character in the buffer is <CR> -
-#else
-   if ( status == 0xFFFFFFFFFFFFFFFF ) {  // last character in the buffer is <CR> -
-                                          // peek next character to see if it is a <LF>
-#endif
+   if ( NbyteRead == -1 )  // last character in the buffer is <CR> -
+   {                       // peek next character to see if it is a <LF>
     if (!ReadFile (myFileHandle, ppeekChar, 1, &dwDummy, NULL)) {
     
      _osd_wnt_set_error ( myError, OSD_WFile );
@@ -1137,13 +1129,9 @@ void OSD_File :: ReadLine (
 
     NbyteRead = dwBytesRead;
 
-   } else {
-
-    if ( dwSeekPos != 0 )
-     SetFilePointer (myFileHandle, (LONG)dwSeekPos, NULL, FILE_CURRENT);
-
-    NbyteRead = ( Standard_Integer )( eos - cBuffer );
-
+   } else if ( aSeekPos != 0 )
+   {
+     SetFilePointer (myFileHandle, aSeekPos, NULL, FILE_CURRENT);
    }
 
   }  // end else
@@ -1167,18 +1155,10 @@ void OSD_File :: ReadLine (
 
   } else {
 
-   status = _get_line ( cBuffer, dwBytesRead );
+   NbyteRead = _get_line (cBuffer, dwBytesRead, aSeekPos);
 
-   dwSeekPos = LODWORD( status );
-   eos       = ( Standard_CString )HIDWORD( status );
-
-#ifdef VAC
-   if ( (__int64) status == (__int64) -1 ) {  // last character in the buffer is <CR> -
-#else  
-   if ( status == 0xFFFFFFFFFFFFFFFF ) {  // last character in the buffer is <CR> -    
-                                          // peek next character to see if it is a <LF>
-#endif
-
+   if (NbyteRead == -1) // last character in the buffer is <CR> -    
+   {                     // peek next character to see if it is a <LF>
     NbyteRead = dwBytesRead; // (LD) always fits this case.
 
     dwDummy = _get_buffer (myFileHandle, ppeekChar, 1, TRUE, myIO & FLAG_SOCKET);
@@ -1195,13 +1175,9 @@ void OSD_File :: ReadLine (
 
      myIO |= FLAG_EOF;
 
-   } else {
-
-    if ( dwSeekPos != 0 )
-     dwBytesRead = dwBytesRead + dwSeekPos;
-
-    NbyteRead  = ( Standard_Integer )( eos - cBuffer );
-
+   } else if (aSeekPos != 0)
+   {
+     dwBytesRead = dwBytesRead + aSeekPos;
    }
 
    // Don't rewrite datas in cBuffer.
@@ -1957,12 +1933,11 @@ static void __fastcall _test_raise ( HANDLE hFile, Standard_CString str ) {
 
 }  // end _test_raise
 
-// Modified so that we have <nl> at end of line if we have read <nl> or <cr>
-// by LD 17 dec 98 for B4.4
+// Returns number of bytes in the string (including end \n, but excluding \r);
+// 
+static Standard_Integer __fastcall _get_line (Standard_PCharacter& buffer, DWORD dwBuffSize, LONG& theSeekPos)
+{
 
-static DWORDLONG __fastcall _get_line ( Standard_PCharacter& buffer, DWORD dwBuffSize ) {
-
- DWORDLONG        retVal;
  Standard_PCharacter ptr;
 
  buffer[ dwBuffSize ] = 0;
@@ -1970,55 +1945,30 @@ static DWORDLONG __fastcall _get_line ( Standard_PCharacter& buffer, DWORD dwBuf
 
  while ( *ptr != 0 ) {
  
-  if (  *ptr == '\n'  ) {
-  
-   ptr++ ;   // jump newline char.
-   *ptr = 0 ;
-   retVal = ptr - buffer - dwBuffSize;
-   retVal &= 0x0000000FFFFFFFF;// import 32-bit to 64-bit
-#ifdef VAC
-   retVal = (DWORDLONG) ( (unsigned __int64) retVal | (((unsigned __int64) ptr) << 32) );
-#else
-   retVal |= (   (  ( DWORDLONG )( DWORD )ptr  ) << 32   );
-#endif   
-   return retVal;
-  
-  } else if (  *ptr == '\r' && ptr[ 1 ] == '\n'  ) {
-  
-   *(ptr++) = '\n' ; // Substitue carriage return by newline.
-   *ptr = 0 ;
-   retVal = ptr + 1 - buffer - dwBuffSize;
-   retVal &= 0x0000000FFFFFFFF;// import 32-bit to 64-bit
-#ifdef VAC
-   retVal = (DWORDLONG) ( (unsigned __int64) retVal | (((unsigned __int64) ptr) << 32) );
-#else
-   retVal |= (   (  ( DWORDLONG )( DWORD )ptr  ) << 32   );
-#endif
-   return retVal;
-  
-  } else if (  *ptr == '\r' && ptr[ 1 ] == 0  ) {
+  if (  *ptr == '\n'  )
+  {
+    ptr++ ;   // jump newline char.
+    *ptr = 0 ;
+    theSeekPos = (LONG)(ptr - buffer - dwBuffSize);
+    return (Standard_Integer)(ptr - buffer);  
+  }
+  else if (  *ptr == '\r' && ptr[ 1 ] == '\n'  )
+  {
+    *(ptr++) = '\n' ; // Substitue carriage return by newline.
+    *ptr = 0 ;
+    theSeekPos = (LONG)(ptr + 1 - buffer - dwBuffSize);
+    return (Standard_Integer)(ptr - buffer);  
+  } 
+  else if (  *ptr == '\r' && ptr[ 1 ] == 0  ) {
     *ptr = '\n' ; // Substitue carriage return by newline
-
-#ifdef VAC  
-    return (DWORDLONG) (__int64) (-1);
-#else
-    return 0xFFFFFFFFFFFFFFFF;
-#endif
+    return -1;
   }
   ++ptr;
   
  }  // end while
 
-#ifdef VAC
- retVal  = (DWORDLONG) ( ( (unsigned __int64) ((DWORD) buffer + dwBuffSize) ) << 32 );
- retVal = (DWORDLONG) ( (unsigned __int64) retVal & (((unsigned __int64) 0xFFFFFFFF) << 32) );
-#else
- retVal  = (   (  ( DWORDLONG )( ( DWORD )buffer + dwBuffSize )  ) << 32   );
- retVal &= 0xFFFFFFFF00000000;
-#endif
-
- return retVal;
-
+ theSeekPos = 0;
+ return dwBuffSize;
 }  // end _get_line
 
 static int __fastcall _get_buffer (

@@ -1039,7 +1039,6 @@ void BRepFeat_MakeDPrism::BossEdges (const Standard_Integer signature)
         for (itLS.Initialize(theLastShape);itLS.More();itLS.Next()) {
           const TopoDS_Face& TopFace = TopoDS::Face(itLS.Value());
           if (!FF.IsSame(TopFace)) {
-            TopExp_Explorer ExpE;
             for (ExpE.Init(FF,TopAbs_EDGE);ExpE.More() && !Found ;ExpE.Next()) {
               const TopoDS_Edge& E1 = TopoDS::Edge(ExpE.Current());
               TopoDS_Vertex V1,V2;

@@ -85,12 +85,6 @@ Standard_Integer OSD_Process::ProcessId(){
  return (getpid());
 }
 
-
-Standard_Integer OSD_Process::UserId(){
- return (getuid());
-}
-
-
 TCollection_AsciiString OSD_Process::UserName(){
  struct passwd *infos;
  infos = getpwuid(getuid()); 
@@ -271,32 +265,6 @@ Quantity_Date OSD_Process :: SystemDate () {
  return retVal;
 
 }  // end OSD_Process :: SystemDate
-
-Standard_Integer OSD_Process :: UserId () {
-
- PSID         retVal        = NULL;
- HANDLE       hProcessToken = INVALID_HANDLE_VALUE;
- PTOKEN_OWNER pTKowner      = NULL;
-
- if (  !OpenProcessToken (
-         GetCurrentProcess (),
-         TOKEN_QUERY, &hProcessToken
-        ) ||
-        (  pTKowner = ( PTOKEN_OWNER )GetTokenInformationEx (
-                                       hProcessToken, TokenOwner
-                                      )
-        ) == NULL ||
-        (  retVal   = CopySidEx ( pTKowner -> Owner )  ) == NULL
- )
-
-  _osd_wnt_set_error ( myError, OSD_WProcess );
-
- if ( hProcessToken != INVALID_HANDLE_VALUE ) CloseHandle ( hProcessToken );
- if ( pTKowner      != NULL                 ) FreeTokenInformation ( pTKowner );
-
- return ( Standard_Integer )retVal;
-
-}  // end OSD_Process :: UserId
 
 TCollection_AsciiString OSD_Process :: UserName () 
 {

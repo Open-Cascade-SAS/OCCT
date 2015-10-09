@@ -224,7 +224,7 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
     Handle(StepBasic_Person) aPerson = new StepBasic_Person;
     Handle(TCollection_HAsciiString) uid = new TCollection_HAsciiString ( orgId );
     uid->AssignCat ( "," );
-    uid->AssignCat ( TCollection_AsciiString ( sys.UserId() ).ToCString() );
+    uid->AssignCat (sys.UserName().ToCString());
     Handle(Interface_HArray1OfHAsciiString) suffix, prefix;
     aPerson->Init ( uid, Standard_True, lname, Standard_True, fname, ( ! mname.IsNull() ),
 		    mname, Standard_False, suffix, Standard_False, prefix );

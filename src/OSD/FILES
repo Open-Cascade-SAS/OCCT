@@ -10,8 +10,6 @@ OSD_Disk.cxx
 OSD_Disk.hxx
 OSD_Environment.cxx
 OSD_Environment.hxx
-OSD_EnvironmentIterator.cxx
-OSD_EnvironmentIterator.hxx
 OSD_Error.cxx
 OSD_Error.hxx
 OSD_ErrorList.hxx
