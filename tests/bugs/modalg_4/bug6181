@@ -11,17 +11,8 @@ set BugNumber OCC6181
 restore [locate_data_file OCC6181_A.brep] s1 
 restore [locate_data_file OCC6181_B.brep] s2 
 
-decho off
-set che_s1 [checkshape s1]
-set che_s2 [checkshape s2]
-decho on
-if { [regexp {Faulty} $che_s1] } {
-    puts "Faulty ${BugNumber} : checkshape is wrong for s1"
-}
-
-if { [regexp {Faulty} $che_s2] } {
-    puts "Faulty ${BugNumber} : checkshape is wrong for s2"
-}
+checkshape s1
+checkshape s2
 
 bcut result s1 s2
 

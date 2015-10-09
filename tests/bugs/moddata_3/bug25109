@@ -1,3 +1,4 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1 "
 puts "============"
 puts "CR25109"
 puts "============"
@@ -8,12 +9,4 @@ puts ""
 
 restore [locate_data_file bug25109_e1.brep] b
 
-decho off
-set info [checkshape b]
-decho on
-
-if { [regexp "This shape seems to be valid" ${info}] == 1 } {
-    puts "Error: checkshape is incorrect"
-} else {
-    puts "OK: checkshape is correct"
-}
+checkshape b

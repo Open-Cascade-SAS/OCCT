@@ -65,25 +65,8 @@ for {set i 1} {$i <= ${NbCurv}} {incr i} {
     puts "Error: Wrong curve's range!"
   }
 
-  dlog reset
-  dlog on
-  xdistcs c_$i s1 ${U1} ${U2} 10
-  set Log2 [dlog get]
-  set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance 1.0e-7
-  set Limit_Tol 1.0e-8
-  set D_good 0.
-  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
-
-  dlog reset
-  dlog on
-  xdistcs c_$i s2 ${U1} ${U2} 10
-  set Log2 [dlog get]
-  set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance 1.0e-7
-  set Limit_Tol 1.0e-8
-  set D_good 0.
-  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+  xdistcs c_$i s1 ${U1} ${U2} 10 1e-7 1e-8
+  xdistcs c_$i s2 ${U1} ${U2} 10 1e-7 1e-8
 }
 
 smallview

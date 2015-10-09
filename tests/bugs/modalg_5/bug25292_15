@@ -74,25 +74,8 @@ if {${ind} >= 0} {
     puts "Error: Wrong curve's range!"
   }
   
-  dlog reset
-  dlog on
-  xdistcs res s1 ${U1} ${U2} 10
-  set Log1 [dlog get]
-  set List1 [split ${Log1} {TD= \t\n}]
-  set Tolerance 1.0e-7
-  set Limit_Tol 1.0e-7
-  set D_good 0.
-  checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
-  
-  dlog reset
-  dlog on
-  xdistcs res s2 ${U1} ${U2} 10
-  set Log1 [dlog get]
-  set List1 [split ${Log1} {TD= \t\n}]
-  set Tolerance 1.0e-7
-  set Limit_Tol 1.0e-7
-  set D_good 0.
-  checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+  xdistcs res s1 ${U1} ${U2} 10 1e-7  
+  xdistcs res s2 ${U1} ${U2} 10 1e-7
 } else {
   set ic 1
   set AllowRepeate 1
@@ -114,25 +97,8 @@ if {${ind} >= 0} {
         puts "Error: Wrong curve's range!"
       }
       
-      dlog reset
-      dlog on
-      xdistcs res_$ic s1 ${U1} ${U2} 10
-      set Log1 [dlog get]
-      set List1 [split ${Log1} {TD= \t\n}]
-      set Tolerance 1.0e-7
-      set Limit_Tol 1.0e-7
-      set D_good 0.
-      checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
-      
-      dlog reset
-      dlog on
-      xdistcs res_$ic s2 0 1 10
-      set Log1 [dlog get]
-      set List1 [split ${Log1} {TD= \t\n}]
-      set Tolerance 1.0e-7
-      set Limit_Tol 1.0e-7
-      set D_good 0.
-      checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+      xdistcs res_$ic s1 ${U1} ${U2} 10 1e-7
+      xdistcs res_$ic s2 0 1 10 1e-7
       
       incr ic
     }

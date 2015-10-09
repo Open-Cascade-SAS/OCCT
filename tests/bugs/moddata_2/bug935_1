@@ -1,4 +1,4 @@
-
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 puts "========="
 puts " OCC935 "
 puts "(case 1)"
@@ -10,20 +10,17 @@ puts ""
 
 restore [locate_data_file OCC935_1.brep] result
 
-decho off
 set err [checkshape result]
-decho on
+
 set j 1
 repeat 25 {
     restore [locate_data_file OCC935_1.brep] result
-    decho off
     set err1 [checkshape result]
-    decho on
     if { $err != $err1 } {
-	puts [format " Faulty OCC935 (case 1): function CHECKSHAPE works wrongly on %s time" $j]
-	break
+      puts [format " Faulty OCC935 (case 1): function CHECKSHAPE works wrongly on %s time" $j]
+      break
     } else {
-	puts [format " OCC935 (case 1)  OK: function CHECKSHAPE works properly %s time" $j]
+      puts [format " OCC935 (case 1)  OK: function CHECKSHAPE works properly %s time" $j]
     }
     incr j
 }

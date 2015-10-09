@@ -2,18 +2,12 @@ puts "========="
 puts "CR25801"
 puts "========="
 puts ""
-###############################
+#########################################################################################
 ## Some of the commands in BOPTest packages show the execution time without -t key
-###############################
+#########################################################################################
 
 box b1 10 10 10
-
-dlog reset
-dlog on
-bopcheck b1
-set Log1 [dlog get]
-
-puts "${Log1}"
+set Log1 [bopcheck b1]
 
 if { [regexp {Elapsed time} ${Log1}] } {
    puts "Error: bopcheck show the execution time without -t key"

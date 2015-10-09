@@ -9,14 +9,11 @@ puts ""
 box x1 10 10 10
 vertex x2 3 3 3
 compound x1 x2 b1
-decho off
+
 set info [bopargcheck b1 #f]
-decho on
 
 if { [regexp "Faulties for FIRST  shape found : 1" $info] != 1 } {
     puts "Error : command bopargcheck produces wrong result"
 } else {
     puts "OK : command bopargcheck produces correct result"
 }
-
-

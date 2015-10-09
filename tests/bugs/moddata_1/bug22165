@@ -1,3 +1,4 @@
+puts "REQUIRED All: 1	F: Syntax error in IGES file at line "
 puts "================"
 puts "OCC22165"
 puts "================"
@@ -12,9 +13,7 @@ catch { pload XDE }
 
 igesbrep [locate_data_file OCC22165-cub_spain.igs] result *
 
-decho off
 set Log [data c]
-decho on
 
 set LogLength [llength ${Log}]
 

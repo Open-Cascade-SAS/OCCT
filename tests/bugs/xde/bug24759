@@ -6,7 +6,6 @@ puts ""
 # Crash on STEP import, when reading a file exported is non-"C" locale
 ##########################################################################
 
-decho off
 stepread [locate_data_file bug24759_FissionMeter.step] aaa f * 
 
 

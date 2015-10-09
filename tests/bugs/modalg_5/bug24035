@@ -1,3 +1,4 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
 puts "============"
 puts "OCC24035"
 puts "============"
@@ -9,23 +10,5 @@ puts ""
 restore [locate_data_file bug24035_face1] face1
 restore [locate_data_file bug24035_face2] face2
 
-decho off
-set info1 [checkshape face1]
-set info2 [checkshape face2]
-decho on
-
-set status 0
-if { [regexp "Faulty shapes in variables faulty_1 to faulty_2" $info1] != 1 } {
-    puts "Error : There is no 2 mistakes by checkshape on face1"
-    set status 1
-}
-if { [regexp "Faulty shapes in variables faulty_1 to faulty_2" $info2] != 1 } {
-    puts "Error : There is no 2 mistakes by checkshape on face2"
-    set stauts 1
-}
-
-if { $status != 0 } {
-    puts "Error : Intersector is not symmetrical"
-} else {
-    puts "OK : Intersector is symmetrical"
-}
+checkshape face1
+checkshape face2

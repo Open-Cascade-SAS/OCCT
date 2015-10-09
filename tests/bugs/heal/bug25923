@@ -1,3 +1,4 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 puts "========"
 puts "OCC25923"
 puts "========"
@@ -10,39 +11,17 @@ smallview
 restore [locate_data_file OCC25923_FixSmallWire_Orientation.brep] a
 fit
 
-dlog reset
-dlog on
-decho off
 checkshape a
-set bug_info_1 [dlog get]
-set bug_info_1 [lrange $bug_info_1 2 7]
-decho on
 
-fixshape r a +s +o 1e-3
-dlog reset
-dlog on
-decho off
-checkshape r
-set bug_info_2 [dlog get]
-set bug_info_2 [lrange $bug_info_2 2 7]
-decho on
+fixshape r1 a +s +o 1e-3
 
-fixshape r r +o
-dlog reset
-dlog on
-decho off
-checkshape r
-set bug_info_3 [dlog get]
-set bug_info_3 [lrange $bug_info_3 2 7]
-decho on
+fixshape r2 r1 +o
 
-if {[string compare $bug_info_1 "This shape seems to be valid"] != 0} {
-  puts "ERRROR: Restored shape is not valid."
-}
-if {[string compare $bug_info_2 "This shape seems to be valid"] == 0} {
+if {[regexp {This shape seems to be valid} [checkshape r1] ]} {
   puts "ERRROR: OCC25923 is reproduced. Algorythm of removing small wires on face does not work."
 }
-if {[string compare $bug_info_3 "This shape seems to be valid"] != 0} {
+
+if {![regexp {This shape seems to be valid} [checkshape r2] ]} {
   puts "ERRROR: OCC25923 is reproduced. Algorythm of removing small wires on face does not work."
 }
 

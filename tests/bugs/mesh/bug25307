@@ -1,3 +1,4 @@
+puts "REQUIRED All: Not connected mesh inside face"
 puts "=========="
 puts "OCC25307"
 puts "=========="
@@ -12,19 +13,18 @@ vinit
 vsetdispmode 1
 vdisplay res
 vfit
-decho off
+
 set info1 [tricheck res]
-decho on
-regexp "Free_links +(\[0-9\]+) +Cross_face_errors +(\[0-9\]+) +Async_edges +(\[0-9\]+) +Free_nodes +(\[0-9\]+)" $info1 full freelinks1 crossfaces1 asyncedges1 freenodes1
+set pattern "Free_links +(\[0-9\]+) +Cross_face_errors +(\[0-9\]+) +Async_edges +(\[0-9\]+) +Free_nodes +(\[0-9\]+)"
+regexp "${pattern}" $info1 full freelinks1 crossfaces1 asyncedges1 freenodes1
 
 vclear
 vdisplay res
 vsetdispmode 1
 vfit
-decho off
+
 set info2 [tricheck res]
-decho on
-regexp "Free_links +(\[0-9\]+) +Cross_face_errors +(\[0-9\]+) +Async_edges +(\[0-9\]+) +Free_nodes +(\[0-9\]+)" $info2 full freelinks2 crossfaces2 asyncedges2 freenodes2
+regexp "${pattern}" $info2 full freelinks2 crossfaces2 asyncedges2 freenodes2
 if { $freelinks1 != $freelinks2 } {
   puts "Error: Free links are not equal"
 } else {

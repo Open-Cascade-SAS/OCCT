@@ -1,3 +1,4 @@
+puts "REQUIRED All: checkshape failure"
 puts "================"
 puts "OCC25844"
 puts "================"
@@ -7,18 +8,4 @@ puts ""
 #######################################################################
 
 restore [locate_data_file bug25843_onewire.brep] b
-
-dlog reset
-dlog on
-
 checkshape b f
-
-set info [dlog get]
-dlog reset
-dlog off
-
-if { [regexp "checkshape failure" ${info}] != 1  } {
-   puts "Error : Command \"checkshape\" does not detect error for case when degenerated edge does not contain geometric representation."
-} else {
-   puts "OK : Command \"checkshape\" work good"
-}

@@ -22,9 +22,7 @@ mkface ff gs
 add r1_1 ff
 add r2_1 ff
 
-decho off
 set resstr [bopargcheck ff b2_6 -F /RTVEIP]
-decho on
 
 if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
     puts "OK ${BugNumber}"

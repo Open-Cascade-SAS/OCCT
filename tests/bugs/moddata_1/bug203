@@ -22,13 +22,11 @@ chamf result1 face edge_1 face_3 A ${radis} ${angle}
 
 explode result1 e
 
-decho off
 if { [catch {fillet result result1 ${radis} result1_1 ${radis} result1_7 } catch_result] } {
     set mistake 1
 } else {
     set  mistake 0
 }
-decho on
 
 if { $mistake != 0} {
     puts "OK OCC203"

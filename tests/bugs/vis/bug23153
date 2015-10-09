@@ -1,3 +1,4 @@
+puts "REQUIRED All: \\*\\*\\*  Error on Record"
 puts "============"
 puts "OCC23153"
 puts "============"
@@ -10,9 +11,9 @@ pload XDE
 set BugNumber OCC23153
 
 set TheFileName OCC23153-long_furrowed_shape.stp
-decho off
+
 stepread [locate_data_file $TheFileName] a *
-decho on
+
 tpcompound result
 
 set square 14684.4

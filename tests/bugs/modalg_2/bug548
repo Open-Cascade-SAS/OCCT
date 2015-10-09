@@ -3,21 +3,14 @@ puts "OCC548"
 puts "OCC628"
 puts "========"
 puts ""
-##################################################################
+####################################################################################
 # Function BRepTool::IsClosed returns Standard_True although argument is open shell
 # Incorrect work of BRepCheck 
-##################################################################
+####################################################################################
 
 pload XDE
 
 restore [locate_data_file CTO908_topo103-t.brep] a 
-
-decho off
-
-checkshape a
-checkshape a b
-
-decho on
 
 fixshape result a 0.001
 

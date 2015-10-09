@@ -23,16 +23,7 @@ intersect i s1 s2
 
 #donly i_22; fit
 
-dlog reset
-dlog on
-xdistcs i_22 s1 0 1 10
-set Log1 [dlog get]
-
-set List1 [split ${Log1} {TD= \t\n}]
-set Tolerance 1.0e-7
-set D_good 0.
-set Limit_Tol 1.0e-7
-checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+xdistcs i_22 s1 0 1 10 1e-7
 
 puts ""
 puts "Second test"
@@ -45,16 +36,7 @@ mkcurve c r_1
 
 #donly r_1; fit
 
-dlog reset
-dlog on
-xdistcs c s1 0.0714822451660209 1 10
-set Log2 [dlog get]
-
-set List2 [split ${Log2} {TD= \t\n}]
-set Tolerance 1.0e-12
-set D_good 0.
-set Limit_Tol 1.0e-7
-checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+xdistcs c s1 0.0714822451660209 1 10 1e-12 1e-7
 
 puts ""
 puts "Third test"
@@ -63,16 +45,7 @@ intersect i s1 s3
 
 #donly i_4; fit
 
-dlog reset
-dlog on
-xdistcs i_4 s1 0 1 10
-set Log3 [dlog get]
-
-set List3 [split ${Log3} {TD= \t\n}]
-set Tolerance 1.0e-6
-set D_good 0.
-set Limit_Tol 1.0e-7
-checkList ${List3} ${Tolerance} ${D_good} ${Limit_Tol}
+xdistcs i_4 s1 0 1 10 1e-6 1e-7
 
 puts ""
 puts "Fourth test"
@@ -85,13 +58,4 @@ mkcurve c r_1
 
 #donly r_1; fit
 
-dlog reset
-dlog on
-xdistcs c s1 0.0714822451660209 1 10
-set Log4 [dlog get]
-
-set List4 [split ${Log4} {TD= \t\n}]
-set Tolerance 1.0e-12
-set D_good 0.
-set Limit_Tol 1.0e-7
-checkList ${List4} ${Tolerance} ${D_good} ${Limit_Tol}
+xdistcs c s1 0.0714822451660209 1 10 1e-12 1e-7

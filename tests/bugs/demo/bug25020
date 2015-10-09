@@ -9,10 +9,7 @@ puts ""
 restore [locate_data_file bug25020_b.brep] b
 explode b e
 
-dlog reset
-dlog on
-catch {checkoverlapedges b_1 b_2}
-set info [dlog get]
+catch {checkoverlapedges b_1 b_2} info
 
 if { [regexp "degenerated" ${info} ] == 1 } {
     puts "OK : checkoverlapedges have the check for degenerated edges"

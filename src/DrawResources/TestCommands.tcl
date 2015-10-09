@@ -63,37 +63,37 @@ proc test {group grid casename {args {}}} {
         set arg [lindex $args $narg]
         # if echo specified as "-echo", convert it to bool
         if { $arg == "-echo" || $arg == "1" } {
-          set echo t
-          continue
+            set echo t
+            continue
         }
 
         # output log file
         if { $arg == "-outfile" } {
-          incr narg
-          if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } {
-            set logfile [lindex $args $narg]
-          } else {
-            error "Option -outfile requires argument"
-          }
-          continue
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } {
+                set logfile [lindex $args $narg]
+            } else {
+                error "Option -outfile requires argument"
+            }
+            continue
         }
 
         # allow overwrite existing log
         if { $arg == "-overwrite" } {
-          set overwrite 1
-          continue
+            set overwrite 1
+            continue
         }
 
         # sound signal at the end of the test
         if { $arg == "-beep" } {
-          set signal t
-          continue
+            set signal t
+            continue
         }
 
         # if errors specified as "-errors", convert it to bool
         if { $arg == "-errors" } {
-          set errors t
-          continue
+            set errors t
+            continue
         }
 
         # unsupported option
@@ -111,20 +111,20 @@ proc test {group grid casename {args {}}} {
             error "Error: Specified log file \"$logfile\" exists; please remove it before running test or use -overwrite option"
         }
         if {$logfile != ""} {
-          if {[file extension $logfile] == ".html"} {
-            if {[regexp {vdump ([^\s\n]+)} $html_log dump snapshot]} {
-              catch {file copy -force $snapshot [file rootname $logfile][file extension $snapshot]}
+            if {[file extension $logfile] == ".html"} {
+                if {[regexp {vdump ([^\s\n]+)} $html_log dump snapshot]} {
+                    catch {file copy -force $snapshot [file rootname $logfile][file extension $snapshot]}
+                }
+                _log_html $logfile $html_log "Test $group $grid $casename"
+            } else {
+                _log_save $logfile "[dlog get]\n$summary" "Test $group $grid $casename"
             }
-            _log_html $logfile $html_log "Test $group $grid $casename"
-          } else {
-            _log_save $logfile "[dlog get]\n$summary" "Test $group $grid $casename"
-          }
         }
     }
 
     # play sound signal at the end of test
     if {$signal} {
-      puts "\7\7\7\7"
+        puts "\7\7\7\7"
     }
     return
 }
@@ -152,7 +152,7 @@ proc testgrid {args} {
 
     # check that environment variable defining paths to test scripts is defined
     if { ! [info exists env(CSF_TestScriptsPath)] || 
-         [llength $env(CSF_TestScriptsPath)] <= 0 } {
+        [llength $env(CSF_TestScriptsPath)] <= 0 } {
         error "Error: Environment variable CSF_TestScriptsPath is not defined"
     }
 
@@ -164,100 +164,100 @@ proc testgrid {args} {
     set xmlfile ""
     set signal 0
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
-	set arg [lindex $args $narg]
+        set arg [lindex $args $narg]
 
-	# parallel execution
-	if { $arg == "-parallel" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set parallel [expr [lindex $args $narg]]
-	    } else {
-		error "Option -parallel requires argument"
-	    }
-	    continue
-	}
+        # parallel execution
+        if { $arg == "-parallel" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set parallel [expr [lindex $args $narg]]
+            } else {
+                error "Option -parallel requires argument"
+            }
+            continue
+        }
 
-	# refresh logs time
-	if { $arg == "-refresh" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set refresh [expr [lindex $args $narg]]
-	    } else {
-		error "Option -refresh requires argument"
-	    }
-	    continue
-	}
+        # refresh logs time
+        if { $arg == "-refresh" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set refresh [expr [lindex $args $narg]]
+            } else {
+                error "Option -refresh requires argument"
+            }
+            continue
+        }
 
-	# output directory
-	if { $arg == "-outdir" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set logdir [lindex $args $narg]
-	    } else {
-		error "Option -outdir requires argument"
-	    }
-	    continue
-	}
+        # output directory
+        if { $arg == "-outdir" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set logdir [lindex $args $narg]
+            } else {
+                error "Option -outdir requires argument"
+            }
+            continue
+        }
 
-	# allow overwrite logs 
-	if { $arg == "-overwrite" } {
-	    set overwrite 1
-	    continue
-	}
+        # allow overwrite logs 
+        if { $arg == "-overwrite" } {
+            set overwrite 1
+            continue
+        }
 
-	# refresh logs time
-	if { $arg == "-xml" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set xmlfile [lindex $args $narg]
-	    }
-	    if { $xmlfile == "" } {
-		set xmlfile TESTS-summary.xml
-	    }
-	    continue
-	}
+        # refresh logs time
+        if { $arg == "-xml" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set xmlfile [lindex $args $narg]
+            }
+            if { $xmlfile == "" } {
+                set xmlfile TESTS-summary.xml
+            }
+            continue
+        }
 
-	# sound signal at the end of the test
-	if { $arg == "-beep" } {
-	    set signal t
-	    continue
-	}
+        # sound signal at the end of the test
+        if { $arg == "-beep" } {
+            set signal t
+            continue
+        }
 
-	# unsupported option
-	if { [regexp {^-} $arg] } {
-	    error "Error: unsupported option \"$arg\""
-	}
+        # unsupported option
+        if { [regexp {^-} $arg] } {
+            error "Error: unsupported option \"$arg\""
+        }
 
-	# treat arguments not recognized as options as group and grid names
-	if { ! [info exists groupmask] } {
-	    set groupmask [split $arg ,]
-	} elseif { ! [info exists gridmask] } {
-	    set gridmask [split $arg ,]
-	} elseif { ! [info exists casemask] } {
-	    set casemask [split $arg ,]
-	} else {
-	    error "Error: cannot interpret argument $narg ($arg)"
-	}
+        # treat arguments not recognized as options as group and grid names
+        if { ! [info exists groupmask] } {
+            set groupmask [split $arg ,]
+        } elseif { ! [info exists gridmask] } {
+            set gridmask [split $arg ,]
+        } elseif { ! [info exists casemask] } {
+            set casemask [split $arg ,]
+        } else {
+            error "Error: cannot interpret argument $narg ($arg)"
+        }
     }
 
     # check that target log directory is empty or does not exist
     set logdir [file normalize [string trim $logdir]]
     if { $logdir == "" } {
-	# if specified logdir is empty string, generate unique name like 
+        # if specified logdir is empty string, generate unique name like 
         # results/<branch>_<timestamp>
         set prefix ""
         if { ! [catch {exec git branch} gitout] &&
              [regexp {[*] ([\w]+)} $gitout res branch] } {
             set prefix "${branch}_"
         }
-	set logdir "results/${prefix}[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
-	set logdir [file normalize $logdir]
+        set logdir "results/${prefix}[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
+        set logdir [file normalize $logdir]
     }
     if { [file isdirectory $logdir] && ! $overwrite && ! [catch {glob -directory $logdir *}] } {
-	error "Error: Specified log directory \"$logdir\" is not empty; please clean it before running tests"
+        error "Error: Specified log directory \"$logdir\" is not empty; please clean it before running tests"
     } 
     if { [catch {file mkdir $logdir}] || ! [file writable $logdir] } {
-	error "Error: Cannot create directory \"$logdir\", or it is not writable"
+        error "Error: Cannot create directory \"$logdir\", or it is not writable"
     }
 
     # masks for search of test groups, grids, and cases
@@ -279,99 +279,99 @@ proc testgrid {args} {
 
     # iterate by all script paths
     foreach dir [lsort -unique [_split_path $env(CSF_TestScriptsPath)]] {
-	# protection against empty paths
-	set dir [string trim $dir]
-	if { $dir == "" } { continue }
+        # protection against empty paths
+        set dir [string trim $dir]
+        if { $dir == "" } { continue }
 
-	if { $_tests_verbose > 0 } { _log_and_puts log "Examining tests directory $dir" }
+        if { $_tests_verbose > 0 } { _log_and_puts log "Examining tests directory $dir" }
 
         # check that directory exists
         if { ! [file isdirectory $dir] } {
             _log_and_puts log "Warning: directory $dir listed in CSF_TestScriptsPath does not exist, skipped"
-	    continue
+            continue
         }
 
-	# search all directories in the current dir with specified mask
-	if [catch {glob -directory $dir -tail -types d {*}$groupmask} groups] { continue }
+        # search all directories in the current dir with specified mask
+        if [catch {glob -directory $dir -tail -types d {*}$groupmask} groups] { continue }
 
-	# iterate by groups
-	if { $_tests_verbose > 0 } { _log_and_puts log "Groups to be executed: $groups" }
-	foreach group [lsort -dictionary $groups] {
-	    if { $_tests_verbose > 0 } { _log_and_puts log "Examining group directory $group" }
+        # iterate by groups
+        if { $_tests_verbose > 0 } { _log_and_puts log "Groups to be executed: $groups" }
+        foreach group [lsort -dictionary $groups] {
+            if { $_tests_verbose > 0 } { _log_and_puts log "Examining group directory $group" }
 
-	    # file grids.list must exist: it defines sequence of grids in the group
+            # file grids.list must exist: it defines sequence of grids in the group
             if { ! [file exists $dir/$group/grids.list] } {
-		_log_and_puts log "Warning: directory $dir/$group does not contain file grids.list, skipped"
-		continue
-	    }
+                _log_and_puts log "Warning: directory $dir/$group does not contain file grids.list, skipped"
+                continue
+            }
 
-	    # read grids.list file and make a list of grids to be executed
-	    set gridlist {}
-	    set fd [open $dir/$group/grids.list]
-	    set nline 0
-	    while { [gets $fd line] >= 0 } {
-		incr nline
+            # read grids.list file and make a list of grids to be executed
+            set gridlist {}
+            set fd [open $dir/$group/grids.list]
+            set nline 0
+            while { [gets $fd line] >= 0 } {
+                incr nline
 
-		# skip comments and empty lines
-		if { [regexp "\[ \t\]*\#.*" $line] } { continue }
-		if { [string trim $line] == "" } { continue }
+                # skip comments and empty lines
+                if { [regexp "\[ \t\]*\#.*" $line] } { continue }
+                if { [string trim $line] == "" } { continue }
 
-		# get grid id and name
-		if { ! [regexp "^\(\[0-9\]+\)\[ \t\]*\(\[A-Za-z0-9_.-\]+\)\$" $line res gridid grid] } {
-		    _log_and_puts log "Warning: cannot recognize line $nline in file $dir/$group/grids.list as \"gridid gridname\"; ignored"
-		    continue
-		}
-		
-		# check that grid fits into the specified mask
+                # get grid id and name
+                if { ! [regexp "^\(\[0-9\]+\)\[ \t\]*\(\[A-Za-z0-9_.-\]+\)\$" $line res gridid grid] } {
+                    _log_and_puts log "Warning: cannot recognize line $nline in file $dir/$group/grids.list as \"gridid gridname\"; ignored"
+                    continue
+                }
+
+                # check that grid fits into the specified mask
                 foreach mask $gridmask {
-		    if { $mask == $gridid || [string match $mask $grid] } {
-		        lappend gridlist $grid
+                    if { $mask == $gridid || [string match $mask $grid] } {
+                        lappend gridlist $grid
                     }
-		}
-	    }
-	    close $fd
-	    
-	    # iterate by all grids
-	    foreach grid $gridlist {
+                }
+            }
+            close $fd
 
-		# check if this grid is aliased to another one
-		set griddir $dir/$group/$grid
-		if { [file exists $griddir/cases.list] } {
-		    set fd [open $griddir/cases.list]
-		    if { [gets $fd line] >= 0 } {
-			set griddir [file normalize $dir/$group/$grid/[string trim $line]]
-		    }
-		    close $fd
-		}
+            # iterate by all grids
+            foreach grid $gridlist {
 
-		# check if grid directory actually exists
-		if { ! [file isdirectory $griddir] } { 
-		    _log_and_puts log "Error: tests directory for grid $grid ($griddir) is missing; skipped"
-		    continue 
-		}
+                # check if this grid is aliased to another one
+                set griddir $dir/$group/$grid
+                if { [file exists $griddir/cases.list] } {
+                    set fd [open $griddir/cases.list]
+                    if { [gets $fd line] >= 0 } {
+                        set griddir [file normalize $dir/$group/$grid/[string trim $line]]
+                    }
+                    close $fd
+                }
 
-		# create directory for logging test results
-		if { $logdir != "" } { file mkdir $logdir/$group/$grid }
+                # check if grid directory actually exists
+                if { ! [file isdirectory $griddir] } { 
+                    _log_and_puts log "Error: tests directory for grid $grid ($griddir) is missing; skipped"
+                    continue 
+                }
 
-		# iterate by all tests in the grid directory
-		if { [catch {glob -directory $griddir -type f {*}$casemask} testfiles] } { continue }
-		foreach casefile [lsort -dictionary $testfiles] {
-		    # filter out files with reserved names
-		    set casename [file tail $casefile]
-		    if { $casename == "begin" || $casename == "end" ||
+                # create directory for logging test results
+                if { $logdir != "" } { file mkdir $logdir/$group/$grid }
+
+                # iterate by all tests in the grid directory
+                if { [catch {glob -directory $griddir -type f {*}$casemask} testfiles] } { continue }
+                foreach casefile [lsort -dictionary $testfiles] {
+                    # filter out files with reserved names
+                    set casename [file tail $casefile]
+                    if { $casename == "begin" || $casename == "end" ||
                          $casename == "parse.rules" } {
-                      continue
+                        continue
                     }
 
-		    lappend tests_list [list $dir $group $grid $casename $casefile]
-		}
-	    }
-	}
+                    lappend tests_list [list $dir $group $grid $casename $casefile]
+                }
+            }
+        }
     }
     if { [llength $tests_list] < 1 } {
-	error "Error: no tests are found, check you input arguments and variable CSF_TestScriptsPath!"
+        error "Error: no tests are found, check you input arguments and variable CSF_TestScriptsPath!"
     } else {
-      puts "Running tests (total [llength $tests_list] test cases)..."
+        puts "Running tests (total [llength $tests_list] test cases)..."
     }
 
     ######################################################
@@ -385,7 +385,7 @@ proc testgrid {args} {
     catch {lappend log "DRAW build:\n[dversion]" }
     lappend log "Environment:"
     foreach envar [lsort [array names env]] {
-	lappend log "$envar=\"$env($envar)\""
+        lappend log "$envar=\"$env($envar)\""
     }
     lappend log ""
 
@@ -395,21 +395,21 @@ proc testgrid {args} {
 
     # if parallel execution is requested, allocate thread pool
     if { $parallel > 0 } {
-	if { ! [info exists tcl_platform(threaded)] || [catch {package require Thread}] } {
-	    _log_and_puts log "Warning: Tcl package Thread is not available, running in sequential mode"
-	    set parallel 0
-	} else {
-	    set worker [tpool::create -minworkers $parallel -maxworkers $parallel]
-	    # suspend the pool until all jobs are posted, to prevent blocking of the process
-	    # of starting / processing jobs by running threads
-	    catch {tpool::suspend $worker}
-	    if { $_tests_verbose > 0 } { _log_and_puts log "Executing tests in (up to) $parallel threads" }
+        if { ! [info exists tcl_platform(threaded)] || [catch {package require Thread}] } {
+            _log_and_puts log "Warning: Tcl package Thread is not available, running in sequential mode"
+            set parallel 0
+        } else {
+            set worker [tpool::create -minworkers $parallel -maxworkers $parallel]
+            # suspend the pool until all jobs are posted, to prevent blocking of the process
+            # of starting / processing jobs by running threads
+            catch {tpool::suspend $worker}
+            if { $_tests_verbose > 0 } { _log_and_puts log "Executing tests in (up to) $parallel threads" }
             # limit number of jobs in the queue by reasonable value
             # to prevent slowdown due to unnecessary queue processing
             set nbpooled 0
             set nbpooled_max [expr 10 * $parallel]
             set nbpooled_ok  [expr  5 * $parallel]
-	}
+        }
     }
 
     # start test cases
@@ -421,81 +421,81 @@ proc testgrid {args} {
             break
         }
 
-	set dir       [lindex $test_def 0]
-	set group     [lindex $test_def 1]
-	set grid      [lindex $test_def 2]
-	set casename  [lindex $test_def 3]
-	set casefile  [lindex $test_def 4]
+        set dir       [lindex $test_def 0]
+        set group     [lindex $test_def 1]
+        set grid      [lindex $test_def 2]
+        set casename  [lindex $test_def 3]
+        set casefile  [lindex $test_def 4]
 
-	# command to set tests for generation of image in results directory
-	set imgdir_cmd ""
-	if { $logdir != "" } { set imgdir_cmd "set imagedir $logdir/$group/$grid" }
+        # command to set tests for generation of image in results directory
+        set imgdir_cmd ""
+        if { $logdir != "" } { set imgdir_cmd "set imagedir $logdir/$group/$grid" }
 
-	# prepare command file for running test case in separate instance of DRAW
-	set fd_cmd [open $logdir/$group/$grid/${casename}.tcl w]
-	puts $fd_cmd "$imgdir_cmd"
-	puts $fd_cmd "set test_image $casename"
-	puts $fd_cmd "_run_test $dir $group $grid $casefile t"
+        # prepare command file for running test case in separate instance of DRAW
+        set fd_cmd [open $logdir/$group/$grid/${casename}.tcl w]
+        puts $fd_cmd "$imgdir_cmd"
+        puts $fd_cmd "set test_image $casename"
+        puts $fd_cmd "_run_test $dir $group $grid $casefile t"
 
-	# use dlog command to obtain complete output of the test when it is absent (i.e. since OCCT 6.6.0)
-	# note: this is not needed if echo is set to 1 in call to _run_test above
-	if { ! [catch {dlog get}] } {
-	    puts $fd_cmd "puts \[dlog get\]"
-	} else {
-	    # else try to use old-style QA_ variables to get more output...
-	    set env(QA_DUMP) 1
-	    set env(QA_DUP) 1
-	    set env(QA_print_command) 1
-	}
+        # use dlog command to obtain complete output of the test when it is absent (i.e. since OCCT 6.6.0)
+        # note: this is not needed if echo is set to 1 in call to _run_test above
+        if { ! [catch {dlog get}] } {
+            puts $fd_cmd "puts \[dlog get\]"
+        } else {
+            # else try to use old-style QA_ variables to get more output...
+            set env(QA_DUMP) 1
+            set env(QA_DUP) 1
+            set env(QA_print_command) 1
+        }
 
-	# final 'exit' is needed when running on Linux under VirtualGl
-	puts $fd_cmd "exit"
-	close $fd_cmd
+        # final 'exit' is needed when running on Linux under VirtualGl
+        puts $fd_cmd "exit"
+        close $fd_cmd
 
         # commant to run DRAW with a command file;
         # note that empty string is passed as standard input to avoid possible 
         # hang-ups due to waiting for stdin of the launching process
-	set command "exec <<{} DRAWEXE -f $logdir/$group/$grid/${casename}.tcl"
+        set command "exec <<{} DRAWEXE -f $logdir/$group/$grid/${casename}.tcl"
 
-	# alternative method to run without temporary file; disabled as it needs too many backslashes
-#	else {
-#	    set command "exec <<\"\" DRAWEXE -c $imgdir_cmd\\\; set test_image $casename\\\; \
-#		         _run_test $dir $group $grid $casefile\\\; \
-#		         puts \\\[dlog get\\\]\\\; exit"
-#	}
+        # alternative method to run without temporary file; disabled as it needs too many backslashes
+        # else {
+        # set command "exec <<\"\" DRAWEXE -c $imgdir_cmd\\\; set test_image $casename\\\; \
+        # _run_test $dir $group $grid $casefile\\\; \
+        # puts \\\[dlog get\\\]\\\; exit"
+        # }
 
-	# run test case, either in parallel or sequentially
-	if { $parallel > 0 } {
-	    # parallel execution
-	    set job [tpool::post -nowait $worker "catch \"$command\" output; return \$output"]
-	    set job_def($job) [list $logdir $dir $group $grid $casename]
+        # run test case, either in parallel or sequentially
+        if { $parallel > 0 } {
+            # parallel execution
+            set job [tpool::post -nowait $worker "catch \"$command\" output; return \$output"]
+            set job_def($job) [list $logdir $dir $group $grid $casename]
             incr nbpooled
             if { $nbpooled > $nbpooled_max } {
                 _testgrid_process_jobs $worker $nbpooled_ok
             }
-	} else {
-	    # sequential execution
-	    catch {eval $command} output
-	    _log_test_case $output $logdir $dir $group $grid $casename log
+        } else {
+            # sequential execution
+            catch {eval $command} output
+            _log_test_case $output $logdir $dir $group $grid $casename log
 
-	    # update summary log with requested period
-	    if { $logdir != "" && $refresh > 0 && [expr [clock seconds] - $refresh_timer > $refresh] } {
-		# update and dump summary
-		_log_summarize $logdir $log
-		set refresh_timer [clock seconds]
-	    }
-	}
+            # update summary log with requested period
+            if { $logdir != "" && $refresh > 0 && [expr [clock seconds] - $refresh_timer > $refresh] } {
+                # update and dump summary
+                _log_summarize $logdir $log
+                set refresh_timer [clock seconds]
+            }
+        }
     }
 
     # get results of started threads
     if { $parallel > 0 } {
         _testgrid_process_jobs $worker
-	# release thread pool
+        # release thread pool
         if { $nbpooled > 0 } {
-	    tpool::cancel $worker [array names job_def]
+            tpool::cancel $worker [array names job_def]
         }
         catch {tpool::resume $worker}
-	tpool::release $worker
+        tpool::release $worker
     }
 
     uplevel dchrono _timer stop
@@ -512,19 +512,19 @@ proc testgrid {args} {
 
     _log_summarize $logdir $log $time
     if { $logdir != "" } {
-	puts "Detailed logs are saved in $logdir"
+        puts "Detailed logs are saved in $logdir"
     }
     if { $logdir != "" && $xmlfile != "" } {
-	# XML output file is assumed relative to log dir unless it is absolute
-	if { [ file pathtype $xmlfile] == "relative" } {
-	    set xmlfile [file normalize $logdir/$xmlfile]
-	}
-	_log_xml_summary $logdir $xmlfile $log 0
-	puts "XML summary is saved to $xmlfile"
+        # XML output file is assumed relative to log dir unless it is absolute
+        if { [ file pathtype $xmlfile] == "relative" } {
+            set xmlfile [file normalize $logdir/$xmlfile]
+        }
+        _log_xml_summary $logdir $xmlfile $log 0
+        puts "XML summary is saved to $xmlfile"
     }
     # play sound signal at the end of test
     if {$signal} {
-      puts "\7\7\7\7"
+        puts "\7\7\7\7"
     }
     return
 }
@@ -540,7 +540,7 @@ proc testsummarize {dir} {
     global _test_case_regexp
 
     if { ! [file isdirectory $dir] } {
-	error "Error: \"$dir\" is not a directory"
+        error "Error: \"$dir\" is not a directory"
     }
 
     # get summary statements from all test cases in one log
@@ -553,15 +553,15 @@ proc testsummarize {dir} {
             set file [file join $dir $grid $caselog]
             set nbfound 0
             set fd [open $file r]
-	    while { [gets $fd line] >= 0 } {
-	        if { [regexp $_test_case_regexp $line res grp grd cas status message] } {
+            while { [gets $fd line] >= 0 } {
+                if { [regexp $_test_case_regexp $line res grp grd cas status message] } {
                     if { "[file join $grid $caselog]" != "[file join $grp $grd ${cas}.log]" } { 
                         puts "Error: $file contains status line for another test case ($line)"
                     }
-	            lappend log $line
-	            incr nbfound
-	        }
-	    }
+                    lappend log $line
+                    incr nbfound
+                }
+            }
             close $fd
 
             if { $nbfound != 1 } { 
@@ -591,13 +591,12 @@ help testdiff {
           1 - output only differences 
           2 - output also list of logs and directories present in one of dirs only
           3 - (default) output also progress messages 
-		  
   -highlight_percent value: highlight considerable (>value in %) deviations
                             of CPU and memory (default value is 5%)
 }
 proc testdiff {dir1 dir2 args} {
     if { "$dir1" == "$dir2" } {
-	error "Input directories are the same"
+        error "Input directories are the same"
     }
 
     ######################################################
@@ -609,61 +608,63 @@ proc testdiff {dir1 dir2 args} {
     set basename ""
     set status "same"
     set verbose 3
-	set highlight_percent 5
+    set highlight_percent 5
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
-	set arg [lindex $args $narg]
+        set arg [lindex $args $narg]
 
-	# log file name
-	if { $arg == "-save" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set logfile [lindex $args $narg]
-	    } else {
-		error "Error: Option -save must be followed by log file name"
-	    } 
-	    continue
-	}
+        # log file name
+        if { $arg == "-save" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set logfile [lindex $args $narg]
+            } else {
+                error "Error: Option -save must be followed by log file name"
+            } 
+            continue
+        }
 
-	# status filter
-	if { $arg == "-status" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set status [lindex $args $narg]
-            } else { set status "" }
-	    if { "$status" != "same" && "$status" != "all" && "$status" != "ok" } {
-		error "Error: Option -status must be followed by one of \"same\", \"all\", or \"ok\""
-	    }
-	    continue
-	}
+        # status filter
+        if { $arg == "-status" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set status [lindex $args $narg]
+            } else {
+                set status ""
+            }
+            if { "$status" != "same" && "$status" != "all" && "$status" != "ok" } {
+                error "Error: Option -status must be followed by one of \"same\", \"all\", or \"ok\""
+            }
+            continue
+        }
 
-	# verbose level
-	if { $arg == "-verbose" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set verbose [expr [lindex $args $narg]]
-	    } else {
-		error "Error: Option -verbose must be followed by integer verbose level"
-	    }
-	    continue
-	}
-	
-	# highlight_percent
-    if { $arg == "-highlight_percent" } {
-	    incr narg
-	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
-		set highlight_percent [expr [lindex $args $narg]]
-	    } else {
-		error "Error: Option -highlight_percent must be followed by integer value"
-	    }
-	    continue
-	}
-		
-	if { [regexp {^-} $arg] } {
-	    error "Error: unsupported option \"$arg\""
-	}
+        # verbose level
+        if { $arg == "-verbose" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set verbose [expr [lindex $args $narg]]
+            } else {
+                error "Error: Option -verbose must be followed by integer verbose level"
+            }
+            continue
+        }
+
+        # highlight_percent
+        if { $arg == "-highlight_percent" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set highlight_percent [expr [lindex $args $narg]]
+            } else {
+                error "Error: Option -highlight_percent must be followed by integer value"
+            }
+            continue
+        }
+
+        if { [regexp {^-} $arg] } {
+            error "Error: unsupported option \"$arg\""
+        }
 
         # non-option arguments form a subdirectory path
-	set basename [file join $basename $arg]
+        set basename [file join $basename $arg]
     }
 
     # run diff procedure (recursive)
@@ -749,8 +750,8 @@ proc testfile {filelist} {
                 # add the file to the registry
                 set names($name_lower) $file
                 lappend sizes($size) $file
-	    }
-	}
+            }
+        }
     }
     if { [llength $filelist] <= 0 } { return }
 
@@ -782,9 +783,9 @@ proc testfile {filelist} {
             set found f
             foreach other $sizes($size) {
                 if { ! [_diff_files $file $other] } {
-                     puts "$file: OK: the same file is already present under name [file tail $other]\n--> $other"
-                     set found t
-                     break
+                    puts "$file: OK: the same file is already present under name [file tail $other]\n--> $other"
+                    set found t
+                    break
                 }
             }
             if { $found } { continue }
@@ -850,35 +851,35 @@ proc locate_data_file {filename} {
     set scriptfile [info script]
     if { $scriptfile != "" } {
         set path [file join [file dirname $scriptfile] data $filename]
-	if { [file exists $path] } {
-	    return [file normalize $path]
-	}
+        if { [file exists $path] } {
+            return [file normalize $path]
+        }
     }
 
     # check sub-directories in paths indicated by CSF_TestDataPath
     if { [info exists env(CSF_TestDataPath)] } {
-	foreach dir [_split_path $env(CSF_TestDataPath)] {
-	    while {[llength $dir] != 0} { 
-	        set name [lindex $dir 0]
-		set dir [lrange $dir 1 end]
+        foreach dir [_split_path $env(CSF_TestDataPath)] {
+            while {[llength $dir] != 0} { 
+                set name [lindex $dir 0]
+                set dir [lrange $dir 1 end]
                 # skip directories starting with dot
                 if { [regexp {^[.]} $name] } { continue }
-		if { [file exists $name/$filename] } {
-		    return [file normalize $name/$filename]
-		}
-		eval lappend dir [glob -nocomplain -directory $name -type d *]
-	    }
-	}
+                if { [file exists $name/$filename] } {
+                    return [file normalize $name/$filename]
+                }
+                eval lappend dir [glob -nocomplain -directory $name -type d *]
+            }
+        }
     }
 
     # check current datadir
     if { [file exists [uplevel datadir]/$filename] } {
-	return [file normalize [uplevel datadir]/$filename]
+        return [file normalize [uplevel datadir]/$filename]
     }
 
     # raise error
     error [join [list "File $filename could not be found" \
-		      "(should be in paths indicated by CSF_TestDataPath environment variable, " \
+                      "(should be in paths indicated by CSF_TestDataPath environment variable, " \
                       "or in subfolder data in the script directory)"] "\n"]
 }
 
@@ -903,14 +904,14 @@ proc _get_test {group grid casename _dir _gridname _casefile} {
 
     # iterate by all script paths
     foreach dir [_split_path $env(CSF_TestScriptsPath)] {
-	# protection against empty paths
-	set dir [string trim $dir]
-	if { $dir == "" } { continue }
+        # protection against empty paths
+        set dir [string trim $dir]
+        if { $dir == "" } { continue }
 
         # check that directory exists
         if { ! [file isdirectory $dir] } {
             puts "Warning: directory $dir listed in CSF_TestScriptsPath does not exist, skipped"
-	    continue
+            continue
         }
 
         # check if test group with given name exists in this dir
@@ -930,8 +931,8 @@ proc _get_test {group grid casename _dir _gridname _casefile} {
                     }
                 }
                 close $fd
-	    }
-	}
+            }
+        }
         if { ! [file isdirectory $dir/$group/$gridname] } { continue }
 
         # get actual file name of the script; stop if it cannot be found
@@ -943,8 +944,8 @@ proc _get_test {group grid casename _dir _gridname _casefile} {
                 if { [gets $fd line] >= 0 } {
                     set casefile [file normalize $dir/$group/$gridname/[string trim $line]/$casename]
                 }
-		close $fd
-	    }
+                close $fd
+            }
         }
         if { [file exists $casefile] } { 
             # normal return
@@ -954,7 +955,7 @@ proc _get_test {group grid casename _dir _gridname _casefile} {
 
     # coming here means specified test is not found; report error
     error [join [list "Error: test case $group / $grid / $casename is not found in paths listed in variable" \
-		     "CSF_TestScriptsPath (current value is \"$env(CSF_TestScriptsPath)\")"] "\n"]
+                      "CSF_TestScriptsPath (current value is \"$env(CSF_TestScriptsPath)\")"] "\n"]
 }
 
 # Internal procedure to run test case indicated by base directory, 
@@ -971,42 +972,42 @@ proc _run_test {scriptsdir group gridname casefile echo} {
     # enable commands logging; switch to old-style mode if dlog command is not present
     set dlog_exists 1
     if { [catch {dlog reset}] } {
-	set dlog_exists 0
+        set dlog_exists 0
     } elseif { $echo } {
         decho on
     } else {
-	dlog reset
-	dlog on
-	rename puts puts-saved
-	proc puts args { 
-	    global _tests_verbose
+        dlog reset
+        dlog on
+        rename puts puts-saved
+        proc puts args { 
+            global _tests_verbose
 
-	    # log only output to stdout and stderr, not to file!
-	    if {[llength $args] > 1} {
-		set optarg [lindex $args end-1]
-		if { $optarg == "stdout" || $optarg == "stderr" || $optarg == "-newline" } {
-		    dlog add [lindex $args end]
-		} else {
-		    eval puts-saved $args
-		}
-	    } else {
-		dlog add [lindex $args end]
-	    }
-	}
+            # log only output to stdout and stderr, not to file!
+            if {[llength $args] > 1} {
+                set optarg [lindex $args end-1]
+                if { $optarg == "stdout" || $optarg == "stderr" || $optarg == "-newline" } {
+                    dlog add [lindex $args end]
+                } else {
+                    eval puts-saved $args
+                }
+            } else {
+                dlog add [lindex $args end]
+            }
+        }
     }
 
     # evaluate test case 
     set tmp_imagedir 0
     if [catch {
         # set variables identifying test case
-	uplevel set casename [file tail $casefile]
-	uplevel set groupname $group
-	uplevel set gridname $gridname
-	uplevel set dirname  $scriptsdir
+        uplevel set casename [file tail $casefile]
+        uplevel set groupname $group
+        uplevel set gridname $gridname
+        uplevel set dirname  $scriptsdir
 
-	# set path for saving of log and images (if not yet set) to temp dir
-	if { ! [uplevel info exists imagedir] } {
-	    uplevel set test_image \$casename
+        # set path for saving of log and images (if not yet set) to temp dir
+        if { ! [uplevel info exists imagedir] } {
+            uplevel set test_image \$casename
 
             # create subdirectory in temp named after group and grid with timestamp
             set rootlogdir [_get_temp_dir]
@@ -1016,48 +1017,48 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 
             if { [catch {file mkdir $imagedir}] || ! [file writable $imagedir] ||
                  ! [catch {glob -directory $imagedir *}] } {
-#                puts "Warning: Cannot create directory \"$imagedir\", or it is not empty; \"${rootlogdir}\" is used"
+                 # puts "Warning: Cannot create directory \"$imagedir\", or it is not empty; \"${rootlogdir}\" is used"
                 set imagedir $rootlogdir
             }
 
             uplevel set imagedir \"$imagedir\"
             set tmp_imagedir 1
-	}
+        }
 
-	# execute test scripts 
+        # execute test scripts 
         if { [file exists $scriptsdir/$group/begin] } {
-	    puts "Executing $scriptsdir/$group/begin..."; flush stdout
-	    uplevel source $scriptsdir/$group/begin
-	}
-	if { [file exists $scriptsdir/$group/$gridname/begin] } {
-	    puts "Executing $scriptsdir/$group/$gridname/begin..."; flush stdout
-	    uplevel source $scriptsdir/$group/$gridname/begin
-	}
-	
-	puts "Executing $casefile..."; flush stdout
-	uplevel source $casefile
-	
-	if { [file exists $scriptsdir/$group/$gridname/end] } {
-	    puts "Executing $scriptsdir/$group/$gridname/end..."; flush stdout
-	    uplevel source $scriptsdir/$group/$gridname/end
-	}
-	if { [file exists $scriptsdir/$group/end] } {
-	    puts "Executing $scriptsdir/$group/end..."; flush stdout
-	    uplevel source $scriptsdir/$group/end
-	}
+            puts "Executing $scriptsdir/$group/begin..."; flush stdout
+            uplevel source $scriptsdir/$group/begin
+        }
+        if { [file exists $scriptsdir/$group/$gridname/begin] } {
+            puts "Executing $scriptsdir/$group/$gridname/begin..."; flush stdout
+            uplevel source $scriptsdir/$group/$gridname/begin
+        }
+
+        puts "Executing $casefile..."; flush stdout
+        uplevel source $casefile
+
+        if { [file exists $scriptsdir/$group/$gridname/end] } {
+            puts "Executing $scriptsdir/$group/$gridname/end..."; flush stdout
+            uplevel source $scriptsdir/$group/$gridname/end
+        }
+        if { [file exists $scriptsdir/$group/end] } {
+            puts "Executing $scriptsdir/$group/end..."; flush stdout
+            uplevel source $scriptsdir/$group/end
+        }
     } res] {
-	puts "Tcl Exception: $res"
+        puts "Tcl Exception: $res"
     }
 
     # stop logging
     if { $dlog_exists } {
         if { $echo } {
-	    decho off
+            decho off
         } else {
             rename puts {}
-	    rename puts-saved puts
-	    dlog off
-	}
+            rename puts-saved puts
+            dlog off
+        }
     }
 
     # stop cpulimit killer if armed by the test
@@ -1071,12 +1072,12 @@ proc _run_test {scriptsdir group gridname casefile echo} {
     uplevel dchrono _timer stop
     set time [uplevel dchrono _timer show]
     if { [regexp -nocase {CPU user time:[ \t]*([0-9.e-]+)} $time res cpu_usr] } {
-	append stats "TOTAL CPU TIME: $cpu_usr sec\n"
+        append stats "TOTAL CPU TIME: $cpu_usr sec\n"
     }
     if { $dlog_exists && ! $echo } {
-	dlog add $stats
+        dlog add $stats
     } else {
-	puts $stats
+        puts $stats
     }
 
     # unset global vars
@@ -1093,159 +1094,182 @@ proc _check_log {dir group gridname casename errors log {_summary {}} {_html_log
     set html_log {}
     set errors_log {}
 
-if [catch {
+    if [catch {
 
-    # load definition of 'bad words' indicating test failure
-    # note that rules are loaded in the order of decreasing priority (grid - group - common),
-    # thus grid rules will override group ones
-    set badwords {}
-    foreach rulesfile [list $dir/$group/$gridname/parse.rules $dir/$group/parse.rules $dir/parse.rules] {
-	if [catch {set fd [open $rulesfile r]}] { continue }
-	while { [gets $fd line] >= 0 } {
-	    # skip comments and empty lines
-	    if { [regexp "\[ \t\]*\#.*" $line] } { continue }
-	    if { [string trim $line] == "" } { continue }
-	    # extract regexp
-	    if { ! [regexp {^([^/]*)/([^/]*)/(.*)$} $line res status rexp comment] } { 
-		puts "Warning: cannot recognize parsing rule \"$line\" in file $rulesfile"
-		continue 
-	    }
-	    set status [string trim $status]
-	    if { $comment != "" } { append status " ([string trim $comment])" }
-	    set rexp [regsub -all {\\b} $rexp {\\y}] ;# convert regexp from Perl to Tcl style
-	    lappend badwords [list $status $rexp]
-	}
-	close $fd
+        # load definition of 'bad words' indicating test failure
+        # note that rules are loaded in the order of decreasing priority (grid - group - common),
+        # thus grid rules will override group ones
+        set badwords {}
+        foreach rulesfile [list $dir/$group/$gridname/parse.rules $dir/$group/parse.rules $dir/parse.rules] {
+            if [catch {set fd [open $rulesfile r]}] { continue }
+            while { [gets $fd line] >= 0 } {
+                # skip comments and empty lines
+                if { [regexp "\[ \t\]*\#.*" $line] } { continue }
+                if { [string trim $line] == "" } { continue }
+                # extract regexp
+                if { ! [regexp {^([^/]*)/([^/]*)/(.*)$} $line res status rexp comment] } { 
+                    puts "Warning: cannot recognize parsing rule \"$line\" in file $rulesfile"
+                    continue 
+                }
+                set status [string trim $status]
+                if { $comment != "" } { append status " ([string trim $comment])" }
+                set rexp [regsub -all {\\b} $rexp {\\y}] ;# convert regexp from Perl to Tcl style
+                lappend badwords [list $status $rexp]
+            }
+            close $fd
+        }
+        if { [llength $badwords] <= 0 } { 
+            puts "Warning: no definition of error indicators found (check files parse.rules)" 
+        }
+
+        # analyse log line-by-line
+        set todos {} ;# TODO statements
+        set requs {} ;# REQUIRED statements
+        set todo_incomplete -1
+        set status ""
+        foreach line [split $log "\n"] {
+            # check if line defines specific treatment of some messages
+            if [regexp -nocase {^[ \s]*TODO ([^:]*):(.*)$} $line res platforms pattern] {
+                if { ! [regexp -nocase {\mAll\M} $platforms] && 
+                     ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
+                    lappend html_log [_html_highlight IGNORE $line]
+                    continue ;# TODO statement is for another platform
+                }
+
+                # record TODOs that mark unstable cases
+                if { [regexp {[\?]} $platforms] } {
+                    set todos_unstable([llength $todos]) 1
+                }
+
+                # convert legacy regexps from Perl to Tcl style
+                set pattern [regsub -all {\\b} [string trim $pattern] {\\y}]
+
+                # special case: TODO TEST INCOMPLETE
+                if { [string trim $pattern] == "TEST INCOMPLETE" } {
+                    set todo_incomplete [llength $todos]
+                }
+
+                lappend todos [list $pattern [llength $html_log] $line]
+                lappend html_log [_html_highlight BAD $line]
+                continue
+            }
+            if [regexp -nocase {^[ \s]*REQUIRED ([^:]*):[ \s]*(.*)$} $line res platforms pattern] {
+                if { ! [regexp -nocase {\mAll\M} $platforms] && 
+                     ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
+                    lappend html_log [_html_highlight IGNORE $line]
+                    continue ;# REQUIRED statement is for another platform
+                }
+                lappend requs [list $pattern [llength $html_log] $line]
+                lappend html_log [_html_highlight OK $line]
+                continue
+            }
+
+            # check for presence of required messages 
+            set ismarked 0
+            for {set i 0} {$i < [llength $requs]} {incr i} {
+                set pattern [lindex $requs $i 0]
+                if { [regexp $pattern $line] } {
+                    incr required_count($i)
+                    lappend html_log [_html_highlight OK $line]
+                    set ismarked 1
+                    continue
+                }
+            }
+            if { $ismarked } {
+                continue
+            }
+
+            # check for presence of messages indicating test result
+            foreach bw $badwords {
+                if { [regexp [lindex $bw 1] $line] } { 
+                    # check if this is known bad case
+                    set is_known 0
+                    for {set i 0} {$i < [llength $todos]} {incr i} {
+                        set pattern [lindex $todos $i 0]
+                        if { [regexp $pattern $line] } {
+                            set is_known 1
+                            incr todo_count($i)
+                            lappend html_log [_html_highlight BAD $line]
+                            break
+                        }
+                    }
+
+                    # if it is not in todo, define status
+                    if { ! $is_known } {
+                        set stat [lindex $bw 0 0]
+                        if {$errors} {
+                            lappend errors_log $line
+                        }
+                        lappend html_log [_html_highlight $stat $line]
+                        if { $status == "" && $stat != "OK" && ! [regexp -nocase {^IGNOR} $stat] } {
+                            set status [lindex $bw 0]
+                        }
+                    }
+                    set ismarked 1
+                    break
+                }
+            }
+            if { ! $ismarked } { 
+               lappend html_log $line
+            }
+        }
+
+        # check for presence of TEST COMPLETED statement
+        if { $status == "" && ! [regexp {TEST COMPLETED} $log] } {
+            # check whether absence of TEST COMPLETED is known problem
+            if { $todo_incomplete >= 0 } {
+                incr todo_count($todo_incomplete)
+            } else {
+                set status "FAILED (no final message is found)"
+            }
+        }
+
+        # report test as failed if it doesn't contain required pattern
+        if { $status == "" } {
+            for {set i 0} {$i < [llength $requs]} {incr i} {
+                if { ! [info exists required_count($i)] } {
+                    set linenum [lindex $requs $i 1]
+                    set html_log [lreplace $html_log $linenum $linenum [_html_highlight FAILED [lindex $requs $i 2]]]
+                    set status "FAILED (REQUIRED statement no. [expr $i + 1] is not found)"
+                }
+            }
+        }
+
+        # check declared bad cases and diagnose possible improvement 
+        # (bad case declared but not detected).
+        # Note that absence of the problem marked by TODO with question mark
+        # (unstable) is not reported as improvement.
+        if { $status == "" } {
+            for {set i 0} {$i < [llength $todos]} {incr i} {
+                if { ! [info exists todos_unstable($i)] &&
+                     (! [info exists todo_count($i)] || $todo_count($i) <= 0) } {
+                    set linenum [lindex $todos $i 1]
+                    set html_log [lreplace $html_log $linenum $linenum [_html_highlight IMPROVEMENT [lindex $todos $i 2]]]
+                    set status "IMPROVEMENT (expected problem TODO no. [expr $i + 1] is not detected)"
+                    break;
+                }
+            }
+        }
+
+        # report test as known bad if at least one of expected problems is found
+        if { $status == "" && [llength [array names todo_count]] > 0 } {
+            set status "BAD (known problem)"
+        }
+
+        # report normal OK
+        if { $status == "" } {set status "OK" }
+
+    } res] {
+        set status "FAILED ($res)"
     }
-    if { [llength $badwords] <= 0 } { 
-	puts "Warning: no definition of error indicators found (check files parse.rules)" 
-    }
-
-    # analyse log line-by-line
-    set todos {}
-    set status ""
-    foreach line [split $log "\n"] {
-	# check if line defines specific treatment of some messages
-	set deb_info [dversion]
-	if [regexp -nocase {^[ \s]*TODO ([^:]*):(.*)$} $line res platforms pattern] {
-	    if { [regexp {DEBUG_} $platforms] != 1 } {
-		if { ! [regexp -nocase {\mAll\M} $platforms] && 
-                    ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
-		    lappend html_log $line
-		    continue ;# TODO statement is for another platform
-		}
-
-		# record TODOs that mark unstable cases
-		if { [regexp {[\?]} $platforms] } {
-		    set todos_unstable([llength $todos]) 1
-        	}
-
-		lappend todos [regsub -all {\\b} [string trim $pattern] {\\y}] ;# convert regexp from Perl to Tcl style
-		lappend html_log [_html_highlight BAD $line]
-		continue
-	    }
-	    
-	    if { [regexp "Debug mode" $deb_info] != 1 && [regexp {DEBUG_} $platforms] == 1 } {
-		continue
-	    }
-
-	    if { [regexp "Debug mode" $deb_info] == 1 && [regexp {DEBUG_} $platforms] == 1 } {
-		if { ! [regexp -nocase {\mAll\M} $platforms] && 
-            	    ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
-	    	    lappend html_log $line
-	    	    continue ;# TODO statement is for another platform
-		}
-
-		# record TODOs that mark unstable cases
-		if { [regexp {[\?]} $platforms] } {
-	    	    set todos_unstable([llength $todos]) 1
-    		}
-            
-        	lappend todos [regsub -all {\\b} [string trim $pattern] {\\y}] ;# convert regexp from Perl to Tcl style
-		lappend html_log [_html_highlight BAD $line]
-		continue
-	    }
-	}
-		
-	# check for presence of messages indicating test result
-	set ismarked 0
-	foreach bw $badwords {
-	    if { [regexp [lindex $bw 1] $line] } { 
-		# check if this is known bad case
-		set is_known 0
-		for {set i 0} {$i < [llength $todos]} {incr i} {
-		    if { [regexp [lindex $todos $i] $line] } {
-			set is_known 1
-			incr todo_count($i)
-			lappend html_log [_html_highlight BAD $line]
-			break
-		    }
-		}
-
-		# if it is not in todo, define status
-		if { ! $is_known } {
-		    set stat [lindex $bw 0 0]
-		    if {$errors} {
-		      lappend errors_log $line
-		    }
-		    lappend html_log [_html_highlight $stat $line]
-		    if { $status == "" && $stat != "OK" && ! [regexp -nocase {^IGNOR} $stat] } {
-			set status [lindex $bw 0]
-		    }
-		}
-		set ismarked 1
-		break
-	    }
-	}
-	if { ! $ismarked } { 
-	    lappend html_log $line
-	}
-    }
-
-    # check for presence of TEST COMPLETED statement
-    if { $status == "" && ! [regexp {TEST COMPLETED} $log] } {
-	# check whether absence of TEST COMPLETED is known problem
-	set i [lsearch $todos "TEST INCOMPLETE"]
-	if { $i >= 0 } {
-	    incr todo_count($i)
-	} else {
-	    set status "FAILED (no final message is found)"
-	}
-    }
-
-    # check declared bad cases and diagnose possible improvement 
-    # (bad case declared but not detected).
-    # Note that absence of the problem marked by TODO with question mark
-    # (unstable) is not reported as improvement.
-    if { $status == "" } {
-        for {set i 0} {$i < [llength $todos]} {incr i} {
-      	    if { ! [info exists todos_unstable($i)] &&
-                 (! [info exists todo_count($i)] || $todo_count($i) <= 0) } {
-		set status "IMPROVEMENT (expected problem TODO no. [expr $i + 1] is not detected)"
-		break;
-	    }
-	}
-    }
-
-    # report test as known bad if at least one of expected problems is found
-    if { $status == "" && [llength [array names todo_count]] > 0 } {
-	set status "BAD (known problem)"
-    }
-
-    # report normal OK
-    if { $status == "" } {set status "OK" }
-
-} res] {
-    set status "FAILED ($res)"
-}
 
     # put final message
     _log_and_puts summary "CASE $group $gridname $casename: $status"
     set summary [join $summary "\n"]
     if {$errors} {
-      foreach error $errors_log {
-        _log_and_puts summary "  $error"
-      }
+        foreach error $errors_log {
+            _log_and_puts summary "  $error"
+        }
     }
     set html_log "[_html_highlight [lindex $status 0] $summary]\n[join $html_log \n]"
 }
@@ -1253,8 +1277,8 @@ if [catch {
 # Auxiliary procedure putting message to both cout and log variable (list)
 proc _log_and_puts {logvar message} {
     if { $logvar != "" } { 
-	upvar $logvar log
-	lappend log $message
+        upvar $logvar log
+        lappend log $message
     }
     puts $message
 }
@@ -1269,8 +1293,8 @@ proc _log_test_case {output logdir dir group grid casename logvar} {
 
     # save log to file
     if { $logdir != "" } {
-	_log_html $logdir/$group/$grid/$casename.html $html_log "Test $group $grid $casename"
-	_log_save $logdir/$group/$grid/$casename.log "$output\n$summary" "Test $group $grid $casename"
+        _log_html $logdir/$group/$grid/$casename.html $html_log "Test $group $grid $casename"
+        _log_save $logdir/$group/$grid/$casename.log "$output\n$summary" "Test $group $grid $casename"
     }
 }
 
@@ -1281,7 +1305,7 @@ proc _log_save {file log {title {}}} {
 
     # try to open a file
     if [catch {set fd [open $file w]} res] {
-	error "Error saving log file $file: $res"
+        error "Error saving log file $file: $res"
     }
     
     # dump log and close
@@ -1314,7 +1338,7 @@ proc _log_html {file log {title {}}} {
 
     # try to open a file
     if [catch {set fd [open $file w]} res] {
-	error "Error saving log file $file: $res"
+        error "Error saving log file $file: $res"
     }
     
     # print header
@@ -1328,7 +1352,7 @@ proc _log_html {file log {title {}}} {
                              ${imgbasename}.gif   ${imgbasename}.png   ${imgbasename}.jpg \
                              ${imgbasename}_*.gif ${imgbasename}_*.png ${imgbasename}_*.jpg \
                              ${imgbasename}-*.gif ${imgbasename}-*.png ${imgbasename}-*.jpg]] {
-	puts $fd "<p>[file tail $img]<br><img src=\"$img\"/><p>"
+        puts $fd "<p>[file tail $img]<br><img src=\"$img\"/><p>"
     }
 
     # print log body, trying to add HTML links to script files on lines like
@@ -1351,20 +1375,20 @@ proc _log_html {file log {title {}}} {
 proc _html_color {status} {
     # choose a color for the cell according to result
     if { $status == "OK" } { 
-	return lightgreen
+        return lightgreen
     } elseif { [regexp -nocase {^FAIL} $status] } { 
-	return red
+        return red
     } elseif { [regexp -nocase {^BAD} $status] } { 
-	return yellow
+        return yellow
     } elseif { [regexp -nocase {^IMP} $status] } { 
-	return orange
+        return orange
     } elseif { [regexp -nocase {^SKIP} $status] } { 
-	return gray
+        return gray
     } elseif { [regexp -nocase {^IGNOR} $status] } { 
-	return gray
+        return gray
     } else {
-	puts "Warning: no color defined for status $status, using red as if FAILED"
-	return red
+        puts "Warning: no color defined for status $status, using red as if FAILED"
+        return red
     }
 }
 
@@ -1383,14 +1407,14 @@ proc _log_html_summary {logdir log totals regressions improvements total_time} {
 
     # try to open a file and start HTML
     if [catch {set fd [open $logdir/summary.html w]} res] {
-	error "Error creating log file: $res"
+        error "Error creating log file: $res"
     }
 
     # write HRML header, including command to refresh log if still in progress
     puts $fd "<html><head>"
     puts $fd "<title>Tests summary</title>"
     if { $total_time == "" } {
-	puts $fd "<meta http-equiv=\"refresh\" content=\"10\">"
+        puts $fd "<meta http-equiv=\"refresh\" content=\"10\">"
     }
     puts $fd "<meta http-equiv=\"pragma\" content=\"NO-CACHE\">"
     puts $fd "</head><body>"
@@ -1403,45 +1427,45 @@ proc _log_html_summary {logdir log totals regressions improvements total_time} {
     set legend(SKIPPED)     "Test skipped due to lack of data file"
     puts $fd "<h1>Summary</h1><table>"
     foreach nbstat $totals {
-	set status [lindex $nbstat 1]
-	if { [info exists legend($status)] } { 
-	    set comment $legend($status) 
-	} else {
-	    set comment "User-defined status"
-	}
-	puts $fd "<tr><td align=\"right\">[lindex $nbstat 0]</td><td bgcolor=\"[_html_color $status]\">$status</td><td>$comment</td></tr>"
+        set status [lindex $nbstat 1]
+        if { [info exists legend($status)] } { 
+            set comment $legend($status) 
+        } else {
+            set comment "User-defined status"
+        }
+        puts $fd "<tr><td align=\"right\">[lindex $nbstat 0]</td><td bgcolor=\"[_html_color $status]\">$status</td><td>$comment</td></tr>"
     }
     puts $fd "</table>"
 
     # time stamp and elapsed time info
     if { $total_time != "" } { 
-	puts $fd "<p>Generated on [clock format [clock seconds] -format {%Y-%m-%d %H:%M:%S}] on [info hostname]\n<p>"
+        puts $fd "<p>Generated on [clock format [clock seconds] -format {%Y-%m-%d %H:%M:%S}] on [info hostname]\n<p>"
         puts $fd [join [split $total_time "\n"] "<p>"]
     } else {
-	puts $fd "<p>NOTE: This is intermediate summary; the tests are still running! This page will refresh automatically until tests are finished."
+        puts $fd "<p>NOTE: This is intermediate summary; the tests are still running! This page will refresh automatically until tests are finished."
     }
    
     # print regressions and improvements
     foreach featured [list $regressions $improvements] {
-	if { [llength $featured] <= 1 } { continue }
-	set status [string trim [lindex $featured 0] { :}]
-	puts $fd "<h2>$status</h2>"
-	puts $fd "<table>"
-	set groupgrid ""
-	foreach test [lrange $featured 1 end] {
-	    if { ! [regexp {^(.*)\s+([\w.]+)$} $test res gg name] } {
-		set gg UNKNOWN
-		set name "Error building short list; check details"
-	    }
-	    if { $gg != $groupgrid } {
-		if { $groupgrid != "" } { puts $fd "</tr>" }
-		set groupgrid $gg
-		puts $fd "<tr><td>$gg</td>"
-	    }
-	    puts $fd "<td bgcolor=\"[_html_color $status]\"><a href=\"[regsub -all { } $gg /]/${name}.html\">$name</a></td>"
-	}
-	if { $groupgrid != "" } { puts $fd "</tr>" }
-	puts $fd "</table>"
+        if { [llength $featured] <= 1 } { continue }
+        set status [string trim [lindex $featured 0] { :}]
+        puts $fd "<h2>$status</h2>"
+        puts $fd "<table>"
+        set groupgrid ""
+        foreach test [lrange $featured 1 end] {
+            if { ! [regexp {^(.*)\s+([\w.]+)$} $test res gg name] } {
+                set gg UNKNOWN
+                set name "Error building short list; check details"
+            }
+            if { $gg != $groupgrid } {
+                if { $groupgrid != "" } { puts $fd "</tr>" }
+                set groupgrid $gg
+                puts $fd "<tr><td>$gg</td>"
+            }
+            puts $fd "<td bgcolor=\"[_html_color $status]\"><a href=\"[regsub -all { } $gg /]/${name}.html\">$name</a></td>"
+        }
+        if { $groupgrid != "" } { puts $fd "</tr>" }
+        puts $fd "</table>"
     }
 
     # put detailed log with TOC
@@ -1453,57 +1477,57 @@ proc _log_html_summary {logdir log totals regressions improvements total_time} {
     set letter {}
     set body {}
     foreach line [lsort -dictionary $log] {
-	# check that the line is case report in the form "CASE group grid name: result (explanation)"
-	if { ! [regexp $_test_case_regexp $line res grp grd casename result message] } {
-	    continue
-	}
+        # check that the line is case report in the form "CASE group grid name: result (explanation)"
+        if { ! [regexp $_test_case_regexp $line res grp grd casename result message] } {
+            continue
+        }
 
-	# start new group
-	if { $grp != $group } {
-	    if { $letter != "" } { lappend body "</tr></table>" }
-	    set letter {}
-	    set group $grp
-	    set grid {}
-	    puts $fd "<a href=\"#$group\">$group</a><br>"
-	    lappend body "<h2><a name=\"$group\">Group $group</a></h2>"
-	}
+        # start new group
+        if { $grp != $group } {
+            if { $letter != "" } { lappend body "</tr></table>" }
+            set letter {}
+            set group $grp
+            set grid {}
+            puts $fd "<a href=\"#$group\">$group</a><br>"
+            lappend body "<h2><a name=\"$group\">Group $group</a></h2>"
+        }
 
-	# start new grid
-	if { $grd != $grid } {
-	    if { $letter != "" } { lappend body "</tr></table>" }
-	    set letter {}
-	    set grid $grd
-	    puts $fd "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$group-$grid\">$grid</a><br>"
-	    lappend body "<h2><a name=\"$group-$grid\">Grid $group $grid</a></h2>"
-	}
+        # start new grid
+        if { $grd != $grid } {
+            if { $letter != "" } { lappend body "</tr></table>" }
+            set letter {}
+            set grid $grd
+            puts $fd "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#$group-$grid\">$grid</a><br>"
+            lappend body "<h2><a name=\"$group-$grid\">Grid $group $grid</a></h2>"
+        }
 
-	# check if test case name is <letter><digit>; 
-	# if not, set alnum to period "." to recognize non-standard test name
-	if { ! [regexp {\A([A-Za-z]{1,2})([0-9]{1,2})\Z} $casename res alnum number] &&
+        # check if test case name is <letter><digit>; 
+        # if not, set alnum to period "." to recognize non-standard test name
+        if { ! [regexp {\A([A-Za-z]{1,2})([0-9]{1,2})\Z} $casename res alnum number] &&
              ! [regexp {\A([A-Za-z0-9]+)_([0-9]+)\Z} $casename res alnum number] } {
-	    set alnum $casename
-	}
+            set alnum $casename
+        }
 
-	# start new row when letter changes or for non-standard names
-	if { $alnum != $letter || $alnum == "." } {
-	    if { $letter != "" } { 
-		lappend body "</tr><tr>" 
-	    } else {
-		lappend body "<table><tr>"
-	    }
-	    set letter $alnum
-	}	    
+        # start new row when letter changes or for non-standard names
+        if { $alnum != $letter || $alnum == "." } {
+            if { $letter != "" } { 
+                lappend body "</tr><tr>" 
+            } else {
+                lappend body "<table><tr>"
+            }
+            set letter $alnum
+        }    
 
-	lappend body "<td bgcolor=\"[_html_color $result]\"><a href=\"$group/$grid/${casename}.html\">$casename</a></td>"
+        lappend body "<td bgcolor=\"[_html_color $result]\"><a href=\"$group/$grid/${casename}.html\">$casename</a></td>"
     }
     puts $fd "</div>\n[join $body "\n"]</tr></table>"
 
     # add remaining lines of log as plain text
     puts $fd "<h2>Plain text messages</h2>\n<pre>"
     foreach line $log {
-	if { ! [regexp $_test_case_regexp $line] } {
-	    puts $fd "$line"
-	}
+        if { ! [regexp $_test_case_regexp $line] } {
+            puts $fd "$line"
+        }
     }
     puts $fd "</pre>"
 
@@ -1522,45 +1546,45 @@ proc _log_summarize {logdir log {total_time {}}} {
 
     # classify test cases by status
     foreach line $loglist {
-	if { [regexp {^CASE ([^:]*): ([[:alnum:]]+).*$} $line res caseid status] } {
-	    lappend stat($status) $caseid
-	}
+        if { [regexp {^CASE ([^:]*): ([[:alnum:]]+).*$} $line res caseid status] } {
+            lappend stat($status) $caseid
+        }
     }
     set totals {}
     set improvements {Improvements:}
     set regressions {Failed:}
     if { [info exists stat] } {
-	foreach status [lsort [array names stat]] {
-	    lappend totals [list [llength $stat($status)] $status]
+        foreach status [lsort [array names stat]] {
+            lappend totals [list [llength $stat($status)] $status]
 
-	    # separately count improvements (status starting with IMP) and regressions (all except IMP, OK, BAD, and SKIP)
-	    if { [regexp -nocase {^IMP} $status] } {
-		eval lappend improvements $stat($status)
-	    } elseif { $status != "OK" && ! [regexp -nocase {^BAD} $status] && ! [regexp -nocase {^SKIP} $status] } {
-		eval lappend regressions $stat($status)
-	    }
-	}
+            # separately count improvements (status starting with IMP) and regressions (all except IMP, OK, BAD, and SKIP)
+            if { [regexp -nocase {^IMP} $status] } {
+                eval lappend improvements $stat($status)
+            } elseif { $status != "OK" && ! [regexp -nocase {^BAD} $status] && ! [regexp -nocase {^SKIP} $status] } {
+                eval lappend regressions $stat($status)
+            }
+        }
     }
 
     # if time is specified, add totals
     if { $total_time != "" } {
-	if { [llength $improvements] > 1 } {
-	    _log_and_puts log [join $improvements "\n  "]
-	}
-	if { [llength $regressions] > 1 } {
-	    _log_and_puts log [join $regressions "\n  "]
-	}
-	if { [llength $improvements] == 1 && [llength $regressions] == 1 } {
-	    _log_and_puts log "No regressions"
-	}
-	_log_and_puts log "Total cases: [join $totals {, }]"
-	_log_and_puts log $total_time
+        if { [llength $improvements] > 1 } {
+            _log_and_puts log [join $improvements "\n  "]
+        }
+        if { [llength $regressions] > 1 } {
+            _log_and_puts log [join $regressions "\n  "]
+        }
+        if { [llength $improvements] == 1 && [llength $regressions] == 1 } {
+            _log_and_puts log "No regressions"
+        }
+        _log_and_puts log "Total cases: [join $totals {, }]"
+        _log_and_puts log $total_time
     }
 
     # save log to files
     if { $logdir != "" } {
-	_log_html_summary $logdir $log $totals $regressions $improvements $total_time
-	_log_save $logdir/tests.log [join $log "\n"] "Tests summary"
+        _log_html_summary $logdir $log $totals $regressions $improvements $total_time
+        _log_save $logdir/tests.log [join $log "\n"] "Tests summary"
     }
 
     return
@@ -1581,7 +1605,7 @@ proc _log_xml_summary {logdir filename log include_cout} {
 
     # try to open a file and start XML
     if [catch {set fd [open $filename w]} res] {
-	error "Error creating XML summary file $filename: $res"
+        error "Error creating XML summary file $filename: $res"
     }
     puts $fd "<?xml version='1.0' encoding='utf-8'?>"
     puts $fd "<testsuites>"
@@ -1593,69 +1617,69 @@ proc _log_xml_summary {logdir filename log include_cout} {
     # sort log and process it line-by-line
     set group {}
     foreach line [lsort -dictionary $log] {
-	# check that the line is case report in the form "CASE group grid name: result (explanation)"
-	if { ! [regexp $_test_case_regexp $line res grp grd casename result message] } {
-	    continue
-	}
-	set message [string trim $message " \t\r\n()"]
+        # check that the line is case report in the form "CASE group grid name: result (explanation)"
+        if { ! [regexp $_test_case_regexp $line res grp grd casename result message] } {
+            continue
+        }
+        set message [string trim $message " \t\r\n()"]
 
-	# start new testsuite for each grid
-	if { $grp != $group || $grd != $grid } {
+        # start new testsuite for each grid
+        if { $grp != $group || $grd != $grid } {
 
-	    # write previous test suite
-	    if [info exists testcases] { eval $cmd_testsuite }
+            # write previous test suite
+            if [info exists testcases] { eval $cmd_testsuite }
 
-	    set testcases {}
-	    set nbtests 0
-	    set nberr 0
-	    set nbfail 0
-	    set nbskip 0
-	    set time 0.
+            set testcases {}
+            set nbtests 0
+            set nberr 0
+            set nbfail 0
+            set nbskip 0
+            set time 0.
 
-	    set group $grp
-	    set grid $grd
-	}
+            set group $grp
+            set grid $grd
+        }
 
-	incr nbtests
-	 
-	# parse test log and get its CPU time
-	set testout {}
-	set add_cpu {}
-	if { [catch {set fdlog [open $logdir/$group/$grid/${casename}.log r]} ret] } { 
-	    puts "Error: cannot open $logdir/$group/$grid/${casename}.log: $ret"
-	} else {
-	    while { [gets $fdlog logline] >= 0 } {
-		if { $include_cout } {
-        	    append testout "$logline\n"
-		}
-		if [regexp -nocase {TOTAL CPU TIME:\s*([\d.]+)\s*sec} $logline res cpu] {
-		    set add_cpu " time=\"$cpu\""
-		    set time [expr $time + $cpu]
-		}
-	    }
-	    close $fdlog
-	}
-	if { ! $include_cout } {
+        incr nbtests
+ 
+        # parse test log and get its CPU time
+        set testout {}
+        set add_cpu {}
+        if { [catch {set fdlog [open $logdir/$group/$grid/${casename}.log r]} ret] } { 
+            puts "Error: cannot open $logdir/$group/$grid/${casename}.log: $ret"
+        } else {
+            while { [gets $fdlog logline] >= 0 } {
+                if { $include_cout } {
+                    append testout "$logline\n"
+                }
+                if [regexp -nocase {TOTAL CPU TIME:\s*([\d.]+)\s*sec} $logline res cpu] {
+                    set add_cpu " time=\"$cpu\""
+                    set time [expr $time + $cpu]
+                }
+            }
+            close $fdlog
+        }
+        if { ! $include_cout } {
             set testout "$line\n"
-	}
+        }
 
-	# record test case with its output and status
-	# Mapping is: SKIPPED, BAD, and OK to OK, all other to failure
-	append testcases "\n  <testcase name=\"$casename\"$add_cpu status=\"$result\">\n"
-	append testcases "\n    <system-out>\n$testout    </system-out>"
-	if { $result != "OK" } {
-	    if { [regexp -nocase {^SKIP} $result] } {
-		incr nberr
-		append testcases "\n    <error name=\"$result\" message=\"$message\"/>"
-	    } elseif { [regexp -nocase {^BAD} $result] } {
-		incr nbskip
-		append testcases "\n    <skipped>$message</skipped>"
-	    } else {
-		incr nbfail
-		append testcases "\n    <failure name=\"$result\" message=\"$message\"/>"
-	    }
-	}
-	append testcases "\n  </testcase>"
+        # record test case with its output and status
+        # Mapping is: SKIPPED, BAD, and OK to OK, all other to failure
+        append testcases "\n  <testcase name=\"$casename\"$add_cpu status=\"$result\">\n"
+        append testcases "\n    <system-out>\n$testout    </system-out>"
+        if { $result != "OK" } {
+            if { [regexp -nocase {^SKIP} $result] } {
+                incr nberr
+                append testcases "\n    <error name=\"$result\" message=\"$message\"/>"
+            } elseif { [regexp -nocase {^BAD} $result] } {
+                incr nbskip
+                append testcases "\n    <skipped>$message</skipped>"
+            } else {
+                incr nbfail
+                append testcases "\n    <failure name=\"$result\" message=\"$message\"/>"
+            }
+        }
+        append testcases "\n  </testcase>"
     }
 
     # write last test suite
@@ -1673,10 +1697,10 @@ proc _tests_platform_def {} {
 
     if [info exists env(os_type)] { return }
     set env(os_type) $tcl_platform(platform)
-	if { $tcl_platform(os) == "Linux" } {
+    if { $tcl_platform(os) == "Linux" } {
         set env(os_type) Linux
     }
-	if { $tcl_platform(os) == "Darwin" } {
+    if { $tcl_platform(os) == "Darwin" } {
         set env(os_type) MacOS
     } 
 }
@@ -1701,9 +1725,9 @@ proc _path_separator {} {
 
     # split path by platform-specific separator
     if { $tcl_platform(platform) == "windows" } {
-	return ";"
+        return ";"
     } else {
-	return ":"
+        return ":"
     }
 }
 
@@ -1717,16 +1741,16 @@ proc _list_diff {list1 list2 _in1 _in2 _common} {
     set in2 {}
     set common {}
     foreach item $list1 {
-	if { [lsearch -exact $list2 $item] >= 0 } {
-	    lappend common $item
+        if { [lsearch -exact $list2 $item] >= 0 } {
+            lappend common $item
         } else {
-	    lappend in1 $item
-	}
+            lappend in1 $item
+        }
     }
     foreach item $list2 {
-	if { [lsearch -exact $common $item] < 0 } {
-	    lappend in2 $item
-	}
+        if { [lsearch -exact $common $item] < 0 } {
+            lappend in2 $item
+        }
     }
     return
 }
@@ -1780,9 +1804,9 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
         }
         foreach subdir $common {
             if { "$verbose" > 2 } {
-	        _log_and_puts log "Checking [file join $basename $subdir]"
-	    }
-	    _test_diff $dir1 $dir2 [file join $basename $subdir] $status $verbose log stat
+                _log_and_puts log "Checking [file join $basename $subdir]"
+            }
+            _test_diff $dir1 $dir2 [file join $basename $subdir] $status $verbose log stat
         }
     } else {
         # check log files (only if directory has no subdirs)
@@ -1799,59 +1823,59 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
         set gmem2 0
         foreach logfile $common {
             # load two logs
-	    set log1 [_read_file [file join $dir1 $basename $logfile]]
-	    set log2 [_read_file [file join $dir2 $basename $logfile]]
+            set log1 [_read_file [file join $dir1 $basename $logfile]]
+            set log2 [_read_file [file join $dir2 $basename $logfile]]
             set casename [file rootname $logfile]
 
             # check execution statuses
             set status1 UNDEFINED
             set status2 UNDEFINED
-	    if { ! [regexp {CASE [^:]*:\s*([\w]+)} $log1 res1 status1] ||
-	         ! [regexp {CASE [^:]*:\s*([\w]+)} $log2 res2 status2] ||
-	         "$status1" != "$status2" } {
-	        _log_and_puts log "STATUS [split $basename /] $casename: $status1 / $status2"
+            if { ! [regexp {CASE [^:]*:\s*([\w]+)} $log1 res1 status1] ||
+                 ! [regexp {CASE [^:]*:\s*([\w]+)} $log2 res2 status2] ||
+                 "$status1" != "$status2" } {
+                _log_and_puts log "STATUS [split $basename /] $casename: $status1 / $status2"
 
                 # if test statuses are different, further comparison makes 
- 		# no sense unless explicitly requested
-		if { "$status" != "all" } {
+                # no sense unless explicitly requested
+                if { "$status" != "all" } {
                     continue
-		}
-	    }
-	    if { "$status" == "ok" && "$status1" != "OK" } { 
-		continue
-	    }
+                }
+            }
+            if { "$status" == "ok" && "$status1" != "OK" } { 
+                continue
+            }
 
             # check CPU times
             set cpu1 UNDEFINED
             set cpu2 UNDEFINED
-	    if { [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log1 res1 cpu1] &&
-	         [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log2 res1 cpu2] } {
+            if { [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log1 res1 cpu1] &&
+                 [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log2 res1 cpu2] } {
                 set stat(cpu1) [expr $stat(cpu1) + $cpu1]
                 set stat(cpu2) [expr $stat(cpu2) + $cpu2]
                 set gcpu1 [expr $gcpu1 + $cpu1]
                 set gcpu2 [expr $gcpu2 + $cpu2]
 
                 # compare CPU times with 10% precision (but not less 0.5 sec)
-	        if { [expr abs ($cpu1 - $cpu2) > 0.5 + 0.05 * abs ($cpu1 + $cpu2)] } {
-	            _log_and_puts log "CPU [split $basename /] $casename: [_diff_show_ratio $cpu1 $cpu2]"
+                if { [expr abs ($cpu1 - $cpu2) > 0.5 + 0.05 * abs ($cpu1 + $cpu2)] } {
+                    _log_and_puts log "CPU [split $basename /] $casename: [_diff_show_ratio $cpu1 $cpu2]"
                 }
-	    }
+            }
 
             # check memory delta
             set mem1 UNDEFINED
             set mem2 UNDEFINED
-	    if { [regexp {MEMORY DELTA:\s*([\d.]+)} $log1 res1 mem1] &&
-	         [regexp {MEMORY DELTA:\s*([\d.]+)} $log2 res1 mem2] } {
+            if { [regexp {MEMORY DELTA:\s*([\d.]+)} $log1 res1 mem1] &&
+                 [regexp {MEMORY DELTA:\s*([\d.]+)} $log2 res1 mem2] } {
                 set stat(mem1) [expr $stat(mem1) + $mem1]
                 set stat(mem2) [expr $stat(mem2) + $mem2]
                 set gmem1 [expr $gmem1 + $mem1]
                 set gmem2 [expr $gmem2 + $mem2]
 
                 # compare memory usage with 10% precision (but not less 16 KiB)
-	        if { [expr abs ($mem1 - $mem2) > 16 + 0.05 * abs ($mem1 + $mem2)] } {
-	            _log_and_puts log "MEMORY [split $basename /] $casename: [_diff_show_ratio $mem1 $mem2]"
+                if { [expr abs ($mem1 - $mem2) > 16 + 0.05 * abs ($mem1 + $mem2)] } {
+                    _log_and_puts log "MEMORY [split $basename /] $casename: [_diff_show_ratio $mem1 $mem2]"
                 }
-	    }
+            }
 
             # check images
             set imglist1 [glob -directory $path1 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
@@ -1862,7 +1886,7 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
                 if { [llength $imgin2] > 0 } { _log_and_puts log "Only in $path2: $imgin2" }
             }
             foreach imgfile $imgcommon {
-#                if { $verbose > 1 } { _log_and_puts log "Checking [split basename /] $casename: $imgfile" }
+                # if { $verbose > 1 } { _log_and_puts log "Checking [split basename /] $casename: $imgfile" }
                 set diffile [_diff_img_name $dir1 $dir2 $basename $imgfile]
                 if { [catch {diffimage [file join $dir1 $basename $imgfile] \
                                        [file join $dir2 $basename $imgfile] \
@@ -1875,14 +1899,14 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
                     file delete -force $diffile ;# clean useless artifact of diffimage
                 }
             }
-	}
+        }
         
         # report CPU and memory difference in group if it is greater than 10%
         if { [expr abs ($gcpu1 - $gcpu2) > 0.5 + 0.005 * abs ($gcpu1 + $gcpu2)] } {
             _log_and_puts log "CPU [split $basename /]: [_diff_show_ratio $gcpu1 $gcpu2]"
         }
-	if { [expr abs ($gmem1 - $gmem2) > 16 + 0.005 * abs ($gmem1 + $gmem2)] } {
-	    _log_and_puts log "MEMORY [split $basename /]: [_diff_show_ratio $gmem1 $gmem2]"
+        if { [expr abs ($gmem1 - $gmem2) > 16 + 0.005 * abs ($gmem1 + $gmem2)] } {
+            _log_and_puts log "MEMORY [split $basename /]: [_diff_show_ratio $gmem1 $gmem2]"
         }
     }
 
@@ -1899,7 +1923,7 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
 
     # try to open a file
     if [catch {set fd [open $file w]} res] {
-	error "Error saving log file $file: $res"
+        error "Error saving log file $file: $res"
     }
     
     # print header
@@ -1924,8 +1948,8 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
         # add images
         if { [regexp {IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+)} $line res case img] } {
             if { [catch {eval file join "" [lrange $case 0 end-1]} gridpath] } {
-               # note: special handler for the case if test grid directoried are compared directly
-               set gridpath ""
+                # note: special handler for the case if test grid directoried are compared directly
+                set gridpath ""
             }
             set img1 "<img src=\"[_make_url $file [file join $dir1 $gridpath $img]]\">"
             set img2 "<img src=\"[_make_url $file [file join $dir2 $gridpath $img]]\">"
@@ -1963,11 +1987,11 @@ proc _get_nb_cpus {} {
             return 0 ;# should never happen, but...
         }
         set nb 0
-	while { [gets $fd line] >= 0 } {
-	    if { [regexp {^processor[ \t]*:} $line] } {
-	        incr nb
-	    }
-	}
+        while { [gets $fd line] >= 0 } {
+            if { [regexp {^processor[ \t]*:} $line] } {
+                incr nb
+            }
+        }
         close $fd
         return $nb
     } elseif { "$tcl_platform(os)" == "Darwin" } {
@@ -2072,12 +2096,12 @@ proc _check_file_format {file} {
 # procedure to load file knowing its format
 proc load_data_file {file format shape} {
     switch $format {
-    BREP { uplevel restore $file $shape }
-    DRAW { uplevel restore $file $shape }
-    IGES { pload XSDRAW; uplevel igesbrep $file $shape * }
-    STEP { pload XSDRAW; uplevel stepread $file __a *; uplevel renamevar __a_1 $shape }
-    STL  { pload XSDRAW; uplevel readstl $shape $file }
-    default { error "Cannot read $format file $file" }
+        BREP { uplevel restore $file $shape }
+        DRAW { uplevel restore $file $shape }
+        IGES { pload XSDRAW; uplevel igesbrep $file $shape * }
+        STEP { pload XSDRAW; uplevel stepread $file __a *; uplevel renamevar __a_1 $shape }
+        STL  { pload XSDRAW; uplevel readstl $shape $file }
+        default { error "Cannot read $format file $file" }
     }
 }
 
@@ -2149,8 +2173,8 @@ proc _testgrid_process_jobs {worker {nb_ok 0}} {
 
         # update summary log with requested period
         if { $logdir != "" && $refresh > 0 && [clock seconds] > $refresh_timer + $refresh } {
-    	    _log_summarize $logdir $log
-    	    set refresh_timer [clock seconds]
+            _log_summarize $logdir $log
+            set refresh_timer [clock seconds]
         }
     }
     catch {tpool::suspend $worker}
@@ -2172,14 +2196,14 @@ proc checkcolor { coord_x coord_y rd_get gr_get bl_get } {
     puts "BLUE color of RGB is $bl_get"
 
     if { $coord_x <= 1 || $coord_y <= 1 } {
-      puts "Error : minimal coordinate is x = 2, y = 2. But we have x = $coord_x y = $coord_y"
-      return -1
+        puts "Error : minimal coordinate is x = 2, y = 2. But we have x = $coord_x y = $coord_y"
+        return -1
     }
 
     set color ""
     catch { [set color "[vreadpixel ${coord_x} ${coord_y} rgb]"] }
     if {"$color" == ""} {
-      puts "Error : Pixel coordinates (${position_x}; ${position_y}) are out of view"
+        puts "Error : Pixel coordinates (${position_x}; ${position_y}) are out of view"
     }
     set rd [lindex $color 0]
     set gr [lindex $color 1]
@@ -2192,52 +2216,52 @@ proc checkcolor { coord_x coord_y rd_get gr_get bl_get } {
     set bl_ch [expr int($bl_get * 1.e+05)]
 
     if { $rd_ch != 0 } {
-      set tol_rd [expr abs($rd_ch - $rd_int)/$rd_ch]
+        set tol_rd [expr abs($rd_ch - $rd_int)/$rd_ch]
     } else {
-      set tol_rd $rd_int
+        set tol_rd $rd_int
     }
     if { $gr_ch != 0 } {
-      set tol_gr [expr abs($gr_ch - $gr_int)/$gr_ch]
+        set tol_gr [expr abs($gr_ch - $gr_int)/$gr_ch]
     } else {
-      set tol_gr $gr_int
+        set tol_gr $gr_int
     }
     if { $bl_ch != 0 } {
-      set tol_bl [expr abs($bl_ch - $bl_int)/$bl_ch]
+        set tol_bl [expr abs($bl_ch - $bl_int)/$bl_ch]
     } else {
-      set tol_bl $bl_int
+        set tol_bl $bl_int
     }
 
     set status 0
     if { $tol_rd > 0.2 } {
-      puts "Warning : RED light of additive color model RGB is invalid"
-      set status 1
+        puts "Warning : RED light of additive color model RGB is invalid"
+        set status 1
     }
     if { $tol_gr > 0.2 } {
-      puts "Warning : GREEN light of additive color model RGB is invalid"
-      set status 1
+        puts "Warning : GREEN light of additive color model RGB is invalid"
+        set status 1
     }
     if { $tol_bl > 0.2 } {
-      puts "Warning : BLUE light of additive color model RGB is invalid"
-      set status 1
+        puts "Warning : BLUE light of additive color model RGB is invalid"
+        set status 1
     }
 
     if { $status != 0 } {
-      puts "Warning : Colors of default coordinate are not equal"
+        puts "Warning : Colors of default coordinate are not equal"
     }
 
     global stat
     if { $tol_rd > 0.2 || $tol_gr > 0.2 || $tol_bl > 0.2 } {
-      set info [_checkpoint $coord_x $coord_y $rd_ch $gr_ch $bl_ch]
-      set stat [lindex $info end]
-      if { ${stat} != 1 } {
-          puts "Error : Colors are not equal in default coordinate and in the near coordinates too"
-          return $stat
-      } else {
-          puts "Point with valid color was found"
-          return $stat
-      }
+        set info [_checkpoint $coord_x $coord_y $rd_ch $gr_ch $bl_ch]
+        set stat [lindex $info end]
+        if { ${stat} != 1 } {
+            puts "Error : Colors are not equal in default coordinate and in the near coordinates too"
+            return $stat
+        } else {
+            puts "Point with valid color was found"
+            return $stat
+        }
     } else {
-      set stat 1
+        set stat 1
     }
 }
 
@@ -2248,52 +2272,52 @@ proc _checkpoint {coord_x coord_y rd_ch gr_ch bl_ch} {
     set mistake 0
     set i 0
     while { $mistake != 1 && $i <= 5 } {
-      set j 0
-      while { $mistake != 1 && $j <= 5 } {
-          set position_x [expr ${x_start} + $j]
-          set position_y [expr ${y_start} + $i]
-          puts $position_x
-          puts $position_y
+        set j 0
+        while { $mistake != 1 && $j <= 5 } {
+            set position_x [expr ${x_start} + $j]
+            set position_y [expr ${y_start} + $i]
+            puts $position_x
+            puts $position_y
 
-          set color ""
-          catch { [set color "[vreadpixel ${position_x} ${position_y} rgb]"] }
-          if {"$color" == ""} {
-            puts "Warning : Pixel coordinates (${position_x}; ${position_y}) are out of view"
+            set color ""
+            catch { [set color "[vreadpixel ${position_x} ${position_y} rgb]"] }
+            if {"$color" == ""} {
+                puts "Warning : Pixel coordinates (${position_x}; ${position_y}) are out of view"
+                incr j
+                continue
+            }
+            set rd [lindex $color 0]
+            set gr [lindex $color 1]
+            set bl [lindex $color 2]
+            set rd_int [expr int($rd * 1.e+05)]
+            set gr_int [expr int($gr * 1.e+05)]
+            set bl_int [expr int($bl * 1.e+05)]
+
+            if { $rd_ch != 0 } {
+                set tol_rd [expr abs($rd_ch - $rd_int)/$rd_ch]
+            } else {
+                set tol_rd $rd_int
+            }
+            if { $gr_ch != 0 } {
+                set tol_gr [expr abs($gr_ch - $gr_int)/$gr_ch]
+            } else {
+                set tol_gr $gr_int
+            }
+            if { $bl_ch != 0 } {
+                set tol_bl [expr abs($bl_ch - $bl_int)/$bl_ch]
+            } else {
+                set tol_bl $bl_int
+            }
+
+            if { $tol_rd > 0.2 || $tol_gr > 0.2 || $tol_bl > 0.2 } {
+                puts "Warning : Point with true color was not found near default coordinates"
+                set mistake 0
+            } else {
+                set mistake 1
+            }
             incr j
-            continue
-          }
-          set rd [lindex $color 0]
-          set gr [lindex $color 1]
-          set bl [lindex $color 2]
-          set rd_int [expr int($rd * 1.e+05)]
-          set gr_int [expr int($gr * 1.e+05)]
-          set bl_int [expr int($bl * 1.e+05)]
-
-          if { $rd_ch != 0 } {
-            set tol_rd [expr abs($rd_ch - $rd_int)/$rd_ch]
-          } else {
-            set tol_rd $rd_int
-          }
-          if { $gr_ch != 0 } {
-            set tol_gr [expr abs($gr_ch - $gr_int)/$gr_ch]
-          } else {
-            set tol_gr $gr_int
-          }
-          if { $bl_ch != 0 } {
-            set tol_bl [expr abs($bl_ch - $bl_int)/$bl_ch]
-          } else {
-            set tol_bl $bl_int
-          }
-
-          if { $tol_rd > 0.2 || $tol_gr > 0.2 || $tol_bl > 0.2 } {
-            puts "Warning : Point with true color was not found near default coordinates"
-            set mistake 0
-          } else {
-            set mistake 1
-          }
-          incr j
-      }
-      incr i
+        }
+        incr i
     }
     return $mistake
 }

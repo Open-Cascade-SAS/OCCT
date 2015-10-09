@@ -35,9 +35,7 @@ for {set i 1} {$i <= 14} {incr i} {
     whatis a_$i
 }
 
-decho off
 set info_result [checkshape result]
-decho on
 
 if {[regexp {Faulty} $info_result] } {
     puts "OK ${BugNumber} : checkshape detect faulty faces in solid shape"

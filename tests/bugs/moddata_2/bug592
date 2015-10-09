@@ -30,9 +30,7 @@ puts "the tolerance of the edge is $MaxEdgeTolerance"
 puts "the tolerance is less than distance between point and surface"
 puts "BUT"
 
-decho off
 set che [checkshape ff114]
-decho on
 
 if { [regexp {Faulty} $che] != 1 } {
     puts "Faulty OCC592 : Checkshape BRepCheck_Analyzer does not detect faulty shape"

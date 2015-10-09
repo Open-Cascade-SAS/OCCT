@@ -1,4 +1,4 @@
-puts "REQUIRED: Error. mkplane has been finished with \"Not Planar\" status."
+puts "REQUIRED ALL: Error. mkplane has been finished with \"Not Planar\" status."
 
 puts "========"
 puts "OCC26687"

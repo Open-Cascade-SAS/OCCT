@@ -7,61 +7,9 @@ puts "========"
 puts "OCC305"
 puts "========"
 puts ""
-######################################################
+###########################################################
 # BRepOffsetAPI_MakeOffset: problem with offsetting a wire
-######################################################
-
-puts ""
-puts "Bug's attributes"
-puts "################"
-puts ""
-puts "Customer : Telco"
-puts "Channel : External"
-puts "Version : 4.0"
-puts "OS : IRIX"
-puts "Urgency : High"
-puts "Type : BUG"
-puts ""
-puts "Summary:  BRepOffsetAPI_MakeOffset: problem with offsetting a wire"
-puts ""
-puts "Description:"
-puts "I am attaching the brep file of a curve, obtained from intersection with a"
-puts "plane. Its a planer curve and we want to offset it by the amount which"
-puts "is feasible. after trying with all options we were not able to offset it."
-puts "But the same wire when we read inside EUCLID3 as well as CATIA it does"
-puts "the offset correctly."
-puts ""
-puts ""
-puts "Bug's advancement"
-puts "#################"
-puts ""
-puts "Customer version                  Development version"
-puts "Status : CLOSED                   Status : CLOSED"
-puts "Resolution : NOT                  Resolution : NOT"
-puts "Leave as CLOSED NOT               Leave as CLOSED NOT"
-puts ""
-puts ""
-puts "Bug's history"
-puts "#############"
-puts ""
-puts "------- Additional Comments From Igor NAZAROV-BUGMASTER 2002-04-19 16:21 -------"
-puts "Dear Sergey,"
-
-puts "Below you will find conclusion of JGV about thia bug"
-puts "Bugmaster"
-puts "   This case can not be done by existing algorithm. It is mathematical"
-puts "limitation: the offset may be performed only from at least C1-continuous"
-puts "curve, but all the 12 edges of initial wire are based on C0-continuous"
-puts "curves."
-puts "   I may modify the algorithm so that it splits initial edges into"
-puts "C1-continuous curves, but then resulting wire will consist of too many"
-puts "small edges (in our case the number of edges will increase about 100"
-puts "times)."
-puts "  But user may obtain initial wire more smooth: when he intersects"
-puts "something with a plane by command \"section\", he can add the key \"-a\""
-puts "(force approximation)."
-puts ""
-puts ""
+###########################################################
 
 catch {pload XDE}
 
@@ -69,16 +17,9 @@ restore [locate_data_file OCC305.brep] a
 checkshape a
 
 if [catch {mkoffset result a 1 0.5 } catch_result] {
-    puts "Faulty OCC305 : function MKOFFSET works wrongly"
+  puts "Faulty OCC305 : function MKOFFSET works wrongly"
 } else {
-    decho off
-    set che [checkshape result]
-    decho on
-    if { [regexp {This shape seems to be valid} $che] == 1} {
-	puts "OCC305  OK"
-    } else {
-	puts "Faulty OCC305"
-    }
+  set che [checkshape result]
 }
 set square 0
 set 2dviewer 0

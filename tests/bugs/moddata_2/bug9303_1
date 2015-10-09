@@ -17,13 +17,11 @@ fit
 
 line ll 0 0 10 1 0 0
 
-decho off
 if [catch {intersect res ll nc} result] {
    set mistake 1
 } else {
    set  mistake 0
 }
-decho on
 
 if { $mistake == 0} {                                                                           
    puts "${BugNumber} OK : intersection was finished"                 

@@ -17,9 +17,7 @@ tcopy b2_10 ee2
 compound b2_10 ee2 comp
 donl b1_10 comp
 
-decho off
 set resstr [bopargcheck b1_10 comp -O /RFTEIP]
-decho on
 
 if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
     puts "OK ${BugNumber}"

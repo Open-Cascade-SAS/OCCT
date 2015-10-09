@@ -1,4 +1,3 @@
-
 puts "================"
 puts "OCC323"
 puts "OCC229"
@@ -8,44 +7,12 @@ puts ""
 restore [locate_data_file OCC323.brep] f 
 explode f
 
-decho off
-set che [checkshape f_1]
-decho on
-
-if { [regexp {Faulty} $che ] == 1 } {
-    puts "Warning OCC323 (shape1): Source shape is NOT correct. It was detected by Checkshape command"
-} else {
-    puts "OCC323 OK (shape1): Source shape is valid"
-}
-
-decho off
-set che [checkshape f_2]
-decho on
-
-if { [regexp {Faulty} $che ] == 1 } {
-    puts "Warning OCC323 (shape2): Source shape is NOT correct. It was detected by Checkshape command"
-} else {
-    puts "OCC323 OK (shape2): Source shape is valid"
-}
-
 bsection r f_1 f_2
+
 checkshape r
-puts [checksection r]
-
-decho off
-set che [checkshape f_3]
-decho on
-
-if { [regexp {Faulty} $che ] == 1 } {
-    puts "Warning OCC323 (shape3): Source shape is invalid. It was detected by Checkshape command"
-} else {
-    puts "OCC323 OK (shape3): Source shape is valid"
-}
+checksection r
 
 bsection result f_1 f_3
 
 set length 1
 set 2dviewer 0
-
-
-

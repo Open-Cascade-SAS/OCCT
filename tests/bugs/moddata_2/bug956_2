@@ -10,15 +10,7 @@ puts ""
 
 restore [locate_data_file OCC956_2.brep] result
 
-decho off
-set che [checkshape result]
-decho on
-
-if { [regexp {Faulty} $che] } {
-    puts "Faulty OCC956 (case 2): Checkshape says that the shape is incorrect, but it is not truth"
-} else {
-    puts "OCC956 OK (case 2): Checkshape works properly"
-}
+checkshape result
 
 set 2dviewer 0
 

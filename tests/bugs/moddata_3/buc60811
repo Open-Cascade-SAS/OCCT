@@ -1,3 +1,4 @@
+puts "REQUIRED All: Error is 5"
 puts "========================"                                                 
 puts "BUC60811"                                                                 
 puts "========================"                                                 
@@ -5,15 +6,6 @@ puts "========================"
 pload QAcommands
 
 vinit
-decho off
+
 set List [BUC60811]
-decho on
-if { [regexp "Error is 5" $List] != 1 } {
-    puts "Faulty: output is incorrect"
-} else {
-    puts "OK: output is correct"
-}
-
-
-
 

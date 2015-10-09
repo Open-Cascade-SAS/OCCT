@@ -43,25 +43,8 @@ while { $AllowRepeate != 0 } {
       puts "Error : Bad intersection"
     }
   
-    dlog reset
-    dlog on
-    xdistcs res_$ic s1 0 100 10
-    set Log1 [dlog get]
-    set List1 [split ${Log1} {TD= \t\n}]
-    set Tolerance 1.0e-7
-    set Limit_Tol 1.0e-7
-    set D_good 0.
-    checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
-    
-    dlog reset
-    dlog on
-    xdistcs res_$ic s2 0 100 10
-    set Log1 [dlog get]
-    set List1 [split ${Log1} {TD= \t\n}]
-    set Tolerance 1.0e-7
-    set Limit_Tol 1.0e-7
-    set D_good 0.
-    checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+    xdistcs res_$ic s1 0 100 10 1e-7
+    xdistcs res_$ic s2 0 100 10 1e-7
     
     incr ic
   }

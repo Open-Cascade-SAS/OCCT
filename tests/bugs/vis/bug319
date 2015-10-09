@@ -10,14 +10,6 @@ cpulimit 3500
 
 restore [locate_data_file OCC319.brep] result
 
-decho off
-set res [checkshape result]
-decho on
-set index [lsearch $res Faulty]
-if {$index > -1} {
-   puts "Warning OCC319: here is checkshape problem"
-}
-
 tclean result
 vinit
 vdisplay result
@@ -41,10 +33,8 @@ set info [trinfo result]
 regexp { +([-0-9.+eE]+) +triangles} $info full tri
 regexp { +([-0-9.+eE]+) +nodes} $info full nod
 
-set IsGood 1
 if { $tri == 0 || $nod == 0 }  {
   puts "Faulty OCC319: here is shading problem"
-  set IsGood 0
 }
 
 regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full sq
@@ -59,11 +49,6 @@ puts "square_percent = ${square_percent}"
 
 if {${square_percent} > ${percent_max}} {
    puts "OCC319 Faulty : here is square problem"
-   set IsGood 0
-}
-
-if {${IsGood} != 1} {
-   puts "Errpr : OCC319"
 }
 
 set only_screen 1

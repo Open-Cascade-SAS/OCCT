@@ -11,17 +11,8 @@ set BugNumber OCC6554
 restore [locate_data_file OCC6554-shell.brep] sh 
 restore [locate_data_file OCC6554-face.brep] f 
 
-decho off
-set che_sh [checkshape sh]
-set che_f [checkshape f]
-decho on
-if { [regexp {Faulty} $che_sh] } {
-    puts "Faulty ${BugNumber} : checkshape is wrong for sh"
-}
-
-if { [regexp {Faulty} $che_f] } {
-    puts "Faulty ${BugNumber} : checkshape is wrong for f"
-}
+checkshape sh
+checkshape f
 
 bsection result sh f -n2d
 

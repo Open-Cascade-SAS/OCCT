@@ -7,7 +7,6 @@ puts ""
 ######################################################
 
 set Tolerance 1.1e-7
-set D_good 0.
 set Limit_Tol 1.0e-7
 
 puts "##############################"
@@ -24,17 +23,9 @@ set bug_info [intersect res sb1 sb2]
 set i 0
 while {$i != [llength $bug_info]} {
   set res_i [lindex $bug_info $i]
-  dlog reset
-  dlog on
-  xdistcs ${res_i} sb1 0 1 10
-  set BugLog [dlog get]
-  set BugList [split ${BugLog} {TD= \t\n}]
-  checkList ${BugList} ${Tolerance} ${D_good} ${Limit_Tol}
-  dlog reset
-  dlog on
-  xdistcs ${res_i} sb2 0 1 10
-  set BugLog [dlog get]
-  set BugList [split ${BugLog} {TD= \t\n}]
-  checkList ${BugList} ${Tolerance} ${D_good} ${Limit_Tol}
+
+  xdistcs ${res_i} sb1 0 1 10 ${Tolerance} ${Limit_Tol}
+  xdistcs ${res_i} sb2 0 1 10 ${Tolerance} ${Limit_Tol}
+
   set i [expr {$i + 1}]
 }

@@ -11,19 +11,8 @@ set BugNumber OCC5729
 restore [locate_data_file OCC5729-f1.brep] f1 
 restore [locate_data_file OCC5729-f2.brep] f2 
 
-decho off
-set che_1 [checkshape f1]
-decho on
-if { [regexp {Faulty} $che_1] } {
-   puts "Faulty ${BugNumber} : checkshape is wrong for f1"
-}
-
-decho off
-set che_2 [checkshape f2]
-decho on
-if { [regexp {Faulty} $che_2] } {
-   puts "Faulty ${BugNumber} : checkshape is wrong for f2"
-}
+checkshape f1
+checkshape f2
 
 bfuse result f1 f2
 

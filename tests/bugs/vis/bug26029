@@ -21,9 +21,6 @@ vsetdispmode 1
 vdefaults -defl 1.0 -autoTriang off
 vdisplay s
 
-# disable output of commands
-decho off
-
 set aNb1 100
 
 # display 100x100 connected instances of single presentation

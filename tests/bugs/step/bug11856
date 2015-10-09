@@ -9,9 +9,7 @@ puts ""
 
 set BugNumber OCC11856
 
-decho off
 stepread [locate_data_file OCC11856.stp] a *
-decho on
 
 tpcompound result
 

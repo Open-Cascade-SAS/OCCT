@@ -1,3 +1,4 @@
+puts "REQUIRED All: ERROR. Degenerated normal on input data"
 puts "========"
 puts "OCC26587"
 puts "========"
@@ -12,13 +13,7 @@ restore [locate_data_file bug26587_plate.brep] plate
 
 offsetparameter 1e-7 p i
 offsetload plate 50
-
-decho off
-
 offsetperform r
 
-decho on
-
 fit
-
 set only_screen_axo 1

@@ -20,17 +20,9 @@ display b1
 display b2
 fit
 
-dlog reset
-dlog on
-decho off
-bopcurves b1 b2
-decho on
-set bug_info [dlog get]
-
-set bug_info [string trim [string range $bug_info [expr {[string first "\n" $bug_info] + 1}] [expr {[string last "\n" $bug_info] - 1}]]]
-set bug_info_tol [string trim [string range $bug_info [expr {[string first "=" $bug_info] + 1}] [expr {[string first "\n" $bug_info] - 1}]]]
-set bug_info_cur [string trim [string range $bug_info [expr {[string first "\n" $bug_info] + 1}] [expr {[string length $bug_info] - 1}]]]
-set bug_info_cur [string trim [string range $bug_info_cur 0 [expr {[string first " " $bug_info_cur] - 1}]]]
+set info [bopcurves b1 b2]
+regexp {Tolerance Reached=([-0-9.+eE]+)} $info full bug_info_tol
+regexp {([0-9]+) curve\(s\) found.} $info full bug_info_cur
 
 if {$bug_info_tol > 1.0e-7} {
   puts "ERROR: OCC25820 is reproduced. Tolerance is to large ($bug_info_tol)."

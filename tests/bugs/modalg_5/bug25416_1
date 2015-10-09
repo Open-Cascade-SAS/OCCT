@@ -6,33 +6,6 @@ puts ""
 # Wrong section curve
 #######################################################################
 
-# Check if list of xdistcs-command is valid
-proc checkList {List Tolerance D_good Limit_Tol} {
-   set L1 [llength ${List}]
-   set L2 10
-   set L3 5
-   set N [expr (${L1} - ${L2})/${L3} + 1]
-
-   for {set i 1} {${i} <= ${N}} {incr i} {
-      set j1 [expr ${L2} + (${i}-1)*${L3}]
-      set j2 [expr ${j1} + 2]
-      set T [lindex ${List} ${j1}]
-      set D [lindex ${List} ${j2}]
-      #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
-      if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
-         puts "Error: T=${T} D=${D}"
-      }
-      
-      if { ${Tolerance} > ${Limit_Tol} } {
-        if { [expr abs(${D} - ${D_good})] > ${Limit_Tol} 
-             && [expr abs(${D} - ${D_good})] <= ${Tolerance} } {
-           puts "Attention (critical value of tolerance) : T=${T} D=${D}"
-        }
-      }
-   }
-}
-
-
 puts "##############################"
 puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
 puts "##############################"
@@ -98,25 +71,8 @@ for {set i 1} {$i <= ${NbCurv}} {incr i} {
     puts "Error: Wrong curve's range!"
   }
 
-  dlog reset
-  dlog on
-  xdistcs c_$i s1 ${U1} ${U2} 10
-  set Log2 [dlog get]
-  set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance 1.0e-7
-  set Limit_Tol 1.0e-7
-  set D_good 0.
-  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
-
-  dlog reset
-  dlog on
-  xdistcs c_$i s2 ${U1} ${U2} 10
-  set Log2 [dlog get]
-  set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance 1.0e-7
-  set Limit_Tol 1.0e-7
-  set D_good 0.
-  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+  xdistcs c_$i s1 ${U1} ${U2} 10 1e-7
+  xdistcs c_$i s2 ${U1} ${U2} 10 1e-7
 }
 
 smallview

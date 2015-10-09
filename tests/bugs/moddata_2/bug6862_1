@@ -12,9 +12,7 @@ set BugNumber OCC6862
 restore [locate_data_file OCC497a.brep] a_1 
 restore [locate_data_file OCC497b.brep] a_2 
 
-decho off
 set resstr [bopargcheck a_2]
-decho on
 
 if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
     puts "OK ${BugNumber}"

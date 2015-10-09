@@ -1,23 +1,19 @@
+puts "REQUIRED All: OCC525 Exception"
+
 pload QAcommands
 
 puts "========"
 puts "OCC525"
 puts "========"
 puts ""
-#########################################
+########################################################
 ## Bug in GeomPlate_BuildPlateSurface::ComputeSurfInit()
-#########################################
+########################################################
 
 set mistake 0
 
-decho off
 if { [catch { OCC525 } ] } {
-    set mistake 1
-}
-decho on
-
-if { $mistake == 1 } {
-    puts "Faulty : OCC525"
+  puts "Faulty : OCC525"
 }
 
 set 2dviewer 1

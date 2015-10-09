@@ -1,22 +1,13 @@
-puts "TODO OCC12345 ALL: Faulty OCC889 : Checkshape says that the shape has FAULTY, but it is not truth"
-
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "============"
 puts "OCC889"
 puts "============"
 puts ""
-############################################
+####################################################################
 ## Checkshape founds number of errors on new face. It is not true.
-############################################
+####################################################################
 restore [locate_data_file OCC889.rle] result
 
-decho off
-set che [checkshape result]
-decho on
-
-if { [ regexp {Faulty} $che ] == 1 } {
-    puts "Faulty OCC889 : Checkshape says that the shape has FAULTY, but it is not truth"
-} else {
-    puts "OCC889 OK : Checkshape works properly"
-}
+checkshape result
 
 set 2dviewer 0

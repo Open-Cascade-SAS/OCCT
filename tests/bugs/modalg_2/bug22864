@@ -44,16 +44,16 @@ for {set i 0} {$i < ${Numbers}} {incr i} {
   close ${fp}
   #
   if {$i == 0} {
-    set StandardLog ${Log}
+	set Standard_Log ${Log}
   } else {
-    set info_result [string compare ${Log} ${StandardLog}]
+	set info_result [string compare ${Log} ${Standard_Log}]
     if {${info_result} == 0} {
-      # Log == StandardLog
-      puts "Log == StandardLog"
+    	    # Log == Standard_Log
+    	    puts "Log == Standard_Log"
     } else {
-      # Log != StandardLog
+    	    # Log != Standard_Log
       set status 1
-      puts "Log != StandardLog"
+    	    puts "Log != Standard_Log"
     }
   }
 }

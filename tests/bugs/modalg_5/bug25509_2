@@ -1,3 +1,4 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1"
 puts "============"
 puts "OCC25509"
 puts "============"
@@ -12,14 +13,6 @@ puts ""
 restore [locate_data_file bug25509_r7.brep] result
 invert result
 
-decho off
-set info [checkshape result]
-decho on
-
-if { [regexp "Faulty shapes in variables faulty_1" ${info}] != 1 } {
-   puts "Error : There are no mistakes by checkshape-command"
-} else {
-   puts "OK : There are mistakes by checkshape-command"
-}
+checkshape result
 
 set 2dviewer 1

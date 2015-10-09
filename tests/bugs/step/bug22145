@@ -8,9 +8,7 @@ puts ""
 # Incorrect cutting BRepMesh_FastDiscretFace
 #######################################################################
 
-decho off
 stepread [locate_data_file OCC22145.stp] a *
-decho on
 
 tpcompound result
 

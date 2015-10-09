@@ -1,33 +1,23 @@
 puts "TODO ?OCC12345 Linux: An exception was caught"
 puts "TODO ?OCC12345 Linux: Faulty OCC1138 : here is reading problem when the filename is a directory name."
 puts "TODO ?OCC12345 Linux: Faulty OCC1138"
+puts "TODO ?OCC12345 Linux: \\*\\* Exception \\*\\*"
 
 puts "================"
 puts "OCC1138"
 puts "================"
 puts ""
-#######################################################################################
+############################################################
 # OSD_SIGSEGV is thrown during call LDOMParser.parse method
-#######################################################################################
+############################################################
 
 pload QAcommands
 
 set BugNumber OCC1138
 
-set status 0
-decho off
-if [catch { OCC983 ${imagedir} } result] {
-decho on
+if [catch { OCC983 ${imagedir} }] {
   puts "Faulty ${BugNumber} : here is reading problem when the filename is a directory name."
-  set status 1
 } else {
   puts "Reading ${BugNumber} OK : here is not reading problem when the filename is a directory name."
 }
 
-# Resume
-puts ""
-if { ${status} != 0 } {
-   puts "Faulty ${BugNumber}"
-} else {
-   puts "OK ${BugNumber}"
-}

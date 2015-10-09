@@ -1,4 +1,4 @@
-
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 puts "========="
 puts "BUC61006"                
 puts "========="
@@ -8,13 +8,8 @@ puts ""
 #########################################################
 
 restore [locate_data_file buc61006.brep] result 
-decho off
-set ch [checkshape result]
-decho on
 
-if {![string compare $ch "This shape seems to be valid"]} {
-	puts "Error : the checkshape command returns incorrect result."
-}
+checkshape result
 
 set 2dviewer 0
 

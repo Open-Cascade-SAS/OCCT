@@ -27,10 +27,7 @@ vtop
 vfit
 vmoveto 200 150
 
-dlog reset
-dlog off
 checkcolor 64 200 1 0.72549021244049072 0.12941177189350128
-dlog on
 
 if { ${stat} == 1} {
    puts "Error : Bad triangulation"

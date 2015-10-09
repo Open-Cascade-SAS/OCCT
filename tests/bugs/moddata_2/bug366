@@ -1,4 +1,4 @@
-
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 puts "========================"
 puts " OCC366 "
 puts "========================"
@@ -9,9 +9,7 @@ puts ""
 
 restore [locate_data_file buc61006.brep] result
 
-decho off
 set che [checkshape result]
-decho on
 
 if { [regexp "Faulty" $che] != 1 } {
    puts "Error : Checkshape command works wrongly"

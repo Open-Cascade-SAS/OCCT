@@ -15,15 +15,11 @@ set anASCIImode 0
 ptorus res 10 8
 incmesh res 0.5
 
-#decho off
 set LogBefore [trinfo res]
-#decho on
 
 writestl res ${aFile} ${anASCIImode}
 
-#decho off
 set LogAfter [trinfo res]
-#decho on
 
 set status 1
 if { ![file exists ${aFile}] } {

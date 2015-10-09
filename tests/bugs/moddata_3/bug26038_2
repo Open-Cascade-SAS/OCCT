@@ -19,13 +19,4 @@ set tol_abs 1.0e-6
 set tol_rel 1.0e-6
 checkreal "length of ext_1" ${ext_1_length} ${good_length} ${tol_abs} ${tol_rel}
 
-dlog reset
-dlog on
-xdistcs c s 1.57079 1.5708 10
-set Log [dlog get]
-
-set List [split ${Log} {TD= \t\n}]
-set Tolerance 1.0e-6
-set D_good 0.
-set Limit_Tol 1.0e-6
-checkList ${List} ${Tolerance} ${D_good} ${Limit_Tol}
+xdistcs c s 1.57079 1.5708 10 1e-6

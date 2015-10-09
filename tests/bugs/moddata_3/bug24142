@@ -15,15 +15,10 @@ mksurface s2 sh_5
 trim st1 s1 0 6.28318530717959 0 74.9999999999999
 trim st2 s2 0 6.28318530717959 -74.0551172696384 125.944882730362
 
-intersect i st1 st2
+intersect cur st1 st2
 
-dlog reset
-dlog on
-xdistcs i st2 0 1 10
-set log_on [dlog get]
-
-if { [regexp "i is null curve" ${log_on}] != 1 } {
-   puts "Error : Wrong section curve"
+if { [regexp -nocase "curve" [whatis cur]] } {
+  puts "Error: intersection curve is built while it should not"
 }
 
 set 2dviewer 1

@@ -13,9 +13,7 @@ set BugNumber OCC6862
 restore [locate_data_file OCC726.brep] a 
 explode a
 
-decho off
 set resstr [bopargcheck a_1 a_2 -O /FTVEI]
-decho on
 
 if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
     puts "OK ${BugNumber}"

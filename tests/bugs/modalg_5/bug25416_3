@@ -22,11 +22,9 @@ foreach i $ll {
    foreach j $ll {
       if { $i >= $j } continue
 
-      decho off
       mkedge e1 $i
       mkedge e2 $j
       set coe [checkoverlapedges e1 e2]
-      decho on
 
       puts "$i<->$j: $coe"
       if { [regexp "Edges is not overlaped" $coe] != 1 } {
@@ -34,8 +32,6 @@ foreach i $ll {
       }
    }
 }
-
-decho on
 
 if { $status != 0 } {
     puts "Wrong section. Error with code $status"

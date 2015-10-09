@@ -2,25 +2,18 @@ puts "============"
 puts "OCC23944"
 puts "============"
 puts ""
-###################################################
+####################################################################################
 ## Typo in ShapeCustom_RestrictionParameters leading to wrong approximation results
-###################################################
-
-set BugNumber OCC23944
+####################################################################################
 
 restore [locate_data_file bug23944_s.draw] s
 
-decho off
 mkface f s
 bsplres result f 1e-4 1e-9 15 100 C1 C2 0 1
 mksurface rsurf result
-set info [getsurfcontinuity rsurf]
-decho on
 
-# Resume
-puts ""
-if { [regexp {rsurf has C0 continuity.} $info] } {
-  puts "OK ${BugNumber}"
-} else {
-  puts "Faulty ${BugNumber}"
+set info [getsurfcontinuity rsurf]
+
+if { ![regexp {rsurf has C0 continuity.} $info] } {
+  puts "Faulty OCC23944"
 }

@@ -1,3 +1,4 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 puts "================"
 puts "OCC25"
 puts "================"
@@ -5,9 +6,7 @@ puts ""
 
 restore [locate_data_file OCC25-1.brep] sh1 
 
-decho off
 set che [checkshape sh1]
-decho on
 
 if { [regexp {Faulty} $che ] == 1 } {
     puts "Faulty OCC25 (case 1): Checkshape says that the wire on face has bad orientation, but it is not truth"
@@ -18,9 +17,7 @@ if { [regexp {Faulty} $che ] == 1 } {
 # ================================================
 restore [locate_data_file OCC25-2.brep] sh2
 
-decho off
 set che [checkshape sh2]
-decho on
 
 if { [regexp {BRepCheck_BadOrientationOfSubshape} $che] && [regexp {BRepCheck_UnorientableShape} $che]} {
     puts " OCC25 (case 2) OK: Checkshape works properly"

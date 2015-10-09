@@ -1,3 +1,4 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 puts "========"
 puts "OCC284"
 puts "========"
@@ -8,15 +9,7 @@ puts "========"
 
 restore [locate_data_file OCC284.brep] result
 
-decho off
 if [catch { checkshape result } catch_result] {
-    set mistake 1
-} else {
-    set mistake 0
-}
-decho on
-
-if { $mistake != 0} {
   puts "Faulty OCC284 : here is problem in checkshape function"
 } else {
   puts "OCC284  OK: function checkshape works properly"

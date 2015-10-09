@@ -9,12 +9,8 @@ puts ""
 set BugNumber OCC6766
 
 restore [locate_data_file OCC6766.brep] a 
-decho off
-set che_a [checkshape a]
-decho on
-if { [regexp {Faulty} $che_a] } {
-    puts "Faulty ${BugNumber} : checkshape is wrong for a"
-}
+
+checkshape a
 
 set Y 6
 plane pl 0 ${Y} 0 0 1 0

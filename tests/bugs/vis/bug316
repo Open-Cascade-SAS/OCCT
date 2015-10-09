@@ -2,23 +2,13 @@ puts "================"
 puts "OCC316"
 puts "================"
 puts ""
-
-########################################################
+#########################################################################
 ## Exception is raised in the application during visualization. (#2054)
-########################################################
+#########################################################################
 
 restore [locate_data_file OCC316.brep] result 
 
-decho off
-set che [checkshape result]
-decho on
-
-if { [regexp "Faulty" $che] == 1 } {
-   puts "Warning OCC316: Source shape is NOT correct. It was detected by Checkshape command"
-}
-
 tclean result
-
 vinit
 vdisplay result
 vsetdispmode result 1
