@@ -24,170 +24,143 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
 
-void gp_Torus::Coefficients (TColStd_Array1OfReal& Coef) const
+void gp_Torus::Coefficients (TColStd_Array1OfReal& theCoef) const
 {
-  // Dans le repere local du tore :
-  // X*X + Y*Y + Z*Z - 2.0 * majorRadius * sqrt (X*X + Y*Y)
-  // - minorRadius * minorRadius + majorRadius * majorRadius = 0.0
-  // X**4 + Y **4 + 2.0 * (X*Y)**2 + 2.0 * (X*Z)**2 + 2.0 * (Y*Z)**2 -
-  // 2.0 * (majorRadius + minorRadius) * (X**2 + Y**2) +
-  // 2.0 * (majorRadius - minorRadius) * Z**2 - 2.0 *
-  // majorRadius * minorRadius = 0.0
-  Standard_Integer Low = Coef.Lower();
-  Standard_DimensionError_Raise_if (Coef.Length() < 31, " ");
-  gp_Trsf T;
-  Standard_Real SumRadius = (majorRadius * majorRadius +
-			     minorRadius * minorRadius);
-  Standard_Real SubRadius = (majorRadius * majorRadius -
-			     minorRadius * minorRadius);
-  T.SetTransformation (pos);
-  Standard_Real T11 = T.Value (1, 1);
-  Standard_Real T12 = T.Value (1, 2);
-  Standard_Real T13 = T.Value (1, 3);
-  Standard_Real T14 = T.Value (1, 4);
-  Standard_Real T21 = T.Value (2, 1);
-  Standard_Real T22 = T.Value (2, 2);
-  Standard_Real T23 = T.Value (2, 3);
-  Standard_Real T24 = T.Value (2, 4);
-  Standard_Real T31 = T.Value (3, 1);
-  Standard_Real T32 = T.Value (3, 2);
-  Standard_Real T33 = T.Value (3, 3);
-  Standard_Real T34 = T.Value (3, 4);
-  Coef(Low) = Pow (T11, 4) + Pow (T21, 4) + Pow(T31, 4) +
-    2.0 * (T11 * T11 * T21 * T21 + T11 * T11 * T31 * T31 +
-	   T21 * T21 * T31 * T31);
-  Coef(Low+1) = Pow (T12, 4) + Pow (T22, 4) + Pow(T32, 4) +
-    2.0 * (T12 * T12 * T22 * T22 + T12 * T12 * T32 * T32 +
-	   T22 * T22 * T32 * T32);
-  Coef(Low+2) = Pow (T13, 4) + Pow (T23, 4) + Pow(T33, 4) +
-    2.0 * (T13 * T13 * T23 * T23 + T13 * T13 * T33 * T33 +
-	   T23 * T23 * T33 * T33);
-  Coef(Low+3) = 4.0 * (Pow (T11, 3) * T12 + Pow (T21, 3) * T22 +
-		       Pow (T31, 3) * T32 + T11 * T11 * T21 * T22 +  T21 * T21 * T11 * T12 +
-		       T11 * T11 * T31 * T32 + T31 * T31 * T11 * T12 + T21 * T21 * T31 * T32
-		       + T31 * T31 * T21 * T22);
-  Coef(Low+4) = 4.0 * (Pow (T11, 3) * T13 + Pow (T21, 3) * T23 +
-		       Pow (T31, 3) * T33 + T11 * T11 * T21 * T23 + T21 * T21 * T11 * T13 +
-		       T11 * T11 * T31 * T33 + T31 * T31 * T11 * T13 + T21 * T21 * T31 * T33
-		       + T31 * T31 * T21 * T23);
-  Coef(Low+5) = 4.0 * (Pow (T12, 3) * T11 + Pow (T22, 3) * T21 +
-		       Pow (T32, 3) * T31  + T12 * T12 * T21 * T22 + T22 * T22 * T11 * T12 +
-		       T12 * T12 * T31 * T32 + T32 * T32 * T11 * T12 + T22 * T22 * T31 * T32
-		       + T32 * T32 * T21 * T22);
-  Coef(Low+6) = 4.0 * (Pow (T12, 3) * T13 + Pow (T22, 3) * T23 +
-		       Pow (T32, 3) * T33 + T12 * T12 * T22 * T23 + T22 * T22 * T12 * T13 +
-		       T12 * T12 * T32 * T33 + T32 * T32 * T12 * T13 + T22 * T22 * T32 * T33
-		       + T32 * T32 * T22 * T23);
-  Coef(Low+7) = 4.0 * (Pow (T13, 3) * T11 + Pow (T23, 3) * T21 +
-		       Pow (T33, 3) * T31 + T13 * T13 * T21 * T23 + T23 * T23 * T11 * T13 +
-		       T13 * T13 * T31 * T33 + T33 * T33 * T11 * T13 + T23 * T23 * T31 * T33
-		       + T33 * T33 * T21 * T23);
-  Coef(Low+8) = 4.0 * (Pow (T13, 3) * T12 + Pow (T23, 3) * T22 +
-		       Pow (T33, 3) * T32 + T13 * T13 * T22 * T23 + T23 * T23 * T12 * T13 +
-		       T13 * T13 * T32 * T33 + T33 * T33 * T12 * T13 + T23 * T23 * T32 * T33
-		       + T33 * T33 * T22 * T23);
-  Coef(Low+9) = 6.0 * (T11 * T11 * T12 * T12 + T21 * T21 * T22 * T22 +
-		       T31 * T31 * T32 * T32) + 8.0 * ( T11 * T12 * T21 * T22 +
-						       T11 * T12 * T31 * T32 + T21 * T22 * T31 * T32) +
-							 2.0 * (T11 * T11 * T22 * T22 + T11 * T11 * T32 * T32 +
-								T21 * T21 * T32 * T32 + T12 * T12 * T21 * T21 +
-								T12 * T12 * T31 * T31 + T22 * T22 * T31 * T31 );
-  Coef(Low+10) = 6.0 * (T11 * T11 * T13 * T13 + T21 * T21 * T23 * T23 +
-			T31 * T31 * T33 * T33) + 8.0 * ( T11 * T13 * T21 * T23 +
-							T11 * T13 * T31 * T33 + T21 * T23 * T31 * T33) +
-							  2.0 * (T11 * T11 * T23 * T23 + T11 * T11 * T33 * T33 +
-								 T21 * T21 * T33 * T33 + T13 * T13 * T21 * T21 +
-								 T13 * T13 * T31 * T31 + T23 * T23 * T31 * T31);
-  Coef(Low+11) = 6.0 * (T12 * T12 * T13 * T13 + T22 * T22 * T23 * T23 +
-			T32 * T32 * T33 * T33) + 8.0 * ( T12 * T13 * T22 * T23 +
-							T12 * T23 * T32 * T33 + T22 * T23 * T32 * T33) + 
-							  2.0 * (T12 * T12 * T23 * T23 + T12 * T12 * T33 * T33 +
-								 T22 * T22 * T33 * T33 +  T13 * T13 * T22 * T22 +
-								 T13 * T13 * T32 * T32 + T23 * T23 * T32 * T32);
-  Coef(Low+12) = 4.0 * (Pow (T11, 3) * T14 + Pow (T21, 3) * T24 +
-			Pow (T31, 3) * T34 + T11 * T11 * T21 * T24 + T11 * T11 * T31 * T34 +
-			T21 * T21 * T31 * T34 + T21 * T21 * T11 * T14 +
-			T31 * T31 * T11 * T34 + T31 * T31 * T21 * T24);
-  Coef(Low+13) = 4.0 * (Pow (T12, 3) * T14 + Pow (T22, 3) * T24 +
-			Pow (T32, 3) * T34 + T12 * T12 * T22 * T24 + T12 * T12 * T32 * T34 +
-			T22 * T22 * T32 * T34 + T22 * T22 * T12 * T14 +
-			T32 * T32 * T12 * T34 + T32 * T32 * T22 * T24);
-  Coef(Low+14) = 4.0 * (Pow (T13, 3) * T14 + Pow (T23, 3) * T24 +
-			Pow (T33, 3) * T34 + T13 * T13 * T23 * T24 + T13 * T13 * T33 * T34 +
-			T23 * T23 * T33 * T34 + T23 * T23 * T13 * T14 +
-			T33 * T33 * T13 * T34 + T33 * T33 * T23 * T24);
-  Coef(Low+15) = 4.0 * (T11 * T11 * T22 * T24 + T11 * T11 * T32 * T34 +
-			T21 * T21 * T32 * T34 + T21 * T21 * T12 * T14 + T31 * T31 * T12 * T14
-			+ T31 * T31 * T22 * T24);
-  Coef(Low+16) = 4.0 * (T11 * T11 * T23 * T24 + T11 * T11 * T33 * T34 +
-			T21 * T21 * T33 * T34 + T21 * T21 * T13 * T14 + T31 * T31 * T13 * T14
-			+ T31 * T31 * T23 * T24);
-  Coef(Low+17) = 4.0 * (T12 * T12 * T21 * T24 + T12 * T12 * T31 * T34 +
-			T22 * T22 * T31 * T34 + T22 * T22 * T11 * T14 + T32 * T32 * T11 * T14
-			+ T32 * T32 * T21 * T24);
-  Coef(Low+18) = 4.0 * (T12 * T12 * T23 * T24 + T12 * T12 * T33 * T34 +
-			T22 * T22 * T33 * T34 + T22 * T22 * T13 * T14 + T32 * T32 * T13 * T14
-			+ T32 * T32 * T23 * T24);
-  Coef(Low+19) = 4.0 * (T13 * T13 * T21 * T24 + T13 * T13 * T31 * T34 +
-			T23 * T23 * T31 * T34 + T23 * T23 * T11 * T14 + T33 * T33 * T11 * T14
-			+ T33 * T33 * T21 * T24);
-  Coef(Low+20) = 4.0 * (T13 * T13 * T22 * T24 + T13 * T13 * T32 * T34 +
-			T23 * T23 * T32 * T34 + T23 * T23 * T12 * T14 + T33 * T33 * T12 * T14
-			+ T33 * T33 * T22 * T24);
-  Coef(Low+21) = 6.0 * (T11 * T11 * T14 * T14 + T21 * T21 * T24 * T24 +
-			T31 * T31 * T34 * T34) + 2.0 * (T11 * T11 * T24 * T24 +
-							T11 * T11 * T34 * T34 + T21 * T21 * T34 * T34 + T21 * T21 * T14 * T14
-							+ T31 * T31 * T14 * T14 + T31 * T31 * T24 * T24 - 
-							SumRadius * (T11 * T11 + T21 * T21) + SubRadius * T31 * T31);
-  Coef(Low+22) = 6.0 * (T12 * T12 * T14 * T14 + T22 * T22 * T24 * T24 +
-			T32 * T32 * T34 * T34) + 2.0 * (T12 * T12 * T24 * T24 +
-							T12 * T12 * T34 * T34 + T22 * T22 * T34 * T34 + T22 * T22 * T14 * T14
-							+ T32 * T32 * T14 * T14 + T32 * T32 * T24 * T24 - 
-							SumRadius * (T12 * T12 + T22 * T22) + SubRadius * T32 * T32);
-  Coef(Low+23) = 6.0 * (T13 * T13 * T14 * T14 + T23 * T23 * T24 * T24 +
-			T33 * T33 * T34 * T34) + 2.0 * (T13 * T13 * T24 * T24 +
-							T13 * T13 * T34 * T34 + T23 * T23 * T34 * T34 + T23 * T23 * T14 * T14
-							+ T33 * T33 * T14 * T14 + T33 * T33 * T24 * T24 - 
-							SumRadius * (T13 * T13 + T23 * T23) + SubRadius * T33 * T33);
-  Coef(Low+24) = 8.0 * (T11 * T14 * T22 * T24 + T11 * T14 * T32 * T34 +
-			T21 * T24 * T32 * T34 + T21 * T24 * T12 * T14 + T31 * T34 * T12 * T14
-			+ T31 * T34 *T22 * T24) + 4.0 * (T11 * T12 * T24 * T24  +
-							 T11 * T12 * T34 * T34 + T21 * T22 * T34 * T34 + T21 * T22 * T14 * T14
-							 + T31 * T32 * T14 * T14 + T31 * T32 * T24 * T24 - SumRadius * (
-															T11 * T12 + T21 * T22) + SubRadius * T31 * T32);
-  Coef(Low+25) = 8.0 * (T11 * T14 * T23 * T24 + T11 * T14 * T33 * T34 +
-			T21 * T24 * T33 * T34 + T21 * T24 * T13 * T14 + T31 * T34 * T13 * T14
-			+ T31 * T34 *T23 * T24) + 4.0 * (T11 * T13 * T24 * T24  +
-							 T11 * T13 * T34 * T34 + T21 * T23 * T34 * T34 + T21 * T23 * T14 * T14
-							 + T31 * T33 * T14 * T14 + T31 * T33 * T24 * T24 - SumRadius * (
-															T11 * T13 + T21 * T22) + SubRadius * T31 * T33);
-  Coef(Low+26) = 8.0 * (T12 * T14 * T23 * T24 + T12 * T14 * T33 * T34 +
-			T22 * T24 * T33 * T34 + T22 * T24 * T13 * T14 + T32 * T34 * T13 * T14
-			+ T32 * T34 *T23 * T24) + 4.0 * (T12 * T13 * T24 * T24  +
-							 T12 * T13 * T34 * T34 + T22 * T23 * T34 * T34 + T22 * T23 * T14 * T14
-							 + T32 * T33 * T14 * T14 + T32 * T33 * T24 * T24 - SumRadius * (
-															T12 * T13 + T21 * T22) + SubRadius * T32 * T33);
+  //  R = majorRadius;
+  //  r = minorRadius.
 
+  //  X = (R + r*cos(V))*cos(U)
+  //  Y = (R + r*cos(V))*sin(U)
+  //  Z = r*sin(V)
 
-  Coef(Low+27) = 4.0 * (Pow (T14, 3) * T11 + Pow (T24, 3) * T21 +
-			Pow (T34, 3) * T31  +  T11 * T14 * T24 * T24 + T11 * T14 * T34 * T34
-			+ T21 * T24 * T34 * T34 + T21 * T24 * T14 * T14 +
-			T31 * T34 * T14 * T14 + T31 * T34 * T24 * T24 + SubRadius * T31 * T34
-			- SumRadius * (T11 * T14 + T21 * T24));
-  Coef(Low+28) = 4.0 * (Pow (T14, 3) * T12 + Pow (T24, 3) * T22 +
-			Pow (T34, 3) * T32  +  T12 * T14 * T24 * T24 + T12 * T14 * T34 * T34
-			+ T22 * T24 * T34 * T34 + T22 * T24 * T14 * T14 +
-			T32 * T34 * T14 * T14 + T32 * T34 * T24 * T24 + SubRadius * T32 * T34
-			- SumRadius * (T12 * T14 + T22 * T24));
-  Coef(Low+29) = 4.0 * (Pow (T14, 3) * T13 + Pow (T24, 3) * T23 +
-			Pow (T34, 3) * T33  +  T13 * T14 * T24 * T24 + T13 * T14 * T34 * T34
-			+ T23 * T24 * T34 * T34 + T23 * T24 * T14 * T14 +
-			T33 * T34 * T14 * T14 + T33 * T34 * T24 * T24 + SubRadius * T33 * T34
-			- SumRadius * (T13 * T14 + T21 * T24));
-  Coef(Low+30) = Pow (T14, 4) + Pow (T24, 4) + Pow (T34, 4) + 2.0 * (
-								     T14 * T14 * T24 * T24 + T14 * T14 * T34 * T34 + T24 * T24 * T34 * T34
-								     - SumRadius * (T14 * T14 + T24 * T24) + SubRadius * T34 * T34 -
-								     majorRadius * majorRadius * minorRadius * minorRadius);
+  //Therefore,
+  //  4*R*R*(r*r - Z*Z) = (X*X + Y*Y + Z*Z - R*R - r*r)^2
+  //Or
+  //  X^4+Y^4+Z^4+
+  //  2*((X*Y)^2+(X*Z)^2+(Y*Z)^2)-
+  //  2*(R^2+r^2)*(X^2+Y^2)+
+  //  2*(R^2-r^2)*Z^2+(R^2-r^2)^2 = 0.0
+
+  const Standard_Integer aLowIndex = theCoef.Lower();
+  Standard_DimensionError_Raise_if (theCoef.Length() < 35,
+              "gp_Torus::theCoefficients(): Dimension mismatch");
+  
+  gp_Trsf aTr;
+  aTr.SetTransformation (pos);
+  const Standard_Real aT11 = aTr.Value (1, 1);
+  const Standard_Real aT12 = aTr.Value (1, 2);
+  const Standard_Real aT13 = aTr.Value (1, 3);
+  const Standard_Real aT14 = aTr.Value (1, 4);
+  const Standard_Real aT21 = aTr.Value (2, 1);
+  const Standard_Real aT22 = aTr.Value (2, 2);
+  const Standard_Real aT23 = aTr.Value (2, 3);
+  const Standard_Real aT24 = aTr.Value (2, 4);
+  const Standard_Real aT31 = aTr.Value (3, 1);
+  const Standard_Real aT32 = aTr.Value (3, 2);
+  const Standard_Real aT33 = aTr.Value (3, 3);
+  const Standard_Real aT34 = aTr.Value (3, 4);
+
+  const Standard_Real aTcol1sq = aT11*aT11 + aT21*aT21 + aT31*aT31;
+  const Standard_Real aTcol2sq = aT12*aT12 + aT22*aT22 + aT32*aT32;
+  const Standard_Real aTcol3sq = aT13*aT13 + aT23*aT23 + aT33*aT33;
+  const Standard_Real aTcol4sq = aT14*aT14 + aT24*aT24 + aT34*aT34;
+  const Standard_Real aTcol1Tcol2 = aT11*aT12 + aT21*aT22 + aT31*aT32;
+  const Standard_Real aTcol1Tcol3 = aT11*aT13 + aT21*aT23 + aT31*aT33;
+  const Standard_Real aTcol2Tcol3 = aT12*aT13 + aT22*aT23 + aT32*aT33;
+  const Standard_Real aTcol1Tcol4 = aT11*aT14 + aT21*aT24 + aT31*aT34;
+  const Standard_Real aTcol2Tcol4 = aT12*aT14 + aT22*aT24 + aT32*aT34;
+  const Standard_Real aTcol3Tcol4 = aT13*aT14 + aT23*aT24 + aT33*aT34;
+  
+  const Standard_Real aSumRadius = (majorRadius*majorRadius +
+                                    minorRadius*minorRadius);
+  const Standard_Real aSubRadius = (majorRadius*majorRadius -
+                                    minorRadius*minorRadius);
+
+  /*
+  After substitution
+  Transpose([X Y Z 1]) = aTr*Transpose([X Y Z 1])
+  we will obtain:
+  */
+
+  theCoef(aLowIndex)     = aTcol1sq*aTcol1sq;  //X^4
+  theCoef(aLowIndex+1)   = aTcol2sq*aTcol2sq;  //Y^4
+  theCoef(aLowIndex+2)   = aTcol3sq*aTcol3sq;  //Z^4
+  theCoef(aLowIndex+3)   = 4.0*aTcol1sq*aTcol1Tcol2; //X^3*Y
+  theCoef(aLowIndex+4)   = 4.0*aTcol1sq*aTcol1Tcol3; //X^3*Z
+  theCoef(aLowIndex+5)   = 4.0*aTcol2sq*aTcol1Tcol2; //X*Y^3
+  theCoef(aLowIndex+6)   = 4.0*aTcol2sq*aTcol2Tcol3; //Y^3*Z
+  theCoef(aLowIndex+7)   = 4.0*aTcol3sq*aTcol1Tcol3; //X*Z^3
+  theCoef(aLowIndex+8)   = 4.0*aTcol3sq*aTcol2Tcol3; //Y*Z^3
+  theCoef(aLowIndex+9)   = 2.0*(aTcol1sq*aTcol2sq + 
+                                2.0*aTcol1Tcol2*aTcol1Tcol2);  //X^2*Y^2
+  theCoef(aLowIndex+10)  = 2.0*(aTcol1sq*aTcol3sq +
+                                2.0*aTcol1Tcol3*aTcol1Tcol3);  //X^2*Z^2
+  theCoef(aLowIndex+11)  = 2.0*(aTcol2sq*aTcol3sq +
+                                2.0*aTcol2Tcol3*aTcol2Tcol3);  //Y^2*Z^2
+  theCoef(aLowIndex+12)  = 4.0*(aTcol1sq*aTcol2Tcol3 +
+                                2.0*aTcol1Tcol2*aTcol1Tcol3); //X^2*Y*Z
+  theCoef(aLowIndex+13)  = 4.0*(aTcol2sq*aTcol1Tcol3 +
+                                2.0*aTcol1Tcol2*aTcol2Tcol3); //X*Y^2*Z
+  theCoef(aLowIndex+14)  = 4.0*(aTcol3sq*aTcol1Tcol2 +
+                                2.0*aTcol1Tcol3*aTcol2Tcol3); //X*Y*Z^2
+
+  theCoef(aLowIndex+15)  = 4.0*aTcol1sq*aTcol1Tcol4; //X^3
+  theCoef(aLowIndex+16)  = 4.0*aTcol2sq*aTcol2Tcol4; //Y^3
+  theCoef(aLowIndex+17)  = 4.0*aTcol3sq*aTcol3Tcol4; //Z^3
+  theCoef(aLowIndex+18)  = 4.0*(aTcol1sq*aTcol2Tcol4 +
+                                2.0*aTcol1Tcol4*aTcol1Tcol2); //X^2*Y
+  theCoef(aLowIndex+19)  = 4.0*(aTcol1sq*aTcol3Tcol4 +
+                                2.0*aTcol1Tcol4*aTcol1Tcol3); //X^2*Z
+  theCoef(aLowIndex+20)  = 4.0*(aTcol2sq*aTcol1Tcol4 +
+                                2.0*aTcol2Tcol4*aTcol1Tcol2); //X*Y^2
+  theCoef(aLowIndex+21)  = 4.0*(aTcol2sq*aTcol3Tcol4 +
+                                2.0*aTcol2Tcol4*aTcol2Tcol3); //Y^2*Z
+  theCoef(aLowIndex+22)  = 4.0*(aTcol3sq*aTcol1Tcol4 +
+                                2.0*aTcol3Tcol4*aTcol1Tcol3); //X*Z^2
+  theCoef(aLowIndex+23)  = 4.0*(aTcol3sq*aTcol2Tcol4 +
+                                2.0*aTcol3Tcol4*aTcol2Tcol3); //Y*Z^2
+  theCoef(aLowIndex+24)  = 8.0*(aTcol1Tcol2*aTcol3Tcol4 +
+                                aTcol2Tcol3*aTcol1Tcol4 +
+                                aTcol2Tcol4*aTcol1Tcol3); //X*Y*Z
+
+  theCoef(aLowIndex+25)  = 2.0*(aSubRadius*aT31*aT31 -
+                                aSumRadius*(aT11*aT11 + aT21*aT21) +
+                                aTcol4sq*aTcol1sq +
+                                2.0*aTcol1Tcol4*aTcol1Tcol4); //X^2
+  theCoef(aLowIndex+26)  = 2.0*(aSubRadius*aT32*aT32 -
+                                aSumRadius*(aT12*aT12 + aT22*aT22) +
+                                aTcol4sq*aTcol2sq +
+                                2.0*aTcol2Tcol4*aTcol2Tcol4); //Y^2
+  theCoef(aLowIndex+27)  = 2.0*(aSubRadius*aT33*aT33 -
+                                aSumRadius*(aT13*aT13 + aT23*aT23) +
+                                aTcol4sq*aTcol3sq +
+                                2.0*aTcol3Tcol4*aTcol3Tcol4); //Z^2
+  theCoef(aLowIndex+28)  = 4.0*(aSubRadius*aT31*aT32 -
+                                aSumRadius*(aT11*aT12 + aT21*aT22) +
+                                aTcol4sq*aTcol1Tcol2 +
+                                2.0*aTcol1Tcol4*aTcol2Tcol4); //X*Y
+  theCoef(aLowIndex+29)  = 4.0*(aSubRadius*aT31*aT33 - 
+                                aSumRadius*(aT11*aT13 + aT21*aT23) +
+                                aTcol4sq*aTcol1Tcol3 +
+                                2.0*aTcol1Tcol4*aTcol3Tcol4); //X*Z
+  theCoef(aLowIndex+30)  = 4.0*(aSubRadius*aT32*aT33 -
+                                aSumRadius*(aT12*aT13 + aT22*aT23) +
+                                aTcol4sq*aTcol2Tcol3 +
+                                2.0*aTcol2Tcol4*aTcol3Tcol4); //Y*Z
+
+  theCoef(aLowIndex+31)  = 4.0*(aTcol4sq*aTcol1Tcol4 +
+                                aSubRadius*aT31*aT34 -
+                                aSumRadius*(aT11*aT14 + aT21*aT24)); //X
+  theCoef(aLowIndex+32)  = 4.0*(aTcol4sq*aTcol2Tcol4 +
+                                aSubRadius*aT32*aT34 -
+                                aSumRadius*(aT12*aT14 + aT22*aT24)); //Y
+  theCoef(aLowIndex+33)  = 4.0*(aTcol4sq*aTcol3Tcol4 +
+                                aSubRadius*aT33*aT34 -
+                                aSumRadius*(aT13*aT14 + aT23*aT24)); //Z;
+
+  theCoef(aLowIndex+34)  = 2.0*aSubRadius*aT34*aT34 - 
+                           2.0*aSumRadius*(aT14*aT14 + aT24*aT24) +
+                           aTcol4sq*aTcol4sq + aSubRadius*aSubRadius;
 }
 
 void gp_Torus::Mirror (const gp_Pnt& P)

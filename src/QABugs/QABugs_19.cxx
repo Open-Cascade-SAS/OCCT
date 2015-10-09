@@ -4536,6 +4536,110 @@ static Standard_Integer OCC26750( Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : OCC26746 
+//purpose  : Checks if coefficients of the torus are computed properly.
+//=======================================================================
+#include <Geom_ToroidalSurface.hxx>
+static Standard_Integer OCC26746(
+  Draw_Interpretor& theDI, 
+  Standard_Integer  theNArg, 
+  const char **     theArgVal)
+{
+  if(theNArg < 2)
+  {
+    theDI << "Use: OCC26746 torus [toler NbCheckedPoints]\n";
+    return 1;
+  }
+
+  const Handle(Geom_ToroidalSurface) aGtor = 
+    Handle(Geom_ToroidalSurface)::DownCast(DrawTrSurf::GetSurface(theArgVal[1]));
+
+  const Standard_Real aToler = (theNArg >= 3)? Draw::Atof(theArgVal[2]) : 1.0e-7;
+  const Standard_Integer aNbPntsMax = (theNArg >= 4)? Draw::Atoi(theArgVal[3]) : 5;
+
+  const Standard_Integer aLowIndex = 5;
+  const Standard_Real aStep = 2.0*M_PI/aNbPntsMax;
+
+  TColStd_Array1OfReal anArrCoeffs(aLowIndex, aLowIndex+34);
+  aGtor->Torus().Coefficients(anArrCoeffs);
+
+  Standard_Real aUpar = 0.0, aVpar = 0.0;
+  for(Standard_Integer aUind = 0; aUind <= aNbPntsMax; aUind++)
+  {
+    for(Standard_Integer aVind = 0; aVind <= aNbPntsMax; aVind++)
+    {
+      const gp_Pnt aPt(aGtor->Value(aUpar, aVpar));
+      const Standard_Real aX1 = aPt.X();
+      const Standard_Real aX2 = aX1*aX1;
+      const Standard_Real aX3 = aX2*aX1;
+      const Standard_Real aX4 = aX2*aX2;
+      const Standard_Real aY1 = aPt.Y();
+      const Standard_Real aY2 = aY1*aY1;
+      const Standard_Real aY3 = aY2*aY1;
+      const Standard_Real aY4 = aY2*aY2;
+      const Standard_Real aZ1 = aPt.Z();
+      const Standard_Real aZ2 = aZ1*aZ1;
+      const Standard_Real aZ3 = aZ2*aZ1;
+      const Standard_Real aZ4 = aZ2*aZ2;
+
+      Standard_Integer i = aLowIndex;
+
+      Standard_Real aDelta =  anArrCoeffs(i++) * aX4;  //1
+      aDelta+= anArrCoeffs(i++) * aY4;                 //2
+      aDelta+= anArrCoeffs(i++) * aZ4;                 //3
+      aDelta+= anArrCoeffs(i++) * aX3 * aY1;           //4
+      aDelta+= anArrCoeffs(i++) * aX3 * aZ1;           //5
+      aDelta+= anArrCoeffs(i++) * aY3 * aX1;           //6
+      aDelta+= anArrCoeffs(i++) * aY3 * aZ1;           //7
+      aDelta+= anArrCoeffs(i++) * aZ3 * aX1;           //8
+      aDelta+= anArrCoeffs(i++) * aZ3 * aY1;           //9
+      aDelta+= anArrCoeffs(i++) * aX2 * aY2;           //10
+      aDelta+= anArrCoeffs(i++) * aX2 * aZ2;           //11
+      aDelta+= anArrCoeffs(i++) * aY2 * aZ2;           //12
+      aDelta+= anArrCoeffs(i++) * aX2 * aY1 * aZ1;     //13
+      aDelta+= anArrCoeffs(i++) * aX1 * aY2 * aZ1;     //14
+      aDelta+= anArrCoeffs(i++) * aX1 * aY1 * aZ2;     //15
+      aDelta+= anArrCoeffs(i++) * aX3;                 //16
+      aDelta+= anArrCoeffs(i++) * aY3;                 //17
+      aDelta+= anArrCoeffs(i++) * aZ3;                 //18
+      aDelta+= anArrCoeffs(i++) * aX2 * aY1;           //19
+      aDelta+= anArrCoeffs(i++) * aX2 * aZ1;           //20
+      aDelta+= anArrCoeffs(i++) * aY2 * aX1;           //21
+      aDelta+= anArrCoeffs(i++) * aY2 * aZ1;           //22
+      aDelta+= anArrCoeffs(i++) * aZ2 * aX1;           //23
+      aDelta+= anArrCoeffs(i++) * aZ2 * aY1;           //24
+      aDelta+= anArrCoeffs(i++) * aX1 * aY1 * aZ1;     //25
+      aDelta+= anArrCoeffs(i++) * aX2;                 //26
+      aDelta+= anArrCoeffs(i++) * aY2;                 //27
+      aDelta+= anArrCoeffs(i++) * aZ2;                 //28
+      aDelta+= anArrCoeffs(i++) * aX1 * aY1;           //29
+      aDelta+= anArrCoeffs(i++) * aX1 * aZ1;           //30
+      aDelta+= anArrCoeffs(i++) * aY1 * aZ1;           //31
+      aDelta+= anArrCoeffs(i++) * aX1;                 //32
+      aDelta+= anArrCoeffs(i++) * aY1;                 //33
+      aDelta+= anArrCoeffs(i++) * aZ1;                 //34
+      aDelta+= anArrCoeffs(i++);                       //35
+
+      if(Abs(aDelta) > aToler)
+      {
+        theDI << "(" << aUpar << ", " << aVpar << "): Error in torus coefficients computation (Delta = " << aDelta << ").\n";
+      }
+      else
+      {
+        theDI << "(" << aUpar << ", " << aVpar << "): OK (Delta = " << aDelta << ").\n";
+      }
+
+      aVpar = (aVind == aNbPntsMax)? 2.0*M_PI : aVpar + aStep;
+    }
+
+    aVpar = 0.0;
+    aUpar = (aUind == aNbPntsMax)? 2.0*M_PI : aUpar + aStep;
+  }
+
+  return 0;     
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4628,6 +4732,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
 
   theCommands.Add ("OCC24537", "OCC24537 [file]", __FILE__, OCC24537, group);
   theCommands.Add ("OCC26750", "OCC26750", __FILE__, OCC26750, group);
+
+  theCommands.Add ("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
 
   return;
 }

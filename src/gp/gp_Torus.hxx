@@ -128,21 +128,23 @@ public:
   //! returns the symmetry axis of the torus.
     const gp_Ax1& Axis() const;
   
-
   //! Computes the coefficients of the implicit equation of the surface
-  //! in the absolute cartesian coordinate system :
-  //! Coef(1) * X**4 + Coef(2) * Y**4 + Coef(3) * Z**4 +
-  //! Coef(4) * X**3 * Y + Coef(5) * X**3 * Z + Coef(6) * Y**3 * X +
-  //! Coef(7) * Y**3 * Z + Coef(8) * Z**3 * X + Coef(9) * Z**3 * Y +
-  //! Coef(10) * X**2 * Y**2 + Coef(11) * X**2 * Z**2 +
-  //! Coef(12) * Y**2 * Z**2 + Coef(13) * X**3 + Coef(14) * Y**3 +
-  //! Coef(15) * Z**3 + Coef(16) * X**2 * Y + Coef(17) * X**2 * Z +
-  //! Coef(18) * Y**2 * X + Coef(19) * Y**2 * Z + Coef(20) * Z**2 * X +
-  //! Coef(21) * Z**2 * Y + Coef(22) * X**2 + Coef(23) * Y**2 +
-  //! Coef(24) * Z**2 + Coef(25) * X * Y + Coef(26) * X * Z +
-  //! Coef(27) * Y * Z + Coef(28) * X + Coef(29) * Y + Coef(30) *  Z +
-  //! Coef(31) = 0.0
-  //! Raises DimensionError if the length of Coef is lower than 31.
+  //! in the absolute Cartesian coordinate system:
+  //!     Coef(1) * X^4 + Coef(2) * Y^4 + Coef(3) * Z^4 +
+  //!     Coef(4) * X^3 * Y + Coef(5) * X^3 * Z + Coef(6) * Y^3 * X +
+  //!     Coef(7) * Y^3 * Z + Coef(8) * Z^3 * X + Coef(9) * Z^3 * Y +
+  //!     Coef(10) * X^2 * Y^2 + Coef(11) * X^2 * Z^2 +
+  //!     Coef(12) * Y^2 * Z^2 + Coef(13) * X^2 * Y * Z +
+  //!     Coef(14) * X * Y^2 * Z + Coef(15) * X * Y * Z^2 +
+  //!     Coef(16) * X^3 + Coef(17) * Y^3 + Coef(18) * Z^3 + 
+  //!     Coef(19) * X^2 * Y + Coef(20) * X^2 * Z + Coef(21) * Y^2 * X +
+  //!     Coef(22) * Y^2 * Z + Coef(23) * Z^2 * X + Coef(24) * Z^2 * Y +
+  //!     Coef(25) * X * Y * Z +
+  //!     Coef(26) * X^2 + Coef(27) * Y^2 + Coef(28) * Z^2 +
+  //!     Coef(29) * X * Y + Coef(30) * X * Z + Coef(31) * Y * Z +
+  //!     Coef(32) * X + Coef(33) * Y + Coef(34) *  Z + 
+  //!     Coef(35) = 0.0
+  //! Raises DimensionError if the length of Coef is lower than 35.
   Standard_EXPORT void Coefficients (TColStd_Array1OfReal& Coef) const;
   
   //! Returns the Torus's location.
