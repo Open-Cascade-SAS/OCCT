@@ -1055,7 +1055,11 @@ void Graphic3d_Camera::LookOrientation (const NCollection_Vec3<Elem_t>& theEye,
 //function : ZFitAll
 //purpose  :
 //=============================================================================
-void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB)
+bool Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor,
+                                const Bnd_Box&      theMinMax,
+                                const Bnd_Box&      theGraphicBB,
+                                Standard_Real&      theZNear,
+                                Standard_Real&      theZFar) const
 {
   Standard_ASSERT_RAISE (theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
 
@@ -1065,8 +1069,9 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   // scene with infinite or helper objects (third argument) for the sake of perspective projection.
   if (theGraphicBB.IsVoid())
   {
-    SetZRange (DEFAULT_ZNEAR, DEFAULT_ZFAR);
-    return;
+    theZNear = DEFAULT_ZNEAR;
+    theZFar  = DEFAULT_ZFAR;
+    return false;
   }
 
   // Measure depth of boundary points from camera eye.
@@ -1153,8 +1158,9 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
     // Everything is behind the perspective camera.
     if (aZFar < zEpsilon())
     {
-      SetZRange (DEFAULT_ZNEAR, DEFAULT_ZFAR);
-      return;
+      theZNear = DEFAULT_ZNEAR;
+      theZFar  = DEFAULT_ZFAR;
+      return false;
     }
   }
 
@@ -1234,5 +1240,7 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
     }
   }
 
-  SetZRange (aZNear, aZFar);
+  theZNear = aZNear;
+  theZFar  = aZFar;
+  return true;
 }

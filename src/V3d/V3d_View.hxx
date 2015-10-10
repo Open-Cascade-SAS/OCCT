@@ -156,10 +156,10 @@ public:
   //! been any modification.
   //! Must be called if the view is shown.
   //! (Ex: DeIconification ) .
-  Standard_EXPORT void Redraw() const;
+  Standard_EXPORT virtual void Redraw() const;
 
   //! Updates layer of immediate presentations.
-  Standard_EXPORT void RedrawImmediate() const;
+  Standard_EXPORT virtual void RedrawImmediate() const;
 
   //! Invalidates view content but does not redraw it.
   Standard_EXPORT void Invalidate() const;
