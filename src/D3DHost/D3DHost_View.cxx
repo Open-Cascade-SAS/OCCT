@@ -93,9 +93,7 @@ D3DHost_View::~D3DHost_View()
 // purpose  :
 // =======================================================================
 void D3DHost_View::SetWindow (const Handle(Aspect_Window)& theWindow,
-                              const Aspect_RenderingContext theContext,
-                              const Aspect_GraphicCallbackProc& theDisplayCB,
-                              const Standard_Address theClientData)
+                              const Aspect_RenderingContext theContext)
 {
   if (!myD3dWglFbo.IsNull())
   {
@@ -108,7 +106,7 @@ void D3DHost_View::SetWindow (const Handle(Aspect_Window)& theWindow,
     myD3dDevice = NULL;
   }
 
-  OpenGl_View::SetWindow (theWindow, theContext, theDisplayCB, theClientData);
+  OpenGl_View::SetWindow (theWindow, theContext);
 
   if (!myWindow.IsNull())
   {

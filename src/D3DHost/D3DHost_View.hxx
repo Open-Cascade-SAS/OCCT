@@ -46,10 +46,8 @@ public:
   //! @param theDisplayCB [in] the display callback function. If is not a NULL value, then the callback will be
   //! invoked at the end of the OCC graphic traversal and just before the swap of buffers.
   //! @param theClientData [in] the client data for the callback.
-  Standard_EXPORT virtual void SetWindow (const Handle(Aspect_Window)& theWindow,
-                                          const Aspect_RenderingContext theContext,
-                                          const Aspect_GraphicCallbackProc& theDisplayCB,
-                                          const Standard_Address theClientData) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetWindow (const Handle(Aspect_Window)&  theWindow,
+                                          const Aspect_RenderingContext theContext) Standard_OVERRIDE;
 
   //! Resizes the window.
   Standard_EXPORT virtual void Resized() Standard_OVERRIDE;
