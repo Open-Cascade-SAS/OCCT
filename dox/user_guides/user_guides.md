@@ -10,7 +10,6 @@ OCCT User Guides are organized by OCCT modules:
   * @subpage occt_user_guides__boolean_operations "Boolean Operations"
   * @subpage occt_user_guides__shape_healing "Shape Healing"
 * @subpage occt_user_guides__visualization "Visualization"
-  * @subpage occt_user_guides__voxels_wp "Voxels"
   * @subpage occt_user_guides__vis "VTK Integration Services"
 * Data Exchange
   * @subpage occt_user_guides__iges "IGES translator"

@@ -212,7 +212,6 @@ n StdPrs
 n StdSelect
 n TColQuantity
 n V3d
-n Voxel
 n WNT
 n Xw
 n Cocoa
@@ -223,7 +222,6 @@ t TKOpenGl
 t TKD3DHost
 t TKService
 t TKV3d
-t TKVoxel
 n BinTObjDrivers
 n LDOM
 n TObj

@@ -5467,7 +5467,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   ViewerTest::RelationCommands(theCommands);
   ViewerTest::ObjectCommands(theCommands);
   ViewerTest::FilletCommands(theCommands);
-  ViewerTest::VoxelCommands(theCommands);
   ViewerTest::OpenGlCommands(theCommands);
 
   const char *group = "AIS_Display";

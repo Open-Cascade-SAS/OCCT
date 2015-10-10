@@ -556,13 +556,6 @@ The combination of these resources allows creating substantial applications.
 
 **See also:** @ref occt__tutorial "OCCT Tutorial" 
 
- Voxel
-------
-
-This is a demonstration application showing OCCT voxel models. It also includes a set of non-regression tests and other commands for testing this functionality (accessible only through TEST pre-processor definition).
-
-**See also:** <a href="occt_voxels_wp.html">Voxels User's guide</a> 
-
 **Remarks:**
 
   * Qt samples are available on all supported platforms;

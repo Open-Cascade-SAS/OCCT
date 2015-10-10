@@ -18,8 +18,7 @@ proc Visualization:toolkits { } {
     set aResult [list TKService \
                      TKV3d \
                      TKOpenGl \
-                     TKMeshVS \
-                     TKVoxel]
+                     TKMeshVS]
 
     if { [info exists ::env(HAVE_VTK)] && "$::env(HAVE_VTK)" == "true" } {
       lappend aResult "TKIVtk"

@@ -16,4 +16,3 @@ ViewerTest_OpenGlCommands.cxx
 ViewerTest_RelationCommands.cxx
 ViewerTest_ViewerCommands.cxx
 ViewerTest_ViewerCommands_1.mm
-ViewerTest_VoxelCommands.cxx

@@ -987,7 +987,7 @@ This group allows  testing extended data exchange packages.
 | Foundation Classes |	TKernel, TKMath	| fclasses |
 | Modeling_algorithms |	TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh |	modalg |
 | Modeling Data | TKG2d, TKG3d, TKGeomBase, TKBRep	| moddata |
-| Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS, TKVoxel	| vis |
+| Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS	| vis |
 
 
 @subsection testmanual_5_3 Recommended approaches to checking test results

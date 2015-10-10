@@ -691,53 +691,6 @@ static Standard_Integer OCC23945 (Draw_Interpretor& /*di*/,Standard_Integer n, c
   return 0;
 }
 
-#include <Voxel_BoolDS.hxx>
-#include <Voxel_FastConverter.hxx>
-#include <Voxel_BooleanOperation.hxx>
-static Standard_Integer OCC24019 (Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
-{
-  if ( argc != 2 ) {
-    di << "Error: " << argv[0] << " - invalid number of arguments" << "\n";
-	return 1;
-  }
-
-  TCollection_AsciiString aFileName = argv[1];
-  TopoDS_Shape aShape;
-  BRep_Builder aBuilder;
-
-  if (!BRepTools::Read(aShape, aFileName.ToCString(), aBuilder)) {
-    di << "Error: Could not read a shape!" << "\n";
-	return 1;
-  }
-  
-  TopoDS_Solid aShape1 = BRepPrimAPI_MakeSphere(gp_Pnt(20,25,35), 7);
-
-  Standard_Real deflection = 0.005;
-  Standard_Integer nbThreads = 1;
-  Standard_Integer nbx = 200, nby = 200, nbz = 200;
-  Voxel_BoolDS theVoxels(0,0,0, 50, 50, 50, nbx, nby, nbz);
-  Voxel_BoolDS theVoxels1(0,0,0, 50, 50, 50, nbx, nby, nbz);
-
-  Standard_Integer progress = 0;
-  Voxel_FastConverter fcp(aShape, theVoxels, deflection, nbx, nby, nbz, nbThreads);
-  fcp.ConvertUsingSAT(progress, 1);
-  fcp.FillInVolume(1);
-
-  Voxel_FastConverter fcp1(aShape1, theVoxels1, deflection, nbx, nby, nbz, nbThreads);
-  fcp1.ConvertUsingSAT(progress, 1);
-  fcp1.FillInVolume(1);
-
-  Voxel_BooleanOperation op;
-  Standard_Boolean result = op.Cut(theVoxels1, theVoxels);
-  if ( result != 1 ) {
-    di << "Error: invalid boolean operation" << "\n";
-  } else {
-	di << "OK: boolean operation is ok" << "\n";
-  }
-
-  return 0;
-}
-
 //=======================================================================
 //function : OCC11758
 //purpose  : 
@@ -1327,34 +1280,6 @@ static Standard_Integer OCC24012 (Draw_Interpretor& di, Standard_Integer argc, c
 		myAISContext->SetColor(myShape, Quantity_Color(Quantity_NOC_YELLOW));
 		myAISContext->Display(myShape, Standard_True);
     }
-
-	return 0;
-}
-
-#include <Voxel_FastConverter.hxx>
-static Standard_Integer OCC24051 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) 
-{
-	if (argc != 1) {
-		di << "Usage : " << argv[0] << " should be one argument (command name only)";
-		return 1;
-	}
-
-	TopoDS_Shape shape = BRepPrimAPI_MakeBox(gp_Pnt(5, 10, 10), 10, 20, 30).Shape();
-	Standard_Integer progress = 0;
-	Standard_Real deflection = 0.005;
-	Standard_Integer nbx = 200, nby = 200, nbz = 200;
-	Voxel_BoolDS theVoxels(-50,-50,-30, 100, 100, 100, nbx, nby, nbz);
-	Voxel_BoolDS theVoxels1(-50,-50,-30, 100, 100, 100, nbx, nby, nbz);
-	Standard_Integer nbThreads = 5;
-	Voxel_FastConverter fcp(shape, theVoxels, deflection, nbx, nby, nbz, nbThreads, Standard_True);
-	
-	#ifdef _MSC_VER
-	#pragma omp parallel for
-        for(int i = 0; i < nbThreads; i++)
-			fcp.ConvertUsingSAT(progress, i+1);
-	#endif
-	
-	fcp.ConvertUsingSAT(progress);
 
 	return 0;
 }
@@ -4635,7 +4560,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("test_offset", "test_offset", __FILE__, test_offset, group);
   theCommands.Add ("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945,group);
   theCommands.Add ("OCC24008", "OCC24008 curve surface", __FILE__, OCC24008, group);
-  theCommands.Add ("OCC24019", "OCC24019 aShape", __FILE__, OCC24019, group);
   theCommands.Add ("OCC11758", "OCC11758", __FILE__, OCC11758, group);
   theCommands.Add ("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);
   theCommands.Add ("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
@@ -4644,7 +4568,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   theCommands.Add ("OCC24533", "OCC24533", __FILE__, OCC24533, group);
   theCommands.Add ("OCC24012", "OCC24012 face edge", __FILE__, OCC24012, group);
-  theCommands.Add ("OCC24051", "OCC24051", __FILE__, OCC24051, group);
   theCommands.Add ("OCC24086", "OCC24086 face wire", __FILE__, OCC24086, group);
   theCommands.Add ("OCC24622", "OCC24622 texture={1D|2D}\n Tests sourcing of 1D/2D pixmaps for AIS_TexturedShape", __FILE__, OCC24622, group);
   theCommands.Add ("OCC24667", "OCC24667 result Wire_spine Profile [Mode [Approx]], no args to get help", __FILE__, OCC24667, group);
