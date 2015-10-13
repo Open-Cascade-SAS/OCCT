@@ -191,6 +191,8 @@ gp_Mat gp_Quaternion::GetMatrix () const
   return aMat;
 }
 
+namespace { // anonymous namespace
+
 //=======================================================================
 //function : translateEulerSequence
 //purpose  : 
@@ -237,12 +239,18 @@ gp_EulerSequence_Parameters translateEulerSequence (const gp_EulerSequence theSe
   case gp_Extrinsic_ZXY: return Params (3, F, F, T);
   case gp_Extrinsic_ZYX: return Params (3, T, F, T);
 
-  case gp_Intrinsic_XYZ: return Params (1, F, F, F);
-  case gp_Intrinsic_XZY: return Params (1, T, F, F);
-  case gp_Intrinsic_YZX: return Params (2, F, F, F);
-  case gp_Intrinsic_YXZ: return Params (2, T, F, F);
-  case gp_Intrinsic_ZXY: return Params (3, F, F, F);
-  case gp_Intrinsic_ZYX: return Params (3, T, F, F);
+  // Conversion of intrinsic angles is made by the same code as for extrinsic,
+  // using equivalence rule: intrinsic rotation is equivalent to extrinsic
+  // rotation by the same angles but with inverted order of elemental rotations.
+  // Swapping of angles (Alpha <-> Gamma) is done inside conversion procedure;
+  // sequence of axes is inverted by setting appropriate parameters here.
+  // Note that proper Euler angles (last block below) are symmetric for sequence of axes.
+  case gp_Intrinsic_XYZ: return Params (3, T, F, F);
+  case gp_Intrinsic_XZY: return Params (2, F, F, F);
+  case gp_Intrinsic_YZX: return Params (1, T, F, F);
+  case gp_Intrinsic_YXZ: return Params (3, F, F, F);
+  case gp_Intrinsic_ZXY: return Params (2, T, F, F);
+  case gp_Intrinsic_ZYX: return Params (1, F, F, F);
 
   case gp_Extrinsic_XYX: return Params (1, F, T, T);
   case gp_Extrinsic_XZX: return Params (1, T, T, T);
@@ -260,9 +268,11 @@ gp_EulerSequence_Parameters translateEulerSequence (const gp_EulerSequence theSe
 
   default:
   case gp_EulerAngles : return Params (3, F, T, F); // = Intrinsic_ZXZ
-  case gp_YawPitchRoll: return Params (3, T, F, F); // = Intrinsic_ZYX
+  case gp_YawPitchRoll: return Params (1, F, F, F); // = Intrinsic_ZYX
   };
 }
+
+} // anonymous namespace
 
 //=======================================================================
 //function : SetEulerAngles

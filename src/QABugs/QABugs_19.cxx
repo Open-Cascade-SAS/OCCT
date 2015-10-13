@@ -29,6 +29,7 @@
 
 #include <gp_Pnt2d.hxx>
 #include <gp_Ax1.hxx>
+#include <gp_Quaternion.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <DrawTrSurf.hxx>
@@ -3594,6 +3595,237 @@ static Standard_Integer OCC24923(
   return 0;
 }
 
+//=======================================================================
+//function : OCC25574
+//purpose  : check implementation of Euler angles in gp_Quaternion
+//=======================================================================
+
+static Standard_Integer OCC25574 (Draw_Interpretor& theDI, Standard_Integer /*argc*/, const char** /*argv*/)
+{
+  Standard_Boolean isTestOk = Standard_True;
+
+  // Check consistency of Get and Set operations for Euler angles
+  gp_Quaternion aQuat;
+  aQuat.Set(0.06766916507860499, 0.21848101129786085, 0.11994599260380681,0.9660744746954637);
+  Standard_Real alpha,beta,gamma;
+  gp_Mat aRinv = aQuat.GetMatrix().Inverted();
+  gp_Mat aI;
+  aI.SetIdentity();
+  const char* names[] = { "Extrinsic_XYZ", "Extrinsic_XZY", "Extrinsic_YZX", "Extrinsic_YXZ", "Extrinsic_ZXY", "Extrinsic_ZYX", 
+                          "Intrinsic_XYZ", "Intrinsic_XZY", "Intrinsic_YZX", "Intrinsic_YXZ", "Intrinsic_ZXY", "Intrinsic_ZYX", 
+                          "Extrinsic_XYX", "Extrinsic_XZX", "Extrinsic_YZY", "Extrinsic_YXY", "Extrinsic_ZYZ", "Extrinsic_ZXZ",
+                          "Intrinsic_XYX", "Intrinsic_XZX", "Intrinsic_YZY", "Intrinsic_YXY", "Intrinsic_ZXZ", "Intrinsic_ZYZ" };
+  for (int i = gp_Extrinsic_XYZ; i <= gp_Intrinsic_ZYZ; i++)
+  {
+    aQuat.GetEulerAngles (gp_EulerSequence(i), alpha, beta, gamma);
+
+    gp_Quaternion aQuat2;
+    aQuat2.SetEulerAngles (gp_EulerSequence(i), alpha, beta, gamma);
+
+    gp_Mat aR = aQuat2.GetMatrix();
+    gp_Mat aDiff = aR * aRinv - aI;
+    if (aDiff.Determinant() > 1e-5)
+    {
+      theDI << "Error: Euler angles conversion incorrect for sequence " << names[i - gp_Extrinsic_XYZ] << "\n";
+      isTestOk = Standard_False;
+    }
+  }
+
+  // Check conversion between intrinsic and extrinsic rotations
+  // Any extrinsic rotation is equivalent to an intrinsic rotation
+  // by the same angles but with inverted order of elemental rotations, and vice versa
+  // For instance:
+  //    Extrinsic_XZY = Incrinsic_XZY
+  //    R = X(A)Z(B)Y(G) --> R = Y(G)Z(B)X(A)
+  alpha = 0.1517461713131;
+  beta = 1.5162198410141;
+  gamma = 1.9313156236541;
+  Standard_Real alpha2, beta2, gamma2;
+  gp_EulerSequence pairs[][2] = { {gp_Extrinsic_XYZ, gp_Intrinsic_ZYX},
+                                  {gp_Extrinsic_XZY, gp_Intrinsic_YZX},
+                                  {gp_Extrinsic_YZX, gp_Intrinsic_XZY},
+                                  {gp_Extrinsic_YXZ, gp_Intrinsic_ZXY},
+                                  {gp_Extrinsic_ZXY, gp_Intrinsic_YXZ},
+                                  {gp_Extrinsic_ZYX, gp_Intrinsic_XYZ} };
+  for (int i = 0; i < 6; i++)
+  {
+    aQuat.SetEulerAngles(pairs[i][0],  alpha,  beta,  gamma);
+    aQuat.GetEulerAngles(pairs[i][1], gamma2, beta2, alpha2);
+
+    if (Abs(alpha - alpha2) > 1e-5 || Abs(beta - beta2) > 1e-5 || Abs(gamma - gamma2) > 1e-5)
+    {
+      theDI << "Error: intrinsic and extrinsic conversion incorrect for sequence " << names[i] << "\n";
+      isTestOk = Standard_False;
+    }
+  }
+
+  // Check correspondence of enumeration and actual rotation it defines, 
+  // by rotation by one axis and checking that it does not change a point on that axis
+  for (int i = gp_Extrinsic_XYZ; i <= gp_Intrinsic_ZYZ; i++)
+  {
+    // Iterate over rotations R(A)R(B)R(G) for each Euler angle Alpha, Beta, Gamma
+    // There are three ordered axes corresponding to three rotations.
+    // Each rotation applyed with current angle around current axis.
+    for (int j=0; j < 3; j++)
+    {
+      // note that current axis index is obtained by parsing of enumeration name!
+      int anAxis = names[i - gp_Extrinsic_XYZ][10 + j] - 'X';
+      Standard_ASSERT_RETURN (anAxis >=0 && anAxis <= 2, "Incorrect parsing of enumeration name", 1);
+
+      // Set 90 degrees to current Euler angle
+      double anAngles[3] = {0., 0., 0.};
+      anAngles[j] = 0.5 * M_PI;
+
+      gp_Quaternion q2;
+      q2.SetEulerAngles (gp_EulerSequence(i), anAngles[0], anAngles[1], anAngles[2]);
+
+      // Set point on axis corresponding to current rotation
+      // We will apply rotation around this axis
+      gp_XYZ v (0., 0., 0.);
+      v.SetCoord (anAxis + 1, 1.);
+
+      // Apply rotation to point
+      gp_Trsf aT;
+      aT.SetRotation (q2);
+      gp_XYZ v2 = v;
+      aT.Transforms (v2);
+
+      // Check that point is still on origin position
+      if ((v - v2).SquareModulus() > Precision::SquareConfusion())
+      {
+        // avoid reporting small coordinates
+        for (int k=1; k <= 3; k++) 
+          if (Abs (v2.Coord(k)) < Precision::Confusion())
+            v2.SetCoord (k, 0.);
+
+        isTestOk = Standard_False;
+        theDI << "Error: Euler sequence " << names[i - gp_Extrinsic_XYZ] << " is incorrect:\n";
+        theDI << "rotating by angle 90 deg around " << (anAxis == 0 ? "X" : anAxis == 1 ? "Y" : "Z") <<
+                      " converts vector (" << v.X() << ", " << v.Y() << ", " << v.Z() << ") to ("
+                        << v2.X() << ", " << v2.Y() << ", " << v2.Z() << ")\n";
+      }
+    }
+  }
+
+  // Check correspondence of enumeration and actual rotation it defines, 
+  // by comparing cumulative rotation matrix with sequence of rotations by axes
+  const Standard_Real anAngle[3] = { 0.1, 0.2, 0.3 };
+  for (int i = gp_Extrinsic_XYZ; i <= gp_Intrinsic_ZYZ; i++)
+  {
+    // Sequence of rotations
+    gp_Mat aR[3];
+    for (int j=0; j < 3; j++)
+    {
+      // note that current axis index is obtained by parsing of enumeration name!
+      int anAxis = names[i - gp_Extrinsic_XYZ][10 + j] - 'X';
+      Standard_ASSERT_RETURN (anAxis >=0 && anAxis <= 2, "Incorrect parsing of enumeration name", 1);
+
+      // Set point on axis corresponding to current rotation
+      // We will apply rotation around this axis
+      gp_XYZ v (0., 0., 0.);
+      v.SetCoord (anAxis + 1, 1.);
+      aR[j].SetRotation (v, anAngle[j]);
+    }
+
+    // construct cumulative transformation (differently for extrinsic and intrinsic rotations);
+    // note that we parse first symbol of the enum name to identify its type
+    gp_Mat aRot;
+    if (names[i - gp_Extrinsic_XYZ][0] == 'E') // extrinsic
+    {
+      aRot = aR[2] * aR[1] * aR[0];
+    }
+    else // intrinsic
+    {
+      aRot = aR[0] * aR[1] * aR[2];
+    }
+
+    // set the same angles in quaternion
+    gp_Quaternion aQuat;
+    aQuat.SetEulerAngles (gp_EulerSequence(i), anAngle[0], anAngle[1], anAngle[2]);
+
+    gp_Mat aRQ = aQuat.GetMatrix();
+    gp_Mat aDiff = aRQ * aRot.Inverted() - aI;
+    if (aDiff.Determinant() > 1e-5)
+    {
+      theDI << "Error: Euler angles conversion does not correspond to sequential rotations for " << names[i - gp_Extrinsic_XYZ] << "\n";
+      isTestOk = Standard_False;
+    }
+  }
+
+  // similar checkfor YawPitchRoll sequence as defined in description of #25574
+  {
+    // Start with world coordinate system
+    gp_Ax2 world;
+
+    // Perform three rotations using the yaw-pitch-roll convention.
+    // This means: rotate around the original z axis with angle alpha,
+    // then rotate around the new y axis with angle beta,
+    // then rotate around the new x axis with angle gamma.
+    alpha = 0.0 / 180.0 * M_PI;
+    beta = -35.0 / 180.0 * M_PI;
+    gamma = 90.0 / 180.0 * M_PI;
+
+    const gp_Quaternion rotationZ(world.Direction(), alpha);
+    const gp_Vec rotY = rotationZ.Multiply(world.YDirection());
+    const gp_Vec rotX = rotationZ.Multiply(world.XDirection());
+
+    const gp_Quaternion rotationY(rotY, beta);
+    const gp_Vec rotZ = rotationY.Multiply(world.Direction());
+    const gp_Vec rotRotX = rotationY.Multiply(rotX);
+
+    const gp_Quaternion rotationX(rotRotX, gamma);
+    const gp_Vec rotRotZ = rotationX.Multiply(rotZ);
+
+    gp_Ax2 result(gp_Pnt(0.0, 0.0, 0.0), rotRotZ, rotRotX);
+
+    // Now compute the Euler angles
+    gp_Trsf transformation;
+    transformation.SetDisplacement(gp_Ax2(), result);
+
+    Standard_Real computedAlpha;
+    Standard_Real computedBeta;
+    Standard_Real computedGamma;
+
+    transformation.GetRotation().GetEulerAngles(gp_YawPitchRoll, computedAlpha, computedBeta, computedGamma);
+
+    // We expect now to get the same angles as we have used for our rotations
+    if (Abs(alpha - computedAlpha) > 1e-5 || Abs(beta - computedBeta) > 1e-5 || Abs(gamma - computedGamma) > 1e-5)
+    {
+      theDI << "Error: unexpected values of Euler angles for YawPitchRoll sequence:\n";
+      theDI << "alpha: " << alpha / M_PI * 180.0 << " and computed alpha: "
+            << computedAlpha / M_PI * 180.0 << "\n";
+      theDI << "beta: " << beta / M_PI * 180.0 << " and computed beta: "
+            << computedBeta / M_PI * 180.0 << "\n";
+      theDI << "gamma: " << gamma / M_PI * 180.0 << " and computed gamma: "
+            << computedGamma / M_PI * 180.0 << "\n";
+      isTestOk = Standard_False;
+    }
+  }
+
+  // test from #25946
+  {
+    gp_Quaternion q;
+    q.Set(0.06766916507860499, 0.21848101129786085, 0.11994599260380681,0.9660744746954637);
+
+    q.GetEulerAngles(gp_Intrinsic_ZYX, alpha,beta, gamma);
+    Standard_Real alpha2,beta2,gamma2;
+    q.GetEulerAngles(gp_Extrinsic_XYZ, alpha2,beta2,gamma2);
+
+    // gp_Intrinsic_ZYX and gp_Extrinsic_XYZ should produce the same values of angles but in opposite order
+    if (Abs(alpha - gamma2) > 1e-5 || Abs(beta - beta2) > 1e-5 || Abs(gamma - alpha2) > 1e-5)
+    {
+      theDI << "Error: Euler angles computed for gp_Intrinsic_ZYX and gp_Extrinsic_XYZ do not match:\n";
+      theDI << "alpha: " << alpha / M_PI * 180.0 << " and " << alpha2 / M_PI * 180.0 << "\n";
+      theDI << "beta: " << beta / M_PI * 180.0 << " and " << beta2 / M_PI * 180.0 << "\n";
+      theDI << "gamma: " << gamma / M_PI * 180.0 << " and " << gamma2 / M_PI * 180.0 << "\n";
+      isTestOk = Standard_False;
+    }
+  }
+
+  theDI << (isTestOk ? "Test completed" : "Test failed") << "\n";
+  return 0;
+}
+
 #include <TColGeom_Array1OfBSplineCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColGeom_HArray1OfBSplineCurve.hxx>
@@ -4887,7 +5119,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
 
   theCommands.Add ("OCC24537", "OCC24537 [file]", __FILE__, OCC24537, group);
   theCommands.Add ("OCC26750", "OCC26750", __FILE__, OCC26750, group);
-
+  theCommands.Add ("OCC25574", "OCC25574", __FILE__, OCC25574, group);
   theCommands.Add ("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
 
   theCommands.Add ("BUC26658", "BUC26658 unexpected selection in the context using a selection filter", __FILE__, BUC26658, group);

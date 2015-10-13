@@ -1,0 +1,9 @@
+puts "=========="
+puts "0025574: gp_YawPitchRoll Euler Angle computation gives wrong results"
+puts "=========="
+
+pload QAcommands
+
+puts "Checking conversions of Euler angles in gp_Quaternion"
+OCC25574
+

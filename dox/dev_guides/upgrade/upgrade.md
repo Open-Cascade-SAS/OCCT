@@ -585,3 +585,13 @@ Verson numbers of BinOCAF and XmlOCAF formats are incremented; new files cannot 
 
 For loading OCAF files saved by previous versions and containing attribute TPrsStd_AISPresentation it is necessary that environment variable CSF_MIGRATION_TYPES should be defined, pointing to file src/StdResources/MigrationSheet.txt.
 When using documents loaded from a file, make sure to call method TPrsStd_AISViewer::New() prior to accessing TPrsStd_AISPresentation attributes in this document (that method will create them).
+
+
+@subsection Correction of interpretation of Euler angles in gp_Quaternion
+
+Conversion of gp_Quaternion to and from intrinsic Tait-Bryan angles (including gp_YawPitchRoll) is fixed.
+
+Before that fix the sequence of rotation axes was opposite to intended; e.g. gp_YawPitchRoll (equivalent to gp_Intrinsic_ZYX) actually was defining intrinsic rotations around X, then Y, then Z.
+Now this is fixed, and rotations are made in correct order.
+
+Applications that use gp_Quaternion to convert Yaw-Pitch-Roll angles (or other intrinsic Tait-Bryan sequences) may need to be updated to take this change into account.
