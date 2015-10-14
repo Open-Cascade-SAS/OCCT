@@ -35,14 +35,19 @@ class STEPCAFControl_StackItemOfDictionaryOfExternFile : public MMgt_TShared
 public:
 
   
+  //! Creates a StackItem with no Previous one
   Standard_EXPORT STEPCAFControl_StackItemOfDictionaryOfExternFile();
   
+  //! Creates a StackItem with a Previous one
   Standard_EXPORT STEPCAFControl_StackItemOfDictionaryOfExternFile(const Handle(STEPCAFControl_StackItemOfDictionaryOfExternFile)& previous);
   
+  //! Returns the Previous Item (is Null if no Previous defined)
   Standard_EXPORT Handle(STEPCAFControl_StackItemOfDictionaryOfExternFile) Previous() const;
   
+  //! Returns the Dictionary Cell corresponding to an Item
   Standard_EXPORT Handle(STEPCAFControl_DictionaryOfExternFile) Value() const;
   
+  //! Sets a new Dictionary Cell as Value of an Item
   Standard_EXPORT void SetValue (const Handle(STEPCAFControl_DictionaryOfExternFile)& cval);
 
 

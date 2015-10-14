@@ -38,6 +38,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Give the bounding box of the polygon.
     static const Bnd_Box& Bounding (const HLRBRep_ThePolygonOfInterCSurf& thePolygon);
   
     static Standard_Real DeflectionOverEstimation (const HLRBRep_ThePolygonOfInterCSurf& thePolygon);
@@ -46,8 +47,10 @@ public:
   
     static Standard_Integer NbSegments (const HLRBRep_ThePolygonOfInterCSurf& thePolygon);
   
+  //! Give the point of range Index in the Polygon.
     static const gp_Pnt& BeginOfSeg (const HLRBRep_ThePolygonOfInterCSurf& thePolygon, const Standard_Integer Index);
   
+  //! Give the point of range Index in the Polygon.
     static const gp_Pnt& EndOfSeg (const HLRBRep_ThePolygonOfInterCSurf& thePolygon, const Standard_Integer Index);
   
   Standard_EXPORT static void Dump (const HLRBRep_ThePolygonOfInterCSurf& thePolygon);

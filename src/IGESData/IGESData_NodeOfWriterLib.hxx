@@ -38,14 +38,21 @@ class IGESData_NodeOfWriterLib : public MMgt_TShared
 public:
 
   
+  //! Creates an empty Node, with no Next
   Standard_EXPORT IGESData_NodeOfWriterLib();
   
+  //! Adds a couple (Module,Protocol), that is, stores it into
+  //! itself if not yet done, else creates a Next Node to do it
   Standard_EXPORT void AddNode (const Handle(IGESData_GlobalNodeOfWriterLib)& anode);
   
+  //! Returns the Module designated by a precise Node
   Standard_EXPORT const Handle(IGESData_ReadWriteModule)& Module() const;
   
+  //! Returns the Protocol designated by a precise Node
   Standard_EXPORT const Handle(IGESData_Protocol)& Protocol() const;
   
+  //! Returns the Next Node. If none was defined, returned value
+  //! is a Null Handle
   Standard_EXPORT const Handle(IGESData_NodeOfWriterLib)& Next() const;
 
 

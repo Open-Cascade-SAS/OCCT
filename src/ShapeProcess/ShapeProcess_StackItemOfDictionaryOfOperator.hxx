@@ -35,14 +35,19 @@ class ShapeProcess_StackItemOfDictionaryOfOperator : public MMgt_TShared
 public:
 
   
+  //! Creates a StackItem with no Previous one
   Standard_EXPORT ShapeProcess_StackItemOfDictionaryOfOperator();
   
+  //! Creates a StackItem with a Previous one
   Standard_EXPORT ShapeProcess_StackItemOfDictionaryOfOperator(const Handle(ShapeProcess_StackItemOfDictionaryOfOperator)& previous);
   
+  //! Returns the Previous Item (is Null if no Previous defined)
   Standard_EXPORT Handle(ShapeProcess_StackItemOfDictionaryOfOperator) Previous() const;
   
+  //! Returns the Dictionary Cell corresponding to an Item
   Standard_EXPORT Handle(ShapeProcess_DictionaryOfOperator) Value() const;
   
+  //! Sets a new Dictionary Cell as Value of an Item
   Standard_EXPORT void SetValue (const Handle(ShapeProcess_DictionaryOfOperator)& cval);
 
 

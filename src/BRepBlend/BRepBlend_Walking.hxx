@@ -62,8 +62,10 @@ public:
   
   Standard_EXPORT BRepBlend_Walking(const Handle(Adaptor3d_HSurface)& Surf1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_TopolTool)& Domain2, const Handle(ChFiDS_HElSpine)& HGuide);
   
+  //! To define different domains for control and clipping.
   Standard_EXPORT void SetDomainsToRecadre (const Handle(Adaptor3d_TopolTool)& RecDomain1, const Handle(Adaptor3d_TopolTool)& RecDomain2);
   
+  //! To define singular points computed before walking.
   Standard_EXPORT void AddSingularPoint (const Blend_Point& P);
   
   Standard_EXPORT void Perform (Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);

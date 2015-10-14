@@ -34,14 +34,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Creation of an indefinite point on curve.
   Standard_EXPORT Extrema_POnCurv2d();
   
+  //! Creation of a point on curve with a parameter
+  //! value on the curve and a Pnt from gp.
   Standard_EXPORT Extrema_POnCurv2d(const Standard_Real U, const gp_Pnt2d& P);
   
+  //! sets the point and parameter values.
   Standard_EXPORT void SetValues (const Standard_Real U, const gp_Pnt2d& P);
   
+  //! Returns the point.
     const gp_Pnt2d& Value() const;
   
+  //! Returns the parameter on the curve.
     Standard_Real Parameter() const;
 
 

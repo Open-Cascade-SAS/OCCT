@@ -39,14 +39,20 @@ class Geom2dAdaptor_GHCurve : public Adaptor2d_HCurve2d
 public:
 
   
+  //! Creates an empty GenHCurve2d.
   Standard_EXPORT Geom2dAdaptor_GHCurve();
   
+  //! Creates a GenHCurve2d from a Curve
   Standard_EXPORT Geom2dAdaptor_GHCurve(const Geom2dAdaptor_Curve& C);
   
+  //! Sets the field of the GenHCurve2d.
   Standard_EXPORT void Set (const Geom2dAdaptor_Curve& C);
   
+  //! Returns the curve used to create the GenHCurve2d.
+  //! This is redefined from HCurve2d, cannot be inline.
   Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const;
   
+  //! Returns the curve used to create the GenHCurve.
     Geom2dAdaptor_Curve& ChangeCurve2d();
 
 

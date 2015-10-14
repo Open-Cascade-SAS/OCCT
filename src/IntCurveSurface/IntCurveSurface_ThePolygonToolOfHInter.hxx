@@ -38,6 +38,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Give the bounding box of the polygon.
     static const Bnd_Box& Bounding (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
   
     static Standard_Real DeflectionOverEstimation (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
@@ -46,8 +47,10 @@ public:
   
     static Standard_Integer NbSegments (const IntCurveSurface_ThePolygonOfHInter& thePolygon);
   
+  //! Give the point of range Index in the Polygon.
     static const gp_Pnt& BeginOfSeg (const IntCurveSurface_ThePolygonOfHInter& thePolygon, const Standard_Integer Index);
   
+  //! Give the point of range Index in the Polygon.
     static const gp_Pnt& EndOfSeg (const IntCurveSurface_ThePolygonOfHInter& thePolygon, const Standard_Integer Index);
   
   Standard_EXPORT static void Dump (const IntCurveSurface_ThePolygonOfHInter& thePolygon);

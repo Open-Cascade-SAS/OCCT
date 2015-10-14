@@ -49,6 +49,7 @@ public:
   
   Standard_EXPORT IntCurveSurface_ThePolygonOfHInter(const Handle(Adaptor3d_HCurve)& Curve, const TColStd_Array1OfReal& Upars);
   
+  //! Give the bounding box of the polygon.
     const Bnd_Box& Bounding() const;
   
     Standard_Real DeflectionOverEstimation() const;
@@ -59,16 +60,25 @@ public:
   
     Standard_Boolean Closed() const;
   
+  //! Give the number of Segments in the polyline.
     Standard_Integer NbSegments() const;
   
+  //! Give the point of range Index in the Polygon.
     const gp_Pnt& BeginOfSeg (const Standard_Integer Index) const;
   
+  //! Give the point of range Index in the Polygon.
     const gp_Pnt& EndOfSeg (const Standard_Integer Index) const;
   
+  //! Returns the parameter (On the curve)
+  //! of the first point of the Polygon
     Standard_Real InfParameter() const;
   
+  //! Returns the parameter (On the curve)
+  //! of the last point of the Polygon
     Standard_Real SupParameter() const;
   
+  //! Give an approximation of the parameter on the curve
+  //! according to the discretization of the Curve.
   Standard_EXPORT Standard_Real ApproxParamOnCurve (const Standard_Integer Index, const Standard_Real ParamOnLine) const;
   
   Standard_EXPORT void Dump() const;

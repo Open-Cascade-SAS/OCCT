@@ -42,34 +42,59 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! The  class   SvSurfaces     is used   when    the
+  //! approximation algorithm needs some extra points on
+  //! the line <line>. A New line  is then created which
+  //! shares  the    same  surfaces    and    functions.
+  //!
+  //! SvSurfaces is   a  deferred   class  which  allows
+  //! several implementations of  this  algorithm   with
+  //! different surfaces   (bi-parametric     ones,   or
+  //! implicit and biparametric ones)
   Standard_EXPORT GeomInt_TheMultiLineOfWLApprox(const Handle(IntPatch_WLine)& line, const Standard_Address PtrSvSurfaces, const Standard_Integer NbP3d, const Standard_Integer NbP2d, const Standard_Real xo, const Standard_Real ax, const Standard_Real yo, const Standard_Real ay, const Standard_Real zo, const Standard_Real az, const Standard_Real u1o, const Standard_Real a1u, const Standard_Real v1o, const Standard_Real a1v, const Standard_Real u2o, const Standard_Real a2u, const Standard_Real v2o, const Standard_Real a2v, const Standard_Boolean P2DOnFirst, const Standard_Integer IndMin = 0, const Standard_Integer IndMax = 0);
   
+  //! No Extra points will be added on the current line
   Standard_EXPORT GeomInt_TheMultiLineOfWLApprox(const Handle(IntPatch_WLine)& line, const Standard_Integer NbP3d, const Standard_Integer NbP2d, const Standard_Real xo, const Standard_Real ax, const Standard_Real yo, const Standard_Real ay, const Standard_Real zo, const Standard_Real az, const Standard_Real u1o, const Standard_Real a1u, const Standard_Real v1o, const Standard_Real a1v, const Standard_Real u2o, const Standard_Real a2u, const Standard_Real v2o, const Standard_Real a2v, const Standard_Boolean P2DOnFirst, const Standard_Integer IndMin = 0, const Standard_Integer IndMax = 0);
   
   Standard_EXPORT Standard_Integer FirstPoint() const;
   
   Standard_EXPORT Standard_Integer LastPoint() const;
   
+  //! Returns the number of 2d points of a TheLine.
   Standard_EXPORT Standard_Integer NbP2d() const;
   
+  //! Returns the number of 3d points of a TheLine.
   Standard_EXPORT Standard_Integer NbP3d() const;
   
   Standard_EXPORT Approx_Status WhatStatus() const;
   
+  //! returns the 3d points of the multipoint <MPointIndex>
+  //! when only 3d points exist.
   Standard_EXPORT void Value (const Standard_Integer MPointIndex, TColgp_Array1OfPnt& tabPt) const;
   
+  //! returns the 2d points of the multipoint <MPointIndex>
+  //! when only 2d points exist.
   Standard_EXPORT void Value (const Standard_Integer MPointIndex, TColgp_Array1OfPnt2d& tabPt2d) const;
   
+  //! returns the 3d and 2d points of the multipoint
+  //! <MPointIndex>.
   Standard_EXPORT void Value (const Standard_Integer MPointIndex, TColgp_Array1OfPnt& tabPt, TColgp_Array1OfPnt2d& tabPt2d) const;
   
+  //! returns the 3d points of the multipoint <MPointIndex>
+  //! when only 3d points exist.
   Standard_EXPORT Standard_Boolean Tangency (const Standard_Integer MPointIndex, TColgp_Array1OfVec& tabV) const;
   
+  //! returns the 2d tangency points of the multipoint
+  //! <MPointIndex> only when 2d points exist.
   Standard_EXPORT Standard_Boolean Tangency (const Standard_Integer MPointIndex, TColgp_Array1OfVec2d& tabV2d) const;
   
+  //! returns the 3d and 2d points of the multipoint
+  //! <MPointIndex>.
   Standard_EXPORT Standard_Boolean Tangency (const Standard_Integer MPointIndex, TColgp_Array1OfVec& tabV, TColgp_Array1OfVec2d& tabV2d) const;
   
   Standard_EXPORT GeomInt_TheMultiLineOfWLApprox MakeMLBetween (const Standard_Integer Low, const Standard_Integer High, const Standard_Integer NbPointsToInsert) const;
   
+  //! Dump of the current multi-line.
   Standard_EXPORT void Dump() const;
 
 

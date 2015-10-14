@@ -39,14 +39,20 @@ class GeomAdaptor_GHSurface : public Adaptor3d_HSurface
 public:
 
   
+  //! Creates an empty GenHSurface.
   Standard_EXPORT GeomAdaptor_GHSurface();
   
+  //! Creates a GenHSurface from a Surface.
   Standard_EXPORT GeomAdaptor_GHSurface(const GeomAdaptor_Surface& S);
   
+  //! Sets the field of the GenHSurface.
   Standard_EXPORT void Set (const GeomAdaptor_Surface& S);
   
+  //! Returns a reference to the Surface inside the HSurface.
+  //! This is redefined from HSurface, cannot be inline.
   Standard_EXPORT const Adaptor3d_Surface& Surface() const;
   
+  //! Returns the surface used to create the GenHSurface.
     GeomAdaptor_Surface& ChangeSurface();
 
 

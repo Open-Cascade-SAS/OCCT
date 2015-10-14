@@ -43,22 +43,39 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty constructor, undefined algorithm.
   Standard_EXPORT Geom2dHatch_Classifier();
   
+  //! Creates an algorithm to classify the Point  P with
+  //! Tolerance <T> on the face described by <F>.
   Standard_EXPORT Geom2dHatch_Classifier(Geom2dHatch_Elements& F, const gp_Pnt2d& P, const Standard_Real Tol);
   
+  //! Classify  the Point  P  with  Tolerance <T> on the
+  //! face described by <F>.
   Standard_EXPORT void Perform (Geom2dHatch_Elements& F, const gp_Pnt2d& P, const Standard_Real Tol);
   
+  //! Returns the result of the classification.
   Standard_EXPORT TopAbs_State State() const;
   
+  //! Returns  True when  the   state was computed by  a
+  //! rejection. The state is OUT.
     Standard_Boolean Rejected() const;
   
+  //! Returns True if  the face  contains  no wire.  The
+  //! state is IN.
     Standard_Boolean NoWires() const;
   
+  //! Returns   the    Edge  used   to    determine  the
+  //! classification. When the State is ON  this  is the
+  //! Edge containing the point.
   Standard_EXPORT const Geom2dAdaptor_Curve& Edge() const;
   
+  //! Returns the parameter on Edge() used to determine  the
+  //! classification.
   Standard_EXPORT Standard_Real EdgeParameter() const;
   
+  //! Returns the  position of  the   point on the  edge
+  //! returned by Edge.
     IntRes2d_Position Position() const;
 
 

@@ -43,18 +43,35 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Given a MultiLine SSP with constraints points, this
+  //! algorithm finds the best curve solution to approximate it.
+  //! The poles from SCurv issued for example from the least
+  //! squares are used as a guess solution for the uzawa
+  //! algorithm. The tolerance used in the Uzawa algorithms
+  //! is Tolerance.
+  //! A is the Bernstein matrix associated to the MultiLine
+  //! and DA is the derivative bernstein matrix.(They can come
+  //! from an approximation with ParLeastSquare.)
+  //! The MultiCurve is modified. New MultiPoles are given.
   Standard_EXPORT GeomInt_ResConstraintOfMyGradientbisOfTheComputeLineOfWLApprox(const GeomInt_TheMultiLineOfWLApprox& SSP, AppParCurves_MultiCurve& SCurv, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const Handle(AppParCurves_HArray1OfConstraintCouple)& Constraints, const math_Matrix& Bern, const math_Matrix& DerivativeBern, const Standard_Real Tolerance = 1.0e-10);
   
+  //! returns True if all has been correctly done.
   Standard_EXPORT Standard_Boolean IsDone() const;
   
+  //! returns the maximum difference value between the curve
+  //! and the given points.
   Standard_EXPORT Standard_Real Error() const;
   
   Standard_EXPORT const math_Matrix& ConstraintMatrix() const;
   
+  //! returns the duale variables of the system.
   Standard_EXPORT const math_Vector& Duale() const;
   
+  //! Returns the derivative of the constraint matrix.
   Standard_EXPORT const math_Matrix& ConstraintDerivative (const GeomInt_TheMultiLineOfWLApprox& SSP, const math_Vector& Parameters, const Standard_Integer Deg, const math_Matrix& DA);
   
+  //! returns the Inverse of Cont*Transposed(Cont), where
+  //! Cont is the constraint matrix for the algorithm.
   Standard_EXPORT const math_Matrix& InverseMatrix() const;
 
 
@@ -63,8 +80,10 @@ public:
 protected:
 
   
+  //! is used internally to create the fields.
   Standard_EXPORT Standard_Integer NbConstraints (const GeomInt_TheMultiLineOfWLApprox& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint, const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints) const;
   
+  //! is internally used for the fields creation.
   Standard_EXPORT Standard_Integer NbColumns (const GeomInt_TheMultiLineOfWLApprox& SSP, const Standard_Integer Deg) const;
 
 

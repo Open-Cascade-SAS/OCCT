@@ -44,8 +44,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Compute a polygon on the domain of the curve.
   Standard_EXPORT Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter(const Adaptor2d_Curve2d& Curve, const Standard_Integer NbPnt, const IntRes2d_Domain& Domain, const Standard_Real Tol);
   
+  //! The current polygon is modified if most
+  //! of the  points of the  polygon  are are
+  //! outside  the  box  <OtherBox>.  In this
+  //! situation, bounds are computed to build
+  //! a polygon inside or near the OtherBox.
   Standard_EXPORT void ComputeWithBox (const Adaptor2d_Curve2d& Curve, const Bnd_Box2d& OtherBox);
   
     virtual Standard_Real DeflectionOverEstimation() const Standard_OVERRIDE;
@@ -54,16 +60,24 @@ public:
   
     void Closed (const Standard_Boolean clos);
   
+  //! Give the number of Segments in the polyline.
     virtual Standard_Integer NbSegments() const Standard_OVERRIDE;
   
+  //! Returns the points of the segment <Index> in the Polygon.
   Standard_EXPORT virtual void Segment (const Standard_Integer theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const Standard_OVERRIDE;
   
+  //! Returns the parameter (On the curve)
+  //! of the first point of the Polygon
     Standard_Real InfParameter() const;
   
+  //! Returns the parameter (On the curve)
+  //! of the last point of the Polygon
     Standard_Real SupParameter() const;
   
   Standard_EXPORT Standard_Boolean AutoIntersectionIsPossible() const;
   
+  //! Give an approximation of the parameter on the curve
+  //! according to the discretization of the Curve.
   Standard_EXPORT Standard_Real ApproxParamOnCurve (const Standard_Integer Index, const Standard_Real ParamOnLine) const;
   
     Standard_Integer CalculRegion (const Standard_Real x, const Standard_Real y, const Standard_Real x1, const Standard_Real x2, const Standard_Real y1, const Standard_Real y2) const;

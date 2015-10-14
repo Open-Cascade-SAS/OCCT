@@ -47,26 +47,39 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty constructor.
   Standard_EXPORT Geom2dInt_IntConicCurveOfGInter();
   
+  //! Intersection between a line and a parametric curve.
   Standard_EXPORT Geom2dInt_IntConicCurveOfGInter(const gp_Lin2d& L, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between a line and a parametric curve.
   Standard_EXPORT Geom2dInt_IntConicCurveOfGInter(const gp_Circ2d& C, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT Geom2dInt_IntConicCurveOfGInter(const gp_Elips2d& E, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT Geom2dInt_IntConicCurveOfGInter(const gp_Parab2d& Prb, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between the main branch of an hyperbola
+  //! and a parametric curve.
   Standard_EXPORT Geom2dInt_IntConicCurveOfGInter(const gp_Hypr2d& H, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between a line and a parametric curve.
   Standard_EXPORT void Perform (const gp_Lin2d& L, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between a line and a parametric curve.
   Standard_EXPORT void Perform (const gp_Circ2d& C, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT void Perform (const gp_Elips2d& E, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT void Perform (const gp_Parab2d& Prb, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between the main branch of an hyperbola
+  //! and a parametric curve.
   Standard_EXPORT void Perform (const gp_Hypr2d& H, const IntRes2d_Domain& D1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol);
 
 

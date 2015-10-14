@@ -65,6 +65,11 @@ protected:
 private:
 
   
+  //! Method to find intersection between two curves
+  //! :  returns false for case when some points of polygon
+  //! : were replaced on line and exact point of intersection was not found
+  //! : for case when point of intersection was found
+  //! : during prelimanary search for line (case of bad paramerization of Bspline for example).
   Standard_EXPORT Standard_Boolean findIntersect (const Adaptor2d_Curve2d& Curve1, const IntRes2d_Domain& Domain1, const Adaptor2d_Curve2d& Curve2, const IntRes2d_Domain& Domain2, const Standard_Real TolConf, const Standard_Real Tol, const Standard_Integer NbIter, const Standard_Real DeltaU, const Standard_Real DeltaV, const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& thePoly1, const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& thePoly2, const Standard_Boolean isFullRepresentation);
 
 

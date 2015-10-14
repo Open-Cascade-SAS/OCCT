@@ -49,6 +49,7 @@ public:
   
   Standard_EXPORT BRepApprox_ThePrmPrmSvSurfacesOfApprox(const BRepAdaptor_Surface& Surf1, const BRepAdaptor_Surface& Surf2);
   
+  //! returns True if Tg,Tguv1 Tguv2 can be computed.
   Standard_EXPORT Standard_Boolean Compute (Standard_Real& u1, Standard_Real& v1, Standard_Real& u2, Standard_Real& v2, gp_Pnt& Pt, gp_Vec& Tg, gp_Vec2d& Tguv1, gp_Vec2d& Tguv2);
   
   Standard_EXPORT void Pnt (const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Pnt& P);

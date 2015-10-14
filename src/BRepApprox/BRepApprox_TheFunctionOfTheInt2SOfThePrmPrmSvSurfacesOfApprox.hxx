@@ -48,6 +48,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Raises Construction Error
   Standard_EXPORT BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox();
   
   Standard_EXPORT BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox(const BRepAdaptor_Surface& S1, const BRepAdaptor_Surface& S2);
@@ -64,6 +65,7 @@ public:
   
   Standard_EXPORT void ComputeParameters (const IntImp_ConstIsoparametric ChoixIso, const TColStd_Array1OfReal& Param, math_Vector& UVap, math_Vector& BornInf, math_Vector& BornSup, math_Vector& Tolerance);
   
+  //! returns somme des fi*fi
     Standard_Real Root() const;
   
     gp_Pnt Point() const;

@@ -50,32 +50,68 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Raises Construction Error
   Standard_EXPORT BRepApprox_TheInt2SOfThePrmPrmSvSurfacesOfApprox();
   
+  //! compute the solution point with the close point
   Standard_EXPORT BRepApprox_TheInt2SOfThePrmPrmSvSurfacesOfApprox(const TColStd_Array1OfReal& Param, const BRepAdaptor_Surface& S1, const BRepAdaptor_Surface& S2, const Standard_Real TolTangency);
   
+  //! initialize the parameters to compute the solution point
+  //! it 's possible to write to optimize:
+  //! IntImp_Int2S inter(S1,S2,Func,TolTangency);
+  //! math_FunctionSetRoot rsnld(inter.Function());
+  //! while ...{
+  //! Param(1)=...
+  //! Param(2)=...
+  //! param(3)=...
+  //! inter.Perform(Param,rsnld);
+  //! }
   Standard_EXPORT BRepApprox_TheInt2SOfThePrmPrmSvSurfacesOfApprox(const BRepAdaptor_Surface& S1, const BRepAdaptor_Surface& S2, const Standard_Real TolTangency);
   
+  //! returns the best constant isoparametric to find
+  //! the next intersection's point +stores the solution
+  //! point (the solution point is found with the close point
+  //! to intersect the isoparametric with the other patch;
+  //! the choice of the isoparametic is calculated)
   Standard_EXPORT IntImp_ConstIsoparametric Perform (const TColStd_Array1OfReal& Param, math_FunctionSetRoot& Rsnld);
   
+  //! returns the best constant isoparametric to find
+  //! the next intersection's point +stores the solution
+  //! point (the solution point is found with the close point
+  //! to intersect the isoparametric with the other patch;
+  //! the choice of the isoparametic is given by ChoixIso)
   Standard_EXPORT IntImp_ConstIsoparametric Perform (const TColStd_Array1OfReal& Param, math_FunctionSetRoot& Rsnld, const IntImp_ConstIsoparametric ChoixIso);
   
+  //! Returns TRUE if the creation completed without failure.
     Standard_Boolean IsDone() const;
   
+  //! Returns TRUE when there is no solution to the problem.
     Standard_Boolean IsEmpty() const;
   
+  //! Returns the intersection point.
     const IntSurf_PntOn2S& Point() const;
   
+  //! Returns True if the surfaces are tangent at the
+  //! intersection point.
     Standard_Boolean IsTangent() const;
   
+  //! Returns the tangent at the intersection line.
     const gp_Dir& Direction() const;
   
+  //! Returns the tangent at the intersection line in the
+  //! parametric space of the first surface.
     const gp_Dir2d& DirectionOnS1() const;
   
+  //! Returns the tangent at the intersection line in the
+  //! parametric space of the second surface.
     const gp_Dir2d& DirectionOnS2() const;
   
+  //! return the math function which
+  //! is used to compute the intersection
     BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox& Function();
   
+  //! return the intersection point which is
+  //! enable for changing.
     IntSurf_PntOn2S& ChangePoint();
 
 

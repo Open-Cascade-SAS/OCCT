@@ -55,16 +55,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty Constructor
   Standard_EXPORT HLRBRep_InterCSurf();
   
+  //! Compute the Intersection between the curve and the
+  //! surface
   Standard_EXPORT void Perform (const gp_Lin& Curve, const Standard_Address& Surface);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The   Curve is already  sampled and
+  //! its polygon : <Polygon> is given.
   Standard_EXPORT void Perform (const gp_Lin& Curve, const HLRBRep_ThePolygonOfInterCSurf& Polygon, const Standard_Address& Surface);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The   Curve is already  sampled and
+  //! its polygon : <Polygon> is given. The Surface is
+  //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform (const gp_Lin& Curve, const HLRBRep_ThePolygonOfInterCSurf& ThePolygon, const Standard_Address& Surface, const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The   Curve is already  sampled and
+  //! its polygon : <Polygon> is given. The Surface is
+  //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform (const gp_Lin& Curve, const HLRBRep_ThePolygonOfInterCSurf& ThePolygon, const Standard_Address& Surface, const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron, Bnd_BoundSortBox& BndBSB);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The Surface is already  sampled and
+  //! its polyhedron : <Polyhedron> is given.
   Standard_EXPORT void Perform (const gp_Lin& Curve, const Standard_Address& Surface, const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron);
 
 
@@ -73,6 +90,8 @@ public:
 protected:
 
   
+  //! Compute the Intersection between the curve and the
+  //! surface
   Standard_EXPORT void Perform (const gp_Lin& Curve, const Standard_Address& Surface, const Standard_Real U0, const Standard_Real V0, const Standard_Real U1, const Standard_Real V1);
   
   Standard_EXPORT void InternalPerformCurveQuadric (const gp_Lin& Curve, const Standard_Address& Surface);

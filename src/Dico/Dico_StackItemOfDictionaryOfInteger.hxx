@@ -36,14 +36,19 @@ class Dico_StackItemOfDictionaryOfInteger : public MMgt_TShared
 public:
 
   
+  //! Creates a StackItem with no Previous one
   Standard_EXPORT Dico_StackItemOfDictionaryOfInteger();
   
+  //! Creates a StackItem with a Previous one
   Standard_EXPORT Dico_StackItemOfDictionaryOfInteger(const Handle(Dico_StackItemOfDictionaryOfInteger)& previous);
   
+  //! Returns the Previous Item (is Null if no Previous defined)
   Standard_EXPORT Handle(Dico_StackItemOfDictionaryOfInteger) Previous() const;
   
+  //! Returns the Dictionary Cell corresponding to an Item
   Standard_EXPORT Handle(Dico_DictionaryOfInteger) Value() const;
   
+  //! Sets a new Dictionary Cell as Value of an Item
   Standard_EXPORT void SetValue (const Handle(Dico_DictionaryOfInteger)& cval);
 
 

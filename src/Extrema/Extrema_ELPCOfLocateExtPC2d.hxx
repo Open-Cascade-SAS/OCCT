@@ -55,24 +55,55 @@ public:
   
   Standard_EXPORT Extrema_ELPCOfLocateExtPC2d();
   
+  //! It calculates all the distances.
+  //! The function F(u)=distance(P,C(u)) has an extremum
+  //! when g(u)=dF/du=0. The algorithm searchs all the
+  //! zeros inside the definition range of the curve.
+  //! Zeros are searched between uinf and usup.
+  //! Tol  is used to decide to stop the
+  //! iterations according to the following condition:
+  //! if n is the number of iterations,
+  //! the algorithm stops when abs(F(Un)-F(Un-1)) < Tol.
   Standard_EXPORT Extrema_ELPCOfLocateExtPC2d(const gp_Pnt2d& P, const Adaptor2d_Curve2d& C, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real TolF = 1.0e-10);
   
+  //! It calculates all the distances.
+  //! The function F(u)=distance(P,C(u)) has an extremum
+  //! when g(u)=dF/du=0. The algorithm searchs all the
+  //! zeros inside the definition range of the curve.
+  //! Tol is used to decide to stop the
+  //! iterations according to the following condition:
+  //! if n is the number of iterations,
+  //! the algorithm stops when abs(F(Un)-F(Un-1)) < Tol.
   Standard_EXPORT Extrema_ELPCOfLocateExtPC2d(const gp_Pnt2d& P, const Adaptor2d_Curve2d& C, const Standard_Real TolF = 1.0e-10);
   
+  //! initializes the fields of the algorithm.
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real TolF = 1.0e-10);
   
+  //! An exception is raised if the fields have not been
+  //! initialized.
   Standard_EXPORT void Perform (const gp_Pnt2d& P);
   
+  //! True if the distances are found.
   Standard_EXPORT Standard_Boolean IsDone() const;
   
+  //! Returns the value of the <N>th extremum square distance.
   Standard_EXPORT Standard_Real SquareDistance (const Standard_Integer N) const;
   
+  //! Returns the number of extremum distances.
   Standard_EXPORT Standard_Integer NbExt() const;
   
+  //! Returns True if the <N>th extremum distance is a
+  //! minimum.
   Standard_EXPORT Standard_Boolean IsMin (const Standard_Integer N) const;
   
+  //! Returns the point of the <N>th extremum distance.
   Standard_EXPORT const Extrema_POnCurv2d& Point (const Standard_Integer N) const;
   
+  //! if the curve is a trimmed curve,
+  //! dist1 is a square distance between <P> and the point
+  //! of parameter FirstParameter <P1> and
+  //! dist2 is a square distance between <P> and the point
+  //! of parameter LastParameter <P2>.
   Standard_EXPORT void TrimmedSquareDistances (Standard_Real& dist1, Standard_Real& dist2, gp_Pnt2d& P1, gp_Pnt2d& P2) const;
 
 

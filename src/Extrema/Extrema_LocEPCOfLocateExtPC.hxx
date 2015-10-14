@@ -46,20 +46,47 @@ public:
   
   Standard_EXPORT Extrema_LocEPCOfLocateExtPC();
   
+  //! Calculates the distance with a close point.
+  //! The close point is defined by the parameter value
+  //! U0.
+  //! The function F(u)=distance(P,C(u)) has an extremum
+  //! when g(u)=dF/du=0. The algorithm searchs a zero
+  //! near the close point.
+  //! TolU is used to decide to stop the iterations.
+  //! At the nth iteration, the criteria is:
+  //! abs(Un - Un-1) < TolU.
   Standard_EXPORT Extrema_LocEPCOfLocateExtPC(const gp_Pnt& P, const Adaptor3d_Curve& C, const Standard_Real U0, const Standard_Real TolU);
   
+  //! Calculates the distance with a close point.
+  //! The close point is defined by the parameter value
+  //! U0.
+  //! The function F(u)=distance(P,C(u)) has an extremum
+  //! when g(u)=dF/du=0. The algorithm searchs a zero
+  //! near the close point.
+  //! Zeros are searched between Umin et Usup.
+  //! TolU is used to decide to stop the iterations.
+  //! At the nth iteration, the criteria is:
+  //! abs(Un - Un-1) < TolU.
   Standard_EXPORT Extrema_LocEPCOfLocateExtPC(const gp_Pnt& P, const Adaptor3d_Curve& C, const Standard_Real U0, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real TolU);
   
+  //! sets the fields of the algorithm.
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real TolU);
   
+  //! the algorithm is done with the point P.
+  //! An exception is raised if the fields have not
+  //! been initialized.
   Standard_EXPORT void Perform (const gp_Pnt& P, const Standard_Real U0);
   
+  //! Returns True if the distance is found.
   Standard_EXPORT Standard_Boolean IsDone() const;
   
+  //! Returns the value of the extremum square distance.
   Standard_EXPORT Standard_Real SquareDistance() const;
   
+  //! Returns True if the extremum distance is a minimum.
   Standard_EXPORT Standard_Boolean IsMin() const;
   
+  //! Returns the point of the extremum distance.
   Standard_EXPORT const Extrema_POnCurv& Point() const;
 
 

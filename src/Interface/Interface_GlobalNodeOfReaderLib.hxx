@@ -38,14 +38,23 @@ class Interface_GlobalNodeOfReaderLib : public Standard_Transient
 public:
 
   
+  //! Creates an empty GlobalNode, with no Next
   Standard_EXPORT Interface_GlobalNodeOfReaderLib();
   
+  //! Adds a Module bound with a Protocol to the list : does
+  //! nothing if already in the list, THAT IS, Same Type (exact
+  //! match) and Same State (that is, IsEqual is not required)
+  //! Once added, stores its attached Protocol in correspondance
   Standard_EXPORT void Add (const Handle(Interface_ReaderModule)& amodule, const Handle(Interface_Protocol)& aprotocol);
   
+  //! Returns the Module stored in a given GlobalNode
   Standard_EXPORT const Handle(Interface_ReaderModule)& Module() const;
   
+  //! Returns the attached Protocol stored in a given GlobalNode
   Standard_EXPORT const Handle(Interface_Protocol)& Protocol() const;
   
+  //! Returns the Next GlobalNode. If none is defined, returned
+  //! value is a Null Handle
   Standard_EXPORT const Handle(Interface_GlobalNodeOfReaderLib)& Next() const;
 
 

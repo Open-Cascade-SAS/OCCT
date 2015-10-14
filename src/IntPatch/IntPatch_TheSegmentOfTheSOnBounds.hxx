@@ -37,20 +37,32 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty constructor.
   Standard_EXPORT IntPatch_TheSegmentOfTheSOnBounds();
   
+  //! Defines the concerned arc.
     void SetValue (const Handle(Adaptor2d_HCurve2d)& A);
   
+  //! Defines the first point or the last point,
+  //! depending on the value of the boolean First.
   Standard_EXPORT void SetLimitPoint (const IntPatch_ThePathPointOfTheSOnBounds& V, const Standard_Boolean First);
   
+  //! Returns the geometric curve on the surface 's domain
+  //! which is solution.
     const Handle(Adaptor2d_HCurve2d)& Curve() const;
   
+  //! Returns True if there is a vertex (ThePathPoint) defining
+  //! the lowest valid parameter on the arc.
     Standard_Boolean HasFirstPoint() const;
   
+  //! Returns the first point.
     const IntPatch_ThePathPointOfTheSOnBounds& FirstPoint() const;
   
+  //! Returns True if there is a vertex (ThePathPoint) defining
+  //! the greatest valid parameter on the arc.
     Standard_Boolean HasLastPoint() const;
   
+  //! Returns the last point.
     const IntPatch_ThePathPointOfTheSOnBounds& LastPoint() const;
 
 

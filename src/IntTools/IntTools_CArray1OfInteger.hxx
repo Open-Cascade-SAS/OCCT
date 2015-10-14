@@ -36,38 +36,75 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+
+  //! Creates an array  of given Length.
   Standard_EXPORT IntTools_CArray1OfInteger(const Standard_Integer Length = 0);
   
+
+  //! Creates an array sharing datas with an other.
+  //! Example:
+  //! Item tab[100];
+  //! CArray1OfItem thetab (tab[0],100);
+  //!
+  //! CArray1OfItem aArray1(100);
+  //! CArray1OfItem anSharedArray1(aArray1.ChangeValue(0),aArray1.Length());
+  //!
+  //! Warning:
+  //! The validity of length are under the responsability
+  //! of the user.
+  //! The sahred array must have a valid address during the life of
+  //! the Array1.
   Standard_EXPORT IntTools_CArray1OfInteger(const Standard_Integer& Item, const Standard_Integer Length);
   
+
+  //! Initializes the array with a given value.
   Standard_EXPORT void Init (const Standard_Integer& V);
   
+
+  //! destroy current content and realloc the new size
+  //! does nothing if Length() == theLength
   Standard_EXPORT void Resize (const Standard_Integer theNewLength);
   
+
+  //! Frees the  allocated   area  corresponding  to the
+  //! array.
   Standard_EXPORT void Destroy();
 ~IntTools_CArray1OfInteger()
 {
   Destroy();
 }
   
+
+  //! Returns the number of elements of <me>.
     Standard_Integer Length() const;
   
   Standard_EXPORT void Append (const Standard_Integer& Value);
   
+
+  //! Sets  the   <Index>th  element  of   the  array to
+  //! <Value>.
   Standard_EXPORT void SetValue (const Standard_Integer Index, const Standard_Integer& Value);
   
+
+  //! Returns the value of  the  <Index>th element of the
+  //! array.
   Standard_EXPORT const Standard_Integer& Value (const Standard_Integer Index) const;
 const Standard_Integer& operator () (const Standard_Integer Index) const
 {
   return Value(Index);
 }
   
+
+  //! Returns the value  of the <Index>th element  of the
+  //! array.
   Standard_EXPORT Standard_Integer& ChangeValue (const Standard_Integer Index);
 Standard_Integer& operator () (const Standard_Integer Index)
 {
   return ChangeValue(Index);
 }
   
+
+  //! Applys the == operator on each array item
   Standard_EXPORT Standard_Boolean IsEqual (const IntTools_CArray1OfInteger& Other) const;
 Standard_Boolean operator == (const IntTools_CArray1OfInteger& Other) const
 {
@@ -86,6 +123,8 @@ protected:
 private:
 
   
+
+  //! Prohibits the creator by copy
   Standard_EXPORT IntTools_CArray1OfInteger(const IntTools_CArray1OfInteger& AnArray);
 
 

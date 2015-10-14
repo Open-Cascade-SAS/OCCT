@@ -38,8 +38,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Returns the parameter V of the point on the
+  //! parametric curve corresponding to the Point Pnt.
+  //! The Correspondance between Pnt and the point P(V)
+  //! on the parametric curve must be coherent with the
+  //! way of determination of the signed distance
+  //! between a point and the implicit curve.
+  //! Tol is the tolerance on the distance between a point
+  //! and the parametrised curve.
+  //! In that case, no bounds are given. The research of
+  //! the rigth parameter has to be made on the natural
+  //! parametric domain of the curve.
   Standard_EXPORT static Standard_Real FindParameter (const Adaptor2d_Curve2d& C, const gp_Pnt2d& Pnt, const Standard_Real Tol);
   
+  //! Returns the parameter V of the point on the
+  //! parametric curve corresponding to the Point Pnt.
+  //! The Correspondance between Pnt and the point P(V)
+  //! on the parametric curve must be coherent with the
+  //! way of determination of the signed distance
+  //! between a point and the implicit curve.
+  //! Tol is the tolerance on the distance between a point
+  //! and the parametrised curve.
+  //! LowParameter and HighParameter give the
+  //! boundaries of the interval in wich the parameter
+  //! certainly lies. These parameters are given to
+  //! implement a more efficient algoritm. So, it is not
+  //! necessary to check that the returned value verifies
+  //! LowParameter <= Value <= HighParameter.
   Standard_EXPORT static Standard_Real FindParameter (const Adaptor2d_Curve2d& C, const gp_Pnt2d& Pnt, const Standard_Real LowParameter, const Standard_Real HighParameter, const Standard_Real Tol);
 
 

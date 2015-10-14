@@ -42,18 +42,30 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Creates an undefined classifier.
   Standard_EXPORT BRepClass3d_SolidPassiveClassifier();
   
+  //! Starts  a  classification process.   The  point to
+  //! classify is the origin of  the  line <L>.  <P>  is
+  //! the original length of the segment on <L>  used to
+  //! compute  intersections.   <Tol> is the   tolerance
+  //! attached to the intersections.
   Standard_EXPORT void Reset (const gp_Lin& L, const Standard_Real P, const Standard_Real Tol);
   
+  //! Updates  the classification process with  the face
+  //! <F> from the boundary.
   Standard_EXPORT void Compare (const TopoDS_Face& F, const TopAbs_Orientation Or);
   
+  //! Returns the current value of the parameter.
     Standard_Real Parameter() const;
   
+  //! Returns True if an intersection is computed.
   Standard_EXPORT Standard_Boolean HasIntersection() const;
   
+  //! Returns the intersecting algorithm.
     BRepClass3d_Intersector3d& Intersector();
   
+  //! Returns the current state of the point.
     TopAbs_State State() const;
 
 

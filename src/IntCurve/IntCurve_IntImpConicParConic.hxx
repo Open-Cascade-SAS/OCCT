@@ -43,10 +43,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty constructor.
   Standard_EXPORT IntCurve_IntImpConicParConic();
   
+  //! Intersection between an implicit curve and
+  //! a parametrised curve.
+  //! The exception ConstructionError is raised if the domain
+  //! of the parametrised curve does not verify HasFirstPoint
+  //! and HasLastPoint return True.
   Standard_EXPORT IntCurve_IntImpConicParConic(const IntCurve_IConicTool& ITool, const IntRes2d_Domain& Dom1, const IntCurve_PConic& PCurve, const IntRes2d_Domain& Dom2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between an implicit curve and
+  //! a parametrised curve.
+  //! The exception ConstructionError is raised if the domain
+  //! of the parametrised curve does not verify HasFirstPoint
+  //! and HasLastPoint return True.
   Standard_EXPORT void Perform (const IntCurve_IConicTool& ITool, const IntRes2d_Domain& Dom1, const IntCurve_PConic& PCurve, const IntRes2d_Domain& Dom2, const Standard_Real TolConf, const Standard_Real Tol);
   
   Standard_EXPORT Standard_Real FindU (const Standard_Real parameter, gp_Pnt2d& point, const IntCurve_PConic& TheParCurev, const IntCurve_IConicTool& TheImpTool) const;

@@ -39,14 +39,20 @@ class Adaptor3d_HOffsetCurve : public Adaptor2d_HCurve2d
 public:
 
   
+  //! Creates an empty GenHCurve2d.
   Standard_EXPORT Adaptor3d_HOffsetCurve();
   
+  //! Creates a GenHCurve2d from a Curve
   Standard_EXPORT Adaptor3d_HOffsetCurve(const Adaptor3d_OffsetCurve& C);
   
+  //! Sets the field of the GenHCurve2d.
   Standard_EXPORT void Set (const Adaptor3d_OffsetCurve& C);
   
+  //! Returns the curve used to create the GenHCurve2d.
+  //! This is redefined from HCurve2d, cannot be inline.
   Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const;
   
+  //! Returns the curve used to create the GenHCurve.
     Adaptor3d_OffsetCurve& ChangeCurve2d();
 
 

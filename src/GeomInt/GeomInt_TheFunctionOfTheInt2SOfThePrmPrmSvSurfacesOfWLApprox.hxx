@@ -48,6 +48,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Raises Construction Error
   Standard_EXPORT GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox();
   
   Standard_EXPORT GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2);
@@ -64,6 +65,7 @@ public:
   
   Standard_EXPORT void ComputeParameters (const IntImp_ConstIsoparametric ChoixIso, const TColStd_Array1OfReal& Param, math_Vector& UVap, math_Vector& BornInf, math_Vector& BornSup, math_Vector& Tolerance);
   
+  //! returns somme des fi*fi
     Standard_Real Root() const;
   
     gp_Pnt Point() const;

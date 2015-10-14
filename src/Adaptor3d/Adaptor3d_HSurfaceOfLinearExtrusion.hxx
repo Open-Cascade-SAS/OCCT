@@ -39,14 +39,20 @@ class Adaptor3d_HSurfaceOfLinearExtrusion : public Adaptor3d_HSurface
 public:
 
   
+  //! Creates an empty GenHSurface.
   Standard_EXPORT Adaptor3d_HSurfaceOfLinearExtrusion();
   
+  //! Creates a GenHSurface from a Surface.
   Standard_EXPORT Adaptor3d_HSurfaceOfLinearExtrusion(const Adaptor3d_SurfaceOfLinearExtrusion& S);
   
+  //! Sets the field of the GenHSurface.
   Standard_EXPORT void Set (const Adaptor3d_SurfaceOfLinearExtrusion& S);
   
+  //! Returns a reference to the Surface inside the HSurface.
+  //! This is redefined from HSurface, cannot be inline.
   Standard_EXPORT const Adaptor3d_Surface& Surface() const;
   
+  //! Returns the surface used to create the GenHSurface.
     Adaptor3d_SurfaceOfLinearExtrusion& ChangeSurface();
 
 

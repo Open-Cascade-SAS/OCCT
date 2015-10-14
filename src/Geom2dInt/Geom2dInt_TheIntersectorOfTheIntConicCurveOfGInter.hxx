@@ -43,10 +43,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty constructor.
   Standard_EXPORT Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter();
   
+  //! Intersection between an implicit curve and
+  //! a parametrised curve.
+  //! The exception ConstructionError is raised if the domain
+  //! of the parametrised curve does not verify HasFirstPoint
+  //! and HasLastPoint return True.
   Standard_EXPORT Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter(const IntCurve_IConicTool& ITool, const IntRes2d_Domain& Dom1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& Dom2, const Standard_Real TolConf, const Standard_Real Tol);
   
+  //! Intersection between an implicit curve and
+  //! a parametrised curve.
+  //! The exception ConstructionError is raised if the domain
+  //! of the parametrised curve does not verify HasFirstPoint
+  //! and HasLastPoint return True.
   Standard_EXPORT void Perform (const IntCurve_IConicTool& ITool, const IntRes2d_Domain& Dom1, const Adaptor2d_Curve2d& PCurve, const IntRes2d_Domain& Dom2, const Standard_Real TolConf, const Standard_Real Tol);
   
   Standard_EXPORT Standard_Real FindU (const Standard_Real parameter, gp_Pnt2d& point, const Adaptor2d_Curve2d& TheParCurev, const IntCurve_IConicTool& TheImpTool) const;

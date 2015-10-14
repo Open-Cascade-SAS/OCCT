@@ -37,20 +37,32 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty constructor.
   Standard_EXPORT Contap_TheSegmentOfTheSearch();
   
+  //! Defines the concerned arc.
     void SetValue (const Handle(Adaptor2d_HCurve2d)& A);
   
+  //! Defines the first point or the last point,
+  //! depending on the value of the boolean First.
   Standard_EXPORT void SetLimitPoint (const Contap_ThePathPointOfTheSearch& V, const Standard_Boolean First);
   
+  //! Returns the geometric curve on the surface 's domain
+  //! which is solution.
     const Handle(Adaptor2d_HCurve2d)& Curve() const;
   
+  //! Returns True if there is a vertex (ThePathPoint) defining
+  //! the lowest valid parameter on the arc.
     Standard_Boolean HasFirstPoint() const;
   
+  //! Returns the first point.
     const Contap_ThePathPointOfTheSearch& FirstPoint() const;
   
+  //! Returns True if there is a vertex (ThePathPoint) defining
+  //! the greatest valid parameter on the arc.
     Standard_Boolean HasLastPoint() const;
   
+  //! Returns the last point.
     const Contap_ThePathPointOfTheSearch& LastPoint() const;
 
 

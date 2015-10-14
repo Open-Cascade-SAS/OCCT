@@ -56,16 +56,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty Constructor
   Standard_EXPORT IntCurveSurface_HInter();
   
+  //! Compute the Intersection between the curve and the
+  //! surface
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& Curve, const Handle(Adaptor3d_HSurface)& Surface);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The   Curve is already  sampled and
+  //! its polygon : <Polygon> is given.
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& Curve, const IntCurveSurface_ThePolygonOfHInter& Polygon, const Handle(Adaptor3d_HSurface)& Surface);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The   Curve is already  sampled and
+  //! its polygon : <Polygon> is given. The Surface is
+  //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& Curve, const IntCurveSurface_ThePolygonOfHInter& ThePolygon, const Handle(Adaptor3d_HSurface)& Surface, const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The   Curve is already  sampled and
+  //! its polygon : <Polygon> is given. The Surface is
+  //! also sampled and <Polyhedron> is given.
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& Curve, const IntCurveSurface_ThePolygonOfHInter& ThePolygon, const Handle(Adaptor3d_HSurface)& Surface, const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron, Bnd_BoundSortBox& BndBSB);
   
+  //! Compute the Intersection  between the curve  and
+  //! the surface. The Surface is already  sampled and
+  //! its polyhedron : <Polyhedron> is given.
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& Curve, const Handle(Adaptor3d_HSurface)& Surface, const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron);
 
 
@@ -74,6 +91,8 @@ public:
 protected:
 
   
+  //! Compute the Intersection between the curve and the
+  //! surface
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& Curve, const Handle(Adaptor3d_HSurface)& Surface, const Standard_Real U0, const Standard_Real V0, const Standard_Real U1, const Standard_Real V1);
   
   Standard_EXPORT void InternalPerformCurveQuadric (const Handle(Adaptor3d_HCurve)& Curve, const Handle(Adaptor3d_HSurface)& Surface);

@@ -36,14 +36,19 @@ class Dico_StackItemOfDictionaryOfTransient : public MMgt_TShared
 public:
 
   
+  //! Creates a StackItem with no Previous one
   Standard_EXPORT Dico_StackItemOfDictionaryOfTransient();
   
+  //! Creates a StackItem with a Previous one
   Standard_EXPORT Dico_StackItemOfDictionaryOfTransient(const Handle(Dico_StackItemOfDictionaryOfTransient)& previous);
   
+  //! Returns the Previous Item (is Null if no Previous defined)
   Standard_EXPORT Handle(Dico_StackItemOfDictionaryOfTransient) Previous() const;
   
+  //! Returns the Dictionary Cell corresponding to an Item
   Standard_EXPORT Handle(Dico_DictionaryOfTransient) Value() const;
   
+  //! Sets a new Dictionary Cell as Value of an Item
   Standard_EXPORT void SetValue (const Handle(Dico_DictionaryOfTransient)& cval);
 
 

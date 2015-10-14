@@ -60,16 +60,26 @@ public:
   
   Standard_EXPORT void Init (const Standard_Integer Degmin, const Standard_Integer Degmax, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Integer NbIt, const Standard_Boolean KnownParameters = Standard_False);
   
+  //! Define the type of parametrization used in the approximation
   Standard_EXPORT void SetParType (const Approx_ParametrizationType ParType);
   
+  //! Define the Continuity used in the approximation
   Standard_EXPORT void SetContinuity (const GeomAbs_Shape C);
   
+  //! define the Weights  associed to the criterium used in
+  //! the  optimization.
+  //!
+  //! if Wi <= 0
   Standard_EXPORT void SetCriteriumWeight (const Standard_Real W1, const Standard_Real W2, const Standard_Real W3);
   
+  //! returns the type of parametrization used in the approximation
   Standard_EXPORT Approx_ParametrizationType ParType() const;
   
+  //! returns the Continuity used in the approximation
   Standard_EXPORT GeomAbs_Shape Continuity() const;
   
+  //! returns the Weights (as percent) associed  to the criterium used in
+  //! the  optimization.
   Standard_EXPORT void CriteriumWeight (Standard_Real& W1, Standard_Real& W2, Standard_Real& W3) const;
   
   Standard_EXPORT void Perform (const Handle(GeomFill_Line)& Lin, GeomFill_SweepSectionGenerator& SecGen, const Standard_Boolean SpApprox = Standard_False);

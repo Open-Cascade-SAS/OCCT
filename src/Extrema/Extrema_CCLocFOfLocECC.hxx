@@ -62,26 +62,40 @@ public:
   
     virtual Standard_Integer NbEquations() const Standard_OVERRIDE;
   
+  //! Calculate Fi(U,V).
   Standard_EXPORT virtual Standard_Boolean Value (const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
   
+  //! Calculate Fi'(U,V).
   Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& UV, math_Matrix& DF);
   
+  //! Calculate Fi(U,V) and Fi'(U,V).
   Standard_EXPORT Standard_Boolean Values (const math_Vector& UV, math_Vector& F, math_Matrix& DF);
   
+  //! Save the found extremum.
   Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
   
+  //! Return the number of found extrema.
     Standard_Integer NbExt() const;
   
+  //! Return the value of the Nth distance.
     Standard_Real SquareDistance (const Standard_Integer N) const;
   
+  //! Return the points of the Nth extreme distance.
   Standard_EXPORT void Points (const Standard_Integer N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const;
   
+  //! Returns a pointer to the curve specified in the constructor
+  //! or in SetCurve() method.
     Standard_Address CurvePtr (const Standard_Integer theRank) const;
   
+  //! Returns a tolerance specified in the constructor
+  //! or in SetTolerance() method.
     Standard_Real Tolerance() const;
   
+  //! Determines of boundaries of subinterval for find of root.
   Standard_EXPORT void SubIntervalInitialize (const math_Vector& theUfirst, const math_Vector& theUlast);
   
+  //! Computes a Tol value. If 1st derivative of curve
+  //! |D1|<Tol, it is considered D1=0.
   Standard_EXPORT Standard_Real SearchOfTolerance (const Standard_Address C);
 
 

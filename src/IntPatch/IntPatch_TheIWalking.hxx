@@ -59,22 +59,52 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Deflection is the maximum deflection admitted between two
+  //! consecutive points on a resulting polyline.
+  //! Step is the maximum increment admitted between two
+  //! consecutive points (in 2d space).
+  //! Epsilon is the tolerance beyond which 2 points
+  //! are confused.
   Standard_EXPORT IntPatch_TheIWalking(const Standard_Real Epsilon, const Standard_Real Deflection, const Standard_Real Step);
   
+  //! Deflection is the maximum deflection admitted between two
+  //! consecutive points on a resulting polyline.
+  //! Step is the maximum increment admitted between two
+  //! consecutive points (in 2d space).
+  //! Epsilon is the tolerance beyond which 2 points
+  //! are confused
     void SetTolerance (const Standard_Real Epsilon, const Standard_Real Deflection, const Standard_Real Step);
   
+  //! Searches a set of polylines starting on a point of Pnts1
+  //! or Pnts2.
+  //! Each point on a resulting polyline verifies F(u,v)=0
   Standard_EXPORT void Perform (const IntSurf_SequenceOfPathPoint& Pnts1, const IntSurf_SequenceOfInteriorPoint& Pnts2, IntPatch_TheSurfFunction& Func, const Handle(Adaptor3d_HSurface)& S, const Standard_Boolean Reversed = Standard_False);
   
+  //! Searches a set of polylines starting on a point of Pnts1.
+  //! Each point on a resulting polyline verifies F(u,v)=0
   Standard_EXPORT void Perform (const IntSurf_SequenceOfPathPoint& Pnts1, IntPatch_TheSurfFunction& Func, const Handle(Adaptor3d_HSurface)& S, const Standard_Boolean Reversed = Standard_False);
   
+  //! Returns true if the calculus was successful.
     Standard_Boolean IsDone() const;
   
+  //! Returns the number of resulting polylines.
+  //! An exception is raised if IsDone returns False.
     Standard_Integer NbLines() const;
   
+  //! Returns the polyline of range Index.
+  //! An exception is raised if IsDone is False.
+  //! An exception is raised if Index<=0 or Index>NbLines.
     const Handle(IntPatch_TheIWLineOfTheIWalking)& Value (const Standard_Integer Index) const;
   
+  //! Returns the number of points belonging to Pnts on which no
+  //! line starts or ends.
+  //! An exception is raised if IsDone returns False.
     Standard_Integer NbSinglePnts() const;
   
+  //! Returns the point of range Index .
+  //! An exception is raised if IsDone returns False.
+  //! An exception is raised if Index<=0 or
+  //! Index > NbSinglePnts.
     const IntSurf_PathPoint& SinglePnt (const Standard_Integer Index) const;
 
 
@@ -105,6 +135,7 @@ protected:
   
   Standard_EXPORT void MakeWalkingPoint (const Standard_Integer Case, const Standard_Real U, const Standard_Real V, IntPatch_TheSurfFunction& Section, IntSurf_PntOn2S& Psol);
   
+  //! Clears up internal containers
   Standard_EXPORT void Clear();
 
 

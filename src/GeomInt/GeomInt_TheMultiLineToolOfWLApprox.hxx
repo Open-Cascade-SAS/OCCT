@@ -41,36 +41,60 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Returns the number of multipoints of the TheMultiLine.
     static Standard_Integer FirstPoint (const GeomInt_TheMultiLineOfWLApprox& ML);
   
+  //! Returns the number of multipoints of the TheMultiLine.
     static Standard_Integer LastPoint (const GeomInt_TheMultiLineOfWLApprox& ML);
   
+  //! Returns the number of 2d points of a TheMultiLine.
     static Standard_Integer NbP2d (const GeomInt_TheMultiLineOfWLApprox& ML);
   
+  //! Returns the number of 3d points of a TheMultiLine.
     static Standard_Integer NbP3d (const GeomInt_TheMultiLineOfWLApprox& ML);
   
+  //! returns the 3d points of the multipoint <MPointIndex>
+  //! when only 3d points exist.
     static void Value (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfPnt& tabPt);
   
+  //! returns the 2d points of the multipoint <MPointIndex>
+  //! when only 2d points exist.
     static void Value (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfPnt2d& tabPt2d);
   
+  //! returns the 3d and 2d points of the multipoint
+  //! <MPointIndex>.
     static void Value (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfPnt& tabPt, TColgp_Array1OfPnt2d& tabPt2d);
   
+  //! returns the 3d points of the multipoint <MPointIndex>
+  //! when only 3d points exist.
     static Standard_Boolean Tangency (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfVec& tabV);
   
+  //! returns the 2d tangency points of the multipoint
+  //! <MPointIndex> only when 2d points exist.
     static Standard_Boolean Tangency (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfVec2d& tabV2d);
   
+  //! returns the 3d and 2d points of the multipoint
+  //! <MPointIndex>.
     static Standard_Boolean Tangency (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfVec& tabV, TColgp_Array1OfVec2d& tabV2d);
   
+  //! returns the 3d curvature of the multipoint <MPointIndex>
+  //! when only 3d points exist.
     static Standard_Boolean Curvature (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfVec& tabV);
   
+  //! returns the 2d curvature points of the multipoint
+  //! <MPointIndex> only when 2d points exist.
     static Standard_Boolean Curvature (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfVec2d& tabV2d);
   
+  //! returns the 3d and 2d curvature of the multipoint
+  //! <MPointIndex>.
     static Standard_Boolean Curvature (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer MPointIndex, TColgp_Array1OfVec& tabV, TColgp_Array1OfVec2d& tabV2d);
   
+  //! Is called if WhatStatus returned "PointsAdded".
     static GeomInt_TheMultiLineOfWLApprox MakeMLBetween (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer I1, const Standard_Integer I2, const Standard_Integer NbPMin);
   
     static Approx_Status WhatStatus (const GeomInt_TheMultiLineOfWLApprox& ML, const Standard_Integer I1, const Standard_Integer I2);
   
+  //! Dump of the current multi-line.
   Standard_EXPORT static void Dump (const GeomInt_TheMultiLineOfWLApprox& ML);
 
 

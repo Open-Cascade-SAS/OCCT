@@ -39,14 +39,20 @@ class ProjLib_HProjectedCurve : public Adaptor2d_HCurve2d
 public:
 
   
+  //! Creates an empty GenHCurve2d.
   Standard_EXPORT ProjLib_HProjectedCurve();
   
+  //! Creates a GenHCurve2d from a Curve
   Standard_EXPORT ProjLib_HProjectedCurve(const ProjLib_ProjectedCurve& C);
   
+  //! Sets the field of the GenHCurve2d.
   Standard_EXPORT void Set (const ProjLib_ProjectedCurve& C);
   
+  //! Returns the curve used to create the GenHCurve2d.
+  //! This is redefined from HCurve2d, cannot be inline.
   Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const;
   
+  //! Returns the curve used to create the GenHCurve.
     ProjLib_ProjectedCurve& ChangeCurve2d();
 
 

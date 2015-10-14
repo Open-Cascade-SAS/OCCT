@@ -39,14 +39,20 @@ class BRepAdaptor_HCurve2d : public Adaptor2d_HCurve2d
 public:
 
   
+  //! Creates an empty GenHCurve2d.
   Standard_EXPORT BRepAdaptor_HCurve2d();
   
+  //! Creates a GenHCurve2d from a Curve
   Standard_EXPORT BRepAdaptor_HCurve2d(const BRepAdaptor_Curve2d& C);
   
+  //! Sets the field of the GenHCurve2d.
   Standard_EXPORT void Set (const BRepAdaptor_Curve2d& C);
   
+  //! Returns the curve used to create the GenHCurve2d.
+  //! This is redefined from HCurve2d, cannot be inline.
   Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const;
   
+  //! Returns the curve used to create the GenHCurve.
     BRepAdaptor_Curve2d& ChangeCurve2d();
 
 

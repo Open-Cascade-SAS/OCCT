@@ -40,26 +40,43 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! The MultiLine <Line> will be approximated until tolerances
+  //! will be reached.
+  //! The approximation will be done from degreemin to degreemax
+  //! with a cutting if the corresponding boolean is True.
   Standard_EXPORT BRepFill_ComputeCLine(const BRepFill_MultiLine& Line, const Standard_Integer degreemin = 3, const Standard_Integer degreemax = 8, const Standard_Real Tolerance3d = 1.0e-5, const Standard_Real Tolerance2d = 1.0e-5, const Standard_Boolean cutting = Standard_False, const AppParCurves_Constraint FirstC = AppParCurves_TangencyPoint, const AppParCurves_Constraint LastC = AppParCurves_TangencyPoint);
   
+  //! Initializes the fields of the algorithm.
   Standard_EXPORT BRepFill_ComputeCLine(const Standard_Integer degreemin = 3, const Standard_Integer degreemax = 8, const Standard_Real Tolerance3d = 1.0e-05, const Standard_Real Tolerance2d = 1.0e-05, const Standard_Boolean cutting = Standard_False, const AppParCurves_Constraint FirstC = AppParCurves_TangencyPoint, const AppParCurves_Constraint LastC = AppParCurves_TangencyPoint);
   
+  //! runs the algorithm after having initialized the fields.
   Standard_EXPORT void Perform (const BRepFill_MultiLine& Line);
   
+  //! changes the degrees of the approximation.
   Standard_EXPORT void SetDegrees (const Standard_Integer degreemin, const Standard_Integer degreemax);
   
+  //! Changes the tolerances of the approximation.
   Standard_EXPORT void SetTolerances (const Standard_Real Tolerance3d, const Standard_Real Tolerance2d);
   
+  //! Changes the constraints of the approximation.
   Standard_EXPORT void SetConstraints (const AppParCurves_Constraint FirstC, const AppParCurves_Constraint LastC);
   
+  //! returns False if at a moment of the approximation,
+  //! the status NoApproximation has been sent by the user
+  //! when more points were needed.
   Standard_EXPORT Standard_Boolean IsAllApproximated() const;
   
+  //! returns False if the status NoPointsAdded has been sent.
   Standard_EXPORT Standard_Boolean IsToleranceReached() const;
   
+  //! returns the tolerances 2d and 3d of the <Index> MultiCurve.
   Standard_EXPORT void Error (const Standard_Integer Index, Standard_Real& tol3d, Standard_Real& tol2d) const;
   
+  //! Returns the number of MultiCurve doing the approximation
+  //! of the MultiLine.
   Standard_EXPORT Standard_Integer NbMultiCurves() const;
   
+  //! returns the approximation MultiCurve of range <Index>.
   Standard_EXPORT AppParCurves_MultiCurve Value (const Standard_Integer Index = 1) const;
   
   Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& firstp, Standard_Real& lastp) const;
@@ -76,6 +93,7 @@ protected:
 private:
 
   
+  //! is internally used by the algorithms.
   Standard_EXPORT Standard_Boolean Compute (const BRepFill_MultiLine& Line, const Standard_Real Ufirst, const Standard_Real Ulast, Standard_Real& TheTol3d, Standard_Real& TheTol2d);
 
 
