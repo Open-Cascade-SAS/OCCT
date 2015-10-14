@@ -567,8 +567,8 @@ The following types of construction are available:
   
 @subsubsection occt_modalg_2_5_4 Filling a contour
 
-It is often convenient to create a surface from two or more curves which will form the boundaries that define the new surface.
-This is done by the class *GeomFill_ConstrainedFilling*, which allows filling a contour defined by two, three or four curves as well  as by tangency constraints. The resulting surface is a BSpline. 
+It is often convenient to create a surface from some curves, which will form the boundaries that define the new surface.
+This is done by the class *GeomFill_ConstrainedFilling*, which allows filling a contour defined by three or four curves as well as by tangency constraints. The resulting surface is a BSpline. 
 
 A case in point is the intersection of two fillets at a corner. If the radius of the fillet on one edge is different from that of the fillet on another, it becomes impossible to sew together all the edges of the resulting surfaces. This leaves a gap in the overall surface of the object which you are constructing.
 
