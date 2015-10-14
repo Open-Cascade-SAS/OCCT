@@ -1480,7 +1480,7 @@ void AIS_InteractiveContext::SetDeviationCoefficient (const Standard_Real theCoe
 //=======================================================================
 void AIS_InteractiveContext::SetDeviationAngle (const Standard_Real theAngle)
 {
-  myDefaultDrawer->SetDeviationCoefficient (theAngle);
+  myDefaultDrawer->SetDeviationAngle (theAngle);
 }
 
 //=======================================================================
