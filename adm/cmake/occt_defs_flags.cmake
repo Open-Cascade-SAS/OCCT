@@ -11,7 +11,6 @@ if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
   endif()
 endif()
 
-add_definitions (-DCSFDB)
 if (WIN32)
   add_definitions (-wd4996)
 elseif (APPLE)

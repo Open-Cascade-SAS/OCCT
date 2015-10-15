@@ -2005,7 +2005,6 @@ proc osutils:cbpx { theOutDir theToolKit } {
     lappend anIncPaths "../../../inc"
 
     # extra macros
-    lappend aTKDefines "CSFDB"
     if { "$aWokStation" == "wnt" } {
       lappend aTKDefines "_CRT_SECURE_NO_DEPRECATE"
     } else {
@@ -2277,7 +2276,6 @@ proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theInc
   }
 
   # extra macros
-  lappend aTKDefines "CSFDB"
   if { "$aWokStation" == "wnt" } {
     lappend aTKDefines "_CRT_SECURE_NO_DEPRECATE"
   } else {
@@ -2543,7 +2541,7 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap theIsStatic thePlatform {t
   set anExecExtension "\t\t\t\tEXECUTABLE_EXTENSION = dylib;"
   set anExecPrefix "\t\t\t\tEXECUTABLE_PREFIX = lib;"
   set aWrapperExtension "\t\t\t\tWRAPPER_EXTENSION = dylib;"
-  set aTKDefines [list "CSFDB" "OCC_CONVERT_SIGNALS"]
+  set aTKDefines [list "OCC_CONVERT_SIGNALS"]
 
   if { "$theTargetType" == "executable" } {
     set aPBXBuildPhase "CopyFiles"

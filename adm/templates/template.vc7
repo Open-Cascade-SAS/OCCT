@@ -22,7 +22,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="NDEBUG;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="NDEBUG;No_Exception;$(CSF_DEFINES)__TKDEFS__"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\inc;$(CSF_OPT_INC)"
-				PreprocessorDefinitions="NDEBUG;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="NDEBUG;No_Exception;$(CSF_DEFINES)__TKDEFS__"
 				Culture="1036"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
@@ -89,7 +89,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="_DEBUG;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="_DEBUG;$(CSF_DEFINES)__TKDEFS__"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\..\..\..\win32\vc7\objd\__TKNAM__\__TKNAM__.pch"
@@ -131,7 +131,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\inc;$(CSF_OPT_INC)"
-				PreprocessorDefinitions="_DEBUG;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="_DEBUG;$(CSF_DEFINES)__TKDEFS__"
 				Culture="1036"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
