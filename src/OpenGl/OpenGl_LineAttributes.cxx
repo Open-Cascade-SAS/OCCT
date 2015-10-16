@@ -553,6 +553,11 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
 void OpenGl_LineAttributes::SetTypeOfHatch (const int theType) const
 {
 #if !defined(GL_ES_VERSION_2_0)
+  if (myPatternBase == 0)
+  {
+    return;
+  }
+
   if (theType != 0)
   {
     glCallList ((GLuint )myPatternBase + (GLuint )theType);

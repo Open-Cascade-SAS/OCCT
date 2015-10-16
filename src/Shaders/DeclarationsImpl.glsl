@@ -50,3 +50,9 @@ vec4  occBackMaterial_Specular(void)      { return occBackMaterial[2]; }
 vec4  occBackMaterial_Emission(void)      { return occBackMaterial[3]; }
 float occBackMaterial_Shininess(void)     { return occBackMaterial[4].x; }
 float occBackMaterial_Transparency(void)  { return occBackMaterial[4].y; }
+
+// 2D texture coordinates transformation
+vec2  occTextureTrsf_Translation(void) { return occTexTrsf2d[0].xy; }
+vec2  occTextureTrsf_Scale(void)       { return occTexTrsf2d[0].zw; }
+float occTextureTrsf_RotationSin(void) { return occTexTrsf2d[1].x; }
+float occTextureTrsf_RotationCos(void) { return occTexTrsf2d[1].y; }

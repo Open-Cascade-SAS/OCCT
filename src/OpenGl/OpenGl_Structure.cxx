@@ -637,7 +637,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (!aUserPlanes.IsNull() && !aUserPlanes->IsEmpty())
   {
     // add planes at loaded view matrix state
-    aCtx->ChangeClipping().AddWorld (*aUserPlanes, theWorkspace);
+    aCtx->ChangeClipping().AddWorld (aCtx, *aUserPlanes);
 
     // Set OCCT state uniform variables
     if (!aCtx->ShaderManager()->IsEmpty())
@@ -668,7 +668,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Revert structure clippings
   if (!aUserPlanes.IsNull() && !aUserPlanes->IsEmpty())
   {
-    aCtx->ChangeClipping().Remove (*aUserPlanes);
+    aCtx->ChangeClipping().Remove (aCtx, *aUserPlanes);
 
     // Set OCCT state uniform variables
     if (!aCtx->ShaderManager()->IsEmpty())

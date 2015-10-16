@@ -926,7 +926,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // before drawing auxiliary stuff (trihedrons, overlayer)
   myWorkspace->ResetAppliedAspect();
 
-  aContext->ChangeClipping().RemoveAll();
+  aContext->ChangeClipping().RemoveAll (aContext);
 
   if (!aManager->IsEmpty())
   {
@@ -1192,7 +1192,7 @@ void OpenGl_View::renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
       }
 
       // add planes at loaded view matrix state
-      aContext->ChangeClipping().AddView (aSlicingPlanes, myWorkspace);
+      aContext->ChangeClipping().AddView (aContext, aSlicingPlanes);
     }
   }
 
@@ -1223,7 +1223,7 @@ void OpenGl_View::renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
 
     if (!aUserPlanes.IsEmpty())
     {
-      aContext->ChangeClipping().AddWorld (aUserPlanes);
+      aContext->ChangeClipping().AddWorldLazy (aContext, aUserPlanes);
     }
 
     if (!aContext->ShaderManager()->IsEmpty())

@@ -554,6 +554,9 @@ public: //! @name methods to alter or retrieve current state
   //! Setup point size.
   Standard_EXPORT void SetPointSize (const Standard_ShortReal theSize);
 
+  //! Setup texture matrix to active GLSL program or to FFP global state using glMatrixMode (GL_TEXTURE).
+  Standard_EXPORT void SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams);
+
   //! Bind default Vertex Array Object
   Standard_EXPORT void BindDefaultVao();
 

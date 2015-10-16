@@ -94,7 +94,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
     {
       const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
       const Standard_Boolean isOn = (aPlane == aRenderPlane);
-      aContext->ChangeClipping().SetEnabled (aPlane, isOn);
+      aContext->ChangeClipping().SetEnabled (aContext, aPlane, isOn);
     }
 
     glClear (GL_STENCIL_BUFFER_BIT);
@@ -127,7 +127,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
     {
       const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
       const Standard_Boolean isOn = (aPlane != aRenderPlane);
-      aContext->ChangeClipping().SetEnabled (aPlane, isOn);
+      aContext->ChangeClipping().SetEnabled (aContext, aPlane, isOn);
     }
 
     // render capping plane using the generated stencil mask
@@ -149,7 +149,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
   // enable clipping
   for (aCappingIt.Init (aContextPlanes); aCappingIt.More(); aCappingIt.Next())
   {
-    aContext->ChangeClipping().SetEnabled (aCappingIt.Value(), Standard_True);
+    aContext->ChangeClipping().SetEnabled (aContext, aCappingIt.Value(), Standard_True);
   }
 
   // restore rendering aspects

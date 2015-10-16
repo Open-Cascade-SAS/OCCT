@@ -107,6 +107,7 @@ uniform               vec4      occColor;              //!< color value (in case
 uniform THE_PREC_ENUM int       occDistinguishingMode; //!< Are front and back faces distinguished?
 uniform THE_PREC_ENUM int       occTextureEnable;      //!< Is texture enabled?
 uniform               sampler2D occActiveSampler;      //!< Current active sampler
+uniform               vec4      occTexTrsf2d[2];       //!< 2D texture transformation parameters
 uniform               float     occPointSize;          //!< point size
 
 // clipping planes state

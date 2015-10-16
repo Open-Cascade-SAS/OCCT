@@ -68,6 +68,7 @@ enum OpenGl_StateVariable
   OpenGl_OCCT_BACK_MATERIAL,
   OpenGl_OCCT_COLOR,
 
+  OpenGl_OCCT_TEXTURE_TRSF2D,
   OpenGl_OCCT_POINT_SIZE,
 
   // DON'T MODIFY THIS ITEM (insert new items before it)

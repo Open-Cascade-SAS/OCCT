@@ -36,11 +36,20 @@ namespace
 
 #define EOL "\n"
 
-//! Definition of VertColor varying.
+//! Definition of TexCoord varying.
 const char THE_VARY_TexCoord_OUT[] =
-  EOL"THE_SHADER_OUT vec2 TexCoord;";
+  EOL"THE_SHADER_OUT vec4 TexCoord;";
 const char THE_VARY_TexCoord_IN[] =
-  EOL"THE_SHADER_IN  vec2 TexCoord;";
+  EOL"THE_SHADER_IN  vec4 TexCoord;";
+//! Compute TexCoord value in Vertex Shader
+const char THE_VARY_TexCoord_Trsf[] =
+  EOL"  float aRotSin = occTextureTrsf_RotationSin();"
+  EOL"  float aRotCos = occTextureTrsf_RotationCos();"
+  EOL"  vec2  aTex2   = (occTexCoord.xy + occTextureTrsf_Translation()) * occTextureTrsf_Scale();"
+  EOL"  vec2  aCopy   = aTex2;"
+  EOL"  aTex2.x = aCopy.x * aRotCos - aCopy.y * aRotSin;"
+  EOL"  aTex2.y = aCopy.x * aRotSin + aCopy.y * aRotCos;"
+  EOL"  TexCoord = vec4(aTex2, occTexCoord.zw);";
 
 //! Auxiliary function to transform normal
 const char THE_FUNC_transformNormal[] =
@@ -1026,8 +1035,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   TCollection_AsciiString aSrcVert = TCollection_AsciiString()
-     + THE_VARY_TexCoord_OUT
-     + EOL"void main()"
+     + EOL"THE_SHADER_OUT vec2 TexCoord;"
+       EOL"void main()"
        EOL"{"
        EOL"  TexCoord = occTexCoord.st;"
        EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
@@ -1043,7 +1052,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
 #endif
 
   TCollection_AsciiString aSrcFrag = TCollection_AsciiString() +
-     + THE_VARY_TexCoord_IN
+     + EOL"THE_SHADER_IN vec2 TexCoord;"
      + aSrcGetAlpha
      + EOL"void main()"
        EOL"{"
@@ -1193,11 +1202,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     {
       aSrcVertExtraOut  += THE_VARY_TexCoord_OUT;
       aSrcFragExtraOut  += THE_VARY_TexCoord_IN;
-      aSrcVertExtraMain +=
-        EOL"  TexCoord = occTexCoord.st;";
+      aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
       aSrcFragGetColor =
-        EOL"vec4 getColor(void) { return occTexture2D(occActiveSampler, TexCoord.st); }";
+        EOL"vec4 getColor(void) { return occTexture2D(occActiveSampler, TexCoord.st / TexCoord.w); }";
     }
     else if ((theBits & OpenGl_PO_TextureEnv) != 0)
     {
@@ -1440,14 +1448,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     {
       aSrcVertExtraOut  += THE_VARY_TexCoord_OUT;
       aSrcFragExtraOut  += THE_VARY_TexCoord_IN;
-      aSrcVertExtraMain +=
-        EOL"  TexCoord = occTexCoord.st;";
+      aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
       aSrcFragGetColor =
         EOL"vec4 getColor(void)"
         EOL"{"
         EOL"  vec4 aColor = gl_FrontFacing ? FrontColor : BackColor;"
-        EOL"  return occTexture2D(occActiveSampler, TexCoord.st) * aColor;"
+        EOL"  return occTexture2D(occActiveSampler, TexCoord.st / TexCoord.w) * aColor;"
         EOL"}";
     }
   }
@@ -1560,14 +1567,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     {
       aSrcVertExtraOut  += THE_VARY_TexCoord_OUT;
       aSrcFragExtraOut  += THE_VARY_TexCoord_IN;
-      aSrcVertExtraMain +=
-        EOL"  TexCoord = occTexCoord.st;";
+      aSrcVertExtraMain += THE_VARY_TexCoord_Trsf;
 
       aSrcFragGetColor =
         EOL"vec4 getColor(void)"
         EOL"{"
         EOL"  vec4 aColor = " thePhongCompLight ";"
-        EOL"  return occTexture2D(occActiveSampler, TexCoord.st) * aColor;"
+        EOL"  return occTexture2D(occActiveSampler, TexCoord.st / TexCoord.w) * aColor;"
         EOL"}";
     }
   }

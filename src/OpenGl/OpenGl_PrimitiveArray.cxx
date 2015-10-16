@@ -784,13 +784,20 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
         }
         default:
         {
+          const Handle(OpenGl_Texture)& aTexture = theWorkspace->ActiveTexture();
           const Standard_Boolean isLightOnFace = isLightOn
-                                              && (theWorkspace->ActiveTexture().IsNull()
-                                               || theWorkspace->ActiveTexture()->GetParams()->IsModulate());
-          aCtx->ShaderManager()->BindProgram (anAspectFace, theWorkspace->ActiveTexture(), isLightOnFace, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
+                                              && (aTexture.IsNull()
+                                               || aTexture->GetParams()->IsModulate());
+          aCtx->ShaderManager()->BindProgram (anAspectFace, aTexture, isLightOnFace, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
           break;
         }
       }
+    }
+
+    if (!theWorkspace->ActiveTexture().IsNull()
+     && myDrawMode != GL_POINTS) // transformation is not supported within point sprites
+    {
+      aCtx->SetTextureMatrix (theWorkspace->ActiveTexture()->GetParams());
     }
 
     aCtx->SetColor4fv (*(const OpenGl_Vec4* )(myDrawMode <= GL_LINE_STRIP ? aLineColor->rgb : anInteriorColor->rgb));

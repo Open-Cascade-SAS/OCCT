@@ -29,6 +29,7 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 
 #include <Message_Messenger.hxx>
 
@@ -2580,6 +2581,53 @@ void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
   if (IsFeedback())
   {
     gl2psLineWidth (theWidth);
+  }
+#endif
+}
+
+// =======================================================================
+// function : SetTextureMatrix
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams)
+{
+  if (theParams.IsNull())
+  {
+    return;
+  }
+  else if (!myActiveProgram.IsNull())
+  {
+    const GLint aUniLoc = myActiveProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_TRSF2D);
+    if (aUniLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
+    {
+      return;
+    }
+
+    // pack transformation parameters
+    OpenGl_Vec4 aTrsf[2];
+    aTrsf[0].xy() = theParams->Translation();
+    aTrsf[0].zw() = theParams->Scale();
+    aTrsf[1].x()  = std::sin (-theParams->Rotation() * static_cast<float> (M_PI / 180.0));
+    aTrsf[1].y()  = std::cos (-theParams->Rotation() * static_cast<float> (M_PI / 180.0));
+    myActiveProgram->SetUniform (this, aUniLoc, 2, aTrsf);
+    return;
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (core11 != NULL)
+  {
+    GLint aMatrixMode = GL_TEXTURE;
+    ::glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
+
+    core11->glMatrixMode (GL_TEXTURE);
+    OpenGl_Mat4 aTextureMat;
+    const Graphic3d_Vec2& aScale = theParams->Scale();
+    const Graphic3d_Vec2& aTrans = theParams->Translation();
+    Graphic3d_TransformUtils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
+    Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
+    Graphic3d_TransformUtils::Rotate    (aTextureMat, -theParams->Rotation(), 0.0f, 0.0f, 1.0f);
+    core11->glLoadMatrixf (aTextureMat);
+    core11->glMatrixMode (aMatrixMode);
   }
 #endif
 }

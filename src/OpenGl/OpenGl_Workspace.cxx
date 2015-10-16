@@ -346,21 +346,8 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  GLint aMatrixMode = GL_TEXTURE;
   if (myGlContext->core11 != NULL)
   {
-    glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
-
-    // setup texture matrix
-    glMatrixMode (GL_TEXTURE);
-    OpenGl_Mat4 aTextureMat;
-    const Graphic3d_Vec2& aScale = aParams->Scale();
-    const Graphic3d_Vec2& aTrans = aParams->Translation();
-    Graphic3d_TransformUtils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
-    Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
-    Graphic3d_TransformUtils::Rotate    (aTextureMat, -aParams->Rotation(), 0.0f, 0.0f, 1.0f);
-    glLoadMatrixf (aTextureMat);
-
     GLint anEnvMode = GL_MODULATE; // lighting mode
     if (!aParams->IsModulate())
     {
@@ -573,12 +560,6 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
     default: break;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
-  if (myGlContext->core11 != NULL)
-  {
-    glMatrixMode (aMatrixMode); // turn back active matrix
-  }
-#endif
   theTexture->SetParams (aParams);
 }
 
