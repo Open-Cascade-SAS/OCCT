@@ -167,7 +167,7 @@ OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
             aZ == 0 ? aBox.CornerMin().z() : aBox.CornerMax().z(),
             1.f);
 
-          aTransformedBox.Add (reinterpret_cast<BVH_Vec3f&> (aCorner));
+          aTransformedBox.Add (aCorner.xyz());
         }
       }
     }
