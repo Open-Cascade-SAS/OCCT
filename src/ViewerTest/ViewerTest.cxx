@@ -4317,20 +4317,23 @@ static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDe
 }
 
 //! Print information about locally selected sub-shapes
-static void localCtxInfo (Draw_Interpretor& theDI)
+template <typename T>
+static void printLocalSelectionInfo (const T& theContext, Draw_Interpretor& theDI)
 {
-  Handle(AIS_InteractiveContext) aCtx = TheAISContext();
-  if (!aCtx->HasOpenedContext())
-  {
-    return;
-  }
-
+  const Standard_Boolean isGlobalCtx = !(Handle(AIS_InteractiveContext)::DownCast (theContext).IsNull());
   TCollection_AsciiString aPrevName;
-  Handle(AIS_LocalContext) aCtxLoc = aCtx->LocalContext();
-  for (aCtxLoc->InitSelected(); aCtxLoc->MoreSelected(); aCtxLoc->NextSelected())
+  for (theContext->InitSelected(); theContext->MoreSelected(); theContext->NextSelected())
   {
-    const TopoDS_Shape      aSubShape = aCtxLoc->SelectedShape();
-    const Handle(AIS_Shape) aShapeIO  = Handle(AIS_Shape)::DownCast (aCtxLoc->SelectedInteractive());
+    const Handle(AIS_Shape) aShapeIO = Handle(AIS_Shape)::DownCast (theContext->SelectedInteractive());
+    const Handle(SelectMgr_EntityOwner) anOwner = theContext->SelectedOwner();
+    if (aShapeIO.IsNull() || anOwner.IsNull())
+      continue;
+    if (isGlobalCtx)
+    {
+      if (anOwner == aShapeIO->GlobalSelOwner())
+        continue;
+    }
+    const TopoDS_Shape      aSubShape = theContext->SelectedShape();
     if (aSubShape.IsNull()
       || aShapeIO.IsNull()
       || !GetMapOfAIS().IsBound1 (aShapeIO))
@@ -4527,18 +4530,27 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     return 0;
   }
 
-  if (aCtx->NbSelected() > 0
-   && !toShowAll)
+  if (!aCtx->HasOpenedContext() && aCtx->NbSelected() > 0 && !toShowAll)
   {
+    NCollection_DataMap<Handle(SelectMgr_EntityOwner), TopoDS_Shape> anOwnerShapeMap;
     for (aCtx->InitSelected(); aCtx->MoreSelected(); aCtx->NextSelected())
     {
-      Handle(AIS_InteractiveObject) anObj = aCtx->SelectedInteractive();
-      TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
-      aName.LeftJustify (20, ' ');
-      theDI << aName << " ";
-      objInfo (aDetected, anObj, theDI);
-      theDI << "\n";
+      const Handle(SelectMgr_EntityOwner) anOwner = aCtx->SelectedOwner();
+      const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+      // handle whole object selection
+      if (anOwner == anObj->GlobalSelOwner())
+      {
+        TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
+        aName.LeftJustify (20, ' ');
+        theDI << aName << " ";
+        objInfo (aDetected, anObj, theDI);
+        theDI << "\n";
+      }
     }
+
+    // process selected sub-shapes
+    printLocalSelectionInfo (aCtx, theDI);
+
     return 0;
   }
 
@@ -4558,7 +4570,9 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     objInfo (aDetected, anObj, theDI);
     theDI << "\n";
   }
-  localCtxInfo (theDI);
+  printLocalSelectionInfo (aCtx, theDI);
+  if (aCtx->HasOpenedContext())
+    printLocalSelectionInfo (aCtx->LocalContext(), theDI);
   return 0;
 }
 
