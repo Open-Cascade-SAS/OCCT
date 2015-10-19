@@ -17,8 +17,8 @@ class View: public QWidget
     Q_OBJECT
 protected:
     enum CurrentAction3d { CurAction3d_Nothing, CurAction3d_DynamicZooming,
-			               CurAction3d_WindowZooming, CurAction3d_DynamicPanning,
-			               CurAction3d_GlobalPanning, CurAction3d_DynamicRotation };
+                           CurAction3d_WindowZooming, CurAction3d_DynamicPanning,
+                           CurAction3d_GlobalPanning, CurAction3d_DynamicRotation };
 
 public:
     enum ViewAction { ViewFitAllId, ViewFitAreaId, ViewZoomId, ViewPanId, ViewGlobalPanId,
@@ -54,14 +54,14 @@ public:
     static QString                GetShapeType( TopAbs_ShapeEnum aShapeType );
 
     Standard_EXPORT static void   OnButtonuseraction( int ExerciceSTEP,
-						                              Handle(AIS_InteractiveContext)& );
+                                                      Handle(AIS_InteractiveContext)& );
     Standard_EXPORT static void   DoSelection( int Id,
                                                Handle(AIS_InteractiveContext)& );
     Standard_EXPORT static void   OnSetSelectionMode( Handle(AIS_InteractiveContext)&,
                                                       Standard_Integer&,
-						                              TopAbs_ShapeEnum& SelectionMode,
-						                              Standard_Boolean& );
-	virtual QPaintEngine*          paintEngine() const;
+                                                      TopAbs_ShapeEnum& SelectionMode,
+                                                      Standard_Boolean& );
+    virtual QPaintEngine*         paintEngine() const;
 signals:
     void                          selectionChanged();
 
@@ -129,8 +129,7 @@ private:
     bool                            myIsReflectionsEnabled;
     bool                            myIsAntialiasingEnabled;
 
-    bool                            myFirst;
-    bool		                        myDrawRect;           // set when a rect is used for selection or magnify 
+    bool                            myDrawRect;           // set when a rect is used for selection or magnify 
     Handle(V3d_View)                myView;
     Handle(AIS_InteractiveContext)  myContext;
     CurrentAction3d                 myCurrentMode;

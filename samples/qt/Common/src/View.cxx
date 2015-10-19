@@ -20,21 +20,8 @@
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TextureEnv.hxx>
-  
-#if defined(_WIN32) || defined(__WIN32__)
-#include <WNT_Window.hxx>
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-#include <Cocoa_Window.hxx>
-#else
-#include <QX11Info>
-#include <GL/glx.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
-#include <Xw_Window.hxx>
-#include <QColormap>
-#endif
 
+#include <OcctWindow.h>
 #include <Aspect_DisplayConnection.hxx>
 
 // the key for multi selection :
@@ -63,12 +50,6 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
   myRaytraceActions( 0 ),
   myBackMenu( NULL )
 {
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  //XSynchronize( x11Display(),true ); // it is possible to use QApplication::syncX();
-  XSynchronize( x11Info().display(),true ); // it is possible to use QApplication::syncX();
-#endif
-
-  myFirst = true;
   myContext = theContext;
 
   myXmin = 0;
@@ -80,77 +61,6 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
 
   setAttribute(Qt::WA_PaintOnScreen);
   setAttribute(Qt::WA_NoSystemBackground);
-
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-    XVisualInfo* pVisualInfo;
-    if ( x11Info().display() )
-    {
-        /* Initialization with the default VisualID */
-        Visual *v = DefaultVisual( x11Info().display(), DefaultScreen( x11Info().display() ) );
-        int visualID = XVisualIDFromVisual( v );
-
-        /*  Here we use the settings from Optimizer_ViewInfo::TxglCreateWindow() */
-        int visualAttr[] = { GLX_RGBA, GLX_DEPTH_SIZE, 1, GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1,
-                             GLX_BLUE_SIZE, 1, GLX_DOUBLEBUFFER, None };
-        pVisualInfo = ::glXChooseVisual( x11Info().display(), DefaultScreen( x11Info().display() ), visualAttr );
-
-        if ( isVisible() )
-            hide();
-
-        XSetWindowAttributes a;
-
-        Window p = RootWindow( x11Info().display(), DefaultScreen( x11Info().display() ) );
-        a.colormap = XCreateColormap( x11Info().display(), RootWindow( x11Info().display(), pVisualInfo->screen ),
-                                      pVisualInfo->visual, AllocNone );
-
-        QColor color = palette().color( backgroundRole() );
-        QColormap colmap = QColormap::instance();
-        a.background_pixel = colmap.pixel( color );
-        a.border_pixel = colmap.pixel( Qt::black );
-        if ( parentWidget() )
-            p = parentWidget()->winId();
-
-        Window w = XCreateWindow( x11Info().display(), p,  x(), y(), width(), height(),
-                                  0, pVisualInfo->depth, InputOutput,  pVisualInfo->visual,
-                                  CWBackPixel | CWBorderPixel | CWColormap, &a );
-        Window *cmw;
-        Window *cmwret;
-        int count;
-        if ( XGetWMColormapWindows( x11Info().display(), topLevelWidget()->winId(), &cmwret, &count ) )
-        {
-            cmw = new Window[count+1];
-            memcpy( (char *)cmw, (char *)cmwret, sizeof(Window)*count );
-            XFree( (char *)cmwret );
-            int i;
-            for ( i = 0; i < count; i++ )
-            {
-              if ( cmw[i] == winId() )  /* replace old window */
-              {
-                  cmw[i] = w;
-                  break;
-              }
-            }
-            if ( i >= count )       /* append new window */
-              cmw[count++] = w;
-        }
-        else
-        {
-            count = 1;
-            cmw = new Window[count];
-            cmw[0] = w;
-        }
-        /* Creating new window (with good VisualID) for this widget */
-        create(w);
-        XSetWMColormapWindows( x11Info().display(), topLevelWidget()->winId(), cmw, count );
-        delete [] cmw;
-
-        if ( isVisible() )
-            show();
-        if ( pVisualInfo )
-            XFree( (char *)pVisualInfo );
-        XFlush( x11Info().display() );
-    }
-#endif
 
   myCurrentMode = CurAction3d_Nothing;
   myHlrModeIsOn = Standard_False;
@@ -164,7 +74,7 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
   setFocusPolicy( Qt::StrongFocus );
   setAttribute( Qt::WA_PaintOnScreen );
   setAttribute( Qt::WA_NoSystemBackground );
-
+  init();
 }
 
 View::~View()
@@ -176,19 +86,8 @@ void View::init()
 {
   if ( myView.IsNull() )
     myView = myContext->CurrentViewer()->CreateView();
-  
-#if defined(_WIN32) || defined(__WIN32__)
-  Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
-  Handle(WNT_Window) hWnd = new WNT_Window (aWindowHandle);
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  NSView* aViewHandle = (NSView* )winId();
-  Handle(Cocoa_Window) hWnd = new Cocoa_Window (aViewHandle);
-#else
-  Window aWindowHandle = (Window )winId();
-  Handle(Aspect_DisplayConnection) aDispConnection = myContext->CurrentViewer()->Driver()->GetDisplayConnection();
-  Handle(Xw_Window) hWnd = new Xw_Window (aDispConnection, aWindowHandle);
-#endif // _WIN32
 
+  Handle(OcctWindow) hWnd = new OcctWindow ( this );
   myView->SetWindow (hWnd);
   if ( !hWnd->IsMapped() )
   {
@@ -204,11 +103,6 @@ void View::init()
 void View::paintEvent( QPaintEvent *  )
 {
 //  QApplication::syncX();
-  if( myFirst )
-  {
-    init();
-    myFirst = false;
-  }
   myView->Redraw();
 }
 
