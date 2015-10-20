@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC26470"
+puts "========"
+puts ""
+##################################################
+# BRepFill_Evolved: exception and invalid result
+##################################################
+
+restore [locate_data_file OCC26470-ClosedWire.brep] a
+restore [locate_data_file OCC26470-wprof2.brep] b
+evolved res a b o
+checkshape res

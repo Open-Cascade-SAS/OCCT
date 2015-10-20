@@ -96,6 +96,14 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   MP.SetPoint2d(2, PF1);
   MP.SetPoint2d(3, PF2);
   MLS.SetValue (1, MP);
+
+#ifdef DUMP_ML
+  i = 1;
+  cout << "--Point " << i << endl;
+  cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << endl;
+  cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << endl;
+#endif
+
   
   Standard_Real DCorde = Length / ( NbPoints - 1); 
   Standard_Real Corde  = DCorde;
@@ -107,6 +115,11 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
     U = LP(Index-1).Y() + Alpha * ( LP(Index).Y() - LP(Index-1).Y());
     AppDef_MultiPointConstraint MPC( 1, 2);
     ML.Value3dOnF1OnF2(U,P3d,PF1,PF2);
+#ifdef DUMP_ML
+    cout << "--Point " << i << endl;
+    cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << endl;
+    cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << endl;
+#endif
     MPC.SetPoint  (1, P3d);
     MPC.SetPoint2d(2, PF1);
     MPC.SetPoint2d(3, PF2);
@@ -115,11 +128,17 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   }
   AppDef_MultiPointConstraint MPE( 1, 2);
   ML.Value3dOnF1OnF2(U2,P3d,PF1,PF2);
+#ifdef DUMP_ML
+  i = NbPoints;
+  cout << "--Point " << i << endl;
+  cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << endl;
+  cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << endl;
+#endif
   MPE.SetPoint  (1, P3d);
   MPE.SetPoint2d(2, PF1);
   MPE.SetPoint2d(3, PF2);
   MLS.SetValue (NbPoints, MPE);
-  
+
   AppDef_Compute Fit(MLS);
 
   Standard_Integer NbCurves = Fit.NbMultiCurves();
