@@ -45,9 +45,9 @@ public:
   
   Standard_EXPORT Plate_LinearXYZConstraint();
   
-  Standard_EXPORT Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& PPC, const TColStd_Array1OfReal& coeff);
+  Standard_EXPORT Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC, const TColStd_Array1OfReal& theCoeff);
   
-  Standard_EXPORT Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& PPC, const TColStd_Array2OfReal& coeff);
+  Standard_EXPORT Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC, const TColStd_Array2OfReal& theCoeff);
   
   Standard_EXPORT Plate_LinearXYZConstraint(const Standard_Integer ColLen, const Standard_Integer RowLen);
   

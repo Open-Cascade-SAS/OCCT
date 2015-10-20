@@ -681,10 +681,8 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	Arrive = Standard_True;
       }
       break;
-#ifndef OCCT_DEBUG
     default:
       break;
-#endif
     }
     if (Arrive) {
       if (sens > 0.) {

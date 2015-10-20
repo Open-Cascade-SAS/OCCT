@@ -72,7 +72,6 @@ TopOpeBRep_ShapeIntersector2d.hxx
 TopOpeBRep_ShapeScanner.cxx
 TopOpeBRep_ShapeScanner.hxx
 TopOpeBRep_sort.cxx
-TopOpeBRep_tools.hxx
 TopOpeBRep_trace.cxx
 TopOpeBRep_traceALWL.cxx
 TopOpeBRep_traceBOOPNINT.cxx

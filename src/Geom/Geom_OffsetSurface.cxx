@@ -1633,7 +1633,7 @@ void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V,
           D1U.SquareMagnitude() + D1V.SquareMagnitude() > MagTol * MagTol)
       {
         // Use non-null derivative as normal direction in degenerated case.
-        gp_Vec aNorm = D1U.SquareMagnitude() > MagTol * MagTol ? D1U : D1V;
+        aNorm = D1U.SquareMagnitude() > MagTol * MagTol ? D1U : D1V;
         aNorm.Normalize();
 
         P.SetXYZ(P.XYZ() + offsetValue * signe * aNorm.XYZ());

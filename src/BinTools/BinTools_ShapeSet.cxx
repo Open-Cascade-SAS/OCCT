@@ -795,15 +795,13 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	BinTools::GetReal(IS, X);
 	BinTools::GetReal(IS, Y);
 	BinTools::GetReal(IS, Z);
-	myBuilder.MakeVertex(V,gp_Pnt(X,Y,Z),tol);
+	gp_Pnt aPnt (X, Y, Z);
+	myBuilder.MakeVertex (V, aPnt, tol);
 	Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(V.TShape());
 
 	BRep_ListOfPointRepresentation& lpr = TV->ChangePoints();
 	TopLoc_Location L;
 	Standard_Boolean aNewF = (myFormatNb > 2) ? Standard_True : Standard_False;
-#ifdef OCCT_DEBUG
-	gp_Pnt aPnt = gp_Pnt(X,Y,Z);
-#endif
 	do {
 	  if(aNewF) {
 	    val = (Standard_Integer)IS.get();//case {0|1|2|3}

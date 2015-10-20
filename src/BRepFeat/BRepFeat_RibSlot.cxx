@@ -1073,9 +1073,8 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
       Handle(Geom_TrimmedCurve) curve;
       curve = new Geom_TrimmedCurve(Cur, f, l, Standard_True);
 #ifdef OCCT_DEBUG
-      gp_Pnt P1 = 
+      gp_Pnt P1 = BRep_Tool::Pnt(TopExp::FirstVertex(E,Standard_True)); (void)P1;
 #endif
-        BRep_Tool::Pnt(TopExp::FirstVertex(E,Standard_True));
       gp_Pnt P2 = BRep_Tool::Pnt(TopExp::LastVertex(E,Standard_True));
       ex1.Init(mySbase, TopAbs_FACE);
       TopoDS_Vertex theVertex;

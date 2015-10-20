@@ -791,30 +791,6 @@ static Standard_Integer shapeclassifier(Draw_Interpretor& di, Standard_Integer n
   return 0;
 }
 
-
-// normals ..
-static Standard_Integer normal(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n < 3) return 1;
-  TopoDS_Shape aLocalShape = DBRep::Get(a[1]);
-  TopoDS_Face f = TopoDS::Face(aLocalShape);
-//  TopoDS_Face f = TopoDS::Face(DBRep::Get(a[1]));
-  if (f.IsNull()) {di<<"null shape"<<"\n";return 1;}
-  gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
-
-  Standard_Real dist=0.; gp_Pnt2d uv; Standard_Boolean ok = FUN_tool_projPonF(p,f,uv,dist);
-  if (!ok) {di<<"projection failed"<<"\n"; return 1;}
-#ifdef OCCT_DEBUG
-  gp_Vec ngf =
-#endif
-               FUN_tool_nggeomF(uv,f);
-  TCollection_AsciiString aa("ngS"); 
-#ifdef DRAW
-  FUN_tool_draw(aa,p,ngf,length);
-#endif
-  return 0;
-}  
-
 static Standard_Integer curvature(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 5) return 1;
@@ -893,7 +869,5 @@ void TestTopOpe::CORCommands(Draw_Interpretor& theCommands)
   theCommands.Add("projponf",   
                   "projponf f pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]",
                                                             __FILE__, projponf, g);
-  theCommands.Add("normal",     "normal f p3d length",      __FILE__, normal, g);
-  theCommands.Add("curvature",  "curvature f x y z",        __FILE__, curvature , g);
-  
+  theCommands.Add("curvature",  "curvature f x y z",        __FILE__, curvature , g);  
 }

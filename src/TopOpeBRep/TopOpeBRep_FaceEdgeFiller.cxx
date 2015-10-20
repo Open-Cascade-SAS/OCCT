@@ -73,7 +73,6 @@ void TopOpeBRep_FaceEdgeFiller::Insert
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
 
   TopAbs_Orientation FFori = FF.Orientation();
-  TopAbs_Orientation EEori = EE.Orientation();
 
   // --- Add <FF,EE> in BDS
   Standard_Integer FFindex = BDS.AddShape(FF,1);
@@ -91,9 +90,9 @@ void TopOpeBRep_FaceEdgeFiller::Insert
     Standard_Real parE = FEINT.Parameter();
 
 #ifdef OCCT_DEBUG
-    TopOpeBRepDS_Transition TFF =
+    TopAbs_Orientation EEori = EE.Orientation();
+    TopOpeBRepDS_Transition TFF = FEINT.Transition(1,EEori); (void)TFF;
 #endif
-                                  FEINT.Transition(1,EEori); //  EEori bidon = EXTERNAL
     TopOpeBRepDS_Transition TEE = FEINT.Transition(2,FFori);
     TEE.Index(FFindex);
     

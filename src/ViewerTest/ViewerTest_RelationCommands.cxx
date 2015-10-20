@@ -1694,7 +1694,7 @@ static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const c
       gp_Pnt A=BRep_Tool::Pnt(aVertex1);
 
 #ifdef OCCT_DEBUG
-      gp_Pnt C = BRep_Tool::Pnt(aVertex2);
+      gp_Pnt C = BRep_Tool::Pnt(aVertex2); (void)C;
 #endif
 
       gp_Pnt aProjB = aDeltaVertexFace.Point(1);

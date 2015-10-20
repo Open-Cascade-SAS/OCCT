@@ -393,7 +393,7 @@ Standard_Boolean Draft_Modification::InternalAdd(const TopoDS_Face& F,
                 TopTools_MapIteratorOfMapOfShape itm(MapOfE);
                 for ( ; itm.More(); itm.Next())
                 {
-                  Standard_Integer IndToReplace = myEMap.FindIndex(TopoDS::Edge(itm.Key()));
+                  IndToReplace = myEMap.FindIndex(TopoDS::Edge(itm.Key()));
                   if ( IndToReplace )
                   {
                     Standard_Integer LInd = myEMap.Extent();

@@ -334,13 +334,13 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
   // Change guiedline on Bis2.
   BisTemp      = Bis2->ChangeGuide();
   Guide        = Bis2->Curve(2);
-#ifdef OCCT_DEBUG
+
+  // note: returned points are not used in the code, but can be useful for consulting in debugger
   gp_Pnt2d P2S = Bis2->ValueAndDist(D2.FirstParameter(),U1,UMax,Dist);
   gp_Pnt2d P2E = Bis2->ValueAndDist(D2.LastParameter() ,U1,UMin,Dist);
-#else
-  Bis2->ValueAndDist(D2.FirstParameter(),U1,UMax,Dist);
-  Bis2->ValueAndDist(D2.LastParameter() ,U1,UMin,Dist);
-#endif
+  (void)P2S;
+  (void)P2E;
+
   // Calculate the domain of intersection on the guideline.
   UMin = Max (D1.FirstParameter(),UMin);
   UMax = Min (D1.LastParameter() ,UMax);

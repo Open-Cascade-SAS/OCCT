@@ -4595,9 +4595,7 @@ Standard_Boolean  ViewerTest::PickObjects(Handle(TColStd_HArray1OfTransient)& ar
   }
 
   // step 2 : wait for the selection...
-//  Standard_Boolean IsGood (Standard_False);
-//  Standard_Integer NbPick(0);
-  Standard_Boolean NbPickGood (0),NbToReach(arr->Length());
+  Standard_Integer NbPickGood (0),NbToReach(arr->Length());
   Standard_Integer NbPickFail(0);
   Standard_Integer argccc = 5;
   const char *bufff[] = { "A", "B", "C","D", "E" };
@@ -4607,7 +4605,7 @@ Standard_Boolean  ViewerTest::PickObjects(Handle(TColStd_HArray1OfTransient)& ar
   while(NbPickGood<NbToReach && NbPickFail <= MaxPick){
     while(ViewerMainLoop(argccc,argvvv)){}
     Standard_Integer NbStored = TheAISContext()->NbSelected();
-    if((unsigned int ) NbStored != NbPickGood)
+    if(NbStored != NbPickGood)
       NbPickGood= NbStored;
     else
       NbPickFail++;
@@ -4616,7 +4614,8 @@ Standard_Boolean  ViewerTest::PickObjects(Handle(TColStd_HArray1OfTransient)& ar
 
   // step3 get result.
 
-  if((unsigned int ) NbPickFail >= NbToReach) return Standard_False;
+  if (NbPickFail >= NbToReach)
+    return Standard_False;
 
   Standard_Integer i(0);
   for(TheAISContext()->InitSelected();
@@ -4769,8 +4768,7 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum TheType,
   }
 
   // step 2 : wait for the selection...
-
-  Standard_Boolean NbPickGood (0),NbToReach(thearr->Length());
+  Standard_Integer NbPickGood (0),NbToReach(thearr->Length());
   Standard_Integer NbPickFail(0);
   Standard_Integer argccc = 5;
   const char *bufff[] = { "A", "B", "C","D", "E" };
@@ -4780,7 +4778,7 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum TheType,
   while(NbPickGood<NbToReach && NbPickFail <= MaxPick){
     while(ViewerMainLoop(argccc,argvvv)){}
     Standard_Integer NbStored = TheAISContext()->NbSelected();
-    if((unsigned int ) NbStored != NbPickGood)
+    if (NbStored != NbPickGood)
       NbPickGood= NbStored;
     else
       NbPickFail++;
@@ -4789,7 +4787,8 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum TheType,
 
   // step3 get result.
 
-  if((unsigned int ) NbPickFail >= NbToReach) return Standard_False;
+  if (NbPickFail >= NbToReach)
+    return Standard_False;
 
   Standard_Integer i(0);
   for(TheAISContext()->InitSelected();TheAISContext()->MoreSelected();TheAISContext()->NextSelected()){

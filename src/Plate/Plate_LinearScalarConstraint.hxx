@@ -44,11 +44,11 @@ public:
   
   Standard_EXPORT Plate_LinearScalarConstraint();
   
-  Standard_EXPORT Plate_LinearScalarConstraint(const Plate_PinpointConstraint& PPC1, const gp_XYZ& coeff);
+  Standard_EXPORT Plate_LinearScalarConstraint(const Plate_PinpointConstraint& thePPC1, const gp_XYZ& theCoeff);
   
-  Standard_EXPORT Plate_LinearScalarConstraint(const Plate_Array1OfPinpointConstraint& PPC, const TColgp_Array1OfXYZ& coeff);
+  Standard_EXPORT Plate_LinearScalarConstraint(const Plate_Array1OfPinpointConstraint& thePPC, const TColgp_Array1OfXYZ& theCoeff);
   
-  Standard_EXPORT Plate_LinearScalarConstraint(const Plate_Array1OfPinpointConstraint& PPC, const TColgp_Array2OfXYZ& coeff);
+  Standard_EXPORT Plate_LinearScalarConstraint(const Plate_Array1OfPinpointConstraint& thePPC, const TColgp_Array2OfXYZ& theCoeff);
   
   Standard_EXPORT Plate_LinearScalarConstraint(const Standard_Integer ColLen, const Standard_Integer RowLen);
   

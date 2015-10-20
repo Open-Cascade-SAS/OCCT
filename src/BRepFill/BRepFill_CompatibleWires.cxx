@@ -462,17 +462,20 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
   if (DSS.IsDone()) {
     // choose the solution closest to P2
     Standard_Integer isol = 1;
-    Standard_Real dss = P2.Distance(DSS.PointOnShape2(isol));
+    gp_Pnt Psol = DSS.PointOnShape2(isol);
+    Standard_Real dss = P2.Distance(Psol);
     for (Standard_Integer iss=2; iss<=DSS.NbSolution(); iss++) {
-      if (dss>P2.Distance(DSS.PointOnShape2(iss))) {
-	dss = P2.Distance(DSS.PointOnShape2(iss));
-	isol = iss;
+      gp_Pnt Pss = DSS.PointOnShape2(iss);
+      Standard_Real aDist = P2.Distance(Pss);
+      if (dss > aDist) {
+        dss = aDist;
+        isol = iss;
+#ifdef OCCT_DEBUG
+        Psol = Pss;
+#endif
       }
     }
-#ifdef OCCT_DEBUG
-    gp_Pnt Psol = 
-#endif
-      DSS.PointOnShape2(isol);
+
     // is the solution a new vertex ?
     NewVertex = (DSS.SupportTypeShape2(isol) != BRepExtrema_IsVertex);
     if (NewVertex) {
