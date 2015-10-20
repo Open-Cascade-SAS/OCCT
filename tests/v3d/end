@@ -1,5 +1,32 @@
 catch { vfit }
-if { ![info exists subgroup] || $subgroup != "mesh" } {
+if { [info exists subgroup] && $subgroup == "raytrace" } {
+
+  # dump final image for raytraced visualization tests
+  if { ![info exists to_dump_screen] || $to_dump_screen == 1 } {
+    catch { set render_parameters [vrenderparams] }
+    catch { set stereo_parameters [vstereo] }
+
+    # for global illumination mode accumulate frames before dumping
+    regexp {renderMode *: *([A-Za-z]+)} $render_parameters full renderMode
+    regexp {GI *: *([A-Za-z]+)}         $render_parameters full gi_enabled
+    if { [string equal -nocase "raytrace" $renderMode] && [string equal -nocase "on" $gi_enabled] } {
+      vfps 200
+    }
+
+    set dump_options {}
+    regexp {Stereo *([A-Za-z]+)} $stereo_parameters full stereo_enabled
+    regexp {Mode *([A-Za-z]+)}   $stereo_parameters full stereo_mode
+    if { [string equal -nocase "on" $stereo_enabled] } {
+      set dump_options {-stereo blend}
+    }
+
+    if { [ catch { vdump $imagedir/${test_image}.png {*}$dump_options } catch_result ] } {
+      puts $catch_result
+    }
+  }
+} elseif { ![info exists subgroup] || $subgroup != "mesh" } {
+
+  # dump final image for common visualization tests
   if { ![info exists to_dump_screen] && [ catch { vdump $imagedir/${test_image}.png } catch_result ] } {
     puts $catch_result
   }

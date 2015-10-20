@@ -460,6 +460,12 @@ void OpenGl_View::Redraw()
   }
 #endif
 
+  if (myRenderParams.Method == Graphic3d_RM_RAYTRACING
+   && myRenderParams.IsGlobalIlluminationEnabled)
+  {
+    myAccumFrames++;
+  }
+
   // bind default FBO
   bindDefaultFbo();
 
@@ -779,6 +785,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   {
     aContext->ProjectionState.SetCurrent (myCamera->ProjectionMatrixF());
     aContext->WorldViewState .SetCurrent (myCamera->OrientationMatrixF());
+    myAccumFrames = 0;
   }
 
   // Apply new matrix state if camera has changed or this view differs from the one
@@ -915,7 +922,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
     aContext->ProjectionState.SetCurrent (myCamera->ProjectionStereoRightF());
     aContext->ApplyProjectionMatrix();
   }
-  renderScene (theOutputFBO, theToDrawImmediate);
+  renderScene (theProjection, theOutputFBO, theToDrawImmediate);
 
   // ===============================
   //      Step 4: Trihedron
@@ -980,8 +987,9 @@ void OpenGl_View::InvalidateBVHData (const Graphic3d_ZLayerId theLayerId)
 //function : renderStructs
 //purpose  :
 //=======================================================================
-void OpenGl_View::renderStructs (OpenGl_FrameBuffer*    theReadDrawFbo,
-                                 const Standard_Boolean theToDrawImmediate)
+void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
+                                 OpenGl_FrameBuffer*          theReadDrawFbo,
+                                 const Standard_Boolean       theToDrawImmediate)
 {
   if ( myZLayers.NbStructures() <= 0 )
     return;
@@ -1095,7 +1103,7 @@ void OpenGl_View::renderStructs (OpenGl_FrameBuffer*    theReadDrawFbo,
       }
 
       // Ray-tracing polygonal primitive arrays
-      raytrace (aSizeX, aSizeY, theReadDrawFbo, aCtx);
+      raytrace (aSizeX, aSizeY, theProjection, theReadDrawFbo, aCtx);
 
       // Render upper (top and topmost) OpenGL layers
       myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Upper);
@@ -1143,8 +1151,9 @@ void OpenGl_View::Invalidate()
 //function : renderScene
 //purpose  :
 //=======================================================================
-void OpenGl_View::renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
-                               const Standard_Boolean theToDrawImmediate)
+void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
+                               OpenGl_FrameBuffer*          theReadDrawFbo,
+                               const Standard_Boolean       theToDrawImmediate)
 {
   const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
 
@@ -1278,7 +1287,7 @@ void OpenGl_View::renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
       myWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
       myWorkspace->DisableTexture();
       // Render the view
-      renderStructs (theReadDrawFbo, theToDrawImmediate);
+      renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
       break;
 
     case Graphic3d_TOD_ENVIRONMENT:
@@ -1288,7 +1297,7 @@ void OpenGl_View::renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
         myWorkspace->EnableTexture (myTextureEnv);
       }
       // Render the view
-      renderStructs (theReadDrawFbo, theToDrawImmediate);
+      renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
       myWorkspace->DisableTexture();
       break;
 
@@ -1296,7 +1305,7 @@ void OpenGl_View::renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
       // First pass
       myWorkspace->NamedStatus &= ~OPENGL_NS_FORBIDSETTEX;
       // Render the view
-      renderStructs (theReadDrawFbo, theToDrawImmediate);
+      renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
       myWorkspace->DisableTexture();
 
       // Second pass
@@ -1332,7 +1341,7 @@ void OpenGl_View::renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
         myWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
 
         // Render the view
-        renderStructs (theReadDrawFbo, theToDrawImmediate);
+        renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
         myWorkspace->DisableTexture();
 
         // Restore properties back

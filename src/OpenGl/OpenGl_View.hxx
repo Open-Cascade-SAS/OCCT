@@ -505,18 +505,22 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
                                        const Standard_Boolean       theToDrawImmediate);
 
   //! Renders the graphical scene.
+  //! @param theProjection [in] the projection that is used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
-  Standard_EXPORT virtual void renderScene (OpenGl_FrameBuffer*    theReadDrawFbo,
+  Standard_EXPORT virtual void renderScene (Graphic3d_Camera::Projection theProjection,
+                                            OpenGl_FrameBuffer*    theReadDrawFbo,
                                             const Standard_Boolean theToDrawImmediate);
 
   //! Draw background (gradient / image)
   Standard_EXPORT virtual void drawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
 
   //! Render set of structures presented in the view.
+  //! @param theProjection [in] the projection that is used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
   //! @param theToDrawImmediate [in] the flag indicates whether the rendering performs in immediate mode.
-  Standard_EXPORT virtual void renderStructs (OpenGl_FrameBuffer*    theReadDrawFbo,
+  Standard_EXPORT virtual void renderStructs (Graphic3d_Camera::Projection theProjection,
+                                              OpenGl_FrameBuffer*    theReadDrawFbo,
                                               const Standard_Boolean theToDrawImmediate);
 
   //! Renders trihedron.
@@ -927,8 +931,8 @@ protected: //! @name methods related to ray-tracing
   //! Releases OpenGL/GLSL shader programs.
   void releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext);
 
-  //! Resizes OpenGL frame buffers.
-  Standard_Boolean resizeRaytraceBuffers (const Standard_Integer        theSizeX,
+  //! Updates auxiliary OpenGL frame buffers.
+  Standard_Boolean updateRaytraceBuffers (const Standard_Integer        theSizeX,
                                           const Standard_Integer        theSizeY,
                                           const Handle(OpenGl_Context)& theGlContext);
 
@@ -958,12 +962,14 @@ protected: //! @name methods related to ray-tracing
                                        const OpenGl_Vec3*            theOrigins,
                                        const OpenGl_Vec3*            theDirects,
                                        const OpenGl_Mat4&            theUnviewMat,
+                                       Graphic3d_Camera::Projection  theProjection,
                                        OpenGl_FrameBuffer*           theReadDrawFbo,
                                        const Handle(OpenGl_Context)& theGlContext);
 
   //! Redraws the window using OpenGL/GLSL ray-tracing.
   Standard_Boolean raytrace (const Standard_Integer        theSizeX,
                              const Standard_Integer        theSizeY,
+                             Graphic3d_Camera::Projection  theProjection,
                              OpenGl_FrameBuffer*           theReadDrawFbo,
                              const Handle(OpenGl_Context)& theGlContext);
 
@@ -1030,9 +1036,9 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_TextureBufferArb) myRaytraceLightSrcTexture;
 
   //! 1st framebuffer (FBO) to perform adaptive FSAA.
-  Handle(OpenGl_FrameBuffer) myRaytraceFBO1;
+  Handle(OpenGl_FrameBuffer) myRaytraceFBO1[2];
   //! 2nd framebuffer (FBO) to perform adaptive FSAA.
-  Handle(OpenGl_FrameBuffer) myRaytraceFBO2;
+  Handle(OpenGl_FrameBuffer) myRaytraceFBO2[2];
   //! Framebuffer (FBO) for preliminary OpenGL output.
   Handle(OpenGl_FrameBuffer) myOpenGlFBO;
 

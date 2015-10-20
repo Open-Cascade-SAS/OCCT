@@ -322,6 +322,9 @@ void OpenGl_FrameBuffer::Release (OpenGl_Context* theGlCtx)
 
   myColorTexture->Release (theGlCtx);
   myDepthStencilTexture->Release (theGlCtx);
+
+  myVPSizeX = 0;
+  myVPSizeY = 0;
 }
 
 // =======================================================================

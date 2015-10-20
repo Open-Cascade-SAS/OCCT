@@ -3189,10 +3189,10 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
   // 4) Determine new zooming in view space.
 
   // 1. Determine normalized projection asymmetry (if any).
-  Standard_Real anAssymX = Tan ( aCamSide.Angle (aFrustumPlane (1).Axis().Direction()))
-                         - Tan (-aCamSide.Angle (aFrustumPlane (2).Axis().Direction()));
-  Standard_Real anAssymY = Tan ( aCamUp.Angle   (aFrustumPlane (3).Axis().Direction()))
-                         - Tan (-aCamUp.Angle   (aFrustumPlane (4).Axis().Direction()));
+  Standard_Real anAssymX = Tan (( aCamSide).Angle (aFrustumPlane (1).Axis().Direction()))
+                         - Tan ((-aCamSide).Angle (aFrustumPlane (2).Axis().Direction()));
+  Standard_Real anAssymY = Tan (( aCamUp)  .Angle (aFrustumPlane (3).Axis().Direction()))
+                         - Tan ((-aCamUp)  .Angle (aFrustumPlane (4).Axis().Direction()));
 
   // 2. Determine how far should be the frustum planes placed from center
   //    of bounding box, in order to match the bounding box closely.
@@ -3232,12 +3232,12 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
   //                            \//
   //                            //
   //                      (frustum plane)
-  aFitDistance.ChangeValue (1) *= Sqrt(1 + Pow (Tan ( aCamSide.Angle (aFrustumPlane (1).Axis().Direction())), 2.0));
-  aFitDistance.ChangeValue (2) *= Sqrt(1 + Pow (Tan (-aCamSide.Angle (aFrustumPlane (2).Axis().Direction())), 2.0));
-  aFitDistance.ChangeValue (3) *= Sqrt(1 + Pow (Tan ( aCamUp.Angle   (aFrustumPlane (3).Axis().Direction())), 2.0));
-  aFitDistance.ChangeValue (4) *= Sqrt(1 + Pow (Tan (-aCamUp.Angle   (aFrustumPlane (4).Axis().Direction())), 2.0));
-  aFitDistance.ChangeValue (5) *= Sqrt(1 + Pow (Tan ( aCamDir.Angle  (aFrustumPlane (5).Axis().Direction())), 2.0));
-  aFitDistance.ChangeValue (6) *= Sqrt(1 + Pow (Tan (-aCamDir.Angle  (aFrustumPlane (6).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (1) *= Sqrt(1 + Pow (Tan (  aCamSide .Angle (aFrustumPlane (1).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (2) *= Sqrt(1 + Pow (Tan ((-aCamSide).Angle (aFrustumPlane (2).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (3) *= Sqrt(1 + Pow (Tan (  aCamUp   .Angle (aFrustumPlane (3).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (4) *= Sqrt(1 + Pow (Tan ((-aCamUp)  .Angle (aFrustumPlane (4).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (5) *= Sqrt(1 + Pow (Tan (  aCamDir  .Angle (aFrustumPlane (5).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (6) *= Sqrt(1 + Pow (Tan ((-aCamDir) .Angle (aFrustumPlane (6).Axis().Direction())), 2.0));
 
   Standard_Real aViewSizeXv = aFitDistance (1) + aFitDistance (2);
   Standard_Real aViewSizeYv = aFitDistance (3) + aFitDistance (4);

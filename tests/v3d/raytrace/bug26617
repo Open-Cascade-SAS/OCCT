@@ -1,0 +1,38 @@
+puts "============"
+puts "CR26617"
+puts "============"
+puts ""
+
+##########################################################################################
+# Visualization, Ray Tracing - adopt progressive rendering Path Tracing for rendering stereoscopic pair
+##########################################################################################
+
+# custom shapes
+set aShape1 [locate_data_file occ/Top.brep]
+set aShape2 [locate_data_file occ/Bottom.brep]
+
+# setup 3D viewer content
+vinit name=View1 w=512 h=512
+vglinfo
+
+vvbo 0
+vsetdispmode 1
+vsetgradientbg 180 200 255 180 180 180 2
+restore $aShape1 s1
+restore $aShape2 s2
+vdisplay s1 s2
+vsetmaterial s1 Silver
+vsetmaterial s2 Pewter
+vsetlocation s1 0.0 0.1 0.0
+vlight change 0 pos -1 1 1
+
+# activate ray-tracing
+vrenderparams -raytrace
+vtextureenv on 5
+vrenderparams -reflections -gi
+
+# activate stereo
+vstereo on
+vstereo -mode anaglyph
+vcamera -iod 0.1
+vfit

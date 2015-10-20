@@ -7407,6 +7407,33 @@ static int VStereo (Draw_Interpretor& theDI,
 
     Standard_Boolean isActive = ViewerTest_myDefaultCaps.contextStereo;
     theDI << "Stereo " << (isActive ? "ON" : "OFF") << "\n";
+    if (isActive)
+    {
+      TCollection_AsciiString aMode;
+      switch (aView->RenderingParams().StereoMode)
+      {
+        case Graphic3d_StereoMode_QuadBuffer       : aMode = "quadBuffer";       break;
+        case Graphic3d_StereoMode_RowInterlaced    : aMode = "rowInterlaced";    break;
+        case Graphic3d_StereoMode_ColumnInterlaced : aMode = "columnInterlaced"; break;
+        case Graphic3d_StereoMode_ChessBoard       : aMode = "chessBoard";       break;
+        case Graphic3d_StereoMode_SideBySide       : aMode = "sideBySide";       break;
+        case Graphic3d_StereoMode_OverUnder        : aMode = "overUnder";        break;
+        case Graphic3d_StereoMode_SoftPageFlip     : aMode = "softpageflip";     break;
+        case Graphic3d_StereoMode_Anaglyph  :
+          aMode = "anaglyph";
+          switch (aView->RenderingParams().AnaglyphFilter)
+          {
+            case Graphic3d_RenderingParams::Anaglyph_RedCyan_Simple      : aMode.AssignCat (" (redCyanSimple)");      break;
+            case Graphic3d_RenderingParams::Anaglyph_RedCyan_Optimized   : aMode.AssignCat (" (redCyan)");            break;
+            case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Simple   : aMode.AssignCat (" (yellowBlueSimple)");   break;
+            case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Optimized: aMode.AssignCat (" (yellowBlue)");         break;
+            case Graphic3d_RenderingParams::Anaglyph_GreenMagenta_Simple : aMode.AssignCat (" (greenMagentaSimple)"); break;
+            default: break;
+          }
+        default: break;
+      }
+      theDI << "Mode " << aMode << "\n";
+    }
     return 0;
   }
 

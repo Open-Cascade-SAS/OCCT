@@ -1586,14 +1586,16 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
     return myRaytraceInitStatus == OpenGl_RT_INIT;
   }
 
-  if (myRaytraceFBO1.IsNull())
+  if (myRaytraceFBO1[0].IsNull())
   {
-    myRaytraceFBO1 = new OpenGl_FrameBuffer (GL_RGBA32F);
+    myRaytraceFBO1[0] = new OpenGl_FrameBuffer (GL_RGBA32F);
+    myRaytraceFBO1[1] = new OpenGl_FrameBuffer (GL_RGBA32F);
   }
 
-  if (myRaytraceFBO2.IsNull())
+  if (myRaytraceFBO2[0].IsNull())
   {
-    myRaytraceFBO2 = new OpenGl_FrameBuffer (GL_RGBA32F);
+    myRaytraceFBO2[0] = new OpenGl_FrameBuffer (GL_RGBA32F);
+    myRaytraceFBO2[1] = new OpenGl_FrameBuffer (GL_RGBA32F);
   }
 
   const GLfloat aVertices[] = { -1.f, -1.f,  0.f,
@@ -1631,8 +1633,10 @@ inline void nullifyResource (const Handle(OpenGl_Context)& theGlContext,
 void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext)
 {
   nullifyResource (theGlContext, myOpenGlFBO);
-  nullifyResource (theGlContext, myRaytraceFBO1);
-  nullifyResource (theGlContext, myRaytraceFBO2);
+  nullifyResource (theGlContext, myRaytraceFBO1[0]);
+  nullifyResource (theGlContext, myRaytraceFBO2[0]);
+  nullifyResource (theGlContext, myRaytraceFBO1[1]);
+  nullifyResource (theGlContext, myRaytraceFBO2[1]);
 
   nullifyResource (theGlContext, myRaytraceShader);
   nullifyResource (theGlContext, myPostFSAAShader);
@@ -1661,18 +1665,44 @@ void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlC
 }
 
 // =======================================================================
-// function : resizeRaytraceBuffers
-// purpose  : Resizes OpenGL frame buffers
+// function : updateRaytraceBuffers
+// purpose  : Updates auxiliary OpenGL frame buffers.
 // =======================================================================
-Standard_Boolean OpenGl_View::resizeRaytraceBuffers (const Standard_Integer        theSizeX,
+Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer        theSizeX,
                                                      const Standard_Integer        theSizeY,
                                                      const Handle(OpenGl_Context)& theGlContext)
 {
-  if (myRaytraceFBO1->GetVPSizeX() != theSizeX
-   || myRaytraceFBO1->GetVPSizeY() != theSizeY)
+  // Auxiliary buffers are not used.
+  if (!myRaytraceParameters.GlobalIllumination && !myRenderParams.IsAntialiasingEnabled)
   {
-    myRaytraceFBO1->Init (theGlContext, theSizeX, theSizeY);
-    myRaytraceFBO2->Init (theGlContext, theSizeX, theSizeY);
+    myRaytraceFBO1[0]->Release (theGlContext.operator->());
+    myRaytraceFBO2[0]->Release (theGlContext.operator->());
+    myRaytraceFBO1[1]->Release (theGlContext.operator->());
+    myRaytraceFBO2[1]->Release (theGlContext.operator->());
+    return Standard_True;
+  }
+
+  if ( myRaytraceFBO1[0]->GetVPSizeX() != theSizeX
+    || myRaytraceFBO1[0]->GetVPSizeY() != theSizeY)
+  {
+    myRaytraceFBO1[0]->Init (theGlContext, theSizeX, theSizeY);
+    myRaytraceFBO2[0]->Init (theGlContext, theSizeX, theSizeY);
+  }
+
+  // Init second set of buffers for stereographic rendering.
+  if (myCamera->ProjectionType() == Graphic3d_Camera::Projection_Stereo)
+  {
+    if (myRaytraceFBO1[1]->GetVPSizeX() != theSizeX
+     || myRaytraceFBO1[1]->GetVPSizeY() != theSizeY)
+    {
+      myRaytraceFBO1[1]->Init (theGlContext, theSizeX, theSizeY);
+      myRaytraceFBO2[1]->Init (theGlContext, theSizeX, theSizeY);
+    }
+  }
+  else
+  {
+    myRaytraceFBO1[1]->Release (theGlContext.operator->());
+    myRaytraceFBO2[1]->Release (theGlContext.operator->());
   }
 
   return Standard_True;
@@ -2343,6 +2373,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
                                                   const OpenGl_Vec3*            theOrigins,
                                                   const OpenGl_Vec3*            theDirects,
                                                   const OpenGl_Mat4&            theUnviewMat,
+                                                  Graphic3d_Camera::Projection  theProjection,
                                                   OpenGl_FrameBuffer*           theReadDrawFbo,
                                                   const Handle(OpenGl_Context)& theGlContext)
 {
@@ -2351,22 +2382,15 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
   Handle(OpenGl_FrameBuffer) aRenderFramebuffer;
   Handle(OpenGl_FrameBuffer) anAccumFramebuffer;
 
+  // Choose proper set of framebuffers for stereo rendering
+  Standard_Boolean isStereo   = myCamera->ProjectionType() == Graphic3d_Camera::Projection_Stereo;
+  Standard_Boolean isRightEye = theProjection              == Graphic3d_Camera::Projection_MonoRightEye;
+  Standard_Integer aFBOIdx    = (isStereo && isRightEye) ? 1 : 0;
+
   if (myRaytraceParameters.GlobalIllumination) // if path-tracing is used
   {
-    for (int anIdx = 0; anIdx < 3; ++anIdx)
-    {
-      if  (fabsf (theOrigins[anIdx].x() - myPreviousOrigins[anIdx].x()) > std::numeric_limits<Standard_ShortReal>::epsilon()
-        || fabsf (theOrigins[anIdx].y() - myPreviousOrigins[anIdx].y()) > std::numeric_limits<Standard_ShortReal>::epsilon()
-        || fabsf (theOrigins[anIdx].z() - myPreviousOrigins[anIdx].z()) > std::numeric_limits<Standard_ShortReal>::epsilon())
-      {
-        myAccumFrames = 0; // camera has been moved
-      }
-
-      myPreviousOrigins[anIdx] = theOrigins[anIdx];
-    }
-
-    aRenderFramebuffer = myAccumFrames % 2 ? myRaytraceFBO1 : myRaytraceFBO2;
-    anAccumFramebuffer = myAccumFrames % 2 ? myRaytraceFBO2 : myRaytraceFBO1;
+    aRenderFramebuffer = myAccumFrames % 2 ? myRaytraceFBO1[aFBOIdx] : myRaytraceFBO2[aFBOIdx];
+    anAccumFramebuffer = myAccumFrames % 2 ? myRaytraceFBO2[aFBOIdx] : myRaytraceFBO1[aFBOIdx];
 
     anAccumFramebuffer->ColorTexture()->Bind (
       theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
@@ -2375,7 +2399,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
   }
   else if (myRenderParams.IsAntialiasingEnabled) // if 2-pass ray-tracing is used
   {
-    myRaytraceFBO1->BindBuffer (theGlContext);
+    myRaytraceFBO1[aFBOIdx]->BindBuffer (theGlContext);
 
     glDisable (GL_BLEND);
   }
@@ -2426,12 +2450,10 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
       theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
 
     theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
-
-    ++myAccumFrames;
   }
   else if (myRenderParams.IsAntialiasingEnabled)
   {
-    myRaytraceFBO1->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
+    myRaytraceFBO1[aFBOIdx]->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
 
     aResult &= theGlContext->BindProgram (myPostFSAAProgram);
 
@@ -2473,7 +2495,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
       aResult &= myPostFSAAProgram->SetUniform (theGlContext,
         myUniformLocations[1][OpenGl_RT_uOffsetY], aOffsetY);
 
-      Handle(OpenGl_FrameBuffer)& aFramebuffer = anIt % 2 ? myRaytraceFBO2 : myRaytraceFBO1;
+      Handle(OpenGl_FrameBuffer)& aFramebuffer = anIt % 2 ? myRaytraceFBO2[aFBOIdx] : myRaytraceFBO1[aFBOIdx];
 
       if (anIt == 3) // disable FBO on last iteration
       {
@@ -2513,6 +2535,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
 // =======================================================================
 Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
                                         const Standard_Integer        theSizeY,
+                                        Graphic3d_Camera::Projection  theProjection,
                                         OpenGl_FrameBuffer*           theReadDrawFbo,
                                         const Handle(OpenGl_Context)& theGlContext)
 {
@@ -2521,7 +2544,7 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
     return Standard_False;
   }
 
-  if (!resizeRaytraceBuffers (theSizeX, theSizeY, theGlContext))
+  if (!updateRaytraceBuffers (theSizeX, theSizeY, theGlContext))
   {
     return Standard_False;
   }
@@ -2576,6 +2599,7 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
                                                    aOrigins,
                                                    aDirects,
                                                    anUnviewMat,
+                                                   theProjection,
                                                    theReadDrawFbo,
                                                    theGlContext);
 
