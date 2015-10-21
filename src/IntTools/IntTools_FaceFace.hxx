@@ -72,10 +72,14 @@ public:
   Standard_EXPORT const IntTools_SequenceOfPntOn2Faces& Points() const;
   
 
-  //! Returns tolerance reached during approximation.
+  //! Returns tolerance reached during approximation,
+  //! and possibly increased to cover more area due to a small angle between surfaces.
   //! If approximation was not done, returns zero.
   Standard_EXPORT Standard_Real TolReached3d() const;
-  
+
+  //! Returns tolerance reached during approximation, without any increase.
+  //! If approximation was not done, returns zero.
+  Standard_EXPORT Standard_Real TolReal() const;
 
   //! Returns tolerance reached during approximation.
   //! If approximation was not done, returns zero.
@@ -92,7 +96,7 @@ public:
 
   //! Returns True if faces are tangent
   Standard_EXPORT Standard_Boolean TangentFaces() const;
-  
+
 
   //! Provides post-processing the result lines.
   //! <bToSplit> - the flag.
@@ -141,6 +145,7 @@ private:
   Standard_Integer myNbrestr;
   Standard_Real myTolReached2d;
   Standard_Real myTolReached3d;
+  Standard_Real myTolReal;
   Standard_Boolean myApprox;
   Standard_Boolean myApprox1;
   Standard_Boolean myApprox2;

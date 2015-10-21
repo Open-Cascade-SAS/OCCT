@@ -10,5 +10,5 @@ updatetolerance b 1
 
 bsection result a b
 
-checkprops result -l 135.096
+checkprops result -l 130.625
 checksection result

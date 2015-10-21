@@ -22,8 +22,8 @@
 #include <string.h>
 static Standard_Integer boptions (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer brunparallel (Draw_Interpretor&, Standard_Integer, const char**); 
-static Standard_Integer bfuzzyvalue (Draw_Interpretor&, Standard_Integer, const char**); 
-static Standard_Integer bparallelmode(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bnondestructive(Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer bfuzzyvalue(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : OptionCommands
@@ -37,13 +37,10 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands  
-  theCommands.Add("boptions", "use boptions" , __FILE__, boptions, g);
+  theCommands.Add("boptions", "use boptions, shows current value of BOP options" , __FILE__, boptions, g);
   theCommands.Add("brunparallel", "use brunparallel [0/1]" , __FILE__, brunparallel, g);
-  theCommands.Add("bfuzzyvalue", "use bfuzzyvalue value" , __FILE__, bfuzzyvalue, g);
-  theCommands.Add("bparallelmode", 
-    "bparallelmode [1/0] : show / set parallel mode for boolean operations", 
-                  __FILE__, bparallelmode, g);
-
+  theCommands.Add("bnondestructive", "use bnondestructive [0/1]", __FILE__, bnondestructive, g);
+  theCommands.Add("bfuzzyvalue", "use bfuzzyvalue value", __FILE__, bfuzzyvalue, g);
 }
 //=======================================================================
 //function : boptions
@@ -59,13 +56,16 @@ Standard_Integer boptions(Draw_Interpretor& di,
   }
   //
   char buf[128];
-  Standard_Boolean bRunParallel;
+  Standard_Boolean bRunParallel, bNonDestructive;
   Standard_Real aFuzzyValue;
   //
   bRunParallel=BOPTest_Objects::RunParallel();
-  aFuzzyValue=BOPTest_Objects::FuzzyValue();
+  bNonDestructive = BOPTest_Objects::NonDestructive();
+  aFuzzyValue = BOPTest_Objects::FuzzyValue();
   
   Sprintf(buf, " RunParallel: %d\n",  bRunParallel);
+  di << buf;
+  Sprintf(buf, " NonDestructive: %d\n", bNonDestructive);
   di << buf;
   Sprintf(buf, " FuzzyValue : %lf\n", aFuzzyValue);
   di << buf;
@@ -125,29 +125,29 @@ Standard_Integer brunparallel(Draw_Interpretor& di,
   return 0;
 }
 //=======================================================================
-//function : bparallelmode
+//function : bnondestructive
 //purpose  : 
 //=======================================================================
-Standard_Integer bparallelmode(Draw_Interpretor& di, 
-                               Standard_Integer n, 
-                               const char** a)
+Standard_Integer bnondestructive(Draw_Interpretor& di,
+  Standard_Integer n,
+  const char** a)
 {
-  Standard_Boolean bRunParallel;
+  if (n != 2) {
+    di << " use bnondestructive [0/1]\n";
+    return 0;
+  }
   //
-  if (n == 2)  {
-    bRunParallel=(Standard_Boolean)Draw::Atoi(a[1]);
-    BOPTest_Objects::SetRunParallel(bRunParallel);
-    if (bRunParallel) {
-      di << "Parallel mode for boolean operations has been enabled";
-    }
-    else  {
-      di << "Parallel mode for boolean operations has been disabled";
-    }
+  Standard_Integer iX;
+  Standard_Boolean bNonDestructive;
+  //
+  iX = Draw::Atoi(a[1]);
+  if (iX<0 || iX>1) {
+    di << " Wrong value.\n";
+    return 0;
   }
-  else  {
-    bRunParallel=BOPTest_Objects::RunParallel();
-    di << "Parallel mode state for boolean operations: " 
-      << (bRunParallel? "enabled" : "disabled");
-  }
+  //
+  bNonDestructive = (Standard_Boolean)(iX);
+  BOPTest_Objects::SetNonDestructive(bNonDestructive);
+  //
   return 0;
 }

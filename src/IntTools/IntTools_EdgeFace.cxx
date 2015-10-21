@@ -284,7 +284,7 @@ void IntTools_EdgeFace::Prepare()
     myCriteria=1.5*myTolE+myTolF;
   }
   else {
-    myCriteria=myTolE+myTolF;
+    myCriteria = myTolE + myTolF + Precision::Confusion();
   }
   // 2.a myTmin, myTmax
   myTmin=myRange.First();
@@ -1236,7 +1236,7 @@ void IntTools_EdgeFace::Perform()
       myCriteria=1.5*myTolE+myTolF;
   }
   else {
-    myCriteria=myTolE+myTolF;
+    myCriteria = myTolE + myTolF + Precision::Confusion();
   }
   
   myTmin=myRange.First();

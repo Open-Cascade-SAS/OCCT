@@ -151,12 +151,15 @@ static
 
 static void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1, 
                            const Handle(GeomAdaptor_HSurface)& theS2, 
+                           const Standard_Real TolF1,
+                           const Standard_Real TolF2,
                            const Standard_Real TolAng, 
                            const Standard_Real TolTang, 
                            const Standard_Boolean theApprox1,
                            const Standard_Boolean theApprox2,
                            IntTools_SequenceOfCurves& theSeqOfCurve, 
-                           Standard_Boolean& theTangentFaces);
+                           Standard_Boolean& theTangentFaces,
+                           Standard_Real& TolReached3d);
 
 static Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_HSurface)& theS, 
                                       const gp_Lin2d& theLin2d, 
@@ -225,6 +228,7 @@ IntTools_FaceFace::IntTools_FaceFace()
   myHS2 = new GeomAdaptor_HSurface ();
   myTolReached2d=0.; 
   myTolReached3d=0.;
+  myTolReal = 0.;
   SetParameters(Standard_True, Standard_True, Standard_True, 1.e-07);
   
 }
@@ -293,6 +297,14 @@ Standard_Real IntTools_FaceFace::TolReached3d() const
   return myTolReached3d;
 }
 //=======================================================================
+//function : TolReal
+//purpose  : 
+//=======================================================================
+Standard_Real IntTools_FaceFace::TolReal() const
+{
+  return myTolReal;
+}
+//=======================================================================
 //function : Lines
 //purpose  : return lines of intersection
 //=======================================================================
@@ -341,7 +353,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
   const Standard_Real Tolang = 1.e-8;
   const Standard_Real aTolF1=BRep_Tool::Tolerance(theF1);
   const Standard_Real aTolF2=BRep_Tool::Tolerance(theF2);
-  const Standard_Real aTolSum = aTolF1 + aTolF2;
+  const Standard_Real aTolSum = aTolF1 + aTolF2 + Precision::Confusion();
   Standard_Real aHigh = 0.0;
 
   const BRepAdaptor_Surface aBAS1(theF1), aBAS2(theF2);
@@ -424,6 +436,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   mySeqOfCurve.Clear();
   myTolReached2d=0.;
   myTolReached3d=0.;
+  myTolReal = 0.;
   myIsDone = Standard_False;
   myNbrestr=0;//?
 
@@ -469,7 +482,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   const Standard_Real aTolF1=BRep_Tool::Tolerance(myFace1);
   const Standard_Real aTolF2=BRep_Tool::Tolerance(myFace2);
 
-  Standard_Real TolArc = aTolF1 + aTolF2;
+  Standard_Real TolArc = aTolF1 + aTolF2 + Precision::Confusion();
   Standard_Real TolTang = TolArc;
 
   const Standard_Boolean isFace1Quad = (aType1 == GeomAbs_Cylinder ||
@@ -493,8 +506,10 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     //
     Standard_Real TolAng = 1.e-8;
     //
-    PerformPlanes(myHS1, myHS2, TolAng, TolTang, myApprox1, myApprox2, 
-                  mySeqOfCurve, myTangentFaces);
+    PerformPlanes(myHS1, myHS2, 
+                  aTolF1, aTolF2, TolAng, TolTang, 
+                  myApprox1, myApprox2, 
+                  mySeqOfCurve, myTangentFaces, myTolReached3d);
     //
     myIsDone = Standard_True;
     
@@ -502,13 +517,16 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
       const Standard_Integer NbLinPP = mySeqOfCurve.Length();
       if(NbLinPP) {
         Standard_Real aTolFMax;
-        myTolReached3d = 1.e-7;
         aTolFMax=Max(aTolF1, aTolF2);
-        if (aTolFMax>myTolReached3d) {
-          myTolReached3d=aTolFMax;
+        myTolReal = Precision::Confusion();
+        if (aTolFMax > myTolReal) {
+          myTolReal = aTolFMax;
+        }
+        if (aTolFMax > myTolReached3d) {
+          myTolReached3d = aTolFMax;
         }
         //
-        myTolReached2d = myTolReached3d;
+        myTolReached2d = myTolReal;
 
         if (bReverse) {
           Handle(Geom2d_Curve) aC2D1, aC2D2;
@@ -778,7 +796,7 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
 //function :ComputeTolReached3d 
 //purpose  : 
 //=======================================================================
-  void IntTools_FaceFace::ComputeTolReached3d()
+void IntTools_FaceFace::ComputeTolReached3d()
 {
   Standard_Integer aNbLin;
   GeomAbs_SurfaceType aType1, aType2;
@@ -825,9 +843,10 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
   Standard_Real aDMax = ComputeTolerance();
   if (aDMax > myTolReached3d)
   {
-      myTolReached3d = aDMax;
-    }
+    myTolReached3d = aDMax;
   }
+  myTolReal = myTolReached3d;
+}
 
 //=======================================================================
 //function : MakeCurve
@@ -2686,12 +2705,15 @@ Standard_Boolean ApproxWithPCurves(const gp_Cylinder& theCyl,
 //=======================================================================
 void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1, 
                     const Handle(GeomAdaptor_HSurface)& theS2, 
+                    const Standard_Real TolF1, 
+                    const Standard_Real TolF2, 
                     const Standard_Real TolAng, 
                     const Standard_Real TolTang, 
                     const Standard_Boolean theApprox1,
                     const Standard_Boolean theApprox2,
                     IntTools_SequenceOfCurves& theSeqOfCurve, 
-                    Standard_Boolean& theTangentFaces)
+                    Standard_Boolean& theTangentFaces,
+                    Standard_Real& TolReached3d)
 {
 
   gp_Pln aPln1 = theS1->Surface().Plane();
@@ -2774,7 +2796,17 @@ void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
   }
 
   theSeqOfCurve.Append(aCurve);
- 
+  //
+  // computation of the tolerance reached
+  Standard_Real anAngle, aDt;
+  gp_Dir aD1, aD2;
+  //
+  aD1 = aPln1.Position().Direction();
+  aD2 = aPln2.Position().Direction();
+  anAngle = aD1.Angle(aD2);
+  //
+  aDt = IntTools_Tools::ComputeIntRange(TolF1, TolF2, anAngle);
+  TolReached3d = sqrt(aDt*aDt + TolF1*TolF1);
 }
 
 //=======================================================================

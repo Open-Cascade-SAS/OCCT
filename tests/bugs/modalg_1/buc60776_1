@@ -7,7 +7,7 @@ restore [locate_data_file buc60776b.brep] b
 checkshape b
 bfuse result a b
 
-checkprops result -s 61626.2 
+checkprops result -s 60771.3
 checkshape result
 
 set 2dviewer 1

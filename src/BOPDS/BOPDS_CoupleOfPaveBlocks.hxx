@@ -32,10 +32,11 @@ class BOPDS_CoupleOfPaveBlocks {
   /**
    * Constructor
    */
-  BOPDS_CoupleOfPaveBlocks() {
-    myIndex=-1;
-    myIndexInterf=-1;
-  }
+  BOPDS_CoupleOfPaveBlocks() :
+    myIndexInterf(-1),
+    myIndex(-1),
+    myTolerance(0)
+  {}
   //
   /**
    * Constructor
@@ -45,9 +46,11 @@ class BOPDS_CoupleOfPaveBlocks {
    *  secondt pave block
    */
   BOPDS_CoupleOfPaveBlocks(const Handle(BOPDS_PaveBlock)& thePB1,
-			   const Handle(BOPDS_PaveBlock)& thePB2) {
-    myIndex=-1;
-    myIndexInterf=-1;
+    const Handle(BOPDS_PaveBlock)& thePB2) :
+    myIndexInterf(-1),
+    myIndex(-1),
+    myTolerance(0)
+  {
     SetPaveBlocks(thePB1, thePB2);
   }
   //
@@ -153,11 +156,26 @@ class BOPDS_CoupleOfPaveBlocks {
   const Handle(BOPDS_PaveBlock)& PaveBlock2()const {
     return myPB[1];
   }
+
+  /**
+  * Sets the tolerance associated with this couple
+  */
+  void SetTolerance(const Standard_Real theTol) {
+    myTolerance = theTol;
+  }
   //
+  /**
+  * Returns the tolerance associated with this couple
+  */
+  Standard_Real Tolerance()const {
+    return myTolerance;
+  }
+
  protected:
   Standard_Integer myIndexInterf;
   Standard_Integer myIndex;
   Handle(BOPDS_PaveBlock) myPB[2];
+  Standard_Real    myTolerance;
 };
 //
 #endif

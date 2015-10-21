@@ -137,7 +137,7 @@ void IntTools_ShrunkRange::SetShrunkRange(const Standard_Real aT1,
 void IntTools_ShrunkRange::Perform()
 {
   Standard_Real aCF, aCL, aTolE, aTolV1;
-  Standard_Real aTolV2, t1, t11, t1C, t2, t12, t2C;
+  Standard_Real aTolV2, t1, t11, t1C, t2, t12, t2C, dummy;
   Standard_Real aCoeff1, aCoeff2, aTol1, aTol2, dt1, dt2, aR, anEps;
   Standard_Integer pri;
   Standard_Boolean bInf1, bInf2, bAppr;
@@ -187,8 +187,8 @@ void IntTools_ShrunkRange::Perform()
     return;
   }
   //
-  aTol1 = aTolV1+aTolE;
-  aTol2 = aTolV2+aTolE;
+  aTol1 = Max(aTolV1, aTolE);
+  aTol2 = Max(aTolV2, aTolE);
   //
   aCoeff1 = (aTolE>0.05) ? 1. : 2.;
   aCoeff2 = aCoeff1;
@@ -214,9 +214,11 @@ void IntTools_ShrunkRange::Perform()
     //
     if (fabs(aTV1-aCF)<aEps) {
       aCoeff1=1.;
+      aTol1 += Precision::Confusion();
     }
     if (fabs(aTV2-aCL)<aEps) {
       aCoeff2=1.;
+      aTol2 += Precision::Confusion();
     }
   }
   //
@@ -346,7 +348,7 @@ void IntTools_ShrunkRange::Perform()
         BRepBuilderAPI_MakeVertex aMV1(aP1L);
         const TopoDS_Vertex& aV1L=aMV1.Vertex();
         //
-        pri=myCtx->ComputeVE (aV1L, myEdge, t1C);
+        pri = myCtx->ComputeVE(aV1L, myEdge, t1C, dummy);
         //
         if (pri==-3) {
           myErrorStatus=4;
@@ -446,7 +448,7 @@ void IntTools_ShrunkRange::Perform()
         BRepBuilderAPI_MakeVertex aMV2(aP2L);
         const TopoDS_Vertex& aV2L=aMV2.Vertex();
         //
-        pri=myCtx->ComputeVE (aV2L, myEdge, t2C);
+        pri = myCtx->ComputeVE(aV2L, myEdge, t2C, dummy);
         //
         if (pri==-3) {
           myErrorStatus=5;
@@ -474,7 +476,7 @@ void IntTools_ShrunkRange::Perform()
   myTS2=t2C;
   //
   // BndBox
-  Standard_Real ddx=aTolE;//1.e-12;
+  Standard_Real ddx = aTolE + Precision::Confusion();
   BndLib_Add3dCurve::Add (aBAC, t1C, t2C, ddx, myBndBox);
 }
 /////////////////////////////////////////////////////////////////////////

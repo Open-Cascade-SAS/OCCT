@@ -1,5 +1,3 @@
-puts "TODO ?OCC26018 ALL: Error: bopcheck failed"
-puts "TODO OCC26018 ALL: Faulty shapes in variables faulty_1 to"
 source [locate_data_file 52109_shapiro.prt.gdml.tcl]
 
 set bcheck [bopcheck result]

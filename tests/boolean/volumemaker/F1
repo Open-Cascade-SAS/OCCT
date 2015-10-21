@@ -2,10 +2,6 @@
 # cone plane
 # Error status: 191
 
-puts "TODO OCC26020 Windows: Error status"
-puts "TODO OCC26020 Windows: TEST INCOMPLETE"
-puts "TODO OCC26020 Linux: Faulty shapes in variables faulty_1 to faulty_"
-
 # planar face 
 plane pln_f1 -2.4595121467478056e-014 -746.52181700999995 1844.22896887 0.86602540378443849 -0.47367733686073094 -0.16009303715192033
 erase pln_f1
@@ -38,3 +34,5 @@ mkface f6 con_f6 0 6.2831853071795862 0 1000000
 
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6
+
+checkprops result -s 1.13448e+007

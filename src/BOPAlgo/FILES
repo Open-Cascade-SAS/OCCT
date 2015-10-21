@@ -42,6 +42,7 @@ BOPAlgo_PaveFiller_7.cxx
 BOPAlgo_PaveFiller_8.cxx
 BOPAlgo_PaveFiller_9.cxx
 BOPAlgo_PaveFiller_10.cxx
+BOPAlgo_PaveFiller_11.cxx
 BOPAlgo_PBOP.hxx
 BOPAlgo_PBuilder.hxx
 BOPAlgo_PPaveFiller.hxx

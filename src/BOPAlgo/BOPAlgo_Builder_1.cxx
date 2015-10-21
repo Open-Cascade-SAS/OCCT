@@ -86,7 +86,7 @@
       aItPB.Initialize(aLPB);
       for (; aItPB.More(); aItPB.Next()) {
         const Handle(BOPDS_PaveBlock)& aPB=aItPB.Value();
-        const Handle(BOPDS_PaveBlock)& aPBR=myDS->RealPaveBlock(aPB);
+        Handle(BOPDS_PaveBlock) aPBR=myDS->RealPaveBlock(aPB);
         //
         nSpR=aPBR->Edge();
         const TopoDS_Shape& aSpR=myDS->Shape(nSpR);

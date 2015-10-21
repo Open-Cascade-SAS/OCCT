@@ -581,6 +581,7 @@ void BOPAlgo_Builder::FillIn3DParts
         }
         Bnd_Box aBox;
         BRepBndLib::Add(aSx, aBox);
+        aBox.SetGap(aBox.GetGap() + Precision::Confusion());
         //
         BOPAlgo_ShapeBox& aSB=aVSB.Append1();
         aSB.SetShape(aSx);

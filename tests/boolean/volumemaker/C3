@@ -1,10 +1,6 @@
 # test script on make volume operation
 # plane
 
-puts "TODO OCC26020 Windows: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC26020 Linux: Error : The command is not valid. The area is"
-puts "TODO OCC26020 Linux: Error : The area of result shape is"
-
 # planar face 
 plane pln_f1 -513.57358775546049 376.87261141864394 391.24411461018769 -0.35888381816183362 -0.86162916044152549 0.35888381816183351
 erase pln_f1
@@ -43,4 +39,4 @@ mkface f7 pln_f7 -1000000 1000000 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7
 
-checkprops result -s 5.29724e-005 -eps 1.0e-3
+checkprops result -s empty

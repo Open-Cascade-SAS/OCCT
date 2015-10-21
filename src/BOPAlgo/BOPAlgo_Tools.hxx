@@ -29,6 +29,8 @@
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
 
 class BOPDS_PaveBlock;
+class BOPDS_CommonBlock;
+class IntTools_Context;
 
 class BOPAlgo_Tools 
 {
@@ -50,6 +52,11 @@ public:
   Standard_EXPORT static void FillMap (const Handle(BOPDS_PaveBlock)& tnePB1, const Standard_Integer tneF, BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMILI, const BOPCol_BaseAllocator& theAllocator);
   
   Standard_EXPORT static void PerformCommonBlocks (const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMBlocks, const BOPCol_BaseAllocator& theAllocator, BOPDS_PDS& pDS);
+
+  Standard_EXPORT static Standard_Real ComputeToleranceOfCB
+                                        (const Handle(BOPDS_CommonBlock)& theCB,
+                                         const BOPDS_PDS theDS,
+                                         const Handle(IntTools_Context)& theContext);
 
 };
 

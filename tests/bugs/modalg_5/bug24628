@@ -11,7 +11,7 @@ restore [locate_data_file bug24628_shellcut2.brep] cut
 
 bsection result shell cut
 
-checknbshapes result -vertex 15 -edge 14
+checknbshapes result -vertex 14 -edge 13
 
 set 2dviewer 1
 

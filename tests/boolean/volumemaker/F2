@@ -1,8 +1,6 @@
 # test script on make volume operation
 # cone plane
 
-puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
-
 # planar face 
 plane pln_f1 0 -746.52181700999995 1844.22896887 -0.86602540378443904 -0.4736773368607301 -0.16009303715192008
 erase pln_f1
@@ -31,4 +29,4 @@ mkface f5 con_f5 0 6.2831853071795862 0 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5
 
-checkprops result -s 8.06875e+006
+checkprops result -s 8.92077e+006

@@ -1,11 +1,6 @@
 puts "TODO OCC25917 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC25917 ALL: Error : The area of result shape is"
 puts "TODO OCC25917 ALL: Error :  is WRONG because number of "
-if { [regexp {Debug mode} [dversion]] } {
-  puts "TODO OCC25917 ALL: TEST INCOMPLETE"
-  puts "TODO OCC25917 ALL: Tcl Exception"
-}
-
 puts "========================"
 puts " OCC472 "
 puts "(case 3)"
@@ -25,7 +20,7 @@ bfuse result b1 b2
 
 checknbshapes result -vertex 66 -edge 107
 
-checkprops result -s 31657.5 
+checkprops result -s 229.516 
 checkshape result
 set 2dviewer 0
 

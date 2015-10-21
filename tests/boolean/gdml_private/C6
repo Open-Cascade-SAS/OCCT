@@ -1,3 +1,2 @@
-puts "TODO OCC26018 ALL: Faulty shapes in variables faulty_1 to faulty_"
 source [locate_data_file 20000_bat-nord_et2_13302.prt.3.gdml.tcl]
 

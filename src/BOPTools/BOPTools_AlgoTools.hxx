@@ -56,7 +56,7 @@ public:
   
   Standard_EXPORT static Standard_Integer ComputeVV (const TopoDS_Vertex& aV1, const TopoDS_Vertex& aV2);
   
-  Standard_EXPORT static void MakeVertex (BOPCol_ListOfShape& aLV, TopoDS_Vertex& aV);
+  Standard_EXPORT static void MakeVertex (const BOPCol_ListOfShape& aLV, TopoDS_Vertex& aV);
   
   Standard_EXPORT static void MakeEdge (const IntTools_Curve& theCurve, const TopoDS_Vertex& theV1, const Standard_Real theT1, const TopoDS_Vertex& theV2, const Standard_Real theT2, const Standard_Real theTolR3D, TopoDS_Edge& theE);
   
@@ -177,18 +177,27 @@ public:
   //! accepted for correction.  If real value of the tolerance
   //! will be greater than  <aTolMax>, the correction does not
   //! perform.
-  Standard_EXPORT static void CorrectTolerances (const TopoDS_Shape& theS, const Standard_Real theTolMax = 0.0001, const Standard_Boolean theRunParallel = Standard_False);
-  
+  Standard_EXPORT static void CorrectTolerances
+              (const TopoDS_Shape& theS, 
+               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const Standard_Real theTolMax = 0.0001,
+               const Standard_Boolean theRunParallel = Standard_False);
 
   //! Provides valid values of tolerances for the shape <theS>
   //! in  terms of BRepCheck_InvalidCurveOnSurface.
-  Standard_EXPORT static void CorrectCurveOnSurface (const TopoDS_Shape& theS, const Standard_Real theTolMax = 0.0001, const Standard_Boolean theRunParallel = Standard_False);
-  
+  Standard_EXPORT static void CorrectCurveOnSurface
+              (const TopoDS_Shape& theS,
+               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const Standard_Real theTolMax = 0.0001,
+               const Standard_Boolean theRunParallel = Standard_False);
 
   //! Provides valid values of tolerances for the shape <theS>
   //! in  terms of BRepCheck_InvalidPointOnCurve.
-  Standard_EXPORT static void CorrectPointOnCurve (const TopoDS_Shape& theS, const Standard_Real theTolMax = 0.0001, const Standard_Boolean theRunParallel = Standard_False);
-  
+  Standard_EXPORT static void CorrectPointOnCurve
+              (const TopoDS_Shape& theS,
+               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const Standard_Real theTolMax = 0.0001,
+               const Standard_Boolean theRunParallel = Standard_False);
 
   //! Make a vertex using 3D-point <aP1> and 3D-tolerance value <aTol>
   Standard_EXPORT static void MakeNewVertex (const gp_Pnt& aP1, const Standard_Real aTol, TopoDS_Vertex& aNewVertex);
@@ -260,8 +269,10 @@ public:
   
 
   //! Corrects tolerance values of the sub-shapes of the shape <theS> if needed.
-  Standard_EXPORT static void CorrectShapeTolerances (const TopoDS_Shape& theS, const Standard_Boolean theRunParallel = Standard_False);
-  
+  Standard_EXPORT static void CorrectShapeTolerances
+              (const TopoDS_Shape& theS,
+               const BOPCol_IndexedMapOfShape& theMapToAvoid,
+               const Standard_Boolean theRunParallel = Standard_False);
 
   //! Retutns dimension of the shape <theS>.
   Standard_EXPORT static Standard_Integer Dimension (const TopoDS_Shape& theS);

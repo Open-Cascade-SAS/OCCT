@@ -163,6 +163,11 @@ public:
   Standard_EXPORT static Standard_Boolean ComputeTolerance (const Handle(Geom_Curve)& theCurve3D, const Handle(Geom2d_Curve)& theCurve2D, const Handle(Geom_Surface)& theSurf, const Standard_Real theFirst, const Standard_Real theLast, Standard_Real& theMaxDist, Standard_Real& theMaxPar);
 
 
+  //! Computes the correct Intersection range for 
+  //! Line/Line, Line/Plane and Plane/Plane intersections
+  Standard_EXPORT static Standard_Real ComputeIntRange(const Standard_Real theTol1,
+                                                       const Standard_Real theTol2,
+                                                       const Standard_Real theAngle);
 
 
 protected:

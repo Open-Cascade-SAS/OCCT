@@ -496,6 +496,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
       myTangentFaces(Standard_False),
       myTolR3D(1.e-7),
       myTolR2D(1.e-7),
+      myTolReal(1.e-7),
       myCurves(0, myAllocator),
       myPoints(0, myAllocator) 
   {
@@ -595,6 +596,25 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
   Standard_Real TolR2D()const {
     return myTolR2D;
   }
+  /**
+  * Modifier
+  * Sets the value of real not increased 3D tolerance
+  * @param theTol
+  *   3D tolerance
+  */
+  void SetTolReal(const Standard_Real theTol) {
+    myTolReal = theTol;
+  }
+  //
+  /**
+  * Selector
+  * Returns the value of real not increased 3D tolerance
+  * @return
+  *   3D tolerance
+  */
+  Standard_Real TolReal()const {
+    return myTolReal;
+  }
   //
   /**
    * Selector
@@ -640,6 +660,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
   Standard_Boolean myTangentFaces;
   Standard_Real myTolR3D;
   Standard_Real myTolR2D;
+  Standard_Real myTolReal;
   BOPDS_VectorOfCurve myCurves;
   BOPDS_VectorOfPoint myPoints;
 };

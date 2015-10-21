@@ -50,7 +50,8 @@ class BOPTest_Session {
     //
     myBuilder=myBuilderDefault;
     myRunParallel=Standard_False;
-    myFuzzyValue=0.;
+    myNonDestructive = Standard_False;
+    myFuzzyValue = 0.;
   };
   //
   // Clear
@@ -114,6 +115,14 @@ class BOPTest_Session {
     return myFuzzyValue;
   };
   //
+  void SetNonDestructive(const Standard_Boolean theFlag) {
+    myNonDestructive = theFlag;
+  };
+  //
+  Standard_Boolean NonDestructive()const {
+    return myNonDestructive;
+  };
+  //
 protected:
   //
   BOPTest_Session(const BOPTest_Session&);
@@ -128,6 +137,7 @@ protected:
   BOPCol_ListOfShape myShapes;
   BOPCol_ListOfShape myTools;
   Standard_Boolean myRunParallel;
+  Standard_Boolean myNonDestructive;
   Standard_Real myFuzzyValue;
 };
 //
@@ -280,6 +290,22 @@ void BOPTest_Objects::SetFuzzyValue(const Standard_Real aValue)
 Standard_Real BOPTest_Objects::FuzzyValue()
 {
   return GetSession().FuzzyValue();
+}
+//=======================================================================
+//function : SetNonDestructive
+//purpose  : 
+//=======================================================================
+void BOPTest_Objects::SetNonDestructive(const Standard_Boolean theFlag)
+{
+  GetSession().SetNonDestructive(theFlag);
+}
+//=======================================================================
+//function : NonDestructive
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPTest_Objects::NonDestructive()
+{
+  return GetSession().NonDestructive();
 }
 //=======================================================================
 //function : Allocator1

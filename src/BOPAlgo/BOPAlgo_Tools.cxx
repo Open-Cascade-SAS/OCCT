@@ -21,14 +21,18 @@
 #include <BOPDS_IndexedMapOfPaveBlock.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_PaveBlock.hxx>
+#include <IntTools_Context.hxx>
+#include <BRep_Tool.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
 
 //=======================================================================
 //function : MakeBlocksCnx
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Tools::MakeBlocksCnx(const BOPCol_IndexedDataMapOfIntegerListOfInteger& aMILI,
-                                    BOPCol_DataMapOfIntegerListOfInteger& aMBlocks,
-                                    const Handle(NCollection_BaseAllocator)& aAllocator)
+void BOPAlgo_Tools::MakeBlocksCnx(const BOPCol_IndexedDataMapOfIntegerListOfInteger& aMILI,
+                                  BOPCol_DataMapOfIntegerListOfInteger& aMBlocks,
+                                  const Handle(NCollection_BaseAllocator)& aAllocator)
 {
   Standard_Integer aNbV, nV, aNbVS, nVP, nVx, aNbVP, aNbEC, k, i, j;
   BOPCol_ListIteratorOfListOfInteger aItLI;
@@ -107,10 +111,10 @@
 //function : FillMap
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Tools::FillMap(const Standard_Integer n1,
-                              const Standard_Integer n2,
-                              BOPCol_IndexedDataMapOfIntegerListOfInteger& aMILI,
-                              const Handle(NCollection_BaseAllocator)& aAllocator)
+void BOPAlgo_Tools::FillMap(const Standard_Integer n1,
+                            const Standard_Integer n2,
+                            BOPCol_IndexedDataMapOfIntegerListOfInteger& aMILI,
+                            const Handle(NCollection_BaseAllocator)& aAllocator)
 {
   if (aMILI.Contains(n1)) {
     BOPCol_ListOfInteger& aLI=aMILI.ChangeFromKey(n1);
@@ -135,10 +139,10 @@
 //function : FillMap
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Tools::FillMap(const Handle(BOPDS_PaveBlock)& aPB1,
-                              const Handle(BOPDS_PaveBlock)& aPB2,
-                              BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMPBLPB,
-                              const Handle(NCollection_BaseAllocator)& aAllocator)
+void BOPAlgo_Tools::FillMap(const Handle(BOPDS_PaveBlock)& aPB1,
+                            const Handle(BOPDS_PaveBlock)& aPB2,
+                            BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMPBLPB,
+                            const Handle(NCollection_BaseAllocator)& aAllocator)
 {
   if (aMPBLPB.Contains(aPB1)) {
     BOPDS_ListOfPaveBlock& aLPB=aMPBLPB.ChangeFromKey(aPB1);
@@ -163,10 +167,10 @@
 //function : FillMap
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Tools::FillMap(const Handle(BOPDS_PaveBlock)& aPB,
-                              const Standard_Integer nF,
-                              BOPDS_IndexedDataMapOfPaveBlockListOfInteger& aMPBLI,
-                              const Handle(NCollection_BaseAllocator)& aAllocator)
+void BOPAlgo_Tools::FillMap(const Handle(BOPDS_PaveBlock)& aPB,
+                            const Standard_Integer nF,
+                            BOPDS_IndexedDataMapOfPaveBlockListOfInteger& aMPBLI,
+                            const Handle(NCollection_BaseAllocator)& aAllocator)
 {
   if (aMPBLI.Contains(aPB)) {
     BOPCol_ListOfInteger& aLI=aMPBLI.ChangeFromKey(aPB);
@@ -182,9 +186,9 @@
 //function : MakeBlocks
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Tools::MakeBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMILI,
-                                 BOPDS_DataMapOfIntegerListOfPaveBlock& aMBlocks,
-                                 const Handle(NCollection_BaseAllocator)& aAllocator)
+void BOPAlgo_Tools::MakeBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMILI,
+                               BOPDS_DataMapOfIntegerListOfPaveBlock& aMBlocks,
+                               const Handle(NCollection_BaseAllocator)& aAllocator)
 {
   Standard_Integer aNbV,  aNbVS, aNbVP, aNbEC, k, i, j;
   BOPDS_ListIteratorOfListOfPaveBlock aItLI;
@@ -263,9 +267,9 @@
 //function : PerformCommonBlocks
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMPBLPB,
-                                          const Handle(NCollection_BaseAllocator)& aAllocator,
-                                          BOPDS_PDS& pDS)
+void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMPBLPB,
+                                        const Handle(NCollection_BaseAllocator)& aAllocator,
+                                        BOPDS_PDS& pDS)
 {
   Standard_Integer aNbCB;
   //
@@ -306,9 +310,9 @@
 //function : PerformCommonBlocks
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Tools::PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& aMPBLI,
-                                          const Handle(NCollection_BaseAllocator)& ,//aAllocator
-                                          BOPDS_PDS& pDS)
+void BOPAlgo_Tools::PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& aMPBLI,
+                                        const Handle(NCollection_BaseAllocator)& ,//aAllocator
+                                        BOPDS_PDS& pDS)
 {
   Standard_Integer nF, i, aNb;
   BOPCol_ListIteratorOfListOfInteger aItLI;
@@ -327,11 +331,123 @@
     }
     //
     const BOPCol_ListOfInteger& aLI=aMPBLI.FindFromKey(aPB);
+    BOPCol_ListOfInteger aNewFaces;
+    const BOPCol_ListOfInteger& anOldFaces = aCB->Faces();
     aItLI.Initialize(aLI);
     for (; aItLI.More(); aItLI.Next()) {
       nF=aItLI.Value();
-      aCB->AddFace(nF);
+      // the both lists aLI and anOldFaces are expected to be short,
+      // so we can allow to run nested loop here
+      BOPCol_ListIteratorOfListOfInteger it(anOldFaces);
+      for (; it.More(); it.Next()) {
+        if (it.Value() == nF)
+          break;
+      }
+      if (!it.More()) {
+        aNewFaces.Append(nF);
+      }
     }
+    aCB->AppendFaces(aNewFaces);
     pDS->SetCommonBlock(aPB, aCB);
   }
+}
+//=======================================================================
+//function : ComputeToleranceOfCB
+//purpose  : 
+//=======================================================================
+Standard_Real BOPAlgo_Tools::ComputeToleranceOfCB
+                   (const Handle(BOPDS_CommonBlock)& theCB,
+                    const BOPDS_PDS theDS,
+                    const Handle(IntTools_Context)& theContext)
+{
+  Standard_Real aTolMax = 0.;
+  if (theCB.IsNull()) {
+    return aTolMax;
+  }
+  //
+  const Handle(BOPDS_PaveBlock)& aPBR = theCB->PaveBlock1();
+  Standard_Integer nE = aPBR->OriginalEdge();
+  const TopoDS_Edge& aEOr = *(TopoDS_Edge*)&theDS->Shape(nE);
+  aTolMax = BRep_Tool::Tolerance(aEOr);
+  //
+  const BOPDS_ListOfPaveBlock& aLPB = theCB->PaveBlocks();
+  const BOPCol_ListOfInteger& aLFI = theCB->Faces();
+  //
+  if ((aLPB.Extent() < 2) && aLFI.IsEmpty()) {
+    return aTolMax;
+  }
+  //
+  const Standard_Integer aNbPnt = 11;
+  Standard_Real aTol, aT, aT1, aT2, aDt;
+  gp_Pnt aP;
+  //
+  const Handle(Geom_Curve)& aC3D = BRep_Tool::Curve(aEOr, aT1, aT2);
+  //
+  aPBR->Range(aT1, aT2);
+  aDt = (aT2 - aT1) / (aNbPnt + 1);
+  //
+  // compute max tolerance for common blocks on edges
+  if (aLPB.Extent() > 1) {
+    // compute max distance between edges
+    BOPDS_ListIteratorOfListOfPaveBlock aItPB;
+    GeomAPI_ProjectPointOnCurve aProjPC;
+    //
+    aItPB.Initialize(aLPB);
+    for (; aItPB.More(); aItPB.Next()) {
+      const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+      if (aPB == aPBR) {
+        continue;
+      }
+      //
+      nE = aPB->OriginalEdge();
+      const TopoDS_Edge& aE = *(TopoDS_Edge*)&theDS->Shape(nE);
+      aTol = BRep_Tool::Tolerance(aE);
+      //
+      aProjPC = theContext->ProjPC(aE);
+      //
+      aT = aT1;
+      for (Standard_Integer i=1; i <= aNbPnt; i++) {
+        aT += aDt;
+        aC3D->D0(aT, aP);
+        aProjPC.Perform(aP);
+        if (aProjPC.NbPoints()) {
+          Standard_Real aTolNew = aTol + aProjPC.LowerDistance();
+          if (aTolNew > aTolMax) {
+            aTolMax = aTolNew;
+          }
+        }
+      }
+    }
+  }
+  //
+  // compute max tolerance for common blocks on faces
+  if (aLFI.Extent()) {
+    Standard_Integer nF;
+    GeomAPI_ProjectPointOnSurf aProjPS;
+    BOPCol_ListIteratorOfListOfInteger aItLI;
+    //
+    aItLI.Initialize(aLFI);
+    for (; aItLI.More(); aItLI.Next()) {
+      nF = aItLI.Value();
+      const TopoDS_Face& aF = *(TopoDS_Face*)&theDS->Shape(nF);
+      aTol = BRep_Tool::Tolerance(aF);
+      //
+      aProjPS = theContext->ProjPS(aF);
+      //
+      aT = aT1;
+      for (Standard_Integer i=1; i <= aNbPnt; i++) {
+        aT += aDt;
+        aC3D->D0(aT, aP);
+        aProjPS.Perform(aP);
+        if (aProjPS.NbPoints()) {
+          Standard_Real aTolNew = aTol + aProjPS.LowerDistance();
+          if (aTolNew > aTolMax) {
+            aTolMax = aTolNew;
+          }
+        }
+      }
+    }
+  }
+  //
+  return aTolMax;
 }

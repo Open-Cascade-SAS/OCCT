@@ -676,7 +676,7 @@ Standard_Boolean IntTools_Tools::IsOnPave1(const Standard_Real aTR,
   //
   aT1=aCPRange.First();
   aT2=aCPRange.Last();
-  bIsOnPave=(aTR>=aT1 && aTR<=aT1);
+  bIsOnPave=(aTR>=aT1 && aTR<=aT2);
   if (bIsOnPave) {
     return bIsOnPave;
   }
@@ -801,4 +801,29 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
   theMaxPar  = aCS.MaxParameter();
   //
   return Standard_True;
+}
+
+//=======================================================================
+// Function : ComputeIntRange
+// purpose : 
+//=======================================================================
+Standard_Real IntTools_Tools::ComputeIntRange(const Standard_Real theTol1,
+                                              const Standard_Real theTol2,
+                                              const Standard_Real theAngle)
+{
+  Standard_Real aDt;
+  //
+  if (Abs(M_PI_2 - theAngle) < Precision::Angular()) {
+    aDt = theTol2;
+  }
+  else {
+    Standard_Real a1, a2, anAngle;
+    //
+    anAngle = (theAngle > M_PI_2) ? (M_PI - theAngle) : theAngle;
+    a1 = theTol1 * tan(M_PI_2 - anAngle);
+    a2 = theTol2 / sin(anAngle);
+    aDt = a1 + a2;
+  }
+  //
+  return aDt;
 }

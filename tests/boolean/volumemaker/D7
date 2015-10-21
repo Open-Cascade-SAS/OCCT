@@ -1,9 +1,6 @@
 # test script on make volume operation
 # cylinder plane
 
-puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC26020 ALL: Error: bopcheck failed"
-
 # planar face 
 plane pln_f1 1441.7792892394632 -1532.5 900.69424230424909 -0.6072926454886024 -2.2204460492503121e-016 0.79447822042863747
 erase pln_f1
@@ -47,5 +44,5 @@ mkface f8 cyl_f8 0 6.2831853071795862 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7 f8
 
-#checkprops result -s 2.00003e+012
+#checkprops result -s 2.13502e+007
 

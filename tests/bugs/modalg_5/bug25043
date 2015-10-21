@@ -1,4 +1,4 @@
-puts "REQUIRED All: Info. Faulty shape if found in source shape"
+puts "REQUIRED All: Info. Faulty shape is found in source shape"
 puts "============"
 puts "OCC25043"
 puts "============"
@@ -9,11 +9,13 @@ puts ""
 
 pload QAcommands
 restore [locate_data_file bug25043.brep] a
+subshape a v 3
+settolerance a_3 0.0005
 
 set info [OCC25043 a]
 
-if { [regexp "Faulty shape if found in source shape" ${info}] == 1 } {
+if { [regexp "Faulty shape is found in source shape" ${info}] == 1 } {
     puts "OK : Good result"
-} else {
+} elseif { [regexp "Problems are not detected" $info] != 1 } {
     puts "Error : Wrong result"
 }

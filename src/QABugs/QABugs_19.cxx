@@ -130,14 +130,18 @@ static Standard_Integer OCC23237 (Draw_Interpretor& di, Standard_Integer /*argc*
   }
  
   int aNbEnters = 0;
-  Standard_Real aPerfMeter_CPUtime = 0., aTimer_ElapsedTime = aTM.ElapsedTime();
+  Standard_Real aPerfMeter_CPUtime = 0., aTimer_CPUTime = 0., aS;
+  Standard_Integer aM, aH;
+  aTM.Show(aS, aM, aH, aTimer_CPUTime);
 
   perf_get_meter("TestMeter", &aNbEnters, &aPerfMeter_CPUtime);
+  perf_init_meter("TestMeter");
 
-  Standard_Real aTimeDiff = (fabs(aTimer_ElapsedTime - aPerfMeter_CPUtime) / aTimer_ElapsedTime);
+  Standard_Real aTimeDiff = (fabs(aTimer_CPUTime - aPerfMeter_CPUtime) / aTimer_CPUTime);
 
   printf("\nMeasurement results (%d cycles):\n", count);
-  printf("\nOSD_PerfMeter CPU time: %lf\nOSD_Timer elapsed time: %lf\n", aPerfMeter_CPUtime, aTimer_ElapsedTime);
+  printf("\nOSD_PerfMeter CPU time: %lf\nOSD_Timer CPU time: %lf\n",
+    aPerfMeter_CPUtime, aTimer_CPUTime);
   printf("Time delta is: %.3lf %%\n", aTimeDiff * 100);
 
   if (aTimeDiff > 0.2)
@@ -2413,14 +2417,14 @@ static Standard_Integer OCC25043 (Draw_Interpretor& theDI,
         }
         else 
         {
-          theDI << "Info. Faulty shape if found in source shape\n";
+          theDI << "Info. Faulty shape is found in source shape\n";
         }
       }
     }
   }
   else 
   {
-    theDI << "Error. Problems are not detected. Test is not performed.";
+    theDI << "Problems are not detected. Test is not performed.";
   }
 
   return 0;

@@ -200,7 +200,7 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
 {
   myCurve = theCurve;
   
-  myCriteria = myBeanTolerance + myFaceTolerance;
+  myCriteria = myBeanTolerance + myFaceTolerance + Precision::Confusion();
   myCurveResolution = myCurve.Resolution(myCriteria);
 
   mySurface = theSurface;
@@ -220,7 +220,7 @@ void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge,
   myBeanTolerance = BRep_Tool::Tolerance(theEdge);
   myFaceTolerance = BRep_Tool::Tolerance(theFace);
   
-  myCriteria = myBeanTolerance + myFaceTolerance;
+  myCriteria = myBeanTolerance + myFaceTolerance + Precision::Confusion();
   myCurveResolution = myCurve.Resolution(myCriteria);
 
   SetSurfaceParameters(mySurface.FirstUParameter(), mySurface.LastUParameter(), 
@@ -243,7 +243,7 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
   myBeanTolerance = theBeanTolerance;
   myFaceTolerance = theFaceTolerance;
   
-  myCriteria = myBeanTolerance + myFaceTolerance;
+  myCriteria = myBeanTolerance + myFaceTolerance + Precision::Confusion();
   myCurveResolution = myCurve.Resolution(myCriteria);
   
   SetSurfaceParameters(mySurface.FirstUParameter(), mySurface.LastUParameter(), 
@@ -1018,14 +1018,24 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   if(myUMinParameter > u || u > myUMaxParameter || myVMinParameter > v || v > myVMaxParameter) {
     return;
   }
-
-  Standard_Real t1 = Max(myFirstParameter, t-myCriteria);
-  Standard_Real t2 = Min(myLastParameter, t+myCriteria);
+  //
+  // compute correct range on the edge
+  Standard_Real anAngle, aDt;
+  gp_Dir aDL, aDP;
+  //
+  aDL = L.Position().Direction();
+  aDP = P.Position().Direction();
+  anAngle = Abs(M_PI_2 - aDL.Angle(aDP));
+  //
+  aDt = IntTools_Tools::ComputeIntRange
+      (myBeanTolerance, myFaceTolerance, anAngle);
+  //
+  Standard_Real t1 = Max(myFirstParameter, t - aDt);
+  Standard_Real t2 = Min(myLastParameter,  t + aDt);
   IntTools_Range aRange(t1, t2);
   myResults.Append(aRange);
  
   return;
-
 }
 
 

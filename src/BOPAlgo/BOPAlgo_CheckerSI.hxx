@@ -50,21 +50,6 @@ Standard_EXPORT virtual ~BOPAlgo_CheckerSI();
   //! 4 - V/V, V/E, E/E, V/F and E/F;
   //! 5 - all interferences, default value.
   Standard_EXPORT void SetLevelOfCheck (const Standard_Integer theLevel);
-  
-  //! Sets the flag <theFlag> that defines
-  //! the mode of the treatment:
-  //! the copy of the argument when theFlag is true
-  //! the argument itself  when theFlag is false
-  Standard_EXPORT void SetNonDestructive (const Standard_Boolean theFlag);
-  
-  //! Returns the flag that defines the
-  //! mode of the treatment:
-  //! true when the copy of the argument is used
-  //! false when the argument itself  is used
-  Standard_EXPORT Standard_Boolean NonDestructive() const;
-
-
-
 
 protected:
 
@@ -81,7 +66,6 @@ protected:
 
 
   Standard_Integer myLevelOfCheck;
-  Standard_Boolean myNonDestructive;
   BOPCol_DataMapOfShapeShape myNewOldMap;
 
 

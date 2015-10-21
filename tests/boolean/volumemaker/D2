@@ -1,8 +1,7 @@
 # test script on make volume operation
 # cylinder plane unstable
 
-puts "TODO OCC26020 Windows: Error: bopcheck failed"
-puts "TODO OCC26020 Linux: Error : The area of result shape is"
+puts "TODO OCC26020 ALL: Error: bopcheck failed"
 
 # planar face 
 plane pln_f1 0 -232.5 3.8857805861880479e-015 0 -1 -1.1102230246251565e-016
@@ -42,5 +41,4 @@ mkface f7 cyl_f7 0 6.2831853071795862 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7
 
-checkprops result -s 1.00502e+012
-
+checkprops result -s 1.93904e+007

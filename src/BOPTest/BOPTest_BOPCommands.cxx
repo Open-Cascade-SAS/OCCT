@@ -119,7 +119,7 @@ Standard_Integer bop(Draw_Interpretor& di,
                      const char** a)
 {
   char buf[32];
-  Standard_Boolean bRunParallel;
+  Standard_Boolean bRunParallel, bNonDestructive;
   Standard_Integer iErr;
   Standard_Real aTol;
   TopoDS_Shape aS1, aS2;
@@ -140,6 +140,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   //
   aTol=BOPTest_Objects::FuzzyValue();
   bRunParallel=BOPTest_Objects::RunParallel();
+  bNonDestructive = BOPTest_Objects::NonDestructive();
   //
   aLC.Append(aS1);
   aLC.Append(aS2);
@@ -155,6 +156,7 @@ Standard_Integer bop(Draw_Interpretor& di,
   pPF->SetArguments(aLC);
   pPF->SetFuzzyValue(aTol);
   pPF->SetRunParallel(bRunParallel);
+  pPF->SetNonDestructive(bNonDestructive);
   //
   pPF->Perform();
   iErr=pPF->ErrorStatus();
@@ -395,7 +397,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   }
   // 
   char buf[80];
-  Standard_Boolean bRunParallel, bApp, bPC1, bPC2;
+  Standard_Boolean bRunParallel, bNonDestructive, bApp, bPC1, bPC2;
   Standard_Integer i, iErr;
   Standard_Real aTol;
   //
@@ -404,6 +406,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   bPC2 = Standard_True;
   aTol = BOPTest_Objects::FuzzyValue(); 
   bRunParallel = BOPTest_Objects::RunParallel();
+  bNonDestructive = BOPTest_Objects::NonDestructive();
   //
   for (i = 4; i < n; ++i) {
     if (!strcmp(a[i], "-n2d")) {
@@ -429,6 +432,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   //
   aSec.SetFuzzyValue(aTol);
   aSec.SetRunParallel(bRunParallel);
+  aSec.SetNonDestructive(bNonDestructive);
   //
   aSec.Build();
   iErr=aSec.ErrorStatus();
@@ -456,7 +460,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
                        const BOPAlgo_Operation aOp)
 {
   char buf[32];
-  Standard_Boolean bRunParallel;
+  Standard_Boolean bRunParallel, bNonDestructive;
   Standard_Integer iErr;
   TopoDS_Shape aS1, aS2;
   BOPCol_ListOfShape aLC;
@@ -479,6 +483,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   // 
   aTol=BOPTest_Objects::FuzzyValue();
   bRunParallel = BOPTest_Objects::RunParallel();
+  bNonDestructive = BOPTest_Objects::NonDestructive();
   //
   Handle(NCollection_BaseAllocator)aAL=
     NCollection_BaseAllocator::CommonBaseAllocator();
@@ -489,6 +494,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aPF.SetArguments(aLC);
   aPF.SetFuzzyValue(aTol); 
   aPF.SetRunParallel(bRunParallel);
+  aPF.SetNonDestructive(bNonDestructive);
   //
   aPF.Perform();
   iErr=aPF.ErrorStatus();
@@ -724,7 +730,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   const char* usage = "Type mkvolume without arguments for the usage of the command.\n";
   //
-  Standard_Boolean bToIntersect, bRunParallel, bCompounds;
+  Standard_Boolean bToIntersect, bRunParallel, bNonDestructive, bCompounds;
   Standard_Integer i;
   Standard_Real aTol;
   TopoDS_Shape aS;
@@ -732,6 +738,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   aTol = BOPTest_Objects::FuzzyValue();
   bRunParallel = BOPTest_Objects::RunParallel();
+  bNonDestructive = BOPTest_Objects::NonDestructive();
   //
   bToIntersect = Standard_True;
   bCompounds = Standard_False;
@@ -781,6 +788,7 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   aMV.SetIntersect(bToIntersect);
   aMV.SetRunParallel(bRunParallel);
   aMV.SetFuzzyValue(aTol);
+  aMV.SetNonDestructive(bNonDestructive);
   //
   aMV.Perform();
   if (aMV.ErrorStatus()) {

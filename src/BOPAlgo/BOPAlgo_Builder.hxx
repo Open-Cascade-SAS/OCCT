@@ -64,7 +64,7 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   Standard_EXPORT virtual void SetArguments (const BOPCol_ListOfShape& theLS);
   
   Standard_EXPORT const BOPCol_ListOfShape& Arguments() const;
-  
+
   Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
   Standard_EXPORT virtual void PerformWithFiller (const BOPAlgo_PaveFiller& theFiller);
@@ -99,7 +99,18 @@ Standard_EXPORT virtual ~BOPAlgo_Builder();
   //! Returns the additional tolerance
   Standard_EXPORT Standard_Real FuzzyValue() const;
 
+  //! Sets the flag that defines the mode of treatment.
+  //! In non-destructive mode the argument shapes are not modified. Instead
+  //! a copy of a sub-shape is created in the result if it is needed to be updated.
+  //! This flag is taken into account if internal PaveFiller is used only.
+  //! In the case of calling PerformWithFiller the corresponding flag of that PaveFiller
+  //! is in force.
+  Standard_EXPORT void SetNonDestructive(const Standard_Boolean theFlag);
 
+  //! Returns the flag that defines the mode of treatment.
+  //! In non-destructive mode the argument shapes are not modified. Instead
+  //! a copy of a sub-shape is created in the result if it is needed to be updated.
+  Standard_EXPORT Standard_Boolean NonDestructive() const;
 
 
 protected:
@@ -162,7 +173,7 @@ protected:
   BOPCol_DataMapOfShapeListOfShape mySplits;
   BOPCol_DataMapOfShapeShape myOrigins;
   Standard_Real myFuzzyValue;
-
+  Standard_Boolean myNonDestructive;
 
 private:
 

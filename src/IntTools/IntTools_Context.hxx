@@ -112,27 +112,35 @@ Standard_EXPORT virtual  ~IntTools_Context();
   
 
   //! Computes parameter of the vertex aV on
-  //! the edge aE.
+  //! the edge aE and new increased value of vertex tolerance.
   //! Returns zero if the distance between vertex
   //! and edge is less than sum of tolerances,
   //! otherwise and for following conditions returns
-  //! negative value
-  //! 1. the edge is degenerated (-1)
-  //! 2. the edge does not contain 3d curve and pcurves (-2)
+  //! negative value: <br>
+  //! 1. the edge is degenerated (-1) <br>
+  //! 2. the edge does not contain 3d curve and pcurves (-2) <br>
   //! 3. projection algorithm failed (-3)
-  Standard_EXPORT Standard_Integer ComputeVE (const TopoDS_Vertex& aV, const TopoDS_Edge& aE, Standard_Real& aT);
-  
+  Standard_EXPORT Standard_Integer ComputeVE (const TopoDS_Vertex& aV,
+                                              const TopoDS_Edge& aE,
+                                              Standard_Real& aParam,
+                                              Standard_Real& aTolVnew);
+
 
   //! Computes UV parameters of the vertex aV on face aF
+  //! and new increased value of vertex tolerance.
   //! Returns zero if the distance between vertex and face is
   //! less than or equal the sum of tolerances and the projection
   //! point lays inside boundaries of the face.
-  //! For following conditions returns negative value
-  //! 1. projection algorithm failed (-1)
-  //! 2. distance is more than sum of tolerances (-2)
+  //! For following conditions returns negative value <br>
+  //! 1. projection algorithm failed (-1) <br>
+  //! 2. distance is more than sum of tolerances (-2) <br>
   //! 3. projection point out or on the boundaries of face (-3)
-  Standard_EXPORT Standard_Integer ComputeVF (const TopoDS_Vertex& aV, const TopoDS_Face& aF, Standard_Real& U, Standard_Real& V);
-  
+  Standard_EXPORT Standard_Integer ComputeVF (const TopoDS_Vertex& aV,
+                                              const TopoDS_Face& aF,
+                                              Standard_Real& U,
+                                              Standard_Real& V,
+                                              Standard_Real& aTolVnew);
+
 
   //! Returns the state of the point aP2D
   //! relative to face aF

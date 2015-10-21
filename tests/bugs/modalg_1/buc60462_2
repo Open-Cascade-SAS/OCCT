@@ -1,4 +1,5 @@
-puts "TODO OCC26717 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC26717 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC26717 ALL: Error : operation bfuse is WRONG because number of SOLID"
 
 puts "=========="
 puts "BUC60462"
@@ -13,7 +14,7 @@ bfuse result a b
 puts "Fuse end"
 
 checkshape result r
-
+checknbshapes result -solid 1 -m "operation bfuse"
 checkprops result -s 93237.9
 checkshape result
 set 2dviewer 0

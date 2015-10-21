@@ -1,4 +1,2 @@
-puts "TODO OCC26018 Linux: Faulty shapes in variables faulty_1 to"
-
 source [locate_data_file 20000_et4_401-ta6049.prt.2.gdml.tcl]
 

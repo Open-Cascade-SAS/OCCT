@@ -70,22 +70,6 @@ void BOPAlgo_CheckerSI::SetLevelOfCheck(const Standard_Integer theLevel)
   }
 }
 //=======================================================================
-//function : SetNonDestructive
-//purpose  : 
-//=======================================================================
-void BOPAlgo_CheckerSI::SetNonDestructive(const Standard_Boolean theFlag)
-{
-  myNonDestructive=theFlag;
-}
-//=======================================================================
-//function : NonDestructive
-//purpose  : 
-//=======================================================================
-Standard_Boolean BOPAlgo_CheckerSI::NonDestructive() const 
-{
-  return myNonDestructive;
-}
-//=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================

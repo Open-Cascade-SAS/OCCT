@@ -962,7 +962,7 @@ Standard_Boolean BOPTools_AlgoTools::AreFacesSameDomain
   }
   // 2
   aTolF2=BRep_Tool::Tolerance(aF2);
-  aTol=aTolF1+aTolF2;
+  aTol = aTolF1 + aTolF2 + Precision::Confusion();
   //
   iErr = BOPTools_AlgoTools3D::PointInFace(aF1, aP, aP2D,
                                            theContext);
@@ -1461,7 +1461,7 @@ Standard_Integer BOPTools_AlgoTools::ComputeVV(const TopoDS_Vertex& aV1,
   //
   aTolV1=BRep_Tool::Tolerance(aV1);
   
-  aTolSum=aTolV1+aTolP2;
+  aTolSum = aTolV1 + aTolP2 + Precision::Confusion();
   aTolSum2=aTolSum*aTolSum;
   //
   aP1=BRep_Tool::Pnt(aV1);
@@ -1484,7 +1484,7 @@ Standard_Integer BOPTools_AlgoTools::ComputeVV(const TopoDS_Vertex& aV1,
   //
   aTolV1=BRep_Tool::Tolerance(aV1);
   aTolV2=BRep_Tool::Tolerance(aV2);
-  aTolSum=aTolV1+aTolV2;
+  aTolSum = aTolV1 + aTolV2 + Precision::Confusion();
   aTolSum2=aTolSum*aTolSum;
   //
   aP1=BRep_Tool::Pnt(aV1);
@@ -1500,7 +1500,7 @@ Standard_Integer BOPTools_AlgoTools::ComputeVV(const TopoDS_Vertex& aV1,
 // function: MakeVertex
 // purpose : 
 //=======================================================================
-void BOPTools_AlgoTools::MakeVertex(BOPCol_ListOfShape& aLV,
+void BOPTools_AlgoTools::MakeVertex(const BOPCol_ListOfShape& aLV,
                                     TopoDS_Vertex& aVnew)
 {
   Standard_Integer aNb;

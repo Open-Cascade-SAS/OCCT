@@ -29,6 +29,7 @@
 #include <BOPDS_DataMapOfPaveBlockCommonBlock.hxx>
 #include <BOPDS_VectorOfFaceInfo.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
+#include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
 #include <BOPDS_MapOfPassKey.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
 #include <BOPDS_VectorOfInterfVE.hxx>
@@ -439,7 +440,13 @@ Standard_EXPORT virtual ~BOPDS_DS();
 
   //! Updates tolerance of the sub-shapes of the shape with index <theIndex>.
   Standard_EXPORT void UpdateEdgeTolerance (const Standard_Integer theIndex, const Standard_Real theTolerance);
-  
+
+  Standard_EXPORT void UpdatePaveBlocksWithSDVertices();
+
+  Standard_EXPORT void UpdateCommonBlockWithSDVertices(const Handle(BOPDS_CommonBlock)& theCB);
+
+  Standard_EXPORT void InitPaveBlocksForVertex(const Standard_Integer theNV);
+
   //! Sets the extended tolerance
     void SetFuzzyValue (const Standard_Real theFuzz);
   
@@ -458,7 +465,8 @@ protected:
 
   //! Initializes the pave blocks for the shape with index theIndex
   Standard_EXPORT void InitPaveBlocks (const Standard_Integer theIndex);
-  
+
+  Standard_EXPORT void UpdatePaveBlockWithSDVertices(const Handle(BOPDS_PaveBlock)& thePB);
 
   //! Initializes the state of face with index theIndex
   Standard_EXPORT void InitFaceInfo (const Standard_Integer theIndex);
@@ -483,6 +491,7 @@ protected:
   BOPDS_DataMapOfPaveBlockCommonBlock myMapPBCB;
   BOPDS_VectorOfFaceInfo myFaceInfoPool;
   BOPCol_DataMapOfIntegerInteger myShapesSD;
+  BOPCol_DataMapOfIntegerListOfInteger myMapVE;
   BOPDS_MapOfPassKey myInterfTB;
   BOPDS_VectorOfInterfVV myInterfVV;
   BOPDS_VectorOfInterfVE myInterfVE;

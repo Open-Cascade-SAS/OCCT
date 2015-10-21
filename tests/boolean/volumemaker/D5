@@ -1,9 +1,8 @@
 # test script on make volume operation
 # cylinder plane
 
-puts "TODO OCC26020 ALL: Error: bopcheck failed"
-puts "TODO OCC26020 Linux: Error : The area of result shape is"
-puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to"
+puts "TODO OCC26020 Linux: Error: bopcheck failed"
+puts "TODO OCC26020 Linux: Faulty shapes in variables faulty_1 to"
 
 # planar face 
 plane pln_f1 0 -1450 -4.4408920985006262e-015 0 1 1.1102230246251565e-016
@@ -48,5 +47,4 @@ mkface f8 cyl_f8 0 6.2831853071795862 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7 f8
 
-checkprops result -s 1.8917e+007
-
+checkprops result -s 1.96647e+007

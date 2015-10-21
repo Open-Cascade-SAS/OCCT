@@ -71,6 +71,10 @@ public:
   
   Standard_EXPORT static Standard_Real FuzzyValue();
 
+  Standard_EXPORT static void SetNonDestructive(const Standard_Boolean theFlag);
+
+  Standard_EXPORT static Standard_Boolean NonDestructive();
+
 
 
 

@@ -72,11 +72,19 @@ IMPLEMENT_STANDARD_RTTIEXT(BOPDS_CommonBlock,MMgt_TShared)
 // function:  AddFaces
 // purpose: 
 //=======================================================================
-  void BOPDS_CommonBlock::AddFaces(const BOPCol_ListOfInteger& aLF)
+  void BOPDS_CommonBlock::SetFaces(const BOPCol_ListOfInteger& aLF)
 {
   myFaces=aLF;
 }
 //=======================================================================
+// function:  AppendFaces
+// purpose: 
+//=======================================================================
+void BOPDS_CommonBlock::AppendFaces(BOPCol_ListOfInteger& aLF)
+{
+  myFaces.Append(aLF);
+}
+  //=======================================================================
 // function:  Faces
 // purpose: 
 //=======================================================================

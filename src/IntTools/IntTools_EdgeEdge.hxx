@@ -47,48 +47,51 @@ public:
   
 
   //! Empty contructor
-    IntTools_EdgeEdge();
-~IntTools_EdgeEdge();
+  IntTools_EdgeEdge();
+
+  //! Destructor
+  ~IntTools_EdgeEdge();
+
+  //! Contructor
+  IntTools_EdgeEdge(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2);
   
 
   //! Contructor
-    IntTools_EdgeEdge(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2);
-  
-
-  //! Contructor
-    IntTools_EdgeEdge(const TopoDS_Edge& theEdge1, const Standard_Real aT11, const Standard_Real aT12, const TopoDS_Edge& theEdge2, const Standard_Real aT21, const Standard_Real aT22);
+  IntTools_EdgeEdge(const TopoDS_Edge& theEdge1, const Standard_Real aT11,
+      const Standard_Real aT12, const TopoDS_Edge& theEdge2, 
+      const Standard_Real aT21, const Standard_Real aT22);
   
 
   //! Sets the first edge
-    void SetEdge1 (const TopoDS_Edge& theEdge);
+  void SetEdge1(const TopoDS_Edge& theEdge);
   
 
   //! Sets the first edge and its range
-    void SetEdge1 (const TopoDS_Edge& theEdge, const Standard_Real aT1, const Standard_Real aT2);
+  void SetEdge1(const TopoDS_Edge& theEdge, const Standard_Real aT1, const Standard_Real aT2);
   
 
   //! Sets the range for the first edge
-    void SetRange1 (const IntTools_Range& theRange1);
+  void SetRange1(const IntTools_Range& theRange1);
   
 
   //! Sets the range for the first edge
-    void SetRange1 (const Standard_Real aT1, const Standard_Real aT2);
+  void SetRange1(const Standard_Real aT1, const Standard_Real aT2);
   
 
   //! Sets the second edge
-    void SetEdge2 (const TopoDS_Edge& theEdge);
+  void SetEdge2(const TopoDS_Edge& theEdge);
   
 
   //! Sets the first edge and its range
-    void SetEdge2 (const TopoDS_Edge& theEdge, const Standard_Real aT1, const Standard_Real aT2);
+  void SetEdge2(const TopoDS_Edge& theEdge, const Standard_Real aT1, const Standard_Real aT2);
   
 
   //! Sets the range for the second edge
-    void SetRange2 (const IntTools_Range& theRange);
+  void SetRange2(const IntTools_Range& theRange);
   
 
   //! Sets the range for the second edge
-    void SetRange2 (const Standard_Real aT1, const Standard_Real aT2);
+  void SetRange2(const Standard_Real aT1, const Standard_Real aT2);
   
 
   //! Performs the intersection between edges
@@ -96,11 +99,11 @@ public:
   
 
   //! Returns TRUE if common part(s) is(are) found
-    Standard_Boolean IsDone() const;
+  Standard_Boolean IsDone() const;
   
 
   //! Returns common parts
-    const IntTools_SequenceOfCommonPrts& CommonParts() const;
+  const IntTools_SequenceOfCommonPrts& CommonParts() const;
 
 
 
@@ -110,7 +113,7 @@ protected:
   
 
   //! Checks the data
-    void CheckData();
+  void CheckData();
   
 
   //! Prepares the data
@@ -122,36 +125,50 @@ protected:
   
 
   //! Intermediate function
-  Standard_EXPORT void FindSolutions (IntTools_SequenceOfRanges& theRanges1, IntTools_SequenceOfRanges& theRanges2, Standard_Boolean& bSplit2);
+  Standard_EXPORT void FindSolutions (IntTools_SequenceOfRanges& theRanges1, 
+    IntTools_SequenceOfRanges& theRanges2, Standard_Boolean& bSplit2);
   
 
   //! Looking for the exact intersection ranges
-  Standard_EXPORT void FindSolutions (const IntTools_Range& theR1, const IntTools_Range& theR2, const Bnd_Box& theBox2, IntTools_SequenceOfRanges& theRanges1, IntTools_SequenceOfRanges& theRanges2);
+  Standard_EXPORT void FindSolutions (const IntTools_Range& theR1, 
+    const IntTools_Range& theR2, const Bnd_Box& theBox2,
+    IntTools_SequenceOfRanges& theRanges1, IntTools_SequenceOfRanges& theRanges2);
   
 
   //! Merges found solutions
-  Standard_EXPORT void MergeSolutions (const IntTools_SequenceOfRanges& theRanges1, const IntTools_SequenceOfRanges& theRanges2, const Standard_Boolean bSplit2);
+  Standard_EXPORT void MergeSolutions (const IntTools_SequenceOfRanges& theRanges1, 
+    const IntTools_SequenceOfRanges& theRanges2, const Standard_Boolean bSplit2);
   
 
   //! Looking for the range of the edge whick is in the box
-  Standard_EXPORT static Standard_Boolean FindParameters (const BRepAdaptor_Curve& theBAC, const Standard_Real aT1, const Standard_Real aT2, const Standard_Real theRes, const Standard_Real thePTol, const Standard_Real theResCoeff, const Bnd_Box& theCBox, Standard_Real& aTB1, Standard_Real& aTB2);
+  Standard_EXPORT static Standard_Boolean FindParameters(const BRepAdaptor_Curve& theBAC,
+    const Standard_Real aT1, const Standard_Real aT2, const Standard_Real theTol,
+    const Standard_Real theRes, const Standard_Real thePTol,
+    const Standard_Real theResCoeff, const Bnd_Box& theCBox,
+    Standard_Real& aTB1, Standard_Real& aTB2);
   
 
   //! Checks if edges coincide on the ranges
-  Standard_EXPORT Standard_Integer CheckCoincidence (const Standard_Real aT11, const Standard_Real aT12, const Standard_Real aT21, const Standard_Real aT22, const Standard_Real theCriteria, const Standard_Real theCurveRes1);
+  Standard_EXPORT Standard_Integer CheckCoincidence (const Standard_Real aT11,
+    const Standard_Real aT12, const Standard_Real aT21, const Standard_Real aT22,
+    const Standard_Real theCriteria, const Standard_Real theCurveRes1);
   
 
   //! Adds common part of the given type to myCommonParts
-  Standard_EXPORT void AddSolution (const Standard_Real aT11, const Standard_Real aT12, const Standard_Real aT21, const Standard_Real aT22, const TopAbs_ShapeEnum theType);
+  Standard_EXPORT void AddSolution (const Standard_Real aT11, const Standard_Real aT12,
+    const Standard_Real aT21, const Standard_Real aT22, const TopAbs_ShapeEnum theType);
   
 
   //! Looking for the minimal distance between edges on the ranges
-  Standard_EXPORT void FindBestSolution (const Standard_Real aT11, const Standard_Real aT12, const Standard_Real aT21, const Standard_Real aT22, Standard_Real& aT1, Standard_Real& aT2);
+  Standard_EXPORT void FindBestSolution (const Standard_Real aT11, const Standard_Real aT12,
+    const Standard_Real aT21, const Standard_Real aT22,
+    Standard_Real& aT1, Standard_Real& aT2);
   
 
   //! Checks is there an intersection between edges on the given ranges
   //! (for nearly conicident edges)
-  Standard_EXPORT Standard_Boolean IsIntersection (const Standard_Real aT11, const Standard_Real aT12, const Standard_Real aT21, const Standard_Real aT22);
+  Standard_EXPORT Standard_Boolean IsIntersection (const Standard_Real aT11,
+    const Standard_Real aT12, const Standard_Real aT21, const Standard_Real aT22);
 
 
   TopoDS_Edge myEdge1;
@@ -175,20 +192,10 @@ protected:
   Standard_Integer myErrorStatus;
   IntTools_SequenceOfCommonPrts myCommonParts;
 
-
 private:
-
-
-
-
 
 };
 
-
 #include <IntTools_EdgeEdge.lxx>
-
-
-
-
 
 #endif // _IntTools_EdgeEdge_HeaderFile

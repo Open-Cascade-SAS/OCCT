@@ -30,6 +30,7 @@
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_EdgeEdge.hxx>
 #include <IntTools_Range.hxx>
+#include <IntTools_Tools.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 
@@ -157,8 +158,9 @@ void IntTools_EdgeEdge::Prepare()
     mySwap = Standard_True;
   }
   //
-  myTol1 = myCurve1.Tolerance();
-  myTol2 = myCurve2.Tolerance();
+  Standard_Real aTolAdd = Precision::Confusion() / 2.;
+  myTol1 = myCurve1.Tolerance() + aTolAdd;
+  myTol2 = myCurve2.Tolerance() + aTolAdd;
   myTol = myTol1 + myTol2;
   //
   if (iCT1 != 0 || iCT2 != 0) {
@@ -321,7 +323,7 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
     bThin = ((aT12 - aT11) < myRes1) ||
       (aB1.IsXThin(myTol) && aB1.IsYThin(myTol) && aB1.IsZThin(myTol));
     //
-    bOut = !FindParameters(myCurve2, aTB21, aTB22, myRes2, myPTol2, 
+    bOut = !FindParameters(myCurve2, aTB21, aTB22, myTol2, myRes2, myPTol2, 
                            myResCoeff2, aB1, aT21, aT22);
     if (bOut || bThin) {
       break;
@@ -338,7 +340,7 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
     bThin = ((aT22 - aT21) < myRes2) ||
       (aB2.IsXThin(myTol) && aB2.IsYThin(myTol) && aB2.IsZThin(myTol));
     //
-    bOut = !FindParameters(myCurve1, aTB11, aTB12, myRes1, myPTol1, 
+    bOut = !FindParameters(myCurve1, aTB11, aTB12, myTol1, myRes1, myPTol1,
                            myResCoeff1, aB2, aT11, aT12);
     //
     if (bOut || bThin) {
@@ -439,7 +441,8 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
 //=======================================================================
 Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theBAC,
                                                    const Standard_Real aT1, 
-                                                   const Standard_Real aT2, 
+                                                   const Standard_Real aT2,
+                                                   const Standard_Real theTol,
                                                    const Standard_Real theRes,
                                                    const Standard_Real thePTol,
                                                    const Standard_Real theResCoeff,
@@ -450,18 +453,17 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
   Standard_Boolean bRet;
   Standard_Integer aC, i, k;
   Standard_Real aCf, aDiff, aDt, aT, aTB, aTOut, aTIn;
-  Standard_Real aDist, aDistP, aDistTol, aTol;
+  Standard_Real aDist, aDistP, aDistTol;
   gp_Pnt aP;
   Bnd_Box aCBx;
   //
   bRet = Standard_False;
   aCf = 0.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.))/2.;
   aDt = theRes;
-  aTol = theBAC.Tolerance();
   aDistP = 0.;
-  aDistTol = Precision::PConfusion();
+  aDistTol = 1e-9;
   aCBx = theCBox;
-  aCBx.Enlarge(aTol);
+  aCBx.Enlarge(theTol);
   //
   const Handle(Geom_Curve)& aCurve = theBAC.Curve().Curve();
   const GeomAbs_CurveType aCurveType = theBAC.GetType();
@@ -476,7 +478,7 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
     while (aC*(aT-aTB) >= 0) {
       theBAC.D0(aTB, aP);
       aDist = PointBoxDistance(theCBox, aP);
-      if (aDist > aTol) {
+      if (aDist > theTol) {
         if (fabs(aDist - aDistP) < aDistTol) {
           aDt = Resolution(aCurve, aCurveType, theResCoeff, (++k)*aDist);
         } else {
@@ -867,8 +869,16 @@ void IntTools_EdgeEdge::ComputeLineLine()
     return;
   }
   //
-  aCommonPrt.SetRange1(aT1 - myTol, aT1 + myTol);
-  aCommonPrt.AppendRange2(aT2 - myTol, aT2 + myTol);
+  // compute correct range on the edges
+  Standard_Real anAngle, aDt1, aDt2;
+  //
+  anAngle = aD1.Angle(aD2);
+  //
+  aDt1 = IntTools_Tools::ComputeIntRange(myTol1, myTol2, anAngle);
+  aDt2 = IntTools_Tools::ComputeIntRange(myTol2, myTol1, anAngle);
+  //
+  aCommonPrt.SetRange1(aT1 - aDt1, aT1 + aDt1);
+  aCommonPrt.AppendRange2(aT2 - aDt2, aT2 + aDt2);
   aCommonPrt.SetType(TopAbs_VERTEX);
   aCommonPrt.SetVertexParameter1(aT1);
   aCommonPrt.SetVertexParameter2(aT2);
