@@ -50,6 +50,8 @@ public:
   //! Creates default rendering parameters.
   Graphic3d_RenderingParams()
   : Method                      (Graphic3d_RM_RASTERIZATION),
+    NbMsaaSamples               (0),
+    // ray tracing parameters
     IsGlobalIlluminationEnabled (Standard_False),
     SamplesPerPixel             (THE_DEFAULT_SPP),
     RaytracingDepth             (THE_DEFAULT_DEPTH),
@@ -59,7 +61,7 @@ public:
     IsTransparentShadowEnabled  (Standard_False),
     UseEnvironmentMapBackground (Standard_False),
     CoherentPathTracingMode     (Standard_False),
-
+    // stereoscopic parameters
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
     AnaglyphFilter (Anaglyph_RedCyan_Optimized),
     ToReverseStereo (Standard_False),
@@ -80,6 +82,7 @@ public:
 public:
 
   Graphic3d_RenderingMode Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
+  Standard_Integer        NbMsaaSamples;               //!< number of MSAA samples (should be within 0..GL_MAX_SAMPLES, power-of-two number), 0 by default
 
   Standard_Boolean        IsGlobalIlluminationEnabled; //!< enables/disables global illumination effects (path tracing)
   Standard_Integer        SamplesPerPixel;             //!< number of samples per pixel (SPP)

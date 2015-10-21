@@ -308,7 +308,7 @@ public:
   const OpenGl_GlFunctions* Functions() const { return myFuncs.operator->(); }
 
   //! Clean up errors stack for this GL context (glGetError() in loop).
-  Standard_EXPORT void ResetErrors();
+  Standard_EXPORT void ResetErrors (const bool theToPrintErrors = false);
 
   //! This method uses system-dependent API to retrieve information
   //! about GL context bound to the current thread.
@@ -421,16 +421,19 @@ public:
   Standard_Integer TextureWrapClamp() const { return myTexClamp; }
 
   //! @return maximum degree of anisotropy texture filter
-  Standard_EXPORT Standard_Integer MaxDegreeOfAnisotropy() const;
+  Standard_Integer MaxDegreeOfAnisotropy() const { return myAnisoMax; }
 
   //! @return value for GL_MAX_TEXTURE_SIZE
-  Standard_EXPORT Standard_Integer MaxTextureSize() const;
+  Standard_Integer MaxTextureSize() const { return myMaxTexDim; }
+
+  //! @return value for GL_MAX_SAMPLES
+  Standard_Integer MaxMsaaSamples() const { return myMaxMsaaSamples; }
 
   //! Get maximum number of clip planes supported by OpenGl.
   //! This value is implementation dependent. At least 6
   //! planes should be supported by OpenGl (see specs).
   //! @return value for GL_MAX_CLIP_PLANES
-  Standard_EXPORT Standard_Integer MaxClipPlanes() const;
+  Standard_Integer MaxClipPlanes() const { return myMaxClipPlanes; }
 
   //! Returns true if VBO is supported and permitted.
   inline bool ToUseVbo() const
@@ -680,6 +683,7 @@ private: // context info
   Standard_Integer myTexClamp;             //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
   Standard_Integer myMaxTexDim;            //!< value for GL_MAX_TEXTURE_SIZE
   Standard_Integer myMaxClipPlanes;        //!< value for GL_MAX_CLIP_PLANES
+  Standard_Integer myMaxMsaaSamples;       //!< value for GL_MAX_SAMPLES
   Standard_Integer myGlVerMajor;           //!< cached GL version major number
   Standard_Integer myGlVerMinor;           //!< cached GL version minor number
   Standard_Boolean myIsInitialized;        //!< flag indicates initialization state

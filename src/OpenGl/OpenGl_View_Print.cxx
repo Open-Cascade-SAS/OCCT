@@ -440,7 +440,7 @@ Standard_Boolean OpenGl_View::Print (const Aspect_Handle    thePrinterDC,
         initBufferTiling (aFrameWidth, aFrameHeight, width, height);
 
       // try to initialize framebuffer
-      if (aFrameBuffer->Init (aCtx, aFrameWidth, aFrameHeight))
+      if (aFrameBuffer->Init (aCtx, aFrameWidth, aFrameHeight, GL_RGBA8, GL_DEPTH24_STENCIL8))
       {
 #ifdef HAVE_FREEIMAGE
         // try to allocate fipImage and necessary resources

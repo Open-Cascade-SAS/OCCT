@@ -1,0 +1,24 @@
+puts "========"
+puts "Multisampling FBOs"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b 2 3 1
+vclear
+vclose ALL
+vinit View1 w=512 h=512
+vsetgradientbg 180 200 255 180 180 180 2
+vsetdispmode 0
+vdisplay b
+vfit
+vrotate 0.5 0 0
+vzbufftrihedron
+
+vrenderparams -msaa 0
+vdump $::imagedir/${::casename}_0.png
+vrenderparams -msaa 2
+vdump $::imagedir/${::casename}_2.png
+vrenderparams -msaa 4
+vdump $::imagedir/${::casename}_4.png
+vrenderparams -msaa 8
+vdump $::imagedir/${::casename}_8.png

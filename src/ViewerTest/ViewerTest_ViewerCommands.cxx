@@ -8267,10 +8267,11 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_RM_RAYTRACING:    theDI << "raytrace ";      break;
     }
     theDI << "\n";
+    theDI << "msaa:         " <<  aParams.NbMsaaSamples << "\n";
+    theDI << "rayDepth:     " <<  aParams.RaytracingDepth                             << "\n";
     theDI << "fsaa:         " << (aParams.IsAntialiasingEnabled       ? "on" : "off") << "\n";
     theDI << "shadows:      " << (aParams.IsShadowEnabled             ? "on" : "off") << "\n";
     theDI << "reflections:  " << (aParams.IsReflectionEnabled         ? "on" : "off") << "\n";
-    theDI << "rayDepth:     " <<  aParams.RaytracingDepth                             << "\n";
     theDI << "gleam:        " << (aParams.IsTransparentShadowEnabled  ? "on" : "off") << "\n";
     theDI << "GI:           " << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << "\n";
     theDI << "blocked RNG:  " << (aParams.CoherentPathTracingMode     ? "on" : "off") << "\n";
@@ -8344,6 +8345,30 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       aParams.Method = Graphic3d_RM_RASTERIZATION;
+    }
+    else if (aFlag == "-msaa")
+    {
+      if (toPrint)
+      {
+        theDI << aParams.NbMsaaSamples << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Integer aNbSamples = Draw::Atoi (theArgVec[anArgIter]);
+      if (aNbSamples < 0)
+      {
+        std::cerr << "Error: invalid number of MSAA samples " << aNbSamples << ".\n";
+        return 1;
+      }
+      else
+      {
+        aParams.NbMsaaSamples = aNbSamples;
+      }
     }
     else if (aFlag == "-raydepth"
           || aFlag == "-ray_depth")
@@ -9270,8 +9295,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VRenderParams, group);
   theCommands.Add("vrenderparams",
     "\n    Manages rendering parameters: "
-    "\n      '-rayTrace'             Enables  GPU ray-tracing"
     "\n      '-raster'               Disables GPU ray-tracing"
+    "\n      '-msaa         0..4'    Specifies number of samples for MSAA"
+    "\n      '-rayTrace'             Enables  GPU ray-tracing"
     "\n      '-rayDepth     0..10'   Defines maximum ray-tracing depth"
     "\n      '-shadows      on|off'  Enables/disables shadows rendering"
     "\n      '-reflections  on|off'  Enables/disables specular reflections"

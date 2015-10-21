@@ -297,7 +297,7 @@ void OpenGl_Window::Init()
     ::glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myHeight);
     ::glBindRenderbuffer (GL_RENDERBUFFER, 0);
 
-    if (!aDefFbo->InitWithRB (myGlContext, myWidth, myHeight, aWinRBColor))
+    if (!aDefFbo->InitWithRB (myGlContext, myWidth, myHeight, GL_RGBA8, GL_DEPTH24_STENCIL8, aWinRBColor))
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: default FBO creation failed");
       Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());

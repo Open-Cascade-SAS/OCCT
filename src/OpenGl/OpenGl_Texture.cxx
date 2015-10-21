@@ -16,7 +16,7 @@
 
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_Context.hxx>
-#include <OpenGl_GlCore15.hxx>
+#include <OpenGl_GlCore32.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Assert.hxx>
@@ -658,6 +658,58 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
                (Standard_Integer)theImage.SizeX(),
                (Standard_Integer)theImage.SizeY(),
                theType, &theImage);
+}
+
+// =======================================================================
+// function : Init2DMultisample
+// purpose  :
+// =======================================================================
+bool OpenGl_Texture::Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
+                                        const GLsizei                 theNbSamples,
+                                        const GLint                   theTextFormat,
+                                        const GLsizei                 theSizeX,
+                                        const GLsizei                 theSizeY)
+{
+  if (!Create (theCtx)
+    || theNbSamples > theCtx->MaxMsaaSamples()
+    || theNbSamples < 1)
+  {
+    return false;
+  }
+
+  const GLsizei aNbSamples = OpenGl_Context::GetPowerOfTwo (theNbSamples, theCtx->MaxMsaaSamples());
+  myTarget = GL_TEXTURE_2D_MULTISAMPLE;
+  if(theSizeX > theCtx->MaxTextureSize()
+  || theSizeY > theCtx->MaxTextureSize())
+  {
+    return false;
+  }
+
+  Bind (theCtx);
+  //myTextFormat = theTextFormat;
+#if !defined(GL_ES_VERSION_2_0)
+  if (theCtx->Functions()->glTexStorage2DMultisample != NULL)
+  {
+    theCtx->Functions()->glTexStorage2DMultisample (myTarget, aNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
+  }
+  else
+  {
+    theCtx->Functions()->glTexImage2DMultisample   (myTarget, aNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
+  }
+#else
+  theCtx->Functions()  ->glTexStorage2DMultisample (myTarget, aNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
+#endif
+  if (theCtx->core11fwd->glGetError() != GL_NO_ERROR)
+  {
+    Unbind (theCtx);
+    return false;
+  }
+
+  mySizeX = theSizeX;
+  mySizeY = theSizeY;
+
+  Unbind (theCtx);
+  return true;
 }
 
 // =======================================================================

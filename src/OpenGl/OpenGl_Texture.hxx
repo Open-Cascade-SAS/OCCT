@@ -247,6 +247,13 @@ public:
                              const Graphic3d_TypeOfTexture theType,
                              const Image_PixMap*           theImage = NULL);
 
+  //! Initialize the 2D multisampling texture using glTexImage2DMultisample().
+  Standard_EXPORT bool Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
+                                          const GLsizei                 theNbSamples,
+                                          const GLint                   theTextFormat,
+                                          const GLsizei                 theSizeX,
+                                          const GLsizei                 theSizeY);
+
   //! Allocates texture rectangle with specified format and size.
   //! \note Texture data is not initialized (will contain trash).
   Standard_EXPORT bool InitRectangle (const Handle(OpenGl_Context)& theCtx,

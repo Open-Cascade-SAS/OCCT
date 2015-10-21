@@ -39,13 +39,31 @@ public:
 public:
 
   //! Empty constructor
-  Standard_EXPORT OpenGl_FrameBuffer (GLint theTextureFormat = GL_RGBA8);
+  Standard_EXPORT OpenGl_FrameBuffer();
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_FrameBuffer();
 
   //! Destroy object - will release GPU memory if any.
   Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx);
+
+  //! Number of multisampling samples.
+  GLsizei NbSamples() const
+  {
+    return myNbSamples;
+  }
+
+  //! Return true if FBO has been created with color attachment.
+  bool HasColor() const
+  {
+    return myColorFormat != 0;
+  }
+
+  //! Return true if FBO has been created with depth attachment.
+  bool HasDepth() const
+  {
+    return myDepthFormat != 0;
+  }
 
   //! Textures width.
   GLsizei GetSizeX() const
@@ -77,32 +95,49 @@ public:
     return isValidFrameBuffer();
   }
 
-  //! Notice! Obsolete hardware (GeForce FX etc)
-  //! doesn't support rectangular textures!
-  //! There are 3 possible results if you are trying
-  //! to create non power-of-two FBO on these cards:
-  //! 1) FBO creation will fail,
-  //!    current implementation will try to generate compatible FBO;
-  //! 2) FBO rendering will be done in software mode (ForceWare 'hack');
-  //! 3) FBO rendering will be incorrect (some obsolete Catalyst drivers).
+  //! Initialize FBO for rendering into textures.
+  //! @param theGlCtx       currently bound OpenGL context
+  //! @param theSizeX       texture width
+  //! @param theSizeY       texture height
+  //! @param theColorFormat color         texture sized format (0 means no color attachment), e.g. GL_RGBA8
+  //! @param theDepthFormat depth-stencil texture sized format (0 means no depth attachment), e.g. GL_DEPTH24_STENCIL8
+  //! @param theNbSamples   MSAA number of samples (0 means normal texture)
+  //! @return true on success
   Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Context)& theGlCtx,
-                                         const GLsizei                 theViewportSizeX,
-                                         const GLsizei                 theViewportSizeY);
+                                         const GLsizei                 theSizeX,
+                                         const GLsizei                 theSizeY,
+                                         const GLint                   theColorFormat,
+                                         const GLint                   theDepthFormat,
+                                         const GLsizei                 theNbSamples = 0);
 
   //! (Re-)initialize FBO with specified dimensions.
   Standard_EXPORT Standard_Boolean InitLazy (const Handle(OpenGl_Context)& theGlCtx,
                                              const GLsizei                 theViewportSizeX,
-                                             const GLsizei                 theViewportSizeY);
+                                             const GLsizei                 theViewportSizeY,
+                                             const GLint                   theColorFormat,
+                                             const GLint                   theDepthFormat,
+                                             const GLsizei                 theNbSamples = 0);
+
+  //! (Re-)initialize FBO with properties taken from another FBO.
+  Standard_Boolean InitLazy (const Handle(OpenGl_Context)& theGlCtx,
+                             const OpenGl_FrameBuffer&     theFbo)
+  {
+    return InitLazy (theGlCtx, theFbo.myVPSizeX, theFbo.myVPSizeY, theFbo.myColorFormat, theFbo.myDepthFormat, theFbo.myNbSamples);
+  }
 
   //! (Re-)initialize FBO with specified dimensions.
   //! The Render Buffer Objects will be used for Color, Depth and Stencil attachments (as opposite to textures).
-  //! @param theGlCtx         currently bound OpenGL context
-  //! @param theViewportSizeX required viewport size, the actual dimensions of FBO might be greater
-  //! @param theViewportSizeY required viewport size, the actual dimensions of FBO might be greater
+  //! @param theGlCtx       currently bound OpenGL context
+  //! @param theSizeX       render buffer width
+  //! @param theSizeY       render buffer height
+  //! @param theColorFormat color         render buffer sized format, e.g. GL_RGBA8
+  //! @param theDepthFormat depth-stencil render buffer sized format, e.g. GL_DEPTH24_STENCIL8
   //! @param theColorRBufferFromWindow when specified - should be ID of already initialized RB object, which will be released within this class
   Standard_EXPORT Standard_Boolean InitWithRB (const Handle(OpenGl_Context)& theGlCtx,
-                                               const GLsizei                 theViewportSizeX,
-                                               const GLsizei                 theViewportSizeY,
+                                               const GLsizei                 theSizeX,
+                                               const GLsizei                 theSizeY,
+                                               const GLint                   theColorFormat,
+                                               const GLint                   theDepthFormat,
                                                const GLuint                  theColorRBufferFromWindow = 0);
 
   //! Initialize class from currently bound FBO.
@@ -163,7 +198,9 @@ protected:
 
   GLsizei                myVPSizeX;             //!< viewport width  (should be <= texture width)
   GLsizei                myVPSizeY;             //!< viewport height (should be <= texture height)
-  GLint                  myTextFormat;          //!< GL_RGB, GL_RGBA,...
+  GLsizei                myNbSamples;           //!< number of MSAA samples
+  GLint                  myColorFormat;         //!< sized format for color         texture, GL_RGBA8 by default
+  GLint                  myDepthFormat;         //!< sized format for depth-stencil texture, GL_DEPTH24_STENCIL8 by default
   GLuint                 myGlFBufferId;         //!< FBO object ID
   GLuint                 myGlColorRBufferId;    //!< color         Render Buffer object (alternative to myColorTexture)
   GLuint                 myGlDepthRBufferId;    //!< depth-stencil Render Buffer object (alternative to myDepthStencilTexture)

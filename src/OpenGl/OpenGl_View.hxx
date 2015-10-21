@@ -545,7 +545,7 @@ private:
   OpenGl_VertexBuffer* initBlitQuad (const Standard_Boolean theToFlip);
 
   //! Blend together views pair into stereo image.
-  void drawStereoPair();
+  void drawStereoPair (OpenGl_FrameBuffer* theDrawFbo);
 
 protected:
 
@@ -599,6 +599,8 @@ protected: //! @name Rendering properties
 
   //! Two framebuffers (left and right views) store cached main presentation
   //! of the view (without presentation of immediate layers).
+  GLint                      myFboColorFormat;        //!< sized format for color attachments
+  GLint                      myFboDepthFormat;        //!< sized format for depth-stencil attachments
   Handle(OpenGl_FrameBuffer) myMainSceneFbos[2];
   Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2]; //!< Additional buffers for immediate layer in stereo mode.
   OpenGl_VertexBuffer        myFullScreenQuad;        //!< Vertices for full-screen quad rendering.
@@ -1034,6 +1036,7 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_FrameBuffer) myRaytraceFBO2[2];
   //! Framebuffer (FBO) for preliminary OpenGL output.
   Handle(OpenGl_FrameBuffer) myOpenGlFBO;
+  Handle(OpenGl_FrameBuffer) myOpenGlFBO2;
 
   //! Vertex buffer (VBO) for drawing dummy quad.
   OpenGl_VertexBuffer myRaytraceScreenQuad;

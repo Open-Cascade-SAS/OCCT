@@ -62,6 +62,10 @@
   // OpenGL ES 3.0+ or GL_OES_element_index_uint extension
   #define GL_UNSIGNED_INT 0x1405
 
+  // OpenGL ES 3.1+
+  #define GL_TEXTURE_2D_MULTISAMPLE 0x9100
+  #define GL_MAX_SAMPLES  0x8D57
+
   // in core since OpenGL ES 3.0, extension GL_EXT_texture_rg
   #define GL_RED   0x1903
   #define GL_R8    0x8229
@@ -103,6 +107,11 @@
   #define GL_DEPTH_STENCIL                  0x84F9
   #define GL_UNSIGNED_INT_24_8              0x84FA
   #define GL_DEPTH24_STENCIL8               0x88F0
+
+  // OpenGL ES 3.0+
+  #define GL_DEPTH_COMPONENT32F             0x8CAC
+  #define GL_DEPTH32F_STENCIL8              0x8CAD
+  #define GL_FLOAT_32_UNSIGNED_INT_24_8_REV 0x8DAD
 
   #define GL_READ_FRAMEBUFFER               0x8CA8
   #define GL_DRAW_FRAMEBUFFER               0x8CA9
@@ -701,6 +710,11 @@ public: //! @name OpenGL ES 3.0
 
   typedef void (*glBlitFramebuffer_t)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
   glBlitFramebuffer_t glBlitFramebuffer;
+
+public: //! @name OpenGL ES 3.1
+
+  typedef void (*glTexStorage2DMultisample_t)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+  glTexStorage2DMultisample_t glTexStorage2DMultisample;
 
 #else // OpenGL ES vs. desktop
 

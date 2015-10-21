@@ -126,6 +126,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myTexClamp   (GL_CLAMP_TO_EDGE),
   myMaxTexDim  (1024),
   myMaxClipPlanes (6),
+  myMaxMsaaSamples(0),
   myGlVerMajor (0),
   myGlVerMinor (0),
   myIsInitialized (Standard_False),
@@ -273,33 +274,6 @@ void OpenGl_Context::forcedRelease()
     myUnusedResources->First()->Release (this);
     myUnusedResources->RemoveFirst();
   }
-}
-
-// =======================================================================
-// function : MaxDegreeOfAnisotropy
-// purpose  :
-// =======================================================================
-Standard_Integer OpenGl_Context::MaxDegreeOfAnisotropy() const
-{
-  return myAnisoMax;
-}
-
-// =======================================================================
-// function : MaxTextureSize
-// purpose  :
-// =======================================================================
-Standard_Integer OpenGl_Context::MaxTextureSize() const
-{
-  return myMaxTexDim;
-}
-
-// =======================================================================
-// function : MaxClipPlanes
-// purpose  :
-// =======================================================================
-Standard_Integer OpenGl_Context::MaxClipPlanes() const
-{
-  return myMaxClipPlanes;
 }
 
 #if !defined(GL_ES_VERSION_2_0)
@@ -763,11 +737,42 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 // function : ResetErrors
 // purpose  :
 // =======================================================================
-void OpenGl_Context::ResetErrors()
+void OpenGl_Context::ResetErrors (const bool theToPrintErrors)
 {
-  while (glGetError() != GL_NO_ERROR)
+  int aPrevErr = 0;
+  int anErr    = ::glGetError();
+  if (!theToPrintErrors)
   {
-    //
+    for (; anErr != GL_NO_ERROR && aPrevErr != anErr; aPrevErr = anErr, anErr = ::glGetError())
+    {
+      //
+    }
+    return;
+  }
+
+  for (; anErr != GL_NO_ERROR && aPrevErr != anErr; aPrevErr = anErr, anErr = ::glGetError())
+  {
+    TCollection_ExtendedString anErrId;
+    switch (anErr)
+    {
+      case GL_INVALID_ENUM:      anErrId = "GL_INVALID_ENUM";      break;
+      case GL_INVALID_VALUE:     anErrId = "GL_INVALID_VALUE";     break;
+      case GL_INVALID_OPERATION: anErrId = "GL_INVALID_OPERATION"; break;
+    #ifdef GL_STACK_OVERFLOW
+      case GL_STACK_OVERFLOW:    anErrId = "GL_STACK_OVERFLOW";    break;
+      case GL_STACK_UNDERFLOW:   anErrId = "GL_STACK_UNDERFLOW";   break;
+    #endif
+      case GL_OUT_OF_MEMORY:     anErrId = "GL_OUT_OF_MEMORY";     break;
+      case GL_INVALID_FRAMEBUFFER_OPERATION:
+        anErrId = "GL_INVALID_FRAMEBUFFER_OPERATION";
+        break;
+      default:
+        anErrId = TCollection_ExtendedString("#") + anErr;
+        break;
+    }
+
+    const TCollection_ExtendedString aMsg = TCollection_ExtendedString ("Unhandled GL error: ") + anErrId;
+    PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_OTHER_ARB, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
   }
 }
 
@@ -1015,6 +1020,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   // read version
   myGlVerMajor = 0;
   myGlVerMinor = 0;
+  myMaxMsaaSamples = 0;
   ReadGlVersion (myGlVerMajor, myGlVerMinor);
   myVendor = (const char* )::glGetString (GL_VENDOR);
 
@@ -1110,6 +1116,13 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
    && FindProc ("glBlitFramebuffer", myFuncs->glBlitFramebuffer))
   {
     arbFBOBlit = (OpenGl_ArbFBOBlit* )(&(*myFuncs));
+  }
+  if (IsGlGreaterEqual (3, 1)
+   && FindProc ("glTexStorage2DMultisample", myFuncs->glTexStorage2DMultisample))
+  {
+    // MSAA RenderBuffers have been defined in OpenGL ES 3.0,
+    // but MSAA Textures - only in OpenGL ES 3.1+
+    ::glGetIntegerv (GL_MAX_SAMPLES, &myMaxMsaaSamples);
   }
 
   hasUintIndex = IsGlGreaterEqual (3, 0)
@@ -2115,6 +2128,24 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     return;
   }
 
+  // MSAA RenderBuffers have been defined in OpenGL 3.0,
+  // but MSAA Textures - only in OpenGL 3.2+
+  if (!has32
+   && CheckExtension ("GL_ARB_texture_multisample")
+   && FindProcShort (glTexImage2DMultisample))
+  {
+    GLint aNbColorSamples = 0, aNbDepthSamples = 0;
+    ::glGetIntegerv (GL_MAX_COLOR_TEXTURE_SAMPLES, &aNbColorSamples);
+    ::glGetIntegerv (GL_MAX_DEPTH_TEXTURE_SAMPLES, &aNbDepthSamples);
+    myMaxMsaaSamples = Min (aNbColorSamples, aNbDepthSamples);
+  }
+  if (!has43
+   && CheckExtension ("GL_ARB_texture_storage_multisample")
+   && FindProcShort (glTexStorage2DMultisample))
+  {
+    //
+  }
+
   if (!has31)
   {
     checkWrongVersion (3, 1);
@@ -2141,6 +2172,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   {
     core32back = (OpenGl_GlCore32Back* )(&(*myFuncs));
   }
+  ::glGetIntegerv (GL_MAX_SAMPLES, &myMaxMsaaSamples);
 
   if (!has33)
   {

@@ -1099,7 +1099,7 @@ Graphic3d_PtrFrameBuffer OpenGl_Workspace::FBOCreate (const Standard_Integer the
   // create the FBO
   const Handle(OpenGl_Context)& aCtx = GetGlContext();
   OpenGl_FrameBuffer* aFrameBuffer = new OpenGl_FrameBuffer();
-  if (!aFrameBuffer->Init (aCtx, theWidth, theHeight))
+  if (!aFrameBuffer->Init (aCtx, theWidth, theHeight, GL_RGBA8, GL_DEPTH24_STENCIL8, 0))
   {
     aFrameBuffer->Release (aCtx.operator->());
     delete aFrameBuffer;

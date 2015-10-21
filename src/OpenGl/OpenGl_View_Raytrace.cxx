@@ -1586,18 +1586,6 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
     return myRaytraceInitStatus == OpenGl_RT_INIT;
   }
 
-  if (myRaytraceFBO1[0].IsNull())
-  {
-    myRaytraceFBO1[0] = new OpenGl_FrameBuffer (GL_RGBA32F);
-    myRaytraceFBO1[1] = new OpenGl_FrameBuffer (GL_RGBA32F);
-  }
-
-  if (myRaytraceFBO2[0].IsNull())
-  {
-    myRaytraceFBO2[0] = new OpenGl_FrameBuffer (GL_RGBA32F);
-    myRaytraceFBO2[1] = new OpenGl_FrameBuffer (GL_RGBA32F);
-  }
-
   const GLfloat aVertices[] = { -1.f, -1.f,  0.f,
                                 -1.f,  1.f,  0.f,
                                  1.f,  1.f,  0.f,
@@ -1632,11 +1620,10 @@ inline void nullifyResource (const Handle(OpenGl_Context)& theGlContext,
 // =======================================================================
 void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlContext)
 {
-  nullifyResource (theGlContext, myOpenGlFBO);
-  nullifyResource (theGlContext, myRaytraceFBO1[0]);
-  nullifyResource (theGlContext, myRaytraceFBO2[0]);
-  nullifyResource (theGlContext, myRaytraceFBO1[1]);
-  nullifyResource (theGlContext, myRaytraceFBO2[1]);
+  myRaytraceFBO1[0]->Release (theGlContext.operator->());
+  myRaytraceFBO1[1]->Release (theGlContext.operator->());
+  myRaytraceFBO2[0]->Release (theGlContext.operator->());
+  myRaytraceFBO2[1]->Release (theGlContext.operator->());
 
   nullifyResource (theGlContext, myRaytraceShader);
   nullifyResource (theGlContext, myPostFSAAShader);
@@ -1682,22 +1669,14 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
     return Standard_True;
   }
 
-  if ( myRaytraceFBO1[0]->GetVPSizeX() != theSizeX
-    || myRaytraceFBO1[0]->GetVPSizeY() != theSizeY)
-  {
-    myRaytraceFBO1[0]->Init (theGlContext, theSizeX, theSizeY);
-    myRaytraceFBO2[0]->Init (theGlContext, theSizeX, theSizeY);
-  }
+  myRaytraceFBO1[0]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+  myRaytraceFBO2[0]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
 
   // Init second set of buffers for stereographic rendering.
   if (myCamera->ProjectionType() == Graphic3d_Camera::Projection_Stereo)
   {
-    if (myRaytraceFBO1[1]->GetVPSizeX() != theSizeX
-     || myRaytraceFBO1[1]->GetVPSizeY() != theSizeY)
-    {
-      myRaytraceFBO1[1]->Init (theGlContext, theSizeX, theSizeY);
-      myRaytraceFBO2[1]->Init (theGlContext, theSizeX, theSizeY);
-    }
+    myRaytraceFBO1[1]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+    myRaytraceFBO2[1]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
   }
   else
   {

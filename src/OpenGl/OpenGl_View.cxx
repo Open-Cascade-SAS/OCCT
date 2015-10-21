@@ -76,6 +76,9 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myToShowGradTrihedron  (false),
   myStateCounter         (theCounter),
   myLastLightSourceState (0, 0),
+  myFboColorFormat       (GL_RGBA8),
+  myFboDepthFormat       (GL_DEPTH24_STENCIL8),
+  myToFlipOutput         (Standard_False),
   myFrameCounter         (0),
   myHasFboBlit           (Standard_True),
   myTransientDrawToFront (Standard_True),
@@ -106,6 +109,12 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myMainSceneFbos[1]      = new OpenGl_FrameBuffer();
   myImmediateSceneFbos[0] = new OpenGl_FrameBuffer();
   myImmediateSceneFbos[1] = new OpenGl_FrameBuffer();
+  myOpenGlFBO             = new OpenGl_FrameBuffer();
+  myOpenGlFBO2            = new OpenGl_FrameBuffer();
+  myRaytraceFBO1[0]       = new OpenGl_FrameBuffer();
+  myRaytraceFBO1[1]       = new OpenGl_FrameBuffer();
+  myRaytraceFBO2[0]       = new OpenGl_FrameBuffer();
+  myRaytraceFBO2[1]       = new OpenGl_FrameBuffer();
 }
 
 // =======================================================================
@@ -152,6 +161,8 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
   myMainSceneFbos[1]     ->Release (theCtx.operator->());
   myImmediateSceneFbos[0]->Release (theCtx.operator->());
   myImmediateSceneFbos[1]->Release (theCtx.operator->());
+  myOpenGlFBO            ->Release (theCtx.operator->());
+  myOpenGlFBO2           ->Release (theCtx.operator->());
   myFullScreenQuad        .Release (theCtx.operator->());
   myFullScreenQuadFlip    .Release (theCtx.operator->());
 
