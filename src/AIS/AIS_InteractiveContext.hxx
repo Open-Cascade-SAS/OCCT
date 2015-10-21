@@ -753,7 +753,7 @@ public:
   //! SizeOfObject * DeviationCoefficient.
   Standard_EXPORT Standard_Real DeviationCoefficient() const;
   
-  //! default 6degrees
+  //! default 12 degrees
   Standard_EXPORT void SetDeviationAngle (const Standard_Real anAngle);
   
   Standard_EXPORT Standard_Real DeviationAngle() const;
