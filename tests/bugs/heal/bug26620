@@ -1,0 +1,26 @@
+puts "REQUIRED ALL: Faulty shapes in variables faulty_1 to"
+
+puts "============"
+puts "OCC26620"
+puts "============"
+puts ""
+#######################################################################
+## Shape healing unreasonably downgrades tolerance of a face
+#######################################################################
+
+restore [locate_data_file bug26620_ff.brep] ff
+
+puts "\nBefore shape healing"
+checkshape ff
+tolerance ff
+
+fixshape r ff
+
+puts "\nAfter shape healing"
+checkshape r
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance r] full MaxTol
+
+set expected_MaxTolerance 0.1
+set tol_abs_MaxTolerance 0.5
+set tol_rel_MaxTolerance 0.5
+checkreal "MaxTolerance" ${MaxTol} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}

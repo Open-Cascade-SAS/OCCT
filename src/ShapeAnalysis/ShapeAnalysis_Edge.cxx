@@ -772,6 +772,19 @@ Standard_Boolean ShapeAnalysis_Edge::ComputeDeviation (const Adaptor3d_Curve& CR
   return OK;
 }
 
+//=======================================================================
+//function : CheckSameParameter
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge,
+                                                         Standard_Real& maxdev,
+                                                         const Standard_Integer NbControl)
+{
+  TopoDS_Face anEmptyFace;
+  return CheckSameParameter(edge, anEmptyFace, maxdev, NbControl);
+}
+
 
 //=======================================================================
 //function : CheckSameParameter
@@ -779,8 +792,9 @@ Standard_Boolean ShapeAnalysis_Edge::ComputeDeviation (const Adaptor3d_Curve& CR
 //=======================================================================
 
 Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge,
-							    Standard_Real& maxdev,
-							    const Standard_Integer NbControl)
+                                                         const TopoDS_Face& face,
+                                                         Standard_Real& maxdev,
+                                                         const Standard_Integer NbControl)
 {
   myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
   if (BRep_Tool::Degenerated (edge)) return Standard_False;
@@ -814,11 +828,26 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
     return Standard_False;
   }
 
+  Handle(Geom_Surface) aFaceSurf;
+  TopLoc_Location L;
+  if ( !face.IsNull() )
+  {
+    aFaceSurf = BRep_Tool::Surface(face, L);
+  }
+
   // iterate on pcurves
   itcr.Initialize ( TE->Curves() );
-  for ( ; itcr.More(); itcr.Next() ) {
+  for ( ; itcr.More(); itcr.Next() )
+  {
     Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
     if ( GC.IsNull() || ! GC->IsCurveOnSurface() ) continue;
+
+    if ( !(face.IsNull()) ) // Face is not null.
+    {
+      // Check for different surface.
+      if (!GC->IsCurveOnSurface(aFaceSurf, GC->Location()))
+        continue;
+    }
 
     Standard_Real f, l;
     GC->Range ( f, l );
@@ -833,15 +862,18 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
     //Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
     Adaptor3d_CurveOnSurface ACS;
     ACS.Load(GHPC, GAHS);
-    if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) ) {
+    if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) )
+    {
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
     }
 
-    if ( GC->IsCurveOnClosedSurface() ) {
+    if ( GC->IsCurveOnClosedSurface() )
+    {
       GHPC->ChangeCurve2d().Load ( GC->PCurve2(), f, l ); // same bounds
       ACS.Load(GHPC, GAHS); // sans doute inutile
-      if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) ) {
-	myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
+      if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) )
+      {
+        myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
       }
     }
   }

@@ -257,11 +257,15 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
       // for case when vertex belong to the different faces it is necessary to check vertices tolerances
       //after all fixes.
       //This fix it should be performed for example for case when cutting edge was performed.
-
       Handle(ShapeFix_Edge) sfe = FixEdgeTool();
-      TopExp_Explorer anExpE (myResult, TopAbs_EDGE);
-      for ( ; anExpE.More(); anExpE.Next()) 
-        sfe->FixVertexTolerance( TopoDS::Edge (anExpE.Current()));
+      TopExp_Explorer anExpF (myResult, TopAbs_FACE);
+      for ( ; anExpF.More(); anExpF.Next()) 
+      {
+        TopoDS_Face aF = TopoDS::Face(anExpF.Current());
+        TopExp_Explorer anExpE (aF, TopAbs_EDGE);
+        for ( ; anExpE.More(); anExpE.Next()) 
+          sfe->FixVertexTolerance( TopoDS::Edge (anExpE.Current()), aF);
+      }
     }
   }
   myResult = Context()->Apply(myResult);

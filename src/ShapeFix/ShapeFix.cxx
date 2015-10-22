@@ -93,6 +93,9 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
   for ( TopExp_Explorer anEdgeExp(shape, TopAbs_FACE); anEdgeExp.More(); anEdgeExp.Next() )
     ++aNbFaces;
 
+  TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
+  TopExp::MapShapesAndAncestors(shape, TopAbs_EDGE, TopAbs_FACE, aMapEF);
+
   BRep_Builder B;
   //Standard_Integer nbexcp = 0; 
   Standard_Integer nbfail = 0,  numedge = 0; 
@@ -129,7 +132,21 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
           B.SameParameter (E,Standard_False);
         }
 
-        sfe->FixSameParameter (E); // K2-SEP97
+        TopTools_ListOfShape aListOfFaces;
+        aMapEF.FindFromKey(E, aListOfFaces);
+        if (aListOfFaces.Extent() != 0)
+        {
+          TopTools_ListOfShape::Iterator aListOfFacesIt(aListOfFaces);
+          for ( ; aListOfFacesIt.More() ; aListOfFacesIt.Next())
+          {
+            TopoDS_Face aF = TopoDS::Face( aListOfFacesIt.Value() );
+            sfe->FixSameParameter (E, aF);
+          }
+        }
+        else
+        {
+          sfe->FixSameParameter (E); // K2-SEP97
+        }
 
         if (!BRep_Tool::SameParameter (E)) { ierr = 1; nbfail ++; }
         

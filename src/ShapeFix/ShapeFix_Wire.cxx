@@ -416,7 +416,7 @@ Standard_Boolean ShapeFix_Wire::Perform()
   // TEMPORARILY without special mode !!!
   Handle(ShapeExtend_WireData) sbwd = WireData();
   for (Standard_Integer iedge = 1; iedge <= sbwd->NbEdges(); iedge++)
-    if ( myFixEdge->FixVertexTolerance (sbwd->Edge (iedge)) ) 
+    if ( myFixEdge->FixVertexTolerance (sbwd->Edge (iedge), Face()) ) 
     {
       Fixed = Standard_True;
     }
@@ -800,7 +800,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
           }
         }
       }
-      myFixEdge->FixSameParameter ( sbwd->Edge(i) );
+      myFixEdge->FixSameParameter ( sbwd->Edge(i), Face());
       if ( myFixEdge->Status ( ShapeExtend_DONE ) ) 
 	myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE8 );
       if ( myFixEdge->Status ( ShapeExtend_FAIL ) ) 
@@ -814,7 +814,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
   {
     for ( i=1; i <= nb; i++)
     {
-      myFixEdge->FixVertexTolerance (sbwd->Edge (i), face);
+      myFixEdge->FixVertexTolerance (sbwd->Edge (i), Face());
       if ( myFixEdge->Status ( ShapeExtend_DONE ) ) 
         myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE8 );
       if ( myFixEdge->Status ( ShapeExtend_FAIL ) ) 
@@ -1778,7 +1778,7 @@ static Standard_Boolean TryNewPCurve (const TopoDS_Edge &E, const TopoDS_Face &f
 // no call to BRepLib:  B.SameParameter ( edge, Standard_False );
 
   Handle(ShapeFix_Edge) sfe = new ShapeFix_Edge;
-  sfe->FixSameParameter ( edge ); 
+  sfe->FixSameParameter ( edge, face ); 
   c2d = BRep_Tool::CurveOnSurface ( edge, face, first, last );
   tol = BRep_Tool::Tolerance ( edge );
   return Standard_True;

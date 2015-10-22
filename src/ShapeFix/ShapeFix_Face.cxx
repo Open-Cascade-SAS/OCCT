@@ -842,7 +842,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
     Handle(ShapeFix_Edge) sfe = myFixWire->FixEdgeTool();
     for (TopExp_Explorer Eed (myFace, TopAbs_EDGE); Eed.More(); Eed.Next()) {
       TopoDS_Edge edg = TopoDS::Edge (Eed.Current());
-      sfe->FixVertexTolerance(edg);
+      sfe->FixVertexTolerance(edg, myFace);
     }
 
 //    B.UpdateFace (myFace,myPrecision);

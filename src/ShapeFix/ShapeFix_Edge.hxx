@@ -173,6 +173,43 @@ public:
   //! DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
   //! (only for edges with not set SameParameter)
   Standard_EXPORT Standard_Boolean FixSameParameter (const TopoDS_Edge& edge, const Standard_Real tolerance = 0.0);
+
+  //! Tries to make edge SameParameter and sets corresponding
+  //! tolerance and SameParameter flag.
+  //! First, it makes edge same range if SameRange flag is not set.
+  //!
+  //! If flag SameParameter is set, this method calls the
+  //! function ShapeAnalysis_Edge::CheckSameParameter() that
+  //! calculates the maximal deviation of pcurves of the edge from
+  //! its 3d curve. If deviation > tolerance, the tolerance of edge
+  //! is increased to a value of deviation. If deviation < tolerance
+  //! nothing happens.
+  //!
+  //! If flag SameParameter is not set, this method chooses the best
+  //! variant (one that has minimal tolerance), either
+  //! a. only after computing deviation (as above) or
+  //! b. after calling standard procedure BRepLib::SameParameter
+  //! and computing deviation (as above). If <tolerance> > 0, it is
+  //! used as parameter for BRepLib::SameParameter, otherwise,
+  //! tolerance of the edge is used.
+  //!
+  //! Use    : Is to be called after all pcurves and 3d curve of the edge are
+  //! correctly computed
+  //! Remark : SameParameter flag is always set to True after this method
+  //! Returns: True, if something done, else False
+  //! Status : OK    - edge was initially SameParameter, nothing is done
+  //! FAIL1 - computation of deviation of pcurves from 3d curve has failed
+  //! FAIL2 - BRepLib::SameParameter() has failed
+  //! DONE1 - tolerance of the edge was increased
+  //! DONE2 - flag SameParameter was set to True (only if
+  //! BRepLib::SameParameter() did not set it)
+  //! DONE3 - edge was modified by BRepLib::SameParameter() to SameParameter
+  //! DONE4 - not used anymore
+  //! DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
+  //! (only for edges with not set SameParameter)
+  Standard_EXPORT Standard_Boolean FixSameParameter (const TopoDS_Edge& edge,
+                                                     const TopoDS_Face& face,
+                                                     const Standard_Real tolerance = 0.0);
   
   //! Returns the status (in the form of True/False) of last Fix
   Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status status) const;
