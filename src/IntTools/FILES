@@ -85,3 +85,5 @@ IntTools_Tools.cxx
 IntTools_Tools.hxx
 IntTools_TopolTool.cxx
 IntTools_TopolTool.hxx
+IntTools_WLineTool.hxx
+IntTools_WLineTool.cxx
