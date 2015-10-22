@@ -53,9 +53,17 @@ The definition of the following attributes is obligatory:
     * **OS Version**
   * **Products Version** - defines the version of Open CASCADE on which the problem has been detected.
   * **Summary** - a short, one sentence description of the issue. It has a limit of 128 characters. It should be informative and useful for the developers. It is advisable to avoid vague or misleading phrases, such as "it doesn't work" or "it crashed". It is not allowed to mention the issue originator, and in particular the customer, in the name of the registered issue.
-  * **Description** - should contain a detailed definition of the nature of the registered issue depending on its type. For a bug it is required to submit a detailed description of the incorrect behavior, including the indication of the cause of the problem (if possible at this stage) or any inputs from the originator. For a feature or integration request it is recommended to describe the proposed feature in details (as possible at that stage), including the changes required for its implementation and the main features of the new functionality. Filling the bug description is obligatory. 
+  * **Description** - should contain a detailed definition of the nature of the registered issue depending on its type. For a bug it is required to submit a detailed description of the incorrect behavior, including the indication of the cause of the problem (if possible at this stage) or any inputs from the originator. For a feature or integration request it is recommended to describe the proposed feature in details (as much as possible at that stage), including the changes required for its implementation and the main features of the new functionality. Filling the bug description is obligatory. 
+  
+For example:
+  
+~~~~~
+3rd-party library New_Image has been implemented in OCCT. This library provides build-in support of popular image processing formats, such as JPEG, PNG, GIF or BMP. It should replace all obsolete code for image load/dump in the future. Currently it is used to save images from Window / OpenGL context. 
+~~~~~
+  
   * **Steps To Reproduce** - in this field it is possible to describe in detail how to reproduce the issue.  This field considerably helps to find the cause of the problem, to eliminate it and to create the test case.
-  * *Upload File* field allows attaching the shapes, scripts or modified source files of OCCT. It is recommended to attach a prototype test case in form of a Tcl script for DRAW,   using either existing DRAW commands, or a C++ code which can be organized in DRAW commands,   as well as sample shapes or other input data (if applicable), immediately after the issue registration. 
+  * **Additional information and documentation updates** - this field should be filled in case when it is  specifically required to single out the changes to be considered when porting from the previous version of OCCT or when the corresponding GIT commit messages are missing or misleading. 
+  * **Upload File** field allows attaching the shapes, scripts or modified source files of OCCT. It is recommended to attach a prototype test case in form of a Tcl script for DRAW,   using either existing DRAW commands, or a C++ code which can be organized in DRAW commands,   as well as sample shapes or other input data (if applicable), immediately after the issue registration. 
   
   The newly registered issue gets status **NEW** and is assigned to the developer responsible for the OCCT component indicated in the Category field (Maintainer). 
 
@@ -78,26 +86,104 @@ The definition of the following attributes is obligatory:
   The **Developer** responsible for the issue assigned to him provides a solution 
   as a change on the version of OCCT indicated in the issue attributes, or the last development version. 
 
-  The modified sources should be submitted for review and testing to the dedicated branch of the official OCCT Git repository:
-
-  * Branch should be created for the issue with name composed of letters ‘CR’ followed by issue ID number (without leading zeroes). 
-   Optional suffix can be added to the branch name after issue ID, 
-   e.g. to distinguish between several version of the fix.
-  * The branch should be based on recent version of the master branch 
-   (not later than commit tagged as last OCCT release).
-  * The first line of the first commit message should contain 
-   the Summary of the issue (starting with its ID followed by colon, e.g. "0022943: Bug TDataXtd_PatternStd"). 
-   The consequent lines should contain a description of the changes made. 
-   If more than one commit has been made, the commit messages should contain description of the changes made.
-  * The amount of the code affected by the change should be limited 
-   to only the changes required for the bug fix or improvement. 
+@subsubsection  occt_contribution_workflow_2_4_1 Creation of the branch
+  
+  The modification of sources should take place in the dedicated branch of the official OCCT Git repository.
+   
+  The branch should be based on the recent version of the master branch (not later than the commit tagged as the last OCCT release).
+  
+  The branch name should be composed of letters **CR** followed by the issue ID number (without leading zeros). It is possible to add an optional suffix to the branch name after the issue ID, e.g. to distinguish between several versions of the fix.
+  
+  The name of the branch, where the fix is submitted, should be given in the note to the Mantis issue    (providing the direct link to relevant branch view in GitWeb is encouraged).
+   
+  Please, see the details in the @ref occt_dev_guides__git_guide "Guide to using GIT".
+  
+@subsubsection  occt_contribution_workflow_2_4_2 Requirements to the code modification.
+ 
+   The amount of code affected by the change should be limited 
+   to the changes required for the bug fix or improvement. 
    Change of layout or re-formatting of the existing code is allowed 
-   only in the parts where meaningful changes related to the issue have been made.
-  * The name of the branch where the fix is submitted should be given 
-   in the note to the Mantis issue 
-   (providing the direct link to relevant branch view in GitWeb is encouraged).
-  * The description of the changes made should be put to the field 
-   "Additional information and documentation updates" of the Mantis issue.
+   only in the parts where meaningful changes related to the issue have been made.  
+
+   Every developer providing a contribution to the source code of OCC should make the appropriate comments in the code  to improve its legibility and maintainability.
+
+  Making the appropriate comments is mandatory in the following cases:
+  * Development of a new package / class / method / enumeration;
+  * Modification of an existing package / class / method / enumeration that changes its behavior;
+  * Modification / new development impacts other packages / classes / methods / enumerations, the documentation which of should be modified correspondingly.  
+  
+  The only case when the comments may be not required is 
+  a modification that does not change the existing behavior in any noticeable way
+  or brings the behavior in accordance with the existing description.
+  
+  The comments must be in good English, containing as much relevant 
+  information and as clear as possible. 
+  
+    
+@subsubsection  occt_contribution_workflow_2_4_3 Requirements to the commit message. 
+
+  The commit message posted in GIT constitutes an integral part of both the fix and the release documentation. 
+  
+  The first line of the first commit message should contain the Summary of the issue (starting with its ID followed by colon, e.g. "0022943: Bug TDataXtd_PatternStd"). 
+   
+  The next lines should contain a mandatory description of changes. The contents and the recommended structure of the description depend on the nature of the bug. 
+  
+  In a general case, the following elements should be present:
+	* **Problem** – a description of the unwanted behavior;
+	* **Change** – a description of the implemented changes, including the name of class/method/enumeration that has been modified or implemented anew;
+	* **Result** – a description of the current behavior (after the implementation).
+
+For example:
+
+~~~~~
+The exception in method BRepFill_Cone::Truncate caused by hard-coded number of symbols in the parameter for truncation operation has been fixed. Now the parameter provided by method BRepFill_Cone::Parameter is stored in a variable, which is used for truncation.
+~~~~~
+
+  \note Please, note that such phrases as "the bug was fixed" or "the regression was eliminated" do not describe the fix, because they provide no information about the **Change**.
+    
+Other cases may require a more detailed description, or vice versa, the Problem or the Result may not be worth indicating. It is not advisable to go too deep into implementation details, however, any reader should be able to understand, what has been fixed and where.   
+
+Let us see some typical cases:
+
+#### Implementation of a new method:
+
+~~~~~
+New method CheckFace::Point has been implemented to check if the point is IN the face. 
+~~~~~
+
+#### Improvement of an existing algorithm: 
+
+~~~~~
+The concatenation algorithm in class BSpline_Surface has been fixed to work with periodic Bspline surfaces.
+~~~~~
+
+#### Removal of an obsolete method:
+
+~~~~~
+Class BOPCol_Array1 has been removed. Instead, new method Ncollection_BaseVector::SetIncrement allows setting the size of increment dynamically.  Classes from package BOPDS have been modified accordingly.
+~~~~~
+
+#### Description of large-scale development 
+
+The implementation of new functionalities or functional overhauls can contain numerous modifications concerning numerous packages or numerous classes in one package. The description of such implementation should include two elements:
+* General description or Summary; 
+* List of modifications with necessary comments.
+
+According to the requirements of chapter @ref occt_contribution_workflow_2_2 "Issue Registration" in the present document, the purpose of an improvement should be already given in the Bug Description. However, if the Bug Description is missing or if it describes the problems rather then their solution or if some other important information is missing, it should be given in the commit or better, if there were many different commits, backtracking and overwriting each other, in **Additional information and documentation updates** field. 
+
+Here is the example of information about numerous changes in connection with the bug that should be provided: 
+
+~~~~~
+The following modifications have been implemented to improve the stereoscopic output:
+	- The target FBO is passed as parameter in method *OpenGl_View::Render()*.
+	- Read/Write buffers management logic has been revised in class *OpenGl_Context* taking into account FBOs.
+	- New DRAWEXE command *dumpstereo* allows dumping the contents of 2D viewer.
+	- New methods *LProjection* and *RProjection* have been added in class Graphic3d_Camera::UpdateProjection() for off-screen rendering.
+~~~~~
+
+For more examples of bug descriptions, please, refer to the previous versions of OCCT Release Notes.
+
+@subsubsection  occt_contribution_workflow_2_4_4 Submitting the contributions 
 
   In some cases (if Git is not accessible for the contributor), 
   external contributions can be submitted as patch (diff) files or sources 
@@ -105,9 +191,7 @@ The definition of the following attributes is obligatory:
   Such contributions should be put to Git for processing by someone else,
   and hence they have less priority in processing than the ones submitted directly through Git.
 
-  The issue for which solution is provided should be switched to **RESOLVED** state 
-  and assigned to the developer who is expected to make a code review 
-  (the **Reviewer**; by default, can be set to the **Maintainer** of the component).
+  To submit the modified sources for review and testing, the issue, for which the solution is provided, should be switched to **RESOLVED** state and assigned to the developer who is expected to make a code review (the **Reviewer**; by default, can be set to the **Maintainer** of the component).
 
 @subsection occt_contribution_workflow_2_5 Code review
 
@@ -133,7 +217,6 @@ The definition of the following attributes is obligatory:
     * the change has been reviewed;
     * the change has been tested without regressions (or with regressions treated properly);
     * the test case has been created for this issue (when applicable), and the change has been rechecked on this test case;
-    * "Additional information and documentation updates" field is filled by the developer;
     * the change does not conflict with other changes integrated previously.
   
   If the result of check is successful the Integrator integrates solution 
@@ -158,11 +241,9 @@ The definition of the following attributes is obligatory:
 
   If a regression is detected, the **Bugmaster** may reopen and reassign the **CLOSED** issue to the appropriate developer with comprehensive comments about the reason of reopening. The issue then becomes **ASSIGNED** again. 
 
-@section occt_contribution_workflow_3 Appendix
+@section occt_contribution_workflow_3 Issue attributes
 
-@subsection occt_contribution_workflow_3_1 Issue attributes
-
-@subsubsection occt_contribution_workflow_3_1_1 Severity
+@subsection occt_contribution_workflow_3_1 Severity
 
   Severity shows at which extent the issue affects the product. 
   The list of used severities is given in the table below in the descending order.
@@ -180,7 +261,7 @@ The definition of the following attributes is obligatory:
   | integration request | Requested integration of an existing feature into the product.               |          0           |
   | Just a question       | A question to be processed, without need   of any changes in the product.        |         0                |
 
-@subsubsection occt_contribution_workflow_3_1_2 Statuses of issues
+@subsection occt_contribution_workflow_3_2 Statuses of issues
 
   The bug statuses that can be applied to the issues are listed in the table below. 
   
@@ -195,7 +276,7 @@ The definition of the following attributes is obligatory:
   | Verified             | The fix has been integrated into the master of the corresponding repository |
   | Closed               | The fix has been integrated to the master. The corresponding test case has been executed successfully. The issue is no longer reproduced. |
 
-@subsubsection occt_contribution_workflow_3_1_3 Resolutions
+@subsection occt_contribution_workflow_3_3 Resolutions
 
   **Resolution** is set when the bug is resolved. "Reopen" resolution is added automatically when the bug is reopened.
 
@@ -213,71 +294,7 @@ The definition of the following attributes is obligatory:
   | Documentation updated | The issue was a normal behavior of the product, but the actions of the user  were wrong. The specification and the user manual have been updated  to reflect this issue.    |
   | Won’t fix             | An administrative/contractual decision has been taken to not fix the bug     |
 
-@subsection occt_contribution_workflow_3_2 Update and evolution of documentation
 
-  The documentation on Open CASCADE Technology currently exists in three forms:
   
-  * OCCT Technical Documentation generated automatically with Doxygen tool on the basis of comments in CDL or HXX files.    
-  * User’s Reference Documentation on OCCT packages and Products supplied in the form of PDF User’s guides
-  * OCCT Release Documentation supplied in the form of Release Notes with each release.
-  
-  It is strictly required to properly report the improvements and changes introduced in OCCT in all three forms of Documentation.
-  
-@subsubsection occt_contribution_workflow_3_2_1 Maintenance of CDL files
 
-  Every developer providing a contribution to the source code of OCC 
-  should make a relevant change in the corresponding header file, including CDL.
-
-  Making the appropriate comments is mandatory in the following cases:
-  
-  * Development of a new package / class / method / enumeration;
-  * Modification of an existing package / class / method / enumeration that changes its behavior;
-  * Modification / new development impacts at other packages / classes / methods / enumerations, the documentation  which of should be modified correspondingly.  
-
-  The only case when the comments may be not required is introducing 
-  a modification that does not change the existing behavior in any noticeable way
-  or brings the behavior in accordance with the existing description.
-  
-  CDL description must be in good English, containing as much relevant 
-  information and as clear as possible. If the developer is unable to properly formulate 
-  his ideas in English or suspects that his description can be misunderstood, 
-  he should address to the Documentation Engineer for language assistance. 
-  Such action is completely subject to the discretion of the developer; however, 
-  the Documentation Engineer can require that the developer should provide a relevant 
-  technical documentation and reopen a bug until all documentation satisfies the requirements above.
-
-@subsubsection occt_contribution_workflow_3_2_2 Maintenance of the User’s Reference Documentation
-
-  The User’s Reference Documentation is distributed among a number of User’s Guides, 
-  each describing a certain module of OCCT. 
-  The User's Guides do not cover the entire functionality of OCCT; 
-  however, they describe most widely used and important packages.
-  
-  In most aspects the User's Guides present the information that is contained in CDL descriptions for methods, classes, etc., only from a different point of view. Thus, it is required that any developer who implements a new or modifies an existing package / class / method / enumeration and adds a description of new development or changes in the corresponding CDL file should also check if this class  package / class / method / enumeration or the package / class, to which the added class / method belongs is already described in the documentation and update the User’s Reference Documentation correspondingly.
-
-3.2.3. Preparation of the Release Documentation
-
-  Before changing the bug Status to RESOLVED, the developer should provide a description of the implemented work using the "Additional information and documentation updates" field of Mantis bugtracker. 
-  
-  This description is used for the Release Documentation and has the following purposes:
-  
-  * to inform the OCCT users about the main features and improvements implemented in the platform in the release;
-  * to give a complete and useable list of changes introduced into the OCCT since the latest version. 
-
-  The changes should be described from the user’s viewpoint so that the text 
-  could be comprehensible even for beginners having a very vague idea about OCCT. 
-  If the developer is unable to properly formulate his ideas in English or suspects 
-  that his description can be misunderstood, he should address to the Documentation Engineer 
-  for language assistance. Such action is completely subject to the discretion of the developer; 
-  however, the Documentation Engineer can require that the developer 
-  should provide a relevant technical documentation and reopen a bug 
-  until all documentation satisfies the requirements.
-
-  **Note**, that it is required to single out the changes in the OCCT behavior as compared to the previous versions and especially the changes to be considered when porting from the previous version of OCCT.
-
-For example: 
-*  If global macros XXX() was used in the code of your application, revise it for direct use of the argument stream object. 
-*  You might need to revise the code related to text display in 3d viewer to take into account new approach of using system fonts via XXX library. 
-
-  The **Documentation Engineer** is responsible for preparation of the version Release Notes 
-  and update of the User’s Guides. If the **Documentation Engineer** considers that the description currently provided by the **Developer** is somehow inadequate or unsatisfactory he can demand the **Developer** to rewrite the documentation with the **Documentation Engineer’s** assistance.
+ 
