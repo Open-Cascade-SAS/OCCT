@@ -212,7 +212,7 @@ void ClassName::InsertAt (const Standard_Integer anI, const Type& aVal)       \
       if (anItem -> myPrev) anItem -> myPrev -> myNext = anItem;              \
       myLength++;                                                             \
       myICur++;                                                               \
-   } else ;                                                                   \
+   }                                                                          \
 }                                                                             \
                                                                               \
 void ClassName::Clear ()                                                      \
