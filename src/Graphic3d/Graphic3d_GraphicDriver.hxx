@@ -133,30 +133,6 @@ public:
   //! Returns Standard_True if the view associated to the window exists.
   virtual Standard_Boolean ViewExists (const Handle(Aspect_Window)& theWindow, Handle(Graphic3d_CView)& theView) = 0;
 
-  Standard_EXPORT void PrintBoolean (const Standard_CString AComment, const Standard_Boolean AValue) const;
-  
-  Standard_EXPORT void PrintCLight (const Graphic3d_CLight& ACLight, const Standard_Integer AField) const;
-
-  Standard_EXPORT void PrintCStructure (const Graphic3d_CStructure& ACStructure, const Standard_Integer AField) const;
-  
-  Standard_EXPORT void PrintCView (const Graphic3d_CView& ACView, const Standard_Integer AField) const;
-  
-  Standard_EXPORT void PrintFunction (const Standard_CString AFunc) const;
-  
-  Standard_EXPORT void PrintInteger (const Standard_CString AComment, const Standard_Integer AValue) const;
-  
-  Standard_EXPORT void PrintIResult (const Standard_CString AFunc, const Standard_Integer AResult) const;
-  
-  Standard_EXPORT void PrintShortReal (const Standard_CString AComment, const Standard_ShortReal AValue) const;
-  
-  Standard_EXPORT void PrintMatrix (const Standard_CString AComment, const TColStd_Array2OfReal& AMatrix) const;
-  
-  Standard_EXPORT void PrintString (const Standard_CString AComment, const Standard_CString AString) const;
-  
-  Standard_EXPORT void SetTrace (const Standard_Integer ALevel);
-  
-  Standard_EXPORT Standard_Integer Trace() const;
-  
   //! returns Handle to display connection
   Standard_EXPORT const Handle(Aspect_DisplayConnection)& GetDisplayConnection() const;
   
@@ -172,7 +148,6 @@ protected:
   //! Initializes the Driver
   Standard_EXPORT Graphic3d_GraphicDriver(const Handle(Aspect_DisplayConnection)& theDisp);
 
-  Standard_Integer MyTraceLevel;
   Handle(Aspect_DisplayConnection) myDisplayConnection;
   Standard_Boolean myDeviceLostFlag;
 
