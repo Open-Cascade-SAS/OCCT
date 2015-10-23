@@ -3,13 +3,13 @@
 
 #ifndef NO_COMMONSAMPLE_EXPORTS
 #ifdef COMMONSAMPLE_EXPORTS
-#ifdef WIN32
+#ifdef _WIN32
 #define COMMONSAMPLE_EXPORT __declspec( dllexport )
 #else
 #define COMMONSAMPLE_EXPORT
 #endif
 #else
-#ifdef WIN32
+#ifdef _WIN32
 #define COMMONSAMPLE_EXPORT __declspec( dllimport )
 #else
 #define COMMONSAMPLE_EXPORT

@@ -23,10 +23,6 @@
 
 // CasCade :
 
-#if !defined(WNT)
-   #error WNT precompiler directive is mandatory for CasCade 
-#endif
-
 enum CurrentAction3d { 
   CurAction3d_Nothing,
   CurAction3d_DynamicZooming,

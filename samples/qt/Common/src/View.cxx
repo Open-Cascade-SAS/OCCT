@@ -1,4 +1,4 @@
-#if !defined WNT
+#if !defined _WIN32
 #define QT_CLEAN_NAMESPACE         /* avoid definition of INT32 and INT8 */
 #endif
 
@@ -187,7 +187,7 @@ void View::init()
   Window aWindowHandle = (Window )winId();
   Handle(Aspect_DisplayConnection) aDispConnection = myContext->CurrentViewer()->Driver()->GetDisplayConnection();
   Handle(Xw_Window) hWnd = new Xw_Window (aDispConnection, aWindowHandle);
-#endif // WNT
+#endif // _WIN32
 
   myView->SetWindow (hWnd);
   if ( !hWnd->IsMapped() )

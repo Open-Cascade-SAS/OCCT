@@ -33,12 +33,7 @@
 
 #include <gp_Pnt.hxx>
 
-
-#ifdef WNT
- #define EOL "\r\n"
-#else
- #define EOL "\n"
-#endif
+#define EOL "\r\n"
 
 // Initialization of global variable with an instance of this class
 OCCDemo_Presentation* OCCDemo_Presentation::Current = new Tesselate_Presentation;

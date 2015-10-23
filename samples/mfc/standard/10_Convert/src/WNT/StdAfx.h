@@ -19,10 +19,6 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#if !defined(WNT)
-   #error WNT precompiler directive is mandatory for CasCade 
-#endif
-
 #pragma warning(  disable : 4244 )        // Issue warning 4244
 #include "Standard_ShortReal.hxx"
 #pragma warning(  default : 4244 )        // Issue warning 4244

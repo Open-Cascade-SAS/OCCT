@@ -33,21 +33,14 @@ FSD_Archive::FSD_Archive(const FSD_CArchive& anArchive)
   myExternFlag = Standard_True;
   myCFile = NULL;
   myFormat = Standard_False;
-#ifdef WNT
   if (myStream->IsLoading()) SetOpenMode(Storage_VSRead);
   else SetOpenMode(Storage_VSWrite);
-#endif
 }
 
-Storage_Error FSD_Archive::IsGoodFileType(const TCollection_AsciiString&
-#ifdef WNT
-                                          aName
-#endif
-                                         )
+Storage_Error FSD_Archive::IsGoodFileType(const TCollection_AsciiString& aName)
 {
   FSD_Archive      f;
   Storage_Error s;
-#ifdef WNT
   s = f.Open(aName,Storage_VSRead);
 
   if (s == Storage_VSOk) {
@@ -62,23 +55,15 @@ Storage_Error FSD_Archive::IsGoodFileType(const TCollection_AsciiString&
       s = Storage_VSFormatError;
     }
   }
-#else
-	s = Storage_VSFormatError;
-#endif
   return s;
 }
 
 Storage_Error FSD_Archive::Open(const TCollection_AsciiString& theName,
-                                const Storage_OpenMode
-#ifdef WNT
-                                aMode
-#endif
-                               )
+                                const Storage_OpenMode aMode)
 {
   Storage_Error result = Storage_VSOk;
   CString aName = theName.ToCString();
   SetName (theName);
-#ifdef WNT
   if (OpenMode() == Storage_VSNone) {
 	if (aMode == Storage_VSRead) {
 		if (!((FSD_CFile*)myCFile)->Open(aName, CFile::modeRead))
@@ -109,9 +94,6 @@ Storage_Error FSD_Archive::Open(const TCollection_AsciiString& theName,
   else {
 	  result = Storage_VSAlreadyOpen;
   }
-#else
-	result = Storage_VSOpenError;
-#endif
   return result;
 }
 
@@ -127,7 +109,6 @@ Storage_Error FSD_Archive::Close()
   myEof = Standard_False;
 
   if (OpenMode() != Storage_VSNone) {
-#ifdef WNT
       if (!myExternFlag) {
   		(*myStream).Close();
 		((FSD_CFile*)myCFile)->Close();
@@ -136,7 +117,6 @@ Storage_Error FSD_Archive::Close()
       myExternFlag = Standard_False;
 	myStream = NULL;
       SetOpenMode(Storage_VSNone);
-#endif
   }
   else {
     result = Storage_VSNotOpen;
@@ -153,13 +133,8 @@ const Standard_CString FSD_Archive::MagicNumber()
 }
 
 
-void FSD_Archive::ReadLine(TCollection_AsciiString& 
-#ifdef WNT
-                                                    buffer
-#endif
-                          )
+void FSD_Archive::ReadLine(TCollection_AsciiString& buffer)
 {
-#ifdef WNT
   TRY {
 	char c;
 	Standard_Boolean IsEnd = Standard_False;
@@ -182,31 +157,19 @@ void FSD_Archive::ReadLine(TCollection_AsciiString&
 	if (e->m_cause == CArchiveException::endOfFile) myEof = Standard_True;
   }
   END_CATCH
-#endif
 }
 
-void FSD_Archive::WriteLine(const TCollection_AsciiString& 
-#ifdef WNT
-                                                    buffer
-#endif
-                          )
+void FSD_Archive::WriteLine(const TCollection_AsciiString& buffer)
 {
-#ifdef WNT
 	Standard_Integer i;
   for (i = 1; i <= buffer.Length(); i++) {
 	  (*myStream) << buffer.Value(i);
 	}
   (*myStream) << (Standard_Character)0;
-#endif
 }
 
-void FSD_Archive::WriteExtendedLine(const TCollection_ExtendedString&
-#ifdef WNT
-                                    buffer
-#endif
-                                   )
+void FSD_Archive::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 {
-#ifdef WNT
   Standard_ExtString extBuffer;
   Standard_Integer   i;
 
@@ -217,16 +180,10 @@ void FSD_Archive::WriteExtendedLine(const TCollection_ExtendedString&
   }
 
   (*myStream) << (Standard_ExtCharacter)0;
-#endif
 }
 
-void FSD_Archive::ReadExtendedLine(TCollection_ExtendedString&
-#ifdef WNT
-                                   buffer
-#endif
-                                  )
+void FSD_Archive::ReadExtendedLine(TCollection_ExtendedString& buffer)
 {
-#ifdef WNT
   TRY {
 	Standard_ExtCharacter i = 0;
 	Standard_Boolean fin = Standard_False;
@@ -243,20 +200,10 @@ void FSD_Archive::ReadExtendedLine(TCollection_ExtendedString&
 	if (e->m_cause == CArchiveException::endOfFile) myEof = Standard_True;
   }
   END_CATCH
-#endif
 }
 
-void FSD_Archive::ReadChar(TCollection_AsciiString&
-#ifdef WNT
-                           buffer
-#endif
-                           ,const Standard_Integer
-#ifdef WNT
-                           rsize
-#endif
-                          )
+void FSD_Archive::ReadChar(TCollection_AsciiString& buffer, const Standard_Integer rsize)
 {
-#ifdef WNT
   TRY {
 	char             c;
 	Standard_Integer ccount = 0;
@@ -273,17 +220,11 @@ void FSD_Archive::ReadChar(TCollection_AsciiString&
 	if (e->m_cause == CArchiveException::endOfFile) myEof = Standard_True;
   }
   END_CATCH
-#endif
 }
 
 
-Storage_Error FSD_Archive::FindTag(const Standard_CString
-#ifdef WNT
-                                   aTag
-#endif
-                                  )
+Storage_Error FSD_Archive::FindTag(const Standard_CString aTag)
 {
-#ifdef WNT
   TCollection_AsciiString l;
   Standard_CString str;
 
@@ -307,14 +248,10 @@ Storage_Error FSD_Archive::FindTag(const Standard_CString
   else {
     return Storage_VSOk;
   }
-#else
-  return Storage_VSSectionNotFound;
-#endif
 }
 
 void FSD_Archive::SkipObject()
 {
-#ifdef WNT
 	Standard_Boolean errorStatus = Standard_False;
 	TRY {
 		char c;
@@ -369,18 +306,12 @@ void FSD_Archive::SkipObject()
 		else if (e->m_cause == CArchiveException::endOfFile) myEof = Standard_True;
 	}
 	END_CATCH
-#endif 
 }
 
 // ---------------------- PUBLIC : PUT
 
-Storage_BaseDriver& FSD_Archive::PutReference(const Standard_Integer
-#ifdef WNT
-                                              aValue
-#endif
-                                             )
+Storage_BaseDriver& FSD_Archive::PutReference(const Standard_Integer aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
 
   TRY {
@@ -392,17 +323,11 @@ Storage_BaseDriver& FSD_Archive::PutReference(const Standard_Integer
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::PutCharacter(const Standard_Character
-#ifdef WNT
-                                              aValue
-#endif
-                                             )
+Storage_BaseDriver& FSD_Archive::PutCharacter(const Standard_Character aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
 
   TRY {
@@ -416,17 +341,11 @@ Storage_BaseDriver& FSD_Archive::PutCharacter(const Standard_Character
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::PutExtCharacter(const Standard_ExtCharacter
-#ifdef WNT
-                                                 aValue
-#endif
-                                                )
+Storage_BaseDriver& FSD_Archive::PutExtCharacter(const Standard_ExtCharacter aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << FSD_EXT << aValue;
@@ -437,17 +356,11 @@ Storage_BaseDriver& FSD_Archive::PutExtCharacter(const Standard_ExtCharacter
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::PutInteger(const Standard_Integer
-#ifdef WNT
-                                            aValue
-#endif
-                                           )
+Storage_BaseDriver& FSD_Archive::PutInteger(const Standard_Integer aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << FSD_INT << aValue;
@@ -458,17 +371,11 @@ Storage_BaseDriver& FSD_Archive::PutInteger(const Standard_Integer
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::PutBoolean(const Standard_Boolean
-#ifdef WNT
-                                            aValue
-#endif
-                                           )
+Storage_BaseDriver& FSD_Archive::PutBoolean(const Standard_Boolean aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << FSD_BOO << ((Standard_Integer)aValue);
@@ -479,17 +386,11 @@ Storage_BaseDriver& FSD_Archive::PutBoolean(const Standard_Boolean
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::PutReal(const Standard_Real
-#ifdef WNT
-                                         aValue
-#endif
-                                        )
+Storage_BaseDriver& FSD_Archive::PutReal(const Standard_Real aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << FSD_REA << ((Standard_Real)aValue);
@@ -500,17 +401,11 @@ Storage_BaseDriver& FSD_Archive::PutReal(const Standard_Real
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::PutShortReal(const Standard_ShortReal
-#ifdef WNT
-                                              aValue
-#endif
-                                             )
+Storage_BaseDriver& FSD_Archive::PutShortReal(const Standard_ShortReal aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << FSD_SHO << aValue;
@@ -521,19 +416,13 @@ Storage_BaseDriver& FSD_Archive::PutShortReal(const Standard_ShortReal
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#endif
   return *this;
 }
 
 // ----------------- PUBLIC : GET
 
-Storage_BaseDriver& FSD_Archive::GetReference(Standard_Integer&
-#ifdef WNT
-                                              aValue
-#endif
-                                             )
+Storage_BaseDriver& FSD_Archive::GetReference(Standard_Integer& aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	char ptype;
@@ -549,17 +438,11 @@ Storage_BaseDriver& FSD_Archive::GetReference(Standard_Integer&
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::GetCharacter(Standard_Character&
-#ifdef WNT
-                                              aValue
-#endif
-                                             )
+Storage_BaseDriver& FSD_Archive::GetCharacter(Standard_Character& aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//unsigned short i;
@@ -579,17 +462,11 @@ Storage_BaseDriver& FSD_Archive::GetCharacter(Standard_Character&
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::GetExtCharacter(Standard_ExtCharacter&
-#ifdef WNT
-                                                 aValue
-#endif
-                                                )
+Storage_BaseDriver& FSD_Archive::GetExtCharacter(Standard_ExtCharacter& aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	char ptype;
@@ -605,17 +482,11 @@ Storage_BaseDriver& FSD_Archive::GetExtCharacter(Standard_ExtCharacter&
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::GetInteger(Standard_Integer&
-#ifdef WNT
-                                            aValue
-#endif
-                                           )
+Storage_BaseDriver& FSD_Archive::GetInteger(Standard_Integer& aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	char ptype;
@@ -631,17 +502,11 @@ Storage_BaseDriver& FSD_Archive::GetInteger(Standard_Integer&
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::GetBoolean(Standard_Boolean&
-#ifdef WNT
-                                            aValue
-#endif
-                                           )
+Storage_BaseDriver& FSD_Archive::GetBoolean(Standard_Boolean& aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	char ptype;
@@ -657,17 +522,11 @@ Storage_BaseDriver& FSD_Archive::GetBoolean(Standard_Boolean&
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::GetReal(Standard_Real&
-#ifdef WNT
-                                         aValue
-#endif
-                                        )
+Storage_BaseDriver& FSD_Archive::GetReal(Standard_Real& aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	char ptype;
@@ -683,17 +542,11 @@ Storage_BaseDriver& FSD_Archive::GetReal(Standard_Real&
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#endif
   return *this;
 }
 
-Storage_BaseDriver& FSD_Archive::GetShortReal(Standard_ShortReal&
-#ifdef WNT
-                                              aValue
-#endif
-                                             )
+Storage_BaseDriver& FSD_Archive::GetShortReal(Standard_ShortReal& aValue)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 char ptype;
@@ -709,7 +562,6 @@ char ptype;
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#endif
   return *this;
 }
 
@@ -731,7 +583,6 @@ void FSD_Archive::Destroy()
 
 Storage_Error FSD_Archive::BeginWriteInfoSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	  //(*myStream) << FSD_Archive::MagicNumber();
@@ -745,51 +596,19 @@ Storage_Error FSD_Archive::BeginWriteInfoSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else 
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
-void FSD_Archive::WriteInfo(const Standard_Integer
-#ifdef WNT
-                            nbObj
-#endif
-			    ,const TCollection_AsciiString&
-#ifdef WNT
-                            dbVersion
-#endif
-			    ,const TCollection_AsciiString&
-#ifdef WNT
-                            date
-#endif
-			    ,const TCollection_AsciiString&
-#ifdef WNT
-                            schemaName
-#endif
-			    ,const TCollection_AsciiString&
-#ifdef WNT
-                            schemaVersion
-#endif
-			    ,const TCollection_ExtendedString&
-#ifdef WNT
-                            appName
-#endif
-			    ,const TCollection_AsciiString&
-#ifdef WNT
-                            appVersion
-#endif
-			    ,const TCollection_ExtendedString&
-#ifdef WNT
-                            dataType
-#endif
-			    ,const TColStd_SequenceOfAsciiString&
-#ifdef WNT
-                            userInfo
-#endif
-                           ) 
+void FSD_Archive::WriteInfo(const Standard_Integer nbObj,
+                            const TCollection_AsciiString& dbVersion,
+                            const TCollection_AsciiString& date,
+                            const TCollection_AsciiString& schemaName,
+                            const TCollection_AsciiString& schemaVersion,
+                            const TCollection_ExtendedString& appName,
+                            const TCollection_AsciiString& appVersion,
+                            const TCollection_ExtendedString& dataType,
+                            const TColStd_SequenceOfAsciiString& userInfo)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	Standard_Integer i;
@@ -820,15 +639,12 @@ void FSD_Archive::WriteInfo(const Standard_Integer
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	  Storage_StreamWriteError::Raise();
-#endif
 }
 
 
 Storage_Error FSD_Archive::EndWriteInfoSection() 
 {
-#ifdef WNT
+
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "END_INFO_SECTION" << '\0';
@@ -840,16 +656,13 @@ Storage_Error FSD_Archive::EndWriteInfoSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	  Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
 Storage_Error FSD_Archive::BeginReadInfoSection() 
 {
   Storage_Error s;
-#ifdef WNT
+
   TCollection_AsciiString l;
   Standard_Integer len = (int)strlen(FSD_Archive::MagicNumber());
 
@@ -872,53 +685,21 @@ Storage_Error FSD_Archive::BeginReadInfoSection()
   else {
     s = FindTag("BEGIN_INFO_SECTION");
   }
-#else 
-	s = Storage_VSFormatError;
-#endif
   return s;
 }
 
 // ------------------- INFO : READ
 
-void FSD_Archive::ReadInfo(Standard_Integer&
-#ifdef WNT
-                           nbObj
-#endif
-			   ,TCollection_AsciiString&
-#ifdef WNT
-                           dbVersion
-#endif
-			   ,TCollection_AsciiString&
-#ifdef WNT
-                           date
-#endif
-			   ,TCollection_AsciiString&
-#ifdef WNT
-                           schemaName
-#endif
-			   ,TCollection_AsciiString&
-#ifdef WNT
-                           schemaVersion
-#endif
-			   ,TCollection_ExtendedString&
-#ifdef WNT
-                           appName
-#endif
-			   ,TCollection_AsciiString&
-#ifdef WNT
-                           appVersion
-#endif
-			   ,TCollection_ExtendedString&
-#ifdef WNT
-                           dataType
-#endif
-			   ,TColStd_SequenceOfAsciiString&
-#ifdef WNT
-                           userInfo
-#endif
-                          ) 
+void FSD_Archive::ReadInfo(Standard_Integer& nbObj,
+                           TCollection_AsciiString& dbVersion,
+                           TCollection_AsciiString& date,
+                           TCollection_AsciiString& schemaName,
+                           TCollection_AsciiString& schemaVersion,
+                           TCollection_ExtendedString& appName,
+                           TCollection_AsciiString& appVersion,
+                           TCollection_ExtendedString& dataType,
+                           TColStd_SequenceOfAsciiString& userInfo) 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) >> nbObj;
@@ -950,7 +731,6 @@ void FSD_Archive::ReadInfo(Standard_Integer&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamTypeMismatchError::Raise();	
 }
 
@@ -963,7 +743,6 @@ Storage_Error FSD_Archive::EndReadInfoSection()
 
 Storage_Error FSD_Archive::BeginWriteCommentSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "BEGIN_COMMENT_SECTION" << '\0';
@@ -975,19 +754,11 @@ Storage_Error FSD_Archive::BeginWriteCommentSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();  
-#else
-	Storage_StreamWriteError::Raise();  
-#endif
   return Storage_VSOk;
 }
 
-void FSD_Archive::WriteComment(const TColStd_SequenceOfExtendedString&
-#ifdef WNT
-                                                                       aCom
-#endif
-                              )
+void FSD_Archive::WriteComment(const TColStd_SequenceOfExtendedString& aCom)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	Standard_Integer i,aSize;
@@ -1004,13 +775,11 @@ void FSD_Archive::WriteComment(const TColStd_SequenceOfExtendedString&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
 Storage_Error FSD_Archive::EndWriteCommentSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "END_COMMENT_SECTION" << '\0';
@@ -1022,9 +791,6 @@ Storage_Error FSD_Archive::EndWriteCommentSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
@@ -1035,13 +801,8 @@ Storage_Error FSD_Archive::BeginReadCommentSection()
   return FindTag("BEGIN_COMMENT_SECTION");
 }
 
-void FSD_Archive::ReadComment(TColStd_SequenceOfExtendedString&
-#ifdef WNT
-                                                                aCom
-#endif
-                             )
+void FSD_Archive::ReadComment(TColStd_SequenceOfExtendedString& aCom)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	TCollection_ExtendedString line;
@@ -1062,7 +823,6 @@ void FSD_Archive::ReadComment(TColStd_SequenceOfExtendedString&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamTypeMismatchError::Raise();
 }
 
@@ -1075,7 +835,6 @@ Storage_Error FSD_Archive::EndReadCommentSection()
 
 Storage_Error FSD_Archive::BeginWriteTypeSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "BEGIN_TYPE_SECTION" << '\0';
@@ -1087,19 +846,11 @@ Storage_Error FSD_Archive::BeginWriteTypeSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
-void FSD_Archive::SetTypeSectionSize(const Standard_Integer
-#ifdef WNT
-                                     aSize
-#endif
-                                    ) 
+void FSD_Archive::SetTypeSectionSize(const Standard_Integer aSize)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << aSize;
@@ -1110,21 +861,12 @@ void FSD_Archive::SetTypeSectionSize(const Standard_Integer
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
-void FSD_Archive::WriteTypeInformations(const Standard_Integer
-#ifdef WNT
-                                        typeNum
-#endif
-				        ,const TCollection_AsciiString&
-#ifdef WNT
-                                        typeName
-#endif
-                                       ) 
+void FSD_Archive::WriteTypeInformations (const Standard_Integer typeNum,
+                                         const TCollection_AsciiString& typeName)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << typeNum << typeName.ToCString() << '\0';
@@ -1137,13 +879,11 @@ void FSD_Archive::WriteTypeInformations(const Standard_Integer
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
 Storage_Error FSD_Archive::EndWriteTypeSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "END_TYPE_SECTION" << '\0';
@@ -1155,9 +895,6 @@ Storage_Error FSD_Archive::EndWriteTypeSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
@@ -1171,7 +908,6 @@ Storage_Error FSD_Archive::BeginReadTypeSection()
 Standard_Integer FSD_Archive::TypeSectionSize() 
 {
   Standard_Integer i = 0;
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) >> i;
@@ -1183,23 +919,11 @@ Standard_Integer FSD_Archive::TypeSectionSize()
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#else
-	Storage_StreamTypeMismatchError::Raise();
-#endif
   return i;
 }
 
-void FSD_Archive::ReadTypeInformations(Standard_Integer&
-#ifdef WNT
-                                       typeNum
-#endif
-				       ,TCollection_AsciiString&
-#ifdef WNT
-                                       typeName
-#endif
-                                      ) 
+void FSD_Archive::ReadTypeInformations(Standard_Integer& typeNum, TCollection_AsciiString& typeName)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	unsigned char c;
@@ -1221,7 +945,6 @@ void FSD_Archive::ReadTypeInformations(Standard_Integer&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamTypeMismatchError::Raise();
 }
 
@@ -1234,7 +957,6 @@ Storage_Error FSD_Archive::EndReadTypeSection()
 
 Storage_Error FSD_Archive::BeginWriteRootSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "BEGIN_ROOT_SECTION" << '\0';
@@ -1246,19 +968,11 @@ Storage_Error FSD_Archive::BeginWriteRootSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
-void FSD_Archive::SetRootSectionSize(const Standard_Integer
-#ifdef WNT
-                                     aSize
-#endif
-                                    ) 
+void FSD_Archive::SetRootSectionSize(const Standard_Integer aSize)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << aSize;
@@ -1269,25 +983,13 @@ void FSD_Archive::SetRootSectionSize(const Standard_Integer
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
-void FSD_Archive::WriteRoot(const TCollection_AsciiString&
-#ifdef WNT
-                                                           rootName
-#endif
-                            ,const Standard_Integer
-#ifdef WNT
-                                                   aRef
-#endif
-                            ,const TCollection_AsciiString&
-#ifdef WNT
-                                                           rootType
-#endif
-                           ) 
+void FSD_Archive::WriteRoot (const TCollection_AsciiString& rootName,
+                             const Standard_Integer aRef,
+                             const TCollection_AsciiString& rootType)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << aRef << rootName.ToCString() << '\0' << rootType.ToCString() << '\0';
@@ -1302,13 +1004,11 @@ void FSD_Archive::WriteRoot(const TCollection_AsciiString&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
 Storage_Error FSD_Archive::EndWriteRootSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "END_ROOT_SECTION" << '\0';
@@ -1320,9 +1020,6 @@ Storage_Error FSD_Archive::EndWriteRootSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
@@ -1336,7 +1033,6 @@ Storage_Error FSD_Archive::BeginReadRootSection()
 Standard_Integer FSD_Archive::RootSectionSize() 
 {
   Standard_Integer i = 0;
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) >> i;
@@ -1348,27 +1044,13 @@ Standard_Integer FSD_Archive::RootSectionSize()
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#else
-	Storage_StreamTypeMismatchError::Raise();
-#endif
   return i;
 }
 
-void FSD_Archive::ReadRoot(TCollection_AsciiString&
-#ifdef WNT
-                           rootName
-#endif
-                           ,Standard_Integer&
-#ifdef WNT
-                           aRef
-#endif
-                           ,TCollection_AsciiString&
-#ifdef WNT
-                           rootType
-#endif
-                          ) 
+void FSD_Archive::ReadRoot(TCollection_AsciiString& rootName,
+                           Standard_Integer& aRef,
+                           TCollection_AsciiString& rootType)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) >> aRef;
@@ -1382,7 +1064,6 @@ void FSD_Archive::ReadRoot(TCollection_AsciiString&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamTypeMismatchError::Raise();
 }
 
@@ -1395,7 +1076,6 @@ Storage_Error FSD_Archive::EndReadRootSection()
 
 Storage_Error FSD_Archive::BeginWriteRefSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "BEGIN_REF_SECTION" << '\0';
@@ -1407,19 +1087,11 @@ Storage_Error FSD_Archive::BeginWriteRefSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
-void FSD_Archive::SetRefSectionSize(const Standard_Integer
-#ifdef WNT
-                                    aSize
-#endif
-                                   ) 
+void FSD_Archive::SetRefSectionSize(const Standard_Integer aSize)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << aSize; 
@@ -1430,21 +1102,12 @@ void FSD_Archive::SetRefSectionSize(const Standard_Integer
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
-void FSD_Archive::WriteReferenceType(const Standard_Integer
-#ifdef WNT
-                                     reference
-#endif
-				     ,const Standard_Integer
-#ifdef WNT
-                                     typeNum
-#endif
-                                    ) 
+void FSD_Archive::WriteReferenceType(const Standard_Integer reference,
+                                     const Standard_Integer typeNum)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << reference << typeNum;
@@ -1455,13 +1118,11 @@ void FSD_Archive::WriteReferenceType(const Standard_Integer
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
 Storage_Error FSD_Archive::EndWriteRefSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "END_REF_SECTION" << '\0';
@@ -1473,9 +1134,6 @@ Storage_Error FSD_Archive::EndWriteRefSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
@@ -1489,7 +1147,6 @@ Storage_Error FSD_Archive::BeginReadRefSection()
 Standard_Integer FSD_Archive::RefSectionSize() 
 {
   Standard_Integer i = 0;
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) >> i;
@@ -1501,23 +1158,12 @@ Standard_Integer FSD_Archive::RefSectionSize()
   END_CATCH
 
   if (errorStatus) Storage_StreamTypeMismatchError::Raise();
-#else
-	Storage_StreamTypeMismatchError::Raise();
-#endif
   return i;
 }
 
-void FSD_Archive::ReadReferenceType(Standard_Integer&
-#ifdef WNT
-                                    reference
-#endif
-				    ,Standard_Integer&
-#ifdef WNT
-                                    typeNum
-#endif
-				   ) 
+void FSD_Archive::ReadReferenceType(Standard_Integer& reference,
+                                    Standard_Integer& typeNum)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) >> reference;
@@ -1530,7 +1176,6 @@ void FSD_Archive::ReadReferenceType(Standard_Integer&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamTypeMismatchError::Raise();
 }
 
@@ -1543,7 +1188,6 @@ Storage_Error FSD_Archive::EndReadRefSection()
 
 Storage_Error FSD_Archive::BeginWriteDataSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "BEGIN_DATA_SECTION" << '\0';
@@ -1555,23 +1199,12 @@ Storage_Error FSD_Archive::BeginWriteDataSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
-void FSD_Archive::WritePersistentObjectHeader(const Standard_Integer
-#ifdef WNT
-                                              aRef
-#endif
-					      ,const Standard_Integer
-#ifdef WNT
-					      aType
-#endif
-					     ) 
+void FSD_Archive::WritePersistentObjectHeader(const Standard_Integer aRef,
+                                              const Standard_Integer aType)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) << aRef << aType;
@@ -1582,7 +1215,6 @@ void FSD_Archive::WritePersistentObjectHeader(const Standard_Integer
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamWriteError::Raise();
 }
 
@@ -1600,14 +1232,11 @@ void FSD_Archive::EndWriteObjectData()
 
 void FSD_Archive::EndWritePersistentObjectData() 
 {	
-#ifdef WNT
 	(*myStream) << 'E';
-#endif
 }
 
 Storage_Error FSD_Archive::EndWriteDataSection() 
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	//(*myStream) << "END_DATA_SECTION" << '\0';
@@ -1619,9 +1248,6 @@ Storage_Error FSD_Archive::EndWriteDataSection()
   END_CATCH
 
   if (errorStatus) Storage_StreamWriteError::Raise();
-#else
-	Storage_StreamWriteError::Raise();
-#endif
   return Storage_VSOk;
 }
 
@@ -1632,17 +1258,8 @@ Storage_Error FSD_Archive::BeginReadDataSection()
   return FindTag("BEGIN_DATA_SECTION");
 }
 
-void FSD_Archive::ReadPersistentObjectHeader(Standard_Integer&
-#ifdef WNT
-                                             aRef
-#endif
-                                             ,Standard_Integer&
-#ifdef WNT
-                                             aType
-#endif
-                                            ) 
+void FSD_Archive::ReadPersistentObjectHeader(Standard_Integer& aRef, Standard_Integer& aType)
 {
-#ifdef WNT
   Standard_Boolean errorStatus = Standard_False;
   TRY {
 	(*myStream) >> aRef;
@@ -1655,7 +1272,6 @@ void FSD_Archive::ReadPersistentObjectHeader(Standard_Integer&
   END_CATCH
 
   if (errorStatus) 
-#endif
 	  Storage_StreamTypeMismatchError::Raise();
 }
 
@@ -1673,7 +1289,6 @@ void FSD_Archive::EndReadObjectData()
 
 void FSD_Archive::EndReadPersistentObjectData() 
 {
-#ifdef WNT
 	char theEnd;
 
 	(*myStream) >> theEnd;
@@ -1681,7 +1296,6 @@ void FSD_Archive::EndReadPersistentObjectData()
 	if (theEnd != 'E') {
 		Storage_StreamFormatError::Raise();
 	}
-#endif
 }
 
 Storage_Error FSD_Archive::EndReadDataSection() 

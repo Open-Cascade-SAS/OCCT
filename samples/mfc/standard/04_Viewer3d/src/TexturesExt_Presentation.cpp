@@ -34,11 +34,7 @@ const TexturesExt_Presentation::PSampleFuncType TexturesExt_Presentation::Sample
   &TexturesExt_Presentation::sampleKitchen
 };
 
-#ifdef WNT
- #define EOL "\r\n"
-#else
- #define EOL "\n"
-#endif
+#define EOL "\r\n"
 
 #define ZVIEW_SIZE 100
 

@@ -15,11 +15,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #include "GeomSources.h"
 
-#ifdef WNT
- #define EOL "\r\n"
-#else
- #define EOL "\n"
-#endif
+#define EOL "\r\n"
 
 #define WAIT_A_LITTLE WaitForInput(500)
 

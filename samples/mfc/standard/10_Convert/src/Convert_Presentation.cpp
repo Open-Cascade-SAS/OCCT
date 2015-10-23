@@ -54,11 +54,7 @@ static const Quantity_Color SurfaceColor     (1,1,0, Quantity_TOC_RGB);      // 
 static const Quantity_Color BSplineColor     (1,0.647,0, Quantity_TOC_RGB);  // orange
 static const Quantity_Color BSplineSurfaceColor (0,0,1, Quantity_TOC_RGB);   // blue
 
-#ifdef WNT
- #define EOL "\r\n"
-#else
- #define EOL "\n"
-#endif
+#define EOL "\r\n"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

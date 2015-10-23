@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
-				PreprocessorDefinitions="WNT;_DEBUG"
+				PreprocessorDefinitions="_DEBUG"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -129,7 +129,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
-				PreprocessorDefinitions="WNT;_DEBUG"
+				PreprocessorDefinitions="_DEBUG"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -209,7 +209,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
-				PreprocessorDefinitions="WNT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -288,7 +287,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
-				PreprocessorDefinitions="WNT"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
