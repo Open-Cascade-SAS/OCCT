@@ -183,13 +183,6 @@ public:
   //! @param theMax [in] the maximum point of scene.
   Standard_EXPORT virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax) Standard_OVERRIDE;
 
-  //! Reads depths of shown pixels of the given rectangle.
-  Standard_EXPORT virtual void ReadDepths (const Standard_Integer theX,
-                                           const Standard_Integer theY,
-                                           const Standard_Integer theWidth,
-                                           const Standard_Integer theHeight,
-                                           const Standard_Address theBuffer) const Standard_OVERRIDE;
-
   //! Dump active rendering buffer into specified memory buffer.
   Standard_EXPORT virtual Standard_Boolean BufferDump (Image_PixMap& theImage,
                                                        const Graphic3d_BufferType& theBufferType) Standard_OVERRIDE;

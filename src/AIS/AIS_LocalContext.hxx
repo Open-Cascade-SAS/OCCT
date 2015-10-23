@@ -95,10 +95,6 @@ public:
   
   Standard_EXPORT void Terminate (const Standard_Boolean updateviewer = Standard_True);
   
-  //! to be called when a upper local context was closed...
-  //! useful to put pack the right projector...
-  Standard_EXPORT void Reactivate();
-  
   //! returns true if done...
   Standard_EXPORT Standard_Boolean Display (const Handle(AIS_InteractiveObject)& anInteractive, const Standard_Integer DisplayMode = 0, const Standard_Boolean AllowShapeDecomposition = Standard_True, const Standard_Integer ActivationMode = 0);
   

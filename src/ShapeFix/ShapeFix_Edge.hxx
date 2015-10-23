@@ -218,7 +218,7 @@ public:
   Standard_EXPORT void SetContext (const Handle(ShapeBuild_ReShape)& context);
 
   //! Returns context
-  Handle(ShapeBuild_ReShape) Context() const;
+  Standard_EXPORT Handle(ShapeBuild_ReShape) Context() const;
 
   DEFINE_STANDARD_RTTI(ShapeFix_Edge,MMgt_TShared)
 

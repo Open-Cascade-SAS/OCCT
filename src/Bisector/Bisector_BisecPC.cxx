@@ -386,11 +386,11 @@ void Bisector_BisecPC::Values(const Standard_Real    U,
   case 2 :  {curve->D3(UOnCurve,PC,Tu,Tuu,T3u);break;}
   }
   
-  gp_Vec2d PPC(PC.X() - point.X(), PC.Y() - point.Y());
+  gp_Vec2d aPPC(PC.X() - point.X(), PC.Y() - point.Y());
   gp_Vec2d Nor( - Tu.Y(), Tu.X());
   
-  Standard_Real SquarePPC = PPC.SquareMagnitude();
-  Standard_Real NorPPC    = Nor.Dot(PPC);
+  Standard_Real SquarePPC = aPPC.SquareMagnitude();
+  Standard_Real NorPPC    = Nor.Dot(aPPC);
   Standard_Real A1;
 
   if (Abs(NorPPC) > gp::Resolution() && (NorPPC*sign) < 0.) {
@@ -402,8 +402,8 @@ void Bisector_BisecPC::Values(const Standard_Real    U,
   if (N == 0) return;                                 // End Calculation Point;
 
   gp_Vec2d      Nu ( - Tuu.Y() , Tuu.X());            // derivative of the normal by U.
-  Standard_Real NuPPC     = Nu .Dot(PPC);
-  Standard_Real TuPPC     = Tu .Dot(PPC);
+  Standard_Real NuPPC     = Nu .Dot(aPPC);
+  Standard_Real TuPPC     = Tu .Dot(aPPC);
   Standard_Real NorPPCE2  = NorPPC*NorPPC;
   Standard_Real A2        = TuPPC/NorPPC - 0.5*NuPPC*SquarePPC/NorPPCE2;
 
@@ -415,8 +415,8 @@ void Bisector_BisecPC::Values(const Standard_Real    U,
   gp_Vec2d Nuu ( - T3u.Y() , T3u.X());
   
   Standard_Real NorPPCE4 = NorPPCE2*NorPPCE2;
-  Standard_Real NuuPPC   = Nuu.Dot(PPC);
-  Standard_Real TuuPPC   = Tuu.Dot(PPC);
+  Standard_Real NuuPPC   = Nuu.Dot(aPPC);
+  Standard_Real TuuPPC   = Tuu.Dot(aPPC);
   
   Standard_Real A21 = TuuPPC/NorPPC - TuPPC*NuPPC/NorPPCE2;
   Standard_Real A22 = (0.5*NuuPPC*SquarePPC + NuPPC*TuPPC)/NorPPCE2 - 
@@ -470,12 +470,12 @@ Standard_Real Bisector_BisecPC::Distance (const Standard_Real U) const
   Standard_Real UOnCurve = LinkBisCurve(U);
   
   curve->D1(UOnCurve,PC,Tan);
-  gp_Vec2d PPC(PC.X() - point.X(), PC.Y() - point.Y());
+  gp_Vec2d aPPC(PC.X() - point.X(), PC.Y() - point.Y());
   gp_Vec2d Nor( - Tan.Y(), Tan.X());
 
   Standard_Real NorNor       = Nor.SquareMagnitude();
-  Standard_Real SquareMagPPC = PPC.SquareMagnitude();
-  Standard_Real Prosca       = Nor.Dot(PPC);
+  Standard_Real SquareMagPPC = aPPC.SquareMagnitude();
+  Standard_Real Prosca       = Nor.Dot(aPPC);
   
   if (point.IsEqual(PC,Precision::Confusion())) {
     if (isConvex) { return 0.;}

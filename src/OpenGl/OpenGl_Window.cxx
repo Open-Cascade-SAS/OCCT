@@ -702,47 +702,6 @@ void OpenGl_Window::Resize()
   Init();
 }
 
-#endif // !__APPLE__
-
-// =======================================================================
-// function : ReadDepths
-// purpose  : TelReadDepths
-// =======================================================================
-void OpenGl_Window::ReadDepths (const Standard_Integer theX,     const Standard_Integer theY,
-                                const Standard_Integer theWidth, const Standard_Integer theHeight,
-                                float* theDepths)
-{
-  if (theDepths == NULL || !Activate())
-    return;
-
-  OpenGl_Mat4 aProjectMat;
-  Graphic3d_TransformUtils::Ortho2D (aProjectMat,
-    0.f, static_cast<GLfloat> (myWidth), 0.f, static_cast<GLfloat> (myHeight));
-
-  myGlContext->WorldViewState.Push();
-  myGlContext->ProjectionState.Push();
-
-  myGlContext->WorldViewState.SetIdentity();
-  myGlContext->ProjectionState.SetCurrent (aProjectMat);
-
-  myGlContext->ApplyProjectionMatrix();
-  myGlContext->ApplyWorldViewMatrix();
-
-#if !defined(GL_ES_VERSION_2_0)
-  glRasterPos2i (theX, theY);
-  myGlContext->DisableFeatures();
-  glReadPixels (theX, theY, theWidth, theHeight, GL_DEPTH_COMPONENT, GL_FLOAT, theDepths);
-  myGlContext->EnableFeatures();
-#endif
-
-  myGlContext->WorldViewState.Pop();
-  myGlContext->ProjectionState.Pop();
-
-  myGlContext->ApplyProjectionMatrix();
-}
-
-#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
-
 // =======================================================================
 // function : Init
 // purpose  :

@@ -296,13 +296,6 @@ public:
   //! @param theMax [in] the maximum point of scene.
   virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax) = 0;
 
-  //! Reads depths of shown pixels of the given rectangle.
-  virtual void ReadDepths (const Standard_Integer theX,
-                           const Standard_Integer theY,
-                           const Standard_Integer theWidth,
-                           const Standard_Integer theHeight,
-                           const Standard_Address theBuffer) const = 0;
-
   //! Dump active rendering buffer into specified memory buffer.
   virtual Standard_Boolean BufferDump (Image_PixMap& theImage, const Graphic3d_BufferType& theBufferType) = 0;
 

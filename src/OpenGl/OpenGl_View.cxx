@@ -367,22 +367,6 @@ void OpenGl_View::GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, c
 }
 
 // =======================================================================
-// function : ReadDepths
-// purpose  :
-// =======================================================================
-void OpenGl_View::ReadDepths (const Standard_Integer theX,
-                              const Standard_Integer theY,
-                              const Standard_Integer theWidth,
-                              const Standard_Integer theHeight,
-                              const Standard_Address theBuffer) const
-{
-  if (myWindow.IsNull())
-    return;
-
-  myWindow->ReadDepths (theX, theY, theWidth, theHeight, (float*)theBuffer);
-}
-
-// =======================================================================
 // function : BufferDump
 // purpose  :
 // =======================================================================
