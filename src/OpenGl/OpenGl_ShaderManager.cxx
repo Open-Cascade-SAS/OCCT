@@ -1260,22 +1260,27 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
   TCollection_AsciiString aSrcVertEndMain;
   if ((theBits & OpenGl_PO_StippleLine) != 0)
   {
-    bool hasCaps = false;
+    bool hasGlslBitOps = false;
   #if defined(GL_ES_VERSION_2_0)
     if (myContext->IsGlGreaterEqual (3, 0))
     {
       aProgramSrc->SetHeader ("#version 300 es");
-      hasCaps = true;
+      hasGlslBitOps = true;
     }
   #else
-    if (myContext->core32 != NULL)
+    if (myContext->IsGlGreaterEqual (3, 0))
     {
-      aProgramSrc->SetHeader ("#version 150");
-      hasCaps = true;
+      aProgramSrc->SetHeader ("#version 130");
+      hasGlslBitOps = true;
+    }
+    else if(myContext->CheckExtension("GL_EXT_gpu_shader4"))
+    {
+      aProgramSrc->SetHeader ("#extension GL_EXT_gpu_shader4 : enable");
+      hasGlslBitOps = true;
     }
   #endif
 
-    if (hasCaps)
+    if (hasGlslBitOps)
     {
       aSrcVertExtraOut +=
         EOL"THE_SHADER_OUT vec2 ScreenSpaceCoord;";
