@@ -140,10 +140,11 @@ public:
   Standard_Integer Length (void) const
   { return RowLength() * ColLength(); }
 
-  //! RowLength 
+  //! Returns length of the row, i.e. number of columns
   Standard_Integer RowLength (void) const
   { return (myUpperCol-myLowerCol+1); }
-  //! ColLength 
+
+  //! Returns length of the column, i.e. number of rows
   Standard_Integer ColLength (void) const
   { return (myUpperRow-myLowerRow+1); }
 
