@@ -385,23 +385,26 @@ TCollection_Array1OfReal aValues = ...;
 std::stable_sort (aValues->begin(), aValues->end());
 ~~~~~
 
-@subsection upgrade_occt700_2dlayers New implementation of 2d-layers
+@subsection upgrade_occt700_2dlayers On-screen objects and ColorScale
 
-In latest OCCT version API that provided old implementation of 2d-layers was removed. Classes Aspect_Clayer2d, OpenGl_GrahpicDriver_Layer, Visual3d_Layer, Visual3d_LayerItem, V3d_LayerMgr, V3d_LayerMgrPointer were deleted.
+Old mechanism for rendering Underlay and Overlay on-screen 2D objects based on Visual3d_Layer and immediate drawing model (e.g. uncached and thus slow) have been removed.
+Classes Aspect_Clayer2d, OpenGl_GraphicDriver_Layer, Visual3d_Layer, Visual3d_LayerItem, V3d_LayerMgr, V3d_LayerMgrPointer have been deleted.
 
-Now 2d-layers are implemented through Z-layers. In order to create a 2d-object it is necessary to follow several steps:
-1. Create an AIS interactive object
-2. Set a Z-layer for it to determine in which layer this object will be displayed (layer system provides order of displaying objects, ones in the lower layer will be displayed behind the others in the higher layer)
-3. Set transform persistence (flag Graphic3d_TMF_2d or Graphic3d_TMF_2d_IsTopDown and a gp_Pnt point, where X and Y are used to set the coordinates’ origin in 2d space of the view and Z coordinate defines the gap from border of view window, except center position)
+General AIS interactive objects with transformation persistence flag Graphic3d_TMF_2d can be used as replacement of Visual3d_LayerItem.
+Anchor point specified for transformation persistence defines a corner of window (or center in case of (0, 0) point).
+To keep on-screen 2D objects on the top of main screen, them could be assigned to appropriate Z-layer.
+Predefined Z-layers Graphic3d_ZLayerId_TopOSD and Graphic3d_ZLayerId_BotOSD are intended to replace Underlay and Overlay layers within old API.
 
-One more feature of new 2d-layers imlementation is a ColorScale based on  a new class AIS_ColorScale. Old implementation of ColorScale as a global property of V3d_View has been removed with associated methods V3d_View::ColorScaleDisplay(), V3d_View::ColorScaleErase(), V3d_View::ColorScaleIsDisplayed(), V3d_View::ColorScale() and classes V3d_ColorScale, V3d_ColorScaleLayerItem, Aspect_ColorScale.
-
-New interactive object AIS_ColorScale provides the same configuration API as previously Aspect_ColorScale and V3d_ColorScale. It should be used in the following way to display a 2D presentation of ColorScale:
+ColorScale object previously implemented using Visual3d_LayerItem has been moved to a new class AIS_ColorScale, with width and height specified explicitly.
+The property of V3d_View storing global ColorScale object has been removed with associated methods V3d_View::ColorScaleDisplay(), V3d_View::ColorScaleErase(), V3d_View::ColorScaleIsDisplayed(), V3d_View::ColorScale() and classes V3d_ColorScale, V3d_ColorScaleLayerItem, Aspect_ColorScale.
+Here is an example of creating ColorScale using updated API:
 
 ~~~~~
 Handle(AIS_ColorScale) aCS = new AIS_ColorScale();
 // configuring
-aCS->SetHeight            (0.95);
+Standard_Integer aWidth, aHeight;
+aView->Window()->Size (aWidth, aHeight);
+aCS->SetSize              (aWidth, aHeight);
 aCS->SetRange             (0.0, 10.0);
 aCS->SetNumberOfIntervals (10);
 // displaying
@@ -411,7 +414,9 @@ aCS->SetToUpdate();
 theContextAIS->Display (aCS);
 ~~~~~
 
-To see how 2d objects are realized in OCCT you can call draw commands vcolorscale, vlayerline or vdrawtext (with -2d option). Draw command vcolorscale now requires a name of ColorScale object as an argument. To display this object use command vdisplay. Example:
+To see how 2d objects are realized in OCCT you can call draw commands vcolorscale, vlayerline or vdrawtext (with -2d option).
+Draw command vcolorscale now requires a name of ColorScale object as an argument.
+To display this object use command vdisplay. Example:
 
 ~~~~~
 pload VISUALIZATION
@@ -428,9 +433,130 @@ vdrawtext t "2D-TEXT" -2d -pos 0 150 0 -color red
 
 Here is a small example in c++ how to display a custom AIS object in 2d:
 ~~~~~
-Handle(AIS_InteractiveContext) aContext = ...; //get AIS context
-Handle(AIS_InteractiveObject) anObj =...; //create an AIS object
-anObj->SetZLayer(Graphic3d_ZLayerId_TopOSD); //display object in overlay
-anObj->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0)); //set 2d flag, coordinate origin is set to down-left corner
-aContext->Display (anObj); //display the object
+Handle(AIS_InteractiveContext) aContext = ...;
+Handle(AIS_InteractiveObject) anObj =...; // create an AIS object
+anObj->SetZLayer(Graphic3d_ZLayerId_TopOSD); // display object in overlay
+anObj->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0)); // set 2d flag, coordinate origin is set to down-left corner
+aContext->Display (anObj); // display the object
 ~~~~~
+
+@subsection upgrade_occt700_userdraw UserDraw and Visual3d
+
+#### Visual3d package
+
+Package Visual3d implementing intermediate layer between high-level V3d classes
+and low-level OpenGl classes for views and graphic structures management has been dropped.
+
+The OpenGl_View inherits from the new class Graphic3d_CView.
+Graphic3d_CView is an interface class that declares abstract methods for managing displayed structures,
+display properties and a base layer code that implements computation
+and management of HLR (or more broadly speaking view-depended) structures.
+
+In new implementation it takes place of eliminated Visual3d_View.
+As before the instance of Graphic3d_CView is still completely managed by V3d_View classes.
+It can be accessed through V3d_View interface but normally this should not be required as all its methods are completely wrapped.
+
+In more details, a concrete specialization of Graphic3d_CView is created and returned by graphical driver on request.
+Right after creation the views is directly used for setting rendering properties and adding graphical structures to be displayed.
+
+The rendering of graphics is possible after mapping a window and activating the view.
+The direct setting of properties makes obsolete usage of intermediate structures with display parameter
+like Visual3d_ContextView and etc (the whole package of Visual3d become redundant).
+
+New location of functionality previously provided by Visual3d package:
+- Logic of managing display of structures was put from Visual3d_ViewManager into Graphic3d_StructureManager.
+- Removed Visual3d_View class. Logic of managing computed structures was put into base layer of Graphi3d_CView.
+- Removed all intermediate structures for storing view parameters e.g. Visual3d_ContextView.
+  All settings are kept by instances of Graphic3d_CView
+- Removed Visual3d_Light intermediate class.
+  All light properties are still stored in Graphic3d_CLight structure.
+  The structure is directly access by instance of V3d_Light classes.
+- Moved all needed enumerations into Graphic3d package.
+
+#### Custom OpenGL rendering and UserDraw
+
+Old APIs based on global callback functions for creating UserDraw objects and for performing custom OpenGL rendering within the view have been dropped.
+UserDraw callbacks no more required since OpenGl_Group now inherits Graphic3d_Group and thus can be accessed directly from AIS_InteractiveObject:
+
+~~~~~
+//! Class implementing custom OpenGL element.
+class UserDrawElement : public OpenGl_Element {};
+
+//! Implementation of virtual method AIS_InteractiveObject::Compute().
+void UserDrawObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                              const Handle(Prs3d_Presentation)& thePrs,
+                              const Standard_Integer theMode)
+{
+  Graphic3d_Vec4 aBndMin (myCoords[0], myCoords[1], myCoords[2], 1.0f);
+  Graphic3d_Vec4 aBndMax (myCoords[3], myCoords[4], myCoords[5], 1.0f);
+
+  // casting to OpenGl_Group should be always true as far as application uses OpenGl_GraphicDriver for rendering
+  Handle(OpenGl_Group) aGroup = Handle(OpenGl_Group)::DownCast (thePrs->NewGroup());
+  aGroup->SetMinMaxValues (aBndMin.x(), aBndMin.y(), aBndMin.z(),
+                           aBndMax.x(), aBndMax.y(), aBndMax.z());
+  UserDrawElement* anElem = new UserDrawElement (this);
+  aGroup->AddElement(anElem);
+
+  // invalidate bounding box of the scene
+  thePrsMgr->StructureManager()->Update (thePrsMgr->StructureManager()->UpdateMode());
+}
+~~~~~
+
+For performing custom OpenGL code within view, user should inherit from class OpenGl_View.
+See the following code sample:
+
+~~~~~
+//! Custom view.
+class UserView : public OpenGl_View
+{
+public:
+  //! Override rendering into the view.
+  virtual void render (Graphic3d_Camera::Projection theProjection,
+                       OpenGl_FrameBuffer*          theReadDrawFbo,
+                       const Standard_Boolean       theToDrawImmediate)
+  {
+    OpenGl_View::render (theProjection, theReadDrawFbo, theToDrawImmediate);
+    if (theToDrawImmediate)
+    {
+      return;
+    }
+
+    // perform custom drawing
+    const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+    GLfloat aVerts[3] = { 0.0f, 0,0f, 0,0f };
+    aCtx->core20->glEnableClientState(GL_VERTEX_ARRAY);
+    aCtx->core20->glVertexPointer(3, GL_FLOAT, 0, aVerts);
+    aCtx->core20->glDrawArrays(GL_POINTS, 0, 1);
+    aCtx->core20->glDisableClientState(GL_VERTEX_ARRAY);
+  }
+
+};
+
+//! Custom driver for creating UserView.
+class UserDriver : public OpenGl_GraphicDriver
+{
+public:
+  //! Create instance of own view.
+  virtual Handle(Graphic3d_CView) CreateView (const Handle(Graphic3d_StructureManager)& theMgr) Standard_OVERRIDE
+  {
+    Handle(UserView) aView = new UserView (theMgr, this, myCaps, myDeviceLostFlag, &myStateCounter);
+    myMapOfView.Add (aView);
+    for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+    {
+      const Graphic3d_ZLayerId        aLayerID  = aLayerIt.Value();
+      const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerID);
+      aView->AddZLayer         (aLayerID);
+      aView->SetZLayerSettings (aLayerID, aSettings);
+    }
+    return aView;
+  }
+};
+
+~~~~~
+
+@subsection upgrade_occt700_localcontext Deprecation of Local Context
+
+Conception of Local Context has been deprecated.
+Related classes (AIS_LocalContext) and methods (AIS_InteractiveContext::OpenLocalContext() and others) will be removed within some future OCCT release.
+
+The main functionality provided by Local Context - selection of object subparts - can be now used within Neutral Point without opening any Local Context.
