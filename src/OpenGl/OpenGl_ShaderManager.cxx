@@ -1171,6 +1171,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
       {
         aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, gl_PointCoord).r; }";
       }
+      else if (myContext->IsGlGreaterEqual (2, 1))
+      {
+        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+      }
     #endif
 
       aSrcFragGetColor = aSrcGetAlpha
@@ -1194,6 +1198,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
         EOL"  vec4 aColor = getColor();"
         EOL"  if (aColor.a <= 0.1) discard;"
         EOL"  occFragColor = aColor;";
+    #if !defined(GL_ES_VERSION_2_0)
+      if (myContext->core11 != NULL
+       && myContext->IsGlGreaterEqual (2, 1))
+      {
+        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+      }
+    #endif
     }
   }
   else
@@ -1440,6 +1451,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
         EOL"  vec4 aColor = gl_FrontFacing ? FrontColor : BackColor;"
         EOL"  return occTexture2D(occActiveSampler, gl_PointCoord) * aColor;"
         EOL"}";
+    #if !defined(GL_ES_VERSION_2_0)
+      if (myContext->core11 != NULL
+       && myContext->IsGlGreaterEqual (2, 1))
+      {
+        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+      }
+    #endif
     }
   }
   else
@@ -1559,6 +1577,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
         EOL"  vec4 aColor = " thePhongCompLight ";"
         EOL"  return occTexture2D(occActiveSampler, gl_PointCoord) * aColor;"
         EOL"}";
+    #if !defined(GL_ES_VERSION_2_0)
+      if (myContext->core11 != NULL
+       && myContext->IsGlGreaterEqual (2, 1))
+      {
+        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+      }
+    #endif
     }
   }
   else
