@@ -1075,73 +1075,6 @@ Standard_Integer offsetperform(Draw_Interpretor& theCommands,
 
 
 //=======================================================================
-//function : Debou
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer Debou(Draw_Interpretor& theCommands,
-			      Standard_Integer narg, const char** a)
-{
-  Standard_Integer i ;
-  Standard_Integer newnarg ;
-
-  if (narg<7) return 1;
-  
-  TopoDS_Shape S = DBRep::Get(a[2]);
-
-  Standard_Boolean Fuse;
-  if (!strcasecmp("F",a[3])) {
-    Fuse = Standard_True;
-  }
-  else if (!strcasecmp("C",a[3])) {
-    Fuse = Standard_False;
-  }
-  else {
-    return 1;
-  }
-
-  for ( newnarg = 4; newnarg < narg; newnarg++) {
-    if (a[newnarg][0] == '@') {
-      break;
-    }
-  }
-  if (newnarg >= narg-1 || newnarg == 4) {
-    return 1;
-  }
-
-
-  TopTools_ListOfShape LF,LF2;
-  for ( i=4; i<newnarg; i++) {
-    TopoDS_Shape aLocalShape(DBRep::Get(a[i],TopAbs_FACE));
-    LF.Append(aLocalShape);
-//    LF.Append(TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE)));
-  }
-
-  for (i=newnarg+1; i<narg; i++) {
-    TopoDS_Shape aLocalShape(DBRep::Get(a[i],TopAbs_FACE));
-    LF2.Append(aLocalShape);
-//    LF2.Append(TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE)));
-  }
-
-  //BRepFeat_LocalOperation BLoc(S);
-  //BLoc.Perform(LF,LF2,Fuse);
-  //BLoc.Build();
-  BRepFeat_Builder BLoc;
-  BLoc.Init(S, S);
-  BLoc.Perform();
-  BLoc.PerformResult();
-  if (!BLoc.ErrorStatus()) {
-//    dout.Clear();
-    DBRep::Set(a[1],BLoc.Shape());
-    dout.Flush();
-    return 0;
-  }
-  theCommands << "Local operation not done" ;
-  return 1;
-}
-
-
-//=======================================================================
 //function : ROW
 //purpose  : 
 //=======================================================================
@@ -2337,12 +2270,6 @@ void BRepTest::FeatureCommands (Draw_Interpretor& theCommands)
   theCommands.Add("offsetperform",
 		  "offsetperform result",
 		  __FILE__,offsetperform,g);
-
-
-  theCommands.Add("deboucle", 
-		  " Essai de debouclage partiel: deboucle result shape F/C face [face...] @ face [face...]",
-		  __FILE__,Debou,g);
-
 
   theCommands.Add("glue", 
 		  "glue result shapenew shapebase facenew facebase [facenew facebase...] [edgenew edgebase [edgenew edgebase...]]",
