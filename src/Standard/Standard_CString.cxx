@@ -80,7 +80,7 @@ Standard_Integer HashCodes (const Standard_CString Value,
     // glibc version for android platform use locale-independent implementation of
     // strtod, strtol, strtoll functions. For other system with locale-depended
     // implementations problems may appear if "C" locale is not set explicitly.
-    #ifndef __ANDROID__
+    #if !defined(__ANDROID__) && !defined(__QNX__)
       #error System does not support xlocale. Import/export could be broken if C locale did not specified by application.
     #endif
     #define strtod_l(thePtr, theNextPtr, theLocale)              strtod(thePtr, theNextPtr)

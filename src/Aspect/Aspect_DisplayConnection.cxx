@@ -23,7 +23,7 @@
 // =======================================================================
 Aspect_DisplayConnection::Aspect_DisplayConnection()
 {
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
   OSD_Environment anEnv ("DISPLAY");
   myDisplayName = anEnv.Value();
   Init();
@@ -36,7 +36,7 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 // =======================================================================
 Aspect_DisplayConnection::~Aspect_DisplayConnection()
 {
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
   if (myDisplay != NULL)
   {
     XCloseDisplay (myDisplay);
@@ -44,7 +44,7 @@ Aspect_DisplayConnection::~Aspect_DisplayConnection()
 #endif
 }
 
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
 // =======================================================================
 // function : Aspect_DisplayConnection
 // purpose  :

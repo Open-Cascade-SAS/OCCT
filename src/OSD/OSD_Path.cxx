@@ -21,8 +21,8 @@
 #include <Standard_ProgramError.hxx>
 #include <TCollection_AsciiString.hxx>
 
-static OSD_SysType whereAmI(){
-#if defined(__digital__) || defined(__FreeBSD__) || defined(SUNOS) || defined(__APPLE__)
+static OSD_SysType whereAmI() {
+#if defined(__digital__) || defined(__FreeBSD__) || defined(SUNOS) || defined(__APPLE__) || defined(__QNX__)
   return OSD_UnixBSD;
 }
 #elif defined(sgi)  || defined(IRIX) || defined(__sun)  || defined(SOLARIS) ||  defined(__sco__) || defined(__hpux) || defined(HPUX)

@@ -27,7 +27,7 @@
 #define No_Standard_DimensionError
 //#endif
 
-#include <math.h>
+#include <cmath>
 
 #include <math_Recipes.hxx>
 

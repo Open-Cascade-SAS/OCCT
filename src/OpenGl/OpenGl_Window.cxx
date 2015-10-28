@@ -26,7 +26,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
-#if defined(HAVE_EGL) || defined(__ANDROID__)
+#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
   #include <EGL/egl.h>
 #endif
 
@@ -36,7 +36,7 @@
 namespace
 {
 
-#if defined(HAVE_EGL) || defined(__ANDROID__)
+#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
   //
 #elif defined(_WIN32)
 
@@ -172,7 +172,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 
   Standard_Boolean isCoreProfile = Standard_False;
 
-#if defined(HAVE_EGL) || defined(__ANDROID__)
+#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
   EGLDisplay anEglDisplay = (EGLDisplay )theDriver->getRawGlDisplay();
   EGLContext anEglContext = (EGLContext )theDriver->getRawGlContext();
   EGLConfig  anEglConfig  = (EGLConfig  )theDriver->getRawGlConfig();
@@ -615,7 +615,7 @@ OpenGl_Window::~OpenGl_Window()
   // release "GL" context if it is owned by window
   // Mesa implementation can fail to destroy GL context if it set for current thread.
   // It should be safer to unset thread GL context before its destruction.
-#if defined(HAVE_EGL) || defined(__ANDROID__)
+#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
   if ((EGLSurface )myGlContext->myWindow != EGL_NO_SURFACE)
   {
     eglDestroySurface ((EGLDisplay )myGlContext->myDisplay,
@@ -677,7 +677,7 @@ Standard_Boolean OpenGl_Window::Activate()
 // =======================================================================
 void OpenGl_Window::Resize()
 {
-#if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__)
+#if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__) && !defined(__QNX__)
   Display* aDisp = (Display* )myGlContext->myDisplay;
   if (aDisp == NULL)
     return;
@@ -694,7 +694,7 @@ void OpenGl_Window::Resize()
   myWidth  = aWidth;
   myHeight = aHeight;
 
-#if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__)
+#if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__) && !defined(__QNX__)
   XResizeWindow (aDisp, myGlContext->myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
   XSync (aDisp, False);
 #endif
@@ -711,7 +711,7 @@ void OpenGl_Window::Init()
   if (!Activate())
     return;
 
-#if defined(HAVE_EGL) || defined(__ANDROID__)
+#if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
   eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_WIDTH,  &myWidth);
   eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_HEIGHT, &myHeight);
 #elif defined(_WIN32)

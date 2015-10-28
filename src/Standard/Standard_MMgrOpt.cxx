@@ -18,6 +18,7 @@
 #include <Standard_Assert.hxx>
 
 #include <stdio.h>
+#include <errno.h>
 
 #ifdef _WIN32
 # include <windows.h>

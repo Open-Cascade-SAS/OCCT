@@ -15,8 +15,8 @@
 #ifndef _Standard_ShortReal_HeaderFile
 #define _Standard_ShortReal_HeaderFile
 
+#include <cmath>
 #include <float.h>
-#include <math.h>
 
 #include <Standard_values.h>
 #include <Standard_TypeDef.hxx>

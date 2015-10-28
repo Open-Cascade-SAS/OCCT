@@ -13,7 +13,7 @@
 
 // AdvApp2Var_SysBase.cxx
 #include <assert.h>
-#include <math.h>
+#include <cmath>
 #include <stdlib.h>
 #include <string.h>
 #include <AdvApp2Var_Data_f2c.hxx>

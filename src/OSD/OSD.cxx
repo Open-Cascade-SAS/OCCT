@@ -16,7 +16,7 @@
 #include <OSD.hxx>
 #include <Standard_Stream.hxx>
 
-#include <math.h>
+#include <cmath>
 #include <stdio.h>
 #if defined(isfinite)
 # define finite isfinite
@@ -125,6 +125,10 @@ void OSD::MilliSecSleep(const Standard_Integer aDelay)
 
 Standard_Boolean OSD::IsDivisible(const Standard_Real theDividend,const Standard_Real theDivisor)
 {
+#ifdef __QNX__
+  using std::finite;
+#endif
+
   if ( theDivisor == 0. || ! finite(theDividend) ) return Standard_False;
   //
   // you may divide by infinity

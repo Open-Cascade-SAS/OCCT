@@ -45,7 +45,7 @@
     #include <OpenGL/gl.h>
   #endif
   #define __X_GL_H // prevent chaotic gl.h inclusions to avoid compile errors
-#elif defined(HAVE_GLES2) || defined(__ANDROID__)
+#elif defined(HAVE_GLES2) || defined(__ANDROID__) || defined(__QNX__)
   #include <GLES2/gl2.h>
   //#include <GLES3/gl3.h>
 #else
@@ -149,7 +149,7 @@
   #define GL_TEXTURE_BUFFER_ARB             0x8C2A
 #endif
 
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__QNX__)
   #define HAVE_EGL
 #endif
 

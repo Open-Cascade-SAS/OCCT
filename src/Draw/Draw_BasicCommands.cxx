@@ -362,6 +362,10 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #elif defined(__ANDROID__) /* must be before Linux */
   #include <android/api-level.h>
   di << "OS: Android (__ANDROID_API__ = " << __ANDROID_API__ << ")\n";
+#elif defined(__QNXNTO__)
+  di << "OS: QNX Neutrino\n";
+#elif defined(__QNX__)
+  di << "OS: QNX\n";
 #elif defined(__linux__)
   di << "OS: Linux\n";
 #elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)

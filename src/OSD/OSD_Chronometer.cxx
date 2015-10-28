@@ -57,7 +57,7 @@
 //=======================================================================
 void OSD_Chronometer::GetProcessCPU (Standard_Real& UserSeconds, Standard_Real& SystemSeconds)
 {
-#if defined(__linux__) || defined(linux) || defined(__FreeBSD__) || defined(__ANDROID__)
+#if defined(__linux__) || defined(linux) || defined(__FreeBSD__) || defined(__ANDROID__) || defined(__QNX__)
   static const long aCLK_TCK = sysconf(_SC_CLK_TCK);
 #else
   static const long aCLK_TCK = CLK_TCK;
@@ -87,7 +87,7 @@ void OSD_Chronometer::GetThreadCPU (Standard_Real& theUserSeconds,
     theUserSeconds   = Standard_Real(aTaskInfo.user_time.seconds)   + 0.000001 * aTaskInfo.user_time.microseconds;
     theSystemSeconds = Standard_Real(aTaskInfo.system_time.seconds) + 0.000001 * aTaskInfo.system_time.microseconds;
   }
-#elif (defined(_POSIX_TIMERS) && defined(_POSIX_THREAD_CPUTIME)) || defined(__ANDROID__)
+#elif (defined(_POSIX_TIMERS) && defined(_POSIX_THREAD_CPUTIME)) || defined(__ANDROID__) || defined(__QNX__)
   // on Linux, only user times are available for threads via clock_gettime()
   struct timespec t;
   if (!clock_gettime (CLOCK_THREAD_CPUTIME_ID, &t))
