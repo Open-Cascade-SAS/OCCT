@@ -750,7 +750,8 @@ TCollection_AsciiString PrinterName;
  else
    sprintf(buffer,"lpr -P%s %s",PrinterName.ToCString(),aBuffer.ToCString());
 
- system(buffer);
+ if (system(buffer) != 0)
+   Standard_ProgramError::Raise("OSD_File::Print : No output device was available, or an error occurred");
 }
 
 

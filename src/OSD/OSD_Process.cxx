@@ -36,10 +36,10 @@ OSD_Process::OSD_Process(){
 }
 
 
-void OSD_Process::Spawn (const TCollection_AsciiString& cmd,
+Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& cmd,
 			 const Standard_Boolean /*ShowWindow*/)
 {
- system(cmd.ToCString());
+ return system(cmd.ToCString());
 }
 
 
@@ -206,11 +206,13 @@ OSD_Process :: OSD_Process () {
 
 }  // end constructor
 
-void OSD_Process :: Spawn ( const TCollection_AsciiString& cmd ,
+
+Standard_Integer OSD_Process::Spawn (const TCollection_AsciiString& cmd,
 			    const Standard_Boolean ShowWindow /* = Standard_True */) {
 
  STARTUPINFO         si;
  PROCESS_INFORMATION pi;
+ DWORD aRes = 0;
 
  ZeroMemory (  &si, sizeof ( STARTUPINFO )  );
 
@@ -229,20 +231,22 @@ void OSD_Process :: Spawn ( const TCollection_AsciiString& cmd ,
  if (!CreateProcess (
       NULL, (char *)cmd.ToCString (), NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi
                     )
- )
+ ) {
 
   _osd_wnt_set_error ( myError, OSD_WProcess );
-
+  aRes = myError.Error();
+ }
  else {
  
   CloseHandle ( pi.hThread );
 
   WaitForSingleObject ( pi.hProcess, INFINITE );
-
+  GetExitCodeProcess (pi.hProcess, &aRes);
   CloseHandle ( pi.hProcess );
  
  }  // end else
 
+ return aRes;
 }  // end OSD_Process :: Spawn
 
 void OSD_Process :: TerminalType ( TCollection_AsciiString& Name ) {
