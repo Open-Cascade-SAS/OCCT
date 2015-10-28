@@ -167,10 +167,10 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
     {
       TCollection_ExtendedString aMsg = TCollection_ExtendedString()
         + "Warning! Depth textures are not supported by hardware!";
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                 GL_DEBUG_TYPE_PORTABILITY_ARB,
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                                 GL_DEBUG_TYPE_PORTABILITY,
                                  0,
-                                 GL_DEBUG_SEVERITY_HIGH_ARB,
+                                 GL_DEBUG_SEVERITY_HIGH,
                                  aMsg);
 
       theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBufferId);
@@ -355,10 +355,10 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
   else if (aColorType != GL_NONE)
   {
     TCollection_ExtendedString aMsg = "OpenGl_FrameBuffer::InitWrapper(), color attachment of unsupported type has been skipped!";
-    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                           GL_DEBUG_TYPE_ERROR_ARB,
+    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                           GL_DEBUG_TYPE_ERROR,
                            0,
-                           GL_DEBUG_SEVERITY_HIGH_ARB,
+                           GL_DEBUG_SEVERITY_HIGH,
                            aMsg);
   }
 
@@ -370,10 +370,10 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
   else if (aDepthType != GL_NONE)
   {
     TCollection_ExtendedString aMsg = "OpenGl_FrameBuffer::InitWrapper(), depth attachment of unsupported type has been skipped!";
-    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                           GL_DEBUG_TYPE_ERROR_ARB,
+    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                           GL_DEBUG_TYPE_ERROR,
                            0,
-                           GL_DEBUG_SEVERITY_HIGH_ARB,
+                           GL_DEBUG_SEVERITY_HIGH,
                            aMsg);
   }
 

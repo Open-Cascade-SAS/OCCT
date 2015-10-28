@@ -1553,10 +1553,10 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     {
       TCollection_ExtendedString aMsg = TCollection_ExtendedString()
         + "Error! FBO blitting has failed";
-      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                         GL_DEBUG_TYPE_ERROR,
                          0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+                         GL_DEBUG_SEVERITY_HIGH,
                          aMsg);
       myHasFboBlit = Standard_False;
       theReadFbo->Release (aCtx.operator->());
@@ -1741,10 +1741,10 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
   {
     TCollection_ExtendedString aMsg = TCollection_ExtendedString()
       + "Error! Anaglyph has failed";
-    aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                       GL_DEBUG_TYPE_ERROR_ARB,
+    aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                       GL_DEBUG_TYPE_ERROR,
                        0,
-                       GL_DEBUG_SEVERITY_HIGH_ARB,
+                       GL_DEBUG_SEVERITY_HIGH,
                        aMsg);
   }
 }

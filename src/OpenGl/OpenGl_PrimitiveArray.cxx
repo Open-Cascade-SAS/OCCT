@@ -226,7 +226,7 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo (const Handle(OpenGl_Conte
     aMsg += "VBO creation for Primitive Array has failed for ";
     aMsg += myAttribs->NbElements;
     aMsg += " vertices. Out of memory?";
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PERFORMANCE, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
 
     clearMemoryGL (theCtx);
     return Standard_False;
@@ -262,7 +262,7 @@ Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo (const Handle(OpenGl_Conte
     aMsg += "VBO creation for Primitive Array has failed for ";
     aMsg += myIndices->NbElements;
     aMsg += " indices. Out of memory?";
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PERFORMANCE, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
     clearMemoryGL (theCtx);
     return Standard_False;
   }

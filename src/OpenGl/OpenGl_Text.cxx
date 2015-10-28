@@ -659,7 +659,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
           aMsg += "Font '";
           aMsg += theAspect.FontName();
           aMsg += "' - initialization of GL resources has failed!";
-          theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+          theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
           aFontFt.Nullify();
           aFont->Release (theCtx.operator->());
           aFont = new OpenGl_Font (aFontFt, theKey);
@@ -672,7 +672,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
         aMsg += theAspect.FontName();
         aMsg += "' is broken or has incompatible format! File path: ";
         aMsg += aRequestedFont->FontPath()->ToCString();
-        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
         aFontFt.Nullify();
         aFont = new OpenGl_Font (aFontFt, theKey);
       }
@@ -683,7 +683,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
       aMsg += "Font '";
       aMsg += theAspect.FontName();
       aMsg += "' is not found in the system!";
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
       aFont = new OpenGl_Font (aFontFt, theKey);
     }
 

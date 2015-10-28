@@ -242,7 +242,7 @@ OpenGl_Context::~OpenGl_Context()
   {
     // reset callback
     void* aPtr = NULL;
-    glGetPointerv (GL_DEBUG_CALLBACK_USER_PARAM_ARB, &aPtr);
+    glGetPointerv (GL_DEBUG_CALLBACK_USER_PARAM, &aPtr);
     if (aPtr == this)
     {
       arbDbg->glDebugMessageCallbackARB (NULL, NULL);
@@ -421,7 +421,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
   if (eglMakeCurrent ((EGLDisplay )myDisplay, (EGLSurface )myWindow, (EGLSurface )myWindow, (EGLContext )myGContext) != EGL_TRUE)
   {
     // if there is no current context it might be impossible to use glGetError() correctly
-    PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
+    PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                  "eglMakeCurrent() has failed!");
     myIsInitialized = Standard_False;
     return Standard_False;
@@ -453,7 +453,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
       aMsg += (Standard_ExtString )aMsgBuff;
       LocalFree (aMsgBuff);
     }
-    PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB, GL_DEBUG_TYPE_ERROR_ARB, (unsigned int )anErrorCode, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+    PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM, GL_DEBUG_TYPE_ERROR, (unsigned int )anErrorCode, GL_DEBUG_SEVERITY_HIGH, aMsg);
     myIsInitialized = Standard_False;
     return Standard_False;
   }
@@ -467,7 +467,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
   if (!glXMakeCurrent ((Display* )myDisplay, (GLXDrawable )myWindow, (GLXContext )myGContext))
   {
     // if there is no current context it might be impossible to use glGetError() correctly
-    PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
+    PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                  "glXMakeCurrent() has failed!");
     myIsInitialized = Standard_False;
     return Standard_False;
@@ -879,27 +879,27 @@ void OpenGl_Context::ReadGlVersion (Standard_Integer& theGlVerMajor,
 static Standard_CString THE_DBGMSG_UNKNOWN = "UNKNOWN";
 static Standard_CString THE_DBGMSG_SOURCES[] =
 {
-  ".OpenGL",    // GL_DEBUG_SOURCE_API_ARB
-  ".WinSystem", // GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB
-  ".GLSL",      // GL_DEBUG_SOURCE_SHADER_COMPILER_ARB
-  ".3rdParty",  // GL_DEBUG_SOURCE_THIRD_PARTY_ARB
-  "",           // GL_DEBUG_SOURCE_APPLICATION_ARB
-  ".Other"      // GL_DEBUG_SOURCE_OTHER_ARB
+  ".OpenGL",    // GL_DEBUG_SOURCE_API
+  ".WinSystem", // GL_DEBUG_SOURCE_WINDOW_SYSTEM
+  ".GLSL",      // GL_DEBUG_SOURCE_SHADER_COMPILER
+  ".3rdParty",  // GL_DEBUG_SOURCE_THIRD_PARTY
+  "",           // GL_DEBUG_SOURCE_APPLICATION
+  ".Other"      // GL_DEBUG_SOURCE_OTHER
 };
 
 static Standard_CString THE_DBGMSG_TYPES[] =
 {
-  "Error",           // GL_DEBUG_TYPE_ERROR_ARB
-  "Deprecated",      // GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB
-  "Undef. behavior", // GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB
-  "Portability",     // GL_DEBUG_TYPE_PORTABILITY_ARB
-  "Performance",     // GL_DEBUG_TYPE_PERFORMANCE_ARB
-  "Other"            // GL_DEBUG_TYPE_OTHER_ARB
+  "Error",           // GL_DEBUG_TYPE_ERROR
+  "Deprecated",      // GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR
+  "Undef. behavior", // GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR
+  "Portability",     // GL_DEBUG_TYPE_PORTABILITY
+  "Performance",     // GL_DEBUG_TYPE_PERFORMANCE
+  "Other"            // GL_DEBUG_TYPE_OTHER
 };
 
-static Standard_CString THE_DBGMSG_SEV_HIGH   = "High";   // GL_DEBUG_SEVERITY_HIGH_ARB
-static Standard_CString THE_DBGMSG_SEV_MEDIUM = "Medium"; // GL_DEBUG_SEVERITY_MEDIUM_ARB
-static Standard_CString THE_DBGMSG_SEV_LOW    = "Low";    // GL_DEBUG_SEVERITY_LOW_ARB
+static Standard_CString THE_DBGMSG_SEV_HIGH   = "High";   // GL_DEBUG_SEVERITY_HIGH
+static Standard_CString THE_DBGMSG_SEV_MEDIUM = "Medium"; // GL_DEBUG_SEVERITY_MEDIUM
+static Standard_CString THE_DBGMSG_SEV_LOW    = "Low";    // GL_DEBUG_SEVERITY_LOW
 
 #if !defined(GL_ES_VERSION_2_0)
 //! Callback for GL_ARB_debug_output extension
@@ -927,29 +927,29 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
                                   const TCollection_ExtendedString& theMessage)
 {
   if (caps->suppressExtraMsg
-   && theSource >= GL_DEBUG_SOURCE_API_ARB
-   && theSource <= GL_DEBUG_SOURCE_OTHER_ARB
-   && myFilters[theSource - GL_DEBUG_SOURCE_API_ARB].Contains (theId))
+   && theSource >= GL_DEBUG_SOURCE_API
+   && theSource <= GL_DEBUG_SOURCE_OTHER
+   && myFilters[theSource - GL_DEBUG_SOURCE_API].Contains (theId))
   {
     return;
   }
 
-  Standard_CString& aSrc = (theSource >= GL_DEBUG_SOURCE_API_ARB
-                        && theSource <= GL_DEBUG_SOURCE_OTHER_ARB)
-                         ? THE_DBGMSG_SOURCES[theSource - GL_DEBUG_SOURCE_API_ARB]
+  Standard_CString& aSrc = (theSource >= GL_DEBUG_SOURCE_API
+                        && theSource <= GL_DEBUG_SOURCE_OTHER)
+                         ? THE_DBGMSG_SOURCES[theSource - GL_DEBUG_SOURCE_API]
                          : THE_DBGMSG_UNKNOWN;
-  Standard_CString& aType = (theType >= GL_DEBUG_TYPE_ERROR_ARB
-                         && theType <= GL_DEBUG_TYPE_OTHER_ARB)
-                          ? THE_DBGMSG_TYPES[theType - GL_DEBUG_TYPE_ERROR_ARB]
+  Standard_CString& aType = (theType >= GL_DEBUG_TYPE_ERROR
+                         && theType <= GL_DEBUG_TYPE_OTHER)
+                          ? THE_DBGMSG_TYPES[theType - GL_DEBUG_TYPE_ERROR]
                           : THE_DBGMSG_UNKNOWN;
-  Standard_CString& aSev = theSeverity == GL_DEBUG_SEVERITY_HIGH_ARB
+  Standard_CString& aSev = theSeverity == GL_DEBUG_SEVERITY_HIGH
                          ? THE_DBGMSG_SEV_HIGH
-                         : (theSeverity == GL_DEBUG_SEVERITY_MEDIUM_ARB
+                         : (theSeverity == GL_DEBUG_SEVERITY_MEDIUM
                           ? THE_DBGMSG_SEV_MEDIUM
                           : THE_DBGMSG_SEV_LOW);
-  Message_Gravity aGrav = theSeverity == GL_DEBUG_SEVERITY_HIGH_ARB
+  Message_Gravity aGrav = theSeverity == GL_DEBUG_SEVERITY_HIGH
                         ? Message_Alarm
-                        : (theSeverity == GL_DEBUG_SEVERITY_MEDIUM_ARB
+                        : (theSeverity == GL_DEBUG_SEVERITY_MEDIUM
                          ? Message_Warning
                          : Message_Info);
 
@@ -970,9 +970,9 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
 Standard_Boolean OpenGl_Context::ExcludeMessage (const unsigned int theSource,
                                                  const unsigned int theId)
 {
-  return theSource >= GL_DEBUG_SOURCE_API_ARB
-      && theSource <= GL_DEBUG_SOURCE_OTHER_ARB
-      && myFilters[theSource - GL_DEBUG_SOURCE_API_ARB].Add (theId);
+  return theSource >= GL_DEBUG_SOURCE_API
+      && theSource <= GL_DEBUG_SOURCE_OTHER
+      && myFilters[theSource - GL_DEBUG_SOURCE_API].Add (theId);
 }
 
 // =======================================================================
@@ -982,9 +982,9 @@ Standard_Boolean OpenGl_Context::ExcludeMessage (const unsigned int theSource,
 Standard_Boolean OpenGl_Context::IncludeMessage (const unsigned int theSource,
                                                  const unsigned int theId)
 {
-  return theSource >= GL_DEBUG_SOURCE_API_ARB
-      && theSource <= GL_DEBUG_SOURCE_OTHER_ARB
-      && myFilters[theSource - GL_DEBUG_SOURCE_API_ARB].Remove (theId);
+  return theSource >= GL_DEBUG_SOURCE_API
+      && theSource <= GL_DEBUG_SOURCE_OTHER
+      && myFilters[theSource - GL_DEBUG_SOURCE_API].Remove (theId);
 }
 
 // =======================================================================
@@ -1004,10 +1004,10 @@ void OpenGl_Context::checkWrongVersion (const Standard_Integer theGlVerMajor,
     + myGlVerMajor  + "." + myGlVerMinor
     + " but does not export required functions for "
     + theGlVerMajor + "." + theGlVerMinor;
-  PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-               GL_DEBUG_TYPE_ERROR_ARB,
+  PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+               GL_DEBUG_TYPE_ERROR,
                0,
-               GL_DEBUG_SEVERITY_HIGH_ARB,
+               GL_DEBUG_SEVERITY_HIGH,
                aMsg);
 }
 
@@ -1033,7 +1033,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   {
     // Buffer detailed info: Buffer object 1 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW)
     // will use VIDEO memory as the source for buffer object operations.
-    ExcludeMessage (GL_DEBUG_SOURCE_API_ARB, 131185);
+    ExcludeMessage (GL_DEBUG_SOURCE_API, 131185);
   }
   if (IsGlGreaterEqual (3, 0))
   {
@@ -1250,7 +1250,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       arbDbg->glDebugMessageCallbackARB (debugCallbackWrap, this);
       if (caps->contextSyncDebug)
       {
-        ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+        ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
       }
     }
   }
@@ -2096,10 +2096,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       + "Error! OpenGL context reports version "
       + myGlVerMajor  + "." + myGlVerMinor
       + " but reports wrong GLSL version";
-    PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                 GL_DEBUG_TYPE_ERROR_ARB,
+    PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                 GL_DEBUG_TYPE_ERROR,
                  0,
-                 GL_DEBUG_SEVERITY_HIGH_ARB,
+                 GL_DEBUG_SEVERITY_HIGH,
                  aMsg);
     myGlVerMajor = 1;
     myGlVerMinor = 5;

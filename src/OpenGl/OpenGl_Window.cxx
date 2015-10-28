@@ -244,9 +244,9 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: "
                                      "ChoosePixelFormat is unable to find stereo supported pixel format. "
                                      "Choosing similar non stereo format.");
-    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                              GL_DEBUG_TYPE_OTHER_ARB,
-                              0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                              GL_DEBUG_TYPE_OTHER,
+                              0, GL_DEBUG_SEVERITY_HIGH, aMsg);
 
     aPixelFrmt.dwFlags &= ~PFD_STEREO;
     aPixelFrmtId = ChoosePixelFormat (aWindowDC, &aPixelFrmt);
@@ -411,7 +411,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
         && !theCaps->contextCompatible)
         {
           TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: core profile creation failed.");
-          myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+          myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
         }
       }
 
@@ -546,7 +546,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
       && !theCaps->contextCompatible)
       {
         TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: core profile creation failed.");
-        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
       }
     }
     XSetErrorHandler(anOldHandler);
@@ -587,9 +587,9 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   if (!aList.IsEmpty())
   {
     TCollection_ExtendedString aMsg = TCollection_ExtendedString ("OpenGl_Window::CreateWindow: window Visual is incomplete: ") + aList;
-    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                              GL_DEBUG_TYPE_OTHER_ARB,
-                              0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMsg);
+    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                              GL_DEBUG_TYPE_OTHER,
+                              0, GL_DEBUG_SEVERITY_MEDIUM, aMsg);
   }
 
   myGlContext->Init ((Aspect_Drawable )aWindow, (Aspect_Display )aDisp, (Aspect_RenderingContext )aGContext, isCoreProfile);

@@ -1303,8 +1303,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     {
       const TCollection_ExtendedString aWarnMessage =
         "Warning: stipple lines in GLSL will be ignored.";
-      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-        GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aWarnMessage);
+      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
     }
   }
 

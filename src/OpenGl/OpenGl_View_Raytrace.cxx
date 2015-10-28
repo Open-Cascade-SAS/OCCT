@@ -379,8 +379,8 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*  
         "Warning: texturing in Ray-Trace requires GL_ARB_bindless_texture extension which is missing. "
         "Please try to update graphics card driver. At the moment textures will be ignored.";
 
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-        GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aWarnMessage);
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
 
       myIsRaytraceWarnTextures = Standard_True;
     }
@@ -1085,8 +1085,8 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
 Standard_Boolean OpenGl_View::safeFailBack (const TCollection_ExtendedString& theMessage,
                                             const Handle(OpenGl_Context)&     theGlContext)
 {
-  theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-    GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, theMessage);
+  theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+    GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, theMessage);
 
   myRaytraceInitStatus = OpenGl_RT_FAIL;
 
@@ -1110,8 +1110,8 @@ Handle(OpenGl_ShaderObject) OpenGl_View::initShader (const GLenum               
     const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to create ") +
       (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader object";
 
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMessage);
 
     aShader->Release (theGlContext.operator->());
 
@@ -1123,8 +1123,8 @@ Handle(OpenGl_ShaderObject) OpenGl_View::initShader (const GLenum               
     const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to set ") +
       (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader source";
 
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMessage);
 
     aShader->Release (theGlContext.operator->());
 
@@ -1140,8 +1140,8 @@ Handle(OpenGl_ShaderObject) OpenGl_View::initShader (const GLenum               
     const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to compile ") +
       (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader object:\n" + aBuildLog;
 
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMessage);
 
     aShader->Release (theGlContext.operator->());
 
@@ -1156,8 +1156,8 @@ Handle(OpenGl_ShaderObject) OpenGl_View::initShader (const GLenum               
       const TCollection_ExtendedString aMessage = TCollection_ExtendedString (theType == GL_VERTEX_SHADER ?
         "Vertex" : "Fragment") + " shader was compiled with following warnings:\n" + aBuildLog;
 
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-        GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMessage);
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW, aMessage);
     }
   }
 
@@ -1178,8 +1178,8 @@ Handle(OpenGl_ShaderProgram) OpenGl_View::initProgram (const Handle(OpenGl_Conte
   {
     theVertShader->Release (theGlContext.operator->());
 
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, "Failed to create shader program");
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Failed to create shader program");
 
     return Handle(OpenGl_ShaderProgram)();
   }
@@ -1189,8 +1189,8 @@ Handle(OpenGl_ShaderProgram) OpenGl_View::initProgram (const Handle(OpenGl_Conte
   {
     theVertShader->Release (theGlContext.operator->());
 
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, "Failed to attach shader objects");
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Failed to attach shader objects");
 
     return Handle(OpenGl_ShaderProgram)();
   }
@@ -1206,8 +1206,8 @@ Handle(OpenGl_ShaderProgram) OpenGl_View::initProgram (const Handle(OpenGl_Conte
     const TCollection_ExtendedString aMessage = TCollection_ExtendedString (
       "Failed to link shader program:\n") + aLinkLog;
 
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+      GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMessage);
 
     return Handle(OpenGl_ShaderProgram)();
   }
@@ -1219,8 +1219,8 @@ Handle(OpenGl_ShaderProgram) OpenGl_View::initProgram (const Handle(OpenGl_Conte
       const TCollection_ExtendedString aMessage = TCollection_ExtendedString (
         "Shader program was linked with following warnings:\n") + aLinkLog;
 
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-        GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMessage);
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW, aMessage);
     }
   }
 
@@ -2569,8 +2569,8 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
 
     if (!myRaytraceGeometry.AcquireTextures (theGlContext))
     {
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB,
-        0, GL_DEBUG_SEVERITY_MEDIUM_ARB, "Error: Failed to acquire OpenGL image textures");
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR,
+        0, GL_DEBUG_SEVERITY_MEDIUM, "Error: Failed to acquire OpenGL image textures");
     }
 
     Standard_Boolean aResult = runRaytraceShaders (theSizeX,
@@ -2584,14 +2584,14 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
 
     if (!aResult)
     {
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB,
-        0, GL_DEBUG_SEVERITY_MEDIUM_ARB, "Error: Failed to execute ray-tracing shaders");
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR,
+        0, GL_DEBUG_SEVERITY_MEDIUM, "Error: Failed to execute ray-tracing shaders");
     }
 
     if (!myRaytraceGeometry.ReleaseTextures (theGlContext))
     {
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB,
-        0, GL_DEBUG_SEVERITY_MEDIUM_ARB, "Error: Failed to release OpenGL image textures");
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR,
+        0, GL_DEBUG_SEVERITY_MEDIUM, "Error: Failed to release OpenGL image textures");
     }
 
     myRaytraceScreenQuad.UnbindVertexAttrib (theGlContext, Graphic3d_TOA_POS);
