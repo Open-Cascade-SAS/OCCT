@@ -657,7 +657,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     //
     const Standard_Integer aNbLinIntersector = myIntersector.NbLines();
     for (Standard_Integer i=1; i <= aNbLinIntersector; ++i) {
-      MakeCurve(i, dom1, dom2);
+      MakeCurve(i, dom1, dom2, TolArc);
     }
     //
     ComputeTolReached3d();
@@ -841,9 +841,10 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
 //function : MakeCurve
 //purpose  : 
 //=======================================================================
-  void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
-                                    const Handle(Adaptor3d_TopolTool)& dom1,
-                                    const Handle(Adaptor3d_TopolTool)& dom2) 
+void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
+                                  const Handle(Adaptor3d_TopolTool)& dom1,
+                                  const Handle(Adaptor3d_TopolTool)& dom2,
+                                  const Standard_Real theToler) 
 {
   Standard_Boolean bDone, rejectSurface, reApprox, bAvoidLineConstructor;
   Standard_Boolean ok, bPCurvesOk;
@@ -2050,16 +2051,27 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
       GeomInt_IntSS::
         TrimILineOnSurfBoundaries(aC2d1, aC2d2, aBox1, aBox2, anArrayOfParameters);
 
+      //Intersect with true boundaries. After that, enlarge bounding-boxes in order to 
+      //correct definition, if point on curve is inscribed in the box.
+      aBox1.Enlarge(theToler);
+      aBox2.Enlarge(theToler);
+
       const Standard_Integer aNbIntersSolutionsm1 = anArrayOfParameters.Length() - 1;
 
       //Trim RLine found.
       for(Standard_Integer anInd = 0; anInd < aNbIntersSolutionsm1; anInd++)
       {
-        const Standard_Real aParF = anArrayOfParameters(anInd),
-                            aParL = anArrayOfParameters(anInd+1);
+        Standard_Real &aParF = anArrayOfParameters(anInd),
+                      &aParL = anArrayOfParameters(anInd+1);
 
         if((aParL - aParF) <= Precision::PConfusion())
+        {
+          //In order to more precise extending to the boundaries of source curves.
+          if(anInd < aNbIntersSolutionsm1-1)
+            aParL = aParF;
+
           continue;
+        }
 
         const Standard_Real aPar = 0.5*(aParF + aParL);
         gp_Pnt2d aPt;

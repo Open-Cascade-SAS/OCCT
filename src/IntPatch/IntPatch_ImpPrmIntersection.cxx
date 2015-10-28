@@ -1351,7 +1351,8 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   }// if (NbSegm) 
   //
   // on traite les restrictions de la surface implicite
-  for (Standard_Integer i=1; i<=slin.Length(); i++)
+
+  for (Standard_Integer i=1, aNbLin = slin.Length(); i<=aNbLin; i++)
   {
     Handle(IntPatch_Line)& aL = slin(i);
     
@@ -1359,7 +1360,19 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
       IntPatch_RstInt::PutVertexOnLine(aL,Surf1,D1,Surf2,Standard_True,TolTang);
     else
       IntPatch_RstInt::PutVertexOnLine(aL,Surf2,D2,Surf1,Standard_False,TolTang);
+
+    if(aL->ArcType() == IntPatch_Walking)
+    {
+      const Handle(IntPatch_WLine) aWL = Handle(IntPatch_WLine)::DownCast(aL);
+      slin.Append(aWL);
+      slin.Remove(i);
+      i--;
+      aNbLin--;
+    }
   }
+
+  // Now slin is filled as follows: lower indices correspond to Restriction line,
+  // after (higher indices) - only Walking-line.
 
   const Standard_Real aUPeriodOfSurf1 = Surf1->IsUPeriodic() ? Surf1->UPeriod() : 0.0,
                       aUPeriodOfSurf2 = Surf2->IsUPeriodic() ? Surf2->UPeriod() : 0.0,
@@ -1378,21 +1391,13 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
       Handle(IntPatch_RLine) aRL1 = Handle(IntPatch_RLine)::DownCast(aL1);
       Handle(IntPatch_RLine) aRL2 = Handle(IntPatch_RLine)::DownCast(aL2);
 
-      if(aRL1.IsNull() && aRL2.IsNull())
+      if(aRL1.IsNull())
       {//If Walking-Walking
         continue;
       }
-      else if(aRL1.IsNull())
-      {// i-th line is not restriction,
-       // but j-th is restriction
-        slin.Append(aL1);
-        slin.SetValue(i, aL2);
-        slin.Remove(j);
-        j--;
-        continue;
-      }
 
-      //Here aL1 (i-th line) is Restriction-line and aL2 (j-th line) is not Restriction
+      //Here aL1 (i-th line) is Restriction-line and aL2 (j-th line) is
+      //Restriction or Walking
 
       if(aBRL.IsVoid())
       {//Fill aBRL

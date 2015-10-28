@@ -21,6 +21,54 @@ OSD_Chronometer Chronrsnld;
 #include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 
+//==================================================================================
+// function : IsTangentExtCheck
+// purpose  : Additional check if the point (theU, theV) in parametric surface
+//            is a tangent point.
+//            If that is TRUE then we can go along any (!) direction in order to
+//            obtain next intersection point. At present, this case is difficult
+//            for processing. Therefore, we will return an empty intersection line
+//            in this case.
+//==================================================================================
+static Standard_Boolean IsTangentExtCheck(TheIWFunction& theFunc,
+                                          const Standard_Real theU,
+                                          const Standard_Real theV,
+                                          const Standard_Real theStepU,
+                                          const Standard_Real theStepV,
+                                          const Standard_Real theUinf,
+                                          const Standard_Real theUsup,
+                                          const Standard_Real theVinf,
+                                          const Standard_Real theVsup)
+{
+  //Factor 2.0 is chosen because we compare distance(s) between TWO faces
+  const Standard_Real aTol = 2.0*Precision::Confusion();
+  const Standard_Integer aNbItems = 4;
+  const Standard_Real aParU[aNbItems] = { Min(theU + theStepU, theUsup),
+                                          Max(theU - theStepU, theUinf),
+                                          theU, theU};
+  const Standard_Real aParV[aNbItems] = { theV, theV,
+                                          Min(theV + theStepV, theVsup),
+                                          Max(theV - theStepV, theVinf)};
+
+  math_Vector aX(1, 2), aVal(1, 1);
+
+  for(Standard_Integer i = 0; i < aNbItems; i++)
+  {
+    aX.Value(1) = aParU[i];
+    aX.Value(2) = aParV[i];
+
+    if(!theFunc.Value(aX, aVal))
+      continue;
+
+    if(aVal(1) > aTol)
+      return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+
+
 IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
                                     const Standard_Real Deflection,
                                     const Standard_Real Increment ) :
@@ -85,7 +133,6 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 			       const Standard_Boolean Reversed)
 
 {
-
   Standard_Integer I;
   Standard_Boolean Rajout = Standard_False;
   Standard_Integer nbPnts1 = Pnts1.Length();
@@ -95,6 +142,23 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   Clear();
   reversed = Reversed;
 
+  Um = ThePSurfaceTool::FirstUParameter(Caro);
+  Vm = ThePSurfaceTool::FirstVParameter(Caro);
+  UM = ThePSurfaceTool::LastUParameter(Caro);
+  VM = ThePSurfaceTool::LastVParameter(Caro);
+
+  if (UM < Um) {
+    Standard_Real utemp = UM;
+    UM = Um;
+    Um = utemp;
+  }
+  if (VM < Vm) {
+    Standard_Real vtemp = VM;
+    VM = Vm;
+    Vm = vtemp;
+  }
+
+  const Standard_Real aStepU = pas*(UM-Um), aStepV = pas*(VM-Vm);
 
   // Loading of etat1 and etat2  as well as  ustart and vstart.
 
@@ -132,29 +196,17 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   wd2.reserve (nbPnts2);
   for (I = 1; I <= nbPnts2; I++) {
     IntWalk_WalkingData aWD2;
-    aWD2.etat = 13;
-    ThePointOfLoopTool::Value2d(Pnts2.Value(I), aWD2.ustart, aWD2.vstart);
+    aWD2.etat = 1;
+    const IntSurf_InteriorPoint& anIP = Pnts2.Value(I);
+    ThePointOfLoopTool::Value2d(anIP, aWD2.ustart, aWD2.vstart);
+    if (!IsTangentExtCheck(Func, aWD2.ustart, aWD2.vstart, aStepU, aStepV, Um, UM, Vm, VM))
+      aWD2.etat = 13;
+    
     wd2.push_back (aWD2);
   }
 
   tolerance(1) = ThePSurfaceTool::UResolution(Caro,Precision::Confusion());
   tolerance(2) = ThePSurfaceTool::VResolution(Caro,Precision::Confusion());
-
-  Um = ThePSurfaceTool::FirstUParameter(Caro);
-  Vm = ThePSurfaceTool::FirstVParameter(Caro);
-  UM = ThePSurfaceTool::LastUParameter(Caro);
-  VM = ThePSurfaceTool::LastVParameter(Caro);
-
-  if (UM < Um) {
-    Standard_Real utemp = UM;
-    UM = Um;
-    Um = utemp;
-  }
-  if (VM < Vm) {
-    Standard_Real vtemp = VM;
-    VM = Vm;
-    Vm = vtemp;
-  }
 
   Func.Set(Caro);
 
