@@ -200,7 +200,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::ModifiedFaces() const
 }
 
 //=======================================================================
-//function : ModifiedFaces
+//function : Generated
 //purpose  : 
 //=======================================================================
 
@@ -216,15 +216,21 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::Generated(const TopoDS_Sha
     Standard_Real        Tol;
     Standard_Boolean     RW,RF;
     if (DMod->NewSurface(TopoDS::Face(S), Surf, L, Tol, RW, RF)) {
-      myGenerated.Append(ModifiedShape (S));
- 
+      if(myVtxToReplace.IsEmpty())
+      {
+        myGenerated.Append(ModifiedShape (S));
+      }
+      else
+      {
+        myGenerated.Append(mySubs.Value(ModifiedShape (S)));
+      }
     }
   }
   return myGenerated;
 }
 
 //=======================================================================
-//function : ModifiedFaces
+//function : Modified
 //purpose  : 
 //=======================================================================
 
@@ -242,9 +248,16 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::Modified(const TopoDS_Shap
     
     if (!DMod->NewSurface(TopoDS::Face(S), Surf, L, Tol, RW, RF)) {
       // Ce n est pas une generation => peut etre une  modif
-      myGenerated.Append(ModifiedShape (S));
+      if(myVtxToReplace.IsEmpty())
+      {
+        myGenerated.Append(ModifiedShape (S));
+      }
+      else
+      {
+        myGenerated.Append(mySubs.Value(ModifiedShape (S)));
+      }
       if (myGenerated.Extent() == 1 && myGenerated.First().IsSame(S)) {
-	myGenerated.Clear();
+	      myGenerated.Clear();
       }
     }
   }
@@ -266,7 +279,15 @@ TopoDS_Shape BRepOffsetAPI_DraftAngle::ModifiedShape
       return myVtxToReplace(S);
     }
   }
-  return myModifier.ModifiedShape(S);
+  if(myVtxToReplace.IsEmpty())
+  {
+    return myModifier.ModifiedShape(S);
+  }
+  else
+  {
+    const TopoDS_Shape& aNS = myModifier.ModifiedShape(S);
+    return mySubs.Value(aNS);
+  }
 }
 
 //=======================================================================
@@ -943,6 +964,7 @@ void BRepOffsetAPI_DraftAngle::CorrectVertexTol()
             TopoDS_Vertex aNewVtx;
             gp_Pnt aVPnt = BRep_Tool::Pnt(aVtx);
             aBB.MakeVertex(aNewVtx, aVPnt,anETol + Epsilon(anETol));
+            aNewVtx.Orientation(aVtx.Orientation());
             myVtxToReplace.Bind(aVtx, aNewVtx);
           }
         }
@@ -959,20 +981,13 @@ void BRepOffsetAPI_DraftAngle::CorrectVertexTol()
     return;
   }
   //
-  BRepTools_Substitution aSub;
+  mySubs.Clear();
   TopTools_DataMapIteratorOfDataMapOfShapeShape anIter(myVtxToReplace);
   for(; anIter.More(); anIter.Next())
   {
-    TopTools_ListOfShape aSubVtx;
-    aSubVtx.Append(anIter.Value());
-    aSub.Substitute(anIter.Key(), aSubVtx);
+    mySubs.Replace(anIter.Key(), anIter.Value());
   }
-  aSub.Build( myShape );
-  if (aSub.IsCopied( myShape ))
-  {
-    const TopTools_ListOfShape& listSh = aSub.Copy( myShape );
-    if (! listSh.IsEmpty())
-      myShape = listSh.First();
-  }
+  mySubs.Apply( myShape );
+  myShape = mySubs.Value(myShape);
   //
 }

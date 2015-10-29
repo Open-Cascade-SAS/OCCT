@@ -67,7 +67,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-
+#include <BRep_Builder.hxx>
+//
 static void GeomLib_ChangeUBounds(Handle(Geom_BSplineSurface)& aSurface,
                   const Standard_Real newU1,
                   const Standard_Real newU2)
@@ -415,6 +416,12 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
             (st == STANDARD_TYPE(Geom2d_BezierCurve))) {
           if(isConvert2d) {
             Curve2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
+            Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+            if(newTol > Tol)
+            {
+              Tol = newTol;
+              myUpdatedEdges.Append(newE);
+            }
             return Standard_True;
           }
           return Standard_False;
@@ -457,9 +464,21 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       ProjLib_ComputeApprox ProjOnCurve(G3dAHC,GAHS,Tol);
       if(ProjOnCurve.BSpline().IsNull()) {
         Curve2d = Geom2dConvert::CurveToBSplineCurve(ProjOnCurve.Bezier());
+        Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+        if(newTol > Tol)
+        {
+          Tol = newTol;
+          myUpdatedEdges.Append(newE);
+        }
         return Standard_True;
       }
       Curve2d = ProjOnCurve.BSpline();
+      Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+      if(newTol > Tol)
+      {
+        Tol = newTol;
+        myUpdatedEdges.Append(newE);
+      }
       return Standard_True;
     }
     GeomAdaptor_Surface GAS(S,Uinf-u,Usup+u,Vinf-v,Vsup+v);
@@ -470,10 +489,22 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
 
     if(ProjOnCurve.IsDone()) {
       Curve2d = ProjOnCurve.BSpline();
+      Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+      if(newTol > Tol)
+      {
+        Tol = newTol;
+        myUpdatedEdges.Append(newE);
+      }
       return Standard_True;
     }
     else {
       Curve2d = Geom2dConvert::CurveToBSplineCurve(C2d);
+      Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+      if(newTol > Tol)
+      {
+        Tol = newTol;
+        myUpdatedEdges.Append(newE);
+      }
       return Standard_True;
     }
   }
@@ -506,6 +537,19 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       if(C3d.IsNull()) {
          if(isConvert2d) {
            Curve2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
+
+           Handle(Geom_Surface) S;
+           if(newF.IsNull())
+             S = BRep_Tool::Surface(F);
+           else
+             S = BRep_Tool::Surface(newF);
+           //
+           Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+           if(newTol > Tol)
+           {
+             Tol = newTol;
+             myUpdatedEdges.Append(newE);
+           }
            return Standard_True;
          }
         return Standard_False;
@@ -525,6 +569,12 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
             (st == STANDARD_TYPE(Geom2d_BezierCurve))) {
           if(isConvert2d) {
             Curve2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
+            Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+            if(newTol > Tol)
+            {
+              Tol = newTol;
+              myUpdatedEdges.Append(newE);
+            }
             return Standard_True;
           }
           return Standard_False;
@@ -566,10 +616,22 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       if(ProjOnCurve.IsDone()) {
         Curve2d = ProjOnCurve.BSpline();
         mylcu.Append(ProjOnCurve.Curve2d());
+        Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+        if(newTol > Tol)
+        {
+          Tol = newTol;
+          myUpdatedEdges.Append(newE);
+        }
         return Standard_True;
       }
       else {
         Curve2d = Geom2dConvert::CurveToBSplineCurve(C2d);
+        Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
+        if(newTol > Tol)
+        {
+          Tol = newTol;
+          myUpdatedEdges.Append(newE);
+        }
         mylcu.Append(C2dBis);
         return Standard_True;
       }
@@ -643,3 +705,12 @@ GeomAbs_Shape BRepTools_NurbsConvertModification::Continuity
 }
 
 
+//=======================================================================
+//function : GetUpdatedEdges
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& 
+        BRepTools_NurbsConvertModification::GetUpdatedEdges() const
+{
+  return myUpdatedEdges;
+}

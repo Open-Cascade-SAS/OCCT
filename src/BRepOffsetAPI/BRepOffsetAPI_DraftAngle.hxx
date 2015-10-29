@@ -27,6 +27,8 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Draft_ErrorStatus.hxx>
+#include <BRepTools_ReShape.hxx>
+
 class StdFail_NotDone;
 class Standard_NullObject;
 class Standard_NoSuchObject;
@@ -208,7 +210,7 @@ private:
   Standard_EXPORT void CorrectVertexTol();
 
   TopTools_DataMapOfShapeShape myVtxToReplace;
-
+  BRepTools_ReShape mySubs;
 };
 
 

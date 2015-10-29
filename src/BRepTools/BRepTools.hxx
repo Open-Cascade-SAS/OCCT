@@ -52,6 +52,9 @@ class BRepTools_Substitution;
 class BRepTools_Quilt;
 class BRepTools_ShapeSet;
 class BRepTools_ReShape;
+class Geom_Curve;
+class Geom2d_Curve;
+class Geom_Surface;
 
 
 //! The BRepTools package provides  utilities for BRep
@@ -201,6 +204,18 @@ public:
   //! <B> is used to build the shape.
   Standard_EXPORT static Standard_Boolean Read (TopoDS_Shape& Sh, const Standard_CString File, const BRep_Builder& B, const Handle(Message_ProgressIndicator)& PR = NULL);
 
+  //! Evals real tolerance of edge  <theE>.
+  //! <theC3d>, <theC2d>, <theS>, <theF>, <theL> are
+  //! correspondently 3d curve of edge, 2d curve on surface <theS> and
+  //! rang of edge
+  //! If calculated tolerance is more then current edge tolerance, edge is updated.
+  //! Method returns actual tolerance of edge
+  Standard_EXPORT static Standard_Real EvalAndUpdateTol(const TopoDS_Edge& theE, 
+                                                        const Handle(Geom_Curve)& theC3d, 
+                                                        const Handle(Geom2d_Curve) theC2d, 
+                                                        const Handle(Geom_Surface)& theS,
+                                                        const Standard_Real theF,
+                                                        const Standard_Real theL);
 
 
 

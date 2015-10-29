@@ -54,84 +54,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <GeomLib_CheckCurveOnSurface.hxx>
-#include <BRepLib.hxx>
-//
-static Standard_Real EvalTol(const Handle(Geom_Curve)& C3d, 
-  const Handle(Geom2d_Curve) C2d, 
-  const Handle(Geom_Surface)& S,
-  const Standard_Real f,
-  const Standard_Real l)
-{
-  Standard_Real first = f, last = l;
-  //Set first, last to avoid ErrosStatus = 2 because of 
-  //too strong checking of limits in class CheckCurveOnSurface
-  //
-  if(!C3d->IsPeriodic())
-  {
-    first = Max(first, C3d->FirstParameter());
-    last = Min(last, C3d->LastParameter());
-  }
-  if(!C2d->IsPeriodic())
-  {
-    first = Max(first, C2d->FirstParameter());
-    last = Min(last, C2d->LastParameter());
-  }
-
-  GeomLib_CheckCurveOnSurface CT(C3d, S, first, last);
-  CT.Perform(C2d);
-  if(CT.IsDone())
-  {
-    return CT.MaxDistance();
-  }
-  else
-  {
-    if(CT.ErrorStatus() == 3 || (CT.ErrorStatus() == 2 &&
-      (C3d->IsPeriodic() || C2d->IsPeriodic())))
-    {
-      //Try to estimate by sample points
-      Standard_Integer nbint = 22;
-      Standard_Real dt = (last - first) / nbint;
-      dt = Max(dt, Precision::Confusion());
-      Standard_Real d, dmax = 0.;
-      gp_Pnt2d aP2d;
-      gp_Pnt aPC, aPS;
-      Standard_Integer cnt = 0; 
-      Standard_Real t = first;
-      for(; t <= last; t += dt)
-      {
-        cnt++;
-        C2d->D0(t, aP2d);
-        C3d->D0(t, aPC);
-        S->D0(aP2d.X(), aP2d.Y(), aPS);
-        d = aPS.SquareDistance(aPC);
-        if(d > dmax)
-        {
-          dmax = d;
-        }
-      }
-      if(cnt < nbint + 1)
-      {
-        t = last;
-        C2d->D0(t, aP2d);
-        C3d->D0(t, aPC);
-        S->D0(aP2d.X(), aP2d.Y(), aPS);
-        d = aPS.SquareDistance(aPC);
-        if(d > dmax)
-        {
-          dmax = d;
-        }
-      }
-
-      dmax = 1.2 * Sqrt(dmax);
-      return dmax;
-    }
-    else
-    {
-      return 0.;
-    }
-  }
-}
 
 //=======================================================================
 //function : Draft_Modification
@@ -539,13 +461,7 @@ Standard_Boolean Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
   }
   //
   Handle(Geom_Curve) aC3d = BRep_Tool::Curve(NewE, Fp, Lp);
-  Standard_Real newtol = EvalTol(aC3d, C, SB, Fp, Lp);
-  if(newtol > Tol)
-  {
-    Tol = newtol;
-    BRep_Builder B;
-    B.UpdateEdge(NewE, newtol);
-  }
+  Tol = BRepTools::EvalAndUpdateTol(NewE,aC3d, C, SB, Fp, Lp);
   return Standard_True;
 }
 

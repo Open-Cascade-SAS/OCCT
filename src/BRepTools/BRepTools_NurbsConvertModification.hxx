@@ -102,6 +102,7 @@ public:
   //! (resp. <F2>).
   Standard_EXPORT GeomAbs_Shape Continuity (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, const TopoDS_Edge& NewE, const TopoDS_Face& NewF1, const TopoDS_Face& NewF2);
 
+  Standard_EXPORT const TopTools_ListOfShape& GetUpdatedEdges() const;
 
 
 
@@ -118,6 +119,7 @@ private:
   TopTools_ListOfShape myled;
   TColStd_ListOfTransient mylcu;
   TColStd_IndexedDataMapOfTransientTransient myMap;
+  TopTools_ListOfShape myUpdatedEdges;
 
 
 };
