@@ -761,6 +761,11 @@ Standard_Boolean OpenGl_View::Print (const Aspect_Handle    thePrinterDC,
   return (Standard_Boolean) isDone;
 
 #else // not _WIN32
+  (void )thePrinterDC;
+  (void )theToShowBackground;
+  (void )theFileName;
+  (void )thePrintAlgorithm;
+  (void )theScaleFactor;
   Standard_NotImplemented::Raise ("OpenGl_View::Print is implemented only on Windows");
   myWorkspace->PrinterContext().Nullify();
   return Standard_False;

@@ -37,6 +37,8 @@ NCollection_WinHeapAllocator::NCollection_WinHeapAllocator
   ULONG aHeapInfo = 2;
   HeapSetInformation (myHeapH, HeapCompatibilityInformation,
                       &aHeapInfo, sizeof(aHeapInfo));
+#else
+  (void )theInitSizeBytes;
 #endif
 }
 

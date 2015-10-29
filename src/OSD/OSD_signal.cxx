@@ -115,7 +115,11 @@ static sigfpe_handler_type *GetOldFPE()
 //==== SIGSEGV is handled by "SegvHandler()"
 //============================================================================
 #ifdef SA_SIGINFO
+  #if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION)
 static void Handler (const int theSignal, siginfo_t *theSigInfo, const Standard_Address theContext)
+  #else
+static void Handler (const int theSignal, siginfo_t */*theSigInfo*/, const Standard_Address /*theContext*/)
+  #endif
 #else
 static void Handler (const int theSignal)
 #endif
@@ -338,6 +342,8 @@ static void SegvHandler(const int theSignal,
     Handler(theSignal, ip, theContext);
     return;
   }
+#else
+  (void )theContext;
 #endif
 #ifdef linux
   if (fFltExceptions)

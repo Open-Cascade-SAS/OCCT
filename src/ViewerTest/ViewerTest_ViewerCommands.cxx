@@ -4275,6 +4275,8 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
                        const char** argv)
 {
 #ifndef _WIN32
+  (void )argc;
+  (void )argv;
   di << "Printing implemented only for WNT!\n";
   return 0;
 #else

@@ -79,7 +79,7 @@ Device::~Device()
 #endif
 
 //=============================================================================
-//function : SetGrid
+//function : Print
 //purpose  :
 //=============================================================================
 Standard_Boolean V3d_View::Print (const Aspect_Handle    thePrintDC,
@@ -143,6 +143,11 @@ Standard_Boolean V3d_View::Print (const Aspect_Handle    thePrintDC,
     return myView->Print (device._pd.hDC, theShowBackground, theFilename, thePrintAlgorithm, aScaleFactor);
   }
 #else
+  (void )thePrintDC;
+  (void )theShowDialog;
+  (void )theShowBackground;
+  (void )theFilename;
+  (void )thePrintAlgorithm;
   Standard_NotImplemented::Raise ("V3d_View::Print is implemented only on Windows");
 #endif
   return Standard_False;

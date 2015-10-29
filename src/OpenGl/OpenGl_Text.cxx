@@ -541,6 +541,8 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
         // as it is better for keeping text/3d graphics proportions
         Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, aTextScaley, aTextScaley, aTextScaley);
       }
+    #else
+      (void )thePrintCtx;
     #endif
       Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, myScaleHeight, myScaleHeight, myScaleHeight);
     }
