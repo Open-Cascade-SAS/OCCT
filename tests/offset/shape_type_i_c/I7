@@ -1,0 +1,5 @@
+restore [locate_data_file bug25926_parasite_solid_s.brep] s
+
+OFFSETSHAPE 1 {} $calcul $type
+
+set volume 1304.43

@@ -1,0 +1,5 @@
+restore [locate_data_file bug25926_offset_input_shape.brep] s
+
+OFFSETSHAPE 40 {} $calcul $type
+
+set volume 7.58284e+008

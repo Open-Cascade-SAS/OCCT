@@ -53,9 +53,9 @@ public:
   
   Standard_EXPORT void ConnexIntByArc (const TopTools_ListOfShape& SetOfFaces, const TopoDS_Shape& ShapeInit, const BRepOffset_Analyse& Analyse, const BRepAlgo_Image& InitOffsetFace);
   
-  Standard_EXPORT void ConnexIntByInt (const TopoDS_Shape& SI, const BRepOffset_DataMapOfShapeOffset& MapSF, const BRepOffset_Analyse& A, TopTools_DataMapOfShapeShape& MES, TopTools_DataMapOfShapeShape& Build, TopTools_ListOfShape& Failed);
+  Standard_EXPORT void ConnexIntByInt (const TopoDS_Shape& SI, const BRepOffset_DataMapOfShapeOffset& MapSF, const BRepOffset_Analyse& A, TopTools_DataMapOfShapeShape& MES, TopTools_DataMapOfShapeShape& Build, TopTools_ListOfShape& Failed, const Standard_Boolean bIsPlanar = Standard_False);
   
-  Standard_EXPORT void ContextIntByInt (const TopTools_IndexedMapOfShape& ContextFaces, const Standard_Boolean ExtentContext, const BRepOffset_DataMapOfShapeOffset& MapSF, const BRepOffset_Analyse& A, TopTools_DataMapOfShapeShape& MES, TopTools_DataMapOfShapeShape& Build, TopTools_ListOfShape& Failed);
+  Standard_EXPORT void ContextIntByInt (const TopTools_IndexedMapOfShape& ContextFaces, const Standard_Boolean ExtentContext, const BRepOffset_DataMapOfShapeOffset& MapSF, const BRepOffset_Analyse& A, TopTools_DataMapOfShapeShape& MES, TopTools_DataMapOfShapeShape& Build, TopTools_ListOfShape& Failed, const Standard_Boolean bIsPlanar = Standard_False);
   
   Standard_EXPORT void ContextIntByArc (const TopTools_IndexedMapOfShape& ContextFaces, const Standard_Boolean ExtentContext, const BRepOffset_Analyse& Analyse, const BRepAlgo_Image& InitOffsetFace, BRepAlgo_Image& InitOffsetEdge);
   

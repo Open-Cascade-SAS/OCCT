@@ -1,0 +1,5 @@
+restore [locate_data_file bug25926_b1x.brep] s
+
+OFFSETSHAPE 2 {} $calcul $type
+
+set volume 1756.4

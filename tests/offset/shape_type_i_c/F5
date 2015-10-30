@@ -1,0 +1,5 @@
+restore [locate_data_file bug25926_undercut_1.brep] s
+
+OFFSETSHAPE 40 {} $calcul $type
+
+set volume 7.1364e+007

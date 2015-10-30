@@ -88,11 +88,21 @@ public:
   //! then the parallels to the two adjacent faces are
   //! enlarged and intersected, so that there are no free
   //! edges on parallels to faces.
+  //! RemoveIntEdges flag defines whether to remove the INTERNAL edges 
+  //! from the result or not.
   //! Warnings
   //! Since the algorithm of MakeThickSolid is based on
   //! MakeOffsetShape algorithm, the warnings are the same as for
   //! MakeOffsetShape.
-  Standard_EXPORT BRepOffsetAPI_MakeThickSolid(const TopoDS_Shape& S, const TopTools_ListOfShape& ClosingFaces, const Standard_Real Offset, const Standard_Real Tol, const BRepOffset_Mode Mode = BRepOffset_Skin, const Standard_Boolean Intersection = Standard_False, const Standard_Boolean SelfInter = Standard_False, const GeomAbs_JoinType Join = GeomAbs_Arc);
+  Standard_EXPORT BRepOffsetAPI_MakeThickSolid(const TopoDS_Shape& S, 
+                                               const TopTools_ListOfShape& ClosingFaces, 
+                                               const Standard_Real Offset, 
+                                               const Standard_Real Tol, 
+                                               const BRepOffset_Mode Mode = BRepOffset_Skin, 
+                                               const Standard_Boolean Intersection = Standard_False,
+                                               const Standard_Boolean SelfInter = Standard_False, 
+                                               const GeomAbs_JoinType Join = GeomAbs_Arc,
+                                               const Standard_Boolean RemoveIntEdges = Standard_False);
   
   //! Builds the resulting shape (redefined from MakeOffsetShape).
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;

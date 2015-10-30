@@ -1,0 +1,5 @@
+restore  [locate_data_file bug25926_box_cut_box.brep] s
+
+OFFSETSHAPE 5 {} $calcul $type
+
+set volume 32000

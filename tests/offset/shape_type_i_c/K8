@@ -1,0 +1,5 @@
+restore  [locate_data_file bug25926_before_offset.brep] s
+
+OFFSETSHAPE 10 {} $calcul $type
+
+set volume 1.90913e+008

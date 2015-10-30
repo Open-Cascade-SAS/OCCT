@@ -1,0 +1,13 @@
+puts "TODO CR25926 ALL: Error : The volume of the resulting shape is"
+puts "TODO CR25926 ALL: Faulty shapes in variables faulty_"
+
+polyline p 0 0 0 10 0 0 10 0 7 6 0 7 6 0 3 5 0 5 0 0 5 0 0 0
+mkplane f p
+prism s f 0 10 0
+
+set distance 3
+offsetparameter 1.e-7 $calcul $type
+offsetload s $distance
+offsetperform result
+
+set volume 0

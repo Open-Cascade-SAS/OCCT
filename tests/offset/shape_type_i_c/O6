@@ -1,0 +1,8 @@
+restore [locate_data_file bug25926_topology.brep] s
+
+set distance 5
+offsetparameter 1.e-7 $calcul $type
+offsetload s $distance
+offsetperform result
+
+set volume 7.9433e+007

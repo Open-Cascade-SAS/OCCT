@@ -1,8 +1,7 @@
-puts "TODO OCC23068 ALL: An exception was caught"
-puts "TODO OCC23068 ALL: \\*\\* Exception \\*\\*"
-puts "TODO OCC23068 ALL: TEST INCOMPLETE"
+puts "TODO OCC23068 ALL: Error: bsection of the result and s is not equal to zero."
+
 psphere s 15 270
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set volume 0
+set volume 1.77778e+16

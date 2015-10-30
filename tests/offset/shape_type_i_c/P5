@@ -1,0 +1,8 @@
+restore [locate_data_file bug25926_offset_primitive.input.brep] s
+
+set distance 10
+offsetparameter 1.e-7 $calcul $type r
+offsetload s $distance
+offsetperform result
+
+set volume 4.9414e+007

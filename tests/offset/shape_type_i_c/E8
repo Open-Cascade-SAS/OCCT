@@ -1,0 +1,5 @@
+restore [locate_data_file bug25926_spike_shape.brep] s
+
+OFFSETSHAPE 10 {} $calcul $type
+
+set volume 4.30309e+008

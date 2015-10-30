@@ -53,9 +53,27 @@ public:
   
   Standard_EXPORT BRepOffset_MakeOffset();
   
-  Standard_EXPORT BRepOffset_MakeOffset(const TopoDS_Shape& S, const Standard_Real Offset, const Standard_Real Tol, const BRepOffset_Mode Mode = BRepOffset_Skin, const Standard_Boolean Intersection = Standard_False, const Standard_Boolean SelfInter = Standard_False, const GeomAbs_JoinType Join = GeomAbs_Arc, const Standard_Boolean Thickening = Standard_False);
+  Standard_EXPORT BRepOffset_MakeOffset(const TopoDS_Shape& S, 
+                                        const Standard_Real Offset, 
+                                        const Standard_Real Tol, 
+                                        const BRepOffset_Mode Mode = BRepOffset_Skin, 
+                                        const Standard_Boolean Intersection = Standard_False, 
+                                        const Standard_Boolean SelfInter = Standard_False, 
+                                        const GeomAbs_JoinType Join = GeomAbs_Arc, 
+                                        const Standard_Boolean Thickening = Standard_False,
+                                        const Standard_Boolean RemoveIntEdges = Standard_False,
+                                        const Standard_Boolean RemoveInvalidFaces = Standard_False);
   
-  Standard_EXPORT void Initialize (const TopoDS_Shape& S, const Standard_Real Offset, const Standard_Real Tol, const BRepOffset_Mode Mode = BRepOffset_Skin, const Standard_Boolean Intersection = Standard_False, const Standard_Boolean SelfInter = Standard_False, const GeomAbs_JoinType Join = GeomAbs_Arc, const Standard_Boolean Thickening = Standard_False);
+  Standard_EXPORT void Initialize (const TopoDS_Shape& S, 
+                                   const Standard_Real Offset, 
+                                   const Standard_Real Tol, 
+                                   const BRepOffset_Mode Mode = BRepOffset_Skin, 
+                                   const Standard_Boolean Intersection = Standard_False, 
+                                   const Standard_Boolean SelfInter = Standard_False, 
+                                   const GeomAbs_JoinType Join = GeomAbs_Arc, 
+                                   const Standard_Boolean Thickening = Standard_False,
+                                   const Standard_Boolean RemoveIntEdges = Standard_False,
+                                   const Standard_Boolean RemoveInvalidFaces = Standard_False);
   
   Standard_EXPORT void Clear();
   
@@ -106,12 +124,7 @@ public:
   Standard_EXPORT const TopoDS_Shape& GetBadShape() const;
 
 
-
-
 protected:
-
-
-
 
 
 private:
@@ -120,6 +133,15 @@ private:
   Standard_EXPORT void BuildOffsetByArc();
   
   Standard_EXPORT void BuildOffsetByInter();
+
+  //! Building splits of the offset faces by the section curves 
+  //! between the neighboring faces. 
+  Standard_EXPORT void BuildSplitsOfFaces(const TopTools_ListOfShape& theLF,
+                                          const Handle(BRepAlgo_AsDes)& theAsDes,
+                                          TopTools_IndexedDataMapOfShapeListOfShape& theOrigins,
+                                          BRepAlgo_Image& theImage,
+                                          TopTools_ListOfShape& theLFailed,
+                                          const Standard_Boolean bLimited);
   
   Standard_EXPORT void SelfInter (TopTools_MapOfShape& Modif);
   
@@ -152,6 +174,10 @@ private:
   //! Private method used to build walls for thickening the shell
   Standard_EXPORT void MakeMissingWalls();
 
+  //! Removes INTERNAL edges from the result
+  Standard_EXPORT void RemoveInternalEdges();
+
+
 
   Standard_Real myOffset;
   Standard_Real myTol;
@@ -161,6 +187,8 @@ private:
   Standard_Boolean mySelfInter;
   GeomAbs_JoinType myJoin;
   Standard_Boolean myThickening;
+  Standard_Boolean myRemoveIntEdges;
+  Standard_Boolean myRemoveInvalidFaces;
   TopTools_DataMapOfShapeReal myFaceOffset;
   TopTools_IndexedMapOfShape myFaces;
   BRepOffset_Analyse myAnalyse;
@@ -174,15 +202,9 @@ private:
   BRepOffset_Error myError;
   BRepOffset_MakeLoops myMakeLoops;
   Standard_Boolean myIsPerformSewing; // Handle bad walls in thicksolid mode.
+  Standard_Boolean myIsPlanar;
   TopoDS_Shape myBadShape;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BRepOffset_MakeOffset_HeaderFile

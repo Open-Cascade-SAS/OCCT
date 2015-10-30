@@ -865,7 +865,7 @@ Standard_Integer thickshell(Draw_Interpretor& theCommands,
     Tol = Draw::Atof(a[5]);
 
   BRepOffset_MakeOffset B;
-  B.Initialize(S,Of,Tol,BRepOffset_Skin,Inter,0,JT, Standard_True);
+  B.Initialize(S,Of,Tol,BRepOffset_Skin,Inter,0,JT,Standard_True);
 
   B.MakeOffsetShape();
 
@@ -942,55 +942,65 @@ static Standard_Boolean      theYaBouchon;
 static Standard_Real         TheTolerance = Precision::Confusion();
 static Standard_Boolean      TheInter     = Standard_False;
 static GeomAbs_JoinType      TheJoin      = GeomAbs_Arc;
+static Standard_Boolean      RemoveIntEdges = Standard_False;
+static Standard_Boolean      RemoveInvalidFaces = Standard_False;
 
 Standard_Integer offsetparameter(Draw_Interpretor& di,
-				 Standard_Integer n, const char** a)
+                                 Standard_Integer n, const char** a)
 {
   if ( n == 1 ) { 
-    //cout << " OffsetParameter Tol Inter(c/p) JoinType(a/i)" << endl;
-    //cout << " Current Values" << endl;
-    //cout << "   --> Tolerance :" << TheTolerance << endl;
-    //cout << "   --> TheInter  :";
-    di << " OffsetParameter Tol Inter(c/p) JoinType(a/i)" << "\n";
+    di << " OffsetParameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]" << "\n";
     di << " Current Values" << "\n";
-    di << "   --> Tolerance :" << TheTolerance << "\n";
-    di << "   --> TheInter  :";
+    di << "   --> Tolerance : " << TheTolerance << "\n";
+    di << "   --> TheInter  : ";
     if ( TheInter) {
-      //cout << "Complet" ;
       di << "Complet" ;
     } else {
-      //cout << "Partial";
       di << "Partial";
     }
-    //cout << endl << "   --> TheJoin   :";
-    di << "\n" << "   --> TheJoin   :";
+    di << "\n" << "   --> TheJoin   : ";
     
     switch (TheJoin) {
-    //case GeomAbs_Arc:          cout << " Arc";          break;
-    //case GeomAbs_Intersection: cout << " Intersection"; break;
-    case GeomAbs_Arc:          di << " Arc";          break;
-    case GeomAbs_Intersection: di << " Intersection"; break;
+    case GeomAbs_Arc:          di << "Arc";          break;
+    case GeomAbs_Intersection: di << "Intersection"; break;
     default:
       break ;
     }
-    //cout << endl;
+    //
+    di << "\n" << "   --> Internal Edges : ";
+    if (RemoveIntEdges) {
+      di << "Remove";
+    }
+    else {
+      di << "Keep";
+    }
+    //
+    di << "\n" << "   --> Invalid Faces : ";
+    if (RemoveInvalidFaces) {
+      di << "Remove";
+    }
+    else {
+      di << "Keep";
+    }
     di << "\n";
-
+    //
     return 0;
   }
 
   if ( n < 4 ) return 1;
-  
+  //
   TheTolerance = Draw::Atof(a[1]);
   TheInter     = strcmp(a[2],"p");
-  
+  //
   if      ( !strcmp(a[3],"a")) TheJoin = GeomAbs_Arc;
   else if ( !strcmp(a[3],"i")) TheJoin = GeomAbs_Intersection;
   else if ( !strcmp(a[3],"t")) TheJoin = GeomAbs_Tangent;
-    
-  return 0;    
+  //
+  RemoveIntEdges = (n >= 5) ? !strcmp(a[4], "r") : Standard_False;
+  RemoveInvalidFaces = (n == 6) ? !strcmp(a[5], "r") : Standard_False;
+  //
+  return 0;
 }
-
 
 //=======================================================================
 //function : offsetinit
@@ -998,7 +1008,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
 //=======================================================================
 
 Standard_Integer offsetload(Draw_Interpretor& ,
-			    Standard_Integer n, const char** a)
+  Standard_Integer n, const char** a)
 {
   if ( n < 2) return 1;
   TopoDS_Shape  S  = DBRep::Get(a[1]);
@@ -1008,7 +1018,8 @@ Standard_Integer offsetload(Draw_Interpretor& ,
   TheRadius = Of;
 //  Standard_Boolean Inter = Standard_True;
   
-  TheOffset.Initialize(S,Of,TheTolerance,BRepOffset_Skin,TheInter,0,TheJoin);
+  TheOffset.Initialize(S,Of,TheTolerance,BRepOffset_Skin,TheInter,0,TheJoin,
+                       Standard_False, RemoveIntEdges, RemoveInvalidFaces);
   //------------------------------------------
   // recuperation et chargement des bouchons.
   //----------------------------------------

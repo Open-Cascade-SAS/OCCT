@@ -82,6 +82,8 @@ public:
   //! - if Join is equal to GeomAbs_Intersection, then the parallels to the
   //! two adjacent faces are enlarged and intersected,
   //! so that there are no free edges on parallels to faces.
+  //! RemoveIntEdges flag defines whether to remove the INTERNAL edges 
+  //! from the result or not.
   //! Warnings
   //! 1. All the faces of the shape S should be based on the surfaces
   //! with continuity at least C1.
@@ -100,8 +102,15 @@ public:
   //! Exceptions
   //! Geom_UndefinedDerivative if the underlying
   //! geometry of S is BSpline with continuity C0.
-  Standard_EXPORT BRepOffsetAPI_MakeOffsetShape(const TopoDS_Shape& S, const Standard_Real Offset, const Standard_Real Tol, const BRepOffset_Mode Mode = BRepOffset_Skin, const Standard_Boolean Intersection = Standard_False, const Standard_Boolean SelfInter = Standard_False, const GeomAbs_JoinType Join = GeomAbs_Arc);
-  
+  Standard_EXPORT BRepOffsetAPI_MakeOffsetShape(const TopoDS_Shape& S, 
+                                                const Standard_Real Offset, 
+                                                const Standard_Real Tol, 
+                                                const BRepOffset_Mode Mode = BRepOffset_Skin, 
+                                                const Standard_Boolean Intersection = Standard_False, 
+                                                const Standard_Boolean SelfInter = Standard_False, 
+                                                const GeomAbs_JoinType Join = GeomAbs_Arc,
+                                                const Standard_Boolean RemoveIntEdges = Standard_False);
+
   Standard_EXPORT virtual const BRepOffset_MakeOffset& MakeOffset() const;
   
   //! Builds the resulting shape (redefined from MakeShape).

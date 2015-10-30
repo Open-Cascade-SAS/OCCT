@@ -1,0 +1,5 @@
+restore [locate_data_file bug25926_input_slanted.brep] s
+
+OFFSETSHAPE 21 {} $calcul $type
+
+set volume 3.29213e+007

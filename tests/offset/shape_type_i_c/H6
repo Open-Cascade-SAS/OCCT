@@ -1,0 +1,5 @@
+restore [locate_data_file bug25926_example_4_side_30_top_10.brep] s
+
+OFFSETSHAPE 35 {} $calcul $type
+
+set volume 4.8893e+007
