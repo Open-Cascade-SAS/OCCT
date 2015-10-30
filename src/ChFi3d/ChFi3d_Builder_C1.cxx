@@ -2256,6 +2256,25 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
             inters.Perform(HC, HGs);
             if (inters.IsDone()&& inters.NbPoints()!=0) {
               Fd->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(S1, DStr.ChangeSurface(Isurf).Tolerance())));
+              //update history
+              if (myEVIMap.IsBound(EdgeSpine))
+              {
+                TColStd_ListIteratorOfListOfInteger itl(myEVIMap.ChangeFind(EdgeSpine));
+                for (; itl.More(); itl.Next())
+                  if (itl.Value() == Isurf)
+                  {
+                    myEVIMap.ChangeFind(EdgeSpine).Remove(itl);
+                    break;
+                  }
+                myEVIMap.ChangeFind(EdgeSpine).Append(Fd->Surf());
+              }
+              else
+              {
+                TColStd_ListOfInteger IndexList;
+                IndexList.Append(Fd->Surf());
+                myEVIMap.Bind(EdgeSpine, IndexList);
+              }
+              ////////////////
               Isurf=Fd->Surf();
             }
           }
