@@ -2126,7 +2126,7 @@ proc _get_temp_dir {} {
     if { "$tcl_platform(platform)" == "windows" } {
         set paths "c:/TEMP c:/TMP /TEMP /TMP"
         if { [info exists env(HOMEDRIVE)] && [info exists env(HOMEPATH)] } {
-            set fallback [regsub -all {\\} "$env(HOMEDRIVE)$(HOMEPATH)/tmp" /]
+            set fallback [regsub -all {\\} "$env(HOMEDRIVE)$env(HOMEPATH)/tmp" /]
         }
     } else {
         set paths "/tmp /var/tmp /usr/tmp"

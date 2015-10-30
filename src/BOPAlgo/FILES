@@ -63,3 +63,5 @@ BOPAlgo_WireSplitter.cxx
 BOPAlgo_WireSplitter.hxx
 BOPAlgo_WireSplitter.lxx
 BOPAlgo_WireSplitter_1.cxx
+BOPAlgo_CellsBuilder.cxx
+BOPAlgo_CellsBuilder.hxx

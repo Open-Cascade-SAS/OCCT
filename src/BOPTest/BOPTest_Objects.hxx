@@ -24,6 +24,7 @@
 #include <BOPAlgo_PBuilder.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
+#include <BOPAlgo_CellsBuilder.hxx>
 class BOPAlgo_PaveFiller;
 class BOPAlgo_Builder;
 class BOPAlgo_BOP;
@@ -51,6 +52,8 @@ public:
   Standard_EXPORT static BOPAlgo_BOP& BOP();
   
   Standard_EXPORT static BOPAlgo_Section& Section();
+  
+  Standard_EXPORT static BOPAlgo_CellsBuilder& CellsBuilder();
   
   Standard_EXPORT static BOPCol_ListOfShape& Shapes();
   
