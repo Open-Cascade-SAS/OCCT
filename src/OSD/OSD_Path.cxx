@@ -21,34 +21,26 @@
 #include <Standard_ProgramError.hxx>
 #include <TCollection_AsciiString.hxx>
 
-static OSD_SysType whereAmI() {
-#if defined(__digital__) || defined(__FreeBSD__) || defined(SUNOS) || defined(__APPLE__) || defined(__QNX__)
+static OSD_SysType whereAmI()
+{
+#if defined(__digital__) || defined(__FreeBSD__) || defined(SUNOS) || defined(__APPLE__) || defined(__QNX__) || defined(__FreeBSD_kernel__)
   return OSD_UnixBSD;
-}
 #elif defined(sgi)  || defined(IRIX) || defined(__sun)  || defined(SOLARIS) ||  defined(__sco__) || defined(__hpux) || defined(HPUX)
   return OSD_UnixSystemV;
-}
 #elif defined(__osf__) || defined(DECOSF1)
   return OSD_OSF;
-}
 #elif defined(OS2)
   return OSD_WindowsNT;
-}
 #elif defined(_WIN32) || defined(__WIN32__)
   return OSD_WindowsNT;
-}
 #elif defined(__CYGWIN32_) || defined(__MINGW32__)
   return OSD_WindowsNT;
-}
 #elif defined(vax) || defined(__vms)
   return OSD_VMS;
-}
 #elif defined(__linux__) || defined(__linux)
   return OSD_LinuxREDHAT;
-}
 #elif defined(_AIX) || defined(AIX)
   return OSD_Aix;
-}
 #else
   struct utsname info;
   uname(&info);
@@ -58,8 +50,8 @@ static OSD_SysType whereAmI() {
   cout << info.version << endl;
   cout << info.machine << endl;
   return OSD_Default;
-}
 #endif
+}
 
 #if !(defined(_WIN32) || defined(__WIN32__))
 
