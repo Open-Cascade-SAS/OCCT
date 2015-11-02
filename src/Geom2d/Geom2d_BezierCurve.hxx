@@ -29,6 +29,8 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <BSplCLib.hxx>
+
 class Standard_ConstructionError;
 class Standard_DimensionError;
 class Standard_RangeError;
@@ -271,6 +273,11 @@ public:
   //! Raised if the length of P is not equal to the number of poles.
   Standard_EXPORT void Poles (TColgp_Array1OfPnt2d& P) const;
   
+  //! Returns all the poles of the curve.
+  const TColgp_Array1OfPnt2d& Poles() const
+  {
+    return poles->Array1();
+  }
 
   //! Returns Value (U=1), it is the first control point
   //! of the curve.
@@ -284,7 +291,15 @@ public:
   //!
   //! Raised if the length of W is not equal to the number of poles.
   Standard_EXPORT void Weights (TColStd_Array1OfReal& W) const;
-  
+
+  //! Returns all the weights of the curve.
+  const TColStd_Array1OfReal* Weights() const
+  {
+    if (!weights.IsNull())
+      return &weights->Array1();
+    return BSplCLib::NoWeights();
+  }
+
   //! Applies the transformation T to this Bezier curve.
   Standard_EXPORT void Transform (const gp_Trsf2d& T) Standard_OVERRIDE;
   
@@ -327,25 +342,13 @@ private:
   //! Update rational and closed.
   //!
   //! if nbpoles < 2 or nbboles > MaDegree + 1
-  Standard_EXPORT void Init (const Handle(TColgp_HArray1OfPnt2d)& Poles, const Handle(TColStd_HArray1OfReal)& Weights);
-  
-  //! returns true if the coefficients have been
-  //! computed with the right value of cacheparameter
-  //! for the given U value.
-  Standard_EXPORT Standard_Boolean CoefficientsOK (const Standard_Real U) const;
-  
-  //! Recompute the coeficients.
-  Standard_EXPORT void UpdateCoefficients (const Standard_Real U = 0.0);
+  void Init (const Handle(TColgp_HArray1OfPnt2d)& Poles, const Handle(TColStd_HArray1OfReal)& Weights);
+
 
   Standard_Boolean rational;
   Standard_Boolean closed;
   Handle(TColgp_HArray1OfPnt2d) poles;
   Handle(TColStd_HArray1OfReal) weights;
-  Handle(TColgp_HArray1OfPnt2d) coeffs;
-  Handle(TColStd_HArray1OfReal) wcoeffs;
-  Standard_Integer validcache;
-  Standard_Real parametercache;
-  Standard_Real spanlenghtcache;
   Standard_Real maxderivinv;
   Standard_Boolean maxderivinvok;
 

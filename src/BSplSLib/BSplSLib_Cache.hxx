@@ -29,23 +29,23 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-//! \brief A cache class for B-spline surfaces.
+//! \brief A cache class for Bezier and B-spline surfaces.
 //!
-//! Defines all data, that can be cached on a span of B-spline surface.
+//! Defines all data, that can be cached on a span of the surface.
 //! The data should be recalculated in going from span to span.
 class BSplSLib_Cache : public Standard_Transient
 {
 public:
   //! Default constructor
   Standard_EXPORT BSplSLib_Cache();
-  //! Constructor for caching of the span for B-spline surface
-  //! \param theDegreeU    degree along the first parameter (U) of the B-spline
-  //! \param thePeriodicU  identify the B-spline is periodical along U axis
-  //! \param theFlatKnotsU knots of B-spline curve (with repetition) along U axis
-  //! \param theDegreeV    degree alogn the second parameter (V) of the B-spline
-  //! \param thePeriodicV  identify the B-spline is periodical along V axis
-  //! \param theFlatKnotsV knots of B-spline curve (with repetition) along V axis
-  //! \param thePoles      array of poles of the B-spline surface
+  //! Constructor for caching of the span for the surface
+  //! \param theDegreeU    degree along the first parameter (U) of the surface
+  //! \param thePeriodicU  identify the surface is periodical along U axis
+  //! \param theFlatKnotsU knots of the surface (with repetition) along U axis
+  //! \param theDegreeV    degree alogn the second parameter (V) of the surface
+  //! \param thePeriodicV  identify the surface is periodical along V axis
+  //! \param theFlatKnotsV knots of the surface (with repetition) along V axis
+  //! \param thePoles      array of poles of the surface
   //! \param theWeights    array of weights of corresponding poles
   Standard_EXPORT BSplSLib_Cache(const Standard_Integer&        theDegreeU,
                                  const Standard_Boolean&        thePeriodicU,
@@ -65,13 +65,13 @@ public:
   //! Recomputes the cache data. Does not verify validity of the cache
   //! \param theParameterU  the parametric value on the U axis to identify the span
   //! \param theParameterV  the parametric value on the V axis to identify the span
-  //! \param theDegreeU     degree of the B-spline along U axis
-  //! \param thePeriodicU   identify the B-spline is periodic along U axis
-  //! \param theFlatKnotsU  flat knots of B-spline surface along U axis
-  //! \param theDegreeV     degree of the B-spline along V axis
-  //! \param thePeriodicV   identify the B-spline is periodic along V axis
-  //! \param theFlatKnotsV  flat knots of B-spline surface along V axis
-  //! \param thePoles       array of poles of B-spline
+  //! \param theDegreeU     degree along U axis
+  //! \param thePeriodicU   identify whether the surface is periodic along U axis
+  //! \param theFlatKnotsU  flat knots of the surface along U axis
+  //! \param theDegreeV     degree along V axis
+  //! \param thePeriodicV   identify whether the surface is periodic along V axis
+  //! \param theFlatKnotsV  flat knots of the surface along V axis
+  //! \param thePoles       array of poles of the surface
   //! \param theWeights     array of weights of corresponding poles
   Standard_EXPORT void BuildCache(const Standard_Real&           theParameterU, 
                                   const Standard_Real&           theParameterV, 
@@ -84,16 +84,16 @@ public:
                                   const TColgp_Array2OfPnt&      thePoles, 
                                   const TColStd_Array2OfReal*    theWeights = NULL);
 
-  //! Calculates the point on B-spline for specified parameters
+  //! Calculates the point on the surface for specified parameters
   //! \param[in]  theU      first parameter for calculation of the value
   //! \param[in]  theV      second parameter for calculation of the value
-  //! \param[out] thePoint  the result of calculation (the point on the B-spline)
+  //! \param[out] thePoint  the result of calculation (the point on the surface)
   Standard_EXPORT void D0(const Standard_Real& theU, const Standard_Real& theV, gp_Pnt& thePoint) const;
 
-  //! Calculates the point on B-spline and its first derivative
+  //! Calculates the point on the surface and its first derivative
   //! \param[in]  theU         first parameter of calculation of the value
   //! \param[in]  theV         second parameter of calculation of the value
-  //! \param[out] thePoint     the result of calculation (the point on the B-spline)
+  //! \param[out] thePoint     the result of calculation (the point on the surface)
   //! \param[out] theTangentU  tangent vector along U axis in the calculated point
   //! \param[out] theTangentV  tangent vector along V axis in the calculated point
   Standard_EXPORT void D1(const Standard_Real& theU, 
@@ -102,10 +102,10 @@ public:
                                 gp_Vec&        theTangentU, 
                                 gp_Vec&        theTangentV) const;
 
-  //! Calculates the point on B-spline and derivatives till second order
+  //! Calculates the point on the surface and derivatives till second order
   //! \param[in]  theU            first parameter of calculation of the value
   //! \param[in]  theV            second parameter of calculation of the value
-  //! \param[out] thePoint        the result of calculation (the point on B-spline)
+  //! \param[out] thePoint        the result of calculation (the point on the surface)
   //! \param[out] theTangentU     tangent vector along U axis in the calculated point
   //! \param[out] theTangentV     tangent vector along V axis in the calculated point
   //! \param[out] theCurvatureU   curvature vector (2nd derivative on U) along U axis
@@ -124,8 +124,8 @@ public:
   DEFINE_STANDARD_RTTI(BSplSLib_Cache, Standard_Transient)
 
 protected:
-  //! Normalizes the parameter for periodical B-splines
-  //! \param[in]     theDegree     degree of B-spline along selected direction
+  //! Normalizes the parameter for periodical surfaces
+  //! \param[in]     theDegree     degree along selected direction
   //! \param[in]     theFlatKnots  knots with repetitions along selected direction
   //! \param[in,out] theParameter  the value to be normalized into the knots array
   void PeriodicNormalization(const Standard_Integer& theDegree, 
@@ -140,13 +140,13 @@ private:
                                                 // for non-rational surfaces there is no weight;
                                                 // size of array: (max(myDegree)+1) * A*(min(myDegree)+1), where A = 4 or 3
 
-  Standard_Boolean              myIsRational;    ///< identifies the rationality of B-spline
+  Standard_Boolean              myIsRational;    ///< identifies the rationality of Bezier/B-spline surface
   Standard_Real                 mySpanStart[2];  ///< parameters (u, v) for the frst point of the span
   Standard_Real                 mySpanLength[2]; ///< lengths of the span along corresponding parameter
-  Standard_Integer              mySpanIndex[2];  ///< indexes of the span on B-spline surface
+  Standard_Integer              mySpanIndex[2];  ///< indexes of the span on Bezier/B-spline surface
   Standard_Integer              mySpanIndexMax[2]; ///< maximal indexes of span
-  Standard_Integer              myDegree[2];     ///< degrees of B-spline for each parameter
-  Handle(TColStd_HArray1OfReal) myFlatKnots[2];  ///< arrays of knots of B-spline 
+  Standard_Integer              myDegree[2];     ///< degrees of Bezier/B-spline for each parameter
+  Handle(TColStd_HArray1OfReal) myFlatKnots[2];  ///< arrays of knots of Bezier/B-spline 
                                                  // (used for periodic normalization of parameters, Null for non-periodical splines)
 };
 
