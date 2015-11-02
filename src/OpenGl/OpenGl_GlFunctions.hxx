@@ -109,6 +109,7 @@
   #define GL_DEPTH24_STENCIL8               0x88F0
 
   // OpenGL ES 3.0+
+  #define GL_DEPTH_COMPONENT24              0x81A6
   #define GL_DEPTH_COMPONENT32F             0x8CAC
   #define GL_DEPTH32F_STENCIL8              0x8CAD
   #define GL_FLOAT_32_UNSIGNED_INT_24_8_REV 0x8DAD

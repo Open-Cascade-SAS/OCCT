@@ -42,19 +42,19 @@ namespace
       }
       case GL_DEPTH_COMPONENT16:
       {
-        thePixelFormat = GL_DEPTH;
+        thePixelFormat = GL_DEPTH_COMPONENT;
         theDataType    = GL_UNSIGNED_SHORT;
         return true;
       }
       case GL_DEPTH_COMPONENT24:
       {
-        thePixelFormat = GL_DEPTH;
+        thePixelFormat = GL_DEPTH_COMPONENT;
         theDataType    = GL_UNSIGNED_INT;
         return true;
       }
       case GL_DEPTH_COMPONENT32F:
       {
-        thePixelFormat = GL_DEPTH;
+        thePixelFormat = GL_DEPTH_COMPONENT;
         theDataType    = GL_FLOAT;
         return true;
       }
