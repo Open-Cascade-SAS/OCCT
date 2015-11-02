@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC26744"
+puts "=========="
+puts ""
+#########################################
+# Boolean Cut builds incorrect result
+#########################################
+
+restore [locate_data_file bug26744_BodyA.brep] a
+restore [locate_data_file bug26744_BodyB.brep] b
+
+bop a b
+bopcut result
+
+set square 1.54891e+06
+set 3dviewer 1
