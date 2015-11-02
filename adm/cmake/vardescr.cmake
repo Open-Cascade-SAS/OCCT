@@ -43,6 +43,7 @@ INSTALL_MESSAGE (INSTALL_FREETYPE         "FreeType binaries")
 INSTALL_MESSAGE (INSTALL_GL2PS            "GL2PS binaries")
 INSTALL_MESSAGE (INSTALL_TBB              "TBB binaries")
 INSTALL_MESSAGE (INSTALL_TCL              "TCL binaries")
+INSTALL_MESSAGE (INSTALL_TK               "TK binaries")
 INSTALL_MESSAGE (INSTALL_VTK              "VTK binaries ")
 
 # build variables

@@ -772,7 +772,7 @@ void OpenGl_Context::ResetErrors (const bool theToPrintErrors)
     }
 
     const TCollection_ExtendedString aMsg = TCollection_ExtendedString ("Unhandled GL error: ") + anErrId;
-    PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_OTHER_ARB, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
+    PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
   }
 }
 

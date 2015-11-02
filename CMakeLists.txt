@@ -160,11 +160,15 @@ OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
 if ("${USE_TCL}" STREQUAL ON)
   message (STATUS "Info: TCL is used by OCCT")
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tcl")
+  
+  message (STATUS "Info: TK is used by OCCT")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tk")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TCL")
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TK")
 
   OCCT_CHECK_AND_UNSET ("INSTALL_TCL")
+  OCCT_CHECK_AND_UNSET ("INSTALL_TK")
 endif()
 
 # search for CSF_FREETYPE variable in EXTERNLIB of each being used toolkit

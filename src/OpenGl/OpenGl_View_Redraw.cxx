@@ -1599,10 +1599,10 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
     if (!myOpenGlFBO ->InitLazy (aCtx, aPair[0]->GetVPSizeX(), aPair[0]->GetVPSizeY(), myFboColorFormat, myFboDepthFormat, 0)
      || !myOpenGlFBO2->InitLazy (aCtx, aPair[0]->GetVPSizeX(), aPair[0]->GetVPSizeY(), myFboColorFormat, 0, 0))
     {
-      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                         GL_DEBUG_TYPE_ERROR,
                          0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
+                         GL_DEBUG_SEVERITY_HIGH,
                          "Error! Unable to allocate FBO for blitting stereo pair");
       bindDefaultFbo (theDrawFbo);
       return;
