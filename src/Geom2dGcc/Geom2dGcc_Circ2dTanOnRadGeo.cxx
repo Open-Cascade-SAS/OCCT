@@ -21,7 +21,7 @@
 //                  de rayon donne : Radius.                             +
 //========================================================================
 
-#include <Adaptor3d_OffsetCurve.hxx>
+#include <Adaptor2d_OffsetCurve.hxx>
 #include <ElCLib.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
@@ -30,7 +30,6 @@
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom2dGcc_Circ2dTanOnRadGeo.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
-#include <Geom2dGcc_CurveToolGeo.hxx>
 #include <Geom2dGcc_QCurve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <gp_Circ2d.hxx>
@@ -124,11 +123,11 @@ parcen3(1,8)
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
       Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
-      Adaptor3d_OffsetCurve C2(HCu1,Coef(jcote1));
-      firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
-      lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-      IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-        Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+      Adaptor2d_OffsetCurve C2(HCu1,Coef(jcote1));
+      firstparam = Max(C2.FirstParameter(),thefirst);
+      lastparam  = Min(C2.LastParameter(),thelast);
+      IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
+                         C2.Value(lastparam), lastparam, Tol);
       Intp.Perform(OnLine,D1,C2,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
@@ -237,11 +236,11 @@ parcen3(1,8)
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
       Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
-      Adaptor3d_OffsetCurve C2(HCu1,cote1(jcote1));
-      firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
-      lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-      IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-        Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+      Adaptor2d_OffsetCurve C2(HCu1,cote1(jcote1));
+      firstparam = Max(C2.FirstParameter(),thefirst);
+      lastparam  = Min(C2.LastParameter(),thelast);
+      IntRes2d_Domain D2(C2.Value(firstparam),firstparam,Tol,
+                         C2.Value(lastparam),lastparam,Tol);
       Intp.Perform(OnCirc,D1,C2,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
@@ -592,17 +591,17 @@ parcen3(1,8)
     Geom2dInt_GInter Intp;
     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
       Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
-      Adaptor3d_OffsetCurve C1(HCu1,cote1(jcote1));
-      firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C1),thefirst);
-      lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C1),thelast);
-      IntRes2d_Domain D1(Geom2dGcc_CurveToolGeo::Value(C1,firstparam),firstparam,Tol,
-        Geom2dGcc_CurveToolGeo::Value(C1,lastparam),lastparam,Tol);
+      Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
+      firstparam = Max(C1.FirstParameter(),thefirst);
+      lastparam  = Min(C1.LastParameter(),thelast);
+      IntRes2d_Domain D1(C1.Value(firstparam), firstparam, Tol,
+                         C1.Value(lastparam), lastparam, Tol);
       Handle(Geom2dAdaptor_HCurve) HOnCurv = new Geom2dAdaptor_HCurve(OnCurv);
-      Adaptor3d_OffsetCurve C2(HOnCurv);
-      firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
-      lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-      IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-        Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+      Adaptor2d_OffsetCurve C2(HOnCurv);
+      firstparam = Max(C2.FirstParameter(),thefirst);
+      lastparam  = Min(C2.LastParameter(),thelast);
+      IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
+                         C2.Value(lastparam), lastparam, Tol);
       Intp.Perform(C1,D1,C2,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {

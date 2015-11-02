@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Adaptor3d_OffsetCurve_HeaderFile
-#define _Adaptor3d_OffsetCurve_HeaderFile
+#ifndef _Adaptor2d_OffsetCurve_HeaderFile
+#define _Adaptor2d_OffsetCurve_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -45,7 +45,7 @@ class Geom2d_BSplineCurve;
 
 
 //! Defines an Offset curve (algorithmic 2d curve).
-class Adaptor3d_OffsetCurve  : public Adaptor2d_Curve2d
+class Adaptor2d_OffsetCurve  : public Adaptor2d_Curve2d
 {
 public:
 
@@ -53,18 +53,18 @@ public:
 
   
   //! The Offset is set to 0.
-  Standard_EXPORT Adaptor3d_OffsetCurve();
+  Standard_EXPORT Adaptor2d_OffsetCurve();
   
   //! The curve is loaded. The Offset is set to 0.
-  Standard_EXPORT Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C);
+  Standard_EXPORT Adaptor2d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C);
   
   //! Creates  an  OffsetCurve curve.
   //! The Offset is set to Offset.
-  Standard_EXPORT Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C, const Standard_Real Offset);
+  Standard_EXPORT Adaptor2d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C, const Standard_Real Offset);
   
   //! Create an Offset curve.
   //! WFirst,WLast define the bounds of the Offset curve.
-  Standard_EXPORT Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C, const Standard_Real Offset, const Standard_Real WFirst, const Standard_Real WLast);
+  Standard_EXPORT Adaptor2d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C, const Standard_Real Offset, const Standard_Real WFirst, const Standard_Real WLast);
   
   //! Changes  the curve.  The Offset is reset to 0.
   Standard_EXPORT void Load (const Handle(Adaptor2d_HCurve2d)& S);
@@ -196,10 +196,10 @@ private:
 };
 
 
-#include <Adaptor3d_OffsetCurve.lxx>
+#include <Adaptor2d_OffsetCurve.lxx>
 
 
 
 
 
-#endif // _Adaptor3d_OffsetCurve_HeaderFile
+#endif // _Adaptor2d_OffsetCurve_HeaderFile

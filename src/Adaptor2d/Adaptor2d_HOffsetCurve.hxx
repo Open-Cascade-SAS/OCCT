@@ -14,56 +14,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Adaptor3d_HOffsetCurve_HeaderFile
-#define _Adaptor3d_HOffsetCurve_HeaderFile
+#ifndef _Adaptor2d_HOffsetCurve_HeaderFile
+#define _Adaptor2d_HOffsetCurve_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Adaptor3d_OffsetCurve.hxx>
+#include <Adaptor2d_OffsetCurve.hxx>
 #include <Adaptor2d_HCurve2d.hxx>
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
-class Adaptor3d_OffsetCurve;
+class Adaptor2d_OffsetCurve;
 class Adaptor2d_Curve2d;
 
 
-class Adaptor3d_HOffsetCurve;
-DEFINE_STANDARD_HANDLE(Adaptor3d_HOffsetCurve, Adaptor2d_HCurve2d)
+class Adaptor2d_HOffsetCurve;
+DEFINE_STANDARD_HANDLE(Adaptor2d_HOffsetCurve, Adaptor2d_HCurve2d)
 
 
-class Adaptor3d_HOffsetCurve : public Adaptor2d_HCurve2d
+class Adaptor2d_HOffsetCurve : public Adaptor2d_HCurve2d
 {
 
 public:
 
   
   //! Creates an empty GenHCurve2d.
-  Standard_EXPORT Adaptor3d_HOffsetCurve();
+  Standard_EXPORT Adaptor2d_HOffsetCurve();
   
   //! Creates a GenHCurve2d from a Curve
-  Standard_EXPORT Adaptor3d_HOffsetCurve(const Adaptor3d_OffsetCurve& C);
+  Standard_EXPORT Adaptor2d_HOffsetCurve(const Adaptor2d_OffsetCurve& C);
   
   //! Sets the field of the GenHCurve2d.
-  Standard_EXPORT void Set (const Adaptor3d_OffsetCurve& C);
+  Standard_EXPORT void Set (const Adaptor2d_OffsetCurve& C);
   
   //! Returns the curve used to create the GenHCurve2d.
   //! This is redefined from HCurve2d, cannot be inline.
   Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const;
   
   //! Returns the curve used to create the GenHCurve.
-    Adaptor3d_OffsetCurve& ChangeCurve2d();
+  Adaptor2d_OffsetCurve& ChangeCurve2d();
 
 
 
 
-  DEFINE_STANDARD_RTTI(Adaptor3d_HOffsetCurve,Adaptor2d_HCurve2d)
+  DEFINE_STANDARD_RTTI(Adaptor2d_HOffsetCurve,Adaptor2d_HCurve2d)
 
 protected:
 
 
-  Adaptor3d_OffsetCurve myCurve;
+  Adaptor2d_OffsetCurve myCurve;
 
 
 private:
@@ -73,11 +73,11 @@ private:
 
 };
 
-#define TheCurve Adaptor3d_OffsetCurve
-#define TheCurve_hxx <Adaptor3d_OffsetCurve.hxx>
-#define Adaptor2d_GenHCurve2d Adaptor3d_HOffsetCurve
-#define Adaptor2d_GenHCurve2d_hxx <Adaptor3d_HOffsetCurve.hxx>
-#define Handle_Adaptor2d_GenHCurve2d Handle(Adaptor3d_HOffsetCurve)
+#define TheCurve Adaptor2d_OffsetCurve
+#define TheCurve_hxx <Adaptor2d_OffsetCurve.hxx>
+#define Adaptor2d_GenHCurve2d Adaptor2d_HOffsetCurve
+#define Adaptor2d_GenHCurve2d_hxx <Adaptor2d_HOffsetCurve.hxx>
+#define Handle_Adaptor2d_GenHCurve2d Handle(Adaptor2d_HOffsetCurve)
 
 #include <Adaptor2d_GenHCurve2d.lxx>
 
@@ -90,4 +90,4 @@ private:
 
 
 
-#endif // _Adaptor3d_HOffsetCurve_HeaderFile
+#endif // _Adaptor2d_HOffsetCurve_HeaderFile

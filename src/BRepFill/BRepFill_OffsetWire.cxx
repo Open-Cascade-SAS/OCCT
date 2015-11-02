@@ -17,7 +17,7 @@
 //  Modified by skv - Fri Jul  8 11:21:38 2005 OCC9145
 
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_OffsetCurve.hxx>
+#include <Adaptor2d_OffsetCurve.hxx>
 #include <Bisector_Bisec.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_CurveRepresentation.hxx>
@@ -269,7 +269,7 @@ static Standard_Boolean KPartCircle
     {
       if (E.Orientation() == TopAbs_REVERSED)
         anOffset *= -1;
-      Adaptor3d_OffsetCurve Off(AHC,anOffset);
+      Adaptor2d_OffsetCurve Off(AHC,anOffset);
       OC = new Geom2d_Line(Off.Line());
     }
     else if (AHC->GetType() == GeomAbs_Circle)
@@ -2089,7 +2089,7 @@ void MakeOffset (const TopoDS_Edge&        E,
 
       Handle(Geom2dAdaptor_HCurve) AHC = 
         new Geom2dAdaptor_HCurve(G2d);
-      Adaptor3d_OffsetCurve   Off(AHC,-anOffset);
+      Adaptor2d_OffsetCurve   Off(AHC,-anOffset);
       Handle(Geom2d_Circle) CC = new Geom2d_Circle(Off.Circle());      
 
       Standard_Real Delta = 2*M_PI - l + f;
@@ -2124,7 +2124,7 @@ void MakeOffset (const TopoDS_Edge&        E,
   else if (AC.GetType() == GeomAbs_Line) {
     Handle(Geom2dAdaptor_HCurve) AHC = 
       new Geom2dAdaptor_HCurve(G2d);
-    Adaptor3d_OffsetCurve Off(AHC,anOffset);
+    Adaptor2d_OffsetCurve Off(AHC,anOffset);
     Handle(Geom2d_Line)       CC = new Geom2d_Line(Off.Line());
     Standard_Real Delta = (l - f);
     if (ToExtendFirstPar)

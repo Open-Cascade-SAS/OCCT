@@ -24,8 +24,6 @@ Geom2dGcc_Circ2dTanOnRadGeo.cxx
 Geom2dGcc_Circ2dTanOnRadGeo.hxx
 Geom2dGcc_CurveTool.cxx
 Geom2dGcc_CurveTool.hxx
-Geom2dGcc_CurveToolGeo.cxx
-Geom2dGcc_CurveToolGeo.hxx
 Geom2dGcc_FunctionTanCirCu.cxx
 Geom2dGcc_FunctionTanCirCu.hxx
 Geom2dGcc_FunctionTanCuCu.cxx

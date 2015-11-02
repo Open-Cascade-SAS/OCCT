@@ -15,8 +15,6 @@ Adaptor3d_HCurveOnSurface.hxx
 Adaptor3d_HCurveOnSurface_0.cxx
 Adaptor3d_HIsoCurve.hxx
 Adaptor3d_HIsoCurve_0.cxx
-Adaptor3d_HOffsetCurve.hxx
-Adaptor3d_HOffsetCurve_0.cxx
 Adaptor3d_HSurface.cxx
 Adaptor3d_HSurface.hxx
 Adaptor3d_HSurface.lxx
@@ -34,9 +32,6 @@ Adaptor3d_InterFunc.hxx
 Adaptor3d_IsoCurve.cxx
 Adaptor3d_IsoCurve.hxx
 Adaptor3d_IsoCurve.lxx
-Adaptor3d_OffsetCurve.cxx
-Adaptor3d_OffsetCurve.hxx
-Adaptor3d_OffsetCurve.lxx
 Adaptor3d_Surface.cxx
 Adaptor3d_Surface.hxx
 Adaptor3d_SurfaceOfLinearExtrusion.cxx

@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_HOffsetCurve.hxx>
+#include <Adaptor2d_HOffsetCurve.hxx>
 
 #include <Standard_Type.hxx>
 
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_DomainError.hxx>
-#include <Adaptor3d_OffsetCurve.hxx>
+#include <Adaptor2d_OffsetCurve.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 
  
@@ -33,10 +33,10 @@
 
 
 
-#define TheCurve Adaptor3d_OffsetCurve
-#define TheCurve_hxx <Adaptor3d_OffsetCurve.hxx>
-#define Adaptor2d_GenHCurve2d Adaptor3d_HOffsetCurve
-#define Adaptor2d_GenHCurve2d_hxx <Adaptor3d_HOffsetCurve.hxx>
-#define Handle_Adaptor2d_GenHCurve2d Handle(Adaptor3d_HOffsetCurve)
+#define TheCurve Adaptor2d_OffsetCurve
+#define TheCurve_hxx <Adaptor2d_OffsetCurve.hxx>
+#define Adaptor2d_GenHCurve2d Adaptor2d_HOffsetCurve
+#define Adaptor2d_GenHCurve2d_hxx <Adaptor2d_HOffsetCurve.hxx>
+#define Handle_Adaptor2d_GenHCurve2d Handle(Adaptor2d_HOffsetCurve)
 #include <Adaptor2d_GenHCurve2d.gxx>
 

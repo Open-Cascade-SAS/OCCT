@@ -31,7 +31,7 @@
 #endif
 
 
-#include <Adaptor3d_OffsetCurve.hxx>
+#include <Adaptor2d_OffsetCurve.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -273,8 +273,8 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     
     Handle(Geom2dAdaptor_HCurve) HC1 = new Geom2dAdaptor_HCurve(C1);
     Handle(Geom2dAdaptor_HCurve) HC2 = new Geom2dAdaptor_HCurve(C2);
-    Adaptor3d_OffsetCurve OC1(HC1,D,MilC1,C1->LastParameter());
-    Adaptor3d_OffsetCurve OC2(HC2,D,C2->FirstParameter(),MilC2);
+    Adaptor2d_OffsetCurve OC1(HC1,D,MilC1,C1->LastParameter());
+    Adaptor2d_OffsetCurve OC2(HC2,D,C2->FirstParameter(),MilC2);
     Geom2dInt_GInter Intersect; 
     Intersect.Perform(OC1,OC2,Tol,Tol);
     

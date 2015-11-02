@@ -24,7 +24,7 @@
 //                                                  Courbes.              +
 //=========================================================================
 
-#include <Adaptor3d_OffsetCurve.hxx>
+#include <Adaptor2d_OffsetCurve.hxx>
 #include <ElCLib.hxx>
 #include <GccAna_Circ2dBisec.hxx>
 #include <GccAna_CircLin2dBisec.hxx>
@@ -39,7 +39,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanOnGeo.hxx>
-#include <Geom2dGcc_CurveToolGeo.hxx>
 #include <Geom2dInt_TheIntConicCurveOfGInter.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -95,11 +94,11 @@ Geom2dGcc_Circ2d2TanOnGeo (const GccEnt_QualifiedCirc&     Qualified1 ,
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
     Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
-    Adaptor3d_OffsetCurve Cu2(HCu2,0.);
-    firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(Cu2),thefirst);
-    lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(Cu2),thelast);
-    IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(Cu2,firstparam),firstparam,Tol,
-      Geom2dGcc_CurveToolGeo::Value(Cu2,lastparam),lastparam,Tol);
+    Adaptor2d_OffsetCurve Cu2(HCu2,0.);
+    firstparam = Max(Cu2.FirstParameter(),thefirst);
+    lastparam  = Min(Cu2.LastParameter(),thelast);
+    IntRes2d_Domain D2(Cu2.Value(firstparam), firstparam, Tol,
+                       Cu2.Value(lastparam), lastparam, Tol);
     Standard_Real Tol1 = Abs(Tolerance);
     Standard_Real Tol2 = Tol1;
     for (Standard_Integer i = 1 ; i <=  nbsolution; i++) {
@@ -323,11 +322,11 @@ parcen3(1,8)
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
     Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
-    Adaptor3d_OffsetCurve C2(HCu2,0.);
-    firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
-    lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-    IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-      Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+    Adaptor2d_OffsetCurve C2(HCu2,0.);
+    firstparam = Max(C2.FirstParameter(),thefirst);
+    lastparam  = Min(C2.LastParameter(),thelast);
+    IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
+                       C2.Value(lastparam), lastparam, Tol);
     for (Standard_Integer i = 1 ; i <=  nbsolution; i++) {
       Handle(GccInt_Bisec) Sol = Bis.ThisSolution(i);
       GccInt_IType type = Sol->ArcType();
@@ -501,11 +500,11 @@ parcen3(1,8)
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
     Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
-    Adaptor3d_OffsetCurve C2(HCu2,0.);
-    firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
-    lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-    IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-      Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+    Adaptor2d_OffsetCurve C2(HCu2,0.);
+    firstparam = Max(C2.FirstParameter(),thefirst);
+    lastparam  = Min(C2.LastParameter(),thelast);
+    IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
+                       C2.Value(lastparam), lastparam, Tol);
     IntRes2d_Domain D1;
     for (Standard_Integer i = 1 ; i <=  nbsolution; i++) {
       Intp.Perform(Bis.ThisSolution(i),D1,C2,D2,Tol1,Tol2);
@@ -649,11 +648,11 @@ parcen3(1,8)
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
     Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
-    Adaptor3d_OffsetCurve C2(HCu2,0.);
-    firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
-    lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-    IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-      Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+    Adaptor2d_OffsetCurve C2(HCu2,0.);
+    firstparam = Max(C2.FirstParameter(),thefirst);
+    lastparam  = Min(C2.LastParameter(),thelast);
+    IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
+                       C2.Value(lastparam), lastparam, Tol);
     for (Standard_Integer i = 1 ; i <=  nbsolution; i++) {
       Handle(GccInt_Bisec) Sol = Bis.ThisSolution(i);
       GccInt_IType type = Sol->ArcType();
@@ -810,11 +809,11 @@ parcen3(1,8)
     Standard_Real Tol2 = Tol1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
-    Adaptor3d_OffsetCurve C2(HCu2,0.);
-    firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
-    lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-    IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-      Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+    Adaptor2d_OffsetCurve C2(HCu2,0.);
+    firstparam = Max(C2.FirstParameter(),thefirst);
+    lastparam  = Min(C2.LastParameter(),thelast);
+    IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
+                       C2.Value(lastparam), lastparam, Tol);
     Handle(GccInt_Bisec) Sol = Bis.ThisSolution();
     GccInt_IType type = Sol->ArcType();
     switch (type) {
@@ -938,11 +937,11 @@ parcen3(1,8)
     Standard_Real Tol2 = Tol1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
-    Adaptor3d_OffsetCurve Cu2(HCu2,0.);
-    firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(Cu2),thefirst);
-    lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(Cu2),thelast);
-    IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(Cu2,firstparam),firstparam,Tol,
-      Geom2dGcc_CurveToolGeo::Value(Cu2,lastparam),lastparam,Tol);
+    Adaptor2d_OffsetCurve Cu2(HCu2,0.);
+    firstparam = Max(Cu2.FirstParameter(),thefirst);
+    lastparam  = Min(Cu2.LastParameter(),thelast);
+    IntRes2d_Domain D2(Cu2.Value(firstparam), firstparam, Tol,
+                       Cu2.Value(lastparam), lastparam, Tol);
     IntRes2d_Domain D1;
     if (Bis.HasSolution()) {
       Intp.Perform(Bis.ThisSolution(),D1,Cu2,D2,Tol1,Tol2);

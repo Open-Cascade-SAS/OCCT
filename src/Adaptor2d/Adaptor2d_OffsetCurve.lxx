@@ -16,7 +16,7 @@
 //purpose  : 
 //=======================================================================
 
-inline const Handle(Adaptor2d_HCurve2d)& Adaptor3d_OffsetCurve::Curve() const
+inline const Handle(Adaptor2d_HCurve2d)& Adaptor2d_OffsetCurve::Curve() const
 {
   return myCurve;
 }
@@ -27,7 +27,7 @@ inline const Handle(Adaptor2d_HCurve2d)& Adaptor3d_OffsetCurve::Curve() const
 //purpose  : 
 //=======================================================================
 
-inline Standard_Real Adaptor3d_OffsetCurve::Offset() const
+inline Standard_Real Adaptor2d_OffsetCurve::Offset() const
 {
   return myOffset;
 }
@@ -38,7 +38,7 @@ inline Standard_Real Adaptor3d_OffsetCurve::Offset() const
 //purpose  : 
 //=======================================================================
 
-inline Standard_Real Adaptor3d_OffsetCurve::FirstParameter() const 
+inline Standard_Real Adaptor2d_OffsetCurve::FirstParameter() const 
 {
   return myFirst;
 }
@@ -48,7 +48,7 @@ inline Standard_Real Adaptor3d_OffsetCurve::FirstParameter() const
 //purpose  : 
 //=======================================================================
 
-inline Standard_Real Adaptor3d_OffsetCurve::LastParameter() const 
+inline Standard_Real Adaptor2d_OffsetCurve::LastParameter() const 
 {
   return myLast;
 }
