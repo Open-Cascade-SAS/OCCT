@@ -5,53 +5,53 @@ Upgrade from older OCCT versions  {#occt_dev_guides__upgrade}
 
 @section upgrade_intro Introduction
 
-This document provides technical details on changes made in particular versions of OCCT, and is aimed to help upgrading user applications based on previous versions of OCCT to newer ones.
+This document provides technical details on changes made in particular versions of OCCT. It can help to upgrade user applications based on previous versions of OCCT to newer ones.
 
 @subsection upgrade_intro_precautions Precautions
 
-Back-up your code before upgrade.
-We strongly recommend using version control system during upgrade process, saving one or several commits for each step of upgrade, until overall result is verified.
-This will facilitate identification and correction of possible problems that can occur on intermediate steps of upgrade.
-Carefully document each step to be able to repeat it if necessary.
+Back-up your code before the upgrade.
+We strongly recommend using version control system during the upgrade process and saving one or several commits at each step of upgrade, until the overall result is verified.
+This will facilitate identification and correction of possible problems that can occur at the intermediate steps of upgrade.
+It is advisable to document each step carefully to be able to repeat it if necessary.
 
 @subsection upgrade_intro_disclaim Disclaimer
 
-This document describes known issues that have been encountered in porting of OCCT and some applications, and approaches that helped to resolve these issues in known cases.
+This document describes known issues that have been encountered during porting of OCCT and some applications and approaches that have helped to resolve these issues in known cases.
 It does not pretend to cover all possible migration issues that can appear in your application.
-Please take this document with discretion; apply your expertise and knowledge of your application to ensure correct result. 
+Take this document with discretion; apply your expertise and knowledge of your application to ensure the correct result. 
 
-The automatic upgrade tool is provided as-is, without warranty of any kind, and we explicitly disclaim any liability for possible errors that may appear due to use of this tool. 
+The automatic upgrade tool is provided as is, without warranty of any kind, and we explicitly disclaim any liability for possible errors that may appear due to use of this tool. 
 It is your responsibility to ensure that the changes you made in your code are correct. 
-When upgrading your code by automatic script, make sure to carefully review the changes made by it, on each step, before committing them.
+When you upgrade the code by an automatic script, make sure to carefully review the introduced changes at each step before committing them.
 
 @section upgrade_700 Upgrade to OCCT 7.0.0
 
 @subsection upgrade_700_persist Removal of legacy persistence
 
-Legacy persistence for shapes and OCAF data based on Storage_Schema (toolkits TKShapeShcema, TLStdLSchema, TKStdSchema, TKXCAFSchema) has been removed in OCCT 7.0.0.
-Applications that used these persistence tools for their data need to be updated to use other persistence mechanisms.
+Legacy persistence for shapes and OCAF data based on *Storage_Schema* (toolkits *TKShapeShcema, TLStdLSchema, TKStdSchema* and *TKXCAFSchema*) has been removed in OCCT 7.0.0.
+The applications that used these data persistence tools need to be updated to use other persistence mechanisms.
 
-The existing data files in standard formats can be converted using OCCT 6.9.0 or previous version, as follows.
+The existing data files in standard formats can be converted using OCCT 6.9.0 or a previous version, as follows.
 
 #### CSFDB files
 
 Files in CSFDB format (usually with extension .csfdb) contain OCCT shape data that can be converted to BRep format. 
 The easiest way to do that is to use ImportExport sample provided with OCCT 6.9.0 (or earlier):
 
-- Start ImportExport sample
-- Select File / New
-- Select File / Import / CSFDB... and specify the file to be converted
-- Drag mouse with right button pressed across the view to select all shapes by rectangle
-- Select File / Export / BREP... and specify location and name for the resulting file
+- Start ImportExport sample;
+- Select File / New;
+- Select File / Import / CSFDB... and specify the file to be converted;
+- Drag the mouse with the right button pressed across the view to select all shapes by the rectangle;
+- Select File / Export / BREP... and specify the location and name for the resulting file
 
 #### OCAF and XCAF documents
 
-Files containing OCAF data saved in old format usually have extensions .std or .sgd or .dxc (XDE documents).
+Files containing OCAF data saved in the old format usually have extensions <i>.std, .sgd</i> or <i>.dxc</i> (XDE documents).
 These files can be converted to XML or binary OCAF formats using DRAW Test Harness commands available in OCCT 6.9.0 or earlier.
 
 For that, start *DRAWEXE* and perform the following commands: 
 
-  * for the conversion of the "*.std" and "*.sgd" file formats to the binary format "*.cbf" (Created document should be in **BinOcaf** format instead of **MDTV-Standard**):
+  * To convert <i>*.std</i> and <i>*.sgd</i> file formats to binary format <i>*.cbf</i> (The created document should be in *BinOcaf* format instead of *MDTV-Standard*):
 
   @code
   Draw[]> pload ALL
@@ -60,7 +60,7 @@ For that, start *DRAWEXE* and perform the following commands:
   Draw[]> SaveAs Doc [path to the new file]
   @endcode
 
-  * for the conversion of the "*.dxc" file format to the binary format "*.xbf" (Created document should be in **BinXCAF** format instead of **MDTV-XCAF**):
+  * To convert <i>*.dxc</i> file format to binary format <i>*.xbf</i> (The created document should be in *BinXCAF* format instead of *MDTV-XCAF*):
 
   @code
   Draw[]> pload ALL
@@ -69,20 +69,22 @@ For that, start *DRAWEXE* and perform the following commands:
   Draw[]> XSave Doc [path to the new file]
   @endcode
 
-On Windows, be careful to replace back slashes in the file path by either direct slash or pairs of back slashes.
-Use "XmlOcaf" or "XmlXCAF" instead of "BinOcaf" and "BinXCAF", respectively, to save in XML format instead of binary one.
+On Windows, it is necessary to replace back slashes in the file path by  direct slashes or pairs of back slashes.
+
+Use *XmlOcaf* or *XmlXCAF* instead of *BinOcaf* and *BinXCAF*, respectively, to save in XML format instead of binary one.
 
 @subsection upgrade_occt700_cdl Removal of CDL and WOK
 
 OCCT code has been completely refactored in version 7.0 to get rid of obsolete technologies used since its inception: CDL (Cas.Cade Definition Language) and WOK (Workshop Organization Kit).
+
 C++ code previously generated by WOK from CDL declarations is now included directly in OCCT sources.
 
 This modification did not change names, API, and behavior of existing OCCT classes, thus in general the code based on OCCT 6.x should compile and work fine with OCCT 7.0.
 However, due to redesign of basic mechanisms (CDL generic classes, Handles and RTTI) using C++ templates, some changes may be necessary in the code when porting to OCCT 7.0, as described below.
 
-WOK is not necessary anymore for building OCCT from sources, though it still can be used in traditional way -- auxiliary files required for that are preserved.
+WOK is not necessary anymore for building OCCT from sources, though it still can be used in a traditional way -- auxiliary files required for that are preserved.
 The recommended method for building OCCT 7.x is CMake, see @ref occt_dev_guides__building_cmake.
-Alternative solution is to use legacy generator of project files (extracted from WOK), see @ref occt_dev_guides__building_wok.
+The alternative solution is to use legacy generator of project files (extracted from WOK), see @ref occt_dev_guides__building_wok.
 
 @subsubsection upgrade_occt700_cdl_auto Automatic upgrade
 
@@ -96,54 +98,54 @@ Example:
  % upgrade -recurse -all -src=<path_to_your_sources>
 ~~~~~
 
-On Windows, helper batch script upgrade.bat can be used, provided that Tcl is either available in PATH, or configured via custom.bat script (for instance, if you use OCCT installed from Windows installer package). Start it from command prompt:
+On Windows, the helper batch script *upgrade.bat* can be used, provided that Tcl is either available in *PATH*, or configured via *custom.bat* script (for instance, if you use OCCT installed from Windows installer package). Start it from the command prompt:
 
 ~~~~~
 cmd> <path_to_occt>\upgrade.bat -recurse -all -inc=<path_to_occt>\inc -src=<path_to_your_sources> [options]
 ~~~~~
 
-Run upgrade tool without arguments to see the list of available options.
+Run the upgrade tool without arguments to see the list of available options.
 
-Upgrade tool performs the following changes in the code.
+The upgrade tool performs the following changes in the code.
 
-1. Replaces macro DEFINE_STANDARD_RTTI by DEFINE_STANDARD_RTTIEXT, with second argument indicating base class for the main argument class (if inheritance is recognized by the script):
+1. Replaces macro *DEFINE_STANDARD_RTTI* by *DEFINE_STANDARD_RTTIEXT*, with second argument indicating base class for the main argument class (if inheritance is recognized by the script):
 ~~~~~
 DEFINE_STANDARD_RTTI(Class) -> DEFINE_STANDARD_RTTIEXT(Class, Base)
 ~~~~~
 
-   @note If macro DEFINE_STANDARD_RTTI with two arguments (used in intermediate development versions of OCCT 7.0) is found, the script will convert it to either DEFINE_STANDARD_RTTIEXT or DEFINE_STANDARD_RTTI_INLINE. 
+   @note If macro *DEFINE_STANDARD_RTTI* with two arguments (used in intermediate development versions of OCCT 7.0) is found, the script will convert it to either *DEFINE_STANDARD_RTTIEXT* or *DEFINE_STANDARD_RTTI_INLINE*. 
    The former case is used if current file is header and source file with the same name is found in the same folder. 
-   In this case, macro IMPLEMENT_STANDARD_RTTI is injected in the corresponding source file.
-   The latter variant defines all methods for RTTI as inline, and does not require IMPLEMENT_STANDARD_RTTIEXT macro. 
+   In this case, macro *IMPLEMENT_STANDARD_RTTI* is injected in the corresponding source file.
+   The latter variant defines all methods for RTTI as inline, and does not require *IMPLEMENT_STANDARD_RTTIEXT* macro. 
 
-2. Replaces forward declarations of collection classes previously generated from CDL generics (defined in TCollection package) by \#include of corresponding header:
+2. Replaces forward declarations of collection classes previously generated from CDL generics (defined in *TCollection* package) by inclusion of the corresponding header:
 ~~~~~
 class TColStd_Array1OfReal; -> #include <TColStd_Array1OfReal.hxx>
 ~~~~~
 
-3. Replaces underscored names of Handle classes by usage of a macro:
+3. Replaces underscored names of *Handle* classes by usage of a macro:
 ~~~~~
 Handle_Class -> Handle(Class)
 ~~~~~
-  This change is not applied if source or header file is recognized as containing definition of Qt class with signals or slots, to avoid possible compilation errors of MOC files caused by inability of MOC to recognize macros (see http://doc.qt.io/qt-4.8/signalsandslots.html).
-  The file is considered as defining Qt object if it contains strings "Q_OBJECT" and either "slots:" or "signals". 
+  This change is not applied if the source or header file is recognized as containing the definition of Qt class with signals or slots, to avoid possible compilation errors of MOC files caused by inability of MOC to recognize macros (see http://doc.qt.io/qt-4.8/signalsandslots.html).
+  The file is considered as defining a Qt object if it contains strings *Q_OBJECT* and either *slots:* or *signals:*. 
 
-4. Removes forward declarations of classes with names Handle(C) or Handle_C, replacing these either by forward declaration of its argument class, or (for files defining Qt objects) \#include statement for header with name of the argument class and extension .hxx:
+4. Removes forward declarations of classes with names <i>Handle(C)</i> or *Handle_C*, replacing them either by forward declaration of its argument class, or (for files defining Qt objects) <i>\#include</i> statement for a header with the name of the argument class and extension .hxx:
 ~~~~~
 class Handle(TColStd_HArray1OfReal); -> #include <TColStd_HArray1OfReal.hxx>
 ~~~~~
 
-5. Removes \#includes of files Handle_...hxx disappeared in OCCT 7.0:
+5. Removes <i> \#includes </i> of files <i>Handle_...hxx</i> that have disappeared in OCCT 7.0:
 ~~~~~
 #include <Handle_Geom_Curve.hxx> ->
 ~~~~~
 
-6. Removes typedef statements that use Handle macro to generate name:
+6. Removes *typedef* statements that use *Handle* macro to generate the name:
 ~~~~~
 typedef NCollection_Handle<Message_Msg> Handle(Message_Msg); ->
 ~~~~~
 
-7. Converts C-style casts applied to Handles to calls to DownCast() method:
+7. Converts C-style casts applied to Handles into calls to <i>DownCast()</i> method:
 ~~~~~
     ((Handle(A)&)b)     -> Handle(A)::DownCast(b)
     (Handle(A)&)b       -> Handle(A)::DownCast(b)
@@ -152,21 +154,21 @@ typedef NCollection_Handle<Message_Msg> Handle(Message_Msg); ->
     (*(Handle(A)*)&b)   -> Handle(A)::DownCast(b)
 ~~~~~
 
-8. Moves Handle() macro out of namespace scope:
+8. Moves <i>Handle()</i> macro out of namespace scope:
 ~~~~~
 Namespace::Handle(Class) -> Handle(Namespace::Class)
 ~~~~~
 
-9. Converts local variables of reference type initialized by temporary object returned by call to DownCast(), to non-references (to avoid using reference to destroyed memory):
+9. Converts local variables of reference type, which are initialized by a temporary object returned by call to <i>DownCast()</i>, to the variables of non-reference type (to avoid using references to destroyed memory):
 ~~~~~
     const Handle(A)& a = Handle(B)::DownCast (b); -> Handle(A) a (Handle(B)::DownCast (b));
 ~~~~~
 
-10. Adds \#include for all classes used as argument to macro STANDARD_TYPE(), except of already included ones;
+10. Adds  <i>\#include</i> for all classes used as argument to macro <i>STANDARD_TYPE()</i>, except for already included ones;
 
-11. Removes uses of obsolete macros IMPLEMENT_DOWNCAST and IMPLEMENT_STANDARD_*, except IMPLEMENT_STANDARD_RTTIEXT.
+11. Removes uses of obsolete macros *IMPLEMENT_DOWNCAST* and *IMPLEMENT_STANDARD_*..., except *IMPLEMENT_STANDARD_RTTIEXT*.
 
-    @note If you plan to keep compatibility of your code with older versions of OCCT, add option "-compat" to avoid the latter change. See also @ref upgrade_occt700_cdl_compat.
+    @note If you plan to keep compatibility of your code with older versions of OCCT, add option <i>-compat</i> to avoid this change. See also @ref upgrade_occt700_cdl_compat.
 
 .
 
@@ -177,20 +179,20 @@ In some cases the warnings or errors like the following may appear:
   Error in {HEADER_FILE}: Macro DEFINE_STANDARD_RTTI used for class {CLASS_NAME} whose declaration is not found in this file, cannot fix
 ~~~~~
 
-Be sure to check carefully all reported errors and warnings, as corresponding places likely will require manual corrections.
-In some cases these messages may help you to detect errors in your code, for instance, cases where DEFINE_STANDARD_RTTI macro is used with incorrect class name as an argument.
+Be sure to check carefully all reported errors and warnings, as the corresponding code will likely require manual corrections.
+In some cases these messages may help you to detect errors in your code, for instance, cases where *DEFINE_STANDARD_RTTI* macro is used with incorrect class name as an argument.
 
 @subsubsection upgrade_occt700_cdl_compiler Possible compiler errors
 
-Some situations requiring upgrade cannot be detected and / or handled by automatic procedure.
-If you get compiler errors or warnings when trying to build upgraded code, you will need to fix them manually. 
+Some situations requiring upgrade cannot be detected and / or handled by the automatic procedure.
+If you get compiler errors or warnings when trying to build the upgraded code, you will need to fix them manually. 
 The following paragraphs list known situations of this kind.
 
 #### Missing header files
 
-Use of handle objects (construction, comparison using operators == or !=, use of function STANDRAD_TYPE() and method DownCast()) now requires the type of the object pointed by Handle to be completely known at compile time. Thus it may be necessary to include header of the corresponding class to make the code compilable.
+The use of handle objects (construction, comparison using operators == or !=, use of function <i>STANDRAD_TYPE()</i> and method <i>DownCast()</i>) now requires the type of the object pointed by Handle to be completely known at compile time. Thus it may be necessary to include header of the corresponding class to make the code compilable.
 
-For example, the following lines will fail to compile if Geom_Line.hxx is not included:
+For example, the following lines will fail to compile if *Geom_Line.hxx* is not included:
 
 ~~~~~
 Handle(Geom_Line) aLine = 0;
@@ -205,8 +207,8 @@ This will eliminate the need to include the header *A* in each source file where
 
 #### Ambiguity of calls to overloaded functions
 
-This issue appears in compilers that do not support default arguments in template functions (known cases are Visual C++ 10 and 11): compiler reports ambiguity error if handle is used in argument of call to function that has two or move overloaded versions, accepting handles to different types. 
-The problem is that operator const handle<T2>& is defined for any type T2, thus compiler cannot make a right choice.
+This issue appears in the compilers that do not support default arguments in template functions (known cases are Visual C++ 10 and 11): the compiler reports an ambiguity error if a handle is used in the argument of a call to the function that has two or move overloaded versions, accepting handles to different types. 
+The problem is that operator  <i> const handle<T2>& </i> is defined for any type *T2*, thus the compiler cannot make the right choice.
 
 Example:
 ~~~~~
@@ -217,14 +219,14 @@ Handle(Geom_TrimmedCurve) aCurve = new Geom_TrimmedCurve (...);
 func (aCurve); // ambiguity error in VC++ 10
 ~~~~~
 
-To resolve this ambiguity, change your code so that argument type corresponds exactly to the function signature. 
-In some cases this can be done by using relevant type for the corresponding variable, like in the example above:
+To resolve this ambiguity, change your code so that argument type should correspond exactly to the function signature. 
+In some cases this can be done by using the relevant type for the corresponding variable, like in the example above:
 
 ~~~~~
 Handle(Geom_Curve) aCurve = new Geom_TrimmedCurve (...);  
 ~~~~~
 
-Other variants are assigning the argument to local variable of correct type, using direct cast or constructor:
+Other variants consist in assigning the argument to a local variable of the correct type and using the direct cast or constructor:
 
 ~~~~~
 const Handle(Geom_Curve)& aGCurve (aTrimmedCurve);
@@ -233,12 +235,12 @@ func (static_cast(aCurve)); // OK - direct cast
 func (Handle(Geom_Curve)(aCurve)); // OK - temporary handle is constructed
 ~~~~~
 
-Another possibility is defining additional templated variant of the overloaded function causing ambiguity, and use SFINAE to resolve the ambiguity.
-For example of this technique, see definition of the template variant of the method IGESData_IGESWriter::Send().
+Another possibility consists in defining additional template variant of the overloaded function causing ambiguity, and using *SFINAE* to resolve the ambiguity.
+This technique can be illustrated by the definition of the template variant of method <i>IGESData_IGESWriter::Send()</i>.
 
 #### Lack of implicit cast to base type
 
-Due to the fact that now cast of handle to reference to handle to the base type is user-defined operation, conversions that require this cast combined with other user-defined cast will not be resolved automatically by compiler.
+As the cast of a handle to the reference to another handle to the base type has become a user-defined operation, the conversions that require this cast together with another user-defined cast will not be resolved automatically by the compiler.
 
 For example:
 
@@ -246,15 +248,15 @@ For example:
 Handle(Geom_Geometry) aC = GC_MakeLine (p, v); // compiler error
 ~~~~~
 
-The problem here is that class GCE2d_MakeSegment has user-defined conversion to const Handle(Geom_TrimmedCurve)&, which is not the same as type of the local variable aC.
+The problem is that the class *GCE2d_MakeSegment* has a user-defined conversion to <i>const Handle(Geom_TrimmedCurve)&,</i> which is not the same as the type of the local variable *aC*.
 
-To resolve this, use method Value():
+To resolve this, use method <i>Value()</i>:
 
 ~~~~~
 Handle(Geom_Geometry) aC = GC_MakeLine (p, v).Value(); // ok
 ~~~~~
 
-or use variable of appropriate type:
+or use variable of the appropriate type:
 
 ~~~~~
 Handle(Geom_TrimmedCurve) aC = GC_MakeLine (p, v); // ok
@@ -264,7 +266,7 @@ Handle(Geom_TrimmedCurve) aC = GC_MakeLine (p, v); // ok
 
 You might need to clean your code from incorrect use of macros *STANDARD_TYPE*() and *Handle*().
 
-1. Explicit definitions of static functions with names generated by macro STANDARD_TYPE(), which are artifacts of old implementation of RTTI, should be removed.
+1. Explicit definitions of static functions with names generated by macro *STANDARD_TYPE()*, which are artifacts of old implementation of RTTI, should be removed.
    
    Example:
 ~~~~~
@@ -275,7 +277,7 @@ const Handle(Standard_Type)& STANDARD_TYPE(math_GlobOptMin)
 }
 ~~~~~
 
-2. Incorrect location of closing parenthesis of Handle() macro that was not detectable in OCCT 6.x will cause compiler error and must be corrected.
+2. Incorrect location of closing parenthesis of *Handle()* macro that was not detectable in OCCT 6.x will cause a compiler error and must be corrected.
 
    Example (note misplaced closing parenthesis):
 ~~~~~
@@ -284,21 +286,21 @@ aBSpline = Handle( Geom2d_BSplineCurve::DownCast(BS->Copy()) );
 
 #### Use of class Standard_AncestorIterator
 
-Class Standard_AncestorIterator has been removed; use method Parent() of Standard_Type class to parse inheritance chain.
+Class *Standard_AncestorIterator* has been removed; use method *Parent()* of *Standard_Type* class to parse the inheritance chain.
 
 #### Absence of cast to Standard_Transient*
 
-Handles in OCCT 7.0 do not have operator of conversion to Standard_Transient*, which was present in earlier versions.
+Handles in OCCT 7.0 do not have the operator of conversion to <i>Standard_Transient*,</i> which was present in earlier versions.
 This is done to prevent possible unintended errors like this:
 
 ~~~~~
 Handle(Geom_Line) aLine = ...;
 Handle(Geom_Surface) aSurf = ...;
 ...
-if (aLine == aSurf) {...} // will cause compiler error in OCCT 7.0, but not OCCT 6.x
+if (aLine == aSurf) {...} // will cause a compiler error in OCCT 7.0, but not OCCT 6.x
 ~~~~~
 
-Places where this implicit cast has been used should be corrected manually.
+The places where this implicit cast has been used should be corrected manually.
 The typical situation is when Handle is passed to stream:
 
 ~~~~~
@@ -306,15 +308,15 @@ Handle(Geom_Line) aLine = ...;
 os << aLine; // in OCCT 6.9.0, resolves to operator << (void*) 
 ~~~~~
 
-Call method get() explicitly to output address of the Handle.
+Call method <i>get()</i> explicitly to output the address of the Handle.
 
 @subsubsection upgrade_occt700_cdl_runtime Possible runtime problems
 
-Known situations when problems are possible at run time after upgrade to OCCT 7.0 are listed here.
+Here is the list of known possible problems at run time after the upgrade to OCCT 7.0.
 
 #### References to temporary objects
 
-In previous versions, compiler was able to detect situation when local variable of reference type to Handle is initialized by temporary object, and ensured that lifetime of that object is longer than that of the variable. 
+In previous versions, the compiler was able to detect the situation when a local variable of a "reference to a Handle" type is initialized by temporary object, and ensured that lifetime of that object is longer than that of the variable. 
 Since OCCT 7.0, it will not work if types of the temporary object and variable are different (due to involvement of user-defined type cast), thus such temporary object will be destroyed immediately.
 
 Example:
@@ -328,13 +330,13 @@ aBC->Transform (T); // access violation in OCCT 7.0
 
 @subsubsection upgrade_occt700_cdl_compat Preserving compatibility with OCCT 6.x
 
-If you like to preserve compatibility of your application code with OCCT versions 6.x even after upgrade to 7.0, consider the following suggestions:
+If you like to preserve the compatibility of your application code with OCCT versions 6.x even after the upgrade to 7.0, consider the following suggestions:
 
-1. If your code used sequences of macros IMPLEMENT_STANDARD_... generated by WOK, replace them by single macro IMPLEMENT_STANDARD_RTTIEXT
+1. If your code used sequences of macros *IMPLEMENT_STANDARD_*... generated by WOK, replace them by single macro *IMPLEMENT_STANDARD_RTTIEXT*
 
-2. When running automatic upgrade tool, add option *-compat*.
+2. When running automatic upgrade tool, add option <i>-compat</i>.
 
-3. Define macros DEFINE_STANDARD_RTTIEXT and DEFINE_STANDARD_RTTI_INLINE when building with previous versions of OCCT, resolving to DEFINE_STANDARD_RTTI with single argument 
+3. Define macros *DEFINE_STANDARD_RTTIEXT* and *DEFINE_STANDARD_RTTI_INLINE* when building with previous versions of OCCT, resolving to *DEFINE_STANDARD_RTTI* with single argument 
 
    Example:
 ~~~~~   
@@ -346,30 +348,29 @@ If you like to preserve compatibility of your application code with OCCT version
 
 @subsubsection upgrade_occt700_cdl_wok Applications based on CDL and WOK
 
-If you have application essentially based on CDL, and need to upgrade it to OCCT 7.0, you will very likely need to convert your application code to non-CDL form.
-This is non-trivial effort; the required actions would depend strongly on the structure of the code and used features of CDL.
+If your application is essentially based on CDL, and you need to upgrade it to OCCT 7.0, you will very likely need to convert your application code to non-CDL form.
+This is a non-trivial effort; the required actions would depend strongly on the structure of the code and used CDL features.
 
-The upgrade script and sources of specialized version of WOK used for upgrading OCCT code can be found in WOK Git repository in branch [CR0_700_2](http://git.dev.opencascade.org/gitweb/?p=occt-wok.git;a=log;h=refs/heads/CR0_700_2).
+The upgrade script and sources of a specialized WOK version used for OCCT code upgrade can be found in WOK Git repository in branch [CR0_700_2](http://git.dev.opencascade.org/gitweb/?p=occt-wok.git;a=log;h=refs/heads/CR0_700_2).
 
 [Contact us](http://www.opencascade.com/contact/) if you need more help.
 
 @subsection upgrade_occt700_bspline Separation of BSpline cache
 
-Implementation of NURBS curves and surfaces has been revised: cache of polynomial coefficients, used to accelerate calculate values of B-spline, is separated from data objects (Geom2d_BSplineCurve, Geom_BSplineCurve, Geom_BSplineSurface), into dedicated classes (BSplCLib_Cache and BSplSLib_Cache). 
+Implementation of NURBS curves and surfaces has been revised: the cache of polynomial coefficients, which is used to accelerate calculate values of B-spline, has been separated from data objects *Geom2d_BSplineCurve, Geom_BSplineCurve* and *Geom_BSplineSurface* into the dedicated classes *BSplCLib_Cache* and *BSplSLib_Cache*. 
 
 The benefits of this change are:
-
 * Reduced memory footprint of OCCT shapes (up to 20% on some cases)
 * Possibility to evaluate the same B-Spline concurrently in parallel threads without data races and mutex locks 
 
-The drawback is that direct evaluation of B-Splines using methods of curves and surfaces becomes slower, due to absence of cache. The way to avoid slow down is to use adaptor classes (Geom2dAdaptor_Curve, GeomAdaptor_Curve and GeomAdaptor_Surface): they now use cache when the curve or surface is a B-spline.
+The drawback is that direct evaluation of B-Splines using methods of curves and surfaces becomes slower due to the absence of cache. The slow-down can be avoided by using adaptor classes *Geom2dAdaptor_Curve, GeomAdaptor_Curve* and *GeomAdaptor_Surface*, which now use cache when the curve or surface is a B-spline.
 
-OCCT algorithms are changed to use adaptors for B-spline calculations instead of direct methods of curves and surfaces.
-The same changes (use of adaptors instead of direct call to curve and surface methods) should be implemented in relevant places in applications based on OCCT in order to get maximum performance.
+OCCT algorithms have been changed to use adaptors for B-spline calculations instead of direct methods for  curves and surfaces.
+The same changes (use of adaptors instead of direct call to curve and surface methods) should be implemented in relevant places in the applications based on OCCT to get the maximum performance.
 
 @subsection upgrade_occt700_sorttools Removal of SortTools package
 
-Package SortTools has been removed. 
+Package *SortTools* has been removed. 
 The code that used the tools provided by that package should be corrected manually.
 The recommended approach is to use sorting algorithms provided by STL.
 
@@ -390,22 +391,22 @@ can be replaced by:
 ...
 TCollection_Array1OfReal aValues = ...;
 ...
-std::stable_sort (aValues->begin(), aValues->end());
+std::stable_sort (aValues.begin(), aValues.end());
 ~~~~~
 
 @subsection upgrade_occt700_2dlayers On-screen objects and ColorScale
 
-Old mechanism for rendering Underlay and Overlay on-screen 2D objects based on Visual3d_Layer and immediate drawing model (e.g. uncached and thus slow) have been removed.
-Classes Aspect_Clayer2d, OpenGl_GraphicDriver_Layer, Visual3d_Layer, Visual3d_LayerItem, V3d_LayerMgr, V3d_LayerMgrPointer have been deleted.
+The old mechanism for rendering Underlay and Overlay on-screen 2D objects based on *Visual3d_Layer* and immediate drawing model (uncached and thus slow) has been removed.
+Classes *Aspect_Clayer2d, OpenGl_GraphicDriver_Layer, Visual3d_Layer, Visual3d_LayerItem, V3d_LayerMgr* and *V3d_LayerMgrPointer* have been deleted.
 
-General AIS interactive objects with transformation persistence flag Graphic3d_TMF_2d can be used as replacement of Visual3d_LayerItem.
-Anchor point specified for transformation persistence defines a corner of window (or center in case of (0, 0) point).
-To keep on-screen 2D objects on the top of main screen, them could be assigned to appropriate Z-layer.
-Predefined Z-layers Graphic3d_ZLayerId_TopOSD and Graphic3d_ZLayerId_BotOSD are intended to replace Underlay and Overlay layers within old API.
+General AIS interactive objects with transformation persistence flag *Graphic3d_TMF_2d* can be used as a replacement of *Visual3d_LayerItem*.
+The anchor point specified for transformation persistence defines the window corner of  (or center in case of (0, 0) point).
+To keep on-screen 2D objects on top of the main screen, they can be assigned to the appropriate Z-layer.
+Predefined Z-layers *Graphic3d_ZLayerId_TopOSD* and *Graphic3d_ZLayerId_BotOSD* are intended to replace Underlay and Overlay layers within the old API.
 
-ColorScale object previously implemented using Visual3d_LayerItem has been moved to a new class AIS_ColorScale, with width and height specified explicitly.
-The property of V3d_View storing global ColorScale object has been removed with associated methods V3d_View::ColorScaleDisplay(), V3d_View::ColorScaleErase(), V3d_View::ColorScaleIsDisplayed(), V3d_View::ColorScale() and classes V3d_ColorScale, V3d_ColorScaleLayerItem, Aspect_ColorScale.
-Here is an example of creating ColorScale using updated API:
+*ColorScale* object previously implemented using *Visual3d_LayerItem* has been moved to a new class *AIS_ColorScale*, with width and height specified explicitly.
+The property of *V3d_View* storing the global *ColorScale* object has been removed with associated methods *V3d_View::ColorScaleDisplay(), V3d_View::ColorScaleErase(), V3d_View::ColorScaleIsDisplayed()* and *V3d_View::ColorScale()* as well as the classes *V3d_ColorScale, V3d_ColorScaleLayerItem* and *Aspect_ColorScale*.
+Here is an example of creating *ColorScale* using the updated API:
 
 ~~~~~
 Handle(AIS_ColorScale) aCS = new AIS_ColorScale();
@@ -422,9 +423,9 @@ aCS->SetToUpdate();
 theContextAIS->Display (aCS);
 ~~~~~
 
-To see how 2d objects are realized in OCCT you can call draw commands vcolorscale, vlayerline or vdrawtext (with -2d option).
-Draw command vcolorscale now requires a name of ColorScale object as an argument.
-To display this object use command vdisplay. Example:
+To see how 2d objects are implemented in OCCT you can call Draw commands *vcolorscale, vlayerline* or *vdrawtext* (with <i>-2d</i> option).
+Draw command *vcolorscale* now requires the name of *ColorScale* object as argument.
+To display this object use command *vdisplay*. For example:
 
 ~~~~~
 pload VISUALIZATION
@@ -439,7 +440,7 @@ vlayerline 0 300 300 300 10
 vdrawtext t "2D-TEXT" -2d -pos 0 150 0 -color red
 ~~~~~
 
-Here is a small example in c++ how to display a custom AIS object in 2d:
+Here is a small example in C++ illustrating how to display a custom AIS object in 2d:
 ~~~~~
 Handle(AIS_InteractiveContext) aContext = ...;
 Handle(AIS_InteractiveObject) anObj =...; // create an AIS object
@@ -452,39 +453,37 @@ aContext->Display (anObj); // display the object
 
 #### Visual3d package
 
-Package Visual3d implementing intermediate layer between high-level V3d classes
+Package *Visual3d* implementing the intermediate layer between high-level *V3d* classes
 and low-level OpenGl classes for views and graphic structures management has been dropped.
 
-The OpenGl_View inherits from the new class Graphic3d_CView.
-Graphic3d_CView is an interface class that declares abstract methods for managing displayed structures,
+The *OpenGl_View* inherits from the new class *Graphic3d_CView*.
+*Graphic3d_CView* is an interface class that declares abstract methods for managing displayed structures,
 display properties and a base layer code that implements computation
 and management of HLR (or more broadly speaking view-depended) structures.
 
-In new implementation it takes place of eliminated Visual3d_View.
-As before the instance of Graphic3d_CView is still completely managed by V3d_View classes.
-It can be accessed through V3d_View interface but normally this should not be required as all its methods are completely wrapped.
+In the new implementation it takes place of the eliminated *Visual3d_View*.
+As before the instance of *Graphic3d_CView* is still completely managed by *V3d_View* classes.
+It can be accessed through *V3d_View* interface but normally it should not be required as all its methods are completely wrapped.
 
-In more details, a concrete specialization of Graphic3d_CView is created and returned by graphical driver on request.
-Right after creation the views is directly used for setting rendering properties and adding graphical structures to be displayed.
+In more details, a concrete specialization of *Graphic3d_CView* is created and returned by the graphical driver on request.
+Right after the creation the views are directly used for setting rendering properties and adding graphical structures to be displayed.
 
 The rendering of graphics is possible after mapping a window and activating the view.
-The direct setting of properties makes obsolete usage of intermediate structures with display parameter
-like Visual3d_ContextView and etc (the whole package of Visual3d become redundant).
+The direct setting of properties obsoletes the use of intermediate structures with display parameter
+like *Visual3d_ContextView*, etc. This means that the whole package *Visual3d* becomes redundant.
 
-New location of functionality previously provided by Visual3d package:
-- Logic of managing display of structures was put from Visual3d_ViewManager into Graphic3d_StructureManager.
-- Removed Visual3d_View class. Logic of managing computed structures was put into base layer of Graphi3d_CView.
-- Removed all intermediate structures for storing view parameters e.g. Visual3d_ContextView.
-  All settings are kept by instances of Graphic3d_CView
-- Removed Visual3d_Light intermediate class.
-  All light properties are still stored in Graphic3d_CLight structure.
-  The structure is directly access by instance of V3d_Light classes.
-- Moved all needed enumerations into Graphic3d package.
+The functionality previously provided by *Visual3d* package has been redesigned in the following way :
+- The management of display of structures has been moved from *Visual3d_ViewManager* into *Graphic3d_StructureManager*.
+- The class *Visual3d_View* has been removed. The management of computed structures has been moved into the base layer of *Graphi3d_CView*.
+- All intermediate structures for storing view parameters, e.g. *Visual3d_ContextView*, have been removed.
+  The settings are now kept by instances of *Graphic3d_CView*.
+- The intermediate class *Visual3d_Light* has been removed. All light properties are stored in *Graphic3d_CLight* structure, which is directly accessed by instances of *V3d_Light* classes.
+- All necessary enumerations have been moved into *Graphic3d* package.
 
 #### Custom OpenGL rendering and UserDraw
 
-Old APIs based on global callback functions for creating UserDraw objects and for performing custom OpenGL rendering within the view have been dropped.
-UserDraw callbacks no more required since OpenGl_Group now inherits Graphic3d_Group and thus can be accessed directly from AIS_InteractiveObject:
+Old APIs based on global callback functions for creating *UserDraw* objects and for performing custom OpenGL rendering within the view have been dropped.
+*UserDraw* callbacks are no more required since *OpenGl_Group* now inherits *Graphic3d_Group* and thus can be accessed directly from *AIS_InteractiveObject*:
 
 ~~~~~
 //! Class implementing custom OpenGL element.
@@ -510,7 +509,7 @@ void UserDrawObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrs
 }
 ~~~~~
 
-For performing custom OpenGL code within view, user should inherit from class OpenGl_View.
+To perform a custom OpenGL code within the view, it is necessary to inherit from class *OpenGl_View*.
 See the following code sample:
 
 ~~~~~
@@ -564,8 +563,8 @@ public:
 
 @subsection upgrade_occt700_localcontext Deprecation of Local Context
 
-Conception of Local Context has been deprecated.
-Related classes (AIS_LocalContext) and methods (AIS_InteractiveContext::OpenLocalContext() and others) will be removed within some future OCCT release.
+The conception of Local Context has been deprecated.
+The related classes, e.g. *AIS_LocalContext*, and methods ( <i>AIS_InteractiveContext::OpenLocalContext()</i> and others) will be removed in a future OCCT release.
 
 The main functionality provided by Local Context - selection of object subparts - can be now used within Neutral Point without opening any Local Context.
 
