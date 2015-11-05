@@ -51,11 +51,11 @@ class TestTopOpeDraw_Displayer {
   void Discret(const Standard_Integer n) { mySdiscret = n; }
   void DiscretDef(const Standard_Boolean b) { mySdiscretdef = b; }
   void SetTol(const Standard_Real Tol) { myTol = Tol;}
-  void GetTol(Standard_Real Tol) { Tol = myTol;}
+  void GetTol(Standard_Real& Tol) { Tol = myTol;}
   Standard_Boolean TolIs(void) {return myTolIs;}
   void TolIs(Standard_Boolean TolIs) { myTolIs = TolIs;}
   void SetPar(const Standard_Real Par) { myPar = Par; myParIs = Standard_True;}
-  void GetPar(Standard_Real Par) { Par = myPar;}
+  void GetPar(Standard_Real& Par) { Par = myPar;}
   Standard_Boolean ParIs(void) {return myParIs;}
   void SetColor(const Draw_Color Col) { myCol = Col; myColIs = Standard_True;}
   void SetNameColor(const Draw_Color Col) { myNameColor = Col; myNameColorIs = Standard_True;}
