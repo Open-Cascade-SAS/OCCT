@@ -6,5 +6,3 @@ CSLib_DerivativeStatus.hxx
 CSLib_NormalPolyDef.cxx
 CSLib_NormalPolyDef.hxx
 CSLib_NormalStatus.hxx
-CSLib_Offset.cxx
-CSLib_Offset.hxx

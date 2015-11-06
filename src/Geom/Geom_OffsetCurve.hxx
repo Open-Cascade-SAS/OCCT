@@ -26,6 +26,8 @@
 #include <Geom_Curve.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
+#include <GeomEvaluator_OffsetCurve.hxx>
+
 class Geom_Curve;
 class Standard_ConstructionError;
 class Standard_RangeError;
@@ -209,35 +211,16 @@ public:
   //! direction.
   //! Raised if N < 1.
   Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
-  
-  //! Warning! this should not be called
-  //! if the basis curve is not at least C1. Nevertheless
-  //! if used on portion where the curve is C1, it is OK
-  Standard_EXPORT void Value (const Standard_Real U, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& V1basis) const;
-  
-  //! Warning! this should not be called
-  //! if the continuity of the basis curve is not C1.
-  //! Nevertheless, it's OK to use it  on portion
-  //! where the curve is C1
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& V1basis) const;
-  
-  //! Warning! this should not be called
-  //! if the continuity of the basis curve is not C1.
-  //! Nevertheless, it's OK to use it  on portion
-  //! where the curve is C1
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& V1, gp_Vec& V1basis, gp_Vec& V2basis) const;
-  
-  //! Warning!  this should not be called
-  //! if the continuity of the basis curve is not C3.
-  //! Nevertheless, it's OK to use it  on portion
-  //! where the curve is C3
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& V1, gp_Vec& V2, gp_Vec& V1basis, gp_Vec& V2basis, gp_Vec& V3basis) const;
-  
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
-  
-  //! Returns the value of the first or last parameter of this
+
+  //! Returns the value of the first parameter of this
   //! offset curve. The first parameter corresponds to the
-  //! start point of the curve. The last parameter
+  //! start point of the curve.
+  //! Note: the first and last parameters of this offset curve
+  //! are also the ones of its basis curve.
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+
+  //! Returns the value of the last parameter of this
+  //! offset curve. The last parameter
   //! corresponds to the end point.
   //! Note: the first and last parameters of this offset curve
   //! are also the ones of its basis curve.
@@ -315,7 +298,7 @@ private:
   gp_Dir direction;
   Standard_Real offsetValue;
   GeomAbs_Shape myBasisCurveContinuity;
-
+  Handle(GeomEvaluator_OffsetCurve) myEvaluator;
 
 };
 

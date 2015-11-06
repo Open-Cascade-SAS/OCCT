@@ -1,3 +1,6 @@
+GeomEvaluator_Curve.hxx
+GeomEvaluator_OffsetCurve.cxx
+GeomEvaluator_OffsetCurve.hxx
 GeomEvaluator_OffsetSurface.cxx
 GeomEvaluator_OffsetSurface.hxx
 GeomEvaluator_Surface.hxx

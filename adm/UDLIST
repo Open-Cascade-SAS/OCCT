@@ -431,3 +431,4 @@ n IVtkTools
 t TKIVtk
 n IVtkDraw
 t TKIVtkDraw
+n Geom2dEvaluator

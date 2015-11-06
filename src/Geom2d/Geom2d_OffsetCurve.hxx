@@ -25,6 +25,8 @@
 #include <Geom2d_Curve.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
+#include <Geom2dEvaluator_OffsetCurve.hxx>
+
 class Geom2d_Curve;
 class Standard_ConstructionError;
 class Standard_RangeError;
@@ -204,28 +206,15 @@ public:
   //! raised if it is not possible to compute a unique offset direction.
   Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
-  //! Warning! this should not be called
-  //! if the basis curve is not at least C1. Nevertheless
-  //! if used on portion where the curve is C1, it is OK
-  Standard_EXPORT void Value (const Standard_Real U, gp_Pnt2d& P, gp_Pnt2d& Pbasis, gp_Vec2d& V1basis) const;
-  
-  //! Warning! this should not be called
-  //! if the continuity of the basis curve is not C1.
-  //! Nevertheless, it's OK to use it  on portion
-  //! where the curve is C1
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Pnt2d& Pbasis, gp_Vec2d& V1, gp_Vec2d& V1basis, gp_Vec2d& V2basis) const;
-  
-  //! Warning! this should not be called
-  //! if the continuity of the basis curve is not C3.
-  //! Nevertheless, it's OK to use it  on portion
-  //! where the curve is C3
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Pnt2d& Pbasis, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V1basis, gp_Vec2d& V2basis, gp_Vec2d& V3basis) const;
-  
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
-  
-  //! Returns the value of the first or last parameter of this
+  //! Returns the value of the first parameter of this
   //! offset curve. The first parameter corresponds to the
-  //! start point of the curve. The last parameter
+  //! start point of the curve.
+  //! Note: the first and last parameters of this offset curve
+  //! are also the ones of its basis curve.
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+
+  //! Returns the value of the last parameter of this
+  //! offset curve. The last parameter
   //! corresponds to the end point.
   //! Note: the first and last parameters of this offset curve
   //! are also the ones of its basis curve.
@@ -312,7 +301,7 @@ private:
   Handle(Geom2d_Curve) basisCurve;
   Standard_Real offsetValue;
   GeomAbs_Shape myBasisCurveContinuity;
-
+  Handle(Geom2dEvaluator_OffsetCurve) myEvaluator;
 
 };
 

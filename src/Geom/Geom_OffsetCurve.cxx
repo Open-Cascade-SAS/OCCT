@@ -18,7 +18,6 @@
 //             avec discernement !
 // 19-09-97  : JPI correction derivee seconde
 
-#include <CSLib_Offset.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
@@ -44,28 +43,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
-typedef Geom_OffsetCurve         OffsetCurve;
-typedef Geom_Curve               Curve;
-typedef gp_Dir  Dir;
-typedef gp_Pnt  Pnt;
-typedef gp_Trsf Trsf;
-typedef gp_Vec  Vec;
-typedef gp_XYZ  XYZ;
 
-//ordre de derivation maximum pour la recherche de la premiere 
-//derivee non nulle
-static const int maxDerivOrder = 3;
-static const Standard_Real MinStep   = 1e-7;
 static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
-
-
-static gp_Vec dummyDerivative; // used as empty value for unused derivatives in AdjustDerivative
-// Recalculate derivatives in the singular point
-// Returns true if the direction of derivatives is changed
-static Standard_Boolean AdjustDerivative(
-    const Handle(Geom_Curve)& theCurve, Standard_Integer theMaxDerivative, Standard_Real theU, gp_Vec& theD1,
-    gp_Vec& theD2 = dummyDerivative, gp_Vec& theD3 = dummyDerivative, gp_Vec& theD4 = dummyDerivative);
-
 
 
 //=======================================================================
@@ -76,7 +55,7 @@ static Standard_Boolean AdjustDerivative(
 Handle(Geom_Geometry) Geom_OffsetCurve::Copy () const {
 
  Handle(Geom_OffsetCurve) C;
- C = new OffsetCurve (basisCurve, offsetValue, direction);
+ C = new Geom_OffsetCurve (basisCurve, offsetValue, direction);
  return C;
 }
 
@@ -107,6 +86,7 @@ void Geom_OffsetCurve::Reverse ()
 { 
   basisCurve->Reverse();
   offsetValue = -offsetValue;
+  myEvaluator->SetOffsetValue(offsetValue);
 }
 
 
@@ -133,8 +113,11 @@ const gp_Dir& Geom_OffsetCurve::Direction () const
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::SetDirection (const Dir& V)     
-  { direction = V; }
+void Geom_OffsetCurve::SetDirection (const gp_Dir& V)     
+{
+  direction = V;
+  myEvaluator->SetOffsetDirection(direction);
+}
 
 //=======================================================================
 //function : SetOffsetValue
@@ -142,7 +125,10 @@ void Geom_OffsetCurve::SetDirection (const Dir& V)
 //=======================================================================
 
 void Geom_OffsetCurve::SetOffsetValue (const Standard_Real D)   
-  { offsetValue = D; }
+{
+  offsetValue = D;
+  myEvaluator->SetOffsetValue(offsetValue);
+}
 
 
 //=======================================================================
@@ -242,6 +228,8 @@ void Geom_OffsetCurve::SetBasisCurve (const Handle(Geom_Curve)& C,
   {
     basisCurve = aCheckingCurve;
   }
+
+  myEvaluator = new GeomEvaluator_OffsetCurve(basisCurve, offsetValue, direction);
 }
 
 
@@ -283,70 +271,40 @@ GeomAbs_Shape Geom_OffsetCurve::Continuity () const {
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::D0 (const Standard_Real U, Pnt& P) const 
+void Geom_OffsetCurve::D0 (const Standard_Real U, gp_Pnt& P) const 
 {
-  gp_Pnt PBasis;
-  gp_Vec VBasis;
-  D0(U,P,PBasis,VBasis);
+  myEvaluator->D0(U, P);
 }
-
 
 //=======================================================================
 //function : D1
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::D1 (const Standard_Real U, Pnt& P, Vec& V1) const 
+void Geom_OffsetCurve::D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const 
 {
-  gp_Pnt PBasis;
-  gp_Vec V1Basis,V2Basis;
-  D1(U,P,PBasis,V1,V1Basis,V2Basis);
+  myEvaluator->D1(U, P, V1);
 }
-
-
 
 //=======================================================================
 //function : D2
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::D2 (const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const 
+void Geom_OffsetCurve::D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const 
 {
-  gp_Pnt PBasis;
-  gp_Vec V1Basis,V2Basis,V3Basis;
-  D2(U,P,PBasis,V1,V2,V1Basis,V2Basis,V3Basis);
+  myEvaluator->D2(U, P, V1, V2);
 }
-
 
 //=======================================================================
 //function : D3
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::D3 (const Standard_Real theU, Pnt& theP, Vec& theV1, Vec& theV2, Vec& theV3) const
+void Geom_OffsetCurve::D3 (const Standard_Real theU, gp_Pnt& theP,
+                           gp_Vec& theV1, gp_Vec& theV2, gp_Vec& theV3) const
 {
-   // P(u) = p(u) + Offset * Ndir / R
-   // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
-
-   // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
-
-   // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
-   //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
-
-   //P"'(u) = p"'(u) + (Offset / R) * (D3Ndir - (3.0 * Dr/R**2) * D2Ndir -
-   //         (3.0 * D2r / R2) * DNdir + (3.0 * Dr * Dr / R4) * DNdir -
-   //         (D3r/R2) * Ndir + (6.0 * Dr * Dr / R4) * Ndir +
-   //         (6.0 * Dr * D2r / R4) * Ndir - (15.0 * Dr* Dr* Dr /R6) * Ndir
-
-  Standard_Boolean IsDirectionChange = Standard_False;
-
-  basisCurve->D3 (theU, theP, theV1, theV2, theV3);
-  Vec aV4 = basisCurve->DN (theU, 4);
-  if(theV1.SquareMagnitude() <= gp::Resolution())
-    IsDirectionChange = AdjustDerivative(basisCurve, 4, theU, theV1, theV2, theV3, aV4);
-
-  CSLib_Offset::D3(theP, theV1, theV2, theV3, aV4, direction, offsetValue,
-                   IsDirectionChange, theP, theV1, theV2, theV3);
+  myEvaluator->D3(theU, theP, theV1, theV2, theV3);
 }
 
 
@@ -355,8 +313,8 @@ void Geom_OffsetCurve::D3 (const Standard_Real theU, Pnt& theP, Vec& theV1, Vec&
 //purpose  : 
 //=======================================================================
 
-Vec Geom_OffsetCurve::DN (const Standard_Real U, const Standard_Integer N) const 
-  {
+gp_Vec Geom_OffsetCurve::DN (const Standard_Real U, const Standard_Integer N) const 
+{
   Standard_RangeError_Raise_if (N < 1, "Exception: "
                               "Geom_OffsetCurve::DN(...). N<1.");
 
@@ -381,83 +339,14 @@ Vec Geom_OffsetCurve::DN (const Standard_Real U, const Standard_Integer N) const
   return VN;
 }
 
-//=======================================================================
-//function : D0
-//purpose  : 
-//=======================================================================
-
-void  Geom_OffsetCurve::D0(const Standard_Real theU, gp_Pnt& theP,
-                           gp_Pnt& thePbasis, gp_Vec& theV1basis)const 
-{
-  basisCurve->D1(theU, thePbasis, theV1basis);
-  Standard_Boolean IsDirectionChange = Standard_False;
-  if(theV1basis.SquareMagnitude() <= gp::Resolution())
-    IsDirectionChange = AdjustDerivative(basisCurve, 1, theU, theV1basis);
-
-  CSLib_Offset::D0(thePbasis, theV1basis, direction, offsetValue, IsDirectionChange, theP);
-}
-
-//=======================================================================
-//function : D1
-//purpose  : 
-//=======================================================================
-
-void Geom_OffsetCurve::D1 ( const Standard_Real theU, 
-                            Pnt& theP , Pnt& thePBasis ,
-                            Vec& theV1, Vec& theV1basis, Vec& theV2basis) const {
-
-   // P(u) = p(u) + Offset * Ndir / R
-   // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
-
-   // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
-
-  basisCurve->D2 (theU, thePBasis, theV1basis, theV2basis);
-
-  Standard_Boolean IsDirectionChange = Standard_False;
-  if(theV1basis.SquareMagnitude() <= gp::Resolution())
-    IsDirectionChange = AdjustDerivative(basisCurve, 2, theU, theV1basis, theV2basis);
-
-  CSLib_Offset::D1(thePBasis, theV1basis, theV2basis, direction, offsetValue, IsDirectionChange, theP, theV1);
-}
-
-
-//=======================================================================
-//function : D2
-//purpose  : 
-//=======================================================================
-
-void Geom_OffsetCurve::D2 (const Standard_Real theU,
-                           Pnt& theP, Pnt& thePBasis,
-                           Vec& theV1, Vec& theV2,
-                           Vec& theV1basis, Vec& theV2basis, Vec& theV3basis) const
-{
-   // P(u) = p(u) + Offset * Ndir / R
-   // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
-
-   // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
-
-   // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
-   //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
-
-  Standard_Boolean IsDirectionChange = Standard_False;
-
-  basisCurve->D3 (theU, thePBasis, theV1basis, theV2basis, theV3basis);
-
-  if(theV1basis.SquareMagnitude() <= gp::Resolution())
-    IsDirectionChange = AdjustDerivative(basisCurve, 3, theU, theV1basis, theV2basis, theV3basis);
-
-  CSLib_Offset::D2(thePBasis, theV1basis, theV2basis, theV3basis, direction, offsetValue,
-                   IsDirectionChange, theP, theV1, theV2);
-}
-
 
 //=======================================================================
 //function : FirstParameter
 //purpose  : 
 //=======================================================================
 
-Standard_Real Geom_OffsetCurve::FirstParameter () const {
-
+Standard_Real Geom_OffsetCurve::FirstParameter () const
+{
    return basisCurve->FirstParameter();
 }
 
@@ -467,8 +356,8 @@ Standard_Real Geom_OffsetCurve::FirstParameter () const {
 //purpose  : 
 //=======================================================================
 
-Standard_Real Geom_OffsetCurve::LastParameter () const {
-
+Standard_Real Geom_OffsetCurve::LastParameter () const
+{
    return basisCurve->LastParameter();
 }
 
@@ -478,22 +367,8 @@ Standard_Real Geom_OffsetCurve::LastParameter () const {
 //purpose  : 
 //=======================================================================
 
-Standard_Real Geom_OffsetCurve::Offset () const { return offsetValue; }
-
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-void Geom_OffsetCurve::Value (const Standard_Real theU, Pnt& theP, 
-                              Pnt& thePbasis,  Vec& theV1basis) const 
-{
-  if (myBasisCurveContinuity == GeomAbs_C0)
-    Geom_UndefinedValue::Raise("Exception: Basis curve is C0 continuity!");
-
-  basisCurve->D1(theU, thePbasis, theV1basis);
-  D0(theU,theP);
-}
+Standard_Real Geom_OffsetCurve::Offset () const
+{ return offsetValue; }
 
 
 //=======================================================================
@@ -528,11 +403,14 @@ Standard_Boolean Geom_OffsetCurve::IsCN (const Standard_Integer N) const {
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::Transform (const Trsf& T) {
-
+void Geom_OffsetCurve::Transform (const gp_Trsf& T)
+{
   basisCurve->Transform (T);
   direction.Transform(T);
   offsetValue *= T.ScaleFactor();
+
+  myEvaluator->SetOffsetValue(offsetValue);
+  myEvaluator->SetOffsetDirection(direction);
 }
 
 //=======================================================================
@@ -564,58 +442,4 @@ const
 GeomAbs_Shape Geom_OffsetCurve::GetBasisCurveContinuity() const
 {
   return myBasisCurveContinuity;
-}
-
-
-// ============= Auxiliary functions ===================
-Standard_Boolean AdjustDerivative(const Handle(Geom_Curve)& theCurve, Standard_Integer theMaxDerivative,
-                                  Standard_Real theU, gp_Vec& theD1, gp_Vec& theD2,
-                                  gp_Vec& theD3, gp_Vec& theD4)
-{
-  static const Standard_Real aTol = gp::Resolution();
-
-  Standard_Boolean IsDirectionChange = Standard_False;
-  const Standard_Real anUinfium   = theCurve->FirstParameter();
-  const Standard_Real anUsupremum = theCurve->LastParameter();
-
-  const Standard_Real DivisionFactor = 1.e-3;
-  Standard_Real du;
-  if((anUsupremum >= RealLast()) || (anUinfium <= RealFirst())) 
-    du = 0.0;
-  else
-    du = anUsupremum - anUinfium;
-
-  const Standard_Real aDelta = Max(du * DivisionFactor, MinStep);
-
-  //Derivative is approximated by Taylor-series
-  Standard_Integer anIndex = 1; //Derivative order
-  gp_Vec V;
-
-  do
-  {
-    V =  theCurve->DN(theU, ++anIndex);
-  }
-  while((V.SquareMagnitude() <= aTol) && anIndex < maxDerivOrder);
-
-  Standard_Real u;
-
-  if(theU-anUinfium < aDelta)
-    u = theU+aDelta;
-  else
-    u = theU-aDelta;
-
-  gp_Pnt P1, P2;
-  theCurve->D0(Min(theU, u), P1);
-  theCurve->D0(Max(theU, u), P2);
-
-  gp_Vec V1(P1, P2);
-  IsDirectionChange = V.Dot(V1) < 0.0;
-  Standard_Real aSign = IsDirectionChange ? -1.0 : 1.0;
-
-  theD1 = V * aSign;
-  gp_Vec* aDeriv[3] = {&theD2, &theD3, &theD4};
-  for (Standard_Integer i = 1; i < theMaxDerivative; i++)
-    *(aDeriv[i-1]) = theCurve->DN(theU, anIndex + i) * aSign;
-
-  return IsDirectionChange;
 }

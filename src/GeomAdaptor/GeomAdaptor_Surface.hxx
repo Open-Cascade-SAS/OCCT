@@ -266,7 +266,7 @@ private:
   Standard_Real myVLast;
   Standard_Real myTolU;
   Standard_Real myTolV;
-  Handle(BSplSLib_Cache) mySurfaceCache; ///< Cached data for B-spline surface
+  Handle(BSplSLib_Cache) mySurfaceCache; ///< Cached data for B-spline or Bezier surface
 
 protected:
   GeomAbs_SurfaceType mySurfaceType;
