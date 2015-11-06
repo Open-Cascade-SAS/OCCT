@@ -54,11 +54,6 @@ namespace
   static const OpenGl_AspectFace myDefaultAspectFace;
   static const OpenGl_AspectMarker myDefaultAspectMarker;
 
-  static const OpenGl_TextParam myDefaultTextParam =
-  {
-    16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
-  };
-
   static const OpenGl_Matrix myDefaultMatrix =
   {
     {{ 1.0F, 0.0F, 0.0F, 0.0F },

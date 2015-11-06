@@ -51,8 +51,7 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
                                                                   const Standard_Boolean theIsInterior)
 : Select3D_SensitiveSet (theOwnerId),
   myTriangul (theTrg),
-  myInitLocation (theInitLoc),
-  myDetectedTr (-1)
+  myInitLocation (theInitLoc)
 {
   myInvInitLocation = myInitLocation.Transformation().Inverted();
   mySensType = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
@@ -144,8 +143,7 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
   myTriangul (theTrg),
   myInitLocation (theInitLoc),
   myCDG3D (theCOG),
-  myFreeEdges (theFreeEdges),
-  myDetectedTr (-1)
+  myFreeEdges (theFreeEdges)
 {
   myInvInitLocation = myInitLocation.Transformation().Inverted();
   mySensType = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;

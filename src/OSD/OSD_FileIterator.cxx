@@ -50,13 +50,21 @@ extern char *vmsify PARAMS ((char *name, int type));
 //const OSD_WhoAmI Iam = OSD_WFileIterator;
 
 
-OSD_FileIterator::OSD_FileIterator() {
- myDescr = NULL ;
+OSD_FileIterator::OSD_FileIterator()
+: myFlag(0),
+  myDescr(0),
+  myEntry(0),
+  myInit(0)
+{
 }
 
 OSD_FileIterator::OSD_FileIterator(const OSD_Path& where,
-                                   const TCollection_AsciiString& Mask){
- myDescr = NULL ;
+                                   const TCollection_AsciiString& Mask)
+: myFlag(0),
+  myDescr(0),
+  myEntry(0),
+  myInit(0)
+{
  Initialize(where, Mask) ;
 }
 

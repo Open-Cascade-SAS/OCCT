@@ -411,13 +411,13 @@ static unsigned int __stdcall CpuFunc (void * /*param*/)
     aCurrent = clock_t(anUserSeconds + aSystemSeconds);
     anElapCurrent = clock_t(aTimer.ElapsedTime());
     
-    if ((aCurrent - CPU_CURRENT) >= CPU_LIMIT)
+    if (CPU_LIMIT > 0 && (aCurrent - CPU_CURRENT) >= CPU_LIMIT)
     {
       cout << "Process killed by CPU limit (" << CPU_LIMIT << " sec)" << endl;
       aTimer.Stop();
       ExitProcess (2);
     }
-    if ((anElapCurrent) >= CPU_LIMIT)
+    if (CPU_LIMIT > 0 && anElapCurrent >= CPU_LIMIT)
     {
       cout << "Process killed by elapsed limit (" << CPU_LIMIT << " sec)" << endl;
       aTimer.Stop();
@@ -438,9 +438,7 @@ static void *CpuFunc(void* /*threadarg*/)
   {
     sleep (5);
     anElapCurrent = clock_t(aTimer.ElapsedTime());
-    if ( CPU_LIMIT < 0 )
-      return NULL;
-    if ((anElapCurrent) >= CPU_LIMIT) {
+    if (CPU_LIMIT >0 && (anElapCurrent) >= CPU_LIMIT) {
       cout << "Process killed by elapsed limit  (" << CPU_LIMIT << " sec)" << endl;
       exit(2);
     }

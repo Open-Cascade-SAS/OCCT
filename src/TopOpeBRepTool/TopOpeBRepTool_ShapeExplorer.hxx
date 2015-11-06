@@ -17,28 +17,20 @@
 #ifndef _TopOpeBRepTool_ShapeExplorer_HeaderFile
 #define _TopOpeBRepTool_ShapeExplorer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <TopExp_Explorer.hxx>
-#include <Standard_Integer.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_OStream.hxx>
-class TopoDS_Shape;
+#include <TopAbs.hxx>
 
+//! Extends TopExp_Explorer by counting index of current item
+//! (for tracing and debug)
 
-
-class TopOpeBRepTool_ShapeExplorer 
+class TopOpeBRepTool_ShapeExplorer : public TopExp_Explorer
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   //! Creates an empty explorer, becomes usefull after Init.
-  Standard_EXPORT TopOpeBRepTool_ShapeExplorer();
+  TopOpeBRepTool_ShapeExplorer() : myIndex(0) 
+  {
+  }
   
   //! Creates an Explorer on the Shape <S>.
   //!
@@ -49,50 +41,43 @@ public:
   //! exploration.   If   <ToAvoid>  is  equal  or  less
   //! complex than <ToFind> or if  <ToAVoid> is SHAPE it
   //! has no effect on the exploration.
-  Standard_EXPORT TopOpeBRepTool_ShapeExplorer(const TopoDS_Shape& S, const TopAbs_ShapeEnum ToFind, const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
+  TopOpeBRepTool_ShapeExplorer(const TopoDS_Shape& S, const TopAbs_ShapeEnum ToFind, const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE)
+    : TopExp_Explorer (S, ToFind, ToAvoid), myIndex(More() ? 1 : 0)
+  {
+  }
   
-  Standard_EXPORT void Init (const TopoDS_Shape& S, const TopAbs_ShapeEnum ToFind, const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
-  
-  //! Returns  True if  there are   more  shapes in  the
-  //! exploration.
-  Standard_EXPORT Standard_Boolean More() const;
+  void Init (const TopoDS_Shape& S, const TopAbs_ShapeEnum ToFind, const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE)
+  {
+    TopExp_Explorer::Init(S,ToFind,ToAvoid);
+    myIndex = (More() ? 1 : 0);
+  }
   
   //! Moves to the next Shape in the exploration.
-  Standard_EXPORT void Next();
-  
-  //! Returns the current shape in the exploration.
-  Standard_EXPORT const TopoDS_Shape& Current() const;
-  
-  Standard_EXPORT Standard_Integer NbShapes() const;
-  
-  Standard_EXPORT Standard_Integer Index() const;
-  
-  Standard_EXPORT Standard_OStream& DumpCurrent (Standard_OStream& OS) const;
+  void Next()
+  {
+    if (More())
+      myIndex++;
+    TopExp_Explorer::Next();
+  }
 
+  //! Index of current sub-shape
+  Standard_Integer Index() const { return myIndex; }
 
-
-
-protected:
-
-
-
-
+  //! Dump info on current shape to stream
+  Standard_OStream& DumpCurrent (Standard_OStream& OS) const
+  {
+    if (More())
+    {
+      TopAbs::Print (Current().ShapeType(), OS);
+      OS << "(" << Index() << ",";
+      TopAbs::Print (Current().Orientation(), OS);
+      OS << ") ";
+    }
+    return OS;
+  }
 
 private:
-
-
-
-  TopExp_Explorer myExplorer;
   Standard_Integer myIndex;
-  Standard_Integer myNbShapes;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepTool_ShapeExplorer_HeaderFile
