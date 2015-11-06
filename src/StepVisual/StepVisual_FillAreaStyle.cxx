@@ -56,5 +56,5 @@ StepVisual_FillStyleSelect StepVisual_FillAreaStyle::FillStylesValue(const Stand
 
 Standard_Integer StepVisual_FillAreaStyle::NbFillStyles () const
 {
-	return fillStyles->Length();
+  return (fillStyles.IsNull() ? 0 : fillStyles->Length());
 }

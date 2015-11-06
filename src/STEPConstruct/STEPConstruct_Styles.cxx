@@ -575,6 +575,8 @@ Standard_Boolean STEPConstruct_Styles::GetColors (const Handle(StepVisual_Styled
 	  Handle(StepVisual_SurfaceStyleFillArea) SSFA = SSES.SurfaceStyleFillArea();
 	  if ( !SSFA.IsNull() ) {
 	    Handle(StepVisual_FillAreaStyle) FAS = SSFA->FillArea();
+      if (FAS.IsNull())
+        continue;
 	    for ( Standard_Integer m=1; m <= FAS->NbFillStyles(); m++ ) {
 	      StepVisual_FillStyleSelect FSS = FAS->FillStylesValue ( m );
 	      Handle(StepVisual_FillAreaStyleColour) FASC = FSS.FillAreaStyleColour();
