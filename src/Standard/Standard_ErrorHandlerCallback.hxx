@@ -17,12 +17,9 @@
 #define _Standard_ErrorHandlerCallback_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
 class Standard_ErrorHandler;
-
 
 //! Defines a base class for callback objects that can be registered
 //! in the OCC error handler (the class simulating C++ exceptions)
@@ -46,50 +43,50 @@ class Standard_ErrorHandlerCallback
 public:
 
   DEFINE_STANDARD_ALLOC
-
   
-  //! Registers this callback object in the current error handler
-  //! (if found).
-    void RegisterCallback();
+  //! Registers this callback object in the current error handler (if found).
+  void RegisterCallback();
   
   //! Unregisters this callback object from the error handler.
-    void UnregisterCallback();
-virtual Standard_EXPORT ~Standard_ErrorHandlerCallback ();
+  void UnregisterCallback();
+
+  //! Destructor
+  virtual Standard_EXPORT ~Standard_ErrorHandlerCallback ();
   
   //! The callback function to perform necessary callback action.
   //! Called by the exception handler when it is being destroyed but
   //! still has this callback registered.
   Standard_EXPORT virtual void DestroyCallback() = 0;
 
-
 friend class Standard_ErrorHandler;
 
-
 protected:
-
   
   //! Empty constructor
-    Standard_ErrorHandlerCallback();
-
-
-
+  Standard_ErrorHandlerCallback();
 
 private:
-
-
-
   Standard_Address myHandler;
   Standard_Address myPrev;
   Standard_Address myNext;
-
-
 };
 
-
-#include <Standard_ErrorHandlerCallback.lxx>
-
-
-
-
+// If neither NO_CXX_EXCEPTION nor OCC_CONVERT_SIGNALS is defined,
+// provide empty inline implementation
+#if ! defined(NO_CXX_EXCEPTION) && ! defined(OCC_CONVERT_SIGNALS)
+inline Standard_ErrorHandlerCallback::Standard_ErrorHandlerCallback ()
+		: myHandler(0), myPrev(0), myNext(0) 
+{
+}
+inline Standard_ErrorHandlerCallback::~Standard_ErrorHandlerCallback () 
+{
+}
+inline void Standard_ErrorHandlerCallback::RegisterCallback () 
+{
+}
+inline void Standard_ErrorHandlerCallback::UnregisterCallback () 
+{
+}
+#endif
 
 #endif // _Standard_ErrorHandlerCallback_HeaderFile

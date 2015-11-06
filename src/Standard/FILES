@@ -22,10 +22,8 @@ Standard_DivideByZero.hxx
 Standard_DomainError.hxx
 Standard_ErrorHandler.cxx
 Standard_ErrorHandler.hxx
-Standard_ErrorHandler.lxx
 Standard_ErrorHandlerCallback.cxx
 Standard_ErrorHandlerCallback.hxx
-Standard_ErrorHandlerCallback.lxx
 Standard_ExtCharacter.hxx
 Standard_ExtString.cxx
 Standard_ExtString.hxx
