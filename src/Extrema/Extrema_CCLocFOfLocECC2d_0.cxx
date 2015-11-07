@@ -22,8 +22,7 @@
 #include <Extrema_POnCurv2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Extrema_SeqPOnCOfCCLocFOfLocECC2d.hxx>
-#include <Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d.hxx>
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
 #include <math_Matrix.hxx>
  
 
@@ -41,14 +40,8 @@
 #define Pnt_hxx <gp_Pnt2d.hxx>
 #define Vec gp_Vec2d
 #define Vec_hxx <gp_Vec2d.hxx>
-#define Extrema_SeqPOnC Extrema_SeqPOnCOfCCLocFOfLocECC2d
-#define Extrema_SeqPOnC_hxx <Extrema_SeqPOnCOfCCLocFOfLocECC2d.hxx>
-#define Extrema_SequenceNodeOfSeqPOnC Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d
-#define Extrema_SequenceNodeOfSeqPOnC_hxx <Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d.hxx>
-#define Extrema_SequenceNodeOfSeqPOnC Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d
-#define Extrema_SequenceNodeOfSeqPOnC_hxx <Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d.hxx>
-#define Handle_Extrema_SequenceNodeOfSeqPOnC Handle(Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d)
-#define Handle_Extrema_SequenceNodeOfSeqPOnC Handle(Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d)
+#define Extrema_SeqPOnC Extrema_SequenceOfPOnCurv2d
+#define Extrema_SeqPOnC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtCC Extrema_CCLocFOfLocECC2d
 #define Extrema_FuncExtCC_hxx <Extrema_CCLocFOfLocECC2d.hxx>
 #include <Extrema_FuncExtCC.gxx>

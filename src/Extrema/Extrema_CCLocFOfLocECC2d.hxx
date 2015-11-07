@@ -26,7 +26,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <TColStd_SequenceOfReal.hxx>
-#include <Extrema_SeqPOnCOfCCLocFOfLocECC2d.hxx>
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
 #include <Standard_Integer.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Boolean.hxx>
@@ -37,8 +37,6 @@ class Extrema_Curve2dTool;
 class Extrema_POnCurv2d;
 class gp_Pnt2d;
 class gp_Vec2d;
-class Extrema_SeqPOnCOfCCLocFOfLocECC2d;
-class Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d;
 class math_Matrix;
 
 
@@ -121,7 +119,7 @@ private:
   gp_Vec2d myDu;
   gp_Vec2d myDv;
   TColStd_SequenceOfReal mySqDist;
-  Extrema_SeqPOnCOfCCLocFOfLocECC2d myPoints;
+  Extrema_SequenceOfPOnCurv2d myPoints;
   Standard_Real myTolC1;
   Standard_Real myTolC2;
   Standard_Integer myMaxDerivOrderC1;
@@ -148,14 +146,8 @@ private:
 #define Pnt_hxx <gp_Pnt2d.hxx>
 #define Vec gp_Vec2d
 #define Vec_hxx <gp_Vec2d.hxx>
-#define Extrema_SeqPOnC Extrema_SeqPOnCOfCCLocFOfLocECC2d
-#define Extrema_SeqPOnC_hxx <Extrema_SeqPOnCOfCCLocFOfLocECC2d.hxx>
-#define Extrema_SequenceNodeOfSeqPOnC Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d
-#define Extrema_SequenceNodeOfSeqPOnC_hxx <Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d.hxx>
-#define Extrema_SequenceNodeOfSeqPOnC Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d
-#define Extrema_SequenceNodeOfSeqPOnC_hxx <Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d.hxx>
-#define Handle_Extrema_SequenceNodeOfSeqPOnC Handle(Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d)
-#define Handle_Extrema_SequenceNodeOfSeqPOnC Handle(Extrema_SequenceNodeOfSeqPOnCOfCCLocFOfLocECC2d)
+#define Extrema_SeqPOnC Extrema_SequenceOfPOnCurv2d
+#define Extrema_SeqPOnC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtCC Extrema_CCLocFOfLocECC2d
 #define Extrema_FuncExtCC_hxx <Extrema_CCLocFOfLocECC2d.hxx>
 
@@ -177,12 +169,6 @@ private:
 #undef Vec_hxx
 #undef Extrema_SeqPOnC
 #undef Extrema_SeqPOnC_hxx
-#undef Extrema_SequenceNodeOfSeqPOnC
-#undef Extrema_SequenceNodeOfSeqPOnC_hxx
-#undef Extrema_SequenceNodeOfSeqPOnC
-#undef Extrema_SequenceNodeOfSeqPOnC_hxx
-#undef Handle_Extrema_SequenceNodeOfSeqPOnC
-#undef Handle_Extrema_SequenceNodeOfSeqPOnC
 #undef Extrema_FuncExtCC
 #undef Extrema_FuncExtCC_hxx
 

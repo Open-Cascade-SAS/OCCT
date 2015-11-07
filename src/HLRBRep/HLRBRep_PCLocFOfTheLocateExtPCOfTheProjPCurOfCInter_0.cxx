@@ -22,9 +22,7 @@
 #include <Extrema_POnCurv2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#include <HLRBRep_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
- 
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
 
 #define Curve Standard_Address
 #define Curve_hxx <Standard_Address.hxx>
@@ -36,14 +34,8 @@
 #define Pnt_hxx <gp_Pnt2d.hxx>
 #define Vec gp_Vec2d
 #define Vec_hxx <gp_Vec2d.hxx>
-#define Extrema_SeqPC HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
-#define Extrema_SeqPC_hxx <HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#define Extrema_SequenceNodeOfSeqPC HLRBRep_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
-#define Extrema_SequenceNodeOfSeqPC_hxx <HLRBRep_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#define Extrema_SequenceNodeOfSeqPC HLRBRep_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
-#define Extrema_SequenceNodeOfSeqPC_hxx <HLRBRep_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#define Handle_Extrema_SequenceNodeOfSeqPC Handle(HLRBRep_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter)
-#define Handle_Extrema_SequenceNodeOfSeqPC Handle(HLRBRep_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter)
+#define Extrema_SeqPC Extrema_SequenceOfPOnCurv2d
+#define Extrema_SeqPC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtPC HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
 #define Extrema_FuncExtPC_hxx <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #include <Extrema_FuncExtPC.gxx>

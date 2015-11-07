@@ -23,19 +23,9 @@
 #include <Standard_Transient.hxx>
 #include <Transfer_ProcessForTransient.hxx>
 #include <Transfer_TransferMapOfProcessForTransient.hxx>
-#include <Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
-
- 
-
-
-
-
-
-
-
 
 #define TheStart Handle(Standard_Transient)
 #define TheStart_hxx <Standard_Transient.hxx>
@@ -46,16 +36,10 @@
 #define TheList_hxx <TColStd_HSequenceOfTransient.hxx>
 #define Transfer_TransferMap Transfer_TransferMapOfProcessForTransient
 #define Transfer_TransferMap_hxx <Transfer_TransferMapOfProcessForTransient.hxx>
-#define Transfer_IndexedDataMapNodeOfTransferMap Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient
-#define Transfer_IndexedDataMapNodeOfTransferMap_hxx <Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient.hxx>
-#define Transfer_IndexedDataMapNodeOfTransferMap Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient
-#define Transfer_IndexedDataMapNodeOfTransferMap_hxx <Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient.hxx>
 #define Transfer_Iterator Transfer_IteratorOfProcessForTransient
 #define Transfer_Iterator_hxx <Transfer_IteratorOfProcessForTransient.hxx>
 #define Transfer_Actor Transfer_ActorOfProcessForTransient
 #define Transfer_Actor_hxx <Transfer_ActorOfProcessForTransient.hxx>
-#define Handle_Transfer_IndexedDataMapNodeOfTransferMap Handle(Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient)
-#define Handle_Transfer_IndexedDataMapNodeOfTransferMap Handle(Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient)
 #define Handle_Transfer_Actor Handle(Transfer_ActorOfProcessForTransient)
 #define Transfer_TransferProcess Transfer_ProcessForTransient
 #define Transfer_TransferProcess_hxx <Transfer_ProcessForTransient.hxx>

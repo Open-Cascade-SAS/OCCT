@@ -24,7 +24,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#include <HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
  
 
 #define Curve Standard_Address
@@ -39,10 +39,10 @@
 #define Vec_hxx <gp_Vec2d.hxx>
 #define Extrema_PCLocF HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
 #define Extrema_PCLocF_hxx <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#define Extrema_SeqPCOfPCLocF HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
-#define Extrema_SeqPCOfPCLocF_hxx <HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#define Extrema_SeqPCOfPCLocF HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
-#define Extrema_SeqPCOfPCLocF_hxx <HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
+#define Extrema_SeqPCOfPCLocF Extrema_SequenceOfPOnCurv2d
+#define Extrema_SeqPCOfPCLocF_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
+#define Extrema_SeqPCOfPCLocF Extrema_SequenceOfPOnCurv2d
+#define Extrema_SeqPCOfPCLocF_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_GenLocateExtPC HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter
 #define Extrema_GenLocateExtPC_hxx <HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #include <Extrema_GenLocateExtPC.gxx>

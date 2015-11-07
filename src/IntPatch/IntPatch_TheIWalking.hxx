@@ -46,11 +46,7 @@ class Adaptor3d_HSurface;
 class Adaptor3d_HSurfaceTool;
 class IntPatch_TheSurfFunction;
 class IntPatch_TheIWLineOfTheIWalking;
-class IntPatch_SequenceOfIWLineOfTheIWalking;
-class IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking;
 class IntSurf_PntOn2S;
-
-
 
 class IntPatch_TheIWalking 
 {
@@ -190,13 +186,7 @@ private:
 #define IntWalk_TheIWLine_hxx <IntPatch_TheIWLineOfTheIWalking.hxx>
 #define IntWalk_SequenceOfIWLine IntPatch_SequenceOfIWLineOfTheIWalking
 #define IntWalk_SequenceOfIWLine_hxx <IntPatch_SequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
 #define Handle_IntWalk_TheIWLine Handle(IntPatch_TheIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
 #define IntWalk_IWalking IntPatch_TheIWalking
 #define IntWalk_IWalking_hxx <IntPatch_TheIWalking.hxx>
 
@@ -224,13 +214,7 @@ private:
 #undef IntWalk_TheIWLine_hxx
 #undef IntWalk_SequenceOfIWLine
 #undef IntWalk_SequenceOfIWLine_hxx
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine_hxx
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine_hxx
 #undef Handle_IntWalk_TheIWLine
-#undef Handle_IntWalk_SequenceNodeOfSequenceOfIWLine
-#undef Handle_IntWalk_SequenceNodeOfSequenceOfIWLine
 #undef IntWalk_IWalking
 #undef IntWalk_IWalking_hxx
 

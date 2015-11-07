@@ -24,11 +24,11 @@
 #include <MMgt_TShared.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
+#include <Transfer_TransferMapOfProcessForTransient.hxx>
+
 class Standard_DomainError;
 class Standard_Transient;
 class Transfer_ProcessForTransient;
-class Transfer_TransferMapOfProcessForTransient;
-class Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient;
 class Transfer_IteratorOfProcessForTransient;
 class Transfer_Binder;
 class Transfer_SimpleBinderOfTransient;

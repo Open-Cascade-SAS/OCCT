@@ -23,17 +23,13 @@
 
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Transfer_TransferIterator.hxx>
-#include <TColStd_MapTransientHasher.hxx>
-#include <Standard_Boolean.hxx>
+#include <Transfer_TransferMapOfProcessForTransient.hxx>
+
 class Standard_NoSuchObject;
 class Standard_Transient;
 class Transfer_ProcessForTransient;
-class Transfer_TransferMapOfProcessForTransient;
-class Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient;
 class Transfer_ActorOfProcessForTransient;
 class Transfer_Binder;
-
-
 
 class Transfer_IteratorOfProcessForTransient  : public Transfer_TransferIterator
 {

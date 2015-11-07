@@ -32,10 +32,6 @@ class Geom2dInt_Geom2dCurveTool;
 class Extrema_POnCurv2d;
 class gp_Pnt2d;
 class gp_Vec2d;
-class Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter;
-class Geom2dInt_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter;
-
-
 
 class Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter 
 {

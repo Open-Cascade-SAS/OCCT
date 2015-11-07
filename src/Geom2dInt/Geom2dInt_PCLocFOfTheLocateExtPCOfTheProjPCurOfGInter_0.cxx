@@ -23,9 +23,7 @@
 #include <Extrema_POnCurv2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Geom2dInt_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#include <Geom2dInt_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
- 
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
 
 #define Curve Adaptor2d_Curve2d
 #define Curve_hxx <Adaptor2d_Curve2d.hxx>
@@ -37,14 +35,8 @@
 #define Pnt_hxx <gp_Pnt2d.hxx>
 #define Vec gp_Vec2d
 #define Vec_hxx <gp_Vec2d.hxx>
-#define Extrema_SeqPC Geom2dInt_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
-#define Extrema_SeqPC_hxx <Geom2dInt_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#define Extrema_SequenceNodeOfSeqPC Geom2dInt_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
-#define Extrema_SequenceNodeOfSeqPC_hxx <Geom2dInt_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#define Extrema_SequenceNodeOfSeqPC Geom2dInt_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
-#define Extrema_SequenceNodeOfSeqPC_hxx <Geom2dInt_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#define Handle_Extrema_SequenceNodeOfSeqPC Handle(Geom2dInt_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter)
-#define Handle_Extrema_SequenceNodeOfSeqPC Handle(Geom2dInt_SequenceNodeOfSeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfGInter)
+#define Extrema_SeqPC Extrema_SequenceOfPOnCurv2d
+#define Extrema_SeqPC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtPC Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
 #define Extrema_FuncExtPC_hxx <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
 #include <Extrema_FuncExtPC.gxx>

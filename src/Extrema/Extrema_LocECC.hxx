@@ -24,6 +24,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <Extrema_SequenceOfPOnCurv.hxx>
+
 class Standard_DomainError;
 class StdFail_NotDone;
 class Adaptor3d_Curve;
@@ -32,9 +34,6 @@ class Extrema_POnCurv;
 class gp_Pnt;
 class gp_Vec;
 class Extrema_CCLocFOfLocECC;
-class Extrema_SeqPOnCOfCCLocFOfLocECC;
-
-
 
 class Extrema_LocECC 
 {

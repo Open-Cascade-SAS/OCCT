@@ -27,21 +27,11 @@
 #include <Transfer_TransferFailure.hxx>
 #include <Transfer_FindHasher.hxx>
 #include <Transfer_TransferMapOfProcessForFinder.hxx>
-#include <Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder.hxx>
 #include <Transfer_IteratorOfProcessForFinder.hxx>
 #include <Message_Msg.hxx>
 #include <Interface_Check.hxx>
 #include <Standard_Transient.hxx>
 #include <Interface_CheckIterator.hxx>
-
- 
-
-
-
-
-
-
-
 
 #define TheStart Handle(Transfer_Finder)
 #define TheStart_hxx <Transfer_Finder.hxx>
@@ -52,16 +42,10 @@
 #define TheList_hxx <Transfer_HSequenceOfFinder.hxx>
 #define Transfer_TransferMap Transfer_TransferMapOfProcessForFinder
 #define Transfer_TransferMap_hxx <Transfer_TransferMapOfProcessForFinder.hxx>
-#define Transfer_IndexedDataMapNodeOfTransferMap Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder
-#define Transfer_IndexedDataMapNodeOfTransferMap_hxx <Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder.hxx>
-#define Transfer_IndexedDataMapNodeOfTransferMap Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder
-#define Transfer_IndexedDataMapNodeOfTransferMap_hxx <Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder.hxx>
 #define Transfer_Iterator Transfer_IteratorOfProcessForFinder
 #define Transfer_Iterator_hxx <Transfer_IteratorOfProcessForFinder.hxx>
 #define Transfer_Actor Transfer_ActorOfProcessForFinder
 #define Transfer_Actor_hxx <Transfer_ActorOfProcessForFinder.hxx>
-#define Handle_Transfer_IndexedDataMapNodeOfTransferMap Handle(Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder)
-#define Handle_Transfer_IndexedDataMapNodeOfTransferMap Handle(Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder)
 #define Handle_Transfer_Actor Handle(Transfer_ActorOfProcessForFinder)
 #define Transfer_TransferProcess Transfer_ProcessForFinder
 #define Transfer_TransferProcess_hxx <Transfer_ProcessForFinder.hxx>

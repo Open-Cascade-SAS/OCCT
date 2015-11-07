@@ -26,7 +26,7 @@
 #include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Extrema_SeqPCOfPCFOfEPCOfExtPC2d.hxx>
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <math_FunctionWithDerivative.hxx>
@@ -37,10 +37,6 @@ class Extrema_Curve2dTool;
 class Extrema_POnCurv2d;
 class gp_Pnt2d;
 class gp_Vec2d;
-class Extrema_SeqPCOfPCFOfEPCOfExtPC2d;
-class Extrema_SequenceNodeOfSeqPCOfPCFOfEPCOfExtPC2d;
-
-
 
 class Extrema_PCFOfEPCOfExtPC2d  : public math_FunctionWithDerivative
 {
@@ -110,7 +106,7 @@ private:
   Standard_Real myD1f;
   TColStd_SequenceOfReal mySqDist;
   TColStd_SequenceOfInteger myIsMin;
-  Extrema_SeqPCOfPCFOfEPCOfExtPC2d myPoint;
+  Extrema_SequenceOfPOnCurv2d myPoint;
   Standard_Boolean myPinit;
   Standard_Boolean myCinit;
   Standard_Boolean myD1Init;

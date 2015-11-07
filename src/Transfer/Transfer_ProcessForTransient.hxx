@@ -17,18 +17,11 @@
 #ifndef _Transfer_ProcessForTransient_HeaderFile
 #define _Transfer_ProcessForTransient_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <Transfer_TransferMapOfProcessForTransient.hxx>
-#include <MMgt_TShared.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Type.hxx>
+
 class Message_Messenger;
 class Standard_Transient;
 class Transfer_Binder;
@@ -36,8 +29,6 @@ class Transfer_ActorOfProcessForTransient;
 class Message_ProgressIndicator;
 class Interface_InterfaceError;
 class Transfer_TransferFailure;
-class Transfer_TransferMapOfProcessForTransient;
-class Transfer_IndexedDataMapNodeOfTransferMapOfProcessForTransient;
 class Transfer_IteratorOfProcessForTransient;
 class Message_Msg;
 class Interface_Check;

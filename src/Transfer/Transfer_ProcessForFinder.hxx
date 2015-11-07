@@ -17,17 +17,10 @@
 #ifndef _Transfer_ProcessForFinder_HeaderFile
 #define _Transfer_ProcessForFinder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
-#include <Transfer_TransferMapOfProcessForFinder.hxx>
-#include <MMgt_TShared.hxx>
 #include <Transfer_HSequenceOfFinder.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Type.hxx>
+#include <Transfer_TransferMapOfProcessForFinder.hxx>
+
 class Message_Messenger;
 class Transfer_Finder;
 class Transfer_Binder;
@@ -36,8 +29,6 @@ class Message_ProgressIndicator;
 class Interface_InterfaceError;
 class Transfer_TransferFailure;
 class Transfer_FindHasher;
-class Transfer_TransferMapOfProcessForFinder;
-class Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder;
 class Transfer_IteratorOfProcessForFinder;
 class Message_Msg;
 class Interface_Check;

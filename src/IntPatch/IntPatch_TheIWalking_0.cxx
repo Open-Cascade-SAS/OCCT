@@ -27,10 +27,8 @@
 #include <IntPatch_TheSurfFunction.hxx>
 #include <IntPatch_TheIWLineOfTheIWalking.hxx>
 #include <IntPatch_SequenceOfIWLineOfTheIWalking.hxx>
-#include <IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
 #include <IntSurf_PntOn2S.hxx>
  
-
 #define ThePointOfPath IntSurf_PathPoint
 #define ThePointOfPath_hxx <IntSurf_PathPoint.hxx>
 #define ThePointOfPathTool IntSurf_PathPointTool
@@ -53,13 +51,7 @@
 #define IntWalk_TheIWLine_hxx <IntPatch_TheIWLineOfTheIWalking.hxx>
 #define IntWalk_SequenceOfIWLine IntPatch_SequenceOfIWLineOfTheIWalking
 #define IntWalk_SequenceOfIWLine_hxx <IntPatch_SequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
 #define Handle_IntWalk_TheIWLine Handle(IntPatch_TheIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(IntPatch_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
 #define IntWalk_IWalking IntPatch_TheIWalking
 #define IntWalk_IWalking_hxx <IntPatch_TheIWalking.hxx>
 #include <IntWalk_IWalking.gxx>

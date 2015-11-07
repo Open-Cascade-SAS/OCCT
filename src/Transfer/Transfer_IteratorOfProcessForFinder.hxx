@@ -23,17 +23,14 @@
 
 #include <Transfer_HSequenceOfFinder.hxx>
 #include <Transfer_TransferIterator.hxx>
-#include <Standard_Boolean.hxx>
+#include <Transfer_TransferMapOfProcessForFinder.hxx>
+
 class Standard_NoSuchObject;
 class Transfer_Finder;
 class Transfer_FindHasher;
 class Transfer_ProcessForFinder;
-class Transfer_TransferMapOfProcessForFinder;
-class Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder;
 class Transfer_ActorOfProcessForFinder;
 class Transfer_Binder;
-
-
 
 class Transfer_IteratorOfProcessForFinder  : public Transfer_TransferIterator
 {

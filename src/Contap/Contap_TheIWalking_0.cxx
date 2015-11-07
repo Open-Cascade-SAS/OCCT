@@ -27,9 +27,7 @@
 #include <Contap_SurfFunction.hxx>
 #include <Contap_TheIWLineOfTheIWalking.hxx>
 #include <Contap_SequenceOfIWLineOfTheIWalking.hxx>
-#include <Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
 #include <IntSurf_PntOn2S.hxx>
- 
 
 #define ThePointOfPath IntSurf_PathPoint
 #define ThePointOfPath_hxx <IntSurf_PathPoint.hxx>
@@ -53,13 +51,7 @@
 #define IntWalk_TheIWLine_hxx <Contap_TheIWLineOfTheIWalking.hxx>
 #define IntWalk_SequenceOfIWLine Contap_SequenceOfIWLineOfTheIWalking
 #define IntWalk_SequenceOfIWLine_hxx <Contap_SequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
 #define Handle_IntWalk_TheIWLine Handle(Contap_TheIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
 #define IntWalk_IWalking Contap_TheIWalking
 #define IntWalk_IWalking_hxx <Contap_TheIWalking.hxx>
 #include <IntWalk_IWalking.gxx>

@@ -33,9 +33,6 @@ class Extrema_POnCurv2d;
 class gp_Pnt2d;
 class gp_Vec2d;
 class Extrema_PCLocFOfLocEPCOfLocateExtPC2d;
-class Extrema_SeqPCOfPCLocFOfLocEPCOfLocateExtPC2d;
-
-
 
 class Extrema_LocEPCOfLocateExtPC2d 
 {

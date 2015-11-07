@@ -33,9 +33,6 @@ class Extrema_POnCurv2d;
 class gp_Pnt2d;
 class gp_Vec2d;
 class HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter;
-class HLRBRep_SeqPCOfPCLocFOfTheLocateExtPCOfTheProjPCurOfCInter;
-
-
 
 class HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter 
 {

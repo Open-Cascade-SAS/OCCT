@@ -23,12 +23,12 @@
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
 #include <Transfer_HSequenceOfFinder.hxx>
+#include <Transfer_TransferMapOfProcessForFinder.hxx>
+
 class Standard_DomainError;
 class Transfer_Finder;
 class Transfer_FindHasher;
 class Transfer_ProcessForFinder;
-class Transfer_TransferMapOfProcessForFinder;
-class Transfer_IndexedDataMapNodeOfTransferMapOfProcessForFinder;
 class Transfer_IteratorOfProcessForFinder;
 class Transfer_Binder;
 class Transfer_SimpleBinderOfTransient;

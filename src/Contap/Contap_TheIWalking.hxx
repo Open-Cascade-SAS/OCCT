@@ -46,11 +46,7 @@ class Adaptor3d_HSurface;
 class Adaptor3d_HSurfaceTool;
 class Contap_SurfFunction;
 class Contap_TheIWLineOfTheIWalking;
-class Contap_SequenceOfIWLineOfTheIWalking;
-class Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking;
 class IntSurf_PntOn2S;
-
-
 
 class Contap_TheIWalking 
 {
@@ -190,13 +186,7 @@ private:
 #define IntWalk_TheIWLine_hxx <Contap_TheIWLineOfTheIWalking.hxx>
 #define IntWalk_SequenceOfIWLine Contap_SequenceOfIWLineOfTheIWalking
 #define IntWalk_SequenceOfIWLine_hxx <Contap_SequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceNodeOfSequenceOfIWLine Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceNodeOfSequenceOfIWLine_hxx <Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking.hxx>
 #define Handle_IntWalk_TheIWLine Handle(Contap_TheIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
-#define Handle_IntWalk_SequenceNodeOfSequenceOfIWLine Handle(Contap_SequenceNodeOfSequenceOfIWLineOfTheIWalking)
 #define IntWalk_IWalking Contap_TheIWalking
 #define IntWalk_IWalking_hxx <Contap_TheIWalking.hxx>
 
@@ -224,13 +214,7 @@ private:
 #undef IntWalk_TheIWLine_hxx
 #undef IntWalk_SequenceOfIWLine
 #undef IntWalk_SequenceOfIWLine_hxx
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine_hxx
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine
-#undef IntWalk_SequenceNodeOfSequenceOfIWLine_hxx
 #undef Handle_IntWalk_TheIWLine
-#undef Handle_IntWalk_SequenceNodeOfSequenceOfIWLine
-#undef Handle_IntWalk_SequenceNodeOfSequenceOfIWLine
 #undef IntWalk_IWalking
 #undef IntWalk_IWalking_hxx
 
