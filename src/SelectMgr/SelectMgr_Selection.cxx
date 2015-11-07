@@ -122,7 +122,7 @@ Handle(SelectMgr_SensitiveEntity)& SelectMgr_Selection::GetEntityById (const Sta
 // function: GetSelectionState
 // purpose : Returns status of selection
 //==================================================
-const SelectMgr_StateOfSelection SelectMgr_Selection::GetSelectionState() const
+SelectMgr_StateOfSelection SelectMgr_Selection::GetSelectionState() const
 {
   return mySelectionState;
 }

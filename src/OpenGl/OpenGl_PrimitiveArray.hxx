@@ -81,7 +81,7 @@ public:
   const Handle(Graphic3d_BoundBuffer)& Bounds() const { return myBounds; }
 
   //! Returns unique ID of primitive array. 
-  const Standard_Size GetUID() const { return myUID; }
+  Standard_Size GetUID() const { return myUID; }
 
   //! Initialize indices, attributes and bounds with new data.
   Standard_EXPORT void InitBuffers (const Handle(OpenGl_Context)&        theContext,

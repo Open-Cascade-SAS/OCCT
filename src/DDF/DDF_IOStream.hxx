@@ -210,7 +210,7 @@ private:
 
  // Methods PRIVATE
  // 
-static const Standard_CString MagicNumber() ;
+static Standard_CString MagicNumber() ;
 
 
  // Fields PRIVATE

@@ -63,7 +63,7 @@ public:
   }
 
   //! Returns true if theSetting is enabled for the layer.
-  const Standard_Boolean IsSettingEnabled (const Graphic3d_ZLayerSetting theSetting) const
+  Standard_Boolean IsSettingEnabled (const Graphic3d_ZLayerSetting theSetting) const
   {
     return myLayerSettings.IsSettingEnabled (theSetting);
   }

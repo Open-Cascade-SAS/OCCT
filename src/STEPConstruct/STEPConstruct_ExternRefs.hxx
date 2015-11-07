@@ -74,7 +74,7 @@ public:
   
   //! Returns filename for numth extern reference
   //! Returns Null if FileName is not defined or bad
-  Standard_EXPORT const Standard_CString FileName (const Standard_Integer num) const;
+  Standard_EXPORT Standard_CString FileName (const Standard_Integer num) const;
   
   //! Returns ProductDefinition to which numth extern reference
   //! is associated.

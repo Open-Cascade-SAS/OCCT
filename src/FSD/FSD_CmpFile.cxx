@@ -163,7 +163,7 @@ Storage_Error FSD_CmpFile::Close()
 //purpose  : ------------------ PROTECTED
 //=======================================================================
 
-const Standard_CString FSD_CmpFile::MagicNumber()
+Standard_CString FSD_CmpFile::MagicNumber()
 {
   return MAGICNUMBER;
 }

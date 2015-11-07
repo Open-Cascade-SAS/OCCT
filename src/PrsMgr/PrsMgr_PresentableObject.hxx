@@ -182,7 +182,7 @@ public:
   
   //! Returns true if object has mutable nature (content or location are be changed regularly).
   //! Mutable object will be managed in different way than static onces (another optimizations).
-  Standard_EXPORT const Standard_Boolean IsMutable() const;
+  Standard_EXPORT Standard_Boolean IsMutable() const;
   
   //! Makes theObject child of current object in scene hierarchy.
   Standard_EXPORT virtual void AddChild (const Handle(PrsMgr_PresentableObject)& theObject);
@@ -194,10 +194,10 @@ public:
   Standard_EXPORT const PrsMgr_ListOfPresentableObjects& Children() const;
   
   //! Returns true if object should have own presentations.
-  Standard_EXPORT const Standard_Boolean HasOwnPresentations() const;
+  Standard_EXPORT Standard_Boolean HasOwnPresentations() const;
   
   //! Returns parent of current object in scene hierarchy.
-  Standard_EXPORT const PrsMgr_PresentableObjectPointer Parent() const;
+  Standard_EXPORT PrsMgr_PresentableObjectPointer Parent() const;
 
 
 friend class PrsMgr_Presentation;

@@ -249,7 +249,7 @@ public:
 
   //! Geometry type defines type of shapes on which the dimension is to be built. 
   //! @return type of geometry on which the dimension will be built.
-  Standard_EXPORT const Standard_Integer GetGeometryType () const;
+  Standard_Integer GetGeometryType () const { return myGeometryType; }
 
   //! Sets user-defined plane where the 2D dimension presentation will be placed.
   //! Checks validity of this plane if geometry has been set already.

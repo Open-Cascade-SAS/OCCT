@@ -158,10 +158,10 @@ Standard_Boolean TestTopOpeTools_Trace::Exist
 const t_flag TestTopOpeTools_Trace::Getflag(const Standard_Integer index)
 { return (t_flag)myflag.Value(index); }
 
-const tf_value TestTopOpeTools_Trace::Getfunc(const Standard_Integer index)
+tf_value TestTopOpeTools_Trace::Getfunc(const Standard_Integer index)
 { return myfunc.Value(index); }
 
-const te_ftyp TestTopOpeTools_Trace::Getftyp(const Standard_Integer index)
+te_ftyp TestTopOpeTools_Trace::Getftyp(const Standard_Integer index)
 {
 //JR/Hp :
   Standard_Integer intenum = myftyp.Value(index);

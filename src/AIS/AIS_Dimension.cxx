@@ -138,15 +138,6 @@ const gp_Pln& AIS_Dimension::GetPlane() const
 }
 
 //=======================================================================
-//function : GetGeometryType
-//purpose  : 
-//=======================================================================
-const Standard_Integer AIS_Dimension::GetGeometryType () const
-{
-  return myGeometryType;
-}
-
-//=======================================================================
 //function : SetUserPlane
 //purpose  : 
 //=======================================================================

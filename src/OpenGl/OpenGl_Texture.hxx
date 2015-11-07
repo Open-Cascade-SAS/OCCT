@@ -262,7 +262,7 @@ public:
                                       const OpenGl_TextureFormat&   theFormat);
 
   //! @return true if texture was generated within mipmaps
-  Standard_EXPORT const Standard_Boolean HasMipmaps() const;
+  Standard_EXPORT Standard_Boolean HasMipmaps() const;
 
   //! @return assigned texture parameters (not necessary applied)
   Standard_EXPORT const Handle(Graphic3d_TextureParams)& GetParams() const;

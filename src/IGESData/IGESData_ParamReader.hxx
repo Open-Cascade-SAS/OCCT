@@ -110,7 +110,7 @@ public:
   Standard_EXPORT Interface_ParamType ParamType (const Standard_Integer num) const;
   
   //! returns litteral value of a parameter, as it was in file
-  Standard_EXPORT const Standard_CString ParamValue (const Standard_Integer num) const;
+  Standard_EXPORT Standard_CString ParamValue (const Standard_Integer num) const;
   
   //! says if a parameter is defined (not void)
   //! See also DefinedElseSkip

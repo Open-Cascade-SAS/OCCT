@@ -67,7 +67,7 @@ TopOpeBRepTool_PurgeInternalEdges::TopOpeBRepTool_PurgeInternalEdges(const TopoD
 //purpose  : 
 //=======================================================================
 
-const Standard_Integer TopOpeBRepTool_PurgeInternalEdges::NbEdges() const
+Standard_Integer TopOpeBRepTool_PurgeInternalEdges::NbEdges() const
 {
 
   Standard_NullObject_Raise_if(myShape.IsNull(),"PurgeInternalEdges : No Shape");

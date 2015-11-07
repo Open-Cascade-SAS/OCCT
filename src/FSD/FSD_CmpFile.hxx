@@ -279,26 +279,15 @@ protected:
   
   Standard_EXPORT Storage_Error FindTag (const Standard_CString aTag);
 
-
-
+private:
+  
+  static Standard_CString MagicNumber();
+  
+  void RaiseError (const Handle(Standard_Type)& theFailure);
 
 private:
 
-  
-  Standard_EXPORT static const Standard_CString MagicNumber();
-  
-  Standard_EXPORT void RaiseError (const Handle(Standard_Type)& theFailure);
-
-
   FSD_FStream myStream;
-
-
 };
-
-
-
-
-
-
 
 #endif // _FSD_CmpFile_HeaderFile

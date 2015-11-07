@@ -76,25 +76,16 @@ public:
   
   Standard_EXPORT const TDF_Label& ContextLabel() const;
   
-    const TopAbs_Orientation Orientation() const;
+  TopAbs_Orientation Orientation() const
+  { 
+    return myOrientation;
+  }
   
   Standard_EXPORT Standard_Boolean Solve (const TDF_Label& aLab, const TDF_LabelMap& Valid) const;
   
   Standard_EXPORT void Paste (TNaming_Name& into, const Handle(TDF_RelocationTable)& RT) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
-
   TNaming_NameType myType;
   TopAbs_ShapeEnum myShapeType;
   TNaming_ListOfNamedShape myArgs;
@@ -103,15 +94,6 @@ private:
   TopoDS_Shape myShape;
   TDF_Label myContextLabel;
   TopAbs_Orientation myOrientation;
-
-
 };
-
-
-#include <TNaming_Name.lxx>
-
-
-
-
 
 #endif // _TNaming_Name_HeaderFile

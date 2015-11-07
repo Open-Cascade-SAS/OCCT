@@ -124,7 +124,7 @@ public:
   SelectMgr_TypeOfBVHUpdate BVHUpdateStatus() const;
 
   //! Returns status of selection
-  Standard_EXPORT const SelectMgr_StateOfSelection GetSelectionState() const;
+  Standard_EXPORT SelectMgr_StateOfSelection GetSelectionState() const;
 
   //! Sets status of selection
   Standard_EXPORT void SetSelectionState (const SelectMgr_StateOfSelection theState) const;

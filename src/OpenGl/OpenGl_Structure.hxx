@@ -157,7 +157,7 @@ public:
   Standard_Boolean IsCulled() const { return myIsCulled; }
 
   //! Checks if the structure should be included into BVH tree or not.
-  const Standard_Boolean IsAlwaysRendered() const
+  Standard_Boolean IsAlwaysRendered() const
   {
     return IsInfinite
         || IsForHighlight

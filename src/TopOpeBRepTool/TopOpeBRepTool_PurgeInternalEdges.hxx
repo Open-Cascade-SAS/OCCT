@@ -65,47 +65,35 @@ public:
   Standard_EXPORT TopoDS_Shape& Shape();
   
   //! returns the number of edges candidate to be removed
-  Standard_EXPORT const Standard_Integer NbEdges() const;
+  Standard_EXPORT Standard_Integer NbEdges() const;
   
   //! returns False  if the list  of internal  edges has
   //! not been extracted
-    Standard_Boolean IsDone() const;
+  Standard_Boolean IsDone() const
+  {
+    return myIsDone;
+  }
   
   //! Using   the list  of internal edge    from each face,
   //! rebuild myShape by removing thoses edges.
   Standard_EXPORT void Perform();
 
-
-
-
 protected:
-
-
 
   TopTools_IndexedDataMapOfShapeListOfShape myMapEdgLstFac;
 
-
 private:
-
   
   //! Do the main job. Explore all the  edges of myShape and
   //! build a map with  faces as a key  and list of internal
   //! edges(without connected faces) as value.
   Standard_EXPORT void BuildList();
 
+private:
 
   TopoDS_Shape myShape;
   Standard_Boolean myIsDone;
   TopTools_DataMapOfShapeListOfShape myMapFacLstEdg;
-
-
 };
-
-
-#include <TopOpeBRepTool_PurgeInternalEdges.lxx>
-
-
-
-
 
 #endif // _TopOpeBRepTool_PurgeInternalEdges_HeaderFile

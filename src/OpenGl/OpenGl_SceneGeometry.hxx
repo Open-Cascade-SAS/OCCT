@@ -177,7 +177,7 @@ public:
   }
 
   //! Returns Id of associated primitive array.
-  const Standard_Size AssociatedPArrayID() const
+  Standard_Size AssociatedPArrayID() const
   {
     return myArrayID;
   }

@@ -82,7 +82,7 @@ public:
   Standard_EXPORT TopoDS_Shape& Shape();
   
   //! returns the number of vertices candidate to be removed
-  Standard_EXPORT const Standard_Integer NbVertices();
+  Standard_EXPORT Standard_Integer NbVertices();
   
   //! Using  map of list of connex  edges, fuse each list to
   //! one edge and then update myShape

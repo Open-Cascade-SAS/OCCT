@@ -162,7 +162,7 @@ Storage_Error DDF_IOStream::Close()
 //purpose  : 
 //=======================================================================
 
-const Standard_CString DDF_IOStream::MagicNumber()
+Standard_CString DDF_IOStream::MagicNumber()
 { return MAGICNUMBER; }
 
 //=======================================================================

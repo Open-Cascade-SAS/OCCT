@@ -116,8 +116,8 @@ private:
   // ==== Methods
   
   const t_flag Getflag(const Standard_Integer index);
-  const tf_value Getfunc(const Standard_Integer index);
-  const te_ftyp Getftyp(const Standard_Integer index);
+  tf_value Getfunc(const Standard_Integer index);
+  te_ftyp Getftyp(const Standard_Integer index);
   Standard_Integer Add(const t_flag flag,const tf_value func,const te_ftyp ftyp);
   
   // ==== Fields

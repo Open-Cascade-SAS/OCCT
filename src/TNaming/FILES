@@ -33,7 +33,6 @@ TNaming_MapIteratorOfMapOfNamedShape.hxx
 TNaming_MapOfNamedShape.hxx
 TNaming_Name.cxx
 TNaming_Name.hxx
-TNaming_Name.lxx
 TNaming_NamedShape.cxx
 TNaming_NamedShape.hxx
 TNaming_NamedShape.lxx

@@ -154,7 +154,7 @@ Storage_Error FSD_File::Close()
 //purpose  : ------------------ PROTECTED
 //=======================================================================
 
-const Standard_CString FSD_File::MagicNumber()
+Standard_CString FSD_File::MagicNumber()
 {
   return MAGICNUMBER;
 }

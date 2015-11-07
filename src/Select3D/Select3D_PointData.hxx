@@ -77,7 +77,7 @@ public:
   }
 
   // Returns size of internal arrays
-  const Standard_Integer Size () const
+  Standard_Integer Size () const
   {
     return mynbpoints;
   }

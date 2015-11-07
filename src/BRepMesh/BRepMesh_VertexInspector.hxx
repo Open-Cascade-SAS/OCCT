@@ -113,7 +113,7 @@ public:
   }
 
   //! Returns index of point coinciding with regerence one.
-  inline const Standard_Integer GetCoincidentPoint() const
+  inline Standard_Integer GetCoincidentPoint() const
   {
     if ( myResIndices.Size() > 0 )
     {

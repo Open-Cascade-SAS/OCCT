@@ -64,7 +64,6 @@ TopOpeBRepTool_PURGE.cxx
 TopOpeBRepTool_PURGE.hxx
 TopOpeBRepTool_PurgeInternalEdges.cxx
 TopOpeBRepTool_PurgeInternalEdges.hxx
-TopOpeBRepTool_PurgeInternalEdges.lxx
 TopOpeBRepTool_RegularizeS.cxx
 TopOpeBRepTool_RegularizeW.cxx
 TopOpeBRepTool_REGUS.cxx

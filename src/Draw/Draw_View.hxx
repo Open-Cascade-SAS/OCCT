@@ -77,19 +77,19 @@ public: // @name getters and setters
   }
 
   //! Gets horizontal offset.
-  const Standard_Integer GetDx() const
+  Standard_Integer GetDx() const
   {
     return myDx;
   }
 
   //! Gets vertical offset.
-  const Standard_Integer GetDy() const
+  Standard_Integer GetDy() const
   {
     return myDy;
   }
 
   //! Gets parameter of zoom.
-  const Standard_Real GetZoom() const
+  Standard_Real GetZoom() const
   {
     return myZoom;
   }
@@ -101,7 +101,7 @@ public: // @name getters and setters
   }
 
   //! Gets focal distance.
-  const Standard_Real GetFocalDistance() const
+  Standard_Real GetFocalDistance() const
   {
     return myFocalDistance;
   }
@@ -115,13 +115,13 @@ public: //! @name public inline methods
   }
 
   //! Returns true value if current view in 2D mode.
-  const Standard_Boolean Is2D() const
+  Standard_Boolean Is2D() const
   {
     return myIs2D;
   }
 
   //! Returns true value if current view in perspective mode.
-  const Standard_Real IsPerspective() const
+  Standard_Real IsPerspective() const
   {
     return myIsPers;
   }

@@ -517,7 +517,7 @@ void PrsMgr_PresentableObject::SetMutable (const Standard_Boolean theIsMutable)
 // function : IsMutable
 // purpose  :
 // =======================================================================
-const Standard_Boolean PrsMgr_PresentableObject::IsMutable() const
+Standard_Boolean PrsMgr_PresentableObject::IsMutable() const
 {
   return myIsMutable;
 }

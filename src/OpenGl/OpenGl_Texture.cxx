@@ -77,7 +77,7 @@ OpenGl_Texture::~OpenGl_Texture()
 // function : HasMipmaps
 // purpose  :
 // =======================================================================
-const Standard_Boolean OpenGl_Texture::HasMipmaps() const
+Standard_Boolean OpenGl_Texture::HasMipmaps() const
 {
   return myHasMipmaps;
 }

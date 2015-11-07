@@ -306,29 +306,18 @@ protected:
   //! write string at the current position.
   Standard_EXPORT void WriteExtendedString (const TCollection_ExtendedString& buffer);
 
-
-
+private:
+  
+  void WriteHeader();
+  
+  void ReadHeader();
+  
+  static Standard_CString MagicNumber();
 
 private:
 
-  
-  Standard_EXPORT void WriteHeader();
-  
-  Standard_EXPORT void ReadHeader();
-  
-  Standard_EXPORT static const Standard_CString MagicNumber();
-
-
   FSD_BStream myStream;
   FSD_FileHeader myHeader;
-
-
 };
-
-
-
-
-
-
 
 #endif // _FSD_BinaryFile_HeaderFile

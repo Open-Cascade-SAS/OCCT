@@ -42,12 +42,12 @@ inline const PrsMgr_ListOfPresentableObjects& PrsMgr_PresentableObject::Children
   return myChildren;
 }
 
-inline const Standard_Boolean PrsMgr_PresentableObject::HasOwnPresentations() const
+inline Standard_Boolean PrsMgr_PresentableObject::HasOwnPresentations() const
 {
   return myHasOwnPresentations;
 }
 
-inline const PrsMgr_PresentableObjectPointer PrsMgr_PresentableObject::Parent() const
+inline PrsMgr_PresentableObjectPointer PrsMgr_PresentableObject::Parent() const
 {
   return myParent;
 }

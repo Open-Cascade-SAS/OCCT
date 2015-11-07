@@ -90,7 +90,7 @@ public:
   }
 
   //! @return interior style
-  const Aspect_InteriorStyle InteriorStyle() const
+  Aspect_InteriorStyle InteriorStyle() const
   {
     return myInteriorStyle;
   }

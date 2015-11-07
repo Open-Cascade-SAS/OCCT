@@ -199,7 +199,7 @@ public:
   void Set (const Graphic3d_TypeOfSurfaceDetail theDetail) { myDetail = theDetail; }
 
   //! Returns surface detail.
-  const Graphic3d_TypeOfSurfaceDetail Detail() const { return myDetail; }
+  Graphic3d_TypeOfSurfaceDetail Detail() const { return myDetail; }
 
 private:
 

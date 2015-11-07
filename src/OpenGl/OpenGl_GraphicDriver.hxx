@@ -234,7 +234,7 @@ public:
   OpenGl_StateCounter* GetStateCounter() const { return &myStateCounter; }
 
   //! Returns unique ID for primitive arrays.
-  const Standard_Size GetNextPrimitiveArrayUID() const { return myUIDGenerator.Increment(); }
+  Standard_Size GetNextPrimitiveArrayUID() const { return myUIDGenerator.Increment(); }
 
 protected:
 

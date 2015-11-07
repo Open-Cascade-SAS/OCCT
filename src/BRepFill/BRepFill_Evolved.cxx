@@ -127,7 +127,7 @@ static Standard_Integer NbPROFILS     = 0;
 static Standard_Integer NbEDGES       = 0;
 #endif
 
-static const Standard_Real BRepFill_Confusion() 
+static Standard_Real BRepFill_Confusion() 
 {
   Standard_Real Tol = 1.e-6;
   return Tol;

@@ -163,7 +163,7 @@ void TopOpeBRepTool_FuseEdges::Faces(TopTools_DataMapOfShapeShape& theMapFac)
 //purpose  : 
 //=======================================================================
 
-const Standard_Integer TopOpeBRepTool_FuseEdges::NbVertices()
+Standard_Integer TopOpeBRepTool_FuseEdges::NbVertices()
 {
 
   Standard_NullObject_Raise_if(myShape.IsNull(),"FuseEdges : No Shape");

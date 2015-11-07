@@ -254,14 +254,6 @@ Handle(TCollection_HExtendedString) TCollection_HExtendedString::Token
 }
 
 // ----------------------------------------------------------------------------
-// ToExtString
-// ----------------------------------------------------------------------------
-const Standard_ExtString TCollection_HExtendedString::ToExtString() const
-{ 
-   return (myString.ToExtString());
-}
-
-// ----------------------------------------------------------------------------
 // Trunc
 // ----------------------------------------------------------------------------
 void TCollection_HExtendedString::Trunc(const Standard_Integer ahowmany)
