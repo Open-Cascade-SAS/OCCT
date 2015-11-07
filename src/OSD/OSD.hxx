@@ -104,21 +104,16 @@ public:
   //! user's code. Refer to Foundation Classes User's Guide for further details.
   Standard_EXPORT static void SetSignal (const Standard_Boolean theFloatingSignal = Standard_True);
   
-  //! Returns available memory in Kilobytes.
-  Standard_EXPORT static Standard_Integer AvailableMemory();
-  
   //! Commands the process to sleep for a number of seconds.
   Standard_EXPORT static void SecSleep (const Standard_Integer aDelay);
   
   //! Commands the process to sleep for a number of milliseconds
   Standard_EXPORT static void MilliSecSleep (const Standard_Integer aDelay);
   
-
   //! Converts aReal into aCstring in exponential format with a period as
   //! decimal point, no thousand separator and no grouping of digits.
   //! The conversion is independant from the current locale
   Standard_EXPORT static Standard_Boolean RealToCString (const Standard_Real aReal, Standard_PCharacter& aString);
-  
 
   //! Converts aCstring representing a real with a period as
   //! decimal point, no thousand separator and no grouping of digits
@@ -126,60 +121,11 @@ public:
   //! The conversion is independant from the current locale.
   Standard_EXPORT static Standard_Boolean CStringToReal (const Standard_CString aString, Standard_Real& aReal);
   
-  //! Tests if the quotient theDividend/theDivisor
-  //! does not overflow
-  Standard_EXPORT static Standard_Boolean IsDivisible (const Standard_Real aDividend, const Standard_Real aDivisor);
-  
-  //! Returns the exponent in base 2 of a floating-point number.
-  Standard_EXPORT static Standard_Integer GetExponent (const Standard_Real aReal);
-  
-  //! Returns the mantissa of a floating-point number.
-  Standard_EXPORT static Standard_Real GetMantissa (const Standard_Real aReal);
-  
   //! since Windows NT does not support 'SIGINT' signal like UNIX,
   //! then this method checks whether Ctrl-Break keystroke was or
   //! not. If yes then raises Exception_CTRL_BREAK.
   Standard_EXPORT static void ControlBreak();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class OSD_Error;
-friend class OSD_Protection;
-friend class OSD_Path;
-friend class OSD_FileNode;
-friend class OSD_Disk;
-friend class OSD_File;
-friend class OSD_FileIterator;
-friend class OSD_Directory;
-friend class OSD_DirectoryIterator;
-friend class OSD_Chronometer;
-friend class OSD_Timer;
-friend class OSD_Printer;
-friend class OSD_Host;
-friend class OSD_Environment;
-friend class OSD_EnvironmentIterator;
-friend class OSD_Process;
-friend class OSD_SharedLibrary;
-friend class OSD_Thread;
-
 };
-
-
-
-
-
-
 
 #endif // _OSD_HeaderFile
