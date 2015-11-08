@@ -67,6 +67,11 @@
   #define catch(Error)        else if(_Function.Catches(STANDARD_TYPE(Error)))
   #define OCC_CATCH_SIGNALS 
 
+  // Suppress GCC warning "variable ...  might be clobbered by 'longjmp' or 'vfork'"
+  #ifdef __GNUC__
+  #pragma GCC diagnostic ignored "-Wclobbered"
+  #endif
+
 #elif defined(OCC_CONVERT_SIGNALS)
 
   // Exceptions are raied as usual, signal cause jumps in the nearest 
@@ -76,6 +81,11 @@
 				_aHandler.Catches(STANDARD_TYPE(Standard_Failure)); \
 				_aHandler.Error()->Reraise(); \
 			      }
+
+  // Suppress GCC warning "variable ...  might be clobbered by 'longjmp' or 'vfork'"
+  #ifdef __GNUC__
+  #pragma GCC diagnostic ignored "-Wclobbered"
+  #endif
 
 #else
 
