@@ -174,19 +174,19 @@ typedef PM_FONT_INFO* pm_font_info;
 static const PM_FONT_INFO arrPMFontInfo[][TEL_NO_OF_SIZES] =
 {
  // TOM_POINT - not used
- {{0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0},
-  {0}},
+ {{0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0},
+  {0, 0, 0}},
 
  // TOM_PLUS
  {{ 9.f,  9.f, PM_PLUS_10_OFT},

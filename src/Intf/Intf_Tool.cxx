@@ -975,39 +975,24 @@ Standard_Integer Intf_Tool::Inters3d(const gp_Hypr& theCurv,
     {
       if(parint[i] <= parint[j])
       {
-        Standard_Real aTemp = parint[i];
-        parint[i] = parint[j];
-        parint[j] = aTemp;
-
-        aTemp = zint[i];
-        zint[i] = zint[j];
-        zint[j] = aTemp;
-
-        aTemp = yint[i];
-        yint[i] = yint[j];
-        yint[j] = aTemp;
-
-        aTemp = xint[i];
-        xint[i] = xint[j];
-        xint[j] = aTemp;
-
-        aTemp = bord[i];
-        bord[i] = bord[j];
-        bord[j] = RealToInt(aTemp);
+	std::swap (parint[i], parint[j]);
+	std::swap (zint[i], zint[j]);
+	std::swap (yint[i], yint[j]);
+	std::swap (xint[i], xint[j]);
+	std::swap (bord[i], bord[j]);
       }
 
       if((i < nbpi - 1) && IsEqual(parint[i], parint[i+1]))
       {
-        for(Standard_Integer k = i + 1; k < aNbDiffPoints; k++)
-        {
-          parint[k-1] = parint[k];
-          zint[k-1] = zint[k];
-          yint[k-1] = yint[k];
-          xint[k-1] = xint[k];
-          bord[k-1] = bord[k];
-        }
-
         aNbDiffPoints--;
+        for(Standard_Integer k = i; k < aNbDiffPoints; k++)
+        {
+          parint[k] = parint[k+1];
+          zint[k] = zint[k+1];
+          yint[k] = yint[k+1];
+          xint[k] = xint[k+1];
+          bord[k] = bord[k+1];
+        }
       }
     }
   }

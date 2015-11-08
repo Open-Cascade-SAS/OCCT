@@ -343,7 +343,8 @@ static void SegvHandler(const int theSignal,
     return;
   }
 #else
-  (void )theContext;
+  (void)theSignal; // silence GCC warnings
+  (void)theContext;
 #endif
 #ifdef linux
   if (fFltExceptions)

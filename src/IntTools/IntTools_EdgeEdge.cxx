@@ -1030,6 +1030,7 @@ Standard_Integer FindDistPC(const Standard_Real aT1A,
   //
   iC = bMaxDist ? 1 : -1;
   iErr = 0;
+  aT1max = aT2max = 0.; // silence GCC warning
   //
   aGS = 0.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.))-1.;
   aA = aT1A;

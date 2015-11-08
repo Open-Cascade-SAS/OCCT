@@ -166,9 +166,9 @@ void STEPConstruct_GDTProperty::GetDimModifiers(const Handle(StepRepr_CompoundRe
 //purpose  : 
 //=======================================================================
 void STEPConstruct_GDTProperty::GetDimClassOfTolerance(const Handle(StepShape_LimitsAndFits)& theLAF,
-                                   Standard_Boolean theHolle,
-                                   XCAFDimTolObjects_DimensionFormVariance theFV,
-                                   XCAFDimTolObjects_DimensionGrade theG)
+                                   Standard_Boolean& theHolle,
+                                   XCAFDimTolObjects_DimensionFormVariance& theFV,
+                                   XCAFDimTolObjects_DimensionGrade& theG)
 {
   Handle(TCollection_HAsciiString) aFormV = theLAF->FormVariance();
   Handle(TCollection_HAsciiString) aGrade = theLAF->Grade();

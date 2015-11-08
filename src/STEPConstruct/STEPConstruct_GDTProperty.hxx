@@ -47,9 +47,9 @@ public:
                                               XCAFDimTolObjects_DimensionModifiersSequence& theModifiers);
 
   Standard_EXPORT static void GetDimClassOfTolerance(const Handle(StepShape_LimitsAndFits)& theLAF,
-                                                     Standard_Boolean theHolle,
-                                                     XCAFDimTolObjects_DimensionFormVariance theFV,
-                                                     XCAFDimTolObjects_DimensionGrade theG);
+                                                     Standard_Boolean& theHolle,
+                                                     XCAFDimTolObjects_DimensionFormVariance& theFV,
+                                                     XCAFDimTolObjects_DimensionGrade& theG);
 
   Standard_EXPORT static Standard_Boolean GetDimType(const Handle(TCollection_HAsciiString)& theName,
                                                      XCAFDimTolObjects_DimensionType& theType);

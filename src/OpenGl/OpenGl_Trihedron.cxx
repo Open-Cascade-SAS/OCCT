@@ -197,7 +197,7 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
 
   // Set line aspect
   const OpenGl_AspectLine* aCurrentAspectLine = theWorkspace->AspectLine (Standard_True);
-  CALL_DEF_CONTEXTLINE aLineAspect = {1, 1, { 1.F, 1.F, 1.F },  aCurrentAspectLine->Type(), aCurrentAspectLine->Width()};
+  CALL_DEF_CONTEXTLINE aLineAspect = {1, 1, { 1.F, 1.F, 1.F },  aCurrentAspectLine->Type(), aCurrentAspectLine->Width(), 0};
   aLineAspect.Color.r = myZColor.r();
   aLineAspect.Color.g = myZColor.g();
   aLineAspect.Color.b = myZColor.b();

@@ -492,7 +492,8 @@ void OpenGl_GraphicDriver::TextSize (const Handle(Graphic3d_CView)& theView,
     { 1.F, 1.F, 1.F }, //ColorSubTitle
     0, //TextZoomable
     0.F, //TextAngle
-    (int)Font_FA_Regular //TextFontAspect
+    (int)Font_FA_Regular, //TextFontAspect
+    0 //ShaderProgram
   };
   aTextAspect.SetAspect(aDefaultContextText);
   TCollection_ExtendedString anExtText = theText;

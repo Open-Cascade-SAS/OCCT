@@ -2510,7 +2510,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
         anUexpect[i] = anUf;
       }
       
-      Standard_Real aCriticalDelta[aNbCritPointsMax];
+      Standard_Real aCriticalDelta[aNbCritPointsMax] = {0};
       for(Standard_Integer aCritPID = 0; aCritPID < aNbCritPoints; aCritPID++)
       { //We are not intersted in elements of aCriticalDelta array
         //if their index is greater than or equal to aNbCritPoints
