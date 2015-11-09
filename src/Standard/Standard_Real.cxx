@@ -240,7 +240,7 @@ Standard_Real     ATanh(const Standard_Real Value)
     cout << "Illegal agument in ATanh" << endl ;
 #endif
   }
-#if __cplusplus >= 201103L
+#if __QNX__
   return std::atanh(Value);
 #else
   return atanh(Value);
@@ -258,7 +258,7 @@ Standard_Real     ACosh (const Standard_Real Value)
     cout << "Illegal agument in ACosh" << endl ;
 #endif
   }
-#if __cplusplus >= 201103L
+#if __QNX__
   return std::acosh(Value);
 #else
   return acosh(Value);

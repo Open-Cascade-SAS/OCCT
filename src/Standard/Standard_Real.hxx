@@ -294,8 +294,8 @@ inline Standard_Real     Sinh(const Standard_Real Value)
 //-------------------------------------------------------------------
 // ASinh : Returns the hyperbolic arc sine of a real
 //-------------------------------------------------------------------
-inline Standard_Real     ASinh(const Standard_Real Value) 
-#if __cplusplus >= 201103L
+inline Standard_Real     ASinh(const Standard_Real Value)
+#if __QNX__
 { return std::asinh(Value); }
 #else
 { return asinh(Value); }

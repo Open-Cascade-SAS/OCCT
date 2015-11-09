@@ -1343,7 +1343,7 @@ Standard_Real ElCLib::HyperbolaParameter (const gp_Ax2& Pos,
     gp_Vec(Pos.Location (), P).Dot
       (gp_Vec (Pos.YDirection())) / MinorRadius;
 
-#if __cplusplus >= 201103L
+#if __QNX__
   return std::asinh(sht);
 #else
   return asinh(sht);
@@ -1426,7 +1426,7 @@ Standard_Real ElCLib::HyperbolaParameter (const gp_Ax22d& Pos,
 {
   gp_Vec2d V (Pos.YDirection().XY());
   Standard_Real sht = gp_Vec2d(Pos.Location(),P).Dot(V) /MinorRadius;
-#if __cplusplus >= 201103L
+#if __QNX__
   return std::asinh(sht);
 #else
   return asinh(sht);
