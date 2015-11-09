@@ -10,8 +10,10 @@ set BugNumber OCC23008
 
 restore [locate_data_file bug23008_ez15] b1 
 restore [locate_data_file bug23008_fz37] b2 
-bop b1 b2
-set info [ bopnews -v ]
+bclearobjects; bcleartools
+baddobjects b1; baddtools b2
+bfillds
+set info [ bopnews v ]
 for {set i 0} {$i <= 100} {incr i} {
     set word [lsearch $info z$i]
     if {$word == -1} {

@@ -22,7 +22,6 @@
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTest.hxx>
-#include <BOPTest_DrawableShape.hxx>
 #include <BOPTest_Objects.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
@@ -32,7 +31,6 @@
 #include <BRepAlgoAPI_Section.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
-#include <Draw_Color.hxx>
 #include <DrawTrSurf.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
@@ -77,7 +75,6 @@ static Standard_Integer bfuse     (Draw_Interpretor&, Standard_Integer, const ch
 static Standard_Integer bcommon   (Draw_Interpretor&, Standard_Integer, const char**);
 //
 static Standard_Integer bopcurves (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopnews   (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
@@ -109,7 +106,6 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   //
   theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2]",
                                                       __FILE__, bopcurves, g);
-  theCommands.Add("bopnews"  , "use  bopnews -v[e,f]"      , __FILE__, bopnews, g);
   theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni]", 
                   __FILE__, mkvolume , g);
 }
@@ -525,77 +521,6 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   }
   //
   DBRep::Set(a[1], aR);
-  return 0;
-}
-//=======================================================================
-//function : bopnews
-//purpose  : 
-//=======================================================================
-Standard_Integer bopnews (Draw_Interpretor& di, 
-                          Standard_Integer n, 
-                          const char** a)
-{
-  if (n!=2) {
-    di << " use bopnews -v[e,f]\n";
-    return 0;
-  }
-  //
-  if (pPF==NULL) {
-    di << " Prepare BOPAlgo_PaveFiller first >bop S1 S2\n";
-    return 0;
-  }
-  //
-  char buf[32];
-  Standard_CString aText;
-  Standard_Integer i, i1, i2, iFound;
-  Draw_Color aTextColor(Draw_cyan);
-  TopAbs_ShapeEnum aT;
-  Handle(BOPTest_DrawableShape) aDShape;
-  //
-  const BOPDS_PDS& pDS=pPF->PDS();
-  //
-  aT=TopAbs_SHAPE;
-  if (!strcmp (a[1], "-f")) {
-    aT=TopAbs_FACE;
-  }
-  else if (!strcmp (a[1], "-e")){
-    aT=TopAbs_EDGE;
-  }
-  else if (!strcmp (a[1], "-v")){
-    aT=TopAbs_VERTEX;
-  }
-  else {
-    di << " use bopnews -v[e,f]\n";
-    return 0;
-  }
-  //
-  iFound=0;
-  i1=pDS->NbSourceShapes();
-  i2=pDS->NbShapes();
-  for (i=i1; i<i2; ++i) {
-    const BOPDS_ShapeInfo& aSI=pDS->ShapeInfo(i);
-    if (aSI.ShapeType()==aT) {
-      const TopoDS_Shape& aS=aSI.Shape();
-      //
-      Sprintf (buf, "z%d", i);
-      aText=buf;
-      aDShape=new BOPTest_DrawableShape (aS, aText, aTextColor);
-      Draw::Set (aText, aDShape);
-      //
-      Sprintf (buf, " z%d", i);
-      di << buf;
-      //
-      iFound=1;
-    }
-  }
-  //
-  if (iFound) {
-    di << "\n";
-  }
-  else {
-    di << " not found\n";
-  }
-  //
   return 0;
 }
 //=======================================================================

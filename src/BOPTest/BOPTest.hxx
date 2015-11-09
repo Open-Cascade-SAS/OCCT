@@ -55,8 +55,8 @@ public:
 
   Standard_EXPORT static void HistoryCommands  (Draw_Interpretor& aDI);
 
+  Standard_EXPORT static void DebugCommands  (Draw_Interpretor& aDI);
   Standard_EXPORT static void CellsCommands  (Draw_Interpretor& aDI);
-
 
 protected:
 

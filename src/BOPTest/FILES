@@ -13,4 +13,4 @@ BOPTest_OptionCommands.cxx
 BOPTest_PartitionCommands.cxx
 BOPTest_TolerCommands.cxx
 BOPTest_HistoryCommands.cxx
-BOPTest_CellsCommands.cxx
+BOPTest_DebugCommands.cxxBOPTest_CellsCommands.cxx
