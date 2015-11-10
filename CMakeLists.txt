@@ -368,10 +368,14 @@ if ("${INSTALL_DIR}" STREQUAL "")
   message (STATUS "Info: INSTALL_DIR has been set as ${INSTALL_DIR}")
 endif()
 
-message (STATUS "\nInfo: Collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
+string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
 
 # collect all the headers to <binary dir>/inc folder
 COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}")
+
+string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
 
 OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
 OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")

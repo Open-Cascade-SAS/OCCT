@@ -173,7 +173,7 @@ macro (OCCT_CONFIGURE_AND_INSTALL BEING_CONGIRUGED_FILE BUILD_NAME INSTALL_NAME 
 endmacro()
 
 macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOOLKITS)
-  set (OCCT_SOURCE_DIRS)
+  set (OCCT_USED_PACKAGES)
 
   # consider patched header.in template
   set (TEMPLATE_HEADER_PATH "${CMAKE_SOURCE_DIR}/adm/templates/header.in")
@@ -184,45 +184,106 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
   set (ROOT_OCCT_DIR ${CMAKE_SOURCE_DIR})
 
   foreach (OCCT_USED_TOOLKIT ${OCCT_BUILD_TOOLKITS})
-    # append parent folder
-    list (APPEND OCCT_SOURCE_DIRS ${OCCT_USED_TOOLKIT})
-
     # append all required package folders
-    set (OCCT_USED_TOOLKIT_DEPS)
+    set (OCCT_TOOLKIT_PACKAGES)
     if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES")
-      file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_USED_TOOLKIT_DEPS)
+      file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_TOOLKIT_PACKAGES)
     elseif (EXISTS "${CMAKE_SOURCE_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES")
-      file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_USED_TOOLKIT_DEPS)
+      file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_TOOLKIT_PACKAGES)
     endif()
 
-    foreach (OCCT_USED_TOOLKIT_DEP ${OCCT_USED_TOOLKIT_DEPS})
-      list (APPEND OCCT_SOURCE_DIRS ${OCCT_USED_TOOLKIT_DEP})
-    endforeach()
+    list (APPEND OCCT_USED_PACKAGES ${OCCT_TOOLKIT_PACKAGES})
   endforeach()
 
-  foreach (OCCT_SOURCE_DIR ${OCCT_SOURCE_DIRS})
-    # get all header files from each src folder
-    file (GLOB OCCT_HEADER_FILES "${CMAKE_SOURCE_DIR}/src/${OCCT_SOURCE_DIR}/*.[hgl]xx" "${CMAKE_SOURCE_DIR}/src/${OCCT_SOURCE_DIR}/*.h")
-    install (FILES ${OCCT_HEADER_FILES} DESTINATION "${INSTALL_DIR}/inc")
+  list (REMOVE_DUPLICATES OCCT_USED_PACKAGES)
 
-    # create new file including found header
-    foreach (OCCT_HEADER_FILE ${OCCT_HEADER_FILES})
-      get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
-      configure_file ("${TEMPLATE_HEADER_PATH}" "${ROOT_TARGET_OCCT_DIR}/inc/${HEADER_FILE_NAME}" @ONLY)
-    endforeach()
+  set (OCCT_HEADER_FILES_COMPLETE)
+  set (OCCT_HEADER_FILE_NAMES_NOT_IN_FILES)
+  set (OCCT_HEADER_FILE_WITH_PROPER_NAMES)
+  foreach (OCCT_PACKAGE ${OCCT_USED_PACKAGES})
+    if (NOT EXISTS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
+      message (WARNING "FILES has not been found in ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}")
+      continue()
+    endif()
 
-    # consider pathed the source files
-    if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_SOURCE_DIR}")
-      file (GLOB PATCHED_OCCT_HEADER_FILES "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_SOURCE_DIR}/*.[hgl]xx" "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_SOURCE_DIR}/*.h")
-      install (FILES ${PATCHED_OCCT_HEADER_FILES} DESTINATION "${INSTALL_DIR}/inc")
+    file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES" OCCT_ALL_FILE_NAMES)
 
-      # create new patched file including found header
-      foreach (OCCT_HEADER_FILE ${PATCHED_OCCT_HEADER_FILES})
-        get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
-        configure_file ("${TEMPLATE_HEADER_PATH}" "${ROOT_TARGET_OCCT_DIR}/inc/${HEADER_FILE_NAME}" @ONLY)
+    # emit warnings if there is unprocessed headers
+    file (GLOB OCCT_ALL_FILES_IN_DIR "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/*.*")
+    foreach (OCCT_FILE_IN_DIR ${OCCT_ALL_FILES_IN_DIR})
+      foreach (OCCT_FILE_NAME ${OCCT_ALL_FILE_NAMES})
+        string (REGEX MATCH "${OCCT_FILE_NAME}" IS_FILE_FOUND "${OCCT_FILE_IN_DIR}")
+        if (IS_FILE_FOUND)
+          string (REGEX MATCH ".+[.]h|[lg]xx" IS_HEADER_FOUND "${OCCT_FILE_NAME}")
+          if (IS_HEADER_FOUND)
+            list (APPEND OCCT_HEADER_FILES_COMPLETE ${OCCT_HEADER_FILE_IN_DIR})
+
+            # collect header files with name that does not contain its package one
+            string (FIND "${OCCT_FILE_NAME}" "${OCCT_PACKAGE}_" FOUND_INDEX)
+            if (NOT ${FOUND_INDEX} EQUAL 0)
+              list (APPEND OCCT_HEADER_FILE_WITH_PROPER_NAMES "${OCCT_FILE_NAME}")
+            endif()            
+          endif()
+
+          break()
+        endif()
       endforeach()
+
+      if (NOT IS_FILE_FOUND)
+        message (STATUS "Warning. ${OCCT_FILE_IN_DIR} is not involved into ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
+        
+        string (REGEX MATCH ".+[.]h|[lg]xx" IS_HEADER_FOUND "${OCCT_FILE_NAME}")
+        if (IS_HEADER_FOUND)
+          list (APPEND OCCT_HEADER_FILE_NAMES_NOT_IN_FILES ${OCCT_FILE_NAME})
+        endif()
+      endif()
+    endforeach()
+  endforeach()
+  
+  # create new file including found header
+  foreach (OCCT_HEADER_FILE ${OCCT_HEADER_FILES_COMPLETE})
+    get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
+    configure_file ("${TEMPLATE_HEADER_PATH}" "${ROOT_TARGET_OCCT_DIR}/inc/${HEADER_FILE_NAME}" @ONLY)
+  endforeach()
+  
+  install (FILES ${OCCT_HEADER_FILES_COMPLETE} DESTINATION "${INSTALL_DIR}/inc")
+  
+  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+  message (STATUS "Info. \(${CURRENT_TIME}\) Checking headers in inc folder...")
+    
+  file (GLOB OCCT_HEADER_FILES_OLD "${ROOT_TARGET_OCCT_DIR}/inc/*")
+  foreach (OCCT_HEADER_FILE_OLD ${OCCT_HEADER_FILES_OLD})
+    get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE_OLD} NAME)
+    string (REGEX MATCH "^[a-zA-Z0-9]+" PACKAGE_NAME "${HEADER_FILE_NAME}")
+    
+    list (FIND OCCT_USED_PACKAGES ${PACKAGE_NAME} IS_HEADER_FOUND)
+    if (NOT ${IS_HEADER_FOUND} EQUAL -1)
+      if (NOT EXISTS "${CMAKE_SOURCE_DIR}/src/${PACKAGE_NAME}/${HEADER_FILE_NAME}")
+        message (STATUS "Warning. ${OCCT_HEADER_FILE_OLD} is not presented in the sources and will be removed from ${ROOT_TARGET_OCCT_DIR}/inc")
+        file (REMOVE "${OCCT_HEADER_FILE_OLD}")
+      else()
+        list (FIND OCCT_HEADER_FILE_NAMES_NOT_IN_FILES ${PACKAGE_NAME} IS_HEADER_FOUND)
+        if (NOT ${IS_HEADER_FOUND} EQUAL -1)
+          message (STATUS "Warning. ${OCCT_HEADER_FILE_OLD} is presented in the sources but not involved in FILES and will be removed from ${ROOT_TARGET_OCCT_DIR}/inc")
+          file (REMOVE "${OCCT_HEADER_FILE_OLD}")
+        endif()
+      endif()
+    else()
+      set (IS_HEADER_FOUND -1)
+      if (NOT "${OCCT_HEADER_FILE_WITH_PROPER_NAMES}" STREQUAL "")
+        list (FIND OCCT_HEADER_FILE_WITH_PROPER_NAMES ${HEADER_FILE_NAME} IS_HEADER_FOUND)
+      endif()
+      
+      if (${IS_HEADER_FOUND} EQUAL -1)
+        message (STATUS "Warning. \(${PACKAGE_NAME}\) ${OCCT_HEADER_FILE_OLD} is not used and will be removed from ${ROOT_TARGET_OCCT_DIR}/inc")
+        file (REMOVE "${OCCT_HEADER_FILE_OLD}")
+      endif()
     endif()
   endforeach()
+  
+  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+  message (STATUS "Info. \(${CURRENT_TIME}\) End the checking")
+
 endmacro()
 
 macro (OCCT_COPY_FILE_OR_DIR BEING_COPIED_OBJECT DESTINATION_PATH)
