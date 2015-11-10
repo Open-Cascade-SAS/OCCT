@@ -433,11 +433,19 @@ public:
   //! Returns the settings of a single Z layer.
   Standard_EXPORT Graphic3d_ZLayerSettings ZLayerSettings (const Standard_Integer theLayerId);
 
+  //! Return Graphic Driver instance.
   Standard_EXPORT const Handle(Graphic3d_GraphicDriver)& Driver() const;
 
   Standard_EXPORT Standard_ExtString NextName() const;
 
   Standard_EXPORT Standard_CString Domain() const;
+
+  //! Return default Rendering Parameters.
+  //! By default these parameters are set in a new V3d_View.
+  Standard_EXPORT const Graphic3d_RenderingParams& DefaultRenderingParams() const;
+
+  //! Set default Rendering Parameters.
+  Standard_EXPORT void SetDefaultRenderingParams (const Graphic3d_RenderingParams& theParams);
 
 friend class V3d_View;
 friend class V3d_Light;
@@ -484,6 +492,7 @@ private:
   V3d_TypeOfSurfaceDetail MySurfaceDetail;
   Quantity_PlaneAngle MyDefaultAngle;
   V3d_TypeOfView MyDefaultTypeOfView;
+  Graphic3d_RenderingParams myDefaultRenderingParams;
   Handle(V3d_Light) MyCurrentSelectedLight;
   TColStd_ListIteratorOfListOfTransient myActiveViewsIterator;
   TColStd_ListIteratorOfListOfTransient myDefinedViewsIterator;

@@ -136,6 +136,8 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
   myView->SetBackground         (theViewer->GetBackgroundColor());
   myView->SetGradientBackground (theViewer->GetGradientBackground());
 
+  ChangeRenderingParams() = theViewer->DefaultRenderingParams();
+
   // camera init
   Handle(Graphic3d_Camera) aCamera = new Graphic3d_Camera();
   aCamera->SetFOVy (45.0);

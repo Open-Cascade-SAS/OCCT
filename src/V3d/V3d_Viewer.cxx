@@ -534,3 +534,21 @@ void V3d_Viewer::IncrCount()
 {
   myNextCount++;
 }
+
+//=======================================================================
+//function : DefaultRenderingParams
+//purpose  :
+//=======================================================================
+const Graphic3d_RenderingParams& V3d_Viewer::DefaultRenderingParams() const
+{
+  return myDefaultRenderingParams;
+}
+
+//=======================================================================
+//function : SetDefaultRenderingParams
+//purpose  :
+//=======================================================================
+void V3d_Viewer::SetDefaultRenderingParams (const Graphic3d_RenderingParams& theParams)
+{
+  myDefaultRenderingParams = theParams;
+}

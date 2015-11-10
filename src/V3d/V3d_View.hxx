@@ -967,6 +967,9 @@ public:
   Standard_EXPORT const Handle(Graphic3d_Camera)& Camera() const;
 
   //! Returns current rendering parameters and effect settings.
+  //! By default it returns default parameters of current viewer.
+  //! To define view-specific settings use method V3d_View::ChangeRenderingParams().
+  //! @sa V3d_Viewer::DefaultRenderingParams()
   Standard_EXPORT const Graphic3d_RenderingParams& RenderingParams() const;
 
   //! Returns reference to current rendering parameters and effect settings.
