@@ -255,3 +255,23 @@ void XCAFDimTolObjects_DatumObject::SetDatumTargetWidth(const Standard_Real theW
 {
   myWidth = theWidth;
 }
+
+//=======================================================================
+//function : GetDatumTargetNumber
+//purpose  : 
+//=======================================================================
+
+Standard_Integer XCAFDimTolObjects_DatumObject::GetDatumTargetNumber() const
+{
+  return myDatumTargetNumber;
+}
+
+//=======================================================================
+//function : SetDatumTargetNumber
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::SetDatumTargetNumber(const Standard_Integer theNumber)
+{
+  myDatumTargetNumber = theNumber;
+}

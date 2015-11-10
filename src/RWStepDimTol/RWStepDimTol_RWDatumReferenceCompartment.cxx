@@ -156,7 +156,7 @@ void RWStepDimTol_RWDatumReferenceCompartment::WriteStep (StepData_StepWriter& S
   else if (aBaseType == 2) {
     Handle(StepDimTol_HArray1OfDatumReferenceElement) anArray = ent->Base().CommonDatumList();
     Standard_Integer i, nb = (anArray.IsNull() ? 0 : anArray->Length());
-    SW.OpenSub();
+    SW.OpenTypedSub("COMMON_DATUM_LIST");
     for (i = 1; i <= nb; i++)  
       SW.Send (anArray->Value(i));
     SW.CloseSub();
@@ -170,12 +170,14 @@ void RWStepDimTol_RWDatumReferenceCompartment::WriteStep (StepData_StepWriter& S
       Standard_Integer aType = aModifier.CaseNum(aModifier.Value());
       switch (aType) {
         case 1: SW.Send(aModifier.DatumReferenceModifierWithValue()); break;
-        case 2: SW.SendEnum(aModifier.SimpleDatumReferenceModifierMember()->EnumText());break;
+        case 2: SW.Send(aModifier.SimpleDatumReferenceModifierMember());break;
       }
     }
     SW.CloseSub();
-  }  
-  
+  }
+  else {
+    SW.SendUndef();
+  }
 }
 
 //=======================================================================

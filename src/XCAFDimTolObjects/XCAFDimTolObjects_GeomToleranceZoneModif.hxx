@@ -20,7 +20,8 @@
 enum XCAFDimTolObjects_GeomToleranceZoneModif
 {
 XCAFDimTolObjects_GeomToleranceZoneModif_None,
-XCAFDimTolObjects_GeomToleranceZoneModif_P,
+XCAFDimTolObjects_GeomToleranceZoneModif_Projected,
+XCAFDimTolObjects_GeomToleranceZoneModif_Runout,
 XCAFDimTolObjects_GeomToleranceZoneModif_NonUniform
 };
 

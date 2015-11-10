@@ -44,6 +44,9 @@ public:
 
   virtual Standard_Boolean SetName(const Standard_CString /*theName*/) Standard_OVERRIDE
     {  return Standard_True;  }
+
+  inline Standard_Integer Kind() const
+    {return 4;}
   
   Standard_EXPORT virtual   Standard_CString EnumText()  const Standard_OVERRIDE;
   

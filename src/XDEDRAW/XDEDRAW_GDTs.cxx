@@ -19,6 +19,8 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 
+#include <STEPConstruct_GDTProperty.hxx>
+
 #include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
@@ -342,6 +344,13 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
     di<<"Use: XDumpNbDGTs Doc";
     return 1;
   }
+
+  Standard_Boolean isFull = Standard_False;
+  if (argc == 3) {
+    char aChar = argv[2][0];
+    if (aChar == 'f')
+      isFull = Standard_True;
+  }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
@@ -358,10 +367,79 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
   TDF_LabelSequence aGDTs;
   aDimTolTool->GetDimensionLabels(aGDTs);
   di << "\n NbOfDimensions          : " << aGDTs.Length();
+  if (isFull) {
+    Standard_Integer nbSize = 0,
+                     nbLocation = 0,
+                     nbAngular = 0,
+                     nbWithPath = 0;
+    for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
+      Handle(XCAFDoc_Dimension) aDimAttr;
+      if (!aGDTs.Value(i).FindAttribute(XCAFDoc_Dimension::GetID(),aDimAttr)) 
+        continue;
+      Handle(XCAFDimTolObjects_DimensionObject) anObject = aDimAttr->GetObject();
+      if (anObject.IsNull())
+        continue;
+      XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
+      if (STEPConstruct_GDTProperty::IsDimensionalLocation(aDimType)) {
+        nbLocation++;
+      }
+      else if (aDimType == XCAFDimTolObjects_DimensionType_Location_Angular) {
+        nbAngular++;
+        nbLocation++;
+      }
+      else if (aDimType == XCAFDimTolObjects_DimensionType_Location_WithPath) {
+        nbLocation++;
+        nbWithPath++;
+      }
+      else if (STEPConstruct_GDTProperty::IsDimensionalSize(aDimType)) {
+        nbSize++;
+      }
+      else if (aDimType == XCAFDimTolObjects_DimensionType_Size_Angular) {
+        nbSize++;
+        nbAngular++;
+      }
+      else if (aDimType == XCAFDimTolObjects_DimensionType_Size_WithPath) {
+        nbSize++;
+        nbWithPath++;
+      }
+    }
+    di << "\n  NbOfDimensionalSize    : " << nbSize;
+    di << "\n  NbOfDimensionalLocation: " << nbLocation;
+    di << "\n  NbOfAngular            : " << nbAngular;
+    di << "\n  NbOfWithPath           : " << nbWithPath;
+  }
 
   aGDTs.Clear();
   aDimTolTool->GetGeomToleranceLabels(aGDTs);
   di << "\n NbOfTolerances          : " << aGDTs.Length();
+  if (isFull) {
+    Standard_Integer nbWithModif = 0,
+                     nbWithMaxTol = 0,
+                     nbWithDatumRef = 0;
+    for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
+      Handle(XCAFDoc_GeomTolerance) aGTAttr;
+      if (!aGDTs.Value(i).FindAttribute(XCAFDoc_GeomTolerance::GetID(),aGTAttr)) 
+        continue;
+      Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = aGTAttr->GetObject();
+      if (anObject.IsNull())
+        continue;
+      if (anObject->GetModifiers().Length() > 0 ||
+          anObject->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None) {
+        nbWithModif++;
+      }
+      if (anObject->GetMaxValueModifier() != 0) {
+        nbWithMaxTol++;
+      }
+      TDF_LabelSequence aDatumSeq;
+      aDimTolTool->GetDatumWithObjectOfTolerLabels(aGDTs.Value(i), aDatumSeq);
+      if (aDatumSeq.Length() > 0) {
+        nbWithDatumRef++;
+      }
+    }
+    di << "\n  NbOfGTWithModifiers    : " << nbWithModif;
+    di << "\n  NbOfGTWithMaxTolerance : " << nbWithMaxTol;
+    di << "\n  NbOfGTWithDatums       : " << nbWithDatumRef;
+  }
 
   Standard_Integer aCounter = 0;
   Standard_Integer aCounter1 = 0;
@@ -2084,7 +2162,7 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
   di.Add ("XDumpDGTs","XDumpDGTs Doc shape/label/all ",
     __FILE__, DumpDGTs, g);
 
-  di.Add ("XDumpNbDGTs","XDumpDGTs Doc",
+  di.Add ("XDumpNbDGTs","XDumpNbDGTs Doc [f (full dumping)]",
     __FILE__, DumpNbDGTs, g);
 
   di.Add ("XAddDimension","XAddDimension Doc shape/label [shape/label]",

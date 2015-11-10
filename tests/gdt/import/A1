@@ -33,12 +33,12 @@ set ref_data {
  	 0:1:4:4 GeomTolerance.9.1 ( T 12 TV 0, V 0.5, M 15 )
  	 	 0:1:4:5 Datum.9.1.1 ( )
  0:1:1:1:9 Shape.10
- 	 0:1:4:6 GeomTolerance.10.1 ( T 9 TV 0, V 0.75 )
+ 	 0:1:4:6 GeomTolerance.10.1 ( T 10 TV 0, V 0.75 )
  	 	 0:1:4:7 Datum.10.1.1 ( )
  	 	 0:1:4:8 Datum.10.1.2 ( )
  	 	 0:1:4:9 Datum.10.1.3 ( )
  0:1:1:1:10 Shape.11
- 	 0:1:4:6 GeomTolerance.11.1 ( T 9 TV 0, V 0.75 )
+ 	 0:1:4:6 GeomTolerance.11.1 ( T 10 TV 0, V 0.75 )
  	 	 0:1:4:7 Datum.11.1.1 ( )
  	 	 0:1:4:8 Datum.11.1.2 ( )
  	 	 0:1:4:9 Datum.11.1.3 ( )
@@ -47,12 +47,12 @@ set ref_data {
  0:1:1:1:12 Shape.13
  	 0:1:4:19 Dimension.13.1 ( T 15, V 35, VL 0, VU 0.20000000000000001, P 0 )
  0:1:1:1:13 Shape.14
- 	 0:1:4:10 GeomTolerance.14.1 ( T 9 TV 0, V 0.75 )
+ 	 0:1:4:10 GeomTolerance.14.1 ( T 10 TV 0, V 0.75 )
  	 	 0:1:4:11 Datum.14.1.1 ( )
  	 	 0:1:4:12 Datum.14.1.2 ( )
  	 	 0:1:4:13 Datum.14.1.3 ( )
  0:1:1:1:14 Shape.15
- 	 0:1:4:10 GeomTolerance.15.1 ( T 9 TV 0, V 0.75 )
+ 	 0:1:4:10 GeomTolerance.15.1 ( T 10 TV 0, V 0.75 )
  	 	 0:1:4:11 Datum.15.1.1 ( )
  	 	 0:1:4:12 Datum.15.1.2 ( )
  	 	 0:1:4:13 Datum.15.1.3 ( )

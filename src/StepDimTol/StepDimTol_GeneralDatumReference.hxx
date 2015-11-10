@@ -59,7 +59,7 @@ public:
   //! Indicates is field Modifiers exist
   inline Standard_Boolean HasModifiers() const
   {
-    return myModifiers.IsNull();
+    return !(myModifiers.IsNull() || myModifiers->Length() == 0);
   }
   
   //! Returns field Modifiers

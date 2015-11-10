@@ -87,6 +87,10 @@ public:
 
   Standard_EXPORT void SetDatumTargetWidth (const Standard_Real theWidth);
 
+  Standard_EXPORT Standard_Integer GetDatumTargetNumber() const;
+
+  Standard_EXPORT void SetDatumTargetNumber (const Standard_Integer theNumber);
+
 
   DEFINE_STANDARD_RTTI(XCAFDimTolObjects_DatumObject,Standard_Transient)
 
@@ -103,7 +107,7 @@ private:
   gp_Ax2 myAxis;
   Standard_Real myLength;
   Standard_Real myWidth;
-  
+  Standard_Integer myDatumTargetNumber;
 
 };
 

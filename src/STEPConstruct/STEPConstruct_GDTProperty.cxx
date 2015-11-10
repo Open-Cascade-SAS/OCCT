@@ -15,8 +15,20 @@
 // commercial license or contractual agreement.
 
 #include <STEPConstruct_GDTProperty.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepDimTol_CylindricityTolerance.hxx>
+#include <StepDimTol_FlatnessTolerance.hxx>
+#include <StepDimTol_LineProfileTolerance.hxx>
+#include <StepDimTol_PositionTolerance.hxx>
+#include <StepDimTol_RoundnessTolerance.hxx>
+#include <StepDimTol_StraightnessTolerance.hxx>
+#include <StepDimTol_SurfaceProfileTolerance.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
-   
+#include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
+#include <XCAFDimTolObjects_DatumModifWithValue.hxx>
+
 //=======================================================================
 //function : STEPConstruct_GDTProperty
 //purpose  : 
@@ -597,4 +609,716 @@ Standard_Boolean STEPConstruct_GDTProperty::GetTolValueType(const Handle(TCollec
       return Standard_True;
     }
     return Standard_False;
+}
+
+
+//=======================================================================
+//function : GetDimTypeName
+//purpose  : 
+//=======================================================================
+Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimTypeName(const XCAFDimTolObjects_DimensionType theType)
+{
+  Handle(TCollection_HAsciiString) aName;
+        switch (theType) {
+        // Dimensional_Location
+        case XCAFDimTolObjects_DimensionType_Location_CurvedDistance:
+          aName = new TCollection_HAsciiString("curved distance");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance:
+          aName = new TCollection_HAsciiString("linear distance");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToOuter:
+          aName = new TCollection_HAsciiString("linear distance centre outer");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToInner:
+          aName = new TCollection_HAsciiString("linear distance centre inner");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToCenter:
+          aName = new TCollection_HAsciiString("linear distance outer centre");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToOuter:
+          aName = new TCollection_HAsciiString("linear distance outer outer");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToInner:
+          aName = new TCollection_HAsciiString("linear distance outer inner");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToCenter:
+          aName = new TCollection_HAsciiString("linear distance inner centre");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToOuter:
+          aName = new TCollection_HAsciiString("linear distance inner outer");
+          break;
+        case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner:
+          aName = new TCollection_HAsciiString("linear distance inner inner");
+          break;
+        //Dimensional_Size
+        case XCAFDimTolObjects_DimensionType_Size_CurveLength:
+          aName = new TCollection_HAsciiString("curve length");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_Diameter:
+          aName = new TCollection_HAsciiString("diameter");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_SphericalDiameter:
+          aName = new TCollection_HAsciiString("spherical diameter");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_Radius:
+          aName = new TCollection_HAsciiString("radius");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_SphericalRadius:
+          aName = new TCollection_HAsciiString("spherical radius");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalMinorDiameter:
+          aName = new TCollection_HAsciiString("toroidal minor diameter");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalMajorDiameter:
+          aName = new TCollection_HAsciiString("toroidal major diameter");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalMinorRadius:
+          aName = new TCollection_HAsciiString("toroidal minor radius");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalMajorRadius:
+          aName = new TCollection_HAsciiString("toroidal major radius");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorDiameter:
+          aName = new TCollection_HAsciiString("toroidal high major diameter");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorDiameter:
+          aName = new TCollection_HAsciiString("toroidal low major diameter");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorRadius:
+          aName = new TCollection_HAsciiString("toroidal high major radius");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorRadius:
+          aName = new TCollection_HAsciiString("toroidal low major radius");
+          break;
+        case XCAFDimTolObjects_DimensionType_Size_Thickness:
+          aName = new TCollection_HAsciiString("thickness");
+          break;
+        // Other entities
+        default:
+          aName = new TCollection_HAsciiString();
+      }
+  return aName;
+}
+
+//=======================================================================
+//function : GetDimQualifierName
+//purpose  : 
+//=======================================================================
+Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimQualifierName(const XCAFDimTolObjects_DimensionQualifier theQualifier)
+{
+  Handle(TCollection_HAsciiString) aName;
+  switch (theQualifier) {
+    case XCAFDimTolObjects_DimensionQualifier_Min:
+      aName = new TCollection_HAsciiString("minimum");
+      break;
+    case XCAFDimTolObjects_DimensionQualifier_Avg:
+      aName = new TCollection_HAsciiString("average");
+      break;
+    case XCAFDimTolObjects_DimensionQualifier_Max:
+      aName = new TCollection_HAsciiString("maximum");
+      break;
+    default:
+      aName = new TCollection_HAsciiString();
+  }
+  return aName;
+}
+
+//=======================================================================
+//function : GetDimModifierName
+//purpose  : 
+//=======================================================================
+Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimModifierName(const XCAFDimTolObjects_DimensionModif theModifier)
+{
+  Handle(TCollection_HAsciiString) aName;
+  switch (theModifier) {
+    case XCAFDimTolObjects_DimensionModif_ControlledRadius:
+      aName = new TCollection_HAsciiString("controlled radius");
+      break;
+    case XCAFDimTolObjects_DimensionModif_Square:
+      aName = new TCollection_HAsciiString("square");
+      break;
+    case XCAFDimTolObjects_DimensionModif_StatisticalTolerance:
+      aName = new TCollection_HAsciiString("statistical");
+      break;
+    case XCAFDimTolObjects_DimensionModif_ContinuousFeature:
+      aName = new TCollection_HAsciiString("continuous feature");
+      break;
+    case XCAFDimTolObjects_DimensionModif_TwoPointSize:
+      aName = new TCollection_HAsciiString("two point size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_LocalSizeDefinedBySphere:
+      aName = new TCollection_HAsciiString("local size defined by a sphere");
+      break;
+    case XCAFDimTolObjects_DimensionModif_LeastSquaresAssociationCriterion:
+      aName = new TCollection_HAsciiString("least squares association criteria");
+      break;
+    case XCAFDimTolObjects_DimensionModif_MaximumInscribedAssociation:
+      aName = new TCollection_HAsciiString("maximum inscribed association criteria");
+      break;
+    case XCAFDimTolObjects_DimensionModif_MinimumCircumscribedAssociation:
+      aName = new TCollection_HAsciiString("minimum circumscribed association criteria");
+      break;
+    case XCAFDimTolObjects_DimensionModif_CircumferenceDiameter:
+      aName = new TCollection_HAsciiString("circumference diameter calculated size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_AreaDiameter:
+      aName = new TCollection_HAsciiString("area diameter calculated size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_VolumeDiameter:
+      aName = new TCollection_HAsciiString("volume diameter calculated size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_MaximumSize:
+      aName = new TCollection_HAsciiString("maximum rank order size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_MinimumSize:
+      aName = new TCollection_HAsciiString("minimum rank order size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_AverageSize:
+      aName = new TCollection_HAsciiString("average rank order size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_MedianSize:
+      aName = new TCollection_HAsciiString("median rank order size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_MidRangeSize:
+      aName = new TCollection_HAsciiString("mid range rank order size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_RangeOfSizes:
+      aName = new TCollection_HAsciiString("range rank order size");
+      break;
+    case XCAFDimTolObjects_DimensionModif_AnyRestrictedPortionOfFeature:
+      aName = new TCollection_HAsciiString("any part of the feature");
+      break;
+    case XCAFDimTolObjects_DimensionModif_AnyCrossSection:
+      aName = new TCollection_HAsciiString("any cross section");
+      break;
+    case XCAFDimTolObjects_DimensionModif_SpecificFixedCrossSection:
+      aName = new TCollection_HAsciiString("specific fixed cross section");
+      break;
+    case XCAFDimTolObjects_DimensionModif_CommonTolerance:
+      aName = new TCollection_HAsciiString("common tolerance");
+      break;
+    case XCAFDimTolObjects_DimensionModif_FreeStateCondition:
+      aName = new TCollection_HAsciiString("free state condition");
+      break;
+    default: aName = new TCollection_HAsciiString();
+  }
+  return aName;
+}
+
+//=======================================================================
+//function : GetLimitsAndFits
+//purpose  : 
+//=======================================================================
+Handle(StepShape_LimitsAndFits) STEPConstruct_GDTProperty::GetLimitsAndFits(Standard_Boolean theHole,
+                       XCAFDimTolObjects_DimensionFormVariance theFormVariance,
+                       XCAFDimTolObjects_DimensionGrade theGrade)
+{
+  Handle(StepShape_LimitsAndFits) aLAF = new StepShape_LimitsAndFits();
+  Handle(TCollection_HAsciiString) aGradeStr, aFormStr, aHoleStr;
+  
+  if (theGrade == XCAFDimTolObjects_DimensionGrade_IT01)
+      aGradeStr = new TCollection_HAsciiString("01");
+    else
+      aGradeStr = new TCollection_HAsciiString((Standard_Integer)theGrade + 1);
+  
+  switch (theFormVariance) {
+    case XCAFDimTolObjects_DimensionFormVariance_None:
+      aFormStr = new TCollection_HAsciiString("");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_A:
+      aFormStr = new TCollection_HAsciiString("A");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_B:
+      aFormStr = new TCollection_HAsciiString("B");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_C:
+      aFormStr = new TCollection_HAsciiString("C");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_CD:
+      aFormStr = new TCollection_HAsciiString("CD");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_D:
+      aFormStr = new TCollection_HAsciiString("D");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_E:
+      aFormStr = new TCollection_HAsciiString("E");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_EF:
+      aFormStr = new TCollection_HAsciiString("EF");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_F:
+      aFormStr = new TCollection_HAsciiString("F");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_FG:
+      aFormStr = new TCollection_HAsciiString("FG");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_G:
+      aFormStr = new TCollection_HAsciiString("G");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_H:
+      aFormStr = new TCollection_HAsciiString("H");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_JS:
+      aFormStr = new TCollection_HAsciiString("JS");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_J:
+      aFormStr = new TCollection_HAsciiString("J");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_K:
+      aFormStr = new TCollection_HAsciiString("K");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_M:
+      aFormStr = new TCollection_HAsciiString("M");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_N:
+      aFormStr = new TCollection_HAsciiString("N");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_P:
+      aFormStr = new TCollection_HAsciiString("P");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_R:
+      aFormStr = new TCollection_HAsciiString("R");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_S:
+      aFormStr = new TCollection_HAsciiString("S");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_T:
+      aFormStr = new TCollection_HAsciiString("T");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_U:
+      aFormStr = new TCollection_HAsciiString("U");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_V:
+      aFormStr = new TCollection_HAsciiString("V");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_X:
+      aFormStr = new TCollection_HAsciiString("X");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_Y:
+      aFormStr = new TCollection_HAsciiString("Y");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_Z:
+      aFormStr = new TCollection_HAsciiString("Z");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_ZA:
+      aFormStr = new TCollection_HAsciiString("ZA");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_ZB:
+      aFormStr = new TCollection_HAsciiString("ZB");
+      break;
+    case XCAFDimTolObjects_DimensionFormVariance_ZC:
+      aFormStr = new TCollection_HAsciiString("ZC");
+      break;
+  }
+
+  if (theHole) {
+    aHoleStr = new TCollection_HAsciiString("hole");
+  }
+  else {
+    aHoleStr = new TCollection_HAsciiString("shaft");
+    aFormStr->LowerCase();
+  }
+  aLAF->Init(aFormStr, aHoleStr, aGradeStr, new TCollection_HAsciiString);
+  return aLAF;
+}
+
+//=======================================================================
+//function : GetDatumTargetName
+//purpose  : 
+//=======================================================================
+Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDatumTargetName(const XCAFDimTolObjects_DatumTargetType theDatumType)
+{
+  Handle(TCollection_HAsciiString) aName;
+  switch (theDatumType) {
+    case XCAFDimTolObjects_DatumTargetType_Point:
+      aName = new TCollection_HAsciiString("point");
+      break;
+    case XCAFDimTolObjects_DatumTargetType_Line:
+      aName = new TCollection_HAsciiString("line");
+      break;
+    case XCAFDimTolObjects_DatumTargetType_Rectangle:
+      aName = new TCollection_HAsciiString("rectangle");
+      break;
+    case XCAFDimTolObjects_DatumTargetType_Circle:
+      aName = new TCollection_HAsciiString("circle");
+      break;
+    case XCAFDimTolObjects_DatumTargetType_Area:
+      aName = new TCollection_HAsciiString("area");
+      break;
+    default: aName = new TCollection_HAsciiString();
+  }
+  return aName;
+}
+
+//=======================================================================
+//function : GetAxis2Placement3D
+//purpose  : 
+//=======================================================================
+Handle(StepGeom_Axis2Placement3d) STEPConstruct_GDTProperty::GetAxis2Placement3D(const gp_Ax2 theAxis)
+{
+  Handle(StepGeom_Axis2Placement3d) anA2P3D = new StepGeom_Axis2Placement3d();
+  Handle(StepGeom_CartesianPoint) aPoint = new StepGeom_CartesianPoint();
+  Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
+  for (Standard_Integer i = 1; i <= 3; i++)
+    aCoords->SetValue(i, theAxis.Location().Coord(i));
+  aPoint->Init(new TCollection_HAsciiString(), aCoords);
+  Handle(StepGeom_Direction) anAxis, aRefDirection;
+  Handle(TColStd_HArray1OfReal) anAxisCoords = new TColStd_HArray1OfReal(1, 3);
+  for (Standard_Integer i = 1; i <= 3; i++)
+    anAxisCoords->SetValue(i, theAxis.Direction().Coord(i));
+  anAxis = new StepGeom_Direction();
+  anAxis->Init(new TCollection_HAsciiString(), anAxisCoords);
+  Handle(TColStd_HArray1OfReal) aDirCoords = new TColStd_HArray1OfReal(1, 3);
+  for (Standard_Integer i = 1; i <= 3; i++)
+    aDirCoords->SetValue(i, theAxis.XDirection().Coord(i));
+  aRefDirection = new StepGeom_Direction();
+  aRefDirection->Init(new TCollection_HAsciiString(), aDirCoords);
+  anA2P3D->Init(new TCollection_HAsciiString("orientation"), aPoint, Standard_True, anAxis, Standard_True, aRefDirection);
+  return anA2P3D;
+}
+
+//=======================================================================
+//function : IsDimensionalSize
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPConstruct_GDTProperty::IsDimensionalLocation(const XCAFDimTolObjects_DimensionType theType)
+{
+  if (theType == XCAFDimTolObjects_DimensionType_Location_None ||
+      theType == XCAFDimTolObjects_DimensionType_Location_CurvedDistance  ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToOuter ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToInner ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToCenter ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToOuter ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToInner ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToCenter ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToOuter ||
+      theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner ||
+      theType == XCAFDimTolObjects_DimensionType_Location_Oriented)
+    return Standard_True;
+  return Standard_False;
+}
+
+//=======================================================================
+//function : IsDimensionalSize
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPConstruct_GDTProperty::IsDimensionalSize(const XCAFDimTolObjects_DimensionType theType)
+{
+  if (theType == XCAFDimTolObjects_DimensionType_Size_CurveLength ||
+      theType == XCAFDimTolObjects_DimensionType_Size_Diameter ||
+      theType == XCAFDimTolObjects_DimensionType_Size_SphericalDiameter ||
+      theType == XCAFDimTolObjects_DimensionType_Size_Radius ||
+      theType == XCAFDimTolObjects_DimensionType_Size_SphericalRadius ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorDiameter ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorDiameter ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorRadius ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorRadius ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorDiameter ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorDiameter ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorRadius ||
+      theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorRadius ||
+      theType == XCAFDimTolObjects_DimensionType_Size_Thickness)
+    return Standard_True;
+  return Standard_False;
+}
+
+//=======================================================================
+//function : GetGeomToleranceType
+//purpose  : 
+//=======================================================================
+StepDimTol_GeometricToleranceType STEPConstruct_GDTProperty::GetGeomToleranceType(const XCAFDimTolObjects_GeomToleranceType theType)
+{
+  switch (theType) {
+    case XCAFDimTolObjects_GeomToleranceType_Angularity:
+      return StepDimTol_GTTAngularityTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_CircularRunout:
+      return StepDimTol_GTTCircularRunoutTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_CircularityOrRoundness:
+      return StepDimTol_GTTRoundnessTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Coaxiality:
+      return StepDimTol_GTTCoaxialityTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Concentricity:
+      return StepDimTol_GTTConcentricityTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Cylindricity:
+      return StepDimTol_GTTCylindricityTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Flatness:
+      return StepDimTol_GTTFlatnessTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Parallelism:
+      return StepDimTol_GTTParallelismTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Perpendicularity:
+      return StepDimTol_GTTPerpendicularityTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Position:
+      return StepDimTol_GTTPositionTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_ProfileOfLine:
+      return StepDimTol_GTTLineProfileTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_ProfileOfSurface:
+      return StepDimTol_GTTSurfaceProfileTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Straightness:
+      return StepDimTol_GTTStraightnessTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_Symmetry:
+      return StepDimTol_GTTSymmetryTolerance;
+    case XCAFDimTolObjects_GeomToleranceType_TotalRunout:
+      return StepDimTol_GTTTotalRunoutTolerance;
+    default:
+      return StepDimTol_GTTPositionTolerance;
+  }
+}
+
+//=======================================================================
+//function : GetGeomToleranceType
+//purpose  : 
+//=======================================================================
+XCAFDimTolObjects_GeomToleranceType STEPConstruct_GDTProperty::GetGeomToleranceType(const StepDimTol_GeometricToleranceType theType)
+{
+  switch (theType) {
+    case StepDimTol_GTTAngularityTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Angularity;
+    case StepDimTol_GTTCircularRunoutTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_CircularRunout;
+    case StepDimTol_GTTRoundnessTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_CircularityOrRoundness;
+    case StepDimTol_GTTCoaxialityTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Coaxiality;
+    case StepDimTol_GTTConcentricityTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Concentricity;
+    case StepDimTol_GTTCylindricityTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Cylindricity;
+    case StepDimTol_GTTFlatnessTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Flatness;
+    case StepDimTol_GTTParallelismTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Parallelism;
+    case StepDimTol_GTTPerpendicularityTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Perpendicularity;
+    case StepDimTol_GTTPositionTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Position;
+    case StepDimTol_GTTLineProfileTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_ProfileOfLine;
+    case StepDimTol_GTTSurfaceProfileTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_ProfileOfSurface;
+    case StepDimTol_GTTStraightnessTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Straightness;
+    case StepDimTol_GTTSymmetryTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_Symmetry;
+    case StepDimTol_GTTTotalRunoutTolerance:
+      return XCAFDimTolObjects_GeomToleranceType_TotalRunout;
+    default:
+      return XCAFDimTolObjects_GeomToleranceType_Position;
+  }
+}
+
+//=======================================================================
+//function : GetGeomTolerance
+//purpose  : 
+//=======================================================================
+Handle(StepDimTol_GeometricTolerance) STEPConstruct_GDTProperty::
+  GetGeomTolerance(const XCAFDimTolObjects_GeomToleranceType theType)
+{
+  switch (theType) {
+    case XCAFDimTolObjects_GeomToleranceType_CircularityOrRoundness:
+      return new StepDimTol_RoundnessTolerance();
+    case XCAFDimTolObjects_GeomToleranceType_Cylindricity:
+      return new StepDimTol_CylindricityTolerance();
+    case XCAFDimTolObjects_GeomToleranceType_Flatness:
+      return new StepDimTol_FlatnessTolerance();
+    case XCAFDimTolObjects_GeomToleranceType_Position:
+      return new StepDimTol_PositionTolerance();
+    case XCAFDimTolObjects_GeomToleranceType_ProfileOfLine:
+      return new StepDimTol_LineProfileTolerance();
+    case XCAFDimTolObjects_GeomToleranceType_ProfileOfSurface:
+      return new StepDimTol_SurfaceProfileTolerance();
+    case XCAFDimTolObjects_GeomToleranceType_Straightness:
+      return new StepDimTol_StraightnessTolerance();
+    default:
+      return NULL;
+  }
+}
+
+//=======================================================================
+//function : GetGeomToleranceModifier
+//purpose  : 
+//=======================================================================
+StepDimTol_GeometricToleranceModifier STEPConstruct_GDTProperty::
+  GetGeomToleranceModifier(const XCAFDimTolObjects_GeomToleranceModif theModifier)
+{
+  switch (theModifier) {
+    case XCAFDimTolObjects_GeomToleranceModif_Any_Cross_Section:
+      return StepDimTol_GTMAnyCrossSection;
+    case XCAFDimTolObjects_GeomToleranceModif_Common_Zone:
+      return StepDimTol_GTMCommonZone;
+    case XCAFDimTolObjects_GeomToleranceModif_Each_Radial_Element:
+      return StepDimTol_GTMEachRadialElement;
+    case XCAFDimTolObjects_GeomToleranceModif_Free_State:
+      return StepDimTol_GTMFreeState;
+    case XCAFDimTolObjects_GeomToleranceModif_Least_Material_Requirement:
+      return StepDimTol_GTMLeastMaterialRequirement;
+    case XCAFDimTolObjects_GeomToleranceModif_Line_Element:
+      return StepDimTol_GTMLineElement;
+    case XCAFDimTolObjects_GeomToleranceModif_Major_Diameter:
+      return StepDimTol_GTMMajorDiameter;
+    case XCAFDimTolObjects_GeomToleranceModif_Maximum_Material_Requirement:
+      return StepDimTol_GTMMaximumMaterialRequirement;
+    case XCAFDimTolObjects_GeomToleranceModif_Minor_Diameter:
+      return StepDimTol_GTMMinorDiameter;
+    case XCAFDimTolObjects_GeomToleranceModif_Not_Convex:
+      return StepDimTol_GTMNotConvex;
+    case XCAFDimTolObjects_GeomToleranceModif_Pitch_Diameter:
+      return StepDimTol_GTMPitchDiameter;
+    case XCAFDimTolObjects_GeomToleranceModif_Reciprocity_Requirement:
+      return StepDimTol_GTMReciprocityRequirement;
+    case XCAFDimTolObjects_GeomToleranceModif_Separate_Requirement:
+      return StepDimTol_GTMSeparateRequirement;
+    case XCAFDimTolObjects_GeomToleranceModif_Statistical_Tolerance:
+      return StepDimTol_GTMStatisticalTolerance;
+    case XCAFDimTolObjects_GeomToleranceModif_Tangent_Plane:
+      return StepDimTol_GTMTangentPlane;
+    default:
+      return StepDimTol_GTMMaximumMaterialRequirement;
+  }
+}
+
+//=======================================================================
+//function : GetDatumRefModifiers
+//purpose  : Note: this function does not add anything to model
+//=======================================================================
+Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPConstruct_GDTProperty::
+  GetDatumRefModifiers(const XCAFDimTolObjects_DatumModifiersSequence theModifiers,
+                       const XCAFDimTolObjects_DatumModifWithValue theModifWithVal,
+                       const Standard_Real theValue,
+                       const StepBasic_Unit theUnit)
+{
+  if ((theModifiers.Length() == 0) && (theModifWithVal == XCAFDimTolObjects_DatumModifWithValue_None))
+    return NULL;
+  Standard_Integer aModifNb = theModifiers.Length();
+  if (theModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None)
+    aModifNb++;
+  Handle(StepDimTol_HArray1OfDatumReferenceModifier) aModifiers =
+    new StepDimTol_HArray1OfDatumReferenceModifier(1, aModifNb);
+
+  // Modifier with value
+  if (theModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None) {
+    StepDimTol_DatumReferenceModifierType aType;
+    switch (theModifWithVal) {
+      case XCAFDimTolObjects_DatumModifWithValue_CircularOrCylindrical:
+        aType = StepDimTol_CircularOrCylindrical;
+        break;
+      case XCAFDimTolObjects_DatumModifWithValue_Distance:
+        aType = StepDimTol_Distance;
+        break;
+      case XCAFDimTolObjects_DatumModifWithValue_Projected:
+        aType = StepDimTol_Projected;
+        break;
+      case XCAFDimTolObjects_DatumModifWithValue_Spherical:
+        aType = StepDimTol_Spherical;
+        break;
+      default:
+        aType = StepDimTol_Distance;
+    }
+    Handle(StepBasic_LengthMeasureWithUnit) aLMWU = new StepBasic_LengthMeasureWithUnit();
+    Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
+    aValueMember->SetName("LENGTH_MEASURE");
+    aValueMember->SetReal(theValue);
+    aLMWU->Init(aValueMember, theUnit);
+    Handle(StepDimTol_DatumReferenceModifierWithValue) aModifWithVal = new StepDimTol_DatumReferenceModifierWithValue();
+    aModifWithVal->Init(aType, aLMWU);
+    StepDimTol_DatumReferenceModifier aModif;
+    aModif.SetValue(aModifWithVal);
+    aModifiers->SetValue(aModifNb, aModif);
+  }
+
+  // Simple modifiers
+  for (Standard_Integer i = 1; i <= theModifiers.Length(); i++) {
+    Handle(StepDimTol_SimpleDatumReferenceModifierMember) aSimpleModifMember = 
+      new StepDimTol_SimpleDatumReferenceModifierMember();
+    switch (theModifiers.Value(i)) {
+      case XCAFDimTolObjects_DatumSingleModif_AnyCrossSection:
+        aSimpleModifMember->SetEnumText(0, ".ANY_CROSS_SECTION.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_Any_LongitudinalSection:
+        aSimpleModifMember->SetEnumText(0, ".ANY_LONGITUDINAL_SECTION.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_Basic:
+        aSimpleModifMember->SetEnumText(0, ".BASIC.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_ContactingFeature:
+        aSimpleModifMember->SetEnumText(0, ".CONTACTING_FEATURE.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_DegreeOfFreedomConstraintU:
+        aSimpleModifMember->SetEnumText(0, ".DEGREE_OF_FREEDOM_CONSTRAINT_U.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_DegreeOfFreedomConstraintV:
+        aSimpleModifMember->SetEnumText(0, ".DEGREE_OF_FREEDOM_CONSTRAINT_V.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_DegreeOfFreedomConstraintW:
+        aSimpleModifMember->SetEnumText(0, ".DEGREE_OF_FREEDOM_CONSTRAINT_W.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_DegreeOfFreedomConstraintX:
+        aSimpleModifMember->SetEnumText(0, ".DEGREE_OF_FREEDOM_CONSTRAINT_X.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_DegreeOfFreedomConstraintY:
+        aSimpleModifMember->SetEnumText(0, ".DEGREE_OF_FREEDOM_CONSTRAINT_Y.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_DegreeOfFreedomConstraintZ:
+        aSimpleModifMember->SetEnumText(0, ".DEGREE_OF_FREEDOM_CONSTRAINT_Z.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_DistanceVariable:
+        aSimpleModifMember->SetEnumText(0, ".DISTANCE_VARIABLE.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_FreeState:
+        aSimpleModifMember->SetEnumText(0, ".FREE_STATE.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_LeastMaterialRequirement:
+        aSimpleModifMember->SetEnumText(0, ".LEAST_MATERIAL_REQUIREMENT.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_Line:
+        aSimpleModifMember->SetEnumText(0, ".LINE.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_MajorDiameter:
+        aSimpleModifMember->SetEnumText(0, ".MAJOR_DIAMETER.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_MaximumMaterialRequirement:
+        aSimpleModifMember->SetEnumText(0, ".MAXIMUM_MATERIAL_REQUIREMENT.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_MinorDiameter:
+        aSimpleModifMember->SetEnumText(0, ".MINOR_DIAMETER.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_Orientation:
+        aSimpleModifMember->SetEnumText(0, ".ORIENTATION.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_PitchDiameter:
+        aSimpleModifMember->SetEnumText(0, ".PITCH_DIAMETER.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_Plane:
+        aSimpleModifMember->SetEnumText(0, ".PLANE.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_Point:
+        aSimpleModifMember->SetEnumText(0, ".POINT.");
+        break;
+      case XCAFDimTolObjects_DatumSingleModif_Translation:
+        aSimpleModifMember->SetEnumText(0, ".TRANSLATION.");
+        break;
+    }
+    StepDimTol_DatumReferenceModifier aModif;
+    aModif.SetValue(aSimpleModifMember);
+    aModifiers->SetValue(i, aModif);
+  }
+
+  return aModifiers;
+}
+
+//=======================================================================
+//function : GetTolValueType
+//purpose  : 
+//=======================================================================
+Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetTolValueType(const XCAFDimTolObjects_GeomToleranceTypeValue& theType)
+{
+  switch (theType) {
+    case XCAFDimTolObjects_GeomToleranceTypeValue_Diameter:
+      return new TCollection_HAsciiString("cylindrical or circular");
+    case XCAFDimTolObjects_GeomToleranceTypeValue_SphericalDiameter:
+      return new TCollection_HAsciiString("spherical");
+    default:
+      return new TCollection_HAsciiString("unknown");
+  }
 }

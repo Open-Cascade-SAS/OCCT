@@ -29,6 +29,7 @@
 #include <OSD_Path.hxx>
 #include <Quantity_TypeOfColor.hxx>
 #include <StepAP214_Protocol.hxx>
+#include <StepAP242_GeometricItemSpecificUsage.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
 #include <StepBasic_HArray1OfDerivedUnitElement.hxx>
@@ -40,6 +41,7 @@
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepBasic_SiUnitAndMassUnit.hxx>
+#include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 #include <STEPCAFControl_ActorWrite.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_DictionaryOfExternFile.hxx>
@@ -50,6 +52,7 @@
 #include <STEPConstruct_DataMapOfAsciiStringTransient.hxx>
 #include <STEPConstruct_DataMapOfPointTransient.hxx>
 #include <STEPConstruct_ExternRefs.hxx>
+#include <STEPConstruct_GDTProperty.hxx>
 #include <STEPConstruct_Styles.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
 #include <STEPControl_StepModelType.hxx>
@@ -64,48 +67,91 @@
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_DatumFeature.hxx>
 #include <StepDimTol_DatumReference.hxx>
+#include <StepDimTol_DatumReferenceElement.hxx>
+#include <StepDimTol_DatumSystem.hxx>
+#include <StepDimTol_DatumSystemOrReference.hxx>
+#include <StepDimTol_DatumTarget.hxx>
 #include <StepDimTol_FlatnessTolerance.hxx>
+#include <StepDimTol_GeometricToleranceType.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
+#include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMod.hxx>
 #include <StepDimTol_HArray1OfDatumReference.hxx>
+#include <StepDimTol_HArray1OfDatumReferenceElement.hxx>
+#include <StepDimTol_HArray1OfDatumReferenceModifier.hxx>
+#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 #include <StepDimTol_LineProfileTolerance.hxx>
 #include <StepDimTol_ModifiedGeometricTolerance.hxx>
 #include <StepDimTol_ParallelismTolerance.hxx>
 #include <StepDimTol_PerpendicularityTolerance.hxx>
+#include <StepDimTol_PlacedDatumTargetFeature.hxx>
 #include <StepDimTol_PositionTolerance.hxx>
 #include <StepDimTol_RoundnessTolerance.hxx>
+#include <StepDimTol_RunoutZoneDefinition.hxx>
+#include <StepDimTol_RunoutZoneOrientation.hxx>
 #include <StepDimTol_StraightnessTolerance.hxx>
 #include <StepDimTol_SurfaceProfileTolerance.hxx>
 #include <StepDimTol_SymmetryTolerance.hxx>
+#include <StepDimTol_ToleranceZone.hxx>
+#include <StepDimTol_ToleranceZoneForm.hxx>
 #include <StepDimTol_TotalRunoutTolerance.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepGeom_Surface.hxx>
+#include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_CompositeShapeAspect.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
+#include <StepRepr_FeatureForDatumTargetRelationship.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_RepresentedDefinition.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepRepr_SpecifiedHigherUsageOccurrence.hxx>
 #include <StepRepr_ValueRange.hxx>
 #include <StepShape_AdvancedFace.hxx>
+#include <StepShape_AngleRelator.hxx>
+#include <StepShape_AngularLocation.hxx>
+#include <StepShape_AngularSize.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
+#include <StepShape_DimensionalCharacteristic.hxx>
 #include <StepShape_DimensionalCharacteristicRepresentation.hxx>
+#include <StepShape_DimensionalLocation.hxx>
+#include <StepShape_DimensionalLocationWithPath.hxx>
 #include <StepShape_DimensionalSize.hxx>
+#include <StepShape_DimensionalSizeWithPath.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_FaceBound.hxx>
+#include <StepShape_LimitsAndFits.hxx>
 #include <StepShape_OrientedEdge.hxx>
+#include <StepShape_PlusMinusTolerance.hxx>
+#include <StepShape_QualifiedRepresentationItem.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeDimensionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
+#include <StepShape_ShapeRepresentationWithParameters.hxx>
+#include <StepShape_ToleranceValue.hxx>
+#include <StepShape_TypeQualifier.hxx>
+#include <StepShape_ValueFormatTypeQualifier.hxx>
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_HArray1OfInvisibleItem.hxx>
 #include <StepVisual_HArray1OfLayeredItem.hxx>
@@ -126,6 +172,7 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
+#include <TColStd_MapOfAsciiString.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -147,14 +194,24 @@
 #include <Transfer_TransientListBinder.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
+#include <XCAFDimTolObjects_DatumObject.hxx>
+#include <XCAFDimTolObjects_DimensionFormVariance.hxx>
+#include <XCAFDimTolObjects_DimensionGrade.hxx>
+#include <XCAFDimTolObjects_DimensionObject.hxx>
+#include <XCAFDimTolObjects_DimensionModif.hxx>
+#include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>
+#include <XCAFDimTolObjects_DimensionQualifier.hxx>
+#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Area.hxx>
 #include <XCAFDoc_Centroid.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_Datum.hxx>
+#include <XCAFDoc_Dimension.hxx>
 #include <XCAFDoc_DimTol.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_Material.hxx>
@@ -168,6 +225,12 @@
 #include <XCAFPrs_Style.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
+
+enum DimensionalValueNumber {
+  DimensionalValueNumber_Nominal = 1,
+  DimensionalValueNumber_Lower,
+  DimensionalValueNumber_Upper
+};
 
 // added by skl 15.01.2004 for D&GT writing
 //#include <StepRepr_CompoundItemDefinition.hxx>
@@ -2044,18 +2107,997 @@ static Standard_Boolean FindPDSforDGT(const Interface_Graph &aGraph,
   return Standard_True;
 }
 
+//=======================================================================
+//function : GetUnit
+//purpose  : auxiliary
+//=======================================================================
+
+static StepBasic_Unit GetUnit(const Handle(StepRepr_RepresentationContext)& theRC,
+                              const Standard_Boolean isAngle = Standard_False)
+{
+  StepBasic_Unit aUnit;
+  if (isAngle) {
+    Handle(StepBasic_SiUnitAndPlaneAngleUnit) aSiPAU;
+    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
+      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
+    if(!aCtx.IsNull()) {
+      for(Standard_Integer j = 1; j <= aCtx->NbUnits(); j++) {
+        if(aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))) {
+          aSiPAU = Handle(StepBasic_SiUnitAndPlaneAngleUnit)::DownCast(aCtx->UnitsValue(j));
+          break;
+        }
+      }
+    }
+    if(aSiPAU.IsNull()) {
+      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
+        Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
+      if(!aCtx1.IsNull()) {
+        for(Standard_Integer j = 1; j <= aCtx1->NbUnits(); j++) {
+          if(aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit))) {
+            aSiPAU = Handle(StepBasic_SiUnitAndPlaneAngleUnit)::DownCast(aCtx1->UnitsValue(j));
+            break;
+          }
+        }
+      }
+    }
+    if(aSiPAU.IsNull())
+      aSiPAU = new StepBasic_SiUnitAndPlaneAngleUnit;
+    aUnit.SetValue(aSiPAU);
+  }
+  else {
+    Handle(StepBasic_SiUnitAndLengthUnit) aSiLU;
+    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) aCtx =
+      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(theRC);
+    if(!aCtx.IsNull()) {
+      for(Standard_Integer j = 1; j <= aCtx->NbUnits(); j++) {
+        if(aCtx->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
+          aSiLU = Handle(StepBasic_SiUnitAndLengthUnit)::DownCast(aCtx->UnitsValue(j));
+          break;
+        }
+      }
+    }
+    if(aSiLU.IsNull()) {
+      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) aCtx1 =
+        Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(theRC);
+      if(!aCtx1.IsNull()) {
+        for(Standard_Integer j = 1; j <= aCtx1->NbUnits(); j++) {
+          if(aCtx1->UnitsValue(j)->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
+            aSiLU = Handle(StepBasic_SiUnitAndLengthUnit)::DownCast(aCtx1->UnitsValue(j));
+            break;
+          }
+        }
+      }
+    }
+    if(aSiLU.IsNull())
+      aSiLU = new StepBasic_SiUnitAndLengthUnit;
+    aUnit.SetValue(aSiLU);
+  }
+  return aUnit;
+}
+
+//=======================================================================
+//function : CreateDimValue
+//purpose  : auxiliary
+//======================================================================
+static Handle(StepRepr_ReprItemAndMeasureWithUnit) CreateDimValue(const Standard_Real theValue,
+                                                                  const StepBasic_Unit theUnit,
+                                                                  const Handle(TCollection_HAsciiString)& theName,
+                                                                  const Standard_CString theMeasureName,
+                                                                  const Standard_Boolean isAngle,
+                                                                  const Standard_Boolean isQualified = Standard_False,
+                                                                  const Handle(StepShape_QualifiedRepresentationItem)& theQRI = NULL)
+{
+  Handle(StepRepr_RepresentationItem) aReprItem = new StepRepr_RepresentationItem();
+  aReprItem->Init(new TCollection_HAsciiString(theName));
+  Handle(StepBasic_MeasureWithUnit) aMWU = new StepBasic_MeasureWithUnit();
+  Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
+  aValueMember->SetName(theMeasureName);
+  aValueMember->SetReal(theValue);
+  aMWU->Init(aValueMember, theUnit);
+  if (isQualified) {
+    if (isAngle) {
+      // Angle & with qualifiers
+      Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI) anItem = 
+        new StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI();
+      anItem->Init(aMWU, aReprItem, theQRI);
+      return anItem;
+    }
+    else {
+      // Length & with qualifiers
+      Handle(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI) anItem = 
+        new StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI();
+      anItem->Init(aMWU, aReprItem, theQRI);
+      return anItem;
+    }
+  }
+  else {
+    if (isAngle) {
+      // Angle & without qualifiers
+      Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit) anItem = 
+        new StepRepr_ReprItemAndPlaneAngleMeasureWithUnit();
+      anItem->Init(aMWU, aReprItem);
+      return anItem;
+    }
+    else {
+      // Length & without qualifiers
+      Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) anItem = 
+        new StepRepr_ReprItemAndLengthMeasureWithUnit();
+      anItem->Init(aMWU, aReprItem);
+      return anItem;
+    }
+  }
+}
+
+//=======================================================================
+//function : WriteShapeAspect
+//purpose  : auxiliary (write Shape_Aspect entity for given shape)
+//=======================================================================
+
+static Handle(StepRepr_ShapeAspect) WriteShapeAspect (const Handle(XSControl_WorkSession) &WS,
+                                                      const TDF_Label theLabel,
+                                                      const TopoDS_Shape theShape,
+                                                      Handle(StepRepr_RepresentationContext)& theRC,
+                                                      Handle(StepAP242_GeometricItemSpecificUsage)& theGISU)
+{
+  // Get working data
+  Handle(Interface_InterfaceModel) Model = WS->Model();
+  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
+  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_HGraph) aHGraph = WS->HGraph();
+  if (aHGraph.IsNull())
+    return NULL;
+  Interface_Graph aGraph = aHGraph->Graph();
+
+  TopLoc_Location aLoc;
+  TColStd_SequenceOfTransient aSeqRI;
+  FindEntities( FP, theShape, aLoc, aSeqRI );
+  if ( aSeqRI.Length() <= 0 ) {
+    FP->Messenger() << "Warning: Cannot find RI for "<<theShape.TShape()->DynamicType()->Name()<<endl;
+    return NULL;
+  }
+
+  Handle(StepRepr_ProductDefinitionShape) aPDS;
+  Handle(StepRepr_RepresentationContext) aRC;
+  Handle(Standard_Transient) anEnt = aSeqRI.Value(1);
+  Handle(StepShape_AdvancedFace) anAF;
+  Handle(StepShape_EdgeCurve) anEC;
+  FindPDSforDGT(aGraph, anEnt, aPDS, aRC, anAF, anEC);
+  if(aPDS.IsNull()) 
+    return NULL;
+
+  theRC = aRC;
+  // Shape_Aspect
+  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString();
+  Handle(TDataStd_Name) aNameAttr;
+  if (theLabel.FindAttribute(TDataStd_Name::GetID(), aNameAttr)) {
+    aName = new TCollection_HAsciiString(TCollection_AsciiString(aNameAttr->Get(), '?'));
+    Standard_Integer aFirstSpace = aName->Search(" ");
+    if (aFirstSpace != -1)
+      aName = aName->SubString(aFirstSpace + 1, aName->Length());
+    else
+      aName = new TCollection_HAsciiString();
+  }
+  Handle(TCollection_HAsciiString) aDescription = new TCollection_HAsciiString();
+  Handle(StepRepr_ShapeAspect) aSA = new StepRepr_ShapeAspect;
+  aSA->Init(aName, aDescription, aPDS, StepData_LTrue);
+
+  // Geometric_Item_Specific_Usage
+  Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
+  aDefinition.SetValue(aSA);
+  Handle(StepRepr_HArray1OfRepresentationItem) anReprItems = new StepRepr_HArray1OfRepresentationItem(1, 1);
+  Handle(StepRepr_RepresentationItem) anIdentifiedItem = Handle(StepRepr_RepresentationItem)::DownCast(anEnt);
+  anReprItems->SetValue(1, anIdentifiedItem);
+  Interface_EntityIterator subs = aGraph.Sharings(aPDS);
+  Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+  for (subs.Start(); subs.More() && aSDR.IsNull(); subs.Next()) {
+    Handle(Standard_Transient) anEntity = subs.Value();
+    aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(anEntity);
+  }
+  if (aSDR.IsNull())
+    return NULL;
+
+  // Set entities to model
+  aGISU->Init(aName, aDescription, aDefinition, aSDR->UsedRepresentation(), anReprItems);
+  Model->AddWithRefs(aSA);
+  Model->AddWithRefs(aGISU);
+  theGISU = aGISU;
+  return aSA;
+}
+
+//=======================================================================
+//function : WriteDatumAP242
+//purpose  : auxiliary (write Datum entity for given shape or write all 
+//           necessary entities and link them to already written datum 
+//           in case of multiple features association)
+//=======================================================================
+static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSession) &WS,
+                                                const TDF_Label theShapeL,
+                                                const TDF_Label theDatumL,
+                                                const Standard_Boolean isFirstDTarget,
+                                                const Handle(StepDimTol_Datum) theWrittenDatum)
+{
+  // Get working data
+  Handle(Interface_InterfaceModel) Model = WS->Model();
+  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
+  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_HGraph) aHGraph = WS->HGraph();
+  if (aHGraph.IsNull())
+    return NULL;
+  Interface_Graph aGraph = aHGraph->Graph();
+
+  Handle(StepRepr_ShapeAspect) aSA;
+  Handle(StepAP242_GeometricItemSpecificUsage) aGISU;
+  // Link with datum feature
+  Handle(StepRepr_ProductDefinitionShape) aPDS;
+  Handle(StepRepr_RepresentationContext) aRC;
+  Handle(Standard_Transient) anEnt;
+  Handle(StepShape_AdvancedFace) anAF;
+  Handle(StepShape_EdgeCurve) anEC;
+  TopoDS_Shape aShape;
+  TopLoc_Location aLoc;
+  TColStd_SequenceOfTransient aSeqRI;
+
+  aShape = XCAFDoc_ShapeTool::GetShape(theShapeL);
+  FindEntities( FP, aShape, aLoc, aSeqRI );
+  if ( aSeqRI.Length() <= 0 ) {
+    FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<endl;
+    return NULL;
+  }
+  anEnt = aSeqRI.Value(1);
+  FindPDSforDGT(aGraph, anEnt, aPDS, aRC, anAF, anEC);
+  if (aPDS.IsNull()) 
+    return NULL;
+
+  aSA = WriteShapeAspect(WS, theDatumL, aShape, aRC, aGISU);
+  if (aSA.IsNull())
+    return NULL;
+  Standard_Integer aSANum = Model->Number(aSA);
+  Standard_Integer aGISUNum = Model->Number(aGISU);
+  // Find if datum has datum targets and get common datum attributes
+  Handle(XCAFDoc_Datum) aDatumAttr;
+  if (!theDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr)) 
+    return NULL;
+  Handle(XCAFDimTolObjects_DatumObject) anObject = aDatumAttr->GetObject();
+  if (anObject.IsNull())
+    return NULL;
+  Standard_Boolean isSimpleDatum = !anObject->IsDatumTarget();
+  Handle(TCollection_HAsciiString) anIdentifier = anObject->GetName();
+  Handle(TCollection_HAsciiString) aTargetId = (anObject->GetDatumTargetNumber() == 0 ? 
+    new TCollection_HAsciiString() : new TCollection_HAsciiString(anObject->GetDatumTargetNumber()));
+
+  // If datum type is area, but there is no area in object, write as simple datum
+  if (anObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Area &&
+    anObject->GetDatumTarget().IsNull())
+    isSimpleDatum = Standard_True;
+
+  // Simple datum
+  if (isSimpleDatum) {
+    Handle(StepDimTol_DatumFeature) aDF = new StepDimTol_DatumFeature();
+    aDF->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aSA->OfShape(), aSA->ProductDefinitional());
+    Model->ReplaceEntity(aSANum, aDF);
+    aSA = aDF;
+    StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
+    aDefinition.SetValue(aDF);
+    aGISU->SetDefinition(aDefinition);
+    Model->ReplaceEntity(aGISUNum, aGISU);
+  }
+  // Datum with datum targets
+  else {
+    XCAFDimTolObjects_DatumTargetType aDatumType = anObject->GetDatumTargetType();
+    Handle(StepDimTol_DatumTarget) aDatumTarget;
+    // Note: the given way to write such datum type may be incorrect (too little information)
+    if (aDatumType == XCAFDimTolObjects_DatumTargetType_Area) {
+      TopoDS_Shape aDTShape = anObject->GetDatumTarget();
+      Handle(StepAP242_GeometricItemSpecificUsage) anAreaGISU;
+      Handle(StepRepr_ShapeAspect) anAreaSA = WriteShapeAspect(WS, theDatumL, aDTShape, aRC, anAreaGISU);
+      aSANum = Model->Number(anAreaSA);
+      aGISUNum = Model->Number(anAreaGISU);
+      Handle(StepDimTol_DatumTarget) aDT = new StepDimTol_DatumTarget();
+      aDT->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString("area"), anAreaSA->OfShape(),
+        anAreaSA->ProductDefinitional(), aTargetId);
+      Model->ReplaceEntity(aSANum, aDT);
+      StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
+      aDefinition.SetValue(aDT);
+      anAreaGISU->SetDefinition(aDefinition);
+      Model->ReplaceEntity(aGISUNum, anAreaGISU);
+  }
+    else {
+      Handle(StepDimTol_PlacedDatumTargetFeature) aPDTF = new StepDimTol_PlacedDatumTargetFeature();
+      aPDTF->Init(new TCollection_HAsciiString(), STEPConstruct_GDTProperty::GetDatumTargetName(aDatumType),
+        aPDS, StepData_LTrue, aTargetId);
+      Model->AddWithRefs(aPDTF);
+      aDatumTarget = aPDTF;
+      // Datum targets
+      Handle(StepRepr_PropertyDefinition) aPD = new StepRepr_PropertyDefinition();
+      StepRepr_CharacterizedDefinition aCDefinition;
+      aCDefinition.SetValue(aPDTF);
+      aPD->Init(new TCollection_HAsciiString(), Standard_False, NULL, aCDefinition);
+      Handle(StepShape_ShapeRepresentationWithParameters) aSRWP = new StepShape_ShapeRepresentationWithParameters();
+      // Common for all datum targets
+      StepBasic_Unit aUnit = GetUnit(aRC);
+      gp_Ax2 aDTAxis = anObject->GetDatumTargetAxis();
+      Handle(StepGeom_Axis2Placement3d) anA2P3D = 
+        STEPConstruct_GDTProperty::GetAxis2Placement3D(aDTAxis);
+      Handle(StepRepr_HArray1OfRepresentationItem) anItems;
+      // Process each datum target type
+      if (aDatumType == XCAFDimTolObjects_DatumTargetType_Point) {
+        anItems = new StepRepr_HArray1OfRepresentationItem(1, 1);
+      }
+      else  {
+        Handle(TCollection_HAsciiString) aTargetValueName;
+        if (aDatumType == XCAFDimTolObjects_DatumTargetType_Line) {
+          anItems = new StepRepr_HArray1OfRepresentationItem(1, 2);
+          aTargetValueName = new TCollection_HAsciiString("target length");
+        }
+        else if (aDatumType == XCAFDimTolObjects_DatumTargetType_Rectangle) {
+          anItems = new StepRepr_HArray1OfRepresentationItem(1, 3);
+          aTargetValueName = new TCollection_HAsciiString("target length");
+          // Additional value
+          Handle(StepRepr_ReprItemAndMeasureWithUnit) aTargetValue = CreateDimValue(anObject->GetDatumTargetWidth(),
+            aUnit, new TCollection_HAsciiString("target width"), "POSITIVE_LENGTH_MEASURE", Standard_False);
+          anItems->SetValue(2, aTargetValue);
+          Model->AddWithRefs(aTargetValue);
+        }
+        else if (aDatumType == XCAFDimTolObjects_DatumTargetType_Circle) {
+          anItems = new StepRepr_HArray1OfRepresentationItem(1, 2);
+          aTargetValueName = new TCollection_HAsciiString("target diameter");
+        }
+        // Value
+        Handle(StepRepr_ReprItemAndMeasureWithUnit) aTargetValue= CreateDimValue(anObject->GetDatumTargetLength(),
+          aUnit, aTargetValueName, "POSITIVE_LENGTH_MEASURE", Standard_False);
+        anItems->SetValue(1, aTargetValue);
+        Model->AddWithRefs(aTargetValue);
+      }
+      anItems->SetValue(anItems->Length(), anA2P3D);
+      aSRWP->Init(new TCollection_HAsciiString(), anItems, aRC);
+  
+      // Create and write auxiliary entities
+      Handle (StepShape_ShapeDefinitionRepresentation) aSDR = new StepShape_ShapeDefinitionRepresentation();
+      StepRepr_RepresentedDefinition aRDefinition;
+      aRDefinition.SetValue(aPD);
+      aSDR->Init(aRDefinition, aSRWP);
+      Model->AddWithRefs(aPD);
+      Model->AddWithRefs(aSRWP);
+      Model->AddWithRefs(aSDR);
+    }
+    // Link datum target to datum feature
+    Handle(StepRepr_FeatureForDatumTargetRelationship) aFFDTR = new StepRepr_FeatureForDatumTargetRelationship();
+    aFFDTR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aDatumTarget, aSA);
+    Model->AddWithRefs(aFFDTR);
+    aSA = aDatumTarget;
+  }
+
+  // Datum
+  Handle(StepDimTol_Datum) aDatum = theWrittenDatum;
+  if (isFirstDTarget) {
+    aDatum = new StepDimTol_Datum();
+    aDatum->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aPDS, StepData_LTrue, anIdentifier);
+    Model->AddWithRefs(aDatum);
+  }
+
+  // Shape_Aspect_Relationship
+  Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+  aSAR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aSA, aDatum);
+  Model->AddWithRefs(aSAR);
+
+  // Auxiliary entities
+  // Property_Definition
+  Handle(StepRepr_PropertyDefinition) aPD = new StepRepr_PropertyDefinition();
+  Handle(TCollection_HAsciiString) aPDName = new TCollection_HAsciiString("Datum Feature Symbol ");
+  aPDName = aPDName->Cat(anIdentifier)->Cat(aTargetId);
+  StepRepr_CharacterizedDefinition aCD;
+  aCD.SetValue(aSA);
+  aPD->Init(aPDName, Standard_False, NULL, aCD);
+  Model->AddWithRefs(aPD);
+  // Shape_Representation
+  Handle(StepShape_ShapeRepresentation) aShapeRepr = new StepShape_ShapeRepresentation();
+  aShapeRepr->Init(aPDName, aGISU->IdentifiedItem(), aRC);
+  Model->AddWithRefs(aShapeRepr);
+  // Shape_Definition_Representation
+  Handle (StepShape_ShapeDefinitionRepresentation) aSDR = new StepShape_ShapeDefinitionRepresentation();
+  StepRepr_RepresentedDefinition aRDefinition;
+  aRDefinition.SetValue(aPD);
+  aSDR->Init(aRDefinition, aShapeRepr);
+  Model->AddWithRefs(aSDR);
+
+  return aDatum;
+}
+
+//=======================================================================
+//function : WriteDimValues
+//purpose  : auxiliary (write all data for given dimension: values, 
+//           qualifiers, modifiers, orientation and tolerance class)
+//======================================================================
+static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
+                           const Handle(XCAFDimTolObjects_DimensionObject) theObject,
+                           const Handle(StepRepr_RepresentationContext) theRC,
+                           const StepShape_DimensionalCharacteristic theDimension)
+{
+  // Get working data
+  Handle(Interface_InterfaceModel) aModel = WS->Model();
+  XCAFDimTolObjects_DimensionModifiersSequence aModifiers = theObject->GetModifiers();
+  Handle(Standard_Transient) aDim = theDimension.Value();
+  Standard_Boolean isAngle = aDim->IsKind(STANDARD_TYPE(StepShape_AngularLocation)) ||
+                             aDim->IsKind(STANDARD_TYPE(StepShape_AngularSize));
+
+  // Unit
+  StepBasic_Unit aUnit = GetUnit(theRC, isAngle);
+  Standard_CString aMeasureName;
+  if (isAngle)
+    aMeasureName = "POSITIVE_PLANE_ANGLE_MEASURE";
+  else
+    aMeasureName = "POSITIVE_LENGTH_MEASURE";
+
+  // Values
+  Handle(StepRepr_HArray1OfRepresentationItem) aValues;
+  Standard_Integer aNbValItems = 1, aNbAddItems = 0;
+  if (theObject->IsDimWithRange())
+    aNbValItems += 2;
+  if (aModifiers.Length() > 0)
+    aNbAddItems++;
+  if (theObject->GetType() == XCAFDimTolObjects_DimensionType_Location_Oriented)
+    aNbAddItems++;
+  aValues = new StepRepr_HArray1OfRepresentationItem(1, aNbValItems + aNbAddItems);
+
+  // Nominal value
+  Standard_Real aNominal = theObject->GetValue();
+  Standard_Integer aLeftNbDigits, aRightNbDigits;
+  theObject->GetNbOfDecimalPlaces(aLeftNbDigits, aRightNbDigits);
+  Standard_Integer aNbQualifiers = 0;
+  if (theObject->HasQualifier() && !isAngle)
+    aNbQualifiers++;
+  if (aLeftNbDigits > 0 || aRightNbDigits > 0)
+    aNbQualifiers++;
+  // With qualifiers
+  if (aNbQualifiers > 0) {
+    Handle(StepShape_QualifiedRepresentationItem) aQRI = new StepShape_QualifiedRepresentationItem();
+    Handle(StepShape_HArray1OfValueQualifier) aQualifiers = new StepShape_HArray1OfValueQualifier(1, aNbQualifiers);
+    // Type qualifier
+    if (theObject->HasQualifier() && !isAngle) {
+      StepShape_ValueQualifier anItem;
+      Handle(StepShape_TypeQualifier) aType = new StepShape_TypeQualifier();
+      XCAFDimTolObjects_DimensionQualifier aQualifier = theObject->GetQualifier();
+      aType->Init(STEPConstruct_GDTProperty::GetDimQualifierName(aQualifier));
+      aModel->AddWithRefs(aType);
+      anItem.SetValue(aType);
+      aQualifiers->SetValue(1, anItem);
+    }
+    // Number of decimal places
+    if (aLeftNbDigits > 0 || aRightNbDigits > 0) {
+      StepShape_ValueQualifier anItem;
+      Handle(StepShape_ValueFormatTypeQualifier) aType = new StepShape_ValueFormatTypeQualifier();
+      Handle(TCollection_HAsciiString) aFormatType = new TCollection_HAsciiString("NR2 ");
+      aFormatType->AssignCat(new TCollection_HAsciiString(aLeftNbDigits));
+      aFormatType->AssignCat(new TCollection_HAsciiString("."));
+      aFormatType->AssignCat(new TCollection_HAsciiString(aRightNbDigits));
+      aType->Init(aFormatType);
+      aModel->AddWithRefs(aType);
+      anItem.SetValue(aType);
+      aQualifiers->SetValue(aNbQualifiers, anItem);
+    }
+    // Set qualifiers
+    aQRI->SetQualifiers(aQualifiers);
+    Handle(StepRepr_ReprItemAndMeasureWithUnit) anItem = CreateDimValue(aNominal, aUnit,
+      new TCollection_HAsciiString("nominal value"), aMeasureName, isAngle, Standard_True, aQRI);
+    aValues->SetValue(DimensionalValueNumber_Nominal, anItem);
+  }
+  // Without qualifiers
+  else {
+    Handle(StepRepr_ReprItemAndMeasureWithUnit) anItem = CreateDimValue(aNominal, aUnit,
+      new TCollection_HAsciiString("nominal value"), aMeasureName, isAngle);
+    aValues->SetValue(DimensionalValueNumber_Nominal, anItem);
+  }
+  // Ranges
+  if (theObject->IsDimWithRange()) {
+    Handle(StepRepr_ReprItemAndMeasureWithUnit) aLowerItem = CreateDimValue(theObject->GetLowerBound(), aUnit,
+      new TCollection_HAsciiString("lower limit"), aMeasureName, isAngle);
+    Handle(StepRepr_ReprItemAndMeasureWithUnit) anUpperItem = CreateDimValue(theObject->GetUpperBound(), aUnit,
+      new TCollection_HAsciiString("upper limit"), aMeasureName, isAngle);
+    aValues->SetValue(DimensionalValueNumber_Lower, aLowerItem);
+    aValues->SetValue(DimensionalValueNumber_Upper, anUpperItem);
+  }
+
+  // Modifiers
+  if (aModifiers.Length() > 0) {
+    Handle(StepRepr_CompoundRepresentationItem) aCompoundRI = new StepRepr_CompoundRepresentationItem();
+    Handle (StepRepr_HArray1OfRepresentationItem) aModifItems = 
+      new StepRepr_HArray1OfRepresentationItem(1, aModifiers.Length());
+    for (Standard_Integer i = 1; i <= aModifiers.Length(); i++) {
+      XCAFDimTolObjects_DimensionModif aModif = aModifiers.Value(i);
+      Handle(StepRepr_DescriptiveRepresentationItem) aModifItem = 
+        new StepRepr_DescriptiveRepresentationItem();
+      aModifItem->Init(new TCollection_HAsciiString(), STEPConstruct_GDTProperty::GetDimModifierName(aModif));
+      aModel->AddWithRefs(aModifItem);
+      aModifItems->SetValue(i, aModifItem);
+    }
+    aCompoundRI->Init(new TCollection_HAsciiString(), aModifItems);
+    aValues->SetValue(aNbValItems + 1, aCompoundRI);
+  }
+
+  // Orientation
+  if (theObject->GetType() == XCAFDimTolObjects_DimensionType_Location_Oriented) {
+    Handle(StepGeom_Axis2Placement3d) anOrientation = new StepGeom_Axis2Placement3d();
+    gp_Dir aDir;
+    theObject->GetDirection(aDir);
+    Handle(StepGeom_CartesianPoint) aLoc = new StepGeom_CartesianPoint();
+    aLoc->Init(new TCollection_HAsciiString());
+    Handle(StepGeom_Direction) anAxis = new StepGeom_Direction();
+    Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
+    aCoords->SetValue(1, aDir.X());
+    aCoords->SetValue(2, aDir.Y());
+    aCoords->SetValue(3, aDir.Z());
+    anAxis->Init(new TCollection_HAsciiString(), aCoords);
+    anOrientation->Init(new TCollection_HAsciiString("orientation"), aLoc, Standard_True, anAxis, Standard_False, NULL);
+    aValues->SetValue(aValues->Length(), anOrientation);
+  }
+
+  for (Standard_Integer i = 1; i <= aValues->Length(); i++)
+    aModel->AddWithRefs(aValues->Value(i));
+
+  // Create resulting Shape_Dimension_Representation
+  Handle(StepShape_ShapeDimensionRepresentation) aSDR = new StepShape_ShapeDimensionRepresentation();
+  aSDR->Init(new TCollection_HAsciiString(), aValues, theRC);
+  aModel->AddWithRefs(aSDR);
+  Handle(StepShape_DimensionalCharacteristicRepresentation) aDCR = new StepShape_DimensionalCharacteristicRepresentation();
+  aDCR->Init(theDimension, aSDR);
+  aModel->AddWithRefs(aDCR);
+
+  // Plus_Minus_Tolerance
+  if (theObject->IsDimWithPlusMinusTolerance()) {
+    Handle(TCollection_HAsciiString) aDummyName = new TCollection_HAsciiString(aMeasureName);
+    aDummyName = aDummyName->SubString(9, aDummyName->Length()); //delete "POSITIVE_"
+    aMeasureName = aDummyName->ToCString();
+    Standard_Real aLowerTolValue = -theObject->GetLowerTolValue(),
+                  anUpperTolValue = theObject->GetUpperTolValue();
+    // Upper
+    Handle(StepBasic_MeasureWithUnit) anUpperMWU = new StepBasic_MeasureWithUnit();
+    Handle(StepBasic_MeasureValueMember) anUpperValue = new StepBasic_MeasureValueMember();
+    anUpperValue->SetName(aMeasureName);
+    anUpperValue->SetReal(anUpperTolValue);
+    anUpperMWU->Init(anUpperValue, aUnit);
+    aModel->AddWithRefs(anUpperMWU);
+    // Lower
+    Handle(StepBasic_MeasureWithUnit) aLowerMWU = new StepBasic_MeasureWithUnit();
+    Handle(StepBasic_MeasureValueMember) aLowerValue = new StepBasic_MeasureValueMember();
+    aLowerValue->SetName(aMeasureName);
+    aLowerValue->SetReal(aLowerTolValue);
+    aLowerMWU->Init(aLowerValue, aUnit);
+    aModel->AddWithRefs(aLowerMWU);
+    // Tolerance
+    Handle(StepShape_ToleranceValue) aTolValue = new StepShape_ToleranceValue();
+    aTolValue->Init(aLowerMWU, anUpperMWU);
+    aModel->AddWithRefs(aTolValue);
+    StepShape_ToleranceMethodDefinition aMethod;
+    aMethod.SetValue(aTolValue);
+    Handle(StepShape_PlusMinusTolerance) aPlusMinusTol = new StepShape_PlusMinusTolerance();
+    aPlusMinusTol->Init(aMethod, theDimension);
+    aModel->AddWithRefs(aPlusMinusTol);
+  }
+  // Tolerance class
+  if (theObject->IsDimWithClassOfTolerance()) {
+    Standard_Boolean isHole;
+    XCAFDimTolObjects_DimensionFormVariance aFormVariance;
+    XCAFDimTolObjects_DimensionGrade aGrade;
+    if (!theObject->GetClassOfTolerance(isHole, aFormVariance, aGrade))
+      return;
+    Handle(StepShape_LimitsAndFits) aLAF = STEPConstruct_GDTProperty::GetLimitsAndFits(isHole, aFormVariance, aGrade);
+    aModel->AddWithRefs(aLAF);
+    StepShape_ToleranceMethodDefinition aMethod;
+    aMethod.SetValue(aLAF);
+    Handle(StepShape_PlusMinusTolerance) aPlusMinusTol = new StepShape_PlusMinusTolerance();
+    aPlusMinusTol->Init(aMethod, theDimension);
+    aModel->AddWithRefs(aPlusMinusTol);
+  }
+}
+
+//=======================================================================
+//function : WriteDatumSystem
+//purpose  : auxiliary (write Write datum system for given
+//           geometric_tolerance)
+//======================================================================
+static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const Handle(XSControl_WorkSession) &WS,
+                                                                           const TDF_Label theGeomTolL,
+                                                                           const TDF_LabelSequence theDatumSeq,
+                                                                           const STEPConstruct_DataMapOfAsciiStringTransient theDatumMap,
+                                                                           const Handle(StepRepr_RepresentationContext)& theRC)
+{
+  // Get working data
+  Handle(Interface_InterfaceModel) Model = WS->Model();
+  const Handle(Interface_HGraph) aHGraph = WS->HGraph();
+  if (aHGraph.IsNull())
+    return NULL;
+  Interface_Graph aGraph = aHGraph->Graph();
+  Handle(XCAFDoc_GeomTolerance) aGTAttr;
+  if (!theGeomTolL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTAttr)) 
+    return NULL;
+  Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = aGTAttr->GetObject();
+  if (anObject.IsNull())
+    return NULL;
+
+  // Unit
+  StepBasic_Unit aUnit = GetUnit(theRC);
+
+  XCAFDimTolObjects_DatumObjectSequence aDatums;
+  Standard_Integer aMaxDatumNum = 0;
+  for (Standard_Integer i = 1; i <= theDatumSeq.Length(); i++) {
+    Handle(XCAFDoc_Datum) aDatumAttr;
+    if (!theDatumSeq.Value(i).FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_DatumObject) aDatumObj = aDatumAttr->GetObject();
+    if (aDatumObj.IsNull())
+      continue;
+    aDatums.Append(aDatumObj);
+    aMaxDatumNum = Max(aMaxDatumNum, aDatumObj->GetPosition());
+  }
+
+  Handle(StepDimTol_HArray1OfDatumReferenceCompartment) aConstituents =
+    new StepDimTol_HArray1OfDatumReferenceCompartment(1, aMaxDatumNum);
+  // Auxiliary datum to initialize attributes in Datum_System
+  Handle(StepDimTol_Datum) aFirstDatum;
+  Standard_Integer aConstituentsNum = 0;
+  for (Standard_Integer i = 1; i <= aMaxDatumNum; i++) {
+    // Collect datums with i-th position
+    XCAFDimTolObjects_DatumObjectSequence aDatumSeqPos;
+    for (Standard_Integer j = 1; j <= aDatums.Length(); j++)
+      if (aDatums.Value(j)->GetPosition() == i)
+        aDatumSeqPos.Append(aDatums.Value(j));
+    if (aDatumSeqPos.Length() < 1)
+      continue;
+
+    aConstituentsNum++;
+    // Initialize Datum_Reference_Compartment
+    StepDimTol_DatumOrCommonDatum aDatumRef;
+    Handle(StepDimTol_DatumReferenceCompartment) aCompartment =
+      new StepDimTol_DatumReferenceCompartment();
+    Handle(StepDimTol_HArray1OfDatumReferenceModifier) aModifiers;
+    if (aDatumSeqPos.Length() == 1) {
+      // Datum entity
+      theDatumMap.Find(aDatumSeqPos.Value(1)->GetName()->String(), aFirstDatum);
+      aDatumRef.SetValue(aFirstDatum);
+      // Modifiers
+      XCAFDimTolObjects_DatumModifiersSequence aSimpleModifiers = aDatumSeqPos.Value(1)->GetModifiers();
+      XCAFDimTolObjects_DatumModifWithValue aModifWithVal;
+      Standard_Real aValue = 0;
+      aDatumSeqPos.Value(1)->GetModifierWithValue(aModifWithVal, aValue);
+      aModifiers = STEPConstruct_GDTProperty::GetDatumRefModifiers(aSimpleModifiers, aModifWithVal, aValue, aUnit);
+      // Add Datum_Reference_Modifier_With_Value
+      if (!aModifiers.IsNull()) {
+        Handle(StepDimTol_DatumReferenceModifierWithValue) aDRMWV = 
+          aModifiers->Value(aModifiers->Length()).DatumReferenceModifierWithValue();
+        if (!aDRMWV.IsNull()) {
+          Model->AddWithRefs(aDRMWV);
+        }
+      }
+    }
+    else {
+      Handle(StepDimTol_HArray1OfDatumReferenceElement) aCommonDatumList = new StepDimTol_HArray1OfDatumReferenceElement(1, aDatumSeqPos.Length());
+      for (Standard_Integer j = 1; j <= aDatumSeqPos.Length(); j++) {
+        // Datum entity
+        Handle(StepDimTol_Datum) aDatum;
+        theDatumMap.Find(aDatumSeqPos.Value(j)->GetName()->String(), aDatum);
+        StepDimTol_DatumOrCommonDatum anElemDatumRef;
+        anElemDatumRef.SetValue(aDatum);
+        if (aFirstDatum.IsNull())
+          aFirstDatum = aDatum;
+        // Modifiers
+        XCAFDimTolObjects_DatumModifiersSequence aSimpleModifiers = aDatumSeqPos.Value(j)->GetModifiers();
+        XCAFDimTolObjects_DatumModifWithValue aModifWithVal;
+        Standard_Real aValue = 0;
+        aDatumSeqPos.Value(j)->GetModifierWithValue(aModifWithVal, aValue);
+        Handle(StepDimTol_HArray1OfDatumReferenceModifier) anElemModifiers =
+          STEPConstruct_GDTProperty::GetDatumRefModifiers(aSimpleModifiers, aModifWithVal, aValue, aUnit);
+        // Add Datum_Reference_Modifier_With_Value
+        if (!anElemModifiers.IsNull()) {
+          Handle(StepDimTol_DatumReferenceModifierWithValue) aDRMWV = 
+            anElemModifiers->Value(aModifiers->Length()).DatumReferenceModifierWithValue();
+          if (!aDRMWV.IsNull()) {
+            Model->AddWithRefs(aDRMWV);
+          }
+        }
+        // Datum_Reference_Element
+        Handle(StepDimTol_DatumReferenceElement) anElement = new StepDimTol_DatumReferenceElement();
+        anElement->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aDatum->OfShape(),
+          aDatum->ProductDefinitional(), anElemDatumRef, !anElemModifiers.IsNull(), anElemModifiers);
+        Model->AddWithRefs(anElement);
+        aCommonDatumList->SetValue(j, anElement);
+      }
+      aDatumRef.SetValue(aCommonDatumList);
+    }
+    aCompartment->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aFirstDatum->OfShape(),
+      aFirstDatum->ProductDefinitional(), aDatumRef, !aModifiers.IsNull(), aModifiers);
+    Model->AddWithRefs(aCompartment);
+    aConstituents->SetValue(aConstituentsNum, aCompartment);
+  }
+  // Remove null elements from aConstituents
+  Standard_Integer aNbConstituents = 0;
+  for (Standard_Integer i = 1; i <= aConstituents->Length(); i++)
+    if (!aConstituents->Value(i).IsNull())
+      aNbConstituents++;
+  Handle(StepDimTol_HArray1OfDatumReferenceCompartment) aResConstituents =
+    new StepDimTol_HArray1OfDatumReferenceCompartment(1, aNbConstituents);
+  Standard_Integer aConstituentsIt = 0;
+  for (Standard_Integer i = 1; i <= aConstituents->Length(); i++)
+    if (!aConstituents->Value(i).IsNull()) {
+      aConstituentsIt++;
+      aResConstituents->SetValue(aConstituentsIt, aConstituents->Value(i));
+    }
+
+  Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
+  Handle(StepDimTol_DatumSystem) aDS = new StepDimTol_DatumSystem();
+  aDS->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aFirstDatum->OfShape(),
+    aFirstDatum->ProductDefinitional(), aResConstituents);
+  Model->AddWithRefs(aDS);
+  StepDimTol_DatumSystemOrReference anArrayValue;
+  anArrayValue.SetValue(aDS);
+  aDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference(1, 1);
+  aDatumSystem->SetValue(1, anArrayValue);
+
+  // Axis
+  if (anObject->HasAxis()) {
+    Handle(StepGeom_Axis2Placement3d) anAxis =
+      STEPConstruct_GDTProperty::GetAxis2Placement3D(anObject->GetAxis());
+    Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
+    StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
+    aDefinition.SetValue(aDS);
+    Handle(StepRepr_HArray1OfRepresentationItem) anReprItems = new StepRepr_HArray1OfRepresentationItem(1, 1);
+    Handle(StepRepr_RepresentationItem) anIdentifiedItem = Handle(StepRepr_RepresentationItem)::DownCast(anAxis);
+    anReprItems->SetValue(1, anIdentifiedItem);
+    Interface_EntityIterator subs = aGraph.Sharings(aFirstDatum->OfShape());
+    Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+    for (subs.Start(); subs.More() && aSDR.IsNull(); subs.Next()) {
+      Handle(Standard_Transient) anEntity = subs.Value();
+      aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(anEntity);
+    }
+    if (aSDR.IsNull())
+      return aDatumSystem;
+    
+    aGISU->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(),
+      aDefinition, aSDR->UsedRepresentation(), anReprItems);
+    Model->AddWithRefs(anAxis);
+    Model->AddWithRefs(aGISU);
+  }
+
+  return aDatumSystem;
+}
+
+//=======================================================================
+//function : WriteToleranceZone
+//purpose  : auxiliary (write tolerace zones)
+//=======================================================================
+static void WriteToleranceZone (const Handle(XSControl_WorkSession) &WS,
+                                const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObject,
+                                const Handle(StepDimTol_GeometricTolerance)& theEntity,
+                                const Handle(StepRepr_RepresentationContext)& theRC)
+{
+  // Get working data
+  Handle(Interface_InterfaceModel) Model = WS->Model();
+  if (theEntity.IsNull() || theObject.IsNull())
+    return;
+
+  // Return if there is no tolerance zones
+  if (theObject->GetTypeOfValue() == XCAFDimTolObjects_GeomToleranceTypeValue_None &&
+      theObject->GetZoneModifier() != XCAFDimTolObjects_GeomToleranceZoneModif_Runout)
+    return;
+
+  // Create Tolerance_Zone
+  Handle(StepDimTol_ToleranceZoneForm) aForm = new StepDimTol_ToleranceZoneForm();
+  Model->AddWithRefs(aForm);
+  aForm->Init(STEPConstruct_GDTProperty::GetTolValueType(theObject->GetTypeOfValue()));
+  Handle(StepDimTol_HArray1OfToleranceZoneTarget) aZoneTargetArray = new StepDimTol_HArray1OfToleranceZoneTarget(1, 1);
+  StepDimTol_ToleranceZoneTarget aTarget;
+  aTarget.SetValue(theEntity);
+  aZoneTargetArray->SetValue(1, aTarget);
+  Handle(StepDimTol_ToleranceZone) aZone = new StepDimTol_ToleranceZone();
+  aZone->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(),
+    theEntity->TolerancedShapeAspect().ShapeAspect()->OfShape(), StepData_LFalse,
+    aZoneTargetArray, aForm);
+  Model->AddWithRefs(aZone);
+
+  // Runout_Tolerance_Zone
+  Handle(StepBasic_PlaneAngleMeasureWithUnit) aPAMWU = new StepBasic_PlaneAngleMeasureWithUnit();
+  Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
+  aValueMember->SetName("PLANE_ANGLE_MEASURE");
+  aValueMember->SetReal(theObject->GetValueOfZoneModifier());
+  aPAMWU->Init(aValueMember, GetUnit(theRC, Standard_True));
+  Handle(StepDimTol_RunoutZoneOrientation) anOrientation = new StepDimTol_RunoutZoneOrientation();
+  anOrientation->Init(aPAMWU);
+  Handle(StepDimTol_RunoutZoneDefinition) aDefinition = new StepDimTol_RunoutZoneDefinition();
+  aDefinition->Init(aZone, NULL, anOrientation);
+  Model->AddWithRefs(aDefinition);
+  Model->AddWithRefs(anOrientation);
+  Model->AddWithRefs(aPAMWU);
+}
+
+//=======================================================================
+//function : WriteGeomTolerance
+//purpose  : auxiliary (write Geometric_Tolerance entity for given shapes,
+//           label and datum system)
+//======================================================================
+static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
+                                const TDF_LabelSequence theShapeSeqL,
+                                const TDF_Label theGeomTolL,
+                                const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
+                                const Handle(StepRepr_RepresentationContext)& theRC)
+{
+  // Get working data
+  Handle(Interface_InterfaceModel) Model = WS->Model();
+  Handle(XCAFDoc_GeomTolerance) aGTAttr;
+  if (!theGeomTolL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTAttr)) 
+    return;
+  Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = aGTAttr->GetObject();
+  if (anObject.IsNull())
+    return;
+
+  // Value
+  Handle(StepBasic_LengthMeasureWithUnit) aLMWU = new StepBasic_LengthMeasureWithUnit();
+  StepBasic_Unit aUnit = GetUnit(theRC);
+  Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
+  aValueMember->SetName("LENGTH_MEASURE");
+  aValueMember->SetReal(anObject->GetValue());
+  aLMWU->Init(aValueMember, aUnit);
+  Model->AddWithRefs(aLMWU);
+
+  // Geometric_Tolerance target
+  Handle(StepRepr_ShapeAspect) aMainSA;
+  Handle(StepRepr_RepresentationContext) dummyRC;
+  Handle(StepAP242_GeometricItemSpecificUsage) dummyGISU;
+  if (theShapeSeqL.Length() == 1) {
+    TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(theShapeSeqL.Value(1));
+    aMainSA = WriteShapeAspect(WS, theGeomTolL, aShape, dummyRC, dummyGISU);
+    Model->AddWithRefs(aMainSA);
+  }
+  else {
+    Handle(StepRepr_CompositeShapeAspect) aCSA;
+    for (Standard_Integer i = 1; i <= theShapeSeqL.Length(); i++) {
+      TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(theShapeSeqL.Value(i));
+      Handle(StepRepr_ShapeAspect) aSA = WriteShapeAspect(WS, theGeomTolL, aShape, dummyRC, dummyGISU);
+      if (aSA.IsNull())
+        continue;
+      if (aCSA.IsNull()) {
+        aCSA = new StepRepr_CompositeShapeAspect();
+        aCSA->Init(aSA->Name(), aSA->Description(), aSA->OfShape(), aSA->ProductDefinitional());
+        Model->AddWithRefs(aCSA);
+      }
+      Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+      aSAR->Init(new TCollection_HAsciiString(), Standard_False, NULL, aCSA, aSA);
+      Model->AddWithRefs(aSAR);
+    }
+    aMainSA = aCSA;
+  }
+  StepDimTol_GeometricToleranceTarget aGTTarget;
+  aGTTarget.SetValue(aMainSA);
+
+  Standard_Boolean isWithModif = Standard_False,
+                   isWithDatRef = Standard_False,
+                   isWithMaxTol = Standard_False;
+  // Modifiers
+  // Simple modifiers
+  XCAFDimTolObjects_GeomToleranceModifiersSequence aModifiers = anObject->GetModifiers();
+  Handle(StepDimTol_HArray1OfGeometricToleranceModifier) aModifArray;
+  Handle(StepBasic_LengthMeasureWithUnit) aMaxLMWU;
+  Standard_Integer aModifNb = aModifiers.Length();
+  if (anObject->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None)
+      aModifNb++;
+  for (Standard_Integer i = 1; i < aModifiers.Length(); i++)
+    if (aModifiers.Value(i) == XCAFDimTolObjects_GeomToleranceModif_All_Around ||
+        aModifiers.Value(i) == XCAFDimTolObjects_GeomToleranceModif_All_Over)
+        aModifNb--;
+  if (aModifNb > 0) {
+    isWithModif = Standard_True;
+    aModifArray = new StepDimTol_HArray1OfGeometricToleranceModifier(1, aModifNb);
+    Standard_Integer k = 1;
+    for (Standard_Integer i = 1; i <= aModifiers.Length(); i++) {
+      if (aModifiers.Value(i) == XCAFDimTolObjects_GeomToleranceModif_All_Around ||
+        aModifiers.Value(i) == XCAFDimTolObjects_GeomToleranceModif_All_Over)
+        continue;
+      StepDimTol_GeometricToleranceModifier aModif = 
+        STEPConstruct_GDTProperty::GetGeomToleranceModifier(aModifiers.Value(i));
+      aModifArray->SetValue(k, aModif);
+      k++;
+    }
+    if (anObject->GetMaterialRequirementModifier() == XCAFDimTolObjects_GeomToleranceMatReqModif_L) {
+      aModifArray->SetValue(aModifNb, StepDimTol_GTMLeastMaterialRequirement);
+    }
+    else if (anObject->GetMaterialRequirementModifier() == XCAFDimTolObjects_GeomToleranceMatReqModif_M) {
+      aModifArray->SetValue(aModifNb, StepDimTol_GTMMaximumMaterialRequirement);
+    }
+    // Modifier with value
+    if (anObject->GetMaxValueModifier() != 0) {
+      isWithMaxTol = Standard_True;
+      aMaxLMWU = new StepBasic_LengthMeasureWithUnit();
+      Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
+      aValueMember->SetName("LENGTH_MEASURE");
+      aValueMember->SetReal(anObject->GetMaxValueModifier());
+      aMaxLMWU->Init(aValueMember, aUnit);
+      Model->AddWithRefs(aMaxLMWU);
+    }
+  }
+
+  // Datum Reference
+  isWithDatRef = !theDatumSystem.IsNull();
+
+  // Collect all attributes
+  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString(),
+                                  aDescription = new TCollection_HAsciiString();
+  Handle(StepDimTol_GeometricToleranceWithDatumReference) aGTWDR = 
+    new StepDimTol_GeometricToleranceWithDatumReference();
+  aGTWDR->SetDatumSystem(theDatumSystem);
+  Handle(StepDimTol_GeometricToleranceWithModifiers) aGTWM = 
+    new StepDimTol_GeometricToleranceWithModifiers();
+  aGTWM->SetModifiers(aModifArray);
+  StepDimTol_GeometricToleranceType aType = 
+    STEPConstruct_GDTProperty::GetGeomToleranceType(anObject->GetType());
+
+  // Init and write necessary subtype of Geometric_Tolerance entity
+  Handle(StepDimTol_GeometricTolerance) aGeomTol;
+  if (isWithModif) {
+    if (isWithMaxTol) {
+      if (isWithDatRef) {
+        // Geometric_Tolerance & Geometric_Tolerance_With_Datum_Reference & 
+        //Geometric_Tolerance_With_Maximum_Tolerance & Geometric_Tolerance_With_Modifiers
+        Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol) aResult =
+          new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol();
+        aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWDR, aGTWM, aMaxLMWU, aType);
+        aGeomTol = aResult;
+      }
+      else {
+        // Geometric_Tolerance & Geometric_Tolerance_With_Maximum_Tolerance & Geometric_Tolerance_With_Modifiers
+        Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol) aResult =
+          new StepDimTol_GeoTolAndGeoTolWthMaxTol();
+        aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWM, aMaxLMWU, aType);
+        aGeomTol = aResult;
+      }
+    }
+    else {
+      if (isWithDatRef) {
+        // Geometric_Tolerance & Geometric_Tolerance_With_Datum_Reference & Geometric_Tolerance_With_Modifiers
+        Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod) aResult =
+          new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod();
+        aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWDR, aGTWM, aType);
+        aGeomTol = aResult;
+      }
+      else {
+        // Geometric_Tolerance & Geometric_Tolerance_With_Modifiers
+        Handle(StepDimTol_GeoTolAndGeoTolWthMod) aResult =
+          new StepDimTol_GeoTolAndGeoTolWthMod();
+        aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWM, aType);
+        aGeomTol = aResult;
+      }
+    }
+  }
+  else {
+    if (isWithDatRef) {
+      // Geometric_Tolerance & Geometric_Tolerance_With_Datum_Reference
+      Handle(StepDimTol_GeoTolAndGeoTolWthDatRef) aResult =
+          new StepDimTol_GeoTolAndGeoTolWthDatRef();
+        aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWDR, aType);
+        aGeomTol = aResult;
+    }
+    else {
+      // Geometric_Tolerance
+      Handle(StepDimTol_GeometricTolerance) aResult = 
+        STEPConstruct_GDTProperty::GetGeomTolerance(anObject->GetType());
+      if (!aResult.IsNull()) {
+        aResult->Init(aName, aDescription, aLMWU, aGTTarget);
+        aGeomTol = aResult;
+      }
+    }
+  }
+  Model->AddWithRefs(aGeomTol);
+  WriteToleranceZone(WS, anObject, aGeomTol, theRC);
+}
 
 //=======================================================================
 //function : WriteDGTs
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSession) &WS,
                                                    const TDF_LabelSequence  &labels ) const
 {
   
   if ( labels.Length() <=0 ) return Standard_False;
-
+  
   // get working data
   Handle(Interface_InterfaceModel) Model = WS->Model();
   Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
@@ -2070,9 +3112,16 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   if(DGTTool.IsNull() ) return Standard_False;
 
   TDF_LabelSequence DGTLabels;
+
+  // Check for number of Application Protocol
+  DGTTool->GetDimTolLabels(DGTLabels);
+  if (DGTLabels.Length() == 0)
+    return WriteDGTsAP242(WS, labels);
+
   STEPConstruct_DataMapOfAsciiStringTransient DatumMap;
 
   // write Datums
+  DGTLabels.Clear();
   DGTTool->GetDatumLabels(DGTLabels);
   if(DGTLabels.Length()<=0) return Standard_False;
   Standard_Integer i;
@@ -2402,6 +3451,217 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   return Standard_True;
 }
 
+//=======================================================================
+//function : WriteDGTsAP242
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_WorkSession) &WS,
+                                                        const TDF_LabelSequence  &labels ) const
+{
+  // Get working data
+  Handle(Interface_InterfaceModel) aModel = WS->Model();
+  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
+  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+
+  const Handle(Interface_HGraph) aHGraph = WS->HGraph();
+  if(aHGraph.IsNull())
+    return Standard_False;
+
+  Interface_Graph aGraph = aHGraph->Graph();
+  Handle(XCAFDoc_DimTolTool) DGTTool = XCAFDoc_DocumentTool::DimTolTool(labels(1));
+  if(DGTTool.IsNull())
+    return Standard_False;
+
+  TDF_LabelSequence aDGTLabels;
+  STEPConstruct_DataMapOfAsciiStringTransient aDatumMap;
+  Handle(StepRepr_RepresentationContext) aRC;
+
+  //------------- //
+  // write Datums //
+  //--------------//
+  DGTTool->GetDatumLabels(aDGTLabels);
+  // Find all shapes with datums
+  TColStd_MapOfAsciiString aNameIdMap;
+  for(Standard_Integer i = 1; i <= aDGTLabels.Length(); i++) {
+    TDF_Label aDatumL = aDGTLabels.Value(i);
+    TDF_LabelSequence aShapeL;
+    TDF_LabelSequence aNullSeq;
+    if(!DGTTool->GetRefShapeLabel(aDatumL, aShapeL, aNullSeq))
+      continue;
+    Handle(XCAFDoc_Datum) aDatumAttr;
+    aDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr);
+    Handle(XCAFDimTolObjects_DatumObject) anObject = aDatumAttr->GetObject();
+    TCollection_AsciiString aDatumName = anObject->GetName()->String();
+    TCollection_AsciiString aDatumTargetId = TCollection_AsciiString(anObject->GetDatumTargetNumber());
+    if (!aNameIdMap.Add(aDatumName.Cat(aDatumTargetId)))
+      continue;
+    Handle(StepDimTol_Datum) aWrittenDatum;
+    Standard_Boolean isFirstDT = !aDatumMap.Find(aDatumName, aWrittenDatum);
+    Handle(StepDimTol_Datum) aDatum = WriteDatumAP242(WS, aShapeL.First(), aDatumL, isFirstDT, aWrittenDatum);
+    // Add created Datum into Map
+    aDatumMap.Bind(aDatumName, aDatum);
+  }
+
+  //----------------- //
+  // write Dimensions //
+  //------------------//
+  aDGTLabels.Clear();
+  DGTTool->GetDimensionLabels(aDGTLabels);
+  for (Standard_Integer i = 1; i <= aDGTLabels.Length(); i++) {
+    TDF_Label aDimensionL = aDGTLabels.Value(i);
+    TDF_LabelSequence aFirstShapeL, aSecondShapeL;
+    if (!DGTTool->GetRefShapeLabel(aDimensionL, aFirstShapeL, aSecondShapeL))
+      continue;
+    Handle(XCAFDoc_Dimension) aDimAttr;
+    if (!aDimensionL.FindAttribute(XCAFDoc_Dimension::GetID(),aDimAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_DimensionObject) anObject = aDimAttr->GetObject();
+    if (anObject.IsNull())
+      continue;
+
+    // Write links with shapes
+    Handle(StepRepr_RepresentationContext) dummyRC;
+    Handle(StepAP242_GeometricItemSpecificUsage) dummyGISU;
+    Handle(StepRepr_ShapeAspect) aFirstSA, aSecondSA;
+    if (aFirstShapeL.Length() == 1) {
+      TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aFirstShapeL.Value(1));
+      aFirstSA = WriteShapeAspect(WS, aDimensionL, aShape, dummyRC, dummyGISU);
+      if (aRC.IsNull() && !dummyRC.IsNull())
+        aRC = dummyRC;
+    }
+    else if (aFirstShapeL.Length() > 1) {
+      Handle(StepRepr_CompositeShapeAspect) aCSA;
+      for (Standard_Integer shIt = 1; shIt <= aFirstShapeL.Length(); shIt++) {
+        TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aFirstShapeL.Value(shIt));
+        Handle(StepRepr_ShapeAspect) aSA = WriteShapeAspect(WS, aDimensionL, aShape, dummyRC, dummyGISU);
+        if (aCSA.IsNull() && !aSA.IsNull())
+          aCSA = new StepRepr_CompositeShapeAspect();
+          aCSA->Init(aSA->Name(), aSA->Description(), aSA->OfShape(), aSA->ProductDefinitional());
+          aModel->AddWithRefs(aCSA);
+        if (!aSA.IsNull()) {
+          Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+          aSAR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aCSA, aSA);
+          aModel->AddWithRefs(aSAR);
+        }
+        if (aRC.IsNull() && !dummyRC.IsNull())
+          aRC = dummyRC;
+      }
+      aFirstSA = aCSA;
+    }
+    if (aSecondShapeL.Length() == 1) {
+      TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aSecondShapeL.Value(1));
+      aSecondSA = WriteShapeAspect(WS, aDimensionL, aShape, dummyRC, dummyGISU);
+      if (aRC.IsNull() && !dummyRC.IsNull())
+        aRC = dummyRC;
+    }
+    else if (aSecondShapeL.Length() > 1) {
+      Handle(StepRepr_CompositeShapeAspect) aCSA;
+      for (Standard_Integer shIt = 1; shIt <= aSecondShapeL.Length(); shIt++) {
+        TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aSecondShapeL.Value(shIt));
+        Handle(StepRepr_ShapeAspect) aSA = WriteShapeAspect(WS, aDimensionL, aShape, dummyRC, dummyGISU);
+        if (aCSA.IsNull() && !aSA.IsNull())
+          aCSA = new StepRepr_CompositeShapeAspect();
+          aCSA->Init(aSA->Name(), aSA->Description(), aSA->OfShape(), aSA->ProductDefinitional());
+        if (!aSA.IsNull()) {
+          Handle(StepRepr_ShapeAspectRelationship) aSAR = new StepRepr_ShapeAspectRelationship();
+          aSAR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aCSA, aSA);
+          aModel->AddWithRefs(aSAR);
+        }
+        if (aRC.IsNull() && !dummyRC.IsNull())
+          aRC = dummyRC;
+      }
+      aSecondSA = aCSA;
+    }
+
+    // Write dimensions
+    StepShape_DimensionalCharacteristic aDimension;
+    XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
+    if (STEPConstruct_GDTProperty::IsDimensionalLocation(aDimType)) {
+      // Dimensional_Location
+      Handle(StepShape_DimensionalLocation) aDim = new StepShape_DimensionalLocation();
+      aDim->Init(STEPConstruct_GDTProperty::GetDimTypeName(aDimType), Standard_False, NULL, aFirstSA, aSecondSA);
+      aDimension.SetValue(aDim);
+    }
+    else if (aDimType == XCAFDimTolObjects_DimensionType_Location_Angular) {
+      // Angular_Location
+      Handle(StepShape_AngularLocation) aDim = new StepShape_AngularLocation();
+      StepShape_AngleRelator aRelator = StepShape_Equal;
+      if (anObject->HasQualifier()) {
+        XCAFDimTolObjects_DimensionQualifier aQualifier = anObject->GetQualifier();
+        switch (aQualifier) {
+          case XCAFDimTolObjects_DimensionQualifier_Min: aRelator = StepShape_Small;
+            break;
+          case XCAFDimTolObjects_DimensionQualifier_Max: aRelator = StepShape_Large;
+            break;
+          default: aRelator = StepShape_Equal;
+        }
+      }
+      aDim->Init(new TCollection_HAsciiString(), Standard_False, NULL, aFirstSA, aSecondSA, aRelator);
+      aDimension.SetValue(aDim);
+    }
+    else if (aDimType == XCAFDimTolObjects_DimensionType_Location_WithPath) {
+      // Dimensional_Location_With_Path
+      Handle(StepShape_DimensionalLocationWithPath) aDim = new StepShape_DimensionalLocationWithPath();
+      Handle(StepRepr_ShapeAspect) aPathSA = WriteShapeAspect(WS, aDimensionL, anObject->GetPath(), dummyRC, dummyGISU);
+      aDim->Init(new TCollection_HAsciiString(), Standard_False, NULL, aFirstSA, aSecondSA, aPathSA);
+      aDimension.SetValue(aDim);
+    }
+    else if (STEPConstruct_GDTProperty::IsDimensionalSize(aDimType)) {
+      // Dimensional_Size
+      Handle(StepShape_DimensionalSize) aDim = new StepShape_DimensionalSize();
+      aDim->Init(aFirstSA, STEPConstruct_GDTProperty::GetDimTypeName(aDimType));
+      aDimension.SetValue(aDim);
+    }
+    else if (aDimType == XCAFDimTolObjects_DimensionType_Size_Angular) {
+      // Angular_Size
+      Handle(StepShape_AngularSize) aDim = new StepShape_AngularSize();
+      StepShape_AngleRelator aRelator = StepShape_Equal;
+      if (anObject->HasQualifier()) {
+        XCAFDimTolObjects_DimensionQualifier aQualifier = anObject->GetQualifier();
+        switch (aQualifier) {
+          case XCAFDimTolObjects_DimensionQualifier_Min: aRelator = StepShape_Small;
+            break;
+          case XCAFDimTolObjects_DimensionQualifier_Max: aRelator = StepShape_Large;
+            break;
+          default: aRelator = StepShape_Equal;
+        }
+      }
+      aDim->Init(aFirstSA, new TCollection_HAsciiString(), aRelator);
+      aDimension.SetValue(aDim);
+    }
+    else if (aDimType == XCAFDimTolObjects_DimensionType_Size_WithPath) {
+      // Dimensional_Size_With_Path
+      Handle(StepShape_DimensionalSizeWithPath) aDim = new StepShape_DimensionalSizeWithPath();
+      Handle(StepRepr_ShapeAspect) aPathSA = WriteShapeAspect(WS, aDimensionL, anObject->GetPath(), dummyRC, dummyGISU);
+      aDim->Init(aFirstSA, new TCollection_HAsciiString(), aPathSA);
+      aDimension.SetValue(aDim);
+    }
+
+    // Write values
+    WriteDimValues(WS, anObject, aRC, aDimension);
+  }
+
+  //----------------------------//
+  // write Geometric Tolerances //
+  //----------------------------//
+  aDGTLabels.Clear();
+  DGTTool->GetGeomToleranceLabels(aDGTLabels);
+  for (Standard_Integer i = 1; i <= aDGTLabels.Length(); i++) {
+    TDF_Label aGeomTolL = aDGTLabels.Value(i);
+    TDF_LabelSequence aFirstShapeL, aNullSeqL;
+    if (!DGTTool->GetRefShapeLabel(aGeomTolL, aFirstShapeL, aNullSeqL))
+      continue;
+    TDF_LabelSequence aDatumSeq;
+    DGTTool->GetDatumWithObjectOfTolerLabels(aGeomTolL, aDatumSeq);
+    Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
+    if (aDatumSeq.Length() > 0)
+      aDatumSystem = WriteDatumSystem(WS, aGeomTolL, aDatumSeq, aDatumMap, aRC);
+    WriteGeomTolerance(WS, aFirstShapeL, aGeomTolL, aDatumSystem, aRC);
+  }
+
+  return Standard_True;
+}
 
 //=======================================================================
 //function : FindPDSforRI

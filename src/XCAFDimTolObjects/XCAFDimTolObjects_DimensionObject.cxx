@@ -98,9 +98,16 @@ XCAFDimTolObjects_DimensionType XCAFDimTolObjects_DimensionObject::GetType()  co
 //=======================================================================
 Standard_Real XCAFDimTolObjects_DimensionObject::GetValue ()  const
 {
-  if(!myVal.IsNull() && (myVal->Length() == 1 || myVal->Length() == 3))
-  {
+  if (myVal.IsNull())
+    return 0;
+
+  // Simple value or value with Plus_Minus_Tolerance
+  if (myVal->Length() == 1 || myVal->Length() == 3) {
     return myVal->Value(1);
+  }
+  // Range
+  if (myVal->Length() == 2) {
+    return (myVal->Value(1) + myVal->Value(2)) / 2;
   }
   return 0;
 }

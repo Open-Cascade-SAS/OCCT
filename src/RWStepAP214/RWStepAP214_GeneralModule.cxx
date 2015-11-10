@@ -1268,6 +1268,8 @@
 #include <RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.hxx>
 #include <RWStepRepr_RWIntegerRepresentationItem.hxx>
 #include <RWStepRepr_RWValueRepresentationItem.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol.hxx>
 
 #include <StepRepr_Apex.hxx>
 #include <StepRepr_CentreOfSymmetry.hxx>
@@ -1311,6 +1313,8 @@
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_IntegerRepresentationItem.hxx>
 #include <StepRepr_ValueRepresentationItem.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -4978,6 +4982,21 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
       RWStepRepr_RWFeatureForDatumTargetRelationship tool;
       tool.Share(anent,iter);
     }
+    break;
+  case 705:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 706:
+    {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMaxTol,anent,ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol tool;
+      tool.Share(anent,iter);
+    }
+    break;
 
     default : break;
     }
@@ -6928,6 +6947,12 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
   case 702:
     ent = new StepRepr_FeatureForDatumTargetRelationship;
     break;
+  case 705 : 
+    ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol;
+    break;
+  case 706 : 
+    ent = new StepDimTol_GeoTolAndGeoTolWthMaxTol;
+    break;
 
   default: 
     return Standard_False;
@@ -7508,7 +7533,10 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 698:
   case 699:
   case 700:
-  case 701: return catdr;
+  case 701:
+  case 702: return catdr;
+  case 705:
+  case 706: return cataux;
     
   default : break;
   }

@@ -34,6 +34,7 @@
 enum ChildLab
 {
   ChildLab_Name = 1,
+  ChildLab_Position,
   ChildLab_Modifiers,
   ChildLab_ModifierWithValue,
   ChildLab_IsDTarget,
@@ -43,6 +44,7 @@ enum ChildLab
   ChildLab_AxisRef,
   ChildLab_DTargetLength,
   ChildLab_DTargetWidth,
+  ChildLab_DTargetNumber,
   ChildLab_DatumTarget,
 };
 
@@ -177,6 +179,10 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
     anAttName->Set(theObject->GetName()->String());
   }
 
+  Handle(TDataStd_Integer) aPosition = new TDataStd_Integer();
+  aPosition->Set(theObject->GetPosition());
+  Label().FindChild(ChildLab_Position).AddAttribute(aPosition);
+
   if(theObject->GetModifiers().Length() > 0)
   {
     Handle(TDataStd_IntegerArray) aModifiers;
@@ -236,17 +242,21 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
       Handle(TDataStd_RealArray) aN = new TDataStd_RealArray();
       Handle(TDataStd_RealArray) aR = new TDataStd_RealArray();
       gp_Ax2 anAx = theObject->GetDatumTargetAxis();
-      aLoc->SetValue(aLoc->Upper(),anAx.Location().X());
-      aLoc->SetValue(aLoc->Upper()+1,anAx.Location().Y());
-      aLoc->SetValue(aLoc->Upper()+2,anAx.Location().Z());
 
-      aN->SetValue(aN->Upper(),anAx.Axis().Direction().X());
-      aN->SetValue(aN->Upper(),anAx.Axis().Direction().X());
-      aN->SetValue(aN->Upper(),anAx.Axis().Direction().X());
+      Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
+      for (Standard_Integer i = 1; i <= 3; i++)
+        aLocArr->SetValue(i, anAx.Location().Coord(i));
+      aLoc->ChangeArray(aLocArr);
 
-      aR->SetValue(aR->Upper(),anAx.Direction().X());
-      aR->SetValue(aR->Upper(),anAx.Direction().X());
-      aR->SetValue(aR->Upper(),anAx.Direction().X());
+      Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
+      for (Standard_Integer i = 1; i <= 3; i++)
+        aNArr->SetValue(i, anAx.Direction().Coord(i));
+      aN->ChangeArray(aNArr);
+
+      Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
+      for (Standard_Integer i = 1; i <= 3; i++)
+        aRArr->SetValue(i, anAx.XDirection().Coord(i));
+      aR->ChangeArray(aRArr);
 
       Label().FindChild(ChildLab_AxisLoc).AddAttribute(aLoc);
       Label().FindChild(ChildLab_AxisN).AddAttribute(aN);
@@ -265,6 +275,9 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
         }
       }
     }
+    Handle(TDataStd_Integer) aNum = new TDataStd_Integer();
+    aNum->Set(theObject->GetDatumTargetNumber());
+    Label().FindChild(ChildLab_DTargetNumber).AddAttribute(aNum);
   }
 }
 
@@ -304,6 +317,12 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
     }
   }
 
+  Handle(TDataStd_Integer) aPosition;
+  if(Label().FindChild(ChildLab_Position).FindAttribute(TDataStd_Integer::GetID(), aPosition))
+  {
+    anObj->SetPosition(aPosition->Get());
+  }
+
   Handle(TDataStd_Integer) aIsDTarget;
   if(Label().FindChild(ChildLab_IsDTarget).FindAttribute(TDataStd_Integer::GetID(), aIsDTarget))
   {
@@ -337,9 +356,9 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
           Label().FindChild(ChildLab_AxisN).FindAttribute(TDataStd_RealArray::GetID(), aN) && aN->Length() == 3 &&
           Label().FindChild(ChildLab_AxisRef).FindAttribute(TDataStd_RealArray::GetID(), aR) && aR->Length() == 3 )
         {
-          gp_Pnt aL(aLoc->Value(aLoc->Upper()), aLoc->Value(aLoc->Upper()+1), aLoc->Value(aLoc->Upper()+2));
-          gp_Dir aD(aN->Value(aN->Upper()), aN->Value(aN->Upper()+1), aN->Value(aN->Upper()+2));
-          gp_Dir aDR(aR->Value(aR->Upper()), aR->Value(aR->Upper()+1), aR->Value(aR->Upper()+2));
+          gp_Pnt aL(aLoc->Value(aLoc->Lower()), aLoc->Value(aLoc->Lower()+1), aLoc->Value(aLoc->Lower()+2));
+          gp_Dir aD(aN->Value(aN->Lower()), aN->Value(aN->Lower()+1), aN->Value(aN->Lower()+2));
+          gp_Dir aDR(aR->Value(aR->Lower()), aR->Value(aR->Lower()+1), aR->Value(aR->Lower()+2));
           gp_Ax2 anAx(aL, aD, aDR);
           anObj->SetDatumTargetAxis(anAx);
         }
@@ -347,20 +366,29 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
         if(anObj->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Point)
         {
           Handle(TDataStd_Real) aLen;
-          if(Label().FindChild(ChildLab_DTargetLength).FindAttribute(TDataStd_Integer::GetID(), aLen))
+          if(Label().FindChild(ChildLab_DTargetLength).FindAttribute(TDataStd_Real::GetID(), aLen))
           {
             anObj->SetDatumTargetLength(aLen->Get());
           }
           if(anObj->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Rectangle)
           {
             Handle(TDataStd_Real) aWidth;
-            if(Label().FindChild(ChildLab_DTargetWidth).FindAttribute(TDataStd_Integer::GetID(), aWidth))
+            if(Label().FindChild(ChildLab_DTargetWidth).FindAttribute(TDataStd_Real::GetID(), aWidth))
             {
               anObj->SetDatumTargetWidth(aWidth->Get());
             }
           }
         }
       }
+    }
+    Handle(TDataStd_Integer) aNum;
+    if(Label().FindChild(ChildLab_DTargetNumber).FindAttribute(TDataStd_Integer::GetID(), aNum))
+    {
+      anObj->SetDatumTargetNumber(aNum->Get());
+    }
+    else 
+    {
+      anObj->SetDatumTargetNumber(0);
     }
   }
 

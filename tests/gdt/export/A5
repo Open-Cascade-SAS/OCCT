@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug26689_nist_ctc_05_asme1_ap242-1.stp
+
+set ref_data {
+
+ NbOfDimensions          : 2
+  NbOfDimensionalSize    : 0
+  NbOfDimensionalLocation: 2
+  NbOfAngular            : 0
+  NbOfWithPath           : 0
+ NbOfTolerances          : 10
+  NbOfGTWithModifiers    : 0
+  NbOfGTWithMaxTolerance : 0
+  NbOfGTWithDatums       : 8
+ NbOfDatumFeature        : 2
+ NbOfAttachedDatum       : 9
+ NbOfDatumTarget         : 2
+}

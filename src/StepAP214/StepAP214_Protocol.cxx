@@ -723,6 +723,8 @@ static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_IntegerRepresentationItem.hxx>
 #include <StepRepr_ValueRepresentationItem.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 
 
 static int init = 0;
@@ -1413,6 +1415,8 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepRepr_IntegerRepresentationItem), 700);
   types.Bind (STANDARD_TYPE(StepRepr_ValueRepresentationItem), 701);
   types.Bind (STANDARD_TYPE(StepRepr_FeatureForDatumTargetRelationship), 702);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol), 705);
+  types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTol), 706);
 }
 
 //=======================================================================

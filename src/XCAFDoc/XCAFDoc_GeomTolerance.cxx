@@ -153,17 +153,21 @@ void XCAFDoc_GeomTolerance::SetObject (const Handle(XCAFDimTolObjects_GeomTolera
     Handle(TDataStd_RealArray) aN = new TDataStd_RealArray();
     Handle(TDataStd_RealArray) aR = new TDataStd_RealArray();
     gp_Ax2 anAx = theObject->GetAxis();
-    aLoc->SetValue(aLoc->Upper(),anAx.Location().X());
-    aLoc->SetValue(aLoc->Upper()+1,anAx.Location().Y());
-    aLoc->SetValue(aLoc->Upper()+2,anAx.Location().Z());
 
-    aN->SetValue(aN->Upper(),anAx.Axis().Direction().X());
-    aN->SetValue(aN->Upper(),anAx.Axis().Direction().X());
-    aN->SetValue(aN->Upper(),anAx.Axis().Direction().X());
+    Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aLocArr->SetValue(i, anAx.Location().Coord(i));
+    aLoc->ChangeArray(aLocArr);
 
-    aR->SetValue(aR->Upper(),anAx.Direction().X());
-    aR->SetValue(aR->Upper(),anAx.Direction().X());
-    aR->SetValue(aR->Upper(),anAx.Direction().X());
+    Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aNArr->SetValue(i, anAx.Direction().Coord(i));
+    aN->ChangeArray(aNArr);
+
+    Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aRArr->SetValue(i, anAx.XDirection().Coord(i));
+    aR->ChangeArray(aRArr);
 
     Label().FindChild(ChildLab_AxisLoc).AddAttribute(aLoc);
     Label().FindChild(ChildLab_AxisN).AddAttribute(aN);
@@ -239,9 +243,9 @@ Handle(XCAFDimTolObjects_GeomToleranceObject) XCAFDoc_GeomTolerance::GetObject()
     Label().FindChild(ChildLab_AxisN).FindAttribute(TDataStd_RealArray::GetID(), aN) && aN->Length() == 3 &&
     Label().FindChild(ChildLab_AxisRef).FindAttribute(TDataStd_RealArray::GetID(), aR) && aR->Length() == 3 )
   {
-    gp_Pnt aL(aLoc->Value(aLoc->Upper()), aLoc->Value(aLoc->Upper()+1), aLoc->Value(aLoc->Upper()+2));
-    gp_Dir aD(aN->Value(aN->Upper()), aN->Value(aN->Upper()+1), aN->Value(aN->Upper()+2));
-    gp_Dir aDR(aR->Value(aR->Upper()), aR->Value(aR->Upper()+1), aR->Value(aR->Upper()+2));
+    gp_Pnt aL(aLoc->Value(aLoc->Lower()), aLoc->Value(aLoc->Lower()+1), aLoc->Value(aLoc->Lower()+2));
+    gp_Dir aD(aN->Value(aN->Lower()), aN->Value(aN->Lower()+1), aN->Value(aN->Lower()+2));
+    gp_Dir aDR(aR->Value(aR->Lower()), aR->Value(aR->Lower()+1), aR->Value(aR->Lower()+2));
     gp_Ax2 anAx(aL, aD, aDR);
     anObj->SetAxis(anAx);
   }

@@ -73,6 +73,9 @@
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_HArray1OfDatumReference.hxx>
 #include <StepDimTol_LineProfileTolerance.hxx>
 #include <StepDimTol_ModifiedGeometricTolerance.hxx>
@@ -1808,17 +1811,17 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
     else if(aSA->IsKind(STANDARD_TYPE(StepDimTol_PlacedDatumTargetFeature)))
     {
       //processing for datum target
-      Interface_EntityIterator anIterDTF = aGraph.Shareds(aSA);
+      Interface_EntityIterator anIterDTF = aGraph.Sharings(aSA);
       for(anIterDTF.Start(); anIterDTF.More(); anIterDTF.Next()) {
         if(anIterDTF.Value()->IsKind(STANDARD_TYPE(StepRepr_FeatureForDatumTargetRelationship)))
         {
-          Interface_EntityIterator anIterFFD = aGraph.Shareds(anIterDTF.Value());
-          for(anIterFFD.Start(); anIterFFD.More(); anIterFFD.Next()) {
-            if(anIterFFD.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
-            {
-              aSA = Handle(StepRepr_ShapeAspect)::DownCast(anIterFFD.Value());
-            }
-          }
+          Handle(StepRepr_FeatureForDatumTargetRelationship) aFFDTR =
+            Handle(StepRepr_FeatureForDatumTargetRelationship)::DownCast(anIterDTF.Value());
+          Handle(StepRepr_ShapeAspect) aTmpSA = aFFDTR->RelatedShapeAspect();
+          Interface_EntityIterator anIterDSWP = aGraph.Sharings(aTmpSA);
+          for(anIterDSWP.Start(); anIterDSWP.More() && aPGISU.IsNull(); anIterDSWP.Next()) {
+            aPGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
+    }
         }
       }
     }
@@ -1862,6 +1865,17 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
         aDGTTool->SetDatum(aShL, aDatL);
         aDatObj = aDat->GetObject();
         aDatObj->SetName(theDat->Identification());
+        aDatObj->SetPosition (thePositionCounter);
+        if(!aXCAFModifiers.IsEmpty())
+          aDatObj->SetModifiers(aXCAFModifiers);
+        if (aXCAFModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None) 
+          aDatObj->SetModifierWithValue(aXCAFModifWithVal, aModifValue);
+        aDGTTool->SetDatumToGeomTol(aDatL, theGDTL);
+        Handle(StepDimTol_PlacedDatumTargetFeature) aPDTF = Handle(StepDimTol_PlacedDatumTargetFeature)::DownCast(aSA);
+        if (aPDTF->TargetId()->IsIntegerValue())
+          aDatObj->SetDatumTargetNumber(aPDTF->TargetId()->IntegerValue());
+        else
+          aDatObj->SetDatumTargetNumber(0);
         aDatObj->IsDatumTarget(Standard_True);
         XCAFDimTolObjects_DatumTargetType aType;
         if(STEPConstruct_GDTProperty::GetDatumTargetType(aSA->Description(),aType))
@@ -2958,7 +2972,37 @@ static Standard_Boolean getTolType(const Handle(Standard_Transient)& theEnt,
   if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRef)))
   {
     Handle(StepDimTol_GeoTolAndGeoTolWthDatRef) anE = Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)::DownCast(theEnt);
-    theType = (XCAFDimTolObjects_GeomToleranceType)anE->GetToleranceType();
+    theType = STEPConstruct_GDTProperty::GetGeomToleranceType(anE->GetToleranceType());
+  }
+  else if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol) anE = 
+      Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)::DownCast(theEnt);
+    theType = STEPConstruct_GDTProperty::GetGeomToleranceType(anE->GetToleranceType());
+  }
+  else if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod) anE = 
+      Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)::DownCast(theEnt);
+    theType = STEPConstruct_GDTProperty::GetGeomToleranceType(anE->GetToleranceType());
+  }
+  else if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTol)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol) anE = 
+      Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol)::DownCast(theEnt);
+    theType = STEPConstruct_GDTProperty::GetGeomToleranceType(anE->GetToleranceType());
+  }
+  else if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMod)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthMod) anE = 
+      Handle(StepDimTol_GeoTolAndGeoTolWthMod)::DownCast(theEnt);
+    theType = STEPConstruct_GDTProperty::GetGeomToleranceType(anE->GetToleranceType());
+  }
+  else if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol) anE = 
+      Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol)::DownCast(theEnt);
+    theType = STEPConstruct_GDTProperty::GetGeomToleranceType(anE->GetToleranceType());
   }
   else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_AngularityTolerance)))
   {
@@ -3084,6 +3128,7 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
             if(GetLengthConversionFactor(NU,aFact))
               aVal=aVal*aFact;
             aTolObj->SetValueOfZoneModifier(aVal);
+            aTolObj->SetZoneModifier(XCAFDimTolObjects_GeomToleranceZoneModif_Projected);
           }
         }
         else if (anIt.Value()->IsKind(STANDARD_TYPE(StepDimTol_RunoutZoneDefinition)))
@@ -3100,6 +3145,7 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
             Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
             if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
             aTolObj->SetValueOfZoneModifier(aVal);
+            aTolObj->SetZoneModifier(XCAFDimTolObjects_GeomToleranceZoneModif_Runout);
           }
         }
       }
@@ -3121,6 +3167,16 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
     aModifiers = Handle(StepDimTol_GeoTolAndGeoTolWthMod)
                              ::DownCast(aTolEnt)->GetGeometricToleranceWithModifiers()->Modifiers();
   }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTol)))
+  {
+    aModifiers = Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol)
+                             ::DownCast(aTolEnt)->GetGeometricToleranceWithModifiers()->Modifiers();
+  }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)))
+  {
+    aModifiers = Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)
+                             ::DownCast(aTolEnt)->GetGeometricToleranceWithModifiers()->Modifiers();
+  }
   if(!aModifiers.IsNull())
   {
     for(Standard_Integer i = aModifiers->Lower(); i <= aModifiers->Upper(); i++)
@@ -3133,14 +3189,31 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         aTolObj->AddModifier((XCAFDimTolObjects_GeomToleranceModif)aModifiers->Value(i));
     }
   }
+  Standard_Real aVal = 0;
+  StepBasic_Unit anUnit;
   if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithMaximumTolerance)))
   {
     Handle(StepDimTol_GeometricToleranceWithMaximumTolerance) aMax = Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)::DownCast(aTolEnt);
-    Standard_Real aVal = aMax->MaximumUpperTolerance()->ValueComponent();
-    StepBasic_Unit anUnit = aMax->MaximumUpperTolerance()->UnitComponent();
+    aVal = aMax->MaximumUpperTolerance()->ValueComponent();
+    anUnit = aMax->MaximumUpperTolerance()->UnitComponent();
+  }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTol)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol) aMax = 
+      Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol)::DownCast(aTolEnt);
+    aVal = aMax->GetMaxTolerance()->ValueComponent();
+    anUnit = aMax->GetMaxTolerance()->UnitComponent();
+  }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol) aMax = 
+      Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)::DownCast(aTolEnt);
+    aVal = aMax->GetMaxTolerance()->ValueComponent();
+    anUnit = aMax->GetMaxTolerance()->UnitComponent();
+  }
+  if (!anUnit.IsNull() && (anUnit.CaseNum(anUnit.Value()) == 1))
+  {
     Standard_Real aFact=1.;
-    if(anUnit.IsNull()) return;
-    if( !(anUnit.CaseNum(anUnit.Value())==1) ) return;
     Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
     if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
     aTolObj->SetMaxValueModifier(aVal);

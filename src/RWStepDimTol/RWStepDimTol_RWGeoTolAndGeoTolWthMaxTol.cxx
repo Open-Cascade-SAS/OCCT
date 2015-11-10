@@ -16,23 +16,21 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol.hxx>
+#include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepDimTol_DatumReference.hxx>
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_GeometricToleranceType.hxx>
-#include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
-#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
-#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
 
 //=======================================================================
-//function : RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod
+//function : RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol
 //purpose  : 
 //=======================================================================
-RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod()
+RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol::RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol()
 {
 }
 
@@ -42,10 +40,10 @@ RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::RWStepDimTol_RWGeoTolAnd
 //purpose  : 
 //=======================================================================
 
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep
+void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol::ReadStep
   (const Handle(StepData_StepReaderData)& data,
    const Standard_Integer num0, Handle(Interface_Check)& ach,
-   const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)& ent) const
+   const Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol)& ent) const
 {
   Standard_Integer num = 0;//num0;
   data->NamedForComplex("GEOMETRIC_TOLERANCE","GMTTLR",num0,num,ach);
@@ -59,32 +57,17 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep
   data->ReadEntity (num, 3, "magnitude", ach, STANDARD_TYPE(StepBasic_MeasureWithUnit), aMagnitude);
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
   data->ReadEntity (num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
-
-  data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE","GTWDR",num0,num,ach);
-  // Own fields of GeometricToleranceWithDatumReference
-  Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
-  Standard_Integer sub5 = 0;
-  if ( data->ReadSubList (num, 1, "datum_system", ach, sub5) ) {
-    Standard_Integer nb0 = data->NbParams(sub5);
-    aDatumSystem = new StepDimTol_HArray1OfDatumSystemOrReference (1, nb0);
-    Standard_Integer num2 = sub5;
-    for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
-      StepDimTol_DatumSystemOrReference anIt0;
-      data->ReadEntity (num2, i0, "datum_system_or_reference", ach, anIt0);
-      aDatumSystem->SetValue(i0, anIt0);
-    }
-  }
-  // Initialize entity
-  Handle(StepDimTol_GeometricToleranceWithDatumReference) aGTWDR =
-    new StepDimTol_GeometricToleranceWithDatumReference;
-  aGTWDR->SetDatumSystem(aDatumSystem);
+  
+  data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE",num0,num,ach);
+  Handle(StepBasic_LengthMeasureWithUnit) aMaxTol;
+  data->ReadEntity (num, 1, "maximum_upper_tolerance", ach, STANDARD_TYPE(StepBasic_LengthMeasureWithUnit), aMaxTol);
 
   data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MODIFIERS",num0,num,ach);
   // Own fields of ModifiedGeometricTolerance
   Handle(StepDimTol_HArray1OfGeometricToleranceModifier) aModifiers;
   Standard_Integer sub = 0;
   if ( data->ReadSubList (num, 1, "modifiers", ach, sub) ) {
-    Standard_Integer nb0 = data->NbParams(sub5);
+    Standard_Integer nb0 = data->NbParams(sub);
     aModifiers = new StepDimTol_HArray1OfGeometricToleranceModifier (1, nb0);
     Standard_Integer num2 = sub;
     for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
@@ -139,7 +122,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep
   else ach->AddFail("The type of geometric tolerance is not supported");
 
   // Initialize entity
-  ent->Init(aName, aDescription, aMagnitude, aTolerancedShapeAspect, aGTWDR, aGTWM, aType);
+  ent->Init(aName, aDescription, aMagnitude, aTolerancedShapeAspect, aGTWM, aMaxTol, aType);
 
 }
 
@@ -149,9 +132,9 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::ReadStep
 //purpose  : 
 //=======================================================================
 
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::WriteStep
+void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol::WriteStep
   (StepData_StepWriter& SW,
-   const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)& ent) const
+   const Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol)& ent) const
 {
   StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
   if (aType == StepDimTol_GTTAngularityTolerance)
@@ -172,15 +155,8 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::WriteStep
   SW.Send(ent->Description());
   SW.Send(ent->Magnitude());
   SW.Send(ent->TolerancedShapeAspect().Value());
-  SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
-  SW.OpenSub();
-  for(Standard_Integer i4=1; i4<=ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length(); i4++) {
-    StepDimTol_DatumSystemOrReference Var0 =
-      ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(i4);
-    SW.Send(Var0.Value());
-  }
-  SW.CloseSub();
-
+  SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
+  SW.Send(ent->GetMaxTolerance());
   SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
   SW.OpenSub();
   Handle(StepDimTol_GeometricToleranceWithModifiers) aGTWM = ent->GetGeometricToleranceWithModifiers();
@@ -204,7 +180,6 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::WriteStep
     }
   }
   SW.CloseSub();
-
   if (aType == StepDimTol_GTTLineProfileTolerance)
     SW.StartEntity("LINE_PROFILE_TOLERANCE");
   else if (aType == StepDimTol_GTTParallelismTolerance)
@@ -231,16 +206,11 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::WriteStep
 //purpose  : 
 //=======================================================================
 
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Share
-  (const Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)& ent,
+void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol::Share
+  (const Handle(StepDimTol_GeoTolAndGeoTolWthMaxTol)& ent,
    Interface_EntityIterator& iter) const
 {
   // Own fields of GeometricTolerance
   iter.AddItem (ent->Magnitude());
   iter.AddItem (ent->TolerancedShapeAspect().Value());
-  // Own fields of GeometricToleranceWithDatumReference
-  for (Standard_Integer i3=1; i3<=ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length(); i3++ ) {
-    StepDimTol_DatumSystemOrReference Var0 = ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(i3);
-    iter.AddItem (Var0.Value());
-  }
 }

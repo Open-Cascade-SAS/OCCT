@@ -16,12 +16,14 @@
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TColStd_MapOfAsciiString.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <XCAFDimTolObjects_DatumObject.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Dimension.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
@@ -823,8 +825,41 @@ Standard_Boolean XCAFDoc_DimTolTool::GetDatumOfTolerLabels(const TDF_Label& theD
   Handle(XCAFDoc_GraphNode) aNode;
   if( !theDimTolL.FindAttribute(XCAFDoc::DatumTolRefGUID(),aNode) )
     return Standard_False;
+
   for(Standard_Integer i=1; i<=aNode->NbChildren(); i++) {
     Handle(XCAFDoc_GraphNode) aDatumNode = aNode->GetChild(i);
+    theDatums.Append(aDatumNode->Label());
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : GetDatumWthObjectsTolerLabels
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean XCAFDoc_DimTolTool::GetDatumWithObjectOfTolerLabels(const TDF_Label& theDimTolL,
+                                                                     TDF_LabelSequence& theDatums) const
+{
+  Handle(XCAFDoc_GraphNode) aNode;
+  if( !theDimTolL.FindAttribute(XCAFDoc::DatumTolRefGUID(),aNode) )
+    return Standard_False;
+
+  TColStd_MapOfAsciiString aDatumNameMap;
+  for(Standard_Integer i=1; i<=aNode->NbChildren(); i++) {
+    Handle(XCAFDoc_GraphNode) aDatumNode = aNode->GetChild(i);
+    TDF_Label aDatumL = aDatumNode->Label();
+    Handle(XCAFDoc_Datum) aDatumAttr;
+    if (!aDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_DatumObject) aDatumObj = aDatumAttr->GetObject();
+    if (aDatumObj.IsNull())
+      continue;
+    Handle(TCollection_HAsciiString) aName = aDatumObj->GetName();
+    if (!aDatumNameMap.Add(aName->String())) {
+      // the datum has already been appended to sequence, due to one of its datum targets
+      continue;
+    }
     theDatums.Append(aDatumNode->Label());
   }
   return Standard_True;

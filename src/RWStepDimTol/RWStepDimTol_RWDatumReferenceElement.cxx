@@ -158,7 +158,7 @@ void RWStepDimTol_RWDatumReferenceElement::WriteStep (StepData_StepWriter& SW,
   else if (aBaseType == 2) {
     Handle(StepDimTol_HArray1OfDatumReferenceElement) anArray = (ent->Base()).CommonDatumList();
     Standard_Integer i, nb = (anArray.IsNull() ? 0 : anArray->Length());
-    SW.OpenSub();
+    SW.OpenTypedSub("COMMON_DATUM_LIST");
     for (i = 1; i <= nb; i++)  
       SW.Send (anArray->Value(i));
     SW.CloseSub();
@@ -176,8 +176,10 @@ void RWStepDimTol_RWDatumReferenceElement::WriteStep (StepData_StepWriter& SW,
       }
     }
     SW.CloseSub();
-  }  
-  
+  }
+  else {
+    SW.SendUndef();
+  }
 }
 
 //=======================================================================

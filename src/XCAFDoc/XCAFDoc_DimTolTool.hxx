@@ -177,6 +177,9 @@ public:
   //! Returns all Datum labels defined for label DimTolL
   Standard_EXPORT Standard_Boolean GetDatumOfTolerLabels (const TDF_Label& DimTolL, TDF_LabelSequence& Datums) const;
 
+  //! Returns all Datum labels with XCAFDimTolObjects_DatumObject defined for label DimTolL
+  Standard_EXPORT Standard_Boolean GetDatumWithObjectOfTolerLabels (const TDF_Label& DimTolL, TDF_LabelSequence& Datums) const;
+
   //! Returns all GeomToleranses labels defined for label DatumL
   Standard_EXPORT   Standard_Boolean GetTolerOfDatumLabels (const TDF_Label& theDatumL, TDF_LabelSequence& theTols)  const;
 
