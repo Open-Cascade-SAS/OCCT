@@ -2,7 +2,11 @@ puts "================"
 puts "OCC1255"
 puts "================"
 puts ""
-# Exception in command 'section'
+###############################################
+## Exception in command 'section'
+###############################################
+
+puts "TODO #OCC26815 ALL: Error : The length of result shape is"
 
 restore [locate_data_file OCC1255.brep] a 
 checkshape a

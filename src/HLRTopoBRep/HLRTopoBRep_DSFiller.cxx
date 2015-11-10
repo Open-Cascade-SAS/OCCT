@@ -450,7 +450,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
 		  
                   //-- cout<<"\nHLRTopoBRep_DSFiller : nbp="<<nbp<<"  Tol3d="<<TOL3d<<"   Tol2d="<<TOL2d<<endl;
 
-                  Approx.SetParameters(TOL3d,TOL2d,dmin,dmax,niter,tg);
+                  Approx.SetParameters(TOL3d, TOL2d, dmin, dmax, niter, 30, tg);
                   Approx.Perform(AppLine,Standard_True,Standard_True,Standard_False,1,nbp);
                   if (!Approx.IsDone()) {
                     C = AppC;

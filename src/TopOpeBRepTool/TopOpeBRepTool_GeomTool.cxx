@@ -33,7 +33,6 @@ TopOpeBRepTool_GeomTool::TopOpeBRepTool_GeomTool
    myCompPC2(CompPC2),
    myTol3d(Precision::Approximation()),
    myTol2d(Precision::PApproximation()),
-   myRelativeTol(Standard_True),
    myNbPntMax(30)
 {
 }
@@ -133,34 +132,6 @@ void TopOpeBRepTool_GeomTool::SetTolerances
 {
   myTol3d = tol3d;
   myTol2d = tol2d;
-  myRelativeTol = Standard_True;
-}
-
-//=======================================================================
-//function : GetTolerances
-//purpose  : 
-//=======================================================================
-
-void TopOpeBRepTool_GeomTool::GetTolerances
-  (Standard_Real& tol3d, Standard_Real& tol2d, Standard_Boolean& relative) const
-{
-  tol3d = myTol3d;
-  tol2d = myTol2d;
-  relative = myRelativeTol;
-}
-
-
-//=======================================================================
-//function : SetTolerances
-//purpose  : 
-//=======================================================================
-
-void TopOpeBRepTool_GeomTool::SetTolerances
-  (const Standard_Real tol3d, const Standard_Real tol2d, const Standard_Boolean relative)
-{
-  myTol3d = tol3d;
-  myTol2d = tol2d;
-  myRelativeTol = relative;
 }
 
 //=======================================================================

@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <IntPatch_Point.hxx>
+#include <Geom_Surface.hxx>
 
 
 //=======================================================================

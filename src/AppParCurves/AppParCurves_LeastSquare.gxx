@@ -56,6 +56,92 @@ static int FlatLength(const TColStd_Array1OfInteger& Mults) {
   return sum;
 }
 
+//=======================================================================
+//function : CheckTangents
+//purpose  : Checks if theArrTg3d and theArrTg2d have direction
+//            corresponded to the direction between theArrPt1 and theArrPt2.
+//            If it is not then reverses tangent vectors.
+//              theArrPt1 (as same as theArrPt2) is sub-set of all 3D-points in
+//            one multy-point (multy-point is union of sets of 2D- and 3D-points).
+//
+//ATTENTION!!!
+//              The property of correlation between Tg3d and Tg2d is used here.
+//            Therefore, only 3D-coinciding is checked.
+//=======================================================================
+static void CheckTangents(const TColgp_Array1OfPnt& theArrPt1,
+                          const TColgp_Array1OfPnt& theArrPt2,
+                          TColgp_Array1OfVec& theArrTg3d,
+                          TColgp_Array1OfVec2d& theArrTg2d)
+{
+  if(theArrPt1.Lower() != theArrPt2.Lower())
+    return;
+
+  if(theArrPt1.Upper() != theArrPt2.Upper())
+    return;
+
+  if(theArrTg3d.Length() != theArrPt1.Length())
+    return;
+
+  Standard_Boolean isToChangeDir = Standard_False;
+
+  for(Standard_Integer i = theArrPt1.Lower(); i <= theArrPt1.Upper(); i++)
+  {
+    const gp_Vec aV1(theArrPt1(i), theArrPt2(i));
+    const gp_Vec& aV2 = theArrTg3d(i);
+
+    if(aV1.Dot(aV2) < 0.0)
+    {
+      isToChangeDir = Standard_True;
+      break;
+    }
+  }
+
+  if(!isToChangeDir)
+    return;
+
+  //Change directions for every 2D- and 3D-tangents
+
+  for(Standard_Integer i = theArrTg3d.Lower(); i <= theArrTg3d.Upper(); i++)
+  {
+    theArrTg3d(i).Reverse();
+  }
+
+  for(Standard_Integer i = theArrTg2d.Lower(); i <= theArrTg2d.Upper(); i++)
+  {
+    theArrTg2d(i).Reverse();
+  }
+}
+
+//=======================================================================
+//function : CheckTangents
+//purpose  : Checks if theArrTg2d have direction
+//            corresponded to the direction between theArrPt1 and theArrPt2.
+//            If it is not then reverses tangent vector.
+//              theArrPt1 (as same as theArrPt2) is sub-set of all 2D-points in
+//            one multy-point (multy-point is union of sets of 2D- and 3D-points).
+//=======================================================================
+static void CheckTangents(const TColgp_Array1OfPnt2d& theArrPt1,
+                          const TColgp_Array1OfPnt2d& theArrPt2,
+                          TColgp_Array1OfVec2d& theArrTg2d)
+{
+  if(theArrPt1.Lower() != theArrPt2.Lower())
+    return;
+
+  if(theArrPt1.Upper() != theArrPt2.Upper())
+    return;
+
+  for(Standard_Integer i = theArrPt1.Lower(); i <= theArrPt1.Upper(); i++)
+  {
+    const gp_Vec2d  aV1(theArrPt1(i), theArrPt2(i));
+    const gp_Vec2d& aV2 = theArrTg2d(i);
+
+    if(aV1.Dot(aV2) < 0.0)
+    {
+      theArrTg2d(i).Reverse();
+    }
+  }
+}
+
 
 AppParCurves_LeastSquare::
   AppParCurves_LeastSquare(const MultiLine&    SSP,
@@ -893,14 +979,20 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
 
 
 
-
+//=======================================================================
+//function : Affect
+//purpose  :    Index is an ID of the point in MultiLine. Every point is set of
+//            several 3D- and 2D-points. E.g. every points of Walking-line,
+//            obtained in intersection algorithm, is set of one 3D points
+//            (nbP == 1) and two 2D-points (nbP2d == 2).
+//=======================================================================
 void AppParCurves_LeastSquare::Affect(const MultiLine& SSP,
 				      const Standard_Integer Index,
 				      AppParCurves_Constraint& Cons,
 				      math_Vector& Vt,
 				      math_Vector& Vc)
 {
-  // Vt: vecteur tangent, Vc: vecteur courbure.
+  // Vt: vector of tangent, Vc: vector of curvature.
 
   if (Cons >= AppParCurves_TangencyPoint) {
     Standard_Integer i, i2 = 1;
@@ -908,59 +1000,99 @@ void AppParCurves_LeastSquare::Affect(const MultiLine& SSP,
     Standard_Integer mynbP2d = nbP2d, mynbP = nbP;
     if (nbP2d == 0) mynbP2d = 1;
     if (nbP == 0) mynbP = 1;
-    TColgp_Array1OfPnt TabP(1, mynbP);
-    TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
     TColgp_Array1OfVec TabV(1, mynbP);
     TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
     
-    if (Cons == AppParCurves_CurvaturePoint) {
-      if (nbP != 0 && nbP2d != 0) {
-	Ok = ToolLine::Curvature(SSP, Index,TabV,TabV2d);
-	if (!Ok) { Cons = AppParCurves_TangencyPoint;}
+    if (Cons == AppParCurves_CurvaturePoint)
+    {
+      if (nbP != 0 && nbP2d != 0)
+      {
+        Ok = ToolLine::Curvature(SSP, Index,TabV,TabV2d);
+        if (!Ok) { Cons = AppParCurves_TangencyPoint;}
       }
-      else if (nbP2d != 0) {
-	Ok = ToolLine::Curvature(SSP, Index, TabV2d);
-	if (!Ok) { Cons = AppParCurves_TangencyPoint;}
+      else if (nbP2d != 0)
+      {
+        Ok = ToolLine::Curvature(SSP, Index, TabV2d);
+        if (!Ok) { Cons = AppParCurves_TangencyPoint;}
       }
       else {
-	Ok = ToolLine::Curvature(SSP, Index, TabV);
-	if (!Ok) { Cons = AppParCurves_TangencyPoint;}
+        Ok = ToolLine::Curvature(SSP, Index, TabV);
+        if (!Ok) { Cons = AppParCurves_TangencyPoint;}
       }
       if (Ok) {
-	for (i = 1; i <= nbP; i++) {
-	  (TabV(i)).Coord(Vc(i2), Vc(i2+1), Vc(i2+2));
-	  i2 += 3;
-	}
-	for (i = 1; i <= nbP2d; i++) {
-	  (TabV2d(i)).Coord(Vc(i2), Vc(i2+1));
-	  i2 += 2;
-	}
+        for (i = 1; i <= nbP; i++) {
+          (TabV(i)).Coord(Vc(i2), Vc(i2+1), Vc(i2+2));
+          i2 += 3;
+        }
+
+        for (i = 1; i <= nbP2d; i++) {
+          (TabV2d(i)).Coord(Vc(i2), Vc(i2+1));
+          i2 += 2;
+        }
       }
     }
 
     i2 = 1;
     if (Cons >= AppParCurves_TangencyPoint) {
       if (nbP != 0 && nbP2d != 0) {
-	Ok = ToolLine::Tangency(SSP, Index, TabV, TabV2d);
-	if (!Ok) { Cons = AppParCurves_PassPoint;}
+        Ok = ToolLine::Tangency(SSP, Index, TabV, TabV2d);
+        if (!Ok) { Cons = AppParCurves_PassPoint;}
       }
       else if (nbP2d != 0) {
-	Ok = ToolLine::Tangency(SSP, Index, TabV2d);
-	if (!Ok) { Cons = AppParCurves_PassPoint;}
+        Ok = ToolLine::Tangency(SSP, Index, TabV2d);
+        if (!Ok) { Cons = AppParCurves_PassPoint;}
       }
       else {
-	Ok = ToolLine::Tangency(SSP, Index, TabV);
-	if (!Ok) { Cons = AppParCurves_PassPoint;}
+        Ok = ToolLine::Tangency(SSP, Index, TabV);
+        if (!Ok) { Cons = AppParCurves_PassPoint;}
       }
-      if (Ok) {
-	for (i = 1; i <= nbP; i++) {
-	  (TabV(i)).Coord(Vt(i2), Vt(i2+1), Vt(i2+2));
-	  i2 += 3;
-	}
-	for (i = 1; i <= nbP2d; i++) {
-	  (TabV2d(i)).Coord(Vt(i2), Vt(i2+1));
-	  i2 += 2;
-	}
+
+      if (Ok)
+      {
+        TColgp_Array1OfPnt anArrPts3d1(1, mynbP), anArrPts3d2(1, mynbP);
+
+        if(nbP != 0)
+        {
+          if(Index < ToolLine::LastPoint(SSP))
+          {
+            ToolLine::Value(SSP, Index, anArrPts3d1);
+            ToolLine::Value(SSP, Index+1, anArrPts3d2);
+          }
+          else
+          {// (Index == ToolLine::LastPoint(theML))
+            ToolLine::Value(SSP, Index-1, anArrPts3d1);
+            ToolLine::Value(SSP, Index, anArrPts3d2);
+          }
+
+          CheckTangents(anArrPts3d1, anArrPts3d2, TabV, TabV2d);
+        }
+        else if(nbP2d != 0)
+        {
+          TColgp_Array1OfPnt2d anArrPts2d1(1, mynbP2d), anArrPts2d2(1, mynbP2d);
+
+          if(Index < ToolLine::LastPoint(SSP))
+          {
+            ToolLine::Value(SSP, Index, anArrPts3d1, anArrPts2d1);
+            ToolLine::Value(SSP, Index+1, anArrPts3d2, anArrPts2d2);
+          }
+          else
+          {// (Index == ToolLine::LastPoint(theML))
+            ToolLine::Value(SSP, Index-1, anArrPts3d1, anArrPts2d1);
+            ToolLine::Value(SSP, Index, anArrPts3d2, anArrPts2d2);
+          }
+
+          CheckTangents(anArrPts2d1, anArrPts2d2, TabV2d);
+        }
+
+        for (i = 1; i <= nbP; i++) {
+          (TabV(i)).Coord(Vt(i2), Vt(i2+1), Vt(i2+2));
+          i2 += 3;
+        }
+
+        for (i = 1; i <= nbP2d; i++) {
+          (TabV2d(i)).Coord(Vt(i2), Vt(i2+1));
+          i2 += 2;
+        }
       }
     }
   }

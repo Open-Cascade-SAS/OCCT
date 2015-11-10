@@ -66,5 +66,5 @@ copy r_1 result
 #  An exception was caught Standard_ConstructionError: 
 #  ** Exception ** Standard_ConstructionError: 
  
-set square 1.59518e+07
+set square 2.15333e+007
 set 2dviewer 0

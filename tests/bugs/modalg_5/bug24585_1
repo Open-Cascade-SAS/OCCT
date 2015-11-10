@@ -5,7 +5,8 @@ puts ""
 ###########################################################
 # Wrong pcurve of the section curve
 ###########################################################
-set MaxTol 1.05e-6
+
+set MaxTol 3.0e-5
 set NbCurv_OK 1
 
 restore [locate_data_file bug24585_b1.brep] b1
@@ -50,4 +51,18 @@ if {${delta_l} != 0} {
   puts "Error: Bad value. U_end = [dval U_end], Ulast = [dval U1l_exp]."
 } else {
   puts "OK: Good value. U_end matches with Ulast of surface."
+}
+
+puts ""
+puts "Check if tangents in first and last point of line have the same directions"
+
+#See bug#26752
+cvalue c_1 U1 xx yy zz dx1 dy1 dz1
+cvalue c_1 U2 xx yy zz dx2 dy2 dz2
+
+set DP [dval dx1*dx2+dy1*dy2+dz1*dz2]
+if {${DP} < 0} {
+  puts "Error: Tangents are reversed. Bug 26752 is reproduced."
+} else {
+  puts "OK: Tangents are not reversed."
 }

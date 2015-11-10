@@ -1,3 +1,5 @@
+puts "TODO #OCC26814 ALL: Error : The length of the resulting shape is"
+
 restore [locate_data_file lh3d_px1.brep] a
 plane p 0 0 0 1 0 0
 mkface f p

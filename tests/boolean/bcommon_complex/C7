@@ -5,7 +5,7 @@ restore [locate_data_file buc60290b.rle] sol2
 
 bcommon result sol2 sol1
 
-set square 667287
+set square 685602
 if { [regexp {Windows} [dversion]] } {
   if { [regexp {64} [dversion]] } {
     #set square 804392

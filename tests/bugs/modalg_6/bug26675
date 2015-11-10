@@ -1,0 +1,58 @@
+puts "============"
+puts "OCC26675"
+puts "============"
+puts ""
+###############################
+## 0026675: Eliminate normalization of coordinates in ApproxInt package
+###############################
+
+set GoodNbCurv 1
+
+pload QAcommands
+OCC26675_1 ss
+
+intersect res ss_1 ss_2
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    display res_$ic
+    
+    bounds res_$ic U1 U2
+    
+    dval U1
+    dval U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    xdistcs res_$ic ss_1 U1 U2 10 4.6e-6
+    xdistcs res_$ic ss_2 U1 U2 10 4.3e-6
+    
+    incr ic
+  }
+}
+
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Curve Number is good!"
+} else {
+  puts "Error: Curve Number is bad!"
+}
+
+smallview
+fit
+set only_screen_axo 1

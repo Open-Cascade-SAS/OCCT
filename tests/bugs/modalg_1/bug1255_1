@@ -7,6 +7,8 @@ puts ""
 #  (This script tests new topology)
 ###############################################
 
+puts "TODO #OCC26815 ALL: Error : The length of result shape is"
+
 restore [locate_data_file OCC1255.brep] a 
 checkshape a
 

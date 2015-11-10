@@ -280,16 +280,14 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 //function : intersect
 //purpose  : 
 //=======================================================================
-
 static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if( n < 2) 
   {
-#ifdef OCCT_DEBUG
     cout<< "2dintersect curve curve [Tol]"<<endl;
-#endif
     return 1;
   }
+
   Standard_Integer k = 1;
   Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[k++]);
   if ( C1.IsNull()) 
@@ -331,6 +329,7 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
   Handle(Geom2d_Curve) S1,S2;
   Handle(DrawTrSurf_Curve2d) CD;
   for ( i = 1; i <= Intersector.NbSegments(); i++) {
+    di << "Segment #" << i << " found.\n";
     Intersector.Segment(i,S1,S2);
     CD = new DrawTrSurf_Curve2d(S1, Draw_bleu, 30);
     dout << CD;

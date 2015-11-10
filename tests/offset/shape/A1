@@ -1,11 +1,13 @@
-puts "TODO OCC23068 ALL: Error : The offset is not valid"
-puts "TODO OCC26556 ALL: ERROR. offsetperform operation not done."
 # Original bug : hkg60144
-# Date : 17Juillet98
+# Date : July, 17 1998
+
+puts "TODO OCC23068 Linux: Error : The offset is not valid"
+puts "TODO OCC23068 Linux: ERROR. offsetperform operation not done."
+puts "TODO OCC23068 Linux: Error : The volume of the resulting shape is"
 
 restore [locate_data_file CHE900_hkg60iob.rle] s
 explode s f
 
 offsetshape result s -5 s_1
 
-set volume 0
+set volume 2.12817e+006

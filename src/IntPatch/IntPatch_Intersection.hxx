@@ -79,14 +79,32 @@ public:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False);
+  //! Flag theIsReqToPostWLProc has been enterred only for
+  //! compatibility with TopOpeBRep package. It shall be deleted
+  //! after deleting TopOpeBRep.
+  //! If theIsReqToPostWLProc == FALSE, then we will work with Walking-line
+  //! obtained after intersection algorithm directly (wothout any post-processing). 
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
   
   //! If isGeomInt == Standard_False, then method
   //! Param-Param intersection will be used.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean RestrictLine = Standard_True, const Standard_Boolean isGeomInt = Standard_True);
+  //! Flag theIsReqToKeepRLine has been enterred only for
+  //! compatibility with TopOpeBRep package. It shall be deleted
+  //! after deleting TopOpeBRep.
+  //! When intersection result returns IntPatch_RLine and another
+  //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
+  //! will always keep both lines even if they are coincided.
+  //! Flag theIsReqToPostWLProc has been enterred only for
+  //! compatibility with TopOpeBRep package. It shall be deleted
+  //! after deleting TopOpeBRep.
+  //! If theIsReqToPostWLProc == FALSE, then we will work with Walking-line
+  //! obtained after intersection algorithm directly (wothout any post-processing). 
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean RestrictLine = Standard_True, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
   
+  //! Perform with start point
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Real TolArc, const Standard_Real TolTang);
   
+  //! Uses for finding self-intersected surfaces.
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Standard_Real TolArc, const Standard_Real TolTang);
   
   //! Returns True if the calculus was succesfull.

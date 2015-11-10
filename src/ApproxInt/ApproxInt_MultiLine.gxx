@@ -14,101 +14,85 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define DEBUG 0
-
-
 #include <TColStd_Array1OfReal.hxx>
-#include <IntSurf_LineOn2S.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_Vec.hxx>
+#include <IntSurf_LineOn2S.hxx>
 
-ApproxInt_MultiLine::ApproxInt_MultiLine(const Handle_TheLine&    line,
-					 const Standard_Address   svsurf,
-					 const Standard_Integer   NbP3d,
-					 const Standard_Integer   NbP2d,
-					 const Standard_Real      xo,
-					 const Standard_Real      ax,
-					 const Standard_Real      yo,
-					 const Standard_Real      ay,
-					 const Standard_Real      zo,
-					 const Standard_Real      az,
-					 const Standard_Real      u1o,
-					 const Standard_Real      a1u,
-					 const Standard_Real      v1o,
-					 const Standard_Real      a1v,
-					 const Standard_Real      u2o,
-					 const Standard_Real      a2u,
-					 const Standard_Real      v2o,
-					 const Standard_Real      a2v,
-					 const Standard_Boolean   P2DOnFirst,
-					 const Standard_Integer   IndMin,
-					 const Standard_Integer   IndMax):
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+ApproxInt_MultiLine::
+  ApproxInt_MultiLine(const Handle_TheLine& line,
+                      const Standard_Address svsurf,
+                      const Standard_Integer NbP3d,
+                      const Standard_Integer NbP2d,
+                      const Standard_Real xo,
+                      const Standard_Real yo,
+                      const Standard_Real zo,
+                      const Standard_Real u1o,
+                      const Standard_Real v1o,
+                      const Standard_Real u2o,
+                      const Standard_Real v2o,
+                      const Standard_Boolean P2DOnFirst,
+                      const Standard_Integer IndMin,
+                      const Standard_Integer IndMax): PtrOnmySvSurfaces(svsurf),
+                                                      myLine(line),
+                                                      indicemin(Min(IndMin, IndMax)),
+                                                      indicemax(Max(IndMin, IndMax)),
+                                                      nbp3d(NbP3d), nbp2d(NbP2d),
+                                                      p2donfirst(P2DOnFirst),
+                                                      Xo(xo), Yo(yo), Zo(zo),
+                                                      U1o(u1o), V1o(v1o),
+                                                      U2o(u2o), V2o(v2o)
 
-       PtrOnmySvSurfaces(svsurf),
-       myLine(line), 
-       indicemin(IndMin),
-       indicemax(IndMax),
-       nbp3d(NbP3d),
-       nbp2d(NbP2d),
-       p2donfirst(P2DOnFirst),
-       Xo(xo),Ax(ax),Yo(yo),Ay(ay),Zo(zo),Az(az),
-       U1o(u1o),A1u(a1u),V1o(v1o),A1v(a1v),
-       U2o(u2o),A2u(a2u),V2o(v2o),A2v(a2v)
 {
-#if DEBUG 
-  if(indicemin>=indicemax) {
-    cout<<"\n********************************************";
-    cout<<"\n*****       ApproxInt_MultiLine     ********";
-    cout<<"\n***** indicemin = indicemax = "<<indicemin;
-    cout<<"\n********************************************"<<endl;
-
-  }
+#if OCCT_DEBUG 
+  //if(indicemin == indicemax)
+  //{
+  //  cout<<"ApproxInt_MultiLine: indicemin = indicemax = " << indicemin << endl;
+  //}
 #endif
 }
-//--------------------------------------------------------------------------------
-ApproxInt_MultiLine::ApproxInt_MultiLine(const Handle_TheLine&    line,
-					 const Standard_Integer   NbP3d,
-					 const Standard_Integer   NbP2d,
-					 const Standard_Real      xo,
-					 const Standard_Real      ax,
-					 const Standard_Real      yo,
-					 const Standard_Real      ay,
-					 const Standard_Real      zo,
-					 const Standard_Real      az,
-					 const Standard_Real      u1o,
-					 const Standard_Real      a1u,
-					 const Standard_Real      v1o,
-					 const Standard_Real      a1v,
-					 const Standard_Real      u2o,
-					 const Standard_Real      a2u,
-					 const Standard_Real      v2o,
-					 const Standard_Real      a2v,
-					 const Standard_Boolean   P2DOnFirst,
-					 const Standard_Integer   IndMin,
-					 const Standard_Integer   IndMax):
 
-       PtrOnmySvSurfaces(0),
-       myLine(line), 
-       indicemin(IndMin),
-       indicemax(IndMax),
-       nbp3d(NbP3d),
-       nbp2d(NbP2d),
-       p2donfirst(P2DOnFirst),
-       Xo(xo),Ax(ax),Yo(yo),Ay(ay),Zo(zo),Az(az),
-       U1o(u1o),A1u(a1u),V1o(v1o),A1v(a1v),
-       U2o(u2o),A2u(a2u),V2o(v2o),A2v(a2v)
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+ApproxInt_MultiLine::
+  ApproxInt_MultiLine(const Handle_TheLine& line,
+                      const Standard_Integer NbP3d,
+                      const Standard_Integer NbP2d,
+                      const Standard_Real xo,
+                      const Standard_Real yo,
+                      const Standard_Real zo,
+                      const Standard_Real u1o,
+                      const Standard_Real v1o,
+                      const Standard_Real u2o,
+                      const Standard_Real v2o,
+                      const Standard_Boolean P2DOnFirst,
+                      const Standard_Integer IndMin,
+                      const Standard_Integer IndMax): PtrOnmySvSurfaces(0),
+                                                      myLine(line),
+                                                      indicemin(Min(IndMin, IndMax)),
+                                                      indicemax(Max(IndMin, IndMax)),
+                                                      nbp3d(NbP3d), nbp2d(NbP2d),
+                                                      p2donfirst(P2DOnFirst),
+                                                      Xo(xo), Yo(yo), Zo(zo),
+                                                      U1o(u1o), V1o(v1o),
+                                                      U2o(u2o), V2o(v2o)
 {
-  if(indicemin>=indicemax) {
-#if DEBUG
-    cout<<"\n********************************************";
-    cout<<"\n*****       ApproxInt_MultiLine     ********";
-    cout<<"\n***** indicemin = indicemax = "<<indicemin;
-    cout<<"\n********************************************"<<endl;
+#if OCCT_DEBUG
+  //if(indicemin == indicemax)
+  //{
+  //  cout<<"ApproxInt_MultiLine: indicemin = indicemax = " << indicemin << endl;
+  //}
 #endif
-  }
 }
+
 //--------------------------------------------------------------------------------
 Standard_Integer ApproxInt_MultiLine::FirstPoint() const { 
   return(indicemin);
@@ -134,216 +118,152 @@ Standard_Integer ApproxInt_MultiLine::NbP2d() const {
 }
 //================================================================================
 void ApproxInt_MultiLine::Value(const Standard_Integer  Index,
-				TColgp_Array1OfPnt&     TabPnt)  const 
+                                TColgp_Array1OfPnt&     TabPnt)  const 
 { 
-  IntSurf_PntOn2S POn2S(myLine->Point(Index));
-  Standard_Real X = POn2S.Value().X();
-  Standard_Real Y = POn2S.Value().Y();
-  Standard_Real Z = POn2S.Value().Z();
-  TabPnt(1) = gp_Pnt(X*Ax + Xo, Y*Ay + Yo, Z*Az + Zo);
+  const gp_Pnt& aP = myLine->Point(Index).Value();
+  TabPnt(1).SetCoord(aP.X()+Xo, aP.Y()+Yo, aP.Z()+Zo);
 }
-//--------------------------------------------------------------------------------
-void ApproxInt_MultiLine::Value( const Standard_Integer Index
-				,TColgp_Array1OfPnt2d&  TabPnt2d) const 
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+void ApproxInt_MultiLine::Value(const Standard_Integer Index,
+                                TColgp_Array1OfPnt2d&  TabPnt2d) const 
 {
   IntSurf_PntOn2S POn2S(myLine->Point(Index));
-  Standard_Real u1,u2,v1,v2;
-  POn2S.Parameters(u1,v1,u2,v2);
-  if(nbp2d==1) { 
-    if(p2donfirst) { 
-      TabPnt2d(1) = gp_Pnt2d(u1 * A1u + U1o , v1 * A1v + V1o);
+  Standard_Real u1 = 0.0, u2 = 0.0, v1 = 0.0, v2 = 0.0;
+  POn2S.Parameters(u1, v1, u2, v2);
+  if(nbp2d==1)
+  { 
+    if(p2donfirst)
+    { 
+      TabPnt2d(1).SetCoord(u1+U1o, v1+V1o);
     }
-    else { 
-      TabPnt2d(1) = gp_Pnt2d(u2 * A2u + U2o , v2 * A2v + V2o);
+    else
+    {
+      TabPnt2d(1).SetCoord(u2+U2o, v2+V2o);
     }
   }
-  else { 
-    TabPnt2d(1) = gp_Pnt2d(u1 * A1u + U1o , v1 * A1v + V1o);
-    if(TabPnt2d.Length()>=2) { 
-      TabPnt2d(2) = gp_Pnt2d(u2 * A2u + U2o , v2 * A2v + V2o);
+  else
+  {
+    TabPnt2d(1).SetCoord(u1+U1o, v1+V1o);
+    if(TabPnt2d.Length() >= 2)
+    { 
+      TabPnt2d(2).SetCoord(u2+U2o, v2+V2o);
     } 
   }
 }
-//--------------------------------------------------------------------------------
-void ApproxInt_MultiLine::Value( const Standard_Integer Index
-				,TColgp_Array1OfPnt&    TabPnt
-				,TColgp_Array1OfPnt2d&  TabPnt2d)  const 
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+void ApproxInt_MultiLine::Value(const Standard_Integer Index,
+                                TColgp_Array1OfPnt&    TabPnt,
+                                TColgp_Array1OfPnt2d&  TabPnt2d)  const 
 { 
-  IntSurf_PntOn2S POn2S(myLine->Point(Index));
-  Standard_Real u1,u2,v1,v2;
-  POn2S.Parameters(u1,v1,u2,v2);
-  if(nbp2d==1) { 
-    if(p2donfirst) { 
-      TabPnt2d(1) = gp_Pnt2d(u1 * A1u + U1o , v1 * A1v + V1o);
-    }
-    else { 
-      TabPnt2d(1) = gp_Pnt2d(u2 * A2u + U2o , v2 * A2v + V2o); 
-    }
-  }
-  else { 
-    TabPnt2d(1) = gp_Pnt2d(u1 * A1u + U1o , v1 * A1v + V1o);
-    if(TabPnt2d.Length()>=2) { 
-      TabPnt2d(2) = gp_Pnt2d(u2 * A2u + U2o , v2 * A2v + V2o);
-    }
-  }
-  Standard_Real X = POn2S.Value().X();
-  Standard_Real Y = POn2S.Value().Y();
-  Standard_Real Z = POn2S.Value().Z();
-  TabPnt(1) = gp_Pnt(X * Ax + Xo, Y * Ay + Yo, Z * Az + Zo);
+    Value(Index, TabPnt);
+    Value(Index, TabPnt2d);
 }
-//--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index
-					       ,TColgp_Array1OfVec&    TabVec) const 
-{ 
+
+//=======================================================================
+//function : Tangency
+//purpose  : 
+//=======================================================================
+Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
+                                                TColgp_Array1OfVec&    TabVec) const 
+{
   if(PtrOnmySvSurfaces==NULL) 
-    return(Standard_False);
+    return Standard_False;
 
-  IntSurf_PntOn2S POn2S(myLine->Point(Index));
-  Standard_Real u1,u2,v1,v2;
-  gp_Vec Tg;
+  const IntSurf_PntOn2S& POn2S = myLine->Point(Index);
+  Standard_Real u1 = 0.0, u2 = 0.0, v1 = 0.0, v2 = 0.0;
   POn2S.Parameters(u1,v1,u2,v2);
-  Standard_Boolean ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->Tangency( u1,v1,u2,v2,Tg);
-  if(ret) { 
-    Standard_Real X = Tg.X();
-    Standard_Real Y = Tg.Y();
-    Standard_Real Z = Tg.Z();
-    TabVec(1) = gp_Vec(X * Ax, Y * Ay, Z * Az);
+
+  Standard_Boolean ret=
+            ((TheSvSurfaces *)PtrOnmySvSurfaces)->Tangency(u1, v1, u2, v2, TabVec(1));
+  if(!ret)
+  {
+    TabVec(1).SetCoord(0.0, 0.0, 0.0);
   }
-  else 
-    TabVec(1) = gp_Vec(0.0,0.0,0.0);
-  return(ret);
+
+  return ret;
 }
-//--------------------------------------------------------------------------------
-Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index
-					       ,TColgp_Array1OfVec2d&  TabVec2d) const 
-{ 
+
+//=======================================================================
+//function : Tangency
+//purpose  : 
+//=======================================================================
+Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
+                                                TColgp_Array1OfVec2d&  TabVec2d) const 
+{
   if(PtrOnmySvSurfaces==NULL) 
-    return(Standard_False);
+    return Standard_False;
 
-  IntSurf_PntOn2S POn2S(myLine->Point(Index));
-  Standard_Real u1,u2,v1,v2,U,V;
-  gp_Vec2d Tg2d;
-  Standard_Boolean ret;
+  const IntSurf_PntOn2S& POn2S = myLine->Point(Index);
+  Standard_Real u1 = 0.0, u2 = 0.0, v1 = 0.0, v2 = 0.0;
   POn2S.Parameters(u1,v1,u2,v2);
-  if(nbp2d==1) { 
-    Standard_Real Au = A1u;
-    Standard_Real Av = A1v;
-    if(p2donfirst) { 
-      ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf1( u1,v1,u2,v2,Tg2d);
+
+  Standard_Boolean ret = Standard_False;
+  if(nbp2d==1)
+  { 
+    if(p2donfirst)
+    {
+      ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
     }
-    else { 
-      ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf2( u1,v1,u2,v2,Tg2d);
-      Au = A2u;
-      Av = A2v;
+    else
+    { 
+      ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(1));
     }
-    if(ret) { 
-      U = Tg2d.X();
-      V = Tg2d.Y();
-      TabVec2d(1) = gp_Vec2d(U * Au, V * Av);
-    }
-    else {
-     TabVec2d(1) = gp_Vec2d(0.0,0.0);
-   }
   }
-  else { 
-    ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf1( u1,v1,u2,v2,Tg2d);
-    if(ret) { 
-      U = Tg2d.X();
-      V = Tg2d.Y();
-      TabVec2d(1) = gp_Vec2d(U * A1u, V * A1v);
-    
-      if(TabVec2d.Length()>=2) { 
-	ret&=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf2( u1,v1,u2,v2,Tg2d);
-	U = Tg2d.X();
-	V = Tg2d.Y();
-	TabVec2d(2) = gp_Vec2d(U * A2u, V * A2v);
-      }
-      else { 
-	TabVec2d(1) = gp_Vec2d(0.0,0.0);
-	if(TabVec2d.Length()>=2) { 
-	  TabVec2d(2) = gp_Vec2d(0.0,0.0);
-	}
+  else
+  {
+    ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
+    if(ret)
+    { 
+      if(TabVec2d.Length()>=2)
+      {
+        ret = 
+              (ret && 
+              ((TheSvSurfaces *)PtrOnmySvSurfaces)->
+                                          TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(2)));
       }
     }
   }
-  return(ret);
+
+  if(!ret)
+  {
+    TabVec2d(1) = gp_Vec2d(0.0, 0.0);
+    if(TabVec2d.Length() >= 2)
+    {
+      TabVec2d(2) = gp_Vec2d(0.0,0.0);
+    }
+  }
+
+  return ret;
 }
-//--------------------------------------------------------------------------------
-Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index
-					    ,TColgp_Array1OfVec&       TabVec
-					    ,TColgp_Array1OfVec2d&     TabVec2d) const 
+
+//=======================================================================
+//function : Tangency
+//purpose  : 
+//=======================================================================
+Standard_Boolean ApproxInt_MultiLine::Tangency( const Standard_Integer Index,
+                                                TColgp_Array1OfVec& TabVec,
+                                                TColgp_Array1OfVec2d& TabVec2d) const
 { 
-  if(PtrOnmySvSurfaces==NULL) 
-    return(Standard_False);
-
-  IntSurf_PntOn2S POn2S(myLine->Point(Index));
-  Standard_Real u1,u2,v1,v2,U,V;
-  gp_Vec2d Tg2d;
-  gp_Vec   Tg;
-  Standard_Boolean ret;
-  POn2S.Parameters(u1,v1,u2,v2);
-  if(nbp2d==1) {
-    Standard_Real Au = A1u;
-    Standard_Real Av = A1v;
-    if(p2donfirst) { 
-      ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf1( u1,v1,u2,v2,Tg2d);
-    }
-    else { 
-      ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf2( u1,v1,u2,v2,Tg2d);
-      Au = A2u;
-      Av = A2v;
-    }
-    if(ret) { 
-      U = Tg2d.X();
-      V = Tg2d.Y();
-      TabVec2d(1) = gp_Vec2d(U * Au, V * Av);	
-    }
-    else { 
-      TabVec2d(1) = gp_Vec2d(0.0,0.0);
-    }
-  }
-  else { 
-    ret=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf1( u1,v1,u2,v2,Tg2d);
-    if(ret) { 
-      U = Tg2d.X();
-      V = Tg2d.Y();
-      TabVec2d(1) = gp_Vec2d(U * A1u, V * A1v);
-      if(TabVec2d.Length()>=2) { 
-	ret&=((TheSvSurfaces *)PtrOnmySvSurfaces)->TangencyOnSurf2( u1,v1,u2,v2,Tg2d);
-	U = Tg2d.X();
-	V = Tg2d.Y();
-	TabVec2d(2) = gp_Vec2d(U * A2u, V * A2v);
-      }
-    }
-    else { 
-      TabVec2d(1) = gp_Vec2d(0.0,0.0);
-      if(TabVec2d.Length()>=2) {
-	TabVec2d(2) = gp_Vec2d(0.0,0.0);
-      }
-    }
-  }
-  if(ret) { 
-    ret&=((TheSvSurfaces *)PtrOnmySvSurfaces)->Tangency( u1,v1,u2,v2,Tg);
-    Standard_Real X = Tg.X();
-    Standard_Real Y = Tg.Y();
-    Standard_Real Z = Tg.Z();
-    TabVec(1) = gp_Vec(X * Ax, Y * Ay, Z * Az);
-  }
-  else { 
-    TabVec(1) = gp_Vec(0.0,0.0,0.0);
-  }
-  return(ret);
+  return (Tangency(Index, TabVec) && Tangency(Index, TabVec2d));
 }
-//--------------------------------------------------------------------------------
 
-
-
-//================================================================================
-ApproxInt_MultiLine  ApproxInt_MultiLine::MakeMLBetween(const Standard_Integer Low,
-							const Standard_Integer High,
-							const Standard_Integer aNbPntsToInsert)
-const { 
+//=======================================================================
+//function : MakeMLBetween
+//purpose  : 
+//=======================================================================
+ApproxInt_MultiLine
+  ApproxInt_MultiLine::MakeMLBetween( const Standard_Integer Low,
+                                      const Standard_Integer High,
+                                      const Standard_Integer aNbPntsToInsert) const
+{ 
   if(PtrOnmySvSurfaces==NULL) {
     //-- cout<<"\n Erreur dans : ApproxInt_MultiLine  ApproxInt_MultiLine::MakeMLBetween "<<endl;
     Handle(IntSurf_LineOn2S) vide1 = new IntSurf_LineOn2S();
@@ -352,13 +272,12 @@ const {
 			       NULL,
 			       nbp3d,
 			       nbp2d,
-			       Xo,Ax,Yo,Ay,Zo,Az,
-			       U1o,A1u,V1o,A1v,
-			       U2o,A2u,V2o,A2v,
+			       Xo,Yo,Zo,U1o,V1o,U2o,V2o,
 			       p2donfirst,
 			       1,1));
     //-- return(*this);
   }
+
   Standard_Integer NbPntsToInsert=aNbPntsToInsert;
   if(NbPntsToInsert<(High-Low)) NbPntsToInsert=(High-Low);
   Standard_Integer NbPnts = NbPntsToInsert + High - Low + 1;
@@ -401,7 +320,6 @@ const {
   AC(Low) =0.0;
   
 #if 0 
-  
   for( i=Low+1; i<=High; i++) { 
     myLine->Point(i).Parameters(u1,v1,u2,v2);
     U1(i) = u1;
@@ -422,20 +340,17 @@ const {
     V1(i) = v1;
     U2(i) = u2;
     V2(i) = v2;    
-    AC(i) = AC(i-1) 
-      + (myLine->Point(i-1).Value()).Distance(myLine->Point(i).Value());
+    AC(i) = AC(i-1) + (myLine->Point(i-1).Value()).Distance(myLine->Point(i).Value());
   }
 
 #endif
   //-------------------------------------------------------------
   //-- Creation des structures contenant les resultats
   
-  Handle(IntSurf_LineOn2S) ResultPntOn2SLine
-    = new IntSurf_LineOn2S();
+  Handle(IntSurf_LineOn2S) ResultPntOn2SLine = new IntSurf_LineOn2S();
   
   IntSurf_PntOn2S StartPOn2S;  
-  TColStd_Array1OfReal StartParams(1,4);
-  
+  TColStd_Array1OfReal StartParams(1,4);  
   
   ds = AC(High) / (NbPnts-1);
   Standard_Integer Indice = Low;
@@ -450,8 +365,11 @@ const {
     //-- s                            s                       --
     //-- Current Indice tel que AC(Indice)<= s < AC(Indice+1) --
     //----------------------------------------------------------
-    while(AC(Indice+1) <= s) { 
-      if(!HasBeenInserted) ResultPntOn2SLine->Add(myLine->Point(Indice));
+    while(AC(Indice+1) <= s)
+    { 
+      if(!HasBeenInserted)
+        ResultPntOn2SLine->Add(myLine->Point(Indice));
+
       HasBeenInserted = Standard_False;
       Indice++;
       if (Indice == High)
@@ -461,10 +379,12 @@ const {
     if (Indice == High)
       break;
     
-    if(!HasBeenInserted  && AC(Indice) <= s) { 
+    if(!HasBeenInserted  && AC(Indice) <= s)
+    { 
       ResultPntOn2SLine->Add(myLine->Point(Indice));
       HasBeenInserted = Standard_True;
     }
+    
     Standard_Real a = s - AC(Indice);
     Standard_Real b = AC(Indice+1) - s;
     Standard_Real nab = 1.0/(a+b);
@@ -474,48 +394,57 @@ const {
     //--                 Si Dist au precedent point < dsmin   --
     //--                                                      --
     //----------------------------------------------------------
-    if((a>dsmin) && (b>dsmin)) { 	
-      
+    if((a>dsmin) && (b>dsmin))
+    {
       u1 = (U1(Indice) * b   +  U1(Indice+1) * a) * nab;
       v1 = (V1(Indice) * b   +  V1(Indice+1) * a) * nab;
       u2 = (U2(Indice) * b   +  U2(Indice+1) * a) * nab;
       v2 = (V2(Indice) * b   +  V2(Indice+1) * a) * nab;
-      
-      
-      if(((TheSvSurfaces *)PtrOnmySvSurfaces)->Compute(u1,v1,u2,v2,P,T,TS1,TS2)) { 
-	StartPOn2S.SetValue(P,u1,v1,u2,v2);
-	//-- cout<<" Insertion du point calcule : "<<u1<<","<<v1<<","<<u2<<","<<v2<<",";
-	//-- cout<<P.X()<<","<<P.Y()<<","<<P.Z()<<endl;
-	ResultPntOn2SLine->Add(StartPOn2S);
+            
+      if(((TheSvSurfaces *)PtrOnmySvSurfaces)->Compute(u1,v1,u2,v2,P,T,TS1,TS2))
+      {
+        StartPOn2S.SetValue(P,u1,v1,u2,v2);
+        //-- cout<<" Insertion du point calcule : "<<u1<<","<<v1<<","<<u2<<","<<v2<<",";
+        //-- cout<<P.X()<<","<<P.Y()<<","<<P.Z()<<endl;
+        ResultPntOn2SLine->Add(StartPOn2S);
       }
-      else { 
-	//-- cout<<" Probleme Non Traite ds ApproxInt_ApproxIntIntersection "<<endl;
+      else
+      {
+        //-- cout<<" Probleme Non Traite ds ApproxInt_ApproxIntIntersection "<<endl;
       }
     }
-    else { 
+    else
+    {
       //-- Point non situe a distance suffisante de 2 pts existants
       //-- avec le point p[indice] deja insere
       
-      if(b<0.0) {
-	while(AC(Indice+1) <= s) { 
-	  if(!HasBeenInserted) ResultPntOn2SLine->Add(myLine->Point(Indice));
-	  //-- cout<<" Insertion du point :"<<Indice<<endl;
-	  HasBeenInserted = Standard_False;
-	  Indice++;
+      if(b<0.0)
+      {
+        while(AC(Indice+1) <= s)
+        {
+          if(!HasBeenInserted)
+            ResultPntOn2SLine->Add(myLine->Point(Indice));
+
+          //-- cout<<" Insertion du point :"<<Indice<<endl;
+          HasBeenInserted = Standard_False;
+          Indice++;
+
           if (Indice == High)
             break;
-	}
-    
-        if (Indice == High)
+        }
+
+        if(Indice == High)
           break;
-    
-	if(!HasBeenInserted  && AC(Indice) <= s) { 
-	  ResultPntOn2SLine->Add(myLine->Point(Indice));
-	  HasBeenInserted = Standard_True;
-	} 
+
+        if(!HasBeenInserted  && AC(Indice) <= s)
+        {
+          ResultPntOn2SLine->Add(myLine->Point(Indice));
+          HasBeenInserted = Standard_True;
+        }
       }
-      else { 
-	s+=dsmin - ds;
+      else
+      {
+        s+= (dsmin - ds);
       }
     }
   }
@@ -538,7 +467,8 @@ const {
 
   Standard_Integer CodeErreur=0; 
   
-  for(i=3,NbPnts=temp->NbPnts();CodeErreur==0 &&  i<=NbPnts; i++) {
+  for(i=3,NbPnts=temp->NbPnts();CodeErreur==0 &&  i<=NbPnts; i++)
+  {
     Standard_Real d,du,dv,duv2;
     temp->Point(i).Parameters(u1,v1,u2,v2);
     //-- Virage P1A P1B P1C
@@ -551,11 +481,13 @@ const {
     du = P1C.X() - u1;
     dv = P1C.Y() - v1;
     d = du*du+dv*dv;
-    if(d>duv2) { 
+    if(d>duv2)
+    { 
       CodeErreur = 1;
       CodeErreur = 1;
       break;
     }
+    
     //-- Virage P2A P2B P2C
     P2C.SetCoord(u2,v2);
     du  = P2B.X()-P2A.X();
@@ -566,63 +498,80 @@ const {
     du = P2C.X() - u2;
     dv = P2C.Y() - v2;
     d = du*du+dv*dv;
-    if(d>duv2) {
+    if(d>duv2)
+    {
       CodeErreur = 2;
       break;
     }
+    
     P1A=P1B;
     P2A=P2B;
     P1B=P1C;
     P2B=P2C;
   }
-#if DEBUG
-  if (temp->NbPnts() < NbPntsToInsert + High - Low + 1) { 
-    cout<<" *** Pas assez de points entre :"<<Low<<" et "<<High<<" -> "<<temp->NbPnts()<<endl;
-  }
-  if(CodeErreur) { 
-    cout<<" *** CodeErreur : "<<CodeErreur<<endl;
-  }
+
+#if OCCT_DEBUG
+  //if (temp->NbPnts() < NbPntsToInsert + High - Low + 1)
+  //{ 
+  //  cout<<" *** Pas assez de points entre :"<<
+  //            Low<<" et "<<High<<" -> "<<temp->NbPnts()<<endl;
+  //}
+
+  //if(CodeErreur)
+  //{ 
+  //  cout<<" *** CodeErreur : "<<CodeErreur<<endl;
+  //}
 #endif
-  if((temp->NbPnts() >= NbPntsToInsert + High - Low + 1)
-     && (CodeErreur==0)) { 
-    return(ApproxInt_MultiLine(temp,
-			       (High-Low>10)? PtrOnmySvSurfaces : NULL,
-			       nbp3d,
-			       nbp2d,
-			       Xo,Ax,Yo,Ay,Zo,Az,
-			       U1o,A1u,V1o,A1v,
-			       U2o,A2u,V2o,A2v,
-			       p2donfirst,
-			       1,ResultPntOn2SLine->NbPoints()));
+
+  if((temp->NbPnts() >= NbPntsToInsert + High - Low + 1) && (CodeErreur==0))
+  {
+    return(ApproxInt_MultiLine( temp, 
+                                (High-Low>10)? PtrOnmySvSurfaces : NULL,
+                                nbp3d,
+                                nbp2d,
+                                Xo,Yo,Zo,
+                                U1o,V1o,
+                                U2o,V2o,
+                                p2donfirst,
+                                1,ResultPntOn2SLine->NbPoints()));
   }
-  else { 
+  else
+  {
     //-- cout<<" ApproxInt_MultiLine "<<endl;
     //-- cout<<" Pas de Rajout de points ds1min =  "<<minds1<<" ds2min = "<<minds2<<endl;
     Handle(IntSurf_LineOn2S) vide1 = new IntSurf_LineOn2S();
     Handle(TheLine) vide = new TheLine(vide1,Standard_False);
-    return(ApproxInt_MultiLine(vide,
-			       NULL,
-			       nbp3d,
-			       nbp2d,
-			       Xo,Ax,Yo,Ay,Zo,Az,
-			       U1o,A1u,V1o,A1v,
-			       U2o,A2u,V2o,A2v,
-			       p2donfirst,
-			       1,1));
+    return(ApproxInt_MultiLine( vide,
+                                NULL,
+                                nbp3d,
+                                nbp2d,
+                                Xo,Yo,Zo,
+                                U1o,V1o,
+                                U2o,V2o,
+                                p2donfirst,
+                                1,1));
   }
 }
-  //======================================================================
 
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
 void ApproxInt_MultiLine::Dump() const
 {
   TColgp_Array1OfPnt anArr1(1, 1);
   TColgp_Array1OfPnt2d anArr2(1, 2);
         
-  for(Standard_Integer ind = FirstPoint(); ind <= LastPoint(); ind++)
+  const Standard_Integer  anIndF = FirstPoint(),
+                          anIndL = LastPoint();
+        
+  for(Standard_Integer ind = anIndF; ind <= anIndL; ind++)
   {
     Value(ind, anArr1, anArr2);
-    printf("%4d  [%+10.20f %+10.20f %+10.20f]  [%+10.20f %+10.20f]  [%+10.20f %+10.20f]\n",
-      ind, anArr1(1).X(), anArr1(1).Y(), anArr1(1).Z(), anArr2(1).X(),anArr2(1).Y(),anArr2(2).X(),anArr2(2).Y());
+    printf("%4d  [%+10.20f %+10.20f %+10.20f]  "
+            "[%+10.20f %+10.20f]  [%+10.20f %+10.20f]\n",
+      ind, anArr1(1).X(), anArr1(1).Y(), anArr1(1).Z(), anArr2(1).X(),
+      anArr2(1).Y(),anArr2(2).X(),anArr2(2).Y());
   }
 }
 

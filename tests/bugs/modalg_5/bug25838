@@ -5,6 +5,8 @@ puts ""
 ###############################################
 # Wrong result obtained by General Fuse operator.
 ###############################################
+puts "TODO #OCC26816 ALL: Error : Result done by General Fuse operator is WRONG because number of"
+puts "TODO #OCC26816 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 restore [locate_data_file bug25715_p02c3s1.brep] b1
 restore [locate_data_file bug25838_p02c3s2.brep] b2

@@ -1274,7 +1274,7 @@ void Approx_ComputeLine::Error(const Standard_Integer Index,
   tol2d = Tolers2d.Value(Index);
 }
 
-void Approx_ComputeLine::Parametrization(Approx_ParametrizationType& partype) const
+Approx_ParametrizationType Approx_ComputeLine::Parametrization() const
 {
-  partype = Par;
+  return Par;
 }

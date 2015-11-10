@@ -1,5 +1,6 @@
-puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC00000 ALL: Faulty OCC602: function BLEND works wrongly"
+puts "TODO OCC00000 ALL: Tcl Exception: result is not a topological shape!!!"
+puts "TODO OCC00000 ALL: TEST INCOMPLETE"
 
 puts "========================"
 puts " OCC602 "

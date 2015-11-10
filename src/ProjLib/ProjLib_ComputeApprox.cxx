@@ -258,23 +258,47 @@ static void Function_SetUVBounds(Standard_Real& myU1,
         nbp = Max(nbp, 3);
         Step = (W2 - W1) / (nbp - 1);
         Standard_Boolean isclandper = (!(myCurve->IsClosed()) && !(myCurve->IsPeriodic()));
-        for(Standard_Real par = W1 + Step; par <= W2; par += Step) {
+        Standard_Boolean isFirst = Standard_True;
+        for(Standard_Real par = W1 + Step; par <= W2; par += Step)
+        {
           if(!isclandper) par += Step;
           P = myCurve->Value(par);
           ElSLib::Parameters( Cone, P, U, V);
           U += Delta;
           d = U - U1;
-          if(d > M_PI)  {
+          if(d > M_PI)
+          {
             if( ( (IsEqual(U,(2*M_PI),1.e-10) && (U1 >= 0. && U1 <= M_PI)) && 
-              (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,0.,1.e-10)) ) && isclandper ) U = 0.;
-            else Delta -= 2*M_PI;
+              (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,0.,1.e-10)) ) && isclandper )
+              U = 0.0;
+            else
+            {
+              // Protection against first-last point on seam.
+              if (isFirst)
+                U1 = 2*M_PI;
+              else if (par + Step >= W2)
+                U = 0.0;
+              else
+                Delta -= 2*M_PI;
+            }
             U += Delta;
             d = U - U1;
           }
-          else if(d < -M_PI)	  {
+          else if(d < -M_PI)
+          {
             if( ( (IsEqual(U,0.,1.e-10) && (U1 >= M_PI && U1 <= (2*M_PI))) &&
-              (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,(2*M_PI),1.e-10)) ) && isclandper ) U = 2*M_PI;
-            else Delta += 2*M_PI;
+              (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,(2*M_PI),1.e-10)) ) && isclandper )
+              U = 2*M_PI;
+            else
+            {
+              // Protection against first-last point on seam.
+              if (isFirst)
+                U1 = 0.0;
+              else if (par + Step >= W2)
+                U = 2*M_PI;
+              else
+                Delta += 2*M_PI;
+            }
             U += Delta;
             d = U - U1;
           }
@@ -282,7 +306,8 @@ static void Function_SetUVBounds(Standard_Real& myU1,
           if(U < myU1) {myU1 = U; pmin = par;}
           if(U > myU2) {myU2 = U; pmax = par;}
           U1 = U;
-        }
+          isFirst = Standard_False;
+        } // for(Standard_Real par = W1 + Step; par <= W2; par += Step)
 
         if(!(Abs(pmin - W1) <= Precision::PConfusion() || Abs(pmin - W2) <= Precision::PConfusion()) ) myU1 -= dmax*.5;
         if(!(Abs(pmax - W1) <= Precision::PConfusion() || Abs(pmax - W2) <= Precision::PConfusion()) ) myU2 += dmax*.5;

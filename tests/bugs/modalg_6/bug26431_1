@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC26431"
+puts "============"
+puts ""
+###############################
+## Can't cut a sphere from a cylinder
+###############################
+
+restore [locate_data_file bug26431_Body.brep] b1
+restore [locate_data_file bug26431_Sphere.brep] b2
+
+explode b1 f
+explode b2 f
+
+set log [bopcurves b1_3 b2_1 -2d]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Tolerance_Reached NbCurv
+
+set expected_Tolerance_Reached 6.1899285293702062e-006
+set tol_abs_Tolerance_Reached 1.0e-7
+set tol_rel_Tolerance_Reached 0.0
+checkreal "Tolerance Reached" ${Tolerance_Reached} ${expected_Tolerance_Reached} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}

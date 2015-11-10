@@ -946,13 +946,14 @@ void Draft_Modification::Perform ()
               return;
             }
 
-            Standard_Real Dist2, Dist2Min = 0., Glob2Min = RealLast();
+            Standard_Real Glob2Min = RealLast();
             GeomAdaptor_Curve TheCurve;
 
             Standard_Integer i,j; //,jmin;
 
             if (i2s.Line(1)->DynamicType() != STANDARD_TYPE(Geom_BSplineCurve))
             {
+              Standard_Real Dist2Min = RealLast();
               imin = 0;
               for (i=1; i<= i2s.NbLines(); i++) {
                 TheCurve.Load(i2s.Line(i));
@@ -1041,7 +1042,7 @@ void Draft_Modification::Perform ()
                     Dist2Min = myExtPC.SquareDistance(1);
                     locpmin = myExtPC.Point(1).Parameter();
                     for (j=2; j<=myExtPC.NbExt(); j++) {
-                      Dist2 = myExtPC.SquareDistance(j);
+                      const Standard_Real Dist2 = myExtPC.SquareDistance(j);
                       if (Dist2 < Dist2Min) {
                         Dist2Min = Dist2;
                         locpmin = myExtPC.Point(j).Parameter();
@@ -1142,15 +1143,15 @@ void Draft_Modification::Perform ()
               Handle( Geom_Curve ) FirstCurve;
               if (Candidates.Length() > 1)
               {
-                Dist2Min = RealLast();
+                Standard_Real DistMin = Precision::Infinite();
                 for (i = 1; i <= Candidates.Length(); i++)
                 {
                   Handle( Geom_Curve ) aCurve = Candidates(i);
                   gp_Pnt Pnt = aCurve->Value( aCurve->FirstParameter() );
-                  Dist2 = Pnt.SquareDistance( pfv );
-                  if (Dist2 < Dist2Min)
+                  const Standard_Real Dist = Pnt.Distance( pfv );
+                  if (Dist - DistMin < -Precision::Confusion())
                   {
-                    Dist2Min = Dist2;
+                    DistMin = Dist;
                     FirstCurve = aCurve;
                   }
                 }
@@ -1210,12 +1211,12 @@ void Draft_Modification::Perform ()
 
               TheCurve.Load( newC );
               Extrema_ExtPC myExtPC( pfv, TheCurve );
-              Dist2Min = RealLast();
+              Standard_Real Dist2Min = RealLast();
               for (i = 1; i <= myExtPC.NbExt(); i++)
               {
                 if (myExtPC.IsMin(i))
                 {
-                  Dist2 = myExtPC.SquareDistance(i);
+                  const Standard_Real Dist2 = myExtPC.SquareDistance(i);
                   if (Dist2 < Dist2Min)
                   {
                     Dist2Min = Dist2;

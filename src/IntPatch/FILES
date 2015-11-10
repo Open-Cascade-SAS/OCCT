@@ -94,3 +94,5 @@ IntPatch_TheSurfFunction_0.cxx
 IntPatch_WLine.cxx
 IntPatch_WLine.hxx
 IntPatch_WLine.lxx
+IntPatch_WLineTool.cxx
+IntPatch_WLineTool.hxx

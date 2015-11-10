@@ -1,10 +1,4 @@
-puts "TODO OCC25929 ALL: Error: Tolerance is too big!"
-
-puts "TODO OCC21564 Linux: Error : T=0.464646\tD=0.000326627"
-puts "TODO OCC21564 Linux: Error : T=0.464646\tD=0.00032747"
-
-puts "TODO OCC21564 Windows: Error : T=0.464646\tD=0.000326671"
-puts "TODO OCC21564 Windows: Error : T=0.464646\tD=0.000327516"
+puts "TODO OCC26927 ALL: Error: Tolerance is too big!"
 
 puts "========="
 puts "CR24915"
@@ -30,8 +24,8 @@ bbuild r
 checkshape r
 
 # 2. geometry
-set MaxTol 5.0e-7
-set log [bopcurves b1 b2]
+set MaxTol 1.0e-7
+set log [bopcurves b1 b2 -2d]
 
 if { ! [regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv] } {
   puts "Error: Cannot find tolerance value in output of bopcurve command"
@@ -39,18 +33,6 @@ if { ! [regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full To
 
 if {${Toler} > ${MaxTol}} {
   puts "Error: Tolerance is too big!"
-}
-
-mksurface s1 b1
-mksurface s2 b2
-
-set Tolerance 2.0e-5
-set WarnTol 1.0e-7
-
-for {set i 1} {$i <= ${NbCurv}} {incr i} {
-  bounds c_$i U1 U2
-  xdistcs c_$i s1 U1 U2 100 $Tolerance $WarnTol
-  xdistcs c_$i s2 U1 U2 100 $Tolerance $WarnTol
 }
 
 smallview

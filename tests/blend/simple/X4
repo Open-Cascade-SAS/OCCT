@@ -4,6 +4,8 @@
 ## Comment : From CV tests serie page 25/26
 ## ===========================================
 
+puts "TODO #OCC26740 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 restore [locate_data_file CCV_1_h1_gsk.rle] s
 explode s E
 blend result s 30 s_14

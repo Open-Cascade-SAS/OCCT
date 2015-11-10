@@ -42,8 +42,7 @@
 BRepAlgo_BooleanOperations::BRepAlgo_BooleanOperations() :
 myApproxNbPntMax (30) ,
 myApproxTol3D (1.e-7) ,
-myApproxTol2D (1.e-7) ,
-myApproxRelativeTol (Standard_True)
+myApproxTol2D (1.e-7)
 {
 }
 
@@ -109,13 +108,11 @@ myApproxRelativeTol (Standard_True)
 //=======================================================================
   void BRepAlgo_BooleanOperations::SetApproxParameters (const Standard_Integer NbPntMax,
 							const Standard_Real Tol3D,
-							const Standard_Real Tol2D,
-							const Standard_Boolean RelativeTol)
+							const Standard_Real Tol2D)
 {
   myApproxNbPntMax = NbPntMax ;
   myApproxTol3D = Tol3D ;
   myApproxTol2D = Tol2D ;
-  myApproxRelativeTol = RelativeTol ;
 }
 
 //=======================================================================
@@ -140,7 +137,7 @@ myApproxRelativeTol (Standard_True)
   TopOpeBRepDS_BuildTool& BTofBuilder = myDSA.myHB->ChangeBuildTool();
   TopOpeBRepTool_GeomTool& GTofBTofBuilder = BTofBuilder.ChangeGeomTool();
   GTofBTofBuilder.SetNbPntMax(myApproxNbPntMax);
-  GTofBTofBuilder.SetTolerances (myApproxTol3D, myApproxTol2D, myApproxRelativeTol) ;
+  GTofBTofBuilder.SetTolerances (myApproxTol3D, myApproxTol2D) ;
   Handle(TopOpeBRepBuild_HBuilder)& HB = myDSA.myHB;
   Handle(TopOpeBRepDS_HDataStructure)& HDS = myDSA.ChangeDS();
   HB->Perform(HDS,myS1,myS2);

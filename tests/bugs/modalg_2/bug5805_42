@@ -1,5 +1,6 @@
-puts "TODO OCC25925 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC25925 ALL: Error :  is WRONG because number of"
+puts "TODO OCC25925 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC25925 ALL: Tcl Exception: Error : command \\\"nbshapes result\\\" gives an empty result"
+puts "TODO OCC25925 ALL: TEST INCOMPLETE"
 
 puts "============"
 puts "OCC5805"

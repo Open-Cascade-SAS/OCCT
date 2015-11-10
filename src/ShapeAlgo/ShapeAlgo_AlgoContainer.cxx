@@ -217,7 +217,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve (const Handle(Geom_BSplineCurve
       }
       GeomInt_WLApprox theapp3d;
       Standard_Real Tol = Precision::Approximation();
-      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, Standard_True);
+      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, 30, Standard_True);
       Handle(IntPatch_WLine) WL = new IntPatch_WLine(R, Standard_False);
       Standard_Integer indicemin = 1;
       Standard_Integer indicemax = jpole;
@@ -349,7 +349,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve (const Handle(Geom2d_BSplineCur
       }
       GeomInt_WLApprox theapp3d;
       Standard_Real Tol = Precision::PApproximation();
-      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, Standard_True);
+      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, 30, Standard_True);
       Handle(IntPatch_WLine) WL = new IntPatch_WLine(R, Standard_False);
       Standard_Integer indicemin = 1;
       Standard_Integer indicemax = jpole;

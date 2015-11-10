@@ -58,7 +58,7 @@ public:
   //! the same time in one curve.
   //! Tol3D, Tol2D : Tolerances to be reached by the approximation.
   //! RelativeTol : The given tolerances are relative.
-  Standard_EXPORT void SetApproxParameters (const Standard_Integer NbPntMax, const Standard_Real Tol3D, const Standard_Real Tol2D, const Standard_Boolean RelativeTol);
+  Standard_EXPORT void SetApproxParameters (const Standard_Integer NbPntMax, const Standard_Real Tol3D, const Standard_Real Tol2D);
   
   Standard_EXPORT void Define (const TopoDS_Shape& S1, const TopoDS_Shape& S2, Handle(TopOpeBRepDS_HDataStructure)& HDS);
   
@@ -129,9 +129,6 @@ private:
   Standard_Integer myApproxNbPntMax;
   Standard_Real myApproxTol3D;
   Standard_Real myApproxTol2D;
-  Standard_Boolean myApproxRelativeTol;
-
-
 };
 
 

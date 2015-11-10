@@ -1259,7 +1259,20 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
               else GCurve->PCurve2(curPC);
             }
           }
-          else IsSameP = 0;
+          else
+          {
+            //Approx_SameParameter has failed.
+            //Consequently, the situation might be,
+            //when 3D and 2D-curve do not have same-range.
+            GeomLib::SameRange( Tol2d, PC[i], 
+                                GCurve->First(), GCurve->Last(),
+                                f3d,l3d,curPC);
+
+            if (i == 0) GCurve->PCurve(curPC);
+            else GCurve->PCurve2(curPC);
+
+            IsSameP = 0;
+          }
 
         }
         else IsSameP = 0;

@@ -63,10 +63,6 @@ public:
   
   Standard_EXPORT void SetTolerances (const Standard_Real tol3d, const Standard_Real tol2d);
   
-  Standard_EXPORT void GetTolerances (Standard_Real& tol3d, Standard_Real& tol2d, Standard_Boolean& relative) const;
-  
-  Standard_EXPORT void SetTolerances (const Standard_Real tol3d, const Standard_Real tol2d, const Standard_Boolean relative);
-  
   Standard_EXPORT Standard_Integer NbPntMax() const;
   
   Standard_EXPORT void SetNbPntMax (const Standard_Integer NbPntMax);
@@ -98,7 +94,6 @@ private:
 
   Standard_Real myTol3d;
   Standard_Real myTol2d;
-  Standard_Boolean myRelativeTol;
   Standard_Integer myNbPntMax;
 
 

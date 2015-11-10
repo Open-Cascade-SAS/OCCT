@@ -40,6 +40,7 @@ class gp_Pnt2d;
 class IntPatch_RLine;
 class Bnd_Box2d;
 class Adaptor3d_TopolTool;
+class IntPatch_WLine;
 
 
 
@@ -110,7 +111,9 @@ public:
   //! of the source surface.
   Standard_EXPORT static void TrimILineOnSurfBoundaries (const Handle(Geom2d_Curve)& theC2d1, const Handle(Geom2d_Curve)& theC2d2, const Bnd_Box2d& theBound1, const Bnd_Box2d& theBound2, GeomInt_VectorOfReal& theArrayOfParameters);
 
+  Standard_EXPORT static Handle(Geom_Curve) MakeBSpline (const Handle(IntPatch_WLine)& WL, const Standard_Integer ideb, const Standard_Integer ifin);
 
+  Standard_EXPORT static Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine, const Standard_Integer ideb, const Standard_Integer ifin, const Standard_Boolean onFirst);
 
 
 protected:

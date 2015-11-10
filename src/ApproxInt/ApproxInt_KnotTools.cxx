@@ -195,25 +195,6 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
         aFeatureInds.Append(i);
       }
     }
-    else if(aCurv(i)*aCurv(i + 1) < 0.0)
-    {
-      if(Abs(aCurv(i)) < Abs(aCurv(i + 1)))
-      {
-        if(i != theInds.Last())
-        {
-          theInds.Append(i);
-          aFeatureInds.Append(i);
-        }
-      }
-      else
-      {
-        if(i+1 != theInds.Last())
-        {
-          theInds.Append(i + 1);
-          aFeatureInds.Append(i + 1);
-        }
-      }
-    }
   }
   if(aCurv.Upper() != theInds.Last())
   {
@@ -369,7 +350,7 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
         Standard_Integer anIdx = i + 1;
         for( ; anIdx <= theInds.Length(); ++anIdx)
         {
-          if (theInds(anIdx) - anIndsPrev > theMinNbPnts)
+          if (theInds(anIdx) - anIndsPrev >= theMinNbPnts)
             break;
         }
         anIdx--;
@@ -379,10 +360,36 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
             aMidIdx - theInds(anIdx)    < theMinNbPnts &&
             theInds(anIdx) - anIndsPrev >= aMinNbStep)
         {
-          // Bad distribution points merge into one knot interval.
-          theLKnots.Append(theInds(anIdx));
-          anIndsPrev = theInds(anIdx);
-          i = anIdx;
+          if (theInds(anIdx) - anIndsPrev > 2 * theMinNbPnts)
+          {
+            // Bad distribution points merge into one knot interval.
+            theLKnots.Append(anIndsPrev + theMinNbPnts);
+            anIndsPrev = anIndsPrev + theMinNbPnts;
+            i = anIdx - 1;
+          }
+          else
+          {
+            if (theInds(anIdx - 1) - anIndsPrev >= theMinNbPnts / 2)
+            {
+              // Bad distribution points merge into one knot interval.
+              theLKnots.Append(theInds(anIdx - 1));
+              anIndsPrev = theInds(anIdx - 1);
+              i = anIdx - 1;
+              if (theInds(anIdx) - theInds(anIdx - 1) <= theMinNbPnts / 2)
+              {
+                theLKnots.SetValue(theLKnots.Upper(), theInds(anIdx));
+                anIndsPrev = theInds(anIdx );
+                i = anIdx;
+              }
+            }
+            else
+            {
+              // Bad distribution points merge into one knot interval.
+              theLKnots.Append(theInds(anIdx));
+              anIndsPrev = theInds(anIdx);
+              i = anIdx;
+            }
+          }
         }
         else if (anIdx == theInds.Upper() && // Last point obtained.
                  theLKnots.Length() >= 2) // It is possible to modify last item.

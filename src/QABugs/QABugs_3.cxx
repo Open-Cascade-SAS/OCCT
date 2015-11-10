@@ -286,17 +286,15 @@ static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer defNbPntMax = 30;
 static Standard_Real defTol3d = 1.e-7;
 static Standard_Real defTol2d = 1.e-7;
-static Standard_Boolean defRelativeTol=Standard_True;
 Standard_Integer NbPntMax = defNbPntMax;
 Standard_Real Toler3d =defTol3d;
 Standard_Real Toler2d = defTol2d;
-Standard_Boolean RelativeTol= defRelativeTol;
 //              //== // ksection : operateur section appelant BRepAlgo_BooleanOperation
 //== // ksection : operateur section appelant BRepAlgo_BooleanOperations
 //=======================================================================
 Standard_Integer ksection(Draw_Interpretor& di, Standard_Integer n, const char ** a) {
   if (n < 8) {
-    di << "Usage : " << a[0] << " resultat shell1 shell2 NbPntMax Toler3d Toler2d RelativeTol"   << "\n";
+    di << "Usage : " << a[0] << " resultat shell1 shell2 NbPntMax Toler3d Toler2d"   << "\n";
     return -1;
   }
   // a[1]= resultat
@@ -305,20 +303,18 @@ Standard_Integer ksection(Draw_Interpretor& di, Standard_Integer n, const char *
   // a[4]= NbPntMax
   // a[5]= Toler3d
   // a[6]= Toler2d
-  // a[7]= RelativeTol
   TopoDS_Shape s1 = DBRep::Get(a[2],TopAbs_SHELL);
   TopoDS_Shape s2 = DBRep::Get(a[3],TopAbs_SHELL);
   if (s1.IsNull() || s2.IsNull()) return 1;
   NbPntMax=Draw::Atoi(a[4]);
   Toler3d=Draw::Atof(a[5]);
   Toler2d=Draw::Atof(a[6]);
-  RelativeTol=Draw::Atoi(a[7]);
 
   di << "BRepAlgo_BooleanOperations myalgo\n";
   BRepAlgo_BooleanOperations myalgo;
 
   myalgo.Shapes(s1, s2);
-  myalgo.SetApproxParameters(NbPntMax,Toler3d,Toler2d,RelativeTol);
+  myalgo.SetApproxParameters(NbPntMax,Toler3d,Toler2d);
   TopoDS_Shape res; res = myalgo.Section();
   DBRep::Set(a[1],res);
   return 0;
@@ -1816,10 +1812,10 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("BUC60609","BUC60609 shape name [U V]",__FILE__,BUC60609,group);
   theCommands.Add("BUC60632","BUC60632 mode length",__FILE__,BUC60632,group);
   theCommands.Add("BUC60652","BUC60652 face",__FILE__,BUC60652,group);
-  theCommands.Add("ksection","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d RelativeTol",__FILE__,ksection,group);
-  theCommands.Add("BUC60682","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d RelativeTol",__FILE__,ksection,group);  
-  theCommands.Add("BUC60669","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d RelativeTol",__FILE__,ksection,group);  
-  theCommands.Add("PRO19626","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d RelativeTol",__FILE__,ksection,group);  
+  theCommands.Add("ksection","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d",__FILE__,ksection,group);
+  theCommands.Add("BUC60682","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d",__FILE__,ksection,group);  
+  theCommands.Add("BUC60669","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d",__FILE__,ksection,group);  
+  theCommands.Add("PRO19626","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d",__FILE__,ksection,group);  
   theCommands.Add("BUC60574","BUC60574 ",__FILE__,BUC60574,group);
 
   theCommands.Add("BUC60699","BUC60699 ",__FILE__,BUC60699,group);

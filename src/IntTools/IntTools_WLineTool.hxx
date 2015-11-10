@@ -38,33 +38,6 @@ public:
                                              const Standard_Integer ifprm,
                                              const Standard_Integer ilprm);
 
-  //! I
-  //! Removes equal points (leave one of equal points) from theWLine
-  //! and recompute vertex parameters.
-  //!
-  //! II
-  //! Removes point out of borders in case of non periodic surfaces.
-  //!
-  //! III
-  //! Removes exceed points using tube criteria:
-  //! delete 7D point if it lies near to expected lines in 2d and 3d.
-  //! Each task (2d, 2d, 3d) have its own tolerance and checked separately.
-  //!
-  //! Returns new WLine or null WLine if the number
-  //! of the points is less than 2.
-  Standard_EXPORT static
-    Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)       &theWLine,
-                                              const Handle(GeomAdaptor_HSurface) &theS1,
-                                              const Handle(GeomAdaptor_HSurface) &theS2,
-                                              const Handle(Adaptor3d_TopolTool)  &theDom1,
-                                              const Handle(Adaptor3d_TopolTool)  &theDom2);
-
-  Standard_EXPORT static
-  Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine) &theWLine,
-                                            const Standard_Integer       ideb,
-                                            const Standard_Integer       ifin,
-                                            const Standard_Boolean       onFirst);
-
   Standard_EXPORT static
   Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
                                         const Handle(GeomAdaptor_HSurface)&            theSurface1, 

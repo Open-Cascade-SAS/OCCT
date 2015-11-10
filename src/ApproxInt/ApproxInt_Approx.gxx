@@ -23,135 +23,68 @@
 #include <Precision.hxx>
 #include <ApproxInt_KnotTools.hxx>
 
-const Standard_Integer LimRajout = 5;
-const Standard_Integer NbPntMaxDecoupage = 30;
-const Standard_Real RatioTol = 1.5;
+// If quantity of points is less than aMinNbPointsForApprox
+// then interpolation is used.
+const Standard_Integer aMinNbPointsForApprox = 5;
 
-//=======================================================================
-//function : MINABS3
-//purpose  : Compute minimal absolute distance to 0 from 3 values.
-//=======================================================================
-static Standard_Real MINABS3(Standard_Real a, Standard_Real b,Standard_Real c)
-{
-  if(a<0.0) a=-a;
-  if(b<0.0) b=-b;
-  if(c<0.0) c=-c;
-  if(a>c) a=c;
-  if(a>b) a=b;
-  return(a);
-}
-
-//=======================================================================
-//function : MINABS4
-//purpose  : Compute minimal absolute distance to 0 from 4 values.
-//=======================================================================
-static Standard_Real MINABS4(Standard_Real a, Standard_Real b,Standard_Real c,Standard_Real d)
-{
-  if(a<0.0) a=-a;
-  if(b<0.0) b=-b;
-  if(c<0.0) c=-c;
-  if(d<0.0) d=-d;
-  if(a>c) a=c;
-  if(a>b) a=b;
-  if(a>d) a=d;
-  return(a);
-}
+// This constant should be removed in the future.
+const Standard_Real RatioTol = 1.5 ;
 
 //=======================================================================
 //function : ComputeTrsf3d
 //purpose  : 
 //=======================================================================
 static void ComputeTrsf3d(const Handle(TheWLine)& theline,
-                          Standard_Real& Xo, Standard_Real& Ax,
-                          Standard_Real& Yo, Standard_Real& Ay,
-                          Standard_Real& Zo, Standard_Real& Az)
+                          Standard_Real& theXo,
+                          Standard_Real& theYo,
+                          Standard_Real& theZo)
 {
-    Standard_Integer nbp = theline->NbPnts();
-    Standard_Real z0,z1,x0,x1,y0,y1;
-    z0=y0=x0=RealLast();
-    z1=y1=x1=RealFirst();
-    for(Standard_Integer i=1;i<=nbp;i++) { 
-      const gp_Pnt& P = theline->Point(i).Value();
-      Standard_Real  X = P.X();
-      Standard_Real  Y = P.Y();
-      Standard_Real  Z = P.Z();
-      if(X<x0) x0=X;
-      if(X>x1) x1=X;
-      if(Y<y0) y0=Y;
-      if(Y>y1) y1=Y;
-      if(Z<z0) z0=Z;
-      if(Z>z1) z1=Z;
-    }
-    Standard_Real dx = x1-x0;
-    Standard_Real dy = y1-y0;
-    Standard_Real dz = z1-z0;
-    Standard_Real MaxD = dx; 
-    if(MaxD < dy) MaxD=dy;
-    if(MaxD < dz) MaxD=dz;
-    Standard_Real MaxDF = 0.01*MaxD;
+  const Standard_Integer aNbPnts = theline->NbPnts();
+  Standard_Real aXmin = RealLast(), aYmin = RealLast(), aZmin = RealLast();
+  for(Standard_Integer i=1;i<=aNbPnts;i++)
+  { 
+    const gp_Pnt& P = theline->Point(i).Value();
+    aXmin = Min(P.X(), aXmin);
+    aYmin = Min(P.Y(), aYmin);
+    aZmin = Min(P.Z(), aZmin);
+  }
 
-    if(MaxDF<1e-12) 
-      MaxDF=1.0;
-
-    if(dx > MaxDF) { Ax = 1.0 / dx;    Xo = -Ax * x0;  }
-    else {     Ax = 1.0/( MaxDF) ; Xo = -Ax*x0;   }
-    if(dy > MaxDF) { Ay = 1.0 / dy;    Yo = -Ay * y0;  }
-    else {     Ay = 1.0/( MaxDF); Yo = -Ay*y0;   }
-    if(dz > MaxDF) { Az = 1.0 / dz;    Zo = -Az * z0;	}
-    else {     Az = 1.0/(MaxDF); Zo = -Az*z0;   } 
+  theXo = -aXmin;
+  theYo = -aYmin;
+  theZo = -aZmin;
 }
 
 //=======================================================================
 //function : ComputeTrsf2d
-//purpose  :
+//purpose  : 
 //=======================================================================
 static void ComputeTrsf2d(const Handle(TheWLine)& theline,
-                          Standard_Real& Uo, Standard_Real& Au,
-                          Standard_Real& Vo, Standard_Real& Av,
                           const Standard_Boolean onFirst,
-                          const Standard_Real UVResRatio = 1.0)
-{
-    Standard_Integer nbp = theline->NbPnts();
-    Standard_Real u0,u1,v0,v1;
-    u0 = v0 = RealLast();
-    u1 = v1 = RealFirst();
-    // pointer to a member-function
-    void (IntSurf_PntOn2S::* pfunc)(Standard_Real&,Standard_Real&) const;
-    if (onFirst)
-      pfunc = &IntSurf_PntOn2S::ParametersOnS1;
-    else
-      pfunc = &IntSurf_PntOn2S::ParametersOnS2;
-    for(Standard_Integer i=1;i<=nbp;i++) { 
-      const IntSurf_PntOn2S&  POn2S = theline->Point(i);
-      Standard_Real  U,V;
-      (POn2S.*pfunc)(U,V);
-      if(U<u0) u0=U;
-      if(U>u1) u1=U;
-      if(V<v0) v0=V;
-      if(V>v1) v1=V;
-    }
+                          Standard_Real& theUo,
+                          Standard_Real& theVo)
+{ 
+  const Standard_Integer aNbPnts = theline->NbPnts();
+  Standard_Real aUmin = RealLast(), aVmin = RealLast();
 
-    Standard_Real du = (u1-u0);
-    Standard_Real dv = (v1-v0);
+  // pointer to a member-function
+  void (IntSurf_PntOn2S::* pfunc)(Standard_Real&,Standard_Real&) const;
 
-    if (UVResRatio > 1.)
-      du *= UVResRatio;
-    else if (UVResRatio < 1.)
-      dv /= UVResRatio;
+  if (onFirst)
+    pfunc = &IntSurf_PntOn2S::ParametersOnS1;
+  else
+    pfunc = &IntSurf_PntOn2S::ParametersOnS2;
+  
+  for(Standard_Integer i=1; i<=aNbPnts; i++)
+  { 
+    const IntSurf_PntOn2S&  POn2S = theline->Point(i);
+    Standard_Real  U,V;
+    (POn2S.*pfunc)(U,V);
+    aUmin = Min(U, aUmin);
+    aVmin = Min(V, aVmin);
+  }
 
-    Standard_Real MaxUV=du;
-    if(MaxUV<dv) MaxUV=dv;
-
-    Standard_Real MaxUVF=0.01*MaxUV;
-
-    //-- lbr le 22 fev 99 (FPE) 
-    if(MaxUVF<1e-12) 
-      MaxUVF=1.0;
-
-    if(du > MaxUVF) { Au = 1.0 / du;    Uo = -Au * u0;  }
-    else {     Au = 1.0/(MaxUVF); Uo = -Au*u0;  }
-    if(dv > MaxUVF) { Av = 1.0 / dv;    Vo = -Av * v0;  }
-    else {     Av = 1.0/(MaxUVF); Vo = -Av*v0;  }
+  theUo = -aUmin;
+  theVo = -aVmin;
 }
 
 //=======================================================================
@@ -219,22 +152,23 @@ static void Parameters(const ApproxInt_TheMultiLine& Line,
 }
 
 //=======================================================================
-//function : ApproxInt_Approx
-//purpose  : Constructor.
+//function : Default constructor
+//purpose  : 
 //=======================================================================
-ApproxInt_Approx::ApproxInt_Approx()
-: myComputeLine(4, 8, 0.001, 0.001, 5, Standard_True),
-  myComputeLineBezier(4, 8, 0.001, 0.001, 5, Standard_True)
+ApproxInt_Approx::ApproxInt_Approx():
+                      myComputeLine(4, 8, 0.001, 0.001, 5),
+                      myComputeLineBezier(4, 8, 0.001, 0.001, 5),
+                      myWithTangency(Standard_True),
+                      myTol3d(0.001),
+                      myTol2d(0.001),
+                      myDegMin(4),
+                      myDegMax(8),
+                      myNbIterMax(5),
+                      myTolReached3d(0.0),
+                      myTolReached2d(0.0)
 {
   myComputeLine.SetContinuity(2);
-  myData.myBezierApprox = Standard_True;
-
-  myRelativeTol = Standard_True;
-  myNbPntMax = NbPntMaxDecoupage;
-  myData.myMinFactorXYZ = 0.0;
-  myData.myMinFactorUV  = 0.0;
-  myTolReached3d = myTolReached2d = 0.0;
-  myUVRes1 = myUVRes2 = 1.0;
+  //myComputeLineBezier.SetContinuity(2);
 }
 
 //=======================================================================
@@ -251,43 +185,35 @@ void ApproxInt_Approx::Perform(const Handle(TheWLine)& theline,
   // Prepare DS.
   prepareDS(ApproxXYZ, ApproxU1V1, ApproxU2V2, indicemin, indicemax);
 
-  Standard_Integer nbpntbez = indicemax-indicemin;
-  if(nbpntbez < LimRajout) 
+  const Standard_Integer nbpntbez = myData.indicemax - myData.indicemin;
+  if(nbpntbez < aMinNbPointsForApprox) 
     myData.myBezierApprox = Standard_False;
   else 
     myData.myBezierApprox = Standard_True;
 
   // Fill data structure.
-  fillData(theline, ApproxXYZ, ApproxU1V1, ApproxU2V2);
+  fillData(theline);
 
   // Build knots.
   buildKnots(theline, NULL);
-
-  Standard_Boolean cut = Standard_True;
-  if(myRelativeTol==Standard_False)
+  if (myKnots.Length() == 2 &&
+      indicemax - indicemin > 2 * myData.myNbPntMax)
   {
-    myComputeLine.Init(myDegMin,
-      myDegMax,
-      myTol3d*myData.myMinFactorXYZ,
-      myTol2d*myData.myMinFactorUV,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-    myComputeLineBezier.Init(myDegMin,
-      myDegMax,
-      myTol3d*myData.myMinFactorXYZ,
-      myTol2d*myData.myMinFactorUV,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
+    // At least 3 knots for BrepApprox.
+    myKnots.ChangeLast() = (indicemax - indicemin) / 2;
+    myKnots.Append(indicemax);
   }
+
+  myComputeLine.Init      (myDegMin, myDegMax, myTol3d, myTol2d, myNbIterMax, Standard_True, myData.parametrization);
+  myComputeLineBezier.Init(myDegMin, myDegMax, myTol3d, myTol2d, myNbIterMax, Standard_True, myData.parametrization);
 
   buildCurve(theline, NULL);
 }
 
 //=======================================================================
 //function : Perform
-//purpose  : Param-Param perform.
+//purpose  : Definition of next steps according to surface types
+//            (i.e. coordination algorithm).
 //=======================================================================
 void ApproxInt_Approx::Perform(const ThePSurface& Surf1,
                                const ThePSurface& Surf2,
@@ -299,95 +225,26 @@ void ApproxInt_Approx::Perform(const ThePSurface& Surf1,
                                const Standard_Integer indicemax) 
 {
 
-  GeomAbs_SurfaceType typeS1 = ThePSurfaceTool::GetType(Surf1);
-  GeomAbs_SurfaceType typeS2 = ThePSurfaceTool::GetType(Surf2);
-  if ((typeS1 != GeomAbs_Plane    &&
-       typeS1 != GeomAbs_Cylinder &&
-       typeS1 != GeomAbs_Sphere   &&
-       typeS1 != GeomAbs_Cone)    &&
-      (typeS2 != GeomAbs_Plane    &&
-       typeS2 != GeomAbs_Cylinder &&
-       typeS2 != GeomAbs_Sphere   &&
-       typeS2 != GeomAbs_Cone))
-  {
-    // Prepare DS.
-    prepareDS(ApproxXYZ, ApproxU1V1, ApproxU2V2, indicemin, indicemax);
+  myTolReached3d = myTolReached2d = 0.;
 
-    // Non-analytical case: Param-Param perform.
-    ApproxInt_ThePrmPrmSvSurfaces myPrmPrmSvSurfaces(Surf1,Surf2);
+  const GeomAbs_SurfaceType typeS1 = ThePSurfaceTool::GetType(Surf1);
+  const GeomAbs_SurfaceType typeS2 = ThePSurfaceTool::GetType(Surf2);
 
-    Standard_Integer nbpntbez = indicemax-indicemin;
-    if(nbpntbez < LimRajout) 
-      myData.myBezierApprox = Standard_False;
-    else 
-      myData.myBezierApprox = Standard_True;
+  const Standard_Boolean isQuadric = ((typeS1 == GeomAbs_Plane) ||
+                                      (typeS1 == GeomAbs_Cylinder) ||
+                                      (typeS1 == GeomAbs_Sphere) ||
+                                      (typeS1 == GeomAbs_Cone) ||
+                                      (typeS2 == GeomAbs_Plane) ||
+                                      (typeS2 == GeomAbs_Cylinder) ||
+                                      (typeS2 == GeomAbs_Sphere) ||
+                                      (typeS2 == GeomAbs_Cone));
 
-    Standard_Boolean cut = Standard_True;
-    if(nbpntbez < LimRajout)
-    {
-      cut = Standard_False;
-    }
-
-    Standard_Real aS1URes = ThePSurfaceTool::UResolution(Surf1, 1.0),
-                  aS1VRes = ThePSurfaceTool::VResolution(Surf1, 1.0),
-                  aS2URes = ThePSurfaceTool::UResolution(Surf2, 1.0),
-                  aS2VRes = ThePSurfaceTool::VResolution(Surf2, 1.0);
-    if(ApproxU1V1)
-      myUVRes1 = aS1URes / aS1VRes;
-    if(ApproxU2V2)
-      myUVRes2 = aS2URes / aS2VRes;
-
-    // Fill data structure.
-    fillData(theline, ApproxXYZ, ApproxU1V1, ApproxU2V2);
-
-    // Build knots.
-    Standard_Address ptrsvsurf = &myPrmPrmSvSurfaces;
-    buildKnots(theline, ptrsvsurf);
-
-    if(myRelativeTol==Standard_False)
-    {
-      myComputeLine.Init(myDegMin,
-        myDegMax,
-        myTol3d*myData.myMinFactorXYZ,
-        myTol2d*myData.myMinFactorUV,
-        myNbIterMax,
-        cut,
-        myData.parametrization);
-      myComputeLineBezier.Init(myDegMin,
-        myDegMax,
-        myTol3d*myData.myMinFactorXYZ,
-        myTol2d*myData.myMinFactorUV,
-        myNbIterMax,
-        cut,
-        myData.parametrization);
-    }
-    else
-    {
-      myComputeLine.Init(myDegMin,
-        myDegMax,
-        myTol3d,
-        myTol2d,
-        myNbIterMax,
-        cut,
-        myData.parametrization);
-      myComputeLineBezier.Init(myDegMin,
-        myDegMax,
-        myTol3d,
-        myTol2d,
-        myNbIterMax,
-        cut,
-        myData.parametrization);
-    }
-
-    buildCurve(theline, ptrsvsurf);
-  }
-  else
+  if(isQuadric)
   {
     IntSurf_Quadric Quad;
     Standard_Boolean SecondIsImplicit=Standard_False;
     switch (typeS1)
     {
-
     case GeomAbs_Plane:
       Quad.SetValue(ThePSurfaceTool::Plane(Surf1));
       break;
@@ -427,160 +284,51 @@ void ApproxInt_Approx::Perform(const ThePSurface& Surf1,
 
         default:
           break;
-        }
+        }//switch (typeS2)
       }
+
       break;
-    } 
-    if(SecondIsImplicit)
-    {
-      Perform(Surf1,Quad,theline,ApproxXYZ,ApproxU1V1,ApproxU2V2,indicemin,indicemax);
-    }
-    else
-    {
-      Perform(Quad,Surf2,theline,ApproxXYZ,ApproxU1V1,ApproxU2V2,indicemin,indicemax);
-    }
+    }//switch (typeS1)
+
+    Perform(Quad, (SecondIsImplicit? Surf1: Surf2), theline,
+            ApproxXYZ, ApproxU1V1, ApproxU2V2,
+            indicemin, indicemax, !SecondIsImplicit);
+
+    return;
   }
-}
 
-//=======================================================================
-//function : SetParameters
-//purpose  :
-//=======================================================================
-void ApproxInt_Approx::SetParameters(const Standard_Real     Tol3d,
-                                     const Standard_Real     Tol2d,
-                                     const Standard_Integer  DegMin,
-                                     const Standard_Integer  DegMax,
-                                     const Standard_Integer  NbIterMax,
-                                     const Standard_Boolean  ApproxWithTangency,
-                                     const Approx_ParametrizationType Parametrization)
-{
-    myWithTangency = ApproxWithTangency;
-    myTol3d        = Tol3d / RatioTol;
-    myTol2d        = Tol2d / RatioTol;
-    myDegMin       = DegMin;
-    myDegMax       = DegMax;
-    myNbIterMax    = NbIterMax;
-    myComputeLine.Init(myDegMin,
-      myDegMax,
-      myTol3d,
-      myTol2d,
-      myNbIterMax,
-      Standard_True,
-      Parametrization);
+  // Here, isQuadric == FALSE.
 
-    if(!ApproxWithTangency) { 
-      myComputeLine.SetConstraints(AppParCurves_PassPoint,AppParCurves_PassPoint);
-    }
-    myComputeLineBezier.Init(myDegMin,
-      myDegMax,
-      myTol3d,
-      myTol2d,
-      myNbIterMax,
-      Standard_True,
-      Parametrization);
-    if(!ApproxWithTangency)
-    {
-      myComputeLineBezier.SetConstraints(AppParCurves_PassPoint,AppParCurves_PassPoint);
-    }
-    myData.myBezierApprox = Standard_True;
-}
-
-//=======================================================================
-//function : SetParameters
-//purpose  : Set parameters with RelativeTol flag and NbPntMax value.
-//=======================================================================
-void ApproxInt_Approx::SetParameters(const Standard_Real     Tol3d,
-                                     const Standard_Real     Tol2d,
-                                     const Standard_Boolean  RelativeTol,
-                                     const Standard_Integer  DegMin,
-                                     const Standard_Integer  DegMax,
-                                     const Standard_Integer  NbIterMax,
-                                     const Standard_Integer  NbPntMax,
-                                     const Standard_Boolean  ApproxWithTangency,
-                                     const Approx_ParametrizationType Parametrization) 
-{
-  myNbPntMax = NbPntMax ;
-  myRelativeTol = RelativeTol ;
-  SetParameters (Tol3d, Tol2d, DegMin, DegMax, NbIterMax, ApproxWithTangency, Parametrization) ;
-}
-
-//=======================================================================
-//function : Perform
-//purpose  : Param-Analytic perform.
-//=======================================================================
-void ApproxInt_Approx::Perform(const ThePSurface& PSurf,
-                               const TheISurface& ISurf,
-                               const Handle(TheWLine)& theline,
-                               const Standard_Boolean ApproxXYZ,
-                               const Standard_Boolean ApproxU1V1,
-                               const Standard_Boolean ApproxU2V2,
-                               const Standard_Integer indicemin,
-                               const Standard_Integer indicemax)
-{
   // Prepare DS.
   prepareDS(ApproxXYZ, ApproxU1V1, ApproxU2V2, indicemin, indicemax);
 
-  // Non-analytical case: Param-Analytic perform.
-  ApproxInt_TheImpPrmSvSurfaces myImpPrmSvSurfaces(PSurf,ISurf);
+  // Non-analytical case: Param-Param perform.
+  ApproxInt_ThePrmPrmSvSurfaces myPrmPrmSvSurfaces(Surf1,Surf2);
 
   Standard_Integer nbpntbez = indicemax-indicemin;
-  if(nbpntbez < LimRajout) 
-    myData.myBezierApprox = Standard_False;
-  else 
-    myData.myBezierApprox = Standard_True;
 
-  Standard_Boolean cut = Standard_True;
-  if(nbpntbez < LimRajout)
+  if(nbpntbez < aMinNbPointsForApprox)
   {
-    cut = Standard_False;
+    myData.myBezierApprox = Standard_False;
   }
-
-  Standard_Real aS1URes = ThePSurfaceTool::UResolution(PSurf, 1.0),
-                aS1VRes = ThePSurfaceTool::VResolution(PSurf, 1.0);
-  if(ApproxU1V1)
-    myUVRes1 = aS1URes / aS1VRes;
+  else 
+  {
+    myData.myBezierApprox = Standard_True;
+  }
 
   // Fill data structure.
-  fillData(theline, ApproxXYZ, ApproxU1V1, ApproxU2V2);
+  fillData(theline);
+
+  const Standard_Boolean cut = myData.myBezierApprox;
+  const Standard_Address ptrsvsurf = &myPrmPrmSvSurfaces;
 
   // Build knots.
-  Standard_Address ptrsvsurf = &myImpPrmSvSurfaces;
   buildKnots(theline, ptrsvsurf);
 
-  if(myRelativeTol==Standard_False)
-  {
-    myComputeLine.Init(myDegMin,
-      myDegMax,
-      myTol3d*myData.myMinFactorXYZ,
-      myTol2d*myData.myMinFactorUV,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-    myComputeLineBezier.Init(myDegMin,
-      myDegMax,
-      myTol3d*myData.myMinFactorXYZ,
-      myTol2d*myData.myMinFactorUV,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-  }
-  else
-  {
-    myComputeLine.Init(myDegMin,
-      myDegMax,
-      myTol3d,
-      myTol2d,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-    myComputeLineBezier.Init(myDegMin,
-      myDegMax,
-      myTol3d,
-      myTol2d,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-  }
+  myComputeLine.Init      ( myDegMin, myDegMax, myTol3d, myTol2d,
+                            myNbIterMax, cut, myData.parametrization);
+  myComputeLineBezier.Init( myDegMin, myDegMax, myTol3d, myTol2d,
+                            myNbIterMax, cut, myData.parametrization);
 
   buildCurve(theline, ptrsvsurf);
 }
@@ -596,74 +344,77 @@ void ApproxInt_Approx::Perform(const TheISurface& ISurf,
                                const Standard_Boolean ApproxU1V1,
                                const Standard_Boolean ApproxU2V2,
                                const Standard_Integer indicemin,
-                               const Standard_Integer indicemax)
+                               const Standard_Integer indicemax,
+                               const Standard_Boolean isTheQuadFirst)
 {
   // Prepare DS.
   prepareDS(ApproxXYZ, ApproxU1V1, ApproxU2V2, indicemin, indicemax);
 
   // Non-analytical case: Analytic-Param perform.
-  ApproxInt_TheImpPrmSvSurfaces myImpPrmSvSurfaces(ISurf, PSurf);
+  ApproxInt_TheImpPrmSvSurfaces myImpPrmSvSurfaces = 
+                          isTheQuadFirst? ApproxInt_TheImpPrmSvSurfaces(ISurf, PSurf):
+                                          ApproxInt_TheImpPrmSvSurfaces(PSurf, ISurf);
 
-  Standard_Integer nbpntbez = indicemax-indicemin;
-  if(nbpntbez < LimRajout) 
-    myData.myBezierApprox = Standard_False;
-  else 
-    myData.myBezierApprox = Standard_True;
-
-  Standard_Boolean cut = Standard_True;
-  if(nbpntbez < LimRajout)
+  const Standard_Integer nbpntbez = indicemax-indicemin;
+  if(nbpntbez < aMinNbPointsForApprox)
   {
-    cut = Standard_False;
+    myData.myBezierApprox = Standard_False;
+  }
+  else 
+  {
+    myData.myBezierApprox = Standard_True;
   }
 
-  Standard_Real aS2URes = ThePSurfaceTool::UResolution(PSurf, 1.0),
-                aS2VRes = ThePSurfaceTool::VResolution(PSurf, 1.0);
-  if(ApproxU2V2)
-    myUVRes2 = aS2URes / aS2VRes;
+  const Standard_Boolean cut = myData.myBezierApprox;
+  const Standard_Address ptrsvsurf = &myImpPrmSvSurfaces;
 
   // Fill data structure.
-  fillData(theline, ApproxXYZ, ApproxU1V1, ApproxU2V2);
+  fillData(theline);
 
   // Build knots.
-  Standard_Address ptrsvsurf = &myImpPrmSvSurfaces;
   buildKnots(theline, ptrsvsurf);
 
-  if(myRelativeTol==Standard_False)
-  {
-    myComputeLine.Init(myDegMin,
-      myDegMax,
-      myTol3d*myData.myMinFactorXYZ,
-      myTol2d*myData.myMinFactorUV,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-    myComputeLineBezier.Init(myDegMin,
-      myDegMax,
-      myTol3d*myData.myMinFactorXYZ,
-      myTol2d*myData.myMinFactorUV,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-  }
-  else
-  {
-    myComputeLine.Init(myDegMin,
-      myDegMax,
-      myTol3d,
-      myTol2d,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-    myComputeLineBezier.Init(myDegMin,
-      myDegMax,
-      myTol3d,
-      myTol2d,
-      myNbIterMax,
-      cut,
-      myData.parametrization);
-  }
+  myComputeLine.Init      ( myDegMin, myDegMax, myTol3d, myTol2d,
+                            myNbIterMax, cut, myData.parametrization);
+  myComputeLineBezier.Init( myDegMin, myDegMax, myTol3d, myTol2d,
+                            myNbIterMax, cut, myData.parametrization);
 
   buildCurve(theline, ptrsvsurf);
+}
+
+//=======================================================================
+//function : SetParameters
+//purpose  : 
+//=======================================================================
+void ApproxInt_Approx::SetParameters( const Standard_Real Tol3d,
+                                      const Standard_Real Tol2d,
+                                      const Standard_Integer DegMin,
+                                      const Standard_Integer DegMax,
+                                      const Standard_Integer NbIterMax,
+                                      const Standard_Integer NbPntMax,
+                                      const Standard_Boolean ApproxWithTangency,
+                                      const Approx_ParametrizationType Parametrization)
+{
+  myData.myNbPntMax = NbPntMax;
+  myWithTangency = ApproxWithTangency;
+  myTol3d        = Tol3d/RatioTol;
+  myTol2d        = Tol2d/RatioTol;
+  myDegMin       = DegMin;
+  myDegMax       = DegMax;
+  myNbIterMax    = NbIterMax;
+
+  myComputeLine.Init      ( myDegMin, myDegMax, myTol3d, myTol2d,
+                            myNbIterMax, Standard_True, Parametrization);
+  myComputeLineBezier.Init( myDegMin, myDegMax, myTol3d, myTol2d,
+                            myNbIterMax, Standard_True, Parametrization);
+
+  if(!ApproxWithTangency)
+  { 
+    myComputeLine.SetConstraints(AppParCurves_PassPoint,AppParCurves_PassPoint);
+    myComputeLineBezier.SetConstraints(AppParCurves_PassPoint,AppParCurves_PassPoint);
+  }
+  
+  myData.myBezierApprox = Standard_True;
 }
 
 //=======================================================================
@@ -683,9 +434,8 @@ void ApproxInt_Approx::UpdateTolReached()
 {
   if (myData.myBezierApprox)
   {
-    Standard_Integer ICur;
-    Standard_Integer NbCurves = myComputeLineBezier.NbMultiCurves();
-    for (ICur = 1 ; ICur <= NbCurves ; ICur++)
+    const Standard_Integer NbCurves = myComputeLineBezier.NbMultiCurves() ;
+    for (Standard_Integer ICur = 1 ; ICur <= NbCurves ; ICur++)
     {
       Standard_Real Tol3D, Tol2D ;
       myComputeLineBezier.Error (ICur, Tol3D, Tol2D) ;
@@ -705,13 +455,7 @@ void ApproxInt_Approx::UpdateTolReached()
 //=======================================================================
 Standard_Real ApproxInt_Approx::TolReached3d() const
 {
-  Standard_Real TheTol3D = RatioTol * myTolReached3d ;
-
-  if (myData.myMinFactorXYZ>1.5e-7)
-    TheTol3D = TheTol3D / myData.myMinFactorXYZ;
-
-  //cout << "Tol 3D: " << TheTol3D << endl;
-  return TheTol3D ;
+  return myTolReached3d * RatioTol;
 }
 
 //=======================================================================
@@ -720,13 +464,7 @@ Standard_Real ApproxInt_Approx::TolReached3d() const
 //=======================================================================
 Standard_Real ApproxInt_Approx::TolReached2d() const
 {
-  Standard_Real TheTol2D = RatioTol * myTolReached2d ;
-
-  if (myData.myMinFactorUV>1.5e-7)
-    TheTol2D = TheTol2D / myData.myMinFactorUV;
-
-  //cout << "Tol 2D: " << TheTol2D << endl;
-  return TheTol2D ;
+  return myTolReached2d * RatioTol;
 }
 
 //=======================================================================
@@ -738,11 +476,6 @@ Standard_Boolean ApproxInt_Approx::IsDone() const
   if(myData.myBezierApprox)
   { 
     return(myComputeLineBezier.NbMultiCurves() > 0);
-    //-- Lorsque la tolerance n est pas atteinte et qu il 
-    //-- faudrait rajouter des points sur la ligne
-    //-- les approx sortent avec la meilleure tolerance
-    //-- atteinte.  ( Pas de rajout de points ds cette version)
-    //-- return(myTolReached);
   }
   else
   {
@@ -757,11 +490,11 @@ Standard_Boolean ApproxInt_Approx::IsDone() const
 const AppParCurves_MultiBSpCurve& ApproxInt_Approx::Value(const Standard_Integer ) const
 {
   if(myData.myBezierApprox)
-  {
+  { 
     return(myBezToBSpl.Value());
   }
   else
-  {
+  { 
     return(myComputeLine.Value());
   }
 }
@@ -770,52 +503,22 @@ const AppParCurves_MultiBSpCurve& ApproxInt_Approx::Value(const Standard_Integer
 //function : fillData
 //purpose  : Fill ApproxInt data structure.
 //=======================================================================
-void ApproxInt_Approx::fillData(const Handle(TheWLine)& theline,
-                                const Standard_Boolean ApproxXYZ,
-                                const Standard_Boolean ApproxU1V1,
-                                const Standard_Boolean ApproxU2V2)
+void ApproxInt_Approx::fillData(const Handle(TheWLine)& theline)
 {
-  if(ApproxXYZ)
-  {
-    ComputeTrsf3d(theline, myData.Xo, myData.Ax, myData.Yo, myData.Ay, myData.Zo, myData.Az);
-  }
+  if(myData.ApproxXYZ)
+    ComputeTrsf3d(theline, myData.Xo, myData.Yo, myData.Zo);
   else
-  {
     myData.Xo = myData.Yo = myData.Zo = 0.0;
-    myData.Ax = myData.Ay = myData.Az = 1.0;
-  }
 
-  if(ApproxU1V1)
-  {
-    ComputeTrsf2d(theline, myData.U1o, myData.A1u, myData.V1o, myData.A1v,Standard_True, myUVRes1);
-  }
+  if(myData.ApproxU1V1)
+    ComputeTrsf2d(theline, Standard_True, myData.U1o, myData.V1o);
   else
-  {
     myData.U1o = myData.V1o = 0.0;
-    myData.A1u = myData.A1v = 1.0;
-  }
 
-  if(ApproxU2V2)
-  {
-    ComputeTrsf2d(theline, myData.U2o, myData.A2u, myData.V2o, myData.A2v, Standard_False, myUVRes2);
-  }
+  if(myData.ApproxU2V2)
+    ComputeTrsf2d(theline, Standard_False, myData.U2o, myData.V2o);
   else
-  {
     myData.U2o = myData.V2o = 0.0;
-    myData.A2u = myData.A2v = 1.0;
-  }
-
-  Standard_Real A3d = MINABS3(myData.Ax, myData.Ay, myData.Az);
-  if((A3d < myData.myMinFactorXYZ) || (myData.myMinFactorXYZ == 0.0))
-  {
-    myData.myMinFactorXYZ = A3d;
-  }
-
-  Standard_Real A2d = MINABS4(myData.A1u, myData.A1v, myData.A2u, myData.A2v);
-  if((A2d < myData.myMinFactorUV) || (myData.myMinFactorUV == 0.0))
-  {
-    myData.myMinFactorUV = A2d;
-  }
 }
 
 //=======================================================================
@@ -828,20 +531,13 @@ void ApproxInt_Approx::prepareDS(const Standard_Boolean theApproxXYZ,
                                  const Standard_Integer theIndicemin,
                                  const Standard_Integer theIndicemax)
 {
-  myData.myMinFactorXYZ = 0.0;
-  myData.myMinFactorUV  = 0.0;
   myTolReached3d = myTolReached2d = 0.0;
-  myUVRes1 = myUVRes2 = 1.0;
   myData.ApproxU1V1 = theApproxU1V1;
   myData.ApproxU2V2 = theApproxU2V2;
   myData.ApproxXYZ = theApproxXYZ;
   myData.indicemin = theIndicemin;
   myData.indicemax = theIndicemax;
-  myData.nbpntmax = myNbPntMax;
-
-  Approx_ParametrizationType parametrization;
-  myComputeLineBezier.Parametrization(parametrization);
-  myData.parametrization = parametrization;
+  myData.parametrization = myComputeLineBezier.Parametrization();
 }
 
 //=======================================================================
@@ -852,71 +548,66 @@ void ApproxInt_Approx::buildKnots(const Handle(TheWLine)& theline,
                                   const Standard_Address thePtrSVSurf)
 {
   myKnots.Clear();
-  if(myData.myBezierApprox)
-  {
-    ApproxInt_TheMultiLine aTestLine(theline,
-      thePtrSVSurf,
-      ((myData.ApproxXYZ)? 1 : 0),
-      ((myData.ApproxU1V1)? 1: 0) + ((myData.ApproxU2V2)? 1: 0),
-      myData.Xo, myData.Ax, myData.Yo, myData.Ay, myData.Zo, myData.Az,
-      myData.U1o, myData.A1u, 
-      myData.V1o, myData.A1v,
-      myData.U2o, myData.A2u,
-      myData.V2o ,myData.A2v,
-      myData.ApproxU1V1,
-      myData.indicemin,
-      myData.indicemax);
-
-    Standard_Integer nbp3d = aTestLine.NbP3d();
-    Standard_Integer nbp2d = aTestLine.NbP2d();
-    TColgp_Array1OfPnt aTabPnt3d(1, Max(1, nbp3d));
-    TColgp_Array1OfPnt2d aTabPnt2d(1, Max(1, nbp2d));
-    TColgp_Array1OfPnt aPntXYZ(myData.indicemin, myData.indicemax);
-    TColgp_Array1OfPnt2d aPntU1V1(myData.indicemin, myData.indicemax);
-    TColgp_Array1OfPnt2d aPntU2V2(myData.indicemin, myData.indicemax);
-    Standard_Integer i;
-    for(i = myData.indicemin; i <= myData.indicemax; ++i)
-    {
-      if (nbp3d != 0 && nbp2d != 0) aTestLine.Value(i, aTabPnt3d, aTabPnt2d);
-      else if (nbp2d != 0)          aTestLine.Value(i, aTabPnt2d);
-      else if (nbp3d != 0)          aTestLine.Value(i, aTabPnt3d);
-      //
-      if(nbp3d > 0)
-      {
-        aPntXYZ(i) = aTabPnt3d(1);
-      }
-      if(nbp2d > 1)
-      {
-        aPntU1V1(i) = aTabPnt2d(1);
-        aPntU2V2(i) = aTabPnt2d(2);
-      }
-      else if(nbp2d > 0)
-      {
-        if(myData.ApproxU1V1)
-        {
-          aPntU1V1(i) = aTabPnt2d(1);
-        }
-        else
-        {
-          aPntU2V2(i) = aTabPnt2d(1);
-        }
-      }
-    }
-
-    Standard_Integer aMinNbPnts = myData.nbpntmax;
-
-    // Expected parametrization.
-    math_Vector aPars(myData.indicemin, myData.indicemax);
-    Parameters(aTestLine, myData.indicemin, myData.indicemax, myData.parametrization, aPars);
-
-    ApproxInt_KnotTools::BuildKnots(aPntXYZ, aPntU1V1, aPntU2V2, aPars,
-      myData.ApproxXYZ, myData.ApproxU1V1, myData.ApproxU2V2, aMinNbPnts, myKnots);
-  }
-  else
+  if(!myData.myBezierApprox)
   {
     myKnots.Append(myData.indicemin);
     myKnots.Append(myData.indicemax);
+    return;
   }
+
+  const ApproxInt_TheMultiLine aTestLine( theline, thePtrSVSurf,
+                                          ((myData.ApproxXYZ)? 1 : 0),
+                                          ((myData.ApproxU1V1)? 1: 0) +
+                                                ((myData.ApproxU2V2)? 1: 0),
+                                          myData.Xo, myData.Yo, myData.Zo,
+                                          myData.U1o, myData.V1o, myData.U2o, myData.V2o,
+                                          myData.ApproxU1V1,
+                                          myData.indicemin, myData.indicemax);
+
+  const Standard_Integer  nbp3d = aTestLine.NbP3d(),
+                          nbp2d = aTestLine.NbP2d();
+  TColgp_Array1OfPnt aTabPnt3d(1, Max(1, nbp3d));
+  TColgp_Array1OfPnt2d aTabPnt2d(1, Max(1, nbp2d));
+  TColgp_Array1OfPnt aPntXYZ(myData.indicemin, myData.indicemax);
+  TColgp_Array1OfPnt2d aPntU1V1(myData.indicemin, myData.indicemax);
+  TColgp_Array1OfPnt2d aPntU2V2(myData.indicemin, myData.indicemax);
+
+  for(Standard_Integer i = myData.indicemin; i <= myData.indicemax; ++i)
+  {
+    if (nbp3d != 0 && nbp2d != 0) aTestLine.Value(i, aTabPnt3d, aTabPnt2d);
+    else if (nbp2d != 0)          aTestLine.Value(i, aTabPnt2d);
+    else if (nbp3d != 0)          aTestLine.Value(i, aTabPnt3d);
+    //
+    if(nbp3d > 0)
+    {
+      aPntXYZ(i) = aTabPnt3d(1);
+    }
+    if(nbp2d > 1)
+    {
+      aPntU1V1(i) = aTabPnt2d(1);
+      aPntU2V2(i) = aTabPnt2d(2);
+    }
+    else if(nbp2d > 0)
+    {
+      if(myData.ApproxU1V1)
+      {
+        aPntU1V1(i) = aTabPnt2d(1);
+      }
+      else
+      {
+        aPntU2V2(i) = aTabPnt2d(1);
+      }
+    }
+  }
+
+  Standard_Integer aMinNbPnts = myData.myNbPntMax;
+
+  // Expected parametrization.
+  math_Vector aPars(myData.indicemin, myData.indicemax);
+  Parameters(aTestLine, myData.indicemin, myData.indicemax, myData.parametrization, aPars);
+
+  ApproxInt_KnotTools::BuildKnots(aPntXYZ, aPntU1V1, aPntU2V2, aPars,
+    myData.ApproxXYZ, myData.ApproxU1V1, myData.ApproxU2V2, aMinNbPnts, myKnots);
 }
 
 //=======================================================================
@@ -932,93 +623,74 @@ void ApproxInt_Approx::buildCurve(const Handle(TheWLine)& theline,
   }
 
   Standard_Integer kind = myKnots.Lower();
-  Standard_Integer imin, imax;
-  myTolReached = Standard_True;
+  Standard_Integer imin = 0, imax = 0;
   Standard_Boolean OtherInter = Standard_False;
   do
   {
     // Base cycle: iterate over knots.
     imin = myKnots(kind);
     imax = myKnots(kind+1);
-    ApproxInt_TheMultiLine myMultiLine(theline,
-      thePtrSVSurf,
+    ApproxInt_TheMultiLine myMultiLine(theline, thePtrSVSurf,
       ((myData.ApproxXYZ)? 1 : 0),
       ((myData.ApproxU1V1)? 1: 0) + ((myData.ApproxU2V2)? 1: 0),
-      myData.Xo, myData.Ax, myData.Yo,myData.Ay, myData.Zo,myData.Az,
-      myData.U1o, myData.A1u, myData.V1o, myData.A1v,
-      myData.U2o, myData.A2u, myData.V2o, myData.A2v,
-      myData.ApproxU1V1,
-      imin,
-      imax);
+      myData.Xo, myData.Yo, myData.Zo, myData.U1o, myData.V1o,
+      myData.U2o, myData.V2o, myData.ApproxU1V1, imin, imax);
 
     if(myData.myBezierApprox)
     {
       myComputeLineBezier.Perform(myMultiLine);
       if (myComputeLineBezier.NbMultiCurves() == 0)
         return;
-      myTolReached&=myComputeLineBezier.IsToleranceReached();
     }
     else
     {
       myComputeLine.Perform(myMultiLine);
     }
+
     UpdateTolReached();
 
-    Standard_Integer indice3d,indice2d1,indice2d2;
-    indice3d = 1; 
-    indice2d1= 2;
-    indice2d2= 3;
+    Standard_Integer indice3d = 1, indice2d1 = 2, indice2d2 = 3;
     if(!myData.ApproxXYZ)  { indice2d1--; indice2d2--; } 
     if(!myData.ApproxU1V1) { indice2d2--; } 
     if(myData.ApproxXYZ)
     { 
-      Standard_Real ax,bx,ay,by,az,bz;
-      ax = 1.0/myData.Ax;   bx = -myData.Xo*ax;
-      ay = 1.0/myData.Ay;   by = -myData.Yo*ay;
-      az = 1.0/myData.Az;   bz = -myData.Zo*az;
       if(myData.myBezierApprox)
       {
         for(Standard_Integer nbmc = myComputeLineBezier.NbMultiCurves() ; nbmc>=1; nbmc--)
         {
-          myComputeLineBezier.ChangeValue(nbmc).Transform(indice3d,bx,ax,by,ay,bz,az);
+          myComputeLineBezier.ChangeValue(nbmc).Transform(indice3d, -myData.Xo, 1.0, -myData.Yo, 1.0, -myData.Zo, 1.0);
         }
       }
       else
       {
-        myComputeLine.ChangeValue().Transform(indice3d,bx,ax,by,ay,bz,az);
+        myComputeLine.ChangeValue().Transform(indice3d, -myData.Xo, 1.0, -myData.Yo, 1.0, -myData.Zo, 1.0);
       }
     }
     if(myData.ApproxU1V1)
     {
-      Standard_Real ax,bx,ay,by;
-      ax = 1.0/myData.A1u;   bx = -myData.U1o*ax;
-      ay = 1.0/myData.A1v;   by = -myData.V1o*ay;
       if(myData.myBezierApprox) {
         for(Standard_Integer nbmc = myComputeLineBezier.NbMultiCurves() ; nbmc>=1; nbmc--)
         {
-          myComputeLineBezier.ChangeValue(nbmc).Transform2d(indice2d1,bx,ax,by,ay);
+          myComputeLineBezier.ChangeValue(nbmc).Transform2d(indice2d1, -myData.U1o, 1.0, -myData.V1o, 1.0);
         }
       }
       else
       {
-        myComputeLine.ChangeValue().Transform2d(indice2d1,bx,ax,by,ay);
+        myComputeLine.ChangeValue().Transform2d(indice2d1, -myData.U1o, 1.0, -myData.V1o, 1.0);
       }
     }
     if(myData.ApproxU2V2)
     {
-      Standard_Real ax,bx,ay,by;
-      ax = 1.0/myData.A2u;   bx = -myData.U2o*ax;
-      ay = 1.0/myData.A2v;   by = -myData.V2o*ay;
       if(myData.myBezierApprox)
       {
         for(Standard_Integer nbmc = myComputeLineBezier.NbMultiCurves() ; nbmc>=1; nbmc--)
         {
-          myComputeLineBezier.ChangeValue(nbmc).Transform2d(indice2d2,bx,ax,by,ay);
+          myComputeLineBezier.ChangeValue(nbmc).Transform2d(indice2d2, -myData.U2o, 1.0, -myData.V2o, 1.0);
         }
       }
       else
       {
-        myComputeLine.ChangeValue().Transform2d(indice2d2,bx,ax,by,ay);
+        myComputeLine.ChangeValue().Transform2d(indice2d2, -myData.U2o, 1.0, -myData.V2o, 1.0);
       }
     }
 

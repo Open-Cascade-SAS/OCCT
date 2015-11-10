@@ -1,8 +1,6 @@
 # test script on make volume operation
 # cone cylinder plane
 
-puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
-
 # planar face 
 plane pln_f1 2.3537565147188571e-015 -592.35294118000002 1.1044592656221142e-015 0.90529096719956037 4.7161388709779336e-017 0.42479202523927467
 erase pln_f1
@@ -41,5 +39,5 @@ mkface f7 cyl_f7 0 6.2831853071795862 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7
 
-set square 1.71122e+013
+set square 9.42987e+007
 

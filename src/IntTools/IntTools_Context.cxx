@@ -852,6 +852,33 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
              (aPCFirst.Distance(aPOncurve.Value()) < Precision::Confusion()))
             aT = aFirst;
         }
+        else
+        {
+          // Local search may fail. Try to use more precise algo.
+          Extrema_ExtPC anExt(aPv, aGAC, 1.e-10);
+          Standard_Real aMinDist = RealLast();
+          Standard_Integer aMinIdx = -1;
+          for (Standard_Integer anIdx = 1; anIdx <= anExt.NbExt(); anIdx++)
+          {
+            if ( anExt.IsMin(anIdx) &&
+                 anExt.SquareDistance(anIdx) < aMinDist )
+              {
+                aMinDist = anExt.SquareDistance(anIdx);
+                aMinIdx = anIdx;
+              }
+          }
+          if (aMinIdx != -1)
+          {
+            const Extrema_POnCurv& aPOncurve = anExt.Point(aMinIdx);
+            aT = aPOncurve.Parameter();
+
+            if((aT > (aLast + aFirst) * 0.5) ||
+              (aPv.Distance(aPOncurve.Value()) > aTolSum) ||
+              (aPCFirst.Distance(aPOncurve.Value()) < Precision::Confusion()))
+              aT = aFirst;
+          }
+        }
+
       }
       //
       return Standard_True;
@@ -876,6 +903,32 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
              (aPv.Distance(aPOncurve.Value()) > aTolSum) ||
              (aPCLast.Distance(aPOncurve.Value()) < Precision::Confusion()))
             aT = aLast;
+        }
+        else
+        {
+          // Local search may fail. Try to use more precise algo.
+          Extrema_ExtPC anExt(aPv, aGAC, 1.e-10);
+          Standard_Real aMinDist = RealLast();
+          Standard_Integer aMinIdx = -1;
+          for (Standard_Integer anIdx = 1; anIdx <= anExt.NbExt(); anIdx++)
+          {
+            if ( anExt.IsMin(anIdx) &&
+                 anExt.SquareDistance(anIdx) < aMinDist )
+              {
+                aMinDist = anExt.SquareDistance(anIdx);
+                aMinIdx = anIdx;
+              }
+          }
+          if (aMinIdx != -1)
+          {
+            const Extrema_POnCurv& aPOncurve = anExt.Point(aMinIdx);
+            aT = aPOncurve.Parameter();
+
+            if((aT < (aLast + aFirst) * 0.5) ||
+              (aPv.Distance(aPOncurve.Value()) > aTolSum) ||
+              (aPCLast.Distance(aPOncurve.Value()) < Precision::Confusion()))
+              aT = aLast;
+          }
         }
       }
       //

@@ -108,20 +108,17 @@
 #include <GeomAdaptor.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <IntTools_WLineTool.hxx>
+#include <IntPatch_WLineTool.hxx>
 
-#ifdef OCCT_DEBUG_DUMPWLINE
-static
-  void DumpWLine(const Handle(IntPatch_WLine)& aWLine);
-#endif
-//
+//#ifdef OCCT_DEBUG_DUMPWLINE
+//static
+//  void DumpWLine(const Handle(IntPatch_WLine)& aWLine);
+//#endif
+////
 static
   void TolR3d(const TopoDS_Face& ,
               const TopoDS_Face& ,
               Standard_Real& );
-static 
-  Handle(Geom_Curve) MakeBSpline (const Handle(IntPatch_WLine)&,
-                                  const Standard_Integer,
-                                  const Standard_Integer);
 
 static 
   void Parameters(const Handle(GeomAdaptor_HSurface)&,
@@ -871,17 +868,11 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
   typl = L->ArcType();
   //
   if(typl==IntPatch_Walking) {
-    Handle(IntPatch_Line) anewL;
-    //
     Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast(L));
-    anewL = IntTools_WLineTool::ComputePurgedWLine(aWLine, myHS1, myHS2, dom1, dom2);
-    if(anewL.IsNull()) {
+    if(aWLine.IsNull()) {
       return;
     }
-    L = anewL;
-
-    //Handle(IntPatch_WLine) aWLineX (Handle(IntPatch_WLine)::DownCast(L));
-    //DumpWLine(aWLineX);
+    L = aWLine;
 
     //
     if(!myListOfPnts.IsEmpty()) {
@@ -1378,14 +1369,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         Handle(Geom2d_BSplineCurve) H2;
 
         if(myApprox1) {
-          H1 = IntTools_WLineTool::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_True);
+          H1 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_True);
         }
         
         if(myApprox2) {
-          H2 = IntTools_WLineTool::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_False);
+          H2 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_False);
         }
         //          
-        mySeqOfCurve.Append(IntTools_Curve(MakeBSpline(WL,1,WL->NbPnts()), H1, H2));
+        mySeqOfCurve.Append(IntTools_Curve(GeomInt_IntSS::MakeBSpline(WL,1,WL->NbPnts()), H1, H2));
       }
     } // if (!myApprox)
 
@@ -1394,7 +1385,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
       // 
       Standard_Real tol2d = myTolApprox;
       //         
-      theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, Standard_True);
+      theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, Standard_True);
       
       aNbParts=myLConstruct.NbParts();
       for (i=1; i<=aNbParts; i++) {
@@ -1410,14 +1401,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
           Handle(Geom2d_BSplineCurve) H2;
 
           if(myApprox1) {
-            H1 = IntTools_WLineTool::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_True);
+            H1 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_True);
           }
           
           if(myApprox2) {
-            H2 = IntTools_WLineTool::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_False);
+            H2 = GeomInt_IntSS::MakeBSpline2d(WL, 1, WL->NbPnts(), Standard_False);
           }
           //          
-          mySeqOfCurve.Append(IntTools_Curve(MakeBSpline(WL,1,WL->NbPnts()), H1, H2));
+          mySeqOfCurve.Append(IntTools_Curve(GeomInt_IntSS::MakeBSpline(WL,1,WL->NbPnts()), H1, H2));
         }
 
         else {
@@ -1528,14 +1519,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         }
         //
         if(myApprox1) {
-          H1 = IntTools_WLineTool::MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
+          H1 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
         }
         //
         if(myApprox2) {
-          H2 = IntTools_WLineTool::MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
+          H2 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
         }
         //           
-        aBSp=MakeBSpline(WL, ifprm, ilprm);
+        aBSp=GeomInt_IntSS::MakeBSpline(WL, ifprm, ilprm);
         IntTools_Curve aIC(aBSp, H1, H2);
         mySeqOfCurve.Append(aIC);
       }// for (i=1; i<=aNbParts; ++i) {
@@ -1578,17 +1569,18 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
       }
         
       if(myHS1 == myHS2) { 
-        theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, Standard_False, aParType);
+        theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, Standard_False, aParType);
         rejectSurface = Standard_True;
       }
       else { 
         if(reApprox && !rejectSurface)
-          theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, Standard_False, aParType);
+          theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, Standard_False, aParType);
         else {
           Standard_Integer iDegMax, iDegMin, iNbIter;
           //
           ApproxParameters(myHS1, myHS2, iDegMin, iDegMax, iNbIter);
-          theapp3d.SetParameters(myTolApprox, tol2d, iDegMin, iDegMax, iNbIter, Standard_True, aParType);
+          theapp3d.SetParameters(myTolApprox, tol2d, iDegMin, iDegMax,
+                                                  iNbIter, 30, Standard_True, aParType);
         }
       }
       //
@@ -1654,7 +1646,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
             if ((typs1==GeomAbs_BezierSurface || typs1==GeomAbs_BSplineSurface) &&
                 (typs2==GeomAbs_BezierSurface || typs2==GeomAbs_BSplineSurface)) {
              
-              theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, Standard_True, aParType);
+              theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30,
+                                                                Standard_True, aParType);
               
               Standard_Boolean bUseSurfaces;
               bUseSurfaces = IntTools_WLineTool::NotUseSurfacesForApprox(myFace1, myFace2, WL, ifprm,  ilprm);
@@ -1662,7 +1655,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 // ######
                 rejectSurface = Standard_True;
                 // ######
-                theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, Standard_False, aParType);
+                theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30,
+                                                                Standard_False, aParType);
               }
             }
           }
@@ -1674,14 +1668,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
           Handle(Geom2d_BSplineCurve) H1;
           Handle(Geom2d_BSplineCurve) H2;
           //           
-          Handle(Geom_Curve) aBSp=MakeBSpline(WL,ifprm, ilprm);
+          Handle(Geom_Curve) aBSp=GeomInt_IntSS::MakeBSpline(WL,ifprm, ilprm);
           //
           if(myApprox1) {
-            H1 = IntTools_WLineTool::MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
+            H1 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
           }
           //
           if(myApprox2) {
-            H2 = IntTools_WLineTool::MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
+            H2 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
           }
           //           
           IntTools_Curve aIC(aBSp, H1, H2);
@@ -1884,15 +1878,15 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                 Handle(Geom2d_BSplineCurve) H1, H2;
                 bPCurvesOk = Standard_True;
                 //           
-                Handle(Geom_Curve) aBSp=MakeBSpline(WL,ifprm, ilprm);
+                Handle(Geom_Curve) aBSp=GeomInt_IntSS::MakeBSpline(WL,ifprm, ilprm);
                 
                 if(myApprox1) {
-                  H1 = IntTools_WLineTool::MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
+                  H1 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
                   bPCurvesOk = CheckPCurve(H1, myFace1);
                 }
                 
                 if(myApprox2) {
-                  H2 = IntTools_WLineTool::MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
+                  H2 = GeomInt_IntSS::MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
                   bPCurvesOk = bPCurvesOk && CheckPCurve(H2, myFace2);
                 }
                 //

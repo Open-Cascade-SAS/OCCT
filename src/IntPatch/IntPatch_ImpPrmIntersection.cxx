@@ -39,7 +39,9 @@
 #include <IntSurf_SequenceOfPathPoint.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_NumericError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
@@ -66,13 +68,16 @@
 #include <Bnd_Box2d.hxx>
 #include <IntPatch_PointLine.hxx>
 
-static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)&   Line,
-  const Standard_Boolean         IsReversed,
-  const IntSurf_Quadric&         Quad,
-  const Handle(Adaptor3d_TopolTool)&    PDomain,
-  const Handle(Adaptor3d_HSurface)&              QSurf,
-  const Standard_Real            ArcTol,
-  IntPatch_SequenceOfLine& Lines);
+#include <Extrema_GenLocateExtPS.hxx>
+
+static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
+                                        const Standard_Boolean       IsReversed,
+                                        const IntSurf_Quadric&       theQuad,
+                                        const Handle(Adaptor3d_TopolTool)& thePDomain,
+                                        const Handle(Adaptor3d_HSurface)&  theQSurf,
+                                        const Handle(Adaptor3d_HSurface)&  theOtherSurf,
+                                        const Standard_Real                theArcTol,
+                                        IntPatch_SequenceOfLine&           theLines);
 static 
   void ComputeTangency (const IntPatch_TheSOnBounds& solrst,
   IntSurf_SequenceOfPathPoint& seqpdep,
@@ -783,6 +788,10 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
         // <-A
         wline = new IntPatch_WLine(thelin,Standard_False,trans1,trans2);
 
+#ifdef OCCT_DEBUG
+        //wline->Dump(0);
+#endif
+
         if (   iwline->HasFirstPoint() 
           && iwline->IsTangentAtBegining() == Standard_False) 
         {
@@ -1464,12 +1473,13 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
   const Handle(Adaptor3d_TopolTool)& PDomain = (reversed) ? D1 : D2;
   const Handle(Adaptor3d_HSurface)& aQSurf = (reversed) ? Surf2 : Surf1;
+  const Handle(Adaptor3d_HSurface)& anOtherSurf = (reversed) ? Surf1 : Surf2;
 
   IntPatch_SequenceOfLine dslin;
   Standard_Boolean isDecompose = Standard_False;
   for(Standard_Integer i = 1; i <= slin.Length(); i++ )
   {
-    if(DecomposeResult(slin(i),reversed,Quad,PDomain,aQSurf,TolArc,dslin))
+    if(DecomposeResult(slin(i),reversed,Quad,PDomain,aQSurf, anOtherSurf, TolArc,dslin))
     {
       isDecompose = Standard_True;
     }
@@ -1623,76 +1633,6 @@ static Standard_Boolean AreSamePoints(const IntSurf_PntOn2S& P1,
   }
   return result;
 }
-
-static void ForcedPurgePoints(const Handle(IntSurf_LineOn2S)& Result,
-                              const Standard_Boolean          IsReversed,
-                              const IntSurf_Quadric&          Quad)
-{
-  if(Result->NbPoints() <= 30) return;
-  Standard_Integer Index = 0, IndexLimF = 8, IndexLimL = 8;
-
-  Standard_Real U1 = 0., V1 = 0., U2 = 0., V2 = 0.;
-  if(IsReversed) {
-    Result->Value(1).ParametersOnS2(U1,V1);
-    Result->Value(Result->NbPoints()).ParametersOnS2(U2,V2);
-  }
-  else {
-    Result->Value(1).ParametersOnS1(U1,V1);   
-    Result->Value(Result->NbPoints()).ParametersOnS1(U2,V2);
-  }
-
-  if(Quad.TypeQuadric() == GeomAbs_Cone) {
-    Standard_Real Uapx = 0., Vapx = 0.;
-    Quad.Parameters(Quad.Cone().Apex(),Uapx,Vapx);
-
-    if(fabs(V1-Vapx) <= 1.e-3)
-      IndexLimF = 12;
-    if(fabs(V2-Vapx) <= 1.e-3)
-      IndexLimL = 12;
-  }
-
-  if(Quad.TypeQuadric() == GeomAbs_Sphere) {
-    Standard_Real Vapx1 = M_PI/2., Vapx2 = -M_PI/2.;
-
-    if(fabs(V1-Vapx1) <= 1.e-3 || fabs(V1-Vapx2) <= 1.e-3)
-      IndexLimF = 12;
-    if(fabs(V2-Vapx1) <= 1.e-3 || fabs(V2-Vapx2) <= 1.e-3)
-      IndexLimL = 12;
-  }
-
-  while(Result->NbPoints() > 2 && Index < IndexLimF) {
-    Result->RemovePoint(2);
-    Index++;
-  }
-  Index = 0;
-  while(Result->NbPoints() > 2 && Index < IndexLimL) {
-    Result->RemovePoint(Result->NbPoints()-1);
-    Index++;
-  }
-}
-
-// DEBUG FUNCTION !!!
-#if 0
-static void DumpLine(Handle(IntSurf_LineOn2S)& Line,
-  Standard_Boolean          IsReversed,
-  Standard_Integer          Number)
-{
-  cout << "DUMP LINE" << endl;
-  Standard_Integer i;
-  Standard_Real U,V;
-  for(i = 1; i <= Line->NbPoints(); i++) {
-    if(i <= Number || i >= (Line->NbPoints()-Number)) {
-      if(IsReversed)
-        Line->Value(i).ParametersOnS2(U,V); // S2 - quadric
-      else
-        Line->Value(i).ParametersOnS1(U,V); // S1 - quadric
-      cout << "point p" << i << " " << U << " " << V << endl;
-    }
-  }
-  cout << endl;
-}
-#endif
-// DEBUG FUNCTION !!!
 
 static void SearchVertices(const Handle(IntSurf_LineOn2S)& Line,
   const Handle(IntSurf_LineOn2S)& Vertices,
@@ -2378,19 +2318,23 @@ static Standard_Boolean SplitOnSegments(Handle(IntPatch_WLine)&        WLine,
   return result;
 }
 
+//=======================================================================
+//function : DecomposeResult
+//purpose  : Split <theLine> in the places where it passes through seam edge
+//            or singularity (apex of cone or pole of sphere).
+//            This passage is detected by jump of U-parameter
+//            from point to point.
+//=======================================================================
 static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
                                         const Standard_Boolean       IsReversed,
                                         const IntSurf_Quadric&       theQuad,
                                         const Handle(Adaptor3d_TopolTool)& thePDomain,
-                                        const Handle(Adaptor3d_HSurface)&  theQSurf,
+                                        const Handle(Adaptor3d_HSurface)&  theQSurf, //quadric
+                                        const Handle(Adaptor3d_HSurface)&  thePSurf, //parametric
                                         const Standard_Real                theArcTol,
                                         IntPatch_SequenceOfLine&           theLines)
 {
-  // Split <theLine> in the places where it passes through seam edge or singularity
-  // (apex of cone or pole of sphere). This passage is detected by jump of U-parameter
-  // from point to point.
-  
-  const Standard_Real aDeltaUmax = 0.5*M_PI;
+  const Standard_Real aDeltaUmax = M_PI_2;
   const Standard_Real aTOL3D = 1.e-10, 
                       aTOL2D = Precision::PConfusion(),
                       aTOL2DS = Precision::PConfusion();
@@ -2437,7 +2381,13 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
   // build WLine parts (if any)
   Standard_Boolean flNextLine = Standard_True;
   Standard_Boolean hasBeenDecomposed = Standard_False;
-  Standard_Boolean PrePointExist = Standard_False;
+  enum PrePoint_Type
+  {
+    PrePoint_NONE,
+    PrePoint_SEAM,
+    PrePoint_POLE
+  }PrePointExist = PrePoint_NONE;
+
   IntSurf_PntOn2S PrePoint;
   while(flNextLine)
   {
@@ -2449,15 +2399,86 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
     Handle(IntSurf_LineOn2S) sline = new IntSurf_LineOn2S();
 
     //if((Lindex-Findex+1) <= 2 )
-    if(aLindex <= aFindex)
-      return hasBeenDecomposed;
+    if((aLindex <= aFindex) && (PrePointExist != PrePoint_POLE))
+    {
+      //break of "while(flNextLine)" cycle
+      break;
+    }
 
-    if (PrePointExist)
+    if (PrePointExist == PrePoint_SEAM)
     {
       sline->Add(PrePoint);
-      PrePointExist = Standard_False;
     }
-    
+    else if(PrePointExist == PrePoint_POLE)
+    {
+      //The last point of the line is the pole of the quadric.
+      //Therefore, Walking-line has been broken in this point.
+      //However, new line must start from this point. Here we must
+      //find its 2D-coordinates.
+
+      //For sphere and cone, some intersection point is satisfied to the system
+      //  \cos(U_{q}) = S_{x}(U_{s},V_{s})/F(V_{q}) 
+      //  \sin(U_{q}) = S_{y}(U_{s},V_{s})/F(V_{q}) 
+
+      //where 
+      //  @S_{x}@, @S_{y}@ are X and Y-coordinates of thePSurf;
+      //  @U_{s}@ and @V_{s}@ are UV-parameters on thePSurf;
+      //  @U_{q}@ and @V_{q}@ are UV-parameters on theQSurf;
+      //  @F(V_{q}) @ is some function, which value independs on @U_{q}@
+      //              (form of this function depends on the type of the quadric).
+
+      //When we go through the pole, the function @F(V_{q}) @ changes sign.
+      //Therefore, some cases are possible, when only @\cos(U_{q}) @ or
+      //only @ \sin(U_{q}) @ change sign.
+
+      //Consequently, when the line goes throug the pole, @U_{q}@ can be
+      //changed on @\pi /2 @ (but not less).
+
+      const Standard_Real aPeriod = M_PI_2, aHalfPeriod = M_PI_4;
+      const IntSurf_PntOn2S& aRefPt = aSSLine->Value(aFindex);
+
+      IntSurf_PntOn2S aFirstPoint = PrePoint;
+
+      if(!aFirstPoint.IsSame(aRefPt, Precision::Confusion()))
+      {
+        Standard_Real aURef = 0.0, aVRef = 0.0;
+        Standard_Real aUquad = 0.0, aVquad = 0.0;
+
+        //Take parameters on quadric
+        if(IsReversed)
+        {
+          aFirstPoint.ParametersOnS2(aUquad, aVquad);
+          aRefPt.ParametersOnS2(aURef, aVRef);
+        }
+        else
+        {
+          aFirstPoint.ParametersOnS1(aUquad, aVquad);
+          aRefPt.ParametersOnS1(aURef, aVRef);
+        }
+
+        {
+          Standard_Real aDeltaPar = aURef-aUquad;
+          const Standard_Real anIncr = aPeriod*Sign(1.0, aDeltaPar);
+          while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
+          {
+            aUquad += anIncr;
+            aDeltaPar = aURef-aUquad;
+          }
+        }
+
+        aFirstPoint.SetValue(!IsReversed, aUquad, aVquad);
+
+        sline->Add(aFirstPoint);
+      }
+      else
+      {
+        //break of "while(flNextLine)" cycle
+        break;
+      }
+    }
+
+    PrePointExist = PrePoint_NONE;
+
     // analyze other points
     for(Standard_Integer k = aFindex; k <= aLindex; k++)
     {
@@ -2517,7 +2538,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
                  Abs(AnU1 - 2*M_PI) <= Precision::PConfusion())
         {
           //Modify <PrePoint>
-          PrePointExist = Standard_True;
+          PrePointExist = PrePoint_SEAM;
           Standard_Real theU1, theV1;
           if (!IsReversed)
           {
@@ -2534,6 +2555,240 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
                               theU1, theV1);
           }
         }
+        else
+        {//Check if WLine goes through pole
+          const Standard_Real aTol = Precision::Confusion();
+          const Standard_Real aPeriod = M_PI+M_PI, aHalfPeriod = M_PI;
+          const IntSurf_PntOn2S& aRefPt = aSSLine->Value(aBindex-1);
+          
+          //Not quadric point
+          Standard_Real aU0 = 0.0, aV0 = 0.0;
+          //Quadric point
+          Standard_Real aUQuadRef = 0.0, aVQuadRef = 0.0;
+
+          if(IsReversed)
+          {
+            aRefPt.Parameters(aU0, aV0, aUQuadRef, aVQuadRef);
+          }
+          else
+          {
+            aRefPt.Parameters(aUQuadRef, aVQuadRef, aU0, aV0);
+          }
+
+          //Transforms parametric surface in coordinate-system of the quadric
+          gp_Trsf aTr;
+          aTr.SetTransformation(theQuad.Sphere().Position());
+
+          //aPQuad is Pole
+          gp_Pnt aPQuad;
+          Standard_Real aUquad = 0.0;
+          Standard_Real aVquad = 0.0; 
+          
+          if(theQuad.TypeQuadric() == GeomAbs_Sphere)
+          {
+            aVquad = Sign(M_PI_2, aVQuadRef);
+          }
+          else if(theQuad.TypeQuadric() == GeomAbs_Cone)
+          {
+            const Standard_Real aRadius = theQuad.Cone().RefRadius();
+            const Standard_Real aSemiAngle = theQuad.Cone().SemiAngle();
+            aVquad = -aRadius/sin(aSemiAngle);
+          }
+          else
+          {
+            Standard_TypeMismatch::Raise( "IntPatch_ImpPrmIntersection.cxx,"
+                                          " DecomposeResult(...): "
+                                          "Unsupported quadric with Pole");
+          }
+          
+          theQSurf->D0(aUquad, aVquad, aPQuad);
+
+          Extrema_GenLocateExtPS anExtr(aPQuad, thePSurf->Surface(), aU0, aV0,
+                                        Precision::PConfusion(),
+                                        Precision::PConfusion());
+
+          if(!anExtr.IsDone())
+            break;
+
+          if(anExtr.SquareDistance() < aTol*aTol)
+          { //Pole is an intersection point
+            //(lies in the quadric and the parametric surface)
+
+            anExtr.Point().Parameter(aU0, aV0);
+            gp_Pnt aP0(anExtr.Point().Value());
+
+            IntSurf_PntOn2S aNewPoint;
+            aNewPoint.SetValue(0.5*(aP0.XYZ() + aPQuad.XYZ()), IsReversed, aU0, aV0);
+
+            if(!aNewPoint.IsSame(aRefPt, Precision::Confusion()))
+            { //Found pole does not exist in the Walking-line
+              //It must be added there (with correct 2D-parameters)
+              
+              //2D-parameters of theparametric surface have already been found (aU0, aV0).
+              //Let find 2D-parameters on the quadric.
+
+              //The algorithm depends on the type of the quadric. Here we consider a Sphere only.
+              //Analogical result can be made for another types (e.g. cone, but formulas will
+              //be different) in case of need.
+              
+              //First of all, we need in adjusting thePSurf in the coordinate system of the Sphere
+              //(in order to make the equation of the sphere maximal simple). However, as it will be
+              //shown later, thePSurf is used in algorithm in order to get its derivatives. Therefore,
+              //for improving performance, transformation of these vectors is enough (there is no point
+              //in transformation of full surface).
+              
+              gp_Pnt aPtemp;
+              gp_Vec aVecDu, aVecDv;
+              thePSurf->D1(aU0, aV0, aPtemp, aVecDu, aVecDv);
+
+              //Derivatives of transformed thePSurf
+              aVecDu.Transform(aTr);
+              aVecDv.Transform(aTr);
+
+              if(theQuad.TypeQuadric() == GeomAbs_Sphere)
+              {
+                //The intersection point (including the pole)
+                //must be satisfied to the following system:
+
+                //    \left\{\begin{matrix}
+                //    R*\cos (U_{q})*\cos (V_{q})=S_{x}(U_{s},V_{s})
+                //    R*\sin (U_{q})*\cos (V_{q})=S_{y}(U_{s},V_{s})
+                //    R*\sin (V_{q})=S_{z}(U_{s},V_{s})
+                //    \end{matrix}\right,
+                //where 
+                //  R is the radius of the sphere;
+                //  @S_{x}@, @S_{y}@ and @S_{z}@ are X, Y and Z-coordinates of thePSurf;
+                //  @U_{s}@ and @V_{s}@ are equal to aU0 and aV0 corespondingly;
+                //  @U_{q}@ and @V_{q}@ are equal to aUquad and aVquad corespondingly.
+
+                //Consequently (from first two equations), 
+                //  \left\{\begin{matrix}
+                //  \cos (U_{q}) = \frac{S_{x}(U_{s},V_{s})}{R*\cos (V_{q})}
+                //  \sin (U_{q}) = \frac{S_{y}(U_{s},V_{s})}{R*\cos (V_{q})}
+                //  \end{matrix}\right.
+
+                //For pole, 
+                //  V_{q}=\pm \pi /2 \Rightarrow \cos (V_{q}) = 0 (denominator is equal to 0).
+
+                //Therefore, computation U_{q} directly is impossibly.
+                //
+                //Let @V_{q}@ tends to @\pm \pi /2@.
+                //Then (indeterminate form is evaluated in accordance of L'Hospital rule),
+                //  \cos (U_{q}) = \lim_{V_{q} \to (\pi /2-0)} 
+                //  \frac{S_{x}(U_{s},V_{s})}{R*\cos (V_{q})}= 
+                //  -\lim_{V_{q} \to (\pi /2-0)}
+                //  \frac{\frac{\partial S_{x}}
+                //  {\partial U_{s}}*\frac{\mathrm{d} U_{s}} 
+                //  {\mathrm{d} V_{q}}+\frac{\partial S_{x}} 
+                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}} 
+                //  {\mathrm{d} V_{q}}}{R*\sin (V_{q})} =  
+                //  -\frac{1}{R}*\frac{\mathrm{d} U_{s}}
+                //  {\mathrm{d} V_{q}}*(\frac{\partial S_{x}} 
+                //  {\partial U_{s}}+\frac{\partial S_{x}}
+                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}}
+                //  {\mathrm{d} U_{s}}) =
+                //  -\frac{1}{R}*\frac{\mathrm{d} V_{s}}
+                //  {\mathrm{d} V_{q}}*(\frac{\partial S_{x}} 
+                //  {\partial U_{s}}*\frac{\mathrm{d} U_{s}}
+                //  {\mathrm{d} V_{s}}+\frac{\partial S_{x}}
+                //  {\partial V_{s}}).
+
+                //Analogicaly for @\sin (U_{q})@ (@S_{x}@ is substituted to @S_{y}@).
+
+                //Let mean, that
+                //  \cos (U_{q}) \left | _{V_{q} \to (-\pi /2+0)} = \cos (U_{q}) \left | _{V_{q} \to (\pi /2-0)}
+                //  \sin (U_{q}) \left | _{V_{q} \to (-\pi /2+0)} = \sin (U_{q}) \left | _{V_{q} \to (\pi /2-0)}
+
+                //From the 3rd equation of the system, we obtain
+                //  \frac{\mathrm{d} (R*\sin (V_{q}))}{\mathrm{d} V_{q}} =
+                //  \frac{\mathrm{d} S_{z}(U_{s},V_{s})}{\mathrm{d} V_{q}}
+                //or
+                //  R*\cos (V_{q}) = \frac{\partial S_{z}}{\partial U_{s}}*
+                //  \frac{\mathrm{d} U_{s}} {\mathrm{d} V_{q}}+\frac{\partial S_{z}}
+                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}}{\mathrm{d} V_{q}}.
+
+                //If @V_{q}=\pm \pi /2@, then
+                //  \frac{\partial S_{z}}{\partial U_{s}}*
+                //  \frac{\mathrm{d} U_{s}} {\mathrm{d} V_{q}}+\frac{\partial S_{z}}
+                //  {\partial V_{s}}*\frac{\mathrm{d} V_{s}}{\mathrm{d} V_{q}} = 0.
+
+                //Consequently, if @\frac{\partial S_{z}}{\partial U_{s}} \neq 0 @ then
+                //  \frac{\mathrm{d} U_{s}}{\mathrm{d} V_{s}} =
+                //  -\frac{\frac{\partial S_{z}}{\partial V_{s}}}
+                //  {\frac{\partial S_{z}}{\partial U_{s}}}.
+
+                //If @ \frac{\partial S_{z}}{\partial V_{s}} \neq 0 @ then
+                //  \frac{\mathrm{d} V_{s}}{\mathrm{d} U_{s}} =
+                //  -\frac{\frac{\partial S_{z}}{\partial U_{s}}}
+                //  {\frac{\partial S_{z}}{\partial V_{s}}}
+
+                //Cases, when @ \frac{\partial S_{z}}{\partial U_{s}} = 
+                //\frac{\partial S_{z}}{\partial V_{s}} = 0 @ are not consider here.
+                //The reason is written below.
+
+                //Vector with {@ \cos (U_{q}) @, @ \sin (U_{q}) @} coordinates.
+                //Ask to pay attention to the fact that this vector is always normalyzed.
+                gp_Vec2d aV1;
+          
+                if(Abs(aVecDu.Z()) > Abs(aVecDv.Z()))
+                {
+                  //Example of this exception is intersection a plane with a sphere
+                  //when the plane tangents the sphere in some pole (i.e. only one 
+                  //intersection point, not line). In this case, U-coordinate of the
+                  //sphere is undefined (can be realy anything). On the other hand,
+                  //in this case there are not any Walking-line to be decomposited.
+                  Standard_NumericError_Raise_if(Abs(aVecDu.Z()) < Precision::PConfusion(),
+                    "IntPatch_ImpPrmIntersection.cxx, DecomposeResult(...): "
+                                          "Cannot find UV-coordinate for quadric in the pole");
+                  const Standard_Real aDusDvs = aVecDv.Z()/aVecDu.Z();
+
+                  aV1.SetCoord( aVecDu.X()*aDusDvs - aVecDv.X(),
+                                aVecDu.Y()*aDusDvs - aVecDv.Y());
+                }
+                else
+                {
+                  //Example of this exception is intersection a plane with a sphere
+                  //when the plane tangents the sphere in some pole (i.e. only one 
+                  //intersection point, not line). In this case, U-coordinate of the
+                  //sphere is undefined (can be realy anything). On the other hand,
+                  //in this case there are not any Walking-line to be decomposited.
+                  Standard_NumericError_Raise_if(Abs(aVecDv.Z()) < Precision::PConfusion(),
+                    "IntPatch_ImpPrmIntersection.cxx, DecomposeResult(...): "
+                                          "Cannot find UV-coordinate for quadric in the pole");
+
+                  const Standard_Real aDvsDus = aVecDu.Z()/aVecDv.Z();
+                  aV1.SetCoord( aVecDv.X()*aDvsDus - aVecDu.X(),
+                                aVecDv.Y()*aDvsDus - aVecDu.Y());
+                }
+
+                aV1.Normalize();
+
+                if(Abs(aV1.X()) > Abs(aV1.Y()))
+                  aUquad = Sign(asin(aV1.Y()), aVquad);
+                else
+                  aUquad = Sign(acos(aV1.X()), aVquad);
+              }
+
+              {
+                //Adjust found U-paramter to previous point of the Walking-line
+                Standard_Real aDeltaPar = aUQuadRef-aUquad;
+                const Standard_Real anIncr = aPeriod*Sign(1.0, aDeltaPar);
+                while((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
+                {
+                  aUquad += anIncr;
+                  aDeltaPar = aUQuadRef-aUquad;
+                }
+              }
+              
+              aNewPoint.SetValue(!IsReversed, aUquad, aVquad);
+              
+              sline->Add(aNewPoint);
+              PrePointExist = PrePoint_POLE;
+              PrePoint = aNewPoint;
+            }
+          }
+        }
+
         ////
         break;
       }
@@ -2570,11 +2825,6 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
         ToSmooth(sline,IsReversed,theQuad,Standard_True,D3F);
         ToSmooth(sline,IsReversed,theQuad,Standard_False,D3L);
       }
-    }
-
-    if(!hasInternals)
-    {
-      ForcedPurgePoints(sline,IsReversed,theQuad);
     }
 
     Handle(IntPatch_WLine) wline = 

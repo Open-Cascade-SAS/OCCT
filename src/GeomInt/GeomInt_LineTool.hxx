@@ -23,9 +23,12 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
+#include <GeomInt_LineConstructor.hxx>
+#include <IntPatch_SequenceOfLine.hxx>
 class IntPatch_Line;
 class IntPatch_Point;
-
+class IntPatch_WLine;
+class GeomAdaptor_HSurface;
 
 
 class GeomInt_LineTool 
@@ -43,7 +46,13 @@ public:
   
   Standard_EXPORT static Standard_Real LastParameter (const Handle(IntPatch_Line)& L);
 
-
+  Standard_EXPORT static Standard_Boolean 
+        DecompositionOfWLine( const Handle(IntPatch_WLine)& theWLine,
+                              const Handle(GeomAdaptor_HSurface)& theSurface1,
+                              const Handle(GeomAdaptor_HSurface)& theSurface2,
+                              const Standard_Real aTolSum,
+                              const GeomInt_LineConstructor& theLConstructor,
+                              IntPatch_SequenceOfLine& theNewLines);
 
 
 protected:
