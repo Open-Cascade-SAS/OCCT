@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <NCollection_Vector.hxx>
 #include <BRepApprox_TheComputeLineOfApprox.hxx>
 #include <BRepApprox_TheComputeLineBezierOfApprox.hxx>
 #include <Approx_MCurvesToBSpCurve.hxx>
@@ -48,6 +49,22 @@ class BRepApprox_TheComputeLineBezierOfApprox;
 class BRepApprox_MyGradientOfTheComputeLineBezierOfApprox;
 class AppParCurves_MultiBSpCurve;
 
+struct Approx_Data 
+{
+  Approx_Data()
+  {
+    myMinFactorXYZ = 0.0;
+    myMinFactorUV  = 0.0;
+  }
+
+  Standard_Boolean myBezierApprox;
+  Standard_Real  Xo, Ax, Yo, Ay, Zo, Az,
+    U1o, A1u, V1o, A1v, U2o, A2u, V2o, A2v;
+  Standard_Boolean ApproxXYZ, ApproxU1V1, ApproxU2V2;
+  Standard_Integer indicemin, indicemax, nbpntmax;
+  Approx_ParametrizationType parametrization;
+  Standard_Real myMinFactorXYZ, myMinFactorUV;
+};
 
 
 class BRepApprox_Approx 
@@ -100,12 +117,31 @@ private:
   
   Standard_EXPORT void UpdateTolReached();
 
+  //! Fill data structure for intersection approximation.
+  Standard_EXPORT void fillData(const Handle(BRepApprox_ApproxLine)& theLine,
+                                const Standard_Boolean theApproxXYZ,
+                                const Standard_Boolean theApproxU1V1,
+                                const Standard_Boolean theApproxU2V2);
+
+  //! Prepare data structure for further computations.
+  Standard_EXPORT void prepareDS(const Standard_Boolean theApproxXYZ,
+                                 const Standard_Boolean theApproxU1V1,
+                                 const Standard_Boolean theApproxU2V2,
+                                 const Standard_Integer indicemin,
+                                 const Standard_Integer indicemax);
+
+  //! Build knot sequence.
+  Standard_EXPORT void buildKnots(const Handle(BRepApprox_ApproxLine)& theline,
+                                  const Standard_Address thePtrSVSurf);
+
+  //! Build curve.
+  Standard_EXPORT void buildCurve(const Handle(BRepApprox_ApproxLine)& theline,
+                                  const Standard_Address thePtrSVSurf);
 
   BRepApprox_TheComputeLineOfApprox myComputeLine;
   BRepApprox_TheComputeLineBezierOfApprox myComputeLineBezier;
   Approx_MCurvesToBSpCurve myBezToBSpl;
   Standard_Boolean myTolReached;
-  Standard_Boolean myApproxBez;
   Standard_Boolean myWithTangency;
   Standard_Real myTol3d;
   Standard_Real myTol2d;
@@ -114,11 +150,11 @@ private:
   Standard_Integer myDegMax;
   Standard_Integer myNbPntMax;
   Standard_Integer myNbIterMax;
-  Standard_Real myMinFactorXYZ;
-  Standard_Real myMinFactorUV;
   Standard_Real myTolReached3d;
   Standard_Real myTolReached2d;
-
+  Approx_Data myData;
+  Standard_Real myUVRes1, myUVRes2;
+  NCollection_Vector<Standard_Integer> myKnots;
 
 };
 
