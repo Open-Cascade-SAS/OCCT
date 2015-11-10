@@ -233,16 +233,33 @@ public:
   Standard_EXPORT void ExchangeUV();
   
   //! Sets the surface U periodic.
-  Standard_EXPORT void SetUPeriodic();
-  
-  //! Modifies this surface to be periodic in the u (or v)
+  //! Modifies this surface to be periodic in the U 
   //! parametric direction.
   //! To become periodic in a given parametric direction a
   //! surface must be closed in that parametric direction,
   //! and the knot sequence relative to that direction must be periodic.
   //! To generate this periodic sequence of knots, the
-  //! functions FirstUKnotIndex and LastUKnotIndex (or
-  //! FirstVKnotIndex and LastVKnotIndex) are used to
+  //! functions FirstUKnotIndex and LastUKnotIndex  are used to
+  //! compute I1 and I2. These are the indexes, in the
+  //! knot array associated with the given parametric
+  //! direction, of the knots that correspond to the first and
+  //! last parameters of this BSpline surface in the given
+  //! parametric direction. Hence the period is:
+  //! Knots(I1) - Knots(I2)
+  //! As a result, the knots and poles tables are modified.
+  //! Exceptions
+  //! Standard_ConstructionError if the surface is not
+  //! closed in the given parametric direction.
+  Standard_EXPORT void SetUPeriodic();
+  
+  //! Sets the surface V periodic.
+  //! Modifies this surface to be periodic in the V
+  //! parametric direction.
+  //! To become periodic in a given parametric direction a
+  //! surface must be closed in that parametric direction,
+  //! and the knot sequence relative to that direction must be periodic.
+  //! To generate this periodic sequence of knots, the
+  //! functions FirstVKnotIndex and LastVKnotIndex are used to
   //! compute I1 and I2. These are the indexes, in the
   //! knot array associated with the given parametric
   //! direction, of the knots that correspond to the first and
@@ -282,49 +299,54 @@ public:
   //! bounds of the knots table in the given parametric direction.
   Standard_EXPORT void SetVOrigin (const Standard_Integer Index);
   
+  //! Sets the surface U not periodic.
+  //! Changes this BSpline surface into a non-periodic
+  //! surface along U direction. 
+  //! If this surface is already non-periodic, it is not modified.
+  //! Note: the poles and knots tables are modified.
   Standard_EXPORT void SetUNotPeriodic();
   
-  //! Modifies this surface to be periodic in the u (or v) parametric direction.
-  //! To become periodic in a given parametric direction a
-  //! surface must be closed in that parametric direction,
-  //! and the knot sequence relative to that direction must be periodic.
-  //! To generate this periodic sequence of knots, the
-  //! functions FirstUKnotIndex and LastUKnotIndex (or
-  //! FirstVKnotIndex and LastVKnotIndex) are used to
-  //! compute I1 and I2. These are the indexes, in the
-  //! knot array associated with the given parametric
-  //! direction, of the knots that correspond to the first and
-  //! last parameters of this BSpline surface in the given
-  //! parametric direction. Hence the period is:
-  //! Knots(I1) - Knots(I2)
-  //! As a result, the knots and poles tables are modified.
-  //! Exceptions
-  //! Standard_ConstructionError if the surface is not
-  //! closed in the given parametric direction.
+  //! Sets the surface V not periodic.
+  //! Changes this BSpline surface into a non-periodic
+  //! surface along V direction. 
+  //! If this surface is already non-periodic, it is not modified.
+  //! Note: the poles and knots tables are modified.
   Standard_EXPORT void SetVNotPeriodic();
   
+  //! Changes the orientation of this BSpline surface in the
+  //! U parametric direction. The bounds of the
+  //! surface are not changed but the given parametric
+  //! direction is reversed. Hence the orientation of the
+  //! surface is reversed.
+  //! The knots and poles tables are modified.
   Standard_EXPORT void UReverse();
   
   //! Changes the orientation of this BSpline surface in the
-  //! u (or v) parametric direction. The bounds of the
+  //! V parametric direction. The bounds of the
   //! surface are not changed but the given parametric
   //! direction is reversed. Hence the orientation of the
   //! surface is reversed.
   //! The knots and poles tables are modified.
   Standard_EXPORT void VReverse();
   
+  //! Computes the u parameter on the modified
+  //! surface, produced by reversing its U parametric
+  //! direction, for the point of u parameter U,  on this BSpline surface.
+  //! For a BSpline surface, these functions return respectively:
+  //! - UFirst + ULast - U, 
+  //! where UFirst, ULast are
+  //! the values of the first and last parameters of this
+  //! BSpline surface, in the u parametric directions.
   Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const;
   
-  //! Computes the u (or v) parameter on the modified
-  //! surface, produced by reversing its u (or v) parametric
-  //! direction, for the point of u parameter U, (or of v
-  //! parameter V) on this BSpline surface.
+  //! Computes the v parameter on the modified
+  //! surface, produced by reversing its V parametric
+  //! direction, for the point of v parameter V on this BSpline surface.
   //! For a BSpline surface, these functions return respectively:
-  //! - UFirst + ULast - U, or
   //! - VFirst + VLast - V,
-  //! where UFirst, ULast, VFirst and VLast are
+  //! VFirst and VLast are
   //! the values of the first and last parameters of this
-  //! BSpline surface, in the u and v parametric directions.
+  //! BSpline surface, in the v pametric directions.
   Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real V) const;
   
   //! Increases the degrees of this BSpline surface to
@@ -341,11 +363,29 @@ public:
   //! Geom_BSplineSurface::MaxDegree().
   Standard_EXPORT void IncreaseDegree (const Standard_Integer UDegree, const Standard_Integer VDegree);
   
+  //! Inserts into the knots table for the U
+  //! parametric direction of this BSpline surface:
+  //! - the values of the array Knots, with their respective
+  //! multiplicities, Mults.
+  //! If the knot value to insert already exists in the table, its multiplicity is:
+  //! - increased by M, if Add is true (the default), or
+  //! - increased to M, if Add is false.
+  //! The tolerance criterion used to check the equality of
+  //! the knots is the larger of the values ParametricTolerance and
+  //! Standard_Real::Epsilon(val), where val is the knot value to be inserted.
+  //! Warning
+  //! - If a given multiplicity coefficient is null, or negative, nothing is done.
+  //! - The new multiplicity of a knot is limited to the degree of this BSpline surface in the
+  //! corresponding parametric direction.
+  //! Exceptions
+  //! Standard_ConstructionError if a knot value to
+  //! insert is outside the bounds of this BSpline surface in
+  //! the specified parametric direction. The comparison
+  //! uses the precision criterion ParametricTolerance.
   Standard_EXPORT void InsertUKnots (const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Real ParametricTolerance = 0.0, const Standard_Boolean Add = Standard_True);
   
-  //! Inserts into the knots table for the corresponding
+  //! Inserts into the knots table for the V
   //! parametric direction of this BSpline surface:
-  //! - the value U, or V, with the multiplicity M (defaulted to 1), or
   //! - the values of the array Knots, with their respective
   //! multiplicities, Mults.
   //! If the knot value to insert already exists in the table, its multiplicity is:
@@ -365,10 +405,27 @@ public:
   //! uses the precision criterion ParametricTolerance.
   Standard_EXPORT void InsertVKnots (const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Real ParametricTolerance = 0.0, const Standard_Boolean Add = Standard_True);
   
+  //! Reduces to M the multiplicity of the knot of index
+  //! Index in the U parametric direction. If M is 0, the knot is removed.
+  //! With a modification of this type, the table of poles is also modified.
+  //! Two different algorithms are used systematically to
+  //! compute the new poles of the surface. For each
+  //! pole, the distance between the pole calculated
+  //! using the first algorithm and the same pole
+  //! calculated using the second algorithm, is checked. If
+  //! this distance is less than Tolerance it ensures that
+  //! the surface is not modified by more than Tolerance.
+  //! Under these conditions, the function returns true;
+  //! otherwise, it returns false.
+  //! A low tolerance prevents modification of the
+  //! surface. A high tolerance "smoothes" the surface.
+  //! Exceptions
+  //! Standard_OutOfRange if Index is outside the
+  //! bounds of the knots table of this BSpline surface.
   Standard_EXPORT Standard_Boolean RemoveUKnot (const Standard_Integer Index, const Standard_Integer M, const Standard_Real Tolerance);
   
   //! Reduces to M the multiplicity of the knot of index
-  //! Index in the given parametric direction. If M is 0, the knot is removed.
+  //! Index in the V parametric direction. If M is 0, the knot is removed.
   //! With a modification of this type, the table of poles is also modified.
   //! Two different algorithms are used systematically to
   //! compute the new poles of the surface. For each
@@ -581,7 +638,7 @@ public:
   Standard_EXPORT void LocateU (const Standard_Real U, const Standard_Real ParametricTolerance, Standard_Integer& I1, Standard_Integer& I2, const Standard_Boolean WithKnotRepetition = Standard_False) const;
   
 
-  //! Locates the parametric value U in the sequence of knots.
+  //! Locates the parametric value V in the sequence of knots.
   //! If "WithKnotRepetition" is True we consider the knot's
   //! representation with repetition of multiple knot value,
   //! otherwise  we consider the knot's representation with
