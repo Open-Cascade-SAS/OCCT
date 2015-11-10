@@ -33,6 +33,7 @@
 #include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
+#include <BRepAdaptor_HCurve.hxx>
 #include <BRepAdaptor_HCurve2d.hxx>
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -1452,6 +1453,99 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
       // Update can only increase tolerance, so if the edge has a greater
       //  tolerance than its faces it is not concerned
       B.UpdateVertex(V, tol);
+    }
+  }
+}
+
+//=======================================================================
+//function : UpdateInnerTolerances
+//purpose  : 
+//=======================================================================
+void  BRepLib::UpdateInnerTolerances(const TopoDS_Shape& aShape)
+{
+  TopTools_IndexedDataMapOfShapeListOfShape EFmap;
+  TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, EFmap);
+  BRep_Builder BB;
+  for (Standard_Integer i = 1; i <= EFmap.Extent(); i++)
+  {
+    TopoDS_Edge anEdge = TopoDS::Edge(EFmap.FindKey(i));
+    TopoDS_Vertex V1, V2;
+    TopExp::Vertices(anEdge, V1, V2);
+    Standard_Real fpar, lpar;
+    BRep_Tool::Range(anEdge, fpar, lpar);
+    Standard_Real TolEdge = BRep_Tool::Tolerance(anEdge);
+    gp_Pnt Pnt1, Pnt2;
+    Handle(BRepAdaptor_HCurve) anHCurve = new BRepAdaptor_HCurve();
+    anHCurve->ChangeCurve().Initialize(anEdge);
+    if (!V1.IsNull())
+      Pnt1 = BRep_Tool::Pnt(V1);
+    if (!V2.IsNull())
+      Pnt2 = BRep_Tool::Pnt(V2);
+    
+    if (!BRep_Tool::Degenerated(anEdge) &&
+        EFmap(i).Extent() > 0)
+    {
+      NCollection_Sequence<Handle(Adaptor3d_HCurve)> theRep;
+      theRep.Append(anHCurve);
+      TopTools_ListIteratorOfListOfShape itl(EFmap(i));
+      for (; itl.More(); itl.Next())
+      {
+        const TopoDS_Face& aFace = TopoDS::Face(itl.Value());
+        Handle(BRepAdaptor_HCurve) anHCurvOnSurf = new BRepAdaptor_HCurve();
+        anHCurvOnSurf->ChangeCurve().Initialize(anEdge, aFace);
+        theRep.Append(anHCurvOnSurf);
+      }
+      
+      const Standard_Integer NbSamples = (BRep_Tool::SameParameter(anEdge))? 23 : 2;
+      Standard_Real delta = (lpar - fpar)/(NbSamples-1);
+      Standard_Real MaxDist = 0.;
+      for (Standard_Integer j = 2; j <= theRep.Length(); j++)
+      {
+        for (Standard_Integer k = 0; k <= NbSamples; k++)
+        {
+          Standard_Real ParamOnCenter = (k == NbSamples)? lpar :
+            fpar + k*delta;
+          gp_Pnt Center = theRep(1)->Value(ParamOnCenter);
+          Standard_Real ParamOnCurve = (BRep_Tool::SameParameter(anEdge))? ParamOnCenter
+            : ((k == 0)? theRep(j)->FirstParameter() : theRep(j)->LastParameter());
+          gp_Pnt aPoint = theRep(j)->Value(ParamOnCurve);
+          Standard_Real aDist = Center.Distance(aPoint);
+          //aDist *= 1.1;
+          aDist += 2.*Epsilon(aDist);
+          if (aDist > MaxDist)
+            MaxDist = aDist;
+
+          //Update tolerances of vertices
+          if (k == 0 && !V1.IsNull())
+          {
+            Standard_Real aDist1 = Pnt1.Distance(aPoint);
+            aDist1 += 2.*Epsilon(aDist1);
+            BB.UpdateVertex(V1, aDist1);
+          }
+          if (k == NbSamples && !V2.IsNull())
+          {
+            Standard_Real aDist2 = Pnt2.Distance(aPoint);
+            aDist2 += 2.*Epsilon(aDist2);
+            BB.UpdateVertex(V2, aDist2);
+          }
+        }
+      }
+      BB.UpdateEdge(anEdge, MaxDist);
+    }
+    TolEdge = BRep_Tool::Tolerance(anEdge);
+    if (!V1.IsNull())
+    {
+      gp_Pnt End1 = anHCurve->Value(fpar);
+      Standard_Real dist1 = Pnt1.Distance(End1);
+      dist1 += 2.*Epsilon(dist1);
+      BB.UpdateVertex(V1, Max(dist1, TolEdge));
+    }
+    if (!V2.IsNull())
+    {
+      gp_Pnt End2 = anHCurve->Value(lpar);
+      Standard_Real dist2 = Pnt2.Distance(End2);
+      dist2 += 2.*Epsilon(dist2);
+      BB.UpdateVertex(V2, Max(dist2, TolEdge));
     }
   }
 }

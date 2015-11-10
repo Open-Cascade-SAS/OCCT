@@ -147,6 +147,10 @@ public:
   //! SameParameter. (called in)
   Standard_EXPORT static void UpdateTolerances (const TopoDS_Shape& S, const Standard_Boolean verifyFaceTolerance = Standard_False);
   
+  //! Checks tolerances of edges (including inner points) and vertices
+  //! of a shape and updates them to satisfy "SameParameter" condition
+  Standard_EXPORT static void UpdateInnerTolerances (const TopoDS_Shape& S);
+  
   //! Orients the solid forward  and the  shell with the
   //! orientation to have  matter in the solid. Returns
   //! False if the solid is unOrientable (open or incoherent)

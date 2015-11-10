@@ -80,6 +80,8 @@ const BRepSweep_Revol&  BRepPrimAPI_MakeRevol::Revol() const
 void  BRepPrimAPI_MakeRevol::Build()
 {
   myShape = myRevol.Shape();
+  BRepLib::UpdateInnerTolerances(myShape);
+  
   Done();
 // Modified by skv - Fri Mar  4 15:50:09 2005 Begin
   myDegenerated.Clear();
