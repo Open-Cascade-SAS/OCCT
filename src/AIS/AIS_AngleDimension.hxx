@@ -217,6 +217,11 @@ protected:
   //! Initialization of fields that is common to all constructors. 
   Standard_EXPORT void Init();
 
+  //! Gets plane normal for minimal angle.
+  //! Dimension computation is based on three attach points and plane normal.
+  //! Based on this normal angle arc, arrows and extensions are constructed.
+  gp_Dir GetNormalForMinAngle() const;
+
   //! @param theFirstAttach [in] the first attachment point.
   //! @param theSecondAttach [in] the second attachment point.
   //! @param theCenter [in] the center point (center point of the angle).  
