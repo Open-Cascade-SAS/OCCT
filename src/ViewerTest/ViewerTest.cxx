@@ -5750,12 +5750,12 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vsetshading",
       "vsetshading  : vsetshading name Quality(default=0.0008) "
-      "\n\t\t: Sets deflection coefficient that defines the quality of the shape’s representation in the shading mode.",
+      "\n\t\t: Sets deflection coefficient that defines the quality of the shape representation in the shading mode.",
       __FILE__,VShading,group);
 
   theCommands.Add("vunsetshading",
       "vunsetshading :vunsetshading name "
-      "\n\t\t: Sets default deflection coefficient (0.0008) that defines the quality of the shape’s representation in the shading mode.",
+      "\n\t\t: Sets default deflection coefficient (0.0008) that defines the quality of the shape representation in the shading mode.",
       __FILE__,VShading,group);
 
   theCommands.Add ("vtexture",

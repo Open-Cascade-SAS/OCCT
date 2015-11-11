@@ -801,18 +801,16 @@ void Draft_Modification::Perform ()
     }
 
     // Calculate new edges.
-
-    Handle(Geom_Surface) S1,S2;
-    Handle(Geom_Curve) C, newC;
-    Standard_Real f,l;
-    TopLoc_Location L;
-
     for (Standard_Integer ii = 1; ii <= myEMap.Extent(); ii++) 
     {
       Draft_EdgeInfo& Einf = myEMap.ChangeFromIndex(ii); 
 
       const TopoDS_Edge& theEdge = TopoDS::Edge(myEMap.FindKey(ii));
 
+      Handle(Geom_Surface) S1,S2;
+      Handle(Geom_Curve) C, newC;
+      Standard_Real f,l;
+      TopLoc_Location L;
       C = BRep_Tool::Curve(theEdge,L,f,l);
       C = Handle(Geom_Curve)::DownCast(C->Transformed(L.Transformation()));
 
@@ -1414,8 +1412,8 @@ void Draft_Modification::Perform ()
             Standard_Real param = Parameter(Einf2.Geometry(), pvt, done);
             if (done != 0)
             {
-              S1 = myFMap.FindFromKey(Einf2.FirstFace()).Geometry();
-              S2 = myFMap.FindFromKey(Einf2.SecondFace()).Geometry();
+              Handle(Geom_Surface) S1 = myFMap.FindFromKey(Einf2.FirstFace()).Geometry();
+              Handle(Geom_Surface) S2 = myFMap.FindFromKey(Einf2.SecondFace()).Geometry();
               Vinf.ChangeParameter(Edg2) = SmartParameter( Einf2, BRep_Tool::Tolerance(Edg2), pvt, done, S1, S2 );
             }
             else
@@ -1428,8 +1426,8 @@ void Draft_Modification::Perform ()
           Standard_Real param = Parameter(Einf1.Geometry(), pvt, done);
           if (done != 0)
           {
-            S1 = myFMap.FindFromKey(Einf1.FirstFace()).Geometry();
-            S2 = myFMap.FindFromKey(Einf1.SecondFace()).Geometry();
+            Handle(Geom_Surface) S1 = myFMap.FindFromKey(Einf1.FirstFace()).Geometry();
+            Handle(Geom_Surface) S2 = myFMap.FindFromKey(Einf1.SecondFace()).Geometry();
             Vinf.ChangeParameter(Edg1) = SmartParameter( Einf1, BRep_Tool::Tolerance(Edg1), pvt, done, S1, S2 );
           }
           else
@@ -1516,8 +1514,8 @@ void Draft_Modification::Perform ()
         Standard_Real param = Parameter(Einf.Geometry(), pvt, done);
         if (done != 0)
         {
-          S1 = myFMap.FindFromKey(Einf.FirstFace()).Geometry();
-          S2 = myFMap.FindFromKey(Einf.SecondFace()).Geometry();
+          Handle(Geom_Surface) S1 = myFMap.FindFromKey(Einf.FirstFace()).Geometry();
+          Handle(Geom_Surface) S2 = myFMap.FindFromKey(Einf.SecondFace()).Geometry();
           Vinf.ChangeParameter(Edg) = SmartParameter( Einf, BRep_Tool::Tolerance(Edg), pvt, done, S1, S2 );
         }
         else

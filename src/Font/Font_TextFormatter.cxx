@@ -43,16 +43,6 @@ namespace
     }
   }
 
-  //! Apply floor to vector components.
-  //! @param  theVec - vector to change (by reference!)
-  //! @return modified vector
-  inline Vec2f& floor (Vec2f& theVec)
-  {
-    theVec.x() = std::floor (theVec.x());
-    theVec.y() = std::floor (theVec.y());
-    return theVec;
-  }
-
 }
 
 // =======================================================================

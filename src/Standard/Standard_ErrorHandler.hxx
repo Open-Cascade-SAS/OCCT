@@ -68,7 +68,7 @@
   #define OCC_CATCH_SIGNALS 
 
   // Suppress GCC warning "variable ...  might be clobbered by 'longjmp' or 'vfork'"
-  #ifdef __GNUC__
+  #if defined(__GNUC__) && ! defined(__INTEL_COMPILER) && ! defined(__clang__)
   #pragma GCC diagnostic ignored "-Wclobbered"
   #endif
 
@@ -83,7 +83,7 @@
 			      }
 
   // Suppress GCC warning "variable ...  might be clobbered by 'longjmp' or 'vfork'"
-  #ifdef __GNUC__
+  #if defined(__GNUC__) && ! defined(__INTEL_COMPILER) && ! defined(__clang__)
   #pragma GCC diagnostic ignored "-Wclobbered"
   #endif
 

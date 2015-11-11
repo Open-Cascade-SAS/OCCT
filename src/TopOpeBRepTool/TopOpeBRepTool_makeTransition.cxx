@@ -204,9 +204,11 @@ static Standard_Boolean FUN_tg(const TopoDS_Edge& e,const Standard_Real par,cons
   st = BEFORE;
   for (Standard_Integer nite = 1; nite <= 2; nite++) {
     if (nite == 2) st = AFTER;    
-    Standard_Real pn; Standard_Boolean mkp = FUN_getnearpar(e,par,f,l,factor,st,pn);
+    Standard_Real pn = 0.;
+    Standard_Boolean mkp = FUN_getnearpar(e,par,f,l,factor,st,pn);
     if (!mkp) continue;
-    gp_Vec tmp; Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(pn,e,tmp);
+    gp_Vec tmp;
+    Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(pn,e,tmp);
     if (!ok) continue;
     tg = gp_Dir(tmp); 
     return Standard_True;    
@@ -477,9 +479,11 @@ static Standard_Boolean FUN_staproj(const TopoDS_Edge& e,const Standard_Real pf,
 		       const Standard_Real factor, const Standard_Integer st, const TopoDS_Face& f, 
 		       TopAbs_State& sta)
 {
-  Standard_Real par;Standard_Boolean ok = FUN_getnearpar(e,pe,pf,pl,factor,st, par);
+  Standard_Real par = 0.;
+  Standard_Boolean ok = FUN_getnearpar(e,pe,pf,pl,factor,st, par);
   if (!ok) return Standard_False;
-  gp_Pnt pt;  ok = FUN_tool_value(par,e, pt);
+  gp_Pnt pt;
+  ok = FUN_tool_value(par,e, pt);
   if (!ok) return Standard_False;
   gp_Pnt2d uv; ok = TopOpeBRepTool_TOOL::Getstp3dF(pt,f,uv,sta);
   return ok;

@@ -266,9 +266,9 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
                 if (!aModif.IsEmpty())
                 {
                   di << ",";
-                  for (Standard_Integer k = aModif.Lower(); k <= aModif.Upper(); k++)
+                  for (Standard_Integer iModif = aModif.Lower(); iModif <= aModif.Upper(); iModif++)
                   {
-                    di << " M " << aModif.Value(k);
+                    di << " M " << aModif.Value(iModif);
                   }
                 }
                 XCAFDimTolObjects_DatumModifWithValue aM;

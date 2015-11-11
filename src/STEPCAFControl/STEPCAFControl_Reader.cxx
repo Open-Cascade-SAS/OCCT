@@ -1875,17 +1875,16 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
               {
                 Handle(StepAP242_GeometricItemSpecificUsage) aGISU
                   = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
-                Handle(StepRepr_RepresentationItem) aRI;
+                Handle(StepRepr_RepresentationItem) anItem;
                 if(aPGISU->NbIdentifiedItem() > 0) {
-                  aRI = Handle(StepRepr_RepresentationItem)::DownCast(aPGISU->IdentifiedItemValue(1));
+                  anItem = Handle(StepRepr_RepresentationItem)::DownCast(aPGISU->IdentifiedItemValue(1));
                 }
-                if(aRI.IsNull()) continue;
-                Standard_Integer index = aTP->MapIndex(aRI);
-                TopoDS_Shape aSh;
-                if(index >0) {
-                  Handle(Transfer_Binder) binder = aTP->MapItem(index);
-                  aSh = TransferBRep::ShapeResult(binder);
-                  aDatObj->SetDatumTarget(aSh);
+                if(anItem.IsNull()) continue;
+                Standard_Integer anItemIndex = aTP->MapIndex(anItem);
+                if(anItemIndex >0) {
+                  Handle(Transfer_Binder) binder = aTP->MapItem(anItemIndex);
+                  TopoDS_Shape anItemShape = TransferBRep::ShapeResult(binder);
+                  aDatObj->SetDatumTarget(anItemShape);
                 }
               }
             }
@@ -2297,8 +2296,8 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
               if(!DimCharR.IsNull()) {
                 Handle(StepShape_ShapeDimensionRepresentation) SDimR = DimCharR->Representation();
                 if(!SDimR.IsNull() && SDimR->NbItems()>0) {
-                  Handle(StepRepr_RepresentationItem) aRI = SDimR->ItemsValue(1);
-                  Handle(StepRepr_ValueRange) VR = Handle(StepRepr_ValueRange)::DownCast(aRI);
+                  Handle(StepRepr_RepresentationItem) anItem = SDimR->ItemsValue(1);
+                  Handle(StepRepr_ValueRange) VR = Handle(StepRepr_ValueRange)::DownCast(anItem);
                   if(!VR.IsNull()) {
                     aName = VR->Name();
                     //StepRepr_CompoundItemDefinition CID = VR->ItemElement();
