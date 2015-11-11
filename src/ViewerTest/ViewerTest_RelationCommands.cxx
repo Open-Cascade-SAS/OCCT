@@ -18,20 +18,36 @@
 
 #include <AIS_AngleDimension.hxx>
 #include <AIS_Circle.hxx>
+#include <AIS_ConcentricRelation.hxx>
 #include <AIS_DiameterDimension.hxx>
 #include <AIS_DisplayMode.hxx>
+#include <AIS_EqualDistanceRelation.hxx>
+#include <AIS_EqualRadiusRelation.hxx>
+#include <AIS_FixRelation.hxx>
+#include <AIS_IdenticRelation.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_LengthDimension.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_MapOfInteractive.hxx>
+#include <AIS_OffsetDimension.hxx>
+#include <AIS_ParallelRelation.hxx>
+#include <AIS_PerpendicularRelation.hxx>
 #include <AIS_Point.hxx>
 #include <AIS_RadiusDimension.hxx>
 #include <AIS_Relation.hxx>
 #include <AIS_Shape.hxx>
-#include <BRepAdaptor_Curve.hxx>
+#include <AIS_SymmetricRelation.hxx>
+#include <AIS_TangentRelation.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepExtrema_ExtCC.hxx>
+#include <BRepExtrema_ExtPC.hxx>
+#include <BRepExtrema_ExtCF.hxx>
+#include <BRepExtrema_ExtPF.hxx>
+#include <BRepExtrema_ExtFF.hxx>
 #include <BRepTools.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw.hxx>
@@ -60,6 +76,7 @@
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>
@@ -537,11 +554,6 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
   {
     case AIS_KOD_LENGTH:
     {
-      if (!isPlaneCustom)
-      {
-        std::cerr << theArgs[0] << ": can not build dimension without working plane.\n";
-        return 1;
-      }
       if (aShapes.Extent() == 1)
       {
         if (aShapes.First()->Type() == AIS_KOI_Shape
@@ -550,6 +562,12 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
           std::cerr << theArgs[0] << ": wrong shape type.\n";
           return 1;
         }
+        if (!isPlaneCustom)
+        {
+          std::cerr << theArgs[0] << ": can not build dimension without working plane.\n";
+          return 1;
+        }
+
         // Adjust working plane
         TopoDS_Edge anEdge = TopoDS::Edge ((Handle(AIS_Shape)::DownCast(aShapes.First()))->Shape());
         TopoDS_Vertex aFirst, aSecond;
@@ -566,8 +584,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         // Getting shapes
         if (aShapes.First()->DynamicType() == STANDARD_TYPE (AIS_Point))
         {
-          Handle(AIS_Point) aPoint1 = Handle(AIS_Point)::DownCast (aShapes.First ());
-          aShape1 = aPoint1->Vertex();
+          aShape1 = Handle(AIS_Point)::DownCast (aShapes.First ())->Vertex();
         }
         else if (aShapes.First()->Type() == AIS_KOI_Shape)
         {
@@ -576,8 +593,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
 
         if (aShapes.Last()->DynamicType() == STANDARD_TYPE (AIS_Point))
         {
-          Handle(AIS_Point) aPoint2 = Handle(AIS_Point)::DownCast (aShapes.Last ());
-          aShape2 = aPoint2->Vertex();
+          aShape2 = Handle(AIS_Point)::DownCast (aShapes.Last ())->Vertex();
         }
         else if (aShapes.Last()->Type() == AIS_KOI_Shape)
         {
@@ -590,17 +606,38 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
           return 1;
         }
 
-        // Adjust working plane
-        if (aShape1.ShapeType() == TopAbs_VERTEX)
+        // Face-Face case
+        if (aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_FACE)
         {
-          aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape1)));
+          aDim = new AIS_LengthDimension (TopoDS::Face (aShape1), TopoDS::Face (aShape2));
         }
-        else if (aShape2.ShapeType() == TopAbs_VERTEX)
+        else if (aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_EDGE)
         {
-          aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape2)));
+          aDim = new AIS_LengthDimension (TopoDS::Face (aShape1), TopoDS::Edge (aShape2));
         }
+        else if (aShape1.ShapeType() == TopAbs_EDGE && aShape2.ShapeType() == TopAbs_FACE)
+        {
+          aDim = new AIS_LengthDimension (TopoDS::Face (aShape2), TopoDS::Edge (aShape1));
+        }
+        else
+        {
+          if (!isPlaneCustom)
+          {
+            std::cerr << theArgs[0] << ": can not build dimension without working plane.\n";
+            return 1;
+          }
+          // Vertex-Vertex case
+          if (aShape1.ShapeType() == TopAbs_VERTEX)
+          {
+            aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape1)));
+          }
+          else if (aShape2.ShapeType() == TopAbs_VERTEX)
+          {
+            aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape2)));
+          }
 
-        aDim = new AIS_LengthDimension (aShape1, aShape2, aWorkingPlane);
+          aDim = new AIS_LengthDimension (aShape1, aShape2, aWorkingPlane);
+        }
       }
       else
       {
@@ -896,14 +933,6 @@ static int VDiameterDimBuilder(Draw_Interpretor& di, Standard_Integer argc, cons
 //purpose  : Display the concentric relation between two surfaces.
 //Draw arg : vconcentric Name
 //==============================================================================
-#include <AIS_ConcentricRelation.hxx>
-#include <Geom_Plane.hxx>
-#include <gp_Pln.hxx>
-#include <GC_MakePlane.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopExp_Explorer.hxx>
-
-
 static int VConcentricBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -990,11 +1019,6 @@ static int VConcentricBuilder(Draw_Interpretor& di, Standard_Integer argc, const
 //purpose  : 
 //Draw arg : vdiameterdim Name DiameterValue
 //==============================================================================
-#include <AIS_EqualDistanceRelation.hxx>
-#include <BRepExtrema_ExtCC.hxx>
-#include <GC_MakePlane.hxx>
-
-
 static int VEqualDistRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -1152,11 +1176,6 @@ static int VEqualDistRelation(Draw_Interpretor& di, Standard_Integer argc, const
 //purpose  : 
 //Draw arg : vdiameterdim Name DiameterValue
 //==============================================================================
-#include <AIS_EqualRadiusRelation.hxx>
-#include <GC_MakePlane.hxx>
-#include <BRepAdaptor_Curve.hxx>
-
-
 static int VEqualRadiusRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -1230,10 +1249,6 @@ static int VEqualRadiusRelation(Draw_Interpretor& di, Standard_Integer argc, con
 //purpose  : 
 //Draw arg : vdiameterdim Name DiameterValue
 //==============================================================================
-#include <AIS_FixRelation.hxx>
-#include <GC_MakePlane.hxx>
-#include <BRepAdaptor_Curve.hxx>
-
 static int VFixRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -1295,11 +1310,6 @@ static int VFixRelation(Draw_Interpretor& di, Standard_Integer argc, const char*
 //purpose  : 
 //Draw arg : vdiameterdim Name DiameterValue
 //==============================================================================
-#include <AIS_IdenticRelation.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopExp_Explorer.hxx>
-
-
 static int VIdenticRelation(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -1436,18 +1446,6 @@ static int VIdenticRelation(Draw_Interpretor& di, Standard_Integer argc, const c
 //purpose  : Display the diameter dimension of a face or an edge.
 //Draw arg : vdiameterdim Name DiameterValue
 //==============================================================================
-#include <AIS_LengthDimension.hxx>
-#include <BRepExtrema_ExtCC.hxx>
-#include <BRepExtrema_ExtPC.hxx>
-#include <BRepExtrema_ExtCF.hxx>
-#include <BRepExtrema_ExtPF.hxx>
-#include <BRepExtrema_ExtFF.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <BRepExtrema_DistShapeShape.hxx>
-#include <gce_MakePln.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
-
 static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -1738,12 +1736,6 @@ static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const c
 //purpose  : Display the radius dimension of a face or an edge.
 //Draw arg : vradiusdim Name 
 //==============================================================================
-#include <AIS_RadiusDimension.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <gp_Circ.hxx>
-
-
 static int VRadiusDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -1831,11 +1823,6 @@ static int VRadiusDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const 
 //purpose  : Display the offset dimension
 //Draw arg : voffsetdim Name 
 //==============================================================================
-#include <AIS_OffsetDimension.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <BRepExtrema_ExtFF.hxx>
-
-
 static int VOffsetDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -1924,15 +1911,6 @@ static int VOffsetDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const 
 //purpose  : Display the parallel relation 
 //Draw arg : vparallel Name 
 //==============================================================================
-#include <AIS_ParallelRelation.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <BRepExtrema_ExtFF.hxx>
-#include <BRepExtrema_ExtCC.hxx>
-#include <GC_MakePlane.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopExp_Explorer.hxx>
-
-
 static int VParallelBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -2081,14 +2059,6 @@ static int VParallelBuilder(Draw_Interpretor& di, Standard_Integer argc, const c
 //purpose  : Display the Perpendicular Relation
 //Draw arg : vperpendicular Name 
 //==============================================================================
-#include <AIS_PerpendicularRelation.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <GC_MakePlane.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopExp_Explorer.hxx>
-
-
-
 static int VPerpendicularBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -2231,9 +2201,6 @@ static int VPerpendicularBuilder(Draw_Interpretor& di, Standard_Integer argc, co
 //purpose  : Display the tangent Relation
 //Draw arg : vtangent Name 
 //==============================================================================
-#include <AIS_TangentRelation.hxx>
-
-
 static int VTangentBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
@@ -2372,11 +2339,6 @@ static int VTangentBuilder(Draw_Interpretor& di, Standard_Integer argc, const ch
 //purpose  : Display the Symetrical Relation
 //Draw arg : vsymetric Name 
 //==============================================================================
-#include <AIS_SymmetricRelation.hxx>
-#include <AIS_InteractiveObject.hxx>
-#include <AIS_Dimension.hxx>
-
-
 static int VSymmetricBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations

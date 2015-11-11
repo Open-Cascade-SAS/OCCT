@@ -65,7 +65,7 @@ DEFINE_STANDARD_HANDLE (AIS_LengthDimension, AIS_Dimension)
 //! In case of face-edge, edge-vertex or face-face lengthes the automatic plane
 //! computing is allowed. For this plane the third point is found on the
 //! edge or on the face.
-//! 
+//!
 //! Please note that if the inappropriate geometry is defined
 //! or the distance between measured points is less than
 //! Precision::Confusion(), the dimension is invalid and its
@@ -80,8 +80,6 @@ public:
   //! @param theEdge [in] the edge (second shape).
   Standard_EXPORT AIS_LengthDimension (const TopoDS_Face& theFace,
                                        const TopoDS_Edge& theEdge);
-
-public:
 
   //! Construct length dimension between two faces.
   //! @param theFirstFace [in] the first face (first shape).

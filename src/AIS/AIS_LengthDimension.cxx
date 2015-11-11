@@ -19,6 +19,7 @@
 #include <AIS.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <BRepTools.hxx>
@@ -26,8 +27,8 @@
 #include <ElSLib.hxx>
 #include <gce_MakeDir.hxx>
 #include <gce_MakePln.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <GeomAPI_ExtremaCurveSurface.hxx>
 #include <GeomAPI_ExtremaSurfaceSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
@@ -433,28 +434,32 @@ Standard_Boolean AIS_LengthDimension::InitEdgeFaceLength (const TopoDS_Edge& the
                                                           const TopoDS_Face& theFace,
                                                           gp_Dir& theEdgeDir)
 {
-  Handle(Geom_Curve) aCurve;
-  gp_Pnt aFirstPoint, aSecondPoint;
-  Standard_Boolean isInfinite = Standard_False;
-
-  if (!AIS::ComputeGeometry (theEdge, aCurve, aFirstPoint, aSecondPoint, isInfinite))
+  // Compute edge direction
+  BRepAdaptor_Curve aCurveAdaptor (theEdge);
+  Handle(Geom_Curve) aCurve = Handle(Geom_Curve)::DownCast (aCurveAdaptor.Curve().Curve()->Transformed (aCurveAdaptor.Trsf()));
+  if (aCurve.IsNull())
   {
     return Standard_False;
   }
-  theEdgeDir = gce_MakeDir (aFirstPoint, aSecondPoint);
-  gp_Pln aPlane;
-  Handle(Geom_Surface) aSurface;
-  AIS_KindOfSurface aSurfType;
-  Standard_Real anOffset;
-
-  if (!AIS::GetPlaneFromFace (theFace, aPlane, aSurface, aSurfType, anOffset))
+  Standard_Real aFirst = aCurveAdaptor.FirstParameter();
+  Standard_Real aLast = aCurveAdaptor.LastParameter();
+  gp_Pnt aFirstPoint = !Precision::IsInfinite (aFirst) ? aCurve->Value (aFirst) : gp::Origin();
+  gp_Pnt aSecondPoint = !Precision::IsInfinite (aLast) ? aCurve->Value (aLast) : gp::Origin();
+  gce_MakeDir aMakeDir (aFirstPoint, aSecondPoint);
+  if (!aMakeDir.IsDone())
   {
     return Standard_False;
   }
+  theEdgeDir = aMakeDir.Value();
 
-  GeomAPI_ExtremaCurveSurface aDistAdaptor (aCurve, aSurface);
-
-  aDistAdaptor.NearestPoints (myFirstPoint, mySecondPoint);
+  // Find attachment points
+  BRepExtrema_DistShapeShape aDistAdaptor (theEdge, theFace, Extrema_ExtFlag_MIN);
+  if (!aDistAdaptor.IsDone())
+  {
+    return Standard_False;
+  }
+  myFirstPoint = aDistAdaptor.PointOnShape1 (1);
+  mySecondPoint = aDistAdaptor.PointOnShape2 (1);
 
   return IsValidPoints (myFirstPoint, mySecondPoint);
 }
@@ -578,11 +583,11 @@ Standard_Boolean AIS_LengthDimension::InitTwoShapesPoints (const TopoDS_Shape& t
 
         return isSuccess && IsValidPoints (myFirstPoint, mySecondPoint);
       }
-      else if (theFirstShape.ShapeType() == TopAbs_EDGE)
+      else if (theSecondShape.ShapeType() == TopAbs_EDGE)
       {
         myGeometryType = GeometryType_EdgeFace;
-        isSuccess = InitEdgeFaceLength (TopoDS::Edge (theFirstShape),
-                                        TopoDS::Face (theSecondShape),
+        isSuccess = InitEdgeFaceLength (TopoDS::Edge (theSecondShape),
+                                        TopoDS::Face (theFirstShape),
                                         aDirAttach);
 
         if (isSuccess)
@@ -619,6 +624,21 @@ Standard_Boolean AIS_LengthDimension::InitTwoShapesPoints (const TopoDS_Shape& t
         myGeometryType = GeometryType_Edges;
         isSuccess = InitTwoEdgesLength (TopoDS::Edge (theFirstShape),
                                         TopoDS::Edge (theSecondShape),
+                                        aDirAttach);
+
+        if (isSuccess)
+        {
+          theComputedPlane = ComputePlane (aDirAttach);
+          theIsPlaneComputed = Standard_True;
+        }
+
+        return isSuccess;
+      }
+      else if (theSecondShape.ShapeType() == TopAbs_FACE)
+      {
+        myGeometryType = GeometryType_EdgeFace;
+        isSuccess = InitEdgeFaceLength (TopoDS::Edge (theFirstShape),
+                                        TopoDS::Face (theSecondShape),
                                         aDirAttach);
 
         if (isSuccess)
