@@ -583,6 +583,13 @@ public: //! @name methods to alter or retrieve current state
 
   Standard_EXPORT void DisableFeatures() const;
 
+  //! Set resolution ratio.
+  //! Note that this method rounds @theRatio to nearest integer.
+  void SetResolutionRatio (const Standard_ShortReal theRatio)
+  {
+    myResolutionRatio = Max (1.0f, std::floor (theRatio + 0.5f));
+  }
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -695,16 +702,18 @@ private: // context info
 
 private: //! @name fields tracking current state
 
-  Handle(OpenGl_ShaderProgram) myActiveProgram; //!< currently active GLSL program
-  Handle(OpenGl_Sampler)       myTexSampler;    //!< currently active sampler object
-  Handle(OpenGl_FrameBuffer)   myDefaultFbo;    //!< default Frame Buffer Object
-  Standard_Integer             myRenderMode;    //!< value for active rendering mode
-  Standard_Integer             myReadBuffer;    //!< current read buffer
-  Standard_Integer             myDrawBuffer;    //!< current draw buffer
-  unsigned int                 myDefaultVao;    //!< default Vertex Array Object
-  Standard_Boolean             myIsGlDebugCtx;  //!< debug context initialization state
-  TCollection_AsciiString      myVendor;        //!< Graphics Driver's vendor
-  TColStd_PackedMapOfInteger   myFilters[6];    //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
+  Handle(OpenGl_ShaderProgram) myActiveProgram;   //!< currently active GLSL program
+  Handle(OpenGl_Sampler)       myTexSampler;      //!< currently active sampler object
+  Handle(OpenGl_FrameBuffer)   myDefaultFbo;      //!< default Frame Buffer Object
+  Standard_Integer             myRenderMode;      //!< value for active rendering mode
+  Standard_Integer             myReadBuffer;      //!< current read buffer
+  Standard_Integer             myDrawBuffer;      //!< current draw buffer
+  unsigned int                 myDefaultVao;      //!< default Vertex Array Object
+  Standard_Boolean             myIsGlDebugCtx;    //!< debug context initialization state
+  TCollection_AsciiString      myVendor;          //!< Graphics Driver's vendor
+  TColStd_PackedMapOfInteger   myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
+  Standard_ShortReal           myResolutionRatio; //!< scaling factor for parameters like text size
+                                                  //!< to be properly displayed on device (screen / printer)
 
 public:
 

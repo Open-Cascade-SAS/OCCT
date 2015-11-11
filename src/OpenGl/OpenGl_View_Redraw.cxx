@@ -281,6 +281,9 @@ void OpenGl_View::Redraw()
   // fetch OpenGl context state
   aCtx->FetchState();
 
+  // set resolution ratio
+  aCtx->SetResolutionRatio (RenderingParams().ResolutionRatio());
+
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )myFBO;
   bool toSwap = aCtx->IsRender()
             && !aCtx->caps->buffersNoSwap

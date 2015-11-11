@@ -79,6 +79,12 @@ public:
     AnaglyphRight.SetRow (3, aZero);
   }
 
+  //! Returns resolution ratio.
+  Standard_ShortReal ResolutionRatio() const
+  {
+    return Resolution / static_cast<Standard_ShortReal> (THE_DEFAULT_RESOLUTION);
+  }
+
 public:
 
   Graphic3d_RenderingMode Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default

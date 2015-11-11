@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC26790 apply view resolution to the line width"
+puts "============"
+puts ""
+pload VISUALIZATION
+
+vclear
+vclose all
+
+vinit View1
+
+box b0 1 2 3
+
+vdisplay b0
+vfit
+
+vdump $imagedir/${casename}_1.png
+
+vrenderparams -resolution 144
+
+vdump $imagedir/${casename}_2.png

@@ -140,7 +140,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myReadBuffer (0),
   myDrawBuffer (0),
   myDefaultVao (0),
-  myIsGlDebugCtx (Standard_False)
+  myIsGlDebugCtx (Standard_False),
+  myResolutionRatio (1.0f)
 {
   // system-dependent fields
 #if defined(HAVE_EGL)
@@ -2607,7 +2608,7 @@ void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
   if (core11 != NULL)
   {
     // glLineWidth() is still defined within Core Profile, but has no effect with values != 1.0f
-    core11fwd->glLineWidth (theWidth);
+    core11fwd->glLineWidth (theWidth * myResolutionRatio);
   }
 #ifdef HAVE_GL2PS
   if (IsFeedback())
