@@ -247,10 +247,15 @@ endif()
 mark_as_advanced (3RDPARTY_TCL_LIBRARY 3RDPARTY_TCL_DLL)
 
 if (TK_FOUND AND 3RDPARTY_TCL_DIR)
-  get_filename_component (3RDPARTY_TK_WISH_DIR "${TK_WISH}" PATH)
-  get_filename_component (3RDPARTY_TK_WISH_DIR_PARENT "${3RDPARTY_TK_WISH_DIR}" PATH)
-  if ("${3RDPARTY_TK_WISH_DIR_PARENT}" STREQUAL "${3RDPARTY_TCL_DIR}")
+
+  get_filename_component (TK_WISH_ABSOLUTE          "${TK_WISH}"          ABSOLUTE)
+  get_filename_component (3RDPARTY_TCL_DIR_ABSOLUTE "${3RDPARTY_TCL_DIR}" ABSOLUTE)
+
+  string (FIND "${TK_WISH_ABSOLUTE}" "${3RDPARTY_TCL_DIR_ABSOLUTE}" THE_SAME_FOLDER)
+
+  if (${THE_SAME_FOLDER} EQUAL 0)
     set (3RDPARTY_TCLTK_DIR "${3RDPARTY_TCL_DIR}")
+    message (STATUS "Info. TK is used from TCL folder: ${3RDPARTY_TCLTK_DIR}")
   endif()
 endif()
 
