@@ -19,11 +19,13 @@
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Vec.hxx>
 
-#include <Font_FTFont.hxx>
+#include <Font_Rect.hxx>
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
 #include <TCollection_AsciiString.hxx>
+
+class Font_FTFont;
 
 //! Texture font.
 class OpenGl_Font : public OpenGl_Resource
@@ -34,9 +36,9 @@ public:
   //! Simple structure stores tile rectangle.
   struct Tile
   {
-    Font_FTFont::Rect uv;      //!< UV coordinates in texture
-    Font_FTFont::Rect px;      //!< pixel displacement coordinates
-    GLuint            texture; //!< GL texture ID
+    Font_Rect uv;      //!< UV coordinates in texture
+    Font_Rect px;      //!< pixel displacement coordinates
+    GLuint    texture; //!< GL texture ID
   };
 
   struct RectI
@@ -71,12 +73,6 @@ public:
     return myFont;
   }
 
-  //! @return FreeType font instance specified on construction.
-  inline Handle(Font_FTFont)& FTFont()
-  {
-    return myFont;
-  }
-
   //! @return true if font was loaded successfully.
   inline bool IsValid() const
   {
@@ -94,14 +90,6 @@ public:
   //! Initialize GL resources.
   //! FreeType font instance should be already initialized!
   Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theCtx);
-
-  //! Compute advance to the next character with kerning applied when applicable.
-  //! Assuming text rendered horizontally.
-  inline float AdvanceX (const Standard_Utf32Char theUChar,
-                         const Standard_Utf32Char theUCharNext)
-  {
-    return myFont->AdvanceX (theUChar, theUCharNext);
-  }
 
   //! @return vertical distance from the horizontal baseline to the highest character coordinate
   inline float Ascender() const

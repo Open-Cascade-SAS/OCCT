@@ -147,7 +147,7 @@ public:
   Standard_EXPORT virtual void Invalidate() Standard_OVERRIDE;
 
   //! Return true if view content cache has been invalidated.
-  virtual Standard_Boolean IsInvalidated() Standard_OVERRIDE { return myBackBufferRestored; }
+  virtual Standard_Boolean IsInvalidated() Standard_OVERRIDE { return !myBackBufferRestored; }
 
   //! Displays z-buffer trihedron.
   Standard_EXPORT virtual void TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition = Aspect_TOTP_CENTER,

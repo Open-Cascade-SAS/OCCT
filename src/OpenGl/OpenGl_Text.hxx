@@ -146,7 +146,7 @@ protected:
   mutable NCollection_Vector<GLuint>                      myTextures;   //!< textures' IDs
   mutable NCollection_Vector<Handle(OpenGl_VertexBuffer)> myVertsVbo;   //!< VBOs of vertices
   mutable NCollection_Vector<Handle(OpenGl_VertexBuffer)> myTCrdsVbo;   //!< VBOs of texture coordinates
-  mutable Font_FTFont::Rect                               myBndBox;
+  mutable Font_Rect                                       myBndBox;
 
 protected:
 

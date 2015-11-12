@@ -15,6 +15,8 @@
 
 #include <Font_TextFormatter.hxx>
 
+#include <Font_FTFont.hxx>
+
 namespace
 {
   typedef NCollection_Vec2<Standard_ShortReal> Vec2f;

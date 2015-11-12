@@ -24,6 +24,7 @@
 #include <OpenGl_View.hxx>
 
 #include <Font_FontMgr.hxx>
+#include <Font_FTFont.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -382,16 +383,16 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
     }
     else if (aCharThis == ' ')
     {
-      aWidth += aFont->AdvanceX (aCharThis, aCharNext);
+      aWidth += aFont->FTFont()->AdvanceX (aCharThis, aCharNext);
       continue;
     }
     else if (aCharThis == '\t')
     {
-      aWidth += aFont->AdvanceX (' ', aCharNext) * 8.0f;
+      aWidth += aFont->FTFont()->AdvanceX (' ', aCharNext) * 8.0f;
       continue;
     }
 
-    aWidth += aFont->AdvanceX (aCharThis, aCharNext);
+    aWidth += aFont->FTFont()->AdvanceX (aCharThis, aCharNext);
   }
   theWidth = Max (theWidth, aWidth);
 
@@ -735,7 +736,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     aFormatter.SetupAlignment (myParams.HAlign, myParams.VAlign);
     aFormatter.Reset();
 
-    aFormatter.Append (myString, *myFont->FTFont());
+    aFormatter.Append (myString, *myFont->FTFont().operator->());
     aFormatter.Format();
 
     OpenGl_TextBuilder aBuilder;

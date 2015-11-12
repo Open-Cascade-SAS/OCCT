@@ -16,13 +16,14 @@
 #ifndef _D3DHost_View_HeaderFile
 #define _D3DHost_View_HeaderFile
 
-#include <d3d9.h>
-
 #include <D3DHost_FrameBuffer.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 
 class D3DHost_GraphicDriver;
+struct IDirect3D9;
+struct IDirect3DDevice9;
+typedef struct _D3DPRESENT_PARAMETERS_ D3DPRESENT_PARAMETERS;
 
 //! The D3D host view implementation that overrides rendering methods.
 class D3DHost_View : public OpenGl_View
@@ -75,7 +76,7 @@ public:
 protected:
 
   //! Auxiliary method.
-  Standard_EXPORT static TCollection_AsciiString d3dFormatError (HRESULT theErrCode);
+  Standard_EXPORT static TCollection_AsciiString d3dFormatError (const long theErrCode);
 
   //! Initialize the D3D library.
   Standard_EXPORT bool d3dInitLib();
@@ -104,9 +105,9 @@ protected:
 
   IDirect3D9*                 myD3dLib;      //!< Direct3D library instance
   IDirect3DDevice9*           myD3dDevice;   //!< Direct3D device object
-  D3DPRESENT_PARAMETERS       myD3dParams;   //!< parameters for created Direct3D device
-  D3DDISPLAYMODE              myCurrMode;    //!< temporary variable
-  UINT                        myRefreshRate; //!< refresh rate in fullscreen mode
+  NCollection_Handle<D3DPRESENT_PARAMETERS>
+                              myD3dParams;   //!< parameters for created Direct3D device
+  unsigned int                myRefreshRate; //!< refresh rate in fullscreen mode
   bool                        myIsD3dEx;     //!< D3dEx flag for WDDM
   Handle(D3DHost_FrameBuffer) myD3dWglFbo;   //!< D3D/WGL interop FBO
 

@@ -19,6 +19,7 @@
 #include <OpenGl_FrameBuffer.hxx>
 
 struct IDirect3DDevice9;
+struct IDirect3DSurface9;
 
 //! Implements bridge FBO for direct rendering to Direct3D surfaces.
 class D3DHost_FrameBuffer : public OpenGl_FrameBuffer
@@ -58,7 +59,7 @@ public:
   IDirect3DSurface9* D3dColorSurface()      { return myD3dSurf; }
 
   //! Returns WDDM hande for D3D color surface.
-  HANDLE             D3dColorSurfaceShare() { return myD3dSurfShare; }
+  void*              D3dColorSurfaceShare() { return myD3dSurfShare; }
 
 protected:
 
@@ -67,9 +68,9 @@ protected:
 protected:
 
   IDirect3DSurface9* myD3dSurf;      //!< D3D surface
-  HANDLE             myD3dSurfShare; //!< D3D surface share handle in WDDM
-  HANDLE             myGlD3dDevice;  //!< WGL/D3D device  handle
-  HANDLE             myGlD3dSurf;    //!< WGL/D3D surface handle
+  void*              myD3dSurfShare; //!< D3D surface share handle in WDDM
+  void*              myGlD3dDevice;  //!< WGL/D3D device  handle
+  void*              myGlD3dSurf;    //!< WGL/D3D surface handle
   Standard_Integer   myLockCount;    //!< locking counter
 
 public:

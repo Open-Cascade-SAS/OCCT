@@ -16,9 +16,14 @@
 #ifndef Font_TextFormatter_Header
 #define Font_TextFormatter_Header
 
-#include <Font_FTFont.hxx>
+#include <Font_Rect.hxx>
+#include <Graphic3d_HorizontalTextAlignment.hxx>
+#include <Graphic3d_VerticalTextAlignment.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
+#include <NCollection_String.hxx>
+
+class Font_FTFont;
 
 //! This class intended to prepare formatted text.
 class Font_TextFormatter
@@ -74,7 +79,7 @@ public:
   }
 
   //! @param bounding box.
-  inline void BndBox (Font_FTFont::Rect& theBndBox) const
+  inline void BndBox (Font_Rect& theBndBox) const
   {
     theBndBox.Left = 0.0f;
     switch (myAlignX)

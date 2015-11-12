@@ -16,6 +16,7 @@
 #include <OpenGl_Font.hxx>
 
 #include <OpenGl_Context.hxx>
+#include <Font_FTFont.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Standard_Assert.hxx>
 #include <TCollection_ExtendedString.hxx>

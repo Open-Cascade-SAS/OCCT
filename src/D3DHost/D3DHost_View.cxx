@@ -13,6 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <d3d9.h>
+
 #include <D3DHost_View.hxx>
 
 #include <D3DHost_GraphicDriver.hxx>
@@ -22,7 +24,7 @@
 // function : d3dFormatError
 // purpose  :
 // =======================================================================
-TCollection_AsciiString D3DHost_View::d3dFormatError (HRESULT theErrCode)
+TCollection_AsciiString D3DHost_View::d3dFormatError (const long theErrCode)
 {
   switch (theErrCode)
   {
@@ -48,22 +50,22 @@ D3DHost_View::D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
 : OpenGl_View (theMgr, theDriver, theCaps, theDeviceLostFlag, theCounter),
   myD3dLib      (NULL),
   myD3dDevice   (NULL),
+  myD3dParams   (new D3DPRESENT_PARAMETERS()),
   myRefreshRate (D3DPRESENT_RATE_DEFAULT),
   myIsD3dEx     (false)
 {
-  memset(&myD3dParams, 0, sizeof(myD3dParams));
-  memset(&myCurrMode,  0, sizeof(myCurrMode));
+  memset(myD3dParams.operator->(), 0, sizeof(D3DPRESENT_PARAMETERS));
 
-  myD3dParams.Windowed         = TRUE;
-  myD3dParams.SwapEffect       = D3DSWAPEFFECT_DISCARD;
-  myD3dParams.BackBufferFormat = D3DFMT_X8R8G8B8;
-  myD3dParams.BackBufferCount  = 1;
-  myD3dParams.BackBufferHeight = 2;
-  myD3dParams.BackBufferWidth  = 2;
-  myD3dParams.EnableAutoDepthStencil     = FALSE;
-  myD3dParams.AutoDepthStencilFormat     = D3DFMT_D16_LOCKABLE;
-  myD3dParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-  myD3dParams.PresentationInterval       = D3DPRESENT_INTERVAL_DEFAULT;
+  myD3dParams->Windowed         = TRUE;
+  myD3dParams->SwapEffect       = D3DSWAPEFFECT_DISCARD;
+  myD3dParams->BackBufferFormat = D3DFMT_X8R8G8B8;
+  myD3dParams->BackBufferCount  = 1;
+  myD3dParams->BackBufferHeight = 2;
+  myD3dParams->BackBufferWidth  = 2;
+  myD3dParams->EnableAutoDepthStencil     = FALSE;
+  myD3dParams->AutoDepthStencilFormat     = D3DFMT_D16_LOCKABLE;
+  myD3dParams->FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+  myD3dParams->PresentationInterval       = D3DPRESENT_INTERVAL_DEFAULT;
 }
 
 // =======================================================================
@@ -166,21 +168,23 @@ bool D3DHost_View::d3dInit()
   UINT anAdapterId = D3DADAPTER_DEFAULT;
 
   // setup the present parameters
-  if (myD3dLib->GetAdapterDisplayMode (anAdapterId, &myCurrMode) == D3D_OK)
+  D3DDISPLAYMODE aCurrMode;
+  memset(&aCurrMode, 0, sizeof(aCurrMode));
+  if (myD3dLib->GetAdapterDisplayMode (anAdapterId, &aCurrMode) == D3D_OK)
   {
-    myD3dParams.BackBufferFormat = myCurrMode.Format;
-    myRefreshRate = myCurrMode.RefreshRate;
+    myD3dParams->BackBufferFormat = aCurrMode.Format;
+    myRefreshRate = aCurrMode.RefreshRate;
   }
-  myD3dParams.Windowed         = TRUE;
-  myD3dParams.BackBufferWidth  = myWindow->Width();
-  myD3dParams.BackBufferHeight = myWindow->Height();
-  myD3dParams.hDeviceWindow    = (HWND )myWindow->PlatformWindow()->NativeHandle();
+  myD3dParams->Windowed         = TRUE;
+  myD3dParams->BackBufferWidth  = myWindow->Width();
+  myD3dParams->BackBufferHeight = myWindow->Height();
+  myD3dParams->hDeviceWindow    = (HWND )myWindow->PlatformWindow()->NativeHandle();
 
   // create the Video Device
   HRESULT isOK = myD3dLib->CreateDevice (anAdapterId, D3DDEVTYPE_HAL,
                                          (HWND )myWindow->PlatformWindow()->NativeHandle(),
                                          D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED | D3DCREATE_FPU_PRESERVE,
-                                         &myD3dParams, &myD3dDevice);
+                                         myD3dParams.get(), &myD3dDevice);
   if (isOK < 0)
   {
     return false;
@@ -200,13 +204,13 @@ bool D3DHost_View::d3dReset()
     return false;
   }
 
-  myD3dParams.Windowed         = TRUE;
-  myD3dParams.BackBufferWidth  = myWindow->Width();
-  myD3dParams.BackBufferHeight = myWindow->Height();
-  myD3dParams.hDeviceWindow    = (HWND )myWindow->PlatformWindow()->NativeHandle();
-  myD3dParams.FullScreen_RefreshRateInHz = !myD3dParams.Windowed ? myRefreshRate : 0;
+  myD3dParams->Windowed         = TRUE;
+  myD3dParams->BackBufferWidth  = myWindow->Width();
+  myD3dParams->BackBufferHeight = myWindow->Height();
+  myD3dParams->hDeviceWindow    = (HWND )myWindow->PlatformWindow()->NativeHandle();
+  myD3dParams->FullScreen_RefreshRateInHz = !myD3dParams->Windowed ? myRefreshRate : 0;
 
-  HRESULT isOK = myD3dDevice->Reset(&myD3dParams);
+  HRESULT isOK = myD3dDevice->Reset(myD3dParams.get());
   return isOK == D3D_OK;
 }
 
@@ -297,11 +301,18 @@ void D3DHost_View::Redraw()
   {
     return;
   }
+  else if (myFBO != NULL)
+  {
+    OpenGl_View::Redraw();
+    return;
+  }
 
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   myToFlipOutput = Standard_True;
   myD3dWglFbo->LockSurface   (aCtx);
+  myFBO = myD3dWglFbo.get();
   OpenGl_View::Redraw();
+  myFBO = NULL;
   myD3dWglFbo->UnlockSurface (aCtx);
   myToFlipOutput = Standard_False;
   if (aCtx->caps->buffersNoSwap)
@@ -340,10 +351,17 @@ void D3DHost_View::RedrawImmediate()
   {
     return;
   }
+  else if (myFBO != NULL)
+  {
+    OpenGl_View::Redraw();
+    return;
+  }
 
   myToFlipOutput = Standard_True;
   myD3dWglFbo->LockSurface   (aCtx);
+  myFBO = myD3dWglFbo.get();
   OpenGl_View::RedrawImmediate();
+  myFBO = NULL;
   myD3dWglFbo->UnlockSurface (aCtx);
   myToFlipOutput = Standard_False;
   if (aCtx->caps->buffersNoSwap)
