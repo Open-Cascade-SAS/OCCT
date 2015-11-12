@@ -1,37 +1,3 @@
 project(TKOpenGl)
 
-set (TOOLKIT_MODULES
-  OpenGl
-)
-
-if (WIN32)
-  list( APPEND USED_LIBS opengl32.lib )
-  list( APPEND USED_LIBS user32.lib )
-  list( APPEND USED_LIBS gdi32.lib )
-  list( APPEND USED_LIBS ws2_32.lib )
-  list( APPEND USED_LIBS vfw32.lib )
-elseif(APPLE)
-  find_library(FRAMEWORKS_OPENGL NAMES OpenGL)
-  if(USE_GLX)
-    list( APPEND USED_LIBS GL )
-  else()
-    list( APPEND USED_LIBS ${FRAMEWORKS_OPENGL} )
-  endif()
-  list( APPEND USED_LIBS objc )
-  find_library(FRAMEWORKS_APPKIT NAMES Appkit)
-  list( APPEND USED_LIBS ${FRAMEWORKS_APPKIT} )
-  find_library(FRAMEWORKS_IOKIT NAMES IOKit)
-  list( APPEND USED_LIBS ${FRAMEWORKS_IOKIT} )
-  list( APPEND USED_LIBS freetype )
-else()
-  list( APPEND USED_LIBS GL )
-  list( APPEND USED_LIBS freetype )
-endif()
-
-if (NOT WIN32)
-  if(USE_GL2PS)
-    list( APPEND USED_LIBS gl2ps )
-  endif()
-endif()
-
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)

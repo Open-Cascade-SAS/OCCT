@@ -9,7 +9,7 @@ endif()
 # BISON_EXECUTABLE is required by BISON_TARGET macro and should be defined
 set (BISON_EXECUTABLE "${3RDPARTY_BISON_EXECUTABLE}" CACHE FILEPATH "path to the bison executable" FORCE)
 
-find_package (Bison)
+find_package (BISON)
 
 if (BISON_FOUND)
   set (3RDPARTY_BISON_EXECUTABLE "${BISON_EXECUTABLE}" CACHE FILEPATH "The Path to the bison command" FORCE)

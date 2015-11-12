@@ -66,43 +66,57 @@ if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
 endif()
 
 # vtk libraries
-# lib
-set (VTK_LIBRARY_NAMES vtkCommonCore-${VTK_VERSION}.lib vtkCommonDataModel-${VTK_VERSION}.lib vtkCommonExecutionModel-${VTK_VERSION}.lib
-                       vtkCommonMath-${VTK_VERSION}.lib vtkCommonTransforms-${VTK_VERSION}.lib vtkRenderingCore-${VTK_VERSION}.lib
-                       vtkRenderingOpenGL-${VTK_VERSION}.lib vtkFiltersGeneral-${VTK_VERSION}.lib vtkIOCore-${VTK_VERSION}.lib
-                       vtkIOImage-${VTK_VERSION}.lib vtkImagingCore-${VTK_VERSION}.lib vtkInteractionStyle-${VTK_VERSION}.lib )
+set (VTK_LIB_EXTENSION so.1)
+set (VTK_DLL_EXTENSION so.1)
+if (WIN32)
+  set (VTK_LIB_EXTENSION lib)
+  set (VTK_DLL_EXTENSION dll)
+endif()
+
+set (VTK_LIBRARY_NAMES vtkCommonCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkCommonDataModel-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkCommonExecutionModel-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkCommonMath-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkCommonTransforms-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkRenderingCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkRenderingOpenGL-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkFiltersGeneral-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkIOCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkIOImage-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkImagingCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
+                       vtkInteractionStyle-${VTK_VERSION}.${VTK_LIB_EXTENSION})
 
 #dll
-set (VTK_DLL_NAMES vtkCommonComputationalGeometry-${VTK_VERSION}.dll
-                   vtkCommonCore-${VTK_VERSION}.dll
-                   vtkCommonDataModel-${VTK_VERSION}.dll
-                   vtkCommonExecutionModel-${VTK_VERSION}.dll
-                   vtkCommonMath-${VTK_VERSION}.dll
-                   vtkCommonMisc-${VTK_VERSION}.dll
-                   vtkCommonSystem-${VTK_VERSION}.dll
-                   vtkCommonTransforms-${VTK_VERSION}.dll
-                   vtkDICOMParser-${VTK_VERSION}.dll
-                   vtkFiltersCore-${VTK_VERSION}.dll
-                   vtkFiltersExtraction-${VTK_VERSION}.dll
-                   vtkFiltersGeneral-${VTK_VERSION}.dll
-                   vtkFiltersGeometry-${VTK_VERSION}.dll
-                   vtkFiltersSources-${VTK_VERSION}.dll
-                   vtkFiltersStatistics-${VTK_VERSION}.dll
-                   vtkIOCore-${VTK_VERSION}.dll
-                   vtkIOImage-${VTK_VERSION}.dll
-                   vtkImagingCore-${VTK_VERSION}.dll
-                   vtkImagingFourier-${VTK_VERSION}.dll
-                   vtkImagingHybrid-${VTK_VERSION}.dll
-                   vtkInteractionStyle-${VTK_VERSION}.dll
-                   vtkRenderingCore-${VTK_VERSION}.dll
-                   vtkRenderingOpenGL-${VTK_VERSION}.dll
-                   vtkalglib-${VTK_VERSION}.dll
-                   vtkjpeg-${VTK_VERSION}.dll
-                   vtkmetaio-${VTK_VERSION}.dll
-                   vtkpng-${VTK_VERSION}.dll
-                   vtksys-${VTK_VERSION}.dll
-                   vtktiff-${VTK_VERSION}.dll
-                   vtkzlib-${VTK_VERSION}.dll )
+set (VTK_DLL_NAMES vtkCommonComputationalGeometry-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkCommonCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkCommonDataModel-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkCommonExecutionModel-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkCommonMath-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkCommonMisc-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkCommonSystem-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkCommonTransforms-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkDICOMParser-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkFiltersCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkFiltersExtraction-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkFiltersGeneral-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkFiltersGeometry-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkFiltersSources-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkFiltersStatistics-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkIOCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkIOImage-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkImagingCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkImagingFourier-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkImagingHybrid-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkInteractionStyle-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkRenderingCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkRenderingOpenGL-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkalglib-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkjpeg-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkmetaio-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkpng-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtksys-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtktiff-${VTK_VERSION}.${VTK_DLL_EXTENSION}
+                   vtkzlib-${VTK_VERSION}.${VTK_DLL_EXTENSION} )
 
 # search for dll directory
 if (WIN32)
@@ -130,12 +144,15 @@ endif()
 if (INSTALL_VTK)
   OCCT_MAKE_OS_WITH_BITNESS()
   OCCT_MAKE_COMPILER_SHORT_NAME()
+
   if (WIN32)
     if(3RDPARTY_VTK_DLL_DIR AND EXISTS "${3RDPARTY_VTK_DLL_DIR}")
       set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
       foreach(VTK_DLL_NAME ${VTK_DLL_NAMES})
+        
         set (3RDPARTY_VTK_DLL "3RDPARTY_VTK_DLL-NOTFOUND" CACHE FILEPATH "VTK shared library" FORCE)
         find_library(3RDPARTY_VTK_DLL "${VTK_DLL_NAME}" PATHS "${3RDPARTY_VTK_DLL_DIR}" NO_DEFAULT_PATH)
+        
         if (NOT 3RDPARTY_VTK_DLL OR NOT EXISTS "${3RDPARTY_VTK_DLL}")
           list (APPEND 3RDPARTY_NOT_INCLUDED "${3RDPARTY_VTK_DLL}")
         else()
@@ -154,7 +171,6 @@ if (INSTALL_VTK)
     endif()
   else ()
     foreach(VTK_DLL_NAME ${VTK_DLL_NAMES})
-      string(REPLACE ".dll" ".so.1" VTK_DLL_NAME "${VTK_DLL_NAME}")
       install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
               CONFIGURATIONS Release
               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"

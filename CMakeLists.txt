@@ -133,7 +133,7 @@ OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
 list (FIND BUILD_TOOLKITS TKMath   CAN_REBUILD_PDC_FOR_TKMATH)
 list (FIND BUILD_TOOLKITS StepFile CAN_REBUILD_PDC_FOR_STEPFILE)
 
-if (NOT "${CAN_REBUILD_PDC_FOR_TKMATH}" STREQUAL "-1" OR NOT "${CAN_REBUILD_PDC_FOR_STEPFILE}" STREQUAL "-1")
+if (NOT ${CAN_REBUILD_PDC_FOR_TKMATH} EQUAL -1 OR NOT ${CAN_REBUILD_PDC_FOR_STEPFILE} EQUAL -1)
   set (REBUILD_PLATFORM_DEPENDENT_CODE OFF CACHE BOOL "${REBUILD_PLATFORM_DEPENDENT_CODE_DESCR}")
 else()
   OCCT_CHECK_AND_UNSET (REBUILD_PLATFORM_DEPENDENT_CODE)
@@ -157,7 +157,7 @@ endif()
 # search for CSF_TclLibs variable in EXTERNLIB of each being used toolkit
 OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
 
-if ("${USE_TCL}" STREQUAL ON)
+if (USE_TCL)
   message (STATUS "Info: TCL is used by OCCT")
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tcl")
   
@@ -174,7 +174,7 @@ endif()
 # search for CSF_FREETYPE variable in EXTERNLIB of each being used toolkit
 OCCT_IS_PRODUCT_REQUIRED (CSF_FREETYPE USE_FREETYPE)
 
-if ("${USE_FREETYPE}" STREQUAL ON)
+if (USE_FREETYPE)
   message (STATUS "Info: Freetype is used by OCCT")
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freetype")
 else()
@@ -239,7 +239,6 @@ endif()
 OCCT_IS_PRODUCT_REQUIRED (CSF_GL2PS CAN_USE_GL2PS)
 
 if (NOT DEFINED ANDROID AND CAN_USE_GL2PS)
-message(STATUS "USE_GL2PS = $ENV{USE_GL2PS} or ${USE_GL2PS}")
   set (USE_GL2PS OFF CACHE BOOL "${USE_GL2PS_DESCR}")
 
   if (USE_GL2PS)
@@ -476,6 +475,9 @@ foreach(RESOURCE ${RESOURCES})
     OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR}/src")
   endif()
 endforeach()
+
+# define CSF variable
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
 
 # include patched toolkit projects or original ones
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
