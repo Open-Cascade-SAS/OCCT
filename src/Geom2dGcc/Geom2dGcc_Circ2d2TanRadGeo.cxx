@@ -836,8 +836,8 @@ pararg2(1,aNbSolMAX)
 #ifdef OCCT_DEBUG
       Standard_Real firstparam = Max(C1.FirstParameter(), thefirst);
       Standard_Real lastparam = Min(C1.LastParameter(), thelast);
-      IntRes2d_Domain D2C1(Geom2dGcc_CurveToolGeo::Value(C1,firstparam),firstparam,Tol,
-        Geom2dGcc_CurveToolGeo::Value(C1,lastparam),lastparam,Tol);
+      IntRes2d_Domain D2C1(C1.Value(firstparam),firstparam,Tol,
+        C1.Value(lastparam),lastparam,Tol);
 #endif
       for (Standard_Integer jcote2 = 1 ; jcote2 <= nbrcote2 ; jcote2++) {
         Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(Cu2);
@@ -845,8 +845,8 @@ pararg2(1,aNbSolMAX)
 #ifdef OCCT_DEBUG
         firstparam = Max(C2.FirstParameter(), thefirst);
         lastparam  = Min(C2.LastParameter(),thelast);
-        IntRes2d_Domain D2C2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
-          Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
+        IntRes2d_Domain D2C2(C2.Value(firstparam),firstparam,Tol,
+          C2.Value(lastparam),lastparam,Tol);
 #endif
         Intp.Perform(C1,C2,Tol,Tol);
         if (Intp.IsDone()) {
