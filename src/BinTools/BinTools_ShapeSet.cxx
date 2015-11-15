@@ -773,7 +773,6 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
   Standard_Real PfX,PfY,PlX,PlY;
   gp_Pnt2d aPf, aPl;
   Standard_Boolean closed, bval;
-  Standard_SStream aMsg;
   GeomAbs_Shape reg = GeomAbs_C0;
   try {
     OCC_CATCH_SIGNALS
@@ -873,6 +872,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	    
 	  default:
 	    {
+              Standard_SStream aMsg;
 	      aMsg << "BinTools_SurfaceSet::ReadGeometry: UnExpected BRep_PointRepresentation = "<< val <<endl;
 	      Standard_Failure::Raise(aMsg);
 	      }
@@ -1067,6 +1067,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
             break;
 	  default:
 	    {
+              Standard_SStream aMsg;
 	      aMsg <<"Unexpected Curve Representation ="<< val << endl;
 	      Standard_Failure::Raise(aMsg);
 	    }
@@ -1153,12 +1154,16 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
       break;
 
     default:
-      aMsg << "Unexpected topology type = "<< T <<endl;
-      Standard_Failure::Raise(aMsg);
-      break;
+      {
+        Standard_SStream aMsg;
+        aMsg << "Unexpected topology type = "<< T <<endl;
+        Standard_Failure::Raise(aMsg);
+        break;
+      }
     }
   }
   catch(Standard_Failure) {
+    Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadGeometry(S,OS)" << endl;
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     aMsg << anExc << endl;
@@ -1233,10 +1238,8 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream& IS)
 {
   char buffer[255];
   IS >> buffer;
-  Standard_SStream aMsg;
   if (IS.fail() || (strstr(buffer,"PolygonOnTriangulations") == NULL)) {
-    aMsg << "BinTools_ShapeSet::ReadPolygonOnTriangulation: Not a PolygonOnTriangulation section" <<endl;
-    Standard_Failure::Raise(aMsg);
+    Standard_Failure::Raise("BinTools_ShapeSet::ReadPolygonOnTriangulation: Not a PolygonOnTriangulation section");
   }
   Standard_Integer i, j, val, nbpol = 0, nbnodes =0;
   Standard_Boolean hasparameters;
@@ -1272,6 +1275,7 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream& IS)
     }
   }
   catch(Standard_Failure) {
+    Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadPolygonOnTriangulation(..)" << endl;
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     aMsg << anExc << endl;
@@ -1337,14 +1341,12 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS)
   Standard_Boolean hasparameters = Standard_False;
   Standard_Real d, x, y, z;
   IS >> buffer;
-  Standard_SStream aMsg;
 
   if (IS.fail() || strstr(buffer,"Polygon3D") == NULL) {
-    aMsg << "BinTools_ShapeSet::ReadPolygon3D: Not a Polygon3D section" <<endl;
 #ifdef OCCT_DEBUG
     cout <<"Buffer: " << buffer << endl;
 #endif
-    Standard_Failure::Raise(aMsg);
+    Standard_Failure::Raise("BinTools_ShapeSet::ReadPolygon3D: Not a Polygon3D section");
   }
   Handle(Poly_Polygon3D) P;
   IS >> nbpol;
@@ -1376,6 +1378,7 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS)
     }
   }
   catch(Standard_Failure) {
+    Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadPolygon3D(..)" << endl;
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     aMsg << anExc << endl;
@@ -1456,10 +1459,8 @@ void BinTools_ShapeSet::ReadTriangulation(Standard_IStream& IS)
   Handle(Poly_Triangulation) T;
   IS >> buffer;
 
-  Standard_SStream aMsg;
   if (IS.fail() || (strstr(buffer,"Triangulations") == NULL)) {
-    aMsg << "BinTools_ShapeSet::Triangulation: Not a Triangulation section" <<endl;
-    Standard_Failure::Raise(aMsg);
+    Standard_Failure::Raise("BinTools_ShapeSet::Triangulation: Not a Triangulation section");
   }
   IS >> nbtri;
   IS.get();// remove LF 
@@ -1505,6 +1506,7 @@ void BinTools_ShapeSet::ReadTriangulation(Standard_IStream& IS)
     }
   }
   catch(Standard_Failure) {
+    Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadTriangulation(..)" << endl;
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     aMsg << anExc << endl;

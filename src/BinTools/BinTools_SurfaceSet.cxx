@@ -383,7 +383,6 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Off
 void BinTools_SurfaceSet::WriteSurface(const Handle(Geom_Surface)& S,
 					Standard_OStream& OS)
 {
-  Standard_SStream aMsg;
   Handle(Standard_Type) TheType = S->DynamicType();
   try {
     OCC_CATCH_SIGNALS
@@ -421,11 +420,11 @@ void BinTools_SurfaceSet::WriteSurface(const Handle(Geom_Surface)& S,
       OS << Handle(Geom_OffsetSurface)::DownCast(S);
     }
     else {
-      aMsg <<"UNKNOWN SURFACE TYPE" <<endl;
-      Standard_Failure::Raise(aMsg);
+      Standard_Failure::Raise("UNKNOWN SURFACE TYPE");
     }
   }
    catch(Standard_Failure) {
+     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_SurfaceSet::WriteSurface(..)" << endl;
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     aMsg << anExc << endl;
@@ -759,7 +758,6 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream& IS,
 						    Handle(Geom_Surface)& S)
 {
-  Standard_SStream aMsg;
   try {
     OCC_CATCH_SIGNALS
     const Standard_Byte stype = (Standard_Byte) IS.get();
@@ -856,14 +854,14 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream& IS,
     default :
       {
 	S = NULL;
-	aMsg << "UNKNOWN SURFACE TYPE" << endl;
-	Standard_Failure::Raise(aMsg);        
+	Standard_Failure::Raise("UNKNOWN SURFACE TYPE");        
       }
       break;
     }
   }
   catch(Standard_Failure) {
     S = NULL;
+    Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << endl;
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     aMsg << anExc << endl;
