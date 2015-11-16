@@ -92,6 +92,23 @@ public:
   //! bytes actually read into <NByteRead> and placed into the
   //! Buffer <Buffer>.
   Standard_EXPORT void ReadLine (TCollection_AsciiString& Buffer, const Standard_Integer NByte, Standard_Integer& NbyteRead);
+
+  //! Reads bytes from the data pointed to by the object file
+  //! into the buffer <Buffer>.
+  //! Data is read until <NByte-1> bytes have been read,
+  //! until	a newline character is read and transferred into
+  //! <Buffer>, or until an EOF (End-of-File) condition is
+  //! encountered.
+  //! Upon successful completion, Read returns the number of
+  //! bytes actually read and placed into the Buffer <Buffer>.
+  inline Standard_Integer ReadLine (
+    TCollection_AsciiString& Buffer, const Standard_Integer NByte) 
+  {
+    Standard_Integer NbyteRead;
+    ReadLine(Buffer, NByte, NbyteRead);
+    return NbyteRead;
+  }
+
   
   //! Attempts to read Nbyte bytes from the files associated with
   //! the object File.
@@ -124,10 +141,8 @@ public:
   Standard_EXPORT OSD_KindFile KindOfFile() const;
   
   //! Makes a temporary File
-  //! This returned file is already open !
-  //! This file is non-persistent and will be automatically
-  //! removed when its process finishes.
-  Standard_EXPORT static OSD_File BuildTemporary();
+  //! This temporary file is already open !
+  Standard_EXPORT void BuildTemporary();
   
   //! Locks current file
   Standard_EXPORT void SetLock (const OSD_LockType Lock);
@@ -171,7 +186,25 @@ public:
   //! find an editor on the system and edit the given file
   Standard_EXPORT Standard_Boolean Edit();
 
+  //! Set file pointer position to the beginning of the file
+  Standard_EXPORT void Rewind();
 
+  //! Redirect a standard handle (fileno(stdout), fileno(stdin) or 
+  //! fileno(stderr) to this OSD_File and return the copy of the original
+  //! standard handle.
+  //! Example:
+  //!    OSD_File aTmp;
+  //!    aTmp.BuildTemporary();
+  //!    int stdfd = _fileno(stdout);
+  //!
+  //!    int oldout = aTmp.Capture(stdfd);
+  //!    cout << "Some output to the file" << endl;
+  //!    cout << flush;
+  //!    fflush(stdout);
+  //!
+  //!    _dup2(oldout, stdfd); // Restore standard output
+  //!    aTmp.Close();
+  Standard_EXPORT int Capture(int theDescr);
 
 
 protected:

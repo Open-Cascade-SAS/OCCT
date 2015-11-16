@@ -14,7 +14,6 @@
 
 #ifndef _WIN32
 
-
 #include <OSD_Directory.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>
@@ -59,19 +58,17 @@ TCollection_AsciiString aBuffer;
 }
 
 OSD_Directory OSD_Directory::BuildTemporary(){
-OSD_Protection          Protect;
 OSD_Directory           aDirectoryToReturn;
-Standard_Integer        internal_prot;
-Standard_CString        name = tmpnam(NULL);
-TCollection_AsciiString aString (name);
+char                    name[] = "/tmp/CSFXXXXXX";
 
- internal_prot = Protect.Internal();
-
- umask ( 0 );
- mkdir (name, (mode_t)internal_prot);
- unlink(name);//Destroys link but directory still exists while 
+ // Create a temporary directory with 0700 permissions.
+ if (NULL == mkdtemp( name ))
+   return aDirectoryToReturn; // Can't create a directory
+  
+ unlink(name);//Destroys link but directory still exists while
               //current process lives.
 
+ TCollection_AsciiString aString (name);
  aDirectoryToReturn.SetPath ( aString );
  return aDirectoryToReturn;
 

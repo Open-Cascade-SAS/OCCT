@@ -241,38 +241,35 @@ void  OSD_File::Open(const OSD_OpenMode Mode,
 
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
-OSD_File OSD_File::BuildTemporary(){
+void OSD_File::BuildTemporary(){
+
+ if ( IsOpen() )
+  Close();
 
 #if defined(vax) || defined(__vms) || defined(VAXVMS)
  FILE *fic;
- OSD_File result;
  int dummy;
 
  fic = tmpfile();
  dummy = open("dummy", O_RDWR | O_CREAT);  // Open a dummy file
- result.myFileChannel = dummy - 1;         // This is file channel of "fic" +1
+ myFileChannel = dummy - 1;         // This is file channel of "fic" +1
  close(dummy);                             // Close dummy file
  unlink("dummy");                          // Removes dummy file
 
 #else 
- OSD_File result;
- char *name = tmpnam((char*) 0) ;
-
+ char name[] = "/tmp/CSFXXXXXX";
+ myFileChannel = mkstemp( name );
 
  TCollection_AsciiString aName ( name ) ;
  OSD_Path aPath( aName ) ;
 
- result.SetPath( aPath ) ;
+ SetPath( aPath ) ;
 
- result.myFILE  = fopen( name, "w+" ) ;
-
- result.myFileChannel = fileno( (FILE*)result.myFILE );
+ myFILE = fdopen( myFileChannel, "w+" ) ;
 
 #endif
 
- result.myMode = OSD_ReadWrite;
-
- return (result);
+ myMode = OSD_ReadWrite;
 }
  
 
@@ -804,6 +801,20 @@ Standard_Boolean OSD_File::IsExecutable()
     return Standard_True;
 }
 
+int OSD_File::Capture(int theDescr) {
+  // Duplicate an old file descriptor of the given one to be able to restore output to it later.
+  int oldDescr = dup(theDescr);
+  // Redirect the output to this file
+  dup2(myFileChannel, theDescr);
+
+  // Return the old descriptor
+  return oldDescr;
+}
+
+void OSD_File::Rewind() { 
+    rewind((FILE*)myFILE); 
+}
+
 #else /* _WIN32 */
 
 //------------------------------------------------------------------------
@@ -892,6 +903,46 @@ OSD_File :: OSD_File ( const OSD_Path& Name ) : OSD_FileNode ( Name )
  myFileChannel  = -1;
  myFileHandle   = INVALID_HANDLE_VALUE;
 }  // end constructor ( 2 )
+
+// ---------------------------------------------------------------------
+// Redirect a standard handle (fileno(stdout), fileno(stdin) or 
+// fileno(stderr) to this OSD_File and return the copy of the original
+// standard handle.
+// Example:
+//    OSD_File aTmp;
+//    aTmp.BuildTemporary();
+//    int stdfd = _fileno(stdout);
+//
+//    int oldout = aTmp.Capture(stdfd);
+//    cout << "Some output to the file" << endl;
+//    cout << flush;
+//    fflush(stdout);
+//
+//    _dup2(oldout, stdfd); // Restore standard output
+//    aTmp.Close();
+// ---------------------------------------------------------------------
+int OSD_File::Capture(int theDescr) {
+  // Get POSIX file descriptor from this file handle
+  int dFile = _open_osfhandle(reinterpret_cast<intptr_t>(myFileHandle), myMode);
+
+  if (0 > dFile)
+  {
+    _osd_wnt_set_error (  myError, OSD_WFile, myFileHandle );
+    return -1;
+  }
+
+  // Duplicate an old file descriptor of the given one to be able to restore output to it later.
+  int oldDescr = _dup(theDescr);
+  // Redirect the output to this file
+  _dup2(dFile, theDescr);
+
+  // Return the old descriptor
+  return oldDescr;
+}
+
+void OSD_File::Rewind() { 
+  SetFilePointer( myFileHandle, 0, NULL, FILE_BEGIN ); 
+}
 
 // protect against occasional use of myFileHande in Windows code
 #define myFileChannel myFileChannel_is_only_for_Linux
@@ -1429,10 +1480,9 @@ typedef struct _osd_wnt_key {
                } OSD_WNT_KEY;
 
 
-OSD_File OSD_File :: BuildTemporary () {
+ void OSD_File::BuildTemporary () {
 
  OSD_Protection prt;
- OSD_File       retVal;
  HKEY           hKey;
  TCHAR          tmpPath[ MAX_PATH ];
  BOOL           fOK = FALSE;
@@ -1494,11 +1544,11 @@ OSD_File OSD_File :: BuildTemporary () {
  
  GetTempFileName ( tmpPath, "CSF", 0, tmpPath );
 
- retVal.SetPath (  OSD_Path ( tmpPath )  );
- retVal.Build   (  OSD_ReadWrite, prt    );
+ if ( IsOpen() )
+  Close();
 
- return retVal;
-
+ SetPath (  OSD_Path ( tmpPath )  );
+ Build   (  OSD_ReadWrite, prt    );
 }  // end OSD_File :: BuildTemporary
 
 //-------------------------------------------------finpri???980424
@@ -2860,7 +2910,6 @@ Standard_Boolean OSD_File::Edit()
   cout << "Function OSD_File::Edit() not yet implemented." << endl;
   return Standard_False ;
 }
-
 
 
 
