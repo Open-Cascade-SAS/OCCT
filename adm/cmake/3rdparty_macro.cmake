@@ -1,113 +1,103 @@
-#
+##
 
-# include occt macros. compiler_bitness, os_wiht_bit, compiler
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
+if(3RDPARTY_MACRO_ALREADY_INCLUDED)
+  return()
+endif()
+set(3RDPARTY_MACRO_ALREADY_INCLUDED 1)
+
 
 macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEBUG)
 
-  # define 3RDPARTY_${PRODUCT_NAME}_DIR variable is it isn't defined
+  if (NOT DEFINED INSTALL_${PRODUCT_NAME})
+    set (INSTALL_${PRODUCT_NAME} OFF CACHE BOOL "${INSTALL_${PRODUCT_NAME}_DESCR}")
+  endif()
+
   if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_DIR)
     set (3RDPARTY_${PRODUCT_NAME}_DIR "" CACHE PATH "The directory containing ${PRODUCT_NAME}")
   endif()
 
-  # search for product directory inside 3RDPARTY_DIR directory
-  if (NOT 3RDPARTY_${PRODUCT_NAME}_DIR AND 3RDPARTY_DIR)
-    FIND_PRODUCT_DIR ("${3RDPARTY_DIR}" "${PRODUCT_NAME}" ${PRODUCT_NAME}_DIR_NAME)
-    if (${PRODUCT_NAME}_DIR_NAME)
-      message (STATUS "Info: ${PRODUCT_NAME}: ${${PRODUCT_NAME}_DIR_NAME} folder is used")
-      set (3RDPARTY_${PRODUCT_NAME}_DIR "${3RDPARTY_DIR}/${${PRODUCT_NAME}_DIR_NAME}" CACHE PATH "The directory containing ${PRODUCT_NAME}" FORCE)
+  # include occt macros. compiler_bitness, os_wiht_bit, compiler
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
+
+  # specify product folder in connectin with 3RDPARTY_DIR
+  if (3RDPARTY_DIR AND EXISTS "${3RDPARTY_DIR}")
+    #CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_DIR 3RDPARTY_${PRODUCT_NAME}_DIR PATH "The directory containing ${PRODUCT_NAME}")
+
+    if (NOT 3RDPARTY_${PRODUCT_NAME}_DIR OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
+      FIND_PRODUCT_DIR ("${3RDPARTY_DIR}" ${PRODUCT_NAME} ${PRODUCT_NAME}_DIR_NAME)
+      if (${PRODUCT_NAME}_DIR_NAME)
+        set (3RDPARTY_${PRODUCT_NAME}_DIR "${3RDPARTY_DIR}/${${PRODUCT_NAME}_DIR_NAME}" CACHE PATH "The directory containing ${PRODUCT_NAME}" FORCE)
+      endif()
     endif()
+  else()
+    #set (3RDPARTY_${PRODUCT_NAME}_DIR "" CACHE PATH "The directory containing ${PRODUCT_NAME}" FORCE)
   endif()
 
-  if (NOT DEFINED INSTALL_${PRODUCT_NAME})
-    message (STATUS "${INSTALL_${PRODUCT_NAME}_DESCR}")
-    if (NOT "${INSTALL_${PRODUCT_NAME}_DESCR}" STREQUAL "")
-      set (INSTALL_${PRODUCT_NAME} OFF CACHE BOOL "${INSTALL_${PRODUCT_NAME}_DESCR}")
-    else()
-      set (INSTALL_${PRODUCT_NAME} OFF CACHE BOOL "Is ${PRODUCT_NAME} required to be copied into install directory")
-    endif()
+  if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR)
+    set (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR           "" CACHE PATH "the path of ${HEADER_NAME}")
   endif()
 
-  # search for include directory
-  if (NOT 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}")
-    set (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR "3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR-NOTFOUND" CACHE FILEPATH "The directory containing the headers of the ${PRODUCT_NAME}" FORCE)
-    find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR ${HEADER_NAME} PATHS
-                                                                    "${3RDPARTY_${PRODUCT_NAME}_DIR}/include"
-                                                                    ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_HEADER}
-                                                                   NO_DEFAULT_PATH)
-    find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR ${HEADER_NAME})
-  endif()
-
-  if (NOT 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}")
-    set (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR "" CACHE FILEPATH "The directory containing the headers of the ${PRODUCT_NAME}" FORCE)
-  endif()
-
-  if (NOT 3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR)
-    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY "" CACHE FILEPATH "${PRODUCT_NAME} library" FORCE)
-  elseif (3RDPARTY_${PRODUCT_NAME}_LIBRARY AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
-    get_filename_component(3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_TMP "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" PATH)
-    if (NOT "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}" STREQUAL "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_TMP}")
-      set (3RDPARTY_${PRODUCT_NAME}_LIBRARY "" CACHE FILEPATH "${PRODUCT_NAME} library" FORCE)
-    endif()
-  endif()
-
-  # search for library
-  if (NOT 3RDPARTY_${PRODUCT_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
-    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "${PRODUCT_NAME} library" FORCE)
-
-    find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME} PATHS
-                                                                   "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}"
-                                                                   "${3RDPARTY_${PRODUCT_NAME}_DIR}/lib"
-                                                                   ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_LIB}
-                                                                   NO_DEFAULT_PATH)
-    # second search if previous one do not find anything
-    find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME})
+  if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_LIBRARY OR NOT 3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}")
+    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY               "" CACHE FILEPATH "${PRODUCT_NAME} library" FORCE)
   endif()
 
   if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR)
-    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "" CACHE FILEPATH "The directory containing ${PRODUCT_NAME} library" FORCE)
+    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR           "" CACHE PATH "The directory containing ${PRODUCT_NAME} library")
   endif()
 
-  # library path
-  if (3RDPARTY_${PRODUCT_NAME}_LIBRARY AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
-    get_filename_component (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" PATH)
-    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}" CACHE FILEPATH "The directory containing ${PRODUCT_NAME} library" FORCE)
-  endif()
-
-  # search for shared library (just for win case)
   if (WIN32)
-    set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
+    if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_DLL OR NOT 3RDPARTY_${PRODUCT_NAME}_DLL_DIR OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}")
+      set (3RDPARTY_${PRODUCT_NAME}_DLL                 "" CACHE FILEPATH "${PRODUCT_NAME} shared library" FORCE)
+    endif()
+  endif()
 
-    if (NOT 3RDPARTY_${PRODUCT_NAME}_DLL_DIR)
-      set (3RDPARTY_${PRODUCT_NAME}_DLL "" CACHE FILEPATH "${PRODUCT_NAME} shared library" FORCE)
-    elseif (3RDPARTY_${PRODUCT_NAME}_DLL AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
-      get_filename_component(3RDPARTY_${PRODUCT_NAME}_DLL_DIR_TMP "${3RDPARTY_${PRODUCT_NAME}_DLL}" PATH)
-      if (NOT "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}" STREQUAL "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_TMP}")
-        set (3RDPARTY_${PRODUCT_NAME}_DLL "" CACHE FILEPATH "${PRODUCT_NAME} shared library" FORCE)
+  if (WIN32)
+    if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_DLL_DIR)
+      set (3RDPARTY_${PRODUCT_NAME}_DLL_DIR             "" CACHE PATH "The directory containing ${PRODUCT_NAME} shared library")
+    endif()
+  endif()
+
+  # check 3RDPARTY_${PRODUCT_NAME}_ paths for consistency with specified 3RDPARTY_${PRODUCT_NAME}_DIR
+  if (3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
+    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_${PRODUCT_NAME}_DIR 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR PATH "the path to ${PRODUCT_NAME}")
+    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_${PRODUCT_NAME}_DIR 3RDPARTY_${PRODUCT_NAME}_LIBRARY FILEPATH "the path to ${PRODUCT_NAME} library")
+
+    if (3RDPARTY_${PRODUCT_NAME}_LIBRARY AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
+      get_filename_component (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" PATH)
+      set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}" CACHE PATH "The directory containing ${PRODUCT_NAME} library" FORCE)
+    else()
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_${PRODUCT_NAME}_DIR 3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR PATH "The directory containing ${PRODUCT_NAME} library")
+    endif()
+
+    if (WIN32)
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_${PRODUCT_NAME}_DIR 3RDPARTY_${PRODUCT_NAME}_DLL FILEPATH "the path to ${PRODUCT_NAME} shared library")
+
+      if (3RDPARTY_${PRODUCT_NAME}_DLL AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
+        get_filename_component (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL}" PATH)
+        set (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}" CACHE PATH "The directory containing ${PRODUCT_NAME} shared library" FORCE)
+      else()
+      
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_${PRODUCT_NAME}_DIR 3RDPARTY_${PRODUCT_NAME}_DLL_DIR PATH "The directory containing ${PRODUCT_NAME} shared library")
       endif()
     endif()
+  endif()
 
-    if (NOT 3RDPARTY_${PRODUCT_NAME}_DLL OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
-      set (3RDPARTY_${PRODUCT_NAME}_DLL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND" CACHE FILEPATH "${PRODUCT_NAME} shared library" FORCE)
+  # header
+  if (NOT 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}")
 
-      find_library (3RDPARTY_${PRODUCT_NAME}_DLL "${LIBRARY_NAME}" PATHS
-                                                                   "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}"
-                                                                   "${3RDPARTY_${PRODUCT_NAME}_DIR}/bin"
-                                                                   ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_DLL}
-                                                                   NO_DEFAULT_PATH)
+    # set 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR as notfound, otherwise find_library can't assign a new value to 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR
+    set (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR "3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR-NOTFOUND" CACHE FILEPATH "the path to ${HEADER_NAME}" FORCE)
 
-        # second search if previous one do not find anything
-        find_library (3RDPARTY_${PRODUCT_NAME}_DLL "${LIBRARY_NAME}")
-    endif()
-
-    if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_DLL_DIR)
-      set (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "" CACHE FILEPATH "The directory containing ${PRODUCT_NAME} shared library" FORCE)
-    endif()
-
-    # shared library path
-    if (3RDPARTY_${PRODUCT_NAME}_DLL AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
-      get_filename_component (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL}" PATH)
-      set (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}" CACHE FILEPATH "The directory containing ${PRODUCT_NAME} shared library" FORCE)
+    if (3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
+      find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR NAMES ${HEADER_NAME}
+                                                      PATHS ${3RDPARTY_${PRODUCT_NAME}_DIR}
+                                                      PATH_SUFFIXES include
+                                                      CMAKE_FIND_ROOT_PATH_BOTH
+                                                      NO_DEFAULT_PATH)
+    else()
+      find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR NAMES ${HEADER_NAME}
+                                                      PATH_SUFFIXES include
+                                                      CMAKE_FIND_ROOT_PATH_BOTH)
     endif()
   endif()
 
@@ -115,16 +105,79 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
     list (APPEND 3RDPARTY_INCLUDE_DIRS "${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}")
   else()
     list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR)
+
+    set (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR "" CACHE FILEPATH "The path to ${HEADER_NAME}" FORCE)
   endif()
 
-  if (3RDPARTY_${PRODUCT_NAME}_LIBRARY AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
+  # library
+  if (NOT 3RDPARTY_${PRODUCT_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
+    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
+
+    set (${PRODUCT_NAME}_PATH_SUFFIXES lib)
+    if (ANDROID)
+      set (${PRODUCT_NAME}_PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES} libs/${ANDROID_ABI})
+    endif()
+
+    # set 3RDPARTY_${PRODUCT_NAME}_LIBRARY as notfound, otherwise find_library can't assign a new value to 3RDPARTY_${PRODUCT_NAME}_LIBRARY
+    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "The path to ${PRODUCT_NAME} library" FORCE)
+
+    if (3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
+      find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY NAMES ${LIBRARY_NAME}
+                                                     PATHS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}" "${3RDPARTY_${PRODUCT_NAME}_DIR}"
+                                                     PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES}
+                                                     CMAKE_FIND_ROOT_PATH_BOTH
+                                                     NO_DEFAULT_PATH)
+    else()
+      find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY NAMES ${LIBRARY_NAME} 
+                                                     PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES}
+                                                     CMAKE_FIND_ROOT_PATH_BOTH)
+    endif()
+
+    if (3RDPARTY_${PRODUCT_NAME}_LIBRARY AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
+      get_filename_component (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" PATH)
+      set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}" CACHE PATH "The directory containing ${PRODUCT_NAME} library" FORCE)
+    else()
+      set (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "" CACHE PATH "The directory containing ${PRODUCT_NAME} library" FORCE)
+    endif()
+  endif()
+
+  if (3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}")
     list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}")
   else()
     list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR)
+
+    set (3RDPARTY_${PRODUCT_NAME}_LIBRARY "" CACHE FILEPATH "The path to ${PRODUCT_NAME} library" FORCE)
   endif()
 
+  # shared library
   if (WIN32)
-    if (3RDPARTY_${PRODUCT_NAME}_DLL OR EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
+    if (NOT 3RDPARTY_${PRODUCT_NAME}_DLL OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
+      
+      set (CMAKE_FIND_LIBRARY_SUFFIXES .dll)
+
+      # set 3RDPARTY_${PRODUCT_NAME}_DLL as notfound, otherwise find_library can't assign a new value to 3RDPARTY_${PRODUCT_NAME}_DLL
+      set (3RDPARTY_${PRODUCT_NAME}_DLL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND" CACHE FILEPATH "The path to ${PRODUCT_NAME} shared library" FORCE)
+
+      if (3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
+        find_library (3RDPARTY_${PRODUCT_NAME}_DLL  NAMES ${LIBRARY_NAME}
+                                                    PATHS "${3RDPARTY_${PRODUCT_NAME}_DIR}"
+                                                    PATH_SUFFIXES bin
+                                                    NO_DEFAULT_PATH)
+      else()
+        find_library (3RDPARTY_${PRODUCT_NAME}_DLL NAMES ${LIBRARY_NAME} PATH_SUFFIXES bin)
+      endif()
+
+      if (3RDPARTY_${PRODUCT_NAME}_DLL AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
+        get_filename_component (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL}" PATH)
+        set (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}" CACHE PATH "The directory containing ${PRODUCT_NAME} library" FORCE)
+      else()
+        set (3RDPARTY_${PRODUCT_NAME}_DLL_DIR "" CACHE PATH "The directory containing ${PRODUCT_NAME} shared library" FORCE)
+
+        set (3RDPARTY_${PRODUCT_NAME}_DLL "" CACHE FILEPATH "${PRODUCT_NAME} shared library" FORCE)
+      endif()
+    endif()
+
+    if (3RDPARTY_${PRODUCT_NAME}_DLL_DIR OR EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}")
       list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}")
     else()
       list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${PRODUCT_NAME}_DLL_DIR)

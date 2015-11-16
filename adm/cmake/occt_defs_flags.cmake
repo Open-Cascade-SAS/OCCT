@@ -1,3 +1,10 @@
+##
+
+if(FLAGS_ALREADY_INCLUDED)
+  return()
+endif()
+set(FLAGS_ALREADY_INCLUDED 1)
+
 
 if (MSVC)
   add_definitions(/fp:precise)

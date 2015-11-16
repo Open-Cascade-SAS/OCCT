@@ -44,7 +44,7 @@ INSTALL_MESSAGE (INSTALL_GL2PS            "GL2PS binaries")
 INSTALL_MESSAGE (INSTALL_TBB              "TBB binaries")
 INSTALL_MESSAGE (INSTALL_TCL              "TCL binaries")
 INSTALL_MESSAGE (INSTALL_TK               "TK binaries")
-INSTALL_MESSAGE (INSTALL_VTK              "VTK binaries ")
+#INSTALL_MESSAGE (INSTALL_VTK              "VTK binaries ")
 
 # build variables
 macro (BUILD_MODULE_MESSAGE BUILD_MODULE_TARGET_VARIABLE BUILD_MODULE_TARGET_STRING)

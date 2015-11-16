@@ -1,24 +1,28 @@
 # CSF variables definition
 
+if(CSFS_ALREADY_INCLUDED)
+  return()
+endif()
+set(CSFS_ALREADY_INCLUDED 1)
+
+
 if (NOT DEFINED USE_TCL)
   OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
 endif()
 
 if (USE_TCL)
   if ("${3RDPARTY_TCL_LIBRARY_VERSION}" STREQUAL "")
-    message (WARNING "TCL version has not been specified by CSF_TclLibs defining")
-    message (WARNING "thus it will be used as 8.6")
+    message (STATUS "Warning. TCL version has not been specified by CSF_TclLibs defining thus it will be used as 8.6")
     set (3RDPARTY_TCL_LIBRARY_VERSION "8.6")
   endif()
 
   if ("${3RDPARTY_TK_LIBRARY_VERSION}" STREQUAL "")
-    message (WARNING "TK version has not been specified by CSF_TclTkLibs defining")
-    message (WARNING "thus it will be used as 8.6")
+    message (STATUS "Warning. TK version has not been specified by CSF_TclTkLibs defining thus it will be used as 8.6")
     set (3RDPARTY_TK_LIBRARY_VERSION "8.6")
   endif()
 endif()
 
-if (USE_VTK AND NOT VTK_LIBRARY_NAMES)
+if (USE_VTK AND NOT 3RDPARTY_VTK_REQUIRED_LIBRARIES)
   message (WARNING "CSF_VTK specification: VTK libraries are not defined")
 endif()
 
@@ -42,40 +46,52 @@ if (WIN32)
   endif()
 
   if (USE_VTK)
-    set (CSF_VTK "${VTK_LIBRARY_NAMES}")
+    set (CSF_VTK "${3RDPARTY_VTK_REQUIRED_LIBRARIES}")
   else()
     set (CSF_VTK)
   endif()
 
 else()
 
-  #-- Tcl/Tk configuration
-  if (USE_TCL)
-    set (CSF_TclLibs     "tcl${3RDPARTY_TCL_LIBRARY_VERSION}")
-    set (CSF_TclTkLibs   "X11 tk${3RDPARTY_TK_LIBRARY_VERSION}")
-  endif()
-
-  if(APPLE)
+  if (APPLE)
     set (CSF_objc        "objc")
 
     # frameworks
-    set (CSF_Appkit      "Appkit")
-    set (CSF_IOKit       "IOKit")
-    set (CSF_OpenGlLibs  "OpenGL")
+    find_library (Appkit_LIB NAMES Appkit)
+    set (CSF_Appkit ${Appkit_LIB})
+
+    find_library (IOKit_LIB NAMES IOKit)
+    set (CSF_IOKit ${IOKit_LIB})
+
+    OCCT_CHECK_AND_UNSET (Appkit_LIB)
+    OCCT_CHECK_AND_UNSET (IOKit_LIB)
+
+    if (USE_GLX)
+      set (CSF_OpenGlLibs GL)
+      set (CSF_XwLibs     "X11 Xext Xmu Xi")
+    else()
+      find_library (OpenGlLibs_LIB NAMES OpenGL)
+      set (CSF_OpenGlLibs ${OpenGlLibs_LIB})
+
+      OCCT_CHECK_AND_UNSET (OpenGlLibs_LIB)
+    endif()
     
-    set (CSF_TclLibs     "Tcl")
-    set (CSF_TclTkLibs   "Tk")
-  elseif(ANDROID)
+    if (USE_TCL)
+      set (CSF_TclTkLibs Tk)
+      set (CSF_TclLibs   Tcl)
+    endif()
+  elseif (ANDROID)
     set (CSF_ThreadLibs  "c")
     set (CSF_OpenGlLibs  "EGL GLESv2")
   elseif (UNIX)
     set (CSF_ThreadLibs  "pthread rt")
     set (CSF_OpenGlLibs  "GLU GL")
-  endif()
-
-  if (NOT DEFINED ANDROID)
     set (CSF_XwLibs      "X11 Xext Xmu Xi")
-    set (CSF_MotifLibs   "X11")
+
+    if (USE_TCL)
+      set (CSF_TclLibs     "tcl${3RDPARTY_TCL_LIBRARY_VERSION}")
+      set (CSF_TclTkLibs   "tk${3RDPARTY_TK_LIBRARY_VERSION}")
+    endif()
   endif()
 
   if (USE_FREETYPE)
@@ -99,7 +115,7 @@ else()
   endif()
   
   if (USE_VTK)
-    set (CSF_VTK "${VTK_LIBRARY_NAMES}")
+    set (CSF_VTK "${3RDPARTY_VTK_REQUIRED_LIBRARIES}")
   else()
     set (CSF_VTK)
   endif()

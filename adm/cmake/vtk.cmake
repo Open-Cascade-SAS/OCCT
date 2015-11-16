@@ -1,199 +1,207 @@
 # vtk
 
-if (NOT DEFINED INSTALL_VTK)
-  set (INSTALL_VTK OFF CACHE BOOL "${INSTALL_VTK_DESCR}")
-endif()
+#if (NOT DEFINED INSTALL_VTK)
+#  set (INSTALL_VTK OFF CACHE BOOL "${INSTALL_VTK_DESCR}")
+#endif()
 
 # vtk directory
 if (NOT DEFINED 3RDPARTY_VTK_DIR)
-  set (3RDPARTY_VTK_DIR "" CACHE PATH "The directory containing vtk")
+  set (3RDPARTY_VTK_DIR "" CACHE PATH "The directory containing VTK")
+endif()
+
+set (3RDPARTY_VTK_REQUIRED_LIBRARIES vtkCommonCore
+                                     vtkCommonDataModel
+                                     vtkCommonExecutionModel
+                                     vtkCommonMath
+                                     vtkCommonTransforms
+                                     vtkRenderingCore
+                                     vtkRenderingFreeType
+                                     vtkRenderingFreeTypeOpenGL
+                                     vtkRenderingOpenGL
+                                     vtkFiltersGeneral
+                                     vtkIOCore
+                                     vtkIOImage
+                                     vtkImagingCore
+                                     vtkInteractionStyle)
+
+# include occt macros. compiler_bitness, os_wiht_bit, compiler
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
+
+# specify VTK folder in connectin with 3RDPARTY_DIR
+if (3RDPARTY_DIR AND EXISTS "${3RDPARTY_DIR}")
+  #CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_DIR 3RDPARTY_VTK_DIR PATH "The directory containing VTK")
+
+  if (NOT 3RDPARTY_VTK_DIR OR NOT EXISTS "${3RDPARTY_VTK_DIR}")
+    FIND_PRODUCT_DIR ("${3RDPARTY_DIR}" VTK VTK_DIR_NAME)
+    if (VTK_DIR_NAME)
+      set (3RDPARTY_VTK_DIR "${3RDPARTY_DIR}/${VTK_DIR_NAME}" CACHE PATH "The directory containing VTK" FORCE)
+    endif()
+  endif()
+else()
+  #set (3RDPARTY_VTK_DIR "" CACHE PATH "The directory containing VTK" FORCE)
 endif()
 
 # vtk include directory
 if (NOT DEFINED 3RDPARTY_VTK_INCLUDE_DIR)
-  set (3RDPARTY_VTK_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of vtk")
+  set (3RDPARTY_VTK_INCLUDE_DIR "" CACHE PATH "The directory containing headers of VTK")
 endif()
 
 # vtk library directory
 if (NOT DEFINED 3RDPARTY_VTK_LIBRARY_DIR)
-  set (3RDPARTY_VTK_LIBRARY_DIR "" CACHE FILEPATH "The directory containing vtk library")
+  set (3RDPARTY_VTK_LIBRARY_DIR "" CACHE PATH "The directory containing VTK libraries")
 endif()
 
 # vtk dll directory
 if (WIN32 AND NOT DEFINED 3RDPARTY_VTK_DLL_DIR)
-  set (3RDPARTY_VTK_DLL_DIR "" CACHE FILEPATH "The directory containing VTK dll")
+  set (3RDPARTY_VTK_DLL_DIR "" CACHE PATH "The directory containing VTK shared libraries")
 endif()
 
-# search for vtk in user defined directory
-if (NOT 3RDPARTY_VTK_DIR AND 3RDPARTY_DIR)
-  FIND_PRODUCT_DIR("${3RDPARTY_DIR}" vtk VTK_DIR_NAME)
-  if (VTK_DIR_NAME)
-    set (3RDPARTY_VTK_DIR "${3RDPARTY_DIR}/${VTK_DIR_NAME}" CACHE PATH "The directory containing vtk product" FORCE)
+# check 3RDPARTY_VTK_ paths for consistency with specified 3RDPARTY_VTK_DIR
+if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
+  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_INCLUDE_DIR PATH "The directory containing headers of VTK")
+  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_LIBRARY_DIR PATH "The directory containing VTK libraries")
+
+  if (WIN32)
+    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_DLL_DIR PATH "The directory containing VTK shared library")
   endif()
 endif()
 
-# find installed vtk
+if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
+  set (CACHED_VTK_DIR $ENV{VTK_DIR})
+  set (ENV{VTK_DIR} "${3RDPARTY_VTK_DIR}")
+endif()
+
 find_package(VTK QUIET)
 
-# find native vtk
-if (NOT VTK_FOUND)
-  find_package(VTK QUIET PATHS "${3RDPARTY_VTK_DIR}")
-endif()
-
-if (NOT VTK_FOUND AND NOT 3RDPARTY_VTK_DIR OR NOT EXISTS "${3RDPARTY_VTK_DIR}")
-  message(SEND_ERROR "VTK not found. Set the 3RDPARTY_VTK_DIR cmake cache entry to the directory containing VTK.")
-  set (3RDPARTY_VTK_DIR "3RDPARTY_VTK_DIR-NOTFOUND" CACHE PATH "The directory containing vtk product" FORCE)
-endif()
-
-set(VTK_VERSION "")
 if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
-  get_filename_component(3RDPARTY_VTK_DIR_NAME "${3RDPARTY_VTK_DIR}" NAME)
-  string(REGEX MATCH "^VTK-([0-9].[0-9])" VTK_VERSION "${3RDPARTY_VTK_DIR_NAME}")
-  set(VTK_VERSION "${CMAKE_MATCH_1}")
-  if (NOT 3RDPARTY_VTK_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_VTK_INCLUDE_DIR}")
-    set (3RDPARTY_VTK_INCLUDE_DIR "${3RDPARTY_VTK_DIR}/include/vtk-${VTK_VERSION}" CACHE FILEPATH "The directory containing includes of VTK" FORCE)
-  endif()
-  if (NOT 3RDPARTY_VTK_LIBRARY_DIR OR NOT EXISTS "${3RDPARTY_VTK_LIBRARY_DIR}")
-    if(EXISTS "${3RDPARTY_VTK_DIR}/lib")
-      set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_DIR}/lib" CACHE FILEPATH "The directory containing libs of VTK" FORCE)
-    elseif (EXISTS "${3RDPARTY_VTK_DIR}/lib")
-      set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_DIR}/lib" CACHE FILEPATH "The directory containing libs of VTK" FORCE)
-    endif()
-  endif()
-  if(3RDPARTY_VTK_LIBRARY_DIR)
-    list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_VTK_LIBRARY_DIR}")
-  endif()
+  set (ENV{VTK_DIR} ${CACHED_VTK_DIR})
 endif()
 
-# vtk libraries
-set (VTK_LIB_EXTENSION so.1)
-set (VTK_DLL_EXTENSION so.1)
-if (WIN32)
-  set (VTK_LIB_EXTENSION lib)
-  set (VTK_DLL_EXTENSION dll)
-endif()
+if (VTK_FOUND)
 
-set (VTK_LIBRARY_NAMES vtkCommonCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkCommonDataModel-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkCommonExecutionModel-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkCommonMath-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkCommonTransforms-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkRenderingCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkRenderingOpenGL-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkFiltersGeneral-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkIOCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkIOImage-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkImagingCore-${VTK_VERSION}.${VTK_LIB_EXTENSION}
-                       vtkInteractionStyle-${VTK_VERSION}.${VTK_LIB_EXTENSION})
+  # add compiler flags, preprocessor definitions, include and link dirs
+  include (${VTK_USE_FILE})
 
-#dll
-set (VTK_DLL_NAMES vtkCommonComputationalGeometry-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkCommonCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkCommonDataModel-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkCommonExecutionModel-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkCommonMath-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkCommonMisc-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkCommonSystem-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkCommonTransforms-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkDICOMParser-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkFiltersCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkFiltersExtraction-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkFiltersGeneral-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkFiltersGeometry-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkFiltersSources-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkFiltersStatistics-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkIOCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkIOImage-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkImagingCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkImagingFourier-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkImagingHybrid-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkInteractionStyle-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkRenderingCore-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkRenderingOpenGL-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkalglib-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkjpeg-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkmetaio-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkpng-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtksys-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtktiff-${VTK_VERSION}.${VTK_DLL_EXTENSION}
-                   vtkzlib-${VTK_VERSION}.${VTK_DLL_EXTENSION} )
+  set (ALL_REQUIRED_VTK_LIBRARIES_FOUND ON)
+  if (VTK_LIBRARIES)
 
-# search for dll directory
-if (WIN32)
-  if (NOT 3RDPARTY_VTK_DLL_DIR OR NOT EXISTS "${3RDPARTY_VTK_DLL_DIR}")
-    if(EXISTS "${3RDPARTY_VTK_DIR}/bin")
-      set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DIR}/bin" CACHE FILEPATH "The directory containing dll of VTK" FORCE)
-    elseif (EXISTS "${3RDPARTY_VTK_DIR}/bind")
-      set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DIR}/bind" CACHE FILEPATH "The directory containing dll of VTK" FORCE)
+    set (3RDPARTY_VTK_INCLUDE_DIRS)
+    set (3RDPARTY_VTK_LIBRARY_DIRS)
+    set (3RDPARTY_VTK_DLL_DIRS)
+
+    foreach (VTK_REQUIRED_LIBRARY ${3RDPARTY_VTK_REQUIRED_LIBRARIES})
+      list (FIND VTK_LIBRARIES ${VTK_REQUIRED_LIBRARY} FOUND_INDEX)
+      if (${FOUND_INDEX} EQUAL -1)
+        message (WARNING "VTK: required ${VTK_REQUIRED_LIBRARY} library is not found")
+        set (ALL_REQUIRED_VTK_LIBRARIES_FOUND OFF)
+      else()
+        # get paths from corresponding variables
+        if (${VTK_REQUIRED_LIBRARY}_INCLUDE_DIRS AND EXISTS "${${VTK_REQUIRED_LIBRARY}_INCLUDE_DIRS}")
+          list (APPEND 3RDPARTY_VTK_INCLUDE_DIRS "${${VTK_REQUIRED_LIBRARY}_INCLUDE_DIRS}")
+        endif()
+
+        if (${VTK_REQUIRED_LIBRARY}_LIBRARY_DIRS AND EXISTS "${${VTK_REQUIRED_LIBRARY}_LIBRARY_DIRS}")
+          list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${${VTK_REQUIRED_LIBRARY}_LIBRARY_DIRS}")
+        endif()
+
+        if (${VTK_REQUIRED_LIBRARY}_RUNTIME_LIBRARY_DIRS AND EXISTS "${${VTK_REQUIRED_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
+          list (APPEND 3RDPARTY_VTK_DLL_DIRS "${${VTK_REQUIRED_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
+          if (NOT WIN32)
+            list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${${VTK_REQUIRED_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
+          endif()
+        endif()
+
+        # get paths from corresponding properties
+        get_property (TARGET_VTK_IMPORT_CONFS TARGET ${VTK_REQUIRED_LIBRARY} PROPERTY IMPORTED_CONFIGURATIONS)
+
+        if (TARGET_VTK_IMPORT_CONFS)
+          list (GET TARGET_VTK_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
+          
+          # todo: choose configuration in connection with the build type
+          #if (CMAKE_BUILD_TYPE)
+          #  foreach (IMPORT_CONF ${TARGET_VTK_IMPORT_CONFS})
+          #  endforeach()
+          #endif()
+
+          get_property (TARGET_PROPERTY_IMP_PATH TARGET ${VTK_REQUIRED_LIBRARY} PROPERTY IMPORTED_IMPLIB_${CHOSEN_IMPORT_CONF})
+          if(TARGET_PROPERTY_IMP_PATH AND EXISTS "${TARGET_PROPERTY_IMP_PATH}")
+            get_filename_component (TARGET_PROPERTY_IMP_DIR "${TARGET_PROPERTY_IMP_PATH}" PATH)
+            list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${TARGET_PROPERTY_IMP_DIR}")
+          endif()
+
+          get_property (TARGET_PROPERTY_LOCATION_PATH TARGET ${VTK_REQUIRED_LIBRARY} PROPERTY IMPORTED_LOCATION_${CHOSEN_IMPORT_CONF})
+          if(TARGET_PROPERTY_LOCATION_PATH AND EXISTS "${TARGET_PROPERTY_LOCATION_PATH}")
+            get_filename_component (TARGET_PROPERTY_LOCATION_DIR "${TARGET_PROPERTY_LOCATION_PATH}" PATH)
+
+            if (WIN32)
+              list (APPEND 3RDPARTY_VTK_DLL_DIRS "${TARGET_PROPERTY_LOCATION_DIR}")
+            else()
+              list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${TARGET_PROPERTY_LOCATION_DIR}")
+            endif()
+          endif()
+        endif()
+      endif()
+      
+    endforeach()
+  else()  
+    set (ALL_REQUIRED_VTK_LIBRARIES_FOUND OFF)
+  endif()
+
+  if (ALL_REQUIRED_VTK_LIBRARIES_FOUND)
+
+    if (3RDPARTY_VTK_INCLUDE_DIRS)
+      list (REMOVE_DUPLICATES 3RDPARTY_VTK_INCLUDE_DIRS)
+      list (APPEND 3RDPARTY_INCLUDE_DIRS ${3RDPARTY_VTK_INCLUDE_DIRS})
+
+      list (GET 3RDPARTY_VTK_INCLUDE_DIRS 0 3RDPARTY_VTK_INCLUDE_DIR)
+      set (3RDPARTY_VTK_INCLUDE_DIR "${3RDPARTY_VTK_INCLUDE_DIR}" CACHE PATH "The directory containing headers of VTK" FORCE)
+    endif()
+
+    if (3RDPARTY_VTK_LIBRARY_DIRS)
+      list (REMOVE_DUPLICATES 3RDPARTY_VTK_LIBRARY_DIRS)
+      list (APPEND 3RDPARTY_LIBRARY_DIRS ${3RDPARTY_VTK_LIBRARY_DIRS})
+
+      list (GET 3RDPARTY_VTK_LIBRARY_DIRS 0 3RDPARTY_VTK_LIBRARY_DIR)
+      set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_LIBRARY_DIR}" CACHE PATH "The directory containing VTK libraries" FORCE)
+    endif()
+
+    if (WIN32)
+      if (3RDPARTY_VTK_DLL_DIRS)
+        list (REMOVE_DUPLICATES 3RDPARTY_VTK_DLL_DIRS)
+        list (APPEND 3RDPARTY_DLL_DIRS ${3RDPARTY_VTK_DLL_DIRS})
+
+        list (GET 3RDPARTY_VTK_DLL_DIRS 0 3RDPARTY_VTK_DLL_DIR)
+        set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DLL_DIR}" CACHE PATH "The directory containing VTK shared libraries" FORCE)
+      endif()
     endif()
   endif()
-
-  if (3RDPARTY_VTK_DLL_DIR OR EXISTS "${3RDPARTY_VTK_DLL_DIR}")
-    list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_VTK_DLL_DIR}")
-  endif()
-endif() 
-
-OCCT_CHECK_AND_UNSET(VTK_DIR)
+endif()
 
 if (3RDPARTY_VTK_INCLUDE_DIR AND EXISTS "${3RDPARTY_VTK_INCLUDE_DIR}")
-  list (APPEND 3RDPARTY_INCLUDE_DIRS "${3RDPARTY_VTK_INCLUDE_DIR}")
+  list (APPEND 3RDPARTY_INCLUDE_DIRS ${3RDPARTY_VTK_INCLUDE_DIR})
 else()
   list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_INCLUDE_DIR)
 endif()
 
-if (INSTALL_VTK)
-  OCCT_MAKE_OS_WITH_BITNESS()
-  OCCT_MAKE_COMPILER_SHORT_NAME()
-
-  if (WIN32)
-    if(3RDPARTY_VTK_DLL_DIR AND EXISTS "${3RDPARTY_VTK_DLL_DIR}")
-      set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
-      foreach(VTK_DLL_NAME ${VTK_DLL_NAMES})
-        
-        set (3RDPARTY_VTK_DLL "3RDPARTY_VTK_DLL-NOTFOUND" CACHE FILEPATH "VTK shared library" FORCE)
-        find_library(3RDPARTY_VTK_DLL "${VTK_DLL_NAME}" PATHS "${3RDPARTY_VTK_DLL_DIR}" NO_DEFAULT_PATH)
-        
-        if (NOT 3RDPARTY_VTK_DLL OR NOT EXISTS "${3RDPARTY_VTK_DLL}")
-          list (APPEND 3RDPARTY_NOT_INCLUDED "${3RDPARTY_VTK_DLL}")
-        else()
-          install (FILES ${3RDPARTY_VTK_DLL}
-                   CONFIGURATIONS Release
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-          install (FILES ${3RDPARTY_VTK_DLL}
-                   CONFIGURATIONS RelWithDebInfo
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
-          install (FILES ${3RDPARTY_VTK_DLL}
-                   CONFIGURATIONS Debug
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
-        endif()
-      endforeach()
-      OCCT_CHECK_AND_UNSET(3RDPARTY_VTK_DLL)
-    endif()
-  else ()
-    foreach(VTK_DLL_NAME ${VTK_DLL_NAMES})
-      install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
-              CONFIGURATIONS Release
-              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
-              RENAME "lib${VTK_DLL_NAME}")
-      install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
-              CONFIGURATIONS RelWithDebInfo
-              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
-              RENAME "lib${VTK_DLL_NAME}")
-      install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
-              CONFIGURATIONS Debug
-              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
-              RENAME "lib${VTK_DLL_NAME}")
-    endforeach()
-  endif()
-
-  set (USED_3RDPARTY_VTK_DIR "")
+if (3RDPARTY_VTK_LIBRARY_DIR AND EXISTS "${3RDPARTY_VTK_LIBRARY_DIR}")
+  list (APPEND 3RDPARTY_LIBRARY_DIRS ${3RDPARTY_VTK_LIBRARY_DIR})
 else()
-  # the library directory for using by the executable
-  if (WIN32)
-    set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_DLL_DIR})
+  list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_LIBRARY_DIR)
+endif()
+
+if (WIN32)
+  if (3RDPARTY_VTK_DLL_DIR OR EXISTS "${3RDPARTY_VTK_DLL_DIR}")
+    list (APPEND 3RDPARTY_DLL_DIRS ${3RDPARTY_VTK_DLL_DIR})
   else()
-    set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_LIBRARY_DIR})
+    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_DLL_DIR)
   endif()
+endif()
+
+# the library directory for using by the executable
+if (WIN32)
+  set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_DLL_DIR})
+else()
+  set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_LIBRARY_DIR})
 endif()
 
 mark_as_advanced (VTK_INCLUDE_DIRS VTK_LIBRARY_DIRS VTK_DIR)

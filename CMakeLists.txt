@@ -86,6 +86,11 @@ foreach (OCCT_MODULE ${OCCT_MODULES})
   BUILD_MODULE (${OCCT_MODULE})
 endforeach()
 
+if (ANDROID AND BUILD_MODULE_Draw)
+  message (STATUS "Info. Draw module is turned off due to it is not supported on Android")
+  set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
+endif()
+
 # Overview
 set (BUILD_DOC_OcctOverview OFF CACHE BOOL "${BUILD_DOC_OcctOverview_DESCR}")
 
@@ -141,17 +146,7 @@ endif()
 
 if (NOT DEFINED 3RDPARTY_DIR)
   set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_DESCR})
-endif()
-
-# search for 3rdparty dir
-if ("${3RDPARTY_DIR}" STREQUAL "")
-  if (DEFINED ENV{3RDPARTY_DIR})
-    set (3RDPARTY_DIR "$ENV{3RDPARTY_DIR}" CACHE PATH ${3RDPARTY_DIR_DESCR} FORCE)
-  elseif (EXISTS "${CMAKE_SOURCE_DIR}/../")
-    # in version 6.7.0 and above, occt parent directory contains 3rdparties
-    get_filename_component (3RDPARTY_DIR "${CMAKE_SOURCE_DIR}/../" ABSOLUTE)
-    set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH ${3RDPARTY_DIR_DESCR} FORCE)
-  endif()
+  get_filename_component (3RDPARTY_DIR "${3RDPARTY_DIR}" ABSOLUTE)
 endif()
 
 # search for CSF_TclLibs variable in EXTERNLIB of each being used toolkit
@@ -190,7 +185,7 @@ if (USE_VTK)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vtk")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_VTK")
-  OCCT_CHECK_AND_UNSET ("INSTALL_VTK")
+  #OCCT_CHECK_AND_UNSET ("INSTALL_VTK")
 endif()
 
 # D3D

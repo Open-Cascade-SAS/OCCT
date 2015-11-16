@@ -1,4 +1,11 @@
-#
+##
+
+if(OCCT_MACROS_ALREADY_INCLUDED)
+  return()
+endif()
+set(OCCT_MACROS_ALREADY_INCLUDED 1)
+
+
 macro (OCCT_CHECK_AND_UNSET VARNAME)
   if (DEFINED ${VARNAME})
     unset (${VARNAME} CACHE)
@@ -91,15 +98,14 @@ function (OCCT_ORIGIN_AND_PATCHED_FILES RELATIVE_PATH SEARCH_TEMPLATE RESULT)
   file (GLOB ORIGIN_FILES "${CMAKE_SOURCE_DIR}/${RELATIVE_PATH}/${SEARCH_TEMPLATE}")
   foreach (ORIGIN_FILE ${ORIGIN_FILES})
     # check for existence of patched version of current file
-    if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}")
+    if (NOT APPLY_OCCT_PATCH_DIR OR NOT EXISTS "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}")
+      list (APPEND FOUND_FILES ${ORIGIN_FILE})
+    else()
       get_filename_component (ORIGIN_FILE_NAME "${ORIGIN_FILE}" NAME)
-      if (EXISTS "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}/${ORIGIN_FILE_NAME}")
-        continue()
+      if (NOT EXISTS "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}/${ORIGIN_FILE_NAME}")
+        list (APPEND FOUND_FILES ${ORIGIN_FILE})
       endif()
     endif()
-
-    # append origin version if patched one is not found
-    list (APPEND FOUND_FILES ${ORIGIN_FILE})
   endforeach()
 
   set (${RESULT} ${FOUND_FILES} PARENT_SCOPE)
@@ -135,9 +141,7 @@ function (FIND_PRODUCT_DIR ROOT_DIR PRODUCT_NAME RESULT)
   endforeach()
 
   if (LOCAL_RESULT)
-    list (LENGTH "${LOCAL_RESULT}" LOC_LEN)
-    math (EXPR LAST_ELEMENT_INDEX "${LOC_LEN}-1")
-    list (GET LOCAL_RESULT ${LAST_ELEMENT_INDEX} DUMMY)
+    list (GET LOCAL_RESULT -1 DUMMY)
     set (${RESULT} ${DUMMY} PARENT_SCOPE)
   endif()
 endfunction()
@@ -200,47 +204,71 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
   set (OCCT_HEADER_FILES_COMPLETE)
   set (OCCT_HEADER_FILE_NAMES_NOT_IN_FILES)
   set (OCCT_HEADER_FILE_WITH_PROPER_NAMES)
+
+  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+  message (STATUS "Info. \(${CURRENT_TIME}\) Compare FILES with files in package directories...")
+
   foreach (OCCT_PACKAGE ${OCCT_USED_PACKAGES})
-    if (NOT EXISTS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
-      message (WARNING "FILES has not been found in ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}")
-      continue()
-    endif()
+    if (EXISTS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
+      file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES" OCCT_ALL_FILE_NAMES)
 
-    file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES" OCCT_ALL_FILE_NAMES)
+      list (LENGTH OCCT_ALL_FILE_NAMES ALL_FILES_NB)
+      math (EXPR ALL_FILES_NB "${ALL_FILES_NB} - 1" )
 
-    # emit warnings if there is unprocessed headers
-    file (GLOB OCCT_ALL_FILES_IN_DIR "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/*.*")
-    foreach (OCCT_FILE_IN_DIR ${OCCT_ALL_FILES_IN_DIR})
-      foreach (OCCT_FILE_NAME ${OCCT_ALL_FILE_NAMES})
-        string (REGEX MATCH "${OCCT_FILE_NAME}" IS_FILE_FOUND "${OCCT_FILE_IN_DIR}")
-        if (IS_FILE_FOUND)
-          string (REGEX MATCH ".+[.]h|[lg]xx" IS_HEADER_FOUND "${OCCT_FILE_NAME}")
-          if (IS_HEADER_FOUND)
-            list (APPEND OCCT_HEADER_FILES_COMPLETE ${OCCT_HEADER_FILE_IN_DIR})
+      # emit warnings if there is unprocessed headers
+      file (GLOB OCCT_ALL_FILES_IN_DIR "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/*.*")
+      foreach (OCCT_FILE_IN_DIR ${OCCT_ALL_FILES_IN_DIR})
+        get_filename_component (OCCT_FILE_IN_DIR_NAME ${OCCT_FILE_IN_DIR} NAME)
 
-            # collect header files with name that does not contain its package one
-            string (FIND "${OCCT_FILE_NAME}" "${OCCT_PACKAGE}_" FOUND_INDEX)
-            if (NOT ${FOUND_INDEX} EQUAL 0)
-              list (APPEND OCCT_HEADER_FILE_WITH_PROPER_NAMES "${OCCT_FILE_NAME}")
-            endif()            
-          endif()
+        set (OCCT_FILE_IN_DIR_STATUS OFF)
 
+        if (${ALL_FILES_NB} LESS 0)
           break()
         endif()
-      endforeach()
 
-      if (NOT IS_FILE_FOUND)
-        message (STATUS "Warning. ${OCCT_FILE_IN_DIR} is not involved into ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
-        
-        string (REGEX MATCH ".+[.]h|[lg]xx" IS_HEADER_FOUND "${OCCT_FILE_NAME}")
-        if (IS_HEADER_FOUND)
-          list (APPEND OCCT_HEADER_FILE_NAMES_NOT_IN_FILES ${OCCT_FILE_NAME})
+        foreach (FILE_INDEX RANGE ${ALL_FILES_NB})
+          list (GET OCCT_ALL_FILE_NAMES ${FILE_INDEX} OCCT_FILE_NAME)
+
+          if ("${OCCT_FILE_IN_DIR_NAME}" STREQUAL "${OCCT_FILE_NAME}")
+            set (OCCT_FILE_IN_DIR_STATUS ON)
+
+            string (REGEX MATCH ".+\\.[hlg]xx|.+\\.h$" IS_HEADER_FOUND "${OCCT_FILE_NAME}")
+            if (IS_HEADER_FOUND)
+              list (APPEND OCCT_HEADER_FILES_COMPLETE ${OCCT_FILE_IN_DIR})
+
+              # collect header files with name that does not contain its package one
+              string (FIND "${OCCT_FILE_NAME}" "${OCCT_PACKAGE}_" FOUND_INDEX)
+              if (NOT ${FOUND_INDEX} EQUAL 0)
+                list (APPEND OCCT_HEADER_FILE_WITH_PROPER_NAMES "${OCCT_FILE_NAME}")
+              endif()            
+            endif()
+
+            # remove found element from list
+            list (REMOVE_AT OCCT_ALL_FILE_NAMES ${FILE_INDEX})
+            math (EXPR ALL_FILES_NB "${ALL_FILES_NB} - 1" ) # decrement number
+
+            break()
+          endif()
+        endforeach()
+
+        if (NOT OCCT_FILE_IN_DIR_STATUS)
+          message (STATUS "Warning. ${OCCT_FILE_IN_DIR} is not involved into ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
+          
+          string (REGEX MATCH ".+\\.[hlg]xx|.+\\.h$" IS_HEADER_FOUND "${OCCT_FILE_NAME}")
+          if (IS_HEADER_FOUND)
+            list (APPEND OCCT_HEADER_FILE_NAMES_NOT_IN_FILES ${OCCT_FILE_NAME})
+          endif()
         endif()
-      endif()
-    endforeach()
+      endforeach()
+    else()
+      message (WARNING "FILES has not been found in ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}")
+    endif()
   endforeach()
   
   # create new file including found header
+  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
+  message (STATUS "Info. \(${CURRENT_TIME}\) Create header-links in inc folder...")
+
   foreach (OCCT_HEADER_FILE ${OCCT_HEADER_FILES_COMPLETE})
     get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
     configure_file ("${TEMPLATE_HEADER_PATH}" "${ROOT_TARGET_OCCT_DIR}/inc/${HEADER_FILE_NAME}" @ONLY)
@@ -280,10 +308,6 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
       endif()
     endif()
   endforeach()
-  
-  string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-  message (STATUS "Info. \(${CURRENT_TIME}\) End the checking")
-
 endmacro()
 
 macro (OCCT_COPY_FILE_OR_DIR BEING_COPIED_OBJECT DESTINATION_PATH)
@@ -457,3 +481,22 @@ function (OCCT_VERSION OCCT_VERSION_VAR)
   set (${OCCT_VERSION_VAR} "${OCCT_VERSION_LOCALVAR}" PARENT_SCOPE)
 endfunction()
 
+macro (CHECK_PATH_FOR_CONSISTENCY THE_ROOT_PATH_NAME THE_BEING_CHECKED_PATH_NAME THE_VAR_TYPE THE_MESSAGE_OF_BEING_CHECKED_PATH)
+  
+  set (THE_ROOT_PATH "${${THE_ROOT_PATH_NAME}}")
+  set (THE_BEING_CHECKED_PATH "${${THE_BEING_CHECKED_PATH_NAME}}")
+
+  if (THE_BEING_CHECKED_PATH OR EXISTS "${THE_BEING_CHECKED_PATH}")
+    get_filename_component (THE_ROOT_PATH_ABS "${THE_ROOT_PATH}" ABSOLUTE)
+    get_filename_component (THE_BEING_CHECKED_PATH_ABS "${THE_BEING_CHECKED_PATH}" ABSOLUTE)
+
+    string (REGEX MATCH "${THE_ROOT_PATH_ABS}" DOES_PATH_CONTAIN "${THE_BEING_CHECKED_PATH_ABS}")
+
+    if (NOT DOES_PATH_CONTAIN) # if cmake found the being checked path at different place from THE_ROOT_PATH_ABS
+      set (${THE_BEING_CHECKED_PATH_NAME} "" CACHE ${THE_VAR_TYPE} "${THE_MESSAGE_OF_BEING_CHECKED_PATH}" FORCE)
+    endif()
+  else()
+    set (${THE_BEING_CHECKED_PATH_NAME} "" CACHE ${THE_VAR_TYPE} "${THE_MESSAGE_OF_BEING_CHECKED_PATH}" FORCE)
+  endif()
+
+endmacro()

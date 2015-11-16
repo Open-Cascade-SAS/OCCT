@@ -77,7 +77,7 @@ endif()
 
 if (WIN32)
   if (NOT 3RDPARTY_TCL_DLL)
-    set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
+    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .dll)
 
     set (DLL_FOLDER_FOR_SEARCH "")
     if (3RDPARTY_TCL_DLL_DIR)
@@ -142,7 +142,7 @@ endif()
 
 if (WIN32)
   if (NOT 3RDPARTY_TCL_DLL)
-    set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
+    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .dll)
 
     set (DLL_FOLDER_FOR_SEARCH "")
     if (3RDPARTY_TCL_DLL_DIR)

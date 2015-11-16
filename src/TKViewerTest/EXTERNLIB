@@ -20,6 +20,7 @@ TKDraw
 TKOpenGl
 CSF_TclLibs
 CSF_TclTkLibs
+CSF_XwLibs
 CSF_user32
 CSF_gdi32
 CSF_OpenGlLibs
