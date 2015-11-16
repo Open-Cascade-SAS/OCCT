@@ -14,62 +14,46 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 
 #include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <Adaptor3d_HSurfaceOfRevolution.hxx>
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
 #include <ElCLib.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Torus.hxx>
-#include <gp_Vec.hxx>
-#include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
+#include <GeomAdaptor_HSurfaceOfRevolution.hxx>
+#include <GeomEvaluator_SurfaceOfRevolution.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
-//function : Adaptor3d_SurfaceOfRevolution
+//function : GeomAdaptor_SurfaceOfRevolution
 //purpose  : 
 //=======================================================================
-Adaptor3d_SurfaceOfRevolution::Adaptor3d_SurfaceOfRevolution()
-:myHaveAxis(Standard_False)
+GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution()
+  : myHaveAxis(Standard_False)
 {}
 
 //=======================================================================
-//function : Adaptor3d_SurfaceOfRevolution
+//function : GeomAdaptor_SurfaceOfRevolution
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_SurfaceOfRevolution::Adaptor3d_SurfaceOfRevolution
-(const Handle(Adaptor3d_HCurve)& C)
-:myHaveAxis(Standard_False)
+GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(
+    const Handle(Adaptor3d_HCurve)& C)
+  : myHaveAxis(Standard_False)
 {
-  Load( C);
+  Load(C);
 }
 
 //=======================================================================
-//function : Adaptor3d_SurfaceOfRevolution
+//function : GeomAdaptor_SurfaceOfRevolution
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_SurfaceOfRevolution::Adaptor3d_SurfaceOfRevolution
-(const Handle(Adaptor3d_HCurve)& C,
- const gp_Ax1&        V)
-:myHaveAxis(Standard_False)
+GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(
+    const Handle(Adaptor3d_HCurve)& C,
+    const gp_Ax1& V)
+  : myHaveAxis(Standard_False)
 {
-  Load( C);
-  Load( V);
+  Load(C);
+  Load(V);
 }
 
 //=======================================================================
@@ -77,10 +61,11 @@ Adaptor3d_SurfaceOfRevolution::Adaptor3d_SurfaceOfRevolution
 //purpose  : 
 //=======================================================================
 
-void Adaptor3d_SurfaceOfRevolution::Load( const Handle(Adaptor3d_HCurve)& C)
+void GeomAdaptor_SurfaceOfRevolution::Load(const Handle(Adaptor3d_HCurve)& C)
 {
   myBasisCurve = C;
-  if ( myHaveAxis)  Load(myAxis); // to evaluate the new myAxeRev.
+  if (myHaveAxis)
+    Load(myAxis); // to evaluate the new myAxeRev.
 }
 
 //=======================================================================
@@ -88,11 +73,15 @@ void Adaptor3d_SurfaceOfRevolution::Load( const Handle(Adaptor3d_HCurve)& C)
 //purpose  : 
 //=======================================================================
 
-void Adaptor3d_SurfaceOfRevolution::Load( const gp_Ax1& V)
+void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
 {
   myHaveAxis = Standard_True;
   myAxis = V;
-  
+
+  mySurfaceType = GeomAbs_SurfaceOfRevolution;
+  myNestedEvaluator = new GeomEvaluator_SurfaceOfRevolution(myBasisCurve,
+      myAxis.Direction(), myAxis.Location());
+
   // Eval myAxeRev : axe of revolution ( Determination de Ox).
   gp_Pnt P,Q;
   gp_Pnt O = myAxis.Location();
@@ -114,9 +103,9 @@ void Adaptor3d_SurfaceOfRevolution::Load( const gp_Ax1& V)
     P = Value( 0., 0.);// ce qui ne veut pas dire grand chose
     if ( GetType() == GeomAbs_Cone) {
       if ( gp_Lin(myAxis).Distance(P) <= Precision::Confusion())
-	Q = ElCLib::Value(1.,myBasisCurve->Line());
+        Q = ElCLib::Value(1.,myBasisCurve->Line());
       else 
-	Q = P;
+        Q = P;
     }
     else if (Precision::IsInfinite(First))
       Q = P; 
@@ -143,8 +132,7 @@ void Adaptor3d_SurfaceOfRevolution::Load( const gp_Ax1& V)
     while ( Dist < Precision::Confusion() && Ratio < 100);
 
     if ( Ratio >= 100 ) {
-      Standard_ConstructionError::Raise
-	("Adaptor3d_SurfaceOfRevolution : Axe and meridian are confused");
+      Standard_ConstructionError::Raise("Adaptor3d_SurfaceOfRevolution : Axe and meridian are confused");
     }
     Ox = ( (Oz^gp_Vec(PP.XYZ()-O.XYZ()))^Oz); 
   }
@@ -165,7 +153,7 @@ void Adaptor3d_SurfaceOfRevolution::Load( const gp_Ax1& V)
 //purpose  : 
 //=======================================================================
 
-gp_Ax1 Adaptor3d_SurfaceOfRevolution::AxeOfRevolution() const
+gp_Ax1 GeomAdaptor_SurfaceOfRevolution::AxeOfRevolution() const
 {
   return myAxis;
 }
@@ -175,7 +163,7 @@ gp_Ax1 Adaptor3d_SurfaceOfRevolution::AxeOfRevolution() const
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::FirstUParameter() const 
+Standard_Real GeomAdaptor_SurfaceOfRevolution::FirstUParameter() const 
 {
   return 0.;
 }
@@ -185,7 +173,7 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::FirstUParameter() const
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::LastUParameter() const 
+Standard_Real GeomAdaptor_SurfaceOfRevolution::LastUParameter() const 
 {
   return 2*M_PI;
 }
@@ -195,7 +183,7 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::LastUParameter() const
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::FirstVParameter() const 
+Standard_Real GeomAdaptor_SurfaceOfRevolution::FirstVParameter() const 
 {
   return myBasisCurve->FirstParameter();
 }
@@ -205,7 +193,7 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::FirstVParameter() const
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::LastVParameter() const 
+Standard_Real GeomAdaptor_SurfaceOfRevolution::LastVParameter() const 
 {
   return myBasisCurve->LastParameter();
 }
@@ -215,7 +203,7 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::LastVParameter() const
 //purpose  : 
 //=======================================================================
 
-GeomAbs_Shape Adaptor3d_SurfaceOfRevolution::UContinuity() const 
+GeomAbs_Shape GeomAdaptor_SurfaceOfRevolution::UContinuity() const 
 {
   return GeomAbs_CN;
 }
@@ -225,7 +213,7 @@ GeomAbs_Shape Adaptor3d_SurfaceOfRevolution::UContinuity() const
 //purpose  : 
 //=======================================================================
 
-GeomAbs_Shape Adaptor3d_SurfaceOfRevolution::VContinuity() const 
+GeomAbs_Shape GeomAdaptor_SurfaceOfRevolution::VContinuity() const 
 {
   return myBasisCurve->Continuity();
 }
@@ -235,9 +223,7 @@ GeomAbs_Shape Adaptor3d_SurfaceOfRevolution::VContinuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Adaptor3d_SurfaceOfRevolution::NbUIntervals
-//(const GeomAbs_Shape S) const
-(const GeomAbs_Shape ) const
+Standard_Integer GeomAdaptor_SurfaceOfRevolution::NbUIntervals(const GeomAbs_Shape ) const
 {
   return 1;
 }
@@ -247,8 +233,7 @@ Standard_Integer Adaptor3d_SurfaceOfRevolution::NbUIntervals
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Adaptor3d_SurfaceOfRevolution::NbVIntervals
-( const GeomAbs_Shape S) const 
+Standard_Integer GeomAdaptor_SurfaceOfRevolution::NbVIntervals(const GeomAbs_Shape S) const
 {
   return myBasisCurve->NbIntervals(S);
 }
@@ -258,9 +243,8 @@ Standard_Integer Adaptor3d_SurfaceOfRevolution::NbVIntervals
 //purpose  : 
 //=======================================================================
 
-void Adaptor3d_SurfaceOfRevolution::UIntervals (TColStd_Array1OfReal& T,
-//					      const GeomAbs_Shape S) const 
-					      const GeomAbs_Shape ) const 
+void GeomAdaptor_SurfaceOfRevolution::UIntervals(TColStd_Array1OfReal& T,
+                                                 const GeomAbs_Shape ) const
 {
   T(T.Lower()  ) = 0.;
   T(T.Lower()+1) = 2*M_PI;
@@ -272,8 +256,8 @@ void Adaptor3d_SurfaceOfRevolution::UIntervals (TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-void Adaptor3d_SurfaceOfRevolution::VIntervals(TColStd_Array1OfReal& T,
-					     const GeomAbs_Shape S) const 
+void GeomAdaptor_SurfaceOfRevolution::VIntervals(TColStd_Array1OfReal& T,
+                                                 const GeomAbs_Shape S) const 
 {
   myBasisCurve->Intervals(T,S);
 }
@@ -284,7 +268,7 @@ void Adaptor3d_SurfaceOfRevolution::VIntervals(TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface) Adaptor3d_SurfaceOfRevolution::UTrim
+Handle(Adaptor3d_HSurface) GeomAdaptor_SurfaceOfRevolution::UTrim
 (const Standard_Real 
 #ifndef No_Exception
                      First
@@ -301,10 +285,10 @@ Handle(Adaptor3d_HSurface) Adaptor3d_SurfaceOfRevolution::UTrim
 #endif
   Standard_OutOfRange_Raise_if
     (  Abs(First) > Eps || Abs(Last - 2.*M_PI) > Eps,
-     "Adaptor3d_SurfaceOfRevolution : UTrim : Parameters out of range");
+     "GeomAdaptor_SurfaceOfRevolution : UTrim : Parameters out of range");
 
-  Handle(Adaptor3d_HSurfaceOfRevolution) HR =
-    new Adaptor3d_HSurfaceOfRevolution(*this);
+  Handle(GeomAdaptor_HSurfaceOfRevolution) HR = new GeomAdaptor_HSurfaceOfRevolution(
+      GeomAdaptor_SurfaceOfRevolution(myBasisCurve, myAxis));
   return HR;
 }
 
@@ -314,16 +298,14 @@ Handle(Adaptor3d_HSurface) Adaptor3d_SurfaceOfRevolution::UTrim
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface) Adaptor3d_SurfaceOfRevolution::VTrim
+Handle(Adaptor3d_HSurface) GeomAdaptor_SurfaceOfRevolution::VTrim
 (const Standard_Real First,
  const Standard_Real Last,
  const Standard_Real Tol) const 
 {
-  Handle(Adaptor3d_HSurfaceOfRevolution) HR =
-    new Adaptor3d_HSurfaceOfRevolution(*this);
   Handle(Adaptor3d_HCurve) HC = BasisCurve()->Trim(First,Last,Tol);
-  HR->ChangeSurface().
-Load(HC);
+  Handle(GeomAdaptor_HSurfaceOfRevolution) HR = new GeomAdaptor_HSurfaceOfRevolution(
+      GeomAdaptor_SurfaceOfRevolution(HC, myAxis));
   return HR;
 }
 
@@ -333,7 +315,7 @@ Load(HC);
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsUClosed() const 
+Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsUClosed() const 
 {
   return Standard_True;
 }
@@ -343,7 +325,7 @@ Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsUClosed() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsVClosed() const 
+Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsVClosed() const 
 {
   return myBasisCurve->IsClosed();
 }
@@ -353,7 +335,7 @@ Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsVClosed() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsUPeriodic() const
+Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsUPeriodic() const
 {
   return Standard_True;
 }
@@ -363,7 +345,7 @@ Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsUPeriodic() const
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::UPeriod() const
+Standard_Real GeomAdaptor_SurfaceOfRevolution::UPeriod() const
 {
   return 2*M_PI;
 }
@@ -373,7 +355,7 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::UPeriod() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsVPeriodic() const
+Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsVPeriodic() const
 {
   return myBasisCurve->IsPeriodic();
 }
@@ -383,146 +365,9 @@ Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsVPeriodic() const
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::VPeriod() const 
+Standard_Real GeomAdaptor_SurfaceOfRevolution::VPeriod() const 
 {
   return myBasisCurve->Period();
-}
-
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-gp_Pnt Adaptor3d_SurfaceOfRevolution::Value(const Standard_Real U, 
-					  const Standard_Real V) const
-{
-  gp_Pnt P;
-  myBasisCurve->D0(V,P);
-  P.Rotate( myAxis, U);
-  return P;
-}
-
-//=======================================================================
-//function : D0
-//purpose  : 
-//=======================================================================
-
-void Adaptor3d_SurfaceOfRevolution::D0(const Standard_Real U,
-				     const Standard_Real V,
-				           gp_Pnt&       P) const
-{
-  myBasisCurve->D0(V,P);
-  P.Rotate( myAxis, U);
-}
-
-//=======================================================================
-//function : D1
-//purpose  : 
-//=======================================================================
-
-void Adaptor3d_SurfaceOfRevolution::D1(const Standard_Real U, 
-				     const Standard_Real V, 
-				     gp_Pnt& P, gp_Vec& D1U,
-				     gp_Vec& D1V) const 
-{
-  myBasisCurve->D1(V,P,D1V);
-  Standard_Real R = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
-  
-  D0( U,V,P);
-  D1V.Rotate( myAxis, U);
-  D1U = R*(myAxeRev.YDirection());
-  D1U.Rotate( myAxis, U);
-}
-
-//=======================================================================
-//function : D2
-//purpose  : 
-//=======================================================================
-
-void Adaptor3d_SurfaceOfRevolution::D2(const Standard_Real U, 
-				     const Standard_Real V,
-				     gp_Pnt& P, gp_Vec& D1U, 
-				     gp_Vec& D1V,
-				     gp_Vec& D2U, gp_Vec& D2V,
-				     gp_Vec& D2UV) const
-{
-  myBasisCurve->D2(V,P,D1V,D2V);
-
-  gp_Vec D1 = (myAxeRev.YDirection()).Rotated( myAxis, U);
-  gp_Vec D2 = (myAxeRev.XDirection()).Rotated( myAxis, U);
-
-  Standard_Real R   = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
-  Standard_Real D1R = D1V * myAxeRev.XDirection(); // D1R = dR/dV 
-                                                   // et R=AP*XDirection
-
-  D0( U,V,P);
-  D1V.Rotate( myAxis, U);
-  D2V.Rotate( myAxis, U);
-  D1U  =   R * D1;
-  D2U  =  -R * D2;
-  D2UV = D1R * D1;
-}
-
-//=======================================================================
-//function : D3
-//purpose  : 
-//=======================================================================
-
-void Adaptor3d_SurfaceOfRevolution::D3(const Standard_Real U, 
-				     const Standard_Real V,
-				     gp_Pnt& P,gp_Vec& D1U, gp_Vec& D1V,
-				     gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV,
-				     gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV,
-				     gp_Vec& D3UVV) const
-{
-  myBasisCurve->D3(V,P,D1V,D2V,D3V);
-  
-  gp_Vec D1 = (myAxeRev.YDirection()).Rotated( myAxis, U);
-  gp_Vec D2 = (myAxeRev.XDirection()).Rotated( myAxis, U);
-
-  Standard_Real R   = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
-  Standard_Real D1R = D1V * myAxeRev.XDirection();  // D1R = dR/dV et
-                                                    // R=AP*XDirection
-  Standard_Real D2R = D2V * myAxeRev.XDirection();
-
-  D0( U,V,P);
-  D1V.Rotate( myAxis, U);
-  D2V.Rotate( myAxis, U);
-  D3V.Rotate( myAxis, U);
-  D1U   =    R * D1;
-  D2U   =   -R * D2;
-  D3U   =   -R * D1;
-  D2UV  =  D1R * D1;
-  D3UUV = -D1R * D2;
-  D3UVV =  D2R * D1;
-}
-
-//=======================================================================
-//function : DN
-//purpose  : 
-//=======================================================================
-
-gp_Vec Adaptor3d_SurfaceOfRevolution::DN(const Standard_Real    U,
-				       const Standard_Real    V,
-                                       const Standard_Integer NU,
-				       const Standard_Integer NV) const 
-{
-  if ( (NU+NV)<1 || NU<0 || NV<0) {
-    Standard_DomainError::Raise("Adaptor3d_SurfaceOfRevolution::DN");
-  }
-  else {
-    gp_Vec DNv = myBasisCurve->DN( V, NV);
-    if ( NU == 0) {
-      return DNv.Rotated( myAxis, U);
-    }
-    else {
-      Standard_Real DNR = DNv * myAxeRev.XDirection();
-      gp_Vec DNu = ( myAxeRev.XDirection()).Rotated( myAxis, U + NU*M_PI/2);
-      return ( DNR * DNu);
-    }
-  }   
-  // portage WNT
-  return gp_Vec();
 }
 
 //=======================================================================
@@ -530,7 +375,7 @@ gp_Vec Adaptor3d_SurfaceOfRevolution::DN(const Standard_Real    U,
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::UResolution
+Standard_Real GeomAdaptor_SurfaceOfRevolution::UResolution
 (const Standard_Real R3d) const 
 {
   return Precision::Parametric(R3d);
@@ -541,7 +386,7 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::UResolution
 //purpose  : 
 //=======================================================================
 
-Standard_Real Adaptor3d_SurfaceOfRevolution::VResolution
+Standard_Real GeomAdaptor_SurfaceOfRevolution::VResolution
 (const Standard_Real R3d) const 
 {
   return myBasisCurve->Resolution(R3d);
@@ -552,65 +397,49 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::VResolution
 //purpose  : 
 //=======================================================================
 
-GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const 
+GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const 
 {
-  Standard_Real TolConf, TolAng;
-  GeomAbs_SurfaceType bRet;
-  //
-  bRet=GeomAbs_SurfaceOfRevolution;
-  TolConf = Precision::Confusion();
-  TolAng  = Precision::Angular();
-  //
-  switch ( myBasisCurve->GetType()) {
+  Standard_Real TolConf = Precision::Confusion();
+  Standard_Real TolAng  = Precision::Angular();
+
+  switch (myBasisCurve->GetType()) {
   case GeomAbs_Line:    {
     gp_Ax1 Axe = myBasisCurve->Line().Position();
     
-    if (myAxis.IsParallel(Axe, TolAng)) {
-      bRet=GeomAbs_Cylinder;
-      return bRet;
-    }
-    else if (myAxis.IsNormal( Axe, TolAng)) {
-      bRet=GeomAbs_Plane;
-      return bRet;
-    }
-    else {
+    if (myAxis.IsParallel(Axe, TolAng))
+      return GeomAbs_Cylinder;
+    else if (myAxis.IsNormal(Axe, TolAng))
+      return GeomAbs_Plane;
+    else
+    {
       Standard_Real uf = myBasisCurve->FirstParameter();
       Standard_Real ul = myBasisCurve->LastParameter();
       Standard_Boolean istrim = (!Precision::IsInfinite(uf) && 
-				 !Precision::IsInfinite(ul));
-      if(istrim){
-	gp_Pnt pf = myBasisCurve->Value(uf);
-	gp_Pnt pl = myBasisCurve->Value(ul);
-	Standard_Real len = pf.Distance(pl);
-	//on calcule la distance projetee sur l axe.
-	gp_Vec vlin(pf,pl);
-	gp_Vec vaxe(myAxis.Direction());
-	Standard_Real projlen = Abs(vaxe.Dot(vlin));
-	Standard_Real aTolConf = len*TolAng;
-	if ((len - projlen) <= aTolConf) {
-	  bRet=GeomAbs_Cylinder;
-	  return bRet;
-	}
-	else if (projlen <= aTolConf) {
-	  bRet=GeomAbs_Plane;
-	  return bRet;
-	}
+                                 !Precision::IsInfinite(ul));
+      if(istrim)
+      {
+        gp_Pnt pf = myBasisCurve->Value(uf);
+        gp_Pnt pl = myBasisCurve->Value(ul);
+        Standard_Real len = pf.Distance(pl);
+        //on calcule la distance projetee sur l axe.
+        gp_Vec vlin(pf,pl);
+        gp_Vec vaxe(myAxis.Direction());
+        Standard_Real projlen = Abs(vaxe.Dot(vlin));
+        Standard_Real aTolConf = len*TolAng;
+        if ((len - projlen) <= aTolConf)
+          return GeomAbs_Cylinder;
+        else if (projlen <= aTolConf)
+          return GeomAbs_Plane;
       }
-      gp_Vec V(myAxis.Location(),
-	       myBasisCurve->Line().Location());
+      gp_Vec V(myAxis.Location(), myBasisCurve->Line().Location());
       gp_Vec W(Axe.Direction());
-      if (Abs(V.DotCross(myAxis.Direction(),W)) <= TolConf){
-	bRet=GeomAbs_Cone;
-	return bRet;
-      }
-      else {
-	return bRet;
-      }
+      if (Abs(V.DotCross(myAxis.Direction(), W)) <= TolConf)
+        return GeomAbs_Cone;
     }
+    break;
   }//case GeomAbs_Line: 
-  //  
+  //
   case GeomAbs_Circle:   {
-    
     Standard_Real MajorRadius, aR;
     gp_Lin aLin(myAxis);
     //
@@ -619,43 +448,35 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const
     aR=C.Radius();
     //
    
-    if (!C.Position().IsCoplanar(myAxis, TolConf, TolAng)) {
-      return bRet;
-    }
-    else if(aLin.Distance(aLC) <= TolConf) {
-      bRet=GeomAbs_Sphere;
-      return bRet;
-    }
-    else {
+    if (!C.Position().IsCoplanar(myAxis, TolConf, TolAng))
+      return GeomAbs_SurfaceOfRevolution;
+    else if(aLin.Distance(aLC) <= TolConf)
+      return GeomAbs_Sphere;
+    else
+    {
       MajorRadius = aLin.Distance(aLC);
-      if(MajorRadius>aR) {
-	//modified by NIZNHY-PKV Thu Feb 24 09:46:29 2011f
-	Standard_Real aT, aDx, dX;
-	gp_Pnt aPx;
-	//
-	aT=0.;
-	aPx=ElCLib::Value(aT, C);
-	aDx=aLin.Distance(aPx);
-	dX=aDx-MajorRadius-aR;
-	if (dX<0.) {
-	  dX=-dX;
-	}
-	if (dX<TolConf) {
-	  bRet=GeomAbs_Torus;
-	}
-	//bRet=GeomAbs_Torus;
-	//return bRet;
-	//modified by NIZNHY-PKV Thu Feb 24 09:52:29 2011t
+      if(MajorRadius > aR)
+      {
+        Standard_Real aT = 0., aDx, dX;
+        gp_Pnt aPx;
+
+        aPx = ElCLib::Value(aT, C);
+        aDx = aLin.Distance(aPx);
+        dX = aDx - MajorRadius - aR;
+        if (dX < 0.)
+          dX = -dX;
+        if (dX < TolConf)
+          return GeomAbs_Torus;
       }
-      return bRet;
     }
+    break;
   }
   //  
   default:
     break;
   }
   
-  return bRet;
+  return GeomAbs_SurfaceOfRevolution;
 }
 
 //=======================================================================
@@ -663,25 +484,19 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const
 //purpose  : 
 //=======================================================================
 
-gp_Pln Adaptor3d_SurfaceOfRevolution::Plane() const 
+gp_Pln GeomAdaptor_SurfaceOfRevolution::Plane() const 
 { 
   Standard_NoSuchObject_Raise_if
-    (GetType() != GeomAbs_Plane, "Adaptor3d_SurfaceOfRevolution:Plane");
+    (GetType() != GeomAbs_Plane, "GeomAdaptor_SurfaceOfRevolution:Plane");
 
   gp_Ax3 Axe = myAxeRev;
-  gp_Pnt P;
-  
-  // P = Projection du Point Debut de la generatrice sur l axe de rotation.
-  P.SetXYZ((myAxis.Location()).XYZ() +
-	   (Value(0.,0.).XYZ()-(myAxis.Location()).XYZ()).
-	   Dot((myAxis.Direction()).XYZ())
-	   *(myAxis.Direction()).XYZ());
-  Axe.SetLocation( P);
-  //// modified by jgv, 8.01.03 for OCC1226 ////
-  if (Axe.XDirection().
-      Dot(myBasisCurve->Line().Direction()) >= -Precision::Confusion()) // > 0.
+  gp_Pnt aPonCurve = Value(0., 0.);
+  Standard_Real aDot = (aPonCurve.XYZ() - myAxis.Location().XYZ()).Dot(myAxis.Direction().XYZ());
+
+  gp_Pnt P(myAxis.Location().XYZ() + aDot * myAxis.Direction().XYZ());
+  Axe.SetLocation(P);
+  if (Axe.XDirection().Dot(myBasisCurve->Line().Direction()) >= -Precision::Confusion())
     Axe.XReverse();
-  //////////////////////////////////////////////
 
   return gp_Pln( Axe);
 }
@@ -691,14 +506,14 @@ gp_Pln Adaptor3d_SurfaceOfRevolution::Plane() const
 //purpose  : 
 //=======================================================================
 
-gp_Cylinder Adaptor3d_SurfaceOfRevolution::Cylinder() const
+gp_Cylinder GeomAdaptor_SurfaceOfRevolution::Cylinder() const
 {
   Standard_NoSuchObject_Raise_if
-    (GetType() != GeomAbs_Cylinder, "Adaptor3d_SurfaceOfRevolution::Cylinder");
+    (GetType() != GeomAbs_Cylinder, "GeomAdaptor_SurfaceOfRevolution::Cylinder");
 
-  gp_Pnt P = Value( 0., 0.);
-  Standard_Real R   = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
-  return gp_Cylinder( myAxeRev, R);
+  gp_Pnt P = Value(0., 0.);
+  Standard_Real R = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
+  return gp_Cylinder(myAxeRev, R);
 }
 
 //=======================================================================
@@ -706,10 +521,10 @@ gp_Cylinder Adaptor3d_SurfaceOfRevolution::Cylinder() const
 //purpose  : 
 //=======================================================================
 
-gp_Cone Adaptor3d_SurfaceOfRevolution::Cone() const
+gp_Cone GeomAdaptor_SurfaceOfRevolution::Cone() const
 {
   Standard_NoSuchObject_Raise_if
-    ( GetType() != GeomAbs_Cone, "Adaptor3d_SurfaceOfRevolution:Cone");
+    ( GetType() != GeomAbs_Cone, "GeomAdaptor_SurfaceOfRevolution:Cone");
 
   gp_Ax3 Axe = myAxeRev;
   gp_Dir ldir = (myBasisCurve->Line()).Direction();
@@ -733,15 +548,15 @@ gp_Cone Adaptor3d_SurfaceOfRevolution::Cone() const
 //purpose  : 
 //=======================================================================
 
-gp_Sphere Adaptor3d_SurfaceOfRevolution::Sphere() const 
+gp_Sphere GeomAdaptor_SurfaceOfRevolution::Sphere() const 
 {
   Standard_NoSuchObject_Raise_if
-    ( GetType() != GeomAbs_Sphere, "Adaptor3d_SurfaceOfRevolution:Sphere");
+    ( GetType() != GeomAbs_Sphere, "GeomAdaptor_SurfaceOfRevolution:Sphere");
 
   gp_Circ C = myBasisCurve->Circle();
   gp_Ax3 Axe = myAxeRev;
-  Axe.SetLocation( C.Location());
-  return gp_Sphere( Axe, C.Radius());
+  Axe.SetLocation(C.Location());
+  return gp_Sphere(Axe, C.Radius());
 }
 
 
@@ -750,36 +565,14 @@ gp_Sphere Adaptor3d_SurfaceOfRevolution::Sphere() const
 //purpose  : 
 //=======================================================================
 
-gp_Torus Adaptor3d_SurfaceOfRevolution::Torus() const 
+gp_Torus GeomAdaptor_SurfaceOfRevolution::Torus() const 
 {
   Standard_NoSuchObject_Raise_if
-    (GetType() != GeomAbs_Torus, "Adaptor3d_SurfaceOfRevolution:Torus");
+    (GetType() != GeomAbs_Torus, "GeomAdaptor_SurfaceOfRevolution:Torus");
 
   gp_Circ C = myBasisCurve->Circle();
   Standard_Real MajorRadius = gp_Lin(myAxis).Distance(C.Location());
-  return gp_Torus( myAxeRev, MajorRadius, C.Radius());
-}
-
-//=======================================================================
-//function : UDegree
-//purpose  : 
-//=======================================================================
-
-Standard_Integer Adaptor3d_SurfaceOfRevolution::UDegree() const 
-{
-  Standard_NoSuchObject::Raise("Adaptor3d_SurfaceOfRevolution::UDegree");
-  return 0;
-}
-
-//=======================================================================
-//function : NbUPoles
-//purpose  : 
-//=======================================================================
-
-Standard_Integer Adaptor3d_SurfaceOfRevolution::NbUPoles() const 
-{
-  Standard_NoSuchObject::Raise("Adaptor3d_SurfaceOfRevolution::NbUPoles");
-  return 0;
+  return gp_Torus(myAxeRev, MajorRadius, C.Radius());
 }
 
 //=======================================================================
@@ -787,7 +580,7 @@ Standard_Integer Adaptor3d_SurfaceOfRevolution::NbUPoles() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Adaptor3d_SurfaceOfRevolution::VDegree() const 
+Standard_Integer GeomAdaptor_SurfaceOfRevolution::VDegree() const 
 {
   return myBasisCurve->Degree();
 }
@@ -797,31 +590,19 @@ Standard_Integer Adaptor3d_SurfaceOfRevolution::VDegree() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Adaptor3d_SurfaceOfRevolution::NbVPoles() const
+Standard_Integer GeomAdaptor_SurfaceOfRevolution::NbVPoles() const
 {
-  return myBasisCurve -> NbPoles();
+  return myBasisCurve->NbPoles();
 }
-
-//=======================================================================
-//function : NbUKnots
-//purpose  : 
-//=======================================================================
-
-Standard_Integer Adaptor3d_SurfaceOfRevolution::NbUKnots() const 
-{
-  Standard_NoSuchObject::Raise("Adaptor3d_SurfaceOfRevolution::NbUKnots");
-  return 0;
-}
-
 
 //=======================================================================
 //function : NbVKnots
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Adaptor3d_SurfaceOfRevolution::NbVKnots() const 
+Standard_Integer GeomAdaptor_SurfaceOfRevolution::NbVKnots() const 
 {
-  Standard_NoSuchObject::Raise("Adaptor3d_SurfaceOfRevolution::NbVKnots");
+  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::NbVKnots");
   return 0;
 }
 
@@ -832,9 +613,9 @@ Standard_Integer Adaptor3d_SurfaceOfRevolution::NbVKnots() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsURational() const 
+Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsURational() const 
 {
-  Standard_NoSuchObject::Raise("Adaptor3d_SurfaceOfRevolution::IsURational");
+  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::IsURational");
   return Standard_False;
 }
 
@@ -843,9 +624,9 @@ Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsURational() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsVRational() const 
+Standard_Boolean GeomAdaptor_SurfaceOfRevolution::IsVRational() const 
 {
-  Standard_NoSuchObject::Raise("Adaptor3d_SurfaceOfRevolution::IsVRational");
+  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::IsVRational");
   return Standard_False;
 }
 
@@ -855,11 +636,10 @@ Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsVRational() const
 //purpose  : 
 //=======================================================================
 
-Handle(Geom_BezierSurface) Adaptor3d_SurfaceOfRevolution::Bezier() const 
+Handle(Geom_BezierSurface) GeomAdaptor_SurfaceOfRevolution::Bezier() const 
 {
-  Standard_NoSuchObject::Raise("");
-  Handle(Geom_BezierSurface) Dummy;
-  return Dummy;
+  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::Bezier");
+  return Handle(Geom_BezierSurface)();
 }
 
 
@@ -868,42 +648,28 @@ Handle(Geom_BezierSurface) Adaptor3d_SurfaceOfRevolution::Bezier() const
 //purpose  : 
 //=======================================================================
 
-Handle(Geom_BSplineSurface) Adaptor3d_SurfaceOfRevolution::BSpline() const 
+Handle(Geom_BSplineSurface) GeomAdaptor_SurfaceOfRevolution::BSpline() const 
 {
-  Standard_NoSuchObject::Raise("");
-  Handle(Geom_BSplineSurface) Dummy;
-  return Dummy;
+  Standard_NoSuchObject::Raise("GeomAdaptor_SurfaceOfRevolution::BSpline");
+  return Handle(Geom_BSplineSurface)();
 }
-
 
 //=======================================================================
 //function : Axis
 //purpose  : 
 //=======================================================================
 
-gp_Ax3 Adaptor3d_SurfaceOfRevolution::Axis() const 
+const gp_Ax3& GeomAdaptor_SurfaceOfRevolution::Axis() const 
 {
   return myAxeRev;
 }
-
-//=======================================================================
-//function : Direction
-//purpose  : 
-//=======================================================================
-
-gp_Dir Adaptor3d_SurfaceOfRevolution::Direction() const 
-{
-  Standard_NoSuchObject::Raise("");
-  return gp_Dir();
-}
-
 
 //=======================================================================
 //function : BasisCurve
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) Adaptor3d_SurfaceOfRevolution::BasisCurve() const 
+Handle(Adaptor3d_HCurve) GeomAdaptor_SurfaceOfRevolution::BasisCurve() const 
 {
   return myBasisCurve;
 }

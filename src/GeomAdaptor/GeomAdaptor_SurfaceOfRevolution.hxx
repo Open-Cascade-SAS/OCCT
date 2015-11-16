@@ -14,22 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Adaptor3d_SurfaceOfRevolution_HeaderFile
-#define _Adaptor3d_SurfaceOfRevolution_HeaderFile
+#ifndef _GeomAdaptor_SurfaceOfRevolution_HeaderFile
+#define _GeomAdaptor_SurfaceOfRevolution_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 #include <gp_Ax1.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Ax3.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAdaptor_Surface.hxx>
+
 class Adaptor3d_HCurve;
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
@@ -65,22 +60,20 @@ class gp_Dir;
 //! The derivatives are always defined for the u direction.
 //! For the v direction the definition of the derivatives depends on
 //! the degree of continuity of the referenced curve.
-//! Curve and Axis are coplanar.
-//! Curve doesn't intersect Axis.
-class Adaptor3d_SurfaceOfRevolution  : public Adaptor3d_Surface
+class GeomAdaptor_SurfaceOfRevolution  : public GeomAdaptor_Surface
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT Adaptor3d_SurfaceOfRevolution();
+  Standard_EXPORT GeomAdaptor_SurfaceOfRevolution();
   
   //! The Curve is loaded.
-  Standard_EXPORT Adaptor3d_SurfaceOfRevolution(const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT GeomAdaptor_SurfaceOfRevolution(const Handle(Adaptor3d_HCurve)& C);
   
   //! The Curve and the Direction are loaded.
-  Standard_EXPORT Adaptor3d_SurfaceOfRevolution(const Handle(Adaptor3d_HCurve)& C, const gp_Ax1& V);
+  Standard_EXPORT GeomAdaptor_SurfaceOfRevolution(const Handle(Adaptor3d_HCurve)& C, const gp_Ax1& V);
   
   //! Changes the Curve
   Standard_EXPORT void Load (const Handle(Adaptor3d_HCurve)& C);
@@ -143,39 +136,7 @@ public:
   Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Real VPeriod() const Standard_OVERRIDE;
-  
-  //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT gp_Pnt Value (const Standard_Real U, const Standard_Real V) const Standard_OVERRIDE;
-  
-  //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const Standard_OVERRIDE;
-  
-  //! Computes the point  and the first derivatives on
-  //! the surface.
-  //! Raised   if  the continuity  of   the  current
-  //! intervals is not C1.
-  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const Standard_OVERRIDE;
-  
-  //! Computes   the point,  the  first  and  second
-  //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
-  //! intervals is not C2.
-  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const Standard_OVERRIDE;
-  
-  //! Computes the point,  the first, second and third
-  //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
-  //! intervals is not C3.
-  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const Standard_OVERRIDE;
-  
-  //! Computes the derivative of order Nu
-  //! in the direction U and Nv in the direction V
-  //! at the point P(U, V).
-  //! Raised if the current U  interval is not not CNu
-  //! and the current V interval is not CNv.
-  //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const Standard_OVERRIDE;
-  
+
   //! Returns the parametric U  resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real UResolution (const Standard_Real R3d) const Standard_OVERRIDE;
@@ -201,17 +162,11 @@ public:
   Standard_EXPORT gp_Sphere Sphere() const Standard_OVERRIDE;
   
   Standard_EXPORT gp_Torus Torus() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Integer UDegree() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Integer NbUPoles() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT Standard_Integer VDegree() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Integer NbVPoles() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Integer NbUKnots() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT Standard_Integer NbVKnots() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsURational() const Standard_OVERRIDE;
@@ -222,9 +177,7 @@ public:
   
   Standard_EXPORT Handle(Geom_BSplineSurface) BSpline() const Standard_OVERRIDE;
   
-  Standard_EXPORT gp_Ax3 Axis() const;
-  
-  Standard_EXPORT gp_Dir Direction() const Standard_OVERRIDE;
+  Standard_EXPORT const gp_Ax3& Axis() const;
   
   Standard_EXPORT Handle(Adaptor3d_HCurve) BasisCurve() const Standard_OVERRIDE;
 
@@ -238,15 +191,10 @@ protected:
 
 
 private:
-
-
-
-  Handle(Adaptor3d_HCurve) myBasisCurve;
-  gp_Ax1 myAxis;
-  Standard_Boolean myHaveAxis;
-  gp_Ax3 myAxeRev;
-
-
+  Handle(Adaptor3d_HCurve) myBasisCurve; ///< revolved curve
+  gp_Ax1                   myAxis;       ///< axis of revolution
+  Standard_Boolean         myHaveAxis;   ///< whether axis of revolution is initialized
+  gp_Ax3                   myAxeRev;     ///< auxiliary trihedron according to the curve position
 };
 
 
@@ -255,4 +203,4 @@ private:
 
 
 
-#endif // _Adaptor3d_SurfaceOfRevolution_HeaderFile
+#endif // _GeomAdaptor_SurfaceOfRevolution_HeaderFile

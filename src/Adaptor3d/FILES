@@ -18,10 +18,6 @@ Adaptor3d_HIsoCurve_0.cxx
 Adaptor3d_HSurface.cxx
 Adaptor3d_HSurface.hxx
 Adaptor3d_HSurface.lxx
-Adaptor3d_HSurfaceOfLinearExtrusion.hxx
-Adaptor3d_HSurfaceOfLinearExtrusion_0.cxx
-Adaptor3d_HSurfaceOfRevolution.hxx
-Adaptor3d_HSurfaceOfRevolution_0.cxx
 Adaptor3d_HSurfaceTool.cxx
 Adaptor3d_HSurfaceTool.hxx
 Adaptor3d_HSurfaceTool.lxx
@@ -34,10 +30,6 @@ Adaptor3d_IsoCurve.hxx
 Adaptor3d_IsoCurve.lxx
 Adaptor3d_Surface.cxx
 Adaptor3d_Surface.hxx
-Adaptor3d_SurfaceOfLinearExtrusion.cxx
-Adaptor3d_SurfaceOfLinearExtrusion.hxx
-Adaptor3d_SurfaceOfRevolution.cxx
-Adaptor3d_SurfaceOfRevolution.hxx
 Adaptor3d_SurfacePtr.hxx
 Adaptor3d_TopolTool.cxx
 Adaptor3d_TopolTool.hxx

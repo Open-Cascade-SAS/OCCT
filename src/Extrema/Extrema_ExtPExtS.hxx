@@ -30,7 +30,7 @@
 #include <Extrema_POnSurf.hxx>
 #include <Standard_Transient.hxx>
 class Adaptor3d_HCurve;
-class Adaptor3d_HSurfaceOfLinearExtrusion;
+class GeomAdaptor_HSurfaceOfLinearExtrusion;
 class StdFail_NotDone;
 class Standard_OutOfRange;
 class gp_Pnt;
@@ -54,14 +54,14 @@ public:
   
   //! It calculates all the distances between a point
   //! from gp and a Surface.
-  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt& P, const Handle(Adaptor3d_HSurfaceOfLinearExtrusion)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt& P, const Handle(GeomAdaptor_HSurfaceOfLinearExtrusion)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
   
   //! It calculates all the distances between a point
   //! from gp and a Surface.
-  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt& P, const Handle(Adaptor3d_HSurfaceOfLinearExtrusion)& S, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt& P, const Handle(GeomAdaptor_HSurfaceOfLinearExtrusion)& S, const Standard_Real TolU, const Standard_Real TolV);
   
   //! Initializes the fields of the algorithm.
-  Standard_EXPORT void Initialize (const Handle(Adaptor3d_HSurfaceOfLinearExtrusion)& S, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real Vinf, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT void Initialize (const Handle(GeomAdaptor_HSurfaceOfLinearExtrusion)& S, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real Vinf, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
   
   Standard_EXPORT void Perform (const gp_Pnt& P);
   
@@ -100,7 +100,7 @@ private:
   Standard_Real mytolv;
   Extrema_FuncExtPS myF;
   Handle(Adaptor3d_HCurve) myC;
-  Handle(Adaptor3d_HSurfaceOfLinearExtrusion) myS;
+  Handle(GeomAdaptor_HSurfaceOfLinearExtrusion) myS;
   gp_Vec myDirection;
   gp_Ax2 myPosition;
   Extrema_GenExtPS myExtPS;

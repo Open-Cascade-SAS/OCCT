@@ -14,56 +14,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Adaptor3d_HSurfaceOfLinearExtrusion_HeaderFile
-#define _Adaptor3d_HSurfaceOfLinearExtrusion_HeaderFile
+#ifndef _GeomAdaptor_HSurfaceOfLinearExtrusion_HeaderFile
+#define _GeomAdaptor_HSurfaceOfLinearExtrusion_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
+#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <Adaptor3d_HSurface.hxx>
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
-class Adaptor3d_SurfaceOfLinearExtrusion;
+class GeomAdaptor_SurfaceOfLinearExtrusion;
 class Adaptor3d_Surface;
 
 
-class Adaptor3d_HSurfaceOfLinearExtrusion;
-DEFINE_STANDARD_HANDLE(Adaptor3d_HSurfaceOfLinearExtrusion, Adaptor3d_HSurface)
+class GeomAdaptor_HSurfaceOfLinearExtrusion;
+DEFINE_STANDARD_HANDLE(GeomAdaptor_HSurfaceOfLinearExtrusion, Adaptor3d_HSurface)
 
 
-class Adaptor3d_HSurfaceOfLinearExtrusion : public Adaptor3d_HSurface
+class GeomAdaptor_HSurfaceOfLinearExtrusion : public Adaptor3d_HSurface
 {
 
 public:
 
   
   //! Creates an empty GenHSurface.
-  Standard_EXPORT Adaptor3d_HSurfaceOfLinearExtrusion();
+  Standard_EXPORT GeomAdaptor_HSurfaceOfLinearExtrusion();
   
   //! Creates a GenHSurface from a Surface.
-  Standard_EXPORT Adaptor3d_HSurfaceOfLinearExtrusion(const Adaptor3d_SurfaceOfLinearExtrusion& S);
+  Standard_EXPORT GeomAdaptor_HSurfaceOfLinearExtrusion(const GeomAdaptor_SurfaceOfLinearExtrusion& S);
   
   //! Sets the field of the GenHSurface.
-  Standard_EXPORT void Set (const Adaptor3d_SurfaceOfLinearExtrusion& S);
+  Standard_EXPORT void Set (const GeomAdaptor_SurfaceOfLinearExtrusion& S);
   
   //! Returns a reference to the Surface inside the HSurface.
   //! This is redefined from HSurface, cannot be inline.
   Standard_EXPORT const Adaptor3d_Surface& Surface() const;
   
   //! Returns the surface used to create the GenHSurface.
-    Adaptor3d_SurfaceOfLinearExtrusion& ChangeSurface();
+  GeomAdaptor_SurfaceOfLinearExtrusion& ChangeSurface();
 
 
 
 
-  DEFINE_STANDARD_RTTI(Adaptor3d_HSurfaceOfLinearExtrusion,Adaptor3d_HSurface)
+  DEFINE_STANDARD_RTTI(GeomAdaptor_HSurfaceOfLinearExtrusion,Adaptor3d_HSurface)
 
 protected:
 
 
-  Adaptor3d_SurfaceOfLinearExtrusion mySurf;
+  GeomAdaptor_SurfaceOfLinearExtrusion mySurf;
 
 
 private:
@@ -73,11 +73,11 @@ private:
 
 };
 
-#define TheSurface Adaptor3d_SurfaceOfLinearExtrusion
-#define TheSurface_hxx <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
-#define Adaptor3d_GenHSurface Adaptor3d_HSurfaceOfLinearExtrusion
-#define Adaptor3d_GenHSurface_hxx <Adaptor3d_HSurfaceOfLinearExtrusion.hxx>
-#define Handle_Adaptor3d_GenHSurface Handle(Adaptor3d_HSurfaceOfLinearExtrusion)
+#define TheSurface GeomAdaptor_SurfaceOfLinearExtrusion
+#define TheSurface_hxx <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
+#define Adaptor3d_GenHSurface GeomAdaptor_HSurfaceOfLinearExtrusion
+#define Adaptor3d_GenHSurface_hxx <GeomAdaptor_HSurfaceOfLinearExtrusion.hxx>
+#define Handle_Adaptor3d_GenHSurface Handle(GeomAdaptor_HSurfaceOfLinearExtrusion)
 
 #include <Adaptor3d_GenHSurface.lxx>
 
@@ -90,4 +90,4 @@ private:
 
 
 
-#endif // _Adaptor3d_HSurfaceOfLinearExtrusion_HeaderFile
+#endif // _GeomAdaptor_HSurfaceOfLinearExtrusion_HeaderFile

@@ -14,56 +14,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Adaptor3d_HSurfaceOfRevolution_HeaderFile
-#define _Adaptor3d_HSurfaceOfRevolution_HeaderFile
+#ifndef _GeomAdaptor_HSurfaceOfRevolution_HeaderFile
+#define _GeomAdaptor_HSurfaceOfRevolution_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <Adaptor3d_HSurface.hxx>
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
-class Adaptor3d_SurfaceOfRevolution;
+class GeomAdaptor_SurfaceOfRevolution;
 class Adaptor3d_Surface;
 
 
-class Adaptor3d_HSurfaceOfRevolution;
-DEFINE_STANDARD_HANDLE(Adaptor3d_HSurfaceOfRevolution, Adaptor3d_HSurface)
+class GeomAdaptor_HSurfaceOfRevolution;
+DEFINE_STANDARD_HANDLE(GeomAdaptor_HSurfaceOfRevolution, Adaptor3d_HSurface)
 
 
-class Adaptor3d_HSurfaceOfRevolution : public Adaptor3d_HSurface
+class GeomAdaptor_HSurfaceOfRevolution : public Adaptor3d_HSurface
 {
 
 public:
 
   
   //! Creates an empty GenHSurface.
-  Standard_EXPORT Adaptor3d_HSurfaceOfRevolution();
+  Standard_EXPORT GeomAdaptor_HSurfaceOfRevolution();
   
   //! Creates a GenHSurface from a Surface.
-  Standard_EXPORT Adaptor3d_HSurfaceOfRevolution(const Adaptor3d_SurfaceOfRevolution& S);
+  Standard_EXPORT GeomAdaptor_HSurfaceOfRevolution(const GeomAdaptor_SurfaceOfRevolution& S);
   
   //! Sets the field of the GenHSurface.
-  Standard_EXPORT void Set (const Adaptor3d_SurfaceOfRevolution& S);
+  Standard_EXPORT void Set (const GeomAdaptor_SurfaceOfRevolution& S);
   
   //! Returns a reference to the Surface inside the HSurface.
   //! This is redefined from HSurface, cannot be inline.
   Standard_EXPORT const Adaptor3d_Surface& Surface() const;
   
   //! Returns the surface used to create the GenHSurface.
-    Adaptor3d_SurfaceOfRevolution& ChangeSurface();
+  GeomAdaptor_SurfaceOfRevolution& ChangeSurface();
 
 
 
 
-  DEFINE_STANDARD_RTTI(Adaptor3d_HSurfaceOfRevolution,Adaptor3d_HSurface)
+  DEFINE_STANDARD_RTTI(GeomAdaptor_HSurfaceOfRevolution,Adaptor3d_HSurface)
 
 protected:
 
 
-  Adaptor3d_SurfaceOfRevolution mySurf;
+  GeomAdaptor_SurfaceOfRevolution mySurf;
 
 
 private:
@@ -73,11 +73,11 @@ private:
 
 };
 
-#define TheSurface Adaptor3d_SurfaceOfRevolution
-#define TheSurface_hxx <Adaptor3d_SurfaceOfRevolution.hxx>
-#define Adaptor3d_GenHSurface Adaptor3d_HSurfaceOfRevolution
-#define Adaptor3d_GenHSurface_hxx <Adaptor3d_HSurfaceOfRevolution.hxx>
-#define Handle_Adaptor3d_GenHSurface Handle(Adaptor3d_HSurfaceOfRevolution)
+#define TheSurface GeomAdaptor_SurfaceOfRevolution
+#define TheSurface_hxx <GeomAdaptor_SurfaceOfRevolution.hxx>
+#define Adaptor3d_GenHSurface GeomAdaptor_HSurfaceOfRevolution
+#define Adaptor3d_GenHSurface_hxx <GeomAdaptor_HSurfaceOfRevolution.hxx>
+#define Handle_Adaptor3d_GenHSurface Handle(GeomAdaptor_HSurfaceOfRevolution)
 
 #include <Adaptor3d_GenHSurface.lxx>
 
@@ -90,4 +90,4 @@ private:
 
 
 
-#endif // _Adaptor3d_HSurfaceOfRevolution_HeaderFile
+#endif // _GeomAdaptor_HSurfaceOfRevolution_HeaderFile

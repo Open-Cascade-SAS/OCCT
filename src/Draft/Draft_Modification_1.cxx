@@ -16,7 +16,7 @@
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
+#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -630,7 +630,7 @@ Standard_Boolean Draft_Modification::Propagate ()
                 errStat = Draft_EdgeRecomputation;
                 break; // leave from while
               }
-              Adaptor3d_SurfaceOfLinearExtrusion SLE(HCur,Direc);
+              GeomAdaptor_SurfaceOfLinearExtrusion SLE(HCur,Direc);
               switch(SLE.GetType()){
 
               case GeomAbs_Plane :

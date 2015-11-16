@@ -29,6 +29,7 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
+#include <GeomEvaluator_Surface.hxx>
 class Geom_Surface;
 class Standard_NoSuchObject;
 class Standard_OutOfRange;
@@ -259,16 +260,17 @@ private:
 
 
   Handle(Geom_Surface) mySurface;
-  GeomAbs_SurfaceType mySurfaceType;
   Standard_Real myUFirst;
   Standard_Real myULast;
   Standard_Real myVFirst;
   Standard_Real myVLast;
   Standard_Real myTolU;
   Standard_Real myTolV;
-  Handle(BSplSLib_Cache) mySurfaceCache;
+  Handle(BSplSLib_Cache) mySurfaceCache; ///< Cached data for B-spline surface
 
-
+protected:
+  GeomAbs_SurfaceType mySurfaceType;
+  Handle(GeomEvaluator_Surface) myNestedEvaluator; ///< Calculates values of nested complex surfaces (offset surface, surface of extrusion or revolution)
 };
 
 

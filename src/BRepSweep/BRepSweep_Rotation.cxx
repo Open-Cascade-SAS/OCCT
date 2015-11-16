@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -346,7 +346,7 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyFace
 
     Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
     HC->ChangeCurve().Load(C,First,Last);
-    Adaptor3d_SurfaceOfRevolution AS(HC,myAxe);
+    GeomAdaptor_SurfaceOfRevolution AS(HC,myAxe);
     switch(AS.GetType()){
     case GeomAbs_Plane :
       {

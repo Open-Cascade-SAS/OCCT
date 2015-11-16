@@ -37,6 +37,7 @@
 Geom_OsculatingSurface::Geom_OsculatingSurface()
   : myAlong(1,4)
 {
+  myAlong.Init(Standard_False);
 }
 //=======================================================================
 //function : Geom_OffsetOsculatingSurface

@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Geom_SweptSurface.hxx>
+#include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -204,25 +205,7 @@ public:
   //! direction and CNv in the v direction.
   //! Raises RangeError if Nu + Nv < 1 or Nu < 0 or Nv < 0.
   Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const;
-  
-  //! The following  functions  evaluates the  local
-  //! derivatives on surface. Useful to manage discontinuities
-  //! on the surface.
-  //! if    Side  =  1  ->  P  =  S( U+,V )
-  //! if    Side  = -1  ->  P  =  S( U-,V )
-  //! else  P  is betveen discontinuities
-  //! can be evaluated using methods  of
-  //! global evaluations    P  =  S( U ,V )
-  Standard_EXPORT void LocalD0 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, gp_Pnt& P) const;
-  
-  Standard_EXPORT void LocalD1 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
-  
-  Standard_EXPORT void LocalD2 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const;
-  
-  Standard_EXPORT void LocalD3 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
-  
-  Standard_EXPORT gp_Vec LocalDN (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, const Standard_Integer Nu, const Standard_Integer Nv) const;
-  
+
   //! Applies the transformation T to this surface of linear extrusion.
   Standard_EXPORT void Transform (const gp_Trsf& T);
   
@@ -277,7 +260,7 @@ protected:
 
 
 private:
-
+  Handle(GeomEvaluator_SurfaceOfExtrusion) myEvaluator;
 
 
 

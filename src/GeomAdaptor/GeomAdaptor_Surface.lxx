@@ -24,13 +24,13 @@
 //=======================================================================
 
 inline GeomAdaptor_Surface::GeomAdaptor_Surface()
- : mySurfaceType(GeomAbs_OtherSurface), 
-   myUFirst(0.),
+ : myUFirst(0.),
    myULast(0.),
    myVFirst(0.),
    myVLast (0.),
    myTolU(0.), 
-   myTolV(0.)
+   myTolV(0.),
+   mySurfaceType(GeomAbs_OtherSurface)
 {
 } 
 

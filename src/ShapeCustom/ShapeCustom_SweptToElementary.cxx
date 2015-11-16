@@ -12,8 +12,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
+#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
@@ -112,7 +112,7 @@ Standard_Boolean ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face& F,
     gp_Ax1 ax1 = SR->Axis();
     Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
     HC->ChangeCurve().Load(bc,bc->FirstParameter(),bc->LastParameter());
-    Adaptor3d_SurfaceOfRevolution AS(HC,ax1);
+    GeomAdaptor_SurfaceOfRevolution AS(HC,ax1);
     switch(AS.GetType()){
     // skl 18.12.2003 - plane not used, problems in PRO14665.igs
     //case GeomAbs_Plane : {
@@ -150,7 +150,7 @@ Standard_Boolean ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face& F,
     gp_Dir dir = SLE->Direction();
     Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
     HC->ChangeCurve().Load(bc,bc->FirstParameter(),bc->LastParameter());
-    Adaptor3d_SurfaceOfLinearExtrusion AS(HC,dir);
+    GeomAdaptor_SurfaceOfLinearExtrusion AS(HC,dir);
     switch(AS.GetType()){
     // skl 18.12.2003 - plane not used, problems in ims013.igs
     //case GeomAbs_Plane : {

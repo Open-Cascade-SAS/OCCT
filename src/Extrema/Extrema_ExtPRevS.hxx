@@ -27,7 +27,7 @@
 #include <Standard_Integer.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Standard_Transient.hxx>
-class Adaptor3d_HSurfaceOfRevolution;
+class GeomAdaptor_HSurfaceOfRevolution;
 class StdFail_NotDone;
 class Standard_OutOfRange;
 class gp_Pnt;
@@ -50,13 +50,13 @@ public:
   
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(Adaptor3d_HSurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_HSurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
   
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(Adaptor3d_HSurfaceOfRevolution)& S, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_HSurfaceOfRevolution)& S, const Standard_Real TolU, const Standard_Real TolV);
   
-  Standard_EXPORT void Initialize (const Handle(Adaptor3d_HSurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT void Initialize (const Handle(GeomAdaptor_HSurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
   
   Standard_EXPORT void Perform (const gp_Pnt& P);
   
@@ -85,7 +85,7 @@ protected:
 private:
 
 
-  Handle(Adaptor3d_HSurfaceOfRevolution) myS;
+  Handle(GeomAdaptor_HSurfaceOfRevolution) myS;
   Standard_Real myvinf;
   Standard_Real myvsup;
   Standard_Real mytolv;

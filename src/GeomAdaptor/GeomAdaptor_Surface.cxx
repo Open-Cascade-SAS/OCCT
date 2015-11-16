@@ -45,6 +45,9 @@
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomEvaluator_OffsetSurface.hxx>
+#include <GeomEvaluator_SurfaceOfExtrusion.hxx>
+#include <GeomEvaluator_SurfaceOfRevolution.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Cone.hxx>
@@ -66,12 +69,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-
-//#include <GeomConvert_BSplineSurfaceKnotSplitting.hxx>
-#define myBspl Handle(Geom_BSplineSurface)::DownCast (mySurface)
-#define myExtSurf Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (mySurface)
-#define myRevSurf Handle(Geom_SurfaceOfRevolution)::DownCast (mySurface)
-#define myOffSurf Handle(Geom_OffsetSurface)::DownCast (mySurface)
 
 //=======================================================================
 //function : LocalContinuity
@@ -138,7 +135,9 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
 
   if ( mySurface != S) {
     mySurface = S;
-    
+    mySurfaceCache = Handle(BSplSLib_Cache)();
+    myNestedEvaluator = Handle(GeomEvaluator_Surface)();
+
     const Handle(Standard_Type)& TheType = S->DynamicType();
     if ( TheType == STANDARD_TYPE(Geom_BezierSurface))
       mySurfaceType = GeomAbs_BezierSurface;
@@ -156,21 +155,51 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       mySurfaceType = GeomAbs_Sphere;
     else if ( TheType == STANDARD_TYPE(Geom_ToroidalSurface))
       mySurfaceType = GeomAbs_Torus;
-    else if ( TheType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
+    else if (TheType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
+    {
       mySurfaceType = GeomAbs_SurfaceOfRevolution;
-    else if ( TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
+      Handle(Geom_SurfaceOfRevolution) myRevSurf =
+          Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
+      // Create nested adaptor for base curve
+      Handle(Geom_Curve) aBaseCurve = myRevSurf->BasisCurve();
+      Handle(GeomAdaptor_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
+      // Create corresponding evaluator
+      myNestedEvaluator = new GeomEvaluator_SurfaceOfRevolution(
+          Handle(Adaptor3d_HCurve)::DownCast(aBaseAdaptor),
+          myRevSurf->Direction(), myRevSurf->Location());
+    }
+    else if (TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
+    {
       mySurfaceType = GeomAbs_SurfaceOfExtrusion;
+      Handle(Geom_SurfaceOfLinearExtrusion) myExtSurf =
+          Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
+      // Create nested adaptor for base curve
+      Handle(Geom_Curve) aBaseCurve = myExtSurf->BasisCurve();
+      Handle(GeomAdaptor_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
+      // Create corresponding evaluator
+      myNestedEvaluator = new GeomEvaluator_SurfaceOfExtrusion(
+          Handle(Adaptor3d_HCurve)::DownCast(aBaseAdaptor), myExtSurf->Direction());
+    }
     else if ( TheType == STANDARD_TYPE(Geom_BSplineSurface)) {
       mySurfaceType = GeomAbs_BSplineSurface;
-      myBspl        = Handle(Geom_BSplineSurface)::DownCast (mySurface);
+      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
       // Create cache for B-spline
-      mySurfaceCache = new BSplSLib_Cache( 
+      mySurfaceCache = new BSplSLib_Cache(
         myBspl->UDegree(), myBspl->IsUPeriodic(), myBspl->UKnotSequence(), 
         myBspl->VDegree(), myBspl->IsVPeriodic(), myBspl->VKnotSequence(), 
         myBspl->Poles(), myBspl->Weights());
     }
-    else if ( TheType == STANDARD_TYPE(Geom_OffsetSurface))
+    else if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
+    {
       mySurfaceType = GeomAbs_OffsetSurface;
+      Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+      // Create nested adaptor for base surface
+      Handle(Geom_Surface) aBaseSurf = myOffSurf->BasisSurface();
+      Handle(GeomAdaptor_HSurface) aBaseAdaptor =
+          new GeomAdaptor_HSurface(aBaseSurf, myUFirst, myULast, myVFirst, myVLast, myTolU, myTolV);
+      myNestedEvaluator = new GeomEvaluator_OffsetSurface(
+          aBaseAdaptor, myOffSurf->Offset(), myOffSurf->OsculatingSurface());
+    }
     else
       mySurfaceType = GeomAbs_OtherSurface;
   }
@@ -192,6 +221,7 @@ GeomAbs_Shape GeomAdaptor_Surface::UContinuity() const
   {
     case GeomAbs_BSplineSurface:
     {
+      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
       const Standard_Integer N = myBspl->NbUKnots();
       TColStd_Array1OfReal TK(1,N);
       TColStd_Array1OfInteger TM(1,N);
@@ -217,8 +247,9 @@ GeomAbs_Shape GeomAdaptor_Surface::UContinuity() const
     }
     case GeomAbs_SurfaceOfExtrusion:
     {
-      GeomAdaptor_Curve GC
-        (Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (mySurface)->BasisCurve(),myUFirst,myULast);
+      Handle(Geom_SurfaceOfLinearExtrusion) myExtSurf =
+          Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
+      GeomAdaptor_Curve GC(myExtSurf->BasisCurve(), myUFirst, myULast);
       return GC.Continuity();
     }
     case GeomAbs_OtherSurface: 
@@ -245,6 +276,7 @@ GeomAbs_Shape GeomAdaptor_Surface::VContinuity() const
   {
     case GeomAbs_BSplineSurface:
     {
+      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
       const Standard_Integer N = myBspl->NbVKnots();
       TColStd_Array1OfReal TK(1,N);
       TColStd_Array1OfInteger TM(1,N);
@@ -270,8 +302,9 @@ GeomAbs_Shape GeomAdaptor_Surface::VContinuity() const
     }
     case GeomAbs_SurfaceOfRevolution:
     {
-      GeomAdaptor_Curve GC
-        (Handle(Geom_SurfaceOfRevolution)::DownCast (mySurface)->BasisCurve(),myVFirst,myVLast);
+      Handle(Geom_SurfaceOfRevolution) myRevSurf =
+          Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
+      GeomAdaptor_Curve GC(myRevSurf->BasisCurve(), myVFirst, myVLast);
       return GC.Continuity();
     }
     case GeomAbs_OtherSurface:
@@ -298,15 +331,17 @@ Standard_Integer GeomAdaptor_Surface::NbUIntervals(const GeomAbs_Shape S) const
   {
     case GeomAbs_BSplineSurface:
     {
+      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
       GeomAdaptor_Curve myBasisCurve
         (myBspl->VIso(myBspl->VKnot(myBspl->FirstVKnotIndex())),myUFirst,myULast);
       return myBasisCurve.NbIntervals(S);
     }
 	  case GeomAbs_SurfaceOfExtrusion:
     {
-      GeomAdaptor_Curve myBasisCurve
-        (Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (mySurface)->BasisCurve(),myUFirst,myULast);
-	  if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
+      Handle(Geom_SurfaceOfLinearExtrusion) myExtSurf =
+          Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
+      GeomAdaptor_Curve myBasisCurve(myExtSurf->BasisCurve(), myUFirst, myULast);
+      if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
         return myBasisCurve.NbIntervals(S);
       break;
     }
@@ -323,7 +358,8 @@ Standard_Integer GeomAdaptor_Surface::NbUIntervals(const GeomAbs_Shape S) const
         case GeomAbs_C3:
         case GeomAbs_CN: break;
       }
-      GeomAdaptor_Surface Sur(Handle(Geom_OffsetSurface)::DownCast (mySurface)->BasisSurface());
+      Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
       return Sur.NbUIntervals(BaseS);
     }
     case GeomAbs_Plane:
@@ -349,19 +385,21 @@ Standard_Integer GeomAdaptor_Surface::NbVIntervals(const GeomAbs_Shape S) const
   {
     case GeomAbs_BSplineSurface:
     {
+      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
       GeomAdaptor_Curve myBasisCurve
         (myBspl->UIso(myBspl->UKnot(myBspl->FirstUKnotIndex())),myVFirst,myVLast);
       return myBasisCurve.NbIntervals(S);
     }
-	  case GeomAbs_SurfaceOfRevolution:
+    case GeomAbs_SurfaceOfRevolution:
     {
-      GeomAdaptor_Curve myBasisCurve
-        (Handle(Geom_SurfaceOfRevolution)::DownCast (mySurface)->BasisCurve(),myVFirst,myVLast);
-	  if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
+      Handle(Geom_SurfaceOfRevolution) myRevSurf =
+          Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
+      GeomAdaptor_Curve myBasisCurve(myRevSurf->BasisCurve(), myVFirst, myVLast);
+      if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
         return myBasisCurve.NbIntervals(S);
       break;
     }
-	  case GeomAbs_OffsetSurface:
+    case GeomAbs_OffsetSurface:
     {
       GeomAbs_Shape BaseS = GeomAbs_CN;
       switch(S)
@@ -374,9 +412,10 @@ Standard_Integer GeomAdaptor_Surface::NbVIntervals(const GeomAbs_Shape S) const
         case GeomAbs_C3:
         case GeomAbs_CN: break;
       }
-      GeomAdaptor_Surface Sur(Handle(Geom_OffsetSurface)::DownCast (mySurface)->BasisSurface());
+      Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
       return Sur.NbVIntervals(BaseS);
-	  }
+    }
     case GeomAbs_Plane:
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
@@ -402,13 +441,14 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
   {
     case GeomAbs_BSplineSurface:
     {
+      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
       GeomAdaptor_Curve myBasisCurve
         (myBspl->VIso(myBspl->VKnot(myBspl->FirstVKnotIndex())),myUFirst,myULast);
       myNbUIntervals = myBasisCurve.NbIntervals(S);
       myBasisCurve.Intervals(T,S);
       break;
     }
-	  case GeomAbs_SurfaceOfExtrusion:
+    case GeomAbs_SurfaceOfExtrusion:
     {
       GeomAdaptor_Curve myBasisCurve
         (Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (mySurface)->BasisCurve(),myUFirst,myULast);
@@ -419,7 +459,7 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
       }
       break;
     }
-	  case GeomAbs_OffsetSurface:
+    case GeomAbs_OffsetSurface:
     {
       GeomAbs_Shape BaseS = GeomAbs_CN;
       switch(S)
@@ -432,7 +472,8 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
         case GeomAbs_C3:
         case GeomAbs_CN: break;
       }
-      GeomAdaptor_Surface Sur(Handle(Geom_OffsetSurface)::DownCast (mySurface)->BasisSurface());
+      Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
       myNbUIntervals = Sur.NbUIntervals(BaseS);
       Sur.UIntervals(T, BaseS);
     }
@@ -463,16 +504,18 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
   {
     case GeomAbs_BSplineSurface:
     {
+      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
       GeomAdaptor_Curve myBasisCurve
         (myBspl->UIso(myBspl->UKnot(myBspl->FirstUKnotIndex())),myVFirst,myVLast);
       myNbVIntervals = myBasisCurve.NbIntervals(S);
       myBasisCurve.Intervals(T,S);
       break;
     }
-	  case GeomAbs_SurfaceOfRevolution:
+    case GeomAbs_SurfaceOfRevolution:
     {
-      GeomAdaptor_Curve myBasisCurve
-        (Handle(Geom_SurfaceOfRevolution)::DownCast (mySurface)->BasisCurve(),myVFirst,myVLast);
+      Handle(Geom_SurfaceOfRevolution) myRevSurf =
+          Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
+      GeomAdaptor_Curve myBasisCurve(myRevSurf->BasisCurve(), myVFirst, myVLast);
       if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
       {
         myNbVIntervals = myBasisCurve.NbIntervals(S);
@@ -480,7 +523,7 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
       }
       break;
     }
-	  case GeomAbs_OffsetSurface:
+    case GeomAbs_OffsetSurface:
     {
       GeomAbs_Shape BaseS = GeomAbs_CN;
       switch(S)
@@ -493,7 +536,8 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
         case GeomAbs_C3:
         case GeomAbs_CN: break;
       }
-      GeomAdaptor_Surface Sur(Handle(Geom_OffsetSurface)::DownCast (mySurface)->BasisSurface());
+      Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+      GeomAdaptor_Surface Sur(myOffSurf->BasisSurface());
       myNbVIntervals = Sur.NbVIntervals(BaseS);
       Sur.VIntervals(T, BaseS);
     }
@@ -624,7 +668,8 @@ Standard_Real GeomAdaptor_Surface::VPeriod() const
 void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU,
                                        const Standard_Real theV) const
 {
-  mySurfaceCache->BuildCache(theU, theV, 
+  Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
+  mySurfaceCache->BuildCache(theU, theV,
     myBspl->UDegree(), myBspl->IsUPeriodic(), myBspl->UKnotSequence(), 
     myBspl->VDegree(), myBspl->IsVPeriodic(), myBspl->VKnotSequence(), 
     myBspl->Poles(), myBspl->Weights());
@@ -638,16 +683,9 @@ void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU,
 gp_Pnt GeomAdaptor_Surface::Value(const Standard_Real U, 
                                   const Standard_Real V) const 
 {
-  if (mySurfaceType == GeomAbs_BSplineSurface && !mySurfaceCache.IsNull())
-  {
-    if (!mySurfaceCache->IsCacheValid(U, V))
-      RebuildCache(U, V);
-    gp_Pnt P;
-    mySurfaceCache->D0(U, V, P);
-    return P;
-  }
-
-  return mySurface->Value(U,V);
+  gp_Pnt aValue;
+  D0(U, V, aValue);
+  return aValue;
 }
 
 //=======================================================================
@@ -658,15 +696,30 @@ gp_Pnt GeomAdaptor_Surface::Value(const Standard_Real U,
 void GeomAdaptor_Surface::D0(const Standard_Real U, 
                              const Standard_Real V, gp_Pnt& P) const 
 {
-  if (mySurfaceType == GeomAbs_BSplineSurface && !mySurfaceCache.IsNull())
+  switch (mySurfaceType)
   {
-    if (!mySurfaceCache->IsCacheValid(U, V))
-      RebuildCache(U, V);
-    mySurfaceCache->D0(U, V, P);
-    return;
-  }
+  case GeomAbs_BSplineSurface:
+    if (!mySurfaceCache.IsNull())
+    {
+      if (!mySurfaceCache->IsCacheValid(U, V))
+        RebuildCache(U, V);
+      mySurfaceCache->D0(U, V, P);
+    }
+    else
+      mySurface->D0(U, V, P);
+    break;
 
-  mySurface->D0(U,V,P);
+  case GeomAbs_OffsetSurface:
+  case GeomAbs_SurfaceOfExtrusion:
+  case GeomAbs_SurfaceOfRevolution:
+    Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
+        "GeomAdaptor_Surface::D0: evaluator is not initialized");
+    myNestedEvaluator->D0(U, V, P);
+    break;
+
+  default:
+    mySurface->D0(U, V, P);
+  }
 }
 
 
@@ -689,8 +742,9 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
   else if (Abs(V-myVLast) <= myTolV) {VSide= -1; v = myVLast;}
 
   switch(mySurfaceType) {
-  case GeomAbs_BSplineSurface:
-    if ((USide != 0 || VSide != 0) && 
+  case GeomAbs_BSplineSurface: {
+    Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
+    if ((USide != 0 || VSide != 0) &&
         IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
       myBspl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
     else if (!mySurfaceCache.IsNull())
@@ -702,27 +756,16 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
     else
       myBspl->D1(u, v, P, D1U, D1V);
     break;
+    }
 
   case GeomAbs_SurfaceOfExtrusion:
-    if (USide==0) 
-      myExtSurf->D1(u, v, P, D1U, D1V);
-    else 
-      myExtSurf->LocalD1(u, v, USide, P, D1U, D1V);
-    break;
-
   case GeomAbs_SurfaceOfRevolution:
-    if (VSide==0) 
-      myRevSurf->D1(u, v, P, D1U, D1V);
-    else 
-      myRevSurf->LocalD1(u, v, VSide, P, D1U, D1V);
+  case GeomAbs_OffsetSurface:
+    Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
+        "GeomAdaptor_Surface::D1: evaluator is not initialized");
+    myNestedEvaluator->D1(u, v, P, D1U, D1V);
     break;
 
-  case GeomAbs_OffsetSurface:
-    if (USide==0 && VSide==0) 
-      myOffSurf->D1(u, v, P, D1U, D1V);
-    else 
-      myOffSurf->LocalD1(u, v, USide, VSide, P, D1U, D1V);
-    break;
   default:
     mySurface->D1(u, v, P, D1U, D1V);
   }
@@ -750,9 +793,10 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
   else if (Abs(V-myVLast) <= myTolV) {VSide= -1; v = myVLast;}
 
   switch(mySurfaceType) {
-  case  GeomAbs_BSplineSurface:
-    if((USide != 0 || VSide != 0) && 
-       IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+  case  GeomAbs_BSplineSurface: {
+    Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
+    if ((USide != 0 || VSide != 0) &&
+        IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
       myBspl->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
     else if (!mySurfaceCache.IsNull())
     {
@@ -760,28 +804,19 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
         RebuildCache(U, V);
       mySurfaceCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
     }
-    else myBspl->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
+    else myBspl->D2(u, v, P, D1U, D1V, D2U, D2V, D2UV);
     break;
+  }
 
-  case GeomAbs_SurfaceOfExtrusion  :
-
-    if(USide==0)  myExtSurf->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
-    else myExtSurf->LocalD2(u,v,USide,P,D1U,D1V,D2U,D2V,D2UV);
-    break;
-
-  case GeomAbs_SurfaceOfRevolution :
-
-    if(VSide==0) myRevSurf->D2 (u, v, P,D1U,D1V,D2U,D2V,D2UV );
-    else myRevSurf->LocalD2 (u, v, VSide, P,D1U,D1V,D2U,D2V,D2UV );
-    break;
-
+  case GeomAbs_SurfaceOfExtrusion:
+  case GeomAbs_SurfaceOfRevolution:
   case  GeomAbs_OffsetSurface :
-    {
-      if((USide==0)&&(VSide==0)) myOffSurf->D2 (u, v,P,D1U,D1V,D2U,D2V,D2UV ); 
-      else myOffSurf->LocalD2 (u, v, USide, VSide ,P,D1U,D1V,D2U,D2V,D2UV ); 
-      break;
-    }
-  default :  { mySurface->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
+    Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
+        "GeomAdaptor_Surface::D2: evaluator is not initialized");
+    myNestedEvaluator->D2(u, v, P, D1U, D1V, D2U, D2V, D2UV);
+    break;
+
+  default:  { mySurface->D2(u, v, P, D1U, D1V, D2U, D2V, D2UV);
     break;}
   }
 }
@@ -806,43 +841,29 @@ void GeomAdaptor_Surface::D3(const Standard_Real U, const Standard_Real V,
   else if (Abs(V-myVLast) <= myTolV) {VSide= -1; v = myVLast;}
 
   switch(mySurfaceType) {
-  case  GeomAbs_BSplineSurface:
-    
-      if((USide==0)&&(VSide==0))
-	myBspl->D3(u,v,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
-      else {
-	if(IfUVBound(u,v,Ideb,Ifin,IVdeb,IVfin,USide,VSide))
-	  myBspl-> LocalD3 (u, v, Ideb, Ifin,IVdeb ,IVfin ,
-			    P ,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); 
-	else
-	  myBspl->D3(u,v,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
-      }
-      break;
-    
-  case GeomAbs_SurfaceOfExtrusion  :
-    
-      if(USide==0)  myExtSurf->D3(u,v,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
-      else myExtSurf->LocalD3(u,v,USide,P,D1U,D1V,D2U,D2V,D2UV,
-			      D3U,D3V,D3UUV,D3UVV);
-      break;
-    
-  case GeomAbs_SurfaceOfRevolution :
-    
-      if(VSide==0) myRevSurf->D3 (u, v, P ,D1U,D1V,D2U,D2V,D2UV,
-				  D3U,D3V,D3UUV,D3UVV);
-      else myRevSurf->LocalD3 (u, v, VSide, P,D1U,D1V,D2U,D2V,D2UV,
-			       D3U,D3V,D3UUV,D3UVV );
-      break;
-    
-  case  GeomAbs_OffsetSurface : 
-    {
-      if((USide==0)&&(VSide==0)) myOffSurf->D3 (u, v,P ,D1U,D1V,D2U,D2V,D2UV,
-						D3U,D3V,D3UUV,D3UVV); 
-      else   myOffSurf->LocalD3 (u, v, USide, VSide ,P ,D1U,D1V,D2U,D2V,D2UV,
-				 D3U,D3V,D3UUV,D3UVV); 
-      break; 
+  case  GeomAbs_BSplineSurface: {
+    Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
+    if ((USide == 0) && (VSide == 0))
+      myBspl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+    else {
+      if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+        myBspl->LocalD3(u, v, Ideb, Ifin, IVdeb, IVfin,
+                        P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      else
+        myBspl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
     }
-    default : {  mySurface->D3(u,v,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); 
+    break;
+  }
+
+  case GeomAbs_SurfaceOfExtrusion:
+  case GeomAbs_SurfaceOfRevolution:
+  case  GeomAbs_OffsetSurface:
+    Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
+        "GeomAdaptor_Surface::D3: evaluator is not initialized");
+    myNestedEvaluator->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+    break;
+
+  default : {  mySurface->D3(u,v,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); 
 		 break;}
   }
 }
@@ -866,30 +887,24 @@ gp_Vec GeomAdaptor_Surface::DN(const Standard_Real    U,
 
   switch(mySurfaceType) 
   {
-  case GeomAbs_BSplineSurface:
-    
-    if((USide==0)&&(VSide==0)) return  myBspl->DN(u,v,Nu,Nv);
+  case GeomAbs_BSplineSurface: {
+    Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
+    if ((USide == 0) && (VSide == 0))
+      return myBspl->DN(u, v, Nu, Nv);
     else {
-      if(IfUVBound(u,v,Ideb,Ifin,IVdeb,IVfin,USide,VSide))
-        return myBspl->LocalDN (u, v, Ideb, Ifin,IVdeb ,IVfin ,Nu,Nv ); 
+      if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+        return myBspl->LocalDN(u, v, Ideb, Ifin, IVdeb, IVfin, Nu, Nv);
       else
-        return  myBspl->DN(u,v,Nu,Nv); 
+        return myBspl->DN(u, v, Nu, Nv);
     }
-    
-  case GeomAbs_SurfaceOfExtrusion:
-    
-    if(USide==0)  return myExtSurf-> DN (u, v,Nu,Nv );
-    else return myExtSurf->LocalDN (u, v, USide,Nu,Nv );
-    
-  case GeomAbs_SurfaceOfRevolution:
+  }
 
-    if(VSide==0)  return myRevSurf->DN (u, v, Nu, Nv );
-    else  return myRevSurf->LocalDN (u, v,VSide, Nu, Nv );
-     
+  case GeomAbs_SurfaceOfExtrusion:
+  case GeomAbs_SurfaceOfRevolution:
   case GeomAbs_OffsetSurface:
-    
-    if((USide==0)&&(VSide==0)) return myOffSurf->DN (u, v, Nu, Nv );
-    else return myOffSurf->LocalDN (u, v, USide, VSide, Nu, Nv );
+    Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
+        "GeomAdaptor_Surface::DN: evaluator is not initialized");
+    return myNestedEvaluator->DN(u, v, Nu, Nv);
 
   case GeomAbs_Plane:
   case GeomAbs_Cylinder:
@@ -1370,7 +1385,8 @@ Standard_Boolean GeomAdaptor_Surface::IfUVBound(const Standard_Real U,
                                                 const Standard_Integer VSide) const
 {
   Standard_Integer Ideb,Ifin;
-  Standard_Integer anUFKIndx = myBspl->FirstUKnotIndex(), 
+  Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
+  Standard_Integer anUFKIndx = myBspl->FirstUKnotIndex(),
     anULKIndx = myBspl->LastUKnotIndex(), 
     aVFKIndx = myBspl->FirstVKnotIndex(), aVLKIndx = myBspl->LastVKnotIndex();
   myBspl->LocateU(U, PosTol, Ideb, Ifin, Standard_False);

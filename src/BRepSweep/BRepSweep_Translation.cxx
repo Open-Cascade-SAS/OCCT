@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
+#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
@@ -266,7 +266,7 @@ TopoDS_Shape  BRepSweep_Translation::MakeEmptyFace
 
     if (myCanonize) {
       Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve(C,First,Last);
-      Adaptor3d_SurfaceOfLinearExtrusion AS(HC,D);
+      GeomAdaptor_SurfaceOfLinearExtrusion AS(HC,D);
       switch(AS.GetType()){
 
       case GeomAbs_Plane :

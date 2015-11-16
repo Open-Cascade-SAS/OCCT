@@ -15,7 +15,6 @@
 #include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HIsoCurve.hxx>
 #include <Adaptor3d_HSurface.hxx>
-#include <Adaptor3d_HSurfaceOfRevolution.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>

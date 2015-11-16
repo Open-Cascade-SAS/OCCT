@@ -26,6 +26,7 @@
 #include <Geom_Surface.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
+#include <GeomEvaluator_OffsetSurface.hxx>
 class Geom_Surface;
 class Standard_ConstructionError;
 class Standard_RangeError;
@@ -120,6 +121,10 @@ public:
   //! Note: The basis surface can be an offset surface.
   inline const Handle(Geom_Surface) & BasisSurface() const
   { return basisSurf; }
+
+  //! Returns osculating surface if base surface is B-spline or Bezier
+  inline const Handle(Geom_OsculatingSurface)& OsculatingSurface() const
+  { return myOscSurf; }
   
   //! Changes the orientation of this offset surface in the u
   //! parametric direction. The bounds of the surface
@@ -289,44 +294,6 @@ public:
   //! raised if it is not possible to compute a unique offset
   //! direction.
   Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const;
-  
-
-  //! P (U, V) = Pbasis + Offset * Ndir   where
-  //! Ndir = D1Ubasis ^ D1Vbasis / ||D1Ubasis ^ D1Vbasis|| is
-  //! the normal direction of the surface.
-  //! If Ndir is undefined this method computes an approched normal
-  //! direction using the following limited development :
-  //! Ndir = N0 + DNdir/DU + DNdir/DV + Eps with Eps->0 which
-  //! requires to compute the second derivatives on the basis surface.
-  //! If the normal direction cannot be approximate for this order
-  //! of derivation the exception UndefinedValue is raised.
-  //!
-  //! Raised if the continuity of the basis surface is not C1.
-  //! Raised if the order of derivation required to compute the normal
-  //! direction is greater than the second order.
-  Standard_EXPORT void Value (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& D1Ubasis, gp_Vec& D1Vbasis) const;
-  
-
-  //! Raised if the continuity of the basis surface is not C2.
-  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D1Ubasis, gp_Vec& D1Vbasis, gp_Vec& D2Ubasis, gp_Vec& D2Vbasis, gp_Vec& D2UVbasis) const;
-  
-
-  //! Raised if the continuity of the basis surface is not C3.
-  //! The  following  private  methods
-  //! includes common part of local  and  global methods
-  //! of  derivative  evaluations.
-  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D1Ubasis, gp_Vec& D1Vbasis, gp_Vec& D2Ubasis, gp_Vec& D2Vbasis, gp_Vec& D2UVbasis, gp_Vec& D3Ubasis, gp_Vec& D3Vbasis, gp_Vec& D3UUVbasis, gp_Vec& D3UVVbasis) const;
-  
-  Standard_EXPORT void LocalD0 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, const Standard_Integer VSide, gp_Pnt& P) const;
-  
-  Standard_EXPORT void LocalD1 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, const Standard_Integer VSide, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
-  
-  Standard_EXPORT void LocalD2 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, const Standard_Integer VSide, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const;
-  
-  Standard_EXPORT void LocalD3 (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, const Standard_Integer VSide, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
-  
-  Standard_EXPORT gp_Vec LocalDN (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, const Standard_Integer VSide, const Standard_Integer Nu, const Standard_Integer Nv) const;
-  
 
   //! Applies the transformation T to this offset surface.
   //! Note: the basis surface is also modified.
@@ -394,36 +361,12 @@ public:
 
 private:
 
-  
-  Standard_EXPORT void SetD0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, const gp_Vec& D1U, const gp_Vec& D1V) const;
-  
-  Standard_EXPORT void SetD1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, const gp_Vec& d2u, const gp_Vec& d2v, const gp_Vec& d2uv) const;
-  
-  Standard_EXPORT void SetD2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, const gp_Vec& d3u, const gp_Vec& d3v, const gp_Vec& d3uuv, const gp_Vec& d3uvv) const;
-  
-  Standard_EXPORT void SetD3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
-  
-  //! The following  functions  evaluates the  local
-  //! derivatives on surface. Useful to manage discontinuities
-  //! on the surface.
-  //! if    Side  =  1  ->  P  =  S( U+,V )
-  //! if    Side  = -1  ->  P  =  S( U-,V )
-  //! else  P  is betveen discontinuities
-  //! can be evaluated using methods  of
-  //! global evaluations    P  =  S( U ,V )
-  Standard_EXPORT gp_Vec SetDN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv, const gp_Vec& D1U, const gp_Vec& D1V) const;
-  
-  //! This  method locates U,V parameters on basis BSpline surface
-  //! and calls LocalDi or Di methods corresponding an order
-  //! of derivative and  position
-  //! of UV-point relatively the surface discontinuities.
-  Standard_EXPORT void LocateSides (const Standard_Real U, const Standard_Real V, const Standard_Integer USide, const Standard_Integer VSide, const Handle(Geom_BSplineSurface)& BSplS, const Standard_Integer NDir, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
-
   Handle(Geom_Surface) basisSurf;
   Handle(Geom_Surface) equivSurf;
   Standard_Real offsetValue;
-  Geom_OsculatingSurface myOscSurf;
+  Handle(Geom_OsculatingSurface) myOscSurf;
   GeomAbs_Shape myBasisSurfContinuity;
+  Handle(GeomEvaluator_OffsetSurface) myEvaluator;
 };
 
 #endif // _Geom_OffsetSurface_HeaderFile

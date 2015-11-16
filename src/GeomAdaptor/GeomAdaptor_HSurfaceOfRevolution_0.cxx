@@ -14,29 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_HSurfaceOfRevolution.hxx>
+#include <GeomAdaptor_HSurfaceOfRevolution.hxx>
 
 #include <Standard_Type.hxx>
 
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_DomainError.hxx>
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <Adaptor3d_Surface.hxx>
 
- 
 
 
-
-
-
-
-
-
-#define TheSurface Adaptor3d_SurfaceOfRevolution
-#define TheSurface_hxx <Adaptor3d_SurfaceOfRevolution.hxx>
-#define Adaptor3d_GenHSurface Adaptor3d_HSurfaceOfRevolution
-#define Adaptor3d_GenHSurface_hxx <Adaptor3d_HSurfaceOfRevolution.hxx>
-#define Handle_Adaptor3d_GenHSurface Handle(Adaptor3d_HSurfaceOfRevolution)
+#define TheSurface GeomAdaptor_SurfaceOfRevolution
+#define TheSurface_hxx <GeomAdaptor_SurfaceOfRevolution.hxx>
+#define Adaptor3d_GenHSurface GeomAdaptor_HSurfaceOfRevolution
+#define Adaptor3d_GenHSurface_hxx <GeomAdaptor_HSurfaceOfRevolution.hxx>
+#define Handle_Adaptor3d_GenHSurface Handle(GeomAdaptor_HSurfaceOfRevolution)
 #include <Adaptor3d_GenHSurface.gxx>
 

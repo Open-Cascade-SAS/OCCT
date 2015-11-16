@@ -16,7 +16,7 @@
 
 
 #include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurfaceOfRevolution.hxx>
+#include <GeomAdaptor_HSurfaceOfRevolution.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_ExtPRevS.hxx>
@@ -35,7 +35,7 @@
 #include <Standard_Type.hxx>
 #include <StdFail_NotDone.hxx>
 
-static gp_Ax2 GetPosition (const Adaptor3d_SurfaceOfRevolution& S)//const Handle(Adaptor_HCurve)& C)
+static gp_Ax2 GetPosition (const GeomAdaptor_SurfaceOfRevolution& S)//const Handle(Adaptor_HCurve)& C)
 {
   Handle(Adaptor3d_HCurve) C = S.BasisCurve();
   
@@ -76,7 +76,7 @@ static gp_Ax2 GetPosition (const Adaptor3d_SurfaceOfRevolution& S)//const Handle
 //purpose  : 
 //=======================================================================
 
-static Standard_Boolean HasSingularity(const Adaptor3d_SurfaceOfRevolution& S) 
+static Standard_Boolean HasSingularity(const GeomAdaptor_SurfaceOfRevolution& S) 
 {
 
   const Handle(Adaptor3d_HCurve) C = S.BasisCurve();
@@ -216,7 +216,7 @@ Extrema_ExtPRevS::Extrema_ExtPRevS()
 //=======================================================================
 
 Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                                 theP,
-                                    const Handle(Adaptor3d_HSurfaceOfRevolution)& theS,
+                                    const Handle(GeomAdaptor_HSurfaceOfRevolution)& theS,
                                     const Standard_Real                           theUmin,
                                     const Standard_Real                           theUsup,
                                     const Standard_Real                           theVmin,
@@ -240,7 +240,7 @@ Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                               
 //=======================================================================
 
 Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                                 theP,
-                                    const Handle(Adaptor3d_HSurfaceOfRevolution)& theS,
+                                    const Handle(GeomAdaptor_HSurfaceOfRevolution)& theS,
                                     const Standard_Real                           theTolU,
                                     const Standard_Real                           theTolV)
 {
@@ -259,7 +259,7 @@ Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                               
 //purpose  : 
 //=======================================================================
 
-void Extrema_ExtPRevS::Initialize (const Handle(Adaptor3d_HSurfaceOfRevolution)& theS,
+void Extrema_ExtPRevS::Initialize (const Handle(GeomAdaptor_HSurfaceOfRevolution)& theS,
                                    const Standard_Real                           theUmin,
                                    const Standard_Real                           theUsup,
                                    const Standard_Real                           theVmin,

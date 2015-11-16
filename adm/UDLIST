@@ -67,6 +67,7 @@ n GeomLProp
 n GeomLib
 n GeomProjLib
 n GeomTools
+n GeomEvaluator
 n Hermit
 n IntAna
 n IntAna2d

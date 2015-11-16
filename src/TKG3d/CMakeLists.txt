@@ -9,6 +9,7 @@ set (TOOLKIT_MODULES
   Adaptor3d
   LProp3d
   TopAbs
+  GeomEvaluator
 )
 
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)

@@ -6,3 +6,4 @@ GeomLProp
 Adaptor3d
 LProp3d
 TopAbs
+GeomEvaluator

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepFill_ApproxSeewing.hxx>
@@ -370,7 +370,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
         Handle(Geom_SurfaceOfRevolution)::DownCast(GS);
       Handle(GeomAdaptor_HCurve) HC = 
         new GeomAdaptor_HCurve(GSRev->BasisCurve());
-      Adaptor3d_SurfaceOfRevolution ASRev(HC,GAS.AxeOfRevolution());
+      GeomAdaptor_SurfaceOfRevolution ASRev(HC,GAS.AxeOfRevolution());
       Axis  = ASRev.Axis();       
       Phase = EvalPhase(Edge,Face,GAS,Axis);
       break;

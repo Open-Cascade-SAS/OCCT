@@ -1,0 +1,7 @@
+GeomEvaluator_OffsetSurface.cxx
+GeomEvaluator_OffsetSurface.hxx
+GeomEvaluator_Surface.hxx
+GeomEvaluator_SurfaceOfExtrusion.cxx
+GeomEvaluator_SurfaceOfExtrusion.hxx
+GeomEvaluator_SurfaceOfRevolution.cxx
+GeomEvaluator_SurfaceOfRevolution.hxx

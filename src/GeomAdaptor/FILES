@@ -13,6 +13,14 @@ GeomAdaptor_HCurve.lxx
 GeomAdaptor_HSurface.cxx
 GeomAdaptor_HSurface.hxx
 GeomAdaptor_HSurface.lxx
+GeomAdaptor_HSurfaceOfLinearExtrusion_0.cxx
+GeomAdaptor_HSurfaceOfLinearExtrusion.hxx
+GeomAdaptor_HSurfaceOfRevolution_0.cxx
+GeomAdaptor_HSurfaceOfRevolution.hxx
 GeomAdaptor_Surface.cxx
 GeomAdaptor_Surface.hxx
 GeomAdaptor_Surface.lxx
+GeomAdaptor_SurfaceOfLinearExtrusion.cxx
+GeomAdaptor_SurfaceOfLinearExtrusion.hxx
+GeomAdaptor_SurfaceOfRevolution.cxx
+GeomAdaptor_SurfaceOfRevolution.hxx

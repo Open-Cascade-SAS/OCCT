@@ -3,16 +3,15 @@ puts "TODO CR23096 ALL: DATA : Faulty"
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-
 set filename sabena.igs
 
 set ref_data {
 DATA        : Faulties = 14  ( 0 )  Warnings = 0  ( 0 )  Summary  = 14  ( 0 )
-TPSTAT      : Faulties = 28  ( 16 )  Warnings = 44  ( 2964 )  Summary  = 72  ( 2980 )
+TPSTAT      : Faulties = 28  ( 16 )  Warnings = 44  ( 3039 )  Summary  = 72  ( 3055 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2639  ( 2634 )   Summary  = 64362  ( 64317 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2639  ( 2639 )   FreeWire = 1027  ( 1027 )   FreeEdge  = 10489 ( 10489 )   SharedEdge = 24209  ( 24190 )
-TOLERANCE   : MaxTol   =  0.05705560511  (  0.05705560511 )  AvgTol   =  0.0002545958154  (  0.0002529561285 )
+TOLERANCE   : MaxTol   =  0.05705560511  (  0.05705560511 )  AvgTol   =  0.0002632718893  (  0.0002620014373 )
 LABELS      : N0Labels = 54  ( 54 )  N1Labels = 10590  ( 27260 )  N2Labels = 0  ( 0 )   TotalLabels = 10644  ( 27314 )   NameLabels = 10644  ( 13414 )   ColorLabels = 10590  ( 27312 )   LayerLabels = 7  ( 18 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 8  ( 8 )

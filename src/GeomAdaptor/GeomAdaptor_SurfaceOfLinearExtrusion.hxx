@@ -14,21 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Adaptor3d_SurfaceOfLinearExtrusion_HeaderFile
-#define _Adaptor3d_SurfaceOfLinearExtrusion_HeaderFile
+#ifndef _GeomAdaptor_SurfaceOfLinearExtrusion_HeaderFile
+#define _GeomAdaptor_SurfaceOfLinearExtrusion_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 #include <gp_Dir.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
-#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAdaptor_Surface.hxx>
+
 class Adaptor3d_HCurve;
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
@@ -54,20 +49,20 @@ class gp_Ax1;
 //! The  position of  the   curve gives  the origin for    the
 //! parameter V.
 //! The continuity of the surface is CN in the V direction.
-class Adaptor3d_SurfaceOfLinearExtrusion  : public Adaptor3d_Surface
+class GeomAdaptor_SurfaceOfLinearExtrusion  : public GeomAdaptor_Surface
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT Adaptor3d_SurfaceOfLinearExtrusion();
+  Standard_EXPORT GeomAdaptor_SurfaceOfLinearExtrusion();
   
   //! The Curve is loaded.
-  Standard_EXPORT Adaptor3d_SurfaceOfLinearExtrusion(const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT GeomAdaptor_SurfaceOfLinearExtrusion(const Handle(Adaptor3d_HCurve)& C);
   
   //! Thew Curve and the Direction are loaded.
-  Standard_EXPORT Adaptor3d_SurfaceOfLinearExtrusion(const Handle(Adaptor3d_HCurve)& C, const gp_Dir& V);
+  Standard_EXPORT GeomAdaptor_SurfaceOfLinearExtrusion(const Handle(Adaptor3d_HCurve)& C, const gp_Dir& V);
   
   //! Changes the Curve
   Standard_EXPORT void Load (const Handle(Adaptor3d_HCurve)& C);
@@ -128,38 +123,7 @@ public:
   Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Real VPeriod() const Standard_OVERRIDE;
-  
-  //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT gp_Pnt Value (const Standard_Real U, const Standard_Real V) const Standard_OVERRIDE;
-  
-  //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const Standard_OVERRIDE;
-  
-  //! Computes the point  and the first derivatives on
-  //! the surface.
-  //! Raised   if  the continuity  of   the  current
-  //! intervals is not C1.
-  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const Standard_OVERRIDE;
-  
-  //! Computes   the point,  the  first  and  second
-  //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
-  //! intervals is not C2.
-  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const Standard_OVERRIDE;
-  
-  //! Computes the point,  the first, second and third
-  //! derivatives on the surface.
-  //! Raised  if   the   continuity   of the current
-  //! intervals is not C3.
-  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const Standard_OVERRIDE;
-  
-  //! Computes the derivative of order Nu in the direction U and Nv
-  //! in the direction V at the point P(U, V).
-  //! Raised if the current U  interval is not not CNu
-  //! and the current V interval is not CNv.
-  //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const Standard_OVERRIDE;
-  
+
   //! Returns the parametric U  resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT Standard_Real UResolution (const Standard_Real R3d) const Standard_OVERRIDE;
@@ -187,15 +151,7 @@ public:
   Standard_EXPORT Standard_Integer UDegree() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Integer NbUPoles() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Integer VDegree() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Integer NbVPoles() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Integer NbUKnots() const Standard_OVERRIDE;
-  
-  Standard_EXPORT Standard_Integer NbVKnots() const Standard_OVERRIDE;
-  
+
   Standard_EXPORT Standard_Boolean IsURational() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsVRational() const Standard_OVERRIDE;
@@ -220,13 +176,9 @@ protected:
 
 
 private:
-
-
-
-  Handle(Adaptor3d_HCurve) myBasisCurve;
-  gp_Dir myDirection;
-
-
+  Handle(Adaptor3d_HCurve) myBasisCurve; ///< extruded curve
+  gp_Dir                   myDirection;  ///< direction of extrusion
+  Standard_Boolean         myHaveDir;    ///< whether the direction of extrusion is initialized
 };
 
 
@@ -235,4 +187,4 @@ private:
 
 
 
-#endif // _Adaptor3d_SurfaceOfLinearExtrusion_HeaderFile
+#endif // _GeomAdaptor_SurfaceOfLinearExtrusion_HeaderFile

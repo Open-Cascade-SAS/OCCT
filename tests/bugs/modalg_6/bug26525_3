@@ -30,9 +30,9 @@ if { $Number == 2} {
 
    regexp {point p_1 +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $log full x1 y1 z1
 
-   set expected_x1 39.0504
-   set expected_y1 -12.8696
-   set expected_z1 82.6099
+   set expected_x1 43.1172
+   set expected_y1 -17.16
+   set expected_z1 82.6048
 
    checkreal "x1" ${x1} ${expected_x1} ${tol_abs} ${tol_rel}
    checkreal "y1" ${y1} ${expected_y1} ${tol_abs} ${tol_rel}
@@ -40,9 +40,9 @@ if { $Number == 2} {
 
    regexp {point p_2 +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $log full x2 y2 z2
 
-   set expected_x2 43.1172
-   set expected_y2 -17.16
-   set expected_z2 82.6048
+   set expected_x2 39.0504
+   set expected_y2 -12.8696
+   set expected_z2 82.6099
 
    checkreal "x2" ${x2} ${expected_x2} ${tol_abs} ${tol_rel}
    checkreal "y2" ${y2} ${expected_y2} ${tol_abs} ${tol_rel}
