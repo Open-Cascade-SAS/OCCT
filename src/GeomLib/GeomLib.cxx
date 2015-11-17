@@ -882,83 +882,91 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
 {
   if(CurvePtr.IsNull()) Standard_Failure::Raise();
   if (Abs(LastOnCurve - RequestedLast) <= Tolerance &&
-      Abs(FirstOnCurve - RequestedFirst) <= Tolerance) { 
-    NewCurvePtr = CurvePtr;
-    return;
+    Abs(FirstOnCurve - RequestedFirst) <= Tolerance)
+  { 
+      NewCurvePtr = CurvePtr;
+      return;
   }
 
   // the parametrisation lentgh  must at least be the same.
   if (Abs(LastOnCurve - FirstOnCurve - RequestedLast + RequestedFirst) 
-      <= Tolerance) { 
-    if (CurvePtr->IsKind(STANDARD_TYPE(Geom2d_Line))) {
+      <= Tolerance)
+  { 
+    if (CurvePtr->IsKind(STANDARD_TYPE(Geom2d_Line)))
+    {
       Handle(Geom2d_Line) Line =
-	Handle(Geom2d_Line)::DownCast(CurvePtr->Copy());
+        Handle(Geom2d_Line)::DownCast(CurvePtr->Copy());
       Standard_Real dU = FirstOnCurve - RequestedFirst;
       gp_Dir2d D = Line->Direction() ;
       Line->Translate(dU * gp_Vec2d(D));
       NewCurvePtr = Line;
     }
-    else if (CurvePtr->IsKind(STANDARD_TYPE(Geom2d_Circle))) {
+    else if (CurvePtr->IsKind(STANDARD_TYPE(Geom2d_Circle)))
+    {
       gp_Trsf2d Trsf;
       NewCurvePtr = Handle(Geom2d_Curve)::DownCast(CurvePtr->Copy()); 
       Handle(Geom2d_Circle) Circ = 
-	Handle(Geom2d_Circle)::DownCast(NewCurvePtr);
+        Handle(Geom2d_Circle)::DownCast(NewCurvePtr);
       gp_Pnt2d P = Circ->Location();
       Standard_Real dU;
       if (Circ->Circ2d().IsDirect()) {
-	dU = FirstOnCurve - RequestedFirst;
+        dU = FirstOnCurve - RequestedFirst;
       }
       else {
-	dU = RequestedFirst - FirstOnCurve;
+        dU = RequestedFirst - FirstOnCurve;
       }
       Trsf.SetRotation(P,dU);
       NewCurvePtr->Transform(Trsf) ;
     }
-    else if (CurvePtr->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
+    else if (CurvePtr->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) 
+    {
       Handle(Geom2d_TrimmedCurve) TC = 
-	Handle(Geom2d_TrimmedCurve)::DownCast(CurvePtr);
+        Handle(Geom2d_TrimmedCurve)::DownCast(CurvePtr);
       GeomLib::SameRange(Tolerance,
-			 TC->BasisCurve(),
-			 FirstOnCurve  , LastOnCurve,
-			 RequestedFirst, RequestedLast,
-			 NewCurvePtr);
+        TC->BasisCurve(),
+        FirstOnCurve  , LastOnCurve,
+        RequestedFirst, RequestedLast,
+        NewCurvePtr);
       NewCurvePtr = new Geom2d_TrimmedCurve( NewCurvePtr, RequestedFirst, RequestedLast );
     }
-//
-//  attention a des problemes de limitation : utiliser le MEME test que dans
-//  Geom2d_TrimmedCurve::SetTrim car sinon comme on risque de relimite sur 
-//  RequestedFirst et RequestedLast on aura un probleme
-//
-// 
+    //
+    //  attention a des problemes de limitation : utiliser le MEME test que dans
+    //  Geom2d_TrimmedCurve::SetTrim car sinon comme on risque de relimite sur 
+    //  RequestedFirst et RequestedLast on aura un probleme
+    //
+    // 
     else if (Abs(LastOnCurve - FirstOnCurve) > Precision::PConfusion() ||
-	     Abs(RequestedLast + RequestedFirst) > Precision::PConfusion()) {
-      
+             Abs(RequestedLast + RequestedFirst) > Precision::PConfusion())
+    {
+
       Handle(Geom2d_TrimmedCurve) TC =
-	new Geom2d_TrimmedCurve(CurvePtr,FirstOnCurve,LastOnCurve);
-      
+        new Geom2d_TrimmedCurve(CurvePtr,FirstOnCurve,LastOnCurve);
+
       Handle(Geom2d_BSplineCurve) BS =
-	Geom2dConvert::CurveToBSplineCurve(TC);
+        Geom2dConvert::CurveToBSplineCurve(TC);
       TColStd_Array1OfReal Knots(1,BS->NbKnots());
       BS->Knots(Knots);
-      
+
       BSplCLib::Reparametrize(RequestedFirst,RequestedLast,Knots);
-      
+
       BS->SetKnots(Knots);
       NewCurvePtr = BS;
     }
-  
   }
-  else { // On segmente le resultat
+  else 
+  { // On segmente le resultat
+    Standard_Real Udeb = Max(CurvePtr->FirstParameter(), FirstOnCurve);
+    Standard_Real Ufin = Min(CurvePtr->LastParameter(), LastOnCurve);
     Handle(Geom2d_TrimmedCurve) TC =
-      new Geom2d_TrimmedCurve( CurvePtr, FirstOnCurve, LastOnCurve );
+      new Geom2d_TrimmedCurve( CurvePtr, Udeb, Ufin );
     //
     Handle(Geom2d_BSplineCurve) BS =
       Geom2dConvert::CurveToBSplineCurve(TC);
     TColStd_Array1OfReal Knots(1,BS->NbKnots());
     BS->Knots(Knots);
-    
+
     BSplCLib::Reparametrize(RequestedFirst,RequestedLast,Knots);
-    
+
     BS->SetKnots(Knots);
     NewCurvePtr = BS;
   }
