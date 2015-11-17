@@ -272,7 +272,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
   // use PerformByProjLib algorithm.
   if(!bspl.IsNull())
   {
-    Standard_Integer aNbIntPnts = NCONTROL;
     Standard_Real aFirstParam = First; // First parameter of current interval.
     Standard_Real aLastParam = Last; // Last parameter of current interval.
 
@@ -286,24 +285,44 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
       }
     }
 
+    GeomAdaptor_Curve aC3DAdaptor(c3d);
+
     for(; anIdx <= bspl->NbKnots() && aFirstParam < Last; anIdx++)
     {
       // Fill current knot interval.
       aLastParam = Min(Last, bspl->Knot(anIdx));
+      Standard_Integer aNbIntPnts = NCONTROL;
+      // Number of inner points is adapted according to the length of the interval
+      // to avoid a lot of calculations on small range of parameters.
+      if (anIdx > 1)
+      {
+        const Standard_Real aLenThres = 1.e-2;
+        const Standard_Real aLenRatio =
+            (aLastParam - aFirstParam) / (bspl->Knot(anIdx) - bspl->Knot(anIdx - 1));
+        if (aLenRatio < aLenThres)
+        {
+          aNbIntPnts = Standard_Integer(aLenRatio / aLenThres * aNbIntPnts);
+          if (aNbIntPnts < 2)
+            aNbIntPnts = 2;
+        }
+      }
       Standard_Real aStep = (aLastParam - aFirstParam) / (aNbIntPnts - 1);
       Standard_Integer anIntIdx;
       gp_Pnt p3d1, p3d2;
+      // Start filling from first point.
+      aC3DAdaptor.D0(aFirstParam, p3d1);
+
       Standard_Real aLength3d = 0.0;
-      for(anIntIdx = 0; anIntIdx < aNbIntPnts - 1; anIntIdx++)
+      for(anIntIdx = 1; anIntIdx < aNbIntPnts; anIntIdx++)
       {
-        // Start filling from first point.
-        Standard_Real aParam1 = aFirstParam + aStep * anIntIdx;
-        Standard_Real aParam2 = aFirstParam + aStep * (anIntIdx + 1);
-        c3d->D0 (aParam1, p3d1);
-        c3d->D0 (aParam2, p3d2);
+        Standard_Real aParam = aFirstParam + aStep * anIntIdx;
+        aC3DAdaptor.D0 (aParam, p3d2);
         aLength3d += p3d2.Distance(p3d1);
+        p3d1 = p3d2;
       }
-      aKnotCoeffs.Append(aLength3d / (aLastParam - aFirstParam));
+      const Standard_Real aCoeff = aLength3d / (aLastParam - aFirstParam);
+      if (Abs(aCoeff) > gp::Resolution())
+        aKnotCoeffs.Append(aCoeff);
       aFirstParam = aLastParam;
     }
 
