@@ -52,6 +52,8 @@
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <TopExp_Explorer.hxx>
 
+#include <SelectMgr_Filter.hxx>
+
 #include <Standard_Version.hxx>
 
 #define QCOMPARE(val1, val2) \
@@ -4640,6 +4642,100 @@ static Standard_Integer OCC26746(
   return 0;     
 }
 
+DEFINE_STANDARD_HANDLE(QABugs_VertexFilter, SelectMgr_Filter);
+class QABugs_VertexFilter: public SelectMgr_Filter
+{
+public:
+  Standard_EXPORT QABugs_VertexFilter() : SelectMgr_Filter() {}
+
+  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)&) const
+  {
+    return Standard_False;
+  }
+};
+
+//=======================================================================
+//function : BUC26658 
+//purpose  : Checks selection in the context after using a selection filter
+//=======================================================================
+static Standard_Integer BUC26658 (Draw_Interpretor& theDI,
+                                  Standard_Integer  /*theNArg*/,
+                                  const char ** theArgVal)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull()) {
+    theDI << "use 'vinit' command before " << theArgVal[0] << "\n";
+    return 1;
+  }
+
+  TopoDS_Shape aBoxShape = BRepPrimAPI_MakeBox(20,20,20).Shape();
+  Handle(AIS_Shape) anAISIO = new AIS_Shape(aBoxShape);
+
+  // visualization of the box in the local mode with possibility to
+  // select box vertices
+  aContext->OpenLocalContext();
+
+  int aDispMode = 0;// wireframe
+  anAISIO->SetDisplayMode(aDispMode);
+  aContext->Display(anAISIO, aDispMode, 0, false, true, AIS_DS_Displayed); 
+  theDI.Eval(" vfit");
+
+  aContext->Load(anAISIO, -1, true); /// load allowing decomposition
+  aContext->Deactivate(anAISIO);
+  aContext->Activate(anAISIO, AIS_Shape::SelectionMode(TopAbs_VERTEX), false);
+  aContext->UpdateCurrentViewer();
+
+  // select a point on the box
+  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
+  double Xv,Yv;
+  myV3dView->Project(20,20,0,Xv,Yv);
+  Standard_Integer Xp,Yp;
+  myV3dView->Convert(Xv,Yv,Xp,Yp);
+
+  aContext->MoveTo(Xp,Yp, myV3dView);
+  aContext->Select();
+  bool aHasSelected = false;
+  for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected()) {
+    Handle(AIS_InteractiveObject) anIO = aContext->SelectedInteractive();
+    if (!anIO.IsNull()) {
+      const TopoDS_Shape aShape = aContext->SelectedShape();
+      if (!aShape.IsNull() && aShape.ShapeType() == TopAbs_VERTEX)
+        aHasSelected = true;
+    }
+  }
+  if (aHasSelected)
+     cout << "has selected vertex : OK"   << endl;
+  else {
+    theDI << "has selected vertex : bugged - Faulty\n";
+    return 1;
+  }
+  // filter to deny any selection in the viewer
+  Handle(QABugs_VertexFilter) aFilter = new QABugs_VertexFilter();
+  aContext->AddFilter(aFilter);
+
+  // update previous selection by hand
+  aContext->LocalContext()->ClearOutdatedSelection(anAISIO, true);
+
+  // check that there are no selected vertices
+  aContext->Select();
+  aHasSelected = false;
+  for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected()) {
+    Handle(AIS_InteractiveObject) anIO = aContext->SelectedInteractive();
+    if (!anIO.IsNull()) {
+      const TopoDS_Shape aShape = aContext->SelectedShape();
+      if (!aShape.IsNull() && aShape.ShapeType() == TopAbs_VERTEX)
+        aHasSelected = true;
+    }
+  }
+  if (!aHasSelected) cout << "has no selected vertex after filter : OK"   << endl;
+  else {
+    theDI << "has no selected vertex after filter : bugged - Faulty\n";
+    return 1;
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4735,5 +4831,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
 
   theCommands.Add ("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
 
+  theCommands.Add ("BUC26658", "BUC26658 unexpected selection in the context using a selection filter", __FILE__, BUC26658, group);
+  
   return;
 }

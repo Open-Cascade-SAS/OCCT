@@ -888,9 +888,13 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
     }
   }
 
-  // 2. Refresh context's detection and selection and keep only active owners
+  // 2. Refresh context's detection and selection and keep only active owners.
   // Keep last detected object for lastindex initialization.
-  Handle(SelectMgr_EntityOwner) aLastPicked = myMainVS->OnePicked();
+  Handle(SelectMgr_EntityOwner) aLastPicked;
+  if (IsValidIndex (mylastindex))
+  {
+    aLastPicked = myMapOfOwner->FindKey (mylastindex);
+  }
 
   // Remove entity owners from detected sequences
   for (Standard_Integer anIdx = 1; anIdx <= myDetectedSeq.Length(); ++anIdx)
@@ -969,12 +973,43 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
   }
   myMapOfOwner->Clear();
   myMapOfOwner->Assign (anOwnersToKeep);
-  mylastindex = myMapOfOwner->FindIndex (aLastPicked);
-  if (!IsValidIndex (mylastindex))
+
+  if (myDetectedSeq.IsEmpty() && !aLastPicked.IsNull())
   {
     myMainPM->ClearImmediateDraw();
+    mylastindex = 0;
+  }
+  else if (!aLastPicked.IsNull())
+  {
+    // For a case when the last detected owner was unhilighted and removed as outdated we
+    // need to check if there were other detected owners with less priority. If yes then
+    // one from the remaining should be treated.
+    Standard_Integer anIndex = 1, aDetectedSeqLength = myDetectedSeq.Length();
+    for (; anIndex <= aDetectedSeqLength; anIndex++)
+    {
+      if (aLastPicked == myMainVS->Picked (myDetectedSeq.Value(anIndex)))
+      {
+        break; // detected owner was not removed
+      }
+    }
+    if (anIndex <= aDetectedSeqLength)
+    {
+      // Last detected owner was not removed, update mylastindex variable
+      mylastindex = myMapOfOwner->FindIndex (aLastPicked);
+    }
+    else
+    {
+      // Last detected owner was removed. First object from sequence become detected.
+      // Pass any active view because in current implementation the highlighting is
+      // synchronized in all view.
+      aViewer->InitActiveViews();
+      manageDetected (myMainVS->Picked (myDetectedSeq.First()),
+                      aViewer->ActiveView(),
+                      Standard_False);
+    }
   }
 
+  // Renew iterator of ::DetectedCurrentObject()
   if (!isAISRemainsDetected)
   {
     // Remove the interactive object from detected sequences
