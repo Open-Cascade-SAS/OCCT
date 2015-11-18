@@ -123,3 +123,36 @@ void OSD_OpenStream(std::ofstream& theStream,
 #endif
 }
 
+// ==============================================
+// function : OSD_OpenStream
+// purpose  : Opens file stream
+// ==============================================
+void OSD_OpenStream (std::ifstream&                theStream,
+                     const char*                   theName,
+                     const std::ios_base::openmode theMode)
+{
+#ifdef _WIN32
+  // file name is treated as UTF-8 string and converted to UTF-16 one
+  const TCollection_ExtendedString aFileNameW (theName, Standard_True);
+  theStream.open ((const wchar_t*)aFileNameW.ToExtString(), theMode);
+#else
+  theStream.open (theName, theMode);
+#endif
+}
+
+// ==============================================
+// function : OSD_OpenStream
+// purpose  : Opens file stream
+// ==============================================
+void OSD_OpenStream (std::ifstream&                    theStream,
+                     const TCollection_ExtendedString& theName,
+                     const std::ios_base::openmode     theMode)
+{
+#ifdef _WIN32
+  theStream.open ((const wchar_t*)theName.ToExtString(), theMode);
+#else
+  // conversion in UTF-8 for linux
+  NCollection_Utf8String aString ((const Standard_Utf16Char*)theName.ToExtString());
+  theStream.open (aString.ToCString(), theMode);
+#endif
+}
