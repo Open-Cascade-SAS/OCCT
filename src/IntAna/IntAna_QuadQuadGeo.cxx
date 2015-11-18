@@ -125,8 +125,8 @@ class AxeOperator {
 //=======================================================================
 AxeOperator::AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2) 
 {
-  myEPSILON_DISTANCE=0.00000000000001;
-  myEPSILON_AXES_PARA=0.000000000001;
+  myEPSILON_DISTANCE=1.0e-14;
+  myEPSILON_AXES_PARA=Precision::Angular();
   Axe1=A1; 
   Axe2=A2;
   //---------------------------------------------------------------------
@@ -275,12 +275,12 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(void)
 //=======================================================================
 void IntAna_QuadQuadGeo::InitTolerances()
 {
-  myEPSILON_DISTANCE               = 0.00000000000001;
-  myEPSILON_ANGLE_CONE             = 0.000000000001;
-  myEPSILON_MINI_CIRCLE_RADIUS     = 0.000000001;
-  myEPSILON_CYLINDER_DELTA_RADIUS  = 0.0000000000001;
-  myEPSILON_CYLINDER_DELTA_DISTANCE= 0.0000001;
-  myEPSILON_AXES_PARA              = 0.000000000001;
+  myEPSILON_DISTANCE               = 1.0e-14;
+  myEPSILON_ANGLE_CONE             = Precision::Angular();
+  myEPSILON_MINI_CIRCLE_RADIUS     = 0.01*Precision::Confusion();
+  myEPSILON_CYLINDER_DELTA_RADIUS  = 1.0e-13;
+  myEPSILON_CYLINDER_DELTA_DISTANCE= Precision::Confusion();
+  myEPSILON_AXES_PARA              = Precision::Angular();
 }
 //=======================================================================
 //function : IntAna_QuadQuadGeo

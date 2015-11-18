@@ -1022,7 +1022,13 @@ stCoeffsValue::stCoeffsValue( const gp_Cylinder& theCyl1,
     }
   }
 
-  if(Abs(aDetV1V2) < aNulValue)
+  // In point of fact, every determinant (aDelta1, aDelta2 and aDelta3) is
+  // cross-product between directions (i.e. sine of angle).
+  // If sine is too small then sine is (approx.) equal to angle itself.
+  // Therefore, in this case we should compare sine with angular tolerance. 
+  // This constant is used for check if axes are parallel (see constructor
+  // AxeOperator::AxeOperator(...) in IntAna_QuadQuadGeo.cxx file).
+  if(Abs(aDetV1V2) < Precision::Angular())
   {
     Standard_Failure::Raise("Error. Exception in divide by zerro (IntCyCyTrim)!!!!");
   }
