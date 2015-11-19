@@ -1,17 +1,11 @@
-# OK: Exception appears and does not kill DRAWEXE (TEST COMPLETED)
-puts "TODO OCC670 ALL: An exception was caught"
-puts "TODO OCC670 ALL: \\*\\* Exception \\*\\*"
-
 puts "========"
-puts "OCC670"
+puts "OCC670: Problem with the Print method."
 puts "========"
 puts ""
-#########################
-## Problem with the Print method.
-#########################
 
 pload QAcommands
 
-catch { OCC670 }
+# Check that exception is handled and does not kill DRAWEXE (TEST COMPLETED)
+OCC670
 
 puts "OCC670 OK"

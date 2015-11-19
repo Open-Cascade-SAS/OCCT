@@ -1705,8 +1705,16 @@ static Standard_Integer OCC670 (Draw_Interpretor& di, Standard_Integer argc, con
     di<<"Usage : " << argv[0] << "\n";
     return -1;
   }
-  TColStd_Array2OfInteger Array2OfInteger(1,1,1,1);
-  Array2OfInteger.SetValue(5,5,55);
+
+  // check that exception initialized without message string can be safely handled and printed
+  try {
+    Standard_OutOfRange::Raise();
+  }
+  catch (Standard_Failure) {
+    std::cout << "Caught successfully: ";
+    Standard_Failure::Caught()->Print (std::cout);
+    std::cout << endl;
+  }
   return 0;
 }
 
