@@ -1,4 +1,4 @@
-// Created on: 2015-06-30
+﻿// Created on: 2015-06-30
 // Created by: Anton POLETAEV
 // Copyright (c) 2015 OPEN CASCADE SAS
 //
@@ -67,7 +67,7 @@ void OpenGl_BVHClipPrimitiveTrsfPersSet::Swap (const Standard_Integer theIdx1,
   const Standard_Integer aStructIdx1 = theIdx1 + 1;
   const Standard_Integer aStructIdx2 = theIdx2 + 1;
 
-  myStructs.Swap (aStructIdx1, aStructIdx2);
+  myStructs    .Swap (aStructIdx1, aStructIdx2);
   myStructBoxes.Swap (aStructIdx1, aStructIdx2);
 }
 
@@ -137,7 +137,9 @@ const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >&
                                            const OpenGl_Mat4& theWorldViewMatrix,
                                            const Graphic3d_WorldViewProjState& theWVPState)
 {
-  if (!myIsDirty && (myStructBoxesState.IsValid() && !myStructBoxesState.IsChanged(theWVPState)))
+  if (!myIsDirty
+    && (myStructBoxesState.IsValid()
+    && !myStructBoxesState.IsChanged (theWVPState)))
   {
     return myBVH;
   }
@@ -149,13 +151,8 @@ const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >&
     const OpenGl_Structure* aStructure = myStructs (aStructIdx);
 
     HBndBox4f aBoundingBox = new Graphic3d_BndBox4f;
-
-    if (aStructure->TransformPersistence.Flags && !(aStructure->TransformPersistence.Flags & Graphic3d_TMF_2d))
-    {
-      *aBoundingBox = aStructure->BoundingBox();
-
-      aStructure->TransformPersistence.Apply (theProjectionMatrix, theWorldViewMatrix, 0, 0, *aBoundingBox);
-    }
+    *aBoundingBox = aStructure->BoundingBox();
+     aStructure->TransformPersistence.Apply (theProjectionMatrix, theWorldViewMatrix, 0, 0, *aBoundingBox);
 
     myStructBoxes.Add (aBoundingBox);
   }

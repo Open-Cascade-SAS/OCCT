@@ -401,53 +401,6 @@ void Graphic3d_CView::DisplayedStructures (Graphic3d_MapOfStructure& theStructur
   }
 }
 
-//! Auxiliary method for MinMaxValues() method
-inline void addStructureBndBox (const Handle(Graphic3d_Structure)& theStruct,
-                                const Standard_Boolean             theToIgnoreInfiniteFlag,
-                                Bnd_Box&                           theBndBox)
-{
-  if (!theStruct->IsVisible())
-  {
-    return;
-  }
-  else if (theStruct->IsInfinite()
-       && !theToIgnoreInfiniteFlag)
-  {
-    // XMin, YMin .... ZMax are initialized by means of infinite line data
-    const Bnd_Box aBox = theStruct->MinMaxValues (Standard_False);
-    if (!aBox.IsWhole()
-     && !aBox.IsVoid())
-    {
-      theBndBox.Add (aBox);
-    }
-    return;
-  }
-
-  // Only non-empty and non-infinite structures
-  // are taken into account for calculation of MinMax
-  if (theStruct->IsEmpty()
-   || theStruct->TransformPersistenceMode() != Graphic3d_TMF_None)
-  {
-    return;
-  }
-
-  // "FitAll" operation ignores object with transform persistence parameter
-  const Bnd_Box aBox = theStruct->MinMaxValues (theToIgnoreInfiniteFlag);
-
-  // To prevent float overflow at camera parameters calculation and further
-  // rendering, bounding boxes with at least one vertex coordinate out of
-  // float range are skipped by view fit algorithms
-  if (Abs (aBox.CornerMax().X()) >= ShortRealLast() ||
-      Abs (aBox.CornerMax().Y()) >= ShortRealLast() ||
-      Abs (aBox.CornerMax().Z()) >= ShortRealLast() ||
-      Abs (aBox.CornerMin().X()) >= ShortRealLast() ||
-      Abs (aBox.CornerMin().Y()) >= ShortRealLast() ||
-      Abs (aBox.CornerMin().Z()) >= ShortRealLast())
-    return;
-
-  theBndBox.Add (aBox);
-}
-
 // =======================================================================
 // function : MinMaxValues
 // purpose  :
@@ -472,20 +425,70 @@ Bnd_Box Graphic3d_CView::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
 {
   Bnd_Box aResult;
   const Standard_Integer aViewId = Identification();
+
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  Standard_Integer aWinWidth  = 0;
+  Standard_Integer aWinHeight = 0;
+  if (IsDefined())
+  {
+    Window()->Size (aWinWidth, aWinHeight);
+  }
+
   for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (theSet); aStructIter.More(); aStructIter.Next())
   {
     const Handle(Graphic3d_Structure)& aStructure = aStructIter.Key();
-    if (!aStructIter.Value()->IsVisible())
+    if (!aStructure->IsVisible() || aStructure->IsEmpty())
     {
       continue;
     }
-    else if (!aStructIter.Value()->CStructure()->ViewAffinity.IsNull()
-          && !aStructIter.Value()->CStructure()->ViewAffinity->IsVisible (aViewId))
+    else if (!aStructure->CStructure()->ViewAffinity.IsNull()
+          && !aStructure->CStructure()->ViewAffinity->IsVisible (aViewId))
     {
       continue;
     }
 
-    addStructureBndBox (aStructure, theToIgnoreInfiniteFlag, aResult);
+    // "FitAll" operation ignores object with transform persistence parameter
+    if (aStructure->TransformPersistence().Flags != Graphic3d_TMF_None)
+    {
+      // Panning and 2d persistence apply changes to projection or/and its translation components.
+      // It makes them incompatible with z-fitting algorithm. Ignored by now.
+      if (!theToIgnoreInfiniteFlag ||
+          (aStructure->TransformPersistence().Flags & Graphic3d_TMF_2d) ||
+          (aStructure->TransformPersistence().Flags & Graphic3d_TMF_PanPers) ||
+          (aStructure->TransformPersistence().Flags & Graphic3d_TMF_TriedronPers))
+      {
+        continue;
+      }
+    }
+
+    Bnd_Box aBox = aStructure->MinMaxValues (theToIgnoreInfiniteFlag);
+
+    if (aBox.IsWhole() || aBox.IsVoid())
+    {
+      continue;
+    }
+
+    if (aStructure->TransformPersistence().Flags != Graphic3d_TMF_None)
+    {
+      const Graphic3d_Mat4d& aProjectionMat = aCamera->ProjectionMatrix();
+      const Graphic3d_Mat4d& aWorldViewMat  = aCamera->OrientationMatrix();
+      aStructure->TransformPersistence().Apply (aProjectionMat, aWorldViewMat, aWinWidth, aWinHeight, aBox);
+    }
+
+    // To prevent float overflow at camera parameters calculation and further
+    // rendering, bounding boxes with at least one vertex coordinate out of
+    // float range are skipped by view fit algorithms
+    if (Abs (aBox.CornerMax().X()) >= ShortRealLast() ||
+        Abs (aBox.CornerMax().Y()) >= ShortRealLast() ||
+        Abs (aBox.CornerMax().Z()) >= ShortRealLast() ||
+        Abs (aBox.CornerMin().X()) >= ShortRealLast() ||
+        Abs (aBox.CornerMin().Y()) >= ShortRealLast() ||
+        Abs (aBox.CornerMin().Z()) >= ShortRealLast())
+    {
+      continue;
+    }
+
+    aResult.Add (aBox);
   }
   return aResult;
 }

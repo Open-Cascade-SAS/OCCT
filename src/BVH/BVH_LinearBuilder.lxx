@@ -181,10 +181,11 @@ Standard_Integer BVH_LinearBuilder<T, N>::EmitHierachy (BVH_Tree<T, N>*         
                                                         std::vector<BVH_EncodedLink>::iterator theStart,
                                                         std::vector<BVH_EncodedLink>::iterator theFinal)
 {
-  if (theFinal - theStart > BVH_Builder<T, N>::myLeafNodeSize && theBit >= 0)
+  if (theFinal - theStart > BVH_Builder<T, N>::myLeafNodeSize)
   {
-    std::vector<BVH_EncodedLink>::iterator aPosition = std::lower_bound (
-      theStart, theFinal, BVH_EncodedLink(), BVH::BitComparator (theBit));
+    std::vector<BVH_EncodedLink>::iterator aPosition =
+      (theBit >= 0) ? std::lower_bound (theStart, theFinal, BVH_EncodedLink(), BVH::BitComparator (theBit))
+                    :                   theStart + ((theFinal - theStart) / 2);
 
     if (aPosition == theStart || aPosition == theFinal)
     {

@@ -163,7 +163,9 @@ public:
         || IsForHighlight
         || IsMutable
         || Is2dText
-        || TransformPersistence.Flags != 0;
+        || (TransformPersistence.Flags & Graphic3d_TMF_2d)           != 0
+        || (TransformPersistence.Flags & Graphic3d_TMF_PanPers)      != 0
+        || (TransformPersistence.Flags & Graphic3d_TMF_TriedronPers) != 0;
   }
 
   //! This method releases GL resources without actual elements destruction.

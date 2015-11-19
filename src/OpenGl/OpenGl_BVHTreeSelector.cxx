@@ -35,10 +35,8 @@ OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
 // =======================================================================
 void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theCamera)
 {
-  if (myWorldViewProjState == theCamera->WorldViewProjState())
-  {
+  if (!myWorldViewProjState.IsChanged (theCamera->WorldViewProjState()))
     return;
-  }
 
   myIsProjectionParallel = theCamera->IsOrthographic();
 
