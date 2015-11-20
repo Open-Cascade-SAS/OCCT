@@ -330,6 +330,20 @@ Standard_Boolean BRepTools_Modifier::Rebuild
 	B.SameRange(TopoDS::Edge(result),
 		    BRep_Tool::SameRange(TopoDS::Edge(S)));
       }
+
+      // update polygonal structure on the edge
+      Handle(Poly_Polygon3D) aPolygon;
+      if (M->NewPolygon(TopoDS::Edge(S), aPolygon))
+      {
+        if (rebuild) // the copied edge already exists => update it
+          B.UpdateEdge(TopoDS::Edge(result), aPolygon, S.Location());
+        else
+        { // create new edge with bare polygon
+          B.MakeEdge(TopoDS::Edge(result), aPolygon);
+          result.Location(S.Location());
+        }
+        rebuild = Standard_True;
+      }
     }
     break;
 
@@ -405,7 +419,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
       {
         const TopoDS_Edge& edge = TopoDS::Edge(ex.Current());
 
-        if (M->NewCurve2d(edge, face, TopoDS::Edge(myMap(ex.Current())), TopoDS::Face(result), curve2d, tol)) 
+        if (M->NewCurve2d(edge, face, TopoDS::Edge(myMap(ex.Current())), TopoDS::Face(result), curve2d, tol))
         {
           // rem dub 16/09/97 : Make constant topology or not make at all.
           // Do not make if CopySurface = 1
@@ -508,6 +522,39 @@ Standard_Boolean BRepTools_Modifier::Rebuild
               B.UpdateVertex(aLocalVertex, param, TopoDS::Edge(myMap(edge)), tol);
               ex2.Next();
             }
+          }
+        }
+
+        // Copy polygon on triangulation
+        Handle(Poly_PolygonOnTriangulation) aPolyOnTria_1, aPolyOnTria_2;
+        Standard_Boolean aNewPonT = M->NewPolygonOnTriangulation(edge, face, aPolyOnTria_1);
+        if (BRepTools::IsReallyClosed(edge, face))
+        {
+          // Obtain triangulation on reversed edge
+          TopoDS_Edge anEdgeRev = edge;
+          anEdgeRev.Reverse();
+          aNewPonT = M->NewPolygonOnTriangulation(anEdgeRev, face, aPolyOnTria_2) || aNewPonT;
+          // It there is only one polygon on triangulation, store it to aPolyOnTria_1
+          if (aPolyOnTria_1.IsNull() && !aPolyOnTria_2.IsNull())
+          {
+            aPolyOnTria_1 = aPolyOnTria_2;
+            aPolyOnTria_2 = Handle(Poly_PolygonOnTriangulation)();
+          }
+        }
+        if (aNewPonT)
+        {
+          TopLoc_Location aLocation;
+          Handle(Poly_Triangulation) aNewFaceTria =
+              BRep_Tool::Triangulation(TopoDS::Face(myMap(face)), aLocation);
+          TopoDS_Edge aNewEdge = TopoDS::Edge(myMap(edge));
+          if (aPolyOnTria_2.IsNull())
+            B.UpdateEdge(aNewEdge, aPolyOnTria_1, aNewFaceTria, aLocation);
+          else
+          {
+            if (edge.Orientation() == TopAbs_FORWARD)
+              B.UpdateEdge(aNewEdge, aPolyOnTria_1, aPolyOnTria_2, aNewFaceTria, aLocation);
+            else
+              B.UpdateEdge(aNewEdge, aPolyOnTria_2, aPolyOnTria_1, aNewFaceTria, aLocation);
           }
         }
       }

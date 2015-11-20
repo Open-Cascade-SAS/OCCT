@@ -53,6 +53,22 @@ Poly_Polygon3D::Poly_Polygon3D(const TColgp_Array1OfPnt&   Nodes,
   }
 }
 
+//=======================================================================
+//function : Copy
+//purpose  : 
+//=======================================================================
+
+Handle(Poly_Polygon3D) Poly_Polygon3D::Copy() const
+{
+  Handle(Poly_Polygon3D) aCopy;
+  if (myParameters.IsNull())
+    aCopy = new Poly_Polygon3D(myNodes);
+  else
+    aCopy = new Poly_Polygon3D(myNodes, myParameters->Array1());
+  aCopy->Deflection(myDeflection);
+  return aCopy;
+}
+
 
 //=======================================================================
 //function : Deflection

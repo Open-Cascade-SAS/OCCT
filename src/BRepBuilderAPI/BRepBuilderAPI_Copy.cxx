@@ -68,6 +68,7 @@ public:
     if (T.IsNull())
       return Standard_False;
 
+    // mesh is copied if and only if the geometry need to be copied too
     if (myCopyGeom)
       T = T->Copy();
     return Standard_True;
@@ -85,6 +86,46 @@ public:
     if ( ! C.IsNull() && myCopyGeom )
       C = Handle(Geom_Curve)::DownCast(C->Copy());
 
+    return Standard_True;
+  }
+
+  //! Returns true to indicate the need to copy polygon;
+  //! copies it if required
+  Standard_Boolean NewPolygon(const TopoDS_Edge& E, Handle(Poly_Polygon3D)& P)
+  {
+    if (!myCopyMesh)
+      return Standard_False;
+
+    TopLoc_Location aLoc;
+    P = BRep_Tool::Polygon3D(E, aLoc);
+
+    if (P.IsNull())
+      return Standard_False;
+
+    // polygon is copied if and only if the geometry need to be copied too
+    if (myCopyGeom)
+      P = P->Copy();
+    return Standard_True;
+  }
+
+  //! Returns true to indicate the need to copy polygon;
+  //! copies it if required
+  Standard_Boolean NewPolygonOnTriangulation(const TopoDS_Edge& E, const TopoDS_Face& F,
+                                             Handle(Poly_PolygonOnTriangulation)& P)
+  {
+    if (!myCopyMesh)
+      return Standard_False;
+
+    TopLoc_Location aLoc;
+    Handle(Poly_Triangulation) aTria = BRep_Tool::Triangulation(F, aLoc);
+    P = BRep_Tool::PolygonOnTriangulation(E, aTria, aLoc);
+
+    if (P.IsNull())
+      return Standard_False;
+
+    // polygon is copied if and only if the geometry need to be copied too
+    if (myCopyGeom)
+      P = P->Copy();
     return Standard_True;
   }
 

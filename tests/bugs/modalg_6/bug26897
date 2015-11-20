@@ -1,0 +1,63 @@
+puts "============"
+puts "OCC26897"
+puts "============"
+puts ""
+###############################
+## The mesh should not rebuild on copied shape
+###############################
+
+proc CHECKMESH {data nb_tria nb_nodes defl tol} {
+    regexp {This shape contains ([0-9]+) triangles.\s* ([0-9]+) nodes.} $data dummy cur_nb_tria cur_nb_nodes
+    regexp {Maximal deflection ([-0-9.+eE]+)} $data dummy cur_defl
+
+    if {$nb_tria == $cur_nb_tria && $nb_nodes == $cur_nb_nodes && abs($defl - $cur_defl) <= $tol} {
+      puts "OK: Triangulation is not changed"
+    } else {
+      if {$nb_tria != $cur_nb_tria} {
+        puts "Error: Wrong number of triangles, $cur_nb_tria instead of $nb_tria"
+      }
+      if {$nb_nodes != $cur_nb_nodes} {
+        puts "Error: Wrong number of nodes, $cur_nb_nodes instead of $nb_nodes"
+      }
+      set diff [expr {abs($defl - $cur_defl)}]
+      if {$diff > $tol} {
+        puts "Error: Wrong deflection, $cur_defl instead of $defl (difference is $diff)"
+      }
+    }
+    puts ""
+}
+
+###############################
+
+
+pload MODELING
+set tol 1.0e-7
+
+cone c 0 0 0 45 0
+mkface f c 0 6.28318530717958647 0 10
+
+# Mesh the face and store initial data
+incmesh f 0.1
+set base [trinfo f]
+regexp {This shape contains ([0-9]+) triangles.\s* ([0-9]+) nodes.} $base dummy base_tria base_nodes
+regexp {Maximal deflection ([-0-9.+eE]+)} $base dummy base_defl
+
+# Copy face
+tcopy -m f fc
+
+# Remesh initial face and check it is not changed
+incmesh f 1.0
+set data [trinfo f]
+CHECKMESH $data $base_tria $base_nodes $base_defl $tol
+
+# Compare mesh info from copied shape
+set data [trinfo fc]
+CHECKMESH $data $base_tria $base_nodes $base_defl $tol
+
+# Remesh copied shape and compare mesh once again
+incmesh fc 1.0
+set data [trinfo fc]
+CHECKMESH $data $base_tria $base_nodes $base_defl $tol
+
+copy fc result
+set 3dviewer 1

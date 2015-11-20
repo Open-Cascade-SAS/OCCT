@@ -82,7 +82,7 @@ Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    Nodes,
 //purpose  : 
 //=======================================================================
 
-Handle(Poly_Triangulation) Poly_Triangulation::Copy()
+Handle(Poly_Triangulation) Poly_Triangulation::Copy() const
 {
   Handle(Poly_Triangulation) aCopy;
   if (HasUVNodes())

@@ -58,6 +58,9 @@ public:
   //! Both the Nodes and Parameters tables must have the
   //! same bounds. This property is not checked at construction time.
   Standard_EXPORT Poly_Polygon3D(const TColgp_Array1OfPnt& Nodes, const TColStd_Array1OfReal& Parameters);
+
+  //! Creates a copy of current polygon
+  Standard_EXPORT virtual Handle(Poly_Polygon3D) Copy() const;
   
   //! Returns the deflection of this polygon
   Standard_EXPORT Standard_Real Deflection() const;

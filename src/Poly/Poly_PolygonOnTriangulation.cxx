@@ -48,6 +48,22 @@ Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation
 }
 
 //=======================================================================
+//function : Copy
+//purpose  : 
+//=======================================================================
+
+Handle(Poly_PolygonOnTriangulation) Poly_PolygonOnTriangulation::Copy() const
+{
+  Handle(Poly_PolygonOnTriangulation) aCopy;
+  if (myParameters.IsNull())
+    aCopy = new Poly_PolygonOnTriangulation(myNodes);
+  else
+    aCopy = new Poly_PolygonOnTriangulation(myNodes, myParameters->Array1());
+  aCopy->Deflection(myDeflection);
+  return aCopy;
+}
+
+//=======================================================================
 //function : Deflection
 //purpose  : 
 //=======================================================================

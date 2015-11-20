@@ -34,6 +34,9 @@ class gp_Pnt;
 class Geom2d_Curve;
 class Poly_Triangulation;
 
+class Poly_Polygon3D;
+class Poly_PolygonOnTriangulation;
+
 
 class BRepTools_Modification;
 DEFINE_STANDARD_HANDLE(BRepTools_Modification, MMgt_TShared)
@@ -74,6 +77,16 @@ public:
   //! If the edge has not been modified, this function
   //! returns false, and the values of C, L and Tol are not significant.
   Standard_EXPORT virtual Standard_Boolean NewCurve (const TopoDS_Edge& E, Handle(Geom_Curve)& C, TopLoc_Location& L, Standard_Real& Tol) = 0;
+
+  //! Returns true if the edge has been modified according to changed polygon.
+  //! If the edge has been modified:
+  //! - P is a new polygon
+  Standard_EXPORT virtual Standard_Boolean NewPolygon(const TopoDS_Edge& E, Handle(Poly_Polygon3D)& P);
+
+  //! Returns true if the edge has been modified according to changed polygon on triangulation.
+  //! If the edge has been modified:
+  //! - P is a new polygon on triangulation
+  Standard_EXPORT virtual Standard_Boolean NewPolygonOnTriangulation(const TopoDS_Edge& E, const TopoDS_Face& F, Handle(Poly_PolygonOnTriangulation)& P);
   
   //! Returns true if the vertex V has been modified.
   //! If V has been modified:
