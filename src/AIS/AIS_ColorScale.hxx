@@ -245,10 +245,11 @@ private:
 
   void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
                   const Handle(Prs3d_Presentation)& thePresentation,
-                  const Standard_Integer theMode);
+                  const Standard_Integer theMode) Standard_OVERRIDE;
 
   void ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
-                           const Standard_Integer /*aMode*/){};
+                           const Standard_Integer /*aMode*/) Standard_OVERRIDE
+  {}
 
   //! Returns the format of text.
   TCollection_AsciiString Format() const;

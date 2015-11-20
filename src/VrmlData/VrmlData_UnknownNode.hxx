@@ -47,7 +47,7 @@ class VrmlData_UnknownNode : public VrmlData_Node
    * Read the unknown node, till the last closing brace of it.
    */
   Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Read            (VrmlData_InBuffer& theBuffer);
+                        Read            (VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Query the title of the unknown node.
@@ -60,7 +60,7 @@ class VrmlData_UnknownNode : public VrmlData_Node
    * Check if the Node is non-writeable -- always returns true.
    */
   Standard_EXPORT virtual Standard_Boolean
-                        IsDefault       () const;
+                        IsDefault       () const Standard_OVERRIDE;
 
  private:
   // ---------- PRIVATE FIELDS ----------

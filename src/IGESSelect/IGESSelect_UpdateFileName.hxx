@@ -48,11 +48,11 @@ public:
   
   //! Specific action : only <target> is used : the system Date
   //! is set to Global Section Item n0 18.
-  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const;
+  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const Standard_OVERRIDE;
   
   //! Returns a text which is
   //! "Updates IGES File Name to new current one"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

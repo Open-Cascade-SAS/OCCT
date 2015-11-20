@@ -36,7 +36,7 @@ public:
   
   Standard_EXPORT CDM_NullMessageDriver();
   
-  Standard_EXPORT void Write (const Standard_ExtString aString);
+  Standard_EXPORT void Write (const Standard_ExtString aString) Standard_OVERRIDE;
 
 
 

@@ -45,7 +45,7 @@ public:
   Standard_EXPORT virtual gp_Hypr2d Hyperbola() const Standard_OVERRIDE;
   
   //! Returns GccInt_Hpr, which is the type of any GccInt_BHyper bisecting curve.
-  Standard_EXPORT GccInt_IType ArcType() const;
+  Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
 
 
 

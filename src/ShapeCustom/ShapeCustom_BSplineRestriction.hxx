@@ -69,7 +69,7 @@ public:
   //!
   //! Otherwise, returns Standard_False, and <S>,   <L>,
   //! <Tol> , <RevWires> ,<RevFace> are not  significant.
-  Standard_EXPORT Standard_Boolean NewSurface (const TopoDS_Face& F, Handle(Geom_Surface)& S, TopLoc_Location& L, Standard_Real& Tol, Standard_Boolean& RevWires, Standard_Boolean& RevFace);
+  Standard_EXPORT Standard_Boolean NewSurface (const TopoDS_Face& F, Handle(Geom_Surface)& S, TopLoc_Location& L, Standard_Real& Tol, Standard_Boolean& RevWires, Standard_Boolean& RevFace) Standard_OVERRIDE;
   
   //! Returns Standard_True  if  curve from the edge <E> has  been
   //! modified.  In this case,  <C> is the new geometric
@@ -80,7 +80,7 @@ public:
   //! geometric support of the edge.
   //! In other cases returns Standard_False, and  <C>,  <L>,  <Tol> are not
   //! significant.
-  Standard_EXPORT Standard_Boolean NewCurve (const TopoDS_Edge& E, Handle(Geom_Curve)& C, TopLoc_Location& L, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewCurve (const TopoDS_Edge& E, Handle(Geom_Curve)& C, TopLoc_Location& L, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns Standard_True if  the edge  <E> has been modified.
   //! In this case,if curve on the surface is modified, <C>
@@ -93,7 +93,7 @@ public:
   //!
   //! <NewE> is the new  edge created from  <E>.  <NewF>
   //! is the new face created from <F>. They may be usefull.
-  Standard_EXPORT Standard_Boolean NewCurve2d (const TopoDS_Edge& E, const TopoDS_Face& F, const TopoDS_Edge& NewE, const TopoDS_Face& NewF, Handle(Geom2d_Curve)& C, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewCurve2d (const TopoDS_Edge& E, const TopoDS_Face& F, const TopoDS_Edge& NewE, const TopoDS_Face& NewF, Handle(Geom2d_Curve)& C, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns Standard_True if  the surface has been modified.
   //! if flag IsOf equals Standard_True Offset surfaces are aproximated to Offset
@@ -171,11 +171,11 @@ public:
   //! Returns error for aproximation surface.
     Standard_Real SurfaceError() const;
   
-  Standard_EXPORT Standard_Boolean NewPoint (const TopoDS_Vertex& V, gp_Pnt& P, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewPoint (const TopoDS_Vertex& V, gp_Pnt& P, Standard_Real& Tol) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean NewParameter (const TopoDS_Vertex& V, const TopoDS_Edge& E, Standard_Real& P, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewParameter (const TopoDS_Vertex& V, const TopoDS_Edge& E, Standard_Real& P, Standard_Real& Tol) Standard_OVERRIDE;
   
-  Standard_EXPORT GeomAbs_Shape Continuity (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, const TopoDS_Edge& NewE, const TopoDS_Face& NewF1, const TopoDS_Face& NewF2);
+  Standard_EXPORT GeomAbs_Shape Continuity (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, const TopoDS_Edge& NewE, const TopoDS_Face& NewF1, const TopoDS_Face& NewF2) Standard_OVERRIDE;
   
   //! Returns error for aproximation surface, curve3d and curve2d.
   Standard_EXPORT Standard_Real MaxErrors (Standard_Real& aCurve3dErr, Standard_Real& aCurve2dErr) const;

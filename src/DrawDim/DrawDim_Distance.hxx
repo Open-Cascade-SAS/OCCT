@@ -48,7 +48,7 @@ public:
   
   Standard_EXPORT void Plane2 (const TopoDS_Face& face);
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
 
 
 

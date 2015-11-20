@@ -64,10 +64,10 @@ public:
   //! complex and needs to pre-build BVH at the creation of
   //! sensitive entity step or is light-weighted so the tree
   //! can be build on demand with unnoticeable delay
-  virtual Standard_Integer NbSubElements() = 0;
+  virtual Standard_Integer NbSubElements() Standard_OVERRIDE = 0;
 
   //! Returns bounding box of a sensitive with transformation applied
-  virtual Select3D_BndBox3d BoundingBox() = 0;
+  virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE = 0;
 
   //! Returns center of a sensitive with transformation applied
   virtual gp_Pnt CenterOfGeometry() const = 0;
@@ -83,7 +83,7 @@ public:
 
   //! Returns inversed location transformation matrix if the shape corresponding
   //! to this entity has init location set. Otherwise, returns identity matrix.
-  Standard_EXPORT virtual gp_Trsf InvInitLocation() const;
+  Standard_EXPORT virtual gp_Trsf InvInitLocation() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTI(Select3D_SensitiveEntity, SelectBasics_SensitiveEntity)
 

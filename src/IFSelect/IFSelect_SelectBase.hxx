@@ -37,7 +37,7 @@ public:
   
   //! Puts in an Iterator the Selections from which "me" depends
   //! This list is empty for all SelectBase type Selections
-  Standard_EXPORT void FillIterator (IFSelect_SelectionIterator& iter) const;
+  Standard_EXPORT void FillIterator (IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
 
 
 

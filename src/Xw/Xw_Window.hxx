@@ -59,7 +59,7 @@ public:
                              const Aspect_FBConfig theFBConfig = NULL);
 
   //! Destroies the Window and all resourses attached to it
-  Standard_EXPORT virtual void Destroy();
+  Standard_EXPORT virtual void Destroy() Standard_OVERRIDE;
 
   ~Xw_Window()
   {

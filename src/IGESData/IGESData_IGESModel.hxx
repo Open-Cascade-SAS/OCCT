@@ -62,12 +62,12 @@ public:
   Standard_EXPORT IGESData_IGESModel();
   
   //! Erases all data specific to IGES file Header (Start + Global)
-  Standard_EXPORT void ClearHeader();
+  Standard_EXPORT void ClearHeader() Standard_OVERRIDE;
   
   //! Prints the IGES file header
   //! (Start and Global Sections) to the log file. The integer
   //! parameter is intended to be used as a level indicator but is not used at present.
-  Standard_EXPORT void DumpHeader (const Handle(Message_Messenger)& S, const Standard_Integer level = 0) const;
+  Standard_EXPORT void DumpHeader (const Handle(Message_Messenger)& S, const Standard_Integer level = 0) const Standard_OVERRIDE;
   
   //! Returns Model's Start Section (list of comment lines)
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) StartSection() const;
@@ -125,10 +125,10 @@ public:
   Standard_EXPORT Standard_Integer DNum (const Handle(IGESData_IGESEntity)& ent) const;
   
   //! gets Header (GlobalSection) from another Model
-  Standard_EXPORT void GetFromAnother (const Handle(Interface_InterfaceModel)& other);
+  Standard_EXPORT void GetFromAnother (const Handle(Interface_InterfaceModel)& other) Standard_OVERRIDE;
   
   //! Returns a New Empty Model, same type as <me> i.e. IGESModel
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const Standard_OVERRIDE;
   
   //! Checks that the IGES file Global
   //! section contains valid data that conforms to the IGES specifications.
@@ -140,11 +140,11 @@ public:
   Standard_EXPORT void SetLineWeights (const Standard_Real defw);
   
   //! erases specific labels, i.e. does nothing
-  Standard_EXPORT void ClearLabels();
+  Standard_EXPORT void ClearLabels() Standard_OVERRIDE;
   
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
-  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
   
   //! Prints label specific to IGES norm  for a given -- --
   //! entity,  i.e.  its directory entry number (2*Number-1)
@@ -157,7 +157,7 @@ public:
   
   //! Returns a string with the label attached to a given entity,
   //! i.e. a string "Dnn" with nn = directory entry number (2*N-1)
-  Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
 
 

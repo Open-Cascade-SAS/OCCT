@@ -65,7 +65,7 @@ public:
   //! modified face changes in the shells which contain it.
   //! For this class, RevFace returns true if the gp_Trsf
   //! associated with this modification is negative.
-  Standard_EXPORT Standard_Boolean NewSurface (const TopoDS_Face& F, Handle(Geom_Surface)& S, TopLoc_Location& L, Standard_Real& Tol, Standard_Boolean& RevWires, Standard_Boolean& RevFace);
+  Standard_EXPORT Standard_Boolean NewSurface (const TopoDS_Face& F, Handle(Geom_Surface)& S, TopLoc_Location& L, Standard_Real& Tol, Standard_Boolean& RevWires, Standard_Boolean& RevFace) Standard_OVERRIDE;
   
   //! Returns true if the edge E has been modified.
   //! If the edge has been modified:
@@ -74,7 +74,7 @@ public:
   //! - Tol is the new tolerance.
   //! If the edge has not been modified, this function
   //! returns false, and the values of C, L and Tol are not significant.
-  Standard_EXPORT Standard_Boolean NewCurve (const TopoDS_Edge& E, Handle(Geom_Curve)& C, TopLoc_Location& L, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewCurve (const TopoDS_Edge& E, Handle(Geom_Curve)& C, TopLoc_Location& L, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns true if the vertex V has been modified.
   //! If the vertex has been modified:
@@ -82,7 +82,7 @@ public:
   //! - Tol is the new tolerance.
   //! If the vertex has not been modified this function
   //! returns false, and the values of P and Tol are not significant.
-  Standard_EXPORT Standard_Boolean NewPoint (const TopoDS_Vertex& V, gp_Pnt& P, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewPoint (const TopoDS_Vertex& V, gp_Pnt& P, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns true if the edge E has a new curve on surface on the face F.
   //! If a new curve exists:
@@ -91,7 +91,7 @@ public:
   //! - Tol the new tolerance.
   //! If no new curve exists, this function returns false, and
   //! the values of C, L and Tol are not significant.
-  Standard_EXPORT Standard_Boolean NewCurve2d (const TopoDS_Edge& E, const TopoDS_Face& F, const TopoDS_Edge& NewE, const TopoDS_Face& NewF, Handle(Geom2d_Curve)& C, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewCurve2d (const TopoDS_Edge& E, const TopoDS_Face& F, const TopoDS_Edge& NewE, const TopoDS_Face& NewF, Handle(Geom2d_Curve)& C, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns true if the Vertex V has a new parameter on the edge E.
   //! If a new parameter exists:
@@ -99,7 +99,7 @@ public:
   //! - Tol is the new tolerance.
   //! If no new parameter exists, this function returns false,
   //! and the values of P and Tol are not significant.
-  Standard_EXPORT Standard_Boolean NewParameter (const TopoDS_Vertex& V, const TopoDS_Edge& E, Standard_Real& P, Standard_Real& Tol);
+  Standard_EXPORT Standard_Boolean NewParameter (const TopoDS_Vertex& V, const TopoDS_Edge& E, Standard_Real& P, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns the  continuity of  <NewE> between <NewF1>
   //! and <NewF2>.
@@ -107,7 +107,7 @@ public:
   //! <NewE> is the new  edge created from <E>.  <NewF1>
   //! (resp. <NewF2>) is the new  face created from <F1>
   //! (resp. <F2>).
-  Standard_EXPORT GeomAbs_Shape Continuity (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, const TopoDS_Edge& NewE, const TopoDS_Face& NewF1, const TopoDS_Face& NewF2);
+  Standard_EXPORT GeomAbs_Shape Continuity (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, const TopoDS_Edge& NewE, const TopoDS_Face& NewF1, const TopoDS_Face& NewF2) Standard_OVERRIDE;
 
 
 

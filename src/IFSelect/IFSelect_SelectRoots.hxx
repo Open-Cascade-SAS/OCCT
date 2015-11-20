@@ -52,10 +52,10 @@ public:
   Standard_EXPORT virtual Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   
   //! Returns always True, because RootResult has done work
-  Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium : "Local Root Entities"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
 
 

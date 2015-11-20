@@ -45,10 +45,10 @@ public:
   
   //! Selects the Drawings attached (through Single Views in
   //! Directory Part) to input entities
-  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const;
+  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   
   //! Returns the label, with is "Drawings attached"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

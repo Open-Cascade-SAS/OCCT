@@ -32,7 +32,7 @@ public:
   virtual ~OpenGl_LineAttributes();
 
   void Init (const Handle(OpenGl_Context)& theGlCtx);
-  virtual void Release (OpenGl_Context* theGlCtx);
+  virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
   void SetTypeOfHatch (const int theType) const;
 

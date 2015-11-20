@@ -34,7 +34,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_PointSprite();
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! @return true if this is display list bitmap
   inline Standard_Boolean IsDisplayList() const

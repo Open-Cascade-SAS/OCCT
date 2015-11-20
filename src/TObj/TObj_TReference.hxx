@@ -46,7 +46,7 @@ class TObj_TReference : public TDF_Attribute
   static Standard_EXPORT const Standard_GUID& GetID();
 
   //! Returns the ID of TObj_TReference attribute.
-  Standard_EXPORT const Standard_GUID& ID() const;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
  public:
   //! Method for create TObj_TReference object
@@ -84,36 +84,36 @@ class TObj_TReference : public TDF_Attribute
 
   //! Returns an new empty TObj_TReference attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
   //! Restores the backuped contents from <theWith> into this one. It is used
   //! when aborting a transaction.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith);
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
 
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const;
+                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
 
   //! Remove back references of it reference if it is in other document.
-  virtual Standard_EXPORT void BeforeForget();
+  virtual Standard_EXPORT void BeforeForget() Standard_OVERRIDE;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
   virtual Standard_EXPORT Standard_Boolean BeforeUndo
                    (const Handle(TDF_AttributeDelta)& theDelta,
-                    const Standard_Boolean            isForced = Standard_False);
+                    const Standard_Boolean            isForced = Standard_False) Standard_OVERRIDE;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
   virtual Standard_EXPORT Standard_Boolean AfterUndo
                    (const Handle(TDF_AttributeDelta)& theDelta,
-                    const Standard_Boolean            isForced = Standard_False);
+                    const Standard_Boolean            isForced = Standard_False) Standard_OVERRIDE;
 
   //! Check if back reference exists for reference.
-  virtual Standard_EXPORT void AfterResume();
+  virtual Standard_EXPORT void AfterResume() Standard_OVERRIDE;
 
   //! Called after retrieval reference from file.
   virtual Standard_EXPORT Standard_Boolean AfterRetrieval
-                         (const Standard_Boolean forceIt = Standard_False);
+                         (const Standard_Boolean forceIt = Standard_False) Standard_OVERRIDE;
 
  private:
   //! Fields

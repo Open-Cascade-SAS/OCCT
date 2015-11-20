@@ -95,7 +95,7 @@ public:
   //! Checks whether the element can be rendered or not.
   //! @param theElement [in] the element to check.
   //! @return True if element can be rendered.
-  virtual Standard_Boolean CanRender (const OpenGl_Element* theElement);
+  virtual Standard_Boolean CanRender (const OpenGl_Element* theElement) Standard_OVERRIDE;
 
 private:
 

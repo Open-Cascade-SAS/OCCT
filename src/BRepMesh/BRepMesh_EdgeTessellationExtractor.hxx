@@ -47,7 +47,7 @@ public:
     const TopLoc_Location&                      theLocation);
 
   //! Returns number of dicretization points.
-  virtual Standard_Integer NbPoints() const
+  virtual Standard_Integer NbPoints() const Standard_OVERRIDE
   {
     return myIndices.Length();
   }
@@ -60,7 +60,7 @@ public:
   virtual void Value(const Standard_Integer theIndex,
                      Standard_Real&         theParameter,
                      gp_Pnt&                thePoint,
-                     gp_Pnt2d&              theUV);
+                     gp_Pnt2d&              theUV) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTI(BRepMesh_EdgeTessellationExtractor, BRepMesh_IEdgeTool)
 

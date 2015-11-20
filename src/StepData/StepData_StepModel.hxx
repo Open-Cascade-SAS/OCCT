@@ -55,10 +55,10 @@ public:
   Standard_EXPORT Handle(Standard_Transient) Entity (const Standard_Integer num) const;
   
   //! gets header from another Model (uses Header Protocol)
-  Standard_EXPORT void GetFromAnother (const Handle(Interface_InterfaceModel)& other);
+  Standard_EXPORT void GetFromAnother (const Handle(Interface_InterfaceModel)& other) Standard_OVERRIDE;
   
   //! Returns a New Empty Model, same type as <me>, i.e. StepModel
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const Standard_OVERRIDE;
   
   //! returns Header entities under the form of an iterator
   Standard_EXPORT Interface_EntityIterator Header() const;
@@ -70,7 +70,7 @@ public:
   Standard_EXPORT Handle(Standard_Transient) HeaderEntity (const Handle(Standard_Type)& atype) const;
   
   //! Clears the Header
-  Standard_EXPORT void ClearHeader();
+  Standard_EXPORT void ClearHeader() Standard_OVERRIDE;
   
   //! Adds an Entity to the Header
   Standard_EXPORT void AddHeaderEntity (const Handle(Standard_Transient)& ent);
@@ -83,10 +83,10 @@ public:
   //! prints its Type. Else sends the Header under the form of
   //! HEADER Section of an Ascii Step File
   //! <level> is not used because Header is not so big
-  Standard_EXPORT void DumpHeader (const Handle(Message_Messenger)& S, const Standard_Integer level = 0) const;
+  Standard_EXPORT void DumpHeader (const Handle(Message_Messenger)& S, const Standard_Integer level = 0) const Standard_OVERRIDE;
   
   //! erases specific labels, i.e. clears the map (entity-ident)
-  Standard_EXPORT void ClearLabels();
+  Standard_EXPORT void ClearLabels() Standard_OVERRIDE;
   
   //! Attaches an ident to an entity to produce a label
   //! (does nothing if <ent> is not in <me>)
@@ -98,11 +98,11 @@ public:
   //! Prints label specific to STEP norm for a given entity, i.e.
   //! if a LabelIdent has been recorded, its value with '#', else
   //! the number in the model with '#' and between ()
-  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
   
   //! Returns a string with the label attached to a given entity,
   //! same form as for PrintLabel
-  Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
 
 

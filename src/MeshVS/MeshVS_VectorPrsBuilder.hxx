@@ -52,7 +52,7 @@ public:
   Standard_EXPORT MeshVS_VectorPrsBuilder(const Handle(MeshVS_Mesh)& Parent, const Standard_Real MaxLength, const Quantity_Color& VectorColor, const MeshVS_DisplayModeFlags& Flags = MeshVS_DMF_VectorDataPrs, const Handle(MeshVS_DataSource)& DS = 0, const Standard_Integer Id = -1, const MeshVS_BuilderPriority& Priority = MeshVS_BP_Vector, const Standard_Boolean IsSimplePrs = Standard_False);
   
   //! Builds vector data presentation
-  Standard_EXPORT virtual void Build (const Handle(Prs3d_Presentation)& Prs, const TColStd_PackedMapOfInteger& IDs, TColStd_PackedMapOfInteger& IDsToExclude, const Standard_Boolean IsElement, const Standard_Integer theDisplayMode) const;
+  Standard_EXPORT virtual void Build (const Handle(Prs3d_Presentation)& Prs, const TColStd_PackedMapOfInteger& IDs, TColStd_PackedMapOfInteger& IDsToExclude, const Standard_Boolean IsElement, const Standard_Integer theDisplayMode) const Standard_OVERRIDE;
   
   //! Adds to array of polygons and polylines some primitive representing single vector
   Standard_EXPORT void DrawVector (const gp_Trsf& theTrsf, const Standard_Real Length, const Standard_Real MaxLength, const TColgp_Array1OfPnt& ArrowPoints, const Handle(Graphic3d_ArrayOfPrimitives)& Lines, const Handle(Graphic3d_ArrayOfPrimitives)& ArrowLines, const Handle(Graphic3d_ArrayOfPrimitives)& Triangles) const;

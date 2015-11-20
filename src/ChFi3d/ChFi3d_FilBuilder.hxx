@@ -134,9 +134,9 @@ public:
 protected:
 
   
-  Standard_EXPORT void SimulKPart (const Handle(ChFiDS_SurfData)& SD) const;
+  Standard_EXPORT void SimulKPart (const Handle(ChFiDS_SurfData)& SD) const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, const math_Vector& Soldep, Standard_Boolean& Intf, Standard_Boolean& Intl);
+  Standard_EXPORT Standard_Boolean SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, const math_Vector& Soldep, Standard_Boolean& Intf, Standard_Boolean& Intl) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HCurve2d)& PC1, const Handle(BRepAdaptor_HSurface)& Sref1, const Handle(BRepAdaptor_HCurve2d)& PCref1, Standard_Boolean& Decroch1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const TopAbs_Orientation Or2, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst, const math_Vector& Soldep) Standard_OVERRIDE;
   
@@ -144,11 +144,11 @@ protected:
   
   Standard_EXPORT virtual void SimulSurf (Handle(ChFiDS_SurfData)& Data, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HCurve2d)& PC1, const Handle(BRepAdaptor_HSurface)& Sref1, const Handle(BRepAdaptor_HCurve2d)& PCref1, Standard_Boolean& Decroch1, const TopAbs_Orientation Or1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Handle(BRepAdaptor_HCurve2d)& PC2, const Handle(BRepAdaptor_HSurface)& Sref2, const Handle(BRepAdaptor_HCurve2d)& PCref2, Standard_Boolean& Decroch2, const TopAbs_Orientation Or2, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP1, const Standard_Boolean RecRst1, const Standard_Boolean RecP2, const Standard_Boolean RecRst2, const math_Vector& Soldep) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean PerformFirstSection (const Handle(ChFiDS_Spine)& S, const Handle(ChFiDS_HElSpine)& HGuide, const Standard_Integer Choix, Handle(BRepAdaptor_HSurface)& S1, Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real Par, math_Vector& SolDep, TopAbs_State& Pos1, TopAbs_State& Pos2) const;
+  Standard_EXPORT Standard_Boolean PerformFirstSection (const Handle(ChFiDS_Spine)& S, const Handle(ChFiDS_HElSpine)& HGuide, const Standard_Integer Choix, Handle(BRepAdaptor_HSurface)& S1, Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I1, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real Par, math_Vector& SolDep, TopAbs_State& Pos1, TopAbs_State& Pos2) const Standard_OVERRIDE;
   
   //! Method calculates the elements of construction of  the
   //! fillet (constant or evolutive).
-  Standard_EXPORT Standard_Boolean PerformSurf (ChFiDS_SequenceOfSurfData& SeqData, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, const math_Vector& Soldep, Standard_Boolean& Intf, Standard_Boolean& Intl);
+  Standard_EXPORT Standard_Boolean PerformSurf (ChFiDS_SequenceOfSurfData& SeqData, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, const math_Vector& Soldep, Standard_Boolean& Intf, Standard_Boolean& Intl) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void PerformSurf (ChFiDS_SequenceOfSurfData& SeqData, const Handle(ChFiDS_HElSpine)& Guide, const Handle(ChFiDS_Spine)& Spine, const Standard_Integer Choix, const Handle(BRepAdaptor_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& I1, const Handle(BRepAdaptor_HCurve2d)& PC1, const Handle(BRepAdaptor_HSurface)& Sref1, const Handle(BRepAdaptor_HCurve2d)& PCref1, Standard_Boolean& Decroch1, const Handle(BRepAdaptor_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& I2, const TopAbs_Orientation Or2, const Standard_Real MaxStep, const Standard_Real Fleche, const Standard_Real TolGuide, Standard_Real& First, Standard_Real& Last, const Standard_Boolean Inside, const Standard_Boolean Appro, const Standard_Boolean Forward, const Standard_Boolean RecP, const Standard_Boolean RecS, const Standard_Boolean RecRst, const math_Vector& Soldep) Standard_OVERRIDE;
   
@@ -160,17 +160,17 @@ protected:
   //! singular  SurfData..
   Standard_EXPORT void SplitSurf (ChFiDS_SequenceOfSurfData& SeqData, const Handle(BRepBlend_Line)& line);
   
-  Standard_EXPORT void PerformTwoCorner (const Standard_Integer Index);
+  Standard_EXPORT void PerformTwoCorner (const Standard_Integer Index) Standard_OVERRIDE;
   
-  Standard_EXPORT void PerformThreeCorner (const Standard_Integer Index);
+  Standard_EXPORT void PerformThreeCorner (const Standard_Integer Index) Standard_OVERRIDE;
   
-  Standard_EXPORT void ExtentOneCorner (const TopoDS_Vertex& V, const Handle(ChFiDS_Stripe)& S);
+  Standard_EXPORT void ExtentOneCorner (const TopoDS_Vertex& V, const Handle(ChFiDS_Stripe)& S) Standard_OVERRIDE;
   
-  Standard_EXPORT void ExtentTwoCorner (const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS);
+  Standard_EXPORT void ExtentTwoCorner (const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS) Standard_OVERRIDE;
   
-  Standard_EXPORT void ExtentThreeCorner (const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS);
+  Standard_EXPORT void ExtentThreeCorner (const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS) Standard_OVERRIDE;
   
-  Standard_EXPORT void SetRegul();
+  Standard_EXPORT void SetRegul() Standard_OVERRIDE;
 
 
 

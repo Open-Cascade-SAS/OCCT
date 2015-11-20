@@ -91,7 +91,7 @@ public:
   
   Standard_EXPORT void GetDisplayHLR (Standard_Boolean& withHLR, Standard_Boolean& withRg1, Standard_Boolean& withRgN, Standard_Boolean& withHid, Standard_Real& ang) const;
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
   
   Standard_EXPORT void DisplayHiddenLines (Draw_Display& dis);
   

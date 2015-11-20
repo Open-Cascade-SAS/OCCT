@@ -41,15 +41,15 @@ public:
   Standard_EXPORT CDF_FWOSDriver();
   
   //! indicate whether a file exists corresponding to the folder and the name
-  Standard_EXPORT Standard_Boolean Find (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion);
+  Standard_EXPORT Standard_Boolean Find (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean HasReadPermission (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion);
+  Standard_EXPORT Standard_Boolean HasReadPermission (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean FindFolder (const TCollection_ExtendedString& aFolder);
+  Standard_EXPORT Standard_Boolean FindFolder (const TCollection_ExtendedString& aFolder) Standard_OVERRIDE;
   
-  Standard_EXPORT TCollection_ExtendedString DefaultFolder();
+  Standard_EXPORT TCollection_ExtendedString DefaultFolder() Standard_OVERRIDE;
   
-  Standard_EXPORT TCollection_ExtendedString BuildFileName (const Handle(CDM_Document)& aDocument);
+  Standard_EXPORT TCollection_ExtendedString BuildFileName (const Handle(CDM_Document)& aDocument) Standard_OVERRIDE;
   
   Standard_EXPORT virtual TCollection_ExtendedString SetName (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aName) Standard_OVERRIDE;
 
@@ -66,9 +66,9 @@ protected:
 private:
 
   
-  Standard_EXPORT Handle(CDM_MetaData) MetaData (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion);
+  Standard_EXPORT Handle(CDM_MetaData) MetaData (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(CDM_MetaData) CreateMetaData (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aFileName);
+  Standard_EXPORT Handle(CDM_MetaData) CreateMetaData (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aFileName) Standard_OVERRIDE;
   
   Standard_EXPORT static TCollection_ExtendedString Concatenate (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName);
   

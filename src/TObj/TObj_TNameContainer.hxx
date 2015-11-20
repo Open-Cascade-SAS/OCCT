@@ -41,7 +41,7 @@ class TObj_TNameContainer : public TDF_Attribute
   static Standard_EXPORT const Standard_GUID& GetID();
   
   //! Returns the ID of TObj_TNameContainer attribute.
-  Standard_EXPORT const Standard_GUID& ID() const;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
 
  public:
   //! Method for create TObj_TNameContainer object
@@ -79,16 +79,16 @@ class TObj_TNameContainer : public TDF_Attribute
     
   //! Returns an new empty TObj_TNameContainer attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   
   //! Restores the backuped contents from <theWith> into this one. It is used 
   //! when aborting a transaction.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith);
+  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
   
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
   Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const;
+                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
   
  private:
   //! Fields

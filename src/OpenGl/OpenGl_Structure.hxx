@@ -70,36 +70,36 @@ public:
   Standard_EXPORT virtual void OnVisibilityChanged() Standard_OVERRIDE;
 
   //! Clear graphic data
-  Standard_EXPORT virtual void Clear();
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   //! Connect other structure to this one
-  Standard_EXPORT virtual void Connect    (Graphic3d_CStructure& theStructure);
+  Standard_EXPORT virtual void Connect    (Graphic3d_CStructure& theStructure) Standard_OVERRIDE;
 
   //! Disconnect other structure to this one
-  Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& theStructure);
+  Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& theStructure) Standard_OVERRIDE;
 
   //! Synchronize structure aspects
-  Standard_EXPORT virtual void UpdateAspects();
+  Standard_EXPORT virtual void UpdateAspects() Standard_OVERRIDE;
 
   //! Synchronize structure transformation
-  Standard_EXPORT virtual void UpdateTransformation();
+  Standard_EXPORT virtual void UpdateTransformation() Standard_OVERRIDE;
 
   //! Highlight entire structure with color
   Standard_EXPORT virtual void HighlightWithColor (const Graphic3d_Vec3&  theColor,
-                                                   const Standard_Boolean theToCreate);
+                                                   const Standard_Boolean theToCreate) Standard_OVERRIDE;
 
   //! Highlight structure using boundary box
   Standard_EXPORT virtual void HighlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct,
-                                                    const Standard_Boolean             theToCreate);
+                                                    const Standard_Boolean             theToCreate) Standard_OVERRIDE;
 
   //! Create shadow link to this structure
-  Standard_EXPORT virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const;
+  Standard_EXPORT virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const Standard_OVERRIDE;
 
   //! Create new group within this structure
-  Standard_EXPORT virtual Handle(Graphic3d_Group) NewGroup (const Handle(Graphic3d_Structure)& theStruct);
+  Standard_EXPORT virtual Handle(Graphic3d_Group) NewGroup (const Handle(Graphic3d_Structure)& theStruct) Standard_OVERRIDE;
 
   //! Remove group from this structure
-  Standard_EXPORT virtual void RemoveGroup (const Handle(Graphic3d_Group)& theGroup);
+  Standard_EXPORT virtual void RemoveGroup (const Handle(Graphic3d_Group)& theGroup) Standard_OVERRIDE;
 
 public:
 

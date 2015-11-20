@@ -60,7 +60,7 @@ public:
   Standard_EXPORT void SetGridValues (const Quantity_Length XOrigin, const Quantity_Length YOrigin, const Quantity_Length XStep, const Quantity_Length YStep, const Quantity_PlaneAngle RotationAngle);
   
   //! returns the point of the grid the closest to the point X,Y
-  Standard_EXPORT void Compute (const Quantity_Length X, const Quantity_Length Y, Quantity_Length& gridX, Quantity_Length& gridY) const;
+  Standard_EXPORT void Compute (const Quantity_Length X, const Quantity_Length Y, Quantity_Length& gridX, Quantity_Length& gridY) const Standard_OVERRIDE;
   
   //! returns the x step of the grid.
   Standard_EXPORT Quantity_Length XStep() const;

@@ -56,7 +56,7 @@ public:
   //! Returns the list of selected entities. Works by calling the
   //! method Sort on each input Entity : the Entity is kept as
   //! output if Sort returns the same value as Direct status
-  Standard_EXPORT virtual Interface_EntityIterator RootResult (const Interface_Graph& G) const;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   
   //! Returns True for an Entity if it satisfies the Sort criterium
   //! It receives :
@@ -76,7 +76,7 @@ public:
   
   //! Returns a text saying "Picked" or "Removed", plus the
   //! specific criterium returned by ExtractLabel (see below)
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium for extraction
   Standard_EXPORT virtual TCollection_AsciiString ExtractLabel() const = 0;

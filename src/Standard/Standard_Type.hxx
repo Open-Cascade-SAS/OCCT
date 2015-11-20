@@ -31,7 +31,8 @@
 public: \
   typedef Base base_type; \
   static const char* get_type_name () { return #Class; } \
-  virtual const Handle(Standard_Type)& DynamicType() const { return STANDARD_TYPE(Class); }
+  virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE \
+  { return STANDARD_TYPE(Class); }
 
 // forward declaration of type_instance class
 namespace opencascade {

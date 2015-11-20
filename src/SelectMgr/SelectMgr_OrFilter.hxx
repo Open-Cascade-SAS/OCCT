@@ -40,7 +40,7 @@ public:
   //! Constructs an empty or selection filter.
   Standard_EXPORT SelectMgr_OrFilter();
   
-  Standard_EXPORT Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const;
+  Standard_EXPORT Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
   
   //! Disable selection of specified objects.
   Standard_EXPORT void SetDisabledObjects (const Handle(Graphic3d_NMapOfTransient)& theObjects);

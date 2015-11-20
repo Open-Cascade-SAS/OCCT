@@ -43,7 +43,7 @@ public:
   Standard_EXPORT IFSelect_DispGlobal();
   
   //! Returns as Label, "One File for all Input"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
   
   //! Returns True : maximum equates 1
   Standard_EXPORT virtual Standard_Boolean LimitedMax (const Standard_Integer nbent, Standard_Integer& max) const Standard_OVERRIDE;
@@ -54,7 +54,7 @@ public:
   //! Computes the list of produced Packets. It is made of only ONE
   //! Packet, which gets the RootResult from the Final Selection.
   //! Remark : the inherited exception raising is never activated.
-  Standard_EXPORT void Packets (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const;
+  Standard_EXPORT void Packets (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
 
 
 

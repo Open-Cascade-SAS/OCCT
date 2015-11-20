@@ -46,7 +46,7 @@ public:
   
   Standard_EXPORT Draw_Axis3D(const gp_Ax3& A, const Draw_Color& col, const Standard_Integer Size = 5);
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
 
 
 

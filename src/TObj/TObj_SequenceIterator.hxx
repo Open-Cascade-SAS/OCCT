@@ -52,13 +52,13 @@ class TObj_SequenceIterator : public TObj_ObjectIterator
   */
   
   //! Returns True if there is a current Item in the iteration.
-  virtual Standard_EXPORT Standard_Boolean More () const;
+  virtual Standard_EXPORT Standard_Boolean More () const Standard_OVERRIDE;
 
   //! Move to the next Item
-  virtual Standard_EXPORT void Next ();
+  virtual Standard_EXPORT void Next () Standard_OVERRIDE;
 
   //! Returns the current item
-  virtual Standard_EXPORT Handle(TObj_Object) Value () const;
+  virtual Standard_EXPORT Handle(TObj_Object) Value () const Standard_OVERRIDE;
 
  protected:
   /**

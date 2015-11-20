@@ -40,7 +40,7 @@ public:
   //! more types of entity.
   Standard_EXPORT SelectMgr_AndFilter();
   
-  Standard_EXPORT Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const;
+  Standard_EXPORT Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
 
 
 

@@ -48,12 +48,12 @@ public:
   
   //! Creates a new empty Model ready to receive data of the Norm.
   //! It is taken from IGES Template Model
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const Standard_OVERRIDE;
   
   //! Returns the Actor for Read attached to the pair (norm,appli)
   //! It is an Actor from IGESToBRep, adapted from an IGESModel :
   //! Unit, tolerances
-  Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead (const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead (const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
   
   //! Takes one Shape and transfers it to the InterfaceModel
   //! (already created by NewModel for instance)

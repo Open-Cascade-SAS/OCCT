@@ -87,33 +87,33 @@ public:
 public:
 
   //! Setup custom color. Affects presentation only when no per-point color attribute has been assigned.
-  Standard_EXPORT virtual void SetColor (const Quantity_NameOfColor theColor);
+  Standard_EXPORT virtual void SetColor (const Quantity_NameOfColor theColor) Standard_OVERRIDE;
 
   //! Setup custom color. Affects presentation only when no per-point color attribute has been assigned.
-  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor);
+  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Restore default color.
-  Standard_EXPORT virtual void UnsetColor();
+  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
 
   //! Setup custom material. Affects presentation only when normals are defined.
-  Standard_EXPORT virtual void SetMaterial (const Graphic3d_NameOfMaterial theMatName);
+  Standard_EXPORT virtual void SetMaterial (const Graphic3d_NameOfMaterial theMatName) Standard_OVERRIDE;
 
   //! Setup custom material. Affects presentation only when normals are defined.
-  Standard_EXPORT virtual void SetMaterial (const Graphic3d_MaterialAspect& theMat);
+  Standard_EXPORT virtual void SetMaterial (const Graphic3d_MaterialAspect& theMat) Standard_OVERRIDE;
 
   //! Restore default material.
-  Standard_EXPORT virtual void UnsetMaterial();
+  Standard_EXPORT virtual void UnsetMaterial() Standard_OVERRIDE;
 
 protected:
 
   //! Prepare presentation for this object.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)&           thePrs,
-                                        const Standard_Integer                      theMode);
+                                        const Standard_Integer                      theMode) Standard_OVERRIDE;
 
   //! Prepare selection for this object.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                 const Standard_Integer             theMode);
+                                                 const Standard_Integer             theMode) Standard_OVERRIDE;
 
 private:
 

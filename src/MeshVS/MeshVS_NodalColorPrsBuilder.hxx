@@ -66,7 +66,7 @@ public:
   Standard_EXPORT MeshVS_NodalColorPrsBuilder(const Handle(MeshVS_Mesh)& Parent, const MeshVS_DisplayModeFlags& Flags = MeshVS_DMF_NodalColorDataPrs, const Handle(MeshVS_DataSource)& DS = 0, const Standard_Integer Id = -1, const MeshVS_BuilderPriority& Priority = MeshVS_BP_NodalColor);
   
   //! Builds presentation of nodes with assigned color.
-  Standard_EXPORT virtual void Build (const Handle(Prs3d_Presentation)& Prs, const TColStd_PackedMapOfInteger& IDs, TColStd_PackedMapOfInteger& IDsToExclude, const Standard_Boolean IsElement, const Standard_Integer DisplayMode) const;
+  Standard_EXPORT virtual void Build (const Handle(Prs3d_Presentation)& Prs, const TColStd_PackedMapOfInteger& IDs, TColStd_PackedMapOfInteger& IDsToExclude, const Standard_Boolean IsElement, const Standard_Integer DisplayMode) const Standard_OVERRIDE;
   
   //! Returns map of colors assigned to nodes.
   Standard_EXPORT const MeshVS_DataMapOfIntegerColor& GetColors() const;

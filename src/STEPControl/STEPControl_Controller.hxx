@@ -47,11 +47,11 @@ public:
   
   //! Creates a new empty Model ready to receive data of the Norm.
   //! It is taken from STEP Template Model
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const;
+  Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const Standard_OVERRIDE;
   
   //! Returns a new Actor for Read attached to the pair (norm,appli)
   //! It is a PmsToTopoDSAct_Actor
-  Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead (const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead (const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Customise (Handle(XSControl_WorkSession)& WS) Standard_OVERRIDE;
   

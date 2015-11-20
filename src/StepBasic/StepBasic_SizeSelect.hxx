@@ -42,7 +42,7 @@ public:
   //! Recognizes a TrimmingSelect Kind Entity that is :
   //! 1 -> SizeMember
   //! 0 else (i.e. Real)
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! Returns a SizeMember (POSITIVE_LENGTH_MEASURE) as preferred
   Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;

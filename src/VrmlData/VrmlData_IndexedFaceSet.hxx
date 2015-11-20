@@ -272,7 +272,7 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * Query the shape. This method checks the flag myIsModified; if True it
    * should rebuild the shape presentation.
    */
-  Standard_EXPORT virtual const Handle(TopoDS_TShape)&  TShape ();
+  Standard_EXPORT virtual const Handle(TopoDS_TShape)&  TShape () Standard_OVERRIDE;
 
   /**
    * Create a copy of this node.
@@ -280,25 +280,25 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
    * is not created, but rather the given one is modified.
    */
   Standard_EXPORT virtual Handle(VrmlData_Node)
-                Clone              (const Handle(VrmlData_Node)& theOther)const;
+                Clone              (const Handle(VrmlData_Node)& theOther)const Standard_OVERRIDE;
 
   /**
    * Read the Node from input stream.
    */
   Standard_EXPORT virtual VrmlData_ErrorStatus
-                Read               (VrmlData_InBuffer& theBuffer);
+                Read               (VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to output stream.
    */
   Standard_EXPORT virtual VrmlData_ErrorStatus
-                Write              (const char * thePrefix) const;
+                Write              (const char * thePrefix) const Standard_OVERRIDE;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
   Standard_EXPORT virtual Standard_Boolean
-                IsDefault          () const;
+                IsDefault          () const Standard_OVERRIDE;
 
  protected:
   // ---------- PROTECTED METHODS ----------

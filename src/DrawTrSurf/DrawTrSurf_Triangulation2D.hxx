@@ -47,7 +47,7 @@ public:
   
   Standard_EXPORT Handle(Poly_Triangulation) Triangulation() const;
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
   
   //! For variable copy.
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;

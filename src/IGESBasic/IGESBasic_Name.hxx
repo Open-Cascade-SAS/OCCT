@@ -48,7 +48,7 @@ public:
   Standard_EXPORT Standard_Integer NbPropertyValues() const;
   
   //! returns the user defined Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Value() const;
+  Standard_EXPORT Handle(TCollection_HAsciiString) Value() const Standard_OVERRIDE;
 
 
 

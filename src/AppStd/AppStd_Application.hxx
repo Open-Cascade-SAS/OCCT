@@ -44,7 +44,7 @@ public:
   
   //! returns   the file  name  which  contains  application
   //! resources
-  Standard_EXPORT Standard_CString ResourcesName();
+  Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 
 
 

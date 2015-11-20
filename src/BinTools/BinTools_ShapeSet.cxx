@@ -433,11 +433,11 @@ void  BinTools_ShapeSet::Read(Standard_IStream& IS)
     return;
   }
 
-  Standard_Integer i, nbShapes;
+  Standard_Integer nbShapes = 0;
   IS >> nbShapes;
   IS.get();//remove lf 
 
-  for (i = 1; i <= nbShapes; i++) {
+  for (int i = 1; i <= nbShapes; i++) {
 
     TopoDS_Shape S;
     
@@ -512,7 +512,7 @@ void  BinTools_ShapeSet::Write(const TopoDS_Shape& S, Standard_OStream& OS)const
 void  BinTools_ShapeSet::Read(TopoDS_Shape& S, Standard_IStream& IS,
                               const Standard_Integer nbshapes)const 
 {
-  Standard_Character aChar;
+  Standard_Character aChar = '\0';
   IS >> aChar;
   if(aChar == '*')
     S = TopoDS_Shape();

@@ -55,7 +55,7 @@ public:
     Standard_Boolean IsActive() const;
   
   //! Displays the grid.
-  Standard_EXPORT void DrawOn (Draw_Display& Out) const;
+  Standard_EXPORT void DrawOn (Draw_Display& Out) const Standard_OVERRIDE;
 
 
 

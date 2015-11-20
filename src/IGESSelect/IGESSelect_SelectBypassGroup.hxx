@@ -53,10 +53,10 @@ public:
   
   //! Explores an entity : for a Group, gives its elements
   //! Else, takes the entity itself
-  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const;
+  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium : "Content of Group"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
 
 
 

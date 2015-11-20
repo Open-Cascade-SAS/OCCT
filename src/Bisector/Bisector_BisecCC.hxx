@@ -78,56 +78,56 @@ public:
   //! than <DistMax>.
   Standard_EXPORT void Perform (const Handle(Geom2d_Curve)& Cu1, const Handle(Geom2d_Curve)& Cu2, const Standard_Real Side1, const Standard_Real Side2, const gp_Pnt2d& Origin, const Standard_Real DistMax = 500);
   
-  Standard_EXPORT Standard_Boolean IsExtendAtStart() const;
+  Standard_EXPORT Standard_Boolean IsExtendAtStart() const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean IsExtendAtEnd() const;
+  Standard_EXPORT Standard_Boolean IsExtendAtEnd() const Standard_OVERRIDE;
   
-  Standard_EXPORT void Reverse();
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Returns the order of continuity of the curve.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
   
   //! The parameter  on <me> is linked to  the parameter
   //! on the first curve. This method creates the same bisector
   //! where the curves are inversed.
   Standard_EXPORT Handle(Bisector_BisecCC) ChangeGuide() const;
   
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
   
 
   //! Transformation of a geometric object. This tansformation
   //! can be a translation, a rotation, a symmetry, a scaling
   //! or a complex transformation obtained by combination of
   //! the previous elementaries transformations.
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
+  Standard_EXPORT void Transform (const gp_Trsf2d& T) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Real FirstParameter() const;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Real LastParameter() const;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
   
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! If necessary,  breaks the  curve in  intervals  of
   //! continuity  <C1>.    And  returns   the number   of
   //! intervals.
-  Standard_EXPORT Standard_Integer NbIntervals() const;
+  Standard_EXPORT Standard_Integer NbIntervals() const Standard_OVERRIDE;
   
   //! Returns  the  first  parameter    of  the  current
   //! interval.
-  Standard_EXPORT Standard_Real IntervalFirst (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real IntervalFirst (const Standard_Integer Index) const Standard_OVERRIDE;
   
   //! Returns  the  last  parameter    of  the  current
   //! interval.
-  Standard_EXPORT Standard_Real IntervalLast (const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real IntervalLast (const Standard_Integer Index) const Standard_OVERRIDE;
   
   Standard_EXPORT GeomAbs_Shape IntervalContinuity() const;
   
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
   
   //! Returns the point of parameter U.
   //! Computes the distance between the current point and
@@ -143,15 +143,15 @@ public:
   //! of the projection of the current point.
   Standard_EXPORT gp_Pnt2d ValueByInt (const Standard_Real U, Standard_Real& U1, Standard_Real& U2, Standard_Real& Distance) const;
   
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
   
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const;
+  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const Standard_OVERRIDE;
   
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const;
+  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const Standard_OVERRIDE;
   
-  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const;
+  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const Standard_OVERRIDE;
   
-  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const;
+  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsEmpty() const;
   
@@ -162,7 +162,7 @@ public:
   //! Returns the reciproque of LinkBisCurve.
   Standard_EXPORT Standard_Real LinkCurveBis (const Standard_Real U) const;
   
-  Standard_EXPORT Standard_Real Parameter (const gp_Pnt2d& P) const;
+  Standard_EXPORT Standard_Real Parameter (const gp_Pnt2d& P) const Standard_OVERRIDE;
   
   Standard_EXPORT Handle(Geom2d_Curve) Curve (const Standard_Integer IndCurve) const;
   

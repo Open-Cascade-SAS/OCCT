@@ -95,61 +95,61 @@ public:
   
   //! Changes the orientation of this line. As a result, the
   //! unit vector of the positioning axis of this line is reversed.
-  Standard_EXPORT void Reverse();
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
   
   //! Computes the parameter on the reversed line for the
   //! point of parameter U on this line.
   //! For a line, the returned value is -U.
-  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Returns the value of the first parameter of this
   //! line. This is Standard_Real::RealFirst().
-  Standard_EXPORT Standard_Real FirstParameter() const;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
   //! Returns the value of the last parameter of this
   //! line. This is  Standard_Real::RealLast().
-  Standard_EXPORT Standard_Real LastParameter() const;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
   
   //! returns False
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
   //! returns False
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
   
   //! Returns GeomAbs_CN, which is the global continuity of any line.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! returns True.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Returns in P the point of parameter U.
   //! P (U) = O + U * Dir where O is the "Location" point of the
   //! line and Dir the direction of the line.
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
   
 
   //! Returns the point P of parameter u and the first derivative V1.
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const;
+  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const Standard_OVERRIDE;
   
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2. V2 is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const;
+  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const Standard_OVERRIDE;
   
 
   //! V2 and V3 are vectors with null magnitude for a line.
-  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const;
+  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const Standard_OVERRIDE;
   
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Integer N) const;
+  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Applies the transformation T to this line.
-  Standard_EXPORT void Transform (const gp_Trsf& T);
+  Standard_EXPORT void Transform (const gp_Trsf& T) Standard_OVERRIDE;
   
   //! Returns the  parameter on the  transformed  curve for
   //! the transform of the point of parameter U on <me>.
@@ -177,7 +177,7 @@ public:
   Standard_EXPORT virtual Standard_Real ParametricTransformation (const gp_Trsf& T) const Standard_OVERRIDE;
   
   //! Creates a new object which is a copy of this line.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

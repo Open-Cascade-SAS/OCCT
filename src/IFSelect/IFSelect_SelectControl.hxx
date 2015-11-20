@@ -67,7 +67,7 @@ public:
   
   //! Puts in an Iterator the Selections from which "me" depends
   //! That is to say, the list of Input Selections
-  Standard_EXPORT void FillIterator (IFSelect_SelectionIterator& iter) const;
+  Standard_EXPORT void FillIterator (IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
 
 
 

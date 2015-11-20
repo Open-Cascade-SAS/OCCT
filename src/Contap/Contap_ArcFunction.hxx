@@ -59,11 +59,11 @@ public:
   
     void Set (const Handle(Adaptor2d_HCurve2d)& A);
   
-  Standard_EXPORT Standard_Boolean Value (const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT Standard_Boolean Value (const Standard_Real X, Standard_Real& F) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean Derivative (const Standard_Real X, Standard_Real& D);
+  Standard_EXPORT Standard_Boolean Derivative (const Standard_Real X, Standard_Real& D) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean Values (const Standard_Real X, Standard_Real& F, Standard_Real& D);
+  Standard_EXPORT Standard_Boolean Values (const Standard_Real X, Standard_Real& F, Standard_Real& D) Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Integer NbSamples() const;
   

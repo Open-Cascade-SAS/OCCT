@@ -45,7 +45,7 @@ public:
   
   //! associates a positive Case Number to each type of StepAP214 entity,
   //! given as a String defined in the EXPRESS form
-  Standard_EXPORT Standard_Integer CaseStep (const TCollection_AsciiString& atype) const;
+  Standard_EXPORT Standard_Integer CaseStep (const TCollection_AsciiString& atype) const Standard_OVERRIDE;
   
   //! associates a positive Case Number to each type of StepAP214 Complex entity,
   //! given as a String defined in the EXPRESS form
@@ -56,13 +56,13 @@ public:
   
   //! returns a StepType (defined in EXPRESS form which belongs to a
   //! Type of Entity, identified by its CaseNumber determined by Protocol
-  Standard_EXPORT const TCollection_AsciiString& StepType (const Standard_Integer CN) const;
+  Standard_EXPORT const TCollection_AsciiString& StepType (const Standard_Integer CN) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean ComplexType (const Standard_Integer CN, TColStd_SequenceOfAsciiString& types) const Standard_OVERRIDE;
   
-  Standard_EXPORT void ReadStep (const Standard_Integer CN, const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT void ReadStep (const Standard_Integer CN, const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
-  Standard_EXPORT void WriteStep (const Standard_Integer CN, StepData_StepWriter& SW, const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT void WriteStep (const Standard_Integer CN, StepData_StepWriter& SW, const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
 
 

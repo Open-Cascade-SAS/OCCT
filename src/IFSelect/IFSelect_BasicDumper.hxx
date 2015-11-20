@@ -44,11 +44,11 @@ public:
   
   //! Write the Own Parameters of Types defined in package IFSelect
   //! Returns True if <item> has been processed, False else
-  Standard_EXPORT Standard_Boolean WriteOwn (IFSelect_SessionFile& file, const Handle(Standard_Transient)& item) const;
+  Standard_EXPORT Standard_Boolean WriteOwn (IFSelect_SessionFile& file, const Handle(Standard_Transient)& item) const Standard_OVERRIDE;
   
   //! Recognizes and Read Own Parameters for Types of package
   //! IFSelect. Returns True if done and <item> created, False else
-  Standard_EXPORT Standard_Boolean ReadOwn (IFSelect_SessionFile& file, const TCollection_AsciiString& type, Handle(Standard_Transient)& item) const;
+  Standard_EXPORT Standard_Boolean ReadOwn (IFSelect_SessionFile& file, const TCollection_AsciiString& type, Handle(Standard_Transient)& item) const Standard_OVERRIDE;
 
 
 

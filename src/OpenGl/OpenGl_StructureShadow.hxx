@@ -28,7 +28,8 @@ public:
   Standard_EXPORT OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
                                           const Handle(OpenGl_Structure)&           theStructure);
 
-  virtual const Graphic3d_SequenceOfGroup& DrawGroups() const { return myParent->DrawGroups(); }
+  virtual const Graphic3d_SequenceOfGroup& DrawGroups() const Standard_OVERRIDE
+  { return myParent->DrawGroups(); }
 
 private:
 

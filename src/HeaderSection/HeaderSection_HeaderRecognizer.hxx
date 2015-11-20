@@ -46,7 +46,7 @@ protected:
 
   
   //! Recognizes data types of Header STEP Standard
-  Standard_EXPORT void Eval (const TCollection_AsciiString& key);
+  Standard_EXPORT void Eval (const TCollection_AsciiString& key) Standard_OVERRIDE;
 
 
 

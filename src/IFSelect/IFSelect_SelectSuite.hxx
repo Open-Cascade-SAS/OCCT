@@ -90,12 +90,12 @@ public:
   //! this result is set as alternate input for the first item,
   //! which computes its result : this result is set as alternate
   //! input for the second item, etc...
-  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const;
+  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   
   //! Returns the Label
   //! Either it has been defined by SetLabel, or it will give
   //! "Suite of nn Selections"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

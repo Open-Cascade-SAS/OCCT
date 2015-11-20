@@ -51,7 +51,7 @@ public:
   //! according a Case Number <CN> (formerly computed by CaseNum).
   //! Considers Properties and Directory Part, and calls
   //! OwnSharedCase (which is adapted to each Type of Entity)
-  Standard_EXPORT void FillSharedCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, Interface_EntityIterator& iter) const;
+  Standard_EXPORT void FillSharedCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, Interface_EntityIterator& iter) const Standard_OVERRIDE;
   
   //! Lists the Entities shared by a given IGESEntity <ent>, from
   //! its specific parameters : specific for each type
@@ -69,7 +69,7 @@ public:
   //! Semantic Checking of an IGESEntity. Performs general Checks,
   //! which use DirChecker, then call OwnCheck which does a check
   //! specific for each type of Entity
-  Standard_EXPORT void CheckCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const;
+  Standard_EXPORT void CheckCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Interface_ShareTool& shares, Handle(Interface_Check)& ach) const Standard_OVERRIDE;
   
   //! Returns a DirChecker, specific for each type of Entity
   //! (identified by its Case Number) : this DirChecker defines
@@ -84,13 +84,13 @@ public:
   Standard_EXPORT virtual Standard_Boolean CanCopy (const Standard_Integer CN, const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! Specific creation of a new void entity
-  Standard_EXPORT virtual Standard_Boolean NewVoid (const Standard_Integer CN, Handle(Standard_Transient)& entto) const = 0;
+  Standard_EXPORT virtual Standard_Boolean NewVoid (const Standard_Integer CN, Handle(Standard_Transient)& entto) const Standard_OVERRIDE = 0;
   
   //! Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
   //! For IGESEntities, Copies general data (Directory Part, List of
   //! Properties) and call OwnCopyCase
-  Standard_EXPORT void CopyCase (const Standard_Integer CN, const Handle(Standard_Transient)& entfrom, const Handle(Standard_Transient)& entto, Interface_CopyTool& TC) const;
+  Standard_EXPORT void CopyCase (const Standard_Integer CN, const Handle(Standard_Transient)& entfrom, const Handle(Standard_Transient)& entto, Interface_CopyTool& TC) const Standard_OVERRIDE;
   
   //! Copies parameters which are specific of each Type of Entity
   Standard_EXPORT virtual void OwnCopyCase (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& entfrom, const Handle(IGESData_IGESEntity)& entto, Interface_CopyTool& TC) const = 0;

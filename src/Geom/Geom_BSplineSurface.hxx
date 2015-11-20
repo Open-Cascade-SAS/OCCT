@@ -319,7 +319,7 @@ public:
   //! direction is reversed. Hence the orientation of the
   //! surface is reversed.
   //! The knots and poles tables are modified.
-  Standard_EXPORT void UReverse();
+  Standard_EXPORT void UReverse() Standard_OVERRIDE;
   
   //! Changes the orientation of this BSpline surface in the
   //! V parametric direction. The bounds of the
@@ -327,7 +327,7 @@ public:
   //! direction is reversed. Hence the orientation of the
   //! surface is reversed.
   //! The knots and poles tables are modified.
-  Standard_EXPORT void VReverse();
+  Standard_EXPORT void VReverse() Standard_OVERRIDE;
   
   //! Computes the u parameter on the modified
   //! surface, produced by reversing its U parametric
@@ -337,7 +337,7 @@ public:
   //! where UFirst, ULast are
   //! the values of the first and last parameters of this
   //! BSpline surface, in the u parametric directions.
-  Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Computes the v parameter on the modified
   //! surface, produced by reversing its V parametric
@@ -347,7 +347,7 @@ public:
   //! VFirst and VLast are
   //! the values of the first and last parameters of this
   //! BSpline surface, in the v pametric directions.
-  Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real V) const;
+  Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real V) const Standard_OVERRIDE;
   
   //! Increases the degrees of this BSpline surface to
   //! UDegree and VDegree in the u and v parametric
@@ -769,31 +769,31 @@ public:
   //! Returns true if the first control points row and the last
   //! control points row are identical. The tolerance criterion
   //! is Resolution from package gp.
-  Standard_EXPORT Standard_Boolean IsUClosed() const;
+  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
   
 
   //! Returns true if the first control points column and the
   //! last last control points column are identical.
   //! The tolerance criterion is Resolution from package gp.
-  Standard_EXPORT Standard_Boolean IsVClosed() const;
+  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
   
 
   //! Returns True if the order of continuity of the surface in the
   //! U direction  is N.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCNu (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCNu (const Standard_Integer N) const Standard_OVERRIDE;
   
 
   //! Returns True if the order of continuity of the surface
   //! in the V direction  is N.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const Standard_OVERRIDE;
   
 
   //! Returns True if the surface is closed in the U direction
   //! and if the B-spline has been turned into a periodic surface
   //! using the function SetUPeriodic.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
   
 
   //! Returns False if for each row of weights all the weights
@@ -809,7 +809,7 @@ public:
   //! Returns True if the surface is closed in the V direction
   //! and if the B-spline has been turned into a periodic
   //! surface using the function SetVPeriodic.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
   
 
   //! Returns False if for each column of weights all the weights
@@ -828,7 +828,7 @@ public:
   //! knots UKnots and VKnots only if the first knots and the
   //! last knots have a multiplicity equal to UDegree + 1 or
   //! VDegree + 1
-  Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const;
+  Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const Standard_OVERRIDE;
   
 
   //! Returns the continuity of the surface :
@@ -844,7 +844,7 @@ public:
   //! Example :
   //! If the surface is C1 in the V direction and C2 in the U
   //! direction this function returns Shape = C1.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
 
   //! Computes the Index of the UKnots which gives the first
@@ -1050,16 +1050,16 @@ public:
   //! value and derivatives computation
   Standard_EXPORT const TColStd_Array2OfReal* Weights() const;
   
-  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const Standard_OVERRIDE;
   
   //! Raised if the continuity of the surface is not C1.
-  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
+  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const Standard_OVERRIDE;
   
   //! Raised if the continuity of the surface is not C2.
-  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const;
+  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const Standard_OVERRIDE;
   
   //! Raised if the continuity of the surface is not C3.
-  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
+  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const Standard_OVERRIDE;
   
 
   //! Nu is the order of derivation in the U parametric direction and
@@ -1083,7 +1083,7 @@ public:
   //! the evaluations are the same as if we consider the whole
   //! definition of the surface. Of course the evaluations are
   //! different outside this parametric domain.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const;
+  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const Standard_OVERRIDE;
   
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
   //!
@@ -1149,12 +1149,12 @@ public:
 
   //! Computes the U isoparametric curve.
   //! A B-spline curve is returned.
-  Standard_EXPORT Handle(Geom_Curve) UIso (const Standard_Real U) const;
+  Standard_EXPORT Handle(Geom_Curve) UIso (const Standard_Real U) const Standard_OVERRIDE;
   
 
   //! Computes the V isoparametric curve.
   //! A B-spline curve is returned.
-  Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V) const;
+  Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V) const Standard_OVERRIDE;
   
 
   //! Computes the U isoparametric curve.
@@ -1170,7 +1170,7 @@ public:
   Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V, const Standard_Boolean CheckRational) const;
   
   //! Applies the transformation T to this BSpline surface.
-  Standard_EXPORT void Transform (const gp_Trsf& T);
+  Standard_EXPORT void Transform (const gp_Trsf& T) Standard_OVERRIDE;
   
 
   //! Returns the value of the maximum degree of the normalized
@@ -1190,7 +1190,7 @@ public:
   Standard_EXPORT void Resolution (const Standard_Real Tolerance3D, Standard_Real& UTolerance, Standard_Real& VTolerance);
   
   //! Creates a new object which is a copy of this BSpline surface.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

@@ -44,7 +44,7 @@ public:
   Standard_EXPORT virtual gp_Parab2d Parabola() const Standard_OVERRIDE;
   
   //! Returns GccInt_Par, which is the type of any GccInt_BParab bisecting curve.
-  Standard_EXPORT GccInt_IType ArcType() const;
+  Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
 
 
 

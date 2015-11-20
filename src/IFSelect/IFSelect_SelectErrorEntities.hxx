@@ -47,10 +47,10 @@ public:
   //! Returns True for an Entity which is qualified as "Error", i.e.
   //! if <model> explicitly knows <ent> (through its Number) as
   //! Erroneous
-  Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium : "Error Entities"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
 
 

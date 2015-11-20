@@ -49,11 +49,11 @@ public:
   //! Reads a IGES File and returns a IGES Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT Standard_Integer ReadFile (const Standard_CString name, Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol) const;
+  Standard_EXPORT Standard_Integer ReadFile (const Standard_CString name, Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol) const Standard_OVERRIDE;
   
   //! Writes a File from a IGES Model (brought by <ctx>)
   //! Returns False (and writes no file) if <ctx> is not for IGES
-  Standard_EXPORT Standard_Boolean WriteFile (IFSelect_ContextWrite& ctx) const;
+  Standard_EXPORT Standard_Boolean WriteFile (IFSelect_ContextWrite& ctx) const Standard_OVERRIDE;
   
   //! Defines a protocol to be adequate for IGES
   //! (encompasses ALL the IGES norm including IGESSolid, IGESAppli)
@@ -61,7 +61,7 @@ public:
   
   //! Dumps an IGES Entity with an IGES Dumper. <level> is the one
   //! used by IGESDumper.
-  Standard_EXPORT void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, const Handle(Message_Messenger)& S, const Standard_Integer level) const;
+  Standard_EXPORT void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, const Handle(Message_Messenger)& S, const Standard_Integer level) const Standard_OVERRIDE;
 
 
 

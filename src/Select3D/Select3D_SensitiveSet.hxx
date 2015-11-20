@@ -70,7 +70,7 @@ public:
   //! Must be called manually to build BVH tree for any sensitive set
   //! in case if its content was initialized not in a constructor,
   //! but element by element
-  Standard_EXPORT void BVH();
+  Standard_EXPORT void BVH() Standard_OVERRIDE;
 
   //! Marks BVH tree of the set as outdated. It will be rebuild
   //! at the next call of BVH()

@@ -36,7 +36,7 @@ public:
   
   Standard_EXPORT FWOSDriver_DriverFactory();
   
-  Standard_EXPORT Handle(CDF_MetaDataDriver) Build() const;
+  Standard_EXPORT Handle(CDF_MetaDataDriver) Build() const Standard_OVERRIDE;
 
 
 

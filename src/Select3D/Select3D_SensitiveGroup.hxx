@@ -67,7 +67,7 @@ public:
 
   //! Removes all sensitive entities from the list used at the
   //! time of construction, or added using the function Add.
-  Standard_EXPORT void Clear();
+  Standard_EXPORT void Clear() Standard_OVERRIDE;
 
   //! Returns true if the sensitive entity aSensitive is in
   //! the list used at the time of construction, or added using the function Add.
@@ -92,7 +92,7 @@ public:
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Sets the owner for all entities in group
-  Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId);
+  Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId) Standard_OVERRIDE;
 
   //! Gets group content
   const Select3D_EntitySequence& GetEntities() const;

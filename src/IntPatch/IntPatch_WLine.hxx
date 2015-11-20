@@ -79,10 +79,10 @@ public:
     void SetLastPoint (const Standard_Integer IndLast);
   
   //! Returns the number of intersection points.
-    Standard_Integer NbPnts() const;
+    Standard_Integer NbPnts() const Standard_OVERRIDE;
   
   //! Returns the intersection point of range Index.
-    const IntSurf_PntOn2S& Point (const Standard_Integer Index) const;
+    const IntSurf_PntOn2S& Point (const Standard_Integer Index) const Standard_OVERRIDE;
   
   //! Returns True if the line has a known First point.
   //! This point is given by the method FirstPoint().

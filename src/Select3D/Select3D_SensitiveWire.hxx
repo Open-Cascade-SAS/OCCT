@@ -52,7 +52,7 @@ public:
   Standard_EXPORT const NCollection_Vector<Handle(Select3D_SensitiveEntity)>& GetEdges();
 
   //! Sets the owner for all entities in wire
-  Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId);
+  Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId) Standard_OVERRIDE;
 
   Standard_EXPORT Handle(Select3D_SensitiveEntity) GetLastDetected() const;
 

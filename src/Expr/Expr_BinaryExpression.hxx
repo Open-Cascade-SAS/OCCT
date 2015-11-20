@@ -55,26 +55,26 @@ public:
   
   //! returns the number of sub-expressions contained
   //! in <me> ( >= 0)
-  Standard_EXPORT Standard_Integer NbSubExpressions() const;
+  Standard_EXPORT Standard_Integer NbSubExpressions() const Standard_OVERRIDE;
   
   //! returns the <I>-th sub-expression of <me>
   //! raises OutOfRange if <I> > NbSubExpressions(me)
-  Standard_EXPORT const Handle(Expr_GeneralExpression)& SubExpression (const Standard_Integer I) const;
+  Standard_EXPORT const Handle(Expr_GeneralExpression)& SubExpression (const Standard_Integer I) const Standard_OVERRIDE;
   
   //! Does <me> contain NamedUnknown ?
-  Standard_EXPORT Standard_Boolean ContainsUnknowns() const;
+  Standard_EXPORT Standard_Boolean ContainsUnknowns() const Standard_OVERRIDE;
   
   //! Tests if <me> contains <exp>.
-  Standard_EXPORT Standard_Boolean Contains (const Handle(Expr_GeneralExpression)& exp) const;
+  Standard_EXPORT Standard_Boolean Contains (const Handle(Expr_GeneralExpression)& exp) const Standard_OVERRIDE;
   
   //! Replaces all occurences of <var> with <with> in <me>.
   //! Raises InvalidOperand if <with> contains <me>.
-  Standard_EXPORT void Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with);
+  Standard_EXPORT void Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
   
   //! Returns a GeneralExpression after replacement of
   //! NamedUnknowns by an associated expression and after
   //! values computation.
-  Standard_EXPORT Handle(Expr_GeneralExpression) Simplified() const;
+  Standard_EXPORT Handle(Expr_GeneralExpression) Simplified() const Standard_OVERRIDE;
 
 
 

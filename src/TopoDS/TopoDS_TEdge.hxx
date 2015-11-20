@@ -36,7 +36,7 @@ public:
 
   
   //! Returns  EDGE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
 
 

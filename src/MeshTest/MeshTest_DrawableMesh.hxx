@@ -47,13 +47,13 @@ public:
   
   Standard_EXPORT TColStd_SequenceOfInteger& Triangles();
   
-  Standard_EXPORT void DrawOn(Draw_Display& theDisplay) const;
+  Standard_EXPORT void DrawOn(Draw_Display& theDisplay) const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Dump(Standard_OStream& theStream) const;
+  Standard_EXPORT virtual void Dump(Standard_OStream& theStream) const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& theDi) const;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& theDi) const Standard_OVERRIDE;
   
   Standard_EXPORT const Handle(BRepMesh_IncrementalMesh)& Mesher() const;
 

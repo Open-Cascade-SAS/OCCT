@@ -42,7 +42,7 @@ public:
   
   Standard_EXPORT Draw_Segment2D(const gp_Pnt2d& p1, const gp_Pnt2d& p2, const Draw_Color& col);
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
   
   Standard_EXPORT const gp_Pnt2d& First() const;
   

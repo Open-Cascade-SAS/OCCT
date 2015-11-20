@@ -65,10 +65,10 @@ public:
   Standard_EXPORT void SetY (const Standard_Real Y);
   
   //! Returns the magnitude of <me>.
-  Standard_EXPORT Standard_Real Magnitude() const;
+  Standard_EXPORT Standard_Real Magnitude() const Standard_OVERRIDE;
   
   //! Returns the square magnitude of <me>.
-  Standard_EXPORT Standard_Real SquareMagnitude() const;
+  Standard_EXPORT Standard_Real SquareMagnitude() const Standard_OVERRIDE;
   
 
   //! Adds the Vector Other to <me>.
@@ -89,7 +89,7 @@ Handle(Geom2d_VectorWithMagnitude) operator + (const Handle(Geom2d_Vector)& Othe
 
   //! Computes the cross product  between <me> and Other
   //! <me> ^ Other. A new vector is returned.
-  Standard_EXPORT Standard_Real Crossed (const Handle(Geom2d_Vector)& Other) const;
+  Standard_EXPORT Standard_Real Crossed (const Handle(Geom2d_Vector)& Other) const Standard_OVERRIDE;
 Standard_Real operator ^ (const Handle(Geom2d_Vector)& Other) const
 {
   return Crossed(Other);
@@ -154,10 +154,10 @@ Handle(Geom2d_VectorWithMagnitude) operator - (const Handle(Geom2d_Vector)& Othe
 }
   
   //! Applies the transformation T to this vector.
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
+  Standard_EXPORT void Transform (const gp_Trsf2d& T) Standard_OVERRIDE;
   
   //! Creates a new object which is a copy of this vector.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

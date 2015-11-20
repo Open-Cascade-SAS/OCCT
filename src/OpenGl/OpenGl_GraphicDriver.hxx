@@ -114,8 +114,8 @@ public:
                                                    void*                   theEglConfig);
 #endif
 
-  Standard_EXPORT Standard_Integer InquireLightLimit ();
-  Standard_EXPORT Standard_Integer InquireViewLimit ();
+  Standard_EXPORT Standard_Integer InquireLightLimit () Standard_OVERRIDE;
+  Standard_EXPORT Standard_Integer InquireViewLimit () Standard_OVERRIDE;
 
 public:
 
@@ -136,11 +136,11 @@ public:
                                  const Standard_ShortReal       theHeight,
                                  Standard_ShortReal&            theWidth,
                                  Standard_ShortReal&            theAscent,
-                                 Standard_ShortReal&            theDescent) const;
+                                 Standard_ShortReal&            theDescent) const Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_Integer InquirePlaneLimit();
+  Standard_EXPORT Standard_Integer InquirePlaneLimit() Standard_OVERRIDE;
 
-  Standard_EXPORT Standard_ShortReal DefaultTextHeight() const;
+  Standard_EXPORT Standard_ShortReal DefaultTextHeight() const Standard_OVERRIDE;
 
   Standard_EXPORT Standard_Boolean ViewExists (const Handle(Aspect_Window)& theWindow, Handle(Graphic3d_CView)& theView) Standard_OVERRIDE;
 
@@ -186,12 +186,12 @@ public:
   //! VBO usage can be forbidden by this method even if it is supported by GL driver.
   //! Notice that disabling of VBO will cause rendering performance degradation.
   //! Warning! This method should be called only before any primitives are displayed in GL scene!
-  Standard_EXPORT void EnableVBO (const Standard_Boolean theToTurnOn);
+  Standard_EXPORT void EnableVBO (const Standard_Boolean theToTurnOn) Standard_OVERRIDE;
 
   //! Returns information about GPU memory usage.
   //! Please read OpenGl_Context::MemoryInfo() for more description.
   Standard_EXPORT Standard_Boolean MemoryInfo (Standard_Size&           theFreeBytes,
-                                               TCollection_AsciiString& theInfo) const;
+                                               TCollection_AsciiString& theInfo) const Standard_OVERRIDE;
 
 public:
 

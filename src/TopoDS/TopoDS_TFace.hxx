@@ -41,10 +41,10 @@ public:
     TopoDS_TFace();
   
   //! returns FACE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
   
   //! Returns an empty TFace.
-  Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const;
+  Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
 
 

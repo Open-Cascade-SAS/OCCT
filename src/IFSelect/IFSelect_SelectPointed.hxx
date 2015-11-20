@@ -118,11 +118,11 @@ public:
   //! Returns the list of selected items. Only the selected entities
   //! which are present in the graph are given (this result assures
   //! uniqueness).
-  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const;
+  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   
   //! Returns a text which identifies the type of selection made.
   //! It is "Pointed Entities"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

@@ -39,7 +39,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_Sampler();
 
   //! Destroys object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
   //! Initializes sampler object.
   Standard_EXPORT Standard_Boolean Init (OpenGl_Context& theContext);

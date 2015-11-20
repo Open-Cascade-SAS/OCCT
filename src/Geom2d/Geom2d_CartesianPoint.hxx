@@ -58,23 +58,23 @@ public:
   Standard_EXPORT void SetY (const Standard_Real Y);
   
   //! Returns the coordinates of <me>.
-  Standard_EXPORT void Coord (Standard_Real& X, Standard_Real& Y) const;
+  Standard_EXPORT void Coord (Standard_Real& X, Standard_Real& Y) const Standard_OVERRIDE;
   
 
   //! Returns a non persistent cartesian point with
   //! the same coordinates as <me>.
   //! -C++: return const&
-  Standard_EXPORT gp_Pnt2d Pnt2d() const;
+  Standard_EXPORT gp_Pnt2d Pnt2d() const Standard_OVERRIDE;
   
   //! Returns the X coordinate of <me>.
-  Standard_EXPORT Standard_Real X() const;
+  Standard_EXPORT Standard_Real X() const Standard_OVERRIDE;
   
   //! Returns the Y coordinate of <me>.
-  Standard_EXPORT Standard_Real Y() const;
+  Standard_EXPORT Standard_Real Y() const Standard_OVERRIDE;
   
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
+  Standard_EXPORT void Transform (const gp_Trsf2d& T) Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

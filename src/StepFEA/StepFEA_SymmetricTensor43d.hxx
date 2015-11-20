@@ -39,7 +39,7 @@ public:
   Standard_EXPORT StepFEA_SymmetricTensor43d();
   
   //! return 0
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! Recognizes a items of select member CurveElementFreedomMember
   //! 1 -> AnisotropicSymmetricTensor43d

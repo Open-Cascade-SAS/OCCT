@@ -106,62 +106,62 @@ public:
   
   //! Changes the orientation of this line. As a result, the
   //! unit vector of the positioning axis of this line is reversed.
-  Standard_EXPORT void Reverse();
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
   
   //! Computes the parameter on the reversed line for the
   //! point of parameter U on this line.
   //! For a line, the returned value is -U.
-  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Returns RealFirst  from  Standard.
-  Standard_EXPORT Standard_Real FirstParameter() const;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
   //! Returns RealLast  from Standard
-  Standard_EXPORT Standard_Real LastParameter() const;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
   
   //! Returns False
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
   //! Returns False
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
   
   //! Returns GeomAbs_CN, which is the global continuity of any line.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! Computes the distance between <me> and the point P.
   Standard_EXPORT Standard_Real Distance (const gp_Pnt2d& P) const;
   
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Returns in P the point of parameter U.
   //! P (U) = O + U * Dir where O is the "Location" point of the
   //! line and Dir the direction of the line.
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
   
 
   //! Returns the point P of parameter u and the first derivative V1.
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const;
+  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
   
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2. V2 is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const;
+  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const Standard_OVERRIDE;
   
 
   //! V2 and V3 are vectors with null magnitude for a line.
-  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const;
+  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const Standard_OVERRIDE;
   
   //! For the point of parameter U of this line, computes
   //! the vector corresponding to the Nth derivative.
   //! Note: if N is greater than or equal to 2, the result is a
   //! vector with null magnitude.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const;
+  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Applies the transformation T to this line.
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
+  Standard_EXPORT void Transform (const gp_Trsf2d& T) Standard_OVERRIDE;
   
   //! Computes the parameter on the line transformed by
   //! T for the point of parameter U on this line.
@@ -179,7 +179,7 @@ public:
   Standard_EXPORT virtual Standard_Real ParametricTransformation (const gp_Trsf2d& T) const Standard_OVERRIDE;
   
   //! Creates a new object, which is a copy of this line.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

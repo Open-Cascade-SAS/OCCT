@@ -54,14 +54,14 @@ public:
   Standard_EXPORT Standard_Integer NbParentEntities() const;
   
   //! Returns the Parent Entity (inherited method)
-  Standard_EXPORT Handle(IGESData_IGESEntity) SingleParent() const;
+  Standard_EXPORT Handle(IGESData_IGESEntity) SingleParent() const Standard_OVERRIDE;
   
   //! returns the number of children of the Parent
-  Standard_EXPORT Standard_Integer NbChildren() const;
+  Standard_EXPORT Standard_Integer NbChildren() const Standard_OVERRIDE;
   
   //! returns the specific child as indicated by Index
   //! raises exception if Index <= 0 or Index > NbChildren()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Child (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESData_IGESEntity) Child (const Standard_Integer Index) const Standard_OVERRIDE;
 
 
 

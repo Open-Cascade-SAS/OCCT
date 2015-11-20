@@ -27,8 +27,8 @@ class NCollection_HeapAllocator : public NCollection_BaseAllocator
 {
  public:
   // ---------- PUBLIC METHODS ----------
-  Standard_EXPORT virtual void* Allocate (const Standard_Size theSize);
-  Standard_EXPORT virtual void  Free     (void * anAddress);
+  Standard_EXPORT virtual void* Allocate (const Standard_Size theSize) Standard_OVERRIDE;
+  Standard_EXPORT virtual void  Free     (void * anAddress) Standard_OVERRIDE;
 
   Standard_EXPORT static const Handle(NCollection_HeapAllocator)&
                                 GlobalHeapAllocator();

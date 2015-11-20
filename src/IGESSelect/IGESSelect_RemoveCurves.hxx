@@ -45,11 +45,11 @@ public:
   Standard_EXPORT IGESSelect_RemoveCurves(const Standard_Boolean UV);
   
   //! Specific action : Removes the Curves
-  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const;
+  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const Standard_OVERRIDE;
   
   //! Returns a text which is
   //! "Remove Curves UV on Face"  or  "Remove Curves 3D on Face"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

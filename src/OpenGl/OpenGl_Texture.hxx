@@ -220,7 +220,7 @@ public:
   Standard_EXPORT bool Create (const Handle(OpenGl_Context)& theCtx);
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Bind this Texture to specified unit.
   Standard_EXPORT void Bind (const Handle(OpenGl_Context)& theCtx,

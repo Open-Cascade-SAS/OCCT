@@ -43,7 +43,7 @@ public:
   //! copies surface if requested
   Standard_Boolean NewSurface (const TopoDS_Face& F, Handle(Geom_Surface)& S,
                                TopLoc_Location& L, Standard_Real& Tol, 
-                               Standard_Boolean& RevWires, Standard_Boolean& RevFace)
+                               Standard_Boolean& RevWires, Standard_Boolean& RevFace) Standard_OVERRIDE
   {
     S = BRep_Tool::Surface(F,L);
     Tol = BRep_Tool::Tolerance(F);
@@ -57,7 +57,7 @@ public:
 
   //! Returns true to indicate the need to copy triangulation;
   //! copies it if required
-  Standard_Boolean NewTriangulation(const TopoDS_Face& F, Handle(Poly_Triangulation)& T)
+  Standard_Boolean NewTriangulation(const TopoDS_Face& F, Handle(Poly_Triangulation)& T) Standard_OVERRIDE
   {
     if (!myCopyMesh)
       return Standard_False;
@@ -76,7 +76,7 @@ public:
   //! Returns true to indicate the need to copy edge;
   //! copies curves if requested
   Standard_Boolean NewCurve (const TopoDS_Edge& E, Handle(Geom_Curve)& C,
-                             TopLoc_Location& L, Standard_Real& Tol)
+                             TopLoc_Location& L, Standard_Real& Tol) Standard_OVERRIDE
   {
     Standard_Real f,l;
     C = BRep_Tool::Curve (E, L, f, l);
@@ -90,7 +90,7 @@ public:
 
   //! Returns true to indicate the need to copy vertex
   Standard_Boolean NewPoint (const TopoDS_Vertex& V, gp_Pnt& P,
-                             Standard_Real& Tol)
+                             Standard_Real& Tol) Standard_OVERRIDE
   {
     P = BRep_Tool::Pnt(V);
     Tol = BRep_Tool::Tolerance(V);
@@ -104,7 +104,7 @@ public:
                                const TopoDS_Edge& /*NewE*/,
                                const TopoDS_Face& /*NewF*/,
                                Handle(Geom2d_Curve)& C, 
-                               Standard_Real& Tol)
+                               Standard_Real& Tol) Standard_OVERRIDE
   {
     Tol = BRep_Tool::Tolerance(E);
     Standard_Real f, l;
@@ -118,7 +118,7 @@ public:
 
   //! Returns true to indicate the need to copy vertex
   Standard_Boolean NewParameter (const TopoDS_Vertex& V, const TopoDS_Edge& E,
-                                 Standard_Real& P, Standard_Real& Tol)
+                                 Standard_Real& P, Standard_Real& Tol) Standard_OVERRIDE
   {
     if (V.IsNull()) return Standard_False; // infinite edge may have Null vertex
 
@@ -131,7 +131,7 @@ public:
   //! Returns the  continuity of E between F1 and F2
   GeomAbs_Shape Continuity (const TopoDS_Edge& E, const TopoDS_Face& F1,
                             const TopoDS_Face& F2, const TopoDS_Edge&,
-                            const TopoDS_Face&, const TopoDS_Face&)
+                            const TopoDS_Face&, const TopoDS_Face&) Standard_OVERRIDE
   {
     return BRep_Tool::Continuity (E, F1, F2);
   }

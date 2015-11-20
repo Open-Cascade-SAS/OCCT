@@ -63,7 +63,7 @@ public:
   //! Case Number, or 0 if failed.
   //! Works with IGESReaderData which provides Type & Form Numbers,
   //! and calls CaseIGES (see below)
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Interface_FileReaderData)& data, const Standard_Integer num) const;
+  Standard_EXPORT Standard_Integer CaseNum (const Handle(Interface_FileReaderData)& data, const Standard_Integer num) const Standard_OVERRIDE;
   
   //! Defines Case Numbers corresponding to the Entity Types taken
   //! into account by a sub-class of ReadWriteModule (hence, each
@@ -73,7 +73,7 @@ public:
   Standard_EXPORT virtual Standard_Integer CaseIGES (const Standard_Integer typenum, const Standard_Integer formnum) const = 0;
   
   //! General Read Function. See IGESReaderTool for more info
-  Standard_EXPORT void Read (const Standard_Integer CN, const Handle(Interface_FileReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT void Read (const Standard_Integer CN, const Handle(Interface_FileReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! Reads own parameters from file for an Entity; <PR> gives
   //! access to them, <IR> detains parameter types and values

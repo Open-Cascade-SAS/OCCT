@@ -50,7 +50,7 @@ public:
   //! G1 : tangency continuity all along the surface,
   //! G2 : curvature continuity all along the surface,
   //! CN : the order of continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
 
   //! Returns the reference direction of the swept surface.

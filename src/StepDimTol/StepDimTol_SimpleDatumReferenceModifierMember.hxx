@@ -36,18 +36,18 @@ public:
   
   Standard_EXPORT StepDimTol_SimpleDatumReferenceModifierMember();
   
-  inline Standard_Boolean HasName() const
+  virtual Standard_Boolean HasName() const Standard_OVERRIDE
     {  return Standard_True;  }
 
-  inline Standard_CString Name() const
+  virtual Standard_CString Name() const Standard_OVERRIDE
     {  return "SIMPLE_DATUM_REFERENCE_MODIFIER";  }
 
-  inline Standard_Boolean SetName(const Standard_CString /*theName*/)
+  virtual Standard_Boolean SetName(const Standard_CString /*theName*/) Standard_OVERRIDE
     {  return Standard_True;  }
   
-  Standard_EXPORT virtual   Standard_CString EnumText()  const;
+  Standard_EXPORT virtual   Standard_CString EnumText()  const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual   void SetEnumText (const Standard_Integer theValue, const Standard_CString theText) ;
+  Standard_EXPORT virtual   void SetEnumText (const Standard_Integer theValue, const Standard_CString theText)  Standard_OVERRIDE;
   
   Standard_EXPORT   void SetValue (const StepDimTol_SimpleDatumReferenceModifier theValue) ;
   

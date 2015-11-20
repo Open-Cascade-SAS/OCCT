@@ -48,7 +48,7 @@ public:
   Standard_EXPORT MeshVS_TextPrsBuilder(const Handle(MeshVS_Mesh)& Parent, const Standard_Real Height, const Quantity_Color& Color, const MeshVS_DisplayModeFlags& Flags = MeshVS_DMF_TextDataPrs, const Handle(MeshVS_DataSource)& DS = 0, const Standard_Integer Id = -1, const MeshVS_BuilderPriority& Priority = MeshVS_BP_Text);
   
   //! Builds presentation of text data
-  Standard_EXPORT virtual void Build (const Handle(Prs3d_Presentation)& Prs, const TColStd_PackedMapOfInteger& IDs, TColStd_PackedMapOfInteger& IDsToExclude, const Standard_Boolean IsElement, const Standard_Integer theDisplayMode) const;
+  Standard_EXPORT virtual void Build (const Handle(Prs3d_Presentation)& Prs, const TColStd_PackedMapOfInteger& IDs, TColStd_PackedMapOfInteger& IDsToExclude, const Standard_Boolean IsElement, const Standard_Integer theDisplayMode) const Standard_OVERRIDE;
   
   //! Returns map of text assigned with nodes ( IsElement = False ) or elements ( IsElement = True )
   Standard_EXPORT const MeshVS_DataMapOfIntegerAsciiString& GetTexts (const Standard_Boolean IsElement) const;

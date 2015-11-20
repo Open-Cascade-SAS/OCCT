@@ -29,7 +29,7 @@
 #define DEFINE_STANDARD_EXCEPTION(C1,C2) \
  \
 class C1 : public C2 { \
-  void Throw () const { throw *this; } \
+  void Throw () const Standard_OVERRIDE { throw *this; } \
 public: \
   C1() : C2() {} \
   C1(const Standard_CString theMessage) : C2(theMessage) {} \

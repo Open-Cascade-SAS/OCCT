@@ -64,10 +64,10 @@ public:
   Standard_EXPORT virtual Standard_Boolean Value (const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
   
   //! Calculate Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& UV, math_Matrix& DF);
+  Standard_EXPORT Standard_Boolean Derivatives (const math_Vector& UV, math_Matrix& DF) Standard_OVERRIDE;
   
   //! Calculate Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Values (const math_Vector& UV, math_Vector& F, math_Matrix& DF);
+  Standard_EXPORT Standard_Boolean Values (const math_Vector& UV, math_Vector& F, math_Matrix& DF) Standard_OVERRIDE;
   
   //! Save the found extremum.
   Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;

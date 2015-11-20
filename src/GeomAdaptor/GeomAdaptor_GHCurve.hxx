@@ -50,11 +50,11 @@ public:
   
   //! Returns the curve used to create the GenHCurve.
   //! This is redefined from HCurve, cannot be inline.
-  Standard_EXPORT const Adaptor3d_Curve& Curve() const;
+  Standard_EXPORT const Adaptor3d_Curve& Curve() const Standard_OVERRIDE;
   
   //! Returns the curve used to create the GenHCurve.
   //! This is redefined from HCurve, cannot be inline.
-  Standard_EXPORT Adaptor3d_Curve& GetCurve();
+  Standard_EXPORT Adaptor3d_Curve& GetCurve() Standard_OVERRIDE;
   
   //! Returns the curve used to create the GenHCurve.
     GeomAdaptor_Curve& ChangeCurve();

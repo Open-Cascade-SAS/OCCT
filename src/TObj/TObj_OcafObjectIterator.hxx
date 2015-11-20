@@ -45,7 +45,7 @@ class TObj_OcafObjectIterator : public TObj_LabelIterator
   */
 
   //! Shift iterator to the next object
-  virtual Standard_EXPORT void MakeStep();
+  virtual Standard_EXPORT void MakeStep() Standard_OVERRIDE;
 
  protected:
   /**

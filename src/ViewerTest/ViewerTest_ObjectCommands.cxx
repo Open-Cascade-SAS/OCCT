@@ -2024,10 +2024,10 @@ private:
     // Virtual methods implementation
     void Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
                   const Handle(Prs3d_Presentation)& thePresentation,
-                  const Standard_Integer theMode);
+                  const Standard_Integer theMode) Standard_OVERRIDE;
 
     void ComputeSelection (  const Handle(SelectMgr_Selection)& theSelection, 
-                           const Standard_Integer theMode);
+                           const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
     Handle(Geom_Circle) myCircle;
@@ -3385,10 +3385,10 @@ private:
 
   void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                 const Handle(Prs3d_Presentation)& aPresentation,
-                const Standard_Integer aMode);
+                const Standard_Integer aMode) Standard_OVERRIDE;
 
   void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                         const Standard_Integer /*theMode*/);
+                         const Standard_Integer /*theMode*/) Standard_OVERRIDE;
 
   bool CheckInputCommand (const TCollection_AsciiString theCommand,
                           const Handle(TColStd_HArray1OfAsciiString) theArgsArray,
@@ -4583,10 +4583,10 @@ public:
 protected:
   void Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
                   const Handle(Prs3d_Presentation)& thePresentation,
-                  const Standard_Integer theMode);
+                  const Standard_Integer theMode) Standard_OVERRIDE;
 
   void ComputeSelection (  const Handle(SelectMgr_Selection)& theSelection, 
-                           const Standard_Integer theMode);
+                           const Standard_Integer theMode) Standard_OVERRIDE;
 private: 
   gp_Pnt myPoint1;
   gp_Pnt myPoint2;
@@ -4775,10 +4775,10 @@ public:
 protected:
   void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
                 const Handle(Prs3d_Presentation)& thePresentation,
-                const Standard_Integer theMode);
+                const Standard_Integer theMode) Standard_OVERRIDE;
 
   void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection, 
-                         const Standard_Integer theMode);
+                         const Standard_Integer theMode) Standard_OVERRIDE;
 private:
   gp_Pnt myPoint1;
   gp_Pnt myPoint2;
@@ -5165,10 +5165,10 @@ private:
 
   void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                 const Handle(Prs3d_Presentation)& aPresentation,
-                const Standard_Integer aMode);
+                const Standard_Integer aMode) Standard_OVERRIDE;
 
   void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                         const Standard_Integer /*theMode*/);
+                         const Standard_Integer /*theMode*/) Standard_OVERRIDE;
 
 protected:
 

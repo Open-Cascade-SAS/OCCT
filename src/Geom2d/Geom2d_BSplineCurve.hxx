@@ -341,14 +341,14 @@ public:
   //! point of the reversed curve;
   //! - the end point of the initial curve becomes the start
   //! point of the reversed curve.
-  Standard_EXPORT void Reverse();
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
   
   //! Computes the parameter on the reversed curve for
   //! the point of parameter U on this BSpline curve.
   //! The returned value is: UFirst + ULast - U,
   //! where UFirst and ULast are the values of the
   //! first and last parameters of this BSpline curve.
-  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Modifies this BSpline curve by segmenting it
   //! between U1 and U2. Either of these values can be
@@ -514,7 +514,7 @@ public:
   //! Returns true if the degree of continuity of this
   //! BSpline curve is at least N. A BSpline curve is at least GeomAbs_C0.
   //! Exceptions Standard_RangeError if N is negative.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
   
 
   //! Check if curve has at least G1 continuity in interval [theTf, theTl]
@@ -532,10 +532,10 @@ public:
   //! Warnings :
   //! The first and the last point can be different from the first
   //! pole and the last pole of the curve.
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
   //! Returns True if the curve is periodic.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
   
 
   //! Returns True if the weights are not identical.
@@ -555,7 +555,7 @@ public:
   //! than Cd-p where p is the maximum multiplicity of the interior
   //! Knots. In the interior of a knot span the curve is infinitely
   //! continuously differentiable.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! Returns the degree of this BSpline curve.
   //! In this class the degree of the basis normalized B-spline
@@ -563,13 +563,13 @@ public:
   //! Computation of value and derivatives
   Standard_EXPORT Standard_Integer Degree() const;
   
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
   
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const;
+  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
   
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const;
+  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const Standard_OVERRIDE;
   
   //! For this BSpline curve, computes
   //! - the point P of parameter U, or
@@ -583,7 +583,7 @@ public:
   //! defined by the parameter with a value greater than U,
   //! i.e. the part of the curve to the "right" of the singularity.
   //! Raises UndefinedDerivative if the continuity of the curve is not C3.
-  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const;
+  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const Standard_OVERRIDE;
   
   //! For the point of parameter U of this BSpline curve,
   //! computes the vector corresponding to the Nth derivative.
@@ -606,7 +606,7 @@ public:
   //! the same as if we consider the whole definition of the
   //! curve. Of course the evaluations are different outside
   //! this parametric domain.
-  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const;
+  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Raised if FromK1 = ToK2.
   //!
@@ -659,7 +659,7 @@ public:
   //! The last point of the curve is different from the last
   //! pole of the curve if the multiplicity of the last knot
   //! is lower than Degree.
-  Standard_EXPORT gp_Pnt2d EndPoint() const;
+  Standard_EXPORT gp_Pnt2d EndPoint() const Standard_OVERRIDE;
   
 
   //! For a B-spline curve the first parameter (which gives the start
@@ -672,7 +672,7 @@ public:
 
   //! Computes the parametric value of the start point of the curve.
   //! It is a knot value.
-  Standard_EXPORT Standard_Real FirstParameter() const;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
 
   //! Returns the knot of range Index. When there is a knot
@@ -732,7 +732,7 @@ public:
 
   //! Computes the parametric value of the end point of the curve.
   //! It is a knot value.
-  Standard_EXPORT Standard_Real LastParameter() const;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
   
 
   //! Locates the parametric value U in the sequence of knots.
@@ -786,7 +786,7 @@ public:
   //! Warnings :
   //! This point is different from the first pole of the curve if the
   //! multiplicity of the first knot is lower than Degree.
-  Standard_EXPORT gp_Pnt2d StartPoint() const;
+  Standard_EXPORT gp_Pnt2d StartPoint() const Standard_OVERRIDE;
   
   //! Returns the weight of the pole of range Index .
   //! Raised if Index < 1 or Index > NbPoles.
@@ -801,7 +801,7 @@ public:
   Standard_EXPORT const TColStd_Array1OfReal* Weights() const;
   
   //! Applies the transformation T to this BSpline curve.
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
+  Standard_EXPORT void Transform (const gp_Trsf2d& T) Standard_OVERRIDE;
   
 
   //! Returns the value of the maximum degree of the normalized
@@ -818,7 +818,7 @@ public:
   Standard_EXPORT void Resolution (const Standard_Real ToleranceUV, Standard_Real& UTolerance);
   
   //! Creates a new object which is a copy of this BSpline curve.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

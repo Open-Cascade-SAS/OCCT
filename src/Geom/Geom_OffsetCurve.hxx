@@ -118,11 +118,11 @@ public:
   //! - the end point of the initial curve becomes the
   //! start point of the reversed curve, and
   //! - the first and last parameters are recomputed.
-  Standard_EXPORT void Reverse();
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
   
   //! Computes the parameter on the reversed curve for
   //! the point of parameter U on this offset curve.
-  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Changes this offset curve by assigning C
   //! as the basis curve from which it is built.
@@ -159,7 +159,7 @@ public:
   //! Returns the continuity of the basis curve - 1.
   //! The offset curve must have a unique offset direction defined
   //! at any point.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! Returns the reference vector of this offset curve.
   //! Value and derivatives
@@ -177,21 +177,21 @@ public:
   //! Warning! this should not be called
   //! if the basis curve is not at least C1. Nevertheless
   //! if used on portion where the curve is C1, it is OK
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
   
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C2.
   //! Nevertheless, it's OK to use it  on portion
   //! where the curve is C2
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const;
+  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const Standard_OVERRIDE;
   
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C3.
   //! Nevertheless, it's OK to use it  on portion
   //! where the curve is C3
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const;
+  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const Standard_OVERRIDE;
   
-  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const;
+  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const Standard_OVERRIDE;
   
 
   //! The returned vector gives the value of the derivative
@@ -208,7 +208,7 @@ public:
   //! raised if it is not possible to compute a unique offset
   //! direction.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Integer N) const;
+  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Warning! this should not be called
   //! if the basis curve is not at least C1. Nevertheless
@@ -233,7 +233,7 @@ public:
   //! where the curve is C3
   Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt& P, gp_Pnt& Pbasis, gp_Vec& V1, gp_Vec& V2, gp_Vec& V1basis, gp_Vec& V2basis, gp_Vec& V3basis) const;
   
-  Standard_EXPORT Standard_Real FirstParameter() const;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
   //! Returns the value of the first or last parameter of this
   //! offset curve. The first parameter corresponds to the
@@ -241,7 +241,7 @@ public:
   //! corresponds to the end point.
   //! Note: the first and last parameters of this offset curve
   //! are also the ones of its basis curve.
-  Standard_EXPORT Standard_Real LastParameter() const;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
   
   //! Returns the offset value of this offset curve.
   Standard_EXPORT Standard_Real Offset() const;
@@ -249,7 +249,7 @@ public:
   //! Returns True if the distance between the start point
   //! and the end point of the curve is lower or equal to
   //! Resolution from package gp.
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
   //! Returns true if the degree of continuity of the basis
   //! curve of this offset curve is at least N + 1.
@@ -258,11 +258,11 @@ public:
   //! to the basis curve (used to compute the offset curve) is
   //! defined at any point on the basis curve.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Returns true if this offset curve is periodic, i.e. if the
   //! basis curve of this offset curve is periodic.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
   
   //! Returns the period of this offset curve, i.e. the period
   //! of the basis curve of this offset curve.
@@ -272,7 +272,7 @@ public:
   
   //! Applies the transformation T to this offset curve.
   //! Note: the basis curve is also modified.
-  Standard_EXPORT void Transform (const gp_Trsf& T);
+  Standard_EXPORT void Transform (const gp_Trsf& T) Standard_OVERRIDE;
   
   //! Returns the  parameter on the  transformed  curve for
   //! the transform of the point of parameter U on <me>.
@@ -293,7 +293,7 @@ public:
   Standard_EXPORT virtual Standard_Real ParametricTransformation (const gp_Trsf& T) const Standard_OVERRIDE;
   
   //! Creates a new object which is a copy of this offset curve.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
   
   //! Returns continuity of the basis curve.
   Standard_EXPORT GeomAbs_Shape GetBasisCurveContinuity() const;

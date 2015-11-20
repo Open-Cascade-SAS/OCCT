@@ -60,11 +60,11 @@ public:
   
   //! Explores an entity : entities from which are connected to that
   //! produced by this entity, including itself
-  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const;
+  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium.
   //! "Connected Entities through produced Shapes"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
   
   //! This functions considers a shape from a transfer and performs
   //! the search function explained above

@@ -41,22 +41,22 @@ public:
   //! Creates the relation <exp1> >= <exp2>.
   Standard_EXPORT Expr_GreaterThanOrEqual(const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2);
   
-  Standard_EXPORT Standard_Boolean IsSatisfied() const;
+  Standard_EXPORT Standard_Boolean IsSatisfied() const Standard_OVERRIDE;
   
   //! Returns a GeneralRelation after replacement of
   //! NamedUnknowns by an associated expression, and after
   //! values computation.
-  Standard_EXPORT Handle(Expr_GeneralRelation) Simplified() const;
+  Standard_EXPORT Handle(Expr_GeneralRelation) Simplified() const Standard_OVERRIDE;
   
   //! Replaces NamedUnknowns by associated expressions,
   //! and computes values in <me>.
-  Standard_EXPORT void Simplify();
+  Standard_EXPORT void Simplify() Standard_OVERRIDE;
   
   //! Returns a copy of <me> having the same unknowns and functions.
-  Standard_EXPORT Handle(Expr_GeneralRelation) Copy() const;
+  Standard_EXPORT Handle(Expr_GeneralRelation) Copy() const Standard_OVERRIDE;
   
   //! returns a string representing <me> in a readable way.
-  Standard_EXPORT TCollection_AsciiString String() const;
+  Standard_EXPORT TCollection_AsciiString String() const Standard_OVERRIDE;
 
 
 

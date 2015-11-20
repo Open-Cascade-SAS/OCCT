@@ -42,10 +42,10 @@ public:
   Standard_EXPORT virtual ~NCollection_WinHeapAllocator();
 
   //! Allocate memory
-  Standard_EXPORT virtual void* Allocate (const Standard_Size theSize);
+  Standard_EXPORT virtual void* Allocate (const Standard_Size theSize) Standard_OVERRIDE;
 
   //! Release memory
-  Standard_EXPORT virtual void  Free (void* theAddress);
+  Standard_EXPORT virtual void  Free (void* theAddress) Standard_OVERRIDE;
 
   // Declaration of CASCADE RTTI
   DEFINE_STANDARD_RTTI(NCollection_WinHeapAllocator, NCollection_BaseAllocator)

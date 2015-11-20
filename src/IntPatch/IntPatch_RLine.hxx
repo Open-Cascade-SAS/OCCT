@@ -125,10 +125,10 @@ public:
     Standard_Boolean HasPolygon() const;
   
   //! Returns the number of intersection points.
-    Standard_Integer NbPnts() const;
+    Standard_Integer NbPnts() const Standard_OVERRIDE;
   
   //! Returns the intersection point of range Index.
-    const IntSurf_PntOn2S& Point (const Standard_Integer Index) const;
+    const IntSurf_PntOn2S& Point (const Standard_Integer Index) const Standard_OVERRIDE;
   
   //! Set the Point of index <Index> in the LineOn2S
   Standard_EXPORT void SetPoint (const Standard_Integer Index, const IntPatch_Point& Pnt);

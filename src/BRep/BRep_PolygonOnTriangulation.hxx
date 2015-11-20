@@ -56,7 +56,7 @@ public:
   Standard_EXPORT virtual const Handle(Poly_PolygonOnTriangulation)& PolygonOnTriangulation() const Standard_OVERRIDE;
   
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const;
+  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
 
 
 

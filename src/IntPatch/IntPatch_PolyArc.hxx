@@ -48,9 +48,9 @@ public:
   
   Standard_EXPORT virtual Standard_Boolean Closed() const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT Standard_Integer NbPoints() const Standard_OVERRIDE;
   
-  Standard_EXPORT gp_Pnt2d Point (const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt2d Point (const Standard_Integer Index) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Real Parameter (const Standard_Integer Index) const;
   

@@ -44,19 +44,19 @@ public:
   
   Standard_EXPORT StepData_DescrReadWrite(const Handle(StepData_Protocol)& proto);
   
-  Standard_EXPORT Standard_Integer CaseStep (const TCollection_AsciiString& atype) const;
+  Standard_EXPORT Standard_Integer CaseStep (const TCollection_AsciiString& atype) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Integer CaseStep (const TColStd_SequenceOfAsciiString& types) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean IsComplex (const Standard_Integer CN) const Standard_OVERRIDE;
   
-  Standard_EXPORT const TCollection_AsciiString& StepType (const Standard_Integer CN) const;
+  Standard_EXPORT const TCollection_AsciiString& StepType (const Standard_Integer CN) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean ComplexType (const Standard_Integer CN, TColStd_SequenceOfAsciiString& types) const Standard_OVERRIDE;
   
-  Standard_EXPORT void ReadStep (const Standard_Integer CN, const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT void ReadStep (const Standard_Integer CN, const Handle(StepData_StepReaderData)& data, const Standard_Integer num, Handle(Interface_Check)& ach, const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
-  Standard_EXPORT void WriteStep (const Standard_Integer CN, StepData_StepWriter& SW, const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT void WriteStep (const Standard_Integer CN, StepData_StepWriter& SW, const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
 
 

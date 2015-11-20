@@ -41,12 +41,12 @@ public:
   
   Standard_EXPORT STEPSelections_SelectInstances();
   
-  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const;
+  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const;
+  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium : "Instances"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
 
 
 

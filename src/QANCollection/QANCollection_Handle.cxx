@@ -233,17 +233,26 @@ static Standard_Integer QAHandleBool (Draw_Interpretor& theDI,
   return 0;
 }
 
+// Auxiliary class to define new virtual methods
+class Transient_Root : public Standard_Transient
+{
+public:
+  virtual const char* Name() const { return "Transient_Root"; }
+  virtual Standard_Transient* CreateParent() const { return new Standard_Transient; }
+  virtual Standard_Transient* Clone()        const { return new Transient_Root; }
+  DEFINE_STANDARD_RTTI(Transient_Root, Standard_Transient)
+};
+DEFINE_STANDARD_HANDLE(Transient_Root, Standard_Transient)
+
 // Auxiliary macros to create hierarchy of 50 classes
 #define QA_DEFINECLASS(theClass, theParent) \
 class theClass : public theParent \
 { \
 public:\
-  theClass() {}; \
-  virtual ~theClass() {}; \
-  virtual const char* Name() const { return #theClass; } \
-  virtual Standard_Transient* CreateParent() const { return new theParent(); } \
-  virtual Standard_Transient* Clone()        const { return new theClass(); } \
-  DEFINE_STANDARD_RTTI(theClass, theParent); \
+  virtual const char* Name() const Standard_OVERRIDE { return #theClass; } \
+  virtual Standard_Transient* CreateParent() const Standard_OVERRIDE { return new theParent(); } \
+  virtual Standard_Transient* Clone()        const Standard_OVERRIDE { return new theClass(); } \
+  DEFINE_STANDARD_RTTI(theClass, theParent) \
 };\
 DEFINE_STANDARD_HANDLE    (theClass, theParent) \
 IMPLEMENT_STANDARD_HANDLE (theClass, theParent) \
@@ -264,7 +273,7 @@ QA_DEFINECLASS(QA_NAME(theTens ## 7), QA_NAME(theTens ## 6)) \
 QA_DEFINECLASS(QA_NAME(theTens ## 8), QA_NAME(theTens ## 7)) \
 QA_DEFINECLASS(QA_NAME(theTens ## 9), QA_NAME(theTens ## 8))
 
-QA_DEFINECLASS10(Standard_Transient, 0)
+QA_DEFINECLASS10(Transient_Root,     0)
 QA_DEFINECLASS10(qaclass09_50,       1)
 QA_DEFINECLASS10(qaclass19_50,       2)
 QA_DEFINECLASS10(qaclass29_50,       3)

@@ -50,7 +50,7 @@ public:
   
   //! Returns the signature for IGES, "mmm nnn" or "mmm" according
   //! creation choice (Type & Form or Type only)
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
 
 

@@ -167,11 +167,11 @@ private:
   //! this method to implement application specific behavior.
   Standard_EXPORT virtual void Activate (const Handle(CDM_Document)& aDocument, const CDF_TypeOfActivation aTypeOfActivation);
   
-  Standard_EXPORT Handle(CDM_Document) Retrieve (const Handle(CDM_MetaData)& aMetaData, const Standard_Boolean UseStorageConfiguration);
+  Standard_EXPORT Handle(CDM_Document) Retrieve (const Handle(CDM_MetaData)& aMetaData, const Standard_Boolean UseStorageConfiguration) Standard_OVERRIDE;
   
   Standard_EXPORT Handle(CDM_Document) Retrieve (const Handle(CDM_MetaData)& aMetaData, const Standard_Boolean UseStorageConfiguration, const Standard_Boolean IsComponent);
   
-  Standard_EXPORT Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& theMetaData);
+  Standard_EXPORT Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& theMetaData) Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean FindReader (const TCollection_ExtendedString& aFileName, Standard_GUID& PluginIn, TCollection_ExtendedString& ResourceName);
   

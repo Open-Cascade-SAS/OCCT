@@ -50,7 +50,7 @@ public:
   
   Standard_EXPORT DrawTrSurf_Curve2d(const Handle(Geom2d_Curve)& C, const Draw_Color& aColor, const Standard_Integer Discret, const Standard_Boolean DispOrigin = Standard_True, const Standard_Boolean DispCurvRadius = Standard_False, const Standard_Real RadiusMax = 1.0e3, const Standard_Real RatioOfRadius = 0.1);
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
   
     Handle(Geom2d_Curve) GetCurve() const;
   

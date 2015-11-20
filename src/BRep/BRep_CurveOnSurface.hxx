@@ -50,7 +50,7 @@ public:
     void UVPoints (gp_Pnt2d& P1, gp_Pnt2d& P2) const;
   
   //! Computes the point at parameter U.
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
   
   //! Returns True.
   Standard_EXPORT virtual Standard_Boolean IsCurveOnSurface() const Standard_OVERRIDE;
@@ -65,7 +65,7 @@ public:
   Standard_EXPORT virtual void PCurve (const Handle(Geom2d_Curve)& C) Standard_OVERRIDE;
   
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const;
+  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
   
   //! Recomputes any derived data after a modification.
   //! This is called when the range is modified.

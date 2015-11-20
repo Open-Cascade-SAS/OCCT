@@ -39,11 +39,11 @@ public:
   Standard_EXPORT Interface_SignLabel();
   
   //! Returns "Entity Label"
-  Standard_EXPORT Standard_CString Name() const;
+  Standard_EXPORT Standard_CString Name() const Standard_OVERRIDE;
   
   //! Considers context as an InterfaceModel and returns the Label
   //! computed by it
-  Standard_EXPORT TCollection_AsciiString Text (const Handle(Standard_Transient)& ent, const Handle(Standard_Transient)& context) const;
+  Standard_EXPORT TCollection_AsciiString Text (const Handle(Standard_Transient)& ent, const Handle(Standard_Transient)& context) const Standard_OVERRIDE;
 
 
 

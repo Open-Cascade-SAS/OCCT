@@ -52,15 +52,15 @@ public:
   Standard_EXPORT const Handle(Interface_InterfaceModel)& StartingModel() const;
   
   //! Clears the List of Copied Results
-  Standard_EXPORT void Clear();
+  Standard_EXPORT void Clear() Standard_OVERRIDE;
   
   //! Binds a (Transient) Result to a (Transient) Starting Entity
-  Standard_EXPORT void Bind (const Handle(Standard_Transient)& ent, const Handle(Standard_Transient)& res);
+  Standard_EXPORT void Bind (const Handle(Standard_Transient)& ent, const Handle(Standard_Transient)& res) Standard_OVERRIDE;
   
   //! Searches for the Result bound to a Starting Entity
   //! If Found, returns True and fills <res>
   //! Else, returns False and nullifies <res>
-  Standard_EXPORT Standard_Boolean Search (const Handle(Standard_Transient)& ent, Handle(Standard_Transient)& res) const;
+  Standard_EXPORT Standard_Boolean Search (const Handle(Standard_Transient)& ent, Handle(Standard_Transient)& res) const Standard_OVERRIDE;
 
 
 

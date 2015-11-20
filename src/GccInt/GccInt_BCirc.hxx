@@ -44,7 +44,7 @@ public:
   Standard_EXPORT virtual gp_Circ2d Circle() const Standard_OVERRIDE;
   
   //! Returns GccInt_Cir, which is the type of any GccInt_BCirc bisecting curve.
-  Standard_EXPORT GccInt_IType ArcType() const;
+  Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
 
 
 

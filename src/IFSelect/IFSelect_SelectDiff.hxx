@@ -43,10 +43,10 @@ public:
   
   //! Returns the list of selected entities : they are the Entities
   //! gotten from the Main Input but not from the Diff Input
-  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const;
+  Standard_EXPORT Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium : "Difference"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

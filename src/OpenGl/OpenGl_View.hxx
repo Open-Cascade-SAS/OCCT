@@ -129,10 +129,12 @@ public:
                                           const Aspect_RenderingContext theContext) Standard_OVERRIDE;
 
   //! Returns window associated with the view.
-  virtual Handle(Aspect_Window) Window() const Standard_OVERRIDE { return myWindow->PlatformWindow(); }
+  virtual Handle(Aspect_Window) Window() const Standard_OVERRIDE
+  { return myWindow->PlatformWindow(); }
 
   //! Returns True if the window associated to the view is defined.
-  virtual Standard_Boolean IsDefined() const { return !myWindow.IsNull(); }
+  virtual Standard_Boolean IsDefined() const Standard_OVERRIDE
+  { return !myWindow.IsNull(); }
 
   //! Handle changing size of the rendering window.
   Standard_EXPORT virtual void Resized() Standard_OVERRIDE;
@@ -170,7 +172,8 @@ public:
   Standard_EXPORT virtual void TriedronEcho (const Aspect_TypeOfTriedronEcho theType = Aspect_TOTE_NONE) Standard_OVERRIDE;
 
   //! Returns data of a graduated trihedron
-  const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() { return myGTrihedronData; }
+  const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() Standard_OVERRIDE
+  { return myGTrihedronData; }
 
   //! Displays Graduated Trihedron.
   Standard_EXPORT virtual void GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData) Standard_OVERRIDE;

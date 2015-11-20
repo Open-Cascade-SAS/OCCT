@@ -45,10 +45,10 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   Standard_EXPORT NCollection_IncAllocator (const size_t theBlockSize = DefaultBlockSize);
 
   //! Allocate memory with given size. Returns NULL on failure
-  Standard_EXPORT virtual void* Allocate        (const size_t size);
+  Standard_EXPORT virtual void* Allocate        (const size_t size) Standard_OVERRIDE;
 
   //! Free a previously allocated memory. Does nothing
-  Standard_EXPORT virtual void  Free            (void *anAddress);
+  Standard_EXPORT virtual void  Free            (void *anAddress) Standard_OVERRIDE;
 
   //! Diagnostic method, returns the total allocated size
   Standard_EXPORT size_t        GetMemSize      () const;

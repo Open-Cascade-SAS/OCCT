@@ -136,19 +136,19 @@ public:
   //! Return the  parameter on the  Ureversed surface for
   //! the point of parameter U on <me>.
   //! Return 2.PI - U.
-  Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Return the  parameter on the  Ureversed surface for
   //! the point of parameter U on <me>.
   //! Return 2.PI - U.
-  Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Computes the aera of the surface.
   Standard_EXPORT Standard_Real Area() const;
   
   //! Returns the parametric bounds U1, U2, V1 and V2 of this torus.
   //! For a torus: U1 = V1 = 0 and V1 = V2 = 2*PI .
-  Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const;
+  Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const Standard_OVERRIDE;
   
 
   //! Returns the coefficients of the implicit equation of the surface
@@ -177,16 +177,16 @@ public:
   Standard_EXPORT Standard_Real Volume() const;
   
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsUClosed() const;
+  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
   
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsVClosed() const;
+  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
   
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
   
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
   
   //! Computes the U isoparametric curve.
   //!
@@ -196,7 +196,7 @@ public:
   //! Warnings :
   //! The radius of the circle can be zero if for the surface
   //! MinorRadius = 0.0
-  Standard_EXPORT Handle(Geom_Curve) UIso (const Standard_Real U) const;
+  Standard_EXPORT Handle(Geom_Curve) UIso (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Computes the V isoparametric curve.
   //!
@@ -206,7 +206,7 @@ public:
   //! Warnings :
   //! The radius of the circle can be zero if for the surface
   //! MajorRadius = MinorRadius
-  Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V) const;
+  Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V) const Standard_OVERRIDE;
   
 
   //! Computes the  point P (U, V) on the surface.
@@ -216,34 +216,34 @@ public:
   //! where Loc is the origin of the placement plane (XAxis, YAxis)
   //! XDir is the direction of the XAxis and YDir the direction of
   //! the YAxis and ZDir the direction of the ZAxis.
-  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const Standard_OVERRIDE;
   
 
   //! Computes the current point and the first derivatives in
   //! the directions U and V.
-  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
+  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const Standard_OVERRIDE;
   
 
   //! Computes the current point, the first and the second derivatives
   //! in the directions U and V.
-  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const;
+  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const Standard_OVERRIDE;
   
 
   //! Computes the current point, the first,the second and the
   //! third derivatives in the directions U and V.
-  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
+  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const Standard_OVERRIDE;
   
 
   //! Computes the derivative of order Nu in the direction u and
   //! Nv in the direction v.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const;
+  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const Standard_OVERRIDE;
   
   //! Applies the transformation T to this torus.
-  Standard_EXPORT void Transform (const gp_Trsf& T);
+  Standard_EXPORT void Transform (const gp_Trsf& T) Standard_OVERRIDE;
   
   //! Creates a new object which is a copy of this torus.
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

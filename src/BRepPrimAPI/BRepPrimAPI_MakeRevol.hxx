@@ -85,10 +85,10 @@ public:
   
   //! Returns the first shape of the revol  (coinciding with
   //! the generating shape).
-  Standard_EXPORT TopoDS_Shape FirstShape();
+  Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
   
   //! Returns the TopoDS Shape of the end of the revol.
-  Standard_EXPORT TopoDS_Shape LastShape();
+  Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
   
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
   

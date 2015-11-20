@@ -42,7 +42,7 @@ public:
   Standard_EXPORT BRep_Curve3D(const Handle(Geom_Curve)& C, const TopLoc_Location& L);
   
   //! Computes the point at parameter U.
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
   
   //! Returns True.
   Standard_EXPORT virtual Standard_Boolean IsCurve3D() const Standard_OVERRIDE;
@@ -52,7 +52,7 @@ public:
   Standard_EXPORT virtual void Curve3D (const Handle(Geom_Curve)& C) Standard_OVERRIDE;
   
   //! Return a copy of this representation.
-  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const;
+  Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
 
 
 

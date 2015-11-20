@@ -219,7 +219,7 @@ public:
   //! ================
   Standard_EXPORT virtual void Update (const Handle(CDM_Document)& aToDocument, const Standard_Integer aReferenceIdentifier, const Standard_Address aModifContext) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const;
+  Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const Standard_OVERRIDE;
   
   //! methods for the nested transaction mode
   Standard_EXPORT virtual void ChangeStorageFormat (const TCollection_ExtendedString& newStorageFormat);

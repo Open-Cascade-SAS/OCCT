@@ -67,7 +67,7 @@ public: //! @name mesher API
                                             const BRepMesh_FastDiscret::Parameters& theParameters);
 
   //! Performs meshing ot the shape.
-  Standard_EXPORT virtual void Perform();
+  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
   
 public: //! @name accessing to parameters.
 
@@ -121,7 +121,7 @@ public: //! @name plugin API
 
 protected:
 
-  Standard_EXPORT virtual void init();
+  Standard_EXPORT virtual void init() Standard_OVERRIDE;
 
 private:
 

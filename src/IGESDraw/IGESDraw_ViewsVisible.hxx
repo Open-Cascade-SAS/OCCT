@@ -57,10 +57,10 @@ public:
   Standard_EXPORT void InitImplied (const Handle(IGESData_HArray1OfIGESEntity)& allDisplayEntity);
   
   //! Returns False (for a complex view)
-  Standard_EXPORT Standard_Boolean IsSingle() const;
+  Standard_EXPORT Standard_Boolean IsSingle() const Standard_OVERRIDE;
   
   //! returns the Number of views visible
-  Standard_EXPORT Standard_Integer NbViews() const;
+  Standard_EXPORT Standard_Integer NbViews() const Standard_OVERRIDE;
   
   //! returns the number of entities displayed in the Views or zero if
   //! no Entities specified in these Views
@@ -68,7 +68,7 @@ public:
   
   //! returns the Index'th ViewKindEntity Entity
   //! raises exception if Index  <= 0 or Index > NbViewsVisible()
-  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem (const Standard_Integer Index) const;
+  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem (const Standard_Integer Index) const Standard_OVERRIDE;
   
   //! returns the Index'th entity whose display is being specified by
   //! this associativity instance

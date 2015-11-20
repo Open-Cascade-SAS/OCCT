@@ -38,11 +38,11 @@ public:
   
   Standard_EXPORT BRepCheck_Vertex(const TopoDS_Vertex& V);
   
-  Standard_EXPORT void InContext (const TopoDS_Shape& ContextShape);
+  Standard_EXPORT void InContext (const TopoDS_Shape& ContextShape) Standard_OVERRIDE;
   
-  Standard_EXPORT void Minimum();
+  Standard_EXPORT void Minimum() Standard_OVERRIDE;
   
-  Standard_EXPORT void Blind();
+  Standard_EXPORT void Blind() Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Real Tolerance();
 

@@ -45,7 +45,7 @@ public:
   Standard_EXPORT virtual gp_Elips2d Ellipse() const Standard_OVERRIDE;
   
   //! Returns GccInt_Ell, which is the type of any GccInt_BElips bisecting curve.
-  Standard_EXPORT GccInt_IType ArcType() const;
+  Standard_EXPORT GccInt_IType ArcType() const Standard_OVERRIDE;
 
 
 

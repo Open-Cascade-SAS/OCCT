@@ -41,7 +41,7 @@ public:
   
   Standard_EXPORT DrawDim_PlanarDiameter(const TopoDS_Shape& circle);
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
 
 
 

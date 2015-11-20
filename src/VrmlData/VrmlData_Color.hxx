@@ -67,19 +67,19 @@ class VrmlData_Color : public VrmlData_ArrayVec3d
    * is not created, but rather the given one is modified.<p>
    */
   Standard_EXPORT virtual Handle(VrmlData_Node)
-                        Clone     (const Handle(VrmlData_Node)& theOther)const;
+                        Clone     (const Handle(VrmlData_Node)& theOther)const Standard_OVERRIDE;
 
   /**
    * Read the Node from input stream.
    */
   Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Read      (VrmlData_InBuffer& theBuffer);
+                        Read      (VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to the Scene output.
    */
   Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Write     (const char * thePrefix) const;
+                        Write     (const char * thePrefix) const Standard_OVERRIDE;
 
  private:
   // ---------- PRIVATE FIELDS ----------

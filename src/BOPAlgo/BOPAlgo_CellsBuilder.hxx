@@ -231,7 +231,7 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
 
   //! Redefined method PerformInternal1 - makes all split parts, 
   //! nullifies the result <myShape>, and index all parts.
-  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF);
+  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
 
   //! Saves all split parts in myAllParts.
   Standard_EXPORT void TakeAllParts();

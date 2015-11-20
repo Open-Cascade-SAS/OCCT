@@ -61,7 +61,7 @@ public:
                                  const Standard_Real       theSize);
 
   //! Release currently loaded font.
-  Standard_EXPORT virtual void Release();
+  Standard_EXPORT virtual void Release() Standard_OVERRIDE;
 
   //! Initialize the font.
   //! @param theFontPath FULL path to the font

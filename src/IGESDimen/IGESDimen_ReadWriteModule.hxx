@@ -45,13 +45,13 @@ public:
   Standard_EXPORT IGESDimen_ReadWriteModule();
   
   //! Defines Case Numbers for Entities of IGESDimen
-  Standard_EXPORT Standard_Integer CaseIGES (const Standard_Integer typenum, const Standard_Integer formnum) const;
+  Standard_EXPORT Standard_Integer CaseIGES (const Standard_Integer typenum, const Standard_Integer formnum) const Standard_OVERRIDE;
   
   //! Reads own parameters from file for an Entity of IGESDimen
-  Standard_EXPORT void ReadOwnParams (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const;
+  Standard_EXPORT void ReadOwnParams (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const Standard_OVERRIDE;
   
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, IGESData_IGESWriter& IW) const;
+  Standard_EXPORT void WriteOwnParams (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, IGESData_IGESWriter& IW) const Standard_OVERRIDE;
 
 
 

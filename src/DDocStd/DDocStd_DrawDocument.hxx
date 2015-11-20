@@ -44,7 +44,7 @@ public:
   
   Standard_EXPORT Handle(TDocStd_Document) GetDocument() const;
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
   

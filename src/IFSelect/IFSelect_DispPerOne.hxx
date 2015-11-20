@@ -44,7 +44,7 @@ public:
   Standard_EXPORT IFSelect_DispPerOne();
   
   //! Returns as Label, "One File per Input Entity"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
   
   //! Returns True, maximum limit is given as <nbent>
   Standard_EXPORT virtual Standard_Boolean LimitedMax (const Standard_Integer nbent, Standard_Integer& max) const Standard_OVERRIDE;
@@ -55,7 +55,7 @@ public:
   
   //! Returns the list of produced Packets. It defines one Packet
   //! per Entity given by RootResult from the Final Selection.
-  Standard_EXPORT void Packets (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const;
+  Standard_EXPORT void Packets (const Interface_Graph& G, IFGraph_SubPartsIterator& packs) const Standard_OVERRIDE;
 
 
 

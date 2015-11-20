@@ -47,11 +47,11 @@ public:
   
   //! Returns the Type to be matched for select : this is the type
   //! given at instantiation time
-  Standard_EXPORT Handle(Standard_Type) TypeForMatch() const;
+  Standard_EXPORT Handle(Standard_Type) TypeForMatch() const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium.
   //! (should by gotten from Type of Entity used for instantiation)
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
 
 

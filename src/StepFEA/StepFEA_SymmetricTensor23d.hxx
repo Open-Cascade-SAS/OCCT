@@ -41,7 +41,7 @@ public:
   
   //! Recognizes a kind of SymmetricTensor23d select type
   //! return 0
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! Recognizes a items of select member SymmetricTensor23dMember
   //! 1 -> IsotropicSymmetricTensor23d

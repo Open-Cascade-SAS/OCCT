@@ -45,7 +45,7 @@ class TObj_ReferenceIterator : public TObj_LabelIterator
   */
   
   //! Shift iterator to the next object
-  virtual Standard_EXPORT void MakeStep();
+  virtual Standard_EXPORT void MakeStep() Standard_OVERRIDE;
 
   Handle(Standard_Type) myType; //!< Type of objects to iterate on
   

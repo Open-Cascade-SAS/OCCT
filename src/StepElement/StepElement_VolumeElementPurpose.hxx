@@ -41,7 +41,7 @@ public:
   
   //! Recognizes a kind of VolumeElementPurpose select type
   //! return 0
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! Recognizes a items of select member VolumeElementPurposeMember
   //! 1 -> EnumeratedVolumeElementPurpose

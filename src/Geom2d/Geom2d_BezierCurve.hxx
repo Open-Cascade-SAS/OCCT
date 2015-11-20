@@ -153,13 +153,13 @@ public:
 
   //! Reverses the direction of parametrization of <me>
   //! Value (NewU) =  Value (1 - OldU)
-  Standard_EXPORT void Reverse();
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
   
   //! Returns the  parameter on the  reversed  curve for
   //! the point of parameter U on <me>.
   //!
   //! returns 1-U
-  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
 
   //! Segments the curve between U1 and U2 which can be out
@@ -206,15 +206,15 @@ public:
   //! Returns True if the distance between the first point
   //! and the last point of the curve is lower or equal to
   //! the Resolution from package gp.
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
   //! Continuity of the curve, returns True.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
   
 
   //! Returns False. A BezierCurve cannot be periodic in this
   //! package
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
   
 
   //! Returns false if all the weights are identical. The tolerance
@@ -222,7 +222,7 @@ public:
   Standard_EXPORT Standard_Boolean IsRational() const;
   
   //! Returns GeomAbs_CN, which is the continuity of any Bezier curve.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
 
   //! Returns the polynomial degree of the curve. It is the number
@@ -230,13 +230,13 @@ public:
   //! curve cannot be greater than "MaxDegree".
   Standard_EXPORT Standard_Integer Degree() const;
   
-  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
   
-  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const;
+  Standard_EXPORT void D1 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
   
-  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const;
+  Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const Standard_OVERRIDE;
   
-  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const;
+  Standard_EXPORT void D3 (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const Standard_OVERRIDE;
   
   //! For this Bezier curve, computes
   //! - the point P of parameter U, or
@@ -246,18 +246,18 @@ public:
   //! - V3, the third derivative vector.
   //! Note: the parameter U can be outside the bounds of the curve.
   //! Raises RangeError if N < 1.
-  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const;
+  Standard_EXPORT gp_Vec2d DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Returns the end point or start point of this Bezier curve.
-  Standard_EXPORT gp_Pnt2d EndPoint() const;
+  Standard_EXPORT gp_Pnt2d EndPoint() const Standard_OVERRIDE;
   
   //! Returns the value of the first  parameter of this
   //! Bezier curve. This is  0.0, which gives the start point of this Bezier curve.
-  Standard_EXPORT Standard_Real FirstParameter() const;
+  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
   //! Returns the value of the last  parameter of this
   //! Bezier curve. This is  1.0, which gives the end point of this Bezier curve.
-  Standard_EXPORT Standard_Real LastParameter() const;
+  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
   
   //! Returns the number of poles for this Bezier curve.
   Standard_EXPORT Standard_Integer NbPoles() const;
@@ -274,7 +274,7 @@ public:
 
   //! Returns Value (U=1), it is the first control point
   //! of the curve.
-  Standard_EXPORT gp_Pnt2d StartPoint() const;
+  Standard_EXPORT gp_Pnt2d StartPoint() const Standard_OVERRIDE;
   
   //! Returns the weight of range Index.
   //! Raised if Index is not in the range [1, NbPoles]
@@ -286,7 +286,7 @@ public:
   Standard_EXPORT void Weights (TColStd_Array1OfReal& W) const;
   
   //! Applies the transformation T to this Bezier curve.
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
+  Standard_EXPORT void Transform (const gp_Trsf2d& T) Standard_OVERRIDE;
   
 
   //! Returns the value of the maximum polynomial degree of a
@@ -303,7 +303,7 @@ public:
   Standard_EXPORT void Resolution (const Standard_Real ToleranceUV, Standard_Real& UTolerance);
   
   //! Creates a new object which is a copy of this Bezier curve.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
 
 
 

@@ -99,7 +99,7 @@ class VrmlData_ArrayVec3d : public VrmlData_Node
    * Returns True if the node is default, so that it should not be written.
    */
   Standard_EXPORT virtual Standard_Boolean
-                        IsDefault () const;
+                        IsDefault () const Standard_OVERRIDE;
 
  protected:
   // ---------- PROTECTED METHODS ----------

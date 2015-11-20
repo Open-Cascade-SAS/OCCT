@@ -39,10 +39,10 @@ public:
     TopoDS_TCompSolid();
   
   //! returns COMPSOLID
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
   
   //! Returns an empty TCompSolid.
-  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const;
+  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
 
 

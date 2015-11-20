@@ -37,7 +37,7 @@ public:
   Standard_EXPORT StepShape_ShapeDimensionRepresentation();
   
   //! Initialize all fields AP214
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, const Handle(StepRepr_HArray1OfRepresentationItem)& theItems, const Handle(StepRepr_RepresentationContext)& theContextOfItems);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, const Handle(StepRepr_HArray1OfRepresentationItem)& theItems, const Handle(StepRepr_RepresentationContext)& theContextOfItems) Standard_OVERRIDE;
 
   //! Initialize all fields AP242
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, const Handle(StepShape_HArray1OfShapeDimensionRepresentationItem)& theItems, const Handle(StepRepr_RepresentationContext)& theContextOfItems);

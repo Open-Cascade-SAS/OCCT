@@ -74,10 +74,10 @@ public:
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
   
   //! Returns the  TopoDS  Shape of the bottom of the prism.
-  Standard_EXPORT TopoDS_Shape FirstShape();
+  Standard_EXPORT TopoDS_Shape FirstShape() Standard_OVERRIDE;
   
   //! Returns the TopoDS Shape of the top of the prism.
-  Standard_EXPORT TopoDS_Shape LastShape();
+  Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
   
   Standard_EXPORT TopoDS_Shape Generated (const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
   

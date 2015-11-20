@@ -52,10 +52,10 @@ public:
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
-  Standard_EXPORT Standard_Boolean IsIdentical (const Handle(Expr_GeneralExpression)& Other) const;
+  Standard_EXPORT Standard_Boolean IsIdentical (const Handle(Expr_GeneralExpression)& Other) const Standard_OVERRIDE;
   
   //! returns a string representing <me> in a readable way.
-  Standard_EXPORT TCollection_AsciiString String() const;
+  Standard_EXPORT TCollection_AsciiString String() const Standard_OVERRIDE;
 
 
 

@@ -39,16 +39,16 @@ public:
 public: //! @name methods implementing BVH set interface
 
   //! Returns total number of triangles.
-  Standard_Integer Size() const;
+  Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns AABB of the given triangle.
-  BVH_Box<Standard_Real, 3> Box (const Standard_Integer theIndex) const;
+  BVH_Box<Standard_Real, 3> Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
 
   //! Returns centroid position along specified axis.
-  Standard_Real Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const;
+  Standard_Real Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const Standard_OVERRIDE;
 
   //! Swaps indices of two specified triangles.
-  void Swap (const Standard_Integer theIndex1, const Standard_Integer theIndex2);
+  void Swap (const Standard_Integer theIndex1, const Standard_Integer theIndex2) Standard_OVERRIDE;
 
 public:
 

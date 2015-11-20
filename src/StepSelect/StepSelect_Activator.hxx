@@ -41,10 +41,10 @@ public:
   Standard_EXPORT StepSelect_Activator();
   
   //! Executes a Command Line for StepSelect
-  Standard_EXPORT IFSelect_ReturnStatus Do (const Standard_Integer number, const Handle(IFSelect_SessionPilot)& pilot);
+  Standard_EXPORT IFSelect_ReturnStatus Do (const Standard_Integer number, const Handle(IFSelect_SessionPilot)& pilot) Standard_OVERRIDE;
   
   //! Sends a short help message for StepSelect commands
-  Standard_EXPORT Standard_CString Help (const Standard_Integer number) const;
+  Standard_EXPORT Standard_CString Help (const Standard_Integer number) const Standard_OVERRIDE;
 
 
 

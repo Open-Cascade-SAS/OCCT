@@ -116,7 +116,7 @@ public:
   
   //! Performs the Standard Transformation, by calling Copy then
   //! ApplyModifiers (which can return an error status)
-  Standard_EXPORT Standard_Boolean Perform (const Interface_Graph& G, const Handle(Interface_Protocol)& protocol, Interface_CheckIterator& checks, Handle(Interface_InterfaceModel)& newmod);
+  Standard_EXPORT Standard_Boolean Perform (const Interface_Graph& G, const Handle(Interface_Protocol)& protocol, Interface_CheckIterator& checks, Handle(Interface_InterfaceModel)& newmod) Standard_OVERRIDE;
   
   //! This the first operation. It calls StandardCopy or OnTheSpot
   //! according the option
@@ -143,12 +143,12 @@ public:
   //! This methods allows to know what happened to a starting
   //! entity after the last Perform. It reads result from the map
   //! which was filled by Perform.
-  Standard_EXPORT Standard_Boolean Updated (const Handle(Standard_Transient)& entfrom, Handle(Standard_Transient)& entto) const;
+  Standard_EXPORT Standard_Boolean Updated (const Handle(Standard_Transient)& entfrom, Handle(Standard_Transient)& entto) const Standard_OVERRIDE;
   
   //! Returns a text which defines the way a Transformer works :
   //! "On the spot edition" or "Standard Copy" followed by
   //! "<nn> Modifiers"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

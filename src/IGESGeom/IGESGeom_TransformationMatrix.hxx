@@ -65,7 +65,7 @@ public:
   
   //! returns the transformation matrix
   //! 4th row elements of GTrsf will always be 0, 0, 0, 1 (not defined)
-  Standard_EXPORT gp_GTrsf Value() const;
+  Standard_EXPORT gp_GTrsf Value() const Standard_OVERRIDE;
 
 
 

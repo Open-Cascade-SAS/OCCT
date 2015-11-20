@@ -69,14 +69,14 @@ public:
   Standard_EXPORT void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const Standard_OVERRIDE;
   
   //! Returns the value at parameter X.
-  Standard_EXPORT Standard_Real Value (const Standard_Real X);
+  Standard_EXPORT Standard_Real Value (const Standard_Real X) Standard_OVERRIDE;
   
   //! Returns the value and the first derivative at parameter X.
-  Standard_EXPORT void D1 (const Standard_Real X, Standard_Real& F, Standard_Real& D);
+  Standard_EXPORT void D1 (const Standard_Real X, Standard_Real& F, Standard_Real& D) Standard_OVERRIDE;
   
   //! Returns the value, first and second derivatives
   //! at parameter X.
-  Standard_EXPORT void D2 (const Standard_Real X, Standard_Real& F, Standard_Real& D, Standard_Real& D2);
+  Standard_EXPORT void D2 (const Standard_Real X, Standard_Real& F, Standard_Real& D, Standard_Real& D2) Standard_OVERRIDE;
   
   //! Returns a  law equivalent of  <me>  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
@@ -87,7 +87,7 @@ public:
   Standard_EXPORT Handle(Law_Function) Trim (const Standard_Real PFirst, const Standard_Real PLast, const Standard_Real Tol) const Standard_OVERRIDE;
   
   //! Returns the parametric bounds of the function.
-  Standard_EXPORT void Bounds (Standard_Real& PFirst, Standard_Real& PLast);
+  Standard_EXPORT void Bounds (Standard_Real& PFirst, Standard_Real& PLast) Standard_OVERRIDE;
   
   //! Returns the elementary  function of the composite used
   //! to compute at parameter W.

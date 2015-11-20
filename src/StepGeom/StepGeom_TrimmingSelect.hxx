@@ -43,7 +43,7 @@ public:
   //! Recognizes a TrimmingSelect Kind Entity that is :
   //! 1 -> CartesianPoint
   //! 0 else (i.e. Real)
-  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! Returns a TrimmingMember (for PARAMETER_VALUE) as preferred
   Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;

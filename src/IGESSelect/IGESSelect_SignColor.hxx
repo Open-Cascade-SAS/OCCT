@@ -53,7 +53,7 @@ public:
   Standard_EXPORT IGESSelect_SignColor(const Standard_Integer mode);
   
   //! Returns the value (see above)
-  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const;
+  Standard_EXPORT Standard_CString Value (const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
 
 
 

@@ -43,13 +43,13 @@ public:
   
   Standard_EXPORT BlendFunc_ChAsymInv(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_HCurve)& C);
   
-  Standard_EXPORT void Set (const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& COnSurf);
+  Standard_EXPORT void Set (const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& COnSurf) Standard_OVERRIDE;
   
-  Standard_EXPORT void GetTolerance (math_Vector& Tolerance, const Standard_Real Tol) const;
+  Standard_EXPORT void GetTolerance (math_Vector& Tolerance, const Standard_Real Tol) const Standard_OVERRIDE;
   
-  Standard_EXPORT void GetBounds (math_Vector& InfBound, math_Vector& SupBound) const;
+  Standard_EXPORT void GetBounds (math_Vector& InfBound, math_Vector& SupBound) const Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean IsSolution (const math_Vector& Sol, const Standard_Real Tol);
+  Standard_EXPORT Standard_Boolean IsSolution (const math_Vector& Sol, const Standard_Real Tol) Standard_OVERRIDE;
   
   //! returns the number of equations of the function.
   Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;

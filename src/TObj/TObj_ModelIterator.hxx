@@ -43,13 +43,13 @@ class TObj_ModelIterator : public TObj_ObjectIterator
   
   //! Returns True if iteration is not finished and method Value()
   //! will give the object
-  virtual Standard_EXPORT Standard_Boolean More() const;
+  virtual Standard_EXPORT Standard_Boolean More() const Standard_OVERRIDE;
   
   //! Iterates to the next object
-  virtual Standard_EXPORT void Next ();
+  virtual Standard_EXPORT void Next () Standard_OVERRIDE;
   
   //! Returns current object (or MainObj of Model if iteration has finished)
-  virtual Standard_EXPORT Handle(TObj_Object) Value () const;
+  virtual Standard_EXPORT Handle(TObj_Object) Value () const Standard_OVERRIDE;
   
  protected:
   /**

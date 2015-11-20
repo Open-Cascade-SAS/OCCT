@@ -111,18 +111,18 @@ public:
 
   //! Reverses the direction of parameterization of <me>.
   //! The local coordinate system of the conic is modified.
-  Standard_EXPORT void Reverse();
+  Standard_EXPORT void Reverse() Standard_OVERRIDE;
   
   //! Returns the  parameter on the  reversed  curve for
   //! the point of parameter U on <me>.
-  Standard_EXPORT virtual Standard_Real ReversedParameter (const Standard_Real U) const = 0;
+  Standard_EXPORT virtual Standard_Real ReversedParameter (const Standard_Real U) const Standard_OVERRIDE = 0;
   
   //! Returns GeomAbs_CN which is the global continuity of any conic.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
 
   //! Returns True, the order of continuity of a conic is infinite.
-  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
 
 
 

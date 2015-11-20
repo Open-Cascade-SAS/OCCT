@@ -57,12 +57,12 @@ public:
   //! Reads a STEP File and returns a STEP Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT Standard_Integer ReadFile (const Standard_CString name, Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol) const;
+  Standard_EXPORT Standard_Integer ReadFile (const Standard_CString name, Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol) const Standard_OVERRIDE;
   
   //! Writes a File from a STEP Model
   //! Returns False (and writes no file) if <ctx> does not bring a
   //! STEP Model
-  Standard_EXPORT Standard_Boolean WriteFile (IFSelect_ContextWrite& ctx) const;
+  Standard_EXPORT Standard_Boolean WriteFile (IFSelect_ContextWrite& ctx) const Standard_OVERRIDE;
   
   //! Performs the copy of entities from an original model to a new
   //! one. Works according <copymode> :
@@ -75,7 +75,7 @@ public:
   //! Level 0 just displays type; level 1 displays the entity itself
   //! and level 2 displays the entity plus its shared ones (one
   //! sub-level : immediately shared entities)
-  Standard_EXPORT void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, const Handle(Message_Messenger)& S, const Standard_Integer level) const;
+  Standard_EXPORT void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, const Handle(Message_Messenger)& S, const Standard_Integer level) const Standard_OVERRIDE;
 
 
 

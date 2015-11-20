@@ -48,7 +48,7 @@ public:
   
   Standard_EXPORT DrawTrSurf_Point(const gp_Pnt2d& P, const Draw_MarkerShape Shape, const Draw_Color& Col);
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
   
   //! Is a 3D object. (Default True).
   Standard_EXPORT virtual Standard_Boolean Is3D() const Standard_OVERRIDE;

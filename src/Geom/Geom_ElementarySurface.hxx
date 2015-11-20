@@ -108,7 +108,7 @@ public:
   
 
   //! Reverses the U parametric direction of the surface.
-  Standard_EXPORT virtual void UReverse();
+  Standard_EXPORT virtual void UReverse() Standard_OVERRIDE;
   
   //! Return the  parameter on the  Ureversed surface for
   //! the point of parameter U on <me>.
@@ -116,11 +116,11 @@ public:
   //! me->UReversed()->Value(me->UReversedParameter(U),V)
   //! is the same point as
   //! me->Value(U,V)
-  Standard_EXPORT virtual Standard_Real UReversedParameter (const Standard_Real U) const = 0;
+  Standard_EXPORT virtual Standard_Real UReversedParameter (const Standard_Real U) const Standard_OVERRIDE = 0;
   
 
   //! Reverses the V parametric direction of the surface.
-  Standard_EXPORT virtual void VReverse();
+  Standard_EXPORT virtual void VReverse() Standard_OVERRIDE;
   
   //! Return the  parameter on the  Vreversed surface for
   //! the point of parameter V on <me>.
@@ -128,16 +128,16 @@ public:
   //! me->VReversed()->Value(U,me->VReversedParameter(V))
   //! is the same point as
   //! me->Value(U,V)
-  Standard_EXPORT virtual Standard_Real VReversedParameter (const Standard_Real V) const = 0;
+  Standard_EXPORT virtual Standard_Real VReversedParameter (const Standard_Real V) const Standard_OVERRIDE = 0;
   
   //! Returns GeomAbs_CN, the global continuity of any elementary surface.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsCNu (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCNu (const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Returns True.
-  Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const Standard_OVERRIDE;
 
 
 

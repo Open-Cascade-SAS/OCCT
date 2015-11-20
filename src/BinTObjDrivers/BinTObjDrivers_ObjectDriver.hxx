@@ -31,13 +31,13 @@ class BinTObjDrivers_ObjectDriver : public BinMDF_ADriver
                          (const Handle(CDM_MessageDriver)& theMessageDriver);
   // constructor
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const;
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   // Creates a new attribute
 
   Standard_EXPORT Standard_Boolean Paste
                          (const BinObjMgt_Persistent&  Source,
                           const Handle(TDF_Attribute)& Target,
-                          BinObjMgt_RRelocationTable&  RelocTable) const;
+                          BinObjMgt_RRelocationTable&  RelocTable) const Standard_OVERRIDE;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.
@@ -47,7 +47,7 @@ class BinTObjDrivers_ObjectDriver : public BinMDF_ADriver
   Standard_EXPORT void Paste
                          (const Handle(TDF_Attribute)& Source,
                           BinObjMgt_Persistent&        Target,
-                          BinObjMgt_SRelocationTable&  RelocTable) const;
+                          BinObjMgt_SRelocationTable&  RelocTable) const Standard_OVERRIDE;
   // Translate the contents of <aSource> and put it
   // into <aTarget>, using the relocation table
   // <aRelocTable> to keep the sharings.

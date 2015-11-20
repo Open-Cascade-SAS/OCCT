@@ -46,26 +46,26 @@ public:
   //! Will throw exception if not created by OpenGl_Structure.
   Standard_EXPORT OpenGl_Group (const Handle(Graphic3d_Structure)& theStruct);
 
-  Standard_EXPORT virtual void Clear (const Standard_Boolean theToUpdateStructureMgr);
+  Standard_EXPORT virtual void Clear (const Standard_Boolean theToUpdateStructureMgr) Standard_OVERRIDE;
 
   //! Update line aspect
-  Standard_EXPORT virtual void UpdateAspectLine   (const Standard_Boolean theIsGlobal);
+  Standard_EXPORT virtual void UpdateAspectLine   (const Standard_Boolean theIsGlobal) Standard_OVERRIDE;
 
   //! Update fill aspect
-  Standard_EXPORT virtual void UpdateAspectFace   (const Standard_Boolean theIsGlobal);
+  Standard_EXPORT virtual void UpdateAspectFace   (const Standard_Boolean theIsGlobal) Standard_OVERRIDE;
 
   //! Update marker aspect
-  Standard_EXPORT virtual void UpdateAspectMarker (const Standard_Boolean theIsGlobal);
+  Standard_EXPORT virtual void UpdateAspectMarker (const Standard_Boolean theIsGlobal) Standard_OVERRIDE;
 
   //! Update text aspect
-  Standard_EXPORT virtual void UpdateAspectText   (const Standard_Boolean theIsGlobal);
+  Standard_EXPORT virtual void UpdateAspectText   (const Standard_Boolean theIsGlobal) Standard_OVERRIDE;
 
   //! Add primitive array element
   Standard_EXPORT virtual void AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
                                                   const Handle(Graphic3d_IndexBuffer)& theIndices,
                                                   const Handle(Graphic3d_Buffer)&      theAttribs,
                                                   const Handle(Graphic3d_BoundBuffer)& theBounds,
-                                                  const Standard_Boolean               theToEvalMinMax);
+                                                  const Standard_Boolean               theToEvalMinMax) Standard_OVERRIDE;
 
   //! Add text element
   Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
@@ -75,7 +75,7 @@ public:
                                      const Graphic3d_TextPath                theTp,
                                      const Graphic3d_HorizontalTextAlignment theHta,
                                      const Graphic3d_VerticalTextAlignment   theVta,
-                                     const Standard_Boolean                  theToEvalMinMax);
+                                     const Standard_Boolean                  theToEvalMinMax) Standard_OVERRIDE;
 
   //! Add text element in 3D space.
   Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
@@ -89,10 +89,10 @@ public:
 
   //! Add flipping element
   Standard_EXPORT virtual void SetFlippingOptions (const Standard_Boolean theIsEnabled,
-                                                   const gp_Ax2&          theRefPlane);
+                                                   const gp_Ax2&          theRefPlane) Standard_OVERRIDE;
 
   //! Add stencil test element
-  Standard_EXPORT virtual void SetStencilTestOptions (const Standard_Boolean theIsEnabled);
+  Standard_EXPORT virtual void SetStencilTestOptions (const Standard_Boolean theIsEnabled) Standard_OVERRIDE;
 
 public:
 

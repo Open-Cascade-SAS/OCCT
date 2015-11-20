@@ -47,7 +47,7 @@ public:
   
   Standard_EXPORT void SetPnt (const gp_Pnt& p);
   
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const;
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
 
 
 

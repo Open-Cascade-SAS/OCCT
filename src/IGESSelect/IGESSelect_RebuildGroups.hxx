@@ -50,11 +50,11 @@ public:
   Standard_EXPORT IGESSelect_RebuildGroups();
   
   //! Specific action : Rebuilds the original groups
-  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const;
+  Standard_EXPORT void Performing (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target, Interface_CopyTool& TC) const Standard_OVERRIDE;
   
   //! Returns a text which is
   //! "Rebuild Groups"
-  Standard_EXPORT TCollection_AsciiString Label() const;
+  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
 
 

@@ -68,25 +68,25 @@ class VrmlData_WorldInfo : public VrmlData_Node
    * is not created, but rather the given one is modified.
    */
   Standard_EXPORT virtual Handle(VrmlData_Node)
-                        Clone   (const Handle(VrmlData_Node)& theOther) const;
+                        Clone   (const Handle(VrmlData_Node)& theOther) const Standard_OVERRIDE;
 
   /**
    * Read the Node from input stream.
    */
   Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Read    (VrmlData_InBuffer& theBuffer);
+                        Read    (VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
 
   /**
    * Write the Node to the Scene output.
    */
   Standard_EXPORT virtual VrmlData_ErrorStatus
-                        Write   (const char * thePrefix) const;
+                        Write   (const char * thePrefix) const Standard_OVERRIDE;
 
   /**
    * Returns True if the node is default, then it would not be written.
    */
   Standard_EXPORT virtual Standard_Boolean
-                        IsDefault() const;
+                        IsDefault() const Standard_OVERRIDE;
 
  private:
   // ---------- PRIVATE FIELDS ----------

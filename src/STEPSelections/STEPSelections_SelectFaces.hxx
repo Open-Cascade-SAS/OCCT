@@ -43,10 +43,10 @@ public:
   
   //! Explores an entity, to take its faces
   //! Works recursively
-  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const;
+  Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium : "Faces"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
 
 
 

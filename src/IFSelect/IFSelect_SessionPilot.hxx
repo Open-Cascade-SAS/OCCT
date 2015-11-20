@@ -205,10 +205,10 @@ public:
   //! xstep is a simple prefix (useful in a wider environment, to
   //! avoid conflicts on command names)
   //! xset control commands which create items with names
-  Standard_EXPORT IFSelect_ReturnStatus Do (const Standard_Integer number, const Handle(IFSelect_SessionPilot)& session);
+  Standard_EXPORT IFSelect_ReturnStatus Do (const Standard_Integer number, const Handle(IFSelect_SessionPilot)& session) Standard_OVERRIDE;
   
   //! Help for specific commands (apart from general command help)
-  Standard_EXPORT Standard_CString Help (const Standard_Integer number) const;
+  Standard_EXPORT Standard_CString Help (const Standard_Integer number) const Standard_OVERRIDE;
 
 
 

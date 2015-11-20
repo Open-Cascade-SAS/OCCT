@@ -50,7 +50,7 @@ public:
   
   //! Returns the curve used to create the GenHCurve2d.
   //! This is redefined from HCurve2d, cannot be inline.
-  Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const;
+  Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const Standard_OVERRIDE;
   
   //! Returns the curve used to create the GenHCurve.
     Adaptor2d_Line2d& ChangeCurve2d();

@@ -50,7 +50,7 @@ public:
   
   //! Returns a reference to the Surface inside the HSurface.
   //! This is redefined from HSurface, cannot be inline.
-  Standard_EXPORT const Adaptor3d_Surface& Surface() const;
+  Standard_EXPORT const Adaptor3d_Surface& Surface() const Standard_OVERRIDE;
   
   //! Returns the surface used to create the GenHSurface.
     GeomAdaptor_Surface& ChangeSurface();

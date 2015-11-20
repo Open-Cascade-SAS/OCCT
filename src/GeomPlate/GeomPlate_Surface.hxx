@@ -64,7 +64,7 @@ public:
 
   //! Reverses the U direction of parametrization of <me>.
   //! The bounds of the surface are not modified.
-  Standard_EXPORT void UReverse();
+  Standard_EXPORT void UReverse() Standard_OVERRIDE;
   
   //! Return the  parameter on the  Ureversed surface for
   //! the point of parameter U on <me>.
@@ -74,12 +74,12 @@ public:
   //! is the same point as
   //!
   //! me->Value(U,V)
-  Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const;
+  Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
 
   //! Reverses the V direction of parametrization of <me>.
   //! The bounds of the surface are not modified.
-  Standard_EXPORT void VReverse();
+  Standard_EXPORT void VReverse() Standard_OVERRIDE;
   
   //! Return the  parameter on the  Vreversed surface for
   //! the point of parameter V on <me>.
@@ -89,7 +89,7 @@ public:
   //! is the same point as
   //!
   //! me->Value(U,V)
-  Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real V) const;
+  Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real V) const Standard_OVERRIDE;
   
   //! Computes the  parameters on the  transformed  surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -130,7 +130,7 @@ public:
   //! Cylinder, Cone, Revolved and Extruded surfaces.
   Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation (const gp_Trsf& T) const Standard_OVERRIDE;
   
-  Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const;
+  Standard_EXPORT void Bounds (Standard_Real& U1, Standard_Real& U2, Standard_Real& V1, Standard_Real& V2) const Standard_OVERRIDE;
   
 
   //! Is the surface closed in the parametric direction U ?
@@ -138,7 +138,7 @@ public:
   //! between the point P (UFirst, V) and P (ULast, V) is
   //! lower or equal to Resolution from gp.  UFirst and ULast
   //! are the parametric bounds in the U direction.
-  Standard_EXPORT Standard_Boolean IsUClosed() const;
+  Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
   
 
   //! Is the surface closed in the parametric direction V ?
@@ -146,7 +146,7 @@ public:
   //! between the point P (U, VFirst) and  P (U, VLast) is
   //! lower or equal to Resolution from gp.  VFirst and VLast
   //! are the parametric bounds in the V direction.
-  Standard_EXPORT Standard_Boolean IsVClosed() const;
+  Standard_EXPORT Standard_Boolean IsVClosed() const Standard_OVERRIDE;
   
 
   //! Is the parametrization of a surface periodic in the
@@ -158,7 +158,7 @@ public:
   //! P (U, V)  and the point  P (U + T, V) is lower or equal
   //! to Resolution from package gp. T is the parametric period
   //! and must be a constant.
-  Standard_EXPORT Standard_Boolean IsUPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsUPeriodic() const Standard_OVERRIDE;
   
   //! returns the Uperiod.
   //! raises if the surface is not uperiodic.
@@ -174,17 +174,17 @@ public:
   //! P (U, V)  and the point  P (U + T, V) is lower or equal
   //! to Resolution from package gp. T is the parametric period
   //! and must be a constant.
-  Standard_EXPORT Standard_Boolean IsVPeriodic() const;
+  Standard_EXPORT Standard_Boolean IsVPeriodic() const Standard_OVERRIDE;
   
   //! returns the Vperiod.
   //! raises if the surface is not vperiodic.
   Standard_EXPORT virtual Standard_Real VPeriod() const Standard_OVERRIDE;
   
   //! Computes the U isoparametric curve.
-  Standard_EXPORT Handle(Geom_Curve) UIso (const Standard_Real U) const;
+  Standard_EXPORT Handle(Geom_Curve) UIso (const Standard_Real U) const Standard_OVERRIDE;
   
   //! Computes the V isoparametric curve.
-  Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V) const;
+  Standard_EXPORT Handle(Geom_Curve) VIso (const Standard_Real V) const Standard_OVERRIDE;
   
 
   //! Global Continuity of the surface in direction U and V :
@@ -198,44 +198,44 @@ public:
   //! Example :
   //! If the surface is C1 in the V parametric direction and C2
   //! in the U parametric direction Shape = C1.
-  Standard_EXPORT GeomAbs_Shape Continuity() const;
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
 
   //! Returns the order of continuity of the surface in the
   //! U parametric direction.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCNu (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCNu (const Standard_Integer N) const Standard_OVERRIDE;
   
 
   //! Returns the order of continuity of the surface in the
   //! V parametric direction.
   //! Raised if N < 0.
-  Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const;
+  Standard_EXPORT Standard_Boolean IsCNv (const Standard_Integer N) const Standard_OVERRIDE;
   
 
   //! Computes the point of parameter U,V on the surface.
   //!
   //! Raised only for an "OffsetSurface" if it is not possible to
   //! compute the current point.
-  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
+  Standard_EXPORT void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const Standard_OVERRIDE;
   
 
   //! Computes the point P and the first derivatives in the
   //! directions U and V at this point.
   //! Raised if the continuity of the surface is not C1.
-  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
+  Standard_EXPORT void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const Standard_OVERRIDE;
   
 
   //! Computes the point P, the first and the second derivatives in
   //! the directions U and V at this point.
   //! Raised if the continuity of the surface is not C2.
-  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const;
+  Standard_EXPORT void D2 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const Standard_OVERRIDE;
   
 
   //! Computes the point P, the first,the second and the third
   //! derivatives in the directions U and V at this point.
   //! Raised if the continuity of the surface is not C2.
-  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
+  Standard_EXPORT void D3 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const Standard_OVERRIDE;
   
   //! ---Purpose ;
   //! Computes the derivative of order Nu in the direction U and Nv
@@ -244,9 +244,9 @@ public:
   //! Raised if the continuity of the surface is not CNu in the U
   //! direction or not CNv in the V direction.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const;
+  Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(Geom_Geometry) Copy() const;
+  Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
   
 
   //! Transformation of a geometric object. This tansformation
@@ -254,7 +254,7 @@ public:
   //! or a complex transformation obtained by combination of
   //! the previous elementaries transformations.
   //! (see class Transformation of the package Geom).
-  Standard_EXPORT void Transform (const gp_Trsf& T);
+  Standard_EXPORT void Transform (const gp_Trsf& T) Standard_OVERRIDE;
   
   Standard_EXPORT Handle(Geom_Surface) CallSurfinit() const;
   
