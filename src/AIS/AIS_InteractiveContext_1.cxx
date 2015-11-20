@@ -1023,16 +1023,20 @@ void AIS_InteractiveContext::SetSelected (const Handle(SelectMgr_EntityOwner)& t
 void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(AIS_InteractiveObject)& theObject,
                                                   const Standard_Boolean theToUpdateViewer)
 {
-  if (!theObject->HasInteractiveContext())
-    theObject->SetContext (this);
+  if (theObject.IsNull())
+    return;
 
   if (HasOpenedContext())
     return myLocalContexts (myCurLocalIndex)->AddOrRemoveSelected (theObject, theToUpdateViewer);
 
-  if (theObject.IsNull() || !myObjects.IsBound (theObject) || !theObject->HasSelection (0))
+  const Standard_Integer aGlobalSelMode = theObject->GlobalSelectionMode();
+  if (!myObjects.IsBound (theObject) || !theObject->HasSelection (aGlobalSelMode))
     return;
 
-  const Handle(SelectMgr_Selection)& aSel = theObject->Selection (0);
+  if (!theObject->HasInteractiveContext())
+    theObject->SetContext (this);
+
+  const Handle(SelectMgr_Selection)& aSel = theObject->Selection (aGlobalSelMode);
 
   if (aSel->IsEmpty())
     return;
@@ -1139,10 +1143,10 @@ Standard_Boolean AIS_InteractiveContext::IsSelected (const Handle(AIS_Interactiv
       break;
     }
   }
-  if (!theObj->HasSelection (aGlobalSelMode) || !isGlobalModeActivated)
+  if (!theObj->HasSelection (aGlobalSelMode) || !isGlobalModeActivated || theObj->GlobalSelOwner().IsNull())
     return Standard_False;
 
-  return myObjects (theObj)->IsHilighted();
+  return theObj->GlobalSelOwner()->State() == 1;
 }
 
 //=======================================================================
