@@ -143,10 +143,7 @@ private:
 
   //! Constructor is private
   Standard_Type (const char* theSystemName, const char* theName,
-                 Standard_Size theSize, const Handle(Standard_Type)& theParent)
-  : mySystemName(theSystemName), myName(theName), mySize(theSize), myParent(theParent)
-  {
-  }
+                 Standard_Size theSize, const Handle(Standard_Type)& theParent);
 
 private:
   Standard_CString mySystemName;  //!< System name of the class (typeinfo.name)
