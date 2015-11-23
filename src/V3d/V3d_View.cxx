@@ -2940,11 +2940,11 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
                                      const V3d_StereoDumpOptions theStereoOptions)
 {
   // always prefer hardware accelerated offscreen buffer
-  Graphic3d_PtrFrameBuffer aFBOPtr = NULL;
-  Graphic3d_PtrFrameBuffer aPrevFBOPtr = myView->FBO();
+  Handle(Standard_Transient) aFBOPtr;
+  Handle(Standard_Transient) aPrevFBOPtr = myView->FBO();
   Standard_Integer aFBOVPSizeX (theWidth), aFBOVPSizeY (theHeight), aFBOSizeXMax (0), aFBOSizeYMax (0);
   Standard_Integer aPrevFBOVPSizeX (0), aPrevFBOVPSizeY (0), aPrevFBOSizeXMax (0), aPrevFBOSizeYMax (0);
-  if (aPrevFBOPtr != NULL)
+  if (!aPrevFBOPtr.IsNull())
   {
     myView->FBOGetDimensions (aPrevFBOPtr,
                               aPrevFBOVPSizeX, aPrevFBOVPSizeY,
@@ -2956,11 +2956,11 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
     }
   }
 
-  if (aFBOPtr == NULL)
+  if (aFBOPtr.IsNull())
   {
     // Try to create hardware accelerated buffer
     aFBOPtr = myView->FBOCreate (aFBOVPSizeX, aFBOVPSizeY);
-    if (aFBOPtr != NULL)
+    if (!aFBOPtr.IsNull())
     {
       myView->FBOGetDimensions (aFBOPtr,
                                 aFBOVPSizeX,  aFBOVPSizeY,
@@ -2975,7 +2975,7 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
 
   // If hardware accelerated buffer - try to use onscreen buffer
   // Results may be bad!
-  if (aFBOPtr == NULL)
+  if (aFBOPtr.IsNull())
   {
     // retrieve window sizes
     Standard_Integer aWinWidth, aWinHeight;
@@ -3065,7 +3065,7 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
   {
     myView->FBORelease (aFBOPtr);
   }
-  else if (aPrevFBOPtr != NULL)
+  else if (!aPrevFBOPtr.IsNull())
   {
     myView->FBOChangeViewport (aPrevFBOPtr, aPrevFBOVPSizeX, aPrevFBOVPSizeY);
   }

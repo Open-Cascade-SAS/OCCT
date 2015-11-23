@@ -16,7 +16,6 @@
 #ifndef _OpenGl_Workspace_Header
 #define _OpenGl_Workspace_Header
 
-#include <Graphic3d_PtrFrameBuffer.hxx>
 #include <Graphic3d_BufferType.hxx>
 
 #include <InterfaceGraphic_Graphic3d.hxx>
@@ -128,13 +127,13 @@ public:
 
   const Handle(OpenGl_Context)& GetGlContext() { return myGlContext; }
 
-  Standard_EXPORT Graphic3d_PtrFrameBuffer FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight);
+  Standard_EXPORT Handle(OpenGl_FrameBuffer) FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight);
 
-  Standard_EXPORT void FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr);
+  Standard_EXPORT void FBORelease (Handle(OpenGl_FrameBuffer)& theFbo);
 
-  Standard_Boolean BufferDump (OpenGl_FrameBuffer*         theFBOPtr,
-                               Image_PixMap&               theImage,
-                               const Graphic3d_BufferType& theBufferType);
+  Standard_Boolean BufferDump (const Handle(OpenGl_FrameBuffer)& theFbo,
+                               Image_PixMap&                     theImage,
+                               const Graphic3d_BufferType&       theBufferType);
 
   Standard_EXPORT Standard_Integer Width()  const;
 

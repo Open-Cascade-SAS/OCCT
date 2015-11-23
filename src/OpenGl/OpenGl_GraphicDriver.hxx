@@ -37,7 +37,6 @@
 #include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_SortType.hxx>
-#include <Graphic3d_PtrFrameBuffer.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_Array2OfVertex.hxx>
 #include <Graphic3d_BufferType.hxx>

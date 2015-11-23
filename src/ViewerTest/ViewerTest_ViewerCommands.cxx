@@ -4370,9 +4370,9 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
     {
       if (isTileSizeProvided)
       {
-        Handle(Graphic3d_CView) aGraphicView = ViewerTest::CurrentView()->View();
-        Graphic3d_PtrFrameBuffer anOldBuffer = aGraphicView->FBO();
-        Graphic3d_PtrFrameBuffer aNewBuffer  = aGraphicView->FBOCreate (aTileWidth, aTileHeight);
+        Handle(Graphic3d_CView)    aGraphicView = ViewerTest::CurrentView()->View();
+        Handle(Standard_Transient) anOldBuffer  = aGraphicView->FBO();
+        Handle(Standard_Transient) aNewBuffer   = aGraphicView->FBOCreate (aTileWidth, aTileHeight);
         aGraphicView->SetFBO (aNewBuffer);
 
         isPrinted = aView->Print (anDC, 1, 1, 0, Aspect_PA_TILE);

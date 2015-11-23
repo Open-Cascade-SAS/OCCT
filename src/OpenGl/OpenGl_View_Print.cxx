@@ -343,7 +343,7 @@ Standard_Boolean OpenGl_View::Print (const Aspect_Handle    thePrinterDC,
 
   // Frame buffer initialization
   OpenGl_FrameBuffer* aFrameBuffer = NULL;
-  OpenGl_FrameBuffer* aPrevBuffer = (OpenGl_FrameBuffer*)myFBO;
+  OpenGl_FrameBuffer* aPrevBuffer  = myFBO.operator->();
   Standard_Integer aFrameWidth (0),  aFrameHeight (0),
                    aPrevBufferX (0), aPrevBufferY (0);
 

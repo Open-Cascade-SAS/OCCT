@@ -301,7 +301,7 @@ void D3DHost_View::Redraw()
   {
     return;
   }
-  else if (myFBO != NULL)
+  else if (!myFBO.IsNull())
   {
     OpenGl_View::Redraw();
     return;
@@ -310,9 +310,9 @@ void D3DHost_View::Redraw()
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   myToFlipOutput = Standard_True;
   myD3dWglFbo->LockSurface   (aCtx);
-  myFBO = myD3dWglFbo.get();
+  myFBO = myD3dWglFbo;
   OpenGl_View::Redraw();
-  myFBO = NULL;
+  myFBO.Nullify();
   myD3dWglFbo->UnlockSurface (aCtx);
   myToFlipOutput = Standard_False;
   if (aCtx->caps->buffersNoSwap)
@@ -351,7 +351,7 @@ void D3DHost_View::RedrawImmediate()
   {
     return;
   }
-  else if (myFBO != NULL)
+  else if (!myFBO.IsNull())
   {
     OpenGl_View::Redraw();
     return;
@@ -359,9 +359,9 @@ void D3DHost_View::RedrawImmediate()
 
   myToFlipOutput = Standard_True;
   myD3dWglFbo->LockSurface   (aCtx);
-  myFBO = myD3dWglFbo.get();
+  myFBO = myD3dWglFbo;
   OpenGl_View::RedrawImmediate();
-  myFBO = NULL;
+  myFBO.Nullify();
   myD3dWglFbo->UnlockSurface (aCtx);
   myToFlipOutput = Standard_False;
   if (aCtx->caps->buffersNoSwap)

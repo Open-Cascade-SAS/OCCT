@@ -38,7 +38,6 @@
 #include <Graphic3d_Vec3.hxx>
 #include <Standard_ShortReal.hxx>
 #include <Standard_Address.hxx>
-#include <Graphic3d_PtrFrameBuffer.hxx>
 #include <Image_PixMap.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <Aspect_Handle.hxx>

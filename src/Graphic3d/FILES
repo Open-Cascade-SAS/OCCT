@@ -95,7 +95,6 @@ Graphic3d_NameOfTexturePlane.hxx
 Graphic3d_NListOfHAsciiString.hxx
 Graphic3d_NMapOfTransient.hxx
 Graphic3d_PriorityDefinitionError.hxx
-Graphic3d_PtrFrameBuffer.hxx
 Graphic3d_RenderingMode.hxx
 Graphic3d_RenderingParams.hxx
 Graphic3d_SequenceOfGroup.hxx

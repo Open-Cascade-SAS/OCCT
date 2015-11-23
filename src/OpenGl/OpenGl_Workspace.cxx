@@ -1084,45 +1084,39 @@ Standard_Boolean OpenGl_Workspace::IsCullingEnabled() const
 // function : FBOCreate
 // purpose  :
 // =======================================================================
-Graphic3d_PtrFrameBuffer OpenGl_Workspace::FBOCreate (const Standard_Integer theWidth,
-                                                      const Standard_Integer theHeight)
+Handle(OpenGl_FrameBuffer) OpenGl_Workspace::FBOCreate (const Standard_Integer theWidth,
+                                                        const Standard_Integer theHeight)
 {
   // activate OpenGL context
   if (!Activate())
-    return NULL;
+    return Handle(OpenGl_FrameBuffer)();
 
   // create the FBO
   const Handle(OpenGl_Context)& aCtx = GetGlContext();
-  OpenGl_FrameBuffer* aFrameBuffer = new OpenGl_FrameBuffer();
+  Handle(OpenGl_FrameBuffer) aFrameBuffer = new OpenGl_FrameBuffer();
   if (!aFrameBuffer->Init (aCtx, theWidth, theHeight, GL_RGBA8, GL_DEPTH24_STENCIL8, 0))
   {
     aFrameBuffer->Release (aCtx.operator->());
-    delete aFrameBuffer;
-    return NULL;
+    return Handle(OpenGl_FrameBuffer)();
   }
-  return (Graphic3d_PtrFrameBuffer )aFrameBuffer;
+  return aFrameBuffer;
 }
 
 // =======================================================================
 // function : FBORelease
 // purpose  :
 // =======================================================================
-void OpenGl_Workspace::FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr)
+void OpenGl_Workspace::FBORelease (Handle(OpenGl_FrameBuffer)& theFbo)
 {
   // activate OpenGL context
   if (!Activate()
-   || theFBOPtr == NULL)
+   || theFbo.IsNull())
   {
     return;
   }
 
-  // release the object
-  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer*)theFBOPtr;
-  if (aFrameBuffer != NULL)
-  {
-    aFrameBuffer->Release (GetGlContext().operator->());
-  }
-  delete aFrameBuffer;
+  theFbo->Release (GetGlContext().operator->());
+  theFbo.Nullify();
 }
 
 inline bool getDataFormat (const Image_PixMap& theData,
@@ -1209,9 +1203,9 @@ inline Standard_Size getAligned (const Standard_Size theNumber,
 // function : BufferDump
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFBOPtr,
-                                               Image_PixMap&               theImage,
-                                               const Graphic3d_BufferType& theBufferType)
+Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)& theFbo,
+                                               Image_PixMap&                     theImage,
+                                               const Graphic3d_BufferType&       theBufferType)
 {
   GLenum aFormat, aType;
   if (theImage.IsEmpty()
@@ -1230,9 +1224,9 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
 #endif
 
   // bind FBO if used
-  if (theFBOPtr != NULL && theFBOPtr->IsValid())
+  if (!theFbo.IsNull() && theFbo->IsValid())
   {
-    theFBOPtr->BindBuffer (GetGlContext());
+    theFbo->BindBuffer (GetGlContext());
   }
   else
   {
@@ -1290,9 +1284,9 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
   glPixelStorei (GL_PACK_ROW_LENGTH, 0);
 #endif
 
-  if (theFBOPtr != NULL && theFBOPtr->IsValid())
+  if (!theFbo.IsNull() && theFbo->IsValid())
   {
-    theFBOPtr->UnbindBuffer (GetGlContext());
+    theFbo->UnbindBuffer (GetGlContext());
   }
   else
   {

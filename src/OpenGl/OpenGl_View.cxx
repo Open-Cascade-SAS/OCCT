@@ -70,7 +70,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myFog            (myDefaultFog),
   myZClip          (myDefaultZClip),
   myCamera         (new Graphic3d_Camera()),
-  myFBO            (NULL),
   myUseGLLight     (Standard_True),
   myToShowTrihedron      (false),
   myToShowGradTrihedron  (false),
@@ -517,26 +516,26 @@ void OpenGl_View::SetZLayerSettings (const Graphic3d_ZLayerId        theLayerId,
 //function : FBO
 //purpose  :
 //=======================================================================
-Graphic3d_PtrFrameBuffer OpenGl_View::FBO() const
+Handle(Standard_Transient) OpenGl_View::FBO() const
 {
-  return reinterpret_cast<Graphic3d_PtrFrameBuffer> (myFBO);
+  return Handle(Standard_Transient)(myFBO);
 }
 
 //=======================================================================
 //function : SetFBO
 //purpose  :
 //=======================================================================
-void OpenGl_View::SetFBO (const Graphic3d_PtrFrameBuffer theFBO)
+void OpenGl_View::SetFBO (const Handle(Standard_Transient)& theFbo)
 {
-  myFBO = reinterpret_cast<OpenGl_FrameBuffer*> (theFBO);
+  myFBO = Handle(OpenGl_FrameBuffer)::DownCast (theFbo);
 }
 
 //=======================================================================
 //function : FBOCreate
 //purpose  :
 //=======================================================================
-Graphic3d_PtrFrameBuffer OpenGl_View::FBOCreate (const Standard_Integer theWidth,
-                                                 const Standard_Integer theHeight)
+Handle(Standard_Transient) OpenGl_View::FBOCreate (const Standard_Integer theWidth,
+                                                   const Standard_Integer theHeight)
 {
   return myWorkspace->FBOCreate (theWidth, theHeight);
 }
@@ -545,22 +544,34 @@ Graphic3d_PtrFrameBuffer OpenGl_View::FBOCreate (const Standard_Integer theWidth
 //function : FBORelease
 //purpose  :
 //=======================================================================
-void OpenGl_View::FBORelease (Graphic3d_PtrFrameBuffer& theFBOPtr)
+void OpenGl_View::FBORelease (Handle(Standard_Transient)& theFbo)
 {
-  myWorkspace->FBORelease (theFBOPtr);
+  Handle(OpenGl_FrameBuffer) aFrameBuffer = Handle(OpenGl_FrameBuffer)::DownCast (theFbo);
+  if (aFrameBuffer.IsNull())
+  {
+    return;
+  }
+
+  myWorkspace->FBORelease (aFrameBuffer);
+  theFbo.Nullify();
 }
 
 //=======================================================================
 //function : FBOGetDimensions
 //purpose  :
 //=======================================================================
-void OpenGl_View::FBOGetDimensions (const Graphic3d_PtrFrameBuffer theFBOPtr,
+void OpenGl_View::FBOGetDimensions (const Handle(Standard_Transient)& theFbo,
                                     Standard_Integer& theWidth,
                                     Standard_Integer& theHeight,
                                     Standard_Integer& theWidthMax,
                                     Standard_Integer& theHeightMax)
 {
-  const OpenGl_FrameBuffer* aFrameBuffer = (const OpenGl_FrameBuffer* )theFBOPtr;
+  const Handle(OpenGl_FrameBuffer) aFrameBuffer = Handle(OpenGl_FrameBuffer)::DownCast (theFbo);
+  if (aFrameBuffer.IsNull())
+  {
+    return;
+  }
+
   theWidth     = aFrameBuffer->GetVPSizeX(); // current viewport size
   theHeight    = aFrameBuffer->GetVPSizeY();
   theWidthMax  = aFrameBuffer->GetSizeX(); // texture size
@@ -571,11 +582,16 @@ void OpenGl_View::FBOGetDimensions (const Graphic3d_PtrFrameBuffer theFBOPtr,
 //function : FBOChangeViewport
 //purpose  :
 //=======================================================================
-void OpenGl_View::FBOChangeViewport (Graphic3d_PtrFrameBuffer& theFBOPtr,
+void OpenGl_View::FBOChangeViewport (const Handle(Standard_Transient)& theFbo,
                                      const Standard_Integer theWidth,
                                      const Standard_Integer theHeight)
 {
-  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theFBOPtr;
+  const Handle(OpenGl_FrameBuffer) aFrameBuffer = Handle(OpenGl_FrameBuffer)::DownCast (theFbo);
+  if (aFrameBuffer.IsNull())
+  {
+    return;
+  }
+
   aFrameBuffer->ChangeViewport (theWidth, theHeight);
 }
 

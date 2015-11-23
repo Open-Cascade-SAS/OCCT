@@ -284,7 +284,7 @@ void OpenGl_View::Redraw()
   // set resolution ratio
   aCtx->SetResolutionRatio (RenderingParams().ResolutionRatio());
 
-  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )myFBO;
+  OpenGl_FrameBuffer* aFrameBuffer = myFBO.operator->();
   bool toSwap = aCtx->IsRender()
             && !aCtx->caps->buffersNoSwap
             &&  aFrameBuffer == NULL;
@@ -521,7 +521,7 @@ void OpenGl_View::RedrawImmediate()
 
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
-  OpenGl_FrameBuffer*          aFrameBuffer = (OpenGl_FrameBuffer* )myFBO;
+  OpenGl_FrameBuffer*          aFrameBuffer = myFBO.operator->();
 
   if ( aFrameBuffer == NULL
    && !aCtx->DefaultFrameBuffer().IsNull()

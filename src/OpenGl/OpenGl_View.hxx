@@ -233,28 +233,28 @@ public:
                                                   const Graphic3d_ZLayerSettings& theSettings) Standard_OVERRIDE;
 
   //! Returns pointer to an assigned framebuffer object.
-  Standard_EXPORT virtual Graphic3d_PtrFrameBuffer FBO() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Standard_Transient) FBO() const Standard_OVERRIDE;
 
   //! Sets framebuffer object for offscreen rendering.
-  Standard_EXPORT virtual void SetFBO (const Graphic3d_PtrFrameBuffer theFBO) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetFBO (const Handle(Standard_Transient)& theFbo) Standard_OVERRIDE;
 
   //! Generate offscreen FBO in the graphic library.
   //! If not supported on hardware returns NULL.
-  Standard_EXPORT virtual Graphic3d_PtrFrameBuffer FBOCreate (const Standard_Integer theWidth,
-                                                              const Standard_Integer theHeight) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Standard_Transient) FBOCreate (const Standard_Integer theWidth,
+                                                                const Standard_Integer theHeight) Standard_OVERRIDE;
 
   //! Remove offscreen FBO from the graphic library
-  Standard_EXPORT virtual void FBORelease (Graphic3d_PtrFrameBuffer& theFBOPtr) Standard_OVERRIDE;
+  Standard_EXPORT virtual void FBORelease (Handle(Standard_Transient)& theFbo) Standard_OVERRIDE;
 
   //! Read offscreen FBO configuration.
-  Standard_EXPORT virtual void FBOGetDimensions (const Graphic3d_PtrFrameBuffer theFBOPtr,
+  Standard_EXPORT virtual void FBOGetDimensions (const Handle(Standard_Transient)& theFbo,
                                                  Standard_Integer& theWidth,
                                                  Standard_Integer& theHeight,
                                                  Standard_Integer& theWidthMax,
                                                  Standard_Integer& theHeightMax) Standard_OVERRIDE;
 
   //! Change offscreen FBO viewport.
-  Standard_EXPORT virtual void FBOChangeViewport (Graphic3d_PtrFrameBuffer& theFBOPtr,
+  Standard_EXPORT virtual void FBOChangeViewport (const Handle(Standard_Transient)& theFbo,
                                                   const Standard_Integer theWidth,
                                                   const Standard_Integer theHeight) Standard_OVERRIDE;
 
@@ -569,7 +569,7 @@ protected:
   OPENGL_ZCLIP                    myZClip;
   Graphic3d_SequenceOfHClipPlane  myClipPlanes;
   Handle(Graphic3d_Camera)        myCamera;
-  OpenGl_FrameBuffer*             myFBO;
+  Handle(OpenGl_FrameBuffer)      myFBO;
   Standard_Boolean                myUseGLLight;
   Standard_Boolean                myToShowTrihedron;
   Standard_Boolean                myToShowGradTrihedron;
