@@ -55,7 +55,7 @@ public:
  // Methods PUBLIC
  // 
 Standard_EXPORT OCAFSample_CommonDriver();
-Standard_EXPORT virtual  Standard_Integer Execute(TFunction_Logbook& theLogbook) const;
+Standard_EXPORT virtual  Standard_Integer Execute(Handle(TFunction_Logbook)& theLogbook) const;
 Standard_EXPORT ~OCAFSample_CommonDriver();
 
 

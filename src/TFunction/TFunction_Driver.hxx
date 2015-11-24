@@ -62,18 +62,18 @@ public:
   //! method even if the function is not executed.
   //! execution of function
   //! =====================
-  Standard_EXPORT virtual void Validate (TFunction_Logbook& log) const;
+  Standard_EXPORT virtual void Validate (Handle(TFunction_Logbook)& log) const;
   
   //! Analyzes the labels in the logbook log.
   //! Returns true if attributes have been modified.
   //! If the function label itself has been modified, the function must be executed.
-  Standard_EXPORT virtual Standard_Boolean MustExecute (const TFunction_Logbook& log) const;
+  Standard_EXPORT virtual Standard_Boolean MustExecute (const Handle(TFunction_Logbook)& log) const;
   
   //! Executes the function in this function driver and
   //! puts the impacted labels in the logbook log.
   //! arguments & results of functions
   //! ================================
-  Standard_EXPORT virtual Standard_Integer Execute (TFunction_Logbook& log) const = 0;
+  Standard_EXPORT virtual Standard_Integer Execute (Handle(TFunction_Logbook)& log) const = 0;
   
   //! The method fills-in the list by labels,
   //! where the arguments of the function are located.

@@ -56,9 +56,9 @@ public:
  // 
 Standard_EXPORT static const Standard_GUID& GetID() ;
 Standard_EXPORT TOcafFunction_BoxDriver();
-Standard_EXPORT virtual  void Validate(TFunction_Logbook& log) const;
-Standard_EXPORT virtual  Standard_Boolean MustExecute(const TFunction_Logbook& log) const;
-Standard_EXPORT virtual  Standard_Integer Execute(TFunction_Logbook& log) const;
+Standard_EXPORT virtual  void Validate(Handle(TFunction_Logbook)& log) const;
+Standard_EXPORT virtual  Standard_Boolean MustExecute(const Handle(TFunction_Logbook)& log) const;
+Standard_EXPORT virtual  Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 Standard_EXPORT ~TOcafFunction_BoxDriver();
 
 

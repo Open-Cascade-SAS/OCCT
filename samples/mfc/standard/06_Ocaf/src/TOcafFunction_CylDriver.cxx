@@ -39,10 +39,10 @@ TOcafFunction_CylDriver::TOcafFunction_CylDriver()
 //purpose  : Validation of the object label, its arguments and its results.
 //=======================================================================
 
-void TOcafFunction_CylDriver::Validate(TFunction_Logbook& log) const
+void TOcafFunction_CylDriver::Validate(Handle(TFunction_Logbook)& log) const
 {
   // We validate the object label ( Label() ), all the arguments and the results of the object:
-  log.SetValid(Label(), Standard_True);
+  log->SetValid(Label(), Standard_True);
 }
 
 //=======================================================================
@@ -51,19 +51,19 @@ void TOcafFunction_CylDriver::Validate(TFunction_Logbook& log) const
 //         : be invoked. If the object label or an argument is modified,
 //         : we must recompute the object - to call the method Execute().
 //=======================================================================
-Standard_Boolean TOcafFunction_CylDriver::MustExecute(const TFunction_Logbook& log) const
+Standard_Boolean TOcafFunction_CylDriver::MustExecute(const Handle(TFunction_Logbook)& log) const
 {
 	// If the object's label is modified:
-  if (log.IsModified(Label())) return Standard_True; 
+  if (log->IsModified(Label())) return Standard_True; 
 
   // Cylinder (in our simple case) has 5 arguments: 
   // 
   // Let's check them:
-  if (log.IsModified(Label().FindChild(1))) return Standard_True; // radius.
-  if (log.IsModified(Label().FindChild(2))) return Standard_True; // height,
-  if (log.IsModified(Label().FindChild(3))) return Standard_True; // x.
-  if (log.IsModified(Label().FindChild(4))) return Standard_True; // y,
-  if (log.IsModified(Label().FindChild(5))) return Standard_True; // z.
+  if (log->IsModified(Label().FindChild(1))) return Standard_True; // radius.
+  if (log->IsModified(Label().FindChild(2))) return Standard_True; // height,
+  if (log->IsModified(Label().FindChild(3))) return Standard_True; // x.
+  if (log->IsModified(Label().FindChild(4))) return Standard_True; // y,
+  if (log->IsModified(Label().FindChild(5))) return Standard_True; // z.
   
  // if there are no any modifications concerned the Cyl,
   // it's not necessary to recompute (to call the method Execute()):
@@ -81,7 +81,7 @@ Standard_Boolean TOcafFunction_CylDriver::MustExecute(const TFunction_Logbook& l
 //         : if there are no any mistakes occurred we return 0:
 //         : 0 - no mistakes were found.
 //=======================================================================
-Standard_Integer TOcafFunction_CylDriver::Execute(TFunction_Logbook& /*log*/) const
+Standard_Integer TOcafFunction_CylDriver::Execute(Handle(TFunction_Logbook)& /*log*/) const
 {
 	// Get the values of dimension and position attributes 
 	Handle(TDataStd_Real) TSR;

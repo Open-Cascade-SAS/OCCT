@@ -88,7 +88,7 @@ TDF_Label TOcaf_Commands::CreateBox(Standard_Real x, Standard_Real y, Standard_R
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_BoxDriver::GetID());
 
 	// Initialize and execute the box driver (look at the "Execute()" code)
-    TFunction_Logbook log;
+    Handle(TFunction_Logbook) log = TFunction_Logbook::Set(L);
 
 	Handle(TOcafFunction_BoxDriver) myBoxDriver;
     // Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID
@@ -143,7 +143,7 @@ TDF_Label TOcaf_Commands::CreateCyl(Standard_Real x, Standard_Real y, Standard_R
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_CylDriver::GetID());
 
 	// Initialize and execute the cylinder driver (look at the "Execute()" code)
-    TFunction_Logbook log;
+    Handle(TFunction_Logbook) log = TFunction_Logbook::Set(L);
 
 	Handle(TOcafFunction_CylDriver) myCylDriver;
 	// Find the TOcafFunction_CylDriver in the TFunction_DriverTable using its GUID
@@ -156,7 +156,7 @@ TDF_Label TOcaf_Commands::CreateCyl(Standard_Real x, Standard_Real y, Standard_R
 }
 
 
-TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real w, Standard_Real l, Standard_Real h, const TCollection_ExtendedString &Name, TFunction_Logbook &log)
+TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real w, Standard_Real l, Standard_Real h, const TCollection_ExtendedString &Name, Handle(TFunction_Logbook) &log)
 {
 	// Set the name attribute (if it's not null)
 	Handle(TDataStd_Name) myStdName;
@@ -170,7 +170,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(1), w);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(2).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -178,7 +178,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(2), l);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(3).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -186,7 +186,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(3), h);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(4).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -194,7 +194,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(4), x);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(5).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -202,7 +202,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(5), y);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(6).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -210,7 +210,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(6), z);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	// Get the TFunction_Function used to create the box
@@ -231,7 +231,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	if (myBoxDriver->MustExecute(log))
 	{
 		// Set the box touched, it will be usefull to recompute an object which used this box as attribute
-		log.SetTouched(MainLab);
+		log->SetTouched(MainLab);
 		if(myBoxDriver->Execute(log))
 			MessageBox (NULL, L"Recompute failed", L"Modify box", MB_ICONEXCLAMATION);
 	}
@@ -239,7 +239,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	return MainLab;
 }
 
-TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real r, Standard_Real h, const TCollection_ExtendedString &Name, TFunction_Logbook &log)
+TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real r, Standard_Real h, const TCollection_ExtendedString &Name, Handle(TFunction_Logbook) &log)
 {
 	// Set the name attribute (if it's not null)
 	Handle(TDataStd_Name) myStdName;
@@ -253,7 +253,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(1), r);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(2).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -261,7 +261,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(2), h);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(3).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -269,7 +269,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(3), x);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(4).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -277,7 +277,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(4), y);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	MainLab.FindChild(5).FindAttribute(TDataStd_Real::GetID(),curReal);
@@ -285,7 +285,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	{
 		TDataStd_Real::Set(MainLab.FindChild(5), z);
 		// Set the label of the attribute as touched for next recomputation
-		log.SetTouched(curReal->Label());
+		log->SetTouched(curReal->Label());
 	}
 
 	// Get the TFunction_Function used to create the cylinder
@@ -306,7 +306,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	if (myCylDriver->MustExecute(log))
 	{
 		// Set the cylinder touched, it will be usefull to recompute an object which used this cylinder as attribute
-		log.SetTouched(MainLab);
+		log->SetTouched(MainLab);
 		if(myCylDriver->Execute(log))
 			MessageBoxW (NULL, L"Recompute failed", L"Modify cylinder", MB_ICONEXCLAMATION);
 	}
@@ -344,7 +344,7 @@ TDF_Label TOcaf_Commands::Cut(TDF_Label ObjectLab, TDF_Label ToolObjectLab)
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_CutDriver::GetID());
 
 	// Initialize and execute the cut driver (look at the "Execute()" code)
-    TFunction_Logbook log;
+    Handle(TFunction_Logbook) log = TFunction_Logbook::Set(L);
 
 	Handle(TOcafFunction_CutDriver) myCutDriver;
     // Find the TOcafFunction_CutDriver in the TFunction_DriverTable using its GUID 

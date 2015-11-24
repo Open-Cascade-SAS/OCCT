@@ -37,10 +37,10 @@ TOcafFunction_BoxDriver::TOcafFunction_BoxDriver()
 //purpose  : Validation of the object label, its arguments and its results.
 //=======================================================================
 
-void TOcafFunction_BoxDriver::Validate(TFunction_Logbook& log) const
+void TOcafFunction_BoxDriver::Validate(Handle(TFunction_Logbook)& log) const
 {
   // We validate the object label ( Label() ), all the arguments and the results of the object:
-  log.SetValid(Label(), Standard_True);
+  log->SetValid(Label(), Standard_True);
 }
 
 //=======================================================================
@@ -49,10 +49,10 @@ void TOcafFunction_BoxDriver::Validate(TFunction_Logbook& log) const
 //         : be invoked. If the object label or an argument is modified,
 //         : we must recompute the object - to call the method Execute().
 //=======================================================================
-Standard_Boolean TOcafFunction_BoxDriver::MustExecute(const TFunction_Logbook& log) const
+Standard_Boolean TOcafFunction_BoxDriver::MustExecute(const Handle(TFunction_Logbook)& log) const
 {
 	// If the object's label is modified:
-  if (log.IsModified(Label())) return Standard_True; 
+  if (log->IsModified(Label())) return Standard_True; 
 
   // Cut (in our simple case) has two arguments: The original shape, and the tool shape.
   // They are on the child labels of the box's label:
@@ -60,12 +60,12 @@ Standard_Boolean TOcafFunction_BoxDriver::MustExecute(const TFunction_Logbook& l
   //     ToolNShape - is attached to the second child label.
   // 
   // Let's check them:
-  if (log.IsModified(Label().FindChild(1))) return Standard_True; // width.
-  if (log.IsModified(Label().FindChild(2))) return Standard_True; // length,
-  if (log.IsModified(Label().FindChild(3))) return Standard_True; // width.
-  if (log.IsModified(Label().FindChild(4))) return Standard_True; // length,
-  if (log.IsModified(Label().FindChild(5))) return Standard_True; // width.
-  if (log.IsModified(Label().FindChild(6))) return Standard_True; // length,
+  if (log->IsModified(Label().FindChild(1))) return Standard_True; // width.
+  if (log->IsModified(Label().FindChild(2))) return Standard_True; // length,
+  if (log->IsModified(Label().FindChild(3))) return Standard_True; // width.
+  if (log->IsModified(Label().FindChild(4))) return Standard_True; // length,
+  if (log->IsModified(Label().FindChild(5))) return Standard_True; // width.
+  if (log->IsModified(Label().FindChild(6))) return Standard_True; // length,
   
  // if there are no any modifications concerned the box,
   // it's not necessary to recompute (to call the method Execute()):
@@ -83,7 +83,7 @@ Standard_Boolean TOcafFunction_BoxDriver::MustExecute(const TFunction_Logbook& l
 //         : if there are no any mistakes occurred we return 0:
 //         : 0 - no mistakes were found.
 //=======================================================================
-Standard_Integer TOcafFunction_BoxDriver::Execute(TFunction_Logbook& /*log*/) const
+Standard_Integer TOcafFunction_BoxDriver::Execute(Handle(TFunction_Logbook)& /*log*/) const
 {
 	// Get the values of dimension and position attributes 
 	Handle(TDataStd_Real) TSR;

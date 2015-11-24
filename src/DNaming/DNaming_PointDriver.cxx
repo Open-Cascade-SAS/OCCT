@@ -47,14 +47,14 @@ DNaming_PointDriver::DNaming_PointDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_PointDriver::Validate(TFunction_Logbook&) const
+void DNaming_PointDriver::Validate(Handle(TFunction_Logbook)&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_PointDriver::MustExecute(const TFunction_Logbook&) const
+Standard_Boolean DNaming_PointDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
   return Standard_True;
 }
@@ -63,7 +63,7 @@ Standard_Boolean DNaming_PointDriver::MustExecute(const TFunction_Logbook&) cons
 //function : Execute
 //purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_PointDriver::Execute(TFunction_Logbook& theLog) const
+Standard_Integer DNaming_PointDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;
   Label().FindAttribute(TFunction_Function::GetID(),aFunction);
@@ -117,7 +117,7 @@ Standard_Integer DNaming_PointDriver::Execute(TFunction_Logbook& theLog) const
   if(!aLocation.IsIdentity())
     TNaming::Displace(aResultLabel, aLocation, Standard_True);
 
-  theLog.SetValid(aResultLabel, Standard_True);  
+  theLog->SetValid(aResultLabel, Standard_True);  
   
   aFunction->SetFailure(DONE);
   return 0;

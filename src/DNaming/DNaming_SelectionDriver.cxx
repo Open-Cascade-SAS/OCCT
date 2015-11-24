@@ -45,7 +45,7 @@ DNaming_SelectionDriver::DNaming_SelectionDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_SelectionDriver::Validate(TFunction_Logbook& ) const
+void DNaming_SelectionDriver::Validate(Handle(TFunction_Logbook)& ) const
 {}
 
 //=======================================================================
@@ -53,7 +53,7 @@ void DNaming_SelectionDriver::Validate(TFunction_Logbook& ) const
 //purpose  : Analyse in <theLog> if the loaded function must be
 //           executed (i.e.arguments are modified) or not.
 //=======================================================================
-Standard_Boolean DNaming_SelectionDriver::MustExecute(const TFunction_Logbook& ) const {
+Standard_Boolean DNaming_SelectionDriver::MustExecute(const Handle(TFunction_Logbook)& ) const {
   return Standard_True;
 }
 
@@ -82,7 +82,7 @@ static void Write(const TopoDS_Shape& shape,
 #include <TCollection_AsciiString.hxx>
 #include <TDF_ChildIterator.hxx>
 
-Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) const
+Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;
   Label().FindAttribute(TFunction_Function::GetID(),aFunction);
@@ -105,7 +105,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) con
   TNaming_Selector aSelector(aRLabel);
 
   TDF_LabelMap aMap;
-  aMap = theLog.ChangeValid();
+  theLog->GetValid(aMap);
 #ifdef OCCT_DEBUG
   cout <<"#E_DNaming_SelectionDriver:: Valid Label Map:"<<endl;
   TDF_MapIteratorOfLabelMap anItr(aMap);
@@ -126,7 +126,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) con
 //***
 
   if(aSelector.Solve(aMap)) {
-    theLog.SetValid(aRLabel);    
+    theLog->SetValid(aRLabel);
     Handle(TNaming_NamedShape) aNS;
     if(!aRLabel.FindAttribute(TNaming_NamedShape::GetID(),aNS)) {
       cout <<"%%%WARNING: DNaming_SelectionDriver::NamedShape is not found"<<endl;

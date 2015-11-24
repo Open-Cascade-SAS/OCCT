@@ -83,7 +83,7 @@ public:
   //! Returns the Logbook used in TFunction_Driver methods.
   //! Implementation of Attribute methods
   //! ===================================
-  Standard_EXPORT TFunction_Logbook& GetLogbook();
+  Standard_EXPORT Handle(TFunction_Logbook) GetLogbook() const;
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
@@ -120,7 +120,6 @@ private:
 
 
   TFunction_DoubleMapOfIntegerLabel myFunctions;
-  TFunction_Logbook myLogbook;
   Standard_Integer myFreeID;
 
 

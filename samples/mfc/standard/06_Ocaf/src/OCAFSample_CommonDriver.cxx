@@ -48,7 +48,7 @@ OCAFSample_CommonDriver::OCAFSample_CommonDriver()
 //purpose  :
 //=======================================================================
 
-Standard_Integer OCAFSample_CommonDriver::Execute(TFunction_Logbook& theLogbook) const
+Standard_Integer OCAFSample_CommonDriver::Execute(Handle(TFunction_Logbook)& theLogbook) const
 {
   Handle(TDF_Reference) aReference;
   TopoDS_Shape aMaster, aTool;
@@ -77,14 +77,14 @@ Standard_Integer OCAFSample_CommonDriver::Execute(TFunction_Logbook& theLogbook)
 
   TDocStd_Modified::Add(aNode->Father()->Label());
 
-  theLogbook.SetImpacted(Label());
+  theLogbook->SetImpacted(Label());
   TDocStd_Modified::Add(Label());  
 
-  theLogbook.SetImpacted(ResultLabel);
+  theLogbook->SetImpacted(ResultLabel);
 
   TDF_ChildIterator anIterator(ResultLabel);
   for(; anIterator.More(); anIterator.Next()) {
-    theLogbook.SetImpacted(anIterator.Value());
+    theLogbook->SetImpacted(anIterator.Value());
   }  
 
   return OK_OPERATION;

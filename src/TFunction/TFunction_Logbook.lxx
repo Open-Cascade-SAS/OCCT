@@ -16,7 +16,11 @@
 
 inline void TFunction_Logbook::SetTouched(const TDF_Label& L)
 {
-  myTouched.Add(L);
+  if (!myTouched.Contains(L))
+  {
+    Backup();
+    myTouched.Add(L);
+  }
 }
 
 inline const TDF_LabelMap& TFunction_Logbook::GetTouched() const
@@ -29,11 +33,6 @@ inline const TDF_LabelMap& TFunction_Logbook::GetImpacted() const
   return myImpacted;
 }
 
-inline TDF_LabelMap& TFunction_Logbook::ChangeValid()
-{
-  return myValid;
-}
-
 inline const TDF_LabelMap& TFunction_Logbook::GetValid() const
 {
   return myValid;
@@ -41,7 +40,11 @@ inline const TDF_LabelMap& TFunction_Logbook::GetValid() const
 
 inline void TFunction_Logbook::Done(const Standard_Boolean status)
 {
-  isDone = status;
+  if (isDone != status)
+  {
+    Backup();
+    isDone = status;
+  }
 }
 
 inline Standard_Boolean TFunction_Logbook::IsDone() const

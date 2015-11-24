@@ -59,8 +59,8 @@ public:
  // Methods PUBLIC
  // 
 Standard_EXPORT   void Validate(TFunction_Logbook& log) const;
-Standard_EXPORT virtual  Standard_Boolean MustExecute(const TFunction_Logbook& log) const;
-Standard_EXPORT virtual  Standard_Integer Execute(TFunction_Logbook& log) const;
+Standard_EXPORT virtual  Standard_Boolean MustExecute(const Handle(TFunction_Logbook)& log) const;
+Standard_EXPORT virtual  Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 Standard_EXPORT virtual  Standard_Boolean Arguments(TDF_LabelMap& theArgs) const;
 Standard_EXPORT virtual  Standard_Boolean Results(TDF_LabelMap& theRes) const;
 Standard_EXPORT ~OCAFSample_Driver();

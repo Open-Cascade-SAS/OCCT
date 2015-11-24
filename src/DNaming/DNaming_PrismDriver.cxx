@@ -66,14 +66,14 @@ DNaming_PrismDriver::DNaming_PrismDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_PrismDriver::Validate(TFunction_Logbook&) const
+void DNaming_PrismDriver::Validate(Handle(TFunction_Logbook)&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyses in <theLog> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_PrismDriver::MustExecute(const TFunction_Logbook&) const
+Standard_Boolean DNaming_PrismDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
   return Standard_True;
 }
@@ -94,7 +94,7 @@ static void Write(const TopoDS_Shape& shape,
 //function : Execute
 //purpose  : Executes the function 
 //=======================================================================
-Standard_Integer DNaming_PrismDriver::Execute(TFunction_Logbook& theLog) const {
+Standard_Integer DNaming_PrismDriver::Execute(Handle(TFunction_Logbook)& theLog) const {
   Handle(TFunction_Function) aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if(aFunction.IsNull()) return -1;
@@ -206,7 +206,7 @@ Standard_Integer DNaming_PrismDriver::Execute(TFunction_Logbook& theLog) const {
   if(!aLocation.IsIdentity()) 
     TNaming::Displace(RESPOSITION(aFunction), aLocation, Standard_True);
 
-  theLog.SetValid(RESPOSITION(aFunction),Standard_True);  
+  theLog->SetValid(RESPOSITION(aFunction),Standard_True);  
   aFunction->SetFailure(DONE);
   return 0;
 }

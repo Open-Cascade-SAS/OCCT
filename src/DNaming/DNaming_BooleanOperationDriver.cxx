@@ -75,14 +75,14 @@ DNaming_BooleanOperationDriver::DNaming_BooleanOperationDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_BooleanOperationDriver::Validate(TFunction_Logbook&) const
+void DNaming_BooleanOperationDriver::Validate(Handle(TFunction_Logbook)&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_BooleanOperationDriver::MustExecute(const TFunction_Logbook&) const
+Standard_Boolean DNaming_BooleanOperationDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
   return Standard_True;
 }
@@ -91,7 +91,7 @@ Standard_Boolean DNaming_BooleanOperationDriver::MustExecute(const TFunction_Log
 //function : Execute
 //purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_BooleanOperationDriver::Execute(TFunction_Logbook& theLog) const
+Standard_Integer DNaming_BooleanOperationDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;
   Label().FindAttribute(TFunction_Function::GetID(),aFunction);
@@ -162,7 +162,7 @@ Standard_Integer DNaming_BooleanOperationDriver::Execute(TFunction_Logbook& theL
   }
   if(!anIsDone) return -1;
   else {
-    theLog.SetValid(RESPOSITION(aFunction),Standard_True);  
+    theLog->SetValid(RESPOSITION(aFunction),Standard_True);  
     aFunction->SetFailure(DONE);
     return 0;
   }

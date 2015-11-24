@@ -43,9 +43,9 @@ class TOcaf_Commands  {
 
 public:
 	TDF_Label Cut( TDF_Label ObjectLab, TDF_Label ToolObjectLab);
-	TDF_Label ModifyBox(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real w, Standard_Real l, Standard_Real h, const TCollection_ExtendedString& Name, TFunction_Logbook &log);
+	TDF_Label ModifyBox(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real w, Standard_Real l, Standard_Real h, const TCollection_ExtendedString& Name, Handle(TFunction_Logbook) &log);
 	TDF_Label CreateBox(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real w, Standard_Real l, Standard_Real h, const TCollection_ExtendedString& Name);
-	TDF_Label ModifyCyl(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real r, Standard_Real h, const TCollection_ExtendedString &Name, TFunction_Logbook &log);
+	TDF_Label ModifyCyl(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real r, Standard_Real h, const TCollection_ExtendedString &Name, Handle(TFunction_Logbook) &log);
 	TDF_Label CreateCyl(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real r, Standard_Real h, const TCollection_ExtendedString& Name);
 
  // Methods PUBLIC

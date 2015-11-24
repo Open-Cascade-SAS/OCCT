@@ -42,10 +42,10 @@ TOcafFunction_CutDriver::TOcafFunction_CutDriver()
 //purpose  : Validation of the object label, its arguments and its results.
 //=======================================================================
 
-void TOcafFunction_CutDriver::Validate(TFunction_Logbook& log) const
+void TOcafFunction_CutDriver::Validate(Handle(TFunction_Logbook)& log) const
 {
   // We validate the object label ( Label() ), all the arguments and the results of the object:
-  log.SetValid(Label(), Standard_True);
+  log->SetValid(Label(), Standard_True);
 }
 
 //=======================================================================
@@ -55,10 +55,10 @@ void TOcafFunction_CutDriver::Validate(TFunction_Logbook& log) const
 //         : we must recompute the object - to call the method Execute().
 //=======================================================================
 
-Standard_Boolean TOcafFunction_CutDriver::MustExecute(const TFunction_Logbook& log) const
+Standard_Boolean TOcafFunction_CutDriver::MustExecute(const Handle(TFunction_Logbook)& log) const
 {
   // If the object's label is modified:
-  if (log.IsModified(Label())) return Standard_True; 
+  if (log->IsModified(Label())) return Standard_True; 
 
   // Cut (in our simple case) has two arguments: The original shape, and the tool shape.
   // They are on the child labels of the cut's label:
@@ -76,11 +76,11 @@ Standard_Boolean TOcafFunction_CutDriver::MustExecute(const TFunction_Logbook& l
   TDF_Tool::Entry(Label(), aEntry);
   cout << "Entry: "<<aEntry.ToCString()<<endl;
   Label().FindChild(1).FindAttribute(TDF_Reference::GetID(),OriginalRef);
-  if (log.IsModified(OriginalRef->Get()))   return Standard_True; // Original shape.
+  if (log->IsModified(OriginalRef->Get()))   return Standard_True; // Original shape.
 
   Handle(TDF_Reference) ToolRef;
   Label().FindChild(2).FindAttribute(TDF_Reference::GetID(),ToolRef);
-  if (log.IsModified(ToolRef->Get()))   return Standard_True; // Tool shape.
+  if (log->IsModified(ToolRef->Get()))   return Standard_True; // Tool shape.
   
   // if there are no any modifications concerned the cut,
   // it's not necessary to recompute (to call the method Execute()):
@@ -99,7 +99,7 @@ Standard_Boolean TOcafFunction_CutDriver::MustExecute(const TFunction_Logbook& l
 //         : 0 - no mistakes were found.
 //=======================================================================
 
-Standard_Integer TOcafFunction_CutDriver::Execute(TFunction_Logbook& /*log*/) const
+Standard_Integer TOcafFunction_CutDriver::Execute(Handle(TFunction_Logbook)& /*log*/) const
 {
   // Let's get the arguments (OriginalNShape, ToolNShape of the object):
 

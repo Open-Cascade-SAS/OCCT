@@ -456,17 +456,11 @@ static Standard_Integer DNaming_BoxDZ (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-static TFunction_Logbook& GetLogBook ()
-{
-  static TFunction_Logbook myLog;
-  return myLog;
-}
-//=======================================================================
 //function : Compute
 //purpose  : Performs the calling to a driver with the given Function ID.
 //=======================================================================
 static Standard_Integer ComputeFunction(const Handle(TFunction_Function)& theFun, 
-					TFunction_Logbook& theLog)
+                                        Handle(TFunction_Logbook)& theLog)
 {
   Handle(TFunction_DriverTable) aTable = TFunction_DriverTable::Get();
   Handle(TFunction_Driver) aDriver;
@@ -506,6 +500,7 @@ static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& /*theDI*/,
 #ifdef OCCT_DEBUG
     cout << "DNaming_SolveFlatFrom: Father label = " << entry << endl;
 #endif
+    Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(FatherLab);
     Standard_Boolean found(Standard_False);
     TDF_ChildIterator it(FatherLab, Standard_False);  
     for(;it.More(); it.Next()) {
@@ -526,7 +521,9 @@ static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& /*theDI*/,
       else {
 	TDF_Tool::Entry(funLabel, entry);
 	try {
-	  Standard_Integer aRes = ComputeFunction(aFun, GetLogBook());
+      // We clear the logbook because the execution starts not from the begining of the function list (some functions ar skipped).
+      logbook->Clear();
+	  Standard_Integer aRes = ComputeFunction(aFun, logbook);
 	  if(aRes != 0) {
 	    cout << "DNaming_SolveFlatFrom: Driver failed at label = " << entry << endl;
 	    return 1;
@@ -558,13 +555,14 @@ static Standard_Integer DNaming_InitLogBook (Draw_Interpretor& /*theDI*/,
     Handle(TDocStd_Document) aDoc;   
     Standard_CString aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc)) return 1;  
-    if(GetLogBook().IsEmpty()) {
+    Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(aDoc->Main());
+    if(logbook->IsEmpty()) {
 #ifdef OCCT_DEBUG
       cout << "DNaming_InitLogBook : is empty" <<endl;
 #endif
     }
     else {
-      GetLogBook().Clear();
+      logbook->Clear();
 #ifdef OCCT_DEBUG
       cout << "DNaming_InitLogBook : cleaned" <<endl;
 #endif
@@ -586,12 +584,12 @@ static Standard_Integer DNaming_CheckLogBook (Draw_Interpretor& /*theDI*/,
   if (theNb == 2) {
     Handle(TDocStd_Document) aDoc;   
     Standard_CString aDocS(theArg[1]);
-    if (!DDocStd::GetDocument(aDocS, aDoc)) return 1;  
-    if(GetLogBook().IsEmpty())
+    if (!DDocStd::GetDocument(aDocS, aDoc)) return 1;
+    Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(aDoc->Main());
+    if(logbook->IsEmpty())
       cout << "DNaming_CheckLogBook : is empty" <<endl;
     else {
-      TDF_LabelMap aMap;
-      aMap = GetLogBook().GetValid();
+      const TDF_LabelMap& aMap = logbook->GetValid();
       TDF_MapIteratorOfLabelMap it(aMap);
       TCollection_AsciiString entry;
       cout << "DNaming_CheckLogBook : LogBook current state:" <<endl;
@@ -625,7 +623,8 @@ static Standard_Integer DNaming_ComputeFun (Draw_Interpretor& /*theDI*/,
     funLabel.FindAttribute(TFunction_Function::GetID(), aFun);
     if(aFun.IsNull()) return 1;
     if(!aFun.IsNull()) {
-      Standard_Integer aRes = ComputeFunction(aFun, GetLogBook());
+      Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(funLabel);
+      Standard_Integer aRes = ComputeFunction(aFun, logbook);
       if(aRes != 0) {
 	 cout << "DNaming_ComputeFun : No Driver or Driver failed" << endl;
 	 return 1;
@@ -2169,7 +2168,7 @@ void DNaming::ModelingCommands (Draw_Interpretor& theCommands)
 		   __FILE__, DNaming_AddObject, g2);
 
   theCommands.Add ("AddFunction", 
-                   "AddFunction D ObjEntry FunNane[Box|Sph|Cyl|Cut|Fuse|Prism|Revol|PMove|Fillet|Attach|XAttach]",
+                   "AddFunction D ObjEntry FunName[Box|Sph|Cyl|Cut|Fuse|Prism|Revol|PMove|Fillet|Attach|XAttach]",
 		   __FILE__, DNaming_AddFunction, g2);
 
   theCommands.Add ("AddBox", "AddBox Doc dx dy dz",      __FILE__, DNaming_AddBox, g2);

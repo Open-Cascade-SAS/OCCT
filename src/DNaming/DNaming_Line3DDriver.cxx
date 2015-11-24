@@ -64,14 +64,14 @@ DNaming_Line3DDriver::DNaming_Line3DDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_Line3DDriver::Validate(TFunction_Logbook&) const
+void DNaming_Line3DDriver::Validate(Handle(TFunction_Logbook)&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyse in <theLog> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_Line3DDriver::MustExecute(const TFunction_Logbook&) const
+Standard_Boolean DNaming_Line3DDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
   return Standard_True;
 }
@@ -80,7 +80,7 @@ Standard_Boolean DNaming_Line3DDriver::MustExecute(const TFunction_Logbook&) con
 //function : Execute
 //purpose  : Execute the function
 //=======================================================================
-Standard_Integer DNaming_Line3DDriver::Execute(TFunction_Logbook& theLog) const
+Standard_Integer DNaming_Line3DDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;
   Label().FindAttribute(TFunction_Function::GetID(),aFunction);
@@ -185,7 +185,7 @@ Standard_Integer DNaming_Line3DDriver::Execute(TFunction_Logbook& theLog) const
   if(!aLocation.IsIdentity())
     TNaming::Displace(aResultLabel, aLocation, Standard_True);
 
-  theLog.SetValid(aResultLabel, Standard_True);  
+  theLog->SetValid(aResultLabel, Standard_True);  
 
   aFunction->SetFailure(DONE);
   return 0;

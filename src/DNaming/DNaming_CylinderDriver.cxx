@@ -51,14 +51,14 @@ DNaming_CylinderDriver::DNaming_CylinderDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_CylinderDriver::Validate(TFunction_Logbook&) const
+void DNaming_CylinderDriver::Validate(Handle(TFunction_Logbook)&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_CylinderDriver::MustExecute(const TFunction_Logbook&) const
+Standard_Boolean DNaming_CylinderDriver::MustExecute(const Handle(TFunction_Logbook)&) const
 {
   return Standard_True;
 }
@@ -67,7 +67,7 @@ Standard_Boolean DNaming_CylinderDriver::MustExecute(const TFunction_Logbook&) c
 //function : Execute
 //purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_CylinderDriver::Execute(TFunction_Logbook& theLog) const
+Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {
   Handle(TFunction_Function) aFunction;
   Label().FindAttribute(TFunction_Function::GetID(),aFunction);
@@ -155,8 +155,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(TFunction_Logbook& theLog) cons
   if(!aLocation.IsIdentity()) 
     TNaming::Displace(RESPOSITION(aFunction), aLocation, Standard_True);
 
-
-  theLog.SetValid(RESPOSITION(aFunction), Standard_True);  
+  theLog->SetValid(RESPOSITION(aFunction), Standard_True);  
   aFunction->SetFailure(DONE);
   return 0;
 }

@@ -336,7 +336,7 @@ void COcafDoc::OnModify()
 	Standard_GUID myDriverID=TFF->GetDriverGUID();
 
 	Handle(TDocStd_Document) D = GetOcafDoc();
-	TFunction_Logbook log;
+	Handle(TFunction_Logbook) log = TFunction_Logbook::Set(D->Main());
 
 	TCollection_AsciiString Message("\
 //  Modification and recomputation of the selected object \n\
@@ -607,7 +607,7 @@ D->CommitCommand(); \n\
 		// Recompute the cut object if it must be (look at the MustExecute function code)
 //		if (myCutDriver->MustExecute(log))
 //		{
-			log.SetTouched(LabObject);
+			log->SetTouched(LabObject);
 			if(myCutDriver->Execute(log))
 				MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Recompute failed", L"Modify cut", MB_ICONEXCLAMATION);
 //		}

@@ -97,7 +97,7 @@ public:
   Standard_EXPORT const TFunction_DoubleMapOfIntegerLabel& GetAllFunctions() const;
   
   //! Returns the Logbook - keeper of modifications.
-  Standard_EXPORT TFunction_Logbook& GetLogbook() const;
+  Standard_EXPORT Handle(TFunction_Logbook) GetLogbook() const;
   
   //! Returns a driver of the function.
   Standard_EXPORT Handle(TFunction_Driver) GetDriver (const Standard_Integer thread = 0) const;
