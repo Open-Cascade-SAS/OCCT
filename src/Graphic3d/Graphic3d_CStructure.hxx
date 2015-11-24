@@ -129,8 +129,7 @@ public:
 
   CALL_DEF_COLOR HighlightColor;
 
-  float Transformation[4][4];
-  Graphic3d_TypeOfComposition Composition;
+  Graphic3d_Mat4           Transformation;
 
   int   ContainsFacet;
 

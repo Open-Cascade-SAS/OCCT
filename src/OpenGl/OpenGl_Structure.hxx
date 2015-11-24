@@ -180,9 +180,6 @@ public:
   //! Returns OpenGL face aspect.
   const OpenGl_AspectFace* AspectFace() const { return myAspectFace; }
 
-  //! Returns OpenGL transformation matrix.
-  const OpenGl_Matrix* Transformation() const { return myTransformation; }
-
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }
 
@@ -201,7 +198,6 @@ protected:
 
 protected:
 
-  OpenGl_Matrix*             myTransformation;
   OpenGl_AspectLine*         myAspectLine;
   OpenGl_AspectFace*         myAspectFace;
   OpenGl_AspectMarker*       myAspectMarker;

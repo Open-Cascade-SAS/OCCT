@@ -24,6 +24,4 @@ struct OpenGl_Matrix
   DEFINE_STANDARD_ALLOC
 };
 
-Standard_EXPORT void OpenGl_Transposemat3 (OpenGl_Matrix *c, const OpenGl_Matrix *a);
-
 #endif //OpenGl_Matrix_Header

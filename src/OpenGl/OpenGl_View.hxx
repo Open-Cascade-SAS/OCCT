@@ -842,7 +842,7 @@ protected: //! @name methods related to ray-tracing
   //! Adds OpenGL groups to ray-traced scene geometry.
   Standard_Boolean addRaytraceGroups (const OpenGl_Structure*        theStructure,
                                       const OpenGl_RaytraceMaterial& theStructMat,
-                                      const Standard_ShortReal*      theTransform,
+                                      const Graphic3d_Mat4*          theTransform,
                                       const Handle(OpenGl_Context)&  theGlContext);
 
   //! Creates ray-tracing material properties.

@@ -411,29 +411,14 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
     aStructMaterial = convertMaterial (theStructure->AspectFace(), theGlContext);
   }
 
-  Standard_ShortReal aStructTransform[16];
-
-  if (theStructure->Transformation()->mat != NULL)
-  {
-    for (Standard_Integer i = 0; i < 4; ++i)
-    {
-      for (Standard_Integer j = 0; j < 4; ++j)
-      {
-        aStructTransform[j * 4 + i] = theStructure->Transformation()->mat[i][j];
-      }
-    }
-  }
-
-  Standard_Boolean aResult = addRaytraceGroups (theStructure, aStructMaterial,
-    theStructure->Transformation()->mat ? aStructTransform : NULL, theGlContext);
+  Standard_Boolean aResult = addRaytraceGroups (theStructure, aStructMaterial, &theStructure->Transformation, theGlContext);
 
   // Process all connected OpenGL structures
   const OpenGl_Structure* anInstanced = theStructure->InstancedStructure();
 
   if (anInstanced != NULL && anInstanced->IsRaytracable())
   {
-    aResult &= addRaytraceGroups (anInstanced, aStructMaterial,
-      theStructure->Transformation()->mat ? aStructTransform : NULL, theGlContext);
+    aResult &= addRaytraceGroups (anInstanced, aStructMaterial, &theStructure->Transformation, theGlContext);
   }
 
   myStructureStates[theStructure] = StructState (theStructure);
@@ -447,7 +432,7 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
 // =======================================================================
 Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        theStructure,
                                                  const OpenGl_RaytraceMaterial& theStructMat,
-                                                 const Standard_ShortReal*      theTransform,
+                                                 const Graphic3d_Mat4*          theTransform,
                                                  const Handle(OpenGl_Context)&  theGlContext)
 {
   for (OpenGl_Structure::GroupIterator aGroupIter (theStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
@@ -495,7 +480,7 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
 
             if (theTransform != NULL)
             {
-              aTransform->SetTransform (*(reinterpret_cast<const BVH_Mat4f*> (theTransform)));
+              aTransform->SetTransform (*theTransform);
             }
 
             aSet->SetProperties (aTransform);
@@ -516,7 +501,7 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
 
               if (theTransform != NULL)
               {
-                aTransform->SetTransform (*(reinterpret_cast<const BVH_Mat4f*> (theTransform)));
+                aTransform->SetTransform (*theTransform);
               }
 
               aSet->SetProperties (aTransform);

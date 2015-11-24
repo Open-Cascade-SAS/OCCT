@@ -117,7 +117,6 @@ public:
 // =======================================================================
 OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager)
 : Graphic3d_CStructure (theManager),
-  myTransformation     (NULL),
   myAspectLine         (NULL),
   myAspectFace         (NULL),
   myAspectMarker       (NULL),
@@ -139,7 +138,6 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
 OpenGl_Structure::~OpenGl_Structure()
 {
   Release (Handle(OpenGl_Context)());
-  delete myTransformation;  myTransformation  = NULL;
 }
 
 // =======================================================================
@@ -167,22 +165,14 @@ void OpenGl_Structure::UpdateAspects()
 // =======================================================================
 void OpenGl_Structure::UpdateTransformation()
 {
-  if (myTransformation == NULL)
-  {
-    myTransformation = new OpenGl_Matrix();
-  }
-
-  Standard_ShortReal (*aMat)[4] = Graphic3d_CStructure::Transformation;
-
+  const OpenGl_Mat4& aMat = Graphic3d_CStructure::Transformation;
   Standard_ShortReal aDet =
-    aMat[0][0] * (aMat[1][1] * aMat[2][2] - aMat[2][1] * aMat[1][2]) -
-    aMat[0][1] * (aMat[1][0] * aMat[2][2] - aMat[2][0] * aMat[1][2]) +
-    aMat[0][2] * (aMat[1][0] * aMat[2][1] - aMat[2][0] * aMat[1][1]);
+    aMat.GetValue(0, 0) * (aMat.GetValue(1, 1) * aMat.GetValue(2, 2) - aMat.GetValue(2, 1) * aMat.GetValue(1, 2)) -
+    aMat.GetValue(0, 1) * (aMat.GetValue(1, 0) * aMat.GetValue(2, 2) - aMat.GetValue(2, 0) * aMat.GetValue(1, 2)) +
+    aMat.GetValue(0, 2) * (aMat.GetValue(1, 0) * aMat.GetValue(2, 1) - aMat.GetValue(2, 0) * aMat.GetValue(1, 1));
 
   // Determinant of transform matrix less then 0 means that mirror transform applied.
   myIsMirrored = aDet < 0.0f;
-
-  matcpy (myTransformation->mat, &Graphic3d_CStructure::Transformation[0][0]);
 
   if (IsRaytracable())
   {
@@ -534,26 +524,18 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     theWorkspace->NamedStatus |= OPENGL_NS_HIGHLIGHT;
   }
 
-  // Do we need to restore GL_NORMALIZE?
-  const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
-
   // Apply local transformation
-  if (myTransformation)
-  {
-    OpenGl_Matrix aModelWorld;
-    OpenGl_Transposemat3 (&aModelWorld, myTransformation);
-    aCtx->ModelWorldState.Push();
-    aCtx->ModelWorldState.SetCurrent (OpenGl_Mat4::Map ((Standard_ShortReal* )aModelWorld.mat));
+  aCtx->ModelWorldState.Push();
+  aCtx->ModelWorldState.SetCurrent (Transformation);
 
-    Standard_ShortReal aScaleX = OpenGl_Vec3 (myTransformation->mat[0][0],
-                                              myTransformation->mat[0][1],
-                                              myTransformation->mat[0][2]).SquareModulus();
-    // Scale transform detected.
-    if (Abs (aScaleX - 1.f) > Precision::Confusion())
-    {
-      aCtx->SetGlNormalizeEnabled (Standard_True);
-    }
+  // detect scale transform
+  const Standard_Boolean   anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
+  const Standard_ShortReal aScaleX          = Transformation.GetRow (0).xyz().SquareModulus();
+  if (Abs (aScaleX - 1.f) > Precision::Confusion())
+  {
+    aCtx->SetGlNormalizeEnabled (Standard_True);
   }
+
   if (TransformPersistence.Flags)
   {
     OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
@@ -678,11 +660,8 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 
   // Restore local transformation
-  if (myTransformation)
-  {
-    aCtx->ModelWorldState.Pop();
-    aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
-  }
+  aCtx->ModelWorldState.Pop();
+  aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
   if (TransformPersistence.Flags)
   {
     aCtx->ProjectionState.Pop();

@@ -28,17 +28,9 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
   Handle(OpenGl_StructureShadow) aShadow = Handle(OpenGl_StructureShadow)::DownCast (theStructure);
   myParent = aShadow.IsNull() ? theStructure : aShadow->myParent;
 
-
-  Composition   = myParent->Composition;
   ContainsFacet = myParent->ContainsFacet;
   IsInfinite    = myParent->IsInfinite;
-  for (Standard_Integer i = 0; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 0; j <= 3; ++j)
-    {
-      Graphic3d_CStructure::Transformation[i][j] = myParent->Graphic3d_CStructure::Transformation[i][j];
-    }
-  }
+  Transformation = myParent->Transformation;
 
   UpdateTransformation();
   myInstancedStructure = const_cast<OpenGl_Structure*> (myParent->InstancedStructure());

@@ -28,7 +28,6 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   myZLayer         (Graphic3d_ZLayerId_Default),
   Priority         (Structure_MAX_PRIORITY / 2),
   PreviousPriority (Structure_MAX_PRIORITY / 2),
-  Composition      (Graphic3d_TOC_REPLACE),
   ContainsFacet    (0),
   IsInfinite       (0),
   stick            (0),
@@ -40,14 +39,6 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   Is2dText         (Standard_False),
   myGraphicDriver  (theManager->GraphicDriver())
 {
-  for (Standard_Integer i = 0; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 0; j <= 3; ++j)
-    {
-      Transformation[i][j] = (i == j) ? 1.0f : 0.0f;
-    }
-  }
-
   ContextLine.IsDef     = 1,
   ContextFillArea.IsDef = 1,
   ContextMarker.IsDef   = 1,

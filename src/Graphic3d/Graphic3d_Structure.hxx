@@ -284,10 +284,6 @@ public:
   //! Returns the highlight indicator for the structure <me>.
   Standard_EXPORT virtual Standard_Boolean IsHighlighted() const;
   
-  //! Returns Standard_True if the structure <me> is rotated.
-  //! <=> The transformation != Identity, != Scale, != Translation.
-  Standard_EXPORT Standard_Boolean IsRotated() const;
-  
   //! Returns Standard_True if the structure <me> is transformed.
   //! <=> The transformation != Identity.
   Standard_EXPORT Standard_Boolean IsTransformed() const;
@@ -376,11 +372,7 @@ public:
   Standard_EXPORT void SetHLRValidation (const Standard_Boolean AFlag);
   
   Standard_EXPORT Standard_Boolean HLRValidation() const;
-  
-  //! Returns the type of composition applied to matrices
-  //! of transformation of <me>.
-  Standard_EXPORT Graphic3d_TypeOfComposition Composition() const;
-  
+
   //! Modifies the current local modelling transformation
   //! in the structure <me>.
   //!
