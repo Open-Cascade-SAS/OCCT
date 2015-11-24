@@ -9,6 +9,9 @@ anOldDyLd="$DYLD_LIBRARY_PATH"
 
 # go to the script directory
 aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
+if [ ! -e "${aScriptPath}/env.sh" ]; then 
+cat ${aScriptPath}/adm/templates/env.sh | sed -e '/__CASROOT__/d' > ${aScriptPath}/env.sh
+fi
 
 aSystem=`uname -s`
 aTarget="$1"

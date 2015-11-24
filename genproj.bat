@@ -7,6 +7,8 @@ SET "OLD_PATH=%PATH%"
 
 if exist "%~dp0env.bat" (
   call "%~dp0env.bat"
+) else (
+   type "%~dp0adm\templates\env.bat" | findstr /i /v "__CASROOT__" > "%~dp0env.bat"
 )
 
 set "TCL_EXEC=tclsh.exe"
