@@ -731,7 +731,7 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
 
     puts $doxyFile "DOTFILE_DIRS             = $outDir/html"
     puts $doxyFile "DOT_PATH                 = $graphvizPath"
-    puts $doxyFile "INCLUDE_PATH             = [OCCDoc_GetIncDir $productsPath]"
+    puts $doxyFile "INCLUDE_PATH             = [OCCDoc_GetSourceDir $productsPath]"
     
     # list of files to generate
     set mainpage [OCCDoc_MakeMainPage $outDir $outDir/$name.dox $modules $productsPath]
