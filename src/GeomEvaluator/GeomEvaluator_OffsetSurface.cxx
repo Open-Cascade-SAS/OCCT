@@ -65,22 +65,9 @@ GeomEvaluator_OffsetSurface::GeomEvaluator_OffsetSurface(
         const Handle(Geom_OsculatingSurface)& theOscSurf)
   : GeomEvaluator_Surface(),
     myBaseAdaptor(theBase),
-    myOffset(theOffset)
+    myOffset(theOffset),
+    myOscSurf(theOscSurf)
 {
-  if (theOscSurf.IsNull())
-    return; // osculating surface already exists
-
-  // Create osculating surface for B-spline and Besier surfaces only
-  Handle(Geom_Surface) aBSurf;
-  if (myBaseAdaptor->GetType() == GeomAbs_BSplineSurface)
-    aBSurf = myBaseAdaptor->BSpline();
-  else if (myBaseAdaptor->GetType() == GeomAbs_BezierSurface)
-    aBSurf = myBaseAdaptor->Bezier();
-  if (!aBSurf.IsNull())
-  {
-    myBaseSurf = aBSurf;
-    myOscSurf = new Geom_OsculatingSurface(aBSurf, Precision::Confusion());
-  }
 }
 
 void GeomEvaluator_OffsetSurface::D0(
