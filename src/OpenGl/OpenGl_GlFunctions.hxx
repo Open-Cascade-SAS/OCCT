@@ -117,6 +117,9 @@
   #define GL_READ_FRAMEBUFFER               0x8CA8
   #define GL_DRAW_FRAMEBUFFER               0x8CA9
 
+  #define GL_TEXTURE_3D                     0x806F
+  #define GL_TEXTURE_WRAP_R                 0x8072
+
   // GL_EXT_texture_filter_anisotropic
   #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
   #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
@@ -711,6 +714,9 @@ public: //! @name OpenGL ES 3.0
 
   typedef void (*glBlitFramebuffer_t)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
   glBlitFramebuffer_t glBlitFramebuffer;
+
+  typedef void (*glTexImage3D_t)(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid* data);
+  glTexImage3D_t glTexImage3D;
 
 public: //! @name OpenGL ES 3.1
 

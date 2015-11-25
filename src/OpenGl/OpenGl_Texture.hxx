@@ -394,6 +394,16 @@ public:
                                       const Standard_Integer        theSizeY,
                                       const OpenGl_TextureFormat&   theFormat);
 
+  //! Initializes 3D texture rectangle with specified format and size.
+  Standard_EXPORT bool Init3D (const Handle(OpenGl_Context)& theCtx,
+                               const GLint                   theTextFormat,
+                               const GLenum                  thePixelFormat,
+                               const GLenum                  theDataType,
+                               const Standard_Integer        theSizeX,
+                               const Standard_Integer        theSizeY,
+                               const Standard_Integer        theSizeZ,
+                               const void*                   thePixels);
+
   //! @return true if texture was generated within mipmaps
   Standard_EXPORT Standard_Boolean HasMipmaps() const;
 
@@ -413,9 +423,10 @@ public:
 protected:
 
   GLuint           myTextureId;  //!< GL resource ID
-  GLenum           myTarget;     //!< GL_TEXTURE_1D/GL_TEXTURE_2D
+  GLenum           myTarget;     //!< GL_TEXTURE_1D/GL_TEXTURE_2D/GL_TEXTURE_3D
   GLsizei          mySizeX;      //!< texture width
   GLsizei          mySizeY;      //!< texture height
+  GLsizei          mySizeZ;      //!< texture depth
   GLenum           myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
   Standard_Boolean myHasMipmaps; //!< flag indicates that texture was uploaded with mipmaps
   bool             myIsAlpha;    //!< indicates alpha format

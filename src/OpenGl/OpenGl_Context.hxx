@@ -635,6 +635,7 @@ public: //! @name extensions
   Standard_Boolean       hasTexRGBA8;    //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
   Standard_Boolean       arbNPTW;        //!< GL_ARB_texture_non_power_of_two
   Standard_Boolean       arbTexRG;       //!< GL_ARB_texture_rg
+  Standard_Boolean       arbTexFloat;    //!< GL_ARB_texture_float (on desktop OpenGL - since 3.0 or as extension GL_ARB_texture_float; on OpenGL ES - since 3.0)
   OpenGl_ArbTexBindless* arbTexBindless; //!< GL_ARB_bindless_texture
   OpenGl_ArbTBO*         arbTBO;         //!< GL_ARB_texture_buffer_object
   Standard_Boolean       arbTboRGB32;    //!< GL_ARB_texture_buffer_object_rgb32 (3-component TBO), in core since 4.0

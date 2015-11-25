@@ -55,6 +55,7 @@ OpenGl_Texture::OpenGl_Texture (const Handle(Graphic3d_TextureParams)& theParams
   myTarget (GL_TEXTURE_2D),
   mySizeX (0),
   mySizeY (0),
+  mySizeZ (0),
   myTextFormat (GL_RGBA),
   myHasMipmaps (Standard_False),
   myIsAlpha    (false),
@@ -379,6 +380,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 #else
   // ES does not support sized formats and format conversions - them detected from data type
   const GLint anIntFormat  = thePixelFormat;
+  (void) theTextFormat;
 #endif
   const GLsizei aWidth     = theSizeX;
   const GLsizei aHeight    = theSizeY;
@@ -793,4 +795,124 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
 #else
   return false;
 #endif
+}
+
+// =======================================================================
+// function : Init3D
+// purpose  :
+// =======================================================================
+bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
+                             const GLint                   theTextFormat,
+                             const GLenum                  thePixelFormat,
+                             const GLenum                  theDataType,
+                             const Standard_Integer        theSizeX,
+                             const Standard_Integer        theSizeY,
+                             const Standard_Integer        theSizeZ,
+                             const void*                   thePixels)
+{
+  if (theCtx->Functions()->glTexImage3D == NULL)
+  {
+    TCollection_ExtendedString aMsg ("Error: three-dimensional textures are not supported by hardware.");
+
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                         GL_DEBUG_TYPE_ERROR,
+                         0,
+                         GL_DEBUG_SEVERITY_HIGH,
+                         aMsg);
+
+    return false;
+  }
+
+  if (!Create(theCtx))
+  {
+    return false;
+  }
+
+  myTarget = GL_TEXTURE_3D;
+
+  const GLsizei aSizeX = Min (theCtx->MaxTextureSize(), theSizeX);
+  const GLsizei aSizeY = Min (theCtx->MaxTextureSize(), theSizeY);
+  const GLsizei aSizeZ = Min (theCtx->MaxTextureSize(), theSizeZ);
+
+  Bind (theCtx);
+
+  if (theDataType == GL_FLOAT && !theCtx->arbTexFloat)
+  {
+    TCollection_ExtendedString aMsg ("Error: floating-point textures are not supported by hardware.");
+
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                         GL_DEBUG_TYPE_ERROR,
+                         0,
+                         GL_DEBUG_SEVERITY_HIGH,
+                         aMsg);
+
+    Release (theCtx.operator->());
+    Unbind (theCtx);
+    return false;
+  }
+
+  const GLint anIntFormat = theTextFormat;
+
+#if !defined (GL_ES_VERSION_2_0)
+  theCtx->core15fwd->glTexImage3D (GL_PROXY_TEXTURE_3D,
+                                   0,
+                                   anIntFormat,
+                                   aSizeX,
+                                   aSizeY,
+                                   aSizeZ,
+                                   0,
+                                   thePixelFormat,
+                                   theDataType,
+                                   NULL);
+
+  GLint aTestSizeX = 0;
+  GLint aTestSizeY = 0;
+  GLint aTestSizeZ = 0;
+
+  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &aTestSizeX);
+  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_HEIGHT, &aTestSizeY);
+  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_DEPTH, &aTestSizeZ);
+
+  if (aTestSizeX == 0 || aTestSizeY == 0 || aTestSizeZ == 0)
+  {
+    Unbind (theCtx);
+    Release (theCtx.operator->());
+    return false;
+  }
+#endif
+
+  const GLenum aWrapMode = myParams->IsRepeat() ? GL_REPEAT :  theCtx->TextureWrapClamp();
+  const GLenum aFilter   = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
+
+  glTexParameteri (myTarget, GL_TEXTURE_WRAP_S, aWrapMode);
+  glTexParameteri (myTarget, GL_TEXTURE_WRAP_T, aWrapMode);
+  glTexParameteri (myTarget, GL_TEXTURE_WRAP_R, aWrapMode);
+
+  glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, aFilter);
+  glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, aFilter);
+
+  theCtx->Functions()->glTexImage3D (myTarget,
+                                     0,
+                                     anIntFormat,
+                                     aSizeX,
+                                     aSizeY,
+                                     aSizeZ,
+                                     0,
+                                     thePixelFormat,
+                                     theDataType,
+                                     thePixels);
+
+  if (glGetError() != GL_NO_ERROR)
+  {
+    Unbind (theCtx);
+    Release (theCtx.operator->());
+    return false;
+  }
+
+  mySizeX = aSizeX;
+  mySizeY = aSizeY;
+  mySizeZ = aSizeZ;
+
+  Unbind (theCtx);
+  return true;
 }

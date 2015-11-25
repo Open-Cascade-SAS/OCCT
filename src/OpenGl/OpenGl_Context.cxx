@@ -105,6 +105,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #endif
   arbNPTW  (Standard_False),
   arbTexRG (Standard_False),
+  arbTexFloat (Standard_False),
   arbTexBindless (NULL),
   arbTBO (NULL),
   arbTboRGB32 (Standard_False),
@@ -1138,17 +1139,22 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   {
     hasHighp = Standard_True;
   }
+
+  arbTexFloat = IsGlGreaterEqual (3, 0)
+             && FindProc ("glTexImage3D", myFuncs->glTexImage3D);
 #else
 
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;
 
   hasTexRGBA8 = Standard_True;
-  arbNPTW = CheckExtension ("GL_ARB_texture_non_power_of_two");
-  extBgra = CheckExtension ("GL_EXT_bgra");
-  extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
-  extPDS  = CheckExtension ("GL_EXT_packed_depth_stencil");
-  atiMem  = CheckExtension ("GL_ATI_meminfo");
-  nvxMem  = CheckExtension ("GL_NVX_gpu_memory_info");
+  arbNPTW     = CheckExtension ("GL_ARB_texture_non_power_of_two");
+  arbTexFloat = IsGlGreaterEqual (3, 0)
+             || CheckExtension ("GL_ARB_texture_float");
+  extBgra     = CheckExtension ("GL_EXT_bgra");
+  extAnis     = CheckExtension ("GL_EXT_texture_filter_anisotropic");
+  extPDS      = CheckExtension ("GL_EXT_packed_depth_stencil");
+  atiMem      = CheckExtension ("GL_ATI_meminfo");
+  nvxMem      = CheckExtension ("GL_NVX_gpu_memory_info");
 
   GLint aStereo = GL_FALSE;
   glGetIntegerv (GL_STEREO, &aStereo);
