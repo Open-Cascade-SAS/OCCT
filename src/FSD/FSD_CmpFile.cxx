@@ -756,6 +756,16 @@ void FSD_CmpFile::ReadInfo(Standard_Integer& nbObj,
 }
 
 //=======================================================================
+//function : ReadCompleteInfo
+//purpose  : 
+//           
+//=======================================================================
+void FSD_CmpFile::ReadCompleteInfo( Standard_IStream& /*theIStream*/, Handle(Storage_Data)& /*theData*/)
+{
+
+}
+
+//=======================================================================
 //function : EndReadInfoSection
 //purpose  : COMMENTS SECTION
 //           write

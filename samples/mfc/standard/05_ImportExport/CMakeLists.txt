@@ -7,12 +7,10 @@ set (CMAKE_MFC_FLAG 2)
 
 set (ImportExport_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/05_ImportExport/src)
 set (ImportExport_HEADER_FILES ${ImportExport_SRC_DIR}/ColoredShapes.h
-                               ${ImportExport_SRC_DIR}/FSD_Archive.hxx
                                ${ImportExport_SRC_DIR}/ImportExportApp.h
                                ${ImportExport_SRC_DIR}/ImportExportDoc.h
                                ${ImportExport_SRC_DIR}/StdAfx.h )
 set (ImportExport_SOURCE_FILES ${ImportExport_SRC_DIR}/ColoredShapes.cpp
-                               ${ImportExport_SRC_DIR}/FSD_Archive.cxx
                                ${ImportExport_SRC_DIR}/ImportExportApp.cpp
                                ${ImportExport_SRC_DIR}/ImportExportDoc.cpp
                                ${ImportExport_SRC_DIR}/StdAfx.cpp)

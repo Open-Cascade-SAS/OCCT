@@ -47,15 +47,12 @@ class LDOM_XmlReader
   };
 
   // ---------- PUBLIC METHODS ----------
-  LDOM_XmlReader (const int aFileDes, const Handle(LDOM_MemManager)& aDocument,
+  LDOM_XmlReader (const Handle(LDOM_MemManager)& aDocument,
                   TCollection_AsciiString& anErrorString);
   // Constructor - takes a file descriptor for input
-
-  LDOM_XmlReader (istream& anInput, const Handle(LDOM_MemManager)& aDocument,
-                  TCollection_AsciiString& anErrorString);
   // Constructor - takes an istream for input
 
-  RecordType            ReadRecord      (LDOM_OSStream& theData);
+  RecordType            ReadRecord      (Standard_IStream& theIStream, LDOM_OSStream& theData);
   // reading a markup or other element of XML format
 
   LDOM_BasicElement&    GetElement      () const        { return * myElement; }
@@ -78,8 +75,6 @@ class LDOM_XmlReader
   // ---------- PRIVATE FIELDS ----------
 
   Standard_Boolean              myEOF;
-  int                           myFileDes; // alternative 1: file descriptor
-  istream&                      myIStream; // alternative 2: istream
   TCollection_AsciiString       & myError;
   Handle(LDOM_MemManager)       myDocument;
   LDOM_BasicElement             * myElement;

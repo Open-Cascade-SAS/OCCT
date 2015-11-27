@@ -703,6 +703,15 @@ void DDF_IOStream::ReadInfo(Standard_Integer& nbObj,
 }
 
 //=======================================================================
+//function : ReadCompleteInfo
+//purpose  : 
+//=======================================================================
+void DDF_IOStream::ReadCompleteInfo( Standard_IStream& /*theIStream*/, Handle(Storage_Data)& /*theData*/ )
+{
+
+}
+
+//=======================================================================
 //function : EndReadInfoSection
 //purpose  : 
 //=======================================================================

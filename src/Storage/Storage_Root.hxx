@@ -83,6 +83,12 @@ public:
   //! Returns the name of this root type.
   Standard_EXPORT TCollection_AsciiString Type() const;
 
+  Standard_EXPORT void SetReference (const Standard_Integer aRef);
+
+  Standard_EXPORT Standard_Integer Reference() const;
+
+  Standard_EXPORT void SetType (const TCollection_AsciiString& aType);
+
 
 friend class Storage_Schema;
 
@@ -97,11 +103,6 @@ protected:
 private:
 
   
-  Standard_EXPORT void SetReference (const Standard_Integer aRef);
-  
-  Standard_EXPORT Standard_Integer Reference() const;
-  
-  Standard_EXPORT void SetType (const TCollection_AsciiString& aType);
 
   TCollection_AsciiString myName;
   TCollection_AsciiString myType;

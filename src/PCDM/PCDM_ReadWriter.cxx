@@ -40,6 +40,8 @@ IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReadWriter,Standard_Transient)
 static TCollection_ExtendedString TryXmlDriverType
                                 (const TCollection_AsciiString& theFileName);
 
+static TCollection_ExtendedString TryXmlDriverType (Standard_IStream& theIStream);
+
 //=======================================================================
 //function : Open
 //purpose  : 
@@ -152,6 +154,41 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat
 }
 
 //=======================================================================
+//function : FileFormat
+//purpose  : 
+//=======================================================================
+
+TCollection_ExtendedString PCDM_ReadWriter::FileFormat (Standard_IStream& theIStream, Handle(Storage_Data)& theData)
+{
+  TCollection_ExtendedString aFormat;
+
+  Storage_BaseDriver* aFileDriver;
+  if (PCDM::FileDriverType (theIStream, aFileDriver) == PCDM_TOFD_Unknown)
+  {
+    return ::TryXmlDriverType (theIStream);
+  }
+  
+  // the stream starts with a magic number, FileDriverType has read
+  // them already but returned the stream pos to initial state,
+  // thus we should read them before reading of info section
+  aFileDriver->ReadMagicNumber(theIStream);
+
+  aFileDriver->ReadCompleteInfo (theIStream, theData);
+
+  for (Standard_Integer i = 1; i <= theData->HeaderData()->UserInfo().Length(); i++)
+  {
+    const TCollection_AsciiString& aLine = theData->HeaderData()->UserInfo().Value(i);
+
+    if(aLine.Search (FILE_FORMAT) != -1)
+    {
+      aFormat = TCollection_ExtendedString (aLine.Token(" ",2).ToCString(), Standard_True);
+    }
+  }
+
+  return aFormat;
+}
+
+//=======================================================================
 //function : ::TryXmlDriverType
 //purpose  : called from FileFormat()
 //=======================================================================
@@ -172,5 +209,41 @@ static TCollection_ExtendedString TryXmlDriverType
     if (anElement.getTagName().equals (LDOMString(aDocumentElementName)))
       theFormat = anElement.getAttribute ("format");
   }
+  return theFormat;
+}
+
+//=======================================================================
+//function : ::TryXmlDriverType
+//purpose  : called from FileFormat()
+//=======================================================================
+
+static TCollection_ExtendedString TryXmlDriverType (Standard_IStream& theIStream)
+{
+  TCollection_ExtendedString theFormat;
+  PCDM_DOMHeaderParser       aParser;
+  const char                 * aDocumentElementName = "document";
+  aParser.SetStartElementName (Standard_CString(aDocumentElementName));
+
+  if (theIStream.good())
+  {
+    streampos aDocumentPos = theIStream.tellg();
+
+    // Parse the file; if there is no error or an error appears before retrieval
+    // of the DocumentElement, the XML format cannot be defined
+    if (aParser.parse (theIStream))
+    {
+      LDOM_Element anElement = aParser.GetElement();
+      if (anElement.getTagName().equals (LDOMString(aDocumentElementName)))
+        theFormat = anElement.getAttribute ("format");
+    }
+
+    if (!theIStream.good())
+    {
+      theIStream.clear();
+    }
+
+    theIStream.seekg(aDocumentPos);
+  }
+
   return theFormat;
 }

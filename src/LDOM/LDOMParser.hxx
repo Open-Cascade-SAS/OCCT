@@ -73,9 +73,9 @@ class LDOMParser
 
  private:
   // ---------- PRIVATE METHODS ----------
-  Standard_Boolean      ParseDocument   ();
+  Standard_Boolean      ParseDocument   (Standard_IStream& theIStream);
 
-  Standard_Boolean      ParseElement    ();
+  Standard_Boolean      ParseElement    (Standard_IStream& theIStream);
 
   // ---------- PRIVATE (PROHIBITED) METHODS ----------
 

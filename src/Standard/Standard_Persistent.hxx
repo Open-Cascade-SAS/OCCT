@@ -27,6 +27,7 @@ public:
   Standard_Persistent() : _typenum(0), _refnum(0) {}
 
   DEFINE_STANDARD_RTTIEXT(Standard_Persistent,Standard_Transient)
+  Standard_Integer& TypeNum() { return _typenum; }
 
 private:
   Standard_Integer _typenum;

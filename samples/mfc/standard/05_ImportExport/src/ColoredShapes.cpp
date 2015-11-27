@@ -39,10 +39,6 @@ IMPLEMENT_SERIAL(CColoredShapes, CObject,1);
 #include <TopoDS_Shape.hxx>
 
 // Tools to put Persistent Object in an archive
-#include <FSD_Archive.hxx>
-#include <Storage_Data.hxx>
-#include <Storage_HSeqOfRoot.hxx>
-#include <Storage_Root.hxx>
 
 void CColoredShapes::Display(Handle(AIS_InteractiveContext)& anAIScontext)
 {

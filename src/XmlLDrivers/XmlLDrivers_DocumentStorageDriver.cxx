@@ -101,12 +101,39 @@ void XmlLDrivers_DocumentStorageDriver::AddNamespace
 //function : Write
 //purpose  : 
 //=======================================================================
-void XmlLDrivers_DocumentStorageDriver::Write
-                          (const Handle(CDM_Document)&       theDocument,
-                           const TCollection_ExtendedString& theFileName)
+void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&       theDocument,
+                                               const TCollection_ExtendedString& theFileName)
 {
-  Handle(CDM_MessageDriver) aMessageDriver =
-    theDocument -> Application() -> MessageDriver();
+  myFileName = theFileName;
+
+  std::ofstream aFileStream;
+  OSD_OpenStream (aFileStream, theFileName, std::ios::out);
+
+  if (aFileStream.is_open() && aFileStream.good())
+  {
+    Write (theDocument, aFileStream);
+  }
+  else
+  {
+    SetIsError (Standard_True);
+    SetStoreStatus(PCDM_SS_WriteFailure);
+    
+    TCollection_ExtendedString aMsg = TCollection_ExtendedString("Error: the file ") +
+                                      theFileName + " cannot be opened for writing";
+
+    theDocument->Application()->MessageDriver()->Write (aMsg.ToExtString());
+    Standard_Failure::Raise("File cannot be opened for writing");
+  }
+}
+
+//=======================================================================
+//function : Write
+//purpose  : 
+//=======================================================================
+Standard_EXPORT void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDocument,
+                                                               Standard_OStream&           theOStream)
+{
+  Handle(CDM_MessageDriver) aMessageDriver = theDocument->Application()->MessageDriver();
   ::take_time (~0, " +++++ Start STORAGE procedures ++++++", aMessageDriver);
 
   // Create new DOM_Document
@@ -115,26 +142,28 @@ void XmlLDrivers_DocumentStorageDriver::Write
   // Fill the document with data
   XmlObjMgt_Element anElement = aDOMDoc.getDocumentElement();
 
-  if (WriteToDomDocument (theDocument, anElement, theFileName) == Standard_False) {
-    // Write DOM_Document into XML file,
-    FILE * aFile = OSD_OpenFile(theFileName, "wt");
+  if (WriteToDomDocument (theDocument, anElement) == Standard_False) {
 
-    if (aFile) {
-      LDOM_XmlWriter aWriter (aFile);
-      aWriter.SetIndentation(1);
-      aWriter << aDOMDoc;
-      fclose(aFile);
-      ::take_time (0, " +++++ Fin formatting to XML : ", aMessageDriver);
-
-    }else{
+    LDOM_XmlWriter aWriter;
+    aWriter.SetIndentation(1);
+  
+    if (theOStream.good())
+    {
+      aWriter.Write (theOStream, aDOMDoc);
+    }
+    else
+    {
       SetIsError (Standard_True);
       SetStoreStatus(PCDM_SS_WriteFailure);
-      TCollection_ExtendedString aMsg =
-        TCollection_ExtendedString("Error: the file ") + theFileName +
-          " cannot be opened for writing";
-      aMessageDriver -> Write (aMsg.ToExtString());
-        Standard_Failure::Raise("File cannot be opened for writing");
+
+      TCollection_ExtendedString aMsg = TCollection_ExtendedString("Error: the stream is bad and") +
+                                        " cannot be used for writing";
+      theDocument->Application()->MessageDriver()->Write (aMsg.ToExtString());
+      
+      Standard_Failure::Raise("File cannot be opened for writing");
     }
+
+    ::take_time (0, " +++++ Fin formatting to XML : ", aMessageDriver);
   }
 }
 
@@ -145,10 +174,8 @@ void XmlLDrivers_DocumentStorageDriver::Write
 //           data to XML, this method should be reimplemented avoiding step 3
 //=======================================================================
 
-Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
-                                  (const Handle(CDM_Document)&  theDocument,
-                                   XmlObjMgt_Element&           theElement,
-				   const TCollection_ExtendedString& theFileName)
+Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument (const Handle(CDM_Document)&  theDocument,
+                                                                        XmlObjMgt_Element&           theElement)
 {
   SetIsError(Standard_False);
   Handle(CDM_MessageDriver) aMessageDriver =
@@ -256,7 +283,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
   Handle(Storage_Data) theData = new Storage_Data;
   //PCDM_ReadWriter::WriteFileFormat( theData, theDocument );
   PCDM_ReadWriter::Writer()->WriteReferenceCounter(theData,theDocument);
-  PCDM_ReadWriter::Writer()->WriteReferences(theData,theDocument,theFileName);
+  PCDM_ReadWriter::Writer()->WriteReferences(theData,theDocument, myFileName);
   PCDM_ReadWriter::Writer()->WriteExtensions(theData,theDocument);
   PCDM_ReadWriter::Writer()->WriteVersion(theData,theDocument);
 

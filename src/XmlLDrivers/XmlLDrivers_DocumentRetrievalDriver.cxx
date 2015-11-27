@@ -22,7 +22,9 @@
 #include <LDOM_LDOMImplementation.hxx>
 #include <LDOMParser.hxx>
 #include <OSD_Path.hxx>
+#include <OSD_OpenFile.hxx>
 #include <PCDM_Document.hxx>
+#include <PCDM_DOMHeaderParser.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -52,7 +54,9 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDri
 
 #define START_REF         "START_REF"
 #define END_REF           "END_REF"
-#define REFERENCE_COUNTER "REFERENCE_COUNTER"
+
+#define MODIFICATION_COUNTER "MODIFICATION_COUNTER: "
+#define REFERENCE_COUNTER    "REFERENCE_COUNTER: "
 
 //#define TAKE_TIMES
 static void take_time (const Standard_Integer, const char *,
@@ -196,13 +200,42 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myFileName = theFileName;
+
+  std::ifstream aFileStream;
+  OSD_OpenStream (aFileStream, myFileName, std::ios::in);
+
+  if (aFileStream.is_open() && aFileStream.good())
+  {
+    Read (aFileStream, NULL, theNewDocument, theApplication);
+  }
+  else
+  {
+    myReaderStatus = PCDM_RS_OpenError;
+   
+    TCollection_ExtendedString aMsg = TCollection_ExtendedString("Error: the file ") +
+                                      theFileName + " cannot be opened for reading";
+
+    theApplication->MessageDriver()->Write (aMsg.ToExtString());
+    Standard_Failure::Raise("File cannot be opened for reading");
+  }
+}
+
+//=======================================================================
+//function : Read
+//purpose  : 
+//=======================================================================
+void XmlLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&              theIStream,
+                                                const Handle(Storage_Data)&    /*theStorageData*/,
+                                                const Handle(CDM_Document)&    theNewDocument,
+                                                const Handle(CDM_Application)& theApplication)
+{
   Handle(CDM_MessageDriver) aMessageDriver = theApplication -> MessageDriver();
   ::take_time (~0, " +++++ Start RETRIEVE procedures ++++++", aMessageDriver);
 
   // 1. Read DOM_Document from file
   LDOMParser aParser;
-  TCollection_AsciiString aName (theFileName,'?');
-  if (aParser.parse(aName.ToCString()))
+
+  if (aParser.parse(theIStream))
   {
     TCollection_AsciiString aData;
     cout << aParser.GetError(aData) << ": " << aData << endl;
@@ -276,8 +309,8 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
       try {
         OCC_CATCH_SIGNALS
         TCollection_AsciiString anInf(anInfo,'?');
-        //Standard_Integer aRefCounter = anInf.Token(" ",2).IntegerValue();
-        //theNewDocument->SetReferenceCounter(aRefCounter);
+        Standard_Integer aRefCounter = anInf.Token(" ",2).IntegerValue();
+        theNewDocument->SetReferenceCounter(aRefCounter);
       }
       catch (Standard_Failure) { 
         //    cout << "warning: could not read the reference counter in " << aFileName << endl;
@@ -285,6 +318,20 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         aMsg = aMsg.Cat("could not read the reference counter").Cat("\0");
         if(!aMsgDriver.IsNull()) 
     aMsgDriver->Write(aMsg.ToExtString());
+      }
+    }
+    else if (anInfo.Search(MODIFICATION_COUNTER) != -1) {
+      try {
+        OCC_CATCH_SIGNALS
+        
+        TCollection_AsciiString anInf(anInfo,'?');
+        Standard_Integer aModCounter = anInf.Token(" ",2).IntegerValue();
+        theNewDocument->SetModifications (aModCounter);
+      }
+      catch (Standard_Failure) { 
+        TCollection_ExtendedString aMsg("Warning: could not read the modification counter\0");
+        if(!aMsgDriver.IsNull()) 
+          aMsgDriver->Write(aMsg.ToExtString());
       }
     }
     

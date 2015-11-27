@@ -1,0 +1,44 @@
+puts "================"
+puts "OCC26229"
+puts "================"
+puts ""
+###################################################################################################
+# Add the possibility in OCAF to open/save a document from/to a stream object (XmlOcaf format)
+###################################################################################################
+
+pload DCAF
+
+NewDocument D XmlOcaf
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aLabel 0:2
+SetInteger D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile ${imagedir}/${casename}.xml
+file delete ${aFile}
+SaveAs D ${aFile} -stream
+if { ![file exists ${aFile}] } {
+   puts "Error: there is not ${aFile} file; SaveAs command"
+   return
+}
+
+
+# Restore the document
+Close D
+Open ${aFile} DD -stream
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetInteger DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 ||
+   ${aSetAttr1}!=${aGetAttr3} } {
+   puts ${aResult}
+   puts "aSetAttr1=${aSetAttr1} aGetAttr3=${aGetAttr3}"
+   puts "Error: get a value of TDataStd_Integer attribute from Streamed restoring document"
+} else {
+   puts "Get a value of TDataStd_Integer attribute from Streamed restoring document: OK"
+}

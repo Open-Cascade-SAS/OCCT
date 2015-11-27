@@ -27,3 +27,22 @@ Storage_BaseDriver::Storage_BaseDriver() : myOpenMode(Storage_VSNone)
 void Storage_BaseDriver::Delete()
 {}
 
+TCollection_AsciiString Storage_BaseDriver::ReadMagicNumber (Standard_IStream& theIStream)
+{
+  // magic number has the same length which is 7: BINFILE, CMPFILE and FSDFILE
+  Standard_Size aMagicNumberLen = 7;
+
+  TCollection_AsciiString aReadMagicNumber;
+
+  char aChar;
+  Standard_Size aReadCharNb = 0;
+
+  while (theIStream.good() && (aReadCharNb < aMagicNumberLen))
+  {
+    theIStream.get(aChar);
+    aReadCharNb += (Standard_Size)theIStream.gcount();
+    aReadMagicNumber += aChar;
+  }
+
+  return aReadMagicNumber;
+}

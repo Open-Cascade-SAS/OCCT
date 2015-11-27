@@ -93,326 +93,373 @@
 #define chLatin_Y       'Y'
 #define chLatin_Z       'Z'
 
-static const LXMLCh  gEndElement[] = { chOpenAngle, chForwardSlash, chNull };
-static const LXMLCh  gEndElement1[]= { chForwardSlash, chNull };
-//static const LXMLCh  gEndPI[] = { chQuestion, chCloseAngle, chNull };
-//static const LXMLCh  gStartPI[] = { chOpenAngle, chQuestion, chNull };
-static const LXMLCh  gXMLDecl1[] =
+static const char  gEndElement[] = { chOpenAngle, chForwardSlash, chNull };
+static const char  gEndElement1[]= { chForwardSlash, chNull };
+
+static const char  gXMLDecl1[] =
 {       chOpenAngle, chQuestion, chLatin_x, chLatin_m, chLatin_l
     ,   chSpace, chLatin_v, chLatin_e, chLatin_r, chLatin_s, chLatin_i
     ,   chLatin_o, chLatin_n, chEqual, chDoubleQuote, chNull
 };
-static const LXMLCh  gXMLDecl2[] =
+static const char  gXMLDecl2[] =
 {       chDoubleQuote, chSpace, chLatin_e, chLatin_n, chLatin_c
     ,   chLatin_o, chLatin_d, chLatin_i, chLatin_n, chLatin_g, chEqual
     ,   chDoubleQuote, chNull
 };
-/*
-static const LXMLCh  gXMLDecl3[] =
-{       chDoubleQuote, chSpace, chLatin_s, chLatin_t, chLatin_a
-    ,   chLatin_n, chLatin_d, chLatin_a, chLatin_l, chLatin_o
-    ,   chLatin_n, chLatin_e, chEqual, chDoubleQuote, chNull
-};
-*/
-static const LXMLCh  gXMLDecl4[] =
+
+static const char  gXMLDecl4[] =
 {       chDoubleQuote, chQuestion, chCloseAngle
     ,   chLF, chNull
 };
-static const LXMLCh  gStartCDATA[] =
+static const char  gStartCDATA[] =
 {       chOpenAngle, chBang, chOpenSquare, chLatin_C, chLatin_D,
         chLatin_A, chLatin_T, chLatin_A, chOpenSquare, chNull
 };
-static const LXMLCh  gEndCDATA[] =
+static const char  gEndCDATA[] =
 {    chCloseSquare, chCloseSquare, chCloseAngle, chNull };
-static const LXMLCh  gStartComment[] =
+static const char  gStartComment[] =
 {    chOpenAngle, chBang, chDash, chDash, chNull };
-static const LXMLCh  gEndComment[] =
+static const char  gEndComment[] =
 {    chDash, chDash, chCloseAngle, chNull };
-/*
-static const LXMLCh  gStartDoctype[] =
-{   chOpenAngle, chBang, chLatin_D, chLatin_O, chLatin_C, chLatin_T,
-    chLatin_Y, chLatin_P, chLatin_E, chSpace, chNull
-};
-static const LXMLCh  gPublic[] =
-{   chLatin_P, chLatin_U, chLatin_B, chLatin_L, chLatin_I,
-    chLatin_C, chSpace, chDoubleQuote, chNull
-};
-static const LXMLCh  gSystem[] =
-{   chLatin_S, chLatin_Y, chLatin_S, chLatin_T, chLatin_E,
-    chLatin_M, chSpace, chDoubleQuote, chNull
-};
-static const LXMLCh  gStartEntity[] =
-{   chOpenAngle, chBang, chLatin_E, chLatin_N, chLatin_T, chLatin_I,
-    chLatin_T, chLatin_Y, chSpace, chNull
-};
-static const LXMLCh  gNotation[] =
-{   chLatin_N, chLatin_D, chLatin_A, chLatin_T, chLatin_A,
-    chSpace, chDoubleQuote, chNull
-};
-*/
 
-static LXMLCh * getEncodingName (const LXMLCh * theEncodingName)
+static char* getEncodingName (const char* theEncodingName)
 {
-  const LXMLCh * anEncoding = theEncodingName;
+  const char* anEncoding = theEncodingName;
   if (theEncodingName == NULL)
   {
-//  anEncoding =           // US-ASCII
-//  { chLatin_U, chLatin_S, chDash, chLatin_A, chLatin_S, chLatin_C, chLatin_I,
-//      chLatin_I, chNull };
-    static const LXMLCh anUTFEncoding [] =   // UTF-8
-      { chLatin_U, chLatin_T, chLatin_F, chDash, chEight, chNull };
+    static const char anUTFEncoding [] =  {chLatin_U, chLatin_T, chLatin_F, chDash, chEight, chNull};
     anEncoding = anUTFEncoding;
   }
+
   Standard_Integer aLen = 0;
   while (anEncoding[aLen++] != chNull);
-  LXMLCh * aResult = new LXMLCh [aLen];
-  memcpy (aResult, anEncoding, aLen * sizeof (LXMLCh));
+
+  char * aResult = new char [aLen];
+  memcpy (aResult, anEncoding, aLen * sizeof (char));
+  
   return aResult;
 }
 
 //=======================================================================
-//function : LH3D_LXMLWriter()
-//purpose  : Constructor
+//function : LDOM_XmlWriter
+//purpose  : 
 //=======================================================================
-LDOM_XmlWriter::LDOM_XmlWriter (FILE            * aFile,
-                                const LXMLCh    * theEncoding)
-     : myFile         (aFile),
-       myEncodingName (::getEncodingName (theEncoding)),
-       myIndent       (0),
-       myCurIndent    (0),
-       myABuffer      (NULL),
-       myABufferLen   (0)
-{}
+LDOM_XmlWriter::LDOM_XmlWriter (const char * theEncoding)
+ : myEncodingName (::getEncodingName (theEncoding)),
+   myIndent       (0),
+   myCurIndent    (0),
+   myABuffer      (NULL),
+   myABufferLen   (0)
+{
+  ;
+}
 
 //=======================================================================
 //function : ~LDOM_XmlWriter
 //purpose  : Destructor
 //=======================================================================
-
 LDOM_XmlWriter::~LDOM_XmlWriter ()
 {
   delete [] myEncodingName;
-  if (myABuffer != NULL) delete [] myABuffer;
+
+  if (myABuffer != NULL)
+  {
+    delete [] myABuffer;
+  }
 }
 
 //=======================================================================
-//function : operator <<
+//function : Write
 //purpose  : 
 //=======================================================================
-
-LDOM_XmlWriter& LDOM_XmlWriter::operator <<     (const LDOM_Document& aDoc)
+void LDOM_XmlWriter::Write (Standard_OStream& theOStream, const LDOM_Document& aDoc)
 {
-  const char * anXMLversion = "1.0";
-  * this << gXMLDecl1 << anXMLversion
-    << gXMLDecl2 << myEncodingName << gXMLDecl4;
+  Write (theOStream, gXMLDecl1);
 
-  return (* this << aDoc.getDocumentElement());
+  const char * anXMLversion = "1.0"; 
+  Write (theOStream, anXMLversion);
+
+  Write (theOStream, gXMLDecl2);
+  Write (theOStream, myEncodingName);
+  Write (theOStream, gXMLDecl4);
+
+  Write (theOStream, aDoc.getDocumentElement());
 }
 
 //=======================================================================
-//function : operator <<
-//purpose  : Stream out an LDOMString
+//function : Write
+//purpose  : 
 //=======================================================================
-
-inline LDOM_XmlWriter& LDOM_XmlWriter::operator <<
-                                        (const LDOMBasicString& aString)
-{
-  switch (aString.Type()) {
-  case LDOMBasicString::LDOM_Integer:
-    {
-      Standard_Integer aValue;
-      aString.GetInteger (aValue);
-      fprintf (myFile, "%d", aValue);
-      break;
-    }
-  case LDOMBasicString::LDOM_AsciiHashed:       // attr names and element tags
-  case LDOMBasicString::LDOM_AsciiDocClear:
-    {
-      const char * str = aString.GetString();
-      if (str) {
-        const Standard_Size aLen = strlen (str);
-        if (aLen > 0) fwrite (str, aLen, 1, myFile);
-      }
-    }
-    break;
-  case LDOMBasicString::LDOM_AsciiFree:
-  case LDOMBasicString::LDOM_AsciiDoc:
-    {
-      const char * str = aString.GetString();
-      if (str) {
-        Standard_Integer aLen;
-        char * encStr = LDOM_CharReference::Encode(str, aLen, Standard_False);
-        if (aLen > 0) fwrite (encStr, aLen, 1, myFile);
-        if (encStr != str) delete [] encStr;
-      }
-    }
-  default: ;
-  }
-  return * this;
-}
-
-//=======================================================================
-//function : operator<<()
-//purpose  : Stream out a char *.
-//=======================================================================
-inline LDOM_XmlWriter& LDOM_XmlWriter::operator << (const LXMLCh * aString)
-{
-  Standard_Size aLength = strlen (aString);
-  if (aLength > 0) fwrite ((void *) aString, aLength, 1, myFile);
-  return * this;
-}
-
-//=======================================================================
-//function : operator<<()
-//purpose  : Stream out a character.
-//=======================================================================
-inline LDOM_XmlWriter& LDOM_XmlWriter::operator << (const LXMLCh aChar)
-{
-  fputc (aChar, myFile);
-  return * this;
-}
-
-//=======================================================================
-//function : WriteAttribute()
-//purpose  : Stream out an XML attribute.
-//=======================================================================
-void LDOM_XmlWriter::WriteAttribute (const LDOM_Node& theAtt)
-{
-  int        aLength;
-  const char * aName = theAtt.getNodeName().GetString();
-  const LDOMString aValueStr = theAtt.getNodeValue();
-
-  //    Integer attribute value
-  if (aValueStr.Type() == LDOMBasicString::LDOM_Integer) {
-    Standard_Integer anIntValue;
-    aValueStr.GetInteger (anIntValue);
-    aLength = (Standard_Integer) (20 + strlen (aName));
-    if (aLength > myABufferLen) {
-      if (myABuffer != NULL) delete [] myABuffer;
-      myABuffer    = new char [aLength+1];
-      myABufferLen = aLength;
-    }
-    sprintf (myABuffer, "%c%s%c%c%d%c", chSpace, aName,
-             chEqual, chDoubleQuote, anIntValue, chDoubleQuote);
-    aLength = (Standard_Integer) strlen (myABuffer);
-
-  //    String attribute value
-  } else {
-    const char  * aValue = aValueStr.GetString();
-    char        * encStr;
-    if (aValueStr.Type() == LDOMBasicString::LDOM_AsciiDocClear) {
-      encStr  = (char *) aValue;
-      aLength = (Standard_Integer) (4 + strlen (aValue) + strlen (aName));
-    } else {
-      encStr = LDOM_CharReference::Encode (aValue, aLength, Standard_True);
-      aLength += (Standard_Integer) (4 + strlen (aName));
-    }
-    if (aLength > myABufferLen) {
-      if (myABuffer != NULL) delete [] myABuffer;
-      myABuffer    = new char [aLength+1];
-      myABufferLen = aLength;
-    }
-    sprintf (myABuffer, "%c%s%c%c%s%c", chSpace, aName,
-             chEqual, chDoubleQuote, encStr, chDoubleQuote);
-    if (encStr != aValue) delete [] encStr;
-  }
-  fwrite ((void *) myABuffer, aLength, 1, myFile);
-}
-
-//=======================================================================
-//function : operator<<()
-//purpose  : Stream out a DOM node, and, recursively, all of its children.
-//           This function is the heart of writing a DOM tree out as XML source.
-//           Give it a document node and it will do the whole thing.
-//=======================================================================
-LDOM_XmlWriter& LDOM_XmlWriter::operator<<     (const LDOM_Node& theNodeToWrite)
+void LDOM_XmlWriter::Write (Standard_OStream& theOStream, const LDOM_Node& theNode)
 {
   // Get the name and value out for convenience
-  LDOMString   aNodeName  = theNodeToWrite.getNodeName();
-  LDOMString   aNodeValue = theNodeToWrite.getNodeValue();
-//  unsigned long dwLent = aNodeValue.length();
+  LDOMString aNodeName  = theNode.getNodeName();
+  LDOMString aNodeValue = theNode.getNodeValue();
 
-  switch (theNodeToWrite.getNodeType()) 
+  switch (theNode.getNodeType()) 
   {
-  case LDOM_Node::TEXT_NODE : 
-    * this << aNodeValue;
+    case LDOM_Node::TEXT_NODE : 
+    Write (theOStream, aNodeValue);
     break;
-  case LDOM_Node::ELEMENT_NODE : 
+    case LDOM_Node::ELEMENT_NODE : 
     {
       const int aMaxNSpaces    = 40;
-      static LXMLCh aSpaces [] = {
+      static char aSpaces [] = {
         chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace,
         chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace,
         chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace,
         chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace,
         chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace, chSpace,
         chOpenAngle, chNull };
-      const LXMLCh * anIndentString = &aSpaces [aMaxNSpaces -  myCurIndent];
-      if (anIndentString < &aSpaces[0]) anIndentString = &aSpaces[0];
+      const char * anIndentString = &aSpaces [aMaxNSpaces -  myCurIndent];
+      
+      if (anIndentString < &aSpaces[0])
+      {
+        anIndentString = &aSpaces[0];
+      }
 
       // Output the element start tag.
-      * this << anIndentString << aNodeName.GetString();
+      Write (theOStream, anIndentString);
+      Write (theOStream, aNodeName.GetString());
 
-        // Output any attributes of this element
-      const LDOM_Element& anElemToWrite = (const LDOM_Element&) theNodeToWrite;
-      LDOM_NodeList aListAtt = anElemToWrite.GetAttributesList ();
+      // Output any attributes of this element
+      const LDOM_Element& anElemToWrite = (const LDOM_Element&)theNode;
+      LDOM_NodeList aListAtt = anElemToWrite.GetAttributesList();
       Standard_Integer aListInd = aListAtt.getLength();
-      while (aListInd--) {
+      
+      while (aListInd--)
+      {
         LDOM_Node aChild = aListAtt.item (aListInd);
-        WriteAttribute (aChild);
+        WriteAttribute (theOStream, aChild);
       }
 
       //  Test for the presence of children
-      LDOM_Node aChild = theNodeToWrite.getFirstChild();
+      LDOM_Node aChild = theNode.getFirstChild();
       if (aChild != 0) 
       {
         // There are children. Close start-tag, and output children.
-        * this << chCloseAngle;
+        Write (theOStream, chCloseAngle);
         if (aChild.getNodeType() == LDOM_Node::ELEMENT_NODE && myIndent > 0)
-          * this << chLF;
+        {
+          Write(theOStream, chLF);
+        }
+
         Standard_Boolean isChildElem = Standard_False;
         while( aChild != 0) 
         {
           isChildElem = (aChild.getNodeType() == LDOM_Node::ELEMENT_NODE);
-          if (isChildElem)  myCurIndent += myIndent;
-          *this << aChild;
-          if (isChildElem)  myCurIndent -= myIndent;
-          do aChild = aChild.getNextSibling();
-          while (aChild.getNodeType() == LDOM_Node::ATTRIBUTE_NODE);
+          if (isChildElem)
+          {
+            myCurIndent += myIndent;
+          }
+
+          Write(theOStream, aChild);
+          
+          if (isChildElem)
+          {
+            myCurIndent -= myIndent;
+          }
+
+          do 
+          {
+            aChild = aChild.getNextSibling();
+          } while (aChild.getNodeType() == LDOM_Node::ATTRIBUTE_NODE);
         }
+
         // Done with children.  Output the end tag.
-        //
         if (isChildElem)
-          * this << anIndentString
-            << gEndElement1 << aNodeName.GetString() << chCloseAngle;
+        {
+          Write (theOStream, anIndentString);
+          Write (theOStream, gEndElement1);
+          Write (theOStream, aNodeName.GetString());
+          Write (theOStream, chCloseAngle);
+        }
         else
-          * this << gEndElement << aNodeName.GetString() << chCloseAngle;
+        {
+          Write (theOStream, gEndElement);
+          Write (theOStream, aNodeName.GetString());
+          Write (theOStream, chCloseAngle);
+        }
       }
       else
       {
         //  There were no children. Output the short form close of
         //  the element start tag, making it an empty-element tag.
-        * this << chForwardSlash << chCloseAngle;
+        Write (theOStream, chForwardSlash);
+        Write (theOStream, chCloseAngle);
       }
+
       if (myIndent > 0)
-        * this << chLF;
+      {
+        Write (theOStream, chLF);
+      }
       break;
     }
     case LDOM_Node::CDATA_SECTION_NODE: 
     {
-      * this << gStartCDATA << aNodeValue << gEndCDATA;
+      Write (theOStream, gStartCDATA);
+      Write (theOStream, aNodeValue);
+      Write (theOStream, gEndCDATA);
       break;
     }
     case LDOM_Node::COMMENT_NODE: 
     {
-      * this << gStartComment << aNodeValue << gEndComment;
+      Write (theOStream, gStartComment);
+      Write (theOStream, aNodeValue);
+      Write (theOStream, gEndComment);
       break;
     }
   default:
 #ifndef _MSC_VER
       cerr << "Unrecognized node type = "
-        << (long)theNodeToWrite.getNodeType() << endl
+        << (long)theNode.getNodeType() << endl
 #endif
   ; }
-  return *this;
+}
+
+//=======================================================================
+//function : 
+//purpose  : Stream out an LDOMString
+//=======================================================================
+void LDOM_XmlWriter::Write (Standard_OStream& theOStream, const LDOMBasicString& theString)
+{
+  switch (theString.Type())
+  {
+    case LDOMBasicString::LDOM_Integer:
+    {
+      Standard_Integer aValue;
+      theString.GetInteger (aValue);
+
+      TCollection_AsciiString aStrValue (aValue);
+      theOStream.write(aStrValue.ToCString(), strlen (aStrValue.ToCString()));
+
+      break;
+    }
+    case LDOMBasicString::LDOM_AsciiHashed:       // attr names and element tags
+    case LDOMBasicString::LDOM_AsciiDocClear:
+    {
+      const char* aStr = theString.GetString();
+      if (aStr)
+      {
+        const Standard_Size aLen = strlen (aStr);
+        if (aLen > 0) 
+        {
+          theOStream.write(aStr, aLen);
+        }
+      }
+    }
+    break;
+    case LDOMBasicString::LDOM_AsciiFree:
+    case LDOMBasicString::LDOM_AsciiDoc:
+    {
+      const char* aStr = theString.GetString();
+      if (aStr)
+      {
+        Standard_Integer aLen;
+        char* encStr = LDOM_CharReference::Encode (aStr, aLen, Standard_False);
+        if (aLen > 0)
+        {
+          theOStream.write(encStr, aLen);
+        }
+
+        if (encStr != aStr)
+        {
+          delete [] encStr;
+        }
+      }
+    }
+  default: ;
+  }
+}
+
+//=======================================================================
+//function : Write
+//purpose  : Stream out a char
+//=======================================================================
+void LDOM_XmlWriter::Write (Standard_OStream& theOStream, const char theChar)
+{
+  theOStream.write (&theChar, sizeof(char));
+}
+
+//=======================================================================
+//function : Write
+//purpose  : Stream out a char *
+//=======================================================================
+void LDOM_XmlWriter::Write (Standard_OStream& theOStream, const char * theString)
+{
+  Standard_Size aLength = strlen (theString);
+  if (aLength > 0)
+  {
+    theOStream.write (theString, aLength);
+  }
+}
+
+//=======================================================================
+//function : WriteAttribute()
+//purpose  : Stream out an XML attribute.
+//=======================================================================
+void LDOM_XmlWriter::WriteAttribute (Standard_OStream& theOStream, const LDOM_Node& theAtt)
+{
+  const char* aName = theAtt.getNodeName().GetString();
+  const LDOMString aValueStr = theAtt.getNodeValue();
+
+  int aLength = 0;
+
+  // Integer attribute value
+  if (aValueStr.Type() == LDOMBasicString::LDOM_Integer)
+  {
+    Standard_Integer anIntValue;
+    aValueStr.GetInteger (anIntValue);
+
+    aLength = (Standard_Integer)(20 + strlen (aName));
+    if (aLength > myABufferLen)
+    {
+      if (myABuffer != NULL)
+      {
+        delete [] myABuffer;
+      }
+      
+      myABuffer    = new char [aLength+1];
+      myABufferLen = aLength;
+    }
+    sprintf (myABuffer, "%c%s%c%c%d%c", chSpace, aName, chEqual, chDoubleQuote, anIntValue, chDoubleQuote);
+    aLength = (Standard_Integer)strlen (myABuffer);
+
+  
+  }
+  else // String attribute value
+  {
+    char* encStr;
+    const char* aValue = aValueStr.GetString();
+    if (aValueStr.Type() == LDOMBasicString::LDOM_AsciiDocClear)
+    {
+      encStr  = (char *) aValue;
+      aLength = (Standard_Integer) (4 + strlen (aValue) + strlen (aName));
+    }
+    else
+    {
+      encStr = LDOM_CharReference::Encode (aValue, aLength, Standard_True);
+      aLength += (Standard_Integer) (4 + strlen (aName));
+    }
+
+    if (aLength > myABufferLen)
+    {
+      if (myABuffer != NULL) 
+      {
+        delete [] myABuffer;
+      }
+      
+      myABuffer    = new char [aLength+1];
+      myABufferLen = aLength;
+    }
+
+    sprintf (myABuffer, "%c%s%c%c%s%c", chSpace, aName, chEqual, chDoubleQuote, encStr, chDoubleQuote);
+    
+    if (encStr != aValue)
+    {
+      delete [] encStr;
+    }
+  }
+
+  theOStream.write (myABuffer, aLength);
 }

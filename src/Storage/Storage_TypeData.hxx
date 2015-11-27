@@ -58,6 +58,15 @@ public:
   
   Standard_EXPORT void Clear();
 
+  //! add a type to the list
+  Standard_EXPORT void AddType (const TCollection_AsciiString& aName, const Standard_Integer aTypeNum);
+
+  //! returns the name of the type with number <aTypeNum>
+  Standard_EXPORT TCollection_AsciiString Type (const Standard_Integer aTypeNum) const;
+
+  //! returns the name of the type with number <aTypeNum>
+  Standard_EXPORT Standard_Integer Type (const TCollection_AsciiString& aTypeName) const;
+
 
 friend class Storage_Schema;
 
@@ -71,15 +80,6 @@ protected:
 
 private:
 
-  
-  //! add a type to the list
-  Standard_EXPORT void AddType (const TCollection_AsciiString& aName, const Standard_Integer aTypeNum);
-  
-  //! returns the name of the type with number <aTypeNum>
-  Standard_EXPORT TCollection_AsciiString Type (const Standard_Integer aTypeNum) const;
-  
-  //! returns the name of the type with number <aTypeNum>
-  Standard_EXPORT Standard_Integer Type (const TCollection_AsciiString& aTypeName) const;
   
   Standard_EXPORT void SetErrorStatus (const Storage_Error anError);
   

@@ -73,6 +73,18 @@ void PCDM_RetrievalDriver::RaiseIfUnknownTypes(const Handle(Storage_Schema)& aSc
 //function : Read
 //purpose  : 
 //=======================================================================
+void PCDM_RetrievalDriver::Read(Standard_IStream&               /*theIStream*/,
+                                const Handle(Storage_Data)&     /*theStorageData*/,
+                                const Handle(CDM_Document)&     /*theDoc*/,
+                                const Handle(CDM_Application)&  /*theApplication*/)
+{
+  
+}
+
+//=======================================================================
+//function : Read
+//purpose  : 
+//=======================================================================
 
 void PCDM_RetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
 				const Handle(CDM_Document)& aNewDocument,

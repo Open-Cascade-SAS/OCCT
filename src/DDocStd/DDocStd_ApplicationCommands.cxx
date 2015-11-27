@@ -32,6 +32,7 @@
 #include <TDF_Tool.hxx> 
 
 #include <OSD_Path.hxx>
+#include <OSD_OpenFile.hxx>
 #include <TDocStd_PathParser.hxx>
 
 #include <AIS_InteractiveContext.hxx>
@@ -129,7 +130,7 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
 				      Standard_Integer nb,
 				      const char** a)
 {   
-  if (nb == 3) {
+  if (nb >= 3) {
     TCollection_ExtendedString path (a[1]); 
     Handle(TDocStd_Application) A;
     if (!DDocStd::Find(A)) return 1;
@@ -139,7 +140,30 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
       di <<"document " << insession << "  is already in session\n";
       return 0;
     }
-    PCDM_ReaderStatus theStatus = A->Open(path,D);
+    PCDM_ReaderStatus theStatus;
+
+    Standard_Boolean anUseStream = Standard_False;
+    for ( Standard_Integer i = 3; i < nb; i++ )
+    {
+      if (!strcmp (a[i], "-stream"))
+      {
+        di << "standard SEEKABLE stream is used\n";
+        anUseStream = Standard_True;
+        break;
+      }
+    }
+
+    if (anUseStream)
+    {
+      std::ifstream aFileStream;
+      OSD_OpenStream (aFileStream, path, std::ios::in | std::ios::binary);
+
+      theStatus = A->Open (aFileStream, D);
+    }
+    else
+    {
+      theStatus = A->Open(path,D);
+    }
     if (theStatus == PCDM_RS_OK && !D.IsNull()) {
       Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(D);
       TDataStd_Name::Set(D->GetData()->Root(),a[2]);
@@ -214,13 +238,36 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
 					Standard_Integer nb,
 					const char** a)
 {  
-  if (nb == 3) {
+  if (nb >= 3) {
     Handle(TDocStd_Document) D;    
     if (!DDocStd::GetDocument(a[1],D)) return 1;  
     TCollection_ExtendedString path (a[2]); 
     Handle(TDocStd_Application) A;
     if (!DDocStd::Find(A)) return 1;
-    PCDM_StoreStatus theStatus = A->SaveAs(D,path);
+    PCDM_StoreStatus theStatus;
+    
+    Standard_Boolean anUseStream = Standard_False;
+    for ( Standard_Integer i = 3; i < nb; i++ )
+    {
+      if (!strcmp (a[i], "-stream"))
+      {
+        di << "standard SEEKABLE stream is used\n";
+        anUseStream = Standard_True;
+        break;
+      }
+    }
+
+    if (anUseStream)
+    {
+      std::ofstream aFileStream;
+      OSD_OpenStream (aFileStream, path, std::ios::out | std::ios::binary);
+      theStatus = A->SaveAs (D, aFileStream);
+    }
+    else
+    {
+      theStatus = A->SaveAs(D,path);
+    }
+    
     if (theStatus != PCDM_SS_OK ) {
       switch ( theStatus ) {
         case PCDM_SS_DriverFailure: {
@@ -456,11 +503,11 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 		  __FILE__, DDocStd_NewDocument, g);  
 
   theCommands.Add("Open",
-		  "Open path docname",
+		  "Open path docname [-stream]",
 		  __FILE__, DDocStd_Open, g);   
 
   theCommands.Add("SaveAs",
-		  "SaveAs DOC path",
+		  "SaveAs DOC path [-stream]",
 		  __FILE__, DDocStd_SaveAs, g);  
 
   theCommands.Add("Save",

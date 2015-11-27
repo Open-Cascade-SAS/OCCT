@@ -70,6 +70,7 @@ public:
   
   Standard_EXPORT void ClearErrorStatus();
 
+  Standard_EXPORT void UpdateRoot (const TCollection_AsciiString& aName, const Handle(Standard_Persistent)& aPers);
 
 friend class Storage_Schema;
 
@@ -84,7 +85,6 @@ protected:
 private:
 
   
-  Standard_EXPORT void UpdateRoot (const TCollection_AsciiString& aName, const Handle(Standard_Persistent)& aPers);
   
   Standard_EXPORT void SetErrorStatus (const Storage_Error anError);
   

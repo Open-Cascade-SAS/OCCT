@@ -17,9 +17,6 @@
     <ClCompile Include="..\..\..\src\ColoredShapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\FSD_Archive.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\ImportExportApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,9 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\ColoredShapes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\FSD_Archive.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\ImportExportApp.h">

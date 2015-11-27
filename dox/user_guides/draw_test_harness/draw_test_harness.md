@@ -2970,10 +2970,12 @@ Makes a list of documents handled during the session of the application.
 
 Syntax:       
 ~~~~~
-Open path docname
+Open path docname [-stream]
 ~~~~~ 
 
 Retrieves the document of file **docname** in the path **path**. Overwrites the document, if it is already in session. 
+
+option <i>-stream</i> activates usage of alternative interface of OCAF persistence working with C++ streams instead of file names.
 
 **Example:** 
 ~~~~~
@@ -3012,10 +3014,12 @@ Save D
 
 Syntax:       
 ~~~~~
-SaveAs docname path
+SaveAs docname path [-stream]
 ~~~~~ 
 
-Saves the active document in the file **docname** in the path **path**. Overwrites the file if it already exists. 
+Saves the active document in the file **docname** in the path **path**. Overwrites the file if it already exists.
+
+option <i>-stream</i> activates usage of alternative interface of OCAF persistence working with C++ streams instead of file names.
 
 **Example:** 
 ~~~~~

@@ -24,6 +24,7 @@
 #include <CDF_Application.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_IStream.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
@@ -176,10 +177,19 @@ public:
   //! is already in memory, this method can be made
   //! to depend on the value returned by IsInSession.
   Standard_EXPORT PCDM_ReaderStatus Open (const TCollection_ExtendedString& path, Handle(TDocStd_Document)& aDoc);
+
+  //! Retrieves aDoc from standard SEEKABLE stream theIStream.
+  //! the stream should support SEEK fuctionality
+  Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream, Handle(TDocStd_Document)& theDoc);
+
   
   //! Save the  active document  in the file  <name> in the
   //! path <path> ; o verwrites  the file  if  it already exists.
   Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc, const TCollection_ExtendedString& path);
+
+  //! Save theDoc to standard SEEKABLE stream theOStream.
+  //! the stream should support SEEK fuctionality
+  Standard_EXPORT PCDM_StoreStatus SaveAs(const Handle(TDocStd_Document)& theDoc, Standard_OStream& theOStream);
   
   //! Save aDoc active document.
   //! Exceptions:
@@ -191,6 +201,10 @@ public:
   //! path <path>  .  overwrite  the file  if  it
   //! already exist.
   Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc, const TCollection_ExtendedString& path, TCollection_ExtendedString& theStatusMessage);
+
+  //! Save theDoc TO standard SEEKABLE stream theOStream.
+  //! the stream should support SEEK fuctionality
+  Standard_EXPORT PCDM_StoreStatus SaveAs(const Handle(TDocStd_Document)& theDoc, Standard_OStream& theOStream, TCollection_ExtendedString& theStatusMessage);
   
   //! Save the document overwriting the previous file
   Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc, TCollection_ExtendedString& theStatusMessage);

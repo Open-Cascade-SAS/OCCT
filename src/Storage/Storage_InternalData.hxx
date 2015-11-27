@@ -37,6 +37,7 @@ class Storage_InternalData : public MMgt_TShared
 
 public:
 
+  Standard_EXPORT Handle(Storage_HPArray) ReadArray() {return myReadArray;}
   
   Standard_EXPORT Storage_InternalData();
   

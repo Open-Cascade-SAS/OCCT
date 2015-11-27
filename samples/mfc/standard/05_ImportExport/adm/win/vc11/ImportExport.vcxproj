@@ -253,7 +253,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\ColoredShapes.cpp" />
-    <ClCompile Include="..\..\..\src\FSD_Archive.cxx" />
     <ClCompile Include="..\..\..\src\ImportExportApp.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -337,7 +336,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\ColoredShapes.h" />
-    <ClInclude Include="..\..\..\src\FSD_Archive.hxx" />
     <ClInclude Include="..\..\..\src\ImportExportApp.h" />
     <ClInclude Include="..\..\..\src\ImportExportDoc.h" />
     <ClInclude Include="..\..\..\res\resource.h" />

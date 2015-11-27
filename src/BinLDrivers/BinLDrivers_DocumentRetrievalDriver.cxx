@@ -27,7 +27,9 @@
 #include <CDM_MessageDriver.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
+#include <OSD_OpenFile.hxx>
 #include <PCDM_Document.hxx>
+#include <PCDM_ReadWriter.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>
@@ -93,14 +95,41 @@ void BinLDrivers_DocumentRetrievalDriver::Make (const Handle(PCDM_Document)&,
 //function : Read
 //purpose  :
 //=======================================================================
-
-#define START_TYPES "START_TYPES"
-#define END_TYPES "END_TYPES"
-
 void BinLDrivers_DocumentRetrievalDriver::Read
                          (const TCollection_ExtendedString& theFileName,
                           const Handle(CDM_Document)&       theNewDocument,
                           const Handle(CDM_Application)&    theApplication)
+{
+  std::ifstream aFileStream;
+  OSD_OpenStream (aFileStream, theFileName, std::ios::in | std::ios::binary);
+
+  if (aFileStream.is_open() && aFileStream.good())
+  {
+    Handle(Storage_Data) dData;
+    TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat (aFileStream, dData);
+
+    Read (aFileStream, dData, theNewDocument, theApplication);
+  }
+  else
+  {
+    myReaderStatus = PCDM_RS_OpenError;
+  }
+}
+
+#define MODIFICATION_COUNTER "MODIFICATION_COUNTER: "
+#define REFERENCE_COUNTER "REFERENCE_COUNTER: "
+
+#define START_TYPES "START_TYPES"
+#define END_TYPES "END_TYPES"
+
+//=======================================================================
+//function : Read
+//purpose  :
+//=======================================================================
+void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               theIStream,
+                                                const Handle(Storage_Data)&     theStorageData,
+                                                const Handle(CDM_Document)&     theDoc,
+                                                const Handle(CDM_Application)&  theApplication)
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myMsgDriver = theApplication -> MessageDriver();
@@ -109,7 +138,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
     ("BinLDrivers_DocumentRetrievalDriver: ");
 
   Handle(TDocStd_Document) aDoc =
-    Handle(TDocStd_Document)::DownCast(theNewDocument);
+    Handle(TDocStd_Document)::DownCast(theDoc);
   if (aDoc.IsNull()) {
 #ifdef OCCT_DEBUG
     WriteMessage (aMethStr + "error: null document");
@@ -118,15 +147,29 @@ void BinLDrivers_DocumentRetrievalDriver::Read
     return;
   }
 
-  TCollection_AsciiString aFileName (theFileName);
-
-  // 1. Read the information section
+  // 1. the information section
   Handle(Storage_HeaderData) aHeaderData;
-  Storage_Position anInfoSectionEnd = ReadInfoSection( aFileName, aHeaderData );
-  if (!anInfoSectionEnd) {
-    WriteMessage (aMethStr + "error: file has invalid header");
-    myReaderStatus = PCDM_RS_UnrecognizedFileFormat;
-    return;
+  
+  if (!theStorageData.IsNull())
+  {
+    aHeaderData = theStorageData->HeaderData();
+  }
+
+  if (!aHeaderData.IsNull())
+  {
+    for (Standard_Integer i = 1; i <= aHeaderData->UserInfo().Length(); i++)
+    {
+      const TCollection_AsciiString& aLine = aHeaderData->UserInfo().Value(i);
+
+      if(aLine.Search(REFERENCE_COUNTER) != -1)
+      {
+        theDoc->SetReferenceCounter (aLine.Token(" ", 2).IntegerValue());
+      }
+      else if(aLine.Search(MODIFICATION_COUNTER) != -1)
+      {
+        theDoc->SetModifications (aLine.Token(" ", 2).IntegerValue());
+      }
+    }
   }
 
   // 1.a Version of writer
@@ -193,23 +236,6 @@ void BinLDrivers_DocumentRetrievalDriver::Read
 	WriteMessage (aTypeNames(i));
   }
 
-  // Open the file stream
-#ifdef _WIN32
-  ifstream anIS ((const wchar_t*) theFileName.ToExtString(), ios::in | ios::binary);
-#else
-  ifstream anIS (aFileName.ToCString());
-#endif
-
-  if (!anIS) {
-    // Can not open file
-    WriteMessage (aMethStr + "error: can't open file " + theFileName);
-    myReaderStatus = PCDM_RS_OpenError;
-    return;
-  }
-
-  // skip info section
-  anIS.seekg( (streampos) anInfoSectionEnd );
-
   // propagate the opened document version to data drivers
   PropagateDocumentVersion(aFileVer);
 
@@ -226,30 +252,30 @@ void BinLDrivers_DocumentRetrievalDriver::Read
   if (aFileVer >= 3) {
     BinLDrivers_DocumentSection aSection;
     do {
-      BinLDrivers_DocumentSection::ReadTOC (aSection, anIS);
+      BinLDrivers_DocumentSection::ReadTOC (aSection, theIStream);
       mySections.Append(aSection);
     } while
       (!aSection.Name().IsEqual((Standard_CString)SHAPESECTION_POS));
-    aDocumentPos = anIS.tellg(); // position of root label
+    aDocumentPos = theIStream.tellg(); // position of root label
 
     BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
     for (; anIterS.More(); anIterS.Next()) {
       BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
       if (aCurSection.IsPostRead() == Standard_False) {
-        anIS.seekg ((streampos) aCurSection.Offset());
+        theIStream.seekg ((streampos) aCurSection.Offset());
         if (aCurSection.Name().IsEqual ((Standard_CString)SHAPESECTION_POS)) 
-          ReadShapeSection (aCurSection, anIS);
+          ReadShapeSection (aCurSection, theIStream);
         else
-          ReadSection (aCurSection, theNewDocument, anIS); 
+          ReadSection (aCurSection, theDoc, theIStream); 
       }
     }
   } else { //aFileVer < 3
-    aDocumentPos = anIS.tellg(); // position of root label
+    aDocumentPos = theIStream.tellg(); // position of root label
 
     // retrieve SHAPESECTION_POS string
     char aShapeSecLabel[SIZEOFSHAPELABEL + 1];
     aShapeSecLabel[SIZEOFSHAPELABEL] = 0x00;
-    anIS.read ((char*)&aShapeSecLabel, SIZEOFSHAPELABEL);// SHAPESECTION_POS
+    theIStream.read ((char*)&aShapeSecLabel, SIZEOFSHAPELABEL);// SHAPESECTION_POS
     TCollection_AsciiString aShapeLabel(aShapeSecLabel);
     // detect if a file was written in old fashion (version 2 without shapes)
     // and if so then skip reading ShapeSection
@@ -263,7 +289,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
 
       // retrieve ShapeSection Position
       Standard_Integer aShapeSectionPos; // go to ShapeSection
-      anIS.read ((char*)&aShapeSectionPos, sizeof(Standard_Integer));
+      theIStream.read ((char*)&aShapeSectionPos, sizeof(Standard_Integer));
 
 #if DO_INVERSE
       aShapeSectionPos = InverseInt (aShapeSectionPos);
@@ -272,26 +298,26 @@ void BinLDrivers_DocumentRetrievalDriver::Read
       cout <<"aShapeSectionPos = " <<aShapeSectionPos <<endl;
 #endif
       if(aShapeSectionPos) { 
-	aDocumentPos = anIS.tellg();
-	anIS.seekg((streampos) aShapeSectionPos);
+	aDocumentPos = theIStream.tellg();
+	theIStream.seekg((streampos) aShapeSectionPos);
 
-	CheckShapeSection(aShapeSectionPos, anIS);
+	CheckShapeSection(aShapeSectionPos, theIStream);
 	// Read Shapes
 	BinLDrivers_DocumentSection aCurSection;
-	ReadShapeSection (aCurSection, anIS, Standard_False);
+	ReadShapeSection (aCurSection, theIStream, Standard_False);
       }
     }
   } // end of reading Sections or shape section
 
   // Return to read of the Document structure
-  anIS.seekg(aDocumentPos);
+  theIStream.seekg(aDocumentPos);
 
   // read the header (tag) of the root label
   Standard_Integer aTag;
-  anIS.read ((char*)&aTag, sizeof(Standard_Integer));
+  theIStream.read ((char*)&aTag, sizeof(Standard_Integer));
 
   // read sub-tree of the root label
-  Standard_Integer nbRead = ReadSubTree (anIS, aData->Root());
+  Standard_Integer nbRead = ReadSubTree (theIStream, aData->Root());
   myPAtt.Destroy();    // free buffer
   myRelocTable.Clear();
   myMapUnsupported.Clear();
@@ -306,12 +332,12 @@ void BinLDrivers_DocumentRetrievalDriver::Read
 
   // Read Sections (post-reading type)
   if (aFileVer >= 3) {
-    BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
-    for (; anIterS.More(); anIterS.Next()) {
-      BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
+    BinLDrivers_VectorOfDocumentSection::Iterator aSectIter (mySections);
+    for (; aSectIter.More(); aSectIter.Next()) {
+      BinLDrivers_DocumentSection& aCurSection = aSectIter.ChangeValue();
       if (aCurSection.IsPostRead()) {
-	anIS.seekg ((streampos) aCurSection.Offset());
-	ReadSection (aCurSection, theNewDocument, anIS); 
+	theIStream.seekg ((streampos) aCurSection.Offset());
+	ReadSection (aCurSection, theDoc, theIStream); 
       }
     }
   }
@@ -421,38 +447,6 @@ Handle(BinMDF_ADriverTable) BinLDrivers_DocumentRetrievalDriver::AttributeDriver
   return BinLDrivers::AttributeDrivers (theMessageDriver);
 }
 
-//=======================================================================
-//function : ReadInfoSection
-//purpose  : Read the info  section  of  theFile, return a file
-//           position corresponding to the info section end
-//=======================================================================
-
-Storage_Position BinLDrivers_DocumentRetrievalDriver::ReadInfoSection
-                         (const TCollection_AsciiString& theFileName,
-                          Handle(Storage_HeaderData)&    theData)
-{
-  TCollection_ExtendedString aMsg
-    ( "BinLDrivers_DocumentRetrievalDriver: error: ");
-
-  FSD_BinaryFile aFileDriver;
-  Storage_Position aPos = 0;
-  if (aFileDriver.Open( theFileName, Storage_VSRead ) == Storage_VSOk)
-  {
-    Storage_Schema aSchema;
-    theData = aSchema.ReadHeaderSection( aFileDriver );
-
-    if (theData->ErrorStatus() == Storage_VSOk)
-      aPos = aFileDriver.Tell();
-    else
-      WriteMessage( aMsg + theData->ErrorStatusExtension() );
-  }
-  else
-    WriteMessage( aMsg + "can not open file " + theFileName);
-
-  aFileDriver.Close();
-
-  return aPos;
-}
 
 //=======================================================================
 //function : WriteMessage

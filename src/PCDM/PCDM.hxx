@@ -21,6 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <Standard_IStream.hxx>
+
 #include <Standard_Boolean.hxx>
 #include <PCDM_TypeOfFileDriver.hxx>
 #include <PCDM_BaseDriverPointer.hxx>
@@ -74,6 +76,8 @@ private:
 
   
   Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (const TCollection_AsciiString& aFileName, PCDM_BaseDriverPointer& aBaseDriver);
+  
+  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (Standard_IStream& theIStream, PCDM_BaseDriverPointer& theBaseDriver);
 
 
 

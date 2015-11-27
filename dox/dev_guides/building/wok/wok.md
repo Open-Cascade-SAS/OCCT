@@ -3,9 +3,9 @@ Using WOK {#occt_dev_guides__building_wok}
 
 @tableofcontents
 
-\ref occt_dev_guides__wok "WOK" is a legacy build environment for Open CASCADE Technology. 
+WOK is a legacy build environment for Open CASCADE Technology. 
 It is required for generation of header files for classes defined with 
-@ref occt_dev_guides__cdl "CDL" ("Cascade Definition Language"). 
+CDL ("Cascade Definition Language"). 
 Also tools for generation of project files for other build systems, and OCCT 
 documentation, are integrated to WOK.
 
@@ -105,7 +105,7 @@ and third-party components required for building OCCT.
 
   Note that <i>$CASROOT</i> is equal to *D:/occt* now.
 
-  Then you can work with this workbench using normal WOK functionality (*wprocess, umake*, etc.; see @ref occt_dev_guides__wok "WOK User's Guide" for details) or use it only for generation of derived sources and project files, and build OCCT with Visual Studio on Windows or *make* command on Linux, as described below.
+  Then you can work with this workbench using normal WOK functionality (*wprocess, umake*, etc.) or use it only for generation of derived sources and project files, and build OCCT with Visual Studio on Windows or *make* command on Linux, as described below.
   
 @section wok3 Generation of building projects
 

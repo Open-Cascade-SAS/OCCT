@@ -38,6 +38,8 @@ public:
   
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aFileName) = 0;
 
+  //! Write <theDocument> to theOStream
+  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, Standard_OStream& theOStream) = 0;
 
 
 

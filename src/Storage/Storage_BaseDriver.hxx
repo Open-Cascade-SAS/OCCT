@@ -25,6 +25,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Storage_Error.hxx>
 #include <Standard_Boolean.hxx>
+#include <Storage_Data.hxx>
 #include <Storage_Position.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
@@ -61,6 +62,8 @@ Standard_EXPORT virtual ~Storage_BaseDriver(){Delete();}
     TCollection_AsciiString Name() const;
   
     Storage_OpenMode OpenMode() const;
+
+    Standard_EXPORT static TCollection_AsciiString ReadMagicNumber (Standard_IStream& theIStream);
   
   //! returns True if we are at end of the stream
   Standard_EXPORT virtual Standard_Boolean IsEnd() = 0;
@@ -77,6 +80,8 @@ Standard_EXPORT virtual ~Storage_BaseDriver(){Delete();}
   Standard_EXPORT virtual Storage_Error BeginReadInfoSection() = 0;
   
   Standard_EXPORT virtual void ReadInfo (Standard_Integer& nbObj, TCollection_AsciiString& dbVersion, TCollection_AsciiString& date, TCollection_AsciiString& schemaName, TCollection_AsciiString& schemaVersion, TCollection_ExtendedString& appName, TCollection_AsciiString& appVersion, TCollection_ExtendedString& objectType, TColStd_SequenceOfAsciiString& userInfo) = 0;
+
+  Standard_EXPORT virtual void ReadCompleteInfo (Standard_IStream& theIStream, Handle(Storage_Data)& theData) = 0;
   
   Standard_EXPORT virtual Storage_Error EndReadInfoSection() = 0;
   

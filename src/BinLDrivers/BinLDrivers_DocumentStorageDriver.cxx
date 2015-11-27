@@ -26,6 +26,7 @@
 #include <CDM_MessageDriver.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
+#include <OSD_OpenFile.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
@@ -78,19 +79,39 @@ void BinLDrivers_DocumentStorageDriver::Write
   SetIsError(Standard_False);
   SetStoreStatus(PCDM_SS_OK);
 
-  myMsgDriver = theDocument -> Application() -> MessageDriver();
+  myFileName = theFileName;
+
+  std::ofstream aFileStream;
+  OSD_OpenStream (aFileStream, theFileName, std::ios::out | std::ios::binary);
+
+  if (aFileStream.is_open() && aFileStream.good())
+  {
+    Write (theDocument, aFileStream);
+  }
+  else
+  {
+    SetIsError (Standard_True);
+    SetStoreStatus(PCDM_SS_WriteFailure);
+  }
+}
+
+//=======================================================================
+//function : Write
+//purpose  :
+//=======================================================================
+
+void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDoc, Standard_OStream& theOStream)
+{
+  myMsgDriver = theDoc->Application()->MessageDriver();
   myMapUnsupported.Clear();
 
   Handle(TDocStd_Document) aDoc =
-    Handle(TDocStd_Document)::DownCast(theDocument);
+    Handle(TDocStd_Document)::DownCast(theDoc);
   if (aDoc.IsNull()) {
     SetIsError(Standard_True);
     SetStoreStatus(PCDM_SS_Doc_IsNull);
   }
   else {
-    // Open the file
-    TCollection_AsciiString aFileName (theFileName);
-
     // First pass: collect empty labels, assign IDs to the types
     if (myDrivers.IsNull())
       myDrivers = AttributeDrivers (myMsgDriver);
@@ -98,7 +119,8 @@ void BinLDrivers_DocumentStorageDriver::Write
     FirstPass (aData->Root());
 
 //  1. Write info section (including types table)
-    WriteInfoSection(theDocument, aFileName);
+    WriteInfoSection (aDoc, theOStream);
+
     myTypesMap.Clear();
     if (IsError())
     {
@@ -106,73 +128,58 @@ void BinLDrivers_DocumentStorageDriver::Write
         return;
     }
 
-#if defined(_WIN32)
-    ofstream anOS ((const wchar_t*) theFileName.ToExtString(), ios::in | ios::binary | ios::ate);
-#elif !defined(IRIX) // 10.10.2005
-    ofstream anOS (aFileName.ToCString(), ios::in | ios::binary | ios::ate);
-#else
-    ofstream anOS (aFileName.ToCString(), ios::ate);
-    //ofstream anOS (aFileName.ToCString(), ios::out| ios::binary | ios::ate);
-#endif
-#ifdef OCCT_DEBUG
-    const Standard_Integer aP = (Standard_Integer) anOS.tellp();
-    cout << "POS = " << aP <<endl;
-#endif
-//#endif
 
-    if (anOS) {
 
 //  2. Write the Table of Contents of Sections
-      BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
-      for (; anIterS.More(); anIterS.Next())
-        anIterS.ChangeValue().WriteTOC (anOS);
+    BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
+    for (; anIterS.More(); anIterS.Next())
+      anIterS.ChangeValue().WriteTOC (theOStream);
 
-      // Shapes Section is the last one, it indicates the end of the table.
-      BinLDrivers_DocumentSection aShapesSection (SHAPESECTION_POS,
-                                                  Standard_False);
-      aShapesSection.WriteTOC (anOS);
+    // Shapes Section is the last one, it indicates the end of the table.
+    BinLDrivers_DocumentSection aShapesSection (SHAPESECTION_POS,
+                                                Standard_False);
+    aShapesSection.WriteTOC (theOStream);
 
 //  3. Write document contents
-      // (Storage data to the stream)
-      myRelocTable.Clear();
-      myPAtt.Init();
+    // (Storage data to the stream)
+    myRelocTable.Clear();
+    myPAtt.Init();
 
-//    Write Doc structure
-      WriteSubTree (aData->Root(), anOS); // Doc is written
+//  Write Doc structure
+    WriteSubTree (aData->Root(), theOStream); // Doc is written
 
 //  4. Write Shapes section
-      WriteShapeSection(aShapesSection, anOS);
+    WriteShapeSection (aShapesSection, theOStream);
 
-// Write application-defined sections
-      for (anIterS.Init (mySections); anIterS.More(); anIterS.Next()) {
-        BinLDrivers_DocumentSection& aSection = anIterS.ChangeValue();
-        const Standard_Size aSectionOffset = (Standard_Size) anOS.tellp();
-        WriteSection (aSection.Name(), theDocument, anOS);
-        aSection.Write (anOS, aSectionOffset);
-      }
-
-// End of processing: close structures and check the status
-      myPAtt.Destroy();   // free buffer
-      myEmptyLabels.Clear();
-      myMapUnsupported.Clear();
-
-      if (!myRelocTable.Extent()) {
-        // No objects written
-#ifdef OCCT_DEBUG
-        WriteMessage ("BinLDrivers_DocumentStorageDriver, no objects written");
-#endif
-        SetIsError(Standard_True);
-        SetStoreStatus(PCDM_SS_No_Obj);
-      }
-      myRelocTable.Clear();
+    // Write application-defined sections
+    for (anIterS.Init (mySections); anIterS.More(); anIterS.Next()) {
+      BinLDrivers_DocumentSection& aSection = anIterS.ChangeValue();
+      const Standard_Size aSectionOffset = (Standard_Size) theOStream.tellp();
+      WriteSection (aSection.Name(), aDoc, theOStream);
+      aSection.Write (theOStream, aSectionOffset);
     }
 
-    if (!anOS) {
+    // End of processing: close structures and check the status
+    myPAtt.Destroy();   // free buffer
+    myEmptyLabels.Clear();
+    myMapUnsupported.Clear();
+
+    if (!myRelocTable.Extent()) {
+      // No objects written
+#ifdef OCCT_DEBUG
+      WriteMessage ("BinLDrivers_DocumentStorageDriver, no objects written");
+#endif
+      SetIsError(Standard_True);
+      SetStoreStatus(PCDM_SS_No_Obj);
+    }
+    myRelocTable.Clear();
+
+    if (!theOStream) {
       // A problem with the stream
 #ifdef OCCT_DEBUG
       TCollection_ExtendedString anErrorStr ("Error: ");
       WriteMessage (anErrorStr + "BinLDrivers_DocumentStorageDriver, Problem with the file stream, rdstate="
-                    + (Standard_Integer )anOS.rdstate());
+                    + (Standard_Integer )theOStream.rdstate());
 #endif
       SetIsError(Standard_True);
       SetStoreStatus(PCDM_SS_WriteFailure);
@@ -361,77 +368,119 @@ void BinLDrivers_DocumentStorageDriver::FirstPass
 #define START_TYPES "START_TYPES"
 #define END_TYPES "END_TYPES"
 
-void BinLDrivers_DocumentStorageDriver::WriteInfoSection
-                         (const Handle(CDM_Document)&    theDocument,
-                          const TCollection_AsciiString& theFileName)
+void BinLDrivers_DocumentStorageDriver::WriteInfoSection 
+                         (const Handle(CDM_Document)&    theDoc,
+                          Standard_OStream&              theOStream)
 {
-  FSD_BinaryFile aFileDriver;
-  if (aFileDriver.Open( theFileName, Storage_VSWrite ) != Storage_VSOk) {
-    WriteMessage (TCollection_ExtendedString("Error: Cannot open file ") +
-                  theFileName);
-    SetIsError(Standard_True);
-    return;
-  }
+  // Magic number
+  theOStream.write (FSD_BinaryFile::MagicNumber(), strlen(FSD_BinaryFile::MagicNumber()));
 
-  if (aFileDriver.BeginWriteInfoSection() == Storage_VSOk)
+  FSD_FileHeader aHeader;
+
   {
-    // add format
-    Handle(Storage_Data) theData = new Storage_Data;
-    PCDM_ReadWriter::WriteFileFormat( theData, theDocument );
-    PCDM_ReadWriter::Writer()->WriteReferenceCounter(theData,theDocument);
-    PCDM_ReadWriter::Writer()->WriteReferences(theData,theDocument,theFileName);
-    PCDM_ReadWriter::Writer()->WriteExtensions(theData,theDocument);
-    PCDM_ReadWriter::Writer()->WriteVersion(theData,theDocument);
+    aHeader.testindian  = -1;
+    aHeader.binfo       = -1;
+    aHeader.einfo       = -1;
+    aHeader.bcomment    = -1;
+    aHeader.ecomment    = -1;
+    aHeader.btype       = -1;
+    aHeader.etype       = -1;
+    aHeader.broot       = -1;
+    aHeader.eroot       = -1;
+    aHeader.bref        = -1;
+    aHeader.eref        = -1;
+    aHeader.bdata       = -1;
+    aHeader.edata       = -1;
+  }
 
-    // add the types table
-    theData->AddToUserInfo(START_TYPES);
-    Standard_Integer i;
-    for (i = 1; i <= myTypesMap.Extent(); i++) {
-      Handle(BinMDF_ADriver) aDriver = myDrivers->GetDriver(i);
-      if (!aDriver.IsNull()) {
-        const TCollection_AsciiString& aTypeName = aDriver->TypeName();
-        theData->AddToUserInfo(aTypeName);
-      }
+  // aHeader.testindian
+  {
+    union {
+      char ti2[4];
+      Standard_Integer aResult;
+    } aWrapUnion;
+
+    aWrapUnion.ti2[0] = 1;
+    aWrapUnion.ti2[1] = 2;
+    aWrapUnion.ti2[2] = 3;
+    aWrapUnion.ti2[3] = 4;
+
+    aHeader.testindian = aWrapUnion.aResult;
+  }
+
+  // info section
+  aHeader.binfo = (Standard_Integer)theOStream.tellp();
+
+  // header section
+  aHeader.einfo = aHeader.binfo + FSD_BinaryFile::WriteHeader (theOStream, aHeader, Standard_True);
+  
+  // add format
+  Handle(Storage_Data) theData = new Storage_Data;
+  PCDM_ReadWriter::WriteFileFormat (theData, theDoc);
+  PCDM_ReadWriter::Writer()->WriteReferenceCounter (theData, theDoc);
+  PCDM_ReadWriter::Writer()->WriteReferences       (theData, theDoc, myFileName);
+  PCDM_ReadWriter::Writer()->WriteExtensions       (theData, theDoc);
+  PCDM_ReadWriter::Writer()->WriteVersion          (theData, theDoc);
+
+  // add the types table
+  theData->AddToUserInfo(START_TYPES);
+  for (Standard_Integer i = 1; i <= myTypesMap.Extent(); i++)
+  {
+    Handle(BinMDF_ADriver) aDriver = myDrivers->GetDriver(i);
+    if (!aDriver.IsNull())
+    {
+      const TCollection_AsciiString& aTypeName = aDriver->TypeName();
+      theData->AddToUserInfo (aTypeName);
     }
-    theData->AddToUserInfo(END_TYPES);
-
-    // add document comments
-    TColStd_SequenceOfExtendedString aComments;
-    theDocument->Comments(aComments);
-    for (i = 1; i <= aComments.Length(); i++)
-      theData->AddToComments(aComments(i));
-
-    // Info
-    aFileDriver.WriteInfo
-      (1,           //   nbObj
-       BinLDrivers::StorageVersion(),
-       Storage_Schema::ICreationDate(),
-       TCollection_AsciiString(SchemaName(),'?'),
-       1,           //   schemaVersion
-       theData->ApplicationName(),
-       theData->ApplicationVersion(),
-       theData->DataType(),
-       theData->UserInfo()
-       );
-
-    // we write a complete header section: info and comments
-    aFileDriver.EndWriteInfoSection();
-    aFileDriver.BeginWriteCommentSection();
-    aFileDriver.WriteComment(theData->Comments());// <=== !!! szy - it was missed
-    aFileDriver.EndWriteCommentSection();
-    // here the location of info and comment sections is written
-    aFileDriver.EndWriteDataSection();
   }
-  else {
-    WriteMessage(TCollection_ExtendedString("Error: Problem writing header "
-                                            "into file ") + theFileName);
-    SetIsError(Standard_True);
+  theData->AddToUserInfo(END_TYPES);
+
+  Standard_Integer aObjNb = 1;
+  Standard_Integer aShemaVer = 1;
+
+  aHeader.einfo += FSD_BinaryFile::WriteInfo (theOStream,
+                                              aObjNb,
+                                              BinLDrivers::StorageVersion(),
+                                              Storage_Schema::ICreationDate(),
+                                              TCollection_AsciiString(SchemaName(),'?'),
+                                              aShemaVer,
+                                              theData->ApplicationName(),
+                                              theData->ApplicationVersion(),
+                                              theData->DataType(),
+                                              theData->UserInfo(),
+                                              Standard_True); // only count the size of the section
+
+  // calculate comment section
+  TColStd_SequenceOfExtendedString aComments;
+  theDoc->Comments(aComments);
+  for (Standard_Integer i = 1; i <= aComments.Length(); i++)
+  {
+    theData->AddToComments (aComments(i));
   }
-#ifdef OCCT_DEBUG
-    const Standard_Integer aP = (Standard_Integer) aFileDriver.Tell();
-    cout << "POS = " << aP <<endl;
-#endif
-  aFileDriver.Close();
+
+  aHeader.bcomment = aHeader.einfo;
+  aHeader.ecomment = aHeader.bcomment + FSD_BinaryFile::WriteComment(theOStream, theData->Comments(), Standard_True);
+
+  aHeader.edata = aHeader.ecomment;
+
+  // write header information
+  FSD_BinaryFile::WriteHeader (theOStream, aHeader);
+
+  // write info section
+  FSD_BinaryFile::WriteInfo (theOStream,
+                             aObjNb,
+                             BinLDrivers::StorageVersion(),
+                             Storage_Schema::ICreationDate(),
+                             TCollection_AsciiString(SchemaName(),'?'),
+                             aShemaVer,
+                             theData->ApplicationName(),
+                             theData->ApplicationVersion(),
+                             theData->DataType(),
+                             theData->UserInfo());
+
+  // write the comments
+  FSD_BinaryFile::WriteComment(theOStream, theData->Comments());
+  
 }
 
 //=======================================================================

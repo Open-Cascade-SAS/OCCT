@@ -103,3 +103,48 @@ PCDM_TypeOfFileDriver PCDM::FileDriverType(const TCollection_AsciiString& aFileN
     return PCDM_TOFD_Unknown;
   }
 }
+
+//=======================================================================
+//function : FileDriverType
+//purpose  : 
+//=======================================================================
+
+PCDM_TypeOfFileDriver PCDM::FileDriverType (Standard_IStream& theIStream, PCDM_BaseDriverPointer& theBaseDriver)
+{
+  TCollection_AsciiString aReadMagicNumber;
+
+  if (theIStream.good())
+  {
+    streampos aDocumentPos = theIStream.tellg();
+
+    // read magic number from the file
+    aReadMagicNumber = Storage_BaseDriver::ReadMagicNumber (theIStream);
+
+    if (!theIStream.good())
+    {
+      theIStream.clear();
+    }
+
+    theIStream.seekg(aDocumentPos);
+  }
+
+  if(aReadMagicNumber == FSD_CmpFile::MagicNumber())
+  {
+    theBaseDriver = new FSD_CmpFile;
+    return PCDM_TOFD_CmpFile;
+  }
+  else if (aReadMagicNumber == FSD_File::MagicNumber())
+  {
+    theBaseDriver = new FSD_File;
+    return PCDM_TOFD_File;
+  }
+  else if (aReadMagicNumber == FSD_BinaryFile::MagicNumber())
+  {
+    theBaseDriver = new FSD_BinaryFile;
+    return PCDM_TOFD_File;
+  }
+
+  theBaseDriver = NULL;
+  return PCDM_TOFD_Unknown;
+}
+

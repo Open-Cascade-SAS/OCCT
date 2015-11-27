@@ -103,13 +103,7 @@ friend class Storage_Schema;
 
   DEFINE_STANDARD_RTTIEXT(Storage_HeaderData,MMgt_TShared)
 
-protected:
-
-
-
-
-private:
-
+public:
   
   Standard_EXPORT void SetNumberOfObjects (const Standard_Integer anObjectNumber);
   
@@ -120,7 +114,9 @@ private:
   Standard_EXPORT void SetSchemaVersion (const TCollection_AsciiString& aVersion);
   
   Standard_EXPORT void SetSchemaName (const TCollection_AsciiString& aName);
-  
+
+private:
+ 
   Standard_EXPORT void SetErrorStatus (const Storage_Error anError);
   
   Standard_EXPORT void SetErrorStatusExtension (const TCollection_AsciiString& anErrorExt);

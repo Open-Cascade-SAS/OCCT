@@ -384,6 +384,67 @@ Handle(PCDM_Reader) CDF_Application::Reader (const TCollection_ExtendedString& a
 }
 
 //=======================================================================
+//function : Read
+//purpose  : 
+//=======================================================================
+Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream)
+{
+  Handle(CDM_Document) aDoc;
+  Handle(Storage_Data) dData;
+  
+  TCollection_ExtendedString aFormat;
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+    
+    aFormat = PCDM_ReadWriter::FileFormat (theIStream, dData);
+  }
+  catch (Standard_Failure)
+  {
+    myRetrievableStatus = PCDM_RS_FormatFailure;
+    
+    Standard_SStream aMsg;
+    aMsg << Standard_Failure::Caught() << endl;
+    Standard_Failure::Raise(aMsg);
+  }
+
+  if (aFormat.IsEmpty())
+  {
+    myRetrievableStatus = PCDM_RS_FormatFailure;
+    return aDoc;
+  }
+ 
+  // 1. use a format name to detect plugin corresponding to the format to continue reading
+  Handle(PCDM_Reader) aReader = ReaderFromFormat (aFormat);
+
+  // 2. create document with the detected reader
+  aDoc = aReader->CreateDocument();
+
+  // 3. read the content of theIStream to aDoc
+  try
+  {
+    OCC_CATCH_SIGNALS
+  
+    aReader->Read (theIStream, dData, aDoc, this);
+  }
+  catch (Standard_Failure)
+  {
+    myRetrievableStatus = aReader->GetStatus();
+    if (myRetrievableStatus  > PCDM_RS_AlreadyRetrieved)
+    {
+      Standard_SStream aMsg;
+      aMsg << Standard_Failure::Caught() << endl;
+      Standard_Failure::Raise(aMsg);
+    }	
+  }
+
+  myRetrievableStatus = aReader->GetStatus();
+
+  return aDoc;
+}
+
+//=======================================================================
 //function : FindReaderFromFormat
 //purpose  : 
 //=======================================================================

@@ -29,6 +29,8 @@
 #include <CDF_TypeOfActivation.hxx>
 #include <Standard_ExtString.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_IStream.hxx>
+
 class Standard_NoSuchObject;
 class CDF_Session;
 class Standard_GUID;
@@ -119,7 +121,11 @@ public:
   Standard_EXPORT Standard_Boolean FindReader (const TCollection_ExtendedString& aFileName);
   
   Standard_EXPORT Handle(PCDM_Reader) Reader (const TCollection_ExtendedString& aFileName);
-  
+
+  //! Reads aDoc from standard SEEKABLE stream theIStream,
+  //! the stream should support SEEK fuctionality
+  Standard_EXPORT Handle(CDM_Document) Read (Standard_IStream& theIStream);
+ 
   Standard_EXPORT Standard_Boolean FindReaderFromFormat (const TCollection_ExtendedString& aFormat);
   
   Standard_EXPORT Handle(PCDM_Reader) ReaderFromFormat (const TCollection_ExtendedString& aFormat);

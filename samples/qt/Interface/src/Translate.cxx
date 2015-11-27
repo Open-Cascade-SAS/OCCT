@@ -16,8 +16,6 @@
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveObject.hxx>
 
-#include <FSD_File.hxx>
-
 #include <IGESControl_Reader.hxx>
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Controller.hxx>

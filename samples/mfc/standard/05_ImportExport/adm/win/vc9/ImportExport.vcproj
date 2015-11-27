@@ -416,10 +416,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\FSD_Archive.cxx"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\res\ImportExport.rc"
 				>
 				<FileConfiguration
@@ -654,10 +650,6 @@
 			>
             <File
 				RelativePath="..\..\..\src\ColoredShapes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\FSD_Archive.hxx"
 				>
 			</File>
 			<File

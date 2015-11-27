@@ -56,6 +56,11 @@ public:
   //! into a persistent document. and the Make   method to build a
   //! transient document.
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& aFileName, const Handle(CDM_Document)& aNewDocument, const Handle(CDM_Application)& anApplication) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Read (Standard_IStream&              theIStream,
+                                     const Handle(Storage_Data)&    theStorageData,
+                                     const Handle(CDM_Document)&    theDoc,
+                                     const Handle(CDM_Application)& theApplication) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Make (const Handle(PCDM_Document)& aPCDM, const Handle(CDM_Document)& aNewDocument) = 0;
   

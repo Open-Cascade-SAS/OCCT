@@ -230,14 +230,7 @@ friend class Storage_Schema;
 
   DEFINE_STANDARD_RTTIEXT(Storage_Data,MMgt_TShared)
 
-protected:
-
-
-
-
-private:
-
-  
+ 
   Standard_EXPORT Handle(Storage_HeaderData) HeaderData() const;
   
   Standard_EXPORT Handle(Storage_RootData) RootData() const;
@@ -247,7 +240,9 @@ private:
   Standard_EXPORT Handle(Storage_InternalData) InternalData() const;
   
   Standard_EXPORT void Clear() const;
-  
+
+private:  
+
   Standard_EXPORT void SetErrorStatus (const Storage_Error anError);
   
   Standard_EXPORT void SetErrorStatusExtension (const TCollection_AsciiString& anErrorExt);
