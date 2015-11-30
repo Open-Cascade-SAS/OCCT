@@ -240,7 +240,7 @@ public:
   virtual const char* Name() const { return "Transient_Root"; }
   virtual Standard_Transient* CreateParent() const { return new Standard_Transient; }
   virtual Standard_Transient* Clone()        const { return new Transient_Root; }
-  DEFINE_STANDARD_RTTI(Transient_Root, Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(Transient_Root,Standard_Transient)
 };
 DEFINE_STANDARD_HANDLE(Transient_Root, Standard_Transient)
 
@@ -252,11 +252,9 @@ public:\
   virtual const char* Name() const Standard_OVERRIDE { return #theClass; } \
   virtual Standard_Transient* CreateParent() const Standard_OVERRIDE { return new theParent(); } \
   virtual Standard_Transient* Clone()        const Standard_OVERRIDE { return new theClass(); } \
-  DEFINE_STANDARD_RTTI(theClass, theParent) \
+  DEFINE_STANDARD_RTTI_INLINE(theClass,theParent) \
 };\
-DEFINE_STANDARD_HANDLE    (theClass, theParent) \
-IMPLEMENT_STANDARD_HANDLE (theClass, theParent) \
-IMPLEMENT_STANDARD_RTTIEXT(theClass, theParent)
+DEFINE_STANDARD_HANDLE    (theClass, theParent) 
 
 #define QA_NAME(theNum) qaclass ## theNum ## _ ## 50
 #define QA_HANDLE_NAME(theNum) Handle(qaclass ## theNum ## _ ## 50)

@@ -19,6 +19,8 @@
 
 #include <NCollection_DataMap.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Standard_Type,Standard_Transient)
+
 //============================================================================
 
 Standard_Boolean Standard_Type::SubType (const Handle(Standard_Type)& theOther) const

@@ -18,6 +18,8 @@
 #include <StepRepr_HArray1OfShapeAspect.hxx>
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneDefinition,StepDimTol_ToleranceZoneDefinition)
+
 //=======================================================================
 //function : StepDimTol_RunoutZoneDefinition
 //purpose  : 

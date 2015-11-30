@@ -1,0 +1,67 @@
+// This is sample C++ file intended for testing and verifyig automatic upgrade 
+// script. Copy it with extension .cxx and apply upgrade procedure to see
+// the result, as follows:
+// > upgrade.bat -src=./adm -inc=./src -recurse -all
+
+// Include of Geom_Line.hxx and Geom_Plane.hxx should be added below
+#include <gp.hxx>
+
+//========================================================================
+// OCCT 7.0
+//========================================================================
+
+//------------------------------------------------------------------------
+// Option -rtti
+//------------------------------------------------------------------------
+
+// Should be replaced by <Standard_Type.hxx>
+#include <Standard_DefineHandle.hxx>
+
+class A_0
+{
+}
+
+class B_1 : 
+public A_0
+{
+  // second argument "A_0" should be added
+  DEFINE_STANDARD_RTTI(B_1)
+};
+
+class C_2 : public Standard_Transient, B_1
+{
+  // second argument "Standard_Transient" should be added
+  DEFINE_STANDARD_RTTI(C_2)
+};
+
+void for_rtti ()
+{
+  Handle(Geom_Curve) aCurve = new Geom_Line (gp::Origin(), gp::DZ());
+  Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (aCurve);
+}
+
+// should be removed
+IMPLEMENT_DOWNCAST(A)
+IMPLEMENT_STANDARD_RTTIEXT(A, B)
+
+//------------------------------------------------------------------------
+// Option -fwd
+//------------------------------------------------------------------------
+
+// force safe mode used for Qt objects
+Q_OBJECT
+slots:
+
+// these includes should be recognized as corresponding to forward declarations 
+#include <occt/TColStd_HArray1OfReal.hxx>
+
+// these declarations should be just removed
+class Handle(TColStd_HArray1OfReal);
+
+// should be replaced by include of corresponding header
+class TColStd_Array1OfReal;
+class Handle(Geom_Curve);
+
+// check that trailing spaces at the following line are preserved
+void ff();       
+

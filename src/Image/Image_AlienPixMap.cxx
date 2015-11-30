@@ -31,6 +31,8 @@
 #include <fstream>
 #include <algorithm>
 
+IMPLEMENT_STANDARD_RTTIEXT(Image_AlienPixMap,Image_PixMap)
+
 #ifdef HAVE_FREEIMAGE
 namespace
 {

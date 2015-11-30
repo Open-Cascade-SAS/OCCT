@@ -23,16 +23,36 @@
 #include <typeinfo>
 
 //! Helper macro to get instance of a type descriptor for a class in a legacy way.
-#define STANDARD_TYPE(theType) Standard_Type::Instance<theType>()
+#define STANDARD_TYPE(theType) theType::get_type_descriptor()
 
 //! Helper macro to be included in definition of the classes inheriting
-//! Standard_Transient to enable use of OCCT RTTI and smart pointers (handles).
-#define DEFINE_STANDARD_RTTI(Class,Base) \
+//! Standard_Transient to enable use of OCCT RTTI.
+//!
+//! Inline version, does not require IMPLEMENT_STANDARD_RTTIEXT, but when used
+//! for big hierarchies of classes may cause considerable increase of size of binaries.
+#define DEFINE_STANDARD_RTTI_INLINE(Class,Base) \
 public: \
   typedef Base base_type; \
   static const char* get_type_name () { return #Class; } \
+  static const Handle(Standard_Type)& get_type_descriptor () { return Standard_Type::Instance<Class>(); } \
   virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE \
   { return STANDARD_TYPE(Class); }
+
+//! Helper macro to be included in definition of the classes inheriting
+//! Standard_Transient to enable use of OCCT RTTI.
+//!
+//! Out-of-line version, requires IMPLEMENT_STANDARD_RTTIEXT.
+#define DEFINE_STANDARD_RTTIEXT(Class,Base) \
+public: \
+  typedef Base base_type; \
+  static const char* get_type_name () { return #Class; } \
+  Standard_EXPORT static const Handle(Standard_Type)& get_type_descriptor (); \
+  Standard_EXPORT virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE;
+
+//! Defines implementation of type descriptor and DynamicType() function
+#define IMPLEMENT_STANDARD_RTTIEXT(Class,Base) \
+  const Handle(Standard_Type)& Class::get_type_descriptor () { return Standard_Type::Instance<Class>(); } \
+  const Handle(Standard_Type)& Class::DynamicType() const { return get_type_descriptor(); }
 
 // forward declaration of type_instance class
 namespace opencascade {
@@ -117,7 +137,7 @@ public:
   Standard_EXPORT ~Standard_Type ();
 
   // Define own RTTI
-  DEFINE_STANDARD_RTTI(Standard_Type, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Standard_Type,Standard_Transient)
 
 private:
 

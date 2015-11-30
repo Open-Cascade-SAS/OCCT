@@ -37,6 +37,8 @@
 
 #include <Standard_ProgramError.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
+
 #if defined(HAVE_EGL)
   #include <EGL/egl.h>
   #ifdef _MSC_VER

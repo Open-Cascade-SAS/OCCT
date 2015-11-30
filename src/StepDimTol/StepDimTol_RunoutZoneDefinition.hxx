@@ -27,6 +27,7 @@ class StepRepr_HArray1OfShapeAspect;
 
 class StepDimTol_RunoutZoneDefinition;
 DEFINE_STANDARD_HANDLE(StepDimTol_RunoutZoneDefinition, StepDimTol_ToleranceZoneDefinition)
+
 //! Representation of STEP entity ToleranceZoneDefinition
 class StepDimTol_RunoutZoneDefinition : public StepDimTol_ToleranceZoneDefinition
 {
@@ -53,7 +54,7 @@ public:
     myOrientation = theOrientation;
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_ToleranceZoneDefinition, StepDimTol_ToleranceZoneDefinition)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_RunoutZoneDefinition,StepDimTol_ToleranceZoneDefinition)
 
 private: 
   Handle(StepDimTol_RunoutZoneOrientation) myOrientation;

@@ -29,6 +29,7 @@
 #include <XmlObjMgt_GP.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_LocationDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (DatumString,    "datum")
 IMPLEMENT_DOMSTRING (LocationString, "location")
 IMPLEMENT_DOMSTRING (PowerString,    "power")
@@ -176,7 +177,7 @@ Standard_Boolean XmlMXCAFDoc_LocationDriver::Translate
       Standard_Integer aDatumID;
       aLocElem.getAttribute (::DatumString()).GetInteger (aDatumID);
       if (aDatumID > 0 && theMap.IsBound (aDatumID))
-        aDatum = (Handle(TopLoc_Datum3D)&) theMap.Find (aDatumID);
+        aDatum = Handle(TopLoc_Datum3D)::DownCast (theMap.Find (aDatumID));
       else
         return Standard_False;
     }else{

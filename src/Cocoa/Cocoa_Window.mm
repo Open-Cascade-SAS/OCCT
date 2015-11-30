@@ -29,6 +29,8 @@
 #include <Aspect_Convert.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Cocoa_Window,Aspect_Window)
+
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //
 #else

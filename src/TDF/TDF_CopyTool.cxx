@@ -38,11 +38,6 @@
 #include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_RelocationTable.hxx>
 
-#define DeclareAndSpeedCast(V,T,Vdown) Handle(T) Vdown = Handle(T)::DownCast (V)
-#define DeclareConstAndSpeedCast(V,T,Vdown) const Handle(T)& Vdown = (Handle(T)&) V
-#define SpeedCast(V,T,Vdown) Vdown = Handle(T)::DownCast (V)
-
-
 //=======================================================================
 //function : Copy
 //purpose  : 

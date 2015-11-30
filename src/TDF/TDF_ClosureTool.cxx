@@ -33,12 +33,6 @@
 #include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
 
-//#include <TDF_Reference.hxx>
-#define DeclareAndSpeedCast(V,T,Vdown) Handle(T) Vdown = Handle(T)::DownCast (V)
-#define DeclareConstAndSpeedCast(V,T,Vdown) const Handle(T)& Vdown = (Handle(T)&) V
-#define SpeedCast(V,T,Vdown) Vdown = Handle(T)::DownCast (V)
-
-
 //=======================================================================
 //function : Closure
 //purpose  : Builds the transitive closure whithout attribute filter.

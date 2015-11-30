@@ -58,7 +58,10 @@ public:
 
   static const char* get_type_name () { return "Standard_Transient"; }
 
-  //! Returns a type information object about this object.
+  //! Returns type descriptor of Standard_Transient class
+  Standard_EXPORT static const opencascade::handle<Standard_Type>& get_type_descriptor ();
+
+  //! Returns a type descriptor about this object.
   Standard_EXPORT virtual const opencascade::handle<Standard_Type>& DynamicType() const;
 
   //! Returns a true value if this is an instance of Type.

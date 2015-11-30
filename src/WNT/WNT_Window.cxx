@@ -25,6 +25,9 @@
 #include <WNT_Window.hxx>
 
 #include <stdio.h>
+
+IMPLEMENT_STANDARD_RTTIEXT(WNT_Window,Aspect_Window)
+
 // =======================================================================
 // function : WNT_Window
 // purpose  :

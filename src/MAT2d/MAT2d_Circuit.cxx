@@ -14,23 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DRAW
-#include <Draw_Appli.hxx>
-#include <DrawTrSurf_Curve2d.hxx>
-#include <Draw_Marker2D.hxx>
-#endif
-#ifdef OCCT_DEBUG
-#include <GCE2d_MakeSegment.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_CartesianPoint.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#endif
-
-
 #include <Adaptor2d_OffsetCurve.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Geometry.hxx>
@@ -53,7 +36,23 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit,MMgt_TShared)
+
+#ifdef OCCT_DEBUG
+#include <GCE2d_MakeSegment.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_CartesianPoint.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Circle.hxx>
+#endif
+
 #ifdef DRAW
+#include <Draw_Appli.hxx>
+#include <DrawTrSurf_Curve2d.hxx>
+#include <Draw_Marker2D.hxx>
   static Handle(DrawTrSurf_Curve2d) draw;
   Standard_EXPORT Draw_Viewer dout;
 #endif

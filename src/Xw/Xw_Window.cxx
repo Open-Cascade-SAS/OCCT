@@ -22,6 +22,8 @@
 
 #include <GL/glx.h>
 
+IMPLEMENT_STANDARD_RTTIEXT(Xw_Window,Aspect_Window)
+
 namespace
 {
 
