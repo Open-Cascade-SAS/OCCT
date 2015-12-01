@@ -237,7 +237,6 @@ n BinMDataXtd
 n BinMDocStd
 n BinMFunction
 n BinMNaming
-n BinMPrsStd
 n BinObjMgt
 n BinTools
 n CDF
@@ -260,7 +259,6 @@ n XmlMDataXtd
 n XmlMDocStd
 n XmlMFunction
 n XmlMNaming
-n XmlMPrsStd
 n XmlObjMgt
 r StdResource
 r XmlOcafResource
@@ -432,3 +430,4 @@ t TKIVtk
 n IVtkDraw
 t TKIVtkDraw
 n Geom2dEvaluator
+t TKVCAF

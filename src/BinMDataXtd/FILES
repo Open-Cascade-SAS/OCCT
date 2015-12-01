@@ -16,3 +16,7 @@ BinMDataXtd_PointDriver.cxx
 BinMDataXtd_PointDriver.hxx
 BinMDataXtd_ShapeDriver.cxx
 BinMDataXtd_ShapeDriver.hxx
+BinMDataXtd_PresentationDriver.hxx
+BinMDataXtd_PresentationDriver.cxx
+BinMDataXtd_PositionDriver.hxx
+BinMDataXtd_PositionDriver.cxx

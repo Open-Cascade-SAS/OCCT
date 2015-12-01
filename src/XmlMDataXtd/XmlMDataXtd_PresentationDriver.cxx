@@ -13,16 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XmlMDataXtd_PresentationDriver.hxx>
 
 #include <CDM_MessageDriver.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
-#include <TPrsStd_AISPresentation.hxx>
-#include <XmlMPrsStd_AISPresentationDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XmlMPrsStd_AISPresentationDriver,XmlMDF_ADriver)
+#include <TDataXtd_Presentation.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PresentationDriver,XmlMDF_ADriver)
+
 IMPLEMENT_DOMSTRING (GuidString,        "guid")
 IMPLEMENT_DOMSTRING (IsDisplayedString, "isdisplayed")
 IMPLEMENT_DOMSTRING (ColorString,       "color")
@@ -34,37 +36,37 @@ IMPLEMENT_DOMSTRING (ModeString,        "mode")
 IMPLEMENT_DOMSTRING (DisplayedString,   "true")
 
 //=======================================================================
-//function : XmlMPrsStd_AISPresentationDriver
+//function : XmlMDataXtd_PresentationDriver
 //purpose  : Constructor
 //=======================================================================
-XmlMPrsStd_AISPresentationDriver::XmlMPrsStd_AISPresentationDriver
-                        (const Handle(CDM_MessageDriver)& theMsgDriver)
-      : XmlMDF_ADriver (theMsgDriver, NULL)
+XmlMDataXtd_PresentationDriver::XmlMDataXtd_PresentationDriver
+  (const Handle(CDM_MessageDriver)& theMsgDriver)
+  : XmlMDF_ADriver (theMsgDriver, NULL)
 {}
 
 //=======================================================================
 //function : NewEmpty
 //purpose  : 
 //=======================================================================
-Handle(TDF_Attribute) XmlMPrsStd_AISPresentationDriver::NewEmpty() const
+Handle(TDF_Attribute) XmlMDataXtd_PresentationDriver::NewEmpty() const
 {
-  return (new TPrsStd_AISPresentation());
+  return (new TDataXtd_Presentation());
 }
 
 //=======================================================================
 //function : Paste
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMPrsStd_AISPresentationDriver::Paste
-                                (const XmlObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 XmlObjMgt_RRelocationTable&  ) const
+Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
+  (const XmlObjMgt_Persistent&  theSource,
+  const Handle(TDF_Attribute)& theTarget,
+  XmlObjMgt_RRelocationTable&  ) const
 {
   TCollection_ExtendedString aMessageString;
   XmlObjMgt_DOMString aDOMStr;
 
-  Handle(TPrsStd_AISPresentation) aTPrs =
-    Handle(TPrsStd_AISPresentation)::DownCast(theTarget);
+  Handle(TDataXtd_Presentation) aTPrs =
+    Handle(TDataXtd_Presentation)::DownCast(theTarget);
   const XmlObjMgt_Element& anElem = theSource;
 
   //convert attribute value into GUID
@@ -112,7 +114,7 @@ Standard_Boolean XmlMPrsStd_AISPresentationDriver::Paste
       WriteMessage (aMessageString);
       return Standard_False;
     }
-    aTPrs->SetMaterial((Graphic3d_NameOfMaterial)anIValue);
+    aTPrs->SetMaterialIndex(anIValue);
   }
   else
   {
@@ -182,13 +184,13 @@ Standard_Boolean XmlMPrsStd_AISPresentationDriver::Paste
 //function : Paste
 //purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMPrsStd_AISPresentationDriver::Paste
-                                        (const Handle(TDF_Attribute)& theSource,
-                                         XmlObjMgt_Persistent&        theTarget,
-                                         XmlObjMgt_SRelocationTable&  ) const
+void XmlMDataXtd_PresentationDriver::Paste
+                                  (const Handle(TDF_Attribute)& theSource,
+                                   XmlObjMgt_Persistent&        theTarget,
+                                   XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TPrsStd_AISPresentation) aTPrs =
-    Handle(TPrsStd_AISPresentation)::DownCast(theSource);
+  Handle(TDataXtd_Presentation) aTPrs =
+    Handle(TDataXtd_Presentation)::DownCast(theSource);
   if (aTPrs.IsNull()) return;
 
   //convert GUID into attribute value
@@ -207,14 +209,14 @@ void XmlMPrsStd_AISPresentationDriver::Paste
   // color
   if (aTPrs->HasOwnColor())
   {
-    aNb = (Standard_Integer)(aTPrs->Color());
+    aNb = aTPrs->Color();
     theTarget.Element().setAttribute(::ColorString(), aNb);
   }
 
   // material
   if (aTPrs->HasOwnMaterial())
   {
-    aNb = (Standard_Integer)(aTPrs->Material());
+    aNb = aTPrs->MaterialIndex();
     theTarget.Element().setAttribute(::MaterialString(), aNb);
   }
 

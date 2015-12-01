@@ -1,7 +1,7 @@
 00000000-0000-0000-0000-000000000000	Reserved
 ffffffff-ffff-ffff-ffff-ffffffffffff	Reserved
 
-04fb4d00-5690-11d1-8940-080009dc3333	TPrsStd_AISPresentation
+3680ac6c-47ae-4366-bb94-26abb6e07341	TPrsStd_AISPresentation
 04fb4d01-5690-11d1-8940-080009dc3333	TPrsStd_ColorAttribute
 04fb4d02-5690-11d1-8940-080009dc3333	TPrsStd_TransparencyAttribute
 04fb4d04-5690-11d1-8940-080009dc3333	TPrsStd_GraphicAttribute

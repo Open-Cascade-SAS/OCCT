@@ -1590,9 +1590,8 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   TDF_Label L;
   DDF::AddLabel(aDF, "0:2", L);
  
-  Handle(TPrsStd_AISPresentation) AISP = new TPrsStd_AISPresentation;
-
-  AISP->Set(L,TDataXtd_Constraint::GetID());
+  Handle(TPrsStd_AISPresentation) AISP = 
+    TPrsStd_AISPresentation::Set(L,TDataXtd_Constraint::GetID());
 
   if (AISP->HasOwnMode()) {di<<3;return 0;}
   AISP->SetMode(3);

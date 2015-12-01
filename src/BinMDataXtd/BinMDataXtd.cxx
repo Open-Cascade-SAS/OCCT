@@ -26,6 +26,8 @@
 #include <BinMDataXtd_ShapeDriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <CDM_MessageDriver.hxx>
+#include <BinMDataXtd_PresentationDriver.hxx>
+#include <BinMDataXtd_PositionDriver.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
 //=======================================================================
@@ -45,6 +47,8 @@ void BinMDataXtd::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
   theDriverTable->AddDriver (new BinMDataXtd_PlaneDriver       (theMsgDriver) );
   theDriverTable->AddDriver (new BinMDataXtd_PlacementDriver   (theMsgDriver) );
 
+  theDriverTable->AddDriver (new BinMDataXtd_PresentationDriver(theMsgDriver) );
+  theDriverTable->AddDriver (new BinMDataXtd_PositionDriver    (theMsgDriver) );
 }
 
 //=======================================================================

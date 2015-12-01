@@ -116,7 +116,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc12\bin/Ocaf.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc12\lib;$(CASROOT)/win32/vc12/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -158,7 +158,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc12\bin/Ocaf.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc12\lib;$(CASROOT)/win64/vc12/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -199,7 +199,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc12\bind/Ocaf.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc12\libd;$(CASROOT)/win32/vc12/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -241,7 +241,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKLCAF.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBO.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc12\bind/Ocaf.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc12\libd;$(CASROOT)/win64/vc12/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

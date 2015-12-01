@@ -15,23 +15,23 @@
 
 // modified     13.04.2009 Sergey ZARITCHNY
 
-#include <BinMPrsStd_PositionDriver.hxx>
-#include <BinObjMgt_Persistent.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <BinMDataXtd_PositionDriver.hxx>
+
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 #include <TDataXtd_Position.hxx>
 #include <TDF_Attribute.hxx>
+#include <BinObjMgt_Persistent.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BinMPrsStd_PositionDriver,BinMDF_ADriver)
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PositionDriver,BinMDF_ADriver)
 
 //=======================================================================
 //function : BinMDataStd_PositionDriver
 //purpose  : Constructor
 //=======================================================================
-BinMPrsStd_PositionDriver::BinMPrsStd_PositionDriver
+BinMDataXtd_PositionDriver::BinMDataXtd_PositionDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
-     : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataXtd_Position)->Name())
+: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataXtd_Position)->Name())
 {
 }
 
@@ -40,7 +40,7 @@ BinMPrsStd_PositionDriver::BinMPrsStd_PositionDriver
 //purpose  : 
 //=======================================================================
 
-Handle(TDF_Attribute) BinMPrsStd_PositionDriver::NewEmpty() const
+Handle(TDF_Attribute) BinMDataXtd_PositionDriver::NewEmpty() const
 {
   return new TDataXtd_Position();
 }
@@ -50,7 +50,7 @@ Handle(TDF_Attribute) BinMPrsStd_PositionDriver::NewEmpty() const
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMPrsStd_PositionDriver::Paste
+Standard_Boolean BinMDataXtd_PositionDriver::Paste
                                 (const BinObjMgt_Persistent&  theSource,
                                  const Handle(TDF_Attribute)& theTarget,
                                  BinObjMgt_RRelocationTable&  ) const
@@ -80,7 +80,7 @@ Standard_Boolean BinMPrsStd_PositionDriver::Paste
 //purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMPrsStd_PositionDriver::Paste (const Handle(TDF_Attribute)& theSource,
+void BinMDataXtd_PositionDriver::Paste (const Handle(TDF_Attribute)& theSource,
                                        BinObjMgt_Persistent&        theTarget,
                                        BinObjMgt_SRelocationTable&  ) const
 {

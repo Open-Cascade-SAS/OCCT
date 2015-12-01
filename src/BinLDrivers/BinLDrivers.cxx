@@ -32,7 +32,7 @@
 //#include <BinMNaming.hxx>
 static Standard_GUID BinLStorageDriver  ("13a56835-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID BinLRetrievalDriver("13a56836-8269-11d5-aab2-0050044b1af1");
-#define CURRENT_DOCUMENT_VERSION 7
+#define CURRENT_DOCUMENT_VERSION 8
 
 //=======================================================================
 //function : Factory
@@ -80,8 +80,6 @@ Handle(BinMDF_ADriverTable) BinLDrivers::AttributeDrivers
   BinMFunction  ::AddDrivers (aTable, aMsgDrv);
   BinMDocStd    ::AddDrivers (aTable, aMsgDrv);
 
-//  BinMNaming    ::AddDrivers (aTable, aMsgDrv);
-//  BinMPrsStd    ::AddDrivers (aTable, aMsgDrv);
   return aTable;
 }
 

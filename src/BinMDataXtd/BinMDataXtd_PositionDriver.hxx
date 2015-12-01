@@ -1,4 +1,4 @@
-// Created on: 2004-05-17
+// Created on: 2004-05-13
 // Created by: Sergey ZARITCHNY <szy@opencascade.com>
 // Copyright (c) 2004-2014 OPEN CASCADE SAS
 //
@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BinMPrsStd_AISPresentationDriver_HeaderFile
-#define _BinMPrsStd_AISPresentationDriver_HeaderFile
+#ifndef _BinMDataXtd_PositionDriver_HeaderFile
+#define _BinMDataXtd_PositionDriver_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -28,17 +28,17 @@ class TDF_Attribute;
 class BinObjMgt_Persistent;
 
 
-class BinMPrsStd_AISPresentationDriver;
-DEFINE_STANDARD_HANDLE(BinMPrsStd_AISPresentationDriver, BinMDF_ADriver)
+class BinMDataXtd_PositionDriver;
+DEFINE_STANDARD_HANDLE(BinMDataXtd_PositionDriver, BinMDF_ADriver)
 
-//! AISPresentation Attribute Driver.
-class BinMPrsStd_AISPresentationDriver : public BinMDF_ADriver
+//! Position Attribute Driver.
+class BinMDataXtd_PositionDriver : public BinMDF_ADriver
 {
 
 public:
 
   
-  Standard_EXPORT BinMPrsStd_AISPresentationDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT BinMDataXtd_PositionDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   
@@ -49,14 +49,14 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(BinMPrsStd_AISPresentationDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataXtd_PositionDriver, BinMDF_ADriver)
 
 protected:
 
 
 
 
-private:
+private: 
 
 
 
@@ -69,4 +69,4 @@ private:
 
 
 
-#endif // _BinMPrsStd_AISPresentationDriver_HeaderFile
+#endif

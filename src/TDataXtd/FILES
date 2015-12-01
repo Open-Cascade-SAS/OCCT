@@ -23,5 +23,7 @@ TDataXtd_Point.cxx
 TDataXtd_Point.hxx
 TDataXtd_Position.cxx
 TDataXtd_Position.hxx
+TDataXtd_Presentation.hxx
+TDataXtd_Presentation.cxx
 TDataXtd_Shape.cxx
 TDataXtd_Shape.hxx

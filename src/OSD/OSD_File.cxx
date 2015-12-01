@@ -1451,25 +1451,6 @@ OSD_KindFile OSD_File :: KindOfFile () const {
 
 }  // end OSD_File :: KindOfFile
 
-#ifdef VAC
- char tmpbuf [MAX_PATH];
- if (GetTempPath (MAX_PATH, tmpbuf) == 0)
- {
-    perror ("ERROR in GetTempPath");
-    exit (10);
- }
- char tmpbuf2 [MAX_PATH];
- if (GetTempFileName (tmpbuf, NULL, 0, tmpbuf2) == 0)
- {
-    perror ("ERROR in GetTempFileName");
-    exit (10);
- }
- TCollection_AsciiString fileName (  tmpbuf2  );
-#else
- TCollection_AsciiString fileName (  _ttmpnam ( NULL )  );
-#endif
-
-
 //-------------------------------------------------debutpri???980424
 
 typedef struct _osd_wnt_key {

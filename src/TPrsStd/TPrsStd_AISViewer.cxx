@@ -19,8 +19,11 @@
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDataXtd_Presentation.hxx>
+#include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
 #include <V3d_Viewer.hxx>
 
@@ -50,6 +53,17 @@ Handle(TPrsStd_AISViewer) TPrsStd_AISViewer::New (const TDF_Label& acces,
   V = new TPrsStd_AISViewer();
   V->SetInteractiveContext (new AIS_InteractiveContext(viewer));
   acces.Root().AddAttribute(V);
+
+  // put TPrsStd_AISPresentation attribute at all labels containing
+  // TDataXtd_Presentation attribute
+  for (TDF_ChildIterator anIt(acces.Root(), Standard_True); anIt.More(); anIt.Next())
+  {
+    Handle(TDataXtd_Presentation) aPrsData;
+    if (anIt.Value().FindAttribute(TDataXtd_Presentation::GetID(), aPrsData)) { 
+      TPrsStd_AISPresentation::Set (anIt.Value(), aPrsData->GetDriverGUID());
+    }
+  }
+
   return V; 
 }
 
@@ -67,6 +81,17 @@ Handle(TPrsStd_AISViewer) TPrsStd_AISViewer::New (const TDF_Label& acces,
   V = new TPrsStd_AISViewer();
   V->SetInteractiveContext (IC);
   acces.Root().AddAttribute(V);
+
+  // put TPrsStd_AISPresentation attribute at all labels containing
+  // TDataXtd_Presentation attribute
+  for (TDF_ChildIterator anIt(acces.Root(), Standard_True); anIt.More(); anIt.Next())
+  {
+    Handle(TDataXtd_Presentation) aPrsData;
+    if (anIt.Value().FindAttribute(TDataXtd_Presentation::GetID(), aPrsData)) { 
+      TPrsStd_AISPresentation::Set (anIt.Value(), aPrsData->GetDriverGUID());
+    }
+  }
+
   return V; 
 }
 

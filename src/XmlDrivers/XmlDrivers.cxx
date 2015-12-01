@@ -28,7 +28,6 @@
 #include <XmlMDocStd.hxx>
 #include <XmlMFunction.hxx>
 #include <XmlMNaming.hxx>
-#include <XmlMPrsStd.hxx>
 
 #include <locale.h>
 #include <time.h>
@@ -82,7 +81,6 @@ Handle(XmlMDF_ADriverTable) XmlDrivers::AttributeDrivers
   XmlMNaming    ::AddDrivers (aTable, theMessageDriver);
   XmlMFunction  ::AddDrivers (aTable, theMessageDriver); 
   XmlMDocStd    ::AddDrivers (aTable, theMessageDriver); 
-  XmlMPrsStd    ::AddDrivers (aTable, theMessageDriver); 
   //
   return aTable;
 }

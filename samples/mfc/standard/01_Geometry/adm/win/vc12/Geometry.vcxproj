@@ -116,7 +116,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc12\bin/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc12\lib;$(CASROOT)/win32/vc12/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -159,7 +159,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc12\bin/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc12\lib;$(CASROOT)/win64/vc12/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -202,7 +202,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc12\bind/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc12\libd;$(CASROOT)/win32/vc12/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -246,7 +246,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../..\win64\vc12\bind/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc12\libd;$(CASROOT)/win64/vc12/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

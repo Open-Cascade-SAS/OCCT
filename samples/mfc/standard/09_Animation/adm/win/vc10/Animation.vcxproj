@@ -111,7 +111,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc10\bind/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc10\libd;$(CASROOT)/win32/vc10/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -153,7 +153,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc10\bind/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\libd;$(CASROOT)/win64/vc10/libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -196,7 +196,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc10\bin/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc10\lib;$(CASROOT)/win32/vc10/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -239,7 +239,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc10\bin/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\lib;$(CASROOT)/win64/vc10/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

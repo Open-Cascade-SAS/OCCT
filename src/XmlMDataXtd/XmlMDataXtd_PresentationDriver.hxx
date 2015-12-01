@@ -1,5 +1,5 @@
-// Created on: 2001-09-04
-// Created by: Julia DOROVSKIKH
+// Created on: 2001-08-24
+// Created by: Alexander GRIGORIEV
 // Copyright (c) 2001-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _XmlMPrsStd_AISPresentationDriver_HeaderFile
-#define _XmlMPrsStd_AISPresentationDriver_HeaderFile
+#ifndef _XmlMDataXtd_PresentationDriver_HeaderFile
+#define _XmlMDataXtd_PresentationDriver_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -28,17 +28,17 @@ class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
 
-class XmlMPrsStd_AISPresentationDriver;
-DEFINE_STANDARD_HANDLE(XmlMPrsStd_AISPresentationDriver, XmlMDF_ADriver)
+class XmlMDataXtd_PresentationDriver;
+DEFINE_STANDARD_HANDLE(XmlMDataXtd_PresentationDriver, XmlMDF_ADriver)
 
 //! Attribute Driver.
-class XmlMPrsStd_AISPresentationDriver : public XmlMDF_ADriver
+class XmlMDataXtd_PresentationDriver : public XmlMDF_ADriver
 {
 
 public:
 
   
-  Standard_EXPORT XmlMPrsStd_AISPresentationDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT XmlMDataXtd_PresentationDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   
@@ -49,24 +49,18 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(XmlMPrsStd_AISPresentationDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMDataXtd_PresentationDriver, XmlMDF_ADriver)
 
 protected:
 
 
 
 
-private:
+private: 
 
 
 
 
 };
 
-
-
-
-
-
-
-#endif // _XmlMPrsStd_AISPresentationDriver_HeaderFile
+#endif

@@ -1,0 +1,12 @@
+TDataStd_Shape          TDataXtd_Shape
+TDataStd_Constraint     TDataXtd_Constraint
+TDataStd_Geometry       TDataXtd_Geometry
+TDataStd_Axis           TDataXtd_Axis
+TDataStd_Point          TDataXtd_Point
+TDataStd_Plane          TDataXtd_Plane
+TDataStd_Position       TDataXtd_Position
+TDataStd_Placement      TDataXtd_Placement
+TDataStd_PatternStd     TDataXtd_PatternStd
+TPrsStd_AISPresentation TDataXtd_Presentation
+
+

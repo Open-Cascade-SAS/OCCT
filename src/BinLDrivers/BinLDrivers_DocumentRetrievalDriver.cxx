@@ -161,7 +161,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
     else if (aStr == END_TYPES)
       break;
     else if (begin) {
-      if(aFileVer < 5) {
+      if ( aFileVer < 8 ) {
 #ifdef DATATYPE_MIGRATION
 	TCollection_AsciiString  newName;	
 	if(Storage_Schema::CheckTypeMigration(aStr, newName)) {

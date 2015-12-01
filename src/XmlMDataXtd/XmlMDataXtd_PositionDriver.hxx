@@ -1,5 +1,5 @@
-// Created on: 2001-09-04
-// Created by: Julia DOROVSKIKH
+// Created on: 2001-08-24
+// Created by: Alexander GRIGORIEV
 // Copyright (c) 2001-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _XmlMPrsStd_PositionDriver_HeaderFile
-#define _XmlMPrsStd_PositionDriver_HeaderFile
+#ifndef _XmlMDataXtd_PositionDriver_HeaderFile
+#define _XmlMDataXtd_PositionDriver_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -28,17 +28,18 @@ class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
 
-class XmlMPrsStd_PositionDriver;
-DEFINE_STANDARD_HANDLE(XmlMPrsStd_PositionDriver, XmlMDF_ADriver)
+class XmlMDataXtd_PositionDriver;
+DEFINE_STANDARD_HANDLE(XmlMDataXtd_PositionDriver, XmlMDF_ADriver)
+
 
 //! Attribute Driver.
-class XmlMPrsStd_PositionDriver : public XmlMDF_ADriver
+class XmlMDataXtd_PositionDriver : public XmlMDF_ADriver
 {
 
 public:
 
   
-  Standard_EXPORT XmlMPrsStd_PositionDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  Standard_EXPORT XmlMDataXtd_PositionDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   
@@ -49,24 +50,18 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTIEXT(XmlMPrsStd_PositionDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMDataXtd_PositionDriver, XmlMDF_ADriver)
 
 protected:
 
 
 
 
-private:
+private: 
 
 
 
 
 };
 
-
-
-
-
-
-
-#endif // _XmlMPrsStd_PositionDriver_HeaderFile
+#endif

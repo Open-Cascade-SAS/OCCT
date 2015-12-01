@@ -18,6 +18,7 @@ proc ApplicationFramework:toolkits { } {
     return [list \
 		TKCDF \
 		TKLCAF \
+		TKVCAF \
                 TKCAF \
                 TKBinL \
                 TKXmlL \

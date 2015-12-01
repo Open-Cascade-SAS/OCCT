@@ -568,3 +568,13 @@ Conception of Local Context has been deprecated.
 Related classes (AIS_LocalContext) and methods (AIS_InteractiveContext::OpenLocalContext() and others) will be removed within some future OCCT release.
 
 The main functionality provided by Local Context - selection of object subparts - can be now used within Neutral Point without opening any Local Context.
+
+@subsection upgrade_occt700_separate_caf_visualisation Separation of visualization part from TKCAF
+
+Visualization CAF attributes moved into new toolkit TKVCAF. 
+If your application uses the classes from TPrsStd package then add link to TKVCAF library.
+
+Verson numbers of BinOCAF and XmlOCAF formats are incremented; new files cannot be read by previous versions of OCCT.
+
+For loading OCAF files saved by previous versions and containing attribute TPrsStd_AISPresentation it is necessary that environment variable CSF_MIGRATION_TYPES should be defined, pointing to file src/StdResources/MigrationSheet.txt.
+When using documents loaded from a file, make sure to call method TPrsStd_AISViewer::New() prior to accessing TPrsStd_AISPresentation attributes in this document (that method will create them).

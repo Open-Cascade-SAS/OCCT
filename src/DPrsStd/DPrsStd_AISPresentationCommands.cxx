@@ -63,24 +63,17 @@
 static Standard_Integer DPrsStd_AISDisplay (Draw_Interpretor&,
 					  Standard_Integer nb, 
 					  const char** arg) 
-{   
-       
+{
   Handle(TDocStd_Document) D;
   if (!DDocStd::GetDocument(arg[1],D)) return 1; 
   TDF_Label L;
   if (!DDF::FindLabel(D->GetData(),arg[2],L)) return 1;
   Handle(TPrsStd_AISPresentation) prs;
-  if(!L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) return 1;  
-  if (nb == 3) {
-    prs->Display(Standard_True);
-    TPrsStd_AISViewer::Update(L);
-    return 0;
-  }
-  else {
-    prs->Display();
-    TPrsStd_AISViewer::Update(L);
-    return 0;
-  }
+  if(!L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) )
+    return 1;
+  prs->Display(nb == 3);
+  TPrsStd_AISViewer::Update(L);
+  return 0;
 }
 
 //=======================================================================

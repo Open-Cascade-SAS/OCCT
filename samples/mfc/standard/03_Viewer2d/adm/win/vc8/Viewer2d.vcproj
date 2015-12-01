@@ -81,7 +81,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win32\vc8\bin/Viewer2d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -177,7 +177,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win32\vc8\bind/Viewer2d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -275,7 +275,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win64\vc8\bin/Viewer2d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -371,7 +371,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win64\vc8\bind/Viewer2d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
