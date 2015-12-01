@@ -19,10 +19,9 @@
 #include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Group.hxx>
 
-#include <Graphic3d_SequenceOfGroup.hxx>
-
 // Forward declaration
 class OpenGl_CappingAlgoFilter;
+class OpenGl_Structure;
 DEFINE_STANDARD_HANDLE (OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 
 //! Capping surface rendering algorithm.
@@ -30,13 +29,12 @@ class OpenGl_CappingAlgo
 {
 public:
 
-  //! Draw capping surfaces by OpenGl for the clipping planes
-  //! enabled in current context state. Depth buffer must be generated
-  //! for the passed groups.
-  //! @param theWorkspace [in] the GL workspace, context state.
-  //! @param theGroups [in] the group of primitives to be capped.
-  Standard_EXPORT static void RenderCapping (const Handle(OpenGl_Workspace)&  theWorkspace,
-                                             const Graphic3d_SequenceOfGroup& theGroups);
+  //! Draw capping surfaces by OpenGl for the clipping planes enabled in current context state.
+  //! Depth buffer must be generated  for the passed groups.
+  //! @param theWorkspace [in] the GL workspace, context state
+  //! @param theStructure [in] the structure to be capped
+  Standard_EXPORT static void RenderCapping (const Handle(OpenGl_Workspace)& theWorkspace,
+                                             const OpenGl_Structure&         theStructure);
 
   //! Render infinite capping plane.
   //! @param theWorkspace [in] the GL workspace, context state.

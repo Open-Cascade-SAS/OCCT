@@ -490,16 +490,41 @@ void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
 }
 
 // =======================================================================
-// function : RenderGeometry
+// function : renderGeometry
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::RenderGeometry (const Handle(OpenGl_Workspace) &theWorkspace) const
+void OpenGl_Structure::renderGeometry (const Handle(OpenGl_Workspace)& theWorkspace,
+                                       bool&                           theHasClosed) const
 {
-  // Render groups
-  const Graphic3d_SequenceOfGroup& aGroups = DrawGroups();
-  for (OpenGl_Structure::GroupIterator aGroupIter (aGroups); aGroupIter.More(); aGroupIter.Next())
+  if (myInstancedStructure != NULL)
   {
+    myInstancedStructure->renderGeometry (theWorkspace, theHasClosed);
+  }
+
+  for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
+  {
+    theHasClosed = theHasClosed || aGroupIter.Value()->IsClosed();
     aGroupIter.Value()->Render (theWorkspace);
+  }
+}
+
+// =======================================================================
+// function : renderClosedGeometry
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::renderClosedGeometry (const Handle(OpenGl_Workspace)& theWorkspace) const
+{
+  if (myInstancedStructure != NULL)
+  {
+    myInstancedStructure->renderClosedGeometry (theWorkspace);
+  }
+
+  for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
+  {
+    if (aGroupIter.Value()->IsClosed())
+    {
+      aGroupIter.Value()->Render (theWorkspace);
+    }
   }
 }
 
@@ -585,12 +610,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (myHighlightColor)
     theWorkspace->HighlightColor = myHighlightColor;
 
-  // Render instanced structure (if exists)
-  if (myInstancedStructure != NULL)
-  {
-    myInstancedStructure->RenderGeometry (theWorkspace);
-  }
-
   // Set up plane equations for non-structure transformed global model-view matrix
   // List of planes to be applied to context state
   NCollection_Handle<Graphic3d_SequenceOfHClipPlane> aUserPlanes;
@@ -629,11 +648,8 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 
   // Render groups
-  const Graphic3d_SequenceOfGroup& aGroups = DrawGroups();
-  for (OpenGl_Structure::GroupIterator aGroupIter (aGroups); aGroupIter.More(); aGroupIter.Next())
-  {
-    aGroupIter.Value()->Render (theWorkspace);
-  }
+  bool hasClosedPrims = false;
+  renderGeometry (theWorkspace, hasClosedPrims);
 
   // Reset correction for mirror transform
   if (myIsMirrored)
@@ -642,9 +658,10 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 
   // Render capping for structure groups
-  if (!aCtx->Clipping().Planes().IsEmpty())
+  if (hasClosedPrims
+  && !aCtx->Clipping().Planes().IsEmpty())
   {
-    OpenGl_CappingAlgo::RenderCapping (theWorkspace, aGroups);
+    OpenGl_CappingAlgo::RenderCapping (theWorkspace, *this);
   }
 
   // Revert structure clippings

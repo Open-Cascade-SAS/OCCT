@@ -130,7 +130,13 @@ public:
   Standard_EXPORT void Clear (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Renders groups of structure without applying any attributes (i.e. transform, material etc).
-  virtual void RenderGeometry  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  //! @param theWorkspace current workspace
+  //! @param theHasClosed flag will be set to TRUE if structure contains at least one group of closed primitives
+  virtual void renderGeometry (const Handle(OpenGl_Workspace)& theWorkspace,
+                               bool&                           theHasClosed) const;
+
+  //! Renders groups of closed primitives without applying any attributes (i.e. transform, material etc).
+  virtual void renderClosedGeometry (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Renders the structure.
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;

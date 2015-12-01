@@ -37,8 +37,8 @@ namespace
 // function : RenderCapping
 // purpose  :
 // =======================================================================
-void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWorkspace,
-                                        const Graphic3d_SequenceOfGroup& theGroups)
+void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorkspace,
+                                        const OpenGl_Structure&         theStructure)
 {
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
@@ -110,13 +110,8 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
     glStencilFunc (GL_ALWAYS, 1, 0x01);
     glStencilOp (GL_KEEP, GL_INVERT, GL_INVERT);
 
-    for (OpenGl_Structure::GroupIterator aGroupIt (theGroups); aGroupIt.More(); aGroupIt.Next())
-    {
-      if (aGroupIt.Value()->IsClosed())
-      {
-        aGroupIt.Value()->Render (theWorkspace);
-      }
-    }
+    // render closed primitives
+    theStructure.renderClosedGeometry (theWorkspace);
 
     // override material, cull back faces
     theWorkspace->SetAspectFace (&theWorkspace->FrontCulling());

@@ -1,0 +1,34 @@
+puts "============"
+puts "0026940: Visualization, TKOpenGl - capping plane should be applied to connected structures"
+puts "Tests capping plane rendering with connected structures"
+puts "============"
+puts ""
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+box b 1 1 1
+vdisplay b
+vfit
+
+vclipplane create pln
+vclipplane set pln view Driver1/Viewer1/View1
+vclipplane change pln equation 0 1 0 -0.5
+vclipplane change pln capping on
+
+vdump $imagedir/${casename}_normal.png
+set aColorNorm [vreadpixel 200 250 rgb name]
+if { "$aColorNorm" != "GRAY13" } {
+  puts "Error: Expected color of capping plane is GRAY13 (normal presentation). Actial is $aColorNorm"
+}
+
+vclear
+
+vconnectto bb 0 0 0 b
+vdump $imagedir/${casename}_connected.png
+set aColorConn [vreadpixel 200 250 rgb name]
+
+if { "$aColorConn" != "GRAY13" } {
+  puts "Error: Expected color of capping plane is GRAY13 (connected presentation). Actial is $aColorConn"
+}
