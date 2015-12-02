@@ -55,29 +55,29 @@ Vrml_Cylinder::Vrml_Cylinder(const Vrml_CylinderParts aParts,
 
  Standard_OStream& Vrml_Cylinder::Print(Standard_OStream& anOStream) const
 {
-  anOStream  << "Cylinder {" << endl;
+  anOStream  << "Cylinder {\n";
 
   switch ( myParts )
     {
-     case Vrml_CylinderALL: break; // anOStream  << "\tparts" << "\tALL ";
-     case Vrml_CylinderSIDES:  anOStream  << "    parts" << "\tSIDES" << endl; break;
-     case Vrml_CylinderTOP:    anOStream  << "    parts" << "\tTOP" << endl; break; 
-     case Vrml_CylinderBOTTOM: anOStream  << "    parts" << "\tBOTTOM" << endl; break; 
+     case Vrml_CylinderALL: break; // anOStream  << "\tparts\tALL ";
+     case Vrml_CylinderSIDES:  anOStream  << "    parts\tSIDES\n"; break;
+     case Vrml_CylinderTOP:    anOStream  << "    parts\tTOP\n"; break; 
+     case Vrml_CylinderBOTTOM: anOStream  << "    parts\tBOTTOM\n"; break; 
     }
 
  if ( Abs(myRadius - 1) > 0.0001 )
    {
-    anOStream  << "    radius" << '\t';
-    anOStream << myRadius << endl;
+    anOStream  << "    radius\t";
+    anOStream << myRadius << "\n";
    }
 
  if ( Abs(myHeight - 2) > 0.0001 )
    {
-    anOStream  << "    height" << '\t';
-    anOStream << myHeight << endl;
+    anOStream  << "    height\t";
+    anOStream << myHeight << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 
 }

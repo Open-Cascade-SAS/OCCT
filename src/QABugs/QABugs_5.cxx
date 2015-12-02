@@ -40,7 +40,7 @@ static Standard_Integer OCC6001 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc < 4)
   {
-    di<<"missing parameters"<<"\n";
+    di<<"missing parameters\n";
     return 1;
   }
   const char *name = argv[1];
@@ -53,7 +53,7 @@ static Standard_Integer OCC6001 (Draw_Interpretor& di, Standard_Integer argc, co
     TopoDS_Shape wire = DBRep::Get(argv[2]);
     if (wire.IsNull() || wire.ShapeType() != TopAbs_WIRE)
     {
-      di<<"incorrect 1st parameter, curve or wire expected"<<"\n";
+      di<<"incorrect 1st parameter, curve or wire expected\n";
       return 1;
     }
     BRepAdaptor_CompCurve comp_curve(TopoDS::Wire(wire));

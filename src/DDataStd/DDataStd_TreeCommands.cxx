@@ -53,7 +53,7 @@ static Standard_Integer DDataStd_SetNode (Draw_Interpretor& di,
     return 0;
   } else if (n == 4) {
     if (!Standard_GUID::CheckGUIDFormat(a[3])) {
-      di<<"DDataStd_SetNode: The format of GUID is invalid"<<"\n";
+      di<<"DDataStd_SetNode: The format of GUID is invalid\n";
       return 1;
     }
     const Standard_GUID ID(a[3]);
@@ -61,7 +61,7 @@ static Standard_Integer DDataStd_SetNode (Draw_Interpretor& di,
     DDF::ReturnLabel(di,TN->Label());
     return 0;    
   }
-  di << "DDataStd_SetNode : Error" << "\n";
+  di << "DDataStd_SetNode : Error\n";
   return 1;
 }    
 
@@ -84,7 +84,7 @@ static Standard_Integer DDataStd_AppendNode (Draw_Interpretor& di,
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[4])) {
-	di<<"DDataStd_AppendNode: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_AppendNode: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[4]);
@@ -97,17 +97,17 @@ static Standard_Integer DDataStd_AppendNode (Draw_Interpretor& di,
     DDF::AddLabel(DF,a[3],L);
     if ( (L.FindAttribute(ID,child))
        &&(!child->IsRoot()) ){
-      di << "DDataStd_AppendNode : Error : childTreeNode don't detach" << "\n";
+      di << "DDataStd_AppendNode : Error : childTreeNode don't detach\n";
       return 1;
     }
     child = TDataStd_TreeNode::Set(L,ID);
     if (!father->Append(child)) return 1;
 #ifdef OCCT_DEBUG
-    di<<"AppendNode: OK"<<"\n";
+    di<<"AppendNode: OK\n";
 #endif
     return 0;
   }
-  di << "DDataStd_AppendNode : Error" << "\n";
+  di << "DDataStd_AppendNode : Error\n";
   return 1;
 }
 
@@ -130,7 +130,7 @@ static Standard_Integer DDataStd_PrependNode (Draw_Interpretor& di,
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[4])) {
-	di<<"DDataStd_PrependNode: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_PrependNode: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[4]);
@@ -143,17 +143,17 @@ static Standard_Integer DDataStd_PrependNode (Draw_Interpretor& di,
     DDF::AddLabel(DF,a[3],L);
     if ( (L.FindAttribute(ID,child))
        &&(!child->IsRoot()) ){
-      di << "DDataStd_PrependNode : Error : childTreeNode don't detach" << "\n";
+      di << "DDataStd_PrependNode : Error : childTreeNode don't detach\n";
       return 1;
     }
     child = TDataStd_TreeNode::Set(L,ID);
     if (!father->Prepend(child)) return 1;
 #ifdef OCCT_DEBUG
-    di<<"PrependNode: OK"<<"\n";
+    di<<"PrependNode: OK\n";
 #endif
     return 0;
   }
-  di << "DDataStd_PrependNode : Error" << "\n";
+  di << "DDataStd_PrependNode : Error\n";
   return 1;
 }
 
@@ -176,7 +176,7 @@ static Standard_Integer DDataStd_RootNode (Draw_Interpretor& di,
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[3])) {
-	di<<"DDataStd_RootNode: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_RootNode: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[3]);
@@ -187,7 +187,7 @@ static Standard_Integer DDataStd_RootNode (Draw_Interpretor& di,
     DDF::ReturnLabel(di,TN->Root()->Label());
     return 0;
   }
-  di << "DDataStd_RootNode : Error" << "\n";
+  di << "DDataStd_RootNode : Error\n";
   return 1;
 }
 
@@ -210,7 +210,7 @@ static Standard_Integer DDataStd_InsertNodeBefore(Draw_Interpretor& di,
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[4])) {
-	di<<"DDataStd_InsertNodeBefore: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_InsertNodeBefore: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[4]);
@@ -226,7 +226,7 @@ static Standard_Integer DDataStd_InsertNodeBefore(Draw_Interpretor& di,
     if (!current->InsertBefore(TN)) return 1;
     return 0;
   }
-  di << "DDataStd_InsertBefore : Error" << "\n";
+  di << "DDataStd_InsertBefore : Error\n";
   return 1;
 }
 
@@ -249,7 +249,7 @@ static Standard_Integer DDataStd_InsertNodeAfter(Draw_Interpretor& di,
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[4])) {
-	di<<"DDataStd_InsertNodeAfter: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_InsertNodeAfter: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[4]);
@@ -264,7 +264,7 @@ static Standard_Integer DDataStd_InsertNodeAfter(Draw_Interpretor& di,
     if (!current->InsertAfter(TN)) return 1;
     return 0;
   }
-  di << "DDataStd_InsertNodeAfter : Error" << "\n";
+  di << "DDataStd_InsertNodeAfter : Error\n";
   return 1;
 }
 
@@ -285,7 +285,7 @@ static Standard_Integer DDataStd_DetachNode (Draw_Interpretor& di,Standard_Integ
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[3])) {
-	di<<"DDataStd_DetachNode: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_DetachNode: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[3]);
@@ -294,10 +294,10 @@ static Standard_Integer DDataStd_DetachNode (Draw_Interpretor& di,Standard_Integ
 
     if (!DDF::Find(DF,a[2],ID,TN)) return 1;
     if (!TN->Remove())
-      di << "Can't Detach the TreeNode" << "\n";
+      di << "Can't Detach the TreeNode\n";
     return 0; 
   } 
-  di << "DDataStd_DetachNode : Error" << "\n";
+  di << "DDataStd_DetachNode : Error\n";
   return 1;
 }
 
@@ -384,7 +384,7 @@ static Standard_Integer DDataStd_ChildNodeIterate (Draw_Interpretor& di,
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[4])) {
-	di<<"DDataStd_ChildNodeIterate: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_ChildNodeIterate: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[4]);
@@ -392,7 +392,7 @@ static Standard_Integer DDataStd_ChildNodeIterate (Draw_Interpretor& di,
     }
 
     if (!DDF::Find(DF, a[2], ID, TN)) return 1; 
-    //di<<"TDataStd_ChildNodeIterator: "<<"\n";
+    //di<<"TDataStd_ChildNodeIterator: \n";
     TDataStd_ChildNodeIterator itr(TN, AllLevels);
     for (; itr.More(); itr.Next()) {
       Value = itr.Value();
@@ -406,7 +406,7 @@ static Standard_Integer DDataStd_ChildNodeIterate (Draw_Interpretor& di,
     di<<"\n";
     return 0;
   }
-  di << "DDataStd_ChildNodeIterate : Error" << "\n";
+  di << "DDataStd_ChildNodeIterate : Error\n";
   return 1;
 }  
 
@@ -431,7 +431,7 @@ static Standard_Integer DDataStd_InitChildNodeIterator (Draw_Interpretor& di,
       ID=Standard_GUID(TDataStd_TreeNode::GetDefaultTreeID());
     else{
       if (!Standard_GUID::CheckGUIDFormat(a[4])) {
-	di<<"DDataStd_ChildNodeIterator: The format of GUID is invalid"<<"\n";
+	di<<"DDataStd_ChildNodeIterator: The format of GUID is invalid\n";
 	return 1;
       }
       const Standard_GUID varID(a[4]);
@@ -443,7 +443,7 @@ static Standard_Integer DDataStd_InitChildNodeIterator (Draw_Interpretor& di,
     cni.Initialize(TN, AllLevels);
     return 0;
   }
-  di << "DDataStd_InitChildNodeIterator : Error" << "\n";
+  di << "DDataStd_InitChildNodeIterator : Error\n";
   return 1;
 }  
 
@@ -458,11 +458,11 @@ static Standard_Integer DDataStd_ChildNodeMore (Draw_Interpretor& di,
 {
   if (cni.More()) {
     //cout<<"TRUE"<<endl;
-    di<<"TRUE"<<"\n";
+    di<<"TRUE\n";
   }
   else {
     //cout<<"FALSE"<<endl;
-    di<<"FALSE"<<"\n";  
+    di<<"FALSE\n";  
   }
   return 0;
 }  

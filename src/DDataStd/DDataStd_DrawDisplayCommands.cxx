@@ -77,7 +77,7 @@ static Standard_Integer DDataStd_PNT (Draw_Interpretor& di,
     TDataXtd_Point::Set (L,gp_Pnt(x,y,z));
     return 0;
   }  
-  di << "DDataStd_PNT : Error : not done" << "\n";
+  di << "DDataStd_PNT : Error : not done\n";
   return 1;
 }
  
@@ -96,7 +96,7 @@ static Standard_Integer DDataStd_Rmdraw (Draw_Interpretor& di,
     if (!D3D.IsNull()) dout.RemoveDrawable(D3D); 
     return 0;
   }
-  di << "DDataStd_Rmdraw : Error : not done" << "\n";
+  di << "DDataStd_Rmdraw : Error : not done\n";
   return 1;
 }
 
@@ -125,7 +125,7 @@ static Standard_Integer DDataStd_DrawOwner (Draw_Interpretor& di,
     else di << 0;
     return 0;
   }
-  di << "DDataStd_DrawOwner : Error" << "\n";
+  di << "DDataStd_DrawOwner : Error\n";
   return 1;
 }
 
@@ -146,7 +146,7 @@ static Standard_Integer DDataStd_DrawDisplay (Draw_Interpretor& di,
     DDataStd_DrawPresentation::Display(L);
     return 0;
   }
-  di << "DDataStd_DrawDisplay : Error" << "\n";
+  di << "DDataStd_DrawDisplay : Error\n";
   return 1;
 }
 
@@ -189,7 +189,7 @@ static Standard_Integer DDataStd_DrawErase (Draw_Interpretor& di,
     DDataStd_DrawPresentation::Erase(L);
     return 0;
   }
-  di << "DDataStd_DrawErase : Error" << "\n";
+  di << "DDataStd_DrawErase : Error\n";
   return 1;
 }
 
@@ -210,7 +210,7 @@ static Standard_Integer DDataStd_DrawUpdate (Draw_Interpretor& di,
     DDataStd_DrawPresentation::Update(L);
     return 0;
   }
-  di << "DDataStd_DrawUpdate : Error" << "\n";
+  di << "DDataStd_DrawUpdate : Error\n";
   return 1;
 }
 

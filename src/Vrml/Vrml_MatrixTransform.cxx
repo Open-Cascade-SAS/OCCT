@@ -54,14 +54,14 @@ Vrml_MatrixTransform::Vrml_MatrixTransform()
  Standard_OStream& Vrml_MatrixTransform::Print(Standard_OStream& anOStream) const
 {
   Standard_Integer i,j;
-  anOStream  << "MatrixTransform {" << endl;
+  anOStream  << "MatrixTransform {\n";
 
   if ( Abs(myMatrix.Value(1,1) - 1) > 0.0000001 || Abs(myMatrix.Value(2,1) - 0) > 0.0000001 || Abs(myMatrix.Value(3,1) - 0) > 0.0000001 || 
        Abs(myMatrix.Value(1,2) - 0) > 0.0000001 || Abs(myMatrix.Value(2,2) - 1) > 0.0000001 || Abs(myMatrix.Value(3,2) - 0) > 0.0000001 || 
        Abs(myMatrix.Value(1,3) - 0) > 0.0000001 || Abs(myMatrix.Value(2,3) - 0) > 0.0000001 || Abs(myMatrix.Value(3,3) - 1) > 0.0000001 || 
        Abs(myMatrix.Value(1,4) - 0) > 0.0000001 || Abs(myMatrix.Value(2,4) - 0) > 0.0000001 || Abs(myMatrix.Value(3,4) - 0) > 0.0000001 )
     {
-      anOStream  << "    matrix" << '\t';
+      anOStream  << "    matrix\t";
 
       for ( j = 1; j <=4; j++ )
 	{
@@ -72,15 +72,15 @@ Vrml_MatrixTransform::Vrml_MatrixTransform()
 	    }
 	  if (j!=4) 
 	    {
-	      anOStream  << '0' << endl;
+	      anOStream  << "0\n";
 	      anOStream  << "\t\t";
 	    }
 	  else 
 	    {
-	      anOStream  << myMatrix.ScaleFactor() << endl;
+	      anOStream  << myMatrix.ScaleFactor() << "\n";
 	    }
 	}
     }
-  anOStream  << '}' << endl;
+  anOStream  << "}\n";
   return anOStream;
 }

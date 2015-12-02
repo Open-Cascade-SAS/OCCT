@@ -171,7 +171,7 @@ static Standard_Integer trim(Draw_Interpretor& di, Standard_Integer n, const cha
   }
   else {
     //cout <<"Error creating edge"<<endl;
-    di <<"Error creating edge"<<"\n";
+    di <<"Error creating edge\n";
   }
   return 0;
 }
@@ -236,7 +236,7 @@ static Standard_Integer wire(Draw_Interpretor& di, Standard_Integer n, const cha
   }
   if (!MW.IsDone()) {
     //cout << "Wire not done" << endl;
-    di << "Wire not done" << "\n";
+    di << "Wire not done\n";
     return 0;
   }
   DBRep::Set(a[1],MW);
@@ -255,7 +255,7 @@ static Standard_Integer mkedge(Draw_Interpretor& di, Standard_Integer n, const c
   Handle(Geom2d_Curve) C2d = DrawTrSurf::GetCurve2d(a[2]);
   if (C.IsNull() && C2d.IsNull()) {
     //cout << a[2] << " is not a curve" << endl;
-    di << a[2] << " is not a curve" << "\n";
+    di << a[2] << " is not a curve\n";
     return 1;
   }
 
@@ -336,7 +336,7 @@ static Standard_Integer mkcurve(Draw_Interpretor& di, Standard_Integer n, const 
   Handle(Geom_Curve) C = BRep_Tool::Curve(TopoDS::Edge(S),L,f,l);
   if (C.IsNull()) {
     //cout << a[2] << " has no 3d curve" << endl;
-    di << a[2] << " has no 3d curve" << "\n";
+    di << a[2] << " has no 3d curve\n";
     return 1;
   }
   C = new Geom_TrimmedCurve(C,f,l);
@@ -1544,7 +1544,7 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
 
     if ( !Paral.IsDone())
     {
-      di << " Error: Offset is not done." << "\n";
+      di << " Error: Offset is not done.\n";
       return 1;
     }
     else
@@ -1604,7 +1604,7 @@ Standard_Integer openoffset(Draw_Interpretor& di,
 
     if ( !Paral.IsDone())
     {
-      di << " Error: Offset is not done." << "\n";
+      di << " Error: Offset is not done.\n";
       return 1;
     }
     else
@@ -1672,7 +1672,7 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
 
   if (EInter.IsEmpty()) {
     //cout << " No intersection found" << endl;
-    di << " No intersection found" << "\n";
+    di << " No intersection found\n";
     return 0;
   }
 
@@ -1715,10 +1715,10 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
       di << " Orientation of vertex " << NbV << " on " << a[i+1] << ": ";
       if (OO == TopAbs_FORWARD) {
         //cout << "FORWARD" << endl;
-        di << "FORWARD" << "\n";
+        di << "FORWARD\n";
       } else {
         //cout << "REVERSED" << endl;
-        di << "REVERSED" << "\n";
+        di << "REVERSED\n";
       }
     }
   }
@@ -1787,7 +1787,7 @@ Standard_Integer  build3d(Draw_Interpretor& di,
 
   if ( (n <2) || (n>3) ) {
     //cout << " 1 or 2 arguments expected" << endl;
-    di << " 1 or 2 arguments expected" << "\n";
+    di << " 1 or 2 arguments expected\n";
     return 1;
   }
 
@@ -1798,7 +1798,7 @@ Standard_Integer  build3d(Draw_Interpretor& di,
   if (n==2) { Ok = BRepLib::BuildCurves3d(S); }
   else      { Ok = BRepLib::BuildCurves3d(S,Draw::Atof(a[2])); }
   //if (!Ok) {cout << " one of the computation failed" << endl;}
-  if (!Ok) {di << " one of the computation failed" << "\n";}
+  if (!Ok) {di << " one of the computation failed\n";}
 
   return 0;
 }
@@ -1819,7 +1819,7 @@ Standard_Integer reducepcurves(Draw_Interpretor& di,
     TopoDS_Shape aShape = DBRep::Get(a[i]);
     if (aShape.IsNull())
       //cout << a[i] << " is not a valid shape" << endl;
-      di << a[i] << " is not a valid shape" << "\n";
+      di << a[i] << " is not a valid shape\n";
     else
       BRepTools::RemoveUnusedPCurves(aShape);
   }

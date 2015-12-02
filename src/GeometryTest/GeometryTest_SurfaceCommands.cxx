@@ -231,12 +231,12 @@ static Standard_Integer ruled(Draw_Interpretor& di,
 
   Handle(Geom_Curve) C1 = DrawTrSurf::GetCurve(a[2]);
   if ( C1.IsNull()) {
-    di << " C1 is not a Curve ==> Command failed" << "\n";
+    di << " C1 is not a Curve ==> Command failed\n";
     return 1;
   }
   Handle(Geom_Curve) C2 = DrawTrSurf::GetCurve(a[3]);
   if ( C2.IsNull()) {
-    di << " C2 is not a Curve ==> Command failed" << "\n";
+    di << " C2 is not a Curve ==> Command failed\n";
     return 1;
   }
   
@@ -277,7 +277,7 @@ static Standard_Integer appsurf(Draw_Interpretor& di,
   App.Perform( Line, Section);
 
   if ( !App.IsDone()) {
-    di << "    Approximation aux fraises " << "\n";
+    di << "    Approximation aux fraises \n";
   }
 
   Standard_Integer UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots;

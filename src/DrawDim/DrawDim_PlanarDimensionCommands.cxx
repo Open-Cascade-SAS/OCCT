@@ -84,7 +84,7 @@ static Standard_Integer DrawDim_DISTANCE (Draw_Interpretor& di,
       }
     }
   }
-  di << "DrawDim_DISTANCE : error" << "\n";
+  di << "DrawDim_DISTANCE : error\n";
   return 1;
 }
 
@@ -122,7 +122,7 @@ static Standard_Integer DrawDim_ANGLE (Draw_Interpretor& di,
       }
     }
   }
-  di << "DrawDim_PlanarAngle : error" << "\n";
+  di << "DrawDim_PlanarAngle : error\n";
   return 1;
 }
 
@@ -156,7 +156,7 @@ static Standard_Integer DrawDim_RADIUS (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << "DrawDim_PlanarRadius : error" << "\n";
+  di << "DrawDim_PlanarRadius : error\n";
   return 1;
 }
 
@@ -188,7 +188,7 @@ static Standard_Integer DrawDim_CENTER (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << "DrawDim_CENTER : error" << "\n";
+  di << "DrawDim_CENTER : error\n";
   return 1;
 }
 
@@ -275,7 +275,7 @@ static Standard_Integer DrawDim_SPLACEMENT (Draw_Interpretor& di,
       return 0;
     }
   }  
-  di << "DrawDim_SPlacement : error" << "\n";
+  di << "DrawDim_SPlacement : error\n";
   return 1;
 }
 
@@ -309,7 +309,7 @@ static Standard_Integer DrawDim_GPLACEMENT (Draw_Interpretor& di,
       return 0;
     }
   }  
-  di << "DrawDim_Placement : error" << "\n";
+  di << "DrawDim_Placement : error\n";
   return 1;
 }
  

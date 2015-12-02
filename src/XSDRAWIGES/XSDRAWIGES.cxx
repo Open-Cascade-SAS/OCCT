@@ -116,8 +116,8 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
   progress->Show();
 
   if (readstat != IFSelect_RetDone) {
-    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon"<<"\n";
-    else di<<"No model loaded"<<"\n";
+    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
+    else di<<"No model loaded\n";
     return 1;
   }
 // Choice of treatment
@@ -140,14 +140,14 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
     }
 
     if (modepri == 0) {  //fin
-      di << "Bye and good luck! " << "\n";
+      di << "Bye and good luck! \n";
       break;
     } 
 
     else if (modepri <= 2) {  // 1 : Visible Roots, 2 : All Roots
-      di << "All Geometry Transfer"<<"\n";
-      di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)"<<"\n";
-      di<<"  To modify : command  param read.iges.bspline.continuity"<<"\n";
+      di << "All Geometry Transfer\n";
+      di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)\n";
+      di<<"  To modify : command  param read.iges.bspline.continuity\n";
       Handle(XSControl_WorkSession) thesession = Reader.WS();
       thesession->ClearContext();
       XSDRAW::SetTransferProcess (thesession->MapReader());
@@ -177,7 +177,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
       if ( answer == 1 || answer == 3) {
 	TopoDS_Shape shape = Reader.OneShape();
 	// save the shape
-	if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
+	if (shape.IsNull()) { di<<"No Shape produced\n"; continue; }
 	char fname[110];
 	Sprintf(fname, "%s", rnom.ToCString());
 	di << "Saving shape in variable Draw : " << fname << "\n";
@@ -189,7 +189,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	catch(Standard_Failure) {
 	  di << "** Exception : ";
 	  di << Standard_Failure::Caught()->GetMessageString();
-	  di<<" ** Skip"<<"\n";
+	  di<<" ** Skip\n";
 	  di << "Saving shape in variable Draw : " << fname << "\n";
 	  IGESToBRep::WriteShape (shape,1);
 	}
@@ -200,7 +200,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	for (Standard_Integer inum = 1; inum <= numshape; inum++) {
 	  // save all the shapes
 	  TopoDS_Shape shape = Reader.Shape(inum);
-	  if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
+	  if (shape.IsNull()) { di<<"No Shape produced\n"; continue; }
 	  char fname[110];
 	  Sprintf(fname, "%s_%d", rnom.ToCString(),inum);
 	  di << "Saving shape in variable Draw : " << fname << "\n";
@@ -212,7 +212,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  catch(Standard_Failure) {
 	    di << "** Exception : ";
 	    di << Standard_Failure::Caught()->GetMessageString();
-	    di<<" ** Skip"<<"\n";
+	    di<<" ** Skip\n";
 	  }
 	}
       }
@@ -226,12 +226,12 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
       cout << " give the number of the Entity : " << flush;
       nent = XSDRAW::GetEntityNumber();
 
-      if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
+      if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result\n";
       else {
 	nbs = Reader.NbShapes();
 	char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nent);
 	di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
-	di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+	di<<"Now, "<<nbs<<" Shapes produced\n";
 	TopoDS_Shape sh = Reader.Shape(nbs);
 	DBRep::Set (shname,sh);
       }
@@ -246,9 +246,9 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 //   *r donne xst-model-roots (TOUTES racines)
 
       if( fromtcl && argv[3][0]=='*' && argv[3][1]=='\0' ) {         
-        di << "All Geometry Transfer"<<"\n";
-        di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)"<<"\n";
-        di<<"  To modify : command  param read.iges.bspline.continuity"<<"\n";
+        di << "All Geometry Transfer\n";
+        di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)\n";
+        di<<"  To modify : command  param read.iges.bspline.continuity\n";
         Handle(XSControl_WorkSession) thesession = Reader.WS();
         thesession->ClearContext();
         XSDRAW::SetTransferProcess (thesession->MapReader());
@@ -276,7 +276,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
         catch(Standard_Failure) {
           di << "** Exception : ";
 	  di << Standard_Failure::Caught()->GetMessageString();
-	  di<<" ** Skip"<<"\n";
+	  di<<" ** Skip\n";
           di << "Saving shape in variable Draw : " << fname << "\n";
           IGESToBRep::WriteShape (shape,1);
         }                                                                             
@@ -295,7 +295,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  list = XSDRAW::GetList (compart.ToCString());
 	}
 	if (list.IsNull()) {
-          di<<"No list defined. Give a selection name or * for all visible transferrable roots"<<"\n";
+          di<<"No list defined. Give a selection name or * for all visible transferrable roots\n";
           continue;
         }
       }
@@ -339,12 +339,12 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  
 	    nent = Reader.Model()->Number(list->Value(ill));
 	    if (nent == 0) continue;
-	    if (!Reader.TransferOne(nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
+	    if (!Reader.TransferOne(nent)) di<<"Transfer entity n0 "<<nent<<" : no result\n";
 	    else {
 	      nbs = Reader.NbShapes();
 	      char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
 	      di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
-	      di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+	      di<<"Now, "<<nbs<<" Shapes produced\n";
 	      TopoDS_Shape sh = Reader.Shape(nbs);
 	      DBRep::Set (shname,sh);
               nbt++;
@@ -371,8 +371,8 @@ static Standard_Integer testread (Draw_Interpretor& di, Standard_Integer argc, c
 {
   if (argc != 3)                                                                                      
     {                                                                                             
-      di << "ERROR in " << argv[0] << "Wrong Number of Arguments."<<"\n";                     
-      di << " Usage : " << argv[0] <<" file_name shape_name"<< "\n";                          
+      di << "ERROR in " << argv[0] << "Wrong Number of Arguments.\n";                     
+      di << " Usage : " << argv[0] <<" file_name shape_name\n";                          
       return 1;                                                                                 
     }  
   IGESControl_Reader Reader;
@@ -380,11 +380,11 @@ static Standard_Integer testread (Draw_Interpretor& di, Standard_Integer argc, c
   IFSelect_ReturnStatus readstat =  Reader.ReadFile(filename);
   di<<"Status from reading IGES file "<<filename<<" : ";  
   switch(readstat) {                                                              
-    case IFSelect_RetVoid  : { di<<"empty file"<<"\n"; return 1; }            
-    case IFSelect_RetDone  : { di<<"file read"<<"\n";    break; }             
-    case IFSelect_RetError : { di<<"file not found"<<"\n";   return 1; }      
-    case IFSelect_RetFail  : { di<<"error during read"<<"\n";  return 1; }    
-    default  :  { di<<"failure"<<"\n";   return 1; }                          
+    case IFSelect_RetVoid  : { di<<"empty file\n"; return 1; }            
+    case IFSelect_RetDone  : { di<<"file read\n";    break; }             
+    case IFSelect_RetError : { di<<"file not found\n";   return 1; }      
+    case IFSelect_RetFail  : { di<<"error during read\n";  return 1; }    
+    default  :  { di<<"failure\n";   return 1; }                          
   }       
   Reader.TransferRoots();
   TopoDS_Shape shape = Reader.OneShape();
@@ -411,7 +411,7 @@ static Standard_Integer brepiges (Draw_Interpretor& di, Standard_Integer n, cons
 			  Interface_Static::IVal("write.iges.brep.mode"));
   di<<"unit (write) : "<<Interface_Static::CVal("write.iges.unit")<<"\n";
   di<<"mode  write  : "<<Interface_Static::CVal("write.iges.brep.mode")<<"\n";
-  di<<"  To modifiy : command  param"<<"\n";
+  di<<"  To modifiy : command  param\n";
 
 //  Mode d emploi (K4B ->) : brepiges shape [+shape][ +shape] nomfic
 //   c a d tant qu il y a des + on ajoute ce qui suit
@@ -442,11 +442,11 @@ static Standard_Integer brepiges (Draw_Interpretor& di, Standard_Integer n, cons
   progress->NewScope(10,"Writing");
   progress->Show();
 
-  di<<npris<<" Shapes written, giving "<<XSDRAW::Model()->NbEntities()<<" Entities"<<"\n";
+  di<<npris<<" Shapes written, giving "<<XSDRAW::Model()->NbEntities()<<" Entities\n";
 
   if ( ! nomfic ) // delayed write
   {
-    di<<" Now, to write a file, command : writeall filename"<<"\n";
+    di<<" Now, to write a file, command : writeall filename\n";
     return 0;
   }
 
@@ -469,8 +469,8 @@ static Standard_Integer testwrite (Draw_Interpretor& di, Standard_Integer n, con
 {
   if (n != 3)                                                                                      
     {                                                                                             
-      di << "ERROR in " << a[0] << "Wrong Number of Arguments."<<"\n";                     
-      di << " Usage : " << a[0] <<" file_name shape_name"<< "\n";                          
+      di << "ERROR in " << a[0] << "Wrong Number of Arguments.\n";                     
+      di << " Usage : " << a[0] <<" file_name shape_name\n";                          
       return 1;                                                                                 
     }
   IGESControl_Writer Writer;
@@ -478,15 +478,15 @@ static Standard_Integer testwrite (Draw_Interpretor& di, Standard_Integer n, con
   TopoDS_Shape shape = DBRep::Get(a[2]); 
   Standard_Boolean ok = Writer.AddShape(shape);
   if(!ok){
-    di<<"Shape not add"<<"\n";
+    di<<"Shape not add\n";
     return 1;
   }
   
   if(!(Writer.Write(filename))){
-    di<<"Error on writing file"<<"\n";
+    di<<"Error on writing file\n";
     return 1;
   }
-  di<<"File Is Written"<<"\n"; 
+  di<<"File Is Written\n"; 
   return 0;
 }
 //--------------------------------------------------------------
@@ -498,12 +498,12 @@ static Standard_Integer testwrite (Draw_Interpretor& di, Standard_Integer n, con
 static Standard_Integer igesparam (Draw_Interpretor& di, Standard_Integer , const char** ) 
 {
 //  liste des parametres
-  di<<"List of parameters which control IGES :"<<"\n";
-  di<<"  unit : write.iges.unit\n  mode write : write.iges.brep.mode\n  spline_continuity (read) : read.iges.bspline.continuity\nSee definition by  defparam, read/edit value by  param"<<"\n";
+  di<<"List of parameters which control IGES :\n";
+  di<<"  unit : write.iges.unit\n  mode write : write.iges.brep.mode\n  spline_continuity (read) : read.iges.bspline.continuity\nSee definition by  defparam, read/edit value by  param\n";
   di<<"unit (write) : "<<Interface_Static::CVal("write.iges.unit")<<"\n";
   di<<"mode  write  : "<<Interface_Static::CVal("write.iges.brep.mode")<<"\n";
-  di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)"<<"\n";
-  di<<"\n"<<" To modifier, param nom_param new_val"<<"\n";
+  di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)\n";
+  di<<"\n To modifier, param nom_param new_val\n";
   return 0;
 }
 
@@ -529,7 +529,7 @@ static Standard_Integer XSDRAWIGES_tplosttrim (Draw_Interpretor& di, Standard_In
   typarg.SetValue(1,"IGESGeom_TrimmedSurface");
   typarg.SetValue(2,"IGESGeom_BoundedSurface");
   typarg.SetValue(3,"IGESSolid_Face");
-  if (TP.IsNull()) { di<<"No Transfer Read"<<"\n"; return 1; }
+  if (TP.IsNull()) { di<<"No Transfer Read\n"; return 1; }
   Standard_Integer nbFaces = 0, totFaces = 0 ;
   Handle(IFSelect_WorkSession) WS = pilot->Session(); 
   Transfer_IteratorOfProcessForTransient itrp = TP->AbnormalResult(); 
@@ -541,14 +541,14 @@ static Standard_Integer XSDRAWIGES_tplosttrim (Draw_Interpretor& di, Standard_In
       if(typarg.Value(k).Location(Arg,1,typarg.Value(k).Length()) != 0) break;
     }
   }   
-  if( k == 4) {di<< "Invalid argument"<<"\n"; return 0; }
+  if( k == 4) {di<< "Invalid argument\n"; return 0; }
   for(Standard_Integer j = 1 ; j <= 3; j++) {
     TColStd_MapOfTransient aMap;
     if(narg == 1) k=j;
     Handle(TColStd_HSequenceOfTransient) list = IFSelect_Functions::GiveList(pilot->Session(),strarg.Value(k).ToCString());
     if (!list.IsNull()) itrp.Filter (list);
     else {
-      di << "No untrimmed faces" << "\n";
+      di << "No untrimmed faces\n";
       return 0;
     }
     for (itrp.Start(); itrp.More(); itrp.Next()) {
@@ -565,14 +565,14 @@ static Standard_Integer XSDRAWIGES_tplosttrim (Draw_Interpretor& di, Standard_In
       }
     }
     if(nbFaces != 0) {
-      if( j == 1 ) di << "Number of untrimmed faces: " << "\n";
+      if( j == 1 ) di << "Number of untrimmed faces: \n";
       switch(k){
       case 1:  
-	di << "Trimmed Surface: " << "\n"; break;
+	di << "Trimmed Surface: \n"; break;
       case 2:
-	di << "Bounded Surface: " << "\n"; break;
+	di << "Bounded Surface: \n"; break;
       case 3:
-	di << "Face: " << "\n"; break;
+	di << "Face: \n"; break;
       }
 
       TColStd_MapIteratorOfMapOfTransient itmap;
@@ -581,14 +581,14 @@ static Standard_Integer XSDRAWIGES_tplosttrim (Draw_Interpretor& di, Standard_In
         di << "  ";
       }
       di << "\n";
-      di << "\n" << "Number:"<< nbFaces << "\n";
+      di << "\nNumber:"<< nbFaces << "\n";
       totFaces += nbFaces;
     }
     if(narg > 1) break;
     nbFaces = 0;
   }
   
-  if(totFaces == 0) di << "No untrimmed faces" << "\n";
+  if(totFaces == 0) di << "No untrimmed faces\n";
   else              di << "Total number :" << totFaces << "\n";
   return 0;
 }
@@ -607,10 +607,10 @@ static Standard_Integer XSDRAWIGES_TPSTAT(Draw_Interpretor& di,Standard_Integer 
    IGESControl_Reader read; //(XSControl::Session(pilot),Standard_False);
   //read.SetTransientProcess(TP);
 //        ****    tpent        ****
-//  if (TP.IsNull()) { di<<"No Transfer Read"<<"\n"; return IFSelect_RetError;}
+//  if (TP.IsNull()) { di<<"No Transfer Read\n"; return IFSelect_RetError;}
   Handle(Interface_InterfaceModel) model = TP->Model();
   //Handle(Interface_InterfaceModel) model = read.Model();
-  if (model.IsNull()) {di<<"No Transfer Read"<<"\n"; return -1;}
+  if (model.IsNull()) {di<<"No Transfer Read\n"; return -1;}
  //DeclareAndCast(IGESData_IGESModel,modelig,model);
  // read.SetModel(modelig);
   Handle(XSControl_WorkSession) thesession = read.WS();
@@ -629,12 +629,12 @@ static Standard_Integer XSDRAWIGES_TPSTAT(Draw_Interpretor& di,Standard_Integer 
     default  : mod1 = -2; break;
     }
   }
-  if (mod1 < -1) di<<"Unknown Mode"<<"\n";
+  if (mod1 < -1) di<<"Unknown Mode\n";
   if (mod1 < 0) {
     di<<"Modes available :\n"
-      <<"g : general    c : checks (count)  C (list)"<<"\n"
-      <<"r : number of CasCade resulting shapes"<<"\n"
-      <<"s : mapping between IGES entities and CasCade shapes"<<"\n";
+      <<"g : general    c : checks (count)  C (list)\n"
+      <<"r : number of CasCade resulting shapes\n"
+      <<"s : mapping between IGES entities and CasCade shapes\n";
     if (mod1 < -1) return -1;
     return 0;
   }
@@ -644,7 +644,7 @@ static Standard_Integer XSDRAWIGES_TPSTAT(Draw_Interpretor& di,Standard_Integer 
 static Standard_Integer etest(Draw_Interpretor& di, Standard_Integer argc, const char** a)
 {
   if(argc < 3) {
-    di<<"etest igesfile shape"<<"\n";
+    di<<"etest igesfile shape\n";
     return 0;
   }
   IGESControl_Reader aReader;

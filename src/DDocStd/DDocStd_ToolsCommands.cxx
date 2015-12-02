@@ -67,7 +67,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
     TDF_AttributeDeltaList added, forgoten, resumed, removed, modified;
     Handle(TDF_AttributeDelta) AD;
     if (D->GetUndos().IsEmpty()) {   
-      di << "no UNDO available" << "\n";
+      di << "no UNDO available\n";
       return 0;
     }
     Handle(TDF_Delta) DELTA = D->GetUndos().Last();
@@ -90,7 +90,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
     di << "ADDED    :"; 
     it.Initialize(added);
     if (it.More()) di << "\n";
-    else di << " empty" << "\n";
+    else di << " empty\n";
     for (;it.More();it.Next()) {   
       TDF_Tool::Entry (it.Value()->Label(),string);
       di << "- " << string.ToCString() << " ";      
@@ -102,7 +102,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
     di << "FORGOTEN :";
     it.Initialize(forgoten);    
     if (it.More()) di << "\n";
-    else di << " empty" << "\n";
+    else di << " empty\n";
     for (;it.More();it.Next()) {   
       TDF_Tool::Entry (it.Value()->Label(),string);
       di << "- " << string.ToCString() << " ";
@@ -114,7 +114,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
     di << "RESUMED  :"; 
     it.Initialize(resumed);
     if (it.More()) di << "\n";
-    else di << " empty" << "\n";
+    else di << " empty\n";
     for (;it.More();it.Next()) {   
       TDF_Tool::Entry (it.Value()->Label(),string);
       di << "- " << string.ToCString() << " ";
@@ -126,7 +126,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
     di << "REMOVED  :";     
     it.Initialize(removed);
     if (it.More()) di << "\n";
-    else di << " empty" << "\n";
+    else di << " empty\n";
     for (;it.More();it.Next()) {   
       TDF_Tool::Entry (it.Value()->Label(),string);
       di << "- " << string.ToCString() << " "; 
@@ -138,7 +138,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
     di << "MODIFIED :";   
     it.Initialize(modified);
     if (it.More()) di << "\n";
-    else di << " empty" << "\n";
+    else di << " empty\n";
     for (;it.More();it.Next()) {   
       TDF_Tool::Entry (it.Value()->Label(),string);
       di << "- " << string.ToCString() << " ";
@@ -147,7 +147,7 @@ static Standard_Integer DDocStd_DumpCommand (Draw_Interpretor& di,
     }
     return 0;
   } 
-  di << "TDocStd_DumpCommand : Error" << "\n";
+  di << "TDocStd_DumpCommand : Error\n";
   return 1;
 }
 

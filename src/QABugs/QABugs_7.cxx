@@ -253,7 +253,7 @@ const Standard_Integer Glob_Mults[Glob_NbKnots] =
 static Standard_Integer OCC862 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if ( argc != 3) {
-    di << "ERROR : Usage : " << argv[0] << " curve1 curve2" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " curve1 curve2\n";
     return 1;
   }
 
@@ -304,12 +304,12 @@ static Standard_Integer OCC862 (Draw_Interpretor& di, Standard_Integer argc, con
       const Standard_Real D = Ex.LowerDistance();
       // IMPORTANT: minimal distance here means accuracy reached in intersection
       di<<"Info: Minimal distance is "<<D<<"\n";
-      di<<"Info: Minimal points are ("<<P1.X()<<","<<P1.Y()<<","<<P1.Z()<<"), ("<<P2.X()<<","<<P2.Y()<<","<<P2.Z()<<")"<<"\n";
-      di<<"Info: Minimal parameters are ("<<U1<<"), ("<<U2<<")"<<"\n";
+      di<<"Info: Minimal points are ("<<P1.X()<<","<<P1.Y()<<","<<P1.Z()<<"), ("<<P2.X()<<","<<P2.Y()<<","<<P2.Z()<<")\n";
+      di<<"Info: Minimal parameters are ("<<U1<<"), ("<<U2<<")\n";
     }
     else
     {
-      di<<"Error: extrema not found"<<"\n";
+      di<<"Error: extrema not found\n";
     }
   }
   

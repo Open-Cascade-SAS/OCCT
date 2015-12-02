@@ -272,7 +272,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
     ONE = 2;
   }
   else {
-   di << "gproject wait 2 or 3 arguments" << "\n";
+   di << "gproject wait 2 or 3 arguments\n";
    return 1;
   } 
 
@@ -309,8 +309,8 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
       Projector.GetSurface()->D0(P2d.X(), P2d.Y(), P);
       DrawTrSurf::Set(temp, P);
       DrawTrSurf::Set(temp1, P2d);
-      di<<temp<<" is 3d projected curve"<<"\n";
-      di<<temp1<<" is pcurve"<<"\n";
+      di<<temp<<" is 3d projected curve\n";
+      di<<temp1<<" is pcurve\n";
     }
     else {
       Only2d = Only3d = Standard_False;
@@ -358,8 +358,8 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
         Handle(Geom_Curve) OutCur = new Geom_TrimmedCurve(GeomAdaptor::MakeCurve(hcur->Curve()), Ufin, Udeb);
         DrawTrSurf::Set(temp, OutCur);
         DrawTrSurf::Set(temp1, PCur2d);
-        di<<temp<<" is 3d projected curve"<<"\n";
-        di<<temp1<<" is pcurve"<<"\n";
+        di<<temp<<" is 3d projected curve\n";
+        di<<temp1<<" is pcurve\n";
         return 0;
         }
       else {
@@ -382,8 +382,8 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
 	  DrawTrSurf::Set(temp, appr.Curve3d());
 	}
         DrawTrSurf::Set(temp1, PCur2d);
-        di<<temp<<" is 3d projected curve"<<"\n";
-        di<<temp1<<" is pcurve"<<"\n";
+        di<<temp<<" is 3d projected curve\n";
+        di<<temp1<<" is pcurve\n";
       }
     }
   }
@@ -399,10 +399,10 @@ static Standard_Integer project (Draw_Interpretor& di,
 {
   if ( n == 1) {
     
-    di << "project result2d c3d surf [-e p] [-v n] [-t tol]" << "\n";
-    di << "   -e p   : extent the surface of <p>%" << "\n";
-    di << "   -v n   : verify the projection at <n> points." << "\n";
-    di << "   -t tol : set the tolerance for approximation" << "\n";
+    di << "project result2d c3d surf [-e p] [-v n] [-t tol]\n";
+    di << "   -e p   : extent the surface of <p>%\n";
+    di << "   -v n   : verify the projection at <n> points.\n";
+    di << "   -t tol : set the tolerance for approximation\n";
     return 0;
   }
 
@@ -445,7 +445,7 @@ static Standard_Integer project (Draw_Interpretor& di,
     GeomProjLib::Curve2d(GC, GS, U1, U2, V1, V2, tolerance);
 
   if ( G2d.IsNull() ) {
-    di << "\n" << "Projection Failed" << "\n";
+    di << "\nProjection Failed\n";
     return 1;
   }
   else {
@@ -453,7 +453,7 @@ static Standard_Integer project (Draw_Interpretor& di,
   }
   if ( Verif) {  // verify the projection on n points
     if ( NbPoints <= 0) { 
-      di << " n must be positive" << "\n";
+      di << " n must be positive\n";
       return 0;
     }
     gp_Pnt P1,P2;
@@ -494,7 +494,7 @@ Standard_Integer projonplane(Draw_Interpretor& di,
 
   Handle(Geom_Plane)   Pl = Handle(Geom_Plane)::DownCast(S);
   if ( Pl.IsNull()) {
-    di << " The surface must be a plane" << "\n";
+    di << " The surface must be a plane\n";
     return 1;
   }
 
@@ -592,7 +592,7 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  }
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
@@ -610,7 +610,7 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  }
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
@@ -629,7 +629,7 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  }
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
@@ -648,12 +648,12 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  }
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
       else {
-	di << " args must be line/circle/point line/circle/point" << "\n";
+	di << " args must be line/circle/point line/circle/point\n";
 	return 1;
       }
     }
@@ -670,7 +670,7 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  }
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
@@ -682,13 +682,13 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  solution(Bis.ThisSolution(),a[1],0);
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
     }
     else {
-      di << " the second arg must be line/circle/point " << "\n";
+      di << " the second arg must be line/circle/point \n";
     }
   }
   else if ( ip1) {
@@ -706,7 +706,7 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  }
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
@@ -718,7 +718,7 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  solution(Bis.ThisSolution(),a[1],0);
 	}
 	else {
-	  di << " Bisec has failed !!" << "\n";
+	  di << " Bisec has failed !!\n";
 	  return 1;
 	}
       }
@@ -730,25 +730,25 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	DrawTrSurf::Set(a[1],new Geom2d_Line(Bis.ThisSolution()));
       }
       else {
-	di << " Bisec has failed !!" << "\n";
+	di << " Bisec has failed !!\n";
 	return 1;
       }
     }
     else {
-      di << " the second arg must be line/circle/point " << "\n";
+      di << " the second arg must be line/circle/point \n";
       return 1;
     }
   }
   else {
-    di << " args must be line/circle/point line/circle/point" << "\n";
+    di << " args must be line/circle/point line/circle/point\n";
     return 1;
   }
 
   if ( NbSol >= 2) {
-    di << "There are " << NbSol << " Solutions." << "\n";
+    di << "There are " << NbSol << " Solutions.\n";
   }
   else {
-    di << "There is " << NbSol << " Solution." << "\n";
+    di << "There is " << NbSol << " Solution.\n";
   }
 
   return 0;
@@ -819,7 +819,7 @@ static Standard_Integer movelaw (Draw_Interpretor& di, Standard_Integer n, const
       Draw::Repaint();
     }
     else {
-      di << "Not enought degree of freedom increase degree please" << "\n";
+      di << "Not enought degree of freedom increase degree please\n";
     }
 
 
@@ -993,7 +993,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   GCPnts_QuasiUniformDeflection PntGen(GAC, defl);
     
   if(!PntGen.IsDone()) {
-    di << "Points generation failed" << "\n";
+    di << "Points generation failed\n";
     return 1;
   }
 
@@ -1100,7 +1100,7 @@ static Standard_Integer uniformAbscissa (Draw_Interpretor& di, Standard_Integer 
   ellip = DrawTrSurf::GetBSplineCurve(a[1]);
   if (ellip.IsNull())
   {
-    di << " BSpline is NULL  "<<"\n";     
+    di << " BSpline is NULL  \n";     
     return 1;
   }*/
 
@@ -1108,7 +1108,7 @@ static Standard_Integer uniformAbscissa (Draw_Interpretor& di, Standard_Integer 
   ellip = DrawTrSurf::GetCurve(a[1]);
   if (ellip.IsNull())
   {
-    di << " Curve is NULL  "<<"\n";     
+    di << " Curve is NULL  \n";     
     return 1;
   }
 
@@ -1146,7 +1146,7 @@ static Standard_Integer uniformAbscissa (Draw_Interpretor& di, Standard_Integer 
 
   catch (Standard_Failure )
   {
-    di << " Standard Failure  " <<"\n";
+    di << " Standard Failure  \n";
   }
   return 0;
 }
@@ -1194,7 +1194,7 @@ static Standard_Integer EllipsUniformAbscissa (Draw_Interpretor& di, Standard_In
   
   catch(Standard_Failure)
   {
-    di << " Standard Failure  "<<"\n";     
+    di << " Standard Failure  \n";     
   }
 
   try
@@ -1223,7 +1223,7 @@ static Standard_Integer EllipsUniformAbscissa (Draw_Interpretor& di, Standard_In
 
   catch (Standard_Failure )
   {
-    di << " Standard Failure  " <<"\n";
+    di << " Standard Failure  \n";
   }
   return 0;
 }
@@ -1625,14 +1625,14 @@ static Standard_Integer intersection (Draw_Interpretor& di,
     }//else if (n == 8 || n == 9 || n == 12 || n == 13 || n == 16 || n == 17)
     else
     {
-      di<<"incorrect number of arguments"<<"\n";
+      di<<"incorrect number of arguments\n";
       return 1;
     }
 
     //
     if (!Inters.IsDone())
     {
-      di<<"No intersections found!"<<"\n";
+      di<<"No intersections found!\n";
 
       return 1;
     }
@@ -1681,7 +1681,7 @@ static Standard_Integer intersection (Draw_Interpretor& di,
     //
     if (!Inters.IsDone())
     {
-      di<<"No intersections found!"<<"\n";
+      di<<"No intersections found!\n";
       return 1;
     }
 

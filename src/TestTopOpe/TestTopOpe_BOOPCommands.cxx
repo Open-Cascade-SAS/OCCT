@@ -253,7 +253,7 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 	}
       }
       if ( !eca && !esa ) {
-	interpretor<<"edge "<<ie<<" has no ancestors"<<"\n";
+	interpretor<<"edge "<<ie<<" has no ancestors\n";
       }
     }
   }
@@ -334,9 +334,9 @@ Standard_Integer TOPOSETCOMMANDS(TestTopOpe_BOOP& PT,Standard_Integer na,const c
 { 
   switch(na) {
   case 1:
-    di<<"toposet <kind> <index> <tol>"<<"\n";
-    di<<"toposet <kind = Point> <index> <x> <y> <z>"<<"\n";
-    di<<"kind = p | c | s | v | e | f | w "<<"\n";
+    di<<"toposet <kind> <index> <tol>\n";
+    di<<"toposet <kind = Point> <index> <x> <y> <z>\n";
+    di<<"kind = p | c | s | v | e | f | w \n";
     return 1;
   case 4:
     if(!strcasecmp(a[1],"p"))
@@ -368,23 +368,23 @@ Standard_Integer TOPOSETCOMMANDS(TestTopOpe_BOOP& PT,Standard_Integer na,const c
 void TOPOHELP(TestTopOpe_BOOP& PT, Draw_Interpretor& di)
 {
   di<<"\n";
-  di<<"Help on topo command :"<<"\n";
-  di<<"----------------------"<<"\n";
+  di<<"Help on topo command :\n";
+  di<<"----------------------\n";
   for (Standard_Integer ic=0;ic<PT.Tnb();ic++) di<<PT.Tkeys(ic).ToCString()<<" : "<<PT.Thelp(ic).ToCString()<<"\n";
-  di<<"args :"<<"\n";
-  di<<"-2d -no2d : produce (or not) 2d curves in section"<<"\n";
-  di<<"-a : section curves approximated (default)"<<"\n";
-  di<<"-p : section curve discretisated"<<"\n";
-  di<<"-tx [default] | tol1 tol2 : set approximation tolerances"<<"\n";
-  di<<"-ti [shape] | tol1 tol2 : set intersection tolerances"<<"\n";
-  di<<"-c 0/[1] : clear view before displaying result"<<"\n";
-  di<<"-m [0]/1 : execute methods / explode methods"<<"\n";
-  di<<"-f [name] : retrieve shape/index <name> among input shapes (exploration index)"<<"\n";
-  di<<"-v [0]/1 : do not trace / trace methods name"<<"\n";
-  di<<"-d : dump all control variables"<<"\n";
-  di<<"-i : initialize control variables to default values"<<"\n";
-  di<<"-h : help"<<"\n";
-  di<<"----------------------"<<"\n";
+  di<<"args :\n";
+  di<<"-2d -no2d : produce (or not) 2d curves in section\n";
+  di<<"-a : section curves approximated (default)\n";
+  di<<"-p : section curve discretisated\n";
+  di<<"-tx [default] | tol1 tol2 : set approximation tolerances\n";
+  di<<"-ti [shape] | tol1 tol2 : set intersection tolerances\n";
+  di<<"-c 0/[1] : clear view before displaying result\n";
+  di<<"-m [0]/1 : execute methods / explode methods\n";
+  di<<"-f [name] : retrieve shape/index <name> among input shapes (exploration index)\n";
+  di<<"-v [0]/1 : do not trace / trace methods name\n";
+  di<<"-d : dump all control variables\n";
+  di<<"-i : initialize control variables to default values\n";
+  di<<"-h : help\n";
+  di<<"----------------------\n";
 }
 
 // -------------------------------------------------------

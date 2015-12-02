@@ -126,7 +126,7 @@ static Standard_Integer PointsByPick
 {
  Standard_Integer id,XX,YY,b, i;
  
- di << "Pick points "<< "\n";
+ di << "Pick points \n";
  dout.Select(id, XX, YY, b);
  Standard_Real zoom = dout.Zoom(id);
  if (b != 1) return 0;
@@ -253,7 +253,7 @@ static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)& MPC,
       for(i=1; i<=nbc; i++) {
 	iFile >> num >> ordre;
 	if ((num<1)||(num>nbp)) {
-	  di << "Error on point Index in constrainte" << "\n";
+	  di << "Error on point Index in constrainte\n";
 	  return;
 	}
 	Constraint = (AppParCurves_Constraint) (ordre+1);
@@ -304,7 +304,7 @@ static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)& MPC,
       for(i=1; i<=nbc; i++) {
 	iFile >> num >> ordre;
 	if ((num<1)||(num>nbp)) {
-	  di << "Error on point Index in constrainte" << "\n";
+	  di << "Error on point Index in constrainte\n";
 	  return;
 	}
 	Constraint = (AppParCurves_Constraint) (ordre+1);
@@ -342,11 +342,11 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
   Standard_Integer id = 0, DegMax = -1;
 
   if (n == 1) {
-    di <<"give a name to your curve !" << "\n";
+    di <<"give a name to your curve !\n";
     return 0;
   }
   if (n == 2) {
-    di <<"give a tolerance to your curve !" << "\n";
+    di <<"give a tolerance to your curve !\n";
     return 0;
   }
   if (n == 3) {
@@ -381,7 +381,7 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
       const char* nomfic = a[ific];
       ifstream iFile(nomfic, ios::in);
       if (!iFile) { 
-	di << a[ific] <<"do not exist !" << "\n";
+	di << a[ific] <<"do not exist !\n";
 	return 1;
       }
       PointsByFile(Points, TABofCC, iFile, di);
@@ -509,20 +509,20 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
   Standard_Integer Degree = 8;
 
   if (n == 1) {
-    di <<"give a name to your curve !" << "\n";
+    di <<"give a name to your curve !\n";
     return 0;
   }
   if (n == 2) {
-    di <<"give a tolerance to your curve !" << "\n";
+    di <<"give a tolerance to your curve !\n";
     return 0;
   }
  if (n == 3) {
-    di <<"give a max degree!" << "\n";
+    di <<"give a max degree!\n";
     return 0;
   }
 
   if (n == 4) {
-    di <<"give an option!" << "\n";
+    di <<"give an option!\n";
     return 0;
   }
   if (n >= 5) {
@@ -551,7 +551,7 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
       const char* nomfic = a[5];
       ifstream iFile(nomfic, ios::in);
       if (!iFile) { 
-	di << a[6] <<"do not exist !" << "\n";
+	di << a[6] <<"do not exist !\n";
 	return 1;
       }
       PointsByFile(Points, TABofCC, iFile, di);
@@ -603,7 +603,7 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
       Appr.Perform (AML);
       
       if (! Appr.IsAllApproximated()) {
-	di << " No result" << "\n";
+	di << " No result\n";
       }
       AppParCurves_MultiCurve AnMuC = Appr.Value();
       ThePoints = new (TColgp_HArray1OfPnt2d) (1,  AnMuC.NbPoles() );
@@ -621,7 +621,7 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
       Varia.Approximate();
 
       if (! Varia.IsDone()) {
-	di << " No result" << "\n";
+	di << " No result\n";
       }
 
       AppParCurves_MultiBSpCurve  AnMuC = Varia.Value();
@@ -678,7 +678,7 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
       Appr.Perform (AML);
       
       if (! Appr.IsAllApproximated()) {
-	di << " No result" << "\n";
+	di << " No result\n";
       }
       AppParCurves_MultiCurve AnMuC = Appr.Value();
       ThePoints = new (TColgp_HArray1OfPnt) (1,  AnMuC.NbPoles() );
@@ -696,7 +696,7 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
       Varia.SetTolerance(Abs(Tolerance));
       Varia.Approximate();
       if (! Varia.IsDone()) {
-	di << " No result" << "\n";
+	di << " No result\n";
       }
 
       AppParCurves_MultiBSpCurve  AnMuC = Varia.Value();

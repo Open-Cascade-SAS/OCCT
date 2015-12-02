@@ -43,21 +43,21 @@ Standard_Integer Vrml_PointSet::NumPoints() const
 
 Standard_OStream& Vrml_PointSet::Print(Standard_OStream& anOStream) const 
 {
- anOStream  << "PointSet {" << endl;
+ anOStream  << "PointSet {\n";
  if ( myStartIndex != 0 || myNumPoints !=-1 )
   {
     if ( myStartIndex != 0)
       {
-	anOStream  << "    startIndex" << '\t';
-	anOStream << myStartIndex << endl;
+	anOStream  << "    startIndex\t";
+	anOStream << myStartIndex << "\n";
       }
     if ( myNumPoints != 0)
       {
-	anOStream  << "    numPoints" << '\t';
-	anOStream << myNumPoints << endl;
+	anOStream  << "    numPoints\t";
+	anOStream << myNumPoints << "\n";
       }
   }
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }
 

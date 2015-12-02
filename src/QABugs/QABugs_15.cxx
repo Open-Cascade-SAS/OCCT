@@ -38,7 +38,7 @@ static Standard_Integer BUC60720 (Draw_Interpretor& di,Standard_Integer argc,con
   }
 
   if(argc != 2) {
-    di << "Usage : " << argv[0] << " 0/1" << "\n";
+    di << "Usage : " << argv[0] << " 0/1\n";
   }
 
   if(Draw::Atoi(argv[1]) == 0) {
@@ -56,7 +56,7 @@ static Standard_Integer BUC60720 (Draw_Interpretor& di,Standard_Integer argc,con
 	myAISContext->Display(theObject2);
       }
   } else {
-    di << "Usage : " << argv[0] << " 0/1" << "\n";
+    di << "Usage : " << argv[0] << " 0/1\n";
     return -1;
   }
   return 0;

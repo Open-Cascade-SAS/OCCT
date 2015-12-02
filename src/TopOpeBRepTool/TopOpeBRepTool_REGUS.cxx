@@ -739,7 +739,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
       if (!ok) {FUN_Raise(); return Standard_False;}
     }
 #ifdef OCCT_DEBUG
-    if (trc) cout<<"   ang("<<"f"<<FUN_adds(fref)<<",f"<<FUN_adds(ffound)<<")="<<angfound<<endl;
+    if (trc) cout<<"   ang(f"<<FUN_adds(fref)<<",f"<<FUN_adds(ffound)<<")="<<angfound<<endl;
 #endif
     break;
   }
@@ -770,7 +770,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
       if (!ok) {FUN_Raise(); return Standard_False;}
     }
 #ifdef OCCT_DEBUG
-    if (trc) cout<<"   ang("<<"f"<<FUN_adds(fref)<<",f"<<FUN_adds(fi)<<")="<<angi<<endl;
+    if (trc) cout<<"   ang(f"<<FUN_adds(fref)<<",f"<<FUN_adds(fi)<<")="<<angi<<endl;
 #endif
     if (angi > angfound) continue; 
     angfound = angi;

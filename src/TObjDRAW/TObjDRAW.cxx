@@ -160,9 +160,9 @@ static Standard_Integer newModel (Draw_Interpretor& di, Standard_Integer argc, c
     DD = new DDocStd_DrawDocument(D);
     TDataStd_Name::Set(D->GetData()->Root(),argv[1]);
     Draw::Set(argv[1],DD);
-    di << "document " << argv[1] << " created" << "\n";
+    di << "document " << argv[1] << " created\n";
   }
-  else di << argv[1] << " is already a document" << "\n";
+  else di << argv[1] << " is already a document\n";
 
   return 0;
 }
@@ -197,7 +197,7 @@ static Standard_Integer saveModel (Draw_Interpretor& di, Standard_Integer argc, 
     isSaved = aModel->Save();
   
   if (!isSaved) {
-    di << "Error: Document not saved" << "\n";
+    di << "Error: Document not saved\n";
     return 1;
   }
   return 0;
@@ -232,7 +232,7 @@ static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, 
   
   
   if (!isLoaded) {
-    di << "Error: Document not loaded" << "\n";
+    di << "Error: Document not loaded\n";
     return 1;
   }
   return 0;
@@ -267,7 +267,7 @@ static Standard_Integer addObj (Draw_Interpretor& di, Standard_Integer argc, con
     new TObjDRAW_Object( aModel->GetMainPartition()->NewLabel() );
   if ( tObj.IsNull() )
   {
-    di << "Error: Object not created" << "\n";
+    di << "Error: Object not created\n";
     return 1;
   }
   tObj->SetName( argv[2] );
@@ -297,7 +297,7 @@ static Standard_Integer setVal (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(TObjDRAW_Object) tObj = getObjByName( argv[1], argv[2] );
   if ( tObj.IsNull() )
   {
-    di << "Error: Object " << argv[2] << " not found" << "\n";
+    di << "Error: Object " << argv[2] << " not found\n";
     return 1;
   }
   if ( !strcmp(argv[3],"-r") )
@@ -325,7 +325,7 @@ static Standard_Integer getVal (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(TObjDRAW_Object) tObj = getObjByName( argv[1], argv[2] );
   if ( tObj.IsNull() )
   {
-    di << "Error: Object " << argv[2] << " not found" << "\n";
+    di << "Error: Object " << argv[2] << " not found\n";
     return 1;
   }
   if ( !strcmp(argv[3],"-i") )
@@ -357,7 +357,7 @@ static Standard_Integer setRef (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(TObjDRAW_Object) tObj2 = getObjByName( argv[1], argv[3] );
   if ( tObj1.IsNull() || tObj2.IsNull() )
   {
-    di << "Error: Object " << argv[2] << " or object " << argv[3] << " not found" << "\n";
+    di << "Error: Object " << argv[2] << " or object " << argv[3] << " not found\n";
     return 1;
   }
   tObj1->SetRef( tObj2 );
@@ -376,7 +376,7 @@ static Standard_Integer getRef (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(TObjDRAW_Object) tObj = getObjByName( argv[1], argv[2] );
   if ( tObj.IsNull() )
   {
-    di << "Error: Object " << argv[2] << " not found" << "\n";
+    di << "Error: Object " << argv[2] << " not found\n";
     return 1;
   }
   Handle(TObj_Object) aRefObj = tObj->GetRef();
@@ -403,13 +403,13 @@ static Standard_Integer addChild (Draw_Interpretor& di, Standard_Integer argc, c
   Handle(TObjDRAW_Object) tObj = getObjByName( argv[1], argv[2] );
   if ( tObj.IsNull() )
   {
-    di << "Error: Object " << argv[2] << " not found" << "\n";
+    di << "Error: Object " << argv[2] << " not found\n";
     return 1;
   }
   Handle(TObj_Object) chldObj = tObj->AddChild();
   if ( chldObj.IsNull() )
   {
-    di << "Error: No child object created" << "\n";
+    di << "Error: No child object created\n";
     return 1;
   }
   chldObj->SetName( new TCollection_HExtendedString( argv[3] ) );
@@ -428,7 +428,7 @@ static Standard_Integer getChild (Draw_Interpretor& di, Standard_Integer argc, c
   Handle(TObjDRAW_Object) tObj = getObjByName( argv[1], argv[2] );
   if ( tObj.IsNull() )
   {
-    di << "Error: Object " << argv[2] << " not found" << "\n";
+    di << "Error: Object " << argv[2] << " not found\n";
     return 1;
   }
   Handle(TObj_ObjectIterator) anItr = tObj->GetChildren();
@@ -511,7 +511,7 @@ void TObjDRAW::Factory(Draw_Interpretor& theDI)
   TObjDRAW::Init(theDI);
 
 #ifdef OCCT_DEBUG
-      theDI << "Draw Plugin : All TKTObjDRAW commands are loaded" << "\n";
+      theDI << "Draw Plugin : All TKTObjDRAW commands are loaded\n";
 #endif
 }
 

@@ -586,7 +586,7 @@ static Standard_Integer cmovetangent (Draw_Interpretor& di, Standard_Integer n, 
 	Draw::Repaint();
 	}
       else {
-	di << "Not enought degree of freedom increase degree please" << "\n";
+	di << "Not enought degree of freedom increase degree please\n";
       }
       
       return 0;
@@ -617,7 +617,7 @@ static Standard_Integer cmovetangent (Draw_Interpretor& di, Standard_Integer n, 
 	Draw::Repaint();
 	}
       else {
-	di << "Not enought degree of freedom increase degree please" << "\n";
+	di << "Not enought degree of freedom increase degree please\n";
       }
       
       return 0;
@@ -787,11 +787,11 @@ static Standard_Integer cremknot (Draw_Interpretor& di, Standard_Integer n, cons
 
   if (!GBs.IsNull()) {
     if (!GBs->RemoveKnot(index,mult,tol))
-      di << "Remove knots failed"<<"\n";
+      di << "Remove knots failed\n";
   }
   else {
     if (!GBs2d->RemoveKnot(index,mult,tol))
-      di << "Remove knots failed"<<"\n";
+      di << "Remove knots failed\n";
   }
 
   Draw::Repaint();
@@ -1368,7 +1368,7 @@ static Standard_Integer localprop(Draw_Interpretor& di,
       }
     }
     else 
-      di <<"Tangent undefined."<<"\n";  
+      di <<"Tangent undefined.\n";  
   }
   else {
     Geom2dLProp_CLProps2d Prop (C2d,2,Precision::Confusion());
@@ -1395,7 +1395,7 @@ static Standard_Integer localprop(Draw_Interpretor& di,
       }
     }
     else 
-      di <<"Tangent undefined."<<"\n";
+      di <<"Tangent undefined.\n";
   }
   return 0;
 }  
@@ -1436,32 +1436,32 @@ static Standard_Integer rawcont(Draw_Interpretor& di, Standard_Integer n, const 
 			    Precision::Angular()) ;
     switch (cont) {
     case GeomAbs_C0: 
-      di << " C0 Continuity " << "\n" ;
+      di << " C0 Continuity \n" ;
       break ;
     case GeomAbs_G1:
-      di << " G1 Continuity " << "\n" ;
+      di << " G1 Continuity \n" ;
       break ;
     case GeomAbs_C1 :
-      di << " C1 Continuity " << "\n" ;
+      di << " C1 Continuity \n" ;
       break ;
     case GeomAbs_G2 :
-      di << " G2 Continuity " << "\n" ;
+      di << " G2 Continuity \n" ;
       break ; 
     case GeomAbs_C2 :
-      di << " C2 Continuity " << "\n" ;
+      di << " C2 Continuity \n" ;
       break ; 
     case GeomAbs_C3 :
-      di << " C3 Continuity " << "\n" ;
+      di << " C3 Continuity \n" ;
       break ; 
     case GeomAbs_CN :
-      di << " CN Continuity " << "\n" ;
+      di << " CN Continuity \n" ;
       break ; 
     default:
       break ; 
     }
   }
   else {
-    di << " not C0 continuity " << "\n" ;
+    di << " not C0 continuity \n" ;
   }
   return 0 ;
 }
@@ -1507,7 +1507,7 @@ static Standard_Integer approxcurveonsurf(Draw_Interpretor& di, Standard_Integer
     return 0;
   }
 
-  di << "Approximation failed !" << "\n";
+  di << "Approximation failed !\n";
   return 1;
 			    
 }
@@ -1699,7 +1699,7 @@ static Standard_Integer splitc1(Draw_Interpretor& di,
  Standard_Real l = ACurve->LastParameter();
 
  if ( Precision::IsInfinite(f) || Precision::IsInfinite(l)) {
-   di << " Error: Infinite curves" << "\n";
+   di << " Error: Infinite curves\n";
    return 1;
  }
 
@@ -1757,7 +1757,7 @@ static Standard_Integer splitc12d(Draw_Interpretor& di,
  Standard_Real l = ACurve->LastParameter();
 
  if ( Precision::IsInfinite(f) || Precision::IsInfinite(l)) {
-   di << " Error: Infinite curves" << "\n";
+   di << " Error: Infinite curves\n";
    return 1;
  }
 
@@ -1834,7 +1834,7 @@ static Standard_Integer length(Draw_Interpretor& di,
     L = GCPnts_AbscissaPoint::Length(AC, Tol);
   }
   else {
-    di << a[1] << "is not a curve" << "\n";
+    di << a[1] << "is not a curve\n";
     return 1;
   }
 

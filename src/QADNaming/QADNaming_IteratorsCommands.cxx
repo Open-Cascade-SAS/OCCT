@@ -60,7 +60,7 @@ static Standard_Integer GetNewShapes (Draw_Interpretor& di,
     if (!QADNaming::Entry(arg, aLabel)) return 1;
     Handle(TNaming_NamedShape) aNS;
     if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(),aNS)) {
-      di<<"Label has no NamedShape"<<"\n";
+      di<<"Label has no NamedShape\n";
       return 1;
     }
     di<<EvolutionString(aNS->Evolution());
@@ -76,7 +76,7 @@ static Standard_Integer GetNewShapes (Draw_Interpretor& di,
     }
     di<<" "<<a-1;
   } else {
-    di<<"Usage: GetNewShapes df entry [res]"<<"\n";
+    di<<"Usage: GetNewShapes df entry [res]\n";
     return 1;
   }
   return 0;
@@ -90,7 +90,7 @@ static Standard_Integer GetOldShapes (Draw_Interpretor& di,
     if (!QADNaming::Entry(arg, aLabel)) return 1;
     Handle(TNaming_NamedShape) aNS;
     if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(),aNS)) {
-      di<<"Label has no NamedShape"<<"\n";
+      di<<"Label has no NamedShape\n";
       return 1;
     }
     di<<EvolutionString(aNS->Evolution());
@@ -106,7 +106,7 @@ static Standard_Integer GetOldShapes (Draw_Interpretor& di,
     }
     di<<" "<<a-1;
   } else {
-    di<<"Usage: GetOldShapes df entry [res]"<<"\n";
+    di<<"Usage: GetOldShapes df entry [res]\n";
     return 1;
   }
   return 0;
@@ -145,7 +145,7 @@ static Standard_Integer GetAllNewShapes (Draw_Interpretor& di,
       if (!QADNaming::Entry(arg, aLabel)) return 1;
       Handle(TNaming_NamedShape) aNS;
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(),aNS)) {
-	di<<"Label has no NamedShape"<<"\n";
+	di<<"Label has no NamedShape\n";
 	return 1;
       }
       Standard_Integer a;
@@ -164,14 +164,14 @@ static Standard_Integer GetAllNewShapes (Draw_Interpretor& di,
     } else { // shape
       Handle(TDF_Data) DF;
       if (!DDF::GetDF(arg[1],DF)) {
-	di<<"Wrong df"<<"\n";
+	di<<"Wrong df\n";
 	return 1;
       }
       TopoDS_Shape aShape = DBRep::Get(arg[2]);
       aResult=GetAllNew(aShape,DF->Root(),aName,0);
     }
   } else {
-    di<<"Usage: GetAllNewShapes df entry/shape [res]"<<"\n";
+    di<<"Usage: GetAllNewShapes df entry/shape [res]\n";
     return 1;
   }
   di<<aResult;
@@ -213,7 +213,7 @@ static Standard_Integer GetAllOldShapes (Draw_Interpretor& di,
       if (!QADNaming::Entry(arg, aLabel)) return 1;
       Handle(TNaming_NamedShape) aNS;
       if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(),aNS)) {
-	di<<"Label has no NamedShape"<<"\n";
+	di<<"Label has no NamedShape\n";
 	return 1;
       }
       Standard_Integer a;
@@ -232,14 +232,14 @@ static Standard_Integer GetAllOldShapes (Draw_Interpretor& di,
     } else { // shape
       Handle(TDF_Data) DF;
       if (!DDF::GetDF(arg[1],DF)) {
-	di<<"Wrong df"<<"\n";
+	di<<"Wrong df\n";
 	return 1;
       }
       TopoDS_Shape aShape = DBRep::Get(arg[2]);
       aResult=GetAllOld(aShape,DF->Root(),aName,0);
     }
   } else {
-    di<<"Usage: GetAllNewShapes df entry/shape [res]"<<"\n";
+    di<<"Usage: GetAllNewShapes df entry/shape [res]\n";
     return 1;
   }
   di<<aResult;
@@ -254,7 +254,7 @@ static Standard_Integer GetSameShapes (Draw_Interpretor& di,
     Standard_Integer aResult = 0;
     Handle(TDF_Data) DF;
     if (!DDF::GetDF(arg[1],DF)) {
-      di<<"Wrong df"<<"\n";
+      di<<"Wrong df\n";
       return 1;
     }
     TopoDS_Shape aShape = DBRep::Get(arg[2]);
@@ -268,7 +268,7 @@ static Standard_Integer GetSameShapes (Draw_Interpretor& di,
       }
     }
   } else {
-    di<<"Usage: GetSameShapes df shape"<<"\n";
+    di<<"Usage: GetSameShapes df shape\n";
     return 1;
   }
   di<<aRes.ToCString();

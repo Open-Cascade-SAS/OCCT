@@ -38,16 +38,16 @@ Vrml_Translation::Vrml_Translation(const gp_Vec& aTranslation)
 
  Standard_OStream& Vrml_Translation::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Translation {" << endl;
+ anOStream  << "Translation {\n";
 
  if ( Abs(myTranslation.X() - 0) > 0.0001 || 
      Abs(myTranslation.Y() - 0) > 0.0001 || 
      Abs(myTranslation.Z() - 0) > 0.0001 ) 
    {
-    anOStream  << "    translation" << '\t';
-    anOStream << myTranslation.X() << ' ' << myTranslation.Y() << ' ' << myTranslation.Z() << endl;
+    anOStream  << "    translation\t";
+    anOStream << myTranslation.X() << " " << myTranslation.Y() << " " << myTranslation.Z() << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

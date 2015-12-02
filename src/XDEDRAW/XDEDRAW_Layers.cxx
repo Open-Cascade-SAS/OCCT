@@ -35,12 +35,12 @@
 static Standard_Integer addLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName StringLayer "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName StringLayer \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   
   TCollection_ExtendedString aLayer = argv[2];
@@ -54,12 +54,12 @@ static Standard_Integer addLayer (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer findLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName StringLayer "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName StringLayer \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   
   TCollection_ExtendedString aLayer = argv[2];
@@ -73,12 +73,12 @@ static Standard_Integer findLayer (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer removeLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName {Label|string}"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Label|string}\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
 
   TDF_Label aLabel;
@@ -96,14 +96,14 @@ static Standard_Integer removeLayer (Draw_Interpretor& di, Standard_Integer argc
 static Standard_Integer setLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<4) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} StringLayer [shapeInOneLayer(0/1)]"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} StringLayer [shapeInOneLayer(0/1)]\n";
     return 1;
   }
   Standard_Boolean shapeInOneLayer = Standard_False;
   if ( (argc==5) && (Draw::Atoi(argv[4])==1) ) shapeInOneLayer = Standard_True;
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_Label aLabel;
   TCollection_ExtendedString aLayer = argv[3];
@@ -125,13 +125,13 @@ static Standard_Integer setLayer (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer getLayers (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} \n";
     return 1;
   }
   //
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_Label aLabel;
   Handle(TColStd_HSequenceOfExtendedString) aLayerS;
@@ -149,7 +149,7 @@ static Standard_Integer getLayers (Draw_Interpretor& di, Standard_Integer argc, 
   if (!aLayerS.IsNull() && aLayerS->Length()!=0)
     for (; i <= aLayerS->Length(); i++) {
       TCollection_AsciiString Entry(aLayerS->Value(i),'?');
-      di << "\"" << Entry.ToCString() << "\"" << " ";
+      di << "\"" << Entry.ToCString() << "\" ";
     }
   return 0;
 }
@@ -158,12 +158,12 @@ static Standard_Integer getLayers (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer getLayerLabels (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=2) {
-    di<<"Use: "<<argv[0]<<" DocName"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_LabelSequence aLabs;
   localLayerTool->GetLayerLabels(aLabs);
@@ -186,12 +186,12 @@ static Standard_Integer getLayerLabels (Draw_Interpretor& di, Standard_Integer a
 static Standard_Integer getOneLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName LayerLabel"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName LayerLabel\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -208,14 +208,14 @@ static Standard_Integer getOneLayer (Draw_Interpretor& di, Standard_Integer argc
 static Standard_Integer setLinkLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<4) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} LayerL [shapeInOneLayer(0/1)]"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} LayerL [shapeInOneLayer(0/1)]\n";
     return 1;
   }
   Standard_Boolean shapeInOneLayer = Standard_False;
   if ( (argc==5) && (Draw::Atoi(argv[4])==1) ) shapeInOneLayer = Standard_True;
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_Label aLabel, layerLabel;
   TDF_Tool::Label(Doc->GetData(), argv[3], layerLabel);
@@ -239,12 +239,12 @@ static Standard_Integer setLinkLayer (Draw_Interpretor& di, Standard_Integer arg
 static Standard_Integer getAllLayers (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=2) {
-    di<<"Use: "<<argv[0]<<" DocName"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_LabelSequence aLabs;
   localLayerTool->GetLayerLabels(aLabs);
@@ -270,12 +270,12 @@ static Standard_Integer getAllLayers (Draw_Interpretor& di, Standard_Integer arg
 static Standard_Integer unSetLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} stringL"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} stringL\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_Label aLabel;
   TCollection_ExtendedString aLayer = argv[3];
@@ -297,12 +297,12 @@ static Standard_Integer unSetLayer (Draw_Interpretor& di, Standard_Integer argc,
 static Standard_Integer unSetAllLayers (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label}"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label}\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_Label aLabel;
 
@@ -323,12 +323,12 @@ static Standard_Integer unSetAllLayers (Draw_Interpretor& di, Standard_Integer a
 static Standard_Integer removeAllLayers (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=2) {
-    di<<"Use: "<<argv[0]<<" DocName"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   
   TDF_LabelSequence aLabs;
@@ -349,12 +349,12 @@ static Standard_Integer removeAllLayers (Draw_Interpretor& di, Standard_Integer 
 static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<"DocName {layerLable|StringLayer} [isvisible(1/0)]"<<"\n";
+    di<<"Use: "<<argv[0]<<"DocName {layerLable|StringLayer} [isvisible(1/0)]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   Standard_Boolean isvisible = Standard_False;
   if ( (argc==4) && (Draw::Atoi(argv[3])==1) ) isvisible = Standard_True;
@@ -374,12 +374,12 @@ static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer ar
 static Standard_Integer isVisible (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName {layerLable|StringLayer}"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {layerLable|StringLayer}\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
 
   TDF_Label aLabel;

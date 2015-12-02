@@ -164,7 +164,7 @@ void  BinTools_LocationSet::Write(Standard_OStream& OS) const
 {
   
   Standard_Integer i, nbLoc = myMap.Extent();
-  OS << "Locations "<< nbLoc <<endl; 
+  OS << "Locations "<< nbLoc << "\n";
   try {
     OCC_CATCH_SIGNALS
     for (i = 1; i <= nbLoc; i++) {

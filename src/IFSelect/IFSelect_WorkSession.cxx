@@ -1436,7 +1436,7 @@ Handle(TColStd_HSequenceOfTransient) IFSelect_WorkSession::SelectionResult
   }
 //  if (ItemIdent(sel) == 0)
   if (sel.IsNull())
-    {  cout << " Selection : "<<" Unknown"<<endl;  return res;  } //cout<<Handle
+    {  cout << " Selection :  Unknown"<<endl;  return res;  } //cout<<Handle
   return EvalSelection (sel).Content();
 }
 
@@ -3162,7 +3162,7 @@ void IFSelect_WorkSession::DumpSelection
 {
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (ItemIdent(sel) == 0) {
-    sout << "Selection : "<<" Unknown"<<endl;  //sout<<Handle
+    sout << "Selection :  Unknown"<<endl;  //sout<<Handle
     return;
   }
   sout << "        **********  Selection";
@@ -3427,7 +3427,7 @@ void IFSelect_WorkSession::DumpModel
     S << "        ********  Loaded File : "<<theloaded.ToCString()<<Interface_MSG::Blanks(32-theloaded.Length())<<" ********"<<endl;
   else S << "        ********  No name for Loaded File"<<endl;
   if (level == 0) {
-    S<<"        ********  Short Dump of Header                           ********"<<"\n";
+    S<<"        ********  Short Dump of Header                           ********\n";
   S << "        *****************************************************************\n\n";
     themodel->DumpHeader(S);  S<<endl;
   }
@@ -3440,7 +3440,7 @@ void IFSelect_WorkSession::DumpModel
     if (!shar.IsShared(themodel->Value(i))) nbr ++;
   }
   S << "        *****************************************************************\n";
-  S << "        ********  Model : "<<nbent<<" Entities, of which "<<nbr<<" Root(s)"<<"\n";
+  S << "        ********  Model : "<<nbent<<" Entities, of which "<<nbr<<" Root(s)\n";
   S << "        *****************************************************************\n"<<endl;
 
   if (level <= 0) return;
@@ -3662,7 +3662,7 @@ void IFSelect_WorkSession::EvaluateSelection
   if (!IsLoaded())
     {  sout<< " ***  Data for Evaluation not available  ***"<<endl;  return;  }
   if (ItemIdent(sel) == 0)
-    {  sout << " Selection : "<<" Unknown"<<endl;  return;  }  //sout<<Handle
+    {  sout << " Selection :  Unknown"<<endl;  return;  }  //sout<<Handle
   Interface_EntityIterator iter = EvalSelection (sel);
   ListEntities (iter,1);
   sout << "****  (Unique) RootResult, Selection 	: "
@@ -3701,9 +3701,9 @@ void IFSelect_WorkSession::EvaluateDispatch
   if (!IsLoaded())
     {  sout<< " ***  Data for List not available  ***"<<endl;  return;  }
   if (theshareout->NbDispatches() < numdisp || numdisp <= 0)
-    { sout<<"Dispatch : "<<" Unknown"<<endl; return; } //sout<<Handle
+    { sout<<"Dispatch :  Unknown"<<endl; return; } //sout<<Handle
   if (disp->FinalSelection().IsNull())
-    { sout<<"Dispatch "<<" : No Final Selection"<<endl; return; }//sout<<Handle
+    { sout<<"Dispatch  : No Final Selection"<<endl; return; }//sout<<Handle
   sout<<" --- Dispatch Label : "<<disp->Label()<<endl; 
 
   IFSelect_ShareOutResult eval(disp,thegraph->Graph());

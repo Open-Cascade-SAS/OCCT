@@ -40,19 +40,19 @@ Standard_OStream& Vrml_Separator::Print(Standard_OStream& anOStream)
 {
   if ( myFlagPrint == 0 )
     {
-      anOStream  << "Separator {" << endl;
+      anOStream  << "Separator {\n";
       if ( myRenderCulling != Vrml_AUTO )
 	{
 	 if ( myRenderCulling == Vrml_ON )
-	    anOStream  << "    renderCulling" << "\tON" << endl;
+	    anOStream  << "    renderCulling\tON\n";
 	 else
-	    anOStream  << "    renderCulling" << "\tOFF" << endl;
+	    anOStream  << "    renderCulling\tOFF\n";
 	}
       myFlagPrint = 1;
     } //End of if
   else 
     {
-     anOStream  << '}' << endl;
+     anOStream  << "}\n";
      myFlagPrint = 0;
     }
  return anOStream;

@@ -35,12 +35,12 @@
 static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 6) {
-    di<<"Use: "<<argv[0]<<" Doc {Label|Shape} R G B [curve|surf]"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc {Label|Shape} R G B [curve|surf]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -63,12 +63,12 @@ static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer getColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" Doc Label"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc Label\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -84,12 +84,12 @@ static Standard_Integer getColor (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer getShapeColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
-    di<<"Use: "<<argv[0]<<" Doc Label [curve|surf]"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc Label [curve|surf]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -114,12 +114,12 @@ static Standard_Integer getShapeColor (Draw_Interpretor& di, Standard_Integer ar
 static Standard_Integer getAllColors (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=2) {
-    di<<"Use: "<<argv[0]<<" Doc "<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
@@ -141,12 +141,12 @@ static Standard_Integer getAllColors (Draw_Interpretor& di, Standard_Integer arg
 static Standard_Integer addColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=5) {
-    di<<"Use: "<<argv[0]<<" DocName R G B"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName R G B\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
@@ -163,12 +163,12 @@ static Standard_Integer addColor (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer removeColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName Label"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Label\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -181,12 +181,12 @@ static Standard_Integer removeColor (Draw_Interpretor& di, Standard_Integer argc
 static Standard_Integer findColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=5) {
-    di<<"Use: "<<argv[0]<<" DocName R G B"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName R G B\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   
@@ -201,12 +201,12 @@ static Standard_Integer findColor (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer unsetColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} ColorType"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} ColorType\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -224,12 +224,12 @@ static Standard_Integer unsetColor (Draw_Interpretor& di, Standard_Integer argc,
 static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<"DocName {Lable|Shape} [isvisible(1/0)]"<<"\n";
+    di<<"Use: "<<argv[0]<<"DocName {Lable|Shape} [isvisible(1/0)]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   Standard_Boolean isvisible = Standard_False;
   if ( (argc==4) && (Draw::Atoi(argv[3])==1) ) isvisible = Standard_True;
@@ -244,7 +244,7 @@ static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer ar
     }
   }
   if ( aLabel.IsNull() ) {
-    di << " cannot find indicated label in document" << "\n";
+    di << " cannot find indicated label in document\n";
     return 1;
   }
   localTool->SetVisibility( aLabel, isvisible );
@@ -254,12 +254,12 @@ static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer ar
 static Standard_Integer getVisibility (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<"DocName {Lable|Shape}"<<"\n";
+    di<<"Use: "<<argv[0]<<"DocName {Lable|Shape}\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -271,7 +271,7 @@ static Standard_Integer getVisibility (Draw_Interpretor& di, Standard_Integer ar
     }
   }
   if ( aLabel.IsNull() ) {
-    di << " cannot find indicated label in document" << "\n";
+    di << " cannot find indicated label in document\n";
     return 1;
   }
   if (localTool->IsVisible( aLabel) ) di << 1;
@@ -282,12 +282,12 @@ static Standard_Integer getVisibility (Draw_Interpretor& di, Standard_Integer ar
 static Standard_Integer getStyledVisibility (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<"DocName Shape"<<"\n";
+    di<<"Use: "<<argv[0]<<"DocName Shape\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
@@ -299,12 +299,12 @@ static Standard_Integer getStyledVisibility (Draw_Interpretor& di, Standard_Inte
 static Standard_Integer getStyledcolor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<" Doc shape colortype(s/c)"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc shape colortype(s/c)\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
 
@@ -329,12 +329,12 @@ static Standard_Integer getStyledcolor (Draw_Interpretor& di, Standard_Integer a
 static Standard_Integer setStyledcolor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<6) {
-    di<<"Use: "<<argv[0]<<" Doc shape R G B type(s/c)"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc shape R G B type(s/c)\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
 
@@ -349,7 +349,7 @@ static Standard_Integer setStyledcolor (Draw_Interpretor& di, Standard_Integer a
   Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   if (!localTool->SetInstanceColor( aShape, type, col) ) 
   {
-    di << "cannot set color for the indicated component" << "\n";
+    di << "cannot set color for the indicated component\n";
     return 1;
   }
   return 0;

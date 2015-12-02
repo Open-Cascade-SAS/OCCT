@@ -78,11 +78,11 @@ void IGESData_IGESModel::DumpHeader
   Standard_Integer ns = thestart->Length();
   S<<"****    Dump of IGES Model , Start and Global Sections   ****"<<endl;
   if (ns > 0) {
-    S << "****    Start Section : "<<ns<<" Line(s)   ****"<<"\n";
+    S << "****    Start Section : "<<ns<<" Line(s)   ****\n";
     for (Standard_Integer i = 1; i <= ns; i ++)
       S<<"["<<(i<10 ? " ": "")<<i<<"]:"<<thestart->Value(i)->ToCString()<<endl;
   }
-  S << "\n"<<"****    Global Section    ****"<<"\n";
+  S << "\n****    Global Section    ****\n";
   char sep = theheader.Separator();
   if (sep == ',')  S << "[ 1]      Default Separator : " << sep;
   else             S << "[ 1]  Non Default Separator : " << sep;
@@ -128,7 +128,7 @@ void IGESData_IGESModel::DumpHeader
   S << "[19]  Resolution            : " << theheader.Resolution()<<"\n";
   if (theheader.HasMaxCoord())
     S<<"[20]  Maximum Coord         : " << theheader.MaxCoord() << "\n\n";
-  else S<<"[20]  Maximum Coord           not defined"<<"\n\n";
+  else S<<"[20]  Maximum Coord           not defined\n\n";
 
   str = theheader.AuthorName();
   if (!str.IsNull()) S<<"[21]  Author                : "<<str->ToCString()<<"\n";
@@ -139,7 +139,7 @@ void IGESData_IGESModel::DumpHeader
     << IGESData_BasicEditor::IGESVersionName(num);
 
   num = theheader.DraftingStandard();
-  S << "\n"<<"[24]  Drafting Standard     : " << num;
+  S << "\n[24]  Drafting Standard     : " << num;
   if (num > 0) S<< "   -> Name : " << IGESData_BasicEditor::DraftingName(num);
   S<<endl;
 

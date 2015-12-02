@@ -156,7 +156,7 @@ static Standard_Integer Getentry (Draw_Interpretor& di, Standard_Integer n, cons
 
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull()) {
-    di <<"Noone shape selected"<<"\n";
+    di <<"Noone shape selected\n";
     di << 0;
     return 0;
   }
@@ -168,7 +168,7 @@ static Standard_Integer Getentry (Draw_Interpretor& di, Standard_Integer n, cons
   else  {
     di <<Name.ToCString();
     if (Status == 2) {
-      di <<"Several shapes have the same name"<<"\n";
+      di <<"Several shapes have the same name\n";
     }
   }
   return 0;
@@ -188,7 +188,7 @@ static Standard_Integer NamedShape(Draw_Interpretor& di, Standard_Integer n, con
   if (!DDF::GetDF(a[1],ND)) return 1;
   TopoDS_Shape  SS = DBRep::Get(a[2]);
   if (SS.IsNull()) {
-    di <<"Noone shape selected"<<"\n";
+    di <<"Noone shape selected\n";
     di << 0;
     return 0;
   }
@@ -259,7 +259,7 @@ static Standard_Integer Initialshape (Draw_Interpretor& di, Standard_Integer n, 
     TDF_Tool::Entry(itL.Value(),entry);
     di <<" , "<< entry.ToCString();    
   }
-  di <<"."<<"\n";
+  di <<".\n";
   return 0;
 }
 
@@ -286,7 +286,7 @@ static Standard_Integer Exploreshape (Draw_Interpretor& di, Standard_Integer n, 
   DDF::FindLabel(ND,a[2],Lab);
   Handle(TNaming_NamedShape) NS;
   if (!Lab.FindAttribute(TNaming_NamedShape::GetID(),NS)) { 
-    di <<"No shape"<<"\n";
+    di <<"No shape\n";
     return 0;
   }
 
@@ -310,7 +310,7 @@ static Standard_Integer Exploreshape (Draw_Interpretor& di, Standard_Integer n, 
   }
   di <<"\n";
   if (NbShapes == 0) {
-    di <<"No shape"<<"\n";
+    di <<"No shape\n";
   }
 
   return 0;
@@ -340,7 +340,7 @@ static Standard_Integer Generatedshape (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << "GetShape : Error" << "\n";
+  di << "GetShape : Error\n";
   return 1;
 }
 
@@ -366,7 +366,7 @@ static Standard_Integer Getshape (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << "DDataStd_GetShape : Error" << "\n";
+  di << "DDataStd_GetShape : Error\n";
   return 1;
 }
 
@@ -417,7 +417,7 @@ static Standard_Integer Getcreationentry (Draw_Interpretor& di, Standard_Integer
   TopoDS_Shape  SS = DBRep::Get(a[2]);
 
   if (SS.IsNull()) {
-    di <<"Noone shape selected"<<"\n";
+    di <<"Noone shape selected\n";
     di << 0;
     return 0;
   }
@@ -438,7 +438,7 @@ static Standard_Integer Getcreationentry (Draw_Interpretor& di, Standard_Integer
   else  {
     di <<Name.ToCString();
     if (Status == 2) {
-      di <<"Several shapes have the same name"<<"\n";
+      di <<"Several shapes have the same name\n";
     }
   }
   return 0;

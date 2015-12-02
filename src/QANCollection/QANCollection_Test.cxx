@@ -592,13 +592,13 @@ static void TestIndexedDataMap  (QANCollection_IDMapFunc& theM)
 Standard_Integer CheckArguments1(Draw_Interpretor& di, Standard_Integer argc, const char ** argv, Standard_Integer& Lower, Standard_Integer& Upper)
 {
   if ( argc != 3) {
-    di << "Usage : " << argv[0] << " Lower Upper" << "\n";
+    di << "Usage : " << argv[0] << " Lower Upper\n";
     return 1;
   }
   Lower = Draw::Atoi(argv[1]);
   Upper = Draw::Atoi(argv[2]);
   if ( Lower > Upper ) {
-    di << "Lower > Upper" << "\n";
+    di << "Lower > Upper\n";
     return 1;
   }
   return 0;
@@ -611,7 +611,7 @@ Standard_Integer CheckArguments1(Draw_Interpretor& di, Standard_Integer argc, co
 Standard_Integer CheckArguments2(Draw_Interpretor& di, Standard_Integer argc, const char ** argv, Standard_Integer& LowerRow, Standard_Integer& UpperRow, Standard_Integer& LowerCol, Standard_Integer& UpperCol)
 {
   if ( argc != 5) {
-    di << "Usage : " << argv[0] << " LowerRow UpperRow LowerCol UpperCol" << "\n";
+    di << "Usage : " << argv[0] << " LowerRow UpperRow LowerCol UpperCol\n";
     return 1;
   }
   LowerRow = Draw::Atoi(argv[1]);
@@ -619,11 +619,11 @@ Standard_Integer CheckArguments2(Draw_Interpretor& di, Standard_Integer argc, co
   LowerCol = Draw::Atoi(argv[3]);
   UpperCol = Draw::Atoi(argv[4]);
   if ( LowerRow > UpperRow ) {
-    di << "LowerRow > UpperRow" << "\n";
+    di << "LowerRow > UpperRow\n";
     return 1;
   }
   if ( LowerCol > UpperCol ) {
-    di << "LowerCol UpperCol> " << "\n";
+    di << "LowerCol UpperCol> \n";
     return 1;
   }
   return 0;

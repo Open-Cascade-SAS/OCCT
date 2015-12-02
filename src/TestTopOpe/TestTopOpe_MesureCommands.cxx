@@ -64,17 +64,17 @@ static Standard_Integer SetName(const Standard_Character *C, Draw_Interpretor& d
 static void Mes_help(Draw_Interpretor& di)
 {
   di<<"\n";
-  di<<"mesure M : create/reset measurement M "<<"\n";
-  di<<"mesure reset : reinitialize all measurements"<<"\n";
-  di<<"mesure M n t : add data [n t] to M"<<"\n";
-  di<<"mesure range M : sort indexes 'min max' of M"<<"\n";
-  di<<"mesure minmax M : take 'xmin ymin xmax ymax' from M"<<"\n";
-  di<<"mesure xy <i> M : take 'x y' = M(i)"<<"\n";
-  di<<"seem M : visualize M"<<"\n";
-  di<<"seemx M fx : visualize M with factor in x"<<"\n";
-  di<<"seemx M fy : visualize M with factor in y"<<"\n";
-  di<<"seemxy M fx fy : visualize M with factor in x,y"<<"\n";
-  di<<""<<"\n";
+  di<<"mesure M : create/reset measurement M \n";
+  di<<"mesure reset : reinitialize all measurements\n";
+  di<<"mesure M n t : add data [n t] to M\n";
+  di<<"mesure range M : sort indexes 'min max' of M\n";
+  di<<"mesure minmax M : take 'xmin ymin xmax ymax' from M\n";
+  di<<"mesure xy <i> M : take 'x y' = M(i)\n";
+  di<<"seem M : visualize M\n";
+  di<<"seemx M fx : visualize M with factor in x\n";
+  di<<"seemx M fy : visualize M with factor in y\n";
+  di<<"seemxy M fx fy : visualize M with factor in x,y\n";
+  di<<"\n";
 }
 
 // ----------------------------------------------------------------------

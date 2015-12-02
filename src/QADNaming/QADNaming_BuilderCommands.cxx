@@ -37,7 +37,7 @@ static Standard_Integer BuildNamedShape (Draw_Interpretor& di,
       aShape1 = DBRep::Get (arg[a]);
       if (anInc == 2) {
 	if (a == nb - 1) {
-	  di<<"For this type of evolution number of shapes must be even"<<"\n";
+	  di<<"For this type of evolution number of shapes must be even\n";
 	  return 1;
 	}
 	aShape2 = DBRep::Get(arg[a+1]);
@@ -64,7 +64,7 @@ static Standard_Integer BuildNamedShape (Draw_Interpretor& di,
 	aBuilder.Select(aShape1,aShape2);
 	break;
       default:
-	di<<"Unknown evolution type"<<"\n";
+	di<<"Unknown evolution type\n";
 	return 1;
       }
     }
@@ -73,7 +73,7 @@ static Standard_Integer BuildNamedShape (Draw_Interpretor& di,
 //       OnlyModif = Draw::Atoi(arg[3]);
 //     }
   } else {
-    di<<"Usage: BuildName df entry evolution(P[RIMITIVE] G[ENERATED] M[ODIFY] D[ELETE] R[EPLACE] S[ELECTED]) shape1 [shape2 ...]"<<"\n";
+    di<<"Usage: BuildName df entry evolution(P[RIMITIVE] G[ENERATED] M[ODIFY] D[ELETE] R[EPLACE] S[ELECTED]) shape1 [shape2 ...]\n";
     return 1;
   }
   return 0;

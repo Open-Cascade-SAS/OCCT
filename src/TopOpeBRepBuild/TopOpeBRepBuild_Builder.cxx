@@ -316,7 +316,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::ToSplit(const TopoDS_Shape& S,const To
 #ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if (tSPS) { 
-    cout<<"tosplit "<<tosplit<<" : "<<"!issplit "<<(!issplit);
+    cout<<"tosplit "<<tosplit<<" : !issplit "<<(!issplit);
     cout<<" && (hasgeom || hassame) ("<<hasgeom<<" || "<<hassame<<")"<<endl;
   }
 #endif

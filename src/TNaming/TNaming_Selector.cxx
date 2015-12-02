@@ -374,7 +374,7 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
   if(!Selection.IsSame(aSelection) && Selection.ShapeType() != TopAbs_COMPOUND) {
     TCollection_AsciiString entry;
     TDF_Tool::Entry(NS->Label(), entry);
-    cout << "Selection is Not Same (NSLabel = " <<entry<<"): " << "TShape1 = " << 
+    cout << "Selection is Not Same (NSLabel = " <<entry<<"): TShape1 = " << 
       Selection.TShape()->This() << " TShape2 = " <<aSelection.TShape()->This() <<endl;
   }
 #endif

@@ -88,26 +88,26 @@ gp_Vec Vrml_DirectionalLight::Direction() const
 
 Standard_OStream& Vrml_DirectionalLight::Print(Standard_OStream& anOStream) const 
 {
- anOStream  << "DirectionalLight {" << endl;
+ anOStream  << "DirectionalLight {\n";
 
  if ( myOnOff != Standard_True )
    {
-    anOStream  << "    on" << "\t\t" << "FALSE" << endl;
-//    anOStream << myOnOff << endl;
+    anOStream  << "    on\t\tFALSE\n";
+//    anOStream << myOnOff << "\n";
    }
 
  if ( Abs(myIntensity - 1) > 0.0001 )
    {
-    anOStream  << "    intensity" << '\t';
-    anOStream << myIntensity << endl;
+    anOStream  << "    intensity\t";
+    anOStream << myIntensity << "\n";
    }
 
  if ( Abs(myColor.Red() - 1) > 0.0001 || 
       Abs(myColor.Green() - 1) > 0.0001 || 
       Abs(myColor.Blue() - 1) > 0.0001 )
    {
-    anOStream  << "    color" << '\t';
-    anOStream << myColor.Red() << ' ' << myColor.Green() << ' ' << myColor.Blue() << endl;
+    anOStream  << "    color\t";
+    anOStream << myColor.Red() << " " << myColor.Green() << " " << myColor.Blue() << "\n";
    }
 
  if ( Abs(myDirection.X() - 0) > 0.0001 || 
@@ -115,9 +115,9 @@ Standard_OStream& Vrml_DirectionalLight::Print(Standard_OStream& anOStream) cons
      Abs(myDirection.Z() + 1) > 0.0001 ) 
    {
     anOStream  << "    direction" << '\t';
-    anOStream << myDirection.X() << ' ' << myDirection.Y() << ' ' << myDirection.Z() << endl;
+    anOStream << myDirection.X() << " " << myDirection.Y() << " " << myDirection.Z() << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

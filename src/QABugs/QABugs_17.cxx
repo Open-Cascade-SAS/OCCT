@@ -128,7 +128,7 @@ static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*
 static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
 {
   if (argc != 4 && argc != 5 && argc != 6 && argc != 7) {
-    di << "Usage : " << argv[0] << "result_shape name_of_circle name_of_curve [ par1 [ tol ] ]" << "\n";
+    di << "Usage : " << argv[0] << "result_shape name_of_circle name_of_curve [ par1 [ tol ] ]\n";
     return 1;
   }
 
@@ -143,7 +143,7 @@ static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,co
   Handle(Geom2d_Curve)  aCur2d1 = DrawTrSurf::GetCurve2d(argv[2]);
   Handle(Geom2d_Curve)  aCur2d2 = DrawTrSurf::GetCurve2d(argv[3]);
   if (aCur2d1.IsNull() || aCur2d2.IsNull()) {
-    di << "Faulty : not curves" << "\n";
+    di << "Faulty : not curves\n";
     return 1;
   }
   Standard_Boolean c1IsCircle = Standard_False;
@@ -162,7 +162,7 @@ static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,co
       Handle(Geom2d_Line) glin = new Geom2d_Line(lin); 
       DrawTrSurf::Set(argv[1], glin);
     } else {
-      di << "Faulty : tangent line is not done." << "\n";
+      di << "Faulty : tangent line is not done.\n";
     }
   }
   else {
@@ -176,7 +176,7 @@ static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,co
       Handle(Geom2d_Line) glin = new Geom2d_Line(lin); 
       DrawTrSurf::Set(argv[1], glin);
     } else {
-      di << "Faulty : tangent line is not done." << "\n";
+      di << "Faulty : tangent line is not done.\n";
     }
   }   
   return 0;
@@ -186,7 +186,7 @@ static Standard_Integer BUC60970 (Draw_Interpretor& di, Standard_Integer argc, c
 {
   if(argc!=3)
   {
-    di << "Usage : " << argv[0] << " shape result" <<"\n";
+    di << "Usage : " << argv[0] << " shape result\n";
     return 1;
   }
 
@@ -290,7 +290,7 @@ static Standard_Integer  BUC60818(Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc > 1) {
-    di<<"Function don't has parameters"<<"\n";
+    di<<"Function don't has parameters\n";
     return 1;
   }
 
@@ -535,7 +535,7 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
     return -1;
   }
   if ( argc != 3) {
-    di << "ERROR : Usage : " << argv[0] << " hlr=0/1 setsurfecedetail=0/1; set perspecrive view" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " hlr=0/1 setsurfecedetail=0/1; set perspecrive view\n";
     return 1;
   }
 
@@ -753,7 +753,7 @@ static Standard_Integer  OCC189 (Draw_Interpretor& di, Standard_Integer /*argc*/
 static Standard_Integer OCC566(Draw_Interpretor& di,Standard_Integer n,const char ** a)
 {
   if (n < 2) {
-    di<<"Usage: " << a[0] << " shape [ xmin ymin zmin xmax ymax zmax]"<<"\n";
+    di<<"Usage: " << a[0] << " shape [ xmin ymin zmin xmax ymax zmax]\n";
     return 1;
   }
   TopoDS_Shape S = DBRep::Get(a[1]);
@@ -782,7 +782,7 @@ static Standard_Integer OCC566(Draw_Interpretor& di,Standard_Integer n,const cha
 static Standard_Integer OCC570 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
 {
   if (argc < 2) {
-    di<<"Usage: " << argv[0] << " result"<<"\n";
+    di<<"Usage: " << argv[0] << " result\n";
     return 1;
   }
 
@@ -829,7 +829,7 @@ static Standard_Integer OCC570 (Draw_Interpretor& di, Standard_Integer argc,cons
     }
     catch(Standard_Failure)
     {
-      di << argv[0] << ": Exception in fillet"<<"\n";
+      di << argv[0] << ": Exception in fillet\n";
       return 2;
     }
   }
@@ -889,7 +889,7 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di,
                                   const char ** a)
 {
   if(Rake == 0){
-    di << "MakeFillet non initialise"<<"\n";
+    di << "MakeFillet non initialise\n";
     return 1 ;
   }
   if(narg%2 != 0 || narg < 4) return 1;
@@ -906,7 +906,7 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di,
   const Standard_Boolean aLawMode = !strcmp(a[0],"OCC570evollaw");
   if (aLawMode)
   {
-    di<<"INFO: Using law to define variable fillet"<<"\n";
+    di<<"INFO: Using law to define variable fillet\n";
     Handle(Law_Interpol) law = new Law_Interpol;
     law->Set(uandr);
     Rake->Add(law,E);
@@ -922,7 +922,7 @@ static Standard_Integer BUILDEVOL(Draw_Interpretor& di,
                                   const char **)
 {
   if(Rake == 0){
-    di << "MakeFillet non initialise"<<"\n";
+    di << "MakeFillet non initialise\n";
     return 1 ;
   }
   Rake->Build();
@@ -948,13 +948,13 @@ static Standard_Integer OCC606 ( Draw_Interpretor& di, Standard_Integer n, const
 {
   if (n != 3 && n != 4)
   {
-    di << "Usage : " << a[0] << " result shape [-t]" << "\n";
+    di << "Usage : " << a[0] << " result shape [-t]\n";
     return 0;
   }
 
   Standard_Boolean TrimMode = (n == 4);
-  if (TrimMode) di<<"INFO: Using trimmed curves..."<<"\n";
-  else di<<"INFO: Using non trimmed curves..."<<"\n";
+  if (TrimMode) di<<"INFO: Using trimmed curves...\n";
+  else di<<"INFO: Using non trimmed curves...\n";
 
   TopoDS_Shape S = DBRep::Get(a[2]);
 
@@ -994,7 +994,7 @@ static Standard_Integer OCC606 ( Draw_Interpretor& di, Standard_Integer n, const
     }
     catch(Standard_Failure)
     {
-      di<<"ERROR: Exception in GeomFill_NSections"<<"\n";
+      di<<"ERROR: Exception in GeomFill_NSections\n";
     }
   }
 
@@ -1010,7 +1010,7 @@ static Standard_Integer OCC813 (Draw_Interpretor& di, Standard_Integer argc,cons
 {
   if (argc < 3)
   {
-    di << "Usage : " << argv[0] << " U V" << "\n";
+    di << "Usage : " << argv[0] << " U V\n";
     return 1;
   }
 
@@ -1149,7 +1149,7 @@ static Standard_Integer OCC884 (Draw_Interpretor& di, Standard_Integer argc, con
 {
   if (argc < 3 || argc > 5)
   {
-    di << "Usage : " << argv[0] << " result shape [toler [maxtoler]]" << "\n";
+    di << "Usage : " << argv[0] << " result shape [toler [maxtoler]]\n";
     return 1;
   }
 
@@ -1158,7 +1158,7 @@ static Standard_Integer OCC884 (Draw_Interpretor& di, Standard_Integer argc, con
   TopExp_Explorer exp(shape, TopAbs_EDGE);
   if (!exp.More())
   {
-    di<<"Error: no edge found"<<"\n";
+    di<<"Error: no edge found\n";
     return 1;
   }
 
@@ -1279,7 +1279,7 @@ static Standard_Integer OCC1188 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc < 2 || argc > 3)
   {
-    di << "Usage : " << argv[0] << " imagefile [filltype] : Load image as background" << "\n";
+    di << "Usage : " << argv[0] << " imagefile [filltype] : Load image as background\n";
     return 1;
   }
 
@@ -1301,7 +1301,7 @@ static Standard_Integer OCC1188 (Draw_Interpretor& di, Standard_Integer argc, co
     else
     {
       di << "Wrong fill type : " << szType << "\n";
-      di << "Must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+      di << "Must be one of CENTERED, TILED, STRETCH, NONE\n";
       return 1;
     }
   }
@@ -1323,7 +1323,7 @@ static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, 
 {
   if (argc != 2)
   {
-    di << "Usage : " << argv[0] << " shape" << "\n";
+    di << "Usage : " << argv[0] << " shape\n";
     return 1;
   }
 
@@ -1381,7 +1381,7 @@ static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, 
 {
   if (argc != 2)
   {
-    di << "Usage : " << argv[0] << " shape" << "\n";
+    di << "Usage : " << argv[0] << " shape\n";
     return 1;
   }
 
@@ -1433,7 +1433,7 @@ static Standard_Integer OCCN1 (Draw_Interpretor& di, Standard_Integer argc, cons
 {
   if (argc != 4)
   {
-    di << "Usage : " << argv[0] << " angle fuse(1 for boss / 0 for slot) length" << "\n";
+    di << "Usage : " << argv[0] << " angle fuse(1 for boss / 0 for slot) length\n";
     return 1;
   }
 
@@ -1494,7 +1494,7 @@ static Standard_Integer OCCN1 (Draw_Interpretor& di, Standard_Integer argc, cons
 static Standard_Integer OCCN2 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc > 2) {
-    di << "Usage : " << argv[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -1525,19 +1525,19 @@ static Standard_Integer OCCN2 (Draw_Interpretor& di, Standard_Integer argc, cons
 
   TopoDS_Shape shape;
   if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Section section(cylinder_sh, sphere_sh)" <<"\n";
+    di << "BRepAlgoAPI_Section section(cylinder_sh, sphere_sh)\n";
     BRepAlgoAPI_Section section(cylinder_sh, sphere_sh);
     section.Build();
     if(!section.IsDone()){
-      di << "Error performing intersection: not done." << "\n";
+      di << "Error performing intersection: not done.\n";
     }
     shape = section.Shape();
   } else {
-    di << "BRepAlgo_Section section(cylinder_sh, sphere_sh)" <<"\n";
+    di << "BRepAlgo_Section section(cylinder_sh, sphere_sh)\n";
     BRepAlgo_Section section(cylinder_sh, sphere_sh);
     section.Build();
     if(!section.IsDone()){
-      di << "Error performing intersection: not done." << "\n";
+      di << "Error performing intersection: not done.\n";
     }
     shape = section.Shape();
   }
@@ -1561,7 +1561,7 @@ static Standard_Integer OCC2569 (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
   if(argc != 3) {
-    di << "Usage : " << argv[0] << " nbpoles result" << "\n";
+    di << "Usage : " << argv[0] << " nbpoles result\n";
     return 1;
   }
 
@@ -1590,7 +1590,7 @@ static Standard_Integer OCC2569 (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer OCC1642 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 10) {
-    di<<"Usage: " << argv[0] << " FinalWare FinalFace InitWare InitFace shape FixReorder FixDegenerated FixConnected FixSelfIntersection"<<"\n";
+    di<<"Usage: " << argv[0] << " FinalWare FinalFace InitWare InitFace shape FixReorder FixDegenerated FixConnected FixSelfIntersection\n";
     return 1;
   }
 

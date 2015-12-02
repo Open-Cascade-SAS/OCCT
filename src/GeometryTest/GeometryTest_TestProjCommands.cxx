@@ -321,13 +321,13 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
   //
   aC=DrawTrSurf::GetCurve(a[1]);
   if (aC.IsNull()) {
-    di << "Error: " << a[1] << " is not a curve!" << "\n";
+    di << "Error: " << a[1] << " is not a curve!\n";
     return 0;
   }
   //
   aS=DrawTrSurf::GetSurface(a[2]);
   if (aS.IsNull()) {
-    di << "Error: " << a[2] << " is not a surface!" << "\n";
+    di << "Error: " << a[2] << " is not a surface!\n";
     return 0;
   }
   //
@@ -354,7 +354,7 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
     aPPS.Init(aP, aS, aTol);
     bRet=aPPS.IsDone();
     if (!bRet) {
-      di << "Error: GeomAPI_ProjectPointOnSurf failed" << "\n";
+      di << "Error: GeomAPI_ProjectPointOnSurf failed\n";
       return 0;
     }
     //

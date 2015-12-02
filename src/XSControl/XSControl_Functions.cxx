@@ -443,16 +443,16 @@ static IFSelect_ReturnStatus XSControl_tpstat(const Handle(IFSelect_SessionPilot
   if (mod1 < -1) sout<<"Unknown Mode"<<endl;
   if (mod1 < 0) {
     sout<<"Modes available :\n"
-      <<"g : general    c : checks (count)  C (list)"<<"\n"
-      <<"               f : fails  (count)  F (list)"<<"\n"
-      <<"  n : numbers of transferred entities (on TRANSFER ROOTS)"<<"\n"
-      <<"  s : their status (type entity-result , presence checks)"<<"\n"
-      <<"  b : detail of binders"<<"\n"
-      <<"  t : count per entity type    r : per type/status result"<<"\n"
-      <<"  l : count per couple  type entity/result"<<"\n"
-      <<"  L : list  per couple  type entity/result"<<"\n"
-      <<"  *n  *s  *b  *t  *r  *l  *L : idem on ALL recorded items"<<"\n"
-      <<"  ?n  ?s  ?b  ?t ... : idem on abnormal items"<<"\n"
+      <<"g : general    c : checks (count)  C (list)\n"
+      <<"               f : fails  (count)  F (list)\n"
+      <<"  n : numbers of transferred entities (on TRANSFER ROOTS)\n"
+      <<"  s : their status (type entity-result , presence checks)\n"
+      <<"  b : detail of binders\n"
+      <<"  t : count per entity type    r : per type/status result\n"
+      <<"  l : count per couple  type entity/result\n"
+      <<"  L : list  per couple  type entity/result\n"
+      <<"  *n  *s  *b  *t  *r  *l  *L : idem on ALL recorded items\n"
+      <<"  ?n  ?s  ?b  ?t ... : idem on abnormal items\n"
       <<"  n select : n applied on a selection   idem for  s b t r l"<<endl;
     if (mod1 < -1) return IFSelect_RetError;
     return IFSelect_RetVoid;

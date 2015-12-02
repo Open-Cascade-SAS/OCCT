@@ -543,7 +543,7 @@ void  BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S,
         OS << " on triangulation " << myTriangulations.FindIndex(CR->Triangulation());
         if (!CR->Location().IsIdentity())
           OS << " location "<<Locations().Index(CR->Location());
-        OS << endl;
+        OS << "\n";
       }
       itrc.Next();
     }
@@ -1240,7 +1240,7 @@ void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&      OS,
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "Polygons On Triangulation", 0, nbpOntri, 1);
   if (Compact)
-    OS << "PolygonOnTriangulations " << nbpOntri << endl;
+    OS << "PolygonOnTriangulations " << nbpOntri << "\n";
   else {
     OS << " -------\n";
     OS <<"Dump of " << nbpOntri << " PolygonOnTriangulations\n";
@@ -1271,7 +1271,7 @@ void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&      OS,
     
     if (!Param.IsNull()) {
       if (!Compact) {
-        OS << "  "<< "Parameters :";
+        OS << "  Parameters :";
       }
       else OS << "1 " ;
       if (!Compact) OS <<"  ";
@@ -1360,7 +1360,7 @@ void BRepTools_ShapeSet::WritePolygon3D(Standard_OStream&      OS,
   Message_ProgressSentry PS(progress, "3D Poligons", 0, nbpol, 1);
 
   if (Compact)
-    OS << "Polygon3D " << nbpol << endl;
+    OS << "Polygon3D " << nbpol << "\n";
   else {
     OS << " -------\n";
     OS <<"Dump of " << nbpol << " Polygon3Ds\n";
@@ -1484,7 +1484,7 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
   Message_ProgressSentry PS(progress, "Triangulations", 0, nbtri, 1);
 
   if (Compact)
-    OS << "Triangulations " << nbtri << endl;
+    OS << "Triangulations " << nbtri << "\n";
   else {
     OS << " -------\n";
     OS <<"Dump of " << nbtri << " Triangulations\n";

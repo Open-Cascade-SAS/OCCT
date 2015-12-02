@@ -106,7 +106,7 @@
 //=======================================================================
 static Standard_Integer newDoc (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) {di<<"Give document name"<<"\n";return 1;}
+  if (argc < 2) {di<<"Give document name\n";return 1;}
 
   Handle(TDocStd_Document) D;
   Handle(DDocStd_DrawDocument) DD;
@@ -119,10 +119,10 @@ static Standard_Integer newDoc (Draw_Interpretor& di, Standard_Integer argc, con
     DD = new DDocStd_DrawDocument(D);
     TDataStd_Name::Set(D->GetData()->Root(),argv[1]);
     Draw::Set(argv[1],DD);
-    di << "document " << argv[1] << " created" << "\n";
+    di << "document " << argv[1] << " created\n";
     //DDocStd::ReturnLabel(di,D->Main());
   }
-  else di << argv[1] << " is already a document" << "\n";
+  else di << argv[1] << " is already a document\n";
 
   return 0;
 }
@@ -152,7 +152,7 @@ static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, co
     return 0;
   }
   if (!D->IsSaved()) {
-    di << "this document has never been saved" << "\n";
+    di << "this document has never been saved\n";
     return 1;
   }
   A->Save(D);
@@ -174,7 +174,7 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
 
   if ( argc != 3 )
   {
-    di << "invalid number of arguments. Usage:\t XOpen filename docname" << "\n";
+    di << "invalid number of arguments. Usage:\t XOpen filename docname\n";
     return 1;
   }
 
@@ -183,13 +183,13 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
 
   if ( DDocStd::GetDocument(DocName, D, Standard_False) )
   {
-    di << "document with name " << DocName << " already exists" << "\n";
+    di << "document with name " << DocName << " already exists\n";
     return 1;
   }
 
   if ( A->Open(Filename, D) != PCDM_RS_OK )
   {
-    di << "cannot open XDE document" << "\n";
+    di << "cannot open XDE document\n";
     return 1;
   }
 
@@ -197,7 +197,7 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
   TDataStd_Name::Set(D->GetData()->Root(), DocName);
   Draw::Set(DocName, DD);
 
-  di << "document " << DocName << " opened" << "\n";
+  di << "document " << DocName << " opened\n";
 
   return 0;
 }
@@ -209,12 +209,12 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer dump (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<2) {
-    di<<"Use: "<<argv[0]<<" Doc [int deep (0/1)]"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc [int deep (0/1)]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   Standard_Boolean deep = Standard_False;
@@ -304,7 +304,7 @@ static void StatAssembly(const TDF_Label L,
         if(i==1)
           di<<"\""<<Entry2.ToCString()<<"\"";
         else
-          di<<" "<<"\""<<Entry2.ToCString()<<"\"";
+          di<<" \""<<Entry2.ToCString()<<"\"";
       }
       di<<") ";
     }
@@ -331,12 +331,12 @@ static void StatAssembly(const TDF_Label L,
 static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<2) {
-    di<<"Use: "<<argv[0]<<" Doc "<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   Standard_Boolean PrintStructMode = (argc==3);
   Handle(XCAFDoc_ShapeTool) aTool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
@@ -344,7 +344,7 @@ static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, co
   TDF_LabelSequence SeqLabels;
   aTool->GetShapes(SeqLabels);
   if(SeqLabels.Length()<=0) return 0;
-  if(PrintStructMode) di<<"\n"<<"Structure of shapes in the document:"<<"\n";
+  if(PrintStructMode) di<<"\nStructure of shapes in the document:\n";
   Standard_Integer level=0;
   Standard_Integer NbCentroidProp=0, NbVolumeProp=0, NbAreaProp=0;
   Standard_Integer NbShapesWithName=0, NbShapesWithColor=0, NbShapesWithLayer=0;
@@ -357,7 +357,7 @@ static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, co
                  NbShapesWithLayer, Doc, PrintStructMode, di);
   }
   Standard_Integer NbLabelsShape = 0;
-  di<<"\n"<<"Statistis of shapes in the document:"<<"\n";
+  di<<"\nStatistis of shapes in the document:\n";
   for(i=0; i<=20; i++) {
     if(HAI->Value(i)==0) break;
     //di<<"level N "<<i<<" :  number of labels with shape = "<<HAI->Value(i)<<"\n";
@@ -369,7 +369,7 @@ static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, co
   di<<"Number of labels with color link = "<<NbShapesWithColor<<"\n";
   di<<"Number of labels with layer link = "<<NbShapesWithLayer<<"\n";
 
-  di<<"\n"<<"Statistis of Props in the document:"<<"\n";
+  di<<"\nStatistis of Props in the document:\n";
   di<<"Number of Centroid Props = "<<NbCentroidProp<<"\n";
   di<<"Number of Volume Props = "<<NbVolumeProp<<"\n";
   di<<"Number of Area Props = "<<NbAreaProp<<"\n";
@@ -377,7 +377,7 @@ static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, co
   Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   TDF_LabelSequence CLabels;
   CTool->GetColors(CLabels);
-  di<<"\n"<<"Number of colors = "<<CLabels.Length()<<"\n";
+  di<<"\nNumber of colors = "<<CLabels.Length()<<"\n";
   if(CLabels.Length()>0) {
     for(i=1; i<=CLabels.Length(); i++) {
       TDF_Label aLabel = CLabels.Value(i);
@@ -391,7 +391,7 @@ static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, co
   Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   TDF_LabelSequence LLabels;
   LTool->GetLayerLabels(LLabels);
-  di<<"\n"<<"Number of layers = "<<LLabels.Length()<<"\n";
+  di<<"\nNumber of layers = "<<LLabels.Length()<<"\n";
   if(LLabels.Length()>0) {
     for(i=1; i<=LLabels.Length(); i++) {
       TDF_Label aLabel = LLabels.Value(i);
@@ -415,13 +415,13 @@ static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer setPrs (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc <2) {
-    di<<"Use: "<<argv[0]<<" DocName [label1 label2 ...] "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName [label1 label2 ...] \n";
     return 1;
   }
 
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   // collect sequence of labels to set presentation
   Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
@@ -466,7 +466,7 @@ static Standard_Integer setPrs (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc <2) {
-    di<<"Use: "<<argv[0]<<" DocName [label1 label2 ...] "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName [label1 label2 ...] \n";
     return 1;
   }
 
@@ -538,13 +538,13 @@ static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const
 static Standard_Integer xwd (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc <3) {
-    di<<"Use: "<<argv[0]<<" DocName filename.{xwd|gif|bmp}"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName filename.{xwd|gif|bmp}\n";
     return 1;
   }
 
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   Handle(AIS_InteractiveContext) IC;
   if ( ! TPrsStd_AISViewer::Find ( Doc->GetData()->Root(), IC ) ) {
@@ -572,7 +572,7 @@ static Standard_Integer xwd (Draw_Interpretor& di, Standard_Integer argc, const 
 //=======================================================================
 static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if ( argc <4 ) { di << "ERROR: Too few args" << "\n"; return 0; }
+  if ( argc <4 ) { di << "ERROR: Too few args\n"; return 0; }
   Handle(DDF_Browser) browser =
     Handle(DDF_Browser)::DownCast (Draw::Get(argv[1], Standard_True));
   if ( browser.IsNull() ) { di << "ERROR: Not a browser: " << argv[1] << "\n"; return 0; }
@@ -585,7 +585,7 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
   TDF_AttributeIterator itr(lab,Standard_False);
   for (Standard_Integer i=1; itr.More() && i < num; i++) itr.Next();
 
-  if ( ! itr.More() ) { di << "ERROR: Attribute #" << num << " not found" << "\n"; return 0; }
+  if ( ! itr.More() ) { di << "ERROR: Attribute #" << num << " not found\n"; return 0; }
 
   const Handle(TDF_Attribute)& att = itr.Value();
   if ( att->IsKind(STANDARD_TYPE(TDataStd_TreeNode)) ) {
@@ -808,7 +808,7 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
 static Standard_Integer setviewName (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc <2) {
-    di<<"Use: "<<argv[0]<<" (1/0)"<<"\n";
+    di<<"Use: "<<argv[0]<<" (1/0)\n";
     return 1;
   }
   Standard_Boolean mode = Standard_False;
@@ -825,8 +825,8 @@ static Standard_Integer setviewName (Draw_Interpretor& di, Standard_Integer argc
 
 static Standard_Integer getviewName (Draw_Interpretor&  di, Standard_Integer /*argc*/, const char** /*argv*/)
 {
-  if ( XCAFPrs::GetViewNameMode() ) di << "Display names ON"<< "\n";
-  else di << "Display names OFF"<< "\n";
+  if ( XCAFPrs::GetViewNameMode() ) di << "Display names ON\n";
+  else di << "Display names OFF\n";
   return 0;
 }
 
@@ -838,13 +838,13 @@ static Standard_Integer getviewName (Draw_Interpretor&  di, Standard_Integer /*a
 static Standard_Integer XSetTransparency (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
-    di<<"Use: "<<argv[0]<<" Doc Transparency [label1 label2 ...] "<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc Transparency [label1 label2 ...] \n";
     return 1;
   }
 
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   const Standard_Real aTransparency = Draw::Atof(argv[2]);
 
@@ -916,7 +916,7 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
   DDocStd::GetDocument (argv[1], aDoc);
   if (aDoc.IsNull())
   {
-    di << argv[1] << " is not a document" << "\n"; 
+    di << argv[1] << " is not a document\n"; 
     return 1;
   }
 
@@ -1165,7 +1165,7 @@ void XDEDRAW::Factory(Draw_Interpretor& theDI)
   XDEDRAW::Init(theDI);
 
 #ifdef OCCT_DEBUG
-      theDI << "Draw Plugin : All TKXDEDRAW commands are loaded" << "\n";
+      theDI << "Draw Plugin : All TKXDEDRAW commands are loaded\n";
 #endif
 }
 

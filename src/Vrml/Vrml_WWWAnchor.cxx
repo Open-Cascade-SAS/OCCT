@@ -56,27 +56,27 @@ Vrml_WWWAnchor::Vrml_WWWAnchor(const TCollection_AsciiString& aName,
 
  Standard_OStream& Vrml_WWWAnchor::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "WWWAnchor {" << endl;
+ anOStream  << "WWWAnchor {\n";
 
  if ( !(myName.IsEqual( "" ) ) )
    {
-    anOStream  << "    name" << '\t';
-    anOStream << '"' << myName << '"' << endl;
+    anOStream  << "    name\t";
+    anOStream << '"' << myName << '"' << "\n";
    }
 
  if ( !(myDescription.IsEqual("") ) )
    {
-    anOStream  << "    description" << '\t';
-    anOStream << '"' << myDescription << '"' << endl;
+    anOStream  << "    description\t";
+    anOStream << '"' << myDescription << '"' << "\n";
    }
 
  switch ( myMap )
     {
-     case Vrml_MAP_NONE: break; // anOStream  << "    map" << "\tNONE ";
-     case Vrml_POINT: anOStream  << "    map" << "\t\tPOINT" << endl; break;
+     case Vrml_MAP_NONE: break; // anOStream  << "    map\tNONE ";
+     case Vrml_POINT: anOStream  << "    map\t\tPOINT\n"; break;
     }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 
 }

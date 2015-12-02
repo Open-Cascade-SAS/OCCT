@@ -67,32 +67,32 @@ Standard_Real Vrml_ShapeHints::Angle() const
 
 Standard_OStream& Vrml_ShapeHints::Print(Standard_OStream& anOStream) const 
 {
-  anOStream  << "ShapeHints {" << endl;
+  anOStream  << "ShapeHints {\n";
 
   switch ( myVertexOrdering )
     {
-     case Vrml_UNKNOWN_ORDERING: break; // anOStream  << "    vertexOrdering" << "\tUNKNOWN_ORDERING";
-     case Vrml_CLOCKWISE:        anOStream  << "    vertexOrdering" << "\tCLOCKWISE" << endl; break;
-     case Vrml_COUNTERCLOCKWISE: anOStream  << "    vertexOrdering" << "\tCOUNTERCLOCKWISE" << endl; break; 
+     case Vrml_UNKNOWN_ORDERING: break; // anOStream  << "    vertexOrdering\tUNKNOWN_ORDERING";
+     case Vrml_CLOCKWISE:        anOStream  << "    vertexOrdering\tCLOCKWISE\n"; break;
+     case Vrml_COUNTERCLOCKWISE: anOStream  << "    vertexOrdering\tCOUNTERCLOCKWISE\n"; break; 
     }
 
   switch ( myShapeType )
     {
-     case Vrml_UNKNOWN_SHAPE_TYPE: break; //anOStream  << "    shapeType" << "\t\tUNKNOWN_SHAPE_TYPE";
-     case Vrml_SOLID:              anOStream  << "    shapeType" << "\t\tSOLID" << endl; break;
+     case Vrml_UNKNOWN_SHAPE_TYPE: break; //anOStream  << "    shapeType\t\tUNKNOWN_SHAPE_TYPE";
+     case Vrml_SOLID:              anOStream  << "    shapeType\t\tSOLID\n"; break;
     }
 
   switch ( myFaceType )
     {
-     case Vrml_UNKNOWN_FACE_TYPE: anOStream  << "    faceType" << "\t\tUNKNOWN_FACE_TYPE" << endl; break;
-     case Vrml_CONVEX:            break; //anOStream  << "    faceType" << "\t\tCONVEX";
+     case Vrml_UNKNOWN_FACE_TYPE: anOStream  << "    faceType\t\tUNKNOWN_FACE_TYPE\n"; break;
+     case Vrml_CONVEX:            break; //anOStream  << "    faceType\t\tCONVEX";
     }
 
   if ( Abs(myAngle - 0.5) > 0.0001 )
     { 
-      anOStream  << "    creaseAngle\t" << '\t' << myAngle << endl;
+      anOStream  << "    creaseAngle\t\t" << myAngle << "\n";
     } 
-  anOStream  << '}' << endl;
+  anOStream  << "}\n";
   return anOStream;
 }
 

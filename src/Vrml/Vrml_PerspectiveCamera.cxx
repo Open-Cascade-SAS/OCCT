@@ -81,13 +81,13 @@ Standard_Real Vrml_PerspectiveCamera::Angle() const
 
 Standard_OStream& Vrml_PerspectiveCamera::Print(Standard_OStream& anOStream) const 
 {
- anOStream  << "PerspectiveCamera {" << endl;
+ anOStream  << "PerspectiveCamera {\n";
  if ( Abs(myPosition.X() - 0) > 0.0001 || 
       Abs(myPosition.Y() - 0) > 0.0001 || 
       Abs(myPosition.Z() - 1) > 0.0001 )
    {
-    anOStream  << "    position" << "\t\t";
-    anOStream << myPosition.X() << ' ' << myPosition.Y() << ' ' << myPosition.Z() << endl;
+    anOStream  << "    position\t\t";
+    anOStream << myPosition.X() << " " << myPosition.Y() << " " << myPosition.Z() << "\n";
    }
 
  if ( Abs(myOrientation.RotationX() - 0) > 0.0001 || 
@@ -95,21 +95,21 @@ Standard_OStream& Vrml_PerspectiveCamera::Print(Standard_OStream& anOStream) con
      Abs(myOrientation.RotationZ() - 1) > 0.0001 ||
      Abs(myOrientation.Angle() - 0) > 0.0001 )
    {
-    anOStream  << "    orientation" << "\t\t";
-    anOStream << myOrientation.RotationX() << ' ' << myOrientation.RotationY() << ' ';
-    anOStream << myOrientation.RotationZ() << ' ' << myOrientation.Angle() << endl;
+    anOStream  << "    orientation\t\t";
+    anOStream << myOrientation.RotationX() << " " << myOrientation.RotationY() << " ";
+    anOStream << myOrientation.RotationZ() << " " << myOrientation.Angle() << "\n";
    }
 
  if ( Abs(myFocalDistance - 5) > 0.0001 )
    {
-    anOStream  << "    focalDistance" << '\t';
-    anOStream << myFocalDistance << endl;
+    anOStream  << "    focalDistance\t";
+    anOStream << myFocalDistance << "\n";
    }
  if ( Abs(myHeightAngle - 0.785398) > 0.0000001 )
    {
-    anOStream  << "    heightAngle" << "\t\t";
-    anOStream << myHeightAngle << endl;
+    anOStream  << "    heightAngle\t\t";
+    anOStream << myHeightAngle << "\n";
    }
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

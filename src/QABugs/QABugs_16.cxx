@@ -89,12 +89,12 @@ Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 static Standard_Integer BUC60848 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 2 ) {
-    di << "Usage : " << argv[0] << " shape " << "\n";
+    di << "Usage : " << argv[0] << " shape \n";
     return 1;
   }
   TopoDS_Shape S = DBRep::Get( argv[1] );
   if ( S.IsNull() ) {
-    di << "Shape is empty" << "\n";
+    di << "Shape is empty\n";
     return 1;
   }
   GProp_GProps G;
@@ -121,8 +121,8 @@ static Standard_Integer BUC60828 (Draw_Interpretor& di, Standard_Integer /*argc*
   Standard_Boolean aValue1; 
   aValue1=anEdge.Infinite(); 
   di << "Current flag : " << (Standard_Integer) aValue1 << "\n";
-  if(aValue1) di << "Flag was set properly." << "\n";
-  else di << "Faulty : flag was not set properly." << "\n";
+  if(aValue1) di << "Flag was set properly.\n";
+  else di << "Faulty : flag was not set properly.\n";
   return 0;
 }
 
@@ -232,7 +232,7 @@ static Standard_Integer BUC60972 (Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   if(argc != 6) {
-    di << "Usage : " << argv[0] << " edge edge plane val text" << "\n";
+    di << "Usage : " << argv[0] << " edge edge plane val text\n";
     return 1;
   }
   
@@ -264,13 +264,13 @@ static Standard_Integer OCC218bug (Draw_Interpretor& di, Standard_Integer argc, 
   }
 
   if(argc != 5) {
-    di << "Usage : " << argv[0] << " name plane Xlabel Ylabel" << "\n";
+    di << "Usage : " << argv[0] << " name plane Xlabel Ylabel\n";
     return 1;
   }
 
   TopoDS_Shape S = DBRep::Get( argv[2] );
   if ( S.IsNull() ) {
-    di << "Shape is empty" << "\n";
+    di << "Shape is empty\n";
     return 1;
   }
 
@@ -345,7 +345,7 @@ static Standard_Integer OCC218bug (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer OCC295(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 4) {
-    di << "Usage : " << argv[0] << " edge_result edge1 edge2" << "\n";
+    di << "Usage : " << argv[0] << " edge_result edge1 edge2\n";
     return 1;
   }
   
@@ -380,7 +380,7 @@ static Standard_Integer OCC49 (Draw_Interpretor& di, Standard_Integer argc, cons
 {
 
   if ( argc != 2 ) {
-    di << "Usage : " << argv[0] << " name" << "\n";
+    di << "Usage : " << argv[0] << " name\n";
     return 1;
   }
 
@@ -392,9 +392,9 @@ static Standard_Integer OCC49 (Draw_Interpretor& di, Standard_Integer argc, cons
   GProp_PrincipalProps Pr = G.PrincipalProperties();
   Standard_Boolean Result = Pr.HasSymmetryAxis();
   if (Result) {
-    di << "1" << "\n";
+    di << "1\n";
   } else {
-    di << "0" << "\n";
+    di << "0\n";
   }
   return 0;
 }
@@ -420,7 +420,7 @@ static Standard_Integer OCC132 (Draw_Interpretor& di, Standard_Integer argc, con
      */
 
   if ( argc != 2 ) {
-    di << "Usage : " << argv[0] << " DependentName" << "\n";
+    di << "Usage : " << argv[0] << " DependentName\n";
     return 1;
   }
 
@@ -433,7 +433,7 @@ static Standard_Integer OCC132 (Draw_Interpretor& di, Standard_Integer argc, con
       OSD_Path Path (argv[1], SysType1);
     }
     catch (Standard_ProgramError) {
-      di << "1" << "\n";
+      di << "1\n";
       return 0;
     }
   }
@@ -444,19 +444,19 @@ static Standard_Integer OCC132 (Draw_Interpretor& di, Standard_Integer argc, con
       OSD_Path Path (argv[1], SysType2);
     }
     catch (Standard_ProgramError) {
-      di << "2" << "\n";
+      di << "2\n";
       return 0;
     }
   }
   
-  di << "0" << "\n";
+  di << "0\n";
   return 0;
 }
 
 static Standard_Integer OCC405 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 4) {
-    di << "Usage : " << argv[0] << " edge_result edge1 edge2; merge two edges" << "\n";
+    di << "Usage : " << argv[0] << " edge_result edge1 edge2; merge two edges\n";
     return 1;
   }
   
@@ -514,7 +514,7 @@ static Standard_Integer OCC405 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC252 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(!(argc == 4 || argc == 5)) {
-    di << "Usage : " << argv[0] << " result part tool [ModeOfLimitation=0/1/2]" << "\n";
+    di << "Usage : " << argv[0] << " result part tool [ModeOfLimitation=0/1/2]\n";
     return 1;
   }
   
@@ -527,7 +527,7 @@ static Standard_Integer OCC252 (Draw_Interpretor& di, Standard_Integer argc, con
   if(argc==5) {
     Standard_Integer ModeOfLimitationInteger = Draw::Atoi(argv[4]);
     if(!(ModeOfLimitationInteger == 0 || ModeOfLimitationInteger == 1 || ModeOfLimitationInteger == 2)) {
-      di << "Usage : " << argv[0] << " result part tool [ModeOfLimitation=0/1/2]" << "\n";
+      di << "Usage : " << argv[0] << " result part tool [ModeOfLimitation=0/1/2]\n";
       return 1;
     }
     //if (ModeOfLimitationInteger == 1) ModeOfLimitation = QAModTopOpe_Reversed;
@@ -539,7 +539,7 @@ static Standard_Integer OCC252 (Draw_Interpretor& di, Standard_Integer argc, con
   //TopoDS_Shape res = QAModTopOpe_Limitation(s1,s2,ModeOfLimitation);
   TopoDS_Shape res = QANewModTopOpe_Limitation(s1,s2,ModeOfLimitation);
   if (res.IsNull()) {
-    di << "Error : result is null" << "\n";
+    di << "Error : result is null\n";
     return 1;
   }
 
@@ -551,7 +551,7 @@ static Standard_Integer OCC252 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC307 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(!(argc == 4 || argc == 5)) {
-    di << "Usage : " << argv[0] << " result part tool [AllowCutting=0/1]" << "\n";
+    di << "Usage : " << argv[0] << " result part tool [AllowCutting=0/1]\n";
     return 1;
   }
   
@@ -563,7 +563,7 @@ static Standard_Integer OCC307 (Draw_Interpretor& di, Standard_Integer argc, con
   if(argc==5) {
     Standard_Integer AllowCuttingInteger = Draw::Atoi(argv[4]);
     if(!( AllowCuttingInteger == 0 || AllowCuttingInteger == 1)) {
-      di << "Usage : " << argv[0] << " result part tool [AllowCutting=0/1]" << "\n";
+      di << "Usage : " << argv[0] << " result part tool [AllowCutting=0/1]\n";
       return 1;
     }
     if (AllowCuttingInteger == 1) AllowCutting = Standard_True;
@@ -572,7 +572,7 @@ static Standard_Integer OCC307 (Draw_Interpretor& di, Standard_Integer argc, con
   //TopoDS_Shape res = QAModTopOpe_Glue(s1,s2,AllowCutting);
   TopoDS_Shape res = QANewModTopOpe_Glue(s1,s2,AllowCutting);
   if (res.IsNull()) {
-    di << "Error : result is null" << "\n";
+    di << "Error : result is null\n";
     return 1;
   }
 
@@ -584,7 +584,7 @@ static Standard_Integer OCC307 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC395 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 4) {
-    di << "Usage : " << argv[0] << " edge_result edge1 edge2" << "\n";
+    di << "Usage : " << argv[0] << " edge_result edge1 edge2\n";
     return 1;
   }
   //TCollection_AsciiString fnom(a[1]);
@@ -631,7 +631,7 @@ static Standard_Integer OCC395 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC394 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc < 3) {
-    di << "Usage : " << argv[0] << " edge_result edge [tol [mode [tolang]]]" << "\n";
+    di << "Usage : " << argv[0] << " edge_result edge [tol [mode [tolang]]]\n";
     return 1;
   }
    TopoDS_Shape Sh = DBRep::Get(argv[2]);
@@ -677,7 +677,7 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
   if ( argc != 3 ) {
-    di << "Usage : " << argv[0] << " ArcRadius ArrowSize" << "\n";
+    di << "Usage : " << argv[0] << " ArcRadius ArrowSize\n";
     return 1;
   }
 
@@ -715,7 +715,7 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC294 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc < 4) {
-    di << "Usage : " << argv[0] << " shape_result shape edge" << "\n";
+    di << "Usage : " << argv[0] << " shape_result shape edge\n";
     return 1;
   }
   TopoDS_Shape Sh1 = DBRep::Get(argv[2]);
@@ -728,7 +728,7 @@ static Standard_Integer OCC294 (Draw_Interpretor& di, Standard_Integer argc, con
   ReShaper.Remove(Sh2);
   const TopoDS_Shape& ResultShape = ReShaper.GetResult();
   if(ResultShape.IsNull()) {
-    di << "Faulty " << argv[0] << " : " << argv[1] << " - shape_result is null" << "\n";
+    di << "Faulty " << argv[0] << " : " << argv[1] << " - shape_result is null\n";
     return 1;
   }
 
@@ -744,7 +744,7 @@ static Standard_Integer OCC60 (Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
   if(argc < 5) {
-    di << "Usage : " << argv[0] << " xmin ymin xmax ymax; selection window" << "\n";
+    di << "Usage : " << argv[0] << " xmin ymin xmax ymax; selection window\n";
     return 1;
   }
 
@@ -769,11 +769,11 @@ static Standard_Integer OCC70 (Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
   if(argc < 7) {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection" << "\n";
+    di << "Usage : " << argv[0] << " x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection\n";
     return 1;
   }
   if (((argc - 1) % 2) != 0) {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection" << "\n";
+    di << "Usage : " << argv[0] << " x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection\n";
     return 1;
   }
 
@@ -796,7 +796,7 @@ static Standard_Integer OCC70 (Draw_Interpretor& di, Standard_Integer argc, cons
 static Standard_Integer OCC261 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 2) {
-    di << "Usage : " << argv[0] << " Doc" << "\n";
+    di << "Usage : " << argv[0] << " Doc\n";
     return 1;
   }
 
@@ -812,16 +812,16 @@ static Standard_Integer OCC261 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC710 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 2) {
-    di << "Usage : " << argv[0] << " path" << "\n";
+    di << "Usage : " << argv[0] << " path\n";
   }
 
   TCollection_AsciiString in(argv[1]);
   OSD_File* aFile = new OSD_File(in);
   Standard_Boolean anExists = aFile->Exists();
   if(anExists == Standard_True) 
-    di << "1" << "\n";
+    di << "1\n";
   else
-    di << "0" << "\n";
+    di << "0\n";
   return 0;
 }
 
@@ -830,11 +830,11 @@ static Standard_Integer OCC710 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC904 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 4) {
-    di << "Usage : " << argv[0] << " result shape nonmanifoldmode(0/1)" << "\n";
+    di << "Usage : " << argv[0] << " result shape nonmanifoldmode(0/1)\n";
   }
   TopoDS_Shape S = DBRep::Get(argv[2]);
   if (S.IsNull() || S.ShapeType() != TopAbs_SHELL) {
-    di << " Shape is null" << "\n";
+    di << " Shape is null\n";
     return 1;
   }
   Standard_Boolean nonmanifmode = (Draw::Atoi(argv[3]) != 0);

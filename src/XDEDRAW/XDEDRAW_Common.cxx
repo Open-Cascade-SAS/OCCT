@@ -107,7 +107,7 @@ static Standard_Boolean SetCurrentWS (TCollection_AsciiString filename)
 static Standard_Integer SetCurWS (Draw_Interpretor& di , Standard_Integer argc, const char** argv)
 {
   if (argc <2) {
-    di<<"Use: "<<argv[0]<<" filename "<<"\n";
+    di<<"Use: "<<argv[0]<<" filename \n";
     return 1;
   }
   TCollection_AsciiString filename (argv[1]);
@@ -126,7 +126,7 @@ static Standard_Integer GetDicWSList (Draw_Interpretor& di, Standard_Integer /*a
   Handle(Dico_DictionaryOfTransient) DictWS = thedictws;
   if ( DictWS->IsEmpty() ) return 1;
   Dico_IteratorOfDictionaryOfTransient DicIt ( DictWS );
-  di << " The list of last translated files:" << "\n";
+  di << " The list of last translated files:\n";
   Standard_Integer num = 0;
   for (; DicIt.More() ; DicIt.Next(), num++ ) {
     TCollection_AsciiString strng ( DicIt.Name() );
@@ -156,7 +156,7 @@ static Standard_Integer GetCurWS (Draw_Interpretor& di, Standard_Integer /*argc*
 static Standard_Integer FromShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if ( argc <2 ) {
-    di << argv[0] << " shape: search for shape origin among all last tranalated files" << "\n";
+    di << argv[0] << " shape: search for shape origin among all last tranalated files\n";
     return 0;
   }
   
@@ -168,7 +168,7 @@ static Standard_Integer FromShape (Draw_Interpretor& di, Standard_Integer argc, 
   Handle(XSControl_WorkSession) WS = XSDRAW::Session();
 
   Dico_IteratorOfDictionaryOfTransient DicIt ( DictWS );
-//  di << "Searching for shape among all the loaded files:" << "\n";
+//  di << "Searching for shape among all the loaded files:\n";
   Standard_Integer num = 0;
   for (; DicIt.More() ; DicIt.Next(), num++ ) {
     Handle(XSControl_WorkSession) CurrentWS = 
@@ -189,7 +189,7 @@ static Standard_Integer FromShape (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if ( argc <3 ) {
-    di << "Use: " << argv[0] << " Doc filename [mode]: read IGES file to a document" << "\n";
+    di << "Use: " << argv[0] << " Doc filename [mode]: read IGES file to a document\n";
     return 0;
   }
   
@@ -218,15 +218,15 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
   if (modfic) readstat = reader.ReadFile (fnom.ToCString());
   else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
   if (readstat != IFSelect_RetDone) {
-    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon"<<"\n";
-    else di<<"No model loaded"<<"\n";
+    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
+    else di<<"No model loaded\n";
     return 1;
   }
 
   Handle(TDocStd_Document) doc;
   if (!DDocStd::GetDocument(argv[1],doc,Standard_False)) {  
     Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) {di<<"No application found"<<"\n";return 1;}
+    if (!DDocStd::Find(A)) {di<<"No application found\n";return 1;}
     A->NewDocument("BinXCAF",doc);  
     TDataStd_Name::Set(doc->GetData()->Root(),argv[1]);  
     Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);  
@@ -234,7 +234,7 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
 //     di << "Document saved with name " << argv[1];
   }
   if ( ! reader.Transfer ( doc ) ) {
-    di << "Cannot read any relevant data from the IGES file" << "\n";
+    di << "Cannot read any relevant data from the IGES file\n";
     return 1;
   }
   
@@ -253,14 +253,14 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer WriteIges (Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   if ( argc <3 ) {
-    di << "Use: " << argv[0] << " Doc filename [mode]: write document to IGES file" << "\n";
+    di << "Use: " << argv[0] << " Doc filename [mode]: write document to IGES file\n";
     return 0;
   }
   
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) {
-    di << argv[1] << " is not a document" << "\n";
+    di << argv[1] << " is not a document\n";
     return 1;
   }
   
@@ -284,8 +284,8 @@ static Standard_Integer WriteIges (Draw_Interpretor& di, Standard_Integer argc, 
   writer.Transfer ( Doc );
 
   di << "Writig IGES model to file " << argv[2] << "\n";
-  if ( writer.Write ( argv[2] ) ) di<<" Write OK"<<"\n";
-  else di<<" Write failed"<<"\n";
+  if ( writer.Write ( argv[2] ) ) di<<" Write OK\n";
+  else di<<" Write failed\n";
 
   return 0;
 }
@@ -298,7 +298,7 @@ static Standard_Integer WriteIges (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if ( argc <3 ) {
-    di << "Use: " << argv[0] << " Doc filename [mode]: read STEP file to a document" << "\n";
+    di << "Use: " << argv[0] << " Doc filename [mode]: read STEP file to a document\n";
     return 0;
   }
   
@@ -329,15 +329,15 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
   if (modfic) readstat = reader.ReadFile (fnom.ToCString());
   else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
   if (readstat != IFSelect_RetDone) {
-    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon"<<"\n";
-    else di<<"No model loaded"<<"\n";
+    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
+    else di<<"No model loaded\n";
     return 1;
   }
 
   Handle(TDocStd_Document) doc;
   if (!DDocStd::GetDocument(argv[1],doc,Standard_False)) {  
     Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) {di<<"No application found"<<"\n";return 1;}
+    if (!DDocStd::Find(A)) {di<<"No application found\n";return 1;}
     A->NewDocument("BinXCAF",doc);  
     TDataStd_Name::Set(doc->GetData()->Root(),argv[1]);  
     Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);  
@@ -345,7 +345,7 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
 //     di << "Document saved with name " << argv[1];
   }
   if ( ! reader.Transfer ( doc ) ) {
-    di << "Cannot read any relevant data from the STEP file" << "\n";
+    di << "Cannot read any relevant data from the STEP file\n";
     return 1;
   }
   
@@ -368,8 +368,8 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if ( argc <3 ) {
-    di << "Use: " << argv[0] << " Doc filename [mode [multifile_prefix [label]]]: write document to the STEP file" << "\n";
-    di << "mode can be: a or 0 : AsIs (default)" << "\n";
+    di << "Use: " << argv[0] << " Doc filename [mode [multifile_prefix [label]]]: write document to the STEP file\n";
+    di << "mode can be: a or 0 : AsIs (default)\n";
     di << "             f or 1 : FacettedBRep        s or 2 : ShellBasedSurfaceModel\n";
     di << "             m or 3 : ManifoldSolidBrep   w or 4 : GeometricCurveSet/WireFrame\n";
     di << "multifile_prefix: triggers writing assembly components as separate files,\n";
@@ -381,7 +381,7 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) {
-    di << argv[1] << " is not a document" << "\n";
+    di << argv[1] << " is not a document\n";
     return 1;
   }
   Standard_CString multifile = 0;
@@ -404,7 +404,7 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
     case '3' : mode = STEPControl_ManifoldSolidBrep;       break;
     case 'w' :
     case '4' : mode = STEPControl_GeometricCurveSet;       break;
-    default :  di<<"3st arg = mode, incorrect [give fsmw]"<<"\n"; return 1;
+    default :  di<<"3st arg = mode, incorrect [give fsmw]\n"; return 1;
     }
     Standard_Boolean wrmode = Standard_True;
     for ( Standard_Integer i = 0; argv[k][i] ; i++ ) 
@@ -438,19 +438,19 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
   }
   if( !label.IsNull())
   {  
-    di << "Translating label "<< argv[k]<<" of document " << argv[1] << " to STEP" << "\n";
+    di << "Translating label "<< argv[k]<<" of document " << argv[1] << " to STEP\n";
     if(!writer.Transfer ( label, mode, multifile )) 
     {
-      di << "The label of document cannot be translated or gives no result" << "\n";
+      di << "The label of document cannot be translated or gives no result\n";
       return 1;
     }
 
   }
   else
   {
-    di << "Translating document " << argv[1] << " to STEP" << "\n";
+    di << "Translating document " << argv[1] << " to STEP\n";
     if ( ! writer.Transfer ( Doc, mode, multifile ) ) {
-      di << "The document cannot be translated or gives no result" << "\n";
+      di << "The document cannot be translated or gives no result\n";
     }
   }
   
@@ -458,16 +458,16 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
   di << "Writing STEP file " << argv[2] << "\n";
   IFSelect_ReturnStatus stat = writer.Write(argv[2]);
   switch (stat) {
-    case IFSelect_RetVoid : di<<"No file written"<<"\n"; break;
+    case IFSelect_RetVoid : di<<"No file written\n"; break;
     case IFSelect_RetDone : {
-      di<<"File "<<argv[2]<<" written"<<"\n";
+      di<<"File "<<argv[2]<<" written\n";
 
       Handle(STEPCAFControl_DictionaryOfExternFile) DicFile = writer.ExternFiles();
       FillDicWS( DicFile );
       AddWS( argv[2], XSDRAW::Session() );
       break;
     }
-    default : di<<"Error on writing file"<<"\n"; break;
+    default : di<<"Error on writing file\n"; break;
   }
   return 0;
 }
@@ -475,12 +475,12 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
-    di<<"Use: "<<argv[0]<<" Doc recurs(0/1) or Doc recurs(0/1) label1 label2 ... or Doc recurs(0/1 shape1 shape2 ..."<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc recurs(0/1) or Doc recurs(0/1) label1 label2 ... or Doc recurs(0/1 shape1 shape2 ...\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   Standard_Boolean recurs = Standard_False;
@@ -490,7 +490,7 @@ static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, con
   if (argc == 3)
   {
     if(!XCAFDoc_Editor::Expand(Doc->Main(), recurs)){
-      di << "The shape is assembly or not compaund" << "\n";
+      di << "The shape is assembly or not compaund\n";
       return 1;
     }
   }
@@ -508,12 +508,12 @@ static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, con
 
       if (!aLabel.IsNull()){
         if(!XCAFDoc_Editor::Expand(Doc->Main(), aLabel, recurs)){
-          di << "The shape is assembly or not compaund" << "\n";
+          di << "The shape is assembly or not compaund\n";
           return 1;
         }
       }
       else
-      { di << argv[i] << " is not a shape" << "\n"; return 1; }
+      { di << argv[i] << " is not a shape\n"; return 1; }
     }
   }
   return 0;

@@ -85,7 +85,7 @@ static Standard_Integer DPrsStd_AISRepaint (Draw_Interpretor& di,
     TPrsStd_AISViewer::Update(acces);
     return 0;
   }
-  di << "DPrsStd_AISRepaint : Error" << "\n";
+  di << "DPrsStd_AISRepaint : Error\n";
   return 1; 
 }
 

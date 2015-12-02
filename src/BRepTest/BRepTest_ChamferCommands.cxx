@@ -46,10 +46,10 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
     //cout <<"   Construction by equal distances from edge          :  chamf newname shape edge face S dist"<< endl;
     //cout <<"   Construction by two distances from edge            :  chamf newname shape edge face dist1 dist2"<< endl;
     //cout <<"   Construction by distance from edge and given angle :  chamf newname shape edge face A dist angle"<< endl;
-    di <<" help for chamf : "<< "\n";
-    di <<"   Construction by equal distances from edge          :  chamf newname shape edge face S dist"<< "\n";
-    di <<"   Construction by two distances from edge            :  chamf newname shape edge face dist1 dist2"<< "\n";
-    di <<"   Construction by distance from edge and given angle :  chamf newname shape edge face A dist angle"<< "\n";
+    di <<" help for chamf : \n";
+    di <<"   Construction by equal distances from edge          :  chamf newname shape edge face S dist\n";
+    di <<"   Construction by two distances from edge            :  chamf newname shape edge face dist1 dist2\n";
+    di <<"   Construction by distance from edge and given angle :  chamf newname shape edge face A dist angle\n";
   }
   else {
     if (narg < 7) return 1;
@@ -135,7 +135,7 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
     if (aMCh.NbContours() == 0 )
       {
 	//cout<<"No suitable edges to chamfer"<<endl;
-	di<<"No suitable edges to chamfer"<<"\n";
+	di<<"No suitable edges to chamfer\n";
 	return 1;
       }
     else aMCh.Build();
@@ -146,7 +146,7 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
     }
     else {
       //cout<<"compute of chamfer failed"<<endl;
-      di<<"compute of chamfer failed"<<"\n";
+      di<<"compute of chamfer failed\n";
       return 1;
     }
   }

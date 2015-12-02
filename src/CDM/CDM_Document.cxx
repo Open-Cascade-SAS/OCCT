@@ -1203,7 +1203,7 @@ void CDM_Document::LoadResources()
     }
     myResourcesAreLoaded=Standard_True;
     
-//    cout << "resource Loaded: " << "Format: " << theFormat << ", FileExtension:" << myFileExtension << ", DataType:" <<  myDataType << ", VersionDataType:" << myVersionDataType << ", Description:" << myDescription << ", Domain:" << myDomain << endl;
+//    cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" << myFileExtension << ", DataType:" <<  myDataType << ", VersionDataType:" << myVersionDataType << ", Description:" << myDescription << ", Domain:" << myDomain << endl;
   }
   return;
 }

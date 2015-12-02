@@ -130,11 +130,11 @@ static Standard_Integer pipe(Draw_Interpretor& di,
 {
   if (n == 1)
   {
-    di << "pipe result Wire_spine Profile [Mode [Approx]]" << "\n";
-    di << "Mode = 0 - CorrectedFrenet," << "\n";
-    di << "     = 1 - Frenet," << "\n";
-    di << "     = 2 - DiscreteTrihedron" << "\n";
-    di << "Approx - force C1-approximation if result is C0" << "\n";
+    di << "pipe result Wire_spine Profile [Mode [Approx]]\n";
+    di << "Mode = 0 - CorrectedFrenet,\n";
+    di << "     = 1 - Frenet,\n";
+    di << "     = 2 - DiscreteTrihedron\n";
+    di << "Approx - force C1-approximation if result is C0\n";
     return 0;
   }
   
@@ -221,11 +221,11 @@ Standard_Integer evolved(Draw_Interpretor& di, Standard_Integer n, const char** 
     //cout << "        is given in the referencial axis. " << endl;
     //cout << " 2) evolved result base profil o : "<< endl;
     //cout << "        This position is automatically computed." << endl;
-    di << " 1) evolved result base profil : "<< "\n";
-    di << "        The relative position of the profil on the base" << "\n";
-    di << "        is given in the referencial axis. " << "\n";
-    di << " 2) evolved result base profil o : "<< "\n";
-    di << "        This position is automatically computed." << "\n";
+    di << " 1) evolved result base profil : \n";
+    di << "        The relative position of the profil on the base\n";
+    di << "        is given in the referencial axis. \n";
+    di << " 2) evolved result base profil o : \n";
+    di << "        This position is automatically computed.\n";
     return 0;
   }
 
@@ -450,22 +450,22 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
     //cout << "   -CN dx dy dz : BiNormal is given by dx dy dz" << endl;
     //cout << "   -FX Tx Ty TZ [Nx Ny Nz] : Tangent and Normal are fixed" <<endl;
     //cout << "   -G guide  0|1(ACR|Plan)  0|1(contact|no contact) : with guide"<<endl;
-    di << "setsweep options [arg1 [arg2 [...]]] : options are :" << "\n";
-    di << "   -FR : Tangent and Normal are given by Frenet trihedron" <<"\n";
-    di << "   -CF : Tangente is given by Frenet," << "\n";
-    di << "         the Normal is computed to minimize the torsion " << "\n";
-    di << "   -DT : discrete trihedron" << "\n";
-    di << "   -DX Surf : Tangent and Normal are given by Darboux trihedron," <<"\n";     
-    di << "       Surf have to be a shell or a face" <<"\n";
-    di << "   -CN dx dy dz : BiNormal is given by dx dy dz" << "\n";
-    di << "   -FX Tx Ty TZ [Nx Ny Nz] : Tangent and Normal are fixed" <<"\n";
-    di << "   -G guide  0|1(Plan|ACR)  0|1|2(no contact|contact|contact on border) : with guide"<<"\n";
+    di << "setsweep options [arg1 [arg2 [...]]] : options are :\n";
+    di << "   -FR : Tangent and Normal are given by Frenet trihedron\n";
+    di << "   -CF : Tangente is given by Frenet,\n";
+    di << "         the Normal is computed to minimize the torsion \n";
+    di << "   -DT : discrete trihedron\n";
+    di << "   -DX Surf : Tangent and Normal are given by Darboux trihedron,\n";     
+    di << "       Surf have to be a shell or a face\n";
+    di << "   -CN dx dy dz : BiNormal is given by dx dy dz\n";
+    di << "   -FX Tx Ty TZ [Nx Ny Nz] : Tangent and Normal are fixed\n";
+    di << "   -G guide  0|1(Plan|ACR)  0|1|2(no contact|contact|contact on border) : with guide\n";
     return 0;
   }
 
    if (Sweep ==0) {
      //cout << "You have forgotten the <<mksweep>> command  !"<< endl;
-     di << "You have forgotten the <<mksweep>> command  !"<< "\n";
+     di << "You have forgotten the <<mksweep>> command  !\n";
      return 1;
    }
   if (!strcmp(a[1],"-FR")) {
@@ -480,14 +480,14 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
   else if (!strcmp(a[1],"-DX")) {
     if (n!=3) {
       //cout << "bad arguments !" << endl;
-      di << "bad arguments !" << "\n";
+      di << "bad arguments !\n";
       return 1;
     }
     TopoDS_Shape Surf;
     Surf = DBRep::Get(a[2],TopAbs_SHAPE);
     if (Surf.IsNull()) {
        //cout << a[2] <<"is not a shape !" << endl;
-       di << a[2] <<"is not a shape !" << "\n";
+       di << a[2] <<"is not a shape !\n";
       return 1;
     }
     Sweep->SetMode(Surf);
@@ -495,7 +495,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
   else if (!strcmp(a[1],"-CN")) {
     if (n!=5) {
       //cout << "bad arguments !" << endl;
-      di << "bad arguments !" << "\n";
+      di << "bad arguments !\n";
       return 1;
     }
     gp_Dir D(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
@@ -504,7 +504,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
   else if (!strcmp(a[1],"-FX")) {
     if ((n!=5)&&(n!=8)) {
       //cout << "bad arguments !" << endl;
-      di << "bad arguments !" << "\n";
+      di << "bad arguments !\n";
       return 1;
     }
     gp_Dir D(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
@@ -523,7 +523,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
      if (n != 5)
        {
 	 //cout << "bad arguments !" << endl;
-	 di << "bad arguments !" << "\n";
+	 di << "bad arguments !\n";
 	 return 1; 
        }
      else
@@ -539,7 +539,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
  
   else {
     //cout << "The option "<< a[1] << " is unknown !" << endl;
-    di << "The option "<< a[1] << " is unknown !" << "\n";
+    di << "The option "<< a[1] << " is unknown !\n";
     return 1;
   }
   return 0;
@@ -558,17 +558,17 @@ static Standard_Integer addsweep(Draw_Interpretor& di,
     //cout << "        with the spine" <<endl;
     //cout << "   -R : the wire have to be rotated to assume orthogonality"<<endl;
     //cout << "        with the spine's tangent" << endl;
-    di << "addsweep wire/vertex [Vertex] [-T] [-R] [u0 v0 u1 v1 [...[uN vN]]] : options are :" << "\n";
-    di << "   -T : the wire/vertex have to be translated to assume contact"<< "\n";
-    di << "        with the spine" <<"\n";
-    di << "   -R : the wire have to be rotated to assume orthogonality"<<"\n";
-    di << "        with the spine's tangent" << "\n";
+    di << "addsweep wire/vertex [Vertex] [-T] [-R] [u0 v0 u1 v1 [...[uN vN]]] : options are :\n";
+    di << "   -T : the wire/vertex have to be translated to assume contact\n";
+    di << "        with the spine\n";
+    di << "   -R : the wire have to be rotated to assume orthogonality\n";
+    di << "        with the spine's tangent\n";
     return 0;
   }
 
   if (Sweep ==0) {
     //cout << "You have forgotten the <<mksweep>> command  !"<< endl;
-    di << "You have forgotten the <<mksweep>> command  !"<< "\n";
+    di << "You have forgotten the <<mksweep>> command  !\n";
     return 1;
   }
 
@@ -581,7 +581,7 @@ static Standard_Integer addsweep(Draw_Interpretor& di,
       Section.ShapeType() != TopAbs_VERTEX)
     {
       //cout << a[1] <<"is not a wire and is not a vertex!" << endl;
-      di << a[1] <<"is not a wire and is not a vertex!" << "\n";
+      di << a[1] <<"is not a wire and is not a vertex!\n";
       return 1;
     }
 
@@ -659,7 +659,7 @@ static Standard_Integer deletesweep(Draw_Interpretor& di,
 //  Section = TopoDS::Wire(DBRep::Get(a[1],TopAbs_SHAPE));
   if (Section.IsNull()) {
     //cout << a[1] <<"is not a wire !" << endl;
-    di << a[1] <<"is not a wire !" << "\n";
+    di << a[1] <<"is not a wire !\n";
     return 1;
   }  
 
@@ -683,27 +683,27 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
     //cout << "   -R : Discontinuities are treated like Round Corner" << endl;
     //cout << "        Treatement is Intersect and Fill" << endl;
     //cout << "   -S : To build a Solid" << endl;
-    di << "build sweep result [-M/-C/-R] [-S] [tol] : options are" << "\n";
-    di << "   -M : Discontinuities are treated by Modfication of"<< "\n"; 
-    di << "        the sweeping mode : it is the default" <<"\n";
-    di << "   -C : Discontinuities are treated like Right Corner" << "\n";
-    di << "        Treatement is Extent && Intersect" << "\n";
-    di << "   -R : Discontinuities are treated like Round Corner" << "\n";
-    di << "        Treatement is Intersect and Fill" << "\n";
-    di << "   -S : To build a Solid" << "\n";
+    di << "build sweep result [-M/-C/-R] [-S] [tol] : options are\n";
+    di << "   -M : Discontinuities are treated by Modfication of\n"; 
+    di << "        the sweeping mode : it is the default\n";
+    di << "   -C : Discontinuities are treated like Right Corner\n";
+    di << "        Treatement is Extent && Intersect\n";
+    di << "   -R : Discontinuities are treated like Round Corner\n";
+    di << "        Treatement is Intersect and Fill\n";
+    di << "   -S : To build a Solid\n";
     return 0;
   }
 
   Standard_Boolean mksolid = Standard_False;
   if (Sweep ==0) {
     //cout << "You have forgotten the <<mksweep>> command  !"<< endl;
-    di << "You have forgotten the <<mksweep>> command  !"<< "\n";
+    di << "You have forgotten the <<mksweep>> command  !\n";
     return 1;
   }
 
   if (!Sweep->IsReady()) {
     //cout << "You have forgotten the <<addsweep>> command  !"<< endl;
-    di << "You have forgotten the <<addsweep>> command  !"<< "\n";
+    di << "You have forgotten the <<addsweep>> command  !\n";
     return 1;
   }
 
@@ -730,15 +730,15 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
   Sweep->Build();
   if (!Sweep->IsDone()) {
     //cout << "Buildsweep : Not Done" << endl;
-    di << "Buildsweep : Not Done" << "\n";
+    di << "Buildsweep : Not Done\n";
     BRepBuilderAPI_PipeError Stat = Sweep->GetStatus(); 
     if (Stat == BRepBuilderAPI_PlaneNotIntersectGuide) {
       //cout << "Buildsweep : One Plane not intersect the guide" << endl;
-      di << "Buildsweep : One Plane not intersect the guide" << "\n";
+      di << "Buildsweep : One Plane not intersect the guide\n";
     }
     if (Stat == BRepBuilderAPI_ImpossibleContact) {
       //cout << "BuildSweep : One section can not be in contact with the guide" << endl;
-      di << "BuildSweep : One section can not be in contact with the guide" << "\n";
+      di << "BuildSweep : One section can not be in contact with the guide\n";
     }
     return 1;
   }
@@ -747,7 +747,7 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
       Standard_Boolean B;
       B = Sweep->MakeSolid();
       //if (!B) cout << " BuildSweep : It is impossible to make a solid !" << endl;
-      if (!B) di << " BuildSweep : It is impossible to make a solid !" << "\n";
+      if (!B) di << " BuildSweep : It is impossible to make a solid !\n";
     }
     result = Sweep->Shape();
     DBRep::Set(a[1],result);
@@ -766,13 +766,13 @@ static Standard_Integer simulsweep(Draw_Interpretor& di,
   
   if (Sweep ==0) {
     //cout << "You have forgotten the <<mksweep>> command  !"<< endl;
-    di << "You have forgotten the <<mksweep>> command  !"<< "\n";
+    di << "You have forgotten the <<mksweep>> command  !\n";
     return 1;
   }
   
   if (!Sweep->IsReady()) {
     //cout << "You have forgotten the <<addsweep>> command  !"<< endl;
-    di << "You have forgotten the <<addsweep>> command  !"<< "\n";
+    di << "You have forgotten the <<addsweep>> command  !\n";
     return 1;
   }
   

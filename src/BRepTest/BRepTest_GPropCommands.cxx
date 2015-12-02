@@ -41,10 +41,10 @@ Standard_IMPORT Draw_Viewer dout;
 Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 2) {
-    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-full]" << "\n";
-    di << "Compute properties of the shape" << "\n";
-    di << "The epsilon, if given, defines relative precision of computation" << "\n";
-    di << "The \"closed\" flag, if present, do computation only closed shells of the shape" << "\n";
+    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-full]\n";
+    di << "Compute properties of the shape\n";
+    di << "The epsilon, if given, defines relative precision of computation\n";
+    di << "The \"closed\" flag, if present, do computation only closed shells of the shape\n";
     di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n";
     di << "All values are outputted with the full precision in the full mode.\n\n";
     return 1;
@@ -104,8 +104,8 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
   {
     Standard_SStream aSStream1;
     aSStream1 << "\n\n";
-    aSStream1 << "Mass : " << setw(15) << G.Mass() << "\n" << "\n";
-    if(witheps && *a[0] != 'l') aSStream1 << "Relative error of mass computation : " <<  setw(15) << eps <<  "\n" << "\n";
+    aSStream1 << "Mass : " << setw(15) << G.Mass() << "\n\n";
+    if(witheps && *a[0] != 'l') aSStream1 << "Relative error of mass computation : " <<  setw(15) << eps <<  "\n\n";
   
     aSStream1 << "Center of gravity : \n";
     aSStream1 << "X = " << setw(15) << P.X() << "\n";
@@ -174,21 +174,21 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 2) {
-    di << "Use: " << a[0] << " shape epsilon closed span mode [x y z]" << "\n";
-    di << "Compute properties of the shape" << "\n";
-    di << "The epsilon defines relative precision of computation" << "\n";
-    di << "The \"closed\" flag, if equal 1, causes computation only closed shells of the shape" << "\n";
-    di << "The \"span\" flag, if equal 1, says that computation is performed on spans" << "\n";
-    di << "      This option makes effect only for BSpline surfaces." << "\n";
-    di << "mode can be 0 - only volume calculations" << "\n";
-    di << "            1 - volume and gravity center" << "\n";
-    di << "            2 - volume, gravity center and matrix of inertia" << "\n";
-    di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n" << "\n";
+    di << "Use: " << a[0] << " shape epsilon closed span mode [x y z]\n";
+    di << "Compute properties of the shape\n";
+    di << "The epsilon defines relative precision of computation\n";
+    di << "The \"closed\" flag, if equal 1, causes computation only closed shells of the shape\n";
+    di << "The \"span\" flag, if equal 1, says that computation is performed on spans\n";
+    di << "      This option makes effect only for BSpline surfaces.\n";
+    di << "mode can be 0 - only volume calculations\n";
+    di << "            1 - volume and gravity center\n";
+    di << "            2 - volume, gravity center and matrix of inertia\n";
+    di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n\n";
     return 1;
   }
 
   if ( n > 2 && n < 6) {
-    di << "Wrong arguments" << "\n";
+    di << "Wrong arguments\n";
     return 1;
   }
 
@@ -227,8 +227,8 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 
   aSStream0.precision(15);
   aSStream0 << "\n\n";
-  aSStream0 << "Mass : " << setw(anOutWidth) << G.Mass() << "\n" << "\n";
-  aSStream0 << "Relative error of mass computation : " <<  setw(anOutWidth) << eps <<  "\n" << "\n";
+  aSStream0 << "Mass : " << setw(anOutWidth) << G.Mass() << "\n\n";
+  aSStream0 << "Relative error of mass computation : " <<  setw(anOutWidth) << eps <<  "\n\n";
   aSStream0 << ends;
   di << aSStream0;
 

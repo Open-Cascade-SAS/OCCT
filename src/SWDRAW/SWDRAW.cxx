@@ -44,29 +44,29 @@ static int dejadraw = 0;
 static Standard_Integer LocSet (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) {
-    di << argv[0] << "LocSet a [b [c]]: set location for shape \"a\":" << "\n";
-    di << "- to Null if one argument is given" << "\n";
-    di << "- to location of shape b if two arguments are given" << "\n";
-    di << "- to difference of locations of shapes b and c if three arguments are given" << "\n";
+    di << argv[0] << "LocSet a [b [c]]: set location for shape \"a\":\n";
+    di << "- to Null if one argument is given\n";
+    di << "- to location of shape b if two arguments are given\n";
+    di << "- to difference of locations of shapes b and c if three arguments are given\n";
     return 1;
   }
 
   TopoDS_Shape a = DBRep::Get ( argv[1] );
   if ( a.IsNull() ) {
-    di << "No shape named \"" << argv[1] << "\" found" << "\n";
+    di << "No shape named \"" << argv[1] << "\" found\n";
     return 1;
   }
   TopLoc_Location L;
   if ( argc >2 ) {
     TopoDS_Shape b = DBRep::Get ( argv[2] );
     if ( b.IsNull() ) {
-      di << "No shape named \"" << argv[2] << "\" found" << "\n";
+      di << "No shape named \"" << argv[2] << "\" found\n";
       return 1;
     }
     if ( argc >3 ) {
       TopoDS_Shape c = DBRep::Get ( argv[3] );
       if ( c.IsNull() ) {
-	di << "No shape named \"" << argv[3] << "\" found" << "\n";
+	di << "No shape named \"" << argv[3] << "\" found\n";
 	return 1;
       }
       L = b.Location().Multiplied ( c.Location().Inverted() );
@@ -87,19 +87,19 @@ static Standard_Integer LocSet (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer LocDump (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) {
-    di << argv[0] << "LocDump a: dump location of shape \"a\"" << "\n";
+    di << argv[0] << "LocDump a: dump location of shape \"a\"\n";
     return 1;
   }
 
   TopoDS_Shape a = DBRep::Get ( argv[1] );
   if ( a.IsNull() ) {
-    di << "No shape named \"" << argv[1] << "\" found" << "\n";
+    di << "No shape named \"" << argv[1] << "\" found\n";
     return 1;
   }
 
   TopLoc_Location L = a.Location();
-  di << "Location of shape " << argv[1] << ":" << "\n";
-  di << "Results in:" << "\n";
+  di << "Location of shape " << argv[1] << ":\n";
+  di << "Results in:\n";
   gp_Trsf T = L.Transformation();
   TopLoc_Location l ( T );
   Standard_SStream aSStream;

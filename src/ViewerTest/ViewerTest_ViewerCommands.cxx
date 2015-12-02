@@ -935,7 +935,7 @@ static int VHLRType (Draw_Interpretor& di, Standard_Integer argc, const char** a
 
       if (!aMap.IsBound2 (aName))
       {
-        di << argv[0] << ":" << " Wrong shape name:" << aName.ToCString() << ".\n";
+        di << argv[0] << ": Wrong shape name:" << aName.ToCString() << ".\n";
         continue;
       }
       Handle(AIS_Shape) anAISObject =
@@ -1281,7 +1281,7 @@ static int VViewList (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
           if (isTreeView)
           {
             TCollection_AsciiString aContextName(aContextIter.Key1());
-            theDi << " " << aContextName.Split(aDriverIter.Key1().Length() + 1) << ":" << "\n";
+            theDi << " " << aContextName.Split(aDriverIter.Key1().Length() + 1) << ":\n";
           }
 
           for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator
@@ -1293,7 +1293,7 @@ static int VViewList (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
               if (isTreeView)
               {
                 if (aViewIter.Value() == ViewerTest::CurrentView())
-                  theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "(*)" << "\n";
+                  theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "(*)\n";
                 else
                   theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "\n";
               }
@@ -1733,7 +1733,7 @@ static int ViewProject(Draw_Interpretor& di, const V3d_TypeOfOrientation ori)
 {
   if ( ViewerTest::CurrentView().IsNull() )
   {
-    di<<"Call vinit before this command, please"<<"\n";
+    di<<"Call vinit before this command, please\n";
     return 1;
   }
 
@@ -1827,39 +1827,39 @@ static int VBack(Draw_Interpretor& di, Standard_Integer , const char** )
 static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
 {
 
-  di << "Q : Quit the application" << "\n";
+  di << "Q : Quit the application\n";
 
-  di << "========================="<<"\n";
-  di << "F : FitAll" << "\n";
-  di << "T : TopView" << "\n";
-  di << "B : BottomView" << "\n";
-  di << "R : RightView" << "\n";
-  di << "L : LeftView" << "\n";
-  di << "A : AxonometricView" << "\n";
-  di << "D : ResetView" << "\n";
+  di << "=========================\n";
+  di << "F : FitAll\n";
+  di << "T : TopView\n";
+  di << "B : BottomView\n";
+  di << "R : RightView\n";
+  di << "L : LeftView\n";
+  di << "A : AxonometricView\n";
+  di << "D : ResetView\n";
 
-  di << "========================="<<"\n";
-  di << "S : Shading" << "\n";
-  di << "W : Wireframe" << "\n";
-  di << "H : HidelLineRemoval" << "\n";
-  di << "U : Unset display mode" << "\n";
-  di << "Delete : Remove selection from viewer" << "\n";
+  di << "=========================\n";
+  di << "S : Shading\n";
+  di << "W : Wireframe\n";
+  di << "H : HidelLineRemoval\n";
+  di << "U : Unset display mode\n";
+  di << "Delete : Remove selection from viewer\n";
 
-  di << "========================="<<"\n";
-  di << "Selection mode "<<"\n";
-  di << "0 : Shape" <<"\n";
-  di << "1 : Vertex" <<"\n";
-  di << "2 : Edge" <<"\n";
-  di << "3 : Wire" <<"\n";
-  di << "4 : Face" <<"\n";
-  di << "5 : Shell" <<"\n";
-  di << "6 : Solid" <<"\n";
-  di << "7 : Compound" <<"\n";
+  di << "=========================\n";
+  di << "Selection mode \n";
+  di << "0 : Shape\n";
+  di << "1 : Vertex\n";
+  di << "2 : Edge\n";
+  di << "3 : Wire\n";
+  di << "4 : Face\n";
+  di << "5 : Shell\n";
+  di << "6 : Solid\n";
+  di << "7 : Compound\n";
 
-  di << "========================="<<"\n";
-  di << "Z : Switch Z clipping On/Off" << "\n";
-  di << ", : Hilight next detected" << "\n";
-  di << ". : Hilight previous detected" << "\n";
+  di << "=========================\n";
+  di << "Z : Switch Z clipping On/Off\n";
+  di << ", : Hilight next detected\n";
+  di << ". : Hilight previous detected\n";
 
   return 0;
 }
@@ -2657,7 +2657,7 @@ static int VPick(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 { if (ViewerTest::CurrentView().IsNull() ) return 1;
 
 if ( argc < 4 ) {
-  di << argv[0] << "Invalid number of arguments" << "\n";
+  di << argv[0] << "Invalid number of arguments\n";
   return 1;
 }
 
@@ -2676,8 +2676,8 @@ static int VSetBg(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 {
   if (argc < 2 || argc > 3)
   {
-    di << "Usage : " << argv[0] << " imagefile [filltype] : Load image as background" << "\n";
-    di << "filltype can be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+    di << "Usage : " << argv[0] << " imagefile [filltype] : Load image as background\n";
+    di << "filltype can be one of CENTERED, TILED, STRETCH, NONE\n";
     return 1;
   }
 
@@ -2699,7 +2699,7 @@ static int VSetBg(Draw_Interpretor& di, Standard_Integer argc, const char** argv
     else
     {
       di << "Wrong fill type : " << szType << "\n";
-      di << "Must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+      di << "Must be one of CENTERED, TILED, STRETCH, NONE\n";
       return 1;
     }
   }
@@ -2719,8 +2719,8 @@ static int VSetBgMode(Draw_Interpretor& di, Standard_Integer argc, const char** 
 {
   if (argc != 2)
   {
-    di << "Usage : " << argv[0] << " filltype : Change background image mode" << "\n";
-    di << "filltype must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+    di << "Usage : " << argv[0] << " filltype : Change background image mode\n";
+    di << "filltype must be one of CENTERED, TILED, STRETCH, NONE\n";
     return 1;
   }
 
@@ -2739,7 +2739,7 @@ static int VSetBgMode(Draw_Interpretor& di, Standard_Integer argc, const char** 
   else
   {
     di << "Wrong fill type : " << szType << "\n";
-    di << "Must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+    di << "Must be one of CENTERED, TILED, STRETCH, NONE\n";
     return 1;
   }
   Handle(V3d_View) V3dView = ViewerTest::CurrentView();
@@ -2755,10 +2755,10 @@ static int VSetGradientBg(Draw_Interpretor& di, Standard_Integer argc, const cha
 {
   if (argc != 8 )
   {
-    di << "Usage : " << argv[0] << " R1 G1 B1 R2 G2 B2 Type : Mount gradient background" << "\n";
-    di << "R1,G1,B1,R2,G2,B2 = [0..255]" << "\n";
-    di << "Type must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2" << "\n";
-    di << "                    5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4" << "\n";
+    di << "Usage : " << argv[0] << " R1 G1 B1 R2 G2 B2 Type : Mount gradient background\n";
+    di << "R1,G1,B1,R2,G2,B2 = [0..255]\n";
+    di << "Type must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2\n";
+    di << "                    5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4\n";
     return 1;
   }
 
@@ -2784,9 +2784,9 @@ static int VSetGradientBg(Draw_Interpretor& di, Standard_Integer argc, const cha
     int aType = Draw::Atoi(argv[7]);
     if( aType < 0 || aType > 8 )
     {
-      di << "Wrong fill type " << "\n";
-      di << "Must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2" << "\n";
-      di << "               5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4" << "\n";
+      di << "Wrong fill type \n";
+      di << "Must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2\n";
+      di << "               5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4\n";
       return 1;
     }
 
@@ -2807,9 +2807,9 @@ static int VSetGradientBgMode(Draw_Interpretor& di, Standard_Integer argc, const
 {
   if (argc != 2 )
   {
-    di << "Usage : " << argv[0] << " Type : Change gradient background fill type" << "\n";
-    di << "Type must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2" << "\n";
-    di << "                    5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4" << "\n";
+    di << "Usage : " << argv[0] << " Type : Change gradient background fill type\n";
+    di << "Type must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2\n";
+    di << "                    5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4\n";
     return 1;
   }
 
@@ -2824,9 +2824,9 @@ static int VSetGradientBgMode(Draw_Interpretor& di, Standard_Integer argc, const
     int aType = Draw::Atoi(argv[1]);
     if( aType < 0 || aType > 8 )
     {
-      di << "Wrong fill type " << "\n";
-      di << "Must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2" << "\n";
-      di << "               5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4" << "\n";
+      di << "Wrong fill type \n";
+      di << "Must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2\n";
+      di << "               5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4\n";
       return 1;
     }
 
@@ -2847,8 +2847,8 @@ static int VSetColorBg(Draw_Interpretor& di, Standard_Integer argc, const char**
 {
   if (argc != 4 )
   {
-    di << "Usage : " << argv[0] << " R G B : Set color background" << "\n";
-    di << "R,G,B = [0..255]" << "\n";
+    di << "Usage : " << argv[0] << " R G B : Set color background\n";
+    di << "R,G,B = [0..255]\n";
     return 1;
   }
 
@@ -2936,7 +2936,7 @@ static int VScale(Draw_Interpretor& di, Standard_Integer argc, const char** argv
   if ( V3dView.IsNull() ) return 1;
 
   if ( argc != 4 ) {
-    di << argv[0] << "Invalid number of arguments" << "\n";
+    di << argv[0] << "Invalid number of arguments\n";
     return 1;
   }
   V3dView->SetAxialScale( Draw::Atof(argv[1]),  Draw::Atof(argv[2]),  Draw::Atof(argv[3]) );
@@ -3267,13 +3267,13 @@ static int VZoom( Draw_Interpretor& di, Standard_Integer argc, const char** argv
   if ( argc == 2 ) {
     Standard_Real coef = Draw::Atof(argv[1]);
     if ( coef <= 0.0 ) {
-      di << argv[1] << "Invalid value" << "\n";
+      di << argv[1] << "Invalid value\n";
       return 1;
     }
     V3dView->SetZoom( Draw::Atof(argv[1]) );
     return 0;
   } else {
-    di << argv[0] << " Invalid number of arguments" << "\n";
+    di << argv[0] << " Invalid number of arguments\n";
     return 1;
   }
 }
@@ -3291,7 +3291,7 @@ static int VPan( Draw_Interpretor& di, Standard_Integer argc, const char** argv 
     V3dView->Pan( Draw::Atoi(argv[1]), Draw::Atoi(argv[2]) );
     return 0;
   } else {
-    di << argv[0] << " Invalid number of arguments" << "\n";
+    di << argv[0] << " Invalid number of arguments\n";
     return 1;
   }
 }
@@ -4053,7 +4053,7 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
   Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
   if (anAISContext.IsNull())
   {
-    std::cout << theArgs[0] << ": " << " please use 'vinit' command to initialize view.\n";
+    std::cout << theArgs[0] << ":  please use 'vinit' command to initialize view.\n";
     return 1;
   }
 
@@ -5775,7 +5775,7 @@ static Standard_Integer VSelect (Draw_Interpretor& di,
 {
   if(argc < 3)
   {
-    di << "Usage : " << argv[0] << " x1 y1 [x2 y2 [... xn yn]] [shift_selection = 1|0]" << "\n";
+    di << "Usage : " << argv[0] << " x1 y1 [x2 y2 [... xn yn]] [shift_selection = 1|0]\n";
     return 1;
   }
 
@@ -5847,7 +5847,7 @@ static Standard_Integer VMoveTo (Draw_Interpretor& di,
 {
   if(argc != 3)
   {
-    di << "Usage : " << argv[0] << " x y" << "\n";
+    di << "Usage : " << argv[0] << " x y\n";
     return 1;
   }
 
@@ -6108,8 +6108,8 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
 {
   if(argc>4)
   {
-    di << "Usage : " << argv[0] << " [mode] [depth  width]" << "\n"
-      <<"mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+    di << "Usage : " << argv[0] << " [mode] [depth  width]\n"
+      <<"mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
     return -1;
   }
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
@@ -6170,8 +6170,8 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
       }
       if (aStatus != 1)
       {
-        di << "Bad mode; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
-          << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+        di << "Bad mode; Usage : " << argv[0] << " [mode] [depth width]\n"
+          << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
         return 1;
       }
       aView->SetZClippingType(aZClippingMode);
@@ -6192,14 +6192,14 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
 
       if(aDepth<0. || aDepth>1.)
       {
-        di << "Bad depth; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
-        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+        di << "Bad depth; Usage : " << argv[0] << " [mode] [depth width]\n"
+        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
         return 1;
       }
       if(aWidth<0. || aWidth>1.)
       {
-        di << "Bad width; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
-        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+        di << "Bad width; Usage : " << argv[0] << " [mode] [depth width]\n"
+        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
         return 1;
       }
 
@@ -6244,7 +6244,7 @@ static Standard_Integer VAntialiasing (Draw_Interpretor& di,
 {
   if(argc > 2)
   {
-    di << "Usage : " << argv[0] << " [1|0]" << "\n";
+    di << "Usage : " << argv[0] << " [1|0]\n";
     return 1;
   }
 
@@ -7068,7 +7068,7 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
 
   if (theArgsNb < 2)
   {
-    theDi << "Auto z-fit mode: " << "\n"
+    theDi << "Auto z-fit mode: \n"
           << "On: " << (aCurrentView->AutoZFitMode() ? "enabled" : "disabled") << "\n"
           << "Scale: " << aScale << "\n";
     return 0;
@@ -8768,13 +8768,13 @@ static Standard_Integer VXRotate (Draw_Interpretor& di,
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
   
   if (argc != 3)
   {
-    di << "ERROR : Usage : " << argv[0] << " name angle" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " name angle\n";
     return 1;
   }
 
@@ -8786,7 +8786,7 @@ static Standard_Integer VXRotate (Draw_Interpretor& di,
   Handle(AIS_InteractiveObject) anIObj;
   if (!aMap.IsBound2 (aName) )
   {
-    di << "Use 'vdisplay' before" << "\n";
+    di << "Use 'vdisplay' before\n";
     return 1;
   }
   else

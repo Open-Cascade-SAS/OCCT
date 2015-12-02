@@ -66,7 +66,7 @@ static Standard_Integer MakeDF (Draw_Interpretor& di,
   if (!D.IsNull ()) {
     NewDDF = Handle(DDF_Data)::DownCast (D);
     if (!NewDDF.IsNull ()) {
-      di<<"DDF_BasicCommands::MakeDF - Sorry, this Data Framework already exists"<<"\n";
+      di<<"DDF_BasicCommands::MakeDF - Sorry, this Data Framework already exists\n";
       return 0;
     }
   }
@@ -108,7 +108,7 @@ static Standard_Integer ClearDF (Draw_Interpretor& di,
     }
   }
 
-  di<<"DDF_BasicCommands::MakeDF - Sorry, this Data Framework doesn't exist"<<"\n";
+  di<<"DDF_BasicCommands::MakeDF - Sorry, this Data Framework doesn't exist\n";
 
   return 0;
 }
@@ -182,18 +182,18 @@ static Standard_Integer MiniDumpDF (Draw_Interpretor& di,
   D = Draw::Get(a[1]);
 
   if (D.IsNull ()) {
-    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist"<<"\n";
+    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
     return Standard_False;
   }
 
   DDF = Handle(DDF_Data)::DownCast (D);
 
   if (DDF.IsNull ()) {
-    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist"<<"\n";
+    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
     return Standard_False;
   }
 
-  di<<"*********** Dump of "<<a[1]<<" ***********"<<"\n";
+  di<<"*********** Dump of "<<a[1]<<" ***********\n";
 
   //DDF->DataFramework()->Dump(cout);
   Standard_SStream aSStream;
@@ -220,18 +220,18 @@ static Standard_Integer XDumpDF (Draw_Interpretor& di,
   D = Draw::Get(a[1]);
 
   if (D.IsNull ()) {
-    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist"<<"\n";
+    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
     return Standard_False;
   }
 
   DDF = Handle(DDF_Data)::DownCast (D);
 
   if (DDF.IsNull ()) {
-    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist"<<"\n";
+    di<<"DDF_BasicCommands : Sorry this Data Framework doesn't exist\n";
     return Standard_False;
   }
 
-  di<<"*********** Dump of "<<a[1]<<" ***********"<<"\n";
+  di<<"*********** Dump of "<<a[1]<<" ***********\n";
 
   TDF_IDFilter filter(Standard_False);
   //TDF_Tool::ExtendedDeepDump(cout,DDF->DataFramework(),filter);
@@ -257,7 +257,7 @@ static Standard_Integer CopyLabel_SCopy (Draw_Interpretor& di,Standard_Integer n
     if(!DDF::GetDF(a[1], DF)) return 1;
     if (!DDF::FindLabel(DF,a[2],SOURCE)) return 1;   
     if (DDF::FindLabel(DF,a[3],TARGET)) {
-      di << " target label is already setted "<< "\n";
+      di << " target label is already setted \n";
       return 1;
     }
     DDF::AddLabel(DF,a[3],TARGET);
@@ -265,10 +265,10 @@ static Standard_Integer CopyLabel_SCopy (Draw_Interpretor& di,Standard_Integer n
     cop.Load(SOURCE, TARGET);
     cop.Perform();
     if (!cop.IsDone()) 
-      di << "copy not done" << "\n";
+      di << "copy not done\n";
     return 0;
   }
-  di << "DDF_CopyLabel : Error" << "\n";
+  di << "DDF_CopyLabel : Error\n";
   return 1;  
 }
 
@@ -327,10 +327,10 @@ static Standard_Integer  DDF_CheckAttrs (Draw_Interpretor& di,Standard_Integer n
       ds1->Clear();
     }
     if(!Shar) 
-      di << "Shareable attributes not found" << "\n";
+      di << "Shareable attributes not found\n";
     return 0;
   }
-  di << "DDF_CheckAttrs : Error" << "\n";
+  di << "DDF_CheckAttrs : Error\n";
   return 1;    
 }
 
@@ -367,7 +367,7 @@ static Standard_Integer  DDF_CheckLabel (Draw_Interpretor& di,Standard_Integer n
 
     return 0;
   }
-  di << "DDF_ChecLabel : Error" << "\n";
+  di << "DDF_ChecLabel : Error\n";
   return 1;    
 }
 

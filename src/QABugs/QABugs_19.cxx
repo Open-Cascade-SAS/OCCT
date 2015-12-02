@@ -63,17 +63,17 @@
 static Standard_Integer OCC230 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 4) {
-    di << "ERROR OCC230: Usage : " << argv[0] << " TrimmedCurve Pnt2d Pnt2d" << "\n";
+    di << "ERROR OCC230: Usage : " << argv[0] << " TrimmedCurve Pnt2d Pnt2d\n";
     return 1;
   }
 
   gp_Pnt2d P1, P2;
   if ( !DrawTrSurf::GetPoint2d(argv[2],P1)) {
-    di << "ERROR OCC230: " << argv[2] << " is not Pnt2d" << "\n";
+    di << "ERROR OCC230: " << argv[2] << " is not Pnt2d\n";
     return 1;
   }
   if ( !DrawTrSurf::GetPoint2d(argv[3],P2)) {
-    di << "ERROR OCC230: " << argv[3] << " is not Pnt2d" << "\n";
+    di << "ERROR OCC230: " << argv[3] << " is not Pnt2d\n";
     return 1;
   }
 
@@ -100,9 +100,9 @@ static Standard_Integer OCC23361 (Draw_Interpretor& di, Standard_Integer /*argc*
 
   // points must be equal
   if ( ! p2.IsEqual(p3, Precision::Confusion()) )
-    di << "ERROR OCC23361: equivalent transformations does not produce equal points" << "\n";
+    di << "ERROR OCC23361: equivalent transformations does not produce equal points\n";
   else 
-    di << "OCC23361: OK" << "\n";
+    di << "OCC23361: OK\n";
 
   return 0;
 }
@@ -300,7 +300,7 @@ static Standard_Boolean OCC23774Test(const TopoDS_Face& grossPlateFace, const To
   BRepBuilderAPI_Transform transformer1(mirror1);
   transformer1.Perform(originalWire);
   if(!transformer1.IsDone()) {
-    di << "Not Done1 " << "\n";
+    di << "Not Done1 \n";
     return Standard_False;
   }
   TopoDS_Shape step1ModifiedShape = transformer1.ModifiedShape(originalWire);
@@ -517,7 +517,7 @@ static Standard_Integer OCC23952intersect (Draw_Interpretor& di, Standard_Intege
 static Standard_Integer OCC23683 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
 {
   if (argc < 2) {
-    di<<"Usage: " << argv[0] << " invalid number of arguments"<<"\n";
+    di<<"Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
 
@@ -548,7 +548,7 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
   // Check the command arguments
   if ( argc != 1 )
   {
-    di << "Error: " << argv[0] << " - invalid number of arguments" << "\n";
+    di << "Error: " << argv[0] << " - invalid number of arguments\n";
     di << "Usage: type help " << argv[0] << "\n";
     return 1; // TCL_ERROR
   }
@@ -557,8 +557,8 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
   gp_Ax22d Ax2( gp::Origin2d(), gp::DY2d(), gp::DX2d() );
   Handle(Geom_Surface) Plane = new Geom_Plane( gp::YOZ() );
 
-  di << "<<<< Preparing sample surface of revolution based on trimmed curve >>>>" << "\n";
-  di << "-----------------------------------------------------------------------" << "\n";
+  di << "<<<< Preparing sample surface of revolution based on trimmed curve >>>>\n";
+  di << "-----------------------------------------------------------------------\n";
 
   Handle(Geom2d_Circle) C2d1 = new Geom2d_Circle(Ax2, 1.0);
   Handle(Geom2d_TrimmedCurve) C2d1Trimmed = new Geom2d_TrimmedCurve(C2d1, 0.0, M_PI/2.0);
@@ -571,10 +571,10 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
 
   DBRep::Set("f1", F1);
 
-  di << "Result: f1" << "\n";
+  di << "Result: f1\n";
 
-  di << "<<<< Preparing sample surface of revolution based on offset curve  >>>>" << "\n";
-  di << "-----------------------------------------------------------------------" << "\n";
+  di << "<<<< Preparing sample surface of revolution based on offset curve  >>>>\n";
+  di << "-----------------------------------------------------------------------\n";
 
   Handle(Geom2d_OffsetCurve) C2d2Offset = new Geom2d_OffsetCurve(C2d1Trimmed, -0.5);
   TopoDS_Edge E2 = BRepBuilderAPI_MakeEdge(C2d2Offset, Plane);
@@ -586,7 +586,7 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
 
   DBRep::Set("f2", F2);
 
-  di << "Result: f2" << "\n";
+  di << "Result: f2\n";
 
   return 0;
 }
@@ -602,17 +602,17 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
 static Standard_Integer OCC24008 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 3) {
-    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    di << "Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
   Handle(Geom_Curve) aCurve = DrawTrSurf::GetCurve(argv[1]);
   Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(argv[2]);
   if (aCurve.IsNull()) {
-    di << "Curve was not read" << "\n";
+    di << "Curve was not read\n";
 	return 1;
   }
   if (aSurf.IsNull()) {
-	di << "Surface was not read" << "\n";
+	di << "Surface was not read\n";
 	return 1;
   }
   ShapeConstruct_ProjectCurveOnSurface aProj;
@@ -621,11 +621,11 @@ static Standard_Integer OCC24008 (Draw_Interpretor& di, Standard_Integer argc, c
     Handle(Geom2d_Curve) aPCurve;
     aProj.Perform (aCurve, aCurve->FirstParameter(), aCurve->LastParameter(), aPCurve);
     if (aPCurve.IsNull()) {
-	  di << "PCurve was not created" << "\n";
+	  di << "PCurve was not created\n";
 	  return 1;
     }
   } catch (...) {
-    di << "Exception was caught" << "\n";
+    di << "Exception was caught\n";
   }
   return 0;
 }
@@ -1198,7 +1198,7 @@ static Standard_Integer OCC24005 (Draw_Interpretor& theDI, Standard_Integer theN
 
   if (!anInters.IsDone())
   {
-    theDI<<"No intersections found!"<<"\n";
+    theDI<<"No intersections found!\n";
 
     return 1;
   }
@@ -1315,9 +1315,9 @@ static Standard_Integer OCC24086 (Draw_Interpretor& di, Standard_Integer argc, c
     ana.NbFaces();
 
 	if (!(BRepAlgo::IsValid(result))) {
-		di << "Result was checked and it is INVALID" << "\n";
+		di << "Result was checked and it is INVALID\n";
 	} else {
-		di << "Result was checked and it is VALID" << "\n";
+		di << "Result was checked and it is VALID\n";
 	}
 	
 	Handle(AIS_InteractiveObject) myShape = new AIS_Shape (result);
@@ -1334,7 +1334,7 @@ static Standard_Integer OCC24086 (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer OCC24945 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 1) {
-    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    di << "Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
 
@@ -1368,7 +1368,7 @@ static Standard_Integer OCC24137 (Draw_Interpretor& theDI, Standard_Integer theN
   Standard_Integer anArgIter = 1;
   if (theNArg < 5)
     {
-      theDI <<"Usage: " << theArgv[0] << " face vertex U V [N]"<<"\n";
+      theDI <<"Usage: " << theArgv[0] << " face vertex U V [N]\n";
       return 1;
     }
 
@@ -1591,7 +1591,7 @@ static Standard_Integer OCC23972 (Draw_Interpretor& di,Standard_Integer n, const
 static Standard_Integer OCC24370 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
 {
   if (argc < 5) {
-    di<<"Usage: " << argv[0] << " invalid number of arguments"<<"\n";
+    di<<"Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
 
@@ -1707,7 +1707,7 @@ struct QABugs_NHandleClass
 {
   Standard_Integer NHandleProc (Draw_Interpretor& , Standard_Integer  , const char** theArgVec)
   {
-    std::cerr << "QABugs_NHandleClass[" << this << "] " << "" << theArgVec[0] << "\n";
+    std::cerr << "QABugs_NHandleClass[" << this << "] " << theArgVec[0] << "\n";
     return 0;
   }
 };
@@ -1718,7 +1718,7 @@ struct QABugs_NHandleClass
 static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 2) {
-    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    di << "Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
   Handle(TDocStd_Document) aDoc = new TDocStd_Document("dummy");;
@@ -1777,7 +1777,7 @@ static Standard_Integer OCC23950 (Draw_Interpretor& di, Standard_Integer argc, c
   STEPCAFControl_Writer writer;
   if (! writer.Transfer (aDoc, mode))
   {
-    di << "The document cannot be translated or gives no result" << "\n";
+    di << "The document cannot be translated or gives no result\n";
     return 1;
   }
 
@@ -1852,11 +1852,11 @@ static Standard_Integer OCC24667 (Draw_Interpretor& di, Standard_Integer n, cons
 {
   if (n == 1)
   {
-    di << "OCC24667 result Wire_spine Profile [Mode [Approx]]" << "\n";
-    di << "Mode = 0 - CorrectedFrenet," << "\n";
-    di << "     = 1 - Frenet," << "\n";
-    di << "     = 2 - DiscreteTrihedron" << "\n";
-    di << "Approx - force C1-approximation if result is C0" << "\n";
+    di << "OCC24667 result Wire_spine Profile [Mode [Approx]]\n";
+    di << "Mode = 0 - CorrectedFrenet,\n";
+    di << "     = 1 - Frenet,\n";
+    di << "     = 2 - DiscreteTrihedron\n";
+    di << "Approx - force C1-approximation if result is C0\n";
     return 0;
   }
 
@@ -1936,7 +1936,7 @@ static TopoDS_Shape CreateTestShape (int& theShapeNb)
 static Standard_Integer OCC24931 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc != 2) {
-    di << "Usage: " << argv[0] << " invalid number of arguments"<<"\n";
+    di << "Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
   TCollection_ExtendedString aFileName (argv[1]);
@@ -2475,7 +2475,7 @@ class mOcafApplication : public TDocStd_Application
 static Standard_Integer OCC23010 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 2) {
-    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    di << "Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
   std::string fileName=argv[1];
@@ -2585,7 +2585,7 @@ static Standard_Integer OCC25202 ( Draw_Interpretor& theDI,
 static Standard_Integer OCC7570 (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n != 2) {
-    di<<"Usage: "<<a[0]<<" invalid number of arguments"<<"\n";
+    di<<"Usage: "<<a[0]<<" invalid number of arguments\n";
     return 1;
   }
   TopoDS_Shape in_shape (DBRep::Get (a[1]));
@@ -2722,7 +2722,7 @@ static Standard_Integer OCC25100 (Draw_Interpretor& di, Standard_Integer argc, c
   TopoDS_Shape S = DBRep::Get(argv[1]);
   if ( S.IsNull() )
   {
-    di << "Shape is empty" << "\n";
+    di << "Shape is empty\n";
     return 1;
   }
   
@@ -2772,7 +2772,7 @@ static Standard_Integer OCC25348 (Draw_Interpretor& theDI,
 static Standard_Integer OCC25413 (Draw_Interpretor& di, Standard_Integer narg , const char** a)
 {
   if (narg != 2) {
-    di << "Usage: " << a[0] << " invalid number of arguments" << "\n";
+    di << "Usage: " << a[0] << " invalid number of arguments\n";
     return 1;
   }
   TopoDS_Shape aShape = DBRep::Get (a[1]);
@@ -3196,7 +3196,7 @@ static ShapeExtend_Status getStatusGap(const Handle(ShapeFix_Wire)&   theFix,
 static Standard_Integer OCC24881 (Draw_Interpretor& di, Standard_Integer narg , const char** a)
 {
   if (narg < 2) {
-    di<<"Usage: "<<a[0]<<" invalid number of arguments"<<"\n";
+    di<<"Usage: "<<a[0]<<" invalid number of arguments\n";
     return 1;
   }
 //    cout <<"FileName1: " << argv[1] <<endl;
@@ -3289,7 +3289,7 @@ static Standard_Integer OCC24881 (Draw_Interpretor& di, Standard_Integer narg , 
 	}    
 	if (nbOk)
 	{
-		di << "Fix_FillGaps_NothingToDo" <<"\n";
+		di << "Fix_FillGaps_NothingToDo\n";
 
 	}
 	TColStd_DataMapIteratorOfDataMapOfIntegerInteger aStatusItr(aStatusNbDMap);
@@ -3580,12 +3580,12 @@ static Standard_Integer OCC24923(
   if (aDeviation > aMaxDeviation)
   {
     theDI << "Failed. Number of incorrect results is too huge: " << 
-      aDeviation * 100 << "% (Max " << aMaxDeviation * 100 << "%)" << "\n";
+      aDeviation * 100 << "% (Max " << aMaxDeviation * 100 << "%)\n";
     return 1;
   }
 
   theDI << "Deviation of incorrect results is: " <<
-    aDeviation * 100 << "% (Max " << aMaxDeviation * 100 << "%)" << "\n";
+    aDeviation * 100 << "% (Max " << aMaxDeviation * 100 << "%)\n";
   theDI << "Test completed\n";
   return 0;
 }
@@ -3604,7 +3604,7 @@ Standard_Integer OCC26446 (Draw_Interpretor& di,
                            const char** a)
 {
   if (n != 4) {
-    di << "Usage: OCC26446 r c1 c2" << "\n";
+    di << "Usage: OCC26446 r c1 c2\n";
     return 1;
   }
 
@@ -3614,12 +3614,12 @@ Standard_Integer OCC26446 (Draw_Interpretor& di,
     Handle(Geom_BSplineCurve)::DownCast(DrawTrSurf::GetCurve(a[3]));
 
   if (aCurve1.IsNull()) {
-    di << a[2] << " is not a BSpline curve" << "\n";
+    di << a[2] << " is not a BSpline curve\n";
 	return 1;
   }
 
   if (aCurve2.IsNull()) {
-    di << a[3] << " is not a BSpline curve" << "\n";
+    di << a[3] << " is not a BSpline curve\n";
 	return 1;
   }
 
@@ -4034,7 +4034,7 @@ static Standard_Integer OCC26313(Draw_Interpretor& di,Standard_Integer n,const c
 
   TopoDS_Shape aSrcShape = DBRep::Get(a[2]);
   if (aSrcShape.IsNull()) {
-    di << a[2] << " is not a valid shape" << "\n";
+    di << a[2] << " is not a valid shape\n";
     return 1;
   }
 

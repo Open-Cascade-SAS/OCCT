@@ -70,12 +70,12 @@ static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, 
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) { 
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
 
   if ( argc != 3) {
-    di << "ERROR : Usage : " << argv[0] << " shape mode" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " shape mode\n";
     return 1;
   }
   
@@ -102,7 +102,7 @@ static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, 
     ChoosingMode = 7;
   }
   if ( ChoosingMode == -1 ) {
-    di << "ERROR : " << argv[1] << " : vrong value of a mode" << "\n";
+    di << "ERROR : " << argv[1] << " : vrong value of a mode\n";
     return 1;
   }
 
@@ -114,12 +114,12 @@ static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, 
   Handle(AIS_InteractiveObject) AISObj;
   
   if(!aMap.IsBound2(aName)) {
-    di << "Use 'vdisplay' before" << "\n";
+    di << "Use 'vdisplay' before\n";
     return 1;
   } else {
     AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
     if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object" << "\n";
+      di << argv[1] << " : No interactive object\n";
       return 1;
     } 
 
@@ -182,7 +182,7 @@ static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 2) {
-    di << "ERROR : Usage : " << argv[0] << " Doc" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " Doc\n";
     return 1;
   }
   
@@ -197,9 +197,9 @@ static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   Handle(TDocStd_Document) OwnerD1 = Owner->GetDocument();    
   if (OwnerD1.IsNull()) {
-    di << "DocOwner1 = NULL" << "\n";
+    di << "DocOwner1 = NULL\n";
   } else {
-    di << "DocOwner1 = NOTNULL" << "\n";
+    di << "DocOwner1 = NOTNULL\n";
   }
  
   Handle(TDocStd_Application) A;
@@ -211,9 +211,9 @@ static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   Handle(TDocStd_Document) OwnerD2 = Owner->GetDocument();    
   if (OwnerD2.IsNull()) {
-    di << "DocOwner2 = NULL" << "\n";
+    di << "DocOwner2 = NULL\n";
   } else {
-    di << "DocOwner2 = NOTNULL" << "\n";
+    di << "DocOwner2 = NOTNULL\n";
   }
 
   Standard_Integer DocRefCount2 = D->GetRefCount();
@@ -225,7 +225,7 @@ static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer OCC145bug (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 3) {
-    di << "ERROR : Usage : " << argv[0] << " Shape MaxNbr" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " Shape MaxNbr\n";
     return 1;
   }
 
@@ -236,7 +236,7 @@ static Standard_Integer OCC145bug (Draw_Interpretor& di, Standard_Integer argc, 
   TopoDS_Shape aShape;
 
   if (!BRepTools::Read(aShape, aFileName.ToCString(), aBld)) {
-    di << "ERROR :Could not read a shape!!!" << "\n";
+    di << "ERROR :Could not read a shape!!!\n";
     return 1;
   }
 
@@ -246,7 +246,7 @@ static Standard_Integer OCC145bug (Draw_Interpretor& di, Standard_Integer argc, 
   for (i = 1; i <= aMaxNbr; i++) {
     BRepBuilderAPI_MakeFace aMF(aWire);
     if (!aMF.IsDone()) {
-      di << "ERROR : Could not make a face" << "\n";
+      di << "ERROR : Could not make a face\n";
       return 1;
     }
   }
@@ -257,7 +257,7 @@ static Standard_Integer OCC145bug (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer OCC73_SelectionMode (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc < 3) {
-    di << "ERROR : Usage : " << argv[0] << " DOC entry [SelectionMode]" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " DOC entry [SelectionMode]\n";
     return 1;
   }
 
@@ -299,13 +299,13 @@ static Standard_Integer OCC10bug (Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   if(argc != 4) {
-    di << "Usage : " << argv[0] << " name plane Length" << "\n";
+    di << "Usage : " << argv[0] << " name plane Length\n";
     return 1;
   }
 
   TopoDS_Shape S = DBRep::Get( argv[2] );
   if ( S.IsNull() ) {
-    di << "Shape is empty" << "\n";
+    di << "Shape is empty\n";
     return 1;
   }
 
@@ -378,9 +378,9 @@ static Standard_Integer OCC10bug (Draw_Interpretor& di, Standard_Integer argc, c
   di << "getLength = " << getLength << "\n";
 
   if (getLength == Length) {
-    di << "OCC10: OK" << "\n";
+    di << "OCC10: OK\n";
   } else {
-    di << "OCC10: ERROR" << "\n";
+    di << "OCC10: ERROR\n";
   }
 
   return 0;
@@ -390,12 +390,12 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) { 
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
 
   if ( argc != 3) {
-    di << "ERROR : Usage : " << argv[0] << " shape mode; set selection mode" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " shape mode; set selection mode\n";
     return 1;
   }
   
@@ -409,12 +409,12 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
   Standard_Integer SelectMode = Draw::Atoi(argv[2]);
   
   if(!aMap.IsBound2(aName)) {
-    di << "Use 'vdisplay' before" << "\n";
+    di << "Use 'vdisplay' before\n";
     return 1;
   } else {
     AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
     if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object" << "\n";
+      di << argv[1] << " : No interactive object\n";
       return 1;
     } 
     if (!aContext->HasOpenedContext()) {
@@ -434,12 +434,12 @@ static Standard_Integer OCC74bug_get (Draw_Interpretor& di, Standard_Integer arg
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) { 
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
 
   if ( argc != 2) {
-    di << "ERROR : Usage : " << argv[0] << " shape; get selection mode" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " shape; get selection mode\n";
     return 1;
   }
 
@@ -449,12 +449,12 @@ static Standard_Integer OCC74bug_get (Draw_Interpretor& di, Standard_Integer arg
   Handle(AIS_InteractiveObject) AISObj;
 
   if(!aMap.IsBound2(aName)) {
-    di << "Use 'vdisplay' before" << "\n";
+    di << "Use 'vdisplay' before\n";
     return 1;
   } else {
     AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
     if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object" << "\n";
+      di << argv[1] << " : No interactive object\n";
       return 1;
     } 
     TColStd_ListOfInteger anActivatedModes;
@@ -475,14 +475,14 @@ static Standard_Integer OCC74bug_get (Draw_Interpretor& di, Standard_Integer arg
 static Standard_Integer OCC361bug (Draw_Interpretor& di, Standard_Integer nb, const char ** a)
 {
   if ( nb != 2) {
-    di << "ERROR : Usage : " << a[0] << " Doc" << "\n";
-    di << "-1" << "\n";
+    di << "ERROR : Usage : " << a[0] << " Doc\n";
+    di << "-1\n";
     return -1;
   }
 
   Handle(TDocStd_Document) D;    
   if (!DDocStd::GetDocument(a[1],D)) {
-    di << "-2" << "\n";
+    di << "-2\n";
     return 1;  
   }
 
@@ -504,9 +504,9 @@ static Standard_Integer OCC361bug (Draw_Interpretor& di, Standard_Integer nb, co
 
   aTBox = aBuilder2.NamedShape()->Get();
   if(aTBox.Orientation() != TopAbs_REVERSED) {
-    di << "1" << "\n";
+    di << "1\n";
   } else {
-    di << "0" << "\n";
+    di << "0\n";
   }
   return 0;
 }

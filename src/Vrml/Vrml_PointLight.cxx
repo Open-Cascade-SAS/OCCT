@@ -88,36 +88,36 @@ gp_Vec Vrml_PointLight::Location() const
 
 Standard_OStream& Vrml_PointLight::Print(Standard_OStream& anOStream) const 
 {
- anOStream  << "PointLight {" << endl;
+ anOStream  << "PointLight {\n";
 
  if ( myOnOff != Standard_True )
    {
-    anOStream  << "    on" << "\t\t" << "FALSE" << endl;
-//    anOStream << myOnOff << endl;
+    anOStream  << "    on\t\tFALSE\n";
+//    anOStream << myOnOff << "\n";
    }
 
  if ( Abs(myIntensity - 1) > 0.0001 )
    {
-    anOStream  << "    intensity" << '\t';
-    anOStream << myIntensity << endl;
+    anOStream  << "    intensity\t";
+    anOStream << myIntensity << "\n";
    }
 
  if ( Abs(myColor.Red() - 1) > 0.0001 || 
       Abs(myColor.Green() - 1) > 0.0001 || 
       Abs(myColor.Blue() - 1) > 0.0001 )
    {
-    anOStream  << "    color" << '\t';
-    anOStream << myColor.Red() << ' ' << myColor.Green() << ' ' << myColor.Blue() << endl;
+    anOStream  << "    color\t";
+    anOStream << myColor.Red() << " " << myColor.Green() << " " << myColor.Blue() << "\n";
    }
 
  if ( Abs(myLocation.X() - 0) > 0.0001 || 
      Abs(myLocation.Y() - 0) > 0.0001 || 
      Abs(myLocation.Z() - 1) > 0.0001 ) 
    {
-    anOStream  << "    location" << '\t';
-    anOStream << myLocation.X() << ' ' << myLocation.Y() << ' ' << myLocation.Z() << endl;
+    anOStream  << "    location\t";
+    anOStream << myLocation.X() << " " << myLocation.Y() << " " << myLocation.Z() << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

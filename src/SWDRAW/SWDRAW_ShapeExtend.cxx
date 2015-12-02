@@ -26,10 +26,10 @@ static Standard_Integer sortcompound (Draw_Interpretor& di, Standard_Integer arg
 {
   Standard_CString arg1 = argv[1];
   if (argc < 2) {
-    di<<"Give shape name. As is, just displays shape type"<<"\n";
-    di<<" or add result_name type [mode]"<<"\n";
-    di<<" Type : v (vertex)  e (edge)  w (wire)  f (face)  s (shell)  so (solid)"<<"\n";
-    di<<" Mode : n (normal, by default)  e (explore)  c (compound)  x (explore+comp)"<<"\n";
+    di<<"Give shape name. As is, just displays shape type\n";
+    di<<" or add result_name type [mode]\n";
+    di<<" Type : v (vertex)  e (edge)  w (wire)  f (face)  s (shell)  so (solid)\n";
+    di<<" Mode : n (normal, by default)  e (explore)  c (compound)  x (explore+comp)\n";
     return 0;
   }
   TopoDS_Shape Shape = DBRep::Get(arg1);
@@ -41,9 +41,9 @@ static Standard_Integer sortcompound (Draw_Interpretor& di, Standard_Integer arg
       TopAbs_ShapeEnum ts = sbx.ShapeType(Shape,i);
       //cout<<"   Type "<<(i ? " (via Compound) : " : "(True) : ");
       if (i == 0) {
-	di<<"   Type "<<"(True) : ";
+	di<<"   Type (True) : ";
       } else {
-	di<<"   Type "<<" (via Compound) : ";
+	di<<"   Type  (via Compound) : ";
       }
       switch (ts) {
 	case TopAbs_SHAPE  : di<<"SHAPE (empty)"; break;
@@ -83,7 +83,7 @@ static Standard_Integer sortcompound (Draw_Interpretor& di, Standard_Integer arg
     }
     ShapeExtend_Explorer sbx;
     Shape = sbx.SortedCompound (Shape,tse,modexp,modcom);
-    if ( Shape.IsNull()) { di<<"Empty result"<<"\n"; return 0; }
+    if ( Shape.IsNull()) { di<<"Empty result\n"; return 0; }
     DBRep::Set(argv[2],Shape);
   }
   return 0; // Done

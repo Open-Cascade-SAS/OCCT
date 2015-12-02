@@ -351,7 +351,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
     }
   }
   if(!nbpi)
-    di<<"Points of intersections are not found"<<"\n";
+    di<<"Points of intersections are not found\n";
   if(indshape < n-1)
     DBRep::Set(a[n-1], aComp);
   //POP pour NT
@@ -424,7 +424,7 @@ Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const char** a
 Standard_Integer xbounds(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n<2) {
-    di << "Usage : " << a[0] << " face" << "\n";
+    di << "Usage : " << a[0] << " face\n";
     return 0;
   }
   //

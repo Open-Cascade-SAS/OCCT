@@ -48,14 +48,14 @@ static Standard_Integer DDataStd_SetShape (Draw_Interpretor& di,
     Handle(TDF_Data) DF;
     if (!DDF::GetDF(arg[1],DF)) return 1;  
     TopoDS_Shape s = DBRep::Get(arg[3]);  
-    if (s.IsNull()) { di <<"shape not found"<< "\n"; return 1;}  
+    if (s.IsNull()) { di <<"shape not found\n"; return 1;}  
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
     TNaming_Builder SI (L);
     SI.Generated(s);
     return 0;
   }
-  di << "DDataStd_SetShape : Error" << "\n";
+  di << "DDataStd_SetShape : Error\n";
   return 1;
 }
 

@@ -123,7 +123,7 @@ static Standard_Integer surface_radius (Draw_Interpretor& di,
 	di << "Min Radius of Curvature : " << radius  << "\n";
       }
       else {
-	di << "Min Radius of Curvature :  infinite" << "\n";
+	di << "Min Radius of Curvature :  infinite\n";
       }
     
       radius = myProperties.MaxCurvature();
@@ -133,10 +133,10 @@ static Standard_Integer surface_radius (Draw_Interpretor& di,
 	di << "Max Radius of Curvature : " << radius  << "\n";
       }
       else
-	di << "Min Radius of Curvature :  infinite" << "\n";
+	di << "Min Radius of Curvature :  infinite\n";
     }
     else {
-      di << "Curvature not defined." << "\n";
+      di << "Curvature not defined.\n";
     }
   }
   else {
@@ -548,7 +548,7 @@ static Standard_Integer tobezier(Draw_Interpretor& di,
 	  Conv(S, U1, U2, V1, V2, Precision::PConfusion());
 	NbU = Conv.NbUPatches();
 	NbV = Conv.NbVPatches();
-	di << NbU << " X " << NbV << " patches in the result" << "\n";
+	di << NbU << " X " << NbV << " patches in the result\n";
 	for (i = 1; i <= NbU; i++) {
 	  for (j = 1; j <= NbV; j++) {
 	    Sprintf(name,"%s_%i_%i",a[1],i,j);
@@ -561,7 +561,7 @@ static Standard_Integer tobezier(Draw_Interpretor& di,
 	GeomConvert_BSplineSurfaceToBezierSurface Conv(S);
 	NbU = Conv.NbUPatches();
 	NbV = Conv.NbVPatches();
-	di << NbU << " X " << NbV << " patches in the result" << "\n";
+	di << NbU << " X " << NbV << " patches in the result\n";
 	for (i = 1; i <= NbU; i++) {
 	  for (j = 1; j <= NbV; j++) {
 	    Sprintf(name,"%s_%i_%i",a[1],i,j);
@@ -579,7 +579,7 @@ static Standard_Integer tobezier(Draw_Interpretor& di,
 	GeomConvert_BSplineCurveToBezierCurve Conv(C3d, U1, U2, 
 						   Precision::PConfusion());
 	NbArc = Conv.NbArcs();
-	di << NbArc << " arcs in the result" << "\n";
+	di << NbArc << " arcs in the result\n";
 	for (i = 1; i <= NbArc; i++) {
 	  Sprintf(name,"%s_%i",a[1],i);
 	  char *temp = name ;
@@ -589,7 +589,7 @@ static Standard_Integer tobezier(Draw_Interpretor& di,
       else {
 	GeomConvert_BSplineCurveToBezierCurve Conv(C3d);
 	NbArc = Conv.NbArcs();
-	di << NbArc << " arcs in the result" << "\n";
+	di << NbArc << " arcs in the result\n";
 	for (i = 1; i <= NbArc; i++) {
 	  Sprintf(name,"%s_%i",a[1],i);
 	  char *temp = name ;
@@ -606,7 +606,7 @@ static Standard_Integer tobezier(Draw_Interpretor& di,
       Geom2dConvert_BSplineCurveToBezierCurve Conv(C2d, U1, U2, 
 						   Precision::PConfusion());
       NbArc = Conv.NbArcs();
-      di << NbArc << " arcs in the result" << "\n";
+      di << NbArc << " arcs in the result\n";
       for (i = 1; i <= NbArc; i++) {
 	Sprintf(name,"%s_%i",a[1],i);
 	char *temp = name ;
@@ -616,7 +616,7 @@ static Standard_Integer tobezier(Draw_Interpretor& di,
     else {
       Geom2dConvert_BSplineCurveToBezierCurve Conv(C2d);
       NbArc = Conv.NbArcs();
-      di << NbArc << " arcs in the result" << "\n";
+      di << NbArc << " arcs in the result\n";
       for (i = 1; i <= NbArc; i++) {
 	Sprintf(name,"%s_%i",a[1],i);
 	char *temp = name ;
@@ -657,7 +657,7 @@ static Standard_Integer convbz(Draw_Interpretor& di,
 	BZ(ii,jj) = 
 	  Handle(Geom_BezierSurface)::DownCast(DrawTrSurf::Get(a[kk]));
 	if (BZ(ii,jj).IsNull()) {
-	  di << "the Surface " << kk <<"is not a BezierSurface" << "\n";
+	  di << "the Surface " << kk <<"is not a BezierSurface\n";
 	  return 1;
 	}
 	kk++;
@@ -667,7 +667,7 @@ static Standard_Integer convbz(Draw_Interpretor& di,
     GeomConvert_CompBezierSurfacesToBSplineSurface Conv(BZ, Tol);
     
     if (! Conv.IsDone()) {
-      di << "Convert Not Done" << "\n";
+      di << "Convert Not Done\n";
       return 1;
     }
 
@@ -688,7 +688,7 @@ static Standard_Integer convbz(Draw_Interpretor& di,
     for (ii=1, kk=3; ii<=NbU; ii++,kk++) {
       BZ =  Handle(Geom_BezierCurve)::DownCast(DrawTrSurf::Get(a[kk]));
       if (BZ.IsNull()) {
-	  di << "the curve " << kk <<"is not a BezierCurve" << "\n";
+	  di << "the curve " << kk <<"is not a BezierCurve\n";
 	  return 1;
 	}
       TColgp_Array1OfPnt Poles(1, BZ->NbPoles());
@@ -1193,7 +1193,7 @@ static Standard_Integer rempole (Draw_Interpretor& di, Standard_Integer n, const
   
   if ( !strcasecmp(a[0],"remrowpole")) {
     if ( BSpline) {
-      di << " Error : Cannot remove a polerow on a BSplineSurface " << "\n";
+      di << " Error : Cannot remove a polerow on a BSplineSurface \n";
     }
     else {
       GBz->RemovePoleRow(NewIndex);
@@ -1201,7 +1201,7 @@ static Standard_Integer rempole (Draw_Interpretor& di, Standard_Integer n, const
   }
   else if ( !strcasecmp(a[0],"remcolpole")) {
     if ( BSpline) {
-      di << " Error : Cannot remove a polecol on a BSplineSurface " << "\n";
+      di << " Error : Cannot remove a polecol on a BSplineSurface \n";
     }
     else {
       GBz->RemovePoleCol(NewIndex);
@@ -1458,7 +1458,7 @@ static Standard_Integer parameters (Draw_Interpretor& di, Standard_Integer n, co
     { 
       // try to find parameters on a Surface
       Handle(Geom_Surface) S = DrawTrSurf::GetSurface(a[1]);
-      if( S.IsNull() ) { di << "Unknown surface" << "\n"; return 1; }
+      if( S.IsNull() ) { di << "Unknown surface\n"; return 1; }
       gp_Pnt P(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
       Standard_Real Tol = Draw::Atof(a[5]), U = 0., V = 0.;
       Standard_Boolean res = GeomLib_Tool::Parameters(S,P,Tol,U,V);
@@ -1466,41 +1466,41 @@ static Standard_Integer parameters (Draw_Interpretor& di, Standard_Integer n, co
       Draw::Set(a[6],U);
       Draw::Set(a[7],V);
 
-      if( !res ) { di << "Wrong point" << "\n"; return 1; }
+      if( !res ) { di << "Wrong point\n"; return 1; }
     }
   else if(n == 7)
     {
       // try to find parameters on a 3d Curve
       Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[1]);
-      if( C.IsNull() ) { di << "Unknown curve" << "\n"; return 1; }
+      if( C.IsNull() ) { di << "Unknown curve\n"; return 1; }
       gp_Pnt P(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
       Standard_Real Tol = Draw::Atof(a[5]), U = 0.;
       Standard_Boolean res = GeomLib_Tool::Parameter(C,P,Tol,U);
     
       Draw::Set(a[6],U);
 
-    if( !res ) { di << "Wrong point" << "\n"; return 1; }
+    if( !res ) { di << "Wrong point\n"; return 1; }
     }
   else if(n == 6)
     {
       // try to find parameters on a 2d Curve
       Handle(Geom2d_Curve) C = DrawTrSurf::GetCurve2d(a[1]);
-      if( C.IsNull() ) { di << "Unknown curve 2d" << "\n";  return 1; }
+      if( C.IsNull() ) { di << "Unknown curve 2d\n";  return 1; }
       gp_Pnt2d P(Draw::Atof(a[2]), Draw::Atof(a[3]));
       Standard_Real Tol = Draw::Atof(a[4]), U = 0.;
       Standard_Boolean res = GeomLib_Tool::Parameter(C,P,Tol,U);
     
       Draw::Set(a[5],U);
 
-      if( !res ) { di << "Wrong point" << "\n"; return 1; }
+      if( !res ) { di << "Wrong point\n"; return 1; }
     }
   else
     {
-      di << "Invalid parameters!" << "\n";
-      di << "Usage:" << "\n";
-      di << "parameters Surf X Y Z Tol U V" << "\n";
-      di << "parameters Curv X Y Z Tol U" << "\n";
-      di << "parameters Curv2d X Y Tol U" << "\n";
+      di << "Invalid parameters!\n";
+      di << "Usage:\n";
+      di << "parameters Surf X Y Z Tol U V\n";
+      di << "parameters Curv X Y Z Tol U\n";
+      di << "parameters Curv2d X Y Tol U\n";
       return 1;
     }
 

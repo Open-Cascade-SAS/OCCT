@@ -32,14 +32,14 @@ Vrml_Info::Vrml_Info(const TCollection_AsciiString& aString)
 
  Standard_OStream& Vrml_Info::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Info {" << endl;
+ anOStream  << "Info {\n";
 
  if ( !(myString.IsEqual( "<Undefined info>") ) )
    {
-    anOStream  << "    string" << '\t';
-    anOStream << '"' << myString << '"' << endl;
+    anOStream  << "    string\t";
+    anOStream << '"' << myString << '"' << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

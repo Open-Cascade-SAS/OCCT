@@ -114,7 +114,7 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
     TDF_Label L2;
     DDF::AddLabel(DF, a[5], L2);
     if (!L2.FindAttribute(TNaming_NamedShape::GetID(), atiNS)) {
-      di<<"Error: Cannot find shape on label."<<"\n";
+      di<<"Error: Cannot find shape on label.\n";
       return 1;
     }
     amyNS = atiNS;
@@ -124,12 +124,12 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
   if (!strcmp(a[4],"Viewer"))
     aSelectedShape = ViewerTest::PickShape(TopAbs_SHAPE);
   else{
-    di<<"Error: Incorrect argument #4"<<"\n";
+    di<<"Error: Incorrect argument #4\n";
     return 1;
   }
 
   if (aSelectedShape.IsNull()) {
-    di<<"Nothing has been selected ... try again"<<"\n";
+    di<<"Nothing has been selected ... try again\n";
     return 1;
   }
 
@@ -152,21 +152,21 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
       OCC_CATCH_SIGNALS
       if(SL.Select(aSubShape, aSelectedShape) == Standard_False) {
 	//    if(SL.Select(aSubShape, amyNS->Get()) == Standard_False) 
-	di << "Selection error!!!" << "\n";
+	di << "Selection error!!!\n";
 	return 1;
       }
       Handle(TNaming_NamedShape) aNS;
       if (!aSubLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
-	di<<"Selection didn't produced a Named Shape ..."<<"\n";
+	di<<"Selection didn't produced a Named Shape ...\n";
 	return 1;
       }
       const TopoDS_Shape& aResultOfSelection = TNaming_Tool::GetShape(aNS);
       if (!aSubShape.IsSame(aResultOfSelection)) {
-	di<<"Failure of selection"<<"\n";
+	di<<"Failure of selection\n";
 	return 1;
       } 
     } catch (Standard_Failure) {
-      di<<"!!! Solving Failed !!!" << "\n";
+      di<<"!!! Solving Failed !!!\n";
       continue;
     }
     
@@ -190,7 +190,7 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
   aTrsf.SetTranslation(aTranslation);
   TopLoc_Location aLoc(aTrsf);
   const TDF_Label& anOriginLabel = TNaming_Tool::NamedShape(aSelectedShape, L)->Label();
-  if (anOriginLabel.IsNull()) di<<"Origin is null"<<"\n";
+  if (anOriginLabel.IsNull()) di<<"Origin is null\n";
 //  TNaming::Displace(anOriginLabel, aLoc);
 //  cout<<"Translate label ";anOriginLabel.EntryDump(cout);cout<<endl;
   TDF_ChildIterator Labelitr(L.Root(), Standard_False);
@@ -321,10 +321,10 @@ static Standard_Integer QANewDBRepNaming_CheckSelectShape(Draw_Interpretor& di, 
   TDF_Label L;
   DDF::AddLabel(DF, a[2], L);
 
-  di<<"SELECT A SUB-SHAPE ..."<<"\n"; 
+  di<<"SELECT A SUB-SHAPE ...\n"; 
   TopoDS_Shape aSelectedShape = ViewerTest::PickShape((TopAbs_ShapeEnum)Draw::Atoi(a[3]));
   if (aSelectedShape.IsNull()) {
-    di<<"QANewDBRepNaming_CheckSelectShape(): Nothing is selected ..."<<"\n";
+    di<<"QANewDBRepNaming_CheckSelectShape(): Nothing is selected ...\n";
     return 1;
   }
   // Find the context:

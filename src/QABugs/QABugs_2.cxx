@@ -51,7 +51,7 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
     // 1. Verify amount of arguments of the command
     //if (argc < 2) { di << "OCC527 FAULTY. Use : OCC527 shape "; return 0;} 
     if (argc < 2 || argc > 3) {
-      di << "Usage : " << argv[0] << " shape [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+      di << "Usage : " << argv[0] << " shape [BRepAlgoAPI/BRepAlgo = 1/0]\n";
       return 1;
     }
     Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -60,7 +60,7 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
       if (IsB != 1) {
 	IsBRepAlgoAPI = Standard_False;
 //#if ! defined(BRepAlgo_def04)
-//	di << "Error: There is not BRepAlgo_Section class" << "\n";
+//	di << "Error: There is not BRepAlgo_Section class\n";
 //	return 1;
 //#endif
       }
@@ -110,14 +110,14 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
 	Standard_Boolean IsDone;
 	TopoDS_Shape aResult;
 	if (IsBRepAlgoAPI) {
-	  di << "BRepAlgoAPI_Section aSection(aFace,pl,Standard_False)" <<"\n";
+	  di << "BRepAlgoAPI_Section aSection(aFace,pl,Standard_False)\n";
 	  BRepAlgoAPI_Section aSection(aFace,pl,Standard_False);
 	  aSection.Approximation(Standard_True);
 	  aSection.Build();
 	  IsDone = aSection.IsDone();
 	  aResult = aSection.Shape();
 	} else {
-	  di << "BRepAlgo_Section aSection(aFace,pl,Standard_False)" <<"\n";
+	  di << "BRepAlgo_Section aSection(aFace,pl,Standard_False)\n";
 	  BRepAlgo_Section aSection(aFace,pl,Standard_False);
 	  aSection.Approximation(Standard_True);
 	  aSection.Build();

@@ -135,7 +135,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
 
   }
   
-  else di << "probleme"<< "\n";
+  else di << "probleme\n";
   //else cout << "probleme"<< endl;
   return 0;
 }

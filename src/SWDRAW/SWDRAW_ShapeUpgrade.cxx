@@ -93,14 +93,14 @@ static Standard_Integer DT_ShapeDivide (Draw_Interpretor& di,
   // a[n-1]= Tolerance
    
   if (n<3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   } 
   
   // try to read a shape:
   TopoDS_Shape inputShape=DBRep::Get(a[2]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   // a[2] is a shape. managing:
@@ -120,23 +120,23 @@ static Standard_Integer DT_ShapeDivide (Draw_Interpretor& di,
   tool.Perform();
   TopoDS_Shape res = tool.Result();
 
-  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8" << "\n";
+  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK\n";
+  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1\n";
+  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2\n";
+  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3\n";
+  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4\n";
+  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5\n";
+  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6\n";
+  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7\n";
+  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8\n";
+  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1\n";
+  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2\n";
+  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3\n";
+  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4\n";
+  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5\n";
+  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6\n";
+  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7\n";
+  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8\n";
 
   // fixes
   
@@ -150,23 +150,23 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
 					 Standard_Integer n, const char** a)
 {
   if (n<5) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   } 
   
   // try to read a shape:
   TopoDS_Shape inputShape=DBRep::Get(a[2]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   
   Standard_Integer c2d = Draw::Atoi(a[3]);
   Standard_Integer c3d = Draw::Atoi(a[4]);
   TopoDS_Shape revsh = ShapeCustom::ConvertToRevolution (inputShape);
-  if (revsh.IsNull()) { di<<"NO RESULT"<<"\n"; return 1; }
-  else if (revsh == inputShape) { di<<"No modif"<<"\n";}
-  else di<<"ConvertToRevolution -> Result : "<<"\n";
+  if (revsh.IsNull()) { di<<"NO RESULT\n"; return 1; }
+  else if (revsh == inputShape) { di<<"No modif\n";}
+  else di<<"ConvertToRevolution -> Result : \n";
   
   ShapeUpgrade_ShapeConvertToBezier tool(revsh);
   tool.SetSurfaceConversion(Standard_True);
@@ -184,23 +184,23 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
   tool.Perform();
   TopoDS_Shape res = tool.Result();
   
-  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8" << "\n";
+  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK\n";
+  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1\n";
+  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2\n";
+  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3\n";
+  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4\n";
+  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5\n";
+  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6\n";
+  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7\n";
+  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8\n";
+  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1\n";
+  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2\n";
+  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3\n";
+  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4\n";
+  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5\n";
+  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6\n";
+  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7\n";
+  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8\n";
 
   // fixes
   
@@ -218,7 +218,7 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
 
     TopoDS_Face  inputFace = TopoDS::Face(inputShape);
     if (inputFace.IsNull()) {
-      di << a[2] << " is not a face" << "\n";
+      di << a[2] << " is not a face\n";
       return 1;
     }
 
@@ -238,21 +238,21 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
       ShapeUpgrade_Error theError=theTool.Error();
       di << "Not done: error=";
       if (theError==ShapeUpgrade_Done) 
-	di << "Done"<<"\n";
+	di << "Done\n";
       else if (theError==ShapeUpgrade_NotDone) 
-	di << "NotDone"<<"\n";
+	di << "NotDone\n";
       else if (theError==ShapeUpgrade_EmptyShell) 
-	di << "EmptyShell"<<"\n";
+	di << "EmptyShell\n";
       else if (theError==ShapeUpgrade_InvalidCriterion) 
-	di << "InvalidCriterion"<<"\n";
+	di << "InvalidCriterion\n";
       else if (theError==ShapeUpgrade_InvalidGridSurface) 
-	di << "InvalidGridSurface"<<"\n";
+	di << "InvalidGridSurface\n";
       else if (theError==ShapeUpgrade_DegeneratedEdge) 
-	di << "DegeneratedEdge"<<"\n";
+	di << "DegeneratedEdge\n";
       else if (theError==ShapeUpgrade_NoSurface) 
-	di << "NoSurface"<<"\n";
+	di << "NoSurface\n";
       else if (theError==ShapeUpgrade_NoTolerance) 
-	di << "NoTolerance"<<"\n";
+	di << "NoTolerance\n";
       return 1;
     }   
     TopoDS_Shell res = theTool.Shell();
@@ -281,7 +281,7 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
       if (n>=5) {
 	TopoDS_Shape inputBoundary=DBRep::Get(a[3]);
 	if (inputBoundary.IsNull()) {
-	  di << "Invalid Boundary" << "\n";
+	  di << "Invalid Boundary\n";
 	  return 1;
 	}
 	TopoDS_Wire WireBoundary = TopoDS::Wire(inputBoundary);
@@ -289,7 +289,7 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
 	  // DT_ShapeDivide result Surface Wire Surf Tol
 	  Handle(Geom_Surface) WireSupport = DrawTrSurf::GetSurface(a[4]);
 	  if (WireSupport.IsNull()) {
-	    di << "Invalid Surface supporting the Wire" << "\n";
+	    di << "Invalid Surface supporting the Wire\n";
 	    return 1;
 	  }
 	  theTool.SetBoundary(WireBoundary, WireSupport);
@@ -307,14 +307,14 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
       // DT_ShapeDivide result NbU NbV {Surf_u_v...} Face Tol
       // DT_ShapeDivide result NbU NbV {Surf_u_v...} Wire Surf Tol
       if (n<6) {
-	di << "bad number of arguments for grid input" <<"\n";
+	di << "bad number of arguments for grid input\n";
 	return 1;
       }
       // number of surf:
       Standard_Integer NbU=Draw::Atoi(a[2]);
       Standard_Integer NbV=Draw::Atoi(a[3]);
       if (n < 4+NbU*NbV+1) {
-	di << "bad number of arguments" <<"\n";
+	di << "bad number of arguments\n";
 	return 1;
       }
       
@@ -333,7 +333,7 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
       if (n>=6+NbU*NbV) {
 	TopoDS_Shape inputBoundary=DBRep::Get(a[4+NbU*NbV]);
 	if (inputBoundary.IsNull()) {
-	  di << "Invalid Boundary" << "\n";
+	  di << "Invalid Boundary\n";
 	  return 1;
 	}
 	TopoDS_Wire  WireBoundary = TopoDS::Wire(inputBoundary);
@@ -341,7 +341,7 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
 	  // DT_ShapeDivide result Surface Wire Surf Tol
 	  Handle(Geom_Surface) WireSupport = DrawTrSurf::GetSurface(a[4+NbU*NbV+1]);
 	  if (WireSupport.IsNull()) {
-	    di << "Invalid Surface supporting the Wire" << "\n";
+	    di << "Invalid Surface supporting the Wire\n";
 	    return 1;
 	  }
 	  theTool.SetBoundary(WireBoundary, WireSupport);
@@ -359,21 +359,21 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
       ShapeUpgrade_Error theError=theTool.Error();
       di << "Not done: error=";
       if (theError==ShapeUpgrade_Done) 
-	di << "Done"<<"\n";
+	di << "Done\n";
       else if (theError==ShapeUpgrade_NotDone) 
-	di << "NotDone"<<"\n";
+	di << "NotDone\n";
       else if (theError==ShapeUpgrade_EmptyShell) 
-	di << "EmptyShell"<<"\n";
+	di << "EmptyShell\n";
       else if (theError==ShapeUpgrade_InvalidCriterion) 
-	di << "InvalidCriterion"<<"\n";
+	di << "InvalidCriterion\n";
       else if (theError==ShapeUpgrade_InvalidGridSurface) 
-	di << "InvalidGridSurface"<<"\n";
+	di << "InvalidGridSurface\n";
       else if (theError==ShapeUpgrade_DegeneratedEdge) 
-	di << "DegeneratedEdge"<<"\n";
+	di << "DegeneratedEdge\n";
       else if (theError==ShapeUpgrade_NoSurface) 
-	di << "NoSurface"<<"\n";
+	di << "NoSurface\n";
       else if (theError==ShapeUpgrade_NoTolerance) 
-	di << "NoTolerance"<<"\n";
+	di << "NoTolerance\n";
       return 1;
     }   
     
@@ -388,14 +388,14 @@ static Standard_Integer DT_ShapeConvert (Draw_Interpretor& di,
 					 Standard_Integer n, const char** a)
 {
   if (n<5) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   } 
   
   // try to read a shape:
   TopoDS_Shape inputShape=DBRep::Get(a[2]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   
@@ -411,23 +411,23 @@ static Standard_Integer DT_ShapeConvert (Draw_Interpretor& di,
   tool.Perform();
   TopoDS_Shape res = tool.Result();
   
-  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8" << "\n";
+  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK\n";
+  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1\n";
+  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2\n";
+  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3\n";
+  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4\n";
+  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5\n";
+  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6\n";
+  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7\n";
+  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8\n";
+  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1\n";
+  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2\n";
+  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3\n";
+  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4\n";
+  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5\n";
+  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6\n";
+  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7\n";
+  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8\n";
 
   // fixes
   
@@ -440,13 +440,13 @@ static Standard_Integer DT_SplitAngle(Draw_Interpretor& di,
 				      Standard_Integer n, const char** a)
 {
   if (n<3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
   
   TopoDS_Shape inputShape=DBRep::Get(a[2]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   
@@ -460,23 +460,23 @@ static Standard_Integer DT_SplitAngle(Draw_Interpretor& di,
   tool.Perform();
   TopoDS_Shape res = tool.Result();
 
-  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7" << "\n";
-  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7" << "\n";
-  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8" << "\n";
+  if ( tool.Status ( ShapeExtend_OK ) ) di << "Status: OK\n";
+  if ( tool.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1\n";
+  if ( tool.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2\n";
+  if ( tool.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3\n";
+  if ( tool.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4\n";
+  if ( tool.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5\n";
+  if ( tool.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6\n";
+  if ( tool.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7\n";
+  if ( tool.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8\n";
+  if ( tool.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1\n";
+  if ( tool.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2\n";
+  if ( tool.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3\n";
+  if ( tool.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4\n";
+  if ( tool.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5\n";
+  if ( tool.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6\n";
+  if ( tool.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7\n";
+  if ( tool.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8\n";
 
   // fixes
   
@@ -502,7 +502,7 @@ static Standard_Integer DT_PlaneDividedFace (Draw_Interpretor& di,
   // a[3]= Tolerance
 
   if (n !=4) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
@@ -510,7 +510,7 @@ static Standard_Integer DT_PlaneDividedFace (Draw_Interpretor& di,
   TopoDS_Shape inputShape=DBRep::Get(a[2]);
   TopoDS_Face  inputFace = TopoDS::Face(inputShape);
   if (inputFace.IsNull()) {
-    di << a[2] << " is not a face" << "\n";
+    di << a[2] << " is not a face\n";
     return 1;
   }
 
@@ -520,7 +520,7 @@ static Standard_Integer DT_PlaneDividedFace (Draw_Interpretor& di,
   //theTool.SetTolerance(Tol);
   theTool.Build();
   if (!theTool.IsDone()) {
-    di << "Not done" << "\n";
+    di << "Not done\n";
     return 1;
   }    
 
@@ -555,7 +555,7 @@ static Standard_Integer DT_PlaneGridShell (Draw_Interpretor& di,
   Standard_Integer NbU=Draw::Atoi(a[2]);
   Standard_Integer NbV=Draw::Atoi(a[3]);
   if (n != 4+NbU+NbV+1) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
@@ -595,21 +595,21 @@ static Standard_Integer DT_PlaneFaceCommon (Draw_Interpretor& di,
   // a[3]= input Shell
 
   if (n !=4) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
   TopoDS_Shape inputShape= DBRep::Get(a[2]);
   TopoDS_Face  inputFace = TopoDS::Face(inputShape);
   if (inputFace.IsNull()) {
-    di << a[2] << " is not a face" << "\n";
+    di << a[2] << " is not a face\n";
     return 1;
   }
 
   inputShape = DBRep::Get(a[3]);
   TopoDS_Shell inputShell = TopoDS::Shell(inputShape);
   if (inputShell.IsNull()) {
-    di << a[3] << " is not a shell" << "\n";
+    di << a[3] << " is not a shell\n";
     return 1;
   }
 
@@ -636,7 +636,7 @@ static Standard_Integer DT_SplitCurve (Draw_Interpretor& di,
   // a[2]= Tolerance
 
   if (n < 3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
@@ -681,7 +681,7 @@ static Standard_Integer DT_SplitCurve2d (Draw_Interpretor& di,
   // a[2]= Tolerance
 
   if (n < 3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
@@ -724,18 +724,18 @@ static Standard_Integer DT_SplitWire (Draw_Interpretor& di,
 {
 
   if (n <3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
   TopoDS_Face source = TopoDS::Face(DBRep::Get(a[2]));
   if(source.IsNull()) {
-    di <<"Shape is not face"<<"\n";
+    di <<"Shape is not face\n";
     return 1;
   }
   TopoDS_Iterator wi(source);
   if(!wi.More()) {
-    di <<"Shape is face without wire"<<"\n";
+    di <<"Shape is face without wire\n";
     return 1;
   }
   
@@ -758,13 +758,13 @@ static Standard_Integer DT_SplitFace (Draw_Interpretor& di,
 {
 
   if (n <3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
   TopoDS_Face source = TopoDS::Face(DBRep::Get(a[2]));
   if(source.IsNull()) {
-    di <<"Shape is not face"<<"\n";
+    di <<"Shape is not face\n";
     return 1;
   } 
   Handle(ShapeUpgrade_ShapeDivideContinuity) tool = new ShapeUpgrade_FaceDivideContinuity;
@@ -779,23 +779,23 @@ static Standard_Integer DT_SplitFace (Draw_Interpretor& di,
   TopoDS_Shape result = tool->Result();
   
   
-  if ( tool->Status ( ShapeExtend_OK ) ) di << "Status: OK" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7" << "\n";
-  if ( tool->Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7" << "\n";
-  if ( tool->Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8" << "\n";
+  if ( tool->Status ( ShapeExtend_OK ) ) di << "Status: OK\n";
+  if ( tool->Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1\n";
+  if ( tool->Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2\n";
+  if ( tool->Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3\n";
+  if ( tool->Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4\n";
+  if ( tool->Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5\n";
+  if ( tool->Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6\n";
+  if ( tool->Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7\n";
+  if ( tool->Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8\n";
+  if ( tool->Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1\n";
+  if ( tool->Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2\n";
+  if ( tool->Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3\n";
+  if ( tool->Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4\n";
+  if ( tool->Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5\n";
+  if ( tool->Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6\n";
+  if ( tool->Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7\n";
+  if ( tool->Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8\n";
 
   // fixes
   
@@ -821,7 +821,7 @@ static Standard_Integer DT_SplitSurface (Draw_Interpretor& di,
   // a[4+nbU*nbV]= Tolerance
 
   if (n <4) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
@@ -835,7 +835,7 @@ static Standard_Integer DT_SplitSurface (Draw_Interpretor& di,
 /* 
   if ( GS.IsNull()) {
     // Case of composite grid surface
-    di << "composite surf" << "\n";
+    di << "composite surf\n";
     Standard_Integer      nbU=Draw::Atoi(a[2]);
     Standard_Integer      nbV=Draw::Atoi(a[3]);
     if (nbU==0 || nbV==0) return 1;
@@ -847,14 +847,14 @@ static Standard_Integer DT_SplitSurface (Draw_Interpretor& di,
 	theGrid->SetValue(iu,iv,GS);
       }
     }
-    di << "appel a SplitSurface::Init" << "\n";
+    di << "appel a SplitSurface::Init\n";
     theTool->Init(theGrid);
   }
   else {*/
     // Case of single surface
-  di << "single surf" << "\n";
+  di << "single surf\n";
   
-  di << "appel a SplitSurface::Init" << "\n";
+  di << "appel a SplitSurface::Init\n";
   theTool->Init(GS);
   if(Split ==1) {
     Handle(TColStd_HSequenceOfReal) spval = new TColStd_HSequenceOfReal;
@@ -863,10 +863,10 @@ static Standard_Integer DT_SplitSurface (Draw_Interpretor& di,
     theTool->SetVSplitValues(spval);
   }
 
-  di << "appel a SplitSurface::Build" << "\n";
+  di << "appel a SplitSurface::Build\n";
   theTool->Build(Standard_True);
 
-  di << "appel a SplitSurface::GlobalU/VKnots" << "\n";
+  di << "appel a SplitSurface::GlobalU/VKnots\n";
   Handle(ShapeExtend_CompositeSurface) Grid = theTool->ResSurfaces();
   Handle(TColStd_HArray1OfReal) GlobalU=Grid->UJointValues();
   Handle(TColStd_HArray1OfReal) GlobalV=Grid->VJointValues();
@@ -881,10 +881,10 @@ static Standard_Integer DT_SplitSurface (Draw_Interpretor& di,
     di  <<" "<< GlobalV->Value(iv);
   di <<"\n";
 
-di << "appel a Surfaces" << "\n";
+di << "appel a Surfaces\n";
   Handle(TColGeom_HArray2OfSurface) theSurfaces= Grid->Patches();
 
-di << "transfert resultat" << "\n";
+di << "transfert resultat\n";
   Standard_Integer NbRow=theSurfaces->ColLength();
   Standard_Integer NbCol=theSurfaces->RowLength();
   for (Standard_Integer irow=1; irow<=NbRow; irow++) {
@@ -909,7 +909,7 @@ static Standard_Integer offset2dcurve
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 4) {
-    di<<"result + curve + offset"<<"\n";
+    di<<"result + curve + offset\n";
     
     return 1 /* Error */;    
   }
@@ -932,7 +932,7 @@ static Standard_Integer offsetcurve
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 5) {
-    di<<"result + curve + offset + Dir"<<"\n";
+    di<<"result + curve + offset + Dir\n";
     
     return 1 /* Error */;    
   }
@@ -957,14 +957,14 @@ static Standard_Integer splitface
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 5) {
-    di << "Split face: splitface result face [u usplit1 usplit2...] [v vsplit1 vsplit2 ...]" << "\n";
+    di << "Split face: splitface result face [u usplit1 usplit2...] [v vsplit1 vsplit2 ...]\n";
     return 1;    
   }
   
   TopoDS_Shape aLocalShape = DBRep::Get(argv[2]) ;
   TopoDS_Face face = TopoDS::Face ( aLocalShape );
   if ( face.IsNull() ) {
-    di << argv[2] << " is not Face" << "\n";
+    di << argv[2] << " is not Face\n";
     return 1;
   }
   
@@ -1006,21 +1006,21 @@ static Standard_Integer splitface
       Standard_Real val = Draw::Atof ( argv[i] );
       TColStd_SequenceOfReal &vals = ( byV ? vval : uval );
       if ( vals.Length() >0 && val - vals.Last() < Precision::PConfusion() ) {
-	di << "Values should be sorted in increasing order; skipped" << "\n";
+	di << "Values should be sorted in increasing order; skipped\n";
 	continue;
       }
       if ( ( byV && ( val < Vf+Precision::PConfusion() || 
 		      val > Vl-Precision::PConfusion() ) ) ||
            (!byV && ( val < Uf+Precision::PConfusion() || 
 		      val > Ul-Precision::PConfusion() ) ) ) {
-	di << "Values should be inside range of surface; skipped" << "\n";
+	di << "Values should be inside range of surface; skipped\n";
 	continue; 
       }
       vals.Append ( val );
     }
   }
   if ( uval.Length() <1 && vval.Length() <1 ) {
-    di << "No splitting defined" << "\n";
+    di << "No splitting defined\n";
     return 1;
   }
   if ( uval.Length() >0 ) {
@@ -1065,7 +1065,7 @@ static Standard_Integer splitface
   }
 
   Handle(ShapeExtend_CompositeSurface) Grid = new ShapeExtend_CompositeSurface;
-  if ( ! Grid->Init ( AS ) ) di << "Grid badly connected!" << "\n";
+  if ( ! Grid->Init ( AS ) ) di << "Grid badly connected!\n";
 
   ShapeFix_ComposeShell SUCS;
   TopLoc_Location l;
@@ -1074,23 +1074,23 @@ static Standard_Integer splitface
   SUCS.SetContext( RS );
   SUCS.Perform ();
   
-  if ( SUCS.Status ( ShapeExtend_OK ) ) di << "Status: OK" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7" << "\n";
-  if ( SUCS.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7" << "\n";
-  if ( SUCS.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8" << "\n";
+  if ( SUCS.Status ( ShapeExtend_OK ) ) di << "Status: OK\n";
+  if ( SUCS.Status ( ShapeExtend_DONE1 ) ) di << "Status: DONE1\n";
+  if ( SUCS.Status ( ShapeExtend_DONE2 ) ) di << "Status: DONE2\n";
+  if ( SUCS.Status ( ShapeExtend_DONE3 ) ) di << "Status: DONE3\n";
+  if ( SUCS.Status ( ShapeExtend_DONE4 ) ) di << "Status: DONE4\n";
+  if ( SUCS.Status ( ShapeExtend_DONE5 ) ) di << "Status: DONE5\n";
+  if ( SUCS.Status ( ShapeExtend_DONE6 ) ) di << "Status: DONE6\n";
+  if ( SUCS.Status ( ShapeExtend_DONE7 ) ) di << "Status: DONE7\n";
+  if ( SUCS.Status ( ShapeExtend_DONE8 ) ) di << "Status: DONE8\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL1 ) ) di << "Status: FAIL1\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL2 ) ) di << "Status: FAIL2\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL3 ) ) di << "Status: FAIL3\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL4 ) ) di << "Status: FAIL4\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL5 ) ) di << "Status: FAIL5\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL6 ) ) di << "Status: FAIL6\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL7 ) ) di << "Status: FAIL7\n";
+  if ( SUCS.Status ( ShapeExtend_FAIL8 ) ) di << "Status: FAIL8\n";
 
   TopoDS_Shape sh = SUCS.Result();
   ShapeFix::SameParameter ( sh, Standard_False );
@@ -1115,7 +1115,7 @@ static Standard_Integer converttobspline
   
   TopoDS_Shape inputShape=DBRep::Get(argv[2]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   TopoDS_Shape revsh = ShapeCustom::ConvertToRevolution (inputShape);
@@ -1135,13 +1135,13 @@ static Standard_Integer splitclosed (Draw_Interpretor& di,
 				     const char** argv)
 {
   if (argc<3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
   
   TopoDS_Shape inputShape=DBRep::Get(argv[2]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   
@@ -1159,13 +1159,13 @@ static Standard_Integer splitarea (Draw_Interpretor& di,
 				     const char** argv)
 {
   if (argc<4) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
   
   TopoDS_Shape inputShape=DBRep::Get(argv[2]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   Standard_Real aMaxArea = Draw::Atof(argv[3]);
@@ -1190,13 +1190,13 @@ static Standard_Integer removeinternalwires (Draw_Interpretor& di,
                                              const char** argv)
 {
   if (argc<4) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
   Standard_Real aMinArea = Draw::Atof(argv[2]);
   TopoDS_Shape inputShape=DBRep::Get(argv[3]);
   if (inputShape.IsNull()) {
-    di << "Unknown shape"<< "\n";
+    di << "Unknown shape\n";
     return 1;
   }
   Handle(ShapeUpgrade_RemoveInternalWires) aTool;
@@ -1204,7 +1204,7 @@ static Standard_Integer removeinternalwires (Draw_Interpretor& di,
   if(inputShape.ShapeType() < TopAbs_WIRE)
      aTool = new ShapeUpgrade_RemoveInternalWires(inputShape);
   else {
-   di<<"Invalid type of first shape: should be FACE,SHELL,SOLID or COMPOUND"<<"\n";
+   di<<"Invalid type of first shape: should be FACE,SHELL,SOLID or COMPOUND\n";
    return 1;
   }
   
@@ -1233,17 +1233,17 @@ static Standard_Integer removeinternalwires (Draw_Interpretor& di,
   else
     aTool->Perform();
   if(aTool->Status(ShapeExtend_FAIL1))
-     di<<"Initial shape has invalid type"<<"\n";
+     di<<"Initial shape has invalid type\n";
   else if(aTool->Status(ShapeExtend_FAIL2))
-     di<<"Specified sub-shape is not belonged to whole shape"<<"\n";   
+     di<<"Specified sub-shape is not belonged to whole shape\n";   
   if(aTool->Status(ShapeExtend_DONE1)) {
     const TopTools_SequenceOfShape& aRemovedWires =aTool->RemovedWires(); 
-     di<<aRemovedWires.Length()<<" internal wires were removed"<<"\n";
+     di<<aRemovedWires.Length()<<" internal wires were removed\n";
     
   }
   if(aTool->Status(ShapeExtend_DONE2)) {
     const TopTools_SequenceOfShape& aRemovedFaces =aTool->RemovedFaces(); 
-     di<<aRemovedFaces.Length()<<" small faces were removed"<<"\n";
+     di<<aRemovedFaces.Length()<<" small faces were removed\n";
     
   }   
   TopoDS_Shape res = aTool->GetResult();
@@ -1258,7 +1258,7 @@ static Standard_Integer removeloc (Draw_Interpretor& di,
                                    const char** argv)
 {
   if (argc<3) {
-    di << "bad number of arguments. Should be:  removeloc res shape" <<"\n";
+    di << "bad number of arguments. Should be:  removeloc res shape\n";
     return 1;
   }
   
@@ -1352,7 +1352,7 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
                                    const char** argv)
 {
   if (argc<6) {
-    di << "bad number of arguments. Should be:  removeloc res shape dx dyy dz" <<"\n";
+    di << "bad number of arguments. Should be:  removeloc res shape dx dyy dz\n";
     return 1;
   }
   TopoDS_Shape aShape = DBRep::Get(argv[2]);

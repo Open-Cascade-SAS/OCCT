@@ -70,15 +70,15 @@ static Standard_Integer ContToInteger( const GeomAbs_Shape Cont)
 
 static Standard_Integer directfaces(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3) { di<<"Donner un nom de SHAPE + un nom de RESULTAT"<<"\n"; return 1 /* Error */; }
+  if (argc < 3) { di<<"Donner un nom de SHAPE + un nom de RESULTAT\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = argv[2];
   TopoDS_Shape Shape = DBRep::Get(arg2);
   if (Shape.IsNull()) { di<<"Shape unknown : "<<arg2<<"\n"; return 1 /* Error */; }
 
   TopoDS_Shape result = ShapeCustom::DirectFaces (Shape);
-  if (result.IsNull()) { di<<"NO RESULT"<<"\n"; return 1; }
-  else if (result == Shape) { di<<"No modif"<<"\n"; return 0; }
+  if (result.IsNull()) { di<<"NO RESULT\n"; return 1; }
+  else if (result == Shape) { di<<"No modif\n"; return 0; }
   di<<"DirectFaces -> Result : "<<arg1<<"\n";
   DBRep::Set (arg1,result);
   return 0; // Done
@@ -271,7 +271,7 @@ static void expsurf(const Handle(Geom_Surface)& aSurface, TColStd_Array2OfIntege
 static Standard_Integer expshape(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc <4) {
-    di << "Incorrect number of arguments. Must be 3" << "\n";
+    di << "Incorrect number of arguments. Must be 3\n";
     return 1 /* Error */;
   }
   Standard_CString arg2 = argv[1];
@@ -290,7 +290,7 @@ static Standard_Integer expshape(Draw_Interpretor& di, Standard_Integer argc, co
     else if (strcmp(argv[k],"G1") == 0)  aCont3 = GeomAbs_C0;
     else if (strcmp(argv[k],"G2") == 0)  aCont3 = GeomAbs_C1;
     else {
-      di<< "Invalid argument Cont3e" << "\n"; return 1; }
+      di<< "Invalid argument Cont3e\n"; return 1; }
 
 
   }
@@ -339,7 +339,7 @@ static Standard_Integer expshape(Draw_Interpretor& di, Standard_Integer argc, co
   //if(NbSurf.Value(2,1) !=0)
   di<< "Number of Bezier surfaces with degree more then "<< Degree << " - " <<NbSurf.Value(2,1)<<"\n";
   //if(NbSurf.Value(2,3) !=0)
-  di<< "Number of Rational Bezier surfaces " << " - " <<NbSurf.Value(2,3)<<"\n";
+  di<< "Number of Rational Bezier surfaces  - " <<NbSurf.Value(2,3)<<"\n";
   //if(NbSurf.Value(2,4) !=0)
   di<< "Number of Bezier surfaces with continuity less than specified - " << NbSurf.Value(2,4)<<"\n";
 
@@ -359,7 +359,7 @@ static Standard_Integer expshape(Draw_Interpretor& di, Standard_Integer argc, co
   //if(NbCurv.Value(2,1) !=0)
   di<< "Number of Bezier curves with degree more then - "<< Degree << " - " <<NbCurv.Value(2,1)<<"\n";
   //if(NbCurv.Value(2,3) !=0)
-  di<< "Number of Rational Bezier curves " << " - " <<NbCurv.Value(2,3)<<"\n"; 
+  di<< "Number of Rational Bezier curves  - " <<NbCurv.Value(2,3)<<"\n"; 
   //if(NbCurv.Value(2,4) !=0)
   di<< "Number of  Bezier curves with less continuity - " << NbCurv.Value(2,4)<<"\n";
 
@@ -375,9 +375,9 @@ static Standard_Integer expshape(Draw_Interpretor& di, Standard_Integer argc, co
   // if(NbCurv2d.Value(1,4) !=0)
   di<< "Number of  BSpline pcurves with less continuity - " << NbCurv2d.Value(1,4)<<"\n";
   //if(NbCurv2d.Value(2,1) !=0)
-  di<< "Number of Bezier pcurves with degree more then "<< Degree <<" - " <<" - " <<NbCurv2d.Value(2,1)<<"\n";
+  di<< "Number of Bezier pcurves with degree more then "<< Degree <<" -  - " <<NbCurv2d.Value(2,1)<<"\n";
   //if(NbCurv2d.Value(2,3) !=0)
-  di<< "Number of Rational Bezier pcurves " << " - " <<NbCurv2d.Value(2,3)<<"\n";
+  di<< "Number of Rational Bezier pcurves  - " <<NbCurv2d.Value(2,3)<<"\n";
   //if(NbCurv2d.Value(2,4) !=0)
   di<< "Number of  Bezier pcurves with less continuity - " << NbCurv2d.Value(2,4)<<"\n";
 
@@ -389,7 +389,7 @@ static Standard_Integer expshape(Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer scaleshape(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc !=4) {
-    di << "Incorrect number of arguments. Must be 4" << "\n";
+    di << "Incorrect number of arguments. Must be 4\n";
     return 1 /* Error */;
   }
   Standard_CString arg2 = argv[2];
@@ -397,15 +397,15 @@ static Standard_Integer scaleshape(Draw_Interpretor& di, Standard_Integer argc, 
   if (Shape.IsNull()) { di << "Shape unknown: " << arg2 << "\n"; return 1 /* Error */; }
 
   TopoDS_Shape result = ShapeCustom::ScaleShape (Shape, Draw::Atof(argv[3]));
-  if (result.IsNull()) { di << "NO RESULT" << "\n"; return 1; }
-  else if (result == Shape) { di << "NO MODIFICATIONS" << "\n"; return 0; }
+  if (result.IsNull()) { di << "NO RESULT\n"; return 1; }
+  else if (result == Shape) { di << "NO MODIFICATIONS\n"; return 0; }
   DBRep::Set (argv[1],result);
   return 0;
 }
 static Standard_Integer BSplRes(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 11) {
-    di << "Incorrect number of arguments. Must be 10" << "\n";
+    di << "Incorrect number of arguments. Must be 10\n";
     return 1 /* Error */;
   }
   Standard_CString arg2 = argv[2];
@@ -420,7 +420,7 @@ static Standard_Integer BSplRes(Draw_Interpretor& di, Standard_Integer argc, con
   else if (strcmp(argv[7],"G1") == 0)  aCont3 = GeomAbs_C0;
   else if (strcmp(argv[7],"G2") == 0)  aCont3 = GeomAbs_C1;
   else {
-    di<< "Invalid argument Cont3e" << "\n"; return 1; }
+    di<< "Invalid argument Cont3e\n"; return 1; }
   GeomAbs_Shape aCont2;
   if(strcmp(argv[8],"C0") == 0)  aCont2 = GeomAbs_C0;
   else if (strcmp(argv[8],"C1") == 0)  aCont2 = GeomAbs_C1;
@@ -430,13 +430,13 @@ static Standard_Integer BSplRes(Draw_Interpretor& di, Standard_Integer argc, con
   else if (strcmp(argv[8],"G1") == 0)  aCont2 = GeomAbs_C0;
   else if (strcmp(argv[8],"G2") == 0)  aCont2 = GeomAbs_C1;
   else {
-    di<< "Invalid argument Cont3e" << "\n"; return 1; }
+    di<< "Invalid argument Cont3e\n"; return 1; }
 
   Handle(ShapeCustom_RestrictionParameters) aParameters = new ShapeCustom_RestrictionParameters;
   TopoDS_Shape result = ShapeCustom::BSplineRestriction (Shape, Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atoi(argv[5]),Draw::Atoi(argv[6]),aCont3,aCont2,(Standard_Boolean) Draw::Atoi(argv[9]),(Standard_Boolean) Draw::Atoi(argv[10]),aParameters);
-  if (result.IsNull()) { di << "NO RESULT" << "\n"; return 1; }
+  if (result.IsNull()) { di << "NO RESULT\n"; return 1; }
   else if (result == Shape) { 
-    di << "NO MODIFICATIONS" << "\n";
+    di << "NO MODIFICATIONS\n";
     DBRep::Set (argv[1],result); return 0; 
   }
   ShapeFix::SameParameter(result,Standard_False);
@@ -447,7 +447,7 @@ static Standard_Integer BSplRes(Draw_Interpretor& di, Standard_Integer argc, con
 
 static Standard_Integer convtorevol(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3) { di<<"Convert surfaces to revolution: convtorevol result shape"<<"\n"; return 1; }
+  if (argc < 3) { di<<"Convert surfaces to revolution: convtorevol result shape\n"; return 1; }
 
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = argv[2];
@@ -455,8 +455,8 @@ static Standard_Integer convtorevol(Draw_Interpretor& di, Standard_Integer argc,
   if (Shape.IsNull()) { di<<"Shape unknown : "<<arg2<<"\n"; return 1; }
 
   TopoDS_Shape result = ShapeCustom::ConvertToRevolution (Shape);
-  if (result.IsNull()) { di<<"NO RESULT"<<"\n"; return 1; }
-  else if (result == Shape) { di<<"No modif"<<"\n"; return 0; }
+  if (result.IsNull()) { di<<"NO RESULT\n"; return 1; }
+  else if (result == Shape) { di<<"No modif\n"; return 0; }
   di<<"ConvertToRevolution -> Result : "<<arg1<<"\n";
   DBRep::Set (arg1,result);
   return 0; // Done

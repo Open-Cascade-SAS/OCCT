@@ -189,7 +189,7 @@ static Standard_Integer deform(Draw_Interpretor& di,Standard_Integer n,const cha
   TopoDS_Shape S = DBRep::Get(a[2]);    
   if (S.IsNull()) {
     //cout << a[2] << " is not a valid shape" << endl;
-    di << a[2] << " is not a valid shape" << "\n";
+    di << a[2] << " is not a valid shape\n";
   }
   else {
     gtrf.Perform(S);
@@ -264,7 +264,7 @@ static Standard_Integer nurbsconvert(Draw_Interpretor& di,Standard_Integer n,con
     TopoDS_Shape S = DBRep::Get(a[2*i+2]);
     if (S.IsNull()) {
       //cout << a[2*i+2] << " is not a valid shape" << endl;
-      di << a[2*i+2] << " is not a valid shape" << "\n";
+      di << a[2*i+2] << " is not a valid shape\n";
     }
     else {
       nbscv.Perform(S);
@@ -495,7 +495,7 @@ static Standard_Integer reperageshape(Draw_Interpretor& di, Standard_Integer nar
   TopoDS_Shape TheShape1 = DBRep::Get(id1);
   
   //cout << "Pick positions with button "<<endl;
-  di << "Pick positions with button "<< "\n";
+  di << "Pick positions with button \n";
   Standard_Integer id,X,Y,b;
   gp_Trsf T;
   gp_Pnt P1,P2;
@@ -636,7 +636,7 @@ static Standard_Integer maxtolerance(Draw_Interpretor& theCommands,
 
 static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char** ) {
   //cout << "Pick positions with button "<<endl;
-  di << "Pick positions with button "<< "\n";
+  di << "Pick positions with button \n";
 
   Standard_Integer id,X,Y,b;
   gp_Trsf T;
@@ -774,7 +774,7 @@ static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char*
   Standard_Boolean IsWire=OrtProj.BuildWire(Wire);
   if (IsWire) {
     //cout << " BuildWire OK " << endl;
-    di << " BuildWire OK " << "\n";
+    di << " BuildWire OK \n";
   }
   DBRep::Set(a[1], OrtProj.Shape());
   return 0;  

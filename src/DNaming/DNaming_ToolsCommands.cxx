@@ -86,7 +86,7 @@ static Standard_Integer DNaming_CheckHasSame (Draw_Interpretor& di,
     for(itr2.Initialize(M2);itr2.More();itr2.Next()) {
       const TopoDS_Shape& s2 = itr2.Key();
       if(s1.IsSame(s2))
-	di << "Shapes " << arg[1]<< " and "<< arg[2]<< " have SAME subshapes" <<"\n";
+	di << "Shapes " << arg[1]<< " and "<< arg[2]<< " have SAME subshapes\n";
     }
   }
 
@@ -127,7 +127,7 @@ static Standard_Integer DNaming_TCopyShape (Draw_Interpretor& di,
   TR.Perform();
 
   if(TR.IsDone()){
-    di << "DNaming_CopyShape:: Copy is Done " << "\n";
+    di << "DNaming_CopyShape:: Copy is Done \n";
 
     DNaming_DataMapIteratorOfDataMapOfShapeOfName itrn(aDMapOfShapeOfName);
     for(;itrn.More();itrn.Next()) {
@@ -138,7 +138,7 @@ static Standard_Integer DNaming_TCopyShape (Draw_Interpretor& di,
     }
     return 0;
   }
-  di << "DNaming_CopyShape : Error" << "\n";
+  di << "DNaming_CopyShape : Error\n";
   return 1;
 }
 
@@ -153,7 +153,7 @@ static Standard_Integer DNaming_TCopyTool (Draw_Interpretor& di,
 					   const char** arg)
 {
   if (nb < 2) {
-    di << "Usage: CopyTool Shape1 [Shape2] ..." << "\n";
+    di << "Usage: CopyTool Shape1 [Shape2] ...\n";
     return 1;
   }
 
@@ -171,7 +171,7 @@ static Standard_Integer DNaming_TCopyTool (Draw_Interpretor& di,
     }
 
     if (aShape.IsNull()) {
-      di << arg[i] << " is neither a shape nor a BREP file. Skip it." << "\n";
+      di << arg[i] << " is neither a shape nor a BREP file. Skip it.\n";
       continue;
     }
 

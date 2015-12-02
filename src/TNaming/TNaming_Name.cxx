@@ -1623,8 +1623,8 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 	  CS =  FindSubShapeInAncestor(aShape, AS);
 // <=== end 21.10.2009
 #ifdef OCCT_DEBUG_OR
-	cout << "ORIENTATION: Selection" <<" TShape = " <<CS.TShape() <<" Orientation = " << CS.Orientation() <<endl;
-	cout << "ORIENTATION: Context " << "ShapeType = "<<AS.ShapeType() << " TShape = " <<AS.TShape() <<endl;
+	cout << "ORIENTATION: Selection TShape = " <<CS.TShape() <<" Orientation = " << CS.Orientation() <<endl;
+	cout << "ORIENTATION: Context ShapeType = "<<AS.ShapeType() << " TShape = " <<AS.TShape() <<endl;
 	DbgTools_Write(AS, "Orientation_Cnt.brep");
 #endif
 	if(!CS.IsNull()) {
@@ -1783,7 +1783,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
 	}
 
 #ifdef OCCT_DEBUG_WIN
-    cout <<"WIREIN: " << " Internal Map ext = " << aSet.Map().Extent()<<endl;
+    cout <<"WIREIN:  Internal Map ext = " << aSet.Map().Extent()<<endl;
     TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
     for (int i=1;it1.More();it1.Next(),i++) {
       cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<
@@ -1928,7 +1928,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
 	}
 
 #ifdef OCCT_DEBUG_SHELL
-    cout <<"SHELLIN: " << " Internal Map ext = " << aSet.Map().Extent()<<endl;
+    cout <<"SHELLIN:  Internal Map ext = " << aSet.Map().Extent()<<endl;
     TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
     for (int i=1;it1.More();it1.Next(),i++) {
       cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<

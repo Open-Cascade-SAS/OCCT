@@ -57,10 +57,10 @@
 static Standard_Integer XSHAPE_edge
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) { di<<"donner un nom de shape"<<"\n"; return 1 /* Error */; }
+  if (argc < 2) { di<<"donner un nom de shape\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg1);
-  if (Shape.IsNull()) { di<<arg1<<" inconnu"<<"\n"; return 1 /* Error */; }
+  if (Shape.IsNull()) { di<<arg1<<" inconnu\n"; return 1 /* Error */; }
   Standard_Integer nbe = 0, nbf = 0;  Standard_Real f3d,l3d;
 
   for (TopExp_Explorer exp(Shape,TopAbs_EDGE); exp.More(); exp.Next()) {
@@ -84,11 +84,11 @@ static Standard_Integer XSHAPE_explorewire
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   char nomsh[30];
-  if (argc < 2) { di<<"donner un nom de wire"<<"\n"; return 1 /* Error */; }
+  if (argc < 2) { di<<"donner un nom de wire\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg1);
-  if (Shape.IsNull()) { di<<arg1<<" inconnu"<<"\n"; return 1 /* Error */; }
-  if (Shape.ShapeType() != TopAbs_WIRE) { di<<"Pas un WIRE"<<"\n"; return 1 /* Error */; }
+  if (Shape.IsNull()) { di<<arg1<<" inconnu\n"; return 1 /* Error */; }
+  if (Shape.ShapeType() != TopAbs_WIRE) { di<<"Pas un WIRE\n"; return 1 /* Error */; }
   TopoDS_Wire W = TopoDS::Wire (Shape);
   TopoDS_Face F;
   if (argc > 2) {
@@ -106,11 +106,11 @@ static Standard_Integer XSHAPE_explorewire
   }
   int* nbs = new int[nbe+1];  for (i = 0; i <= nbe; i ++) nbs[i] = 0;
 
-  di<<"TopoDS_Iterator(EDGE)  donne "<<nbe<<" Edges dont "<<num<<" distinctes"<<"\n";
+  di<<"TopoDS_Iterator(EDGE)  donne "<<nbe<<" Edges dont "<<num<<" distinctes\n";
   nbe = num;
   nbw = 0;
   for (TopExp_Explorer exe(W.Oriented(TopAbs_FORWARD),TopAbs_EDGE); exe.More(); exe.Next()) nbw ++;
-  di<<"TopExp_Explorer(EDGE)  donne "<<nbw<<" Edges"<<"\n";
+  di<<"TopExp_Explorer(EDGE)  donne "<<nbw<<" Edges\n";
   nbw = 0;
   BRepTools_WireExplorer bwe;
   if (F.IsNull()) bwe.Init(W);
@@ -121,16 +121,16 @@ static Standard_Integer XSHAPE_explorewire
     num = map.FindIndex(E);
     nbs[num] ++;
   }
-  di<<"BRepTools_WireExplorer donne "<<nbw<<" Edges"<<"\n";
-  di<<"Par rapport a la map, edges sautees par WE en NOWE_num, passees > 1 fois en MULTWE_num"<<"\n";
-  if (nbs[0] > 0) di<<"NB : Edge n0 0 comptee "<<nbs[0]<<" fois"<<"\n";
+  di<<"BRepTools_WireExplorer donne "<<nbw<<" Edges\n";
+  di<<"Par rapport a la map, edges sautees par WE en NOWE_num, passees > 1 fois en MULTWE_num\n";
+  if (nbs[0] > 0) di<<"NB : Edge n0 0 comptee "<<nbs[0]<<" fois\n";
   for (i = 1; i <= nbe; i ++) {
     if (nbs[i] < 1) {
-      di<<"Edge n0 "<<i<<" pas vue par WE"<<"\n";
+      di<<"Edge n0 "<<i<<" pas vue par WE\n";
       Sprintf (nomsh,"NOWE_%d",i);
       DBRep::Set (nomsh,map.FindKey(i));
     } else if (nbs[i] > 1) {
-      di<<"Edge n0 "<<i<<" vue par WE : "<<nbs[i]<<" fois"<<"\n";
+      di<<"Edge n0 "<<i<<" vue par WE : "<<nbs[i]<<" fois\n";
       Sprintf (nomsh,"MULT_%d",i);
       DBRep::Set (nomsh,map.FindKey(i));
     }
@@ -144,20 +144,20 @@ static Standard_Integer XSHAPE_explorewire
 static Standard_Integer XSHAPE_ssolid
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3) { di<<"Give new solid name + shell name"<<"\n"; return 1 /* Error */; }
+  if (argc < 3) { di<<"Give new solid name + shell name\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull()) { di<<"Shape unknown : "<<arg1<<"\n"; return 1 /* Error */; }
   TopAbs_ShapeEnum shen = Shape.ShapeType();
   if (shen == TopAbs_SOLID) {
-    di<<" Already a Solide ! nothing done"<<"\n";
+    di<<" Already a Solide ! nothing done\n";
     return 0;
   }
   if (shen != TopAbs_SHELL) {
-    di<<" Not a Shell"<<"\n";  return 1 /* Error */;
+    di<<" Not a Shell\n";  return 1 /* Error */;
   }
   if (!Shape.Free ()) {
-    di<<"Shape non Free -> Freeing"<<"\n";
+    di<<"Shape non Free -> Freeing\n";
     Shape.Free(Standard_True);
   }
   TopoDS_Shell sh = TopoDS::Shell (Shape);
@@ -171,7 +171,7 @@ static Standard_Integer XSHAPE_ssolid
   if (bsc3d.State() == TopAbs_IN) {
 //         Ensuite, inverser C-A-D REPRENDRE LES SHELLS
 //         (l inversion du solide n est pas bien prise en compte)
-    di<<"NB : Shell to be reversed"<<"\n";
+    di<<"NB : Shell to be reversed\n";
     TopoDS_Solid soli2;
     B.MakeSolid (soli2);    // on recommence
     sh.Reverse();
@@ -190,7 +190,7 @@ static Standard_Integer XSHAPE_edgeregul
   Standard_Real tolang = Precision::Angular(); // = Interface_Static::RVal("XSTEP.encoderegularity.angle");
 //  if (argc < 3) di<<"Current value for regularity angle : "<<tolang<<"\n";
   if (argc < 3) {
-    di<<"Donner nom de shape.\n + option : angle en radian, sinon la valeur courante est prise"<<"\n";
+    di<<"Donner nom de shape.\n + option : angle en radian, sinon la valeur courante est prise\n";
     return 0;
   }
   Standard_CString arg1 = argv[1];
@@ -233,10 +233,10 @@ static Standard_Integer samerange (Draw_Interpretor& di,  Standard_Integer argc,
     DrawTrSurf::Set(argv[1],NewC2d);
   }
   else {
-    di << "Apply BRepLib::SameRange() to shape or GeomLib::SameRange() to pcurve:" << "\n";
-    di << "> samerange shape" << "\n";
-    di << "or" << "\n";
-    di << "> samerange newcurve curve2d first last newfirst newlast" << "\n";
+    di << "Apply BRepLib::SameRange() to shape or GeomLib::SameRange() to pcurve:\n";
+    di << "> samerange shape\n";
+    di << "or\n";
+    di << "> samerange newcurve curve2d first last newfirst newlast\n";
   }
   
   return 0;

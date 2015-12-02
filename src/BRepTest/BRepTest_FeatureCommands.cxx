@@ -544,7 +544,7 @@ static Standard_Integer PRW(Draw_Interpretor& theCommands,
     else {
       // il faudrait inverser V et appeler PerfomFromEnd...
       //cout << "Not Implemented" << endl;
-      theCommands << "Not Implemented" << "\n";
+      theCommands << "Not Implemented\n";
     }
   }
   if (!thePFace.IsDone()) {
@@ -709,7 +709,7 @@ static Standard_Integer PRF(Draw_Interpretor& theCommands,
     else { //FUntil.IsNull()
       // il faudrait inverser V et appeler PerfomFromEnd...
       //cout << "Not Implemented" << endl;
-      theCommands << "Not Implemented" << "\n";
+      theCommands << "Not Implemented\n";
     }
   }
   if (!thePFace.IsDone()) {
@@ -949,8 +949,8 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
                                  Standard_Integer n, const char** a)
 {
   if ( n == 1 ) { 
-    di << " OffsetParameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]" << "\n";
-    di << " Current Values" << "\n";
+    di << " OffsetParameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]\n";
+    di << " Current Values\n";
     di << "   --> Tolerance : " << TheTolerance << "\n";
     di << "   --> TheInter  : ";
     if ( TheInter) {
@@ -958,7 +958,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
     } else {
       di << "Partial";
     }
-    di << "\n" << "   --> TheJoin   : ";
+    di << "\n   --> TheJoin   : ";
     
     switch (TheJoin) {
     case GeomAbs_Arc:          di << "Arc";          break;
@@ -967,7 +967,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
       break ;
     }
     //
-    di << "\n" << "   --> Internal Edges : ";
+    di << "\n   --> Internal Edges : ";
     if (RemoveIntEdges) {
       di << "Remove";
     }
@@ -975,7 +975,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
       di << "Keep";
     }
     //
-    di << "\n" << "   --> Invalid Faces : ";
+    di << "\n   --> Invalid Faces : ";
     if (RemoveInvalidFaces) {
       di << "Remove";
     }

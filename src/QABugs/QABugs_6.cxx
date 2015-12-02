@@ -37,7 +37,7 @@ static Standard_Integer OCC281bug (Draw_Interpretor& di, Standard_Integer argc, 
     return -1;
     }
   if(argc < 4) {
-    di << "Usage : " << argv[0] << " x y TypeOfMarker(0-12)" << "\n";
+    di << "Usage : " << argv[0] << " x y TypeOfMarker(0-12)\n";
     return 1;
   }
 
@@ -106,11 +106,11 @@ static Standard_Integer OCC281bug (Draw_Interpretor& di, Standard_Integer argc, 
       V3d_Coordinate X,Y,Z;
       aView->ConvertToGrid(x,y,X,Y,Z);
     } else {
-      di << "NOT aViewer->GridEcho()" << "\n";
+      di << "NOT aViewer->GridEcho()\n";
       return 1;
     }
   } else {
-    di << "NOT aViewer->IsActive()" << "\n";
+    di << "NOT aViewer->IsActive()\n";
     return 1;
   }
   return 0;

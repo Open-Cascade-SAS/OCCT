@@ -36,19 +36,19 @@ Vrml_MaterialBindingAndNormalBinding Vrml_MaterialBinding::Value() const
 
 Standard_OStream& Vrml_MaterialBinding::Print(Standard_OStream& anOStream) const 
 {
- anOStream  << "MaterialBinding {" << endl;
+ anOStream  << "MaterialBinding {\n";
  switch ( myValue )
    {
-   case Vrml_DEFAULT:  break; // anOStream  << "    value" << "\tDEFAULT";
-   case Vrml_OVERALL:            anOStream  << "    value" << "\tOVERALL" << endl; break;
-   case Vrml_PER_PART:           anOStream  << "    value" << "\tPER_PART" << endl; break;
-   case Vrml_PER_PART_INDEXED:   anOStream  << "    value" << "\tPER_PART_INDEXED" << endl; break;
-   case Vrml_PER_FACE:           anOStream  << "    value" << "\tPER_FACE" << endl; break;
-   case Vrml_PER_FACE_INDEXED:   anOStream  << "    value" << "\tPER_FACE_INDEXED" << endl; break;
-   case Vrml_PER_VERTEX:         anOStream  << "    value" << "\tPER_VERTEX" << endl; break;
-   case Vrml_PER_VERTEX_INDEXED: anOStream  << "    value" << "\tPER_VERTEX_INDEXED" << endl; break;
+   case Vrml_DEFAULT:  break; // anOStream  << "    value\tDEFAULT";
+   case Vrml_OVERALL:            anOStream  << "    value\tOVERALL\n"; break;
+   case Vrml_PER_PART:           anOStream  << "    value\tPER_PART\n"; break;
+   case Vrml_PER_PART_INDEXED:   anOStream  << "    value\tPER_PART_INDEXED\n"; break;
+   case Vrml_PER_FACE:           anOStream  << "    value\tPER_FACE\n"; break;
+   case Vrml_PER_FACE_INDEXED:   anOStream  << "    value\tPER_FACE_INDEXED\n"; break;
+   case Vrml_PER_VERTEX:         anOStream  << "    value\tPER_VERTEX\n"; break;
+   case Vrml_PER_VERTEX_INDEXED: anOStream  << "    value\tPER_VERTEX_INDEXED\n"; break;
    }
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }
 

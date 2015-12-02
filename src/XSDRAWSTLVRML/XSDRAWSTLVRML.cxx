@@ -86,7 +86,7 @@ static Standard_Integer writestl
 {
   if (argc < 3 || argc > 4) {
     di << "Use: " << argv[0]
-    << " shape file [ascii/binary (0/1) : 1 by default]" << "\n";
+    << " shape file [ascii/binary (0/1) : 1 by default]\n";
   } else {
     TopoDS_Shape aShape = DBRep::Get(argv[1]);
     Standard_Boolean isASCIIMode = Standard_False;
@@ -124,7 +124,7 @@ static Standard_Integer writevrml
 {
   if (argc < 3 || argc > 5) 
   {
-    di << "wrong number of parameters" << "\n";
+    di << "wrong number of parameters\n";
     return 0;
   }
 
@@ -235,7 +235,7 @@ static Standard_Integer loadvrml
       }
     }
     else {
-      di << "cannot open file" << "\n";
+      di << "cannot open file\n";
     }
 
 
@@ -250,15 +250,15 @@ static Standard_Integer createmesh
 {
   if (argc<3)
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use: " << argv[0] << " <mesh name> <stl file>" << "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use: " << argv[0] << " <mesh name> <stl file>\n";
     return 0;
   }
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
-    di << "No active view. Please call 'vinit' first" << "\n";
+    di << "No active view. Please call 'vinit' first\n";
     return 0;
   }
 
@@ -267,11 +267,11 @@ static Standard_Integer createmesh
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
   Handle(StlMesh_Mesh) aSTLMesh = RWStl::ReadFile (aFile, aProgress);
 
-  di << "Reading OK..." << "\n";
+  di << "Reading OK...\n";
   Handle( XSDRAWSTLVRML_DataSource ) aDS = new XSDRAWSTLVRML_DataSource( aSTLMesh );
-  di << "Data source is created successful" << "\n";
+  di << "Data source is created successful\n";
   Handle( MeshVS_Mesh ) aMesh = new MeshVS_Mesh();
-  di << "MeshVS_Mesh is created successful" << "\n";
+  di << "MeshVS_Mesh is created successful\n";
 
   aMesh->SetDataSource( aDS );
   aMesh->AddBuilder( new MeshVS_MeshPrsBuilder( aMesh.operator->() ), Standard_True );
@@ -303,22 +303,22 @@ static Standard_Integer create3d
 {
   if (argc<2)
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use: " << argv[0] << " <mesh name>" << "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use: " << argv[0] << " <mesh name>\n";
     return 0;
   }
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
-    di << "No active view. Please call 'vinit' first" << "\n";
+    di << "No active view. Please call 'vinit' first\n";
     return 0;
   }
 
   Handle( XSDRAWSTLVRML_DataSource3D ) aDS = new XSDRAWSTLVRML_DataSource3D();
-  di << "Data source is created successful" << "\n";
+  di << "Data source is created successful\n";
   Handle( MeshVS_Mesh ) aMesh = new MeshVS_Mesh();
-  di << "MeshVS_Mesh is created successful" << "\n";
+  di << "MeshVS_Mesh is created successful\n";
 
   aMesh->SetDataSource( aDS );
   aMesh->AddBuilder( new MeshVS_MeshPrsBuilder( aMesh.operator->() ), Standard_True );
@@ -351,7 +351,7 @@ Handle( MeshVS_Mesh ) getMesh( const char* theName, Draw_Interpretor& di)
 
   if( aDrawMesh.IsNull() )
   {
-    di << "There is no such object" << "\n";
+    di << "There is no such object\n";
     return NULL;
   }
   else
@@ -359,7 +359,7 @@ Handle( MeshVS_Mesh ) getMesh( const char* theName, Draw_Interpretor& di)
     Handle( MeshVS_Mesh ) aMesh = aDrawMesh->GetMesh();
     if( aMesh.IsNull() )
     {
-      di << "There is invalid mesh" << "\n";
+      di << "There is invalid mesh\n";
       return NULL;
     }
     else
@@ -372,7 +372,7 @@ static Standard_Integer setcolor
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv, Standard_Integer theParam )
 {
   if (argc<5)
-    di << "Wrong number of parameters" << "\n";
+    di << "Wrong number of parameters\n";
   else
   {
     Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
@@ -387,7 +387,7 @@ static Standard_Integer setcolor
       Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
 
       if( aContext.IsNull() )
-        di << "The context is null" << "\n";
+        di << "The context is null\n";
       else
         aContext->Redisplay( aMesh );
     }
@@ -411,7 +411,7 @@ static Standard_Integer meshmat
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv )
 {
   if (argc<3)
-    di << "Wrong number of parameters" << "\n";
+    di << "Wrong number of parameters\n";
   else
   {
     Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
@@ -433,7 +433,7 @@ static Standard_Integer meshmat
       Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
 
       if( aContext.IsNull() )
-        di << "The context is null" << "\n";
+        di << "The context is null\n";
       else
         aContext->Redisplay( aMesh );
     }
@@ -445,7 +445,7 @@ static Standard_Integer shrink
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv )
 {
   if (argc<3)
-    di << "Wrong number of parameters" << "\n";
+    di << "Wrong number of parameters\n";
   else
   {
     Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
@@ -457,7 +457,7 @@ static Standard_Integer shrink
       Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
 
       if( aContext.IsNull() )
-        di << "The context is null" << "\n";
+        di << "The context is null\n";
       else
         aContext->Redisplay( aMesh );
     }
@@ -470,7 +470,7 @@ static Standard_Integer closed (Draw_Interpretor& theDI, Standard_Integer theArg
 {
   if (theArgc < 3)
   {
-    theDI << "Wrong number of parameters." << "\n";
+    theDI << "Wrong number of parameters.\n";
   }
   else
   {
@@ -483,7 +483,7 @@ static Standard_Integer closed (Draw_Interpretor& theDI, Standard_Integer theArg
       Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
       if (aContext.IsNull())
       {
-        theDI << "The context is null" << "\n";
+        theDI << "The context is null\n";
       }
       else
       {
@@ -500,7 +500,7 @@ static Standard_Integer mdisplay
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv )
 {
   if (argc<2)
-    di << "Wrong number of parameters" << "\n";
+    di << "Wrong number of parameters\n";
   else
   {
     Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
@@ -509,7 +509,7 @@ static Standard_Integer mdisplay
       Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
 
       if( aContext.IsNull() )
-        di << "The context is null" << "\n";
+        di << "The context is null\n";
       else
       {
         if( aContext->HasOpenedContext() )
@@ -526,7 +526,7 @@ static Standard_Integer merase
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv )
 {
   if (argc<2)
-    di << "Wrong number of parameters" << "\n";
+    di << "Wrong number of parameters\n";
   else
   {
     Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
@@ -535,7 +535,7 @@ static Standard_Integer merase
       Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
 
       if( aContext.IsNull() )
-        di << "The context is null" << "\n";
+        di << "The context is null\n";
       else
       {
         if( aContext->HasOpenedContext() )
@@ -545,7 +545,7 @@ static Standard_Integer merase
       }
     }
     else
-      di << "Mesh is null" << "\n";
+      di << "Mesh is null\n";
   }
   return 0;
 }
@@ -555,8 +555,8 @@ static Standard_Integer hidesel
 {
   if (argc<2)
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use: " << argv[0] << " <mesh name>" << "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use: " << argv[0] << " <mesh name>\n";
     return 0;
   }
 
@@ -564,12 +564,12 @@ static Standard_Integer hidesel
   Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
   if( aMesh.IsNull() )
   {
-    di << "The mesh is invalid" << "\n";
+    di << "The mesh is invalid\n";
     return 0;
   }
 
   if( aContext.IsNull() )
-    di << "The context is null" << "\n";
+    di << "The context is null\n";
   else
   {
     Handle(TColStd_HPackedMapOfInteger) aHiddenNodes = aMesh->GetHiddenNodes();
@@ -612,8 +612,8 @@ static Standard_Integer showonly
 {
   if (argc<2)
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use: " << argv[0] << " <mesh name>" << "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use: " << argv[0] << " <mesh name>\n";
     return 0;
   }
 
@@ -622,12 +622,12 @@ static Standard_Integer showonly
   Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
   if( aMesh.IsNull() )
   {
-    di << "The mesh is invalid" << "\n";
+    di << "The mesh is invalid\n";
     return 0;
   }
 
   if( aContext.IsNull() )
-    di << "The context is null" << "\n";
+    di << "The context is null\n";
   else
   {
     Handle(TColStd_HPackedMapOfInteger) aHiddenNodes =
@@ -663,8 +663,8 @@ static Standard_Integer showall
 {
   if (argc<2)
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use: " << argv[0] << " <mesh name>" << "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use: " << argv[0] << " <mesh name>\n";
     return 0;
   }
 
@@ -672,12 +672,12 @@ static Standard_Integer showall
   Handle( MeshVS_Mesh ) aMesh = getMesh( argv[1], di );
   if( aMesh.IsNull() )
   {
-    di << "The mesh is invalid" << "\n";
+    di << "The mesh is invalid\n";
     return 0;
   }
 
   if( aContext.IsNull() )
-    di << "The context is null" << "\n";
+    di << "The context is null\n";
   else
   {
     aMesh->SetHiddenNodes( new TColStd_HPackedMapOfInteger() );
@@ -698,15 +698,15 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
     OCC_CATCH_SIGNALS
       if ( argc < 4 )
       {
-        di << "Wrong number of parameters" << "\n";
-        di << "Use : meshcolors <mesh name> <mode> <isreflect>" << "\n";
-        di << "mode : {elem1|elem2|nodal|nodaltex|none}"<< "\n";
-        di << "       elem1 - different color for each element" << "\n";
-        di << "       elem2 - one color for one side"<<"\n";
-        di << "       nodal - different color for each node"<< "\n";
-        di << "       nodaltex - different color for each node with texture interpolation"<< "\n";
-        di << "       none  - clear"<< "\n";
-        di << "isreflect : {0|1} "<< "\n";
+        di << "Wrong number of parameters\n";
+        di << "Use : meshcolors <mesh name> <mode> <isreflect>\n";
+        di << "mode : {elem1|elem2|nodal|nodaltex|none}\n";
+        di << "       elem1 - different color for each element\n";
+        di << "       elem2 - one color for one side\n";
+        di << "       nodal - different color for each node\n";
+        di << "       nodaltex - different color for each node with texture interpolation\n";
+        di << "       none  - clear\n";
+        di << "isreflect : {0|1} \n";
 
         return 0;
       }
@@ -715,13 +715,13 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
 
       if ( aMesh.IsNull() )
       {
-        di << "Mesh not found" << "\n";
+        di << "Mesh not found\n";
         return 0;
       }
       Handle(AIS_InteractiveContext) anIC = ViewerTest::GetAISContext();
       if ( anIC.IsNull() )
       {
-        di << "The context is null" << "\n";
+        di << "The context is null\n";
         return 0;
       }
       if( !aMesh.IsNull() )
@@ -852,14 +852,14 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
         }
         else
         {
-          di << "Wrong mode name" << "\n";
+          di << "Wrong mode name\n";
           return 0;
         }
       }
   }
   catch ( Standard_Failure )
   {
-    di << "Error" << "\n";
+    di << "Error\n";
   }
 
   return 0;
@@ -871,12 +871,12 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
 {
   if ( argc < 3 )
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use : meshvectors <mesh name> < -mode {elem|nodal|none} > [-maxlen len] [-color name] [-arrowpart ratio] [-issimple {1|0}]" << "\n";
-    di << "Supported mode values:"<< "\n";
-    di << "       elem  - vector per element" << "\n";
-    di << "       nodal - vector per node"<< "\n";
-    di << "       none  - clear"<< "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use : meshvectors <mesh name> < -mode {elem|nodal|none} > [-maxlen len] [-color name] [-arrowpart ratio] [-issimple {1|0}]\n";
+    di << "Supported mode values:\n";
+    di << "       elem  - vector per element\n";
+    di << "       nodal - vector per node\n";
+    di << "       none  - clear\n";
 
     return 0;
   }
@@ -885,13 +885,13 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
 
   if ( aMesh.IsNull() )
   {
-    di << "Mesh not found" << "\n";
+    di << "Mesh not found\n";
     return 0;
   }
   Handle(AIS_InteractiveContext) anIC = ViewerTest::GetAISContext();
   if ( anIC.IsNull() )
   {
-    di << "The context is null" << "\n";
+    di << "The context is null\n";
     return 0;
   }
 
@@ -936,7 +936,7 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
 
   if( !aMode.IsEqual("elem") && !aMode.IsEqual("nodal") && !aMode.IsEqual("none") )
   {
-    di << "Wrong mode name" << "\n";
+    di << "Wrong mode name\n";
     return 0;
   }
 
@@ -995,8 +995,8 @@ static Standard_Integer meshtext( Draw_Interpretor& di,
 {
   if ( argc < 2 )
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use : meshtext <mesh name>" << "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use : meshtext <mesh name>\n";
     return 0;
   }
 
@@ -1004,14 +1004,14 @@ static Standard_Integer meshtext( Draw_Interpretor& di,
 
   if ( aMesh.IsNull() )
   {
-    di << "Mesh not found" << "\n";
+    di << "Mesh not found\n";
     return 0;
   }
 
   Handle(AIS_InteractiveContext) anIC = ViewerTest::GetAISContext();
   if ( anIC.IsNull() )
   {
-    di << "The context is null" << "\n";
+    di << "The context is null\n";
     return 0;
   }
 
@@ -1035,8 +1035,8 @@ static Standard_Integer meshdeform( Draw_Interpretor& di,
 {
   if ( argc < 3 )
   {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use : meshdeform <mesh name> < -mode {on|off} > [-scale scalefactor]" << "\n";
+    di << "Wrong number of parameters\n";
+    di << "Use : meshdeform <mesh name> < -mode {on|off} > [-scale scalefactor]\n";
     return 0;
   }
 
@@ -1044,13 +1044,13 @@ static Standard_Integer meshdeform( Draw_Interpretor& di,
 
   if ( aMesh.IsNull() )
   {
-    di << "Mesh not found" << "\n";
+    di << "Mesh not found\n";
     return 0;
   }
   Handle(AIS_InteractiveContext) anIC = ViewerTest::GetAISContext();
   if ( anIC.IsNull() )
   {
-    di << "The context is null" << "\n";
+    di << "The context is null\n";
     return 0;
   }
 
@@ -1080,7 +1080,7 @@ static Standard_Integer meshdeform( Draw_Interpretor& di,
 
   if(!aMode.IsEqual("on") && !aMode.IsEqual("off"))
   {
-    di << "Wrong mode name" << "\n";
+    di << "Wrong mode name\n";
     return 0;
   }
 
@@ -1124,22 +1124,22 @@ static Standard_Integer mesh_edge_width( Draw_Interpretor& di,
     OCC_CATCH_SIGNALS
       if ( argc < 3 )
       {
-        di << "Wrong number of parameters" << "\n";
-        di << "Use : mesh_edge_width <mesh name> <width>" << "\n";
+        di << "Wrong number of parameters\n";
+        di << "Use : mesh_edge_width <mesh name> <width>\n";
         return 0;
       }
 
       Handle(MeshVS_Mesh) aMesh = getMesh( argv[ 1 ], di );
       if ( aMesh.IsNull() )
       {
-        di << "Mesh not found" << "\n";
+        di << "Mesh not found\n";
         return 0;
       }
 
       const char* aWidthStr = argv[ 2 ];
       if ( aWidthStr == 0 || Draw::Atof( aWidthStr ) <= 0 )
       {
-        di << "Width must be real value more than zero" << "\n";
+        di << "Width must be real value more than zero\n";
         return 0;
       }
 
@@ -1148,14 +1148,14 @@ static Standard_Integer mesh_edge_width( Draw_Interpretor& di,
       Handle(AIS_InteractiveContext) anIC = ViewerTest::GetAISContext();
       if ( anIC.IsNull() )
       {
-        di << "The context is null" << "\n";
+        di << "The context is null\n";
         return 0;
       }
 
       Handle(MeshVS_Drawer) aDrawer = aMesh->GetDrawer();
       if ( aDrawer.IsNull() )
       {
-        di << "The drawer is null" << "\n";
+        di << "The drawer is null\n";
         return 0;
       }
 
@@ -1164,7 +1164,7 @@ static Standard_Integer mesh_edge_width( Draw_Interpretor& di,
   }
   catch ( Standard_Failure )
   {
-    di << "Error" << "\n";
+    di << "Error\n";
   }
 
   return 0;
@@ -1178,14 +1178,14 @@ static Standard_Integer meshinfo(Draw_Interpretor& di,
 {
   if ( argc != 2 )
   {
-    di << "Wrong number of parameters. Use : meshinfo mesh" << "\n";
+    di << "Wrong number of parameters. Use : meshinfo mesh\n";
     return 0;
   }
 
   Handle(MeshVS_Mesh) aMesh = getMesh(argv[ 1 ], di);
   if ( aMesh.IsNull() )
   {
-    di << "Mesh not found" << "\n";
+    di << "Mesh not found\n";
     return 0;
   }
 
@@ -1246,7 +1246,7 @@ void XSDRAWSTLVRML::Factory(Draw_Interpretor& theDI)
   XSDRAWSTLVRML::InitCommands(theDI);
   XSDRAW::LoadDraw(theDI);
 #ifdef OCCT_DEBUG
-  theDI << "Draw Plugin : All TKXSDRAW commands are loaded" << "\n";
+  theDI << "Draw Plugin : All TKXSDRAW commands are loaded\n";
 #endif
 }
 

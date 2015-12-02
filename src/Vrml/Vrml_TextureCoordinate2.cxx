@@ -39,21 +39,21 @@ Vrml_TextureCoordinate2::Vrml_TextureCoordinate2(const Handle(TColgp_HArray1OfVe
  Standard_OStream& Vrml_TextureCoordinate2::Print(Standard_OStream& anOStream) const
 {
  Standard_Integer i;
- anOStream  << "TextureCoordinate2 {" << endl;
+ anOStream  << "TextureCoordinate2 {\n";
 
  if ( myPoint->Length() != 1 || Abs(myPoint->Value(myPoint->Lower()).X() - 0) > 0.0001 || 
                                 Abs(myPoint->Value(myPoint->Lower()).Y() - 0) > 0.0001 )
   { 
-   anOStream  << "    point [" << endl << '\t';
+   anOStream  << "    point [\n\t";
     for ( i = myPoint->Lower(); i <= myPoint->Upper(); i++ )
 	{
-	 anOStream << myPoint->Value(i).X() << ' ' << myPoint->Value(i).Y();
+	 anOStream << myPoint->Value(i).X() << " " << myPoint->Value(i).Y();
 
          if ( i < myPoint->Length() )
-	    anOStream  << ',' << endl << '\t';
+	    anOStream  << ",\n\t";
 	}
-    anOStream  << " ]" << endl;
+    anOStream  << " ]\n";
   }
-  anOStream  << '}' << endl;
+  anOStream  << "}\n";
  return anOStream;
 }

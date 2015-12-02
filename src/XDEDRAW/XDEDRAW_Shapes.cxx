@@ -41,12 +41,12 @@
 static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<" DocName Shape [int makeAssembly (1/0)]"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Shape [int makeAssembly (1/0)]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
@@ -55,7 +55,7 @@ static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, c
   if ( argc==4 && Draw::Atoi(argv[3]) == 0 ) makeAssembly = Standard_False;
   TDF_Label aLabel;
   aLabel = myAssembly->AddShape(aShape, makeAssembly);
-  if (aLabel.IsNull()) di<<"Null Label"<<"\n";
+  if (aLabel.IsNull()) di<<"Null Label\n";
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(aLabel, Entry);
   di << Entry.ToCString();
@@ -65,13 +65,13 @@ static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer newShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=2) {
-    di<<"Use: "<<argv[0]<<" DocName "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   TDF_Label aLabel;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
 //XCAFDoc_ShapeTool myAssembly;
@@ -87,17 +87,17 @@ static Standard_Integer newShape (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer setShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" DocName Label Shape "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Label Shape \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   TopoDS_Shape aShape;
-  //   if (aLabel.IsNull()) di<<"Null Label"<<"\n";
+  //   if (aLabel.IsNull()) di<<"Null Label\n";
   aShape = DBRep::Get(argv[3]);
 //  XCAFDoc_ShapeTool myAssembly;
 //  myAssembly.Init(Doc);
@@ -110,16 +110,16 @@ static Standard_Integer setShape (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer getShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" Result DocName Label"<<"\n";
+    di<<"Use: "<<argv[0]<<" Result DocName Label\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[2], Doc);
-  if ( Doc.IsNull() ) { di << argv[2] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[2] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[3], aLabel);
-  if (aLabel.IsNull()) {di<<"No such Label"<<"\n"; return 1;}
+  if (aLabel.IsNull()) {di<<"No such Label\n"; return 1;}
   TopoDS_Shape aShape;
 //  XCAFDoc_ShapeTool myAssembly;
 //  myAssembly.Init(Doc);
@@ -135,16 +135,16 @@ static Standard_Integer removeShape (Draw_Interpretor& di, Standard_Integer argc
 {
   if (argc != 3 && argc != 4)
   {
-    di<<"Use: "<<argv[0]<<" DocName Label [int removeCompletely (1/0)]"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Label [int removeCompletely (1/0)]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  if (aLabel.IsNull()) {di<<"No such Label"<<"\n"; return 1;}
+  if (aLabel.IsNull()) {di<<"No such Label\n"; return 1;}
   TopoDS_Shape aShape;
 //  XCAFDoc_ShapeTool myAssembly;
 //  myAssembly.Init(Doc);
@@ -160,12 +160,12 @@ static Standard_Integer removeShape (Draw_Interpretor& di, Standard_Integer argc
 static Standard_Integer findShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName Shape"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Shape\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TopoDS_Shape aShape;
@@ -184,12 +184,12 @@ static Standard_Integer findShape (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer labelInfo (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName Label "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -199,22 +199,22 @@ static Standard_Integer labelInfo (Draw_Interpretor& di, Standard_Integer argc, 
   TCollection_AsciiString Entry;
 
   if ( myAssembly->IsShape(aLabel) ) {
-    //di<<"There are a TopLevelShape"<<"\n";
+    //di<<"There are a TopLevelShape\n";
     Entry="There are a TopLevelShape";
     di << Entry.ToCString();
   }
   if ( myAssembly->IsComponent(aLabel) ) {
-    //di<<"There are a Component"<<"\n";
+    //di<<"There are a Component\n";
     Entry="There are a Component";
     di << Entry.ToCString();
   }
   if ( myAssembly->IsAssembly(aLabel) ) {
-    //di<<"There are an Assembly"<<"\n";
+    //di<<"There are an Assembly\n";
     Entry="There are an Assembly";
     di << Entry.ToCString();
   }
   if ( myAssembly->IsFree(aLabel) ) {
-    //di<<"This Shape don't used"<<"\n";
+    //di<<"This Shape don't used\n";
     Entry="This Shape don't used";
     di << Entry.ToCString();
   }
@@ -224,7 +224,7 @@ static Standard_Integer labelInfo (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer getUsers (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<" Doc Label [withSubChilds(int)]"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc Label [withSubChilds(int)]\n";
     return 1;
   }
   Standard_Boolean getsubchilds = Standard_False;
@@ -232,7 +232,7 @@ static Standard_Integer getUsers (Draw_Interpretor& di, Standard_Integer argc, c
   
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -241,21 +241,21 @@ static Standard_Integer getUsers (Draw_Interpretor& di, Standard_Integer argc, c
   TCollection_AsciiString Entry;
   Entry=myAssembly->GetUsers(aLabel, labseq, getsubchilds);
   di << Entry.ToCString();
-  //di<<myAssembly->GetUsers(aLabel, labseq, getsubchilds)<<" assemblies use this component"<<"\n";
+  //di<<myAssembly->GetUsers(aLabel, labseq, getsubchilds)<<" assemblies use this component\n";
   return 0;
 }
 
 static Standard_Integer nbComponents (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {
-    di<<"Use: "<<argv[0]<<" Doc Label [withSubChilds(int)]"<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc Label [withSubChilds(int)]\n";
     return 1;
   }
   Standard_Boolean getsubchilds = Standard_False;
   if ( (argc==4) && ( Draw::Atoi(argv[3])==1 ) ) getsubchilds = Standard_True;
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -266,8 +266,8 @@ static Standard_Integer nbComponents (Draw_Interpretor& di, Standard_Integer arg
   TCollection_AsciiString Entry;
   Entry=myAssembly->NbComponents( aLabel, getsubchilds);
   di << Entry.ToCString();
-  //di<<" components"<<"\n";
-  //di<<"This assembly has "<<myAssembly->NbComponents( aLabel, getsubchilds )<<" components"<<"\n";
+  //di<<" components\n";
+  //di<<"This assembly has "<<myAssembly->NbComponents( aLabel, getsubchilds )<<" components\n";
 
   return 0;
 }
@@ -275,12 +275,12 @@ static Standard_Integer nbComponents (Draw_Interpretor& di, Standard_Integer arg
 static Standard_Integer addComponent (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" DocName Label Shape "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Label Shape \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -300,12 +300,12 @@ static Standard_Integer addComponent (Draw_Interpretor& di, Standard_Integer arg
 static Standard_Integer removeComponent (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName Label "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -319,12 +319,12 @@ static Standard_Integer removeComponent (Draw_Interpretor& di, Standard_Integer 
 static Standard_Integer getReferredShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName Label "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel, RootLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -343,12 +343,12 @@ static Standard_Integer getReferredShape (Draw_Interpretor& di, Standard_Integer
 static Standard_Integer getTopLevelShapes (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=2) {
-    di<<"Use: "<<argv[0]<<" DocName "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_Label aLabel;
   TDF_LabelSequence Labels;
@@ -371,19 +371,19 @@ static Standard_Integer getTopLevelShapes (Draw_Interpretor& di, Standard_Intege
 static Standard_Integer getFreeShapes (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc <2) {
-    di<<"Use: "<<argv[0]<<" DocName [shape_prefix]"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName [shape_prefix]\n";
     return 1;
   }
   
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
   TDF_LabelSequence Labels;
   Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   STool->GetFreeShapes(Labels);
   if ( Labels.Length() <=0 ) {
-    di << "Document " << argv[1] << " contain no shapes" << "\n";
+    di << "Document " << argv[1] << " contain no shapes\n";
     return 0;
   }
   
@@ -414,19 +414,19 @@ static Standard_Integer getFreeShapes (Draw_Interpretor& di, Standard_Integer ar
 static Standard_Integer getOneShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" shape DocName "<<"\n";
+    di<<"Use: "<<argv[0]<<" shape DocName \n";
     return 1;
   }
   
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[2], Doc);
-  if ( Doc.IsNull() ) { di << argv[2] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[2] << " is not a document\n"; return 1; }
 
   TDF_LabelSequence Labels;
   Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   STool->GetFreeShapes(Labels);
   if ( Labels.Length() <=0 ) {
-    di << "Document " << argv[2] << " contain no shapes" << "\n";
+    di << "Document " << argv[2] << " contain no shapes\n";
     return 0;
   }
   
@@ -456,14 +456,14 @@ static Standard_Integer XDumpLocation (Draw_Interpretor& di, Standard_Integer ar
 {
   if (argc != 3)
   {
-    di << "Use: " << argv[0] << " Doc Label " << "\n";
+    di << "Use: " << argv[0] << " Doc Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
   {
-    di << argv[1] << " is not a document" << "\n";
+    di << argv[1] << " is not a document\n";
     return 1;
   }
 
@@ -473,7 +473,7 @@ static Standard_Integer XDumpLocation (Draw_Interpretor& di, Standard_Integer ar
   Handle(XCAFDoc_Location) aLoc;
   if (!aLabel.FindAttribute(XCAFDoc_Location::GetID(), aLoc))
   {
-    di << "Label " << argv[2] << " doesn't contain XCAFDoc_Location attribute" << "\n";
+    di << "Label " << argv[2] << " doesn't contain XCAFDoc_Location attribute\n";
     return 1;
   }
   
@@ -499,12 +499,12 @@ static Standard_Integer setSHUO (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc < 4)
   {
-    di << "Use: " << argv[0] << " Doc UU_Label NU_Label " << "\n";
+    di << "Use: " << argv[0] << " Doc UU_Label NU_Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   TDF_LabelSequence aLabSeq;
   for (Standard_Integer i = 3; i <= argc; i++) {
@@ -516,13 +516,13 @@ static Standard_Integer setSHUO (Draw_Interpretor& di, Standard_Integer argc, co
       di << argv[i - 1] << " is null label"  << "\n";
   }
   if (aLabSeq.Length() < 2) {
-    di << "Error: couldnot set SHUO between on less then 2 labels" << "\n";
+    di << "Error: couldnot set SHUO between on less then 2 labels\n";
   }
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   Handle(XCAFDoc_GraphNode) aMainSHUO;
   myAssembly->SetSHUO( aLabSeq, aMainSHUO );
   if (aMainSHUO.IsNull()) {
-    di << "Error: cannot set the SHUO" << "\n";
+    di << "Error: cannot set the SHUO\n";
     return 1;
   }
     
@@ -533,12 +533,12 @@ static Standard_Integer getSHUOUpperUsage (Draw_Interpretor& di, Standard_Intege
 {
   if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Doc NU_Label " << "\n";
+    di << "Use: " << argv[0] << " Doc NU_Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   TDF_Label NL;
   TDF_Tool::Label(Doc->GetData(), argv[2], NL);
   if (NL.IsNull()) {
@@ -563,12 +563,12 @@ static Standard_Integer getSHUONextUsage (Draw_Interpretor& di, Standard_Integer
 {
   if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Doc UU_Label " << "\n";
+    di << "Use: " << argv[0] << " Doc UU_Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   TDF_Label UL;
   TDF_Tool::Label(Doc->GetData(), argv[2], UL);
   if (UL.IsNull()) {
@@ -593,12 +593,12 @@ static Standard_Integer removeSHUO (Draw_Interpretor& di, Standard_Integer argc,
 {
   if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Doc SHUOComponent_Label " << "\n";
+    di << "Use: " << argv[0] << " Doc SHUOComponent_Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   TDF_Label UL;
   TDF_Tool::Label(Doc->GetData(), argv[2], UL);
   if (UL.IsNull()) {
@@ -615,12 +615,12 @@ static Standard_Integer hasSHUO (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Doc SHUO_Label " << "\n";
+    di << "Use: " << argv[0] << " Doc SHUO_Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   TDF_Label UL;
   TDF_Tool::Label(Doc->GetData(), argv[2], UL);
   if (UL.IsNull()) {
@@ -641,12 +641,12 @@ static Standard_Integer getAllSHUO (Draw_Interpretor& di, Standard_Integer argc,
 {
   if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Doc SHUO_Label " << "\n";
+    di << "Use: " << argv[0] << " Doc SHUO_Label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   TDF_Label UL;
   TDF_Tool::Label(Doc->GetData(), argv[2], UL);
@@ -671,12 +671,12 @@ static Standard_Integer findComponent (Draw_Interpretor& di, Standard_Integer ar
 {
   if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Doc shape " << "\n";
+    di << "Use: " << argv[0] << " Doc shape \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
@@ -697,12 +697,12 @@ static Standard_Integer getStyledComponent (Draw_Interpretor& di, Standard_Integ
 {
   if (argc < 4)
   {
-    di << "Use: " << argv[0] << " Doc res SHUO_label " << "\n";
+    di << "Use: " << argv[0] << " Doc res SHUO_label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   TopoDS_Shape aShape;
   TDF_Label aLabel;
@@ -712,7 +712,7 @@ static Standard_Integer getStyledComponent (Draw_Interpretor& di, Standard_Integ
     aShape = myAssembly->GetSHUOInstance( SHUO );
   
   if (aShape.IsNull()) {
-    di << "cannot get component" << "\n";
+    di << "cannot get component\n";
     return 1;
   }
   DBRep::Set ( argv[2], aShape );
@@ -724,12 +724,12 @@ static Standard_Integer getAllStyledComponents (Draw_Interpretor& di, Standard_I
 {
   if (argc < 4)
   {
-    di << "Use: " << argv[0] << " Doc res SHUO_label " << "\n";
+    di << "Use: " << argv[0] << " Doc res SHUO_label \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   TopTools_SequenceOfShape aShapes;
   TDF_Label aLabel;
@@ -755,12 +755,12 @@ static Standard_Integer findSHUO (Draw_Interpretor& di, Standard_Integer argc, c
 {
   if (argc < 4)
   {
-    di << "Use: " << argv[0] << " Doc labels " << "\n";
+    di << "Use: " << argv[0] << " Doc labels \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   TDF_LabelSequence aLabSeq;
   for (Standard_Integer i = 3; i <= argc; i++) {
@@ -772,12 +772,12 @@ static Standard_Integer findSHUO (Draw_Interpretor& di, Standard_Integer argc, c
       di << argv[i - 1] << " is null label"  << "\n";
   }
   if (aLabSeq.Length() < 2) {
-    di << "Error: couldnot find SHUO between on less then 2 labels" << "\n";
+    di << "Error: couldnot find SHUO between on less then 2 labels\n";
   }
   Handle(XCAFDoc_GraphNode) SHUO;
   myAssembly->FindSHUO( aLabSeq, SHUO );
   if (SHUO.IsNull()) {
-    di << "cannot find SHUO" << "\n";
+    di << "cannot find SHUO\n";
     return 1;
   }
   TCollection_AsciiString Entry;
@@ -791,17 +791,17 @@ static Standard_Integer setStyledComponent (Draw_Interpretor& di, Standard_Integ
 {
   if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Doc shape " << "\n";
+    di << "Use: " << argv[0] << " Doc shape \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
   if (aShape.IsNull()) {
-    di << "Shape " << argv[2] << " is null" << "\n";
+    di << "Shape " << argv[2] << " is null\n";
     return 1;
   }
   Handle(XCAFDoc_GraphNode) aSHUOAttr;

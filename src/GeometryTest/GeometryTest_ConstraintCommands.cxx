@@ -221,7 +221,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 
       else {
         // C-R-R
-        di << "Curve, radius, radius ???"<<"\n";
+        di << "Curve, radius, radius ???\n";
         return 1;
       }
     }
@@ -308,7 +308,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 
       else {
         // P-R-R
-        di << "Point, radius, radius ???"<<"\n";
+        di << "Point, radius, radius ???\n";
         return 1;
       }
     }
@@ -338,7 +338,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 
       else {
         // R-C-R
-        di << "Radius - Curve - Radius ??"<<"\n";
+        di << "Radius - Curve - Radius ??\n";
         return 1;
       }
     }
@@ -364,13 +364,13 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
       }      
       else {
         // R-P-R
-        di << "Radius - Point - Radius ??"<<"\n";
+        di << "Radius - Point - Radius ??\n";
         return 1;
       }
     }
     else {
       // R-R-..
-      di << "radius, radius ???"<<"\n";
+      di << "radius, radius ???\n";
       return 1;
     }
   }
@@ -418,7 +418,7 @@ static Standard_Integer lintang (Draw_Interpretor& di,Standard_Integer n, const 
       }
     }
     else
-      di << "Lin2dTanObl Not done" << "\n";
+      di << "Lin2dTanObl Not done\n";
   }
   else {
     Geom2dGcc_Lin2d2Tan ct3(Geom2dGcc::Unqualified(C1),
@@ -436,7 +436,7 @@ static Standard_Integer lintang (Draw_Interpretor& di,Standard_Integer n, const 
       }
     }
     else
-      di << "Lin2d2Tan Not done" << "\n";
+      di << "Lin2d2Tan Not done\n";
   }
 
   DrawTrSurf_CurveColor(col);
@@ -449,12 +449,12 @@ static Standard_Integer interpol (Draw_Interpretor& di,Standard_Integer n, const
 //==================================================================================
 {
   if (n == 1) {
-    di <<"give a name to your curve !" << "\n";
+    di <<"give a name to your curve !\n";
     return 0;
   }
   if (n == 2) {
     Standard_Integer id,XX,YY,b, i, j;
-    di << "Pick points "<< "\n";
+    di << "Pick points \n";
     dout.Select(id, XX, YY, b);
     Standard_Real zoom = dout.Zoom(id);
     if (b != 1) return 0;
@@ -780,8 +780,8 @@ static Standard_Integer gcarc (Draw_Interpretor& di,Standard_Integer n, const ch
       }
     }
   }
-  di <<"give a name for arc and the type seg or cir then" << "\n";
-  di <<"give passing points p1 p2 for seg    p1 p2 p3 or p1 p2 p3 p4 for cir (p2 p3 is a tgtvec)!" << "\n";
+  di <<"give a name for arc and the type seg or cir then\n";
+  di <<"give passing points p1 p2 for seg    p1 p2 p3 or p1 p2 p3 p4 for cir (p2 p3 is a tgtvec)!\n";
   return 0;
 }
 

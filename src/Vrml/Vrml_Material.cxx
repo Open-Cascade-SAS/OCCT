@@ -148,7 +148,7 @@ Handle(TColStd_HArray1OfReal) Vrml_Material::Transparency() const
 Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const 
 {
  Standard_Integer i;
- anOStream  << "Material {" << endl;
+ anOStream  << "Material {\n";
 
  if ( myAmbientColor->Length() != 1 ||
      Abs(myAmbientColor->Value(myAmbientColor->Lower()).Red() - 0.2)    > 0.0001 ||
@@ -160,9 +160,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
     {
      anOStream << myAmbientColor->Value(i).Red() << ' ' << myAmbientColor->Value(i).Green() << ' ' << myAmbientColor->Value(i).Blue();
      if ( i < myAmbientColor->Length() )
-	anOStream  << ',' << endl << '\t'; // ,,,,,,,,,,
+	anOStream  << ",\n\t"; // ,,,,,,,,,,
     }
-   anOStream  << " ]" << endl;
+   anOStream  << " ]\n";
   }
 
  if ( myDiffuseColor->Length() != 1 || 
@@ -175,9 +175,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
     {
      anOStream << myDiffuseColor->Value(i).Red() << ' ' << myDiffuseColor->Value(i).Green() << ' ' << myDiffuseColor->Value(i).Blue();
      if ( i < myDiffuseColor->Length() )
-	anOStream  << ',' << endl << '\t';     
+	anOStream  << ",\n\t";
     }
-   anOStream  << " ]" << endl;
+   anOStream  << " ]\n";
   }
 
  if ( mySpecularColor->Length() != 1 || 
@@ -190,9 +190,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
      {
      anOStream << mySpecularColor->Value(i).Red() << ' ' << mySpecularColor->Value(i).Green() << ' ' << mySpecularColor->Value(i).Blue();
      if ( i < mySpecularColor->Length() )
-	anOStream  << ',' << endl << "\t";     
+	anOStream  << ",\n\t";
      }
-   anOStream  << " ]" << endl;
+   anOStream  << " ]\n";
   }
 
  if ( myEmissiveColor->Length() != 1 || 
@@ -205,9 +205,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
     {
      anOStream << myEmissiveColor->Value(i).Red() << ' ' << myEmissiveColor->Value(i).Green() << ' ' << myEmissiveColor->Value(i).Blue();
      if ( i < myEmissiveColor->Length() )
-	anOStream  << ',' << endl << "\t";     
+	anOStream  << ",\n\t";
     }
-   anOStream  << " ]" << endl;
+   anOStream  << " ]\n";
   }
 
  if ( myShininess->Length() != 1 ||  Abs(myShininess->Value(myShininess->Lower()) - 0.2) > 0.0001 )
@@ -219,7 +219,7 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
        if ( i < myShininess->Length() )
           anOStream  << ", ";
       }
-    anOStream  << " ]" << endl;
+    anOStream  << " ]\n";
   }
 
  if ( myTransparency->Length() != 1 ||  Abs(myTransparency->Value(myTransparency->Lower()) - 0) > 0.0001 )
@@ -231,9 +231,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
       if ( i < myTransparency->Length() )
          anOStream  << ", ";
      }
-    anOStream  << " ]" << endl;
+    anOStream  << " ]\n";
   } 
-  anOStream  << '}' << endl;
+  anOStream  << "}\n";
   
  return anOStream;
 }

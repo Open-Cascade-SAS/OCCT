@@ -47,9 +47,9 @@ static Standard_Integer DDataStd_SetConstraint (Draw_Interpretor& di,
 {   
   if (nb < 5)
   {
-    di << "usage: SetConstraint DF entry keyword geometrie [geometrie ...]" << "\n";
-    di << "or SetConstraint DF entry \"plane\" geometrie - to set plane for existing constraint" << "\n";
-    di << "or SetConstraint DF entry \"value\" value - to set value for existing constraint" << "\n";
+    di << "usage: SetConstraint DF entry keyword geometrie [geometrie ...]\n";
+    di << "or SetConstraint DF entry \"plane\" geometrie - to set plane for existing constraint\n";
+    di << "or SetConstraint DF entry \"value\" value - to set value for existing constraint\n";
     return 1;
   }
 
@@ -122,10 +122,10 @@ static Standard_Integer DDataStd_SetConstraint (Draw_Interpretor& di,
     else if (strcmp(aT,"offset") == 0) aCT = TDataXtd_OFFSET;
     else
     {
-      di << "DDataStd_SetConstraint : unknown type, must be one of:" << "\n";
-      di << "rad/dia/minr/majr/tan/par/perp/concentric/equal/dist/angle/eqrad/symm/midp/" << "\n";
-      di << "eqdist/fix/rigid or from/axis/mate/alignf/aligna/axesa/facesa/round/offset" << "\n";
-      di << "or plane/value" << "\n";
+      di << "DDataStd_SetConstraint : unknown type, must be one of:\n";
+      di << "rad/dia/minr/majr/tan/par/perp/concentric/equal/dist/angle/eqrad/symm/midp/\n";
+      di << "eqdist/fix/rigid or from/axis/mate/alignf/aligna/axesa/facesa/round/offset\n";
+      di << "or plane/value\n";
       return 1;
     }
 
@@ -186,7 +186,7 @@ static Standard_Integer DDataStd_GetConstraint (Draw_Interpretor& di,
     }
     return 0;
   }
-  di << "DDataStd_GetConstraint : Error : not done" << "\n";
+  di << "DDataStd_GetConstraint : Error : not done\n";
   return 1;
 }
 
@@ -200,7 +200,7 @@ static Standard_Integer DDataStd_SetPattern (Draw_Interpretor& di,
 {   
   if (nb < 5)
   {
-    di << "usage: SetPattern (DF,entry,signature,NSentry[realEntry,intEntry[,NSentry,realEntry,intEntry]])" << "\n";
+    di << "usage: SetPattern (DF,entry,signature,NSentry[realEntry,intEntry[,NSentry,realEntry,intEntry]])\n";
     return 1;
   }
 
@@ -226,9 +226,9 @@ static Standard_Integer DDataStd_SetPattern (Draw_Interpretor& di,
   {
     if (nb < 7)
     {
-      di<<"usage:"<<"\n";
-      di<<"SetPattern (DF,entry,signature<=2,NSentry,realEntry,intEntry)"<<"\n";
-      di<<"SetPattern (DF,entry,2<signature<5,NSentry,realEntry,intEntry,NSentry,realEntry,intEntry)"<<"\n";
+      di<<"usage:\n";
+      di<<"SetPattern (DF,entry,signature<=2,NSentry,realEntry,intEntry)\n";
+      di<<"SetPattern (DF,entry,2<signature<5,NSentry,realEntry,intEntry,NSentry,realEntry,intEntry)\n";
       return 1;
     }
 
@@ -257,8 +257,8 @@ static Standard_Integer DDataStd_SetPattern (Draw_Interpretor& di,
     {
       if (nb < 10)
       {
-        di<<"usage:"<<"\n";
-        di<<"SetPattern (DF,entry,2<signature<5,NSentry,realEntry,intEntry,NSentry,realEntry,intEntry)"<<"\n";
+        di<<"usage:\n";
+        di<<"SetPattern (DF,entry,2<signature<5,NSentry,realEntry,intEntry,NSentry,realEntry,intEntry)\n";
         return 1;
       }
 
@@ -288,7 +288,7 @@ static Standard_Integer DDataStd_SetPattern (Draw_Interpretor& di,
   {
     if (nb > 5)
     {
-      di<<"usage: SetPattern (DF,entry,signature>=5,NSentry)"<<"\n";
+      di<<"usage: SetPattern (DF,entry,signature>=5,NSentry)\n";
       return 1;
     }
 
@@ -387,7 +387,7 @@ static Standard_Integer DDataStd_DumpPattern (Draw_Interpretor& di,
     }
     return 0;
   }
-  di << "DDataStd_DumpPattern : Error : not done" << "\n";
+  di << "DDataStd_DumpPattern : Error : not done\n";
   return 1;
 }
 
@@ -411,7 +411,7 @@ static Standard_Integer DDataStd_SetPosition (Draw_Interpretor& di,
     TDataXtd_Position::Set(L,aPos);  
     return 0;
   }
-  di << "Usage: SetPosition (DF, entry, X, Y, Z)" << "\n";
+  di << "Usage: SetPosition (DF, entry, X, Y, Z)\n";
   return 1;
 }
 
@@ -432,7 +432,7 @@ static Standard_Integer DDataStd_GetPosition (Draw_Interpretor& di,
     gp_Pnt aPos;
     if (!TDataXtd_Position::Get(L, aPos))
     {
-      di << "There is no TDataStd_Position attribute on this label" << "\n";
+      di << "There is no TDataStd_Position attribute on this label\n";
       return -1;
     }
 
@@ -441,7 +441,7 @@ static Standard_Integer DDataStd_GetPosition (Draw_Interpretor& di,
     Draw::Set(arg[5],TCollection_AsciiString(aPos.Z()).ToCString());
     return 0;
   }
-  di << "Usage: GetPosition (DF, entry, X(out), Y(out), Z(out))" << "\n";
+  di << "Usage: GetPosition (DF, entry, X(out), Y(out), Z(out))\n";
   return 1;
 }
 

@@ -63,20 +63,20 @@ static int mtmCreate (Draw_Interpretor& /*di*/, int n, const char** a)
 static int mtmAddDocument (Draw_Interpretor& di, int n, const char** a)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   if(n > 1) {
     Handle(DDocStd_DrawDocument) aDrawDoc =
       Handle(DDocStd_DrawDocument)::DownCast(Draw::Get(a[1]));
     if(aDrawDoc.IsNull()) {
-      di << "Error   : wrong document name" << "\n";
+      di << "Error   : wrong document name\n";
       return 1;
     }
     sMultiTransactionManager->AddDocument(aDrawDoc->GetDocument());
   }
   else {
-    di << "Error   : document name is not defined" << "\n";
+    di << "Error   : document name is not defined\n";
     return 1;
   }
   return 0;
@@ -90,7 +90,7 @@ static int mtmAddDocument (Draw_Interpretor& di, int n, const char** a)
 static int mtmOpenTransaction (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   sMultiTransactionManager->OpenCommand();
@@ -105,7 +105,7 @@ static int mtmOpenTransaction (Draw_Interpretor& di, int /*n*/, const char** /*a
 static int mtmCommitTransaction (Draw_Interpretor& di, int n, const char** a)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   if(n > 1)
@@ -123,7 +123,7 @@ static int mtmCommitTransaction (Draw_Interpretor& di, int n, const char** a)
 static int mtmAbortTransaction (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   sMultiTransactionManager->AbortCommand();
@@ -138,15 +138,15 @@ static int mtmAbortTransaction (Draw_Interpretor& di, int /*n*/, const char** /*
 static int mtmDump (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
-  di <<         "*** Dump of MTM ***" << "\n";
+  di <<         "*** Dump of MTM ***\n";
   //sMultiTransactionManager->DumpTransaction(cout);
   Standard_SStream aStream;
   sMultiTransactionManager->DumpTransaction(aStream);
   di << aStream;
-  di << "\n" << "***     End     ***" << "\n";
+  di << "\n***     End     ***\n";
   return 0;
 }
 
@@ -158,7 +158,7 @@ static int mtmDump (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 static int mtmUndo (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   sMultiTransactionManager->Undo();
@@ -173,7 +173,7 @@ static int mtmUndo (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 static int mtmRedo (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   sMultiTransactionManager->Redo();
@@ -188,7 +188,7 @@ static int mtmRedo (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
 static int mtmNestedMode (Draw_Interpretor& di, int n, const char** a)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   Standard_Boolean aMode = Standard_False;
@@ -206,7 +206,7 @@ static int mtmNestedMode (Draw_Interpretor& di, int n, const char** a)
 
 static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if ( argc <4 ) { di << "ERROR: Too few args" << "\n"; return 0; }
+  if ( argc <4 ) { di << "ERROR: Too few args\n"; return 0; }
   Handle(DDF_Browser) browser =
     Handle(DDF_Browser)::DownCast (Draw::Get(argv[1], Standard_True)); 
   if ( browser.IsNull() ) { di << "ERROR: Not a browser: " << argv[1] << "\n"; return 0; }
@@ -219,7 +219,7 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
   TDF_AttributeIterator itr(lab,Standard_False);
   for (Standard_Integer i=1; itr.More() && i < num; i++) itr.Next();
   
-  if ( ! itr.More() ) { di << "ERROR: Attribute #" << num << " not found" << "\n"; return 0; }
+  if ( ! itr.More() ) { di << "ERROR: Attribute #" << num << " not found\n"; return 0; }
     
   const Handle(TDF_Attribute)& att = itr.Value();
   if ( att->IsKind(STANDARD_TYPE(TDataStd_TreeNode)) )
@@ -331,20 +331,20 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
 static int mtmRemoveDocument (Draw_Interpretor& di, int n, const char** a)
 {
   if(sMultiTransactionManager.IsNull()) {
-    di << "Error   : manager is not initialised" << "\n";
+    di << "Error   : manager is not initialised\n";
     return 1;
   }
   if(n > 1) {
     Handle(DDocStd_DrawDocument) aDrawDoc =
        Handle(DDocStd_DrawDocument)::DownCast(Draw::Get(a[1]));
     if(aDrawDoc.IsNull()) {
-      di << "Error   : wrong document name" << "\n";
+      di << "Error   : wrong document name\n";
       return 1;
     }
     sMultiTransactionManager->RemoveDocument(aDrawDoc->GetDocument());
   }
   else {
-    di << "Error   : document name is not defined" << "\n";
+    di << "Error   : document name is not defined\n";
     return 1;
   }
   return 0;

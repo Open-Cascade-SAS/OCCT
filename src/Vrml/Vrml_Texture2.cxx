@@ -85,18 +85,18 @@ Vrml_Texture2::Vrml_Texture2(const TCollection_AsciiString& aFilename,
  Standard_OStream& Vrml_Texture2::Print(Standard_OStream& anOStream) const
 {
  Standard_Integer i;
- anOStream  << "Texture2 {" << endl;
+ anOStream  << "Texture2 {\n";
 
  if ( !(myFilename.IsEqual("") ) )
    {
-    anOStream  << "    filename" << '\t';
-    anOStream << '"' << myFilename << '"' << endl;
+    anOStream  << "    filename\t";
+    anOStream << '"' << myFilename << '"' << "\n";
    }
 
  if ( myImage->Width() != 0 || myImage->Height() != 0 || myImage->Number() != Vrml_NULL ) 
    {
-    anOStream  << "    image" << '\t';
-    anOStream <<  myImage->Width() << ' ' << myImage->Height() << ' ';
+    anOStream  << "    image\t";
+    anOStream <<  myImage->Width() << " " << myImage->Height() << " ";
 
     switch ( myImage->Number() )
       {
@@ -111,25 +111,25 @@ Vrml_Texture2::Vrml_Texture2(const TCollection_AsciiString& aFilename,
       { 
 	for ( i = myImage->Array()->Lower(); i <= myImage->Array()->Upper(); i++ )
 	  {
-//	    anOStream << ' ' << hex(myImage->Array()->Value(i),0);
-	    anOStream << ' ' << myImage->Array()->Value(i);
+//	    anOStream << " " << hex(myImage->Array()->Value(i),0);
+	    anOStream << " " << myImage->Array()->Value(i);
 	  }
       }
-    anOStream  <<  endl;
+    anOStream  <<  "\n";
   }
 
   switch ( myWrapS )
     {
-     case Vrml_REPEAT: break; // anOStream  << "    wrapS" << "\tREPEAT ";
-     case Vrml_CLAMP: anOStream  << "    wrapS" << "\tCLAMP" << endl; break;
+     case Vrml_REPEAT: break; // anOStream  << "    wrapS\tREPEAT ";
+     case Vrml_CLAMP: anOStream  << "    wrapS\tCLAMP\n"; break;
     }
 
   switch ( myWrapT )
     {
-     case Vrml_REPEAT: break; // anOStream  << "    wrapT" << "\tREPEAT ";
-     case Vrml_CLAMP: anOStream  << "    wrapT" << "\tCLAMP" << endl; break;
+     case Vrml_REPEAT: break; // anOStream  << "    wrapT\tREPEAT ";
+     case Vrml_CLAMP: anOStream  << "    wrapT\tCLAMP\n"; break;
     }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

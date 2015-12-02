@@ -171,7 +171,7 @@ static Standard_Real CalculVolume(const TopoDS_Shape& So,
   
   localCentroid = localCentroid * (1./ myVolume);
   
-  di << "Centroid:" << "\n";
+  di << "Centroid:\n";
   di << "X=\t" << localCentroid.X() << "\n";
   di << "Y=\t" << localCentroid.Y() << "\n";
   di << "Z=\t" << localCentroid.Z() << "\n";
@@ -194,12 +194,12 @@ static Standard_Real CalculVolume(const TopoDS_Shape& So,
 static Standard_Integer SetProps (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} [epsilon = 0.001]"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} [epsilon = 0.001]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   Standard_Real Vres, Ares;
 
@@ -256,12 +256,12 @@ static Standard_Integer SetProps (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer SetVolume (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} volume"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} volume\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   Standard_Real res=0.;
 
@@ -294,12 +294,12 @@ static Standard_Integer SetVolume (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer SetArea (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} area"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} area\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   Standard_Real res=0.;
 
@@ -331,12 +331,12 @@ static Standard_Integer SetArea (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer SetCentroid (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=6) {
-    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} x y z"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} x y z\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   gp_Pnt aPoint;
 
@@ -370,12 +370,12 @@ static Standard_Integer SetCentroid (Draw_Interpretor& di, Standard_Integer argc
 static Standard_Integer GetVolume (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label}"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label}\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -406,12 +406,12 @@ static Standard_Integer GetVolume (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer GetArea (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label}"<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label}\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -442,12 +442,12 @@ static Standard_Integer GetArea (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer GetCentroid (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} "<<"\n";
+    di<<"Use: "<<argv[0]<<" DocName {Shape|Label} \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   gp_Pnt aPoint;
   
@@ -481,17 +481,17 @@ static Standard_Integer GetCentroid (Draw_Interpretor& di, Standard_Integer argc
 static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc <2) {
-    di << "Use: "<<argv[0]<<" DocName [ 0|deflection [Shape|Label] ]"<<"\n";
-    di << "     If second argument is 0, standard CADCADE tool is used for" << "\n";
-    di << "     computation of volume and CG." << "\n";
-    di << "     If second argument is not 0, it is treated as deflection" << "\n";
-    di << "     and computation is done by triangulations" << "\n";
-    di << "     If the second argument is negative, meshing is forced" << "\n";
+    di << "Use: "<<argv[0]<<" DocName [ 0|deflection [Shape|Label] ]\n";
+    di << "     If second argument is 0, standard CADCADE tool is used for\n";
+    di << "     computation of volume and CG.\n";
+    di << "     If second argument is not 0, it is treated as deflection\n";
+    di << "     and computation is done by triangulations\n";
+    di << "     If the second argument is negative, meshing is forced\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Standard_Boolean withVolFix = Standard_False;
   if ( argc >2 && Draw::Atof(argv[2]) != 0 ) withVolFix = Standard_True;
   Standard_Boolean wholeDoc = ( argc <4 );
@@ -515,7 +515,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
     STool->GetShapes(seq);
   }
   if ( wholeDoc ) {
-    di << "Label            Area defect   Volume defect    dX      dY      dZ    Name" << "\n";
+    di << "Label            Area defect   Volume defect    dX      dY      dZ    Name\n";
   }
   for ( Standard_Integer i=1; i <= seq.Length(); i++ ) {
     TDF_Label aLabel = seq(i);
@@ -661,7 +661,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 	//fflush ( stdout );
 	di << ": ";
 	di << Standard_Failure::Caught()->GetMessageString();
-	di<<" ** Skip"<<"\n";
+	di<<" ** Skip\n";
 #endif
       }
     }
@@ -693,7 +693,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 static Standard_Integer ShapeVolume (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" Shape deflection "<<"\n";
+    di<<"Use: "<<argv[0]<<" Shape deflection \n";
     return 1;
   }
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
@@ -808,12 +808,12 @@ static Standard_Integer ShapeMassProps (Draw_Interpretor& di, Standard_Integer a
 {
   
   if (argc <2) {
-    di << "Use: "<<argv[0]<<" DocName [deflection [Shape|Label] ]"<<"\n";
-    di << "     If second argument is 0, standard CADCADE tool is used for" << "\n";
-    di << "     computation of volume and CG." << "\n";
-    di << "     If second argument is not 0, it is treated as deflection" << "\n";
-    di << "     and computation is done by triangulations" << "\n";
-    di << "     If the second argument is negative, meshing is forced" << "\n";
+    di << "Use: "<<argv[0]<<" DocName [deflection [Shape|Label] ]\n";
+    di << "     If second argument is 0, standard CADCADE tool is used for\n";
+    di << "     computation of volume and CG.\n";
+    di << "     If second argument is not 0, it is treated as deflection\n";
+    di << "     and computation is done by triangulations\n";
+    di << "     If the second argument is negative, meshing is forced\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
@@ -821,7 +821,7 @@ static Standard_Integer ShapeMassProps (Draw_Interpretor& di, Standard_Integer a
   Standard_Real atol = Precision::Confusion();
   if(argc >2)
     atol  = Draw::Atof(argv[2]);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   Standard_Boolean wholeDoc = ( argc <4 );
   TDF_LabelSequence seq;
   if ( ! wholeDoc ) {
@@ -843,7 +843,7 @@ static Standard_Integer ShapeMassProps (Draw_Interpretor& di, Standard_Integer a
     STool->GetShapes(seq);
   }
   //if ( wholeDoc ) {
-  //  di << "Label            Area defect   Volume defect    dX      dY      dZ    Name" << "\n";
+  //  di << "Label            Area defect   Volume defect    dX      dY      dZ    Name\n";
  // }
   gp_XYZ aCenterGravity(0.0,0.0,0.0);
   Standard_Real aMassVal =0.0;
@@ -861,8 +861,8 @@ static Standard_Integer ShapeMassProps (Draw_Interpretor& di, Standard_Integer a
       di<<"\n";
     }
     else {
-//      di<<"For one component density is absent"<<"\n";
-      di<<"Shape from label : "<<str.ToCString()<<" not have a mass"<<"\n";
+//      di<<"For one component density is absent\n";
+      di<<"Shape from label : "<<str.ToCString()<<" not have a mass\n";
     }
   }
   return 0;
@@ -877,12 +877,12 @@ static Standard_Integer ShapeMassProps (Draw_Interpretor& di, Standard_Integer a
 static Standard_Integer SetMaterial (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<5) {
-    di<<"Use: "<<argv[0]<<" Doc {Label|Shape} name density(g/cu sm) "<<"\n";
+    di<<"Use: "<<argv[0]<<" Doc {Label|Shape} name density(g/cu sm) \n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
   DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
   
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);

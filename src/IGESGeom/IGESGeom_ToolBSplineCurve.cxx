@@ -420,7 +420,7 @@ void IGESGeom_ToolBSplineCurve::OwnDump(const Handle(IGESGeom_BSplineCurve)& ent
   S << endl << "Control Points (Poles) : ";
   IGESData_DumpListXYZL(S ,level,0, upind, ent->Pole, ent->Location());
   S << endl << "Starting Parameter Value : " << ent->UMin();
-  S << "  " << "Ending Parameter Value : " << ent->UMax() << endl;
+  S << "  Ending Parameter Value : " << ent->UMax() << endl;
   S << "Unit Normal : ";
   IGESData_DumpXYZL(S,level, ent->Normal(), ent->Location());
   S << endl;

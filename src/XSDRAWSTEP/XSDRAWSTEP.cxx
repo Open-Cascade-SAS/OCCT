@@ -146,8 +146,8 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
   progress->Show();
 
   if (readstat != IFSelect_RetDone) {
-    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon"<<"\n";
-    else di<<"No model loaded"<<"\n";
+    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
+    else di<<"No model loaded\n";
     return 1;
   }
   
@@ -169,7 +169,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
       cin>>modepri;
     }
 
-    if (modepri == 0) { di<<"End Reading STEP"<<"\n"; return 0; }
+    if (modepri == 0) { di<<"End Reading STEP\n"; return 0; }
     if (modepri <= 2) {
       num = 1;
       if (modepri == 2) {
@@ -180,12 +180,12 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
       progress->Show();
       sr.WS()->MapReader()->SetProgress ( progress );
 
-      if (!sr.TransferRoot (num)) di<<"Transfer root n0 "<<num<<" : no result"<<"\n";
+      if (!sr.TransferRoot (num)) di<<"Transfer root n0 "<<num<<" : no result\n";
       else {
         nbs = sr.NbShapes();
         char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
         di<<"Transfer root n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
-        di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+        di<<"Now, "<<nbs<<" Shapes produced\n";
         TopoDS_Shape sh = sr.Shape(nbs);
         DBRep::Set (shname,sh);
       }
@@ -196,12 +196,12 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
     }
     else if (modepri == 3) {
       cout<<"Entity : "<<flush;  num = XSDRAW::GetEntityNumber();
-      if (!sr.TransferOne (num)) di<<"Transfer entity n0 "<<num<<" : no result"<<"\n";
+      if (!sr.TransferOne (num)) di<<"Transfer entity n0 "<<num<<" : no result\n";
       else {
         nbs = sr.NbShapes();
         char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),num);
         di<<"Transfer entity n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
-        di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+        di<<"Now, "<<nbs<<" Shapes produced\n";
         TopoDS_Shape sh = sr.Shape(nbs);
         DBRep::Set (shname,sh);
       }
@@ -227,11 +227,11 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
           di<<" : ";
           list = XSDRAW::GetList (argv[k], ( argc > (k+1) ? argv[k+1] : 0 ) );
         }
-        if (list.IsNull()) { di<<"No list defined. Give a selection name or * for all transferrable roots"<<"\n"; continue; }
+        if (list.IsNull()) { di<<"No list defined. Give a selection name or * for all transferrable roots\n"; continue; }
       } else {
         cout<<"Name of Selection :"<<flush;
         list = XSDRAW::GetList();
-        if (list.IsNull()) { di<<"No list defined"<<"\n"; continue; }
+        if (list.IsNull()) { di<<"No list defined\n"; continue; }
       }
 
       Standard_Integer ill, nbl = list->Length();
@@ -246,12 +246,12 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
       for (ill = 1; ill <= nbl && PSentry.More(); ill ++, PSentry.Next()) {
         num = sr.Model()->Number(list->Value(ill));
         if (num == 0) continue;
-        if (!sr.TransferOne(num)) di<<"Transfer entity n0 "<<num<<" : no result"<<"\n";
+        if (!sr.TransferOne(num)) di<<"Transfer entity n0 "<<num<<" : no result\n";
         else {
           nbs = sr.NbShapes();
           char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
           di<<"Transfer entity n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
-          di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+          di<<"Now, "<<nbs<<" Shapes produced\n";
           TopoDS_Shape sh = sr.Shape(nbs);
           DBRep::Set (shname,sh);
         }
@@ -273,8 +273,8 @@ static Standard_Integer testread (Draw_Interpretor& di, Standard_Integer argc, c
 {
   if (argc != 3)                                                                                      
     {                                                                                             
-      di << "ERROR in " << argv[0] << "Wrong Number of Arguments."<<"\n";                     
-      di << " Usage : " << argv[0] <<" file_name shape_name"<< "\n";                          
+      di << "ERROR in " << argv[0] << "Wrong Number of Arguments.\n";                     
+      di << " Usage : " << argv[0] <<" file_name shape_name\n";                          
       return 1;                                                                                 
     }
   STEPControl_Reader Reader;
@@ -282,11 +282,11 @@ static Standard_Integer testread (Draw_Interpretor& di, Standard_Integer argc, c
   IFSelect_ReturnStatus readstat = Reader.ReadFile(filename);
   di<<"Status from reading STEP file "<<filename<<" : ";  
   switch(readstat) {                                                              
-    case IFSelect_RetVoid  : { di<<"empty file"<<"\n"; return 1; }            
-    case IFSelect_RetDone  : { di<<"file read"<<"\n";    break; }             
-    case IFSelect_RetError : { di<<"file not found"<<"\n";   return 1; }      
-    case IFSelect_RetFail  : { di<<"error during read"<<"\n";  return 1; }    
-    default  :  { di<<"failure"<<"\n";   return 1; }                          
+    case IFSelect_RetVoid  : { di<<"empty file\n"; return 1; }            
+    case IFSelect_RetDone  : { di<<"file read\n";    break; }             
+    case IFSelect_RetError : { di<<"file not found\n";   return 1; }      
+    case IFSelect_RetFail  : { di<<"error during read\n";  return 1; }    
+    default  :  { di<<"failure\n";   return 1; }                          
   }  
   Reader.TransferRoots();
   TopoDS_Shape shape = Reader.OneShape();
@@ -303,7 +303,7 @@ static Standard_Integer testread (Draw_Interpretor& di, Standard_Integer argc, c
 
 static Standard_Integer steptrans (Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
-  if (argc < 5) { di<<"give shape-name new-shape + entity-n0 entity-n0: AXIS2"<<"\n";
+  if (argc < 5) { di<<"give shape-name new-shape + entity-n0 entity-n0: AXIS2\n";
 		  return 1; }
   TopoDS_Shape shape = DBRep::Get(argv[1]);
   if (shape.IsNull()) { di<<"Not a shape : "<<argv[1]<<"\n"; return 1; }
@@ -323,7 +323,7 @@ static Standard_Integer steptrans (Draw_Interpretor& di, Standard_Integer argc, 
     DBRep::Set (argv[2],shape);
     di<<"Transformed Shape as "<<argv[2]<<"\n";
   }
-  else di<<"No transformation computed"<<"\n";
+  else di<<"No transformation computed\n";
   return 0;
 }
 
@@ -345,9 +345,9 @@ static Standard_Integer stepwrite (Draw_Interpretor& di, Standard_Integer argc, 
   }
 
   if (argc < 3) {
-    di<<"Give mode[1-4] and Shape name + optional file. Mode possible"<<"\n";
+    di<<"Give mode[1-4] and Shape name + optional file. Mode possible\n";
     di<<"f ou 1 : FacettedBRep        s ou 2 : ShellBasedSurfaceModel\n"
-        <<"m ou 3 : ManifoldSolidBrep   w ou 4 : GeometricCurveSet/WireFrame"<<"\n";
+        <<"m ou 3 : ManifoldSolidBrep   w ou 4 : GeometricCurveSet/WireFrame\n";
     return 1; }
   char modeshape = argv[1][0];
   STEPControl_StepModelType mode;
@@ -362,7 +362,7 @@ static Standard_Integer stepwrite (Draw_Interpretor& di, Standard_Integer argc, 
     case '3' : mode = STEPControl_ManifoldSolidBrep;       break;
     case 'w' :
     case '4' : mode = STEPControl_GeometricCurveSet;       break;
-    default :  di<<"1st arg = mode, incorrect [give fsmw]"<<"\n"; return 1;
+    default :  di<<"1st arg = mode, incorrect [give fsmw]\n"; return 1;
   }
 
   //:k8 abv 6 Jan 98: using parameter for writing mode (assemblies/shapes)
@@ -400,22 +400,22 @@ static Standard_Integer stepwrite (Draw_Interpretor& di, Standard_Integer argc, 
 //   Que s est-il passe
   stepmodel = sw.Model();
   Standard_Integer nbapres = (stepmodel.IsNull() ? 0 : stepmodel->NbEntities());
-  if (nbavant > 0) di<<"Beware : Model not empty before transferring"<<"\n";
-  if (nbapres <= nbavant) di<<"Beware : No data produced by this transfer"<<"\n";
-  if (nbapres == 0) { di<<"No data to write"<<"\n"; return 0; }
+  if (nbavant > 0) di<<"Beware : Model not empty before transferring\n";
+  if (nbapres <= nbavant) di<<"Beware : No data produced by this transfer\n";
+  if (nbapres == 0) { di<<"No data to write\n"; return 0; }
 
   if (argc <= 3) {
-    di<<" Now, to write a file, command : writeall filename"<<"\n";
+    di<<" Now, to write a file, command : writeall filename\n";
     return 0;
   }
 
   const char *nomfic = argv[3];
   stat = sw.Write(nomfic);
   switch (stat) {
-  case IFSelect_RetVoid : di<<"Error: No file written"<<"\n"; break;
-    case IFSelect_RetDone : di<<"File "<<nomfic<<" written"<<"\n"; break;
-    case IFSelect_RetStop : di<<"Error on writing file: no space on disk or destination is write protected"<<"\n"; break;
-    default : di<<"Error: File "<<nomfic<<" written with fail messages"<<"\n"; break;
+  case IFSelect_RetVoid : di<<"Error: No file written\n"; break;
+    case IFSelect_RetDone : di<<"File "<<nomfic<<" written\n"; break;
+    case IFSelect_RetStop : di<<"Error on writing file: no space on disk or destination is write protected\n"; break;
+    default : di<<"Error: File "<<nomfic<<" written with fail messages\n"; break;
   }
 
   progress->EndScope();
@@ -431,8 +431,8 @@ static Standard_Integer testwrite (Draw_Interpretor& di, Standard_Integer argc, 
 {
   if (argc != 3)                                                                                      
     {                                                                                             
-      di << "ERROR in " << argv[0] << "Wrong Number of Arguments."<<"\n";                     
-      di << " Usage : " << argv[0] <<" file_name shape_name "<< "\n"; 
+      di << "ERROR in " << argv[0] << "Wrong Number of Arguments.\n";                     
+      di << " Usage : " << argv[0] <<" file_name shape_name \n"; 
       return 1;                                                                                 
     }
   STEPControl_Writer Writer;
@@ -441,10 +441,10 @@ static Standard_Integer testwrite (Draw_Interpretor& di, Standard_Integer argc, 
   IFSelect_ReturnStatus stat = Writer.Transfer(shape,STEPControl_AsIs);
   stat = Writer.Write(filename);
   if(stat != IFSelect_RetDone){
-    di<<"Error on writing file"<<"\n";                                                               
+    di<<"Error on writing file\n";                                                               
     return 1; 
   }
-  di<<"File Is Written"<<"\n";
+  di<<"File Is Written\n";
   return 0;
 }
 
@@ -509,7 +509,7 @@ static Standard_Integer stepfileunits (Draw_Interpretor& di, Standard_Integer ar
  
   if (readstat != IFSelect_RetDone) {
     
-    di<<"No model loaded"<<"\n";
+    di<<"No model loaded\n";
     return 1;
   }
 
@@ -520,17 +520,17 @@ static Standard_Integer stepfileunits (Draw_Interpretor& di, Standard_Integer ar
                                    
   Standard_Integer i =1;
   di<<"=====================================================\n";
-  di<<"LENTH Unit"<<"\n";
+  di<<"LENTH Unit\n";
   for( ; i <= anUnitLengthNames.Length() ; i++)
     di<<anUnitLengthNames(i).ToCString()<<"\n";
   
   di<<"=====================================================\n";
-  di<<"Angle Unit"<<"\n";
+  di<<"Angle Unit\n";
   for( i =1 ; i <= anUnitAngleNames.Length() ; i++)
     di<<anUnitAngleNames(i).ToCString()<<"\n";
 
   di<<"=====================================================\n";
-  di<<"Solid Angle Unit"<<"\n";
+  di<<"Solid Angle Unit\n";
   for( i =1 ; i <= anUnitSolidAngleNames.Length() ; i++)
     di<<anUnitSolidAngleNames(i).ToCString()<<"\n";
   

@@ -122,9 +122,9 @@ Standard_Boolean VarsTopo::GetC2D() const
 void VarsTopo::DumpOCT(Standard_OStream& OS) const
 {
   if (myOCT == TopOpeBRepTool_APPROX) 
-    OS<<"section curves approximated"<<"\n";
+    OS<<"section curves approximated\n";
   if (myOCT == TopOpeBRepTool_BSPLINE1) 
-    OS<<"section curves discretizated"<<"\n";
+    OS<<"section curves discretizated\n";
 }
 
 void VarsTopo::DumpC2D(Standard_OStream& OS) const
@@ -140,24 +140,24 @@ void VarsTopo::DumpC2D(Standard_OStream& OS) const
 void VarsTopo::DumpTolx(Standard_OStream& OS) const
 {
   OS<<"approximation tolerances : ";
-  OS<<"(3d "<<mytol3x<<"), (2d "<<mytol2x<<")"<<"\n";
+  OS<<"(3d "<<mytol3x<<"), (2d "<<mytol2x<<")\n";
 }
 
 void VarsTopo::DumpToli(Standard_OStream& OS) const
 {
   if (myforcetoli) {
     OS<<"intersection tolerances : ";
-    OS<<"(tolarc "<<mytolarc<<"), (toltan "<<mytoltan<<")"<<"\n";
+    OS<<"(tolarc "<<mytolarc<<"), (toltan "<<mytoltan<<")\n";
   }
   else {
-    OS<<"intersection with shape tolerances"<<"\n";
+    OS<<"intersection with shape tolerances\n";
   }
 }
 
 void VarsTopo::DumpClear(Standard_OStream& OS) const
 {
-  if (myclear) OS<<"clear ON"<<"\n";
-  else         OS<<"clear OFF"<<"\n";
+  if (myclear) OS<<"clear ON\n";
+  else         OS<<"clear OFF\n";
 }
 
 void VarsTopo::DumpMode(Standard_OStream& OS) const

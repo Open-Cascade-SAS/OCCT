@@ -55,27 +55,27 @@ Vrml_Cone::Vrml_Cone(const Vrml_ConeParts aParts,
 
  Standard_OStream& Vrml_Cone::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Cone {" << endl;
+ anOStream  << "Cone {\n";
 
   switch ( myParts )
     {
-     case Vrml_ConeALL: break; // anOStream  << "    parts" << "\t\tALL ";
-     case Vrml_ConeSIDES:  anOStream  << "    parts" << "\t\tSIDES" << endl; break;
-     case Vrml_ConeBOTTOM: anOStream  << "    parts" << "\t\tBOTTOM" << endl; break; 
+     case Vrml_ConeALL: break; // anOStream  << "    parts\t\tALL ";
+     case Vrml_ConeSIDES:  anOStream  << "    parts\t\tSIDES\n"; break;
+     case Vrml_ConeBOTTOM: anOStream  << "    parts\t\tBOTTOM\n"; break; 
     }
 
  if ( Abs(myBottomRadius - 1 ) > 0.0001 )
    {
-    anOStream  << "    bottomRadius" << '\t';
-    anOStream << myBottomRadius << endl;
+    anOStream  << "    bottomRadius\t";
+    anOStream << myBottomRadius << "\n";
    }
 
  if ( Abs(myHeight - 2 ) > 0.0001 )
    {
-    anOStream  << "    height" << "\t\t";
-    anOStream << myHeight << endl;
+    anOStream  << "    height\t\t";
+    anOStream << myHeight << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

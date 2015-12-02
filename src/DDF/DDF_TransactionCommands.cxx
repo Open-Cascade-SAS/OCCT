@@ -84,7 +84,7 @@ static Standard_Integer AbortTran (Draw_Interpretor& di,
       DDF_TStack.RemoveFirst();
     }
     else {
-      di<<"DDF_BasicCommands::AbortTran - No more transaction to abort"<<"\n";
+      di<<"DDF_BasicCommands::AbortTran - No more transaction to abort\n";
     }
   }
   return 0;
@@ -113,7 +113,7 @@ static Standard_Integer CommitTran (Draw_Interpretor& di,
       DDF_TStack.RemoveFirst();
     }
     else {
-      di<<"DDF_BasicCommands::CommitTran - No more transaction to commit"<<"\n";
+      di<<"DDF_BasicCommands::CommitTran - No more transaction to commit\n";
     }
   }
   return 0;
@@ -172,17 +172,17 @@ static Standard_Integer Undo (Draw_Interpretor& di,
 	DDF_LastDelta = tmp;
       }
       else {
-	di<<"Undo not applicable HERE and NOW."<<"\n";
+	di<<"Undo not applicable HERE and NOW.\n";
 	return 1;
       }
     }
     else {
-      di<<"No undo to apply."<<"\n";
+      di<<"No undo to apply.\n";
       return 1;
     }
   }
   else {
-    di<<"Unknown DF."<<"\n";
+    di<<"Unknown DF.\n";
     return 1;
   }
   return 0;

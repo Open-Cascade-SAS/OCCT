@@ -71,7 +71,7 @@ static Standard_Integer DDataStd_SetName (Draw_Interpretor& di,
     N = TDataStd_Name::Set(L,arg[3]); 
     return 0;
   }
-  di << "DDataStd_SetName : Error" << "\n";
+  di << "DDataStd_SetName : Error\n";
   return 1;
 }
 
@@ -97,7 +97,7 @@ static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
     di << s.ToCString();
     return 0;
   }
-  di << "DDataStd_SetName : Error" << "\n";
+  di << "DDataStd_SetName : Error\n";
   return 1;
 }
 

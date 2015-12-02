@@ -508,7 +508,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 	  if (F.IsNull())
 	    {
 	      //cout<<endl<<"Wrong parameters"<<endl<<endl;
-	      di<<"\n"<<"Wrong parameters"<<"\n"<<"\n";
+	      di<<"\nWrong parameters\n\n";
 	      return 1;
 	    }
 	  else
@@ -527,7 +527,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
       if (E.IsNull())
 	{
 	  //cout<<"Wrong parameters"<<endl;
-	  di<<"Wrong parameters"<<"\n";
+	  di<<"Wrong parameters\n";
 	  return 1;
 	}
       //TopoDS_Shape alocalFace(DBRep::Get( a[i], TopAbs_FACE ) );
@@ -559,7 +559,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 	  if (F.IsNull()) 
 	    {
 	      //cout<<"Wrong parameters"<<endl;
-	      di<<"Wrong parameters"<<"\n";
+	      di<<"Wrong parameters\n";
 	      return 1;
 	    }
 	  Order = Draw::Atoi( a[i++] );
@@ -572,7 +572,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   if (! MakeFilling.IsDone())
     {
       //cout<<"filling failed"<<endl;
-      di<<"filling failed"<<"\n";
+      di<<"filling failed\n";
       return 0;
     }
 
@@ -591,7 +591,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   Chrono.Show(Tps);
   //cout<<"*** FIN DE FILLING ***"<<endl;
   //cout<<"Temps de calcul  : "<<Tps<<endl;
-  di<<"*** FIN DE FILLING ***"<<"\n";
+  di<<"*** FIN DE FILLING ***\n";
   di<<"Temps de calcul  : "<<Tps<<"\n";
 #endif
 
@@ -609,11 +609,11 @@ static Standard_Integer fillingparam( Draw_Interpretor & di, Standard_Integer n,
     //cout << "-c t2d t3d tang tcur : to set tolerances" << endl;
     //cout << "-a maxdeg maxseg : Approximation option" << endl;
     di << "fillingparam : options are"  <<"\n";
-    di << "-l : to list current values" << "\n";
+    di << "-l : to list current values\n";
     di << "-i : to set default values"   << "\n";
-    di << "-r deg nbPonC nbIt anis : to set filling options" <<"\n";
-    di << "-c t2d t3d tang tcur : to set tolerances" << "\n";
-    di << "-a maxdeg maxseg : Approximation option" << "\n";
+    di << "-r deg nbPonC nbIt anis : to set filling options\n";
+    di << "-c t2d t3d tang tcur : to set tolerances\n";
+    di << "-a maxdeg maxseg : Approximation option\n";
   }
   else if (n > 1)
     {
@@ -639,15 +639,15 @@ static Standard_Integer fillingparam( Draw_Interpretor & di, Standard_Integer n,
 	  di<<"Degree = "<<Degree<<"\n";
 	  di<<"NbPtsOnCur = "<<NbPtsOnCur<<"\n";
 	  di<<"NbIter = "<<NbIter<<"\n";
-	  di<<"Anisotropie = "<< (Standard_Integer) Anisotropie<<"\n"<<"\n";
+	  di<<"Anisotropie = "<< (Standard_Integer) Anisotropie<<"\n\n";
 	  
 	  di<<"Tol2d = "<<Tol2d<<"\n";
 	  di<<"Tol3d = "<<Tol3d<<"\n";
 	  di<<"TolAng = "<<TolAng<<"\n";
-	  di<<"TolCurv = "<<TolCurv<<"\n"<<"\n";
+	  di<<"TolCurv = "<<TolCurv<<"\n\n";
 	  
 	  di<<"MaxDeg = "<<MaxDeg<<"\n";
-	  di<<"MaxSegments = "<<MaxSegments<<"\n"<<"\n";
+	  di<<"MaxSegments = "<<MaxSegments<<"\n\n";
 	}
       else if (strcmp( flag, "-i" ) == 0 && n == 2)
 	{
@@ -686,7 +686,7 @@ static Standard_Integer fillingparam( Draw_Interpretor & di, Standard_Integer n,
       else
 	{
 	  //cout<<"Wrong parameters"<<endl;
-	  di<<"Wrong parameters"<<"\n";
+	  di<<"Wrong parameters\n";
 	  return 1;
 	}
     }

@@ -100,7 +100,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
         char* temp = name; // portage WNT
         DrawTrSurf::Set(temp, P1);
         proj.Parameters(i,UU,VV);
-        di << " Le point est sur la surface." << "\n";
+        di << " Le point est sur la surface.\n";
         di << " Ses parametres sont:  UU = " << UU << "\n";
         di << "                       VV = " << VV << "\n";
       }
@@ -139,7 +139,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
         DrawTrSurf::Set(temp, P1);
         di << name << " ";
         UU = proj.Parameter(i);
-        di << " Le point est sur la courbe." << "\n";
+        di << " Le point est sur la courbe.\n";
         di << " Son parametre est U = " << UU << "\n";
       }
     }
@@ -541,7 +541,7 @@ static Standard_Integer totalextcc(Draw_Interpretor& di, Standard_Integer n, con
       di << "Extrema is point : " << P1.X() << " " << P1.Y() << " " << P1.Z() << "\n";
     }
     else {
-      di << "Extrema is segment of line" << "\n"; 
+      di << "Extrema is segment of line\n"; 
       Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
       Handle(Geom_TrimmedCurve) CT = 
 	new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
@@ -558,7 +558,7 @@ static Standard_Integer totalextcc(Draw_Interpretor& di, Standard_Integer n, con
 
   }
   else {
-    di << "Curves are infinite and parallel" << "\n";
+    di << "Curves are infinite and parallel\n";
   }
   
   di << "Minimal distance : " << Ex.TotalLowerDistance() << "\n";

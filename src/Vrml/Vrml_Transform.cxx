@@ -106,14 +106,14 @@ Vrml_Transform::Vrml_Transform(const gp_Vec& aTranslation,
 
  Standard_OStream& Vrml_Transform::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Transform {" << endl;
+ anOStream  << "Transform {\n";
 
  if ( Abs(myTranslation.X() - 0) > 0.0001 || 
      Abs(myTranslation.Y() - 0) > 0.0001 || 
      Abs(myTranslation.Z() - 0) > 0.0001 ) 
    {
-    anOStream  << "    translation" << "\t\t";
-    anOStream << myTranslation.X() << ' ' << myTranslation.Y() << ' ' << myTranslation.Z() << endl;
+    anOStream  << "    translation\t\t";
+    anOStream << myTranslation.X() << " " << myTranslation.Y() << " " << myTranslation.Z() << "\n";
    }
 
  if ( Abs(myRotation.RotationX() - 0) > 0.0001 || 
@@ -121,17 +121,17 @@ Vrml_Transform::Vrml_Transform(const gp_Vec& aTranslation,
       Abs(myRotation.RotationZ() - 1) > 0.0001 ||
       Abs(myRotation.Angle() - 0) > 0.0001 ) 
    {
-    anOStream  << "    rotation" << "\t\t";
-    anOStream << myRotation.RotationX() << ' ' << myRotation.RotationY() << ' ';
-    anOStream << myRotation.RotationZ() << ' ' << myRotation.Angle() << endl;
+    anOStream  << "    rotation\t\t";
+    anOStream << myRotation.RotationX() << " " << myRotation.RotationY() << " ";
+    anOStream << myRotation.RotationZ() << " " << myRotation.Angle() << "\n";
    }
 
  if ( Abs(myScaleFactor.X() - 1) > 0.0001 || 
      Abs(myScaleFactor.Y() - 1) > 0.0001 || 
      Abs(myScaleFactor.Z() - 1) > 0.0001 ) 
    {
-    anOStream  << "    scaleFactor" << "\t\t";
-    anOStream << myTranslation.X() << ' ' << myTranslation.Y() << ' ' << myTranslation.Z() << endl;
+    anOStream  << "    scaleFactor\t\t";
+    anOStream << myTranslation.X() << " " << myTranslation.Y() << " " << myTranslation.Z() << "\n";
    }
 
  if ( Abs(myScaleOrientation.RotationX() - 0) > 0.0001 || 
@@ -139,19 +139,19 @@ Vrml_Transform::Vrml_Transform(const gp_Vec& aTranslation,
      Abs(myScaleOrientation.RotationZ() - 1) > 0.0001 || 
      Abs(myScaleOrientation.Angle() - 0) > 0.0001 ) 
    {
-    anOStream  << "    scaleOrientation" << '\t';
-    anOStream << myScaleOrientation.RotationX() << ' ' << myScaleOrientation.RotationY() << ' ';
-    anOStream << myScaleOrientation.RotationZ() << ' ' << myScaleOrientation.Angle() << endl;
+    anOStream  << "    scaleOrientation\t";
+    anOStream << myScaleOrientation.RotationX() << " " << myScaleOrientation.RotationY() << " ";
+    anOStream << myScaleOrientation.RotationZ() << " " << myScaleOrientation.Angle() << "\n";
    }
 
  if ( Abs(myCenter.X() - 0) > 0.0001 || 
      Abs(myCenter.Y() - 0) > 0.0001 || 
      Abs(myCenter.Z() - 0) > 0.0001 ) 
    {
-    anOStream  << "    center" << "\t\t";
-    anOStream << myCenter.X() << ' ' << myCenter.Y() << ' ' << myCenter.Z() << endl;
+    anOStream  << "    center\t\t";
+    anOStream << myCenter.X() << " " << myCenter.Y() << " " << myCenter.Z() << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

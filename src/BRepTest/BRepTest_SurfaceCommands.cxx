@@ -328,7 +328,7 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
             }
             else
             {
-              theDi << "Error! min tolerance can't possess the null value" << "\n";
+              theDi << "Error! min tolerance can't possess the null value\n";
               return (1);
             }
           }
@@ -338,7 +338,7 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
               aMaxTol = Draw::Atof (theArgv[++i]);
             else
             {
-              theDi << "Error! max tolerance can't possess the null value" << "\n";
+              theDi << "Error! max tolerance can't possess the null value\n";
               return (1);
             }
           }
@@ -371,22 +371,22 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
    
   if (aPar < 2)
   {
-    theDi << "Use: " << theArgv[0] << " result [tolerance] shape1 shape2 ... [min tolerance] [max tolerance] [switches]" << "\n";
-    theDi << "To set user's value of min/max tolerances the following syntax is used: +<parameter> <value>" << "\n";
-    theDi << "- parameters are identified by letters:" << "\n";
-    theDi << "  mint - min tolerance" << "\n";
-    theDi << "  maxt - max tolerance" << "\n";
-    theDi << "Switches allow to tune other parameters of Sewing" << "\n";
-    theDi << "The following syntax is used: <symbol><parameter>" << "\n";
-    theDi << "- symbol may be - to set parameter off, + to set on" << "\n";
-    theDi << "- parameters are identified by letters:" << "\n";
-    theDi << "  s - mode for creating sewed shape" << "\n";
-    theDi << "  a - mode for analysis of input shapes" << "\n";
-    theDi << "  c - mode for cutting of free edges" << "\n";
-    theDi << "  n - mode for non manifold processing" << "\n";
-    theDi << "  p - mode for same parameter processing for edges" << "\n";
-    theDi << "  e - mode for sewing floating edges" << "\n";
-    theDi << "  f - mode for sewing faces" << "\n";
+    theDi << "Use: " << theArgv[0] << " result [tolerance] shape1 shape2 ... [min tolerance] [max tolerance] [switches]\n";
+    theDi << "To set user's value of min/max tolerances the following syntax is used: +<parameter> <value>\n";
+    theDi << "- parameters are identified by letters:\n";
+    theDi << "  mint - min tolerance\n";
+    theDi << "  maxt - max tolerance\n";
+    theDi << "Switches allow to tune other parameters of Sewing\n";
+    theDi << "The following syntax is used: <symbol><parameter>\n";
+    theDi << "- symbol may be - to set parameter off, + to set on\n";
+    theDi << "- parameters are identified by letters:\n";
+    theDi << "  s - mode for creating sewed shape\n";
+    theDi << "  a - mode for analysis of input shapes\n";
+    theDi << "  c - mode for cutting of free edges\n";
+    theDi << "  n - mode for non manifold processing\n";
+    theDi << "  p - mode for same parameter processing for edges\n";
+    theDi << "  e - mode for sewing floating edges\n";
+    theDi << "  f - mode for sewing faces\n";
     return (1);
   }
     
@@ -398,12 +398,12 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
     aMinTol = Precision::Confusion();
   if (aMinTol > aTol)
   {
-    theDi << "Error! min tolerance can't exceed working tolerance" << "\n";
+    theDi << "Error! min tolerance can't exceed working tolerance\n";
     return (1);
   }
   if (aMaxTol < aTol)
   {
-    theDi << "Error! max tolerance can't be less than working tolerance" << "\n";
+    theDi << "Error! max tolerance can't be less than working tolerance\n";
     return (1);
   }
 

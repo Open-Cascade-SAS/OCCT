@@ -931,7 +931,7 @@ Standard_Boolean TopOpeBRepTool_REGUW::AddNewConnexity(const TopoDS_Vertex& v, c
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUFA(); 
   if (trc) 
     {cout<<"** setting new connexity : v"<<FUN_adds(v)<<" is ";FUN_tro(OriKey);
-     cout<<" in "<<" e"<<FUN_adds(e);FUN_tool_tori(e.Orientation());
+     cout<<" in  e"<<FUN_adds(e);FUN_tool_tori(e.Orientation());
      TopoDS_Vertex vclo; Standard_Boolean cloE = TopOpeBRepTool_TOOL::ClosedE(e,vclo); if (cloE) cout<<" closed";
      Standard_Boolean dgE = BRep_Tool::Degenerated(e); if (dgE) cout<<" degenerated";cout<<endl;}
 #endif

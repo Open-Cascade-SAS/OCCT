@@ -118,7 +118,7 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
     TopLoc_Location aLoc;
     Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
     if (aT.IsNull()) {
-      di << "face " <<iF <<" has no triangulation" << "\n";
+      di << "face " <<iF <<" has no triangulation\n";
       continue;
     }
 

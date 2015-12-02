@@ -145,7 +145,7 @@ Standard_OStream& operator << (Standard_OStream&     theOutput,
 
   aScene.myOutput = &theOutput;
   aScene.myNamedNodesOut.Clear();
-  theOutput << "#VRML V2.0 utf8" << endl << endl;
+  theOutput << "#VRML V2.0 utf8\n\n";
 
   // Real write
 
@@ -966,17 +966,17 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteLine
     if (aCurrentIndent < 0)
       aCurrentIndent = 0;
     if (theLin0 == 0L && theLin1 == 0L)
-      (* myOutput) << endl;
+      (* myOutput) << "\n";
     else {
       const Standard_Integer nSpaces = Min (aCurrentIndent, sizeof(spaces)-1);
       (* myOutput) << &spaces[sizeof(spaces)-1 - nSpaces];
       if (theLin0) {
         (* myOutput) << theLin0;
         if (theLin1)
-          (* myOutput) << ' ' << theLin1;
+          (* myOutput) << " " << theLin1;
       } else
         (* myOutput) << theLin1;
-      (* myOutput) << endl;
+      (* myOutput) << "\n";
     }
     const int stat = myOutput->rdstate();
     if (stat & ios::badbit)
@@ -1075,7 +1075,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteNode
 void VrmlData_Scene::Dump (Standard_OStream& theStream) const
 {
   theStream << " ===== Diagnostic Dump of a Scene (" << myAllNodes.Extent()
-            << " nodes)" << endl;
+            << " nodes)\n";
 
   /*
   Iterator anIterA(myAllNodes);
@@ -1194,9 +1194,9 @@ void dumpNodeHeader (Standard_OStream&                  theStream,
                      const char *                       theType,
                      const char *                       theName)
 {
-  theStream << theIndent << theType <<" node";
+  theStream << theIndent << theType << " node";
   if (theName[0] == '\0')
-    theStream << endl;
+    theStream << "\n";
   else
-    theStream << ": \"" << theName << '\"' << endl;
+    theStream << ": \"" << theName << "\"\n";
 }

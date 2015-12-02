@@ -45,7 +45,7 @@ class TCollection_HExtendedString;
 //! with previous versions).
 //!
 //! User fills the parameter fields in the text of the message by
-//! calling corresponding methods Arg() or operators "<<".
+//! calling corresponding methods Arg() or operators .
 //!
 //! The resulting message, filled with all parameters, can be obtained
 //! by method Get(). If some parameters were not filled, the text

@@ -97,9 +97,9 @@ IGESData_IGESDumper::IGESData_IGESDumper
   S<<" )    ****"<<endl;
 
 // ****    Entity 1234:D2467  **  Type:102 Form:56  **  CompositeCurve  **
-  S<<"\n"<<"****    Entity ";  PrintShort (ent,S);  S<<endl;
+  S<<"\n****    Entity ";  PrintShort (ent,S);  S<<endl;
 
-  S<<"              Directory Part"<<"\n";
+  S<<"              Directory Part\n";
 // **      Status :   Blank:1    Subordinate:2    UseFlag:3    Hierarchy:4
   if (own >= 2)
     S <<"**      Status Number :   Blank:"<<ent->BlankStatus()
@@ -126,7 +126,7 @@ IGESData_IGESDumper::IGESData_IGESDumper
     if (ent->HasStructure())
       {  S<<"**      Structure     :"; PrintDNum (ent->Structure(),S);  S<<"\n";  }
 
-    S<<"\n"<<"              Graphic Attributes"<<"\n";
+    S<<"\n              Graphic Attributes\n";
     if (ent->DefLineFont() == IGESData_DefValue)
       {  S<<"**      LineFont Value:"<<ent->RankLineFont()<<"\n"; }
     else if (ent->DefLineFont() == IGESData_DefReference)
@@ -150,7 +150,7 @@ IGESData_IGESDumper::IGESData_IGESDumper
     S<<endl;
 
     if (own > 3) {
-      S<<"****             Own Data             ****"<<"\n\n";
+      S<<"****             Own Data             ****\n\n";
       OwnDump(ent,S,own);
     }
   }
@@ -161,7 +161,7 @@ IGESData_IGESDumper::IGESData_IGESDumper
   Standard_Integer nb = iter.NbEntities();
   Standard_Boolean iasuit = (nb > 0);
   if (nb > 0) {
-    S<<"\n"<<"****     Properties (nb:"<<nb<<")          ****"<<"\n";
+    S<<"\n****     Properties (nb:"<<nb<<")          ****\n";
     for (;iter.More(); iter.Next()) {
       DeclareAndCast(IGESData_IGESEntity,ent2,iter.Value());
       Dump (ent2,S,att,-1);
@@ -171,14 +171,14 @@ IGESData_IGESDumper::IGESData_IGESDumper
   nb = iter.NbEntities();
   if (nb > 0) iasuit = Standard_True;
   if (nb > 0) {
-    S<<"\n"<<"****   Associativities (nb:"<<nb<<")        ****"<<"\n";
+    S<<"\n****   Associativities (nb:"<<nb<<")        ****\n";
     for (;iter.More(); iter.Next()) {
       DeclareAndCast(IGESData_IGESEntity,ent2,iter.Value());
       Dump(ent2,S,att,-1);
     }
   }
   if (iasuit) {  if (att <= 1) S << "\n";  }
-  S<<"\n"<<"****             End of Dump          ****"<<"\n"<<endl;
+  S<<"\n****             End of Dump          ****\n"<<endl;
 }
 
 

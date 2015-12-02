@@ -1026,7 +1026,7 @@ static void printColor(Draw_Interpretor& di, const Draw_Color& theColor)
     case Draw_saumon:  di << "salmon "           << "\n"; break;
     case Draw_violet:  di << "violet "           << "\n"; break;
     case Draw_jaune:   di << "yellow "           << "\n"; break;
-    case Draw_kaki:    di << "dark-olive green " << "\n"; break;
+    case Draw_kaki:    di << "dark-olive green \n"; break;
     case Draw_corail:  di << "coral "            << "\n"; break;
   }
 }
@@ -1193,7 +1193,7 @@ static void printMarker(Draw_Interpretor& di, const Draw_MarkerShape& theMarker)
     case Draw_X:          di << "x "           << "\n"; break;
     case Draw_Plus:       di << "plus "        << "\n"; break;
     case Draw_Circle:     di << "circle "      << "\n"; break;
-    case Draw_CircleZoom: di << "circle_zoom " << "\n"; break;
+    case Draw_CircleZoom: di << "circle_zoom \n"; break;
   }
 }
 

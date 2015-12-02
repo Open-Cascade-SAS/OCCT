@@ -29,7 +29,7 @@
 //=======================================================================
 static Standard_Integer ApplySequence(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 4) { di<<"Specify result, shape, resource name and prefix (optional)"<<"\n"; return 1 /* Error */; }
+  if (argc < 4) { di<<"Specify result, shape, resource name and prefix (optional)\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = argv[2];
   Standard_CString arg3 = argv[3];

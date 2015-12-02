@@ -168,7 +168,7 @@ static Standard_Integer halfspace(Draw_Interpretor& di,
     TopoDS_Shape Shell  = DBRep::Get(a[2],TopAbs_SHELL);
     if (Shell.IsNull()) {
       //cout << a[2] << " must be a face or a shell" << endl;
-      di << a[2] << " must be a face or a shell" << "\n";
+      di << a[2] << " must be a face or a shell\n";
       return 1;
     }
     else {
@@ -178,7 +178,7 @@ static Standard_Integer halfspace(Draw_Interpretor& di,
       }
       else {
 	//cout << " HalfSpace NotDone" << endl;
-	di << " HalfSpace NotDone" << "\n";
+	di << " HalfSpace NotDone\n";
 	return 1;
       }
     }
@@ -190,7 +190,7 @@ static Standard_Integer halfspace(Draw_Interpretor& di,
     }
     else {
       //cout << " HalfSpace NotDone" << endl;
-      di << " HalfSpace NotDone" << "\n";
+      di << " HalfSpace NotDone\n";
       return 1;
     }
   }

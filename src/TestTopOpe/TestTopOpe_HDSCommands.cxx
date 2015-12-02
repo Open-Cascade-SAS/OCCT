@@ -564,83 +564,83 @@ void OthersCommands_help(const char* CommandName,const char* syntaxe = "");
 //-----------------------------------------------------------------------
 static void tsee_help(const char* CommandName, Draw_Interpretor& di)
 {
-  di<<""<<"\n";
-  di<<"tsee : Draw entities of data structure (DS) loaded by TestTopOpe::CurrentDS()."<<"\n";
-  di<<"DS entities are shapes and geometries accessed by a <type> and an <index>."<<"\n";
-  di<<"basic usage :"<<"\n";
-  di<<"              tsee <type> <index1 index2 ...>"<<"\n";
-  di<<"<type>  = so sh f w e v s for solid/shell/face/wire/edge/vertex/shape"<<"\n";
-  di<<"          su cu p for surface/curve/point (N.B : su is NYI)"<<"\n";
-  di<<"<index> = integer"<<"\n";
-  di<<"example : 'tsee e 3' will draw the edge of index 3"<<"\n";
-  di<<"          'tsee e 3 6' will draw the edges of index 3 and 6"<<"\n";
-  di<<"          'tsee e' will draw all the edges."<<"\n";
-  di<<""<<"\n";
-  di<<"Index values of DS entities may be given by the 'tds' command which prints"<<"\n";
-  di<<"the content of the DS for each shape and geometry type."<<"\n";
-  di<<"Entities are drawn with a specific color according to their type."<<"\n";
-  di<<""<<"\n";
-  di<<"Naming : "<<"\n";
-  di<<"'tsee <t> <i>' creates the drawable object named <t>_<i>."<<"\n";
-  di<<"This name is displayed near the entity in one if the forms : "<<"\n";
-  di<<"     *<t>_<i> meaning entity belongs to the first shape of current operation."<<"\n";
-  di<<"     <t>_<i>* meaning entity belongs to the second shape of current operation."<<"\n";
-  di<<""<<"\n";
-  di<<"Same Domain shapes : "<<"\n";
-  di<<"'tsee <type> sd' to display all shapes of <type> having same domain data."<<"\n";
-  di<<"example : 'tsee e sd' to display all edges sharing a 1d geometric domain"<<"\n";
-  di<<"          with other edges."<<"\n";
-  di<<""<<"\n";
-  di<<"Optional flags :"<<"\n";
+  di<<"\n";
+  di<<"tsee : Draw entities of data structure (DS) loaded by TestTopOpe::CurrentDS().\n";
+  di<<"DS entities are shapes and geometries accessed by a <type> and an <index>.\n";
+  di<<"basic usage :\n";
+  di<<"              tsee <type> <index1 index2 ...>\n";
+  di<<"<type>  = so sh f w e v s for solid/shell/face/wire/edge/vertex/shape\n";
+  di<<"          su cu p for surface/curve/point (N.B : su is NYI)\n";
+  di<<"<index> = integer\n";
+  di<<"example : 'tsee e 3' will draw the edge of index 3\n";
+  di<<"          'tsee e 3 6' will draw the edges of index 3 and 6\n";
+  di<<"          'tsee e' will draw all the edges.\n";
+  di<<"\n";
+  di<<"Index values of DS entities may be given by the 'tds' command which prints\n";
+  di<<"the content of the DS for each shape and geometry type.\n";
+  di<<"Entities are drawn with a specific color according to their type.\n";
+  di<<"\n";
+  di<<"Naming : \n";
+  di<<"'tsee <t> <i>' creates the drawable object named <t>_<i>.\n";
+  di<<"This name is displayed near the entity in one if the forms : \n";
+  di<<"     *<t>_<i> meaning entity belongs to the first shape of current operation.\n";
+  di<<"     <t>_<i>* meaning entity belongs to the second shape of current operation.\n";
+  di<<"\n";
+  di<<"Same Domain shapes : \n";
+  di<<"'tsee <type> sd' to display all shapes of <type> having same domain data.\n";
+  di<<"example : 'tsee e sd' to display all edges sharing a 1d geometric domain\n";
+  di<<"          with other edges.\n";
+  di<<"\n";
+  di<<"Optional flags :\n";
   OthersCommands_help(CommandName);
-  di<<"Other types :"<<"\n";
-  di<<"'tsee fev' : displays all faces,then edges,then vertices."<<"\n";
-  di<<"'tsee es <i>' displays edge described as section edge <i>."<<"\n";
-  di<<"      The name of a section edge likes t_i<j>,where :"<<"\n";
-  di<<"         - i is the edge index in the set of section edge,"<<"\n";
-  di<<"         - j is edge index in the DS (as any edge)."<<"\n";
-  di<<""<<"\n";
+  di<<"Other types :\n";
+  di<<"'tsee fev' : displays all faces,then edges,then vertices.\n";
+  di<<"'tsee es <i>' displays edge described as section edge <i>.\n";
+  di<<"      The name of a section edge likes t_i<j>,where :\n";
+  di<<"         - i is the edge index in the set of section edge,\n";
+  di<<"         - j is edge index in the DS (as any edge).\n";
+  di<<"\n";
 }
 
 static void tseei_help(Draw_Interpretor& di)
 {
-  di<<""<<"\n";
-  di<<"tseei : Draws entities of data structure (DS) loaded by TestTopOpe::CurrentDS()."<<"\n";
-  di<<"Draws the objects appearing in interferences DS objects."<<"\n";
-  di<<"See command 'tsee' for discussion about DS objects."<<"\n";
+  di<<"\n";
+  di<<"tseei : Draws entities of data structure (DS) loaded by TestTopOpe::CurrentDS().\n";
+  di<<"Draws the objects appearing in interferences DS objects.\n";
+  di<<"See command 'tsee' for discussion about DS objects.\n";
   di<<"\n";
 }
 
 static void tki_help(Draw_Interpretor& di)
 {
-  di<<""<<"\n";
-  di<<"tki,tkig,tkis : Groups interferences of DS objects"<<"\n";
-  di<<"  by geometry (g),or support (s),and index."<<"\n";
-  di<<"See command 'tsee' for discussion about DS objects."<<"\n";
-  di<<"(Test of class TopOpeBRepDS_TKI)"<<"\n";
+  di<<"\n";
+  di<<"tki,tkig,tkis : Groups interferences of DS objects\n";
+  di<<"  by geometry (g),or support (s),and index.\n";
+  di<<"See command 'tsee' for discussion about DS objects.\n";
+  di<<"(Test of class TopOpeBRepDS_TKI)\n";
   di<<"\n";
 }
 
 static void tds_help(Draw_Interpretor& di)
 {
-  di<<""<<"\n";
-  di<<"tds : dump current DS (loaded by CurrentDS())"<<"\n";
-  di<<"basic usage : tds <-arg> type <index1 index2 ...>"<<"\n";
   di<<"\n";
-  di<<"Description of curve geometry (type = c) : <-arg>  = -t -k -s -l"<<"\n";
-  di<<"\t-k : print only the curve with keep = Standard_True"<<"\n";
-  di<<"\t-l : (long) print all poles and knots for BSplines curves"<<"\n";
-  di<<"\t-s : (short) print only 4 poles and 4 knots for BSplines curves"<<"\n";
-  di<<"on shapes (type = s|so|sh|f|w|e|v) : <-arg>  = -ssi"<<"\n";
-  di<<"\t-ssi : print only ShapeShapeInterferences"<<"\n";
-  di<<""<<"\n";
-  di<<"See command 'tsee' for discussion about type and <index1 index2 ...>."<<"\n";
+  di<<"tds : dump current DS (loaded by CurrentDS())\n";
+  di<<"basic usage : tds <-arg> type <index1 index2 ...>\n";
+  di<<"\n";
+  di<<"Description of curve geometry (type = c) : <-arg>  = -t -k -s -l\n";
+  di<<"\t-k : print only the curve with keep = Standard_True\n";
+  di<<"\t-l : (long) print all poles and knots for BSplines curves\n";
+  di<<"\t-s : (short) print only 4 poles and 4 knots for BSplines curves\n";
+  di<<"on shapes (type = s|so|sh|f|w|e|v) : <-arg>  = -ssi\n";
+  di<<"\t-ssi : print only ShapeShapeInterferences\n";
+  di<<"\n";
+  di<<"See command 'tsee' for discussion about type and <index1 index2 ...>.\n";
   di<<"\n";
 }
 
 typedef Standard_Integer (*tf_SeeShape)(const Standard_Integer I,const TopoDS_Shape& S);
 extern void OthersCommands_flags(Standard_Integer& na,const char** a,TestTopOpeDraw_Displayer& TD);
-void COUTNOHDS(Draw_Interpretor& di) {di<<"no current HDS"<<"\n";}
+void COUTNOHDS(Draw_Interpretor& di) {di<<"no current HDS\n";}
 Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,const char** a,tf_SeeShape SeeShapefunc)
 {
   if (na_in == 1 || (na_in == 2 && !strcasecmp(a[1],"-h"))) {
@@ -899,7 +899,7 @@ Standard_Integer SeeShapeISI(const Standard_Integer I,const TopoDS_Shape& S,Draw
 //    TopOpeBRepDS_Kind kk = (TopOpeBRepDS_Kind)ITLOKK.Value(); Standard_Integer ii = ITLOII.Value();
     TopOpeBRepDS::Print(kk,ii,cout,""," ");
   }
-  if (ya) di<<"\n"; else di<<"no shape interference"<<"\n";
+  if (ya) di<<"\n"; else di<<"no shape interference\n";
   
   ITLOKK.Initialize(LOKK); ITLOII.Initialize(LOII);
   for(; ITLOKK.More(),ITLOII.More(); ITLOKK.Next(),ITLOII.Next()) {
@@ -1117,7 +1117,7 @@ Standard_Integer TPPE(Draw_Interpretor& di,Standard_Integer na,const char** a)
   Standard_Integer ie = Draw::Atoi(a[4]);
   ok = ok && (ip >= 1); ok = ok && (ie >= 1);
   if (!ok) {
-    di <<" bad data"<<"\n";
+    di <<" bad data\n";
     return 1;
   }
   
@@ -1126,7 +1126,7 @@ Standard_Integer TPPE(Draw_Interpretor& di,Standard_Integer na,const char** a)
     ok = Standard_True;
     ok = ok && (ip <= HDS->NbPoints());
     if (ok) pds = HDS->Point(ip).Point();
-    if (!ok) di<<" geometry "<<ip<<" is not a point"<<"\n";
+    if (!ok) di<<" geometry "<<ip<<" is not a point\n";
   }
   if (!strcmp("v",a[1])){
     ok = Standard_True;
@@ -1136,7 +1136,7 @@ Standard_Integer TPPE(Draw_Interpretor& di,Standard_Integer na,const char** a)
       ok = ok && (sh.ShapeType() == TopAbs_VERTEX);
       if (ok) pds =BRep_Tool::Pnt(TopoDS::Vertex(sh));
     }
-    if (!ok) di<<" shape "<<ip<<" is not a vertex"<<"\n";
+    if (!ok) di<<" shape "<<ip<<" is not a vertex\n";
   } 
   if (!strcmp("e",a[3])){
     ok = ok && (ie <= HDS->NbShapes());
@@ -1145,7 +1145,7 @@ Standard_Integer TPPE(Draw_Interpretor& di,Standard_Integer na,const char** a)
       ok = ok && (sh.ShapeType() == TopAbs_EDGE);
       if (ok) ed = TopoDS::Edge(sh);
     }
-    if (!ok) di<<" shape "<<ie<<" is not an edge"<<"\n";
+    if (!ok) di<<" shape "<<ie<<" is not an edge\n";
     
   } else ok = Standard_False;
   
@@ -1171,7 +1171,7 @@ Standard_Integer TPPE(Draw_Interpretor& di,Standard_Integer na,const char** a)
     char* ppp = (char *)pp.ToCString(); 
     DrawTrSurf::Set(ppp,pproj);
     di<<"dist point "<<ip<<" on edge "<<ie<<" = "<<dmin<<"\n";
-  } else di<<"projection failed"<<"\n";
+  } else di<<"projection failed\n";
   
   return ok;
 } // TPPE
@@ -1180,7 +1180,7 @@ void FUN_ChkIntgInterf(Draw_Interpretor& di) //***Check Integrity Interference
 {
   if ( PHDSD == NULL ) return;
   PHDSD->CurrentHDS()->ChkIntg();
-  di<<"Check interference integrity completed"<<"\n";
+  di<<"Check interference integrity completed\n";
 }
 
 void FUN_ChkIntgSamDomain(Draw_Interpretor& di) //***Check Integrity SameDomain
@@ -1188,7 +1188,7 @@ void FUN_ChkIntgSamDomain(Draw_Interpretor& di) //***Check Integrity SameDomain
   if ( PHDSD == NULL ) return;
   TopOpeBRepDS_Check C(PHDSD->CurrentHDS());
   if(C.ChkIntgSamDom())
-    di<<"Check SameDomain integrity completed"<<"\n";
+    di<<"Check SameDomain integrity completed\n";
 }
 
 void FUN_ChkIntg(Draw_Interpretor& di) //***Check Integrity
@@ -1203,7 +1203,7 @@ void FUN_ChkVertex(Draw_Interpretor& di) //***Check Vertex SameDomain
   if ( PHDSD == NULL ) return;
   TopOpeBRepDS_Check C(PHDSD->CurrentHDS());
   if(C.OneVertexOnPnt())
-    di<<"Check Structure Vertex SameDomain Complete"<<"\n";
+    di<<"Check Structure Vertex SameDomain Complete\n";
 }
 
 //---------------------------------------------------------
@@ -1223,10 +1223,10 @@ Standard_Integer topochk(Draw_Interpretor& di,Standard_Integer na,const char** a
   }
   else if(!strcmp (a[1],"-s")) ::FUN_ChkVertex(di);
   else {
-    di<<"option : -i   = check DS full integrity"<<"\n";
-    di<<"option : -ii  = check only interferences"<<"\n";
-    di<<"option : -isd = check only SameDomain data"<<"\n"<<"\n";
-    di<<"option : -s   = check only SameDomain data on vertex"<<"\n";
+    di<<"option : -i   = check DS full integrity\n";
+    di<<"option : -ii  = check only interferences\n";
+    di<<"option : -isd = check only SameDomain data\n\n";
+    di<<"option : -s   = check only SameDomain data on vertex\n";
     return 1;
   }
   return 0;
@@ -1246,7 +1246,7 @@ Standard_Integer SeeShapeTCX(const Standard_Integer I,const TopoDS_Shape& S)
 
 static void tcx_help(Draw_Interpretor& di)
 {
-  di<<"tcx : function not documented"<<"\n";
+  di<<"tcx : function not documented\n";
 }
 
 //-----------------------------------------------------------------------

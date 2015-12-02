@@ -321,11 +321,11 @@ void  BinTools_ShapeSet::Write(Standard_OStream& OS)const
 
   // write the copyright
   if (myFormatNb == 3)
-    OS << "\n" << Version_3 << endl;
+    OS << "\n" << Version_3 << "\n";
   else if (myFormatNb == 2)
-    OS << "\n" << Version_2 << endl;
+    OS << "\n" << Version_2 << "\n";
   else
-    OS << "\n" << Version_1 << endl;
+    OS << "\n" << Version_1 << "\n";
 
   //-----------------------------------------
   // write the locations
@@ -1194,7 +1194,7 @@ void BinTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream& OS) const
 {
   Standard_Integer i, j, nbpOntri = myNodes.Extent();
 
-  OS << "PolygonOnTriangulations " << nbpOntri << endl;
+  OS << "PolygonOnTriangulations " << nbpOntri << "\n";
   Handle(Poly_PolygonOnTriangulation) Poly;
   Handle(TColStd_HArray1OfReal) Param;
   try {
@@ -1293,7 +1293,7 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream& IS)
 void BinTools_ShapeSet::WritePolygon3D(Standard_OStream& OS)const
 {
   Standard_Integer i, j, nbpol = myPolygons3D.Extent();
-  OS << "Polygon3D " << nbpol << endl;
+  OS << "Polygon3D " << nbpol << "\n";
   Handle(Poly_Polygon3D) P;
   try {
     OCC_CATCH_SIGNALS
@@ -1396,7 +1396,7 @@ void BinTools_ShapeSet::WriteTriangulation(Standard_OStream& OS) const
 {
   Standard_Integer i, j, nbNodes, nbtri = myTriangulations.Extent();
   Standard_Integer nbTriangles = 0, n1, n2, n3;
-    OS << "Triangulations " << nbtri << endl;
+    OS << "Triangulations " << nbtri << "\n";
   Handle(Poly_Triangulation) T;
   try {
     OCC_CATCH_SIGNALS

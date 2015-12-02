@@ -88,7 +88,7 @@ static Standard_Integer BUC60897 (Draw_Interpretor& di, Standard_Integer /*argc*
   Geom2dGcc_Circ2d2TanRad aGccCirc2d(aQualifCurve1, aQualifCurve2, 10, 1e-7);
   if(!aGccCirc2d.IsDone())
   {
-    di << "Faulty: can not create a circle." << "\n";
+    di << "Faulty: can not create a circle.\n";
     return 1;
   }
   for(Standard_Integer i = 1; i <= aGccCirc2d.NbSolutions(); i++)
@@ -99,34 +99,34 @@ static Standard_Integer BUC60897 (Draw_Interpretor& di, Standard_Integer /*argc*
     gp_Pnt2d aPnt2d1, aPnt2d2;
     aGccCirc2d.Tangency1(i, aTmpR1, aTmpR2, aPnt2d1);
     aGccCirc2d.Tangency2(i, aTmpR1, aTmpR2, aPnt2d2);
-    di << "\n" << "tangency1 : X " << aPnt2d1.X() << " Y " << aPnt2d1.Y();
-    di << "\n" << "tangency2 : X " << aPnt2d2.X() << " Y " << aPnt2d2.Y() << "\n";
+    di << "\ntangency1 : X " << aPnt2d1.X() << " Y " << aPnt2d1.Y();
+    di << "\ntangency2 : X " << aPnt2d2.X() << " Y " << aPnt2d2.Y() << "\n";
     
     Sprintf(abuf,"circle_%d",i);
     Handle(Geom2d_Curve) circ_res = new Geom2d_Circle(aCirc2d);
     DrawTrSurf::Set (st, circ_res);
   }
 
-  di << "done" << "\n";
+  di << "done\n";
   return 0;
 }
 
 static Standard_Integer BUC60889 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 10) {
-    di << "Usage : " << argv[0] << " point_1 point_2 name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2" << "\n";
+    di << "Usage : " << argv[0] << " point_1 point_2 name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2\n";
     return 1;
   } else {
     gp_Pnt p1, p2;
     if (!(DrawTrSurf::GetPoint(argv[1], p1)) || !(DrawTrSurf::GetPoint(argv[2], p2)))
     {
-      di << "Need two points to define a band" << "\n";
+      di << "Need two points to define a band\n";
       return 1;
     }
     TopoDS_Edge ed = TopoDS::Edge(DBRep::Get(argv[3]));
     if (ed.IsNull())
     {
-      di << "Need an edge to define the band direction" << "\n";
+      di << "Need an edge to define the band direction\n";
       return 1;
     }
     BRepAdaptor_Curve curve(ed);
@@ -134,9 +134,9 @@ static Standard_Integer BUC60889 (Draw_Interpretor& di, Standard_Integer argc, c
     Bnd_Box bnd_box;
     bnd_box.Update(Draw::Atof(argv[4]), Draw::Atof(argv[5]), Draw::Atof(argv[6]), Draw::Atof(argv[7]), Draw::Atof(argv[8]), Draw::Atof(argv[9]));
     if(bnd_box.IsOut(p1, p2, d))
-      di << "The band lies out of the box" << "\n";
+      di << "The band lies out of the box\n";
     else
-      di << "The band intersects the box" << "\n";
+      di << "The band intersects the box\n";
     
     return 0;
   }
@@ -145,20 +145,20 @@ static Standard_Integer BUC60889 (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer BUC60852 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 8)
-    di << "Usage : " << argv[0] << " name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2" << "\n";
+    di << "Usage : " << argv[0] << " name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2\n";
   else {
     TopoDS_Edge shape = TopoDS::Edge(DBRep::Get(argv[1]));
     if(shape.ShapeType() != TopAbs_EDGE)
-      di << "shape must be an edge" << "\n";
+      di << "shape must be an edge\n";
     else {
       BRepAdaptor_Curve curve(shape);
       gp_Lin lin = curve.Line();
       Bnd_Box bnd_box;
       bnd_box.Update(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Draw::Atof(argv[6]), Draw::Atof(argv[7]));
       if(bnd_box.IsOut(lin))
-	di << "Line that lies on edge does not intersect the box" << "\n";
+	di << "Line that lies on edge does not intersect the box\n";
       else
-	di << "Line that lies on edge intersects the box" << "\n";
+	di << "Line that lies on edge intersects the box\n";
     }
   }
   return 0;
@@ -269,7 +269,7 @@ static Standard_Integer BUC60870 (Draw_Interpretor& di, Standard_Integer argc, c
 {
   Standard_Integer i1;
   if (argc != 5) {
-    di << "Usage : " << argv[0] << " result name_of_shape_1 name_of_shape_2 dev" << "\n";
+    di << "Usage : " << argv[0] << " result name_of_shape_1 name_of_shape_2 dev\n";
     return 1;
   }
   const char *ns1 = (argv[2]), *ns2 = (argv[3]), *ns0 = (argv[1]);
@@ -311,7 +311,7 @@ static Standard_Integer BUC60870 (Draw_Interpretor& di, Standard_Integer argc, c
       }
     }
   } else {
-    di << "Faulty : found a problem"<< "\n";
+    di << "Faulty : found a problem\n";
   }
   return 0;
 }
@@ -328,7 +328,7 @@ static Standard_Integer BUC60902 (Draw_Interpretor& di, Standard_Integer /*argc*
   GeomAPI_Interpolate anInterpolater(aPnts, Standard_False, Precision::Confusion());
   anInterpolater.Perform(); 
   if(!anInterpolater.IsDone()) {
-    di << "Faulty : error in interpolation" << "\n";
+    di << "Faulty : error in interpolation\n";
     return 1;
   }
   Handle(Geom_BSplineCurve) aCur = anInterpolater.Curve(); 
@@ -341,7 +341,7 @@ static Standard_Integer BUC60902 (Draw_Interpretor& di, Standard_Integer /*argc*
   anInterpolater1.Load(aFirstTang, aLastTang, Standard_False); 
   anInterpolater1.Perform(); 
   if(!anInterpolater1.IsDone()) {
-    di << "Faulty : error in interpolation 1" << "\n";
+    di << "Faulty : error in interpolation 1\n";
     return 1;
   }
   aCur = anInterpolater1.Curve();
@@ -351,16 +351,16 @@ static Standard_Integer BUC60902 (Draw_Interpretor& di, Standard_Integer /*argc*
   di << " Tang1 after compute = " << aFirstTang1.X() << " " << aFirstTang1.Y() << " " << aFirstTang1.Z() << "\n"; 
   di << " Tang2 after compute = " << aLastTang1.X() << " " << aLastTang1.Y() << " " << aLastTang1.Z() << "\n"; 
   if(aFirstTang.IsEqual(aFirstTang1, Precision::Confusion(), Precision::Angular())) {
-    di << "First tangent is OK" << "\n";
+    di << "First tangent is OK\n";
   }
   else {
-    di << "Faulty : first tangent is wrong" << "\n";
+    di << "Faulty : first tangent is wrong\n";
   }
   if(aLastTang.IsEqual(aLastTang1, Precision::Confusion(), Precision::Angular())) {
-    di << "Last tangent is OK" << "\n";
+    di << "Last tangent is OK\n";
   }
   else {
-    di << "Faulty : last tangent is wrong" << "\n";
+    di << "Faulty : last tangent is wrong\n";
   }
   return 0;
 }
@@ -368,7 +368,7 @@ static Standard_Integer BUC60902 (Draw_Interpretor& di, Standard_Integer /*argc*
 static Standard_Integer BUC60944 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 2) {
-    di << "Usage : " << argv[0] << " path" << "\n";
+    di << "Usage : " << argv[0] << " path\n";
   }
 
   TCollection_AsciiString in(argv[1]);
@@ -376,7 +376,7 @@ static Standard_Integer BUC60944 (Draw_Interpretor& di, Standard_Integer argc, c
   TCollection_AsciiString out;
   aPath->SystemName(out);
   if(in == out) 
-    di << "The convertion is right." << "\n";
+    di << "The convertion is right.\n";
   else
     di << "Faulty : The convertion is incorrect : " << out.ToCString() << "\n";
   di << out.ToCString() << "\n";
@@ -524,14 +524,14 @@ Standard_Boolean BuildBoundWires(const TopoDS_Shape   &theShell,
 static Standard_Integer BUC60868 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 3) {
-    di << "Usage : " <<argv[0] << " Result Shell" << "\n";
+    di << "Usage : " <<argv[0] << " Result Shell\n";
     return 1;
   }
 
   TopoDS_Shape aShell = DBRep::Get(argv[2]);
 
   if (aShell.IsNull()) {
-    di << "Faulty : The shape is NULL" << "\n";
+    di << "Faulty : The shape is NULL\n";
     return 1;
   }
 
@@ -540,7 +540,7 @@ static Standard_Integer BUC60868 (Draw_Interpretor& di, Standard_Integer argc, c
 
   TopoDS_Shape aRes;
   if (aListOfWires.IsEmpty())
-    di << "no bound" << "\n";
+    di << "no bound\n";
   else if (aListOfWires.Extent() == 1)
     aRes = aListOfWires.First();
   else {
@@ -558,14 +558,14 @@ static Standard_Integer BUC60868 (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer BUC60924 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 5) {
-    di << "Usage : " <<argv[0] << " curve X Y Z" << "\n";
+    di << "Usage : " <<argv[0] << " curve X Y Z\n";
     return 1;
   }
 
   Handle(Geom_Curve) aCurve = DrawTrSurf::GetCurve(argv[1]);
 
   if (aCurve.IsNull()) {
-    di << "Faulty : the curve is NULL." << "\n";
+    di << "Faulty : the curve is NULL.\n";
     return 1;
   }
   
@@ -575,9 +575,9 @@ static Standard_Integer BUC60924 (Draw_Interpretor& di, Standard_Integer argc, c
   isPlanar=ShapeAnalysis_Curve::IsPlanar(aCurve,aVec,1e-7);
   
   if(isPlanar)
-    di << "The curve is planar !" << "\n";
+    di << "The curve is planar !\n";
   else 
-    di << "Faulty : the curve is not planar!" << "\n";
+    di << "Faulty : the curve is not planar!\n";
   
   return 0;
 }
@@ -628,7 +628,7 @@ static Standard_Integer  BUC60920(Draw_Interpretor& di, Standard_Integer /*argc*
 static Standard_Integer  OCC983 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 2) {
-    di << "Usage : " << argv[0] << " file" << "\n";
+    di << "Usage : " << argv[0] << " file\n";
     return 1;
   }
 
@@ -639,16 +639,16 @@ static Standard_Integer  OCC983 (Draw_Interpretor& di, Standard_Integer argc, co
 
   if(!aParser.parse(File)) {
     myDOM=aParser.getDocument();
-    di<<"Document parsed"<<"\n";
+    di<<"Document parsed\n";
   } else {
-    di<<"Document not parsed"<<"\n";
+    di<<"Document not parsed\n";
     return 0;
   }
 
   LDOM_Element root = myDOM.getDocumentElement();
 
   if ( root.isNull() ) {
-    di<<"Root element is null"<<"\n";
+    di<<"Root element is null\n";
     return 0;
   }
 
@@ -690,7 +690,7 @@ static Standard_Integer  OCC983 (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 2) {
-    di << "Usage : " << argv[0] << " file" << "\n";
+    di << "Usage : " << argv[0] << " file\n";
     return 1;
   }
 
@@ -703,9 +703,9 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
 
   if(!aParser.parse(File)) {
     myDOM=aParser.getDocument();
-    di<<"Document parsed"<<"\n";
+    di<<"Document parsed\n";
   } else {
-    di<<"Document not parsed"<<"\n";
+    di<<"Document not parsed\n";
   }
 
   return 0;
@@ -715,7 +715,7 @@ static Standard_Integer OCC1786 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if( argc != 2)
   {
-    di << "Usage : " << argv[0] << " AutoHilight=0/1" << "\n";
+    di << "Usage : " << argv[0] << " AutoHilight=0/1\n";
     return 1;
   }
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
@@ -835,7 +835,7 @@ static Standard_Integer OCC1919_set (Draw_Interpretor& di, Standard_Integer argc
 {
   if( argc != 2)
   {
-    di << "Usage : " << argv[0] << " LC_NUMERIC" << "\n";
+    di << "Usage : " << argv[0] << " LC_NUMERIC\n";
     return 1;
   }
   TCollection_AsciiString aNumLocale(argv[1]);
@@ -872,7 +872,7 @@ static Standard_Integer OCC2932_SetIDUAttribute (Draw_Interpretor& di, Standard_
 {
   if( argc != 5)
   {
-    di << "Usage : " << argv[0] << " (DF, entry, oldLocalID, newLocalID)" << "\n";
+    di << "Usage : " << argv[0] << " (DF, entry, oldLocalID, newLocalID)\n";
     return 1;
   }
   Handle(TDF_Data) DF;
@@ -903,7 +903,7 @@ static Standard_Integer OCC2932_SetTag (Draw_Interpretor& di, Standard_Integer a
 {
   if( argc != 4)
   {
-    di << "Usage : " << argv[0] << " (DF, entry, Tag)" << "\n";
+    di << "Usage : " << argv[0] << " (DF, entry, Tag)\n";
     return 1;
   }
   Handle(TDF_Data) DF;
@@ -921,7 +921,7 @@ static Standard_Integer OCC2932_SetCurrent (Draw_Interpretor& di, Standard_Integ
 {
   if( argc != 3)
   {
-    di << "Usage : " << argv[0] << " (DF, entry)" << "\n";
+    di << "Usage : " << argv[0] << " (DF, entry)\n";
     return 1;
   }
   Handle(TDF_Data) DF;
@@ -937,7 +937,7 @@ static Standard_Integer OCC2932_SetExpression (Draw_Interpretor& di, Standard_In
 {
   if( argc != 4)
   {
-    di << "Usage : " << argv[0] << " (DF, entry, Expression)" << "\n";
+    di << "Usage : " << argv[0] << " (DF, entry, Expression)\n";
     return 1;
   }
   Handle(TDF_Data) DF;
@@ -955,7 +955,7 @@ static Standard_Integer OCC2932_SetRelation (Draw_Interpretor& di, Standard_Inte
 {
   if( argc != 4)
   {
-    di << "Usage : " << argv[0] << " (DF, entry, Relation)" << "\n";
+    di << "Usage : " << argv[0] << " (DF, entry, Relation)\n";
     return 1;
   }
   Handle(TDF_Data) DF;
@@ -972,7 +972,7 @@ static Standard_Integer OCC3277 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if( argc != 2)
   {
-    di << "Usage : " << argv[0] << " string" << "\n";
+    di << "Usage : " << argv[0] << " string\n";
     return 1;
   }
   TCollection_ExtendedString ExtendedString;
@@ -989,7 +989,7 @@ static Standard_Integer OCC6794 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc > 2)
     {
-      di << "Usage: " << argv[0] << " [nb]" << "\n";
+      di << "Usage: " << argv[0] << " [nb]\n";
       return 1;
     }
 

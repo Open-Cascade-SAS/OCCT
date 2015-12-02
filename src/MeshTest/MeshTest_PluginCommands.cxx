@@ -395,7 +395,7 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
   // dump info on cross face errors
   Standard_Integer nbErr = aCheck.NbCrossFaceErrors();
   if (nbErr > 0) {
-    di << "cross face errors: {face1, node1, face2, node2, distance}" << "\n";
+    di << "cross face errors: {face1, node1, face2, node2, distance}\n";
     for (i=1; i <= nbErr; i++) {
       Standard_Integer iF1, n1, iF2, n2;
       Standard_Real aVal;
@@ -408,7 +408,7 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
   // dump info on edges
   Standard_Integer nbAsync = aCheck.NbAsyncEdges();
   if (nbAsync > 0) {
-    di << "async edges:" << "\n";
+    di << "async edges:\n";
     for (i=1; i <= nbAsync; i++) {
       Standard_Integer ie = aCheck.GetAsyncEdgeNum(i);
       di << ie << " ";
@@ -419,7 +419,7 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
   // dump info on free nodes
   Standard_Integer nbFreeNodes = aCheck.NbFreeNodes();
   if (nbFreeNodes > 0) {
-    di << "free nodes (in pairs: face / node): " << "\n";
+    di << "free nodes (in pairs: face / node): \n";
     for (i=1; i <= nbFreeNodes; i++) {
       Standard_Integer iface, inode;
       aCheck.GetFreeNodeNum(i, iface, inode);

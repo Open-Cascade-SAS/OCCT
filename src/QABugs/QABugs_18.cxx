@@ -48,7 +48,7 @@
 static Standard_Integer OCC267 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 3) {
-    di << "ERROR OCC267: Usage : " << argv[0] << " DOC path" << "\n";
+    di << "ERROR OCC267: Usage : " << argv[0] << " DOC path\n";
     return 1;
   }
 
@@ -60,9 +60,9 @@ static Standard_Integer OCC267 (Draw_Interpretor& di, Standard_Integer argc, con
 
   PCDM_StoreStatus theStatus = A->SaveAs(D,path);
   if (theStatus == PCDM_SS_OK ) {
-    di << "OCC267 : PCDM_StoreStatus = PCDM_SS_OK" << "\n";
+    di << "OCC267 : PCDM_StoreStatus = PCDM_SS_OK\n";
   } else {
-    di << "OCC267 : PCDM_StoreStatus = Bad_Store_Status" << "\n";
+    di << "OCC267 : PCDM_StoreStatus = Bad_Store_Status\n";
   }
 
   return 0;
@@ -71,7 +71,7 @@ static Standard_Integer OCC267 (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer OCC181 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 5) {
-    di << "ERROR OCC181: Usage : " << argv[0] << " FileName path1 path2 verbose=0/1" << "\n";
+    di << "ERROR OCC181: Usage : " << argv[0] << " FileName path1 path2 verbose=0/1\n";
     return 1;
   }
   Standard_CString aFileName = argv[1];
@@ -97,9 +97,9 @@ static Standard_Integer OCC181 (Draw_Interpretor& di, Standard_Integer argc, con
   Standard_Boolean aStatus = aManager.Save();
 
   if (aStatus) {
-    di << "\nOCC181 : Status = TRUE" << "\n";
+    di << "\nOCC181 : Status = TRUE\n";
   } else {
-    di << "\nOCC181 : Status = FALSE" << "\n";
+    di << "\nOCC181 : Status = FALSE\n";
   }
 
   return 0;
@@ -121,7 +121,7 @@ static Standard_Real delta_percent (Standard_Real a, Standard_Real b)
 static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 7) {
-    di << "ERROR : Usage : " << argv[0] << " shape step goodX goodY goodZ percent_tolerance" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " shape step goodX goodY goodZ percent_tolerance\n";
     return 1;
   }
 
@@ -208,9 +208,9 @@ static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, con
   di << "\n\nFirstEdge = " << FirstEdgeX <<" " << FirstEdgeY <<" " << FirstEdgeZ << "\n";
   di << "deltaX = " << deltaX << " deltaY = " << deltaY << " deltaZ = " << deltaZ << "\n";
   if (Status) {
-    di << argv[0] << " : OK" << "\n";
+    di << argv[0] << " : OK\n";
   } else {
-    di << argv[0] << " : ERROR" << "\n";
+    di << argv[0] << " : ERROR\n";
   }
 
   return 0;
@@ -220,7 +220,7 @@ static Standard_Integer OCC71bug (Draw_Interpretor& di, Standard_Integer /*argc*
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) { 
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
 

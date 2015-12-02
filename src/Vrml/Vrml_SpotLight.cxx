@@ -129,56 +129,56 @@ Standard_Real Vrml_SpotLight::CutOffAngle() const
 
 Standard_OStream& Vrml_SpotLight::Print(Standard_OStream& anOStream) const 
 {
- anOStream  << "SpotLight {" << endl;
+ anOStream  << "SpotLight {\n";
 
  if ( myOnOff != Standard_True )
    {
-    anOStream  << "    on" << "\t\t" << "FALSE" << endl;
-//    anOStream << myOnOff << endl;
+    anOStream  << "    on\t\tFALSE\n";
+//    anOStream << myOnOff << "\n";
    }
 
  if ( Abs(myIntensity - 1) > 0.0001 )
    {
-    anOStream  << "    intensity" << '\t';
-    anOStream << myIntensity << endl;
+    anOStream  << "    intensity\t";
+    anOStream << myIntensity << "\n";
    }
 
  if ( Abs(myColor.Red() - 1) > 0.0001 || 
      Abs(myColor.Green() - 1) > 0.0001 || 
      Abs(myColor.Blue() - 1) > 0.0001 )
    {
-    anOStream  << "    color" << '\t';
-    anOStream << myColor.Red() << ' ' << myColor.Green() << ' ' << myColor.Blue() << endl;
+    anOStream  << "    color\t";
+    anOStream << myColor.Red() << " " << myColor.Green() << " " << myColor.Blue() << "\n";
    }
 
  if ( Abs(myLocation.X() - 0) > 0.0001 || 
      Abs(myLocation.Y() - 0) > 0.0001 || 
      Abs(myLocation.Z() - 1) > 0.0001 ) 
    {
-    anOStream  << "    location" << '\t';
-    anOStream << myLocation.X() << ' ' << myLocation.Y() << ' ' << myLocation.Z() << endl;
+    anOStream  << "    location\t";
+    anOStream << myLocation.X() << " " << myLocation.Y() << " " << myLocation.Z() << "\n";
    }
 
  if ( Abs(myDirection.X() - 0) > 0.0001 || 
      Abs(myDirection.Y() - 0) > 0.0001 || 
      Abs(myDirection.Z() + 1) > 0.0001 ) 
    {
-    anOStream  << "    direction" << '\t';
-    anOStream << myDirection.X() << ' ' << myDirection.Y() << ' ' << myDirection.Z() << endl;
+    anOStream  << "    direction\t";
+    anOStream << myDirection.X() << " " << myDirection.Y() << " " << myDirection.Z() << "\n";
    }
 
  if ( Abs(myDropOffRate - 0) > 0.0001 )
    {
-    anOStream  << "    dropOffRate" << '\t';
-    anOStream << myDropOffRate << endl;
+    anOStream  << "    dropOffRate\t";
+    anOStream << myDropOffRate << "\n";
    }
 
  if ( Abs(myCutOffAngle - 0.785398) > 0.0000001 )
    {
-    anOStream  << "    cutOffAngle" << '\t';
-    anOStream << myCutOffAngle << endl;
+    anOStream  << "    cutOffAngle\t";
+    anOStream << myCutOffAngle << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

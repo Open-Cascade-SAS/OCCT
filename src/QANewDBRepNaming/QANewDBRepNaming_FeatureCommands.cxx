@@ -140,7 +140,7 @@ static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpre
     break;
   }  
   default:
-    di<<"QANewDBRepNaming_NameBooleanOperation The type of operation must be 1 - fuse, 2 - cut or 3 - common"<<"\n";
+    di<<"QANewDBRepNaming_NameBooleanOperation The type of operation must be 1 - fuse, 2 - cut or 3 - common\n";
   }
 
   return 0;

@@ -376,7 +376,7 @@ static int pipe_OCC9 (Draw_Interpretor& di,
 		      Standard_Integer n, const char ** a)
 {
   if (n < 6) {
-    di << "Usage: " << a[0] << " result path cur1 cur2 radius [tolerance]" << "\n";
+    di << "Usage: " << a[0] << " result path cur1 cur2 radius [tolerance]\n";
     return 1;
   }
 
@@ -385,7 +385,7 @@ static int pipe_OCC9 (Draw_Interpretor& di,
   for (i=2 ; i<=4; i++) {
     Handle(Geom_Curve) aC = Handle(Geom_Curve)::DownCast( DrawTrSurf::Get(a[i]) );
     if (aC.IsNull()) {
-      di << a[i] << " is not a curve" << "\n";
+      di << a[i] << " is not a curve\n";
       return 1;
     }
     aCurveSeq.Append(aC);
@@ -469,21 +469,21 @@ Standard_Integer  OCC157(Draw_Interpretor& di,
 //static Standard_Integer findplanarsurface(Draw_Interpretor&, Standard_Integer n, const char ** a)
 {
   if (n<3) {
-    di << "bad number of arguments" <<"\n";
+    di << "bad number of arguments\n";
     return 1;
   }
 
   // try to read a shape:
   TopoDS_Shape inputShape=DBRep::Get(a[2]);
   if (inputShape.IsNull() || inputShape.ShapeType() != TopAbs_WIRE) {
-    di << "Invalid input shape"<< "\n";
+    di << "Invalid input shape\n";
     return 1;
   }
   Standard_Real toler = Draw::Atof(a[3]);
   TopoDS_Wire aWire = TopoDS::Wire(inputShape);
   BRepLib_FindSurface FS(aWire, toler, Standard_True);
   if(FS.Found()) {
-    di<<"OCC157: OK; Planar surface is found"<<"\n";
+    di<<"OCC157: OK; Planar surface is found\n";
     Handle(Geom_Surface) aSurf = FS.Surface();
     BRepBuilderAPI_MakeFace aMakeFace(aSurf,aWire,Standard_True);
     if(aMakeFace.IsDone()) {
@@ -526,7 +526,7 @@ Standard_Integer  OCC165(Draw_Interpretor& di ,
  {
    if (n > 2)
      {
-       di <<"Usage : " << a[0] << " [file]"<<"\n";
+       di <<"Usage : " << a[0] << " [file]\n";
        return 1;
      }
 	di.Eval ("axo");
@@ -676,7 +676,7 @@ static Standard_Integer OCC305 (Draw_Interpretor& di,Standard_Integer argc, cons
 {
   if (argc != 2)
   {
-    di <<"Usage : " << argv[0] << " file"<<"\n";
+    di <<"Usage : " << argv[0] << " file\n";
     return 1;
   }
   Standard_CString file = argv[1];
@@ -760,7 +760,7 @@ static Standard_Integer OCC166 (Draw_Interpretor& di, Standard_Integer /*argc*/,
 static Standard_Integer OCC381_Save (Draw_Interpretor& di, Standard_Integer nb, const char ** a)
 {
   if (nb != 2) {
-    di << "Usage: " << a[0] << " Doc" << "\n";
+    di << "Usage: " << a[0] << " Doc\n";
     return 1;
   }
 
@@ -772,34 +772,34 @@ static Standard_Integer OCC381_Save (Draw_Interpretor& di, Standard_Integer nb, 
 
   TCollection_ExtendedString theStatusMessage;
   if (!D->IsSaved()) {
-    di << "this document has never been saved" << "\n";
+    di << "this document has never been saved\n";
     return 0;
   }
   PCDM_StoreStatus theStatus = A->Save(D, theStatusMessage);
   if (theStatus != PCDM_SS_OK ) {
     switch ( theStatus ) {
       case PCDM_SS_DriverFailure: {
-        di << "Error saving document: Could not store , no driver found to make it" << "\n";
+        di << "Error saving document: Could not store , no driver found to make it\n";
         break ;
       }
       case PCDM_SS_WriteFailure: {
-        di << "Error saving document: Write access failure" << "\n";
+        di << "Error saving document: Write access failure\n";
         break;
       }
       case PCDM_SS_Failure: {
-        di << "Error saving document: Write failure" << "\n" ;
+        di << "Error saving document: Write failure\n" ;
         break;
       }
       case PCDM_SS_Doc_IsNull: {
-        di << "Error saving document: No document to save" << "\n";
+        di << "Error saving document: No document to save\n";
         break ;
       }
       case PCDM_SS_No_Obj: {
-        di << "Error saving document: No objects written" << "\n";
+        di << "Error saving document: No objects written\n";
         break;
       }
       case PCDM_SS_Info_Section_Error: {
-        di << "Error saving document: Write info section failure" << "\n" ;
+        di << "Error saving document: Write info section failure\n" ;
         break;
       }
       default:
@@ -813,7 +813,7 @@ static Standard_Integer OCC381_Save (Draw_Interpretor& di, Standard_Integer nb, 
 static Standard_Integer OCC381_SaveAs (Draw_Interpretor& di, Standard_Integer nb, const char ** a)
 {
   if (nb != 3) {
-    di << "Usage: " << a[0] << " Doc Path" << "\n";
+    di << "Usage: " << a[0] << " Doc Path\n";
     return 1;
   }
 
@@ -829,27 +829,27 @@ static Standard_Integer OCC381_SaveAs (Draw_Interpretor& di, Standard_Integer nb
   if (theStatus != PCDM_SS_OK ) {
     switch ( theStatus ) {
       case PCDM_SS_DriverFailure: {
-        di << "Error saving document: Could not store , no driver found to make it" << "\n";
+        di << "Error saving document: Could not store , no driver found to make it\n";
         break ;
       }
       case PCDM_SS_WriteFailure: {
-        di << "Error saving document: Write access failure" << "\n";
+        di << "Error saving document: Write access failure\n";
         break;
       }
       case PCDM_SS_Failure: {
-        di << "Error saving document: Write failure" << "\n" ;
+        di << "Error saving document: Write failure\n" ;
         break;
       }
       case PCDM_SS_Doc_IsNull: {
-        di << "Error saving document: No document to save" << "\n";
+        di << "Error saving document: No document to save\n";
         break ;
       }
       case PCDM_SS_No_Obj: {
-        di << "Error saving document: No objects written" << "\n";
+        di << "Error saving document: No objects written\n";
         break;
       }
       case PCDM_SS_Info_Section_Error: {
-        di << "Error saving document: Write info section failure" << "\n" ;
+        di << "Error saving document: Write info section failure\n" ;
         break;
       }
       default:
@@ -919,10 +919,10 @@ static Standard_Integer OCC309bug (Draw_Interpretor& di, Standard_Integer nb, co
   OSD_Path d = p.CurrentDirectory();
   TCollection_AsciiString s;
   d.SystemName(s);
-  di << "*" <<  s.ToCString() << "*" << "\n";
+  di << "*" <<  s.ToCString() << "*\n";
   d.UpTrek();
   d.SystemName(s);
-  di <<  "*" <<  s.ToCString() <<  "*" <<"\n";
+  di <<  "*" <<  s.ToCString() <<  "*\n";
   return 0;
 }
 
@@ -951,7 +951,7 @@ static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, co
   //  return 1;
   //}
   if(nb < 1 || nb > 2) {
-    di << "Usage : " << a[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << a[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -977,14 +977,14 @@ static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, co
 //#endif
   TopoDS_Shape fuse,comm;
   if (IsBRepAlgoAPI) {
-    di << "fuse = BRepAlgoAPI_Fuse( shape1, shape2 )" <<"\n";
-    di << "comm = BRepAlgoAPI_Common( shape1, shape2 )" <<"\n";
+    di << "fuse = BRepAlgoAPI_Fuse( shape1, shape2 )\n";
+    di << "comm = BRepAlgoAPI_Common( shape1, shape2 )\n";
     fuse = BRepAlgoAPI_Fuse( shape1, shape2 );
     comm = BRepAlgoAPI_Common( shape1, shape2 );
   } else {
-    di << "fuse = BRepAlgo_Fuse( shape1, shape2 )" <<"\n";
+    di << "fuse = BRepAlgo_Fuse( shape1, shape2 )\n";
     fuse = BRepAlgo_Fuse( shape1, shape2 );
-    di << "comm = BRepAlgo_Common( shape1, shape2 )" <<"\n";
+    di << "comm = BRepAlgo_Common( shape1, shape2 )\n";
     comm = BRepAlgo_Common( shape1, shape2 );
   }
 
@@ -996,22 +996,22 @@ static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, co
 static Standard_Integer OCC333bug (Draw_Interpretor& di, Standard_Integer n, const char ** a)
 {
   if( n < 3) {
-    di<<"-1"<<"\n";
-    di << "Usage: " << a[0] << " edge1 edge2 [toler domaindist]" << "\n";
+    di<<"-1\n";
+    di << "Usage: " << a[0] << " edge1 edge2 [toler domaindist]\n";
     return 1;
   }
   TopoDS_Shape Sh1 = DBRep::Get(a[1]);
   TopoDS_Shape Sh2 = DBRep::Get(a[2]);
   if(Sh1.IsNull() || Sh2.IsNull()) {
-    di<<"-2"<<"\n";
-    di<<"Invalid arguments"<<"\n";
+    di<<"-2\n";
+    di<<"Invalid arguments\n";
     return 1;
   }
   TopoDS_Edge e1 = TopoDS::Edge(Sh1);
   TopoDS_Edge e2 = TopoDS::Edge(Sh2);
   if(e1.IsNull() || e2.IsNull()) {
-    di<<"-3"<<"\n";
-    di<<"Invalid type of arguments"<<"\n";
+    di<<"-3\n";
+    di<<"Invalid type of arguments\n";
     return 1;
   }
   Standard_Real aTol = Precision::Confusion();
@@ -1025,17 +1025,17 @@ static Standard_Integer OCC333bug (Draw_Interpretor& di, Standard_Integer n, con
   ShapeAnalysis_Edge sae;
   if(sae.CheckOverlapping(e1,e2,aTol,aDistDomain)) {
     if(aDistDomain ==0.0) {
-      di<<"1"<<"\n";
-      di<<"Edges is overlaping comletly"<<"\n";
+      di<<"1\n";
+      di<<"Edges is overlaping comletly\n";
     } else {
-      di<<"2"<<"\n";
-      di<<"Edges is overlaped"<<"\n";
+      di<<"2\n";
+      di<<"Edges is overlaped\n";
       di<<"with tolerance = "<<aTol<<"\n";
       di<<"on segment length = "<<aDistDomain<<"\n";
     }
   } else {
-    di<<"3"<<"\n";
-    di<<"Edges is not overlaped"<<"\n";
+    di<<"3\n";
+    di<<"Edges is not overlaped\n";
   }
   return 0;
 }
@@ -1215,8 +1215,8 @@ static Standard_Integer OCC377 (Draw_Interpretor& di, Standard_Integer argc, con
       di << "Reversed Wire " << i << ": point ( " << p2d.X() << ", " << p2d.Y() << " ) is " << TmpString.ToCString() << "\n";
 
       // 4.3. Compare results (they must be same)
-      if(stat1 ==stat2) di << "OCC377 OK" << "\n";
-      else {di << "OCC377 FAULTY" << "\n"; return 0;}
+      if(stat1 ==stat2) di << "OCC377 OK\n";
+      else {di << "OCC377 FAULTY\n"; return 0;}
     }
   }
   catch(Standard_Failure)
@@ -1455,7 +1455,7 @@ static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, con
   //  return 1;
   //}
   if(argc < 4 || argc > 5) {
-    di << "Usage : " << argv[0] << " shape1 shape2 shape3 [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " shape1 shape2 shape3 [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -1463,9 +1463,9 @@ static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, con
     Standard_Integer IsB = Draw::Atoi(argv[4]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
-//      di << "Error: There is not BRepAlgo_Cut class" << "\n";
+//      di << "Error: There is not BRepAlgo_Cut class\n";
 //      return 1;
     }
   }
@@ -1540,10 +1540,10 @@ static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, con
 //#endif
   TopoDS_Shape wedge_common;
   if (IsBRepAlgoAPI) {
-    di << "wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a)" <<"\n";
+    di << "wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a)\n";
     wedge_common = BRepAlgoAPI_Fuse(wedge1a , wedge2a);
   } else {
-    di << "wedge_common = BRepAlgo_Fuse(wedge1a , wedge2a)" <<"\n";
+    di << "wedge_common = BRepAlgo_Fuse(wedge1a , wedge2a)\n";
     wedge_common = BRepAlgo_Fuse(wedge1a , wedge2a);
   }
 
@@ -1555,10 +1555,10 @@ static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, con
 //#endif
   TopoDS_Shape sub_etch1;
   if (IsBRepAlgoAPI) {
-    di << "sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common)" <<"\n";
+    di << "sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common)\n";
     sub_etch1 = BRepAlgoAPI_Cut(substrate, wedge_common);
   } else {
-    di << "sub_etch1 = BRepAlgo_Cut(substrate, wedge_common)" <<"\n";
+    di << "sub_etch1 = BRepAlgo_Cut(substrate, wedge_common)\n";
     sub_etch1 = BRepAlgo_Cut(substrate, wedge_common);
   }
 
@@ -1657,12 +1657,12 @@ static Standard_Integer OCC708 (Draw_Interpretor& di, Standard_Integer argc, con
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) { 
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
 
   if ( argc != 2) {
-    di << "ERROR : Usage : " << argv[0] << " shape ; Deactivate the current transformation" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " shape ; Deactivate the current transformation\n";
     return 1;
   }
   
@@ -1674,12 +1674,12 @@ static Standard_Integer OCC708 (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(AIS_InteractiveObject) AISObj;
 
   if(!aMap.IsBound2(aName)) {
-    di << "Use 'vdisplay' before" << "\n";
+    di << "Use 'vdisplay' before\n";
     return 1;
   } else {
     AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
     if(AISObj.IsNull()){
-      di << argv[1] << " : No interactive object" << "\n";
+      di << argv[1] << " : No interactive object\n";
       return 1;
     } 
     AISObj->ResetTransformation();
@@ -1766,7 +1766,7 @@ static Standard_Integer OCC909 (Draw_Interpretor& di, Standard_Integer argc, con
   TopoDS_Wire awire = TopoDS::Wire(DBRep::Get(argv[1])); //read the wire
   TopoDS_Face aface = TopoDS::Face(DBRep::Get(argv[2])); //read the face
   if (awire.IsNull() || aface.IsNull()) {
-    di << "Null object" << "\n";
+    di << "Null object\n";
     return 1;
   }
 
@@ -1792,7 +1792,7 @@ static Standard_Integer OCC921 (Draw_Interpretor& di, Standard_Integer argc, con
 {
   if (argc != 2)
   {
-    di <<"Usage : " << argv[0] << " face"<<"\n";
+    di <<"Usage : " << argv[0] << " face\n";
     return 1;
   }
   Standard_Real u1, u2, v1, v2;
@@ -1815,7 +1815,7 @@ static Standard_Integer OCC902(Draw_Interpretor& di, Standard_Integer argc, cons
 {
   if (argc != 2)
   {
-    di <<"Usage : " << argv[0] << " expression"<<"\n";
+    di <<"Usage : " << argv[0] << " expression\n";
     return 1;
   }
 
@@ -1873,7 +1873,7 @@ static Standard_Integer OCC1029_AISTransparency (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << arg[0] << " : Error" << "\n";
+  di << arg[0] << " : Error\n";
   return 1;
 }
 
@@ -1906,7 +1906,7 @@ static Standard_Integer OCC1030_AISColor (Draw_Interpretor& di,
       return 0; 
     }
   }
-  di << arg[0] << " : Error" << "\n";
+  di << arg[0] << " : Error\n";
   return 1;
 }
 
@@ -1940,7 +1940,7 @@ static Standard_Integer OCC1031_AISMaterial (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << arg[0] << " : Error" << "\n";
+  di << arg[0] << " : Error\n";
   return 1;
 }
 
@@ -1974,7 +1974,7 @@ static Standard_Integer OCC1032_AISWidth (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << arg[0] << " : Error" << "\n";
+  di << arg[0] << " : Error\n";
   return 1;
 }
 
@@ -2008,7 +2008,7 @@ static Standard_Integer OCC1033_AISMode (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << arg[0] << " : Error" << "\n";
+  di << arg[0] << " : Error\n";
   return 1;
 }
 
@@ -2042,7 +2042,7 @@ static Standard_Integer OCC1034_AISSelectionMode (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << arg[0] << " : Error" << "\n";
+  di << arg[0] << " : Error\n";
   return 1;
 }
 
@@ -2059,7 +2059,7 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
   //  return -1;
   //}
   if(argc < 5 || argc > 6) {
-    di << "Usage : " << argv[0] << " CylinderVariant(=1/2) cylinder1 cylinder2 cutshape [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " CylinderVariant(=1/2) cylinder1 cylinder2 cutshape [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -2067,7 +2067,7 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
     Standard_Integer IsB = Draw::Atoi(argv[5]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
-//      di << "Error: There is not BRepAlgo_Cut class" << "\n";
+//      di << "Error: There is not BRepAlgo_Cut class\n";
 //      return 1;
     }
   }
@@ -2098,10 +2098,10 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
 //    o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
 //#endif
     if (IsBRepAlgoAPI) {
-      di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())" <<"\n";
+      di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
       o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ());
     } else {
-      di << "o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ())" <<"\n";
+      di << "o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
       o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
     }
   } else {
@@ -2118,10 +2118,10 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
 //    o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
 //#endif
     if (IsBRepAlgoAPI) {
-      di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())" <<"\n";
+      di << "o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
       o_cut_shape = BRepAlgoAPI_Cut (o_mc1.Solid (), o_mc2.Solid ());
     } else {
-      di << "o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ())" <<"\n";
+      di << "o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ())\n";
       o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
     }
   }
@@ -2234,7 +2234,7 @@ TopoDS_Shape OCC1077_Bug()
 static Standard_Integer OCC1077 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc < 1 || argc > 2) {
-    di << "Usage : " << argv[0] << " result" << "\n";
+    di << "Usage : " << argv[0] << " result\n";
     return 1;
   }
 
@@ -2253,7 +2253,7 @@ static Standard_Integer OCC5739_UniAbs (Draw_Interpretor& di, Standard_Integer a
 {
   if (argc < 4)
   {
-    di << "Usage : " << argv[0] << " name shape step" << "\n";
+    di << "Usage : " << argv[0] << " name shape step\n";
     return 1;
   }
   const char *name = argv[1];
@@ -2266,7 +2266,7 @@ static Standard_Integer OCC5739_UniAbs (Draw_Interpretor& di, Standard_Integer a
     TopoDS_Shape wire = DBRep::Get(argv[2]);
     if (wire.IsNull() || wire.ShapeType() != TopAbs_WIRE)
     {
-      di << argv[0] <<" Faulty : incorrect 1st parameter, curve or wire expected"<<"\n";
+      di << argv[0] <<" Faulty : incorrect 1st parameter, curve or wire expected\n";
       return 1;
     }
     adapCurve = new BRepAdaptor_CompCurve(TopoDS::Wire(wire));
@@ -2276,7 +2276,7 @@ static Standard_Integer OCC5739_UniAbs (Draw_Interpretor& di, Standard_Integer a
   int res;
   if (!aUni.IsDone())
   {
-    di << argv[0] <<" : fail"<<"\n";
+    di << argv[0] <<" : fail\n";
     res = 1;
   }
   else
@@ -2301,7 +2301,7 @@ static Standard_Integer OCC6046 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc != 3)
   {
-    di << "Usage : " << argv[0] << " nb_of_vectors size" << "\n";
+    di << "Usage : " << argv[0] << " nb_of_vectors size\n";
     return 1;
   }
 
@@ -2310,7 +2310,7 @@ static Standard_Integer OCC6046 (Draw_Interpretor& di, Standard_Integer argc, co
   Standard_Real val = 10;
   math_Vector **pv = new math_Vector *[nb];
 
-  di<<"creating "<<nb<<" vectors "<<sz<<" elements each..."<<"\n";
+  di<<"creating "<<nb<<" vectors "<<sz<<" elements each...\n";
   Standard_Integer i;
   for (i=0; i < nb; i++) {
     pv[i] = new math_Vector (1, sz, val);
@@ -2320,8 +2320,8 @@ static Standard_Integer OCC6046 (Draw_Interpretor& di, Standard_Integer argc, co
       di<<"\n";
     }
   }
-  di<<" done"<<"\n";
-  di<<"deleting them ..."<<"\n";
+  di<<" done\n";
+  di<<"deleting them ...\n";
   for (i=0; i < nb; i++) {
     delete pv[i];
     if ((i % (nb/10)) == 0) {
@@ -2330,7 +2330,7 @@ static Standard_Integer OCC6046 (Draw_Interpretor& di, Standard_Integer argc, co
       di<<"\n";
     }
   }
-  di<<" done"<<"\n";
+  di<<" done\n";
 
   delete [] pv;
 
@@ -2341,7 +2341,7 @@ static Standard_Integer OCC5698 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc != 2)
   {
-    di << "Usage : " << argv[0] << " wire" << "\n";
+    di << "Usage : " << argv[0] << " wire\n";
     return 1;
   }
   TopoDS_Shape shape = DBRep::Get(argv[1],TopAbs_WIRE);
@@ -2365,10 +2365,10 @@ static Standard_Integer OCC5698 (Draw_Interpretor& di, Standard_Integer argc, co
   if (error_dist > Precision::Confusion()) {
     //cout.precision(3);
     di<<"error_dist = "<<error_dist<<
-      "  ( "<<error_dist/need_length*100<<" %)"<<"\n";
+      "  ( "<<error_dist/need_length*100<<" %)\n";
     return 0;
   }
-  di<<"OK"<<"\n";
+  di<<"OK\n";
   return 0;
 }
 
@@ -2409,7 +2409,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Integer res, a =4, b = 0 ;
       res = a / b;
-      di << " 4 / 0 = " << res << "  Does not Caught... KO"<< "\n";
+      di << " 4 / 0 = " << res << "  Does not Caught... KO\n";
       Succes = Standard_False;
     }
 #if defined(SOLARIS) || defined(_WIN32)
@@ -2418,20 +2418,20 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     catch(Standard_NumericError)
 #endif
     {
-      di << " Ok"<< "\n";
+      di << " Ok\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
 #ifndef NO_CXX_EXCEPTION
     // this case tests if (...) supersedes (Standard_*),
     // the normal behaviour is not
     catch(...) {
-      di<<" unknown exception... (But) Ok"<<"\n";
+      di<<" unknown exception... (But) Ok\n";
     }
 #endif
   }
@@ -2445,23 +2445,23 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Real res, a= 4.0, b=0.0;
       res = a / b;
-      di << " 4.0 / 0.0 = " << res << "  Does not Caught... OK"<< "\n";
+      di << " 4.0 / 0.0 = " << res << "  Does not Caught... OK\n";
     }
     catch(Standard_DivideByZero) // Solaris, Windows w/o SSE2
     {
-      di << " KO" << "\n";
+      di << " KO\n";
       Succes = Standard_False;
     }
     catch(Standard_NumericError) // Linux, Windows with SSE2
     {
-      di << " KO" << "\n";
+      di << " KO\n";
       Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
   }
@@ -2477,16 +2477,16 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       res = i + 1;
       //++++ cout << " -- "<<res<<"="<<i<<"+1   Does not Caught... KO"<< endl;
       //++++ Succes = Standard_False;
-      di << " "<<res<<"="<<i<<"+1  Does not Caught... (But) Ok"<< "\n";
+      di << " "<<res<<"="<<i<<"+1  Does not Caught... (But) Ok\n";
     }
     catch(Standard_Overflow) {
-      di << " Ok"<< "\n";
+      di << " Ok\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
   }
@@ -2503,23 +2503,23 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       
       (void)sin(1.); //this function tests FPU flags and raises signal (tested on LINUX).
 
-      di << "-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... OK"<< "\n";
+      di << "-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... OK\n";
     }
     catch(Standard_Overflow) // Solaris, Windows w/o SSE2
     {
-      di << " KO" << "\n";
+      di << " KO\n";
       Succes = Standard_False;
     }
     catch(Standard_NumericError) // Linux, Windows with SSE2
     {
-      di << " KO" << "\n";
+      di << " KO\n";
       Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
   }
@@ -2536,23 +2536,23 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       //res = res + 1.;
       //++++ cout<<"-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<<endl;
       //++++ Succes = Standard_False;
-      di<<" -- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... (But) Ok"<<"\n";
+      di<<" -- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... (But) Ok\n";
     }
     catch(Standard_Underflow) // could be on Solaris, Windows w/o SSE2
     {
-      di << " KO" << "\n";
+      di << " KO\n";
       Succes = Standard_False;
     }
     catch(Standard_NumericError) // could be on Linux, Windows with SSE2
     {
-      di << " KO" << "\n";
+      di << " KO\n";
       Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
   }
@@ -2566,17 +2566,17 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Real res, r=-1;
       res = sqrt(r);
-      di<<" "<<res<<"=sqrt("<<r<<")  Does not Caught... OK"<<"\n";
+      di<<" "<<res<<"=sqrt("<<r<<")  Does not Caught... OK\n";
     }
     catch(Standard_NumericError) {
-      di << " KO"<< "\n";
+      di << " KO\n";
       Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
   }
@@ -2590,7 +2590,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       int* pint=NULL;
       *pint = 4;
-      di << "  Does not Caught... KO"<<"\n";
+      di << "  Does not Caught... KO\n";
       Succes = Standard_False;
     }
 #ifdef _WIN32
@@ -2599,12 +2599,12 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     catch(OSD_SIGSEGV)
 #endif
     {
-      di << " Ok"<< "\n";
+      di << " Ok\n";
     } catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
   }
@@ -2618,26 +2618,26 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       //cout.flush();
       di << "\n";
       StackOverflow();
-      di << "  Does not Caught... KO"<<"\n";
+      di << "  Does not Caught... KO\n";
       Succes = Standard_False;
     }
     catch(OSD_Exception_STACK_OVERFLOW) {
-      di << " Ok"<< "\n";
+      di << " Ok\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
-      di << ")... KO" << "\n";
+      di << ")... KO\n";
       Succes = Standard_False;
     }
   }
 #endif
 
  if(Succes) {
-   di << "TestExcept: Successfull completion" << "\n";
+   di << "TestExcept: Successfull completion\n";
  } else {
-   di << "TestExcept: failure" << "\n";
+   di << "TestExcept: failure\n";
  }
 
   return 0;
@@ -2671,7 +2671,7 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
 
   if (argc > 3)
     {
-      di << "Usage : " << argv[0] << " [nCount] path" << "\n";
+      di << "Usage : " << argv[0] << " [nCount] path\n";
       return 1;
     }
 
@@ -2686,7 +2686,7 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
   shapeTool->AddShape(AddTestStructure(nCount), Standard_True);
   STEPControl_StepModelType mode = STEPControl_AsIs;
   if (!Interface_Static::SetIVal("write.step.assembly",1)) { //assembly mode
-    di << "Failed to set assembly mode for step data\n" << "\n";
+    di << "Failed to set assembly mode for step data\n\n";
     return 0;
   }
   try {
@@ -2696,14 +2696,14 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
     }
   }
   catch(OSD_Exception_STACK_OVERFLOW) {
-    di << "Failed : STACK OVERFLOW\n" << "\n";
+    di << "Failed : STACK OVERFLOW\n\n";
   }
   catch (Standard_Failure) {
-    di << "Failed :\n" << "\n";
+    di << "Failed :\n\n";
     //cout << Standard_Failure::Caught() << endl;
     di << Standard_Failure::Caught()->GetMessageString();
   }
-  di << argv[0] << " : Finish" << "\n";
+  di << argv[0] << " : Finish\n";
   
   return 0;
 }
@@ -2755,7 +2755,7 @@ static Standard_Integer OCC8169 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc != 4)
   {
-    di << "Usage : " << argv[0] << " edge1 edge2 plane" << "\n";
+    di << "Usage : " << argv[0] << " edge1 edge2 plane\n";
     return 1;
   }
   TopoDS_Edge theEdge1 = TopoDS::Edge(DBRep::Get(argv[1],TopAbs_EDGE));
@@ -2794,7 +2794,7 @@ static Standard_Integer OCC8169 (Draw_Interpretor& di, Standard_Integer argc, co
     Standard_Integer i;
     for (i=1; i<=NbPoints; i++) {
       gp_Pnt2d aPi = anInter.Point(i);
-      di << "Point.X(" << i << ") = " << aPi.X() << "   " << "Point.Y(" << i << ") = " << aPi.Y() << "\n" ;
+      di << "Point.X(" << i << ") = " << aPi.X() << "   Point.Y(" << i << ") = " << aPi.Y() << "\n" ;
     }
   }
 
@@ -2810,20 +2810,20 @@ static Standard_Integer OCC8169 (Draw_Interpretor& di, Standard_Integer argc, co
   
     Standard_Real aDist = aP1.Distance(aP2);
   
-    di << "aP1.X() = " << aP1.X() << "   " << "aP1.Y() = " << aP1.Y() << "\n" ;
-    di << "aP2.X() = " << aP2.X() << "   " << "aP2.Y() = " << aP2.Y() << "\n" ;
+    di << "aP1.X() = " << aP1.X() << "   aP1.Y() = " << aP1.Y() << "\n" ;
+    di << "aP2.X() = " << aP2.X() << "   aP2.Y() = " << aP2.Y() << "\n" ;
 
     di << "Distance = " << aDist << "\n" ;
 
     di << "Confusion = " << aConfusion << "\n" ;
 
     if (aDist > aConfusion) {
-      di << "\n" << argv[0] << " Faulty" << "\n" ;
+      di << "\n" << argv[0] << " Faulty\n" ;
     } else {
-      di << "\n" << argv[0] << " OK" << "\n" ;
+      di << "\n" << argv[0] << " OK\n" ;
     }
   } else {
-    di << "\n" << argv[0] << " OK" << "\n" ;
+    di << "\n" << argv[0] << " OK\n" ;
   }
 
   return 0;
@@ -2832,7 +2832,7 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
 {
   if (argc != 3)
   {
-    di << "Usage : " << argv[0] << " lower upper" << "\n";
+    di << "Usage : " << argv[0] << " lower upper\n";
     return 1;
   }
 
@@ -3042,7 +3042,7 @@ static Standard_Integer OCC7639 (Draw_Interpretor& di, Standard_Integer argc, co
 
   if (argc < 3 || IsEvenArgc)
     {
-      di << "Usage : " << argv[0] << " index1 value1 ... [indexN valueN]" << "\n";
+      di << "Usage : " << argv[0] << " index1 value1 ... [indexN valueN]\n";
       return 1;
     }
 
@@ -4529,7 +4529,7 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) { 
-    di << argv[0] << " ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << " ERROR : use 'vinit' command before \n";
     return -1;
   }
 
@@ -4577,9 +4577,9 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
     if (mode == 2) {
       Standard_Boolean IsDisplayed = aContext->IsDisplayed (aCS);
       if (IsDisplayed)
-	di <<"ColorScaleIsDisplayed = " << "1" << "\n";
+	di <<"ColorScaleIsDisplayed = 1\n";
       else
-	di <<"ColorScaleIsDisplayed = " << "0" << "\n";
+	di <<"ColorScaleIsDisplayed = 0\n";
     }
   }
   return 0;
@@ -4641,8 +4641,8 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
   progress->Show();
 
   if (readstat != IFSelect_RetDone) {
-    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon"<<"\n";
-    else di<<"No model loaded"<<"\n";
+    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
+    else di<<"No model loaded\n";
     return 1;
   }
 // Choice of treatment
@@ -4665,14 +4665,14 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
     }
 
     if (modepri == 0) {  //fin
-      di << "Bye and good luck! " << "\n";
+      di << "Bye and good luck! \n";
       break;
     } 
 
     else if (modepri <= 2) {  // 1 : Visible Roots, 2 : All Roots
-      di << "All Geometry Transfer"<<"\n";
-      di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)"<<"\n";
-      di<<"  To modify : command  param read.iges.bspline.continuity"<<"\n";
+      di << "All Geometry Transfer\n";
+      di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)\n";
+      di<<"  To modify : command  param read.iges.bspline.continuity\n";
       Handle(XSControl_WorkSession) thesession = Reader.WS();
       thesession->ClearContext();
       XSDRAW::SetTransferProcess (thesession->MapReader());
@@ -4702,7 +4702,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
       if ( answer == 1 || answer == 3) {
 	TopoDS_Shape shape = Reader.OneShape();
 	// save the shape
-	if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
+	if (shape.IsNull()) { di<<"No Shape produced\n"; continue; }
 	char fname[110];
 	Sprintf(fname, "%s", rnom.ToCString());
 	di << "Saving shape in variable Draw : " << fname << "\n";
@@ -4714,7 +4714,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	catch(Standard_Failure) {
 	  di << "** Exception : ";
 	  di << Standard_Failure::Caught()->GetMessageString();
-	  di<<" ** Skip"<<"\n";
+	  di<<" ** Skip\n";
 	  di << "Saving shape in variable Draw : " << fname << "\n";
 	  IGESToBRep::WriteShape (shape,1);
 	}
@@ -4725,7 +4725,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	for (Standard_Integer inum = 1; inum <= numshape; inum++) {
 	  // save all the shapes
 	  TopoDS_Shape shape = Reader.Shape(inum);
-	  if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
+	  if (shape.IsNull()) { di<<"No Shape produced\n"; continue; }
 	  char fname[110];
 	  Sprintf(fname, "%s_%d", rnom.ToCString(),inum);
 	  di << "Saving shape in variable Draw : " << fname << "\n";
@@ -4737,7 +4737,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	  catch(Standard_Failure) {
 	    di << "** Exception : ";
 	    di << Standard_Failure::Caught()->GetMessageString();
-	    di<<" ** Skip"<<"\n";
+	    di<<" ** Skip\n";
 	  }
 	}
       }
@@ -4751,12 +4751,12 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
       cout << " give the number of the Entity : " << flush;
       nent = XSDRAW::GetEntityNumber();
 
-      if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
+      if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result\n";
       else {
 	nbs = Reader.NbShapes();
 	char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nent);
 	di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
-	di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+	di<<"Now, "<<nbs<<" Shapes produced\n";
 	TopoDS_Shape sh = Reader.Shape(nbs);
 	DBRep::Set (shname,sh);
       }
@@ -4771,9 +4771,9 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 //   *r donne xst-model-roots (TOUTES racines)
 
       if( fromtcl && argv[3][0]=='*' && argv[3][1]=='\0' ) {         
-        di << "All Geometry Transfer"<<"\n";
-        di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)"<<"\n";
-        di<<"  To modify : command  param read.iges.bspline.continuity"<<"\n";
+        di << "All Geometry Transfer\n";
+        di<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)\n";
+        di<<"  To modify : command  param read.iges.bspline.continuity\n";
         Handle(XSControl_WorkSession) thesession = Reader.WS();
         thesession->ClearContext();
         XSDRAW::SetTransferProcess (thesession->MapReader());
@@ -4801,7 +4801,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
         catch(Standard_Failure) {
           di << "** Exception : ";
 	  di << Standard_Failure::Caught()->GetMessageString();
-	  di<<" ** Skip"<<"\n";
+	  di<<" ** Skip\n";
           di << "Saving shape in variable Draw : " << fname << "\n";
           IGESToBRep::WriteShape (shape,1);
         }                                                                             
@@ -4820,7 +4820,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	  list = XSDRAW::GetList (compart.ToCString());
 	}
 	if (list.IsNull()) {
-          di<<"No list defined. Give a selection name or * for all visible transferrable roots"<<"\n";
+          di<<"No list defined. Give a selection name or * for all visible transferrable roots\n";
           continue;
         }
       }
@@ -4864,12 +4864,12 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	  
 	    nent = Reader.Model()->Number(list->Value(ill));
 	    if (nent == 0) continue;
-	    if (!Reader.TransferOne(nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
+	    if (!Reader.TransferOne(nent)) di<<"Transfer entity n0 "<<nent<<" : no result\n";
 	    else {
 	      nbs = Reader.NbShapes();
 	      char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
 	      di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
-	      di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+	      di<<"Now, "<<nbs<<" Shapes produced\n";
 	      TopoDS_Shape sh = Reader.Shape(nbs);
 	      DBRep::Set (shname,sh);
               nbt++;
@@ -4928,7 +4928,7 @@ static Standard_Integer OCC20627 (Draw_Interpretor& di, Standard_Integer argc, c
 {
   if(argc!=2)
     {
-      di << "Usage : " << argv[0] << " MaxNbr" << "\n";
+      di << "Usage : " << argv[0] << " MaxNbr\n";
       return -1;
     }
   Standard_Integer aMaxNbr = Draw::Atoi(argv[1]);
@@ -4951,7 +4951,7 @@ Standard_Integer OCC22762 (Draw_Interpretor& di, Standard_Integer argc, const ch
 {
     if (argc!=7)
 	{
-	    di << "Wrong number of arguments" << "\n";
+	    di << "Wrong number of arguments\n";
 	    return -1;
 	}
     Standard_Real X1_Pnt = Draw::Atof(argv[1]);
@@ -4977,7 +4977,7 @@ Standard_Integer OCC17424 (Draw_Interpretor& di, Standard_Integer argc, const ch
 {
   if(argc!=9)
     {
-      di << "Usage : " << argv[0] << " shape X_Pnt Y_Pnt Z_Pnt X_Dir Y_Dir Z_Dir PInf" << "\n";
+      di << "Usage : " << argv[0] << " shape X_Pnt Y_Pnt Z_Pnt X_Dir Y_Dir Z_Dir PInf\n";
       return -1;
     }
 
@@ -5035,8 +5035,8 @@ Standard_Integer OCC22301 (Draw_Interpretor& di, Standard_Integer argc, const ch
   for (Standard_Integer i = 0; i < 2; i++)
     aPartMask.Add(i);
   
-  di << "aFullMask = 1111" << "\n";
-  di << "aPartMask = 1100" << "\n";
+  di << "aFullMask = 1111\n";
+  di << "aPartMask = 1100\n";
   
   Standard_Boolean isAffected;
   
@@ -5262,7 +5262,7 @@ Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const cha
   // Check the command arguments
   if (argc != 2)
   {
-    di <<"Error: "<<argv[0]<<" - invalid number of arguments"<< "\n";
+    di <<"Error: "<<argv[0]<<" - invalid number of arguments\n";
     di << "Usage : " << argv[0] << " mode(0/1)\n";
     return 1; //TCL_ERROR
   }
@@ -5274,7 +5274,7 @@ Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const cha
   Handle(AIS_InteractiveContext) aisContext = ViewerTest::GetAISContext();
   if (aisContext.IsNull())
   {
-    di <<"Error: call 'vinit' first"<< "\n";
+    di <<"Error: call 'vinit' first\n";
     return 1; //TCL_ERROR
   }
 

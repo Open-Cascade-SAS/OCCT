@@ -52,7 +52,7 @@
 static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc < 7 || argc > 8) {
-    di << "Usage : " << argv[0] << " shape1 shape2 shape3 shape4 shape5 shape6 [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " shape1 shape2 shape3 shape4 shape5 shape6 [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -61,7 +61,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
     }
@@ -119,13 +119,13 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
 
   TopoDS_Shape fuse32, fuse321;
   if (IsBRepAlgoAPI) {
-    di << "fuse32 = BRepAlgoAPI_Fuse(rs3, rs2)" <<"\n";
-    di << "fuse321 = BRepAlgoAPI_Fuse(fuse32, rs1)" <<"\n";
+    di << "fuse32 = BRepAlgoAPI_Fuse(rs3, rs2)\n";
+    di << "fuse321 = BRepAlgoAPI_Fuse(fuse32, rs1)\n";
     fuse32 = BRepAlgoAPI_Fuse(rs3, rs2);
     fuse321 = BRepAlgoAPI_Fuse(fuse32, rs1);
   } else {
-    di << "fuse32 = BRepAlgo_Fuse(rs3, rs2)" <<"\n";
-    di << "fuse321 = BRepAlgo_Fuse(fuse32, rs1)" <<"\n";
+    di << "fuse32 = BRepAlgo_Fuse(rs3, rs2)\n";
+    di << "fuse321 = BRepAlgo_Fuse(fuse32, rs1)\n";
     fuse32 = BRepAlgo_Fuse(rs3, rs2);
     fuse321 = BRepAlgo_Fuse(fuse32, rs1);
   }
@@ -133,10 +133,10 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
   //Give the mass claculation of the shpae "fuse321"
   GProp_GProps G;
   BRepGProp::VolumeProperties(fuse321, G);
-  di<<" "<<"\n";
-  di<<"Mass: "<<G.Mass()<<"\n"<<"\n";
+  di<<" \n";
+  di<<"Mass: "<<G.Mass()<<"\n\n";
 
-  di << "Trianglating Faces ....." <<"\n";
+  di << "Trianglating Faces .....\n";
   TopExp_Explorer ExpFace;
 
   for (ExpFace.Init (fuse321,TopAbs_FACE); ExpFace.More(); ExpFace.Next())
@@ -148,27 +148,27 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
       Handle(Poly_Triangulation) facing = BRep_Tool::Triangulation(TopologicalFace, loc);
       if (facing.IsNull())
       {
-        di << "Triangulation FAILED for this face" << "\n";
+        di << "Triangulation FAILED for this face\n";
         continue;
       }
       di << "No of Triangles = " << facing->NbTriangles() << "\n";
     }
-  di<<"Triangulation of all Faces Completed. "<< "\n" << "\n";
+  di<<"Triangulation of all Faces Completed. \n\n";
 
   TopTools_IndexedDataMapOfShapeListOfShape edgemap;
   TopExp::MapShapesAndAncestors(fuse321, TopAbs_EDGE, TopAbs_SOLID, edgemap);
   di << "No. of Edges: " << edgemap.Extent() << "\n";
   ChFi3d_FilletShape FShape = ChFi3d_Rational;
   BRepFilletAPI_MakeFillet blend(fuse321,FShape);
-  di << "Adding Edges ..... " << "\n";
+  di << "Adding Edges ..... \n";
   for(int i = 1; i <= edgemap.Extent(); i++)
     {
       // cout << "Adding Edge : " << i << endl;
       TopoDS_Edge edg = TopoDS::Edge( edgemap.FindKey(i) );
       if(!edg.IsNull()) blend.Add(1, edg);
     }
-  di << "All Edges added !  Now Building the Blend ... " << "\n";
-  di<<" "<<"\n";
+  di << "All Edges added !  Now Building the Blend ... \n";
+  di<<" \n";
   blend.Build();
 
   //DBRep::Set ( argv[1], fuse321 );
@@ -291,7 +291,7 @@ static Standard_Integer OCC486(Draw_Interpretor& di, Standard_Integer argc, cons
 //=======================================================================
 static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) {
   if (argc != 3) {
-    di << "Usage : " << argv[0] << " draftAngle slabThick" << "\n";
+    di << "Usage : " << argv[0] << " draftAngle slabThick\n";
     return 1;
   }
   //NOTE: Case:1 - draftAngle = 15, slabThick = 30 --> Fails
@@ -332,7 +332,7 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
 
   if (!MW.IsDone())
     {
-      di << "my Wire not done" << "\n";
+      di << "my Wire not done\n";
       return 1;
     }
   TopoDS_Wire W = MW.Wire();
@@ -340,7 +340,7 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
   TopoDS_Face F = BRepBuilderAPI_MakeFace(W);
   if ( F.IsNull())
     {
-      di << " Error in Face creation " << "\n";
+      di << " Error in Face creation \n";
       return 1;
     }
 
@@ -358,7 +358,7 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
       BRepPrimAPI_MakePrism slab(F, slabVect, Standard_True);
       if ( ! slab.IsDone() )
         {
-	  di << " Error in Slab creation " << "\n";
+	  di << " Error in Slab creation \n";
 	  return 1;
         }
 
@@ -379,17 +379,17 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
 	      draftSlab.Add(aFace, slabDir, angle, slabPln);
 	      if (!draftSlab.AddDone())
                 {
-		  di << " Error in Add " << "\n";
+		  di << " Error in Add \n";
 		  return 1;
                 }
             }
 
-	  di << "All Faces added. Building... " << "\n"; //cout.flush();
+	  di << "All Faces added. Building... \n"; //cout.flush();
 	  draftSlab.Build();
-	  di << "Build done..." << "\n"; //cout.flush();
+	  di << "Build done...\n"; //cout.flush();
 	  if (!draftSlab.IsDone())  //--------------> STEP:1
             {
-	      di << " Error in Build " << "\n";
+	      di << " Error in Build \n";
 	      return 1;
             }
 	  slabShape = draftSlab.Shape();
@@ -398,7 +398,7 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
     }
   catch ( Standard_Failure ) //--------------------> STEP:2
     {
-      di << " Error in Draft Slab " << "\n";
+      di << " Error in Draft Slab \n";
       return 1;
     }
   return 0;
@@ -426,20 +426,20 @@ Standard_Integer performTriangulation (TopoDS_Shape aShape, Draw_Interpretor& di
       if (facing.IsNull())
         {
 	  failed++;
-	  di << "******************** FAILED during Triangulation " << "\n";
+	  di << "******************** FAILED during Triangulation \n";
         }
       else
         {
-	  di << facing->NbTriangles() << " Triangles" <<"\n";
+	  di << facing->NbTriangles() << " Triangles\n";
         }
     }
-  di<<"Triangulation of all Faces Completed: "<<"\n"<<"\n";
+  di<<"Triangulation of all Faces Completed: \n\n";
   if (failed == 0) return 1;
-  di<<"***************************************************"<<"\n";
-  di<<"*******                                    ********"<<"\n";
-  di<<"***** Triangulation FAILED for " << failed << " of " << total << " Faces ******"<<"\n";
-  di<<"*******                                    ********"<<"\n";
-  di<<"***************************************************"<<"\n";
+  di<<"***************************************************\n";
+  di<<"*******                                    ********\n";
+  di<<"***** Triangulation FAILED for " << failed << " of " << total << " Faces ******\n";
+  di<<"*******                                    ********\n";
+  di<<"***************************************************\n";
   return 0;
 }
 
@@ -454,7 +454,7 @@ Standard_Integer performTriangulation (TopoDS_Shape aShape, Draw_Interpretor& di
 static Standard_Integer OCC822_1 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) {
 
   if(argc < 4 || argc > 5) {
-    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -463,11 +463,11 @@ static Standard_Integer OCC822_1 (Draw_Interpretor& di, Standard_Integer argc, c
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
 #if ! defined(BRepAlgo_def02)
-//      di << "Error: There is not BRepAlgo_Cut class" << "\n";
+//      di << "Error: There is not BRepAlgo_Cut class\n";
 //      return 1;
 #endif
     }
@@ -493,42 +493,42 @@ static Standard_Integer OCC822_1 (Draw_Interpretor& di, Standard_Integer argc, c
   TopoDS_Shape conIn = conMakerIn.Shape();
   TopoDS_Shape conOut = conMakerOut.Shape();
 
-  di << "All primitives created.....  Creating Boolean" << "\n";
+  di << "All primitives created.....  Creating Boolean\n";
 
   TopoDS_Shape theIn, theOut, theRes;
   try
     {
     OCC_CATCH_SIGNALS
       if (IsBRepAlgoAPI) {
-	di << "theIn = BRepAlgoAPI_Fuse(cylIn, conIn)" <<"\n";
-	di << "theOut = BRepAlgoAPI_Fuse(cylOut, conOut)" <<"\n";
-	di << "theRes = BRepAlgoAPI_Cut(theOut, theIn)" <<"\n";
+	di << "theIn = BRepAlgoAPI_Fuse(cylIn, conIn)\n";
+	di << "theOut = BRepAlgoAPI_Fuse(cylOut, conOut)\n";
+	di << "theRes = BRepAlgoAPI_Cut(theOut, theIn)\n";
         theIn = BRepAlgoAPI_Fuse(cylIn, conIn);
         theOut = BRepAlgoAPI_Fuse(cylOut, conOut);
         theRes = BRepAlgoAPI_Cut(theOut, theIn);
       } else {
-	di << "theIn = BRepAlgo_Fuse(cylIn, conIn)" <<"\n";
-	di << "theOut = BRepAlgo_Fuse(cylOut, conOut)" <<"\n";
+	di << "theIn = BRepAlgo_Fuse(cylIn, conIn)\n";
+	di << "theOut = BRepAlgo_Fuse(cylOut, conOut)\n";
         theIn = BRepAlgo_Fuse(cylIn, conIn);
         theOut = BRepAlgo_Fuse(cylOut, conOut);
-	di << "theRes = BRepAlgo_Cut(theOut, theIn)" <<"\n";
+	di << "theRes = BRepAlgo_Cut(theOut, theIn)\n";
         theRes = BRepAlgo_Cut(theOut, theIn);
       }
 
       if (index < argc) DBRep::Set(argv[index++], theIn);
       if (index < argc) DBRep::Set(argv[index++], theOut);
       if (index < argc) DBRep::Set(argv[index++], theRes);
-      di << "Booleans Created !    Triangulating !" <<"\n";
+      di << "Booleans Created !    Triangulating !\n";
 
       performTriangulation(theRes, di);
     }
   catch ( Standard_Failure )
     {
-      di<<"*********************************************************"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"***** Standard_Failure : Exception in Shoe Function *****"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"*********************************************************"<<"\n";
+      di<<"*********************************************************\n";
+      di<<"*****                                              ******\n";
+      di<<"***** Standard_Failure : Exception in Shoe Function *****\n";
+      di<<"*****                                              ******\n";
+      di<<"*********************************************************\n";
       return 1;
     }
   return 0;
@@ -544,7 +544,7 @@ static Standard_Integer OCC822_1 (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer OCC822_2 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv)
 {
   if(argc < 4 || argc > 5) {
-    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -553,7 +553,7 @@ static Standard_Integer OCC822_2 (Draw_Interpretor& di,Standard_Integer argc, co
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
     }
@@ -573,17 +573,17 @@ static Standard_Integer OCC822_2 (Draw_Interpretor& di,Standard_Integer argc, co
   TopoDS_Shape sph = sphereMaker.Shape();
   if (index < argc) DBRep::Set(argv[index++], sph);
 
-  di << "All primitives created.....  Creating Cut Objects" << "\n";
+  di << "All primitives created.....  Creating Cut Objects\n";
 
   TopoDS_Shape fuse;
   try
     {
     OCC_CATCH_SIGNALS
       if (IsBRepAlgoAPI) {
-	di << "fuse = BRepAlgoAPI_Fuse(box, sph)" <<"\n";
+	di << "fuse = BRepAlgoAPI_Fuse(box, sph)\n";
 	fuse = BRepAlgoAPI_Fuse(box, sph);
       } else {
-	di << "fuse = BRepAlgo_Fuse(box, sph)" <<"\n";
+	di << "fuse = BRepAlgo_Fuse(box, sph)\n";
 	fuse = BRepAlgo_Fuse(box, sph);
       }
       if (index < argc) DBRep::Set(argv[index++], fuse);
@@ -593,11 +593,11 @@ static Standard_Integer OCC822_2 (Draw_Interpretor& di,Standard_Integer argc, co
     }
   catch ( Standard_Failure )
     {
-      di<<"*********************************************************"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"***** Standard_Failure : Exception in HSP Function ******"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"*********************************************************"<<"\n";
+      di<<"*********************************************************\n";
+      di<<"*****                                              ******\n";
+      di<<"***** Standard_Failure : Exception in HSP Function ******\n";
+      di<<"*****                                              ******\n";
+      di<<"*********************************************************\n";
       return 1;
     }
 
@@ -611,7 +611,7 @@ static Standard_Integer OCC822_2 (Draw_Interpretor& di,Standard_Integer argc, co
 static Standard_Integer OCC823 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv)
 {
   if(argc < 4 || argc > 5) {
-    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -620,7 +620,7 @@ static Standard_Integer OCC823 (Draw_Interpretor& di,Standard_Integer argc, cons
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
     }
@@ -642,31 +642,31 @@ static Standard_Integer OCC823 (Draw_Interpretor& di,Standard_Integer argc, cons
   TopoDS_Shape cyl2 = mkCyl2.Shape();
   if (index < argc) DBRep::Set(argv[index++], cyl2);
 
-  di << "All primitives created.....  Creating Boolean" << "\n";
+  di << "All primitives created.....  Creating Boolean\n";
 
   TopoDS_Shape fuse;
   try
     {
     OCC_CATCH_SIGNALS
       if (IsBRepAlgoAPI) {
-	di << "fuse = BRepAlgoAPI_Fuse(cyl2, cyl1)" <<"\n";
+	di << "fuse = BRepAlgoAPI_Fuse(cyl2, cyl1)\n";
 	fuse = BRepAlgoAPI_Fuse(cyl2, cyl1);
       } else {
-	di << "fuse = BRepAlgo_Fuse(cyl2, cyl1)" <<"\n";
+	di << "fuse = BRepAlgo_Fuse(cyl2, cyl1)\n";
 	fuse = BRepAlgo_Fuse(cyl2, cyl1);
       }
       if (index < argc) DBRep::Set(argv[index++], fuse);
-      di << "Fuse Created !    Triangulating !" <<"\n";
+      di << "Fuse Created !    Triangulating !\n";
 
       performTriangulation(fuse, di);
     }
   catch ( Standard_Failure )
     {
-      di<<"*********************************************************"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"***** Standard_Failure : Exception in TEE Function ******"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"*********************************************************"<<"\n";
+      di<<"*********************************************************\n";
+      di<<"*****                                              ******\n";
+      di<<"***** Standard_Failure : Exception in TEE Function ******\n";
+      di<<"*****                                              ******\n";
+      di<<"*********************************************************\n";
       return 1;
     }
   return 0;
@@ -679,7 +679,7 @@ static Standard_Integer OCC823 (Draw_Interpretor& di,Standard_Integer argc, cons
 static Standard_Integer OCC824 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv)
 {
   if(argc < 4 || argc > 5) {
-    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -688,7 +688,7 @@ static Standard_Integer OCC824 (Draw_Interpretor& di,Standard_Integer argc, cons
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
     }
@@ -706,31 +706,31 @@ static Standard_Integer OCC824 (Draw_Interpretor& di,Standard_Integer argc, cons
   TopoDS_Shape sph = sphere.Shape();
   if (index < argc) DBRep::Set(argv[index++], sph);
 
-  di << "All primitives created.....  Creating Boolean" << "\n";
+  di << "All primitives created.....  Creating Boolean\n";
 
   TopoDS_Shape fuse;
   try
     {
     OCC_CATCH_SIGNALS
       if (IsBRepAlgoAPI) {
-	di << "fuse = BRepAlgoAPI_Fuse(cyl, sph)" <<"\n";
+	di << "fuse = BRepAlgoAPI_Fuse(cyl, sph)\n";
 	fuse = BRepAlgoAPI_Fuse(cyl, sph);
       } else {
-	di << "fuse = BRepAlgo_Fuse(cyl, sph)" <<"\n";
+	di << "fuse = BRepAlgo_Fuse(cyl, sph)\n";
 	fuse = BRepAlgo_Fuse(cyl, sph);
       }
-      di << "Fuse Created !    Triangulating !" <<"\n";
+      di << "Fuse Created !    Triangulating !\n";
       if (index < argc) DBRep::Set(argv[index++], fuse);
 
       performTriangulation(fuse, di);
     }
   catch ( Standard_Failure )
     {
-      di<<"*********************************************************"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"***** Standard_Failure : Exception in YOU Function ******"<<"\n";
-      di<<"*****                                              ******"<<"\n";
-      di<<"*********************************************************"<<"\n";
+      di<<"*********************************************************\n";
+      di<<"*****                                              ******\n";
+      di<<"***** Standard_Failure : Exception in YOU Function ******\n";
+      di<<"*****                                              ******\n";
+      di<<"*********************************************************\n";
       return 1;
     }
   return 0;
@@ -748,7 +748,7 @@ static Standard_Integer OCC824 (Draw_Interpretor& di,Standard_Integer argc, cons
 static Standard_Integer OCC825 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv)
 {
   if(argc < 6 || argc > 7) {
-    di << "Usage : " << argv[0] << " name1 name2 name3 result1 result2 [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " name1 name2 name3 result1 result2 [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -757,7 +757,7 @@ static Standard_Integer OCC825 (Draw_Interpretor& di,Standard_Integer argc, cons
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def02)
-//      di << "Error: There is not BRepAlgo_Cut class" << "\n";
+//      di << "Error: There is not BRepAlgo_Cut class\n";
 //      return 1;
 #endif
     }
@@ -790,59 +790,59 @@ static Standard_Integer OCC825 (Draw_Interpretor& di,Standard_Integer argc, cons
   TopoDS_Shape sph2 = sphere2.Shape();
   if (index < argc) DBRep::Set(argv[index++], sph2);
 
-  di << "All primitives created.....  Creating Cut Objects" << "\n";
+  di << "All primitives created.....  Creating Cut Objects\n";
 
   TopoDS_Shape cut1, cut2;
   try
     {
     OCC_CATCH_SIGNALS
       if (IsBRepAlgoAPI) {
-	di << "cut1 = BRepAlgoAPI_Cut(sph1, hsp)" << "\n";
+	di << "cut1 = BRepAlgoAPI_Cut(sph1, hsp)\n";
 	cut1 = BRepAlgoAPI_Cut(sph1, hsp);
       } else {
-	di << "cut1 = BRepAlgo_Cut(sph1, hsp)" << "\n";
+	di << "cut1 = BRepAlgo_Cut(sph1, hsp)\n";
 	cut1 = BRepAlgo_Cut(sph1, hsp);
       }
       if (index < argc) DBRep::Set(argv[index++], cut1);
       di << "CUT 1 Created !   " ;
 
       if (IsBRepAlgoAPI) {
-	di << "cut2 = BRepAlgoAPI_Cut(sph2, hsp)" << "\n";
+	di << "cut2 = BRepAlgoAPI_Cut(sph2, hsp)\n";
 	cut2 = BRepAlgoAPI_Cut(sph2, hsp);
       } else {
-	di << "cut2 = BRepAlgo_Cut(sph2, hsp)" << "\n";
+	di << "cut2 = BRepAlgo_Cut(sph2, hsp)\n";
 	cut2 = BRepAlgo_Cut(sph2, hsp);
       }
       if (index < argc) DBRep::Set(argv[index++], cut2);
-      di << "CUT 2 Created !" << "\n" << "\n";
+      di << "CUT 2 Created !\n\n";
 
       GProp_GProps G;
       BRepGProp::VolumeProperties(cut1, G);
-      di<<"CUT 1 Mass = "<<G.Mass()<< "\n" << "\n";
+      di<<"CUT 1 Mass = "<<G.Mass()<< "\n\n";
       BRepGProp::VolumeProperties(cut2, G);
-      di<<"CUT 2 Mass = "<<G.Mass()<< "\n" << "\n";
+      di<<"CUT 2 Mass = "<<G.Mass()<< "\n\n";
 
-      di << "Trianglating Faces of CUT 1 ....." << "\n";
+      di << "Trianglating Faces of CUT 1 .....\n";
       performTriangulation(cut1, di);
 
-      di << "Trianglating Faces of CUT 2 ....." << "\n";
+      di << "Trianglating Faces of CUT 2 .....\n";
       performTriangulation(cut2, di);
     }
   catch ( Standard_Failure )
     {
-      di<<"*********************************************************"<< "\n";
-      di<<"*****                                              ******"<< "\n";
-      di<<"***** Standard_Failure : Exception in HSP Function ******"<< "\n";
-      di<<"*****                                              ******"<< "\n";
-      di<<"*********************************************************"<< "\n";
+      di<<"*********************************************************\n";
+      di<<"*****                                              ******\n";
+      di<<"***** Standard_Failure : Exception in HSP Function ******\n";
+      di<<"*****                                              ******\n";
+      di<<"*********************************************************\n";
       return 1;
     }
 
-  di<<"*************************************************************"<< "\n";
-  di<<" CUT 1 and CUT 2 gives entirely different results during"<< "\n";
-  di<<" mass computation and face triangulation, eventhough the"<< "\n";
-  di<<" two spheres are located more or less at the same position."<< "\n";
-  di<<"*************************************************************"<< "\n";
+  di<<"*************************************************************\n";
+  di<<" CUT 1 and CUT 2 gives entirely different results during\n";
+  di<<" mass computation and face triangulation, eventhough the\n";
+  di<<" two spheres are located more or less at the same position.\n";
+  di<<"*************************************************************\n";
 
   return 0;
 }
@@ -854,7 +854,7 @@ static Standard_Integer OCC825 (Draw_Interpretor& di,Standard_Integer argc, cons
 static Standard_Integer OCC826 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv)
 {
   if(argc < 4 || argc > 5) {
-    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " name1 name2 result [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -863,7 +863,7 @@ static Standard_Integer OCC826 (Draw_Interpretor& di,Standard_Integer argc, cons
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
     }
@@ -896,30 +896,30 @@ static Standard_Integer OCC826 (Draw_Interpretor& di,Standard_Integer argc, cons
   TopoDS_Shape sph = sphere.Shape();
   if (index < argc) DBRep::Set(argv[index++], sph);
 
-  di << "All primitives created.....  Creating Boolean" << "\n";
+  di << "All primitives created.....  Creating Boolean\n";
 
   TopoDS_Shape fuse;
   try
     {
     OCC_CATCH_SIGNALS
       if (IsBRepAlgoAPI) {
-	di << "fuse = BRepAlgoAPI_Fuse(rev, sph)" << "\n";
+	di << "fuse = BRepAlgoAPI_Fuse(rev, sph)\n";
 	fuse = BRepAlgoAPI_Fuse(rev, sph);
       } else {
-	di << "fuse = BRepAlgo_Fuse(rev, sph)" << "\n";
+	di << "fuse = BRepAlgo_Fuse(rev, sph)\n";
 	fuse = BRepAlgo_Fuse(rev, sph);
       }
       if (index < argc) DBRep::Set(argv[index++], fuse);
-      di << "Fuse Created !   Triangulating !" << "\n";
+      di << "Fuse Created !   Triangulating !\n";
       performTriangulation(fuse, di);
     }
   catch ( Standard_Failure )
     {
-      di<<"*********************************************************"<< "\n";
-      di<<"*****                                              ******"<< "\n";
-      di<<"***** Standard_Failure : Exception in SPH Function ******"<< "\n";
-      di<<"*****                                              ******"<< "\n";
-      di<<"*********************************************************"<< "\n";
+      di<<"*********************************************************\n";
+      di<<"*****                                              ******\n";
+      di<<"***** Standard_Failure : Exception in SPH Function ******\n";
+      di<<"*****                                              ******\n";
+      di<<"*********************************************************\n";
       return 1;
     }
   return 0;
@@ -933,7 +933,7 @@ static Standard_Integer OCC826 (Draw_Interpretor& di,Standard_Integer argc, cons
 static Standard_Integer OCC827 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv)
 {
   if(argc < 6 || argc > 7) {
-    di << "Usage : " << argv[0] << " name1 name2 name3 result1 result2 [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " name1 name2 name3 result1 result2 [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -942,7 +942,7 @@ static Standard_Integer OCC827 (Draw_Interpretor& di,Standard_Integer argc, cons
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
     }
@@ -982,40 +982,40 @@ static Standard_Integer OCC827 (Draw_Interpretor& di,Standard_Integer argc, cons
   TopoDS_Shape tor2 = Torus2.Shape();
   if (index < argc) DBRep::Set(argv[index++], tor2);
 
-  di << "All primitives created.....  Creating Boolean" << "\n";
+  di << "All primitives created.....  Creating Boolean\n";
 
   TopoDS_Shape fuse1, fuse2;
   try
     {
     OCC_CATCH_SIGNALS
       if (IsBRepAlgoAPI) {
-	di << "Fuse1 = BRepAlgoAPI_Fuse(tor1, rev)" << "\n";
+	di << "Fuse1 = BRepAlgoAPI_Fuse(tor1, rev)\n";
 	fuse1 = BRepAlgoAPI_Fuse(tor1, rev);
       } else {
-	di << "Fuse1 = BRepAlgo_Fuse(tor1, rev)" << "\n";
+	di << "Fuse1 = BRepAlgo_Fuse(tor1, rev)\n";
 	fuse1 = BRepAlgo_Fuse(tor1, rev);
       }
       if (index < argc) DBRep::Set(argv[index++], fuse1);
-      di << "Fuse1 Created !    Creating Fuse 2" << "\n";
+      di << "Fuse1 Created !    Creating Fuse 2\n";
       if (IsBRepAlgoAPI) {
-	di << "Fuse2 = BRepAlgoAPI_Fuse(tor2, fuse1)" << "\n";
+	di << "Fuse2 = BRepAlgoAPI_Fuse(tor2, fuse1)\n";
 	fuse2 = BRepAlgoAPI_Fuse(tor2, fuse1);
       } else {
-	di << "Fuse2 = BRepAlgo_Fuse(tor2, fuse1)" << "\n";
+	di << "Fuse2 = BRepAlgo_Fuse(tor2, fuse1)\n";
 	fuse2 = BRepAlgo_Fuse(tor2, fuse1);
       }
       if (index < argc) DBRep::Set(argv[index++], fuse2);
-      di << "Fuse2 Created !    Triangulating !" << "\n";
+      di << "Fuse2 Created !    Triangulating !\n";
 
       performTriangulation(fuse2, di);
     }
   catch ( Standard_Failure )
     {
-      di<<"*********************************************************"<< "\n";
-      di<<"*****                                              ******"<< "\n";
-      di<<"***** Standard_Failure : Exception in REV Function ******"<< "\n";
-      di<<"*****                                              ******"<< "\n";
-      di<<"*********************************************************"<< "\n";
+      di<<"*********************************************************\n";
+      di<<"*****                                              ******\n";
+      di<<"***** Standard_Failure : Exception in REV Function ******\n";
+      di<<"*****                                              ******\n";
+      di<<"*********************************************************\n";
       return 1;
     }
   return 0;
@@ -1053,14 +1053,14 @@ int performBlend (TopoDS_Shape aShape, Standard_Real rad, TopoDS_Shape& bShape, 
       status = 1;
     }
   if(status) {
-      di<<"*******************************************************"<< "\n";
-      di<<"******                                          *******"<< "\n";
-      di<<"****** Blending Failed (Radius = " << rad << ") *******"<< "\n";
-      di<<"******                                          *******"<< "\n";
-      di<<"*******************************************************"<< "\n";
+      di<<"*******************************************************\n";
+      di<<"******                                          *******\n";
+      di<<"****** Blending Failed (Radius = " << rad << ") *******\n";
+      di<<"******                                          *******\n";
+      di<<"*******************************************************\n";
       return 1;
   } else {
-    di<<"Blending successfully performed on all Edges: "<< "\n" << "\n";
+    di<<"Blending successfully performed on all Edges: \n\n";
   }
   bShape = blend.Shape();
   return 0;
@@ -1074,7 +1074,7 @@ int performBlend (TopoDS_Shape aShape, Standard_Real rad, TopoDS_Shape& bShape, 
 static Standard_Integer OCC828 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv)
 {
   if(argc != 2) {
-    di << "Usage : " << argv[0] << " shape" << "\n";
+    di << "Usage : " << argv[0] << " shape\n";
   }
   int index = 1;
 
@@ -1117,7 +1117,7 @@ static Standard_Integer OCC828 (Draw_Interpretor& di,Standard_Integer argc, cons
 
   if (!MW.IsDone())
     {
-      di << "my Wire not done" << "\n";
+      di << "my Wire not done\n";
       return 1;
     }
 
@@ -1125,7 +1125,7 @@ static Standard_Integer OCC828 (Draw_Interpretor& di,Standard_Integer argc, cons
   TopoDS_Face F = BRepBuilderAPI_MakeFace(W);
   if ( F.IsNull())
     {
-      di << " Error in Face creation " << "\n";
+      di << " Error in Face creation \n";
       return 1;
     }
 
@@ -1139,7 +1139,7 @@ static Standard_Integer OCC828 (Draw_Interpretor& di,Standard_Integer argc, cons
       BRepPrimAPI_MakePrism slab(F, slabVect, Standard_True);
       if ( ! slab.IsDone() )
         {
-	  di << " Error in Slab creation " << "\n";
+	  di << " Error in Slab creation \n";
 	  return 1;
         }
       if (index < argc) DBRep::Set(argv[index++], slab.Shape());
@@ -1155,7 +1155,7 @@ static Standard_Integer OCC828 (Draw_Interpretor& di,Standard_Integer argc, cons
     }
   catch ( Standard_Failure )
     {
-      di << " Error in Draft Slab " << "\n";
+      di << " Error in Draft Slab \n";
       return 1;
     }
   return 0;

@@ -136,7 +136,7 @@ static Standard_Integer DDataStd_NewNoteBook (Draw_Interpretor& di,
     TDataStd_NoteBook::New(L);
     return 0;
   }
-  di << "DDataStd_NewNoteBook : Error" << "\n";
+  di << "DDataStd_NewNoteBook : Error\n";
   return 1;
 }
 

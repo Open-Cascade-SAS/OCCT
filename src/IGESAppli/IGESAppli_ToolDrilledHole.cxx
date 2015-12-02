@@ -137,7 +137,7 @@ void  IGESAppli_ToolDrilledHole::OwnDump
   S << "Finish diameter size : "  << ent->FinishDiaSize() << endl;
   S << "Plating indication flag : ";
   if (!ent->IsPlating())   S << "NO"  << "  -  ";
-  else                     S << "YES" << "  -  ";
+  else                     S << "YES  -  ";
   S << "Lower Numbered Layer  : " << ent->NbLowerLayer() << "  ";
   S << "Higher Numbered Layer : " << ent->NbHigherLayer() << endl;
 }

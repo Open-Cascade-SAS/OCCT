@@ -23,12 +23,12 @@ Standard_OStream& Vrml_TransformSeparator::Print(Standard_OStream& anOStream)
 {
   if ( myFlagPrint == 0 )
     {
-      anOStream  << "TransformSeparator {" << endl;
+      anOStream  << "TransformSeparator {\n";
       myFlagPrint = 1;
     } 
   else 
     {
-      anOStream  << '}' << endl;
+      anOStream  << "}\n";
       myFlagPrint = 0;
     }
   return anOStream;

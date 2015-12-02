@@ -78,67 +78,67 @@ Handle(TColStd_HArray1OfInteger) Vrml_IndexedFaceSet::TextureCoordIndex() const
 Standard_OStream& Vrml_IndexedFaceSet::Print(Standard_OStream& anOStream) const 
 {
  Standard_Integer i;
- anOStream  << "IndexedFaceSet {" << endl;
+ anOStream  << "IndexedFaceSet {\n";
 
  if ( myCoordIndex->Length() != 1 || myCoordIndex->Value(myCoordIndex->Lower())!=0 )
   { 
-   anOStream  << "    coordIndex [" << endl << '\t';
+   anOStream  << "    coordIndex [\n\t";
     for ( i = myCoordIndex->Lower(); i <= myCoordIndex->Upper(); i++ )
 	{
 	 anOStream << myCoordIndex->Value(i);
 
          if ( i < myCoordIndex->Length() )
-	    anOStream  << ',';
+	    anOStream  << ",";
  	
          if ( myCoordIndex->Value(i) == -1 )
-	    anOStream  << endl << '\t';
+	    anOStream  << "\n\t";
 	}
-    anOStream  << ']' << endl;
+    anOStream  << "]\n";
   }
 
  if ( myMaterialIndex->Length() != 1 || myMaterialIndex->Value(myMaterialIndex->Lower())!=-1 )
   { 
-    anOStream  << "    materialIndex [" << endl << '\t';
+    anOStream  << "    materialIndex [\n\t";
      for ( i=myMaterialIndex->Lower(); i <= myMaterialIndex->Upper(); i++ )
 	{
 	 anOStream << myMaterialIndex->Value(i);
          if ( i < myMaterialIndex->Length() )
-	      anOStream  << ',';
+	      anOStream  << ",";
 
 	 if ( myMaterialIndex->Value(i) == -1 )
-  	    anOStream  << endl << '\t';
+  	    anOStream  << "\n\t";
         } // End of for
-     anOStream  << ']' << endl;
+     anOStream  << "]\n";
   }
 
  if ( myNormalIndex->Length() != 1 || myNormalIndex->Value(myNormalIndex->Lower())!=-1 )
   { 
-     anOStream  << "    normalIndex [" << endl << '\t';
+     anOStream  << "    normalIndex [\n\t";
      for ( i=myNormalIndex->Lower(); i <= myNormalIndex->Upper(); i++ )
 	{
 	 anOStream << myNormalIndex->Value(i);
 	 if ( i < myNormalIndex->Length() )
-	    anOStream  << ',';
+	    anOStream  << ",";
 
 	 if ( myNormalIndex->Value(i) == -1 )
-	    anOStream  << endl << '\t';
+	    anOStream  << "\n\t";
         } // End of for
-     anOStream  << ']' << endl;
+     anOStream  << "]\n";
    }
  if ( myTextureCoordIndex->Length() != 1 || myTextureCoordIndex->Value(myTextureCoordIndex->Lower())!=-1 )
   { 
-     anOStream  << "    textureCoordIndex [" << endl << '\t';
+     anOStream  << "    textureCoordIndex [\n\t";
      for ( i=myTextureCoordIndex->Lower(); i <= myTextureCoordIndex->Upper(); i++ )
 	{
 	 anOStream << myTextureCoordIndex->Value(i);
 	 if ( i < myTextureCoordIndex->Length() )
-	    anOStream  << ',';
+	    anOStream  << ",";
 
 	 if ( myTextureCoordIndex->Value(i) == -1 )
-	    anOStream  << endl << '\t';
+	    anOStream  << "\n\t";
         } // End of for
-      anOStream  << ']' << endl;
+      anOStream  << "]\n";
    }
-  anOStream  << '}' << endl;
+  anOStream  << "}\n";
  return anOStream;
 }

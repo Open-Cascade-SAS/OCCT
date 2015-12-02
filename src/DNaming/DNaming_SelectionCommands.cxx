@@ -130,7 +130,7 @@ static Standard_Integer DNaming_Select (Draw_Interpretor& di, Standard_Integer n
     }
     return 0;  
   }
-  di << "DNaming_Select : Error" << "\n";
+  di << "DNaming_Select : Error\n";
   return 1;
 }
 // #define DEB_SELN 1
@@ -200,7 +200,7 @@ static Standard_Integer DNaming_SolveSelection (Draw_Interpretor& di, Standard_I
     }
 	TDF_LabelMap aValidMap;
     if(!FillValidMap(L,aValidMap)) 
-		di << "Valid map is empty" << "\n";
+		di << "Valid map is empty\n";
 #ifdef OCCT_DEBUG_SELN
 	cout<<"== Valid Label map =="<<endl;
 	for (TDF_MapIteratorOfLabelMap mapItr(aValidMap);mapItr.More(); mapItr.Next()) {
@@ -215,13 +215,13 @@ static Standard_Integer DNaming_SolveSelection (Draw_Interpretor& di, Standard_I
     TNaming_Selector SL (L);
     Standard_Boolean isSolved = SL.Solve(aValidMap);
 	if(!isSolved)
-		di << "!!! Solver is failed" <<"\n";
+		di << "!!! Solver is failed\n";
     TopoDS_Shape Res = TNaming_Tool::CurrentShape(SL.NamedShape());
     Sprintf (name,"%s_%s","new",a[2]);
     Display (name,Res);
     return 0;
   }
-  di << "DNaming_SolveSelection : Error" << "\n";
+  di << "DNaming_SolveSelection : Error\n";
   return 1;
 }
 
@@ -240,7 +240,7 @@ static Standard_Integer DNaming_DumpSelection (Draw_Interpretor& di,
     if (!DDF::FindLabel(DF,a[2],L)) return 1;
     Handle(TNaming_Naming) naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-      di <<"DNaming_DumpSelection : not a selection" << "\n";
+      di <<"DNaming_DumpSelection : not a selection\n";
       return 1;
     }
     DumpNaming(naming, di);
@@ -263,7 +263,7 @@ static Standard_Integer DNaming_DumpSelection (Draw_Interpretor& di,
     }
     return 0;
   }
-  di << "DNaming_DumpSelection : Error" << "\n";
+  di << "DNaming_DumpSelection : Error\n";
   return 1;  
 }
 
@@ -282,7 +282,7 @@ static Standard_Integer DNaming_ArgsSelection (Draw_Interpretor& di,
     if (!DDF::FindLabel(DF,a[2],L)) return 1;
     Handle(TNaming_Naming) naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-      di <<"DNaming_DumpSelection : not a selection" << "\n";
+      di <<"DNaming_DumpSelection : not a selection\n";
       return 1;
     }  
     TCollection_AsciiString Entry;
@@ -297,7 +297,7 @@ static Standard_Integer DNaming_ArgsSelection (Draw_Interpretor& di,
     di << "\n";
     return 0;
   }
-  di << "DNaming_ArgsSelection : Error" << "\n";
+  di << "DNaming_ArgsSelection : Error\n";
   return 1;  
 }
 
@@ -367,7 +367,7 @@ static Standard_Integer DNaming_Attachment (Draw_Interpretor& di,
     di << "\n";
     return 0;
   }
-  di << "DNaming_Attachment : Error" << "\n";
+  di << "DNaming_Attachment : Error\n";
   return 1;  
 }
 

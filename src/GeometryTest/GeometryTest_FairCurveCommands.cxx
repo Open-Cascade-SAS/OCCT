@@ -34,7 +34,7 @@ Standard_Boolean IsGoodNumber(Standard_Integer argc, Standard_Integer waiting, D
   // argc vaut 1 de plus, puisque argv[0] contient le nom de la commande
   if (argc != (waiting+1))
     {
-      di << "Waiting "<< waiting << " arguments" << "\n";
+      di << "Waiting "<< waiting << " arguments\n";
       return Standard_False;
     }
   else
@@ -75,7 +75,7 @@ BattenCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   Handle(DrawFairCurve_Batten) aBatten = new DrawFairCurve_Batten(Bat);
 
   if (aBatten.IsNull()) {
-	di << " Batten null "<< "\n";
+	di << " Batten null \n";
 	return 1;
       }
   Draw::Set(BattenName,aBatten);
@@ -118,7 +118,7 @@ MVCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   Handle(DrawFairCurve_MinimalVariation) aMVC = new DrawFairCurve_MinimalVariation(MVC);
 
   if (aMVC.IsNull()) {
-	di << " MVC null "<< "\n";
+	di << " MVC null \n";
 	return 1;
       }
   Draw::Set(MVCName, aMVC);

@@ -205,7 +205,7 @@ ShapeUpgrade_SplitSurfaceContinuity::ShapeUpgrade_SplitSurfaceContinuity()
   if(mySurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     MyBSpline = Handle(Geom_BSplineSurface)::DownCast(mySurface->Copy());
   if (MyBSpline.IsNull()) {
-//    if (ShapeUpgrade::Debug()) cout<<". "<<" Surface is not a Bspline"<<endl;
+//    if (ShapeUpgrade::Debug()) cout<<".  Surface is not a Bspline"<<endl;
     return;
   } 
   if(mySurface->Continuity() >= myCriterion) {

@@ -80,15 +80,15 @@ static Standard_Integer contblend(Draw_Interpretor& di, Standard_Integer narg, c
     switch (blend_cont) {
       case GeomAbs_C0:
          //cout << ""<<endl;
-         di << "C0"<<"\n";
+         di << "C0\n";
 	 break;
       case GeomAbs_C1:
          //cout << "C1"<<endl;
-         di << "C1"<<"\n";
+         di << "C1\n";
 	 break;
       case GeomAbs_C2:
          //cout << "C2"<<endl;
-         di << "C2"<<"\n";
+         di << "C2\n";
 	 break;
        default:
 	 break;
@@ -215,12 +215,12 @@ static Standard_Integer CheckHist(Draw_Interpretor& di,
 {
   if(Rakk == 0) {
     //cout<<"No active Builder"<<endl;
-    di<<"No active Builder"<<"\n";
+    di<<"No active Builder\n";
     return 1;
   }
   if(!Rakk->IsDone()) {
     //cout<<"Active Builder Not Done"<<endl;
-    di<<"Active Builder Not Done"<<"\n";
+    di<<"Active Builder Not Done\n";
     return 1;
   }
   Standard_Integer nbc = Rakk->NbContours();
@@ -242,7 +242,7 @@ static Standard_Integer CheckHist(Draw_Interpretor& di,
     PrintHist(curshape,It,nbgen);
   }
   //cout<<"foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }"<<endl;
-  di<<"foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }"<<"\n";
+  di<<"foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }\n";
   return 0;
 }
 
@@ -277,7 +277,7 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di,
 {
   if(Rake == 0){
     //cout << "MakeFillet not initialized"<<endl;
-    di << "MakeFillet not initialized"<<"\n";
+    di << "MakeFillet not initialized\n";
     return 1 ;
   }
   if(narg%2 != 0 || narg < 4) return 1;
@@ -301,7 +301,7 @@ static Standard_Integer BUILDEVOL(Draw_Interpretor& di,
 {
   if(Rake == 0){
     //cout << "MakeFillet not initialized"<<endl;
-    di << "MakeFillet not initialized"<<"\n";
+    di << "MakeFillet not initialized\n";
     return 1 ;
   }
   Rake->Build();
@@ -528,16 +528,16 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
   //  if (Rakk.IsDone()==FilletSurf_IsPartial) cout <<"resultat partiel"<<endl; 
   if (aRakk.IsDone()==FilletSurf_IsNotOk)
    { FilletSurf_ErrorTypeStatus err=aRakk.StatusError();
-     if (err==FilletSurf_EmptyList) di<< "StatusError=EmptyList"<<"\n";
-     else if (err==FilletSurf_EdgeNotG1) di<< "StatusError=NotG1"<<"\n";
-     else if (err==FilletSurf_FacesNotG1) di<< "StatusError=facesNotG1"<<"\n";
+     if (err==FilletSurf_EmptyList) di<< "StatusError=EmptyList\n";
+     else if (err==FilletSurf_EdgeNotG1) di<< "StatusError=NotG1\n";
+     else if (err==FilletSurf_FacesNotG1) di<< "StatusError=facesNotG1\n";
      else if (err==FilletSurf_EdgeNotOnShape)
-     di<< "StatusError=edgenotonshape"<<"\n";
-     else if (err==FilletSurf_NotSharpEdge ) di<< "StatusError=notsharpedge"<<"\n";
-     else if (err==FilletSurf_PbFilletCompute) di <<"StatusError=PBFillet"<<"\n";
+     di<< "StatusError=edgenotonshape\n";
+     else if (err==FilletSurf_NotSharpEdge ) di<< "StatusError=notsharpedge\n";
+     else if (err==FilletSurf_PbFilletCompute) di <<"StatusError=PBFillet\n";
    }
    else {
-    if (aRakk.IsDone()==FilletSurf_IsPartial) di <<"partial result"<<"\n";
+    if (aRakk.IsDone()==FilletSurf_IsPartial) di <<"partial result\n";
  
     nb=aRakk.NbSurface();
     char localname [100];
@@ -554,11 +554,11 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
     //else if (Rakk.StartSectionStatus()==FilletSurf_TwoExtremityOnEdge)
     //  {cout<<" type deb conges = WLBLEND"<<endl;}
     if (aRakk.StartSectionStatus()==FilletSurf_NoExtremityOnEdge)
-      {di<<" type start fillets = WLBLOUT"<<"\n";}
+      {di<<" type start fillets = WLBLOUT\n";}
     else if (aRakk.StartSectionStatus()==FilletSurf_OneExtremityOnEdge)
-      { di<<" type start fillets = WLBLSTOP"<<"\n";}
+      { di<<" type start fillets = WLBLSTOP\n";}
     else if (aRakk.StartSectionStatus()==FilletSurf_TwoExtremityOnEdge)
-      {di<<" type start fillets = WLBLEND"<<"\n";}
+      {di<<" type start fillets = WLBLEND\n";}
     
     //if (Rakk.EndSectionStatus()==FilletSurf_NoExtremityOnEdge) 
     //  {cout<<" type fin  conges = WLBLOUT"<<endl;}
@@ -567,11 +567,11 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
     //else if (Rakk.EndSectionStatus()==FilletSurf_TwoExtremityOnEdge) 
     //  { cout<<" type fin  conges = WLBLEND"<<endl;}
     if (aRakk.EndSectionStatus()==FilletSurf_NoExtremityOnEdge)
-      {di<<" type end fillets = WLBLOUT"<<"\n";}
+      {di<<" type end fillets = WLBLOUT\n";}
     else if (aRakk.EndSectionStatus()==FilletSurf_OneExtremityOnEdge)
-      {di<<" type end fillets = WLBLSTOP"<<"\n";}
+      {di<<" type end fillets = WLBLSTOP\n";}
     else if (aRakk.EndSectionStatus()==FilletSurf_TwoExtremityOnEdge)
-      { di<<" type end fillets = WLBLEND"<<"\n";}
+      { di<<" type end fillets = WLBLEND\n";}
     Standard_Real f,l;
     f = aRakk.FirstParameter();
     l = aRakk.LastParameter();
@@ -679,7 +679,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
 //      TopoDS_Face F1 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
       if ( F1.IsNull()) {
 	//cout << " Stop face not referenced." << endl;
-	di << " Stop face not referenced." << "\n";
+	di << " Stop face not referenced.\n";
 	return 1;
       }
       Roll.SetStoppingFace(F1);
@@ -691,7 +691,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
       i++;
       if ( !strcmp(a[i],"@")) {
 	//cout << " Even number of ball support faces is required " << endl;
-	di << " Even number of ball support faces is required " << "\n";
+	di << " Even number of ball support faces is required \n";
 	return 1;
       }
       aLocalFace = DBRep::Get(a[i],TopAbs_FACE);
@@ -699,7 +699,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
 //      TopoDS_Face F2 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
       if ( F1.IsNull() || F2.IsNull()) {
 	//cout << " Support face not referenced." << endl;
-	di << " Support face not referenced." << "\n";
+	di << " Support face not referenced.\n";
 	return 1;
       }
       Roll.SetFaces(F1,F2);
@@ -710,7 +710,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
 //      TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
       if ( E.IsNull()) {
 	//cout << " Edge not referenced." << endl;
-	di << " Edge not referenced." << "\n";
+	di << " Edge not referenced.\n";
 	return 1;
       }
       Roll.SetEdge(E);

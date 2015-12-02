@@ -75,7 +75,7 @@ static Standard_Integer DDataStd_SetPoint (Draw_Interpretor& di,
       TDataXtd_Point::Set (L,p);
     }
     else {
-      di << "DDataStd_SetPoint : not a point" << "\n";
+      di << "DDataStd_SetPoint : not a point\n";
       return 1;
     }
   }  
@@ -104,7 +104,7 @@ static Standard_Integer DDataStd_SetAxis (Draw_Interpretor& di,
   else if (nb == 4) { 
     Handle(Geom_Line) LINE =  Handle(Geom_Line)::DownCast(DrawTrSurf::Get (arg[3]));
     if (LINE.IsNull()) {
-      di << "DDataStd_SetAxis : not a line" << "\n";
+      di << "DDataStd_SetAxis : not a line\n";
       return 1;
     }
     TDataXtd_Axis::Set (L,LINE->Lin()); 
@@ -135,7 +135,7 @@ static Standard_Integer DDataStd_SetPlane (Draw_Interpretor& di,
   else if (nb == 4) {
     Handle(Geom_Plane) PLANE =  Handle(Geom_Plane)::DownCast(DrawTrSurf::Get (arg[3]));
     if (PLANE.IsNull()) {
-      di << "DDataStd_SetPlane : not a plane" << "\n";
+      di << "DDataStd_SetPlane : not a plane\n";
       return 1;
     }
     TDataXtd_Plane::Set (L,PLANE->Pln()); 
@@ -237,7 +237,7 @@ static Standard_Integer DDataStd_SetGeometry (Draw_Interpretor& di,
   {
     // set NS attribute
     TopoDS_Shape s = DBRep::Get(arg[4]);  
-    if (s.IsNull()) { di <<"shape not found"<< "\n"; return 1;}  
+    if (s.IsNull()) { di <<"shape not found\n"; return 1;}  
     TNaming_Builder SI (L);
     SI.Generated(s);
   }
@@ -260,8 +260,8 @@ static Standard_Integer DDataStd_SetGeometry (Draw_Interpretor& di,
     else if (strcmp(aT,"cyl") == 0) aType = TDataXtd_CYLINDER;
     else
     {
-      di << "DDataStd_SetGeometry : unknown type, must be one of:" << "\n";
-      di << "any/pnt/lin/cir/ell/spl/pln/cyl" << "\n";
+      di << "DDataStd_SetGeometry : unknown type, must be one of:\n";
+      di << "any/pnt/lin/cir/ell/spl/pln/cyl\n";
       return 1;
     }
   }
@@ -295,7 +295,7 @@ static Standard_Integer DDataStd_GetGeometryType (Draw_Interpretor& di,
   Handle(TDataXtd_Geometry) aGA;
   if (!L.FindAttribute(TDataXtd_Geometry::GetID(),aGA))
   {
-    di << "TDataStd_Geometry : attribute not found" << "\n";
+    di << "TDataStd_Geometry : attribute not found\n";
     return 1;
   }
 
@@ -313,7 +313,7 @@ static Standard_Integer DDataStd_GetGeometryType (Draw_Interpretor& di,
   case TDataXtd_CYLINDER:  di <<"cyl"; break;
   default:
     {
-      di << "DDataStd_GetGeometry : unknown type" << "\n";
+      di << "DDataStd_GetGeometry : unknown type\n";
       return 1;
     }
   }

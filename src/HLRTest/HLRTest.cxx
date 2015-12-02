@@ -134,7 +134,7 @@ hout (Draw_Interpretor& di, Standard_Integer n, const char** a)
   const char *name = a[2];
   TopoDS_Shape S = DBRep::Get(name);
   if (S.IsNull()) {
-    di << name << " is not a shape." << "\n";
+    di << name << " is not a shape.\n";
     return 1;
   }
   HLRTest::Set(a[1],S);
@@ -155,13 +155,13 @@ hfil (Draw_Interpretor& di, Standard_Integer n, const char** a)
   const char *name1 = a[1];
   Handle(HLRTopoBRep_OutLiner) HS = HLRTest::GetOutLiner(name1);
   if (HS.IsNull()) {
-    di << name1 << " is not an OutLiner." << "\n";
+    di << name1 << " is not an OutLiner.\n";
     return 1;
   }
   const char *name2 = a[2];
   HLRAlgo_Projector P;
   if (!HLRTest::GetProjector(name2,P)) {
-    di << name2 << " is not a projector." << "\n";
+    di << name2 << " is not a projector.\n";
     return 1;
   }
   BRepTopAdaptor_MapOfShapeTool MST;
@@ -182,7 +182,7 @@ sori (Draw_Interpretor& di, Standard_Integer n, const char** a)
   const char *name2 = a[2];
   Handle(HLRTopoBRep_OutLiner) HS = HLRTest::GetOutLiner(name2);
   if (HS.IsNull()) {
-    di << name2 << " is not an OutLiner." << "\n";
+    di << name2 << " is not an OutLiner.\n";
     return 1;
   }
   DBRep::Set(name1,HS->OriginalShape());
@@ -202,11 +202,11 @@ sout (Draw_Interpretor& di, Standard_Integer n, const char** a)
   const char *name2 = a[2];
   Handle(HLRTopoBRep_OutLiner) HS = HLRTest::GetOutLiner(name2);
   if (HS.IsNull()) {
-    di << name2 << " is not an OutLiner." << "\n";
+    di << name2 << " is not an OutLiner.\n";
     return 1;
   }
   if (HS->OutLinedShape().IsNull()) {
-    di << name2 << " has no OutLinedShape." << "\n";
+    di << name2 << " has no OutLinedShape.\n";
     return 1;
   }
   DBRep::Set(name1,HS->OutLinedShape());
@@ -225,7 +225,7 @@ hloa (Draw_Interpretor& di, Standard_Integer n, const char** a)
   const char *name1 = a[1];
   Handle(HLRTopoBRep_OutLiner) HS = HLRTest::GetOutLiner(name1);
   if (HS.IsNull()) {
-    di << name1 << " is not an OutLiner." << "\n";
+    di << name1 << " is not an OutLiner.\n";
     return 1;
   }
   hider->Load(HS);
@@ -247,13 +247,13 @@ hrem (Draw_Interpretor& di, Standard_Integer n, const char** a)
     if (HS.IsNull()) {
       TopoDS_Shape S = DBRep::Get(name);
       if (S.IsNull()) {
-	di << name << " is not an OutLiner and not a shape." << "\n";
+	di << name << " is not an OutLiner and not a shape.\n";
 	return 1;
       }
       else {
 	index = hider->Index(S);
 	if (index == 0) {
-	  di << name << " not loaded shape." << "\n";
+	  di << name << " not loaded shape.\n";
 	  return 1;
 	}
       }
@@ -261,18 +261,18 @@ hrem (Draw_Interpretor& di, Standard_Integer n, const char** a)
     else {
       index = hider->Index(HS->OriginalShape());
       if (index == 0) {
-	di << name << " not loaded outliner." << "\n";
+	di << name << " not loaded outliner.\n";
 	return 1;
       }
     }
     hider->Remove(index);
-    di << name << " removed" << "\n";
+    di << name << " removed\n";
   }
   else {
     while (hider->NbShapes() > 0) {
       hider->Remove(1);
     }
-    di << " all shapes removed" << "\n";
+    di << " all shapes removed\n";
   }
   return 0;
 }
@@ -289,7 +289,7 @@ sprj (Draw_Interpretor& di, Standard_Integer n, const char** a)
   const char *name = a[1];
   HLRAlgo_Projector P;
   if (!HLRTest::GetProjector(name,P)) {
-    di << name << " is not a projector." << "\n";
+    di << name << " is not a projector.\n";
     return 1;
   }
   hider->Projector(P);
@@ -342,9 +342,9 @@ hdbg (Draw_Interpretor& di, Standard_Integer, const char**)
 {
   hider->Debug(!hider->Debug());
   if (hider->Debug())
-    di << "debug" << "\n";
+    di << "debug\n";
   else
-    di << "no debug" << "\n";
+    di << "no debug\n";
   return 0;
 }
 

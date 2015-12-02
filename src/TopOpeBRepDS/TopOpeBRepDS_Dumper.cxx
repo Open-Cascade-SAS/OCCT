@@ -688,7 +688,7 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpSectionEdge(const TopOpeBRepDS_Kind
   
   OS<<endl;
   TCollection_AsciiString s = "---- ";
-  OS<<s<<"Section Edges"<<" : "<<nse<<" edges"<<endl;
+  OS<<s<<"Section Edges : "<<nse<<" edges"<<endl;
   for(Standard_Integer i = 1; i <= nse; i++) {
     DumpSectionEdge(K,i,OS);
   }

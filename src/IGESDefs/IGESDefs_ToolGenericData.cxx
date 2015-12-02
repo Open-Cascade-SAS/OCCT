@@ -266,7 +266,7 @@ void  IGESDefs_ToolGenericData::OwnDump
     {
     case 4:
       S << "Types  : " << endl;
-      S << "Values : " << "Count = " << ent->NbTypeValuePairs() << endl;
+      S << "Values : Count = " << ent->NbTypeValuePairs() << endl;
       S << "      [ as level > 4 for content ]" << endl;
       break;
     case 5:

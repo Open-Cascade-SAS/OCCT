@@ -82,8 +82,8 @@ static Standard_Integer chronom(Draw_Interpretor& di,
     else
       Draw_Chrono = (*a[1] == '1');
 
-    if (Draw_Chrono) di << "Chronometers activated."<<"\n";
-    else di << "Chronometers desactivated."<<"\n";
+    if (Draw_Chrono) di << "Chronometers activated.\n";
+    else di << "Chronometers desactivated.\n";
   }
   else {
     Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
@@ -121,8 +121,8 @@ static Standard_Integer dchronom(Draw_Interpretor& I,
     else
       Draw_Chrono = (*a[1] == '1');
 
-    if (Draw_Chrono) I << "Chronometers activated."<<"\n";
-    else I << "Chronometers desactivated."<<"\n";
+    if (Draw_Chrono) I << "Chronometers activated.\n";
+    else I << "Chronometers desactivated.\n";
   }
   else {
     Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
@@ -186,7 +186,7 @@ static Standard_Integer spy(Draw_Interpretor& di, Standard_Integer n, const char
   Draw_Spying = Standard_False;
   if (n > 1) {
     if (!Draw_Spyfile.open(a[1],ios::out)) {
-      di << "Cannot open "<<a[1]<<" for writing"<<"\n";
+      di << "Cannot open "<<a[1]<<" for writing\n";
       return 1;
     }
     Draw_Spying = Standard_True;
@@ -548,44 +548,44 @@ By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
     int aType = (n > 2 ? Draw::Atoi(a[2]) : 1);
     if (aType < 0 || aType > 2)
     {
-      di << "unknown op of the command set" << "\n";
+      di << "unknown op of the command set\n";
       return 1;
     }
     else if (aType == 0)
     {
       OSD_MAllocHook::SetCallback(NULL);
-      di << "callback is unset" << "\n";
+      di << "callback is unset\n";
     }
     else if (aType == 1)
     {
       OSD_MAllocHook::SetCallback(OSD_MAllocHook::GetCollectBySize());
-      di << "callback is set to CollectBySize" << "\n";
+      di << "callback is set to CollectBySize\n";
     }
     else //if (aType == 2)
     {
       OSD_MAllocHook::SetCallback(OSD_MAllocHook::GetLogFileHandler());
-      di << "callback is set to LogFileHandler" << "\n";
+      di << "callback is set to LogFileHandler\n";
     }
   }
   else if (strcmp(a[1], "reset") == 0)
   {
     OSD_MAllocHook::GetCollectBySize()->Reset();
-    di << "CollectBySize handler is reset" << "\n";
+    di << "CollectBySize handler is reset\n";
   }
   else if (strcmp(a[1], "open") == 0)
   {
     const char* aFileName = (n > 2 ? a[2] : "mem-log.txt");
     if (!OSD_MAllocHook::GetLogFileHandler()->Open(aFileName))
     {
-      di << "cannot create file " << aFileName << " for writing" << "\n";
+      di << "cannot create file " << aFileName << " for writing\n";
       return 1;
     }
-    di << "log file " << aFileName << " is opened for writing" << "\n";
+    di << "log file " << aFileName << " is opened for writing\n";
   }
   else if (strcmp(a[1], "close") == 0)
   {
     OSD_MAllocHook::GetLogFileHandler()->Close();
-    di << "log file is closed" << "\n";
+    di << "log file is closed\n";
   }
   else if (strcmp(a[1], "report1") == 0)
   {
@@ -594,7 +594,7 @@ By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
       aOutFile = a[2];
     if (OSD_MAllocHook::GetCollectBySize()->MakeReport(aOutFile))
     {
-      di << "report " << aOutFile << " has been created" << "\n";
+      di << "report " << aOutFile << " has been created\n";
     }
     else
     {
@@ -619,7 +619,7 @@ By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
     }
     if (OSD_MAllocHook::LogFileHandler::MakeReport(aLogFile, aOutFile, includeAlive))
     {
-      di << "report " << aOutFile << " has been created" << "\n";
+      di << "report " << aOutFile << " has been created\n";
     }
     else
     {

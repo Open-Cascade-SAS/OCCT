@@ -139,13 +139,13 @@ Standard_Integer regularize(Draw_Interpretor& di, Standard_Integer n, const char
   TopoDS_Shape aLocalShape = DBRep::Get(a[1]);
   TopoDS_Face fa = TopoDS::Face(aLocalShape);
 //  TopoDS_Face fa = TopoDS::Face(DBRep::Get(a[1]));
-  if (fa.IsNull()) {di<<"null face"<<"\n"; return 1;}
+  if (fa.IsNull()) {di<<"null face\n"; return 1;}
   
   TopTools_DataMapOfShapeListOfShape ESplits;
   TopTools_ListOfShape lof;  
   TopOpeBRepTool::Regularize(fa, lof, ESplits);  
   Standard_Integer nfa = lof.Extent();
-  di<<"face gives "<<nfa<<" newfaces"<<"\n";
+  di<<"face gives "<<nfa<<" newfaces\n";
   
   Standard_Integer i = 0;
   TopTools_ListIteratorOfListOfShape itlof(lof) ;
@@ -158,7 +158,7 @@ Standard_Integer regularize(Draw_Interpretor& di, Standard_Integer n, const char
   BRep_Builder BB;
   TopoDS_Compound CC; BB.MakeCompound(CC);
   for (itlof.Initialize(lof); itlof.More(); itlof.Next()) BB.Add(CC, itlof.Value());
-  di<<"resulting compound is cmp"<<"\n";
+  di<<"resulting compound is cmp\n";
   TCollection_AsciiString aa = TCollection_AsciiString("cmp");
   FUN_draw(aa,CC);  
   
@@ -171,20 +171,20 @@ static Standard_Integer splitF(Draw_Interpretor& di, Standard_Integer n, const c
   TopoDS_Shape aLocalShape = DBRep::Get(a[1]);
   const TopoDS_Face& fa = TopoDS::Face(aLocalShape);
 //  const TopoDS_Face& fa = TopoDS::Face(DBRep::Get(a[1]));
-  if (fa.IsNull()) {di<<"null face"<<"\n"; return 1;}
+  if (fa.IsNull()) {di<<"null face\n"; return 1;}
   
   TopTools_ListOfShape fsplits;
 //  Standard_Boolean splitok = FUN_tool_SplitF(fa,fsplits);
   Standard_Boolean splitok = TopOpeBRepTool_REGUS::SplitF(fa,fsplits);
   
-  if (!splitok) {di<<"no splits"<<"\n"; return 0;}
-  di<<"fa gives "<<fsplits.Extent()<<" splits"<<"\n";
+  if (!splitok) {di<<"no splits\n"; return 0;}
+  di<<"fa gives "<<fsplits.Extent()<<" splits\n";
   
   BRep_Builder BB;
   TopoDS_Compound CC; BB.MakeCompound(CC);
   for (TopTools_ListIteratorOfListOfShape it(fsplits); it.More(); it.Next()) BB.Add(CC, it.Value());
   
-  di<<"resulting compound is cmp"<<"\n";
+  di<<"resulting compound is cmp\n";
   TCollection_AsciiString aa = TCollection_AsciiString("cmp");
   FUN_draw(aa,CC); 
   return 0;
@@ -195,10 +195,10 @@ static Standard_Integer regush(Draw_Interpretor& di, Standard_Integer n, const c
 {
   if (n < 2) return 1;
   const TopoDS_Shape& sha = DBRep::Get(a[1]);
-  if (sha.IsNull()) {di<<"null shape"<<"\n"; return 1;}
+  if (sha.IsNull()) {di<<"null shape\n"; return 1;}
   TopExp_Explorer ex(sha, TopAbs_SOLID);
   const TopoDS_Solid& so = TopoDS::Solid(ex.Current());
-  if (so.IsNull()) {di<<"no solid"<<"\n"; return 1;}
+  if (so.IsNull()) {di<<"no solid\n"; return 1;}
   
   TopTools_DataMapOfShapeListOfShape FSplits;
   TopTools_DataMapOfShapeListOfShape OldSheNewShe;
@@ -207,7 +207,7 @@ static Standard_Integer regush(Draw_Interpretor& di, Standard_Integer n, const c
   TopoDS_Compound CC; BB.MakeCompound(CC);
   Standard_Integer nshe = 0;
   Standard_Boolean regu = TopOpeBRepTool::RegularizeShells(so,OldSheNewShe,FSplits);
-  if (!regu) {di<<"solid gives no new shell"<<"\n";}
+  if (!regu) {di<<"solid gives no new shell\n";}
   else {  
     Standard_Integer noldshe = OldSheNewShe.Extent();
     TopTools_DataMapIteratorOfDataMapOfShapeListOfShape ite(OldSheNewShe);
@@ -222,7 +222,7 @@ static Standard_Integer regush(Draw_Interpretor& di, Standard_Integer n, const c
       }
     } // i = 1..noldshe
     di <<"noldshe = "<<noldshe<<" gives nshe = "<<nshe<<"\n";
-    di<<"resulting compound is cmp"<<"\n";
+    di<<"resulting compound is cmp\n";
     TCollection_AsciiString aa = TCollection_AsciiString("cmp");
     FUN_draw(aa,CC);  
   }
@@ -233,10 +233,10 @@ Standard_Integer reguso(Draw_Interpretor& di, Standard_Integer n, const char** a
 {
   if (n < 2) return 1;
   const TopoDS_Shape& sha = DBRep::Get(a[1]);
-  if (sha.IsNull()) {di<<"null shape"<<"\n"; return 1;}
+  if (sha.IsNull()) {di<<"null shape\n"; return 1;}
   TopExp_Explorer ex(sha, TopAbs_SOLID);
   const TopoDS_Solid& so = TopoDS::Solid(ex.Current());
-  if (so.IsNull()) {di<<"no solid"<<"\n"; return 1;}
+  if (so.IsNull()) {di<<"no solid\n"; return 1;}
   
   TopTools_DataMapOfShapeListOfShape FSplits;
   TopTools_DataMapOfShapeListOfShape OldSheNewShe;
@@ -245,7 +245,7 @@ Standard_Integer reguso(Draw_Interpretor& di, Standard_Integer n, const char** a
   TopoDS_Compound CC; BB.MakeCompound(CC);
 //  Standard_Integer nshe = 0;
   Standard_Boolean regu = TopOpeBRepTool::RegularizeShells(so,OldSheNewShe,FSplits);
-  if (!regu) {di<<"solid gives no new shell"<<"\n";}
+  if (!regu) {di<<"solid gives no new shell\n";}
   else {  
     TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(OldSheNewShe);
     
@@ -270,8 +270,8 @@ Standard_Integer reguso(Draw_Interpretor& di, Standard_Integer n, const char** a
       aBBuilder.Add(aCompound,spli);
       nSo++;
     } 
-    di<<"so gives "<<nSo<<" new solids"<<"\n";
-    di<<"resulting compound is cmp"<<"\n";
+    di<<"so gives "<<nSo<<" new solids\n";
+    di<<"resulting compound is cmp\n";
     TCollection_AsciiString aa = TCollection_AsciiString("cmp");
     FUN_draw(aa, aCompound);
   }
@@ -357,7 +357,7 @@ static Standard_Integer purge(Draw_Interpretor& di, Standard_Integer n, const ch
   TopTools_ListIteratorOfListOfShape itw(lWs);  
   for (; itw.More(); itw.Next()) BB.Add(newF, TopoDS::Wire(itw.Value()));
 
-  di <<"New face built is newF"<<"\n";
+  di <<"New face built is newF\n";
   TCollection_AsciiString aa("newF");
   FUN_draw(aa, newF);
   return 0;  
@@ -376,12 +376,12 @@ Standard_Integer correctONISO(Draw_Interpretor& di, Standard_Integer n, const ch
 
   FC2D_Prepare(F,F);
 
-  if (F.IsNull() || Fsp.IsNull()) {di<<"NULL shape(s)"<<"\n";return 1;}
+  if (F.IsNull() || Fsp.IsNull()) {di<<"NULL shape(s)\n";return 1;}
 
   TopOpeBRepTool::CorrectONUVISO(F,Fsp);
   TCollection_AsciiString aa("newFsp");
   FUN_draw(aa,Fsp);
-  di<<"-> newFsp"<<"\n";
+  di<<"-> newFsp\n";
   
   return 0;  
 }
@@ -406,8 +406,8 @@ static Standard_Integer isclosingE(Draw_Interpretor& di, Standard_Integer n, con
 		  Standard_SStream aSStream;
 		  TopAbs::Print(oriE,aSStream);
 		  di << aSStream;
-		  di<<" closing edge"<<"\n";}
-  else di <<"edge is NOT closing edge"<<"\n";
+		  di<<" closing edge\n";}
+  else di <<"edge is NOT closing edge\n";
   return 0;
 }
 
@@ -417,9 +417,9 @@ static Standard_Integer compareshsh(Draw_Interpretor& di, Standard_Integer n, co
   TopoDS_Shape sh1 = DBRep::Get(a[1]);
   TopoDS_Shape sh2 = DBRep::Get(a[2]);
   Standard_Boolean issame = sh1.IsSame(sh2); 
-  if (issame) di<<" same shapes"<<"\n";
-  else        di <<" shapes are not same"<<"\n";
-  Standard_Boolean isequal = sh1.IsEqual(sh2); if (isequal) di<<" equal shapes"<<"\n";
+  if (issame) di<<" same shapes\n";
+  else        di <<" shapes are not same\n";
+  Standard_Boolean isequal = sh1.IsEqual(sh2); if (isequal) di<<" equal shapes\n";
   return 0;
 }
 static Standard_Integer pcurveedgeonface(Draw_Interpretor& di, Standard_Integer n, const char** a)
@@ -458,12 +458,12 @@ static Standard_Integer orivine(Draw_Interpretor& di, Standard_Integer n, const 
 //  TopoDS_Edge ed = TopoDS::Edge(DBRep::Get(a[2]));
 
   Standard_Integer ori = TopOpeBRepTool_TOOL::OriinSor(v,ed);
-  if      (ori==0) di<<"v not in ed"<<"\n";
-  else if (ori==1)  di<<"v FORWARD in ed"<<"\n";
-  else if (ori==2)  di<<"v REVERSED in ed"<<"\n";
-  else if (ori==3)  di<<"v INTERNAL in ed"<<"\n";
-  else if (ori==4)  di<<"v EXTERNAL in ed"<<"\n";
-  else if (ori==5)  di<<"v CLOSING in ed"<<"\n";
+  if      (ori==0) di<<"v not in ed\n";
+  else if (ori==1)  di<<"v FORWARD in ed\n";
+  else if (ori==2)  di<<"v REVERSED in ed\n";
+  else if (ori==3)  di<<"v INTERNAL in ed\n";
+  else if (ori==4)  di<<"v EXTERNAL in ed\n";
+  else if (ori==5)  di<<"v CLOSING in ed\n";
   return 0;
 }
 
@@ -486,12 +486,12 @@ static Standard_Integer vine(Draw_Interpretor& di, Standard_Integer n, const cha
   di << "p2df";FUN_cout(p2df,di); di << "p2dl";FUN_cout(p2dl,di);di<<"\n";  
   
   Standard_Integer ori = TopOpeBRepTool_TOOL::OriinSor(v,ed);
-  if      (ori==0)  {di<<"v not in ed"<<"\n"; return 0;}
-  else if (ori==1)  di<<"v FORWARD in ed"<<"\n";
-  else if (ori==2)  di<<"v REVERSED in ed"<<"\n";
-  else if (ori==3)  di<<"v INTERNAL in ed"<<"\n";
-  else if (ori==4)  di<<"v EXTERNAL in ed"<<"\n";
-  else if (ori==5)  di<<"v CLOSING in ed"<<"\n";
+  if      (ori==0)  {di<<"v not in ed\n"; return 0;}
+  else if (ori==1)  di<<"v FORWARD in ed\n";
+  else if (ori==2)  di<<"v REVERSED in ed\n";
+  else if (ori==3)  di<<"v INTERNAL in ed\n";
+  else if (ori==4)  di<<"v EXTERNAL in ed\n";
+  else if (ori==5)  di<<"v CLOSING in ed\n";
 
   if ((ori == 1) || (ori == 2)) {
     Standard_Real par = TopOpeBRepTool_TOOL::ParE(ori,ed);//FUN_tool_parOnE(ind,ed,fa);
@@ -516,8 +516,8 @@ static Standard_Integer issubshape(Draw_Interpretor& di, Standard_Integer n, con
   for (; ex.More(); ex.Next())
     if (ex.Current().IsSame(subshape)) {issubs = Standard_True; break;}
   
-  if (issubs) di<<" is subshape"<<"\n";
-  else        di<<" is NOT subshape"<<"\n";
+  if (issubs) di<<" is subshape\n";
+  else        di<<" is NOT subshape\n";
   return 0;
 }
 
@@ -633,10 +633,10 @@ static Standard_Integer pntonc(Draw_Interpretor& di, Standard_Integer n, const c
   if (n < 3) return 1;
   Standard_Real x = Draw::Atof(a[1]);
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
-  if (C.IsNull()) {di<<"null curve"<<"\n"; return 1;}
+  if (C.IsNull()) {di<<"null curve\n"; return 1;}
   gp_Pnt p = C->Value(x);
   di<<"point on curve of parameter "<<x<<" =("<<p.X()<<",";
-  di<<p.Y()<<","<<p.Z()<<")"<<"\n";
+  di<<p.Y()<<","<<p.Z()<<")\n";
   return 0;
 }
 
@@ -645,14 +645,14 @@ static Standard_Integer pntonc2d(Draw_Interpretor& di, Standard_Integer n, const
   if (n < 4) return 1;
   Standard_Real x = Draw::Atof(a[1]);
   Handle(Geom2d_Curve) C2d = DrawTrSurf::GetCurve2d(a[2]);
-  if (C2d.IsNull()) {di<<"null curve"<<"\n"; return 1;}
+  if (C2d.IsNull()) {di<<"null curve\n"; return 1;}
   Handle(Geom_Surface) S   = DrawTrSurf::GetSurface(a[3]);
-  if (S.IsNull()) {di<<"null surface"<<"\n"; return 1;}
+  if (S.IsNull()) {di<<"null surface\n"; return 1;}
   gp_Pnt2d p2d = C2d->Value(x);
-  di<<"point on curve of parameter "<<x<<" =("<<p2d.X()<<","<<p2d.Y()<<")"<<"\n";
+  di<<"point on curve of parameter "<<x<<" =("<<p2d.X()<<","<<p2d.Y()<<")\n";
   gp_Pnt p = S->Value(p2d.X(),p2d.Y());
   di<<"point on curve of parameter "<<x<<" =("<<p.X()<<",";
-  di<<p.Y()<<","<<p.Z()<<")"<<"\n";	
+  di<<p.Y()<<","<<p.Z()<<")\n";	
   return 0;						          
 }
 
@@ -667,7 +667,7 @@ static Standard_Integer projponf(Draw_Interpretor& di, Standard_Integer n, const
   TopoDS_Face f = TopoDS::Face(aLocalShape);
   //
   if (f.IsNull()) {
-    di<<"null shape"<<"\n";
+    di<<"null shape\n";
     return 1;
   }
   //
@@ -699,18 +699,18 @@ static Standard_Integer projponf(Draw_Interpretor& di, Standard_Integer n, const
   ok = FUN_tool_projPonF(p, f, uv, dist, anExtFlag, anExtAlgo);
   //
   if (!ok) {
-    di<<"projection failed"<<"\n"; 
+    di<<"projection failed\n"; 
     return 1;
   }
   //
   ok = FUN_tool_value(uv,f,pproj);
   if (!ok) {
-    di<<"projection failed"<<"\n"; 
+    di<<"projection failed\n"; 
     return 1;
   }
   //
   di<<"proj dist = "<<dist<<" uvproj = ("<<uv.X()<<" "<<uv.Y();
-  di<<"); pproj = ("<<pproj.X()<<" "<<pproj.Y()<<" "<<pproj.Z()<<")"<<"\n";
+  di<<"); pproj = ("<<pproj.X()<<" "<<pproj.Y()<<" "<<pproj.Z()<<")\n";
   return 0;
 }  
 
@@ -718,7 +718,7 @@ static Standard_Integer solidclassifier(Draw_Interpretor& di, Standard_Integer n
 {
   if (n < 4) return 1;
   TopoDS_Shape s = DBRep::Get(a[1]);
-  if (s.IsNull()) {di<<"null shape"<<"\n";return 1;}
+  if (s.IsNull()) {di<<"null shape\n";return 1;}
   gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
   Standard_Real tol = Draw::Atof(a[3]);
   
@@ -726,7 +726,7 @@ static Standard_Integer solidclassifier(Draw_Interpretor& di, Standard_Integer n
   TopAbs_State sta = TopAbs_UNKNOWN;
   if      (s.ShapeType() == TopAbs_SOLID) soclassi.Classify(TopoDS::Solid(s),p,tol);
   else if (s.ShapeType() == TopAbs_SHELL) soclassi.Classify(TopoDS::Shell(s),p,tol);
-  else {di<<"shape is not a solid nor a shell => KO"<<"\n"; return 1;}
+  else {di<<"shape is not a solid nor a shell => KO\n"; return 1;}
   
   sta = soclassi.State();
   di<<"point is ";
@@ -734,7 +734,7 @@ static Standard_Integer solidclassifier(Draw_Interpretor& di, Standard_Integer n
   Standard_SStream aSStream;
   TopAbs::Print(sta,aSStream);
   di << aSStream;
-  di<<" shape s"<<"\n";
+  di<<" shape s\n";
   return 0;
 }
 
@@ -742,7 +742,7 @@ static Standard_Integer class3dclassifier(Draw_Interpretor& di, Standard_Integer
 {
   if (n < 4) return 1;
   TopoDS_Shape s = DBRep::Get(a[1]);
-  if (s.IsNull()) {di<<"null shape"<<"\n";return 1;}
+  if (s.IsNull()) {di<<"null shape\n";return 1;}
   gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
   Standard_Real tol = Draw::Atof(a[3]);
   
@@ -756,22 +756,22 @@ static Standard_Integer class3dclassifier(Draw_Interpretor& di, Standard_Integer
   Standard_SStream aSStream;
   TopAbs::Print(sta,aSStream);
   di << aSStream;
-  di<<" shape s"<<"\n";
+  di<<" shape s\n";
   return 0;
 }
 static Standard_Integer shapeclassifier(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 3) return 1;
   TopoDS_Shape sh = DBRep::Get(a[1]);
-  if (sh.IsNull()) {di<<"null shape"<<"\n";return 1;}
+  if (sh.IsNull()) {di<<"null shape\n";return 1;}
   TopoDS_Shape shref = DBRep::Get(a[2]);
-  if (shref.IsNull()) {di<<"null reference shape"<<"\n";return 1;}
+  if (shref.IsNull()) {di<<"null reference shape\n";return 1;}
   Standard_Boolean hastoavoid = (n > 3);
   TopTools_ListOfShape toavoid;
   if (hastoavoid) {
     for (Standard_Integer i=3; i<=n; i++) {
       TopoDS_Shape shtoavoid = DBRep::Get(a[i]); 
-      if (shtoavoid.IsNull()) {di<<"null toavoid shape"<<"\n";return 1;}    
+      if (shtoavoid.IsNull()) {di<<"null toavoid shape\n";return 1;}    
       toavoid.Append(shtoavoid);
     }
   }
@@ -787,7 +787,7 @@ static Standard_Integer shapeclassifier(Draw_Interpretor& di, Standard_Integer n
   Standard_SStream aSStream;
   TopAbs::Print(sta,aSStream);
   di << aSStream;
-  di<<" shape ref"<<"\n";
+  di<<" shape ref\n";
   return 0;
 }
 
@@ -797,7 +797,7 @@ static Standard_Integer curvature(Draw_Interpretor& di, Standard_Integer n, cons
   TopoDS_Shape aLocalShape = DBRep::Get(a[1]);
   TopoDS_Face f = TopoDS::Face(aLocalShape);
 //  TopoDS_Face f = TopoDS::Face(DBRep::Get(a[1]));
-  if (f.IsNull()) {di<<"null shape"<<"\n";return 1;}
+  if (f.IsNull()) {di<<"null shape\n";return 1;}
   Standard_Real x = Draw::Atof(a[2]);
   Standard_Real y = Draw::Atof(a[3]);
   Standard_Real z = Draw::Atof(a[4]);
@@ -806,9 +806,9 @@ static Standard_Integer curvature(Draw_Interpretor& di, Standard_Integer n, cons
   Handle(Geom_Surface) su = BRep_Tool::Surface(f);
   GeomAPI_IntCS intcs(line,su);
   Standard_Boolean done = intcs.IsDone();
-  if (!done) {di<<"intersection point on surface not found"<<"\n"; return 1;}
+  if (!done) {di<<"intersection point on surface not found\n"; return 1;}
   Standard_Integer npnts = intcs.NbPoints();
-  if (npnts < 1) {di<<"intersection point on surface not found"<<"\n"; return 1;}
+  if (npnts < 1) {di<<"intersection point on surface not found\n"; return 1;}
   
   Standard_Real tol = Precision::Confusion();
   BRepLProp_SLProps props(BS,2,tol);
@@ -816,10 +816,10 @@ static Standard_Integer curvature(Draw_Interpretor& di, Standard_Integer n, cons
   for (Standard_Integer i = 1; i <= npnts; i++) {
     gp_Pnt p = intcs.Point(i);
     Standard_Real u,v,w; intcs.Parameters(i,u,v,w);
-    di<<"point("<<i<<") = { ("<<p.X()<<" "<<p.Y()<<" "<<p.Z()<<"), ("<<u<<" "<<v<<") }"<<"\n"; 
+    di<<"point("<<i<<") = { ("<<p.X()<<" "<<p.Y()<<" "<<p.Z()<<"), ("<<u<<" "<<v<<") }\n"; 
     props.SetParameters(u,v);
     Standard_Boolean curdef = props.IsCurvatureDefined();
-    if (!curdef) {di<<"!IsCurvatureDefined"<<"\n"; continue;}
+    if (!curdef) {di<<"!IsCurvatureDefined\n"; continue;}
     Standard_Boolean umbilic = props.IsUmbilic();
     if (umbilic) { 
       D1 = gp_Dir(0,0,1);
@@ -830,9 +830,9 @@ static Standard_Integer curvature(Draw_Interpretor& di, Standard_Integer n, cons
       props.CurvatureDirections(D1,D2);
     }
     Norm = gp_Dir(D1^D2); 
-    di<<"D1  = ("<<D1.X()<<" "<<D1.Y()<<" "<<D1.Z()<<" "<<")"<<"\n";
-    di<<"D2  = ("<<D2.X()<<" "<<D2.Y()<<" "<<D2.Z()<<" "<<")"<<"\n";
-    di<<"Norm  = ("<<Norm.X()<<" "<<Norm.Y()<<" "<<Norm.Z()<<" "<<")"<<"\n";
+    di<<"D1  = ("<<D1.X()<<" "<<D1.Y()<<" "<<D1.Z()<<" )\n";
+    di<<"D2  = ("<<D2.X()<<" "<<D2.Y()<<" "<<D2.Z()<<" )\n";
+    di<<"Norm  = ("<<Norm.X()<<" "<<Norm.Y()<<" "<<Norm.Z()<<" )\n";
   } // i
   return 0;
 }

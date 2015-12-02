@@ -321,7 +321,7 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
 	  cout<<" parEE "<<parEE<<endl;
 	  cout<<"  puEE,pvEE "<<pEE.X()<<" "<<pEE.Y();
 	  cout<<" d1uEE,d1vEE "<<d1EE.X()<<" "<<d1EE.Y()<<endl;
-	  cout<<"  --> cross "<<" "<<cross<<endl;
+	  cout<<"  --> cross  "<<cross<<endl;
 
 	  if ( t2 ) cout<<" t2 --> on garde EE"<<endl<<endl;
 	  else 	  cout<<" t2 --> on vire EE"<<endl<<endl;

@@ -336,7 +336,7 @@ void IGESGeom_ToolSplineSurface::OwnDump
   else                          S << "  (Unspecified)";
   S << endl;
   S << "Number Of Segments. In U : "
-    << nbUSegs << "  " << "  In V : " << nbVSegs << endl;
+    << nbUSegs << "    In V : " << nbVSegs << endl;
   S << "The U Break Points : ";
   IGESData_DumpVals(S ,level,1, nbUSegs+1,ent->UBreakPoint);
   S <<endl<< "The V Break Points : ";

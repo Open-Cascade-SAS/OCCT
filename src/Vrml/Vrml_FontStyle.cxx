@@ -55,29 +55,29 @@ Vrml_FontStyle::Vrml_FontStyle(const Standard_Real aSize,
 
  Standard_OStream& Vrml_FontStyle::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "FontStyle {" << endl;
+ anOStream  << "FontStyle {\n";
 
  if ( Abs(mySize - 10) > 0.0001 )
    {
-    anOStream  << "    size" << '\t';
-    anOStream <<  mySize  << endl;
+    anOStream  << "    size\t";
+    anOStream <<  mySize  << "\n";
    }
 
   switch ( myFamily )
     {
-     case Vrml_SERIF:      break; // anOStream  << "    family" << "\tSERIF ";
-     case Vrml_SANS:       anOStream  << "    family" << "\tSANS" << endl; break;
-     case Vrml_TYPEWRITER: anOStream  << "    family" << "\tTYPEWRITER" << endl; break; 
+     case Vrml_SERIF:      break; // anOStream  << "    family\tSERIF ";
+     case Vrml_SANS:       anOStream  << "    family\tSANS\n"; break;
+     case Vrml_TYPEWRITER: anOStream  << "    family\tTYPEWRITER\n"; break;
     }
 
   switch ( myStyle )
     {
-     case Vrml_NONE:   break; // anOStream  << "    style" << "\tSERIF ";
-     case Vrml_BOLD:   anOStream  << "    style" << "\tBOLD" << endl; break;
-     case Vrml_ITALIC: anOStream  << "    style" << "\tITALIC" << endl; break; 
+     case Vrml_NONE:   break; // anOStream  << "    style\tSERIF ";
+     case Vrml_BOLD:   anOStream  << "    style\tBOLD\n"; break;
+     case Vrml_ITALIC: anOStream  << "    style\tITALIC\n"; break;
     }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 
 }

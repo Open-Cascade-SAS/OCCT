@@ -277,7 +277,7 @@ static Standard_Integer fastdiscret(Draw_Interpretor& di, Standard_Integer nbarg
   //if (nbarg > 4) NbIterations = Draw::Atoi(argv[4]);
   //MESH.NbIterations() = NbIterations;
 
-  di<<"Starting FastDiscret with :"<<"\n";
+  di<<"Starting FastDiscret with :\n";
   di<<"  Deflection="<<d<<"\n";
   di<<"  Angle="<<0.5<<"\n";
 
@@ -349,7 +349,7 @@ static Standard_Integer fastdiscret(Draw_Interpretor& di, Standard_Integer nbarg
     DBRep::Set(name,aCompViolating);
   }
 
-  di<<"FastDiscret completed with :"<<"\n";
+  di<<"FastDiscret completed with :\n";
   di<<"  MaxDeflection="<<maxdef<<"\n";
   di<<"  NbNodes="<<nbnodes<<"\n";
   di<<"  NbTriangles="<<nbtriangles<<"\n";
@@ -459,7 +459,7 @@ static Standard_Integer triangule(Draw_Interpretor& di, Standard_Integer nbarg, 
   Standard_Real aDeflection = Draw::Atof(argv[3]);
   if (aDeflection <= 0.)
   {
-    di << " Incorrect value of deflection!" << "\n";
+    di << " Incorrect value of deflection!\n";
     return 1;
   }
 
@@ -471,7 +471,7 @@ static Standard_Integer triangule(Draw_Interpretor& di, Standard_Integer nbarg, 
   Standard_Integer nbn, nbl, nbe;
   MeshStats(aShape, nbe, nbl, nbn);
 
-  di<<"(Resultat ("<<nbe<<" mailles) ("<<nbl<<" aretes) ("<<nbn<<" sommets))"<<"\n";
+  di<<"(Resultat ("<<nbe<<" mailles) ("<<nbl<<" aretes) ("<<nbn<<" sommets))\n";
 
   // passe de verification du maillage.
   /*Standard_Integer nbc;
@@ -935,8 +935,8 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
   }
 
   di<<"\n";
-  di<<"This shape contains " <<nbtriangles<<" triangles."<<"\n";
-  di<<"                    " <<nbnodes    <<" nodes."<<"\n";
+  di<<"This shape contains " <<nbtriangles<<" triangles.\n";
+  di<<"                    " <<nbnodes    <<" nodes.\n";
   di<<"Maximal deflection " <<MaxDeflection<<"\n";
   di<<"\n";
 #ifdef OCCT_DEBUG_MESH_CHRONO
@@ -953,26 +953,26 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
   chPointValid.Show(pointvalid); chIsos.Show(isos); chPointsOnIsos.Show(pointsisos);
 
   if (tot > 0.00001) {
-    di <<"temps total de maillage:     "<<tot        <<" seconds"<< "\n";
-    di <<"dont: "<< "\n";
-    di <<"discretisation des edges:    "<<edges      <<" seconds---> "<< 100*edges/tot      <<" %"<<"\n";
-    di <<"maillage des edges:          "<<mailledges <<" seconds---> "<< 100*mailledges/tot <<" %"<<"\n";
-    di <<"controle et points internes: "<<etuinter   <<" seconds---> "<< 100*etuinter/tot   <<" %"<<"\n";
-    di <<"derniers controles:          "<<lastcontrol<<" seconds---> "<< 100*lastcontrol/tot<<" %"<<"\n";
-    di <<"stockage dans la S.D.        "<<stock      <<" seconds---> "<< 100*stock/tot      <<" %"<<"\n";
+    di <<"temps total de maillage:     "<<tot        <<" seconds\n";
+    di <<"dont: \n";
+    di <<"discretisation des edges:    "<<edges      <<" seconds---> "<< 100*edges/tot      <<" %\n";
+    di <<"maillage des edges:          "<<mailledges <<" seconds---> "<< 100*mailledges/tot <<" %\n";
+    di <<"controle et points internes: "<<etuinter   <<" seconds---> "<< 100*etuinter/tot   <<" %\n";
+    di <<"derniers controles:          "<<lastcontrol<<" seconds---> "<< 100*lastcontrol/tot<<" %\n";
+    di <<"stockage dans la S.D.        "<<stock      <<" seconds---> "<< 100*stock/tot      <<" %\n";
     di << "\n";
-    di <<"et plus precisement: "<<"\n";
-    di <<"Add 11ere partie :           "<<add11     <<" seconds---> "<<100*add11/tot      <<" %"<<"\n";
-    di <<"Add 12ere partie :           "<<add12     <<" seconds---> "<<100*add12/tot      <<" %"<<"\n";
-    di <<"Add 2eme partie :            "<<add2      <<" seconds---> "<<100*add2/tot       <<" %"<<"\n";
-    di <<"Update :                     "<<upda      <<" seconds---> "<<100*upda/tot       <<" %"<<"\n";
-    di <<"AddPoint :                   "<<addp      <<" seconds---> "<<100*addp/tot       <<" %"<<"\n";
-    di <<"UniformDeflection            "<<unif      <<" seconds---> "<<100*unif/tot       <<" %"<<"\n";
-    di <<"Controle :                   "<<contr     <<" seconds---> "<<100*contr/tot      <<" %"<<"\n";
-    di <<"Points Internes:             "<<inter     <<" seconds---> "<<100*inter/tot      <<" %"<<"\n";
-    di <<"calcul des isos et du, dv:   "<<isos      <<" seconds---> "<<100*isos/tot       <<" %"<<"\n";
-    di <<"calcul des points sur isos:  "<<pointsisos<<" seconds---> "<<100*pointsisos/tot <<" %"<<"\n";
-    di <<"IsPointValid:                "<<pointvalid<<" seconds---> "<<100*pointvalid/tot <<" %"<<"\n";
+    di <<"et plus precisement: \n";
+    di <<"Add 11ere partie :           "<<add11     <<" seconds---> "<<100*add11/tot      <<" %\n";
+    di <<"Add 12ere partie :           "<<add12     <<" seconds---> "<<100*add12/tot      <<" %\n";
+    di <<"Add 2eme partie :            "<<add2      <<" seconds---> "<<100*add2/tot       <<" %\n";
+    di <<"Update :                     "<<upda      <<" seconds---> "<<100*upda/tot       <<" %\n";
+    di <<"AddPoint :                   "<<addp      <<" seconds---> "<<100*addp/tot       <<" %\n";
+    di <<"UniformDeflection            "<<unif      <<" seconds---> "<<100*unif/tot       <<" %\n";
+    di <<"Controle :                   "<<contr     <<" seconds---> "<<100*contr/tot      <<" %\n";
+    di <<"Points Internes:             "<<inter     <<" seconds---> "<<100*inter/tot      <<" %\n";
+    di <<"calcul des isos et du, dv:   "<<isos      <<" seconds---> "<<100*isos/tot       <<" %\n";
+    di <<"calcul des points sur isos:  "<<pointsisos<<" seconds---> "<<100*pointsisos/tot <<" %\n";
+    di <<"IsPointValid:                "<<pointvalid<<" seconds---> "<<100*pointvalid/tot <<" %\n";
     di << "\n";
 
 
@@ -1126,7 +1126,7 @@ static Standard_Integer veriftriangles(Draw_Interpretor& di, Standard_Integer n,
             deflemin = Min(deflemin, defle);
 
             if (defle > defstock) {
-              di <<"face "<< nbface <<" deflection = " << defle <<" pour "<<defstock <<" stockee."<<"\n";
+              di <<"face "<< nbface <<" deflection = " << defle <<" pour "<<defstock <<" stockee.\n";
             }
           }
         }
@@ -1469,7 +1469,7 @@ Standard_Integer vb(Draw_Interpretor& di, Standard_Integer nbarg, const char** a
           di<< VB(i, j) << ", ";
         }
       }
-      di << "\n" << "\n";
+      di << "\n\n";
     }
   }
   return 0;

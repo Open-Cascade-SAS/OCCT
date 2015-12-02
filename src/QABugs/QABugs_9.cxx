@@ -81,11 +81,11 @@ static Standard_Integer OCC137 (Draw_Interpretor& di, Standard_Integer argc, con
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) {
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
   if ( argc < 2 || argc > 3) {
-    di << "ERROR : Usage : " << argv[0] << " highlight_mode [shape]" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " highlight_mode [shape]\n";
     return 1;
   }
   
@@ -97,12 +97,12 @@ static Standard_Integer OCC137 (Draw_Interpretor& di, Standard_Integer argc, con
     TCollection_AsciiString aName(argv[2]);
     Handle(AIS_InteractiveObject) AISObj;
     if(!aMap1.IsBound2(aName)) {
-      di << "Use 'vdisplay' before" << "\n";
+      di << "Use 'vdisplay' before\n";
       return 1;
     } else {
       AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap1.Find2(aName));
       if(AISObj.IsNull()){
-        di << argv[2] << " : No interactive object" << "\n";
+        di << argv[2] << " : No interactive object\n";
         return 1;
       }
       aMap.Bind(AISObj,aName);
@@ -132,11 +132,11 @@ static Standard_Integer OCC137_z (Draw_Interpretor& di, Standard_Integer argc, c
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) {
-    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    di << argv[0] << "ERROR : use 'vinit' command before \n";
     return 1;
   }
   if ( argc != 1 && argc != 2) {
-    di << "ERROR : Usage : " << argv[0] << " [ZDetection_mode]" << "\n";
+    di << "ERROR : Usage : " << argv[0] << " [ZDetection_mode]\n";
     return 1;
   }
   aContext->SetZDetection(((argc == 1 || (argc == 2 && Draw::Atoi(argv[1]) == 1)) ? Standard_True : Standard_False));

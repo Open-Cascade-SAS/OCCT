@@ -91,7 +91,7 @@ static Standard_Integer QADNaming_CheckHasSame (Draw_Interpretor& di,
     for(itr2.Initialize(M2);itr2.More();itr2.Next()) {
       const TopoDS_Shape& s2 = itr2.Key();
       if(s1.IsSame(s2))
-	di << "Shapes " << arg[1]<< " and "<< arg[2]<< " have SAME subshapes" <<"\n";
+	di << "Shapes " << arg[1]<< " and "<< arg[2]<< " have SAME subshapes\n";
     }
   }
 
@@ -143,7 +143,7 @@ static Standard_Integer QADNaming_TCopyShape (Draw_Interpretor& di,
     }
     return 0;
   }
-  di << "QADNaming_CopyShape : Error" << "\n";
+  di << "QADNaming_CopyShape : Error\n";
   return 1;
 }
 

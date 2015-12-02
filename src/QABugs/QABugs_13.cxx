@@ -75,10 +75,10 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   //if ((bend_angle >= M_PI)) {
   if ((bend_angle >= M_PI)) {
-    di << "The arguments are invalid." << "\n";
+    di << "The arguments are invalid.\n";
     return 1;
   }
-  di << "creating the shape for a bent tube" << "\n";
+  di << "creating the shape for a bent tube\n";
 
   double radius_l = dia1/2.0;
   double radius_r = dia2/2.0;
@@ -313,60 +313,60 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   if (check) {
     if (!(BRepCheck_Analyzer(wallSolid).IsValid()))
-      di << "The TopoDS_Solid was checked, and it was invalid!" << "\n";
+      di << "The TopoDS_Solid was checked, and it was invalid!\n";
     else
-      di << "The TopoDS_Solid was checked, and it was valid." << "\n";
+      di << "The TopoDS_Solid was checked, and it was valid.\n";
     if (!wallSolid.Closed())
-      di << "The TopoDS_Solid is not closed!" << "\n";
+      di << "The TopoDS_Solid is not closed!\n";
     else
-      di << "The TopoDS_Solid is closed." << "\n";
+      di << "The TopoDS_Solid is closed.\n";
     if (!wallSolid.Checked())
-      di << "The TopoDS_Solid is not checked!" << "\n";
+      di << "The TopoDS_Solid is not checked!\n";
     else
-      di << "The TopoDS_Solid has been checked." << "\n";
+      di << "The TopoDS_Solid has been checked.\n";
     if (wallSolid.Infinite())
-      di << "The TopoDS_Solid is infinite!" << "\n";
+      di << "The TopoDS_Solid is infinite!\n";
     else
-      di << "The TopoDS_Solid is finite." << "\n";
+      di << "The TopoDS_Solid is finite.\n";
   }
 
   di << "The result is a ";
   // Check to see if we have a solid
   switch (wallSolid.ShapeType()) {
   case (TopAbs_COMPOUND):
-    di << "TopAbs_COMPOUND" << "\n";
+    di << "TopAbs_COMPOUND\n";
     break;
   case (TopAbs_COMPSOLID):
-    di << "TopAbs_COMPSOLID" << "\n";
+    di << "TopAbs_COMPSOLID\n";
     break;
   case (TopAbs_SOLID):
-    di << "TopAbs_SOLID" << "\n";
+    di << "TopAbs_SOLID\n";
     break;
   case (TopAbs_SHELL):
-    di << "TopAbs_SHELL" << "\n";
+    di << "TopAbs_SHELL\n";
     break;
   case (TopAbs_FACE):
-    di << "TopAbs_FACE" << "\n";
+    di << "TopAbs_FACE\n";
     break;
   case (TopAbs_WIRE):
-    di << "TopAbs_WIRE" << "\n";
+    di << "TopAbs_WIRE\n";
     break;
   case (TopAbs_EDGE):
-    di << "TopAbs_EDGE" << "\n";
+    di << "TopAbs_EDGE\n";
     break;
   case (TopAbs_VERTEX):
-    di << "TopAbs_VERTEX" << "\n";
+    di << "TopAbs_VERTEX\n";
     break;
   case (TopAbs_SHAPE):
-    di << "TopAbs_SHAPE" << "\n";
+    di << "TopAbs_SHAPE\n";
   }
   di << "Can we turn it into a solid? ";
   try {
     OCC_CATCH_SIGNALS
-    di << " yes" << "\n";
+    di << " yes\n";
   }
   catch (Standard_TypeMismatch) {
-    di << " no" << "\n";
+    di << " no\n";
   }
 
   getFaces.Clear();
@@ -400,7 +400,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if(argc > 7) {
-    di << "Usage : " << argv[0] << " [[[[[wT [[[[d1 [[[d2 [[R [length [BRepAlgoAPI/BRepAlgo = 1/0]]]]]]" << "\n";
+    di << "Usage : " << argv[0] << " [[[[[wT [[[[d1 [[[d2 [[R [length [BRepAlgoAPI/BRepAlgo = 1/0]]]]]]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -409,7 +409,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
+//      di << "Error: There is not BRepAlgo_Fuse class\n";
 //      return 1;
 #endif
     }
@@ -438,10 +438,10 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 
   // mkv 15.07.03 if ((bend_angle >= 2.0*M_PI)) {
   if ((bend_angle >= 2.0*M_PI)) {
-    di << "The arguments are invalid." << "\n";
+    di << "The arguments are invalid.\n";
     return 1;
   }
-  di << "creating the shape for a bent tube" << "\n";
+  di << "creating the shape for a bent tube\n";
  
   gp_Ax2 origin(gp_Pnt(500.0,-300.0, 100.0),
 		gp_Dir(0.0, -1.0/sqrt(2.0), -1.0/sqrt(2.0)));
@@ -634,31 +634,31 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   // Check to see if we have a solid
   switch (SewIt.SewedShape().ShapeType()) {
   case (TopAbs_COMPOUND):
-    di << "TopAbs_COMPOUND" << "\n";
+    di << "TopAbs_COMPOUND\n";
     break;
   case (TopAbs_COMPSOLID):
-    di << "TopAbs_COMPSOLID" << "\n";
+    di << "TopAbs_COMPSOLID\n";
     break;
   case (TopAbs_SOLID):
-    di << "TopAbs_SOLID" << "\n";
+    di << "TopAbs_SOLID\n";
     break;
   case (TopAbs_SHELL):
-    di << "TopAbs_SHELL" << "\n";
+    di << "TopAbs_SHELL\n";
     break;
   case (TopAbs_FACE):
-    di << "TopAbs_FACE" << "\n";
+    di << "TopAbs_FACE\n";
     break;
   case (TopAbs_WIRE):
-    di << "TopAbs_WIRE" << "\n";
+    di << "TopAbs_WIRE\n";
     break;
   case (TopAbs_EDGE):
-    di << "TopAbs_EDGE" << "\n";
+    di << "TopAbs_EDGE\n";
     break;
   case (TopAbs_VERTEX):
-    di << "TopAbs_VERTEX" << "\n";
+    di << "TopAbs_VERTEX\n";
     break;
   case (TopAbs_SHAPE):
-    di << "TopAbs_SHAPE" << "\n";
+    di << "TopAbs_SHAPE\n";
   }
 
   BRep_Builder B;
@@ -670,19 +670,19 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
     TubeShell = TopoDS::Shell(SewIt.SewedShape());
     B.MakeSolid(wallSolid);
     B.Add(wallSolid,TubeShell);
-    di << " yes" << "\n";
+    di << " yes\n";
   }
   catch (Standard_TypeMismatch) {
-    di << "Can't convert to shell..." << "\n";
+    di << "Can't convert to shell...\n";
     TopExp_Explorer getSol;
     getSol.Init(SewIt.SewedShape(), TopAbs_SOLID);
     if (getSol.More()) {
-      di << "First solid found in compound" << "\n";
+      di << "First solid found in compound\n";
       wallSolid = TopoDS::Solid(getSol.Current());
       TopoDS_Solid test_solid;
       while (getSol.More())
 	{
-	  di << "Next solid found in compound" << "\n";
+	  di << "Next solid found in compound\n";
 	  getSol.Next();
 	  test_solid = TopoDS::Solid(getSol.Current());
 //////#if ! defined(BRepAlgoAPI_def01)
@@ -692,12 +692,12 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 //////#endif
 //////	  fuser.Build();
 	  if (IsBRepAlgoAPI) {
-	    di << "BRepAlgoAPI_Fuse fuser(test_solid, wallSolid)" <<"\n";
+	    di << "BRepAlgoAPI_Fuse fuser(test_solid, wallSolid)\n";
 	    BRepAlgoAPI_Fuse fuser(test_solid, wallSolid);
 	    fuser.Build();
 	    wallSolid = TopoDS::Solid(fuser.Shape());
 	  } else {
-	    di << "BRepAlgo_Fuse fuser(test_solid, wallSolid)" <<"\n";
+	    di << "BRepAlgo_Fuse fuser(test_solid, wallSolid)\n";
 	    BRepAlgo_Fuse fuser(test_solid, wallSolid);
 	    fuser.Build();
 	    wallSolid = TopoDS::Solid(fuser.Shape());
@@ -709,14 +709,14 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
       TopExp_Explorer getShel;
       getShel.Init(SewIt.SewedShape(), TopAbs_SHELL);
       if (getShel.More()) {
-	di << "First shell found in compound" << "\n";
+	di << "First shell found in compound\n";
 	B.MakeSolid(wallSolid);
-	di << "B.Add(wallSolid,TopoDS::Shell(getShel.Current()));" << "\n";
+	di << "B.Add(wallSolid,TopoDS::Shell(getShel.Current()));\n";
 	int i = 1;
 	while (getShel.More())
 	  {
-	    di << "Next shell found in compound" << "\n";
-	    di << "B.Add(wallSolid,TopoDS::Shell(getShel.Current()));" << "\n";
+	    di << "Next shell found in compound\n";
+	    di << "B.Add(wallSolid,TopoDS::Shell(getShel.Current()));\n";
 	    Sprintf(name,"shell%d", i++);
 	    DBRep::Set(name,getShel.Current());
 	    B.Add(wallSolid,TopoDS::Shell(getShel.Current()));
@@ -736,52 +736,52 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 
   if (check) {
     if (!(BRepCheck_Analyzer(wallSolid).IsValid()))
-      di << "The TopoDS_Solid was checked, and it was invalid!" << "\n";
+      di << "The TopoDS_Solid was checked, and it was invalid!\n";
     else
-      di << "The TopoDS_Solid was checked, and it was valid." << "\n";
+      di << "The TopoDS_Solid was checked, and it was valid.\n";
     if (!wallSolid.Closed())
-      di << "The TopoDS_Solid is not closed!" << "\n";
+      di << "The TopoDS_Solid is not closed!\n";
     else
-      di << "The TopoDS_Solid is closed." << "\n";
+      di << "The TopoDS_Solid is closed.\n";
     if (!wallSolid.Checked())
-      di << "The TopoDS_Solid is not checked!" << "\n";
+      di << "The TopoDS_Solid is not checked!\n";
     else
-      di << "The TopoDS_Solid has been checked." << "\n";
+      di << "The TopoDS_Solid has been checked.\n";
     if (wallSolid.Infinite())
-      di << "The TopoDS_Solid is infinite!" << "\n";
+      di << "The TopoDS_Solid is infinite!\n";
     else
-      di << "The TopoDS_Solid is finite." << "\n";
+      di << "The TopoDS_Solid is finite.\n";
   }
 
   di << "The result is a ";
   // Check to see if we have a solid
   switch (wallSolid.ShapeType()) {
   case (TopAbs_COMPOUND):
-    di << "TopAbs_COMPOUND" << "\n";
+    di << "TopAbs_COMPOUND\n";
     break;
   case (TopAbs_COMPSOLID):
-    di << "TopAbs_COMPSOLID" << "\n";
+    di << "TopAbs_COMPSOLID\n";
     break;
   case (TopAbs_SOLID):
-    di << "TopAbs_SOLID" << "\n";
+    di << "TopAbs_SOLID\n";
     break;
   case (TopAbs_SHELL):
-    di << "TopAbs_SHELL" << "\n";
+    di << "TopAbs_SHELL\n";
     break;
   case (TopAbs_FACE):
-    di << "TopAbs_FACE" << "\n";
+    di << "TopAbs_FACE\n";
     break;
   case (TopAbs_WIRE):
-    di << "TopAbs_WIRE" << "\n";
+    di << "TopAbs_WIRE\n";
     break;
   case (TopAbs_EDGE):
-    di << "TopAbs_EDGE" << "\n";
+    di << "TopAbs_EDGE\n";
     break;
   case (TopAbs_VERTEX):
-    di << "TopAbs_VERTEX" << "\n";
+    di << "TopAbs_VERTEX\n";
     break;
   case (TopAbs_SHAPE):
-    di << "TopAbs_SHAPE" << "\n";
+    di << "TopAbs_SHAPE\n";
   }
 
   return 0;
@@ -810,7 +810,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   //////////  return 1;	
   //////////}
   if(argc < 3 || argc > 4) {
-    di << "Usage : " << argv[0] << " result mesh_delta [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
+    di << "Usage : " << argv[0] << " result mesh_delta [BRepAlgoAPI/BRepAlgo = 1/0]\n";
     return 1;
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
@@ -819,11 +819,11 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def02)
-//      di << "Error: There is not BRepAlgo_Cut class" << "\n";
+//      di << "Error: There is not BRepAlgo_Cut class\n";
 //      return 1;
 #endif
 #if ! defined(BRepAlgo_def03)
-//      di << "Error: There is not BRepAlgo_Common class" << "\n";
+//      di << "Error: There is not BRepAlgo_Common class\n";
 //      return 1;
 #endif
     }
@@ -833,7 +833,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   Standard_Real mesh_delt = Draw::Atof(argv[2]);
   if (mesh_delt <= 0.0)
   {
-    di<<"Error: mesh_delta must be positive value"<<"\n";
+    di<<"Error: mesh_delta must be positive value\n";
     return -1;
   }
 
@@ -860,21 +860,21 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
 
   TopoDS_Shape cut_shape;
   if (IsBRepAlgoAPI) {
-    di << "BRepAlgoAPI_Cut cut( fullSolid, internalSolid )" <<"\n";
+    di << "BRepAlgoAPI_Cut cut( fullSolid, internalSolid )\n";
     BRepAlgoAPI_Cut cut( fullSolid, internalSolid );
     cut_shape = cut.Shape();
     if ( !cut.IsDone() )
       {
-	di << "Error: Could not cut volumes" << "\n";
+	di << "Error: Could not cut volumes\n";
 	return -1;
       }
   } else {
-    di << "BRepAlgo_Cut cut( fullSolid, internalSolid )" <<"\n";
+    di << "BRepAlgo_Cut cut( fullSolid, internalSolid )\n";
     BRepAlgo_Cut cut( fullSolid, internalSolid );
     cut_shape = cut.Shape();
     if ( !cut.IsDone() )
       {
-	di << "Error: Could not cut volumes" << "\n";
+	di << "Error: Could not cut volumes\n";
 	return -1;
       }
   }
@@ -890,7 +890,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   if ( found_solid != 1 )
   {
-    di << "Error: Cut operation produced " << found_solid << " solids" << "\n";
+    di << "Error: Cut operation produced " << found_solid << " solids\n";
     return -1;
   }
   DBRep::Set(argv[1],cutSolid);
@@ -913,7 +913,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   Xmax += delt;
   Ymax += delt;
   Zmax += delt;
-  di<<"Info: Bounds\n  ("<<Xmin<<","<<Ymin<<","<<Zmin<<")\n  ("<<Xmax<<","<<Ymax<<","<<Zmax<<")"<<"\n";
+  di<<"Info: Bounds\n  ("<<Xmin<<","<<Ymin<<","<<Zmin<<")\n  ("<<Xmax<<","<<Ymax<<","<<Zmax<<")\n";
 
   // grid the bounding box
   Standard_Integer NumXsubvolumes = (Standard_Integer)((Xmax - Xmin) / mesh_delt); if (NumXsubvolumes <= 0) NumXsubvolumes = 1;
@@ -992,7 +992,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
 
     TopoDS_Shape aCommonShape;
     if (IsBRepAlgoAPI) {
-      di << "BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l))" <<"\n";
+      di << "BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l))\n";
       BRepAlgoAPI_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l));
       if (!common.IsDone())
 	{
@@ -1001,7 +1001,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
 	}
       aCommonShape = common.Shape();
     } else {
-      di << "BRepAlgo_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l))" <<"\n";
+      di << "BRepAlgo_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l))\n";
       BRepAlgo_Common common(copySolid/*cutSolid*/, SubvolumeSolid(l));
       if (!common.IsDone())
 	{
@@ -1022,7 +1022,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
     }
     if ( found_solid != 1 )
     {
-      di << "Info: Common operation " << l << " produced " << found_solid << " solids" << "\n";
+      di << "Info: Common operation " << l << " produced " << found_solid << " solids\n";
     }
     else
     {
@@ -1033,9 +1033,9 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
       const Standard_Boolean err = (vol > SubvolumeVol(l)) || (vol <= 0.0);
       //cout << (err? "ERROR" : "Info") << ": final subvolume " << l << " volume = " << vol << endl;
       if (err)
-	di << "ERROR" << ": final subvolume " << l << " volume = " << vol << "\n";
+	di << "ERROR: final subvolume " << l << " volume = " << vol << "\n";
       else
-	di << "Info" << ": final subvolume " << l << " volume = " << vol << "\n";
+	di << "Info: final subvolume " << l << " volume = " << vol << "\n";
       accumulatedVolume += vol;
       if (err)
       {

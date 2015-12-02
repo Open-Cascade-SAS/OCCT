@@ -531,7 +531,7 @@ void FairCurve_Batten::Dump(Standard_OStream& o) const
 // ==================================================================
 {
 
-o << "  Batten       |"; o.width(7); o<< "Old " << " | " << "  New" << endl;
+o << "  Batten       |"; o.width(7); o<< "Old  |   New" << endl;
 o << "  P1    X      |"; o.width(7); o<<  OldP1.X() << " | " << NewP1.X() << endl;
 o << "        Y      |"; o.width(7); o<<  OldP1.Y() << " | " << NewP1.Y() << endl;
 o << "  P2    X      |"; o.width(7); o<<  OldP2.X() << " | " << NewP2.X() << endl;

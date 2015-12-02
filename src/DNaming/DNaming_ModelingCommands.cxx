@@ -109,7 +109,7 @@ static Standard_Integer  DNaming_AddObject(Draw_Interpretor& di,
       return 0;
     }
   }
-  di << "DNaming_AddObject: Error" << "\n";
+  di << "DNaming_AddObject: Error\n";
   return 1;
 }
 
@@ -293,7 +293,7 @@ static Standard_Integer  DNaming_AddFunction(Draw_Interpretor& di,
       return 0;
     }
   }
-  di << "DNaming_AddObject: Error" << "\n";
+  di << "DNaming_AddObject: Error\n";
   return 1;
 }
 

@@ -433,7 +433,7 @@ void  TopTools_ShapeSet::Dump(Standard_OStream& OS)const
 
   myLocations.Dump(OS);
 
-  OS << endl;
+  OS << "\n";
 }
 
 
@@ -452,9 +452,9 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
 
   // write the copyright
   if (myFormatNb == 2)
-    OS << "\n" << Version2 << endl;
+    OS << "\n" << Version2 << "\n";
   else
-    OS << "\n" << Version << endl;
+    OS << "\n" << Version << "\n";
 
   //-----------------------------------------
   // write the locations
@@ -470,7 +470,7 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
   }
 
   if (!myProgress.IsNull() && myProgress->UserBreak()) {
-    OS << "Interrupted by the user"<<endl;
+    OS << "Interrupted by the user\n";
     OS.imbue (anOldLocale);
     return;
   }
@@ -538,7 +538,7 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
     OS << "\n";
   }
   
-  OS << endl;
+  OS << "\n";
   OS.precision(prec);
   OS.imbue (anOldLocale);
 
@@ -547,7 +547,7 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
     myProgress->EndScope();
     myProgress->Show();
     if (myProgress->UserBreak())
-      OS << "Interrupted by the user"<<endl;
+      OS << "Interrupted by the user\n";
   }
 }
 

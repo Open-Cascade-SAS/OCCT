@@ -79,11 +79,11 @@ static Standard_Integer edgesameparam (Draw_Interpretor& di, Standard_Integer ar
 //  const Standard_CString arg1 = argv[1];
   const Standard_CString arg2 (argc > 2 ? argv[2] : NULL);
 //        ****    Edge:SameParameter         ****
-  if (argc < 2) { di<<"shapename ,  option f to force, else only Edges not-SameParameter are computed"<<"\n"; return 1 /* Error */; }
+  if (argc < 2) { di<<"shapename ,  option f to force, else only Edges not-SameParameter are computed\n"; return 1 /* Error */; }
   TopoDS_Shape Shape = DBRep::Get(argv[1]);
 
   if (!ShapeFix::SameParameter(Shape, (argc > 2 && arg2[0] == 'f') , BRepBuilderAPI::Precision()) )
-    di<<"Some edges were not processed"<<"\n";
+    di<<"Some edges were not processed\n";
   di<<"\n";
   return 0; // Done
 }
@@ -96,11 +96,11 @@ static Standard_Integer edgesameparam (Draw_Interpretor& di, Standard_Integer ar
 static Standard_Integer settolerance (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
-    di<<    "myshape val   : forces tolerances at <val>"<<"\n"
-      <<      "myshape < max : sets maximum tolerance to <max>"<<"\n"
-	<<    "myshape > min : sets minimum tolerance to <min>"<<"\n"
-	  <<  "myshape min max : bounds tolerances between <min> and <max>"<<"\n"
-	    <<"myshape mode=v-e-f other args : idem but only on vertex-edge-face"<<"\n";
+    di<<    "myshape val   : forces tolerances at <val>\n"
+      <<      "myshape < max : sets maximum tolerance to <max>\n"
+	<<    "myshape > min : sets minimum tolerance to <min>\n"
+	  <<  "myshape min max : bounds tolerances between <min> and <max>\n"
+	    <<"myshape mode=v-e-f other args : idem but only on vertex-edge-face\n";
     return (argc < 2 ? 0 : 1 /* Error */);
   }
   Standard_CString arg1 = argv[1];
@@ -140,15 +140,15 @@ static Standard_Integer settolerance (Draw_Interpretor& di, Standard_Integer arg
 static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) { // help
-    di<<"Donner nom shape depart + nom shape resultat + option"<<"\n";
+    di<<"Donner nom shape depart + nom shape resultat + option\n";
     di<<"Options de chargement :  x add connected  (sinon add simple)\n"
       <<  "Options de traitement :  l fix little/BRepBuilderAPI\n"
       <<"Options de sortie : aucune make simple\n"
       <<"  m MakeAPI r avec reorder  v vertex\n"
-      <<"Autres (se cumulent) :  q quid(stats)"<<"\n";
+      <<"Autres (se cumulent) :  q quid(stats)\n";
     return 0;
   }
-  if (argc < 4) { di<<"stwire tout court pour help"<<"\n"; return 1 /* Error */; }
+  if (argc < 4) { di<<"stwire tout court pour help\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = argv[2];
 
@@ -170,7 +170,7 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
     }
   }
   TopoDS_Shape Shape = DBRep::Get(arg1);
-  if (Shape.IsNull()) { di<<arg1<<" inconnu"<<"\n"; return 1 /* Error */; }
+  if (Shape.IsNull()) { di<<arg1<<" inconnu\n"; return 1 /* Error */; }
 
 //  On y va
   Handle(ShapeExtend_WireData) sbwd = new ShapeExtend_WireData;
@@ -188,7 +188,7 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
   }
   if (awire.IsNull()) {
     di<<"Neither FACE nor WIRE : "<<arg1<<"\n";
-    di<<"Considering as list of edges ..."<<"\n";
+    di<<"Considering as list of edges ...\n";
     awire = Shape;
 //    return 1 /* Error */;
   }
@@ -239,7 +239,7 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
       else di<<" FWD";
       di<<" ordered to "<<iord<<" Gap="<<WO.Gap(i)<<"\n";
     }
-    di<<"Reorder not yet done"<<"\n";
+    di<<"Reorder not yet done\n";
     sfw->FixReorder (WO);
 //   Mais on n execute pas
   }
@@ -282,13 +282,13 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
       Standard_Integer stat = sawv.Data (i,pos,upre,ufol);
       di<<i<<" : ";
       switch (stat) {
-      case 0 : di<<"Same Vertex"<<"\n"; break;
-      case 1 : di<<"Same Coords with recorded precisions (but not Same Vertex)"<<"\n"; break;
-      case 2 : di<<"Close (with preci="<< saw->Precision()<<")"<<"\n"; break;
+      case 0 : di<<"Same Vertex\n"; break;
+      case 1 : di<<"Same Coords with recorded precisions (but not Same Vertex)\n"; break;
+      case 2 : di<<"Close (with preci="<< saw->Precision()<<")\n"; break;
       case 3 : di<<"End of "<<i<<" OK, Start of "<<(i == nb ? 1 : i+1)<<" at U="<<ufol; break;
       case 4 : di<<"End of "<<i<<" at U="<<upre<<", Start of "<<(i == nb ? 1 : i+1)<<" OK"; break;
       case 5 : di<<"Intersection, End of "<<i<<" at U="<<upre<<", Start of "<<(i == nb ? 1 : i+1)<<" at U="<<ufol; break;
-	default : di<<"Disjoined"<<"\n";
+	default : di<<"Disjoined\n";
       }
       if (stat >= 3 && stat <= 5) di<<"\n   - Position : "<<pos.X()<<"  "<<pos.Y()<<"  "<<pos.Z()<<"\n";
     }
@@ -318,13 +318,13 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
       }
       result = CW.Wire (num);
     }
-    else di << "Cannot apply Correct_Wire: face not defined" << "\n";
+    else di << "Cannot apply Correct_Wire: face not defined\n";
   }
   */
   else if (om) result = sbwd->WireAPIMake();
   else         result = sbwd->Wire();
   if (result.IsNull()) {
-    di<<"Pas de resultat, desole"<<"\n";
+    di<<"Pas de resultat, desole\n";
     return 1;  // Fail
   }
   DBRep::Set (arg2,result);
@@ -338,7 +338,7 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
 
 static Standard_Integer reface (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3) { di<<"Donner un nom de SHAPE (SHELL ou FACE) + un nom de RESULTAT"<<"\n"; return 1 /* Error */; }
+  if (argc < 3) { di<<"Donner un nom de SHAPE (SHELL ou FACE) + un nom de RESULTAT\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = argv[2];
   TopoDS_Shape Shape = DBRep::Get(arg1);
@@ -391,7 +391,7 @@ static Standard_Integer reface (Draw_Interpretor& di, Standard_Integer argc, con
     DBRep::Set (arg2,resh.Apply (Shape,TopAbs_FACE,2));
     return 0; // Done
   }
-  else di<<"ShapeFix_Face n a rien trouve a redire"<<"\n";
+  else di<<"ShapeFix_Face n a rien trouve a redire\n";
   return 0;
 }
 
@@ -465,20 +465,20 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
 
   if ( par <2 ) {
     di << "Use: " << argv[0] << " result shape [tolerance [max_tolerance]] [switches]\n"
-      "[-maxtaila <degrees>] [-maxtailw <width>]" << "\n";
-    di << "Switches allow to tune parameters of ShapeFix" << "\n"; 
-    di << "The following syntax is used: <symbol><parameter>" << "\n"; 
-    di << "- symbol may be - to set parameter off, + to set on or * to set default" << "\n"; 
-    di << "- parameters are identified by letters:" << "\n"; 
-    di << "  l - FixLackingMode" << "\n"; 
-    di << "  o - FixOrientationMode" << "\n"; 
-    di << "  h - FixShiftedMode" << "\n"; 
-    di << "  m - FixMissingSeamMode" << "\n"; 
-    di << "  d - FixDegeneratedMode" << "\n"; 
-    di << "  s - FixSmallMode" << "\n"; 
-    di << "  i - FixSelfIntersectionMode" << "\n"; 
-    di << "  n - FixNotchedEdgesMode" << "\n"; 
-    di << "For enhanced message output, use switch '+?'" << "\n"; 
+      "[-maxtaila <degrees>] [-maxtailw <width>]\n";
+    di << "Switches allow to tune parameters of ShapeFix\n"; 
+    di << "The following syntax is used: <symbol><parameter>\n"; 
+    di << "- symbol may be - to set parameter off, + to set on or * to set default\n"; 
+    di << "- parameters are identified by letters:\n"; 
+    di << "  l - FixLackingMode\n"; 
+    di << "  o - FixOrientationMode\n"; 
+    di << "  h - FixShiftedMode\n"; 
+    di << "  m - FixMissingSeamMode\n"; 
+    di << "  d - FixDegeneratedMode\n"; 
+    di << "  s - FixSmallMode\n"; 
+    di << "  i - FixSelfIntersectionMode\n"; 
+    di << "  n - FixNotchedEdgesMode\n"; 
+    di << "For enhanced message output, use switch '+?'\n"; 
     return 1;
   }
 
@@ -546,7 +546,7 @@ Standard_Integer fixgaps(Draw_Interpretor& di, Standard_Integer n, const char** 
   
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull()) {
-    di << " Shape is null" << "\n";
+    di << " Shape is null\n";
     return 1;
   }
 
@@ -555,7 +555,7 @@ Standard_Integer fixgaps(Draw_Interpretor& di, Standard_Integer n, const char** 
   SFWF->SetPrecision(prec);
   if ( SFWF->FixWireGaps() ) {
     DBRep::Set(a[1],SFWF->Shape());
-    di<<" Wireframe gaps fixed on shape"<<"\n";
+    di<<" Wireframe gaps fixed on shape\n";
   }
 
   return 0;
@@ -572,7 +572,7 @@ Standard_Integer fixsmall(Draw_Interpretor& di, Standard_Integer n, const char**
   
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull()) {
-    di << " Shape is null" << "\n";
+    di << " Shape is null\n";
     return 1;
   }
 
@@ -582,7 +582,7 @@ Standard_Integer fixsmall(Draw_Interpretor& di, Standard_Integer n, const char**
   
   if (SFWF.FixSmallEdges()) {
     DBRep::Set(a[1],SFWF.Shape());
-    di<<" Small edges fixed on shape"<<"\n";
+    di<<" Small edges fixed on shape\n";
   }
 
   return 0;
@@ -596,7 +596,7 @@ Standard_Integer fixsmall(Draw_Interpretor& di, Standard_Integer n, const char**
 static Standard_Integer fixsmalledges(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if( n < 3) {
-    di<<"Invalid number of arguments"<<"\n";
+    di<<"Invalid number of arguments\n";
     return 1;
   }
   TopoDS_Shape Sh = DBRep::Get(a[2]);
@@ -641,19 +641,19 @@ static Standard_Integer fixsmalledges(Draw_Interpretor& di, Standard_Integer n, 
 static Standard_Integer checkoverlapedges(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
    if( n < 3) {
-     di<<"Invalid number of arguments"<<"\n";
+     di<<"Invalid number of arguments\n";
      return 1;
    }
    TopoDS_Shape Sh1 = DBRep::Get(a[1]);
    TopoDS_Shape Sh2 = DBRep::Get(a[2]);
    if(Sh1.IsNull() || Sh2.IsNull()) {
-     di<<"Invalid arguments"<<"\n";
+     di<<"Invalid arguments\n";
      return 1;
    }
    TopoDS_Edge e1 = TopoDS::Edge(Sh1);
    TopoDS_Edge e2 = TopoDS::Edge(Sh2);
    if(e1.IsNull() || e2.IsNull()) {
-     di<<"Invalid type of arguments"<<"\n";
+     di<<"Invalid type of arguments\n";
      return 1;
    }
 
@@ -680,14 +680,14 @@ static Standard_Integer checkoverlapedges(Draw_Interpretor& di, Standard_Integer
    ShapeAnalysis_Edge sae;
    if(sae.CheckOverlapping(e1,e2,aTol,aDistDomain)) {
      if(aDistDomain ==0.0)
-       di<<"Edges is overlaping comletly"<<"\n";
+       di<<"Edges is overlaping comletly\n";
      else {
-        di<<"Edges is overlaped"<<"\n";
+        di<<"Edges is overlaped\n";
         di<<"with tolerance = "<<aTol<<"\n";
         di<<"on segment length = "<<aDistDomain<<"\n";
      }
    }
-   else di<<"Edges is not overlaped"<<"\n";
+   else di<<"Edges is not overlaped\n";
    return 0;
 }
 
@@ -699,14 +699,14 @@ static Standard_Integer checkoverlapedges(Draw_Interpretor& di, Standard_Integer
 static Standard_Integer checkfclass2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if( n < 4) {
-    di<<"Invalid number of arguments"<<"\n";
+    di<<"Invalid number of arguments\n";
     return 1;
   }
   TopoDS_Shape Sh1 = DBRep::Get(a[1]);
   Standard_Real ucoord = Draw::Atof(a[2]);
   Standard_Real vcoord = Draw::Atof(a[3]);
   if(Sh1.IsNull() || Sh1.ShapeType()!= TopAbs_FACE) {
-    di<<"Invalid arguments"<<"\n";
+    di<<"Invalid arguments\n";
     return 1;
   }
   TopoDS_Face aFace = TopoDS::Face(Sh1);
@@ -714,25 +714,25 @@ static Standard_Integer checkfclass2d(Draw_Interpretor& di, Standard_Integer n, 
   BRepTopAdaptor_FClass2d f2d(aFace,Precision::Confusion());
   TopAbs_State stat = f2d.Perform(p2d);
   if(stat == TopAbs_OUT)
-    di<<"Point is OUT"<<"\n";
+    di<<"Point is OUT\n";
   else if(stat == TopAbs_IN)
-    di<<"Point is IN"<<"\n";
+    di<<"Point is IN\n";
   else if(stat == TopAbs_ON)
-    di<<"Point is ON"<<"\n";
+    di<<"Point is ON\n";
   else
-    di<<"Point is UNKNOWN"<<"\n";
+    di<<"Point is UNKNOWN\n";
   return 0;
 }
 
 static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if( n < 3) {
-    di<<"Invalid number of arguments. Should be : result shape [toler shared]"<<"\n";
+    di<<"Invalid number of arguments. Should be : result shape [toler shared]\n";
     return 1;
   }
   TopoDS_Shape aSh1 = DBRep::Get(a[2]);
   if(aSh1.IsNull()) {
-    di<<"Shape is null"<<"\n";
+    di<<"Shape is null\n";
     return 1;
   }
   Standard_Real aTol = Precision::Confusion();
@@ -760,7 +760,7 @@ static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, c
   for( ; i <= aSeqWires->Length() ; i++)
   {
     TopoDS_Shape aW = aSeqWires->Value(i);
-    di<<"Wire - "<<i<<" : "<<"\n";
+    di<<"Wire - "<<i<<" : \n";
     
     TopExp_Explorer aExp1(aW, TopAbs_EDGE);
     for( ; aExp1.More(); aExp1.Next())

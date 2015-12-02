@@ -413,7 +413,7 @@ AffPosition(T2,PParamOnSecond," Point 2 ");
 
 #if 0 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#define Debug(q) cout<<"IntRes2d_Intersection"<<"q ="<<q<<endl;
+#define Debug(q) cout<<"IntRes2d_Intersectionq ="<<q<<endl;
 
 char *DebugPos(const IntRes2d_Position P);
 

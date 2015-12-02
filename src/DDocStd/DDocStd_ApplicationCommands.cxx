@@ -75,7 +75,7 @@ static Standard_Integer DDocStd_ListDocuments (Draw_Interpretor& di,
     }
     return 0;
   }
-  di << "DDocStd_ListDocuments : Error" << "\n";
+  di << "DDocStd_ListDocuments : Error\n";
   return 1; 
 }
 
@@ -96,10 +96,10 @@ static Standard_Integer DDocStd_NewDocument (Draw_Interpretor& di,
       D = new TDocStd_Document("dummy");  
       DD = new DDocStd_DrawDocument(D);  
       Draw::Set(a[1],DD);       
-      di << "document (not handled by application)  " << a[1] << " created" << "\n";  
+      di << "document (not handled by application)  " << a[1] << " created\n";  
       DDocStd::ReturnLabel(di,D->Main()); 
     }    
-    else di << a[1] << " is already a document" << "\n";
+    else di << a[1] << " is already a document\n";
     return 0;
   }
   if (nb == 3) {   
@@ -110,13 +110,13 @@ static Standard_Integer DDocStd_NewDocument (Draw_Interpretor& di,
       DD = new DDocStd_DrawDocument(D);  
       TDataStd_Name::Set(D->GetData()->Root(),a[1]);  
       Draw::Set(a[1],DD);    
-      di << "document " << a[1] << " created" << "\n";    
+      di << "document " << a[1] << " created\n";    
       DDocStd::ReturnLabel(di,D->Main()); 
     }
-    else di << a[1] << " is already a document" << "\n";
+    else di << a[1] << " is already a document\n";
     return 0;
   }   
-  di << "DDocStd_NewDocument : Error" << "\n";
+  di << "DDocStd_NewDocument : Error\n";
   return 1;
 }
 
@@ -136,7 +136,7 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
     Handle(TDocStd_Document) D;
     Standard_Integer insession = A->IsInSession(path);
     if (insession > 0) {  
-      di <<"document " << insession << "  is already in session" << "\n";
+      di <<"document " << insession << "  is already in session\n";
       return 0;
     }
     PCDM_ReaderStatus theStatus = A->Open(path,D);
@@ -149,32 +149,32 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
       switch ( theStatus ) {
       case PCDM_RS_AlreadyRetrieved: 
       case PCDM_RS_AlreadyRetrievedAndModified: {
-	di << " already retrieved " << "\n" ;  
+	di << " already retrieved \n" ;  
 	break;
       }
       case PCDM_RS_NoDriver: {
-	di << " could not retrieve , no Driver to make it " <<"\n" ;
+	di << " could not retrieve , no Driver to make it \n" ;
 	break ;
       }
       case PCDM_RS_UnknownDocument:
       case PCDM_RS_NoModel: {
-	di << " could not retrieve , Unknown Document or No Model " <<"\n";
+	di << " could not retrieve , Unknown Document or No Model \n";
 	break ; 
       }
       case PCDM_RS_TypeNotFoundInSchema:
       case PCDM_RS_UnrecognizedFileFormat: {
-	di << " could not retrieve , Type not found or Unrecognized File Format" <<"\n";
+	di << " could not retrieve , Type not found or Unrecognized File Format\n";
 	break ;
       }
       case PCDM_RS_PermissionDenied: {
-	di << " could not retrieve , permission denied " << "\n" ;  
+	di << " could not retrieve , permission denied \n" ;  
 	break;
       }
       default:
-	di << " could not retrieve " << "\n" ;  
+	di << " could not retrieve \n" ;  
 	break;
       }
-      di << "DDocStd_Open : Error" << "\n";
+      di << "DDocStd_Open : Error\n";
     }	
   }
   return 1;
@@ -195,13 +195,13 @@ static Standard_Integer DDocStd_Save (Draw_Interpretor& di,
     Handle(TDocStd_Application) A;
     if (!DDocStd::Find(A)) return 1;  
     if (!D->IsSaved()) {
-      di << "this document has never been saved" << "\n";
+      di << "this document has never been saved\n";
       return 0;
     }
     A->Save(D);
     return 0; 
   }
-  di << "DDocStd_Save : Error" << "\n";
+  di << "DDocStd_Save : Error\n";
   return 1;
 }
 
@@ -224,27 +224,27 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     if (theStatus != PCDM_SS_OK ) {
       switch ( theStatus ) {
         case PCDM_SS_DriverFailure: {
-          di << "Error saving document: Could not store , no driver found to make it" << "\n";
+          di << "Error saving document: Could not store , no driver found to make it\n";
           break ;
         }
         case PCDM_SS_WriteFailure: {
-          di << "Error saving document: Write access failure" << "\n";
+          di << "Error saving document: Write access failure\n";
           break;
         }
         case PCDM_SS_Failure: {
-          di << "Error saving document: Write failure" << "\n" ;
+          di << "Error saving document: Write failure\n" ;
           break;
         }
         case PCDM_SS_Doc_IsNull: {
-          di << "Error saving document: No document to save" << "\n";
+          di << "Error saving document: No document to save\n";
           break ;
         }
         case PCDM_SS_No_Obj: {
-          di << "Error saving document: No objects written" << "\n";
+          di << "Error saving document: No objects written\n";
           break;
         }
         case PCDM_SS_Info_Section_Error: {
-          di << "Error saving document: Write info section failure" << "\n" ;
+          di << "Error saving document: Write info section failure\n" ;
           break;
         }
         default:
@@ -255,7 +255,7 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
       return 0; 
     }
   }
-  di << "DDocStd_SaveAs : Error not enough argument" << "\n";
+  di << "DDocStd_SaveAs : Error not enough argument\n";
   return 1;
 }
 
@@ -323,7 +323,7 @@ static Standard_Integer DDocStd_IsInSession (Draw_Interpretor& di,
     di << A->IsInSession(a[1]);
     return 0;
   }  
-  di << "DDocStd_IsInSession : Error" << "\n";
+  di << "DDocStd_IsInSession : Error\n";
   return 1;
 }
 
@@ -348,7 +348,7 @@ static Standard_Integer DDocStd_OSDPath (Draw_Interpretor& di,
     di << "Extension : " << path.Extension().ToCString() << "\n";
     return 0;
   }
-  di << "DDocStd_OSDPath : Error" << "\n";
+  di << "DDocStd_OSDPath : Error\n";
   return 1;
 }
 
@@ -378,7 +378,7 @@ static Standard_Integer DDocStd_Path (Draw_Interpretor& di,
     di << "Path      : " << PathAsciiString.ToCString() << "\n";
     return 0;
   }
-  di << "DDocStd_Path : Error" << "\n";
+  di << "DDocStd_Path : Error\n";
   return 1;
 }
 
@@ -400,7 +400,7 @@ static Standard_Integer DDocStd_AddComment (Draw_Interpretor& di,
     D->AddComment(comment);
     return 0; 
   }
-  di << "DDocStd_AddComment : Wrong arguments number" << "\n";
+  di << "DDocStd_AddComment : Wrong arguments number\n";
   return 1;
 }
 
@@ -428,7 +428,7 @@ static Standard_Integer DDocStd_PrintComments (Draw_Interpretor& di,
 
     return 0; 
   }
-  di << "DDocStd_PrintComments : Wrong arguments number" << "\n";
+  di << "DDocStd_PrintComments : Wrong arguments number\n";
   return 1;
 }
 

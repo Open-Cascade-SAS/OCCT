@@ -43,14 +43,14 @@ Standard_OStream& Vrml_Normal::Print(Standard_OStream& anOStream) const
 {
  Standard_Integer i;
 
- anOStream  << "Normal {" << endl;
+ anOStream  << "Normal {\n";
  i = myVector->Lower();
  if ( myVector->Length() == 1 && 
      Abs(myVector->Value(i).X() - 0) < 0.0001 && 
      Abs(myVector->Value(i).Y() - 0) < 0.0001 && 
      Abs(myVector->Value(i).Z() - 1) < 0.0001 )
    {
-    anOStream  << '}' << endl;
+    anOStream  << "}\n";
     return anOStream;
    }
  else 
@@ -58,13 +58,13 @@ Standard_OStream& Vrml_Normal::Print(Standard_OStream& anOStream) const
   anOStream  << "    vector [\n\t";
    for ( i = myVector->Lower(); i <= myVector->Upper(); i++ )
      {
-	 anOStream << myVector->Value(i).X() << ' ' << myVector->Value(i).Y() << ' ' << myVector->Value(i).Z();
+	 anOStream << myVector->Value(i).X() << " " << myVector->Value(i).Y() << " " << myVector->Value(i).Z();
       if ( i < myVector->Length() )
-	 anOStream  << ',' << endl << '\t';
+	 anOStream  << ",\n\t";
      }
-    anOStream << " ]" << endl;
+    anOStream << " ]\n";
   }  
-  anOStream  << '}' << endl;
+  anOStream  << "}\n";
 
  return anOStream;
 }

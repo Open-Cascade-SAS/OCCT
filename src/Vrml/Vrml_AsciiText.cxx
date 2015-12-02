@@ -80,42 +80,42 @@ Standard_OStream& Vrml_AsciiText::Print(Standard_OStream& anOStream) const
 {
  Standard_Integer i;
 
- anOStream  << "AsciiText {" << endl;
+ anOStream  << "AsciiText {\n";
 
  i = myString->Lower();
 
  if ( myString->Length() != 1 || myString->Value(i) != "" )
    {
-    anOStream  << "    string [" << endl << '\t';
+    anOStream  << "    string [\n\t";
 
     for ( i = myString->Lower(); i <= myString->Upper(); i++ )
 	{
 	 anOStream << '"' << myString->Value(i) << '"';
 	 if ( i < myString->Length() )
-	    anOStream  << ',' << endl << '\t';
+	    anOStream  << ",\n\t";
         }
-    anOStream  << " ]" << endl;
+    anOStream  << " ]\n";
    }
 
  if ( Abs(mySpacing - 1 ) > 0.0001 )
    {
-    anOStream  << "    spacing" << "\t\t";
-    anOStream << mySpacing << endl;
+    anOStream  << "    spacing\t\t";
+    anOStream << mySpacing << "\n";
    }
 
   switch ( myJustification )
     {
-     case Vrml_LEFT: break; // anOStream  << "    justification" << "\t LEFT";
-     case Vrml_CENTER:        anOStream  << "    justification" << "\tCENTER" << endl; break;
-     case Vrml_RIGHT: anOStream  << "    justification" << "\tRIGHT" << endl; break; 
+     case Vrml_LEFT: break; // anOStream  << "    justification\t LEFT";
+     case Vrml_CENTER:        anOStream  << "    justification\tCENTER\n"; break;
+     case Vrml_RIGHT: anOStream  << "    justification\tRIGHT\n"; break; 
     }
 
  if ( Abs(myWidth - 0 ) > 0.0001 )
    {
-    anOStream  << "    width" << "\t\t";
-    anOStream << myWidth << endl;
+    anOStream  << "    width\t\t";
+    anOStream << myWidth << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

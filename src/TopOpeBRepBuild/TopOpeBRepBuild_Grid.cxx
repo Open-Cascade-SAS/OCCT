@@ -62,7 +62,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S,const T
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if (tSPS) { 
     cout<<"GToSplit ";GdumpSHA(S);cout<<" ";TopAbs::Print(TB,cout);
-    cout<<" "<<tosplit<<" : "<<"!issplit "<<(!issplit);
+    cout<<" "<<tosplit<<" : !issplit "<<(!issplit);
     cout<<" && (facshap || hasgeom || hassame) ";
     cout<<"("<<facshap<<" || "<<hasgeom<<" || "<<hassame<<")"<<endl;
     cout.flush();
@@ -87,7 +87,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S,const T
     } //CONTEXT
     Standard_Boolean tosplitH = tosplit || hasON; //CONTEXT
     if(tSPS){cout<<"GToSplit context SPEON";} //CONTEXT
-    if(tSPS){cout<<" "<<tosplitH<<" : "<<"tosplit "<<tosplit;} //CONTEXT
+    if(tSPS){cout<<" "<<tosplitH<<" : tosplit "<<tosplit;} //CONTEXT
     if(tSPS){cout<<" || hasON "<<hasON<<endl;} //CONTEXT
   } //CONTEXT
 #endif

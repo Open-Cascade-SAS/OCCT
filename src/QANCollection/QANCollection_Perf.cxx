@@ -993,17 +993,17 @@ static void CompSparseArray (Draw_Interpretor& theDI,
 Standard_Integer CheckArguments(Draw_Interpretor& di, Standard_Integer argc, const char ** argv, Standard_Integer& Repeat, Standard_Integer& Size)
 {
   if ( argc != 3) {
-    di << "Usage : " << argv[0] << " Repeat Size" << "\n";
+    di << "Usage : " << argv[0] << " Repeat Size\n";
     return 1;
   }
   Repeat = Draw::Atoi(argv[1]);
   Size   = Draw::Atoi(argv[2]);
   if ( Repeat < 1 ) {
-    di << "Repeat > 0" << "\n";
+    di << "Repeat > 0\n";
     return 1;
   }
   if ( Size < 1 ) {
-    di << "Size > 0" << "\n";
+    di << "Size > 0\n";
     return 1;
   }
   return 0;

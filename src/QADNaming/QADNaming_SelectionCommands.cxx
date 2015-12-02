@@ -128,7 +128,7 @@ static Standard_Integer QADNaming_Select (Draw_Interpretor& di, Standard_Integer
     }
     return 0;  
   }
-  di << "QADNaming_Select : Error" << "\n";
+  di << "QADNaming_Select : Error\n";
   return 1;
 }
 
@@ -148,7 +148,7 @@ static Standard_Integer QADNaming_SolveSelection (Draw_Interpretor& di, Standard
     Standard_Integer i;
     for(i=3;i<n;i++) {
       TDF_Label aValidLab;
-      if (!DDF::FindLabel(aLabel.Data(),a[i],aValidLab)) di<<"Warning: label "<<a[i]<<" not exists"<<"\n";
+      if (!DDF::FindLabel(aLabel.Data(),a[i],aValidLab)) di<<"Warning: label "<<a[i]<<" not exists\n";
       else valid.Add(aValidLab);
     }
     Standard_Boolean done = SL.Solve(valid);
@@ -158,7 +158,7 @@ static Standard_Integer QADNaming_SolveSelection (Draw_Interpretor& di, Standard
     Display (name,Res);
     return done?0:1;
   }
-  di << "Usage:  DumpSelection DF entry [validlabel1 validlabel2 ...]" << "\n";
+  di << "Usage:  DumpSelection DF entry [validlabel1 validlabel2 ...]\n";
   return 1;
 }
 
@@ -177,7 +177,7 @@ static Standard_Integer QADNaming_DumpSelection (Draw_Interpretor& di,
     if (!DDF::FindLabel(DF,a[2],L)) return 1;
     Handle(TNaming_Naming) naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-      di <<"QADNaming_DumpSelection : not a selection" << "\n";
+      di <<"QADNaming_DumpSelection : not a selection\n";
       return 1;
     }
     DumpNaming(naming, di);
@@ -200,7 +200,7 @@ static Standard_Integer QADNaming_DumpSelection (Draw_Interpretor& di,
     }
     return 0;
   }
-  di << "QADNaming_DumpSelection : Error" << "\n";
+  di << "QADNaming_DumpSelection : Error\n";
   return 1;  
 }
 
@@ -219,7 +219,7 @@ static Standard_Integer QADNaming_ArgsSelection (Draw_Interpretor& di,
     if (!DDF::FindLabel(DF,a[2],L)) return 1;
     Handle(TNaming_Naming) naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-      di <<"QADNaming_DumpSelection : not a selection" << "\n";
+      di <<"QADNaming_DumpSelection : not a selection\n";
       return 1;
     }  
     TCollection_AsciiString Entry;
@@ -234,7 +234,7 @@ static Standard_Integer QADNaming_ArgsSelection (Draw_Interpretor& di,
     di << "\n";
     return 0;
   }
-  di << "QADNaming_ArgsSelection : Error" << "\n";
+  di << "QADNaming_ArgsSelection : Error\n";
   return 1;  
 }
 
@@ -302,7 +302,7 @@ static Standard_Integer QADNaming_Attachment (Draw_Interpretor& di,
     di << "\n";
     return 0;
   }
-  di << "QADNaming_Attachment : Error" << "\n";
+  di << "QADNaming_Attachment : Error\n";
   return 1;  
 }
 

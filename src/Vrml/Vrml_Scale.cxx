@@ -38,16 +38,16 @@ Vrml_Scale::Vrml_Scale(const gp_Vec& aScaleFactor)
 
  Standard_OStream& Vrml_Scale::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Scale {" << endl;
+ anOStream  << "Scale {\n";
 
  if ( Abs(myScaleFactor.X() - 1) > 0.0001 || 
      Abs(myScaleFactor.Y() - 1) > 0.0001 || 
      Abs(myScaleFactor.Z() - 1) > 0.0001 ) 
    {
-    anOStream  << "    scaleFactor" << '\t';
-    anOStream << myScaleFactor.X() << ' ' << myScaleFactor.Y() << ' ' << myScaleFactor.Z() << endl;
+    anOStream  << "    scaleFactor\t";
+    anOStream << myScaleFactor.X() << " " << myScaleFactor.Y() << " " << myScaleFactor.Z() << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

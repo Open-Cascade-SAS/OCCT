@@ -80,33 +80,33 @@ Vrml_Texture2Transform::Vrml_Texture2Transform(const gp_Vec2d& aTranslation,
 
  Standard_OStream& Vrml_Texture2Transform::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "Texture2Transform {" << endl;
+ anOStream  << "Texture2Transform {\n";
 
  if ( Abs(myTranslation.X() - 0) > 0.0001 || Abs(myTranslation.Y() - 0) > 0.0001 ) 
    {
-    anOStream  << "    translation" << '\t';
-    anOStream << myTranslation.X() << ' ' << myTranslation.Y() << endl;
+    anOStream  << "    translation\t";
+    anOStream << myTranslation.X() << " " << myTranslation.Y() << "\n";
    }
 
  if ( Abs(myRotation - 0) > 0.0001 )
    {
-    anOStream  << "    rotation" << '\t';
-    anOStream << myRotation << endl;
+    anOStream  << "    rotation\t";
+    anOStream << myRotation << "\n";
    }
 
  if ( Abs(myScaleFactor.X() - 0) > 0.0001 || Abs(myScaleFactor.Y() - 0) > 0.0001 ) 
    {
-    anOStream  << "    scaleFactor" << '\t';
-    anOStream << myScaleFactor.X() << ' ' << myScaleFactor.Y() << endl;
+    anOStream  << "    scaleFactor\t";
+    anOStream << myScaleFactor.X() << " " << myScaleFactor.Y() << "\n";
    }
 
  if ( Abs(myCenter.X() - 0) > 0.0001 || Abs(myCenter.Y() - 0) > 0.0001 ) 
    {
-    anOStream  << "    center" << '\t';
-    anOStream << myCenter.X() << ' ' << myCenter.Y() << endl;
+    anOStream  << "    center\t";
+    anOStream << myCenter.X() << " " << myCenter.Y() << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 
 }

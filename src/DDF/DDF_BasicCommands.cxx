@@ -220,7 +220,7 @@ static Standard_Integer DDF_SetTagger (Draw_Interpretor& di,
     TDF_TagSource::Set(L); 
     return 0;
   }
-  di << "DDF_SetTagger : Error" << "\n";
+  di << "DDF_SetTagger : Error\n";
   return 1;
 }
 
@@ -243,7 +243,7 @@ static Standard_Integer DDF_NewTag (Draw_Interpretor& di,
     di << A->NewTag ();
     return 0;
   }
-  di << "DDF_NewTag : Error" << "\n";
+  di << "DDF_NewTag : Error\n";
   return 1;
 }
 
@@ -273,7 +273,7 @@ static Standard_Integer DDF_NewChild (Draw_Interpretor& di,
       return 0;
     }
   }
-  di << "DDF_NewChild : Error" << "\n";
+  di << "DDF_NewChild : Error\n";
   return 1;
 }
 
@@ -290,13 +290,13 @@ static Standard_Integer DDF_Label (Draw_Interpretor& di,Standard_Integer n, cons
     TDF_Label L;
     if (!DDF::FindLabel(DF,a[2],L,Standard_False)) { 
       DDF::AddLabel(DF,a[2],L);  
-      //di << "Label : " << a[2] << " created" << "\n";
+      //di << "Label : " << a[2] << " created\n";
     }
-    //else di << "Label : " << a[2] << " retrieved" << "\n";
+    //else di << "Label : " << a[2] << " retrieved\n";
     DDF::ReturnLabel(di,L);
     return 0;
   }
-  di << "DDF_Label : Error" << "\n";
+  di << "DDF_Label : Error\n";
   return 1; 
 }
 

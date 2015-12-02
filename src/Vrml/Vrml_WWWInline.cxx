@@ -65,30 +65,30 @@ gp_Vec Vrml_WWWInline::BboxCenter() const
 
 Standard_OStream& Vrml_WWWInline::Print(Standard_OStream& anOStream) const
 {
- anOStream  << "WWWInline {" << endl;
+ anOStream  << "WWWInline {\n";
 
  if ( !(myName.IsEqual ("") ) )
    {
-    anOStream  << "    name" << '\t';
-    anOStream << '"' << myName << '"' << endl;
+    anOStream  << "    name\t";
+    anOStream << '"' << myName << '"' << "\n";
    }
 
  if ( Abs(myBboxSize.X() - 0) > 0.0001 || 
      Abs(myBboxSize.Y() - 0) > 0.0001 || 
      Abs(myBboxSize.Z() - 0) > 0.0001 ) 
    {
-    anOStream  << "    bboxSize" << '\t';
-    anOStream << myBboxSize.X() << ' ' << myBboxSize.Y() << ' ' << myBboxSize.Z() << endl;
+    anOStream  << "    bboxSize\t";
+    anOStream << myBboxSize.X() << " " << myBboxSize.Y() << " " << myBboxSize.Z() << "\n";
    }
 
  if ( Abs(myBboxCenter.X() - 0) > 0.0001 || 
      Abs(myBboxCenter.Y() - 0) > 0.0001 || 
      Abs(myBboxCenter.Z() - 0) > 0.0001 ) 
    {
-    anOStream  << "    bboxCenter" << '\t';
-    anOStream << myBboxCenter.X() << ' ' << myBboxCenter.Y() << ' ' << myBboxCenter.Z() << endl;
+    anOStream  << "    bboxCenter\t";
+    anOStream << myBboxCenter.X() << " " << myBboxCenter.Y() << " " << myBboxCenter.Z() << "\n";
    }
 
- anOStream  << '}' << endl;
+ anOStream  << "}\n";
  return anOStream;
 }

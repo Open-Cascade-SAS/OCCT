@@ -61,26 +61,26 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
 			      const char ** argv)
 {
   if(argc != 2){
-    di <<"Usage : vtri_orig tri_name"<<"\n";
+    di <<"Usage : vtri_orig tri_name\n";
     return 1;
   }
 
   if(TheAISContext().IsNull()){
-    di<<"Make 'vinit' before this method call"<<"\n";
+    di<<"Make 'vinit' before this method call\n";
     return 1;
   }
 
   //get trihedron from AIS map.
   TCollection_AsciiString aName(argv[1]);
   if(!GetMapOfAIS().IsBound2(aName)){
-    di<<"No object named '"<<argv[1]<<"'"<<"\n";
+    di<<"No object named '"<<argv[1]<<"'\n";
     return 1;
   }
 
   Handle(AIS_Trihedron) aTrih =
     Handle(AIS_Trihedron)::DownCast(GetMapOfAIS().Find2(aName));
   if(aTrih.IsNull()){
-    di<<"Trihedron is not found, try another name"<<"\n";
+    di<<"Trihedron is not found, try another name\n";
     return 1;
   }
 
@@ -104,7 +104,7 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
   GetMapOfAIS().Bind(YLine,aName+"_Y");
   GetMapOfAIS().Bind(ZLine,aName+"_Z");
   //print names of created objects:
-  di<<argv[1]<<"_X  "<<argv[1]<<"_Y  "<<argv[1]<<"_Z"<<"\n";
+  di<<argv[1]<<"_X  "<<argv[1]<<"_Y  "<<argv[1]<<"_Z\n";
 
   //try to draw them:
   TheAISContext()->Display(XLine);

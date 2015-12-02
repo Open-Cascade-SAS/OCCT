@@ -113,7 +113,7 @@ Standard_Integer DOTVIEW(Draw_Interpretor&, Standard_Integer narg, const char** 
 }
 
 Standard_Integer VECTEUR(Draw_Interpretor& di, Standard_Integer , const char** ) {
-  di << "Pick positions with button "<<"\n";
+  di << "Pick positions with button \n";
   Standard_Integer id,X,Y,b;
   gp_Trsf T;
   gp_Pnt P1,P2,PP1,PP2;
@@ -240,12 +240,12 @@ Standard_Integer GRILLE(Draw_Interpretor& di, Standard_Integer narg, const char*
     return 1;
   if(nbx) dx = (xmax-xmin)/nbx; else dx=0;
   if(nby) dy = (ymax-ymin)/nby; else dy=0;
-  di<<"compound CE"<<"\n";
+  di<<"compound CE\n";
   for(Standard_Real x=xmin; x<xmax; x+=dx) { 
     for(Standard_Real y=ymin; y<ymax; y+=dx) { 
       //-- cout<<x<<" "<<y<<" "<<zmin<<"   "<<x<<" "<<y<<" "<<zmax<<"\n";
       di<<"line l "<<x<<" "<<y<<" "<<zmin<<" 0 0 1;mkedge e l 0 ";
-      di<<zmax-zmin<<" ;orient e EXTERNAL; add e CE"<<"\n";
+      di<<zmax-zmin<<" ;orient e EXTERNAL; add e CE\n";
       if(dy==0) y=ymax;
     } 
     if(dx==0) x=xmax;
@@ -257,7 +257,7 @@ Standard_Integer GETP3D(Draw_Interpretor& di, Standard_Integer /*narg*/, const c
 {
   TopoDS_Shape V = DBRep::Get(a[1]);
   if (V.IsNull()) {
-    di<<"null shape"<<"\n";
+    di<<"null shape\n";
     return 1;
   }
   gp_Pnt pV = BRep_Tool::Pnt(TopoDS::Vertex(V));
@@ -280,8 +280,8 @@ Standard_Integer CHROBOOP(Draw_Interpretor& di, Standard_Integer n, const char**
     else
       Draw_Chrono = (*a[1] == '1');
     
-    if (Draw_Chrono) di << "Chronometers activated."<<"\n";
-    else di << "Chronometers desactivated."<<"\n";
+    if (Draw_Chrono) di << "Chronometers activated.\n";
+    else di << "Chronometers desactivated.\n";
   }
   else {
     Handle(Draw_Drawable3D) D = Draw::Get(a[1]);

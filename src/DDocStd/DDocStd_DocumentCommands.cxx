@@ -61,7 +61,7 @@ static Standard_Integer DDocStd_Main (Draw_Interpretor& di,Standard_Integer nb, 
     DDocStd::ReturnLabel(di,DOC->Main());
     return 0;
   }   
-  di << "DDocStd_Main : Error" << "\n";
+  di << "DDocStd_Main : Error\n";
   return 1;  
 }
 
@@ -89,7 +89,7 @@ static Standard_Integer DDocStd_Format (Draw_Interpretor& di,Standard_Integer n,
     D->ChangeStorageFormat(a[2]);  
     return 0;
   }  
-  di << "DDocStd_Format : Error" << "\n";
+  di << "DDocStd_Format : Error\n";
   return 1;
 }
 
@@ -109,11 +109,11 @@ static Standard_Integer DDocStd_Copy (Draw_Interpretor& di,Standard_Integer n, c
     TDocStd_XLinkTool XLinkTool;
     XLinkTool.Copy(L,XL);
     if (!XLinkTool.IsDone()) {
-      di << "DDocStd_XLinkTool : not done" << "\n";
+      di << "DDocStd_XLinkTool : not done\n";
     }
     return 0;
   }  
-  di << "DDocStd_XLinkTool : Error" << "\n";
+  di << "DDocStd_XLinkTool : Error\n";
   return 1; 
 }
 
@@ -134,11 +134,11 @@ static Standard_Integer DDocStd_CopyWithLink (Draw_Interpretor& di,Standard_Inte
     TDocStd_XLinkTool XLinkTool;
     XLinkTool.CopyWithLink(L,XL);
     if (!XLinkTool.IsDone()) {
-      di << "DDocStd_CopyWithLink : not done" << "\n";
+      di << "DDocStd_CopyWithLink : not done\n";
     }
     return 0;
   }  
-  di << "DDocStd_CopyWithLink : Error" << "\n";
+  di << "DDocStd_CopyWithLink : Error\n";
   return 1; 
 }
 
@@ -157,20 +157,20 @@ static Standard_Integer DDocStd_UpdateLink (Draw_Interpretor& di,Standard_Intege
       if (!DDocStd::Find(DOC,a[2],TDF_Reference::GetID(),REF)) return 1;
       XLinkTool.UpdateLink(REF->Label());
       if (!XLinkTool.IsDone()) {
-	di << "DDocStd_UpdateXLink : not done" << "\n";
+	di << "DDocStd_UpdateXLink : not done\n";
       }
     }
     else {
       for (TDocStd_XLinkIterator xit (DOC); xit.More(); xit.Next()) {
 	XLinkTool.UpdateLink(xit.Value()->Label());
 	if (!XLinkTool.IsDone()) {
-	  di << "DDocStd_UpdateXLink : not done" << "\n";
+	  di << "DDocStd_UpdateXLink : not done\n";
 	}
       }
     }
     return 0;
   }
-  di << "DDocStd_UpdateXLink : Error" << "\n";
+  di << "DDocStd_UpdateXLink : Error\n";
   return 1; 
 }
 
@@ -220,10 +220,10 @@ static Standard_Integer DDocStd_Undo (Draw_Interpretor& di,Standard_Integer n, c
 
   for (i = 1; i <= step; i++) {
     if (undo) {
-      if (!D->Undo()) di << "Undo not done" << "\n";
+      if (!D->Undo()) di << "Undo not done\n";
     }
     else {
-      if (!D->Redo()) di << "Redo not done" << "\n";
+      if (!D->Redo()) di << "Redo not done\n";
     }
   }
   
@@ -305,7 +305,7 @@ static Standard_Integer DDocStd_DumpDocument (Draw_Interpretor& di,
     if (D->IsSaved()) 
       di << "DOCUMENT      : " << TCollection_AsciiString(D->GetName(),'?').ToCString();
     else 
-      di << "DOCUMENT      : " << "not saved";
+      di << "DOCUMENT      : not saved";
     di << "\n";
     // format
     //cout << "FORMAT        : " << D->StorageFormat();
@@ -337,7 +337,7 @@ static Standard_Integer DDocStd_DumpDocument (Draw_Interpretor& di,
     if (!TDocStd_Modified::IsEmpty(D->Main())) {
       di << "MODIFICATIONS : ";     
       TDF_MapIteratorOfLabelMap it (D->GetModified()); 
-      if (!it.More()) di << "VALID" << "\n"; 
+      if (!it.More()) di << "VALID\n"; 
       else {
 	TCollection_AsciiString string;  
 	for (;it.More();it.Next()) { 
@@ -349,7 +349,7 @@ static Standard_Integer DDocStd_DumpDocument (Draw_Interpretor& di,
     }
     return 0;
   } 
-  di << "DDocStd_DumpDocument : Error" << "\n";
+  di << "DDocStd_DumpDocument : Error\n";
   return 1;
 }
 
@@ -369,7 +369,7 @@ static Standard_Integer DDocStd_SetModified (Draw_Interpretor& di,Standard_Integ
     }
     return 0; 
   }
-  di << "DDocStd_SetModified : Error" << "\n";
+  di << "DDocStd_SetModified : Error\n";
   return 1;
 }
 
@@ -400,7 +400,7 @@ static Standard_Integer DDocStd_Propagate (Draw_Interpretor& di,Standard_Integer
 //     D->PurgeModified();
 //     return 0;
 //   }
-  di << "DDocStd_Propagate : not implemented" << "\n";
+  di << "DDocStd_Propagate : not implemented\n";
   return 1;
 }
 

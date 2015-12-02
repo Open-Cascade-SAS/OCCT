@@ -69,7 +69,7 @@ static Standard_Integer tolerance
 		    <<  "myshape [mode] valmin : sub-shapes over valmin\n"
 		      <<"myshape [mode] valmin valmax : between valmin and valmax\n"
 			<<"myshape [mode] 0 valmax : below valmax\n"
-			  <<"  more : all shapes(D)  v vertices  e edges  f faces  c combined(faces)"<<"\n";
+			  <<"  more : all shapes(D)  v vertices  e edges  f faces  c combined(faces)\n";
 		  return (argc < 2 ? 0 : 1 /* Error */);  }
   Standard_CString arg1 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg1);
@@ -132,11 +132,11 @@ static Standard_Integer tolerance
 static Standard_Integer projface
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 4) { di<<"Give FACE name and X Y [Z]"<<"\n"; return 1 /* Error */; }
+  if (argc < 4) { di<<"Give FACE name and X Y [Z]\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull()) { di<<"Shape unknown : "<<arg1<<"\n"; return 1 /* Error */; }
-  if (Shape.ShapeType() != TopAbs_FACE) { di<<"Not a face"<<"\n"; return 1 /* Error */; }
+  if (Shape.ShapeType() != TopAbs_FACE) { di<<"Not a face\n"; return 1 /* Error */; }
   TopoDS_Face F = TopoDS::Face (Shape);
   Handle(Geom_Surface) thesurf = BRep_Tool::Surface (F);  // pas locface
 //  On y va
@@ -158,7 +158,7 @@ static Standard_Integer projface
 
     GeomAPI_ProjectPointOnSurf proj(P3D, thesurf, uf-du, ul+du, vf-dv, vl+dv);
     Standard_Integer sol, nPSurf = proj.NbPoints();
-    di<<" Found "<<nPSurf<<" Points"<<"\n";
+    di<<" Found "<<nPSurf<<" Points\n";
     for (sol = 1; sol <= nPSurf; sol ++) {
       di<<"n0 "<<sol<<" Distance "<<proj.Distance(sol);
       proj.Parameters(sol, U,V);
@@ -188,7 +188,7 @@ static Standard_Integer projcurve
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
 //  admet une EDGE ou une CURVE
-  if (argc < 5) { di<<"Give : EDGE X Y Z  or  CURVE3D X Y Z  or  CURVE3D first last X Y Z"<<"\n";  return 1 /* Error */; }
+  if (argc < 5) { di<<"Give : EDGE X Y Z  or  CURVE3D X Y Z  or  CURVE3D first last X Y Z\n";  return 1 /* Error */; }
   const char * arg1 = argv[1];
   Standard_Integer i0 = 0;
   TopoDS_Shape Shape = DBRep::Get(arg1);
@@ -200,13 +200,13 @@ static Standard_Integer projcurve
       C = BRep_Tool::Curve (E,cf,cl);
       di<<"Edge "<<arg1<<" Params from "<<cf<<" to "<<cl<<"\n";
     } else {
-      di<<"SHAPE "<<arg1<<" Not an EDGE"<<"\n"; return 1 /* Error */;
+      di<<"SHAPE "<<arg1<<" Not an EDGE\n"; return 1 /* Error */;
     }
   } else {
     const char* a1 = arg1;
     C = DrawTrSurf::GetCurve (a1);
     if (C.IsNull())
-      {  di<<arg1<<" neither EDGE nor CURVE 3D"<<"\n"; return 1 /* Error */;  }
+      {  di<<arg1<<" neither EDGE nor CURVE 3D\n"; return 1 /* Error */;  }
     cf = C->FirstParameter();  cl = C->LastParameter();
     if (argc >= 7) { cf = Draw::Atof (argv[2]);  cl = Draw::Atof (argv[3]); i0 = 2; }
     di<<"Curve 3D "<<arg1<<" Params from "<<cf<<" to "<<cl<<"\n";
@@ -224,18 +224,18 @@ static Standard_Integer projcurve
 
   dist = ShapeAnalysis_Curve().Project (C,P3D,BRepBuilderAPI::Precision(),res,param, cf,cl);
   res.Coord(X,Y,Z);
-  di<<"Result : "<<X<<"  "<<Y<<"  "<<Z<<"\n"<<"Param = "<<param<<"  Gap = "<<dist<<"\n";
+  di<<"Result : "<<X<<"  "<<Y<<"  "<<Z<<"\nParam = "<<param<<"  Gap = "<<dist<<"\n";
   return 0;
 }
 
 static Standard_Integer anaface
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) { di<<"donner un nom de face"<<"\n"; return 1 /* Error */; }
+  if (argc < 2) { di<<"donner un nom de face\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg1);
-  if (Shape.IsNull()) { di<<arg1<<" inconnu"<<"\n"; return 1 /* Error */; }
-//  if (Shape.ShapeType() != TopAbs_FACE) { di<<"Pas une FACE"<<"\n"; return 1 /* Error */; }
+  if (Shape.IsNull()) { di<<arg1<<" inconnu\n"; return 1 /* Error */; }
+//  if (Shape.ShapeType() != TopAbs_FACE) { di<<"Pas une FACE\n"; return 1 /* Error */; }
 
 //  On regarde les wires, sont-ils bien fermes
   Standard_Integer nbw = 0, nbe = 0;
@@ -252,7 +252,7 @@ static Standard_Integer anaface
     }
     di<<"\n";
   }
-  else { di<<"Analyse Wires, Ignore Faces"<<"\n"; }
+  else { di<<"Analyse Wires, Ignore Faces\n"; }
   Standard_Boolean iasurf = !surface.IsNull();
 //:sw  if (!Face.IsNull()) STW.SetFace (Face);
 //:sw  else STW.SetPrecision (BRepBuilderAPI::Precision());
@@ -260,8 +260,8 @@ static Standard_Integer anaface
   for (TopExp_Explorer exp(Shape,TopAbs_WIRE); exp.More(); exp.Next()) {
     TopoDS_Wire Wire = TopoDS::Wire   (exp.Current());  nbw ++;  nbe = 0;
     di<<"WIRE "<<nbw;
-    if (Wire.Orientation() == TopAbs_FORWARD) di<<" (FWD)"<<"\n";
-    else di<<" (REV)"<<"\n";
+    if (Wire.Orientation() == TopAbs_FORWARD) di<<" (FWD)\n";
+    else di<<" (REV)\n";
     gp_Pnt   fin,debut;
     gp_Pnt2d finuv,debuv;  gp_XY baseuv;
     TopoDS_Vertex fv,lv;
@@ -271,7 +271,7 @@ static Standard_Integer anaface
     Standard_Real u1= 0.,u2= 0.,v1= 0.,v2= 0.,umin= 0.,umax= 0.,vmin= 0.,vmax= 0., totcross= 0.;
 
 //:sw    STW.ClearWire();  STW.Load (Wire);
-//    if (STW.Reorder()) di<<"Wire reordered to explore"<<"\n";
+//    if (STW.Reorder()) di<<"Wire reordered to explore\n";
 //    for (TopExp_Explorer exe(Wire.Oriented(TopAbs_FORWARD),TopAbs_EDGE); exe.More(); exe.Next()) {
 //      TopoDS_Edge Edge = TopoDS::Edge (exe.Current());  nbe ++;
 //:sw    for (nbe = 1; nbe <= STW.NbEdges(); nbe ++) {
@@ -283,14 +283,14 @@ static Standard_Integer anaface
       di<<"Wire "<<nbw<<", Edge "<<nbe;
       if (Edge.Orientation() == TopAbs_FORWARD) di<<" (FWD";
       else di<<" (REV";
-      di<<" , Tol= "<<BRep_Tool::Tolerance (Edge)<<" )"<<"\n";
+      di<<" , Tol= "<<BRep_Tool::Tolerance (Edge)<<" )\n";
       Standard_Real f3d,l3d,f2d,l2d;
       Handle(Geom_Curve) curve3d = BRep_Tool::Curve (Edge,f3d,l3d);
       Handle(Geom2d_Curve) curve2d;
       if (iasurf) curve2d = BRep_Tool::CurveOnSurface(Edge,Face,f2d,l2d);
       Standard_Boolean ia2d = !curve2d.IsNull(); iaw2d |= ia2d;
-      if (!ia2d) di<<"--  No PCurve"<<"\n";
-      if (curve3d.IsNull()) di<<"-- no Curve 3d"<<"\n";
+      if (!ia2d) di<<"--  No PCurve\n";
+      if (curve3d.IsNull()) di<<"-- no Curve 3d\n";
 
 //      On va tacher de calculer les positions et les comparer
       gp_Pnt2d fuv,luv;
@@ -357,32 +357,32 @@ static Standard_Integer anaface
       Standard_Real difu = umax - umin, difv = vmax - vmin;
       GProp_GProps G;
       BRepGProp::SurfaceProperties(Face,G);
-      if (G.Mass() > 0) di<<"GProps:Mass Out"<<"\n";
-      else di<<"GProps:Mass In"<<"\n";
+      if (G.Mass() > 0) di<<"GProps:Mass Out\n";
+      else di<<"GProps:Mass In\n";
 ///  return (G.Mass() > 0);
       BRepTopAdaptor_FClass2d fcl (Face,BRep_Tool::Tolerance(Face));
-      if (fcl.PerformInfinitePoint () == TopAbs_OUT) di<<"Classifier Infinite : Out"<<"\n";
-      else di<<"Classifier Infinite : In"<<"\n";
+      if (fcl.PerformInfinitePoint () == TopAbs_OUT) di<<"Classifier Infinite : Out\n";
+      else di<<"Classifier Infinite : In\n";
       gp_Pnt2d pcl;
       pcl.SetCoord(umin-difu,vmin-difv);
-      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMin-VMin : Out"<<"\n";
+      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMin-VMin : Out\n";
       pcl.SetCoord(umin-difu,vmax+difv);
-      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMin-VMax : Out"<<"\n";
+      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMin-VMax : Out\n";
       pcl.SetCoord(umax+difu,vmin-difv);
-      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMax-VMin : Out"<<"\n";
+      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMax-VMin : Out\n";
       pcl.SetCoord(umax+difu,vmax+difv);
-      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMax-VMax : Out"<<"\n";
+      if (fcl.Perform (pcl) == TopAbs_OUT) di<<"Classifier UMax-VMax : Out\n";
     }
   }
-  if (ShapeAnalysis::IsOuterBound (Face)) di<<"ShapeAnalysis: Outer Bound"<<"\n";
-  else di<<"ShapeAnalysis: Not Outer Bound"<<"\n";
-  di<<" Total "<<nbw<<" Wire(s)"<<"\n";
+  if (ShapeAnalysis::IsOuterBound (Face)) di<<"ShapeAnalysis: Outer Bound\n";
+  else di<<"ShapeAnalysis: Not Outer Bound\n";
+  di<<" Total "<<nbw<<" Wire(s)\n";
   return 0;
 }
 
 static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) { di<<"ShapeName; + options : prefix for particular cases : what to get"<<"\n"; return 1 /* Error */; }
+  if (argc < 2) { di<<"ShapeName; + options : prefix for particular cases : what to get\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = NULL;
   Standard_CString arg3 = NULL;
@@ -404,61 +404,61 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di, Standard_Integer 
   }
   analyzer.Perform(Shape);
   
-  di<<"Count    Item\n-----    ----"<<"\n";
+  di<<"Count    Item\n-----    ----\n";
   nb = analyzer.NbEdges();
-  if(nb>0) di<<nb<<"	"<<" EDGE (Oriented)"<<"\n";
+  if(nb>0) di<<nb<<"	 EDGE (Oriented)\n";
   nb = analyzer.NbSharedEdges();
-  if(nb>0) di<<nb<<"	"<<" EDGE (Shared)"<<"\n";
+  if(nb>0) di<<nb<<"	 EDGE (Shared)\n";
   nb = analyzer.NbFreeEdges();
-  if(nb>0) di<<nb<<"	"<<" EDGE (Free)"<<"\n";
+  if(nb>0) di<<nb<<"	 EDGE (Free)\n";
   nb = analyzer.NbFaces();
-  if(nb>0) di<<nb<<"	"<<" FACE"<<"\n";
+  if(nb>0) di<<nb<<"	 FACE\n";
   nb = analyzer.NbFreeFaces();
-  if(nb>0) di<<nb<<"	"<<" FACE (Free)"<<"\n";
+  if(nb>0) di<<nb<<"	 FACE (Free)\n";
   nb = analyzer.NbFreeWires();
-  if(nb>0) di<<nb<<"	"<<" WIRE (Free)"<<"\n";
+  if(nb>0) di<<nb<<"	 WIRE (Free)\n";
   nb = analyzer.NbShells();
-  if(nb>0) di<<nb<<"	"<<" SHELL"<<"\n";
+  if(nb>0) di<<nb<<"	 SHELL\n";
   nb = analyzer.NbSolids();
-  if(nb>0) di<<nb<<"	"<<" SOLID"<<"\n";
+  if(nb>0) di<<nb<<"	 SOLID\n";
   nb = analyzer.NbVertices();
-  if(nb>0) di<<nb<<"	"<<" VERTEX (Oriented)"<<"\n";
+  if(nb>0) di<<nb<<"	 VERTEX (Oriented)\n";
   nb = analyzer.NbSharedVertices();
-  if(nb>0) di<<nb<<"	"<<" VERTEX (Shared)"<<"\n";
+  if(nb>0) di<<nb<<"	 VERTEX (Shared)\n";
   nb = analyzer.NbWires();
-  if(nb>0) di<<nb<<"	"<<" WIRE"<<"\n";
+  if(nb>0) di<<nb<<"	 WIRE\n";
   nb = analyzer.NbFaceWithSevWires();
-  if(nb>0) di<<nb<<"	"<<"Face with more than one wire"<<"\n";
+  if(nb>0) di<<nb<<"	Face with more than one wire\n";
   nb = analyzer.NbNoPCurve();
-  if(nb>0) di<<nb<<"	"<<"No pcurve"<<"\n";
+  if(nb>0) di<<nb<<"	No pcurve\n";
   nb = analyzer.NbSolidsWithVoids();
-  if(nb>0) di<<nb<<"	"<<"SOLID with voids"<<"\n";
+  if(nb>0) di<<nb<<"	SOLID with voids\n";
   nb = analyzer.NbWireWitnSeam();
-  if(nb>0) di<<nb<<"	"<<"Wire(s) with one seam edge"<<"\n";
+  if(nb>0) di<<nb<<"	Wire(s) with one seam edge\n";
   nb = analyzer.NbWireWithSevSeams();
-  if(nb>0) di<<nb<<"	"<<"Wire(s) with several seam edges"<<"\n";
+  if(nb>0) di<<nb<<"	Wire(s) with several seam edges\n";
   nb = analyzer.NbBigSplines();
-  if(nb>0) di<<nb<<"	"<<"bigspl : BSpline > 8192 poles"<<"\n";
+  if(nb>0) di<<nb<<"	bigspl : BSpline > 8192 poles\n";
   nb = analyzer.NbBezierSurf();
-  if(nb>0) di<<nb<<"	"<<"bezsur : BezierSurface"<<"\n";
+  if(nb>0) di<<nb<<"	bezsur : BezierSurface\n";
   nb = analyzer.NbBSplibeSurf();
-  if(nb>0) di<<nb<<"	"<<"bspsur : BSplineSurface"<<"\n";
+  if(nb>0) di<<nb<<"	bspsur : BSplineSurface\n";
   nb = analyzer.NbC0Curves();
-  if(nb>0) di<<nb<<"	"<<"c0curv : Curve Only C0"<<"\n";
+  if(nb>0) di<<nb<<"	c0curv : Curve Only C0\n";
   nb = analyzer.NbC0Surfaces();
-  if(nb>0) di<<nb<<"	"<<"c0surf : Surface Only C0"<<"\n";
+  if(nb>0) di<<nb<<"	c0surf : Surface Only C0\n";
   nb = analyzer.NbIndirectSurf();
-  if(nb>0) di<<nb<<"	"<<"indsur : Indirect Surface"<<"\n";
+  if(nb>0) di<<nb<<"	indsur : Indirect Surface\n";
   nb = analyzer.NbOffsetCurves();
-  if(nb>0) di<<nb<<"	"<<"ofcur  : Offset Curve(s)"<<"\n";
+  if(nb>0) di<<nb<<"	ofcur  : Offset Curve(s)\n";
   nb = analyzer.NbOffsetSurf();
-  if(nb>0) di<<nb<<"	"<<"ofsur  : Offset Surface"<<"\n";
+  if(nb>0) di<<nb<<"	ofsur  : Offset Surface\n";
   nb = analyzer.NbTrimmedCurve2d();
-  if(nb>0) di<<nb<<"	"<<"trc2d  : Trimmed Curve2d"<<"\n";
+  if(nb>0) di<<nb<<"	trc2d  : Trimmed Curve2d\n";
   nb = analyzer.NbTrimmedCurve3d();
-  if(nb>0) di<<nb<<"	"<<"trc3d  : Trimmed Curve3d"<<"\n";
+  if(nb>0) di<<nb<<"	trc3d  : Trimmed Curve3d\n";
   nb = analyzer.NbTrimSurf();
-  if(nb>0) di<<nb<<"	"<<"trimsu : RectangularTrimmedSurface"<<"\n";
+  if(nb>0) di<<nb<<"	trimsu : RectangularTrimmedSurface\n";
   
   if(arg3 ==NULL) return 0;
   
@@ -519,12 +519,12 @@ static Standard_Integer XSHAPE_comptoledge
 	    "Deviation is computed by nbpoints sample points (default is 371).\n"
 	    "Gives the max, min and average value on all edges in the shape\n"
 	    "If prefix is defined, edges with maximal real tolerance and\n"
-	    "relation (and corresponding faces) will be saved with such names\n" << "\n"; 
+	    "relation (and corresponding faces) will be saved with such names\n\n"; 
     return 0; 
   }
 
   TopoDS_Shape shape = DBRep::Get(argv[1]);
-  if (shape.IsNull()) { di << "Shape name \"" << argv[1] << "\" is invalid" << "\n"; return 1; }
+  if (shape.IsNull()) { di << "Shape name \"" << argv[1] << "\" is invalid\n"; return 1; }
   Standard_Integer nbpnts = 371;
   Standard_CString prefix = 0;
   if ( argc >2 ) {
@@ -558,7 +558,7 @@ static Standard_Integer XSHAPE_comptoledge
     }
     num++;
   }
-  if ( ! num ) { di << "No edges found in the shape" << "\n"; return 1; }
+  if ( ! num ) { di << "No edges found in the shape\n"; return 1; }
   
   di << "Edges tolerance computed by " << nbpnts << " points: \n"
           "MAX=" << max << " AVG=" << ave/num << " MIN=" << min << "\n"; 
@@ -626,11 +626,11 @@ static Standard_Integer freebounds (Draw_Interpretor& di,
   TopoDS_Shape wires = F.GetClosedWires();
   Sprintf (name, "%s_c", a[1]);
   DBRep::Set (name, wires);
-  di << name << " - closed wires" << "\n";
+  di << name << " - closed wires\n";
   wires = F.GetOpenWires();
   Sprintf (name, "%s_o", a[1]);
   DBRep::Set (name, wires);
-  di << name << " - open wires" << "\n";
+  di << name << " - open wires\n";
 
   return 0;
 }
@@ -664,7 +664,7 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
 					Standard_Integer n, const char** a)
 {
   if ( (n < 2)||(n > 5) ) {
-    di<<"Usage : freeprops shapename [tolerance [splitclosed [splitopen]]]"<<"\n";
+    di<<"Usage : freeprops shapename [tolerance [splitclosed [splitopen]]]\n";
     return 1;
   }
 
@@ -690,10 +690,10 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
 
   Standard_Integer nb = analyzer.NbClosedFreeBounds();
   di<<"\n";
-  di<<" \t"<<"Area mm2"<<"\t"<<"Length mm"<<"\t"<<"Ratio L/W"<<"\t"<<"Width mm"<<"\t"<<"Nb noth"<<"\n";
+  di<<" \tArea mm2\tLength mm\tRatio L/W\tWidth mm\tNb noth\n";
   B.MakeCompound(closed);
   if (nb) {
-    di<<"Closed bounds properties"<<"\n";
+    di<<"Closed bounds properties\n";
     for (Standard_Integer i=1; i <= nb; i++) {
       Handle(ShapeAnalysis_FreeBoundData) fbd = analyzer.ClosedFreeBound(i);
       PrintProps(i, fbd, di);
@@ -704,7 +704,7 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
   nb = analyzer.NbOpenFreeBounds();
   B.MakeCompound(open);
   if (nb) {
-    di<<"Open bounds properties"<<"\n";
+    di<<"Open bounds properties\n";
     for (Standard_Integer i=1; i <= nb; i++) {
       Handle(ShapeAnalysis_FreeBoundData) fbd = analyzer.OpenFreeBound(i);
       PrintProps(i, fbd, di);
@@ -717,7 +717,7 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
   di << name << " - closed wires,  ";
   DBRep::Set(name, closed);
   Sprintf (name, "%s_o",a[1]);
-  di << name << " - closed wires " << "\n";
+  di << name << " - closed wires \n";
   DBRep::Set(name, open);
   return 0;
 }
@@ -748,11 +748,11 @@ static Standard_Integer closefreebounds (Draw_Interpretor& di,
   TopoDS_Shape wires = F.GetClosedWires();
   Sprintf (name, "%s_c", a[1]);
   DBRep::Set (name, wires);
-  di << name << " - closed wires" << "\n";
+  di << name << " - closed wires\n";
   wires = F.GetOpenWires();
   Sprintf (name, "%s_o", a[1]);
   DBRep::Set (name, wires);
-  di << name << " - open wires" << "\n";
+  di << name << " - open wires\n";
 
   return 0;
 }
@@ -824,11 +824,11 @@ static Standard_Integer getareacontour (Draw_Interpretor& di,
   if (n < 2) return 1;
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull()) {
-    di<<"Shape is not defined"<<"\n";
+    di<<"Shape is not defined\n";
     return 1;
   }
   if(shape.ShapeType() != TopAbs_WIRE) {
-    di<<"invalid type of argument"<<"\n";
+    di<<"invalid type of argument\n";
     return 1;
   }
   //Handle(ShapeExtend_WireData) asewd = new ShapeExtend_WireData(TopoDS::Wire(shape));
@@ -843,7 +843,7 @@ static Standard_Integer checkselfintersection
 {
   if (argc < 2) 
   { 
-      di<<"Call please \"checkselfintersection wire [face]\""<<"\n";  
+      di<<"Call please \"checkselfintersection wire [face]\"\n";  
       return 1; 
   }
 
@@ -852,7 +852,7 @@ static Standard_Integer checkselfintersection
   TopoDS_Shape wire = DBRep::Get(arg1);
   if (wire.IsNull() || wire.ShapeType() != TopAbs_WIRE)
   { 
-      di<<"A null shape or not a wire is used."<<"\n";  
+      di<<"A null shape or not a wire is used.\n";  
       return 2; 
   }
 
@@ -864,7 +864,7 @@ static Standard_Integer checkselfintersection
       face = DBRep::Get(arg2);
       if (face.IsNull() || face.ShapeType() != TopAbs_FACE)
       { 
-          di<<"A null shape or not a face is used."<<"\n";  
+          di<<"A null shape or not a face is used.\n";  
           return 3; 
       }
   }
@@ -877,7 +877,7 @@ static Standard_Integer checkselfintersection
           face = mkFace.Face();
       else
       { 
-          di<<"Can't make a face for the wire. Provide please a face for analysis."<<"\n";  
+          di<<"Can't make a face for the wire. Provide please a face for analysis.\n";  
           return 4; 
       }
   }
@@ -886,9 +886,9 @@ static Standard_Integer checkselfintersection
   Standard_Boolean result = analyser.CheckSelfIntersection();
 
   if (result == Standard_True)
-      di<<"A self-intersecting wire."<<"\n";
+      di<<"A self-intersecting wire.\n";
   else
-      di<<"Not self-intersecting wire."<<"\n";
+      di<<"Not self-intersecting wire.\n";
   return 0;
 }
 
@@ -896,7 +896,7 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
 {
   if (argc < 2) 
   { 
-    di<<"Call please \"checkedge edge [face]\""<<"\n";  
+    di<<"Call please \"checkedge edge [face]\"\n";  
     return 1;
   }
 
@@ -905,7 +905,7 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
   TopoDS_Shape edge = DBRep::Get(arg1);
   if (edge.IsNull() || edge.ShapeType() != TopAbs_EDGE)
   { 
-    di<<"A null shape or not an edge is used."<<"\n";  
+    di<<"A null shape or not an edge is used.\n";  
     return 2;
   }
 
@@ -917,7 +917,7 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
     face = DBRep::Get(arg2);
     if (face.IsNull() || face.ShapeType() != TopAbs_FACE)
     { 
-      di<<"A null shape or not a face is used."<<"\n";  
+      di<<"A null shape or not a face is used.\n";  
       return 3;
     }
   }

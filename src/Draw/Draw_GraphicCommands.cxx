@@ -135,7 +135,7 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
   }
   if(argc == 1)
   {
-    di << "Pick first corner"<<"\n";
+    di << "Pick first corner\n";
     dout.Select(id,X1,Y1,b);
 
     gp_Trsf T;
@@ -162,7 +162,7 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
     d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
     d.Flush();
     dout.GetPosSize(id,X,Y,W,H);
-    di << "Pick second corner"<<"\n";
+    di << "Pick second corner\n";
     b = 0;
     while (b == 0) {
       dout.Select(id,X2,Y2,b,Standard_False);
@@ -236,7 +236,7 @@ static Standard_Integer wclick(Draw_Interpretor& di, Standard_Integer, const cha
 {
   Standard_Integer id1,X1,Y1,b;
   dout.Flush();
-  di << "Just click."<<"\n";
+  di << "Just click.\n";
   dout.Select(id1,X1,Y1,b);
   return 0;
 }
@@ -273,7 +273,7 @@ static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const cha
       H = Draw::Atoi(a[6]);
     dout.MakeView(id,a[2],X,Y,W,H);
     if (!dout.HasView(id)) {
-      di << "View creation failed"<<"\n";
+      di << "View creation failed\n";
       return 1;
     }
     SetTitle(id);
@@ -289,7 +289,7 @@ static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const cha
     }
     dout.MakeView(id,a[2],a[3]);
     if (!dout.HasView(id)) {
-      di << "View creation failed"<<"\n";
+      di << "View creation failed\n";
       return 1;
     }
     SetTitle(id);
@@ -808,12 +808,12 @@ static Standard_Integer dfont(Draw_Interpretor& di,
 static Standard_Integer hcolor(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 4) {
-    di << "code de couleur (Draw.cxx) : " << "\n" ;
-    di << "0 = White,\t 1 = Red,\t 2 = Green,\t 3 = Blue" << "\n" ;
+    di << "code de couleur (Draw.cxx) : \n" ;
+    di << "0 = White,\t 1 = Red,\t 2 = Green,\t 3 = Blue\n" ;
     di << "4 = Cyan,\t 5 = Gold,\t 6 = Magenta,\t 7 = Maroon"  << "\n" ;
-    di << "8 = Orange,\t 9 = Pink,\t 10 = Salmon,\t 11 = Violet" << "\n" ;
-    di << "12 = Yellow,\t 13 = Khaki,\t 14 = Coral" << "\n" ;
-    di << "1 <= width <= 11,  0 (noir)  <= gray <= 1 (blanc)" << "\n" ;
+    di << "8 = Orange,\t 9 = Pink,\t 10 = Salmon,\t 11 = Violet\n" ;
+    di << "12 = Yellow,\t 13 = Khaki,\t 14 = Coral\n" ;
+    di << "1 <= width <= 11,  0 (noir)  <= gray <= 1 (blanc)\n" ;
   } else {
     dout.PostColor(Draw::Atoi(a[1]),Draw::Atoi(a[2]),Draw::Atof(a[3]));
   }
@@ -916,7 +916,7 @@ static Standard_Integer dtext(Draw_Interpretor& di, Standard_Integer n, const ch
   Standard_Boolean is3d;
   if (n == 2) {
     Standard_Integer id,X,Y,b;
-    di << "Pick position with button 1, other button escape"<<"\n";
+    di << "Pick position with button 1, other button escape\n";
     dout.Select(id,X,Y,b);
     if (b != 1)
       return 0;

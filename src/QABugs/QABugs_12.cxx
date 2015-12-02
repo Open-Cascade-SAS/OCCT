@@ -44,7 +44,7 @@ static Standard_Integer OCC895 (Draw_Interpretor& di, Standard_Integer argc, con
 {
   if (argc < 2 || argc > 5)
   {
-    di << "Usage : " << argv[0] << " result [angle [reverse [order]]]" << "\n";
+    di << "Usage : " << argv[0] << " result [angle [reverse [order]]]\n";
     return 1;
   }
 

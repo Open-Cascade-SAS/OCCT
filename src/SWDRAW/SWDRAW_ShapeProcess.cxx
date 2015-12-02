@@ -31,7 +31,7 @@
 static Standard_Integer ApplySequence(Draw_Interpretor& di,
 				      Standard_Integer argc, const char** argv)
 {
-  if (argc < 4) { di<<"Specify result, shape, resource name and prefix (optional)"<<"\n"; return 1 /* Error */; }
+  if (argc < 4) { di<<"Specify result, shape, resource name and prefix (optional)\n"; return 1 /* Error */; }
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = argv[2];
   Standard_CString arg3 = argv[3];
@@ -47,10 +47,10 @@ static Standard_Integer ApplySequence(Draw_Interpretor& di,
   TopoDS_Shape result = context->Result();
 //  seq.PrintPreparationResult ();
   if ( result.IsNull() ) {
-    di << "No result" << "\n";
+    di << "No result\n";
   }
   else if ( result == Shape ) {
-    di << "Shape not modified" << "\n";
+    di << "Shape not modified\n";
   }
   DBRep::Set (arg1,result);
   return 0;

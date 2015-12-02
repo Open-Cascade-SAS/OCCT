@@ -56,28 +56,28 @@ Vrml_LOD::Vrml_LOD(const Handle(TColStd_HArray1OfReal)& aRange,
  Standard_OStream& Vrml_LOD::Print(Standard_OStream& anOStream) const
 {
   Standard_Integer i;
-  anOStream  << "LOD {" << endl;
+  anOStream  << "LOD {\n";
   
   if ( myRangeFlag == Standard_True )
     { 
-      anOStream  << "    range [" << endl << "\t";
+      anOStream  << "    range [\n\t";
       for ( i = myRange->Lower(); i <= myRange->Upper(); i++ )
 	{
 	  anOStream << myRange->Value(i);
 	  if ( i < myRange->Length() )
-	    anOStream  << ',';
+	    anOStream  << ",";
         }
-      anOStream  << " ]" << endl;
+      anOStream  << " ]\n";
     }
 
   if ( Abs(myCenter.X() - 0) > 0.0001 || 
       Abs(myCenter.Y() - 0) > 0.0001 || 
       Abs(myCenter.Z() - 0) > 0.0001 ) 
     {
-      anOStream  << "    center" << '\t';
-      anOStream << myCenter.X() << ' ' << myCenter.Y() << ' ' << myCenter.Z() << endl;
+      anOStream  << "    center\t";
+      anOStream << myCenter.X() << " " << myCenter.Y() << " " << myCenter.Z() << "\n";
     }
   
-  anOStream  << '}' << endl;
+  anOStream  << "}\n";
   return anOStream;
 }

@@ -43,28 +43,28 @@ Standard_OStream& Vrml_Coordinate3::Print(Standard_OStream& anOStream) const
 {
  Standard_Integer i;
  
- anOStream  << "Coordinate3 {" << endl;
+ anOStream  << "Coordinate3 {\n";
  
  i = myPoint->Lower();
  if (  myPoint->Length() == 1 && Abs(myPoint->Value(i).X() - 0) < 0.0001 
                               && Abs(myPoint->Value(i).Y() - 0) < 0.0001 
                               && Abs(myPoint->Value(i).Z() - 0) < 0.0001 )
    {
-    anOStream << '}' << endl;
+    anOStream << "}\n";
     return anOStream;
    }
  else
    {
-    anOStream  << "    point [" << endl << '\t';
+    anOStream  << "    point [\n\t";
     for ( i = myPoint->Lower(); i <= myPoint->Upper(); i++ )
 	{
 	 anOStream << myPoint->Value(i).X() << ' ' << myPoint->Value(i).Y() << ' ' << myPoint->Value(i).Z();
 	 if ( i < myPoint->Length() )
-	    anOStream  << ',' << endl << '\t';
+	    anOStream  << ",\n\t";
         }
-    anOStream  << " ]" << endl;
+    anOStream  << " ]\n";
    }
- anOStream << '}' << endl;
+ anOStream << "}\n";
 
  return anOStream;
 }

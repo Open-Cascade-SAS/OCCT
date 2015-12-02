@@ -37,7 +37,7 @@
 static Standard_Integer  OCC162 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 2 ) {
-    di << "Usage : " << argv[0] << " name" << "\n";
+    di << "Usage : " << argv[0] << " name\n";
     return 1;
   }
 
@@ -75,7 +75,7 @@ static Standard_Integer  OCC172 (Draw_Interpretor& di, Standard_Integer /*argc*/
 static Standard_Integer  OCC204 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 2 ) {
-    di << "Usage : " << argv[0] << " updateviewer=0/1" << "\n";
+    di << "Usage : " << argv[0] << " updateviewer=0/1\n";
     return 1;
   }
 
@@ -129,7 +129,7 @@ static Standard_Integer  OCC204 (Draw_Interpretor& di, Standard_Integer argc, co
 static Standard_Integer OCC1651 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 8 ) {
-    di << "Usage : " << argv[0] << " Shape PntX PntY PntZ DirX DirY DirZ" << "\n";
+    di << "Usage : " << argv[0] << " Shape PntX PntY PntZ DirX DirY DirZ\n";
     return 1;
   }
 
