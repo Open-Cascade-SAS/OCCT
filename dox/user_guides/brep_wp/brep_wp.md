@@ -232,7 +232,7 @@ The example record is interpreted as a line which  passes through a point *P*=(1
  
 **BNF-like Definition**
  
-@verbatim
+~~~~
     <3D curve record 2> = "2" <_> <3D circle center> <_> <3D circle N> <_> <3D circle Dx> <_> <3D circle Dy> <_> <3D circle radius> <_\n>;  
      
     <3D circle center> = <3D point>;  
@@ -244,7 +244,7 @@ The example record is interpreted as a line which  passes through a point *P*=(1
     <3D circle Dy> = <3D direction>;  
      
     <3D circle radius> = <real>;  
-@endverbatim 
+~~~~
  
 **Description**  
  
@@ -265,7 +265,7 @@ The  example record is interpreted as a circle which has its center *P*=(1, 2, 3
  
 **BNF-like Definition**
 
-@verbatim 
+~~~~
     <3D curve record 3> = "3" <_> <3D ellipse center> <_> <3D ellipse N> <_> <3D ellipse Dmaj> <_> <3D ellipse Dmin> <_> <3D ellipse Rmaj> <_> <3D ellipse Rmin> <_\n>;  
      
     <3D ellipse center> = <3D point>;  
@@ -279,7 +279,7 @@ The  example record is interpreted as a circle which has its center *P*=(1, 2, 3
     <3D ellipse Rmaj> = <real>;  
      
     <3D ellipse Rmin> = <real>;  
-@endverbatim 
+~~~~
  
 **Description**  
  
@@ -300,7 +300,7 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
  
 **BNF-like Definition**  
 
-@verbatim
+~~~~
     <3D curve record 4> = "4" <_> <3D parabola origin> <_> <3D parabola N> <_> <3D parabola Dx> <_> <3D parabola Dy> <_> <3D parabola focal length> <_\n>;  
      
     <3D parabola origin> = <3D point>;  
@@ -312,7 +312,7 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
     <3D parabola Dy> = <3D direction>;  
      
     <3D parabola focal length> = <real>;  
-@endverbatim 
+~~~~
  
 **Description**  
  
@@ -334,7 +334,7 @@ The  example record is interpreted as a parabola in plane which passes through a
  
 **BNF-like Definition**  
 
-@verbatim
+~~~~
     <3D curve record 5> = "5" <_> <3D hyperbola origin> <_> <3D hyperbola N> <_> <3D hyperbola Dx> <_> <3D hyperbola Dy> <_> <3D hyperbola Kx> <_> <3D hyperbola Ky> <_\n>;  
      
     <3D hyperbola origin> = <3D point>;  
@@ -348,7 +348,7 @@ The  example record is interpreted as a parabola in plane which passes through a
     <3D hyperbola Kx> = <real>;  
      
     <3D hyperbola Ky> = <real>;  
-@endverbatim
+~~~~
  
 **Descripton**  
  
@@ -410,7 +410,7 @@ The example record is interpreted as a Bezier curve with a rational flag *r*=1, 
  
 **BNF-like Definition**
 
-@verbatim
+~~~~
 	<3D curve record 7> = "7" <_> <3D B-spline rational flag> <_> "0" <_> <3D B-spline degree> <_> 
 	<3D B-spline pole count> <_> <3D B-spline multiplicity knot count> <3D B-spline weight poles> 
 	<_\n> <3D B-spline multiplicity knots> <_\n>;
@@ -430,7 +430,7 @@ The example record is interpreted as a Bezier curve with a rational flag *r*=1, 
 	<3D B-spline multiplicity knots> = (<_> <3D B-spline multiplicity knot>) ^ <3D B-spline multiplicity knot count>;
 
 	<3D B-spline multiplicity knot> = <real> <_> <int>;  
-@endverbatim
+~~~~
  
 **Description**  
  
@@ -474,13 +474,13 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
  
 **BNF-like Definition**  
 
-@verbatim
+~~~~
 	<3D curve record 8> = "8" <_> <3D trimmed curve u min> <_> <3D trimmed curve u max> <_\n> <3D curve record>;
 
 	<3D trimmed curve u min> = <real>;
 
 	<3D trimmed curve u max> = <real>;  
-@endverbatim
+~~~~
  
 **Description**  
  
@@ -746,7 +746,7 @@ where @f$ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D
  
 **BNF-like Definition**
 
-@verbatim
+~~~~
 	<surface record 8> = "8" <_> <Bezier surface u rational flag> <_> <Bezier surface v rational flag> <_> <Bezier surface u degree> <_> <Bezier surface v degree> <_> 
 	<Bezier surface weight poles>;
 
@@ -765,7 +765,7 @@ where @f$ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D
 	(<_> <Bezier surface weight pole>) ^ <Bezier surface v degree>;
 
 	<Bezier surface weight pole> = <3D point> [<_> <real>];  
-@endverbatim
+~~~~
  
 **Description**  
  
@@ -781,12 +781,13 @@ where @f$ 0^{0} \equiv 1 @f$.
  
 The example record is interpreted as a Bezier surface  with a u rational flag *r<sub>u</sub>*=1, v rational flag *r<sub>v</sub>*=1, u degree *m<sub>u</sub>*=2, v degree *m<sub>v</sub>*=1, weight poles *B<sub>0,0</sub>*=(0, 0, 1), *h<sub>0,0</sub>*=7, *B<sub>0,1</sub>*=(1, 0, -4), *h<sub>0,1</sub>*=10, *B<sub>1,0</sub>*=(0, 1, -2), *h<sub>1,0</sub>*=8, *B<sub>1,1</sub>*=(1, 1, 5), *h<sub>1,1</sub>*=11, *B<sub>2,0</sub>*=(0, 2, 3), *h<sub>2,0</sub>*=9 and *B<sub>2,1</sub>*=(1, 2, 6), *h<sub>2,1</sub>*=12. The surface is defined by  the following parametric equation:  
  
-@f[ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1-u)^{2} \cdot v+ \\
-(0,1,-2) \cdot 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v)+(1,1,5) \cdot 11 \cdot 2 \cdot u \cdot (1-u) \cdot v+ \\
-(0,2,3) \cdot 9 \cdot u^{2} \cdot (1-v)+(1,2,6) \cdot 12 \cdot u^{2} \cdot v] \div \\
-[7 \cdot (1-u)^{2} \cdot (1-v)+10 \cdot (1-u)^{2} \cdot v+ \\
-8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v)+11 \cdot 2 \cdot u \cdot (1-u) \cdot v+ \\
-9 \cdot u^{2} \cdot (1-v)+12 \cdot u^{2} \cdot v ] @f]
+@f[
+\begin{align}
+S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1-u)^{2} \cdot v+ (0,1,-2) \cdot 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v) + \\
+(1,1,5) \cdot 11 \cdot 2 \cdot u \cdot (1-u)  \cdot v+ (0,2,3) \cdot 9 \cdot u^{2} \cdot (1-v)+(1,2,6) \cdot 12 \cdot u^{2} \cdot v] \div [7 \cdot (1-u)^{2} \cdot (1-v)+ \\
+10 \cdot (1-u)^{2} \cdot v+ 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v)+ 11 \cdot 2 \cdot u \cdot (1-u) \cdot v+ 9 \cdot u^{2} \cdot (1-v)+12 \cdot u^{2} \cdot v ]
+\end{align}
+@f]
  
  
 @subsubsection occt_brep_format_4_2_9 B-spline Surface - \< surface record 9 \> 
@@ -877,14 +878,19 @@ The B-spline surface is defined by the following  parametric equation:
  
 where functions *N<sub>i,j</sub>* and *M<sub>i,j</sub>* have the following recursion definition by *j*:  
  
-@f[ N_{i,1}(u)=\left\{\begin{matrix}
-1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
-0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
-N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m_{u}+1); \\
+@f[
+\begin{align}
+N_{i,1}(u)= \left\{\begin{matrix}
+1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}
+0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix}  \right.,\; \\
+N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+  
+\frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m_{u}+1), \; \\
 M_{i,1}(v)=\left\{\begin{matrix}
 1\Leftarrow \bar{v}_{i} \leq v \leq \bar{v}_{i+1}\\ 
-0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix} \right.,\;
-M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i}}+ \frac{(\bar{v}_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar{v}_{i+j}-\bar{v}_{i+1}},\;(2 \leq j \leq m_{v}+1); @f]  
+0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix} \right.,\; \\
+M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i}}+ \frac{(\bar{v}_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar{v}_{i+j}-\bar{v}_{i+1}},\;(2 \leq j \leq m_{v}+1); 
+\end{align}
+@f]  
 
 where   
 @f[ \bar{u}_{i}=u_{j}\; (1 \leq j \leq k_{u},\; \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
@@ -892,13 +898,15 @@ where
  
 The example record is interpreted as a B-spline  surface with a u rational flag *r<sub>u</sub>*=1, v rational flag *r<sub>v</sub>*=1, u degree *m<sub>u</sub>*=1, v degree *m<sub>v</sub>*=1, u pole count *n<sub>u</sub>*=3, v pole count *n<sub>v</sub>*=2, u multiplicity knot count *k<sub>u</sub>*=5, v multiplicity knot count *k<sub>v</sub>*=4, weight poles *B<sub>1,1</sub>*=(0, 0, 1), *h<sub>1,1</sub>*=7, *B<sub>1,2</sub>*=(1, 0, -4), *h<sub>1,2</sub>*=10, *B<sub>2,1</sub>*=(0, 1, -2), *h<sub>2,1</sub>*=8, *B<sub>2,2</sub>*=(1, 1, 5), *h<sub>2,2</sub>*=11, *B<sub>3,1</sub>*=(0, 2, 3), *h<sub>3,1</sub>*=9 and *B<sub>3,2</sub>*=(1, 2, 6), *h<sub>3,2</sub>*=12, u multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1, v multiplicity  knots *v<sub>1</sub>*=0, *r<sub>1</sub>*=1, *v<sub>2</sub>*=0.3, *r<sub>2</sub>*=1, *v<sub>3</sub>*=0.7, *r<sub>3</sub>*=1 and *v<sub>4</sub>*=1, *r<sub>4</sub>*=1. The B-spline surface is defined  by the following parametric equation:  
  
-@f[ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ \\
+@f[ 
+\begin{align} 
+S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ \\
 (0,1,-2) \cdot 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+(1,1,5) \cdot 11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ \\
 (0,2,3) \cdot 9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+(1,2,6) \cdot 12 \cdot N_{3,2}(u) \cdot M_{2,2}(v)] \div \\
-[7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ \\
-8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ \\
-9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+12 \cdot N_{3,2}(u) \cdot M_{2,2}(v) ] @f]  
- 
+[7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+ \\ 
+11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ 9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+12 \cdot N_{3,2}(u) \cdot M_{2,2}(v) ] 
+\end{align} 
+@f]
  
 @subsubsection occt_brep_format_4_2_10  Rectangular Trim Surface - \< surface  record 10 \>
  
@@ -1050,7 +1058,7 @@ The example record is interpreted as a line which  passes through a point *P*=(3
  
 **BNF-like Definition**
 
-@verbatim
+~~~~
 	<2D curve record 2> = "2" <_> <2D circle center> <_> <2D circle Dx> <_> <2D circle Dy> <_> <2D circle radius> <_\n>;
 
 	<2D circle center> = <2D point>;
@@ -1060,7 +1068,7 @@ The example record is interpreted as a line which  passes through a point *P*=(3
 	<2D circle Dy> = <2D direction>;
 
 	<2D circle radius> = <real>;  
-@endverbatim
+~~~~
  
 **Description**  
  
@@ -1221,7 +1229,7 @@ The example record is interpreted as a Bezier curve  with a rational flag *r*=1,
  
 **BNF-like Definition**
 
-@verbatim
+~~~~
 	<2D curve record 7> = "7" <_> <2D B-spline rational flag> <_> "0" <_> <2D B-spline degree> <_> <2D B-spline pole count> <_> <2D B-spline multiplicity knot count> <2D B-spline weight poles> <_\n> <2D B-spline multiplicity knots> <_\n>;
 
 	<2D B-spline rational flag> = <flag>;
@@ -1240,7 +1248,7 @@ The example record is interpreted as a Bezier curve  with a rational flag *r*=1,
 	<2D B-spline multiplicity knot> ^ <2D B-spline multiplicity knot count>;
 
 	<2D B-spline multiplicity knot> = <_> <real> <_> <int>;
-@endverbatim
+~~~~
  
 **Description**  
  
@@ -1404,7 +1412,7 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
  
 **BNF-like Definition**
 
-@verbatim
+~~~~
 	<triangulations> = <triangulation header> <_\n> <triangulation records>;
 
 	<triangulation header> = "Triangulations" <_> <triangulation count>;
@@ -1434,7 +1442,7 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
 	<triangulation triangles> = (<triangulation triangle> <_>) ^ <triangulation triangle count>;
 
 	<triangulation triangle> = <int> <_> <int> <_> <int>.  
-@endverbatim
+~~~~
  
 **Description**  
  
@@ -1750,7 +1758,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
  
 **BNF-like Definition**
 
-@verbatim
+~~~~
 	<edge data> = <_> <edge data tolerance> <_> <edge data same parameter flag> <_> edge data same range flag> <_> <edge data degenerated flag> <_\n> <edge data representations>;
 
 	<edge data tolerance> = <real>;
@@ -1793,7 +1801,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
 
 	<edge data representation data 7> = (<polygon on triangulation number> <_>) ^ 2 
 	<triangulation number> <_> <location number>;
-@endverbatim
+~~~~
  
 **Description**  
  
@@ -1820,13 +1828,13 @@ Flags \<edge data same parameter flag\>, \<edge data same range flag\> and \<edg
  
 **BNF-like Definition**
 
-@verbatim
+~~~~
 	<face data> = <face data natural restriction flag> <_> <face data tolerance> <_> <surface number> <_> <location number> <\n> ["2" <_> <triangulation number>];
 
 	<face data natural restriction flag> = <flag>;
 
 	<face data tolerance> = <real>;
-@endverbatim
+~~~~
  
 **Description**  
  

@@ -315,8 +315,11 @@ ad696002-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
   Later on, you can  modify the handle's geometry without changing its color — 
   both remain attached  to the same label.  
  
-@image html ocaf_wp_image005.png "Figure 3. The data structure of the coffee machine"  
-@image latex ocaf_wp_image005.png "Figure 3. The data structure of the coffee machine"  
+@image html ocaf_wp_image007.png "Figure 3. The coffee machine"  
+@image latex ocaf_wp_image007.png "Figure 3. The coffee machine"  
+ 
+@image html ocaf_wp_image005.png "Figure 4. The data structure of the coffee machine"  
+@image latex ocaf_wp_image005.png "Figure 4. The data structure of the coffee machine"  
  
   The nesting of labels is key to OCAF. This allows a  label to have its own structure 
   with its local addressing scheme which can be  reused in a more complex structure. 
@@ -339,8 +342,8 @@ ad696002-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
   which references the coffee pot of the first document 
   (the XLink contains the relative path of the coffee pot document and the entry of the coffee pot data [0:1] ).  
 
-@image html ocaf_wp_image006.png "The coffee machine compound document"
-@image latex ocaf_wp_image006.png "The coffee machine compound document"
+@image html ocaf_wp_image006.png "Figure 5. The coffee machine compound document"
+@image latex ocaf_wp_image006.png "Figure 5. The coffee machine compound document"
  
   In this context, the end-user of the coffee machine application can open the coffee pot document, 
   modify the geometry of, for  example, the reservoir, and overwrite the document without worrying 

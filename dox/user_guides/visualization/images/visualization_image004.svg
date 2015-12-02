@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="642.85785"
+   height="522.1217"
+   id="svg4656"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="visualization_image004.svg">
+  <defs
+     id="defs4658">
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path7116"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path7116-1"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-7"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path7116-9"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="310.01454"
+     inkscape:cy="256.97846"
+     inkscape:document-units="px"
+     inkscape:current-layer="g9010"
+     showgrid="false"
+     inkscape:window-width="964"
+     inkscape:window-height="869"
+     inkscape:window-x="110"
+     inkscape:window-y="110"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata4661">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-87.454854,-473.93551)">
+    <g
+       id="g9010">
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#000000;stroke-width:1.14259863px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+         clip-path="url(#clipEmfPath0)"
+         d="m 144.5394,804.00145 c -30.36322,0 -54.967887,15.2339 -54.967887,34.03321 0,18.7993 24.604667,34.03319 54.967887,34.03319 30.3632,0 54.96788,-15.23389 54.96788,-34.03319 0,-18.79931 -24.60468,-34.03321 -54.96788,-34.03321"
+         id="path3298-1" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#000000;stroke-width:1.21930075px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
+         clip-path="url(#clipEmfPath0)"
+         d="m 144,919.27681 c -30.89771,0 -55.935496,17.04774 -55.935496,38.08539 0,21.03765 25.037786,38.08539 55.935496,38.08539 30.89769,0 55.93549,-17.04774 55.93549,-38.08539 0,-21.03765 -25.0378,-38.08539 -55.93549,-38.08539"
+         id="path3298-1-7" />
+      <g
+         transform="translate(-3,-4)"
+         id="g7007">
+        <path
+           id="path3028"
+           d="m 221.70549,791.45369 0,102.81698 236.58902,0 0,-102.81698 z"
+           style="fill:none;stroke:#000000;stroke-width:2.03636551px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           inkscape:connector-curvature="0" />
+        <text
+           id="text3030"
+           style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="855.65771"
+           x="240.58167"
+           xml:space="preserve">uses algorithms of Prs3D </text>
+        <text
+           style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="868.65771"
+           x="246.58167"
+           xml:space="preserve"
+           id="text6807">and StdPrs packages to </text>
+        <text
+           style="font-size:15.67667294px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="752.18933"
+           x="296.65607"
+           xml:space="preserve"
+           id="text6803"
+           transform="scale(0.92214786,1.0844248)">Class AIS_Shape </text>
+        <text
+           style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="757.59094"
+           x="330.80762"
+           xml:space="preserve"
+           id="text6805"
+           transform="scale(0.90547757,1.1043896)">Compute()</text>
+        <text
+           style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="882.28711"
+           x="229.76691"
+           xml:space="preserve"
+           id="text6807-9">create Graphics3d structure </text>
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.11899135px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
+         d="m 199.62164,835.29171 14.20318,-0.59253 c 0.2177,0 0.39421,0.27272 0.40004,0.61131 0.007,0.34803 -0.16469,0.63953 -0.3824,0.64897 l -14.19727,0.5831 c -0.21769,0.01 -0.39419,-0.2634 -0.4001,-0.60198 -0.007,-0.34793 0.16477,-0.63943 0.37655,-0.64887 z m 13.36769,-3.68664 4.76573,3.56434 -4.64222,3.95002 z"
+         id="path3010" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#000000;stroke-width:1.40559888px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 217.3901,936.6383 0,48.44779 239.2198,0 0,-48.44779 z"
+         id="path3028-4" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.12212796px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
+         d="m 199.64351,958.2917 14.96808,-0.59231 c 0.22942,0 0.41543,0.27262 0.42158,0.61102 0.007,0.34795 -0.17356,0.63928 -0.40299,0.64873 l -14.96187,0.58287 c -0.22941,0.01 -0.41542,-0.26328 -0.42164,-0.60177 -0.007,-0.34775 0.17364,-0.63908 0.39684,-0.64854 z m 14.0876,-3.68514 5.02238,3.56286 -4.89222,3.94842 z"
+         id="path3010-8" />
+      <text
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8"
+         xml:space="preserve"
+         x="282.51627"
+         y="872.30591"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">Topological Object</text>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#000000;stroke-width:2.12761998px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 470.75112,864.99932 0,102.72572 258.49776,0 0,-102.72572 z"
+         id="path3028-2" />
+      <text
+         transform="scale(0.92214786,1.0844248)"
+         id="text6803-4"
+         xml:space="preserve"
+         x="530.02728"
+         y="824.57794"
+         style="font-size:15.67667294px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">StdPrs and Prs3d packages </text>
+      <text
+         xml:space="preserve"
+         x="493.69882"
+         y="920.38812"
+         style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         id="text3030-5">Contain various algorithms </text>
+      <text
+         id="text6807-1"
+         xml:space="preserve"
+         x="476.76691"
+         y="936.28711"
+         style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">to transform object structures </text>
+      <text
+         id="text6807-9-7"
+         xml:space="preserve"
+         x="492.01605"
+         y="951.38818"
+         style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">into Graphics3d structures </text>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.09031779px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
+         d="m 336.80311,932.90806 0.0571,-40.42973 c 0,-0.12142 0.28555,-0.22261 0.63772,-0.22261 0.35218,0 0.63773,0.10119 0.63773,0.22598 l -0.0572,40.42636 c 0,0.12477 -0.28555,0.22599 -0.63772,0.22599 -0.35218,0 -0.63773,-0.10122 -0.63773,-0.22599 z m 4.44506,-0.44857 -3.80733,2.69823 -3.80734,-2.69823 z m -7.55756,-39.52921 3.80734,-2.69824 3.80734,2.69824 z"
+         id="path7377" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path21911"
+         d="m 219,707.54039 0,75.64359"
+         style="fill:none;stroke:#000000;stroke-width:0.7003088;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2.10092636, 2.10092636;stroke-dashoffset:0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path21911-1"
+         d="m 453.5,707.46465 0,77.79507"
+         style="fill:none;stroke:#000000;stroke-width:0.58958817;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.76876451, 1.76876451;stroke-dashoffset:0" />
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#000000;stroke-width:2.24281454px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 165.30872,475.05692 0,72.61052 406.38256,0 0,-72.61052 z"
+         id="path3028-2-1" />
+      <g
+         transform="translate(-5,-185.5)"
+         id="g7007-5">
+        <path
+           id="path3028-27"
+           d="m 221.70549,791.45369 0,102.81698 236.58902,0 0,-102.81698 z"
+           style="fill:none;stroke:#000000;stroke-width:2.03636551px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           inkscape:connector-curvature="0" />
+        <text
+           style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="868.65771"
+           x="231.58167"
+           xml:space="preserve"
+           id="text6807-14">Declares Compute() method </text>
+        <text
+           style="font-size:15.67667294px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="752.18933"
+           x="296.65607"
+           xml:space="preserve"
+           id="text6803-2"
+           transform="scale(0.92214786,1.0844248)">Deferred class </text>
+        <text
+           style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+           y="756.68549"
+           x="270.06619"
+           xml:space="preserve"
+           id="text6805-3"
+           transform="scale(0.90547756,1.1043896)">AIS_InteractiveObject</text>
+        <path
+           inkscape:connector-curvature="0"
+           id="path13459"
+           d="m 368.70052,894.03606 -47.83744,77.21358"
+           style="fill:none;stroke:#000000;stroke-width:1.27159095px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:none" />
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         id="path13459-6"
+         d="M 535.32214,863.39163 454.93725,806.09542"
+         style="fill:none;stroke:#000000;stroke-width:1.41992795px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:none" />
+      <text
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8-8"
+         xml:space="preserve"
+         x="543.32458"
+         y="749.08734"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">uses</text>
+      <text
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8-8-5"
+         xml:space="preserve"
+         x="385.70276"
+         y="682.21692"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">inherits</text>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#000000;stroke-width:1.2751534px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 479.32488,631.07307 0,48.57823 196.35024,0 0,-48.57823 z"
+         id="path3028-4-7" />
+      <text
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8-6"
+         xml:space="preserve"
+         x="544.42902"
+         y="597.87256"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">Object presentation</text>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.14474645px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
+         d="m 452.8172,658.29188 21.08928,-0.5905 c 0.32324,0 0.58532,0.27179 0.59399,0.60922 0.01,0.34683 -0.24455,0.63734 -0.5678,0.64674 l -21.08051,0.5811 c -0.32323,0.01 -0.58531,-0.26249 -0.59408,-0.59991 -0.01,-0.34674 0.24465,-0.63724 0.55912,-0.64665 z m 19.84871,-3.674 7.07629,3.55212 -6.8929,3.93648 z"
+         id="path3010-1" />
+      <text
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8-6-8"
+         xml:space="preserve"
+         x="269.14154"
+         y="446.65784"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">Class PresentationManager3d</text>
+      <text
+         xml:space="preserve"
+         x="175.31769"
+         y="514.28717"
+         style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         id="text3030-5-9">calls Compute() method of AIS_InteractiveObject</text>
+      <text
+         xml:space="preserve"
+         x="174.40979"
+         y="530.71832"
+         style="font-size:13.78678322px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         id="text3030-5-9-2">to obtain Graphics3d structure</text>
+      <path
+         inkscape:connector-curvature="0"
+         id="path13459-6-5"
+         d="M 561.27709,629.42121 457.63979,547.78428"
+         style="fill:none;stroke:#000000;stroke-width:1.92449844px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:none" />
+      <text
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8-8-4"
+         xml:space="preserve"
+         x="571.24023"
+         y="521.04193"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">deals with</text>
+      <text
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8-8-4-3"
+         xml:space="preserve"
+         x="398.07434"
+         y="519.80078"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">calls</text>
+      <text
+         inkscape:transform-center-y="94"
+         inkscape:transform-center-x="-61"
+         transform="scale(0.90547756,1.1043896)"
+         id="text6805-8-8-4-1"
+         xml:space="preserve"
+         x="398.07431"
+         y="535.19385"
+         style="font-size:16.73931694px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">Compute()</text>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.210106px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
+         d="m 339.06968,549.84169 0.58535,44.82599 c 0,0.68706 -0.26941,1.24411 -0.6039,1.26254 -0.3438,0.0212 -0.63178,-0.5198 -0.64109,-1.20688 l -0.57603,-44.80735 c -0.01,-0.68703 0.26019,-1.24409 0.59467,-1.26273 0.34371,-0.0213 0.63168,0.52001 0.641,1.18843 z m 3.64194,42.18911 -3.52112,15.0409 -3.90212,-14.6511 z"
+         id="path3010-2" />
+      <text
+         transform="scale(0.88347213,1.1318976)"
+         id="text6805-8-8-5-1"
+         xml:space="preserve"
+         x="112.37634"
+         y="733.97705"
+         style="font-size:14.97209454px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">Creation of</text>
+      <text
+         transform="scale(0.88347214,1.1318976)"
+         id="text6805-8-8-5-1-7"
+         xml:space="preserve"
+         x="119.76624"
+         y="746.78375"
+         style="font-size:14.97209454px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">AIS_Shape</text>
+      <text
+         transform="scale(0.88347214,1.1318976)"
+         id="text6805-8-8-5-1-4"
+         xml:space="preserve"
+         x="112.97488"
+         y="839.54834"
+         style="font-size:14.97209454px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">Creation of</text>
+      <text
+         transform="scale(0.88347214,1.1318976)"
+         id="text6805-8-8-5-1-0"
+         xml:space="preserve"
+         x="112.99133"
+         y="853.70294"
+         style="font-size:14.97209454px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">topological</text>
+      <text
+         transform="scale(0.88347214,1.1318976)"
+         id="text6805-8-8-5-1-9"
+         xml:space="preserve"
+         x="132.23358"
+         y="867.8385"
+         style="font-size:14.97209454px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New">object</text>
+    </g>
+  </g>
+</svg>

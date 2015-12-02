@@ -281,7 +281,7 @@ The usage of low-level tools is justified in cases when the utilities from *IVtk
 
 The low-level scenario of VIS usage in VTK pipeline is shown in the figure below. The Mesher component produces shape facet (VTK polygonal data) using implementation of *IShapeData* interface. Then result can be retrieved from this implementation as a *vtkPolyData* instance.
 
-@figure{/user_guides/vis/images/vis_image007.png "Low-level VIS usage with VTK"}
+@figure{/user_guides/vis/images/vis_image007.svg "Low-level VIS usage with VTK"}
 
 The visualization pipeline for OCCT shape presentation can be initialized as follows:
 1. Create an instance of *IShape* class initialized by OCCT topological shape:
