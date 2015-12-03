@@ -266,6 +266,8 @@ private:
   Standard_Real myVLast;
   Standard_Real myTolU;
   Standard_Real myTolV;
+  
+  Handle(Geom_BSplineSurface) myBSplineSurface; ///< B-spline representation to prevent downcasts
   Handle(BSplSLib_Cache) mySurfaceCache; ///< Cached data for B-spline or Bezier surface
 
 protected:

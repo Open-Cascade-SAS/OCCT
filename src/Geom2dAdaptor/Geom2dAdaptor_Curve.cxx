@@ -75,22 +75,20 @@ static const Standard_Real PosTol = Precision::PConfusion() / 2;
 //=======================================================================
 
 GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const Standard_Real U1, 
-						   const Standard_Real U2) 
-     const {
-
+						   const Standard_Real U2) const
+{
        Standard_NoSuchObject_Raise_if(myTypeCurve!=GeomAbs_BSplineCurve," ");
-       Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-       Standard_Integer Nb = aBspl->NbKnots();
+       Standard_Integer Nb = myBSplineCurve->NbKnots();
        Standard_Integer Index1 = 0;
        Standard_Integer Index2 = 0;
        Standard_Real newFirst, newLast;
        TColStd_Array1OfReal    TK(1,Nb);
        TColStd_Array1OfInteger TM(1,Nb);
-       aBspl->Knots(TK);
-       aBspl->Multiplicities(TM);
-       BSplCLib::LocateParameter(aBspl->Degree(),TK,TM,U1,aBspl->IsPeriodic(),
+       myBSplineCurve->Knots(TK);
+       myBSplineCurve->Multiplicities(TM);
+       BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,U1,myBSplineCurve->IsPeriodic(),
 				 1,Nb,Index1,newFirst);
-       BSplCLib::LocateParameter(aBspl->Degree(),TK,TM,U2,aBspl->IsPeriodic(),
+       BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,U2,myBSplineCurve->IsPeriodic(),
 				 1,Nb,Index2,newLast);
        if ( Abs(newFirst-TK(Index1+1))<Precision::PConfusion()) { 
 	 if (Index1 < Nb)Index1++;
@@ -99,7 +97,7 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const Standard_Real U1,
 	 Index2--;
        Standard_Integer MultMax;
        // attention aux courbes peridiques.
-       if ( (aBspl->IsPeriodic()) && (Index1 == Nb) )
+       if ( myBSplineCurve->IsPeriodic() && Index1 == Nb )
 	 Index1 = 1;
 
        if ( Index2 - Index1 <= 0) {
@@ -110,7 +108,7 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const Standard_Real U1,
 	 for(Standard_Integer i = Index1+1;i<=Index2;i++) {
 	   if ( TM(i)>MultMax) MultMax=TM(i);
 	 }
-	 MultMax = aBspl->Degree() - MultMax;
+	 MultMax = myBSplineCurve->Degree() - MultMax;
        }
        if ( MultMax <= 0) {
 	 return GeomAbs_C0;
@@ -127,7 +125,7 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const Standard_Real U1,
        else { 
 	 return GeomAbs_CN;
        }
-     }
+}
 
 
 //=======================================================================
@@ -185,8 +183,9 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
 
   if ( myCurve != C) {
     myCurve = C;
-    myCurveCache = Handle(BSplCLib_Cache)();
-    myNestedEvaluator = Handle(Geom2dEvaluator_Curve)();
+    myCurveCache.Nullify();
+    myNestedEvaluator.Nullify();
+    myBSplineCurve.Nullify();
 
     Handle(Standard_Type) TheType = C->DynamicType();
     if ( TheType == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
@@ -221,6 +220,7 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
       myTypeCurve = GeomAbs_BSplineCurve;
       // Create cache for B-spline
       Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
+      myBSplineCurve = aBspl;
       myCurveCache = new BSplCLib_Cache(aBspl->Degree(), aBspl->IsPeriodic(),
           aBspl->KnotSequence(), aBspl->Poles(), aBspl->Weights());
     }
@@ -290,9 +290,8 @@ Standard_Integer Geom2dAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
   Standard_Integer myNbIntervals = 1;
   Standard_Integer NbSplit;
   if (myTypeCurve == GeomAbs_BSplineCurve) {
-    Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-    Standard_Integer FirstIndex = aBspl->FirstUKnotIndex();
-    Standard_Integer LastIndex  = aBspl->LastUKnotIndex();
+    Standard_Integer FirstIndex = myBSplineCurve->FirstUKnotIndex();
+    Standard_Integer LastIndex  = myBSplineCurve->LastUKnotIndex();
     TColStd_Array1OfInteger Inter (1, LastIndex-FirstIndex+1);
     if ( S > Continuity()) {
       Standard_Integer Cont;
@@ -312,11 +311,11 @@ Standard_Integer Geom2dAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
 	  if      ( S == GeomAbs_C1) Cont = 1;
 	  else if ( S == GeomAbs_C2) Cont = 2;
 	  else if ( S == GeomAbs_C3) Cont = 3;
-	  else                       Cont = aBspl->Degree();
-          Standard_Integer Degree = aBspl->Degree();
-          Standard_Integer NbKnots = aBspl->NbKnots();
+	  else                       Cont = myBSplineCurve->Degree();
+          Standard_Integer Degree = myBSplineCurve->Degree();
+          Standard_Integer NbKnots = myBSplineCurve->NbKnots();
           TColStd_Array1OfInteger Mults (1, NbKnots);
-          aBspl->Multiplicities (Mults);
+          myBSplineCurve->Multiplicities (Mults);
           NbSplit = 1;
           Standard_Integer Index   = FirstIndex;
           Inter (NbSplit) = Index;
@@ -335,19 +334,19 @@ Standard_Integer Geom2dAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
 
           Standard_Integer NbInt = NbSplit-1;
 	  
-	  Standard_Integer Nb = aBspl->NbKnots();
+	  Standard_Integer Nb = myBSplineCurve->NbKnots();
 	  Standard_Integer Index1 = 0;
 	  Standard_Integer Index2 = 0;
 	  Standard_Real newFirst, newLast;
 	  TColStd_Array1OfReal    TK(1,Nb);
 	  TColStd_Array1OfInteger TM(1,Nb);
-	  aBspl->Knots(TK);
-	  aBspl->Multiplicities(TM);
-	  BSplCLib::LocateParameter(aBspl->Degree(),TK,TM,myFirst,
-				    aBspl->IsPeriodic(),
+	  myBSplineCurve->Knots(TK);
+	  myBSplineCurve->Multiplicities(TM);
+	  BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,myFirst,
+				    myBSplineCurve->IsPeriodic(),
 				    1,Nb,Index1,newFirst);
-	  BSplCLib::LocateParameter(aBspl->Degree(),TK,TM,myLast,
-				    aBspl->IsPeriodic(),
+	  BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,myLast,
+				    myBSplineCurve->IsPeriodic(),
 				    1,Nb,Index2,newLast);
 
 	  // On decale eventuellement les indices  
@@ -396,9 +395,8 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
   Standard_Integer myNbIntervals = 1;
   Standard_Integer NbSplit;
   if (myTypeCurve == GeomAbs_BSplineCurve) {
-    Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-    Standard_Integer FirstIndex = aBspl->FirstUKnotIndex();
-    Standard_Integer LastIndex  = aBspl->LastUKnotIndex();
+    Standard_Integer FirstIndex = myBSplineCurve->FirstUKnotIndex();
+    Standard_Integer LastIndex  = myBSplineCurve->LastUKnotIndex();
     TColStd_Array1OfInteger Inter (1, LastIndex-FirstIndex+1);
     if ( S > Continuity()) {
       Standard_Integer Cont;
@@ -418,11 +416,11 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 	  if      ( S == GeomAbs_C1) Cont = 1;
 	  else if ( S == GeomAbs_C2) Cont = 2;
 	  else if ( S == GeomAbs_C3) Cont = 3;
-	  else                       Cont = aBspl->Degree();
-          Standard_Integer Degree = aBspl->Degree();
-          Standard_Integer NbKnots = aBspl->NbKnots();
+	  else                       Cont = myBSplineCurve->Degree();
+          Standard_Integer Degree = myBSplineCurve->Degree();
+          Standard_Integer NbKnots = myBSplineCurve->NbKnots();
           TColStd_Array1OfInteger Mults (1, NbKnots);
-          aBspl->Multiplicities (Mults);
+          myBSplineCurve->Multiplicities (Mults);
           NbSplit = 1;
           Standard_Integer Index   = FirstIndex;
           Inter (NbSplit) = Index;
@@ -440,19 +438,19 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 	  Inter (NbSplit) = Index;
           Standard_Integer NbInt = NbSplit-1;
 	  
-	  Standard_Integer Nb = aBspl->NbKnots();
+	  Standard_Integer Nb = myBSplineCurve->NbKnots();
 	  Standard_Integer Index1 = 0;
 	  Standard_Integer Index2 = 0;
 	  Standard_Real newFirst, newLast;
 	  TColStd_Array1OfReal    TK(1,Nb);
 	  TColStd_Array1OfInteger TM(1,Nb);
-	  aBspl->Knots(TK);
-	  aBspl->Multiplicities(TM);
-	  BSplCLib::LocateParameter(aBspl->Degree(),TK,TM,myFirst,
-				    aBspl->IsPeriodic(),
+	  myBSplineCurve->Knots(TK);
+	  myBSplineCurve->Multiplicities(TM);
+	  BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,myFirst,
+				    myBSplineCurve->IsPeriodic(),
 				    1,Nb,Index1,newFirst);
-	  BSplCLib::LocateParameter(aBspl->Degree(),TK,TM,myLast,
-				    aBspl->IsPeriodic(),
+	  BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,myLast,
+				    myBSplineCurve->IsPeriodic(),
 				    1,Nb,Index2,newLast);
 
 
@@ -577,10 +575,9 @@ void Geom2dAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
   }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
   {
-    Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-    myCurveCache->BuildCache(theParameter, aBspl->Degree(),
-      aBspl->IsPeriodic(), aBspl->KnotSequence(),
-      aBspl->Poles(), aBspl->Weights());
+    myCurveCache->BuildCache(theParameter, myBSplineCurve->Degree(),
+      myBSplineCurve->IsPeriodic(), myBSplineCurve->KnotSequence(),
+      myBSplineCurve->Poles(), myBSplineCurve->Weights());
   }
 }
 
@@ -592,12 +589,11 @@ Standard_Boolean Geom2dAdaptor_Curve::IsBoundary(const Standard_Real theU,
                                                  Standard_Integer& theSpanStart,
                                                  Standard_Integer& theSpanFinish) const
 {
-  Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-  if (!aBspl.IsNull() && (theU == myFirst || theU == myLast))
+  if (!myBSplineCurve.IsNull() && (theU == myFirst || theU == myLast))
   {
     if (theU == myFirst)
     {
-      aBspl->LocateU(myFirst, PosTol, theSpanStart, theSpanFinish);
+      myBSplineCurve->LocateU(myFirst, PosTol, theSpanStart, theSpanFinish);
       if (theSpanStart < 1)
         theSpanStart = 1;
       if (theSpanStart >= theSpanFinish)
@@ -605,9 +601,9 @@ Standard_Boolean Geom2dAdaptor_Curve::IsBoundary(const Standard_Real theU,
     }
     else if (theU == myLast)
     {
-      aBspl->LocateU(myLast, PosTol, theSpanStart, theSpanFinish);
-      if (theSpanFinish > aBspl->NbKnots())
-        theSpanFinish = aBspl->NbKnots();
+      myBSplineCurve->LocateU(myLast, PosTol, theSpanStart, theSpanFinish);
+      if (theSpanFinish > myBSplineCurve->NbKnots())
+        theSpanFinish = myBSplineCurve->NbKnots();
       if (theSpanStart >= theSpanFinish)
         theSpanStart = theSpanFinish - 1;
     }
@@ -643,8 +639,7 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
     Standard_Integer aStart = 0, aFinish = 0;
     if (IsBoundary(U, aStart, aFinish))
     {
-      Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-      aBspl->LocalD0(U, aStart, aFinish, P);
+      myBSplineCurve->LocalD0(U, aStart, aFinish, P);
     }
     else if (!myCurveCache.IsNull()) // use cached data
     {
@@ -682,8 +677,7 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U,
     Standard_Integer aStart = 0, aFinish = 0;
     if (IsBoundary(U, aStart, aFinish))
     {
-      Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-      aBspl->LocalD1(U, aStart, aFinish, P, V);
+      myBSplineCurve->LocalD1(U, aStart, aFinish, P, V);
     }
     else if (!myCurveCache.IsNull()) // use cached data
     {
@@ -721,8 +715,7 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U,
     Standard_Integer aStart = 0, aFinish = 0;
     if (IsBoundary(U, aStart, aFinish))
     {
-      Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-      aBspl->LocalD2(U, aStart, aFinish, P, V1, V2);
+      myBSplineCurve->LocalD2(U, aStart, aFinish, P, V1, V2);
     }
     else if (!myCurveCache.IsNull()) // use cached data
     {
@@ -761,8 +754,7 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
     Standard_Integer aStart = 0, aFinish = 0;
     if (IsBoundary(U, aStart, aFinish))
     {
-      Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-      aBspl->LocalD3(U, aStart, aFinish, P, V1, V2, V3);
+      myBSplineCurve->LocalD3(U, aStart, aFinish, P, V1, V2, V3);
     }
     else if (!myCurveCache.IsNull()) // use cached data
     {
@@ -800,8 +792,7 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const Standard_Real U,
     Standard_Integer aStart = 0, aFinish = 0;
     if (IsBoundary(U, aStart, aFinish))
     {
-      Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-      return aBspl->LocalDN(U, aStart, aFinish, N);
+      myBSplineCurve->LocalDN(U, aStart, aFinish, N);
     }
     else
       return myCurve->DN(U, N);
@@ -923,7 +914,7 @@ Standard_Integer Geom2dAdaptor_Curve::Degree() const
   if (myTypeCurve == GeomAbs_BezierCurve)
     return Handle(Geom2d_BezierCurve)::DownCast (myCurve)->Degree();
   else if (myTypeCurve == GeomAbs_BSplineCurve)
-    return Handle(Geom2d_BSplineCurve)::DownCast (myCurve)->Degree();
+    return myBSplineCurve->Degree();
   else
     Standard_NoSuchObject::Raise();
   // portage WNT 
@@ -938,7 +929,7 @@ Standard_Integer Geom2dAdaptor_Curve::Degree() const
 Standard_Boolean Geom2dAdaptor_Curve::IsRational() const {
   switch( myTypeCurve) {
   case GeomAbs_BSplineCurve:
-    return Handle(Geom2d_BSplineCurve)::DownCast (myCurve)->IsRational();
+    return myBSplineCurve->IsRational();
   case GeomAbs_BezierCurve:
     return Handle(Geom2d_BezierCurve)::DownCast (myCurve)->IsRational();
   default:
@@ -956,7 +947,7 @@ Standard_Integer Geom2dAdaptor_Curve::NbPoles() const
   if (myTypeCurve == GeomAbs_BezierCurve)
     return Handle(Geom2d_BezierCurve)::DownCast (myCurve)->NbPoles();
   else if (myTypeCurve == GeomAbs_BSplineCurve)
-    return Handle(Geom2d_BSplineCurve)::DownCast (myCurve)->NbPoles();
+    return myBSplineCurve->NbPoles();
   else
     Standard_NoSuchObject::Raise();
   // portage WNT 
@@ -968,11 +959,11 @@ Standard_Integer Geom2dAdaptor_Curve::NbPoles() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Geom2dAdaptor_Curve::NbKnots() const {
+Standard_Integer Geom2dAdaptor_Curve::NbKnots() const
+{
   if ( myTypeCurve != GeomAbs_BSplineCurve)
     Standard_NoSuchObject::Raise("Geom2dAdaptor_Curve::NbKnots");
-  return Handle(Geom2d_BSplineCurve)::DownCast (myCurve)->NbKnots();
-
+  return myBSplineCurve->NbKnots();
 }
 
 //=======================================================================
@@ -992,7 +983,7 @@ Handle(Geom2d_BezierCurve) Geom2dAdaptor_Curve::Bezier() const
 
 Handle(Geom2d_BSplineCurve) Geom2dAdaptor_Curve::BSpline() const 
 {
-  return Handle(Geom2d_BSplineCurve)::DownCast (myCurve);
+  return myBSplineCurve;
 }
 
 static Standard_Integer nbPoints(const Handle(Geom2d_Curve)& theCurve) 
@@ -1025,7 +1016,7 @@ static Standard_Integer nbPoints(const Handle(Geom2d_Curve)& theCurve)
   if(nbs>300)
     nbs = 300;
   return nbs;
-  
+
 }
 
 Standard_Integer Geom2dAdaptor_Curve::NbSamples() const
