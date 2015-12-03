@@ -24,8 +24,8 @@ These include messages on internal errors and special cases encountered, timing 
 
 # install variables
 set (INSTALL_DIR_DESCR 
-"The place where built OCCT libraries, headers, test cases (INSTALL_OCCT_TEST_CASES variable),
-samples (INSTALL_OCCT_SAMPLES_DESCR variable) and certain 3rdparties (INSTALL_GL2PS, INSTALL_TBB and
+"The place where built OCCT libraries, headers, test cases (INSTALL_TEST_CASES variable),
+samples (INSTALL_SAMPLES_DESCR variable) and certain 3rdparties (INSTALL_GL2PS, INSTALL_TBB and
 other similar variables) will be placed during the installation process (building INSTALL project)")
 
 macro (INSTALL_MESSAGE INSTALL_TARGET_VARIABLE INSTALL_TARGET_STRING)
@@ -34,8 +34,8 @@ set (${INSTALL_TARGET_VARIABLE}_DESCR
 project) into the installation directory (INSTALL_DIR variable)")
 endmacro()
 
-INSTALL_MESSAGE (INSTALL_OCCT_SAMPLES     "OCCT samples")
-INSTALL_MESSAGE (INSTALL_OCCT_TEST_CASES  "non-regression OCCT test scripts")
+INSTALL_MESSAGE (INSTALL_SAMPLES          "OCCT samples")
+INSTALL_MESSAGE (INSTALL_TEST_CASES       "non-regression OCCT test scripts")
 INSTALL_MESSAGE (INSTALL_DOC_OcctOverview "OCCT overview documentation (HTML format)")
 INSTALL_MESSAGE (INSTALL_FREEIMAGE        "FreeImage binaries")
 INSTALL_MESSAGE (INSTALL_FREEIMAGEPLUS    "FreeImagePlus binaries")

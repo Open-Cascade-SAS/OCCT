@@ -34,7 +34,7 @@ project (OCCT)
 # Solution folder property
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
-set (INSTALL_OCCT_TEST_CASES OFF CACHE BOOL "${INSTALL_OCCT_TEST_CASES_DESCR}")
+set (INSTALL_TEST_CASES OFF CACHE BOOL "${INSTALL_TEST_CASES_DESCR}")
 # a single-configuration generator like the Makefile generator defines CMAKE_BUILD_TYPE variable
 # check this variable and set if it's required
 if (DEFINED CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE) # single-configuration generator.
@@ -48,7 +48,7 @@ if (OCCT_ALGO_EXTENDED_OUTPUT)
 endif()
 
 # copy samples to install directory
-set (INSTALL_OCCT_SAMPLES OFF CACHE BOOL "${INSTALL_OCCT_SAMPLES_DESCR}")
+set (INSTALL_SAMPLES OFF CACHE BOOL "${INSTALL_SAMPLES_DESCR}")
 
 # install dir of the built project
 set (INSTALL_DIR "" CACHE PATH "${INSTALL_DIR_DESCR}" )
@@ -375,11 +375,11 @@ message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
 OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
 OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")
 
-if (INSTALL_OCCT_SAMPLES)
+if (INSTALL_SAMPLES)
   OCCT_INSTALL_FILE_OR_DIR ("samples" "${INSTALL_DIR}")
 endif()
 
-if (INSTALL_OCCT_TEST_CASES)
+if (INSTALL_TEST_CASES)
   OCCT_INSTALL_FILE_OR_DIR ("tests" "${INSTALL_DIR}")
 endif()
 

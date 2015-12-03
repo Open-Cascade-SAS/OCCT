@@ -117,8 +117,8 @@ The following table enumerates the full list of environment variables used at co
 | INSTALL_TBB | Boolean flag | Indicates whether TBB binaries should be installed into the installation directory |
 | INSTALL_VTK | Boolean flag | Indicates whether VTK binaries should be installed into the installation directory |
 | INSTALL_TCL | Boolean flag | Indicates whether TCL binaries should be installed into the installation directory |
-| INSTALL_OCCT_TEST_CASES | Boolean flag | Indicates whether non-regression OCCT test scripts should be installed into the installation directory |
-| INSTALL_OCCT_SAMPLES | Boolean flag | Indicates whether OCCT samples should be installed into the installation directory |
+| INSTALL_TEST_CASES | Boolean flag | Indicates whether non-regression OCCT test scripts should be installed into the installation directory |
+| INSTALL_SAMPLES | Boolean flag | Indicates whether OCCT samples should be installed into the installation directory |
 | INSTALL_DOC_OcctOverview | Boolean flag | Indicates whether OCCT overview documentation should be installed into the installation directory |
 
 **Note:** In those CMake options defining paths only the forward slashes ("/") are acceptable.
