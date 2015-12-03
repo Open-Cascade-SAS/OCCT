@@ -685,7 +685,8 @@ Standard_Real Geom2d_BSplineCurve::ReversedParameter( const Standard_Real U) con
 void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
 				  const Standard_Real aU2)
 {
-  Standard_DomainError_Raise_if ( aU2 < aU1, "Geom2d_BSplineCurve::Segment");
+  if (aU2 < aU1)
+    Standard_DomainError::Raise("Geom2d_BSplineCurve::Segment");
   //
   Standard_Real AbsUMax = Max(Abs(FirstParameter()),Abs(LastParameter()));
   Standard_Real Eps = Max (Epsilon(AbsUMax), Precision::PConfusion());
@@ -725,12 +726,10 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
   if (periodic) {
     Standard_Real Period = LastParameter() - FirstParameter();
     DU = U2 - U1;
-    while (DU > Period) {
-      DU -= Period;
-    }
-    if (DU <= Epsilon(Period)) {
+    if (DU - Period > Precision::PConfusion())
+      Standard_DomainError::Raise("Geom2d_BSplineCurve::Segment");
+    if (DU > Period)
       DU = Period;
-    }
   }
   //
   index = 0;
@@ -946,14 +945,14 @@ void Geom2d_BSplineCurve::SetPeriodic ()
 
 void Geom2d_BSplineCurve::SetOrigin(const Standard_Integer Index)
 {
-  Standard_NoSuchObject_Raise_if( !periodic,
-				 "Geom2d_BSplineCurve::SetOrigin");
+  if (!periodic)
+    Standard_NoSuchObject::Raise("Geom2d_BSplineCurve::SetOrigin");
   Standard_Integer i,k;
   Standard_Integer first = FirstUKnotIndex();
   Standard_Integer last  = LastUKnotIndex();
 
-  Standard_DomainError_Raise_if( (Index < first) || (Index > last),
-				"Geom2d_BSplineCurve::SetOrigine");
+  if ((Index < first) || (Index > last))
+  Standard_DomainError::Raise("Geom2d_BSplineCurve::SetOrigin");
 
   Standard_Integer nbknots = knots->Length();
   Standard_Integer nbpoles = poles->Length();

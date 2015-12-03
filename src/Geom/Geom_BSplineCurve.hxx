@@ -296,6 +296,8 @@ public:
   //! of the curve <me> or if the curve makes loop.
   //! After the segmentation the length of a curve can be null.
   //! raises if U2 < U1.
+  //! Standard_DomainError if U2 - U1 exceeds the period for periodic curves.
+  //! i.e. ((U2 - U1) - Period) > Precision::PConfusion().
   Standard_EXPORT void Segment (const Standard_Real U1, const Standard_Real U2);
   
   //! Modifies this BSpline curve by assigning the value K
@@ -525,42 +527,27 @@ public:
   Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Integer N) const Standard_OVERRIDE;
   
   //! Raised if FromK1 = ToK2.
-  //!
-  //! Raised if FromK1 and ToK2 are not in the range
-  //! [FirstUKnotIndex, LastUKnotIndex].
   Standard_EXPORT gp_Pnt LocalValue (const Standard_Real U, const Standard_Integer FromK1, const Standard_Integer ToK2) const;
   
   //! Raised if FromK1 = ToK2.
-  //!
-  //! Raised if FromK1 and ToK2 are not in the range
-  //! [FirstUKnotIndex, LastUKnotIndex].
   Standard_EXPORT void LocalD0 (const Standard_Real U, const Standard_Integer FromK1, const Standard_Integer ToK2, gp_Pnt& P) const;
   
 
   //! Raised if the local continuity of the curve is not C1
   //! between the knot K1 and the knot K2.
   //! Raised if FromK1 = ToK2.
-  //!
-  //! Raised if FromK1 and ToK2 are not in the range
-  //! [FirstUKnotIndex, LastUKnotIndex].
   Standard_EXPORT void LocalD1 (const Standard_Real U, const Standard_Integer FromK1, const Standard_Integer ToK2, gp_Pnt& P, gp_Vec& V1) const;
   
 
   //! Raised if the local continuity of the curve is not C2
   //! between the knot K1 and the knot K2.
   //! Raised if FromK1 = ToK2.
-  //!
-  //! Raised if FromK1 and ToK2 are not in the range
-  //! [FirstUKnotIndex, LastUKnotIndex].
   Standard_EXPORT void LocalD2 (const Standard_Real U, const Standard_Integer FromK1, const Standard_Integer ToK2, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const;
   
 
   //! Raised if the local continuity of the curve is not C3
   //! between the knot K1 and the knot K2.
   //! Raised if FromK1 = ToK2.
-  //!
-  //! Raised if FromK1 and ToK2 are not in the range
-  //! [FirstUKnotIndex, LastUKnotIndex].
   Standard_EXPORT void LocalD3 (const Standard_Real U, const Standard_Integer FromK1, const Standard_Integer ToK2, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const;
   
 
@@ -568,9 +555,6 @@ public:
   //! between the knot K1 and the knot K2.
   //! Raised if FromK1 = ToK2.
   //! Raised if N < 1.
-  //!
-  //! Raises if FromK1 and ToK2 are not in the range
-  //! [FirstUKnotIndex, LastUKnotIndex].
   Standard_EXPORT gp_Vec LocalDN (const Standard_Real U, const Standard_Integer FromK1, const Standard_Integer ToK2, const Standard_Integer N) const;
   
 
@@ -610,7 +594,8 @@ public:
   //! repeated in the knot table. The Multiplicity function
   //! can be used to obtain the multiplicity of each knot.
   //!
-  //! Raised if the length of K is not equal to the number of knots.
+  //! Raised K.Lower() is less than number of first knot or
+  //! K.Upper() is more than number of last knot.
   Standard_EXPORT void Knots (TColStd_Array1OfReal& K) const;
   
   //! returns the knot values of the B-spline curve;
@@ -670,8 +655,9 @@ public:
   //! K = { k3-p k3-p k1 k1 k1 k2 k3 k3
   //! k4 k4 k4 k2+p k3+p }
   //! Exceptions
-  //! Standard_DimensionError if the array K is not of
-  //! the appropriate length.Returns the knots sequence.
+  //! Raised if K.Lower() is less than number of first knot
+  //! in knot sequence with repetitions or K.Upper() is more
+  //! than number of last knot in knot sequence with repetitions.
   Standard_EXPORT void KnotSequence (TColStd_Array1OfReal& K) const;
   
   //! returns the knots of the B-spline curve.

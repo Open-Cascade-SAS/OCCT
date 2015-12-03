@@ -538,16 +538,29 @@ void Geom_BSplineSurface::Segment(const Standard_Real U1,
 				  const Standard_Real V1,
 				  const Standard_Real V2) 
 {
-
-  Standard_DomainError_Raise_if ( (U2 < U1) || (V2 < V1),
-				 "Geom_BSplineCurve::Segment");
+  if ((U2 < U1) || (V2 < V1))
+    Standard_DomainError::Raise("Geom_BSplineSurface::Segment");
   Standard_Real deltaU = Max(Abs(U2),Abs(U1));
   Standard_Real EpsU = Epsilon(deltaU);
   deltaU = U2 - U1;
+  if (uperiodic) {
+    Standard_Real aUPeriod = uknots->Last() - uknots->First();
+    if (deltaU - aUPeriod > Precision::PConfusion())
+      Standard_DomainError::Raise("Geom_BSplineSurface::Segment");
+    if (deltaU > aUPeriod)
+      deltaU = aUPeriod;
+  }
   
   Standard_Real deltaV = Max(Abs(V2),Abs(V1));
   Standard_Real EpsV = Epsilon(deltaV);
   deltaV = V2 - V1;
+  if (vperiodic) {
+    Standard_Real aVPeriod = vknots->Last() - vknots->First();
+    if (deltaV - aVPeriod > Precision::PConfusion())
+      Standard_DomainError::Raise("Geom_BSplineSurface::Segment");
+    if (deltaV > aVPeriod)
+      deltaV = aVPeriod;
+  }
 
   Standard_Real NewU1, NewU2, NewV1, NewV2;
   Standard_Real U,V;
@@ -747,15 +760,29 @@ void Geom_BSplineSurface::CheckAndSegment(const Standard_Real U1,
 					  const Standard_Real V2) 
 {
 
-  Standard_DomainError_Raise_if ( (U2 < U1) || (V2 < V1),
-				 "Geom_BSplineCurve::Segment");
+  if ((U2 < U1) || (V2 < V1))
+    Standard_DomainError::Raise("Geom_BSplineSurface::CheckAndSegment");
   Standard_Real deltaU = Max(Abs(U2),Abs(U1));
   Standard_Real EpsU = Epsilon(deltaU);
   deltaU = U2 - U1;
+  if (uperiodic) {
+    Standard_Real aUPeriod = uknots->Last() - uknots->First();
+    if (deltaU - aUPeriod > Precision::PConfusion())
+      Standard_DomainError::Raise("Geom_BSplineSurface::CheckAndSegment");
+    if (deltaU > aUPeriod)
+      deltaU = aUPeriod;
+  }
   
   Standard_Real deltaV = Max(Abs(V2),Abs(V1));
   Standard_Real EpsV = Epsilon(deltaV);
   deltaV = V2 - V1;
+  if (vperiodic) {
+    Standard_Real aVPeriod = vknots->Last() - vknots->First();
+    if (deltaV - aVPeriod > Precision::PConfusion())
+      Standard_DomainError::Raise("Geom_BSplineSurface::CheckAndSegment");
+    if (deltaV > aVPeriod)
+      deltaV = aVPeriod;
+  }
 
   Standard_Real NewU1, NewU2, NewV1, NewV2;
   Standard_Real U,V;

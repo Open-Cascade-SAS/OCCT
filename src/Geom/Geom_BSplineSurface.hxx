@@ -551,7 +551,11 @@ public:
   //! Even if <me> is not closed it can become closed after the
   //! segmentation for example if U1 or U2 are out of the bounds
   //! of the surface <me> or if the surface makes loop.
-  //! raises if U2 < U1 or V2 < V1
+  //! raises if U2 < U1 or V2 < V1.
+  //! Standard_DomainError if U2 - U1 exceeds the uperiod for uperiodic surfaces.
+  //! i.e. ((U2 - U1) - UPeriod) > Precision::PConfusion().
+  //! Standard_DomainError if V2 - V1 exceeds the vperiod for vperiodic surfaces.
+  //! i.e. ((V2 - V1) - VPeriod) > Precision::PConfusion()).
   Standard_EXPORT void Segment (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2);
   
 
@@ -567,7 +571,11 @@ public:
   //! Even if <me> is not closed it can become closed after the
   //! segmentation for example if U1 or U2 are out of the bounds
   //! of the surface <me> or if the surface makes loop.
-  //! raises if U2 < U1 or V2 < V1
+  //! raises if U2 < U1 or V2 < V1.
+  //! Standard_DomainError if U2 - U1 exceeds the uperiod for uperiodic surfaces.
+  //! i.e. ((U2 - U1) - UPeriod) > Precision::PConfusion().
+  //! Standard_DomainError if V2 - V1 exceeds the vperiod for vperiodic surfaces.
+  //! i.e. ((V2 - V1) - VPeriod) > Precision::PConfusion()).
   Standard_EXPORT void CheckAndSegment (const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2);
   
   //! Substitutes the UKnots of range UIndex with K.
@@ -975,6 +983,7 @@ public:
   Standard_EXPORT Standard_Integer VDegree() const;
   
   //! Returns the Knot value of range VIndex.
+  //! Raised if VIndex < 1 or VIndex > NbVKnots
   Standard_EXPORT Standard_Real VKnot (const Standard_Integer VIndex) const;
   
 
@@ -1086,40 +1095,24 @@ public:
   Standard_EXPORT gp_Vec DN (const Standard_Real U, const Standard_Real V, const Standard_Integer Nu, const Standard_Integer Nv) const Standard_OVERRIDE;
   
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
-  //!
-  //! Raised if FromUK1, ToUK2 are not in the range [FirstUKnotIndex,
-  //! LastUKnotIndex] or if FromVK1, ToVK2 are not in the range
-  //! [FirstVKnotIndex, LastVKnotIndex]
   Standard_EXPORT void LocalD0 (const Standard_Real U, const Standard_Real V, const Standard_Integer FromUK1, const Standard_Integer ToUK2, const Standard_Integer FromVK1, const Standard_Integer ToVK2, gp_Pnt& P) const;
   
 
   //! Raised if the local continuity of the surface is not C1
   //! between the knots FromUK1, ToUK2 and FromVK1, ToVK2.
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
-  //!
-  //! Raised if FromUK1, ToUK2 are not in the range [FirstUKnotIndex,
-  //! LastUKnotIndex] or if FromVK1, ToVK2 are not in the range
-  //! [FirstVKnotIndex, LastVKnotIndex]
   Standard_EXPORT void LocalD1 (const Standard_Real U, const Standard_Real V, const Standard_Integer FromUK1, const Standard_Integer ToUK2, const Standard_Integer FromVK1, const Standard_Integer ToVK2, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
   
 
   //! Raised if the local continuity of the surface is not C2
   //! between the knots FromUK1, ToUK2 and FromVK1, ToVK2.
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
-  //!
-  //! Raised if FromUK1, ToUK2 are not in the range [FirstUKnotIndex,
-  //! LastUKnotIndex] or if FromVK1, ToVK2 are not in the range
-  //! [FirstVKnotIndex, LastVKnotIndex]
   Standard_EXPORT void LocalD2 (const Standard_Real U, const Standard_Real V, const Standard_Integer FromUK1, const Standard_Integer ToUK2, const Standard_Integer FromVK1, const Standard_Integer ToVK2, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const;
   
 
   //! Raised if the local continuity of the surface is not C3
   //! between the knots FromUK1, ToUK2 and FromVK1, ToVK2.
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
-  //!
-  //! Raised if FromUK1, ToUK2 are not in the range [FirstUKnotIndex,
-  //! LastUKnotIndex] or if FromVK1, ToVK2 are not in the range
-  //! [FirstVKnotIndex, LastVKnotIndex]
   Standard_EXPORT void LocalD3 (const Standard_Real U, const Standard_Real V, const Standard_Integer FromUK1, const Standard_Integer ToUK2, const Standard_Integer FromVK1, const Standard_Integer ToVK2, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const;
   
 
@@ -1127,10 +1120,6 @@ public:
   //! between the knots FromUK1, ToUK2 and CNv between the knots
   //! FromVK1, ToVK2.
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
-  //!
-  //! Raised if FromUK1, ToUK2 are not in the range [FirstUKnotIndex,
-  //! LastUKnotIndex] or if FromVK1, ToVK2 are not in the range
-  //! [FirstVKnotIndex, LastVKnotIndex]
   Standard_EXPORT gp_Vec LocalDN (const Standard_Real U, const Standard_Real V, const Standard_Integer FromUK1, const Standard_Integer ToUK2, const Standard_Integer FromVK1, const Standard_Integer ToVK2, const Standard_Integer Nu, const Standard_Integer Nv) const;
   
 
@@ -1140,10 +1129,6 @@ public:
   //! [Knot VK1, Knot VK2]  but for the computation we only use the
   //! definition of the surface between these knot values.
   //! Raises if FromUK1 = ToUK2 or FromVK1 = ToVK2.
-  //!
-  //! Raises if FromUK1, ToUK2 are not in the range [FirstUKnotIndex,
-  //! LastUKnotIndex] or if FromVK1, ToVK2 are not in the range
-  //! [FirstVKnotIndex, LastVKnotIndex]
   Standard_EXPORT gp_Pnt LocalValue (const Standard_Real U, const Standard_Real V, const Standard_Integer FromUK1, const Standard_Integer ToUK2, const Standard_Integer FromVK1, const Standard_Integer ToVK2) const;
   
 

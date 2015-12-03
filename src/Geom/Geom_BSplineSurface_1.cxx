@@ -921,15 +921,15 @@ void Geom_BSplineSurface::SetVPeriodic ()
 
 void Geom_BSplineSurface::SetUOrigin(const Standard_Integer Index)
 {
-  Standard_NoSuchObject_Raise_if( !uperiodic,
-				 "Geom_BSplineSurface::SetUOrigin");
+  if (!uperiodic)
+    Standard_NoSuchObject::Raise("Geom_BSplineSurface::SetUOrigin");
 
   Standard_Integer i,j,k;
   Standard_Integer first = FirstUKnotIndex();
   Standard_Integer last  = LastUKnotIndex();
 
-  Standard_DomainError_Raise_if( (Index < first) || (Index > last),
-				"Geom_BSplineCurve::SetUOrigine");
+  if ((Index < first) || (Index > last))
+    Standard_DomainError::Raise("Geom_BSplineCurve::SetUOrigin");
 
   Standard_Integer nbknots = uknots->Length();
   Standard_Integer nbpoles = poles->ColLength();
@@ -1019,15 +1019,15 @@ void Geom_BSplineSurface::SetUOrigin(const Standard_Integer Index)
 
 void Geom_BSplineSurface::SetVOrigin(const Standard_Integer Index)
 {
-  Standard_NoSuchObject_Raise_if( !vperiodic,
-				 "Geom_BSplineSurface::SetVOrigin");
+  if (!vperiodic)
+    Standard_NoSuchObject::Raise("Geom_BSplineSurface::SetVOrigin");
 
   Standard_Integer i,j,k;
   Standard_Integer first = FirstVKnotIndex();
   Standard_Integer last  = LastVKnotIndex();
 
-  Standard_DomainError_Raise_if( (Index < first) || (Index > last),
-				"Geom_BSplineCurve::SetVOrigine");
+  if ((Index < first) || (Index > last))
+    Standard_DomainError::Raise("Geom_BSplineCurve::SetVOrigin");
 
   Standard_Integer nbknots = vknots->Length();
   Standard_Integer nbpoles = poles->RowLength();

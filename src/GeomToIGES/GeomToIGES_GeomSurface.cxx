@@ -242,8 +242,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
   Standard_Real uShift = 0, vShift = 0;
   mysurface->Bounds(U0,U1,V0,V1);
 
-  // cut segment from periodic surfaces for syncronization of pcurves ranges
-  // and surface bounds (issue 26138)
+  // fix bounds
   if (!PeriodU) {
     if (Umin < U0)
       Umin = U0;
@@ -258,6 +257,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
     uShift = ShapeAnalysis::AdjustToPeriod(Umin, U0, U1);
     Umin += uShift;
     Umax += uShift;
+    if (Umax - Umin > U1 - U0)
+      Umax = Umin + (U1 - U0);
   }
   if (!PeriodV) {
     if (Vmin < V0)
@@ -273,44 +274,40 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
     vShift = ShapeAnalysis::AdjustToPeriod(Vmin, V0, V1);
     Vmin += vShift;
     Vmax += vShift;
-  }
-  if (PeriodU || PeriodV) {
-    Standard_Boolean isNeedSegment = Standard_True;
-    isNeedSegment = Abs(Umax-Umin) > Precision::PConfusion() && 
-                    Abs(Vmax-Vmin) > Precision::PConfusion();
-    Standard_Real uMaxShift = 0, vMaxShift = 0;
-    uMaxShift = ShapeAnalysis::AdjustToPeriod(Ufin, U0, U1);
-    vMaxShift = ShapeAnalysis::AdjustToPeriod(Vfin, V0, V1);
-    isNeedSegment &= 
-      (PeriodU && Abs(uShift - uMaxShift) > Precision::PConfusion()) ||
-      (PeriodV && Abs(vShift - vMaxShift) > Precision::PConfusion());
-    if (isNeedSegment) {
-      try {
-        OCC_CATCH_SIGNALS
-        Handle(Geom_BSplineSurface) bspl = Handle(Geom_BSplineSurface)::DownCast ( start->Copy() );
-        if ( ! bspl.IsNull() ) {
-          bspl->CheckAndSegment(Umin, Umax, Vmin, Vmax);
-          if ((U1 - U0) - (Umax - Umin) > Precision::PConfusion())
-            PeriodU = Standard_False;
-          if ((V1 - V0) - (Vmax - Vmin) > Precision::PConfusion())
-            PeriodV = Standard_False;
-            mysurface = bspl;
-        }
-      }
-      catch ( Standard_Failure ) {
-        #ifdef OCCT_DEBUG
-        cout << "Warning: GeomToIGES_GeomSurface: can't trim bspline" << endl;
-        cout << "Warning: Exception in Segment(): " ;
-        Standard_Failure::Caught()->Print(cout);
-        #endif
-      }
-    }
+    if (Vmax - Vmin > V1 - V0)
+      Vmax = Vmin + (V1 - V0);
   }
   //unperiodize surface to get neccessary for IGES standard number of knots and mults
   if ( mysurface->IsUPeriodic() ) {
+    // set new origin for periodic BSpline surfaces for synchronization of pcurves ranges
+    // and surface bounds (issue 26138)
+    if (mysurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) {
+      Standard_Real uMaxShift = 0;
+      uMaxShift = ShapeAnalysis::AdjustToPeriod(Ufin, U0, U1);
+      if (Abs(uShift - uMaxShift) > Precision::PConfusion()) {
+        Handle(Geom_BSplineSurface) aBspl = Handle(Geom_BSplineSurface)::DownCast (mysurface->Copy());
+        Standard_Integer aLeft, aRight;
+        aBspl->LocateU(Umin, Precision::PConfusion(), aLeft, aRight);
+        aBspl->SetUOrigin(aLeft);
+        mysurface = aBspl;
+      }
+    }
     mysurface->SetUNotPeriodic();
   }
   if ( mysurface->IsVPeriodic() ) {
+    // set new origin for periodic BSpline surfaces for synchronization of pcurves ranges
+    // and surface bounds (issue 26138)
+    if (mysurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) {
+      Standard_Real vMaxShift = 0;
+      vMaxShift = ShapeAnalysis::AdjustToPeriod(Vfin, V0, V1);
+      if (Abs(vShift - vMaxShift) > Precision::PConfusion()) {
+        Handle(Geom_BSplineSurface) aBspl = Handle(Geom_BSplineSurface)::DownCast (mysurface->Copy());
+        Standard_Integer aLeft, aRight;
+        aBspl->LocateV(Vmin, Precision::PConfusion(), aLeft, aRight);
+        aBspl->SetVOrigin(aLeft);
+        mysurface = aBspl;
+      }
+    }
     mysurface->SetVNotPeriodic();
   }
  

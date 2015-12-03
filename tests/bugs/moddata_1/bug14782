@@ -43,7 +43,7 @@ if { [llength ${bounds_list}] < 7 } {
 set ll1 [lindex [length res] end]
 puts "length1=${ll1}"
 
-segment res t3 t4
+segment res t1 t2
 set segment_list [dump res]
 
 puts ""

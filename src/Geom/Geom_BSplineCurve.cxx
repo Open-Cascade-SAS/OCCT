@@ -525,8 +525,8 @@ Standard_Real Geom_BSplineCurve::ReversedParameter
 void Geom_BSplineCurve::Segment(const Standard_Real U1,
 				const Standard_Real U2)
 {
-  Standard_DomainError_Raise_if ( U2 < U1,
-				 "Geom_BSplineCurve::Segment");
+  if (U2 < U1)
+    Standard_DomainError::Raise("Geom_BSplineCurve::Segment");
   
   Standard_Real NewU1, NewU2;
   Standard_Real U,DU=0,aDDU=0;
@@ -540,9 +540,9 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
   if (periodic) {
     Standard_Real Period = LastParameter() - FirstParameter();
     DU = U2 - U1;
-    while (DU > Period)
-      DU -= Period;
-    if (DU <= Epsilon(Period))
+    if (DU - Period > Precision::PConfusion())
+      Standard_DomainError::Raise("Geom_BSplineCurve::Segment");
+    if (DU > Period)
       DU = Period;
     aDDU = DU;
   }
@@ -783,14 +783,15 @@ void Geom_BSplineCurve::SetPeriodic ()
 
 void Geom_BSplineCurve::SetOrigin(const Standard_Integer Index)
 {
-  Standard_NoSuchObject_Raise_if( !periodic,
-				 "Geom_BSplineCurve::SetOrigin");
+  if (!periodic)
+    Standard_NoSuchObject::Raise("Geom_BSplineCurve::SetOrigin");
+
   Standard_Integer i,k;
   Standard_Integer first = FirstUKnotIndex();
   Standard_Integer last  = LastUKnotIndex();
 
-  Standard_DomainError_Raise_if( (Index < first) || (Index > last),
-				"Geom_BSplineCurve::SetOrigine");
+  if ((Index < first) || (Index > last))
+    Standard_DomainError::Raise("Geom_BSplineCurve::SetOrigin");
 
   Standard_Integer nbknots = knots->Length();
   Standard_Integer nbpoles = poles->Length();
@@ -872,8 +873,8 @@ void Geom_BSplineCurve::SetOrigin(const Standard_Integer Index)
 void Geom_BSplineCurve::SetOrigin(const Standard_Real U,
 				  const Standard_Real Tol)
 {
-  Standard_NoSuchObject_Raise_if( !periodic,
-				 "Geom_BSplineCurve::SetOrigin");
+  if (!periodic)
+    Standard_NoSuchObject::Raise("Geom_BSplineCurve::SetOrigin");
   //U est il dans la period.
   Standard_Real uf = FirstParameter(), ul = LastParameter();
   Standard_Real u = U, period = ul - uf;
