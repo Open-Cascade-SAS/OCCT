@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC26952"
+puts "============"
+puts ""
+###############################
+## First test case for Set-41
+###############################
+
+restore [locate_data_file bug26952_B41.brep] b1
+restore [locate_data_file bug26952_Tank41_1.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 0
+
+set square 424.666
+
+set 2dviewer 1
