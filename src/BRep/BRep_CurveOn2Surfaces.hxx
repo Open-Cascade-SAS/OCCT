@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_CurveOn2Surfaces,BRep_CurveRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_CurveOn2Surfaces,BRep_CurveRepresentation)
 
 protected:
 

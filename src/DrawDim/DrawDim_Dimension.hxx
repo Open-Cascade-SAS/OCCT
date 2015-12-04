@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_Dimension,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_Dimension,Draw_Drawable3D)
 
 protected:
 

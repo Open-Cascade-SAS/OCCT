@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_NetworkSubfigure,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigure,IGESData_IGESEntity)
 
 protected:
 

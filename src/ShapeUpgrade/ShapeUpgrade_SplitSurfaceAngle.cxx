@@ -28,6 +28,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceAngle,ShapeUpgrade_SplitSurface)
+
 //=======================================================================
 //function : ShapeUpgrade_SplitSurfaceAngle
 //purpose  : 

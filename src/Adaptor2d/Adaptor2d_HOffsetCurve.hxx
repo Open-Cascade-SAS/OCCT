@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Adaptor2d_HOffsetCurve,Adaptor2d_HCurve2d)
+  DEFINE_STANDARD_RTTI_INLINE(Adaptor2d_HOffsetCurve,Adaptor2d_HCurve2d)
 
 protected:
 

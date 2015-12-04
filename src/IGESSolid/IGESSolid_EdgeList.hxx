@@ -89,7 +89,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_EdgeList,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_EdgeList,IGESData_IGESEntity)
 
 protected:
 

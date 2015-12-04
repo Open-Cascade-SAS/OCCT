@@ -23,6 +23,8 @@
 #include <IGESSolid_Cylinder.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Cylinder,IGESData_IGESEntity)
+
 IGESSolid_Cylinder::IGESSolid_Cylinder ()    {  }
 
 

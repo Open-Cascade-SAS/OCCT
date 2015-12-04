@@ -19,6 +19,8 @@
 #include <OpenGl_Vec.hxx>
 #include <Precision.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource,OpenGl_Resource)
+
 namespace
 {
   //! 12 plane vertices, interleaved:

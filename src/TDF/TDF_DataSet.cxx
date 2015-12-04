@@ -26,6 +26,8 @@
 #include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DataSet,MMgt_TShared)
+
 //=======================================================================
 //function : TDF_DataSet
 //purpose  : Creates a DataSet.

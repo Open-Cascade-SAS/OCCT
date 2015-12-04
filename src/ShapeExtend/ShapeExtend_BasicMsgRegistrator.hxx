@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeExtend_BasicMsgRegistrator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator,MMgt_TShared)
 
 protected:
 

@@ -365,7 +365,7 @@ friend class TDF_AttributeIterator;
 friend class TDF_DeltaOnForget;
 
 
-  DEFINE_STANDARD_RTTI(TDF_Attribute,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_Attribute,MMgt_TShared)
 
 protected:
 

@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_NamedExpression,Expr_GeneralExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_NamedExpression,Expr_GeneralExpression)
 
 protected:
 

@@ -405,7 +405,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ProcessForTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ProcessForTransient,MMgt_TShared)
 
 protected:
 

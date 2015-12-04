@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_CalendarDate,StepBasic_Date)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_CalendarDate,StepBasic_Date)
 
 protected:
 

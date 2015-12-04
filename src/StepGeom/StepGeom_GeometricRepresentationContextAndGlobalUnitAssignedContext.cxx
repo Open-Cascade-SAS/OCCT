@@ -19,6 +19,8 @@
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext,StepRepr_RepresentationContext)
+
 StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext ()  {}
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(

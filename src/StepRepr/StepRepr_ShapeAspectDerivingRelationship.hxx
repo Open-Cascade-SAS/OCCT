@@ -37,7 +37,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ShapeAspectDerivingRelationship,StepRepr_ShapeAspectRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspectDerivingRelationship,StepRepr_ShapeAspectRelationship)
 
 protected:
 

@@ -16,6 +16,8 @@
 #include <Standard_Type.hxx>
 #include <Vrml_LOD.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_LOD,MMgt_TShared)
+
 Vrml_LOD::Vrml_LOD()
 {
   myRange = new TColStd_HArray1OfReal(1,1);

@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StdSelect_ShapeTypeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_ShapeTypeFilter,SelectMgr_Filter)
 
 protected:
 

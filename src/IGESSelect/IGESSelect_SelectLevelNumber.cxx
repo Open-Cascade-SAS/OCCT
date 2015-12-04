@@ -23,6 +23,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectLevelNumber,IFSelect_SelectExtract)
+
 IGESSelect_SelectLevelNumber::IGESSelect_SelectLevelNumber ()    {  }
 
 

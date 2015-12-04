@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_Radius,DrawDim_Dimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_Radius,DrawDim_Dimension)
 
 protected:
 

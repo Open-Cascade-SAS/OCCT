@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRep_Polygon3D,BRep_CurveRepresentation)
+
 //=======================================================================
 //function : BRep_Polygon3D
 //purpose  : 

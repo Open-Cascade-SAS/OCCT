@@ -24,6 +24,8 @@
 #include <TDF_RelocationTable.hxx>
 #include <TDocStd_Modified.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Modified,TDF_Attribute)
+
 //=======================================================================
 //function : IsEmpty
 //purpose  : 

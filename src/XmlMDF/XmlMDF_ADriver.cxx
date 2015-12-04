@@ -22,6 +22,8 @@
 #include <XmlMDF_ADriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriver,MMgt_TShared)
+
 //=======================================================================
 //function : XmlMDF_ADriver
 //purpose  : Constructor

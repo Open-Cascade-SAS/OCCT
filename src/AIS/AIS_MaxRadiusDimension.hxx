@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_MaxRadiusDimension,AIS_EllipseRadiusDimension)
+  DEFINE_STANDARD_RTTIEXT(AIS_MaxRadiusDimension,AIS_EllipseRadiusDimension)
 
 protected:
 

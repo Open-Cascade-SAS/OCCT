@@ -218,7 +218,7 @@ public:
 friend class TDataStd_ChildNodeIterator;
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_TreeNode,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_TreeNode,TDF_Attribute)
 
 protected:
 

@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_DraughtingAnnotationOccurrence,StepVisual_AnnotationOccurrence)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingAnnotationOccurrence,StepVisual_AnnotationOccurrence)
 
 protected:
 

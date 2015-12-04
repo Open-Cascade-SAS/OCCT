@@ -46,7 +46,7 @@ public:
   
   Standard_EXPORT Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) ItemsAP242() const;
   
-  DEFINE_STANDARD_RTTI(StepShape_ShapeDimensionRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ShapeDimensionRepresentation,StepShape_ShapeRepresentation)
 private:
 
   Handle(StepShape_HArray1OfShapeDimensionRepresentationItem) itemsAP242;

@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_SelectionDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_SelectionDriver,TFunction_Driver)
 
 protected:
 

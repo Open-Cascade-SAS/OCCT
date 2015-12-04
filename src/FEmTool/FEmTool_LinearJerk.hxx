@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(FEmTool_LinearJerk,FEmTool_ElementaryCriterion)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_LinearJerk,FEmTool_ElementaryCriterion)
 
 protected:
 

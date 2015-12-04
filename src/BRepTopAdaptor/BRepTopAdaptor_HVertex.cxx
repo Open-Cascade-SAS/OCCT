@@ -26,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepTopAdaptor_HVertex,Adaptor3d_HVertex)
+
 BRepTopAdaptor_HVertex::BRepTopAdaptor_HVertex
   (const TopoDS_Vertex& V,
    const Handle(BRepAdaptor_HCurve2d)& C):

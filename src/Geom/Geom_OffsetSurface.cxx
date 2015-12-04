@@ -72,6 +72,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_OffsetSurface,Geom_Surface)
+
 static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
 
 

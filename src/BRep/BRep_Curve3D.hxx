@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_Curve3D,BRep_GCurve)
+  DEFINE_STANDARD_RTTIEXT(BRep_Curve3D,BRep_GCurve)
 
 protected:
 

@@ -113,7 +113,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_TextFontDef,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_TextFontDef,IGESData_IGESEntity)
 
 protected:
 

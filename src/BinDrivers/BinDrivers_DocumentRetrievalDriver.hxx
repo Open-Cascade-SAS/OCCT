@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
 
 protected:
 

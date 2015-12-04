@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_RebuildGroups,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_RebuildGroups,IGESSelect_ModelModifier)
 
 protected:
 

@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaShellBendingStiffness,StepFEA_FeaMaterialPropertyRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaShellBendingStiffness,StepFEA_FeaMaterialPropertyRepresentationItem)
 
 protected:
 

@@ -18,6 +18,8 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithModifiers,StepDimTol_GeometricTolerance)
+
 //=======================================================================
 //function : StepDimTol_GeometricToleranceWithModifiers
 //purpose  : 

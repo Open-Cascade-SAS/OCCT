@@ -80,7 +80,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(BRepExtrema_TriangleSet, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepExtrema_TriangleSet,Standard_Transient)
 
 };
 

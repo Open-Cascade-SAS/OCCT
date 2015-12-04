@@ -16,6 +16,8 @@
 #include <StepVisual_AreaOrView.hxx>
 #include <StepVisual_BackgroundColour.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_BackgroundColour,StepVisual_Colour)
+
 StepVisual_BackgroundColour::StepVisual_BackgroundColour ()  {}
 
 void StepVisual_BackgroundColour::Init(

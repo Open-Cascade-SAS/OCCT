@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDefs_UnitsData,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_UnitsData,IGESData_IGESEntity)
 
 protected:
 

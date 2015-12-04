@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_Check,MMgt_TShared)
+
 // Un Check est cree au depart sans liste de message : celle ci est creee
 // seulement si au moins une erreur doit y etre enregitree (Fail-Warning)
 //=======================================================================

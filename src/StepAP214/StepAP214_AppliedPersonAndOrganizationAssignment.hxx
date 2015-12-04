@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AppliedPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
 
 protected:
 

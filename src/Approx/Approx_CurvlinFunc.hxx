@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Approx_CurvlinFunc,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Approx_CurvlinFunc,MMgt_TShared)
 
 protected:
 

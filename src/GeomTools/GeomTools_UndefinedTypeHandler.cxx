@@ -21,6 +21,8 @@
 #include <GeomTools_UndefinedTypeHandler.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomTools_UndefinedTypeHandler,MMgt_TShared)
+
 GeomTools_UndefinedTypeHandler::GeomTools_UndefinedTypeHandler()
 {
 }

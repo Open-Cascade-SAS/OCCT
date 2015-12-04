@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSAlgo_AlgoContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSAlgo_AlgoContainer,MMgt_TShared)
 
 protected:
 

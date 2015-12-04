@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BiTgte_HCurveOnVertex,Adaptor3d_HCurve)
+  DEFINE_STANDARD_RTTI_INLINE(BiTgte_HCurveOnVertex,Adaptor3d_HCurve)
 
 protected:
 

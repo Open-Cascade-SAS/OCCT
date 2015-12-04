@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_BoxedHalfSpace,StepShape_HalfSpaceSolid)
+  DEFINE_STANDARD_RTTIEXT(StepShape_BoxedHalfSpace,StepShape_HalfSpaceSolid)
 
 protected:
 

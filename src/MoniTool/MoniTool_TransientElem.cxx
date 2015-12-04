@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_TransientElem,MoniTool_Element)
+
 MoniTool_TransientElem::MoniTool_TransientElem (const Handle(Standard_Transient)& akey)
     : theval (akey)
 {  SetHashCode ( TColStd_MapTransientHasher::HashCode (akey, IntegerLast() ) );  }

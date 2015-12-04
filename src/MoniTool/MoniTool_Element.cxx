@@ -16,6 +16,8 @@
 #include <MoniTool_Element.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Element,MMgt_TShared)
+
 void  MoniTool_Element::SetHashCode (const Standard_Integer code)
       {  thecode = code;  }
 

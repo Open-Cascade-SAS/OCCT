@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_NodeOfWriterLib,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(StepData_NodeOfWriterLib,MMgt_TShared)
 
 protected:
 

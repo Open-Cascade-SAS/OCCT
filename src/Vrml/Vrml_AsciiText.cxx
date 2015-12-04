@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <Vrml_AsciiText.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_AsciiText,MMgt_TShared)
+
 Vrml_AsciiText::Vrml_AsciiText()
 {
     TCollection_AsciiString tmpS("");

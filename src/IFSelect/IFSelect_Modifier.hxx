@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Modifier,IFSelect_GeneralModifier)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Modifier,IFSelect_GeneralModifier)
 
 protected:
 

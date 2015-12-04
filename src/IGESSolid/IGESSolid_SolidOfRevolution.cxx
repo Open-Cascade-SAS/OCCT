@@ -24,6 +24,8 @@
 #include <IGESSolid_SolidOfRevolution.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidOfRevolution,IGESData_IGESEntity)
+
 IGESSolid_SolidOfRevolution::IGESSolid_SolidOfRevolution ()    {  }
 
 

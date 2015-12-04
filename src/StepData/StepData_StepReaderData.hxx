@@ -318,7 +318,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_StepReaderData,Interface_FileReaderData)
+  DEFINE_STANDARD_RTTIEXT(StepData_StepReaderData,Interface_FileReaderData)
 
 protected:
 

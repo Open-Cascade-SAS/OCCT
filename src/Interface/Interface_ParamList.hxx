@@ -76,7 +76,7 @@ Interface_FileParameter& operator () (const Standard_Integer Index)
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_ParamList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ParamList,MMgt_TShared)
 
 protected:
 

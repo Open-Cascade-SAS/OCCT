@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ActorDispatch,Transfer_ActorOfTransientProcess)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ActorDispatch,Transfer_ActorOfTransientProcess)
 
 protected:
 

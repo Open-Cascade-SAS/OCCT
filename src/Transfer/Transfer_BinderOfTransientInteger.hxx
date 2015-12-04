@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_BinderOfTransientInteger,Transfer_SimpleBinderOfTransient)
+  DEFINE_STANDARD_RTTIEXT(Transfer_BinderOfTransientInteger,Transfer_SimpleBinderOfTransient)
 
 protected:
 

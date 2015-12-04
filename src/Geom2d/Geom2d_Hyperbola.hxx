@@ -297,7 +297,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom2d_Hyperbola,Geom2d_Conic)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Hyperbola,Geom2d_Conic)
 
 protected:
 

@@ -23,6 +23,8 @@
 #include <IGESGeom_Plane.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Plane,IGESData_IGESEntity)
+
 IGESGeom_Plane::IGESGeom_Plane ()     {  }
 
 

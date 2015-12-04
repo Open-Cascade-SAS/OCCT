@@ -11,28 +11,25 @@
 #include <Prs3d_ArrowAspect.hxx>
 
 
-IMPLEMENT_STANDARD_HANDLE(ISession_Curve,AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTI(ISession_Curve,AIS_InteractiveObject)
 //
 // Foreach ancestors, we add a IMPLEMENT_STANDARD_SUPERTYPE and 
 // a IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY macro.
 // We must respect the order: from the direct ancestor class
 // to the base class.
 //
-IMPLEMENT_STANDARD_TYPE(ISession_Curve)
-        IMPLEMENT_STANDARD_SUPERTYPE(AIS_InteractiveObject)
-        IMPLEMENT_STANDARD_SUPERTYPE(SelectMgr_SelectableObject)
-        IMPLEMENT_STANDARD_SUPERTYPE(PrsMgr_PresentableObject)
-        IMPLEMENT_STANDARD_SUPERTYPE(MMgt_TShared)
-        IMPLEMENT_STANDARD_SUPERTYPE(Standard_Transient)
-        IMPLEMENT_STANDARD_SUPERTYPE_ARRAY()
-                IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(AIS_InteractiveObject)
-                IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(SelectMgr_SelectableObject)
-                IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(PrsMgr_PresentableObject)
-                IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(MMgt_TShared)
-                IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(Standard_Transient)
-        IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_END()
-IMPLEMENT_STANDARD_TYPE_END(ISession_Curve)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifdef _DEBUG
 #undef THIS_FILE

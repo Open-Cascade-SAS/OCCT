@@ -19,6 +19,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_Line,MMgt_TShared)
+
 BRepBlend_Line::BRepBlend_Line ():
   tras1(IntSurf_Undecided),tras2(IntSurf_Undecided),
   hass1(Standard_False),hass2(Standard_False)

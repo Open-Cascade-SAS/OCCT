@@ -23,6 +23,8 @@
 #include <StepData_EDescr.hxx>
 #include <StepData_Protocol.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_DescrGeneral,StepData_GeneralModule)
+
 StepData_DescrGeneral::StepData_DescrGeneral
   (const Handle(StepData_Protocol)& proto)
     :  theproto (proto)    {  }

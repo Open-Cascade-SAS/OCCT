@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_PresentationSet.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationSet,MMgt_TShared)
+
 StepVisual_PresentationSet::StepVisual_PresentationSet ()  {}
 

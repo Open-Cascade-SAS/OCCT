@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepApprox_ApproxLine,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepApprox_ApproxLine,MMgt_TShared)
 
 protected:
 

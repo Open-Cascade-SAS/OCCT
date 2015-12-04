@@ -18,6 +18,8 @@
 #include <GeomFill_Line.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Line,MMgt_TShared)
+
 //=======================================================================
 //function : GeomFill_Line
 //purpose  : 

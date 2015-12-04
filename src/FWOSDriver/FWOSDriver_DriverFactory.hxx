@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(FWOSDriver_DriverFactory,CDF_MetaDataDriverFactory)
+  DEFINE_STANDARD_RTTIEXT(FWOSDriver_DriverFactory,CDF_MetaDataDriverFactory)
 
 protected:
 

@@ -80,7 +80,7 @@ public:
 friend class WNT_Window;
 
 
-  DEFINE_STANDARD_RTTI(WNT_WClass,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(WNT_WClass,MMgt_TShared)
 
 protected:
 

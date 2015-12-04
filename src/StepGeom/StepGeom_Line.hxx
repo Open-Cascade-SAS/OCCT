@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_Line,StepGeom_Curve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Line,StepGeom_Curve)
 
 protected:
 

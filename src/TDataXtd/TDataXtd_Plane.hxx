@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Plane,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Plane,TDF_Attribute)
 
 protected:
 

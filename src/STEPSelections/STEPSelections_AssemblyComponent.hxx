@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPSelections_AssemblyComponent,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_AssemblyComponent,MMgt_TShared)
 
 protected:
 

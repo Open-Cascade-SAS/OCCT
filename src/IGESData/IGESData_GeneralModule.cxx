@@ -33,6 +33,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_GeneralModule,Interface_GeneralModule)
+
 void  IGESData_GeneralModule::FillSharedCase
   (const Standard_Integer CN, const Handle(Standard_Transient)& ent,
    Interface_EntityIterator& iter) const 

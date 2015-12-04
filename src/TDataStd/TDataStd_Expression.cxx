@@ -26,6 +26,8 @@
 #include <TDF_ListIteratorOfAttributeList.hxx>
 #include <TDF_RelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Expression,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

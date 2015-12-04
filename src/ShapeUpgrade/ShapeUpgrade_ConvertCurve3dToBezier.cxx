@@ -33,6 +33,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve3dToBezier,ShapeUpgrade_SplitCurve3d)
+
 ShapeUpgrade_ConvertCurve3dToBezier::ShapeUpgrade_ConvertCurve3dToBezier()
 {
   mySegments = new TColGeom_HSequenceOfCurve;

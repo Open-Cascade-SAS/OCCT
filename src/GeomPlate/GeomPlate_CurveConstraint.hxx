@@ -160,7 +160,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomPlate_CurveConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomPlate_CurveConstraint,MMgt_TShared)
 
 protected:
 

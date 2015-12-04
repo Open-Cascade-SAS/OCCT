@@ -244,7 +244,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_Check,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_Check,MMgt_TShared)
 
 protected:
 

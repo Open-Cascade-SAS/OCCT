@@ -18,3 +18,5 @@
 #include <CDF_MetaDataDriver.hxx>
 #include <CDF_MetaDataDriverFactory.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(CDF_MetaDataDriverFactory,Standard_Transient)

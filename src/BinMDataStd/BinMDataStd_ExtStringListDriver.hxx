@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMDataStd_ExtStringListDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataStd_ExtStringListDriver,BinMDF_ADriver)
 
 protected:
 

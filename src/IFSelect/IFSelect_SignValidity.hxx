@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SignValidity,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignValidity,IFSelect_Signature)
 
 protected:
 

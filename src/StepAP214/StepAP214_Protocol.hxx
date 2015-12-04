@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_Protocol,StepData_Protocol)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_Protocol,StepData_Protocol)
 
 protected:
 

@@ -17,6 +17,8 @@
 
 #include <StepRepr_HArray1OfShapeAspect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneDefinition,MMgt_TShared)
+
 //=======================================================================
 //function : StepDimTol_ToleranceZoneDefinition
 //purpose  : 

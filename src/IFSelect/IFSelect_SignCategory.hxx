@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SignCategory,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignCategory,IFSelect_Signature)
 
 protected:
 

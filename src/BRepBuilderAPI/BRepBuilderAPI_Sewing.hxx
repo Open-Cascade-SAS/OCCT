@@ -241,7 +241,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepBuilderAPI_Sewing,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepBuilderAPI_Sewing,MMgt_TShared)
 
 protected:
 

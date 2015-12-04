@@ -26,6 +26,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CopiousData,IGESData_IGESEntity)
+
 IGESGeom_CopiousData::IGESGeom_CopiousData ()
 {
   theDataType = 0;  // to allow Setting Form Number before Init

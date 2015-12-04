@@ -39,6 +39,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_TrimmedCurve,Geom2d_BoundedCurve)
+
 typedef Geom2d_TrimmedCurve         TrimmedCurve;
 typedef gp_Ax2d   Ax2d;
 typedef gp_Pnt2d  Pnt2d;

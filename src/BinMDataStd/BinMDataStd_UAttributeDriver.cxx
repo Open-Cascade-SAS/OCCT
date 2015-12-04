@@ -21,6 +21,8 @@
 #include <TDataStd_UAttribute.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_UAttributeDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_UAttributeDriver
 //purpose  : Constructor

@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SignType,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignType,IFSelect_Signature)
 
 protected:
 

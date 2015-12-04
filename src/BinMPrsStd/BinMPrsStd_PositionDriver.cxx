@@ -23,6 +23,8 @@
 #include <TDataXtd_Position.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMPrsStd_PositionDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_PositionDriver
 //purpose  : Constructor

@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectErrorEntities,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectErrorEntities,IFSelect_SelectExtract)
 
 protected:
 

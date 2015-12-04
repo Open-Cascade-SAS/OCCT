@@ -1093,6 +1093,8 @@
 #include <StepVisual_ViewVolume.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
+
 //#define DeclareAndCast(atype,result,start) \  NON car Name
 // Handle(atype) result = Handle(atype)::DownCast (start)
 // Removed from Rev2 to Rev4 :  <StepVisual_AnnotationCurveOccurrence.hxx>

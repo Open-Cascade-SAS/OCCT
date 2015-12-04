@@ -84,7 +84,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_TEdge,TopoDS_TEdge)
+  DEFINE_STANDARD_RTTIEXT(BRep_TEdge,TopoDS_TEdge)
 
 protected:
 

@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_LocationDraft,GeomFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_LocationDraft,GeomFill_LocationLaw)
 
 protected:
 

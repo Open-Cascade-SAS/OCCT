@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMXCAFDoc_ShapeToolDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_ShapeToolDriver,XmlMDF_ADriver)
 
 protected:
 

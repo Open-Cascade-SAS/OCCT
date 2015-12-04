@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(RWHeaderSection_ReadWriteModule,StepData_ReadWriteModule)
+  DEFINE_STANDARD_RTTIEXT(RWHeaderSection_ReadWriteModule,StepData_ReadWriteModule)
 
 protected:
 

@@ -15,6 +15,8 @@
 #include <Graphic3d_TextureParams.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureParams,Standard_Transient)
+
 // =======================================================================
 // function : Graphic3d_TextureParams
 // purpose  :

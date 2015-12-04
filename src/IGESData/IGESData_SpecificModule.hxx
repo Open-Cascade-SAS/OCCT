@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_SpecificModule,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IGESData_SpecificModule,Standard_Transient)
 
 protected:
 

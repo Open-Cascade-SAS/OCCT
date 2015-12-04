@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_CcDesignContract,StepBasic_ContractAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignContract,StepBasic_ContractAssignment)
 
 protected:
 

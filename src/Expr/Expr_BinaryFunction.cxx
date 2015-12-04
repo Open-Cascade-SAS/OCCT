@@ -38,6 +38,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_BinaryFunction,Expr_BinaryExpression)
+
 Expr_BinaryFunction::Expr_BinaryFunction (const Handle(Expr_GeneralFunction)& func, const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {
   if (func->NbOfVariables() != 2) {

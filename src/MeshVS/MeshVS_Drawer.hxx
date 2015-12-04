@@ -89,7 +89,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_Drawer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_Drawer,MMgt_TShared)
 
 protected:
 

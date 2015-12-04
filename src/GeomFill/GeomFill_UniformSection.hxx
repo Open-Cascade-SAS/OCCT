@@ -148,7 +148,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_UniformSection,GeomFill_SectionLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_UniformSection,GeomFill_SectionLaw)
 
 protected:
 

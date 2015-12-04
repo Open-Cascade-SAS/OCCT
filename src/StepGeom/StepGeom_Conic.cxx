@@ -17,6 +17,8 @@
 #include <StepGeom_Conic.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Conic,StepGeom_Curve)
+
 StepGeom_Conic::StepGeom_Conic ()  {}
 
 void StepGeom_Conic::Init(

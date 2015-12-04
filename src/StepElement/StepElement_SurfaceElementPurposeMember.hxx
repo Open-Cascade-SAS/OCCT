@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_SurfaceElementPurposeMember,StepData_SelectNamed)
+  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceElementPurposeMember,StepData_SelectNamed)
 
 protected:
 

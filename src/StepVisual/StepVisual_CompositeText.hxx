@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_CompositeText,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CompositeText,StepGeom_GeometricRepresentationItem)
 
 protected:
 

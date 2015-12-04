@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSDRAWSTLVRML_DrawableMesh,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(XSDRAWSTLVRML_DrawableMesh,Draw_Drawable3D)
 
 protected:
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_VertexLoop,StepShape_Loop)
+  DEFINE_STANDARD_RTTIEXT(StepShape_VertexLoop,StepShape_Loop)
 
 protected:
 

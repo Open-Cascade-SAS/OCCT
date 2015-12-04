@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMXCAFDoc_MaterialToolDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_MaterialToolDriver,XmlMDF_ADriver)
 
 protected:
 

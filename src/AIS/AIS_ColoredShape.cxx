@@ -44,6 +44,9 @@
 
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredShape,AIS_Shape)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredDrawer,Prs3d_Drawer)
+
 //=======================================================================
 //function : AIS_ColoredShape
 //purpose  :

@@ -15,4 +15,6 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_DigitalDocument.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DigitalDocument,StepBasic_Document)
+
 StepBasic_DigitalDocument::StepBasic_DigitalDocument  ()    {  }

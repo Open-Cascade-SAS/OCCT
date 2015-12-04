@@ -78,7 +78,7 @@ public:
   //! @return true if axes labels are drawn
   Standard_EXPORT Standard_Boolean ToDrawLabels() const;
 
-  DEFINE_STANDARD_RTTI(Prs3d_DatumAspect,Prs3d_BasicAspect)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_DatumAspect,Prs3d_BasicAspect)
 
 private:
 

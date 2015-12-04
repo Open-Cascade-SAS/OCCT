@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_AreaUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_AreaUnit,StepBasic_NamedUnit)
 
 protected:
 

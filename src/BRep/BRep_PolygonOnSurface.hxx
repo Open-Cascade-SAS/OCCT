@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_PolygonOnSurface,BRep_CurveRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnSurface,BRep_CurveRepresentation)
 
 protected:
 

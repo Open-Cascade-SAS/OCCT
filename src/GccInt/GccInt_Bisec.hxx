@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GccInt_Bisec,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GccInt_Bisec,MMgt_TShared)
 
 protected:
 

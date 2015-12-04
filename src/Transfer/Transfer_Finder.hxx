@@ -147,7 +147,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_Finder,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_Finder,MMgt_TShared)
 
 protected:
 

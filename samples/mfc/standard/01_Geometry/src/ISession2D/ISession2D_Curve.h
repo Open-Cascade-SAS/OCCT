@@ -15,7 +15,7 @@
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
 
-class TColGeom2d_HSequenceOfCurve;
+#include <TColGeom2d_HSequenceOfCurve.hxx>
 class PrsMgr_PresentationManager2d;
 class Graphic2d_GraphicObject;
 class SelectMgr_Selection;
@@ -33,7 +33,7 @@ public:
   // 
 
   ISession2D_Curve
-    (const Handle_Geom2d_Curve aGeom2dCurve,
+    (const Handle(Geom2d_Curve) aGeom2dCurve,
     const Aspect_TypeOfLine aTypeOfline = Aspect_TOL_SOLID,
     const Aspect_WidthOfLine aWidthOfLine = Aspect_WOL_MEDIUM,
     const Standard_Integer aColorIndex = 4);
@@ -59,7 +59,7 @@ public:
   inline   Standard_Real GetDiscretisation() const;
   inline   void SetDiscretisation(const Standard_Real aNewDiscretisation) ;
 
-  DEFINE_STANDARD_RTTI(ISession2D_Curve,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(ISession2D_Curve,AIS_InteractiveObject)
 
 private: 
 
@@ -70,7 +70,7 @@ private:
 
   // Fields PRIVATE
   //
-  Handle_Geom2d_Curve myGeom2dCurve;
+  Handle(Geom2d_Curve) myGeom2dCurve;
   Aspect_TypeOfLine   myTypeOfLine;
   Aspect_WidthOfLine  myWidthOfLine;
   Standard_Integer    myColorIndex;

@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectSharing,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSharing,IFSelect_SelectDeduct)
 
 protected:
 

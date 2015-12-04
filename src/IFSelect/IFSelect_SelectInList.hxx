@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectInList,IFSelect_SelectAnyList)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectInList,IFSelect_SelectAnyList)
 
 protected:
 

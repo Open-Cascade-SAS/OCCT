@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_Point,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Point,IGESData_IGESEntity)
 
 protected:
 

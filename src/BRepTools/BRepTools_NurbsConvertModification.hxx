@@ -106,7 +106,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepTools_NurbsConvertModification,BRepTools_Modification)
+  DEFINE_STANDARD_RTTIEXT(BRepTools_NurbsConvertModification,BRepTools_Modification)
 
 protected:
 

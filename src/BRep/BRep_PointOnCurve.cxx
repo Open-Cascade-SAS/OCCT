@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRep_PointOnCurve,BRep_PointRepresentation)
+
 //=======================================================================
 //function : BRep_PointOnCurve
 //purpose  : 

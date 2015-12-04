@@ -33,6 +33,8 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESControl_ActorWrite,Transfer_ActorOfFinderProcess)
+
 IGESControl_ActorWrite::IGESControl_ActorWrite ()  {  ModeTrans() = 0;  }
 
 Standard_Boolean  IGESControl_ActorWrite::Recognize

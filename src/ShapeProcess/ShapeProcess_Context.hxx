@@ -123,7 +123,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeProcess_Context,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeProcess_Context,MMgt_TShared)
 
 protected:
 

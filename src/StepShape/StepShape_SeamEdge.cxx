@@ -21,6 +21,8 @@
 #include <StepShape_SeamEdge.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_SeamEdge,StepShape_OrientedEdge)
+
 //=======================================================================
 //function : StepShape_SeamEdge
 //purpose  : 

@@ -16,3 +16,5 @@
 #include <Law_Function.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Law_Function,MMgt_TShared)

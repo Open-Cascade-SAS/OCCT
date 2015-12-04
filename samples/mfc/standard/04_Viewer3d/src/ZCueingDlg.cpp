@@ -16,7 +16,7 @@ static char THIS_FILE[] = __FILE__;
 // ZCueingDlg dialog
 
 
-ZCueingDlg::ZCueingDlg(Handle_V3d_View Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent /*=NULL*/)
+ZCueingDlg::ZCueingDlg(Handle(V3d_View) Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent /*=NULL*/)
 	: CDialog(ZCueingDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(ZCueingDlg)

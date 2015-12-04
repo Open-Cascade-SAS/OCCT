@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_RevolutionDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_RevolutionDriver,TFunction_Driver)
 
 protected:
 

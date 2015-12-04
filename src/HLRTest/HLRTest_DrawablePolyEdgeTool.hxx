@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRTest_DrawablePolyEdgeTool,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(HLRTest_DrawablePolyEdgeTool,Draw_Drawable3D)
 
 protected:
 

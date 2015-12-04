@@ -33,6 +33,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_ACRLaw,BRepFill_LocationLaw)
+
 BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire& Path,
 				 const Handle(GeomFill_LocationGuide)& theLaw)
 {

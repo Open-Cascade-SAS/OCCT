@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_ExternallyDefinedGeneralProperty,StepBasic_GeneralProperty)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedGeneralProperty,StepBasic_GeneralProperty)
 
 protected:
 

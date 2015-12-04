@@ -20,3 +20,5 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_HSurface,GeomAdaptor_GHSurface)

@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPSelections_SelectInstances,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectInstances,IFSelect_SelectExplore)
 
 protected:
 

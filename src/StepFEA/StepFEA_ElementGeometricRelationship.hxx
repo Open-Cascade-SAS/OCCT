@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_ElementGeometricRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_ElementGeometricRelationship,MMgt_TShared)
 
 protected:
 

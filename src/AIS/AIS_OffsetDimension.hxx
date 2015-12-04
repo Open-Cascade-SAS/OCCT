@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_OffsetDimension,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_OffsetDimension,AIS_Relation)
 
 protected:
 

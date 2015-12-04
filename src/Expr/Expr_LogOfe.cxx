@@ -28,6 +28,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_LogOfe,Expr_UnaryExpression)
+
 Expr_LogOfe::Expr_LogOfe(const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);

@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnSurface,BRep_CurveRepresentation)
+
 //=======================================================================
 //function : BRep_PolygonOnSurface
 //purpose  : 

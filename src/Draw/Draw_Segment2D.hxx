@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Segment2D,Draw_Drawable2D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Segment2D,Draw_Drawable2D)
 
 protected:
 

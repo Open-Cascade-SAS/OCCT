@@ -16,6 +16,8 @@
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnit,StepBasic_NamedUnit)
+
 StepBasic_SiUnit::StepBasic_SiUnit ()  {}
 
 void StepBasic_SiUnit::Init(

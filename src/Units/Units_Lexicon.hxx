@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_Lexicon,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Lexicon,MMgt_TShared)
 
 protected:
 

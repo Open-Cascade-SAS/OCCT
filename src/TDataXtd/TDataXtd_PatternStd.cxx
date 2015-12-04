@@ -33,6 +33,8 @@
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_PatternStd,TDataXtd_Pattern)
+
 //=======================================================================
 //function : GetPatternID
 //purpose  : 

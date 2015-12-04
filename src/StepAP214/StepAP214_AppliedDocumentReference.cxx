@@ -18,6 +18,8 @@
 #include <StepBasic_Document.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedDocumentReference,StepBasic_DocumentReference)
+
 StepAP214_AppliedDocumentReference::StepAP214_AppliedDocumentReference ()    {  }
 
 void  StepAP214_AppliedDocumentReference::Init

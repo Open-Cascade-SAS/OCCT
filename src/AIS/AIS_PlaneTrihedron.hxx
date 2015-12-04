@@ -120,7 +120,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_PlaneTrihedron,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_PlaneTrihedron,AIS_InteractiveObject)
 
 protected:
 

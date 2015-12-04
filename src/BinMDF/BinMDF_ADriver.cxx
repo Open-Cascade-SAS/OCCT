@@ -22,6 +22,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriver,MMgt_TShared)
+
 //=======================================================================
 //function : BinMDF_ADriver
 //purpose  : Constructor

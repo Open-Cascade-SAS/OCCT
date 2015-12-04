@@ -75,7 +75,7 @@ public:
   
   virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
-  DEFINE_STANDARD_RTTI( OcctWindow, Aspect_Window )
+  DEFINE_STANDARD_RTTIEXT(OcctWindow,Aspect_Window)
 
 protected:
   Standard_Integer myXLeft;

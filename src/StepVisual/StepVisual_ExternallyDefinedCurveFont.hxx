@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_ExternallyDefinedCurveFont,StepBasic_ExternallyDefinedItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedCurveFont,StepBasic_ExternallyDefinedItem)
 
 protected:
 

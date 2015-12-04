@@ -82,7 +82,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_RuledSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_RuledSurface,IGESData_IGESEntity)
 
 protected:
 

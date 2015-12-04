@@ -112,7 +112,7 @@ void operator<< (Standard_OStream& s) const
 
 
 
-  DEFINE_STANDARD_RTTI(Standard_Failure,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Standard_Failure,Standard_Transient)
 
 protected:
 

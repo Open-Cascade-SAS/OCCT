@@ -31,6 +31,7 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMFunction_ScopeDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (LastIDIndex,    "lastid")
 IMPLEMENT_DOMSTRING (LastLabelIndex, "lastlabel")
 

@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TransferBRep_OrientedShapeMapper,Transfer_Finder)
+  DEFINE_STANDARD_RTTI_INLINE(TransferBRep_OrientedShapeMapper,Transfer_Finder)
 
 protected:
 

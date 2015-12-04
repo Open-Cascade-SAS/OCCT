@@ -18,6 +18,8 @@
 #include <StepVisual_ViewVolume.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3,StepVisual_CameraModel)
+
 StepVisual_CameraModelD3::StepVisual_CameraModelD3 ()  {}
 
 void StepVisual_CameraModelD3::Init(

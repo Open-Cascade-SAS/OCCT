@@ -35,6 +35,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_CurveConstraint,GeomPlate_CurveConstraint)
+
 //---------------------------------------------------------
 //         Constructeurs avec courbe sur surface
 //---------------------------------------------------------

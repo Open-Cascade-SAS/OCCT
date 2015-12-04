@@ -112,7 +112,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_SplineSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_SplineSurface,IGESData_IGESEntity)
 
 protected:
 

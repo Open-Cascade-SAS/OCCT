@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_ParamEditor,IFSelect_Editor)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ParamEditor,IFSelect_Editor)
 
 protected:
 

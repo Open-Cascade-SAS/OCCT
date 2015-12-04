@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_RatioUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_RatioUnit,StepBasic_NamedUnit)
 
 protected:
 

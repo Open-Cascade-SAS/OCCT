@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Prs3d_PlaneAspect,Prs3d_BasicAspect)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_PlaneAspect,Prs3d_BasicAspect)
 
 protected:
 

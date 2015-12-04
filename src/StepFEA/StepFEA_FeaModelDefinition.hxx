@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaModelDefinition,StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModelDefinition,StepRepr_ShapeAspect)
 
 protected:
 

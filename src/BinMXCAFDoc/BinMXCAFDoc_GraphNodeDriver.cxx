@@ -21,6 +21,8 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_GraphNodeDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function :
 //purpose  : 

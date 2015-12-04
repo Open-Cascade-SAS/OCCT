@@ -454,7 +454,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Wire,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Wire,ShapeFix_Root)
 
 protected:
 

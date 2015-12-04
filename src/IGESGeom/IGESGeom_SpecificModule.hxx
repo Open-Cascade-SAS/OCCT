@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_SpecificModule,IGESData_SpecificModule)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_SpecificModule,IGESData_SpecificModule)
 
 protected:
 

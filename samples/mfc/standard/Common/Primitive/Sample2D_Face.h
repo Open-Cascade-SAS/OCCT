@@ -21,7 +21,7 @@ public:
  // 
 Standard_EXPORT Sample2D_Face (const TopoDS_Shape& theFace);
 
-DEFINE_STANDARD_RTTI(Sample2D_Face,AIS_InteractiveObject)
+DEFINE_STANDARD_RTTIEXT(Sample2D_Face,AIS_InteractiveObject)
 
 private:
 

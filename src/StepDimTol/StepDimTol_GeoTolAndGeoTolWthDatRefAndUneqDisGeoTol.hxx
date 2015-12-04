@@ -63,7 +63,7 @@ public:
     return myUnequallyDisposedGeometricTolerance;
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,StepDimTol_GeoTolAndGeoTolWthDatRef)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,StepDimTol_GeoTolAndGeoTolWthDatRef)
 
 private:
 

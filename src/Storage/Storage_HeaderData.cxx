@@ -19,6 +19,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Storage_HeaderData,MMgt_TShared)
+
 Storage_HeaderData::Storage_HeaderData() : myNBObj(0), myErrorStatus(Storage_VSOk)
 {
 }

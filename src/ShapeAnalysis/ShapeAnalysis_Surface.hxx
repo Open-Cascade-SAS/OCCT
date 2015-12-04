@@ -287,7 +287,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeAnalysis_Surface,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_Surface,MMgt_TShared)
 
 protected:
 

@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_DefaultSpecific,IGESData_SpecificModule)
+
 IGESData_DefaultSpecific::IGESData_DefaultSpecific ()
 {  IGESData_SpecificLib::SetGlobal(this, IGESData::Protocol());  }
 

@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_TimeMeasureWithUnit,StepBasic_MeasureWithUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_TimeMeasureWithUnit,StepBasic_MeasureWithUnit)
 
 protected:
 

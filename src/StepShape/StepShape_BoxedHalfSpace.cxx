@@ -18,6 +18,8 @@
 #include <StepShape_BoxedHalfSpace.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxedHalfSpace,StepShape_HalfSpaceSolid)
+
 StepShape_BoxedHalfSpace::StepShape_BoxedHalfSpace ()  {}
 
 void StepShape_BoxedHalfSpace::Init(

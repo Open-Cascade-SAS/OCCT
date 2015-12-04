@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_CylinderDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_CylinderDriver,TFunction_Driver)
 
 protected:
 

@@ -22,6 +22,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide,GeomFill_TrihedronLaw)
+
 Handle(Adaptor3d_HCurve) GeomFill_TrihedronWithGuide::Guide()const
 {
   return myGuide;

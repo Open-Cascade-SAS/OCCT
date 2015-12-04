@@ -77,6 +77,8 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_ComposeShell,ShapeFix_Root)
+
 //=======================================================================
 //function : ShapeFix_ComposeShell
 //purpose  : 

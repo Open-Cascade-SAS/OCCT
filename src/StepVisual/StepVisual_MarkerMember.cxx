@@ -17,6 +17,8 @@
 #include <StepVisual_MarkerMember.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_MarkerMember,StepData_SelectInt)
+
 static StepData_EnumTool tool
   (".DOT.",".X.",".PLUS.",".ASTERISK.",".RING.",".SQUARE.",".TRIANGLE.");
 

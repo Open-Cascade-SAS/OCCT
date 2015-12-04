@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetVersion5,IGESSelect_ModelModifier)
+
 IGESSelect_SetVersion5::IGESSelect_SetVersion5 ()
     : IGESSelect_ModelModifier (Standard_False)    {  }
 

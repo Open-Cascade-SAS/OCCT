@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepDS_ShapeShapeInterference,TopOpeBRepDS_Interference)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference,TopOpeBRepDS_Interference)
 
 protected:
 

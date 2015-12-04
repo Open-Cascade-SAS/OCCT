@@ -21,6 +21,8 @@
 #include <gp_Vec.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TgtOnCoons,GeomFill_TgtField)
+
 //=======================================================================
 //function : GeomFill_TgtOnCoons
 //purpose  : 

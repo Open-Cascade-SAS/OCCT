@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_Effectivity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Effectivity,MMgt_TShared)
 
 protected:
 

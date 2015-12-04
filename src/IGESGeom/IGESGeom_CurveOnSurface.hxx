@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_CurveOnSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_CurveOnSurface,IGESData_IGESEntity)
 
 protected:
 

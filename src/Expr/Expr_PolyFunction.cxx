@@ -38,6 +38,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_PolyFunction,Expr_PolyExpression)
+
 Expr_PolyFunction::Expr_PolyFunction (const Handle(Expr_GeneralFunction)& func, const Expr_Array1OfGeneralExpression& exps)
 {
   for (Standard_Integer i=exps.Lower();i <= exps.Upper(); i++) {

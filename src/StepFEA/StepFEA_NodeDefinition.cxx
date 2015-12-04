@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepFEA_NodeDefinition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeDefinition,StepRepr_ShapeAspect)
+
 //=======================================================================
 //function : StepFEA_NodeDefinition
 //purpose  : 

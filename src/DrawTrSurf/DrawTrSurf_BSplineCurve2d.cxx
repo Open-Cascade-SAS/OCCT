@@ -24,6 +24,8 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve2d,DrawTrSurf_Curve2d)
+
 DrawTrSurf_BSplineCurve2d::DrawTrSurf_BSplineCurve2d (
    const Handle(Geom2d_BSplineCurve)& C) 
    : DrawTrSurf_Curve2d (C, Draw_vert, 100) {

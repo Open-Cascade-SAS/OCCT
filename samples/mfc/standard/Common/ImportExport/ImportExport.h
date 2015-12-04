@@ -34,13 +34,13 @@ public :
 
     //======================================================================
     // return is HSequence to be able to select a set of files
-    static int ReadBREP(const Handle_AIS_InteractiveContext& anInteractiveContext);
-    static Handle_TopTools_HSequenceOfShape ReadBREP();
+    static int ReadBREP(const Handle(AIS_InteractiveContext)& anInteractiveContext);
+    static Handle(TopTools_HSequenceOfShape) ReadBREP();
     static Standard_Boolean ReadBREP(CString      aFileName,
                                     TopoDS_Shape& aShape);
 
     //----------------------------------------------------------------------
-    static void SaveBREP(const Handle_AIS_InteractiveContext& anInteractiveContext);
+    static void SaveBREP(const Handle(AIS_InteractiveContext)& anInteractiveContext);
     static Standard_Boolean SaveBREP(const TopoDS_Shape& aShape);
     static Standard_Boolean SaveBREP(CString aFileName,
                                     const TopoDS_Shape& aShape);

@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFPrs_Driver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(XCAFPrs_Driver,TPrsStd_Driver)
 
 protected:
 

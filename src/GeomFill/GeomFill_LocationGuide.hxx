@@ -173,7 +173,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_LocationGuide,GeomFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_LocationGuide,GeomFill_LocationLaw)
 
 protected:
 

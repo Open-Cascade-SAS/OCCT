@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_Node,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_Node,IGESData_IGESEntity)
 
 protected:
 

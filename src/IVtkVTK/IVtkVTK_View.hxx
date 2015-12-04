@@ -89,7 +89,7 @@ public:
   //! @return true if conversion was successful, false otherwise
   Standard_EXPORT virtual bool    DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldPnt) const;
 
-  DEFINE_STANDARD_RTTI(IVtkVTK_View, IVtk_IView)
+  DEFINE_STANDARD_RTTIEXT(IVtkVTK_View,IVtk_IView)
 
 private:
   vtkRenderer* myRenderer;

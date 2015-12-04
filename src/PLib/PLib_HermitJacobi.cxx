@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(PLib_HermitJacobi,PLib_Base)
+
 //=======================================================================
 //function : PLib_HermitJacobi
 //purpose  : 

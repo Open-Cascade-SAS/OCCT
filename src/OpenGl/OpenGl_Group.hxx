@@ -133,7 +133,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Group, Graphic3d_Group) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Group,Graphic3d_Group) // Type definition
 
 };
 

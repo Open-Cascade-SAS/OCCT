@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_SignShape,MoniTool_SignText)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_SignShape,MoniTool_SignText)
 
 protected:
 

@@ -19,6 +19,8 @@
 #include <StepFEA_DegreeOfFreedomMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_DegreeOfFreedomMember,StepData_SelectNamed)
+
 static Standard_CString anEnumeratedCurveElementFreedom = "ENUMERATED_DEGREE_OF_FREEDOM";
 static Standard_CString anApplicationDefinedDegreeOfFreedom ="APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 

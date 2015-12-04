@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_TrimmingMember,StepData_SelectReal)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_TrimmingMember,StepData_SelectReal)
 
 protected:
 

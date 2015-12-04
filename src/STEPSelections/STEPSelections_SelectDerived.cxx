@@ -25,6 +25,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectDerived,StepSelect_StepType)
+
 STEPSelections_SelectDerived::STEPSelections_SelectDerived():StepSelect_StepType()
 {
 }

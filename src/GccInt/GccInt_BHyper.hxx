@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GccInt_BHyper,GccInt_Bisec)
+  DEFINE_STANDARD_RTTIEXT(GccInt_BHyper,GccInt_Bisec)
 
 protected:
 

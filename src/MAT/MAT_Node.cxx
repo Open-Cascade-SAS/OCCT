@@ -21,6 +21,8 @@
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Node,MMgt_TShared)
+
 //=============================================================================
 //function : 
 //Purpose  :

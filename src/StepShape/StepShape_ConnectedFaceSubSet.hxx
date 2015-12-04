@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ConnectedFaceSubSet,StepShape_ConnectedFaceSet)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSubSet,StepShape_ConnectedFaceSet)
 
 protected:
 

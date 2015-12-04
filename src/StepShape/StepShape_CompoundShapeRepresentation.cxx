@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepShape_CompoundShapeRepresentation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_CompoundShapeRepresentation,StepShape_ShapeRepresentation)
+
 //=======================================================================
 //function : StepShape_CompoundShapeRepresentation
 //purpose  : 

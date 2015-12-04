@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(APIHeaderSection_EditHeader,IFSelect_Editor)
+  DEFINE_STANDARD_RTTIEXT(APIHeaderSection_EditHeader,IFSelect_Editor)
 
 protected:
 

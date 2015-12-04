@@ -28,6 +28,8 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IntTools_TopolTool,Adaptor3d_TopolTool)
+
 static void Analyse(const TColgp_Array2OfPnt& array2,
 		    Standard_Integer&         theNbSamplesU,
 		    Standard_Integer&         theNbSamplesV);

@@ -29,6 +29,8 @@
 #include <TopAbs.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_SelectionDriver,TFunction_Driver)
+
 //#define SEL_DEB 1
 #ifdef OCCT_DEBUG
 #include <TDF_Tool.hxx>

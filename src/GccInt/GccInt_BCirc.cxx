@@ -20,6 +20,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BCirc,GccInt_Bisec)
+
 GccInt_BCirc::
    GccInt_BCirc(const gp_Circ2d& Circ) {
    cir = gp_Circ2d(Circ);

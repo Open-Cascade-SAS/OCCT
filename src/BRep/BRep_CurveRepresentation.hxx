@@ -147,7 +147,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_CurveRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRep_CurveRepresentation,MMgt_TShared)
 
 protected:
 

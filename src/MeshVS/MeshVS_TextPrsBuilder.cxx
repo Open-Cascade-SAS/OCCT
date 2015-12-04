@@ -38,6 +38,8 @@
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_TextPrsBuilder,MeshVS_PrsBuilder)
+
 //================================================================
 // Function : Constructor MeshVS_TextPrsBuilder
 // Purpose  :

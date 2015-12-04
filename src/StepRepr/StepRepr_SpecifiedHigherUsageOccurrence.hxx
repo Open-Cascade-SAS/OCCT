@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_SpecifiedHigherUsageOccurrence,StepRepr_AssemblyComponentUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_SpecifiedHigherUsageOccurrence,StepRepr_AssemblyComponentUsage)
 
 protected:
 

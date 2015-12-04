@@ -153,7 +153,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_TransformStandard,IFSelect_Transformer)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_TransformStandard,IFSelect_Transformer)
 
 protected:
 

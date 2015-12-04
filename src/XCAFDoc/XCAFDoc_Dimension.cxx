@@ -29,6 +29,8 @@
 #include <TopoDS.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Dimension,TDF_Attribute)
+
 enum ChildLab
 {
   ChildLab_Type = 1,

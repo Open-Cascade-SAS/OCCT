@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_ShapeLaw,BRepFill_SectionLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_ShapeLaw,BRepFill_SectionLaw)
 
 protected:
 

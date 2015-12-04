@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMNaming_NamingDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMNaming_NamingDriver,XmlMDF_ADriver)
 
 protected:
 

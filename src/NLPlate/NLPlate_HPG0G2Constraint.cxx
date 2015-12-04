@@ -22,6 +22,8 @@
 #include <Plate_D2.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0G2Constraint,NLPlate_HPG0G1Constraint)
+
 NLPlate_HPG0G2Constraint::NLPlate_HPG0G2Constraint(const gp_XY& UV, const gp_XYZ& Value, const Plate_D1& D1T, const Plate_D2& D2T)
 : NLPlate_HPG0G1Constraint(UV,Value,D1T), myG2Target(D2T)
 {

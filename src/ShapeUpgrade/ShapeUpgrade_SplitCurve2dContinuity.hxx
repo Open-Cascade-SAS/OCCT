@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_SplitCurve2dContinuity,ShapeUpgrade_SplitCurve2d)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity,ShapeUpgrade_SplitCurve2d)
 
 protected:
 

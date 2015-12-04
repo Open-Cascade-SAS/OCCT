@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ActorOfTransientProcess,Transfer_ActorOfProcessForTransient)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ActorOfTransientProcess,Transfer_ActorOfProcessForTransient)
 
 protected:
 

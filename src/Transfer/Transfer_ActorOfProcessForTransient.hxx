@@ -96,7 +96,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ActorOfProcessForTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ActorOfProcessForTransient,MMgt_TShared)
 
 protected:
 

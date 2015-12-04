@@ -550,7 +550,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI (OpenGl_ShaderProgram, OpenGl_Resource)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderProgram,OpenGl_Resource)
   friend class OpenGl_ShaderManager;
 
 };

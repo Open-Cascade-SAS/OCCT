@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_NamedUnknown,Expr_NamedExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_NamedUnknown,Expr_NamedExpression)
 
 protected:
 

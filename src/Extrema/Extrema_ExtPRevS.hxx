@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Extrema_ExtPRevS,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Extrema_ExtPRevS,Standard_Transient)
 
 protected:
 

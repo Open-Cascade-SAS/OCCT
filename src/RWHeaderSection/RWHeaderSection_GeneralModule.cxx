@@ -31,6 +31,8 @@
 #include <StepData_UndefinedEntity.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(RWHeaderSection_GeneralModule,StepData_GeneralModule)
+
 RWHeaderSection_GeneralModule::RWHeaderSection_GeneralModule ()
 { 
   Interface_GeneralLib::SetGlobal(this, HeaderSection::Protocol());

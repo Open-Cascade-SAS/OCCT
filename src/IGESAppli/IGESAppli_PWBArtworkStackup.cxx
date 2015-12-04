@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBArtworkStackup,IGESData_IGESEntity)
+
 IGESAppli_PWBArtworkStackup::IGESAppli_PWBArtworkStackup ()    {  }
 
 

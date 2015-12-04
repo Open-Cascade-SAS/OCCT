@@ -32,6 +32,8 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentableObject,MMgt_TShared)
+
 //=======================================================================
 //function : PrsMgr_PresentableObject
 //purpose  :

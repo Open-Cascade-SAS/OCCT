@@ -15,4 +15,6 @@
 
 #include <StepRepr_Apex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_Apex,StepRepr_DerivedShapeAspect)
+
 StepRepr_Apex::StepRepr_Apex ()    {  }

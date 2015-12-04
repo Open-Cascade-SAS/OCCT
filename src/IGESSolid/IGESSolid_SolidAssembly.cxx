@@ -23,6 +23,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidAssembly,IGESData_IGESEntity)
+
 IGESSolid_SolidAssembly::IGESSolid_SolidAssembly ()    {  }
 
 

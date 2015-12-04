@@ -26,6 +26,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ElementResults,IGESData_IGESEntity)
+
 IGESAppli_ElementResults::IGESAppli_ElementResults ()    {  }
 
     void  IGESAppli_ElementResults::Init

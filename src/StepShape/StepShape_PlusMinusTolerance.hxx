@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_PlusMinusTolerance,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance,MMgt_TShared)
 
 protected:
 

@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomAdaptor_HSurface,GeomAdaptor_GHSurface)
+  DEFINE_STANDARD_RTTIEXT(GeomAdaptor_HSurface,GeomAdaptor_GHSurface)
 
 protected:
 

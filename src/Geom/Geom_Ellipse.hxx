@@ -223,7 +223,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Ellipse,Geom_Conic)
+  DEFINE_STANDARD_RTTIEXT(Geom_Ellipse,Geom_Conic)
 
 protected:
 

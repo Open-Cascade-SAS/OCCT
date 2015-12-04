@@ -24,6 +24,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDocStd_XLinkDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (DocEntryString, "documentEntry")
 
 //=======================================================================

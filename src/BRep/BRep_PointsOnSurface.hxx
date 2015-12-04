@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_PointsOnSurface,BRep_PointRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_PointsOnSurface,BRep_PointRepresentation)
 
 protected:
 

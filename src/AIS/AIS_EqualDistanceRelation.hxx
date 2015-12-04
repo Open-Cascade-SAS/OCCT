@@ -108,7 +108,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_EqualDistanceRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_EqualDistanceRelation,AIS_Relation)
 
 protected:
 

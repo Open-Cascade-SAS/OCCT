@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_Reference,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDF_Reference,TDF_Attribute)
 
 protected:
 

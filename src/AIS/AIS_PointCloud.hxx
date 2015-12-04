@@ -122,7 +122,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_PointCloud, AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_PointCloud,AIS_InteractiveObject)
 
 };
 

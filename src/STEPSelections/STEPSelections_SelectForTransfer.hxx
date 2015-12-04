@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPSelections_SelectForTransfer,XSControl_SelectForTransfer)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectForTransfer,XSControl_SelectForTransfer)
 
 protected:
 

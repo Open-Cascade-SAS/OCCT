@@ -23,6 +23,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BezierCurve,DrawTrSurf_Curve)
+
 DrawTrSurf_BezierCurve::DrawTrSurf_BezierCurve (
    const Handle(Geom_BezierCurve)& C) 
    : DrawTrSurf_Curve (C, Draw_vert, 16, 0.05, 1) {

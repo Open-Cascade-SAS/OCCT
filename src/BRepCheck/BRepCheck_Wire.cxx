@@ -74,6 +74,8 @@
 #include <TopTools_MapOfShape.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Wire,BRepCheck_Result)
+
 static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape&,
                       const TopoDS_Shape&,   // edge
                       TopTools_MapOfShape&); // mapofedge

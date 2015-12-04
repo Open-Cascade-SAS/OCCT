@@ -206,7 +206,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_GraphicDriver, Graphic3d_GraphicDriver)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 protected:
 

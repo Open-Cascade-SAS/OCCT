@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_AdvancedFace,StepShape_FaceSurface)
+  DEFINE_STANDARD_RTTIEXT(StepShape_AdvancedFace,StepShape_FaceSurface)
 
 protected:
 

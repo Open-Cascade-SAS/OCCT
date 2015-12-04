@@ -110,7 +110,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_ReadWriteModule,Interface_ReaderModule)
+  DEFINE_STANDARD_RTTIEXT(StepData_ReadWriteModule,Interface_ReaderModule)
 
 protected:
 

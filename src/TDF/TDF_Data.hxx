@@ -138,7 +138,7 @@ friend class TDF_Transaction;
 friend class TDF_LabelNode;
 
 
-  DEFINE_STANDARD_RTTI(TDF_Data,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_Data,MMgt_TShared)
 
 protected:
 

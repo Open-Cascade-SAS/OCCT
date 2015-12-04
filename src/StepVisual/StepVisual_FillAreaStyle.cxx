@@ -17,6 +17,8 @@
 #include <StepVisual_FillStyleSelect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyle,MMgt_TShared)
+
 StepVisual_FillAreaStyle::StepVisual_FillAreaStyle ()  {}
 
 void StepVisual_FillAreaStyle::Init(

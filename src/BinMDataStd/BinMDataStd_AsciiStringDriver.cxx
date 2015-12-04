@@ -24,6 +24,8 @@
 #include <TDataStd_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_AsciiStringDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_AsciiStringDriver
 //purpose  :

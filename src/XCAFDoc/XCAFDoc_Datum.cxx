@@ -31,6 +31,8 @@
 
 #include <XCAFDimTolObjects_DatumObject.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Datum,TDF_Attribute)
+
 enum ChildLab
 {
   ChildLab_Name = 1,

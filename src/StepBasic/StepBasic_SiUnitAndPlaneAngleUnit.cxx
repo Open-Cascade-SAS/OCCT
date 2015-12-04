@@ -18,6 +18,8 @@
 #include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndPlaneAngleUnit,StepBasic_SiUnit)
+
 StepBasic_SiUnitAndPlaneAngleUnit::StepBasic_SiUnitAndPlaneAngleUnit ()
 {
 }

@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_Datum,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Datum,TDF_Attribute)
 
 protected:
 

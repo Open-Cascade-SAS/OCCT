@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_Ellipse,StepGeom_Conic)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Ellipse,StepGeom_Conic)
 
 protected:
 

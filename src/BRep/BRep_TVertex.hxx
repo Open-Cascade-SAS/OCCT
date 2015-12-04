@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_TVertex,TopoDS_TVertex)
+  DEFINE_STANDARD_RTTIEXT(BRep_TVertex,TopoDS_TVertex)
 
 protected:
 

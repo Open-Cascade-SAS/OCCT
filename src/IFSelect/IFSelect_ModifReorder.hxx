@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_ModifReorder,IFSelect_Modifier)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ModifReorder,IFSelect_Modifier)
 
 protected:
 

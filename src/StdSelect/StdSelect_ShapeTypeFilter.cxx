@@ -20,6 +20,8 @@
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StdSelect_ShapeTypeFilter,SelectMgr_Filter)
+
 //==================================================
 // Function: StdSelect_ShapeTypeFilter
 // Purpose : Constructeur

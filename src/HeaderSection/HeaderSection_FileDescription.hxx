@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HeaderSection_FileDescription,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HeaderSection_FileDescription,MMgt_TShared)
 
 protected:
 

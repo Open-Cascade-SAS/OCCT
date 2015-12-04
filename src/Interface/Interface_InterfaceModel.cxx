@@ -39,6 +39,8 @@
 #include <TColStd_Array1OfTransient.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerTransient.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel,MMgt_TShared)
+
 // Un Modele d`Interface est un ensemble ferme d`Entites d`interface : chacune
 // est dans un seul modele a la fois; elle y a un numero (Number) qui permet de
 // verifier qu`une entite est bien dans un seul modele, de definir des Map tres

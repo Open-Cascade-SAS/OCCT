@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRAlgo_PolyShellData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,MMgt_TShared)
 
 protected:
 

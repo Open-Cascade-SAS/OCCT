@@ -61,7 +61,7 @@ public:
                             const Standard_Integer theDerU,
                             const Standard_Integer theDerV) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(GeomEvaluator_SurfaceOfExtrusion, GeomEvaluator_Surface)
+  DEFINE_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfExtrusion,GeomEvaluator_Surface)
 
 private:
   //! Shift the point along direction to the given distance (theShift)

@@ -18,6 +18,8 @@
 #include <StepGeom_RationalBSplineSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierSurfaceAndRationalBSplineSurface,StepGeom_BSplineSurface)
+
 StepGeom_BezierSurfaceAndRationalBSplineSurface::StepGeom_BezierSurfaceAndRationalBSplineSurface ()  {}
 
 void StepGeom_BezierSurfaceAndRationalBSplineSurface::Init(

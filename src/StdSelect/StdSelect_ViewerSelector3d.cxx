@@ -66,6 +66,8 @@
 #include <OSD_Timer.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(StdSelect_ViewerSelector3d,SelectMgr_ViewerSelector)
+
 static Standard_Integer StdSel_NumberOfFreeEdges (const Handle(Poly_Triangulation)& Trg)
 {
   Standard_Integer nFree = 0;

@@ -24,6 +24,8 @@
 #include <TDataStd_NoteBook.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_NoteBookDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_NoteBookDriver
 //purpose  : 

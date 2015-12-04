@@ -21,6 +21,8 @@
 #include <TopAbs.hxx>
 #include <TopoDS_TShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRep_TVertex,TopoDS_TVertex)
+
 //=======================================================================
 //function : BRep_TVertex
 //purpose  : 

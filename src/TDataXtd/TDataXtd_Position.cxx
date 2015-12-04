@@ -22,6 +22,8 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Position,TDF_Attribute)
+
 //=======================================================================
 //function : Set (class method)
 //purpose  : 

@@ -18,6 +18,8 @@
 #include <StepGeom_SurfaceCurve.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceCurve,StepGeom_Curve)
+
 StepGeom_SurfaceCurve::StepGeom_SurfaceCurve ()  {}
 
 void StepGeom_SurfaceCurve::Init(

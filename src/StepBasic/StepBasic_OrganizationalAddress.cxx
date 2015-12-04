@@ -17,6 +17,8 @@
 #include <StepBasic_OrganizationalAddress.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationalAddress,StepBasic_Address)
+
 StepBasic_OrganizationalAddress::StepBasic_OrganizationalAddress ()  {}
 
 void StepBasic_OrganizationalAddress::Init(

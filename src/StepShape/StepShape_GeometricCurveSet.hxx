@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_GeometricCurveSet,StepShape_GeometricSet)
+  DEFINE_STANDARD_RTTIEXT(StepShape_GeometricCurveSet,StepShape_GeometricSet)
 
 protected:
 

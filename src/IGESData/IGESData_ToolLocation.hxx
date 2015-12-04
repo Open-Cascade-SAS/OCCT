@@ -154,7 +154,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_ToolLocation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESData_ToolLocation,MMgt_TShared)
 
 protected:
 

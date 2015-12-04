@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_IntercharacterSpacing,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_IntercharacterSpacing,IGESData_IGESEntity)
 
 protected:
 

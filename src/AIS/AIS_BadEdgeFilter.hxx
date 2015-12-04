@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_BadEdgeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(AIS_BadEdgeFilter,SelectMgr_Filter)
 
 protected:
 

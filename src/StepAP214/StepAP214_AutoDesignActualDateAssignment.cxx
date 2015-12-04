@@ -18,6 +18,8 @@
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateRole.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignActualDateAssignment,StepBasic_DateAssignment)
+
 StepAP214_AutoDesignActualDateAssignment::StepAP214_AutoDesignActualDateAssignment ()  {}
 
 void StepAP214_AutoDesignActualDateAssignment::Init(

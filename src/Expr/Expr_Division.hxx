@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Division,Expr_BinaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Division,Expr_BinaryExpression)
 
 protected:
 

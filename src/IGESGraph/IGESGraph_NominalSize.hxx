@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_NominalSize,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_NominalSize,IGESData_IGESEntity)
 
 protected:
 

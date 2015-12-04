@@ -21,6 +21,8 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_ColorToolDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : 
 //purpose  : 

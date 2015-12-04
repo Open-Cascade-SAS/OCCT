@@ -17,6 +17,8 @@
 #include <StepShape_Sphere.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Sphere,StepGeom_GeometricRepresentationItem)
+
 StepShape_Sphere::StepShape_Sphere ()  {}
 
 void StepShape_Sphere::Init(

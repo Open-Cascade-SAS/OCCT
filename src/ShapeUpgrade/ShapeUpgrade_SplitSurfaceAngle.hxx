@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_SplitSurfaceAngle,ShapeUpgrade_SplitSurface)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceAngle,ShapeUpgrade_SplitSurface)
 
 protected:
 

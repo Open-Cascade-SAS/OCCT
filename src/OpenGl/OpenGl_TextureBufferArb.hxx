@@ -91,7 +91,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_TextureBufferArb, OpenGl_VertexBuffer) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_TextureBufferArb,OpenGl_VertexBuffer) // Type definition
 
 };
 

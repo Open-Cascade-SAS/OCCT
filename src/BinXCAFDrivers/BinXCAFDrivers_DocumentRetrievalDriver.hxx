@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinXCAFDrivers_DocumentRetrievalDriver,BinDrivers_DocumentRetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,BinDrivers_DocumentRetrievalDriver)
 
 protected:
 

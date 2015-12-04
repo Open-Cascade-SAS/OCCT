@@ -47,11 +47,11 @@ public :
   void ActivateFrame(CRuntimeClass* pViewClass, int nCmdShow = SW_RESTORE  );
 
 private:
-  Handle_V3d_Viewer my2DViewer;
-  Handle_AIS_InteractiveContext myInteractiveContext2D;
+  Handle(V3d_Viewer) my2DViewer;
+  Handle(AIS_InteractiveContext) myInteractiveContext2D;
 public :
-  Handle_V3d_Viewer GetViewer2D()  { return my2DViewer; };
-  Handle_AIS_InteractiveContext& GetInteractiveContext2D(){ return myInteractiveContext2D; };
+  Handle(V3d_Viewer) GetViewer2D()  { return my2DViewer; };
+  Handle(AIS_InteractiveContext)& GetInteractiveContext2D(){ return myInteractiveContext2D; };
   void FitAll2DViews(Standard_Boolean UpdateViewer=Standard_False);
 
 public :

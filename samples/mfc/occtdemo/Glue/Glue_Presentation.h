@@ -13,8 +13,8 @@
 class GProp_Glue;
 class TCollection_AsciiString;
 class TopoDS_Shape;
-class Handle_AIS_InteractiveObject;
-class TopTools_ListOfShape;
+class AIS_InteractiveObject;
+#include <TopTools_ListOfShape.hxx>
 
 class Glue_Presentation : public OCCDemo_Presentation
 {
@@ -37,10 +37,10 @@ private:
     TopTools_ListOfShape&, TopTools_ListOfShape&);
 
   // display a given shape in wire frame mode
-  Standard_Boolean drawShapeWf(TopoDS_Shape&,Handle_AIS_InteractiveObject&);
+  Standard_Boolean drawShapeWf(TopoDS_Shape&,Handle(AIS_InteractiveObject)&);
 
   // display a given shape in shaded mode
-  Standard_Boolean drawShapeSh(TopoDS_Shape&,Handle_AIS_InteractiveObject&);
+  Standard_Boolean drawShapeSh(TopoDS_Shape&,Handle(AIS_InteractiveObject)&);
 
   void sampleBoxes();
   void sampleCylinder();

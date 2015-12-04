@@ -167,7 +167,7 @@ public:
     return myBoundaryPoints->Extent();
   }
 
-  DEFINE_STANDARD_RTTI(BRepMesh_FastDiscret, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_FastDiscret,Standard_Transient)
 
 private:
 

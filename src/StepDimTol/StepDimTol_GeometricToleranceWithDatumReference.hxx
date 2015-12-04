@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceWithDatumReference,StepDimTol_GeometricTolerance)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDatumReference,StepDimTol_GeometricTolerance)
 
 protected:
 

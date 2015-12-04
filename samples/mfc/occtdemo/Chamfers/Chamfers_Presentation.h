@@ -12,7 +12,7 @@
 #include <OCCDemo_Presentation.h>
 #include <ChFi3d_FilletShape.hxx>
 
-class Handle_AIS_InteractiveObject;
+class AIS_InteractiveObject;
 class TopoDS_Solid;
 
 class Chamfers_Presentation : public OCCDemo_Presentation
@@ -29,15 +29,15 @@ public:
 private:
   Standard_Boolean createChamferOnBox(
     TopoDS_Solid&, Standard_Real, Standard_Real, 
-    Handle_AIS_InteractiveObject&);
+    Handle(AIS_InteractiveObject)&);
 
   Standard_Boolean createDiverseChamferOnBox(
     TopoDS_Solid&, Standard_Real, Standard_Real, 
-    Standard_Real, Handle_AIS_InteractiveObject&);
+    Standard_Real, Handle(AIS_InteractiveObject)&);
 
   Standard_Boolean createFilletOnBox(
     TopoDS_Solid&, Standard_Real, ChFi3d_FilletShape, 
-    Handle_AIS_InteractiveObject&);
+    Handle(AIS_InteractiveObject)&);
 
   // Sample functions
   void sampleBoxChamfer();

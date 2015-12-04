@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_NumericValue,Expr_GeneralExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_NumericValue,Expr_GeneralExpression)
 
 protected:
 

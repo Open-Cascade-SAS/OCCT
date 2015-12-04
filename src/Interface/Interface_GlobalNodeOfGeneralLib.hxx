@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_GlobalNodeOfGeneralLib,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(Interface_GlobalNodeOfGeneralLib,Standard_Transient)
 
 protected:
 

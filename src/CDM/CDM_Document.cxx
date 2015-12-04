@@ -37,6 +37,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDM_Document,Standard_Transient)
+
 static CDM_PresentationDirectory& getPresentations() {
   static CDM_PresentationDirectory thePresentations;
   return thePresentations;

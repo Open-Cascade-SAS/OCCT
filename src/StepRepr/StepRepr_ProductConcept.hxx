@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ProductConcept,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ProductConcept,MMgt_TShared)
 
 protected:
 

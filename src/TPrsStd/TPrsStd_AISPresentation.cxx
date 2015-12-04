@@ -39,6 +39,8 @@
 #include <TPrsStd_Driver.hxx>
 #include <TPrsStd_DriverTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AISPresentation,TDF_Attribute)
+
 //=======================================================================
 //function : Set
 //purpose  : 

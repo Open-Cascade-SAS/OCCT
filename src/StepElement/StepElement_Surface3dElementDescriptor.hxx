@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_Surface3dElementDescriptor,StepElement_ElementDescriptor)
+  DEFINE_STANDARD_RTTIEXT(StepElement_Surface3dElementDescriptor,StepElement_ElementDescriptor)
 
 protected:
 

@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_ManifoldSolid,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_ManifoldSolid,IGESData_IGESEntity)
 
 protected:
 

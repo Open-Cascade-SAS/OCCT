@@ -35,6 +35,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_FilSpine,ChFiDS_Spine)
+
 //=======================================================================
 //function : ChFiDS_FilSpine
 //purpose  : 

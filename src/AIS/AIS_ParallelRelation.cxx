@@ -52,6 +52,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ParallelRelation,AIS_Relation)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_TopologicalRepresentationItem,StepRepr_RepresentationItem)
+
 StepShape_TopologicalRepresentationItem::StepShape_TopologicalRepresentationItem ()  {}
 

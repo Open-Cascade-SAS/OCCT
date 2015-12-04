@@ -79,7 +79,7 @@ public:
 friend class TDocStd_XLinkIterator;
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_XLinkRoot,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_XLinkRoot,TDF_Attribute)
 
 protected:
 

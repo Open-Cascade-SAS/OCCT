@@ -87,6 +87,8 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_Wire,MMgt_TShared)
+
 //szvsh addition
 //=======================================================================
 //function : ShapeAnalysis_Wire

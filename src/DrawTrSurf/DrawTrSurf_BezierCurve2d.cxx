@@ -23,6 +23,8 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BezierCurve2d,DrawTrSurf_Curve2d)
+
 DrawTrSurf_BezierCurve2d::DrawTrSurf_BezierCurve2d (
    const Handle(Geom2d_BezierCurve)& C) :
    DrawTrSurf_Curve2d (C, Draw_vert, 50) {

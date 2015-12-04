@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_DraughtingModel,StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingModel,StepRepr_Representation)
 
 protected:
 

@@ -515,7 +515,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeAnalysis_Wire,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_Wire,MMgt_TShared)
 
 protected:
 

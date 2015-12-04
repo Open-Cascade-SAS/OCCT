@@ -28,6 +28,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_RebuildGroups,IGESSelect_ModelModifier)
+
 IGESSelect_RebuildGroups::IGESSelect_RebuildGroups ()
     : IGESSelect_ModelModifier (Standard_True)    {  }
 

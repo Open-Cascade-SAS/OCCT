@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_UpdateLastChange,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateLastChange,IGESSelect_ModelModifier)
 
 protected:
 

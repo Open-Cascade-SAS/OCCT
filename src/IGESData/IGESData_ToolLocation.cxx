@@ -32,6 +32,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_ToolLocation,MMgt_TShared)
+
 #define TYPEFORASSOC 402
 
 IGESData_ToolLocation::IGESData_ToolLocation (const Handle(IGESData_IGESModel)& amodel,

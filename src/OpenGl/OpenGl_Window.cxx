@@ -26,6 +26,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)
+
 #if defined(HAVE_EGL) || defined(__ANDROID__) || defined(__QNX__)
   #include <EGL/egl.h>
 #endif

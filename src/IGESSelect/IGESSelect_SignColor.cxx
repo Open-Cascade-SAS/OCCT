@@ -22,6 +22,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SignColor,IFSelect_Signature)
+
 static TCollection_AsciiString valbuf;  // to prepare value and keep some time
 
 static Standard_CString ColName (const Standard_Integer mode)

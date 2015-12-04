@@ -17,3 +17,5 @@
 #include <TopLoc_ItemLocation.hxx>
 #include <TopLoc_SListNodeOfItemLocation.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation,MMgt_TShared)

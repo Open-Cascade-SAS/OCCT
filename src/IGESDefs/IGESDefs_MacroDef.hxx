@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDefs_MacroDef,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_MacroDef,IGESData_IGESEntity)
 
 protected:
 

@@ -17,6 +17,8 @@
 #include <NCollection_AlignedAllocator.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBufferCompat,OpenGl_VertexBuffer)
+
 // =======================================================================
 // function : OpenGl_VertexBufferCompat
 // purpose  :

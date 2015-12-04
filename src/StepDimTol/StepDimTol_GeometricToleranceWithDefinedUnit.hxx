@@ -56,7 +56,7 @@ public:
     myUnitSize = theUnitSize;
   } 
   
-  DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceWithDefinedUnit, StepDimTol_GeometricTolerance)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedUnit,StepDimTol_GeometricTolerance)
 
 private: 
   Handle(StepBasic_LengthMeasureWithUnit) myUnitSize;

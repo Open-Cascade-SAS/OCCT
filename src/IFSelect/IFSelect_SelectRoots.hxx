@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectRoots,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectRoots,IFSelect_SelectExtract)
 
 protected:
 

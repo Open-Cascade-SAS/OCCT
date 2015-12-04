@@ -109,7 +109,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TFunction_Scope,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TFunction_Scope,TDF_Attribute)
 
 protected:
 

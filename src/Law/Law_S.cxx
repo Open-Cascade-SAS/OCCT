@@ -20,6 +20,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Law_S,Law_BSpFunc)
+
 Law_S::Law_S ()
 {}
 

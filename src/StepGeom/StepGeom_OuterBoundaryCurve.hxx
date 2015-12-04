@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_OuterBoundaryCurve,StepGeom_BoundaryCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_OuterBoundaryCurve,StepGeom_BoundaryCurve)
 
 protected:
 

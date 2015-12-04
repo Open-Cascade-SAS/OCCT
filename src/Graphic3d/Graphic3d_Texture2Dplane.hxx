@@ -121,7 +121,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_Texture2Dplane,Graphic3d_Texture2D)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Texture2Dplane,Graphic3d_Texture2D)
 
 protected:
 

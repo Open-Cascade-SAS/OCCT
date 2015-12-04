@@ -134,7 +134,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_SegmentedViewsVisible,IGESData_ViewKindEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_SegmentedViewsVisible,IGESData_ViewKindEntity)
 
 protected:
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMDataXtd_GeometryDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMDataXtd_GeometryDriver,XmlMDF_ADriver)
 
 protected:
 

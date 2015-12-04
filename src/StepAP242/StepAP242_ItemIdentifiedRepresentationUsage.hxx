@@ -121,7 +121,7 @@ public:
     identifiedItem->SetValue (num, theItem);
   }
 
-  DEFINE_STANDARD_RTTI(StepAP242_ItemIdentifiedRepresentationUsage, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage,MMgt_TShared)
 
 private: 
   Handle(TCollection_HAsciiString) name;

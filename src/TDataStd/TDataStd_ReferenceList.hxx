@@ -91,7 +91,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_ReferenceList,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_ReferenceList,TDF_Attribute)
 
 protected:
 

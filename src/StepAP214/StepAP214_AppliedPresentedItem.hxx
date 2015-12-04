@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AppliedPresentedItem,StepVisual_PresentedItem)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedPresentedItem,StepVisual_PresentedItem)
 
 protected:
 

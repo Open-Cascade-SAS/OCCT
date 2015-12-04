@@ -28,6 +28,8 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMNaming_NamingDriver,XmlMDF_ADriver)
+
 //=======================================================================
 static TopAbs_ShapeEnum ShapeEnumFromString (const XmlObjMgt_DOMString&);
 static TNaming_NameType NameTypeFromString (const XmlObjMgt_DOMString&);

@@ -19,6 +19,8 @@
 #include <StepFEA_FeaMassDensity.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaMassDensity,StepFEA_FeaMaterialPropertyRepresentationItem)
+
 //=======================================================================
 //function : StepFEA_FeaMassDensity
 //purpose  : 

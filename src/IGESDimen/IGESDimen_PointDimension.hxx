@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_PointDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_PointDimension,IGESData_IGESEntity)
 
 protected:
 

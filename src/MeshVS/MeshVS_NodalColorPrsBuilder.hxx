@@ -122,7 +122,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_NodalColorPrsBuilder,MeshVS_PrsBuilder)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_NodalColorPrsBuilder,MeshVS_PrsBuilder)
 
 protected:
 

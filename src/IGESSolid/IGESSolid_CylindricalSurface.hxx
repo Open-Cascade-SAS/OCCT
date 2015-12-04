@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_CylindricalSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_CylindricalSurface,IGESData_IGESEntity)
 
 protected:
 

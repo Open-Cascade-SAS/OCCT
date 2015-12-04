@@ -139,7 +139,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_Address,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Address,MMgt_TShared)
 
 protected:
 

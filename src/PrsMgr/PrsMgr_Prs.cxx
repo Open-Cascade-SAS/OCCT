@@ -23,6 +23,8 @@
 #include <PrsMgr_Prs.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Prs,Prs3d_Presentation)
+
 PrsMgr_Prs::PrsMgr_Prs (const Handle(Graphic3d_StructureManager)& theStructManager,
                         const PrsMgr_PresentationPointer&         thePrs,
                         const PrsMgr_TypeOfPresentation3d         theTypeOfPresentation)

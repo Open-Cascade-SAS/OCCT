@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_Colour,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_Colour,MMgt_TShared)
 
 protected:
 

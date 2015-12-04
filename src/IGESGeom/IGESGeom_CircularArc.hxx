@@ -97,7 +97,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_CircularArc,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_CircularArc,IGESData_IGESEntity)
 
 protected:
 

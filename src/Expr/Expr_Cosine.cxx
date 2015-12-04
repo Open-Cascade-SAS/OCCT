@@ -30,6 +30,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Cosine,Expr_UnaryExpression)
+
 Expr_Cosine::Expr_Cosine(const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);

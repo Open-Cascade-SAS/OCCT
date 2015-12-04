@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepCheck_Shell,BRepCheck_Result)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Shell,BRepCheck_Result)
 
 protected:
 

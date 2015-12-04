@@ -17,6 +17,8 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_HDataMapOfStringHArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfReal,MMgt_TShared)
+
 //=======================================================================
 //function : TDataStd_HDataMapOfStringHArray1OfReal
 //purpose  : Constructor of empty map

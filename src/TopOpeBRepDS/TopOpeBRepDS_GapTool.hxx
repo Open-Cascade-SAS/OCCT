@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepDS_GapTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool,MMgt_TShared)
 
 protected:
 

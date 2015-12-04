@@ -93,7 +93,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_ExclusionFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(AIS_ExclusionFilter,SelectMgr_Filter)
 
 protected:
 

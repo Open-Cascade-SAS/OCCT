@@ -81,7 +81,7 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean HasDepthClipping (const Handle(SelectMgr_EntityOwner)& theOwner) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(StdSelect_ViewerSelector3d, SelectMgr_ViewerSelector)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_ViewerSelector3d,SelectMgr_ViewerSelector)
 
 protected:
 

@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPSelections_SelectDerived,StepSelect_StepType)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectDerived,StepSelect_StepType)
 
 protected:
 

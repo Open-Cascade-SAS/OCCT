@@ -52,7 +52,7 @@ public:
     myDisplacement = theDisplacement;
   }
 
-  DEFINE_STANDARD_RTTI(StepDimTol_UnequallyDisposedGeometricTolerance, StepDimTol_GeometricTolerance)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_UnequallyDisposedGeometricTolerance,StepDimTol_GeometricTolerance)
 
 private: 
   Handle(StepBasic_LengthMeasureWithUnit) myDisplacement;

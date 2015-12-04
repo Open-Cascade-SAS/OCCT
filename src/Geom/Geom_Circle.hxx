@@ -161,7 +161,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Circle,Geom_Conic)
+  DEFINE_STANDARD_RTTIEXT(Geom_Circle,Geom_Conic)
 
 protected:
 

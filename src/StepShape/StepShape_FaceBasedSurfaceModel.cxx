@@ -19,6 +19,8 @@
 #include <StepShape_FaceBasedSurfaceModel.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel,StepGeom_GeometricRepresentationItem)
+
 //=======================================================================
 //function : StepShape_FaceBasedSurfaceModel
 //purpose  : 

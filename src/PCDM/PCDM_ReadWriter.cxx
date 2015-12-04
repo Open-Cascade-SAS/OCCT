@@ -33,6 +33,8 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <UTL.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReadWriter,Standard_Transient)
+
 #define FILE_FORMAT "FILE_FORMAT: "
 
 static TCollection_ExtendedString TryXmlDriverType

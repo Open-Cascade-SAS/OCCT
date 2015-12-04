@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_PointRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRep_PointRepresentation,MMgt_TShared)
 
 protected:
 

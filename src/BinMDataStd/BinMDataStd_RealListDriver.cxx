@@ -23,6 +23,8 @@
 #include <TDataStd_RealList.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_RealListDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_RealListDriver
 //purpose  : Constructor

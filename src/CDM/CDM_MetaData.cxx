@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDM_MetaData,Standard_Transient)
+
 static CDM_MetaDataLookUpTable& getLookUpTable(){
   static CDM_MetaDataLookUpTable theLookUpTable;
   return theLookUpTable;

@@ -66,7 +66,7 @@ public:
   Standard_EXPORT Standard_Boolean VOscSurf (const Standard_Real U, const Standard_Real V, Standard_Boolean& t, Handle(Geom_BSplineSurface)& L) const;
 
 
-  DEFINE_STANDARD_RTTI(Geom_OsculatingSurface, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Geom_OsculatingSurface,MMgt_TShared)
 
 protected:
 

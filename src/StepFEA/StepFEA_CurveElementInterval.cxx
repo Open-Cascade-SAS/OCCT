@@ -20,6 +20,8 @@
 #include <StepFEA_CurveElementInterval.hxx>
 #include <StepFEA_CurveElementLocation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementInterval,MMgt_TShared)
+
 //=======================================================================
 //function : StepFEA_CurveElementInterval
 //purpose  : 

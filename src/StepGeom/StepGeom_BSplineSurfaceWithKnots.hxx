@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_BSplineSurfaceWithKnots,StepGeom_BSplineSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineSurfaceWithKnots,StepGeom_BSplineSurface)
 
 protected:
 

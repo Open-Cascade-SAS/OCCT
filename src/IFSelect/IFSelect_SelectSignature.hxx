@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectSignature,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSignature,IFSelect_SelectExtract)
 
 protected:
 

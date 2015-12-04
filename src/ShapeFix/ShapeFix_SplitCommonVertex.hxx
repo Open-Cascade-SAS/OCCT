@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_SplitCommonVertex,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_SplitCommonVertex,ShapeFix_Root)
 
 protected:
 

@@ -23,6 +23,8 @@
 #include <Image_PixMap.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Texture,OpenGl_Resource)
+
 //! Simple class to reset unpack alignment settings
 struct OpenGl_UnpackAlignmentSentry
 {

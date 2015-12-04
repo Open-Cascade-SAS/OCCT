@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_TrihedronWithGuide,GeomFill_TrihedronLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide,GeomFill_TrihedronLaw)
 
 protected:
 

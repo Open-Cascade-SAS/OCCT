@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_SplitCurve3d,ShapeUpgrade_SplitCurve)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3d,ShapeUpgrade_SplitCurve)
 
 protected:
 

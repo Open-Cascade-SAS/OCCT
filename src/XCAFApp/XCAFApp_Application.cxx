@@ -22,6 +22,8 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFPrs_Driver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFApp_Application,TDocStd_Application)
+
 //=======================================================================
 //function : GetApplication
 //purpose  : 

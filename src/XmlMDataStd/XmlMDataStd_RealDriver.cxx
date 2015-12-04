@@ -24,6 +24,8 @@
 #include <XmlObjMgt_Persistent.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_RealDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMDataStd_RealDriver
 //purpose  : Constructor

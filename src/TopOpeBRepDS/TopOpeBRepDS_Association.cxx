@@ -20,6 +20,8 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Association,MMgt_TShared)
+
 //=======================================================================
 //function : Contains
 //purpose  : 

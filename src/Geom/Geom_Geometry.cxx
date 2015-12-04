@@ -25,6 +25,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Geometry,MMgt_TShared)
+
 typedef Geom_Geometry         Geometry;
 typedef gp_Pnt                Pnt;
 typedef gp_Vec                Vec;

@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRep_FFDumper,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,MMgt_TShared)
 
 protected:
 

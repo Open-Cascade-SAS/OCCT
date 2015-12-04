@@ -21,6 +21,8 @@
 #include <IGESSolid_ConicalSurface.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ConicalSurface,IGESData_IGESEntity)
+
 IGESSolid_ConicalSurface::IGESSolid_ConicalSurface ()    {  }
 
 

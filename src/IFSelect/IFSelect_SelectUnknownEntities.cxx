@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectUnknownEntities,IFSelect_SelectExtract)
+
 IFSelect_SelectUnknownEntities::IFSelect_SelectUnknownEntities ()    {  }
 
     Standard_Boolean  IFSelect_SelectUnknownEntities::Sort

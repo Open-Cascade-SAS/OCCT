@@ -135,7 +135,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_WireDivide,ShapeUpgrade_Tool)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_WireDivide,ShapeUpgrade_Tool)
 
 protected:
 

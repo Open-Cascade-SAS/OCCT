@@ -22,6 +22,8 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_DeltaOnRemoval.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnRemoval,TDF_AttributeDelta)
+
 //=======================================================================
 //function : TDF_DeltaOnRemoval
 //purpose  : 

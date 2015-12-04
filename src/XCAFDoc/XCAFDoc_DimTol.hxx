@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_DimTol,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_DimTol,TDF_Attribute)
 
 protected:
 

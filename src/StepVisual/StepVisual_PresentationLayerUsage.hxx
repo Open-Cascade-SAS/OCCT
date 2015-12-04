@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PresentationLayerUsage,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage,MMgt_TShared)
 
 protected:
 

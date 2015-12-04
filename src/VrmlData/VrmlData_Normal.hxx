@@ -78,7 +78,7 @@ class VrmlData_Normal : public VrmlData_ArrayVec3d
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Normal, VrmlData_ArrayVec3d)
+DEFINE_STANDARD_RTTI_INLINE(VrmlData_Normal,VrmlData_ArrayVec3d)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <StepData_UndefinedEntity.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_Protocol,StepData_Protocol)
+
 static Standard_CString schemaName = "header_section";
 
 HeaderSection_Protocol::HeaderSection_Protocol () { }

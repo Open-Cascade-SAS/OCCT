@@ -25,6 +25,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(Interface_Static,Interface_TypedValue)
+
 static char defmess[31];
 
 //  Fonctions Satisfies offertes en standard ...

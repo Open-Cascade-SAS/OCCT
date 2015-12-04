@@ -29,6 +29,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_FunctionDerivative,Expr_GeneralFunction)
+
 Expr_FunctionDerivative::Expr_FunctionDerivative (const Handle(Expr_GeneralFunction)& func, const Handle(Expr_NamedUnknown)& withX, const Standard_Integer deg)
 {
   myFunction = func;

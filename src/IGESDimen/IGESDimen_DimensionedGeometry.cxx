@@ -22,6 +22,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionedGeometry,IGESData_IGESEntity)
+
 IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry ()    {  }
 
 

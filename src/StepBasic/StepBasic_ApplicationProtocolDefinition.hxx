@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ApplicationProtocolDefinition,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition,MMgt_TShared)
 
 protected:
 

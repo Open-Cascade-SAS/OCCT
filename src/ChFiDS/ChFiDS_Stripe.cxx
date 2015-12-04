@@ -20,6 +20,8 @@
 #include <Geom2d_Curve.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_Stripe,MMgt_TShared)
+
 ChFiDS_Stripe::ChFiDS_Stripe ():
        begfilled(/*Standard_False*/0), // eap, Apr 29 2002, occ293
        endfilled(/*Standard_False*/0),

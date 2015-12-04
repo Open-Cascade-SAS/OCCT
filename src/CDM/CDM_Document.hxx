@@ -371,7 +371,7 @@ friend class CDM_ReferenceIterator;
 friend class CDM_Application;
 
 
-  DEFINE_STANDARD_RTTI(CDM_Document,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDM_Document,Standard_Transient)
 
 protected:
 

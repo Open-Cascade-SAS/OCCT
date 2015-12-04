@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_Curve3dElementDescriptor,StepElement_ElementDescriptor)
+  DEFINE_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor,StepElement_ElementDescriptor)
 
 protected:
 

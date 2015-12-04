@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ResultFromModel,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ResultFromModel,MMgt_TShared)
 
 protected:
 

@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_GeneralModule,IGESData_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_GeneralModule,IGESData_GeneralModule)
 
 protected:
 

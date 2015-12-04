@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_FileModifier,IFSelect_GeneralModifier)
+  DEFINE_STANDARD_RTTI_INLINE(IGESSelect_FileModifier,IFSelect_GeneralModifier)
 
 protected:
 

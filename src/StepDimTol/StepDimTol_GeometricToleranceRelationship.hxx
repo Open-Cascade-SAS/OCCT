@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceRelationship,MMgt_TShared)
 
 protected:
 

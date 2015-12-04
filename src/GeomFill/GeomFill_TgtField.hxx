@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_TgtField,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_TgtField,MMgt_TShared)
 
 protected:
 

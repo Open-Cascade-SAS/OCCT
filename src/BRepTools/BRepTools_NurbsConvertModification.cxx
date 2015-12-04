@@ -68,6 +68,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <BRep_Builder.hxx>
+IMPLEMENT_STANDARD_RTTIEXT(BRepTools_NurbsConvertModification,BRepTools_Modification)
+
 //
 static void GeomLib_ChangeUBounds(Handle(Geom_BSplineSurface)& aSurface,
                   const Standard_Real newU1,

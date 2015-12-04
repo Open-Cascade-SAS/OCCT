@@ -59,7 +59,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Font_FTLibrary, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(Font_FTLibrary,Standard_Transient) // Type definition
 
 };
 

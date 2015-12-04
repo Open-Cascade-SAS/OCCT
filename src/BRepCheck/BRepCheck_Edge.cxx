@@ -60,6 +60,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Edge,BRepCheck_Result)
+
 //modified by NIZNHY-PKV Thu May 05 09:01:57 2011f
 static 
   Standard_Boolean Validate(const Adaptor3d_Curve&,

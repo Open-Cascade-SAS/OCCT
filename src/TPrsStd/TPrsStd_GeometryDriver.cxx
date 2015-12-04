@@ -39,6 +39,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TPrsStd_GeometryDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_GeometryDriver,TPrsStd_Driver)
+
 //=======================================================================
 //function :
 //purpose  : 

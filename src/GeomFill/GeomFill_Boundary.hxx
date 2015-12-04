@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_Boundary,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_Boundary,MMgt_TShared)
 
 protected:
 

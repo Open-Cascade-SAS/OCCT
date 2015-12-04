@@ -23,6 +23,8 @@
 #include <StepDimTol_GeneralDatumReference.hxx>
 #include <StepDimTol_HArray1OfDatumReferenceElement.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepDimTol_DatumReferenceElement.hxx>
+#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWGeneralDatumReference

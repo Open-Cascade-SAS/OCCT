@@ -96,7 +96,7 @@ class VrmlData_WorldInfo : public VrmlData_Node
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_WorldInfo, VrmlData_Node)
+DEFINE_STANDARD_RTTIEXT(VrmlData_WorldInfo,VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

@@ -45,6 +45,7 @@
 #include <V3d_Viewer.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
+#include <OpenGl_Group.hxx>
 
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
@@ -62,7 +63,7 @@ class VUserDrawObj : public AIS_InteractiveObject
 {
 public:
     // CASCADE RTTI
-    DEFINE_STANDARD_RTTI(VUserDrawObj, AIS_InteractiveObject);
+    DEFINE_STANDARD_RTTI_INLINE(VUserDrawObj,AIS_InteractiveObject);
 
     VUserDrawObj()
     {

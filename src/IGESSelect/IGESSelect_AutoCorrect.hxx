@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_AutoCorrect,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_AutoCorrect,IGESSelect_ModelModifier)
 
 protected:
 

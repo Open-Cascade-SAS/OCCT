@@ -31,6 +31,8 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMNaming_NamedShapeDriver,BinMDF_ADriver)
+
 #define SHAPESET "SHAPE_SECTION"
 #define FORMAT_NUMBER 3
 //=======================================================================

@@ -19,5 +19,7 @@
 #include <SelectMgr_Filter.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Filter,MMgt_TShared)
+
 Standard_Boolean SelectMgr_Filter::ActsOn(const TopAbs_ShapeEnum /*aStandardMode*/) const 
 {return Standard_False;}

@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_Line,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Line,IGESData_IGESEntity)
 
 protected:
 

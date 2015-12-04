@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDefs_Protocol,IGESData_Protocol)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_Protocol,IGESData_Protocol)
 
 protected:
 

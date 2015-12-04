@@ -138,7 +138,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_OffsetCurve,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_OffsetCurve,IGESData_IGESEntity)
 
 protected:
 

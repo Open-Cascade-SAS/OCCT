@@ -54,7 +54,7 @@ public:  //! @name list of overridden properties
   Standard_Boolean myHasOwnWidth;
 
 public:
-  DEFINE_STANDARD_RTTI(AIS_ColoredDrawer, Prs3d_Drawer);
+  DEFINE_STANDARD_RTTIEXT(AIS_ColoredDrawer,Prs3d_Drawer);
 
 };
 
@@ -175,7 +175,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_ColoredShape, AIS_Shape);
+  DEFINE_STANDARD_RTTIEXT(AIS_ColoredShape,AIS_Shape);
 
 };
 

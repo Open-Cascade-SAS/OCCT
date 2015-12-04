@@ -130,6 +130,8 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepBuilderAPI_Sewing,MMgt_TShared)
+
 //#include <LocalAnalysis_SurfaceContinuity.hxx>
 //=======================================================================
 //function : SameRange

@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_FlowLineSpec,IGESData_IGESEntity)
+
 IGESAppli_FlowLineSpec::IGESAppli_FlowLineSpec ()    {  }
 
     void  IGESAppli_FlowLineSpec::Init

@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DDF_Transaction,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DDF_Transaction,MMgt_TShared)
 
 protected:
 

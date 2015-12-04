@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_SelectedComponent,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SelectedComponent,IGESData_IGESEntity)
 
 protected:
 

@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_GroupWithoutBackP,IGESBasic_Group)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_GroupWithoutBackP,IGESBasic_Group)
 
 protected:
 

@@ -37,6 +37,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_Presentation,Graphic3d_Structure)
+
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 static void MakeGraphicTrsf (const Handle(Geom_Transformation)& aGeomTrsf,

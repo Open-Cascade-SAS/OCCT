@@ -316,7 +316,7 @@ void Offset2d_Presentation::sampleWire2()
   drawAndOffsetWire (aWire, aName, aText);
 }
 
-void Offset2d_Presentation::drawAndOffsetCurve2d (Handle_Geom2d_Curve theCurve,
+void Offset2d_Presentation::drawAndOffsetCurve2d (Handle(Geom2d_Curve) theCurve,
                                                 const Standard_CString theName,
                                                 TCollection_AsciiString& theText)
 {
@@ -339,7 +339,7 @@ void Offset2d_Presentation::drawAndOffsetCurve2d (Handle_Geom2d_Curve theCurve,
   getViewer()->ActiveView()->Update();
 
   // Make offset curves
-  Handle_AIS_InteractiveObject aObj;
+  Handle(AIS_InteractiveObject) aObj;
   for (int i=1; i <= SampleDescrs[myIndex].nNeg; i++)
   {
     if (WAIT_A_LITTLE)
@@ -381,7 +381,7 @@ void Offset2d_Presentation::drawAndOffsetWire(const TopoDS_Wire& theWire,
   setResultText (theText.ToCString());
 
   // Display theWire
-  Handle_AIS_InteractiveObject aObj = new AIS_Shape (theWire);
+  Handle(AIS_InteractiveObject) aObj = new AIS_Shape (theWire);
   getAISContext()->SetColor (aObj, CurveColor);
   getAISContext()->Display (aObj);
   getViewer()->InitActiveViews();

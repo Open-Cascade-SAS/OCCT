@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_TListNodeOfListOfEdge,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfEdge,MMgt_TShared)
 
 protected:
 

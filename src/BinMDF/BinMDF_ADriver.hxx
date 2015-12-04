@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMDF_ADriver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BinMDF_ADriver,MMgt_TShared)
 
 protected:
 

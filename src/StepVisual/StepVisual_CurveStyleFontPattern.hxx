@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_CurveStyleFontPattern,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyleFontPattern,MMgt_TShared)
 
 protected:
 

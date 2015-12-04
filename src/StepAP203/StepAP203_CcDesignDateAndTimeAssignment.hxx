@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_CcDesignDateAndTimeAssignment,StepBasic_DateAndTimeAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignDateAndTimeAssignment,StepBasic_DateAndTimeAssignment)
 
 protected:
 

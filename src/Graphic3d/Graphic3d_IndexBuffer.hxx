@@ -72,7 +72,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_IndexBuffer, Graphic3d_Buffer) // Type definition
+  DEFINE_STANDARD_RTTI_INLINE(Graphic3d_IndexBuffer,Graphic3d_Buffer) // Type definition
 
 };
 

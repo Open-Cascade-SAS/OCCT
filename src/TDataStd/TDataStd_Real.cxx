@@ -24,6 +24,8 @@
 #include <TDF_Reference.hxx>
 #include <TDF_RelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Real,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

@@ -41,6 +41,8 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_Data,MMgt_TShared)
+
 Standard_Integer nbOkIntersection;
 Standard_Integer nbPtIntersection;
 Standard_Integer nbSegIntersection;

@@ -797,7 +797,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_BSplineCurve,Geom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(Geom_BSplineCurve,Geom_BoundedCurve)
 
 protected:
 

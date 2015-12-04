@@ -77,7 +77,7 @@ void ThruSections_Presentation::DoSample()
 // purpose:
 //////////////////////////////////////////////////////////////////////
 
-static Handle_Geom_BSplineCurve CreateCurve(Standard_Real aCoords[][3],Standard_Integer nPoles)                     
+static Handle(Geom_BSplineCurve) CreateCurve(Standard_Real aCoords[][3],Standard_Integer nPoles)                     
 {
   TColgp_Array1OfPnt aCurvePoint (1, nPoles);
 
@@ -192,7 +192,7 @@ void ThruSections_Presentation::sample1()
 
 //====================================================================
 
-  Handle_AIS_InteractiveObject aShow1,aShow2,aShowWire;
+  Handle(AIS_InteractiveObject) aShow1,aShow2,aShowWire;
 
   // this data used for building a shape through sections:
   Standard_Boolean IsSolid,IsRuled;
@@ -374,7 +374,7 @@ void ThruSections_Presentation::sample2()
 
 //====================================================================
 
-  Handle_AIS_InteractiveObject aShow1,aShow2,aShowWire1,aShowWire2,aShowWire3;
+  Handle(AIS_InteractiveObject) aShow1,aShow2,aShowWire1,aShowWire2,aShowWire3;
 
   // this data used for building a shape through sections:
   const Standard_Boolean IsSolid = Standard_False;
@@ -403,8 +403,8 @@ void ThruSections_Presentation::sample2()
   Standard_Integer aSize3 = sizeof(aCoords3)/(sizeof(Standard_Real)*3);
 
   // creates curves:
-  Handle_Geom_BSplineCurve aCurve1 = CreateCurve(aCoords1,aSize1);
-  Handle_Geom_BSplineCurve aCurve2 = CreateCurve(aCoords2,aSize2);
+  Handle(Geom_BSplineCurve) aCurve1 = CreateCurve(aCoords1,aSize1);
+  Handle(Geom_BSplineCurve) aCurve2 = CreateCurve(aCoords2,aSize2);
 
   // creates wires based on the curves:
   TopoDS_Wire aW1 = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aCurve1));

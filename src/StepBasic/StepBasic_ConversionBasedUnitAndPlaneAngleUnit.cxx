@@ -20,6 +20,8 @@
 #include <StepBasic_PlaneAngleUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,StepBasic_ConversionBasedUnit)
+
 StepBasic_ConversionBasedUnitAndPlaneAngleUnit::StepBasic_ConversionBasedUnitAndPlaneAngleUnit ()
 {
 }

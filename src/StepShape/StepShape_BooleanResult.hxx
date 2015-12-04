@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_BooleanResult,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_BooleanResult,StepGeom_GeometricRepresentationItem)
 
 protected:
 

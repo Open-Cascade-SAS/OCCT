@@ -30,6 +30,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedFunction,Expr_GeneralFunction)
+
 Expr_NamedFunction::Expr_NamedFunction (const TCollection_AsciiString& name, const Handle(Expr_GeneralExpression)& exp, const Expr_Array1OfNamedUnknown& vars) : 
                                  myVariables(vars.Lower(),vars.Upper())
 {

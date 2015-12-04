@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ShellBasedSurfaceModel,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ShellBasedSurfaceModel,StepGeom_GeometricRepresentationItem)
 
 protected:
 

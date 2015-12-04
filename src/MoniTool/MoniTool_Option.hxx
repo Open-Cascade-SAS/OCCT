@@ -145,7 +145,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_Option,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_Option,MMgt_TShared)
 
 protected:
 

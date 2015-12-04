@@ -22,6 +22,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_UpdateFileName,IGESSelect_ModelModifier)
+
 IGESSelect_UpdateFileName::IGESSelect_UpdateFileName  ()
     : IGESSelect_ModelModifier (Standard_False)    {  }
 

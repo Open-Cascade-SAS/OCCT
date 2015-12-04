@@ -190,7 +190,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_PipeShell,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_PipeShell,MMgt_TShared)
 
 protected:
 

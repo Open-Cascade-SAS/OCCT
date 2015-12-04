@@ -10,7 +10,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(ISession_Curve,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Curve,AIS_InteractiveObject)
 
 #ifdef _DEBUG

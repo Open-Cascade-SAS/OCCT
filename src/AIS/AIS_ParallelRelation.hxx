@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_ParallelRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_ParallelRelation,AIS_Relation)
 
 protected:
 

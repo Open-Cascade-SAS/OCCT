@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDefs_AttributeTable,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_AttributeTable,IGESData_IGESEntity)
 
 protected:
 

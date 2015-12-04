@@ -44,7 +44,7 @@ class HClassName : public _Array2Type_, public MMgt_TShared {                  \
    HClassName  (const _Array2Type_& theOther) : _Array2Type_(theOther) {}      \
    const _Array2Type_& Array2 () const { return *this; }                       \
    _Array2Type_& ChangeArray2 ()       { return *this; }                       \
-   DEFINE_STANDARD_RTTI (HClassName, MMgt_TShared)                              \
+   DEFINE_STANDARD_RTTI_INLINE(HClassName,MMgt_TShared)                              \
 };                                                                             \
 DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)
 

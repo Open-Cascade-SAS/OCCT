@@ -28,6 +28,8 @@
 #include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
 #include <TFunction_Scope.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_ScopeDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMFunction_GraphNodeDriver
 //purpose  : 

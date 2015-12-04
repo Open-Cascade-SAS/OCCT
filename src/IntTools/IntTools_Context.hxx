@@ -217,7 +217,7 @@ Standard_EXPORT virtual  ~IntTools_Context();
 
 
 
-  DEFINE_STANDARD_RTTI(IntTools_Context,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IntTools_Context,MMgt_TShared)
 
 protected:
 

@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PresentationView,StepVisual_PresentationRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationView,StepVisual_PresentationRepresentation)
 
 protected:
 

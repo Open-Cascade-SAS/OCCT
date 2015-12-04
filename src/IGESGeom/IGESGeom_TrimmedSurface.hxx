@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_TrimmedSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_TrimmedSurface,IGESData_IGESEntity)
 
 protected:
 

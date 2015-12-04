@@ -21,6 +21,8 @@
 #include <XmlMXCAFDoc_ShapeToolDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_ShapeToolDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function :
 //purpose  : 

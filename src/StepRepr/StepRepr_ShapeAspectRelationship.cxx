@@ -20,6 +20,8 @@
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspectRelationship,MMgt_TShared)
+
 //=======================================================================
 //function : StepRepr_ShapeAspectRelationship
 //purpose  : 

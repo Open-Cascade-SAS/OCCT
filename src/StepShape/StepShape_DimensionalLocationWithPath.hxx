@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_DimensionalLocationWithPath,StepShape_DimensionalLocation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalLocationWithPath,StepShape_DimensionalLocation)
 
 protected:
 

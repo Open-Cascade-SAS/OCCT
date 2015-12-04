@@ -20,6 +20,8 @@
 #include <StepData_DescrReadWrite.hxx>
 #include <StepData_WriterLib.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_DescrProtocol,StepData_FileProtocol)
+
 StepData_DescrProtocol::StepData_DescrProtocol ()    {  }
 
     void  StepData_DescrProtocol::SetSchemaName (const Standard_CString name)

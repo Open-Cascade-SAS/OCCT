@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IntTools_TopolTool,Adaptor3d_TopolTool)
+  DEFINE_STANDARD_RTTIEXT(IntTools_TopolTool,Adaptor3d_TopolTool)
 
 protected:
 

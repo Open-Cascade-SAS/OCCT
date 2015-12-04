@@ -96,7 +96,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_LabelDisplay,IGESData_LabelDisplayEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_LabelDisplay,IGESData_LabelDisplayEntity)
 
 protected:
 

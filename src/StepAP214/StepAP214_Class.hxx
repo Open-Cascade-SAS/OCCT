@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_Class,StepBasic_Group)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_Class,StepBasic_Group)
 
 protected:
 

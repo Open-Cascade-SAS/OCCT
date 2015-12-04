@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT2d_Circuit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT2d_Circuit,MMgt_TShared)
 
 protected:
 

@@ -25,6 +25,8 @@
 #include <TNaming_Tool.hxx>
 #include <TPrsStd_PlaneDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PlaneDriver,TPrsStd_Driver)
+
 //#include <TDataStd_Datum.hxx>
 //=======================================================================
 //function :

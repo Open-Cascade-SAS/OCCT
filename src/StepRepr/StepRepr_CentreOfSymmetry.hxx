@@ -31,7 +31,7 @@ public:
   
   Standard_EXPORT StepRepr_CentreOfSymmetry();
 
-  DEFINE_STANDARD_RTTI(StepRepr_CentreOfSymmetry, StepRepr_DerivedShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_CentreOfSymmetry,StepRepr_DerivedShapeAspect)
 
 };
 #endif // _StepRepr_CentreOfSymmetry_HeaderFile

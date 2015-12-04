@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_LineFontDefTemplate,IGESData_LineFontEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_LineFontDefTemplate,IGESData_LineFontEntity)
 
 protected:
 

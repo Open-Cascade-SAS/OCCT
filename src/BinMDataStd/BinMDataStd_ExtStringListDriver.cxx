@@ -23,6 +23,8 @@
 #include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExtStringListDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_ExtStringListDriver
 //purpose  : Constructor

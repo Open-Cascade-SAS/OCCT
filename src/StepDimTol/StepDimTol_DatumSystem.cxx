@@ -17,6 +17,8 @@
 
 #include <StepDimTol_HArray1OfDatumReferenceCompartment.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumSystem,StepRepr_ShapeAspect)
+
 //=======================================================================
 //function : StepDimTol_DatumSystem
 //purpose  : 

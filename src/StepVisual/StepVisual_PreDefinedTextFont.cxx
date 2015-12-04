@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_PreDefinedTextFont.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedTextFont,StepVisual_PreDefinedItem)
+
 StepVisual_PreDefinedTextFont::StepVisual_PreDefinedTextFont ()  {}
 

@@ -30,6 +30,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Division,Expr_BinaryExpression)
+
 Expr_Division::Expr_Division (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {
   CreateFirstOperand(exp1);

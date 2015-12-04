@@ -36,7 +36,7 @@ public:
   Standard_EXPORT StepRepr_FeatureForDatumTargetRelationship();
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_FeatureForDatumTargetRelationship,StepRepr_ShapeAspectRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_FeatureForDatumTargetRelationship,StepRepr_ShapeAspectRelationship)
 
 protected:
 

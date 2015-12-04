@@ -28,7 +28,7 @@ Standard_EXPORT inline   Quantity_Factor GetScale() const;
 Standard_EXPORT inline   void SetScale(const Quantity_Factor aNewScale) ;
 Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theContext) ;
 
-DEFINE_STANDARD_RTTI(Sample2D_Image,AIS_TexturedShape)
+DEFINE_STANDARD_RTTIEXT(Sample2D_Image,AIS_TexturedShape)
 private:
   void MakeShape();
 protected:

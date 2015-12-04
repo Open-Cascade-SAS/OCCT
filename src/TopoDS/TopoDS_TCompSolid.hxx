@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopoDS_TCompSolid,TopoDS_TShape)
+  DEFINE_STANDARD_RTTIEXT(TopoDS_TCompSolid,TopoDS_TShape)
 
 protected:
 

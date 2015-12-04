@@ -13,6 +13,8 @@
 
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject,Standard_Transient)
+
 //=======================================================================
 //function : XCAFDimTolObjects_GeomTolerance
 //purpose  : 

@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPCAFControl_StackItemOfDictionaryOfExternFile,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(STEPCAFControl_StackItemOfDictionaryOfExternFile,MMgt_TShared)
 
 protected:
 

@@ -82,7 +82,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(FEmTool_ProfileMatrix,FEmTool_SparseMatrix)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_ProfileMatrix,FEmTool_SparseMatrix)
 
 protected:
 

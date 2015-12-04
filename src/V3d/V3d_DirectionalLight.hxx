@@ -98,7 +98,7 @@ public:
                                   Quantity_Parameter& theVy,
                                   Quantity_Parameter& theVz) const;
 
-  DEFINE_STANDARD_RTTI(V3d_DirectionalLight,V3d_PositionLight)
+  DEFINE_STANDARD_RTTIEXT(V3d_DirectionalLight,V3d_PositionLight)
 
 private:
 

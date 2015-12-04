@@ -18,6 +18,8 @@
 #include <StepBasic_Document.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignDocumentReference,StepBasic_DocumentReference)
+
 StepAP214_AutoDesignDocumentReference::StepAP214_AutoDesignDocumentReference ()    {  }
 
 void  StepAP214_AutoDesignDocumentReference::Init

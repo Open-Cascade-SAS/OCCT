@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_TextureEnv,Graphic3d_TextureRoot)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_TextureEnv,Graphic3d_TextureRoot)
 
 protected:
 

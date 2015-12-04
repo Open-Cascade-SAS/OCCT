@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_PerpendicularRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_PerpendicularRelation,AIS_Relation)
 
 protected:
 

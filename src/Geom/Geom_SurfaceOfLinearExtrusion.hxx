@@ -252,7 +252,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_SurfaceOfLinearExtrusion,Geom_SweptSurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfLinearExtrusion,Geom_SweptSurface)
 
 protected:
 

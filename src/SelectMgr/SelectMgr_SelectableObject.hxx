@@ -199,7 +199,7 @@ public:
 friend class SelectMgr_SelectionManager;
 
 
-  DEFINE_STANDARD_RTTI(SelectMgr_SelectableObject,PrsMgr_PresentableObject)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_SelectableObject,PrsMgr_PresentableObject)
 
 protected:
 

@@ -21,6 +21,8 @@
 #include <IGESSolid_CylindricalSurface.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_CylindricalSurface,IGESData_IGESEntity)
+
 IGESSolid_CylindricalSurface::IGESSolid_CylindricalSurface ()    {  }
 
 

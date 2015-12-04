@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_TotalRunoutTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_TotalRunoutTolerance,StepDimTol_GeometricToleranceWithDatumReference)
 
 protected:
 

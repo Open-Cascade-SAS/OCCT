@@ -61,6 +61,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <ShapeBuild_ReShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Edge,MMgt_TShared)
+
 //=======================================================================
 //function : ShapeFix_Edge
 //purpose  : 

@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSAlgo_ToolContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSAlgo_ToolContainer,MMgt_TShared)
 
 protected:
 

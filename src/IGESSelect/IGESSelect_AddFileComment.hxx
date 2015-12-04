@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_AddFileComment,IGESSelect_FileModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_AddFileComment,IGESSelect_FileModifier)
 
 protected:
 

@@ -194,7 +194,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_LayerTool,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_LayerTool,TDF_Attribute)
 
 protected:
 

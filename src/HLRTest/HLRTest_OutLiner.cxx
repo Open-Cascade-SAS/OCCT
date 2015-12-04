@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(HLRTest_OutLiner,Draw_Drawable3D)
+
 //=======================================================================
 //function : HLRTest_OutLiner
 //purpose  : 

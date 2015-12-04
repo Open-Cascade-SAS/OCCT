@@ -184,7 +184,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRBRep_PolyAlgo,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_PolyAlgo,MMgt_TShared)
 
 protected:
 

@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectFaces,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectFaces,IFSelect_SelectExplore)
 
 protected:
 

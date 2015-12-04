@@ -359,7 +359,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_LocalContext,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(AIS_LocalContext,MMgt_TShared)
 
 protected:
 

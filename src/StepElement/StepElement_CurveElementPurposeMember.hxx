@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_CurveElementPurposeMember,StepData_SelectNamed)
+  DEFINE_STANDARD_RTTIEXT(StepElement_CurveElementPurposeMember,StepData_SelectNamed)
 
 protected:
 

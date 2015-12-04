@@ -16,6 +16,8 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Direction,StepGeom_GeometricRepresentationItem)
+
 StepGeom_Direction::StepGeom_Direction ()  {}
 
 void StepGeom_Direction::Init(

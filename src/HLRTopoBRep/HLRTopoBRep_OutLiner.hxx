@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRTopoBRep_OutLiner,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner,MMgt_TShared)
 
 protected:
 

@@ -36,6 +36,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_EdgeOnSurfLaw,BRepFill_LocationLaw)
+
 BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
 					       const TopoDS_Shape& Surf)
 {

@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_CcDesignPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
 
 protected:
 

@@ -36,6 +36,8 @@
 #include <GeomAdaptor_HSurfaceOfLinearExtrusion.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Extrema_ExtPExtS,Standard_Transient)
+
 static gp_Ax2 GetPosition (const Handle(Adaptor3d_HCurve)& C);
      
 static void PerformExtPElC (Extrema_ExtPElC& E,

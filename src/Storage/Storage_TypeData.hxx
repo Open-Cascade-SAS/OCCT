@@ -62,7 +62,7 @@ public:
 friend class Storage_Schema;
 
 
-  DEFINE_STANDARD_RTTI(Storage_TypeData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_TypeData,MMgt_TShared)
 
 protected:
 

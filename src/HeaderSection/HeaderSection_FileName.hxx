@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HeaderSection_FileName,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HeaderSection_FileName,MMgt_TShared)
 
 protected:
 

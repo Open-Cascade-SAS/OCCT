@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_FaceOuterBound,StepShape_FaceBound)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FaceOuterBound,StepShape_FaceBound)
 
 protected:
 

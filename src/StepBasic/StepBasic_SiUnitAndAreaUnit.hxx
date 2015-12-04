@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_SiUnitAndAreaUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndAreaUnit,StepBasic_SiUnit)
 
 protected:
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMPrsStd_PositionDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMPrsStd_PositionDriver,BinMDF_ADriver)
 
 protected:
 

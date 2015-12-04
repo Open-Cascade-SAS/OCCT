@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_DispPerCount,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerCount,IFSelect_Dispatch)
 
 protected:
 

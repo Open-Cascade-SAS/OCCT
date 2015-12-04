@@ -115,7 +115,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_IGESReaderData,Interface_FileReaderData)
+  DEFINE_STANDARD_RTTIEXT(IGESData_IGESReaderData,Interface_FileReaderData)
 
 protected:
 

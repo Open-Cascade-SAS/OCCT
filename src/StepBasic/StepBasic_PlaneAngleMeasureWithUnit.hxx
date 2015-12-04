@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_PlaneAngleMeasureWithUnit,StepBasic_MeasureWithUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_PlaneAngleMeasureWithUnit,StepBasic_MeasureWithUnit)
 
 protected:
 

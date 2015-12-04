@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_RepresentationRelationshipWithTransformation,StepRepr_ShapeRepresentationRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationRelationshipWithTransformation,StepRepr_ShapeRepresentationRelationship)
 
 protected:
 

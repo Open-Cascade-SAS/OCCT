@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_CameraImage,StepRepr_MappedItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage,StepRepr_MappedItem)
 
 protected:
 

@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DimensionalExponents,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DimensionalExponents,MMgt_TShared)
 
 protected:
 

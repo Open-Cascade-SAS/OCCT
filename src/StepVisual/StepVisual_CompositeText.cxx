@@ -17,6 +17,8 @@
 #include <StepVisual_TextOrCharacter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeText,StepGeom_GeometricRepresentationItem)
+
 StepVisual_CompositeText::StepVisual_CompositeText ()  {}
 
 void StepVisual_CompositeText::Init(

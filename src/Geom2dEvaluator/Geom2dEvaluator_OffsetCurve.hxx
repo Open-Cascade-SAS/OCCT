@@ -54,7 +54,7 @@ public:
   Standard_EXPORT gp_Vec2d DN(const Standard_Real theU,
                               const Standard_Integer theDeriv) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Geom2dEvaluator_OffsetCurve, Geom2dEvaluator_Curve)
+  DEFINE_STANDARD_RTTIEXT(Geom2dEvaluator_OffsetCurve,Geom2dEvaluator_Curve)
 
 private:
   //! Recalculate D1 values of base curve into D0 value of offset curve

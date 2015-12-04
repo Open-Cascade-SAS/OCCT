@@ -105,7 +105,7 @@ public:
   Standard_EXPORT void Attenuation (Quantity_Coefficient& theConstAttenuation,
                                     Quantity_Coefficient& theLinearAttenuation) const;
 
-  DEFINE_STANDARD_RTTI(V3d_PositionalLight,V3d_PositionLight)
+  DEFINE_STANDARD_RTTIEXT(V3d_PositionalLight,V3d_PositionLight)
 
 private:
 

@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Message_Printer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Message_Printer,MMgt_TShared)
 
 protected:
 

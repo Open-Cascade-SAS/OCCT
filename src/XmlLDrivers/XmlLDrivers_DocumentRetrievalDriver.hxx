@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(XmlLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
 
 protected:
 

@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Printer,Message_Printer)
+  DEFINE_STANDARD_RTTIEXT(Draw_Printer,Message_Printer)
 
 protected:
 

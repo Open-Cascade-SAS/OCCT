@@ -97,7 +97,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OcctJni_Window)
+  DEFINE_STANDARD_RTTIEXT(OcctJni_Window,Aspect_Window)
 
 };
 

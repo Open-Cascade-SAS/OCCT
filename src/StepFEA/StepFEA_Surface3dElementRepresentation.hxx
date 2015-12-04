@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_Surface3dElementRepresentation,StepFEA_ElementRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_Surface3dElementRepresentation,StepFEA_ElementRepresentation)
 
 protected:
 

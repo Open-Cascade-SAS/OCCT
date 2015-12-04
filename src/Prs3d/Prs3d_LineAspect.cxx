@@ -18,6 +18,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_LineAspect,Prs3d_BasicAspect)
+
 Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_Color &aColor,
 				const Aspect_TypeOfLine aType,
 				const Standard_Real aWidth) {

@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_EdgeOnSurfLaw,BRepFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_EdgeOnSurfLaw,BRepFill_LocationLaw)
 
 protected:
 

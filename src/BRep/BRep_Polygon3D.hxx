@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_Polygon3D,BRep_CurveRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_Polygon3D,BRep_CurveRepresentation)
 
 protected:
 

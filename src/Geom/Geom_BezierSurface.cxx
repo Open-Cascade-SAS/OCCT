@@ -46,6 +46,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierSurface,Geom_BoundedSurface)
+
 //=======================================================================
 //function : Rational
 //purpose  : check rationality of an array of weights

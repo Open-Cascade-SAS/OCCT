@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigureDef,IGESData_IGESEntity)
+
 IGESDraw_NetworkSubfigureDef::IGESDraw_NetworkSubfigureDef ()    {  }
 
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMPrsStd_AISPresentationDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMPrsStd_AISPresentationDriver,BinMDF_ADriver)
 
 protected:
 

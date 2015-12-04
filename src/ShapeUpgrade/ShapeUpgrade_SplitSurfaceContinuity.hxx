@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_SplitSurfaceContinuity,ShapeUpgrade_SplitSurface)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceContinuity,ShapeUpgrade_SplitSurface)
 
 protected:
 

@@ -74,7 +74,7 @@ private:
 
  public:
   //! Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI (TObj_CheckModel, Message_Algorithm)
+  DEFINE_STANDARD_RTTIEXT(TObj_CheckModel,Message_Algorithm)
 };
 
 //! Definition of HANDLE object using Standard_DefineHandle.hxx

@@ -11,7 +11,7 @@
 
 #include <OCCDemo_Presentation.h>
 class TopoDS_Shape;
-class Handle_Prs3d_Projector;
+class Prs3d_Projector;
 class gp_Trsf;
 class TopLoc_Location;
 
@@ -28,7 +28,7 @@ public:
   // one phase of iterations
 
 private:
-  Handle_Prs3d_Projector Projector(gp_Trsf& theTrsf);
+  Handle(Prs3d_Projector) Projector(gp_Trsf& theTrsf);
   Standard_Boolean HLR(const TopoDS_Shape&, const Standard_Integer nbIso);
   Standard_Boolean PolyHLR(const TopoDS_Shape&);
   Standard_Boolean drawHLR(TopoDS_Shape&, TopoDS_Shape&, const TopLoc_Location&, 

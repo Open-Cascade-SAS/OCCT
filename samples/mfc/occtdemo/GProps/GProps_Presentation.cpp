@@ -241,7 +241,7 @@ Standard_Boolean GProps_Presentation::GProps(GProp_GProps& aProps,
 
   if (WAIT_A_SECOND) return Standard_False;
 
-  Handle_AIS_Point aPointIO = drawPoint(
+  Handle(AIS_Point) aPointIO = drawPoint(
     aCenterOfMass, MAIN_ELEMS_COLOR, Standard_False);
   aPointIO->UnsetMarker();
   aPointIO->SetMarker(Aspect_TOM_O);
@@ -265,7 +265,7 @@ Standard_Boolean GProps_Presentation::GProps(GProp_GProps& aProps,
   }
 
   // display the cirle with radius = aRadiusOfGyration
-  Handle_Geom_Circle aCirc = new Geom_Circle(anInertialCoordSys, aRadiusOfGyration);
+  Handle(Geom_Circle) aCirc = new Geom_Circle(anInertialCoordSys, aRadiusOfGyration);
   drawCurve(aCirc, CUSTOM_INERTIAL_ELEMS_COLOR);
 
   return Standard_True;
@@ -327,7 +327,7 @@ void GProps_Presentation::samplePoints()
 
   //if (WAIT_A_SECOND) return;
 
-  Handle_AIS_Point aPointIO = drawPoint(
+  Handle(AIS_Point) aPointIO = drawPoint(
     aBaryCentre, MAIN_ELEMS_COLOR, Standard_False);
   aPointIO->SetMarker(Aspect_TOM_STAR);
   getAISContext()->Display(aPointIO);
@@ -373,7 +373,7 @@ void GProps_Presentation::sampleCurves()
     aPoints(i+1) = gp_Pnt (aCoords[i][0]*k, aCoords[i][1]*k, aCoords[i][2]*k);
 
   // edge 2 is a bezier curve that starts in edge1's end point
-  Handle_Geom_BezierCurve aCurve = new Geom_BezierCurve(aPoints);
+  Handle(Geom_BezierCurve) aCurve = new Geom_BezierCurve(aPoints);
   TopoDS_Edge anEdge2 = BRepBuilderAPI_MakeEdge(aCurve);
 
   // edge 1 is a linear edge between 2 points
@@ -575,9 +575,9 @@ void GProps_Presentation::sampleSystem()
   for (Standard_Integer i=0; i < nPoints; i++)
     aPoints(i+1) = gp_Pnt (aCoords[i][0]*k, aCoords[i][1]*k, aCoords[i][2]*k);
 
-  Handle_Geom_BezierCurve aCurve = new Geom_BezierCurve(aPoints);
+  Handle(Geom_BezierCurve) aCurve = new Geom_BezierCurve(aPoints);
   gp_Ax1 anAxis(aPoints(1), gp_Dir(0,1,0));
-  Handle_Geom_SurfaceOfRevolution aSurface = new Geom_SurfaceOfRevolution(aCurve, anAxis);
+  Handle(Geom_SurfaceOfRevolution) aSurface = new Geom_SurfaceOfRevolution(aCurve, anAxis);
   TopoDS_Solid aSolid = BRepBuilderAPI_MakeSolid(BRepBuilderAPI_MakeShell(aSurface));
 
   TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(gp_Pnt(5*k, 2*k, 0), gp_Pnt(12*k, 7*k, 0));
@@ -595,8 +595,8 @@ void GProps_Presentation::sampleSystem()
   aBuilder.Perform(aWing1, Standard_True);
   TopoDS_Face aWing2 = TopoDS::Face(aBuilder.Shape());
 
-  Handle_Geom_Circle aCirc = new Geom_Circle(gp_Ax2(gp_Pnt(3*k, 11*k, 0), gp_Dir(0,-0.2,0.8)), (12-3)*k);
-  Handle_Geom_TrimmedCurve aTrimCirc = new Geom_TrimmedCurve(aCirc, -PI/2, PI/2);
+  Handle(Geom_Circle) aCirc = new Geom_Circle(gp_Ax2(gp_Pnt(3*k, 11*k, 0), gp_Dir(0,-0.2,0.8)), (12-3)*k);
+  Handle(Geom_TrimmedCurve) aTrimCirc = new Geom_TrimmedCurve(aCirc, -PI/2, PI/2);
   TopoDS_Edge aSpoiler = BRepBuilderAPI_MakeEdge(aTrimCirc);
 
   TopoDS_Edge anArrow = BRepBuilderAPI_MakeEdge(gp_Pnt(3*k, 0, 0), gp_Pnt(3*k, -5*k, 0));

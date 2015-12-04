@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture1Dmanual,Graphic3d_Texture1D)
+
 // =======================================================================
 // function : Graphic3d_Texture1Dmanual
 // purpose  :

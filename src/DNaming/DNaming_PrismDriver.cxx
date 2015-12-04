@@ -53,6 +53,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_PrismDriver,TFunction_Driver)
+
 // OCC
 // OCAF
 //=======================================================================

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_ApplicationDelta,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,MMgt_TShared)
 
 protected:
 

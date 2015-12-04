@@ -53,6 +53,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawDim_PlanarAngle,DrawDim_PlanarDimension)
+
 //=======================================================================
 //function : DrawDim_PlanarAngle
 //purpose  : 

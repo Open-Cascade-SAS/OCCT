@@ -267,7 +267,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomPlate_Surface,Geom_Surface)
+  DEFINE_STANDARD_RTTIEXT(GeomPlate_Surface,Geom_Surface)
 
 protected:
 

@@ -20,6 +20,8 @@
 #include <CDM_MessageDriver.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,BinDrivers_DocumentRetrievalDriver)
+
 //=======================================================================
 //function : 
 //purpose  :

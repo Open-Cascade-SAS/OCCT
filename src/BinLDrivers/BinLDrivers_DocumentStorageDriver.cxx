@@ -42,6 +42,8 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinLDrivers_DocumentStorageDriver,PCDM_StorageDriver)
+
 #define SHAPESECTION_POS (Standard_CString)"SHAPE_SECTION_POS:"
 
 //=======================================================================

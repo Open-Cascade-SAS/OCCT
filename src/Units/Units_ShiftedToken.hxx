@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_ShiftedToken,Units_Token)
+  DEFINE_STANDARD_RTTIEXT(Units_ShiftedToken,Units_Token)
 
 protected:
 

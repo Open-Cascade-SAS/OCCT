@@ -30,26 +30,26 @@ public:
   void DragEvent2D       (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
                           const Standard_Integer  TheState,
-                          const Handle_V3d_View& aView   );
+                          const Handle(V3d_View)& aView   );
   void InputEvent2D      (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   );
+                          const Handle(V3d_View)& aView   );
   void MoveEvent2D       (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   );
+                          const Handle(V3d_View)& aView   );
   void ShiftMoveEvent2D  (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   );
+                          const Handle(V3d_View)& aView   );
   void ShiftDragEvent2D  (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
                           const Standard_Integer  TheState,
-                          const Handle_V3d_View& aView   );
+                          const Handle(V3d_View)& aView   );
   void ShiftInputEvent2D (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   );
+                          const Handle(V3d_View)& aView   );
   void Popup2D           (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   );
+                          const Handle(V3d_View)& aView   );
 
   //-------------------- 3D -------------------//
 
@@ -61,21 +61,21 @@ public:
                           const Standard_Integer theMouseY,
                           const Handle(V3d_View)& theView);
 
-  Handle_AIS_InteractiveObject drawSurface
-    (const Handle_Geom_Surface& theSurface,
+  Handle(AIS_InteractiveObject) drawSurface
+    (const Handle(Geom_Surface)& theSurface,
     const Quantity_Color& theColor,
     const Standard_Boolean toDisplay);
 
   Standard_Boolean WaitForInput (unsigned long aMilliSeconds);
   // Waits for a user input or a period of time has been elapsed
 
-  Handle_AIS_Point drawPoint (const gp_Pnt& thePnt,
+  Handle(AIS_Point) drawPoint (const gp_Pnt& thePnt,
                               const Quantity_Color& theColor = Quantity_Color(Quantity_NOC_GREEN),
                               const Standard_Boolean toDisplay = Standard_True);
   // creates a presentation of the given point
   // and displays it in the viewer if toDisplay = Standard_True
 
-  Handle_AIS_Shape drawShape (const TopoDS_Shape& theShape,
+  Handle(AIS_Shape) drawShape (const TopoDS_Shape& theShape,
                               const Graphic3d_NameOfMaterial theMaterial = Graphic3d_NOM_BRASS,
                               const Standard_Boolean toDisplay = Standard_True);
   // creates a presentation of the given shape with the given material
@@ -224,16 +224,16 @@ public:
   int Current;
   void Minimize3D();
   void Minimize2D();
-  Handle_V3d_Viewer GetViewer2D() { return myViewer2D; };
-  Handle_AIS_InteractiveContext& GetISessionContext() { return myAISContext2D; };
+  Handle(V3d_Viewer) GetViewer2D() { return myViewer2D; };
+  Handle(AIS_InteractiveContext)& GetISessionContext() { return myAISContext2D; };
   BOOL FitMode;
 
 public:
   CResultDialog myCResultDialog;
 
 private:
-  Handle_V3d_Viewer myViewer2D;
-  Handle_AIS_InteractiveContext myAISContext2D;
+  Handle(V3d_Viewer) myViewer2D;
+  Handle(AIS_InteractiveContext) myAISContext2D;
 
 
 };

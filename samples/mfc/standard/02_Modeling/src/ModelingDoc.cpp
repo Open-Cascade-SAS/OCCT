@@ -4721,7 +4721,7 @@ void CModelingDoc::OnStopStop()
 			MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The plate face is not valid!", L"CasCade Error", MB_ICONERROR);
 		myAISContext->CloseLocalContext();
 		myState = -1;
-		Handle_AIS_Shape anAISShape = new AIS_Shape(aface);
+		Handle(AIS_Shape) anAISShape = new AIS_Shape(aface);
 		myAISContext->SetColor(anAISShape,Quantity_NOC_AZURE); 
 		myAISContext->SetMaterial(anAISShape,Graphic3d_NOM_SILVER);                                  
         myAISContext->SetDisplayMode(anAISShape,1);                                    
@@ -5017,7 +5017,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 					MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The plate surface is not valid!!!", L"CasCade Error", MB_ICONERROR);
 			}
 
-			Handle_AIS_Shape anAISShape=new AIS_Shape(theFace);
+			Handle(AIS_Shape) anAISShape=new AIS_Shape(theFace);
 			myAISContext->SetColor(anAISShape,Quantity_NOC_BLUE1); 
 			myAISContext->SetMaterial(anAISShape,Graphic3d_NOM_SILVER);                                  
 			myAISContext->SetDisplayMode(anAISShape,1);                     

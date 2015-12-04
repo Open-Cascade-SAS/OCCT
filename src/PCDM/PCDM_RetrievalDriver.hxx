@@ -78,7 +78,7 @@ friend
   Standard_EXPORT void PCDM_ReferenceIterator::Init (const Handle(CDM_MetaData)& aMetaData);
 
 
-  DEFINE_STANDARD_RTTI(PCDM_RetrievalDriver,PCDM_Reader)
+  DEFINE_STANDARD_RTTIEXT(PCDM_RetrievalDriver,PCDM_Reader)
 
 protected:
 

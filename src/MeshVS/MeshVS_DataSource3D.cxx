@@ -17,6 +17,8 @@
 #include <MeshVS_DataSource3D.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DataSource3D,MeshVS_DataSource)
+
 //================================================================
 // Function : GetPrismTopology
 // Purpose  :

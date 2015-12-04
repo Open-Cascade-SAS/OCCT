@@ -26,6 +26,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TNaming_NamedShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
+
 //=======================================================================
 //function : BinDrivers_DocumentStorageDriver
 //purpose  : Constructor

@@ -18,6 +18,8 @@
 #include <StepGeom_Vector.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Line,StepGeom_Curve)
+
 StepGeom_Line::StepGeom_Line ()  {}
 
 void StepGeom_Line::Init(

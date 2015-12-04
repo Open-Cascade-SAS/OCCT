@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_DirectedDimensionalLocation,StepShape_DimensionalLocation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DirectedDimensionalLocation,StepShape_DimensionalLocation)
 
 protected:
 

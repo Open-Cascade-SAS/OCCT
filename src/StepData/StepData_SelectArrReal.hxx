@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_SelectArrReal,StepData_SelectNamed)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectArrReal,StepData_SelectNamed)
 
 protected:
 

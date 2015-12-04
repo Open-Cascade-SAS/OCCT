@@ -41,6 +41,8 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_FilletDriver,TFunction_Driver)
+
 //=======================================================================
 //function : FilletDriver
 //purpose  : Constructor

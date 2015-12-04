@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomAdaptor_GHCurve,Adaptor3d_HCurve)
+  DEFINE_STANDARD_RTTI_INLINE(GeomAdaptor_GHCurve,Adaptor3d_HCurve)
 
 protected:
 

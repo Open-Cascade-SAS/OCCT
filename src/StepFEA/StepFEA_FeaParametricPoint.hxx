@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaParametricPoint,StepGeom_Point)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaParametricPoint,StepGeom_Point)
 
 protected:
 

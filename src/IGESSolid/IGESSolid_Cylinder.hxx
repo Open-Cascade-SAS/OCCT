@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_Cylinder,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Cylinder,IGESData_IGESEntity)
 
 protected:
 

@@ -20,6 +20,8 @@
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentedDefinition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation,MMgt_TShared)
+
 //=======================================================================
 //function : StepRepr_PropertyDefinitionRepresentation
 //purpose  : 

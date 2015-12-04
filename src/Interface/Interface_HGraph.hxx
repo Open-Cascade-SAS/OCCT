@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_HGraph,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_HGraph,MMgt_TShared)
 
 protected:
 

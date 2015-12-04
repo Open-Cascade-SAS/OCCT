@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext,StepRepr_RepresentationContext)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext,StepRepr_RepresentationContext)
 
 protected:
 

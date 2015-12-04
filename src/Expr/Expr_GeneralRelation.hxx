@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_GeneralRelation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Expr_GeneralRelation,MMgt_TShared)
 
 protected:
 

@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TCollection_MapNode,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TCollection_MapNode,MMgt_TShared)
 
 protected:
 

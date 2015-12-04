@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CylindricalSurface,StepGeom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CylindricalSurface,StepGeom_ElementarySurface)
 
 protected:
 

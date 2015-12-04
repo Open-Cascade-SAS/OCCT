@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_SurfaceOfRevolution,StepGeom_SweptSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceOfRevolution,StepGeom_SweptSurface)
 
 protected:
 

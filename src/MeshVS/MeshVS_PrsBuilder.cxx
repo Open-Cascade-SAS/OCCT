@@ -24,6 +24,8 @@
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_PrsBuilder,MMgt_TShared)
+
 //================================================================
 // Function : Constructor MeshVS_PrsBuilder
 // Purpose  :

@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_OrganizationalAddress,StepBasic_Address)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_OrganizationalAddress,StepBasic_Address)
 
 protected:
 

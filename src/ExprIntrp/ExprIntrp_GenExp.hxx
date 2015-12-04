@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ExprIntrp_GenExp,ExprIntrp_Generator)
+  DEFINE_STANDARD_RTTIEXT(ExprIntrp_GenExp,ExprIntrp_Generator)
 
 protected:
 

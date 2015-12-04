@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_CopyControl,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_CopyControl,MMgt_TShared)
 
 protected:
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_ExternalRefFile,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalRefFile,IGESData_IGESEntity)
 
 protected:
 

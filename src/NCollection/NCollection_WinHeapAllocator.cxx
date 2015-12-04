@@ -16,6 +16,8 @@
 #include <NCollection_WinHeapAllocator.hxx>
 #include <Standard_OutOfMemory.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(NCollection_WinHeapAllocator,NCollection_BaseAllocator)
+
 #if(defined(_WIN32) || defined(__WIN32__))
   #include <windows.h>
 #endif

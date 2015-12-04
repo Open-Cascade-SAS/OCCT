@@ -208,7 +208,7 @@ class _HEBTREE : public _HUBTREE                                        \
   const EBTree& ETree () const { return (const EBTree&) Tree(); }       \
   EBTree&       ChangeETree () { return (EBTree&) ChangeTree(); }       \
                                                                         \
-  DEFINE_STANDARD_RTTI (_HEBTREE, _HUBTREE)                                       \
+  DEFINE_STANDARD_RTTI_INLINE(_HEBTREE,_HUBTREE)                                       \
   /* Type management */                                                 \
 };                                                                      \
 DEFINE_STANDARD_HANDLE (_HEBTREE, _HUBTREE)

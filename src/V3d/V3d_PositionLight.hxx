@@ -97,7 +97,7 @@ public:
                                V3d_Coordinate& theY,
                                V3d_Coordinate& theZ) const;
 
-  DEFINE_STANDARD_RTTI(V3d_PositionLight,V3d_Light)
+  DEFINE_STANDARD_RTTIEXT(V3d_PositionLight,V3d_Light)
 
 protected:
 

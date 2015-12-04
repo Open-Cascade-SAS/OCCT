@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_DimensionUnits,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionUnits,IGESData_IGESEntity)
 
 protected:
 

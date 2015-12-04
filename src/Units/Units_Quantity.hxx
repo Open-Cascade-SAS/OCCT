@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_Quantity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Quantity,MMgt_TShared)
 
 protected:
 

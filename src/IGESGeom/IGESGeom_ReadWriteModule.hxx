@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_ReadWriteModule,IGESData_ReadWriteModule)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_ReadWriteModule,IGESData_ReadWriteModule)
 
 protected:
 

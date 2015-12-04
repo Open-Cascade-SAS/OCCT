@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_AnnotationTextOccurrence.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationTextOccurrence,StepVisual_AnnotationOccurrence)
+
 StepVisual_AnnotationTextOccurrence::StepVisual_AnnotationTextOccurrence ()  {}
 

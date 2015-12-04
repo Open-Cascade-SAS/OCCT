@@ -24,6 +24,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol,IGESData_IGESEntity)
+
 IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol ()    {  }
 
     void  IGESDimen_GeneralSymbol::Init 

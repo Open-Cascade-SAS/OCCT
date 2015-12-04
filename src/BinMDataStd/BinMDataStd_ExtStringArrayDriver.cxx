@@ -24,6 +24,8 @@
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExtStringArrayDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_ExtStringArrayDriver
 //purpose  : Constructor

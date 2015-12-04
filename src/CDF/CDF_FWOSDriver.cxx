@@ -25,6 +25,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDF_FWOSDriver,CDF_MetaDataDriver)
+
 #ifdef _MSC_VER
 #include <tchar.h>
 #endif  // _MSC_VER

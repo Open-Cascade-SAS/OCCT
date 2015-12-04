@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ProductDefinitionFormationRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormationRelationship,MMgt_TShared)
 
 protected:
 

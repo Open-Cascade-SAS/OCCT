@@ -21,6 +21,8 @@
 #include <IGESSolid_PlaneSurface.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_PlaneSurface,IGESData_IGESEntity)
+
 IGESSolid_PlaneSurface::IGESSolid_PlaneSurface ()    {  }
 
 

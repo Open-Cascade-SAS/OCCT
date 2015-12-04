@@ -129,7 +129,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Image_Diff, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(Image_Diff,Standard_Transient) // Type definition
 
 };
 

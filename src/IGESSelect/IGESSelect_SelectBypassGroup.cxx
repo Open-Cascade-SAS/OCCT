@@ -26,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectBypassGroup,IFSelect_SelectExplore)
+
 #define TypePourGroup 402
 
 

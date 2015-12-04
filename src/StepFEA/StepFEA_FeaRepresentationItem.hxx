@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaRepresentationItem,StepRepr_RepresentationItem)
 
 protected:
 

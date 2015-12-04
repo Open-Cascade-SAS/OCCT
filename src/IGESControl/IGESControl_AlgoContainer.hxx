@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESControl_AlgoContainer,IGESToBRep_AlgoContainer)
+  DEFINE_STANDARD_RTTIEXT(IGESControl_AlgoContainer,IGESToBRep_AlgoContainer)
 
 protected:
 

@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Vrml_AsciiText,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_AsciiText,MMgt_TShared)
 
 protected:
 

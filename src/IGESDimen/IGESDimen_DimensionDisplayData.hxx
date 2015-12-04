@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_DimensionDisplayData,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionDisplayData,IGESData_IGESEntity)
 
 protected:
 

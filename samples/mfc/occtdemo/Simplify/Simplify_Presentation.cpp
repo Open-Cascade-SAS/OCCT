@@ -98,7 +98,7 @@ void Simplify_Presentation::simplify(const TopoDS_Shape& aShape)
     "    TopLoc_Location aLocation;" EOL
     "" EOL
     "    // takes the triangulation of the face aFace" EOL
-    "    Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);" EOL
+    "    Handle(Poly_Triangulation) aTr = BRep_Tool::Triangulation(aFace,aLocation);" EOL
     "" EOL
     "    if(!aTr.IsNull())" EOL
     "    { " EOL
@@ -224,7 +224,7 @@ void Simplify_Presentation::simplify(const TopoDS_Shape& aShape)
     "  TopoDS_Face aFace;" EOL
     "  B.MakeFace(aFace, aSurf, Precision::Confusion());" EOL
     "  B.Add(aFace, aWire);" EOL
-    "  Handle_ShapeFix_Shape sfs = new ShapeFix_Shape(aFace);" EOL
+    "  Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape(aFace);" EOL
     "  sfs->Perform();" EOL
     "  TopoDS_Shape aFixedFace = sfs->Shape();" EOL
     "  if (aFixedFace.IsNull()) " EOL
@@ -251,7 +251,7 @@ void Simplify_Presentation::simplify(const TopoDS_Shape& aShape)
     TopLoc_Location aLocation;
 
     // takes the triangulation of the face aFace
-    Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
+    Handle(Poly_Triangulation) aTr = BRep_Tool::Triangulation(aFace,aLocation);
 
     if(!aTr.IsNull())
     { 
@@ -377,14 +377,14 @@ void Simplify_Presentation::simplify(const TopoDS_Shape& aShape)
   TopoDS_Face aFace;
   B.MakeFace(aFace, aSurf, Precision::Confusion());
   B.Add(aFace, aWire);
-  Handle_ShapeFix_Shape sfs = new ShapeFix_Shape(aFace);
+  Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape(aFace);
   sfs->Perform();
   TopoDS_Shape aFixedFace = sfs->Shape();
   if (aFixedFace.IsNull()) 
     return;
 
   // output surface, make it half transparent
-  Handle_AIS_InteractiveObject aSurfIO = drawSurface(
+  Handle(AIS_InteractiveObject) aSurfIO = drawSurface(
     aSurf, Quantity_NOC_LEMONCHIFFON3, Standard_False);
   aSurfIO->SetTransparency(0.5);
   getAISContext()->Display(aSurfIO, Standard_False);

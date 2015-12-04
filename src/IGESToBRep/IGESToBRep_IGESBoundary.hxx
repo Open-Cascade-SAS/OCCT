@@ -120,7 +120,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESToBRep_IGESBoundary,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESToBRep_IGESBoundary,MMgt_TShared)
 
 protected:
 

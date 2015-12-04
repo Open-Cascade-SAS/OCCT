@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_NodeSet,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_NodeSet,StepGeom_GeometricRepresentationItem)
 
 protected:
 

@@ -18,3 +18,5 @@
 #include <Bisector_Curve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Bisector_Curve,Geom2d_Curve)

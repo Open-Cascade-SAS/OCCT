@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepFEA_FreedomsList.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FreedomsList,MMgt_TShared)
+
 //=======================================================================
 //function : StepFEA_FreedomsList
 //purpose  : 

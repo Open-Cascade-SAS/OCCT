@@ -44,6 +44,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_ConvertSurfaceToBezierBasis,ShapeUpgrade_SplitSurface)
+
 ShapeUpgrade_ConvertSurfaceToBezierBasis::ShapeUpgrade_ConvertSurfaceToBezierBasis()
 {
   myPlaneMode      = Standard_True;

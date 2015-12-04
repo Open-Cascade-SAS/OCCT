@@ -79,7 +79,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Sampler, OpenGl_Resource)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Sampler,OpenGl_Resource)
 
 };
 

@@ -19,6 +19,8 @@
 #include <IGESAppli_PWBDrilledHole.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBDrilledHole,IGESData_IGESEntity)
+
 IGESAppli_PWBDrilledHole::IGESAppli_PWBDrilledHole ()    {  }
 
 

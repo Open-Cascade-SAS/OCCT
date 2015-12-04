@@ -22,6 +22,8 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Poly_Triangulation,MMgt_TShared)
+
 //=======================================================================
 //function : Poly_Triangulation
 //purpose  : 

@@ -30,6 +30,6 @@ public:
   
   Standard_EXPORT StepRepr_GeometricAlignment();
   
-  DEFINE_STANDARD_RTTI(StepRepr_GeometricAlignment, StepRepr_DerivedShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_GeometricAlignment,StepRepr_DerivedShapeAspect)
 };
 #endif // _StepRepr_GeometricAlignment_HeaderFile

@@ -17,6 +17,8 @@
 #include <StepGeom_Surface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RectangularTrimmedSurface,StepGeom_BoundedSurface)
+
 StepGeom_RectangularTrimmedSurface::StepGeom_RectangularTrimmedSurface ()  {}
 
 void StepGeom_RectangularTrimmedSurface::Init(

@@ -206,7 +206,7 @@ protected: //! @name texture mapping properties
 
 public:
 
-  DEFINE_STANDARD_RTTI (AIS_TexturedShape, AIS_Shape)
+  DEFINE_STANDARD_RTTIEXT(AIS_TexturedShape,AIS_Shape)
 
 };
 

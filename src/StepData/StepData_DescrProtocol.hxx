@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_DescrProtocol,StepData_FileProtocol)
+  DEFINE_STANDARD_RTTIEXT(StepData_DescrProtocol,StepData_FileProtocol)
 
 protected:
 

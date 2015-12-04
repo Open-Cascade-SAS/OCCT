@@ -20,6 +20,8 @@
 #include <StepElement_SurfaceSection.hxx>
 #include <StepFEA_FeaSurfaceSectionGeometricRelationship.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaSurfaceSectionGeometricRelationship,MMgt_TShared)
+
 //=======================================================================
 //function : StepFEA_FeaSurfaceSectionGeometricRelationship
 //purpose  : 

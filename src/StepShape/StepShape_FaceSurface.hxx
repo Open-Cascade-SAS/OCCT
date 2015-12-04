@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_FaceSurface,StepShape_Face)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FaceSurface,StepShape_Face)
 
 protected:
 

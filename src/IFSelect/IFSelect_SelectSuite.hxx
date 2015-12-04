@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectSuite,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSuite,IFSelect_SelectDeduct)
 
 protected:
 

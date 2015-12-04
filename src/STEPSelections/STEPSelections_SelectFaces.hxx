@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPSelections_SelectFaces,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectFaces,IFSelect_SelectExplore)
 
 protected:
 

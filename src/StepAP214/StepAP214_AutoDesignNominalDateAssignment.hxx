@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AutoDesignNominalDateAssignment,StepBasic_DateAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AutoDesignNominalDateAssignment,StepBasic_DateAssignment)
 
 protected:
 

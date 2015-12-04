@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepShape_DimensionalLocation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalLocation,StepRepr_ShapeAspectRelationship)
+
 //=======================================================================
 //function : StepShape_DimensionalLocation
 //purpose  : 

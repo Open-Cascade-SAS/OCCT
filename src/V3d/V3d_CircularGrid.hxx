@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(V3d_CircularGrid,Aspect_CircularGrid)
+  DEFINE_STANDARD_RTTIEXT(V3d_CircularGrid,Aspect_CircularGrid)
 
 protected:
 

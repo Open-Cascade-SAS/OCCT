@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeProcess_UOperator,ShapeProcess_Operator)
+  DEFINE_STANDARD_RTTIEXT(ShapeProcess_UOperator,ShapeProcess_Operator)
 
 protected:
 

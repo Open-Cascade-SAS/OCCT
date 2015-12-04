@@ -21,6 +21,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Option,MMgt_TShared)
+
 MoniTool_Option::MoniTool_Option
   (const Handle(Standard_Type)& atype, const Standard_CString aname)
     : thename (aname) , thetype (atype) 

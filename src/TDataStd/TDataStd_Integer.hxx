@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_Integer,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_Integer,TDF_Attribute)
 
 protected:
 

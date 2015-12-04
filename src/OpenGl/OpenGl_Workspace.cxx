@@ -36,6 +36,9 @@
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RaytraceFilter,OpenGl_RenderFilter)
+
 #ifdef HAVE_GL2PS
   #include <gl2ps.h>
   /* OCC22216 NOTE: linker dependency can be switched off by undefining macro.

@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignedShared,IFSelect_SelectExplore)
+
 IFSelect_SelectSignedShared::IFSelect_SelectSignedShared
   (const Handle(IFSelect_Signature)& matcher,
    const Standard_CString signtext, const Standard_Boolean exact,

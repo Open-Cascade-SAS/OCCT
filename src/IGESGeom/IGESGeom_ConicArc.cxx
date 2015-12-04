@@ -26,6 +26,8 @@
 #include <IGESGeom_ConicArc.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_ConicArc,IGESData_IGESEntity)
+
 IGESGeom_ConicArc::IGESGeom_ConicArc ()    {  }
 
 

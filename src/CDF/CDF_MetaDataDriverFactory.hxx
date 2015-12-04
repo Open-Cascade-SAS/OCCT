@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(CDF_MetaDataDriverFactory,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDF_MetaDataDriverFactory,Standard_Transient)
 
 protected:
 

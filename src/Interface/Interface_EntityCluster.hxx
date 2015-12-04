@@ -96,7 +96,7 @@ public:
 friend class Interface_EntityList;
 
 
-  DEFINE_STANDARD_RTTI(Interface_EntityCluster,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_EntityCluster,MMgt_TShared)
 
 protected:
 

@@ -73,7 +73,7 @@ public:
                             const Standard_Integer theDerU,
                             const Standard_Integer theDerV) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(GeomEvaluator_SurfaceOfRevolution, GeomEvaluator_Surface)
+  DEFINE_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfRevolution,GeomEvaluator_Surface)
 
 private:
   Handle(Geom_Curve)       myBaseCurve;

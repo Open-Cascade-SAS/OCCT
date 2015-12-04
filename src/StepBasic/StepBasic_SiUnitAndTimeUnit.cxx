@@ -18,6 +18,8 @@
 #include <StepBasic_SiUnitAndTimeUnit.hxx>
 #include <StepBasic_TimeUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndTimeUnit,StepBasic_SiUnit)
+
 StepBasic_SiUnitAndTimeUnit::StepBasic_SiUnitAndTimeUnit ()  
 {
 }

@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ProductConceptContext,StepBasic_ApplicationContextElement)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductConceptContext,StepBasic_ApplicationContextElement)
 
 protected:
 

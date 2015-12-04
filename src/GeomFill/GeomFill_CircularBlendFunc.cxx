@@ -26,6 +26,8 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc,Approx_SweepFunction)
+
 #if DRAW
 #include <GeomAdaptor_HCurve.hxx>
 #include <Geom_BSplineCurve.hxx>

@@ -148,7 +148,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PLib_JacobiPolynomial,PLib_Base)
+  DEFINE_STANDARD_RTTIEXT(PLib_JacobiPolynomial,PLib_Base)
 
 protected:
 

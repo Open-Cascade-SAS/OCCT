@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_SingleRelation,Expr_GeneralRelation)
+  DEFINE_STANDARD_RTTIEXT(Expr_SingleRelation,Expr_GeneralRelation)
 
 protected:
 

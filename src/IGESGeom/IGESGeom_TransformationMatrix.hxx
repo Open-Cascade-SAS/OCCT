@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_TransformationMatrix,IGESData_TransfEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_TransformationMatrix,IGESData_TransfEntity)
 
 protected:
 

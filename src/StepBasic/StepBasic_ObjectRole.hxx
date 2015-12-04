@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ObjectRole,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ObjectRole,MMgt_TShared)
 
 protected:
 

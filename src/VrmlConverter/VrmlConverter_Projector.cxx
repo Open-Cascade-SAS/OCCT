@@ -30,6 +30,8 @@
 #include <Vrml_TransformSeparator.hxx>
 #include <VrmlConverter_Projector.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_Projector,MMgt_TShared)
+
 VrmlConverter_Projector::VrmlConverter_Projector (const TopTools_Array1OfShape& Shapes,
 						  const Quantity_Length Focus,
 						  const Quantity_Length DX,

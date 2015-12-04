@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TColStd_HPackedMapOfInteger,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger,MMgt_TShared)
 
 protected:
 

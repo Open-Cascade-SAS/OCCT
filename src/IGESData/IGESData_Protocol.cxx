@@ -22,6 +22,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_Protocol,Interface_Protocol)
+
 IGESData_Protocol::IGESData_Protocol ()    {  }
 
 

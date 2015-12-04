@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(CDM_NullMessageDriver,CDM_MessageDriver)
+  DEFINE_STANDARD_RTTIEXT(CDM_NullMessageDriver,CDM_MessageDriver)
 
 protected:
 

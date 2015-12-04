@@ -48,7 +48,7 @@ public:
     myAngle = theAngle;
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_RunoutZoneOrientation, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation,MMgt_TShared)
   
 private:
   Handle(StepBasic_PlaneAngleMeasureWithUnit) myAngle;

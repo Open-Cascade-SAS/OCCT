@@ -28,6 +28,8 @@
 #include <TopLoc_Location.hxx>
 #include <XCAFDoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_LocationDriver,BinMDF_ADriver)
+
 //#include <Precision.hxx>
 //=======================================================================
 //function :

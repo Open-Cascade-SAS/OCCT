@@ -71,6 +71,8 @@
 
 #include <vector>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscret,Standard_Transient)
+
 #define UVDEFLECTION 1.e-05
 
 //=======================================================================

@@ -51,6 +51,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TNaming_NamedShape,TDF_Attribute)
+
 // Defines the nodes classes
 //#define MDTV_DEB_HASL
 //=======================================================================

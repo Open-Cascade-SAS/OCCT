@@ -23,6 +23,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_MaterialDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (NameIndexString,     "name")
 IMPLEMENT_DOMSTRING (DescrIndexString,    "descr")
 IMPLEMENT_DOMSTRING (DensNameIndexString, "dens_name")

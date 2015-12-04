@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SignColor,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SignColor,IFSelect_Signature)
 
 protected:
 

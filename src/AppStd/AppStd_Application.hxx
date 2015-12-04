@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AppStd_Application,TDocStd_Application)
+  DEFINE_STANDARD_RTTIEXT(AppStd_Application,TDocStd_Application)
 
 protected:
 

@@ -24,6 +24,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationLaw,MMgt_TShared)
+
 Standard_Boolean GeomFill_LocationLaw::D1(const Standard_Real, gp_Mat&, gp_Vec&,gp_Mat&, gp_Vec&,TColgp_Array1OfPnt2d&,TColgp_Array1OfVec2d&) 
 {
   Standard_NotImplemented::Raise("GeomFill_LocationLaw::D1");

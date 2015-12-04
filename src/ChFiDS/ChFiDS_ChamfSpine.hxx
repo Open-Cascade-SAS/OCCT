@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ChFiDS_ChamfSpine,ChFiDS_Spine)
+  DEFINE_STANDARD_RTTIEXT(ChFiDS_ChamfSpine,ChFiDS_Spine)
 
 protected:
 

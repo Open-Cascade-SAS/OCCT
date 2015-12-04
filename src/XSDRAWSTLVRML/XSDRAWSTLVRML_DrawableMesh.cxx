@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <XSDRAWSTLVRML_DrawableMesh.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSDRAWSTLVRML_DrawableMesh,Draw_Drawable3D)
+
 //================================================================
 // Function : DrawOn
 // Purpose  :

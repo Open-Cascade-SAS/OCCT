@@ -55,6 +55,8 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Wireframe,ShapeFix_Root)
+
 //#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 //=======================================================================
 //function : ShapeFix_Wireframe

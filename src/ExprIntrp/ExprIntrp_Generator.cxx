@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_Generator,MMgt_TShared)
+
 //#include <ExprIntrp_yaccanal.hxx>
 Standard_EXPORT ExprIntrp_Analysis ExprIntrp_Recept;
 

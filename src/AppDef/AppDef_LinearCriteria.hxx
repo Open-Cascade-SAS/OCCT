@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AppDef_LinearCriteria,AppDef_SmoothCriterion)
+  DEFINE_STANDARD_RTTIEXT(AppDef_LinearCriteria,AppDef_SmoothCriterion)
 
 protected:
 

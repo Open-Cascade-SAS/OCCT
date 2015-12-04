@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ClosedShell,StepShape_ConnectedFaceSet)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ClosedShell,StepShape_ConnectedFaceSet)
 
 protected:
 

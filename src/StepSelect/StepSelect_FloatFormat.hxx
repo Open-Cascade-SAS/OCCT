@@ -93,7 +93,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepSelect_FloatFormat,StepSelect_FileModifier)
+  DEFINE_STANDARD_RTTIEXT(StepSelect_FloatFormat,StepSelect_FileModifier)
 
 protected:
 

@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_UnitsSystem,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_UnitsSystem,MMgt_TShared)
 
 protected:
 

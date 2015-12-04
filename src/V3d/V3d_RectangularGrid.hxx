@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(V3d_RectangularGrid,Aspect_RectangularGrid)
+  DEFINE_STANDARD_RTTIEXT(V3d_RectangularGrid,Aspect_RectangularGrid)
 
 protected:
 

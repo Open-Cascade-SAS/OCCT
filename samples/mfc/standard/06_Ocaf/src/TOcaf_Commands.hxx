@@ -51,7 +51,7 @@ public:
  // Methods PUBLIC
  // 
 Standard_EXPORT TOcaf_Commands(const TDF_Label& Main);
-//Standard_EXPORT   Handle_TDataStd_TreeNode Graph() ;
+//Standard_EXPORT   Handle(TDataStd_TreeNode) Graph() ;
 
 protected:
 

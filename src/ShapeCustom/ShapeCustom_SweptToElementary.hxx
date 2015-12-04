@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeCustom_SweptToElementary,ShapeCustom_Modification)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_SweptToElementary,ShapeCustom_Modification)
 
 protected:
 

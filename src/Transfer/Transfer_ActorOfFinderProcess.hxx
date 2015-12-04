@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ActorOfFinderProcess,Transfer_ActorOfProcessForFinder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ActorOfFinderProcess,Transfer_ActorOfProcessForFinder)
 
 protected:
 

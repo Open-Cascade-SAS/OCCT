@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_SignatureFilter,AIS_TypeFilter)
+  DEFINE_STANDARD_RTTIEXT(AIS_SignatureFilter,AIS_TypeFilter)
 
 protected:
 

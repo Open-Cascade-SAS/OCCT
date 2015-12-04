@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_PlaneSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_PlaneSurface,IGESData_IGESEntity)
 
 protected:
 

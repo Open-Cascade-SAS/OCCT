@@ -20,6 +20,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BHyper,GccInt_Bisec)
+
 GccInt_BHyper::
    GccInt_BHyper(const gp_Hypr2d& Hyper) {
    hyp = gp_Hypr2d(Hyper);

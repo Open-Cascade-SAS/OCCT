@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_SelectInt,StepData_SelectMember)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectInt,StepData_SelectMember)
 
 protected:
 

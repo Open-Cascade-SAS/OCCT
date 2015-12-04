@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Vrml_IndexedFaceSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_IndexedFaceSet,MMgt_TShared)
 
 protected:
 

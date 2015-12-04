@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_DegreeOfFreedomMember,StepData_SelectNamed)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_DegreeOfFreedomMember,StepData_SelectNamed)
 
 protected:
 

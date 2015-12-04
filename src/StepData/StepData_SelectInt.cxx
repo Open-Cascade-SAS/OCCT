@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <StepData_SelectInt.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectInt,StepData_SelectMember)
+
 StepData_SelectInt::StepData_SelectInt  ()    {  thekind = 0;  theval = 0;  }
 
 Standard_Integer  StepData_SelectInt::Kind () const    {  return thekind;  }

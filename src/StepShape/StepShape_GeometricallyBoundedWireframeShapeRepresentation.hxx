@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_GeometricallyBoundedWireframeShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_GeometricallyBoundedWireframeShapeRepresentation,StepShape_ShapeRepresentation)
 
 protected:
 

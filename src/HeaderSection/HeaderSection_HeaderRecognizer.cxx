@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_HeaderRecognizer,StepData_FileRecognizer)
+
 static TCollection_AsciiString reco_FileName    ("FILE_NAME");
 static TCollection_AsciiString reco_FileSchema ("FILE_SCHEMA");
 static TCollection_AsciiString reco_FileDescription ("FILE_DESCRIPTION");

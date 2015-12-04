@@ -18,6 +18,8 @@
 #include <StepShape_OrientedFace.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedFace,StepShape_Face)
+
 StepShape_OrientedFace::StepShape_OrientedFace ()  {}
 
 void StepShape_OrientedFace::Init(

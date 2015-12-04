@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_Relation,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_Relation,TDF_Attribute)
 
 protected:
 

@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepDimTol_SymmetryTolerance.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_SymmetryTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+
 //=======================================================================
 //function : StepDimTol_SymmetryTolerance
 //purpose  : 

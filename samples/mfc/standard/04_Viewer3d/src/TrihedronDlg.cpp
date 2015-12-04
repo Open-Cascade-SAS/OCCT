@@ -35,7 +35,7 @@ value = (value*neg)/inc;
 //CTrihedronDlg::CTrihedronDlg(CWnd* pParent /*=NULL*/)
 	//: CDialog(CTrihedronDlg::IDD, pParent)
 
-CTrihedronDlg::CTrihedronDlg(Handle_V3d_View Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent /*=NULL*/)
+CTrihedronDlg::CTrihedronDlg(Handle(V3d_View) Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent /*=NULL*/)
 	: CDialog(CTrihedronDlg::IDD, pParent)
 
 {

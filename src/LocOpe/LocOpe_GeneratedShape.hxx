@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(LocOpe_GeneratedShape,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(LocOpe_GeneratedShape,MMgt_TShared)
 
 protected:
 

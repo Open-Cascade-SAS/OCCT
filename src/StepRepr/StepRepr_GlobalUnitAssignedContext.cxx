@@ -17,6 +17,8 @@
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GlobalUnitAssignedContext,StepRepr_RepresentationContext)
+
 StepRepr_GlobalUnitAssignedContext::StepRepr_GlobalUnitAssignedContext ()  {}
 
 void StepRepr_GlobalUnitAssignedContext::Init(

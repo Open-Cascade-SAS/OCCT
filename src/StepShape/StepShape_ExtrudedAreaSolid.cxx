@@ -18,6 +18,8 @@
 #include <StepShape_ExtrudedAreaSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ExtrudedAreaSolid,StepShape_SweptAreaSolid)
+
 StepShape_ExtrudedAreaSolid::StepShape_ExtrudedAreaSolid ()  {}
 
 void StepShape_ExtrudedAreaSolid::Init(

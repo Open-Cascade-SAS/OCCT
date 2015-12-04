@@ -220,7 +220,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeExtend_WireData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_WireData,MMgt_TShared)
 
 protected:
 

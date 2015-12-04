@@ -22,6 +22,8 @@
 #include <IGESGeom_Line.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Line,IGESData_IGESEntity)
+
 IGESGeom_Line::IGESGeom_Line ()    {  }
 
 

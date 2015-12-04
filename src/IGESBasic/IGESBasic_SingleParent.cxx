@@ -22,6 +22,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingleParent,IGESData_SingleParentEntity)
+
 IGESBasic_SingleParent::IGESBasic_SingleParent ()    {  }
 
 

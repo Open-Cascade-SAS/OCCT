@@ -21,6 +21,8 @@
 
 #include <stdio.h>
 #include <string.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_GraphCounter,IFSelect_SignCounter)
+
 IFSelect_GraphCounter::IFSelect_GraphCounter
   (const Standard_Boolean withmap, const Standard_Boolean withlist)
   : IFSelect_SignCounter (withmap,withlist)  {  }

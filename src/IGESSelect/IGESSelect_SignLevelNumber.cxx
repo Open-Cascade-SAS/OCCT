@@ -22,6 +22,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SignLevelNumber,IFSelect_Signature)
+
 static TCollection_AsciiString laval;
 
 

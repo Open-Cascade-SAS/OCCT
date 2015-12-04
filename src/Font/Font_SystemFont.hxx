@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Font_SystemFont,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Font_SystemFont,MMgt_TShared)
 
 protected:
 

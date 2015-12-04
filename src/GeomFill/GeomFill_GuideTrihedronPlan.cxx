@@ -38,6 +38,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronPlan,GeomFill_TrihedronWithGuide)
+
 //#include <gp_Trsf2d.hxx>
 //#include <Bnd_Box2d.hxx>
 #if DRAW

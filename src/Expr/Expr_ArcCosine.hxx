@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_ArcCosine,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_ArcCosine,Expr_UnaryExpression)
 
 protected:
 

@@ -95,7 +95,7 @@ class TObj_TObject : public TDF_Attribute
   
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_TObject, TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TObj_TObject,TDF_Attribute)
 };
 
 //! Define handle class for TObj_TObject

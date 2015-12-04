@@ -207,7 +207,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_ModelCopier,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ModelCopier,MMgt_TShared)
 
 protected:
 

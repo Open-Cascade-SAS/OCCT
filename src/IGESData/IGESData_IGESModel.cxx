@@ -32,6 +32,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESModel,Interface_InterfaceModel)
+
 static Standard_CString voidline = "";
 
 // Routine interne utilisee pour VerifyCheck

@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_AttributeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(AIS_AttributeFilter,SelectMgr_Filter)
 
 protected:
 

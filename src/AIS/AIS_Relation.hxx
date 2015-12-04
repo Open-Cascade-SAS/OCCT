@@ -193,7 +193,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_Relation,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_Relation,AIS_InteractiveObject)
 
 protected:
 

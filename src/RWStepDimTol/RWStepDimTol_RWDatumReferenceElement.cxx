@@ -25,6 +25,7 @@
 #include <StepDimTol_HArray1OfDatumReferenceElement.hxx>
 #include <StepDimTol_HArray1OfDatumReferenceModifier.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWDatumReferenceElement

@@ -418,7 +418,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_ShapeTool,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_ShapeTool,TDF_Attribute)
 
 protected:
 

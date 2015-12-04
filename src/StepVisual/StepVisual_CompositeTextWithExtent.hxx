@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_CompositeTextWithExtent,StepVisual_CompositeText)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CompositeTextWithExtent,StepVisual_CompositeText)
 
 protected:
 

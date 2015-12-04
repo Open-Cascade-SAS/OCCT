@@ -184,7 +184,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_GeneralModule,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_GeneralModule,MMgt_TShared)
 
 protected:
 

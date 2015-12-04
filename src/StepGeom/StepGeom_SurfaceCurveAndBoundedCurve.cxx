@@ -19,6 +19,8 @@
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_SurfaceCurveAndBoundedCurve.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceCurveAndBoundedCurve,StepGeom_SurfaceCurve)
+
 StepGeom_SurfaceCurveAndBoundedCurve::StepGeom_SurfaceCurveAndBoundedCurve () 
 {
 }

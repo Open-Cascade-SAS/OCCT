@@ -40,7 +40,7 @@ public:
 
   IVtk_IdType GetSubShapeId (const IVtk_IShape::Handle&) const;
 
-  DEFINE_STANDARD_RTTI(IVtkOCC_Shape, IVtk_IShape)
+  DEFINE_STANDARD_RTTIEXT(IVtkOCC_Shape,IVtk_IShape)
 
   //! Get the wrapped original OCCT shape
   //! @return TopoDS_Shape the wrapped original OCCT shape

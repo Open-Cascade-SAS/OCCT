@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_SurfaceSectionFieldVarying,StepElement_SurfaceSectionField)
+  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionFieldVarying,StepElement_SurfaceSectionField)
 
 protected:
 

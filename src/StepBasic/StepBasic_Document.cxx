@@ -20,6 +20,8 @@
 #include <StepBasic_DocumentType.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Document,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_Document
 //purpose  : 

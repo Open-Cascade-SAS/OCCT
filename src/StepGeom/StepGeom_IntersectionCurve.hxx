@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_IntersectionCurve,StepGeom_SurfaceCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_IntersectionCurve,StepGeom_SurfaceCurve)
 
 protected:
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_EdgeBasedWireframeModel,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeModel,StepGeom_GeometricRepresentationItem)
 
 protected:
 

@@ -125,7 +125,7 @@ public:
                                                 const Standard_Integer theMode,
                                                 const Standard_Integer theNewSens);
 
-  DEFINE_STANDARD_RTTI(SelectMgr_SelectionManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_SelectionManager,MMgt_TShared)
 
 protected:
 

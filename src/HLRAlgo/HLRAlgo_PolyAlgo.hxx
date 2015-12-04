@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRAlgo_PolyAlgo,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo,MMgt_TShared)
 
 protected:
 

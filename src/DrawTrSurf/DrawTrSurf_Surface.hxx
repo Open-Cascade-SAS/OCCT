@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_Surface,DrawTrSurf_Drawable)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Surface,DrawTrSurf_Drawable)
 
 protected:
 

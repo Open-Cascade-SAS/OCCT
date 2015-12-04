@@ -112,7 +112,7 @@ class VrmlData_Faceted : public VrmlData_Geometry
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Faceted, VrmlData_Geometry)
+DEFINE_STANDARD_RTTI_INLINE(VrmlData_Faceted,VrmlData_Geometry)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

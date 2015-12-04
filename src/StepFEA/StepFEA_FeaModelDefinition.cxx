@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepFEA_FeaModelDefinition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaModelDefinition,StepRepr_ShapeAspect)
+
 //=======================================================================
 //function : StepFEA_FeaModelDefinition
 //purpose  : 

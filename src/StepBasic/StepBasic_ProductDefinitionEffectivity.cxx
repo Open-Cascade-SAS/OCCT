@@ -17,6 +17,8 @@
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionEffectivity,StepBasic_Effectivity)
+
 StepBasic_ProductDefinitionEffectivity::StepBasic_ProductDefinitionEffectivity  ()    {  }
 
 void  StepBasic_ProductDefinitionEffectivity::Init

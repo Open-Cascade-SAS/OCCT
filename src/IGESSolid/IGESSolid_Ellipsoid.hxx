@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_Ellipsoid,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Ellipsoid,IGESData_IGESEntity)
 
 protected:
 

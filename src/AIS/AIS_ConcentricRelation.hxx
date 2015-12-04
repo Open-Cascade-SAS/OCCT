@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_ConcentricRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_ConcentricRelation,AIS_Relation)
 
 protected:
 

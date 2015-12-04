@@ -20,6 +20,8 @@
 #include <Standard_NumericError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_CircularGrid,Aspect_Grid)
+
 Aspect_CircularGrid::Aspect_CircularGrid
      (const Quantity_Length aRadiusStep,
       const Standard_Integer aDivisionNumber,

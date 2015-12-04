@@ -37,6 +37,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Axis,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

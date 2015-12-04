@@ -57,6 +57,8 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(LocOpe_WiresOnShape,MMgt_TShared)
+
 static Standard_Boolean Project(const TopoDS_Vertex&,
                                 const gp_Pnt2d&,
 				const TopoDS_Face&,

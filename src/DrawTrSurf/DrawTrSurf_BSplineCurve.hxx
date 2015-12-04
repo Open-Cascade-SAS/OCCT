@@ -94,7 +94,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_BSplineCurve,DrawTrSurf_Curve)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve,DrawTrSurf_Curve)
 
 protected:
 

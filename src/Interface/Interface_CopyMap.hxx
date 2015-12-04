@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_CopyMap,Interface_CopyControl)
+  DEFINE_STANDARD_RTTIEXT(Interface_CopyMap,Interface_CopyControl)
 
 protected:
 

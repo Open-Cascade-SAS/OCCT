@@ -144,7 +144,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Bisector_BisecAna,Bisector_Curve)
+  DEFINE_STANDARD_RTTIEXT(Bisector_BisecAna,Bisector_Curve)
 
 protected:
 

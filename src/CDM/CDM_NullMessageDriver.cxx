@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDM_NullMessageDriver,CDM_MessageDriver)
+
 CDM_NullMessageDriver::CDM_NullMessageDriver() {}
 
 void CDM_NullMessageDriver::Write(const Standard_ExtString /*aString*/) {

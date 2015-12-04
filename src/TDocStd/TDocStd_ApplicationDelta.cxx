@@ -20,6 +20,8 @@
 #include <TDocStd_ApplicationDelta.hxx>
 #include <TDocStd_Document.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,MMgt_TShared)
+
 //=======================================================================
 //function : TDocStd_ApplicationDelta
 //purpose  : 

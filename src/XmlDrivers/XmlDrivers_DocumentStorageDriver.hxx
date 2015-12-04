@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlDrivers_DocumentStorageDriver,XmlLDrivers_DocumentStorageDriver)
+  DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentStorageDriver,XmlLDrivers_DocumentStorageDriver)
 
 protected:
 

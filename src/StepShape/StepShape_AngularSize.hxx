@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_AngularSize,StepShape_DimensionalSize)
+  DEFINE_STANDARD_RTTIEXT(StepShape_AngularSize,StepShape_DimensionalSize)
 
 protected:
 

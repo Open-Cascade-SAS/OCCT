@@ -41,7 +41,7 @@ class XmlTObjDrivers_DocumentStorageDriver :
 
  public:
   // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI (XmlTObjDrivers_DocumentStorageDriver, XmlLDrivers_DocumentStorageDriver)
+  DEFINE_STANDARD_RTTIEXT(XmlTObjDrivers_DocumentStorageDriver,XmlLDrivers_DocumentStorageDriver)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

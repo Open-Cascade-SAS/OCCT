@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Act,IFSelect_Activator)
+
 static TCollection_AsciiString thedefgr, thedefil;
 
 

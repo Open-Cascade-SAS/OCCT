@@ -157,7 +157,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_BSplineSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_BSplineSurface,IGESData_IGESEntity)
 
 protected:
 

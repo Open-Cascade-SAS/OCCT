@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_DispPerFiles,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerFiles,IFSelect_Dispatch)
 
 protected:
 

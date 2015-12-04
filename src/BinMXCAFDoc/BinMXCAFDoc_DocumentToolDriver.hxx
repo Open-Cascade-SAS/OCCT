@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMXCAFDoc_DocumentToolDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_DocumentToolDriver,BinMDF_ADriver)
 
 protected:
 

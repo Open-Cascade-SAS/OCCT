@@ -96,7 +96,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_SectionedArea,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_SectionedArea,IGESData_IGESEntity)
 
 protected:
 

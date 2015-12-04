@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_Volume3dElementRepresentation,StepFEA_ElementRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_Volume3dElementRepresentation,StepFEA_ElementRepresentation)
 
 protected:
 

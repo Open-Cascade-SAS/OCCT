@@ -20,3 +20,5 @@
 #include <GeomAdaptor_HCurve.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_HCurve,GeomAdaptor_GHCurve)

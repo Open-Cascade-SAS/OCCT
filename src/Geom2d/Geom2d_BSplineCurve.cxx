@@ -49,6 +49,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BSplineCurve,Geom2d_BoundedCurve)
+
 //=======================================================================
 //function : CheckCurveData
 //purpose  : Internal use only

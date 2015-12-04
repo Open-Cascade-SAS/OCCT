@@ -215,7 +215,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_CylindricalSurface,Geom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_CylindricalSurface,Geom_ElementarySurface)
 
 protected:
 

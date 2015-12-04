@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ApprovalRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalRelationship,MMgt_TShared)
 
 protected:
 

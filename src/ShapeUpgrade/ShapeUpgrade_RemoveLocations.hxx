@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_RemoveLocations,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations,MMgt_TShared)
 
 protected:
 

@@ -57,6 +57,8 @@
 #include <TopTools_Array1OfShape.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_NSections,BRepFill_SectionLaw)
+
 #ifdef OCCT_DEBUG
 static Standard_Boolean Affich = 0;
 #endif

@@ -160,7 +160,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_SectionLaw,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_SectionLaw,MMgt_TShared)
 
 protected:
 

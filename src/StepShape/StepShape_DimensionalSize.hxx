@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_DimensionalSize,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalSize,MMgt_TShared)
 
 protected:
 

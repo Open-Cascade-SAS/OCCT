@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <TransferBRep_TransferResultInfo.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,MMgt_TShared)
+
 //=======================================================================
 //function : TransferBRep_TransferResultInfo
 //purpose  : 

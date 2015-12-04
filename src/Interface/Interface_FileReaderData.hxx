@@ -180,7 +180,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_FileReaderData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_FileReaderData,MMgt_TShared)
 
 protected:
 

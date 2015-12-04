@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopoDS_TEdge,TopoDS_TShape)
+  DEFINE_STANDARD_RTTIEXT(TopoDS_TEdge,TopoDS_TShape)
 
 protected:
 

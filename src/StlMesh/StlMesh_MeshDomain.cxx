@@ -24,6 +24,8 @@
 #include <StlMesh_MeshDomain.hxx>
 #include <StlMesh_MeshTriangle.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StlMesh_MeshDomain,MMgt_TShared)
+
 //=======================================================================
 //function : StlMesh_MeshDomain
 //design   : 

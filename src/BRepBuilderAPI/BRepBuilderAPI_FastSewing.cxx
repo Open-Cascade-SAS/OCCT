@@ -33,6 +33,8 @@
 #include <TopTools_MapOfShape.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepBuilderAPI_FastSewing,Standard_Transient)
+
 //=======================================================================
 //function : IntersetctionOfSets
 //purpose  : Returns minimal value of intersection result

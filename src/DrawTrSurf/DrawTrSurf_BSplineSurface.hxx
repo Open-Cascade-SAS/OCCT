@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_BSplineSurface,DrawTrSurf_Surface)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BSplineSurface,DrawTrSurf_Surface)
 
 protected:
 

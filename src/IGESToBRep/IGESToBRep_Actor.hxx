@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESToBRep_Actor,Transfer_ActorOfTransientProcess)
+  DEFINE_STANDARD_RTTIEXT(IGESToBRep_Actor,Transfer_ActorOfTransientProcess)
 
 protected:
 

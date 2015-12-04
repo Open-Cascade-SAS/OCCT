@@ -44,6 +44,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Bisector_BisecPC,Bisector_Curve)
+
 //=============================================================================
 //function :
 // purpose :

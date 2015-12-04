@@ -43,6 +43,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationDraft,GeomFill_LocationLaw)
+
 //==================================================================
 //Function: GeomFill_LocationDraft
 //Purpose : constructor

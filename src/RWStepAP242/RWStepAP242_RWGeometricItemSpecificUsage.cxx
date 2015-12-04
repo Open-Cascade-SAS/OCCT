@@ -20,6 +20,7 @@
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 
 RWStepAP242_RWGeometricItemSpecificUsage::RWStepAP242_RWGeometricItemSpecificUsage () {}

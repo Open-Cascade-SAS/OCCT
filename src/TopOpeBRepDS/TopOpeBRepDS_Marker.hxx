@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepDS_Marker,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Marker,MMgt_TShared)
 
 protected:
 

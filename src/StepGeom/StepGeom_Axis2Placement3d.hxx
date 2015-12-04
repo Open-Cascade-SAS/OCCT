@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_Axis2Placement3d,StepGeom_Placement)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Axis2Placement3d,StepGeom_Placement)
 
 protected:
 

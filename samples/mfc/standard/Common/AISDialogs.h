@@ -20,7 +20,7 @@ class CAISNbrIsosDialog : public CDialog
 {
 // Construction
 public:
-	CAISNbrIsosDialog(Handle_AIS_InteractiveContext CurrentIC,
+	CAISNbrIsosDialog(Handle(AIS_InteractiveContext) CurrentIC,
 					  CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -103,7 +103,7 @@ protected:
 private:
     void RedisplaySelected ();
 
-	Handle_AIS_InteractiveContext myCurrentIC;
+	Handle(AIS_InteractiveContext) myCurrentIC;
 };
 
 */
@@ -160,7 +160,7 @@ protected:
 private:
 	void SetMaterial (Graphic3d_NameOfMaterial Material);
 
-	Handle_AIS_InteractiveContext myCurrentIC;
+	Handle(AIS_InteractiveContext) myCurrentIC;
 
 };
 
@@ -168,7 +168,7 @@ class Standard_EXPORT CDialogTransparency : public CDialog
 {
 // Construction
 public:
-	CDialogTransparency(Handle_AIS_InteractiveContext CurrentIC, 
+	CDialogTransparency(Handle(AIS_InteractiveContext) CurrentIC, 
 		                CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -196,7 +196,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	Handle_AIS_InteractiveContext myCurrentIC;
+	Handle(AIS_InteractiveContext) myCurrentIC;
 
 };
 

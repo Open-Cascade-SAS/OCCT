@@ -46,6 +46,8 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IntTools_Context,MMgt_TShared)
+
 // 
 //=======================================================================
 //function : 

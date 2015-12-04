@@ -24,6 +24,8 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Datum.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DatumDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

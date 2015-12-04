@@ -15,4 +15,6 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_Extension.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_Extension,StepRepr_DerivedShapeAspect)
+
 StepRepr_Extension::StepRepr_Extension ()    {  }

@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_SimpleBinderOfTransient,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient,Transfer_Binder)
 
 protected:
 

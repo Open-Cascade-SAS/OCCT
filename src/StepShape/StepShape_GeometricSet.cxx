@@ -17,6 +17,8 @@
 #include <StepShape_GeometricSetSelect.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet,StepGeom_GeometricRepresentationItem)
+
 StepShape_GeometricSet::StepShape_GeometricSet ()  {}
 
 void StepShape_GeometricSet::Init(

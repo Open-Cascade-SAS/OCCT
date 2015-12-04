@@ -41,6 +41,8 @@
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute,MMgt_TShared)
+
 #undef TDF_DATA_COMMIT_OPTIMIZED
 
 //=======================================================================

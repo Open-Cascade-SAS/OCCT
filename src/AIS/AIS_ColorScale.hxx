@@ -211,7 +211,7 @@ public:
   Standard_EXPORT void TextSize (const TCollection_ExtendedString& theText, const Standard_Integer theHeight, Standard_Integer& theWidth, Standard_Integer& theAscent, Standard_Integer& theDescent) const;
 
 
-  DEFINE_STANDARD_RTTI(AIS_ColorScale,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_ColorScale,AIS_InteractiveObject)
 
 protected:
 

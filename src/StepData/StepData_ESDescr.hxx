@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_ESDescr,StepData_EDescr)
+  DEFINE_STANDARD_RTTIEXT(StepData_ESDescr,StepData_EDescr)
 
 protected:
 

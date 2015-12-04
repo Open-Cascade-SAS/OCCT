@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PCDM_Writer,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(PCDM_Writer,Standard_Transient)
 
 protected:
 

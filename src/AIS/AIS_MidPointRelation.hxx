@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_MidPointRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_MidPointRelation,AIS_Relation)
 
 protected:
 

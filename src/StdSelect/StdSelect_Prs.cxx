@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <StdSelect_Prs.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StdSelect_Prs,Prs3d_Presentation)
+
 StdSelect_Prs::
 StdSelect_Prs(const Handle(Graphic3d_StructureManager)& aStructureManager):
 Prs3d_Presentation(aStructureManager),

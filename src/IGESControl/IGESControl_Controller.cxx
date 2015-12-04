@@ -66,6 +66,8 @@
 #include <XSControl_SelectForTransfer.hxx>
 #include <XSControl_WorkSession.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESControl_Controller,XSControl_Controller)
+
 //szv#4:S4163:12Mar99 never referenced
 //static const Standard_CString thelong  = "IGES";
 //static const Standard_CString theshort = "iges";

@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMDataStd_AsciiStringDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataStd_AsciiStringDriver,BinMDF_ADriver)
 
 protected:
 

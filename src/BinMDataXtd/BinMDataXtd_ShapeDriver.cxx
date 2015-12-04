@@ -24,6 +24,8 @@
 #include <TDataXtd_Shape.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_ShapeDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataXtd_ShapeDriver
 //purpose  : 

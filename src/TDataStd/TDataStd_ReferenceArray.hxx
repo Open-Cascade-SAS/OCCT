@@ -94,7 +94,7 @@ TDF_Label operator () (const Standard_Integer Index) const
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_ReferenceArray,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_ReferenceArray,TDF_Attribute)
 
 protected:
 

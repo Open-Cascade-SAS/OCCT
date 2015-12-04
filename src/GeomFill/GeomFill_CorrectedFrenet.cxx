@@ -45,6 +45,8 @@
 #include <TColStd_SequenceOfReal.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CorrectedFrenet,GeomFill_TrihedronLaw)
+
 //Patch
 #ifdef OCCT_DEBUG
 static Standard_Boolean Affich=0;

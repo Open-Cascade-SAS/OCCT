@@ -121,7 +121,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_ViewSorter,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_ViewSorter,MMgt_TShared)
 
 protected:
 

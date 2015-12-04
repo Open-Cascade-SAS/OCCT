@@ -21,6 +21,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont,Standard_Transient)
+
 // =======================================================================
 // function : Font_FTFont
 // purpose  :

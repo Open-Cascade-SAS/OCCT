@@ -110,7 +110,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeAlgo_AlgoContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAlgo_AlgoContainer,MMgt_TShared)
 
 protected:
 

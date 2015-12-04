@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_SiUnitAndLengthUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndLengthUnit,StepBasic_SiUnit)
 
 protected:
 

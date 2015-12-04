@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_FilletDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_FilletDriver,TFunction_Driver)
 
 protected:
 

@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_SpecificModule,IGESData_SpecificModule)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SpecificModule,IGESData_SpecificModule)
 
 protected:
 

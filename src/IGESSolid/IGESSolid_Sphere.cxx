@@ -22,6 +22,8 @@
 #include <IGESSolid_Sphere.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Sphere,IGESData_IGESEntity)
+
 IGESSolid_Sphere::IGESSolid_Sphere ()    {  }
 
 

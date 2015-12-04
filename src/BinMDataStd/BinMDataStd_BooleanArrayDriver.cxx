@@ -23,6 +23,8 @@
 #include <TDataStd_BooleanArray.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_BooleanArrayDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_BooleanArrayDriver
 //purpose  : Constructor

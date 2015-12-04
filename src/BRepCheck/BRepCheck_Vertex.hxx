@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepCheck_Vertex,BRepCheck_Result)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Vertex,BRepCheck_Result)
 
 protected:
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaAreaDensity,StepFEA_FeaMaterialPropertyRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaAreaDensity,StepFEA_FeaMaterialPropertyRepresentationItem)
 
 protected:
 

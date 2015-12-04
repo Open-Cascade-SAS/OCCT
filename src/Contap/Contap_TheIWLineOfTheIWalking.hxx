@@ -143,7 +143,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Contap_TheIWLineOfTheIWalking,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Contap_TheIWLineOfTheIWalking,MMgt_TShared)
 
 protected:
 

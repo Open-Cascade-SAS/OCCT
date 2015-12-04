@@ -61,6 +61,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationGuide,GeomFill_LocationLaw)
+
 #if DRAW
 static Standard_Integer Affich = 0;
 #include <Approx_Curve3d.hxx>

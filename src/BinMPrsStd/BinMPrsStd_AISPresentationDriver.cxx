@@ -23,6 +23,8 @@
 #include <TDF_Attribute.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMPrsStd_AISPresentationDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_AISPresentationDriver
 //purpose  : Constructor

@@ -31,6 +31,6 @@ public:
   
   Standard_EXPORT StepRepr_ContinuosShapeAspect();
 
-  DEFINE_STANDARD_RTTI(StepRepr_ContinuosShapeAspect, StepRepr_CompositeShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ContinuosShapeAspect,StepRepr_CompositeShapeAspect)
 };
 #endif // _StepRepr_ContinuosShapeAspect_HeaderFile

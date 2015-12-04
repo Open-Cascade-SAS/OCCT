@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_BSplineCurve,StepGeom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineCurve,StepGeom_BoundedCurve)
 
 protected:
 

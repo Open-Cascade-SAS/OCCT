@@ -139,7 +139,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Conic,Geom_Curve)
+  DEFINE_STANDARD_RTTIEXT(Geom_Conic,Geom_Curve)
 
 protected:
 

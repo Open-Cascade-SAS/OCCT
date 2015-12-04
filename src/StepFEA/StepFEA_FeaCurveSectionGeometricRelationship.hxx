@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaCurveSectionGeometricRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaCurveSectionGeometricRelationship,MMgt_TShared)
 
 protected:
 

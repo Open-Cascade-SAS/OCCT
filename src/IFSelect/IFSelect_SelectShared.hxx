@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectShared,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectShared,IFSelect_SelectDeduct)
 
 protected:
 

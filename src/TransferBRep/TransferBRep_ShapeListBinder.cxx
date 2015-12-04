@@ -27,6 +27,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TransferBRep_ShapeListBinder.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_ShapeListBinder,Transfer_Binder)
+
 TransferBRep_ShapeListBinder::TransferBRep_ShapeListBinder  ()
       {  theres = new TopTools_HSequenceOfShape();  }
 

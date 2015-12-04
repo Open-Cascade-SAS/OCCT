@@ -78,11 +78,11 @@ void HLR_Presentation::DoSample()
 // Purpose  : returns Prs3d_Projector object created corresponding 
 //            to the current view parameters
 //================================================================
-Handle_Prs3d_Projector HLR_Presentation::Projector(gp_Trsf& theTrsf)
+Handle(Prs3d_Projector) HLR_Presentation::Projector(gp_Trsf& theTrsf)
 {
   // retrieve view parameters for creation of Prs3d_Projector object
   getViewer()->InitActiveViews();
-  Handle_V3d_View aView = getViewer()->ActiveView();
+  Handle(V3d_View) aView = getViewer()->ActiveView();
   
   Standard_Real aProjVecX, aProjVecY, aProjVecZ;
   aView->Proj(aProjVecX, aProjVecY, aProjVecZ);
@@ -93,7 +93,7 @@ Handle_Prs3d_Projector HLR_Presentation::Projector(gp_Trsf& theTrsf)
   Standard_Real aPntX = 0.0, aPntY = 0.0, aPntZ = 0.0;
 
   // create a projector object
-  Handle_Prs3d_Projector aProjector = new Prs3d_Projector(Standard_False, 0.0, 
+  Handle(Prs3d_Projector) aProjector = new Prs3d_Projector(Standard_False, 0.0, 
     aProjVecX, aProjVecY, aProjVecZ, aPntX, aPntY, aPntZ, aUpX, aUpY, aUpZ);
 
   gp_Pnt At (aPntX,aPntY,aPntZ);
@@ -122,14 +122,14 @@ Standard_Boolean HLR_Presentation::HLR(const TopoDS_Shape& aShape, const Standar
     "  // initializing aShape ..." EOL
     "" EOL
     "  // Build The algorithm object" EOL
-    "  Handle_HLRBRep_Algo myAlgo = new HLRBRep_Algo();" EOL
+    "  Handle(HLRBRep_Algo) myAlgo = new HLRBRep_Algo();" EOL
     "  " EOL
     "  // Add Shapes into the algorithm" EOL
     "  Standard_Real nbIso = 5; // number of isolines to display" EOL
     "  myAlgo->Add(aShape, nbIso);" EOL
     "" EOL
     "  // create a projector object" EOL
-    "  Handle_V3d_View aView;" EOL
+    "  Handle(V3d_View) aView;" EOL
     "  // initializing V3d_View ..." EOL
     "  " EOL
     "  Standard_Real aProjVecX, aProjVecY, aProjVecZ;" EOL
@@ -141,7 +141,7 @@ Standard_Boolean HLR_Presentation::HLR(const TopoDS_Shape& aShape, const Standar
     "  Standard_Real aPntX = 0.0, aPntY = 0.0, aPntZ = 0.0;" EOL
     "" EOL
     "  // create a projector object" EOL
-    "  Handle_Prs3d_Projector aProjector = new Prs3d_Projector(Standard_False, 0.0, " EOL
+    "  Handle(Prs3d_Projector) aProjector = new Prs3d_Projector(Standard_False, 0.0, " EOL
     "    aProjVecX, aProjVecY, aProjVecZ, aPntX, aPntY, aPntZ, aUpX, aUpY, aUpZ);" EOL
     "  " EOL
     "  // Set The Projector" EOL
@@ -189,7 +189,7 @@ Standard_Boolean HLR_Presentation::HLR(const TopoDS_Shape& aShape, const Standar
     "  Isolines     - YELLOW" EOL);
 
   // Build The algorithm object
-  Handle_HLRBRep_Algo myAlgo = new HLRBRep_Algo();
+  Handle(HLRBRep_Algo) myAlgo = new HLRBRep_Algo();
   
   // Add Shapes into the algorithm
   myAlgo->Add(aShape, nbIso);
@@ -234,7 +234,7 @@ Standard_Boolean HLR_Presentation::HLR(const TopoDS_Shape& aShape, const Standar
   TopoDS_Shape OutLineHCompound = aHLRToShape.OutLineHCompound();
   TopoDS_Shape IsoLineHCompound = aHLRToShape.IsoLineHCompound();
 
-  Handle_AIS_Shape aShapeIO = drawShape(aShape);
+  Handle(AIS_Shape) aShapeIO = drawShape(aShape);
 
   if (WAIT_A_SECOND) return Standard_False;
 
@@ -268,13 +268,13 @@ Standard_Boolean HLR_Presentation::PolyHLR(const TopoDS_Shape& aShape)
     "  // triangulating aShape with BRepMesh::Mesh" EOL
     "" EOL
     "  // Build The algorithm object" EOL
-    "  Handle_HLRBRep_PolyAlgo myPolyAlgo = new HLRBRep_PolyAlgo();" EOL
+    "  Handle(HLRBRep_PolyAlgo) myPolyAlgo = new HLRBRep_PolyAlgo();" EOL
     "  " EOL
     "  // Add Shapes into the algorithm" EOL
     "  myPolyAlgo->Load(aShape);" EOL
     "" EOL
     "  // create a projector object" EOL
-    "  Handle_V3d_View aView;" EOL
+    "  Handle(V3d_View) aView;" EOL
     "  // initializing V3d_View ..." EOL
     "  " EOL
     "  Standard_Real aProjVecX, aProjVecY, aProjVecZ;" EOL
@@ -286,7 +286,7 @@ Standard_Boolean HLR_Presentation::PolyHLR(const TopoDS_Shape& aShape)
     "  Standard_Real aPntX = 0.0, aPntY = 0.0, aPntZ = 0.0;" EOL
     "" EOL
     "  // create a projector object" EOL
-    "  Handle_Prs3d_Projector aProjector = new Prs3d_Projector(Standard_False, 0.0, " EOL
+    "  Handle(Prs3d_Projector) aProjector = new Prs3d_Projector(Standard_False, 0.0, " EOL
     "    aProjVecX, aProjVecY, aProjVecZ, aPntX, aPntY, aPntZ, aUpX, aUpY, aUpZ);" EOL
     "  " EOL
     "  // Set The Projector" EOL
@@ -328,7 +328,7 @@ Standard_Boolean HLR_Presentation::PolyHLR(const TopoDS_Shape& aShape)
     "  Isolines     - YELLOW" EOL);
 
   // Build The algorithm object
-  Handle_HLRBRep_PolyAlgo myPolyAlgo = new HLRBRep_PolyAlgo();
+  Handle(HLRBRep_PolyAlgo) myPolyAlgo = new HLRBRep_PolyAlgo();
   
   // Add Shapes into the algorithm
   myPolyAlgo->Load(aShape);
@@ -367,7 +367,7 @@ Standard_Boolean HLR_Presentation::PolyHLR(const TopoDS_Shape& aShape)
   TopoDS_Shape RgNLineHCompound = aPolyHLRToShape.RgNLineHCompound();
   TopoDS_Shape OutLineHCompound = aPolyHLRToShape.OutLineHCompound();
 
-  Handle_AIS_Shape aShapeIO = drawShape(aShape);
+  Handle(AIS_Shape) aShapeIO = drawShape(aShape);
 
   if (WAIT_A_SECOND) return Standard_False;
 
@@ -409,7 +409,7 @@ Standard_Boolean HLR_Presentation::drawHLR(TopoDS_Shape& aVShape,
     aVShape.Location(aLoc);
 
     // create a look for a line according to aColor and aLineType
-    Handle_AIS_Shape anIO = drawShape(aVShape, aColor, Standard_False);
+    Handle(AIS_Shape) anIO = drawShape(aVShape, aColor, Standard_False);
     anIO->Attributes()->WireAspect()->SetTypeOfLine(Aspect_TOL_SOLID);
     
     getAISContext()->Display(anIO, HShapeIsNull);
@@ -420,7 +420,7 @@ Standard_Boolean HLR_Presentation::drawHLR(TopoDS_Shape& aVShape,
     aHShape.Location(aLoc);
 
     // create a look for a line according to aColor and aLineType
-    Handle_AIS_Shape anIO = drawShape(aHShape, aColor, Standard_False);
+    Handle(AIS_Shape) anIO = drawShape(aHShape, aColor, Standard_False);
     anIO->Attributes()->WireAspect()->SetTypeOfLine(Aspect_TOL_DASH);
 
     getAISContext()->Display(anIO);
@@ -464,7 +464,7 @@ void HLR_Presentation::sampleTorus()
   Standard_Real MinorRadius = 10;
   
   //make torus
-  Handle_Geom_ToroidalSurface aTorSurface = new Geom_ToroidalSurface(anAx3, MajorRadius, MinorRadius);
+  Handle(Geom_ToroidalSurface) aTorSurface = new Geom_ToroidalSurface(anAx3, MajorRadius, MinorRadius);
   TopoDS_Shell aShape = BRepBuilderAPI_MakeShell(aTorSurface);
 
   Standard_Integer nbIso = 3;

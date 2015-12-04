@@ -24,6 +24,8 @@
 #include <XmlObjMgt_Persistent.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_CentroidDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMXCAFDoc_CentroidDriver
 //purpose  : Constructor

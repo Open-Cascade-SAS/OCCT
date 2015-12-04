@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_C0RegularityFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(AIS_C0RegularityFilter,SelectMgr_Filter)
 
 protected:
 

@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_TextStyleWithBoxCharacteristics,StepVisual_TextStyle)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics,StepVisual_TextStyle)
 
 protected:
 

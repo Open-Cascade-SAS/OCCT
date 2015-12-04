@@ -99,7 +99,7 @@ class TObj_LabelIterator : public TObj_ObjectIterator
   
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_LabelIterator, TObj_ObjectIterator)
+  DEFINE_STANDARD_RTTIEXT(TObj_LabelIterator,TObj_ObjectIterator)
 };
 
 //! Define handle class for TObj_LabelIterator

@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_Invisibility,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_Invisibility,MMgt_TShared)
 
 protected:
 

@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_GenRel,ExprIntrp_Generator)
+
 ExprIntrp_GenRel::ExprIntrp_GenRel ()
 {
   done = Standard_False;

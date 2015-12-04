@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectUnion,IFSelect_SelectCombine)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectUnion,IFSelect_SelectCombine)
 
 protected:
 

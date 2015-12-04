@@ -51,6 +51,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_TransferParametersProj,ShapeAnalysis_TransferParameters)
+
 //=======================================================================
 //function : ShapeAnalysis_TransferParametersProj
 //purpose  : 

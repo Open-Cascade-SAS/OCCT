@@ -127,7 +127,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectPointed,IFSelect_SelectBase)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectPointed,IFSelect_SelectBase)
 
 protected:
 

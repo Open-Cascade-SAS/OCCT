@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_OrientedPath,StepShape_Path)
+  DEFINE_STANDARD_RTTIEXT(StepShape_OrientedPath,StepShape_Path)
 
 protected:
 

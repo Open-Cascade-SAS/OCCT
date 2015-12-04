@@ -79,7 +79,7 @@ public:
     return mySecondUnitSize.IsNull();
   }
 
-  DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceWithDefinedAreaUnit, StepDimTol_GeometricToleranceWithDefinedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedAreaUnit,StepDimTol_GeometricToleranceWithDefinedUnit)
 
 private: 
   StepDimTol_AreaUnitType myAreaType;

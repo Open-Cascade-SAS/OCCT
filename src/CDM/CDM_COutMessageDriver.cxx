@@ -18,6 +18,8 @@
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDM_COutMessageDriver,CDM_MessageDriver)
+
 //=======================================================================
 //function : Write
 //purpose  : 

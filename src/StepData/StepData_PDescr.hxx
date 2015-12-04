@@ -213,7 +213,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_PDescr,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_PDescr,MMgt_TShared)
 
 protected:
 

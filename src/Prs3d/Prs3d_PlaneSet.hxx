@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Prs3d_PlaneSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_PlaneSet,MMgt_TShared)
 
 protected:
 

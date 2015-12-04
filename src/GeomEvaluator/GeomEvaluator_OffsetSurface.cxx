@@ -25,6 +25,8 @@
 #include <Standard_RangeError.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomEvaluator_OffsetSurface,GeomEvaluator_Surface)
+
 template<class SurfOrAdapt>
 static void derivatives(Standard_Integer theMaxOrder,
                         Standard_Integer theMinOrder,

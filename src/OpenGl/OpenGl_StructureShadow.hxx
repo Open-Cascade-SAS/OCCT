@@ -51,7 +51,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_StructureShadow, OpenGl_Structure) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_StructureShadow,OpenGl_Structure) // Type definition
 
 };
 

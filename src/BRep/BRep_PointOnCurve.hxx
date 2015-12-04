@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_PointOnCurve,BRep_PointRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurve,BRep_PointRepresentation)
 
 protected:
 

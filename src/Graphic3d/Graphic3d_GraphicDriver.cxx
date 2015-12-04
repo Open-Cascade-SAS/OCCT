@@ -16,6 +16,8 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,MMgt_TShared)
+
 // =======================================================================
 // function : Graphic3d_GraphicDriver
 // purpose  :

@@ -40,6 +40,8 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
+
 #ifdef _MSC_VER
 # include <tchar.h>
 #endif  // _MSC_VER

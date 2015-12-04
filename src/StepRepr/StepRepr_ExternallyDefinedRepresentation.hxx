@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ExternallyDefinedRepresentation,StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ExternallyDefinedRepresentation,StepRepr_Representation)
 
 protected:
 

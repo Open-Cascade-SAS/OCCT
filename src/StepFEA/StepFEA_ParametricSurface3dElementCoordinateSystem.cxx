@@ -19,6 +19,8 @@
 #include <StepFEA_ParametricSurface3dElementCoordinateSystem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricSurface3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+
 //=======================================================================
 //function : StepFEA_ParametricSurface3dElementCoordinateSystem
 //purpose  : 

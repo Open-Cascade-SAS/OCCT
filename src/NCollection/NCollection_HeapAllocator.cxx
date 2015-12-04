@@ -18,6 +18,8 @@
 #include <Standard_Mutex.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(NCollection_HeapAllocator,NCollection_BaseAllocator)
+
 //=======================================================================
 //function : Allocate
 //purpose  : 

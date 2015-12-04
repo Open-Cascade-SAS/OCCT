@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_ArbitraryVolume3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_ArbitraryVolume3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
 
 protected:
 

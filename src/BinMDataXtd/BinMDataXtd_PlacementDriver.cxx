@@ -24,6 +24,8 @@
 #include <TDataXtd_Placement.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PlacementDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataXtd_PlacementDriver
 //purpose  : 

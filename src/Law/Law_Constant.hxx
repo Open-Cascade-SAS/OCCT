@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Law_Constant,Law_Function)
+  DEFINE_STANDARD_RTTIEXT(Law_Constant,Law_Function)
 
 protected:
 

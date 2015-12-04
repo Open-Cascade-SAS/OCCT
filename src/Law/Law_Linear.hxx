@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Law_Linear,Law_Function)
+  DEFINE_STANDARD_RTTIEXT(Law_Linear,Law_Function)
 
 protected:
 

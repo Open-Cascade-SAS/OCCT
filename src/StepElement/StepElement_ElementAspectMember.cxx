@@ -19,6 +19,8 @@
 #include <StepElement_ElementAspectMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementAspectMember,StepData_SelectNamed)
+
 static Standard_CString aElementVolume = "ELEMENT_VOLUME";
 static Standard_CString aVolume3dFace = "VOLUME_3D_FACE";
 static Standard_CString aVolume2dFace = "VOLUME_2D_FACE";

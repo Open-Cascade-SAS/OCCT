@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TNaming_DeltaOnRemoval,TDF_DeltaOnRemoval)
+  DEFINE_STANDARD_RTTIEXT(TNaming_DeltaOnRemoval,TDF_DeltaOnRemoval)
 
 protected:
 

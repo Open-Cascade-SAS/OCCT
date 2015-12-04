@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DocumentReference,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentReference,MMgt_TShared)
 
 protected:
 

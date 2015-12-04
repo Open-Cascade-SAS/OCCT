@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepDimTol_PerpendicularityTolerance.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_PerpendicularityTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+
 //=======================================================================
 //function : StepDimTol_PerpendicularityTolerance
 //purpose  : 

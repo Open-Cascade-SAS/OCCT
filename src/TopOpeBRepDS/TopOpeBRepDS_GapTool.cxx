@@ -25,6 +25,8 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool,MMgt_TShared)
+
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceGAP();
 #endif

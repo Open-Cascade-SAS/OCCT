@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMDataStd_DirectoryDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMDataStd_DirectoryDriver,XmlMDF_ADriver)
 
 protected:
 

@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_Dumper,IFSelect_SessionDumper)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_Dumper,IFSelect_SessionDumper)
 
 protected:
 

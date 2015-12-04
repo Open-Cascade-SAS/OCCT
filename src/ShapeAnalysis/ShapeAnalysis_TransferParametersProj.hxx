@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeAnalysis_TransferParametersProj,ShapeAnalysis_TransferParameters)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParametersProj,ShapeAnalysis_TransferParameters)
 
 protected:
 

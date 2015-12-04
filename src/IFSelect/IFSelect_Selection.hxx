@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Selection,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Selection,MMgt_TShared)
 
 protected:
 

@@ -23,6 +23,8 @@
 #include <TObj_TXYZ.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_XYZDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinTObjDrivers_XYZDriver
 //purpose  : constructor

@@ -23,6 +23,8 @@
 #include <WNT_Window.hxx>
 
 #include <string.h>
+IMPLEMENT_STANDARD_RTTIEXT(WNT_WClass,MMgt_TShared)
+
 //=======================================================================
 //function : WNT_WClass
 //purpose  : 

@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_PlanarDiameter,DrawDim_PlanarDimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarDiameter,DrawDim_PlanarDimension)
 
 protected:
 

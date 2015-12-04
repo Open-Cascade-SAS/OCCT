@@ -240,7 +240,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_NewGeneralNote,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_NewGeneralNote,IGESData_IGESEntity)
 
 protected:
 

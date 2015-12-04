@@ -37,6 +37,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESToBRep_IGESBoundary,MMgt_TShared)
+
 //=======================================================================
 //function : IGESToBRep_IGESBoundary
 //purpose  : 

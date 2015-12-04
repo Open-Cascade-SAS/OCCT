@@ -34,6 +34,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Law_BSpline,MMgt_TShared)
+
 #define  POLES    (poles->Array1())
 #define  KNOTS    (knots->Array1())
 #define  FKNOTS   (flatknots->Array1())

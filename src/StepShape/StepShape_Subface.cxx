@@ -20,6 +20,8 @@
 #include <StepShape_Subface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_Subface,StepShape_Face)
+
 //=======================================================================
 //function : StepShape_Subface
 //purpose  : 

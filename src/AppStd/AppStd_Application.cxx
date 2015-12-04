@@ -20,6 +20,8 @@
 #include <CDM_MessageDriver.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AppStd_Application,TDocStd_Application)
+
 //=======================================================================
 //function : AppStd_Application
 //purpose  : 

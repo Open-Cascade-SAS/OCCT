@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_Representation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_Representation,MMgt_TShared)
 
 protected:
 

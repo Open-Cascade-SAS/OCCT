@@ -106,7 +106,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_UndefinedEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_UndefinedEntity,IGESData_IGESEntity)
 
 protected:
 

@@ -19,6 +19,8 @@
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_SourceItem.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalSource,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_ExternalSource
 //purpose  : 

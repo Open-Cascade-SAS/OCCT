@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BOPTest_DrawableShape,DBRep_DrawableShape)
+  DEFINE_STANDARD_RTTIEXT(BOPTest_DrawableShape,DBRep_DrawableShape)
 
 protected:
 

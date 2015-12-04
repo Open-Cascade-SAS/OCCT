@@ -19,6 +19,8 @@
 #include <StepRepr_DataEnvironment.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_DataEnvironment,MMgt_TShared)
+
 //=======================================================================
 //function : StepRepr_DataEnvironment
 //purpose  : 

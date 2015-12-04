@@ -20,6 +20,8 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_AttributeFilter,SelectMgr_Filter)
+
 AIS_AttributeFilter::AIS_AttributeFilter():
 hasC(Standard_False),
 hasW(Standard_False){}

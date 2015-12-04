@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPCAFControl_Controller,STEPControl_Controller)
+  DEFINE_STANDARD_RTTIEXT(STEPCAFControl_Controller,STEPControl_Controller)
 
 protected:
 

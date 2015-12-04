@@ -163,7 +163,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Poly_Triangulation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Poly_Triangulation,MMgt_TShared)
 
 protected:
 

@@ -89,7 +89,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_Modified,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_Modified,TDF_Attribute)
 
 protected:
 

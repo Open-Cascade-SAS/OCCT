@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_Axis,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_Axis,AIS_InteractiveObject)
 
 protected:
 

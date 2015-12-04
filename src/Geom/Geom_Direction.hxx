@@ -121,7 +121,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Direction,Geom_Vector)
+  DEFINE_STANDARD_RTTIEXT(Geom_Direction,Geom_Vector)
 
 protected:
 

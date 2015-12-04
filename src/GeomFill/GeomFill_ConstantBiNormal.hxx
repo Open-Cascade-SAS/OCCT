@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_ConstantBiNormal,GeomFill_TrihedronLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_ConstantBiNormal,GeomFill_TrihedronLaw)
 
 protected:
 

@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectFlag,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectFlag,IFSelect_SelectExtract)
 
 protected:
 

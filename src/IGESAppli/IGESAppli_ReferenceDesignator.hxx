@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_ReferenceDesignator,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator,IGESData_IGESEntity)
 
 protected:
 

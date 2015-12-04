@@ -27,6 +27,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Loop,IGESData_IGESEntity)
+
 IGESSolid_Loop::IGESSolid_Loop ()    {  }
 
 

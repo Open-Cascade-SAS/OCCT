@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_RegionRestriction,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_RegionRestriction,IGESData_IGESEntity)
 
 protected:
 

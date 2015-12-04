@@ -24,6 +24,8 @@
 #include <ShapeExtend_ComplexCurve.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_ComplexCurve,Geom_Curve)
+
 //=======================================================================
 //function : ShapeExtend_ComplexCurve
 //purpose  : 

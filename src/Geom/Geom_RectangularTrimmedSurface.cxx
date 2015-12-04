@@ -45,6 +45,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface,Geom_BoundedSurface)
+
 typedef Geom_RectangularTrimmedSurface RectangularTrimmedSurface;
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;

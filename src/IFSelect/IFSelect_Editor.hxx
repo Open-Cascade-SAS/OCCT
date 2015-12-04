@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Editor,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Editor,MMgt_TShared)
 
 protected:
 

@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_ClosedFaceDivide,ShapeUpgrade_FaceDivide)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedFaceDivide,ShapeUpgrade_FaceDivide)
 
 protected:
 

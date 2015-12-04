@@ -78,8 +78,8 @@ static Standard_Boolean fixParam(Standard_Real& theParam)
 // Purpose  : displays a given geometric surface in 3d viewer
 //            (creates a finite face and displays it)
 //================================================================
-Handle_AIS_InteractiveObject OCCDemo_Presentation::drawSurface
-                                  (const Handle_Geom_Surface& theSurface,
+Handle(AIS_InteractiveObject) OCCDemo_Presentation::drawSurface
+                                  (const Handle(Geom_Surface)& theSurface,
                                    const Quantity_Color& theColor,
                                    const Standard_Boolean toDisplay)
 {
@@ -90,7 +90,7 @@ Handle_AIS_InteractiveObject OCCDemo_Presentation::drawSurface
   fixParam(v1);
   fixParam(v2);
 
-  Handle_AIS_Shape aGraphicSurface = 
+  Handle(AIS_Shape) aGraphicSurface = 
     new AIS_Shape(BRepBuilderAPI_MakeFace (theSurface, u1, u2, v1, v2, Precision::Confusion()));
 
   getAISContext()->SetMaterial(aGraphicSurface, Graphic3d_NOM_PLASTIC, toDisplay);
@@ -111,8 +111,8 @@ Handle_AIS_InteractiveObject OCCDemo_Presentation::drawSurface
 // Function : DrawCurve                                 
 // Purpose  : displays a given curve 3d
 //================================================================
-Handle_AIS_InteractiveObject OCCDemo_Presentation::drawCurve
-                                  (const Handle_Geom_Curve& theCurve,
+Handle(AIS_InteractiveObject) OCCDemo_Presentation::drawCurve
+                                  (const Handle(Geom_Curve)& theCurve,
                                    const Quantity_Color& theColor,
                                    const Standard_Boolean toDisplay)
 {
@@ -136,8 +136,8 @@ Handle_AIS_InteractiveObject OCCDemo_Presentation::drawCurve
 // Function : DrawCurve                                 
 // Purpose  : displays a given curve 2d
 //================================================================
-Handle_AIS_InteractiveObject OCCDemo_Presentation::drawCurve
-                                  (const Handle_Geom2d_Curve& theCurve,
+Handle(AIS_InteractiveObject) OCCDemo_Presentation::drawCurve
+                                  (const Handle(Geom2d_Curve)& theCurve,
                                    const Quantity_Color& theColor,
                                    const Standard_Boolean toDisplay,
                                    const gp_Ax2& aPosition)
@@ -164,7 +164,7 @@ Handle_AIS_InteractiveObject OCCDemo_Presentation::drawCurve
 // Function : drawPoint
 // Purpose  : displays a given point
 //================================================================
-Handle_AIS_Point OCCDemo_Presentation::drawPoint
+Handle(AIS_Point) OCCDemo_Presentation::drawPoint
                                   (const gp_Pnt& aPnt,
                                    const Quantity_Color& theColor,
                                    const Standard_Boolean toDisplay)
@@ -186,7 +186,7 @@ Handle_AIS_Point OCCDemo_Presentation::drawPoint
 //            (segment of line starting at thePnt with the arrow at the end,
 //             the length of segment is the length of the vector)
 //================================================================
-Handle_AIS_InteractiveObject OCCDemo_Presentation::drawVector 
+Handle(AIS_InteractiveObject) OCCDemo_Presentation::drawVector 
                                   (const gp_Pnt& thePnt,
                                    const gp_Vec& theVec,
                                    const Quantity_Color& theColor,
@@ -218,11 +218,11 @@ Handle_AIS_InteractiveObject OCCDemo_Presentation::drawVector
 }
 
 
-Handle_AIS_Shape OCCDemo_Presentation::drawShape 
+Handle(AIS_Shape) OCCDemo_Presentation::drawShape 
          (const TopoDS_Shape& theShape,const Quantity_Color& theColor,
           const Standard_Boolean toDisplay)
 {
-  Handle_AIS_Shape aGraphicShape = new AIS_Shape(theShape);
+  Handle(AIS_Shape) aGraphicShape = new AIS_Shape(theShape);
 
   getAISContext()->SetMaterial(aGraphicShape, Graphic3d_NOM_PLASTIC, toDisplay);
   getAISContext()->SetColor (aGraphicShape, theColor, toDisplay);
@@ -238,12 +238,12 @@ Handle_AIS_Shape OCCDemo_Presentation::drawShape
   return aGraphicShape;
 }
 
-Handle_AIS_Shape OCCDemo_Presentation::drawShape
+Handle(AIS_Shape) OCCDemo_Presentation::drawShape
          (const TopoDS_Shape& theShape,
           const Graphic3d_NameOfMaterial theMaterial,
           const Standard_Boolean toDisplay)
 {
-  Handle_AIS_Shape aGraphicShape = new AIS_Shape(theShape);
+  Handle(AIS_Shape) aGraphicShape = new AIS_Shape(theShape);
 
   getAISContext()->SetMaterial(aGraphicShape, theMaterial, toDisplay);
   if (toDisplay) {
@@ -314,12 +314,12 @@ void OCCDemo_Presentation::ResetView()
 	pView->Reset();
 }
 */
-Handle_AIS_InteractiveContext OCCDemo_Presentation::getAISContext() const
+Handle(AIS_InteractiveContext) OCCDemo_Presentation::getAISContext() const
 {
 	return myDoc->GetAISContext();
 }
 
-Handle_V3d_Viewer OCCDemo_Presentation::getViewer() const
+Handle(V3d_Viewer) OCCDemo_Presentation::getViewer() const
 {
 	return myDoc->GetViewer();
 }

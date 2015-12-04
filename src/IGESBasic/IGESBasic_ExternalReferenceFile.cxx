@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalReferenceFile,IGESData_IGESEntity)
+
 IGESBasic_ExternalReferenceFile::IGESBasic_ExternalReferenceFile ()    {  }
 
 

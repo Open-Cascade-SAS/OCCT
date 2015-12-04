@@ -224,7 +224,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_SphericalSurface,Geom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_SphericalSurface,Geom_ElementarySurface)
 
 protected:
 

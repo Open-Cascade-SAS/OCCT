@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_NodeOfSpecificLib,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(IGESData_NodeOfSpecificLib,MMgt_TShared)
 
 protected:
 

@@ -21,6 +21,8 @@
 #include <StepBasic_Document.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignSpecificationReference,StepBasic_DocumentReference)
+
 //=======================================================================
 //function : StepAP203_CcDesignSpecificationReference
 //purpose  : 

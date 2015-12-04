@@ -18,3 +18,5 @@
 #include <Geom_BoundedCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Geom_BoundedCurve,Geom_Curve)

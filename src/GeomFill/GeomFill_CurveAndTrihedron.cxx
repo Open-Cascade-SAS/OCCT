@@ -29,6 +29,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CurveAndTrihedron,GeomFill_LocationLaw)
+
 //==================================================================
 //Function: Create
 //Purpose :

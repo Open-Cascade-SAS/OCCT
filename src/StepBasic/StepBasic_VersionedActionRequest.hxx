@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_VersionedActionRequest,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_VersionedActionRequest,MMgt_TShared)
 
 protected:
 

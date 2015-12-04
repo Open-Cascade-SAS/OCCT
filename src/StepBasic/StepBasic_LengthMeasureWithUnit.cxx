@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_LengthMeasureWithUnit,StepBasic_MeasureWithUnit)
+
 StepBasic_LengthMeasureWithUnit::StepBasic_LengthMeasureWithUnit ()  {}
 

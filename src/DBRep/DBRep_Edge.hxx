@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DBRep_Edge,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DBRep_Edge,MMgt_TShared)
 
 protected:
 

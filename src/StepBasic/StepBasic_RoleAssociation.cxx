@@ -20,6 +20,8 @@
 #include <StepBasic_RoleAssociation.hxx>
 #include <StepBasic_RoleSelect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_RoleAssociation,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_RoleAssociation
 //purpose  : 

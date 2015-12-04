@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_MechanicalDesignGeometricPresentationArea,StepVisual_PresentationArea)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationArea,StepVisual_PresentationArea)
 
 protected:
 

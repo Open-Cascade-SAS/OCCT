@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_ConicalSurface,StepGeom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_ConicalSurface,StepGeom_ElementarySurface)
 
 protected:
 

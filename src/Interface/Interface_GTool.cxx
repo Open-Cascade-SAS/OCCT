@@ -21,6 +21,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_GTool,MMgt_TShared)
+
 Interface_GTool::Interface_GTool  ()    {  }
 
     Interface_GTool::Interface_GTool

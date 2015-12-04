@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AutoDesignApprovalAssignment,StepBasic_ApprovalAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AutoDesignApprovalAssignment,StepBasic_ApprovalAssignment)
 
 protected:
 

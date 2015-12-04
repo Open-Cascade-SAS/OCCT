@@ -19,6 +19,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_ReaderModule,MMgt_TShared)
+
 Standard_Boolean Interface_ReaderModule::NewRead(const Standard_Integer,
                                                  const Handle(Interface_FileReaderData)&,
                                                  const Standard_Integer,

@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TestTopOpeDraw_DrawableMesure,TestTopOpeDraw_DrawableC3D)
+  DEFINE_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableMesure,TestTopOpeDraw_DrawableC3D)
 
 protected:
 

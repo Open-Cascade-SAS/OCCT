@@ -15,6 +15,8 @@
 #include <MoniTool_RealVal.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_RealVal,MMgt_TShared)
+
 MoniTool_RealVal::MoniTool_RealVal  (const Standard_Real val)    {  theval = val;  }
 
 Standard_Real  MoniTool_RealVal::Value () const  {  return theval;  }

@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_Node,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Node,MMgt_TShared)
 
 protected:
 

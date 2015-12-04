@@ -18,6 +18,8 @@
 #include <Transfer_MultipleBinder.hxx>
 #include <Transfer_TransferFailure.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_MultipleBinder,Transfer_Binder)
+
 // Resultat Multiple
 // Possibilite de definir un Resultat Multiple : plusieurs objets resultant
 //  d un Transfert, sans pouvoir les distinguer

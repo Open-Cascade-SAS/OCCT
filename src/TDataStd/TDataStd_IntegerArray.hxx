@@ -117,7 +117,7 @@ Standard_Integer operator () (const Standard_Integer Index) const
 friend class TDataStd_DeltaOnModificationOfIntArray;
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_IntegerArray,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_IntegerArray,TDF_Attribute)
 
 protected:
 

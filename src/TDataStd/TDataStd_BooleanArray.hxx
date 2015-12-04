@@ -90,7 +90,7 @@ Standard_Boolean operator () (const Standard_Integer Index) const
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_BooleanArray,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_BooleanArray,TDF_Attribute)
 
 protected:
 

@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_DefaultGeneral,StepData_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(StepData_DefaultGeneral,StepData_GeneralModule)
 
 protected:
 

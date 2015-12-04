@@ -14,7 +14,7 @@ class ZClippingDlg : public CDialog
 {
 // Construction
 public:
-	ZClippingDlg(Handle_V3d_View Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent = NULL);   // standard constructor
+	ZClippingDlg(Handle(V3d_View) Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(ZClippingDlg)

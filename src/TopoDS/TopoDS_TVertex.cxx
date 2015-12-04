@@ -19,6 +19,8 @@
 #include <TopAbs.hxx>
 #include <TopoDS_TVertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TVertex,TopoDS_TShape)
+
 //=======================================================================
 //function : ShapeType
 //purpose  : 

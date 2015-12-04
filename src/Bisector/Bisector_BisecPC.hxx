@@ -166,7 +166,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Bisector_BisecPC,Bisector_Curve)
+  DEFINE_STANDARD_RTTIEXT(Bisector_BisecPC,Bisector_Curve)
 
 protected:
 

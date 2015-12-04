@@ -17,6 +17,8 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_HDataMapOfStringByte.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringByte,MMgt_TShared)
+
 //=======================================================================
 //function : TDataStd_HDataMapOfStringByte
 //purpose  : Constructor of empty map

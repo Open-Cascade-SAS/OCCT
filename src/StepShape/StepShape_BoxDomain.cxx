@@ -16,6 +16,8 @@
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepShape_BoxDomain.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxDomain,MMgt_TShared)
+
 StepShape_BoxDomain::StepShape_BoxDomain ()  {}
 
 void StepShape_BoxDomain::Init(

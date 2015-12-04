@@ -18,6 +18,8 @@
 #include <StepBasic_Unit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_UncertaintyMeasureWithUnit,StepBasic_MeasureWithUnit)
+
 //=======================================================================
 //function : StepBasic_UncertaintyMeasureWithUnit
 //purpose  : 

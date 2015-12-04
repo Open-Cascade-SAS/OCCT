@@ -32,6 +32,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawDim_PlanarDiameter,DrawDim_PlanarDimension)
+
 //=======================================================================
 //function : DrawDim_PlanarDiameter
 //purpose  : 

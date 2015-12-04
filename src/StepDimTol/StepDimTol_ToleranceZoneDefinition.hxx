@@ -84,7 +84,7 @@ public:
     myZone = theZone;
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_ToleranceZoneDefinition, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneDefinition,MMgt_TShared)
 
 private: 
   Handle(StepRepr_HArray1OfShapeAspect) myBoundaries;

@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_ModifEditForm,IFSelect_Modifier)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ModifEditForm,IFSelect_Modifier)
 
 protected:
 

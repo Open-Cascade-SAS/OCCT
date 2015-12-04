@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_HighLight,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_HighLight,IGESData_IGESEntity)
 
 protected:
 

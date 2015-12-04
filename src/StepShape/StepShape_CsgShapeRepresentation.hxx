@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_CsgShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_CsgShapeRepresentation,StepShape_ShapeRepresentation)
 
 protected:
 

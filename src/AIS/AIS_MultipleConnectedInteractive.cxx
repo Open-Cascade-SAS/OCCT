@@ -33,6 +33,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)
+
 namespace
 {
   //! SelectMgr_AssemblyEntityOwner replaces original owners in sensitive entities

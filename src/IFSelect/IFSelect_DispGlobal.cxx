@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispGlobal,IFSelect_Dispatch)
+
 // Genere un seul paquet avec la sortie finale
 IFSelect_DispGlobal::IFSelect_DispGlobal ()    {  }
 

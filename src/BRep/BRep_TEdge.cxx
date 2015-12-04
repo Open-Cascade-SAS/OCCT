@@ -25,6 +25,8 @@
 #include <TopAbs.hxx>
 #include <TopoDS_TShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRep_TEdge,TopoDS_TEdge)
+
 static const Standard_Integer ParameterMask       = 1;
 static const Standard_Integer RangeMask           = 2;
 static const Standard_Integer DegeneratedMask     = 4;

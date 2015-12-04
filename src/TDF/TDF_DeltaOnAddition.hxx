@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_DeltaOnAddition,TDF_AttributeDelta)
+  DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnAddition,TDF_AttributeDelta)
 
 protected:
 

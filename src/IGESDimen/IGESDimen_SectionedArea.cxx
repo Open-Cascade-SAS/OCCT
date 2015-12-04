@@ -25,6 +25,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_SectionedArea,IGESData_IGESEntity)
+
 IGESDimen_SectionedArea::IGESDimen_SectionedArea ()    {  }
 
 

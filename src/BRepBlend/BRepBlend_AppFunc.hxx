@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepBlend_AppFunc,BRepBlend_AppFuncRoot)
+  DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFunc,BRepBlend_AppFuncRoot)
 
 protected:
 

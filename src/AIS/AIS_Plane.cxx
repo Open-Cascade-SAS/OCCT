@@ -54,6 +54,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <UnitsAPI.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Plane,AIS_InteractiveObject)
+
 //=======================================================================
 //function : AIS_Plane
 //purpose  : 

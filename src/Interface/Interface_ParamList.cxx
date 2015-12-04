@@ -21,6 +21,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_ParamList,MMgt_TShared)
+
 //=======================================================================
 //function : Interface_ParamList
 //purpose  : 

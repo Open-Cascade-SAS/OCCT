@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_BezierCurveAndRationalBSplineCurve,StepGeom_BSplineCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_BezierCurveAndRationalBSplineCurve,StepGeom_BSplineCurve)
 
 protected:
 

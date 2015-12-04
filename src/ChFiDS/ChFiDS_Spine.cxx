@@ -34,6 +34,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_Spine,MMgt_TShared)
+
 //=======================================================================
 //function : ChFiDS_Spine
 //purpose  : 

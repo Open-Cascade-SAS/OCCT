@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawFairCurve_MinimalVariation,DrawFairCurve_Batten)
+  DEFINE_STANDARD_RTTIEXT(DrawFairCurve_MinimalVariation,DrawFairCurve_Batten)
 
 protected:
 

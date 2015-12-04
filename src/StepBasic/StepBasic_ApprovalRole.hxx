@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ApprovalRole,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalRole,MMgt_TShared)
 
 protected:
 

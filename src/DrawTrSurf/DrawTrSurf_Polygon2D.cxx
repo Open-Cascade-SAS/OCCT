@@ -24,6 +24,8 @@
 #include <Poly_Polygon2D.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Polygon2D,Draw_Drawable2D)
+
 //=======================================================================
 //function : DrawTrSurf_Polygon2D
 //purpose  : 

@@ -165,7 +165,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PrsMgr_PresentationManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentationManager,MMgt_TShared)
 
 protected:
 

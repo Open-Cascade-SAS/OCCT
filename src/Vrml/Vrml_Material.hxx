@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Vrml_Material,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_Material,MMgt_TShared)
 
 protected:
 

@@ -21,6 +21,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkTransform.h>
 
+IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_View,IVtk_IView)
+
 // Initialization of VTK object factories.
 // Since VTK 6 the factory methods require "auto-initialization" depending on
 // what modules are enabled at VTK configure time.

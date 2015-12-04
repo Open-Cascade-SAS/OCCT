@@ -229,7 +229,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Transformation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Geom_Transformation,MMgt_TShared)
 
 protected:
 

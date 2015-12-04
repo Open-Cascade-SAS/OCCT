@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_FunctionallyDefinedTransformation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_FunctionallyDefinedTransformation,MMgt_TShared)
 
 protected:
 

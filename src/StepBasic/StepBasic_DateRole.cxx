@@ -16,6 +16,8 @@
 #include <StepBasic_DateRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateRole,MMgt_TShared)
+
 StepBasic_DateRole::StepBasic_DateRole ()  {}
 
 void StepBasic_DateRole::Init(

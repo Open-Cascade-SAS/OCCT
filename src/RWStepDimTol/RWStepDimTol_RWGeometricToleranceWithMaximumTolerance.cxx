@@ -24,6 +24,7 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWGeometricTolerance

@@ -22,6 +22,8 @@
 #include <TCollection_ExtendedString.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Font,OpenGl_Resource)
+
 // =======================================================================
 // function : OpenGl_Font
 // purpose  :

@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(VrmlConverter_ShadingAspect,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,MMgt_TShared)
 
 protected:
 

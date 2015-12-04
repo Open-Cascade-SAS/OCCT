@@ -445,34 +445,34 @@ void CViewer3dDoc::OnObjectDisplayall()
     myOffsetDlg->UpdateValues();
 }
 
-Handle_User_Cylinder CViewer3dDoc::GetCylinder()
+Handle(User_Cylinder) CViewer3dDoc::GetCylinder()
 {
   return myCylinder;
 }
 
 
-Handle_AIS_Shape CViewer3dDoc::GetSphere()
+Handle(AIS_Shape) CViewer3dDoc::GetSphere()
 {
   return mySphere;
 }
 
-Handle_AIS_Shape CViewer3dDoc::GetBox()
+Handle(AIS_Shape) CViewer3dDoc::GetBox()
 {
   return myBox;
 }
 
-Handle_AIS_Shape CViewer3dDoc::GetOverlappedCylinder()
+Handle(AIS_Shape) CViewer3dDoc::GetOverlappedCylinder()
 {
   return myOverlappedCylinder;
 }
 
 
-Handle_AIS_Shape CViewer3dDoc::GetOverlappedSphere()
+Handle(AIS_Shape) CViewer3dDoc::GetOverlappedSphere()
 {
   return myOverlappedSphere;
 }
 
-Handle_AIS_Shape CViewer3dDoc::GetOverlappedBox()
+Handle(AIS_Shape) CViewer3dDoc::GetOverlappedBox()
 {
   return myOverlappedBox;
 }
@@ -507,7 +507,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
     myAISContext->InitSelected();
     if (myAISContext->MoreSelected())
     {
-      Handle_AIS_InteractiveObject Current = myAISContext->SelectedInteractive();
+      Handle(AIS_InteractiveObject) Current = myAISContext->SelectedInteractive();
       if (Current->HasColor())
       {
         CSFColor = myAISContext->Color (Current);
@@ -770,7 +770,7 @@ void CViewer3dDoc::OnFillet3d()
   myAISContext->InitSelected();
   if (myAISContext->MoreSelected()) 
   {
-    const Handle(AIS_Shape)& aSelInteractive = Handle(AIS_Shape)::DownCast (myAISContext->SelectedInteractive());
+    Handle(AIS_Shape) aSelInteractive (Handle(AIS_Shape)::DownCast (myAISContext->SelectedInteractive()));
     if (aSelInteractive.IsNull())
     {
       AfxMessageBox (L"It is necessary to activate the edges selection mode\n"

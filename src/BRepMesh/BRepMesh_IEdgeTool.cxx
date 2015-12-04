@@ -16,3 +16,5 @@
 #include <BRepMesh_IEdgeTool.hxx>
 
 
+
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IEdgeTool,Standard_Transient)

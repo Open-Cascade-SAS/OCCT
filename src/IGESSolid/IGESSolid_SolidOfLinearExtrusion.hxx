@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_SolidOfLinearExtrusion,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidOfLinearExtrusion,IGESData_IGESEntity)
 
 protected:
 

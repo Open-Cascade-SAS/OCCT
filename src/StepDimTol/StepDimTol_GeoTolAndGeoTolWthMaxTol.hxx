@@ -64,7 +64,7 @@ public:
     return myMaxTol;
   }
 
-  DEFINE_STANDARD_RTTI(StepDimTol_GeoTolAndGeoTolWthMod,StepDimTol_GeoTolAndGeoTolWthMod)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthMaxTol,StepDimTol_GeoTolAndGeoTolWthMod)
 
 private:
 

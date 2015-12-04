@@ -38,6 +38,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDF_Application,CDM_Application)
+
 #define theMetaDataDriver CDF_Session::CurrentSession()->MetaDataDriver()
 
 

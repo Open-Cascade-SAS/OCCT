@@ -205,7 +205,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BOPDS_PaveBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BOPDS_PaveBlock,MMgt_TShared)
 
 protected:
 

@@ -20,6 +20,8 @@
 #include <StepBasic_ActionRequestAssignment.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionRequestAssignment,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_ActionRequestAssignment
 //purpose  : 

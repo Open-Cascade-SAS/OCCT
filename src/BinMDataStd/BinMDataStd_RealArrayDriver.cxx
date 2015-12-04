@@ -23,6 +23,8 @@
 #include <TDataStd_RealArray.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_RealArrayDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_RealArrayDriver
 //purpose  : Constructor

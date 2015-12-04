@@ -56,7 +56,7 @@ public:
   //! Deactivate the given selection
   void Deactivate (const Handle(SelectMgr_Selection)& theSelection);
 
-  DEFINE_STANDARD_RTTI(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
+  DEFINE_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector,SelectMgr_ViewerSelector)
 
 private:
   Standard_Integer myPixTol;

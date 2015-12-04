@@ -18,6 +18,8 @@
 #include <StepGeom_OffsetCurve3d.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetCurve3d,StepGeom_Curve)
+
 StepGeom_OffsetCurve3d::StepGeom_OffsetCurve3d ()  {}
 
 void StepGeom_OffsetCurve3d::Init(

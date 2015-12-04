@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_UniformSurface,StepGeom_BSplineSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_UniformSurface,StepGeom_BSplineSurface)
 
 protected:
 

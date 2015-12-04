@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_OrganizationRole,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_OrganizationRole,MMgt_TShared)
 
 protected:
 

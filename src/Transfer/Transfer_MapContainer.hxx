@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_MapContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_MapContainer,MMgt_TShared)
 
 protected:
 

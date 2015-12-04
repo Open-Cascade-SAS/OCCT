@@ -101,6 +101,8 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Face,ShapeFix_Root)
+
 #ifdef OCCT_DEBUG
 #define DEBUG
 #endif

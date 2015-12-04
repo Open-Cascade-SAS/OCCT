@@ -17,6 +17,8 @@
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationRelationship,MMgt_TShared)
+
 StepRepr_RepresentationRelationship::StepRepr_RepresentationRelationship ()  {}
 
 void StepRepr_RepresentationRelationship::Init(

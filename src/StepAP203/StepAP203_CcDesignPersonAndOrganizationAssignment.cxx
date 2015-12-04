@@ -21,6 +21,8 @@
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
+
 //=======================================================================
 //function : StepAP203_CcDesignPersonAndOrganizationAssignment
 //purpose  : 

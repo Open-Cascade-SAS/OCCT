@@ -31,6 +31,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(StepData_StepModel,Interface_InterfaceModel)
+
 // Entete de fichier : liste d entites
 StepData_StepModel::StepData_StepModel ()  {  }
 

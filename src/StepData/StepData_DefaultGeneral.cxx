@@ -27,6 +27,8 @@
 #include <StepData_Protocol.hxx>
 #include <StepData_UndefinedEntity.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_DefaultGeneral,StepData_GeneralModule)
+
 //  DefaultGeneral de StepData  reconnait  UN SEUL TYPE : UndefinedEntity
 StepData_DefaultGeneral::StepData_DefaultGeneral ()
 {

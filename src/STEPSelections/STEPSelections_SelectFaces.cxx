@@ -25,6 +25,8 @@
 #include <StepShape_GeometricSet.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectFaces,IFSelect_SelectExplore)
+
 STEPSelections_SelectFaces::STEPSelections_SelectFaces():IFSelect_SelectExplore (-1){ }
 
 Standard_Boolean STEPSelections_SelectFaces::Explore(const Standard_Integer /*level*/,

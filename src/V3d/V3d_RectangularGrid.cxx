@@ -41,6 +41,8 @@
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_Viewer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(V3d_RectangularGrid,Aspect_RectangularGrid)
+
 /*----------------------------------------------------------------------*/
 /*
  * Constant

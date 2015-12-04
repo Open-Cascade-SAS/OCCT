@@ -92,12 +92,12 @@ Handle(TopTools_HSequenceOfShape) CImportExport::BuildSequenceFromContext(const 
 //=                                                                    =
 //======================================================================
 
-int CImportExport::ReadBREP (const Handle_AIS_InteractiveContext& anInteractiveContext)
+int CImportExport::ReadBREP (const Handle(AIS_InteractiveContext)& anInteractiveContext)
 {
     Handle(TopTools_HSequenceOfShape) aSequence = CImportExport::ReadBREP();
 	if(aSequence->IsEmpty())
 		return 1;
-	Handle_AIS_Shape aShape;
+	Handle(AIS_Shape) aShape;
     for(int i=1;i<= aSequence->Length();i++){
 		aShape = new AIS_Shape(aSequence->Value(i));
 		anInteractiveContext->SetDisplayMode(aShape, 1, Standard_False);
@@ -164,7 +164,7 @@ Standard_Boolean CImportExport::ReadBREP(CString      aFileName,
   return !aShape.IsNull();
 }
 
-void CImportExport::SaveBREP(const Handle_AIS_InteractiveContext& anInteractiveContext)
+void CImportExport::SaveBREP(const Handle(AIS_InteractiveContext)& anInteractiveContext)
 {
 	anInteractiveContext->InitCurrent();
 	if (anInteractiveContext->NbCurrents() == 0){

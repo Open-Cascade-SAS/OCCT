@@ -17,6 +17,8 @@
 #include <StepGeom_Vector.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Vector,StepGeom_GeometricRepresentationItem)
+
 StepGeom_Vector::StepGeom_Vector ()  {}
 
 void StepGeom_Vector::Init(

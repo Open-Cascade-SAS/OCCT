@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDF_MetaDataDriver,Standard_Transient)
+
 //=======================================================================
 //function : CDF_MetaDataDriver
 //purpose  : 

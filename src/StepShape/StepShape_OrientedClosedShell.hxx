@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_OrientedClosedShell,StepShape_ClosedShell)
+  DEFINE_STANDARD_RTTIEXT(StepShape_OrientedClosedShell,StepShape_ClosedShell)
 
 protected:
 

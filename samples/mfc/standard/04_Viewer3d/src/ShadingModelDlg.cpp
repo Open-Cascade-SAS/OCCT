@@ -15,7 +15,7 @@ static char THIS_FILE[] = __FILE__;
 // CShadingModelDlg dialog
 
 
-CShadingModelDlg::CShadingModelDlg(Handle_V3d_View Current_V3d_View, CWnd* pParent /*=NULL*/)
+CShadingModelDlg::CShadingModelDlg(Handle(V3d_View) Current_V3d_View, CWnd* pParent /*=NULL*/)
 	: CDialog(CShadingModelDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CShadingModelDlg)

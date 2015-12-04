@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AutoDesignGroupAssignment,StepBasic_GroupAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AutoDesignGroupAssignment,StepBasic_GroupAssignment)
 
 protected:
 

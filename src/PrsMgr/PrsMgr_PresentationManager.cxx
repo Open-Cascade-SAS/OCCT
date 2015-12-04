@@ -28,6 +28,8 @@
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <V3d_View.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentationManager,MMgt_TShared)
+
 // =======================================================================
 // function : PrsMgr_PresentationManager
 // purpose  :

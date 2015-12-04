@@ -85,7 +85,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_RemoveInternalWires,ShapeUpgrade_Tool)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveInternalWires,ShapeUpgrade_Tool)
 
 protected:
 

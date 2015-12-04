@@ -22,6 +22,8 @@
 #include <IGESDimen_WitnessLine.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_OrdinateDimension,IGESData_IGESEntity)
+
 IGESDimen_OrdinateDimension::IGESDimen_OrdinateDimension ()    {  }
 
 

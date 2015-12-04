@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_BasicElt,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_BasicElt,MMgt_TShared)
 
 protected:
 

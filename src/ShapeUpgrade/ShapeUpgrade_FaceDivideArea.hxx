@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_FaceDivideArea,ShapeUpgrade_FaceDivide)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivideArea,ShapeUpgrade_FaceDivide)
 
 protected:
 

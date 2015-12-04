@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_CameraImage2dWithScale,StepVisual_CameraImage)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage2dWithScale,StepVisual_CameraImage)
 
 protected:
 

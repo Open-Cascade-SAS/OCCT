@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_GeneralModule,IGESData_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_GeneralModule,IGESData_GeneralModule)
 
 protected:
 

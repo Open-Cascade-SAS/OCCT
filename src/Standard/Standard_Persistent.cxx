@@ -14,3 +14,5 @@
 
 #include <Standard_Persistent.hxx>
 
+
+IMPLEMENT_STANDARD_RTTIEXT(Standard_Persistent,Standard_Transient)

@@ -70,7 +70,7 @@ Standard_OStream& operator<< (Standard_OStream& OS) const
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_AttributeDelta,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_AttributeDelta,MMgt_TShared)
 
 protected:
 

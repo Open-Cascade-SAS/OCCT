@@ -15,6 +15,8 @@
 
 #include <StepDimTol_GeometricToleranceWithDefinedAreaUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedAreaUnit,StepDimTol_GeometricToleranceWithDefinedUnit)
+
 //=======================================================================
 //function : StepDimTol_GeometricToleranceWithDefinedAreaUnit
 //purpose  : 

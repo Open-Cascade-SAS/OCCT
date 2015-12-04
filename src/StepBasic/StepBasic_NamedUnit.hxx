@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_NamedUnit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_NamedUnit,MMgt_TShared)
 
 protected:
 

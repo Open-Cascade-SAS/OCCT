@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_PointReplica,StepGeom_Point)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_PointReplica,StepGeom_Point)
 
 protected:
 

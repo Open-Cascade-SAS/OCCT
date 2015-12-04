@@ -21,6 +21,8 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaAxis2Placement3d,StepGeom_Axis2Placement3d)
+
 //=======================================================================
 //function : StepFEA_FeaAxis2Placement3d
 //purpose  : 

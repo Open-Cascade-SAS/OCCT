@@ -25,6 +25,8 @@
 #include <TestTopOpeDraw_DrawableC2D.hxx>
 #include <TopOpeBRepTool_define.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableC2D,DrawTrSurf_Curve2d)
+
 //=======================================================================
 //function : TestTopOpeDraw_DrawableC2D
 //purpose  : 

@@ -91,7 +91,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(NLPlate_HGPPConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(NLPlate_HGPPConstraint,MMgt_TShared)
 
 protected:
 

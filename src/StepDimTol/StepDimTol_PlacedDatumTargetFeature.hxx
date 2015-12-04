@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_PlacedDatumTargetFeature,StepDimTol_DatumTarget)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_PlacedDatumTargetFeature,StepDimTol_DatumTarget)
 
 protected:
 

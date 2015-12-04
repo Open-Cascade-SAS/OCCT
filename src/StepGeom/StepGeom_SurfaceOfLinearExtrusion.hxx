@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_SurfaceOfLinearExtrusion,StepGeom_SweptSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceOfLinearExtrusion,StepGeom_SweptSurface)
 
 protected:
 

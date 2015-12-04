@@ -23,6 +23,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_MapOfTransient.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectPointed,IFSelect_SelectBase)
+
 IFSelect_SelectPointed::IFSelect_SelectPointed ()
     : theset (Standard_False)    {  }
 

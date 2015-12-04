@@ -132,7 +132,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_SweepFunction,Approx_SweepFunction)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_SweepFunction,Approx_SweepFunction)
 
 protected:
 

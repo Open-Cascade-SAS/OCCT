@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_AspectMarker3d,Aspect_AspectMarker)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectMarker3d,Aspect_AspectMarker)
 
 protected:
 

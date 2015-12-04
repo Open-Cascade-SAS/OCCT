@@ -18,6 +18,8 @@
 #include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndLengthUnit,StepBasic_SiUnit)
+
 StepBasic_SiUnitAndLengthUnit::StepBasic_SiUnitAndLengthUnit ()
 {
 }

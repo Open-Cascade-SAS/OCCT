@@ -336,7 +336,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_BezierCurve,Geom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(Geom_BezierCurve,Geom_BoundedCurve)
 
 protected:
 

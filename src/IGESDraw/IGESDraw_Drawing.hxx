@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_Drawing,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_Drawing,IGESData_IGESEntity)
 
 protected:
 

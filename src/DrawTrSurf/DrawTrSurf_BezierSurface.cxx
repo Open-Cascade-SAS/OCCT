@@ -24,6 +24,8 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BezierSurface,DrawTrSurf_Surface)
+
 DrawTrSurf_BezierSurface::DrawTrSurf_BezierSurface (
    const Handle(Geom_BezierSurface)& S)
    : DrawTrSurf_Surface (S, 1, 1, Draw_jaune, Draw_bleu, 30, 0.05, 0) {

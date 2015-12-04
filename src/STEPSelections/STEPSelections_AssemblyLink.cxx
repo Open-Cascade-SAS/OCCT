@@ -21,6 +21,8 @@
 #include <STEPSelections_AssemblyComponent.hxx>
 #include <STEPSelections_AssemblyLink.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_AssemblyLink,MMgt_TShared)
+
 STEPSelections_AssemblyLink::STEPSelections_AssemblyLink()
 {
 }

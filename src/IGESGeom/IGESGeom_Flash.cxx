@@ -25,6 +25,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Flash,IGESData_IGESEntity)
+
 IGESGeom_Flash::IGESGeom_Flash ()     {  }
 
 

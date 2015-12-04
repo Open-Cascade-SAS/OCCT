@@ -49,7 +49,7 @@ class BinTObjDrivers_IntSparseArrayDriver : public BinMDF_ADriver
 
  public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(BinTObjDrivers_IntSparseArrayDriver, BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinTObjDrivers_IntSparseArrayDriver,BinMDF_ADriver)
 };
 
 // Define handle class

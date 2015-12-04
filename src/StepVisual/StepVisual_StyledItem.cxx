@@ -18,6 +18,8 @@
 #include <StepVisual_StyledItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_StyledItem,StepRepr_RepresentationItem)
+
 StepVisual_StyledItem::StepVisual_StyledItem ()  {}
 
 void StepVisual_StyledItem::Init(

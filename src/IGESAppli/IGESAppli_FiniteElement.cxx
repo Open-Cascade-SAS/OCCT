@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_FiniteElement,IGESData_IGESEntity)
+
 IGESAppli_FiniteElement::IGESAppli_FiniteElement ()    {  }
 
 

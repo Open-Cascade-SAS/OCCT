@@ -166,7 +166,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draft_Modification,BRepTools_Modification)
+  DEFINE_STANDARD_RTTIEXT(Draft_Modification,BRepTools_Modification)
 
 protected:
 

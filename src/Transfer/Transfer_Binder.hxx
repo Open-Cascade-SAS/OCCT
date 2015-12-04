@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_Binder,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_Binder,MMgt_TShared)
 
 protected:
 

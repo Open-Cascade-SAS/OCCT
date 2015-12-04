@@ -16,6 +16,8 @@
 #include <Graphic3d_ArrayOfQuadrangleStrips.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfQuadrangleStrips,Graphic3d_ArrayOfPrimitives)
+
 Graphic3d_ArrayOfQuadrangleStrips::Graphic3d_ArrayOfQuadrangleStrips (const Standard_Integer theMaxVertexs,
                                                                       const Standard_Integer theMaxStrips,
                                                                       const Standard_Boolean theHasVNormals,

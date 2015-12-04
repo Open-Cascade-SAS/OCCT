@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_Sphere,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Sphere,IGESData_IGESEntity)
 
 protected:
 

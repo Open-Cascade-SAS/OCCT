@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ManifoldSurfaceShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ManifoldSurfaceShapeRepresentation,StepShape_ShapeRepresentation)
 
 protected:
 

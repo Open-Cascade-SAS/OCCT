@@ -21,6 +21,8 @@
 #include <StepBasic_ProductCategoryRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductCategoryRelationship,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_ProductCategoryRelationship
 //purpose  : 

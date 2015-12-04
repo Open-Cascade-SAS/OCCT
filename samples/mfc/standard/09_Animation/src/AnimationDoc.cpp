@@ -380,7 +380,7 @@ void CAnimationDoc::OnFileLoadgrid()
       CString C = dlg.GetPathName();
       SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
 
-      Handle_Geom_BSplineSurface mySurface;
+      Handle(Geom_BSplineSurface) mySurface;
 
       if(grid2surf(C,mySurface ))
 	{

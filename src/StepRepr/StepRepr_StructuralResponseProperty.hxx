@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_StructuralResponseProperty,StepRepr_PropertyDefinition)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_StructuralResponseProperty,StepRepr_PropertyDefinition)
 
 protected:
 

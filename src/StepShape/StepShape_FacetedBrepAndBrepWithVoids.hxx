@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_FacetedBrepAndBrepWithVoids,StepShape_ManifoldSolidBrep)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrepAndBrepWithVoids,StepShape_ManifoldSolidBrep)
 
 protected:
 

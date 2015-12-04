@@ -129,7 +129,7 @@ public:
 friend class ShapeProcess_IteratorOfDictionaryOfOperator;
 
 
-  DEFINE_STANDARD_RTTI(ShapeProcess_DictionaryOfOperator,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(ShapeProcess_DictionaryOfOperator,MMgt_TShared)
 
 protected:
 

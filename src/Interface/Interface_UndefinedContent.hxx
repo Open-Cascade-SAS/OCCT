@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_UndefinedContent,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_UndefinedContent,MMgt_TShared)
 
 protected:
 

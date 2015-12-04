@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DDataStd_DrawDriver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DDataStd_DrawDriver,MMgt_TShared)
 
 protected:
 

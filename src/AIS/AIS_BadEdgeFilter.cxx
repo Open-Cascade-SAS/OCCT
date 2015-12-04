@@ -25,6 +25,8 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_BadEdgeFilter,SelectMgr_Filter)
+
 //=======================================================================
 //function : AIS_BadEdgeFilter
 //purpose  : 

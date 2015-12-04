@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ExtrudedFaceSolid,StepShape_SweptFaceSolid)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ExtrudedFaceSolid,StepShape_SweptFaceSolid)
 
 protected:
 

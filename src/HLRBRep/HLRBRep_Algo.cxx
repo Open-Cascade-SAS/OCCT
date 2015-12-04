@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_Algo,HLRBRep_InternalAlgo)
+
 //=======================================================================
 //function : HLRBRep_Algo
 //purpose  : 

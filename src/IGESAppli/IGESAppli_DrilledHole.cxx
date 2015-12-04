@@ -19,6 +19,8 @@
 #include <IGESAppli_DrilledHole.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_DrilledHole,IGESData_IGESEntity)
+
 IGESAppli_DrilledHole::IGESAppli_DrilledHole ()    {  }
 
     void  IGESAppli_DrilledHole::Init

@@ -20,7 +20,7 @@ class ISession_Curve : public AIS_InteractiveObject
 public:
 	ISession_Curve(const Handle(Geom_Curve)& aCurve);
 	virtual ~ISession_Curve();
-DEFINE_STANDARD_RTTI(ISession_Curve,AIS_InteractiveObject)
+DEFINE_STANDARD_RTTIEXT(ISession_Curve,AIS_InteractiveObject)
 private:
 
 Standard_EXPORT virtual  void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) ;

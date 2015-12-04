@@ -113,7 +113,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(D3DHost_View, OpenGl_View)
+  DEFINE_STANDARD_RTTIEXT(D3DHost_View,OpenGl_View)
 
 };
 

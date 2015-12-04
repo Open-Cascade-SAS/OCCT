@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture2D,Graphic3d_TextureMap)
+
 static const char *NameOfTexture_to_FileName[] =
 {
   "2d_MatraDatavision.rgb",

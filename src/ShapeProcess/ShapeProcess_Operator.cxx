@@ -17,3 +17,5 @@
 #include <ShapeProcess_Context.hxx>
 #include <ShapeProcess_Operator.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_Operator,MMgt_TShared)

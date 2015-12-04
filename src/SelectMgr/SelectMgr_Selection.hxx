@@ -137,7 +137,7 @@ public:
   //! proper updates use SelectMgr_SelectionManager::SetSelectionSensitivity method.
   Standard_EXPORT void SetSensitivity (const Standard_Integer theNewSens);
 
-  DEFINE_STANDARD_RTTI (SelectMgr_Selection, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_Selection,MMgt_TShared)
 
 protected:
 

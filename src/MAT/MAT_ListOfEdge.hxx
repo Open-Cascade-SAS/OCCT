@@ -94,7 +94,7 @@ Handle(MAT_Edge) operator() (const Standard_Integer anindex)
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_ListOfEdge,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_ListOfEdge,MMgt_TShared)
 
 protected:
 

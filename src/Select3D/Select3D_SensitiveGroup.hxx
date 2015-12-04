@@ -120,7 +120,7 @@ public:
   //! Returns the length of vector of sensitive entities
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveGroup, Select3D_SensitiveSet)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveGroup,Select3D_SensitiveSet)
 
 private:
 

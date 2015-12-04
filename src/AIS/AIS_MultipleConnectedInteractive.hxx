@@ -100,7 +100,7 @@ public:
   Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE;
 
 
-  DEFINE_STANDARD_RTTI(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)
 
 protected:
 

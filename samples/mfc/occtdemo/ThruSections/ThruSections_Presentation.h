@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include <OCCDemo_Presentation.h>
-class TopTools_SequenceOfShape;
+#include <TopTools_SequenceOfShape.hxx>
 //class TCollection_AsciiString;
 
 class ThruSections_Presentation : public OCCDemo_Presentation

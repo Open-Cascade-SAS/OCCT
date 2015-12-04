@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ConfigurationDesign,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,MMgt_TShared)
 
 protected:
 

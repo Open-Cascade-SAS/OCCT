@@ -21,6 +21,8 @@
 #include <TNaming_DeltaOnRemoval.hxx>
 #include <TNaming_NamedShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TNaming_DeltaOnRemoval,TDF_DeltaOnRemoval)
+
 //=======================================================================
 //function : TNaming_DeltaOnModification
 //purpose  : 

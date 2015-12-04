@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DateRole,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DateRole,MMgt_TShared)
 
 protected:
 

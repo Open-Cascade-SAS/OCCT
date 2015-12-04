@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_BoxDomain,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_BoxDomain,MMgt_TShared)
 
 protected:
 

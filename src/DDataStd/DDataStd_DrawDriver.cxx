@@ -60,6 +60,8 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DDataStd_DrawDriver,MMgt_TShared)
+
 // attribut affichable
 // drawable object
 static Standard_Integer DISCRET    = 100;

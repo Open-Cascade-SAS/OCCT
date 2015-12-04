@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESControl_ToolContainer,IGESToBRep_ToolContainer)
+  DEFINE_STANDARD_RTTIEXT(IGESControl_ToolContainer,IGESToBRep_ToolContainer)
 
 protected:
 

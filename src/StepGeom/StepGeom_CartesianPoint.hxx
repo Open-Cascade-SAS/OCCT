@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CartesianPoint,StepGeom_Point)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianPoint,StepGeom_Point)
 
 protected:
 

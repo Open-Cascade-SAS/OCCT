@@ -24,6 +24,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(QANewModTopOpe_ReShaper,MMgt_TShared)
+
 QANewModTopOpe_ReShaper::QANewModTopOpe_ReShaper(const TopoDS_Shape& TheInitialShape):
        myInitShape(TheInitialShape)
 {

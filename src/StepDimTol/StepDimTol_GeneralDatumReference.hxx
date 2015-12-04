@@ -92,7 +92,7 @@ public:
     myModifiers->SetValue (theNum, theItem);
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_GeneralDatumReference, StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeneralDatumReference,StepRepr_ShapeAspect)
 
 private: 
   StepDimTol_DatumOrCommonDatum myBase;

@@ -2,7 +2,6 @@
 
 #include "Sample2D_Text.h"
 
-IMPLEMENT_STANDARD_HANDLE(Sample2D_Text,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Text,AIS_InteractiveObject)
 
 Sample2D_Text::Sample2D_Text   (const TCollection_AsciiString& theText,
@@ -36,7 +35,7 @@ void Sample2D_Text::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPres
 {
   aPresentation->Clear();
 
-  Handle_Prs3d_TextAspect asp = myDrawer->TextAspect();
+  Handle(Prs3d_TextAspect) asp = myDrawer->TextAspect();
 
   asp->SetFont(myFont);
   asp->SetColor(myColor);

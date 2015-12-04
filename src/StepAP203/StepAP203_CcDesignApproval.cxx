@@ -20,6 +20,8 @@
 #include <StepAP203_CcDesignApproval.hxx>
 #include <StepBasic_Approval.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignApproval,StepBasic_ApprovalAssignment)
+
 //=======================================================================
 //function : StepAP203_CcDesignApproval
 //purpose  : 

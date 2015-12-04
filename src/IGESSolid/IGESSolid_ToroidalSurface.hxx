@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_ToroidalSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_ToroidalSurface,IGESData_IGESEntity)
 
 protected:
 

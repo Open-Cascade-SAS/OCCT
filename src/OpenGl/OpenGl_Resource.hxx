@@ -53,7 +53,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Resource, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Resource,Standard_Transient) // Type definition
 
 };
 

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_Activator,IFSelect_Activator)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_Activator,IFSelect_Activator)
 
 protected:
 

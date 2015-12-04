@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
+  DEFINE_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 
 protected:
 

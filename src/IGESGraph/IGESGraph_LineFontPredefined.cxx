@@ -19,6 +19,8 @@
 #include <IGESGraph_LineFontPredefined.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_LineFontPredefined,IGESData_IGESEntity)
+
 IGESGraph_LineFontPredefined::IGESGraph_LineFontPredefined ()    {  }
 
 

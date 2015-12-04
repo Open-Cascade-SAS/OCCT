@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectFromDrawing,IFSelect_SelectDeduct)
+
 #define PourDrawing 404
 
 

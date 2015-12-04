@@ -229,7 +229,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_ShareOut,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ShareOut,MMgt_TShared)
 
 protected:
 

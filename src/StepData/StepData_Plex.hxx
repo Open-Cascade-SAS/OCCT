@@ -96,7 +96,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_Plex,StepData_Described)
+  DEFINE_STANDARD_RTTIEXT(StepData_Plex,StepData_Described)
 
 protected:
 

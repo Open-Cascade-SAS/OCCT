@@ -19,6 +19,8 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepRepr_FeatureForDatumTargetRelationship.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_FeatureForDatumTargetRelationship,StepRepr_ShapeAspectRelationship)
+
 //=======================================================================
 //function : StepRepr_FeatureForDatumtargetRelationship
 //purpose  : 

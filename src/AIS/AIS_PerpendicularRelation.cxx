@@ -50,6 +50,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_PerpendicularRelation,AIS_Relation)
+
 //=======================================================================
 //function : Constructor
 //purpose  : TwoEdgesPerpendicular

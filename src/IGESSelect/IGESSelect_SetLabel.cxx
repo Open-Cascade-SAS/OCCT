@@ -22,6 +22,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetLabel,IGESSelect_ModelModifier)
+
 IGESSelect_SetLabel::IGESSelect_SetLabel
   (const Standard_Integer mode, const Standard_Boolean enforce)
     : IGESSelect_ModelModifier (Standard_False) ,

@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_UnitsLexicon,Units_Lexicon)
+  DEFINE_STANDARD_RTTIEXT(Units_UnitsLexicon,Units_Lexicon)
 
 protected:
 

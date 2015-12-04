@@ -186,7 +186,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeCustom_BSplineRestriction,ShapeCustom_Modification)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_BSplineRestriction,ShapeCustom_Modification)
 
 protected:
 

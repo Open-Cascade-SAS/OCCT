@@ -82,7 +82,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Law_Interpol,Law_BSpFunc)
+  DEFINE_STANDARD_RTTIEXT(Law_Interpol,Law_BSpFunc)
 
 protected:
 

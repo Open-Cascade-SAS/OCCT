@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRAlgo_PolyInternalData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
 
 protected:
 

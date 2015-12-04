@@ -32,6 +32,8 @@
 #include <TPrsStd_DriverTable.hxx>
 #include <TPrsStd_NamedShapeDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_NamedShapeDriver,TPrsStd_Driver)
+
 #undef OPTIM_UPDATE  // If this variable is defined there will be done
 //                      more otimized update of AIS_Shape. If an object was
 //                      erased in the viewer and it's location was changed

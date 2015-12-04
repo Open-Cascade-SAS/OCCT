@@ -142,7 +142,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IntPatch_RLine,IntPatch_PointLine)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_RLine,IntPatch_PointLine)
 
 protected:
 

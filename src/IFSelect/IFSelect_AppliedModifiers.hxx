@@ -106,7 +106,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_AppliedModifiers,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_AppliedModifiers,MMgt_TShared)
 
 protected:
 

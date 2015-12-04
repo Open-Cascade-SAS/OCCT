@@ -54,6 +54,8 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_PolyAlgo,MMgt_TShared)
+
 #define EMskOutLin1  ((Standard_Boolean)   1)
 #define EMskOutLin2  ((Standard_Boolean)   2)
 #define EMskOutLin3  ((Standard_Boolean)   4)

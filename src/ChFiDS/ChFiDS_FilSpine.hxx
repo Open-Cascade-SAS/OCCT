@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ChFiDS_FilSpine,ChFiDS_Spine)
+  DEFINE_STANDARD_RTTIEXT(ChFiDS_FilSpine,ChFiDS_Spine)
 
 protected:
 

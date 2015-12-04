@@ -23,6 +23,8 @@
 #include <IntSurf_PntOn2S.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepApprox_ApproxLine,MMgt_TShared)
+
 //=======================================================================
 //function : BRepApprox_ApproxLine
 //purpose  : 

@@ -28,6 +28,8 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepTools_Modification,MMgt_TShared)
+
 Standard_Boolean BRepTools_Modification::NewTriangulation(const TopoDS_Face&, Handle(Poly_Triangulation)&)
 {
   return Standard_False;

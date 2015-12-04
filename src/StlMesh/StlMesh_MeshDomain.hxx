@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StlMesh_MeshDomain,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StlMesh_MeshDomain,MMgt_TShared)
 
 protected:
 

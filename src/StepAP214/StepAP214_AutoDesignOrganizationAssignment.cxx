@@ -18,6 +18,8 @@
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationRole.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignOrganizationAssignment,StepBasic_OrganizationAssignment)
+
 StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssignment ()  {}
 
 void StepAP214_AutoDesignOrganizationAssignment::Init(

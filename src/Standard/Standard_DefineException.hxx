@@ -42,7 +42,7 @@ public: \
     _E->Reraise (theMessage); \
   } \
   static Handle(C1) NewInstance(const Standard_CString theMessage = "") { return new C1(theMessage); } \
-  DEFINE_STANDARD_RTTI(C1,C2) \
+  DEFINE_STANDARD_RTTI_INLINE(C1,C2) \
 };
 
 //! Obsolete macro, kept for compatibility with old code

@@ -18,6 +18,8 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator3d,StepGeom_CartesianTransformationOperator)
+
 StepGeom_CartesianTransformationOperator3d::StepGeom_CartesianTransformationOperator3d ()  {}
 
 void StepGeom_CartesianTransformationOperator3d::Init(

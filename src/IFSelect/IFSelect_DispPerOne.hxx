@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_DispPerOne,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerOne,IFSelect_Dispatch)
 
 protected:
 

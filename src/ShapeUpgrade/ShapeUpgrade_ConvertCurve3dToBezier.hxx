@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_ConvertCurve3dToBezier,ShapeUpgrade_SplitCurve3d)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve3dToBezier,ShapeUpgrade_SplitCurve3d)
 
 protected:
 

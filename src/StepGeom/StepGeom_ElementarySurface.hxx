@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_ElementarySurface,StepGeom_Surface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_ElementarySurface,StepGeom_Surface)
 
 protected:
 

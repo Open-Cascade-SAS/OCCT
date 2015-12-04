@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_GeneralLabel,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralLabel,IGESData_IGESEntity)
 
 protected:
 

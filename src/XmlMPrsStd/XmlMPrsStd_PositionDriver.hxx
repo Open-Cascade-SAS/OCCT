@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMPrsStd_PositionDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMPrsStd_PositionDriver,XmlMDF_ADriver)
 
 protected:
 

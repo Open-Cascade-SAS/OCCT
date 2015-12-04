@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_Curve2d,DrawTrSurf_Drawable)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Curve2d,DrawTrSurf_Drawable)
 
 protected:
 

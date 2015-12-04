@@ -19,6 +19,8 @@
 #include <StepElement_VolumeElementPurposeMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_VolumeElementPurposeMember,StepData_SelectNamed)
+
 static Standard_CString EVEP = "ENUMERATED_VOLUME_ELEMENT_PURPOSE";
 static Standard_CString ADEP = "APPLICATION_DEFINED_ELEMENT_PURPOSE";
 

@@ -21,6 +21,8 @@
 #include <XmlMDataXtd_PointDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PointDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMDataXtd_PointDriver
 //purpose  : Constructor

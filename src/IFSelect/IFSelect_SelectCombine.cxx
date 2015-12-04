@@ -18,6 +18,8 @@
 #include <IFSelect_SelectionIterator.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectCombine,IFSelect_Selection)
+
 IFSelect_SelectCombine::IFSelect_SelectCombine ()    {  }
 //      {  thelist = new IFSelect_SequenceOfSelection();  }
 

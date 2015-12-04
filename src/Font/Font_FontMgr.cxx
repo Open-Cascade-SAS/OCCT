@@ -26,6 +26,8 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,MMgt_TShared)
+
 struct Font_FontMgr_FontAliasMapNode
 {
   const char *    EnumName;

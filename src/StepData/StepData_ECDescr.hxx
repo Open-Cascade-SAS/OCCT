@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_ECDescr,StepData_EDescr)
+  DEFINE_STANDARD_RTTIEXT(StepData_ECDescr,StepData_EDescr)
 
 protected:
 

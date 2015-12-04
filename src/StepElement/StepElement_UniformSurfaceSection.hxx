@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_UniformSurfaceSection,StepElement_SurfaceSection)
+  DEFINE_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection,StepElement_SurfaceSection)
 
 protected:
 

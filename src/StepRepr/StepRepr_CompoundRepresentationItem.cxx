@@ -17,6 +17,8 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompoundRepresentationItem,StepRepr_RepresentationItem)
+
 StepRepr_CompoundRepresentationItem::StepRepr_CompoundRepresentationItem  ()    {  }
 
 void  StepRepr_CompoundRepresentationItem::Init

@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopoDS_HShape,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopoDS_HShape,MMgt_TShared)
 
 protected:
 

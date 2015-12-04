@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ShapeDefinitionRepresentation,StepRepr_PropertyDefinitionRepresentation)
+
 //=======================================================================
 //function : StepShape_ShapeDefinitionRepresentation
 //purpose  : 

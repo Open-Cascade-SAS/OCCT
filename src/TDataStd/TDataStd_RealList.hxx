@@ -89,7 +89,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_RealList,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_RealList,TDF_Attribute)
 
 protected:
 

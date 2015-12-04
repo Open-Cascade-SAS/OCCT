@@ -26,6 +26,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TPrsStd_AxisDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AxisDriver,TPrsStd_Driver)
+
 //=======================================================================
 //function :
 //purpose  : 

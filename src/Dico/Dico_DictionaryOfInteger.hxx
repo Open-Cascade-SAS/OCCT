@@ -129,7 +129,7 @@ public:
 friend class Dico_IteratorOfDictionaryOfInteger;
 
 
-  DEFINE_STANDARD_RTTI(Dico_DictionaryOfInteger,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Dico_DictionaryOfInteger,MMgt_TShared)
 
 protected:
 

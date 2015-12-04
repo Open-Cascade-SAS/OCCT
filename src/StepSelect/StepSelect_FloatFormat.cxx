@@ -20,6 +20,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(StepSelect_FloatFormat,StepSelect_FileModifier)
+
 StepSelect_FloatFormat::StepSelect_FloatFormat ()
     : thezerosup (Standard_True) , themainform ("%E") ,
       theformrange ("%f") , therangemin (0.1) , therangemax (1000.)

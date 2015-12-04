@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture1D,Graphic3d_TextureMap)
+
 static const char *NameOfTexture_to_FileName[] =
 {
   "1d_elevation.rgb"

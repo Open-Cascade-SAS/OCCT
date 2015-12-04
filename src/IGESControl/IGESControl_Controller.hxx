@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESControl_Controller,XSControl_Controller)
+  DEFINE_STANDARD_RTTIEXT(IGESControl_Controller,XSControl_Controller)
 
 protected:
 

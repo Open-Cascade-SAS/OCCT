@@ -22,6 +22,8 @@
 #include <Standard_ProgramError.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(D3DHost_FrameBuffer,OpenGl_FrameBuffer)
+
 // =======================================================================
 // function : D3DHost_FrameBuffer
 // purpose  :

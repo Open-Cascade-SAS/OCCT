@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Bisector_Curve,Geom2d_Curve)
+  DEFINE_STANDARD_RTTIEXT(Bisector_Curve,Geom2d_Curve)
 
 protected:
 

@@ -16,6 +16,8 @@
 #include <IVtkOCC_Shape.hxx>
 #include <TopExp.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape,IVtk_IShape)
+
 // Handle implementation
 
 

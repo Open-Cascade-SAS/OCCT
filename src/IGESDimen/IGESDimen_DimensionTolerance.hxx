@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_DimensionTolerance,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionTolerance,IGESData_IGESEntity)
 
 protected:
 

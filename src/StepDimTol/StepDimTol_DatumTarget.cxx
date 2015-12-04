@@ -20,6 +20,8 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumTarget,StepRepr_ShapeAspect)
+
 //=======================================================================
 //function : StepDimTol_DatumTarget
 //purpose  : 

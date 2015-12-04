@@ -22,6 +22,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(Interface_TypedValue,MoniTool_TypedValue)
+
 //static  char defmess[30]; svv #2
 //  Fonctions Satisfies offertes en standard ...
 // svv#2

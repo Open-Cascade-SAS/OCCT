@@ -62,6 +62,8 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveContext,MMgt_TShared)
+
 //#include <AIS_DataMapIteratorOfDataMapOfInteractiveInteger.hxx>
 namespace
 {

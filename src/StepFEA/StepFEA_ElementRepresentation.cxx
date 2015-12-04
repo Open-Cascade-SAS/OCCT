@@ -20,6 +20,8 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ElementRepresentation,StepRepr_Representation)
+
 //=======================================================================
 //function : StepFEA_ElementRepresentation
 //purpose  : 

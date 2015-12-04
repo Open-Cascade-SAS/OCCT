@@ -33,6 +33,8 @@
 #include <algorithm>
 #include <errno.h>
 
+IMPLEMENT_STANDARD_RTTIEXT(Resource_Manager,MMgt_TShared)
+
 //! Auxiliary enumeration for function WhatKindOfLine().
 enum Resource_KindOfLine
 {

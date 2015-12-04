@@ -16,3 +16,5 @@
 #include <gp_Pnt2d.hxx>
 #include <IntStart_SITopolTool.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(IntStart_SITopolTool,MMgt_TShared)

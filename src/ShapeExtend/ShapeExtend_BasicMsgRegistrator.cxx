@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator,MMgt_TShared)
+
 //=======================================================================
 //function : ShapeExtend_BasicMsgRegistrator
 //purpose  : 

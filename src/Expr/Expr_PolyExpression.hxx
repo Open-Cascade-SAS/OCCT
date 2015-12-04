@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_PolyExpression,Expr_GeneralExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_PolyExpression,Expr_GeneralExpression)
 
 protected:
 

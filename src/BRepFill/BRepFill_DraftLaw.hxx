@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_DraftLaw,BRepFill_Edge3DLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_DraftLaw,BRepFill_Edge3DLaw)
 
 protected:
 

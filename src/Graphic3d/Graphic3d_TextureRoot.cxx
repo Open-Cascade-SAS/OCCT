@@ -28,6 +28,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot,MMgt_TShared)
+
 namespace
 {
   static volatile Standard_Integer THE_TEXTURE_COUNTER = 0;

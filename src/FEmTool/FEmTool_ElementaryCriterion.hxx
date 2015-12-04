@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(FEmTool_ElementaryCriterion,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,MMgt_TShared)
 
 protected:
 

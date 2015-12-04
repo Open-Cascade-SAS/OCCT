@@ -24,6 +24,8 @@
 #include <SelectMgr_EntityOwner.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_TextLabel,AIS_InteractiveObject)
+
 //=======================================================================
 //function : AIS_TextLabel
 //purpose  :

@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_DiameterDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_DiameterDimension,IGESData_IGESEntity)
 
 protected:
 

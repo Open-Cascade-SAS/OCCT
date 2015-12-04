@@ -199,7 +199,7 @@ public:
 friend class TDocStd_Document;
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_Application,CDF_Application)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_Application,CDF_Application)
 
 protected:
 

@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_TransientElem,MoniTool_Element)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_TransientElem,MoniTool_Element)
 
 protected:
 

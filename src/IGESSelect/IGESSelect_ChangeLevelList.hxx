@@ -95,7 +95,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_ChangeLevelList,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_ChangeLevelList,IGESSelect_ModelModifier)
 
 protected:
 

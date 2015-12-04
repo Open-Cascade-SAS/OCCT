@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_Angle,DrawDim_Dimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_Angle,DrawDim_Dimension)
 
 protected:
 

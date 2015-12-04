@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_RationalBSplineCurve,StepGeom_BSplineCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_RationalBSplineCurve,StepGeom_BSplineCurve)
 
 protected:
 

@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
+  DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
 
 protected:
 

@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PipingFlow,IGESData_IGESEntity)
+
 IGESAppli_PipingFlow::IGESAppli_PipingFlow ()    {  }
 
 

@@ -144,7 +144,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI (Graphic3d_ShaderVariable, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ShaderVariable,Standard_Transient)
 
 protected:
 

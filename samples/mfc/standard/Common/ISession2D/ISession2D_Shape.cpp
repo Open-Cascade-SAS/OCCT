@@ -6,7 +6,6 @@
 #include <HLRBRep_HLRToShape.hxx>
 #include <TopExp.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(ISession2D_Shape,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession2D_Shape,AIS_InteractiveObject)
 
 ISession2D_Shape::ISession2D_Shape ()

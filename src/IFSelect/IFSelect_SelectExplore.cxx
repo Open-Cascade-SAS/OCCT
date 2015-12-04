@@ -21,6 +21,8 @@
 #include <TColStd_IndexedMapOfTransient.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectExplore,IFSelect_SelectDeduct)
+
 IFSelect_SelectExplore::IFSelect_SelectExplore (const Standard_Integer level)
 : thelevel (level)    {  }
 

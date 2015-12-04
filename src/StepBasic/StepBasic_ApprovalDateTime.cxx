@@ -17,6 +17,8 @@
 #include <StepBasic_ApprovalDateTime.hxx>
 #include <StepBasic_DateTimeSelect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime,MMgt_TShared)
+
 StepBasic_ApprovalDateTime::StepBasic_ApprovalDateTime ()  {  }
 
 void  StepBasic_ApprovalDateTime::Init (const StepBasic_DateTimeSelect& aDateTime, const Handle(StepBasic_Approval)& aDatedApproval)

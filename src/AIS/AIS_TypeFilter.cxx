@@ -20,6 +20,8 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_TypeFilter,SelectMgr_Filter)
+
 AIS_TypeFilter::AIS_TypeFilter(const AIS_KindOfInteractive TheKind):
 myKind(TheKind){}
 

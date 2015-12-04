@@ -26,6 +26,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_Bisec,MMgt_TShared)
+
 gp_Circ2d GccInt_Bisec::
   Circle() const { 
     Standard_NotImplemented::Raise();

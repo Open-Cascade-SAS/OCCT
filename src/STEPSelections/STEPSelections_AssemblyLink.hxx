@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPSelections_AssemblyLink,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_AssemblyLink,MMgt_TShared)
 
 protected:
 

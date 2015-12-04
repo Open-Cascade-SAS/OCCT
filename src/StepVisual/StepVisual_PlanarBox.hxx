@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PlanarBox,StepVisual_PlanarExtent)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PlanarBox,StepVisual_PlanarExtent)
 
 protected:
 

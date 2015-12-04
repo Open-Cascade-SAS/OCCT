@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Number,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Number,Draw_Drawable3D)
 
 protected:
 

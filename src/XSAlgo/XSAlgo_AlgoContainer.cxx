@@ -65,6 +65,8 @@
 #include <XSAlgo_ToolContainer.hxx>
 #include <TopExp_Explorer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSAlgo_AlgoContainer,MMgt_TShared)
+
 //=======================================================================
 //function : XSAlgo_AlgoContainer
 //purpose  : 

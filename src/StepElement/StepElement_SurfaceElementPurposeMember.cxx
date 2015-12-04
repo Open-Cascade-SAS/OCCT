@@ -19,6 +19,8 @@
 #include <StepElement_SurfaceElementPurposeMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceElementPurposeMember,StepData_SelectNamed)
+
 static Standard_CString ESEP = "ENUMERATED_SURFACE_ELEMENT_PURPOSE";
 static Standard_CString ADEP = "APPLICATION_DEFINED_ELEMENT_PURPOSE";
 

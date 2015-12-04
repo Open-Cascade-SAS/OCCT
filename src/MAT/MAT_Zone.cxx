@@ -22,6 +22,8 @@
 #include <MAT_Zone.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Zone,MMgt_TShared)
+
 //========================================================================
 // function:
 // purpose :

@@ -19,6 +19,8 @@
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <StepElement_UniformSurfaceSection.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection,StepElement_SurfaceSection)
+
 //=======================================================================
 //function : StepElement_UniformSurfaceSection
 //purpose  : 

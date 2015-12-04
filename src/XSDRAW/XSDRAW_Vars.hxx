@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSDRAW_Vars,XSControl_Vars)
+  DEFINE_STANDARD_RTTIEXT(XSDRAW_Vars,XSControl_Vars)
 
 protected:
 

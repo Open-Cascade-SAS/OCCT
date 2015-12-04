@@ -70,7 +70,7 @@ void Interpol_Presentation::DoSample()
 // Output   : vectors theTan, theNewTan.
 // Returns  : false if failed, true if ok.
 //================================================================
-static Standard_Boolean calculateNewTangent(const Handle_Geom_BSplineCurve& anInterpolationCurve, 
+static Standard_Boolean calculateNewTangent(const Handle(Geom_BSplineCurve)& anInterpolationCurve, 
                                             gp_Pnt aPointOnCurve, gp_Vec& theTan, gp_Vec& theNewTan,
                                             Standard_Real angle)
 {
@@ -128,7 +128,7 @@ void Interpol_Presentation::interpolate (Standard_Real aCoords[][3],
     "  aNoPeriodInterpolate.Perform();" EOL
     "  // check results" EOL
     "  if (!aNoPeriodInterpolate.IsDone()) return;" EOL
-    "  Handle_Geom_BSplineCurve anInterpolationCurve = aNoPeriodInterpolate.Curve();" EOL EOL
+    "  Handle(Geom_BSplineCurve) anInterpolationCurve = aNoPeriodInterpolate.Curve();" EOL EOL
 
     "  //===================================" EOL
     "  // Creating a constrained interpolation curve" EOL
@@ -183,9 +183,9 @@ void Interpol_Presentation::interpolate (Standard_Real aCoords[][3],
   aNoPeriodInterpolate.Perform();
   // check results
   if (!aNoPeriodInterpolate.IsDone()) return;
-  Handle_Geom_BSplineCurve anInterpolationCurve = aNoPeriodInterpolate.Curve();
+  Handle(Geom_BSplineCurve) anInterpolationCurve = aNoPeriodInterpolate.Curve();
 
-  Handle_AIS_InteractiveObject aShowCurve = drawCurve(anInterpolationCurve);
+  Handle(AIS_InteractiveObject) aShowCurve = drawCurve(anInterpolationCurve);
   if (WAIT_A_SECOND) return;
      
   //===================================
@@ -197,7 +197,7 @@ void Interpol_Presentation::interpolate (Standard_Real aCoords[][3],
   Standard_Real scaleVec = 1;
   aCopyFlags->Init(Standard_False);
 
-  Handle_AIS_InteractiveObject aShowTan;
+  Handle(AIS_InteractiveObject) aShowTan;
   for (i = indexes.Lower(); i <= indexes.Upper(); i++)
   {
     gp_Pnt aPoint = aPnts->Value(indexes(i));

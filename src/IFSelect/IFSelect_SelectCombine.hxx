@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectCombine,IFSelect_Selection)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectCombine,IFSelect_Selection)
 
 protected:
 

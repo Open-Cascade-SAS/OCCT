@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepFEA_Node.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_Node,StepFEA_NodeRepresentation)
+
 //=======================================================================
 //function : StepFEA_Node
 //purpose  : 

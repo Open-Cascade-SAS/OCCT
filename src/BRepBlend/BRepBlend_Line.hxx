@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepBlend_Line,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepBlend_Line,MMgt_TShared)
 
 protected:
 

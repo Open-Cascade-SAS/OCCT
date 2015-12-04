@@ -134,7 +134,7 @@ class VrmlData_Cone : public VrmlData_Geometry
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Cone, VrmlData_Geometry)
+DEFINE_STANDARD_RTTI_INLINE(VrmlData_Cone,VrmlData_Geometry)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

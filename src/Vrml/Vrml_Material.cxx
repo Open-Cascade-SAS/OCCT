@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <Vrml_Material.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_Material,MMgt_TShared)
+
 Vrml_Material::Vrml_Material(const Handle(Quantity_HArray1OfColor)& aAmbientColor, 
 			      const Handle(Quantity_HArray1OfColor)& aDiffuseColor, 
 			      const Handle(Quantity_HArray1OfColor)& aSpecularColor, 

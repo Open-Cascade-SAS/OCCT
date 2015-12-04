@@ -36,7 +36,7 @@ private:
   void sampleWire1();
   void sampleWire2();
 
-  void drawAndOffsetCurve2d (Handle_Geom2d_Curve theCurve,
+  void drawAndOffsetCurve2d (Handle(Geom2d_Curve) theCurve,
     const Standard_CString theName,
     TCollection_AsciiString& theText);
   void drawAndOffsetWire (const TopoDS_Wire& theWire,

@@ -37,7 +37,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_LineFontEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_LineFontEntity,IGESData_IGESEntity)
 
 protected:
 

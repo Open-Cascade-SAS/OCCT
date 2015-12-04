@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectBypassGroup,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBypassGroup,IFSelect_SelectExplore)
 
 protected:
 

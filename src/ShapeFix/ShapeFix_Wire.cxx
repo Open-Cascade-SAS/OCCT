@@ -118,6 +118,8 @@
 #include <TopTools_Array1OfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Wire,ShapeFix_Root)
+
 //S4135
 //#######################################################################
 //  Constructors, initializations, modes, querying

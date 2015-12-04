@@ -71,7 +71,7 @@ public:
     myConstituents->SetValue (num, theItem);
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_DatumSystem, StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumSystem,StepRepr_ShapeAspect)
 
 private: 
   Handle(StepDimTol_HArray1OfDatumReferenceCompartment) myConstituents;

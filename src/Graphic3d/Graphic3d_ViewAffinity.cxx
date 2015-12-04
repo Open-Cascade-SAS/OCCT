@@ -16,3 +16,5 @@
 #include <Graphic3d_ViewAffinity.hxx>
 
 
+
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ViewAffinity,Standard_Transient)

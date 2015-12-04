@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom2d_AxisPlacement,Geom2d_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_AxisPlacement,Geom2d_Geometry)
 
 protected:
 

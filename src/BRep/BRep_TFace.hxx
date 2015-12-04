@@ -91,7 +91,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_TFace,TopoDS_TFace)
+  DEFINE_STANDARD_RTTIEXT(BRep_TFace,TopoDS_TFace)
 
 protected:
 

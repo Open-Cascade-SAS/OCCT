@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TransferBRep_BinderOfShape,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(TransferBRep_BinderOfShape,Transfer_Binder)
 
 protected:
 

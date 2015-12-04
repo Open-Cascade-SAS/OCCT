@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepElement_SurfaceSectionField.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSectionField,MMgt_TShared)
+
 //=======================================================================
 //function : StepElement_SurfaceSectionField
 //purpose  : 

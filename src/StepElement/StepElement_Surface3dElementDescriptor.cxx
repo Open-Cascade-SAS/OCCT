@@ -19,6 +19,8 @@
 #include <StepElement_Surface3dElementDescriptor.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_Surface3dElementDescriptor,StepElement_ElementDescriptor)
+
 //=======================================================================
 //function : StepElement_Surface3dElementDescriptor
 //purpose  : 

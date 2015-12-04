@@ -97,7 +97,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_Block,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Block,IGESData_IGESEntity)
 
 protected:
 

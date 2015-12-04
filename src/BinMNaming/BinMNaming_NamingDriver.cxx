@@ -34,6 +34,8 @@
 #include <TNaming_Naming.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMNaming_NamingDriver,BinMDF_ADriver)
+
 #define  NULL_ENTRY "0:0"
 #define  OBSOLETE_NUM (int)sizeof(Standard_Integer)
 

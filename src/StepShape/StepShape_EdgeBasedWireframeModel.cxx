@@ -19,6 +19,8 @@
 #include <StepShape_EdgeBasedWireframeModel.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeModel,StepGeom_GeometricRepresentationItem)
+
 //=======================================================================
 //function : StepShape_EdgeBasedWireframeModel
 //purpose  : 

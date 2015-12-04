@@ -21,6 +21,8 @@
 #include <CDM_Reference.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDM_Reference,Standard_Transient)
+
 CDM_Reference::CDM_Reference(const Handle(CDM_Document)& aFromDocument, const Handle(CDM_Document)& aToDocument, const Standard_Integer aReferenceIdentifier, const Standard_Integer aToDocumentVersion):
 myToDocument(aToDocument),
 myFromDocument(aFromDocument.operator->()),

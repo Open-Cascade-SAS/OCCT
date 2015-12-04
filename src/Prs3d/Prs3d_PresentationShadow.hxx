@@ -36,7 +36,7 @@ public:
 
 private: 
 
-  DEFINE_STANDARD_RTTI(Prs3d_PresentationShadow, Prs3d_Presentation)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_PresentationShadow,Prs3d_Presentation)
 
 private:
   Standard_Integer               myParentStructId;

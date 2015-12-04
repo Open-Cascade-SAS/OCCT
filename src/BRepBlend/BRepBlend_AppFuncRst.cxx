@@ -23,6 +23,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRst,BRepBlend_AppFuncRoot)
+
 BRepBlend_AppFuncRst::BRepBlend_AppFuncRst (Handle(BRepBlend_Line)& Line,
 					    Blend_SurfRstFunction& Func,
 					    const Standard_Real Tol3d,

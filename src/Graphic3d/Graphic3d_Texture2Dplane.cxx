@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture2Dplane,Graphic3d_Texture2D)
+
 // =======================================================================
 // function : Graphic3d_Texture2Dplane
 // purpose  :

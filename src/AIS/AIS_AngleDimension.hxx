@@ -210,7 +210,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI (AIS_AngleDimension, AIS_Dimension)
+  DEFINE_STANDARD_RTTIEXT(AIS_AngleDimension,AIS_Dimension)
 
 protected:
 

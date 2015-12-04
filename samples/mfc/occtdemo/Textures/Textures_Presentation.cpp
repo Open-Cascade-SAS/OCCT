@@ -83,7 +83,7 @@ void Textures_Presentation::Init()
 {
   // initialize v3d_view so it displays textures well
   getViewer()->InitActiveViews();
-  Handle_V3d_View aView = getViewer()->ActiveView();
+  Handle(V3d_View) aView = getViewer()->ActiveView();
   aView->SetSurfaceDetail(V3d_TEX_ALL);
   aView->SetSize(ZVIEW_SIZE);
 
@@ -95,7 +95,7 @@ void Textures_Presentation::Init()
     "  // aShape = ..." EOL
     "" EOL
     "  // create a textured presentation object for aShape" EOL
-    "  Handle_AIS_TexturedShape aTShape = new AIS_TexturedShape(aShape);" EOL
+    "  Handle(AIS_TexturedShape) aTShape = new AIS_TexturedShape(aShape);" EOL
     "" EOL
     "  TCollection_AsciiString aTFileName;" EOL
     "" EOL
@@ -142,12 +142,12 @@ void Textures_Presentation::Init()
 //================================================================
 void Textures_Presentation::lightsOnOff(Standard_Boolean isOn)
 {
-  static Handle_V3d_Light aLight1 = new V3d_DirectionalLight(getViewer(), V3d_XnegYposZneg);
-  static Handle_V3d_Light aLight2 = new V3d_DirectionalLight(getViewer(), V3d_XnegYnegZpos);
-  static Handle_V3d_Light aLight3 = new V3d_DirectionalLight(getViewer(), V3d_XposYnegZpos);
-  static Handle_V3d_Light aLight4 = new V3d_DirectionalLight(getViewer(), V3d_XnegYnegZneg);
-  static Handle_V3d_Light aLight5 = new V3d_DirectionalLight(getViewer(), V3d_XnegYposZpos);
-  static Handle_V3d_Light aLight6 = new V3d_DirectionalLight(getViewer(), V3d_XposYposZpos);
+  static Handle(V3d_Light) aLight1 = new V3d_DirectionalLight(getViewer(), V3d_XnegYposZneg);
+  static Handle(V3d_Light) aLight2 = new V3d_DirectionalLight(getViewer(), V3d_XnegYnegZpos);
+  static Handle(V3d_Light) aLight3 = new V3d_DirectionalLight(getViewer(), V3d_XposYnegZpos);
+  static Handle(V3d_Light) aLight4 = new V3d_DirectionalLight(getViewer(), V3d_XnegYnegZneg);
+  static Handle(V3d_Light) aLight5 = new V3d_DirectionalLight(getViewer(), V3d_XnegYposZpos);
+  static Handle(V3d_Light) aLight6 = new V3d_DirectionalLight(getViewer(), V3d_XposYposZpos);
 
   if (isOn)
   {
@@ -184,7 +184,7 @@ Standard_Boolean Textures_Presentation::displayTextured(const TopoDS_Shape& aSha
                                                         Standard_Integer nRepeat)
 {
   // create a textured presentation object for aShape
-  Handle_AIS_TexturedShape aTShape = new AIS_TexturedShape(aShape);
+  Handle(AIS_TexturedShape) aTShape = new AIS_TexturedShape(aShape);
 
   // load texture from file if it is not an integer value
   // integer value indicates a number of texture in predefined textures enumeration
@@ -209,7 +209,7 @@ Standard_Boolean Textures_Presentation::displayTextured(const TopoDS_Shape& aSha
   {
     lightsOnOff(Standard_False);
 
-    Handle_AIS_Shape aAisShape = drawShape(aShape/*, Quantity_NOC_WHITE*/);
+    Handle(AIS_Shape) aAisShape = drawShape(aShape/*, Quantity_NOC_WHITE*/);
     if (WAIT_A_SECOND) return Standard_False;
     getAISContext()->Erase(aAisShape, Standard_False);
   }
@@ -391,7 +391,7 @@ void Textures_Presentation::samplePredefTexture2()
   Standard_Real aXStep = 250, aYStep = 250;
   Standard_Real aXBound = -450, aYBound = -300;
 
-  Handle_Geom_BSplineSurface aSurface = 
+  Handle(Geom_BSplineSurface) aSurface = 
     GeomAPI_PointsToBSplineSurface(aZPoints,aXBound,aXStep,aYBound,aYStep,3,8);
 
   TopoDS_Face aShape = BRepBuilderAPI_MakeFace(aSurface);

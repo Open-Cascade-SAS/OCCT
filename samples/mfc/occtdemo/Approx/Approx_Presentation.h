@@ -32,11 +32,11 @@ private:
   Standard_Boolean DrawModifyBSplineSurface(TColStd_Array2OfReal& ,
                                             Standard_Real ,Standard_Real ,
                                             Standard_Integer ,Standard_Integer ,
-                                            Standard_Real,Handle_AIS_InteractiveObject&,
-                                            Handle_AIS_InteractiveObject&,
+                                            Standard_Real,Handle(AIS_InteractiveObject)&,
+                                            Handle(AIS_InteractiveObject)&,
                                             Standard_Integer);
 
-  Handle_Geom_BSplineSurface CreateBSplineSurface(TColStd_Array2OfReal& ,
+  Handle(Geom_BSplineSurface) CreateBSplineSurface(TColStd_Array2OfReal& ,
                                                   Standard_Real ,Standard_Real,
                                                   Standard_Integer);
 

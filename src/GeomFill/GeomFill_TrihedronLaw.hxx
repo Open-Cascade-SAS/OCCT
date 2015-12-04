@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_TrihedronLaw,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_TrihedronLaw,MMgt_TShared)
 
 protected:
 

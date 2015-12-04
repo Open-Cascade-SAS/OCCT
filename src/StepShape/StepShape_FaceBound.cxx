@@ -17,6 +17,8 @@
 #include <StepShape_Loop.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceBound,StepShape_TopologicalRepresentationItem)
+
 StepShape_FaceBound::StepShape_FaceBound ()  {}
 
 void StepShape_FaceBound::Init(

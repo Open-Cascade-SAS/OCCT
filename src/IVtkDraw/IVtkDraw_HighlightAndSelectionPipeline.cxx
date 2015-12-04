@@ -28,6 +28,8 @@
 #include <IVtkTools_ShapeObject.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(IVtkDraw_HighlightAndSelectionPipeline,Standard_Transient)
+
 //===========================================================
 // Function : Constructor
 // Purpose  :

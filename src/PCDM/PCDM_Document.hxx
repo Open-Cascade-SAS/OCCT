@@ -36,7 +36,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PCDM_Document,Standard_Persistent)
+  DEFINE_STANDARD_RTTIEXT(PCDM_Document,Standard_Persistent)
 
 protected:
 

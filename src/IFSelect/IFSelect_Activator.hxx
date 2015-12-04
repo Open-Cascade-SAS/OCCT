@@ -134,7 +134,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Activator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Activator,MMgt_TShared)
 
 protected:
 

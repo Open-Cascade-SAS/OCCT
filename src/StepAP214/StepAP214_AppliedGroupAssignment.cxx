@@ -19,6 +19,8 @@
 #include <StepAP214_AppliedGroupAssignment.hxx>
 #include <StepBasic_Group.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedGroupAssignment,StepBasic_GroupAssignment)
+
 //=======================================================================
 //function : StepAP214_AppliedGroupAssignment
 //purpose  : 

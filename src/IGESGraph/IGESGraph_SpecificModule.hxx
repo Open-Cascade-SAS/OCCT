@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_SpecificModule,IGESData_SpecificModule)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_SpecificModule,IGESData_SpecificModule)
 
 protected:
 

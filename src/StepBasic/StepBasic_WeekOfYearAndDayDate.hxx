@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_WeekOfYearAndDayDate,StepBasic_Date)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_WeekOfYearAndDayDate,StepBasic_Date)
 
 protected:
 

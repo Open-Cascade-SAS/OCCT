@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_SurfaceStyleSilhouette,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette,MMgt_TShared)
 
 protected:
 

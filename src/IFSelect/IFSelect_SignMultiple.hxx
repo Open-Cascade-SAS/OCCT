@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SignMultiple,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignMultiple,IFSelect_Signature)
 
 protected:
 

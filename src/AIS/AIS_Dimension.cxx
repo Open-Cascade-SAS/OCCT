@@ -75,6 +75,8 @@
 #include <UnitsAPI_SystemUnits.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Dimension,AIS_InteractiveObject)
+
 namespace
 {
   // default text strings

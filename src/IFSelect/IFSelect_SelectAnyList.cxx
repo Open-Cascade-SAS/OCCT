@@ -23,6 +23,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectAnyList,IFSelect_SelectDeduct)
+
 // ....    Definition de liste : methodes "deferred" NbItems & FillResult
 void  IFSelect_SelectAnyList::SetRange
   (const Handle(IFSelect_IntParam)& rankfrom,

@@ -282,7 +282,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_ConicalSurface,Geom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_ConicalSurface,Geom_ElementarySurface)
 
 protected:
 

@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ProductDefinitionFormationWithSpecifiedSource,StepBasic_ProductDefinitionFormation)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormationWithSpecifiedSource,StepBasic_ProductDefinitionFormation)
 
 protected:
 

@@ -171,7 +171,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Message_ProgressIndicator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Message_ProgressIndicator,MMgt_TShared)
 
 protected:
 

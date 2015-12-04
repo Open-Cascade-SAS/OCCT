@@ -21,6 +21,7 @@
 #include <StepRepr_HArray1OfShapeAspect.hxx>
 #include <StepDimTol_NonUniformZoneDefinition.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
+#include <StepRepr_ShapeAspect.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWNonUniformZoneDefinition

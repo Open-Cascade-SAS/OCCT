@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_Color,IGESData_ColorEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_Color,IGESData_ColorEntity)
 
 protected:
 

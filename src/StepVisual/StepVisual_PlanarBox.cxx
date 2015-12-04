@@ -17,6 +17,8 @@
 #include <StepVisual_PlanarBox.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PlanarBox,StepVisual_PlanarExtent)
+
 StepVisual_PlanarBox::StepVisual_PlanarBox ()  {}
 
 void StepVisual_PlanarBox::Init(

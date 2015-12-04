@@ -89,7 +89,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPControl_ActorRead,Transfer_ActorOfTransientProcess)
+  DEFINE_STANDARD_RTTIEXT(STEPControl_ActorRead,Transfer_ActorOfTransientProcess)
 
 protected:
 

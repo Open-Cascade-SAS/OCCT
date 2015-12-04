@@ -44,7 +44,7 @@ class HClassName : public _SequenceType_, public MMgt_TShared {                \
                 typename std::enable_if<std::is_base_of<HClassName, T>::value>::type * = 0) { \
      _SequenceType_::Append (theOther->ChangeSequence());                      \
    }                                                                           \
-   DEFINE_STANDARD_RTTI (HClassName, MMgt_TShared)                             \
+   DEFINE_STANDARD_RTTI_INLINE(HClassName,MMgt_TShared)                             \
 }; \
 DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared) 
 

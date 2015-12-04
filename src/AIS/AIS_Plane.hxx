@@ -173,7 +173,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_Plane,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_Plane,AIS_InteractiveObject)
 
 protected:
 

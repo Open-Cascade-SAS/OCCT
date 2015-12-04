@@ -26,6 +26,8 @@
 #include <StepShape_GeometricSet.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectGSCurves,IFSelect_SelectExplore)
+
 static Standard_Integer flag;
 
 STEPSelections_SelectGSCurves::STEPSelections_SelectGSCurves():IFSelect_SelectExplore (-1){ flag = 1;}

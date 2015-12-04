@@ -99,7 +99,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_Simple,StepData_Described)
+  DEFINE_STANDARD_RTTIEXT(StepData_Simple,StepData_Described)
 
 protected:
 

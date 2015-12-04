@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_NodalConstraint,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_NodalConstraint,IGESData_IGESEntity)
 
 protected:
 

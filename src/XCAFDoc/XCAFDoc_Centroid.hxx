@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_Centroid,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Centroid,TDF_Attribute)
 
 protected:
 

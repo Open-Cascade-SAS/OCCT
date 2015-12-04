@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TestTopOpeDraw_DrawableP2D,Draw_Marker2D)
+  DEFINE_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableP2D,Draw_Marker2D)
 
 protected:
 

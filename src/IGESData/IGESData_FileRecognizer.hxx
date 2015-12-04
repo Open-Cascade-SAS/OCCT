@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_FileRecognizer,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(IGESData_FileRecognizer,Standard_Transient)
 
 protected:
 

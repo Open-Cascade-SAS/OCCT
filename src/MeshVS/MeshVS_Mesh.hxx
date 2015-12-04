@@ -187,7 +187,7 @@ public:
 friend class MeshVS_PrsBuilder;
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_Mesh,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_Mesh,AIS_InteractiveObject)
 
 protected:
 

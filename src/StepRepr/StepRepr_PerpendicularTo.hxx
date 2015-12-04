@@ -30,6 +30,6 @@ public:
   
   Standard_EXPORT StepRepr_PerpendicularTo();
 
-  DEFINE_STANDARD_RTTI(StepRepr_PerpendicularTo, StepRepr_DerivedShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PerpendicularTo,StepRepr_DerivedShapeAspect)
 };
 #endif // _StepRepr_PerpendicularTo_HeaderFile

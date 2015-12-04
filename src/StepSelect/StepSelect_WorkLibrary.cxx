@@ -42,6 +42,8 @@
 
 #include <errno.h>
 #include <sys/stat.h>
+IMPLEMENT_STANDARD_RTTIEXT(StepSelect_WorkLibrary,IFSelect_WorkLibrary)
+
 StepSelect_WorkLibrary::StepSelect_WorkLibrary
   (const Standard_Boolean copymode)
   : thecopymode (copymode) , thelabmode (0)

@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_Boundary,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Boundary,IGESData_IGESEntity)
 
 protected:
 

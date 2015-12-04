@@ -15,6 +15,8 @@
 
 #include <SelectMgr_BaseFrustum.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseFrustum,Standard_Transient)
+
 //=======================================================================
 // function : SelectMgr_SelectingVolume
 // purpose  : Creates new selecting volume with pixel toletance set to 2,

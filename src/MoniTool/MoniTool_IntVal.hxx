@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_IntVal,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_IntVal,MMgt_TShared)
 
 protected:
 

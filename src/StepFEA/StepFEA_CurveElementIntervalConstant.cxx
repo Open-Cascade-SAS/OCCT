@@ -21,6 +21,8 @@
 #include <StepFEA_CurveElementIntervalConstant.hxx>
 #include <StepFEA_CurveElementLocation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementIntervalConstant,StepFEA_CurveElementInterval)
+
 //=======================================================================
 //function : StepFEA_CurveElementIntervalConstant
 //purpose  : 

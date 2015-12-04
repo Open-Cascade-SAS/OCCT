@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPCAFControl_ActorWrite,STEPControl_ActorWrite)
+  DEFINE_STANDARD_RTTIEXT(STEPCAFControl_ActorWrite,STEPControl_ActorWrite)
 
 protected:
 

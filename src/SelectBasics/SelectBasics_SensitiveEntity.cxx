@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectBasics_SensitiveEntity,MMgt_TShared)
+
 //=======================================================================
 // function : SelectBasics_SensitiveEntity
 // purpose  : Creates new empty sensitive entity instance

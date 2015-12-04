@@ -19,6 +19,8 @@
 #include <TopLoc_Location.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveGroup,Select3D_SensitiveSet)
+
 //=======================================================================
 //function : Creation
 //purpose  :

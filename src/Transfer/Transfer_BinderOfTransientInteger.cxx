@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <Transfer_BinderOfTransientInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_BinderOfTransientInteger,Transfer_SimpleBinderOfTransient)
+
 Transfer_BinderOfTransientInteger::Transfer_BinderOfTransientInteger ()
     : theintval (0)    {  }
 

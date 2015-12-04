@@ -29,6 +29,8 @@
 #include <Poly.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlData_IndexedFaceSet,VrmlData_Faceted)
+
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)

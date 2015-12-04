@@ -17,6 +17,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_IsoAspect,Prs3d_LineAspect)
+
 Prs3d_IsoAspect::Prs3d_IsoAspect(const Quantity_Color &aColor,
 			     const Aspect_TypeOfLine aType,
 			     const Standard_Real aWidth,

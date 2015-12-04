@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_CurveElementLocation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementLocation,MMgt_TShared)
 
 protected:
 

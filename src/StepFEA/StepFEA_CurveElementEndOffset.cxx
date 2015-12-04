@@ -19,6 +19,8 @@
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <StepFEA_CurveElementEndOffset.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset,MMgt_TShared)
+
 //=======================================================================
 //function : StepFEA_CurveElementEndOffset
 //purpose  : 

@@ -24,6 +24,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IntPatch_ALine,IntPatch_Line)
+
 #define DEBUG 0
 
 IntPatch_ALine::IntPatch_ALine (const IntAna_Curve& C,

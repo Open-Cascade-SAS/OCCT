@@ -19,6 +19,8 @@
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_CurvePointInterference,TopOpeBRepDS_Interference)
+
 //=======================================================================
 //function : TopOpeBRepDS_CurvePointInterference
 //purpose  : 

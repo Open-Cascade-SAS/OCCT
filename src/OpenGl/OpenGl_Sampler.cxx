@@ -18,6 +18,8 @@
 #include <Standard_Assert.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Sampler,OpenGl_Resource)
+
 // =======================================================================
 // function : OpenGl_Sampler
 // purpose  :

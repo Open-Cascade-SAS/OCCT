@@ -112,7 +112,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepTools_TrsfModification,BRepTools_Modification)
+  DEFINE_STANDARD_RTTIEXT(BRepTools_TrsfModification,BRepTools_Modification)
 
 protected:
 

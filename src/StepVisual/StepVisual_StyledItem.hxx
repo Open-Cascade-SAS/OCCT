@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_StyledItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_StyledItem,StepRepr_RepresentationItem)
 
 protected:
 

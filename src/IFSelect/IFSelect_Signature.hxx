@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Signature,Interface_SignType)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Signature,Interface_SignType)
 
 protected:
 

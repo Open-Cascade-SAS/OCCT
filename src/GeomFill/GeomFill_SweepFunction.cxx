@@ -31,6 +31,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SweepFunction,Approx_SweepFunction)
+
 //=======================================================================
 //function : GeomFill_SweepFunction
 //purpose  : 

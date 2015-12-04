@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_Line3DDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_Line3DDriver,TFunction_Driver)
 
 protected:
 

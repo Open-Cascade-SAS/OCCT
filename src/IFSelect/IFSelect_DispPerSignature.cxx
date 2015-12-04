@@ -26,6 +26,8 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerSignature,IFSelect_Dispatch)
+
 IFSelect_DispPerSignature::IFSelect_DispPerSignature ()    {  }
 
     Handle(IFSelect_SignCounter)  IFSelect_DispPerSignature::SignCounter () const

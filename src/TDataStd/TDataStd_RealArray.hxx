@@ -118,7 +118,7 @@ Standard_Real operator () (const Standard_Integer Index) const
 friend class TDataStd_DeltaOnModificationOfRealArray;
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_RealArray,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_RealArray,TDF_Attribute)
 
 protected:
 

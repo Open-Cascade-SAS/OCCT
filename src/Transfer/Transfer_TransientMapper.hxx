@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_TransientMapper,Transfer_Finder)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_TransientMapper,Transfer_Finder)
 
 protected:
 

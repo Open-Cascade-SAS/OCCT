@@ -20,6 +20,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_EntityCluster,MMgt_TShared)
+
 // Un Cluster, ce sont 4 entites qui se suivent (dans le principe, nombre fixe,
 // meme si pas 4). Elles sont remplies depuis 0. Il y a donc autant d Entites
 // que de Handles non Nuls, plus le fait qu ils sont remplis dans l ordre

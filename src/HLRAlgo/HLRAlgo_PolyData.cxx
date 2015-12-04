@@ -23,6 +23,8 @@
 #include <HLRAlgo_PolyData.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyData,MMgt_TShared)
+
 #define EMskGrALin1  ((Standard_Boolean)   8)
 #define EMskGrALin2  ((Standard_Boolean)  16)
 #define EMskGrALin3  ((Standard_Boolean)  32)

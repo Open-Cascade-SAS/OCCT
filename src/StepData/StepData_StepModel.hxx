@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_StepModel,Interface_InterfaceModel)
+  DEFINE_STANDARD_RTTIEXT(StepData_StepModel,Interface_InterfaceModel)
 
 protected:
 

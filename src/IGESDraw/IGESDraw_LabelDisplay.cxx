@@ -28,6 +28,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_LabelDisplay,IGESData_LabelDisplayEntity)
+
 IGESDraw_LabelDisplay::IGESDraw_LabelDisplay ()    {  }
 
     void IGESDraw_LabelDisplay::Init

@@ -15,6 +15,8 @@
 
 #include <StepShape_ValueFormatTypeQualifier.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ValueFormatTypeQualifier,MMgt_TShared)
+
 //=======================================================================
 //function : StepShape_ValueFormatTypeQualifier
 //purpose  : 

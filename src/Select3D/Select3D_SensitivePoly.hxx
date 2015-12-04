@@ -93,7 +93,7 @@ public:
   Standard_EXPORT virtual void Swap (const Standard_Integer theIdx1,
                                      const Standard_Integer theIdx2) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI (Select3D_SensitivePoly, Select3D_SensitiveSet)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitivePoly,Select3D_SensitiveSet)
 
 private:
 

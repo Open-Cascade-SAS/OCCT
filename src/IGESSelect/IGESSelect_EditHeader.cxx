@@ -26,6 +26,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_EditHeader,IFSelect_Editor)
+
 static Standard_Boolean IsTimeStamp
   (const Handle(TCollection_HAsciiString)& val)
 {

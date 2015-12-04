@@ -21,6 +21,8 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_AnalysisItemWithinRepresentation,MMgt_TShared)
+
 //=======================================================================
 //function : StepElement_AnalysisItemWithinRepresentation
 //purpose  : 

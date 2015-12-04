@@ -152,7 +152,7 @@ class TObj_Assistant_UnknownType : public MMgt_TShared
     // Empty constructor
   
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_Assistant_UnknownType, MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(TObj_Assistant_UnknownType,MMgt_TShared)
 };
 
 // Define handle class for TObj_Assistant_UnknownType

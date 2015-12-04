@@ -103,6 +103,8 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(V3d_View,MMgt_TShared)
+
 #define V3d_FLAG_COMPUTATION   0x00000004
 
 // Perspective

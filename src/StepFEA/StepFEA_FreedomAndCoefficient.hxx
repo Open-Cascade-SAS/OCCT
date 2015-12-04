@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FreedomAndCoefficient,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient,MMgt_TShared)
 
 protected:
 

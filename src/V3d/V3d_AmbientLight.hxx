@@ -34,7 +34,7 @@ public:
   Standard_EXPORT V3d_AmbientLight (const Handle(V3d_Viewer)& theViewer,
                                     const Quantity_NameOfColor theColor = Quantity_NOC_WHITE);
 
-  DEFINE_STANDARD_RTTI(V3d_AmbientLight,V3d_Light)
+  DEFINE_STANDARD_RTTIEXT(V3d_AmbientLight,V3d_Light)
 };
 
 #endif // _V3d_AmbientLight_HeaderFile

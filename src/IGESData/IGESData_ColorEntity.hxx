@@ -37,7 +37,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_ColorEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_ColorEntity,IGESData_IGESEntity)
 
 protected:
 

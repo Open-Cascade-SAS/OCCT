@@ -16,6 +16,8 @@
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleSilhouette.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette,MMgt_TShared)
+
 StepVisual_SurfaceStyleSilhouette::StepVisual_SurfaceStyleSilhouette ()  {}
 
 void StepVisual_SurfaceStyleSilhouette::Init(

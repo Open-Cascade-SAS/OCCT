@@ -2,7 +2,6 @@
 
 #include "Sample2D_Face.h"
 
-IMPLEMENT_STANDARD_HANDLE(Sample2D_Face,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Face,AIS_InteractiveObject)
 
 Sample2D_Face::Sample2D_Face (const TopoDS_Shape& theFace)

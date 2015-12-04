@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignMultiple,IFSelect_Signature)
+
 static TCollection_AsciiString theval;    // temporaire pour construire Value
 
     IFSelect_SignMultiple::IFSelect_SignMultiple (const Standard_CString name)

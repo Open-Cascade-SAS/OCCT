@@ -450,7 +450,7 @@ public:
 friend class V3d_View;
 friend class V3d_Light;
 
-  DEFINE_STANDARD_RTTI(V3d_Viewer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(V3d_Viewer,MMgt_TShared)
 
 protected:
 

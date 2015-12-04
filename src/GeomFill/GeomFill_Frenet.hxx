@@ -91,7 +91,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_Frenet,GeomFill_TrihedronLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_Frenet,GeomFill_TrihedronLaw)
 
 protected:
 

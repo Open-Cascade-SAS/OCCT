@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <Vrml_Coordinate3.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_Coordinate3,MMgt_TShared)
+
 Vrml_Coordinate3::Vrml_Coordinate3(const Handle(TColgp_HArray1OfVec)& aPoint)
 {
  myPoint = aPoint;

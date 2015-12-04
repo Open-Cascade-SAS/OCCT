@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMFunction_GraphNodeDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMFunction_GraphNodeDriver,XmlMDF_ADriver)
 
 protected:
 

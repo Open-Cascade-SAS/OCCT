@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_GCurve,BRep_CurveRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_GCurve,BRep_CurveRepresentation)
 
 protected:
 

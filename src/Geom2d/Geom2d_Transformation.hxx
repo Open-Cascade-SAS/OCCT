@@ -219,7 +219,7 @@ void operator *= (const Handle(Geom2d_Transformation)& Other)
 
 
 
-  DEFINE_STANDARD_RTTI(Geom2d_Transformation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Transformation,MMgt_TShared)
 
 protected:
 

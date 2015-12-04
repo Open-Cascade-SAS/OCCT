@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_PlanarDistance,DrawDim_PlanarDimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarDistance,DrawDim_PlanarDimension)
 
 protected:
 

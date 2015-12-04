@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_Protocol,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_Protocol,MMgt_TShared)
 
 protected:
 

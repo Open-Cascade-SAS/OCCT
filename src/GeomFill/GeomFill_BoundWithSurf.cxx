@@ -28,6 +28,8 @@
 #include <Law_Function.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_BoundWithSurf,GeomFill_Boundary)
+
 //=======================================================================
 //function : GeomFill_BoundWithSurf
 //purpose  : 

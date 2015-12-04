@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_RectangularTrimmedSurface,StepGeom_BoundedSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_RectangularTrimmedSurface,StepGeom_BoundedSurface)
 
 protected:
 

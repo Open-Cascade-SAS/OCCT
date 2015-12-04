@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(FEmTool_LinearFlexion,FEmTool_ElementaryCriterion)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_LinearFlexion,FEmTool_ElementaryCriterion)
 
 protected:
 

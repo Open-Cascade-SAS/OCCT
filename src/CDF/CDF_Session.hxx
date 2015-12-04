@@ -67,7 +67,7 @@ public:
 friend class CDF_Application;
 
 
-  DEFINE_STANDARD_RTTI(CDF_Session,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDF_Session,Standard_Transient)
 
 protected:
 

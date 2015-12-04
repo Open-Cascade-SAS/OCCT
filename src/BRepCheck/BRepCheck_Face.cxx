@@ -56,6 +56,8 @@
 #include <TopTools_OrientedShapeMapHasher.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Face,BRepCheck_Result)
+
 //#include <BRepAdaptor_Curve2d.hxx>
 //#include <Geom2dInt_GInter.hxx>
 typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_OrientedShapeMapHasher> DataMapOfShapeBox2d;

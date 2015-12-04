@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_Change,StepBasic_ActionAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_Change,StepBasic_ActionAssignment)
 
 protected:
 

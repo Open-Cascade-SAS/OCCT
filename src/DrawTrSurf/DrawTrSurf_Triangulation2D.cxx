@@ -29,6 +29,8 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Triangulation2D,Draw_Drawable2D)
+
 #ifdef _MSC_VER
 #include <stdio.h>
 #endif

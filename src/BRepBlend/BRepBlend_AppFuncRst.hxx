@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepBlend_AppFuncRst,BRepBlend_AppFuncRoot)
+  DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFuncRst,BRepBlend_AppFuncRoot)
 
 protected:
 

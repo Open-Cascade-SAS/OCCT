@@ -51,7 +51,7 @@ class TObj_ReferenceIterator : public TObj_LabelIterator
   
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_ReferenceIterator, TObj_LabelIterator)
+  DEFINE_STANDARD_RTTIEXT(TObj_ReferenceIterator,TObj_LabelIterator)
 };
 
 //! Define handle class for TObj_ReferenceIterator

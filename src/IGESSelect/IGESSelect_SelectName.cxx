@@ -22,6 +22,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectName,IFSelect_SelectExtract)
+
 IGESSelect_SelectName::IGESSelect_SelectName ()    {  }
 
 

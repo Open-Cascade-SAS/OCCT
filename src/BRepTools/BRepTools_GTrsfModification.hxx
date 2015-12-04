@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepTools_GTrsfModification,BRepTools_Modification)
+  DEFINE_STANDARD_RTTIEXT(BRepTools_GTrsfModification,BRepTools_Modification)
 
 protected:
 

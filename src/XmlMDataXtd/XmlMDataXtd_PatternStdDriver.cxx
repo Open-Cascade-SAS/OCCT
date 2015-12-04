@@ -24,6 +24,7 @@
 #include <XmlMDataXtd_PatternStdDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PatternStdDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (SignatureString,           "signature")
 IMPLEMENT_DOMSTRING (Axis1RevString,            "axis1reversed")
 IMPLEMENT_DOMSTRING (Axis2RevString,            "axis2reversed")

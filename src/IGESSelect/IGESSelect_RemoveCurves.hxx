@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_RemoveCurves,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_RemoveCurves,IGESSelect_ModelModifier)
 
 protected:
 

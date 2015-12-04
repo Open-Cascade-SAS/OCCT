@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectRoots,IFSelect_SelectExtract)
+
 IFSelect_SelectRoots::IFSelect_SelectRoots ()    {  }
 
 

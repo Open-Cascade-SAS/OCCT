@@ -24,6 +24,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_DimTolDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (NameIndexString,  "name")
 IMPLEMENT_DOMSTRING (DescrIndexString, "descr")
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")

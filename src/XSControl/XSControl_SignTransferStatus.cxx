@@ -22,6 +22,8 @@
 #include <XSControl_SignTransferStatus.hxx>
 #include <XSControl_TransferReader.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_SignTransferStatus,IFSelect_Signature)
+
 //#include <stdio.h>
 static TCollection_AsciiString& themes()
 {

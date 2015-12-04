@@ -28,6 +28,8 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_EdgeConnector,MMgt_TShared)
+
 //=======================================================================
 //function : Create
 //purpose  : 

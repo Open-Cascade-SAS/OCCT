@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_EntityOwner,SelectBasics_EntityOwner)
+
 //==================================================
 // Function: 
 // Purpose :

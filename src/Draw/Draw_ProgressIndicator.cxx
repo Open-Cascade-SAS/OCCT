@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 #include <time.h>
+IMPLEMENT_STANDARD_RTTIEXT(Draw_ProgressIndicator,Message_ProgressIndicator)
+
 //=======================================================================
 //function : Draw_ProgressIndicator
 //purpose  : 

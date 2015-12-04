@@ -143,7 +143,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_AspectText3d,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectText3d,MMgt_TShared)
 
 protected:
 

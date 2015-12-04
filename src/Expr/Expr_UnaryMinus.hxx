@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_UnaryMinus,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_UnaryMinus,Expr_UnaryExpression)
 
 protected:
 

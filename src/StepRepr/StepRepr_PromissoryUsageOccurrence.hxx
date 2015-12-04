@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_PromissoryUsageOccurrence,StepRepr_AssemblyComponentUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PromissoryUsageOccurrence,StepRepr_AssemblyComponentUsage)
 
 protected:
 

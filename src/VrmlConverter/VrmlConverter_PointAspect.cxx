@@ -16,6 +16,8 @@
 #include <Vrml_Material.hxx>
 #include <VrmlConverter_PointAspect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_PointAspect,MMgt_TShared)
+
 VrmlConverter_PointAspect::VrmlConverter_PointAspect()
 {
  myHasMaterial = Standard_False;

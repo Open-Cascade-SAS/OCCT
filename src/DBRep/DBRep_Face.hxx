@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DBRep_Face,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(DBRep_Face,MMgt_TShared)
 
 protected:
 

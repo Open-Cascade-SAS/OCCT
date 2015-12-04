@@ -23,6 +23,8 @@
 #include <IGESSolid_ToroidalSurface.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ToroidalSurface,IGESData_IGESEntity)
+
 IGESSolid_ToroidalSurface::IGESSolid_ToroidalSurface ()    {  }
 
 

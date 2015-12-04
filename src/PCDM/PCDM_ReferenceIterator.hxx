@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PCDM_ReferenceIterator,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(PCDM_ReferenceIterator,Standard_Transient)
 
 protected:
 

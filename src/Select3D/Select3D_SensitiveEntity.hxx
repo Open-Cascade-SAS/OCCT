@@ -85,7 +85,7 @@ public:
   //! to this entity has init location set. Otherwise, returns identity matrix.
   Standard_EXPORT virtual gp_Trsf InvInitLocation() const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveEntity, SelectBasics_SensitiveEntity)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveEntity,SelectBasics_SensitiveEntity)
 
 protected:
 

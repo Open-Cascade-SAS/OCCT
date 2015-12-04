@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_FixSmallBezierCurves,ShapeUpgrade_FixSmallCurves)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallBezierCurves,ShapeUpgrade_FixSmallCurves)
 
 protected:
 

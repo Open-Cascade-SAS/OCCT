@@ -69,7 +69,7 @@ public:
     return myToleranceType;
   }
 
-  DEFINE_STANDARD_RTTI(StepDimTol_GeoTolAndGeoTolWthDatRef,StepDimTol_GeometricTolerance)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRef,StepDimTol_GeometricTolerance)
 
 private:
 

@@ -17,6 +17,8 @@
 #include <StepBasic_ProductRelatedProductCategory.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory,StepBasic_ProductCategory)
+
 StepBasic_ProductRelatedProductCategory::StepBasic_ProductRelatedProductCategory ()  {}
 
 void StepBasic_ProductRelatedProductCategory::Init(

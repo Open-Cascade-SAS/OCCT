@@ -35,6 +35,8 @@
 #include <TColStd_Array1OfReal.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection,GeomFill_SectionLaw)
+
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <Geom_Curve.hxx>

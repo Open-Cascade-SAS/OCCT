@@ -122,7 +122,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_GeneralModule,Interface_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(IGESData_GeneralModule,Interface_GeneralModule)
 
 protected:
 

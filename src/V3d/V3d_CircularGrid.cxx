@@ -39,6 +39,8 @@
 #include <V3d_CircularGrid.hxx>
 #include <V3d_Viewer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(V3d_CircularGrid,Aspect_CircularGrid)
+
 /*----------------------------------------------------------------------*/
 /*
  * Constant

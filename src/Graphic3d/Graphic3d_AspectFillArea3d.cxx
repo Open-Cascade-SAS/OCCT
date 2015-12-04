@@ -32,6 +32,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d,Aspect_AspectFillArea)
+
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d ():
 DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFaceRemovalActive (Standard_False),  MyTextureMapState(Standard_False), MyFrontMaterial (), MyBackMaterial ()
 {

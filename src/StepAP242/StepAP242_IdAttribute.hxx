@@ -61,7 +61,7 @@ public:
     return identifiedItem;
   }
 
-  DEFINE_STANDARD_RTTI(StepAP242_IdAttribute, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepAP242_IdAttribute,MMgt_TShared)
 
 private: 
   Handle(TCollection_HAsciiString) attributeValue;

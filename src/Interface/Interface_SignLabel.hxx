@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_SignLabel,MoniTool_SignText)
+  DEFINE_STANDARD_RTTIEXT(Interface_SignLabel,MoniTool_SignText)
 
 protected:
 

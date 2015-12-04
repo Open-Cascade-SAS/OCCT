@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectDiff,IFSelect_SelectControl)
+
 IFSelect_SelectDiff::IFSelect_SelectDiff ()    {  }
 
 

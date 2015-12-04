@@ -24,6 +24,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_ViewSorter,MMgt_TShared)
+
 #define PourDrawing 404
 
 

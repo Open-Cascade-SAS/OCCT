@@ -20,6 +20,8 @@
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_FaceEdgeInterference,TopOpeBRepDS_ShapeShapeInterference)
+
 //=======================================================================
 //function : TopOpeBRepDS_FaceEdgeInterference
 //purpose  : 

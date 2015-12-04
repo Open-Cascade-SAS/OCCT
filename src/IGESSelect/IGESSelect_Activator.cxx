@@ -56,6 +56,8 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Activator,IFSelect_Activator)
+
 static int initActivator = 0;
 
     IGESSelect_Activator::IGESSelect_Activator ()

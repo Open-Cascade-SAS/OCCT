@@ -115,7 +115,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Shell,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Shell,ShapeFix_Root)
 
 protected:
 

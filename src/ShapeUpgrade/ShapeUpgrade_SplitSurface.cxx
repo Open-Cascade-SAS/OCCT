@@ -38,6 +38,8 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurface,MMgt_TShared)
+
 //=======================================================================
 //function : ShapeUpgrade_SplitSurface
 //purpose  : 

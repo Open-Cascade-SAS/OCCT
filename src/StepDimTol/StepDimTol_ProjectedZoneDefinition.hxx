@@ -65,7 +65,7 @@ public:
     myProjectionLength = theProjectionLength;
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_ProjectedZoneDefinition, StepDimTol_ToleranceZoneDefinition)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition,StepDimTol_ToleranceZoneDefinition)
 
 private: 
   Handle(StepRepr_ShapeAspect) myProjectionEnd;

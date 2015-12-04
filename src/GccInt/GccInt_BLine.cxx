@@ -20,6 +20,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BLine,GccInt_Bisec)
+
 GccInt_BLine::
    GccInt_BLine(const gp_Lin2d& Line) {
    lin = gp_Lin2d(Line);

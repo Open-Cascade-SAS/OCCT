@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(SelectMgr_CompositionFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_CompositionFilter,SelectMgr_Filter)
 
 protected:
 

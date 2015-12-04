@@ -39,6 +39,8 @@
 #include <V3d_View.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ColorScale,AIS_InteractiveObject)
+
 //=======================================================================
 //function : AIS_ColorScale
 //purpose  :

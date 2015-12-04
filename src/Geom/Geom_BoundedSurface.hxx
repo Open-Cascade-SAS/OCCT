@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_BoundedSurface,Geom_Surface)
+  DEFINE_STANDARD_RTTIEXT(Geom_BoundedSurface,Geom_Surface)
 
 protected:
 

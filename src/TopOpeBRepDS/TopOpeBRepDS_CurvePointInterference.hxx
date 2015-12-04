@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepDS_CurvePointInterference,TopOpeBRepDS_Interference)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_CurvePointInterference,TopOpeBRepDS_Interference)
 
 protected:
 

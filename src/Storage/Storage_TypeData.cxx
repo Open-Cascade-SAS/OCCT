@@ -19,6 +19,8 @@
 #include <Storage_TypeData.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Storage_TypeData,MMgt_TShared)
+
 Storage_TypeData::Storage_TypeData() : myErrorStatus(Storage_VSOk)
 {
 }

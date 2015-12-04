@@ -16,5 +16,7 @@
 #include <IGESData_TransfEntity.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_TransfEntity,IGESData_IGESEntity)
+
 // TransfEntity ne sert que pour controle de Type, et fourniture par Value
 // de la GTrsf correspondante

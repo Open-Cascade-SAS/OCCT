@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESToBRep_AlgoContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESToBRep_AlgoContainer,MMgt_TShared)
 
 protected:
 

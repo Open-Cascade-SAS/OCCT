@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_DatumFeature,StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumFeature,StepRepr_ShapeAspect)
 
 protected:
 

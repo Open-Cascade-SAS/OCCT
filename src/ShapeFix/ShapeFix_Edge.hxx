@@ -220,7 +220,7 @@ public:
   //! Returns context
   Standard_EXPORT Handle(ShapeBuild_ReShape) Context() const;
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Edge,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Edge,MMgt_TShared)
 
 protected:
 

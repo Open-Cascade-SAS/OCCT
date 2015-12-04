@@ -160,7 +160,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_CStructure, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient) // Type definition
 
 };
 

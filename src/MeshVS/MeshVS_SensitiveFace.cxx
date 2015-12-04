@@ -18,6 +18,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveFace,Select3D_SensitiveFace)
+
 //=======================================================================
 // name    : MeshVS_SensitiveFace::MeshVS_SensitiveFace
 // Purpose :

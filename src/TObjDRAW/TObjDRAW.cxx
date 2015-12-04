@@ -58,7 +58,7 @@ class TObjDRAW_Model : public TObj_Model
   
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObjDRAW_Model, TObj_Model)
+  DEFINE_STANDARD_RTTI_INLINE(TObjDRAW_Model,TObj_Model)
 
 };
 DEFINE_STANDARD_HANDLE (TObjDRAW_Model,TObj_Model)
@@ -132,7 +132,7 @@ class TObjDRAW_Object : public TObj_Object
 
  public:
   // Declaration of CASCADE RTTI
- DEFINE_STANDARD_RTTI (TObjDRAW_Object, TObj_Object)
+ DEFINE_STANDARD_RTTI_INLINE(TObjDRAW_Object,TObj_Object)
   
 };
 

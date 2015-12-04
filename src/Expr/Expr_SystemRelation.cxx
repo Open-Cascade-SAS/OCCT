@@ -26,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_SystemRelation,Expr_GeneralRelation)
+
 Expr_SystemRelation::Expr_SystemRelation (const Handle(Expr_GeneralRelation)& relation)
 {
   myRelations.Append(relation);

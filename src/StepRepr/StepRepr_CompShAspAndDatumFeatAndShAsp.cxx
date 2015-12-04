@@ -15,4 +15,6 @@
 
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompShAspAndDatumFeatAndShAsp,StepRepr_ShapeAspect)
+
 StepRepr_CompShAspAndDatumFeatAndShAsp::StepRepr_CompShAspAndDatumFeatAndShAsp ()    {  }

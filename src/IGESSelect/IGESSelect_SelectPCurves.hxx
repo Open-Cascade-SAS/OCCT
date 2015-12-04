@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectPCurves,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectPCurves,IFSelect_SelectExplore)
 
 protected:
 

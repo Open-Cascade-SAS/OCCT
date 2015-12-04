@@ -24,6 +24,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SegmentedViewsVisible,IGESData_ViewKindEntity)
+
 IGESDraw_SegmentedViewsVisible::IGESDraw_SegmentedViewsVisible ()    {  }
 
 

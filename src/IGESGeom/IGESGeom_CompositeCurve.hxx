@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_CompositeCurve,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_CompositeCurve,IGESData_IGESEntity)
 
 protected:
 

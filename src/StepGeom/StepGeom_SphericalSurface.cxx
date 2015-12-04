@@ -17,6 +17,8 @@
 #include <StepGeom_SphericalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SphericalSurface,StepGeom_ElementarySurface)
+
 StepGeom_SphericalSurface::StepGeom_SphericalSurface ()  {}
 
 void StepGeom_SphericalSurface::Init(

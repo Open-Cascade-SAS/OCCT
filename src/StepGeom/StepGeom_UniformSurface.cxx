@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_UniformSurface.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_UniformSurface,StepGeom_BSplineSurface)
+
 StepGeom_UniformSurface::StepGeom_UniformSurface ()  {}
 

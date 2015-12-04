@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_Conic,StepGeom_Curve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Conic,StepGeom_Curve)
 
 protected:
 

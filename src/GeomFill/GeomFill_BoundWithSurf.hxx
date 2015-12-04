@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_BoundWithSurf,GeomFill_Boundary)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_BoundWithSurf,GeomFill_Boundary)
 
 protected:
 

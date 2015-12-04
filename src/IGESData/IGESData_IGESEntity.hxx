@@ -330,7 +330,7 @@ friend class IGESData_IGESReaderTool;
 friend class IGESData_DirChecker;
 
 
-  DEFINE_STANDARD_RTTI(IGESData_IGESEntity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESData_IGESEntity,MMgt_TShared)
 
 protected:
 

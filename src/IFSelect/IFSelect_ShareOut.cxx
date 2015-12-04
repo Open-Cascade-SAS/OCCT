@@ -25,6 +25,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ShareOut,MMgt_TShared)
+
 IFSelect_ShareOut::IFSelect_ShareOut ()
 {
   thedefrt  = new TCollection_HAsciiString ("Default");

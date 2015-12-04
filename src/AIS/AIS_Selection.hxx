@@ -120,7 +120,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_Selection,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(AIS_Selection,MMgt_TShared)
 
 protected:
 

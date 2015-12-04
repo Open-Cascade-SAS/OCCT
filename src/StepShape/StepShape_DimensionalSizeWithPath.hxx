@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_DimensionalSizeWithPath,StepShape_DimensionalSize)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalSizeWithPath,StepShape_DimensionalSize)
 
 protected:
 

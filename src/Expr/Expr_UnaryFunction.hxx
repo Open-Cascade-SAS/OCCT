@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_UnaryFunction,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_UnaryFunction,Expr_UnaryExpression)
 
 protected:
 

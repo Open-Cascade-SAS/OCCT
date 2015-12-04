@@ -293,7 +293,7 @@ class BOPAlgo_BPC {
   const TopoDS_Face& GetFace() const {
     return myF;
   }
-  const Handle_Geom2d_Curve& GetCurve2d() const {
+  const Handle(Geom2d_Curve)& GetCurve2d() const {
     return myCurve;
   }
   Standard_Boolean IsToUpdate() const {
@@ -307,7 +307,7 @@ class BOPAlgo_BPC {
  protected:
   TopoDS_Edge myE;
   TopoDS_Face myF;
-  Handle_Geom2d_Curve myCurve;
+  Handle(Geom2d_Curve) myCurve;
   Standard_Boolean myToUpdate;
 };
 //=======================================================================

@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_GlobalUncertaintyAssignedContext,StepRepr_RepresentationContext)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_GlobalUncertaintyAssignedContext,StepRepr_RepresentationContext)
 
 protected:
 

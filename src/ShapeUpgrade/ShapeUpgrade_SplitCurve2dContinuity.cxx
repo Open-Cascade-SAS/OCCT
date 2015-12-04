@@ -28,6 +28,8 @@
 #include <TColGeom2d_HArray1OfCurve.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity,ShapeUpgrade_SplitCurve2d)
+
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve2dContinuity
 //purpose  : 

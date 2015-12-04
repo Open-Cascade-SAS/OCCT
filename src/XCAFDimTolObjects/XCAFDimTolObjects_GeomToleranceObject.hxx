@@ -84,7 +84,7 @@ public:
    
   Standard_EXPORT Standard_Boolean HasAxis () const;
 
-  DEFINE_STANDARD_RTTI(XCAFDimTolObjects_GeomToleranceObject,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject,Standard_Transient)
 
 private: 
 

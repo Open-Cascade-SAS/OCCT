@@ -37,7 +37,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_LabelDisplayEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_LabelDisplayEntity,IGESData_IGESEntity)
 
 protected:
 

@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CurveBoundedSurface,StepGeom_BoundedSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CurveBoundedSurface,StepGeom_BoundedSurface)
 
 protected:
 

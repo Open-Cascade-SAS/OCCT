@@ -19,6 +19,8 @@
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection,MMgt_TShared)
+
 //==================================================
 // Function: SelectMgr_Selection
 // Purpose :

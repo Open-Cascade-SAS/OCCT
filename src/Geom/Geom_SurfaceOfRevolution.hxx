@@ -304,7 +304,7 @@ public:
   Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
 
 
-  DEFINE_STANDARD_RTTI(Geom_SurfaceOfRevolution,Geom_SweptSurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution,Geom_SweptSurface)
 
 private:
   Handle(GeomEvaluator_SurfaceOfRevolution) myEvaluator;

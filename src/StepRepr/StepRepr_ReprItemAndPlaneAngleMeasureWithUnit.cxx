@@ -18,6 +18,8 @@
 #include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit,StepRepr_ReprItemAndMeasureWithUnit)
+
 //=======================================================================
 //function : StepRepr_ReprItemAndPlaneAngleMeasureWithUnit
 //purpose  : 

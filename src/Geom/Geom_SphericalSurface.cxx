@@ -32,6 +32,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_SphericalSurface,Geom_ElementarySurface)
+
 typedef Geom_Circle                   Circle;
 typedef Geom_SphericalSurface         SphericalSurface;
 typedef gp_Ax2  Ax2;

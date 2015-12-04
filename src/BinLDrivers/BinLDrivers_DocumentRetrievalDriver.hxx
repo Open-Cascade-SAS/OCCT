@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(BinLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
 
 protected:
 

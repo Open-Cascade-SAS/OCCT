@@ -17,6 +17,8 @@
 #include <StepGeom_Circle.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Circle,StepGeom_Conic)
+
 StepGeom_Circle::StepGeom_Circle ()  {}
 
 void StepGeom_Circle::Init(

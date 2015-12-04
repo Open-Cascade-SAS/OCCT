@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectModelRoots,IFSelect_SelectBase)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectModelRoots,IFSelect_SelectBase)
 
 protected:
 

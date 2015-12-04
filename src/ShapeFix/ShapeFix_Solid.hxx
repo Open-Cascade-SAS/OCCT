@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Solid,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Solid,ShapeFix_Root)
 
 protected:
 

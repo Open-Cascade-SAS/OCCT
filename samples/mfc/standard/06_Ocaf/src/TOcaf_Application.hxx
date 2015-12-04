@@ -42,7 +42,7 @@ Standard_EXPORT ~TOcaf_Application();
 
  // Type management
  //
- //Standard_EXPORT friend Handle_Standard_Type& TOcaf_Application_Type_();
+ //Standard_EXPORT friend Handle(Standard_Type)& TOcaf_Application_Type_();
  Standard_EXPORT const Handle(TOcaf_Application) DownCast(const Handle(Standard_Transient)& AnObject);
  Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
  Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;

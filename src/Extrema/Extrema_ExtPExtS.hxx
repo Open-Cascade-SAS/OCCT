@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Extrema_ExtPExtS,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Extrema_ExtPExtS,Standard_Transient)
 
 protected:
 

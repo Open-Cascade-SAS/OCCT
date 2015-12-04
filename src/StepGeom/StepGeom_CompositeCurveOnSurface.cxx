@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_CompositeCurveOnSurface.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurveOnSurface,StepGeom_CompositeCurve)
+
 StepGeom_CompositeCurveOnSurface::StepGeom_CompositeCurveOnSurface ()  {}
 

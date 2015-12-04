@@ -27,6 +27,8 @@
 #include <Storage_Data.hxx>
 #include <UTL.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReferenceIterator,Standard_Transient)
+
 #ifdef _MSC_VER
 # include <tchar.h>
 #endif  // _MSC_VER

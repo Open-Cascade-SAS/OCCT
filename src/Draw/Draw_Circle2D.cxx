@@ -21,6 +21,8 @@
 #include <gp_Circ2d.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Circle2D,Draw_Drawable2D)
+
 //=======================================================================
 //function : Draw_Circle2D
 //purpose  : 

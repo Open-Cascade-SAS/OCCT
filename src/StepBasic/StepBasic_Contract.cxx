@@ -21,6 +21,8 @@
 #include <StepBasic_ContractType.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Contract,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_Contract
 //purpose  : 

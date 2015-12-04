@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeCustom_TrsfModification,BRepTools_TrsfModification)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_TrsfModification,BRepTools_TrsfModification)
 
 protected:
 

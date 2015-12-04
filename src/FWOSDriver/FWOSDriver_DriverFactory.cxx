@@ -20,6 +20,8 @@
 #include <FWOSDriver_DriverFactory.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(FWOSDriver_DriverFactory,CDF_MetaDataDriverFactory)
+
 FWOSDriver_DriverFactory::FWOSDriver_DriverFactory(){}
 
 

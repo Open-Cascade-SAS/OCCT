@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(CDF_StoreList,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDF_StoreList,Standard_Transient)
 
 protected:
 

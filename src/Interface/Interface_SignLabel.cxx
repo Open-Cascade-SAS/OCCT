@@ -19,6 +19,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_SignLabel,MoniTool_SignText)
+
 Interface_SignLabel::Interface_SignLabel  ()    {  }
 
     Standard_CString  Interface_SignLabel::Name () const

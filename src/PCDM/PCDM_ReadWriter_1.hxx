@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PCDM_ReadWriter_1,PCDM_ReadWriter)
+  DEFINE_STANDARD_RTTIEXT(PCDM_ReadWriter_1,PCDM_ReadWriter)
 
 protected:
 

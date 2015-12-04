@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TestTopOpeDraw_DrawableSUR,DrawTrSurf_Surface)
+  DEFINE_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableSUR,DrawTrSurf_Surface)
 
 protected:
 

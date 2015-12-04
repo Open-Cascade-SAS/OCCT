@@ -21,6 +21,8 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_TagSource.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_TagSourceDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDF_TagSourceDriver
 //purpose  : Constructor

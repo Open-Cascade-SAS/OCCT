@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRep_Hctxee2d,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d,MMgt_TShared)
 
 protected:
 

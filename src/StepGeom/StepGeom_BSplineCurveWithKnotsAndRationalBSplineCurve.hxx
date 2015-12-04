@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve,StepGeom_BSplineCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve,StepGeom_BSplineCurve)
 
 protected:
 

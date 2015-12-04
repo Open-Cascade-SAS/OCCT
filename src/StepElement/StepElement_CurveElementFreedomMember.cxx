@@ -19,6 +19,8 @@
 #include <StepElement_CurveElementFreedomMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementFreedomMember,StepData_SelectNamed)
+
 static Standard_CString ECEF = "ENUMERATED_CURVE_ELEMENT_FREEDOM";
 static Standard_CString ADDF = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 

@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_BezierSurface,DrawTrSurf_Surface)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BezierSurface,DrawTrSurf_Surface)
 
 protected:
 

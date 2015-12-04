@@ -25,6 +25,8 @@
 #include <Interface_Protocol.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_Protocol,IGESData_Protocol)
+
 static int deja = 0;
 static Handle(Standard_Type) atype1,atype2,atype3,atype4,atype5,atype6,atype7;
 

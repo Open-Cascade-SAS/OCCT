@@ -24,6 +24,8 @@
 #include <TPrsStd_AISViewer.hxx>
 #include <V3d_Viewer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AISViewer,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

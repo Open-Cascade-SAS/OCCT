@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_CcDesignSecurityClassification,StepBasic_SecurityClassificationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignSecurityClassification,StepBasic_SecurityClassificationAssignment)
 
 protected:
 

@@ -208,7 +208,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TCollection_HExtendedString,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TCollection_HExtendedString,MMgt_TShared)
 
 protected:
 

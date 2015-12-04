@@ -57,6 +57,8 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_FixRelation,AIS_Relation)
+
 static Standard_Boolean InDomain(const Standard_Real fpar,
 					const Standard_Real lpar,
 					const Standard_Real para) 

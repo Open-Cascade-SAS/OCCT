@@ -74,7 +74,7 @@ public:
   //! Prints statistics on a given output, according mode
   Standard_EXPORT void PrintStats (const Standard_Integer mode, const Handle(Message_Messenger)& S) const;
 
-  DEFINE_STANDARD_RTTI(Transfer_FinderProcess,Transfer_ProcessForFinder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_FinderProcess,Transfer_ProcessForFinder)
 
 private:
   Handle(Interface_InterfaceModel) themodel;

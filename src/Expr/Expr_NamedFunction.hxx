@@ -99,7 +99,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_NamedFunction,Expr_GeneralFunction)
+  DEFINE_STANDARD_RTTIEXT(Expr_NamedFunction,Expr_GeneralFunction)
 
 protected:
 

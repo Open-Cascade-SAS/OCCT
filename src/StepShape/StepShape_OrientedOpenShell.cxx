@@ -18,6 +18,8 @@
 #include <StepShape_OrientedOpenShell.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedOpenShell,StepShape_OpenShell)
+
 StepShape_OrientedOpenShell::StepShape_OrientedOpenShell ()  {}
 
 void StepShape_OrientedOpenShell::Init(

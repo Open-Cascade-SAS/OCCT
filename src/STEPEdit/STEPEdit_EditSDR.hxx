@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPEdit_EditSDR,IFSelect_Editor)
+  DEFINE_STANDARD_RTTIEXT(STEPEdit_EditSDR,IFSelect_Editor)
 
 protected:
 

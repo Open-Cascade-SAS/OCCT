@@ -308,7 +308,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_RectangularTrimmedSurface,Geom_BoundedSurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface,Geom_BoundedSurface)
 
 protected:
 

@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMNaming_NamedShapeDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMNaming_NamedShapeDriver,XmlMDF_ADriver)
 
 protected:
 

@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductDefinitionShape,StepRepr_PropertyDefinition)
+
 //=======================================================================
 //function : StepRepr_ProductDefinitionShape
 //purpose  : 

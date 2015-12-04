@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DocumentProductEquivalence,StepBasic_DocumentProductAssociation)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentProductEquivalence,StepBasic_DocumentProductAssociation)
 
 protected:
 

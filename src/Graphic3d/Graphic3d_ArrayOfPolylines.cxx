@@ -16,6 +16,8 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolylines,Graphic3d_ArrayOfPrimitives)
+
 Graphic3d_ArrayOfPolylines::Graphic3d_ArrayOfPolylines (const Standard_Integer theMaxVertexs,
                                                         const Standard_Integer theMaxBounds,
                                                         const Standard_Integer theMaxEdges,

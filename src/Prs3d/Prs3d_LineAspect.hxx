@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Prs3d_LineAspect,Prs3d_BasicAspect)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_LineAspect,Prs3d_BasicAspect)
 
 protected:
 

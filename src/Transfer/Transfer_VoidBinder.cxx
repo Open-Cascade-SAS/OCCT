@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <Transfer_VoidBinder.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_VoidBinder,Transfer_Binder)
+
 Transfer_VoidBinder::Transfer_VoidBinder ()    {  }
 
 //    Standard_Boolean  Transfer_VoidBinder::IsMultiple () const

@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_CurveConstraint,GeomPlate_CurveConstraint)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_CurveConstraint,GeomPlate_CurveConstraint)
 
 protected:
 

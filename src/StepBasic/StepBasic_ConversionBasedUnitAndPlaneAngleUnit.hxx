@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,StepBasic_ConversionBasedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,StepBasic_ConversionBasedUnit)
 
 protected:
 

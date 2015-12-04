@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_Dimensions,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Dimensions,MMgt_TShared)
 
 protected:
 

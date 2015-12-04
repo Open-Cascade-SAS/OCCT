@@ -487,7 +487,7 @@ public:
 friend class Graphic3d_Group;
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_Structure,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Structure,MMgt_TShared)
 
 protected:
 

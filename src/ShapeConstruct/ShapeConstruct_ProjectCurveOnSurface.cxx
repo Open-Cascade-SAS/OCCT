@@ -74,6 +74,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 
 #include <algorithm>
+IMPLEMENT_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface,MMgt_TShared)
+
 #define NCONTROL 23
 
 //=======================================================================

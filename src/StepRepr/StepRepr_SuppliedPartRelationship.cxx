@@ -15,4 +15,6 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_SuppliedPartRelationship.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_SuppliedPartRelationship,StepBasic_ProductDefinitionRelationship)
+
 StepRepr_SuppliedPartRelationship::StepRepr_SuppliedPartRelationship ()    {  }

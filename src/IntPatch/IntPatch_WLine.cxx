@@ -26,6 +26,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IntPatch_WLine,IntPatch_PointLine)
+
 #define DEBUG 0
 #define DEBUGV 0
 

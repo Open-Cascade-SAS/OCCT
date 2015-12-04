@@ -56,6 +56,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_OffsetDimension,AIS_Relation)
+
 //=======================================================================
 //function : AIS_OffsetDimension
 //purpose  : 

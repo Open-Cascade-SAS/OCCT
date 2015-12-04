@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_Name,IGESData_NameEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_Name,IGESData_NameEntity)
 
 protected:
 

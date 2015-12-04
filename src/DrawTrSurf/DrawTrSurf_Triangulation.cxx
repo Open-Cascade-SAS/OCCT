@@ -29,6 +29,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Triangulation,Draw_Drawable3D)
+
 //=======================================================================
 //function : DrawTrSurf_Triangulation
 //purpose  : 

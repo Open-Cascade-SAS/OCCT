@@ -18,3 +18,5 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Shape.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(TopoDS_HShape,MMgt_TShared)

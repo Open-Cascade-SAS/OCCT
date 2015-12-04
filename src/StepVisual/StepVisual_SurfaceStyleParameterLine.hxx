@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_SurfaceStyleParameterLine,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine,MMgt_TShared)
 
 protected:
 

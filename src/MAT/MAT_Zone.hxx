@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_Zone,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Zone,MMgt_TShared)
 
 protected:
 

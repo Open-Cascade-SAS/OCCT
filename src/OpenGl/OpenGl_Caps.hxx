@@ -131,7 +131,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Caps, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Caps,Standard_Transient) // Type definition
 
 };
 

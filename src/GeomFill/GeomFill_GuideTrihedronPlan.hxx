@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_GuideTrihedronPlan,GeomFill_TrihedronWithGuide)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_GuideTrihedronPlan,GeomFill_TrihedronWithGuide)
 
 protected:
 

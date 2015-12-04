@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_DrawingUnits,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_DrawingUnits,IGESData_IGESEntity)
 
 protected:
 

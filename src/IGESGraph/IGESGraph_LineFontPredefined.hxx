@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_LineFontPredefined,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_LineFontPredefined,IGESData_IGESEntity)
 
 protected:
 

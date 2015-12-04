@@ -29,6 +29,8 @@
 #include <StepShape_ShapeRepresentation.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectAssembly,IFSelect_SelectExplore)
+
 STEPSelections_SelectAssembly::STEPSelections_SelectAssembly():IFSelect_SelectExplore (-1){ }
 
 Standard_Boolean STEPSelections_SelectAssembly::Explore(const Standard_Integer /*level*/,

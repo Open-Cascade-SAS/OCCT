@@ -71,11 +71,11 @@ protected:
   DECLARE_MESSAGE_MAP()
 
 private:
-  Handle_AIS_Shape myAisCrankArm     ;
-  Handle_AIS_Shape myAisCylinderHead ;
-  Handle_AIS_Shape myAisPropeller    ;
-  Handle_AIS_Shape myAisPiston       ;
-  Handle_AIS_Shape myAisEngineBlock  ;
+  Handle(AIS_Shape) myAisCrankArm     ;
+  Handle(AIS_Shape) myAisCylinderHead ;
+  Handle(AIS_Shape) myAisPropeller    ;
+  Handle(AIS_Shape) myAisPiston       ;
+  Handle(AIS_Shape) myAisEngineBlock  ;
 
   Standard_Real     myDeviation;
   Standard_Integer  myAngle;

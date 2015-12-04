@@ -119,7 +119,7 @@ public:
     virtual Handle(Geom2d_BSplineCurve) BSpline() const;
 
 
-  DEFINE_STANDARD_RTTI(Adaptor2d_HCurve2d,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Adaptor2d_HCurve2d,MMgt_TShared)
 };
 
 #include <Adaptor2d_HCurve2d.lxx>

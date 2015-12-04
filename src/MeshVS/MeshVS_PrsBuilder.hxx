@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_PrsBuilder,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_PrsBuilder,MMgt_TShared)
 
 protected:
 

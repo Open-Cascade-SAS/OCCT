@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSDRAWSTLVRML_DataSource3D,MeshVS_DataSource)
+  DEFINE_STANDARD_RTTIEXT(XSDRAWSTLVRML_DataSource3D,MeshVS_DataSource)
 
 protected:
 

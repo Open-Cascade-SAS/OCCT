@@ -31,6 +31,6 @@ public:
   
   Standard_EXPORT StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp();
   
-  DEFINE_STANDARD_RTTI(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp, StepRepr_CompShAspAndDatumFeatAndShAsp)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp,StepRepr_CompShAspAndDatumFeatAndShAsp)
 };
 #endif // _StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp_HeaderFile

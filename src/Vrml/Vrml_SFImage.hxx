@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Vrml_SFImage,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_SFImage,MMgt_TShared)
 
 protected:
 

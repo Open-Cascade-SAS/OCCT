@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_ContextDependentOverRidingStyledItem,StepVisual_OverRidingStyledItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_ContextDependentOverRidingStyledItem,StepVisual_OverRidingStyledItem)
 
 protected:
 

@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModifEditForm,IFSelect_Modifier)
+
 IFSelect_ModifEditForm::IFSelect_ModifEditForm
   (const Handle(IFSelect_EditForm)& editform)
     : IFSelect_Modifier (Standard_False)    {  theedit = editform;  }

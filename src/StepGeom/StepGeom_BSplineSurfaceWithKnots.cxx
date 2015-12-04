@@ -16,6 +16,8 @@
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineSurfaceWithKnots,StepGeom_BSplineSurface)
+
 StepGeom_BSplineSurfaceWithKnots::StepGeom_BSplineSurfaceWithKnots ()  {}
 
 void StepGeom_BSplineSurfaceWithKnots::Init(

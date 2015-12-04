@@ -22,3 +22,5 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Expr_GeneralRelation,MMgt_TShared)

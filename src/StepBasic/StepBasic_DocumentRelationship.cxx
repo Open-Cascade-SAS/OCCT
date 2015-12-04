@@ -17,6 +17,8 @@
 #include <StepBasic_DocumentRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentRelationship,MMgt_TShared)
+
 StepBasic_DocumentRelationship::StepBasic_DocumentRelationship  ()    {  }
 
 void  StepBasic_DocumentRelationship::Init

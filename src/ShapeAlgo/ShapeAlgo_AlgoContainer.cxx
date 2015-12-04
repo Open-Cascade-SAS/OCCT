@@ -58,6 +58,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeAlgo_AlgoContainer,MMgt_TShared)
+
 //=======================================================================
 //function : ShapeAlgo_AlgoContainer
 //purpose  : 

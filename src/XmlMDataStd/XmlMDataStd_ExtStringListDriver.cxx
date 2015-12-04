@@ -25,6 +25,7 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ExtStringListDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")
 IMPLEMENT_DOMSTRING (ExtString,        "string")

@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_MeasureWithUnit,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_MeasureWithUnit,MMgt_TShared)
 
 protected:
 

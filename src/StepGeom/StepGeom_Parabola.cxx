@@ -17,6 +17,8 @@
 #include <StepGeom_Parabola.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Parabola,StepGeom_Conic)
+
 StepGeom_Parabola::StepGeom_Parabola ()  {}
 
 void StepGeom_Parabola::Init(

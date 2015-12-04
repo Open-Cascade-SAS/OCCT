@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Adaptor3d_HIsoCurve,Adaptor3d_HCurve)
+  DEFINE_STANDARD_RTTI_INLINE(Adaptor3d_HIsoCurve,Adaptor3d_HCurve)
 
 protected:
 

@@ -56,7 +56,7 @@ class TObj_OcafObjectIterator : public TObj_LabelIterator
   
  public:
    //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_OcafObjectIterator, TObj_LabelIterator)
+  DEFINE_STANDARD_RTTIEXT(TObj_OcafObjectIterator,TObj_LabelIterator)
 };
 
 //! Define handle class for TObj_OcafObjectIterator

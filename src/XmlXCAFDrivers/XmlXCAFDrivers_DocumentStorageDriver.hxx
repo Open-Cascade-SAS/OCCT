@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlXCAFDrivers_DocumentStorageDriver,XmlDrivers_DocumentStorageDriver)
+  DEFINE_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentStorageDriver,XmlDrivers_DocumentStorageDriver)
 
 protected:
 

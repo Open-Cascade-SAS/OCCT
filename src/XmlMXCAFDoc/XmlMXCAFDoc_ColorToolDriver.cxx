@@ -21,6 +21,8 @@
 #include <XmlMXCAFDoc_ColorToolDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_ColorToolDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function :
 //purpose  : 

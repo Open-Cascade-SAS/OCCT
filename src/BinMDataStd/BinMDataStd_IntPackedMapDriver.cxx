@@ -29,6 +29,8 @@
 #include <TDataStd_IntPackedMap.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntPackedMapDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_IntPackedMapDriver
 //purpose  :

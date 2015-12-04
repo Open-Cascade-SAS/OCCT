@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_RightCircularCone,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_RightCircularCone,StepGeom_GeometricRepresentationItem)
 
 protected:
 

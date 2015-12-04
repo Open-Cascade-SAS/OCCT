@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TestTopOpeDraw_DrawableSHA,DBRep_DrawableShape)
+  DEFINE_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableSHA,DBRep_DrawableShape)
 
 protected:
 

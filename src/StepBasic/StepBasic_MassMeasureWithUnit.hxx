@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_MassMeasureWithUnit,StepBasic_MeasureWithUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_MassMeasureWithUnit,StepBasic_MeasureWithUnit)
 
 protected:
 

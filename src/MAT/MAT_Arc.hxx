@@ -98,7 +98,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_Arc,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Arc,MMgt_TShared)
 
 protected:
 

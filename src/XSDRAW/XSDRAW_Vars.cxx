@@ -26,6 +26,8 @@
 #include <TopoDS_Shape.hxx>
 #include <XSDRAW_Vars.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSDRAW_Vars,XSControl_Vars)
+
 XSDRAW_Vars::XSDRAW_Vars  ()    {  }
 
 void  XSDRAW_Vars::Set

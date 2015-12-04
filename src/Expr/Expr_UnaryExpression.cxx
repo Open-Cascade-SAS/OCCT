@@ -23,6 +23,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_UnaryExpression,Expr_GeneralExpression)
+
 void Expr_UnaryExpression::SetOperand (const Handle(Expr_GeneralExpression)& exp)
 {
   Handle(Expr_UnaryExpression) me = this;

@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_FileRecognizer,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(StepData_FileRecognizer,Standard_Transient)
 
 protected:
 

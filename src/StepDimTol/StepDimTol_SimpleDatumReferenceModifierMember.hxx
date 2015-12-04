@@ -56,6 +56,6 @@ public:
   
   Standard_EXPORT   StepDimTol_SimpleDatumReferenceModifier Value()  const;
 
-  DEFINE_STANDARD_RTTI(StepDimTol_SimpleDatumReferenceModifierMember, StepData_SelectInt)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_SimpleDatumReferenceModifierMember,StepData_SelectInt)
 };
 #endif // _StepDimTol_SimpleDatumReferenceModifierMember_HeaderFile

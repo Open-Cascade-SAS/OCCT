@@ -44,6 +44,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveObject,SelectMgr_SelectableObject)
+
 //=======================================================================
 //function : AIS_InteractiveObject
 //purpose  : 

@@ -84,7 +84,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_Directory,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_Directory,TDF_Attribute)
 
 protected:
 

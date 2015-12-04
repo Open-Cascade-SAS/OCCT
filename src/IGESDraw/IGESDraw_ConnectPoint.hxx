@@ -146,7 +146,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_ConnectPoint,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_ConnectPoint,IGESData_IGESEntity)
 
 protected:
 

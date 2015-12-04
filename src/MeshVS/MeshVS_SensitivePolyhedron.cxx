@@ -27,6 +27,8 @@
 #include <TColStd_SequenceOfInteger.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron,Select3D_SensitiveEntity)
+
 //================================================================
 // Function : Constructor MeshVS_SensitivePolyhedron
 // Purpose  :

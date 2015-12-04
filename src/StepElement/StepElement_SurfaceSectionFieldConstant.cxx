@@ -19,6 +19,8 @@
 #include <StepElement_SurfaceSection.hxx>
 #include <StepElement_SurfaceSectionFieldConstant.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSectionFieldConstant,StepElement_SurfaceSectionField)
+
 //=======================================================================
 //function : StepElement_SurfaceSectionFieldConstant
 //purpose  : 

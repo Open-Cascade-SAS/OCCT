@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_LogOf10,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_LogOf10,Expr_UnaryExpression)
 
 protected:
 

@@ -21,6 +21,9 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-Standard_Boolean  IFSelect_Transformer::ChangeProtocol
-  (Handle(Interface_Protocol)& ) const
-      {  return Standard_False;  }        // par defaut, protocole inchange
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Transformer,MMgt_TShared)
+
+Standard_Boolean  IFSelect_Transformer::ChangeProtocol (Handle(Interface_Protocol)& ) const
+{ 
+  return Standard_False; // par defaut, protocole inchange
+}

@@ -105,6 +105,8 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPControl_ActorWrite,Transfer_ActorOfFinderProcess)
+
 //  Transfer
 //  TransferShape
 //:d6

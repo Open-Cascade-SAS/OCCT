@@ -51,6 +51,8 @@
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder,MeshVS_PrsBuilder)
+
 //================================================================
 // Function : Constructor MeshVS_ElementalColorPrsBuilder
 // Purpose  :

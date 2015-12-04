@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TestTopOpeDraw_DrawableP3D.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableP3D,Draw_Marker3D)
+
 //=======================================================================
 //function : TestTopOpeDraw_DrawableP3D
 //purpose  : 

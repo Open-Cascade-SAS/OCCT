@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_CheckCounter,IFSelect_SignatureList)
+
 //=======================================================================
 //function : IFSelect_CheckCounter
 //purpose  : 

@@ -41,7 +41,7 @@ public:
   
   Standard_EXPORT Handle(StepShape_QualifiedRepresentationItem) GetQualifiedRepresentationItem() const;
 
-  DEFINE_STANDARD_RTTI(StepRepr_ReprItemAndMeasureWithUnitAndQRI,StepRepr_ReprItemAndMeasureWithUnit)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnitAndQRI,StepRepr_ReprItemAndMeasureWithUnit)
 
 private:
   Handle(StepShape_QualifiedRepresentationItem) myQualifiedRepresentationItem;

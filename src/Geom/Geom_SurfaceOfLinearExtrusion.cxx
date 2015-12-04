@@ -45,6 +45,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_SurfaceOfLinearExtrusion,Geom_SweptSurface)
+
 #define  POLES    (poles->Array2())
 #define  WEIGHTS  (weights->Array2())
 #define  UKNOTS   (uknots->Array1())

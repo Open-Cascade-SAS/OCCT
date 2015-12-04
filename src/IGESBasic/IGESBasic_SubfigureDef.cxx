@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SubfigureDef,IGESData_IGESEntity)
+
 IGESBasic_SubfigureDef::IGESBasic_SubfigureDef ()    {  }
 
 

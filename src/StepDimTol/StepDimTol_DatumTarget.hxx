@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_DatumTarget,StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumTarget,StepRepr_ShapeAspect)
 
 protected:
 

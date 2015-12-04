@@ -19,6 +19,8 @@
 #include <Select3D_SensitivePoly.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoly,Select3D_SensitiveSet)
+
 //==================================================
 // Function: Select3D_SensitivePoly
 // Purpose :

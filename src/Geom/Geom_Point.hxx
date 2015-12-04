@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Point,Geom_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom_Point,Geom_Geometry)
 
 protected:
 

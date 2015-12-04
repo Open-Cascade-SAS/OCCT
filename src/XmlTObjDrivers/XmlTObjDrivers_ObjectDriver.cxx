@@ -27,6 +27,8 @@
 
 
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ObjectDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlTObjDrivers_ObjectDriver
 //purpose  : constructor

@@ -89,7 +89,7 @@ class VrmlData_Color : public VrmlData_ArrayVec3d
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Color, VrmlData_ArrayVec3d)
+DEFINE_STANDARD_RTTI_INLINE(VrmlData_Color,VrmlData_ArrayVec3d)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

@@ -82,7 +82,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_PrinterContext, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_PrinterContext,Standard_Transient) // Type definition
 
 };
 

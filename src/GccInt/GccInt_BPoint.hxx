@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GccInt_BPoint,GccInt_Bisec)
+  DEFINE_STANDARD_RTTIEXT(GccInt_BPoint,GccInt_Bisec)
 
 protected:
 

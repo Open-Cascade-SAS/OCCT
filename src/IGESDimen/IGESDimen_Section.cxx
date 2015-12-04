@@ -24,6 +24,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_Section,IGESData_IGESEntity)
+
 IGESDimen_Section::IGESDimen_Section ()    {  }
 
 

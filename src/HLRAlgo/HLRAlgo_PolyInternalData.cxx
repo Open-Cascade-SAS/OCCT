@@ -20,6 +20,8 @@
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
+
 #define Tri1Node1 ((Standard_Integer*)Tri1Indices)[0]
 #define Tri1Node2 ((Standard_Integer*)Tri1Indices)[1]
 #define Tri1Node3 ((Standard_Integer*)Tri1Indices)[2]

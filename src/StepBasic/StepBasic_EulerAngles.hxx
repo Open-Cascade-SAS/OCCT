@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_EulerAngles,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_EulerAngles,MMgt_TShared)
 
 protected:
 

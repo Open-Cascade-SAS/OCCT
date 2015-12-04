@@ -22,6 +22,8 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_IntegerDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMDataStd_IntegerDriver
 //purpose  : Constructor

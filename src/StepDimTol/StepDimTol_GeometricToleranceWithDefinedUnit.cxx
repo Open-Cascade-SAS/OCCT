@@ -18,6 +18,8 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedUnit,StepDimTol_GeometricTolerance)
+
 //=======================================================================
 //function : StepDimTol_GeometricToleranceWithDefinedUnit
 //purpose  : 

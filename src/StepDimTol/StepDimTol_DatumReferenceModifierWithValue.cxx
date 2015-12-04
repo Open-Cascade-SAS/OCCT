@@ -15,6 +15,8 @@
 
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue,MMgt_TShared)
+
 //=======================================================================
 //function : StepDimTol_DatumReferenceModifierWithValue
 //purpose  : 

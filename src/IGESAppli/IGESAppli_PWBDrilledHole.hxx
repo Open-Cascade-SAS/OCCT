@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_PWBDrilledHole,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_PWBDrilledHole,IGESData_IGESEntity)
 
 protected:
 

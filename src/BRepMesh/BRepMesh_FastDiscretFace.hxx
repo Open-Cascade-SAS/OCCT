@@ -62,7 +62,7 @@ public:
 
   Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
 
-  DEFINE_STANDARD_RTTI(BRepMesh_FastDiscretFace, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_FastDiscretFace,Standard_Transient)
 
 private:
 

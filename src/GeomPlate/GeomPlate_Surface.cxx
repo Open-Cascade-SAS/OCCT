@@ -38,6 +38,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_Surface,Geom_Surface)
+
 //=======================================================================
 //function : GeomPlate_Surface
 //purpose  : 

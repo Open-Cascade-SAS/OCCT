@@ -102,7 +102,7 @@ class VrmlData_ShapeNode : public VrmlData_Node
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_ShapeNode, VrmlData_Node)
+DEFINE_STANDARD_RTTI_INLINE(VrmlData_ShapeNode,VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

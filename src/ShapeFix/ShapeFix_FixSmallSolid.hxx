@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_FixSmallSolid,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_FixSmallSolid,ShapeFix_Root)
 
 protected:
 

@@ -46,6 +46,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TNaming_TranslateTool,MMgt_TShared)
+
 //=======================================================================
 //function : TNaming_TranslateTool
 //purpose  : 

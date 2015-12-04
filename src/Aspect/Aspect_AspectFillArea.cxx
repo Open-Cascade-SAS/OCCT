@@ -31,6 +31,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_AspectFillArea,MMgt_TShared)
+
 //-Aliases
 //-Global data definitions
 //	-- interior

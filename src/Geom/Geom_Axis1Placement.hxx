@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Axis1Placement,Geom_AxisPlacement)
+  DEFINE_STANDARD_RTTIEXT(Geom_Axis1Placement,Geom_AxisPlacement)
 
 protected:
 

@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Prs3d_IsoAspect,Prs3d_LineAspect)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_IsoAspect,Prs3d_LineAspect)
 
 protected:
 

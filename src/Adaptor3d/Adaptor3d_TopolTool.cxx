@@ -27,6 +27,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_TopolTool,MMgt_TShared)
+
 #define myInfinite Precision::Infinite()
 
 static void GetConeApexParam(const gp_Cone& C, Standard_Real& U, Standard_Real& V)

@@ -43,6 +43,8 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableSHA,DBRep_DrawableShape)
+
 Draw_Color DBRep_ColorOrientation (const TopAbs_Orientation);
 
 //=======================================================================

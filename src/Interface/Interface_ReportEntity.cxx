@@ -17,6 +17,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_ReportEntity,MMgt_TShared)
+
 //=======================================================================
 //function : Interface_ReportEntity
 //purpose  : 

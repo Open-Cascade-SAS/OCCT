@@ -20,6 +20,8 @@
 #include <StepRepr_AssemblyComponentUsage.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsage,StepRepr_ProductDefinitionUsage)
+
 //=======================================================================
 //function : StepRepr_AssemblyComponentUsage
 //purpose  : 

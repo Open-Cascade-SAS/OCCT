@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepCheck_Solid,BRepCheck_Result)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Solid,BRepCheck_Result)
 
 protected:
 

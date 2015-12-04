@@ -94,7 +94,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_NamedConstant,Expr_NamedExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_NamedConstant,Expr_NamedExpression)
 
 protected:
 

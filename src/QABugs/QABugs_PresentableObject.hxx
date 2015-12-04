@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(QABugs_PresentableObject,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(QABugs_PresentableObject,AIS_InteractiveObject)
 
 protected:
 

@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_Subedge,StepShape_Edge)
+  DEFINE_STANDARD_RTTIEXT(StepShape_Subedge,StepShape_Edge)
 
 protected:
 

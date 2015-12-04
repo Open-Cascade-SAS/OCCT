@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_TgtOnCoons,GeomFill_TgtField)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_TgtOnCoons,GeomFill_TgtField)
 
 protected:
 

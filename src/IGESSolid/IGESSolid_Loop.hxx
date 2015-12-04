@@ -108,7 +108,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_Loop,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Loop,IGESData_IGESEntity)
 
 protected:
 

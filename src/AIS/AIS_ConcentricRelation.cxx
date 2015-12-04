@@ -41,6 +41,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ConcentricRelation,AIS_Relation)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

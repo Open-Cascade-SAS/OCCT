@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(NLPlate_HPG2Constraint,NLPlate_HPG1Constraint)
+  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG2Constraint,NLPlate_HPG1Constraint)
 
 protected:
 

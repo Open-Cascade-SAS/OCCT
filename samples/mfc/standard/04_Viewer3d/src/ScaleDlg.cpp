@@ -14,7 +14,7 @@ static char THIS_FILE[] = __FILE__;
 // ScaleDlg dialog
 
 
-ScaleDlg::ScaleDlg(Handle_V3d_View Current_V3d_View, CViewer3dView* pView, CWnd* pParent /*=NULL*/)
+ScaleDlg::ScaleDlg(Handle(V3d_View) Current_V3d_View, CViewer3dView* pView, CWnd* pParent /*=NULL*/)
 	: CDialog(ScaleDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(ScaleDlg)

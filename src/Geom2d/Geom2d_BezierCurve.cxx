@@ -44,6 +44,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BezierCurve,Geom2d_BoundedCurve)
+
 //=======================================================================
 //function : Rational
 //purpose  : check rationality of an array of weights

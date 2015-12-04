@@ -29,6 +29,8 @@
 #include <TColGeom_HArray1OfCurve.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3dContinuity,ShapeUpgrade_SplitCurve3d)
+
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve3dContinuity
 //purpose  : 

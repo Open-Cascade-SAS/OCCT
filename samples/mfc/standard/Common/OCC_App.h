@@ -21,7 +21,7 @@ public:
 	const wchar_t* GetInitDataDir() const;
   void SetSamplePath (const wchar_t* thePath);
 	OCC_App();
-  Handle_Graphic3d_GraphicDriver GetGraphicDriver() const
+  Handle(Graphic3d_GraphicDriver) GetGraphicDriver() const
   {
     return myGraphicDriver;
   }
@@ -36,7 +36,7 @@ public:
    //}}AFX_MSG
    DECLARE_MESSAGE_MAP()
 protected:
-  Handle_Graphic3d_GraphicDriver myGraphicDriver;
+  Handle(Graphic3d_GraphicDriver) myGraphicDriver;
 public:
 	CString SampleName;
 	CString SamplePath;

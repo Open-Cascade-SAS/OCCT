@@ -22,6 +22,8 @@
 #include <Select3D_SensitiveSegment.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveWire,Select3D_SensitiveSet)
+
 //=====================================================
 // Function : Select3D_SensitiveWire
 // Purpose  :

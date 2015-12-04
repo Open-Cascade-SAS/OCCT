@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationRepresentation,StepVisual_PresentationRepresentation)
+
 StepVisual_MechanicalDesignGeometricPresentationRepresentation::StepVisual_MechanicalDesignGeometricPresentationRepresentation ()  {}
 

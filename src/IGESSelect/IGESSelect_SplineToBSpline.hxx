@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SplineToBSpline,IFSelect_Transformer)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SplineToBSpline,IFSelect_Transformer)
 
 protected:
 

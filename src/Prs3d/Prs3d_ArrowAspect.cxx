@@ -19,6 +19,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ArrowAspect,Prs3d_BasicAspect)
+
 Prs3d_ArrowAspect::Prs3d_ArrowAspect () 
      : myAngle(M_PI/180.*10), myLength(1.) {
   myArrowAspect = 

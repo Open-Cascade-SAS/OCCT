@@ -99,7 +99,7 @@ Standard_Real operator ^ (const Handle(Geom2d_Vector)& Other) const
 
 
 
-  DEFINE_STANDARD_RTTI(Geom2d_Direction,Geom2d_Vector)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_Direction,Geom2d_Vector)
 
 protected:
 

@@ -24,6 +24,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPEdit_EditSDR,IFSelect_Editor)
+
 STEPEdit_EditSDR::STEPEdit_EditSDR ()
 : IFSelect_Editor (11)
 {

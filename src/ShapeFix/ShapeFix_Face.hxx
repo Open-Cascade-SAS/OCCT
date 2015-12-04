@@ -245,7 +245,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Face,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Face,ShapeFix_Root)
 
 protected:
 

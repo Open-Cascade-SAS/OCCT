@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_GlobalNodeOfSpecificLib,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(IGESData_GlobalNodeOfSpecificLib,Standard_Transient)
 
 protected:
 

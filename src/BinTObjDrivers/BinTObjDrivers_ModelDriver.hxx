@@ -54,7 +54,7 @@ class BinTObjDrivers_ModelDriver : public BinMDF_ADriver
   
  public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(BinTObjDrivers_ModelDriver, BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinTObjDrivers_ModelDriver,BinMDF_ADriver)
 };
 
 // Define handle class

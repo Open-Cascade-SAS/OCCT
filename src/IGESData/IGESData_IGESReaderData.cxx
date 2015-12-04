@@ -28,6 +28,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESReaderData,Interface_FileReaderData)
+
 IGESData_IGESReaderData::IGESData_IGESReaderData
   (const Standard_Integer nbe, const Standard_Integer nbp)
     : Interface_FileReaderData (nbe,nbp) , thectyp (0,0) , thedirs(0,nbe)  

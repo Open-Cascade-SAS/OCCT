@@ -18,6 +18,8 @@
 #include <StepShape_RevolvedFaceSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_RevolvedFaceSolid,StepShape_SweptFaceSolid)
+
 StepShape_RevolvedFaceSolid::StepShape_RevolvedFaceSolid ()  {}
 
 void StepShape_RevolvedFaceSolid::Init(

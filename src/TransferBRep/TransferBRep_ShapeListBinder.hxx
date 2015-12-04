@@ -96,7 +96,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TransferBRep_ShapeListBinder,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(TransferBRep_ShapeListBinder,Transfer_Binder)
 
 protected:
 

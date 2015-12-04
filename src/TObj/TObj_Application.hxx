@@ -117,7 +117,7 @@ public:
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_Application, TDocStd_Application)
+  DEFINE_STANDARD_RTTIEXT(TObj_Application,TDocStd_Application)
 };
 
 

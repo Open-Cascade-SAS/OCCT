@@ -33,6 +33,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceContinuity,ShapeUpgrade_SplitSurface)
+
 //======================================================================
 //function : ShapeUpgrade_SplitSurface
 //purpose  : 

@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_DimensionalCharacteristicRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation,MMgt_TShared)
 
 protected:
 

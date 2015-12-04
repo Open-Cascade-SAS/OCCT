@@ -24,6 +24,8 @@
 #include <TDataStd_ByteArray.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ByteArrayDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_ByteArrayDriver
 //purpose  : Constructor

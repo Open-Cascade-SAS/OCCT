@@ -26,7 +26,7 @@ public:
   ISession_Direction (const gp_Pnt2d& aPnt2d,const gp_Vec2d& aVec2d);
 
   virtual ~ISession_Direction();
-  DEFINE_STANDARD_RTTI(ISession_Direction,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)
 
 private:
 

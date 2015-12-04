@@ -22,6 +22,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMPrsStd_AISPresentationDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (GuidString,        "guid")
 IMPLEMENT_DOMSTRING (IsDisplayedString, "isdisplayed")
 IMPLEMENT_DOMSTRING (ColorString,       "color")

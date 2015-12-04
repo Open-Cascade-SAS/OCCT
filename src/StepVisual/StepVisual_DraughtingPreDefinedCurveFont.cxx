@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_DraughtingPreDefinedCurveFont.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedCurveFont,StepVisual_PreDefinedCurveFont)
+
 StepVisual_DraughtingPreDefinedCurveFont::StepVisual_DraughtingPreDefinedCurveFont ()  {}
 

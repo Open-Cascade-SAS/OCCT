@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_GTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_GTool,MMgt_TShared)
 
 protected:
 

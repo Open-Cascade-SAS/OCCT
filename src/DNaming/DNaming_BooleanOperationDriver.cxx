@@ -53,6 +53,8 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_BooleanOperationDriver,TFunction_Driver)
+
 static Standard_Boolean FixSameParameter(const TopoDS_Shape&    theShape,
 					     BRepCheck_Analyzer&    theAnalyzer,
 					     const Standard_Boolean bIgnoreNotSPErrors = Standard_False );

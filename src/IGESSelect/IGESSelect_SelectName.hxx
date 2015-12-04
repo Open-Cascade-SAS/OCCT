@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectName,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectName,IFSelect_SelectExtract)
 
 protected:
 

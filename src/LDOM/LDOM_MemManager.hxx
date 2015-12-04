@@ -128,7 +128,7 @@ class LDOM_MemManager : public MMgt_TShared
 
  public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI (LDOM_MemManager, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(LDOM_MemManager,MMgt_TShared)
 };
 
 

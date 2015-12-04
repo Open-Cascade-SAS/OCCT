@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Wireframe,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Wireframe,ShapeFix_Root)
 
 protected:
 

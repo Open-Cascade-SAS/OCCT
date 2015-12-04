@@ -43,6 +43,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineSurface,Geom_BoundedSurface)
+
 //=======================================================================
 //function : CheckSurfaceData
 //purpose  : Internal use only.

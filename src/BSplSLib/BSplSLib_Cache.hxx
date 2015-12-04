@@ -121,7 +121,7 @@ public:
                                 gp_Vec&        theCurvatureUV) const;
 
 
-  DEFINE_STANDARD_RTTI(BSplSLib_Cache, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BSplSLib_Cache,Standard_Transient)
 
 protected:
   //! Normalizes the parameter for periodical surfaces

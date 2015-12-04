@@ -21,6 +21,8 @@
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Segment2D,Draw_Drawable2D)
+
 //=======================================================================
 //function : Draw_Segment2D
 //purpose  : 

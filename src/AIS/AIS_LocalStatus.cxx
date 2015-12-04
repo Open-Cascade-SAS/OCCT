@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_LocalStatus,MMgt_TShared)
+
 AIS_LocalStatus::AIS_LocalStatus(const Standard_Boolean IsTemp,
 				 const Standard_Boolean Decomp,
 				 const Standard_Integer DMode,

@@ -25,6 +25,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_LeaderArrow,IGESData_IGESEntity)
+
 IGESDimen_LeaderArrow::IGESDimen_LeaderArrow ()    {  }
 
     void  IGESDimen_LeaderArrow::Init

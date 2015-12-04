@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Product,Expr_PolyExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Product,Expr_PolyExpression)
 
 protected:
 

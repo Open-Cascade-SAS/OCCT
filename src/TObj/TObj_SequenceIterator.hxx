@@ -70,7 +70,7 @@ class TObj_SequenceIterator : public TObj_ObjectIterator
 
  public:
    //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_SequenceIterator, TObj_ObjectIterator)
+  DEFINE_STANDARD_RTTIEXT(TObj_SequenceIterator,TObj_ObjectIterator)
 };
 
 //! Define handle class for TObj_SequenceIterator

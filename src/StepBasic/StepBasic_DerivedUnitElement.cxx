@@ -16,6 +16,8 @@
 #include <StepBasic_DerivedUnitElement.hxx>
 #include <StepBasic_NamedUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DerivedUnitElement,MMgt_TShared)
+
 StepBasic_DerivedUnitElement::StepBasic_DerivedUnitElement ()    {  }
 
 void  StepBasic_DerivedUnitElement::Init (const Handle(StepBasic_NamedUnit)& aUnit, const Standard_Real aExponent)

@@ -26,6 +26,8 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StdSelect_BRepOwner,SelectMgr_EntityOwner)
+
 //==================================================
 // Function: 
 // Purpose :

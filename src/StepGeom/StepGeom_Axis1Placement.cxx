@@ -18,6 +18,8 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis1Placement,StepGeom_Placement)
+
 StepGeom_Axis1Placement::StepGeom_Axis1Placement ()  {}
 
 void StepGeom_Axis1Placement::Init(

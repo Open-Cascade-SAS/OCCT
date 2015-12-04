@@ -40,7 +40,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_DeltaOnRemoval,TDF_AttributeDelta)
+  DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnRemoval,TDF_AttributeDelta)
 
 protected:
 

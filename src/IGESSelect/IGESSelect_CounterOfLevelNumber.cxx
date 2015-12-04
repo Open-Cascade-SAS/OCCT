@@ -24,6 +24,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_CounterOfLevelNumber,IFSelect_SignCounter)
+
 IGESSelect_CounterOfLevelNumber::IGESSelect_CounterOfLevelNumber
   (const Standard_Boolean withmap, const Standard_Boolean withlist)
     : IFSelect_SignCounter (withmap,withlist)

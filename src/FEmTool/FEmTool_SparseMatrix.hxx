@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(FEmTool_SparseMatrix,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_SparseMatrix,MMgt_TShared)
 
 protected:
 

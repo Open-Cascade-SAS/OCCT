@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_SolidReplica,StepShape_SolidModel)
+  DEFINE_STANDARD_RTTIEXT(StepShape_SolidReplica,StepShape_SolidModel)
 
 protected:
 

@@ -18,6 +18,8 @@
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateRole.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignNominalDateAssignment,StepBasic_DateAssignment)
+
 StepAP214_AutoDesignNominalDateAssignment::StepAP214_AutoDesignNominalDateAssignment ()  {}
 
 void StepAP214_AutoDesignNominalDateAssignment::Init(

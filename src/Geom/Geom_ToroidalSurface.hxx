@@ -248,7 +248,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_ToroidalSurface,Geom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_ToroidalSurface,Geom_ElementarySurface)
 
 protected:
 

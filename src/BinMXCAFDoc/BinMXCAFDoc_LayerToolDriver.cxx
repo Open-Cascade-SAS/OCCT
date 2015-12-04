@@ -21,6 +21,8 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_LayerTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_LayerToolDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function :
 //purpose  : 

@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_DispPerDrawing,IFSelect_Dispatch)
+
 IGESSelect_DispPerDrawing::IGESSelect_DispPerDrawing ()
       {  thesorter = new IGESSelect_ViewSorter;  }
 

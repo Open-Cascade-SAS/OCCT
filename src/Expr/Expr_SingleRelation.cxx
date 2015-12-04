@@ -22,6 +22,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_SingleRelation,Expr_GeneralRelation)
+
 void Expr_SingleRelation::SetFirstMember (const Handle(Expr_GeneralExpression)& exp)
 {
   myFirstMember = exp;

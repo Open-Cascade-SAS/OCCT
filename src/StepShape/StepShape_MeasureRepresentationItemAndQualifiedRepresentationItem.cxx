@@ -20,6 +20,8 @@
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem,StepRepr_RepresentationItem)
+
 StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem::StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem  ()
 {
   myMeasure = new StepBasic_MeasureWithUnit;

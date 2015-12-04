@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_TagSource,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDF_TagSource,TDF_Attribute)
 
 protected:
 

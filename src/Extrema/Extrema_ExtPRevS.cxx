@@ -35,6 +35,8 @@
 #include <Standard_Type.hxx>
 #include <StdFail_NotDone.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Extrema_ExtPRevS,Standard_Transient)
+
 static gp_Ax2 GetPosition (const GeomAdaptor_SurfaceOfRevolution& S)//const Handle(Adaptor_HCurve)& C)
 {
   Handle(Adaptor3d_HCurve) C = S.BasisCurve();

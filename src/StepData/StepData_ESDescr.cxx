@@ -21,6 +21,8 @@
 #include <StepData_Simple.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_ESDescr,StepData_EDescr)
+
 StepData_ESDescr::StepData_ESDescr  (const Standard_CString name)
 :  thenom (name)    {  thenames = new Dico_DictionaryOfInteger;  }
 

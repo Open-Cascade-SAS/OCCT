@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_CompoundRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_CompoundRepresentationItem,StepRepr_RepresentationItem)
 
 protected:
 

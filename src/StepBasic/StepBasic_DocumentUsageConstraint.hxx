@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DocumentUsageConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentUsageConstraint,MMgt_TShared)
 
 protected:
 

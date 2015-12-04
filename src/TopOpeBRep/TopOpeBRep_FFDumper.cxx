@@ -37,6 +37,8 @@
 #include <TopOpeBRep_VPointInterIterator.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,MMgt_TShared)
+
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 

@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_RepresentationMap,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationMap,MMgt_TShared)
 
 protected:
 

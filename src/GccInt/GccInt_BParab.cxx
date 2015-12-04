@@ -20,6 +20,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BParab,GccInt_Bisec)
+
 GccInt_BParab::
    GccInt_BParab(const gp_Parab2d& Parab) {
    par = gp_Parab2d(Parab);

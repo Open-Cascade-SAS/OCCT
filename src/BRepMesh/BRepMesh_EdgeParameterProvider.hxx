@@ -25,7 +25,7 @@
 class gp_Pnt;
 class TopoDS_Edge;
 class TopoDS_Face;
-class TColStd_HArray1OfReal;
+#include <TColStd_HArray1OfReal.hxx>
 
 //! Auxiliary class provides correct parameters 
 //! on curve regarding SameParameter flag.

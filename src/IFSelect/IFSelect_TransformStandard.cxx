@@ -32,6 +32,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_TransformStandard,IFSelect_Transformer)
+
 IFSelect_TransformStandard::IFSelect_TransformStandard ()
       {  thecopy = Standard_True;  }
 

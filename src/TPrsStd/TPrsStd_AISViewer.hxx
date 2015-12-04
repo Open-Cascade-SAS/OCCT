@@ -95,7 +95,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_AISViewer,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_AISViewer,TDF_Attribute)
 
 protected:
 

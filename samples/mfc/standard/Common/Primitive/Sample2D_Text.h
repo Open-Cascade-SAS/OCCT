@@ -38,7 +38,7 @@ inline   Standard_Boolean        GetIsZoomable() const { return myIsZoomable; }
 inline   void                    SetIsZoomable(const Standard_Boolean theIsZoomable) { myIsZoomable = theIsZoomable;}
 
 
-DEFINE_STANDARD_RTTI(Sample2D_Text,AIS_InteractiveObject)
+DEFINE_STANDARD_RTTIEXT(Sample2D_Text,AIS_InteractiveObject)
 
 private: 
  

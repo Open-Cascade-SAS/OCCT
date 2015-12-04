@@ -24,6 +24,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Selection,MMgt_TShared)
+
 #define MaxSizeOfResult 100000
 
 //current selection (handle)

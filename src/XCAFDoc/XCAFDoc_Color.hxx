@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_Color,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Color,TDF_Attribute)
 
 protected:
 

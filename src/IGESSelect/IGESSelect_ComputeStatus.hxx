@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_ComputeStatus,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_ComputeStatus,IGESSelect_ModelModifier)
 
 protected:
 

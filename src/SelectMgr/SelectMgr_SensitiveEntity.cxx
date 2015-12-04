@@ -16,6 +16,8 @@
 #include <SelectMgr_SensitiveEntity.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient)
+
 //=======================================================================
 // function : SelectMgr_SensitiveEntity
 // purpose  : Creates new inactive for selection object with base entity

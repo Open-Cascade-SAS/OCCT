@@ -25,6 +25,8 @@
 #include <iomanip>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(NCollection_BaseAllocator,MMgt_TShared)
+
 //=======================================================================
 //function : Allocate
 //purpose  : Standard allocation

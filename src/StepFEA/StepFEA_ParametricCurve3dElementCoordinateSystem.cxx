@@ -20,6 +20,8 @@
 #include <StepFEA_ParametricCurve3dElementCoordinateSystem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricCurve3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+
 //=======================================================================
 //function : StepFEA_ParametricCurve3dElementCoordinateSystem
 //purpose  : 

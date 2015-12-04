@@ -212,7 +212,7 @@ friend
   Standard_EXPORT void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Geom_Transformation)& theTrsf, const Handle(Graphic3d_Structure)& theGivenStruct);
 
 
-  DEFINE_STANDARD_RTTI(PrsMgr_PresentableObject,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_PresentableObject,MMgt_TShared)
 
 protected:
 

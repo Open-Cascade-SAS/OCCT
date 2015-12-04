@@ -21,6 +21,8 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_Volume.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_VolumeDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function :
 //purpose  : 

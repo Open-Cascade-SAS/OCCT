@@ -20,6 +20,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GccInt_BElips,GccInt_Bisec)
+
 GccInt_BElips::
    GccInt_BElips(const gp_Elips2d& Ellipse) {
    eli = gp_Elips2d(Ellipse);

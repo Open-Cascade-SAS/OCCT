@@ -110,7 +110,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_CorrectedFrenet,GeomFill_TrihedronLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_CorrectedFrenet,GeomFill_TrihedronLaw)
 
 protected:
 

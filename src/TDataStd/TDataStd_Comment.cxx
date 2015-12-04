@@ -29,6 +29,8 @@
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Comment,TDF_Attribute)
+
 #define lid1 45
 #define lid2 36
 

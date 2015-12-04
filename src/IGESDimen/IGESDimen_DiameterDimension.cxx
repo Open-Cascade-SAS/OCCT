@@ -25,6 +25,8 @@
 #include <IGESDimen_LeaderArrow.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DiameterDimension,IGESData_IGESEntity)
+
 IGESDimen_DiameterDimension::IGESDimen_DiameterDimension ()    {  }
 
 

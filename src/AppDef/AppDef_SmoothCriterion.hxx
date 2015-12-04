@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AppDef_SmoothCriterion,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(AppDef_SmoothCriterion,MMgt_TShared)
 
 protected:
 

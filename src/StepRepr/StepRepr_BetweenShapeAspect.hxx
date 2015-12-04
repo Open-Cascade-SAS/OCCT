@@ -31,7 +31,7 @@ public:
   
   Standard_EXPORT StepRepr_BetweenShapeAspect();
 
-  DEFINE_STANDARD_RTTI(StepRepr_BetweenShapeAspect, StepRepr_ContinuosShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_BetweenShapeAspect,StepRepr_ContinuosShapeAspect)
 
 };
 #endif // _StepRepr_BetweenShapeAspect_HeaderFile

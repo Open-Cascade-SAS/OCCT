@@ -38,6 +38,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_CylindricalSurface,Geom_ElementarySurface)
+
 typedef Geom_CylindricalSurface         CylindricalSurface;
 
 typedef gp_Ax1  Ax1;

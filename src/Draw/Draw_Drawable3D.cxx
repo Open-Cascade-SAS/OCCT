@@ -19,6 +19,8 @@
 #include <Draw_Drawable3D.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D,MMgt_TShared)
+
 //=======================================================================
 //function : Draw_Drawable3D
 //purpose  : 

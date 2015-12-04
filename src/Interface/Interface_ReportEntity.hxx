@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_ReportEntity,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ReportEntity,MMgt_TShared)
 
 protected:
 

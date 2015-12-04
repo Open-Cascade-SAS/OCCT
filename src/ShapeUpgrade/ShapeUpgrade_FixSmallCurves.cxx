@@ -23,6 +23,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallCurves,ShapeUpgrade_Tool)
+
 //#include <TColGeom_HArray1OfCurve.hxx>
 //#include <TColStd_HSequenceOfReal.hxx>
 #//include <TColGeom2d_HArray1OfCurve.hxx>

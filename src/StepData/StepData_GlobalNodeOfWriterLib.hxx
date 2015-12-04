@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_GlobalNodeOfWriterLib,Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(StepData_GlobalNodeOfWriterLib,Standard_Transient)
 
 protected:
 

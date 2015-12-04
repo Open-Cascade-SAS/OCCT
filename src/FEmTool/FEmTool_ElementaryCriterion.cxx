@@ -21,6 +21,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,MMgt_TShared)
+
 void FEmTool_ElementaryCriterion::Set(const Handle(TColStd_HArray2OfReal)& Coeff) 
 {
   myCoeff = Coeff;

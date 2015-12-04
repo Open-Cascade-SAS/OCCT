@@ -69,7 +69,7 @@ inline   Quantity_Factor         GetScale() const;
 inline   void                    SetScale  (const Quantity_Factor aNewScale) ;
 
 
-DEFINE_STANDARD_RTTI(ISession_Text,AIS_InteractiveObject)
+DEFINE_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
 
 private: 
 

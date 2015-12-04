@@ -22,6 +22,8 @@
 #include <IGESGraph_UniformRectGrid.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_UniformRectGrid,IGESData_IGESEntity)
+
 IGESGraph_UniformRectGrid::IGESGraph_UniformRectGrid ()    {  }
 
     void IGESGraph_UniformRectGrid::Init

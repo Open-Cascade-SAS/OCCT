@@ -27,6 +27,8 @@
 #include <QABugs_PresentableObject.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(QABugs_PresentableObject,AIS_InteractiveObject)
+
 QABugs_PresentableObject::QABugs_PresentableObject(const PrsMgr_TypeOfPresentation3d theTypeOfPresentation3d)
      :AIS_InteractiveObject(theTypeOfPresentation3d)
 {

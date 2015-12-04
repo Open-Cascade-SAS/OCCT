@@ -4654,7 +4654,7 @@ class V3d_LineItem : public AIS_InteractiveObject
 {
 public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(V3d_LineItem, AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTI_INLINE(V3d_LineItem,AIS_InteractiveObject)
 
   // constructor
   Standard_EXPORT V3d_LineItem(Standard_Real X1, Standard_Real Y1,
@@ -6434,7 +6434,7 @@ public:
                             const Standard_ShortReal theXShift,
                             const Standard_ShortReal theYShift,
                             const Standard_ShortReal theAngle);
-  DEFINE_STANDARD_RTTI(OCC_TextureEnv, Graphic3d_TextureEnv);
+  DEFINE_STANDARD_RTTI_INLINE(OCC_TextureEnv,Graphic3d_TextureEnv);
 };
 DEFINE_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv);
 

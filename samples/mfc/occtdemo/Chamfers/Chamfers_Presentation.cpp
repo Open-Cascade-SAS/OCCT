@@ -84,7 +84,7 @@ Standard_Boolean Chamfers_Presentation::createDiverseChamferOnBox(
                          Standard_Real d1, // chamfer on edge 1
                          Standard_Real d2, // chamfer on edge 2
                          Standard_Real d3, // chamfer on edge 3
-                         Handle_AIS_InteractiveObject& thePrevShape)// for smoth drawing
+                         Handle(AIS_InteractiveObject)& thePrevShape)// for smoth drawing
                          // we display the new shape first, then erase the previous one
 {
   // initializing a class that builds chamfer
@@ -202,7 +202,7 @@ Standard_Boolean Chamfers_Presentation::createChamferOnBox(
                          TopoDS_Solid& aBox, 
                          Standard_Real theDistA, // distance along first face 
                          Standard_Real theDistB, // distance along second face
-                         Handle_AIS_InteractiveObject& thePrevShape)// for smoth drawing
+                         Handle(AIS_InteractiveObject)& thePrevShape)// for smoth drawing
                          // we display the new shape first, then erase the previous one
 {
   // initializing a class that builds chamfer
@@ -287,7 +287,7 @@ Standard_Boolean Chamfers_Presentation::createFilletOnBox(
                        TopoDS_Solid& aBox,
                        Standard_Real theRad, // radius of fillet
                        ChFi3d_FilletShape theFShape, // shape of fillet
-                       Handle_AIS_InteractiveObject& thePrevObj) // to erase 
+                       Handle(AIS_InteractiveObject)& thePrevObj) // to erase 
                        // the previous shape
 {
   // initializing a class that builds fillet
@@ -612,7 +612,7 @@ void Chamfers_Presentation::sampleBoxFillet()
   Standard_Real a = BOX_SIDE_LEN;
   TopoDS_Solid aBox = BRepPrimAPI_MakeBox(gp_Pnt(-a/2, -a/2, -a/2), a, a, a);
 
-  Handle_AIS_InteractiveObject aPrevObj = new AIS_Shape(aBox);
+  Handle(AIS_InteractiveObject) aPrevObj = new AIS_Shape(aBox);
   getAISContext()->Display(aPrevObj, Standard_False);
   COCCDemoDoc::Fit();
 

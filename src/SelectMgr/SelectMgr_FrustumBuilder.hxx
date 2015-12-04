@@ -74,7 +74,7 @@ public:
                                                 const Standard_Real& theY,
                                                 const Standard_Real& theZ) const;
 
-  DEFINE_STANDARD_RTTI(SelectMgr_FrustumBuilder, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder,Standard_Transient)
 
 private:
 

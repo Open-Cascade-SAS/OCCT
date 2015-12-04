@@ -95,7 +95,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_ElementalColorPrsBuilder,MeshVS_PrsBuilder)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder,MeshVS_PrsBuilder)
 
 protected:
 

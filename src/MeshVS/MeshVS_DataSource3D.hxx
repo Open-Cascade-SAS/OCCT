@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_DataSource3D,MeshVS_DataSource)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource3D,MeshVS_DataSource)
 
 protected:
 

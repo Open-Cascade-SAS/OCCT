@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_IGESTypeForm,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESTypeForm,IFSelect_Signature)
 
 protected:
 

@@ -46,7 +46,7 @@ public:
   //! Returns bounding box of object
   Standard_EXPORT virtual void BoundingBox (Bnd_Box& theBndBox) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(IVtkOCC_SelectableObject, SelectMgr_SelectableObject)
+  DEFINE_STANDARD_RTTIEXT(IVtkOCC_SelectableObject,SelectMgr_SelectableObject)
 
 private: 
 

@@ -42,7 +42,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_LineAttributes, OpenGl_Resource)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_LineAttributes,OpenGl_Resource)
 
 };
 

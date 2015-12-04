@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_HDataMapOfStringHArray1OfReal,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfReal,MMgt_TShared)
 
 protected:
 

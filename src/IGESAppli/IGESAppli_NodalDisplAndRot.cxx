@@ -26,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalDisplAndRot,IGESData_IGESEntity)
+
 IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot ()    {  }
 
 

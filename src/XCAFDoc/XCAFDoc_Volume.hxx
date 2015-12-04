@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_Volume,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Volume,TDF_Attribute)
 
 protected:
 

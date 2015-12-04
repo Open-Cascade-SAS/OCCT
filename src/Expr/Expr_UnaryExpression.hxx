@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_UnaryExpression,Expr_GeneralExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_UnaryExpression,Expr_GeneralExpression)
 
 protected:
 

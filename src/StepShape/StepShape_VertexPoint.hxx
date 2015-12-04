@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_VertexPoint,StepShape_Vertex)
+  DEFINE_STANDARD_RTTIEXT(StepShape_VertexPoint,StepShape_Vertex)
 
 protected:
 

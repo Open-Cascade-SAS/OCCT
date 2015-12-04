@@ -14,7 +14,7 @@ class ZCueingDlg : public CDialog
 {
 // Construction
 public:
-	ZCueingDlg(Handle_V3d_View Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent = NULL); 
+	ZCueingDlg(Handle(V3d_View) Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent = NULL); 
 // Dialog Data
 	//{{AFX_DATA(ZCueingDlg)
 	enum { IDD = IDD_ZCUEING };
@@ -48,7 +48,7 @@ protected:
 
 private:
 
-	Handle_V3d_View myCurrent_V3d_View;
+	Handle(V3d_View) myCurrent_V3d_View;
 	CViewer3dDoc* myDoc;
 };
 

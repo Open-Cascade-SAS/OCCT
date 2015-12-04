@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(RWHeaderSection_GeneralModule,StepData_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(RWHeaderSection_GeneralModule,StepData_GeneralModule)
 
 protected:
 

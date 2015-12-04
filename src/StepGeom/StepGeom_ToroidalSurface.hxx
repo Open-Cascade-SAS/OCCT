@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_ToroidalSurface,StepGeom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_ToroidalSurface,StepGeom_ElementarySurface)
 
 protected:
 

@@ -17,6 +17,8 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_DatumAspect,Prs3d_BasicAspect)
+
 Prs3d_DatumAspect::Prs3d_DatumAspect()
 : myDrawFirstAndSecondAxis (Standard_True),
   myDrawThirdAxis (Standard_True),

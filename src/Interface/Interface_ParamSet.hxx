@@ -88,7 +88,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_ParamSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ParamSet,MMgt_TShared)
 
 protected:
 

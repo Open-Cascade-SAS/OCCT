@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_CurveElementIntervalLinearlyVarying,StepFEA_CurveElementInterval)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementIntervalLinearlyVarying,StepFEA_CurveElementInterval)
 
 protected:
 

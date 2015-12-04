@@ -16,6 +16,8 @@
 #include <StepBasic_Effectivity.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Effectivity,MMgt_TShared)
+
 StepBasic_Effectivity::StepBasic_Effectivity  ()    {  }
 
 void  StepBasic_Effectivity::Init (const Handle(TCollection_HAsciiString)& aid)

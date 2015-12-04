@@ -63,11 +63,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public :
 void ActivateFrame(CRuntimeClass* pViewClass, int nCmdShow = SW_RESTORE  );
-  Handle_TDocStd_Document GetOcafDoc() {return myOcafDoc;};
+  Handle(TDocStd_Document) GetOcafDoc() {return myOcafDoc;};
 	CString PathName;
 
 private:
-  Handle_TDocStd_Document myOcafDoc;
+  Handle(TDocStd_Document) myOcafDoc;
 
 public :
 	void EraseAll();

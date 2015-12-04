@@ -48,7 +48,7 @@ public:
     return value;
   }
 
-  DEFINE_STANDARD_RTTI(StepRepr_IntegerRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_IntegerRepresentationItem,StepRepr_RepresentationItem)
 
 private:
   Standard_Integer value;

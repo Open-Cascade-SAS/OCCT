@@ -85,7 +85,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx,StepRepr_RepresentationContext)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx,StepRepr_RepresentationContext)
 
 protected:
 

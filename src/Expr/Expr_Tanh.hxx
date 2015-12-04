@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Tanh,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Tanh,Expr_UnaryExpression)
 
 protected:
 

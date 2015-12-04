@@ -30,7 +30,7 @@ public: // New operations
 
 public: // getters
 
-  Handle_V3d_Viewer GetViewer2D () { return myViewer; };
+  Handle(V3d_Viewer) GetViewer2D () { return myViewer; };
 
   Handle(AIS_InteractiveContext)& GetInteractiveContext() { return myAISContext; };
 

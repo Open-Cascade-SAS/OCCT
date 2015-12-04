@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DDataStd_TreeBrowser,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(DDataStd_TreeBrowser,Draw_Drawable3D)
 
 protected:
 

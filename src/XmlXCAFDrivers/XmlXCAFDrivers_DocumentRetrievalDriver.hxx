@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlXCAFDrivers_DocumentRetrievalDriver,XmlDrivers_DocumentRetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentRetrievalDriver,XmlDrivers_DocumentRetrievalDriver)
 
 protected:
 

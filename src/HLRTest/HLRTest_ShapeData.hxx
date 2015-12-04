@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRTest_ShapeData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRTest_ShapeData,MMgt_TShared)
 
 protected:
 

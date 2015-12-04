@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSControl_SignTransferStatus,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(XSControl_SignTransferStatus,IFSelect_Signature)
 
 protected:
 

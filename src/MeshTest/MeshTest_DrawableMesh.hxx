@@ -57,7 +57,7 @@ public:
   
   Standard_EXPORT const Handle(BRepMesh_IncrementalMesh)& Mesher() const;
 
-  DEFINE_STANDARD_RTTI(MeshTest_DrawableMesh, Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(MeshTest_DrawableMesh,Draw_Drawable3D)
 
 private: 
 

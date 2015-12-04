@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ActionRequestAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestAssignment,MMgt_TShared)
 
 protected:
 

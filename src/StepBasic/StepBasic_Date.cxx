@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_Date.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Date,MMgt_TShared)
+
 StepBasic_Date::StepBasic_Date ()  {}
 
 void StepBasic_Date::Init(

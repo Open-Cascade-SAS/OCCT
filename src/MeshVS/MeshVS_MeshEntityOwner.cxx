@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner,SelectMgr_EntityOwner)
+
 #ifndef MeshVS_PRSBUILDERHXX
 #include <MeshVS_PrsBuilder.hxx>
 #endif

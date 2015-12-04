@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_DescrReadWrite,StepData_ReadWriteModule)
+  DEFINE_STANDARD_RTTIEXT(StepData_DescrReadWrite,StepData_ReadWriteModule)
 
 protected:
 

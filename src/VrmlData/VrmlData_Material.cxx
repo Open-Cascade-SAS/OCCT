@@ -19,6 +19,8 @@
 #include <VrmlData_Scene.hxx>
 #include <gp_XYZ.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Material,VrmlData_Node)
+
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)

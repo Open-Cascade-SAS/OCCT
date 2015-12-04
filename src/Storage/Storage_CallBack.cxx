@@ -18,3 +18,5 @@
 #include <Storage_BaseDriver.hxx>
 #include <Storage_CallBack.hxx>
 #include <Storage_Schema.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Storage_CallBack,MMgt_TShared)

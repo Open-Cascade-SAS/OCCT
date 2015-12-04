@@ -40,6 +40,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Shape,ShapeFix_Root)
+
 //=======================================================================
 //function : ShapeFix_Shape
 //purpose  : 

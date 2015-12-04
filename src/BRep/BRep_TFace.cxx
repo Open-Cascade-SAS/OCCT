@@ -23,6 +23,8 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS_TShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRep_TFace,TopoDS_TFace)
+
 //=======================================================================
 //function : BRep_TFace
 //purpose  : 

@@ -28,6 +28,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedUnknown,Expr_NamedExpression)
+
 Expr_NamedUnknown::Expr_NamedUnknown(const TCollection_AsciiString& name)
 {
   SetName(name);

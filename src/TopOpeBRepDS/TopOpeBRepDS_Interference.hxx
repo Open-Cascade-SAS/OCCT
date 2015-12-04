@@ -108,7 +108,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepDS_Interference,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Interference,MMgt_TShared)
 
 protected:
 

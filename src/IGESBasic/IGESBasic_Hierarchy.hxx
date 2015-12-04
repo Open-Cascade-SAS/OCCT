@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_Hierarchy,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_Hierarchy,IGESData_IGESEntity)
 
 protected:
 

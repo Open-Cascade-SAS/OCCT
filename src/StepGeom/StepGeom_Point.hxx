@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_Point,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Point,StepGeom_GeometricRepresentationItem)
 
 protected:
 

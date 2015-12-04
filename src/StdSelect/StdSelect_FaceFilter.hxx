@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StdSelect_FaceFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_FaceFilter,SelectMgr_Filter)
 
 protected:
 

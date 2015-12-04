@@ -24,6 +24,8 @@
 #include <TDF_Label.hxx>
 #include <TPrsStd_PointDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PointDriver,TPrsStd_Driver)
+
 //#include <TDataStd_Datum.hxx>
 //=======================================================================
 //function :

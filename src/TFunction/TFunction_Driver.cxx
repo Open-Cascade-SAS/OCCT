@@ -21,6 +21,8 @@
 #include <TFunction_Driver.hxx>
 #include <TFunction_Logbook.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_Driver,MMgt_TShared)
+
 //=======================================================================
 //function : TFunction_Driver
 //purpose  : Constructor

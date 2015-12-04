@@ -18,6 +18,8 @@
 #include <StepShape_QualifiedRepresentationItem.hxx>
 #include <StepRepr_ReprItemAndMeasureWithUnitAndQRI.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnitAndQRI,StepRepr_ReprItemAndMeasureWithUnit)
+
 //=======================================================================
 //function : Init
 //purpose  : 

@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawFairCurve_Batten,DrawTrSurf_BSplineCurve2d)
+  DEFINE_STANDARD_RTTIEXT(DrawFairCurve_Batten,DrawTrSurf_BSplineCurve2d)
 
 protected:
 

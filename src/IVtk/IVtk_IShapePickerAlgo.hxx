@@ -31,7 +31,7 @@ public:
 
   virtual ~IVtk_IShapePickerAlgo() { }
 
-  DEFINE_STANDARD_RTTI(IVtk_IShapePickerAlgo, IVtk_Interface)
+  DEFINE_STANDARD_RTTIEXT(IVtk_IShapePickerAlgo,IVtk_Interface)
 
   virtual void SetView (const IVtk_IView::Handle& theView) = 0;
   virtual int  NbPicked() = 0;

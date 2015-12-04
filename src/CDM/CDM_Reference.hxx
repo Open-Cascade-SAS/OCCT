@@ -53,7 +53,7 @@ public:
 friend class CDM_Document;
 
 
-  DEFINE_STANDARD_RTTI(CDM_Reference,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDM_Reference,Standard_Transient)
 
 protected:
 

@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ApprovalDateTime,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime,MMgt_TShared)
 
 protected:
 

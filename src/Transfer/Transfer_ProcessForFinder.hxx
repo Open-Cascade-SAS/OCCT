@@ -401,7 +401,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ProcessForFinder,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ProcessForFinder,MMgt_TShared)
 
 protected:
 

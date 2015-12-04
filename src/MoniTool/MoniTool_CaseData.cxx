@@ -33,6 +33,8 @@
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_CaseData,MMgt_TShared)
+
 //#include <GeomTools.hxx>
 // definitions
 static Handle(Dico_DictionaryOfInteger)& defchecks()

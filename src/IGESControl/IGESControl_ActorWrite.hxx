@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESControl_ActorWrite,Transfer_ActorOfFinderProcess)
+  DEFINE_STANDARD_RTTIEXT(IGESControl_ActorWrite,Transfer_ActorOfFinderProcess)
 
 protected:
 

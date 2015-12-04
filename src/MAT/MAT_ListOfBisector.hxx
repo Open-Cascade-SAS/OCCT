@@ -94,7 +94,7 @@ Handle(MAT_Bisector) operator() (const Standard_Integer anindex)
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_ListOfBisector,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_ListOfBisector,MMgt_TShared)
 
 protected:
 

@@ -53,6 +53,8 @@
 #include <TopTools_Array1OfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_Line3DDriver,TFunction_Driver)
+
 //=======================================================================
 //function : DNaming_Line3DDriver
 //purpose  : Constructor

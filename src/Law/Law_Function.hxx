@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Law_Function,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Law_Function,MMgt_TShared)
 
 protected:
 

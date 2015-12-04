@@ -530,7 +530,7 @@ public:
     theRed=255;
     theGreen=255;
     theBlue=255;
-    Handle_AIS_InteractiveObject aCurrent ;
+    Handle(AIS_InteractiveObject) aCurrent ;
     Quantity_Color anObjCol;
     myAISContext()->InitCurrent();
     if (!myAISContext()->MoreCurrent())
@@ -716,7 +716,7 @@ public:
   /// <summary>
   ///Get AISContext
   /// </summary>
-  Handle_AIS_InteractiveContext GetContext(void)
+  Handle(AIS_InteractiveContext) GetContext(void)
   {
     return myAISContext();
   }
@@ -841,8 +841,8 @@ public:
       return false;
     }
 
-    Handle_AIS_InteractiveObject anIO = myAISContext()->Current();
-    Handle_AIS_Shape anIS = Handle_AIS_Shape::DownCast(anIO);
+    Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+    Handle(AIS_Shape) anIS = Handle(AIS_Shape)::DownCast(anIO);
     return BRepTools::Write (anIS->Shape(), (Standard_CString)theFileName) != Standard_False;
   }
 
@@ -857,8 +857,8 @@ public:
     STEPControl_Writer aWriter;
     for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
     {
-      Handle_AIS_InteractiveObject anIO = myAISContext()->Current();
-      Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       aStatus = aWriter.Transfer( aShape , aType );
       if ( aStatus != IFSelect_RetDone )
@@ -888,8 +888,8 @@ public:
 
     for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
     {
-      Handle_AIS_InteractiveObject anIO = myAISContext()->Current();
-      Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       aWriter.AddShape ( aShape );
     }
@@ -910,8 +910,8 @@ public:
 
     for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
     {
-      Handle_AIS_InteractiveObject anIO = myAISContext()->Current();
-      Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       if ( aShape.IsNull() )
       {
@@ -939,8 +939,8 @@ public:
 
     for ( myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent() )
     {
-      Handle_AIS_InteractiveObject anIO = myAISContext()->Current();
-      Handle_AIS_Shape anIS=Handle_AIS_Shape::DownCast(anIO);
+      Handle(AIS_InteractiveObject) anIO = myAISContext()->Current();
+      Handle(AIS_Shape) anIS=Handle(AIS_Shape)::DownCast(anIO);
       TopoDS_Shape aShape = anIS->Shape();
       if ( aShape.IsNull() ) 
       {
@@ -1030,8 +1030,8 @@ public:
 
 private:
   // fields
-  NCollection_Haft<Handle_V3d_Viewer> myViewer;
-  NCollection_Haft<Handle_V3d_View> myView;
-  NCollection_Haft<Handle_AIS_InteractiveContext> myAISContext;
-  NCollection_Haft<Handle_OpenGl_GraphicDriver> myGraphicDriver;
+  NCollection_Haft<Handle(V3d_Viewer)> myViewer;
+  NCollection_Haft<Handle(V3d_View)> myView;
+  NCollection_Haft<Handle(AIS_InteractiveContext)> myAISContext;
+  NCollection_Haft<Handle(OpenGl_GraphicDriver)> myGraphicDriver;
 };

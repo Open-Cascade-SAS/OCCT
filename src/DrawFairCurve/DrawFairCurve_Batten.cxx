@@ -23,6 +23,8 @@
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawFairCurve_Batten,DrawTrSurf_BSplineCurve2d)
+
 DrawFairCurve_Batten::DrawFairCurve_Batten(const Standard_Address TheBatten)
                      : DrawTrSurf_BSplineCurve2d( ((FairCurve_Batten*)TheBatten)->Curve()),
                        MyBatten( TheBatten)

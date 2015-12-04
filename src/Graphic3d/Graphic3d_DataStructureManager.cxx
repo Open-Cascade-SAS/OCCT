@@ -25,6 +25,8 @@
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,MMgt_TShared)
+
 //-Aliases
 //-Global data definitions
 //-Constructors

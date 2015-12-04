@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ExternalIdentificationAssignment,StepBasic_IdentificationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ExternalIdentificationAssignment,StepBasic_IdentificationAssignment)
 
 protected:
 

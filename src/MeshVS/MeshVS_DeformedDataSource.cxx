@@ -20,6 +20,8 @@
 #include <MeshVS_DeformedDataSource.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DeformedDataSource,MeshVS_DataSource)
+
 //================================================================
 // Function : Constructor MeshVS_DeformedDataSource
 // Purpose  :

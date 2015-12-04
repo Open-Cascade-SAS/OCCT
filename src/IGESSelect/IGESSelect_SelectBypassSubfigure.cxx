@@ -28,6 +28,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectBypassSubfigure,IFSelect_SelectExplore)
+
 IGESSelect_SelectBypassSubfigure::IGESSelect_SelectBypassSubfigure
   (const Standard_Integer level)
   : IFSelect_SelectExplore (level)    {  }

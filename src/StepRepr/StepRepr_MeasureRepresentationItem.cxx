@@ -22,6 +22,8 @@
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MeasureRepresentationItem,StepRepr_RepresentationItem)
+
 //=======================================================================
 //function : StepRepr_MeasureRepresentationItem
 //purpose  : 

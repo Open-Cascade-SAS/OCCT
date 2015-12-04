@@ -139,7 +139,7 @@ public:
                                            const Standard_Real aTol);
 
 
-  DEFINE_STANDARD_RTTI(BRepTools_ReShape,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepTools_ReShape,MMgt_TShared)
 
 protected:
 

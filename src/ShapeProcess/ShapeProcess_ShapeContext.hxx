@@ -129,7 +129,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeProcess_ShapeContext,ShapeProcess_Context)
+  DEFINE_STANDARD_RTTIEXT(ShapeProcess_ShapeContext,ShapeProcess_Context)
 
 protected:
 

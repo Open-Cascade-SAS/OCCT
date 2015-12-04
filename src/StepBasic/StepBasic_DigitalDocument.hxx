@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DigitalDocument,StepBasic_Document)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DigitalDocument,StepBasic_Document)
 
 protected:
 

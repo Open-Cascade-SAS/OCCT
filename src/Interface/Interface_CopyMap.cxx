@@ -18,6 +18,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_CopyMap,Interface_CopyControl)
+
 //  CopyMap : rien de plus qu une Map passive
 Interface_CopyMap::Interface_CopyMap
   (const Handle(Interface_InterfaceModel)& amodel)

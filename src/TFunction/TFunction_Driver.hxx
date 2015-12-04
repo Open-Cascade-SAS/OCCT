@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TFunction_Driver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TFunction_Driver,MMgt_TShared)
 
 protected:
 

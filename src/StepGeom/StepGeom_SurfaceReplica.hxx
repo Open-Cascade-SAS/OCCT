@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_SurfaceReplica,StepGeom_Surface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceReplica,StepGeom_Surface)
 
 protected:
 

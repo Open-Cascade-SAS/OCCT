@@ -19,6 +19,8 @@
 #include <IGESGraph_Pick.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Pick,IGESData_IGESEntity)
+
 IGESGraph_Pick::IGESGraph_Pick ()    {  }
 
 

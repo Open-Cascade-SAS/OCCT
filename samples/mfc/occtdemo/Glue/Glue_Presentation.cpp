@@ -168,9 +168,9 @@ void Glue_Presentation::sampleCylinder()
   TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(gp_Pnt(24,0,0),gp_Pnt(24,15,0));
   TopoDS_Edge e5 = BRepBuilderAPI_MakeEdge(gp_Pnt(24,15,0),gp_Pnt(0,15,0));
   TopoDS_Edge e6 = BRepBuilderAPI_MakeEdge(gp_Pnt(0,15,0),gp_Pnt(0,0,0));
-  Handle_Geom_Circle e2C = new Geom_Circle(gp_Ax2(gp_Pnt(12,0,0), gp_Dir(0,0,1)), 7);
+  Handle(Geom_Circle) e2C = new Geom_Circle(gp_Ax2(gp_Pnt(12,0,0), gp_Dir(0,0,1)), 7);
   e2C->Rotate(gp_Ax1(gp_Pnt(12,0,0),gp_Dir(0,0,1)),PI);
-  Handle_Geom_TrimmedCurve e2A = new Geom_TrimmedCurve(e2C, PI, 2*PI);
+  Handle(Geom_TrimmedCurve) e2A = new Geom_TrimmedCurve(e2C, PI, 2*PI);
   TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(e2A);
 
   BRepBuilderAPI_MakeWire wireMaker(e1,e2,e3,e4);
@@ -311,7 +311,7 @@ void Glue_Presentation::sampleMoreBoxes()
 // Purpose  : display a shape in wire frame mode
 //================================================================
 Standard_Boolean Glue_Presentation::drawShapeWf(TopoDS_Shape& aShape, 
-                                                Handle_AIS_InteractiveObject& io)
+                                                Handle(AIS_InteractiveObject)& io)
 {
   io = drawShape(aShape, Graphic3d_NOM_BRASS, Standard_False);
   getAISContext()->SetDisplayMode(io, AIS_WireFrame, Standard_False);
@@ -325,7 +325,7 @@ Standard_Boolean Glue_Presentation::drawShapeWf(TopoDS_Shape& aShape,
 // Purpose  : display a shape in shaded mode
 //================================================================
 Standard_Boolean Glue_Presentation::drawShapeSh(TopoDS_Shape& aShape, 
-                                                Handle_AIS_InteractiveObject& io)
+                                                Handle(AIS_InteractiveObject)& io)
 {
   io = drawShape(aShape, Graphic3d_NOM_BRASS, Standard_False);
   getAISContext()->SetDisplayMode(io, AIS_Shaded, Standard_False);
@@ -346,7 +346,7 @@ Standard_Boolean Glue_Presentation::displayShapesFaces(TopoDS_Shape& aShape1,
                                            TopTools_ListOfShape& aEdges1,
                                            TopTools_ListOfShape& aEdges2)
 {
-  Handle_AIS_Shape io1,io2,io3,io4,io5,io6;
+  Handle(AIS_Shape) io1,io2,io3,io4,io5,io6;
   if (!drawShapeSh(aShape1, io1)) return Standard_False;
   if (!drawShapeSh(aShape2, io2)) return Standard_False;
 

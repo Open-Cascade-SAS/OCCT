@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_EqualRadiusRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_EqualRadiusRelation,AIS_Relation)
 
 protected:
 

@@ -20,6 +20,8 @@
 #include <IGESGeom_CurveOnSurface.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CurveOnSurface,IGESData_IGESEntity)
+
 IGESGeom_CurveOnSurface::IGESGeom_CurveOnSurface ()    {  }
 
 

@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinLDrivers_DocumentStorageDriver,PCDM_StorageDriver)
+  DEFINE_STANDARD_RTTIEXT(BinLDrivers_DocumentStorageDriver,PCDM_StorageDriver)
 
 protected:
 

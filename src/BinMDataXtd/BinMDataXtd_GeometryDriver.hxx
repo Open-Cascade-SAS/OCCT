@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMDataXtd_GeometryDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataXtd_GeometryDriver,BinMDF_ADriver)
 
 protected:
 

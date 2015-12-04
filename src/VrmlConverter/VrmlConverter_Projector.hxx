@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(VrmlConverter_Projector,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_Projector,MMgt_TShared)
 
 protected:
 

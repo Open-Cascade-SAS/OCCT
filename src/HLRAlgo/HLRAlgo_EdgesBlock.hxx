@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRAlgo_EdgesBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock,MMgt_TShared)
 
 protected:
 

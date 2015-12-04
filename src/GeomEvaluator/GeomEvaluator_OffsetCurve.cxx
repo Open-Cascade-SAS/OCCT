@@ -18,6 +18,8 @@
 #include <Standard_NullValue.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomEvaluator_OffsetCurve,GeomEvaluator_Curve)
+
 GeomEvaluator_OffsetCurve::GeomEvaluator_OffsetCurve(
         const Handle(Geom_Curve)& theBase,
         const Standard_Real theOffset,

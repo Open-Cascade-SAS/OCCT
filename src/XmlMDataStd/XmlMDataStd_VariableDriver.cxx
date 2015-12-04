@@ -21,6 +21,7 @@
 #include <XmlMDataStd_VariableDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_VariableDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (IsConstString, "isconst")
 IMPLEMENT_DOMSTRING (UnitString,    "unit")
 IMPLEMENT_DOMSTRING (ConstString,   "true")

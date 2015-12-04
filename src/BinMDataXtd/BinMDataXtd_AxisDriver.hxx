@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMDataXtd_AxisDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMDataXtd_AxisDriver,BinMDF_ADriver)
 
 protected:
 

@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_Triangulation2D,Draw_Drawable2D)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Triangulation2D,Draw_Drawable2D)
 
 protected:
 

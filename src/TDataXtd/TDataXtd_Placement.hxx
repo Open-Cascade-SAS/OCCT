@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Placement,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Placement,TDF_Attribute)
 
 protected:
 

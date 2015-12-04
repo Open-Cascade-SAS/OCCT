@@ -162,7 +162,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_IGESModel,Interface_InterfaceModel)
+  DEFINE_STANDARD_RTTIEXT(IGESData_IGESModel,Interface_InterfaceModel)
 
 protected:
 

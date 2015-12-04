@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeAnalysis_FreeBoundData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData,MMgt_TShared)
 
 protected:
 

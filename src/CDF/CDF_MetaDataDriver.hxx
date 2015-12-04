@@ -111,7 +111,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(CDF_MetaDataDriver,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDF_MetaDataDriver,Standard_Transient)
 
 protected:
 

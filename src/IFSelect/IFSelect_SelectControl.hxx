@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectControl,IFSelect_Selection)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectControl,IFSelect_Selection)
 
 protected:
 

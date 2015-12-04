@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopLoc_Datum3D,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopLoc_Datum3D,MMgt_TShared)
 
 protected:
 

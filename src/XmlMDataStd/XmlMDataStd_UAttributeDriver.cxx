@@ -21,6 +21,7 @@
 #include <XmlMDataStd_UAttributeDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_UAttributeDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (GuidString, "guid")
 
 //=======================================================================

@@ -65,7 +65,7 @@ public:
                             const Standard_Integer theDerU,
                             const Standard_Integer theDerV) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(GeomEvaluator_OffsetSurface, GeomEvaluator_Surface)
+  DEFINE_STANDARD_RTTIEXT(GeomEvaluator_OffsetSurface,GeomEvaluator_Surface)
 
 private:
   //! Returns bounds of a base surface

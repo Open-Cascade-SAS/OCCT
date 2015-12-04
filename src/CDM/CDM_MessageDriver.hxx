@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(CDM_MessageDriver,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDM_MessageDriver,Standard_Transient)
 
 protected:
 

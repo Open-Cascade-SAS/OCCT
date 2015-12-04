@@ -21,6 +21,8 @@
 #include <TDataStd_Name.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_NameDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_NameDriver
 //purpose  :

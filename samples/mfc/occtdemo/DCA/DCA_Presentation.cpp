@@ -196,14 +196,14 @@ void DCA_Presentation::sampleParabola()
 
   if(WAIT_A_LITTLE) return;
 
-  Handle_Geom_Line aFocalLenLin = new Geom_Line(gce_MakeLin(aPointParab, gp_Dir(0,0,1)));
-  Handle_Geom_TrimmedCurve aTrim = new Geom_TrimmedCurve(aFocalLenLin, -aFocalLength/2, aFocalLength/2);
+  Handle(Geom_Line) aFocalLenLin = new Geom_Line(gce_MakeLin(aPointParab, gp_Dir(0,0,1)));
+  Handle(Geom_TrimmedCurve) aTrim = new Geom_TrimmedCurve(aFocalLenLin, -aFocalLength/2, aFocalLength/2);
   drawCurve(aTrim);
 
   if(WAIT_A_LITTLE) return;
   
-  Handle_Geom_Parabola aParabola = new Geom_Parabola(aParab);
-  Handle_Geom_TrimmedCurve aParabTrimmed = 
+  Handle(Geom_Parabola) aParabola = new Geom_Parabola(aParab);
+  Handle(Geom_TrimmedCurve) aParabTrimmed = 
     new Geom_TrimmedCurve(aParabola,-300,300,Standard_True);
   drawCurve(aParabTrimmed);
 
@@ -218,8 +218,8 @@ void DCA_Presentation::sampleParabola()
 
   if(WAIT_A_LITTLE) return;
 
-  Handle_Geom_Parabola aParabola1 = new Geom_Parabola(aParab1);
-  Handle_Geom_TrimmedCurve aParabTrimmed1 = new Geom_TrimmedCurve(aParabola1,-300,300,Standard_True);
+  Handle(Geom_Parabola) aParabola1 = new Geom_Parabola(aParab1);
+  Handle(Geom_TrimmedCurve) aParabTrimmed1 = new Geom_TrimmedCurve(aParabola1,-300,300,Standard_True);
   drawCurve(aParabTrimmed1);
 }
 //================================================================
@@ -283,8 +283,8 @@ void DCA_Presentation::sampleHyperbola()
 
   if(WAIT_A_LITTLE) return;
 
-  Handle_Geom_Hyperbola aHyperbola1 = new Geom_Hyperbola(aHypr1);
-  Handle_Geom_TrimmedCurve aHyprTrimmed =
+  Handle(Geom_Hyperbola) aHyperbola1 = new Geom_Hyperbola(aHypr1);
+  Handle(Geom_TrimmedCurve) aHyprTrimmed =
     new Geom_TrimmedCurve(aHyperbola1,-3,4,Standard_True);
   drawCurve(aHyprTrimmed);
 
@@ -305,23 +305,23 @@ void DCA_Presentation::sampleHyperbola()
   if(WAIT_A_LITTLE) return;
 
   //output of display MajorRadius (yellow color)
-  Handle_Geom_Line aLine = new Geom_Line(gce_MakeLin(aPointHypr1,aPointHypr2));
-  Handle_Geom_TrimmedCurve aTrimmed1 = 
+  Handle(Geom_Line) aLine = new Geom_Line(gce_MakeLin(aPointHypr1,aPointHypr2));
+  Handle(Geom_TrimmedCurve) aTrimmed1 = 
     new Geom_TrimmedCurve(aLine, 0, aPointHypr1.Distance(aPointHypr2));
   drawCurve(aTrimmed1,Quantity_Color(Quantity_NOC_YELLOW));
 
   if(WAIT_A_LITTLE) return;
 
   //output of display MinorRadius (yellow color)
-  Handle_Geom_Line aLine1 = new Geom_Line(gce_MakeLin(aPointHypr3, gp_Dir(0,-1,0)));
-  Handle_Geom_TrimmedCurve aTrimmed2 = new Geom_TrimmedCurve(aLine1, 0,100);
+  Handle(Geom_Line) aLine1 = new Geom_Line(gce_MakeLin(aPointHypr3, gp_Dir(0,-1,0)));
+  Handle(Geom_TrimmedCurve) aTrimmed2 = new Geom_TrimmedCurve(aLine1, 0,100);
   drawCurve(aTrimmed2,Quantity_Color(Quantity_NOC_YELLOW)); 
 
   if(WAIT_A_LITTLE) return;
 
   //output hyperbola
-  Handle_Geom_Hyperbola aHyperbola2 = new Geom_Hyperbola(aHypr2);
-  Handle_Geom_TrimmedCurve aHyprTrimmed1 = 
+  Handle(Geom_Hyperbola) aHyperbola2 = new Geom_Hyperbola(aHypr2);
+  Handle(Geom_TrimmedCurve) aHyprTrimmed1 = 
     new Geom_TrimmedCurve(aHyperbola2,-2,2,Standard_True);
   drawCurve(aHyprTrimmed1);
 }
@@ -396,8 +396,8 @@ void DCA_Presentation::sampleCircle()
   if(WAIT_A_LITTLE) return;
 
   //output radius
-  Handle_Geom_Line aLine = new Geom_Line(gce_MakeLin (aCenterPoint,gp_Dir(0,0,1)));
-  Handle_Geom_TrimmedCurve aTrimmed = new Geom_TrimmedCurve(aLine,0,300);
+  Handle(Geom_Line) aLine = new Geom_Line(gce_MakeLin (aCenterPoint,gp_Dir(0,0,1)));
+  Handle(Geom_TrimmedCurve) aTrimmed = new Geom_TrimmedCurve(aLine,0,300);
   drawCurve(aTrimmed,Quantity_Color(Quantity_NOC_WHITE));
 
   if(WAIT_A_LITTLE) return;
@@ -519,16 +519,16 @@ void DCA_Presentation::sampleEllipse()
   gp_Lin aLine1 = aMakeLin1.Value();
 
   //output MajorRadius
-  Handle_Geom_Line aLineMajorRadius = new Geom_Line(aLine);
-  Handle_Geom_TrimmedCurve aTrimmed = 
+  Handle(Geom_Line) aLineMajorRadius = new Geom_Line(aLine);
+  Handle(Geom_TrimmedCurve) aTrimmed = 
     new Geom_TrimmedCurve(aLineMajorRadius,0,120);
   drawCurve(aTrimmed,Quantity_Color(Quantity_NOC_WHITE));
 
   if(WAIT_A_LITTLE) return;
 
   //output MinorRadius
-  Handle_Geom_Line aLineMinorrRadius = new Geom_Line(aLine1);
-  Handle_Geom_TrimmedCurve aTrimmed1 = 
+  Handle(Geom_Line) aLineMinorrRadius = new Geom_Line(aLine1);
+  Handle(Geom_TrimmedCurve) aTrimmed1 = 
     new Geom_TrimmedCurve(aLineMinorrRadius,0,300);
   drawCurve(aTrimmed1,Quantity_Color(Quantity_NOC_WHITE));
 
@@ -588,8 +588,8 @@ void DCA_Presentation::samplePlane()
 
   if(WAIT_A_LITTLE) return;
     
-  Handle_Geom_Plane aPln = new Geom_Plane(aPlane);
-  Handle_Geom_RectangularTrimmedSurface aPlnTrimmed = 
+  Handle(Geom_Plane) aPln = new Geom_Plane(aPlane);
+  Handle(Geom_RectangularTrimmedSurface) aPlnTrimmed = 
     new Geom_RectangularTrimmedSurface(aPln,-300,300,-300,300,Standard_True,Standard_True);
   drawSurface(aPlnTrimmed);
 
@@ -604,8 +604,8 @@ void DCA_Presentation::samplePlane()
 
   if(WAIT_A_LITTLE) return;
 
-  Handle_Geom_Plane aPln1 = new Geom_Plane(aPlane1);
-  Handle_Geom_RectangularTrimmedSurface aPlnTrimmed1 = 
+  Handle(Geom_Plane) aPln1 = new Geom_Plane(aPlane1);
+  Handle(Geom_RectangularTrimmedSurface) aPlnTrimmed1 = 
     new Geom_RectangularTrimmedSurface(aPln1,-200,300,-200,300,Standard_True,Standard_True);
   drawSurface(aPlnTrimmed1);
 
@@ -693,14 +693,14 @@ void DCA_Presentation::sampleCylindricalSurface()
   gp_Dir aDir1(0,0,1);
   gce_MakeLin aMakeLin(aCenterPoint,aDir1);
   gp_Lin aLin = aMakeLin.Value();
-  Handle_Geom_Line aLine = new Geom_Line(aLin);
-  Handle_Geom_TrimmedCurve aTrimmed = new Geom_TrimmedCurve(aLine,-100,0);
+  Handle(Geom_Line) aLine = new Geom_Line(aLin);
+  Handle(Geom_TrimmedCurve) aTrimmed = new Geom_TrimmedCurve(aLine,-100,0);
   drawCurve(aTrimmed,Quantity_Color(Quantity_NOC_WHITE));
   if(WAIT_A_LITTLE) return;
   // output cylinder
-  Handle_Geom_CylindricalSurface aCylSurface =
+  Handle(Geom_CylindricalSurface) aCylSurface =
     new Geom_CylindricalSurface(aCyl);
-  Handle_Geom_RectangularTrimmedSurface aCylTrimmed = 
+  Handle(Geom_RectangularTrimmedSurface) aCylTrimmed = 
     new Geom_RectangularTrimmedSurface(aCylSurface,0,2*PI,-200,300,Standard_True,Standard_True);
   drawSurface(aCylTrimmed);
   if(WAIT_A_LITTLE) return;
@@ -716,14 +716,14 @@ void DCA_Presentation::sampleCylindricalSurface()
   drawVector(aCylinderPoint2,gp_Vec(aCylinderPoint2,aCylinderPoint3)*3,Quantity_Color(Quantity_NOC_WHITE));
    if(WAIT_A_LITTLE) return;
   //output radius
-  Handle_Geom_Line aLine1 = new Geom_Line(gce_MakeLin(aCylinderPoint1,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmed1 = new Geom_TrimmedCurve(aLine1,-80,0);
+  Handle(Geom_Line) aLine1 = new Geom_Line(gce_MakeLin(aCylinderPoint1,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmed1 = new Geom_TrimmedCurve(aLine1,-80,0);
   drawCurve(aTrimmed1,Quantity_Color(Quantity_NOC_WHITE));
   if(WAIT_A_LITTLE) return;
   //output cylinder
-  Handle_Geom_CylindricalSurface aCylSurface1 = 
+  Handle(Geom_CylindricalSurface) aCylSurface1 = 
     new Geom_CylindricalSurface(aCyl1);
-  Handle_Geom_RectangularTrimmedSurface aCylTrimmed1 = 
+  Handle(Geom_RectangularTrimmedSurface) aCylTrimmed1 = 
     new Geom_RectangularTrimmedSurface(aCylSurface1,0,2*PI,-300,100,Standard_True,Standard_True);
   drawSurface(aCylTrimmed1);
   if(WAIT_A_LITTLE) return;
@@ -731,17 +731,17 @@ void DCA_Presentation::sampleCylindricalSurface()
 
   //METHOD 3.(output of dispay)
   //output base cylinder  
-  Handle_Geom_CylindricalSurface aCylSurf = new Geom_CylindricalSurface(aCylinder);
-  Handle_Geom_RectangularTrimmedSurface aCylTrimmed2 = 
+  Handle(Geom_CylindricalSurface) aCylSurf = new Geom_CylindricalSurface(aCylinder);
+  Handle(Geom_RectangularTrimmedSurface) aCylTrimmed2 = 
     new Geom_RectangularTrimmedSurface(aCylSurf,0,2*PI,-200,200,Standard_True,Standard_True);
   drawSurface(aCylTrimmed2 ,Quantity_Color(Quantity_NOC_WHITE));
   //output point
   drawPoint(aCylinderPoint4);
   if(WAIT_A_LITTLE) return;
   //output cylinder
-  Handle_Geom_CylindricalSurface aCylSurface2 = 
+  Handle(Geom_CylindricalSurface) aCylSurface2 = 
     new Geom_CylindricalSurface(aCyl2);
-  Handle_Geom_RectangularTrimmedSurface aCylTrimmed3 =
+  Handle(Geom_RectangularTrimmedSurface) aCylTrimmed3 =
     new Geom_RectangularTrimmedSurface(aCylSurface2,0,2*PI,-200,200,Standard_True,Standard_True);
   drawSurface(aCylTrimmed3);
   if(WAIT_A_LITTLE) return;
@@ -753,9 +753,9 @@ void DCA_Presentation::sampleCylindricalSurface()
   drawCurve(new Geom_Circle(aCirc),Quantity_Color(Quantity_NOC_WHITE));
   if(WAIT_A_LITTLE)  return;
   //output cylinder
-  Handle_Geom_CylindricalSurface aCylSurface3 = 
+  Handle(Geom_CylindricalSurface) aCylSurface3 = 
     new Geom_CylindricalSurface(aCyl3);
-  Handle_Geom_RectangularTrimmedSurface aCylTrimmed4 =
+  Handle(Geom_RectangularTrimmedSurface) aCylTrimmed4 =
     new Geom_RectangularTrimmedSurface(aCylSurface3,0,2*PI,-200,200,Standard_True,Standard_True);
   drawSurface(aCylTrimmed4);
   }
@@ -800,8 +800,8 @@ void DCA_Presentation::sampleToroidalSurface()
   if(WAIT_A_LITTLE) return;
 
   //output MajorRadius
-  Handle_Geom_Line R1 = new Geom_Line(gce_MakeLin(aCenterPoint, gp_Dir(0,1,0)));
-  Handle_Geom_TrimmedCurve aTrimmedR1 = new Geom_TrimmedCurve(R1,0,MajorRadius);
+  Handle(Geom_Line) R1 = new Geom_Line(gce_MakeLin(aCenterPoint, gp_Dir(0,1,0)));
+  Handle(Geom_TrimmedCurve) aTrimmedR1 = new Geom_TrimmedCurve(R1,0,MajorRadius);
   drawCurve(aTrimmedR1, Quantity_Color(Quantity_NOC_WHITE));
   drawCurve(new Geom_Circle(anAx3.Ax2(), MajorRadius));
 
@@ -809,7 +809,7 @@ void DCA_Presentation::sampleToroidalSurface()
   
   // output MinorRadius as a circle
   gp_Ax2 aMinorRadAx(aTrimmedR1->EndPoint(), gp_Dir(0,0,1));
-  Handle_Geom_Circle aMinorRadCirc = new Geom_Circle(aMinorRadAx, MinorRadius);
+  Handle(Geom_Circle) aMinorRadCirc = new Geom_Circle(aMinorRadAx, MinorRadius);
   drawCurve(aMinorRadCirc);
 
   if(WAIT_A_LITTLE) return;
@@ -915,28 +915,28 @@ void DCA_Presentation::sampleConicalSurface()
 
   gp_Dir aDir1(0,1,0);
   //output first radius 
-  Handle_Geom_Line aLine = new Geom_Line(gce_MakeLin(aConePnt,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmed = new Geom_TrimmedCurve(aLine,0,100);
+  Handle(Geom_Line) aLine = new Geom_Line(gce_MakeLin(aConePnt,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmed = new Geom_TrimmedCurve(aLine,0,100);
   drawCurve(aTrimmed,Quantity_Color(Quantity_NOC_WHITE));
 
   //output second radius
-  Handle_Geom_Line aLine1 = new Geom_Line(gce_MakeLin(aConePnt1,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmed1 = new Geom_TrimmedCurve(aLine1,0,50);
+  Handle(Geom_Line) aLine1 = new Geom_Line(gce_MakeLin(aConePnt1,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmed1 = new Geom_TrimmedCurve(aLine1,0,50);
   drawCurve(aTrimmed1,Quantity_Color(Quantity_NOC_WHITE));
 
   if(WAIT_A_LITTLE) return;
 
   //output ruling of cone
-  Handle_Geom_Line aLine2 = new Geom_Line(gce_MakeLin(aConePnt,aConePnt1));
-  Handle_Geom_TrimmedCurve aTrimmed2 = 
+  Handle(Geom_Line) aLine2 = new Geom_Line(gce_MakeLin(aConePnt,aConePnt1));
+  Handle(Geom_TrimmedCurve) aTrimmed2 = 
     new Geom_TrimmedCurve(aLine2,0,aConePnt.Distance(aConePnt1));
   drawCurve(aTrimmed2,Quantity_Color(Quantity_NOC_RED));
 
   if(WAIT_A_LITTLE) return;
 
   //output cone
-  Handle_Geom_ConicalSurface aConSurface1 = new Geom_ConicalSurface(aCone1);
-  Handle_Geom_RectangularTrimmedSurface aConTrimmed1 = 
+  Handle(Geom_ConicalSurface) aConSurface1 = new Geom_ConicalSurface(aCone1);
+  Handle(Geom_RectangularTrimmedSurface) aConTrimmed1 = 
     new Geom_RectangularTrimmedSurface(aConSurface1,0,2*PI,-50,450,Standard_True,Standard_True);
   drawSurface(aConTrimmed1);
 
@@ -955,18 +955,18 @@ void DCA_Presentation::sampleConicalSurface()
   if(WAIT_A_LITTLE) return;
 
   //output of first radius 
-  Handle_Geom_Line aLineR1 = new Geom_Line(gce_MakeLin (aConePnt,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmedR1 = new Geom_TrimmedCurve(aLineR1,0,Radius1);
+  Handle(Geom_Line) aLineR1 = new Geom_Line(gce_MakeLin (aConePnt,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmedR1 = new Geom_TrimmedCurve(aLineR1,0,Radius1);
   drawCurve(aTrimmedR1,Quantity_Color(Quantity_NOC_WHITE));
 
   //output of second radius 
-  Handle_Geom_Line aLineR2 = new Geom_Line(gce_MakeLin (aConePnt2,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmedR2 = new Geom_TrimmedCurve(aLineR2,0,Radius2);
+  Handle(Geom_Line) aLineR2 = new Geom_Line(gce_MakeLin (aConePnt2,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmedR2 = new Geom_TrimmedCurve(aLineR2,0,Radius2);
   drawCurve(aTrimmedR2,Quantity_Color(Quantity_NOC_WHITE));
 
   //output cone
-  Handle_Geom_ConicalSurface aConSurface2 = new Geom_ConicalSurface(aCone2);
-  Handle_Geom_RectangularTrimmedSurface aConTrimmed2 =
+  Handle(Geom_ConicalSurface) aConSurface2 = new Geom_ConicalSurface(aCone2);
+  Handle(Geom_RectangularTrimmedSurface) aConTrimmed2 =
     new Geom_RectangularTrimmedSurface(aConSurface2,0,2*PI,-120,400,Standard_True,Standard_True);
   drawSurface(aConTrimmed2);
 
@@ -981,13 +981,13 @@ void DCA_Presentation::sampleConicalSurface()
   if(WAIT_A_LITTLE) return;
 
   //output radius
-  Handle_Geom_Line aLine3 = new Geom_Line(gce_MakeLin (aCenterPoint,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmed3 = new Geom_TrimmedCurve(aLine3,0,70);
+  Handle(Geom_Line) aLine3 = new Geom_Line(gce_MakeLin (aCenterPoint,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmed3 = new Geom_TrimmedCurve(aLine3,0,70);
   drawCurve(aTrimmed3 ,Quantity_Color(Quantity_NOC_WHITE));
 
   //output cone
-  Handle_Geom_ConicalSurface aConSurface3 = new Geom_ConicalSurface(aCone3);
-  Handle_Geom_RectangularTrimmedSurface aConTrimmed = 
+  Handle(Geom_ConicalSurface) aConSurface3 = new Geom_ConicalSurface(aCone3);
+  Handle(Geom_RectangularTrimmedSurface) aConTrimmed = 
     new Geom_RectangularTrimmedSurface(aConSurface3,0,2*PI,-300,300,Standard_True,Standard_True);
   drawSurface(aConTrimmed);
 
@@ -1011,30 +1011,30 @@ void DCA_Presentation::sampleConicalSurface()
   if(WAIT_A_LITTLE) return;
 
   //output ruling of cone
-  Handle_Geom_Line aLine4 = new Geom_Line(gce_MakeLin (aPoint_3,aPoint_4));
-  Handle_Geom_TrimmedCurve aTrimmed4 = 
+  Handle(Geom_Line) aLine4 = new Geom_Line(gce_MakeLin (aPoint_3,aPoint_4));
+  Handle(Geom_TrimmedCurve) aTrimmed4 = 
     new Geom_TrimmedCurve(aLine4,0,aPoint_3.Distance(aPoint_4));
   drawCurve(aTrimmed4 ,Quantity_Color(Quantity_NOC_RED));
 
   if(WAIT_A_LITTLE) return;
 
   //output first radius
-  Handle_Geom_Line aLine5 = new Geom_Line(gce_MakeLin (aPoint_3,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmed5 = new Geom_TrimmedCurve(aLine5,0,50);
+  Handle(Geom_Line) aLine5 = new Geom_Line(gce_MakeLin (aPoint_3,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmed5 = new Geom_TrimmedCurve(aLine5,0,50);
   drawCurve(aTrimmed5 ,Quantity_Color(Quantity_NOC_WHITE));
 
   if(WAIT_A_LITTLE) return;
 
   //output second radius
-  Handle_Geom_Line aLine6 = new Geom_Line(gce_MakeLin (aPoint_4,aDir1));
-  Handle_Geom_TrimmedCurve aTrimmed6 = new Geom_TrimmedCurve(aLine6,0,60);
+  Handle(Geom_Line) aLine6 = new Geom_Line(gce_MakeLin (aPoint_4,aDir1));
+  Handle(Geom_TrimmedCurve) aTrimmed6 = new Geom_TrimmedCurve(aLine6,0,60);
   drawCurve(aTrimmed6 ,Quantity_Color(Quantity_NOC_WHITE));
 
   if(WAIT_A_LITTLE) return;
 
   //output cone
-  Handle_Geom_ConicalSurface aConSurface4 = new Geom_ConicalSurface(aCone4);
-  Handle_Geom_RectangularTrimmedSurface aConTrimmed4 = 
+  Handle(Geom_ConicalSurface) aConSurface4 = new Geom_ConicalSurface(aCone4);
+  Handle(Geom_RectangularTrimmedSurface) aConTrimmed4 = 
     new Geom_RectangularTrimmedSurface(aConSurface4,0,2*PI,-300,300,Standard_True,Standard_True);
   drawSurface(aConTrimmed4);
 

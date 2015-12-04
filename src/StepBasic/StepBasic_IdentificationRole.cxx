@@ -19,6 +19,8 @@
 #include <StepBasic_IdentificationRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_IdentificationRole,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_IdentificationRole
 //purpose  : 

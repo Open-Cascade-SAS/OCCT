@@ -112,7 +112,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_Circle,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_Circle,AIS_InteractiveObject)
 
 protected:
 

@@ -22,6 +22,8 @@
 #include <StepData_Simple.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_Plex,StepData_Described)
+
 static StepData_Field bid;
 
     StepData_Plex::StepData_Plex  (const Handle(StepData_ECDescr)& descr)

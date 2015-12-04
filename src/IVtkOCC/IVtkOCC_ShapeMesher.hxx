@@ -179,7 +179,7 @@ private:
   //! Get the IShape as OCC implementation
   const IVtkOCC_Shape::Handle GetShapeObj() const;
 
-  DEFINE_STANDARD_RTTI(IVtkOCC_ShapeMesher, IVtk_IShapeMesher)
+  DEFINE_STANDARD_RTTIEXT(IVtkOCC_ShapeMesher,IVtk_IShapeMesher)
 
 private:
   IVtk_ShapeTypeMap     myEdgesTypes;

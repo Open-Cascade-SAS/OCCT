@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_StartRequest,StepBasic_ActionRequestAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_StartRequest,StepBasic_ActionRequestAssignment)
 
 protected:
 

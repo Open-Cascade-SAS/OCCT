@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_ShiftedUnit,Units_Unit)
+  DEFINE_STANDARD_RTTIEXT(Units_ShiftedUnit,Units_Unit)
 
 protected:
 

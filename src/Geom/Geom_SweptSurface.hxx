@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_SweptSurface,Geom_Surface)
+  DEFINE_STANDARD_RTTIEXT(Geom_SweptSurface,Geom_Surface)
 
 protected:
 

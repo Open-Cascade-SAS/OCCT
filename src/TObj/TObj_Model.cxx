@@ -43,6 +43,8 @@
 #include <Message_Msg.hxx>
 #include <OSD_OpenFile.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_Model,MMgt_TShared)
+
 #ifdef _MSC_VER
   #include <io.h>
 #else

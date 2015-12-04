@@ -22,6 +22,8 @@
 #include <gce_MakeDir.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_RadiusDimension,AIS_Dimension)
+
 namespace
 {
   static const Standard_ExtCharacter THE_RADIUS_SYMBOL ('R');

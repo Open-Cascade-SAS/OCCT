@@ -17,6 +17,8 @@
 #include <StepGeom_Hyperbola.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Hyperbola,StepGeom_Conic)
+
 StepGeom_Hyperbola::StepGeom_Hyperbola ()  {}
 
 void StepGeom_Hyperbola::Init(

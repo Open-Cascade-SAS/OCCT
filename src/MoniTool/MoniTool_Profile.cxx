@@ -22,6 +22,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Profile,MMgt_TShared)
+
 static Standard_Boolean IsCurrent (const Standard_CString name)
 {  return (name[0] == '.' && name[1] == '\0');  }
 

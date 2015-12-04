@@ -1001,7 +1001,7 @@ friend
   Standard_EXPORT void V3d_Viewer::SetViewOff (const Handle(V3d_View)& View);
 
 
-  DEFINE_STANDARD_RTTI(V3d_View,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(V3d_View,MMgt_TShared)
 
 protected:
 

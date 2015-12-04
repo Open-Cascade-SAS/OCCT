@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_LessThan,Expr_SingleRelation)
+
 Expr_LessThan::Expr_LessThan (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {
   SetFirstMember(exp1);

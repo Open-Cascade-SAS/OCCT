@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepAlgo_AsDes,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepAlgo_AsDes,MMgt_TShared)
 
 protected:
 

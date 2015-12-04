@@ -460,7 +460,7 @@ public:
 friend class AIS_InteractiveContext;
 
 
-  DEFINE_STANDARD_RTTI(AIS_InteractiveObject,SelectMgr_SelectableObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_InteractiveObject,SelectMgr_SelectableObject)
 
 protected:
 

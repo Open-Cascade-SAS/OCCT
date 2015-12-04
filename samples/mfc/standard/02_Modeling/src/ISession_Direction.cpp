@@ -10,7 +10,6 @@
 static char THIS_FILE[]=__FILE__;
 #endif
 
-IMPLEMENT_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)
 
 #include "DsgPrs_LengthPresentation.hxx"

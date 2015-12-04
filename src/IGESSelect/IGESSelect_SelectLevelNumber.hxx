@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectLevelNumber,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectLevelNumber,IFSelect_SelectExtract)
 
 protected:
 

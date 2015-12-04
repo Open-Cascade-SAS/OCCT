@@ -89,7 +89,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DDF_Browser,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(DDF_Browser,Draw_Drawable3D)
 
 protected:
 

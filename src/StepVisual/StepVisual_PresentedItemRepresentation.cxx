@@ -17,6 +17,8 @@
 #include <StepVisual_PresentedItem.hxx>
 #include <StepVisual_PresentedItemRepresentation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentedItemRepresentation,MMgt_TShared)
+
 StepVisual_PresentedItemRepresentation::StepVisual_PresentedItemRepresentation  ()    {  }
 
 void  StepVisual_PresentedItemRepresentation::Init

@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepTopAdaptor_TopolTool,Adaptor3d_TopolTool)
+  DEFINE_STANDARD_RTTIEXT(BRepTopAdaptor_TopolTool,Adaptor3d_TopolTool)
 
 protected:
 

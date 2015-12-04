@@ -19,6 +19,8 @@
 #include <StepElement_CurveElementEndReleasePacket.hxx>
 #include <StepElement_CurveElementFreedom.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementEndReleasePacket,MMgt_TShared)
+
 //=======================================================================
 //function : StepElement_CurveElementEndReleasePacket
 //purpose  : 

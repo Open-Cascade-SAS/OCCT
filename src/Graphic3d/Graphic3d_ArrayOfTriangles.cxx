@@ -16,6 +16,8 @@
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangles,Graphic3d_ArrayOfPrimitives)
+
 Graphic3d_ArrayOfTriangles::Graphic3d_ArrayOfTriangles (const Standard_Integer theMaxVertexs,
                                                         const Standard_Integer theMaxEdges,
                                                         const Standard_Boolean theHasVNormals,

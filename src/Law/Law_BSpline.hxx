@@ -533,7 +533,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Law_BSpline,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Law_BSpline,MMgt_TShared)
 
 protected:
 

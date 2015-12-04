@@ -108,7 +108,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Resource_Manager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Resource_Manager,MMgt_TShared)
 
 protected:
 

@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPControl_ActorWrite,Transfer_ActorOfFinderProcess)
+  DEFINE_STANDARD_RTTIEXT(STEPControl_ActorWrite,Transfer_ActorOfFinderProcess)
 
 protected:
 

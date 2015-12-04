@@ -17,6 +17,8 @@
 #include <Vrml_ShapeHints.hxx>
 #include <VrmlConverter_ShadingAspect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,MMgt_TShared)
+
 VrmlConverter_ShadingAspect::VrmlConverter_ShadingAspect()
 {
  Handle(Vrml_Material) m = new Vrml_Material;

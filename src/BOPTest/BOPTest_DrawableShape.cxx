@@ -45,6 +45,8 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(BOPTest_DrawableShape,DBRep_DrawableShape)
+
 //=======================================================================
 //function : 
 //purpose  : 

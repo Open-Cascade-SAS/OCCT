@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Sinh,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Sinh,Expr_UnaryExpression)
 
 protected:
 

@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Aspect_CircularGrid,Aspect_Grid)
+  DEFINE_STANDARD_RTTIEXT(Aspect_CircularGrid,Aspect_Grid)
 
 protected:
 

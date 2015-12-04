@@ -471,7 +471,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TCollection_HAsciiString,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TCollection_HAsciiString,MMgt_TShared)
 
 protected:
 

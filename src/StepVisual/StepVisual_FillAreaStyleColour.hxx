@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_FillAreaStyleColour,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_FillAreaStyleColour,MMgt_TShared)
 
 protected:
 

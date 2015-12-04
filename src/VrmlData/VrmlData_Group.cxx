@@ -23,6 +23,8 @@
 #include <Precision.hxx>
 #include <gp_Ax1.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Group,VrmlData_Node)
+
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)

@@ -21,6 +21,8 @@
 #include <StepRepr_ConfigurationDesignItem.hxx>
 #include <StepRepr_ConfigurationItem.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign,MMgt_TShared)
+
 //=======================================================================
 //function : StepRepr_ConfigurationDesign
 //purpose  : 

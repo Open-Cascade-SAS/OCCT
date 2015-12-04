@@ -95,7 +95,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_NodalDisplAndRot,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_NodalDisplAndRot,IGESData_IGESEntity)
 
 protected:
 

@@ -27,6 +27,8 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeBuild_ReShape,BRepTools_ReShape)
+
 //=======================================================================
 //function : ShapeBuild_ReShape
 //purpose  : 

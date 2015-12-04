@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_CameraModel,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModel,StepGeom_GeometricRepresentationItem)
 
 protected:
 

@@ -21,6 +21,8 @@
 #include <StepBasic_DateAndTime.hxx>
 #include <StepBasic_DateTimeRole.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignDateAndTimeAssignment,StepBasic_DateAndTimeAssignment)
+
 //=======================================================================
 //function : StepAP203_CcDesignDateAndTimeAssignment
 //purpose  : 

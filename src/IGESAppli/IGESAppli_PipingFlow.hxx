@@ -116,7 +116,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_PipingFlow,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_PipingFlow,IGESData_IGESEntity)
 
 protected:
 

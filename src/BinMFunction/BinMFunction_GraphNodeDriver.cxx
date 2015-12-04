@@ -26,6 +26,8 @@
 #include <TDF_Attribute.hxx>
 #include <TFunction_GraphNode.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_GraphNodeDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMFunction_GraphNodeDriver
 //purpose  : 

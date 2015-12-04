@@ -22,6 +22,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronLaw,MMgt_TShared)
+
 void GeomFill_TrihedronLaw::SetCurve(const Handle(Adaptor3d_HCurve)& C) 
 {
   myCurve = C;

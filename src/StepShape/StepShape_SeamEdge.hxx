@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_SeamEdge,StepShape_OrientedEdge)
+  DEFINE_STANDARD_RTTIEXT(StepShape_SeamEdge,StepShape_OrientedEdge)
 
 protected:
 

@@ -21,6 +21,8 @@
 #include <StepGeom_Surface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveBoundedSurface,StepGeom_BoundedSurface)
+
 //=======================================================================
 //function : StepGeom_CurveBoundedSurface
 //purpose  : 

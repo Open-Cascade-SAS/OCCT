@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PCDM_ReadWriter,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(PCDM_ReadWriter,Standard_Transient)
 
 protected:
 

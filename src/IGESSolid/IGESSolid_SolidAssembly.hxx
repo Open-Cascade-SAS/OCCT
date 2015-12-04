@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_SolidAssembly,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidAssembly,IGESData_IGESEntity)
 
 protected:
 

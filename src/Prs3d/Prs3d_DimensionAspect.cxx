@@ -23,6 +23,8 @@
 #include <Quantity_Color.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_DimensionAspect,Prs3d_BasicAspect)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

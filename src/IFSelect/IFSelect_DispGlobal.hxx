@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_DispGlobal,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_DispGlobal,IFSelect_Dispatch)
 
 protected:
 

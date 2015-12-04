@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_Timer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_Timer,MMgt_TShared)
 
 protected:
 

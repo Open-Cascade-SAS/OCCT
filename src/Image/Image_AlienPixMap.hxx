@@ -90,7 +90,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Image_AlienPixMap, Image_PixMap) // Type definition
+  DEFINE_STANDARD_RTTIEXT(Image_AlienPixMap,Image_PixMap) // Type definition
 
 };
 

@@ -77,7 +77,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_CenterLine,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_CenterLine,IGESData_IGESEntity)
 
 protected:
 

@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_AspectLine3d,Aspect_AspectLine)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectLine3d,Aspect_AspectLine)
 
 protected:
 

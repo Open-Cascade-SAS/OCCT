@@ -20,7 +20,7 @@ public:
   ISession_Curve(Handle(Geom_Curve)& aCurve);
   virtual ~ISession_Curve();
 
-  DEFINE_STANDARD_RTTI(ISession_Curve,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(ISession_Curve,AIS_InteractiveObject)
 
 private:
 

@@ -15,3 +15,5 @@
 
 #include <Standard_Type.hxx>
 #include <TCollection_MapNode.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(TCollection_MapNode,MMgt_TShared)

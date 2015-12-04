@@ -153,7 +153,7 @@ static TCollection_AsciiString  Comment(Standard_Real Step,
       "GeomAPI_PointsToBSplineSurface aPTBS;" EOL
       "aPTBS.Init(aZPoints,aX0,aXStep,aY0,aYStep," EOL
       "           DegMin,DegMax,Continuity,Tolerance);" EOL
-      "Handle_Geom_BSplineSurface aSurface = aPTBS.Surface();" EOL EOL EOL
+      "Handle(Geom_BSplineSurface) aSurface = aPTBS.Surface();" EOL EOL EOL
     );
 
   return aText;
@@ -165,7 +165,7 @@ static TCollection_AsciiString  Comment(Standard_Real Step,
 // Purpose  : 
 //================================================================
 
-Handle_Geom_BSplineSurface Approx_Presentation::CreateBSplineSurface(TColStd_Array2OfReal& aZPoints,
+Handle(Geom_BSplineSurface) Approx_Presentation::CreateBSplineSurface(TColStd_Array2OfReal& aZPoints,
                                                                Standard_Real theXStep,
                                                                Standard_Real theYStep,
                                                                Standard_Integer Count)
@@ -175,7 +175,7 @@ Handle_Geom_BSplineSurface Approx_Presentation::CreateBSplineSurface(TColStd_Arr
   GeomAPI_PointsToBSplineSurface aPTBS;
   aPTBS.Init(aZPoints,aX0,theXStep,aY0,theYStep,
     DegMin[Count],DegMax[Count],Continuity[Count],Tol[Count]);
-  Handle_Geom_BSplineSurface aSurface = aPTBS.Surface();
+  Handle(Geom_BSplineSurface) aSurface = aPTBS.Surface();
 
   return aSurface;
 }
@@ -192,12 +192,12 @@ Standard_Boolean Approx_Presentation::DrawModifyBSplineSurface(TColStd_Array2OfR
                                                                Standard_Integer theIndexX,
                                                                Standard_Integer theIndexY,
                                                                Standard_Real theDeflection,
-                                                               Handle_AIS_InteractiveObject& aMovePnt,
-                                                               Handle_AIS_InteractiveObject& aObj,
+                                                               Handle(AIS_InteractiveObject)& aMovePnt,
+                                                               Handle(AIS_InteractiveObject)& aObj,
                                                                Standard_Integer Count)
                            
 { 
-  Handle_AIS_InteractiveObject auxObj;
+  Handle(AIS_InteractiveObject) auxObj;
   Standard_Real aX0 = -300, aY0 = -200;
   Standard_Real aLastZ = aZPoints(theIndexX,theIndexY);
   aZPoints(theIndexX,theIndexY) += 100*theDeflection; 
@@ -216,7 +216,7 @@ Standard_Boolean Approx_Presentation::DrawModifyBSplineSurface(TColStd_Array2OfR
 
   aZPoints(theIndexX,theIndexY) = aLastZ;
 
-  Handle_Geom_BSplineSurface aSurface = aPTBS.Surface();
+  Handle(Geom_BSplineSurface) aSurface = aPTBS.Surface();
 
   auxObj = drawSurface(aSurface);
   getAISContext()->Erase(aObj);
@@ -275,7 +275,7 @@ void Approx_Presentation::sample1()
 
   aText += (
     "aPTB.Init(aCurvePoint,DegMin,DegMax,Continuity,Tolerance);" EOL
-    "Handle_Geom_BSplineCurve aCurve = aPTB.Curve();" EOL
+    "Handle(Geom_BSplineCurve) aCurve = aPTB.Curve();" EOL
   );
 
   setResultTitle("Creating approximations of curves");
@@ -295,7 +295,7 @@ void Approx_Presentation::sample1()
 
   GeomAPI_PointsToBSpline aPTB;
 
-  Handle_AIS_InteractiveObject aIndexPnt [2],aObj;
+  Handle(AIS_InteractiveObject) aIndexPnt [2],aObj;
   Standard_Integer aIndex[2] = {9,13};
   Standard_Real aDeflection[2] = {-1.5,2};
   
@@ -313,7 +313,7 @@ void Approx_Presentation::sample1()
   if(WAIT_A_LITTLE) return;
 
   aPTB.Init(aCurvePoint,DegMin[Count],DegMax[Count],Continuity[Count],Tol[Count]);
-  Handle_Geom_BSplineCurve aCurve = aPTB.Curve();
+  Handle(Geom_BSplineCurve) aCurve = aPTB.Curve();
   aObj = drawCurve(aCurve);
 
   for( i = 0 ; i < 2 ; i++)
@@ -367,7 +367,7 @@ void Approx_Presentation::sample2()
 
   
   TColgp_Array2OfPnt aPnt(1,4,1,4);
-  Handle_AIS_InteractiveObject aShowPnt[4][4],aObj,aMovePnt;
+  Handle(AIS_InteractiveObject) aShowPnt[4][4],aObj,aMovePnt;
    
   Standard_Integer aColLength = aZPoints.ColLength();
   Standard_Integer aRowLength = aZPoints.RowLength();
@@ -404,7 +404,7 @@ void Approx_Presentation::sample2()
   aText = Comment(aXStep,anUpper,DegMin[Count],DegMax[Count],Count+1,Tol[Count]);
   setResultText(aText.ToCString());
 
-  Handle_Geom_BSplineSurface aSurface = CreateBSplineSurface(aZPoints,aXStep,aYStep,Count);
+  Handle(Geom_BSplineSurface) aSurface = CreateBSplineSurface(aZPoints,aXStep,aYStep,Count);
   aObj = drawSurface(aSurface);
   Standard_Boolean aBool;
   if(WAIT_A_LITTLE) return ;
@@ -452,7 +452,7 @@ void Approx_Presentation::sample3()
 
   
   TColgp_Array2OfPnt aPnt(1,4,1,4);
-  Handle_AIS_InteractiveObject aShowPnt[4][4],aObj,aMovePnt;
+  Handle(AIS_InteractiveObject) aShowPnt[4][4],aObj,aMovePnt;
    
   Standard_Integer aColLength = aZPoints.ColLength();
   Standard_Integer aRowLength = aZPoints.RowLength();
@@ -491,7 +491,7 @@ void Approx_Presentation::sample3()
   aText += Comment(aXStep,anUpper,DegMin[Count],DegMax[Count],Count+1,Tol[Count]);
   setResultText(aText.ToCString());
 
-  Handle_Geom_BSplineSurface aSurface = CreateBSplineSurface(aZPoints,aXStep,aYStep,Count);
+  Handle(Geom_BSplineSurface) aSurface = CreateBSplineSurface(aZPoints,aXStep,aYStep,Count);
   aObj = drawSurface(aSurface);
   Standard_Boolean aBool;
   if(WAIT_A_LITTLE) return ;
@@ -540,7 +540,7 @@ void Approx_Presentation::sample4()
 
   
   TColgp_Array2OfPnt aPnt(1,5,1,5);
-  Handle_AIS_InteractiveObject aShowPnt[5][5],aObj,aMovePnt;
+  Handle(AIS_InteractiveObject) aShowPnt[5][5],aObj,aMovePnt;
    
   Standard_Integer aColLength = aZPoints.ColLength();
   Standard_Integer aRowLength = aZPoints.RowLength();
@@ -579,7 +579,7 @@ void Approx_Presentation::sample4()
   aText += Comment(aXStep,anUpper,DegMin[Count],DegMax[Count],Count+1,Tol[Count]);
   setResultText(aText.ToCString());
 
-  Handle_Geom_BSplineSurface aSurface = CreateBSplineSurface(aZPoints,aXStep,aYStep,Count);
+  Handle(Geom_BSplineSurface) aSurface = CreateBSplineSurface(aZPoints,aXStep,aYStep,Count);
   aObj = drawSurface(aSurface);
   Standard_Boolean aBool;
   if(WAIT_A_LITTLE) return ;

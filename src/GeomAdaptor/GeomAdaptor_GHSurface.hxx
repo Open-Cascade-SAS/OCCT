@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomAdaptor_GHSurface,Adaptor3d_HSurface)
+  DEFINE_STANDARD_RTTI_INLINE(GeomAdaptor_GHSurface,Adaptor3d_HSurface)
 
 protected:
 

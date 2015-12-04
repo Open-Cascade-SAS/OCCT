@@ -38,10 +38,10 @@ private:
   void sampleConicalSurface(); 
   void sampleSphericalSurface(); 
 
-  void drawCurveAndItsBSpline (Handle_Geom_Curve theCurve, 
+  void drawCurveAndItsBSpline (Handle(Geom_Curve) theCurve, 
     const Standard_CString theName, TCollection_AsciiString& theText);
 
-  void drawSurfaceAndItsBSpline (const Handle_Geom_Surface & theSurface, 
+  void drawSurfaceAndItsBSpline (const Handle(Geom_Surface) & theSurface, 
     const Standard_CString theName, TCollection_AsciiString& theText);
 
 private:

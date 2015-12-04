@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ExtrudedAreaSolid,StepShape_SweptAreaSolid)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ExtrudedAreaSolid,StepShape_SweptAreaSolid)
 
 protected:
 

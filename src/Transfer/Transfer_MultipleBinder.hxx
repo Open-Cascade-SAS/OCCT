@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_MultipleBinder,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_MultipleBinder,Transfer_Binder)
 
 protected:
 

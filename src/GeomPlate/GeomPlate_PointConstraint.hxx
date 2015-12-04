@@ -146,7 +146,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomPlate_PointConstraint,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomPlate_PointConstraint,MMgt_TShared)
 
 protected:
 

@@ -126,10 +126,10 @@ static TopoDS_Shape CreateRevolShape()
 
   gp_Ax1 anAxis = gp_Ax1(gp_Pnt(0,0,0),gp::DY());
   GC_MakeSegment aSegment(gp_Pnt(0,-8*SCALE,0),gp_Pnt(0,-8*SCALE,2*SCALE));
-  Handle_Geom_TrimmedCurve aLine = aSegment.Value();
-  Handle_Geom_SurfaceOfRevolution aSurface1 = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  Handle_Geom_SurfaceOfRevolution aSurface2 = new Geom_SurfaceOfRevolution(aCurve1, anAxis);
-  Handle_Geom_SurfaceOfRevolution aSurface3 = new Geom_SurfaceOfRevolution(aCurve2, anAxis);
+  Handle(Geom_TrimmedCurve) aLine = aSegment.Value();
+  Handle(Geom_SurfaceOfRevolution) aSurface1 = new Geom_SurfaceOfRevolution(aLine, anAxis);
+  Handle(Geom_SurfaceOfRevolution) aSurface2 = new Geom_SurfaceOfRevolution(aCurve1, anAxis);
+  Handle(Geom_SurfaceOfRevolution) aSurface3 = new Geom_SurfaceOfRevolution(aCurve2, anAxis);
   
   BRep_Builder aBuilder;
   TopoDS_Compound aShape;
@@ -214,10 +214,10 @@ static TopoDS_Shape CreateBSplnShape()
 
   GeomAPI_PointsToBSplineSurface aPTBS;
   aPTBS.Init(aZPoints1,aX0,aXStep,aY0,aYStep,3,10,GeomAbs_C3,0.3*SCALE);
-  Handle_Geom_BSplineSurface aSurface1 = aPTBS.Surface();
+  Handle(Geom_BSplineSurface) aSurface1 = aPTBS.Surface();
   
   aPTBS.Init(aZPoints2,aX0,aXStep,aY0,aYStep,3,10,GeomAbs_C3,0.3*SCALE);
-  Handle_Geom_BSplineSurface aSurface2 = aPTBS.Surface();
+  Handle(Geom_BSplineSurface) aSurface2 = aPTBS.Surface();
 
   TopoDS_Face aFace1,aFace2;
   aFace1 = BRepBuilderAPI_MakeFace (aSurface1);
@@ -251,7 +251,7 @@ void TopLProps_Presentation::sample1()
   if (aEdge.IsNull()) return;
   
   //show:
-  Handle_AIS_InteractiveObject aShowShape = drawShape(aShape);
+  Handle(AIS_InteractiveObject) aShowShape = drawShape(aShape);
   if(WAIT_A_SECOND) return;
   drawShape(aEdge,Quantity_NOC_RED);
   if(WAIT_A_SECOND) return;
@@ -281,9 +281,9 @@ void TopLProps_Presentation::sample2()
   if (aFace.IsNull()) return;
 
   //show:
-  Handle_AIS_InteractiveObject aShowShape = drawShape(aShape);
+  Handle(AIS_InteractiveObject) aShowShape = drawShape(aShape);
   if(WAIT_A_SECOND) return;
-  Handle_AIS_InteractiveObject aShowFace = drawShape(aFace,Graphic3d_NOM_BRASS,Standard_False);
+  Handle(AIS_InteractiveObject) aShowFace = drawShape(aFace,Graphic3d_NOM_BRASS,Standard_False);
   getAISContext()->SetDisplayMode(aShowFace,AIS_WireFrame);
   getAISContext()->Display(aShowFace);
   if(WAIT_A_SECOND) return;
@@ -324,7 +324,7 @@ void TopLProps_Presentation::sample3()
   Standard_Integer aNbPoints = sizeof(aPoints)/sizeof(Standard_Real);
 
   //show:
-  Handle_AIS_InteractiveObject aShowShape = drawShape(aShape);
+  Handle(AIS_InteractiveObject) aShowShape = drawShape(aShape);
   if(WAIT_A_SECOND) return;
 
   drawShape(aEdge,Quantity_NOC_RED);
@@ -367,9 +367,9 @@ void TopLProps_Presentation::sample4()
   Standard_Integer aNbPoints = sizeof(aPoints)/(sizeof(Standard_Real)*2);
 
   //show:
-  Handle_AIS_InteractiveObject aShowShape = drawShape(aShape);
+  Handle(AIS_InteractiveObject) aShowShape = drawShape(aShape);
   if(WAIT_A_SECOND) return;
-  Handle_AIS_InteractiveObject aShowFace = drawShape(aFace,Graphic3d_NOM_BRASS,Standard_False);
+  Handle(AIS_InteractiveObject) aShowFace = drawShape(aFace,Graphic3d_NOM_BRASS,Standard_False);
   getAISContext()->SetDisplayMode(aShowFace,AIS_WireFrame);
   getAISContext()->Display(aShowFace);
   if(WAIT_A_SECOND) return;
@@ -439,7 +439,7 @@ void TopLProps_Presentation::showEdgeLProps(TopoDS_Edge& theEdge,
   setResultText (aText.ToCString());
 
   BRepAdaptor_Curve anAdapCurve (theEdge) ;
-  Handle_AIS_InteractiveObject aObjs[7];
+  Handle(AIS_InteractiveObject) aObjs[7];
   Standard_Integer maxOrder = 3;
   Standard_Real aResol = gp::Resolution();
   BRepLProp_CLProps aLProps (anAdapCurve,maxOrder,aResol);

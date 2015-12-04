@@ -20,6 +20,8 @@
 #include <StepBasic_RatioUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndRatioUnit,StepBasic_ConversionBasedUnit)
+
 StepBasic_ConversionBasedUnitAndRatioUnit::StepBasic_ConversionBasedUnitAndRatioUnit ()
 {
 }

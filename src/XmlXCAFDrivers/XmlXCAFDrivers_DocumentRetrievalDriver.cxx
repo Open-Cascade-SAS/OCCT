@@ -21,6 +21,8 @@
 #include <XmlMXCAFDoc.hxx>
 #include <XmlXCAFDrivers_DocumentRetrievalDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentRetrievalDriver,XmlDrivers_DocumentRetrievalDriver)
+
 //=======================================================================
 //function : XmlXCAFDrivers_DocumentRetrievalDriver
 //purpose  : 

@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_Element,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_Element,MMgt_TShared)
 
 protected:
 

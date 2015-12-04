@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_PrecisionQualifier,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_PrecisionQualifier,MMgt_TShared)
 
 protected:
 

@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_DrawingWithRotation,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_DrawingWithRotation,IGESData_IGESEntity)
 
 protected:
 

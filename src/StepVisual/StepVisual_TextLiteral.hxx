@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_TextLiteral,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TextLiteral,StepGeom_GeometricRepresentationItem)
 
 protected:
 

@@ -20,6 +20,8 @@
 #include <StepAP203_CcDesignCertification.hxx>
 #include <StepBasic_Certification.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignCertification,StepBasic_CertificationAssignment)
+
 //=======================================================================
 //function : StepAP203_CcDesignCertification
 //purpose  : 

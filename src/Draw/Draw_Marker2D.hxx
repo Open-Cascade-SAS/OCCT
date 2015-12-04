@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Marker2D,Draw_Drawable2D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Marker2D,Draw_Drawable2D)
 
 protected:
 

@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IntStart_SITopolTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IntStart_SITopolTool,MMgt_TShared)
 
 protected:
 

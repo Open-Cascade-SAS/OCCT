@@ -22,6 +22,8 @@
 #include <Storage_Schema.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData,MMgt_TShared)
+
 Storage_RootData::Storage_RootData() : myErrorStatus(Storage_VSOk)
 {
 }

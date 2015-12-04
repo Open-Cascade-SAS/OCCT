@@ -21,6 +21,8 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DimTolToolDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : 
 //purpose  : 

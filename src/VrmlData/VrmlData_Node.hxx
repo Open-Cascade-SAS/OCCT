@@ -195,7 +195,7 @@ class VrmlData_Node : public Standard_Transient
 
  public:
 // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI (VrmlData_Node, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(VrmlData_Node,Standard_Transient)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

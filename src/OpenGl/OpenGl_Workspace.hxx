@@ -102,7 +102,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_RaytraceFilter, OpenGl_RenderFilter)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_RaytraceFilter,OpenGl_RenderFilter)
 };
 
 class OpenGl_Workspace;
@@ -283,7 +283,7 @@ protected: //! @name fields related to status
 
 public: //! @name type definition
 
-  DEFINE_STANDARD_RTTI(OpenGl_Workspace, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
   DEFINE_STANDARD_ALLOC
 
 };

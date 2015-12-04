@@ -20,6 +20,8 @@
 #include <StepBasic_ProductDefinitionFormationRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormationRelationship,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_ProductDefinitionFormationRelationship
 //purpose  : 

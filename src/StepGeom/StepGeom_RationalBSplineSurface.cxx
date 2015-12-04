@@ -16,6 +16,8 @@
 #include <StepGeom_RationalBSplineSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RationalBSplineSurface,StepGeom_BSplineSurface)
+
 StepGeom_RationalBSplineSurface::StepGeom_RationalBSplineSurface ()  {}
 
 void StepGeom_RationalBSplineSurface::Init(

@@ -380,7 +380,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (Poly_CoherentTriangulation, Standard_Transient)
+DEFINE_STANDARD_RTTIEXT(Poly_CoherentTriangulation,Standard_Transient)
 
   friend class IteratorOfTriangle;
   friend class IteratorOfNode;

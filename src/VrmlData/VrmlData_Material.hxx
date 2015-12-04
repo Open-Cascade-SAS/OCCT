@@ -156,7 +156,7 @@ class VrmlData_Material : public VrmlData_Node
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Material, VrmlData_Node)
+DEFINE_STANDARD_RTTIEXT(VrmlData_Material,VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

@@ -82,7 +82,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSControl_Vars,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSControl_Vars,MMgt_TShared)
 
 protected:
 

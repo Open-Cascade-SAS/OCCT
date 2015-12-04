@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_DimensionOwner,SelectMgr_EntityOwner)
+  DEFINE_STANDARD_RTTIEXT(AIS_DimensionOwner,SelectMgr_EntityOwner)
 
 protected:
 

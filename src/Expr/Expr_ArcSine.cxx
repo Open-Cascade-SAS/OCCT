@@ -31,6 +31,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_ArcSine,Expr_UnaryExpression)
+
 Expr_ArcSine::Expr_ArcSine (const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);

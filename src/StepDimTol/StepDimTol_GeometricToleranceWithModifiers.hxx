@@ -76,7 +76,7 @@ public:
   {  
     myModifiers->SetValue (theNum, theItem);
   }
-  DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceWithModifiers, StepDimTol_GeometricTolerance)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithModifiers,StepDimTol_GeometricTolerance)
 
 private: 
   Handle(StepDimTol_HArray1OfGeometricToleranceModifier) myModifiers;

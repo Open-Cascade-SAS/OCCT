@@ -40,6 +40,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivide,ShapeUpgrade_Tool)
+
 //=======================================================================
 //function : ShapeUpgrade_FaceDivide
 //purpose  : 

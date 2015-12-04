@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_ElementDescriptor,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_ElementDescriptor,MMgt_TShared)
 
 protected:
 

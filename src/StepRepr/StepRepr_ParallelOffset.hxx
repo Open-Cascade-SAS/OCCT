@@ -50,7 +50,7 @@ public:
     offset = theOffset;
   }
 
-  DEFINE_STANDARD_RTTI(StepRepr_ParallelOffset, StepRepr_DerivedShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ParallelOffset,StepRepr_DerivedShapeAspect)
 
 private:
   Handle(StepBasic_MeasureWithUnit) offset;

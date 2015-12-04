@@ -16,6 +16,8 @@
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_PresentationStyleSelect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment,MMgt_TShared)
+
 StepVisual_PresentationStyleAssignment::StepVisual_PresentationStyleAssignment ()  {}
 
 void StepVisual_PresentationStyleAssignment::Init(

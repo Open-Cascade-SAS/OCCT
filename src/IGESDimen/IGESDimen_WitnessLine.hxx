@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_WitnessLine,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_WitnessLine,IGESData_IGESEntity)
 
 protected:
 

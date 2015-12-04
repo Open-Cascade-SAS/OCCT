@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(CDF_FWOSDriver,CDF_MetaDataDriver)
+  DEFINE_STANDARD_RTTIEXT(CDF_FWOSDriver,CDF_MetaDataDriver)
 
 protected:
 

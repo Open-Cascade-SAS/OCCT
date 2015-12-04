@@ -17,6 +17,8 @@
 #include <StepBasic_DateAndTime.hxx>
 #include <StepBasic_LocalTime.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateAndTime,MMgt_TShared)
+
 StepBasic_DateAndTime::StepBasic_DateAndTime ()  {}
 
 void StepBasic_DateAndTime::Init(

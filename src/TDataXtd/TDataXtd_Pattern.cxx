@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <TDataXtd_Pattern.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Pattern,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

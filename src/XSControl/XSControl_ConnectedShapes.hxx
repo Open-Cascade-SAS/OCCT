@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSControl_ConnectedShapes,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(XSControl_ConnectedShapes,IFSelect_SelectExplore)
 
 protected:
 

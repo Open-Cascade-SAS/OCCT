@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CartesianTransformationOperator3d,StepGeom_CartesianTransformationOperator)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator3d,StepGeom_CartesianTransformationOperator)
 
 protected:
 

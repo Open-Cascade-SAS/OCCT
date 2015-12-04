@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_Protocol,IGESData_Protocol)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_Protocol,IGESData_Protocol)
 
 protected:
 

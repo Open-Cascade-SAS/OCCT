@@ -24,6 +24,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_PolyExpression,Expr_GeneralExpression)
+
 Expr_PolyExpression::Expr_PolyExpression()
 {
 }

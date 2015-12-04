@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_MeasureValueMember,StepData_SelectReal)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_MeasureValueMember,StepData_SelectReal)
 
 protected:
 

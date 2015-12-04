@@ -144,7 +144,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_GraphNode,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_GraphNode,TDF_Attribute)
 
 protected:
 

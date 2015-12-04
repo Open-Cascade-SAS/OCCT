@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PinNumber,IGESData_IGESEntity)
+
 IGESAppli_PinNumber::IGESAppli_PinNumber ()    {  }
 
 

@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Vrml_IndexedLineSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_IndexedLineSet,MMgt_TShared)
 
 protected:
 

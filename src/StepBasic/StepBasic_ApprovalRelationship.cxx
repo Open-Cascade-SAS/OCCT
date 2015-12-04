@@ -17,6 +17,8 @@
 #include <StepBasic_ApprovalRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalRelationship,MMgt_TShared)
+
 StepBasic_ApprovalRelationship::StepBasic_ApprovalRelationship ()  {}
 
 void StepBasic_ApprovalRelationship::Init(

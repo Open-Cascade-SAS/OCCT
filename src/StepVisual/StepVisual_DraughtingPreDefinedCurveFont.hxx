@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_DraughtingPreDefinedCurveFont,StepVisual_PreDefinedCurveFont)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedCurveFont,StepVisual_PreDefinedCurveFont)
 
 protected:
 

@@ -46,6 +46,8 @@
 
 #include <locale.h>
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(Storage_Schema,MMgt_TShared)
+
 #define DATATYPE_MIGRATION
 
 #ifdef DATATYPE_MIGRATION

@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_OffsetCurve3d,StepGeom_Curve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_OffsetCurve3d,StepGeom_Curve)
 
 protected:
 

@@ -17,6 +17,8 @@
 #include <StepGeom_ConicalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ConicalSurface,StepGeom_ElementarySurface)
+
 StepGeom_ConicalSurface::StepGeom_ConicalSurface ()  {}
 
 void StepGeom_ConicalSurface::Init(

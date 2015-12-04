@@ -31,6 +31,8 @@
 
 
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager,Standard_Transient)
+
 namespace
 {
 

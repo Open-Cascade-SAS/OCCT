@@ -36,6 +36,8 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <UTL.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReadWriter_1,PCDM_ReadWriter)
+
 #define START_REF "START_REF"
 #define END_REF "END_REF"
 #define START_EXT "START_EXT"

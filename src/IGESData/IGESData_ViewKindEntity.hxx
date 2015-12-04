@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_ViewKindEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_ViewKindEntity,IGESData_IGESEntity)
 
 protected:
 

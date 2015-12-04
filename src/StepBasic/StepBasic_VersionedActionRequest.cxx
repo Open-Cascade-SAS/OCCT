@@ -20,6 +20,8 @@
 #include <StepBasic_VersionedActionRequest.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_VersionedActionRequest,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_VersionedActionRequest
 //purpose  : 

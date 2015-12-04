@@ -21,6 +21,8 @@
 #include <XmlMXCAFDoc_DocumentToolDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_DocumentToolDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function :
 //purpose  : 

@@ -132,7 +132,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_CircularBlendFunc,Approx_SweepFunction)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc,Approx_SweepFunction)
 
 protected:
 

@@ -16,6 +16,8 @@
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPoints,Graphic3d_ArrayOfPrimitives)
+
 Graphic3d_ArrayOfPoints::Graphic3d_ArrayOfPoints (const Standard_Integer theMaxVertexs,
                                                   const Standard_Boolean theHasVColors,
                                                   const Standard_Boolean theHasVNormals)

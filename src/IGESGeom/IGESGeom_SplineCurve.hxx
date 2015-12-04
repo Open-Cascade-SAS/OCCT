@@ -124,7 +124,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_SplineCurve,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_SplineCurve,IGESData_IGESEntity)
 
 protected:
 

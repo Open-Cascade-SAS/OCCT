@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SignAncestor,IFSelect_SignType)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignAncestor,IFSelect_SignType)
 
 protected:
 

@@ -178,7 +178,7 @@ public:
   }
 
 public:
-  DEFINE_STANDARD_RTTI(BRepBuilderAPI_Copy_Modification, BRepTools_Modification)
+  DEFINE_STANDARD_RTTI_INLINE(BRepBuilderAPI_Copy_Modification,BRepTools_Modification)
 
 private: 
   Standard_Boolean myCopyGeom;

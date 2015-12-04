@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(QABugs_MyText,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(QABugs_MyText,AIS_InteractiveObject)
 
 protected:
 

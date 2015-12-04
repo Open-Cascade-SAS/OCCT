@@ -21,6 +21,8 @@
 #include <ElCLib.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox,Select3D_SensitiveEntity)
+
 //==================================================
 // Function: Select3D_SensitiveBox
 // Purpose :

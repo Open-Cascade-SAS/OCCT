@@ -17,5 +17,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_SingleParentEntity,IGESData_IGESEntity)
+
 // SingleParentEntity sert a decrire des entites "associativite parent"
 // (methode Parent a definir)

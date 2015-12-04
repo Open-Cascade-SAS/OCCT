@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepBlend_AppFuncRoot,Approx_SweepFunction)
+  DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFuncRoot,Approx_SweepFunction)
 
 protected:
 

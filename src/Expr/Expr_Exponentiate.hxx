@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Exponentiate,Expr_BinaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Exponentiate,Expr_BinaryExpression)
 
 protected:
 

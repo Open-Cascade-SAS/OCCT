@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SplineToBSpline,IFSelect_Transformer)
+
 IGESSelect_SplineToBSpline::IGESSelect_SplineToBSpline
   (const Standard_Boolean tryC2)
 {

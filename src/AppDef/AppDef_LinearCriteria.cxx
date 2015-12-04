@@ -38,6 +38,8 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AppDef_LinearCriteria,AppDef_SmoothCriterion)
+
 static Standard_Integer order(const Handle(PLib_Base)& B)
 {
   return (*( Handle(PLib_HermitJacobi)*)&B)->NivConstr();

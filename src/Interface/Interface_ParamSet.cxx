@@ -19,6 +19,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_ParamSet,MMgt_TShared)
+
 Interface_ParamSet::Interface_ParamSet (const Standard_Integer nres, const Standard_Integer )//nst)
 {
   thelist = new Interface_ParamList;// (nst,nst+nres+2);

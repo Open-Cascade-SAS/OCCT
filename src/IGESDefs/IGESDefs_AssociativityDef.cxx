@@ -22,6 +22,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AssociativityDef,IGESData_IGESEntity)
+
 IGESDefs_AssociativityDef::IGESDefs_AssociativityDef ()    {  }
 
 

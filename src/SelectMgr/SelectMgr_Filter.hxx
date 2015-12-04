@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(SelectMgr_Filter,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_Filter,MMgt_TShared)
 
 protected:
 

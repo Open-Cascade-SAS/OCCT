@@ -182,7 +182,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Line,Geom_Curve)
+  DEFINE_STANDARD_RTTIEXT(Geom_Line,Geom_Curve)
 
 protected:
 

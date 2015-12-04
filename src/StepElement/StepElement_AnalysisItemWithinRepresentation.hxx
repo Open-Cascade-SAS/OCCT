@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_AnalysisItemWithinRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_AnalysisItemWithinRepresentation,MMgt_TShared)
 
 protected:
 

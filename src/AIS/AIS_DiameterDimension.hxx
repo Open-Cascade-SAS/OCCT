@@ -130,7 +130,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_DiameterDimension, AIS_Dimension)
+  DEFINE_STANDARD_RTTIEXT(AIS_DiameterDimension,AIS_Dimension)
 
 protected:
 

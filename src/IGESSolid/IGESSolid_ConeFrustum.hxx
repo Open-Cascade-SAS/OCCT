@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_ConeFrustum,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_ConeFrustum,IGESData_IGESEntity)
 
 protected:
 

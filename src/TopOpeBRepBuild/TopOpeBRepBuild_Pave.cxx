@@ -20,6 +20,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_Pave.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave,TopOpeBRepBuild_Loop)
+
 //=======================================================================
 //function : TopOpeBRepBuild_Pave
 //purpose  : 

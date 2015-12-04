@@ -48,7 +48,7 @@ public:
   
   Standard_EXPORT Handle(StepRepr_RepresentationItem) GetRepresentationItem() const;
 
-  DEFINE_STANDARD_RTTI(StepRepr_ReprItemAndMeasureWithUnit,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnit,StepRepr_RepresentationItem)
 
 private:
 

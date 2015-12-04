@@ -333,7 +333,7 @@ Standard_Integer AddVertex (const Graphic3d_Vec3& theVertex);
 friend class Graphic3d_Group;
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_ArrayOfPrimitives,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives,MMgt_TShared)
 
 protected:
 

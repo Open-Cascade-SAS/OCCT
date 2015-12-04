@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PLib_Base,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(PLib_Base,MMgt_TShared)
 
 protected:
 

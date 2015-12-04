@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Aspect_AspectLine,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Aspect_AspectLine,MMgt_TShared)
 
 protected:
 

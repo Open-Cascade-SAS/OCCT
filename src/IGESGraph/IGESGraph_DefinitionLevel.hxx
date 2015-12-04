@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_DefinitionLevel,IGESData_LevelListEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_DefinitionLevel,IGESData_LevelListEntity)
 
 protected:
 

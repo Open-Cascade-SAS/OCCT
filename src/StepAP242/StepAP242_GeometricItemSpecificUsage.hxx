@@ -31,7 +31,7 @@ public:
   
   Standard_EXPORT StepAP242_GeometricItemSpecificUsage();
 
-  DEFINE_STANDARD_RTTI(StepAP242_GeometricItemSpecificUsage, StepAP242_ItemIdentifiedRepresentationUsage)
+  DEFINE_STANDARD_RTTIEXT(StepAP242_GeometricItemSpecificUsage,StepAP242_ItemIdentifiedRepresentationUsage)
 
 private: 
 };

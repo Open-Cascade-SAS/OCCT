@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_BezierCurve,DrawTrSurf_Curve)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BezierCurve,DrawTrSurf_Curve)
 
 protected:
 

@@ -21,7 +21,7 @@ class CTrihedronDlg : public CDialog
 // Construction
 public:
 	CTrihedronDlg(CWnd* pParent = NULL);   // standard constructor
-	CTrihedronDlg(Handle_V3d_View Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent = NULL);   // standard constructor
+	CTrihedronDlg(Handle(V3d_View) Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent = NULL);   // standard constructor
 
 
 // Dialog Data
@@ -63,7 +63,7 @@ protected:
 
 private:
 
-	Handle_V3d_View myCurrent_V3d_View;
+	Handle(V3d_View) myCurrent_V3d_View;
 	CViewer3dDoc* myDoc;
 	Quantity_NameOfColor Color ;
 	Aspect_TypeOfTriedronPosition Position;

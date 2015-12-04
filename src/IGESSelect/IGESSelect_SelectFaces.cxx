@@ -26,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectFaces,IFSelect_SelectExplore)
+
 IGESSelect_SelectFaces::IGESSelect_SelectFaces ()
     : IFSelect_SelectExplore (-1)    {  }
 

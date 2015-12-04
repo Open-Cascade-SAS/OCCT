@@ -110,7 +110,7 @@ public:
 friend class TNaming_Builder;
 
 
-  DEFINE_STANDARD_RTTI(TNaming_UsedShapes,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TNaming_UsedShapes,TDF_Attribute)
 
 protected:
 

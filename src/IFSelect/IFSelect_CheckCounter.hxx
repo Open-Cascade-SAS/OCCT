@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_CheckCounter,IFSelect_SignatureList)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_CheckCounter,IFSelect_SignatureList)
 
 protected:
 

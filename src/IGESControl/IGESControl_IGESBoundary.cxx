@@ -55,6 +55,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESControl_IGESBoundary,IGESToBRep_IGESBoundary)
+
 //=======================================================================
 //function : IGESControl_IGESBoundary
 //purpose  : 

@@ -41,6 +41,8 @@
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
+
 #define SHAPESECTION_POS "SHAPE_SECTION_POS:"
 #define SIZEOFSHAPELABEL  18
 

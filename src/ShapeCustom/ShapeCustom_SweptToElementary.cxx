@@ -49,6 +49,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_SweptToElementary,ShapeCustom_Modification)
+
 //=======================================================================
 //function : ShapeCustom_SweptToElementary
 //purpose  : 

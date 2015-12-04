@@ -26,6 +26,8 @@
 #include <IGESGeom_Line.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_CurveDimension,IGESData_IGESEntity)
+
 IGESDimen_CurveDimension::IGESDimen_CurveDimension ()    {  }
 
 

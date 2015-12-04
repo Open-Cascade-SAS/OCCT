@@ -213,7 +213,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepDS_HDataStructure,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_HDataStructure,MMgt_TShared)
 
 protected:
 

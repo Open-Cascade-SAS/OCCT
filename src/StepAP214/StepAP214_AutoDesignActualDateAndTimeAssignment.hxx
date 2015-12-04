@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AutoDesignActualDateAndTimeAssignment,StepBasic_DateAndTimeAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AutoDesignActualDateAndTimeAssignment,StepBasic_DateAndTimeAssignment)
 
 protected:
 

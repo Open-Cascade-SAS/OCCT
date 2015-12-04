@@ -20,6 +20,8 @@
 #include <StepBasic_Certification.hxx>
 #include <StepBasic_CertificationAssignment.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CertificationAssignment,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_CertificationAssignment
 //purpose  : 

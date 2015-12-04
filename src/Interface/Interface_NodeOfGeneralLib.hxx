@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_NodeOfGeneralLib,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Interface_NodeOfGeneralLib,MMgt_TShared)
 
 protected:
 

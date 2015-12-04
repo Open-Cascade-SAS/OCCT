@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepDimTol_ConcentricityTolerance.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ConcentricityTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+
 //=======================================================================
 //function : StepDimTol_ConcentricityTolerance
 //purpose  : 

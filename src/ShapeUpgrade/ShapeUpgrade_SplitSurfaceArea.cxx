@@ -17,6 +17,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea,ShapeUpgrade_SplitSurface)
+
 //=======================================================================
 //function : ShapeUpgrade_SplitSurfaceArea
 //purpose  : 

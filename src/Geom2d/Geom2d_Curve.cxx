@@ -25,6 +25,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Curve,Geom2d_Geometry)
+
 typedef Geom2d_Curve         Curve;
 
 

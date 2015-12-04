@@ -21,6 +21,8 @@
 #include <StepBasic_IdentificationRole.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedExternalIdentificationAssignment,StepBasic_ExternalIdentificationAssignment)
+
 //=======================================================================
 //function : StepAP214_AppliedExternalIdentificationAssignment
 //purpose  : 

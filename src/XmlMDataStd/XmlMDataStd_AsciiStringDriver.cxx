@@ -24,6 +24,8 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_AsciiStringDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMDataStd_AsciiStringDriver
 //purpose  : Constructor

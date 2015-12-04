@@ -20,6 +20,8 @@
 #include <IGESSolid_SolidInstance.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidInstance,IGESData_IGESEntity)
+
 IGESSolid_SolidInstance::IGESSolid_SolidInstance ()    {  }
 
 

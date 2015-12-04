@@ -18,6 +18,8 @@
 #include <STEPCAFControl_ActorWrite.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_ActorWrite,STEPControl_ActorWrite)
+
 //=======================================================================
 //function : STEPCAFControl_ActorWrite
 //purpose  : 

@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_TabularData,IGESData_IGESEntity)
+
 IGESDefs_TabularData::IGESDefs_TabularData ()    {  }
 
 

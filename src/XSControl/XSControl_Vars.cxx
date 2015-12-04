@@ -28,6 +28,8 @@
 #include <TopoDS_Shape.hxx>
 #include <XSControl_Vars.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_Vars,MMgt_TShared)
+
 XSControl_Vars::XSControl_Vars  ()
     {  thevars = new Dico_DictionaryOfTransient;  }
 

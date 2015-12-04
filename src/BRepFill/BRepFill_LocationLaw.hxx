@@ -122,7 +122,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_LocationLaw,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_LocationLaw,MMgt_TShared)
 
 protected:
 

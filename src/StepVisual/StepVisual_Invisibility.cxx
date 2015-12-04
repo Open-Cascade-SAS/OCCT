@@ -16,6 +16,8 @@
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_Invisibility,MMgt_TShared)
+
 StepVisual_Invisibility::StepVisual_Invisibility ()  {}
 
 void StepVisual_Invisibility::Init(

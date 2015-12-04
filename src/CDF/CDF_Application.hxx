@@ -139,7 +139,7 @@ public:
 friend class CDF_Session;
 
 
-  DEFINE_STANDARD_RTTI(CDF_Application,CDM_Application)
+  DEFINE_STANDARD_RTTIEXT(CDF_Application,CDM_Application)
 
 protected:
 

@@ -15,6 +15,8 @@
 
 #include <StepDimTol_ProjectedZoneDefinition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition,StepDimTol_ToleranceZoneDefinition)
+
 //=======================================================================
 //function : StepDimTol_ProjectedZoneDefinition
 //purpose  : 

@@ -16,6 +16,8 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationItem,MMgt_TShared)
+
 StepRepr_RepresentationItem::StepRepr_RepresentationItem ()  {}
 
 void StepRepr_RepresentationItem::Init(

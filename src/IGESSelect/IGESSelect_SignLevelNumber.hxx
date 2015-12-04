@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SignLevelNumber,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SignLevelNumber,IFSelect_Signature)
 
 protected:
 

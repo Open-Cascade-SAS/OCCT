@@ -21,6 +21,8 @@
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference,TopOpeBRepDS_Interference)
+
 //=======================================================================
 //function : TopOpeBRepDS_ShapeShapeInterference
 //purpose  : 

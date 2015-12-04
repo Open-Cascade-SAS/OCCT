@@ -13,5 +13,4 @@
 
 #include <OcctJni_Window.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OcctJni_Window, Aspect_Window)
 IMPLEMENT_STANDARD_RTTIEXT(OcctJni_Window, Aspect_Window)

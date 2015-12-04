@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_Plane.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Plane,StepGeom_ElementarySurface)
+
 StepGeom_Plane::StepGeom_Plane ()  {}
 

@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom2d_CartesianPoint,Geom2d_Point)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_CartesianPoint,Geom2d_Point)
 
 protected:
 

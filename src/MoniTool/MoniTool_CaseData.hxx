@@ -286,7 +286,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_CaseData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_CaseData,MMgt_TShared)
 
 protected:
 

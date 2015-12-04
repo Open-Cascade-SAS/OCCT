@@ -149,7 +149,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_ComposeShell,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_ComposeShell,ShapeFix_Root)
 
 protected:
 

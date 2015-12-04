@@ -33,6 +33,7 @@
 #include <TDF_ChildIterator.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ReferenceDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (MasterEntry,        "master")
 IMPLEMENT_DOMSTRING (ReferredEntry,      "entry")
 IMPLEMENT_DOMSTRING (ReferredModelEntry, "modelentry")

@@ -30,9 +30,9 @@ class TObj_Persistence;
 class TObj_ObjectIterator;
 class TObj_TNameContainer;
 class TCollection_HExtendedString;
-class TColStd_HArray1OfInteger;
-class TColStd_HArray1OfReal;
-class TColStd_HArray1OfExtendedString;
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfExtendedString.hxx>
 
 class TObj_Object;
 DEFINE_STANDARD_HANDLE(TObj_Object,MMgt_TShared)
@@ -627,7 +627,7 @@ class TObj_Object : public MMgt_TShared
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_Object, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TObj_Object,MMgt_TShared)
 };
 
 //! Define handle in separate file

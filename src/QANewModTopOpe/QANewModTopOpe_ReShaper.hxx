@@ -57,7 +57,7 @@ Standard_EXPORT operator TopoDS_Shape() const;
 
 
 
-  DEFINE_STANDARD_RTTI(QANewModTopOpe_ReShaper,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(QANewModTopOpe_ReShaper,MMgt_TShared)
 
 protected:
 

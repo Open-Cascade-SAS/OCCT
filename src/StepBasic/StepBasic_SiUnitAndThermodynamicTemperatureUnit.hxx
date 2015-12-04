@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_SiUnitAndThermodynamicTemperatureUnit,StepBasic_SiUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndThermodynamicTemperatureUnit,StepBasic_SiUnit)
 
 protected:
 

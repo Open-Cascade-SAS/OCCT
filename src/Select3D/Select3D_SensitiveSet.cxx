@@ -17,6 +17,8 @@
 #include <Select3D_BVHPrimitiveContent.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSet,Select3D_SensitiveEntity)
+
 //=======================================================================
 // function : Select3D_SensitiveSet
 // purpose  : Creates new empty sensitive set and its content

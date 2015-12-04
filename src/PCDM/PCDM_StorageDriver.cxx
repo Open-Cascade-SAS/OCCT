@@ -36,6 +36,8 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 
 #include <locale.h>
+IMPLEMENT_STANDARD_RTTIEXT(PCDM_StorageDriver,PCDM_Writer)
+
 #define STORAGE_VERSION "STORAGE_VERSION:"
 
 

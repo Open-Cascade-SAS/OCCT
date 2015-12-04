@@ -48,7 +48,7 @@ public:
   Standard_EXPORT virtual void  Free (void* theAddress) Standard_OVERRIDE;
 
   // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI(NCollection_WinHeapAllocator, NCollection_BaseAllocator)
+  DEFINE_STANDARD_RTTIEXT(NCollection_WinHeapAllocator,NCollection_BaseAllocator)
 
 private:
   //! Copy constructor - prohibited

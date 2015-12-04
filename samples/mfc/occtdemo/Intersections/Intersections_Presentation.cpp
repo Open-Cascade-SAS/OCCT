@@ -70,7 +70,7 @@ void Intersections_Presentation::DoSample()
 //////////////////////////////////////////////////////////////////////
 
 
-static Handle_Geom2d_BSplineCurve create2dBSplineCurve(const Standard_Integer thePoles,
+static Handle(Geom2d_BSplineCurve) create2dBSplineCurve(const Standard_Integer thePoles,
                                  const Standard_Real theCoords[][2])
 {
   TColgp_Array1OfPnt2d thePoints(1, thePoles);
@@ -86,7 +86,7 @@ static Handle_Geom2d_BSplineCurve create2dBSplineCurve(const Standard_Integer th
 }
 
 
-static Handle_Geom_BSplineSurface createBSplineSurface(const Standard_Real theZCoords[],
+static Handle(Geom_BSplineSurface) createBSplineSurface(const Standard_Real theZCoords[],
                                                        const Standard_Real theXStep,
                                                        const Standard_Real theYStep,
                                                        const Standard_Real theXBound,

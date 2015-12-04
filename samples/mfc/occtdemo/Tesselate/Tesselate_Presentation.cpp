@@ -123,7 +123,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
     "  TopLoc_Location aLocation;" EOL EOL
     
     "  // takes the triangulation of the face aFace:" EOL
-    "  Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);" EOL EOL
+    "  Handle(Poly_Triangulation) aTr = BRep_Tool::Triangulation(aFace,aLocation);" EOL EOL
     
     "  if(!aTr.IsNull()) // if this triangulation is not NULL" EOL
     "  { " EOL
@@ -161,7 +161,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
     "    if(!aEdge.IsNull()) // if this edge is not NULL" EOL
     "    {" EOL
     "      // takes the polygon associated to the edge aEdge:" EOL
-    "      Handle_Poly_PolygonOnTriangulation aPol = " EOL
+    "      Handle(Poly_PolygonOnTriangulation) aPol = " EOL
     "        BRep_Tool::PolygonOnTriangulation(aEdge,aTr,aEdge.Location());" EOL EOL
     
     "      if(!aPol.IsNull()) // if this polygon is not NULL" EOL
@@ -197,7 +197,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
   Standard_Integer aNumOfNodes = 0;
   Standard_Integer aNumOfTriangles = 0;
   
-  Handle_AIS_InteractiveObject aShowEdge,aShowFace,aShowShape;
+  Handle(AIS_InteractiveObject) aShowEdge,aShowFace,aShowShape;
   
   TopExp_Explorer aExpFace,aExpEdge;
 
@@ -208,7 +208,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
     TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());
     TopLoc_Location aLocation;
 
-    Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);
+    Handle(Poly_Triangulation) aTr = BRep_Tool::Triangulation(aFace,aLocation);
 
     if(!aTr.IsNull())
     { 
@@ -232,7 +232,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 
         if(!aEdge.IsNull())
         {
-          Handle_Poly_PolygonOnTriangulation aPol = 
+          Handle(Poly_PolygonOnTriangulation) aPol = 
             BRep_Tool::PolygonOnTriangulation(aEdge,aTr,aEdge.Location());
 
           if(!aPol.IsNull())

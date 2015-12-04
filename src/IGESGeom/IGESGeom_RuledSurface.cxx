@@ -20,6 +20,8 @@
 #include <IGESGeom_RuledSurface.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_RuledSurface,IGESData_IGESEntity)
+
 IGESGeom_RuledSurface::IGESGeom_RuledSurface ()    {  }
 
 

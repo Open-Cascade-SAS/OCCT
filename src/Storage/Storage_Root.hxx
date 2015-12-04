@@ -87,7 +87,7 @@ public:
 friend class Storage_Schema;
 
 
-  DEFINE_STANDARD_RTTI(Storage_Root,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_Root,MMgt_TShared)
 
 protected:
 

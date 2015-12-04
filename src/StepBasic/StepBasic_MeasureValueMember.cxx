@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_MeasureValueMember,StepData_SelectReal)
+
 //=======================================================================
 //function : StepBasic_MeasureValueMember
 //purpose  : 

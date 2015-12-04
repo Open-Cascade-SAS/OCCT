@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_ExternalReferenceFile,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalReferenceFile,IGESData_IGESEntity)
 
 protected:
 

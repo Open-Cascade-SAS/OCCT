@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_EdgeProjAux,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux,MMgt_TShared)
 
 protected:
 

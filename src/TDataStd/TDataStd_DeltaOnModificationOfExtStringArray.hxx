@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_DeltaOnModificationOfExtStringArray,TDF_DeltaOnModification)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfExtStringArray,TDF_DeltaOnModification)
 
 protected:
 

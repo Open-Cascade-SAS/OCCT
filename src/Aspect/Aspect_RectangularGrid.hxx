@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Aspect_RectangularGrid,Aspect_Grid)
+  DEFINE_STANDARD_RTTIEXT(Aspect_RectangularGrid,Aspect_Grid)
 
 protected:
 

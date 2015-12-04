@@ -24,7 +24,7 @@ public:
     ISession_Direction(const gp_Pnt& aPnt,const gp_Pnt& aPnt2);
     ISession_Direction(const gp_Pnt& aPnt,const gp_Vec& aVec);
 
-  DEFINE_STANDARD_RTTI(ISession_Direction,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)
 
 private:
 

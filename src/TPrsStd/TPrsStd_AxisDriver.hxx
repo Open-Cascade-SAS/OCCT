@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_AxisDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_AxisDriver,TPrsStd_Driver)
 
 protected:
 

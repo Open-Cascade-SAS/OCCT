@@ -143,7 +143,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_ListEditor,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_ListEditor,MMgt_TShared)
 
 protected:
 

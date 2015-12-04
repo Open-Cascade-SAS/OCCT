@@ -930,7 +930,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Prs3d_Drawer, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_Drawer,MMgt_TShared)
 
 };
 

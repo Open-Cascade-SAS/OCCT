@@ -18,6 +18,8 @@
 #include <FairCurve_MinimalVariation.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawFairCurve_MinimalVariation,DrawFairCurve_Batten)
+
 DrawFairCurve_MinimalVariation::DrawFairCurve_MinimalVariation(const Standard_Address TheMVC)
                                : DrawFairCurve_Batten(TheMVC)
                                  

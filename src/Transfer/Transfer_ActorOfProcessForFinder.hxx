@@ -97,7 +97,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ActorOfProcessForFinder,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Transfer_ActorOfProcessForFinder,MMgt_TShared)
 
 protected:
 

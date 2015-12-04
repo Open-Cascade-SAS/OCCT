@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectSent,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSent,IFSelect_SelectExtract)
 
 protected:
 

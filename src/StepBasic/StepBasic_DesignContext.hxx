@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DesignContext,StepBasic_ProductDefinitionContext)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DesignContext,StepBasic_ProductDefinitionContext)
 
 protected:
 

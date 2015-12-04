@@ -67,7 +67,7 @@ public:
 friend class CDF_DirectoryIterator;
 
 
-  DEFINE_STANDARD_RTTI(CDF_Directory,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDF_Directory,Standard_Transient)
 
 protected:
 

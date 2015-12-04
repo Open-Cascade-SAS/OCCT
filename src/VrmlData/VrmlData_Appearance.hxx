@@ -116,7 +116,7 @@ class VrmlData_Appearance : public VrmlData_Node
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Appearance, VrmlData_Node)
+DEFINE_STANDARD_RTTI_INLINE(VrmlData_Appearance,VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

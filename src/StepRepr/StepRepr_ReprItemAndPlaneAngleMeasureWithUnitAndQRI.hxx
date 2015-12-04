@@ -38,7 +38,7 @@ public:
   
   Standard_EXPORT Handle(StepBasic_PlaneAngleMeasureWithUnit) GetPlaneAngleMeasureWithUnit() const;
 
-  DEFINE_STANDARD_RTTI(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,StepRepr_ReprItemAndMeasureWithUnitAndQRI)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,StepRepr_ReprItemAndMeasureWithUnitAndQRI)
 
 private:
   Handle(StepBasic_PlaneAngleMeasureWithUnit) myPlaneAngleMeasureWithUnit;

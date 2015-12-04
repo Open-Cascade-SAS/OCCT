@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectIncorrectEntities,IFSelect_SelectFlag)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectIncorrectEntities,IFSelect_SelectFlag)
 
 protected:
 

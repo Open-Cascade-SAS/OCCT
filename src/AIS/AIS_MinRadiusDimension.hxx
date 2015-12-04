@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_MinRadiusDimension,AIS_EllipseRadiusDimension)
+  DEFINE_STANDARD_RTTIEXT(AIS_MinRadiusDimension,AIS_EllipseRadiusDimension)
 
 protected:
 

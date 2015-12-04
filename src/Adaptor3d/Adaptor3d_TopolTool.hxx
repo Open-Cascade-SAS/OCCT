@@ -154,7 +154,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Adaptor3d_TopolTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool,MMgt_TShared)
 
 protected:
 

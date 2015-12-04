@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_PolygonOnTriangulation,BRep_CurveRepresentation)
+  DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnTriangulation,BRep_CurveRepresentation)
 
 protected:
 

@@ -23,6 +23,8 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ReferenceArrayDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_ReferenceArrayDriver
 //purpose  : Constructor

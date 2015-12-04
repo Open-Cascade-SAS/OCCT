@@ -38,7 +38,7 @@ public:
   //! Get ids of sub-shapes composing a sub-shape with the given id
   virtual IVtk_ShapeIdList GetSubIds (const IVtk_IdType theId) const = 0;
 
-  DEFINE_STANDARD_RTTI(IVtk_IShape, IVtk_Interface)
+  DEFINE_STANDARD_RTTIEXT(IVtk_IShape,IVtk_Interface)
 
 private:
   IVtk_IdType myId;

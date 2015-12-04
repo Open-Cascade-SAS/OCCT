@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol,StepDimTol_GeometricTolerance)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol,StepDimTol_GeometricTolerance)
 
 protected:
 

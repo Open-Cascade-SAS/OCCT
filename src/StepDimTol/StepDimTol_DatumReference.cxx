@@ -19,6 +19,8 @@
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_DatumReference.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReference,MMgt_TShared)
+
 //=======================================================================
 //function : StepDimTol_DatumReference
 //purpose  : 

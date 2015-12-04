@@ -17,6 +17,8 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow,OpenGl_Structure)
+
 //=======================================================================
 //function : OpenGl_StructureShadow
 //purpose  :

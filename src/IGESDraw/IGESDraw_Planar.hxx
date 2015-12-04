@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_Planar,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_Planar,IGESData_IGESEntity)
 
 protected:
 

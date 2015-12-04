@@ -19,6 +19,8 @@
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderObject,Standard_Transient)
+
 namespace
 {
   static volatile Standard_Integer THE_SHADER_OBJECT_COUNTER = 0;

@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_DeformedDataSource,MeshVS_DataSource)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_DeformedDataSource,MeshVS_DataSource)
 
 protected:
 

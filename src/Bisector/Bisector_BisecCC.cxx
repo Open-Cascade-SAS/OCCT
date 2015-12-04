@@ -50,6 +50,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Bisector_BisecCC,Bisector_Curve)
+
 static Standard_Boolean ProjOnCurve (const gp_Pnt2d& P,
   const Handle(Geom2d_Curve)& C,
   Standard_Real& theParam);

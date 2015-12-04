@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_LinearDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_LinearDimension,IGESData_IGESEntity)
 
 protected:
 

@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_OrientedEdge,StepShape_Edge)
+  DEFINE_STANDARD_RTTIEXT(StepShape_OrientedEdge,StepShape_Edge)
 
 protected:
 

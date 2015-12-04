@@ -31,13 +31,13 @@ private:
   void samplePBSpline();
   void sampleBezierSurface();
 
-  void showCurveLProps (Handle_Geom_Curve theCurve,
+  void showCurveLProps (Handle(Geom_Curve) theCurve,
     const Standard_CString theName,
     const Standard_Integer theNbPoints,
     const Standard_Real thePoints[]);
   // Draws the curve, shows local properties and updates the result dialog
 
-  void showSurfaceLProps (Handle_Geom_Surface theSurface,
+  void showSurfaceLProps (Handle(Geom_Surface) theSurface,
     const Standard_CString theName,
     const Standard_Integer theNbPoints,
     const Standard_Real thePoints[][2]);

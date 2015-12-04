@@ -16,6 +16,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_Grid,MMgt_TShared)
+
 Aspect_Grid::Aspect_Grid(
 			       const Quantity_Length anXOrigin,
 			       const Quantity_Length anYOrigin,

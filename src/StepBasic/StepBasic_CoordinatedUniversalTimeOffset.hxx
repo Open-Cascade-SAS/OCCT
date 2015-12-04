@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_CoordinatedUniversalTimeOffset,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_CoordinatedUniversalTimeOffset,MMgt_TShared)
 
 protected:
 

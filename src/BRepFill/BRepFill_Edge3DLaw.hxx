@@ -40,7 +40,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_Edge3DLaw,BRepFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_Edge3DLaw,BRepFill_LocationLaw)
 
 protected:
 

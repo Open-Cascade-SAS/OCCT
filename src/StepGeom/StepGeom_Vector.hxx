@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_Vector,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Vector,StepGeom_GeometricRepresentationItem)
 
 protected:
 

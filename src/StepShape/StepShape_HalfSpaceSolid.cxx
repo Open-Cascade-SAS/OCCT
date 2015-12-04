@@ -17,6 +17,8 @@
 #include <StepShape_HalfSpaceSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_HalfSpaceSolid,StepGeom_GeometricRepresentationItem)
+
 StepShape_HalfSpaceSolid::StepShape_HalfSpaceSolid ()  {}
 
 void StepShape_HalfSpaceSolid::Init(

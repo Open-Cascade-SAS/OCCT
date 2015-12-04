@@ -38,6 +38,7 @@
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColGeom2d_SequenceOfGeometry.hxx>
+#include <Geom2d_Curve.hxx>
 
 static void CutSketch (MAT2d_SequenceOfSequenceOfGeometry&    Figure,
 		       MAT2d_DataMapOfBiIntInteger&           NbSect);

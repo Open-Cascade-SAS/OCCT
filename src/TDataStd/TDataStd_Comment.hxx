@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_Comment,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_Comment,TDF_Attribute)
 
 protected:
 

@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepTool_HBoxTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepTool_HBoxTool,MMgt_TShared)
 
 protected:
 

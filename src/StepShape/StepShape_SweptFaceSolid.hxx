@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_SweptFaceSolid,StepShape_SolidModel)
+  DEFINE_STANDARD_RTTIEXT(StepShape_SweptFaceSolid,StepShape_SolidModel)
 
 protected:
 

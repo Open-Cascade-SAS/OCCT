@@ -25,6 +25,8 @@
 #include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_PointDimension,IGESData_IGESEntity)
+
 IGESDimen_PointDimension::IGESDimen_PointDimension ()    {  }
 
 

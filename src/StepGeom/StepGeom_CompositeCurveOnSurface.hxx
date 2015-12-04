@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CompositeCurveOnSurface,StepGeom_CompositeCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveOnSurface,StepGeom_CompositeCurve)
 
 protected:
 

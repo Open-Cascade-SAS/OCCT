@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_Bisector,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Bisector,MMgt_TShared)
 
 protected:
 

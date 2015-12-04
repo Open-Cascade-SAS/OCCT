@@ -17,6 +17,8 @@
 #include <Interface_Protocol.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_FileProtocol,IGESData_Protocol)
+
 IGESData_FileProtocol::IGESData_FileProtocol ()    {  }
 
     void  IGESData_FileProtocol::Add (const Handle(IGESData_Protocol)& protocol)

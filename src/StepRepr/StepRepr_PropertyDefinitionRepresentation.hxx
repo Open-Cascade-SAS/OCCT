@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_PropertyDefinitionRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation,MMgt_TShared)
 
 protected:
 

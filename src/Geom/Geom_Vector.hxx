@@ -137,7 +137,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Vector,Geom_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom_Vector,Geom_Geometry)
 
 protected:
 

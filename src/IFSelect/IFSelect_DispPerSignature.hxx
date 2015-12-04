@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_DispPerSignature,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_DispPerSignature,IFSelect_Dispatch)
 
 protected:
 

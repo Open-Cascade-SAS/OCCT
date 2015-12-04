@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Cosh,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Cosh,Expr_UnaryExpression)
 
 protected:
 

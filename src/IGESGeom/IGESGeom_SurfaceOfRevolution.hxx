@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_SurfaceOfRevolution,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_SurfaceOfRevolution,IGESData_IGESEntity)
 
 protected:
 

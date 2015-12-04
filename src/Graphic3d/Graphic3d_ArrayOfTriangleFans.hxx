@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_ArrayOfTriangleFans,Graphic3d_ArrayOfPrimitives)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangleFans,Graphic3d_ArrayOfPrimitives)
 
 protected:
 

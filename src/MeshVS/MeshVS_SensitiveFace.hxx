@@ -34,7 +34,7 @@ public:
                                         const TColgp_Array1OfPnt& thePoints,
                                         const Select3D_TypeOfSensitivity theSensType = Select3D_TOS_INTERIOR);
 
-  DEFINE_STANDARD_RTTI(MeshVS_SensitiveFace, Select3D_SensitiveFace)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_SensitiveFace,Select3D_SensitiveFace)
 
 protected:
 

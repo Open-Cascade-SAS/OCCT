@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_ExternallyDefinedTextFont,StepBasic_ExternallyDefinedItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedTextFont,StepBasic_ExternallyDefinedItem)
 
 protected:
 

@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_BinaryExpression,Expr_GeneralExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_BinaryExpression,Expr_GeneralExpression)
 
 protected:
 

@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TNaming_Naming,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TNaming_Naming,TDF_Attribute)
 
 protected:
 

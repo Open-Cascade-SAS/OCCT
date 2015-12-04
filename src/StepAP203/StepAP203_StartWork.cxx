@@ -20,6 +20,8 @@
 #include <StepAP203_StartWork.hxx>
 #include <StepBasic_Action.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_StartWork,StepBasic_ActionAssignment)
+
 //=======================================================================
 //function : StepAP203_StartWork
 //purpose  : 

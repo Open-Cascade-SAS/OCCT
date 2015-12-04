@@ -118,7 +118,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI (AIS_RadiusDimension, AIS_Dimension)
+  DEFINE_STANDARD_RTTIEXT(AIS_RadiusDimension,AIS_Dimension)
 
 protected:
 

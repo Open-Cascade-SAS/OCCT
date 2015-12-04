@@ -30,6 +30,8 @@
 #include <OSD_Environment.hxx>
 #include <Standard_NotImplemented.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
+
 #if defined(_WIN32)
   #include <WNT_Window.hxx>
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)

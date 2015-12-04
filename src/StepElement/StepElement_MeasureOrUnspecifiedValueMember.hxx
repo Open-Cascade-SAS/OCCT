@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_MeasureOrUnspecifiedValueMember,StepData_SelectNamed)
+  DEFINE_STANDARD_RTTIEXT(StepElement_MeasureOrUnspecifiedValueMember,StepData_SelectNamed)
 
 protected:
 

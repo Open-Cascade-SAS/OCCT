@@ -19,6 +19,8 @@
 #include <Graphic3d_TransModeFlags.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient)
+
 //=============================================================================
 //function : Graphic3d_CStructure
 //purpose  :

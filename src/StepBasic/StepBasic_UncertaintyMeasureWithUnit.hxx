@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_UncertaintyMeasureWithUnit,StepBasic_MeasureWithUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_UncertaintyMeasureWithUnit,StepBasic_MeasureWithUnit)
 
 protected:
 

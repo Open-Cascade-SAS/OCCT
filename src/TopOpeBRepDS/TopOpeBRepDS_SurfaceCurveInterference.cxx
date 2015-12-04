@@ -21,6 +21,8 @@
 #include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_SurfaceCurveInterference,TopOpeBRepDS_Interference)
+
 #ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_Dumper.hxx>
 #endif

@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureEnv,Graphic3d_TextureRoot)
+
 static const char *NameOfTexture_to_FileName[] =
 {
   "env_clouds.rgb",

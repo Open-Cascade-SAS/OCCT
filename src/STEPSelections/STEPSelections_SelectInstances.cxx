@@ -39,6 +39,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectInstances,IFSelect_SelectExplore)
+
 static Handle(Interface_HGraph) myGraph;
 static Interface_EntityIterator myEntities;
 

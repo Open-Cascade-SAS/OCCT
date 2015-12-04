@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaMoistureAbsorption,StepFEA_FeaMaterialPropertyRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaMoistureAbsorption,StepFEA_FeaMaterialPropertyRepresentationItem)
 
 protected:
 

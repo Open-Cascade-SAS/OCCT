@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_PolyFunction,Expr_PolyExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_PolyFunction,Expr_PolyExpression)
 
 protected:
 

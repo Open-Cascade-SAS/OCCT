@@ -16,6 +16,8 @@
 #include <BRepMesh_DiscretRoot.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DiscretRoot,Standard_Transient)
+
 //=======================================================================
 //function : BRepMesh_DiscretRoot
 //purpose  :

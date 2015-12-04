@@ -19,6 +19,8 @@
 #include <BinLDrivers.hxx>
 #include <BinTObjDrivers.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
+
 //=======================================================================
 //function : BinTObjDrivers_DocumentRetrievalDriver
 //purpose  : 

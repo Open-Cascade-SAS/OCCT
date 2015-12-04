@@ -19,3 +19,5 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_GeneralModule.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(StepData_GeneralModule,Interface_GeneralModule)

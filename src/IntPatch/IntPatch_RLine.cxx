@@ -25,6 +25,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IntPatch_RLine,IntPatch_PointLine)
+
 IntPatch_RLine::IntPatch_RLine (const Standard_Boolean Tang,
                                 const IntSurf_TypeTrans Trans1,
                                 const IntSurf_TypeTrans Trans2) :

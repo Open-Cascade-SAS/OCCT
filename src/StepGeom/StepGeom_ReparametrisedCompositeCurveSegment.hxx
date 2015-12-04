@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_ReparametrisedCompositeCurveSegment,StepGeom_CompositeCurveSegment)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_ReparametrisedCompositeCurveSegment,StepGeom_CompositeCurveSegment)
 
 protected:
 

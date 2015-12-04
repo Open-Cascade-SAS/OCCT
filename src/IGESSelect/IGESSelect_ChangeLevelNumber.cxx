@@ -28,6 +28,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_ChangeLevelNumber,IGESSelect_ModelModifier)
+
 IGESSelect_ChangeLevelNumber::IGESSelect_ChangeLevelNumber ()
     :  IGESSelect_ModelModifier (Standard_False)    {  }
 

@@ -38,6 +38,8 @@
 #include <XCAFPrs_Style.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_AISObject,AIS_ColoredShape)
+
 //=======================================================================
 //function : XCAFPrs_AISObject
 //purpose  : 

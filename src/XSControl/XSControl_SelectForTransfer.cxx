@@ -20,6 +20,8 @@
 #include <XSControl_SelectForTransfer.hxx>
 #include <XSControl_TransferReader.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_SelectForTransfer,IFSelect_SelectExtract)
+
 XSControl_SelectForTransfer::XSControl_SelectForTransfer ()    {  }
 
     XSControl_SelectForTransfer::XSControl_SelectForTransfer

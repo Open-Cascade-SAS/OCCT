@@ -18,6 +18,8 @@
 #include <StepGeom_CurveReplica.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveReplica,StepGeom_Curve)
+
 StepGeom_CurveReplica::StepGeom_CurveReplica ()  {}
 
 void StepGeom_CurveReplica::Init(

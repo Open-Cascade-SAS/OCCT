@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_DataStructureManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,MMgt_TShared)
 
 protected:
 

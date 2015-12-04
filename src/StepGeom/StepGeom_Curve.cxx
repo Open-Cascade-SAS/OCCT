@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_Curve.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Curve,StepGeom_GeometricRepresentationItem)
+
 StepGeom_Curve::StepGeom_Curve ()  {}
 

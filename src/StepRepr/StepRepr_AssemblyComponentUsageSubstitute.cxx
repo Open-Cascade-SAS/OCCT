@@ -17,6 +17,8 @@
 #include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsageSubstitute,MMgt_TShared)
+
 StepRepr_AssemblyComponentUsageSubstitute::StepRepr_AssemblyComponentUsageSubstitute ()    {  }
 
 void  StepRepr_AssemblyComponentUsageSubstitute::Init

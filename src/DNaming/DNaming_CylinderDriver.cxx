@@ -40,6 +40,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Solid.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_CylinderDriver,TFunction_Driver)
+
 //=======================================================================
 //function : DNaming_CylinderDriver
 //purpose  : Constructor

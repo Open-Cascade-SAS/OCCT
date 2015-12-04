@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_GeometricRepresentationContext,StepRepr_RepresentationContext)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContext,StepRepr_RepresentationContext)
 
 protected:
 

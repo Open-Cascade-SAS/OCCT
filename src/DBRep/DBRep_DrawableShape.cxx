@@ -60,6 +60,8 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DBRep_DrawableShape,Draw_Drawable3D)
+
 static Standard_Real IsoRatio = 1.001;
 
 static Standard_Integer MaxPlotCount = 5; // To avoid huge recursive calls in

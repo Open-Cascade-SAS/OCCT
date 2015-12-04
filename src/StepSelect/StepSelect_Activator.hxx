@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepSelect_Activator,IFSelect_Activator)
+  DEFINE_STANDARD_RTTIEXT(StepSelect_Activator,IFSelect_Activator)
 
 protected:
 

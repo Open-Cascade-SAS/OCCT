@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ParametricRepresentationContext,StepRepr_RepresentationContext)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ParametricRepresentationContext,StepRepr_RepresentationContext)
 
 protected:
 

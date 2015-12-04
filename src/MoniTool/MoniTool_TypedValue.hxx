@@ -320,7 +320,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_TypedValue,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_TypedValue,MMgt_TShared)
 
 protected:
 

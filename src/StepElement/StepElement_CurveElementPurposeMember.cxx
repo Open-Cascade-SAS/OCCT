@@ -19,6 +19,8 @@
 #include <StepElement_CurveElementPurposeMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementPurposeMember,StepData_SelectNamed)
+
 static Standard_CString ECEP = "ENUMERATED_CURVE_ELEMENT_PURPOSE";
 static Standard_CString ADEP = "APPLICATION_DEFINED_ELEMENT_PURPOSE";
 

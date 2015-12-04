@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PLib_HermitJacobi,PLib_Base)
+  DEFINE_STANDARD_RTTIEXT(PLib_HermitJacobi,PLib_Base)
 
 protected:
 

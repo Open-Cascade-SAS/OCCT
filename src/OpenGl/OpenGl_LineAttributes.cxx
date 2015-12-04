@@ -18,6 +18,8 @@
 #include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_Context.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes,OpenGl_Resource)
+
 static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
 {
   //TEL_HS_SOLID

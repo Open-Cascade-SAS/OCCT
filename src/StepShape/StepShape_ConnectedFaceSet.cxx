@@ -17,6 +17,8 @@
 #include <StepShape_Face.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet,StepShape_TopologicalRepresentationItem)
+
 StepShape_ConnectedFaceSet::StepShape_ConnectedFaceSet ()  {}
 
 void StepShape_ConnectedFaceSet::Init(

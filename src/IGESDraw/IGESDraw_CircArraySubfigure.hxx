@@ -106,7 +106,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_CircArraySubfigure,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_CircArraySubfigure,IGESData_IGESEntity)
 
 protected:
 

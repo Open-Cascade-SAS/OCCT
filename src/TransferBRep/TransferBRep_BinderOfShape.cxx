@@ -18,6 +18,8 @@
 #include <TransferBRep_BinderOfShape.hxx>
 #include <TransferBRep_ShapeInfo.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_BinderOfShape,Transfer_Binder)
+
 TransferBRep_BinderOfShape::TransferBRep_BinderOfShape (){ }
 
 TransferBRep_BinderOfShape::TransferBRep_BinderOfShape (const TopoDS_Shape& res)

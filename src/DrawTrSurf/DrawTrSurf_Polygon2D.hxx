@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawTrSurf_Polygon2D,Draw_Drawable2D)
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Polygon2D,Draw_Drawable2D)
 
 protected:
 

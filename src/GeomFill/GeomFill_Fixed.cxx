@@ -23,6 +23,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Fixed,GeomFill_TrihedronLaw)
+
 GeomFill_Fixed::GeomFill_Fixed(const gp_Vec& Tangent,
 			       const gp_Vec& Normal)
 {

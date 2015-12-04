@@ -36,7 +36,7 @@ public:
 
 	void SetZoom ( const Quantity_Factor& Coef  ) {   myView->SetZoom ( Coef  );  };
 
-  Handle_V3d_View& GetView() { return myView; }
+  Handle(V3d_View)& GetView() { return myView; }
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(OCC_3dView)
@@ -94,7 +94,7 @@ protected:
 
 protected:
 
-  Handle_V3d_View  myView;
+  Handle(V3d_View)  myView;
   CurAction3d      myCurrentMode;
   Standard_Integer myXmin;
   Standard_Integer myYmin;

@@ -39,6 +39,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectableObject,PrsMgr_PresentableObject)
+
 static Standard_Integer Search (const SelectMgr_SequenceOfSelection& seq,
                                 const Handle (SelectMgr_Selection)& theSel)
 {

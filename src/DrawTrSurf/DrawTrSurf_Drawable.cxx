@@ -30,6 +30,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Drawable,Draw_Drawable3D)
+
 //=======================================================================
 //function : DrawTrSurf_Drawable
 //purpose  : initialise the discretisation

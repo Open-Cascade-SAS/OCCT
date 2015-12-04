@@ -21,6 +21,8 @@
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Bisector,MMgt_TShared)
+
 MAT_Bisector::MAT_Bisector()
 {
   thebisectornumber = -1;

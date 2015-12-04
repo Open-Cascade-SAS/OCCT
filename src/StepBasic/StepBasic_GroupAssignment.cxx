@@ -19,6 +19,8 @@
 #include <StepBasic_Group.hxx>
 #include <StepBasic_GroupAssignment.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GroupAssignment,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_GroupAssignment
 //purpose  : 

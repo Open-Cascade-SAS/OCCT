@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaGroup,StepBasic_Group)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaGroup,StepBasic_Group)
 
 protected:
 

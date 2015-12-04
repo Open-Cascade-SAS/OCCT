@@ -33,6 +33,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDF_StoreList,Standard_Transient)
+
 static void CAUGHT(TCollection_ExtendedString& status,const TCollection_ExtendedString& what) {
   Handle(Standard_Failure) F = Standard_Failure::Caught();
   status += what;

@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_Chamf3dDimension,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_Chamf3dDimension,AIS_Relation)
 
 protected:
 

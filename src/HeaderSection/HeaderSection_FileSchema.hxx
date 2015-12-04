@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HeaderSection_FileSchema,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HeaderSection_FileSchema,MMgt_TShared)
 
 protected:
 

@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_LimitsAndFits,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_LimitsAndFits,MMgt_TShared)
 
 protected:
 

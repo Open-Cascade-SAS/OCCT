@@ -131,7 +131,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StlMesh_Mesh,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StlMesh_Mesh,MMgt_TShared)
 
 protected:
 

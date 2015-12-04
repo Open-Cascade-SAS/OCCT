@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_WorkLibrary,Standard_Transient)
+
 //  all deferred but Copy (virtual default)
 IFSelect_WorkLibrary::IFSelect_WorkLibrary ()  {  thelevdef = 0;  }
 

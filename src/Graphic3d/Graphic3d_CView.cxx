@@ -15,6 +15,8 @@
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_StructureManager.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CView,Graphic3d_DataStructureManager)
+
 //=======================================================================
 //function : Constructor
 //purpose  :

@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_CameraModelD2,StepVisual_CameraModel)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CameraModelD2,StepVisual_CameraModel)
 
 protected:
 

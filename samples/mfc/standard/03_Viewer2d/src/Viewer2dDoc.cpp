@@ -195,7 +195,7 @@ void CViewer2dDoc::OnBUTTONTestLine()
       TopoDS_Edge E4 = BRepBuilderAPI_MakeEdge(gp_Pnt(10*i,10*j+5,0.), gp_Pnt(10*i,10*j,0.));
       TopoDS_Wire W = BRepBuilderAPI_MakeWire(E1,E2,E3,E4);
       TopoDS_Face F = BRepBuilderAPI_MakeFace(W);
-      Handle_AIS_Shape aRect = new AIS_Shape(F);
+      Handle(AIS_Shape) aRect = new AIS_Shape(F);
       //set attributes of boundaries
       Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
       Handle(Prs3d_LineAspect) aLineAttrib = 
@@ -280,7 +280,7 @@ void CViewer2dDoc::OnBUTTONTestRect()
 	TopoDS_Edge E13 = BRepBuilderAPI_MakeEdge(gp_Pnt(42.5,93.,0.), gp_Pnt(0.,68.,0.));
   TopoDS_Edge E14 = BRepBuilderAPI_MakeEdge(gp_Pnt(0.,68.,0.), gp_Pnt(40.,0.,0.));
 	TopoDS_Wire W1 = BRepBuilderAPI_MakeWire(E11,E12,E13,E14);
-  Handle_AIS_Shape aRect1 = new AIS_Shape(W1); 
+  Handle(AIS_Shape) aRect1 = new AIS_Shape(W1); 
   myAISContext->Display(aRect1);
   myAISContext->SetColor(aRect1,Quantity_NOC_YELLOW);
   
@@ -290,7 +290,7 @@ void CViewer2dDoc::OnBUTTONTestRect()
 	TopoDS_Edge E23 = BRepBuilderAPI_MakeEdge(gp_Pnt(112.5,93.,0.), gp_Pnt(70.,68.,0.));
   TopoDS_Edge E24 = BRepBuilderAPI_MakeEdge(gp_Pnt(70.,68.,0.), gp_Pnt(110.,0.,0.));
 	TopoDS_Wire W2 = BRepBuilderAPI_MakeWire(E21,E22,E23,E24);
-  Handle_AIS_Shape aRect2 = new AIS_Shape(W2); 
+  Handle(AIS_Shape) aRect2 = new AIS_Shape(W2); 
   myAISContext->Display(aRect2);
   myAISContext->SetColor(aRect2,Quantity_NOC_YELLOW);
   myAISContext->Activate(aRect2,2);

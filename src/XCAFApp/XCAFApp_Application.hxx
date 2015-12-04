@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFApp_Application,TDocStd_Application)
+  DEFINE_STANDARD_RTTIEXT(XCAFApp_Application,TDocStd_Application)
 
 protected:
 

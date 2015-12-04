@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TemplateInstance.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TemplateInstance,StepRepr_MappedItem)
+
 StepVisual_TemplateInstance::StepVisual_TemplateInstance ()  {}
 

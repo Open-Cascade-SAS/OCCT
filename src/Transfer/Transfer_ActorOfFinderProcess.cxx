@@ -22,6 +22,8 @@
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientMapper.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorOfFinderProcess,Transfer_ActorOfProcessForFinder)
+
 Transfer_ActorOfFinderProcess::Transfer_ActorOfFinderProcess ()    {  themodetrans = 0;  }
 
 Standard_Integer& Transfer_ActorOfFinderProcess::ModeTrans ()

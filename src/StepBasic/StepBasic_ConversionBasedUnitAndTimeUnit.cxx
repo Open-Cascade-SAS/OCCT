@@ -20,6 +20,8 @@
 #include <StepBasic_TimeUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndTimeUnit,StepBasic_ConversionBasedUnit)
+
 StepBasic_ConversionBasedUnitAndTimeUnit::StepBasic_ConversionBasedUnitAndTimeUnit ()
 {
 }

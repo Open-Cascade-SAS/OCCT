@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_NSections,BRepFill_SectionLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_NSections,BRepFill_SectionLaw)
 
 protected:
 

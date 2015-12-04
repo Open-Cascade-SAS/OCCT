@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_StructuralResponsePropertyDefinitionRepresentation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_StructuralResponsePropertyDefinitionRepresentation,StepRepr_PropertyDefinitionRepresentation)
+
 //=======================================================================
 //function : StepRepr_StructuralResponsePropertyDefinitionRepresentation
 //purpose  : 

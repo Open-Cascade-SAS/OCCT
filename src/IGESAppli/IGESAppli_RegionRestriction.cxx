@@ -19,6 +19,8 @@
 #include <IGESAppli_RegionRestriction.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_RegionRestriction,IGESData_IGESEntity)
+
 IGESAppli_RegionRestriction::IGESAppli_RegionRestriction ()    {  }
 
 

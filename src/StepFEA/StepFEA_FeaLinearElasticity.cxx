@@ -20,6 +20,8 @@
 #include <StepFEA_SymmetricTensor43d.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaLinearElasticity,StepFEA_FeaMaterialPropertyRepresentationItem)
+
 //=======================================================================
 //function : StepFEA_FeaLinearElasticity
 //purpose  : 

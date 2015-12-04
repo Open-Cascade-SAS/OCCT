@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_HArray1OfHArray1OfIGESEntity,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(IGESBasic_HArray1OfHArray1OfIGESEntity,MMgt_TShared)
 
 protected:
 

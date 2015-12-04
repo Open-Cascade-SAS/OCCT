@@ -31,7 +31,7 @@ public:
   
   Standard_EXPORT StepRepr_Apex();
 
-  DEFINE_STANDARD_RTTI(StepRepr_Apex, StepRepr_DerivedShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_Apex,StepRepr_DerivedShapeAspect)
 
 };
 #endif // _StepRepr_Apex_HeaderFile

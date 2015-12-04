@@ -19,6 +19,8 @@
 #include <Standard_Atomic.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MarkerImage,Standard_Transient)
+
 namespace
 {
   static volatile Standard_Integer THE_MARKER_IMAGE_COUNTER = 0;

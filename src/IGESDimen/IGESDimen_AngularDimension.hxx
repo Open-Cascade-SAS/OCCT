@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_AngularDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_AngularDimension,IGESData_IGESEntity)
 
 protected:
 

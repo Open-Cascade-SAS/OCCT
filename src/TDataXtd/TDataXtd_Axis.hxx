@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Axis,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Axis,TDF_Attribute)
 
 protected:
 

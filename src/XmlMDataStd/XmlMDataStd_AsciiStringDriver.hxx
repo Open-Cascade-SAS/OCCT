@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMDataStd_AsciiStringDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMDataStd_AsciiStringDriver,XmlMDF_ADriver)
 
 protected:
 

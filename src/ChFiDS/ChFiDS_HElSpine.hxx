@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ChFiDS_HElSpine,Adaptor3d_HCurve)
+  DEFINE_STANDARD_RTTI_INLINE(ChFiDS_HElSpine,Adaptor3d_HCurve)
 
 protected:
 

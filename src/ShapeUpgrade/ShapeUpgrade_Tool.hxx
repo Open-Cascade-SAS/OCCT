@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_Tool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_Tool,MMgt_TShared)
 
 protected:
 

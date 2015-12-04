@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ConnectedFaceSet,StepShape_TopologicalRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet,StepShape_TopologicalRepresentationItem)
 
 protected:
 

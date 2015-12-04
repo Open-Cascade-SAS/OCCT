@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_CurveElementEndOffset,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset,MMgt_TShared)
 
 protected:
 

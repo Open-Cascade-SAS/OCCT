@@ -36,6 +36,8 @@
 
 #include <algorithm>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_ViewerSelector,MMgt_TShared)
+
 namespace {
   // Comparison operator for sorting selection results
   class CompareResults

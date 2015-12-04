@@ -66,7 +66,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveCurve, Select3D_SensitivePoly)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCurve,Select3D_SensitivePoly)
 
 private:
 

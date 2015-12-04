@@ -25,6 +25,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetGlobalParameter,IGESSelect_ModelModifier)
+
 IGESSelect_SetGlobalParameter::IGESSelect_SetGlobalParameter
   (const Standard_Integer numpar)
     : IGESSelect_ModelModifier (Standard_False)

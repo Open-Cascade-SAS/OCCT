@@ -17,6 +17,8 @@
 #include <StepGeom_Surface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetSurface,StepGeom_Surface)
+
 StepGeom_OffsetSurface::StepGeom_OffsetSurface ()  {}
 
 void StepGeom_OffsetSurface::Init(

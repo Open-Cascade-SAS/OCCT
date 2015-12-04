@@ -30,6 +30,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRoot,Approx_SweepFunction)
+
 BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
 					     Blend_AppFunction&      Func,
 					     const Standard_Real     Tol3d,

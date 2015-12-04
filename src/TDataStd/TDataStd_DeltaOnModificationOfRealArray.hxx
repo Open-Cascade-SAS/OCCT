@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_DeltaOnModificationOfRealArray,TDF_DeltaOnModification)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfRealArray,TDF_DeltaOnModification)
 
 protected:
 

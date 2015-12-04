@@ -20,6 +20,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_FloatFormat,IGESSelect_FileModifier)
+
 IGESSelect_FloatFormat::IGESSelect_FloatFormat ()
     : thezerosup (Standard_True) , themainform ("%E") ,
       theformrange ("%f") , therangemin (0.1) , therangemax (1000.)

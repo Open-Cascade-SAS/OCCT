@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_DefaultDeltaOnModification,TDF_DeltaOnModification)
+  DEFINE_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification,TDF_DeltaOnModification)
 
 protected:
 

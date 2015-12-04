@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_ClosedEdgeDivide,ShapeUpgrade_EdgeDivide)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedEdgeDivide,ShapeUpgrade_EdgeDivide)
 
 protected:
 

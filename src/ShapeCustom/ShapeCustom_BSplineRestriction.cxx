@@ -81,6 +81,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_BSplineRestriction,ShapeCustom_Modification)
+
 static GeomAbs_Shape IntegerToGeomAbsShape(const Standard_Integer i)
 {
   GeomAbs_Shape result = GeomAbs_C0;

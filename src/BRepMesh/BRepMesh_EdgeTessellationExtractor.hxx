@@ -62,7 +62,7 @@ public:
                      gp_Pnt&                thePoint,
                      gp_Pnt2d&              theUV) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(BRepMesh_EdgeTessellationExtractor, BRepMesh_IEdgeTool)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor,BRepMesh_IEdgeTool)
 
 private:
 

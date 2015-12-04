@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Square,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Square,Expr_UnaryExpression)
 
 protected:
 

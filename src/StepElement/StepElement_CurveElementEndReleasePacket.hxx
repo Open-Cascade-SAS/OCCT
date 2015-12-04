@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_CurveElementEndReleasePacket,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_CurveElementEndReleasePacket,MMgt_TShared)
 
 protected:
 

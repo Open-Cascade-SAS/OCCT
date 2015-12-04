@@ -23,6 +23,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_EdgeDivide,ShapeUpgrade_Tool)
+
 //=======================================================================
 //function : ShapeUpgrade_EdgeDivide
 //purpose  : 

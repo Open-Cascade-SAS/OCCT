@@ -32,7 +32,7 @@ private:
   // filename can also be an integer value ("2", "5", etc.), in this case
   // a predefined texture from Graphic3d_NameOfTexture2D with number = this value
   // is loaded.
-  Handle_AIS_TexturedShape Texturize(
+  Handle(AIS_TexturedShape) Texturize(
     const TopoDS_Shape& aShape, TCollection_AsciiString aTFileName, 
     Standard_Real toScaleU=1.0, Standard_Real toScaleV=1.0, 
     Standard_Real toRepeatU=1.0, Standard_Real toRepeatV=1.0,

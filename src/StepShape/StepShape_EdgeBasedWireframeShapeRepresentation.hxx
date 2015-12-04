@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_EdgeBasedWireframeShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeShapeRepresentation,StepShape_ShapeRepresentation)
 
 protected:
 

@@ -214,7 +214,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSControl_WorkSession,IFSelect_WorkSession)
+  DEFINE_STANDARD_RTTIEXT(XSControl_WorkSession,IFSelect_WorkSession)
 
 protected:
 

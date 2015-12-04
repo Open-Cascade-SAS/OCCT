@@ -18,6 +18,8 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_UnequallyDisposedGeometricTolerance,StepDimTol_GeometricTolerance)
+
 //=======================================================================
 //function : StepDimTol_UnequallyDisposedGeometricTolerance
 //purpose  : 

@@ -84,7 +84,7 @@ public:
   //! Returns the amount of sub-entities (points or planar convex polygons)
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveFace, Select3D_SensitiveEntity)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveFace,Select3D_SensitiveEntity)
 
 private:
 

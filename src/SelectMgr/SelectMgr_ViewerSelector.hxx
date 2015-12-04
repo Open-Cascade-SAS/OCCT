@@ -261,7 +261,7 @@ public:
 
   friend class SelectMgr_SelectionManager;
 
-  DEFINE_STANDARD_RTTI(SelectMgr_ViewerSelector, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_ViewerSelector,MMgt_TShared)
 
 protected:
 

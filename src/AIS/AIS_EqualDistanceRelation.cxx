@@ -48,6 +48,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_EqualDistanceRelation,AIS_Relation)
+
 //=======================================================================
 //function : AIS_EqualDistanceRelation
 //purpose  : 

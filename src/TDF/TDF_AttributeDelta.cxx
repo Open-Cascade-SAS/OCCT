@@ -26,6 +26,8 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_AttributeDelta,MMgt_TShared)
+
 //=======================================================================
 //function : TDF_AttributeDelta
 //purpose  : 

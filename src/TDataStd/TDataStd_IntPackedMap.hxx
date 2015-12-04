@@ -100,7 +100,7 @@ public:
 friend class TDataStd_DeltaOnModificationOfIntPackedMap;
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_IntPackedMap,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_IntPackedMap,TDF_Attribute)
 
 protected:
 

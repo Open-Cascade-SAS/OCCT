@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_Curve3dElementProperty,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_Curve3dElementProperty,MMgt_TShared)
 
 protected:
 

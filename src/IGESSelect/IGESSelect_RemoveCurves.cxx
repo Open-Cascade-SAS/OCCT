@@ -28,6 +28,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_RemoveCurves,IGESSelect_ModelModifier)
+
 IGESSelect_RemoveCurves::IGESSelect_RemoveCurves (const Standard_Boolean UV)
     : IGESSelect_ModelModifier (Standard_True)  ,  theUV (UV)    {  }
 

@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_OrdinalDate,StepBasic_Date)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_OrdinalDate,StepBasic_Date)
 
 protected:
 

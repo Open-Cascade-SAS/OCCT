@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_OrderedGroupWithoutBackP,IGESBasic_Group)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_OrderedGroupWithoutBackP,IGESBasic_Group)
 
 protected:
 

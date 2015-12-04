@@ -111,7 +111,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_AxisPlacement,Geom_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom_AxisPlacement,Geom_Geometry)
 
 protected:
 

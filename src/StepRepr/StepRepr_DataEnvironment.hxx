@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_DataEnvironment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_DataEnvironment,MMgt_TShared)
 
 protected:
 

@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepSelect_FileModifier,IFSelect_GeneralModifier)
+  DEFINE_STANDARD_RTTI_INLINE(StepSelect_FileModifier,IFSelect_GeneralModifier)
 
 protected:
 

@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_Person,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Person,MMgt_TShared)
 
 protected:
 

@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_UnitsDictionary,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_UnitsDictionary,MMgt_TShared)
 
 protected:
 

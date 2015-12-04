@@ -44,6 +44,8 @@
 #include <XmlObjMgt_SRelocationTable.hxx>
 
 #include <locale.h>
+IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentStorageDriver,PCDM_StorageDriver)
+
 #define STORAGE_VERSION      "STORAGE_VERSION: "
 #define REFERENCE_COUNTER    "REFERENCE_COUNTER: "
 #define MODIFICATION_COUNTER "MODIFICATION_COUNTER: "

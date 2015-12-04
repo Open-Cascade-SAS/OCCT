@@ -26,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Wire.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_DraftLaw,BRepFill_Edge3DLaw)
+
 //=======================================================================
 //function : ToG0
 //purpose  : Cacul une tranformation T tq T.M2 = M1

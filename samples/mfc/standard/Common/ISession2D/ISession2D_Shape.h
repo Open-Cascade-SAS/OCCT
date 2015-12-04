@@ -41,7 +41,7 @@ public:
   { return Standard_True; }
 
 public:
-  DEFINE_STANDARD_RTTI(ISession2D_Shape,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(ISession2D_Shape,AIS_InteractiveObject)
 
 private:
   void BuildAlgo();

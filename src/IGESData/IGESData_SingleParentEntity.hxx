@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_SingleParentEntity,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_SingleParentEntity,IGESData_IGESEntity)
 
 protected:
 

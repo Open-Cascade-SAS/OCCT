@@ -20,6 +20,8 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndMassUnit,StepBasic_ConversionBasedUnit)
+
 //=======================================================================
 //function : StepBasic_ConversionBasedUnitAndMassUnit
 //purpose  : 

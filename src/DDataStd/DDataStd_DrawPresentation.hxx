@@ -94,7 +94,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DDataStd_DrawPresentation,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(DDataStd_DrawPresentation,TDF_Attribute)
 
 protected:
 

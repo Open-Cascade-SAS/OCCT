@@ -21,6 +21,8 @@
 #include <StepRepr_MakeFromUsageOption.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MakeFromUsageOption,StepRepr_ProductDefinitionUsage)
+
 //=======================================================================
 //function : StepRepr_MakeFromUsageOption
 //purpose  : 

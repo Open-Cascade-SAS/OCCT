@@ -28,6 +28,8 @@
 #include <TDF_Tool.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ReferenceDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinTObjDrivers_ReferenceDriver
 //purpose  : constructor

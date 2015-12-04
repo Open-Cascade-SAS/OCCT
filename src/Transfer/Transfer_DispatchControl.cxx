@@ -19,6 +19,8 @@
 #include <Transfer_DispatchControl.hxx>
 #include <Transfer_TransientProcess.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_DispatchControl,Interface_CopyControl)
+
 Transfer_DispatchControl::Transfer_DispatchControl
   (const Handle(Interface_InterfaceModel)& model,
    const Handle(Transfer_TransientProcess)& TP)

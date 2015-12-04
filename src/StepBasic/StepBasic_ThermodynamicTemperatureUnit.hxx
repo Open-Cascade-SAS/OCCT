@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ThermodynamicTemperatureUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ThermodynamicTemperatureUnit,StepBasic_NamedUnit)
 
 protected:
 

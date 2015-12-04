@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_UniformCurveAndRationalBSplineCurve,StepGeom_BSplineCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_UniformCurveAndRationalBSplineCurve,StepGeom_BSplineCurve)
 
 protected:
 

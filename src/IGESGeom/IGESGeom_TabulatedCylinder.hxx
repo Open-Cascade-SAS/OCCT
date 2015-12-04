@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_TabulatedCylinder,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_TabulatedCylinder,IGESData_IGESEntity)
 
 protected:
 

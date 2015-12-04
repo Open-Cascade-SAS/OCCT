@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_GraphCounter,IFSelect_SignCounter)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_GraphCounter,IFSelect_SignCounter)
 
 protected:
 

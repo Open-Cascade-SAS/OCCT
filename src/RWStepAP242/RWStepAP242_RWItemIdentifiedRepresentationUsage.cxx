@@ -21,6 +21,7 @@
 #include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
 #include <StepAP242_ItemIdentifiedRepresentationUsageDefinition.hxx>
 #include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 
 RWStepAP242_RWItemIdentifiedRepresentationUsage::RWStepAP242_RWItemIdentifiedRepresentationUsage () {}

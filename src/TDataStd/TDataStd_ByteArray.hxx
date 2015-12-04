@@ -113,7 +113,7 @@ Standard_Byte operator () (const Standard_Integer Index) const
 friend class TDataStd_DeltaOnModificationOfByteArray;
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_ByteArray,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_ByteArray,TDF_Attribute)
 
 protected:
 

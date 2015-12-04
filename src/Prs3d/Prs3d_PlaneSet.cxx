@@ -22,6 +22,8 @@
 #include <Prs3d_PlaneSet.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PlaneSet,MMgt_TShared)
+
 Prs3d_PlaneSet::Prs3d_PlaneSet(const Standard_Real Xdir,
 			       const Standard_Real Ydir,
 			       const Standard_Real Zdir,

@@ -17,6 +17,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_SignText,MMgt_TShared)
+
 TCollection_AsciiString  MoniTool_SignText::TextAlone
   (const Handle(Standard_Transient)& ent) const
 {

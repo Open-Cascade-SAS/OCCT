@@ -96,7 +96,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRBRep_Algo,HLRBRep_InternalAlgo)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_Algo,HLRBRep_InternalAlgo)
 
 protected:
 

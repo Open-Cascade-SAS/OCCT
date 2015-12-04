@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_SignType,MoniTool_SignText)
+
 TCollection_AsciiString  Interface_SignType::Text
   (const Handle(Standard_Transient)& ent,
    const Handle(Standard_Transient)& context) const

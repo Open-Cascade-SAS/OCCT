@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_ShapeMapTool,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_ShapeMapTool,TDF_Attribute)
 
 protected:
 

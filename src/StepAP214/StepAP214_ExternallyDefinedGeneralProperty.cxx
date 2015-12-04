@@ -22,6 +22,8 @@
 #include <StepBasic_SourceItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedGeneralProperty,StepBasic_GeneralProperty)
+
 //=======================================================================
 //function : StepAP214_ExternallyDefinedGeneralProperty
 //purpose  : 

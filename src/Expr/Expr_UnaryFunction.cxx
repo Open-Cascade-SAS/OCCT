@@ -37,6 +37,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_UnaryFunction,Expr_UnaryExpression)
+
 Expr_UnaryFunction::Expr_UnaryFunction (const Handle(Expr_GeneralFunction)& func, const Handle(Expr_GeneralExpression)& exp)
 {
   if (func->NbOfVariables() != 1) {

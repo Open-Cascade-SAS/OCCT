@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ConfigurationEffectivity,StepBasic_ProductDefinitionEffectivity)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationEffectivity,StepBasic_ProductDefinitionEffectivity)
 
 protected:
 

@@ -37,7 +37,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ValueRange,StepRepr_CompoundRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ValueRange,StepRepr_CompoundRepresentationItem)
 
 protected:
 

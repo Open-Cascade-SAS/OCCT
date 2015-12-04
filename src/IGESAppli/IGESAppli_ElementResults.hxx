@@ -139,7 +139,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_ElementResults,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_ElementResults,IGESData_IGESEntity)
 
 protected:
 

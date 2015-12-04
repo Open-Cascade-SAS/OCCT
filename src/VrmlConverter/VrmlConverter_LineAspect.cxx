@@ -16,6 +16,8 @@
 #include <Vrml_Material.hxx>
 #include <VrmlConverter_LineAspect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_LineAspect,MMgt_TShared)
+
 VrmlConverter_LineAspect::VrmlConverter_LineAspect()
 {
  myHasMaterial = Standard_False;

@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Dico_StackItemOfDictionaryOfInteger,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Dico_StackItemOfDictionaryOfInteger,MMgt_TShared)
 
 protected:
 

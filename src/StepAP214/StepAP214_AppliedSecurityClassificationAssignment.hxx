@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AppliedSecurityClassificationAssignment,StepBasic_SecurityClassificationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedSecurityClassificationAssignment,StepBasic_SecurityClassificationAssignment)
 
 protected:
 

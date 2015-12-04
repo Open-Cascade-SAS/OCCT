@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepSelect_ModelModifier,IFSelect_Modifier)
+  DEFINE_STANDARD_RTTI_INLINE(StepSelect_ModelModifier,IFSelect_Modifier)
 
 protected:
 

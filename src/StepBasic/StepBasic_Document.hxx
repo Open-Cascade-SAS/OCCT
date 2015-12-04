@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_Document,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_Document,MMgt_TShared)
 
 protected:
 

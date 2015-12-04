@@ -34,6 +34,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectBasicGeom,IFSelect_SelectExplore)
+
 IGESSelect_SelectBasicGeom::IGESSelect_SelectBasicGeom
   (const Standard_Integer mode)
     : IFSelect_SelectExplore (-1)    {  thegeom = mode;  }

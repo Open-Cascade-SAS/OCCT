@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_RepresentationRelationship,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationRelationship,MMgt_TShared)
 
 protected:
 

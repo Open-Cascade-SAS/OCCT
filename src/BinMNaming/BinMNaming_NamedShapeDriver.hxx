@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMNaming_NamedShapeDriver,BinMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(BinMNaming_NamedShapeDriver,BinMDF_ADriver)
 
 protected:
 

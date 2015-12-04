@@ -195,7 +195,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Units_Token,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Units_Token,MMgt_TShared)
 
 protected:
 

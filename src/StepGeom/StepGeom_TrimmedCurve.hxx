@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_TrimmedCurve,StepGeom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_TrimmedCurve,StepGeom_BoundedCurve)
 
 protected:
 

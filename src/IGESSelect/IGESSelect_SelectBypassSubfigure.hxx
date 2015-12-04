@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectBypassSubfigure,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBypassSubfigure,IFSelect_SelectExplore)
 
 protected:
 

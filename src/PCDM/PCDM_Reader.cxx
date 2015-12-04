@@ -21,3 +21,5 @@
 #include <PCDM_Reader.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(PCDM_Reader,Standard_Transient)

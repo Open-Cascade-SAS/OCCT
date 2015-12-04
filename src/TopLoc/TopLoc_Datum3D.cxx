@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Datum3D.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopLoc_Datum3D,MMgt_TShared)
+
 //=======================================================================
 //function : TopLoc_Datum3D
 //purpose  : Identity

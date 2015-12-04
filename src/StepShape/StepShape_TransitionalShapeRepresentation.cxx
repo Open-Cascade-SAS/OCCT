@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepShape_TransitionalShapeRepresentation.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_TransitionalShapeRepresentation,StepShape_ShapeRepresentation)
+
 StepShape_TransitionalShapeRepresentation::StepShape_TransitionalShapeRepresentation ()  {}
 

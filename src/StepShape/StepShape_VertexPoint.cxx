@@ -17,6 +17,8 @@
 #include <StepShape_VertexPoint.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_VertexPoint,StepShape_Vertex)
+
 StepShape_VertexPoint::StepShape_VertexPoint ()  {}
 
 void StepShape_VertexPoint::Init(

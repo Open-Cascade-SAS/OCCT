@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_BooleanList,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_BooleanList,TDF_Attribute)
 
 protected:
 

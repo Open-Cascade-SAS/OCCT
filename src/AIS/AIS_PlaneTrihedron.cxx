@@ -54,6 +54,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <UnitsAPI.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_PlaneTrihedron,AIS_InteractiveObject)
+
 void  ExtremityPoints(TColgp_Array1OfPnt& PP,const Handle(Geom_Plane)& myPlane,const Handle(Prs3d_Drawer)& myDrawer);
 
 //=======================================================================

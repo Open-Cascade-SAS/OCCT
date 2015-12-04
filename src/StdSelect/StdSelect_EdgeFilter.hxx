@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StdSelect_EdgeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_EdgeFilter,SelectMgr_Filter)
 
 protected:
 

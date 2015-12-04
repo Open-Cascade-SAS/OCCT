@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_SizeMember.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SizeMember,StepData_SelectReal)
+
 StepBasic_SizeMember::StepBasic_SizeMember  ()    {  }
 
     Standard_Boolean  StepBasic_SizeMember::HasName () const

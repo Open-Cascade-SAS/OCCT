@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(LocOpe_HBuilder,TopOpeBRepBuild_HBuilder)
+  DEFINE_STANDARD_RTTIEXT(LocOpe_HBuilder,TopOpeBRepBuild_HBuilder)
 
 protected:
 

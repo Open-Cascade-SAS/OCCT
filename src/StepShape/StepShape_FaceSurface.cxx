@@ -17,6 +17,8 @@
 #include <StepShape_FaceSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceSurface,StepShape_Face)
+
 StepShape_FaceSurface::StepShape_FaceSurface ()  {}
 
 void StepShape_FaceSurface::Init(

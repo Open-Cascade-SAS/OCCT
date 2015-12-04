@@ -25,6 +25,8 @@
 #include <IGESGeom_CircularArc.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CircularArc,IGESData_IGESEntity)
+
 IGESGeom_CircularArc::IGESGeom_CircularArc ()    {  }
 
     void IGESGeom_CircularArc::Init 

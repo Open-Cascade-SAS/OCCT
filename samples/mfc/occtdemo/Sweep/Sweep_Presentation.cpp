@@ -76,7 +76,7 @@ void Sweep_Presentation::DoSample()
 // Auxiliary functions
 //////////////////////////////////////////////////////////////////////
 
-static Handle_Geom_Curve mkBezierCurve(const Standard_Integer nPoles,
+static Handle(Geom_Curve) mkBezierCurve(const Standard_Integer nPoles,
                                  const Standard_Real theCoords[][3],
                                  const Standard_Real aScale = 1,
                                  const gp_XYZ& aShift = gp_XYZ(0,0,0))
@@ -90,7 +90,7 @@ static Handle_Geom_Curve mkBezierCurve(const Standard_Integer nPoles,
   return new Geom_BezierCurve (aPoles);
 }
 
-static Handle_Geom_Curve mkPBSplineCurve(const Standard_Integer nPoles,
+static Handle(Geom_Curve) mkPBSplineCurve(const Standard_Integer nPoles,
                                  const Standard_Real theCoords[][3],
                                  const Standard_Real aScale = 1,
                                  const gp_XYZ& aShift = gp_XYZ(0,0,0))
@@ -111,7 +111,7 @@ static Handle_Geom_Curve mkPBSplineCurve(const Standard_Integer nPoles,
   return new Geom_BSplineCurve (aPoles, aKnots, aMults, 3, Standard_True);
 }
 
-static Handle_Geom2d_Curve mk2dBezierCurve(const Standard_Integer nPoles,
+static Handle(Geom2d_Curve) mk2dBezierCurve(const Standard_Integer nPoles,
                                      const Standard_Real theCoords[][2],
                                      const Standard_Real aScale = 1,
                                      const gp_XY& aShift = gp_XY(0,0))
@@ -139,7 +139,7 @@ static TopoDS_Wire mkPolygonWire(const Standard_Integer nPoints,
   return aPol.Wire();
 }
 
-static Handle_Geom_Curve mkCurve1()
+static Handle(Geom_Curve) mkCurve1()
 {
   Standard_Real aCoords[][3] = {
     {0,0,0},{0,0,10},{0,10,10},{0,10,20}
@@ -148,7 +148,7 @@ static Handle_Geom_Curve mkCurve1()
   return mkBezierCurve (nPoles, aCoords);
 }
 
-static Handle_Geom_Curve mkCurve2()
+static Handle(Geom_Curve) mkCurve2()
 {
   Standard_Real aCoords[][3] = {
     {0,0,0},{10,0,0},{20,10,12},{25,30,20},{50,40,50}
@@ -157,7 +157,7 @@ static Handle_Geom_Curve mkCurve2()
   return mkBezierCurve (nPoles, aCoords);
 }
 
-static Handle_Geom_Curve mkCurve3()
+static Handle(Geom_Curve) mkCurve3()
 {
   Standard_Real aCoords[][3] = {
     {50,40,50},{70,30,30},{90,20,20},{100,50,0}
@@ -166,7 +166,7 @@ static Handle_Geom_Curve mkCurve3()
   return mkBezierCurve (nPoles, aCoords);
 }
 
-static Handle_Geom2d_Curve mk2dCurve1()
+static Handle(Geom2d_Curve) mk2dCurve1()
 {
   Standard_Real aCoords[][2] = {
     {0,0},{0.3,0},{0.1,0.5},{0.3,0.6},{0.6,0.5}
@@ -175,7 +175,7 @@ static Handle_Geom2d_Curve mk2dCurve1()
   return mk2dBezierCurve (nPoles, aCoords);
 }
 
-static Handle_Geom_Surface mkSurface1()
+static Handle(Geom_Surface) mkSurface1()
 {
   Standard_Real aCoords[3][3][3] = {
     {{-10,-10,-30},{-10,50,40},{-10,70,-20}},
@@ -292,9 +292,9 @@ static TopoDS_Wire mkWire9()
 }
 
 
-Handle_AIS_InteractiveObject Sweep_Presentation::drawCurveOnSurface 
-    (const Handle_Geom2d_Curve& aC2d,
-     const Handle_Geom_Surface& aSurf,
+Handle(AIS_InteractiveObject) Sweep_Presentation::drawCurveOnSurface 
+    (const Handle(Geom2d_Curve)& aC2d,
+     const Handle(Geom_Surface)& aSurf,
      const Quantity_Color& aColor)
 {
   Handle(Geom2dAdaptor_HCurve) aHC = new Geom2dAdaptor_HCurve(aC2d);

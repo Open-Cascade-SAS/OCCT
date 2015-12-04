@@ -57,7 +57,7 @@ public:
   
   Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_GeomTolerance,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_GeomTolerance,TDF_Attribute)
 
 };
 

@@ -81,7 +81,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_CappingPlaneResource, OpenGl_Resource) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource,OpenGl_Resource) // Type definition
 
 };
 

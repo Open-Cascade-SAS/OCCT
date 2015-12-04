@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Edge.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DBRep_Edge,MMgt_TShared)
+
 //=======================================================================
 //function : DBRep_Edge
 //purpose  : 

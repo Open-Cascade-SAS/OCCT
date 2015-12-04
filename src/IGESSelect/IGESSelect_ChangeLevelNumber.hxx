@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_ChangeLevelNumber,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_ChangeLevelNumber,IGESSelect_ModelModifier)
 
 protected:
 

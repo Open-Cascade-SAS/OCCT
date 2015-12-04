@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_Driver,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_Driver,MMgt_TShared)
 
 protected:
 

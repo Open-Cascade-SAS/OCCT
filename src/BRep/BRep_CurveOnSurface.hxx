@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_CurveOnSurface,BRep_GCurve)
+  DEFINE_STANDARD_RTTIEXT(BRep_CurveOnSurface,BRep_GCurve)
 
 protected:
 

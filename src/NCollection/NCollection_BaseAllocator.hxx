@@ -78,7 +78,7 @@ class NCollection_BaseAllocator : public MMgt_TShared
 
  public:
   // ---------- CasCade RunTime Type Information
-  DEFINE_STANDARD_RTTI(NCollection_BaseAllocator, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(NCollection_BaseAllocator,MMgt_TShared)
 };
 
 DEFINE_STANDARD_HANDLE(NCollection_BaseAllocator,MMgt_TShared)

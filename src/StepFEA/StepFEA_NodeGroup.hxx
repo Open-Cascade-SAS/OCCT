@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_NodeGroup,StepFEA_FeaGroup)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_NodeGroup,StepFEA_FeaGroup)
 
 protected:
 

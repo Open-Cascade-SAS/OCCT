@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_SingleParent,IGESData_SingleParentEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_SingleParent,IGESData_SingleParentEntity)
 
 protected:
 

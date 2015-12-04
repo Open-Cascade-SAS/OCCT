@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_NoteBook,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_NoteBook,TDF_Attribute)
 
 protected:
 

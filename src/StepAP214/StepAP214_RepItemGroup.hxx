@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_RepItemGroup,StepBasic_Group)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_RepItemGroup,StepBasic_Group)
 
 protected:
 

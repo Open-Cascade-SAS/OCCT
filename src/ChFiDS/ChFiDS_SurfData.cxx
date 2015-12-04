@@ -22,6 +22,8 @@
 #include <MMgt_TShared.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_SurfData,MMgt_TShared)
+
 ChFiDS_SurfData::ChFiDS_SurfData () : 
 indexOfS1(0),indexOfS2(0),indexOfConge(0),
 isoncurv1(0),isoncurv2(0),twistons1(0),twistons2(0)

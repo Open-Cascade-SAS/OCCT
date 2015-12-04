@@ -17,6 +17,8 @@
 
 #include <StepDimTol_HArray1OfToleranceZoneTarget.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZone,StepRepr_ShapeAspect)
+
 //=======================================================================
 //function : StepDimTol_ToleranceZone
 //purpose  : 

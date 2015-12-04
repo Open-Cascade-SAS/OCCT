@@ -17,6 +17,8 @@
 #include <StepGeom_CartesianPoint.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineSurface,StepGeom_BoundedSurface)
+
 StepGeom_BSplineSurface::StepGeom_BSplineSurface ()  {}
 
 void StepGeom_BSplineSurface::Init(

@@ -24,6 +24,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_Group,IGESData_IGESEntity)
+
 IGESBasic_Group::IGESBasic_Group ()    {  InitTypeAndForm(402,1);  }
 
     IGESBasic_Group::IGESBasic_Group

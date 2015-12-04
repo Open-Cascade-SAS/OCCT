@@ -40,7 +40,7 @@ class XmlTObjDrivers_DocumentRetrievalDriver :
 
  public:
   // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI (XmlTObjDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
+  DEFINE_STANDARD_RTTIEXT(XmlTObjDrivers_DocumentRetrievalDriver,XmlLDrivers_DocumentRetrievalDriver)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

@@ -32,6 +32,8 @@
 #include <TColStd_Array1OfReal.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeTessellator,BRepMesh_IEdgeTool)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

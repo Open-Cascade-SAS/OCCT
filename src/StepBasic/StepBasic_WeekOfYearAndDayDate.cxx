@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_WeekOfYearAndDayDate.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_WeekOfYearAndDayDate,StepBasic_Date)
+
 StepBasic_WeekOfYearAndDayDate::StepBasic_WeekOfYearAndDayDate ()  {}
 
 void StepBasic_WeekOfYearAndDayDate::Init(

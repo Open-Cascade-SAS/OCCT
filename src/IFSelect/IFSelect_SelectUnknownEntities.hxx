@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectUnknownEntities,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectUnknownEntities,IFSelect_SelectExtract)
 
 protected:
 

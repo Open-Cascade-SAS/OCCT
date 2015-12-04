@@ -122,7 +122,7 @@ class TObj_TReference : public TDF_Attribute
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_TReference, TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TObj_TReference,TDF_Attribute)
 };
 
 //! Define handle class for TObj_TReference

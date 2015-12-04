@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectSubordinate,IFSelect_SelectExtract)
+
 IGESSelect_SelectSubordinate::IGESSelect_SelectSubordinate
   (const Standard_Integer status)    {  thestatus = status;  }
 

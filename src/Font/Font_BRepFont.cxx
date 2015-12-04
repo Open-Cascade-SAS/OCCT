@@ -48,6 +48,8 @@
 #include FT_OUTLINE_H
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Font_BRepFont,Font_FTFont)
+
 namespace
 {
   // pre-defined font rendering options

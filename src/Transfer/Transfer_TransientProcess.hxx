@@ -116,7 +116,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_TransientProcess,Transfer_ProcessForTransient)
+  DEFINE_STANDARD_RTTIEXT(Transfer_TransientProcess,Transfer_ProcessForTransient)
 
 protected:
 

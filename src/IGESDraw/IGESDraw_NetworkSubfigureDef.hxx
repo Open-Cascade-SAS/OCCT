@@ -119,7 +119,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_NetworkSubfigureDef,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigureDef,IGESData_IGESEntity)
 
 protected:
 

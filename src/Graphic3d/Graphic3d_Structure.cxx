@@ -40,6 +40,8 @@
 #include <TColStd_Array2OfReal.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure,MMgt_TShared)
+
 //=============================================================================
 //function : Graphic3d_Structure
 //purpose  :

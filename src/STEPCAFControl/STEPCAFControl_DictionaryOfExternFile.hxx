@@ -129,7 +129,7 @@ public:
 friend class STEPCAFControl_IteratorOfDictionaryOfExternFile;
 
 
-  DEFINE_STANDARD_RTTI(STEPCAFControl_DictionaryOfExternFile,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(STEPCAFControl_DictionaryOfExternFile,MMgt_TShared)
 
 protected:
 

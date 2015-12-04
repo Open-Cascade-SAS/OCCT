@@ -23,6 +23,8 @@
 #include <IGESSolid_Ellipsoid.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Ellipsoid,IGESData_IGESEntity)
+
 IGESSolid_Ellipsoid::IGESSolid_Ellipsoid ()    {  }
 
 

@@ -18,6 +18,8 @@
 #include <StepShape_RevolvedAreaSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_RevolvedAreaSolid,StepShape_SweptAreaSolid)
+
 StepShape_RevolvedAreaSolid::StepShape_RevolvedAreaSolid ()  {}
 
 void StepShape_RevolvedAreaSolid::Init(

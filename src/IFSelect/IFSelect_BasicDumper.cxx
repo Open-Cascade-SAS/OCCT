@@ -42,6 +42,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_BasicDumper,IFSelect_SessionDumper)
+
 //#include <IFSelect_SelectTextType.hxx>
 #define FIRSTCHAR 1
 // Param litteral "own" sous la forme  :"<val>" -> first = 3

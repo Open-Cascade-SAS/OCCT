@@ -76,7 +76,7 @@ class VrmlData_Coordinate : public VrmlData_ArrayVec3d
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Coordinate, VrmlData_ArrayVec3d)
+DEFINE_STANDARD_RTTI_INLINE(VrmlData_Coordinate,VrmlData_ArrayVec3d)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

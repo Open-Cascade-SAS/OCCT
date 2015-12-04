@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_EdgeDivide,ShapeUpgrade_Tool)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_EdgeDivide,ShapeUpgrade_Tool)
 
 protected:
 

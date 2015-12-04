@@ -41,6 +41,7 @@
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceGAP();

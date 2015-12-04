@@ -15,6 +15,8 @@
 
 #include <StepDimTol_ToleranceZoneForm.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneForm,MMgt_TShared)
+
 //=======================================================================
 //function : StepDimTol_ToleranceZoneForm
 //purpose  : 

@@ -23,6 +23,8 @@
 #include <TDF_DefaultDeltaOnRemoval.hxx>
 #include <TDF_Label.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnRemoval,TDF_DeltaOnRemoval)
+
 //=======================================================================
 //function : TDF_DefaultDeltaOnRemoval
 //purpose  : 

@@ -18,6 +18,8 @@
 #include <StepBasic_ApprovalRole.hxx>
 #include <StepBasic_PersonOrganizationSelect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalPersonOrganization,MMgt_TShared)
+
 StepBasic_ApprovalPersonOrganization::StepBasic_ApprovalPersonOrganization ()  {}
 
 void StepBasic_ApprovalPersonOrganization::Init(

@@ -68,6 +68,8 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Shape,AIS_InteractiveObject)
+
 static Standard_Boolean myFirstCompute;
 
 static Standard_Boolean IsInList(const TColStd_ListOfInteger& LL, const Standard_Integer aMode)

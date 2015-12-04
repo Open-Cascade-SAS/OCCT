@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_ConstantSurface3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_ConstantSurface3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
 
 protected:
 

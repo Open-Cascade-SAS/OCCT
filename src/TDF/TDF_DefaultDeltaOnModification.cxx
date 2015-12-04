@@ -24,6 +24,8 @@
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_Label.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification,TDF_DeltaOnModification)
+
 //=======================================================================
 //function : TDF_DefaultDeltaOnModification
 //purpose  : 

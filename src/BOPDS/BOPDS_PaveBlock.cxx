@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 
 #include <algorithm>
+IMPLEMENT_STANDARD_RTTIEXT(BOPDS_PaveBlock,MMgt_TShared)
+
 #ifdef _MSC_VER
 #pragma warning ( disable : 4291 )
 #endif

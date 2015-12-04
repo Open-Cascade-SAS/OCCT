@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_AssemblyComponentUsage,StepRepr_ProductDefinitionUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsage,StepRepr_ProductDefinitionUsage)
 
 protected:
 

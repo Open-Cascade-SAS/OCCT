@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ViewerTest_EventManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ViewerTest_EventManager,MMgt_TShared)
 
 protected:
 

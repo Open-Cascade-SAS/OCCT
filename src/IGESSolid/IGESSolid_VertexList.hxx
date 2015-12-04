@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_VertexList,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_VertexList,IGESData_IGESEntity)
 
 protected:
 

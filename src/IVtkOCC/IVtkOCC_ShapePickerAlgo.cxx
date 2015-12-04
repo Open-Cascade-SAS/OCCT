@@ -21,6 +21,8 @@
 #include <Message_Messenger.hxx>
 #include <StdSelect_BRepOwner.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ShapePickerAlgo,IVtk_IShapePickerAlgo)
+
 // Handle implementation
 
 

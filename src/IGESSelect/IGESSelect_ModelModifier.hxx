@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_ModelModifier,IFSelect_Modifier)
+  DEFINE_STANDARD_RTTI_INLINE(IGESSelect_ModelModifier,IFSelect_Modifier)
 
 protected:
 

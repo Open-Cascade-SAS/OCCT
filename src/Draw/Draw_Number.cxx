@@ -20,6 +20,8 @@
 #include <Draw_Number.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Number,Draw_Drawable3D)
+
 //=======================================================================
 //function : Draw_Number
 //purpose  : 

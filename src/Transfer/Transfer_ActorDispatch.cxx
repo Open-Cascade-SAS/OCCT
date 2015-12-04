@@ -24,6 +24,8 @@
 #include <Transfer_TransferDispatch.hxx>
 #include <Transfer_TransientProcess.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorDispatch,Transfer_ActorOfTransientProcess)
+
 Transfer_ActorDispatch::Transfer_ActorDispatch
   (const Handle(Interface_InterfaceModel)& amodel,
    const Interface_GeneralLib& lib)

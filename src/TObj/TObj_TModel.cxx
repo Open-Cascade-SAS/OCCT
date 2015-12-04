@@ -21,6 +21,8 @@
 #include <TDF_RelocationTable.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_TModel,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

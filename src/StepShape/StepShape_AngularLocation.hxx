@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_AngularLocation,StepShape_DimensionalLocation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_AngularLocation,StepShape_DimensionalLocation)
 
 protected:
 

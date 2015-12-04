@@ -22,6 +22,8 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_DeltaOnModification.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnModification,TDF_AttributeDelta)
+
 //=======================================================================
 //function : TDF_DeltaOnModification
 //purpose  : 

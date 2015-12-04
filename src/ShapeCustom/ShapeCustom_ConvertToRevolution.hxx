@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeCustom_ConvertToRevolution,ShapeCustom_Modification)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_ConvertToRevolution,ShapeCustom_Modification)
 
 protected:
 

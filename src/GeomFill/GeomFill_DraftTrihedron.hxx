@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_DraftTrihedron,GeomFill_TrihedronLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_DraftTrihedron,GeomFill_TrihedronLaw)
 
 protected:
 

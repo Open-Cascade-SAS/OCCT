@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(SelectMgr_EntityOwner,SelectBasics_EntityOwner)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_EntityOwner,SelectBasics_EntityOwner)
 
 protected:
 

@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_RadiusDimension,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_RadiusDimension,IGESData_IGESEntity)
 
 protected:
 

@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StdSelect_BRepOwner,SelectMgr_EntityOwner)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_BRepOwner,SelectMgr_EntityOwner)
 
 protected:
 

@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_AddGroup,IGESSelect_ModelModifier)
+
 IGESSelect_AddGroup::IGESSelect_AddGroup ()
     : IGESSelect_ModelModifier (Standard_True)    {  }
 

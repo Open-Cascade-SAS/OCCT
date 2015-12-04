@@ -120,7 +120,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_TextDisplayTemplate,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_TextDisplayTemplate,IGESData_IGESEntity)
 
 protected:
 

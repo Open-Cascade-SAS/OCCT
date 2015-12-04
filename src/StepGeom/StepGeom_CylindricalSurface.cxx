@@ -17,6 +17,8 @@
 #include <StepGeom_CylindricalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CylindricalSurface,StepGeom_ElementarySurface)
+
 StepGeom_CylindricalSurface::StepGeom_CylindricalSurface ()  {}
 
 void StepGeom_CylindricalSurface::Init(

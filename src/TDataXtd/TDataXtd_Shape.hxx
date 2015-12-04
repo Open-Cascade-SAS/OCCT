@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Shape,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Shape,TDF_Attribute)
 
 protected:
 

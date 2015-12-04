@@ -39,6 +39,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <UnitsAPI.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Line,AIS_InteractiveObject)
+
 //==================================================================
 // function: FindLimits
 // purpose:

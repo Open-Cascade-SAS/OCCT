@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TestTopOpeDraw_DrawableP3D,Draw_Marker3D)
+  DEFINE_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableP3D,Draw_Marker3D)
 
 protected:
 

@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_CoaxialityTolerance,StepDimTol_GeometricToleranceWithDatumReference)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_CoaxialityTolerance,StepDimTol_GeometricToleranceWithDatumReference)
 
 protected:
 

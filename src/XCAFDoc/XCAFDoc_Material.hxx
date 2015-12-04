@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_Material,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Material,TDF_Attribute)
 
 protected:
 

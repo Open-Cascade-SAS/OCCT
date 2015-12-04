@@ -37,6 +37,8 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESToBRep_Actor,Transfer_ActorOfTransientProcess)
+
 //=======================================================================
 //function : IGESToBRep_Actor
 //purpose  : 

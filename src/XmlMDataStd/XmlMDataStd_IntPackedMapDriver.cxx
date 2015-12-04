@@ -30,6 +30,7 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_IntPackedMapDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (IntPackedMapSize, "mapsize")
 IMPLEMENT_DOMSTRING (IsDeltaOn,        "delta")
 //=======================================================================

@@ -21,6 +21,8 @@
 #include <XmlMDataXtd_ShapeDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_ShapeDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMDataXtd_ShapeDriver
 //purpose  : Constructor

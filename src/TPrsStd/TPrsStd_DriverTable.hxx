@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_DriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_DriverTable,MMgt_TShared)
 
 protected:
 

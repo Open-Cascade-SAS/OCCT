@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_Point.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Point,StepGeom_GeometricRepresentationItem)
+
 StepGeom_Point::StepGeom_Point ()  {}
 

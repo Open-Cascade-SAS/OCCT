@@ -25,6 +25,8 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
+IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsLexicon,Units_Lexicon)
+
 //=======================================================================
 //function : Units_UnitsLexicon
 //purpose  : 

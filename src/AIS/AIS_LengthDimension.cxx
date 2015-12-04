@@ -36,6 +36,8 @@
 #include <TopExp_Explorer.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_LengthDimension,AIS_Dimension)
+
 //=======================================================================
 //function : Constructor
 //purpose  : Dimension between two faces

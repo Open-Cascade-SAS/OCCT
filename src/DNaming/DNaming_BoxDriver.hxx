@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_BoxDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_BoxDriver,TFunction_Driver)
 
 protected:
 

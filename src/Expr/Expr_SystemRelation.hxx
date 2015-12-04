@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_SystemRelation,Expr_GeneralRelation)
+  DEFINE_STANDARD_RTTIEXT(Expr_SystemRelation,Expr_GeneralRelation)
 
 protected:
 

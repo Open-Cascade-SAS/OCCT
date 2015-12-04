@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_PhysicallyModeledProductDefinition,StepBasic_ProductDefinition)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_PhysicallyModeledProductDefinition,StepBasic_ProductDefinition)
 
 protected:
 

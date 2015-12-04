@@ -53,6 +53,8 @@
 #include <Geom_Plane.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_AngleDimension,AIS_Dimension)
+
 namespace
 {
   static const TCollection_ExtendedString THE_EMPTY_LABEL_STRING;

@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_DateAndTimeAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_DateAndTimeAssignment,MMgt_TShared)
 
 protected:
 

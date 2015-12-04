@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_CoonsAlgPatch,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch,MMgt_TShared)
 
 protected:
 

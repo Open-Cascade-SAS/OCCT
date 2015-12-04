@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Color,IGESData_ColorEntity)
+
 IGESGraph_Color::IGESGraph_Color ()    {  }
 
 

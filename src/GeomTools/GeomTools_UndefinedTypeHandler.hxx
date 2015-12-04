@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomTools_UndefinedTypeHandler,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(GeomTools_UndefinedTypeHandler,MMgt_TShared)
 
 protected:
 

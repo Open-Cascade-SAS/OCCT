@@ -19,6 +19,8 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Signature,Interface_SignType)
+
 // unused 
 //static Standard_CString nulsign = "";
 static char intval[20];

@@ -73,7 +73,7 @@ Projection_Presentation::Projection_Presentation()
 // Function : createCurve
 // Purpose  : returns a BSpline curve with 10 poles
 //================================================================
-static Handle_Geom_BSplineCurve createCurve()
+static Handle(Geom_BSplineCurve) createCurve()
 {
   Standard_Real aCoords[][3] = {{-6,3,0},{-5,1,0},{-4,0,0},{-2,1,0},{-1,-1,0},
                                 {0,-1,0},{1,0,0},{2,2,0},{3,1,0},{4,0,0}};
@@ -95,7 +95,7 @@ static Handle_Geom_BSplineCurve createCurve()
 // Function : createSurface
 // Purpose  : returns a BSpline Surface with 8 poles
 //================================================================
-static Handle_Geom_BSplineSurface createSurface()
+static Handle(Geom_BSplineSurface) createSurface()
 {
   // define points array
   TColgp_Array2OfPnt aPoints (1,2,1,4);
@@ -244,7 +244,7 @@ void Projection_Presentation::sample2()
     "  gp_Dir aDir(0,0,1);" EOL
     "  gp_Ax3 anAx3(aCenterPoint, aDir);" EOL
     "  Standard_Real Radius = 300;" EOL
-    "  Handle_Geom_CylindricalSurface aCylSurface =" EOL
+    "  Handle(Geom_CylindricalSurface) aCylSurface =" EOL
     "    new Geom_CylindricalSurface(anAx3, Radius);" EOL
     "" EOL
     "  // projection of a point onto a surface" EOL
@@ -277,7 +277,7 @@ void Projection_Presentation::sample2()
   gp_Dir aDir(0,0,1);
   gp_Ax3 anAx3(aCenterPoint, aDir);
   Standard_Real Radius = 300;
-  Handle_Geom_CylindricalSurface aCylSurface =
+  Handle(Geom_CylindricalSurface) aCylSurface =
     new Geom_CylindricalSurface(anAx3, Radius);
 
   // projection of a point onto a surface
@@ -314,7 +314,7 @@ void Projection_Presentation::sample2()
   if(WAIT_A_LITTLE) return;
 
   // output cylindrical surface
-  Handle_Geom_RectangularTrimmedSurface aCylTrimmed = 
+  Handle(Geom_RectangularTrimmedSurface) aCylTrimmed = 
     new Geom_RectangularTrimmedSurface(aCylSurface,0,2*PI,-200,300,Standard_True,Standard_True);
   
   drawSurface(aCylTrimmed);
@@ -352,21 +352,21 @@ void Projection_Presentation::sample3()
     "  // define a planar surface" EOL
     "  gp_Pnt aPlanePnt(0,0,-100);" EOL
     "  gp_Dir aPlaneDir(0,0,1);" EOL
-    "  Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);" EOL
+    "  Handle(Geom_Plane) aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);" EOL
     "" EOL
     "  // create a cylindrical surface" EOL
     "  gp_Pnt aCylPnt(-100,0,550);" EOL
     "  gp_Dir aCylDir(0,1,0);" EOL
     "  gp_Ax3 anAx3(aCylPnt, aCylDir);" EOL
     "  Standard_Real aRadius = 800;" EOL
-    "  Handle_Geom_CylindricalSurface aCylSurface = " EOL
+    "  Handle(Geom_CylindricalSurface) aCylSurface = " EOL
     "    new Geom_CylindricalSurface(anAx3, aRadius);" EOL
     "" EOL
     "  // Projection of a curve onto a planar surface" EOL
-    "  Handle_Geom_Curve aPlaneProjCurve = GeomProjLib::Project(aCurve, aPlane);" EOL
+    "  Handle(Geom_Curve) aPlaneProjCurve = GeomProjLib::Project(aCurve, aPlane);" EOL
     "" EOL
     "  // Projection of a curve onto a cylindrical surface" EOL
-    "  Handle_Geom_Curve aCylProjCurve = GeomProjLib::Project(aCurve, aCylSurface);" EOL
+    "  Handle(Geom_Curve) aCylProjCurve = GeomProjLib::Project(aCurve, aCylSurface);" EOL
   );
   
   // create BSpline curve
@@ -378,21 +378,21 @@ void Projection_Presentation::sample3()
   // define a planar surface
   gp_Pnt aPlanePnt(0,0,-100);
   gp_Dir aPlaneDir(0,0,1);
-  Handle_Geom_Plane aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
+  Handle(Geom_Plane) aPlane = new Geom_Plane(aPlanePnt, aPlaneDir);
 
   // create a cylindrical surface
   gp_Pnt aCylPnt(-100,0,550);
   gp_Dir aCylDir(0,1,0);
   gp_Ax3 anAx3(aCylPnt, aCylDir);
   Standard_Real aRadius = 800;
-  Handle_Geom_CylindricalSurface aCylSurface = 
+  Handle(Geom_CylindricalSurface) aCylSurface = 
     new Geom_CylindricalSurface(anAx3, aRadius);
 
   // Projection of a curve onto a planar surface
-  Handle_Geom_Curve aPlaneProjCurve = GeomProjLib::Project(aCurve, aPlane);
+  Handle(Geom_Curve) aPlaneProjCurve = GeomProjLib::Project(aCurve, aPlane);
 
   // Projection of a curve onto a cylindrical surface
-  Handle_Geom_Curve aCylProjCurve = GeomProjLib::Project(aCurve, aCylSurface);
+  Handle(Geom_Curve) aCylProjCurve = GeomProjLib::Project(aCurve, aCylSurface);
 
   // ===== output ===========
   // output original curve
@@ -417,7 +417,7 @@ void Projection_Presentation::sample3()
   getAISContext()->Erase(aProjCurveIO, Standard_False);
 
   // output the second surface - cylindrical surface
-  Handle_Geom_RectangularTrimmedSurface aCylTrimmed = 
+  Handle(Geom_RectangularTrimmedSurface) aCylTrimmed = 
    new Geom_RectangularTrimmedSurface(aCylSurface,PI/2,-PI/2,-450,550,Standard_True,Standard_True);
   Handle(AIS_InteractiveObject) aCylIO = drawSurface(
     aCylTrimmed, Quantity_Color(Quantity_NOC_YELLOW), Standard_False);

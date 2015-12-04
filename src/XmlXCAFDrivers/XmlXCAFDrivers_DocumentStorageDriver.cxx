@@ -22,6 +22,8 @@
 #include <XmlMXCAFDoc.hxx>
 #include <XmlXCAFDrivers_DocumentStorageDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentStorageDriver,XmlDrivers_DocumentStorageDriver)
+
 //=======================================================================
 //function : XmlXCAFDrivers_DocumentStorageDriver
 //purpose  : 

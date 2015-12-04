@@ -22,6 +22,8 @@
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_VariableDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_VariableDriver
 //purpose  : Constructor

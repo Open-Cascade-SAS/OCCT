@@ -137,7 +137,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IntPatch_ALine,IntPatch_Line)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_ALine,IntPatch_Line)
 
 protected:
 

@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ExprIntrp_Generator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ExprIntrp_Generator,MMgt_TShared)
 
 protected:
 

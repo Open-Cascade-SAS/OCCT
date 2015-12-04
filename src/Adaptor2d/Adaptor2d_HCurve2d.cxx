@@ -23,3 +23,5 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor2d_HCurve2d,MMgt_TShared)

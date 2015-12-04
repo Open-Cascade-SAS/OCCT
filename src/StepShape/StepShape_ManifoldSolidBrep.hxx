@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ManifoldSolidBrep,StepShape_SolidModel)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ManifoldSolidBrep,StepShape_SolidModel)
 
 protected:
 

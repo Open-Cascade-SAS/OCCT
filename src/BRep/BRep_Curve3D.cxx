@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRep_Curve3D,BRep_GCurve)
+
 //=======================================================================
 //function : BRep_Curve3D
 //purpose  : 

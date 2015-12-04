@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ProjLib_HCompProjectedCurve,Adaptor2d_HCurve2d)
+  DEFINE_STANDARD_RTTI_INLINE(ProjLib_HCompProjectedCurve,Adaptor2d_HCurve2d)
 
 protected:
 

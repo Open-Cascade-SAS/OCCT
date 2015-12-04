@@ -63,6 +63,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_WireDivide,ShapeUpgrade_Tool)
+
 //=======================================================================
 //function : ShapeUpgrade_WireDivide
 //purpose  : 

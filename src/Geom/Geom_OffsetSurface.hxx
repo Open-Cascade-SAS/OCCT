@@ -357,7 +357,7 @@ public:
   inline GeomAbs_Shape GetBasisSurfContinuity() const
   { return myBasisSurfContinuity; }
 
-  DEFINE_STANDARD_RTTI(Geom_OffsetSurface,Geom_Surface)
+  DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface,Geom_Surface)
 
 private:
 

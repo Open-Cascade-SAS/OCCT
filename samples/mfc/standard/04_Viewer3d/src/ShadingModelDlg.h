@@ -16,7 +16,7 @@ class CShadingModelDlg : public CDialog
 {
 // Construction
 public:
-	CShadingModelDlg(Handle_V3d_View Current_V3d_View, CWnd* pParent = NULL);   // standard constructor
+	CShadingModelDlg(Handle(V3d_View) Current_V3d_View, CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CShadingModelDlg)
@@ -44,7 +44,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
-	Handle_V3d_View	myCurrent_V3d_View;
+	Handle(V3d_View)	myCurrent_V3d_View;
 };
 
 //{{AFX_INSERT_LOCATION}}

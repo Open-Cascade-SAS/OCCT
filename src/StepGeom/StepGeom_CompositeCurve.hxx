@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CompositeCurve,StepGeom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurve,StepGeom_BoundedCurve)
 
 protected:
 

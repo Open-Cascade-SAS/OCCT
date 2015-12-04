@@ -77,7 +77,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_SelectNamed,StepData_SelectMember)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectNamed,StepData_SelectMember)
 
 protected:
 

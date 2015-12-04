@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_SeamCurve,StepGeom_SurfaceCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SeamCurve,StepGeom_SurfaceCurve)
 
 protected:
 

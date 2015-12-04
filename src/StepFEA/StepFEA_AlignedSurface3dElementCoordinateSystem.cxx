@@ -20,6 +20,8 @@
 #include <StepFEA_FeaAxis2Placement3d.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_AlignedSurface3dElementCoordinateSystem,StepFEA_FeaRepresentationItem)
+
 //=======================================================================
 //function : StepFEA_AlignedSurface3dElementCoordinateSystem
 //purpose  : 

@@ -92,7 +92,7 @@ public:
   Standard_EXPORT void SetDatumTargetNumber (const Standard_Integer theNumber);
 
 
-  DEFINE_STANDARD_RTTI(XCAFDimTolObjects_DatumObject,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject,Standard_Transient)
 
 private: 
 

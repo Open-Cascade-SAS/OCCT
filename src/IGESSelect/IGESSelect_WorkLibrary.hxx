@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_WorkLibrary,IFSelect_WorkLibrary)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_WorkLibrary,IFSelect_WorkLibrary)
 
 protected:
 

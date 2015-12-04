@@ -4,7 +4,7 @@
 
 // Implementation of Handle and type mgt
 //
-IMPLEMENT_STANDARD_HANDLE(User_Cylinder,AIS_InteractiveObject)
+
 IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 
 #include "ColoredMeshDlg.h"
@@ -52,8 +52,8 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
   myCylindricalFaceColor = Quantity_NOC_KHAKI4;
 }
 
-void User_Cylinder::Compute(const Handle_PrsMgr_PresentationManager3d& /*aPresentationManager*/,
-                            const Handle_Prs3d_Presentation& aPresentation,
+void User_Cylinder::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                            const Handle(Prs3d_Presentation)& aPresentation,
                             const Standard_Integer aMode ) 
 {
   switch (aMode) {
@@ -308,14 +308,14 @@ case 6: //color
   }
 }
 
-void User_Cylinder::Compute(const Handle_Prs3d_Projector& aProjector,
-                            const Handle_Prs3d_Presentation& aPresentation)
+void User_Cylinder::Compute(const Handle(Prs3d_Projector)& aProjector,
+                            const Handle(Prs3d_Presentation)& aPresentation)
 {
   myDrawer->EnableDrawHiddenLine();
   StdPrs_HLRPolyShape::Add(aPresentation,myShape,myDrawer,aProjector);
 }
 
-void User_Cylinder::ComputeSelection(const Handle_SelectMgr_Selection& aSelection,
+void User_Cylinder::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                     const Standard_Integer aMode)
 {
   switch(aMode)

@@ -23,6 +23,8 @@
 #include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_RelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataStd_ReferenceList,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_DatumReference,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReference,MMgt_TShared)
 
 protected:
 

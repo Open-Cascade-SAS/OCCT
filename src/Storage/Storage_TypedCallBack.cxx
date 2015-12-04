@@ -18,6 +18,8 @@
 #include <Storage_TypedCallBack.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Storage_TypedCallBack,MMgt_TShared)
+
 Storage_TypedCallBack::Storage_TypedCallBack() : myIndex(0)
 {
 }

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AppliedGroupAssignment,StepBasic_GroupAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedGroupAssignment,StepBasic_GroupAssignment)
 
 protected:
 

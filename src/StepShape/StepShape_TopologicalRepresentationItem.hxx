@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_TopologicalRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_TopologicalRepresentationItem,StepRepr_RepresentationItem)
 
 protected:
 

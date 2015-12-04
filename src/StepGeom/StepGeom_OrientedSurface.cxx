@@ -19,6 +19,8 @@
 #include <StepGeom_OrientedSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OrientedSurface,StepGeom_Surface)
+
 //=======================================================================
 //function : StepGeom_OrientedSurface
 //purpose  : 

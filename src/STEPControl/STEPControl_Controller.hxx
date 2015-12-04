@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPControl_Controller,XSControl_Controller)
+  DEFINE_STANDARD_RTTIEXT(STEPControl_Controller,XSControl_Controller)
 
 protected:
 

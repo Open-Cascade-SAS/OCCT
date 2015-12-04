@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_Torus,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_Torus,IGESData_IGESEntity)
 
 protected:
 

@@ -31,6 +31,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Approx_CurvlinFunc,MMgt_TShared)
+
 #ifdef OCCT_DEBUG_CHRONO
 #include <OSD_Timer.hxx>
 static OSD_Chronometer chr_uparam;

@@ -33,7 +33,7 @@ public:
 
   Standard_EXPORT void Build (const IVtk_IShape::Handle& theShape, const IVtk_IShapeData::Handle& theData);
 
-  DEFINE_STANDARD_RTTI(IVtk_IShapeMesher, IVtk_Interface)
+  DEFINE_STANDARD_RTTIEXT(IVtk_IShapeMesher,IVtk_Interface)
 
 protected:
   Standard_EXPORT virtual void initialize (const IVtk_IShape::Handle&     theShapeObj,

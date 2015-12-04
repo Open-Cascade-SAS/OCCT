@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_DispPerSingleView,IFSelect_Dispatch)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_DispPerSingleView,IFSelect_Dispatch)
 
 protected:
 

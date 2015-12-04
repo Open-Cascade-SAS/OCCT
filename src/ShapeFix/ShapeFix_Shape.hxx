@@ -133,7 +133,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Shape,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Shape,ShapeFix_Root)
 
 protected:
 

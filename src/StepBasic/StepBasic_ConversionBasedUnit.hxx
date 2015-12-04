@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ConversionBasedUnit,StepBasic_NamedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnit,StepBasic_NamedUnit)
 
 protected:
 

@@ -24,6 +24,8 @@
 #include <TNaming_Iterator.hxx>
 #include <TNaming_NamedShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TNaming_DeltaOnModification,TDF_DeltaOnModification)
+
 //=======================================================================
 //function : TNaming_DeltaOnModification
 //purpose  : 

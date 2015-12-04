@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Message_PrinterOStream,Message_Printer)
+  DEFINE_STANDARD_RTTIEXT(Message_PrinterOStream,Message_Printer)
 
 protected:
 

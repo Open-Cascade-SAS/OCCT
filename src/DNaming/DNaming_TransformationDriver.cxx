@@ -53,6 +53,8 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_TransformationDriver,TFunction_Driver)
+
 #ifdef _WIN32
 #define EXCEPTION ...
 #else

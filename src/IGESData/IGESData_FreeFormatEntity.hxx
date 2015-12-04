@@ -135,7 +135,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_FreeFormatEntity,IGESData_UndefinedEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESData_FreeFormatEntity,IGESData_UndefinedEntity)
 
 protected:
 

@@ -135,7 +135,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeConstruct_ProjectCurveOnSurface,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface,MMgt_TShared)
 
 protected:
 

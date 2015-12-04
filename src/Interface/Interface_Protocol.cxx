@@ -20,6 +20,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_Protocol,MMgt_TShared)
+
 //  Gestion du Protocol actif : tres simple, une variable statique
 static Handle(Interface_Protocol)& theactive()
 {

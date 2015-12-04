@@ -131,7 +131,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectAnyList,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectAnyList,IFSelect_SelectDeduct)
 
 protected:
 

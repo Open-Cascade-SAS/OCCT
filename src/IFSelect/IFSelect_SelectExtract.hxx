@@ -84,7 +84,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectExtract,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectExtract,IFSelect_SelectDeduct)
 
 protected:
 

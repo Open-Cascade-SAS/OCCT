@@ -78,7 +78,7 @@ void PointOnCurve_Presentation::DoSample()
 // Purpose  : creating a BSpline Curve 
 //================================================================
 
-static Handle_Geom_BSplineCurve CreateCurve()                     
+static Handle(Geom_BSplineCurve) CreateCurve()                     
 {
   Standard_Real aCoords[][3] = 
   {
@@ -196,7 +196,7 @@ void PointOnCurve_Presentation::sample1()
           gce_MakeLin aLin(aPoint1, aPoint2);
 
           Standard_Real aParam = aPoint1.Distance(aPoint2);
-          Handle_Geom_TrimmedCurve aSeg = new Geom_TrimmedCurve(new Geom_Line(aLin), 0, aParam);
+          Handle(Geom_TrimmedCurve) aSeg = new Geom_TrimmedCurve(new Geom_Line(aLin), 0, aParam);
           drawCurve(aSeg, Quantity_NOC_GREEN1);
         }
         if (WAIT_A_LITTLE) return;

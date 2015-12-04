@@ -34,6 +34,8 @@
 #include <OpenGl_Workspace.hxx>
 #include <Standard_CLocaleSentry.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,Graphic3d_CView)
+
 #ifdef HAVE_GL2PS
 #include <gl2ps.h>
 #endif

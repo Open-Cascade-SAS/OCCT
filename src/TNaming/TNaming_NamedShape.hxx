@@ -142,7 +142,7 @@ friend class TNaming_NewShapeIterator;
 friend class TNaming_OldShapeIterator;
 
 
-  DEFINE_STANDARD_RTTI(TNaming_NamedShape,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TNaming_NamedShape,TDF_Attribute)
 
 protected:
 

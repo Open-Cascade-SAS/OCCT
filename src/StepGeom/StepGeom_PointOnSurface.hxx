@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_PointOnSurface,StepGeom_Point)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_PointOnSurface,StepGeom_Point)
 
 protected:
 

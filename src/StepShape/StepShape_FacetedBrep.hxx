@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_FacetedBrep,StepShape_ManifoldSolidBrep)
+  DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrep,StepShape_ManifoldSolidBrep)
 
 protected:
 

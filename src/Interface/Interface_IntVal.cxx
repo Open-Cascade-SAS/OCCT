@@ -15,6 +15,8 @@
 #include <Interface_IntVal.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_IntVal,MMgt_TShared)
+
 Interface_IntVal::Interface_IntVal  ()    {  theval = 0;  }
 
 Standard_Integer  Interface_IntVal::Value () const  {  return theval;  }

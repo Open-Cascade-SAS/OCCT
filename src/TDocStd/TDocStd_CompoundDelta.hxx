@@ -44,7 +44,7 @@ public:
 friend class TDocStd_Document;
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_CompoundDelta,TDF_Delta)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_CompoundDelta,TDF_Delta)
 
 protected:
 

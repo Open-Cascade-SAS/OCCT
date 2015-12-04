@@ -35,6 +35,8 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepTools_ReShape,MMgt_TShared)
+
 //include <ShapeExtend.hxx>
 //#include <BRepTools_Edge.hxx>
 static void CopyRanges (const TopoDS_Shape& toedge, const TopoDS_Shape& fromedge,

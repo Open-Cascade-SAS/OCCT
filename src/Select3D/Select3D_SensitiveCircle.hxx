@@ -99,7 +99,7 @@ public:
   //! Builds BVH tree for a circle's edge segments if needed
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveCircle, Select3D_SensitivePoly)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCircle,Select3D_SensitivePoly)
 
 private:
 

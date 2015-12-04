@@ -195,7 +195,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Constraint,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Constraint,TDF_Attribute)
 
 protected:
 

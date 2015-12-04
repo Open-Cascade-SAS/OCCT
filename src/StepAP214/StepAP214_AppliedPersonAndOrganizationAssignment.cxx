@@ -18,6 +18,8 @@
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedPersonAndOrganizationAssignment,StepBasic_PersonAndOrganizationAssignment)
+
 StepAP214_AppliedPersonAndOrganizationAssignment::StepAP214_AppliedPersonAndOrganizationAssignment ()  {}
 
 void StepAP214_AppliedPersonAndOrganizationAssignment::Init(

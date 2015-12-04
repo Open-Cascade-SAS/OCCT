@@ -111,7 +111,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DBRep_DrawableShape,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(DBRep_DrawableShape,Draw_Drawable3D)
 
 protected:
 

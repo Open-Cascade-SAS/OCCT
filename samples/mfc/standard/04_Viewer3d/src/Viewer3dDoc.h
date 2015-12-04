@@ -34,12 +34,12 @@ protected: // create from serialization only
 
 public:
   void SetMyStaticTrihedronAxisIsDisplayed(BOOL IsDisplayed);
-  Handle_AIS_Shape GetBox();
-  Handle_AIS_Shape GetSphere();
-  Handle_User_Cylinder GetCylinder();
-  Handle_AIS_Shape GetOverlappedBox();
-  Handle_AIS_Shape GetOverlappedSphere();
-  Handle_AIS_Shape GetOverlappedCylinder();
+  Handle(AIS_Shape) GetBox();
+  Handle(AIS_Shape) GetSphere();
+  Handle(User_Cylinder) GetCylinder();
+  Handle(AIS_Shape) GetOverlappedBox();
+  Handle(AIS_Shape) GetOverlappedSphere();
+  Handle(AIS_Shape) GetOverlappedCylinder();
   void Start();
   Standard_CString GetDataDir() {return myDataDir;}
   static void Fit();
@@ -137,13 +137,13 @@ protected:
 private:
   COffsetDlg* myOffsetDlg;
 
-  Handle_User_Cylinder myCylinder;
-  Handle_AIS_Shape mySphere;
-  Handle_AIS_Shape myBox;
-  Handle_AIS_Shape myOverlappedCylinder;
-  Handle_AIS_Shape myOverlappedSphere;
-  Handle_AIS_Shape myOverlappedBox;
-  Handle_AIS_Trihedron myTrihedron;
+  Handle(User_Cylinder) myCylinder;
+  Handle(AIS_Shape) mySphere;
+  Handle(AIS_Shape) myBox;
+  Handle(AIS_Shape) myOverlappedCylinder;
+  Handle(AIS_Shape) myOverlappedSphere;
+  Handle(AIS_Shape) myOverlappedBox;
+  Handle(AIS_Trihedron) myTrihedron;
 
   OCCDemo_Presentation *myPresentation;
   char myDataDir[5];         // for "Data\0"

@@ -22,6 +22,8 @@
 #include <TDF_RelocationTable.hxx>
 #include <XCAFDoc_Centroid.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Centroid,TDF_Attribute)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

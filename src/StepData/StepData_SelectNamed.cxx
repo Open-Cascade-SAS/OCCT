@@ -16,6 +16,8 @@
 #include <StepData_Field.hxx>
 #include <StepData_SelectNamed.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectNamed,StepData_SelectMember)
+
 //  Definitions reprises de Field :
 #define KindInteger 1
 #define KindBoolean 2

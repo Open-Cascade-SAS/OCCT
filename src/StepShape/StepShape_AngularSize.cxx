@@ -20,6 +20,8 @@
 #include <StepShape_AngularSize.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_AngularSize,StepShape_DimensionalSize)
+
 //=======================================================================
 //function : StepShape_AngularSize
 //purpose  : 

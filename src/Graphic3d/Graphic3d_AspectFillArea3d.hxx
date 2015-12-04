@@ -171,7 +171,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_AspectFillArea3d,Aspect_AspectFillArea)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d,Aspect_AspectFillArea)
 
 protected:
 

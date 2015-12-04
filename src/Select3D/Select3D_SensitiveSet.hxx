@@ -91,7 +91,7 @@ public:
   Standard_EXPORT Standard_Integer GetLeafNodeSize() const;
 
 public:
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveSet, Select3D_SensitiveEntity)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveSet,Select3D_SensitiveEntity)
 
 protected:
 

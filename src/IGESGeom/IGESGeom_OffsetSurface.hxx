@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_OffsetSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_OffsetSurface,IGESData_IGESEntity)
 
 protected:
 

@@ -38,6 +38,8 @@
 
 #include <stdio.h>
 #include <sys/stat.h>
+IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsDictionary,MMgt_TShared)
+
 //=======================================================================
 //function : Units_UnitsDictionary
 //purpose  : 

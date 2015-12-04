@@ -31,6 +31,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Exponentiate,Expr_BinaryExpression)
+
 Expr_Exponentiate::Expr_Exponentiate (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {
   CreateFirstOperand(exp1);

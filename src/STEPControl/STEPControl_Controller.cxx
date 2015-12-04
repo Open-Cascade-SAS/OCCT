@@ -54,6 +54,8 @@
 #include <XSAlgo.hxx>
 #include <XSControl_WorkSession.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPControl_Controller,XSControl_Controller)
+
 //#include <StepAP214.hxx>
 //  Pour NewModel et Write : definition de produit (temporaire ...)
 STEPControl_Controller::STEPControl_Controller ()

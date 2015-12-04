@@ -19,7 +19,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CAISNbrIsosDialog dialog
 
-//CAISNbrIsosDialog::CAISNbrIsosDialog(Handle_AIS_InteractiveContext CurrentIC,
+//CAISNbrIsosDialog::CAISNbrIsosDialog(Handle(AIS_InteractiveContext) CurrentIC,
 //									 CWnd* pParent /*=NULL*/)
 //	: CDialog(CAISNbrIsosDialog::IDD, pParent)
 /*
@@ -120,7 +120,7 @@ void CAISNbrIsosDialog::UpdateIsos ()
 // CDevCoeffDialog dialog
 
 
-//CDevCoeffDialog::CDevCoeffDialog(Handle_AIS_InteractiveContext CurrentIC,
+//CDevCoeffDialog::CDevCoeffDialog(Handle(AIS_InteractiveContext) CurrentIC,
 //								 CWnd* pParent /*=NULL*/)
 //	: CDialog(CDevCoeffDialog::IDD, pParent)
 /*
@@ -247,7 +247,7 @@ void CDevCoeffDialog::RedisplaySelected ()
 // CDialogMaterial dialog
 
 
-CDialogMaterial::CDialogMaterial(Handle_AIS_InteractiveContext CurrentIC,
+CDialogMaterial::CDialogMaterial(Handle(AIS_InteractiveContext) CurrentIC,
 								 CWnd* pParent /*=NULL*/)
 	: CDialog(CDialogMaterial::IDD, pParent)
 {
@@ -344,7 +344,7 @@ void CDialogMaterial::OnObjectMaterialDefault    () { SetMaterial ( Graphic3d_NO
 /////////////////////////////////////////////////////////////////////////////
 // CDialogTransparency dialog
 
-CDialogTransparency::CDialogTransparency(Handle_AIS_InteractiveContext CurrentIC,
+CDialogTransparency::CDialogTransparency(Handle(AIS_InteractiveContext) CurrentIC,
 										 CWnd* pParent /*=NULL*/)
 	: CDialog(CDialogTransparency::IDD, pParent)
 {

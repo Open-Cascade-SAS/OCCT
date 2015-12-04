@@ -28,18 +28,18 @@ public:
 	void SetColor(const Quantity_Color &aColor);
 
 private:
-	void Compute(const Handle_PrsMgr_PresentationManager3d& aPresentationManager,
-				 const Handle_Prs3d_Presentation& aPresentation,
+	void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+				 const Handle(Prs3d_Presentation)& aPresentation,
 				 const Standard_Integer aMode = 0) ;
-	void ComputeSelection(const Handle_SelectMgr_Selection& aSelection,
+	void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 						  const Standard_Integer aMode) ;
-	void Compute(const Handle_Prs3d_Projector& aProjector,const Handle_Prs3d_Presentation& aPresentation);
+	void Compute(const Handle(Prs3d_Projector)& aProjector,const Handle(Prs3d_Presentation)& aPresentation);
 	Standard_Boolean TriangleIsValid(const gp_Pnt& P1,const gp_Pnt& P2,const gp_Pnt& P3) const;
 	Quantity_Color Color(gp_Pnt& thePoint,Standard_Real AltMin,Standard_Real AltMax, const Standard_Integer ColorizationMode) ;
 						
 // some methods like DynamicType() or IsKind()
 //
-DEFINE_STANDARD_RTTI(User_Cylinder,AIS_InteractiveObject)
+DEFINE_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 private:
 //	Quantity_NameOfColor myCylindricalFaceColor;
 //	Quantity_NameOfColor myPlanarFaceColor;
@@ -47,7 +47,7 @@ private:
 	Quantity_Color myPlanarFaceColor;
 	TopoDS_Shape myShape;
 
-	Handle_Graphic3d_AspectFillArea3d myAspect;
+	Handle(Graphic3d_AspectFillArea3d) myAspect;
 	Standard_Real myDeflection;
 
 	Standard_Boolean myX1OnOff;
@@ -78,7 +78,7 @@ private:
 
 
 
-//Handle_Graphic3d_Texture2Dmanual mytexture;
+//Handle(Graphic3d_Texture2Dmanual) mytexture;
 
 };
 #endif

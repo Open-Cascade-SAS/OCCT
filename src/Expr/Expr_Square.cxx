@@ -30,6 +30,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Square,Expr_UnaryExpression)
+
 Expr_Square::Expr_Square (const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);

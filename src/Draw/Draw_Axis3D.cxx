@@ -24,6 +24,8 @@
 #include <gp_Vec.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Axis3D,Draw_Drawable3D)
+
 extern Standard_Boolean Draw_Bounds;
 
 

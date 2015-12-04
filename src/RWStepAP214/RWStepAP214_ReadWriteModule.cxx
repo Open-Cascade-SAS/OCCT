@@ -29,6 +29,8 @@
 #include <StepData_WriterLib.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
+
 //#include <Interface_Macros.hxx>
 #define DeclareAndCast(atype,result,start) \
 Handle(atype) result = Handle(atype)::DownCast (start)

@@ -111,7 +111,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_FaceDivide,ShapeUpgrade_Tool)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivide,ShapeUpgrade_Tool)
 
 protected:
 

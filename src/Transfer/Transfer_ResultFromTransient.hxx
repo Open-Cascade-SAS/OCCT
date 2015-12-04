@@ -113,7 +113,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_ResultFromTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Transfer_ResultFromTransient,MMgt_TShared)
 
 protected:
 

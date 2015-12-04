@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepTopAdaptor_HVertex,Adaptor3d_HVertex)
+  DEFINE_STANDARD_RTTIEXT(BRepTopAdaptor_HVertex,Adaptor3d_HVertex)
 
 protected:
 

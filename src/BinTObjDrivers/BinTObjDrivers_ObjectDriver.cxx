@@ -28,6 +28,8 @@
 
 
 
+IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ObjectDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinTObjDrivers_ObjectDriver
 //purpose  : constructor

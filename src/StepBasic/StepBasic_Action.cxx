@@ -21,6 +21,8 @@
 #include <StepBasic_ActionMethod.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Action,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_Action
 //purpose  : 

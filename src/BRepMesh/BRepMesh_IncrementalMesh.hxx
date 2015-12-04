@@ -117,7 +117,7 @@ public: //! @name plugin API
   //! Discret() static method (thus applied only to Mesh Factories).
   Standard_EXPORT static void SetParallelDefault(const Standard_Boolean isInParallel);
 
-  DEFINE_STANDARD_RTTI(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)
 
 protected:
 

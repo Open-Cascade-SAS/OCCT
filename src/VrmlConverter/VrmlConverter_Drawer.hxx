@@ -216,7 +216,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(VrmlConverter_Drawer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_Drawer,MMgt_TShared)
 
 protected:
 

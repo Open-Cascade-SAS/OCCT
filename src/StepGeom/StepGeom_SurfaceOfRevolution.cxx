@@ -18,6 +18,8 @@
 #include <StepGeom_SurfaceOfRevolution.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceOfRevolution,StepGeom_SweptSurface)
+
 StepGeom_SurfaceOfRevolution::StepGeom_SurfaceOfRevolution ()  {}
 
 void StepGeom_SurfaceOfRevolution::Init(

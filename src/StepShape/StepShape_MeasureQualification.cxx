@@ -18,6 +18,8 @@
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_MeasureQualification,MMgt_TShared)
+
 StepShape_MeasureQualification::StepShape_MeasureQualification  ()    {  }
 
 void  StepShape_MeasureQualification::Init

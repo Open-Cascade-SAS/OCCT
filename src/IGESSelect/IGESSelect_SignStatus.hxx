@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SignStatus,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SignStatus,IFSelect_Signature)
 
 protected:
 

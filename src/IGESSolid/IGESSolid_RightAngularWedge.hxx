@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_RightAngularWedge,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge,IGESData_IGESEntity)
 
 protected:
 

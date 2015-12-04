@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_ModifiedGeometricTolerance,StepDimTol_GeometricTolerance)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ModifiedGeometricTolerance,StepDimTol_GeometricTolerance)
 
 protected:
 

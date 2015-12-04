@@ -18,6 +18,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectInList,IFSelect_SelectAnyList)
+
 // ....    Specialisation de SelectAnyList dans laquelle on traite une liste
 //         dont chaque item est une Entite
 void IFSelect_SelectInList::FillResult

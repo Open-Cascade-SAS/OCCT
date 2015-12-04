@@ -182,7 +182,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRBRep_Data,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRBRep_Data,MMgt_TShared)
 
 protected:
 

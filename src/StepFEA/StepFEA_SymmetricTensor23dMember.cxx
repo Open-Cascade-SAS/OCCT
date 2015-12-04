@@ -19,6 +19,8 @@
 #include <StepFEA_SymmetricTensor23dMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_SymmetricTensor23dMember,StepData_SelectArrReal)
+
 static Standard_CString IST = "ISOTROPIC_SYMMETRIC_TENSOR2_3D";
 static Standard_CString OST = "ORTHOTROPIC_SYMMETRIC_TENSOR2_3D";
 static Standard_CString AST = "ANISOTROPIC_SYMMETRIC_TENSOR2_3D";

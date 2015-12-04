@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_NodeDefinition,StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_NodeDefinition,StepRepr_ShapeAspect)
 
 protected:
 

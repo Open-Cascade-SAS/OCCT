@@ -23,6 +23,8 @@
 #include <IGESSolid_SelectedComponent.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SelectedComponent,IGESData_IGESEntity)
+
 IGESSolid_SelectedComponent::IGESSolid_SelectedComponent ()    {  }
 
 

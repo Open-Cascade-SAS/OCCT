@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom2d_BoundedCurve,Geom2d_Curve)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_BoundedCurve,Geom2d_Curve)
 
 protected:
 

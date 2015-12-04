@@ -23,6 +23,8 @@
 #include <IGESGeom_OffsetSurface.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_OffsetSurface,IGESData_IGESEntity)
+
 IGESGeom_OffsetSurface::IGESGeom_OffsetSurface ()     {  }
 
 

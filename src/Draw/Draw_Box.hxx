@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Box,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Box,Draw_Drawable3D)
 
 protected:
 

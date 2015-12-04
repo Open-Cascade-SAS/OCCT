@@ -21,6 +21,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_TextAspect,Prs3d_BasicAspect)
+
 Prs3d_TextAspect::Prs3d_TextAspect () 
 : myAngle(0.),
   myHeight(16.),

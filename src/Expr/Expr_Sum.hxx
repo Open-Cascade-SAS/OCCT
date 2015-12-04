@@ -84,7 +84,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Sum,Expr_PolyExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Sum,Expr_PolyExpression)
 
 protected:
 

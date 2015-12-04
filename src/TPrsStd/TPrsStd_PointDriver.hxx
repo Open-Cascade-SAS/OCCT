@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_PointDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_PointDriver,TPrsStd_Driver)
 
 protected:
 

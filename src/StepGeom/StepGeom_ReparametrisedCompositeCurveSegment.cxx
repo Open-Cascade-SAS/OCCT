@@ -16,6 +16,8 @@
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_ReparametrisedCompositeCurveSegment.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ReparametrisedCompositeCurveSegment,StepGeom_CompositeCurveSegment)
+
 StepGeom_ReparametrisedCompositeCurveSegment::StepGeom_ReparametrisedCompositeCurveSegment ()  {}
 
 void StepGeom_ReparametrisedCompositeCurveSegment::Init(

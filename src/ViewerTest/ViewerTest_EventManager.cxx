@@ -21,6 +21,8 @@
 #include <V3d_View.hxx>
 #include <ViewerTest_EventManager.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager,MMgt_TShared)
+
 //=======================================================================
 //function : ViewerTest_EventManager
 //purpose  :

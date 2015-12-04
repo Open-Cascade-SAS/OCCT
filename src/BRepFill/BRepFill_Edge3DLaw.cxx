@@ -30,6 +30,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_Edge3DLaw,BRepFill_LocationLaw)
+
 BRepFill_Edge3DLaw::BRepFill_Edge3DLaw(const TopoDS_Wire& Path,
 				     const Handle(GeomFill_LocationLaw)& Law)
 {

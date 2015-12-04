@@ -157,7 +157,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SignCounter,IFSelect_SignatureList)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignCounter,IFSelect_SignatureList)
 
 protected:
 

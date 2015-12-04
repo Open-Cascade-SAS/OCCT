@@ -15,7 +15,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // ZClippingDlg dialog
 
-ZClippingDlg::ZClippingDlg(Handle_V3d_View Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent /*=NULL*/)
+ZClippingDlg::ZClippingDlg(Handle(V3d_View) Current_V3d_View, CViewer3dDoc* pDoc, CWnd* pParent /*=NULL*/)
 	: CDialog(ZClippingDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(ZClippingDlg)

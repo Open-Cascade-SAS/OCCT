@@ -24,6 +24,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Conic,Geom2d_Curve)
+
 typedef Geom2d_Conic         Conic;
 
 typedef gp_Ax2d  Ax2d;

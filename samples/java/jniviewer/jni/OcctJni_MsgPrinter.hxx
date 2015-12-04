@@ -53,7 +53,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OcctJni_MsgPrinter)
+  DEFINE_STANDARD_RTTIEXT(OcctJni_MsgPrinter,Message_Printer)
 
 };
 

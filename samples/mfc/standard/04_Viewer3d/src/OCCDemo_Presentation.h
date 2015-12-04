@@ -66,8 +66,8 @@ public:
 protected:
   // Methods to call from a derivable class
   void setName (const char* theName) {myName = CString(theName);}
-  Handle_AIS_InteractiveContext getAISContext() const;
-  Handle_V3d_Viewer getViewer() const;
+  Handle(AIS_InteractiveContext) getAISContext() const;
+  Handle(V3d_Viewer) getViewer() const;
 //  void setResultTitle (const char* theTitle) {myDoc->GetResultDialog()->SetTitle(theTitle);}
 //  void setResultText (const char* theText) {myDoc->GetResultDialog()->SetText(theText);}
   Standard_CString GetDataDir();
@@ -75,45 +75,45 @@ protected:
   Standard_Boolean WaitForInput (unsigned long aMilliSeconds);
   // Waits for a user input or a period of time has been elapsed
 
-  Handle_AIS_InteractiveObject drawSurface (const Handle_Geom_Surface& theSurface,
+  Handle(AIS_InteractiveObject) drawSurface (const Handle(Geom_Surface)& theSurface,
          const Quantity_Color& theColor = Quantity_Color(Quantity_NOC_LEMONCHIFFON3),
          const Standard_Boolean toDisplay = Standard_True);
   // creates a finite face based on the given geometric surface 
   // and displays it in the viewer if toDisplay = Standard_True
 
-  Handle_AIS_InteractiveObject drawCurve (const Handle_Geom_Curve& theCurve,
+  Handle(AIS_InteractiveObject) drawCurve (const Handle(Geom_Curve)& theCurve,
          const Quantity_Color& theColor = Quantity_Color(Quantity_NOC_RED),
          const Standard_Boolean toDisplay = Standard_True);
   // creates an ISession_Curve based on the given geometric curve
   // and displays it in the viewer if toDisplay = Standard_True
 
-  Handle_AIS_InteractiveObject drawCurve (const Handle_Geom2d_Curve& theCurve,
+  Handle(AIS_InteractiveObject) drawCurve (const Handle(Geom2d_Curve)& theCurve,
          const Quantity_Color& theColor = Quantity_Color(Quantity_NOC_RED),
          const Standard_Boolean toDisplay = Standard_True,
          const gp_Ax2& aPosition = gp::XOY());
   // converts a given curve to 3d using aPosition and calls the previous method
 
-  Handle_AIS_Point drawPoint (const gp_Pnt& thePnt,
+  Handle(AIS_Point) drawPoint (const gp_Pnt& thePnt,
          const Quantity_Color& theColor = Quantity_Color(Quantity_NOC_GREEN),
          const Standard_Boolean toDisplay = Standard_True);
   // creates a presentation of the given point
   // and displays it in the viewer if toDisplay = Standard_True
 
-  Handle_AIS_InteractiveObject drawVector (const gp_Pnt& thePnt,
+  Handle(AIS_InteractiveObject) drawVector (const gp_Pnt& thePnt,
                                            const gp_Vec& theVec,
          const Quantity_Color& theColor = Quantity_Color(Quantity_NOC_YELLOW),
          const Standard_Boolean toDisplay = Standard_True);
   // creates a presentation of the given vector
   // and displays it in the viewer if toDisplay = Standard_True
 
-  Handle_AIS_Shape drawShape (const TopoDS_Shape& theShape,
+  Handle(AIS_Shape) drawShape (const TopoDS_Shape& theShape,
          const Quantity_Color& theColor,
          const Standard_Boolean toDisplay = Standard_True);
   // creates a presentation of the given shape
   // with material PLASTIC and a given color
   // and displays it in the viewer if toDisplay = Standard_True
 
-  Handle_AIS_Shape drawShape (const TopoDS_Shape& theShape,
+  Handle(AIS_Shape) drawShape (const TopoDS_Shape& theShape,
          const Graphic3d_NameOfMaterial theMaterial = Graphic3d_NOM_BRASS,
          const Standard_Boolean toDisplay = Standard_True);
   // creates a presentation of the given shape with the given material

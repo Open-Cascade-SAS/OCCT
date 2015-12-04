@@ -47,7 +47,7 @@ public:
   //! Marks entity as active for selection
   Standard_EXPORT void SetActiveForSelection() const;
 
-  DEFINE_STANDARD_RTTI(SelectMgr_SensitiveEntity, Standard_Transient) // Type definition
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient) // Type definition
 
 private:
 

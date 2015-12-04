@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_SignText,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_SignText,MMgt_TShared)
 
 protected:
 

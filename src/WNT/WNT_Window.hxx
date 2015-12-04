@@ -118,7 +118,7 @@ public:
   //! Returns nothing on Windows
   virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 
-  DEFINE_STANDARD_RTTI(WNT_Window,Aspect_Window)
+  DEFINE_STANDARD_RTTIEXT(WNT_Window,Aspect_Window)
 
 protected:
 

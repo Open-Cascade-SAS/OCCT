@@ -115,7 +115,7 @@ protected:
 public:
 
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(AIS_TextLabel, AIS_InteractiveObject);
+  DEFINE_STANDARD_RTTIEXT(AIS_TextLabel,AIS_InteractiveObject);
 
 };
 

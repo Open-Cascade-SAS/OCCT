@@ -21,6 +21,8 @@
 #include <XmlMXCAFDoc_MaterialToolDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_MaterialToolDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function :
 //purpose  : 

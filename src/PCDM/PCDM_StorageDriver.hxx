@@ -91,7 +91,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PCDM_StorageDriver,PCDM_Writer)
+  DEFINE_STANDARD_RTTIEXT(PCDM_StorageDriver,PCDM_Writer)
 
 protected:
 

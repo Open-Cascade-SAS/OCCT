@@ -92,6 +92,7 @@ static Standard_Integer NbOFFSET = 0;
 #include <DBRep.hxx>
 #endif
 #include <stdio.h>
+#include <Geom_BSplineSurface.hxx>
 
 
 static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)

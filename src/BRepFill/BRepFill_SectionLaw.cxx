@@ -38,6 +38,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_SectionLaw,MMgt_TShared)
+
 //=======================================================================
 //function : NbLaw
 //purpose  : Gives the number of elementary (or Geometric) law

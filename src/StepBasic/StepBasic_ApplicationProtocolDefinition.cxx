@@ -17,6 +17,8 @@
 #include <StepBasic_ApplicationProtocolDefinition.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition,MMgt_TShared)
+
 StepBasic_ApplicationProtocolDefinition::StepBasic_ApplicationProtocolDefinition ()  {}
 
 void StepBasic_ApplicationProtocolDefinition::Init(

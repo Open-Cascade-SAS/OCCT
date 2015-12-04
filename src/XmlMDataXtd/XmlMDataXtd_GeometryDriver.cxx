@@ -21,6 +21,8 @@
 #include <XmlMDataXtd_GeometryDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_GeometryDriver,XmlMDF_ADriver)
+
 static const XmlObjMgt_DOMString& GeometryTypeString
                                         (const TDataXtd_GeometryEnum);
 static Standard_Boolean           GeometryTypeEnum

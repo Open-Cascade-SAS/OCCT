@@ -16,6 +16,8 @@
 #include <IFSelect_SelectionIterator.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectBase,IFSelect_Selection)
+
 void  IFSelect_SelectBase::FillIterator
   (IFSelect_SelectionIterator& ) const 
       {  }   // rien a faire, une SelectBase ne depend d aucune autre Selection

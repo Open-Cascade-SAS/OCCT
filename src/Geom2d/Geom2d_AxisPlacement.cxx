@@ -23,6 +23,8 @@
 #include <gp_Trsf2d.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_AxisPlacement,Geom2d_Geometry)
+
 typedef Geom2d_AxisPlacement          AxisPlacement;
 typedef gp_Dir2d  Dir2d;
 typedef gp_Pnt2d  Pnt2d;

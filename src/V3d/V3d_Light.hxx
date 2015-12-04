@@ -95,7 +95,7 @@ friend
   //! Updates the lights of the view. The view is redrawn.
   Standard_EXPORT void V3d_View::UpdateLights() const;
 
-  DEFINE_STANDARD_RTTI(V3d_Light,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(V3d_Light,MMgt_TShared)
 
 protected:
 

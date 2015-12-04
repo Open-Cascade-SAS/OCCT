@@ -83,7 +83,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Law_BSpFunc,Law_Function)
+  DEFINE_STANDARD_RTTIEXT(Law_BSpFunc,Law_Function)
 
 protected:
 

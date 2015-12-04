@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CompositeCurveSegment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment,MMgt_TShared)
 
 protected:
 

@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ContextDependentShapeRepresentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ContextDependentShapeRepresentation,MMgt_TShared)
 
 protected:
 

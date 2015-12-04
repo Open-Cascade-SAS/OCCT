@@ -34,6 +34,8 @@
 #include <TDocStd_Owner.hxx>
 #include <TDocStd_PathParser.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Application,CDF_Application)
+
 // TDocStd_Owner attribute have pointer of closed TDocStd_Document
 //=======================================================================
 //function : TDocStd_Application

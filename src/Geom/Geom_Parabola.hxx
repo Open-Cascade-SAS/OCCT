@@ -226,7 +226,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Parabola,Geom_Conic)
+  DEFINE_STANDARD_RTTIEXT(Geom_Parabola,Geom_Conic)
 
 protected:
 

@@ -135,7 +135,7 @@ public:
   //! Returns the spot angle.
   Standard_EXPORT Quantity_PlaneAngle Angle() const;
 
-  DEFINE_STANDARD_RTTI(V3d_SpotLight,V3d_PositionLight)
+  DEFINE_STANDARD_RTTIEXT(V3d_SpotLight,V3d_PositionLight)
 
 private:
 

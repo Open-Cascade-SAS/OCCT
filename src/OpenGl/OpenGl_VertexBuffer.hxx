@@ -327,7 +327,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_VertexBuffer, OpenGl_Resource) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_VertexBuffer,OpenGl_Resource) // Type definition
 
 };
 

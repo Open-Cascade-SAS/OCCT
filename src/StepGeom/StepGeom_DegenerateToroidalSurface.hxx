@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_DegenerateToroidalSurface,StepGeom_ToroidalSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_DegenerateToroidalSurface,StepGeom_ToroidalSurface)
 
 protected:
 

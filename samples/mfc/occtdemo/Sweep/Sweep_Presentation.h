@@ -10,8 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include <OCCDemo_Presentation.h>
-class Handle_Geom2d_Curve;
-class Handle_Geom_Surface;
+class Geom2d_Curve;
+class Geom_Surface;
 
 class Sweep_Presentation : public OCCDemo_Presentation
 {
@@ -24,9 +24,9 @@ public:
   virtual void DoSample();
   // one phase of iterations
 
-  Handle_AIS_InteractiveObject drawCurveOnSurface
-    (const Handle_Geom2d_Curve& aC2d,
-     const Handle_Geom_Surface& aSurf,
+  Handle(AIS_InteractiveObject) drawCurveOnSurface
+    (const Handle(Geom2d_Curve)& aC2d,
+     const Handle(Geom_Surface)& aSurf,
      const Quantity_Color& aColor);
 
 private:

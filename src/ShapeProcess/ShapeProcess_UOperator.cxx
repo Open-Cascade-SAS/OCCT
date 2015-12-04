@@ -18,6 +18,8 @@
 #include <ShapeProcess_UOperator.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_UOperator,ShapeProcess_Operator)
+
 //=======================================================================
 //function : ShapeProcess_UOperator
 //purpose  : 

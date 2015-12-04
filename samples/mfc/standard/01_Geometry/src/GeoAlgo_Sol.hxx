@@ -44,18 +44,18 @@ public:
   Standard_EXPORT GeoAlgo_Sol(const Standard_CString aGroundName);
   Standard_EXPORT void Build(const Standard_CString aGroundName) ;
   Standard_EXPORT void Build(const TColgp_SequenceOfXYZ& aSeqofPoints) ;
-  Standard_EXPORT Handle_Geom_BSplineSurface Surface() const;
+  Standard_EXPORT Handle(Geom_BSplineSurface) Surface() const;
   Standard_EXPORT Standard_Boolean IsDone() const;
 
 private: 
 
  // Methods PRIVATE
  // 
-Standard_EXPORT   Handle_Geom_BSplineSurface Read(const Standard_CString aGroundName) ;
+Standard_EXPORT   Handle(Geom_BSplineSurface) Read(const Standard_CString aGroundName) ;
 
  // Fields PRIVATE
  //
-Handle_Geom_BSplineSurface myGround;
+Handle(Geom_BSplineSurface) myGround;
 Standard_Boolean myIsDone;
 
 };

@@ -18,5 +18,7 @@
 #include <IFSelect_SelectIncorrectEntities.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectIncorrectEntities,IFSelect_SelectFlag)
+
 IFSelect_SelectIncorrectEntities::IFSelect_SelectIncorrectEntities ()
     : IFSelect_SelectFlag ("Incorrect")    {  }

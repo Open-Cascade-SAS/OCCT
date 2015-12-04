@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESControl_IGESBoundary,IGESToBRep_IGESBoundary)
+  DEFINE_STANDARD_RTTIEXT(IGESControl_IGESBoundary,IGESToBRep_IGESBoundary)
 
 protected:
 

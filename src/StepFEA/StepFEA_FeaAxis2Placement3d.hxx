@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaAxis2Placement3d,StepGeom_Axis2Placement3d)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaAxis2Placement3d,StepGeom_Axis2Placement3d)
 
 protected:
 

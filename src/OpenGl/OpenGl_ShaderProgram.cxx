@@ -28,6 +28,8 @@
 
 #include <OpenGl_GlCore32.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderProgram,OpenGl_Resource)
+
 OpenGl_VariableSetterSelector OpenGl_ShaderProgram::mySetterSelector = OpenGl_VariableSetterSelector();
 
 // Declare OCCT-specific OpenGL/GLSL shader variables

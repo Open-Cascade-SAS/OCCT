@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_MakeFromUsageOption,StepRepr_ProductDefinitionUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_MakeFromUsageOption,StepRepr_ProductDefinitionUsage)
 
 protected:
 

@@ -77,7 +77,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Point,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Point,TDF_Attribute)
 
 protected:
 

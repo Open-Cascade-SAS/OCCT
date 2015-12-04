@@ -117,7 +117,7 @@ public:
   Standard_EXPORT void SetPoints (const Handle(TColgp_HArray1OfPnt)& thePnts);
 
 
-  DEFINE_STANDARD_RTTI(XCAFDimTolObjects_DimensionObject,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject,Standard_Transient)
 
 private: 
 

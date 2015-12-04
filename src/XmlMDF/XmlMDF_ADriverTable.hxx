@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMDF_ADriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriverTable,MMgt_TShared)
 
 protected:
 

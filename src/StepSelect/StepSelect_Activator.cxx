@@ -24,6 +24,8 @@
 #include <StepSelect_Activator.hxx>
 #include <StepSelect_FloatFormat.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepSelect_Activator,IFSelect_Activator)
+
 static int initActivator = 0;
 
 

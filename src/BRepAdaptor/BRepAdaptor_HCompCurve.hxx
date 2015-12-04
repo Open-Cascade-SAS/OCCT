@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepAdaptor_HCompCurve,Adaptor3d_HCurve)
+  DEFINE_STANDARD_RTTI_INLINE(BRepAdaptor_HCompCurve,Adaptor3d_HCurve)
 
 protected:
 

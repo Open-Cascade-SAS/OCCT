@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Text2D,Draw_Drawable2D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Text2D,Draw_Drawable2D)
 
 protected:
 

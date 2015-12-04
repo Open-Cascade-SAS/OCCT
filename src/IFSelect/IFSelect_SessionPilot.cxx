@@ -31,6 +31,8 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionPilot,IFSelect_Activator)
+
 #define MAXWORDS 200
 #define MAXCARS 1000
 

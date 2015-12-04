@@ -41,7 +41,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopoDS_TVertex,TopoDS_TShape)
+  DEFINE_STANDARD_RTTIEXT(TopoDS_TVertex,TopoDS_TShape)
 
 protected:
 

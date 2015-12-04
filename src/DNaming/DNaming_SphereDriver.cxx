@@ -44,6 +44,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_SphereDriver,TFunction_Driver)
+
 //=======================================================================
 //function : DNaming_SphereDriver
 //purpose  : Constructor

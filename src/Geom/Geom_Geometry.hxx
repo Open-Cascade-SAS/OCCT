@@ -121,7 +121,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Geometry,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Geom_Geometry,MMgt_TShared)
 
 protected:
 

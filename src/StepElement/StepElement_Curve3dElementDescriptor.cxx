@@ -19,6 +19,8 @@
 #include <StepElement_Curve3dElementDescriptor.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor,StepElement_ElementDescriptor)
+
 //=======================================================================
 //function : StepElement_Curve3dElementDescriptor
 //purpose  : 

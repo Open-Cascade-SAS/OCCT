@@ -20,6 +20,8 @@
 #include <NLPlate_HPG0Constraint.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(NLPlate_HPG0Constraint,NLPlate_HGPPConstraint)
+
 NLPlate_HPG0Constraint::NLPlate_HPG0Constraint(const gp_XY& UV,const gp_XYZ& Value)
 :myXYZTarget(Value)
 {

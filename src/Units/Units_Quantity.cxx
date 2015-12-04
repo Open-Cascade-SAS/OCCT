@@ -22,6 +22,8 @@
 #include <Units_Quantity.hxx>
 #include <Units_Unit.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Units_Quantity,MMgt_TShared)
+
 //=======================================================================
 //function : IsEqual
 //purpose  : 

@@ -82,7 +82,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_SymmetricRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_SymmetricRelation,AIS_Relation)
 
 protected:
 

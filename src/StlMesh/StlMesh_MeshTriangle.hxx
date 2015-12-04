@@ -62,7 +62,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StlMesh_MeshTriangle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StlMesh_MeshTriangle,MMgt_TShared)
 
 protected:
 

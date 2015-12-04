@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPSelections_SelectGSCurves,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectGSCurves,IFSelect_SelectExplore)
 
 protected:
 

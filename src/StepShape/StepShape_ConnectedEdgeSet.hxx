@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_ConnectedEdgeSet,StepShape_TopologicalRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedEdgeSet,StepShape_TopologicalRepresentationItem)
 
 protected:
 

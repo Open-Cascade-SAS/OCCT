@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_ExternallyDefinedClass,StepAP214_Class)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedClass,StepAP214_Class)
 
 protected:
 

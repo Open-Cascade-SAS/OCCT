@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_Distance,DrawDim_Dimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_Distance,DrawDim_Dimension)
 
 protected:
 

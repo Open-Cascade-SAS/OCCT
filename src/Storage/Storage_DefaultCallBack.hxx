@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Storage_DefaultCallBack,Storage_CallBack)
+  DEFINE_STANDARD_RTTIEXT(Storage_DefaultCallBack,Storage_CallBack)
 
 protected:
 

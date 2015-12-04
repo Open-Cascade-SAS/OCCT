@@ -25,6 +25,8 @@
 #include <IGESDimen_RadiusDimension.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_RadiusDimension,IGESData_IGESEntity)
+
 IGESDimen_RadiusDimension::IGESDimen_RadiusDimension ()    {  }
 
 

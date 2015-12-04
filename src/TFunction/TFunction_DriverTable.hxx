@@ -73,7 +73,7 @@ Standard_OStream& operator << (Standard_OStream& anOS) const
 
 
 
-  DEFINE_STANDARD_RTTI(TFunction_DriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TFunction_DriverTable,MMgt_TShared)
 
 protected:
 

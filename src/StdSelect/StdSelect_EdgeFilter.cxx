@@ -24,6 +24,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StdSelect_EdgeFilter,SelectMgr_Filter)
+
 /*#include <.hxx>
 #include <.hxx>
 #include <.hxx>

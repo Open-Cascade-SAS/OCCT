@@ -16,6 +16,8 @@
 #include <StepShape_TypeQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_TypeQualifier,MMgt_TShared)
+
 StepShape_TypeQualifier::StepShape_TypeQualifier  ()    {  }
 
 void  StepShape_TypeQualifier::Init

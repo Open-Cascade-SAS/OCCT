@@ -21,6 +21,8 @@
 #include <TopLoc_Location.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity,SelectBasics_SensitiveEntity)
+
 //=======================================================================
 //function : Select3D_SensitiveEntity
 //purpose  :

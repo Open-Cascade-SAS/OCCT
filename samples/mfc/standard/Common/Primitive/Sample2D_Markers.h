@@ -34,7 +34,7 @@ public:
                    const Standard_Real theScaleOrId=2.0);
 
 
-DEFINE_STANDARD_RTTI(Sample2D_Markers,AIS_InteractiveObject)
+DEFINE_STANDARD_RTTIEXT(Sample2D_Markers,AIS_InteractiveObject)
 
 private: 
 

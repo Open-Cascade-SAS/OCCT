@@ -28,6 +28,8 @@
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Constraint,TDF_Attribute)
+
 // for symmetry midpoint the third argument is the axis or the point
 //=======================================================================
 //function : GetID

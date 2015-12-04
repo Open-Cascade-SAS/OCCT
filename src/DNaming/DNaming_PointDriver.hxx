@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_PointDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_PointDriver,TFunction_Driver)
 
 protected:
 

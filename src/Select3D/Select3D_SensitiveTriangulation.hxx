@@ -111,7 +111,7 @@ public:
   inline const TopLoc_Location& GetInitLocation() const;
 
 public:
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveTriangulation, Select3D_SensitiveSet)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangulation,Select3D_SensitiveSet)
 
 protected:
 

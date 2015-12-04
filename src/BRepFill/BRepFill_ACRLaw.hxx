@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepFill_ACRLaw,BRepFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(BRepFill_ACRLaw,BRepFill_LocationLaw)
 
 protected:
 

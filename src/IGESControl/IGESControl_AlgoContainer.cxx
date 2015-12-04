@@ -18,6 +18,8 @@
 #include <IGESControl_ToolContainer.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESControl_AlgoContainer,IGESToBRep_AlgoContainer)
+
 //=======================================================================
 //function : IGESControl_AlgoContainer
 //purpose  : 

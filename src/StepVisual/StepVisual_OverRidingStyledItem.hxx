@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_OverRidingStyledItem,StepVisual_StyledItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_OverRidingStyledItem,StepVisual_StyledItem)
 
 protected:
 

@@ -25,6 +25,8 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_EditForm,MMgt_TShared)
+
 IFSelect_EditForm::IFSelect_EditForm
   (const Handle(IFSelect_Editor)& editor,
    const Standard_Boolean readonly, const Standard_Boolean undoable,

@@ -82,7 +82,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_ViewVolume,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_ViewVolume,MMgt_TShared)
 
 protected:
 

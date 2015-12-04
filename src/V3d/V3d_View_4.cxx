@@ -35,6 +35,7 @@
 #include <V3d_UnMapped.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
+#include <Aspect_CircularGrid.hxx>
 
 #define MYEPSILON1 0.0001		// Comparison with 0.0
 #define MYEPSILON2 M_PI / 180.	// Delta between 2 angles

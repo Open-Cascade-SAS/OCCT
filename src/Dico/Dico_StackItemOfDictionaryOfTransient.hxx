@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Dico_StackItemOfDictionaryOfTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Dico_StackItemOfDictionaryOfTransient,MMgt_TShared)
 
 protected:
 

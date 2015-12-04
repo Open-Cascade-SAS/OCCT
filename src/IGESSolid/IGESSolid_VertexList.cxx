@@ -22,6 +22,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_VertexList,IGESData_IGESEntity)
+
 IGESSolid_VertexList::IGESSolid_VertexList ()    {  }
 
 

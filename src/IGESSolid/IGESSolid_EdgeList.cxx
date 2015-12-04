@@ -23,6 +23,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_EdgeList,IGESData_IGESEntity)
+
 IGESSolid_EdgeList::IGESSolid_EdgeList ()    {  }
 
 

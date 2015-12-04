@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_ConvertSurfaceToBezierBasis,ShapeUpgrade_SplitSurface)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ConvertSurfaceToBezierBasis,ShapeUpgrade_SplitSurface)
 
 protected:
 

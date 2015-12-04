@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeProcess_Operator,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeProcess_Operator,MMgt_TShared)
 
 protected:
 

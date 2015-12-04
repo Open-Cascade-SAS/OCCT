@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_EdgeLoop,StepShape_Loop)
+  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeLoop,StepShape_Loop)
 
 protected:
 

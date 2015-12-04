@@ -32,6 +32,8 @@
 #include <StdPrs_BndBox.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloud,AIS_InteractiveObject)
+
 //==================================================
 // Function: AIS_PointCloud
 // Purpose : Constructor

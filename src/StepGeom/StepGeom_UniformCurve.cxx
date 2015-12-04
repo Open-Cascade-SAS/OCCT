@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_UniformCurve.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_UniformCurve,StepGeom_BSplineCurve)
+
 StepGeom_UniformCurve::StepGeom_UniformCurve ()  {}
 

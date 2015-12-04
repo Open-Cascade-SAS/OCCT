@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(SelectBasics_EntityOwner,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(SelectBasics_EntityOwner,MMgt_TShared)
 
 protected:
 

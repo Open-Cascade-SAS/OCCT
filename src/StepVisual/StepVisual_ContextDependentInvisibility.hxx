@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_ContextDependentInvisibility,StepVisual_Invisibility)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_ContextDependentInvisibility,StepVisual_Invisibility)
 
 protected:
 

@@ -19,6 +19,8 @@
 #include <StepElement_Volume3dElementDescriptor.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_Volume3dElementDescriptor,StepElement_ElementDescriptor)
+
 //=======================================================================
 //function : StepElement_Volume3dElementDescriptor
 //purpose  : 

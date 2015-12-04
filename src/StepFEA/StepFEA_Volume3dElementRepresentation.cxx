@@ -23,6 +23,8 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepFEA_Volume3dElementRepresentation,StepFEA_ElementRepresentation)
+
 //=======================================================================
 //function : StepFEA_Volume3dElementRepresentation
 //purpose  : 

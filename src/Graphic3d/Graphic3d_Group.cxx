@@ -39,6 +39,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Group,MMgt_TShared)
+
 #define MyContainsFacet myCBitFields.bool2
 
 // =======================================================================

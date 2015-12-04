@@ -31,7 +31,7 @@ public:
   
   Standard_EXPORT StepRepr_CompositeGroupShapeAspect();
 
-  DEFINE_STANDARD_RTTI(StepRepr_CompositeGroupShapeAspect, StepRepr_CompositeShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_CompositeGroupShapeAspect,StepRepr_CompositeShapeAspect)
 
 };
 #endif // _StepRepr_CompositeGroupShapeAspect_HeaderFile

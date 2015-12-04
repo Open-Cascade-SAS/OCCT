@@ -40,7 +40,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HeaderSection_HeaderRecognizer,StepData_FileRecognizer)
+  DEFINE_STANDARD_RTTIEXT(HeaderSection_HeaderRecognizer,StepData_FileRecognizer)
 
 protected:
 

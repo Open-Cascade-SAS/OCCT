@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_EditDirPart,IFSelect_Editor)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_EditDirPart,IFSelect_Editor)
 
 protected:
 

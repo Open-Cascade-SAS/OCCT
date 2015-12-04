@@ -50,7 +50,7 @@ public:
     myName = theName;
   }
 
-  DEFINE_STANDARD_RTTI(StepDimTol_ToleranceZoneForm, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneForm,MMgt_TShared)
   
 private:
   Handle(TCollection_HAsciiString) myName;

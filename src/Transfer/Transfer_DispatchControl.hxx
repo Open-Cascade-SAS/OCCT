@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_DispatchControl,Interface_CopyControl)
+  DEFINE_STANDARD_RTTIEXT(Transfer_DispatchControl,Interface_CopyControl)
 
 protected:
 

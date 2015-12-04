@@ -22,6 +22,8 @@
 
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap,Standard_Transient)
+
 // =======================================================================
 // function : Image_PixMap
 // purpose  :

@@ -37,6 +37,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TopoDS.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Circle,AIS_InteractiveObject)
+
 //=======================================================================
 //function : AIS_Circle
 //purpose  : 

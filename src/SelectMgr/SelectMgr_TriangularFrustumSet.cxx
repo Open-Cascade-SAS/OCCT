@@ -18,6 +18,7 @@
 #include <NCollection_IncAllocator.hxx>
 
 #include <SelectMgr_TriangularFrustumSet.hxx>
+#include <SelectMgr_TriangularFrustum.hxx>
 
 #define MEMORY_BLOCK_SIZE 512 * 7
 

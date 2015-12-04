@@ -51,6 +51,8 @@
 #include <XCAFDoc_ShapeMapTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ShapeTool,TDF_Attribute)
+
 static Standard_Boolean theAutoNaming = Standard_True;
 
 // attribute methods //////////////////////////////////////////////////

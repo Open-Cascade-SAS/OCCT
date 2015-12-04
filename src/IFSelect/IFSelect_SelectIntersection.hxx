@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectIntersection,IFSelect_SelectCombine)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectIntersection,IFSelect_SelectCombine)
 
 protected:
 

@@ -27,6 +27,8 @@
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DataSource,MMgt_TShared)
+
 //================================================================
 // Function : Get3DGeom
 // Purpose  :

@@ -23,6 +23,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralLabel,IGESData_IGESEntity)
+
 IGESDimen_GeneralLabel::IGESDimen_GeneralLabel ()    {  }
 
     void  IGESDimen_GeneralLabel::Init

@@ -93,7 +93,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Aspect_AspectFillArea,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Aspect_AspectFillArea,MMgt_TShared)
 
 protected:
 

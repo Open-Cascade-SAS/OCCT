@@ -18,3 +18,5 @@
 #include <LocOpe_HBuilder.hxx>
 #include <Standard_Type.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(LocOpe_HBuilder,TopOpeBRepBuild_HBuilder)

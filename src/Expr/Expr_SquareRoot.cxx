@@ -29,6 +29,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_SquareRoot,Expr_UnaryExpression)
+
 Expr_SquareRoot::Expr_SquareRoot (const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);

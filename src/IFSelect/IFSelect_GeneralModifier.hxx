@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_GeneralModifier,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_GeneralModifier,MMgt_TShared)
 
 protected:
 

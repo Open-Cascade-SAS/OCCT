@@ -77,7 +77,7 @@ public:
   //! note that it uses static variable and thus not thread-safe! 
   Standard_EXPORT static Standard_Address& StopIndicator();
 
-  DEFINE_STANDARD_RTTI(Draw_ProgressIndicator,Message_ProgressIndicator)
+  DEFINE_STANDARD_RTTIEXT(Draw_ProgressIndicator,Message_ProgressIndicator)
 
 private:
   Standard_Boolean myTextMode;

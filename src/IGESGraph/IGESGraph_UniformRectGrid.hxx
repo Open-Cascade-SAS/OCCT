@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGraph_UniformRectGrid,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGraph_UniformRectGrid,IGESData_IGESEntity)
 
 protected:
 

@@ -138,7 +138,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDraw_PerspectiveView,IGESData_ViewKindEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDraw_PerspectiveView,IGESData_ViewKindEntity)
 
 protected:
 

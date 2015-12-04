@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Face.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DBRep_Face,MMgt_TShared)
+
 //=======================================================================
 //function : DBRep_Face
 //purpose  : 

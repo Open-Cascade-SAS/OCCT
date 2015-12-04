@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDefs_GeneralModule,IGESData_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_GeneralModule,IGESData_GeneralModule)
 
 protected:
 

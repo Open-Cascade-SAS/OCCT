@@ -16,6 +16,8 @@
 #include <StepGeom_GeometricRepresentationContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContext,StepRepr_RepresentationContext)
+
 StepGeom_GeometricRepresentationContext::StepGeom_GeometricRepresentationContext ()  {}
 
 void StepGeom_GeometricRepresentationContext::Init(

@@ -53,6 +53,8 @@
 
 #include <GCPnts_TangentialDeflection.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)
+
 namespace
 {
   //! Default flag to control parallelization for BRepMesh_IncrementalMesh

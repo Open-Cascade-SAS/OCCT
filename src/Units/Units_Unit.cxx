@@ -25,6 +25,8 @@
 #include <Units_Unit.hxx>
 #include <Units_UnitsDictionary.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Units_Unit,MMgt_TShared)
+
 //=======================================================================
 //function : Units_Unit
 //purpose  : 

@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Vrml_TextureCoordinate2,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_TextureCoordinate2,MMgt_TShared)
 
 protected:
 

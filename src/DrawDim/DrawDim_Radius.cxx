@@ -29,6 +29,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawDim_Radius,DrawDim_Dimension)
+
 //=======================================================================
 //function : DrawDim_Radius
 //purpose  : 

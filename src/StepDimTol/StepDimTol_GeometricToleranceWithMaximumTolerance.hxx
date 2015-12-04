@@ -53,7 +53,7 @@ public:
     myMaximumUpperTolerance = theMaximumUpperTolerance;
   }
 
-  DEFINE_STANDARD_RTTI(StepDimTol_GeometricToleranceWithMaximumTolerance, StepDimTol_GeometricToleranceWithModifiers)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithMaximumTolerance,StepDimTol_GeometricToleranceWithModifiers)
 
 private:
   Handle(StepBasic_LengthMeasureWithUnit) myMaximumUpperTolerance;

@@ -24,6 +24,8 @@
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderProgram,Standard_Transient)
+
 namespace
 {
   static volatile Standard_Integer THE_PROGRAM_OBJECT_COUNTER = 0;

@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #endif
 #ifndef _Handle_OCAFSample_CommonDriver_HeaderFile
-#include <Handle_OCAFSample_CommonDriver.hxx>
 #endif
 
 #ifndef _OCAFSample_Driver_HeaderFile
@@ -63,7 +62,7 @@ Standard_EXPORT ~OCAFSample_CommonDriver();
 
  // Type management
  //
- Standard_EXPORT friend Handle_Standard_Type& OCAFSample_CommonDriver_Type_();
+ Standard_EXPORT friend Handle(Standard_Type)& OCAFSample_CommonDriver_Type_();
  Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
  Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 

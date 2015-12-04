@@ -20,6 +20,8 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_SignatureFilter,AIS_TypeFilter)
+
 AIS_SignatureFilter::AIS_SignatureFilter(const AIS_KindOfInteractive TheKind,
 					 const Standard_Integer      TheSignature):
 AIS_TypeFilter(TheKind),

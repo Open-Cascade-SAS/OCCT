@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(CDM_COutMessageDriver,CDM_MessageDriver)
+  DEFINE_STANDARD_RTTIEXT(CDM_COutMessageDriver,CDM_MessageDriver)
 
 protected:
 

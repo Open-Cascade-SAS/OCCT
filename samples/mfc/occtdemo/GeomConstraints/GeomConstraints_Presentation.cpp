@@ -95,7 +95,7 @@ void GeomConstraints_Presentation::DoSample()
 // Function creating Surface,BSPline,Bezier and 2dBSpline Curves
 //=========================================================================================
 
-static Handle_Geom_BSplineCurve createBSplineCurve(const Standard_Integer nPoles,
+static Handle(Geom_BSplineCurve) createBSplineCurve(const Standard_Integer nPoles,
                                  const Standard_Real theCoords[][3])
 {
   TColgp_Array1OfPnt aCurvePoint (1, nPoles);
@@ -111,7 +111,7 @@ static Handle_Geom_BSplineCurve createBSplineCurve(const Standard_Integer nPoles
 }
 
 
-static Handle_Geom_BezierCurve createBezierCurve(const Standard_Integer nPoles,
+static Handle(Geom_BezierCurve) createBezierCurve(const Standard_Integer nPoles,
                                  const Standard_Real theCoords[][3])
 {
   TColgp_Array1OfPnt aCurvePoint (1, nPoles);
@@ -123,7 +123,7 @@ static Handle_Geom_BezierCurve createBezierCurve(const Standard_Integer nPoles,
   return aBCurve;
 }
 
-static Handle_Geom2d_BSplineCurve battenCurve(const Standard_Real& theAngle1,
+static Handle(Geom2d_BSplineCurve) battenCurve(const Standard_Real& theAngle1,
                                                 const Standard_Real& theAngle2)
 {
    //define points
@@ -149,10 +149,10 @@ static Handle_Geom2d_BSplineCurve battenCurve(const Standard_Real& theAngle1,
 }
 
 
-static Handle_Geom_Surface createSurface(
+static Handle(Geom_Surface) createSurface(
                                  const Standard_Integer endBound,
                                  TColgp_Array1OfPnt& thePoint,
-                                 const Handle_Geom_Plane& thePlane)
+                                 const Handle(Geom_Plane)& thePlane)
 {
   Standard_Integer Degree = 3;
   Standard_Integer NbPtsOnCur = 10;
@@ -630,7 +630,7 @@ void GeomConstraints_Presentation::sample3()
   }  
   aFile.close();
 
-  Handle_AIS_InteractiveObject anIO,aNewIO;
+  Handle(AIS_InteractiveObject) anIO,aNewIO;
  
   for(Standard_Integer j = 1; j <= int(aSize / 20); j++)
   {

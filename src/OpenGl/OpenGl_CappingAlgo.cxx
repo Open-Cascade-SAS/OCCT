@@ -22,6 +22,8 @@
 #include <OpenGl_Structure.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingAlgoFilter,OpenGl_RenderFilter)
+
 namespace
 {
 #if !defined(GL_ES_VERSION_2_0)

@@ -22,6 +22,8 @@
 #include <IGESGeom_Direction.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Direction,IGESData_IGESEntity)
+
 IGESGeom_Direction::IGESGeom_Direction ()    {  }
 
 

@@ -162,7 +162,7 @@ Handle(Geom2d_VectorWithMagnitude) operator - (const Handle(Geom2d_Vector)& Othe
 
 
 
-  DEFINE_STANDARD_RTTI(Geom2d_VectorWithMagnitude,Geom2d_Vector)
+  DEFINE_STANDARD_RTTIEXT(Geom2d_VectorWithMagnitude,Geom2d_Vector)
 
 protected:
 

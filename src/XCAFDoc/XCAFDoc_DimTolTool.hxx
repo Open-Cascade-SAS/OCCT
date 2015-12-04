@@ -197,7 +197,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_DimTolTool,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_DimTolTool,TDF_Attribute)
 
 protected:
 

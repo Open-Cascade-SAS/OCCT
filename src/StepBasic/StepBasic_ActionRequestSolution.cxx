@@ -21,6 +21,8 @@
 #include <StepBasic_ActionRequestSolution.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_ActionRequestSolution
 //purpose  : 

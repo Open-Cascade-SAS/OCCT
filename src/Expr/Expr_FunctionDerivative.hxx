@@ -101,7 +101,7 @@ public:
 friend class Expr_NamedFunction;
 
 
-  DEFINE_STANDARD_RTTI(Expr_FunctionDerivative,Expr_GeneralFunction)
+  DEFINE_STANDARD_RTTIEXT(Expr_FunctionDerivative,Expr_GeneralFunction)
 
 protected:
 

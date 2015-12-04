@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Storage_CallBack,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Storage_CallBack,MMgt_TShared)
 
 protected:
 

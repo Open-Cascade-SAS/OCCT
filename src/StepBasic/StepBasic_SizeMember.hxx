@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_SizeMember,StepData_SelectReal)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_SizeMember,StepData_SelectReal)
 
 protected:
 

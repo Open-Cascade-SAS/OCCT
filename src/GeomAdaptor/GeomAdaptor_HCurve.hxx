@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomAdaptor_HCurve,GeomAdaptor_GHCurve)
+  DEFINE_STANDARD_RTTIEXT(GeomAdaptor_HCurve,GeomAdaptor_GHCurve)
 
 protected:
 

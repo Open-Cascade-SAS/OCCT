@@ -17,6 +17,8 @@
 #include <StepShape_RightCircularCone.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightCircularCone,StepGeom_GeometricRepresentationItem)
+
 StepShape_RightCircularCone::StepShape_RightCircularCone ()  {}
 
 void StepShape_RightCircularCone::Init(

@@ -21,6 +21,8 @@
 #include <XmlMDataXtd_AxisDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_AxisDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMDataXtd_AxisDriver
 //purpose  : Constructor

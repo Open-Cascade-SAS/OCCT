@@ -30,6 +30,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_ShapeContext,ShapeProcess_Context)
+
 //=======================================================================
 //function : ShapeProcess_ShapeContext
 //purpose  : 

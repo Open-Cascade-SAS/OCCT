@@ -400,7 +400,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_InterfaceModel,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_InterfaceModel,MMgt_TShared)
 
 protected:
 

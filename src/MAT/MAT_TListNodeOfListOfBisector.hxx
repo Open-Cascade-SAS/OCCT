@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_TListNodeOfListOfBisector,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(MAT_TListNodeOfListOfBisector,MMgt_TShared)
 
 protected:
 

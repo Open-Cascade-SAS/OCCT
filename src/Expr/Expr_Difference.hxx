@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Difference,Expr_BinaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Difference,Expr_BinaryExpression)
 
 protected:
 

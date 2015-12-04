@@ -130,8 +130,8 @@ private:
 	enum VisMode { VIS_WIREFRAME, VIS_SHADE, VIS_HLR };
 	VisMode                        myVisMode;
 	
-  Handle_V3d_View                myView;
-  Handle_Graphic3d_GraphicDriver myGraphicDriver;
+  Handle(V3d_View)                myView;
+  Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   View3D_CurrentAction           myCurrentMode;
   Standard_Integer               myXmin;
   Standard_Integer               myYmin;

@@ -41,6 +41,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_CurveConstraint,MMgt_TShared)
+
 //---------------------------------------------------------
 //         Constructeur vide
 //---------------------------------------------------------

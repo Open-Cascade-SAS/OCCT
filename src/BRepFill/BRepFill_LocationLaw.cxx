@@ -42,6 +42,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepFill_LocationLaw,MMgt_TShared)
+
 //=======================================================================
 //function : Norm
 //purpose  : Norm of a Matrix

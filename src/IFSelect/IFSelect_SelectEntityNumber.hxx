@@ -60,7 +60,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectEntityNumber,IFSelect_SelectBase)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectEntityNumber,IFSelect_SelectBase)
 
 protected:
 

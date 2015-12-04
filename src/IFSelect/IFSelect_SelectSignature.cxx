@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignature,IFSelect_SelectExtract)
+
 //  theexact : -1  OUI   0  NON une seule valeur  > 0 NON nb de valeurs
 //  signmode : 1 prendre si contenu, 2 refuser si contenu
 //             3 prendre si egal,    4 refuser si egal

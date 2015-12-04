@@ -19,6 +19,8 @@
 #include <MAT_Edge.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Edge,MMgt_TShared)
+
 MAT_Edge::MAT_Edge()
 {
 }

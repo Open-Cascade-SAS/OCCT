@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ChFiDS_SurfData,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ChFiDS_SurfData,MMgt_TShared)
 
 protected:
 

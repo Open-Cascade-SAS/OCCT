@@ -17,6 +17,8 @@
 #include <StepShape_SweptAreaSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_SweptAreaSolid,StepShape_SolidModel)
+
 StepShape_SweptAreaSolid::StepShape_SweptAreaSolid ()  {}
 
 void StepShape_SweptAreaSolid::Init(

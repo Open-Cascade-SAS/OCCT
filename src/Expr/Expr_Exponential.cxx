@@ -28,6 +28,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Exponential,Expr_UnaryExpression)
+
 Expr_Exponential::Expr_Exponential(const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);

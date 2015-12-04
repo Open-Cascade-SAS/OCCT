@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_MaterialPropertyRepresentation,StepRepr_PropertyDefinitionRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_MaterialPropertyRepresentation,StepRepr_PropertyDefinitionRepresentation)
 
 protected:
 

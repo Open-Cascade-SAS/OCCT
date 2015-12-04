@@ -19,6 +19,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCurve,Select3D_SensitivePoly)
+
 //==================================================
 // Function: Creation
 // Purpose :

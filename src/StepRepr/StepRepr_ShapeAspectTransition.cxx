@@ -18,6 +18,8 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_ShapeAspectTransition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspectTransition,StepRepr_ShapeAspectRelationship)
+
 //=======================================================================
 //function : StepRepr_ShapeAspectTransition
 //purpose  : 

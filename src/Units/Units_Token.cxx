@@ -30,6 +30,8 @@
 #include <Units_Operators.hxx>
 #include <Units_Token.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Units_Token,MMgt_TShared)
+
 //=======================================================================
 //function : Units_Token
 //purpose  : 

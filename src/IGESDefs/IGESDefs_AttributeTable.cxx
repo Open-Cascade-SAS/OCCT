@@ -31,6 +31,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable,IGESData_IGESEntity)
+
 //  ATTENTION  ATTENTION : L Appellation "ROW" n est pas reconduite en l etat
 //  Le Numero d Attribut est donne en 1er (donc, en colonne du HArray2 et non
 //  en ligne), le numero de Colonne en 2e (donc, comme un numero de Ligne)

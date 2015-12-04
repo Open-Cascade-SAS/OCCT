@@ -25,6 +25,8 @@
 #include <TDF_DeltaOnRemoval.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_TReference,TDF_Attribute)
+
 //=======================================================================
 //function : TObj_TReference
 //purpose  : 

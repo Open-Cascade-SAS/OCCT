@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepBuild_Loop,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop,MMgt_TShared)
 
 protected:
 

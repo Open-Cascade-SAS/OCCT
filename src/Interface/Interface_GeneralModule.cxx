@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Interface_GeneralModule,MMgt_TShared)
+
 void  Interface_GeneralModule::FillShared
   (const Handle(Interface_InterfaceModel)& /*model*/,
    const Standard_Integer casenum,

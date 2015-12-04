@@ -22,6 +22,8 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDF_Directory,Standard_Transient)
+
 CDF_Directory::CDF_Directory () {}
 
 void CDF_Directory::Add(const Handle(CDM_Document)& aDocument) {

@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_SelectReal,StepData_SelectMember)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectReal,StepData_SelectMember)
 
 protected:
 

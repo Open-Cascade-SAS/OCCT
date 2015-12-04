@@ -32,6 +32,8 @@
 #include <TopOpeBRepTool_CurveTool.hxx>
 
 #include <string.h>
+IMPLEMENT_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableMesure,TestTopOpeDraw_DrawableC3D)
+
 static gp_Pnt PScale(const gp_Pnt& P,
 		     const Standard_Real ScaleX,
 		     const Standard_Real ScaleY)

@@ -141,7 +141,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SignatureList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SignatureList,MMgt_TShared)
 
 protected:
 

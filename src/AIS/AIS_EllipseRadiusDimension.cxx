@@ -46,6 +46,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_EllipseRadiusDimension,AIS_Relation)
+
 //=======================================================================
 //function : AIS_EllipseRadiusDimension
 //purpose  : 

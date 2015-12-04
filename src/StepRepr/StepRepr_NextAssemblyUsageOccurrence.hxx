@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_NextAssemblyUsageOccurrence,StepRepr_AssemblyComponentUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_NextAssemblyUsageOccurrence,StepRepr_AssemblyComponentUsage)
 
 protected:
 

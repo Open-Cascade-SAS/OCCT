@@ -27,6 +27,9 @@
 #include <PrsMgr_Prs.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
+#include <Graphic3d_CView.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Presentation,MMgt_TShared)
 
 namespace
 {

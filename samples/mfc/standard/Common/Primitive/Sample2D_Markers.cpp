@@ -2,7 +2,6 @@
 
 #include "Sample2D_Markers.h"
 
-IMPLEMENT_STANDARD_HANDLE(Sample2D_Markers,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Markers,AIS_InteractiveObject)
 
 // generic marker

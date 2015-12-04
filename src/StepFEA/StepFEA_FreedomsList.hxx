@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FreedomsList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomsList,MMgt_TShared)
 
 protected:
 

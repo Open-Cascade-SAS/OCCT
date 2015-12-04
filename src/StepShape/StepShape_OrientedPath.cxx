@@ -18,6 +18,8 @@
 #include <StepShape_OrientedPath.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedPath,StepShape_Path)
+
 StepShape_OrientedPath::StepShape_OrientedPath ()  {}
 
 void StepShape_OrientedPath::Init(

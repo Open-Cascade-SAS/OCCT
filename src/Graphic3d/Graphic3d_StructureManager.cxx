@@ -34,12 +34,15 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager,MMgt_TShared)
+
 static Standard_Boolean Initialisation = Standard_True;
 static int StructureManager_ArrayId[StructureManager_MAX];
 static Standard_Integer StructureManager_CurrentId = 0;
 
 #include "Graphic3d_Structure.pxx"
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
+#include <Graphic3d_CView.hxx>
 
 Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver)
 : myViewGenId (0, 31)

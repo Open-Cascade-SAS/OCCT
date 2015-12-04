@@ -161,6 +161,7 @@ extern void ChFi3d_ResultChron(OSD_Chronometer & ch,Standard_Real& time);
 #include <Geom2dAdaptor_Curve.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <Geom_BezierCurve.hxx>
+#include <Geom_BoundedSurface.hxx>
 
 static Standard_Real recadre(const Standard_Real p,
 			     const Standard_Real ref,

@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StdSelect_Shape,PrsMgr_PresentableObject)
+  DEFINE_STANDARD_RTTIEXT(StdSelect_Shape,PrsMgr_PresentableObject)
 
 protected:
 

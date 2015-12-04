@@ -138,7 +138,7 @@ protected:
 
   CRectangularGrid TheRectangularGridDialog;
   CCircularGrid    TheCircularGridDialog;
-  Handle_V3d_View myV2dView;
+  Handle(V3d_View) myV2dView;
 };
 
 #ifndef _DEBUG  // debug version in 2DDisplayView.cpp

@@ -20,6 +20,8 @@
 #include <StepShape_DimensionalLocationWithPath.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalLocationWithPath,StepShape_DimensionalLocation)
+
 //=======================================================================
 //function : StepShape_DimensionalLocationWithPath
 //purpose  : 

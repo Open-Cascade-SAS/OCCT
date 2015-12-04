@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSControl_SelectForTransfer,IFSelect_SelectExtract)
+  DEFINE_STANDARD_RTTIEXT(XSControl_SelectForTransfer,IFSelect_SelectExtract)
 
 protected:
 

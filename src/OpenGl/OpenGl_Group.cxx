@@ -28,6 +28,8 @@
 #include <Graphic3d_GroupDefinitionError.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group,Graphic3d_Group)
+
 // =======================================================================
 // function : OpenGl_Group
 // purpose  :

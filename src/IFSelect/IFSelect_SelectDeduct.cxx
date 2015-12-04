@@ -21,6 +21,8 @@
 #include <Interface_InterfaceError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectDeduct,IFSelect_Selection)
+
 void  IFSelect_SelectDeduct::SetInput (const Handle(IFSelect_Selection)& sel)
       {  thesel = sel;  }
 

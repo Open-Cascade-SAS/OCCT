@@ -22,6 +22,8 @@
 #include <TDF_RelocationTable.hxx>
 #include <XCAFDoc_Color.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Color,TDF_Attribute)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

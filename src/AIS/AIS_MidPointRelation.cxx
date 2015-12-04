@@ -53,6 +53,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_MidPointRelation,AIS_Relation)
+
 //=======================================================================
 //function : AIS_MidPointRelation
 //purpose  : 

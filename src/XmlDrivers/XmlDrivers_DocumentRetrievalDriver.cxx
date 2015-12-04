@@ -26,6 +26,8 @@
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlObjMgt_Element.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver,XmlLDrivers_DocumentRetrievalDriver)
+
 //=======================================================================
 //function : XmlDrivers_DocumentRetrievalDriver
 //purpose  : Constructor

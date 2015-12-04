@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_SurfacePatch,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_SurfacePatch,MMgt_TShared)
 
 protected:
 

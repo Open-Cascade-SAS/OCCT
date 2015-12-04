@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TNaming_TranslateTool,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TNaming_TranslateTool,MMgt_TShared)
 
 protected:
 

@@ -92,7 +92,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SessionDumper,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SessionDumper,MMgt_TShared)
 
 protected:
 

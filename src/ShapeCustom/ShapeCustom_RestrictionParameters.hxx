@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeCustom_RestrictionParameters,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters,MMgt_TShared)
 
 protected:
 

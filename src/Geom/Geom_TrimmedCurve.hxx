@@ -255,7 +255,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_TrimmedCurve,Geom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(Geom_TrimmedCurve,Geom_BoundedCurve)
 
 protected:
 

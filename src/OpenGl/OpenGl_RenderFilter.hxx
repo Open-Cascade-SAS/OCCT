@@ -38,7 +38,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_RenderFilter, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_RenderFilter,Standard_Transient)
 };
 
 #endif

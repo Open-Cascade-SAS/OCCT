@@ -23,6 +23,8 @@
 #include <IGESSolid_SolidOfLinearExtrusion.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidOfLinearExtrusion,IGESData_IGESEntity)
+
 IGESSolid_SolidOfLinearExtrusion::IGESSolid_SolidOfLinearExtrusion ()   { }
 
 

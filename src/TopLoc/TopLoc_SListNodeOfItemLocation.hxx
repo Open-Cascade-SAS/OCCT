@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopLoc_SListNodeOfItemLocation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation,MMgt_TShared)
 
 protected:
 

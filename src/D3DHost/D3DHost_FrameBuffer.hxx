@@ -75,7 +75,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(D3DHost_FrameBuffer, OpenGl_FrameBuffer)
+  DEFINE_STANDARD_RTTIEXT(D3DHost_FrameBuffer,OpenGl_FrameBuffer)
 
 };
 

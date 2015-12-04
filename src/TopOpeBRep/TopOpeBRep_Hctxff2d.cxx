@@ -24,6 +24,8 @@
 #include <TopOpeBRep_Hctxff2d.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_Hctxff2d,MMgt_TShared)
+
 //=======================================================================
 //function : TopOpeBRep_Hctxff2d
 //purpose  : 

@@ -58,6 +58,8 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DNaming_RevolutionDriver,TFunction_Driver)
+
 // OCAF
 //=======================================================================
 //function : DNaming_RevolutionDriver

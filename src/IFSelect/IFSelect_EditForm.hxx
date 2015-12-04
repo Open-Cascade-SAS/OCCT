@@ -284,7 +284,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_EditForm,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_EditForm,MMgt_TShared)
 
 protected:
 

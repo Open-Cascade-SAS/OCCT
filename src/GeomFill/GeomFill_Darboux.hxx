@@ -84,7 +84,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_Darboux,GeomFill_TrihedronLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_Darboux,GeomFill_TrihedronLaw)
 
 protected:
 

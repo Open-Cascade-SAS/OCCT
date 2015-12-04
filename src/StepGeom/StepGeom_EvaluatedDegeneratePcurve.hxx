@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_EvaluatedDegeneratePcurve,StepGeom_DegeneratePcurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_EvaluatedDegeneratePcurve,StepGeom_DegeneratePcurve)
 
 protected:
 

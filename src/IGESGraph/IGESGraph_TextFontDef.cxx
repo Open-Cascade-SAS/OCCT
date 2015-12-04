@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_TextFontDef,IGESData_IGESEntity)
+
 IGESGraph_TextFontDef::IGESGraph_TextFontDef ()    {  }
 
 

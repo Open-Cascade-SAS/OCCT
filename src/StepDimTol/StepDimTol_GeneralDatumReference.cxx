@@ -17,6 +17,8 @@
 
 #include <StepDimTol_HArray1OfDatumReferenceModifier.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeneralDatumReference,StepRepr_ShapeAspect)
+
 //=======================================================================
 //function : StepDimTol_GeneralDatumReference
 //purpose  : 

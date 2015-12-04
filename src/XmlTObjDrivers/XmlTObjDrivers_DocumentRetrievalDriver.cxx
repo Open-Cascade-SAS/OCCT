@@ -19,6 +19,8 @@
 #include <XmlLDrivers.hxx>
 #include <XmlTObjDrivers.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_DocumentRetrievalDriver,XmlLDrivers_DocumentRetrievalDriver)
+
 //=======================================================================
 //function : XmlTObjDrivers_DocumentRetrievalDriver
 //purpose  : 

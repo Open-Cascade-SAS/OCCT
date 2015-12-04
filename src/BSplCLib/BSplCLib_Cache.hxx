@@ -139,7 +139,7 @@ public:
                                 gp_Vec&        theTorsion) const;
 
 
-  DEFINE_STANDARD_RTTI(BSplCLib_Cache, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BSplCLib_Cache,Standard_Transient)
 
 protected:
   //! Normalizes the parameter for periodical curves

@@ -145,7 +145,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_RelocationTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_RelocationTable,MMgt_TShared)
 
 protected:
 

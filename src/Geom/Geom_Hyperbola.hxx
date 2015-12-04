@@ -279,7 +279,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Hyperbola,Geom_Conic)
+  DEFINE_STANDARD_RTTIEXT(Geom_Hyperbola,Geom_Conic)
 
 protected:
 

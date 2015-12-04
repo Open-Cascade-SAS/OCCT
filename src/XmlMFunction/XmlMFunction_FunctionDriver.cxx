@@ -23,6 +23,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMFunction_FunctionDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (GuidString, "guid")
 IMPLEMENT_DOMSTRING (FailureString, "failure")
 

@@ -18,6 +18,8 @@
 #include <StepVisual_TextStyleWithBoxCharacteristics.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics,StepVisual_TextStyle)
+
 StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics ()  {}
 
 void StepVisual_TextStyleWithBoxCharacteristics::Init(

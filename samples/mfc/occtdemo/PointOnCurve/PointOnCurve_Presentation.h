@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include <OCCDemo_Presentation.h>
-class Handle_Geom_Curve;
+class Geom_Curve;
 
 class PointOnCurve_Presentation : public OCCDemo_Presentation
 {
@@ -18,8 +18,8 @@ public:
   // Construction
   PointOnCurve_Presentation();
 private:
-  Handle_AIS_InteractiveObject PointOnCurve_Presentation::DrawCurve (
-             Handle_Geom_Curve theCurve, Quantity_NameOfColor theColor);
+  Handle(AIS_InteractiveObject) PointOnCurve_Presentation::DrawCurve (
+             Handle(Geom_Curve) theCurve, Quantity_NameOfColor theColor);
 
 public:
   // Iteration on samples

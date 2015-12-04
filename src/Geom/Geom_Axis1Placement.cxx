@@ -23,6 +23,8 @@
 #include <gp_Trsf.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Axis1Placement,Geom_AxisPlacement)
+
 typedef Geom_Axis1Placement         Axis1Placement;
 typedef gp_Ax2  Ax2;
 typedef gp_Dir  Dir;

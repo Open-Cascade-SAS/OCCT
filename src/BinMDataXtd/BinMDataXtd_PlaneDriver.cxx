@@ -24,6 +24,8 @@
 #include <TDataXtd_Plane.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PlaneDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataXtd_PlaneDriver
 //purpose  : 

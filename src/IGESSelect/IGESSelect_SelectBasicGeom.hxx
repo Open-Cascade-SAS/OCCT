@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectBasicGeom,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBasicGeom,IFSelect_SelectExplore)
 
 protected:
 

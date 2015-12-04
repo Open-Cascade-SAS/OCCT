@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_SymmetricTensor23dMember,StepData_SelectArrReal)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_SymmetricTensor23dMember,StepData_SelectArrReal)
 
 protected:
 

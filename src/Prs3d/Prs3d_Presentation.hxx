@@ -91,7 +91,7 @@ public:
 friend class Prs3d_Root;
 
 
-  DEFINE_STANDARD_RTTI(Prs3d_Presentation,Graphic3d_Structure)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_Presentation,Graphic3d_Structure)
 
 protected:
 

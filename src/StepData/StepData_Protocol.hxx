@@ -138,7 +138,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_Protocol,Interface_Protocol)
+  DEFINE_STANDARD_RTTIEXT(StepData_Protocol,Interface_Protocol)
 
 protected:
 

@@ -31,6 +31,8 @@
 #include <Standard_Type.hxx>
 #include <TestTopOpeDraw_DrawableSUR.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableSUR,DrawTrSurf_Surface)
+
 //=======================================================================
 //function : TestTopOpeDraw_DrawableSUR
 //purpose  : 

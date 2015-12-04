@@ -119,7 +119,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_SelectMember,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepData_SelectMember,MMgt_TShared)
 
 protected:
 

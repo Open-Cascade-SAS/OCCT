@@ -40,6 +40,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_EqualRadiusRelation,AIS_Relation)
+
 //=======================================================================
 //function : AIS_EqualRadiusRelation
 //purpose  : 

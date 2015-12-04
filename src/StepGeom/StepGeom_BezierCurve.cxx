@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_BezierCurve.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierCurve,StepGeom_BSplineCurve)
+
 StepGeom_BezierCurve::StepGeom_BezierCurve ()  {}
 

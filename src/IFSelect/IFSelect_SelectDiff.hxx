@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectDiff,IFSelect_SelectControl)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectDiff,IFSelect_SelectControl)
 
 protected:
 

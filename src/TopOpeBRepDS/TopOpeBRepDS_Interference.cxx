@@ -22,6 +22,8 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Interference,MMgt_TShared)
+
 //=======================================================================
 //function : TopOpeBRepDS_Interference
 //purpose  : 

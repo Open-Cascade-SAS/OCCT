@@ -2,7 +2,6 @@
 
 #include "Sample2D_Image.h"
 
-IMPLEMENT_STANDARD_HANDLE(Sample2D_Image,AIS_TexturedShape)
 IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Image,AIS_TexturedShape)
 
 Sample2D_Image::Sample2D_Image(TCollection_AsciiString& aFileName,

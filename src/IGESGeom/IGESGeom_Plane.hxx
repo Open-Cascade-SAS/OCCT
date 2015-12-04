@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_Plane,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Plane,IGESData_IGESEntity)
 
 protected:
 

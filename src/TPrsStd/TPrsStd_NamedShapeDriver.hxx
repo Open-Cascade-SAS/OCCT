@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_NamedShapeDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_NamedShapeDriver,TPrsStd_Driver)
 
 protected:
 

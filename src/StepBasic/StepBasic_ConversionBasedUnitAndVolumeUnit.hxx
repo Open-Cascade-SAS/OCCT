@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ConversionBasedUnitAndVolumeUnit,StepBasic_ConversionBasedUnit)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndVolumeUnit,StepBasic_ConversionBasedUnit)
 
 protected:
 

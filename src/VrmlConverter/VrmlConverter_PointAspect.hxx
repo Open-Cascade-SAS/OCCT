@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(VrmlConverter_PointAspect,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_PointAspect,MMgt_TShared)
 
 protected:
 

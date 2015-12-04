@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HeaderSection_Protocol,StepData_Protocol)
+  DEFINE_STANDARD_RTTIEXT(HeaderSection_Protocol,StepData_Protocol)
 
 protected:
 

@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectSingleViewFrom,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectSingleViewFrom,IFSelect_SelectDeduct)
 
 protected:
 

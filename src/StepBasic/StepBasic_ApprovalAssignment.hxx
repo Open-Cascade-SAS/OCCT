@@ -43,7 +43,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ApprovalAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment,MMgt_TShared)
 
 protected:
 

@@ -31,6 +31,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_UndefinedEntity,IGESData_IGESEntity)
+
 // MGE 23/07/98
 //=======================================================================
 //function : IGESData_UndefinedEntity

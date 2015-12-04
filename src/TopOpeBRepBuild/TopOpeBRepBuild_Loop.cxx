@@ -20,6 +20,8 @@
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop,MMgt_TShared)
+
 //=======================================================================
 //function : TopOpeBRepBuild_Loop
 //purpose  : 

@@ -20,6 +20,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_AssocGroupType,IGESData_IGESEntity)
+
 IGESBasic_AssocGroupType::IGESBasic_AssocGroupType ()    {  }
 
 

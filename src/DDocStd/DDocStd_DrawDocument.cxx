@@ -21,6 +21,8 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DDocStd_DrawDocument,DDF_Data)
+
 //=======================================================================
 //function : Find
 //purpose  : 

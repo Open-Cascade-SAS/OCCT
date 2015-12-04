@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_RoleAssociation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_RoleAssociation,MMgt_TShared)
 
 protected:
 

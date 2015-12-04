@@ -637,7 +637,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_Camera, Standard_Transient);
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Camera,Standard_Transient);
 };
 
 DEFINE_STANDARD_HANDLE (Graphic3d_Camera, Standard_Transient)

@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <Vrml_SFImage.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_SFImage,MMgt_TShared)
+
 Vrml_SFImage::Vrml_SFImage()
 {
   myArray = new TColStd_HArray1OfInteger(1,1);

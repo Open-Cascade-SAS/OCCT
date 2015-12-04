@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_RightAngularWedge,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_RightAngularWedge,StepGeom_GeometricRepresentationItem)
 
 protected:
 

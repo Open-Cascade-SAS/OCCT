@@ -79,7 +79,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_UnifySameDomain,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,MMgt_TShared)
 
 protected:
 

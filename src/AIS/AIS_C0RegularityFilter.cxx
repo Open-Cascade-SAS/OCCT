@@ -28,6 +28,8 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_C0RegularityFilter,SelectMgr_Filter)
+
 //=======================================================================
 //function : AIS_C0RegularityFilter
 //purpose  : 

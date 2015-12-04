@@ -197,7 +197,7 @@ class VrmlData_IndexedLineSet : public VrmlData_Geometry
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_IndexedLineSet, VrmlData_Geometry)
+DEFINE_STANDARD_RTTIEXT(VrmlData_IndexedLineSet,VrmlData_Geometry)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

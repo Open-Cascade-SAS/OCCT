@@ -117,7 +117,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_GeneralExpression,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Expr_GeneralExpression,MMgt_TShared)
 
 protected:
 

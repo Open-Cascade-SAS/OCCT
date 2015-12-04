@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ProductRelatedProductCategory,StepBasic_ProductCategory)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory,StepBasic_ProductCategory)
 
 protected:
 

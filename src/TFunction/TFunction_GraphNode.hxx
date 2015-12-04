@@ -115,7 +115,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TFunction_GraphNode,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TFunction_GraphNode,TDF_Attribute)
 
 protected:
 

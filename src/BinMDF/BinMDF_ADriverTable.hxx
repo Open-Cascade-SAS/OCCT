@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinMDF_ADriverTable,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BinMDF_ADriverTable,MMgt_TShared)
 
 protected:
 

@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Message_Messenger,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Message_Messenger,MMgt_TShared)
 
 protected:
 

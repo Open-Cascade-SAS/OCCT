@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_FixRelation,AIS_Relation)
+  DEFINE_STANDARD_RTTIEXT(AIS_FixRelation,AIS_Relation)
 
 protected:
 

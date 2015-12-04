@@ -41,6 +41,8 @@
 #include <TColStd_SequenceOfAsciiString.hxx>
 
 #include <locale.h>
+IMPLEMENT_STANDARD_RTTIEXT(PCDM_RetrievalDriver,PCDM_Reader)
+
 void PCDM_RetrievalDriver::RaiseIfUnknownTypes(const Handle(Storage_Schema)& aSchema, const TCollection_ExtendedString& aFileName) {
 
   PCDM_BaseDriverPointer theFileDriver;

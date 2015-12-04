@@ -103,7 +103,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeBuild_ReShape,BRepTools_ReShape)
+  DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape,BRepTools_ReShape)
 
 protected:
 

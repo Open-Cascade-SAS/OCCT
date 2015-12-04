@@ -279,7 +279,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Surface,Geom_Geometry)
+  DEFINE_STANDARD_RTTIEXT(Geom_Surface,Geom_Geometry)
 
 protected:
 

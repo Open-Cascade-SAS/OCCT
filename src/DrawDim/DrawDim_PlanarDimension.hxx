@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_PlanarDimension,DrawDim_Dimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarDimension,DrawDim_Dimension)
 
 protected:
 

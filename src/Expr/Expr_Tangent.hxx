@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Tangent,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Tangent,Expr_UnaryExpression)
 
 protected:
 

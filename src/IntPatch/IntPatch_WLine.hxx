@@ -164,7 +164,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IntPatch_WLine,IntPatch_PointLine)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_WLine,IntPatch_PointLine)
 
 protected:
 

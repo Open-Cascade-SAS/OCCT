@@ -96,7 +96,7 @@ friend
   Standard_EXPORT void CDM_Application::SetDocumentVersion (const Handle(CDM_Document)& aDocument, const Handle(CDM_MetaData)& aMetaData) const;
 
 
-  DEFINE_STANDARD_RTTI(CDM_MetaData,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDM_MetaData,Standard_Transient)
 
 protected:
 

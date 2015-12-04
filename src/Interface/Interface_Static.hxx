@@ -261,7 +261,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_Static,Interface_TypedValue)
+  DEFINE_STANDARD_RTTIEXT(Interface_Static,Interface_TypedValue)
 
 protected:
 

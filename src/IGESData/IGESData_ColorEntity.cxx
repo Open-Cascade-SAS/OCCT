@@ -15,4 +15,6 @@
 #include <IGESData_ColorEntity.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_ColorEntity,IGESData_IGESEntity)
+
 // ColorEntity ne sert qu'au controle de type (entite Color du directory part)

@@ -11,7 +11,7 @@
 static char THIS_FILE[]=__FILE__;
 //#define new DEBUG_NEW
 #endif
-IMPLEMENT_STANDARD_HANDLE(ISession_Text,AIS_InteractiveObject)
+
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
 
 //////////////////////////////////////////////////////////////////////

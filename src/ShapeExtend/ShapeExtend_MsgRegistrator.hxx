@@ -67,7 +67,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeExtend_MsgRegistrator,ShapeExtend_BasicMsgRegistrator)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_MsgRegistrator,ShapeExtend_BasicMsgRegistrator)
 
 protected:
 

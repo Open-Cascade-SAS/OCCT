@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_RepresentationItem,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationItem,MMgt_TShared)
 
 protected:
 

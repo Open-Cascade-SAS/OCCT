@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_LessThanOrEqual,Expr_SingleRelation)
+  DEFINE_STANDARD_RTTIEXT(Expr_LessThanOrEqual,Expr_SingleRelation)
 
 protected:
 

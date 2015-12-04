@@ -66,7 +66,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(LocOpe_GluedShape,LocOpe_GeneratedShape)
+  DEFINE_STANDARD_RTTIEXT(LocOpe_GluedShape,LocOpe_GeneratedShape)
 
 protected:
 

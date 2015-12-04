@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion,StepFEA_FeaMaterialPropertyRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion,StepFEA_FeaMaterialPropertyRepresentationItem)
 
 protected:
 

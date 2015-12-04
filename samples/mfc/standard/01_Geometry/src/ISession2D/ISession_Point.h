@@ -22,7 +22,7 @@ public:
   ISession_Point(const gp_Pnt2d& aPoint,Standard_Real Elevation = 0);
   ISession_Point(const gp_Pnt& aPoint);
   virtual ~ISession_Point();
-  DEFINE_STANDARD_RTTI(ISession_Point,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(ISession_Point,AIS_InteractiveObject)
 
 private :
 

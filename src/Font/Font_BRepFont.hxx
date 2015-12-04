@@ -211,7 +211,7 @@ protected: //! @name Shared temporary variables for glyph construction
 
 public:
 
-  DEFINE_STANDARD_RTTI(Font_BRepFont, Font_FTFont)
+  DEFINE_STANDARD_RTTIEXT(Font_BRepFont,Font_FTFont)
 
 };
 

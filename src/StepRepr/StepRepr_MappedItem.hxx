@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_MappedItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_MappedItem,StepRepr_RepresentationItem)
 
 protected:
 

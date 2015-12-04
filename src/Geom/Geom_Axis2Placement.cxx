@@ -24,6 +24,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Axis2Placement,Geom_AxisPlacement)
+
 typedef Geom_Axis2Placement Axis2Placement;
 typedef gp_Ax1  Ax1;
 typedef gp_Dir  Dir;

@@ -58,6 +58,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_MaxRadiusDimension,AIS_EllipseRadiusDimension)
+
 //=======================================================================
 //function : AIS_MaxRadiusDimension
 //purpose  : 

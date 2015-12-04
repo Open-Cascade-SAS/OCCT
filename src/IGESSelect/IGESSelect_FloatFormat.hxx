@@ -93,7 +93,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_FloatFormat,IGESSelect_FileModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_FloatFormat,IGESSelect_FileModifier)
 
 protected:
 

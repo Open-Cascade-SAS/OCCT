@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_ReaderModule,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Interface_ReaderModule,MMgt_TShared)
 
 protected:
 

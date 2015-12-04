@@ -16,6 +16,8 @@
 #include <Prs3d_PresentationShadow.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PresentationShadow,Prs3d_Presentation)
+
 //=======================================================================
 //function : Prs3d_PresentationShadow
 //purpose  :

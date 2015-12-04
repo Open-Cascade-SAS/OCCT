@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AppliedDocumentReference,StepBasic_DocumentReference)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedDocumentReference,StepBasic_DocumentReference)
 
 protected:
 

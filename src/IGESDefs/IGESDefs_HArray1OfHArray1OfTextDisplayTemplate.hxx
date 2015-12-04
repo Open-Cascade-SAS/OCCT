@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate,MMgt_TShared)
 
 protected:
 

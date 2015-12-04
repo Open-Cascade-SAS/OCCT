@@ -20,6 +20,8 @@
 #include <VrmlConverter_PointAspect.hxx>
 #include <VrmlConverter_ShadingAspect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_Drawer,MMgt_TShared)
+
 VrmlConverter_Drawer::VrmlConverter_Drawer():
   myNbPoints(17),
   myIsoOnPlane(Standard_False),

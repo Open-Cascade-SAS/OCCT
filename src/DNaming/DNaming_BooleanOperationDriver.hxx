@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DNaming_BooleanOperationDriver,TFunction_Driver)
+  DEFINE_STANDARD_RTTIEXT(DNaming_BooleanOperationDriver,TFunction_Driver)
 
 protected:
 

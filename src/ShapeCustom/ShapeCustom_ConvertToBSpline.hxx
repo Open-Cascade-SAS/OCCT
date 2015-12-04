@@ -116,7 +116,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeCustom_ConvertToBSpline,ShapeCustom_Modification)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_ConvertToBSpline,ShapeCustom_Modification)
 
 protected:
 

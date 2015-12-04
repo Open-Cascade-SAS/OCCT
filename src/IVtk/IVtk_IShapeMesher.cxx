@@ -15,6 +15,8 @@
 
 #include <IVtk_IShapeMesher.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeMesher,IVtk_Interface)
+
 // Handle implementation
 
 

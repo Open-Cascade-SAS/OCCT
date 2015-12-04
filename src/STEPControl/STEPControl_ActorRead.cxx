@@ -112,6 +112,8 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(STEPControl_ActorRead,Transfer_ActorOfTransientProcess)
+
 // #include <Interface_InterfaceModel.hxx>  // pour mise au point
 // MappedItem :
 // FaceSurface :

@@ -32,6 +32,8 @@
 #include <TColStd_HArray2OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(FEmTool_LinearTension,FEmTool_ElementaryCriterion)
+
 FEmTool_LinearTension::FEmTool_LinearTension(const Standard_Integer WorkDegree,
 					     const GeomAbs_Shape ConstraintOrder):
        RefMatrix(0,WorkDegree,0,WorkDegree)

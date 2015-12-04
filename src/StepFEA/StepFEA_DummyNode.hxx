@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_DummyNode,StepFEA_NodeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_DummyNode,StepFEA_NodeRepresentation)
 
 protected:
 

@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Pattern,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Pattern,TDF_Attribute)
 
 protected:
 

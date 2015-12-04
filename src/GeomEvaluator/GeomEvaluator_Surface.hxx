@@ -49,7 +49,7 @@ public:
   virtual gp_Vec DN(const Standard_Real theU, const Standard_Real theV,
                     const Standard_Integer theDerU, const Standard_Integer theDerV) const = 0;
 
-  DEFINE_STANDARD_RTTI(GeomEvaluator_Surface, Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(GeomEvaluator_Surface,Standard_Transient)
 };
 
 DEFINE_STANDARD_HANDLE(GeomEvaluator_Surface, Standard_Transient)

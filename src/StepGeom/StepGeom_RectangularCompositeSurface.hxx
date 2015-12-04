@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_RectangularCompositeSurface,StepGeom_BoundedSurface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_RectangularCompositeSurface,StepGeom_BoundedSurface)
 
 protected:
 

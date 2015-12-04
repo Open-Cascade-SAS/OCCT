@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_ChamfSpine,ChFiDS_Spine)
+
 //=======================================================================
 //function : ChFiDS_ChamfSpine
 //purpose  : 

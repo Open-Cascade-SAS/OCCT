@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopoDS_TShell,TopoDS_TShape)
+  DEFINE_STANDARD_RTTIEXT(TopoDS_TShell,TopoDS_TShape)
 
 protected:
 

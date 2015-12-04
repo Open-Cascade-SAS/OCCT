@@ -30,6 +30,8 @@
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_Utils.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferWriter,MMgt_TShared)
+
 XSControl_TransferWriter::XSControl_TransferWriter ()
 {  theTransferWrite = new Transfer_FinderProcess;  theTransferMode = 0;  }
 

@@ -24,6 +24,8 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
+IMPLEMENT_STANDARD_RTTIEXT(Units_Lexicon,MMgt_TShared)
+
 #ifdef _MSC_VER
 # include <stdio.h>
 #else

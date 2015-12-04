@@ -30,6 +30,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectLine3d,Aspect_AspectLine)
+
 //-Aliases
 //-Global data definitions
 //-Constructors

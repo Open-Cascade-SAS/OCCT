@@ -40,7 +40,7 @@ class BinTObjDrivers_DocumentStorageDriver :
 
  public:
   // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI (BinTObjDrivers_DocumentStorageDriver, BinLDrivers_DocumentStorageDriver)
+  DEFINE_STANDARD_RTTIEXT(BinTObjDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

@@ -292,7 +292,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeExtend_CompositeSurface,Geom_Surface)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_CompositeSurface,Geom_Surface)
 
 protected:
 

@@ -50,7 +50,7 @@ public:
     return valueComponentMember;
   }
 
-  DEFINE_STANDARD_RTTI(StepRepr_ValueRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ValueRepresentationItem,StepRepr_RepresentationItem)
 
 private:
   Handle(StepBasic_MeasureValueMember) valueComponentMember;

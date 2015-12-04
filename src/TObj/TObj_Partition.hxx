@@ -144,7 +144,7 @@ class TObj_Partition : public TObj_Object
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_Partition, TObj_Object)
+  DEFINE_STANDARD_RTTIEXT(TObj_Partition,TObj_Object)
 
  public:
   friend class TObj_Model;

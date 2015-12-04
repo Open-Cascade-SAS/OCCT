@@ -21,6 +21,8 @@
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Marker3D,Draw_Drawable3D)
+
 //=======================================================================
 //function : Draw_Marker3D
 //purpose  : 

@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_CcDesignSpecificationReference,StepBasic_DocumentReference)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignSpecificationReference,StepBasic_DocumentReference)
 
 protected:
 

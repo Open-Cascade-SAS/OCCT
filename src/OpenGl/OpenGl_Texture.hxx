@@ -424,7 +424,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Texture, OpenGl_Resource) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_Texture,OpenGl_Resource) // Type definition
 
 };
 

@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_PolygonOnClosedTriangulation,BRep_PolygonOnTriangulation)
+  DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnClosedTriangulation,BRep_PolygonOnTriangulation)
 
 protected:
 

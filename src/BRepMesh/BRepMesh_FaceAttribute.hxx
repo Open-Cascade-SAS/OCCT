@@ -317,7 +317,7 @@ public: //! @name Auxiliary methods
   Standard_EXPORT gp_XY Scale(const gp_XY&           thePoint2d, 
                               const Standard_Boolean isToFaceBasis);
 
-  DEFINE_STANDARD_RTTI(BRepMesh_FaceAttribute, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_FaceAttribute,Standard_Transient)
 
 private:
 

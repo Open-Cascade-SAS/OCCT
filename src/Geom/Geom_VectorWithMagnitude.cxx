@@ -24,6 +24,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_VectorWithMagnitude,Geom_Vector)
+
 typedef Geom_VectorWithMagnitude         VectorWithMagnitude;
 typedef Geom_Vector                      Vector;
 typedef gp_Ax1  Ax1;

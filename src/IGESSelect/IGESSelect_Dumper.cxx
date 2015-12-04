@@ -44,6 +44,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Dumper,IFSelect_SessionDumper)
+
 //#include <IGESSelect_SelectIGESTypeForm.hxx>
 IGESSelect_Dumper::IGESSelect_Dumper ()    {  }
 

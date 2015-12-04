@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepDimTol_CommonDatum,StepRepr_CompositeShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_CommonDatum,StepRepr_CompositeShapeAspect)
 
 protected:
 

@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRep_PolygonOnClosedSurface,BRep_PolygonOnSurface)
+  DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface,BRep_PolygonOnSurface)
 
 protected:
 

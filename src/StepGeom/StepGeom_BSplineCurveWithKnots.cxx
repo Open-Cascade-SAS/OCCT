@@ -16,6 +16,8 @@
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnots,StepGeom_BSplineCurve)
+
 StepGeom_BSplineCurveWithKnots::StepGeom_BSplineCurveWithKnots ()  {}
 
 void StepGeom_BSplineCurveWithKnots::Init(

@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaModel,StepRepr_Representation)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModel,StepRepr_Representation)
 
 protected:
 

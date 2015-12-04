@@ -86,7 +86,7 @@ void Convert_Presentation::DoSample()
 // Function : Convert_Presentation::drawSurfaceAndItsBSpline
 // Purpose  : 
 //================================================================
-void Convert_Presentation::drawSurfaceAndItsBSpline(const Handle_Geom_Surface & theSurface, 
+void Convert_Presentation::drawSurfaceAndItsBSpline(const Handle(Geom_Surface) & theSurface, 
                                                     const Standard_CString theName, 
                                                     TCollection_AsciiString& theText)
 {
@@ -95,7 +95,7 @@ void Convert_Presentation::drawSurfaceAndItsBSpline(const Handle_Geom_Surface & 
   aTitle += " to BSpline surface";
 
   theText += EOL
-    "  Handle_Geom_BSplineSurface aBSplineSurface = " EOL
+    "  Handle(Geom_BSplineSurface) aBSplineSurface = " EOL
     "    GeomConvert::SurfaceToBSplineSurface(aSurface);" EOL;
 
   setResultTitle (aTitle.ToCString());
@@ -105,7 +105,7 @@ void Convert_Presentation::drawSurfaceAndItsBSpline(const Handle_Geom_Surface & 
 
   if (WAIT_A_LITTLE) return;
 
-  Handle_Geom_BSplineSurface aBSplineSurface = GeomConvert::SurfaceToBSplineSurface(theSurface);
+  Handle(Geom_BSplineSurface) aBSplineSurface = GeomConvert::SurfaceToBSplineSurface(theSurface);
 
   _ASSERTE(!aBSplineSurface.IsNull());
 
@@ -116,7 +116,7 @@ void Convert_Presentation::drawSurfaceAndItsBSpline(const Handle_Geom_Surface & 
 // Function : Convert_Presentation::drawCurveAndItsBSpline
 // Purpose  : 
 //================================================================
-void Convert_Presentation::drawCurveAndItsBSpline(Handle_Geom_Curve theCurve, 
+void Convert_Presentation::drawCurveAndItsBSpline(Handle(Geom_Curve) theCurve, 
                                                   const Standard_CString theName, 
                                                   TCollection_AsciiString& theText)
 {
@@ -125,7 +125,7 @@ void Convert_Presentation::drawCurveAndItsBSpline(Handle_Geom_Curve theCurve,
   aTitle += " to BSpline curve";
 
   theText += EOL
-    "  Handle_Geom_BSplineCurve aBSpline = " EOL
+    "  Handle(Geom_BSplineCurve) aBSpline = " EOL
     "    GeomConvert::CurveToBSplineCurve(aCurve);" EOL;
 
   setResultTitle (aTitle.ToCString());
@@ -135,7 +135,7 @@ void Convert_Presentation::drawCurveAndItsBSpline(Handle_Geom_Curve theCurve,
   
   if (WAIT_A_LITTLE) return;
 
-  Handle_Geom_BSplineCurve aBSpline = GeomConvert::CurveToBSplineCurve(theCurve);
+  Handle(Geom_BSplineCurve) aBSpline = GeomConvert::CurveToBSplineCurve(theCurve);
 
   drawCurve (Handle(Geom_Curve)::DownCast(aBSpline), BSplineColor);
 }
@@ -155,7 +155,7 @@ void Convert_Presentation::sampleCircle()
   gp_Dir aDir (1,0,0);
   gp_Ax2 aAxis (aOrigin, aDir);
   Standard_Real aRadius = 300;
-  Handle_Geom_Circle aCurve = new Geom_Circle (aAxis, aRadius);
+  Handle(Geom_Circle) aCurve = new Geom_Circle (aAxis, aRadius);
 
   TCollection_AsciiString aText (
     "  gp_Pnt aOrigin (0,0,0);" EOL

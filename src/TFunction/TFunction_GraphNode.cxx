@@ -23,6 +23,8 @@
 #include <TFunction_GraphNode.hxx>
 #include <TFunction_Scope.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TFunction_GraphNode,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : Static method to get an ID

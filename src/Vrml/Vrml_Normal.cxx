@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <Vrml_Normal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Vrml_Normal,MMgt_TShared)
+
 Vrml_Normal::Vrml_Normal(const Handle(TColgp_HArray1OfVec)& aVector)
 {
  myVector = aVector;

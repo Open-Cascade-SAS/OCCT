@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(VrmlConverter_IsoAspect,VrmlConverter_LineAspect)
+  DEFINE_STANDARD_RTTIEXT(VrmlConverter_IsoAspect,VrmlConverter_LineAspect)
 
 protected:
 

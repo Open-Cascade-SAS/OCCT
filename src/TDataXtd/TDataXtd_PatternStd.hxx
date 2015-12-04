@@ -112,7 +112,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_PatternStd,TDataXtd_Pattern)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_PatternStd,TDataXtd_Pattern)
 
 protected:
 

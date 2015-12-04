@@ -23,6 +23,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalConstraint,IGESData_IGESEntity)
+
 IGESAppli_NodalConstraint::IGESAppli_NodalConstraint ()    {  }
 
 

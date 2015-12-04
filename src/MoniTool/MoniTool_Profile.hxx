@@ -206,7 +206,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MoniTool_Profile,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MoniTool_Profile,MMgt_TShared)
 
 protected:
 

@@ -28,6 +28,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Circle,Geom_Conic)
+
 typedef Geom_Circle         Circle;
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;

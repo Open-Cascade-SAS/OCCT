@@ -767,7 +767,7 @@ void CDimensionDlg::OnClose()
 TopoDS_Shape CDimensionDlg::SelectedShape()
 {
   Handle(Standard_Transient) aSelection = AIS_Selection::CurrentSelection()->Value();
-  Handle(SelectMgr_EntityOwner) anOwner = *((Handle(SelectMgr_EntityOwner)*)&aSelection);
+  Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aSelection);
   Handle(StdSelect_BRepOwner) aBrepOwner = Handle(StdSelect_BRepOwner)::DownCast(anOwner);
   return aBrepOwner->Shape().Located (aBrepOwner->Location() * aBrepOwner->Shape().Location());
 }

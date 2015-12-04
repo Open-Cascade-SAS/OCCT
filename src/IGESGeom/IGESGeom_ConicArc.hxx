@@ -131,7 +131,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_ConicArc,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_ConicArc,IGESData_IGESEntity)
 
 protected:
 

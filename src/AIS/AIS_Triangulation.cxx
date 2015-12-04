@@ -28,6 +28,8 @@
 #include <Graphic3d_ArrayOfTriangles.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Triangulation,AIS_InteractiveObject)
+
 AIS_Triangulation::AIS_Triangulation(const Handle(Poly_Triangulation)& Triangulation)
 {
   myTriangulation = Triangulation;

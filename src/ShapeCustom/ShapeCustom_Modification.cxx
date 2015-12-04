@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_Modification,BRepTools_Modification)
+
 //=======================================================================
 //function : SetMsgRegistrator
 //purpose  : 

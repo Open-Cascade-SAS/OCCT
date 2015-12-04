@@ -18,6 +18,8 @@
 #include <StepRepr_Transformation.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationRelationshipWithTransformation,StepRepr_ShapeRepresentationRelationship)
+
 StepRepr_RepresentationRelationshipWithTransformation::StepRepr_RepresentationRelationshipWithTransformation ()    {  }
 
 void  StepRepr_RepresentationRelationshipWithTransformation::Init

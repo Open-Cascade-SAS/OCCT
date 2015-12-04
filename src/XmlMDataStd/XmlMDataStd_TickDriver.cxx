@@ -21,6 +21,8 @@
 #include <XmlMDataStd_TickDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_TickDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMDataStd_TickDriver
 //purpose  : Constructor

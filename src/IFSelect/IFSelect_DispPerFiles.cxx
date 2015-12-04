@@ -24,6 +24,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerFiles,IFSelect_Dispatch)
+
 IFSelect_DispPerFiles::IFSelect_DispPerFiles ()    {  }
 
     Handle(IFSelect_IntParam)  IFSelect_DispPerFiles::Count () const 

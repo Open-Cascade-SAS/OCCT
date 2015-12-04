@@ -173,7 +173,7 @@ protected:
 
 // Declaration of CASCADE RTTI
 public:
-  DEFINE_STANDARD_RTTI (NCollection_AccAllocator, NCollection_BaseAllocator)
+  DEFINE_STANDARD_RTTIEXT(NCollection_AccAllocator,NCollection_BaseAllocator)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

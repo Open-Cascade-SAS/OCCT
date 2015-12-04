@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TestTopOpeDraw_DrawableC3D,DrawTrSurf_Curve)
+  DEFINE_STANDARD_RTTIEXT(TestTopOpeDraw_DrawableC3D,DrawTrSurf_Curve)
 
 protected:
 

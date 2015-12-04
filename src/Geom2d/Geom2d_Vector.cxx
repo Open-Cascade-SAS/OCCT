@@ -21,6 +21,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Vector,Geom2d_Geometry)
+
 typedef Geom2d_Vector         Vector;
 typedef gp_Ax2d  Ax2d;
 typedef gp_Pnt2d Pnt2d;

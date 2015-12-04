@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_BezierSurface.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierSurface,StepGeom_BSplineSurface)
+
 StepGeom_BezierSurface::StepGeom_BezierSurface ()  {}
 

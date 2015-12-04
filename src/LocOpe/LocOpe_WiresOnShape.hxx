@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(LocOpe_WiresOnShape,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(LocOpe_WiresOnShape,MMgt_TShared)
 
 protected:
 

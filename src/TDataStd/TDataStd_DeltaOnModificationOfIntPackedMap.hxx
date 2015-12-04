@@ -44,7 +44,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataStd_DeltaOnModificationOfIntPackedMap,TDF_DeltaOnModification)
+  DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntPackedMap,TDF_DeltaOnModification)
 
 protected:
 

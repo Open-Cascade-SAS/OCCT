@@ -196,7 +196,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_LengthDimension, AIS_Dimension)
+  DEFINE_STANDARD_RTTIEXT(AIS_LengthDimension,AIS_Dimension)
 
 protected:
 

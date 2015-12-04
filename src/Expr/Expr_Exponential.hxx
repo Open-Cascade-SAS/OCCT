@@ -74,7 +74,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_Exponential,Expr_UnaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_Exponential,Expr_UnaryExpression)
 
 protected:
 

@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_PolyLoop,StepShape_Loop)
+  DEFINE_STANDARD_RTTIEXT(StepShape_PolyLoop,StepShape_Loop)
 
 protected:
 

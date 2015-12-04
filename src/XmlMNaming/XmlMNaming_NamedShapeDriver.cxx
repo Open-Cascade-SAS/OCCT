@@ -34,6 +34,8 @@
 #include <XmlObjMgt_Array1.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMNaming_NamedShapeDriver,XmlMDF_ADriver)
+
 static TNaming_Evolution          EvolutionEnum   (const XmlObjMgt_DOMString&);
 static const XmlObjMgt_DOMString& EvolutionString (const TNaming_Evolution);
 static void                       doTranslate     (const TopoDS_Shape&,

@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_Edge,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Edge,MMgt_TShared)
 
 protected:
 

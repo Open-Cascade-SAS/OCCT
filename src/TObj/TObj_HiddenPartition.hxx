@@ -38,7 +38,7 @@ class TObj_HiddenPartition : public TObj_Partition
   DECLARE_TOBJOCAF_PERSISTENCE(TObj_HiddenPartition,TObj_Partition)
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_HiddenPartition, TObj_Partition)
+  DEFINE_STANDARD_RTTIEXT(TObj_HiddenPartition,TObj_Partition)
 };
 
 //! Define handle class for TObj_HiddenPartition

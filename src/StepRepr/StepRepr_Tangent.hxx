@@ -31,7 +31,7 @@ public:
   
   Standard_EXPORT StepRepr_Tangent();
 
-  DEFINE_STANDARD_RTTI(StepRepr_Tangent, StepRepr_DerivedShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_Tangent,StepRepr_DerivedShapeAspect)
 
 };
 #endif // _StepRepr_Tangent_HeaderFile

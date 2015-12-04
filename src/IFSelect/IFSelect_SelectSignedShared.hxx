@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectSignedShared,IFSelect_SelectExplore)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSignedShared,IFSelect_SelectExplore)
 
 protected:
 

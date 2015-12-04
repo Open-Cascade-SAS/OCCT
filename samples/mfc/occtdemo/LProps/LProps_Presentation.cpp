@@ -145,7 +145,7 @@ void LProps_Presentation::sampleBezierSurface()
     sizeof(aPoints)/(sizeof(Standard_Real)*2), aPoints);
 }
 
-void LProps_Presentation::showCurveLProps (Handle_Geom_Curve theCurve,
+void LProps_Presentation::showCurveLProps (Handle(Geom_Curve) theCurve,
                                            const Standard_CString theName,
                                            const Standard_Integer theNbPoints,
                                            const Standard_Real thePoints[])
@@ -283,7 +283,7 @@ void LProps_Presentation::showCurveLProps (Handle_Geom_Curve theCurve,
   }
 }
 
-void LProps_Presentation::showSurfaceLProps (Handle_Geom_Surface theSurface,
+void LProps_Presentation::showSurfaceLProps (Handle(Geom_Surface) theSurface,
                                              const Standard_CString theName,
                                              const Standard_Integer theNbPoints,
                                              const Standard_Real thePoints[][2])

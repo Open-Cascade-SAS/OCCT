@@ -23,6 +23,8 @@
 #include <TDataStd_IntegerList.hxx>
 #include <TDF_Attribute.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntegerListDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDataStd_IntegerListDriver
 //purpose  : Constructor

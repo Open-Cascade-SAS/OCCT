@@ -20,6 +20,8 @@
 #include <TopoDS_TFace.hxx>
 #include <TopoDS_TShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TFace,TopoDS_TShape)
+
 //=======================================================================
 //function : ShapeType
 //purpose  : 

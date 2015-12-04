@@ -20,6 +20,8 @@
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorOfTransientProcess,Transfer_ActorOfProcessForTransient)
+
 Transfer_ActorOfTransientProcess::Transfer_ActorOfTransientProcess ()    {  }
 
 Handle(Transfer_Binder)  Transfer_ActorOfTransientProcess::Transfer

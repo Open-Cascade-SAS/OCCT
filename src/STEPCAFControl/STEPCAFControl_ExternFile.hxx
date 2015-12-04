@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPCAFControl_ExternFile,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(STEPCAFControl_ExternFile,MMgt_TShared)
 
 protected:
 

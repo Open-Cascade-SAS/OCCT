@@ -77,7 +77,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_MeshEntityOwner,SelectMgr_EntityOwner)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner,SelectMgr_EntityOwner)
 
 protected:
 

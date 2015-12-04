@@ -21,6 +21,8 @@
 #include <StepData_FieldListN.hxx>
 #include <StepData_Simple.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_Simple,StepData_Described)
+
 StepData_Simple::StepData_Simple (const Handle(StepData_ESDescr)& descr)
     : StepData_Described (descr) , thefields (descr->NbFields())    {  }
 

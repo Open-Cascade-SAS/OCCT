@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeAlgo_ToolContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer,MMgt_TShared)
 
 protected:
 

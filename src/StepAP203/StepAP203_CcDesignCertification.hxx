@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP203_CcDesignCertification,StepBasic_CertificationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignCertification,StepBasic_CertificationAssignment)
 
 protected:
 

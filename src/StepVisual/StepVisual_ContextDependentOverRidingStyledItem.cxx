@@ -19,6 +19,8 @@
 #include <StepVisual_StyledItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ContextDependentOverRidingStyledItem,StepVisual_OverRidingStyledItem)
+
 StepVisual_ContextDependentOverRidingStyledItem::StepVisual_ContextDependentOverRidingStyledItem ()  {}
 
 void StepVisual_ContextDependentOverRidingStyledItem::Init(

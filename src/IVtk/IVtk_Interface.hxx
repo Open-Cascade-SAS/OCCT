@@ -33,7 +33,7 @@ class IVtk_Interface : public Standard_Transient
 
 public:
   typedef Handle(IVtk_Interface) Handle;
-  DEFINE_STANDARD_RTTI(IVtk_Interface, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IVtk_Interface,Standard_Transient)
 
   virtual ~IVtk_Interface() { }
 };

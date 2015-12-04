@@ -19,6 +19,8 @@
 #include <Storage_Schema.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Storage_Root,MMgt_TShared)
+
 Storage_Root::Storage_Root() : myRef(0)
 {
 }

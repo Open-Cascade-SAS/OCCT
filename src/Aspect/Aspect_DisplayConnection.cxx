@@ -17,6 +17,8 @@
 #include <OSD_Environment.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection,Standard_Transient)
+
 // =======================================================================
 // function : Aspect_DisplayConnection
 // purpose  :

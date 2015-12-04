@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_SurfaceSectionField,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionField,MMgt_TShared)
 
 protected:
 

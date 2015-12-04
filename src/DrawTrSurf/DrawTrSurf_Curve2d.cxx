@@ -31,6 +31,8 @@
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Curve2d,DrawTrSurf_Drawable)
+
 static Standard_Real DrawTrSurf_CurveLimit = 400;
 extern Standard_Boolean Draw_Bounds;
 

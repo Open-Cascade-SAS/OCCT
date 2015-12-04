@@ -21,6 +21,8 @@
 #include <StepBasic_ProductOrFormationOrDefinition.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation,MMgt_TShared)
+
 //=======================================================================
 //function : StepBasic_DocumentProductAssociation
 //purpose  : 

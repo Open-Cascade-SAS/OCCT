@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_CurveElementInterval,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementInterval,MMgt_TShared)
 
 protected:
 

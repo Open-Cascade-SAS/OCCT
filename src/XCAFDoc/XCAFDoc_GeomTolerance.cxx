@@ -23,6 +23,8 @@
 #include <TDataStd_Real.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_GeomTolerance,TDF_Attribute)
+
 enum ChildLab
 {
   ChildLab_Type = 1,

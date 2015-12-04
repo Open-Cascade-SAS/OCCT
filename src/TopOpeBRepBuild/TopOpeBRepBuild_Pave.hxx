@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopOpeBRepBuild_Pave,TopOpeBRepBuild_Loop)
+  DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave,TopOpeBRepBuild_Loop)
 
 protected:
 

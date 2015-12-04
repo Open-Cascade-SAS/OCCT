@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepData_GeneralModule,Interface_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(StepData_GeneralModule,Interface_GeneralModule)
 
 protected:
 

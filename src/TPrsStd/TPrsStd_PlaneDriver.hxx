@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_PlaneDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_PlaneDriver,TPrsStd_Driver)
 
 protected:
 

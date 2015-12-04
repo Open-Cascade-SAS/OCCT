@@ -19,6 +19,8 @@
 #include <Standard_Type.hxx>
 #include <StepAP214_Protocol.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_Protocol,StepData_Protocol)
+
 static Standard_CString schemaAP214CD  = "AUTOMOTIVE_DESIGN_CC2 { 1 2 10303 214 -1 1 5 4 }";
 static Standard_CString schemaAP214DIS = "AUTOMOTIVE_DESIGN { 1 2 10303 214 0 1 1 1 }";
 static Standard_CString schemaAP214IS  = "AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }";

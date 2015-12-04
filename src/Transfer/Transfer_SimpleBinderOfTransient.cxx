@@ -18,6 +18,8 @@
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransferFailure.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient,Transfer_Binder)
+
 //  "Handle(Standard_Transient)" : la classe de base pour le Resultat
 Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient () { }
 

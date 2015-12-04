@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MMgt_TShared,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(MMgt_TShared,Standard_Transient)
 
 protected:
 

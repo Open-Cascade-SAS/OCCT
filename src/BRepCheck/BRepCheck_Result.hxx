@@ -73,7 +73,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepCheck_Result,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Result,MMgt_TShared)
 
 protected:
 

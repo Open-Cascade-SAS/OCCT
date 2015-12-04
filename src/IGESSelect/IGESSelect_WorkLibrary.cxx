@@ -44,6 +44,8 @@
 #include <TColStd_HSequenceOfInteger.hxx>
 
 #include <errno.h>
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_WorkLibrary,IFSelect_WorkLibrary)
+
 static int deja = 0;
 static  Handle(IGESData_FileProtocol) IGESProto;
 

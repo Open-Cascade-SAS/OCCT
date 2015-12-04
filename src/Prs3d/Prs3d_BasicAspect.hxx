@@ -37,7 +37,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Prs3d_BasicAspect,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_BasicAspect,MMgt_TShared)
 
 protected:
 

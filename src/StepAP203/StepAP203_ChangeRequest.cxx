@@ -20,6 +20,8 @@
 #include <StepAP203_ChangeRequest.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP203_ChangeRequest,StepBasic_ActionRequestAssignment)
+
 //=======================================================================
 //function : StepAP203_ChangeRequest
 //purpose  : 

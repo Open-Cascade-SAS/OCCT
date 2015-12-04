@@ -188,7 +188,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_AISPresentation,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_AISPresentation,TDF_Attribute)
 
 protected:
 

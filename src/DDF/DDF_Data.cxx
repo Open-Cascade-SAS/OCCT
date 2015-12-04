@@ -33,6 +33,8 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DDF_Data,Draw_Drawable3D)
+
 //=======================================================================
 //function : DDF_Data
 //purpose  : 

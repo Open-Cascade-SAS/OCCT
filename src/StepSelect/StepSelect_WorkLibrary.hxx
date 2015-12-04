@@ -80,7 +80,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepSelect_WorkLibrary,IFSelect_WorkLibrary)
+  DEFINE_STANDARD_RTTIEXT(StepSelect_WorkLibrary,IFSelect_WorkLibrary)
 
 protected:
 

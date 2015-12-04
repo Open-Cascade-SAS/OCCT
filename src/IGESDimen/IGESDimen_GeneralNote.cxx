@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralNote,IGESData_IGESEntity)
+
 IGESDimen_GeneralNote::IGESDimen_GeneralNote ()    {  }
 
     void  IGESDimen_GeneralNote::Init

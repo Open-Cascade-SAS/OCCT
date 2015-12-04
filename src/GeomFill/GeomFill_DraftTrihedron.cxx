@@ -25,6 +25,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_DraftTrihedron,GeomFill_TrihedronLaw)
+
 //=======================================================================
 //function : DDeriv
 //purpose  : computes (F/|F|)''

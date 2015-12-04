@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(NLPlate_HPG0G3Constraint,NLPlate_HPG0G2Constraint)
+  DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0G3Constraint,NLPlate_HPG0G2Constraint)
 
 protected:
 

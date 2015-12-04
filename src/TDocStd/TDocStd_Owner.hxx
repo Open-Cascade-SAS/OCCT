@@ -71,7 +71,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_Owner,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_Owner,TDF_Attribute)
 
 protected:
 

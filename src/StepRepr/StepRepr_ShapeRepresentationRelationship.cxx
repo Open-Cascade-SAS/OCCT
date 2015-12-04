@@ -16,4 +16,6 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeRepresentationRelationship,StepRepr_RepresentationRelationship)
+
 StepRepr_ShapeRepresentationRelationship::StepRepr_ShapeRepresentationRelationship ()    {  }

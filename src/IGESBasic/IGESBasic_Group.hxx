@@ -97,7 +97,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESBasic_Group,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESBasic_Group,IGESData_IGESEntity)
 
 protected:
 

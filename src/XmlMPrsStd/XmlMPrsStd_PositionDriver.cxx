@@ -24,6 +24,8 @@
 #include <XmlObjMgt_Persistent.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(XmlMPrsStd_PositionDriver,XmlMDF_ADriver)
+
 //=======================================================================
 //function : XmlMPrsStd_PositionDriver
 //purpose  : Constructor

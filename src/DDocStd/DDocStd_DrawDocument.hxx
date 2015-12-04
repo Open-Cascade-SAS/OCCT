@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DDocStd_DrawDocument,DDF_Data)
+  DEFINE_STANDARD_RTTIEXT(DDocStd_DrawDocument,DDF_Data)
 
 protected:
 

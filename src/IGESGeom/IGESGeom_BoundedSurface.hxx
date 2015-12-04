@@ -70,7 +70,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_BoundedSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_BoundedSurface,IGESData_IGESEntity)
 
 protected:
 

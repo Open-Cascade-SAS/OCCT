@@ -16,6 +16,8 @@
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DerivedUnit,MMgt_TShared)
+
 StepBasic_DerivedUnit::StepBasic_DerivedUnit  ()    {  }
 
 void  StepBasic_DerivedUnit::Init (const Handle(StepBasic_HArray1OfDerivedUnitElement)& elements)

@@ -68,7 +68,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TransferBRep_TransferResultInfo,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TransferBRep_TransferResultInfo,MMgt_TShared)
 
 protected:
 

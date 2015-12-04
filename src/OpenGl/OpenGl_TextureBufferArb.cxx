@@ -18,6 +18,8 @@
 #include <Standard_Assert.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureBufferArb,OpenGl_VertexBuffer)
+
 // =======================================================================
 // function : OpenGl_TextureBufferArb
 // purpose  :

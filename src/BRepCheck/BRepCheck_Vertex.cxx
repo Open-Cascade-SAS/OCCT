@@ -41,6 +41,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Vertex,BRepCheck_Result)
+
 //=======================================================================
 //function : BRepCheck_Vertex
 //purpose  : 

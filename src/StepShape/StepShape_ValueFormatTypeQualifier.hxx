@@ -50,7 +50,7 @@ public:
     formatType = theFormatType;
   }
 
-  DEFINE_STANDARD_RTTI(StepShape_ValueFormatTypeQualifier, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepShape_ValueFormatTypeQualifier,MMgt_TShared)
   
 private:
   Handle(TCollection_HAsciiString) formatType;

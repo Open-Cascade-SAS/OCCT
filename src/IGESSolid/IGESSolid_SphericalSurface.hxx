@@ -78,7 +78,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSolid_SphericalSurface,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESSolid_SphericalSurface,IGESData_IGESEntity)
 
 protected:
 

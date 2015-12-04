@@ -86,7 +86,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AndroidQt_Window)
+  DEFINE_STANDARD_RTTIEXT(AndroidQt_Window,Aspect_Window)
 
 };
 

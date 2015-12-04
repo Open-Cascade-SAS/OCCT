@@ -138,7 +138,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Dispatch,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Dispatch,MMgt_TShared)
 
 protected:
 

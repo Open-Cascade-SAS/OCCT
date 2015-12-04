@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_OrientedOpenShell,StepShape_OpenShell)
+  DEFINE_STANDARD_RTTIEXT(StepShape_OrientedOpenShell,StepShape_OpenShell)
 
 protected:
 

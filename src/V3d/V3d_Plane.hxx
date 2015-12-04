@@ -96,7 +96,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(V3d_Plane, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(V3d_Plane,MMgt_TShared)
 };
 
 #endif

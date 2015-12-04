@@ -28,6 +28,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Parabola.hxx>
 #include <Geom_Hyperbola.hxx>
+#include <IntPatch_ALine.hxx>
 
 
 static void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,

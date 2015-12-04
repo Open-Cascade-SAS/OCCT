@@ -142,7 +142,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_ElementarySurface,Geom_Surface)
+  DEFINE_STANDARD_RTTIEXT(Geom_ElementarySurface,Geom_Surface)
 
 protected:
 

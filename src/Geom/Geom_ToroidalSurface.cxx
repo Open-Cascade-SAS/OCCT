@@ -35,6 +35,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_ToroidalSurface,Geom_ElementarySurface)
+
 typedef Geom_ToroidalSurface         ToroidalSurface;
 typedef TColStd_Array1OfReal      Array1OfReal;
 typedef gp_Ax1  Ax1;

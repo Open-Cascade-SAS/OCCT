@@ -19,6 +19,8 @@
 #include <Storage_DefaultCallBack.hxx>
 #include <Storage_Schema.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Storage_DefaultCallBack,Storage_CallBack)
+
 Storage_DefaultCallBack::Storage_DefaultCallBack()
 {
 }

@@ -106,7 +106,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_PacketList,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_PacketList,MMgt_TShared)
 
 protected:
 

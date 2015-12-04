@@ -1566,7 +1566,7 @@ public:
 friend class AIS_LocalContext;
 
 
-  DEFINE_STANDARD_RTTI(AIS_InteractiveContext,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(AIS_InteractiveContext,MMgt_TShared)
 
 protected:
 

@@ -113,7 +113,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_Root,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_Root,MMgt_TShared)
 
 protected:
 

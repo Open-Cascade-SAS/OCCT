@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_Polyline,StepGeom_BoundedCurve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_Polyline,StepGeom_BoundedCurve)
 
 protected:
 

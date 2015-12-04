@@ -23,6 +23,8 @@
 #include <Units_ShiftedUnit.hxx>
 #include <Units_Token.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Units_ShiftedUnit,Units_Unit)
+
 //=======================================================================
 //function : Units_ShiftedUnit
 //purpose  : 

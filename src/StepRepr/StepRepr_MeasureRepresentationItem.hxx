@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_MeasureRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_MeasureRepresentationItem,StepRepr_RepresentationItem)
 
 protected:
 

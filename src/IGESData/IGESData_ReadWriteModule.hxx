@@ -93,7 +93,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_ReadWriteModule,Interface_ReaderModule)
+  DEFINE_STANDARD_RTTIEXT(IGESData_ReadWriteModule,Interface_ReaderModule)
 
 protected:
 

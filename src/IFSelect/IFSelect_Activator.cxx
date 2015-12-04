@@ -26,6 +26,8 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Activator,MMgt_TShared)
+
 static Handle(Dico_DictionaryOfInteger) thedico; // = new Dico_DictionaryOfInteger;
 static TColStd_SequenceOfInteger   thenums, themodes;
 static TColStd_SequenceOfTransient theacts;

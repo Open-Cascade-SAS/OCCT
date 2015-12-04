@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Law_Composite,Law_Function)
+  DEFINE_STANDARD_RTTIEXT(Law_Composite,Law_Function)
 
 protected:
 

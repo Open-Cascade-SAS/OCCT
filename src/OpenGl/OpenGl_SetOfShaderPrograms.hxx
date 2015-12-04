@@ -50,7 +50,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI (OpenGl_SetOfShaderPrograms, Standard_Transient)
+  DEFINE_STANDARD_RTTI_INLINE(OpenGl_SetOfShaderPrograms,Standard_Transient)
 
 };
 

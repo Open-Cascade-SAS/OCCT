@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Poly_Polygon2D,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D,MMgt_TShared)
 
 protected:
 

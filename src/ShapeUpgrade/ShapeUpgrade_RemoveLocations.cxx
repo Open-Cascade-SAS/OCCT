@@ -42,6 +42,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations,MMgt_TShared)
+
 //#include <ShapeUpgrade_DataMapOfShapeListOfTransient.hxx>
 //=======================================================================
 //function : ShapeUpgrade_RemoveLocations

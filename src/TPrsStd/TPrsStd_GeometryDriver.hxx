@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TPrsStd_GeometryDriver,TPrsStd_Driver)
+  DEFINE_STANDARD_RTTIEXT(TPrsStd_GeometryDriver,TPrsStd_Driver)
 
 protected:
 

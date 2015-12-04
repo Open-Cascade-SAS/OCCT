@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_Protocol,Interface_Protocol)
+  DEFINE_STANDARD_RTTIEXT(IGESData_Protocol,Interface_Protocol)
 
 protected:
 

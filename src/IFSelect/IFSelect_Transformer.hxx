@@ -100,7 +100,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Transformer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Transformer,MMgt_TShared)
 
 protected:
 

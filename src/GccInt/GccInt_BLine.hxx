@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GccInt_BLine,GccInt_Bisec)
+  DEFINE_STANDARD_RTTIEXT(GccInt_BLine,GccInt_Bisec)
 
 protected:
 

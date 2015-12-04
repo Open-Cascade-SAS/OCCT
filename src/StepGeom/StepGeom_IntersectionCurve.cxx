@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepGeom_IntersectionCurve.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_IntersectionCurve,StepGeom_SurfaceCurve)
+
 StepGeom_IntersectionCurve::StepGeom_IntersectionCurve ()  {}
 

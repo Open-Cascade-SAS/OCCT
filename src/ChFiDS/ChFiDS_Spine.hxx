@@ -229,7 +229,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ChFiDS_Spine,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ChFiDS_Spine,MMgt_TShared)
 
 protected:
 

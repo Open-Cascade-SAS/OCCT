@@ -39,7 +39,7 @@ public:
   
   Standard_EXPORT Handle(StepBasic_LengthMeasureWithUnit) GetLengthMeasureWithUnit() const;
 
-  DEFINE_STANDARD_RTTI(StepRepr_ReprItemAndLengthMeasureWithUnit,StepRepr_ReprItemAndMeasureWithUnit)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndLengthMeasureWithUnit,StepRepr_ReprItemAndMeasureWithUnit)
 
 private:
   Handle(StepBasic_LengthMeasureWithUnit) myLengthMeasureWithUnit;

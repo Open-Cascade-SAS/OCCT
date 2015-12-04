@@ -15,6 +15,8 @@
 
 #include <IVtk_Interface.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IVtk_Interface,Standard_Transient)
+
 // Handle implementation
 
 

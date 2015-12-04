@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SetVersion5,IGESSelect_ModelModifier)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SetVersion5,IGESSelect_ModelModifier)
 
 protected:
 

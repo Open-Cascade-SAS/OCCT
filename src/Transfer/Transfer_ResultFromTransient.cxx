@@ -20,6 +20,8 @@
 #include <Transfer_ResultFromTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_ResultFromTransient,MMgt_TShared)
+
 static Handle(Interface_Check) voidcheck = new Interface_Check;
 
     Transfer_ResultFromTransient::Transfer_ResultFromTransient ()    {  }

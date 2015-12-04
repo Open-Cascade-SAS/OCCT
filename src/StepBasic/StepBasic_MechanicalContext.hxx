@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_MechanicalContext,StepBasic_ProductContext)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_MechanicalContext,StepBasic_ProductContext)
 
 protected:
 

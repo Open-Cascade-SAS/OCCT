@@ -54,6 +54,8 @@
 #include <Standard_Type.hxx>
 #include <StdFail_NotDone.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Bisector_BisecAna,Bisector_Curve)
+
 static Standard_Boolean Degenerate(Handle(GccInt_Bisec)& aBisector,
 				   const Standard_Real   Tolerance);
 

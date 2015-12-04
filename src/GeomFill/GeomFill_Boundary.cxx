@@ -20,6 +20,8 @@
 #include <gp_Vec.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Boundary,MMgt_TShared)
+
 //=======================================================================
 //function : GeomFill_Boundary
 //purpose  : 

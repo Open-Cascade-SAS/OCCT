@@ -19,6 +19,8 @@
 #include <StepData_FileProtocol.hxx>
 #include <StepData_Protocol.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_FileProtocol,StepData_Protocol)
+
 //static TCollection_AsciiString  thename("");
 static Standard_CString  thename = "";
 

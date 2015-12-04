@@ -132,7 +132,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_CurveAndTrihedron,GeomFill_LocationLaw)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_CurveAndTrihedron,GeomFill_LocationLaw)
 
 protected:
 

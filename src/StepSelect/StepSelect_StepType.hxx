@@ -64,7 +64,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepSelect_StepType,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(StepSelect_StepType,IFSelect_Signature)
 
 protected:
 

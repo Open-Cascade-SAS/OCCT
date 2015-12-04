@@ -19,6 +19,8 @@
 #include <StepElement_MeasureOrUnspecifiedValueMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepElement_MeasureOrUnspecifiedValueMember,StepData_SelectNamed)
+
 static Standard_CString aContextDependedMeasure = "CONTEXT_DEPENDENT_MEASURE";
 static Standard_CString anUnspecifiedValue = "UNSPECIFIED_VALUE";
 

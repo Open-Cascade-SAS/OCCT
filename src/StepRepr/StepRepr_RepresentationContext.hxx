@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_RepresentationContext,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationContext,MMgt_TShared)
 
 protected:
 

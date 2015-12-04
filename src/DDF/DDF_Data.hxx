@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DDF_Data,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(DDF_Data,Draw_Drawable3D)
 
 protected:
 

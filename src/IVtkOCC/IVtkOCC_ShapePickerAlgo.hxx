@@ -96,7 +96,7 @@ public: //! @name Obtain picking results
 
 public:
 
-  DEFINE_STANDARD_RTTI(IVtkOCC_ShapePickerAlgo, IVtk_IShapePickerAlgo)
+  DEFINE_STANDARD_RTTIEXT(IVtkOCC_ShapePickerAlgo,IVtk_IShapePickerAlgo)
 
 private:
 

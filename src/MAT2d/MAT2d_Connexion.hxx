@@ -108,7 +108,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT2d_Connexion,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT2d_Connexion,MMgt_TShared)
 
 protected:
 

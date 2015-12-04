@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_ContractType,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_ContractType,MMgt_TShared)
 
 protected:
 

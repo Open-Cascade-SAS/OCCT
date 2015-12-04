@@ -66,7 +66,7 @@ Standard_EXPORT ~TOcafFunction_CutDriver();
 
  // Type management
  //
- //Standard_EXPORT friend Handle_Standard_Type& TOcafFunction_CutDriver_Type_();
+ //Standard_EXPORT friend Handle(Standard_Type)& TOcafFunction_CutDriver_Type_();
  Standard_EXPORT const Handle(TOcafFunction_CutDriver) DownCast(const Handle(Standard_Transient)& AnObject); 
  Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
  Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;

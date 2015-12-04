@@ -16,6 +16,8 @@
 #include <StepVisual_PresentationStyleByContext.hxx>
 #include <StepVisual_StyleContextSelect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationStyleByContext,StepVisual_PresentationStyleAssignment)
+
 StepVisual_PresentationStyleByContext::StepVisual_PresentationStyleByContext ()  {}
 
 void StepVisual_PresentationStyleByContext::Init(

@@ -95,7 +95,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeUpgrade_SplitSurface,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurface,MMgt_TShared)
 
 protected:
 

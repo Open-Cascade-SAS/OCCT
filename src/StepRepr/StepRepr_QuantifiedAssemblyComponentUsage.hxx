@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_QuantifiedAssemblyComponentUsage,StepRepr_AssemblyComponentUsage)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_QuantifiedAssemblyComponentUsage,StepRepr_AssemblyComponentUsage)
 
 protected:
 

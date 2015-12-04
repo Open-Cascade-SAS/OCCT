@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDefs_GenericData,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDefs_GenericData,IGESData_IGESEntity)
 
 protected:
 

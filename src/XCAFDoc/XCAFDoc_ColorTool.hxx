@@ -187,7 +187,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_ColorTool,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_ColorTool,TDF_Attribute)
 
 protected:
 

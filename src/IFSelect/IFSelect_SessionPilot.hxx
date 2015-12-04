@@ -213,7 +213,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SessionPilot,IFSelect_Activator)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SessionPilot,IFSelect_Activator)
 
 protected:
 

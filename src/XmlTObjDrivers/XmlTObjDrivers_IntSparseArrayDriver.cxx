@@ -25,6 +25,8 @@
 #include <TDF_Tool.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_IntSparseArrayDriver,XmlMDF_ADriver)
+
 #define ITEM_ID "itemId_"
 #define ITEM_VALUE "itemValue_"
 

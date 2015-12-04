@@ -1076,7 +1076,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_WorkSession,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_WorkSession,MMgt_TShared)
 
 protected:
 

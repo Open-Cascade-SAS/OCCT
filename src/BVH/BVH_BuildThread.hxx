@@ -72,7 +72,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(BVH_BuildThread, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BVH_BuildThread,Standard_Transient)
 };
 
 DEFINE_STANDARD_HANDLE (BVH_BuildThread, Standard_Transient)

@@ -26,6 +26,8 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDF_RelocationTable,MMgt_TShared)
+
 //=======================================================================
 //function : TDF_RelocationTable
 //purpose  : 

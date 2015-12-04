@@ -64,7 +64,7 @@ public:
     myModifierValue = theModifierValue;
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_DatumReferenceModifierWithValue, MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue,MMgt_TShared)
 
 private: 
   StepDimTol_DatumReferenceModifierType myModifierType;

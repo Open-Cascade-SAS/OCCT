@@ -16,6 +16,8 @@
 #include <StepAP214_AppliedPresentedItem.hxx>
 #include <StepAP214_PresentedItemSelect.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedPresentedItem,StepVisual_PresentedItem)
+
 StepAP214_AppliedPresentedItem::StepAP214_AppliedPresentedItem ()  {}
 
 void StepAP214_AppliedPresentedItem::Init(

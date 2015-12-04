@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(GeomFill_SimpleBound,GeomFill_Boundary)
+  DEFINE_STANDARD_RTTIEXT(GeomFill_SimpleBound,GeomFill_Boundary)
 
 protected:
 

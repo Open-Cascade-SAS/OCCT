@@ -63,7 +63,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PointStyle,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PointStyle,MMgt_TShared)
 
 protected:
 

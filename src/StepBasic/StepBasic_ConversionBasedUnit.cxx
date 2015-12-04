@@ -18,6 +18,8 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnit,StepBasic_NamedUnit)
+
 StepBasic_ConversionBasedUnit::StepBasic_ConversionBasedUnit ()  {}
 
 void StepBasic_ConversionBasedUnit::Init(

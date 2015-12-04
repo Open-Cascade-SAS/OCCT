@@ -19,6 +19,8 @@
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Shape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MoniTool_SignShape,MoniTool_SignText)
+
 MoniTool_SignShape::MoniTool_SignShape ()    {  }
 
     Standard_CString  MoniTool_SignShape::Name () const

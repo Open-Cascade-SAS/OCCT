@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_AnnotationText,StepRepr_MappedItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationText,StepRepr_MappedItem)
 
 protected:
 

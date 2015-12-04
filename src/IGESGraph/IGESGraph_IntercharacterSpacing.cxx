@@ -19,6 +19,8 @@
 #include <IGESGraph_IntercharacterSpacing.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_IntercharacterSpacing,IGESData_IGESEntity)
+
 IGESGraph_IntercharacterSpacing::IGESGraph_IntercharacterSpacing ()    {  }
 
     void IGESGraph_IntercharacterSpacing::Init

@@ -20,6 +20,8 @@
 #include <StepShape_OrientedClosedShell.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepShape_FacetedBrepAndBrepWithVoids,StepShape_ManifoldSolidBrep)
+
 StepShape_FacetedBrepAndBrepWithVoids::StepShape_FacetedBrepAndBrepWithVoids ()  {}
 
 void StepShape_FacetedBrepAndBrepWithVoids::Init

@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Equal,Expr_SingleRelation)
+
 Expr_Equal::Expr_Equal (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {
   SetFirstMember(exp1);

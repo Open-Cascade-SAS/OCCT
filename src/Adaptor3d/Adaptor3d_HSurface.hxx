@@ -164,7 +164,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Adaptor3d_HSurface,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_HSurface,MMgt_TShared)
 
 protected:
 

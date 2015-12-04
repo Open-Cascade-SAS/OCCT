@@ -61,7 +61,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PresentationLayerAssignment,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerAssignment,MMgt_TShared)
 
 protected:
 

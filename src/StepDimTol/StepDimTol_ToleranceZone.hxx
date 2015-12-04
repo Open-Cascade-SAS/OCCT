@@ -90,7 +90,7 @@ public:
     myForm = theForm;
   }
   
-  DEFINE_STANDARD_RTTI(StepDimTol_ToleranceZone, StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZone,StepRepr_ShapeAspect)
 
 private: 
   Handle(StepDimTol_HArray1OfToleranceZoneTarget) myDefiningTolerance;

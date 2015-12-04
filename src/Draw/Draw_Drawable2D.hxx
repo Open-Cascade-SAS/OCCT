@@ -40,7 +40,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Drawable2D,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Drawable2D,Draw_Drawable3D)
 
 protected:
 

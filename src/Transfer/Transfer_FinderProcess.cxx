@@ -23,6 +23,8 @@
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_TransientMapper.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Transfer_FinderProcess,Transfer_ProcessForFinder)
+
 Transfer_FinderProcess::Transfer_FinderProcess (const Standard_Integer nb)
     : Transfer_ProcessForFinder (nb)    {  }
  

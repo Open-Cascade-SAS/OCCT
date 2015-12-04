@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_DefinitionalRepresentationAndShapeRepresentation,StepRepr_DefinitionalRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_DefinitionalRepresentationAndShapeRepresentation,StepRepr_DefinitionalRepresentation)
 
 protected:
 

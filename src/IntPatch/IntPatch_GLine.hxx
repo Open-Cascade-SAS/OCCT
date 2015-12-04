@@ -175,7 +175,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IntPatch_GLine,IntPatch_Line)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_GLine,IntPatch_Line)
 
 protected:
 

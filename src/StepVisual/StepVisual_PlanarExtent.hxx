@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PlanarExtent,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PlanarExtent,StepGeom_GeometricRepresentationItem)
 
 protected:
 

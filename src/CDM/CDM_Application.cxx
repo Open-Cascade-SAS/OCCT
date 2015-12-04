@@ -25,6 +25,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(CDM_Application,Standard_Transient)
+
 //=======================================================================
 //function : SetDocumentVersion
 //purpose  : 

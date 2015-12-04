@@ -17,7 +17,7 @@ class ScaleDlg : public CDialog
 {
 // Construction
 public:
-	ScaleDlg(Handle_V3d_View Current_V3d_View, CViewer3dView* pView, CWnd* pParent = NULL); 
+	ScaleDlg(Handle(V3d_View) Current_V3d_View, CViewer3dView* pView, CWnd* pParent = NULL); 
 
 // Dialog Data
 	//{{AFX_DATA(ScaleDlg)
@@ -53,7 +53,7 @@ protected:
 
 private:
 
-	Handle_V3d_View myCurrent_V3d_View;
+	Handle(V3d_View) myCurrent_V3d_View;
 	CViewer3dView* myView;
 };
 

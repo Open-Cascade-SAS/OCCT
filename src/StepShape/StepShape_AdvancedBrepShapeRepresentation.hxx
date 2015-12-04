@@ -39,7 +39,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_AdvancedBrepShapeRepresentation,StepShape_ShapeRepresentation)
+  DEFINE_STANDARD_RTTIEXT(StepShape_AdvancedBrepShapeRepresentation,StepShape_ShapeRepresentation)
 
 protected:
 

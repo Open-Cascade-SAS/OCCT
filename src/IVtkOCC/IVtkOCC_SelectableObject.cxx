@@ -23,6 +23,8 @@
 #include <StdSelect_BRepSelectionTool.hxx>
 #include <TopoDS_Iterator.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_SelectableObject,SelectMgr_SelectableObject)
+
 // Handle implementation
 
 

@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_ShapeAspectTransition,StepRepr_ShapeAspectRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspectTransition,StepRepr_ShapeAspectRelationship)
 
 protected:
 

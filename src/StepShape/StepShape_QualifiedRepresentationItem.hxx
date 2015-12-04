@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_QualifiedRepresentationItem,StepRepr_RepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_QualifiedRepresentationItem,StepRepr_RepresentationItem)
 
 protected:
 

@@ -104,7 +104,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Poly_PolygonOnTriangulation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation,MMgt_TShared)
 
 protected:
 

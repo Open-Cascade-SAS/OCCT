@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PresentationSize,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationSize,MMgt_TShared)
 
 protected:
 

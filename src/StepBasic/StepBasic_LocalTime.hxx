@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepBasic_LocalTime,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(StepBasic_LocalTime,MMgt_TShared)
 
 protected:
 

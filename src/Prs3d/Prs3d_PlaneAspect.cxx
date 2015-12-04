@@ -17,6 +17,8 @@
 #include <Prs3d_PlaneAspect.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PlaneAspect,Prs3d_BasicAspect)
+
 Prs3d_PlaneAspect::Prs3d_PlaneAspect()
 {
   myEdgesAspect = new Prs3d_LineAspect(Quantity_NOC_GREEN,Aspect_TOL_SOLID,1.);

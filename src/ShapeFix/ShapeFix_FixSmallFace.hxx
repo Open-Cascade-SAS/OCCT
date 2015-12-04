@@ -87,7 +87,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeFix_FixSmallFace,ShapeFix_Root)
+  DEFINE_STANDARD_RTTIEXT(ShapeFix_FixSmallFace,ShapeFix_Root)
 
 protected:
 

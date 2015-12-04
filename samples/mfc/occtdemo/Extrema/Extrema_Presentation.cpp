@@ -199,7 +199,7 @@ void Extrema_Presentation::sampleCurveSur()
   TCollection_AsciiString aText(
     "  // the curve - first object for finding the extrema." EOL
     "  Handle(Geom_Curve) aCurve;" EOL
-    "  Handle_TColgp_HArray1OfPnt aPoles = new TColgp_HArray1OfPnt(1, 4);" EOL EOL
+    "  Handle(TColgp_HArray1OfPnt) aPoles = new TColgp_HArray1OfPnt(1, 4);" EOL EOL
 
     "  // points to build the curves" EOL
     "  Standard_Real a[][3] = {{2,1,10},{0,12,0},{5,6,0},{0,10,11}};  " EOL EOL
@@ -239,7 +239,7 @@ void Extrema_Presentation::sampleCurveSur()
   
   // the curve - first object for finding the extrema.
   Handle(Geom_Curve) aCurve;
-  Handle_TColgp_HArray1OfPnt aPoles = new TColgp_HArray1OfPnt(1, 4); 
+  Handle(TColgp_HArray1OfPnt) aPoles = new TColgp_HArray1OfPnt(1, 4); 
 
   // points to build the curves
   Standard_Real a[][3] = {{2,1,10},{0,12,0},{5,6,0},{0,10,11}};  
@@ -429,7 +429,7 @@ void Extrema_Presentation::sampleShellShell()
     "    for (Standard_Integer j=0; j < 3; j++)" EOL
     "      aSurPoles(i+1,j+1) = gp_Pnt (aSurCoords[i*3+j][0]*10-250, aSurCoords[i*3+j][1]*10-250, aSurCoords[i*3+j][2]*10-350);" EOL EOL
 
-    "  Handle_Geom_BezierSurface aSurface = new Geom_BezierSurface(aSurPoles);" EOL EOL
+    "  Handle(Geom_BezierSurface) aSurface = new Geom_BezierSurface(aSurPoles);" EOL EOL
 
     "  // creating a TopoDS_Shell from Geom_Surface" EOL 
     "  TopoDS_Shell aShape2 = BRepBuilderAPI_MakeShell(aSurface);" EOL EOL
@@ -473,7 +473,7 @@ void Extrema_Presentation::sampleShellShell()
     for (Standard_Integer j=0; j < 3; j++)
       aSurPoles(i+1,j+1) = gp_Pnt (aSurCoords[i*3+j][0]*10-250, aSurCoords[i*3+j][1]*10-250, aSurCoords[i*3+j][2]*10-350);
 
-  Handle_Geom_BezierSurface aSurface = new Geom_BezierSurface(aSurPoles);
+  Handle(Geom_BezierSurface) aSurface = new Geom_BezierSurface(aSurPoles);
 
   // creating a TopoDS_Shell from Geom_Surface
   TopoDS_Shell aShape2 = BRepBuilderAPI_MakeShell(aSurface);
@@ -535,10 +535,10 @@ void Extrema_Presentation::doShapeShapeExtrema(const TopoDS_Shape& theShape1,
     {
       displayExtemaEdge(anExtrema.PointOnShape1(i), anExtrema.PointOnShape2(i));
 
-      Handle_AIS_Shape aSupportShape1 = new AIS_Shape(anExtrema.SupportOnShape1(i));
+      Handle(AIS_Shape) aSupportShape1 = new AIS_Shape(anExtrema.SupportOnShape1(i));
       aSupportShape1->SetMaterial(Graphic3d_NOM_PLASTIC);
       aSupportShape1->SetColor(Quantity_NOC_GRAY97);
-      Handle_AIS_Shape aSupportShape2 = new AIS_Shape(anExtrema.SupportOnShape2(i));
+      Handle(AIS_Shape) aSupportShape2 = new AIS_Shape(anExtrema.SupportOnShape2(i));
       aSupportShape2->SetMaterial(Graphic3d_NOM_PLASTIC);
       aSupportShape2->SetColor(Quantity_NOC_GRAY97);
       getAISContext()->Display(aSupportShape1, Standard_False);

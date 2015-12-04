@@ -43,6 +43,8 @@
 #include <TopoDS.hxx>
 #include <UnitsAPI.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Axis,AIS_InteractiveObject)
+
 //=======================================================================
 //function : AIS_Axis
 //purpose  :

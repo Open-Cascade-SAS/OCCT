@@ -111,7 +111,7 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
 
  public:
 // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI (NCollection_IncAllocator, NCollection_BaseAllocator)
+  DEFINE_STANDARD_RTTIEXT(NCollection_IncAllocator,NCollection_BaseAllocator)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

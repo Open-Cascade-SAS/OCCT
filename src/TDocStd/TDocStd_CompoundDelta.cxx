@@ -18,6 +18,8 @@
 #include <TDocStd_CompoundDelta.hxx>
 #include <TDocStd_Document.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_CompoundDelta,TDF_Delta)
+
 //=======================================================================
 //function : TDocStd_CompoundDelta
 //purpose  : 

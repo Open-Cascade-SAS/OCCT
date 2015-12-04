@@ -131,7 +131,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Approx_SweepFunction,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Approx_SweepFunction,MMgt_TShared)
 
 protected:
 

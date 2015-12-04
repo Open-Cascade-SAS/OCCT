@@ -18,3 +18,5 @@
 #include <FEmTool_SparseMatrix.hxx>
 #include <Standard_Type.hxx>
 #include <StdFail_NotDone.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(FEmTool_SparseMatrix,MMgt_TShared)

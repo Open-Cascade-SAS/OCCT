@@ -29,6 +29,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_Sinh,Expr_UnaryExpression)
+
 Expr_Sinh::Expr_Sinh(const Handle(Expr_GeneralExpression)& exp)
 {
   CreateOperand(exp);

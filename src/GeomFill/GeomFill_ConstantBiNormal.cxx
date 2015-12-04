@@ -28,6 +28,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_ConstantBiNormal,GeomFill_TrihedronLaw)
+
 //=======================================================================
 //function : FDeriv
 //purpose  : computes (F/|F|)'

@@ -31,6 +31,8 @@
 #include <TopExp_Explorer.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(MeshTest_DrawableMesh,Draw_Drawable3D)
+
 typedef NCollection_Map<BRepMesh_Edge> BRepMesh_MapOfLinks;
 
 static inline void addLink(const Standard_Integer theIndex1,

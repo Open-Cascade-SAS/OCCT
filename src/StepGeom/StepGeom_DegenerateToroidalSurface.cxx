@@ -17,6 +17,8 @@
 #include <StepGeom_DegenerateToroidalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_DegenerateToroidalSurface,StepGeom_ToroidalSurface)
+
 StepGeom_DegenerateToroidalSurface::StepGeom_DegenerateToroidalSurface ()  {}
 
 void StepGeom_DegenerateToroidalSurface::Init(

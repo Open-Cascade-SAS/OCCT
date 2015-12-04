@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XmlMPrsStd_AISPresentationDriver,XmlMDF_ADriver)
+  DEFINE_STANDARD_RTTIEXT(XmlMPrsStd_AISPresentationDriver,XmlMDF_ADriver)
 
 protected:
 

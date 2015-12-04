@@ -107,7 +107,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepElement_CurveElementSectionDerivedDefinitions,StepElement_CurveElementSectionDefinition)
+  DEFINE_STANDARD_RTTIEXT(StepElement_CurveElementSectionDerivedDefinitions,StepElement_CurveElementSectionDefinition)
 
 protected:
 

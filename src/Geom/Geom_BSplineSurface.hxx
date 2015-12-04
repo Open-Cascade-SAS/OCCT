@@ -1195,7 +1195,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_BSplineSurface,Geom_BoundedSurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_BSplineSurface,Geom_BoundedSurface)
 
 protected:
 

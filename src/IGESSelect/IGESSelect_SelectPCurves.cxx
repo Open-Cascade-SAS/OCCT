@@ -31,6 +31,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectPCurves,IFSelect_SelectExplore)
+
 IGESSelect_SelectPCurves::IGESSelect_SelectPCurves
   (const Standard_Boolean basic)
     : IFSelect_SelectExplore (-1) , thebasic (basic)    {  }

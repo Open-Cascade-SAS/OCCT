@@ -33,6 +33,6 @@ public:
   //! Empty constructor
   Standard_EXPORT StepDimTol_DatumReferenceElement();
 
-  DEFINE_STANDARD_RTTI(StepDimTol_DatumReferenceElement, StepDimTol_GeneralDatumReference)
+  DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceElement,StepDimTol_GeneralDatumReference)
 };
 #endif // _StepDimTol_DatumReferenceElement_HeaderFile

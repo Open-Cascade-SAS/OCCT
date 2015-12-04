@@ -49,7 +49,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_ParametricCurve3dElementCoordinateDirection,StepFEA_FeaRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_ParametricCurve3dElementCoordinateDirection,StepFEA_FeaRepresentationItem)
 
 protected:
 

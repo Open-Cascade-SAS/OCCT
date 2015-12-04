@@ -242,7 +242,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_Document,CDM_Document)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_Document,CDM_Document)
 
 protected:
 

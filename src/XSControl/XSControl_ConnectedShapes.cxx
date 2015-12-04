@@ -25,6 +25,8 @@
 #include <XSControl_ConnectedShapes.hxx>
 #include <XSControl_TransferReader.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XSControl_ConnectedShapes,IFSelect_SelectExplore)
+
 XSControl_ConnectedShapes::XSControl_ConnectedShapes ()
     : IFSelect_SelectExplore (1)    {  }
 

@@ -23,6 +23,8 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepData_ReadWriteModule,Interface_ReaderModule)
+
 Standard_Integer  StepData_ReadWriteModule::CaseNum
   (const Handle(Interface_FileReaderData)& data,
    const Standard_Integer num) const

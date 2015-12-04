@@ -54,7 +54,7 @@ public:
   
   Standard_EXPORT Handle(XCAFDimTolObjects_DimensionObject) GetObject() const;
 
-  DEFINE_STANDARD_RTTI(XCAFDoc_Dimension,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Dimension,TDF_Attribute)
 
 };
 

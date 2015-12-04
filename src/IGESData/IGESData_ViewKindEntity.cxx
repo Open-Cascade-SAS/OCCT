@@ -16,6 +16,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESData_ViewKindEntity,IGESData_IGESEntity)
+
 // ViewKindEntity ne sert qu'au controle de type (entite View du directory part
 // qui peut etre une Vue Simple ou une Liste de Vue
 // Vue Simple doit implementer IsSingle a Standard_True, Liste de Vue a Standard_False

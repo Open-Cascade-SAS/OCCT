@@ -151,7 +151,7 @@ const Handle(TOcafFunction_CutDriver) TOcafFunction_CutDriver::DownCast(const Ha
 
   if (!AnObject.IsNull()) {
      if (AnObject->IsKind(STANDARD_TYPE(TOcafFunction_CutDriver))) {
-       _anOtherObject = Handle(TOcafFunction_CutDriver)((Handle(TOcafFunction_CutDriver)&)AnObject);
+       _anOtherObject = Handle(TOcafFunction_CutDriver)::DownCast (AnObject);
      }
   }
 

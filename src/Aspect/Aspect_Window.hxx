@@ -117,7 +117,7 @@ public:
   //! Returns native Window FB config (GLXFBConfig on Xlib)
   Standard_EXPORT virtual Aspect_FBConfig NativeFBConfig() const = 0;
 
-  DEFINE_STANDARD_RTTI(Aspect_Window,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Aspect_Window,MMgt_TShared)
 
 protected:
 

@@ -121,7 +121,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_WorkLibrary,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_WorkLibrary,Standard_Transient)
 
 protected:
 

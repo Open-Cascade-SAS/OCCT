@@ -85,7 +85,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Interface_TypedValue,MoniTool_TypedValue)
+  DEFINE_STANDARD_RTTIEXT(Interface_TypedValue,MoniTool_TypedValue)
 
 protected:
 

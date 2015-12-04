@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_SelectFromDrawing,IFSelect_SelectDeduct)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectFromDrawing,IFSelect_SelectDeduct)
 
 protected:
 

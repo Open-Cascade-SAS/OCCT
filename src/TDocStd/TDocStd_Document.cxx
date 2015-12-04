@@ -40,6 +40,8 @@
 #include <TDocStd_XLink.hxx>
 #include <TDocStd_XLinkIterator.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Document,CDM_Document)
+
 // List should have a RemoveLast...
 #define TDocStd_List_RemoveLast(theList) \
 TDF_ListIteratorOfDeltaList it(theList); \

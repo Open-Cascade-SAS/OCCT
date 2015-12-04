@@ -17,6 +17,8 @@
 #include <StepGeom_Placement.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Placement,StepGeom_GeometricRepresentationItem)
+
 StepGeom_Placement::StepGeom_Placement ()  {}
 
 void StepGeom_Placement::Init(

@@ -57,6 +57,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <UnitsAPI.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AIS_Trihedron,AIS_InteractiveObject)
+
 //=======================================================================
 //function : AIS_Trihedron
 //purpose  : 

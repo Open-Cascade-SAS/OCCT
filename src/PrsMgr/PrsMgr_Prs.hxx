@@ -65,7 +65,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(PrsMgr_Prs,Prs3d_Presentation)
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_Prs,Prs3d_Presentation)
 
 protected:
 

@@ -125,7 +125,7 @@ const Handle(TOcafFunction_CylDriver) TOcafFunction_CylDriver::DownCast(const Ha
 
   if (!AnObject.IsNull()) {
      if (AnObject->IsKind(STANDARD_TYPE(TOcafFunction_CylDriver))) {
-       _anOtherObject = Handle(TOcafFunction_CylDriver)((Handle(TOcafFunction_CylDriver)&)AnObject);
+       _anOtherObject = Handle(TOcafFunction_CylDriver)::DownCast (AnObject);
      }
   }
 

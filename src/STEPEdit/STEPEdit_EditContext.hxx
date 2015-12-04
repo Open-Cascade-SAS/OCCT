@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(STEPEdit_EditContext,IFSelect_Editor)
+  DEFINE_STANDARD_RTTIEXT(STEPEdit_EditContext,IFSelect_Editor)
 
 protected:
 

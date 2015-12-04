@@ -49,6 +49,8 @@
 #include <TColStd_Array1OfReal.hxx>
 
 #include <stdio.h>
+IMPLEMENT_STANDARD_RTTIEXT(GeomFill_NSections,GeomFill_SectionLaw)
+
 #ifdef OCCT_DEBUG
 # ifdef DRAW
 #  include <DrawTrSurf.hxx>

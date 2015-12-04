@@ -81,7 +81,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Expr_BinaryFunction,Expr_BinaryExpression)
+  DEFINE_STANDARD_RTTIEXT(Expr_BinaryFunction,Expr_BinaryExpression)
 
 protected:
 

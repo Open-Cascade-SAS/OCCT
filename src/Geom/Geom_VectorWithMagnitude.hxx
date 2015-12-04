@@ -145,7 +145,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_VectorWithMagnitude,Geom_Vector)
+  DEFINE_STANDARD_RTTIEXT(Geom_VectorWithMagnitude,Geom_Vector)
 
 protected:
 

@@ -21,6 +21,8 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_CommonDatum,StepRepr_CompositeShapeAspect)
+
 //=======================================================================
 //function : StepDimTol_CommonDatum
 //purpose  : 

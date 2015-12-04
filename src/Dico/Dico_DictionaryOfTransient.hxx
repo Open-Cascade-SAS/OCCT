@@ -130,7 +130,7 @@ public:
 friend class Dico_IteratorOfDictionaryOfTransient;
 
 
-  DEFINE_STANDARD_RTTI(Dico_DictionaryOfTransient,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(Dico_DictionaryOfTransient,MMgt_TShared)
 
 protected:
 

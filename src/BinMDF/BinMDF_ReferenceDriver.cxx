@@ -21,6 +21,8 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Reference.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ReferenceDriver,BinMDF_ADriver)
+
 //=======================================================================
 //function : BinMDF_ReferenceDriver
 //purpose  : Constructor

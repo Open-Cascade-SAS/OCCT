@@ -141,7 +141,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESDimen_GeneralNote,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralNote,IGESData_IGESEntity)
 
 protected:
 

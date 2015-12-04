@@ -109,7 +109,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Aspect_Grid,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Aspect_Grid,MMgt_TShared)
 
 protected:
 

@@ -23,6 +23,8 @@
 #include <IGESSolid_Block.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Block,IGESData_IGESEntity)
+
 IGESSolid_Block::IGESSolid_Block ()    {  }
 
 

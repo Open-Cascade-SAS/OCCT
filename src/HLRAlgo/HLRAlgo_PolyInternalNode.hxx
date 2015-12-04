@@ -45,7 +45,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRAlgo_PolyInternalNode,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalNode,MMgt_TShared)
 
 protected:
 

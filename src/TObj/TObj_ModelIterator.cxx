@@ -20,6 +20,8 @@
 #include <TObj_Model.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(TObj_ModelIterator,TObj_ObjectIterator)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

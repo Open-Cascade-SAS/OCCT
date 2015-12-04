@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_TransientListBinder,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_TransientListBinder,Transfer_Binder)
 
 protected:
 

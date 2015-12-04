@@ -85,7 +85,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_Act,IFSelect_Activator)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_Act,IFSelect_Activator)
 
 protected:
 

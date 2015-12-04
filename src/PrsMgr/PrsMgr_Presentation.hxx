@@ -69,7 +69,7 @@ friend class PrsMgr_PresentableObject;
 friend class PrsMgr_Prs;
 
 
-  DEFINE_STANDARD_RTTI(PrsMgr_Presentation,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(PrsMgr_Presentation,MMgt_TShared)
 
 protected:
 

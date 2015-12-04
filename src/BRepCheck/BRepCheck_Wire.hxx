@@ -114,7 +114,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepCheck_Wire,BRepCheck_Result)
+  DEFINE_STANDARD_RTTIEXT(BRepCheck_Wire,BRepCheck_Result)
 
 protected:
 

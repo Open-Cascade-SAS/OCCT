@@ -15,5 +15,7 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_CameraUsage.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraUsage,StepRepr_RepresentationMap)
+
 StepVisual_CameraUsage::StepVisual_CameraUsage ()  {}
 

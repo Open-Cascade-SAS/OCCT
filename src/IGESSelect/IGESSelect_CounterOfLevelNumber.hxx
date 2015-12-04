@@ -90,7 +90,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_CounterOfLevelNumber,IFSelect_SignCounter)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_CounterOfLevelNumber,IFSelect_SignCounter)
 
 protected:
 

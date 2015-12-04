@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Drawable3D,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Draw_Drawable3D,MMgt_TShared)
 
 protected:
 

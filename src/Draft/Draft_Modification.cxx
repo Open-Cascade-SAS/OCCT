@@ -55,6 +55,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Draft_Modification,BRepTools_Modification)
+
 //=======================================================================
 //function : Draft_Modification
 //purpose  : 

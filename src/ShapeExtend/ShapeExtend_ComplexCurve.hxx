@@ -102,7 +102,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeExtend_ComplexCurve,Geom_Curve)
+  DEFINE_STANDARD_RTTIEXT(ShapeExtend_ComplexCurve,Geom_Curve)
 
 protected:
 

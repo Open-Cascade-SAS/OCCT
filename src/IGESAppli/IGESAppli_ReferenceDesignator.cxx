@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator,IGESData_IGESEntity)
+
 IGESAppli_ReferenceDesignator::IGESAppli_ReferenceDesignator ()    {  }
 
 

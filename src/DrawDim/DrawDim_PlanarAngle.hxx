@@ -52,7 +52,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(DrawDim_PlanarAngle,DrawDim_PlanarDimension)
+  DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarAngle,DrawDim_PlanarDimension)
 
 protected:
 

@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeCustom_Modification,BRepTools_Modification)
+  DEFINE_STANDARD_RTTIEXT(ShapeCustom_Modification,BRepTools_Modification)
 
 protected:
 

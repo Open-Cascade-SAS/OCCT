@@ -31,6 +31,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_EditDirPart,IFSelect_Editor)
+
 static  Handle(Interface_TypedValue) NewDefType(const Standard_CString name)
 {
   Handle(Interface_TypedValue) deftype = new Interface_TypedValue(name,Interface_ParamEnum);

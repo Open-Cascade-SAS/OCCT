@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CurveReplica,StepGeom_Curve)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CurveReplica,StepGeom_Curve)
 
 protected:
 

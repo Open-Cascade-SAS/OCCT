@@ -20,6 +20,8 @@
 #include <SelectMgr_ListIteratorOfListOfFilter.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_CompositionFilter,SelectMgr_Filter)
+
 void SelectMgr_CompositionFilter::Add(const Handle(SelectMgr_Filter)& afilter)
 {
   myFilters.Append(afilter);

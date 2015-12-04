@@ -21,6 +21,8 @@
 
 #include <Select3D_InteriorSensitivePointSet.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet,Select3D_SensitiveSet)
+
 namespace {
 
 // Internal class for creation of planar polygons

@@ -28,6 +28,8 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BSplineSurface,DrawTrSurf_Surface)
+
 DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface (
    const Handle(Geom_BSplineSurface)& S)
    : DrawTrSurf_Surface (S, S->NbUKnots()-2, S->NbVKnots()-2, 

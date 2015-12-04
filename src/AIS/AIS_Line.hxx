@@ -103,7 +103,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_Line,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_Line,AIS_InteractiveObject)
 
 protected:
 

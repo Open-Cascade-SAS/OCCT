@@ -24,6 +24,8 @@
 #include <Prs3d_TextAspect.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Prs3d_Drawer,MMgt_TShared)
+
 // =======================================================================
 // function : Prs3d_Drawer
 // purpose  :

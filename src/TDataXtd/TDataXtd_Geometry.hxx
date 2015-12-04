@@ -158,7 +158,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDataXtd_Geometry,TDF_Attribute)
+  DEFINE_STANDARD_RTTIEXT(TDataXtd_Geometry,TDF_Attribute)
 
 protected:
 

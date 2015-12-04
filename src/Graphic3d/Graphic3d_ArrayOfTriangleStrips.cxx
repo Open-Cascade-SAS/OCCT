@@ -16,6 +16,8 @@
 #include <Graphic3d_ArrayOfTriangleStrips.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfTriangleStrips,Graphic3d_ArrayOfPrimitives)
+
 Graphic3d_ArrayOfTriangleStrips::Graphic3d_ArrayOfTriangleStrips (const Standard_Integer theMaxVertexs,
                                                                   const Standard_Integer theMaxStrips,
                                                                   const Standard_Boolean theHasVNormals,

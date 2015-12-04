@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeProcess_StackItemOfDictionaryOfOperator,MMgt_TShared)
+  DEFINE_STANDARD_RTTI_INLINE(ShapeProcess_StackItemOfDictionaryOfOperator,MMgt_TShared)
 
 protected:
 

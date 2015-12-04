@@ -16,6 +16,8 @@
 #include <Font_FTLibrary.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(Font_FTLibrary,Standard_Transient)
+
 // =======================================================================
 // function : Font_FTLibrary
 // purpose  :

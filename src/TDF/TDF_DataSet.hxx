@@ -87,7 +87,7 @@ Standard_OStream& operator<< (Standard_OStream& anOS) const
 
 
 
-  DEFINE_STANDARD_RTTI(TDF_DataSet,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_DataSet,MMgt_TShared)
 
 protected:
 

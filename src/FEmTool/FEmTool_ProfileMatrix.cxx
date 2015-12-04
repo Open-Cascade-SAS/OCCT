@@ -26,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <StdFail_NotDone.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ProfileMatrix,FEmTool_SparseMatrix)
+
 //=======================================================================
 //function : :FEmTool_ProfileMatrix
 //purpose  :

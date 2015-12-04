@@ -105,7 +105,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MAT_Graph,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(MAT_Graph,MMgt_TShared)
 
 protected:
 

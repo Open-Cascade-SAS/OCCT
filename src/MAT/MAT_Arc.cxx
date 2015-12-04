@@ -21,6 +21,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(MAT_Arc,MMgt_TShared)
+
 //========================================================================
 // function:
 // purpose :

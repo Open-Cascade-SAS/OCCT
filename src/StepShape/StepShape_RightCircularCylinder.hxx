@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_RightCircularCylinder,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepShape_RightCircularCylinder,StepGeom_GeometricRepresentationItem)
 
 protected:
 

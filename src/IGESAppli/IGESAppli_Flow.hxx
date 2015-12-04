@@ -123,7 +123,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESAppli_Flow,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESAppli_Flow,IGESData_IGESEntity)
 
 protected:
 

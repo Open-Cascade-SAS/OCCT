@@ -260,7 +260,7 @@ public: //! @name Auxilary API
     clearDeletedNodes();
   }
 
-  DEFINE_STANDARD_RTTI(BRepMesh_DataStructureOfDelaun, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_DataStructureOfDelaun,Standard_Transient)
 
 private: 
 

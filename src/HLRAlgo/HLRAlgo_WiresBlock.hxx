@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(HLRAlgo_WiresBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(HLRAlgo_WiresBlock,MMgt_TShared)
 
 protected:
 

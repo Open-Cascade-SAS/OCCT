@@ -33,6 +33,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeDef,IGESData_IGESEntity)
+
 //  For each Attribute Value, according to Attribute Type :
 // 0 -> Void, 1 -> Integer, 2 -> Real, 3 -> String, 4 -> Entity   6 -> Logical
 IGESDefs_AttributeDef::IGESDefs_AttributeDef ()    {  }

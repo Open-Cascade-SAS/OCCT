@@ -58,7 +58,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepAdaptor_HCurve2d,Adaptor2d_HCurve2d)
+  DEFINE_STANDARD_RTTI_INLINE(BRepAdaptor_HCurve2d,Adaptor2d_HCurve2d)
 
 protected:
 

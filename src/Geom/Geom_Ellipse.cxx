@@ -29,6 +29,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Ellipse,Geom_Conic)
+
 typedef Geom_Ellipse         Ellipse;
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;

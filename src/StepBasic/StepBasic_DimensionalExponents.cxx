@@ -15,6 +15,8 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DimensionalExponents,MMgt_TShared)
+
 StepBasic_DimensionalExponents::StepBasic_DimensionalExponents ()  {}
 
 void StepBasic_DimensionalExponents::Init(

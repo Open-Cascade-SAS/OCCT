@@ -60,6 +60,8 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Solid,ShapeFix_Root)
+
 //======================================================
 //function : ShapeFix_Solid
 //purpose  : 

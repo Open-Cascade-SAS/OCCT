@@ -19,6 +19,8 @@
 #include <IGESToBRep_IGESBoundary.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESControl_ToolContainer,IGESToBRep_ToolContainer)
+
 //=======================================================================
 //function : IGESControl_ToolContainer
 //purpose  : 

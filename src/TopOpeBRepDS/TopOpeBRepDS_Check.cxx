@@ -42,6 +42,8 @@
 #include <TopTools_ListOfShape.hxx>
 
 #include <string.h>
+IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Check,MMgt_TShared)
+
 //=======================================================================
 //function : Create
 //purpose  : 

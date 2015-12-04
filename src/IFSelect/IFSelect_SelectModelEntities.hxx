@@ -54,7 +54,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IFSelect_SelectModelEntities,IFSelect_SelectBase)
+  DEFINE_STANDARD_RTTIEXT(IFSelect_SelectModelEntities,IFSelect_SelectBase)
 
 protected:
 

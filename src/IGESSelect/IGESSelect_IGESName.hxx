@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESSelect_IGESName,IFSelect_Signature)
+  DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESName,IFSelect_Signature)
 
 protected:
 

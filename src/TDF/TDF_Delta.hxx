@@ -81,7 +81,7 @@ public:
 friend class TDF_Data;
 
 
-  DEFINE_STANDARD_RTTI(TDF_Delta,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDF_Delta,MMgt_TShared)
 
 protected:
 

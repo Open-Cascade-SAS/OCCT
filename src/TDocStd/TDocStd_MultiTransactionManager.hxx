@@ -145,7 +145,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TDocStd_MultiTransactionManager,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager,MMgt_TShared)
 
 protected:
 

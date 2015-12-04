@@ -47,7 +47,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(TopoDS_TWire,TopoDS_TShape)
+  DEFINE_STANDARD_RTTIEXT(TopoDS_TWire,TopoDS_TShape)
 
 protected:
 

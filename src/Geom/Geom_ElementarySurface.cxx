@@ -22,6 +22,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_ElementarySurface,Geom_Surface)
+
 typedef Geom_ElementarySurface         ElementarySurface;
 typedef gp_Ax1 Ax1;
 typedef gp_Ax2 Ax2;

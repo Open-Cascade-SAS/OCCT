@@ -19,6 +19,8 @@
 #include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionWithAssociatedDocuments,StepBasic_ProductDefinition)
+
 StepBasic_ProductDefinitionWithAssociatedDocuments::StepBasic_ProductDefinitionWithAssociatedDocuments  ()    {  }
 
 void  StepBasic_ProductDefinitionWithAssociatedDocuments::Init

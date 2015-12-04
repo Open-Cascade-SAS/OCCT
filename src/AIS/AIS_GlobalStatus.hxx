@@ -93,7 +93,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_GlobalStatus,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(AIS_GlobalStatus,MMgt_TShared)
 
 protected:
 

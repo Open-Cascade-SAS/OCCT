@@ -26,6 +26,8 @@
 #include <BRep_Tool.hxx>
 
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceAttribute,Standard_Transient)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

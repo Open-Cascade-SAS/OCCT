@@ -101,7 +101,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_ConnectedInteractive,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_ConnectedInteractive,AIS_InteractiveObject)
 
 protected:
 

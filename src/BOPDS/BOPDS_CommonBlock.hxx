@@ -145,7 +145,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BOPDS_CommonBlock,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BOPDS_CommonBlock,MMgt_TShared)
 
 protected:
 

@@ -31,6 +31,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_DrawingWithRotation,IGESData_IGESEntity)
+
 IGESDraw_DrawingWithRotation::IGESDraw_DrawingWithRotation ()    {  }
 
 

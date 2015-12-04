@@ -24,6 +24,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom_Conic,Geom_Curve)
+
 typedef Geom_Conic         Conic;
 typedef gp_Ax1 Ax1;
 typedef gp_Ax2 Ax2;

@@ -61,7 +61,7 @@ public:
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitivePoint, Select3D_SensitiveEntity)
+  DEFINE_STANDARD_RTTIEXT(Select3D_SensitivePoint,Select3D_SensitiveEntity)
 
 private:
 

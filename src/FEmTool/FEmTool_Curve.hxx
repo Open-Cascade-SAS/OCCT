@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(FEmTool_Curve,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(FEmTool_Curve,MMgt_TShared)
 
 protected:
 

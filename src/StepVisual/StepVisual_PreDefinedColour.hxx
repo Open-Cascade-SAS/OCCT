@@ -46,7 +46,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PreDefinedColour,StepVisual_Colour)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedColour,StepVisual_Colour)
 
 protected:
 

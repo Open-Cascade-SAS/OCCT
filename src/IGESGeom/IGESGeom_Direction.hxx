@@ -56,7 +56,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESGeom_Direction,IGESData_IGESEntity)
+  DEFINE_STANDARD_RTTIEXT(IGESGeom_Direction,IGESData_IGESEntity)
 
 protected:
 

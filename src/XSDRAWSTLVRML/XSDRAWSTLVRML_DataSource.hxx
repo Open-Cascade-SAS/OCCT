@@ -75,7 +75,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSDRAWSTLVRML_DataSource,MeshVS_DataSource)
+  DEFINE_STANDARD_RTTIEXT(XSDRAWSTLVRML_DataSource,MeshVS_DataSource)
 
 protected:
 

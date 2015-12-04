@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Vrml_Coordinate3,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(Vrml_Coordinate3,MMgt_TShared)
 
 protected:
 

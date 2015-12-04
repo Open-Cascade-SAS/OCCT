@@ -168,7 +168,7 @@ public:
   //! Removes the non-default settings for width set in SetWidth.
   Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(AIS_Trihedron,AIS_InteractiveObject)
+  DEFINE_STANDARD_RTTIEXT(AIS_Trihedron,AIS_InteractiveObject)
 
 protected:
 

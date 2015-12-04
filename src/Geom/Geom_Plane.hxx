@@ -221,7 +221,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Geom_Plane,Geom_ElementarySurface)
+  DEFINE_STANDARD_RTTIEXT(Geom_Plane,Geom_ElementarySurface)
 
 protected:
 

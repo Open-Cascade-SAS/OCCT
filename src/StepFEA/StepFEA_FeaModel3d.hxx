@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepFEA_FeaModel3d,StepFEA_FeaModel)
+  DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModel3d,StepFEA_FeaModel)
 
 protected:
 

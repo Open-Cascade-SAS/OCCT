@@ -59,7 +59,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_OffsetSurface,StepGeom_Surface)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_OffsetSurface,StepGeom_Surface)
 
 protected:
 

@@ -130,7 +130,7 @@ const Handle(TOcafFunction_BoxDriver) TOcafFunction_BoxDriver::DownCast(const Ha
 
   if (!AnObject.IsNull()) {
      if (AnObject->IsKind(STANDARD_TYPE(TOcafFunction_BoxDriver))) {
-       _anOtherObject = Handle(TOcafFunction_BoxDriver)((Handle(TOcafFunction_BoxDriver)&)AnObject);
+       _anOtherObject = Handle(TOcafFunction_BoxDriver)::DownCast (AnObject);
      }
   }
 

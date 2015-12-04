@@ -38,7 +38,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_SuppliedPartRelationship,StepBasic_ProductDefinitionRelationship)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_SuppliedPartRelationship,StepBasic_ProductDefinitionRelationship)
 
 protected:
 

@@ -29,6 +29,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Line,Geom2d_Curve)
+
 typedef Geom2d_Line         Line;
 typedef gp_Ax2d   Ax2d;
 typedef gp_Dir2d  Dir2d;

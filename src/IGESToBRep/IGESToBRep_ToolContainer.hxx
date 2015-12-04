@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESToBRep_ToolContainer,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IGESToBRep_ToolContainer,MMgt_TShared)
 
 protected:
 

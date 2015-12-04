@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(RWStepAP214_GeneralModule,StepData_GeneralModule)
+  DEFINE_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 
 protected:
 

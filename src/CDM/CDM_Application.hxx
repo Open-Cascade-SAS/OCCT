@@ -65,7 +65,7 @@ friend class CDM_Reference;
 friend class CDM_MetaData;
 
 
-  DEFINE_STANDARD_RTTI(CDM_Application,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(CDM_Application,Standard_Transient)
 
 protected:
 

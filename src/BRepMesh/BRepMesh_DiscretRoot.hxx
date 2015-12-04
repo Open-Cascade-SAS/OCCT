@@ -49,7 +49,7 @@ public:
   Standard_EXPORT virtual void Perform() = 0;
 
 
-  DEFINE_STANDARD_RTTI(BRepMesh_DiscretRoot, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_DiscretRoot,Standard_Transient)
 
 protected:
   

@@ -22,6 +22,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerOne,IFSelect_Dispatch)
+
 //  Genere un paquet par racine (strong comp.) locale a la liste transmise
 IFSelect_DispPerOne::IFSelect_DispPerOne ()    {  }
 

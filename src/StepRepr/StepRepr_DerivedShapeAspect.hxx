@@ -37,7 +37,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepRepr_DerivedShapeAspect,StepRepr_ShapeAspect)
+  DEFINE_STANDARD_RTTIEXT(StepRepr_DerivedShapeAspect,StepRepr_ShapeAspect)
 
 protected:
 

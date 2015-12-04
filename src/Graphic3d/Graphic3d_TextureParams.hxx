@@ -110,7 +110,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Graphic3d_TextureParams,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_TextureParams,Standard_Transient)
 
 protected:
 

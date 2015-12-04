@@ -76,7 +76,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepGeom_CartesianTransformationOperator,StepGeom_GeometricRepresentationItem)
+  DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator,StepGeom_GeometricRepresentationItem)
 
 protected:
 

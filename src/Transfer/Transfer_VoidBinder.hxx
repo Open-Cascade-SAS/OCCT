@@ -53,7 +53,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Transfer_VoidBinder,Transfer_Binder)
+  DEFINE_STANDARD_RTTIEXT(Transfer_VoidBinder,Transfer_Binder)
 
 protected:
 

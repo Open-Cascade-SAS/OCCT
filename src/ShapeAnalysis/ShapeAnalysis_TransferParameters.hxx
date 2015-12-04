@@ -86,7 +86,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(ShapeAnalysis_TransferParameters,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParameters,MMgt_TShared)
 
 protected:
 

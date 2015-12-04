@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(MeshVS_MeshPrsBuilder,MeshVS_PrsBuilder)
+  DEFINE_STANDARD_RTTIEXT(MeshVS_MeshPrsBuilder,MeshVS_PrsBuilder)
 
 protected:
 

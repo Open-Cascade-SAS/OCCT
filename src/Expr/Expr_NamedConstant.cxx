@@ -23,6 +23,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedConstant,Expr_NamedExpression)
+
 Expr_NamedConstant::Expr_NamedConstant(const TCollection_AsciiString& name, const Standard_Real value)
 {
   SetName(name);

@@ -36,6 +36,8 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TopoDS.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepTopAdaptor_TopolTool,Adaptor3d_TopolTool)
+
 static 
   void Analyse(const TColgp_Array2OfPnt& array2,
 	       const Standard_Integer nbup,

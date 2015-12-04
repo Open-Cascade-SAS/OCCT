@@ -31,6 +31,8 @@
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ColorTool,TDF_Attribute)
+
 #define AUTONAMING // automatically set names for labels
 
 //=======================================================================

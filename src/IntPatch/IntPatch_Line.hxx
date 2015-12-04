@@ -114,7 +114,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IntPatch_Line,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(IntPatch_Line,MMgt_TShared)
 
 protected:
 

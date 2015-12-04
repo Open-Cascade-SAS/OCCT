@@ -122,7 +122,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Prs3d_TextAspect,Prs3d_BasicAspect)
+  DEFINE_STANDARD_RTTIEXT(Prs3d_TextAspect,Prs3d_BasicAspect)
 
 protected:
 

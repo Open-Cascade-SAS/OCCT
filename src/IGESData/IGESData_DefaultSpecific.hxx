@@ -48,7 +48,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(IGESData_DefaultSpecific,IGESData_SpecificModule)
+  DEFINE_STANDARD_RTTIEXT(IGESData_DefaultSpecific,IGESData_SpecificModule)
 
 protected:
 

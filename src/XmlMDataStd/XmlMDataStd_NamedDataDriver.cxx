@@ -39,6 +39,7 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_NamedDataDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIntegerIndex, "firstI")
 IMPLEMENT_DOMSTRING (LastIntegerIndex,  "lastI")
 IMPLEMENT_DOMSTRING (FirstRealIndex,    "firstR")

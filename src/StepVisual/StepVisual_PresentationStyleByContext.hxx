@@ -50,7 +50,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_PresentationStyleByContext,StepVisual_PresentationStyleAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationStyleByContext,StepVisual_PresentationStyleAssignment)
 
 protected:
 

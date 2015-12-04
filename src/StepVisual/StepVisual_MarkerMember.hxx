@@ -57,7 +57,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepVisual_MarkerMember,StepData_SelectInt)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_MarkerMember,StepData_SelectInt)
 
 protected:
 

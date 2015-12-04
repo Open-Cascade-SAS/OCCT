@@ -42,7 +42,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BinXCAFDrivers_DocumentStorageDriver,BinDrivers_DocumentStorageDriver)
+  DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentStorageDriver,BinDrivers_DocumentStorageDriver)
 
 protected:
 

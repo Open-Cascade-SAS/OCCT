@@ -131,7 +131,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Xw_Window, Aspect_Window)
+  DEFINE_STANDARD_RTTIEXT(Xw_Window,Aspect_Window)
 
 };
 

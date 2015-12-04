@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(Draw_Axis3D,Draw_Drawable3D)
+  DEFINE_STANDARD_RTTIEXT(Draw_Axis3D,Draw_Drawable3D)
 
 protected:
 

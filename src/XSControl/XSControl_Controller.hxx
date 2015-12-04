@@ -295,7 +295,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(XSControl_Controller,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(XSControl_Controller,MMgt_TShared)
 
 protected:
 

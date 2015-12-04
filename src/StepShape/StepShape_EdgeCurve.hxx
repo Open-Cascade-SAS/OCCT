@@ -55,7 +55,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepShape_EdgeCurve,StepShape_Edge)
+  DEFINE_STANDARD_RTTIEXT(StepShape_EdgeCurve,StepShape_Edge)
 
 protected:
 

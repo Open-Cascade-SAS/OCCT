@@ -69,7 +69,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(AIS_TypeFilter,SelectMgr_Filter)
+  DEFINE_STANDARD_RTTIEXT(AIS_TypeFilter,SelectMgr_Filter)
 
 protected:
 

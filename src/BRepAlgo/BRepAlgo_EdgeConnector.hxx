@@ -72,7 +72,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(BRepAlgo_EdgeConnector,MMgt_TShared)
+  DEFINE_STANDARD_RTTIEXT(BRepAlgo_EdgeConnector,MMgt_TShared)
 
 protected:
 

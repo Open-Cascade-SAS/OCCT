@@ -35,6 +35,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Plane,TDF_Attribute)
+
 //=======================================================================
 //function : GetID
 //purpose  : 

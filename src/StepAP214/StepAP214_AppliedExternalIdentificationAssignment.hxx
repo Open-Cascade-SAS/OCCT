@@ -51,7 +51,7 @@ public:
 
 
 
-  DEFINE_STANDARD_RTTI(StepAP214_AppliedExternalIdentificationAssignment,StepBasic_ExternalIdentificationAssignment)
+  DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedExternalIdentificationAssignment,StepBasic_ExternalIdentificationAssignment)
 
 protected:
 

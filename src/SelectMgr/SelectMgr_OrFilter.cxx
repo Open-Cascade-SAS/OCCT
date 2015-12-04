@@ -20,6 +20,8 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_OrFilter,SelectMgr_CompositionFilter)
+
 //=============================================================================
 //function : SelectMgr_OrFilter
 //purpose  :
