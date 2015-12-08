@@ -1,10 +1,10 @@
 puts "TODO ?OCC23068 ALL: ERROR. offsetperform operation not done."
 puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC23068 ALL: Error : The volume of the resulting shape is"
+puts "TODO ?OCC23068 ALL: Error : The volume of result shape is"
 puts "TODO ?OCC23068 ALL: TEST INCOMPLETE"
 
 psphere s 15 -90 60 270
 
 OFFSETSHAPE -1 {s_3 s_4} $calcul $type
 
-set volume 0
+checkprops result -v 0

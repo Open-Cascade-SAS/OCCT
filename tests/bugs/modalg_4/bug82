@@ -27,6 +27,8 @@ if { $nnv > $nb_edges } {
 } else {
     puts "Number of vertices correspond edges: OK"
 }
-set length 113.703
+checkprops result -l 113.703 
+checkshape result 
+checksection result
 set 2dviewer 0
 

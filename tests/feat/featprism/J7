@@ -13,4 +13,4 @@ copy base_23 skface
 featprism base cont skface 0 -1 0 0 1
 featperform prism result funtil
 
-set square 42861.7
+checkprops result -s 42861.7

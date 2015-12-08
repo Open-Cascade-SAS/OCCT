@@ -5,4 +5,4 @@ blend result s SCALE*0.0005 s_1
 explode result Sh
 renamevar result_1 result
  
-set square 2923.51
+checkprops result -s 2923.51

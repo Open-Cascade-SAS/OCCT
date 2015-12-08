@@ -12,4 +12,4 @@ blend result result 5 result_4
 explode result e
 blend result result 5 result_33
 
-set square 250844
+checkprops result -s 250844

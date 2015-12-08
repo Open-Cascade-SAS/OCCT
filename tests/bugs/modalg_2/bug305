@@ -1,7 +1,6 @@
 puts "TODO OCC25919 ALL: Error: Offset is not done."
 puts "TODO OCC25919 ALL: Faulty OCC305 : function MKOFFSET works wrongly"
-puts "TODO OCC25919 ALL: Tcl Exception: result is not a topological shape!!!"
-puts "TODO OCC25919 ALL: TEST INCOMPLETE"
+puts "TODO OCC25919 ALL: Error: The command cannot be built"
 
 puts "========"
 puts "OCC305"
@@ -21,6 +20,5 @@ if [catch {mkoffset result a 1 0.5 } catch_result] {
 } else {
   set che [checkshape result]
 }
-set square 0
+checkprops result -s 0 
 set 2dviewer 0
-

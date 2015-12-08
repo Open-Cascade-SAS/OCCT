@@ -16,4 +16,4 @@ don result
 fit
 checkshape result
 
-set square 1.67216
+checkprops result -s 1.67216

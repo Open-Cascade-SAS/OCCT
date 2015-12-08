@@ -12,7 +12,8 @@ restore [locate_data_file bug24798_rectBranch.brep] b2
 bop b1 b2
 bopcut result
 
-set square 1826.16
+checkprops result -s 1826.16 
+checkshape result
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 44 -edge 67 -wire 29 -face 22 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 165

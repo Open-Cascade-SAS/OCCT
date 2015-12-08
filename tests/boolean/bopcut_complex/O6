@@ -5,4 +5,4 @@ bop b1 b2
 bopcut result
 
 
-set square 504.289
+checkprops result -s 504.289

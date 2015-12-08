@@ -18,5 +18,6 @@ if [catch {bcommon result a_1 a_2 } catch_result] {
 } else {
     puts "OCC488 OK: function COMMON works properly "
 }
-set square 92466.8
+checkprops result -s 92466.8 
+checkshape result
 set 2dviewer 0

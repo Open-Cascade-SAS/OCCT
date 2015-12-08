@@ -21,7 +21,7 @@ bopcommon result
 checkshape result
 puts "Finish boolean operation ..."
 
-set square 585.072
+checkprops result -s 585.072
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 6 -edge 12 -wire 5 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 31

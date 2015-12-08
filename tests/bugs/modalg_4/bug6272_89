@@ -21,5 +21,7 @@ if { [catch { bopsection result } ] } {
     puts "Faulty ${BugNumber}"
 }
 
-set length 57.3941
+checkprops result -l 57.3941 
+checkshape result 
+checksection result
 set 2dviewer 0

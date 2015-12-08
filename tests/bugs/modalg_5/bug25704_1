@@ -15,7 +15,9 @@ if [catch { mkoffset resoffset a 1 2. } ] {
 } else {
   renamevar resoffset_1 result
 
-  set length 75.3982
+  checkprops result -l 75.3982 
+checkshape result 
+checksection result
 
   checknbshapes result -vertex 1 -edge 1 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 3
 }

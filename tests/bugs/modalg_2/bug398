@@ -21,5 +21,6 @@ scaleshape result a 10
 
 checknbshapes result -solid 1
 
-set square 180000.
+checkprops result -s 180000. 
+checkshape result
 set 2dviewer 0

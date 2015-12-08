@@ -6,4 +6,4 @@ restore [locate_data_file jap60038-tool.rle] tool
 
 bcut result part tool
 
-set square 173510
+checkprops result -s 173510

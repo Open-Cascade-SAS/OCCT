@@ -13,7 +13,8 @@ trotate _copy 155. 100.75 0 0 0 1 90
 
 bfuse result _model _copy
 
-set square 606195
+checkprops result -s 606195 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

@@ -6,4 +6,4 @@ restore [locate_data_file CTO900_pro9476-tool.rle] tool
 
 bfuse result part tool
 
-set square 1.83166e+06
+checkprops result -s 1.83166e+06

@@ -22,5 +22,6 @@ trotate s 0 0 0 0 0 1 90
 
 OFFSETSHAPE 1 {s_2 s_3} $calcul $type
 
-set square 885.688
+checkprops result -s 885.688 
+checkshape result
 set 2dviewer 0

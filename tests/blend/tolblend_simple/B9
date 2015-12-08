@@ -19,4 +19,4 @@ blend result s 15*SCALE1 s_3
 explode result sh
 tcopy result_1 result 
 
-set square 803799
+checkprops result -s 803799

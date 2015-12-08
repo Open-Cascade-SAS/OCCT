@@ -1,4 +1,5 @@
 puts "TODO OCC23748 ALL: Error : The offset cannot be built."
+puts "TODO OCC23748 ALL: Error: The command cannot be built"
 puts "TODO OCC23748 Windows: Error: Offset is not done."
 puts "TODO OCC23748 Linux: An exception was caught"
 puts "TODO OCC23748 Linux: \\*\\* Exception \\*\\*"

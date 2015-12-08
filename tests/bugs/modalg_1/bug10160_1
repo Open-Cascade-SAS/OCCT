@@ -43,7 +43,8 @@ puts "CPU_user_time=${CPU_user_time}"
 set CPU_user_time [expr ${CPU_user_time} / ${NbTests}]
 puts "CPU_user_time=${CPU_user_time}"
 
-set square 1.30062e+07
+checkprops result -s 1.30062e+07 
+checkshape result
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 20 -edge 28 -wire 16 -face 15 -shell 3 -solid 3 -compsolid 0 -compound 1 -shape 86

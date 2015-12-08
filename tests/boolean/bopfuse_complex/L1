@@ -11,4 +11,4 @@ copy b_1 b
 bop a b
 bopfuse result 
 
-set square 45600
+checkprops result -s 45600

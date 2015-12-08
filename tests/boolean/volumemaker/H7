@@ -64,5 +64,5 @@ mkface f12 cyl_f12 0 6.2831853071795862 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
 
-set square 8.13019
+checkprops result -s 8.13019
 

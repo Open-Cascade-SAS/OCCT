@@ -1,1 +1,3 @@
 set command bopcut
+set display_vertices 1
+

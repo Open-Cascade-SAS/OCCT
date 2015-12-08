@@ -11,5 +11,5 @@ restore [locate_data_file pro18457b.rle] f2
 
 bfuse result f1 f2
 
-set square 996.98
+checkprops result -s 996.98
 

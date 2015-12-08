@@ -15,4 +15,4 @@ revol s w 0 0 0 0 0 1 270
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set volume 0
+checkprops result -v 0

@@ -23,7 +23,8 @@ if {[lsearch ${list} Error] > -1} {
         } else {
     	    puts "OK ${BugNumber}"
         }
-	set square 2.22665e+06
+	checkprops result -s 2.22665e+06 
+checkshape result
 	set 2dviewer 0
     }
 }

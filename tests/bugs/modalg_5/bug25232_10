@@ -11,7 +11,8 @@ explode b f
 mkvolume result b_1 b_2 b_3
 # 3 solids created
 
-set square 5.46979e+06
+checkprops result -s 5.46979e+06 
+checkshape result
 
 checknbshapes result -vertex 5 -edge 7 -wire 7 -face 5 -shell 3 -solid 3 -compsolid 0 -compound 1 -shape 31
 set 2dviewer 1

@@ -54,5 +54,6 @@ if { $z2 > 60 } {
 } else {
     puts "Elapsed time is less then 60 seconds - OK"      
 }
-set square 3468.6
+checkprops result -s 3468.6 
+checkshape result
 set 2dviewer 0

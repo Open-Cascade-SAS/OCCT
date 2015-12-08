@@ -9,4 +9,4 @@ halfspace space2 bsurf2 0 -0.3 0
 
 bcut result revol1 space2
 
-set square 0.402138
+checkprops result -s 0.402138

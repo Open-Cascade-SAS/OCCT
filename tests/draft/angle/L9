@@ -6,4 +6,4 @@ restore [locate_data_file CFE903_cts21ggu.rle] base
 nexplode base face
 
 depouille result base 0 0 1 base_9 3 0 0 81 0 0 1
-set square 180498
+checkprops result -s 180498

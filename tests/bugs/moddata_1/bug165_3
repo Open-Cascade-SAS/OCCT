@@ -1,4 +1,3 @@
-
 puts "========"
 puts "OCC165"
 puts "========"
@@ -6,12 +5,10 @@ puts "========"
 restore [locate_data_file OCC165-2.brep] f 
 checkshape f
 
-set IsGood 1
 if [catch {mkoffset res1 f 3 10 } result] {
   puts "Faulty OCC165 (case 1) : function MKOFFSET works wrongly"
-  set IsGood 0
 } else {
-  #puts "OCC165 OK (case 1): function MKOFFSET works properly"
+  puts "OCC165 OK (case 1): function MKOFFSET works properly"
   mkplane pl1_1 res1_1 
   checkshape pl1_1
   mkplane pl1_2 res1_2 
@@ -22,9 +19,8 @@ if [catch {mkoffset res1 f 3 10 } result] {
 
 if [catch {mkoffset res2 f 3 -10 } result] {
   puts "Faulty OCC165 (case 2) : function MKOFFSET works wrongly"
-  set IsGood 0
 } else {
-  #puts "OCC165 OK (case 2): function MKOFFSET works properly"
+  puts "OCC165 OK (case 2): function MKOFFSET works properly"
   mkplane pl2_1 res2_1 
   checkshape pl2_1
   mkplane pl2_2 res2_2 
@@ -33,105 +29,10 @@ if [catch {mkoffset res2 f 3 -10 } result] {
   checkshape pl2_3
 }
 
-if {$IsGood == 1} {
-  compound f res1_1 res1_2 res1_3 res2_1 res2_2 res2_3 res
-  
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res1_1] full len
-
-  set good_len 462.832
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    puts "Faulty OCC165 (case 3) : function MKOFFSET works wrongly"
-    set IsGood 0
-  }
-
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res1_2] full len
-
-  set good_len 525.664
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    puts "Faulty OCC165 (case 4) : function MKOFFSET works wrongly"
-    set IsGood 0
-  }
-
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res1_3] full len
-
-  set good_len 588.496
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    puts "Faulty OCC165 (case 5) : function MKOFFSET works wrongly"
-    set IsGood 0
-  }
-
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res2_1] full len
-
-  set good_len 320
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    puts "Faulty OCC165 (case 6) : function MKOFFSET works wrongly"
-    set IsGood 0
-  }
-
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res2_2] full len
-
-  set good_len 240
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    puts "Faulty OCC165 (case 7) : function MKOFFSET works wrongly"
-    set IsGood 0
-  }
-
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res2_3] full len
-
-  set good_len 160
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    puts "Faulty OCC165 (case 8) : function MKOFFSET works wrongly"
-    set IsGood 0
-  }
-
-  if {$IsGood == 1} {
-    puts "OCC165 OK"
-  } else {
-    puts "OCC165 FAULTY"
-  }
-
-} else {
-  puts "OCC165 FAULTY"
-}
+compound f res1_1 res1_2 res1_3 res2_1 res2_2 res2_3 res
+checkprops res1_1 -l 462.832
+checkprops res1_2 -l 525.664
+checkprops res1_3 -l 588.496
+checkprops res2_1 -l 320
+checkprops res2_2 -l 240
+checkprops res2_3 -l 160

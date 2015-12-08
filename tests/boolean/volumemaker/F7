@@ -39,5 +39,5 @@ mkface f7 con_f7 0 6.2831853071795862 0 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7
 
-set square 7.80813e+006
+checkprops result -s 7.80813e+006
 

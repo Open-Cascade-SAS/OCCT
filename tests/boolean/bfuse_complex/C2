@@ -3,4 +3,4 @@ restore [locate_data_file so7] b2
 
 bfuse result b1 b2
 
-set square 466.035
+checkprops result -s 466.035

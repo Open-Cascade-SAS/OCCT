@@ -18,5 +18,6 @@ if { [catch { bcut result a_1 a_2 } status] } {
     puts "Faulty OCC774 (case 1)"
 } 
 
-set square 50704.6
+checkprops result -s 50704.6 
+checkshape result
 set 2dviewer 0

@@ -1,4 +1,4 @@
-puts "TODO #22911 ALL: Error : The bopfuse cannot be built."
+puts "TODO #22911 ALL: Error: The command cannot be built"
 
 restore [locate_data_file BUC60928.brep] sh
 explode sh
@@ -6,4 +6,4 @@ explode sh
 bop sh_2 sh_1
 bopfuse result
 
-set square 0
+checkprops result -s 0

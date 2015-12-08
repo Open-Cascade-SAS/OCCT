@@ -7,4 +7,4 @@ restore [locate_data_file CTO900_pro6066b.rle] box2
 
 bcut result prot1 box2
 
-set square 0.264921
+checkprops result -s 0.264921

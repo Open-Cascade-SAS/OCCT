@@ -2,4 +2,5 @@ restore [locate_data_file a32] a
 restore [locate_data_file b32] b
 bsection result a b
 
-set length 12.4984
+checkprops result -l 12.4984
+checksection result

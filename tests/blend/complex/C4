@@ -10,4 +10,4 @@ tscale a 0 0 0 1000
 nexplode a e
 blend result a 3 a_18 3 a_36 3 a_20 3 a_9
 
-set square 4990.42
+checkprops result -s 4990.42

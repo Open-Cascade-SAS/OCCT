@@ -11,4 +11,4 @@ blend s tmp 5 tmp_5
 explode s E
 blend result  s 2.5 s_1 2.5 s_5 2.5 s_7
 
-set square 6773.7
+checkprops result -s 6773.7

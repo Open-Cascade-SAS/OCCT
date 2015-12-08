@@ -8,4 +8,4 @@ bop a b
 bopfuse result
 
 
-set square 4356.19
+checkprops result -s 4356.19

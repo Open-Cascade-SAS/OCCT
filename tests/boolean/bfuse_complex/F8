@@ -7,4 +7,4 @@ restore [locate_data_file CTO900_pro12913b.rle] b
 
 bfuse result a b
 
-set square 213476
+checkprops result -s 213476

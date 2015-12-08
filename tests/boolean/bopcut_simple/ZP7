@@ -28,4 +28,4 @@ bop ba s
 
 bopcut result 
 
-set square 53.2832
+checkprops result -s 53.2832

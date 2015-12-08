@@ -6,4 +6,4 @@ restore [locate_data_file CFE903_cts20ghb.rle] base
 explode base face
 
 depouille result base 0 0 1 base_25 5 0 0 5 0 0 1 base_26 5 0 0 5 0 0 1
-set square 969.177
+checkprops result -s 969.177

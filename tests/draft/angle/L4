@@ -11,4 +11,4 @@ explode base face
 depouille result base 1 0 0 base_2 5 0 -250 250 1 0 0 base_3 5 0 -250 250 1 0 0 base_4 5 0 -250 250 1 0 0 base_5 5 0 -250 250 1 0 0
 
 fsameparameter result
-set square 688897
+checkprops result -s 688897

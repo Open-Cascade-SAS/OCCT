@@ -22,6 +22,6 @@ if { ${word1} == 0 && ${word2} == 0 } {
    puts "Faulty ${BugNumber}"
 }
 
-set square 284190
+checkprops result -s 284190 
 
 

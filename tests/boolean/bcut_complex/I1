@@ -8,4 +8,4 @@ bcut result base outil
 
 
 
-set square 541032
+checkprops result -s 541032

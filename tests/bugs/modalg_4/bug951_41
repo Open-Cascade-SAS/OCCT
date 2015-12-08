@@ -19,6 +19,7 @@ checkshape s2
 bop s1 s2
 bopcommon result
 
-set square 560.908
+checkprops result -s 560.908 
+checkshape result
 set 3dviewer 1
 

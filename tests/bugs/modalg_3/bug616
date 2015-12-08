@@ -18,5 +18,7 @@ if { [catch {mkoffset result a 5 -2} catch_result] } {
     puts "OCC616 OK: function MKOFFSET works OK"
 }
 
-set length 1062.78
+checkprops result -l 1062.78
+checkshape result
+checksection result
 set 2dviewer 0

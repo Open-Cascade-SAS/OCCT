@@ -42,5 +42,5 @@ if { $status != 0 } {
     puts  "OK $BugNumber"
 }
 set 3dviewer 0
-set square 7.46496e+06
+checkprops result -s 7.46496e+06
 

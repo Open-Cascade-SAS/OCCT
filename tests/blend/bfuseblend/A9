@@ -14,4 +14,4 @@ tscale b 0 0 0 SCALE1
 tscale s 0 0 0 SCALE1
 bfuseblend result s b 1*SCALE1
  
-set square 1.29262e+06
+checkprops result -s 1.29262e+06

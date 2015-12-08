@@ -4,4 +4,4 @@ restore [locate_data_file b102] b
 bop a b
 bopcut result
 
-set square empty
+checkprops result -s empty

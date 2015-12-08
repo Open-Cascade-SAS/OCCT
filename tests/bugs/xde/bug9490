@@ -38,20 +38,12 @@ if { ${IsOk} == 1} {
    if { ${Tolerance_percent}  > ${percent_max} } {
       set IsOk 0
    }
-   set good_square 36259
-   checknbshapes OCC9490a -vertex 1770 -edge 1237 -wire 140 -face 123 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3271
 
-   regexp {Mass +: +([-0-9.+eE]+)} [sprops OCC9490a] full sq1
-   if {$sq1 != $good_square} {
-      	 set IsOk 0
-   }	
+   checknbshapes OCC9490a -vertex 1770 -edge 1237 -wire 140 -face 123 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3271
+   checkprops OCC9490a -s 36259
 
    checknbshapes OCC9490b -vertex 1770 -edge 1237 -wire 140 -face 123 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3271
-
-   regexp {Mass +: +([-0-9.+eE]+)} [sprops OCC9490b] full sq2
-   if {$sq2 != $good_square} {
-      	 set IsOk 0
-   }	
+   checkprops OCC9490b -s 36259
 
    if { ${IsOk}  == 0 } {
       puts "${BugNumber}: Faulty"

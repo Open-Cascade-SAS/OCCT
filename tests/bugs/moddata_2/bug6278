@@ -57,5 +57,6 @@ if {[llength ${DumpList}] < 40} {
     }
 }
 
-set length 278.725
+checkprops result -l 278.725 
+checksection result
 set 3dviewer 2

@@ -12,7 +12,8 @@ puts ""
 restore [locate_data_file OCC369.brep] result 
 OCC369 result
 
-set square 0.077223
+checkprops result -s 0.077223 
+checkshape result
 set 2dviewer 0
 
 

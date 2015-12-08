@@ -14,7 +14,8 @@ trotate b 10 0 0 0 0 1 45
 
 bcommon result s b
 
-set square 199.095
+checkprops result -s 199.095 
+checkshape result
 
 checknbshapes result -vertex 2 -edge 3 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 14
 set 2dviewer 0

@@ -14,5 +14,5 @@ checkshape sh
 prism result sh 100 100 100
 checkshape result
 
-set square 104057
+checkprops result -s 104057
 set 2dviewer 0

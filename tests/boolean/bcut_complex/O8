@@ -1,4 +1,4 @@
-puts "TODO #25319 ALL: Error : The area of the resulting shape is"
+puts "TODO #25319 ALL: Error : The area of result shape is"
 
 ## cts20461
 
@@ -44,4 +44,4 @@ bcut r4 r3 p4
 bcut r5 r4 p5
 bcut result r5 p6
 
-set square 55910.6
+checkprops result -s 55910.6

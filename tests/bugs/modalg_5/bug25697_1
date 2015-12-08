@@ -17,4 +17,5 @@ if { ${nb_alone_Vertices} == 2 } {
   puts "Error: Wrong result done by Boolean Operation algorithm"
 }
 
-set length 107.503
+checkprops result -l 107.503 
+checkshape result 

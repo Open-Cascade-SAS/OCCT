@@ -18,5 +18,5 @@ if { ${exception_status} == 0 } {
    puts "Faulty ${BugNumber}"
 }
 
-set square 0.110535
+checkprops result -s 0.110535
 set 3dviewer 0

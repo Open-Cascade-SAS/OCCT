@@ -7,4 +7,5 @@ restore [locate_data_file ger60854b.rle] b
 bsection result a b
 
 
-set length 44.3547
+checkprops result -l 44.3547
+checksection result

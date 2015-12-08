@@ -12,4 +12,4 @@ mkface face surf
 featprism cyl cont cont 0 1 0 0 1
 featperformval prism result 100 face
 
-set square 82461.3
+checkprops result -s 82461.3

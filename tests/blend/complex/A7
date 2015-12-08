@@ -11,4 +11,4 @@ explode s e
 blend myResult s 6 s_5
 blend result myResult 6 s_8
 
-set square 0
+checkprops result -s 0

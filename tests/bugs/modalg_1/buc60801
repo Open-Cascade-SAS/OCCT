@@ -14,6 +14,7 @@ checkshape r3
 
 renamevar r3 result
 
-set square 6400
+checkprops result -s 6400 
+checkshape result
 set 2dviewer 0
 

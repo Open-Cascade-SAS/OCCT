@@ -16,8 +16,9 @@ mkface a a -10 10 -10 10
 bop a h
 bopcut result
 
-set length 60.
-set square 200.
+checkprops result -l 60. -s 200.
+checksection result
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

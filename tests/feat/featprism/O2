@@ -15,4 +15,4 @@ featperform prism result f6
 
 # indiquer option support face Until
 
-set square 603600
+checkprops result -s 603600

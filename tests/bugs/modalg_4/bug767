@@ -11,5 +11,7 @@ restore [locate_data_file OCC767.brep] result
 
 sameparameter result
 
-set length 7.6901
+checkprops result -l 7.6901 
+checkshape result 
+checksection result
 set 2dviewer 0

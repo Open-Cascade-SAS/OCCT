@@ -8,4 +8,4 @@ restore [locate_data_file pro14942b.rle] b
 
 bcut result a b
 
-set square 192941
+checkprops result -s 192941

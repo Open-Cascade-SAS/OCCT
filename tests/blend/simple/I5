@@ -9,4 +9,4 @@ fsameparameter s SCALE1*1.e-7
 explode s E
 blend result s 1*SCALE1 s_6
 
-set square 81863.7
+checkprops result -s 81863.7

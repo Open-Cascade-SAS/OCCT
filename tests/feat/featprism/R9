@@ -7,4 +7,4 @@ restore [locate_data_file spo0139b.rle] b
 featprism b a a 0 1 0 0 1
 featperform prism result
 
-set square 129086
+checkprops result -s 129086

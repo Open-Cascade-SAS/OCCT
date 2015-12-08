@@ -24,6 +24,6 @@ bcaddall result
 donly result
 fit
 
-set square 7729.72
+checkprops result -s 7729.72
 
 set only_screen_axo 1

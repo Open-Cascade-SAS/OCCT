@@ -16,14 +16,8 @@ baddtools b2
 bfillds
 bbuild result
 
-regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full volume
-
-set expected_volume 620.091
-set tol_abs_volume 1.0e-3
-set tol_rel_volume 0.001
-checkreal "Volume" ${volume} ${expected_volume} ${tol_abs_volume} ${tol_rel_volume}
-
-set square 842.655
+checkprops result -s 842.655 -v 620.091
+checkshape result
 
 checknbshapes result -vertex 4 -edge 6 -wire 2 -face 2 -shell 3 -solid 2 -compsolid 0 -compound 1 -shape 20
 set 3dviewer 1

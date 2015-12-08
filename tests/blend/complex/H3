@@ -20,4 +20,4 @@ blend res m 5 m_49 5 m_12 5 m_78 5 m_44
 explode res Sh
 copy res_1 result
 
-set square 0
+checkprops result -s 0

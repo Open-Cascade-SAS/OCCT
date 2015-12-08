@@ -12,4 +12,4 @@ bfuse b p1 p2
 
 bcut result a b
 
-set square 60037.4
+checkprops result -s 60037.4

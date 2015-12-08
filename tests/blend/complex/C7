@@ -10,4 +10,4 @@ blend result a 2 a_60
 nexplode result e
 blend result result 2 result_90
 
-set square 12622.7
+checkprops result -s 12622.7

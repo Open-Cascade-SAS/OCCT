@@ -6,4 +6,4 @@ trotate b2 0 0 4 0 1 0 -90
 bop b1 b2
 bopcommon result
 
-set square 228.47
+checkprops result -s 228.47

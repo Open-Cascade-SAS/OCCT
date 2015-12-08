@@ -31,6 +31,6 @@ if { [regexp {Faulty} $che] == 1} {
     }
 }
 
-set square 2104.21
+checkprops result -s 2104.21 
 set 2dviewer 0
 

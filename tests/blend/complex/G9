@@ -10,4 +10,4 @@ bfuse f c1b c2
 explode f E
 blend result f 4.9 f_5
 
-set square 2104.35
+checkprops result -s 2104.35

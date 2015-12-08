@@ -4,4 +4,4 @@ trotate s 0 0 0 0 1 0 -45
 box b 1 1 1
 bcommon result s b
 
-set square 3.92699
+checkprops result -s 3.92699

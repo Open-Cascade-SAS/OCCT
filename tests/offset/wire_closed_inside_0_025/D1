@@ -1,5 +1,6 @@
 cpulimit 2400
 puts "TODO OCC23068 ALL: Error : The offset cannot be built."
+puts "TODO OCC23748 ALL: Error: The command cannot be built"
 puts "TODO OCC23748 ALL: Error: Offset is not done."
 #puts "TODO OCC24255 ALL: An exception was caught"
 

@@ -17,7 +17,9 @@ donly a ww
 fit
 middlepath result a ww ww
 
-set length 365.161
+checkprops result -l 365.161 
+checkshape result 
+checksection result
 
 set 2dviewer 1
 

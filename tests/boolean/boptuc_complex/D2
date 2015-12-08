@@ -4,4 +4,4 @@ restore [locate_data_file a138] b
 bop a b
 boptuc result
 
-set square empty
+checkprops result -s empty

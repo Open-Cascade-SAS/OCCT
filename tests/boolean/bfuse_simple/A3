@@ -4,4 +4,4 @@ trotate s 0 0 0 0 1 0 -45
 box b 1 1 1
 bfuse result b s
 
-set square 14.6393
+checkprops result -s 14.6393

@@ -8,4 +8,4 @@ restore [locate_data_file CFI_jap50078.rle] a
 nexplode a e
 blend result a 13 a_12 13 a_17 13 a_41 13 a_42
 
-set square 290049
+checkprops result -s 290049

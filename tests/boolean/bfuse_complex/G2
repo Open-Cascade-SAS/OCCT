@@ -8,4 +8,4 @@ updatetolerance tool 1
 bfuse result part tool
 
 
-set square 671652
+checkprops result -s 671652

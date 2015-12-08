@@ -10,4 +10,4 @@ compound pr1_3 pr1_4 fu
 featprism pr1 p2 p2 -2 -4 0 1 1
 featperform prism result fu
 
-set square 26.9296
+checkprops result -s 26.9296

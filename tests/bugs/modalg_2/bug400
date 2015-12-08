@@ -1,5 +1,5 @@
 puts "TODO OCC11111 ALL: OCC358 : Faulty"
-puts "TODO OCC11111 ALL: Error : The square of result shape is"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
 
 puts "========================"
 puts " OCC400 "
@@ -25,7 +25,8 @@ if { $tri == 66 && $nod ==70} {
     puts "OCC358 : Faulty , but visual checking is required !!!!"
 }
 
-set square 0
+checkprops result -s 0 
+checkshape result
 set 3dviewer 1
 
 

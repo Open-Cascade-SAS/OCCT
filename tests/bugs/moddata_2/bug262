@@ -55,5 +55,5 @@ if { [ expr $MaxEdgeTolerance2 > $tolerance ] } {
 
 renamevar a result
 
-set square 449.437
+checkprops result -s 449.437
 set 2dviewer 0

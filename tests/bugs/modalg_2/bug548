@@ -19,5 +19,6 @@ if { [regexp {problems} $che] } {
    puts "Faulty OCC628"
 }
 
-set square 119630
+checkprops result -s 119630 
+checkshape result
 set 2dviewer 2

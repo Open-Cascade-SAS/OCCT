@@ -14,6 +14,6 @@ checkshape b2
 bcommon result b1 b2
 checkshape result
 
-set square 315.159
+checkprops result -s 315.159
 set 2dviewer 0
 

@@ -30,6 +30,6 @@ if [catch {bfuse result a b } catch_result] {
 	puts "BUC60703   : here is NOT checking problem"
     }
 }
-set square 505.797
+checkprops result -s 505.797 
 set 2dviewer 0
 

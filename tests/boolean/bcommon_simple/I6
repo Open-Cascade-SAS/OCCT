@@ -23,4 +23,4 @@ prism bb f 0 6 0
 
 bcommon result ba bb
 
-set square 14
+checkprops result -s 14

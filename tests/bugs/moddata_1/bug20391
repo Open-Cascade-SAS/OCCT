@@ -16,5 +16,5 @@ if [catch {deform result a 2 2 2}] {
    puts "OK ${BugNumber}"
 }
 
-set square 2.71197e+07
+checkprops result -s 2.71197e+07
 set 2dviewer 0

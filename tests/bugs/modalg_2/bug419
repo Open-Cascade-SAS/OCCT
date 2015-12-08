@@ -18,5 +18,6 @@ checkshape -top sec
 bfuse result a b
 checkshape -top result
 
-set square 508496.
+checkprops result -s 508496. 
+checkshape result
 set 2dviewer 0

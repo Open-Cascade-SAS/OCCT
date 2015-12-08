@@ -7,4 +7,4 @@ featprism E cont E_10 0 0 1 0 1
 addslide prism cont_1 E_3
 featperformval prism result -50
 
-set square 955000
+checkprops result -s 955000

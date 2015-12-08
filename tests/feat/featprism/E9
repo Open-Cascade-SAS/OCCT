@@ -8,4 +8,4 @@ explode pr f
 featprism pr pp pr_3 0 1 0 1 1
 featperform prism result pr_5
 
-set square 104
+checkprops result -s 104

@@ -9,4 +9,4 @@ updatetolerance u 1
 
 bfuse result s u
 
-set square 22999.2
+checkprops result -s 22999.2

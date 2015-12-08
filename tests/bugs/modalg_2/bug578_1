@@ -21,5 +21,6 @@ checkshape res1
 
 bcut result b res1
 
-set square 4.84596
+checkprops result -s 4.84596 
+checkshape result
 set 3dviewer 0

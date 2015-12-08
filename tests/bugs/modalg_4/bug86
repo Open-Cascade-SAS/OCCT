@@ -14,6 +14,8 @@ puts "Do Thrusection by following command: thrusections res 0 0 w1 w2 "
 
 thrusections result 0 0 w1 w2
 
-set length 102.832
+checkprops result -l 102.832 
+checkshape result 
+checksection result
 set 2dviewer 0
 

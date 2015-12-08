@@ -6,4 +6,4 @@ restore [locate_data_file CTO904_fra61146b.rle] b
 
 bfuse result b a
 
-set square 254248
+checkprops result -s 254248

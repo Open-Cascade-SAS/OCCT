@@ -9,6 +9,6 @@ mkedge e2 l2 0 100
 # Chamfer
 chamfer2d result e1 e2 10 20
 
-set length 22.3607
+checkprops result -l 22.3607
 
 set 2dviewer 1

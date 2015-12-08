@@ -37,5 +37,5 @@ if { [catch { set tri_info [trinfo result] } catch_result] } {
     }
 }
 
-set square 863.938
+checkprops result -s 863.938
 set 3dviewer 1

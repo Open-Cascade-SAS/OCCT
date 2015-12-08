@@ -7,4 +7,4 @@ explode rr so
 
 bcommon result rr_1 c
 
-set square 625.133
+checkprops result -s 625.133

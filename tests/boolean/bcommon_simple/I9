@@ -13,4 +13,4 @@ prism cylb f -300 0 0
 
 bcommon result cyla cylb
 
-set square 160000
+checkprops result -s 160000

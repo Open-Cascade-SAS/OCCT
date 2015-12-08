@@ -1,5 +1,5 @@
-puts "TODO OCC26018 ALL: Error : The area of the resulting shape is"
+puts "TODO OCC26018 ALL: Error : The area of result shape is"
 source [locate_data_file 51533_1632-02.asm.1.gdml.tcl]
 
 ## image is differ from application
-set square 0
+checkprops result -s 0

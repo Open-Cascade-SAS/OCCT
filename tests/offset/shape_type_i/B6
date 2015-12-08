@@ -4,4 +4,5 @@ psphere s 15 270
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set volume 1.77778e+16
+checkprops result -v 1.77778e+16
+

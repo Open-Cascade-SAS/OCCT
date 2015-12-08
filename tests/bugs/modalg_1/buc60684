@@ -8,5 +8,6 @@ checkshape w
 
 prism result w 0 0 10
 
-set square 148.875
+checkprops result -s 148.875 
+checkshape result
 set 2dviewer 0

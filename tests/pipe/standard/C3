@@ -4,4 +4,4 @@ wire profile profile
 polyline w 10 0 0 10 -30 30 10 -70 90
 pipe result w profile
 
-set square 9588.68
+checkprops result -s 9588.68

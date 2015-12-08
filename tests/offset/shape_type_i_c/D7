@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_offset_shape_input_tc80.2.brep] s
 
 OFFSETSHAPE 5 {} $calcul $type
 
-set volume 1.01936e+008
+checkprops result -v 1.01936e+008

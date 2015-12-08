@@ -12,5 +12,5 @@ checkshape sh2
 
 compound sh1 sh2 result
 
-set square 560.774
+checkprops result -s 560.774
 set 2dviewer 0

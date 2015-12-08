@@ -11,4 +11,4 @@ mkface f28 p28
 featprism base cont cont 1 0 0 1 1
 featperform prism result f28
 
-set square 46778.2
+checkprops result -s 46778.2

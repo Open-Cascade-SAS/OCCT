@@ -40,5 +40,5 @@ if { $status != 0 } {
 }
 
 set 3dviewer 0
-set square 1.13819e+07
+checkprops result -s 1.13819e+07 -eps 0.1
 

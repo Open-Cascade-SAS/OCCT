@@ -1,15 +1,13 @@
 if { [isdraw result] } {
-   regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
-
-   #check if result is valid
-   puts [checkshape result]
+    #check if result is valid
+    puts [checkshape result]
     clear
     smallview
     donly result
     fit
     xwd $imagedir/${test_image}.png
 } else {
-   puts "Error : The prism cannot be built."
+    puts "Error : The prism cannot be built."
 }
 
 # to end a test script

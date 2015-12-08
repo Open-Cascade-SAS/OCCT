@@ -13,5 +13,6 @@ restore [locate_data_file OCC22946-CompoundWithoutPcurves.brep] b
 
 splitshape result a a b
 
-set square 6.06498e+08
+checkprops result -s 6.06498e+08 
+checkshape result
 set 3dviewer 0

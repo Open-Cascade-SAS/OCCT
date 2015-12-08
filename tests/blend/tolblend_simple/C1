@@ -21,4 +21,4 @@ blend result s 5*SCALE1 s_3 5*SCALE1 s_8
 explode result Sh
 tcopy result_1 result 
 
-set square 1.34325e+07
+checkprops result -s 1.34325e+07

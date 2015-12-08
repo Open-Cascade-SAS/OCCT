@@ -6,4 +6,4 @@ ttranslate cont 0 0 -50
 featdprism E cont cont 10 0 1
 featperformval dprism result 200
 
-set square 963548
+checkprops result -s 963548

@@ -1,6 +1,7 @@
 restore [locate_data_file case_1_solid.brep] a
 restore [locate_data_file case_1_edge4.brep] b
 bcut result b a
-set length empty
+checkprops result -l empty
+checksection result
 set nbsh_v 0
 set nbsh_e 0

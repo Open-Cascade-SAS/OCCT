@@ -2,6 +2,7 @@ restore [locate_data_file case_9_wire.brep] a
 restore [locate_data_file case_9_edge2.brep] b
 bop a b
 bopfuse result
-set length 1157.7
+checkprops result -l 1157.7
+checksection result
 set nbsh_v 6
 set nbsh_e 6

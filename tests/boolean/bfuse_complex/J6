@@ -9,4 +9,4 @@ tmirror b 0 0 0 1 0 0
 bfuse result a b
 
 
-set square 19185.1
+checkprops result -s 19185.1

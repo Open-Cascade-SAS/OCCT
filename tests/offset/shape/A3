@@ -1,4 +1,5 @@
 puts "TODO OCC23190 ALL: ERROR. C0 continuity of input data."
+puts "TODO OCC23190 ALL: Error: The command cannot be built"
 puts "TODO OCC23190 ALL: result is not a topological shape!!!"
 puts "TODO OCC23068 ALL: TEST INCOMPLETE"
 # Original bug : cts21271
@@ -11,4 +12,4 @@ explode s f
 
 offsetshape result s -1 s_35
 
-set volume 0
+checkprops result -v 0

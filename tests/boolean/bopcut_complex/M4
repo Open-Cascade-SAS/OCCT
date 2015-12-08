@@ -15,4 +15,4 @@ btolx b
 bop a b
 bopcut result
 
-set square 5609.09
+checkprops result -s 5609.09

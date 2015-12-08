@@ -26,7 +26,9 @@ plane p 0 0 $Z
 psection result a p 
 if ![regexp VERTEX [statshape result]] {puts [format "OCC526 FAULTY Z=%f" $Z ] }
 
-set length 27.8021
+checkprops result -l 27.8021 
+checkshape result 
+checksection result
 set 2dviewer 1
 
 

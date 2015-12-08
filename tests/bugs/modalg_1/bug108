@@ -23,6 +23,8 @@ if { [expr $dis < 0.201357] } {
    puts "OCC134 OK: bounding box is correct"
 }
 
-set length 0.201357
+checkprops result -l 0.201357 
+checkshape result
+checksection result
 set 2dviewer 0
 

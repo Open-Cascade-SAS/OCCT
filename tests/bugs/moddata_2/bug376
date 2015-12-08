@@ -14,6 +14,6 @@ offset r s 1
 
 mkface result s
 
-set square 1256.64
+checkprops result -s 1256.64
 set 2dviewer 0
 

@@ -1,4 +1,4 @@
-puts "TODO OCC7166 ALL: Error : The square of the resulting shape is"
+puts "TODO OCC7166 ALL: Error : The area of result shape is"
 
 puts "============"
 puts "OCC7166"
@@ -22,7 +22,7 @@ set isruled 0
 catch {thrusections result ${issolid} ${isruled} v1 w1 v2 }
 
 
-set square 422.859
+checkprops result -s 422.859
 
 
 checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 9

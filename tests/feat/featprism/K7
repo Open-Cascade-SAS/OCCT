@@ -12,4 +12,4 @@ explode cont face
 featprism base cont_1 cont_1 0 0 1 0 1
 featperform prism result funtil
 
-set square 31415
+checkprops result -s 31415

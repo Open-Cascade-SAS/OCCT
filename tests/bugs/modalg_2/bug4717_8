@@ -28,7 +28,8 @@ tscale s 0 0 0 SCALE1
 bop b s
 bopcommon result
 
-set square 181937
+checkprops result -s 181937 
+checkshape result
 
 checknbshapes result -vertex 3 -edge 4 -wire 2 -face 2 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 14
 set 2dviewer 0

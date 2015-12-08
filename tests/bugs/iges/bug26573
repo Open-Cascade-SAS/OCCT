@@ -9,7 +9,8 @@ puts ""
 igesbrep [locate_data_file bug26573_loft.igs] a *
 tpcompound result
 
-set square 240.546
+checkprops result -s 240.546
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

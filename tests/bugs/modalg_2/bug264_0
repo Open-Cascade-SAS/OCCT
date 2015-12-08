@@ -25,5 +25,5 @@ if { $tri != 6 && $nod != 8 }  {
     puts "Shading of OCC264_0 is OK"
 }
 
-set square 1.3135
+checkprops result -s 1.3135 
 set 3dviewer 0

@@ -8,4 +8,4 @@ restore [locate_data_file CTO900_pro5640b.rle] box2
 ## we want a radius of 0.01 Meter (10 mm)
 bcutblend result box1 box2 0.01
 
-set square 0.242811
+checkprops result -s 0.242811

@@ -12,4 +12,4 @@ featlf pr pp pl 0 0.3 0 0 0 0 1 1
 featperform lf result 
 
 
-set square 6.89244
+checkprops result -s 6.89244

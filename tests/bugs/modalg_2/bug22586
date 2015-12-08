@@ -19,4 +19,5 @@ if { [catch { OCC22586 shape result } catch_result] } {
 }
 
 set 3dviewer 1 
-set square 10975
+checkprops result -s 10975
+checkshape result

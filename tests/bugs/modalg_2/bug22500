@@ -18,5 +18,6 @@ checkmaxtol result -ref 4.5583792019775401e-006
 checknbshapes result -shell 1
 checkfreebounds result 28
 
-set square 0.0363594
+checkprops result -s 0.0363594 
+checkshape result
 set 3dviewer 0

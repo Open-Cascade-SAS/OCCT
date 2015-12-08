@@ -13,4 +13,4 @@ explode c f
 bfuse result a_1 c_1
 #pkv t
 
-set square 570.047
+checkprops result -s 570.047

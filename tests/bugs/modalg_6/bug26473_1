@@ -11,5 +11,6 @@ offsetparameter 1e-7 c i
 offsetload i 1
 offsetperform result
 
-set square 605144
+checkprops result -s 605144 
+checkshape result
 set 2dviewer 1

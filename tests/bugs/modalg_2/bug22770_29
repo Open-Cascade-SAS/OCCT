@@ -13,7 +13,8 @@ restore [locate_data_file 22770-trans.brep] b
 
 sewing result 0.1 a b +c -f
 
-set square 1.8847e+07
+checkprops result -s 1.88469e+07 -eps 0.1
+checkshape result
 
 checknbshapes result -vertex 1469 -edge 1474 -wire 273 -face 259 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 3476
 checkmaxtol result -ref 0.0451323239933289

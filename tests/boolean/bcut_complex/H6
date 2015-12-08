@@ -7,4 +7,4 @@ restore [locate_data_file pro12880d.rle] tool
 bcut result part tool
 
 
-set square 200102
+checkprops result -s 200102

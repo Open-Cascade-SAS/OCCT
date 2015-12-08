@@ -3,7 +3,7 @@
 
 puts "TODO OCC26020 ALL: Error: bopcheck failed"
 puts "TODO OCC26020 Linux: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC26020 Linux: Error : The area of the resulting shape is"
+puts "TODO OCC26020 Linux: Error : The area of result shape is"
 
 # planar face 
 plane pln_f1 590.6877421677151 -519.8775759738943 -93.555747452441423 0.64798185367609173 0.7547095802227719 -0.10263024323494339
@@ -43,5 +43,5 @@ mkface f7 pln_f7 -1000000 1000000 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7
 
-set square 9.99931e+012
+checkprops result -s 9.99931e+012
 

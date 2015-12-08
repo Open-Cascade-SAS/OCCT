@@ -9,4 +9,4 @@ ttranslate cont 0 -5.65 0
 featprism base cont cont 0 1 0 0 1
 featperformval prism result 11.3
 
-set square 848.269
+checkprops result -s 848.269

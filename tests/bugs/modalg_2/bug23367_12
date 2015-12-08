@@ -14,7 +14,9 @@ donly a w1 w2
 fit
 middlepath result a w2 w1
 
-set length 3.46311
+checkprops result -l 3.46311 
+checkshape result 
+checksection result
 
 set 2dviewer 1
 

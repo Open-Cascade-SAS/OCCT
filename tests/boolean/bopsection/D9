@@ -24,4 +24,5 @@ bopsection result
 
 
 
-set length 116.349
+checkprops result -l 116.349
+checksection result

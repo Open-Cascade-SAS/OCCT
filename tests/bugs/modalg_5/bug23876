@@ -24,6 +24,7 @@ ttranslate b2 0 0 50
 bop b1 b2
 bopcommon result
 
-set square 2422.92
+checkprops result -s 2422.92 
+checkshape result
 set 2dviewer 0
 

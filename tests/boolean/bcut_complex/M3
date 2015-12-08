@@ -9,4 +9,4 @@ revol b skface 0 0 0 0 0 1 360
 
 bcut result a b
 
-set square 172676
+checkprops result -s 172676

@@ -19,5 +19,6 @@ if [catch {depouille result a 0 0 1 a_2 10 0 39.6875 0 0. 0. -1 } catch_result] 
     puts "OCC712 OK"
 }
 
-set square 41956.4
+checkprops result -s 41956.4 
+checkshape result
 set 2dviewer 0

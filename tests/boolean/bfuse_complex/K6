@@ -6,4 +6,4 @@ restore [locate_data_file cts20973b.rle] b
 
 bfuse result a b
 
-set square 324489
+checkprops result -s 324489

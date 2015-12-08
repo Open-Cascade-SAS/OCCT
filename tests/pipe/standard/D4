@@ -4,4 +4,4 @@ mkedge w w
 wire w w
 pipe result w profile
 
-set square 2669.45
+checkprops result -s 2669.45

@@ -14,4 +14,5 @@ restore [locate_data_file bug23849_plane_2.brep] b2
 bop b1 b2
 bopcommon result
 
-set square empty
+checkprops result -s empty
+checkshape result

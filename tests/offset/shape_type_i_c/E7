@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_trapezoid_1.brep] s
 
 OFFSETSHAPE 10 {} $calcul $type
 
-set volume 244837
+checkprops result -v 244837

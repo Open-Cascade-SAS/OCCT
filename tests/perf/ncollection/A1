@@ -20,7 +20,7 @@ lappend values "$diff_cl"
 if { [string compare $tcl_platform(platform) "windows"] != 0 } {
   set check_values  { 1.2363286058767904
                       2.7537414143534
-                      1.2596260162601621
+                      1.5596260162601621
                       3.937043746844462
                       1.2133020329576465
                       1.2164522569168656

@@ -11,6 +11,7 @@ checkshape sh_2
 
 bcut result sh_1 sh_2
 
-set square 83334.1
+checkprops result -s 83334.1 
+checkshape result
 set 2dviewer 0
 

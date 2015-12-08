@@ -15,7 +15,9 @@ polyline a -10 -10 0 10 -10 0 10 10 0 -10 10 0 -10 -10 0
 bop a h
 bopcut result
 
-set length 40.
+checkprops result -l 40. 
+checkshape result 
+checksection result
 
 set nbshapes_expected "
 Number of shapes in shape

@@ -46,7 +46,8 @@ baddtools Sphere002 Cylinder006 Sphere001 Cylinder005 Cylinder004
 bfillds
 bbop result 1
 
-set square 1893.17
+checkprops result -s 1893.17 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

@@ -12,6 +12,7 @@ checkshape b
 
 bfuse result a b
 
-set square 4844.63
+checkprops result -s 4844.63 
+checkshape result
 set 3dviewer 1
 

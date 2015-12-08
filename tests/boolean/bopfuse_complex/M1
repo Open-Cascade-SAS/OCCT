@@ -24,4 +24,4 @@ bopfuse result
 # the tool b.
 
 
-set square 22963.8
+checkprops result -s 22963.8

@@ -1,11 +1,11 @@
 # Original bug : pro14260
 # Date : 21 Sept 98
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
+puts "TODO #22911 ALL: Error : The area of result shape is"
 
 restore [locate_data_file CTO900_pro14260c.rle] c
 restore [locate_data_file pro14260d.rle] d
 
 bfuse result c d
 
-set square 46305.1
+checkprops result -s 46305.1

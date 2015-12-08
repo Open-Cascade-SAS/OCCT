@@ -16,6 +16,7 @@ vsetdispmode 1
 vdisplay result
 vfit
 
-set square 493480
+checkprops result -s 493480 
+checkshape result
 
 set only_screen 1

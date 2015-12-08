@@ -15,6 +15,8 @@ checkshape sh2
 
 bsection result sh1 sh2
 
-set length 26.2001
+checkprops result -l 26.2001 
+checkshape result
+checksection result
 set 2dviewer 0
 

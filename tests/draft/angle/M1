@@ -9,4 +9,4 @@ fsameparameter base
 explode base face
 
 depouille result base 0 0 1 base_2 10 0 0 0 0 0 1
-set square 278770
+checkprops result -s 278770

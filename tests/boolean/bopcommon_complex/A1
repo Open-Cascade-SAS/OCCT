@@ -9,4 +9,4 @@ bop a b
 bopcommon result
 
 
-set square 844.929
+checkprops result -s 844.929

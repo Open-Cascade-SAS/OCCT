@@ -5,4 +5,4 @@ restore [locate_data_file mds-part2.rle] b
 
 bfuse result a b
 
-set square 239.333
+checkprops result -s 239.333

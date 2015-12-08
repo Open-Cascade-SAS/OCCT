@@ -7,4 +7,4 @@ ttranslate b2 0 3 0
 
 bcommon result b1 b2
 
-set square empty
+checkprops result -s empty

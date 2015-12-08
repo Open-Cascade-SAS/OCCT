@@ -8,4 +8,4 @@ fsameparameter b
 
 bfuse result a b
 
-set square 22058
+checkprops result -s 22058

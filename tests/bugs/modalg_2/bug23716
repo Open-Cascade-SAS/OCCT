@@ -11,6 +11,7 @@ explode b
 bop b_1 b_3
 bopfuse result
 
-set square 45605.9
+checkprops result -s 45605.9 
+checkshape result
 
 set 2dviewer 1

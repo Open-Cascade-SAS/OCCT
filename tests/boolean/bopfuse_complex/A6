@@ -4,4 +4,4 @@ restore [locate_data_file OCC3-2.brep] b
 bop  b a
 bopfuse result
 
-set square 11400
+checkprops result -s 11400

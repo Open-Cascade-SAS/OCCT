@@ -8,4 +8,4 @@ box s 100 100 100
 explode s e
 blend result s 10 s_5
 
-set square 59527.9
+checkprops result -s 59527.9

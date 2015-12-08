@@ -29,6 +29,7 @@ box b 0 0 $Zbox 150 200 200
 
 bcut result b hs
 
-set square 179000
+checkprops result -s 179000 
+checkshape result
 set 2dviewer 0
 

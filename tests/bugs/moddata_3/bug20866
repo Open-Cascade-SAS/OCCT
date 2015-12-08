@@ -26,7 +26,7 @@ if [catch { buildsweep result } ] {
   puts "Faulty ${BugNumber} : buildsweep is wrong"
 } else {
 
-    set square 1.94998e+06
+    checkprops result -s 1.94998e+06
 
     checknbshapes result -vertex 161 -edge 299 -wire 138 -face 138 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 737
 }

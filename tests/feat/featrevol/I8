@@ -13,4 +13,4 @@ ttranslate pp 1.5 1.5 1
 featrevol bb pp pp 1.5 1.5 1 0 0 1 1 1
 featperform revol result
 
-set square 61.854
+checkprops result -s 61.854

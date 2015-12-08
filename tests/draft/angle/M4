@@ -8,4 +8,4 @@ restore [locate_data_file CFE903_pro16gha.rle] base
 explode base face
 
 depouille result base 0 0 -1 base_1  1 115.16843 -2.03233999999999 -119.85872 0 0 1
-set square 10170.4
+checkprops result -s 10170.4

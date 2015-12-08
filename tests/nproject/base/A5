@@ -2,5 +2,4 @@ restore [locate_data_file projortho005.brep] p
 explode p
 compound p_1 p_2 c
 nproject result p_3 c 0.001 2 14 10
-set length 540.983
-
+checkprops result -l 540.983

@@ -3,4 +3,4 @@ restore [locate_data_file so2] b2
 
 bfuse result b1 b2
 
-set square 430.878
+checkprops result -s 430.878

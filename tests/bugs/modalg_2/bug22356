@@ -21,7 +21,9 @@ puts "Start boolean operation ..."
 bopfuse result
 puts "Finish boolean operation ..."
 
-set length 300
+checkprops result -l 300 
+checkshape result 
+checksection result
 
 checknbshapes result -vertex 3 -edge 2 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 6
 

@@ -25,5 +25,7 @@ if { $ll_1 != $ll_2 } {
     puts "PRO19653 OK : BREPALGO_BOOLEANOPERATION returns result"
 }
 
-set length 228.265
+checkprops result -l 228.265 
+checkshape result 
+checksection result
 set 2dviewer 0

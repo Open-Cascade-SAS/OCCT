@@ -4,4 +4,4 @@ restore [locate_data_file b193] b
 bop a b
 bopcut result
 
-set square 10000
+checkprops result -s 10000

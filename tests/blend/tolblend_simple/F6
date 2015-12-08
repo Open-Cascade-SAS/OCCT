@@ -3,4 +3,4 @@ tscale s 0 0 0 SCALE1
 explode s E
 blend result s 5*SCALE1 s_9 5*SCALE1 s_10  5*SCALE1 s_2
 
-set square 165929
+checkprops result -s 165929

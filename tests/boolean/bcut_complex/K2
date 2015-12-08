@@ -11,4 +11,4 @@ bcut result c d
 
 
 
-set square 1.55789e+06
+checkprops result -s 1.55789e+06

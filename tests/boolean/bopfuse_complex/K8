@@ -11,4 +11,4 @@ bop coque1_1 coque2_1
 
 bopfuse result 
 
-set square 3950.89
+checkprops result -s 3950.89

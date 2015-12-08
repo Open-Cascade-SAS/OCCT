@@ -47,5 +47,5 @@ mkface f8 pln_f8 -1000000 1000000 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7 f8
 
-#set square 3.60102e+013
+#checkprops result -s 3.60102e+013
 

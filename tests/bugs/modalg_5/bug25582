@@ -15,5 +15,6 @@ if ![isdraw result] {
   puts "Error : thrusections failed"
 }
 
-set square 1.5708
+checkprops result -s 1.5708 
+checkshape result
 set 2dviewer 0

@@ -4,4 +4,4 @@ restore [locate_data_file CTO909_tool_syb.brep] b
 
 bfuse result a b
 
-set square 76217.4
+checkprops result -s 76217.4

@@ -1,3 +1,4 @@
+puts "TODO OCC1111 Windows: Error : The area of result shape is"
 puts "BUC60290 (the same problem with cut and common)"
 
 restore [locate_data_file buc60290a.rle] sol1
@@ -5,10 +6,4 @@ restore [locate_data_file buc60290b.rle] sol2
 
 bcommon result sol2 sol1
 
-set square 685602
-if { [regexp {Windows} [dversion]] } {
-  if { [regexp {64} [dversion]] } {
-    #set square 804392
-    puts "TODO OCC1111 Windows: Error : The area of the resulting shape is"
-  }
-}
+checkprops result -s 662100

@@ -24,5 +24,6 @@ if { [catch {buildsweep result} catch_result] } {
     puts "Faulty OCC2083"
 }
 
-set square 36302.3
+checkprops result -s 36302.3 
+checkshape result
 set 3dviewer 1

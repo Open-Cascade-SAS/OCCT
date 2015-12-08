@@ -12,4 +12,4 @@ restore [locate_data_file CCV_2_c1_gsv.rle] s
 explode s F
 catch {offsetcompshape result s -10 s_8 s_10}
 
-set volume 3.0764e+06
+checkprops result -v 3.0764e+06

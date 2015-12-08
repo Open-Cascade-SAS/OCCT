@@ -6,4 +6,4 @@ nexplode bx f
 depouille result bx 1 0 0 bx_3 10 0 0 0 1 0 0 \
 bx_6 5 0 0 0 1 0 0
 
-set square 2011.72
+checkprops result -s 2011.72

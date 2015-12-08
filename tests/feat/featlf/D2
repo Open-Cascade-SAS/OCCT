@@ -8,4 +8,4 @@ ttranslate pp 0.5 2.5 0.3
 featlf pr pp pl 0 0 0.3 0 0 -0.1 1 1
 featperform lf result
 
-set square 43.7592
+checkprops result -s 43.7592

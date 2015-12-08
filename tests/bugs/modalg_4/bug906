@@ -14,5 +14,6 @@ restore [locate_data_file DXF906.rle] a
 
 mkplane result a
 
-set square 92131.6
+checkprops result -s 92131.6 
+checkshape result
 set 2dviewer 0

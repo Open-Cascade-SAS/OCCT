@@ -12,4 +12,4 @@ bop rr p1
 bopfuse result
 
 
-set square 664
+checkprops result -s 664

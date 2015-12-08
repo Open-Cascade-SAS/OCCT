@@ -6,4 +6,4 @@ restore [locate_data_file CTO909_bad_cut_part.brep] b
 bop b a
 bopcut result
 
-set square 163.988
+checkprops result -s 163.988

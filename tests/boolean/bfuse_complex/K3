@@ -10,4 +10,4 @@ prism pp f 0 0 100
 
 bfuse result s pp
 
-set square 358551
+checkprops result -s 358551

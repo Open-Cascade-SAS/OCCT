@@ -1,5 +1,5 @@
 puts "TODO OCC24862 ALL: Error :  is WRONG because number of"
-puts "TODO OCC24862 ALL: Error : The square of result shape is"
+puts "TODO OCC24862 ALL: Error : The area of result shape is"
 puts "TODO OCC24682 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 puts "============"
@@ -37,7 +37,8 @@ catch { OFFSETSHAPE $distance {} $calcul $type }
 # Null result
 
 
-set square 495.635
+checkprops result -s 495.635 
+checkshape result
 
 checknbshapes result -vertex 2 -edge 3 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 13
 

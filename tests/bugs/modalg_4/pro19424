@@ -14,6 +14,7 @@ if [catch {evolved result b p o } catch_result] {
   puts "PRO19424 OK: function EVOLVED works properly"
 }
 
-set square 246.506
+checkprops result -s 246.506 
+checkshape result
 set 2dviewer 0
 

@@ -27,5 +27,6 @@ if { $tri == 1874 || $nod == 1861} {
     puts " OCC179  shading: Faulty"
 }
 
-set square 12229.8
+checkprops result -s 12229.8 
+checkshape result
 set 3dviewer 0

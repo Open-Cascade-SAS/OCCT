@@ -24,7 +24,8 @@ donly result
 fit
 xwd $imagedir/${test_image}_2.png
 
-set square 662.657
+checkprops result -s 662.657 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

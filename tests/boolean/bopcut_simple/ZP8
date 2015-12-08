@@ -6,4 +6,4 @@ prism pcy pc_2 0 0 10
 bop pc pcy
 bopcut result
 
-set square 254.16
+checkprops result -s 254.16

@@ -13,7 +13,9 @@ donly a a_2 a_3
 fit
 middlepath result a a_2 a_3
 
-set length 30.0036
+checkprops result -l 30.0036 
+checkshape result 
+checksection result
 
 set 2dviewer 1
 

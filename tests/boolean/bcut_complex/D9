@@ -3,4 +3,4 @@ restore [locate_data_file so7] b2
 
 bcut result b2 b1
 
-set square 269.65
+checkprops result -s 269.65

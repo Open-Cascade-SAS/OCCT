@@ -12,8 +12,8 @@ restore [locate_data_file OCC6063.brep] result
 
 checkshape result
 
-set tol_square 1.e-6
-set square 413318
+checkprops result -s 413318 -eps 1.e-6
+checkshape result
 set 3dviewer 1
 
 

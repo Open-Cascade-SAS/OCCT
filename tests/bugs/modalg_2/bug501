@@ -14,5 +14,6 @@ if [catch {tcopy result b } catch_result] {
 } else {
     puts "OCC501 OK: function TCOPY works without hangs up "
 }
-set square 121895
+checkprops result -s 121895 
+checkshape result
 set 2dviewer 0

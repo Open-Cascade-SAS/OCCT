@@ -17,4 +17,4 @@ featrf s w pl 0 0 0 0 0 1 0.2 0.2 1 1
 featperform rf result
 
 
-set square 196.379
+checkprops result -s 196.379

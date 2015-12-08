@@ -14,4 +14,4 @@ bfuse f p pc
 nexplode f f
 depouille result f 0 0 1 f_7 1 0 0 11 0 0 1
 
-set square 1050.36
+checkprops result -s 1050.36

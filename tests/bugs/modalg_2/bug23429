@@ -12,7 +12,8 @@ restore [locate_data_file CR23429-Shape3.brep] b
 
 OCC23429 result a b
 
-set square 1120.52
+checkprops result -s 1107.88
+checkshape result
 
 set 2dviewer 1
 

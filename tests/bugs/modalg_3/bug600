@@ -13,5 +13,6 @@ bop b a
 
 bopcommon result
 
-set square 41970.8
+checkprops result -s 41970.8
+checkshape result
 set 2dviewer 0

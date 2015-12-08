@@ -29,5 +29,6 @@ set dz [expr $az - $bz]
 
 revol result a $ax $ay $az $dx $dy $dz 360
 
-set square 692942
+checkprops result -s 692942 
+checkshape result
 set 2dviewer 0

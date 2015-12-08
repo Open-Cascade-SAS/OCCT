@@ -9,4 +9,4 @@ bcut result part tool
 
 
 
-set square 42297.3
+checkprops result -s 42297.3

@@ -24,4 +24,4 @@ bopfuse result
 
 
 
-set square 5194.93
+checkprops result -s 5194.93

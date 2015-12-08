@@ -11,4 +11,5 @@ copy b_1 b
 bsection result a b
 
 
-set length 28.14
+checkprops result -l 28.14
+checksection result

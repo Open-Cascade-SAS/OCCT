@@ -7,4 +7,4 @@ nexplode a e
 
 blend result a 4 a_5 4 a_1 4 a_6
 
-set square 21444.7
+checkprops result -s 21444.7

@@ -12,4 +12,4 @@ blend res2 result 10 result_11
 explode res2 e
 blend res3 res2 10 res2_6
 
-set square 189823
+checkprops result -s 189823

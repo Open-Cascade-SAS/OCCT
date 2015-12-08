@@ -1,6 +1,7 @@
 restore [locate_data_file case_9_wire_a.brep] a
 restore [locate_data_file case_9_edge4.brep] b
 bcommon result b a
-set length empty
+checkprops result -l empty
+checksection result
 set nbsh_v 0
 set nbsh_e 0

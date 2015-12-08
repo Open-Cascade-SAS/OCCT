@@ -6,4 +6,4 @@ restore [locate_data_file CTO900_hkg60163d.rle] prism
 
 bcut result base prism
 
-set square 93761.7
+checkprops result -s 93761.7

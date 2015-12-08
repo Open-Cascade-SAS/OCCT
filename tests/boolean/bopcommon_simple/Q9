@@ -6,4 +6,4 @@ ttranslate b2 1 1 3
 bop b1 b2
 bopcommon result
 
-set square 3.3094
+checkprops result -s 3.3094

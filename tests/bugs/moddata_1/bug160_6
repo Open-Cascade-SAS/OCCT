@@ -19,7 +19,7 @@ if {$nf < 6} {
    puts "Error : the resulting shape is unclosed!!!"
 }
 
-set square 247636
+checkprops result -s 247636
 set 2dviewer 0
 
 

@@ -4,4 +4,4 @@ explode sh
 bop sh_2 sh_1
 bopcommon result
 
-set square empty
+checkprops result -s empty

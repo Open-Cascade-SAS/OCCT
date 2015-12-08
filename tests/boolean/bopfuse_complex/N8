@@ -10,4 +10,4 @@ bop result b3
 bopfuse result
 
 
-set square 12677.1
+checkprops result -s 12677.1

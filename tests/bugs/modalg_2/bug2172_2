@@ -17,6 +17,7 @@ checkshape cylinder
 
 bfuse result cylinder torus
 
-set square 28603.8
+checkprops result -s 28603.8 
+checkshape result
 set 3dviewer 1
 

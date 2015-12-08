@@ -8,4 +8,4 @@ mkface fu su
 featrevol boite cont boite_3 200 0 200 0 -1 0 0 1
 featperform revol result fu
 
-set square 316405
+checkprops result -s 316405

@@ -10,5 +10,6 @@ checkshape w10
 
 OCC606 result w10 -t
 
-set square 522.56
+checkprops result -s 522.56
+checkshape result
 set 3dviewer 0

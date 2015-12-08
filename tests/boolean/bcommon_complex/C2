@@ -1,12 +1,9 @@
 # Original bug : cts21453
 # Date : 15sept98
 
-
 restore [locate_data_file CTO900_cts21453a.rle] a
 restore [locate_data_file CTO900_cts21453b.rle] b
 
 bcommon result a b
 
-
-
-set square 16681.4
+checkprops result -s 16681.4

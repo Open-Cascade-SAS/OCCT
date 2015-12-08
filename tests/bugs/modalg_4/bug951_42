@@ -19,6 +19,8 @@ checkshape s2
 bop s1 s2
 bopsection result
 
-set length 39.8616
+checkprops result -l 39.8616 
+checkshape result 
+checksection result
 set 3dviewer 1
 

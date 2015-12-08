@@ -7,4 +7,4 @@ ttranslate cont 0 200 0
 featdprism cyl cont cont -10 1 1
 featperformval dprism result 55 cyl_3
 
-set square 94944.4
+checkprops result -s 94944.4

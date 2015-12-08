@@ -22,5 +22,7 @@ regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ed
  } else {
      puts "Faulty BUC60789: CUT operation was made wrongly"
  }
-set length 288.856
+checkprops result -l 288.856 
+checkshape result
+checksection result
 set 2dviewer 0

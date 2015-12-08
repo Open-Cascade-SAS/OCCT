@@ -7,4 +7,4 @@ ttranslate cont 0 0 -100
 featprism cyl cont cont 0 1 0 1 1
 featperformval prism result 100
 
-set square 101561
+checkprops result -s 101561

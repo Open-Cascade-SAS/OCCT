@@ -5,4 +5,4 @@ box b2 -r -r 0 2*r 2*r 1
 bop b1 b2
 bopcut result
 
-set square 24.5064
+checkprops result -s 24.5064

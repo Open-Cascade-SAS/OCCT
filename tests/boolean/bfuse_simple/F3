@@ -24,4 +24,4 @@ bfuse result ba bb
 
 
 
-set square 170
+checkprops result -s 170

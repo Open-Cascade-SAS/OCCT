@@ -11,4 +11,5 @@ updatetolerance out 1
 #problemes de baillement sur les partie haute de le ligne de section
 bsection result obj out
 
-set length 1022.03
+checkprops result -l 1022.03
+checksection result

@@ -14,9 +14,8 @@ checkshape r
 explode r f
 compound r_1 r_2 r_3 r_4 r_5 r_6 r_7 r_8 r_9 r_10 r_11 result
 
-set square 900
-
 checknbshapes result -vertex 23 -edge 33 -wire 13 -face 11 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 81
-set square 900
+checkprops result -s 900 
+checkshape result
 set 2dviewer 0
 

@@ -2,7 +2,7 @@
 # cylinder plane
 
 puts "TODO OCC26020 ALL: Error: bopcheck failed"
-puts "TODO OCC26020 Linux: Error : The area of the resulting shape is"
+puts "TODO OCC26020 Linux: Error : The area of result shape is"
 
 # planar face 
 plane pln_f1 1665.7013364039071 -825 -339.75605834598957 0.15643446504023129 4.4408920985006257e-016 0.98768834059513766
@@ -47,5 +47,5 @@ mkface f8 cyl_f8 0 6.2831853071795862 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7 f8
 
-set square 1.99784e+007
+checkprops result -s 1.99784e+007
 

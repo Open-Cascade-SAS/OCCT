@@ -7,4 +7,4 @@ featrevol b p b_6 1.5 1.5 3 0 1 0 1 1
 featperform revol result  
 
 
-set square 64.5664
+checkprops result -s 64.5664

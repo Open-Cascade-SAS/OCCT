@@ -25,6 +25,6 @@ if { ${word1} == 0 && ${word2} == 0 && ${word3} == 0 && ${word4} == 0 && ${word5
    puts "Faulty ${BugNumber}"
 }
 
-set square 7837.39
+checkprops result -s 7837.39 
 set 3dviewer 0
 

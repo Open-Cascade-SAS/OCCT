@@ -13,6 +13,8 @@ puts [bop a b]
 puts [boptuc result]
 
 checknbshapes result -vertex 3 -edge 2
-set length 272.04
+checkprops result -l 272.04 
+checkshape result 
+checksection result
 set 2dviewer 0
  

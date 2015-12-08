@@ -22,5 +22,6 @@ if ![isdraw result] {
   }
 }
 
-set square 25.236
+checkprops result -s 25.236 
+checkshape result
 set 2dviewer 0

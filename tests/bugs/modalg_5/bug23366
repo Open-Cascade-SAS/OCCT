@@ -12,6 +12,7 @@ restore [locate_data_file bug23366_IntersectionSegment.brep] s2
 bop s1 s2
 bopcut result
 
-set square 173.098
+checkprops result -s 173.098 
+checkshape result
 set 2dviewer 0
 

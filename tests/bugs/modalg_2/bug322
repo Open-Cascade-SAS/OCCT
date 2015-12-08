@@ -28,6 +28,7 @@ checkmaxtol result -ref 1.0001007808605688e-007
 checknbshapes result -shell 1
 checkfreebounds result 6
 
-set square 20000
+checkprops result -s 20000 
+checkshape result
 set only_screen 1
 

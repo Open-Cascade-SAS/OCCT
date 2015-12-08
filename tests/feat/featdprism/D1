@@ -7,4 +7,4 @@ mkface f s
 featdprism E cont E_10 10 1 1
 featperform dprism result f
 
-set square 969352
+checkprops result -s 969352

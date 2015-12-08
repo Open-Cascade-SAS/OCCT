@@ -1,7 +1,8 @@
-puts "TODO #OCC26777 ALL: Error : The length of the resulting shape is"
+puts "TODO #OCC26777 ALL: Error : The length of result shape is"
 
 restore [locate_data_file GEN758_nofog.rle] a
 explode a
 bsection result a_1 a_2
 
-set length 22.2575
+checkprops result -l 22.2575
+checksection result

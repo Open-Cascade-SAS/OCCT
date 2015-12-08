@@ -22,6 +22,7 @@ if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 }
     puts "Tolerance is OK"
 }
 
-set square 11.9915
+checkprops result -s 11.9915 
+checkshape result
 set 2dviewer 0
 

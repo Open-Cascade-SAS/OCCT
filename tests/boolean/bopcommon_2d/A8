@@ -2,6 +2,7 @@ restore [locate_data_file case_1_shell.brep] a
 restore [locate_data_file case_1_edge2.brep] b
 bop a b
 bopcommon result
-set length empty
+checkprops result -l empty
+checksection result
 set nbsh_v 0
 set nbsh_e 0

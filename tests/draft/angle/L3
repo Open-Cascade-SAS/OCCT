@@ -6,4 +6,4 @@ pcylinder base 5 10
 explode base face
 
 depouille result base 0 0 1 base_1 0.41 5 0 0 0 0 1
-set square 466.767
+checkprops result -s 466.767

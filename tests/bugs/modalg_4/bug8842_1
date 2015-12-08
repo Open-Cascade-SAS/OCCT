@@ -32,7 +32,8 @@ if [catch { myoffset result con1 5 0 } catch_result] {
   puts "${BugNumber}: Faulty (1)"
 } else {
 
-set square 32396.2
+checkprops result -s 32396.2 
+checkshape result
 
 checknbshapes result -vertex 5 -edge 8 -wire 4 -face 4 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 22
 }

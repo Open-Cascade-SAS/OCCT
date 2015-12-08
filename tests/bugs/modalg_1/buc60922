@@ -23,5 +23,6 @@ distmini r sh e
 
 mkface result result
 
-set square 157.932
+checkprops result -s 157.932 
+checkshape result
 set 2dviewer 0

@@ -5,4 +5,4 @@ mkplane f b
 featprism a f f 1 0 0 0 1
 featperform prism result
 
-set square 3288.73
+checkprops result -s 3288.73

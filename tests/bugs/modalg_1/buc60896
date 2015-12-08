@@ -14,5 +14,7 @@ sameparameter result
 sameparameter result tol 1.e-2
 sameparameter result tol 1000
 
-set length 48288.3
+checkprops result -l 48288.3 
+checkshape result
+checksection result
 set 2dviewer 0

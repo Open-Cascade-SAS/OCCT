@@ -1,4 +1,4 @@
-puts "TODO OCC26018 ALL: Error : The area of the resulting shape is"
+puts "TODO OCC26018 ALL: Error : The area of result shape is"
 # test script for hole_full_prism_rect.prt.2.gdml file
 compound result
 
@@ -35,4 +35,4 @@ bcut sh48C48E0 sh467E330_copy sh48D1E70_copy; copy sh48C48E0 sh48C48E0_copy
 # result
 add sh48C48E0_copy result
 
-set square 0
+checkprops result -s 0

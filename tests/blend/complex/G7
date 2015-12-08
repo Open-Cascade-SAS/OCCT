@@ -10,4 +10,4 @@ explode a e
 # this may not be all the fillets
 blend result a 2 s_132 2 s_139 0.5 s_4 0.5 s_144 0.5 s_119 1 s_50
 
-set square 0
+checkprops result -s 0

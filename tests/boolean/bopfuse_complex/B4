@@ -1,4 +1,4 @@
-puts "TODO #22911 ALL: Error : The bopfuse cannot be built."
+puts "TODO #22911 ALL: Error: The command cannot be built"
 
 restore [locate_data_file OCC100_sp.brep] a
 restore [locate_data_file OCC100_cyl.brep] b
@@ -6,4 +6,4 @@ restore [locate_data_file OCC100_cyl.brep] b
 bop a b
 bopfuse result
 
-set square 0
+checkprops result -s 0

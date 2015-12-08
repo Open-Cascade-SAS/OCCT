@@ -21,6 +21,6 @@ if { [catch {bcut result b2 b1} catch_result] } {
 
 checkshape result
 
-set square 71185
+checkprops result -s 71185
 set 3dviewer 1
 

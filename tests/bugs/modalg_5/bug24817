@@ -43,12 +43,7 @@ sewing sr2 plane1 plane2 plane3 +n
 #
 checknbshapes sr1 -vertex 2 -edge 3 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 10
 
-regexp {Mass +: +([-0-9.+eE]+)} [sprops sr1] full square1
-set square1_good 3.14159
-if { ${square1} != ${square1_good} } {
-   puts "Error 2: Square is not valid"
-}
-
+checkprops sr1 -s 3.14159
 clear
 smallview
 donly sr1
@@ -58,12 +53,7 @@ xwd $imagedir/${test_image}_1.png
 #
 checknbshapes sr2 -vertex 2 -edge 4 -wire 3 -face 3 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 13
 
-regexp {Mass +: +([-0-9.+eE]+)} [sprops sr2] full square2
-set square2_good 4.71239
-if { ${square2} != ${square2_good} } {
-   puts "Error 4: Square is not valid"
-}
-
+checkprops sr2 -s 4.71239
 donly sr2
 fit
 xwd $imagedir/${test_image}_2.png

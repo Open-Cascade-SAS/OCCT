@@ -5,4 +5,4 @@ orientation w1 F
 orientation w2 R
 orientation w1 R
 thrusections result 1 0 w2 w1
-set square 29817.5
+checkprops result -s 29817.5

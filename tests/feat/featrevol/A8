@@ -11,4 +11,4 @@ vertex v1 200 50 200
 featrevol base cont cont 200 50 200 0 1 0 1 1
 featperformval revol result 270 funtil
 
-set square 190754
+checkprops result -s 190754

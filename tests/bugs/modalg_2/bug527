@@ -12,5 +12,6 @@ cpulimit 3600
 restore [locate_data_file OCC527.brep] result
 OCC527 result
   
-set square 3774.42
+checkprops result -s 3774.42 
+checkshape result
 set 2dviewer 1

@@ -47,5 +47,6 @@ puts [computetolerance res2]
 
 renamevar res2 result
 
-set square 78.7016
+checkprops result -s 78.8852
+checkshape result
 set 2dviewer 0

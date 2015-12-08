@@ -27,6 +27,6 @@ if { $tri == 71 && $nod == 73} {
 	puts " OCC347  case 2: Faulty"
 }
 
-set square 100.531
+checkprops result -s 100.531 
 set 2dviewer 0
 

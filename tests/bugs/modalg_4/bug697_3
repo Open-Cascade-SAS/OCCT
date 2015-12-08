@@ -19,5 +19,6 @@ if { [catch {bfuse result b2 b1} catch_result] } {
     puts "Faulty OCC697"
 }
 
-set square 8879.41
+checkprops result -s 8879.41 
+checkshape result
 set 3dviewer 1

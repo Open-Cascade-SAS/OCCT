@@ -11,7 +11,8 @@ restore [locate_data_file bug23122_IntTor.brep] s2
 
 bcut result s1 s2
 
-set square 6962.25
+checkprops result -s 6962.25 
+checkshape result
 set 2dviewer 0
 
 

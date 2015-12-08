@@ -21,4 +21,4 @@ prism pr4 p4 0 0 -5
 bcut result po2 pr4
 
 
-set square 145250
+checkprops result -s 145250

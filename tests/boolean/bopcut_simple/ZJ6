@@ -4,4 +4,4 @@ pcone b2 2 1 8
 bop b1 b2
 bopcut result
 
-set square 361.87
+checkprops result -s 361.87

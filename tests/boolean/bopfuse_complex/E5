@@ -24,4 +24,4 @@ btolx sh_5
 bop res4 sh_5
 bopfuse result
 
-set square 1.20917e+07
+checkprops result -s 1.20917e+07

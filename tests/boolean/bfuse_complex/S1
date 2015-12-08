@@ -13,4 +13,4 @@ explode res
 
 bfuse result base res_1
 
-set square 64405.2
+checkprops result -s 64405.2

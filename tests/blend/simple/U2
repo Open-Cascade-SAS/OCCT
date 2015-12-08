@@ -13,4 +13,4 @@ tscale s 0 0 0 SCALE2
 explode s E
 blend result s 5*SCALE2 s_14
 
-set square 4328.2
+checkprops result -s 4328.2

@@ -11,6 +11,6 @@ explode a e
 blend result a 1 a_5 1 a_6 1 a_7 1 a_8
 checkshape result
 
-set square 155.846
+checkprops result -s 155.846
 set 2dviewer 0
 

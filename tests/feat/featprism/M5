@@ -15,4 +15,4 @@ mkface f12 p12
 featprism base cont cont 0 1 0 0 1
 featperform prism result f12
 
-set square 829.806
+checkprops result -s 829.806

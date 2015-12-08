@@ -18,5 +18,7 @@ puts "Start boolean operation ..."
 bopsection result b1 b2
 puts "Finish boolean operation ..."
 
-set length 94.4534
+checkprops result -l 94.4534 
+checkshape result
+checksection result
 set 2dviewer 0

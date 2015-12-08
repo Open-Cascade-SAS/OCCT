@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_offset_input_shape.brep] s
 
 OFFSETSHAPE 3 {} $calcul $type
 
-set volume 5.53893e+008
+checkprops result -v 5.53893e+008

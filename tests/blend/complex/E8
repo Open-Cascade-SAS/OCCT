@@ -8,4 +8,4 @@ restore [locate_data_file CFI_pro12404.rle] a
 explode a e
 blend result a 10 a_8 10 a_13
 
-set square 26887.8
+checkprops result -s 26887.8

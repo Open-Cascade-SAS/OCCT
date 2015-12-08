@@ -28,7 +28,7 @@ bcommon result rcut1 b2_5
 regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
 
 if { $m != 0 } {
-    puts "Error : square is not right"
+    puts "Error : area is not right"
 }
 
 set 3dviewer 1

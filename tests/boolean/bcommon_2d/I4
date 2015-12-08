@@ -1,6 +1,7 @@
 restore [locate_data_file case_5_shell.brep] a
 restore [locate_data_file case_4_wire1.brep] b
 bcommon result b a
-set length 1747.73
+checkprops result -l 1747.73
+checksection result
 set nbsh_v 4
 set nbsh_e 2

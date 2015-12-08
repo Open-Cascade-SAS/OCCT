@@ -8,4 +8,4 @@ explode s f
 offsetonface s_3 20
 offsetperform result
 
-set volume 250644
+checkprops result -v 250644

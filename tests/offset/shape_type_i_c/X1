@@ -1,7 +1,7 @@
-puts "TODO CR25926 ALL: Error : The volume of the resulting shape is"
+puts "TODO CR25926 ALL: Error : The volume of result shape is"
 
 restore [locate_data_file bug25926_b3.brep] s
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set volume 0
+checkprops result -v 0

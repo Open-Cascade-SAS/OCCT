@@ -3,4 +3,4 @@ restore [locate_data_file f5] b2
 
 bcommon result b1 b2
 
-set square 56.7232
+checkprops result -s 56.7232

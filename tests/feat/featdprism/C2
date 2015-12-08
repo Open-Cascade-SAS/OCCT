@@ -5,4 +5,4 @@ profile cont S E_10 F 0 -100 X 50 Y -100 X -50
 featdprism E cont E_10 10 0 1
 featperformval dprism result 150
 
-set square 949737
+checkprops result -s 949737

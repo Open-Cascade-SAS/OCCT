@@ -43,6 +43,7 @@ checknbshapes result -vertex 8 -edge 18 -wire 12 -face 12 -shell 1 -solid 0 -com
   puts "Faulty ${BugNumber}"
 }
 
-set square 600
+checkprops result -s 600
+checkshape result
 set 3dviewer 0
 

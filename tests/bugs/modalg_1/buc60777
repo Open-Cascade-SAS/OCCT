@@ -20,5 +20,7 @@ if {  $end >=  $end1} {
 
 renamevar result_1 result
 
-set length 191.044
+checkprops result -l 191.044 
+checkshape result
+checksection result
 set 2dviewer 0

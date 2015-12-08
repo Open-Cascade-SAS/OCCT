@@ -18,5 +18,6 @@ halfspace h2 t2 20 20 0
 # first cut
 bcut result p h1
 
-set square 81.8172
+checkprops result -s 81.8172 
+checkshape result
 set 2dviewer 0

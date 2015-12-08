@@ -20,6 +20,7 @@ splitshape result s s_1 e_1 e_2
 
 checknbshapes result -face 3
 
-set square 1256.64
+checkprops result -s 1256.64 
+checkshape result
 set 3dviewer 0
 

@@ -16,6 +16,7 @@ invert b1
 bop b1 b2
 bopcut result
 
-set square 3452.78
+checkprops result -s 3452.78 
+checkshape result
 
 set 3dviewer 1

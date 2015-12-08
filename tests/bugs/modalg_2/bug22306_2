@@ -21,7 +21,8 @@ puts "Start boolean operation ..."
 bopcut result
 puts "Finish boolean operation ..."
 
-set square 458.125
+checkprops result -s 458.125 
+checkshape result
 
 checknbshapes result -vertex 4 -edge 7 -wire 4 -face 4 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 22
 set 3dviewer 1

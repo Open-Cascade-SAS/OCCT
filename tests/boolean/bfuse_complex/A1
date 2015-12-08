@@ -3,4 +3,4 @@ restore [locate_data_file CIN900_cts20hll.rle] b
 
 bfuse result a b
 
-set square 43552.5
+checkprops result -s 43552.5

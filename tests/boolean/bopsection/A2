@@ -11,4 +11,5 @@ prism pp f 0 0 100
 bop a pp
 bopsection result
 
-set length 539.158
+checkprops result -l 539.158
+checksection result

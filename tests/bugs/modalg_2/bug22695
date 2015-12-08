@@ -20,7 +20,7 @@ if { [catch {chfi2d res1 ff ff_1 ff_2 F 5} catch_result] } {
    puts "Faulty ${BugNumber}"
 }
 
-#set length 37.854
+#checkprops result -l 37.854 
 
 explode res1 e
 donly res1 res1_3 res1_4
@@ -28,7 +28,7 @@ if { [catch {chfi2d res2 res1 res1_3 res1_4 F 5} catch_result] } {
    puts "Faulty ${BugNumber}"
 }
 
-#set length 35.708
+#checkprops result -l 35.708 
 
 explode res2 e
 donly res2 res2_1 res2_5
@@ -36,7 +36,7 @@ if {  [catch {chfi2d res3 res2 res2_1 res2_5 F 5} catch_result] } {
    puts "Faulty ${BugNumber}"
 }
 
-#set length 33.5619
+#checkprops result -l 33.5619 
 
 explode res3 e
 donly res3 res3_4 res3_5
@@ -44,6 +44,8 @@ if { [catch {chfi2d result res3 res3_4 res3_5 F 5} catch_result] } {
    puts "Faulty ${BugNumber}"
 }
 
-set length 31.4159
+checkprops result -l 31.4159 
+checkshape result 
+checksection result
 set 3dviewer 0
 

@@ -4,4 +4,4 @@ box b2  1     1     0     1     1     1
 
 bfuse result  b2 b1
 
-set square 12
+checkprops result -s 12

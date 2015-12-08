@@ -11,4 +11,4 @@ bcut result a b
 
 
 
-set square 426392
+checkprops result -s 426392

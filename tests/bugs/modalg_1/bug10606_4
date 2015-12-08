@@ -18,7 +18,8 @@ puts "Start boolean operation ..."
 boptuc result
 puts "Finish boolean operation ..."
 
-set square 755.54
+checkprops result -s 755.54 
+checkshape result
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 6 -edge 8 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 23

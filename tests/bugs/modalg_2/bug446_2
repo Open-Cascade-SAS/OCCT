@@ -17,6 +17,6 @@ if { [regexp {Faulty} $che ] == 1} {
 } else {
     puts "OCC446 OK (case 2): Source shape is Closed"
 }
-set square 24272.8
+checkprops result -s 24272.8 
 set 2dviewer 0
 

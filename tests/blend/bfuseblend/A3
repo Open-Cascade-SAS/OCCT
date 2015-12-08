@@ -5,4 +5,4 @@ tscale s 0 0 0 SCALE1
 explode s E
 bfuseblend result s b 1*SCALE1
  
-set square 389033
+checkprops result -s 389033

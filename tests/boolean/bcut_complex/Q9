@@ -5,4 +5,4 @@ compound m_2 m_3 m_4 m_5 c1
 
 bcut result m_1 c1
 
-set square 57618.4
+checkprops result -s 57618.4

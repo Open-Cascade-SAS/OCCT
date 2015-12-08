@@ -15,5 +15,5 @@ if { [regexp {Faulty} $che ] == 1 } {
     puts "OCC399 OK : Source shape is valid. Command checkshape works properly."
 }
 
-set square 4558.53
+checkprops result -s 4558.53 
 set 2dviewer 0

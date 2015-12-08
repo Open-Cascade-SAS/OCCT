@@ -9,4 +9,4 @@ plane pl -3 0 1.5 0 1 0
 featrf c1 w pl 0 0 0 0 0 1 0.3 0.3 1 1
 featperform rf result
 
-set square 154.636
+checkprops result -s 154.636

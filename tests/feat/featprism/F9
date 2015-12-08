@@ -12,4 +12,4 @@ mkface f2 s2
 featprism pr pp pp 0 1 0 0 1
 featperform prism result f1 f2
 
-set square 59
+checkprops result -s 59

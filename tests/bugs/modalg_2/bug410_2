@@ -13,6 +13,7 @@ checkshape b2
 
 bfuse result b1 b2
 
-set square 172.169
+checkprops result -s 172.169 
+checkshape result
 set 2dviewer 0
 

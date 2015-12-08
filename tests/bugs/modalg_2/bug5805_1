@@ -34,7 +34,8 @@ if { [catch { offsetshape result rthru2 -0.5 rthru2_3 rthru2_4 } catch_result] }
 
 checkmaxtol result -min_tol 1.
 
-set square 981.941
+checkprops result -s 981.941 
+checkshape result
 
 checknbshapes result -vertex 6 -edge 10 -wire 8 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 32
 set 2dviewer 0

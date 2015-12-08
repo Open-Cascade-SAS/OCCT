@@ -8,4 +8,4 @@ ttranslate pp 3 1 0.25
 featprism pr pp pr_3 0 1 0 0 1
 featperform prism result pr_7
 
-set square 47.5
+checkprops result -s 47.5

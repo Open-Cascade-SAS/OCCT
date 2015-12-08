@@ -4,4 +4,4 @@ box b2 0 -0.5 0 2 1 1
 bop b1 b2
 boptuc result
 
-set square 6.40192
+checkprops result -s 6.40192

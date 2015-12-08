@@ -33,7 +33,8 @@ wedge result ${Ox} ${Oy} ${Oz} ${Zx} ${Zy} ${Zz} ${Xx} ${Xy} ${Xz} \
 #wedge result \
 #      ${dx} ${dy} ${dz} ${xmin} ${zmin} ${xmax} ${zmax}
 
-set square 2.25939e+06
+checkprops result -s 2.25939e+06 
+checkshape result
 
 # Analysis of "nbshapes result"
 checknbshapes result -vertex 6 -edge 9 -wire 5 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 27

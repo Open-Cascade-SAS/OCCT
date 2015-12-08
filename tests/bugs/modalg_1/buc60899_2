@@ -51,5 +51,7 @@ if { $edgeness == 1  } {
     puts "Shape is not empty, OK"                                                                                                   
 }
 
-set length 162.299
+checkprops result -l 162.299 
+checkshape result
+checksection result
 set 2dviewer 0

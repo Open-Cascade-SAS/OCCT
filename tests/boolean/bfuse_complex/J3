@@ -8,4 +8,4 @@ restore [locate_data_file cts20484-tool2.rle] tool2
 bfuse result1 part tool1
 bfuse result result1 tool2
 
-set square 133085
+checkprops result -s 133085

@@ -7,4 +7,4 @@ restore [locate_data_file CTO900_cts19485-tool.rle] tool
 bcut result part tool
 
 
-set square 42297.3
+checkprops result -s 42297.3

@@ -16,4 +16,4 @@ ttranslate cylb 0 0 2
 
 bcommon result cyla cylb
 
-set square empty
+checkprops result -s empty

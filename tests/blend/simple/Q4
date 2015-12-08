@@ -7,4 +7,4 @@ bfuse s c b
 explode s E
 blend result s 1 s_3
 
-set square 192.343
+checkprops result -s 192.343

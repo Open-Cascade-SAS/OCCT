@@ -18,7 +18,9 @@ OCC24667 r w v3
 
 compound r r_f r_l result
 
-set length 100
+checkprops result -l 100 
+checkshape result 
+checksection result
 
 # Analysis of "nbshapes result"
 checknbshapes result -vertex 2 -edge 1 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 5

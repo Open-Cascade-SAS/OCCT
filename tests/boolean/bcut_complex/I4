@@ -12,4 +12,4 @@ bcut result result bb
 
 
 
-set square 1.22443e+06
+checkprops result -s 1.22443e+06

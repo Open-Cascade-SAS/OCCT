@@ -13,6 +13,8 @@ restore [locate_data_file test-fix280-face.brep] res
 
 fixshape result res
 
-set length 1.56058
+checkprops result -l 1.56058
+checksection result
+checkshape result
 set 2dviewer 0
 

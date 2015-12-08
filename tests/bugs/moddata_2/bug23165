@@ -152,5 +152,6 @@ if { ${status} == 0 && ${exception_status} == 0&& ${e1_status} == 0 } {
 }
 
 set 2dviewer 1
-set length 15.8888
+checkprops result -l 15.8888 
+checksection result
 

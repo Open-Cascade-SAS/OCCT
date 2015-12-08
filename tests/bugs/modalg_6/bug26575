@@ -13,7 +13,9 @@ prj res w f 0 0 1
 
 renamevar res_1 result
 
-set length 238.46
+checkprops result -l 238.46 
+checkshape result 
+checksection result
 
 set nbshapes_expected "
 Number of shapes in shape

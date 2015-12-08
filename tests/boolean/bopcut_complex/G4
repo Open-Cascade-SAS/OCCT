@@ -4,4 +4,4 @@ restore [locate_data_file b21] b
 bop a b
 bopcut result
 
-set square 8143.4
+checkprops result -s 8143.4

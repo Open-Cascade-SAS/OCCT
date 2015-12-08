@@ -7,4 +7,4 @@ restore [locate_data_file cts19474tool.rle] tool
 bfuse result part tool
 
 
-set square 328.513
+checkprops result -s 328.513

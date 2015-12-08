@@ -6,4 +6,4 @@ nexplode p f
 depouille result p 0 0 1 p_8 4 0 0 10 0 0 1 \
 p_1 3 0 0 0 0 0 1
 
-set square 618.869
+checkprops result -s 618.869

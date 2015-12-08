@@ -26,5 +26,6 @@ pipe s w profile
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set square 1306.3
+checkprops result -s 1306.3 
+checkshape result
 set 2dviewer 0

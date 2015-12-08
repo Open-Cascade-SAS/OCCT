@@ -18,7 +18,8 @@ if [catch {spliteshape result a a b} catch_result] {
     puts "Faulty OCC673: function SPLITSHAPE works wrongly"
 } else {
     puts "OCC673 OK : function SPLITSHAPE works OK"
-    set square 0
+    checkprops result -s 0 
+checkshape result
     set 2dviewer 0
 }
 

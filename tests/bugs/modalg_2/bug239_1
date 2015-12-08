@@ -16,6 +16,8 @@ puts [bopcommon result]
  
 checknbshapes result -vertex 18 -edge 10
 
-set length 0
+checkprops result -l 0 
+checkshape result 
+checksection result
 set 2dviewer 0
  

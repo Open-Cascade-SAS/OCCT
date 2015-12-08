@@ -2,6 +2,7 @@ puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 puts "TODO OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC23748 ALL: Error: The command cannot be built"
 puts "TODO OCC26556 ALL: Error : The offset cannot be built."
 
 ellipse w1 0 0 0 15 10
@@ -14,4 +15,4 @@ revol s w 0 0 0 0 0 1 270
 
 OFFSETSHAPE 1 {s_4 s_5} $calcul $type
 
-set volume 0
+checkprops result -v 0

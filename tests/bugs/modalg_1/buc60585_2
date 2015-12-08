@@ -9,7 +9,9 @@ plane pt 2036.25  -97.5  -1460.499755859375  0.0  -1.0  0.0 1.0 0.0 0.0
 
 psection result t pt
 
-set length 22.0446
+checkprops result -l 22.0446 
+checkshape result
+checksection result
 set 2dviewer 0
 
 # checksection res

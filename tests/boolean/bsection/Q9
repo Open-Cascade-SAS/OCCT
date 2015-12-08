@@ -6,4 +6,5 @@ restore [locate_data_file spo0139b.rle] b
 
 bsection result a b
 
-set length 202.576
+checkprops result -l 202.576
+checksection result

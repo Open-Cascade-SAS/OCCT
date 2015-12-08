@@ -19,7 +19,8 @@ wire wire_spine edge2
 # invalid pipe
 pipe result wire_spine revol1
 
-set square 828.319
+checkprops result -s 828.319 
+checkshape result
 set good_vertex 6
 set good_edge 9
 set good_wire 5

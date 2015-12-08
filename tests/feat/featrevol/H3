@@ -6,4 +6,4 @@ profile cont S boite_3 F 75 50 X 50 Y 100 X -50
 featrevol boite cont boite_3 200 0 200 0 1 0 1 1
 featperform revol result 
 
-set square 400997
+checkprops result -s 400997

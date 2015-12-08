@@ -10,4 +10,4 @@ restore [locate_data_file CTO909_fus-object2.brep] o2
 bop o1 o2
 bopfuse result
 
-set square 67333.1
+checkprops result -s 67333.1

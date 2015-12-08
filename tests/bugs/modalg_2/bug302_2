@@ -17,5 +17,5 @@ if { [regexp {OK} $che] != 1} {
     puts "OCC302 OK (case 2) :  command  checkbrep works properly"
 }
 
-set square 1.93998
+checkprops result -s 1.93998 
 set 2dviewer 0

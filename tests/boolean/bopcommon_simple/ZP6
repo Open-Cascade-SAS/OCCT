@@ -29,4 +29,4 @@ box b 0 0 $Zbox 150 200 200
 bop b hs
 bopcommon result
 
-set square 144000
+checkprops result -s 144000

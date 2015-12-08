@@ -13,7 +13,8 @@ restore [locate_data_file bug23160_box.brep] b2
 bop b1 b2
 bopcut result
 
-set square 270192
+checkprops result -s 270192 
+checkshape result
 
 checknbshapes result -vertex 16 -edge 24 -wire 10 -face 10 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 63
 set 3dviewer 0

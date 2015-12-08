@@ -29,6 +29,6 @@ if { $tri != 294 && $nod != 300 }  {
     puts "Shading of BUC61057 is OK"
 }
 
-set square 33.8757
+checkprops result -s 33.8757 
 set only_screen 1
 

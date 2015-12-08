@@ -17,4 +17,4 @@ bcut cab a bb
 nexplode cab e
 blend result cab 10 cab_9 10 cab_10 10 cab_2 10 cab_11
 
-set square 180881
+checkprops result -s 180881

@@ -72,7 +72,9 @@ if {$IsGood == 1} {
 
 renamevar result_1 result
 
-set length 1112.83
+checkprops result -l 1112.83 
+checkshape result
+checksection result
 set 2dviewer 0
 
 dchrono h stop

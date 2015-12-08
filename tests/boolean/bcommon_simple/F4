@@ -32,4 +32,4 @@ prism bb fb 0 0 2
 
 bcommon result ba bb
 
-set square 16
+checkprops result -s 16

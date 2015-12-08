@@ -11,4 +11,4 @@ copy base_7 funtil
 featrevol base cont cont -54.0405883789062 -16.3985233306885 100 0 1 0 1 1
 featperform revol result funtil
 
-set square 130748
+checkprops result -s 130748

@@ -14,5 +14,6 @@ p_7 1 0 0 0 0 0 1 \
 p_8 5 0 0 0 0 0 1 \
 p_2 1 0 0 0 0 0 1
 
-set square 659.647
+checkprops result -s 659.647 
+checkshape result
 set 2dviewer 0

@@ -4,4 +4,4 @@ restore [locate_data_file cts21570_2.rle] w2
 orientation w1 F
 orientation w2 R
 thrusections result 1 0 w2 w1
-set square 29817.5
+checkprops result -s 29817.5

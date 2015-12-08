@@ -25,5 +25,6 @@ if [catch { buildsweep result } catch_result] {
     puts "Faulty OCC637 (case 1): function buildsweep works wrongly"
 } 
 
-set square 1675.58
+checkprops result -s 1674.46 -eps 0.1
+checkshape result
 set 2dviewer 0

@@ -3,4 +3,4 @@
 restore [locate_data_file CHE_bb15.rle] s
 OFFSETSHAPE 0.1 {} $calcul $type
 
-set volume 26.4725
+checkprops result -v 26.4725

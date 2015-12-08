@@ -10,4 +10,4 @@ mkface f plan
 featlf base wire plan -50 0 0 0 0 0 1 1
 featperform lf result
 
-set square 1.19616e+06
+checkprops result -s 1.19616e+06

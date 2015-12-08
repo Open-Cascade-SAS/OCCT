@@ -9,6 +9,6 @@ checkshape result
 
 build3d result
 
-set square 8464.65
+checkprops result -s 8464.65
 set 2dviewer 0
 

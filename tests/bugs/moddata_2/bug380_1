@@ -12,6 +12,6 @@ restore [locate_data_file OCC380b.rle] b
 
 bcommon result a b
 
-set square 21.154
+checkprops result -s 21.154
 set 2dviewer 0
 

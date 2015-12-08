@@ -97,4 +97,4 @@ vfit
 vsetdispmode 1
 
 set only_screen 1
-set square 9951.34
+checkprops result -s 9951.34

@@ -8,4 +8,4 @@ pcylinder pc pl1 100 50
 bfuse result bl1 pc
 
 
-set square 322832
+checkprops result -s 322832

@@ -16,7 +16,8 @@ baddtools b2
 bfillds -s
 bbuild result
 
-set square 470659
+checkprops result -s 470659 
+checkshape result
 
 checknbshapes result -solid 3
 

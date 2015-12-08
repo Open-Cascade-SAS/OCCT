@@ -10,6 +10,7 @@ puts ""
 restore [locate_data_file OCC268.brep] result 
 checkshape result
 
-set length 56.6039
+checkprops result -l 56.6039 
+checksection result
 set 2dviewer 0
 

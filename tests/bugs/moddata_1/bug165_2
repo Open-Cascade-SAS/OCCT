@@ -1,4 +1,3 @@
-
 puts "========"
 puts "OCC165"
 puts "Bug regression in BRepOffsetAPI_MakeOffset class (offsetting in OY direction)"
@@ -10,9 +9,8 @@ checkshape a
 mkplane f a
 checkshape f
 
-set IsGood 1
 if [catch {mkoffset res1 f 1 4.8 } result] {
-  set IsGood 0
+  puts "Faulty OCC165 (case 1) : function MKOFFSET works wrongly"
 } else {
   puts "OCC165 OK (case 1): function MKOFFSET works properly"
   checkshape res1_1
@@ -21,7 +19,7 @@ if [catch {mkoffset res1 f 1 4.8 } result] {
 }
 
 if [catch {mkoffset res2 f 1 -2.9 } result] {
-  set IsGood 0
+  puts "Faulty OCC165 (case 2) : function MKOFFSET works wrongly"
 } else {
   puts "OCC165 OK (case 2): function MKOFFSET works properly"
   checkshape res2_1
@@ -29,43 +27,6 @@ if [catch {mkoffset res2 f 1 -2.9 } result] {
   checkshape pl2
 }
 
-if {$IsGood == 1} {
-  compound a res1_1 res2_1 res
-  
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res1_1] full len
-
-  set good_len 1112.29
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    set IsGood 0
-  }
-  
-  regexp {Mass +: +([-0-9.+eE]+)} [lprops res2_1] full len
-
-  set good_len 1063.91
-  set percent_max 0.1
-  set percent [expr abs(${len} - ${good_len}) / double(${good_len}) * 100.]
-
-  puts "good_len = ${good_len}"
-  puts "length = ${len}"
-  puts "percent = ${percent}"
-
-  if {${percent} > ${percent_max}} {
-    set IsGood 0
-  }
-
-  if {$IsGood == 1} {
-    puts "OCC165 OK"
-  } else {
-    puts "OCC165 Faulty"
-  }
-
-} else {
-  puts "OCC165 Faulty"
-}
+compound a res1_1 res2_1 res
+checkprops res1_1 -l 1112.29
+checkprops res2_1 -l 1063.91

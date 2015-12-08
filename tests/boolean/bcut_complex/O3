@@ -1,4 +1,4 @@
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
+puts "TODO #22911 ALL: Error : The area of result shape is"
 puts "TODO OCC25735 ALL: Faulty shapes in variables faulty_1 to"
 
 restore [locate_data_file CTO908_topo101-o1.brep] obj1
@@ -6,4 +6,4 @@ restore [locate_data_file CTO908_topo101-t1.brep] tool1
 
 bcut result obj1 tool1
 
-set square 0
+checkprops result -s 0

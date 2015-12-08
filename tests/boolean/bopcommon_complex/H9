@@ -4,4 +4,4 @@ restore [locate_data_file b130] b
 bop a b
 bopcommon result
 
-set square empty
+checkprops result -s empty

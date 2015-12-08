@@ -46,7 +46,8 @@ if { $z > ${max_time} } {
     puts "Elapsed time of bbuild is less than ${max_time} seconds - OK"
 }
 
-set square 280627
+checkprops result -s 280627 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

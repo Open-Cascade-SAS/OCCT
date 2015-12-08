@@ -15,6 +15,6 @@ checkshape tool
 
 bcut result shape tool
 
-set square 3166.93
+checkprops result -s 3166.93
 set 2dviewer 0
 

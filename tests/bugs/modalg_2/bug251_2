@@ -29,5 +29,7 @@ if {[llength ${status}] < 1} {
     }
 }
 
-set length 1.
+checkprops result -l 1. 
+checkshape result 
+checksection result
 set 2dviewer 0

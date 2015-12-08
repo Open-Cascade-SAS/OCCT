@@ -1,4 +1,5 @@
 puts "TODO OCC12345 ALL: Tcl Exception: result is not a topological shape!!!"
+puts "TODO OCC12345 ALL: Error: The command cannot be built"
 puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 
 puts "========"
@@ -17,5 +18,6 @@ checkshape a_2
 
 bcut result a_2 a_1
 
-set square 10
+checkprops result -s 10 
+checkshape result
 set 2dviewer 0

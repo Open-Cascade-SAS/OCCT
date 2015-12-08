@@ -13,4 +13,4 @@ offsetonface s_22 0
 offsetonface s_26 0
 offsetperform result
 
-set volume 8.2464e+007
+checkprops result -v 8.2464e+007

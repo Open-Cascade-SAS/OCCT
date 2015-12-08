@@ -15,5 +15,6 @@ explode s e
 
 blend result s 100 s_16
 
-set square 1.54883e+06
+checkprops result -s 1.54883e+06 
+checkshape result
 set 3dviewer 1

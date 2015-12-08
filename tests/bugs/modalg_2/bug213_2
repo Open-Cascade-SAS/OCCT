@@ -11,5 +11,6 @@ restore [locate_data_file OCC213-2.brep] S2
 checkshape S2
 
 bfuse result S2 S1 
-set square 4835.45
+checkprops result -s 4835.45 
+checkshape result
 set 3dviewer 0

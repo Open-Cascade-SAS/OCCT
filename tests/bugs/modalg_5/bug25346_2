@@ -12,5 +12,6 @@ restore [locate_data_file CTO902_pro14235b.rle] b2
 bop b1 b2
 bopcommon result
 
-set square 2866.34
+checkprops result -s 2866.34 
+checkshape result
 set 2dviewer 1

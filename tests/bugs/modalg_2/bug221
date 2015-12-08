@@ -23,7 +23,7 @@ if { [regexp {Faulty} $che] == 1} {
     puts "OCC221 OK (checkshape) : Checkshape command works properly"
 }
 
-set square 425.537
+checkprops result -s 425.537 
 set 2dviewer 0
 
 

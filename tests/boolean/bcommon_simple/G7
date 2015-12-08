@@ -38,4 +38,4 @@ trotate bb 0 0 0 0 0 1 45
 
 bcommon result ba bb 
 
-set square 3.55724
+checkprops result -s 3.55724

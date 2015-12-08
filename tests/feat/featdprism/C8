@@ -6,4 +6,4 @@ nexplode cont E
 featdprism E cont E_10 10 0 1
 featperformval dprism result 150
 
-set square 949737
+checkprops result -s 949737

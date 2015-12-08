@@ -5,4 +5,4 @@ pipe p w p
 nexplode p f
 depouille result p 0 0 1 p_7 -5 0 0 0 0 0 1
 
-set square 540.527
+checkprops result -s 540.527

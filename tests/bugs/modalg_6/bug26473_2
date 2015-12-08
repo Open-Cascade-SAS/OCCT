@@ -13,5 +13,6 @@ offsetload b1 0.0
 offsetonface b1_1 1.0
 offsetperform result
 
-set square 10
+checkprops result -s 10 
+checkshape result
 set 2dviewer 1

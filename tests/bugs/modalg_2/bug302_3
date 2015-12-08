@@ -17,5 +17,5 @@ if { [regexp {OK} $che] !=1 } {
     puts "OCC302 OK (case 3) :  command  checkshape works properly"
 }
 
-set square 23240.8
+checkprops result -s 23240.8 
 set 2dviewer 0

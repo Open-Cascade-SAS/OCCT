@@ -29,6 +29,6 @@ bcremoveint result
 donly result
 fit
 
-set square 4326.81
+checkprops result -s 4326.81
 
 set only_screen_axo 1

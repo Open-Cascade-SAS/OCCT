@@ -8,4 +8,4 @@ fsameparameter base
 
 bcut result prism base
 
-set square 16596
+checkprops result -s 16596

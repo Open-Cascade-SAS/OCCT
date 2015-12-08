@@ -14,4 +14,4 @@ addslide revol p_2 c_3
 featperform revol result c_2 c_5
 
 
-set square 431.681
+checkprops result -s 431.681

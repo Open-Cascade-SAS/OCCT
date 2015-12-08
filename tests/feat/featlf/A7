@@ -8,4 +8,4 @@ restore [locate_data_file cts21168_wire.rle] wire
 featlf base wire plan 0 10 0 0 -10 0 1 1 
 featperform lf result
 
-set square 1.02307e+06
+checkprops result -s 1.02307e+06

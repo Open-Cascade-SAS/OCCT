@@ -27,5 +27,6 @@ if { ${matrix12} != 0. || ${matrix21} != 0. || ${matrix23} != 0. || ${matrix32} 
     puts "OCC705 OK"
 }
 
-set length 123.755
+checkprops result -l 123.755 
+checksection result
 set 2dviewer 0

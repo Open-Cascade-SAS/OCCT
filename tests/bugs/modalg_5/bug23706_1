@@ -23,10 +23,5 @@ offset o2 ss2 -0.1
 offset o3 ss3 -0.1
 
 mkface res o2
-set info [sprops res]
-regexp {Mass +: +([-0-9.+eE]+)} $info full sq
-set sq_check 9.00819
 
-if { [expr 1.*abs($sq_check - $sq)/$sq_check] > 0.01 } {
-   puts "Error : The square of result shape is $sq"
-}
+checkprops res -s 9.00819

@@ -9,4 +9,4 @@ explode a e
 blend result a 3 a_9 3 a_7 3 a_5 3 a_3 3 a_1 3 a_2 3 a_4 3 a_6 3 a_8
 # it's a_8 which causes the problem
 
-set square 90330.5
+checkprops result -s 90330.5

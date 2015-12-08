@@ -7,4 +7,4 @@ blend p p 2 p_1 2 p_12
 nexplode p f
 depouille result p 0 0 1 p_8 3 0 0 0 0 0 1
 
-set square 1198.82
+checkprops result -s 1198.82

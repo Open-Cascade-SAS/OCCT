@@ -29,7 +29,7 @@ bopfuse Union_1
 bop face_1 Union_1
 bopcut result
 
-set square 37172.6
+checkprops result -s 37172.6
 
 
 

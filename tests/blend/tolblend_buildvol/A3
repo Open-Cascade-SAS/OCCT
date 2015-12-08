@@ -23,4 +23,4 @@ buildevol
 explode P Sh
 copy P_1 result
 
-set square 4.80062e+08
+checkprops result -s 4.80062e+08

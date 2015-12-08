@@ -12,11 +12,15 @@ plane p 28.85 0 0 1 0 0
 mkface f p -10 10 -10 10
 bsection result a f
 
-set length 2.95277
 smallview
 clear
 display result
 display f
 display a
 fit
+
+checkprops result -l 2.95277
+checkshape result
+checksection result
+
 set only_screen_axo 1

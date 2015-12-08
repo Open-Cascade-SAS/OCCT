@@ -1,4 +1,5 @@
 puts "TODO ?OCC23068 ALL: ERROR. offsetperform operation not done."
+puts "TODO ?OCC23068 ALL: Error: The command cannot be built"
 puts "TODO ?OCC23068 ALL: result is not a topological shape!!!"
 puts "TODO ?OCC23068 ALL: TEST INCOMPLETE"
 
@@ -13,4 +14,4 @@ explode s F
 offsetcompshape result s -10 s_1
 
 #real volume of result shape is unknow yet
-set volume 0
+checkprops result -v 0

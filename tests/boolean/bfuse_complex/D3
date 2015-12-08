@@ -8,4 +8,4 @@ restore [locate_data_file ger60041b.rle] b
 bfuse result a b 
 
 
-set square 17651.7
+checkprops result -s 17651.7

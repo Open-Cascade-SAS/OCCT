@@ -1,6 +1,6 @@
 puts "TODO OCC7166 ALL: Faulty OCC7166 : result is not Closed shape"
 puts "TODO OCC7166 ALL: Error :  is WRONG because number of  "
-puts "TODO OCC7166 ALL: Error : The square of the resulting shape is"
+puts "TODO OCC7166 ALL: Error : The area of result shape is"
 
 puts "============"
 puts "OCC7166"
@@ -32,7 +32,7 @@ set isruled 0
 catch {thrusections result ${issolid} ${isruled} wc1 w1 wc2}
 
 
-set square 702.858
+checkprops result -s 702.858
 
 checknbshapes result -vertex 4 -edge 6 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 15
 

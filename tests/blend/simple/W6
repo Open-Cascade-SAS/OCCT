@@ -8,4 +8,4 @@ restore [locate_data_file CCV_1_d12gsg.rle] s
 explode s E
 blend result s 5 s_5
 
-set square 60998.1
+checkprops result -s 60998.1

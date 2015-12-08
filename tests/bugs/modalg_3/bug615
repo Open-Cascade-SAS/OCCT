@@ -16,5 +16,6 @@ if [catch {blend result a 9 a_15 } catch_result] {
     puts "OCC615 OK: function CHAMF works OK"
 }
 
-set square 197055.
+checkprops result -s 197055.
+checkshape result
 set 2dviewer 0

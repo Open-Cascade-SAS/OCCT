@@ -24,7 +24,7 @@ puts "ElapsedTime = ${ElapsedTime}"
 fsameparameter result
 checkshape result
 
-set square 32.1968
+checkprops result -s 32.1968
 set 2dviewer 0
 
 

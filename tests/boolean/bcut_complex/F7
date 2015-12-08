@@ -14,4 +14,4 @@ explode b so
 
 bcut result a_1 b_1
 
-set square 3020.55
+checkprops result -s 3020.55

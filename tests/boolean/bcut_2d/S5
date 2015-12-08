@@ -1,6 +1,7 @@
 restore [locate_data_file case_9_edge.brep] a
 restore [locate_data_file case_9_wire2.brep] b
 bcut result b a
-set length 1080.64
+checkprops result -l 1080.64
+checksection result
 set nbsh_v 6
 set nbsh_e 6

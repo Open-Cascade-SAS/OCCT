@@ -22,4 +22,4 @@ ttranslate cylb 0 0 0.5
 
 bcommon result cyla cylb
 
-set square 4.71239
+checkprops result -s 4.71239

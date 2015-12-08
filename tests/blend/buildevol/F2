@@ -11,4 +11,4 @@ mkevol result s
 updatevol s_1 0 1*SCALE1 1 2*SCALE1 2 1*SCALE1
 buildevol
 
-set square 484801
+checkprops result -s 484801

@@ -8,4 +8,4 @@ restore [locate_data_file CCV_2_b1_gsu.rle] s
 explode s F
 offsetcompshape result s -10 s_10
 
-set volume 894477
+checkprops result -v 894477

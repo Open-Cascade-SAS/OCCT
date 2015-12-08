@@ -11,4 +11,4 @@ copy base_4 funtil
 featprism base cont cont 0 1 0 0 1
 featperform prism result ffrom funtil
 
-set square 41699.3
+checkprops result -s 41699.3

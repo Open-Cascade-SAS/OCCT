@@ -172,7 +172,7 @@ proc _check_arg {check_name check_result {get_value 0}} {
   if { $arg == ${check_name} } {
     if {${get_value}} {
       incr narg
-      if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } {
+      if { $narg < [llength $args] && ! [regexp {^-[^0-9]} [lindex $args $narg]] } {
         set ${check_result} "[lindex $args $narg]"
       } else {
         error "Option ${check_result} requires argument"
@@ -448,4 +448,142 @@ proc checkfaults {shape source_shape {ref_value 0}} {
   if { $nb_r > $nb_a } {
     puts "Error : Number of faults is $nb_r"
   }
+}
+
+# auxiliary: check all arguments
+proc _check_args { args {options {}} {command_name ""}} {
+  # check arguments
+  for {set narg 0} {${narg} < [llength ${args}]} {incr narg} {
+    set arg [lindex ${args} ${narg}]
+    set toContinue 0
+    foreach option ${options} {
+      set option_name            [lindex ${option} 0]
+      set variable_to_save_value [lindex ${option} 1]
+      set get_value              [lindex ${option} 2]
+      set local_value ""
+      if { [_check_arg ${option_name} local_value ${get_value}] } {
+        upvar ${variable_to_save_value} ${variable_to_save_value}
+        set ${variable_to_save_value} ${local_value}
+        set toContinue 1
+      }
+    }
+    if {${toContinue}} { continue }
+    # unsupported option
+    if { [regexp {^-} ${arg}] } {
+      error "Error: unsupported option \"${arg}\""
+    }
+    error "Error: cannot interpret argument ${narg} (${arg})"
+  }
+  foreach option ${options} {
+    set option_name            [lindex ${option} 0]
+    set variable_to_save_value [lindex ${option} 1]
+    set should_exist           [lindex ${option} 3]
+    if {![info exists ${variable_to_save_value}] && ${should_exist} == 1} {
+      error "Error: wrong using of command '${command_name}', '${option_name}' option is required"
+    }
+  }
+}
+
+help checkprops {
+  Procedure includes commands to compute length, area and volume of input shape.
+
+  Use: checkprops shapename [options...]
+  Allowed options are:
+    -l LENGTH: command lprops, computes the mass properties of all edges in the shape with a linear density of 1
+    -s AREA: command sprops, computes the mass properties of all faces with a surface density of 1 
+    -v VOLUME: command vprops, computes the mass properties of all solids with a density of 1
+    -eps EPSILON: the epsilon defines relative precision of computation
+    -equal SHAPE: compare area\volume\length of input shapes. Puts error if its are not equal
+    -notequal SHAPE: compare area\volume\length of input shapes. Puts error if its are equal
+  Options -l, -s and -v are independent and can be used in any order. Tolerance epsilon is the same for all options.
+}
+
+proc checkprops {shape args} {
+    puts "checkprops ${shape} ${args}"
+    upvar ${shape} ${shape}
+
+    if {![isdraw ${shape}] || [regexp "${shape} is a \n" [whatis ${shape}]]} {
+        puts "Error: The command cannot be built"
+        return
+    }
+
+    set length -1
+    set area -1
+    set volume -1
+    set epsilon 1.0e-4
+    set compared_equal_shape -1
+    set compared_notequal_shape -1
+    set equal_check 0
+
+    set options {{"-eps" epsilon 1}
+                 {"-equal" compared_equal_shape 1}
+                 {"-notequal" compared_notequal_shape 1}}
+
+    if { [regexp {\-[not]*equal} $args] } {
+        lappend options {"-s" area 0}
+        lappend options {"-l" length 0}
+        lappend options {"-v" volume 0}
+        set equal_check 1
+    } else {
+        lappend options {"-s" area 1}
+        lappend options {"-l" length 1}
+        lappend options {"-v" volume 1}
+    }
+    _check_args ${args} ${options} "checkprops"
+
+    if { ${length} != -1 || ${equal_check} == 1 } {
+        set CommandName lprops
+        set mass $length
+        set prop "length"
+        set equal_check 0
+    }
+    if { ${area} != -1 || ${equal_check} == 1 } {
+        set CommandName sprops
+        set mass $area
+        set prop "area"
+        set equal_check 0
+    }
+    if { ${volume} != -1 || ${equal_check} == 1 } {
+        set CommandName vprops
+        set mass $volume
+        set prop "volume"
+        set equal_check 0
+    }
+    
+    regexp {Mass +: +([-0-9.+eE]+)} [${CommandName} ${shape} ${epsilon}] full m
+
+    if { ${compared_equal_shape} != -1 } {
+        upvar ${compared_equal_shape} ${compared_equal_shape}
+        regexp {Mass +: +([-0-9.+eE]+)} [${CommandName} ${compared_equal_shape} ${epsilon}] full compared_m
+        if { $compared_m != $m } {
+            puts "Error: Shape ${compared_equal_shape} is not equal to shape ${shape}"
+        }
+    }
+
+    if { ${compared_notequal_shape} != -1 } {
+        upvar ${compared_notequal_shape} ${compared_notequal_shape}
+        regexp {Mass +: +([-0-9.+eE]+)} [${CommandName} ${compared_notequal_shape} ${epsilon}] full compared_m
+        if { $compared_m == $m } {
+            puts "Error: Shape ${compared_notequal_shape} is equal shape to ${shape}"
+        }
+    }
+
+    if { ${compared_equal_shape} == -1 && ${compared_notequal_shape} == -1 } {
+        if { [string compare "$mass" "empty"] != 0 } {
+            if { $m == 0 } {
+                puts "Error : The command is not valid. The $prop is 0."
+            }
+            if { $mass > 0 } {
+                puts "The expected $prop is $mass"
+            }
+            #check of change of area is < 1%
+            if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
+                puts "Error : The $prop of result shape is $m"
+            }
+        } else {
+            if { $m != 0 } {
+                puts "Error : The command is not valid. The $prop is $m"
+            }
+        }
+    }
 }

@@ -21,4 +21,4 @@ featperform lf result
 # Il faut faire en premier la rainure la moins profonde 
 # puis la plus profonde
 
-set square 164147
+checkprops result -s 164147

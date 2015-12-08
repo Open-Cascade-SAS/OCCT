@@ -3,4 +3,4 @@ box b 1 1 1
 
 bcommon result b s
 
-set square 3.92699
+checkprops result -s 3.92699

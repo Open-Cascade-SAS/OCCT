@@ -2,4 +2,4 @@ ptorus s 20 5
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set volume 14212.2
+checkprops result -v 14212.2

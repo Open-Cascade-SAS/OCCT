@@ -3,4 +3,4 @@ restore [locate_data_file so3] b2
 
 bcommon result b1 b2
 
-set square 327.249
+checkprops result -s 327.249

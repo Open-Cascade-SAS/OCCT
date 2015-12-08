@@ -6,4 +6,4 @@ restore [locate_data_file CTO900_ger60224d.rle] prism
 
 bcut result base prism
 
-set square 60037.4
+checkprops result -s 60037.4

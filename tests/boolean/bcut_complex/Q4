@@ -7,4 +7,4 @@ restore [locate_data_file cts21135b.brep] t
 
 bcut result o t
 
-set square 44000
+checkprops result -s 44000

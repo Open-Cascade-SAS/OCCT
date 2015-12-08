@@ -13,4 +13,4 @@ prism pr3 p3 0 0 -30
 bcut result po1 pr3
 
 
-set square 97000
+checkprops result -s 97000

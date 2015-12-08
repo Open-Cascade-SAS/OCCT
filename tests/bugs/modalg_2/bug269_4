@@ -22,5 +22,6 @@ if { $tri != 7218 && $nod !=  3685 }  {
 } else {
   puts "Shading of OCC269 is OK"
 }
-set square 36.4284
+checkprops result -s 36.4284 
+checkshape result
 set 2dviewer 0

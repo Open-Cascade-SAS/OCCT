@@ -30,7 +30,7 @@ if { $tri ==6 && $nod == 8} {
     puts " OCC292 : Faulty"
 }
 
-set square 1.3135
+checkprops result -s 1.3135 
 set 3dviewer 1
 
 

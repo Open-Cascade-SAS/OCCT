@@ -21,5 +21,6 @@ result
 
 puts "OCC745 OK"
 
-set square 5844.54
+checkprops result -s 5844.54 
+checkshape result
 set 2dviewer 1

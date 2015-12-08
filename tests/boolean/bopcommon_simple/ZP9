@@ -7,5 +7,5 @@ psphere s2 pl2 7.5
 bop bb s1
 bopcommon result
 
-set square 576.293
+checkprops result -s 576.293
 

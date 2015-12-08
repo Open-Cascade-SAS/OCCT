@@ -30,6 +30,6 @@ if { $tri == 382 && $nod == 343 } {
 	puts " Shady OCC291 : nb tri & nod changed"
 }
 
-set square 376.873
+checkprops result -s 376.873 
 set only_screen 1
 

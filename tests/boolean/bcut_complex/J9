@@ -10,4 +10,4 @@ bcut result c d
 
 
 
-set square 344545
+checkprops result -s 344545

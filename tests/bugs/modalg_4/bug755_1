@@ -30,5 +30,6 @@ if {$lth < 5} {
     }
 }
 
-set square 1.57358e+06
+checkprops result -s 1.57358e+06 
+checkshape result
 set 2dviewer 0

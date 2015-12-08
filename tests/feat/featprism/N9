@@ -15,4 +15,4 @@ featperform prism result f6
 
 # Prendre option face Until + support
 
-set square 813.9
+checkprops result -s 813.9

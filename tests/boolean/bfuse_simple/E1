@@ -13,4 +13,4 @@ prism p2 f2 0 0 -50*SCALE
 
 bfuse result p2 p1
 
-set square 1.85425e+09
+checkprops result -s 1.85425e+09

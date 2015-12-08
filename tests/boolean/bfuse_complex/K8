@@ -6,4 +6,4 @@ restore [locate_data_file CTO904_pro12875b.rle] b
 updatetolerance a 1
 bfuse result a b
 
-set square 788417
+checkprops result -s 788417

@@ -13,6 +13,7 @@ trotate b2 0 0 2 0 1 0 60
 bfuse result  b2 b1 
 checkshape -top result
 
-set square 46.8319
+checkprops result -s 46.8319 
+checkshape result
 set 2dviewer 0
 

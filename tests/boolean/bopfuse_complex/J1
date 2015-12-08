@@ -4,4 +4,4 @@ restore [locate_data_file b189] b
 bop a b
 bopfuse result
 
-set square 25131.5
+checkprops result -s 25131.5

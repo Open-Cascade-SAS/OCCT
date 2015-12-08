@@ -4,4 +4,4 @@ restore [locate_data_file OCC315-2.brep] b
 bop b a
 bopcut result
 
-set square empty
+checkprops result -s empty

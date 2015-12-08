@@ -10,4 +10,5 @@ btolx a
 
 bsection result a b
 
-set length 267.11
+checkprops result -l 267.11
+checksection result

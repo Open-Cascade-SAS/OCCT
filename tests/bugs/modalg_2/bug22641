@@ -1,4 +1,4 @@
-puts "TODO OCC11111 ALL: Error : The square of result shape is"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
 puts "TODO OCC11111 ALL: Error :  is WRONG because number of"
 
 puts "================"
@@ -15,7 +15,8 @@ catch { pload XDE }
 
 testreadstep [locate_data_file OCC22641-RailBosch.stp] result
 
-set square 160133
+checkprops result -s 160133 
+checkshape result
 
 checknbshapes result -vertex 7608 -edge 12032 -wire 4750 -face 4444 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 28836
 vinit

@@ -17,5 +17,7 @@ if { $err1== $err3 && $err2 == $err4 } {
     puts "OCC465 OK"
 }
 
-set length 4.21716
+checkprops result -l 4.21716 
+checkshape result 
+checksection result
 set 2dviewer 0

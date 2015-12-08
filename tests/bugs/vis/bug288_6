@@ -12,8 +12,7 @@ puts "TODO #23828 MacOS: TEST INCOMPLETE"
 set BugNumber OCC288
 
 restore [locate_data_file OCC288-shading_176.brep] result
-
-set square 1.21055e+07
+checkprops result -s 1.21055e+07 
 
 checknbshapes result -vertex 667 -edge 941 -wire 368 -face 289 -shell 6 -solid 6 -compsolid 0 -compound 1 -shape 2278
 vinit
@@ -21,5 +20,6 @@ tclean result
 vsetdispmode 1
 vdisplay result
 vfit
+checkshape result
 
 set 3dviewer 1

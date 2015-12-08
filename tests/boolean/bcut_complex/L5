@@ -8,4 +8,4 @@ prism b b 0 0 -50
 
 bcut result a b
 
-set square 302130
+checkprops result -s 302130

@@ -7,4 +7,4 @@ restore [locate_data_file cts20148_face.rle] cont
 featprism base cont cont 0 -1 0 0 1 
 featperform prism result
 
-set square 68758
+checkprops result -s 68758

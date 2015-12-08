@@ -13,4 +13,4 @@ explode rr so
 bop rr_1 p1
 bopcut result
 
-set square 600
+checkprops result -s 600

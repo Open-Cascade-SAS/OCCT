@@ -16,5 +16,5 @@ if { [regexp {OK} $che] != 1 } {
     puts " OCC437  OK: function CHECKSHAPE works properly"
 }
 
-set square 0.000201234
+checkprops result -s 0.000201234 
 set 2dviewer 0

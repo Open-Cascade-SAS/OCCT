@@ -11,7 +11,7 @@ restore [locate_data_file bug26775_b.brep] b
 
 bsection result a b
 
-set length 1400.02
+checkprops result -l 1400.02
 
 set nbshapes_expected "
 Number of shapes in shape

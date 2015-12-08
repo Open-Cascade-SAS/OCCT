@@ -18,4 +18,4 @@ featprism base cont cont 0 0 -1 0 1
 featperform prism result f15 f17
 
 
-set square 1105.82
+checkprops result -s 1105.82

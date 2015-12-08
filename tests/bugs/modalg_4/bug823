@@ -22,5 +22,6 @@ if { [ catch { set info_result [OCC823 a1 a2 result] } ] } {
 	puts "Faulty OCC823 : Resulting shape is empty COMPOUND"
     }
 }
-set square 23189.5
+checkprops result -s 23189.5 
+checkshape result
 set 2dviewer 1

@@ -12,5 +12,5 @@ restore [locate_data_file bug26744_BodyB.brep] b
 bop a b
 bopcut result
 
-set square 1.54891e+06
+checkprops result -s 1.54891e+06
 set 3dviewer 1

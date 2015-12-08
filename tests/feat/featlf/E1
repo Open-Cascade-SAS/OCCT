@@ -11,4 +11,4 @@ trotate pp 5 5 0.3 1 0 0 180
 featlf pr pp pl 0 0 0.3 0 0 -0.2 1 1
 featperform lf result
 
-set square 71.1883
+checkprops result -s 71.1883

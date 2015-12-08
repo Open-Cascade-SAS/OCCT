@@ -6,4 +6,5 @@ renamevar m_3 coque
 bop coque m_2
 bopsection result
 
-set length 83.7197
+checkprops result -l 83.7197
+checksection result

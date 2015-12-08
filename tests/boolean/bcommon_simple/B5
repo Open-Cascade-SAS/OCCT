@@ -4,4 +4,4 @@ box b2  0     0.25  0     1     0.5   1
 
 bcommon result b1 b2
 
-set square 4
+checkprops result -s 4

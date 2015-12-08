@@ -4,4 +4,4 @@ restore [locate_data_file b104] b
 bop a b
 boptuc result
 
-set square 25134
+checkprops result -s 25134

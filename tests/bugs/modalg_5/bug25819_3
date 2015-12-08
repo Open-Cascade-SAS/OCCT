@@ -11,7 +11,8 @@ restore [locate_data_file bug25819_3_BodyB.brep] b
 
 bcut result a b
 
-set square 67742.9
+checkprops result -s 67742.9 
+checkshape result
 
 checknbshapes result -vertex 99 -edge 136 -wire 49 -face 36 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 323 -t -m "Result of BOP cut"
 

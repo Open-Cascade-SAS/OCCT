@@ -22,7 +22,9 @@ puts "Start boolean operation ..."
 bopsection result
 puts "Finish boolean operation ..."
 
-set length 389.898
+checkprops result -l 389.898 
+checkshape result 
+checksection result
 
 checknbshapes result -vertex 64 -edge 64 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 129
 

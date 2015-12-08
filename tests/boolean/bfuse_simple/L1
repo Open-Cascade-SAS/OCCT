@@ -21,4 +21,4 @@ puts { Error: The rule of tolerance Tol(V) > Tol(E) > Tol(F) is not observed . T
 }
 puts { The rule of tolerance Tol(V) > Tol(E) > Tol(F) is observed .} 
 
-set square 1050
+checkprops result -s 1050

@@ -45,4 +45,4 @@ tcopy buc60706i.brep s
 bop s t
 bopcut result
 
-set square 865172
+checkprops result -s 865172

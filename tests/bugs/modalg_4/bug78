@@ -14,5 +14,6 @@ checkshape w
 checkshape p
 
 pipe result w p
-set square 10191.8
+checkprops result -s 10191.8 
+checkshape result
 set 2dviewer 0

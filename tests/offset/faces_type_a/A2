@@ -3,5 +3,4 @@
 restore [locate_data_file fritehaut] s
 OFFSETSHAPE -.004 {s_3} $calcul $type
 
-
-set volume 0.000514386
+checkprops result -v 0.000514386

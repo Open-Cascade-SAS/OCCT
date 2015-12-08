@@ -14,7 +14,7 @@ checkshape a
 tcopy a result
 checkshape result
 
-set square 623.832
+checkprops result -s 623.832
 set 2dviewer 0
 
 

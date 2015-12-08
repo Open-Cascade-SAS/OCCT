@@ -6,4 +6,4 @@ mkedge w w
 wire w w
 pipe result w profile
 
-set square 187196
+checkprops result -s 187196

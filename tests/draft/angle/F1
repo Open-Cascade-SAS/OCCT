@@ -8,4 +8,4 @@ blend f f 2 f_10
 nexplode f f
 depouille result f 0 0 1 f_8 2 0 0 35 0 0 1
 
-set square 4827.83
+checkprops result -s 4827.83

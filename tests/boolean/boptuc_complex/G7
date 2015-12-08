@@ -13,4 +13,4 @@ explode rr so
 bop rr_1 p1
 boptuc result
 
-set square empty
+checkprops result -s empty

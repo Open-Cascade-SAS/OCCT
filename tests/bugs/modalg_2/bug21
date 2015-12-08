@@ -16,6 +16,7 @@ DT_SplitAngle result sh 90
 
 puts "in the resulting shape sharing is not preserved"
 
-set square 12154.8
+checkprops result -s 12154.8 
+checkshape result
 set 2dviewer 0
 

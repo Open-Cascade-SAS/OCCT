@@ -14,6 +14,7 @@ if { $bndb  > 100.000001 } {
 } else {
     puts "BUC60849 OK :Bounding box of spherical surface is created properly."
 }
-set square 125663
+checkprops result -s 125663 
+checkshape result
 set 2dviewer 0
 

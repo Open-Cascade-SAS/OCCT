@@ -16,4 +16,4 @@ mkface f15 p15
 featprism base cont cont 0 0 -1 0 1
 featperform prism result f15
 
-set square 16398.2
+checkprops result -s 16398.2

@@ -24,5 +24,6 @@ checkshape prf
 bopcheck prf
 bcut result sh prf
 
-set square 0.233021
+checkprops result -s 0.233021 
+checkshape result
 set 2dviewer 0

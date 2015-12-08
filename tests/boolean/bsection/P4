@@ -8,4 +8,5 @@ bsection s c1 m_2
 bsection s2 m_4 m_2 
 compound s s2 result
 
-set length 682.142
+checkprops result -l 682.142
+checksection result

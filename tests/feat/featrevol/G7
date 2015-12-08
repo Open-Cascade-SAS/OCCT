@@ -9,4 +9,4 @@ featrevol c1 p p 0 0 0.5 0 0 1 1 1
 featperformval revol result 30
 
 
-set square 93.1062
+checkprops result -s 93.1062

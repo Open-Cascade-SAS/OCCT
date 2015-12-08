@@ -10,4 +10,4 @@ restore [locate_data_file CCV_1_h1_gsk.rle] s
 explode s E
 blend result s 30 s_14
 
-set square 43339.8
+checkprops result -s 43339.8

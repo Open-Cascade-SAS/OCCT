@@ -4,4 +4,4 @@ restore [locate_data_file sh2a] b2
 bop b1 b2
 bopcommon result
 
-set square 350
+checkprops result -s 350

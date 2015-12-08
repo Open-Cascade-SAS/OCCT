@@ -9,4 +9,4 @@ prism prism cont 0 20 0
 
 bcut result base prism
 
-set square 250288
+checkprops result -s 250288

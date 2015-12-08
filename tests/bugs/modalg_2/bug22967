@@ -55,6 +55,7 @@ if {${status} > 0} {
    puts "OK ${BugNumber}"
 }
 
-set square 668843
+checkprops result -s 668843 
+checkshape result
 set 2dviewer 0
 

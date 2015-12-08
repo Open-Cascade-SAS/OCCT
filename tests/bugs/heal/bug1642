@@ -22,22 +22,7 @@ if { ${Intersectingpt} == -1} {
     puts "Warning: There are not intersecting points"
 }
 
-set list [lprops result]
-regexp {Mass +: +([-0-9.+eE]+)} $list full pcurve_length
-
-set good_pcurve_length 3880.52
-set percent_max 0.1
-set percent [expr abs(${pcurve_length} - ${good_pcurve_length}) / double(${good_pcurve_length}) * 100.]
-
-puts "good_pcurve_length = ${good_pcurve_length}"
-puts "pcurve_length = ${pcurve_length}"
-puts "percent = ${percent}"
-
-if {${percent} > ${percent_max}} {
-    puts "OCC1642 Faulty length: function FixShape works WRONGLY !!"
-} else {
-    puts "OCC1642 length: function FixShape works CORRECTLY"
-}
+checkprops result -l 3880.52
 
 if { ${Intersectingpt} > ${FixSelfIntersection} } {
     puts "OCC1642 Faulty"

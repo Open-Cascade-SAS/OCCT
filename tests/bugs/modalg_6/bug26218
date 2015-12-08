@@ -17,7 +17,8 @@ baddcompound b2
 bfillds
 bbuild result
 
-set square 2728.77
+checkprops result -s 2728.77 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

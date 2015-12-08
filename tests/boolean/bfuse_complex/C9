@@ -7,4 +7,4 @@ restore [locate_data_file cts16184b.brep] b
 bfuse result a b
 
 
-set square 0.0892544
+checkprops result -s 0.0892544

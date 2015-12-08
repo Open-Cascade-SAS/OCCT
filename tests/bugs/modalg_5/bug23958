@@ -26,6 +26,8 @@ bopargcheck a f -S #F
 bsection result a f
 
 # check total length of result
-set length 1.21473
+checkprops result -l 1.21473 
+checkshape result 
+checksection result
 
 set 2dviewer 1

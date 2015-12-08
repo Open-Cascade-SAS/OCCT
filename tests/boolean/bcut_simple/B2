@@ -4,4 +4,4 @@ box b2  0     1     0     1     0.5   1
 
 bcut result b2 b1
 
-set square 4
+checkprops result -s 4

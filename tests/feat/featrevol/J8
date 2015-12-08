@@ -9,4 +9,4 @@ copy base_4 funtil
 featrevol base cont cont 54.06494140625 70.2841796875 0 0 0 1 1 1
 featperform revol result ffrom
 
-set square 455939
+checkprops result -s 455939

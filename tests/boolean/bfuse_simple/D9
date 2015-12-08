@@ -10,4 +10,4 @@ prism p2 f2 0 0 100
 
 bfuse result p1 p2
 
-set square 180000
+checkprops result -s 180000

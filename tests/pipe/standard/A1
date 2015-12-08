@@ -10,4 +10,4 @@ restore [locate_data_file 3_A1.rle] profile
 
 pipe result profile fbase
 
-set square 38226.4
+checkprops result -s 38226.4

@@ -6,4 +6,4 @@ restore [locate_data_file cts21296b.rle] b
 
 bcut result a b
 
-set square 330624
+checkprops result -s 330624

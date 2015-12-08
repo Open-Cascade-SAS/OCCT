@@ -5,6 +5,7 @@ puts "*"
 puts "TODO OCC22810 All:Error in featperform"
 puts "TODO OCC22810 All:Error in fsameparameter"
 puts "TODO OCC22810 All:Error : The feat grid cannot be built."
+puts "TODO OCC22810 All: Error: The command cannot be built"
 
 restore [locate_data_file CTO900_hkg60163c.rle] base
 restore [locate_data_file hkg60163_face.rle] cont1
@@ -25,4 +26,4 @@ if { [catch { fsameparameter result } ] != 0 } {
   puts "Error in fsameparameter"
 }
 
-set square 0
+checkprops result -s 0

@@ -2,7 +2,7 @@
 #puts "TODO OCC22803 Linux: Error in depouille"
 #puts "TODO OCC22803 Linux: Error : The skin cannot be built."
 puts "TODO OCC22803 Linux Windows: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC22803 Linux Windows: Error : The area of the resulting shape is"
+puts "TODO OCC22803 Linux Windows: Error : The area of result shape is"
 polyline p 0 0 3  0 0 0  10 0 0  10 0 3  
 beziercurve bc 4 10 0 3  7 0 2  3 0 3  0 0 3
 mkedge bc bc
@@ -18,4 +18,4 @@ if { [catch { depouille result f 0 0 1 f_4 3 0 0 10 0 0 1 } ] != 0 } {
   puts "Error in depouille"
 }
 
-set square 492.768
+checkprops result -s 492.768

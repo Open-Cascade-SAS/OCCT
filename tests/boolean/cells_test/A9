@@ -27,6 +27,6 @@ bcadd result s2 0 s3 1
 donly result
 fit
 
-set square 3701.46
+checkprops result -s 3701.46
 
 set only_screen_axo 1

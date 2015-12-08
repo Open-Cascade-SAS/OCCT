@@ -8,4 +8,4 @@ restore [locate_data_file CFI_cts19997.rle] a
 nexplode a e
 blend result a 2 a_1
 
-set square 314713
+checkprops result -s 314713

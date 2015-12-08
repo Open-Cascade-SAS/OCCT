@@ -3,4 +3,4 @@ restore [locate_data_file CIN900_fra61hlt.rle] b
 
 bfuse result a b
 
-set square 309.521
+checkprops result -s 309.521

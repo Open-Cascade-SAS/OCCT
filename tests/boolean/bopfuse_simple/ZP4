@@ -7,4 +7,4 @@ bop pc pcy
 
 bopfuse result
 
-set square 1353.72
+checkprops result -s 1353.72

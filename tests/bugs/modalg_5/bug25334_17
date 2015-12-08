@@ -20,7 +20,9 @@ renamevar res_1 result
 
 fit
 
-set length 1211.6
+checkprops result -l 1211.6 
+checkshape result 
+checksection result
 
 checknbshapes result -vertex 6 -edge 5 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 12
 set only_screen_axo 1

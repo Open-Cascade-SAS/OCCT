@@ -26,4 +26,5 @@ if {${percent} > ${percent_max}} {
 }
 
 set 2dviewer 0
-set square 6000
+checkprops result -s 6000 
+checkshape result

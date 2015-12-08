@@ -4,4 +4,4 @@ explode sh
 bop sh_2 sh_1
 bopcut result
 
-set square 132943
+checkprops result -s 132943

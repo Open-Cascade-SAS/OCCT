@@ -73,5 +73,7 @@ dchrono h show
 
 renamevar result_1 result
 
-set length 1081.52
+checkprops result -l 1081.52 
+checkshape result
+checksection result
 set 2dviewer 0

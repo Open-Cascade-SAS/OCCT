@@ -2,4 +2,4 @@ pcylinder s 5 15
 
 OFFSETSHAPE -1 {} $calcul $type
 
-set volume 653.451
+checkprops result -v 653.451

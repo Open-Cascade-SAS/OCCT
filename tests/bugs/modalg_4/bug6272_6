@@ -1,4 +1,4 @@
-puts "TODO OCC22033 ALL: Error : The square of result shape is"
+puts "TODO OCC22033 ALL: Error : The area of result shape is"
 puts "TODO OCC22033 ALL: Error :  is WRONG because number of"
 
 puts "============"
@@ -19,7 +19,8 @@ bopfuse result
 
 # puts "See result in the viewer!!!"
 
-set square 8979.70
+checkprops result -s 8979.70 
+checkshape result
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 60 -edge 90 -wire 42 -face 40 -shell 5 -solid 5 -compsolid 0 -compound 1 -shape 243

@@ -14,4 +14,4 @@ blend result a 10 a_5 10 a_6
 explode result sh
 renamevar result_1 result
 
-set square 0
+checkprops result -s 0

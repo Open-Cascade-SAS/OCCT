@@ -22,5 +22,7 @@ if { $ve != 0 && $ed != 0 } {
 } else {
     puts "Faulty BUC60789: COMMON operation was made wrongly"
 }
-set length 78.3594
+checkprops result -l 78.3594 
+checkshape result
+checksection result
 set 2dviewer 0

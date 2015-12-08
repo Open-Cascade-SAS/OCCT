@@ -7,4 +7,4 @@ explode rr so
 
 bcut result rr_1 c
 
-set square empty
+checkprops result -s empty

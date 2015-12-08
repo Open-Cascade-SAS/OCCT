@@ -33,5 +33,5 @@ if { [regexp {Faulty} $che] == 1 } {
     puts "Volume = ${volume}"
 }
 
-set square 750
+checkprops result -s 750 
 set 2dviewer 0

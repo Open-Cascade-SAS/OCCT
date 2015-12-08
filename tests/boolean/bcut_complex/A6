@@ -3,4 +3,4 @@ restore [locate_data_file f3] b2
 
 bcut result b2 b1
 
-set square 93.6289
+checkprops result -s 93.6289

@@ -15,7 +15,8 @@ checkshape w
 
 pipe result w f
 
-set square 1.12048e+07
+checkprops result -s 1.12048e+07 
+checkshape result
 set 2dviewer 0
 
 

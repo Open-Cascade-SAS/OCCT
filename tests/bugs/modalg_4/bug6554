@@ -26,5 +26,6 @@ if { ${Vertices} != ${good_Vertices} } {
     puts "OK ${BugNumber}"
 }
 
-set length 110.045
+checkprops result -l 110.045 
+checkshape result 
 set 2dviewer 2

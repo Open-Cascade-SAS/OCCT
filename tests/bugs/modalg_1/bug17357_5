@@ -12,7 +12,8 @@ restore [locate_data_file OCC17357-2.brep] b2
 bop b1 b2
 bopsection result
 
-set length 3.84991
-
+checkprops result -l 3.84991 
+checkshape result
+checksection result
 set 2dviewer 0
 

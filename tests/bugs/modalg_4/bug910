@@ -44,6 +44,8 @@ if { ${TopoDS_Iterator1} != ${TopoDS_Iterator2} || \
 
 renamevar a_7 result
 
-set length 149.816
+checkprops result -l 149.816 
+checkshape result 
+checksection result
 set 2dviewer 0
 

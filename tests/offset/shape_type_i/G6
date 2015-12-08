@@ -9,4 +9,4 @@ pipe s w profile
 
 OFFSETSHAPE -1 {} $calcul $type
 
-set volume 196.68
+checkprops result -v 196.68

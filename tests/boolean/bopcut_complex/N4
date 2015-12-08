@@ -13,4 +13,4 @@ updatetolerance b 1
 bop a b
 bopcut result
 
-set square 45884.6
+checkprops result -s 45884.6

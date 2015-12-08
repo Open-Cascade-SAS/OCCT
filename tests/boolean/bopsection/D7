@@ -19,4 +19,5 @@ bopsection result
 # the tool b.
 
 
-set length 74.2717
+checkprops result -l 74.2717
+checksection result

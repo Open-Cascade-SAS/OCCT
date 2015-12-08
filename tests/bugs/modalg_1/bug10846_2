@@ -18,7 +18,8 @@ puts "Start boolean operation ..."
 bopfuse result
 puts "Finish boolean operation ..."
 
-set square 2309.97
+checkprops result -s 2309.97 
+checkshape result
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 25 -edge 45 -wire 15 -face 15 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 103

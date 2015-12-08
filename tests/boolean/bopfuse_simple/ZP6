@@ -17,4 +17,4 @@ bopfuse x1
 bop x1 a2
 bopfuse result
 
-set square 197700
+checkprops result -s 197700

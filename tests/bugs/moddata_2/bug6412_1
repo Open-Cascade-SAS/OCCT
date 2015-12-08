@@ -13,5 +13,5 @@ vinit
 vfit
 vsetdispmode 1
 
-set square 3480.05
+checkprops result -s 3480.05
 set 3dviewer 0

@@ -10,4 +10,4 @@ copy base_5 skface
 featprism base cont skface 0 0 -1 0 1
 featperformval prism result 100
 
-set square 4909.72
+checkprops result -s 4909.72

@@ -23,7 +23,8 @@ puts "Start boolean operation ..."
 boptuc result
 puts "Finish boolean operation ..."
 
-set square 37856.9
+checkprops result -s 37856.9 
+checkshape result
 
 checknbshapes result -vertex 15 -edge 22 -wire 9 -face 9 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 58
 

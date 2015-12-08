@@ -11,7 +11,8 @@ explode c
 
 bcut result c_1 c_2
 
-set square 9.82018
+checkprops result -s 9.82018 
+checkshape result
 
 checknbshapes result -vertex 5 -edge 11 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 31
 set 2dviewer 1

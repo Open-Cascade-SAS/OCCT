@@ -1,5 +1,5 @@
 puts "TODO OCC11111 ALL: Faulty OCC264_12: here is shading problem"
-puts "TODO OCC11111 ALL: Error : The square of result shape is"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
 
 puts "========"
 puts "OCC264"
@@ -29,5 +29,6 @@ if { $tri != 19 && $nod != 21 }  {
     puts "Shading of OCC264_12 is OK"
 }
 
-set square 0
+checkprops result -s 0 
+checkshape result
 set 2dviewer 0

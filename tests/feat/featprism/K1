@@ -9,4 +9,4 @@ explode base face
 featprism base cont cont 0 0 1 1 1
 featperformval prism result 25
 
-set square 47886.5
+checkprops result -s 47886.5

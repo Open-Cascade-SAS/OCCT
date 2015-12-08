@@ -9,4 +9,4 @@ explode s0 E
 blend s s0 30 s0_5
 blend result s0 30 s0_5 30 s0_10
 
-set square 126267
+checkprops result -s 126267

@@ -23,7 +23,8 @@ extrema intCrv pl
 
 if { [isdraw ext_1] } {
    mkedge result ext_1
-   set length 136.705
+   checkprops result -l 136.705
+   checksection result
 } else {
    puts "${BugNumber}: invalid result for ext_1"
 }

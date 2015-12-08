@@ -18,5 +18,6 @@ if [catch {fillet result a_1 1.2 a_2 } catch_result] {
     puts " OCC571 (case 1) OK: Fillet operation was made"
 }
 
-set square 21118.1
+checkprops result -s 21118.1 
+checkshape result
 set 2dviewer 0

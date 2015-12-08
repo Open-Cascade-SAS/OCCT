@@ -21,6 +21,8 @@ if { [catch {bop a f1 } ] } {
     bopsection result
 }
 
-set length 5840.24
+checkprops result -l 5840.24 
+checkshape result
+checksection result
 set 2dviewer 0
 

@@ -41,5 +41,6 @@ if { [ catch { set info_result [OCC827 a1 a2 a3 result1 result2] } ] } {
     renamevar result2 result
 }
 
-set square 11847.7
+checkprops result -s 11847.7 
+checkshape result
 set 2dviewer 0

@@ -22,5 +22,6 @@ if [catch {bcut result a_1 r1 } catch_result] {
 } else {
     puts "OCC497 : function CUT works without hangs up "
 }
-set square 646.969
+checkprops result -s 646.969 
+checkshape result
 set 2dviewer 0

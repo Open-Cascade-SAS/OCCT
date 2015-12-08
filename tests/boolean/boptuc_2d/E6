@@ -2,6 +2,7 @@ restore [locate_data_file case_3_face.brep] a
 restore [locate_data_file case_3_wire2.brep] b
 bop a b
 boptuc result
-set length 103.485
+checkprops result -l 103.485
+checksection result
 set nbsh_v 4
 set nbsh_e 2

@@ -10,4 +10,4 @@ plane plan 0 -500 120 1 0 0
 featlf base wire plan -10 0 0 10 0 0 1 1
 featperform lf result
 
-set square 2.00853e+06
+checkprops result -s 2.00853e+06

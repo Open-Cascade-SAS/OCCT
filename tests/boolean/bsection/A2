@@ -2,4 +2,5 @@ restore [locate_data_file CIN001_a10.rle] a
 restore [locate_data_file CIN001_b10.rle] b
 bsection result a b
 
-set length 25.4961
+checkprops result -l 25.4961
+checksection result

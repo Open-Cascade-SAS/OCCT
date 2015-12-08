@@ -17,5 +17,5 @@ mkplane result a
 
 checkshape result
 
-set square 43.3075
+checkprops result -s 43.3075
 set 2dviewer 0

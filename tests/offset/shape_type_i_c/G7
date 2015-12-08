@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_three_chimneys_duplicated.brep] s
 
 OFFSETSHAPE 30 {} $calcul $type
 
-set volume 2.93724e+008
+checkprops result -v 2.93724e+008

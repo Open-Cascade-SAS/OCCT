@@ -2,4 +2,5 @@ restore [locate_data_file BUGDATA_2381.rle] a
 explode a
 bsection result a_1 a_2
 
-set length 691.399
+checkprops result -l 691.399
+checksection result

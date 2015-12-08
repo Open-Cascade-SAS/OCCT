@@ -5,4 +5,4 @@ restore [locate_data_file CTO909_tool.brep] b
 
 bcut result a b
 
-set square 1507.32
+checkprops result -s 1507.32

@@ -2,7 +2,7 @@
 puts "========================"
 puts "BUC60531"
 puts "========================"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
 restore [locate_data_file buc60531a.brep] r1
 checkshape r1
 
@@ -17,5 +17,6 @@ checkshape pl2
 
 bcut result r2 pl2
 
-set square 115935
+checkprops result -s 115935 
+checkshape result
 set 2dviewer 0

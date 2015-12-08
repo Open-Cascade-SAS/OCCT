@@ -6,4 +6,4 @@ trotate b2 0 0 0 0 0 1 45
 bop b1 b2
 boptuc result
 
-set square 2.91421
+checkprops result -s 2.91421

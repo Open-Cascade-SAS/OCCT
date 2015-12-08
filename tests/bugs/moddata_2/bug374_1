@@ -13,5 +13,5 @@ offset su1 su 1
 
 mkface result su1
 
-set square 7960.45
+checkprops result -s 7960.45
 set 2dviewer 0

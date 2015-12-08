@@ -9,4 +9,4 @@ vertex v1 56.3468437194825 6.86845636367778 100
 depouille result base 0 0 -1 base_5 1 56.3468437194825 6.86845636367778 100 0 0 -1
 
 fsameparameter result
-set square 39615.1
+checkprops result -s 39615.1

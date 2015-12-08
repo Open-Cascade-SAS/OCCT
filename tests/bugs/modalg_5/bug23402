@@ -25,15 +25,9 @@ bop s f3
 bopcommon c3
 ttranslate c3 0 0 5
 
-regexp {Mass +: +([-0-9.+eE]+)} [sprops c1] full sq1
-regexp {Mass +: +([-0-9.+eE]+)} [sprops c2] full sq2
-regexp {Mass +: +([-0-9.+eE]+)} [sprops c3] full sq3
-
-if { $sq1 != 12.5 || $sq2 != 12.5 || $sq3 != 10 } {
-    puts "Error : c1 and c2 should be indeticall"
-} else {
-    puts "OK : c1 and c2 are identicall"
-}
+checkprops c1 -s 12.5
+checkprops c2 -s 12.5
+checkprops c3 -s 10
 
 mu4
 fit

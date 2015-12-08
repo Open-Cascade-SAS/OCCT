@@ -1,4 +1,4 @@
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
 puts "TODO OCC12345 ALL: OCC287 : Faulty"
 
 puts "========================"
@@ -35,6 +35,7 @@ vdisplay result
 vfit
 vsetdispmode result 1
 
-set square 0
+checkprops result -s 0 
+checkshape result
 set 3dviewer 0
 

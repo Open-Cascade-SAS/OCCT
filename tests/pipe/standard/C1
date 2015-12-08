@@ -11,4 +11,4 @@ restore [locate_data_file 3_C1.rle] profile
 
 pipe result profile fbase
 
-set square 180694
+checkprops result -s 180694

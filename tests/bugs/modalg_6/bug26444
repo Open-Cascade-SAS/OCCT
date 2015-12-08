@@ -13,5 +13,6 @@ dump p2
 halfspace s1 a -0.541421905726473 0.200000002980232 0.00899999961256981
 bcut result b s1
 
-set square 0.106547
+checkprops result -s 0.106547 
+checkshape result
 set 2dviewer 1

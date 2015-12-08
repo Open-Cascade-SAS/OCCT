@@ -6,4 +6,4 @@ restore [locate_data_file pro12903b.rle] out
 
 bcut result obj out
 
-set square 281453
+checkprops result -s 281453

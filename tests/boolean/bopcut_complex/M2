@@ -8,4 +8,4 @@ bop a b
 bopcut result
 
 
-set square 68758
+checkprops result -s 68758

@@ -13,4 +13,4 @@ explode result So
 tcopy result_1 result 
 explode result V
 
-set square 781868
+checkprops result -s 781868

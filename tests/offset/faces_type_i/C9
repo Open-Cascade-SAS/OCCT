@@ -1,7 +1,7 @@
 puts "TODO OCC23748 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC23547 ALL: Error : The volume of the resulting shape is"
+puts "TODO OCC23748 ALL: Error : The volume of result shape is"
 psphere s 15 270
 
 OFFSETSHAPE 1 {s_2} $calcul $type
 
-set volume 0
+checkprops result -v 0

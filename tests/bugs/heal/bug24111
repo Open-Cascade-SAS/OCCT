@@ -12,7 +12,8 @@ restore [locate_data_file bug24111_shape.brep] a
 
 fixshape result a
 
-set square 15902.8
+checkprops result -s 15902.8
+checkshape result
 
 checknbshapes result -vertex 14 -edge 15 -wire 1 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 31
 set 2dviewer 1

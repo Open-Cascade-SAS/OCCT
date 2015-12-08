@@ -21,7 +21,7 @@ bopcut result
 checkshape result
 puts "Finish boolean operation ..."
 
-set square 893.394
+checkprops result -s 893.394
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 7 -edge 15 -wire 6 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 36

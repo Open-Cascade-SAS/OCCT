@@ -9,4 +9,4 @@ restore [locate_data_file CTO900_pro6974_box.rle] box2
 
 bcommon result rev1 box2
 
-set square 2.14421
+checkprops result -s 2.14421

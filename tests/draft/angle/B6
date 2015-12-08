@@ -5,4 +5,4 @@ depouille result p 0 1 0 p_4 5 0 0 0 0 1 0 \
 p_6 5 0 0 0 0 1 0 \
 p_3 5 0 2 0 0 1 0
 
-set square 39.0405
+checkprops result -s 39.0405

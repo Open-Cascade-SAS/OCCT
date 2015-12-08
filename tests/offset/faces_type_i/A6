@@ -2,4 +2,4 @@ pcone s 10 5 20
 
 OFFSETSHAPE -1 {s_3} $calcul $type
 
-set volume 957.403
+checkprops result -v 957.403

@@ -1,4 +1,4 @@
-puts "TODO CR25926 ALL: Error : The volume of the resulting shape is"
+puts "TODO CR25926 ALL: Error : The volume of result shape is"
 
 polyline p 0 0 0 3 0 0 3 0 1 2 0 1 1 0 4 1 0 5 0 0 5 0 0 0
 mkplane f p
@@ -11,4 +11,4 @@ explode s f
 offsetonface s_4 2
 offsetperform result
 
-set volume 0
+checkprops result -v 0

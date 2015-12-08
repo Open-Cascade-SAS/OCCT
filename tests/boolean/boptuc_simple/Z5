@@ -5,4 +5,4 @@ box b2 -r -r 0 2*r 2*r 1
 bop b1 b2
 boptuc result
 
-set square empty
+checkprops result -s empty

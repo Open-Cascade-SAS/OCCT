@@ -1,5 +1,5 @@
 puts "TODO OCC11111 ALL: Faulty OCC263: here is shading problem"
-puts "TODO OCC11111 ALL: Error : The square of result shape is"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
 
 puts "========"
 puts "OCC263"
@@ -26,5 +26,6 @@ if { $tri != 989 && $nod != 535 }  {
     puts "Shading of OCC263  is OK"
 }
 
-set square 0
+checkprops result -s 0 
+checkshape result
 set 3dviewer 0

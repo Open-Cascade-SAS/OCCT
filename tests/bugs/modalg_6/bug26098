@@ -24,7 +24,8 @@ if { [regexp "This shape seems to be OK" ${info}] != 1 } {
     puts "Error : The result of General Fuse operation is self-interfered shape"
 }
 
-set square 173.444
+checkprops result -s 173.444 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

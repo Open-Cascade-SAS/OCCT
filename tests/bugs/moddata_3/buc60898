@@ -22,7 +22,7 @@ if [catch { igesbrep $filepath a *} result] {
     checknbshapes result -shell 4
     checkfreebounds result 1725
 
-    set square 798.266
+    checkprops result -s 798.266
     set 2dviewer 0
 }
 

@@ -30,7 +30,8 @@ addsweep Invert_2_1 chemin_2 -R
 buildsweep result
 puts "Finish Make pipe ..."
 
-set square 1040.94
+checkprops result -s 1040.94 
+checkshape result
 
 checknbshapes result -vertex 4 -edge 6 -wire 2 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 15
 vinit

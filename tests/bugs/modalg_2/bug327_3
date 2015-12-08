@@ -12,5 +12,5 @@ if { [regexp {OK} $che] == 1 } {
     puts " OCC327  case 3: Faulty"
 }
 
-set square 61013.8
+checkprops result -s 61013.8 
 set 2dviewer 0

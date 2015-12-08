@@ -8,5 +8,4 @@ dump revolution1
 dval  dovx+dvx
 dval  dovy+dvy
 mkface result revolution1
-set square 13.8136
-
+checkprops result -s 13.8136

@@ -24,5 +24,7 @@ if { $err != 4 && $err1 != 3} {
     puts "BUC60788 - OK"
 }
 
-set length 750
+checkprops result -l 750 
+checkshape result
+checksection result
 set 2dviewer 0

@@ -8,4 +8,4 @@ restore [locate_data_file OCC213-2.brep] b
 bop b a 
 bopcommon result
 
-set square 838.302
+checkprops result -s 838.302

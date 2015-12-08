@@ -5,4 +5,4 @@ offsetparameter 1.e-7 $calcul $type
 offsetload s $distance
 offsetperform result
 
-set volume 3.92994e+007
+checkprops result -v 3.92994e+007

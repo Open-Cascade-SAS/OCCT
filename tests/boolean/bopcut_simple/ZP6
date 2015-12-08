@@ -30,4 +30,4 @@ box b 0 0 $Zbox 150 200 200
 bop b hs
 bopcut result
 
-set square 116000
+checkprops result -s 116000

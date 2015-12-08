@@ -17,4 +17,4 @@ plane pl 0.2 0.2 0.3 0 0 1
 featlf pr w pl 0 0 0.3 0 0 0 0 1
 featperform lf result
 
-set square 50.08
+checkprops result -s 50.08

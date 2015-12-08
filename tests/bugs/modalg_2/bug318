@@ -18,5 +18,5 @@ if { [regexp {Faulty} $che] == 1} {
     puts "OCC318 OK: Result shape is valid"
 }
 
-set square 8e+100
+checkprops result -s 8e+100 
 set 2dviewer 0

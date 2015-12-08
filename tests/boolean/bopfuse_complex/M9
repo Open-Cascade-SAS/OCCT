@@ -13,4 +13,4 @@ explode rr so
 bop rr_1 p1
 bopfuse result
 
-set square 664
+checkprops result -s 664

@@ -10,6 +10,7 @@ checkshape pl1
 
 bcut result r1 pl1
 
-set square 119983
+checkprops result -s 119879 
+checkshape result
 set 2dviewer 0
 

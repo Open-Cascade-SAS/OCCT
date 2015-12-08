@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_b1x.brep] s
 
 OFFSETSHAPE 5 {} $calcul $type
 
-set volume 6000
+checkprops result -v 6000

@@ -4,4 +4,4 @@ restore [locate_data_file sf55] b2
 bop b1 b2
 bopcommon result
 
-set square 37699.1
+checkprops result -s 37699.1

@@ -8,6 +8,6 @@ restore [locate_data_file bug23405_Rotation_1.brep] rr
 bop bb rr
 bopcommon result
 
-set square 2435.25
+checkprops result -s 2435.25
 
 

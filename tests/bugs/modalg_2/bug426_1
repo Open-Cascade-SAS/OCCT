@@ -2,7 +2,7 @@ puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 puts "TODO OCC25920 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC25920 ALL: Error : The square of result shape is"
+puts "TODO OCC25920 ALL: Error : The area of result shape is"
 
 pload QAcommands
 
@@ -24,6 +24,7 @@ checkshape rs3
 checkshape fuse32
 checkshape fuse321
 
-set square 7507.61
+checkprops result -s 7507.61 
+checkshape result
 set 3dviewer 1
 

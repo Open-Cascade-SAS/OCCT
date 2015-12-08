@@ -34,4 +34,4 @@ prism bb fb -.5 .5 0
 
 bcommon result ba bb
 
-set square 4.41421
+checkprops result -s 4.41421

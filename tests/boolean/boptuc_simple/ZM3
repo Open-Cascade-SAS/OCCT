@@ -4,4 +4,4 @@ pcone b2 2 1 8
 bop b1 b2
 boptuc result
 
-set square empty
+checkprops result -s empty

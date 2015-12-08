@@ -16,7 +16,8 @@ vsetdispmode 1
 vdisplay result
 vfit
 
-set square 14217.2
+checkprops result -s 14217.2 
+checkshape result
 
 checknbshapes result -vertex 6 -edge 9 -wire 3 -face 2 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 22
 set 3dviewer 1

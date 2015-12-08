@@ -20,5 +20,5 @@ if [catch {bfuse result S_4 S_1}] {
     checkshape result
 }
 
-set square 2.5405e+06
+checkprops result -s 2.5405e+06
 set 2dviewer 0

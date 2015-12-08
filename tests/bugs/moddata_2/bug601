@@ -18,6 +18,6 @@ if [catch {blend result a 13 a_41 } res] {
     puts "OCC601 OK: function BLEND works good"
     checkshape result
     
-    set square 32486.0
+    checkprops result -s 32486.0
     set 2dviewer 0
 }

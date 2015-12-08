@@ -28,7 +28,7 @@ if [catch {chamf res sh sh_6_1 sh_6 A 2 45 sh_6_8 sh_6 A 2 45} inf] {
 	puts "Warning. Chamfer was not build. But suitable message was given"
     } else {
 	checkshape result
-	set square 10
+	checkprops result -s 10
     }
 }
 set 2dviewer 0

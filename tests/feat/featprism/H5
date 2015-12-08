@@ -6,4 +6,4 @@ explode b f
 featprism b p b_6 0 0 1 1 1
 featperformval prism result 1
 
-set square 9.14159
+checkprops result -s 9.14159

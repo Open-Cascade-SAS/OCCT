@@ -12,6 +12,8 @@ restore [locate_data_file bug23060_ce.brep] result
 explode result
 bop result_1 result_2
 
-set length 176.06
+checkprops result -l 176.06 
+checkshape result 
+checksection result
 set 3dviewer 0
 

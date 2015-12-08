@@ -14,5 +14,6 @@ checkshape s2
 
 bcommon result s1 s2
 
-set square 628.319
+checkprops result -s 628.319 
+checkshape result
 set 2dviewer 0

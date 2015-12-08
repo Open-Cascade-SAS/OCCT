@@ -6,4 +6,4 @@ updatevol s_5 0 10*SCALE1 1 0*SCALE1 2 10*SCALE1
 buildevol
 explode result 
  
-set square 1.49427e+06
+checkprops result -s 1.49427e+06

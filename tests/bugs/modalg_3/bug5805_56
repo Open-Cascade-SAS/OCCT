@@ -42,8 +42,8 @@ set distance -0.5
 catch { OFFSETSHAPE $distance {s_4 s_5} $calcul $type }
 
 
-set square 870.345
-
+checkprops result -s 870.345
+checkshape result
 checknbshapes result -vertex 12 -edge 18 -wire 10 -face 8 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 50
 
 set index [lsearch [whatis s] Closed]

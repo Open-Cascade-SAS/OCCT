@@ -19,6 +19,7 @@ if {$bug_info != "DARKGOLDENROD3 1"} {
   puts "ERROR: OCC26379 is reproduced. Volume is incorrect."
 }
 
-set square 6.60933e+006
+checkprops result -s 6.60933e+006 
+checkshape result
 
 set only_screen 1

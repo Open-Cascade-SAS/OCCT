@@ -1,4 +1,4 @@
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
+puts "TODO #22911 ALL: Error : The area of result shape is"
 
 restore [locate_data_file a350] a
 restore [locate_data_file b350] b
@@ -6,4 +6,4 @@ restore [locate_data_file b350] b
 bop a b
 bopfuse result
 
-set square 0
+checkprops result -s 0

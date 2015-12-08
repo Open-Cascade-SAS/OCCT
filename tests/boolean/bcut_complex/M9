@@ -6,4 +6,4 @@ restore [locate_data_file CTO904_hkg60150b.rle] b
 
 bcut result a b
 
-set square 2167.4
+checkprops result -s 2167.4

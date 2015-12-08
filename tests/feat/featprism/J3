@@ -11,6 +11,6 @@ copy base_26 funtil
 featprism base cont cont -0.8660254 0.50 0 1 1
 featperform prism result funtil
 
-#set square 13742.4
+#checkprops result -s 13742.4
 #sprops command returns correct value for result_6 face in OCCT6.5.3
-set square 14135.9
+checkprops result -s 14135.9

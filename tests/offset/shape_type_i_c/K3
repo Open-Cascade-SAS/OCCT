@@ -9,4 +9,4 @@ offsetonface s_7 15
 offsetonface s_9 15
 offsetperform result
 
-set volume 269568
+checkprops result -v 269568

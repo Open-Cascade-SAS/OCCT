@@ -12,7 +12,8 @@ restore [locate_data_file bug22828_shape1.brep] b1
 restore [locate_data_file bug22828_shape2.brep] b2 
 catch { bfuse result b1 b2 }
 
-set square 4029.04
+checkprops result -s 4029.04 
+checkshape result
 
 checknbshapes result -vertex 11 -edge 15 -wire 12 -face 9 -shell 2 -solid 2 -compsolid 0 -compound 1 -shape 52
 set 3dviewer 1

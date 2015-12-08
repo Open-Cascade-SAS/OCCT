@@ -16,4 +16,4 @@ if { [catch { featperform prism result funtil } ] != 0 } {
   puts "Error in featperform"
 }
 
-set square 18033.5
+checkprops result -s 18033.5

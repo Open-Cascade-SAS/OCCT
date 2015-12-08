@@ -10,8 +10,6 @@ puts "========"
 restore [locate_data_file OCC184.brep] FaceBrep 
 checkshape FaceBrep
 
-regexp {Mass +: +([-0-9.+eE]+)} [sprops FaceBrep] full square1
-
 catch {exec rm ${imagedir}/OCC184.igs}
 brepiges FaceBrep ${imagedir}/OCC184.igs
 catch {exec chmod 777 ${imagedir}/OCC184.igs}
@@ -19,15 +17,10 @@ catch {exec chmod 777 ${imagedir}/OCC184.igs}
 igesbrep ${imagedir}/OCC184.igs FaceIGES *
 
 sewing result FaceIGES
+
 checkshape result
-
-regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full square2
-
 checknbshapes result -ref [nbshapes FaceBrep]
-
-if { ${square2} != ${square1} } {
-   puts "Error : Square is not valid"
-}
+checkprops result -s -equal FaceBrep
 
 checkmaxtol result -ref 9.9999999999999995e-008
 checknbshapes result -shell 0

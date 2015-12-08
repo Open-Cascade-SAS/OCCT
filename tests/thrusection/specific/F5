@@ -30,7 +30,7 @@ set isruled 1
 catch {thrusections result ${issolid} ${isruled} wc1 w1 wc2}
 
 
-set square 256.875
+checkprops result -s 256.875
 
 
 checknbshapes result -vertex 6 -edge 10 -wire 6 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 30

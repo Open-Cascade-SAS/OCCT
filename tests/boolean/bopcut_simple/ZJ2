@@ -6,4 +6,4 @@ trotate b2 0 0 8 0 0 1 270
 bop b1 b2
 bopcut result
 
-set square 196.529
+checkprops result -s 196.529

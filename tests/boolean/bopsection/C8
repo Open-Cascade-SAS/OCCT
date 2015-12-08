@@ -6,4 +6,5 @@ restore [locate_data_file CTO902_cts20528-part.rle] b
 bop a b
 bopsection result
 
-set length 382.621
+checkprops result -l 382.621
+checksection result

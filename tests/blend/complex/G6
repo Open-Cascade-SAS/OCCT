@@ -12,4 +12,4 @@ explode a e
 blend result a 0.2 a_24
 # value of 0.1 works
 
-set square 0
+checkprops result -s 0

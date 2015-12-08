@@ -18,7 +18,8 @@ tolerance v
 bop p v
 bopcut result
 
-set square 1.89516e+07
+checkprops result -s 1.89516e+07 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in result

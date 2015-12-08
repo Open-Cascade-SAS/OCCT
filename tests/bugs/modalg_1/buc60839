@@ -13,5 +13,6 @@ puts "Starting fuse operation"
 
 bfuse result a b
 
-set square 27341.6
+checkprops result -s 27341.6 
+checkshape result
 set 2dviewer 0

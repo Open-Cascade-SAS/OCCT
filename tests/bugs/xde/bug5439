@@ -10,5 +10,6 @@ restore [locate_data_file OCC5439-1.brep] a
 
 catch { fixshape result a 1.e-7 }
 
-set square 13.1825
+checkprops result -s 13.1825 -eps 0.1
+checkshape result
 set 2dviewer 1

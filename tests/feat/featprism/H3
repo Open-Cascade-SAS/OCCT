@@ -5,4 +5,4 @@ ttranslate p 0 0 0.5
 featprism b p p 0 0 1 0 1
 featperformval prism result 0.2
 
-set square 7.2
+checkprops result -s 7.2

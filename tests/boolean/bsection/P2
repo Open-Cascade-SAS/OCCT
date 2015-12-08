@@ -4,4 +4,5 @@ explode m
 # m_2 : Sr Reglee
 bsection result m_1 m_2
 
-set length 126.535
+checkprops result -l 126.535
+checksection result

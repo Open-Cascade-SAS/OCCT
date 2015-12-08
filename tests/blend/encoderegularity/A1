@@ -7,4 +7,4 @@ blend result m  3 m_41 3 m_38 3 m_6 3 m_5 3 m_4 3 m_3\
 explode result Sh
 renamevar result_1 result
 
-set square 52047
+checkprops result -s 52047

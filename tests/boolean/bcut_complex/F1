@@ -7,4 +7,4 @@ restore [locate_data_file cts17785-tool.rle] tool
 bcut result part tool
 
 
-set square 56064.6
+checkprops result -s 56064.6

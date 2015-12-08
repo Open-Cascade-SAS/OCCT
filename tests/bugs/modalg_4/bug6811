@@ -20,5 +20,6 @@ if { [catch { stepread $filepath a * } catch_result] } {
     renamevar a_1 result
 }
 
-set square 1.48021e+06
+checkprops result -s 1.48021e+06 
+checkshape result
 set 2dviewer 0

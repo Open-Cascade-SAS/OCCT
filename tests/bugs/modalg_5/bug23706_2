@@ -17,10 +17,4 @@ mksurface ss spine_1
 offset o1 ss 2
 
 mkface res o1
-set info [sprops res]
-regexp {Mass +: +([-0-9.+eE]+)} $info full sq
-set sq_check 240.865
-
-if { [expr 1.*abs($sq_check - $sq)/$sq_check] > 0.01 } {
-   puts "Error : The square of result shape is $sq"
-}
+checkprops res -s 245.495

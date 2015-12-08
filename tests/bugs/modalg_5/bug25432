@@ -11,14 +11,8 @@ restore [locate_data_file bug25432_qz.brep] q
 explode q f
 mkvolume result q_1 q_2 q_3 q_4 q_5 q_6 q_7 q_8 q_9 q_10 q_11 -ni
 
-regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full volume
-
-set expected_volume 0.26776
-set tol_abs_volume 1.0e-4
-set tol_rel_volume 0.0001
-checkreal "Volume" ${volume} ${expected_volume} ${tol_abs_volume} ${tol_rel_volume}
-
-set square 3.59972
+checkprops result -s 3.59972 -v 0.26776
+checkshape result
 
 checknbshapes result -vertex 12 -edge 20 -wire 11 -face 11 -shell 2 -solid 2 -compsolid 0 -compound 1 -shape 59
 set 2dviewer 1

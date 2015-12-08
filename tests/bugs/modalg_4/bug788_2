@@ -21,4 +21,5 @@ thrusections result 0 0 ww1 ww2
 puts "It necessary to analyse the photo"
 
 set 2dviewer 0
-set square 148608.
+checkprops result -s 148608. 
+checkshape result

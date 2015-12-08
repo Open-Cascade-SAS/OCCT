@@ -2,4 +2,4 @@ wedge s 4 10 10 2 2 7 7
 
 OFFSETSHAPE -1 {} $calcul $type
 
-set volume 103.814
+checkprops result -v 103.814

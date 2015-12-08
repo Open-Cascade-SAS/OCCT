@@ -10,4 +10,4 @@ mkevol result s
 updatevol s_9 0 10 1 20 2 10
 buildevol
 
-set square 44716.1
+checkprops result -s 44716.1

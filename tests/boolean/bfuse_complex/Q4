@@ -6,4 +6,4 @@ restore [locate_data_file buc60321b.brep] b
 
 bfuse result a b
 
-set square 21190.7
+checkprops result -s 21190.7

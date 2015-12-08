@@ -21,16 +21,7 @@ if { $exp2 != "r2_1" } {
   puts "Error: Second intersection is not returned"
 }
 
-set len_check 3.83537
 checksection r1
 checksection r2
-regexp {Mass +: +([-0-9.+eE]+)} [lprops r1] full l1
-regexp {Mass +: +([-0-9.+eE]+)} [lprops r2] full l2
-if { [expr 1.*abs($len_check - $l1)/$len_check] > 0.01 || [expr 1.*abs($len_check - $l2)/$len_check] > 0.01 } {
-  puts "Error : The length of first intersection is $l1"
-  puts "Error : The length of second intersection is $l2"
-} else {
-  puts "OK : The length of first intersection is $l1"
-  puts "OK : The length of second intersection is $l2"
-}
-
+checkprops r1 -l 3.83537
+checkprops r2 -l 3.83537

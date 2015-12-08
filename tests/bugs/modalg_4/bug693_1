@@ -70,6 +70,7 @@ compound int2 cut3 cut4 result
 
 checkshape -top result
 
-set square 33196
+checkprops result -s 33196 
+checkshape result
 set 3dviewer 1
 

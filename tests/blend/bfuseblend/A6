@@ -8,4 +8,4 @@ trotate s b 0 0 0 0 0 1 -10
 explode s E
 bfuseblend result s b 3*SCALE1
  
-set square 1.65656e+06
+checkprops result -s 1.65656e+06

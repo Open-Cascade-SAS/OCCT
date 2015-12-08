@@ -14,4 +14,4 @@ bfuse result a c
 
 # KO
 
-set square 168515
+checkprops result -s 168515

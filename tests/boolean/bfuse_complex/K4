@@ -10,4 +10,4 @@ explode a so
 bfuse result a_1 b
 # pkv t
 
-set square 65482.8
+checkprops result -s 65482.8

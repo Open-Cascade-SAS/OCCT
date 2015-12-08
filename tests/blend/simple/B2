@@ -9,4 +9,4 @@ trotate s 0 0 0 0 0 1 270
 explode s E
 blend result s 10 s_1
 
-set square 21389.8
+checkprops result -s 21389.8

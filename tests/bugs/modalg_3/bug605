@@ -35,5 +35,6 @@ if { [catch {pipe result w2 w1 } catch_result] } {
    }
 }
 
-set square 20.6253
+checkprops result -s 20.6253
+checkshape result
 set 2dviewer 0

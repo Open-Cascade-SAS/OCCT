@@ -6,4 +6,5 @@ restore [locate_data_file cts20484-tool1.rle] tool1
 
 bsection result part tool1
 
-set length 386.561
+checkprops result -l 386.561
+checksection result

@@ -12,6 +12,6 @@ wire w e1 e2
 # Fillet (analytical)
 fillet2d result w 10
 
-set length 275.293
+checkprops result -l 275.293
 
 set 2dviewer 1

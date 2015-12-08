@@ -6,4 +6,4 @@ mkplane w w
 featprism s w w 0 1 0 1 1
 featperform prism result s_3 s_3
 
-set square 1.40005e+006
+checkprops result -s 1.40005e+006

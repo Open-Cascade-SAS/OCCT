@@ -8,4 +8,4 @@ revol b skface 0 0 0 0 -1 0 360
 
 bfuse result a b
 
-set square 7463.16
+checkprops result -s 7463.16

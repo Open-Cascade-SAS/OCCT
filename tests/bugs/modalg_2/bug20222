@@ -13,7 +13,6 @@ explode s f
 explode s_10 e
 chamf result s s_10_3 s_10 S 50
 
+checkprops result -s 712126 
 checkshape result
-
-set square 712126
 set 2dviewer 0

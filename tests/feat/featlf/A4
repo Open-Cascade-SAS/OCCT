@@ -23,4 +23,4 @@ if { [catch { featperform lf result } ] } {
   puts "Error in featperform"
 }
 
-set square 0
+checkprops result -s 0

@@ -1,7 +1,7 @@
 puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
-puts "TODO OCC23068 ALL: Error : The volume of the resulting shape is"
+puts "TODO OCC23068 ALL: Error : The volume of result shape is"
 puts "TODO OCC25406 ALL: Error: bsection of the result and s is not equal to zero"
 
 ellipse w1 0 0 0 15 10
@@ -14,4 +14,4 @@ revol s w 0 0 0 0 0 1 90
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set volume 0
+checkprops result -v 0

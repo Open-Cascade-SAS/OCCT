@@ -15,6 +15,7 @@ checkshape s2
 bop s2 s1
 bopcommon result
 
-set square 105.587
+checkprops result -s 105.587 
+checkshape result
 checknbshapes result -vertex 15 -edge 26 -wire 12 -face 12 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 68
 set 2dviewer 0

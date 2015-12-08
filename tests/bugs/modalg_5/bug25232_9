@@ -21,7 +21,8 @@ mkface f s
 mkvolume result b1 b2 b3 f
 # 9832 solids created
 
-set square 50513.3
+checkprops result -s 50513.3 
+checkshape result
 
 checknbshapes result -vertex 11037 -edge 31880 -wire 30668 -face 30668 -shell 9832 -solid 9832 -compsolid 0 -compound 1 -shape 123918
 set 2dviewer 1

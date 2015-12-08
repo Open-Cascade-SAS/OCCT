@@ -25,6 +25,8 @@ if { [catch { stepread $filepath a * } catch_result] } {
     }
 }
 
-set length 453.679
+checkprops result -l 453.679 
+checkshape result 
+checksection result
 set 3dviewer 0
 

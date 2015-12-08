@@ -23,4 +23,4 @@ revol ring f 0 0 0 0 0 1 269
 
 bfuse result cyl ring 
 
-set square 190.356
+checkprops result -s 190.356

@@ -3,4 +3,4 @@ pcone p 10 2 20
 nexplode p f
 depouille result p 0 0 1 p_3 0 0 0 0 0 0 1
 
-set square 1138.79
+checkprops result -s 1138.79

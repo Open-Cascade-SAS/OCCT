@@ -7,4 +7,4 @@ restore [locate_data_file pro14240_face.rle] cont
 featprism base cont cont 0 0 1 0 1
 featperformval prism result 100
 
-set square 2.23524e+06
+checkprops result -s 2.23524e+06

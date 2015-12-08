@@ -13,4 +13,4 @@ featperform lf result
 
 #fsameparameter result
 
-set square 10969.1
+checkprops result -s 10969.1

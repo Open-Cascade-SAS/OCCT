@@ -4,4 +4,4 @@ blend s b 2 b_6
 explode s E
 blend result s 2 s_10
  
-set square 133.982
+checkprops result -s 133.982

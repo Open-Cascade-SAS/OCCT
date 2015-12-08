@@ -23,5 +23,6 @@ if { [ catch { set info_result [OCC825 a1 a2 a3 a4 a5] } ] } {
     }
 }
 
-set square 7853.92
+checkprops result -s 7853.92 
+checkshape result
 set 2dviewer 1

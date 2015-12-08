@@ -7,4 +7,4 @@ copy cyl_1 funtil
 featprism cyl cont cont -1 0 0 0 1
 featperform prism result funtil
 
-set square 763239
+checkprops result -s 763239

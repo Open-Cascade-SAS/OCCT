@@ -12,4 +12,4 @@ mkplane cf c
 bfuse resafbf af bf
 bfuse result resafbf cf
 
-set square 12677.1
+checkprops result -s 12677.1

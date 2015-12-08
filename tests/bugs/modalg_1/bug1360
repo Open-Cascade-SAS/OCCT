@@ -14,6 +14,7 @@ restore [locate_data_file OCC1360.brep] sh
 
 fixshape result sh 1e-7
 
-set square 407.599
+checkprops result -s 407.599 
+checkshape result
 set 3dviewer 1
 

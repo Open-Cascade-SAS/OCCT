@@ -11,5 +11,7 @@ checkshape b
 bsection result b a
 # checksection res
 
-set length 1475.98
+checkprops result -l 1475.98 
+checkshape result
+checksection result
 set 2dviewer 0

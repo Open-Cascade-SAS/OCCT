@@ -2,4 +2,5 @@ restore [locate_data_file GEN746_nofog.rle] a
 explode a
 bsection result a_1 a_2
 
-set length 556.6
+checkprops result -l 556.6
+checksection result

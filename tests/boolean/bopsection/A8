@@ -7,4 +7,5 @@ restore [locate_data_file buc60093b.rle] b
 bop a b
 bopsection result
 
-set length 151.416
+checkprops result -l 151.416
+checksection result

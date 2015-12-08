@@ -24,4 +24,4 @@ prism cylb fb 0 0 2
 
 bcommon result ba cylb
 
-set square 8.28319
+checkprops result -s 8.28319

@@ -24,5 +24,6 @@ if { [regexp {Faulty} $che ] == 1 } {
 	bcommon result c s
     }
 }
-set square 4.89279
+checkprops result -s 4.89279 
+checkshape result
 set 2dviewer 0

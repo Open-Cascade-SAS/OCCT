@@ -9,4 +9,4 @@ vertex v1 0 0 0
 depouille result base 0 0 1 base_2 1.5 0 0 0 0 0 1
 
 fsameparameter result 
-set square 75281.9
+checkprops result -s 75281.9

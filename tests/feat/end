@@ -4,30 +4,16 @@
 ## ==================================
 
 if { [isdraw result] } {
-   regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
-
-   #check if result is valid
-   puts [checkshape result]
-   if { $m == 0 } {
-       puts "Error : The feat grid is not valid. The area is 0."
-   }
-
-   if { $square > 0 } {
-      puts "The expected area is $square"
-   }
-   #check of change of square is < 1%
-   if { ($square != 0 && [expr 1.*abs($square - $m)/$square] > 0.01) || ($square == 0 && $m != 0) } {
-      puts "Error : The area of the resulting shape is $m"
-   }
-   if { $m > 0 } {
-      clear
-      smallview
-      donly result
-      fit
-      xwd $imagedir/${test_image}.png
-   } 
+    #check if result is valid
+    puts [checkshape result]
+    
+    clear
+    smallview
+    donly result
+    fit
+    xwd $imagedir/${test_image}.png 
 } else {
-   puts "Error : The feat grid cannot be built."
+    puts "Error : The feat grid cannot be built."
 }
 
 # to end a test script

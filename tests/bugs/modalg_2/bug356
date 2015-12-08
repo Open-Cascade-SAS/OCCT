@@ -32,5 +32,5 @@ if { $nom != 6} {
     puts "OCC356 OK  :  Command WEXPLO works properly"
 }
 
-set square 6207.83
+checkprops result -s 6207.83 
 set 2dviewer 0

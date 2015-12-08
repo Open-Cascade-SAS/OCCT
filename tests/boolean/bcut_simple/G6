@@ -8,4 +8,4 @@ revol rev2 rev 0 0 50 0 1 0 360
 
 bcut result b rev2
 
-set square 41187.4
+checkprops result -s 41187.4

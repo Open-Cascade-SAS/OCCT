@@ -4,4 +4,4 @@ prism p p 0 0 12
 nexplode p f
 depouille result p 0 0 1 p_2 5 0 0 0 0 0 1
 
-set square 1083.89
+checkprops result -s 1083.89

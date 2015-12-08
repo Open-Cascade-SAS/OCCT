@@ -32,7 +32,9 @@ if { $z > 5 } {
     puts "Elapsed time is less then 5 - OK"                                                                                                  
 }
 
-set length 42.879
+checkprops result -l 42.879 
+checkshape result 
+checksection result
 set 2dviewer 0
 
 

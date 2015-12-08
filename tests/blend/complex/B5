@@ -23,4 +23,4 @@ explode a e
 blend result a $h1 a_4 $h2 a_5
 #hlr hlr result
 
-set square 671.356
+checkprops result -s 671.356

@@ -37,18 +37,5 @@ if { $tri == 0 || $nod == 0 }  {
   puts "Faulty OCC319: here is shading problem"
 }
 
-regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full sq
-set good_square 8623.6
-set square_percent [expr abs(${sq} - ${good_square}) / double(${good_square}) * 100.]
-
-set percent_max 0.1
-
-puts "good_square = ${good_square}"
-puts "square = ${sq}"
-puts "square_percent = ${square_percent}"
-
-if {${square_percent} > ${percent_max}} {
-   puts "OCC319 Faulty : here is square problem"
-}
-
+checkprops result -s 8623.6
 set only_screen 1

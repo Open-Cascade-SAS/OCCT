@@ -7,4 +7,4 @@ restore [locate_data_file IR2_sphere2_20.brep] b
 
 bfuse result a b
 
-set square 35185.8
+checkprops result -s 35185.8

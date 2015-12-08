@@ -4,4 +4,4 @@ trotate b 0 0 1 0 1 0 90
 
 bcut result s b
 
-set square 13.3517
+checkprops result -s 13.3517

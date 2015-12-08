@@ -9,4 +9,4 @@ prism tool f 0 0 4
 
 bcut result b tool
 
-set square 51883
+checkprops result -s 51883

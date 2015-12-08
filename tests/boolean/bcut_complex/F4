@@ -6,4 +6,4 @@ restore [locate_data_file pro11730_tool.rle] tool
 
 bcut result part tool
 
-set square 275.753
+checkprops result -s 275.753

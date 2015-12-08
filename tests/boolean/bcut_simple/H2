@@ -34,4 +34,4 @@ box b -1 2 1 5 1 3
 
 bcut result sol b 
 
-set square 68
+checkprops result -s 68

@@ -30,5 +30,5 @@ tolerance result
 checkshape result
 dump result
 
-set square 0.00456273
+checkprops result -s 0.00456273 
 set 2dviewer 0

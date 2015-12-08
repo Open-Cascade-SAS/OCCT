@@ -8,4 +8,4 @@ restore [locate_data_file cfi900H2.rle] a
 nexplode a e
 blend result a 1 a_66
 
-set square 204440
+checkprops result -s 204440

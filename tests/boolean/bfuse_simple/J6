@@ -28,4 +28,4 @@ bfuse result ba ob
 
 
 
-set square 180.283
+checkprops result -s 180.283

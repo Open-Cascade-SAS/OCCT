@@ -43,5 +43,7 @@ if {$ne >= $nv} {
     puts [format "Faulty : the number of edges is %s, but the number of vertexes is %s." $ne $nv]
 }
 
-set length 228.386
+checkprops result -l 228.386 
+checkshape result
+checksection result
 set 2dviewer 0

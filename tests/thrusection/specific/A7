@@ -36,7 +36,7 @@ set isruled 0
 thrusections result ${issolid} ${isruled} v4 w1 v5
 
 
-set square 646.621
+checkprops result -s 646.621
 
 checknbshapes result -vertex 2 -edge 9 -wire 3 -face 3 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 18
 

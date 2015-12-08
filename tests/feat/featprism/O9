@@ -13,4 +13,4 @@ ttranslate cont 0 0 -0.1
 featprism base cont cont 1 0 0 1 1
 featperform prism result ffrom funtil
 
-set square 4796.46
+checkprops result -s 4796.46

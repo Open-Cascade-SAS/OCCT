@@ -46,5 +46,7 @@ if { $num != 0 } {
 } else {
     puts "BUC60712 OK: Result shape is correct "
 }
-set length 1.88145
+checkprops result -l 1.88145 
+checkshape result
+checksection result
 set 2dviewer 0

@@ -34,5 +34,5 @@ if { ${Color} != ${ColorMove} && ${Color} != ${ColorSelect} && ${ColorMove} != $
   puts "Faulty ${BugNumber}"
 }
 
-set square 24859.6
+checkprops result -s 24859.6
 set only_screen 1

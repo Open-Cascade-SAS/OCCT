@@ -9,4 +9,4 @@ mkplane cont wire
 featprism base cont cont 0 1 0 0 1
 featperform prism result 
 
-set square 60037.4
+checkprops result -s 60037.4

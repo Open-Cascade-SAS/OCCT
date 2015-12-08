@@ -6,4 +6,4 @@ restore [locate_data_file CTO901_cts20138_outil.rle]  outil
 
 bcut result base outil
 
-set square 31806.5
+checkprops result -s 31806.5

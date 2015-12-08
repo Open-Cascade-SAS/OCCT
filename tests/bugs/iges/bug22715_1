@@ -38,8 +38,7 @@ checkshape s1_26
 
 renamevar s1 result
 
-set check_square 1
-
-set square 49245
+checkprops result -s 49245
+checkshape result
 
 set 3dviewer 1

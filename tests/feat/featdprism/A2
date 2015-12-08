@@ -6,4 +6,4 @@ nexplode cyl F
 featdprism cyl cont cont -10 0 1
 featperformval dprism result -100
 
-set square 87985.1
+checkprops result -s 87985.1

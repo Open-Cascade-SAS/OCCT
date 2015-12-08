@@ -12,7 +12,9 @@ restore [locate_data_file OCC23214-shell_for_line_1188.brep] b2
 bop b1 b2
 bopsection result
 
-set length 2.94086
+checkprops result -l 2.94086 
+checkshape result 
+checksection result
 set nb_good_vertex 4
 set nb_good_edge 2
 set nb_good_wire 0

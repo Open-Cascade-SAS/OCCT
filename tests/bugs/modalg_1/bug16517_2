@@ -22,7 +22,9 @@ if { ${Result_Numbers} != 2 } {
   renamevar p_2 result
   set status 0
 
-  set length 110.167
+  checkprops result -l 110.167 
+checkshape result
+  checksection result
   checknbshapes result -vertex 1 -edge 1 -wire 1 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 0 -shape 3
 }
 

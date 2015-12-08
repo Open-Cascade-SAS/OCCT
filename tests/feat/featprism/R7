@@ -9,4 +9,4 @@ mkface f f
 featprism c1 p p 0 1 0 1 1
 featperform prism result f
 
-set square 109.383
+checkprops result -s 109.383

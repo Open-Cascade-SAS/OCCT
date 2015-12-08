@@ -5,4 +5,4 @@ mkplane profile profile
 polyline w 10 0 0 0 30 30 0 70 70
 pipe result w profile
 
-set square 4068.2
+checkprops result -s 4272.58

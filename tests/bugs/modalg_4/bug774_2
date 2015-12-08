@@ -1,5 +1,5 @@
 puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
 
 puts "========"
 puts "OCC774"
@@ -18,5 +18,6 @@ if { [catch { bcut result a_2 a_1 } status] } {
     puts "Faulty OCC774 (case 2)"
 }
 
-set square 0
+checkprops result -s 0 
+checkshape result
 set 2dviewer 0

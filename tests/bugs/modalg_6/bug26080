@@ -19,7 +19,8 @@ baddobjects b1 b2
 bfillds
 bbuild result
 
-set square 1.36058e+06
+checkprops result -s 1.36058e+06 
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

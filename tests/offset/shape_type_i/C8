@@ -1,5 +1,5 @@
+puts "TODO OCC23068 ALL: Error : The volume of result shape is"
 puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to"
-puts "TODO OCC23068 ALL: Error : The volume of the resulting shape is"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2
@@ -11,4 +11,5 @@ revol s w 0 0 0 0 0 1 270
 
 OFFSETSHAPE -1 {} $calcul $type
 
-set volume 0
+checkprops result -v 0
+

@@ -8,4 +8,4 @@ restore [locate_data_file cts20721_until.brep] funtil
 featprism base cont cont 0 0 -1 0 1
 featperform prism result funtil
 
-set square 283290
+checkprops result -s 283290

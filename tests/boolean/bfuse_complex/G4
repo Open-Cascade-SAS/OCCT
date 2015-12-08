@@ -6,4 +6,4 @@ restore [locate_data_file CTO901_cts20171_outil.rle]  outil
 
 bfuse result base outil
 
-set square 47886.5
+checkprops result -s 47886.5

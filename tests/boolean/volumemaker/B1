@@ -34,5 +34,5 @@ mkface f6 sph_f6
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6
 
-set square 1.67121e+007
+checkprops result -s 1.67121e+007
 

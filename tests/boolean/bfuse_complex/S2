@@ -16,4 +16,4 @@ bfuse res2 sh res_3
 bfuse result sh res_2
 
 
-set square 3734.83
+checkprops result -s 3734.83

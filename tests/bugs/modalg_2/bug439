@@ -22,5 +22,5 @@ if { [regexp {Faulty} $che ] == 1 } {
     puts "OCC134 OK: Result shape is valid"
 }
 
-set square 247000
+checkprops result -s 247000 
 set 2dviewer 0

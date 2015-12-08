@@ -11,5 +11,6 @@ restore [locate_data_file bug23711_sph2.brep] b2
 bop b1 b2
 bopfuse result
 
-set square 1256.63
+checkprops result -s 1256.63 
+checkshape result
 set 2dviewer 1

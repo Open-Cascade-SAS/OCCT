@@ -29,7 +29,9 @@ revol r2 tface 136.06, 68.01, 0.0 0 1 0 360 1
 bop r1 r2
 bopsection result
 
-set length 228.699
+checkprops result -l 228.699 
+checkshape result
+checksection result
 
 checknbshapes result -vertex 13 -edge 15 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 29
 

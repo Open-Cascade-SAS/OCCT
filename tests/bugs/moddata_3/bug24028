@@ -12,7 +12,7 @@ trimu ts ss 0 pi
 
 mkface result ts
 
-set square 1222.58
+checkprops result -s 1222.58
 
 
 set 2dviewer 0

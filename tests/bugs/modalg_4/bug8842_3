@@ -1,5 +1,5 @@
 puts "TODO OCC25913 ALL: Error :  is WRONG because number of"
-puts "TODO OCC25913 ALL: Error : The square of result shape is"
+puts "TODO OCC25913 ALL: Error : The area of result shape is"
 puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: OCC8842: Faulty"
@@ -38,7 +38,8 @@ if [catch { myoffset result con1 5 1 } catch_result] {
   puts "${BugNumber}: Faulty (1)"
 } else {
 
-set square 3542.24
+checkprops result -s 3542.24 
+checkshape result
 
 checknbshapes result -vertex 60 -edge 90 -wire 42 -face 40 -shell 5 -solid 5 -compsolid 0 -compound 1 -shape 243
 

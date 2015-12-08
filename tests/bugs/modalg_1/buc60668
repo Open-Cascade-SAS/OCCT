@@ -23,5 +23,6 @@ if { $vcomp != $vcomm } {
 } else {
     puts " BUC60668 OK : Common was made properly"
 }
-set square 1800
+checkprops result -s 1800 
+checkshape result
 set 2dviewer 0

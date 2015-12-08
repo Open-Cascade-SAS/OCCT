@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_undercut_1.brep] s
 
 OFFSETSHAPE 15 {} $calcul $type
 
-set volume 3.89013e+007
+checkprops result -v 3.89013e+007

@@ -9,4 +9,4 @@ vertex v1 12.9980200374864 -13 16.2268812577167
 
 # 2 degres
 depouille result base 0 -1 0 facdep 2 12.9980200374864 -13 16.2268812577167 0 -1 0
-set square 8004.37
+checkprops result -s 8004.37

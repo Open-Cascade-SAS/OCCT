@@ -5,4 +5,4 @@ restore [locate_data_file CTO908_topo104-o2.brep] jante
 
 bfuse result wheel jante
 
-set square 40059.9
+checkprops result -s 40059.9

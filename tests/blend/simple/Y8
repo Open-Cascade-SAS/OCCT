@@ -7,4 +7,4 @@ explode a_3 e
 
 blend result a 1 a_3_1 1 a_3_2
 
-set square 1738.79
+checkprops result -s 1738.79

@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_parasite_solid_s2.brep] s
 
 OFFSETSHAPE 5 {} $calcul $type
 
-set volume 10761.4
+checkprops result -v 10761.4

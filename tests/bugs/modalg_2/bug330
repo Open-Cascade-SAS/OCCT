@@ -1,6 +1,6 @@
 # TODOs statements should be replaced by REQUIRED after bug fixing.
 puts "TODO OCC12345 ALL: Faulty OCC330: Checkshape command works wrongly"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
 
 puts "========================"
 puts " OCC330 "
@@ -20,5 +20,5 @@ if { [regexp {Faulty} $che ] != 1 } {
     puts "OCC330 OK : Checkshape command works properly"
 }
 
-set square 0
+checkprops result -s 0 
 set 2dviewer 0

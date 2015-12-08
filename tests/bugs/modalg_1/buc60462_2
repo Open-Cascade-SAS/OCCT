@@ -14,5 +14,6 @@ puts "Fuse end"
 
 checkshape result r
 
-set square 93255.6
+checkprops result -s 93237.9
+checkshape result
 set 2dviewer 0

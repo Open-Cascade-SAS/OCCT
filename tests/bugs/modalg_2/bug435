@@ -24,5 +24,7 @@ repeat 8 {
     incr j
 } 
 
-set length 17.2848
+checkprops result -l 17.2848 
+checkshape result 
+checksection result
 set 3dviewer 1

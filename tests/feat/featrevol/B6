@@ -7,4 +7,4 @@ restore [locate_data_file pro16120_face.brep] cont
 featrevol base cont cont 200 0 200 0 1 0 1 1
 featperformval revol result 280
 
-set square 176160
+checkprops result -s 176160

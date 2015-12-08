@@ -17,7 +17,9 @@ if [catch { openoffset resoffset a 1 6. i } ] {
 } else {
   renamevar resoffset_1 result
 
-  set length 242.849
+  checkprops result -l 242.849 
+checkshape result 
+checksection result
 
   set nbshapes_expected "
 Number of shapes in shape

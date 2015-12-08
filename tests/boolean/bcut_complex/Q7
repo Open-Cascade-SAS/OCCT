@@ -9,4 +9,4 @@ restore [locate_data_file id260084b.rle] b
 prism tool b 0 0 10
 bcut result a tool
 
-set square 14055.3
+checkprops result -s 14055.3

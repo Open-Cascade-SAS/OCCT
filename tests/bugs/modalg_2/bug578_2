@@ -23,5 +23,6 @@ checkshape res1
 bop b res1
 bopcut result
 
-set square 4.84596
+checkprops result -s 4.84596 
+checkshape result
 set 3dviewer 0

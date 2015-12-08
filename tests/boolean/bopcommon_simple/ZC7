@@ -4,4 +4,4 @@ box b1 -1 0 1 2 2 2
 bop b1 b2
 bopcommon result
 
-set square 13.4248
+checkprops result -s 13.4248

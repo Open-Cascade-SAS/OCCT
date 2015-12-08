@@ -5,4 +5,4 @@ ttranslate b2 2 2 1
 bop b1 b2
 bopcut result
 
-set square 109.642
+checkprops result -s 109.642

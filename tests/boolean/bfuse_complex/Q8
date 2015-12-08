@@ -13,4 +13,4 @@ explode rcut1
 
 bfuse result base rcut1_2
 
-set square 13428.1
+checkprops result -s 13428.1

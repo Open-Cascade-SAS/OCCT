@@ -14,7 +14,8 @@ if { [catch { pipe result a b } catch_result] } {
     puts "$catch_result"
 }
 
-set square 44761.1
+checkprops result -s 44761.1 
+checkshape result
 set 2dviewer 0
 
 

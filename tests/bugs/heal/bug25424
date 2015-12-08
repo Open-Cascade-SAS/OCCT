@@ -36,7 +36,8 @@ if { $z > ${max_time} } {
     puts "Elapsed time of testreadstep is less than ${max_time} seconds - OK"
 }
 
-set square 6998.53
+checkprops result -s 6998.53
+checkshape result
 
 checknbshapes result -vertex 4482 -edge 6781 -wire 2309 -face 2305 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 15879
 set 3dviewer 1

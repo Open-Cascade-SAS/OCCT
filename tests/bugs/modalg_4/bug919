@@ -29,5 +29,5 @@ if { [ catch { bfuse result a_1 a_2} catch_result ] } {
     }
 }
 
-set square 272591.
+checkprops result -s 272591. 
 set 2dviewer 0

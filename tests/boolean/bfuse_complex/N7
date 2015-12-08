@@ -6,4 +6,4 @@ restore [locate_data_file pro15049b.rle] b
 
 bfuse result a b
 
-set square 741091
+checkprops result -s 741091

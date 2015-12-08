@@ -16,7 +16,7 @@ revol result sh 0 0 0 0 0 1 360
 
 checkshape result
 
-set square 1.0134e+06
+checkprops result -s 1.0134e+06
 set 2dviewer 0
 
 

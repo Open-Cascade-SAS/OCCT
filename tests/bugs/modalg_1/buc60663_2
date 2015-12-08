@@ -29,5 +29,7 @@ regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance $ver] f
 if {$dist > $toler} {
     puts "Faulty : the distanse is $dist. It is more $toler."
 }
-set length 0
+checkprops result -l 0 
+checkshape result
+checksection result
 set 2dviewer 0

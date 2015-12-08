@@ -12,5 +12,6 @@ checkshape shape3
 common result shape1 shape3
 checkshape result
 
-set length 1194.29
+checkprops result -l 1194.29 
+checksection result
 set 2dviewer 0

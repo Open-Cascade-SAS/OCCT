@@ -4,4 +4,4 @@ box b2  1     1     0     1     1     1
 
 bcommon result b1 b2
 
-set square empty
+checkprops result -s empty

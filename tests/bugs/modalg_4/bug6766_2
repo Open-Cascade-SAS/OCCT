@@ -20,5 +20,7 @@ bopsection result
 
 
 checknbshapes result -vertex 4 -edge 3 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 8
-set length 138.474
+checkprops result -l 138.474 
+checkshape result 
+checksection result
 set 2dviewer 0

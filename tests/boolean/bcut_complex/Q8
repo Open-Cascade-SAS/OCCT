@@ -9,4 +9,4 @@ restore [locate_data_file pro16389b.rle] prism
 
 bcut result base prism
 
-set square 312467
+checkprops result -s 312467

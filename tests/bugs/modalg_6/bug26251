@@ -11,7 +11,9 @@ restore [locate_data_file bug26251_tank31.brep] b2
 
 bsection result b1 b2
 
-set length 2.49934
+checkprops result -l 2.49934 
+checkshape result 
+checksection result
 
 set nbshapes_expected "
 Number of shapes in shape

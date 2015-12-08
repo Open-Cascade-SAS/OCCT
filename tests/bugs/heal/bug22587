@@ -21,7 +21,8 @@ if { [regexp {This shape seems to be valid} $info] } {
 } else {
    puts "Faulty ${BugNumber}"
 }
-set square 290.283
+checkprops result -s 290.283
+checkshape result
 set 2dviewer 0
 
 

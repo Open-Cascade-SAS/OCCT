@@ -21,6 +21,7 @@ if { [catch {buildsweep result -R} catch_result] } {
     puts "Faulty OCC1477"
 }
 
-set good_square 1.99019e+06
+checkprops result -s 1.99019e+06
+checkshape result 
 set 3dviewer 1
 

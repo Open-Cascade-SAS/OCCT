@@ -7,4 +7,5 @@ restore [locate_data_file pro13495b.rle] b
 bop a b
 bopsection result
 
-set length 280.243
+checkprops result -l 280.243
+checksection result

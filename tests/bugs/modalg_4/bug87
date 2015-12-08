@@ -1,5 +1,5 @@
 puts "TODO OCC12345 ALL: Faulty : Now w1,w2 have bspline curves as basic !!!"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Error : The area of result shape is"
 
 puts "========================"
 puts " BUC60958 "
@@ -28,5 +28,6 @@ if {$first1 != $first2 || $second1 != $second2} {
     puts "Correct result: Wires have circle curves as basic"
 }
 
-set square 0
+checkprops result -s 0 
+checkshape result
 set 2dviewer 0

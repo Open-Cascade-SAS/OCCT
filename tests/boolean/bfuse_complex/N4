@@ -8,4 +8,4 @@ prism b aface 0 0 -50
 
 bfuse result a b
 
-set square 601864
+checkprops result -s 601864

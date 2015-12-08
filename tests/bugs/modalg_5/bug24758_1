@@ -89,8 +89,9 @@ vsetdispmode cutter 1
 incmesh profile_1 0.01; vdisplay profile_1
 vfit
 
-# check square
+# check area
 renamevar cutter result
-set square 1403.85
+checkprops result -s 1403.85 
+checkshape result
 
 set only_screen 1

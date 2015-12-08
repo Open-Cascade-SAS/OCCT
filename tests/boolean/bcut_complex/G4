@@ -6,4 +6,4 @@ restore [locate_data_file fra50089-tool.rle] tool
 
 bcut result part tool
 
-set square 193593
+checkprops result -s 193593

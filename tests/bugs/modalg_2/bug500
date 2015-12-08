@@ -18,5 +18,6 @@ if [catch {pipe result a_1 a_2 } catch_result] {
 } else {
     puts "OCC500 : function PIPE works without hangs up "
 }
-set square 1246.13
+checkprops result -s 1246.13 
+checkshape result
 set 2dviewer 0

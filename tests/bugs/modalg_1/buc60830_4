@@ -16,5 +16,7 @@ if { [regexp {OK} $che] != 1 } {
     renamevar result_1 result
 }
 
-set length 81.5088
+checkprops result -l 81.5088 
+checkshape result
+checksection result
 set 2dviewer 0

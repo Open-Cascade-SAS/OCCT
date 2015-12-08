@@ -43,6 +43,6 @@ bcmakecontainers result
 donly result
 fit
 
-set square 2998.06
+checkprops result -s 2998.06
 
 set only_screen_axo 1

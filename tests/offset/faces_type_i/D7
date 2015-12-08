@@ -12,4 +12,4 @@ revol s w 0 0 0 0 0 1 360
 
 OFFSETSHAPE -1 {} $calcul $type
 
-set volume 13139
+checkprops result -v 13139

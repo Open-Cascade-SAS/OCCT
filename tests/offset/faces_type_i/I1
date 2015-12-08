@@ -3,4 +3,4 @@ trotate s 0 0 0 0 0 1 90
 
 OFFSETSHAPE 1 {s_5 s_4} $calcul $type
 
-set volume 142.942
+checkprops result -v 142.942

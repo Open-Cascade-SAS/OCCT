@@ -9,4 +9,4 @@ restore [locate_data_file CFI_indusfjm.rle] s
 explode s e
 blend result s 2 s_4 s_5 s_15 s_16
 
-set square 0
+checkprops result -s 0

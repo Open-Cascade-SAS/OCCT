@@ -18,4 +18,4 @@ prism priz f 1 0 0
 bop priz cyl
 bopfuse result
 
-set square 33.9911
+checkprops result -s 33.9911

@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_example_3_side_30_top_0.brep] s
 
 OFFSETSHAPE 45 {} $calcul $type
 
-set volume 9.51489e+007
+checkprops result -v 9.51489e+007

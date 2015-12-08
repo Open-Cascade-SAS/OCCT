@@ -13,4 +13,4 @@ depouille result base 0 -1 0 base_13 3 110 0 96.5000000000001  0 -1 0 base_24 3 
 
 fsameparameter result
 
-set square 186543
+checkprops result -s 186543

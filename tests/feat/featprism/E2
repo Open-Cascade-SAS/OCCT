@@ -9,4 +9,4 @@ mkface fu su
 featprism E cont E_10 0 0 1 1 1
 featperform prism result ff fu
 
-set square 960000
+checkprops result -s 960000

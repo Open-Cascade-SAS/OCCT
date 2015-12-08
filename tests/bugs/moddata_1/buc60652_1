@@ -10,5 +10,5 @@ restore [locate_data_file buc60652a.brep] result
 checkshape result
 BUC60652 result
 
-set square 19614.8
+checkprops result -s 19614.8
 set 2dviewer 0

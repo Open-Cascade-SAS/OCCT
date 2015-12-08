@@ -32,5 +32,7 @@ if { [regexp {Faulty} $che] == 1} {
     }
 }
 
-set length 19.5611
+checkprops result -l 19.5611 
+checkshape result 
+checksection result
 set 2dviewer 0

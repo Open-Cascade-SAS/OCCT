@@ -10,4 +10,4 @@ profile cont S E_10 F 50 -100 X 50 Y -100 X -50
 featprism  E cont cont 0 0 1 0 1
 featperform prism result E_9
 
-set square 960000
+checkprops result -s 960000

@@ -34,4 +34,4 @@ bfuse result cyla cylb
 
 
 
-set square 740.048
+checkprops result -s 740.048

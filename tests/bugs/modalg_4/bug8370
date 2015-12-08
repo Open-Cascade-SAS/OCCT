@@ -12,7 +12,8 @@ pload XDE
 
 igesread [locate_data_file OCC8370-part1.igs] result *
 
-set square 25310.8
+checkprops result -s 25310.8 
+checkshape result
 
 checknbshapes result -vertex 5060 -edge 5105 -wire 416 -face 399 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10981
 vinit

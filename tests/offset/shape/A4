@@ -3,4 +3,4 @@ explode s f
 
 offsetshape result s -10 s_1
 
-set volume 424000
+checkprops result -v 424000

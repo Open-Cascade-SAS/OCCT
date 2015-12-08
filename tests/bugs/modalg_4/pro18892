@@ -29,4 +29,6 @@ if { [expr $d > $MaxEdgeTolerance] || [expr $d > $MaxVertexTolerance] } {
     puts "Faulty : Result is BAD. Distance is more than MaxTolerance"
 }
 
-set length 6.46299
+checkprops result -l 6.46299 
+checkshape result 
+checksection result

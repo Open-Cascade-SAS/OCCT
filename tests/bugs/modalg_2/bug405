@@ -23,5 +23,6 @@ if { $num == 2 } {
     puts " Faulty OCC405: Result shape is INcorrect !!! "
 }
 
-set length 17.5348
+checkprops result -l 17.5348 
+checkshape result 
 set 2dviewer 0

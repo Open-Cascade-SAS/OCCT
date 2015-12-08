@@ -16,5 +16,5 @@ bfuse tool tool_1 tool_2
 
 bcut result shape tool
 
-set square 2282.26
+checkprops result -s 2282.26
 set 2dviewer 0

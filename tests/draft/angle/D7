@@ -7,4 +7,4 @@ nexplode f f
 depouille result f 0 0 1 f_3 5 0 0 20 0 0 1 \
 f_7 3 0 0 20 0 0 1
 
-set square 2323.25
+checkprops result -s 2323.25

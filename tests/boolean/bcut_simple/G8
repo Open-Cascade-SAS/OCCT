@@ -14,4 +14,4 @@ box ab 0 -1 -1 2 2 2
 bcut result ab pryz 
 #pkv t
 
-set square 30
+checkprops result -s 30

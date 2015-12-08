@@ -5,4 +5,4 @@ box b2 -r -r 0 2*r 2*r 1
 bop b1 b2
 bopcommon result
 
-set square 9.65685
+checkprops result -s 9.65685

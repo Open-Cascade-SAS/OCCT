@@ -12,7 +12,8 @@ checkshape sh2
 
 bfuse result sh1 sh2
 
-set square 1.86064e+07
+checkprops result -s 1.86064e+07 
+checkshape result
 set 2dviewer 0
 
 

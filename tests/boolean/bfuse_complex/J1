@@ -8,4 +8,4 @@ ttranslate c2 5 0 10
 bfuse result c1 c2
 
 
-set square 2199.11
+checkprops result -s 2199.11

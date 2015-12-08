@@ -18,5 +18,7 @@ if { $cs != 0 } {
     puts "Faulty : Section is incorrect"
 }
 
-set length 282.421
+checkprops result -l 282.421
+checkshape result
+checksection result
 set 2dviewer 0

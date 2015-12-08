@@ -6,4 +6,4 @@ featdprism E cont E_10 10 1 1
 featperform dprism result E_9 E_8
 
 
-set square 959315
+checkprops result -s 959315

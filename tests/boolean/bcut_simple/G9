@@ -18,4 +18,4 @@ ttranslate pcyl 5 0 -2
 
 bcut result body pcyl
 
-set square 727.481
+checkprops result -s 727.481

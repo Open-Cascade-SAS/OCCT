@@ -4,4 +4,4 @@ pcone b2 2 1 8
 bop b1 b2
 bopfuse result
 
-set square 301.593
+checkprops result -s 301.593

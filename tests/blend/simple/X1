@@ -13,4 +13,4 @@ blend resultat tmp 10 tmp_3
 explode resultat E
 blend result resultat 15 resultat_5
 
-set square 60963.9
+checkprops result -s 60963.9

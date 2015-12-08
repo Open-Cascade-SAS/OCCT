@@ -25,4 +25,4 @@ fsameparameter s
 explode  s E
 blend result s 7*SCALE2 s_12
  
-set square 5335.27
+checkprops result -s 5335.27

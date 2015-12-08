@@ -15,5 +15,6 @@ bcut result S1 S2
 
 checknbshapes result -shell 1 -compound 1 -m "result should be a shell, but not a compound of faces"
 
-set square 150200
+checkprops result -s 150200 
+checkshape result
 set 2dviewer 0

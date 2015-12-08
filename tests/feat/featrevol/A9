@@ -11,4 +11,4 @@ vertex v1 176.755126953125 -180.8310546875 180
 featrevol base cont cont 176.755126953125 -180.8310546875 180 0 1 0 1 1
 featperform revol result funtil
 
-set square 772945
+checkprops result -s 772945

@@ -2,4 +2,5 @@ restore [locate_data_file fra61083a.rle] a
 restore [locate_data_file CIN900_fra61hlt.rle] b
 bsection result a b
 
-set length 10
+checkprops result -l 10
+checksection result

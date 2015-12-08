@@ -57,4 +57,4 @@ if { $Jtime < $Ktime || $Jtime < $Ltime || $Jtime < $Mtime} {
 
 compound resab rescd resef resgh result
 
-set square 2.5e+13
+checkprops result -s 2.5e+13

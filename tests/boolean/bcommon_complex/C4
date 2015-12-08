@@ -7,4 +7,4 @@ restore [locate_data_file CTO902_cts20460b.rle] b
 
 bcommon result a b 
 
-set square 25468.7
+checkprops result -s 25468.7

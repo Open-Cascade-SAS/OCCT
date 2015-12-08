@@ -23,7 +23,8 @@ baddobjects b1 b2 b3 b4 b5 b6 b7 b8 b9
 bfillds
 bbuild result
 
-set square 260611
+checkprops result -s 260611 
+checkshape result
 
 checknbshapes result -vertex 44 -edge 108 -wire 74 -face 74 -shell 17 -solid 17 -compsolid 0 -compound 1 -shape 335
 set 2dviewer 1

@@ -62,6 +62,7 @@ bop s s26; bopfuse s
 bop s s27; bopfuse result
 
 checknbshapes result -vertex 60 -edge 105 -wire 29 -face 29 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 226
-set square 150.187
+checkprops result -s 150.187 
+checkshape result
 
 set 2dviewer 1

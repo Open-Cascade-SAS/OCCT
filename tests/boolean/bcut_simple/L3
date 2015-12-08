@@ -22,4 +22,4 @@ bcut result r1 p3
 
 
 
-set square 30153
+checkprops result -s 30153

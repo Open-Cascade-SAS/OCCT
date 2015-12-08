@@ -5,4 +5,5 @@ bop b1 b2
 bopsection result
 
 
-set length 30
+checkprops result -l 30
+checksection result

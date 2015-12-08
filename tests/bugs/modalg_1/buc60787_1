@@ -15,5 +15,6 @@ bcommon result S1 S2
 
 checknbshapes result -shell 1 -compound 1 -m "result should be a shell, but not a compound of faces"
 
-set square 45000
+checkprops result -s 45000 
+checkshape result
 set 2dviewer 0

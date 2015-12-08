@@ -11,7 +11,8 @@ explode sh
 
 bfuse result sh_1 sh_2
 
-set square 81598.4
+checkprops result -s 81598.4 
+checkshape result
 set 2dviewer 0
 
 

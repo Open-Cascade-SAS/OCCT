@@ -9,4 +9,4 @@ explode a e
 blend result a 1 a_108
 # radius of 0.8 is OK
 
-set square 2614.55
+checkprops result -s 2614.55

@@ -13,6 +13,7 @@ if [catch { fixshape result a 1e-7 } res] {
     puts "Error : fixshape works wrongly"
 }
 
-set square 162.581
+checkprops result -s 162.581 
+checkshape result
 set 2dviewer 1
 

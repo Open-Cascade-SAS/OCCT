@@ -7,4 +7,4 @@ mkedge w w -pi/2. pi/2.
 wire w w
 pipe result w profile
 
-set square 9533.54
+checkprops result -s 9533.54

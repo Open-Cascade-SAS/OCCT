@@ -22,6 +22,6 @@ if {${ll} < 2} {
 	puts "OCC157: Error"
     }
 }
-set square 2.11095e+06
+checkprops result -s 2.11095e+06
 set 2dviewer 0
 

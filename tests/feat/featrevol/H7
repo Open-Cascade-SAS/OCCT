@@ -11,4 +11,4 @@ addslide revol p_2 c1_1
 featperformval revol result 360
 
 
-set square 125.664
+checkprops result -s 125.664

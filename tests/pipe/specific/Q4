@@ -25,8 +25,7 @@ if [catch { buildsweep result -S} res] {
   puts "Faulty OCC1477: buildsweep is wrong"
 }
 
-set square 29030.2
-set volume 68648
+checkprops result -s 29030.2 -v 68648
 
 checknbshapes result -vertex 12 -edge 20 -wire 10 -face 10 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 54
 set 2dviewer 0

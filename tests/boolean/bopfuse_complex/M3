@@ -16,4 +16,4 @@ bop c1 c2
 bopfuse result
 
 
-set square 570.047
+checkprops result -s 570.047

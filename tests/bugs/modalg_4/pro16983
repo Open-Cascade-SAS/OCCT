@@ -13,5 +13,6 @@ wire w e
 featlf B w p -5 0 0 5 0 0 1 1
 featperform lf result
 
-set square 796476
+checkprops result -s 796476 
+checkshape result
 set 2dviewer 0

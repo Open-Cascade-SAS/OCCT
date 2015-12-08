@@ -19,6 +19,7 @@ baddtools b2
 bfillds
 bbop result 0
 
-set square 181.203
+checkprops result -s 181.203 
+checkshape result
 checknbshapes result -vertex 2 -edge 3 -wire 3 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 10
 set 2dviewer 1

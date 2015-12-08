@@ -9,7 +9,8 @@ puts ""
 stepread [locate_data_file bug26715_001.stp] a *
 tpcompound result
 
-set square 28950.7
+checkprops result -s 28950.7
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

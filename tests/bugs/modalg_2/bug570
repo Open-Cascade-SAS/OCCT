@@ -7,5 +7,6 @@ puts ""
 
 OCC570 result
 
-set square 58500
+checkprops result -s 58500 
+checkshape result
 set 3dviewer 0

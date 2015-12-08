@@ -4,4 +4,4 @@ restore [locate_data_file sh8] b2
 bop b1 b2
 bopcommon result
 
-set square 95.7107
+checkprops result -s 95.7107

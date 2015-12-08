@@ -10,4 +10,4 @@ copy base_7 funtil
 featprism base cont cont -1 0 0 1 1
 featperform prism result funtil
 
-set square 3.45898e+06
+checkprops result -s 3.45898e+06

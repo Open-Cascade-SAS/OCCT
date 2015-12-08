@@ -2,4 +2,4 @@ restore [locate_data_file bug25926_b5.brep] s
 
 OFFSETSHAPE 2 {} $calcul $type
 
-set volume 4580.57
+checkprops result -v 4580.57

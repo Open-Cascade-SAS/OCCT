@@ -21,7 +21,9 @@ mkface p pl 0 10 -5 5
 bsection result f p -na
 
 checknbshapes result -vertex 2 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 4
-set length 0.592137
+checkprops result -l 0.592137 
+checkshape result 
+checksection result
 
 set 2dviewer 0
 

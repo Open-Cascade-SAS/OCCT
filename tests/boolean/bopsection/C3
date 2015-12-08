@@ -6,4 +6,5 @@ restore [locate_data_file CTO909_bad_cut_part.brep] b
 bop b a
 bopsection result
 
-set length 20.7531
+checkprops result -l 20.7531
+checksection result

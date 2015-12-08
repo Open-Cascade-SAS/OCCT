@@ -43,5 +43,5 @@ buildsweep result
 # BUG: a pipe is invalid
 checkshape result -short
 
-set square 1.45725e-06
+checkprops result -s 1.45725e-06 
 set 3dviewer 0

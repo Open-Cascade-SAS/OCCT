@@ -1,8 +1,9 @@
 #old file ofcb23
 puts "TODO CR25925 ALL: ERROR. offsetperform operation not done."
+puts "TODO CR25925 ALL: Error: The command cannot be built"
 puts "TODO CR26556 ALL: Error : The offset cannot be built."
 
 restore [locate_data_file CHE_cc3.rle] s
 OFFSETSHAPE -0.01 {s_6} $calcul $type
 
-set volume 0.0228808
+checkprops result -v 0.0228808
