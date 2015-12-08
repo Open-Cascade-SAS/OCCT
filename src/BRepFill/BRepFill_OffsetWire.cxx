@@ -299,7 +299,7 @@ static Standard_Boolean KPartCircle
     
     myShape.Orientation(E.Orientation());
     myShape.Location(L);
-    if (Alt != 0.) {
+    if (fabs(Alt) > gp::Resolution()) {
       BRepAdaptor_Surface S(mySpine,0);
       gp_Ax1 Nor = S.Plane().Axis();
       gp_Trsf T;
@@ -775,12 +775,14 @@ void BRepFill_OffsetWire::PerformWithBiLo
   TopTools_ListOfShape                      EmptyList;
   TColStd_SequenceOfReal                    EmptySeqOfReal;
 
-  Standard_Real ALT = Alt;
   Handle(Geom_Plane) RefPlane = 
     Handle(Geom_Plane)::DownCast(BRep_Tool::Surface(myWorkSpine));
-  if ( myWorkSpine.Orientation() == TopAbs_REVERSED) ALT = -Alt;
-  RefPlane = Handle(Geom_Plane)::DownCast
-    (RefPlane->Translated( ALT * gp_Vec(RefPlane->Axis().Direction() )));
+  if (fabs(Alt) > gp::Resolution()) {
+    Standard_Real anAlt = Alt;
+    if ( myWorkSpine.Orientation() == TopAbs_REVERSED) anAlt = -Alt;
+    RefPlane = Handle(Geom_Plane)::DownCast
+      (RefPlane->Translated( anAlt * gp_Vec(RefPlane->Axis().Direction() )));
+  }
 
   //---------------------------------------------------------------
   // Construction of Circles and OffsetCurves
