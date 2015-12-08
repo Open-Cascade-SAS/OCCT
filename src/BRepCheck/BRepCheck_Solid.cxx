@@ -23,6 +23,7 @@
 #include <MMgt_TShared.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
+#include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Builder.hxx>
@@ -36,14 +37,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Solid,BRepCheck_Result)
 
-//
-//
-//
-//
-//
-//
-//
-//
 //
 class BRepCheck_HSC;
 DEFINE_STANDARD_HANDLE(BRepCheck_HSC, MMgt_TShared);
@@ -73,8 +66,6 @@ class BRepCheck_HSC : public MMgt_TShared {
   BRepClass3d_SolidClassifier mySC;
 };
 
-
-
 //
 //=======================================================================
 //class    : BRepCheck_ToolSolid
@@ -87,6 +78,7 @@ class BRepCheck_ToolSolid  {
 
   BRepCheck_ToolSolid() {
     myIsHole=Standard_False;
+    myPntTol=Precision::Confusion();
     myPnt.SetCoord(-1.,-1.,-1.);
   };
    
@@ -109,6 +101,10 @@ class BRepCheck_ToolSolid  {
     return myPnt;
   }
   //
+  Standard_Real CheckTol() const {
+    return myPntTol;
+  };
+  //
   // IsOut
   Standard_Boolean IsOut(BRepCheck_ToolSolid& aOther)  {
     Standard_Boolean bFlag;
@@ -116,7 +112,7 @@ class BRepCheck_ToolSolid  {
     //
     BRepClass3d_SolidClassifier& aSC=myHSC->SolidClassifier();
     //
-    aSC.Perform(aOther.myPnt, ::RealSmall());
+    aSC.Perform(aOther.InnerPoint(), aOther.CheckTol());
     aState=aSC.State();
     bFlag=(aState==TopAbs_OUT);
     //
@@ -148,6 +144,7 @@ class BRepCheck_ToolSolid  {
         Handle(Geom_Curve) aC3D=BRep_Tool::Curve(aE, aT1, aT2);
         aT=(1.-aPAR_T)*aT1 + aPAR_T*aT2;
         myPnt=aC3D->Value(aT);
+        myPntTol = BRep_Tool::Tolerance(aE);
         break;
       }
     }
@@ -155,7 +152,8 @@ class BRepCheck_ToolSolid  {
   //
  protected:
   Standard_Boolean myIsHole;
-  gp_Pnt myPnt;
+  gp_Pnt myPnt; 
+  Standard_Real myPntTol;
   TopoDS_Solid mySolid;
   Handle(BRepCheck_HSC) myHSC;
 };
