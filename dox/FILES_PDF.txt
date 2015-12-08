@@ -12,9 +12,6 @@ user_guides/modeling_algos/modeling_algos.md
 user_guides/boolean_operations/boolean_operations.md
 user_guides/shape_healing/shape_healing.md
 user_guides/ocaf/ocaf.md
-user_guides/ocaf_functionmechanism_wp/ocaf_functionmechanism_wp.md
-user_guides/ocaf_tree_wp/ocaf_tree_wp.md
-user_guides/ocaf_wp/ocaf_wp.md
 user_guides/step/step.md
 user_guides/draw_test_harness/draw_test_harness.md
 user_guides/tobj/tobj.md
