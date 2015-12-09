@@ -22,13 +22,6 @@ inline void Storage_Schema::WritePersistentObjectHeader(const Handle(Standard_Pe
   f.WritePersistentObjectHeader(sp->_refnum,sp->_typenum);
 }
 
-inline void Storage_Schema::ReadPersistentObjectHeader(Storage_BaseDriver& f) 
-{
-  Standard_Integer i,j;
-
-  f.ReadPersistentObjectHeader(i,j);
-}
-
 inline Standard_Boolean Storage_Schema::HasTypeBinding(const TCollection_AsciiString& aTypeName) const
 {
   return Storage_Schema::ICurrentData()->InternalData()->myTypeBinding.IsBound(aTypeName);

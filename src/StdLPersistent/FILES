@@ -1,0 +1,16 @@
+FILES
+StdLPersistent.cxx
+StdLPersistent.hxx
+StdLPersistent_PCollection_HExtendedString.cxx
+StdLPersistent_PCollection_HExtendedString.hxx
+StdLPersistent_PColStd_HArray1.hxx
+StdLPersistent_PColStd_HArray1Base.cxx
+StdLPersistent_PColStd_HArray1Base.hxx
+StdLPersistent_PDataStd_Integer.cxx
+StdLPersistent_PDataStd_Integer.hxx
+StdLPersistent_PDataStd_Name.cxx
+StdLPersistent_PDataStd_Name.hxx
+StdLPersistent_PDF_Data.cxx
+StdLPersistent_PDF_Data.hxx
+StdLPersistent_PDocStd_Document.cxx
+StdLPersistent_PDocStd_Document.hxx

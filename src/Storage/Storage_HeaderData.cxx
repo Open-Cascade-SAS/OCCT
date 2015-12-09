@@ -13,9 +13,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Storage_HeaderData.hxx>
-#include <Storage_Schema.hxx>
+#include <Storage_BaseDriver.hxx>
+#include <Storage_StreamTypeMismatchError.hxx>
+#include <Storage_StreamExtCharParityError.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -23,6 +25,98 @@ IMPLEMENT_STANDARD_RTTIEXT(Storage_HeaderData,MMgt_TShared)
 
 Storage_HeaderData::Storage_HeaderData() : myNBObj(0), myErrorStatus(Storage_VSOk)
 {
+}
+
+Standard_Boolean Storage_HeaderData::Read (Storage_BaseDriver& theDriver)
+{
+  // Check driver open mode
+  if (theDriver.OpenMode() != Storage_VSRead
+   && theDriver.OpenMode() != Storage_VSReadWrite)
+  {
+    myErrorStatus = Storage_VSModeError;
+    myErrorStatusExt = "OpenMode";
+    return Standard_False;
+  }
+
+  // Read info section
+  myErrorStatus = theDriver.BeginReadInfoSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "BeginReadInfoSection";
+    return Standard_False;
+  }
+
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      theDriver.ReadInfo (myNBObj,
+                          myStorageVersion,
+                          myDate,
+                          mySchemaName,
+                          mySchemaVersion,
+                          myApplicationName,
+                          myApplicationVersion,
+                          myDataType,
+                          myUserInfo);
+    }
+    catch (Storage_StreamTypeMismatchError)
+    {
+      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatusExt = "ReadInfo";
+      return Standard_False;
+    }
+    catch (Storage_StreamExtCharParityError)
+    {
+      myErrorStatus = Storage_VSExtCharParityError;
+      myErrorStatusExt = "ReadInfo";
+      return Standard_False;
+    }
+  }
+
+  myErrorStatus = theDriver.EndReadInfoSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "EndReadInfoSection";
+    return Standard_False;
+  }
+
+  // Read comment section
+  myErrorStatus = theDriver.BeginReadCommentSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "BeginReadCommentSection";
+    return Standard_False;
+  }
+
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      theDriver.ReadComment (myComments);
+    }
+    catch (Storage_StreamTypeMismatchError)
+    {
+      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatusExt = "ReadComment";
+      return Standard_False;
+    }
+    catch (Storage_StreamExtCharParityError)
+    {
+      myErrorStatus = Storage_VSExtCharParityError;
+      myErrorStatusExt = "ReadComment";
+      return Standard_False;
+    }
+  }
+
+  myErrorStatus = theDriver.EndReadCommentSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "EndReadCommentSection";
+    return Standard_False;
+  }
+
+  return Standard_True;
 }
 
 TCollection_AsciiString Storage_HeaderData::CreationDate() const

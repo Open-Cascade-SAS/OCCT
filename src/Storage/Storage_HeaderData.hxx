@@ -28,6 +28,7 @@
 #include <Storage_Error.hxx>
 #include <MMgt_TShared.hxx>
 class Storage_Schema;
+class Storage_BaseDriver;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
@@ -43,6 +44,8 @@ public:
 
   
   Standard_EXPORT Storage_HeaderData();
+
+  Standard_EXPORT Standard_Boolean Read (Storage_BaseDriver& theDriver);
   
   //! return the creation date
   Standard_EXPORT TCollection_AsciiString CreationDate() const;

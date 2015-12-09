@@ -13,16 +13,67 @@
 // commercial license or contractual agreement.
 
 
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_Type.hxx>
-#include <Storage_Schema.hxx>
 #include <Storage_TypeData.hxx>
+#include <Storage_BaseDriver.hxx>
+#include <Storage_StreamTypeMismatchError.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Storage_TypeData,MMgt_TShared)
 
 Storage_TypeData::Storage_TypeData() : myErrorStatus(Storage_VSOk)
 {
+}
+
+Standard_Boolean Storage_TypeData::Read (Storage_BaseDriver& theDriver)
+{
+  // Check driver open mode
+  if (theDriver.OpenMode() != Storage_VSRead
+   && theDriver.OpenMode() != Storage_VSReadWrite)
+  {
+    myErrorStatus = Storage_VSModeError;
+    myErrorStatusExt = "OpenMode";
+    return Standard_False;
+  }
+
+  // Read type section
+  myErrorStatus = theDriver.BeginReadTypeSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "BeginReadTypeSection";
+    return Standard_False;
+  }
+
+  Standard_Integer        aTypeNum;
+  TCollection_AsciiString aTypeName;
+
+  Standard_Integer len = theDriver.TypeSectionSize();
+  for (Standard_Integer i = 1; i <= len; i++)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      theDriver.ReadTypeInformations (aTypeNum, aTypeName);
+    }
+    catch (Storage_StreamTypeMismatchError)
+    {
+      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatusExt = "ReadTypeInformations";
+      return Standard_False;
+    }
+
+    myPt.Add (aTypeName, aTypeNum);
+  }
+
+  myErrorStatus = theDriver.EndReadTypeSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "EndReadTypeSection";
+    return Standard_False;
+  }
+
+  return Standard_True;
 }
 
 Standard_Integer Storage_TypeData::NumberOfTypes() const

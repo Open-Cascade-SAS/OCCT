@@ -107,50 +107,6 @@ public:
   //! to be stored together.
   Standard_EXPORT void Write (Storage_BaseDriver& s, const Handle(Storage_Data)& aData) const;
   
-  //! Returns the data read from the container defined
-  //! by the driver s. The retrieval operation is
-  //! performed according to the data schema with
-  //! which this algorithm is working.
-  //! These data are aggregated in a Storage_Data
-  //! object which may be browsed in order to extract
-  //! the root objects from the container.
-  Standard_EXPORT Handle(Storage_Data) Read (Storage_BaseDriver& s) const;
-  
-  //! read the header part of the stream
-  //! Arguments:
-  //! s: driver to read
-  Standard_EXPORT Handle(Storage_HeaderData) ReadHeaderSection (Storage_BaseDriver& s) const;
-  
-  //! fill the TypeData with the  names of the type used
-  //! in a stream
-  //! Arguments:
-  //! s: driver to read
-  Standard_EXPORT Handle(Storage_TypeData) ReadTypeSection (Storage_BaseDriver& s) const;
-  
-  //! read root part of the file
-  //! Arguments:
-  //! s: driver to read
-  Standard_EXPORT Handle(Storage_RootData) ReadRootSection (Storage_BaseDriver& s) const;
-  
-  //! returns the known types of a schema
-  Standard_EXPORT virtual const TColStd_SequenceOfAsciiString& SchemaKnownTypes() const;
-  
-  //! indicates whether  the  are  types  in  the driver
-  //! which are not known from  the schema and for which
-  //! no callbacks have been set. The unknown types can
-  //! be read in <theUnknownTypes>.
-  Standard_EXPORT Standard_Boolean HasUnknownType (Storage_BaseDriver& aDriver, TColStd_SequenceOfAsciiString& theUnknownTypes) const;
-  
-  //! returns the all known types  of a schema and their
-  //! nested schemes.
-  Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) GetAllSchemaKnownTypes() const;
-  
-  Standard_EXPORT void SetNestedSchemas (const Handle(Storage_HArrayOfSchema)& theSchemas);
-  
-  Standard_EXPORT void ClearNestedSchemas();
-  
-  Standard_EXPORT Handle(Storage_HArrayOfSchema) NestedSchemas() const;
-  
   //! return a current date string
   Standard_EXPORT static TCollection_AsciiString ICreationDate();
   
@@ -204,17 +160,9 @@ public:
   //! UseDefaultCallBack() is set.
   Standard_EXPORT Handle(Storage_CallBack) DefaultCallBack() const;
   
-  Standard_EXPORT virtual Handle(Storage_CallBack) CallBackSelection (const TCollection_AsciiString& tName) const;
-  
-  Standard_EXPORT virtual Handle(Storage_CallBack) AddTypeSelection (const Handle(Standard_Persistent)& sp) const;
-  
     void WritePersistentObjectHeader (const Handle(Standard_Persistent)& sp, Storage_BaseDriver& s);
   
-    void ReadPersistentObjectHeader (Storage_BaseDriver& s);
-  
     void WritePersistentReference (const Handle(Standard_Persistent)& sp, Storage_BaseDriver& s);
-  
-  Standard_EXPORT void ReadPersistentReference (Handle(Standard_Persistent)& sp, Storage_BaseDriver& s);
   
   Standard_EXPORT Standard_Boolean AddPersistent (const Handle(Standard_Persistent)& sp, const Standard_CString tName) const;
   
@@ -226,11 +174,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(Storage_Schema,MMgt_TShared)
 
 protected:
-
-  
-  Standard_EXPORT Standard_Boolean IsNested() const;
-  
-  Standard_EXPORT Handle(Storage_CallBack) ResolveUnknownType (const TCollection_AsciiString& aTypeName, const Handle(Standard_Persistent)& aPers, const Storage_SolveMode aMode) const;
   
     Standard_Boolean HasTypeBinding (const TCollection_AsciiString& aTypeName) const;
   
@@ -242,18 +185,7 @@ protected:
 
 private:
 
-  
-  Standard_EXPORT Standard_Boolean SetNested();
-  
-  Standard_EXPORT Standard_Boolean UnsetNested();
-  
   Standard_EXPORT void Clear() const;
-  
-  Standard_EXPORT Standard_Boolean IReadHeaderSection (Storage_BaseDriver& s, const Handle(Storage_HeaderData)& iData) const;
-  
-  Standard_EXPORT Standard_Boolean IReadTypeSection (Storage_BaseDriver& s, const Handle(Storage_TypeData)& tData) const;
-  
-  Standard_EXPORT Standard_Boolean IReadRootSection (Storage_BaseDriver& s, const Handle(Storage_RootData)& rData) const;
   
   Standard_EXPORT static void ISetCurrentData (const Handle(Storage_Data)& dData);
   
@@ -264,10 +196,6 @@ private:
   Handle(Storage_CallBack) myDefaultCallBack;
   TCollection_AsciiString myName;
   TCollection_AsciiString myVersion;
-  Handle(Storage_HArrayOfSchema) myArrayOfSchema;
-  Standard_Boolean myNestedState;
-
-
 };
 
 

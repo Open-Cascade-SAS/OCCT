@@ -16,15 +16,18 @@
 ;# 
 proc ApplicationFramework:toolkits { } {
     return [list \
-		TKCDF \
-		TKLCAF \
-		TKVCAF \
+                TKCDF \
+                TKLCAF \
+                TKVCAF \
                 TKCAF \
                 TKBinL \
                 TKXmlL \
                 TKBin \
                 TKXml \
-		FWOSPlugin \
+                FWOSPlugin \
+                TKStdL \
+                TKStd \
+                TKShape \
                 TKTObj \
                 TKBinTObj \
                 TKXmlTObj \
@@ -34,10 +37,10 @@ proc ApplicationFramework:toolkits { } {
 ;# Autres UDs a prendre.
 ;#
 proc ApplicationFramework:ressources { } {
-    return [list  \
-		[list both r StdResource {}] \
+    return [list \
+                [list both r StdResource {}] \
                 [list both r XmlOcafResource {}] \
-	       ]
+           ]
 }
 ;#
 ;# Nom du module 

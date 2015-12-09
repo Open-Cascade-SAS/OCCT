@@ -71,27 +71,6 @@ Handle(CDM_Document) BinLDrivers_DocumentRetrievalDriver::CreateDocument()
 }
 
 //=======================================================================
-//function : SchemaName
-//purpose  : pure virtual method definition
-//=======================================================================
-
-TCollection_ExtendedString BinLDrivers_DocumentRetrievalDriver::SchemaName() const
-{
-  TCollection_ExtendedString schemaname;
-  return schemaname;
-}
-
-//=======================================================================
-//function : Make
-//purpose  : pure virtual method definition
-//=======================================================================
-
-void BinLDrivers_DocumentRetrievalDriver::Make (const Handle(PCDM_Document)&,
-                                               const Handle(CDM_Document)&)
-{
-}
-
-//=======================================================================
 //function : Read
 //purpose  :
 //=======================================================================

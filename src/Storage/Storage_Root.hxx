@@ -53,9 +53,14 @@ public:
   
   Standard_EXPORT Storage_Root();
   
-  Standard_EXPORT Storage_Root(const TCollection_AsciiString& aName, const Handle(Standard_Persistent)& anObject);
+  Standard_EXPORT Storage_Root (const TCollection_AsciiString&     theName,
+                                const Handle(Standard_Persistent)& theObject);
+
+  Standard_EXPORT Storage_Root (const TCollection_AsciiString& theName,
+                                const Standard_Integer         theRef,
+                                const TCollection_AsciiString& theType);
   
-  Standard_EXPORT void SetName (const TCollection_AsciiString& aName);
+  Standard_EXPORT void SetName (const TCollection_AsciiString& theName);
   
 
   //! Returns the name of this root object.

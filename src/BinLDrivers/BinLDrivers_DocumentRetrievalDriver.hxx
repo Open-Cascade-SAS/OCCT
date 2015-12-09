@@ -56,12 +56,6 @@ public:
   Standard_EXPORT BinLDrivers_DocumentRetrievalDriver();
   
   //! pure virtual method definition
-  Standard_EXPORT virtual TCollection_ExtendedString SchemaName() const Standard_OVERRIDE;
-  
-  //! pure virtual method definition
-  Standard_EXPORT virtual void Make (const Handle(PCDM_Document)& PD, const Handle(CDM_Document)& TD) Standard_OVERRIDE;
-  
-  //! pure virtual method definition
   Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() Standard_OVERRIDE;
   
   //! retrieves the content of the file into a new Document.

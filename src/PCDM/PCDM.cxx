@@ -61,26 +61,6 @@ Standard_Boolean PCDM::FindStorageDriver(const Handle(CDM_Document)& aDocument) 
 }
 
 //=======================================================================
-//function : Schema
-//purpose  : returns a schema to be used during a Store or Retrieve
-//           operation.
-//           Schema will plug the schema defined by
-//           the SchemaName method.
-//=======================================================================
-
-Handle(Storage_Schema) PCDM::Schema(const TCollection_ExtendedString& aSchemaName, const Handle(CDM_Application)& anApplication) {
-  
-  Handle(Resource_Manager) r = anApplication->Resources();
-  if(!UTL::Find(r,aSchemaName)) {
-    Standard_SStream aMsg; aMsg << "could not find the plugin resource for the schema: " << TCollection_ExtendedString(aSchemaName) << (char)0;
-    Standard_NoSuchObject::Raise(aMsg);
-  }
-  Handle(Standard_Transient) t = Plugin::Load(UTL::GUID(UTL::Value(r,aSchemaName)));
-  return Handle(Storage_Schema)::DownCast (t);
-  
-}
-
-//=======================================================================
 //function : FileDriverType
 //purpose  : 
 //=======================================================================

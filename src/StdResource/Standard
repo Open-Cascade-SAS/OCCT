@@ -1,8 +1,14 @@
-formatlist:XmlOcaf|BinOcaf
+formatlist:MDTV-Standard|XmlOcaf|BinOcaf
 !
 ! Default format
 xml.FileFormat: XmlOcaf
 cbf.FileFormat: BinOcaf
+!
+! standard attributes
+!
+MDTV-Standard.Description: Standard Document Version 1.0
+MDTV-Standard.FileExtension: std
+MDTV-Standard.RetrievalPlugin: ad696001-5b34-11d1-b5ba-00a0c9064368
 !
 ! XmlOcaf format
 !

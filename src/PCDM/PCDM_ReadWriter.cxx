@@ -26,7 +26,6 @@
 #include <Storage_BaseDriver.hxx>
 #include <Storage_Data.hxx>
 #include <Storage_HeaderData.hxx>
-#include <Storage_Schema.hxx>
 #include <Storage_TypeData.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -130,9 +129,9 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat
     
     Open(*theFileDriver,aFileName,Storage_VSRead);
     theFileIsOpen=Standard_True;
-    Handle(Storage_Schema) s = new Storage_Schema;
-    Handle(Storage_HeaderData) hd = s->ReadHeaderSection(*theFileDriver);
-    const TColStd_SequenceOfAsciiString &refUserInfo = hd->UserInfo();
+    Storage_HeaderData hd;
+    hd.Read (*theFileDriver);
+    const TColStd_SequenceOfAsciiString &refUserInfo = hd.UserInfo();
     Standard_Boolean found=Standard_False;
     for (Standard_Integer i =1; !found && i<=  refUserInfo.Length() ; i++) {
       if(refUserInfo(i).Search(FILE_FORMAT) != -1) {
@@ -141,7 +140,12 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat
                                              Standard_True);
       }
     }
-    if(!found) theFormat=s->ReadTypeSection(*theFileDriver)->Types()->Value(1);
+    if (!found)
+    {
+      Storage_TypeData td;
+      td.Read (*theFileDriver);
+      theFormat = td.Types()->Value(1);
+    }
   }
   catch (Standard_Failure) {}
 

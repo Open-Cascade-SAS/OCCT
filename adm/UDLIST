@@ -243,6 +243,12 @@ n CDF
 n CDM
 n FWOSDriver
 n PCDM
+n StdLDrivers
+n StdLPersistent
+n StdObjMgt
+n StdDrivers
+n StdPersistent
+n ShapePersistent
 n TDF
 n TDataStd
 n TDataXtd
@@ -271,6 +277,9 @@ t TKCAF
 t TKCDF
 t TKLCAF
 
+t TKStdL
+t TKStd
+t TKShape
 t TKTObj
 t TKXml
 t TKXmlL

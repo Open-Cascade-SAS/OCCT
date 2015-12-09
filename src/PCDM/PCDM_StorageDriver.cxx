@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PCDM_StorageDriver,PCDM_Writer)
 
 void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString&  aFileName) 
 {
-  Handle(Storage_Schema) theSchema=PCDM::Schema(SchemaName(),aDocument->Application());
+  Handle(Storage_Schema) theSchema = new Storage_Schema;
 
   TColStd_SequenceOfExtendedString theExtensions;
   aDocument->Extensions(theExtensions);

@@ -1,4 +1,11 @@
-formatlist:BinLOcaf|XmlLOcaf
+formatlist:OCC-StdLite|BinLOcaf|XmlLOcaf
+!
+!
+! Lite attributes
+!
+OCC-StdLite.Description: Lite Document Version 1.0
+OCC-StdLite.FileExtension: stdl
+OCC-StdLite.RetrievalPlugin: bd696001-5b34-11d1-b5ba-00a0c9064368
 !
 ! BinLOcaf format
 !

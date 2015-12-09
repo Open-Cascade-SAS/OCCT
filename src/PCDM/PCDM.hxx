@@ -28,75 +28,23 @@
 #include <PCDM_BaseDriverPointer.hxx>
 class CDM_Document;
 class PCDM_StorageDriver;
-class Storage_Schema;
-class TCollection_ExtendedString;
-class CDM_Application;
 class TCollection_AsciiString;
-class PCDM_Document;
-class PCDM_Reader;
-class PCDM_Writer;
-class PCDM_RetrievalDriver;
-class PCDM_StorageDriver;
-class PCDM_ReferenceIterator;
-class PCDM_Reference;
-class PCDM_ReadWriter;
-class PCDM_ReadWriter_1;
-
 
 
 class PCDM 
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT static Standard_Boolean FindStorageDriver (const Handle(CDM_Document)& aDocument);
   
   //! gets   in the  EuclidDesktop   resource  the plugin
   //! identifier of the driver plugs the driver.
   Standard_EXPORT static Handle(PCDM_StorageDriver) StorageDriver (const Handle(CDM_Document)& aDocument);
   
-  //! returns a schema to be used during a Store or Retrieve
-  //! operation.
-  //! Schema will plug the schema defined by
-  //! the SchemaName method.
-  Standard_EXPORT static Handle(Storage_Schema) Schema (const TCollection_ExtendedString& aSchemaName, const Handle(CDM_Application)& anApplication);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-  
   Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (const TCollection_AsciiString& aFileName, PCDM_BaseDriverPointer& aBaseDriver);
   
   Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (Standard_IStream& theIStream, PCDM_BaseDriverPointer& theBaseDriver);
 
-
-
-friend class PCDM_Document;
-friend class PCDM_Reader;
-friend class PCDM_Writer;
-friend class PCDM_RetrievalDriver;
-friend class PCDM_StorageDriver;
-friend class PCDM_ReferenceIterator;
-friend class PCDM_Reference;
-friend class PCDM_ReadWriter;
-friend class PCDM_ReadWriter_1;
-
+  DEFINE_STANDARD_ALLOC
 };
-
-
-
-
-
-
 
 #endif // _PCDM_HeaderFile

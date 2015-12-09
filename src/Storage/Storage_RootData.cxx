@@ -13,19 +13,71 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_Persistent.hxx>
-#include <Standard_Type.hxx>
-#include <Storage_DataMapIteratorOfMapOfPers.hxx>
-#include <Storage_Root.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <Storage_RootData.hxx>
-#include <Storage_Schema.hxx>
+#include <Storage_Root.hxx>
+#include <Storage_BaseDriver.hxx>
+#include <Storage_StreamTypeMismatchError.hxx>
+#include <Storage_DataMapIteratorOfMapOfPers.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData,MMgt_TShared)
 
 Storage_RootData::Storage_RootData() : myErrorStatus(Storage_VSOk)
 {
+}
+
+Standard_Boolean Storage_RootData::Read (Storage_BaseDriver& theDriver)
+{
+  // Check driver open mode
+  if (theDriver.OpenMode() != Storage_VSRead
+   && theDriver.OpenMode() != Storage_VSReadWrite)
+  {
+    myErrorStatus = Storage_VSModeError;
+    myErrorStatusExt = "OpenMode";
+    return Standard_False;
+  }
+
+  // Read root section
+  myErrorStatus = theDriver.BeginReadRootSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "BeginReadRootSection";
+    return Standard_False;
+  }
+
+  TCollection_AsciiString aRootName, aTypeName;
+  Standard_Integer aRef;
+
+  Standard_Integer len = theDriver.RootSectionSize();
+  for (Standard_Integer i = 1; i <= len; i++)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      theDriver.ReadRoot (aRootName, aRef, aTypeName);
+    }
+    catch (Storage_StreamTypeMismatchError)
+    {
+      myErrorStatus = Storage_VSTypeMismatch;
+      myErrorStatusExt = "ReadRoot";
+      return Standard_False;
+    }
+
+    Handle(Storage_Root) aRoot = new Storage_Root (aRootName, aRef, aTypeName);
+    myObjects.Bind (aRootName, aRoot);
+  }
+
+  myErrorStatus = theDriver.EndReadRootSection();
+  if (myErrorStatus != Storage_VSOk)
+  {
+    myErrorStatusExt = "EndReadRootSection";
+    return Standard_False;
+  }
+
+  return Standard_True;
 }
 
 Standard_Integer Storage_RootData::NumberOfRoots() const
