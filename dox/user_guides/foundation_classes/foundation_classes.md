@@ -811,7 +811,7 @@ void f(1)
 
 Here, the first handler will catch exceptions of *Overflow* type and the second one - exceptions of *NumericError* type and all exceptions derived from it, including *Underflow* and *ZeroDivide*. 
 
-The handlers are checked in order of appearance, from the  nearest to the most distant try block, until one matches the raise expression.  For a try block, it would be a mistake to place a handler for a base exception  type ahead of a handler for its derived type since that would ensure that the  handler for the derived exception would never be invoked.  
+The handlers are checked in order of appearance, from the nearest to the try block to the most distant from it, until one matches the raise expression.  For a try block, it would be a mistake to place a handler for a base exception  type ahead of a handler for its derived type since that would ensure that the  handler for the derived exception would never be invoked.  
 
 ~~~~~
 void f(1)
