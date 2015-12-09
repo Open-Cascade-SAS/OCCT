@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-  <Type Name="gp_XY">
+<Type Name="gp_XY">
     <DisplayString>[{(float)x} {(float)y}]</DisplayString>
   </Type>
   <Type Name="gp_Pnt2d">
@@ -40,16 +40,23 @@
   </Type>
   <Type Name="Handle_Standard_Transient">
     <DisplayString Condition="entity==0x00000000">NULL</DisplayString>
-    <DisplayString Condition="entity!=0x00000000">[count={entity->count}]</DisplayString>
+    <DisplayString Condition="entity!=0x00000000">[cnt={entity->count}]</DisplayString>
     <Expand>
       <ExpandedItem>*entity</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="NCollection_Handle&lt;*&gt;">
     <DisplayString Condition="entity==0x00000000">NULL</DisplayString>
-    <DisplayString Condition="entity!=0x00000000">[count={entity->count}]</DisplayString>
+    <DisplayString Condition="entity!=0x00000000">{(void*)entity} [cnt={entity->count}]</DisplayString>
     <Expand>
       <ExpandedItem>*((NCollection_Handle&lt;$T1&gt;::Ptr*)entity)->myPtr</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="opencascade::handle&lt;*&gt;">
+    <DisplayString Condition="entity==0x00000000">NULL</DisplayString>
+    <DisplayString Condition="entity!=0x00000000">{(void*)entity} [cnt={entity->count} {*entity}]</DisplayString>
+    <Expand>
+      <ExpandedItem>(opencascade::handle&lt;$T1&gt;::element_type*)entity</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="TCollection_AsciiString">
@@ -101,6 +108,17 @@
       </LinkedListItems>
     </Expand>
   </Type>
+  <Type Name="NCollection_Sequence&lt;*&gt;">
+    <DisplayString>NCollection_Sequence [{mySize}]</DisplayString>
+    <Expand>
+      <LinkedListItems>
+        <Size>mySize</Size>
+        <HeadPointer>myFirstItem</HeadPointer>
+        <NextPointer>myNext</NextPointer>
+        <ValueNode>*($T1*)(sizeof(NCollection_SeqNode) + ((char *)this))</ValueNode>
+      </LinkedListItems>
+    </Expand>
+  </Type>
   <Type Name="Bnd_B2f">
     <AlternativeType Name="Bnd_B2d"></AlternativeType>
     <DisplayString Condition="myCenter[0] &gt; 1000000000000000000.">VOID</DisplayString>
@@ -143,4 +161,97 @@
   <Type Name="OpenGl_Context">
     <DisplayString>[{myGlVerMajor}.{myGlVerMinor}]</DisplayString>
   </Type>
+
+<!--ArrayItems Expansion-->
+<Type Name="TColStd_Array1OfInteger">
+    <DisplayString Condition="isAllocated != 1">empty</DisplayString> 
+    <DisplayString>{{size = {myUpperBound - myLowerBound + 1}}}</DisplayString>
+    <Expand>
+        <Item Condition="isAllocated == 1" Name="[size]">myUpperBound - myLowerBound + 1</Item>
+        <ArrayItems Condition="isAllocated == 1">
+            <Size>myUpperBound - myLowerBound + 1</Size>
+            <ValuePointer>(Standard_Integer*)(myStart) + myLowerBound</ValuePointer>
+        </ArrayItems>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_Array1OfReal">
+    <DisplayString Condition="isAllocated != 1">empty</DisplayString> 
+    <DisplayString>{{size = {myUpperBound - myLowerBound + 1}}}</DisplayString>
+    <Expand>
+        <Item Condition="isAllocated == 1" Name="[size]">myUpperBound - myLowerBound + 1</Item>
+        <ArrayItems Condition="isAllocated == 1">
+            <Size>myUpperBound - myLowerBound + 1</Size>
+            <ValuePointer>(Standard_Real*)(myStart) + myLowerBound</ValuePointer>
+        </ArrayItems>
+    </Expand>
+</Type>
+
+<!--Multi-dimensional Arrays-->
+<Type Name="TColStd_Array2OfInteger">
+    <DisplayString Condition="(myUpperColumn == myLowerColumn) &amp;&amp; (myUpperRow == myLowerRow)">empty</DisplayString>
+    <DisplayString>extent = {(myUpperColumn-myLowerColumn+1) * (myUpperRow-myLowerRow+1)}</DisplayString>
+</Type>
+
+
+<!--LinkedListItems Expansion-->
+<Type Name="TColStd_ListNodeOfListOfInteger">
+    <DisplayString>{{current = {myValue}}}</DisplayString>
+    <Expand>
+        <LinkedListItems>
+            <HeadPointer>this</HeadPointer>
+            <NextPointer>(TColStd_ListNodeOfListOfInteger*)myNext</NextPointer>
+            <ValueNode>this-&gt;myValue</ValueNode>
+        </LinkedListItems>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_ListOfInteger">
+    <DisplayString Condition="myFirst == 0">empty</DisplayString>
+    <Expand>
+        <Item Name="values">(TColStd_ListNodeOfListOfInteger*)(myFirst)</Item>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_ListNodeOfListOfReal">
+    <DisplayString>{{current = {myValue}}}</DisplayString>
+    <Expand>
+        <LinkedListItems>
+            <HeadPointer>this</HeadPointer>
+            <NextPointer>(TColStd_ListNodeOfListOfReal*)myNext</NextPointer>
+            <ValueNode>this-&gt;myValue</ValueNode>
+        </LinkedListItems>
+    </Expand>
+</Type>
+
+<Type Name="TColStd_ListOfReal">
+    <DisplayString Condition="myFirst == 0">empty</DisplayString>
+    <Expand>
+        <Item Name="values">(TColStd_ListNodeOfListOfReal*)(myFirst)</Item>
+    </Expand>
+</Type>
+
+<Type Name="BRep_ListOfCurveRepresentation">
+    <DisplayString Condition="myFirst == 0">empty</DisplayString>
+    <Expand>
+        <Item Name="values">(BRep_ListNodeOfListOfCurveRepresentation*)(myFirst)</Item>
+    </Expand>
+</Type>
+
+<Type Name="TopoDS_Shape">
+    <DisplayString>{myOrient} {myTShape} loc={myLocation}</DisplayString>
+</Type>
+
+<Type Name="TopoDS_TShape">
+    <DisplayString>subshapes={myShapes} flags={myFlags}</DisplayString>
+</Type>
+
+<Type Name="BOPDS_Pave">
+    <DisplayString>{{{myIndex} {myParameter}}}</DisplayString>
+</Type>
+
+<Type Name="BOPDS_PaveBlock">
+    <DisplayString>edge={myEdge} orig={myOriginalEdge} pave1={myPave1} pave2={myPave2} extpaves={myExtPaves}</DisplayString>
+</Type>
+
 </AutoVisualizer>
