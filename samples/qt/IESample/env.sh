@@ -10,8 +10,8 @@ if [ -e "${aSamplePath}/../../../env.sh" ]; then
    source "${aSamplePath}/../../../env.sh";
 fi
 
-if test "${QT_DIR}" == ""; then
-   echo "Environment variable \"QT_DIR\" not defined. Define it in \"custom.sh\" script."
+if test "${QTDIR}" == ""; then
+   echo "Environment variable \"QTDIR\" not defined. Define it in \"custom.sh\" script."
    exit 1
 fi
 
@@ -19,4 +19,4 @@ host=`uname -s`
 export STATION=$host
 export RES_DIR=${aSamplePath}/${STATION}/res
 
-export PATH=${QT_DIR}/bin:${PATH}
+export PATH=${QTDIR}/bin:${PATH}

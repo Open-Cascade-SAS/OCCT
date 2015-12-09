@@ -1,4 +1,4 @@
 #!/bin/bash
-#Define QT_DIR variables in order to generate Makefile files by qmake
+#Define QTDIR variable
 
-export QT_DIR=""
+export QTDIR=""

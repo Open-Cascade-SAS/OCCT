@@ -1,4 +1,4 @@
 @echo off
-rem Define QT_DIR variables in order to load OCCT environment
+rem Define QTDIR variable
 
-set "QT_DIR="
+set "QTDIR="

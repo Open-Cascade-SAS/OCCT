@@ -64,13 +64,13 @@ win32 {
         DESTDIR = ./win$(ARCH)/$(VCVER)/bind
         OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/objd
         MOC_DIR = ./win$(ARCH)/$(VCVER)/mocd
-        LIBS = -L$$(QT_DIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/libd
+        LIBS = -L$$(QTDIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/libd
     } else {
         DEFINES += NDEBUG
         DESTDIR = ./win$(ARCH)/$(VCVER)/bin
         OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/obj
         MOC_DIR = ./win$(ARCH)/$(VCVER)/moc
-        LIBS = -L$$(QT_DIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/lib
+        LIBS = -L$$(QTDIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/lib
     }
     DEFINES += NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }
