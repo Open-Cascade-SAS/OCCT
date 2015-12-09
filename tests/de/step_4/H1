@@ -1,16 +1,13 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
-
-
 set filename Inventor_Engine.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 448  ( 560 )  Summary  = 448  ( 560 )
-CHECKSHAPE  : Wires    = 9  ( 6 )  Faces    = 9  ( 6 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 47  ( 47 )  Shell    = 47  ( 47 )  Face     = 4455  ( 4455 )   Summary  = 27804  ( 27803 )
-STATSHAPE   : Solid    = 80  ( 80 )  Shell    = 80  ( 80 )  Face     = 5359  ( 5359 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 11467  ( 11467 )
-TOLERANCE   : MaxTol   =    2.429208989  (    2.450580634 )  AvgTol   =  0.003235414897  (  0.002917423634 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 456  ( 560 )  Summary  = 456  ( 560 )
+CHECKSHAPE  : Wires    = 6  ( 6 )  Faces    = 6  ( 6 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 47  ( 47 )  Shell    = 47  ( 47 )  Face     = 4454  ( 4454 )   Summary  = 27812  ( 27811 )
+STATSHAPE   : Solid    = 80  ( 80 )  Shell    = 80  ( 80 )  Face     = 5356  ( 5356 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 11472  ( 11473 )
+TOLERANCE   : MaxTol   =     2.37122237  (    2.449305641 )  AvgTol   =  0.002570900495  (  0.002589625201 )
 LABELS      : N0Labels = 52  ( 52 )  N1Labels = 86  ( 86 )  N2Labels = 0  ( 0 )   TotalLabels = 138  ( 138 )   NameLabels = 136  ( 136 )   ColorLabels = 47  ( 47 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 11  ( 11 )

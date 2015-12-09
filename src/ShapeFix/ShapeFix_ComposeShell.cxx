@@ -425,6 +425,7 @@ static inline Standard_Integer IsCoincided (const gp_Pnt2d &p1, const gp_Pnt2d &
 //function : GetPatchIndex
 //purpose  : auxilary
 //=======================================================================
+
 // computes index for the patch by given parameter Param
 static Standard_Integer GetPatchIndex (const Standard_Real Param,
 				       const Handle(TColStd_HArray1OfReal) &Params,
@@ -449,7 +450,6 @@ static Standard_Integer GetPatchIndex (const Standard_Real Param,
   Standard_Integer ishift = (Standard_Integer)( ish <0 ? ish - 0.5 : ish + 0.5 ); 
   return i - ishift * ( NP - 1 );
 }
-
 
 //=======================================================================
 //function : LoadWires
@@ -780,19 +780,6 @@ static void DefinePatch (ShapeFix_WireSegment &wire, const Standard_Integer code
     if ( ! ( code & IOR_LEFT  ) ) wire.DefineIVMax ( nb, cutIndex );
   }
 }
-
-
-//=======================================================================
-//function : DefinePatchForWire
-//purpose  : auxilary
-//=======================================================================
-static void DefinePatchForWire(ShapeFix_WireSegment &wire, const Standard_Integer code, 
-			       const Standard_Boolean isCutByU, const Standard_Integer cutIndex)
-{
-  for(Standard_Integer i = 1; i <= wire.NbEdges(); i++) 
-    DefinePatch(wire,code,isCutByU,cutIndex,i);
-}     
-
 
 //=======================================================================
 //function : GetGridResolution
@@ -1427,7 +1414,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
 
   if ( IntEdgePar.Length() <1 ) {
     //pdn Defining position of wire. There is no intersection, so by any point.
-    DefinePatchForWire ( wire, firstCode, isCutByU, cutIndex );
+    //DefinePatchForWire ( wire, firstCode, isCutByU, cutIndex );
     return Standard_False; //pdn ??
   }
 
@@ -1467,19 +1454,23 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
       j=i++;
     }
   }
-  
+   //sequence of real codes for each segment
+   TColStd_SequenceOfInteger aNewSegCodes;
   // Compute segment codes (left side of line, right or tangential)
   for ( i=1; i <= IntEdgePar.Length(); i++ ) {
     j = ( i < IntEdgePar.Length() ? i + 1 : 1 );
     Standard_Integer code = ComputeCode ( sewd, line, IntEdgeInd(i), IntEdgeInd(j), 
-					  IntEdgePar(i), IntEdgePar(j),isnonmanifold );
+      IntEdgePar(i), IntEdgePar(j),isnonmanifold );
     SegmentCodes.Append ( code );
   }
-  
+ 
   // for EXTERNAL wire, i.e. another joint line, every point is double intersection
   if ( wire.Orientation() == TopAbs_EXTERNAL ) {
     for ( i=1; i <= IntEdgePar.Length(); i++ )
+    {
       IntCode.Append ( ITP_TANG | IOR_BOTH );
+      aNewSegCodes.Append(SegmentCodes(i));
+    }
   }
   // For real (closed) wire, analyze tangencies
   else {
@@ -1508,7 +1499,6 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
     }
     //pdn exit if all split points removed
     if ( IntEdgePar.Length() <1 ) {
-      //DefinePatchForWire ( wire, firstCode, isCutByU, cutIndex );
       return Standard_False; //pdn ??
     }
     
@@ -1517,15 +1507,22 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
     // beginning and end of tangential segment.
     // Orientation (IOR) tells on which side of line edge crosses it
     j = IntEdgePar.Length();
+    
     for ( i=1; i <= IntEdgePar.Length(); j = i++ ) {
       Standard_Integer codej = SegmentCodes(j);
       Standard_Integer codei = SegmentCodes(i);
       if ( myClosedMode ) {
-	if ( ( codej & IOR_BOTH ) == IOR_BOTH ) //IOR_LEFT : IOR_RIGHT
-	  codej = ( codej & IOR_POS ? IOR_RIGHT : IOR_LEFT );
-	if ( ( codei & IOR_BOTH ) == IOR_BOTH ) //IOR_RIGHT : IOR_LEFT
-	  codei = ( codei & IOR_POS ? IOR_LEFT : IOR_RIGHT );
+        if ( ( codej & IOR_BOTH ) == IOR_BOTH ) //IOR_LEFT : IOR_RIGHT
+          codej = ( codej & IOR_POS ? IOR_RIGHT : IOR_LEFT );
+        if ( ( codei & IOR_BOTH ) == IOR_BOTH ) //IOR_RIGHT : IOR_LEFT
+          codei = ( codei & IOR_POS ? IOR_LEFT : IOR_RIGHT );
+        aNewSegCodes.Append ( codei );
+        if(IntEdgeInd(i) == IntEdgeInd(j))
+          aNewSegCodes.Append ( codej );
+        
       }
+      else
+        aNewSegCodes.Append ( codei );
       Standard_Integer ipcode = ( codej | codei );
       if ( codej == IOR_UNDEF ) { // previous segment was tangency
 	    if ( IntLinePar(i) > IntLinePar (j) ) 
@@ -1546,10 +1543,12 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
   }
   
   //=======================================
+
+
   // Split edges in the wire by intersection points and fill vertices array
   TopTools_SequenceOfShape IntVertices;
   wire = SplitWire ( wire, IntEdgeInd, IntEdgePar, IntVertices, 
-		     SegmentCodes, isCutByU, cutIndex );
+		     aNewSegCodes, isCutByU, cutIndex );
   
   // add all data to input arrays
   for ( i=1; i <= IntLinePar.Length(); i++ ) {
@@ -1683,15 +1682,20 @@ void ShapeFix_ComposeShell::SplitByLine (ShapeFix_SequenceOfWireSegment &wires,
     // set patch indices
     DefinePatch ( seg, IOR_UNDEF, isCutByU, cutIndex );
     if ( ! isCutByU ) {
-      seg.DefineIUMin ( 1, GetPatchIndex ( SplitLinePar(i-1)+::Precision::PConfusion(),
-					   myGrid->UJointValues(), myUClosed ) );
-      seg.DefineIUMax ( 1, GetPatchIndex ( SplitLinePar(i)-::Precision::PConfusion(),
+      Standard_Real shiftU = 
+        (myClosedMode && myUClosed ? ShapeAnalysis::AdjustToPeriod(SplitLinePar(i-1) -TOLINT, myGrid->UJointValue(1), myGrid->UJointValue(2)) : 0.);
+      Standard_Real aPar = SplitLinePar(i-1) + shiftU;
+
+      seg.DefineIUMin ( 1, GetPatchIndex ( aPar+::Precision::PConfusion(), myGrid->UJointValues(), myUClosed ) );
+      seg.DefineIUMax ( 1, GetPatchIndex ( aPar-::Precision::PConfusion(),
 					   myGrid->UJointValues(), myUClosed ) + 1 );
     }
     else {
-      seg.DefineIVMin ( 1, GetPatchIndex ( SplitLinePar(i-1)+::Precision::PConfusion(),
+      Standard_Real shiftV = (myClosedMode && myVClosed ? ShapeAnalysis::AdjustToPeriod(SplitLinePar(i-1) -TOLINT, myGrid->VJointValue(1), myGrid->VJointValue(2)) : 0.);
+      Standard_Real aPar = SplitLinePar(i-1) + shiftV;
+      seg.DefineIVMin ( 1, GetPatchIndex ( aPar+::Precision::PConfusion(),
 					   myGrid->VJointValues(), myVClosed ) );
-      seg.DefineIVMax ( 1, GetPatchIndex ( SplitLinePar(i)-::Precision::PConfusion(),
+      seg.DefineIVMax ( 1, GetPatchIndex ( aPar-::Precision::PConfusion(),
 					   myGrid->VJointValues(), myVClosed ) + 1 );
     }
 				 
@@ -1725,10 +1729,79 @@ void ShapeFix_ComposeShell::SplitByGrid (ShapeFix_SequenceOfWireSegment &seqw)
   BRepTools::UVBounds(myFace,Uf,Ul,Vf,Vl);
   Standard_Real Umin,Umax,Vmin,Vmax;
   myGrid->Bounds(Umin,Umax,Vmin,Vmax);
-  Standard_Real pprec = ::Precision::PConfusion();
-  
+
+  //value of precision to define number of patch should be the same as used in the definitin position of point realtively to seam edge (TOLINT)
+  Standard_Real pprec = TOLINT;//::Precision::PConfusion();
+   Standard_Integer i = 1;
+  if(myClosedMode)
+  {
+    //for closed mode when only one patch exist and location of the splitting line is coinsident with first joint value
+    //Therefore in this case it is necessary to move all wire segments in the range of the patch between first and last joint
+    //values. Then all wire segments are lie between -period and period in order to have valid split ranges after splitting.
+    //Because for closed mode cut index always equal to 1 and parts of segments after splitting always should have index either (0,1) or (1,2). 
+       
+    for ( i=1; i <= seqw.Length(); i++ ) 
+    {
+      ShapeFix_WireSegment &wire = seqw(i);
+
+      TopoDS_Shape atmpF = myFace.EmptyCopied();
+      BRep_Builder aB;
+      atmpF.Orientation(TopAbs_FORWARD);
+      aB.Add(atmpF, wire.WireData()->Wire());
+      Standard_Real Uf1,Ul1,Vf1,Vl1;
+      ShapeAnalysis::GetFaceUVBounds(TopoDS::Face(atmpF),Uf1,Ul1,Vf1,Vl1);
+
+      //for closed mode it is necessary to move wire segment in the interval defined by first and last grid UV values 
+      Standard_Real shiftU = (myClosedMode && myUClosed ? ShapeAnalysis::AdjustToPeriod(Ul1 -pprec, myGrid->UJointValue(1), myGrid->UJointValue(2)) : 0.);
+      Standard_Real shiftV = (myClosedMode && myVClosed ? ShapeAnalysis::AdjustToPeriod(Vl1 -pprec, myGrid->VJointValue(1), myGrid->VJointValue(2)) : 0.);
+      Uf1 += shiftU;
+      Ul1 += shiftU;
+      Vf1 += shiftV;
+      Vl1 += shiftV;
+      // limit patch indices to be in range of grid (extended for periodic) (0, 2)
+      //in same cases for example trj4_pm2-ug-203.stp (entity #8024) wire in 2D space has length greater then period
+      Standard_Integer iumin = Max(0,GetPatchIndex ( Uf1+pprec, myGrid->UJointValues(), myUClosed ));
+      Standard_Integer iumax = GetPatchIndex ( Ul1-pprec, myGrid->UJointValues(), myUClosed ) + 1;
+
+
+      for ( Standard_Integer j=1; j <= wire.NbEdges(); j++ ) {
+        wire.DefineIUMin ( j, iumin );
+        wire.DefineIUMax ( j, iumax );
+      }
+
+      Standard_Integer ivmin = Max(0,GetPatchIndex ( Vf1+pprec, myGrid->VJointValues(), myVClosed ));
+      Standard_Integer ivmax = GetPatchIndex ( Vl1-pprec, myGrid->VJointValues(), myVClosed ) + 1;
+
+      for ( Standard_Integer j=1; j <= wire.NbEdges(); j++ ) {
+        wire.DefineIVMin ( j, ivmin );
+        wire.DefineIVMax ( j, ivmax );
+      }
+    }
+  }
+  else
+  {
+    // limit patch indices to be in range of grid (extended for periodic)
+    Standard_Integer iumin = GetPatchIndex ( Uf+pprec, myGrid->UJointValues(), myUClosed );
+    Standard_Integer iumax = GetPatchIndex ( Ul-pprec, myGrid->UJointValues(), myUClosed ) + 1;
+    for ( i=1; i <= seqw.Length(); i++ ) {
+      ShapeFix_WireSegment &wire = seqw(i);
+      for ( Standard_Integer j=1; j <= wire.NbEdges(); j++ ) {
+        wire.DefineIUMin ( j, iumin );
+        wire.DefineIUMax ( j, iumax );
+      }
+    }
+    Standard_Integer ivmin = GetPatchIndex ( Vf+pprec, myGrid->VJointValues(), myVClosed );
+    Standard_Integer ivmax = GetPatchIndex ( Vl-pprec, myGrid->VJointValues(), myVClosed ) + 1;
+    for ( i=1; i <= seqw.Length(); i++ ) {
+      ShapeFix_WireSegment &wire = seqw(i);
+      for ( Standard_Integer j=1; j <= wire.NbEdges(); j++ ) {
+        wire.DefineIVMin ( j, ivmin );
+        wire.DefineIVMax ( j, ivmax );
+      }
+    }
+  }
   // split by u lines
-  Standard_Integer i; // svv #1
+
   for ( i = ( myUClosed ? 1 : 2 ); i <= myGrid->NbUPatches(); i++ ) {
     gp_Pnt2d pos ( myGrid->UJointValue(i), 0. ); // 0. - for infinite ranges: myGrid->VJointValue(1) ;
     gp_Lin2d line ( pos, gp_Dir2d ( 0., 1. ) );
@@ -1737,15 +1810,15 @@ void ShapeFix_ComposeShell::SplitByGrid (ShapeFix_SequenceOfWireSegment &seqw)
       Standard_Real X = pos.X();
       Standard_Real sh = ShapeAnalysis::AdjustToPeriod(X,Uf, Uf+period);
       for( ; X+sh <= Ul+pprec; sh += period ) {
-	gp_Lin2d ln = line.Translated(gp_Vec2d(sh,0));
-	Standard_Integer cutIndex = GetPatchIndex ( X+sh+pprec, myGrid->UJointValues(), myUClosed );
-	SplitByLine ( seqw, ln, Standard_True, cutIndex );
+        gp_Lin2d ln = line.Translated(gp_Vec2d(sh,0));
+        Standard_Integer cutIndex = GetPatchIndex ( X+sh+pprec, myGrid->UJointValues(), myUClosed );
+        SplitByLine ( seqw, ln, Standard_True, cutIndex );
       }   
     }
     else
       SplitByLine ( seqw, line, Standard_True, i );
   }
-  
+
   // split by v lines
   for ( i = ( myVClosed ? 1 : 2 ); i <= myGrid->NbVPatches(); i++ ) {
     gp_Pnt2d pos ( 0., myGrid->VJointValue(i) );
@@ -1755,34 +1828,15 @@ void ShapeFix_ComposeShell::SplitByGrid (ShapeFix_SequenceOfWireSegment &seqw)
       Standard_Real Y = pos.Y();
       Standard_Real sh = ShapeAnalysis::AdjustToPeriod(Y,Vf, Vf+period);
       for( ; Y+sh <= Vl+pprec; sh += period) {
-	gp_Lin2d ln = line.Translated(gp_Vec2d(0,sh));
-	Standard_Integer cutIndex = GetPatchIndex ( Y+sh+pprec, myGrid->VJointValues(), myVClosed );
-	SplitByLine ( seqw, ln, Standard_False, cutIndex );
+        gp_Lin2d ln = line.Translated(gp_Vec2d(0,sh));
+        Standard_Integer cutIndex = GetPatchIndex ( Y+sh+pprec, myGrid->VJointValues(), myVClosed );
+        SplitByLine ( seqw, ln, Standard_False, cutIndex );
       }   
     }
     else 
       SplitByLine ( seqw, line, Standard_False, i );
   }
 
-  // limit patch indices to be in range of grid (extended for periodic)
-  Standard_Integer iumin = GetPatchIndex ( Uf+pprec, myGrid->UJointValues(), myUClosed );
-  Standard_Integer iumax = GetPatchIndex ( Ul-pprec, myGrid->UJointValues(), myUClosed ) + 1;
-  for ( i=1; i <= seqw.Length(); i++ ) {
-    ShapeFix_WireSegment &wire = seqw(i);
-    for ( Standard_Integer j=1; j <= wire.NbEdges(); j++ ) {
-      wire.DefineIUMin ( j, iumin );
-      wire.DefineIUMax ( j, iumax );
-    }
-  }
-  Standard_Integer ivmin = GetPatchIndex ( Vf+pprec, myGrid->VJointValues(), myVClosed );
-  Standard_Integer ivmax = GetPatchIndex ( Vl-pprec, myGrid->VJointValues(), myVClosed ) + 1;
-  for ( i=1; i <= seqw.Length(); i++ ) {
-    ShapeFix_WireSegment &wire = seqw(i);
-    for ( Standard_Integer j=1; j <= wire.NbEdges(); j++ ) {
-      wire.DefineIVMin ( j, ivmin );
-      wire.DefineIVMax ( j, ivmax );
-    }
-  }
 }
     
 
@@ -2037,15 +2091,15 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
         if ( anOr == TopAbs_FORWARD ) reverse = Standard_True;
         index = i;
 	seg.GetPatchIndex ( 1, iumin, iumax, ivmin, ivmax );
+ 
 	misoriented = Standard_False;
 	dsu = dsv = 0.;
         break;
       }
 
       // check whether current segment is on the same patch with previous
-      Standard_Integer sp = ( myClosedMode || // no indexation in closed mode
-			      IsSamePatch ( seg, myGrid->NbUPatches(), myGrid->NbVPatches(), 
-					    iumin, iumax, ivmin, ivmax ) );
+      Standard_Integer sp = IsSamePatch ( seg, myGrid->NbUPatches(), myGrid->NbVPatches(), 
+					    iumin, iumax, ivmin, ivmax );
 
       // not same patch has lowest priority
       if ( ! sp && ( canBeClosed || ( index && samepatch ) ) ) continue;
@@ -2151,7 +2205,13 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
       else if ( samepatch ) { // extend patch indices
 	    IsSamePatch ( seg, myGrid->NbUPatches(), myGrid->NbVPatches(), 
 		      iumin, iumax, ivmin, ivmax, Standard_True );
-      }
+       }
+
+      //for closed mode in case if current segment is seam segment it is necessary to detect crossing seam edge 
+      //in order to have possibility to take candidate from other patch
+      if(myClosedMode )
+          seg.GetPatchIndex ( 1, iumin, iumax, ivmin, ivmax );
+
 //      TopAbs_Orientation or = seg.Orientation();
       if ( ! reverse ) sbwd->Add ( seg.WireData() );
       else {

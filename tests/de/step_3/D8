@@ -1,5 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR25013 Linux: Error : 1 differences with reference data found" 
+puts "TODO OCC26973 Windows: Error : 1 differences with reference data found"
 
 set filename trj6_pm4-hc-214.stp
 
@@ -7,9 +7,9 @@ set ref_data {
 DATA        : Faulties = 0  ( 20 )  Warnings = 0  ( 60 )  Summary  = 0  ( 80 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 21  ( 557 )  Summary  = 21  ( 557 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 98  ( 98 )  Shell    = 98  ( 98 )  Face     = 1506  ( 1506 )   Summary  = 9262  ( 9257 )
+NBSHAPES    : Solid    = 98  ( 98 )  Shell    = 98  ( 98 )  Face     = 1506  ( 1506 )   Summary  = 9261  ( 9257 )
 STATSHAPE   : Solid    = 272  ( 272 )  Shell    = 272  ( 272 )  Face     = 3216  ( 3216 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3315  ( 3311 )
-TOLERANCE   : MaxTol   =   0.9562231856  (      3.3196868 )  AvgTol   =  0.0007127405962  (  0.003722159881 )
+TOLERANCE   : MaxTol   =   0.9562231856  (      3.3196868 )  AvgTol   =  0.0007127401639  (  0.003722159846 )
 LABELS      : N0Labels = 230  ( 230 )  N1Labels = 1909  ( 1909 )  N2Labels = 0  ( 0 )   TotalLabels = 2139  ( 2139 )   NameLabels = 633  ( 633 )   ColorLabels = 1506  ( 1506 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 98  ( 98 )  Volume   = 98  ( 98 )  Area     = 98  ( 98 )
 NCOLORS     : NColors  = 6  ( 6 )
