@@ -68,6 +68,17 @@ public:
   //! 0 - means FALSE.
   Standard_EXPORT const TDataStd_ListOfByte& List() const;
   
+  //! Inserts the <value> before the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertBefore (const Standard_Integer index, const Standard_Boolean before_value);
+  
+  //! Inserts the <value> after the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertAfter (const Standard_Integer index, const Standard_Boolean after_value);
+  
+  //! Removes a value at <index> position.
+  Standard_EXPORT Standard_Boolean Remove (const Standard_Integer index);
+  
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;

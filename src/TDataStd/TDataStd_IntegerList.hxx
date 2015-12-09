@@ -61,11 +61,22 @@ public:
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT Standard_Boolean InsertBefore (const Standard_Integer value, const Standard_Integer before_value);
   
+  //! Inserts the <value> before the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertBeforeByIndex (const Standard_Integer index, const Standard_Integer before_value);
+  
   //! Inserts the <value> after the first meet of <after_value>.
   Standard_EXPORT Standard_Boolean InsertAfter (const Standard_Integer value, const Standard_Integer after_value);
   
+  //! Inserts the <value> after the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertAfterByIndex (const Standard_Integer index, const Standard_Integer after_value);
+
   //! Removes the first meet of the <value>.
   Standard_EXPORT Standard_Boolean Remove (const Standard_Integer value);
+  
+  //! Removes a value at <index> position.
+  Standard_EXPORT Standard_Boolean RemoveByIndex (const Standard_Integer index);
   
   Standard_EXPORT void Clear();
   

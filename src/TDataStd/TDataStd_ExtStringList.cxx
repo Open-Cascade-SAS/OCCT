@@ -118,6 +118,29 @@ Standard_Boolean TDataStd_ExtStringList::InsertBefore(const TCollection_Extended
 }
 
 //=======================================================================
+//function : InsertBefore
+//purpose  : Inserts the <value> before the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_ExtStringList::InsertBefore(const Standard_Integer index,
+                                                      const TCollection_ExtendedString& before_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDataStd_ListIteratorOfListOfExtendedString itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertBefore(before_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
+//=======================================================================
 //function : InsertAfter
 //purpose  : 
 //=======================================================================
@@ -138,6 +161,29 @@ Standard_Boolean TDataStd_ExtStringList::InsertAfter(const TCollection_ExtendedS
 }
 
 //=======================================================================
+//function : InsertAfter
+//purpose  : Inserts the <value> after the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_ExtStringList::InsertAfter(const Standard_Integer index,
+                                                     const TCollection_ExtendedString& after_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDataStd_ListIteratorOfListOfExtendedString itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertAfter(after_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
+//=======================================================================
 //function : Remove
 //purpose  : 
 //=======================================================================
@@ -154,6 +200,28 @@ Standard_Boolean TDataStd_ExtStringList::Remove(const TCollection_ExtendedString
     }
   }
   return Standard_False;
+}
+
+//=======================================================================
+//function : Remove
+//purpose  : Removes a value at <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_ExtStringList::Remove(const Standard_Integer index)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDataStd_ListIteratorOfListOfExtendedString itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (index == i)
+    {
+      Backup();
+      myList.Remove(itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
 }
 
 //=======================================================================

@@ -134,6 +134,74 @@ const TDataStd_ListOfByte& TDataStd_BooleanList::List() const
 }
 
 //=======================================================================
+//function : InsertBefore
+//purpose  : Inserts the <value> before the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_BooleanList::InsertBefore(const Standard_Integer index,
+                                                    const Standard_Boolean before_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDataStd_ListIteratorOfListOfByte itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertBefore(before_value ? 1 : 0, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
+//=======================================================================
+//function : InsertAfter
+//purpose  : Inserts the <value> after the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_BooleanList::InsertAfter(const Standard_Integer index,
+                                                   const Standard_Boolean after_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDataStd_ListIteratorOfListOfByte itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertAfter(after_value ? 1 : 0, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
+//=======================================================================
+//function : Remove
+//purpose  : Removes the <value> at the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_BooleanList::Remove(const Standard_Integer index)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDataStd_ListIteratorOfListOfByte itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.Remove(itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
+//=======================================================================
 //function : ID
 //purpose  : 
 //=======================================================================

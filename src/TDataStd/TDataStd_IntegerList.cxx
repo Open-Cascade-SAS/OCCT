@@ -116,6 +116,27 @@ Standard_Boolean TDataStd_IntegerList::InsertBefore(const Standard_Integer value
   return Standard_False;
 }
 
+// Inserts the <value> before the <index> position.
+// The indices start with 1 .. Extent().
+Standard_Boolean TDataStd_IntegerList::InsertBeforeByIndex (const Standard_Integer index,
+                                                            const Standard_Integer before_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TColStd_ListIteratorOfListOfInteger itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertBefore(before_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
 //=======================================================================
 //function : InsertAfter
 //purpose  : 
@@ -135,6 +156,27 @@ Standard_Boolean TDataStd_IntegerList::InsertAfter(const Standard_Integer value,
   }
   return Standard_False;
 }
+  
+// Inserts the <value> after the <index> position.
+// The indices start with 1 .. Extent().
+Standard_Boolean TDataStd_IntegerList::InsertAfterByIndex (const Standard_Integer index,
+                                                           const Standard_Integer after_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TColStd_ListIteratorOfListOfInteger itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertAfter(after_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
 
 //=======================================================================
 //function : Remove
@@ -153,6 +195,28 @@ Standard_Boolean TDataStd_IntegerList::Remove(const Standard_Integer value)
     }
   }
   return Standard_False;
+}
+
+//=======================================================================
+//function : Remove
+//purpose  : Removes the <value> at the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_IntegerList::RemoveByIndex (const Standard_Integer index)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TColStd_ListIteratorOfListOfInteger itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.Remove(itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
 }
 
 //=======================================================================

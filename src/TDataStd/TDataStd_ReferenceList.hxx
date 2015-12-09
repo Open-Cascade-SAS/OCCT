@@ -62,11 +62,22 @@ public:
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT Standard_Boolean InsertBefore (const TDF_Label& value, const TDF_Label& before_value);
   
+  //! Inserts the label before the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertBefore (const Standard_Integer index, const TDF_Label& before_value);
+  
   //! Inserts the <value> after the first meet of <after_value>.
   Standard_EXPORT Standard_Boolean InsertAfter (const TDF_Label& value, const TDF_Label& after_value);
   
+  //! Inserts the label after the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertAfter (const Standard_Integer index, const TDF_Label& after_value);
+  
   //! Removes the first meet of the <value>.
   Standard_EXPORT Standard_Boolean Remove (const TDF_Label& value);
+  
+  //! Removes a label at "index" position.
+  Standard_EXPORT Standard_Boolean Remove (const Standard_Integer index);
   
   Standard_EXPORT void Clear();
   

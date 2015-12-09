@@ -117,6 +117,27 @@ Standard_Boolean TDataStd_ReferenceList::InsertBefore(const TDF_Label& value,
   return Standard_False;
 }
 
+// Inserts the label before the <index> position.
+// The indices start with 1 .. Extent().
+Standard_Boolean TDataStd_ReferenceList::InsertBefore (const Standard_Integer index,
+                                                       const TDF_Label& before_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDF_ListIteratorOfLabelList itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertBefore(before_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
 //=======================================================================
 //function : InsertAfter
 //purpose  : 
@@ -137,6 +158,27 @@ Standard_Boolean TDataStd_ReferenceList::InsertAfter(const TDF_Label& value,
   return Standard_False;
 }
 
+// Inserts the label after the <index> position.
+// The indices start with 1 .. Extent().
+Standard_Boolean TDataStd_ReferenceList::InsertAfter (const Standard_Integer index,
+                                                      const TDF_Label& after_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDF_ListIteratorOfLabelList itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertAfter(after_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
 //=======================================================================
 //function : Remove
 //purpose  : 
@@ -154,6 +196,28 @@ Standard_Boolean TDataStd_ReferenceList::Remove(const TDF_Label& value)
     }
   }
   return Standard_False;
+}
+
+//=======================================================================
+//function : Remove
+//purpose  : Removes a label at the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_ReferenceList::Remove (const Standard_Integer index)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TDF_ListIteratorOfLabelList itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.Remove(itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
 }
 
 //=======================================================================

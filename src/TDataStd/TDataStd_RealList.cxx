@@ -116,6 +116,27 @@ Standard_Boolean TDataStd_RealList::InsertBefore(const Standard_Real value,
   return Standard_False;
 }
 
+// Inserts the <value> before the <index> position.
+// The indices start with 1 .. Extent().
+Standard_Boolean TDataStd_RealList::InsertBeforeByIndex (const Standard_Integer index,
+                                                         const Standard_Real before_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TColStd_ListIteratorOfListOfReal itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertBefore(before_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
 //=======================================================================
 //function : InsertAfter
 //purpose  : 
@@ -136,6 +157,27 @@ Standard_Boolean TDataStd_RealList::InsertAfter(const Standard_Real value,
   return Standard_False;
 }
 
+// Inserts the <value> after the <index> position.
+// The indices start with 1 .. Extent().
+Standard_Boolean TDataStd_RealList::InsertAfterByIndex (const Standard_Integer index,
+                                                        const Standard_Real after_value)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TColStd_ListIteratorOfListOfReal itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.InsertAfter(after_value, itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
+}
+
 //=======================================================================
 //function : Remove
 //purpose  : 
@@ -153,6 +195,28 @@ Standard_Boolean TDataStd_RealList::Remove(const Standard_Real value)
     }
   }
   return Standard_False;
+}
+
+//=======================================================================
+//function : Remove
+//purpose  : Removes a value at the <index> position.
+//=======================================================================
+Standard_Boolean TDataStd_RealList::RemoveByIndex (const Standard_Integer index)
+{
+  Standard_Integer i(1);
+  Standard_Boolean found(Standard_False);
+  TColStd_ListIteratorOfListOfReal itr(myList);
+  for (; itr.More(); itr.Next(), ++i)
+  {
+    if (i == index)
+    {
+      Backup();
+      myList.Remove(itr);
+      found = Standard_True;
+      break;
+    }
+  }
+  return found;
 }
 
 //=======================================================================

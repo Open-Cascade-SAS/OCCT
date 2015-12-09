@@ -62,11 +62,22 @@ public:
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT Standard_Boolean InsertBefore (const TCollection_ExtendedString& value, const TCollection_ExtendedString& before_value);
   
+  //! Inserts the <value> before the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertBefore (const Standard_Integer index, const TCollection_ExtendedString& before_value);
+  
   //! Inserts the <value> after the first meet of <after_value>.
   Standard_EXPORT Standard_Boolean InsertAfter (const TCollection_ExtendedString& value, const TCollection_ExtendedString& after_value);
   
+  //! Inserts the <value> after the <index> position.
+  //! The indices start with 1 .. Extent().
+  Standard_EXPORT Standard_Boolean InsertAfter (const Standard_Integer index, const TCollection_ExtendedString& after_value);
+  
   //! Removes the first meet of the <value>.
   Standard_EXPORT Standard_Boolean Remove (const TCollection_ExtendedString& value);
+  
+  //! Removes a value at <index> position.
+  Standard_EXPORT Standard_Boolean Remove (const Standard_Integer index);
   
   Standard_EXPORT void Clear();
   
