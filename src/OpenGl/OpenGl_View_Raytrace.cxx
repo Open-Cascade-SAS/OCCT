@@ -807,8 +807,8 @@ Standard_Boolean OpenGl_View::addRaytraceTriangleStripArray (OpenGl_TriangleSet&
   {
     for (Standard_Integer aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2; ++aVert, aCW = (aCW + 1) % 2)
     {
-      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + aCW ? 1 : 0),
-                                            theIndices->Index (aVert + aCW ? 0 : 1),
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + (aCW ? 1 : 0)),
+                                            theIndices->Index (aVert + (aCW ? 0 : 1)),
                                             theIndices->Index (aVert + 2),
                                             theMatID));
     }
@@ -817,8 +817,8 @@ Standard_Boolean OpenGl_View::addRaytraceTriangleStripArray (OpenGl_TriangleSet&
   {
     for (Standard_Integer aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2; ++aVert, aCW = (aCW + 1) % 2)
     {
-      theSet.Elements.push_back (BVH_Vec4i (aVert + aCW ? 1 : 0,
-                                            aVert + aCW ? 0 : 1,
+      theSet.Elements.push_back (BVH_Vec4i (aVert + (aCW ? 1 : 0),
+                                            aVert + (aCW ? 0 : 1),
                                             aVert + 2,
                                             theMatID));
     }

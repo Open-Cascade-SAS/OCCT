@@ -1,0 +1,27 @@
+puts "============"
+puts "CR26975"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization, TKOpenGl - handle triangle strips correctly within Ray-Tracing core"
+##########################################################################################
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vraytrace 0
+vdrawparray s trianglestrips v 0 0 0 n 0 0 1 v 0 2 0 n 0 0 1 v 2 0 0 n 0 0 1 v 2 2 0 n 0 0 1
+vfit
+
+vdump $imagedir/${casename}_rt_off.png
+
+vraytrace 1
+
+vdump $imagedir/${casename}_rt_on.png
+
+set color  [vreadpixel 250 250 rgb name]
+puts $color
+if { $color == "BLACK" } {
+    puts "ERROR: CR26975 is reproduced. Triangle strips incorrect within Ray-Tracing core."
+}
