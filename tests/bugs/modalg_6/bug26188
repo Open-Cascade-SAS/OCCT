@@ -1,0 +1,18 @@
+puts "============"
+puts "CR26188"
+puts "==========="
+puts ""
+###############################################################################
+# Incorrect PCurve creation
+###############################################################################
+
+restore [locate_data_file OCC26196-Face.brep] a
+explode a e
+tcopy a_1 ac
+bhaspc ac a do
+mk2dcurve cc ac a
+
+#v2d2
+view 1 -2D-  728 20 400 400
+2dfit
+xwd ${imagedir}/${test_image}.png
