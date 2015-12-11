@@ -236,12 +236,7 @@ void StepToTopoDS_TranslateFace::Init
 //  Standard_Boolean fautcoudre =
 //    ( (NbBnd == 2) && (GeomSurf->IsUClosed() || GeomSurf->IsVClosed()) );
 
-  Standard_Boolean isExistOuter = Standard_False;
-  for (Standard_Integer i = 1; i <= NbBnd; i++) {
-    FaceBound = FS->BoundsValue(i);
-    if (FaceBound->IsKind(STANDARD_TYPE(StepShape_FaceOuterBound)))
-      isExistOuter = Standard_True;
-  }
+  
   for (Standard_Integer i = 1; i <= NbBnd; i ++) {
 
 #ifdef OCCT_DEBUG
@@ -265,13 +260,14 @@ void StepToTopoDS_TranslateFace::Init
       if (GeomSurf->IsKind (STANDARD_TYPE(Geom_SphericalSurface)) ||
           GeomSurf->IsKind (STANDARD_TYPE(Geom_BSplineSurface)) )
       {
-        if (!isExistOuter || FaceBound->IsKind(STANDARD_TYPE(StepShape_FaceOuterBound))) {
+        if (NbBnd ==1 || FaceBound->IsKind(STANDARD_TYPE(StepShape_FaceOuterBound))) {
           BRepBuilderAPI_MakeFace mf (GeomSurf, Precision());
           for (TopoDS_Iterator it(mf); it.More(); it.Next()) 
             B.Add (F, it.Value());
-        }
+        
 
         continue;
+        }
       }
       
       if (//GeomSurf->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||

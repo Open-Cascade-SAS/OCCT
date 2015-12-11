@@ -1,0 +1,29 @@
+puts "================"
+puts "OCC24595"
+puts "================"
+puts ""
+#######################################################################################
+# STEP import missing surfaces
+#######################################################################################
+
+set BugNumber OCC24595
+stepread [locate_data_file bug24595_281390.stp] a *
+explode a_1 f
+set mlog [nbshapes a_1_3]
+
+set status 1
+
+if (![regexp {WIRE[ ]+: 1} $mlog]) {
+  set status 0
+}
+
+set mlog [bounding a_1_3]
+if (![regexp {(-7.26623440743389) (-8.0984932752388978) (-150.09849327523889) (7.2662344074338865) (8.0984932752388978) (-141.90150672476111)} $mlog]) {
+  set status 0
+}                        
+                                
+if {$status == 1} {
+  puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}

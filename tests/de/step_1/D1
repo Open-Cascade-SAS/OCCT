@@ -1,14 +1,13 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-
 set filename trj9_b2-ai-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 38 )  Summary  = 8  ( 38 )
-CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 221  ( 221 )   Summary  = 1465  ( 1463 )
-STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 221  ( 221 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 610  ( 610 )
-TOLERANCE   : MaxTol   = 0.004950186716  ( 0.004950186717 )  AvgTol   =  0.0003553188051  (  0.0003621212346 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 38 )  Summary  = 7  ( 38 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 221  ( 221 )   Summary  = 1460  ( 1459 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 221  ( 221 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 608  ( 608 )
+TOLERANCE   : MaxTol   = 0.004950137219  ( 0.004950137216 )  AvgTol   =  0.0003566630364  (  0.0003615446964 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
 NCOLORS     : NColors  = 1  ( 1 )
