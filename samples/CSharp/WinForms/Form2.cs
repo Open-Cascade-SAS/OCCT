@@ -638,6 +638,8 @@ namespace IE_WinForms
     public void DeleteObjects()
     {
       myOCCTProxy.EraseObjects();
+      IE_WinForms.Form1 parent = (IE_WinForms.Form1)this.ParentForm;
+      parent.SelectionChanged();
     }
     public void ImportModel(IE_WinForms.ModelFormat format)
     {

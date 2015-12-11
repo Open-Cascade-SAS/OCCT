@@ -402,6 +402,7 @@ namespace IE_WPF_D3D
     public void Delete ()
     {
       View.EraseObjects ();
+      SelectionChanged ();
     }
 
     protected void MultiDragEvent (int x, int y, int theState)

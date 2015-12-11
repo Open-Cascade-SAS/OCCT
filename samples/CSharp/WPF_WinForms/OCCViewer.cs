@@ -481,6 +481,7 @@ namespace IE_WPF_WinForms
         public void Delete()
         {
             View.EraseObjects();
+            SelectionChanged();
         }
 
         public void OnKeyDown( System.Windows.Input.Key theKey )
