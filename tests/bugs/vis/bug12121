@@ -28,7 +28,7 @@ set y_edge_new 240
 
 set x_wire_obj 298
 set y_wire_obj 209
-set x_wire_new 55
+set x_wire_new 56
 set y_wire_new 236
 
 set x_face_obj 169
