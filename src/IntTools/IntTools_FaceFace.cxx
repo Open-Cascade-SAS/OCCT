@@ -875,9 +875,9 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     L = aWLine;
 
     //
-    if(!myListOfPnts.IsEmpty()) {
-      bAvoidLineConstructor = Standard_True;
-    }
+    //if(!myListOfPnts.IsEmpty()) {
+    //  bAvoidLineConstructor = Standard_True;
+    //}
 
     Standard_Integer nbp = aWLine->NbPnts();
     const IntSurf_PntOn2S& p1 = aWLine->Point(1);

@@ -104,7 +104,7 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   theCommands.Add("bsection", "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]", 
                                                       __FILE__, bsection, g);
   //
-  theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2]",
+  theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2] [-p u1 v1 u2 v2]",
                                                       __FILE__, bopcurves, g);
   theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni]", 
                   __FILE__, mkvolume , g);
@@ -562,29 +562,44 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   Standard_Boolean aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
   Standard_Integer i, aNbCurves, aNbPoints;
   Standard_Real anAppTol, aTolR;
+  IntSurf_ListOfPntOn2S aListOfPnts;
   TCollection_AsciiString aNm("c_"), aNp("p_");
   //
   anAppTol = 0.0000001;
   aToApproxC3d = Standard_True;
   aToApproxC2dOnS1 = Standard_False;
   aToApproxC2dOnS2 = Standard_False;
+
   //
-  if (n > 3) {
-    if (!strcasecmp(a[3],"-2d")) {
+  for(Standard_Integer i = 3; i < n; i++)
+  {
+    if (!strcasecmp(a[i],"-2d")) {
       aToApproxC2dOnS1 = Standard_True;
       aToApproxC2dOnS2 = Standard_True;
     } 
-    else if (!strcasecmp(a[3],"-2d1")) {
+    else if (!strcasecmp(a[i],"-2d1")) {
       aToApproxC2dOnS1 = Standard_True;
     }
-    else if (!strcasecmp(a[3],"-2d2")) {
+    else if (!strcasecmp(a[i],"-2d2")) {
       aToApproxC2dOnS2 = Standard_True;
     }
+    else if (!strcasecmp(a[i],"-p")) {
+      IntSurf_PntOn2S aPt;
+      const Standard_Real aU1 = Draw::Atof(a[++i]);
+      const Standard_Real aV1 = Draw::Atof(a[++i]);
+      const Standard_Real aU2 = Draw::Atof(a[++i]);
+      const Standard_Real aV2 = Draw::Atof(a[++i]);
+
+      aPt.SetValue(aU1, aV1, aU2, aV2);
+      aListOfPnts.Append(aPt);
+    }
     else {
-      di << "Wrong key. To build 2d curves use: bopcurves F1 F2 -2d/-2d1/-2d2 \n";
+      di << "Wrong key. To build 2d curves use: bopcurves F1 F2 [-2d/-2d1/-2d2] [-p u1 v1 u2 v2]\n";
       return 1;
     }
+
   }
+
   //
   IntTools_FaceFace aFF;
   //
@@ -592,6 +607,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
                      aToApproxC2dOnS1,
                      aToApproxC2dOnS2,
                      anAppTol);
+  aFF.SetList(aListOfPnts);
   //
   aFF.Perform (aF1, aF2);
   //

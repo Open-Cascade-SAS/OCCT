@@ -448,8 +448,9 @@ static Handle(IntPatch_WLine)
       Standard_Integer aHashIdx = 
         Standard_Integer(anIdx * theWLine->NbPnts() / 9);
 
-      //Store this point.
-      aNewPointsHash(aHashIdx) = 0;
+      //Vertex must be stored as VERTEX (HASH = -1)
+      if (aNewPointsHash(aHashIdx) != -1)
+        aNewPointsHash(aHashIdx) = 0;
     }
   }
 
