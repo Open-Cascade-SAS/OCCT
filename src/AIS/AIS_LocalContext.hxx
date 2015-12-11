@@ -356,6 +356,10 @@ public:
   
   Standard_EXPORT Handle(SelectMgr_EntityOwner) FindSelectedOwnerFromShape (const TopoDS_Shape& aShape) const;
 
+  //! Iterates through all interactive objects of local context and activates selection modes
+  //! stored in local status
+  Standard_EXPORT void RestoreActivatedModes() const;
+
 
 
 

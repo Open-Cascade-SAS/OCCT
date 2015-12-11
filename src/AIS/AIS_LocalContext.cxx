@@ -534,6 +534,7 @@ void AIS_LocalContext::ActivateStandardMode(const TopAbs_ShapeEnum aType)
       myCTX->SelectionManager()->Activate(ItM.Key(),
 					  IMode,
 					  myMainVS);
+    ItM.Value()->AddSelectionMode (IMode);
   }
   
 }

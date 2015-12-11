@@ -1,0 +1,71 @@
+puts "============"
+puts "CR26945"
+puts "Visualization - selection does not work after closing one of local contexts in stack"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING QAcommands
+
+vinit
+vclear
+
+box b 1 1 1
+vdisplay b
+vfit
+vaspects b -setWidth 2
+
+set edge_x 380
+set edge_y 281
+set vert_x 379
+set vert_y 305
+set pick_face_x 250
+set pick_face_y 300
+set pick_vert_x 380
+set pick_vert_y 309
+
+# open local ctx with face selection enabled
+OCC26945_open 4
+vmoveto $pick_face_x $pick_face_y
+if {[vreadpixel $edge_x $edge_y name] != "CYAN1 1"} {
+  puts "ERROR: Can not select face in local context 1"
+}
+
+vmoveto 0 0
+
+# open local ctx with vertex selection enabled
+set aVertIdx [OCC26945_open 1]
+vmoveto $pick_vert_x $pick_vert_y
+if {[vreadpixel $vert_x $vert_y name] != "CYAN1 1"} {
+  puts "ERROR: Can not select vertex in local context 2"
+}
+
+vmoveto 0 0
+
+# open local ctx with edge selection enabled
+set anEdgeIdx [OCC26945_open 2]
+vmoveto $edge_x $edge_y
+if {[vreadpixel $edge_x $edge_y name] != "CYAN1 1"} {
+  puts "ERROR: Can not select edge in local context 3"
+}
+
+vmoveto 0 0
+
+# close local ctx with vertex selection enabled.
+# edge selection should be active.
+OCC26945_close $aVertIdx
+vmoveto $edge_x $edge_y
+if {[vreadpixel $edge_x $edge_y name] != "CYAN1 1"} {
+  puts "ERROR: Can not select edge after closing local context 2"
+}
+
+vmoveto 0 0
+
+# close local ctx with edge selection enabled.
+# face selection should be active.
+OCC26945_close $anEdgeIdx
+vmoveto $pick_face_x $pick_face_y
+if {[vreadpixel $edge_x $edge_y name] != "CYAN1 1"} {
+  puts "ERROR: Can not select face after closing local context 3"
+}
+
+set only_screen 1

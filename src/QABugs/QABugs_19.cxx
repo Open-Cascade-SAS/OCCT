@@ -4737,6 +4737,60 @@ static Standard_Integer BUC26658 (Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : OCC26945_open
+//purpose  : Opens local context and activates given standard selection mode
+//=======================================================================
+static Standard_Integer OCC26945_open (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
+    return 1;
+  }
+
+  if (theArgc < 2)
+  {
+    std::cout << "Not enough arguments. See usage:\n";
+    theDI.PrintHelp (theArgv[0]);
+    return 1;
+  }
+
+  const TopAbs_ShapeEnum aSelType = AIS_Shape::SelectionType (Draw::Atoi (theArgv[1]));
+  Standard_Integer aLocalCtxIdx = aCtx->OpenLocalContext();
+  aCtx->ActivateStandardMode (aSelType);
+  theDI << aLocalCtxIdx;
+
+  return 0;
+}
+
+//=======================================================================
+//function : OCC26945_close
+//purpose  : Closes local context with the id given
+//=======================================================================
+static Standard_Integer OCC26945_close (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
+    return 1;
+  }
+
+  if (theArgc < 2)
+  {
+    std::cout << "Not enough arguments. See usage:\n";
+    theDI.PrintHelp (theArgv[0]);
+    return 1;
+  }
+
+  const Standard_Integer aCtxToClose = Draw::Atoi (theArgv[1]);
+  aCtx->CloseLocalContext (aCtxToClose);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4833,6 +4887,15 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
 
   theCommands.Add ("BUC26658", "BUC26658 unexpected selection in the context using a selection filter", __FILE__, BUC26658, group);
+  theCommands.Add ("OCC26945_open",
+                   "OCC26945 selectionModeToActivate"
+                   "\n\t\t: Opens a new local context with selectionModeToActivate activated."
+                   "\n\t\t: Prints the ID of newely opened local context in case of success.",
+                   __FILE__, OCC26945_open, group);
+  theCommands.Add ("OCC26945_close",
+                   "OCC26945 localCtxToClose"
+                   "\n\t\t: Closes local context with the ID localCtxToClose",
+                   __FILE__, OCC26945_close, group);
   
   return;
 }

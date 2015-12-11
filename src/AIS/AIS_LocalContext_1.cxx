@@ -1565,3 +1565,19 @@ Handle(AIS_InteractiveObject) AIS_LocalContext::DetectedCurrentObject() const
 {
   return MoreDetected() ? myAISDetectedSeq(myAISCurDetected) : NULL;
 }
+
+//=======================================================================
+//function : RestoreActivatedModes
+//purpose  :
+//=======================================================================
+void AIS_LocalContext::RestoreActivatedModes() const
+{
+  for (AIS_DataMapOfSelStat::Iterator anIter (myActiveObjects); anIter.More(); anIter.Next())
+  {
+    const TColStd_ListOfInteger& anActivatedModes = anIter.Value()->SelectionModes();
+    for (TColStd_ListIteratorOfListOfInteger aModesIter (anActivatedModes); aModesIter.More(); aModesIter.Next())
+    {
+      mySM->Activate (anIter.Key(), aModesIter.Value(), myMainVS);
+    }
+  }
+}
