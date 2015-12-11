@@ -3220,8 +3220,15 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   }
   else
   {
-    anAISContext->Remove (anIO, Standard_False);
     aTexturedIO = new AIS_TexturedShape (DBRep::Get (theArgv[1]));
+
+    if (anIO->HasTransformation())
+    {
+      const gp_Trsf& aLocalTrsf = anIO->LocalTransformation();
+      aTexturedIO->SetLocalTransformation (aLocalTrsf);
+    }
+
+    anAISContext->Remove (anIO, Standard_False);
     GetMapOfAIS().UnBind1 (anIO);
     GetMapOfAIS().UnBind2 (aShapeName);
     GetMapOfAIS().Bind (aTexturedIO, aShapeName);
