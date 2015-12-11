@@ -18,6 +18,6 @@ baddtools b2
 bfillds
 bbop result 0
 
-set square 45.069
+checkprops result -s 45.069
 
 set 2dviewer 1

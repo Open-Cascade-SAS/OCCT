@@ -15,7 +15,7 @@ checkshape b
 bop a b
 bopsection result
 
-set length 19.8372
+checkprops result -l 19.8372
 
 set nbshapes_expected "
 Number of shapes in shape
