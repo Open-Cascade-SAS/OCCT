@@ -37,8 +37,10 @@ Standard_Type::Standard_Type (const char* theSystemName,
                               const char* theName,
                               Standard_Size theSize,
                               const Handle(Standard_Type)& theParent) :
-  mySystemName (copy_string (theSystemName)),
-  myName(theName), mySize(theSize), myParent(theParent)
+  mySystemName(copy_string (theSystemName)),
+  myName(copy_string (theName)), 
+  mySize(theSize), 
+  myParent(theParent)
 {
 }
 
@@ -127,4 +129,5 @@ Standard_Type::~Standard_Type ()
 
 //  cout << "Unregistering " << mySystemName << ": " << aRegistry.Extent() << endl;
   Standard::Free (mySystemName);
+  Standard::Free (myName);
 }

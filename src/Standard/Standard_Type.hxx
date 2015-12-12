@@ -57,7 +57,7 @@ public: \
 // forward declaration of type_instance class
 namespace opencascade {
   template <typename T>
-  class type_instance;
+  struct type_instance;
 }
 
 //! This class provides legacy interface (type descriptor) to run-time type
@@ -156,22 +156,18 @@ namespace opencascade {
 
   //! Template class providing instantiation of type descriptors as static
   //! variables (one per binary module). Having type descriptors defined as 
-  //! static variables is essential to ensure that everything gets initialized
-  //! during library loading and thus no concurrency occurs when type system
-  //! is accessed from multiple threads.
+  //! static variables is essential to ensure that descriptors are initialized
+  //! once and in correct order.
   template <typename T>
-  class type_instance
+  struct type_instance
   {
-    static Handle(Standard_Type) myInstance;
-  public:
     static const Handle(Standard_Type)& get ();
   };
 
   //! Specialization of type descriptor instance for void; returns null handle
   template <>
-  class type_instance<void>
+  struct type_instance<void>
   {
-  public:
     Standard_EXPORT static Handle(Standard_Type) get () { return 0; }
   };
 
@@ -180,8 +176,6 @@ namespace opencascade {
   template <typename T>
   const Handle(Standard_Type)& type_instance<T>::get ()
   {
-    (void)myInstance; // ensure that myInstance is instantiated
-
     // static variable inside function ensures that descriptors
     // are initialized in correct sequence
     static Handle(Standard_Type) anInstance =
@@ -189,11 +183,6 @@ namespace opencascade {
                                type_instance<typename T::base_type>::get());
     return anInstance;
   }
-
-  // Static class field is defined to ensure initialization of all type
-  // descriptors at load time of the library
-  template <typename T>
-  Handle(Standard_Type) type_instance<T>::myInstance (get());
 
 }
 
