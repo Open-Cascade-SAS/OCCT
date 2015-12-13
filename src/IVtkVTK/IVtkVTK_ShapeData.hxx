@@ -62,7 +62,7 @@ public:
   //! @param [in] theY Y coordinate
   //! @param [in] theZ Z coordinate
   //! @return id of added point
-  Standard_EXPORT virtual IVtk_PointId InsertCoordinate (double theX, double theY, double theZ);
+  Standard_EXPORT virtual IVtk_PointId InsertCoordinate (double theX, double theY, double theZ) Standard_OVERRIDE;
 
   //! Insert a vertex.
   //! @param [in] theShapeID id of the subshape to which the vertex belongs.
@@ -70,7 +70,7 @@ public:
   //! @param [in] theMeshType mesh type of the subshape (MT_Undefined by default)
   Standard_EXPORT virtual void InsertVertex (const IVtk_IdType   theShapeID,
                                              const IVtk_PointId  thePointId,
-                                             const IVtk_MeshType theMeshType);
+                                             const IVtk_MeshType theMeshType) Standard_OVERRIDE;
 
   //! Insert a line.
   //! @param [in] theShapeID id of the subshape to which the line belongs.
@@ -80,7 +80,7 @@ public:
   Standard_EXPORT virtual void InsertLine (const IVtk_IdType   theShapeID,
                                            const IVtk_PointId  thePointId1,
                                            const IVtk_PointId  thePointId2,
-                                           const IVtk_MeshType theMeshType);
+                                           const IVtk_MeshType theMeshType) Standard_OVERRIDE;
 
   //! Insert a poly-line.
   //! @param [in] theShapeID id of the subshape to which the polyline belongs.
@@ -88,7 +88,7 @@ public:
   //! @param [in] theMeshType mesh type of the subshape (MT_Undefined by default)
   Standard_EXPORT virtual void InsertLine (const IVtk_IdType       theShapeID, 
                                            const IVtk_PointIdList* thePointIds,
-                                           const IVtk_MeshType     theMeshType);
+                                           const IVtk_MeshType     theMeshType) Standard_OVERRIDE;
   //! Insert a triangle
   //! @param [in] theShapeID id of the subshape to which the triangle belongs.
   //! @param [in] thePointId1 id of the first point
@@ -99,7 +99,7 @@ public:
                                                const IVtk_PointId  thePointId1,
                                                const IVtk_PointId  thePointId2,
                                                const IVtk_PointId  thePointId3,
-                                               const IVtk_MeshType theMeshType);
+                                               const IVtk_MeshType theMeshType) Standard_OVERRIDE;
 
 
 public: //! @name Specific methods

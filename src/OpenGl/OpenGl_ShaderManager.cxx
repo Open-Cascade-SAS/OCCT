@@ -995,21 +995,22 @@ void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  if (typeid (*aState.Aspect()) == typeid (OpenGl_AspectFace))
+  const OpenGl_Element* anAspect = aState.Aspect();
+  if (typeid (*anAspect) == typeid (OpenGl_AspectFace))
   {
-    PushAspectFace   (myContext, theProgram, dynamic_cast<const OpenGl_AspectFace*> (aState.Aspect()));
+    PushAspectFace   (myContext, theProgram, dynamic_cast<const OpenGl_AspectFace*> (anAspect));
   }
-  else if (typeid (*aState.Aspect()) == typeid (OpenGl_AspectLine))
+  else if (typeid (*anAspect) == typeid (OpenGl_AspectLine))
   {
-    PushAspectLine   (myContext, theProgram, dynamic_cast<const OpenGl_AspectLine*> (aState.Aspect()));
+    PushAspectLine   (myContext, theProgram, dynamic_cast<const OpenGl_AspectLine*> (anAspect));
   }
-  else if (typeid (*aState.Aspect()) == typeid (OpenGl_AspectText))
+  else if (typeid (*anAspect) == typeid (OpenGl_AspectText))
   {
-    PushAspectText   (myContext, theProgram, dynamic_cast<const OpenGl_AspectText*> (aState.Aspect()));
+    PushAspectText   (myContext, theProgram, dynamic_cast<const OpenGl_AspectText*> (anAspect));
   }
-  else if (typeid (*aState.Aspect()) == typeid (OpenGl_AspectMarker))
+  else if (typeid (*anAspect) == typeid (OpenGl_AspectMarker))
   {
-    PushAspectMarker (myContext, theProgram, dynamic_cast<const OpenGl_AspectMarker*> (aState.Aspect()));
+    PushAspectMarker (myContext, theProgram, dynamic_cast<const OpenGl_AspectMarker*> (anAspect));
   }
 
   theProgram->UpdateState (OpenGl_MATERIALS_STATE, aState.Index());

@@ -59,8 +59,6 @@ LDOM_CharacterData& LDOM_CharacterData::operator =
 void LDOM_CharacterData::setData (const LDOMString& theValue)
 {
   LDOM_BasicText& aText = (LDOM_BasicText&) Origin ();
-  if (&aText == NULL)
-    Standard_ProgramError::Raise("LDOM_CharacterData::setData: called on void");
   aText.SetData (theValue, myDocument);
   myLength = -1;
 }

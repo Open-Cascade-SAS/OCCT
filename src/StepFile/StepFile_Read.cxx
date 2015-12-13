@@ -173,7 +173,7 @@ Standard_Integer StepFile_Read
     new StepData_StepReaderData(nbhead,nbrec,nbpar);  // creation tableau de records
 
   for ( Standard_Integer nr = 1; nr <= nbrec; nr ++) {
-    int nbarg; char* ident; char* typrec ;
+    int nbarg; char* ident; char* typrec = 0;
     lir_file_rec (&ident, &typrec, &nbarg);
     undirec->SetRecord (nr, ident, typrec, nbarg);
 

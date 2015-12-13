@@ -91,7 +91,7 @@ public:
 
   //! Returns true to indicate the need to copy polygon;
   //! copies it if required
-  Standard_Boolean NewPolygon(const TopoDS_Edge& E, Handle(Poly_Polygon3D)& P)
+  Standard_Boolean NewPolygon(const TopoDS_Edge& E, Handle(Poly_Polygon3D)& P) Standard_OVERRIDE
   {
     if (!myCopyMesh)
       return Standard_False;
@@ -111,7 +111,7 @@ public:
   //! Returns true to indicate the need to copy polygon;
   //! copies it if required
   Standard_Boolean NewPolygonOnTriangulation(const TopoDS_Edge& E, const TopoDS_Face& F,
-                                             Handle(Poly_PolygonOnTriangulation)& P)
+                                             Handle(Poly_PolygonOnTriangulation)& P) Standard_OVERRIDE
   {
     if (!myCopyMesh)
       return Standard_False;

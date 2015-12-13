@@ -55,7 +55,7 @@ private:
   //! @param [in] selection container for sensitive primitives
   //! @param [in] mode Selection mode
   void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                         const Standard_Integer theMode);
+                         const Standard_Integer theMode) Standard_OVERRIDE;
 
   const Bnd_Box& BoundingBox();
 

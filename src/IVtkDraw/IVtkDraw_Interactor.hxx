@@ -69,9 +69,7 @@ public:
 
 protected:
   IVtkDraw_Interactor();
-  IVtkDraw_Interactor (const IVtkDraw_Interactor& );
   ~IVtkDraw_Interactor();
-
 
 #ifdef _WIN32
   friend LRESULT CALLBACK WndProc (HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam);
@@ -97,6 +95,10 @@ protected:
   void GetMousePosition (Standard_Integer *theX, Standard_Integer *theY);
 #endif
 
+private:
+  // copying is prohibited
+  IVtkDraw_Interactor (const IVtkDraw_Interactor&);
+  void operator = (const IVtkDraw_Interactor&);
 
 private:
 

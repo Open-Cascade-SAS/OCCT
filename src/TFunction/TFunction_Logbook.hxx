@@ -104,13 +104,14 @@ public:
   //  ========================================
 
   //! Returns the ID of the attribute.
-  Standard_EXPORT const Standard_GUID& ID() const;
+  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   //! Undos (and redos) the attribute.
-  Standard_EXPORT virtual void Restore (const Handle(TDF_Attribute)& with);
+  Standard_EXPORT virtual void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
   
   //! Pastes the attribute to another label.
-  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& into, const Handle(TDF_RelocationTable)& RT) const;
+  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& into, 
+                                      const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
   
   //! Returns a new empty instance of the attribute.
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;

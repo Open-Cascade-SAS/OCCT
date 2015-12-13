@@ -86,16 +86,16 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
   TColStd_Array1OfReal aCurv(thePars.Lower(), thePars.Upper());
   // Arrays are allocated for max theDim = 7: 1 3d curve + 2 2d curves.
   Standard_Real Val[21], Par[3], Res[21];
-  Standard_Integer i, j, k, l, m, ic;
+  Standard_Integer i, j, m, ic;
   Standard_Real aMaxCurv = 0.;
   Standard_Integer dim = theDim;
   //
   i = aCurv.Lower();
   for(j = 0; j < 3; ++j)
   {
-    k = i+j;
+    Standard_Integer k = i+j;
     ic = (k - aCurv.Lower()) * dim;
-    l = dim*j;
+    Standard_Integer l = dim*j;
     for(m = 0; m < dim; ++m)
     {
       Val[l + m] = theCoords[ic + m];
@@ -115,9 +115,9 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
   {
     for(j = 0; j < 3; ++j)
     {
-      k = i+j-1;
+      Standard_Integer k = i+j-1;
       ic = (k - aCurv.Lower()) * dim;
-      l = dim*j;
+      Standard_Integer l = dim*j;
       for(m = 0; m < dim; ++m)
       {
         Val[l + m] = theCoords[ic + m];
@@ -136,9 +136,9 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
   i = aCurv.Upper();
   for(j = 0; j < 3; ++j)
   {
-    k = i+j-2;
+    Standard_Integer k = i+j-2;
     ic = (k - aCurv.Lower()) * dim;
-    l = dim*j;
+    Standard_Integer l = dim*j;
     for(m = 0; m < dim; ++m)
     {
       Val[l + m] = theCoords[ic + m];
@@ -243,19 +243,18 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
           ici1 = (anIndNext - aCurv.Lower()) * theDim,
           icm = (anInd - aCurv.Lower()) * theDim;
         NCollection_LocalArray<Standard_Real> V1(theDim), V2(theDim);
-        Standard_Integer k,l;
         Standard_Real mp = 0., m1 = 0., m2 = 0.;
         Standard_Real p;
-        for(k = 0; k < theDim; ++k)
+        for(Standard_Integer k = 0; k < theDim; ++k)
         {
           V1[k] = theCoords[icm + k] - theCoords[ici + k];
           m1 += V1[k]*V1[k];
           V2[k] = theCoords[ici1 + k] - theCoords[icm + k];
           m2 += V2[k]*V2[k];
         }
-        for(k = 1; k < theDim; ++k)
+        for(Standard_Integer k = 1; k < theDim; ++k)
         {
-          for(l = 0; l < k; ++l)
+          for(Standard_Integer l = 0; l < k; ++l)
           {
             p = V1[k]*V2[l] - V1[l]*V2[k];
             mp += p*p;

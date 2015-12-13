@@ -3006,10 +3006,10 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
     if (anObject->GetMaxValueModifier() != 0) {
       isWithMaxTol = Standard_True;
       aMaxLMWU = new StepBasic_LengthMeasureWithUnit();
-      Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
-      aValueMember->SetName("LENGTH_MEASURE");
-      aValueMember->SetReal(anObject->GetMaxValueModifier());
-      aMaxLMWU->Init(aValueMember, aUnit);
+      Handle(StepBasic_MeasureValueMember) aModifierValueMember = new StepBasic_MeasureValueMember();
+      aModifierValueMember->SetName("LENGTH_MEASURE");
+      aModifierValueMember->SetReal(anObject->GetMaxValueModifier());
+      aMaxLMWU->Init(aModifierValueMember, aUnit);
       Model->AddWithRefs(aMaxLMWU);
     }
   }

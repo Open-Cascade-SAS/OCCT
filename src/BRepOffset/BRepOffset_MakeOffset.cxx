@@ -4700,6 +4700,9 @@ Standard_Boolean CheckBiNormals
    Standard_Boolean& bRemove,
    const Standard_Boolean RemoveInvalidFaces)
 {
+  bKeep = Standard_True;
+  bRemove = Standard_False;
+
   Standard_Boolean bChecked;
   Standard_Integer aNbEdgesChecked;
   Standard_Real anAngle;
@@ -4792,8 +4795,6 @@ Standard_Boolean CheckBiNormals
   }
   //
   // decide whether to remove the split face or not
-  bKeep = Standard_True;
-  bRemove = Standard_False;
   //
   Standard_Integer  aNb = aMEInv.Extent();
   if (aNb == 0) {

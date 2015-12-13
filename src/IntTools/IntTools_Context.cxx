@@ -857,21 +857,21 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
         else
         {
           // Local search may fail. Try to use more precise algo.
-          Extrema_ExtPC anExt(aPv, aGAC, 1.e-10);
+          Extrema_ExtPC anExt2(aPv, aGAC, 1.e-10);
           Standard_Real aMinDist = RealLast();
           Standard_Integer aMinIdx = -1;
-          for (Standard_Integer anIdx = 1; anIdx <= anExt.NbExt(); anIdx++)
+          for (Standard_Integer anIdx = 1; anIdx <= anExt2.NbExt(); anIdx++)
           {
-            if ( anExt.IsMin(anIdx) &&
-                 anExt.SquareDistance(anIdx) < aMinDist )
+            if ( anExt2.IsMin(anIdx) &&
+                 anExt2.SquareDistance(anIdx) < aMinDist )
               {
-                aMinDist = anExt.SquareDistance(anIdx);
+                aMinDist = anExt2.SquareDistance(anIdx);
                 aMinIdx = anIdx;
               }
           }
           if (aMinIdx != -1)
           {
-            const Extrema_POnCurv& aPOncurve = anExt.Point(aMinIdx);
+            const Extrema_POnCurv& aPOncurve = anExt2.Point(aMinIdx);
             aT = aPOncurve.Parameter();
 
             if((aT > (aLast + aFirst) * 0.5) ||
@@ -909,21 +909,21 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
         else
         {
           // Local search may fail. Try to use more precise algo.
-          Extrema_ExtPC anExt(aPv, aGAC, 1.e-10);
+          Extrema_ExtPC anExt2(aPv, aGAC, 1.e-10);
           Standard_Real aMinDist = RealLast();
           Standard_Integer aMinIdx = -1;
-          for (Standard_Integer anIdx = 1; anIdx <= anExt.NbExt(); anIdx++)
+          for (Standard_Integer anIdx = 1; anIdx <= anExt2.NbExt(); anIdx++)
           {
-            if ( anExt.IsMin(anIdx) &&
-                 anExt.SquareDistance(anIdx) < aMinDist )
+            if ( anExt2.IsMin(anIdx) &&
+                 anExt2.SquareDistance(anIdx) < aMinDist )
               {
-                aMinDist = anExt.SquareDistance(anIdx);
+                aMinDist = anExt2.SquareDistance(anIdx);
                 aMinIdx = anIdx;
               }
           }
           if (aMinIdx != -1)
           {
-            const Extrema_POnCurv& aPOncurve = anExt.Point(aMinIdx);
+            const Extrema_POnCurv& aPOncurve = anExt2.Point(aMinIdx);
             aT = aPOncurve.Parameter();
 
             if((aT < (aLast + aFirst) * 0.5) ||

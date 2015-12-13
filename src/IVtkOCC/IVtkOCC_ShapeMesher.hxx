@@ -53,8 +53,7 @@ public:
                        const Standard_Integer theNbVIsos = 1)
  : myDevCoeff (theDevCoeff),
    myDevAngle (theDevAngle),
-   myDeflection (0.0),
-   myPointId (0)
+   myDeflection (0.0)
   {
     myNbIsos[0] = theNbUIsos;
     myNbIsos[1] = theNbVIsos;
@@ -88,7 +87,7 @@ public:
 
 protected:
   //! Executes the mesh generation algorithms. To be defined in implementation class.
-  Standard_EXPORT virtual void internalBuild();
+  Standard_EXPORT virtual void internalBuild() Standard_OVERRIDE;
 
 private:
   //! Internal method, generates OCCT triangulation starting from TopoDS_Shape
@@ -186,7 +185,6 @@ private:
   Standard_Real         myDevCoeff;
   Standard_Real         myDevAngle;
   mutable Standard_Real myDeflection;
-  IVtk_PointId          myPointId;
   Standard_Integer      myNbIsos[2];
 };
 
