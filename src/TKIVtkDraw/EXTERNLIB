@@ -16,4 +16,6 @@ TKTopAlgo
 TKV3d
 TKOpenGl
 TKIVtk
-
+vtkIOImage
+vtkImagingCore
+vtkInteractionStyle

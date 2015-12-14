@@ -72,8 +72,6 @@ if (WIN32)
   set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
 endif()
 
-set (USE_VTK OFF CACHE BOOL "${USE_VTK_DESCR}")
-
 # include occt macros
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
@@ -93,11 +91,6 @@ endif()
 
 # Overview
 set (BUILD_DOC_OcctOverview OFF CACHE BOOL "${BUILD_DOC_OcctOverview_DESCR}")
-
-if (NOT USE_VTK)
-  list (REMOVE_ITEM Visualization_TOOLKITS TKIVtk)
-  list (REMOVE_ITEM Draw_TOOLKITS TKIVtkDraw)
-endif()
 
 if (NOT USE_D3D)
   list (REMOVE_ITEM Visualization_TOOLKITS TKD3DHost)
@@ -133,6 +126,20 @@ set (BUILD_TOOLKITS ${RAW_BUILD_TOOLKITS})
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_defs_flags")
 
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
+
+# search for TKIVtk and TKIVtkDraw in BUILD_TOOLKITS
+list (FIND BUILD_TOOLKITS TKIVtk CAN_USE_VTK)
+if (CAN_USE_VTK EQUAL -1)
+  list (FIND BUILD_TOOLKITS TKIVtkDraw CAN_USE_VTK)
+endif()
+
+if (NOT CAN_USE_VTK EQUAL -1)
+  if (NOT DEFINED USE_VTK)
+    set (USE_VTK OFF CACHE BOOL "${USE_VTK_DESCR}")
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET (USE_VTK)
+endif()
 
 # Rebuild *.yacc and *.lex files that are contained by TKMath toolkit
 list (FIND BUILD_TOOLKITS TKMath   CAN_REBUILD_PDC_FOR_TKMATH)
@@ -185,7 +192,13 @@ if (USE_VTK)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vtk")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_VTK")
-  #OCCT_CHECK_AND_UNSET ("INSTALL_VTK")
+  
+  if (NOT CAN_USE_VTK EQUAL -1)
+    message (STATUS "Info: TKIVtk and TKIVtkDraw toolkits excluded due to VTK usage is disabled")
+
+    list (REMOVE_ITEM BUILD_TOOLKITS TKIVtk)
+    list (REMOVE_ITEM BUILD_TOOLKITS TKIVtkDraw)
+  endif()
 endif()
 
 # D3D
@@ -317,7 +330,7 @@ endif()
 if (3RDPARTY_INCLUDE_DIRS)
   list (REMOVE_DUPLICATES 3RDPARTY_INCLUDE_DIRS)
   string (REGEX REPLACE ";" "\n\t" 3RDPARTY_INCLUDE_DIRS_WITH_ENDS "${3RDPARTY_INCLUDE_DIRS}")
-  message (STATUS "The directories containing 3rdparty headers: ${3RDPARTY_INCLUDE_DIRS_WITH_ENDS}")
+  message (STATUS "Info: The directories of 3rdparty headers: ${3RDPARTY_INCLUDE_DIRS_WITH_ENDS}")
   include_directories (${3RDPARTY_INCLUDE_DIRS})
 endif()
 
@@ -327,7 +340,7 @@ include_directories (${CMAKE_BINARY_DIR}/inc)
 if (3RDPARTY_LIBRARY_DIRS)
   list (REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
   string (REGEX REPLACE ";" "\n\t" 3RDPARTY_LIBRARY_DIRS_WITH_ENDS "${3RDPARTY_LIBRARY_DIRS}")
-  message (STATUS "The directories containing 3rdparty libraries: ${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")
+  message (STATUS "Info: The directories of 3rdparty libraries: ${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")
   link_directories (${3RDPARTY_LIBRARY_DIRS})
 endif()
 

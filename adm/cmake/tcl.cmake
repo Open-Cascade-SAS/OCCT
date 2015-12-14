@@ -255,7 +255,7 @@ if (TK_FOUND AND 3RDPARTY_TCL_DIR)
 
   if (${THE_SAME_FOLDER} EQUAL 0)
     set (3RDPARTY_TCLTK_DIR "${3RDPARTY_TCL_DIR}")
-    message (STATUS "Info. TK is used from TCL folder: ${3RDPARTY_TCLTK_DIR}")
+    message (STATUS "Info: TK is used from TCL folder: ${3RDPARTY_TCLTK_DIR}")
   endif()
 endif()
 

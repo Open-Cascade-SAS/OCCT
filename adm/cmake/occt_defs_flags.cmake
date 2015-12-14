@@ -37,41 +37,41 @@ endif()
 # remove _WINDOWS flag if it exists
 string (REGEX MATCH "/D_WINDOWS" IS_WINDOWSFLAG "${CMAKE_CXX_FLAGS}")
 if (IS_WINDOWSFLAG)
-  message (STATUS "/D_WINDOWS has been removed from CMAKE_CXX_FLAGS")
+  message (STATUS "Info: /D_WINDOWS has been removed from CMAKE_CXX_FLAGS")
   string (REGEX REPLACE "/D_WINDOWS" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
 # remove WIN32 flag if it exists
 string (REGEX MATCH "/DWIN32" IS_WIN32FLAG "${CMAKE_CXX_FLAGS}")
 if (IS_WIN32FLAG)
-  message (STATUS "/DWIN32 has been removed from CMAKE_CXX_FLAGS")
+  message (STATUS "Info: /DWIN32 has been removed from CMAKE_CXX_FLAGS")
   string (REGEX REPLACE "/DWIN32" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
 # remove _WINDOWS flag if it exists
 string (REGEX MATCH "/D_WINDOWS" IS_WINDOWSFLAG "${CMAKE_C_FLAGS}")
 if (IS_WINDOWSFLAG)
-  message (STATUS "/D_WINDOWS has been removed from CMAKE_C_FLAGS")
+  message (STATUS "Info: /D_WINDOWS has been removed from CMAKE_C_FLAGS")
   string (REGEX REPLACE "/D_WINDOWS" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 endif()
 
 # remove WIN32 flag if it exists
 string (REGEX MATCH "/DWIN32" IS_WIN32FLAG "${CMAKE_C_FLAGS}")
 if (IS_WIN32FLAG)
-  message (STATUS "/DWIN32 has been removed from CMAKE_C_FLAGS")
+  message (STATUS "Info: /DWIN32 has been removed from CMAKE_C_FLAGS")
   string (REGEX REPLACE "/DWIN32" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 endif()
 
 # remove DEBUG flag if it exists
 string (REGEX MATCH "-DDEBUG" IS_DEBUG_CXX "${CMAKE_CXX_FLAGS_DEBUG}")
 if (IS_DEBUG_CXX)
-  message (STATUS "-DDEBUG has been removed from CMAKE_CXX_FLAGS_DEBUG")
+  message (STATUS "Info: -DDEBUG has been removed from CMAKE_CXX_FLAGS_DEBUG")
   string (REGEX REPLACE "-DDEBUG" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
 string (REGEX MATCH "-DDEBUG" IS_DEBUG_C "${CMAKE_C_FLAGS_DEBUG}")
 if (IS_DEBUG_C)
-  message (STATUS "-DDEBUG has been removed from CMAKE_C_FLAGS_DEBUG")
+  message (STATUS "Info: -DDEBUG has been removed from CMAKE_C_FLAGS_DEBUG")
   string (REGEX REPLACE "-DDEBUG" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 endif()
 # enable parallel compilation on MSVC 9 and above

@@ -206,7 +206,7 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
   set (OCCT_HEADER_FILE_WITH_PROPER_NAMES)
 
   string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-  message (STATUS "Info. \(${CURRENT_TIME}\) Compare FILES with files in package directories...")
+  message (STATUS "Info: \(${CURRENT_TIME}\) Compare FILES with files in package directories...")
 
   foreach (OCCT_PACKAGE ${OCCT_USED_PACKAGES})
     if (EXISTS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
@@ -252,7 +252,7 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
         endforeach()
 
         if (NOT OCCT_FILE_IN_DIR_STATUS)
-          message (STATUS "Warning. ${OCCT_FILE_IN_DIR} is not involved into ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
+          message (STATUS "Warning. File ${OCCT_FILE_IN_DIR} is not listed in ${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES")
           
           string (REGEX MATCH ".+\\.[hlg]xx|.+\\.h$" IS_HEADER_FOUND "${OCCT_FILE_NAME}")
           if (IS_HEADER_FOUND)
@@ -267,7 +267,7 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
   
   # create new file including found header
   string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-  message (STATUS "Info. \(${CURRENT_TIME}\) Create header-links in inc folder...")
+  message (STATUS "Info: \(${CURRENT_TIME}\) Create header-links in inc folder...")
 
   foreach (OCCT_HEADER_FILE ${OCCT_HEADER_FILES_COMPLETE})
     get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
@@ -277,7 +277,7 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
   install (FILES ${OCCT_HEADER_FILES_COMPLETE} DESTINATION "${INSTALL_DIR}/inc")
   
   string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-  message (STATUS "Info. \(${CURRENT_TIME}\) Checking headers in inc folder...")
+  message (STATUS "Info: \(${CURRENT_TIME}\) Checking headers in inc folder...")
     
   file (GLOB OCCT_HEADER_FILES_OLD "${ROOT_TARGET_OCCT_DIR}/inc/*")
   foreach (OCCT_HEADER_FILE_OLD ${OCCT_HEADER_FILES_OLD})
