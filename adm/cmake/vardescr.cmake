@@ -1,7 +1,7 @@
 # variable description
 
 # 
-set (APPLY_OCCT_PATCH_DIR_DESCR 
+set (BUILD_PATCH_DESCR 
 "Points to the directory recognized as a 'patch' for OCCT. If specified,
 the files from this directory take precedence over the corresponding native
 OCCT sources. This way you are able to introduce patches to Open CASCADE
@@ -13,12 +13,12 @@ set (BUILD_LIBRARY_TYPE_DESCR
 are linked dynamically and loaded at runtime. 'Static' libraries
 are archives of object files for use when linking other targets")
 
-set (REBUILD_PLATFORM_DEPENDENT_CODE_DESCR 
+set (BUILD_YACCLEX_DESCR 
 "Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and
 ExprIntrp functionality are generated automatically with Flex/Bison. Checking this options
 leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files")
 
-set (OCCT_ALGO_EXTENDED_OUTPUT_DESCR
+set (BUILD_WITH_DEBUG_DESCR
 "Enables extended messages of many OCCT algorithms, usually printed to cout. 
 These include messages on internal errors and special cases encountered, timing etc")
 
