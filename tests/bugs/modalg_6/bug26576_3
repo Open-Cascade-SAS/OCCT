@@ -1,0 +1,61 @@
+puts "============"
+puts "OCC26576"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by intersection algorithm.
+###############################
+
+pload DCAF
+
+Open [locate_data_file bug26576_study1_new_geom.cbf] D
+
+GetShape D 0:1:484:1:1:2 b1_src
+GetShape D 0:1:478:1:1:2 b2_src
+
+save b1_src $imagedir/bug26576_b1.brep
+save b2_src $imagedir/bug26576_b2.brep
+
+restore $imagedir/bug26576_b1.brep b1
+restore $imagedir/bug26576_b2.brep b2
+
+explode b1 f
+explode b2 f
+copy b1_1 b2
+copy b2_2 b1
+
+#Wrong value of Tolerance Reached. 
+
+set log [bopcurves b1 b2 -2d]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Tolerance_Reached NbCurv
+
+set GoodNbCurv 2
+
+set expected_Tolerance_Reached 2.4466119525954045e-008
+set tol_abs_Tolerance_Reached 1.0e-7
+set tol_rel_Tolerance_Reached 0.0
+checkreal "Tolerance Reached" ${Tolerance_Reached} ${expected_Tolerance_Reached} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: ${GoodNbCurv} curves are expected but ${NbCurv} are found!"
+}
+
+#Overlapping intersection curves.
+
+for {set i 1} {$i < ${NbCurv}} {incr i} {
+  for {set j [expr $i+1]} {$j <= $NbCurv} {incr j} {
+    mkedge e1 c_$i
+    mkedge e2 c_$j
+
+    set coe [checkoverlapedges e1 e2 $Tolerance_Reached]
+
+    puts "$i<->$j: $coe"
+    if { [regexp "Edges is not overlaped" $coe] != 1 } {
+      puts "Error: c_$i and c_$j are overlaped"
+    }
+  }
+}
+
+smallview
+fit
+set only_screen_axo 1

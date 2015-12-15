@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC26576"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by intersection algorithm.
+###############################
+
+pload DCAF
+
+Open [locate_data_file bug26576_study1_new_geom.cbf] D
+
+GetShape D 0:1:484:1:1:2 b1
+GetShape D 0:1:478:1:1:2 b2
+
+#General fuse
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+bbuild result
+
+smallview
+donly result
+fit
+
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 4
+ EDGE      : 12
+ WIRE      : 10
+ FACE      : 8
+ SHELL     : 4
+ SOLID     : 4
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 43
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "General fuse"
+
+set only_screen_axo 1

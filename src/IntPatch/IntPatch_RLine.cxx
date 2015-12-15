@@ -345,6 +345,70 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real )
 #endif
 }
 
+void IntPatch_RLine::Dump(const Standard_Integer theMode) const
+{ 
+  cout<<" ----------- D u m p    I n t P a t c h  _  R L i n e  -(begin)------"<<endl;
+  const Standard_Integer aNbPoints = NbPnts();
+  const Standard_Integer aNbVertex = NbVertex();
 
+  switch(theMode)
+  {
+  case 0:
+    printf("Num    [X  Y  Z]     [U1  V1]   [U2  V2]\n");
+    for(Standard_Integer i=1; i<=aNbPoints; i++)
+    {
+      Standard_Real u1,v1,u2,v2;
+      Point(i).Parameters(u1,v1,u2,v2);
+      printf("%4d  [%+10.20f %+10.20f %+10.20f]  [%+10.20f %+10.20f]  [%+10.20f %+10.20f]\n",
+              i,Point(i).Value().X(),Point(i).Value().Y(),Point(i).Value().Z(),
+              u1,v1,u2,v2);
+    }
+    
+    for(Standard_Integer i=1;i<=aNbVertex;i++)
+    {
+      Vertex(i).Dump();
+      Standard_Real  polr = Vertex(i).ParameterOnLine();
+      Standard_Integer pol = static_cast<Standard_Integer>(polr);
 
+      if(pol>=1 && pol<=aNbVertex)
+      {
+        cout<<"----> IntSurf_PntOn2S : "<<
+                      polr <<", Pnt (" << Vertex(pol).Value().X() << "," <<
+                                          Vertex(pol).Value().Y() << "," <<
+                                          Vertex(pol).Value().Z() <<")" <<endl;
+      }
+    }
+
+    break;
+  case 1:
+    for(Standard_Integer i = 1; i <= aNbPoints; i++)
+    {
+      Standard_Real u1,v1,u2,v2;
+      Point(i).Parameters(u1,v1,u2,v2);
+      printf("point p%d %+10.20f %+10.20f %+10.20f\n",
+              i,Point(i).Value().X(),Point(i).Value().Y(),Point(i).Value().Z());
+    }
+
+    break;
+  case 2:
+    for(Standard_Integer i = 1; i <= aNbPoints; i++)
+    {
+      Standard_Real u1,v1,u2,v2;
+      Point(i).Parameters(u1,v1,u2,v2);
+      printf("point p%d %+10.20f %+10.20f\n", i, u1, v1);
+    }
+
+    break;
+  default:
+    for(Standard_Integer i = 1; i <= aNbPoints; i++)
+    {
+      Standard_Real u1,v1,u2,v2;
+      Point(i).Parameters(u1,v1,u2,v2);
+      printf("point p%d %+10.20f %+10.20f\n", i, u2, v2);
+    }
+
+    break;
+  }
+  cout<<"\n--------------------------------------------------- (end) -------"<<endl;  
+}
 

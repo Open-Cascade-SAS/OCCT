@@ -658,8 +658,8 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
     Handle(IntPatch_WLine) WL = 
       Handle(IntPatch_WLine)::DownCast(L);
 
-#ifdef OCCT_DEBUG
-    //WL->Dump(0);
+#ifdef GEOMINT_INTSS_DEBUG
+    WL->Dump(0);
 #endif
 
     //

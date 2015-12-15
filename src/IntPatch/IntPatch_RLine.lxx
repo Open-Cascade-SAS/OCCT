@@ -118,3 +118,8 @@ inline const IntSurf_PntOn2S& IntPatch_RLine::Point (const Standard_Integer Inde
   if (curv.IsNull()) {Standard_DomainError::Raise();}
   return curv->Value(Index);
 }
+
+inline Handle(IntSurf_LineOn2S) IntPatch_RLine::Curve() const
+{ 
+  return(curv);
+}

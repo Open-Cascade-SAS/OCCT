@@ -153,7 +153,7 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
     aMaxCurv = aCurv(i);
   }
 
-#if defined(APPROXINT_KNOTTOOLS_DEBUG) || defined(OCCT_DEBUG)
+#ifdef APPROXINT_KNOTTOOLS_DEBUG
   cout << "Discrete curvature array is" << endl;
   for(i = aCurv.Lower(); i <= aCurv.Upper(); ++i)
   {

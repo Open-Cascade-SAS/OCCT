@@ -110,11 +110,6 @@
 #include <IntTools_WLineTool.hxx>
 #include <IntPatch_WLineTool.hxx>
 
-//#ifdef OCCT_DEBUG_DUMPWLINE
-//static
-//  void DumpWLine(const Handle(IntPatch_WLine)& aWLine);
-//#endif
-////
 static
   void TolR3d(const TopoDS_Face& ,
               const TopoDS_Face& ,
@@ -893,6 +888,9 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
 
   typl=L->ArcType();
 
+  if(typl == IntPatch_Restriction)
+    bAvoidLineConstructor = Standard_True;
+
   //
   // Line Constructor
   if(!bAvoidLineConstructor) {
@@ -1492,8 +1490,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     Handle(IntPatch_WLine) WL = 
       Handle(IntPatch_WLine)::DownCast(L);
 
-#ifdef OCCT_DEBUG
-    //WL->Dump(0);
+#ifdef INTTOOLS_FACEFACE_DEBUG
+    WL->Dump(0);
 #endif
 
     //
@@ -2011,6 +2009,11 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     {
       Handle(IntPatch_RLine) RL = 
         Handle(IntPatch_RLine)::DownCast(L);
+
+#ifdef INTTOOLS_FACEFACE_DEBUG
+    RL->Dump(0);
+#endif
+
       Handle(Geom_Curve) aC3d;
       Handle(Geom2d_Curve) aC2d1, aC2d2;
       Standard_Real aTolReached;
@@ -3073,30 +3076,6 @@ Standard_Integer IndexType(const GeomAbs_SurfaceType aType)
   } 
   return aIndex;
 }
-#ifdef OCCT_DEBUG_DUMPWLINE
-//=======================================================================
-//function : DumpWLine
-//purpose  : 
-//=======================================================================
-void DumpWLine(const Handle(IntPatch_WLine)& aWLine)
-{
-  Standard_Integer i, aNbPnts; 
-  Standard_Real aX, aY, aZ, aU1, aV1, aU2, aV2;
-  //
-  printf(" *WLine\n");
-  aNbPnts=aWLine->NbPnts();
-  for (i=1; i<=aNbPnts; ++i) {
-    const IntSurf_PntOn2S aPntOn2S=aWLine->Point(i);
-    const gp_Pnt& aP3D=aPntOn2S.Value();
-    aP3D.Coord(aX, aY, aZ);
-    aPntOn2S.Parameters(aU1, aV1, aU2, aV2);
-    //
-    printf("point p_%d %lf %lf %lf\n", i, aX, aY, aZ);
-    //printf("point p_%d %20.15lf %20.15lf %20.15lf %20.15lf %20.15lf %20.15lf %20.15lf\n",
-        //   i, aX, aY, aZ, aU1, aV1, aU2, aV2);
-  }
-}
-#endif
 
 //=======================================================================
 // Function : FindMaxDistance

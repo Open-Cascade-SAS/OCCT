@@ -40,8 +40,7 @@ static Standard_Boolean IsTangentExtCheck(TheIWFunction& theFunc,
                                           const Standard_Real theVinf,
                                           const Standard_Real theVsup)
 {
-  //Factor 2.0 is chosen because we compare distance(s) between TWO faces
-  const Standard_Real aTol = 2.0*Precision::Confusion();
+  const Standard_Real aTol = theFunc.Tolerance();
   const Standard_Integer aNbItems = 4;
   const Standard_Real aParU[aNbItems] = { Min(theU + theStepU, theUsup),
                                           Max(theU - theStepU, theUinf),
