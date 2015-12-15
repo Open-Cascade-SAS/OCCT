@@ -755,6 +755,7 @@ Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& 
     NSView* TheSpecifiedWindowId = THEWindow->HView();
   #endif
 #elif defined(__ANDROID__) || defined(__QNX__)
+  (void )AWindow;
   int TheSpecifiedWindowId = -1;
 #else
   const Handle(Xw_Window) THEWindow = Handle(Xw_Window)::DownCast (AWindow);

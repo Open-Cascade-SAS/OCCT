@@ -47,7 +47,7 @@ OpenGl_TextureBufferArb::~OpenGl_TextureBufferArb()
 // =======================================================================
 GLenum OpenGl_TextureBufferArb::GetTarget() const
 {
-  return GL_TEXTURE_BUFFER_ARB; // GL_TEXTURE_BUFFER for OpenGL 3.1+
+  return GL_TEXTURE_BUFFER; // GL_TEXTURE_BUFFER for OpenGL 3.1+, OpenGL ES 3.2
 }
 
 // =======================================================================
@@ -98,9 +98,12 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
                                     const GLsizei  theElemsNb,
                                     const GLfloat* theData)
 {
-#if !defined(GL_ES_VERSION_2_0)
-  if (theComponentsNb < 1
-   || theComponentsNb > 4)
+  if (theGlCtx->arbTBO == NULL)
+  {
+    return false;
+  }
+  else if (theComponentsNb < 1
+        || theComponentsNb > 4)
   {
     // unsupported format
     return false;
@@ -130,9 +133,6 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   UnbindTexture (theGlCtx);
   Unbind (theGlCtx);
   return true;
-#else
-  return false;
-#endif
 }
 
 // =======================================================================
@@ -144,9 +144,12 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
                                     const GLsizei  theElemsNb,
                                     const GLuint*  theData)
 {
-#if !defined(GL_ES_VERSION_2_0)
-  if (theComponentsNb < 1
-   || theComponentsNb > 4)
+  if (theGlCtx->arbTBO == NULL)
+  {
+    return false;
+  }
+  else if (theComponentsNb < 1
+        || theComponentsNb > 4)
   {
     // unsupported format
     return false;
@@ -176,9 +179,6 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   UnbindTexture (theGlCtx);
   Unbind (theGlCtx);
   return true;
-#else
-  return false;
-#endif
 }
 
 // =======================================================================

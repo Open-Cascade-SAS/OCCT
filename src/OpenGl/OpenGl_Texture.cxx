@@ -793,6 +793,9 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
   Unbind (theCtx);
   return true;
 #else
+  (void )theSizeX;
+  (void )theSizeY;
+  (void )theFormat;
   return false;
 #endif
 }

@@ -57,7 +57,7 @@ void OpenGl_TextBuilder::createGlyphs (const Font_TextFormatter&                
   theVertsPerTexture.Clear();
   theTCrdsPerTexture.Clear();
 
-  OpenGl_Font::Tile aTile = {};
+  OpenGl_Font::Tile aTile = {Font_Rect(), Font_Rect(), 0u};
   OpenGl_Vec2       aPen (0.0f, 0.0f);
   Standard_Integer  aRectsNb = 0;
   Standard_Integer  aSymbolsCounter = 0;

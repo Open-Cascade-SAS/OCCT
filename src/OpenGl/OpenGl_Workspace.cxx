@@ -1224,6 +1224,8 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
   {
     return Standard_False;
   }
+#else
+  (void )theBufferType;
 #endif
 
   // bind FBO if used

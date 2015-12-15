@@ -821,9 +821,11 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
 #if !defined(GL_ES_VERSION_2_0)
   theCtx->core32->glUniform2uiv (theLocation, 1, theValue.GetData());
-#endif
-
   return Standard_True;
+#else
+  (void )theValue;
+  return Standard_False;
+#endif
 }
 
 // =======================================================================
@@ -854,9 +856,12 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
 #if !defined(GL_ES_VERSION_2_0)
   theCtx->core32->glUniform2uiv (theLocation, theCount, theValue->GetData());
-#endif
-
   return Standard_True;
+#else
+  (void )theCount;
+  (void )theValue;
+  return Standard_False;
+#endif
 }
 
 // =======================================================================

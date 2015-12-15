@@ -1142,6 +1142,14 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   arbTexFloat = IsGlGreaterEqual (3, 0)
              && FindProc ("glTexImage3D", myFuncs->glTexImage3D);
+
+  const Standard_Boolean hasTexBuffer32  = IsGlGreaterEqual (3, 2) && FindProc ("glTexBuffer", myFuncs->glTexBuffer);
+  const Standard_Boolean hasExtTexBuffer = CheckExtension ("GL_EXT_texture_buffer") && FindProc ("glTexBufferEXT", myFuncs->glTexBuffer);
+
+  if (hasTexBuffer32 || hasExtTexBuffer)
+  {
+    arbTBO = reinterpret_cast<OpenGl_ArbTBO*> (myFuncs.get());
+  }
 #else
 
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;

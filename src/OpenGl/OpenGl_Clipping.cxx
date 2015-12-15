@@ -228,6 +228,8 @@ void OpenGl_Clipping::SetEnabled (const Handle(OpenGl_Context)&      theGlCtx,
   GLenum anID = (GLenum)aProps.ContextID;
   const bool toUseFfp = theGlCtx->core11 != NULL
                      && theGlCtx->caps->ffpEnable;
+#else
+  (void )theGlCtx;
 #endif
   if (theIsEnabled)
   {

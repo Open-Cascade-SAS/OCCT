@@ -18,12 +18,10 @@
 
 #include <OpenGl_GlFunctions.hxx>
 
-//! TBO is available on OpenGL 3.0+ hardware
+//! TBO is available on OpenGL 3.0+ and OpenGL ES 3.2+ hardware
 struct OpenGl_ArbTBO : protected OpenGl_GlFunctions
 {
-#if !defined(GL_ES_VERSION_2_0)
   using OpenGl_GlFunctions::glTexBuffer;
-#endif
 };
 
 #endif // _OpenGl_ArbTBO_H__

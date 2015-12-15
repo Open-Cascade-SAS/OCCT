@@ -66,6 +66,9 @@
   #define GL_TEXTURE_2D_MULTISAMPLE 0x9100
   #define GL_MAX_SAMPLES  0x8D57
 
+  // OpenGL ES 3.2+ or GL_EXT_texture_buffer for OpenGL ES 3.1+
+  #define GL_TEXTURE_BUFFER 0x8C2A
+
   // in core since OpenGL ES 3.0, extension GL_EXT_texture_rg
   #define GL_RED   0x1903
   #define GL_R8    0x8229
@@ -102,6 +105,11 @@
   #define GL_RG16     0x822C
   #define GL_RG16F    0x822F
   #define GL_RG32F    0x8230
+
+  #define GL_R32I     0x8235
+  #define GL_RG32I    0x823B
+  #define GL_RGB32I   0x8D83
+  #define GL_RGBA32I  0x8D82
 
   // GL_OES_packed_depth_stencil
   #define GL_DEPTH_STENCIL                  0x84F9
@@ -147,9 +155,6 @@
   #define GL_DEBUG_SEVERITY_HIGH        0x9146
   #define GL_DEBUG_SEVERITY_MEDIUM      0x9147
   #define GL_DEBUG_SEVERITY_LOW         0x9148
-
-  // GL_EXT_texture_buffer for OpenGL ES 3.1+
-  #define GL_TEXTURE_BUFFER_ARB             0x8C2A
 #endif
 
 #if defined(__ANDROID__) || defined(__QNX__)
@@ -722,6 +727,11 @@ public: //! @name OpenGL ES 3.1
 
   typedef void (*glTexStorage2DMultisample_t)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
   glTexStorage2DMultisample_t glTexStorage2DMultisample;
+
+public: //! @name OpenGL ES 3.2
+
+  typedef void (*glTexBuffer_t)(GLenum target, GLenum internalFormat, GLuint buffer);
+  glTexBuffer_t glTexBuffer;
 
 #else // OpenGL ES vs. desktop
 

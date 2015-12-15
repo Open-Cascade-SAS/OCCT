@@ -87,6 +87,8 @@ public:
     {
       theWorkspace->EnableTexture (aPrevTexture);
     }
+  #else
+    (void )theWorkspace;
   #endif
   }
 

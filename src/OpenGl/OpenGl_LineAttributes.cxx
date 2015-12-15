@@ -545,6 +545,8 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
     glPolygonStipple ((const GLubyte* )myInteriors[i < nbi ? i : 0]);
     glEndList();
   }
+#else
+  (void )theGlCtx;
 #endif
 }
 
@@ -567,5 +569,7 @@ void OpenGl_LineAttributes::SetTypeOfHatch (const int theType) const
   }
   else
     glDisable (GL_POLYGON_STIPPLE);
+#else
+  (void )theType;
 #endif
 }
