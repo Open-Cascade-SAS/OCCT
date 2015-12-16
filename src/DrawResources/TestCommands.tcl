@@ -140,6 +140,8 @@ help testgrid {
   -overwrite: force writing logs in existing non-empty directory
   -xml filename: write XML report for Jenkins (in JUnit-like format)
   -beep: play sound signal at the end of the tests
+  -regress dirname: re-run only a set of tests that have been detected as regressions on some previous run.
+                    Here "dirname" is path to directory containing results of previous run.
   Groups, grids, and test cases to be executed can be specified by list of file 
   masks, separated by spaces or comma; default is all (*).
 }
@@ -163,6 +165,8 @@ proc testgrid {args} {
     set overwrite 0
     set xmlfile ""
     set signal 0
+    set regress 0
+    set prev_logdir ""
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
         set arg [lindex $args $narg]
 
@@ -223,6 +227,18 @@ proc testgrid {args} {
             continue
         }
 
+        # re-run only a set of tests that have been detected as regressions on some previous run
+        if { $arg == "-regress" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } {
+                set prev_logdir [lindex $args $narg]
+                set regress 1
+            } else {
+                error "Option -regress requires argument"
+            }
+            continue
+        }
+
         # unsupported option
         if { [regexp {^-} $arg] } {
             error "Error: unsupported option \"$arg\""
@@ -242,12 +258,13 @@ proc testgrid {args} {
 
     # check that target log directory is empty or does not exist
     set logdir [file normalize [string trim $logdir]]
+    set prev_logdir [file normalize [string trim $prev_logdir]]
     if { $logdir == "" } {
         # if specified logdir is empty string, generate unique name like 
         # results/<branch>_<timestamp>
         set prefix ""
         if { ! [catch {exec git branch} gitout] &&
-             [regexp {[*] ([\w]+)} $gitout res branch] } {
+             [regexp {[*] ([\w-]+)} $gitout res branch] } {
             set prefix "${branch}_"
         }
         set logdir "results/${prefix}[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
@@ -270,6 +287,33 @@ proc testgrid {args} {
     if { ! [info exists gridmask ] } { set gridmask  * }
     if { ! [info exists casemask ] } { set casemask  * }
 
+    # Find test cases with FAILED and IMPROVEMENT statuses in previous run
+    # if option "regress" is given
+    set rerun_group_grid_case {}
+
+    if { ${regress} > 0 } {
+        if { "${groupmask}" != "*"} {
+            lappend rerun_group_grid_case [list $groupmask $gridmask $casemask]
+        }
+    } else {
+        lappend rerun_group_grid_case [list $groupmask $gridmask $casemask]
+    }
+
+    if { ${regress} > 0 } {
+        if { [file exists ${prev_logdir}/tests.log] } {
+            set fd [open ${prev_logdir}/tests.log]
+            while { [gets $fd line] >= 0 } {
+                if {[regexp {CASE ([^\s]+) ([^\s]+) ([^\s]+): FAILED} $line dump group grid casename] ||
+                    [regexp {CASE ([^\s]+) ([^\s]+) ([^\s]+): IMPROVEMENT} $line dump group grid casename]} {
+                    lappend rerun_group_grid_case [list $group $grid $casename]
+                }
+            }
+            close $fd
+        } else {
+            error "Error: file ${prev_logdir}/tests.log is not found, check your input arguments!"
+        }
+    }
+
     ######################################################
     # prepare list of tests to be performed
     ######################################################
@@ -282,99 +326,105 @@ proc testgrid {args} {
     # path to test case file
     set tests_list {}
 
-    # iterate by all script paths
-    foreach dir [lsort -unique [_split_path $env(CSF_TestScriptsPath)]] {
-        # protection against empty paths
-        set dir [string trim $dir]
-        if { $dir == "" } { continue }
+    foreach group_grid_case ${rerun_group_grid_case} {
+        set groupmask [lindex $group_grid_case 0]
+        set gridmask  [lindex $group_grid_case 1]
+        set casemask  [lindex $group_grid_case 2]
 
-        if { $_tests_verbose > 0 } { _log_and_puts log "Examining tests directory $dir" }
+        # iterate by all script paths
+        foreach dir [lsort -unique [_split_path $env(CSF_TestScriptsPath)]] {
+            # protection against empty paths
+            set dir [string trim $dir]
+            if { $dir == "" } { continue }
 
-        # check that directory exists
-        if { ! [file isdirectory $dir] } {
-            _log_and_puts log "Warning: directory $dir listed in CSF_TestScriptsPath does not exist, skipped"
-            continue
-        }
+            if { $_tests_verbose > 0 } { _log_and_puts log "Examining tests directory $dir" }
 
-        # search all directories in the current dir with specified mask
-        if [catch {glob -directory $dir -tail -types d {*}$groupmask} groups] { continue }
-
-        # iterate by groups
-        if { $_tests_verbose > 0 } { _log_and_puts log "Groups to be executed: $groups" }
-        foreach group [lsort -dictionary $groups] {
-            if { $_tests_verbose > 0 } { _log_and_puts log "Examining group directory $group" }
-
-            # file grids.list must exist: it defines sequence of grids in the group
-            if { ! [file exists $dir/$group/grids.list] } {
-                _log_and_puts log "Warning: directory $dir/$group does not contain file grids.list, skipped"
+            # check that directory exists
+            if { ! [file isdirectory $dir] } {
+                _log_and_puts log "Warning: directory $dir listed in CSF_TestScriptsPath does not exist, skipped"
                 continue
             }
 
-            # read grids.list file and make a list of grids to be executed
-            set gridlist {}
-            set fd [open $dir/$group/grids.list]
-            set nline 0
-            while { [gets $fd line] >= 0 } {
-                incr nline
+            # search all directories in the current dir with specified mask
+            if [catch {glob -directory $dir -tail -types d {*}$groupmask} groups] { continue }
 
-                # skip comments and empty lines
-                if { [regexp "\[ \t\]*\#.*" $line] } { continue }
-                if { [string trim $line] == "" } { continue }
+            # iterate by groups
+            if { $_tests_verbose > 0 } { _log_and_puts log "Groups to be executed: $groups" }
+            foreach group [lsort -dictionary $groups] {
+                if { $_tests_verbose > 0 } { _log_and_puts log "Examining group directory $group" }
 
-                # get grid id and name
-                if { ! [regexp "^\(\[0-9\]+\)\[ \t\]*\(\[A-Za-z0-9_.-\]+\)\$" $line res gridid grid] } {
-                    _log_and_puts log "Warning: cannot recognize line $nline in file $dir/$group/grids.list as \"gridid gridname\"; ignored"
+                # file grids.list must exist: it defines sequence of grids in the group
+                if { ! [file exists $dir/$group/grids.list] } {
+                    _log_and_puts log "Warning: directory $dir/$group does not contain file grids.list, skipped"
                     continue
                 }
 
-                # check that grid fits into the specified mask
-                foreach mask $gridmask {
-                    if { $mask == $gridid || [string match $mask $grid] } {
-                        lappend gridlist $grid
-                    }
-                }
-            }
-            close $fd
+                # read grids.list file and make a list of grids to be executed
+                set gridlist {}
+                set fd [open $dir/$group/grids.list]
+                set nline 0
+                while { [gets $fd line] >= 0 } {
+                    incr nline
 
-            # iterate by all grids
-            foreach grid $gridlist {
+                    # skip comments and empty lines
+                    if { [regexp "\[ \t\]*\#.*" $line] } { continue }
+                    if { [string trim $line] == "" } { continue }
 
-                # check if this grid is aliased to another one
-                set griddir $dir/$group/$grid
-                if { [file exists $griddir/cases.list] } {
-                    set fd [open $griddir/cases.list]
-                    if { [gets $fd line] >= 0 } {
-                        set griddir [file normalize $dir/$group/$grid/[string trim $line]]
-                    }
-                    close $fd
-                }
-
-                # check if grid directory actually exists
-                if { ! [file isdirectory $griddir] } { 
-                    _log_and_puts log "Error: tests directory for grid $grid ($griddir) is missing; skipped"
-                    continue 
-                }
-
-                # create directory for logging test results
-                if { $logdir != "" } { file mkdir $logdir/$group/$grid }
-
-                # iterate by all tests in the grid directory
-                if { [catch {glob -directory $griddir -type f {*}$casemask} testfiles] } { continue }
-                foreach casefile [lsort -dictionary $testfiles] {
-                    # filter out files with reserved names
-                    set casename [file tail $casefile]
-                    if { $casename == "begin" || $casename == "end" ||
-                         $casename == "parse.rules" } {
+                    # get grid id and name
+                    if { ! [regexp "^\(\[0-9\]+\)\[ \t\]*\(\[A-Za-z0-9_.-\]+\)\$" $line res gridid grid] } {
+                        _log_and_puts log "Warning: cannot recognize line $nline in file $dir/$group/grids.list as \"gridid gridname\"; ignored"
                         continue
                     }
 
-                    lappend tests_list [list $dir $group $grid $casename $casefile]
+                    # check that grid fits into the specified mask
+                    foreach mask $gridmask {
+                        if { $mask == $gridid || [string match $mask $grid] } {
+                            lappend gridlist $grid
+                        }
+                    }
+                }
+                close $fd
+
+                # iterate by all grids
+                foreach grid $gridlist {
+
+                    # check if this grid is aliased to another one
+                    set griddir $dir/$group/$grid
+                    if { [file exists $griddir/cases.list] } {
+                        set fd [open $griddir/cases.list]
+                        if { [gets $fd line] >= 0 } {
+                            set griddir [file normalize $dir/$group/$grid/[string trim $line]]
+                        }
+                        close $fd
+                    }
+
+                    # check if grid directory actually exists
+                    if { ! [file isdirectory $griddir] } {
+                        _log_and_puts log "Error: tests directory for grid $grid ($griddir) is missing; skipped"
+                        continue
+                    }
+
+                    # create directory for logging test results
+                    if { $logdir != "" } { file mkdir $logdir/$group/$grid }
+
+                    # iterate by all tests in the grid directory
+                    if { [catch {glob -directory $griddir -type f {*}$casemask} testfiles] } { continue }
+                    foreach casefile [lsort -dictionary $testfiles] {
+                        # filter out files with reserved names
+                        set casename [file tail $casefile]
+                        if { $casename == "begin" || $casename == "end" ||
+                             $casename == "parse.rules" } {
+                            continue
+                        }
+
+                        lappend tests_list [list $dir $group $grid $casename $casefile]
+                    }
                 }
             }
         }
     }
     if { [llength $tests_list] < 1 } {
-        error "Error: no tests are found, check you input arguments and variable CSF_TestScriptsPath!"
+        error "Error: no tests are found, check your input arguments and variable CSF_TestScriptsPath!"
     } else {
         puts "Running tests (total [llength $tests_list] test cases)..."
     }

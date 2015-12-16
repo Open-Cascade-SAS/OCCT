@@ -109,6 +109,14 @@ Draw[]> testgrid -outdir d:/occt/last_results -overwrite
 ~~~~~
 In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
 
+To re-run test cases which were detected as regressions on previous run, option <i>-regress dirname</i> should be used.
+<i>dirname</i> is path to directory containing results of previous run. Only test cases with *FAILED* and *IMPROVEMENT* statuses will be tested.
+
+Example:
+~~~~~
+Draw[]> testgrid -regress d:/occt/last_results
+~~~~~
+
 Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command:
 
 ~~~~~
@@ -122,6 +130,8 @@ testgrid: Run all tests, or specified group, or one grid
     -overwrite: force writing logs in existing non-empty directory
     -xml filename: write XML report for Jenkins (in JUnit-like format)
     -beep: play sound signal at the end of the tests
+    -regress dirname: re-run only a set of tests that have been detected as regressions on some previous run.
+                      Here "dirname" is path to directory containing results of previous run.
     Groups, grids, and test cases to be executed can be specified by list of file 
     masks, separated by spaces or comma; default is all (*).
 ~~~~~
@@ -630,11 +640,11 @@ puts "REQUIRED ListOfPlatforms: RegularExpression"
 
 Here *ListOfPlatforms* and *RegularExpression* have the same meaning as in TODO statements described above.
 
-The REQUIRED statament can also be used to mask message that would normally be interpreted as error (according to rules defined in *parse.rules*) but should not be considered as such within current test.
+The REQUIRED statement can also be used to mask message that would normally be interpreted as error (according to rules defined in *parse.rules*) but should not be considered as such within current test.
 
 Example:
 ~~~~~
-puts "TODO REQUIRED Linux: Faulty shapes in variables faulty_1 to faulty_5"
+puts "REQUIRED Linux: Faulty shapes in variables faulty_1 to faulty_5"
 ~~~~~
 
 This statement notifies test system that errors reported by *checkshape* command are expected in that test case, and test should be considered as OK if this message appears, despite of presence of general rule stating that 'Faulty' signals failure.
