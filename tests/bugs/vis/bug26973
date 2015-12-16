@@ -1,0 +1,79 @@
+puts "============"
+puts "CR26973"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - selection of entities hidden by clipping planes is broken"
+##########################################################################################
+
+pload MODELING VISUALIZATION
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+
+proc OCC26973 { toTestViewPlanes toApplyTrsf theImgIdr theCaseName} {
+  if {$toApplyTrsf == "1"} {
+    box b -100 -100 -100 1 1 1
+    ttranslate b 100 100 100
+  } else {
+    box b 1 1 1
+  }
+
+  vdisplay b
+  vfit
+  vselmode b 4 1
+
+  vclipplane create pln
+  if {$toTestViewPlanes == "1"} {
+    vclipplane set pln view Driver1/Viewer1/View1
+  } else {
+    vclipplane set pln object b
+  }
+  vclipplane change pln equation 0 1 0 -0.5
+
+  vselect 200 140
+  set aTestInfo "Test case: "
+  append aTestInfo "clipping planes applied to "
+  set aDumpFileName $theImgIdr/${theCaseName}
+  if {$toTestViewPlanes == "1"} {
+    append aTestInfo "view, "
+    append aDumpFileName "_view"
+  } else {
+    append aTestInfo "object, "
+    append aDumpFileName "_obj"
+  }
+  append aTestInfo "object trsf is "
+  if {$toApplyTrsf == "1"} {
+    append aTestInfo "on"
+    append aDumpFileName "_with_trsf.png"
+  } else {
+    append aTestInfo "off"
+    append aDumpFileName "_wo_trsf.png"
+  }
+
+  if {[vnbselected] != 1} {
+    puts "ERROR: can not select face."
+    puts $aTestInfo
+  }
+  set aSelectedFace [string trim [lindex [split [vstate] "\n"] 1] ]
+  if {$aSelectedFace != "Face #1"} {
+    puts "ERROR: wrong face is selected."
+    puts "Actually seleced face: $aSelectedFace"
+    puts $aTestInfo
+  }
+
+  vdump $aDumpFileName
+  vremove -all
+  vclipplane delete pln
+}
+
+# check global clipping planes selection
+OCC26973 1 0 $imagedir $casename
+OCC26973 1 1 $imagedir $casename
+
+# check object clipping planes selection
+OCC26973 0 0 $imagedir $casename
+OCC26973 0 1 $imagedir $casename

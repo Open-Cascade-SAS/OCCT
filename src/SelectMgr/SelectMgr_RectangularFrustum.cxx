@@ -276,6 +276,8 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d &thePoint)
   // {i, j, k} vectors and store them to corresponding class fields
   cacheVertexProjections (this);
 
+  myViewClipRange.Clear();
+
   myScale = 1.0;
 }
 
@@ -303,6 +305,8 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
   // compute vertices projections onto frustum normals and
   // {i, j, k} vectors and store them to corresponding class fields
   cacheVertexProjections (this);
+
+  myViewClipRange.Clear();
 
   myScale = 1.0;
 }
@@ -395,6 +399,8 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAnd
 
   cacheVertexProjections (aRes);
 
+  aRes->myViewClipRange = myViewClipRange;
+
   return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
 }
 
@@ -430,7 +436,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
 
   theDepth = aNearestPnt.Distance (myNearPickedPnt);
 
-  return Standard_True;
+  return isViewClippingOk (theDepth);
 }
 
 // =======================================================================
@@ -449,7 +455,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt,
 
   theDepth = aDetectedPnt.Distance (myNearPickedPnt) * myScale;
 
-  return Standard_True;
+  return isViewClippingOk (theDepth);
 }
 
 // =======================================================================
@@ -474,7 +480,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
     return Standard_False;
 
   segmentSegmentDistance (thePnt1, thePnt2, theDepth);
-  return Standard_True;
+
+  return isViewClippingOk (theDepth);
 }
 
 // =======================================================================
@@ -524,7 +531,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const Handle(TColgp_HAr
                               theDepth);
   }
 
-  return Standard_True;
+  return isViewClippingOk (theDepth);
 }
 
 // =======================================================================
@@ -574,7 +581,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
       // is detected correctly, and distance to triangle's plane can be measured as distance to its arbitrary vertex.
       const gp_XYZ aDiff = myNearPickedPnt.XYZ() - thePnt1.XYZ();
       theDepth = aTriangleNormal.Dot (aDiff) * myScale;
-      return Standard_True;
+
+      return isViewClippingOk (theDepth);
     }
 
     gp_XYZ anEdge = (thePnt1.XYZ() - myNearPickedPnt.XYZ()) * (1.0 / anAlpha);
@@ -592,7 +600,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
     {
       gp_Pnt aDetectedPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTime;
       theDepth = myNearPickedPnt.Distance (aDetectedPnt) * myScale;
-      return Standard_True;
+
+      return isViewClippingOk (theDepth);
     }
 
     gp_Pnt aPnts[3] = {thePnt1, thePnt2, thePnt3};
@@ -613,7 +622,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
     segmentSegmentDistance (aPnts[aNearestEdgeIdx], aPnts[(aNearestEdgeIdx + 1) % 3], theDepth);
   }
 
-  return Standard_True;
+  return isViewClippingOk (theDepth);
 }
 
 // =======================================================================
@@ -637,18 +646,17 @@ gp_Pnt SelectMgr_RectangularFrustum::DetectedPoint (const Standard_Real theDepth
 }
 
 // =======================================================================
-// function : IsClipped
-// purpose  : Checks if the point of sensitive in which selection was
-//            detected belongs to the region defined by clipping planes
+// function : computeClippingRange
+// purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                          const Standard_Real theDepth)
+void SelectMgr_RectangularFrustum::computeClippingRange (const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                                         Standard_Real& theDepthMin,
+                                                         Standard_Real& theDepthMax)
 {
-  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (thePlanes);
-  Standard_Real aMaxDepth = DBL_MAX;
-  Standard_Real aMinDepth = -DBL_MAX;
+  theDepthMax = DBL_MAX;
+  theDepthMin = -DBL_MAX;
   Standard_Real aPlaneA, aPlaneB, aPlaneC, aPlaneD;
-  for ( ; aPlaneIt.More(); aPlaneIt.Next())
+  for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (thePlanes); aPlaneIt.More(); aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aClipPlane = aPlaneIt.Value();
     if (!aClipPlane->IsOn())
@@ -660,9 +668,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_Sequen
 
     const gp_XYZ& aPlaneDirXYZ = aGeomPlane.Axis().Direction().XYZ();
 
-    Standard_Real aDotProduct = myViewRayDir.XYZ().Dot (aPlaneDirXYZ);
-    Standard_Real aDistance = - myNearPickedPnt.XYZ().Dot (aPlaneDirXYZ) +
-                                aPlaneD;
+    Standard_Real aDotProduct = myViewRayDir.XYZ ().Dot (aPlaneDirXYZ);
+    Standard_Real aDistance = - myNearPickedPnt.XYZ ().Dot (aPlaneDirXYZ)
+                              - aPlaneD;
 
     // check whether the pick line is parallel to clip plane
     if (Abs (aDotProduct) < Precision::Angular())
@@ -687,13 +695,55 @@ Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_Sequen
     // change depth limits for case of opposite and directed planes
     if (aDotProduct < 0.0)
     {
-      aMaxDepth = Min (aDistToPln, aMaxDepth);
+      theDepthMax = Min (aDistToPln, theDepthMax);
     }
-    else if (aDistToPln > aMinDepth)
+    else if (aDistToPln > theDepthMin)
     {
-      aMinDepth = Max (aDistToPln, aMinDepth);
+      theDepthMin = Max (aDistToPln, theDepthMin);
     }
   }
+}
+
+// =======================================================================
+// function : IsClipped
+// purpose  : Checks if the point of sensitive in which selection was
+//            detected belongs to the region defined by clipping planes
+// =======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                                          const Standard_Real theDepth)
+{
+  Standard_Real aMaxDepth, aMinDepth;
+  computeClippingRange (thePlanes, aMinDepth, aMaxDepth);
 
   return (theDepth <= aMinDepth || theDepth >= aMaxDepth);
+}
+
+// =======================================================================
+// function : SetViewClipping
+// purpose  :
+// =======================================================================
+void SelectMgr_RectangularFrustum::SetViewClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+{
+  if (thePlanes.Size() == 0)
+  {
+    myViewClipRange.Clear();
+    return;
+  }
+
+  Standard_Real aMaxDepth, aMinDepth;
+  computeClippingRange (thePlanes, aMinDepth, aMaxDepth);
+  myViewClipRange.Set (aMinDepth, aMaxDepth);
+}
+
+// =======================================================================
+// function : isViewClippingOk
+// purpose  :
+// =======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::isViewClippingOk (const Standard_Real theDepth) const
+{
+  if (!myViewClipRange.IsValid())
+    return Standard_True;
+
+  return myViewClipRange.MaxDepth() > theDepth
+    && myViewClipRange.MinDepth() < theDepth;
 }

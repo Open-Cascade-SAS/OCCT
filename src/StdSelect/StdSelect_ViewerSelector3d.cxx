@@ -113,8 +113,6 @@ void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPix,
                                        const Standard_Integer theYPix,
                                        const Handle(V3d_View)& theView)
 {
-  SetClipping (theView->GetClipPlanes());
-
   if(myToUpdateTolerance)
   {
     mySelectingVolumeMgr.SetPixelTolerance (myTolerances.Tolerance());
@@ -129,6 +127,7 @@ void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPix,
   gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
                       static_cast<Standard_Real> (theYPix));
   mySelectingVolumeMgr.BuildSelectingVolume (aMousePos);
+  mySelectingVolumeMgr.SetViewClipping (theView->GetClipPlanes());
 
   TraverseSensitives();
 }
@@ -648,15 +647,6 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(Graphic3d_Str
     aSensGroup->AddPrimitiveArray(aPrims);
     aSensGroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
   }
-}
-
-//=======================================================================
-//function : SetClipping
-//purpose  :
-//=======================================================================
-void StdSelect_ViewerSelector3d::SetClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes)
-{
-  myClipPlanes = thePlanes;
 }
 
 //=======================================================================

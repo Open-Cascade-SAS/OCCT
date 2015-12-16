@@ -220,6 +220,10 @@ Standard_Real SelectMgr_BaseFrustum::DistToGeometryCenter (const gp_Pnt& /*theCO
   return DBL_MAX;
 }
 
+//=======================================================================
+// function : DetectedPoint
+// purpose  :
+//=======================================================================
 gp_Pnt SelectMgr_BaseFrustum::DetectedPoint (const Standard_Real /*theDepth*/) const
 {
   return gp_Pnt (RealLast(), RealLast(), RealLast());

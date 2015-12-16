@@ -155,6 +155,10 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean IsOverlapAllowed() const Standard_OVERRIDE;
 
+  //! Valid for point selection only!
+  //! Computes depth range for global (defined for the whole view) clipping planes.
+  Standard_EXPORT void SetViewClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes);
+
   //! A set of helper functions that return rectangular selecting frustum data
   Standard_EXPORT const gp_Pnt* GetVertices() const;
 

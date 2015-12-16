@@ -361,7 +361,7 @@ gp_Pnt SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theD
 Standard_Boolean SelectMgr_SelectingVolumeManager::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
                                                               const Standard_Real& theDepth)
 {
-  if (myActiveSelectionType == Point)
+  if (myActiveSelectionType != Point)
     return Standard_False;
 
   return mySelectingVolumes[Frustum]->IsClipped (thePlanes, theDepth);
@@ -427,4 +427,16 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPnt() const
    const SelectMgr_RectangularFrustum* aFr =
      reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
   return aFr->GetFarPnt();
+}
+
+//=======================================================================
+// function : SetViewClipping
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::SetViewClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes)
+{
+  if (myActiveSelectionType != Point)
+    return;
+
+  mySelectingVolumes[Frustum]->SetViewClipping (thePlanes);
 }

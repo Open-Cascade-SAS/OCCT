@@ -230,8 +230,8 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
     {
       if (HasDepthClipping (anOwner) && theMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point)
       {
-        Standard_Boolean isClipped = theMgr.IsClipped (anOwner->Selectable()->GetClipPlanes(),
-                                                       aPickResult.Depth());
+        Standard_Boolean isClipped = mySelectingVolumeMgr.IsClipped (anOwner->Selectable()->GetClipPlanes(),
+                                                                     aPickResult.Depth());
         if (isClipped)
           return;
       }

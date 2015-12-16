@@ -83,12 +83,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StdSelect_ViewerSelector3d,SelectMgr_ViewerSelector)
 
-protected:
-
-  //! Set view clipping for the selector.
-  //! @param thePlanes [in] the view planes.
-  Standard_EXPORT void SetClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes);
-
 private:
 
   void ComputeSensitivePrs (const Handle(Graphic3d_Structure)& theStructure,
@@ -97,7 +91,6 @@ private:
                             const Graphic3d_TransformPers& theTransPers);
 
   Graphic3d_SequenceOfStructure myStructs;
-  Graphic3d_SequenceOfHClipPlane myClipPlanes;
 };
 
 DEFINE_STANDARD_HANDLE(StdSelect_ViewerSelector3d, SelectMgr_ViewerSelector)

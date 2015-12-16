@@ -58,6 +58,7 @@ SelectMgr_TriangularFrustumSet.hxx
 SelectMgr_TypeOfBVHUpdate.hxx
 SelectMgr_TypeOfUpdate.hxx
 SelectMgr_VectorTypes.hxx
+SelectMgr_ViewClipRange.hxx
 SelectMgr_ViewerSelector.cxx
 SelectMgr_ViewerSelector.hxx
 SelectMgr_ViewerSelector.lxx
