@@ -16,7 +16,6 @@
 
 #define OPTIMISATION 1 
 
-
 #include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <Bnd_BoundSortBox.hxx>
@@ -41,7 +40,9 @@
 #include <Intf_Tool.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS_Face.hxx>
-
+#include <BRep_Tool.hxx>
+#include <TopoDS.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
 //=======================================================================
 //function : SurfaceType
 //purpose  : 
@@ -57,6 +58,7 @@ GeomAbs_SurfaceType IntCurvesFace_Intersector::SurfaceType() const
 IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
                                                      const Standard_Real aTol,
                                                      const Standard_Boolean aRestr)
+                                                    
 : 
   Tol(aTol),
   done(Standard_False),
@@ -121,65 +123,116 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
 					     const Standard_Real parinf,
 					     const Standard_Real parsup) 
 {
-  if(HICS.IsDone()) {
+  if(HICS.IsDone() && HICS.NbPoints() > 0) {
+    //Calculate tolerance for 2d classifier
+    Standard_Real mintol3d = BRep_Tool::Tolerance(face);
+    Standard_Real maxtol3d = mintol3d;
+    Standard_Real mintol2d = Tol, maxtol2d = Tol;
+    TopExp_Explorer anExp(face, TopAbs_EDGE);
+    for(; anExp.More(); anExp.Next())
+    {
+      Standard_Real curtol = BRep_Tool::Tolerance(TopoDS::Edge(anExp.Current()));
+      mintol3d = Min(mintol3d, curtol);
+      maxtol3d = Max(maxtol3d, curtol);
+    }
+    Standard_Real minres = Max(Hsurface->UResolution(mintol3d), Hsurface->VResolution(mintol3d));
+    Standard_Real maxres = Max(Hsurface->UResolution(maxtol3d), Hsurface->VResolution(maxtol3d));
+    mintol2d = Max(minres, Tol); 
+    maxtol2d = Max(maxres, Tol);
+    //
+    Handle(BRepTopAdaptor_TopolTool) anAdditionalTool;
     for(Standard_Integer index=HICS.NbPoints(); index>=1; index--) {  
       const IntCurveSurface_IntersectionPoint& HICSPointindex = HICS.Point(index);
       gp_Pnt2d Puv(HICSPointindex.U(),HICSPointindex.V());
-      
-      TopAbs_State currentstate = myTopolTool->Classify(Puv,Tol);
+
+      //TopAbs_State currentstate = myTopolTool->Classify(Puv,Tol);
+      TopAbs_State currentstate = myTopolTool->Classify(Puv, mintol2d);
+      if(currentstate == TopAbs_OUT && maxtol2d > mintol2d) {
+        if(anAdditionalTool.IsNull())
+        {
+          anAdditionalTool = new BRepTopAdaptor_TopolTool(Hsurface);
+        }
+        currentstate = anAdditionalTool->Classify(Puv,maxtol2d);
+        if(currentstate == TopAbs_ON)
+        {
+          currentstate = TopAbs_OUT;
+          //Find out nearest edge and it's tolerance
+          anExp.Init(face, TopAbs_EDGE);
+          for(; anExp.More(); anExp.Next())
+          {
+            TopoDS_Edge anE = TopoDS::Edge(anExp.Current());
+            Standard_Real curtol = BRep_Tool::Tolerance(anE);
+            Standard_Real tol2d = Max(Hsurface->UResolution(curtol), Hsurface->VResolution(curtol));
+            tol2d = Max(tol2d, Tol);
+            Standard_Real f, l;
+            Handle(Geom2d_Curve) aPC = BRep_Tool::CurveOnSurface(anE, face, f, l);
+            Geom2dAPI_ProjectPointOnCurve aProj(Puv, aPC, f, l);
+            if(aProj.NbPoints() > 0)
+            {
+              Standard_Real d = aProj.LowerDistance();
+              if(d <= tol2d)
+              {
+                //Nearest edge is found, state is really ON
+                currentstate = TopAbs_ON;
+                break;
+              }
+            }
+          }
+        }
+      }
       if(currentstate==TopAbs_IN || currentstate==TopAbs_ON) { 
-	Standard_Real HICSW = HICSPointindex.W();
-	if(HICSW >= parinf && HICSW <= parsup ) { 
-	  Standard_Real U          = HICSPointindex.U();
-	  Standard_Real V          = HICSPointindex.V();
-	  Standard_Real W          = HICSW; 
-	  IntCurveSurface_TransitionOnCurve transition = HICSPointindex.Transition();
-	  gp_Pnt pnt        = HICSPointindex.Pnt();
-	  //	  state      = currentstate;
-	  //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
-	  Standard_Integer anIntState = (currentstate == TopAbs_IN) ? 0 : 1;
-	  //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
+        Standard_Real HICSW = HICSPointindex.W();
+        if(HICSW >= parinf && HICSW <= parsup ) { 
+          Standard_Real U          = HICSPointindex.U();
+          Standard_Real V          = HICSPointindex.V();
+          Standard_Real W          = HICSW; 
+          IntCurveSurface_TransitionOnCurve transition = HICSPointindex.Transition();
+          gp_Pnt pnt        = HICSPointindex.Pnt();
+          //	  state      = currentstate;
+          //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
+          Standard_Integer anIntState = (currentstate == TopAbs_IN) ? 0 : 1;
+          //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
 
-	  if(transition != IntCurveSurface_Tangent && face.Orientation()==TopAbs_REVERSED) { 
-	    if(transition == IntCurveSurface_In) 
-	      transition = IntCurveSurface_Out;
-	    else 
-	      transition = IntCurveSurface_In;
-	  }
-	  //----- Insertion du point 
-	  if(nbpnt==0) { 
-	    IntCurveSurface_IntersectionPoint PPP(pnt,U,V,W,transition);
-	    SeqPnt.Append(PPP);
-	    //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
-	    mySeqState.Append(anIntState);
-	    //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
-	  }
-	  else { 
-	    Standard_Integer i = 1;
-	    Standard_Integer b = nbpnt+1;                    
-	    while(i<=nbpnt) {
-	      const IntCurveSurface_IntersectionPoint& Pnti=SeqPnt.Value(i);
-	      Standard_Real wi = Pnti.W();
-	      if(wi >= W) { b=i; i=nbpnt; }
-	      i++;
-	    }
-	    IntCurveSurface_IntersectionPoint PPP(pnt,U,V,W,transition);
-	    //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
-// 	    if(b>nbpnt)          { SeqPnt.Append(PPP); } 
-// 	    else if(b>0)             { SeqPnt.InsertBefore(b,PPP); } 
-	    if(b>nbpnt) {
-	      SeqPnt.Append(PPP);
-	      mySeqState.Append(anIntState);
-	    } else if(b>0) {
-	      SeqPnt.InsertBefore(b,PPP);
-	      mySeqState.InsertBefore(b, anIntState);
-	    }
-	    //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
-	  }
+          if(transition != IntCurveSurface_Tangent && face.Orientation()==TopAbs_REVERSED) { 
+            if(transition == IntCurveSurface_In) 
+              transition = IntCurveSurface_Out;
+            else 
+              transition = IntCurveSurface_In;
+          }
+          //----- Insertion du point 
+          if(nbpnt==0) { 
+            IntCurveSurface_IntersectionPoint PPP(pnt,U,V,W,transition);
+            SeqPnt.Append(PPP);
+            //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
+            mySeqState.Append(anIntState);
+            //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
+          }
+          else { 
+            Standard_Integer i = 1;
+            Standard_Integer b = nbpnt+1;                    
+            while(i<=nbpnt) {
+              const IntCurveSurface_IntersectionPoint& Pnti=SeqPnt.Value(i);
+              Standard_Real wi = Pnti.W();
+              if(wi >= W) { b=i; i=nbpnt; }
+              i++;
+            }
+            IntCurveSurface_IntersectionPoint PPP(pnt,U,V,W,transition);
+            //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
+            // 	    if(b>nbpnt)          { SeqPnt.Append(PPP); } 
+            // 	    else if(b>0)             { SeqPnt.InsertBefore(b,PPP); } 
+            if(b>nbpnt) {
+              SeqPnt.Append(PPP);
+              mySeqState.Append(anIntState);
+            } else if(b>0) {
+              SeqPnt.InsertBefore(b,PPP);
+              mySeqState.InsertBefore(b, anIntState);
+            }
+            //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
+          }
 
- 
-	  nbpnt++;
-	} 
+
+          nbpnt++;
+        } 
       } //-- classifier state is IN or ON
     } //-- Loop on Intersection points.
   } //-- HICS.IsDone()
