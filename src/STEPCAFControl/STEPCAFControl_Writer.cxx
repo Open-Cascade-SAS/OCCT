@@ -52,7 +52,7 @@
 #include <STEPConstruct_DataMapOfAsciiStringTransient.hxx>
 #include <STEPConstruct_DataMapOfPointTransient.hxx>
 #include <STEPConstruct_ExternRefs.hxx>
-#include <STEPConstruct_GDTProperty.hxx>
+#include <STEPCAFControl_GDTProperty.hxx>
 #include <STEPConstruct_Styles.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
 #include <STEPControl_StepModelType.hxx>
@@ -2404,7 +2404,7 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
   }
     else {
       Handle(StepDimTol_PlacedDatumTargetFeature) aPDTF = new StepDimTol_PlacedDatumTargetFeature();
-      aPDTF->Init(new TCollection_HAsciiString(), STEPConstruct_GDTProperty::GetDatumTargetName(aDatumType),
+      aPDTF->Init(new TCollection_HAsciiString(), STEPCAFControl_GDTProperty::GetDatumTargetName(aDatumType),
         aPDS, StepData_LTrue, aTargetId);
       Model->AddWithRefs(aPDTF);
       aDatumTarget = aPDTF;
@@ -2418,7 +2418,7 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
       StepBasic_Unit aUnit = GetUnit(aRC);
       gp_Ax2 aDTAxis = anObject->GetDatumTargetAxis();
       Handle(StepGeom_Axis2Placement3d) anA2P3D = 
-        STEPConstruct_GDTProperty::GetAxis2Placement3D(aDTAxis);
+        STEPCAFControl_GDTProperty::GetAxis2Placement3D(aDTAxis);
       Handle(StepRepr_HArray1OfRepresentationItem) anItems;
       // Process each datum target type
       if (aDatumType == XCAFDimTolObjects_DatumTargetType_Point) {
@@ -2558,7 +2558,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
       StepShape_ValueQualifier anItem;
       Handle(StepShape_TypeQualifier) aType = new StepShape_TypeQualifier();
       XCAFDimTolObjects_DimensionQualifier aQualifier = theObject->GetQualifier();
-      aType->Init(STEPConstruct_GDTProperty::GetDimQualifierName(aQualifier));
+      aType->Init(STEPCAFControl_GDTProperty::GetDimQualifierName(aQualifier));
       aModel->AddWithRefs(aType);
       anItem.SetValue(aType);
       aQualifiers->SetValue(1, anItem);
@@ -2607,7 +2607,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
       XCAFDimTolObjects_DimensionModif aModif = aModifiers.Value(i);
       Handle(StepRepr_DescriptiveRepresentationItem) aModifItem = 
         new StepRepr_DescriptiveRepresentationItem();
-      aModifItem->Init(new TCollection_HAsciiString(), STEPConstruct_GDTProperty::GetDimModifierName(aModif));
+      aModifItem->Init(new TCollection_HAsciiString(), STEPCAFControl_GDTProperty::GetDimModifierName(aModif));
       aModel->AddWithRefs(aModifItem);
       aModifItems->SetValue(i, aModifItem);
     }
@@ -2681,7 +2681,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
     XCAFDimTolObjects_DimensionGrade aGrade;
     if (!theObject->GetClassOfTolerance(isHole, aFormVariance, aGrade))
       return;
-    Handle(StepShape_LimitsAndFits) aLAF = STEPConstruct_GDTProperty::GetLimitsAndFits(isHole, aFormVariance, aGrade);
+    Handle(StepShape_LimitsAndFits) aLAF = STEPCAFControl_GDTProperty::GetLimitsAndFits(isHole, aFormVariance, aGrade);
     aModel->AddWithRefs(aLAF);
     StepShape_ToleranceMethodDefinition aMethod;
     aMethod.SetValue(aLAF);
@@ -2760,7 +2760,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
       XCAFDimTolObjects_DatumModifWithValue aModifWithVal;
       Standard_Real aValue = 0;
       aDatumSeqPos.Value(1)->GetModifierWithValue(aModifWithVal, aValue);
-      aModifiers = STEPConstruct_GDTProperty::GetDatumRefModifiers(aSimpleModifiers, aModifWithVal, aValue, aUnit);
+      aModifiers = STEPCAFControl_GDTProperty::GetDatumRefModifiers(aSimpleModifiers, aModifWithVal, aValue, aUnit);
       // Add Datum_Reference_Modifier_With_Value
       if (!aModifiers.IsNull()) {
         Handle(StepDimTol_DatumReferenceModifierWithValue) aDRMWV = 
@@ -2786,7 +2786,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
         Standard_Real aValue = 0;
         aDatumSeqPos.Value(j)->GetModifierWithValue(aModifWithVal, aValue);
         Handle(StepDimTol_HArray1OfDatumReferenceModifier) anElemModifiers =
-          STEPConstruct_GDTProperty::GetDatumRefModifiers(aSimpleModifiers, aModifWithVal, aValue, aUnit);
+          STEPCAFControl_GDTProperty::GetDatumRefModifiers(aSimpleModifiers, aModifWithVal, aValue, aUnit);
         // Add Datum_Reference_Modifier_With_Value
         if (!anElemModifiers.IsNull()) {
           Handle(StepDimTol_DatumReferenceModifierWithValue) aDRMWV = 
@@ -2836,7 +2836,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
   // Axis
   if (anObject->HasAxis()) {
     Handle(StepGeom_Axis2Placement3d) anAxis =
-      STEPConstruct_GDTProperty::GetAxis2Placement3D(anObject->GetAxis());
+      STEPCAFControl_GDTProperty::GetAxis2Placement3D(anObject->GetAxis());
     Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
     StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
     aDefinition.SetValue(aDS);
@@ -2883,7 +2883,7 @@ static void WriteToleranceZone (const Handle(XSControl_WorkSession) &WS,
   // Create Tolerance_Zone
   Handle(StepDimTol_ToleranceZoneForm) aForm = new StepDimTol_ToleranceZoneForm();
   Model->AddWithRefs(aForm);
-  aForm->Init(STEPConstruct_GDTProperty::GetTolValueType(theObject->GetTypeOfValue()));
+  aForm->Init(STEPCAFControl_GDTProperty::GetTolValueType(theObject->GetTypeOfValue()));
   Handle(StepDimTol_HArray1OfToleranceZoneTarget) aZoneTargetArray = new StepDimTol_HArray1OfToleranceZoneTarget(1, 1);
   StepDimTol_ToleranceZoneTarget aTarget;
   aTarget.SetValue(theEntity);
@@ -2992,7 +2992,7 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
         aModifiers.Value(i) == XCAFDimTolObjects_GeomToleranceModif_All_Over)
         continue;
       StepDimTol_GeometricToleranceModifier aModif = 
-        STEPConstruct_GDTProperty::GetGeomToleranceModifier(aModifiers.Value(i));
+        STEPCAFControl_GDTProperty::GetGeomToleranceModifier(aModifiers.Value(i));
       aModifArray->SetValue(k, aModif);
       k++;
     }
@@ -3027,7 +3027,7 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
     new StepDimTol_GeometricToleranceWithModifiers();
   aGTWM->SetModifiers(aModifArray);
   StepDimTol_GeometricToleranceType aType = 
-    STEPConstruct_GDTProperty::GetGeomToleranceType(anObject->GetType());
+    STEPCAFControl_GDTProperty::GetGeomToleranceType(anObject->GetType());
 
   // Init and write necessary subtype of Geometric_Tolerance entity
   Handle(StepDimTol_GeometricTolerance) aGeomTol;
@@ -3077,7 +3077,7 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
     else {
       // Geometric_Tolerance
       Handle(StepDimTol_GeometricTolerance) aResult = 
-        STEPConstruct_GDTProperty::GetGeomTolerance(anObject->GetType());
+        STEPCAFControl_GDTProperty::GetGeomTolerance(anObject->GetType());
       if (!aResult.IsNull()) {
         aResult->Init(aName, aDescription, aLMWU, aGTTarget);
         aGeomTol = aResult;
@@ -3577,10 +3577,10 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
     // Write dimensions
     StepShape_DimensionalCharacteristic aDimension;
     XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
-    if (STEPConstruct_GDTProperty::IsDimensionalLocation(aDimType)) {
+    if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType)) {
       // Dimensional_Location
       Handle(StepShape_DimensionalLocation) aDim = new StepShape_DimensionalLocation();
-      aDim->Init(STEPConstruct_GDTProperty::GetDimTypeName(aDimType), Standard_False, NULL, aFirstSA, aSecondSA);
+      aDim->Init(STEPCAFControl_GDTProperty::GetDimTypeName(aDimType), Standard_False, NULL, aFirstSA, aSecondSA);
       aDimension.SetValue(aDim);
     }
     else if (aDimType == XCAFDimTolObjects_DimensionType_Location_Angular) {
@@ -3607,10 +3607,10 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
       aDim->Init(new TCollection_HAsciiString(), Standard_False, NULL, aFirstSA, aSecondSA, aPathSA);
       aDimension.SetValue(aDim);
     }
-    else if (STEPConstruct_GDTProperty::IsDimensionalSize(aDimType)) {
+    else if (STEPCAFControl_GDTProperty::IsDimensionalSize(aDimType)) {
       // Dimensional_Size
       Handle(StepShape_DimensionalSize) aDim = new StepShape_DimensionalSize();
-      aDim->Init(aFirstSA, STEPConstruct_GDTProperty::GetDimTypeName(aDimType));
+      aDim->Init(aFirstSA, STEPCAFControl_GDTProperty::GetDimTypeName(aDimType));
       aDimension.SetValue(aDim);
     }
     else if (aDimType == XCAFDimTolObjects_DimensionType_Size_Angular) {

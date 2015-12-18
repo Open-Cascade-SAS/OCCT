@@ -27,3 +27,5 @@ STEPCAFControl_StackItemOfDictionaryOfExternFile.hxx
 STEPCAFControl_StackItemOfDictionaryOfExternFile_0.cxx
 STEPCAFControl_Writer.cxx
 STEPCAFControl_Writer.hxx
+STEPCAFControl_GDTProperty.hxx
+STEPCAFControl_GDTProperty.cxx

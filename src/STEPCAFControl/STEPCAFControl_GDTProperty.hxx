@@ -1,7 +1,6 @@
-// Created on: 1999-09-08
-// Created by: Andrey BETENEV
-// Copyright (c) 1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2015-09-10
+// Created by: Irina Krylova
+// Copyright (c) 1999-2015 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _STEPConstruct_GDTProperty_HeaderFile
-#define _STEPConstruct_GDTProperty_HeaderFile
+#ifndef _STEPCAFControl_GDTProperty_HeaderFile
+#define _STEPCAFControl_GDTProperty_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -47,13 +46,13 @@
 
 //! This class provides tools for access (read)
 //! the GDT properties.
-class STEPConstruct_GDTProperty
+class STEPCAFControl_GDTProperty
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT STEPConstruct_GDTProperty();
+  Standard_EXPORT STEPCAFControl_GDTProperty();
   Standard_EXPORT static void GetDimModifiers(const Handle(StepRepr_CompoundRepresentationItem)& theCRI,
                                               XCAFDimTolObjects_DimensionModifiersSequence& theModifiers);
 
@@ -88,7 +87,7 @@ public:
 
   Standard_EXPORT static Handle(TCollection_HAsciiString) GetDatumTargetName(const XCAFDimTolObjects_DatumTargetType theDatumType);
 
-  Standard_EXPORT static Handle(StepGeom_Axis2Placement3d) GetAxis2Placement3D(const gp_Ax2 theAxis);
+  Standard_EXPORT static Handle(StepGeom_Axis2Placement3d) GetAxis2Placement3D(const gp_Ax2& theAxis);
 
   Standard_EXPORT static Standard_Boolean IsDimensionalLocation(const XCAFDimTolObjects_DimensionType theType);
 
@@ -109,4 +108,4 @@ public:
 
 };
 
-#endif // _STEPConstruct_GDTProperty_HeaderFile
+#endif // _STEPCAFControl_GDTProperty_HeaderFile

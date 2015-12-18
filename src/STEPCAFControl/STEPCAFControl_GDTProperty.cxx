@@ -1,7 +1,6 @@
-// Created on: 1999-09-09
-// Created by: Andrey BETENEV
-// Copyright (c) 1999-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2015-09-10
+// Created by: Irina Krylova
+// Copyright (c) 1999-2015 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPConstruct_GDTProperty.hxx>
+#include <STEPCAFControl_GDTProperty.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Direction.hxx>
@@ -30,11 +29,11 @@
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
 
 //=======================================================================
-//function : STEPConstruct_GDTProperty
+//function : STEPCAFControl_GDTProperty
 //purpose  : 
 //=======================================================================
 
-STEPConstruct_GDTProperty::STEPConstruct_GDTProperty ()
+STEPCAFControl_GDTProperty::STEPCAFControl_GDTProperty ()
 {
 }
 
@@ -42,7 +41,7 @@ STEPConstruct_GDTProperty::STEPConstruct_GDTProperty ()
 //function : getDimModifiers
 //purpose  : 
 //=======================================================================
-void STEPConstruct_GDTProperty::GetDimModifiers(const Handle(StepRepr_CompoundRepresentationItem)& theCRI,
+void STEPCAFControl_GDTProperty::GetDimModifiers(const Handle(StepRepr_CompoundRepresentationItem)& theCRI,
                             XCAFDimTolObjects_DimensionModifiersSequence& theModifiers)
 {
   for (Standard_Integer l = 1; l <= theCRI->ItemElement()->Length(); l++)
@@ -177,7 +176,7 @@ void STEPConstruct_GDTProperty::GetDimModifiers(const Handle(StepRepr_CompoundRe
 //function : getClassOfTolerance
 //purpose  : 
 //=======================================================================
-void STEPConstruct_GDTProperty::GetDimClassOfTolerance(const Handle(StepShape_LimitsAndFits)& theLAF,
+void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(const Handle(StepShape_LimitsAndFits)& theLAF,
                                    Standard_Boolean& theHolle,
                                    XCAFDimTolObjects_DimensionFormVariance& theFV,
                                    XCAFDimTolObjects_DimensionGrade& theG)
@@ -409,7 +408,7 @@ void STEPConstruct_GDTProperty::GetDimClassOfTolerance(const Handle(StepShape_Li
 //function : getDimType
 //purpose  : 
 //=======================================================================
-Standard_Boolean STEPConstruct_GDTProperty::GetDimType(const Handle(TCollection_HAsciiString)& theName,
+Standard_Boolean STEPCAFControl_GDTProperty::GetDimType(const Handle(TCollection_HAsciiString)& theName,
                        XCAFDimTolObjects_DimensionType& theType)
 {
     TCollection_AsciiString aName = theName->String();
@@ -524,7 +523,7 @@ Standard_Boolean STEPConstruct_GDTProperty::GetDimType(const Handle(TCollection_
 //function : DatumTargetType
 //purpose  : 
 //=======================================================================
-Standard_Boolean STEPConstruct_GDTProperty::GetDatumTargetType(const Handle(TCollection_HAsciiString)& theDescription,
+Standard_Boolean STEPCAFControl_GDTProperty::GetDatumTargetType(const Handle(TCollection_HAsciiString)& theDescription,
                        XCAFDimTolObjects_DatumTargetType& theType)
 {
     TCollection_AsciiString aName = theDescription->String();
@@ -561,7 +560,7 @@ Standard_Boolean STEPConstruct_GDTProperty::GetDatumTargetType(const Handle(TCol
 //function : GetDimQualifierType
 //purpose  : 
 //=======================================================================
-Standard_Boolean STEPConstruct_GDTProperty::GetDimQualifierType(const Handle(TCollection_HAsciiString)& theDescription,
+Standard_Boolean STEPCAFControl_GDTProperty::GetDimQualifierType(const Handle(TCollection_HAsciiString)& theDescription,
                        XCAFDimTolObjects_DimensionQualifier& theType)
 {
     TCollection_AsciiString aName = theDescription->String();
@@ -590,7 +589,7 @@ Standard_Boolean STEPConstruct_GDTProperty::GetDimQualifierType(const Handle(TCo
 //function : GetTolValueType
 //purpose  : 
 //=======================================================================
-Standard_Boolean STEPConstruct_GDTProperty::GetTolValueType(const Handle(TCollection_HAsciiString)& theDescription,
+Standard_Boolean STEPCAFControl_GDTProperty::GetTolValueType(const Handle(TCollection_HAsciiString)& theDescription,
                        XCAFDimTolObjects_GeomToleranceTypeValue& theType)
 {
     TCollection_AsciiString aName = theDescription->String();
@@ -616,7 +615,7 @@ Standard_Boolean STEPConstruct_GDTProperty::GetTolValueType(const Handle(TCollec
 //function : GetDimTypeName
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimTypeName(const XCAFDimTolObjects_DimensionType theType)
+Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimTypeName(const XCAFDimTolObjects_DimensionType theType)
 {
   Handle(TCollection_HAsciiString) aName;
         switch (theType) {
@@ -705,7 +704,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimTypeName(const
 //function : GetDimQualifierName
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimQualifierName(const XCAFDimTolObjects_DimensionQualifier theQualifier)
+Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimQualifierName(const XCAFDimTolObjects_DimensionQualifier theQualifier)
 {
   Handle(TCollection_HAsciiString) aName;
   switch (theQualifier) {
@@ -728,7 +727,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimQualifierName(
 //function : GetDimModifierName
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimModifierName(const XCAFDimTolObjects_DimensionModif theModifier)
+Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimModifierName(const XCAFDimTolObjects_DimensionModif theModifier)
 {
   Handle(TCollection_HAsciiString) aName;
   switch (theModifier) {
@@ -810,7 +809,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDimModifierName(c
 //function : GetLimitsAndFits
 //purpose  : 
 //=======================================================================
-Handle(StepShape_LimitsAndFits) STEPConstruct_GDTProperty::GetLimitsAndFits(Standard_Boolean theHole,
+Handle(StepShape_LimitsAndFits) STEPCAFControl_GDTProperty::GetLimitsAndFits(Standard_Boolean theHole,
                        XCAFDimTolObjects_DimensionFormVariance theFormVariance,
                        XCAFDimTolObjects_DimensionGrade theGrade)
 {
@@ -927,7 +926,7 @@ Handle(StepShape_LimitsAndFits) STEPConstruct_GDTProperty::GetLimitsAndFits(Stan
 //function : GetDatumTargetName
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDatumTargetName(const XCAFDimTolObjects_DatumTargetType theDatumType)
+Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDatumTargetName(const XCAFDimTolObjects_DatumTargetType theDatumType)
 {
   Handle(TCollection_HAsciiString) aName;
   switch (theDatumType) {
@@ -955,7 +954,7 @@ Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetDatumTargetName(c
 //function : GetAxis2Placement3D
 //purpose  : 
 //=======================================================================
-Handle(StepGeom_Axis2Placement3d) STEPConstruct_GDTProperty::GetAxis2Placement3D(const gp_Ax2 theAxis)
+Handle(StepGeom_Axis2Placement3d) STEPCAFControl_GDTProperty::GetAxis2Placement3D(const gp_Ax2& theAxis)
 {
   Handle(StepGeom_Axis2Placement3d) anA2P3D = new StepGeom_Axis2Placement3d();
   Handle(StepGeom_CartesianPoint) aPoint = new StepGeom_CartesianPoint();
@@ -982,7 +981,7 @@ Handle(StepGeom_Axis2Placement3d) STEPConstruct_GDTProperty::GetAxis2Placement3D
 //function : IsDimensionalSize
 //purpose  : 
 //=======================================================================
-Standard_Boolean STEPConstruct_GDTProperty::IsDimensionalLocation(const XCAFDimTolObjects_DimensionType theType)
+Standard_Boolean STEPCAFControl_GDTProperty::IsDimensionalLocation(const XCAFDimTolObjects_DimensionType theType)
 {
   if (theType == XCAFDimTolObjects_DimensionType_Location_None ||
       theType == XCAFDimTolObjects_DimensionType_Location_CurvedDistance  ||
@@ -1004,7 +1003,7 @@ Standard_Boolean STEPConstruct_GDTProperty::IsDimensionalLocation(const XCAFDimT
 //function : IsDimensionalSize
 //purpose  : 
 //=======================================================================
-Standard_Boolean STEPConstruct_GDTProperty::IsDimensionalSize(const XCAFDimTolObjects_DimensionType theType)
+Standard_Boolean STEPCAFControl_GDTProperty::IsDimensionalSize(const XCAFDimTolObjects_DimensionType theType)
 {
   if (theType == XCAFDimTolObjects_DimensionType_Size_CurveLength ||
       theType == XCAFDimTolObjects_DimensionType_Size_Diameter ||
@@ -1028,7 +1027,7 @@ Standard_Boolean STEPConstruct_GDTProperty::IsDimensionalSize(const XCAFDimTolOb
 //function : GetGeomToleranceType
 //purpose  : 
 //=======================================================================
-StepDimTol_GeometricToleranceType STEPConstruct_GDTProperty::GetGeomToleranceType(const XCAFDimTolObjects_GeomToleranceType theType)
+StepDimTol_GeometricToleranceType STEPCAFControl_GDTProperty::GetGeomToleranceType(const XCAFDimTolObjects_GeomToleranceType theType)
 {
   switch (theType) {
     case XCAFDimTolObjects_GeomToleranceType_Angularity:
@@ -1070,7 +1069,7 @@ StepDimTol_GeometricToleranceType STEPConstruct_GDTProperty::GetGeomToleranceTyp
 //function : GetGeomToleranceType
 //purpose  : 
 //=======================================================================
-XCAFDimTolObjects_GeomToleranceType STEPConstruct_GDTProperty::GetGeomToleranceType(const StepDimTol_GeometricToleranceType theType)
+XCAFDimTolObjects_GeomToleranceType STEPCAFControl_GDTProperty::GetGeomToleranceType(const StepDimTol_GeometricToleranceType theType)
 {
   switch (theType) {
     case StepDimTol_GTTAngularityTolerance:
@@ -1112,7 +1111,7 @@ XCAFDimTolObjects_GeomToleranceType STEPConstruct_GDTProperty::GetGeomToleranceT
 //function : GetGeomTolerance
 //purpose  : 
 //=======================================================================
-Handle(StepDimTol_GeometricTolerance) STEPConstruct_GDTProperty::
+Handle(StepDimTol_GeometricTolerance) STEPCAFControl_GDTProperty::
   GetGeomTolerance(const XCAFDimTolObjects_GeomToleranceType theType)
 {
   switch (theType) {
@@ -1139,7 +1138,7 @@ Handle(StepDimTol_GeometricTolerance) STEPConstruct_GDTProperty::
 //function : GetGeomToleranceModifier
 //purpose  : 
 //=======================================================================
-StepDimTol_GeometricToleranceModifier STEPConstruct_GDTProperty::
+StepDimTol_GeometricToleranceModifier STEPCAFControl_GDTProperty::
   GetGeomToleranceModifier(const XCAFDimTolObjects_GeomToleranceModif theModifier)
 {
   switch (theModifier) {
@@ -1182,7 +1181,7 @@ StepDimTol_GeometricToleranceModifier STEPConstruct_GDTProperty::
 //function : GetDatumRefModifiers
 //purpose  : Note: this function does not add anything to model
 //=======================================================================
-Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPConstruct_GDTProperty::
+Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPCAFControl_GDTProperty::
   GetDatumRefModifiers(const XCAFDimTolObjects_DatumModifiersSequence theModifiers,
                        const XCAFDimTolObjects_DatumModifWithValue theModifWithVal,
                        const Standard_Real theValue,
@@ -1311,7 +1310,7 @@ Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPConstruct_GDTProperty::
 //function : GetTolValueType
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) STEPConstruct_GDTProperty::GetTolValueType(const XCAFDimTolObjects_GeomToleranceTypeValue& theType)
+Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetTolValueType(const XCAFDimTolObjects_GeomToleranceTypeValue& theType)
 {
   switch (theType) {
     case XCAFDimTolObjects_GeomToleranceTypeValue_Diameter:

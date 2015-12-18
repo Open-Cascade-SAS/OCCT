@@ -19,7 +19,7 @@
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 
-#include <STEPConstruct_GDTProperty.hxx>
+#include <STEPCAFControl_GDTProperty.hxx>
 
 #include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
@@ -380,7 +380,7 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
       if (anObject.IsNull())
         continue;
       XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
-      if (STEPConstruct_GDTProperty::IsDimensionalLocation(aDimType)) {
+      if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType)) {
         nbLocation++;
       }
       else if (aDimType == XCAFDimTolObjects_DimensionType_Location_Angular) {
@@ -391,7 +391,7 @@ static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc,
         nbLocation++;
         nbWithPath++;
       }
-      else if (STEPConstruct_GDTProperty::IsDimensionalSize(aDimType)) {
+      else if (STEPCAFControl_GDTProperty::IsDimensionalSize(aDimType)) {
         nbSize++;
       }
       else if (aDimType == XCAFDimTolObjects_DimensionType_Size_Angular) {
