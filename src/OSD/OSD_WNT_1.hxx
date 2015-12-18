@@ -45,8 +45,6 @@ extern "C" {
 
 enum DIR_RESPONSE { DIR_ABORT, DIR_RETRY, DIR_IGNORE };
 
-enum MB_ITEMTYPE { MBT_BUTTON, MBT_ICON };
-
 #define FLAG_READ_PIPE  0x00000001
 #define FLAG_EOF        0x00000002
 #define FLAG_FILE       0x00000004
@@ -63,22 +61,6 @@ enum MB_ITEMTYPE { MBT_BUTTON, MBT_ICON };
 
 #define LODWORD( a ) ( DWORD )(   ( ( _int64 )( a ) ) & 0x00000000FFFFFFFF   )
 #define HIDWORD( a ) ( DWORD )(   ( ( _int64 )( a ) ) >> 32                  )
-
-typedef struct _group_sid {
-
-                DWORD  nCount;
-                PSID*  pSID;
-
-               } GROUP_SID, *PGROUP_SID;
-
-typedef struct _MB_DESC {
-
-                MB_ITEMTYPE   itemType;
-                int           itemId;
-                char*         buttonLabel;
-
-               } MB_DESC, *LPMB_DESC;
-
 
 typedef struct _file_ace {
 
@@ -114,13 +96,6 @@ void   OSDAPI FreeTokenInformation  ( LPVOID                          );
 PSECURITY_DESCRIPTOR OSDAPI GetFileSecurityEx ( LPCWSTR, SECURITY_INFORMATION );
 void                 OSDAPI FreeFileSecurity  ( PSECURITY_DESCRIPTOR          );
 
-BOOL OSDAPI LookupAccountSidEx ( PSID, LPWSTR*, LPWSTR* );
-void OSDAPI FreeAccountNames   ( LPWSTR, LPWSTR         );
-
-PSID OSDAPI GetSecurityDescriptorOwnerEx ( PSECURITY_DESCRIPTOR );
-PSID OSDAPI GetSecurityDescriptorGroupEx ( PSECURITY_DESCRIPTOR );
-PACL OSDAPI GetSecurityDescriptorDaclEx  ( PSECURITY_DESCRIPTOR );
-
 PACL OSDAPI CreateAcl ( DWORD );
 void OSDAPI FreeAcl   ( PACL  );
 
@@ -136,12 +111,6 @@ PSID OSDAPI BatchSid        ( void );
 PSID OSDAPI CreatorOwnerSid ( void );
 PSID OSDAPI NullSid         ( void );
 PSID OSDAPI NtSid           ( void );
-
-PSID OSDAPI CopySidEx ( PSID );
-void OSDAPI FreeSidEx ( PSID );
-
-PGROUP_SID OSDAPI AllocGroupSid ( PSECURITY_DESCRIPTOR );
-void       OSDAPI FreeGroupSid  ( PGROUP_SID           );
 
 PVOID OSDAPI AllocAccessAllowedAce ( DWORD, BYTE, PSID );
 void  OSDAPI FreeAce ( PVOID );

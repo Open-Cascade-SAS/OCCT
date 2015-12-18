@@ -560,7 +560,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   const TopoDS_Face& aF2=*(TopoDS_Face*)(&S2);
   //
   Standard_Boolean aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
-  Standard_Integer i, aNbCurves, aNbPoints;
+  Standard_Integer aNbCurves, aNbPoints;
   Standard_Real anAppTol, aTolR;
   IntSurf_ListOfPntOn2S aListOfPnts;
   TCollection_AsciiString aNm("c_"), aNp("p_");
@@ -636,7 +636,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   if (aNbCurves) {
     di << aNbCurves << " curve(s) found.\n";
     //
-    for (i=1; i<=aNbCurves; i++) {
+    for (Standard_Integer i=1; i<=aNbCurves; i++) {
       const IntTools_Curve& anIC=aSCs(i);
 
       Handle (Geom_Curve)  aC3D = anIC.Curve();
@@ -691,7 +691,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   if (aNbPoints) {
     di << aNbPoints << " point(s) found.\n";
     //
-    for (i = 1; i <= aNbPoints; i++) {
+    for (Standard_Integer i = 1; i <= aNbPoints; i++) {
       const IntTools_PntOn2Faces& aPi = aSPs(i);
       const gp_Pnt& aP = aPi.P1().Pnt();
       //

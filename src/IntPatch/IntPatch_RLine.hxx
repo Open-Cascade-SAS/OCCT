@@ -59,7 +59,7 @@ public:
   Standard_EXPORT IntPatch_RLine(const Standard_Boolean Tang);
   
   //! To add a vertex in the list.
-  virtual void AddVertex (const IntPatch_Point& Pnt);
+  virtual void AddVertex (const IntPatch_Point& Pnt) Standard_OVERRIDE;
   
   //! Replaces the element of range Index in the list
   //! of points.
@@ -118,10 +118,10 @@ public:
     const IntPatch_Point& LastPoint() const;
   
   //! Returns number of vertices (IntPatch_Point) of the line
-  virtual Standard_Integer NbVertex() const;
+  virtual Standard_Integer NbVertex() const Standard_OVERRIDE;
   
   //! Returns the vertex of range Index on the line.
-  virtual const IntPatch_Point& Vertex (const Standard_Integer Index) const;
+  virtual const IntPatch_Point& Vertex (const Standard_Integer Index) const Standard_OVERRIDE;
   
     Standard_Boolean HasPolygon() const;
   
@@ -141,10 +141,10 @@ public:
   Standard_EXPORT void ComputeVertexParameters (const Standard_Real Tol);
 
   //! Returns set of intersection points
-  Standard_EXPORT virtual Handle(IntSurf_LineOn2S) Curve() const;
+  Standard_EXPORT virtual Handle(IntSurf_LineOn2S) Curve() const Standard_OVERRIDE;
 
   //! Removes vertices from the line (i.e. cleans svtx member)
-  virtual void ClearVertexes()
+  virtual void ClearVertexes() Standard_OVERRIDE
   {
     svtx.Clear();
   }

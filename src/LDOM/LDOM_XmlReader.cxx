@@ -34,7 +34,6 @@
 //#include <ctype.h>
 
 const int XML_MIN_BUFFER = 10;
-const int FILE_NONVALUE  = -1;
 
 typedef enum {
   STATE_WAITING = 0,

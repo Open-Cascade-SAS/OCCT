@@ -1425,10 +1425,10 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
       if(!aRL2.IsNull())
       {
-        const Handle(Adaptor2d_HCurve2d)& anArc = aRL2->IsArcOnS1() ?
-                                                  aRL2->ArcOnS1() :
-                                                  aRL2->ArcOnS2();
-        if(anArc->Curve2d().GetType() != GeomAbs_Line)
+        const Handle(Adaptor2d_HCurve2d)& anArc2 = aRL2->IsArcOnS1() ?
+                                                   aRL2->ArcOnS1() :
+                                                   aRL2->ArcOnS2();
+        if(anArc2->Curve2d().GetType() != GeomAbs_Line)
         {
           //Restriction line must be isoline.
           //Other cases are not supported by
