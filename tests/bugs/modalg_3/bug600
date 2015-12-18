@@ -29,14 +29,4 @@ Number of shapes in shape
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "Result of Boolean operations"
 
-checknbshapes r1 -ref ${nbshapes_expected} -t -m "BOPCOMMON"
-checkshape r1
-
-restore [locate_data_file OCC600_1.brep] a 
-restore [locate_data_file OCC600_2.brep] b 
-
-bcommon result b a
-
-checkprops result -s 41970.8
-checkshape result
 set 2dviewer 0
