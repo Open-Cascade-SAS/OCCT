@@ -127,10 +127,10 @@ static Standard_Integer converttoMDTV
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer unit(Draw_Interpretor& , Standard_Integer n, const char** a)
+static Standard_Integer unit(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if(n == 4) {
-    cout << Units::Convert(Draw::Atof(a[1]), a[2], a[3]) << endl;
+    di << Units::Convert(Draw::Atof(a[1]), a[2], a[3]);
     return 0;
   }
   else

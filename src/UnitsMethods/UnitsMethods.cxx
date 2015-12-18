@@ -414,17 +414,17 @@ void UnitsMethods::SetCasCadeLengthUnit (const Standard_Integer unit)
 Standard_Real UnitsMethods::GetLengthFactorValue (const Standard_Integer par) 
 {
   switch ( par ) {
-  case  1 : return 25.4;
-  case  2 : return 1.;
+  case  1 : return 25.4; // inch
+  case  2 : return 1.; // millimeter
   
-  case  4 : return 304.8;
-  case  5 : return 1609270.;
-  case  6 : return 1000.;
-  case  7 : return 1000000.;
-  case  8 : return 0.0254;
-  case  9 : return 0.001;
-  case 10 : return 10.;
-  case 11 : return 0.0000254;
+  case  4 : return 304.8; // foot
+  case  5 : return 1609344.; // mile
+  case  6 : return 1000.; // meter
+  case  7 : return 1000000.; // kilometer
+  case  8 : return 0.0254; // mil (0.001 inch)
+  case  9 : return 0.001; // micron
+  case 10 : return 10.; // centimeter
+  case 11 : return 0.0000254; // microinch
   default : return 1.;
   }
 }

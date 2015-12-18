@@ -41,7 +41,7 @@ micron                                             µ                            
 mille                                              mille                            1852                 m
 light year                                         Al                                  9.46053E+15       m
 
-inch                                               in.                                25.40001969E-03    m
+inch                                               in.                                 0.0254            m
                                                    in
 caliber                                            caliber                             1                 in.
 foot                                               ft.                                12                 in
@@ -51,7 +51,7 @@ yard                                               yd.                          
                                                    yd
 
 statute mile                                       stat.mile                        1760                 yd.
-nautical mile                                      naut.mile                        6080                 ft.
+nautical mile                                      naut.mile                        1852                 m
 ....................................................................................................................................
                                                  M         L         T         I         K         N         J         P         S
 TIME                                             0         0         1         0         0         0         0         0         0
