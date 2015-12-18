@@ -162,6 +162,14 @@ public:
   //! Optional argument theSelObj specifies parent decomposed object to inherit its view affinity.
   Standard_EXPORT Handle(PrsMgr_Presentation) Presentation (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0, const Standard_Boolean theToCreate = Standard_False, const Handle(PrsMgr_PresentableObject)& theSelObj = NULL) const;
 
+  //! Allows to apply location transformation to shadow highlight presentation immediately.
+  //! @param theObj defines the base object, it local transformation will be applied to corresponding highlight structure
+  //! @param theMode defines display mode of the base object
+  //! @param theSelObj defines the object produced after decomposition of the base object for local selection
+  Standard_EXPORT void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
+                                            const Handle(PrsMgr_PresentableObject)& theObj,
+                                            const Standard_Integer theMode = 0,
+                                            const Handle(PrsMgr_PresentableObject)& theSelObj = NULL);
 
 
 

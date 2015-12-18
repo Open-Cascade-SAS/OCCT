@@ -130,8 +130,10 @@ public:
   //! Set Z layer ID and update all presentations.
   Standard_EXPORT virtual void SetZLayer (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 
-
-
+  //! Implements immediate application of location transformation of parent object to dynamic highlight structure
+  Standard_EXPORT virtual void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
+                                                    const Handle(PrsMgr_PresentationManager3d)& theManager,
+                                                    const Standard_Integer theDispMode) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(StdSelect_BRepOwner,SelectMgr_EntityOwner)
 

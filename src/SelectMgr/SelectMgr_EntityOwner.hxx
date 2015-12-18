@@ -31,6 +31,7 @@ class Standard_NoSuchObject;
 class SelectMgr_SelectableObject;
 class PrsMgr_PresentationManager;
 class TopLoc_Location;
+class V3d_Viewer;
 
 
 class SelectMgr_EntityOwner;
@@ -130,7 +131,10 @@ public:
   //! Set Z layer ID and update all presentations.
   Standard_EXPORT virtual void SetZLayer (const Graphic3d_ZLayerId theLayerId);
 
-
+  //! Implements immediate application of location transformation of parent object to dynamic highlight structure
+  Standard_EXPORT virtual void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
+                                                    const Handle(PrsMgr_PresentationManager3d)& theManager,
+                                                    const Standard_Integer theDispMode);
 
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_EntityOwner,SelectBasics_EntityOwner)
