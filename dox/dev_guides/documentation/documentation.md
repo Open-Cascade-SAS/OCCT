@@ -136,7 +136,7 @@ dev_guides/svn/svn.md
 
 **Note** that the order of paths to documents in *FILES.txt* is reproduced in the Table of Contents in the HTML output. Please, place them logically.
 
-**Note** that you should specify a file tag, not the document name. See <a href="#OCCT_DM_SECTION_A_1">Header section</a> for details.
+**Note** that you should specify a file tag, not the document name. See @ref OCCT_DM_SECTION_A_1 "Header and hierarchic document structure" section for details.
 
 @section  OCCT_DOC_SECTION_5 Additional Resources
 

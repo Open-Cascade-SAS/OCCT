@@ -445,7 +445,7 @@ Let us correct the following wire:
 @image html /user_guides/shape_healing/images/shape_healing_image013.png "Initial shape"
 @image latex /user_guides/shape_healing/images/shape_healing_image013.png "Initial shape"
 
-It is necessary to apply the <a href="#_3_1_2">Tools for the analysis of validity of wires</a> to check that:
+It is necessary to apply the @ref occt_shg_3_1_2 "tools for the analysis of wire validity" to check that:
 * the edges are correctly oriented;
 * there are no edges that are too short;
 * there are no intersecting adjacent edges;
@@ -504,7 +504,7 @@ To see how this tool works, it is possible to take an edge, where the maximum de
 @image html /user_guides/shape_healing/images/shape_healing_image011.png "Initial shape"
 @image latex /user_guides/shape_healing/images/shape_healing_image011.png "Initial shape"
 
-First it is necessary to apply the <a href="#_3_1_3">Tool for checking the validity of edges</a> to find that maximum deviation between pcurve and 3D curve is greater than tolerance. Then we can use the repairing tool to increase the tolerance and make the deviation acceptable.
+First it is necessary to apply the @ref occt_shg_3_1_3 "tool for checking the edge validity" to find that the maximum deviation between pcurve and 3D curve is greater than tolerance. Then we can use the repairing tool to increase the tolerance and make the deviation acceptable.
 
 ~~~~~	
 ShapeAnalysis_Edge sae;

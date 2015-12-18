@@ -520,7 +520,7 @@ To rebase your branch into a single commit, you need to do the following:
 
   Use of TortoiseGit is recommended for convenient code review:
 
-  * Fetch the changes from the remote repository as described in <a href="#occt_gitguide_4_7">Synchronizing with remote repository</a> section.   
+  * Fetch the changes from the remote repository as described in @ref occt_gitguide_4_7 "Synchronizing with remote repository" section.   
   * Right-click on the repository, choose **TortoiseGit** -> **Show** log;
   * Locate the remote branch you need to review;
   * To review commits one-by-one, select each commit in the log. The list of changed files is shown at the bottom of the window; double-click on the file will open visual compare tool.

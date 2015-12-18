@@ -16,7 +16,7 @@ Open Cascade allows its users to employ STEP in the following domains:
 
 This manual is intended to provide technical documentation on the Open CASCADE Technology (**OCCT**) STEP processor and to help Open CASCADE Technology users with the use of the STEP processor (to read and write STEP files). 
 
-Only geometrical, topological STEP entities (shapes) and assembly structures are translated by the basic translator described in sections 2 to 6. Data that cannot be translated on this level are also loaded from a STEP file and can be translated later. XDE STEP translator (see section 7 <a href="#occt_step_7">Reading from and writing to XDE</a>) translates names, colors, layers, validation properties and other data associated with shapes and assemblies into XDE document. 
+Only geometrical, topological STEP entities (shapes) and assembly structures are translated by the basic translator described in sections 2 to 6. Data that cannot be translated on this level are also loaded from a STEP file and can be translated later. XDE STEP translator (see section 7 @ref occt_step_7 "Reading from and writing to XDE") translates names, colors, layers, validation properties and other data associated with shapes and assemblies into XDE document. 
 
 File translation is performed in the programming mode, via C++ calls. 
 
@@ -105,7 +105,7 @@ The types of STEP topological entities that can be translated are:
   * faces 
   * shells 
   * solids
-For further information see <a href="#occt_step_2_4">Mapping STEP entities to Open CASCADE Technology shapes</a>.
+For further information see @ref occt_step_2_4 "Mapping STEP entities to Open CASCADE Technology shapes".
 
 @subsubsection occt_step_2_2_4 Geometrical entities
 The types of STEP geometrical entities that can be translated are: 
@@ -793,7 +793,7 @@ The shapes organized in a structure of nested compounds can be translated either
 The assembly structure placed in the produced STEP file corresponds to the structure described in the ProSTEP Agreement Log (item 21) as the second alternative (assembly structure through *representation_relationship* / *item_defined_transformation*). To represent an assembly it uses entities of the *representation_relationship_with_transformation* type. Transformation operators used for locating assembly components are represented by *item_defined_transformation* entities. 
 If mode *write.step.assembly* is set to the values *ON* or *Auto* then an OCC shape consisting of nested compounds will be written as an assembly, otherwise it will be written as separate solids. 
 
-Please see also <a href="#occt_step_3_4">Mapping OCCT shapes to STEP entities</a>
+Please see also @ref occt_step_3_4 "Mapping OCCT shapes to STEP entities".
 
 @subsection occt_step_3_3 Description of the process
 @subsubsection occt_step_3_3_1 Initializing the process
@@ -1176,7 +1176,7 @@ Physical file writing consists of the following steps:
 
 If it is necessary to write and translate an OCCT shape into a new entity by the STEP processor the Writer and Actor scope should be enhanced. 
 
-For a description of steps, which should be taken for adding a new entity type to the STEP processor, see <a href="#occt_step_4_2">Physical file reading</a>. Then, enhance the *STEPControl_ActorWrite* class i.e. methods *Recognize()* and *Transfer()*, or other classes from *TopoDSToStep*, to translate the OCCT shape into a new STEP entity. 
+For a description of steps, which should be taken for adding a new entity type to the STEP processor, see @ref occt_step_4_2 "Physical file reading". Then, enhance the *STEPControl_ActorWrite* class i.e. methods *Recognize()* and *Transfer()*, or other classes from *TopoDSToStep*, to translate the OCCT shape into a new STEP entity. 
 
 @section occt_step_6 Using DRAW
 @subsection occt_step_6_1 DRAW STEP Commands Overview
@@ -1205,9 +1205,9 @@ Command xtrace is intended to view and change these parameters:
 
 @subsection occt_step_6_3 Reading a STEP file
 
-For a description of parameters used in reading a STEP file refer to <a href="#occt_step_2_3_3">Setting the translation parameters</a> section.
+For a description of parameters used in reading a STEP file refer to @ref occt_step_2_3_3 "Setting the translation parameters" section.
 
-For reading a STEP file, the following parameters are defined (see above, <a href="#occt_step_6_2">the command *param*</a>):
+For reading a STEP file, the following parameters are defined (see above, @ref occt_step_6_2 "the command *param*"):
 
 | Description | Name | Values | Meaning |
 | :------------ | :---- | :------- | :------- |
@@ -1357,7 +1357,7 @@ When specifying min and max arguments this command saves shapes with tolerances 
 * *c* - for shells and faces. 
 
 @subsection occt_step_6_5 Writing a STEP file
-For writing shapes to a STEP file, the following parameters are defined (see above, <a href="#occt_step_6_2">the command *param*</a>):
+For writing shapes to a STEP file, the following parameters are defined (see above, @ref occt_step_6_2 "the command *param*"):
 
 | Description | Name | Values | Meaning | 
 | :------------ | :----- | :------ | :------- | 
@@ -1406,10 +1406,10 @@ IFSelect_ReturnStatus stat = reader.ReadFile("filename.stp");
 Loading the file only memorizes the data, it does not translate it. 
 
 @subsubsection occt_step_7_1_2 Checking the loaded STEP file
-This step is not obligatory. See a description of this step in section <a href="#occt_step_2_3_2">Checking the STEP file</a>. 
+This step is not obligatory. See a description of this step in section @ref occt_step_2_3_2 "Checking the STEP file". 
 
 @subsubsection occt_step_7_1_3 Setting the parameters for translation to XDE
-See a description of this step in section <a href="#occt_step_2_3_3">Setting the translation parameters</a>. 
+See a description of this step in section @ref occt_step_2_3_3 "Setting the translation parameters". 
 
 In addition, the following parameters can be set for XDE translation of attributes: 
   *  Parameter for transferring colors: 

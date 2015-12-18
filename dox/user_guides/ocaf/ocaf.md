@@ -65,8 +65,8 @@ The subsequent chapters of this document explain the concepts and show how to us
 
 OCAF provides you with an object-oriented Application-Document-Attribute model consisting of C++ class libraries. 
 
-@image html ocaf_wp_image003.png "The Application-Document-Attribute model "
-@image latex ocaf_wp_image003.png "The Application-Document-Attribute model "
+@image html ocaf_wp_image003.png "The Application-Document-Attribute model"
+@image latex ocaf_wp_image003.png "The Application-Document-Attribute model"
 
 @subsubsection occt_ocaf_1_2_1 Application
 
@@ -94,18 +94,18 @@ The *Application* is an abstract class in charge of handling documents during th
 
   Application data is described by **Attributes**, which are instances of  classes derived from the *Attribute* abstract class, organized according to the OCAF Data  Framework. 
   
-  The <a href="#occt_ocaf_3">OCAF Data Framework</a> references aggregations of attributes using  persistent identifiers in a single hierarchy. A wide range of  attributes come with OCAF, including:    
+  The @ref occt_ocaf_3 "OCAF Data Framework" references aggregations of attributes using  persistent identifiers in a single hierarchy. A wide range of  attributes come with OCAF, including:    
   
-  * <a href="#occt_ocaf_6">Standard attributes</a> allow operating with simple common data in the data framework (for example: integer, real, string, array kinds of data), realize auxiliary functions (for example: tag sources attribute for the children of the label counter), create dependencies (for example: reference, tree node)....;
-  * <a href="#occt_ocaf_5">Shape attributes</a> contain the geometry of the whole model or its elements including reference to the shapes and tracking of shape evolution;
+  * @ref occt_ocaf_6 "Standard attributes" allow operating with simple common data in the data framework (for example: integer, real, string, array kinds of data), realize auxiliary functions (for example: tag sources attribute for the children of the label counter), create dependencies (for example: reference, tree node)....;
+  * @ref occt_ocaf_5 "Shape attributes" contain the geometry of the whole model or its elements including reference to the shapes and tracking of shape evolution;
   * Other  geometric attributes such as **Datums** (points, axis and plane) and **Constraints** (*tangent-to, at-a-given-distance, from-a-given-angle, concentric,* etc.)
   * User  attributes, that is, attributes typed by the application  
-  * <a href="#occt_ocaf_7">Visualization attributes</a> allow placing viewer information to the data framework, visual representation of objects and other auxiliary visual information, which is needed for graphical data representation.
-  * <a href="#occt_ocaf_8">Function services</a> — the purpose of these attributes is to rebuild  objects after they have been modified (parameterization of models). While the document manages the notification of changes, a function manages propagation of these changes. The function mechanism provides links between functions and calls to various algorithms. 
+  * @ref occt_ocaf_7 "Visualization attributes" allow placing viewer information to the data framework, visual representation of objects and other auxiliary visual information, which is needed for graphical data representation.
+  * @ref occt_ocaf_8 "Function services" — the purpose of these attributes is to rebuild  objects after they have been modified (parameterization of models). While the document manages the notification of changes, a function manages propagation of these changes. The function mechanism provides links between functions and calls to various algorithms. 
   
 In addition,  application-specific data can be added by defining new attribute classes; naturally, this changes the standard file format. The only functions that have to be implemented are:
     * Copying the  attribute
-    * Converting  it from and to its persistent homologue (persistence is briefly presented in the paragraph <a href="#occt_ocaf_9a_3">Persistent Data Storage</a>)
+    * Converting  it from and to its persistent homologue (persistence is briefly presented in the paragraph @ref occt_ocaf_9a_3 "Persistent Data Storage")
 	
 @subsection occt_ocaf_1_3  Reference-key model
 
@@ -159,7 +159,7 @@ In addition,  application-specific data can be added by defining new attribute c
   attached to the reference-key. As such, on a  parametrized model, 
   after modifying the value of a parameter, the reference-keys still address the appropriate faces, 
   even if their geometry has  changed. 
-  Consequently, you change the size of the cube shown in the figure 2 above, 
+  Consequently, you change the size of the cube shown in the figure above, 
   the user texture stay attached to the right face.  
  
   <b>Note</b> As Topological naming is based on the reference-key and attributes such as Naming 
@@ -327,11 +327,7 @@ Standard_Integer tag = achild.Tag();
 
 @subsection occt_ocaf_3_4 Label
 
-The tag gives a persistent address to a label. The label – the semantics of the tag – is a place in the data framework where attributes, which contain data, are attached. The data framework is, in fact, a tree of labels with a root as the ultimate father label (refer to the following figure): 
-
-@image html /user_guides/ocaf/images/ocaf_image007.png
-@image latex /user_guides/ocaf/images/ocaf_image007.png
-
+The tag gives a persistent address to a label. The label – the semantics of the tag – is a place in the data framework where attributes, which contain data, are attached. The data framework is, in fact, a tree of labels with a root as the ultimate father label.
 
 Label can not be deleted from the data framework, so, the structure of the data framework that has been created can not be removed while the document is opened. Hence any kind of reference to an existing label will be actual while an application is working with the document. 
 
@@ -518,7 +514,7 @@ If you use the binary format, do the following:
 	  * Factory, which loads the document storage and retrieval drivers; and 
 	  * AttributeDrivers, which calls the methods AddDrivers for all packages responsible for persistence of the document.
   3. Create a plug-in implemented as an executable (see example *BinPlugin*). It calls a macro PLUGIN with the package name where you implemented the method Factory.
-See <a href="#occt_ocaf_4_3_3">Saving the document</a> and <a href="#occt_ocaf_4_3_4">Opening the document from a file</a> for the description of document save/open mechanisms. 
+See @ref occt_ocaf_4_3_3 "Saving the document" and @ref occt_ocaf_4_3_4 "Opening the document from a file" for the description of document save/open mechanisms. 
 
 If you decided to use the alternative way (create a new attribute by means of *UAttribute* and a combination of other standard attributes), do the following: 
   1. Set a *TDataStd_UAttribute* with a unique GUID attached to a label. This attribute defines the semantics of the data type (identifies the data type).
@@ -529,7 +525,7 @@ Choosing the alternative way of implementation of new data types allows to forge
 
 Let’s study the implementation of the same data type in both ways by the example of transformation represented by *gp_Trsf* class. The class *gp_Trsf* defines the transformation according to the type (*gp_TrsfForm*) and a set of parameters of the particular type of transformation (two points or a vector for translation, an axis and an angle for rotation, and so on). 
 
-1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the <a href="#occt_ocaf_11">Samples</a>. 
+1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the @ref occt_ocaf_11 "Samples". 
 
 2. The second way: creation of a new data type by means of combination of standard attributes. Depending on the type of transformation it may be kept in data framework by different standard attributes. For example, a translation is defined by two points. Therefore the data tree for translation looks like this: 
   * Type of transformation <i>(gp_Translation)</i> as *TDataStd_Integer*;

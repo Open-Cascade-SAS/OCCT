@@ -33,8 +33,8 @@ The figure below presents a schematic overview of the relations between the key 
 
 To answer different needs of CASCADE users, this User's Guide offers the following three paths in reading it.
   
-  * If the 3D services proposed in AIS meet your requirements, you  need only read chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>.   
-  * If you need more detail, for example, a selection filter on another type of entity - you should  read chapter 2 <a href="#occt_visu_2">Fundamental Concepts</a>, chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>, and 4 <a href="#occt_visu_4">3D Presentations</a>. You may want to begin with the chapter presenting AIS.
+  * If the 3D services proposed in AIS meet your requirements, you  need only read chapter 3  @ref occt_visu_3 "AIS: Application Interactive Services".   
+  * If you need more detail, for example, a selection filter on another type of entity - you should  read chapter 2 @ref occt_visu_2 "Fundamental Concepts", chapter 3 @ref occt_visu_3 "AIS: Application Interactive Services", and 4 @ref occt_visu_4 "3D Presentations". You may want to begin with the chapter presenting AIS.
  
 For advanced information on visualization algorithms, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.  
 
@@ -164,7 +164,7 @@ The interactive context is used to manage both selectable  objects and selection
 
 Selection modes may be activated or de-activated for given  selectable objects. Information is then provided about the status of  activated/de-activated selection modes for a given object in a given selector. 
 
-See also <a href="#occt_visu_3">AIS: Application Interactive Services</a>.
+See also @ref occt_visu_3 "AIS: Application Interactive Services".
 
 Let us consider, for example, a 3D selectable shape object, which  corresponds to a topological shape.  
 
@@ -502,7 +502,7 @@ Inside these categories, additional characterization is  available by means of a
   * *AIS_InteractiveObject::Type*  
   * *AIS_InteractiveObject::Signature*.  
 
-**Note** that some signatures are already used by "standard" objects provided in AIS (see the <a href="#occt_visu_3_5">list of Standard Interactive Object Classes</a>).  
+**Note** that some signatures are already used by "standard" objects provided in AIS (see the @ref occt_visu_3_5 "List of Standard Interactive Object Classes".  
 
 The interactive context can have a  default mode of representation for the set of interactive objects. This mode  may not be accepted by a given class of objects. 
 
@@ -555,7 +555,7 @@ void myPk_IsShape::Compute
 
 @subsubsection occt_visu_3_2_4 Selection 
 
-An interactive object can have an indefinite number of selection modes, each representing a "decomposition" into sensitive primitives;  each primitive has an Owner (*SelectMgr_EntityOwner*) which allows identifying the exact entity which has been detected (see <a href="#occt_visu_3_6"> Dynamic Selection</a> chapter).  
+An interactive object can have an indefinite number of selection modes, each representing a "decomposition" into sensitive primitives;  each primitive has an Owner (*SelectMgr_EntityOwner*) which allows identifying the exact entity which has been detected (see ref occt_visu_3_6 "Dynamic Selection" chapter).  
 
 The set of sensitive primitives, which correspond to a given  mode, is stocked in a SELECTION (*SelectMgr_Selection*). 
 
@@ -563,7 +563,7 @@ Each Selection mode is identified by an index. By  Convention, the default selec
 
 The calculation of Selection primitives (or sensitive  primitives) is done by the intermediary of a virtual function, *ComputeSelection*.  This should be implemented for each type of interactive object on which you  want to make different type selections using the function *AIS_ConnectedInteractive::ComputeSelection*.  
 
-A detailed explanation of the mechanism and the manner of  implementing this function has been given in <a href="#occt_visu_3_6"> Dynamic Selection</a> chapter.  
+A detailed explanation of the mechanism and the manner of  implementing this function has been given in @ref occt_visu_3_6 "Dynamic Selection" chapter.  
 
 Moreover, just as the most frequently manipulated entity is *TopoDS_Shape*, the most used Interactive Object is *AIS_Shape*. You will see below activation functions for standard selection modes are proposed in the  Interactive context (selection by vertex, by edges etc). To create new classes  of interactive object with the same behavior as *AIS_Shape* - such as vertices  and edges - you must redefine the virtual function *AIS_ConnectedInteractive::AcceptShapeDecomposition*.  
 
@@ -788,7 +788,7 @@ The specific modes of selection only concern the interactive  objects, which are
 
 The local context can be opened using method *AIS_InteractiveContext::OpenLocalContext*. The following options are available:
   * *UseDisplayedObjects*: allows loading the  interactive objects visualized at Neutral Point in the opened local context. If *FALSE*, the local context is empty after being opened. If *TRUE*,  the objects at Neutral Point are modified by their default selection mode. 
-  * *AllowShapeDecomposition*: *AIS_Shape* allows or prevents  decomposition in standard shape location mode of objects at Neutral Point,  which are type-privileged (see <a href="#occt_visu_3_2_4"> Selection</a> chapter). This Flag is only taken  into account when *UseDisplayedObjects* is *TRUE*. 
+  * *AllowShapeDecomposition*: *AIS_Shape* allows or prevents  decomposition in standard shape location mode of objects at Neutral Point,  which are type-privileged (see @ref occt_visu_3_2_4 "Selection" chapter). This Flag is only taken  into account when *UseDisplayedObjects* is *TRUE*. 
   * *AcceptEraseOfObjects*: authorizes other local contexts to erase  the interactive objects present in this context. This option is rarely used. The last option has no current use.
 
 This function returns the index of the created local context.  It should be kept and used when the context is closed.  
@@ -1507,7 +1507,7 @@ void InteractiveBox::ComputeSelection
 
 Selectable objects are loaded in the selection manager,  which has one or more selectors; in general, we suggest assigning one selector  per viewer. All you have to do afterwards is to activate or deactivate the  different selection modes for selectable objects. The *SelectionManager*  looks after the call to the *ComputeSelection* functions for different  objects. 
 
-NOTE: This procedure is completely hidden if you use the <a href="#occt_visu_3_3"> AIS Interactive Context </a>
+NOTE: This procedure is completely hidden if you use the @ref occt_visu_3_3 "AIS Interactive Context"
 
 <h4>Example </h4>
 ~~~~~
@@ -2668,7 +2668,7 @@ myAISContext->Display (anAISShape);
 
 Follow the procedure below to compute the presentable object:
 
-1. Build a presentable object inheriting from *AIS_InteractiveObject* (refer to the Chapter on <a href="#occt_visu_2_1">Presentable Objects</a>).
+1. Build a presentable object inheriting from *AIS_InteractiveObject* (refer to the Chapter on @ref occt_visu_2_1 "Presentable Objects").
 2. Reuse the *Prs3d_Presentation* provided as an argument of the compute methods.
 
 **Note** that there are two compute methods: one for a standard representation, and the other for a degenerated representation, i.e. in hidden line removal and wireframe modes.

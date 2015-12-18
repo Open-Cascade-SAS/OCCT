@@ -1272,7 +1272,7 @@ When an object is modified or erased, the whole view must be repainted. To avoid
 
 Graphic operations are buffered by Draw (and also by the X system). Usually the buffer is flushed at the end of a command and before graphic selection. If you want to flush the buffer from inside a script, use the **dflush** command. 
 
-See also: <a href="#occt_draw_4_1_11">pick</a> command.  
+See also: @ref occt_draw_4_1_11 "pick" command.  
 
 @subsection occt_draw_4_2 AIS viewer – view commands
 
@@ -4238,7 +4238,7 @@ Syntax:
 AISMaterial docname entry [material] 
 ~~~~~
 
-Sets (if *material* is defined) or gets the value of transparency for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see <a href="#occt_draw_4_5_6">meshmat</a> command). 
+Sets (if *material* is defined) or gets the value of transparency for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see @ref occt_draw_4_5_6 "meshmat" command). 
 
 **Example:** 
 ~~~~~
@@ -8463,7 +8463,7 @@ These commands are used for translation of IGES and STEP files into an XCAF docu
   * XDE layer’s commands
   * XDE property’s commands
 
-Reminding: All operations of translation are performed with parameters managed by command  <a href="#occt_draw_8_3_14">the command *param*</a>.
+Reminding: All operations of translation are performed with parameters managed by command @ref occt_draw_8_3_14 "param".
 
 @subsubsection occt_draw_8_4_1  ReadIges
 
@@ -8576,7 +8576,7 @@ Syntax:
 XFromShape <shape>
 ~~~~~
 
-This command is similar to <a href="#occt_draw_8_3_7">the command *fromshape*</a>, but gives additional information about the file name. It is useful if a shape was translated from several files. 
+This command is similar to the command @ref occt_draw_8_3_7 "fromshape", but gives additional information about the file name. It is useful if a shape was translated from several files. 
 
 **Example:**
 ~~~~~
@@ -9961,14 +9961,14 @@ ADVCURV            : TKMyAdvCurv
 MESHING            : TKMyMesh 
 ~~~~~
 
-For other examples of the plug-in resource file refer to the <a href="#occt_draw_1_3_2">Plug-in resource file</a> chapter above or to the <i>$CASROOT/src/DrawPlugin</i> file shipped with Open CASCADE Technology. 
+For other examples of the plug-in resource file refer to the @ref occt_draw_1_3_2 "Plug-in resource file" chapter above or to the <i>$CASROOT/src/DrawPlugin</i> file shipped with Open CASCADE Technology. 
 
 
 @subsection occt_draw_11_5 Dynamic loading and activation
 
-Loading a plug-in and activating its commands is described in the <a href="#occt_draw_1_3_3">Activation of the commands implemented in the plug-in</a> chapter. 
+Loading a plug-in and activating its commands is described in the @ref occt_draw_1_3_3 "Activation of the commands implemented in the plug-in" chapter. 
 
-The procedure consists in defining the system variables and using the pload commands in the Test Harness session. 
+The procedure consists in defining the system variables and using the *pload* commands in the Test Harness session. 
 
 **Example:** 
 ~~~~
