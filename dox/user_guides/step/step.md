@@ -283,10 +283,6 @@ Default values:
 * read.step.resource.name - STEP, 
 * read.step.sequence - FromSTEP. 
 
-<h4>read.scale.unit</h4>
-This parameter is obsolete (the parameter *xstep.cascade.unit* should be used instead when necessary). If it is set to 'M', the shape is scaled 0.001 times (as if it were in meters) after translation from IGES or STEP. 
-Default value is MM. 
-
 <h4>xstep.cascade.unit</h4>
 This parameter defines units to which a shape should be converted when translated from IGES or STEP to CASCADE. Normally it is MM; only those applications that work internally in units other than MM should use this parameter. 
 

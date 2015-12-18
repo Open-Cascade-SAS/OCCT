@@ -61,13 +61,6 @@ static Handle(XSAlgo_AlgoContainer) theContainer;
   Interface_Static::Init ("XSTEP","xstep.cascade.unit",'&',"eval UIN");   //11
   Interface_Static::SetCVal ("xstep.cascade.unit","MM");
   
-  //  unit : pour depannage / test de non regression  0 MM  1 M(ancien)
-  Interface_Static::Init("XSTEP"    ,"read.scale.unit", 'e',"");
-  Interface_Static::Init("XSTEP","read.scale.unit",'&',"ematch 0");
-  Interface_Static::Init("XSTEP","read.scale.unit",'&',"eval MM");
-  Interface_Static::Init("XSTEP","read.scale.unit",'&',"eval M");
-  Interface_Static::SetIVal ("read.scale.unit",0);
-
   // init Standard Shape Processing operators
   ShapeProcess_OperLibrary::Init();
 }
