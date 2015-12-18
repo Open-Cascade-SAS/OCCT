@@ -139,6 +139,8 @@ AIS_RadiusDimension.hxx
 AIS_Relation.cxx
 AIS_Relation.hxx
 AIS_Relation.lxx
+AIS_RubberBand.hxx
+AIS_RubberBand.cxx
 AIS_Selection.cxx
 AIS_Selection.hxx
 AIS_Selection.lxx

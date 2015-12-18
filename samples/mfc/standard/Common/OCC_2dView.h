@@ -93,24 +93,6 @@ protected:
 
 protected:
 
-  CurrentAction2d myCurrentMode;
-  Standard_Integer myXmin;
-  Standard_Integer myYmin;
-  Standard_Integer myXmax;
-  Standard_Integer myYmax;
-  Quantity_Factor myCurZoom;
-
-  enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };
-
-  CPen* m_Pen;
-
-  virtual void DrawRectangle2D (const Standard_Integer MinX,
-                                const Standard_Integer MinY,
-                                const Standard_Integer MaxX,
-                                const Standard_Integer MaxY,
-                                const Standard_Boolean Draw,
-                                const LineStyle aLineStyle = Default);
-
     virtual void DragEvent2D (const Standard_Integer x,
                               const Standard_Integer y,
                               const Standard_Integer TheState);
@@ -136,9 +118,10 @@ protected:
 
 protected:
 
+  Handle(V3d_View) myV2dView;
+  CurrentAction2d  myCurrentMode;
   CRectangularGrid TheRectangularGridDialog;
   CCircularGrid    TheCircularGridDialog;
-  Handle(V3d_View) myV2dView;
 };
 
 #ifndef _DEBUG  // debug version in 2DDisplayView.cpp

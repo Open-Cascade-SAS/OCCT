@@ -94,26 +94,11 @@ protected:
 
 protected:
 
-  Handle(V3d_View)  myView;
+  Handle(V3d_View) myView;
   CurAction3d      myCurrentMode;
-  Standard_Integer myXmin;
-  Standard_Integer myYmin;
-  Standard_Integer myXmax;
-  Standard_Integer myYmax;
-  Quantity_Factor  myCurZoom;
   Standard_Integer myWidth;
   Standard_Integer myHeight;
   Standard_Boolean myHlrModeIsOn;
-
-	enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };
-	CPen*  m_Pen;
-
-    virtual void DrawRectangle (const Standard_Integer  MinX  ,
-    					        const Standard_Integer  MinY  ,
-                                const Standard_Integer  MaxX  ,
-				    	        const Standard_Integer  MaxY  ,
-					            const Standard_Boolean  Draw  ,
-                                const LineStyle aLineStyle = Default  );
 
 private:
 

@@ -62,15 +62,9 @@ END_MESSAGE_MAP()
 
 OCC_3dView::OCC_3dView()
 : myCurrentMode (CurAction3d_Nothing),
-  myXmin (0),
-  myYmin (0),
-  myXmax (0),
-  myYmax (0),
-  myCurZoom (0.0),
   myWidth  (0),
   myHeight (0),
-  myHlrModeIsOn (Standard_False),
-  m_Pen (NULL)
+  myHlrModeIsOn (Standard_False)
 {
   // TODO: add construction code here
 }
@@ -83,7 +77,6 @@ OCC_3dView::~OCC_3dView()
   }
 
   delete m_pStereoDlg;
-  delete m_Pen;
 }
 
 BOOL OCC_3dView::PreCreateWindow(CREATESTRUCT& cs)
@@ -135,7 +128,7 @@ void OCC_3dView::OnDraw(CDC* /*pDC*/)
   if(myWidth != aRect.Width() || myHeight != aRect.Height()) {
     myWidth = aRect.Width();
     myHeight = aRect.Height();
-    ::PostMessage ( GetSafeHwnd () , WM_SIZE , SW_SHOW , myWidth + myHeight*65536 );
+    ::PostMessage ( GetSafeHwnd() , WM_SIZE , SW_SHOW , myWidth + myHeight*65536 );
   }
   myView->Redraw();
 }
@@ -321,6 +314,7 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
   }
   else // if ( Ctrl )
   {
+    const Handle(AIS_InteractiveContext)& aContext = GetDocument()->GetAISContext();
     switch (myCurrentMode)
     {
     case CurAction3d_Nothing :
@@ -335,7 +329,7 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
       } else
       {
         myXmax=point.x;    myYmax=point.y;
-        DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False);
+        drawRectangle (myXmin, myYmin, myXmax, myYmax, aContext, Standard_False);
         if (nFlags & MK_SHIFT)
           GetDocument()->ShiftDragEvent(point.x,point.y,1,myView);
         else
@@ -347,7 +341,7 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
       break;
     case CurAction3d_WindowZooming :
       myXmax=point.x;        myYmax=point.y;
-      DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False);
+      drawRectangle (myXmin, myYmin, myXmax, myYmax, aContext, Standard_False);
       if ((abs(myXmin-myXmax)>ValZWMin) || (abs(myYmin-myYmax)>ValZWMin))
         // Test if the zoom window is greater than a minimale window.
       {
@@ -432,17 +426,17 @@ void OCC_3dView::OnMouseMove(UINT nFlags, CPoint point)
     {
       // move with MB1 and Control : on the dynamic zooming  
       // Do the zoom in function of mouse's coordinates  
-      myView->Zoom(myXmax,myYmax,point.x,point.y); 
+      myView->Zoom (myXmax,myYmax,point.x,point.y); 
       // save the current mouse coordinate in min 
       myXmax = point.x; 
       myYmax = point.y;	
     }
     else // if ( Ctrl )
     {
+      const Handle(AIS_InteractiveContext)& aContext = GetDocument()->GetAISContext();
       switch (myCurrentMode)
       {
       case CurAction3d_Nothing :
-        DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False);
         myXmax = point.x;
         myYmax = point.y;
 
@@ -450,18 +444,20 @@ void OCC_3dView::OnMouseMove(UINT nFlags, CPoint point)
           GetDocument()->ShiftDragEvent(myXmax,myYmax,0,myView);
         else
           GetDocument()->DragEvent(myXmax,myYmax,0,myView);
-        DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True);
+
+        drawRectangle (myXmin, myYmin, myXmax, myYmax, aContext);
 
         break;
       case CurAction3d_DynamicZooming :
         myView->Zoom(myXmax,myYmax,point.x,point.y); 
         // save the current mouse coordinate in min \n";
-        myXmax=point.x;  myYmax=point.y;
+        myXmax = point.x;
+        myYmax = point.y;
         break;
       case CurAction3d_WindowZooming :
-        myXmax = point.x; myYmax = point.y;	
-        DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False,LongDash);
-        DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True,LongDash);
+        myXmax = point.x;
+        myYmax = point.y;
+        drawRectangle (myXmin, myYmin, myXmax, myYmax, aContext);
         break;
       case CurAction3d_DynamicPanning :
         myView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
@@ -484,8 +480,8 @@ void OCC_3dView::OnMouseMove(UINT nFlags, CPoint point)
     if ( nFlags & MK_CONTROL ) 
     {
       myView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
-      myXmax = point.x; myYmax = point.y;	
-
+      myXmax = point.x;
+      myYmax = point.y;
     }
   } 
   else if ( nFlags & MK_RBUTTON)
@@ -496,67 +492,15 @@ void OCC_3dView::OnMouseMove(UINT nFlags, CPoint point)
     }
   }
   else 
-  {  // No buttons 
-    myXmax = point.x; myYmax = point.y;	
+  {  // No buttons
+    myXmax = point.x;
+    myYmax = point.y;
     if (nFlags & MK_SHIFT)
       GetDocument()->ShiftMoveEvent(point.x,point.y,myView);
     else
       GetDocument()->MoveEvent(point.x,point.y,myView);
   }
 }
-
-void OCC_3dView::DrawRectangle(const Standard_Integer  MinX    ,
-					                    const Standard_Integer  MinY    ,
-                                        const Standard_Integer  MaxX ,
-					                    const Standard_Integer  MaxY ,
-					                    const Standard_Boolean  Draw , 
-                                        const LineStyle aLineStyle)
-{
-    static int m_DrawMode;
-    if  (!m_Pen && aLineStyle ==Solid )
-        {m_Pen = new CPen(PS_SOLID, 1, RGB(0,0,0)); m_DrawMode = R2_MERGEPENNOT;}
-    else if (!m_Pen && aLineStyle ==Dot )
-        {m_Pen = new CPen(PS_DOT, 1, RGB(0,0,0));   m_DrawMode = R2_XORPEN;}
-    else if (!m_Pen && aLineStyle == ShortDash)
-        {m_Pen = new CPen(PS_DASH, 1, RGB(255,0,0));	m_DrawMode = R2_XORPEN;}
-    else if (!m_Pen && aLineStyle == LongDash)
-        {m_Pen = new CPen(PS_DASH, 1, RGB(0,0,0));	m_DrawMode = R2_NOTXORPEN;}
-    else if (aLineStyle == Default) 
-        { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
-
-    CPen* aOldPen = NULL;
-    CClientDC clientDC(this);
-    if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
-    clientDC.SetROP2(m_DrawMode);
-
-    static		Standard_Integer StoredMinX, StoredMaxX, StoredMinY, StoredMaxY;
-    static		Standard_Boolean m_IsVisible;
-
-    if ( m_IsVisible && !Draw) // move or up  : erase at the old position 
-    {
-     clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
-     clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	 clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
-     m_IsVisible = false;
-    }
-
-    StoredMinX = Min ( MinX, MaxX );
-    StoredMinY = Min ( MinY, MaxY );
-    StoredMaxX = Max ( MinX, MaxX );
-    StoredMaxY = Max ( MinY, MaxY);
-
-    if (Draw) // move : draw
-    {
-     clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
-     clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	 clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
-     m_IsVisible = true;
-   }
-
-    if (m_Pen) clientDC.SelectObject(aOldPen);
-}
-
-
 
 void OCC_3dView::OnUpdateBUTTONHlrOff(CCmdUI* pCmdUI) 
 {

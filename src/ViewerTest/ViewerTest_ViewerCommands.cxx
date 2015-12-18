@@ -16,6 +16,7 @@
 
 #include <OpenGl_GlCore20.hxx>
 #include <AIS_ColorScale.hxx>
+#include <AIS_RubberBand.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -193,6 +194,17 @@ int X_ButtonPress = 0; // Last ButtonPress position
 int Y_ButtonPress = 0;
 Standard_Boolean IsDragged = Standard_False;
 Standard_Boolean DragFirst = Standard_False;
+
+
+Standard_EXPORT const Handle(AIS_RubberBand)& GetRubberBand()
+{
+  static Handle(AIS_RubberBand) aBand;
+  if (aBand.IsNull())
+  {
+    aBand = new AIS_RubberBand();
+  }
+  return aBand;
+}
 
 //==============================================================================
 
@@ -1902,11 +1914,12 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
     case WM_LBUTTONUP:
       if (!DragFirst)
       {
-        HDC hdc = GetDC( hwnd );
-        SelectObject( hdc, GetStockObject( HOLLOW_BRUSH ) );
-        SetROP2( hdc, R2_NOT );
-        Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );
-        ReleaseDC( hwnd, hdc );
+        if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
+        {
+          ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
+          ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+        }
+
         VT_ProcessButton1Release (fwKeys & MK_SHIFT);
       }
       IsDragged = Standard_False;
@@ -1925,26 +1938,26 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
       break;
 
     case WM_MOUSEMOVE:
-      if( IsDragged )
+      if (IsDragged)
       {
-        HDC hdc = GetDC( hwnd );
-
-        HGDIOBJ anObj = SelectObject( hdc, GetStockObject( WHITE_PEN ) );
-        SelectObject( hdc, GetStockObject( HOLLOW_BRUSH ) );
-        SetROP2( hdc, R2_NOT );
-
-        if( !DragFirst )
-          Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );
+        if (!DragFirst && ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
+        {
+          ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
+          ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+        }
 
         DragFirst = Standard_False;
-        X_Motion = LOWORD(lParam);
-        Y_Motion = HIWORD(lParam);
+        X_Motion = LOWORD (lParam);
+        Y_Motion = HIWORD (lParam);
 
-        Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );
-
-        SelectObject( hdc, anObj );
-
-        ReleaseDC( hwnd, hdc );
+        RECT aRect;
+        if (GetClientRect (hwnd, &aRect))
+        {
+          int aHeight = aRect.bottom - aRect.top;
+          GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
+          ViewerTest::GetAISContext()->Display (GetRubberBand(), Standard_False);
+          ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+        }
       }
       else
         return ViewerWindowProc( hwnd, Msg, wParam, lParam );
@@ -2297,9 +2310,11 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
           {
             if( !DragFirst )
             {
-              Aspect_Handle aWindow = VT_GetWindow()->XWindow();
-              GC gc = XCreateGC( aDisplay, aWindow, 0, 0 );
-              XDrawRectangle( aDisplay, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
+              if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
+              {
+                ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
+                ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+              }
             }
 
             Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
@@ -2350,18 +2365,27 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
           }
           if( IsDragged )
           {
-            Aspect_Handle aWindow = VT_GetWindow()->XWindow();
-            GC gc = XCreateGC( aDisplay, aWindow, 0, 0 );
-            XSetFunction( aDisplay, gc, GXinvert );
-
             if( !DragFirst )
-              XDrawRectangle(aDisplay, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
+            {
+              if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
+              {
+                ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
+                ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+              }
+            }
 
             X_Motion = aReport.xmotion.x;
             Y_Motion = aReport.xmotion.y;
             DragFirst = Standard_False;
 
-            XDrawRectangle( aDisplay, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
+            Window aWindow = GetWindowHandle(VT_GetWindow());
+            Window aRoot;
+            int anX, anY;
+            unsigned int aWidth, aHeight, aBorderWidth, aDepth;
+            XGetGeometry (aDisplay, aWindow, &aRoot, &anX, &anY, &aWidth, &aHeight, &aBorderWidth, &aDepth);
+            GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
+            ViewerTest::GetAISContext()->Display (GetRubberBand(), Standard_False);
+            ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
           }
           else
           {
