@@ -57,7 +57,7 @@ public: \
 // forward declaration of type_instance class
 namespace opencascade {
   template <typename T>
-  struct type_instance;
+  class type_instance;
 }
 
 //! This class provides legacy interface (type descriptor) to run-time type
@@ -154,20 +154,28 @@ private:
 
 namespace opencascade {
 
-  //! Template class providing instantiation of type descriptors as static
-  //! variables (one per binary module). Having type descriptors defined as 
-  //! static variables is essential to ensure that descriptors are initialized
-  //! once and in correct order.
+  //! Template class providing instantiation of type descriptors as singletons.
+  //! The descriptors are defined as static variables in function get(), which
+  //! is essential to ensure that they are initialized in correct sequence.
+  //!
+  //! For compilers that do not provide thread-safe initialization of static
+  //! variables (C++11 feature, N2660), additional global variable is
+  //! defined for each type to hold its type descriptor. These globals ensure
+  //! that all types get initialized during the library loading and thus no 
+  //! concurrency occurs when type system is accessed from multiple threads.
   template <typename T>
-  struct type_instance
+  class type_instance
   {
+    static Handle(Standard_Type) myInstance;
+  public:
     static const Handle(Standard_Type)& get ();
   };
 
   //! Specialization of type descriptor instance for void; returns null handle
   template <>
-  struct type_instance<void>
+  class type_instance<void>
   {
+  public:
     Standard_EXPORT static Handle(Standard_Type) get () { return 0; }
   };
 
@@ -176,6 +184,9 @@ namespace opencascade {
   template <typename T>
   const Handle(Standard_Type)& type_instance<T>::get ()
   {
+    // ensure that myInstance is instantiated
+    (void)myInstance;
+
     // static variable inside function ensures that descriptors
     // are initialized in correct sequence
     static Handle(Standard_Type) anInstance =
@@ -184,6 +195,22 @@ namespace opencascade {
     return anInstance;
   }
 
+  // Static class field is defined to ensure initialization of all type
+  // descriptors at load time of the library on compilers not supporting N2660:
+  // - VC++ below 14 (VS 2015)
+  // - GCC below 4.3
+  // Intel compiler reports itself as GCC on Linux and VC++ on Windows,
+  // and is claimed to support N2660 on Linux and on Windows "in VS2015 mode".
+  // CLang should support N2660 since version 2.9, but it is not clear how to 
+  // check its version reliably (on Linux it says it is GCC 4.2).
+#if (defined(_MSC_VER) && _MSC_VER < 1800) || \
+    (defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 3)) && \
+     ! defined(__clang__) && ! defined(__INTEL_COMPILER))
+
+  template <typename T>
+  Handle(Standard_Type) type_instance<T>::myInstance (get());
+
+#endif
 }
 
 //! Operator printing type descriptor to stream

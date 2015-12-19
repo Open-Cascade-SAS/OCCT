@@ -182,7 +182,9 @@ namespace opencascade {
       return handle (dynamic_cast<T*>(const_cast<T2*>(thePtr)));
     }
 
-#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800) || (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 6)
+#if (defined(__clang__)) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1300) || \
+    (defined(_MSC_VER) && _MSC_VER >= 1800) || \
+    (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)))
 
     //! Conversion to bool for use in conditional expressions
     explicit operator bool () const
@@ -201,7 +203,9 @@ namespace opencascade {
 #endif
 
     //! Upcast to const reference to base type.
-#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800) || (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3)
+#if (defined(__clang__)) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1206) || \
+    (defined(_MSC_VER) && _MSC_VER >= 1800) || \
+    (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)))
 
     //! Upcast to const reference to base type.
     template <class T2, typename = typename std::enable_if<std::is_base_of<T2, T>::value>::type>
