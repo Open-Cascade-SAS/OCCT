@@ -29,4 +29,8 @@ Number of shapes in shape
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "Result of Boolean operations"
 
+checkprops result -s 41970.8
+
+checkshape result
+
 set 2dviewer 0
