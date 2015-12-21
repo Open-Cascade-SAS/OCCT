@@ -1,0 +1,47 @@
+puts "========"
+puts "OCC27021"
+puts "========"
+puts ""
+###########################################################
+# TopExp::Vertices performance optimization
+###########################################################
+
+pload QAcommands
+
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 8.
+    set max_time2 5.
+  } else {
+    set max_time 8.
+    set max_time2 5.
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 8.
+    set max_time2 5.
+  } else {
+    set max_time 8.
+    set max_time2 5.
+  }
+}
+
+restore [locate_data_file bug27021_shape.brep] f
+
+set log [OCC27021 f]
+
+regexp {Retrieving 100000000 vertices using approach A\)\.\.\.done in ([-0-9.+eE]+) seconds} ${log} full A_sec
+regexp {Retrieving 100000000 vertices using approach B\)\.\.\.done in ([-0-9.+eE]+) seconds} ${log} full B_sec
+
+
+if { ${A_sec} > ${max_time} } {                                         
+    puts "Retrieving 100000000 vertices using approach A) is more than ${max_time} seconds - Faulty"
+} else {
+    puts "Retrieving 100000000 vertices using approach A) is less than ${max_time} seconds - OK"
+}
+
+if { ${B_sec} > ${max_time2} } {                                         
+    puts "Retrieving 100000000 vertices using approach A) is more than ${max_time2} seconds - Faulty"
+} else {
+    puts "Retrieving 100000000 vertices using approach A) is less than ${max_time2} seconds - OK"
+}

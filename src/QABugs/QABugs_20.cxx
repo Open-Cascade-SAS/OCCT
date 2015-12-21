@@ -25,6 +25,15 @@
 #include <Geom_BSplineSurface.hxx>
 #include <DrawTrSurf.hxx>
 
+#include <TopExp.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <BRep_Tool.hxx>
+#include <TopoDS_Edge.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
+#include <TopoDS.hxx>
+#include <DBRep.hxx>
+
 //=======================================================================
 //function : SurfaceGenOCC26675_1 
 //purpose  : Generates a surface for intersect (in corresponding
@@ -1242,10 +1251,102 @@ static Standard_Integer SurfaceGenOCC26675_1( Draw_Interpretor& theDI,
   return 0;
 }
 
+
+//=======================================================================
+//function : OCC27021 
+//purpose  : Tests performance of obtaining geometry (points) via topological
+//           exploring or fetching the geometry.
+//=======================================================================
+
+// Fetch via topology
+static std::pair<gp_Pnt, gp_Pnt> getVerticesA(const TopoDS_Edge& theEdge)
+{
+  std::pair<gp_Pnt, gp_Pnt> result;
+
+  static TopoDS_Vertex aFirst, aLast;
+  TopExp::Vertices(theEdge, aFirst, aLast, Standard_True);
+
+  result.first = BRep_Tool::Pnt(aFirst);
+  result.second = BRep_Tool::Pnt(aLast);
+
+  return result;
+}
+
+//Geometrical way
+static std::pair<gp_Pnt, gp_Pnt> getVerticesB(const TopoDS_Edge& theEdge)
+{
+  Standard_Real first;
+  Standard_Real last;
+
+  Handle(Geom_Curve) curve = BRep_Tool::Curve(theEdge, first, last);
+
+  std::pair<gp_Pnt, gp_Pnt> result;
+
+  if (theEdge.Orientation() == TopAbs_REVERSED)
+  {
+    curve->D0(first, result.second);
+    curve->D0(last, result.first);
+  }
+  else
+  {
+    curve->D0(first, result.first);
+    curve->D0(last, result.second);
+  }
+  return result;
+}
+
+
+
+static Standard_Integer OCC27021(Draw_Interpretor& theDI,
+                                 Standard_Integer  theNArg,
+                                 const char ** theArgVal)
+{
+  if (theNArg != 2)
+  {
+    cout << "Use: " << theArgVal[0] << " shape" << endl;
+    return 1;
+  }
+
+  TopoDS_Shape shape (DBRep::Get(theArgVal[1]));
+
+  TopTools_IndexedMapOfShape shape_faces;
+  TopExp::MapShapes(shape, TopAbs_FACE, shape_faces);
+
+  // Pick a single face which shows the problem.
+  TopoDS_Face face = TopoDS::Face(shape_faces(10));
+  TopTools_IndexedMapOfShape face_edges;
+  TopExp::MapShapes(face, TopAbs_EDGE, face_edges);
+  TopoDS_Edge edge = TopoDS::Edge(face_edges(2));
+
+  Standard_Integer iterations = 100000000;
+
+  std::pair<gp_Pnt, gp_Pnt> vertices;
+  clock_t t = clock();
+
+  theDI << "\nRetrieving " << iterations << " vertices using approach A)...";
+  for (int i = 0; i < iterations; ++i)
+  {
+    vertices = getVerticesA(edge);
+  }
+  theDI << "done in " << (clock() - t) / (double)CLOCKS_PER_SEC << " seconds\n";
+  t = clock();
+
+  theDI << "\nRetrieving " << iterations << " vertices using approach B)...";
+  for (int i = 0; i < iterations; ++i)
+  {
+    vertices = getVerticesB(edge);
+  }
+  theDI << "done in " << (clock() - t) / (double)CLOCKS_PER_SEC << " seconds\n";
+
+  return 0;
+}
+
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
   theCommands.Add ("OCC26675_1", "OCC26675_1 result", __FILE__, SurfaceGenOCC26675_1, group);
+  theCommands.Add("OCC27021", "OCC27021", __FILE__, OCC27021, group);
 
   return;
 }

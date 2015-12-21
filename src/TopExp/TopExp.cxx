@@ -147,15 +147,33 @@ void  TopExp::Vertices(const TopoDS_Edge& E,
 		       TopoDS_Vertex& Vlast,
 		       const Standard_Boolean CumOri)
 {
-  Vfirst = Vlast = TopoDS_Vertex(); // nullify
-  TopoDS_Iterator ite(E,CumOri);
+  // minor optimization for case when Vfirst and Vlast are non-null:
+  // at least for VC++ 10, it is faster if we use boolean flags than 
+  // if we nullify vertices at that point (see #27021)
+  Standard_Boolean isFirstDefined = Standard_False;
+  Standard_Boolean isLastDefined = Standard_False;
+  
+  TopoDS_Iterator ite(E, CumOri);
   while (ite.More()) {
-    if (ite.Value().Orientation() == TopAbs_FORWARD) 
-      Vfirst =  TopoDS::Vertex(ite.Value());
-    else if (ite.Value().Orientation() == TopAbs_REVERSED) 
-      Vlast =  TopoDS::Vertex(ite.Value());
+    const TopoDS_Shape& aV = ite.Value();
+    if (aV.Orientation() == TopAbs_FORWARD)
+    {
+      Vfirst = TopoDS::Vertex (aV);
+      isFirstDefined = Standard_True;
+    }
+    else if (aV.Orientation() == TopAbs_REVERSED)
+    {
+      Vlast = TopoDS::Vertex (aV);
+      isLastDefined = Standard_True;
+    }
     ite.Next();
   }
+
+  if (!isFirstDefined)
+    Vfirst.Nullify();
+
+  if (!isLastDefined)
+    Vlast.Nullify();
 }
 
 
