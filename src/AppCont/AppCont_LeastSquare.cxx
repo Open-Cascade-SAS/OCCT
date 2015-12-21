@@ -24,6 +24,7 @@
 #include <AppParCurves_MultiPoint.hxx>
 #include <AppCont_ContMatrices.hxx>
 #include <PLib.hxx>
+#include <Precision.hxx>
 
 
 //=======================================================================
@@ -37,21 +38,25 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
                                                NCollection_Array1<gp_Pnt2d>& theFix2d,
                                                NCollection_Array1<gp_Pnt>&   theFix)
 {
-  Standard_Real aMaxIter = 15.0;
+  Standard_Integer aMaxIter = 15;
   Standard_Integer j, i2;
   NCollection_Array1<gp_Pnt>   aTabP(1, Max (myNbP, 1)),     aPrevP(1, Max (myNbP, 1));
   NCollection_Array1<gp_Pnt2d> aTabP2d(1,  Max (myNbP2d, 1)), aPrevP2d(1,  Max (myNbP2d, 1));
   Standard_Real aMult = ((theU - theU0) > (theU1 - theU)) ? 1.0: -1.0;
-  Standard_Real aStartParam = (theU0 + theU1) / 2.0,
+  Standard_Real aStartParam = theU,
                 aCurrParam, aPrevDist = 1.0, aCurrDist = 1.0;
 
-  for (Standard_Real anIter = 1.0; anIter < aMaxIter; anIter += 1.0)
+  Standard_Real du = -(theU1 - theU0) / 2.0 * aMult;
+  Standard_Real eps = Epsilon(1.);
+  Standard_Real dd = du, dec = .1;
+  for (Standard_Integer anIter = 1; anIter < aMaxIter; anIter++)
   {
-    aCurrParam = aStartParam + aMult * (1 - pow(10, -anIter)) * (theU1 - theU0) / 2.0;
+    dd *=  dec;
+    aCurrParam = aStartParam + dd;
     theSSP.Value(aCurrParam, aTabP2d, aTabP);
 
     // from second iteration
-    if (anIter > 1.5)
+    if (anIter > 1)
     {
       aCurrDist = 0.0;
 
@@ -68,12 +73,14 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
       }
 
       // from the third iteration
-      if (anIter > 2.5 && aCurrDist / aPrevDist > 10.0)
+      if (anIter > 2 && aCurrDist / aPrevDist > 10.0)
         break;
     }
     aPrevP = aTabP;
     aPrevP2d = aTabP2d;
     aPrevDist = aCurrDist;
+    if(aPrevDist <= eps)
+      break;
   }
   theFix2d = aPrevP2d;
   theFix   = aPrevP;
