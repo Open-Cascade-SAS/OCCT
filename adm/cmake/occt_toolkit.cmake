@@ -116,8 +116,19 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
 endforeach()
 string (REGEX REPLACE ";" " " PRECOMPILED_DEFS "${PRECOMPILED_DEFS}")
 
+set (USED_RCFILE "")
+if (MSVC)
+  set (USED_RCFILE "${CMAKE_BINARY_DIR}/resources/${PROJECT_NAME}.rc")
+
+  if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/adm/templates/occt_toolkit.rc.in")
+    configure_file("${APPLY_OCCT_PATCH_DIR}/adm/templates/occt_toolkit.rc.in" "${USED_RCFILE}" @ONLY)
+  else()
+    configure_file("${CMAKE_SOURCE_DIR}/adm/templates/occt_toolkit.rc.in" "${USED_RCFILE}" @ONLY)
+  endif()
+endif()
+
 if ("${PROJECT_NAME}" STREQUAL "DRAWEXE")
-  add_executable (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES})
+  add_executable (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE})
 
   install (TARGETS ${PROJECT_NAME}
            CONFIGURATIONS Release
@@ -129,7 +140,7 @@ if ("${PROJECT_NAME}" STREQUAL "DRAWEXE")
            CONFIGURATIONS Debug
            DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 else()
-  add_library (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES})
+  add_library (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE})
 
   install (TARGETS ${PROJECT_NAME}
            CONFIGURATIONS Release

@@ -1,0 +1,30 @@
+#include <windows.h>
+#include <Standard_Version.hxx>
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     OCC_VERSION_MAJOR, OCC_VERSION_MINOR, OCC_VERSION_MAINTENANCE, 0
+PRODUCTVERSION  OCC_VERSION_MAJOR, OCC_VERSION_MINOR, OCC_VERSION_MAINTENANCE, 0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+FILEFLAGS VS_FF_DEBUG
+#endif
+FILEOS          VOS_NT
+FILETYPE        VFT_DLL
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN BLOCK "040904E4" // Language type = U.S English(0x0409) and Character Set = Windows, Multilingual(0x04E4)
+    BEGIN
+      VALUE "FileDescription", "@PROJECT_NAME@ Toolkit\000"
+      VALUE "FileVersion",     OCC_VERSION_STRING_EXT "\000"
+      VALUE "LegalCopyright",  "\251 OPEN CASCADE SAS\000"
+      VALUE "ProductName",     "@PROJECT_NAME@\000"
+      VALUE "ProductVersion",  OCC_VERSION_STRING_EXT "\000"
+      VALUE "OfficialSite",    "www.opencascade.org\000"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 0x04E4
+  END
+END
