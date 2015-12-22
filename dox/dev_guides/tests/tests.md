@@ -3,13 +3,13 @@
 
 @tableofcontents
 
-@section testmanual_1 Introduction
+@section testmanual_intro Introduction
 
 This document provides OCCT developers and contributors with an overview and practical guidelines for work with OCCT automatic testing system.
 
 Reading the Introduction should be sufficient for developers to use the test system to control non-regression of the modifications they implement in OCCT. Other sections provide a more in-depth description of the test system, required for modifying the tests and adding new test cases. 
 
-@subsection testmanual_1_1 Basic Information
+@subsection testmanual_intro_basic Basic Information
 
 OCCT automatic testing system is organized around @ref occt_user_guides__test_harness "DRAW Test Harness", a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
 
@@ -98,7 +98,7 @@ Example:
     Detailed logs are saved in D:/occt/results_2012-06-04T0919
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See @ref testmanual_3_5 "Interpretation of test results" for details.
+The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See @ref testmanual_details_results "Interpretation of test results" for details.
 
 The results and detailed logs of the tests are saved by default to a new subdirectory of the subdirectory *results* in the current folder, whose name is generated automatically using the current date and time, prefixed by Git branch name (if Git is available and current sources are managed by Git).
 If necessary, a non-default output directory can be specified using option <i> –outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>–overwrite</i> to allow writing results in the existing non-empty directory. 
@@ -165,7 +165,7 @@ test: Run specified test case
         This key will be ignored if the "-echo" key is already set.
 ~~~~~
 
-@subsubsection testmanual_1_3_4 Creating a New Test
+@subsubsection testmanual_intro_quick_create Creating a New Test
 
 The detailed rules of creation of new tests are given in @ref testmanual_3 "Creation and modification of tests" chapter. The following short description covers the most typical situations:
 
@@ -321,7 +321,7 @@ Example:
 
 Lines starting with a *#* character and blank lines are ignored to allow comments and spacing.
 
-See @ref testmanual_3_5 "Interpretation of test results" chapter for details.
+See @ref testmanual_details_results "Interpretation of test results" chapter for details.
 
 If a line matches several rules, the first one applies. Rules defined in the grid are checked first, then rules in the group, then rules in the test root directory. This allows defining some rules on the grid level with status *IGNORE* to ignore messages that would otherwise be treated as errors due to the group level rules.
 
@@ -563,7 +563,7 @@ In order to ensure that the test works as expected in different environments, ob
 * Do not put call to *locate_data_file* in catch statement – this can prevent correct interpretation of the missing data file by the test system.
 * Do not use commands *decho* and *dlog* in the test script, to avoid interference with use of these commands by the test system.
 
-@subsection testmanual_3_5 Interpretation of test results
+@subsection testmanual_details_results Interpretation of test results
 
 The result of the test is evaluated by checking its output against patterns defined in the files *parse.rules* of the grid and group.
 
