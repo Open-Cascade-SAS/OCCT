@@ -236,30 +236,40 @@ macro (TBB_PRODUCT_SEARCH PRODUCT_NAME)
     OCCT_MAKE_COMPILER_SHORT_NAME()
 
     if (WIN32)
-      install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
-               CONFIGURATIONS Release
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-      install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
-               CONFIGURATIONS RelWithDebInfo
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
-      install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
-               CONFIGURATIONS Debug
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+      if (DEFINED INSTALL_BIN_DIR)
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL} DESTINATION "${INSTALL_BIN_DIR}")
+      else()
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+      endif()
     else()
       get_filename_component (PRODUCT_LIBRARY_NAME ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} NAME)
 
-      install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
-               CONFIGURATIONS Release
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
-               RENAME ${PRODUCT_LIBRARY_NAME}.2)
-      install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
-               CONFIGURATIONS RelWithDebInfo
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
-               RENAME ${PRODUCT_LIBRARY_NAME}.2)
-      install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
-               CONFIGURATIONS Debug
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
-               RENAME ${PRODUCT_LIBRARY_NAME}.2)
+      if (DEFINED INSTALL_LIB_DIR)
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
+                 DESTINATION "${INSTALL_LIB_DIR}"
+                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
+      else()
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
+                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
+      endif()
     endif()
   endif()
   mark_as_advanced (3RDPARTY_${PRODUCT_NAME}_LIBRARY 3RDPARTY_${PRODUCT_NAME}_DLL)

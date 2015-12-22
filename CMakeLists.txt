@@ -31,10 +31,27 @@ endif()
 # the name of the project
 project (OCCT)
 
+# include occt macros
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
+
 # Solution folder property
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
+# get current OCCT version
+OCC_VERSION (OCC_VERSION_MAJOR OCC_VERSION_MINOR OCC_VERSION_MAINTENANCE OCC_VERSION_DEVELOPMENT OCC_VERSION_STRING_EXT)
+
+set_property (GLOBAL PROPERTY OCC_VERSION_MAJOR ${OCC_VERSION_MAJOR})
+set_property (GLOBAL PROPERTY OCC_VERSION_MINOR ${OCC_VERSION_MINOR})
+set_property (GLOBAL PROPERTY OCC_VERSION_MAINTENANCE ${OCC_VERSION_MAINTENANCE})
+
 set (INSTALL_TEST_CASES OFF CACHE BOOL "${INSTALL_TEST_CASES_DESCR}")
+
+# single-configuration generator
+set (SINGLE_GENERATOR OFF)
+if (CMAKE_BUILD_TYPE)
+  set (SINGLE_GENERATOR ON)
+endif()
+
 # a single-configuration generator like the Makefile generator defines CMAKE_BUILD_TYPE variable
 # check this variable and set if it's required
 if (DEFINED CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE) # single-configuration generator.
@@ -50,10 +67,93 @@ endif()
 # copy samples to install directory
 set (INSTALL_SAMPLES OFF CACHE BOOL "${INSTALL_SAMPLES_DESCR}")
 
-# install dir of the built project
-set (INSTALL_DIR "" CACHE PATH "${INSTALL_DIR_DESCR}" )
-set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
+# install dir of the project
+if (NOT DEFINED INSTALL_DIR)
+  set (INSTALL_DIR "${CMAKE_INSTALL_PREFIX}" CACHE PATH "${INSTALL_DIR_DESCR}")
+endif()
 
+if ("${INSTALL_DIR}" STREQUAL "")
+  get_filename_component (CMAKE_BINARY_DIR_PARENT ${CMAKE_BINARY_DIR} DIRECTORY)
+  set (INSTALL_DIR "${CMAKE_BINARY_DIR_PARENT}/install" CACHE PATH "${INSTALL_DIR_DESCR}" FORCE)
+  message (STATUS "Info: INSTALL_DIR has been set as ${INSTALL_DIR}")
+endif()
+
+# hide CMAKE_INSTALL_PREFIX from a user
+set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE)
+
+set (BIN_LETTER "")
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+  set (BIN_LETTER "d")
+elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+  set (BIN_LETTER "i")
+endif()
+
+# Get all used variables: OS_WITH_BIT, COMPILER
+OCCT_MAKE_OS_WITH_BITNESS()
+OCCT_MAKE_COMPILER_SHORT_NAME()
+
+# do not define INSTALL_BIN_DIR for win. 
+# Leave library structure for win: <prefix>/win64/vc10/bin(d)
+if (NOT DEFINED INSTALL_BIN_DIR)
+  if (UNIX)
+    set (INSTALL_BIN_DIR "${INSTALL_DIR}/bin" CACHE PATH "${INSTALL_BIN_DIR_DESCR}")
+  else()
+    if (SINGLE_GENERATOR)
+      set (INSTALL_BIN_DIR "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BIN_LETTER}" CACHE PATH "${INSTALL_BIN_DIR_DESCR}")
+    endif()
+  endif()
+endif()
+
+# define folder contaning all shell/batch scripts
+if (NOT DEFINED INSTALL_SCRIPT_DIR)
+  if (UNIX)
+    set (INSTALL_SCRIPT_DIR "${INSTALL_BIN_DIR}/opencascade-${OCC_VERSION_STRING_EXT}" CACHE PATH "${INSTALL_SCRIPT_DIR_DESCR}")
+  else()
+    set (INSTALL_SCRIPT_DIR "${INSTALL_DIR}" CACHE PATH "${INSTALL_SCRIPT_DIR_DESCR}")
+  endif()
+endif()
+
+# place the libraries to <prefix>/lib folder for unix and leave old structure for windows
+if (NOT DEFINED INSTALL_LIB_DIR)
+  if (UNIX)
+    set (INSTALL_LIB_DIR "${INSTALL_DIR}/lib" CACHE PATH "${INSTALL_LIB_DIR_DESCR}")
+  else()
+    if (SINGLE_GENERATOR)
+      set (INSTALL_LIB_DIR "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BIN_LETTER}" CACHE PATH "${INSTALL_LIB_DIR_DESCR}")
+    endif()
+  endif()
+endif()
+
+# OCCT headers: <prefix>/inc for windows,
+#               <prefix>/include/opencascade-7.0.0 for unix
+if (NOT DEFINED INSTALL_INCLUDE_DIR)
+  if (UNIX)
+    set (INSTALL_INCLUDE_DIR "${INSTALL_DIR}/include/opencascade-${OCC_VERSION_STRING_EXT}" CACHE PATH "${INSTALL_INCLUDE_DIR_DESCR}")
+  else()
+    set (INSTALL_INCLUDE_DIR "${INSTALL_DIR}/inc" CACHE PATH "${INSTALL_INCLUDE_DIR_DESCR}")
+  endif()
+endif()
+
+# OCCT resources: <prefix>/src for windows,
+#                 <prefix>/share/opencascade-7.0.0/resources for unix
+if (NOT DEFINED INSTALL_OCCT_RESOURCE_DIR)
+  if (UNIX)
+    set (INSTALL_OCCT_RESOURCE_DIR "${INSTALL_DIR}/share/opencascade-${OCC_VERSION_STRING_EXT}/resoures" CACHE PATH "${INSTALL_OCCT_RESOURCE_DIR_DESCR}")
+  else()
+    set (INSTALL_OCCT_RESOURCE_DIR "${INSTALL_DIR}/src" CACHE PATH "${INSTALL_OCCT_RESOURCE_DIR_DESCR}")
+  endif()
+endif()
+
+# OCCT data
+if (NOT DEFINED INSTALL_SHARE_DIR)
+  if (UNIX)
+    set (INSTALL_SHARE_DIR "${INSTALL_DIR}/share/opencascade-${OCC_VERSION_STRING_EXT}" CACHE PATH "${INSTALL_SHARE_DIR_DESCR}")
+  else()
+    set (INSTALL_SHARE_DIR "${INSTALL_DIR}" CACHE PATH "${INSTALL_SHARE_DIR_DESCR}")
+  endif()
+endif()
+
+# a directory recognized as a 'patch' for OCCT
 set (BUILD_PATCH "" CACHE PATH "${BUILD_PATCH_DESCR}")
 
 # the list of being built toolkits
@@ -68,12 +168,10 @@ endif()
 if (APPLE)
   set (USE_GLX OFF CACHE BOOL "${USE_GLX_DESCR}")
 endif()
+
 if (WIN32)
   set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
 endif()
-
-# include occt macros
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
 # include the patched or original list of modules
 # list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
@@ -114,7 +212,7 @@ endif()
 # accumulate all used toolkits
 list (REMOVE_DUPLICATES BUILD_TOOLKITS)
 set (RAW_BUILD_TOOLKITS)
-foreach(BUILD_TOOLKIT ${BUILD_TOOLKITS})
+foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
   OCCT_TOOLKIT_FULL_DEP (${BUILD_TOOLKIT} TOOLKIT_FULL_DEPS)
   list (APPEND RAW_BUILD_TOOLKITS ${BUILD_TOOLKIT} ${TOOLKIT_FULL_DEPS})
 endforeach()
@@ -293,9 +391,12 @@ if (BUILD_DOC_OcctOverview)
   endif()
 
   if (INSTALL_DOC_OcctOverview)
-    install (DIRECTORY "${CMAKE_BINARY_DIR}/doc/overview" DESTINATION  "${INSTALL_DIR}/doc")
+    install (DIRECTORY "${CMAKE_BINARY_DIR}/doc/overview" DESTINATION  "${INSTALL_SHARE_DIR}/doc")
 
-    OCCT_INSTALL_FILE_OR_DIR ("dox/resources/overview.html" "${INSTALL_DIR}")
+    # create overview.html only for windows
+    if (WIN32)
+      OCCT_INSTALL_FILE_OR_DIR ("dox/resources/overview.html" "${INSTALL_SCRIPT_DIR}")
+    endif()
   endif()
 
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
@@ -344,10 +445,6 @@ if (3RDPARTY_LIBRARY_DIRS)
   link_directories (${3RDPARTY_LIBRARY_DIRS})
 endif()
 
-# Get all used variables: OS_WITH_BIT, COMPILER
-OCCT_MAKE_OS_WITH_BITNESS()
-OCCT_MAKE_COMPILER_SHORT_NAME()
-
 # build directories
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
@@ -367,15 +464,6 @@ if (WIN32)
   set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG          "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 endif()
 
-if ("${INSTALL_DIR}" STREQUAL "")
-  get_filename_component (CMAKE_BINARY_DIR_PARENT ${CMAKE_BINARY_DIR} DIRECTORY)
-
-  set (INSTALL_DIR "${CMAKE_BINARY_DIR_PARENT}/install" CACHE PATH "${INSTALL_DIR_DESCR}" FORCE)
-  set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
-
-  message (STATUS "Info: INSTALL_DIR has been set as ${INSTALL_DIR}")
-endif()
-
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
 
@@ -385,15 +473,24 @@ COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}"
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
 
-OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
-OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")
+OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_SHARE_DIR}")
 
+# OCCT samples
 if (INSTALL_SAMPLES)
-  OCCT_INSTALL_FILE_OR_DIR ("samples" "${INSTALL_DIR}")
+  if (WIN32)
+    OCCT_INSTALL_FILE_OR_DIR ("samples/CSharp" "${INSTALL_SHARE_DIR}/samples")
+    OCCT_INSTALL_FILE_OR_DIR ("samples/mfc" "${INSTALL_SHARE_DIR}/samples")   
+  endif()
+  
+  OCCT_INSTALL_FILE_OR_DIR ("samples/java" "${INSTALL_SHARE_DIR}/samples")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/ocafsamples" "${INSTALL_SHARE_DIR}/samples")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/qt" "${INSTALL_SHARE_DIR}/samples")
 endif()
 
+OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_SHARE_DIR}/samples")
+
 if (INSTALL_TEST_CASES)
-  OCCT_INSTALL_FILE_OR_DIR ("tests" "${INSTALL_DIR}")
+  OCCT_INSTALL_FILE_OR_DIR ("tests" "${INSTALL_SHARE_DIR}")
 endif()
 
 if (WIN32)
@@ -402,14 +499,16 @@ else()
   set (SCRIPT_EXT sh)
 endif()
 
-# DRAW.BAT or DRAW.SH
+# copy draw script to install script folder
 if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/adm/templates/draw.${SCRIPT_EXT}")
-  install (FILES "${BUILD_PATCH}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
-          OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  install (FILES "${BUILD_PATCH}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_SCRIPT_DIR}"
+          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
 else()
-  install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
-          OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_SCRIPT_DIR}"
+          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
 endif()
+
+# copy draw script to CMake binary folder
 OCCT_COPY_FILE_OR_DIR ("adm/templates/draw.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
 
 set (SUB_CUSTOM_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.${SCRIPT_EXT}")
@@ -417,29 +516,29 @@ set (SUB_CUSTOM_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.${SCRIPT_EXT}")
 if (WIN32)
   set (ADDITIONAL_CUSTOM_CONTENT "\nif exist \"%~dp0${SUB_CUSTOM_NAME}\" (\n  call \"%~dp0${SUB_CUSTOM_NAME}\" %VCVER% %ARCH% %CASDEB% \n)")
 else()
-  set (ADDITIONAL_CUSTOM_CONTENT "\nif [ -e \"\${aScriptPath}/${SUB_CUSTOM_NAME}\" ]; then\n  source \"\${aScriptPath}/${SUB_CUSTOM_NAME}\" \"\${COMPILER}\" \"\${WOKSTATION}\${ARCH}\" \"\${CASDEB}\" \nfi")
+  set (ADDITIONAL_CUSTOM_CONTENT "\nif [ -e \"\${aScriptPath}/${SUB_CUSTOM_NAME}\" ]; then\n  source \"\${aScriptPath}/${SUB_CUSTOM_NAME}\" \"\$1\" \"\$2\" \nfi")
 endif()
 
  # change custom.bat/sh
-if (EXISTS "${INSTALL_DIR}/custom.${SCRIPT_EXT}")
-  file (READ "${INSTALL_DIR}/custom.${SCRIPT_EXT}" CUSTOM_CONTENT)
+if (EXISTS "${INSTALL_BIN_DIR}/custom.${SCRIPT_EXT}")
+  file (READ "${INSTALL_BIN_DIR}/custom.${SCRIPT_EXT}" CUSTOM_CONTENT)
 
   set (CUSTOM_CONTENT "${CUSTOM_CONTENT} ${ADDITIONAL_CUSTOM_CONTENT}")
 
-  file (WRITE "${INSTALL_DIR}/custom.${SCRIPT_EXT}" "${CUSTOM_CONTENT}")
+  file (WRITE "${INSTALL_BIN_DIR}/custom.${SCRIPT_EXT}" "${CUSTOM_CONTENT}")
 else()
-  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" "custom.${SCRIPT_EXT}" "${INSTALL_DIR}")
+  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" "custom.${SCRIPT_EXT}" "${INSTALL_SCRIPT_DIR}")
 endif()
 
 # write current custom.bat/sh (for install directory)
 set (SUB_CUSTOM_BUILD_NAME "custom_${COMPILER}_${COMPILER_BITNESS}.install.${SCRIPT_EXT}")
-OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${SUB_CUSTOM_BUILD_NAME}" "${SUB_CUSTOM_NAME}" "${INSTALL_DIR}")
+OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.install.${SCRIPT_EXT}.in" "${SUB_CUSTOM_BUILD_NAME}" "${SUB_CUSTOM_NAME}" "${INSTALL_SCRIPT_DIR}")
 
 # write current custom.bat/sh (for build directory)
 OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME}")
 
 if (BUILD_MODULE_OcctMfcSamples)
-  OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR}")
+  OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_SCRIPT_DIR}")
   OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
 endif()
 
@@ -447,29 +546,31 @@ endif()
 OCCT_CONFIGURE ("adm/templates/env.build.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
 
 # end script for draw in standalone environment
-# release version
-set (BUILD_LETTER "")
-OCCT_CONFIGURE ("adm/templates/env.install.${SCRIPT_EXT}.in" "env.install.release.${SCRIPT_EXT}")
-install (FILES "${CMAKE_BINARY_DIR}/env.install.release.${SCRIPT_EXT}" 
-         CONFIGURATIONS Release
-         DESTINATION  "${INSTALL_DIR}"
-         RENAME "env.${SCRIPT_EXT}")
+if (UNIX)
+  OCCT_CONFIGURE ("adm/templates/env.install.sh.in" "env.install.sh")
+  install (FILES "${CMAKE_BINARY_DIR}/env.install.sh" DESTINATION  "${INSTALL_SCRIPT_DIR}" RENAME "env.sh")
+else()
+  # release version
+  set (CURRENT_BUILD_LETTER "")
+  OCCT_CONFIGURE ("adm/templates/env.install.bat.in" "env.install.release.bat")
+  install (FILES "${CMAKE_BINARY_DIR}/env.install.release.bat" 
+           CONFIGURATIONS Release
+           DESTINATION  "${INSTALL_SCRIPT_DIR}" RENAME "env.bat")
 
-# debug version
-set (BUILD_LETTER "d")
-OCCT_CONFIGURE ("adm/templates/env.install.${SCRIPT_EXT}.in" "env.install.debug.${SCRIPT_EXT}")
-install (FILES "${CMAKE_BINARY_DIR}/env.install.debug.${SCRIPT_EXT}" 
-         CONFIGURATIONS Debug
-         DESTINATION  "${INSTALL_DIR}"
-         RENAME "env.${SCRIPT_EXT}")
+  # debug version
+  set (CURRENT_BUILD_LETTER "d")
+  OCCT_CONFIGURE ("adm/templates/env.install.bat.in" "env.install.debug.bat")
+  install (FILES "${CMAKE_BINARY_DIR}/env.install.debug.bat" 
+           CONFIGURATIONS Debug
+           DESTINATION  "${INSTALL_SCRIPT_DIR}" RENAME "env.bat")
 
-# release with debug info version
-set (BUILD_LETTER "i")
-OCCT_CONFIGURE ("adm/templates/env.install.${SCRIPT_EXT}.in" "env.install.relwithdebinfo.${SCRIPT_EXT}")
-install (FILES "${CMAKE_BINARY_DIR}/env.install.relwithdebinfo.${SCRIPT_EXT}" 
-         CONFIGURATIONS RelWithDebInfo
-         DESTINATION  "${INSTALL_DIR}"
-         RENAME "env.${SCRIPT_EXT}")
+  # release with debug info version
+  set (CURRENT_BUILD_LETTER "i")
+  OCCT_CONFIGURE ("adm/templates/env.install.bat.in" "env.install.relwithdebinfo.bat")
+  install (FILES "${CMAKE_BINARY_DIR}/env.install.relwithdebinfo.bat" 
+           CONFIGURATIONS RelWithDebInfo
+           DESTINATION  "${INSTALL_SCRIPT_DIR}" RENAME "env.bat")
+endif()
 
 # copy DrawAppliInit from OCCT source to build directory
 if (NOT EXISTS "${CMAKE_BINARY_DIR}/DrawAppliInit")
@@ -482,9 +583,9 @@ foreach(RESOURCE ${RESOURCES})
   get_filename_component(RESOURCE_FOLDER ${RESOURCE} DIRECTORY)
   if(NOT "${RESOURCE_FOLDER}" STREQUAL "")
     get_filename_component(RESOURCE_FOLDER ${RESOURCE_FOLDER} NAME)
-    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR}/src/${RESOURCE_FOLDER}")
+    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_OCCT_RESOURCE_DIR}/${RESOURCE_FOLDER}")
   else()
-    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR}/src")
+    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_OCCT_RESOURCE_DIR}")
   endif()
 endforeach()
 

@@ -289,34 +289,44 @@ endif()
 
 # install instructions
 if (INSTALL_FREETYPE)
-
   OCCT_MAKE_OS_WITH_BITNESS()
+
   if (WIN32)
-    install (FILES "${3RDPARTY_FREETYPE_DLL}"
-             CONFIGURATIONS Release
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-    install (FILES "${3RDPARTY_FREETYPE_DLL}"
-             CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
-    install (FILES "${3RDPARTY_FREETYPE_DLL}"
-             CONFIGURATIONS Debug
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+    if (DEFINED INSTALL_BIN_DIR)
+      install (FILES "${3RDPARTY_FREETYPE_DLL}" DESTINATION "${INSTALL_BIN_DIR}")
+    else()
+      install (FILES "${3RDPARTY_FREETYPE_DLL}"
+               CONFIGURATIONS Release
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+      install (FILES "${3RDPARTY_FREETYPE_DLL}"
+               CONFIGURATIONS RelWithDebInfo
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+      install (FILES "${3RDPARTY_FREETYPE_DLL}"
+               CONFIGURATIONS Debug
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+    endif()
   else()
     get_filename_component(3RDPARTY_FREETYPE_LIBRARY_ABS ${3RDPARTY_FREETYPE_LIBRARY} REALPATH)
     get_filename_component(3RDPARTY_FREETYPE_LIBRARY_NAME ${3RDPARTY_FREETYPE_LIBRARY} NAME)
 
-    install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
-             CONFIGURATIONS Release
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
-             RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
-    install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
-             CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
-             RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
-    install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
-             CONFIGURATIONS Debug
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
-             RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+    if (DEFINED INSTALL_LIB_DIR)
+      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+               DESTINATION "${INSTALL_LIB_DIR}"
+               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+    else()
+      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+               CONFIGURATIONS Release
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+               CONFIGURATIONS RelWithDebInfo
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
+               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+               CONFIGURATIONS Debug
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+    endif()
   endif()
 
   set (USED_3RDPARTY_FREETYPE_DIR "")

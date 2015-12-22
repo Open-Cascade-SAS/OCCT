@@ -37,12 +37,10 @@ set (OCCT_CONFIG_FOR_DOXYGEN "${OCCT_GENERATED_DOC_DIR}/occt.cfg")
 
 set (3RDPARTY_MATHJAX_RELATIVE_PATH "http://cdn.mathjax.org/mathjax/latest")
 
-OCCT_VERSION (OCCT_SOURCE_VERSION)
-
 configure_file ("${OCCT_OVERVIEW_RESOURCE_DIR}/occt_ug_html.doxyfile" "${OCCT_CONFIG_FOR_DOXYGEN}" COPYONLY)
 
 # Add common options for generation of Overview and User Guides
-file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nPROJECT_NUMBER         = ${OCCT_SOURCE_VERSION}")
+file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nPROJECT_NUMBER         = ${OCC_VERSION_STRING_EXT}")
 file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nOUTPUT_DIRECTORY       = ${OCCT_GENERATED_OVERVIEW_DIR}/.")
 file (APPEND ${OCCT_CONFIG_FOR_DOXYGEN} "\nPROJECT_LOGO           = ${OCCT_OVERVIEW_DIR}/resources/occ_logo.png")
 

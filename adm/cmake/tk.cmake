@@ -207,31 +207,45 @@ if (INSTALL_TK)
 
     # collect and install all dlls from tk dll dirs
     file (GLOB TK_DLLS  "${3RDPARTY_TK_DLL_DIR}/*.dll")
-    install (FILES ${TK_DLLS}
-             CONFIGURATIONS Release
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-    install (FILES ${TK_DLLS}
-             CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
-    install (FILES ${TK_DLLS}
-             CONFIGURATIONS Debug
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+
+    if (DEFINED INSTALL_BIN_DIR)
+      install (FILES ${TK_DLLS} DESTINATION "${INSTALL_BIN_DIR}")
+    else()
+      install (FILES ${TK_DLLS}
+               CONFIGURATIONS Release
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+      install (FILES ${TK_DLLS}
+               CONFIGURATIONS RelWithDebInfo
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+      install (FILES ${TK_DLLS}
+               CONFIGURATIONS Debug
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+    endif()
   else()
     get_filename_component(3RDPARTY_TK_LIBRARY_REALPATH ${3RDPARTY_TK_LIBRARY} REALPATH)
-    install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
-             CONFIGURATIONS Release
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
-    install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
-             CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
-    install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
-             CONFIGURATIONS Debug
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
+
+    if (DEFINED INSTALL_LIB_DIR)
+      install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH} DESTINATION "${INSTALL_LIB_DIR}")
+    else()
+      install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
+               CONFIGURATIONS Release
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+      install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
+               CONFIGURATIONS RelWithDebInfo
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
+      install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
+               CONFIGURATIONS Debug
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
+    endif()
   endif()
 
   if (TCL_TCLSH_VERSION)
     # tk is required to install in lib folder (without)
-    install (DIRECTORY "${3RDPARTY_TK_LIBRARY_DIR}/tk${TCL_TCLSH_VERSION}"  DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    if (DEFINED INSTALL_LIB_DIR)
+      install (DIRECTORY "${3RDPARTY_TK_LIBRARY_DIR}/tk${TCL_TCLSH_VERSION}"  DESTINATION "${INSTALL_LIB_DIR}")
+    else()
+      install (DIRECTORY "${3RDPARTY_TK_LIBRARY_DIR}/tk${TCL_TCLSH_VERSION}"  DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    endif()
   else()
     message (STATUS "\nWarning: tkX.X subdir won't be copyied during the installation process.")
     message (STATUS "Try seeking tk within another folder by changing 3RDPARTY_TK_DIR variable.")

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$COMPILER" == "@COMPILER@" ]; then
-  if [ "$ARCH" == "@COMPILER_BITNESS@" ]; then
+if [ "$1" == "@COMPILER@" ]; then
+  if [ "$2" == "@COMPILER_BITNESS@" ]; then
     export TCL_DIR="@USED_3RDPARTY_TCL_DIR@"
     export TK_DIR="@USED_3RDPARTY_TK_DIR@"
     export FREETYPE_DIR="@USED_3RDPARTY_FREETYPE_DIR@"
@@ -9,6 +9,32 @@ if [ "$COMPILER" == "@COMPILER@" ]; then
     export GL2PS_DIR="@USED_3RDPARTY_GL2PS_DIR@"
     export TBB_DIR="@USED_3RDPARTY_TBB_DIR@"
     export VTK_DIR="@USED_3RDPARTY_VTK_DIR@"
+
+    export BIN_PATH="@INSTALL_BIN_DIR@"
+    if [ "$BIN_PATH" != "" ]; then
+      export PATH="${BIN_PATH}:${PATH}"
+    fi
+
+    export LIB_PATH="@INSTALL_LIB_DIR@"
+    if [ "$LIB_PATH" != "" ]; then
+      if [ "$LD_LIBRARY_PATH" != "" ]; then
+        export LD_LIBRARY_PATH="${LIB_PATH}:${LD_LIBRARY_PATH}"
+      else
+        export LD_LIBRARY_PATH="${LIB_PATH}"
+      fi
+    fi
+    
+    export OCCT_RESOURCE_PATH="${CASROOT}/src"
+    if [ "@INSTALL_OCCT_RESOURCE_DIR@" != "" ]; then
+      export OCCT_RESOURCE_PATH="@INSTALL_OCCT_RESOURCE_DIR@"
+    fi
+
+    # required for set default testing environment
+    # and "Samples" window creation in DRAW
+    export OCCT_SHARE_PATH="${CASROOT}"
+    if [ "@INSTALL_SHARE_DIR@" != "" ]; then
+      export OCCT_SHARE_PATH="@INSTALL_SHARE_DIR@"
+    fi
   fi
 fi
 

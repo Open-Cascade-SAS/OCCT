@@ -251,6 +251,11 @@ proc testgrid {args} {
             set prefix "${branch}_"
         }
         set logdir "results/${prefix}[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
+
+        if { [array names ::env OCCT_SHARE_PATH] != "" && "$::env(OCCT_SHARE_PATH)" != ""} {
+          set logdir "$::env(OCCT_SHARE_PATH)/${logdir}"
+        }
+
         set logdir [file normalize $logdir]
     }
     if { [file isdirectory $logdir] && ! $overwrite && ! [catch {glob -directory $logdir *}] } {
