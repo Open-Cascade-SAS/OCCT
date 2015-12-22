@@ -200,7 +200,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE           := libTKJniSample
 LOCAL_C_INCLUDES       := $(STL_INC)
 #LOCAL_STATIC_LIBRARIES := $(STL_LIB) does not work
-LOCAL_CFLAGS           := -Wall
+LOCAL_CFLAGS           := -Wall -std=c++11
 LOCAL_CPP_EXTENSION    := .cxx .cpp
 LOCAL_CPP_FEATURES     := rtti exceptions
 LOCAL_SRC_FILES        := OcctJni_Viewer.cxx OcctJni_Window.cxx OcctJni_MsgPrinter.cxx

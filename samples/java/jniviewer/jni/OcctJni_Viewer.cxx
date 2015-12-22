@@ -179,7 +179,7 @@ bool OcctJni_Viewer::init()
     }
 
     aWindow->SetSize (aWidth, aHeight);
-    myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext, NULL, NULL);
+    myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
     return true;
   }
 
@@ -208,7 +208,7 @@ bool OcctJni_Viewer::init()
   Handle(OcctJni_Window) aWindow = new OcctJni_Window (aWidth, aHeight);
   myView = myViewer->CreateView();
 
-  myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext, NULL, NULL);
+  myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
   myView->TriedronDisplay (Aspect_TOTP_RIGHT_LOWER, Quantity_NOC_WHITE, 0.08, V3d_ZBUFFER);
 
   initContent();
@@ -245,7 +245,7 @@ void OcctJni_Viewer::resize (int theWidth,
   //myView->MustBeResized(); // can be used instead of SetWindow() when EGLsurface has not been changed
 
   EGLContext anEglContext = eglGetCurrentContext();
-  myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext, NULL, NULL);
+  myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
   //saveSnapshot ("/sdcard/Download/tt.png", theWidth, theHeight);
 }
 
