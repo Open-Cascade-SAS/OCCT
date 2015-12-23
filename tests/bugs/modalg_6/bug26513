@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC26513"
+puts "========"
+puts ""
+###########################################################
+# Offset API not returning result (seems to be "hanging")
+###########################################################
+
+set max_time 10
+
+smallview
+
+restore [locate_data_file bug26513-offset_input.brep] a
+
+offsetparameter 1.e-7 c i
+offsetload a 5
+
+dchrono cr reset
+dchrono cr start
+offsetperform result
+dchrono cr stop
+
+set chrono_info [dchrono cr show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $chrono_info full CPU_time
+if { $CPU_time > ${max_time} } {
+  puts "ERROR: OCC26513 is reproduced. Offset operation is too long (> $max_time sec)"
+}
+
+donly result
+fit
+
+set only_screen_axo 1
