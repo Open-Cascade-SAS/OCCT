@@ -1,6 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR27029 ALL: Error : 1 differences with reference data found" 
 
 set filename PRO11414-2.igs
 

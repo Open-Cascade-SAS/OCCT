@@ -955,10 +955,26 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
   }
   else 
   { // On segmente le resultat
-    Standard_Real Udeb = Max(CurvePtr->FirstParameter(), FirstOnCurve);
-    Standard_Real Ufin = Min(CurvePtr->LastParameter(), LastOnCurve);
-    Handle(Geom2d_TrimmedCurve) TC =
-      new Geom2d_TrimmedCurve( CurvePtr, Udeb, Ufin );
+    Handle(Geom2d_TrimmedCurve) TC;
+    Handle(Geom2d_Curve) aCCheck = CurvePtr;
+
+    if(aCCheck->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+    {
+      aCCheck = Handle(Geom2d_TrimmedCurve)::DownCast(aCCheck)->BasisCurve();
+    }
+
+    if(aCCheck->IsPeriodic())
+    {
+      TC = new Geom2d_TrimmedCurve( CurvePtr, FirstOnCurve, LastOnCurve );
+    }
+    else
+    {
+      const Standard_Real Udeb = Max(CurvePtr->FirstParameter(), FirstOnCurve);
+      const Standard_Real Ufin = Min(CurvePtr->LastParameter(), LastOnCurve);
+
+      TC = new Geom2d_TrimmedCurve( CurvePtr, Udeb, Ufin );
+    }
+
     //
     Handle(Geom2d_BSplineCurve) BS =
       Geom2dConvert::CurveToBSplineCurve(TC);
