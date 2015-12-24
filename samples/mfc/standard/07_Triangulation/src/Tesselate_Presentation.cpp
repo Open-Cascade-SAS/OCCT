@@ -397,7 +397,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 void Tesselate_Presentation::sample(const Standard_CString aFileName)
 {
   CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += "\\..\\..\\..\\samples\\mfc\\standard\\Data\\";
+  initfile += "..\\..\\..\\Data\\";
   initfile += aFileName;
 
 /*  

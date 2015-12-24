@@ -158,7 +158,7 @@ OCCT documentation is provided in several forms:
   which is a freeware and can be downloaded from the Adobe site. 
 
 - Full reference documentation covering all OCCT classes generated automatically by Doxygen 
-  software is provided in HTML format, in a separate package. 
+  software is provided in HTML format. 
   Reference documentation is presented in **Modules --> Toolkits --> Packages --> Classes** 
   logic structure with cross-references to all OCCT classes and complete in-browser search by all classes.
 
@@ -191,90 +191,64 @@ Linux (x86-64), MAC OS X (x86-64) and Android (4.0.4 armv7) platforms.
 The tables below describe the recommended hardware and software configurations
 for which OCCT is certified to work.
 
-@subsection OCCT_OVW_SECTION_5_1 Linux
+@subsection overview_req_os Operating System
 
-| Operating System  | Mandriva 2010, CentOS 5.5, CentOS 6.3, Fedora 17, Fedora 18, Ubuntu 13.04, Debian 6.0\*  |
-| ----- | ----- |
-| Minimum memory    | 512 MB, 1 GB recommended |
-| Free disk space (complete installation) | 600 MB approx. |
-| Video card   | See \ref overview_req_graphics |
-| Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ |
-| C++      | GNU gcc 4.0.  - 4.7.3. |
-| TCL (for testing tools)    | Tcl/Tk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
-| Freetype (for text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.16.0 http://sourceforge.net/projects/freeimage/files |
-| gl2ps (optional, for export contents of OCCT viewer to vector graphic files) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
-| Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| VTK (for VTK Integration Services | VTK 6.1.0 http://www.vtk.org/VTK/resources/software.html |
+| OS        | Versions |
+| --------- | ----------- |
+| Windows   | 10, 8.1, 7 SP1, Vista SP2 |
+| Linux     | Mandriva 2010, CentOS 6.3, Fedora 18, Ubuntu 14.10 - 15.10, Debian 6.0, Debian 7.0 |
+| OS X      | 10.10 Yosemite / 10.9 Mavericks / 10.8 Mountain Lion / 10.7 Lion |
+| Android   | 6.x, 5.x, 4.0.4+ |
 
-* Debian 6.0 64 bit is a platform used for regular testing of contributions
+@subsection overview_req_cpp C++ Compiler / IDE
 
-@subsection OCCT_OVW_SECTION_5_2 Windows
+| OS        | Compiler |
+| --------- | ----------- |
+| Windows   | Microsoft Visual Studio: 2010 SP1\*, 2012 Update 4, 2013 Update 5, 2015 <br> Intel C++ Composer XE 2013 SP1 |
+| Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
+| OS X      | XCode 6 or newer |
+| Android   | NDK r10, GNU gcc 4.8 or newer |
 
-| Operating System | Windows 8.1 / 7 SP1 / Vista SP2 / XP SP3 |
-| ----- | ----- |
-| Minimum memory    | 512 MB, 1 GB recommended |
-| Free disk space (complete installation) | 600 MB approx. |
-| Video card   | See \ref overview_req_graphics |
-| Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ |
-| C++ | Microsoft Visual Studio: 2005 SP1, 2008 SP1, 2010 SP1 \*, 2012 Update 3, 2013 <br>Intel C++ Composer XE 2013 SP1 |
-| TCL (for testing tools) | Tcl/Tk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html  |
-| Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
-| Freetype (OCCT Text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (Support of common graphic formats) | FreeImage 3.16.0 http://sourceforge.net/projects/freeimage/files |
-| gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
-| Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| VTK (for VTK Integration Services | VTK 6.1.0 http://www.vtk.org/VTK/resources/software.html |
-
-* VC++ 10 64-bit is used for certification of contributions and for building 
+* VC++ 10 64-bit is used for regular testing and for building 
   binary package of official release of OCCT on Windows.
 
-@subsection OCCT_OVW_SECTION_5_3 MAC OS X
+@subsection overview_req_libs Third-party libraries
 
-| Operating System | OS X 10.10 Yosemite / 10.9 Mavericks / 10.8 Mountain Lion / 10.7 Lion / 10.6.8 Snow Leopard |
-| ----- | ----- |
+| Component | Requirement |
+| --------- | ----------- |
+| Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ <br> Direct3D 9 |
+| Qt (for samples and demos) | Desktop: Qt 4.8.6+ http://www.qt.io/download/ <br> Android: Qt 5.3.2+ http://www.qt.io/download/ |
+| TCL (for testing tools)    | Tcl/Tk 8.6.3+ http://www.tcl.tk/software/tcltk/download.html |
+| Freetype (for text rendering) | freetype-2.5.3+ http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.16.0+ http://sourceforge.net/projects/freeimage/files |
+| gl2ps (optional, for export contents of OCCT viewer to vector formats) | gl2ps-1.3.8+  http://geuz.org/gl2ps/ |
+| Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x http://www.threadingbuildingblocks.org/ |
+| VTK (for VTK Integration Services | VTK 6.1+ http://www.vtk.org/VTK/resources/software.html |
+
+@subsection overview_req_hw Hardware
+
+| Component | Requirement |
+| --------- | ----------- |
 | Minimum memory    | 512 MB, 1 GB recommended |
 | Free disk space (complete installation) | 600 MB approx. |
-| C++      | XCode 3.2 or newer (4.x is recommended) |
-| TCL (for testing tools)    | Tcl/Tk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
-| Freetype (OCCT Text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (Support of common graphic formats) | FreeImage 3.16.0 http://sourceforge.net/projects/freeimage/files |
-| gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
-| Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
 
-@subsection OCCT_OVW_SECTION_5_4 Android
-
-| Operating System  | Android 4.0.4+  |
-| ----- | ----- |
-| Minimum memory | 512 MB, 1 GB recommended |
-| C++      | NDK r10, GNU gcc 4.8 or newer |
-| Qt (for demonstration tools) | Qt 5.3.2 http://qt-project.org/downloads |
-| Freetype (for text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
-
-@subsection overview_req_graphics Graphic cards
-
-On desktop, 3D viewer requires graphic card or software implementation supporting OpenGL 1.1 or above. OpenGL 2.1+ is highly recommended.
-Ray tracing requires OpenGL 4.0+ or OpenGL 3.1+ with GL_ARB_texture_buffer_object_rgb32 extension. Textures within ray tracing will be available only when GL_ARB_bindless_texture extension is provided by driver.
+On desktop, 3D viewer for optimal performance requires graphics processing unit (GPU) supporting OpenGL 3.3 or above. 
+Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with GL_ARB_texture_buffer_object_rgb32 extension.
+Textures within ray tracing will be available only when GL_ARB_bindless_texture extension is provided by driver.
 
 On mobile platforms, OpenGL ES 2.0+ is required for 3D viewer. The ray tracing is not yet available on mobile platforms.
 Some old hardware might be unable to execute complex GLSL programs (e.g. with high number of light sources, clipping planes).
 
 The following table lists graphic cards tested to work with OCCT.
 
-| Graphic card                     | Driver                           | OS                         | OpenGL (fixed pipeline) | OpenGL (shaders) | OpenGL (ray tracing) |
+| Graphic card  | Driver | OS | OpenGL (fixed pipeline) | OpenGL (shaders) | OpenGL (ray tracing) |
 | ---- | ---- | ---- | :----: | :----: | :----: |
 | NVIDIA GeForce GTX 650     | Driver 340.52, OpenGL 4.4        | Windows 7 64 bit           | OK | OK  | OK |
 | AMD/ATI RadeOn HD 7870     | Driver 14.100, OpenGL 4.4        | Windows 7 64-bit           | OK | OK  | OK |
 | Intel(R) HD Graphics 2500  | Driver 10.18.10.3621, OpenGL 4.0 | Windows 7 64 bit           | OK | OK  | limited (no textures) |
-| RadeOn 9600                | OpenGL 2.1.8454                  | Windows XP 32-bit          | OK | bad | unsupported by hardware |
-| NVIDIA GeForce 6600 GT     | OpenGL 2.1                       | Windows XP 32-bit          | OK | OK  | unsupported by hardware |
 | NVIDIA GeForce 320         | N/A                              | Mac OS X 10.6 / OS X 10.10 | OK | OK  | not yet supported by OCCT |
 | Apple software OpenGL      | N/A                              | Mac OS X 10.6 / OS X 10.10 | OK | OK  | N/A |
-| Mesa 10.2.4 \*             | "Gallium 0.4 on llvmpipe (LLVM 3.4, 256 bits)" OpenGL 3.0 | Windows 7 64 bit   | OK | OK  | unsupported by software |
-
-* Mesa implementation of OpenGL is used for certification testing of OCCT
+| Mesa 10.2.4 (software emulator) | "Gallium 0.4 on llvmpipe (LLVM 3.4, 256 bits)" OpenGL 3.0 | Windows 7 64 bit   | OK | OK  | unsupported by software |
 
 @section OCCT_OVW_SECTION_4 Installation
 

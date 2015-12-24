@@ -142,7 +142,7 @@ Handle(AIS_TexturedShape) TexturesExt_Presentation::Texturize(const TopoDS_Shape
   // load texture from file if it is not an integer value
   // integer value indicates a number of texture in predefined TexturesExt enumeration
   CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += "\\..\\..\\..\\samples\\mfc\\standard\\04_Viewer3d\\Data\\";
+  initfile += "..\\..\\..\\04_Viewer3d\\Data\\";
   if (!aTFileName.IsIntegerValue())
   {
 	initfile += aTFileName.ToCString();
@@ -172,7 +172,7 @@ Standard_Boolean TexturesExt_Presentation::loadShape(TopoDS_Shape& aShape,
 {
   // create a TopoDS_Shape -> read from a brep file
   CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += "\\..\\..\\..\\samples\\mfc\\standard\\04_Viewer3d\\Data\\";
+  initfile += "..\\..\\..\\04_Viewer3d\\Data\\";
   initfile += aFileName.ToCString();
 
   std::filebuf aFileBuf;

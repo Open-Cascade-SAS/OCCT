@@ -8,10 +8,13 @@ puts ""
 
 restore [locate_data_file OCC26635_t0.brep] t0
 restore [locate_data_file OCC26635_t1.brep] t1
+
 bfuse res t0 t1
-set m0 [meminfo w]
-repeat 10 {bfuse res t0 t1}
-set m1 [meminfo w]
-if {[expr {$m1 - $m0}] > 1572864} {
-  puts "ERROR: OCC26616 is reproduced. Memory leak has been detected."
+
+set listmem {}
+for {set i 1} {$i < 10} {incr i} {
+    bfuse res t0 t1
+
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 64 "Memory leak detected"
 }

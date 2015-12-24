@@ -140,7 +140,7 @@
 				</Button>
 				<Button ToolTip="Hidden Off" Name="HiddenOffBtn" Click="HiddenOffBtn_Click"
 					IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsHlrOnPushed}">
-					<Image Source="vres/iew_comp_on.png" Style="{StaticResource toolbarImageStyle}"/>
+					<Image Source="res/view_comp_on.png" Style="{StaticResource toolbarImageStyle}"/>
 				</Button>
 				<Button ToolTip="Hidden On" Name="HiddenOnBtn" Click="HiddenOnBtn_Click"
 					IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsHlrOffPushed}">

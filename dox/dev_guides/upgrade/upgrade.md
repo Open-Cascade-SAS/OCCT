@@ -368,6 +368,14 @@ The drawback is that direct evaluation of B-Splines using methods of curves and 
 OCCT algorithms have been changed to use adaptors for B-spline calculations instead of direct methods for  curves and surfaces.
 The same changes (use of adaptors instead of direct call to curve and surface methods) should be implemented in relevant places in the applications based on OCCT to get the maximum performance.
 
+@subsection upgrade_occt700_booleanresult Structural result of Boolean operations
+
+The result of Boolean operations became structured according to the structure of the input shapes. Therefore it may impact old applications that always iterate on direct children of the result compound assuming to obtain solids as iteration items, regardless of the structure of the input shapes. In order to get always solids as iteration items it is recommended to use TopExp_Explorer instead of TopoDS_Iterator.
+
+@subsection upgrade_occt700_brepextrema BRepExtrema_ExtCC finds one solution only
+
+Extrema computation between non-analytical curves in shape-shape distance calculation algorithm has been changed in order to return only one solution. So, if e.g. two edges are created on parallel b-spline curves the algorithm BRepExtrema_DistShapeShape will return only one solution instead of enormous number of solutions. There is no way to get algorithm working in old manner.
+
 @subsection upgrade_occt700_sorttools Removal of SortTools package
 
 Package *SortTools* has been removed. 
