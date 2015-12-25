@@ -249,10 +249,15 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
     return !theShape.IsNull();
   }
 
+  FT_Outline& anOutline = myFTFace->glyph->outline;
+
+  if (!anOutline.n_contours)
+    return Standard_False;
+
   TopLoc_Location aLoc;
   TopoDS_Face aFaceDraft;
   myBuilder.MakeFace (aFaceDraft, mySurface, myPrecision);
-  FT_Outline& anOutline = myFTFace->glyph->outline;
+
   // Get orientation is useless since it doesn't retrieve any in-font information and just computes orientation.
   // Because it fails in some cases - leave this to ShapeFix.
   //const FT_Orientation anOrient = FT_Outline_Get_Orientation (&anOutline);
