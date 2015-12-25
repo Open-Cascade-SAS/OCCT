@@ -201,7 +201,8 @@ Standard_EXPORT const Handle(AIS_RubberBand)& GetRubberBand()
   static Handle(AIS_RubberBand) aBand;
   if (aBand.IsNull())
   {
-    aBand = new AIS_RubberBand();
+    aBand = new AIS_RubberBand (Quantity_NOC_LIGHTBLUE, Aspect_TOL_SOLID, Quantity_NOC_LIGHTBLUE, 0.4, 1.0);
+    aBand->SetDisplayMode (0);
   }
   return aBand;
 }
@@ -1940,10 +1941,11 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
     case WM_MOUSEMOVE:
       if (IsDragged)
       {
+        bool toRedraw = false;
         if (!DragFirst && ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
         {
           ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-          ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+          toRedraw = true;
         }
 
         DragFirst = Standard_False;
@@ -1955,7 +1957,11 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
         {
           int aHeight = aRect.bottom - aRect.top;
           GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-          ViewerTest::GetAISContext()->Display (GetRubberBand(), Standard_False);
+          ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, Standard_True, AIS_DS_Displayed);
+          toRedraw = true;
+        }
+        if (toRedraw)
+        {
           ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
         }
       }
@@ -2370,7 +2376,6 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
               if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
               {
                 ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-                ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
               }
             }
 
@@ -2384,7 +2389,7 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
             unsigned int aWidth, aHeight, aBorderWidth, aDepth;
             XGetGeometry (aDisplay, aWindow, &aRoot, &anX, &anY, &aWidth, &aHeight, &aBorderWidth, &aDepth);
             GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-            ViewerTest::GetAISContext()->Display (GetRubberBand(), Standard_False);
+            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, Standard_True, AIS_DS_Displayed);
             ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
           }
           else

@@ -42,6 +42,7 @@ AIS_RubberBand::AIS_RubberBand()
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NOM_PLASTIC);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_EMPTY);
   myDrawer->ShadingAspect()->SetTransparency (1.0);
   myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
@@ -60,6 +61,7 @@ AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theWidth));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NOM_PLASTIC);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_EMPTY);
   myDrawer->ShadingAspect()->SetTransparency (1.0);
   myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
@@ -80,6 +82,7 @@ AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theLineWidth));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NOM_PLASTIC);
   myDrawer->ShadingAspect()->SetColor (theFillColor);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
   myDrawer->ShadingAspect()->SetTransparency (theTransparency);
@@ -324,7 +327,7 @@ Standard_Boolean AIS_RubberBand::fillTriangles()
   if (myTriangles.IsNull() || myTriangles->VertexNumber() != myPoints.Length() + 1)
   {
     toFill = Standard_True;
-    myTriangles = new Graphic3d_ArrayOfTriangles (aTriangles.Extent() * 3);
+    myTriangles = new Graphic3d_ArrayOfTriangles (aTriangles.Extent() * 3, 0, Standard_True);
   }
 
   Standard_Integer aVertexIndex = 1;
@@ -349,9 +352,11 @@ Standard_Boolean AIS_RubberBand::fillTriangles()
 
     if (toFill)
     {
+      gp_Dir aNorm = gp::DZ();
       for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
       {
-        myTriangles->AddVertex (aPts[anIt].X(), aPts[anIt].Y(), 0.0);
+        myTriangles->AddVertex (aPts[anIt].X(), aPts[anIt].Y(), 0.0,
+                                aNorm.X(), aNorm.Y(), aNorm.Z());
       }
     }
     else
