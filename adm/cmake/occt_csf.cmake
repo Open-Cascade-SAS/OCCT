@@ -74,7 +74,7 @@ else()
     set (CSF_ThreadLibs  "c")
     set (CSF_OpenGlLibs  "EGL GLESv2")
   elseif (UNIX)
-    set (CSF_ThreadLibs  "pthread rt")
+    set (CSF_ThreadLibs  "pthread rt stdc++")
     set (CSF_OpenGlLibs  "GLU GL")
     set (CSF_XwLibs      "X11 Xext Xmu Xi")
 
