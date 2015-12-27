@@ -460,9 +460,9 @@ void BOPAlgo_PaveFiller::PerformEE()
           if (bLineLine) {
             // increase tolerance for Line/Line intersection, but do not update 
             // the vertex till its intersection with some other shape
-            Standard_Real aTol = (aCR1.Last() - aCR1.First()) / 2.;
-            if (aTol > aTolVnew) {
-              aTolVnew = aTol;
+            Standard_Real aTolMin = (aCR1.Last() - aCR1.First()) / 2.;
+            if (aTolMin > aTolVnew) {
+              aTolVnew = aTolMin;
             }
           }
           // <-LXBR

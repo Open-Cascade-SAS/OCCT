@@ -24,12 +24,12 @@ class StdLDrivers_DocumentRetrievalDriver : public PCDM_RetrievalDriver
 {
 public:
   //! Create an empty TDocStd_Document.
-  Standard_EXPORT virtual Handle(CDM_Document) CreateDocument();
+  Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() Standard_OVERRIDE;
 
   //! Retrieve the content of a file into a new document.
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName,
                                      const Handle(CDM_Document)&       theNewDocument,
-                                     const Handle(CDM_Application)&    theApplication);
+                                     const Handle(CDM_Application)&    theApplication) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT (StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
 

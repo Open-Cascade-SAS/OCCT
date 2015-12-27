@@ -184,8 +184,12 @@ namespace opencascade {
   template <typename T>
   const Handle(Standard_Type)& type_instance<T>::get ()
   {
+#if (defined(_MSC_VER) && _MSC_VER < 1800) || \
+    (defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 3)) && \
+     ! defined(__clang__) && ! defined(__INTEL_COMPILER))
     // ensure that myInstance is instantiated
     (void)myInstance;
+#endif
 
     // static variable inside function ensures that descriptors
     // are initialized in correct sequence

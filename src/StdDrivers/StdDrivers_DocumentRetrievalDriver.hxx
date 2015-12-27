@@ -21,7 +21,7 @@ class StdDrivers_DocumentRetrievalDriver : public StdLDrivers_DocumentRetrievalD
 {
 public:
   //! Register types.
-  Standard_EXPORT virtual void BindTypes (StdObjMgt_MapOfInstantiators& theMap);
+  Standard_EXPORT virtual void BindTypes (StdObjMgt_MapOfInstantiators& theMap) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT (StdDrivers_DocumentRetrievalDriver, StdLDrivers_DocumentRetrievalDriver)
 };

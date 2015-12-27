@@ -454,7 +454,6 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
   //
   Standard_Integer nVx, nVSD, iV, iErr, nE, iFlag, iX, i, aNbPBLI;
   Standard_Real aT, dummy;
-  TopoDS_Shape aV;
   BOPCol_ListIteratorOfListOfShape aItLS;
   BOPCol_ListIteratorOfListOfInteger aItLI;
   BOPDS_PDS aPDS;
@@ -504,12 +503,7 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
     const TopoDS_Shape& aVx = aItLS.Value();
     nVx = aPDS->Index(aVx);
     //
-    if (aPDS->HasShapeSD(nVx, nVSD)) {
-      aV = aPDS->Shape(nVSD);
-    }
-    else {
-      aV = aVx;
-    }
+    const TopoDS_Shape& aV = (aPDS->HasShapeSD(nVx, nVSD) ? aPDS->Shape(nVSD) : aVx);
     BOPCol_ListOfShape* pLst = aImages.ChangeSeek(aV);
     if (!pLst) {
       pLst = &aImages.ChangeFromIndex(aImages.Add(aV, BOPCol_ListOfShape()));
@@ -554,12 +548,7 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
     const TopoDS_Shape& aVx=aItLS.Value();
     nVx=aPDS->Index(aVx);
     //
-    if (aPDS->HasShapeSD(nVx, nVSD)) {
-      aV=aPDS->Shape(nVSD);
-    }
-    else {
-      aV=aVx;
-    }
+    const TopoDS_Shape& aV = (aPDS->HasShapeSD(nVx, nVSD) ? aPDS->Shape(nVSD) : aVx);
     iV = aMVI.Find(aV);
     //
     BOPDS_CoupleOfPaveBlocks &aCPB=theMVCPB.ChangeFromKey(aVx);
