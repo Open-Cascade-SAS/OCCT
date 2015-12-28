@@ -3,7 +3,7 @@ Building with CMake {#occt_dev_guides__building_cmake}
 
 @tableofcontents
 
-This article describes **CMake**-based build process which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources. *OCCT requires CMake version 3.0 or later*.
+This article describes **CMake**-based build process which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources. *OCCT requires CMake version 2.8.12 or later*.
 
 **Note**: Comparing to the previous (6.x) releases of Open CASCADE Technology, OCCT 7.0 comes with a complete set of CMake scripts and projects, so that there is no need to use WOK anymore. Moreover, CMake gives you a powerful configuration tool which allows to control many aspects of OCCT deployment. At the same time this tool is quite intuitive which is a significant advantage over the legacy WOK utilities.
 
