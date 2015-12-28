@@ -1,3 +1,4 @@
+puts "TODO ?OCC27052 All: Faulty shapes in variables faulty_1 to"
 puts "TODO OCC26018 ALL: bopcheck failed"
 source [locate_data_file mos2014-asm-scf-final.asm.1.gdml.tcl]
 

@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC27032"
+puts "========"
+puts ""
+##########################################################################################
+# Result of bcut has the same volume as the object
+##########################################################################################
+
+restore [locate_data_file OCC27032_sh.brep] a
+
+explode a
+bcut result a_1 a_2
+
+checkprops result -s 1.80949e+006

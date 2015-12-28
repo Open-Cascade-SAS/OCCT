@@ -108,7 +108,9 @@ Standard_EXPORT virtual  ~IntTools_Context();
   //! 1. the edge is degenerated (-1)
   //! 2. the edge does not contain 3d curve and pcurves (-2)
   //! 3. projection algorithm failed (-3)
-  Standard_EXPORT Standard_Integer ComputePE (const gp_Pnt& theP, const Standard_Real theTolP, const TopoDS_Edge& theE, Standard_Real& theT);
+  Standard_EXPORT Standard_Integer ComputePE (const gp_Pnt& theP, const Standard_Real theTolP,
+                                              const TopoDS_Edge& theE, Standard_Real& theT,
+                                              Standard_Real& theDist);
   
 
   //! Computes parameter of the vertex aV on

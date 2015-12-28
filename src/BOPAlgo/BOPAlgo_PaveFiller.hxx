@@ -188,7 +188,10 @@ protected:
   
   Standard_EXPORT void PutBoundPaveOnCurve (const TopoDS_Face& theF1, const TopoDS_Face& theF2, const Standard_Real theTolR3D, BOPDS_Curve& theNC, BOPCol_ListOfInteger& theLBV);
   
-  Standard_EXPORT Standard_Boolean IsExistingPaveBlock (const Handle(BOPDS_PaveBlock)& thePB, const BOPDS_Curve& theNC, const Standard_Real theTolR3D, const BOPDS_IndexedMapOfPaveBlock& theMPB, Handle(BOPDS_PaveBlock)& thePBOut);
+  Standard_EXPORT Standard_Boolean IsExistingPaveBlock
+    (const Handle(BOPDS_PaveBlock)& thePB, const BOPDS_Curve& theNC,
+     const Standard_Real theTolR3D, const BOPDS_IndexedMapOfPaveBlock& theMPB,
+     Handle(BOPDS_PaveBlock)& thePBOut, Standard_Real& theTolNew);
   
   Standard_EXPORT Standard_Boolean IsExistingPaveBlock (const Handle(BOPDS_PaveBlock)& thePB, const BOPDS_Curve& theNC, const Standard_Real theTolR3D, const BOPCol_ListOfInteger& theLSE);
   

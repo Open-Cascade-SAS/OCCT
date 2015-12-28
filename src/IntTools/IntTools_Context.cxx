@@ -481,12 +481,13 @@ Standard_Integer IntTools_Context::ComputePE
   (const gp_Pnt& aP1,
    const Standard_Real aTolP1,
    const TopoDS_Edge& aE2,
-   Standard_Real& aT)
+   Standard_Real& aT,
+   Standard_Real& aDist)
 {
   if (!BRep_Tool::IsGeometric(aE2)) { 
     return -2;
   }
-  Standard_Real aDist, aTolE2, aTolSum;
+  Standard_Real aTolE2, aTolSum;
   Standard_Integer aNbProj;
   //
   GeomAPI_ProjectPointOnCurve& aProjector=ProjPC(aE2);

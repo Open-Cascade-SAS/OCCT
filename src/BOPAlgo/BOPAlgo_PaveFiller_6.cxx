@@ -521,7 +521,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
           continue;
         }
         //
-        bExist=IsExistingPaveBlock(aPB, aNC, aTolR3D, aMPBOnIn, aPBOut);
+        Standard_Real aTolNew;
+        bExist=IsExistingPaveBlock(aPB, aNC, aTolR3D, aMPBOnIn, aPBOut, aTolNew);
         if (bExist) {
           if (aMPBAdd.Add(aPBOut)) {
             Standard_Boolean bInBothFaces = Standard_True;
@@ -532,8 +533,10 @@ void BOPAlgo_PaveFiller::MakeBlocks()
               nE = aPBOut->Edge();
               const TopoDS_Edge& aE = *(TopoDS_Edge*)&myDS->Shape(nE);
               aTolE = BRep_Tool::Tolerance(aE);
-              if (aTolR3D > aTolE) {
-                UpdateEdgeTolerance(nE, aTolR3D);
+              if (aTolNew < aFF.TolReal())
+                aTolNew = aFF.TolReal();  // use real tolerance of intersection
+              if (aTolNew > aTolE) {
+                UpdateEdgeTolerance(nE, aTolNew);
               }
               bInBothFaces = Standard_False;
             } 
@@ -1097,7 +1100,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
     return !bRet;
   } 
   //
-  Standard_Real aT1, aT2, aTm, aTx, aTol;
+  Standard_Real aT1, aT2, aTm, aTx, aTol, aDist;
   Standard_Integer nE, iFlag;
   gp_Pnt aPm;
   Bnd_Box aBoxPm;
@@ -1120,7 +1123,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
       const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&aSIE.Shape()));
       aTol = BRep_Tool::Tolerance(aE);
       aTol = aTol > theTolR3D ? aTol : theTolR3D;
-      iFlag=myContext->ComputePE(aPm, aTol, aE, aTx);
+      iFlag=myContext->ComputePE(aPm, aTol, aE, aTx, aDist);
       if (!iFlag) {
         return bRet;
       }
@@ -1138,7 +1141,8 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
      const BOPDS_Curve& theNC,
      const Standard_Real theTolR3D,
      const BOPDS_IndexedMapOfPaveBlock& theMPBOnIn,
-     Handle(BOPDS_PaveBlock)& aPBOut)
+     Handle(BOPDS_PaveBlock)& aPBOut,
+     Standard_Real& theTolNew)
 {
   Standard_Boolean bRet;
   Standard_Real aT1, aT2, aTm, aTx;
@@ -1165,6 +1169,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
   aBoxP2.Add(aP2);
   aBoxP2.Enlarge(theTolR3D);
   //
+  theTolNew = 0.;
   aNbPB = theMPBOnIn.Extent();
   for (i = 1; i <= aNbPB; ++i) {
     const Handle(BOPDS_PaveBlock)& aPB = theMPBOnIn(i);
@@ -1181,19 +1186,24 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
     iFlag2 = (nV12 == nV21 || nV12 == nV22) ? 2 : 
       (!aBoxSp.IsOut(aBoxP2) ? 1 : 0);
     if (iFlag1 && iFlag2) {
+      Standard_Real aDist;
       if (aBoxSp.IsOut(aBoxPm) || myContext->ComputePE(aPm, 
                                                        theTolR3D, 
                                                        aSp, 
-                                                       aTx)) {
+                                                       aTx, theTolNew)) {
         continue;
       }
       //
       if (iFlag1 == 1) {
-        iFlag1 = !myContext->ComputePE(aP1, theTolR3D, aSp, aTx);
+        iFlag1 = !myContext->ComputePE(aP1, theTolR3D, aSp, aTx, aDist);
+        if (theTolNew < aDist)
+          theTolNew = aDist;
       }
       //
       if (iFlag2 == 1) {
-        iFlag2 = !myContext->ComputePE(aP2, theTolR3D, aSp, aTx);
+        iFlag2 = !myContext->ComputePE(aP2, theTolR3D, aSp, aTx, aDist);
+        if (theTolNew < aDist)
+          theTolNew = aDist;
       }
       //
       if (iFlag1 && iFlag2) {
@@ -2525,7 +2535,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
         for (; aItLPB.More(); aItLPB.Next()) {
           const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
           Standard_Integer nE;
-          if (!aPB->HasEdge(nE)) {
+          if (!aPB->HasEdge(nE) || aPB->OriginalEdge() >= 0) {
             continue;
           }
           const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
