@@ -24,14 +24,6 @@ StepGeom_Axis2Placement3d::StepGeom_Axis2Placement3d ()  {}
 
 void StepGeom_Axis2Placement3d::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_CartesianPoint)& aLocation)
-{
-
-	StepGeom_Placement::Init(aName, aLocation);
-}
-
-void StepGeom_Axis2Placement3d::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_CartesianPoint)& aLocation,
 	const Standard_Boolean hasAaxis,
 	const Handle(StepGeom_Direction)& aAxis,

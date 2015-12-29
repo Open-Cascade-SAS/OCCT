@@ -39,18 +39,6 @@ StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::StepGeom_GeomR
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init
 (const Handle(TCollection_HAsciiString)& aContextIdentifier,
- const Handle(TCollection_HAsciiString)& aContextType)
-{
-  StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
-}
-
-// --------------------------------------------------------------------------------------------------
-// Method  :
-// Purpose :
-// --------------------------------------------------------------------------------------------------
-
-void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init
-(const Handle(TCollection_HAsciiString)& aContextIdentifier,
  const Handle(TCollection_HAsciiString)& aContextType,
  const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext,
  const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext,

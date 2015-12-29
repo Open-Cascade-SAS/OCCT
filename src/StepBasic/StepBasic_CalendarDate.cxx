@@ -20,13 +20,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CalendarDate,StepBasic_Date)
 StepBasic_CalendarDate::StepBasic_CalendarDate ()  {}
 
 void StepBasic_CalendarDate::Init(
-	const Standard_Integer aYearComponent)
-{
-
-	StepBasic_Date::Init(aYearComponent);
-}
-
-void StepBasic_CalendarDate::Init(
 	const Standard_Integer aYearComponent,
 	const Standard_Integer aDayComponent,
 	const Standard_Integer aMonthComponent)

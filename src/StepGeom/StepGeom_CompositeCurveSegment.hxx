@@ -39,7 +39,7 @@ public:
   //! Returns a CompositeCurveSegment
   Standard_EXPORT StepGeom_CompositeCurveSegment();
   
-  Standard_EXPORT virtual void Init (const StepGeom_TransitionCode aTransition, const Standard_Boolean aSameSense, const Handle(StepGeom_Curve)& aParentCurve);
+  Standard_EXPORT void Init (const StepGeom_TransitionCode aTransition, const Standard_Boolean aSameSense, const Handle(StepGeom_Curve)& aParentCurve);
   
   Standard_EXPORT void SetTransition (const StepGeom_TransitionCode aTransition);
   

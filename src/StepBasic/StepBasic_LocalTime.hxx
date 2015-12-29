@@ -40,7 +40,7 @@ public:
   //! Returns a LocalTime
   Standard_EXPORT StepBasic_LocalTime();
   
-  Standard_EXPORT virtual void Init (const Standard_Integer aHourComponent, const Standard_Boolean hasAminuteComponent, const Standard_Integer aMinuteComponent, const Standard_Boolean hasAsecondComponent, const Standard_Real aSecondComponent, const Handle(StepBasic_CoordinatedUniversalTimeOffset)& aZone);
+  Standard_EXPORT void Init (const Standard_Integer aHourComponent, const Standard_Boolean hasAminuteComponent, const Standard_Integer aMinuteComponent, const Standard_Boolean hasAsecondComponent, const Standard_Real aSecondComponent, const Handle(StepBasic_CoordinatedUniversalTimeOffset)& aZone);
   
   Standard_EXPORT void SetHourComponent (const Standard_Integer aHourComponent);
   

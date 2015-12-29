@@ -39,9 +39,7 @@ public:
   //! Returns a Vector
   Standard_EXPORT StepGeom_Vector();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Direction)& aOrientation, const Standard_Real aMagnitude);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Direction)& aOrientation, const Standard_Real aMagnitude);
   
   Standard_EXPORT void SetOrientation (const Handle(StepGeom_Direction)& aOrientation);
   

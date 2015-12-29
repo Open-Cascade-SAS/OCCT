@@ -24,14 +24,6 @@ StepShape_RevolvedAreaSolid::StepShape_RevolvedAreaSolid ()  {}
 
 void StepShape_RevolvedAreaSolid::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_CurveBoundedSurface)& aSweptArea)
-{
-
-	StepShape_SweptAreaSolid::Init(aName, aSweptArea);
-}
-
-void StepShape_RevolvedAreaSolid::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_CurveBoundedSurface)& aSweptArea,
 	const Handle(StepGeom_Axis1Placement)& aAxis,
 	const Standard_Real aAngle)

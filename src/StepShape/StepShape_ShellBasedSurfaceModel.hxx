@@ -40,9 +40,7 @@ public:
   //! Returns a ShellBasedSurfaceModel
   Standard_EXPORT StepShape_ShellBasedSurfaceModel();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfShell)& aSbsmBoundary);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfShell)& aSbsmBoundary);
   
   Standard_EXPORT void SetSbsmBoundary (const Handle(StepShape_HArray1OfShell)& aSbsmBoundary);
   

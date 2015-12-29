@@ -40,7 +40,7 @@ public:
   //! Returns a SurfaceSideStyle
   Standard_EXPORT StepVisual_SurfaceSideStyle();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfSurfaceStyleElementSelect)& aStyles);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfSurfaceStyleElementSelect)& aStyles);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

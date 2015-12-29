@@ -38,9 +38,7 @@ public:
   //! Returns a Edge
   Standard_EXPORT StepShape_Edge();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aEdgeStart, const Handle(StepShape_Vertex)& aEdgeEnd);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aEdgeStart, const Handle(StepShape_Vertex)& aEdgeEnd);
   
   Standard_EXPORT virtual void SetEdgeStart (const Handle(StepShape_Vertex)& aEdgeStart);
   

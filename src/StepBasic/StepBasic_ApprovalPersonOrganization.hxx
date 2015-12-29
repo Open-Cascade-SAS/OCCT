@@ -40,7 +40,7 @@ public:
   //! Returns a ApprovalPersonOrganization
   Standard_EXPORT StepBasic_ApprovalPersonOrganization();
   
-  Standard_EXPORT virtual void Init (const StepBasic_PersonOrganizationSelect& aPersonOrganization, const Handle(StepBasic_Approval)& aAuthorizedApproval, const Handle(StepBasic_ApprovalRole)& aRole);
+  Standard_EXPORT void Init (const StepBasic_PersonOrganizationSelect& aPersonOrganization, const Handle(StepBasic_Approval)& aAuthorizedApproval, const Handle(StepBasic_ApprovalRole)& aRole);
   
   Standard_EXPORT void SetPersonOrganization (const StepBasic_PersonOrganizationSelect& aPersonOrganization);
   

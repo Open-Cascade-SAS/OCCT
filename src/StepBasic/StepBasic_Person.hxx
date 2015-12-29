@@ -40,7 +40,7 @@ public:
   //! Returns a Person
   Standard_EXPORT StepBasic_Person();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aId, const Standard_Boolean hasAlastName, const Handle(TCollection_HAsciiString)& aLastName, const Standard_Boolean hasAfirstName, const Handle(TCollection_HAsciiString)& aFirstName, const Standard_Boolean hasAmiddleNames, const Handle(Interface_HArray1OfHAsciiString)& aMiddleNames, const Standard_Boolean hasAprefixTitles, const Handle(Interface_HArray1OfHAsciiString)& aPrefixTitles, const Standard_Boolean hasAsuffixTitles, const Handle(Interface_HArray1OfHAsciiString)& aSuffixTitles);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Standard_Boolean hasAlastName, const Handle(TCollection_HAsciiString)& aLastName, const Standard_Boolean hasAfirstName, const Handle(TCollection_HAsciiString)& aFirstName, const Standard_Boolean hasAmiddleNames, const Handle(Interface_HArray1OfHAsciiString)& aMiddleNames, const Standard_Boolean hasAprefixTitles, const Handle(Interface_HArray1OfHAsciiString)& aPrefixTitles, const Standard_Boolean hasAsuffixTitles, const Handle(Interface_HArray1OfHAsciiString)& aSuffixTitles);
   
   Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& aId);
   

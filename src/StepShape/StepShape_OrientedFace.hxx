@@ -42,9 +42,7 @@ public:
   //! Returns a OrientedFace
   Standard_EXPORT StepShape_OrientedFace();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFaceBound)& aBounds) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Face)& aFaceElement, const Standard_Boolean aOrientation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Face)& aFaceElement, const Standard_Boolean aOrientation);
   
   Standard_EXPORT void SetFaceElement (const Handle(StepShape_Face)& aFaceElement);
   

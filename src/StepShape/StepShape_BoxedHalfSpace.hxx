@@ -40,9 +40,7 @@ public:
   //! Returns a BoxedHalfSpace
   Standard_EXPORT StepShape_BoxedHalfSpace();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBaseSurface, const Standard_Boolean aAgreementFlag) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBaseSurface, const Standard_Boolean aAgreementFlag, const Handle(StepShape_BoxDomain)& aEnclosure);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBaseSurface, const Standard_Boolean aAgreementFlag, const Handle(StepShape_BoxDomain)& aEnclosure);
   
   Standard_EXPORT void SetEnclosure (const Handle(StepShape_BoxDomain)& aEnclosure);
   

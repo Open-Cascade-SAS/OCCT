@@ -41,9 +41,7 @@ public:
   //! Returns a AutoDesignNominalDateAndTimeAssignment
   Standard_EXPORT StepAP214_AutoDesignNominalDateAndTimeAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aRole) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem)& aItems);
   

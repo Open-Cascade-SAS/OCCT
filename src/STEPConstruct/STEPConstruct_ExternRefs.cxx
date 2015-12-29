@@ -864,7 +864,7 @@ void STEPConstruct_ExternRefs::checkAP214Shared ()
     // create new ProductRelatedProductCategory for all extern files.
     Handle(TCollection_HAsciiString) PRPCname = new TCollection_HAsciiString("document");
     mySharedPRPC = new StepBasic_ProductRelatedProductCategory;
-    mySharedPRPC->Init( PRPCname, Standard_False, EmptyString );
+    mySharedPRPC->Init( PRPCname, Standard_False, EmptyString, 0 );
   }
   if ( mySharedDocType.IsNull() ) {
     // create new shared Document Type

@@ -39,7 +39,7 @@ public:
   //! Returns a CoordinatedUniversalTimeOffset
   Standard_EXPORT StepBasic_CoordinatedUniversalTimeOffset();
   
-  Standard_EXPORT virtual void Init (const Standard_Integer aHourOffset, const Standard_Boolean hasAminuteOffset, const Standard_Integer aMinuteOffset, const StepBasic_AheadOrBehind aSense);
+  Standard_EXPORT void Init (const Standard_Integer aHourOffset, const Standard_Boolean hasAminuteOffset, const Standard_Integer aMinuteOffset, const StepBasic_AheadOrBehind aSense);
   
   Standard_EXPORT void SetHourOffset (const Standard_Integer aHourOffset);
   

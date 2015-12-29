@@ -24,14 +24,6 @@ StepShape_OrientedOpenShell::StepShape_OrientedOpenShell ()  {}
 
 void StepShape_OrientedOpenShell::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_HArray1OfFace)& aCfsFaces)
-{
-
-	StepShape_ConnectedFaceSet::Init(aName, aCfsFaces);
-}
-
-void StepShape_OrientedOpenShell::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_OpenShell)& aOpenShellElement,
 	const Standard_Boolean aOrientation)
 {

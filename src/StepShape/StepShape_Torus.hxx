@@ -39,9 +39,7 @@ public:
   //! Returns a Torus
   Standard_EXPORT StepShape_Torus();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis1Placement)& aPosition, const Standard_Real aMajorRadius, const Standard_Real aMinorRadius);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis1Placement)& aPosition, const Standard_Real aMajorRadius, const Standard_Real aMinorRadius);
   
   Standard_EXPORT void SetPosition (const Handle(StepGeom_Axis1Placement)& aPosition);
   

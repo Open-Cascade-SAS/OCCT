@@ -40,7 +40,7 @@ public:
   //! Returns a OrientedEdge
   Standard_EXPORT StepShape_OrientedEdge();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Edge)& aEdgeElement, const Standard_Boolean aOrientation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Edge)& aEdgeElement, const Standard_Boolean aOrientation);
   
   Standard_EXPORT void SetEdgeElement (const Handle(StepShape_Edge)& aEdgeElement);
   

@@ -34,17 +34,6 @@ StepBasic_SiUnitAndThermodynamicTemperatureUnit::StepBasic_SiUnitAndThermodynami
 //purpose  : 
 //=======================================================================
 
-void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-  StepBasic_NamedUnit::Init(aDimensions);
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
 void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolean hasAprefix,
                                                            const StepBasic_SiPrefix aPrefix,
                                                            const StepBasic_SiUnitName aName)

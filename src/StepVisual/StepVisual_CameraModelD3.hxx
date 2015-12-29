@@ -39,9 +39,7 @@ public:
   //! Returns a CameraModelD3
   Standard_EXPORT StepVisual_CameraModelD3();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aViewReferenceSystem, const Handle(StepVisual_ViewVolume)& aPerspectiveOfVolume);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aViewReferenceSystem, const Handle(StepVisual_ViewVolume)& aPerspectiveOfVolume);
   
   Standard_EXPORT void SetViewReferenceSystem (const Handle(StepGeom_Axis2Placement3d)& aViewReferenceSystem);
   

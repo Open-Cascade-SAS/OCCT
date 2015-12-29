@@ -39,7 +39,7 @@ public:
   //! Returns a Invisibility
   Standard_EXPORT StepVisual_Invisibility();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems);
+  Standard_EXPORT void Init (const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems);
   
   Standard_EXPORT void SetInvisibleItems (const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems);
   

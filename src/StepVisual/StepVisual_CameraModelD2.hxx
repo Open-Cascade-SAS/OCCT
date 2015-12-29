@@ -39,9 +39,7 @@ public:
   //! Returns a CameraModelD2
   Standard_EXPORT StepVisual_CameraModelD2();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_PlanarBox)& aViewWindow, const Standard_Boolean aViewWindowClipping);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_PlanarBox)& aViewWindow, const Standard_Boolean aViewWindowClipping);
   
   Standard_EXPORT void SetViewWindow (const Handle(StepVisual_PlanarBox)& aViewWindow);
   

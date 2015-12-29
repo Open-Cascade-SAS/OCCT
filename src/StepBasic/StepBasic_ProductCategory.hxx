@@ -38,7 +38,7 @@ public:
   //! Returns a ProductCategory
   Standard_EXPORT StepBasic_ProductCategory();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasAdescription, const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasAdescription, const Handle(TCollection_HAsciiString)& aDescription);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

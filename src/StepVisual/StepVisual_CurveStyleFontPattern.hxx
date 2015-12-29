@@ -37,7 +37,7 @@ public:
   //! Returns a CurveStyleFontPattern
   Standard_EXPORT StepVisual_CurveStyleFontPattern();
   
-  Standard_EXPORT virtual void Init (const Standard_Real aVisibleSegmentLength, const Standard_Real aInvisibleSegmentLength);
+  Standard_EXPORT void Init (const Standard_Real aVisibleSegmentLength, const Standard_Real aInvisibleSegmentLength);
   
   Standard_EXPORT void SetVisibleSegmentLength (const Standard_Real aVisibleSegmentLength);
   

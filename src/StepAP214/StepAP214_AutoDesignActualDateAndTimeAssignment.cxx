@@ -24,14 +24,6 @@ StepAP214_AutoDesignActualDateAndTimeAssignment::StepAP214_AutoDesignActualDateA
 
 void StepAP214_AutoDesignActualDateAndTimeAssignment::Init(
 	const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime,
-	const Handle(StepBasic_DateTimeRole)& aRole)
-{
-
-	StepBasic_DateAndTimeAssignment::Init(aAssignedDateAndTime, aRole);
-}
-
-void StepAP214_AutoDesignActualDateAndTimeAssignment::Init(
-	const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime,
 	const Handle(StepBasic_DateTimeRole)& aRole,
 	const Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem)& aItems)
 {

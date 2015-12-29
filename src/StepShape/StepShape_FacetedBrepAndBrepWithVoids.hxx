@@ -43,8 +43,6 @@ public:
   //! Returns a FacetedBrepAndBrepWithVoids
   Standard_EXPORT StepShape_FacetedBrepAndBrepWithVoids();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter) Standard_OVERRIDE;
-  
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter, const Handle(StepShape_FacetedBrep)& aFacetedBrep, const Handle(StepShape_BrepWithVoids)& aBrepWithVoids);
   
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter, const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);

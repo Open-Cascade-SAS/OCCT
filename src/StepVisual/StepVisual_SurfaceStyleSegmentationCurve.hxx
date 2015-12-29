@@ -37,7 +37,7 @@ public:
   //! Returns a SurfaceStyleSegmentationCurve
   Standard_EXPORT StepVisual_SurfaceStyleSegmentationCurve();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_CurveStyle)& aStyleOfSegmentationCurve);
+  Standard_EXPORT void Init (const Handle(StepVisual_CurveStyle)& aStyleOfSegmentationCurve);
   
   Standard_EXPORT void SetStyleOfSegmentationCurve (const Handle(StepVisual_CurveStyle)& aStyleOfSegmentationCurve);
   

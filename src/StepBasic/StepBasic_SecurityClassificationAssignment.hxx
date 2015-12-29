@@ -34,7 +34,7 @@ class StepBasic_SecurityClassificationAssignment : public MMgt_TShared
 public:
 
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification);
+  Standard_EXPORT void Init (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification);
   
   Standard_EXPORT void SetAssignedSecurityClassification (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification);
   

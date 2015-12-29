@@ -37,7 +37,7 @@ public:
   //! Returns a Date
   Standard_EXPORT StepBasic_Date();
   
-  Standard_EXPORT virtual void Init (const Standard_Integer aYearComponent);
+  Standard_EXPORT void Init (const Standard_Integer aYearComponent);
   
   Standard_EXPORT void SetYearComponent (const Standard_Integer aYearComponent);
   

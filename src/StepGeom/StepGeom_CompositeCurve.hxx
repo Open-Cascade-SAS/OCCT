@@ -41,9 +41,7 @@ public:
   //! Returns a CompositeCurve
   Standard_EXPORT StepGeom_CompositeCurve();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments, const StepData_Logical aSelfIntersect);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments, const StepData_Logical aSelfIntersect);
   
   Standard_EXPORT void SetSegments (const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments);
   

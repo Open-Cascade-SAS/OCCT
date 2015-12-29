@@ -41,9 +41,7 @@ public:
   //! Returns a AppliedDateAndTimeAssignment
   Standard_EXPORT StepAP214_AppliedDateAndTimeAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aRole) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aRole, const Handle(StepAP214_HArray1OfDateAndTimeItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_DateAndTime)& aAssignedDateAndTime, const Handle(StepBasic_DateTimeRole)& aRole, const Handle(StepAP214_HArray1OfDateAndTimeItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfDateAndTimeItem)& aItems);
   

@@ -24,13 +24,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_LoopAndPath,StepShape_TopologicalRepresenta
 StepShape_LoopAndPath::StepShape_LoopAndPath ()  {}
 
 void StepShape_LoopAndPath::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_LoopAndPath::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_Loop)& aLoop,
 	const Handle(StepShape_Path)& aPath)

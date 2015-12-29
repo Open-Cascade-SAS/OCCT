@@ -40,9 +40,7 @@ public:
   //! Returns a Path
   Standard_EXPORT StepShape_Path();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
   
   Standard_EXPORT virtual void SetEdgeList (const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
   

@@ -23,14 +23,6 @@ StepGeom_ToroidalSurface::StepGeom_ToroidalSurface ()  {}
 
 void StepGeom_ToroidalSurface::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Axis2Placement3d)& aPosition)
-{
-
-	StepGeom_ElementarySurface::Init(aName, aPosition);
-}
-
-void StepGeom_ToroidalSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Axis2Placement3d)& aPosition,
 	const Standard_Real aMajorRadius,
 	const Standard_Real aMinorRadius)

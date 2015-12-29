@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurve,StepGeom_BoundedCurve)
 StepGeom_CompositeCurve::StepGeom_CompositeCurve ()  {}
 
 void StepGeom_CompositeCurve::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_CompositeCurve::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_HArray1OfCompositeCurveSegment)& aSegments,
 	const StepData_Logical aSelfIntersect)

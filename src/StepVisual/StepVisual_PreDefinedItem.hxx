@@ -37,7 +37,7 @@ public:
   //! Returns a PreDefinedItem
   Standard_EXPORT StepVisual_PreDefinedItem();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

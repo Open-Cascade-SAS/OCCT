@@ -36,7 +36,7 @@ public:
   Standard_EXPORT StepDimTol_ToleranceZoneForm();
   
   //! Init all field own and inherited
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& theName);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName);
 
   //! Returns field Name
   inline Handle(TCollection_HAsciiString) Name()

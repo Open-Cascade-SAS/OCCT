@@ -21,13 +21,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_DescriptiveRepresentationItem,StepRepr_Repre
 StepRepr_DescriptiveRepresentationItem::StepRepr_DescriptiveRepresentationItem ()  {}
 
 void StepRepr_DescriptiveRepresentationItem::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepRepr_DescriptiveRepresentationItem::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(TCollection_HAsciiString)& aDescription)
 {

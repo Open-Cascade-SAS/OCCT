@@ -40,9 +40,7 @@ public:
   //! Returns a EvaluatedDegeneratePcurve
   Standard_EXPORT StepGeom_EvaluatedDegeneratePcurve();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve, const Handle(StepGeom_CartesianPoint)& aEquivalentPoint);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve, const Handle(StepGeom_CartesianPoint)& aEquivalentPoint);
   
   Standard_EXPORT void SetEquivalentPoint (const Handle(StepGeom_CartesianPoint)& aEquivalentPoint);
   

@@ -38,7 +38,7 @@ public:
   //! Returns a ApprovalRelationship
   Standard_EXPORT StepBasic_ApprovalRelationship();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_Approval)& aRelatingApproval, const Handle(StepBasic_Approval)& aRelatedApproval);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_Approval)& aRelatingApproval, const Handle(StepBasic_Approval)& aRelatedApproval);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

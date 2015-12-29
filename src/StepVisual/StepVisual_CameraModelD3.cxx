@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3,StepVisual_CameraModel)
 StepVisual_CameraModelD3::StepVisual_CameraModelD3 ()  {}
 
 void StepVisual_CameraModelD3::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepVisual_CameraModelD3::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Axis2Placement3d)& aViewReferenceSystem,
 	const Handle(StepVisual_ViewVolume)& aPerspectiveOfVolume)

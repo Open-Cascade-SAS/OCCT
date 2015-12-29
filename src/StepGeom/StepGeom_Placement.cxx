@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Placement,StepGeom_GeometricRepresentationIt
 StepGeom_Placement::StepGeom_Placement ()  {}
 
 void StepGeom_Placement::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_Placement::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_CartesianPoint)& aLocation)
 {

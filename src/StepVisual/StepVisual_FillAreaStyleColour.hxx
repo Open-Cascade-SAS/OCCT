@@ -38,7 +38,7 @@ public:
   //! Returns a FillAreaStyleColour
   Standard_EXPORT StepVisual_FillAreaStyleColour();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_Colour)& aFillColour);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_Colour)& aFillColour);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ShellBasedSurfaceModel,StepGeom_GeometricRe
 StepShape_ShellBasedSurfaceModel::StepShape_ShellBasedSurfaceModel ()  {}
 
 void StepShape_ShellBasedSurfaceModel::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_ShellBasedSurfaceModel::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_HArray1OfShell)& aSbsmBoundary)
 {

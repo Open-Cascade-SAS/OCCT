@@ -42,9 +42,7 @@ public:
   //! Returns a BSplineSurface
   Standard_EXPORT StepGeom_BSplineSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect);
   
   Standard_EXPORT void SetUDegree (const Standard_Integer aUDegree);
   

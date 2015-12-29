@@ -38,9 +38,7 @@ public:
   //! Returns a ProductDefinitionContext
   Standard_EXPORT StepBasic_ProductDefinitionContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference, const Handle(TCollection_HAsciiString)& aLifeCycleStage);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference, const Handle(TCollection_HAsciiString)& aLifeCycleStage);
   
   Standard_EXPORT void SetLifeCycleStage (const Handle(TCollection_HAsciiString)& aLifeCycleStage);
   

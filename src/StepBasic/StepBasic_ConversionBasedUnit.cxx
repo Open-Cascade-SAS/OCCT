@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnit,StepBasic_NamedUnit)
 StepBasic_ConversionBasedUnit::StepBasic_ConversionBasedUnit ()  {}
 
 void StepBasic_ConversionBasedUnit::Init(
-	const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-
-	StepBasic_NamedUnit::Init(aDimensions);
-}
-
-void StepBasic_ConversionBasedUnit::Init(
 	const Handle(StepBasic_DimensionalExponents)& aDimensions,
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)

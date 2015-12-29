@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD2,StepVisual_CameraModel)
 StepVisual_CameraModelD2::StepVisual_CameraModelD2 ()  {}
 
 void StepVisual_CameraModelD2::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepVisual_CameraModelD2::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepVisual_PlanarBox)& aViewWindow,
 	const Standard_Boolean aViewWindowClipping)

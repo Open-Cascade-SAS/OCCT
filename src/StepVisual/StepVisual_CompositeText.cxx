@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeText,StepGeom_GeometricRepresenta
 StepVisual_CompositeText::StepVisual_CompositeText ()  {}
 
 void StepVisual_CompositeText::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepVisual_CompositeText::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText)
 {

@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Face,StepShape_TopologicalRepresentationIte
 StepShape_Face::StepShape_Face ()  {}
 
 void StepShape_Face::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_Face::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_HArray1OfFaceBound)& aBounds)
 {

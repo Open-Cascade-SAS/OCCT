@@ -40,9 +40,7 @@ public:
   //! Returns a ReparametrisedCompositeCurveSegment
   Standard_EXPORT StepGeom_ReparametrisedCompositeCurveSegment();
   
-  Standard_EXPORT virtual void Init (const StepGeom_TransitionCode aTransition, const Standard_Boolean aSameSense, const Handle(StepGeom_Curve)& aParentCurve) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const StepGeom_TransitionCode aTransition, const Standard_Boolean aSameSense, const Handle(StepGeom_Curve)& aParentCurve, const Standard_Real aParamLength);
+  Standard_EXPORT void Init (const StepGeom_TransitionCode aTransition, const Standard_Boolean aSameSense, const Handle(StepGeom_Curve)& aParentCurve, const Standard_Real aParamLength);
   
   Standard_EXPORT void SetParamLength (const Standard_Real aParamLength);
   

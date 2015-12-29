@@ -21,13 +21,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianPoint,StepGeom_Point)
 StepGeom_CartesianPoint::StepGeom_CartesianPoint ()  {}
 
 void StepGeom_CartesianPoint::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_CartesianPoint::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(TColStd_HArray1OfReal)& aCoordinates)
 {

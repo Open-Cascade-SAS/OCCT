@@ -40,7 +40,11 @@ public:
   Standard_EXPORT StepAP242_ItemIdentifiedRepresentationUsage();
   
   //! Init all fields own and inherited
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& theName, const Handle(TCollection_HAsciiString)& theDescription, const StepAP242_ItemIdentifiedRepresentationUsageDefinition& theDefinition, const Handle(StepRepr_Representation)& theUsedRepresentation, const Handle(StepRepr_HArray1OfRepresentationItem)& theIdentifiedItem) ;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
+                             const Handle(TCollection_HAsciiString)& theDescription,
+                             const StepAP242_ItemIdentifiedRepresentationUsageDefinition& theDefinition,
+                             const Handle(StepRepr_Representation)& theUsedRepresentation,
+                             const Handle(StepRepr_HArray1OfRepresentationItem)& theIdentifiedItem);
   
   //! Set field Name
   inline void SetName(const Handle(TCollection_HAsciiString)& theName)

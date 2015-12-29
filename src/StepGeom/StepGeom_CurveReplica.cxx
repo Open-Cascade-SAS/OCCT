@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveReplica,StepGeom_Curve)
 StepGeom_CurveReplica::StepGeom_CurveReplica ()  {}
 
 void StepGeom_CurveReplica::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_CurveReplica::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Curve)& aParentCurve,
 	const Handle(StepGeom_CartesianTransformationOperator)& aTransformation)

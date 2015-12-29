@@ -35,7 +35,7 @@ class StepBasic_PersonAndOrganizationAssignment : public MMgt_TShared
 public:
 
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization, const Handle(StepBasic_PersonAndOrganizationRole)& aRole);
+  Standard_EXPORT void Init (const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization, const Handle(StepBasic_PersonAndOrganizationRole)& aRole);
   
   Standard_EXPORT void SetAssignedPersonAndOrganization (const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization);
   

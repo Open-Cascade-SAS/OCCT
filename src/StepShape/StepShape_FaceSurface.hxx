@@ -40,9 +40,7 @@ public:
   //! Returns a FaceSurface
   Standard_EXPORT StepShape_FaceSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFaceBound)& aBounds) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFaceBound)& aBounds, const Handle(StepGeom_Surface)& aFaceGeometry, const Standard_Boolean aSameSense);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFaceBound)& aBounds, const Handle(StepGeom_Surface)& aFaceGeometry, const Standard_Boolean aSameSense);
   
   Standard_EXPORT void SetFaceGeometry (const Handle(StepGeom_Surface)& aFaceGeometry);
   

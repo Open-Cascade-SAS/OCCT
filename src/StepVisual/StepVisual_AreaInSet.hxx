@@ -38,7 +38,7 @@ public:
   //! Returns a AreaInSet
   Standard_EXPORT StepVisual_AreaInSet();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_PresentationArea)& aArea, const Handle(StepVisual_PresentationSet)& aInSet);
+  Standard_EXPORT void Init (const Handle(StepVisual_PresentationArea)& aArea, const Handle(StepVisual_PresentationSet)& aInSet);
   
   Standard_EXPORT void SetArea (const Handle(StepVisual_PresentationArea)& aArea);
   

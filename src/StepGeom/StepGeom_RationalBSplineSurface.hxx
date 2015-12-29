@@ -43,9 +43,7 @@ public:
   //! Returns a RationalBSplineSurface
   Standard_EXPORT StepGeom_RationalBSplineSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray2OfReal)& aWeightsData);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray2OfReal)& aWeightsData);
   
   Standard_EXPORT void SetWeightsData (const Handle(TColStd_HArray2OfReal)& aWeightsData);
   

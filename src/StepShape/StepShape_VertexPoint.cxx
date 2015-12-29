@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_VertexPoint,StepShape_Vertex)
 StepShape_VertexPoint::StepShape_VertexPoint ()  {}
 
 void StepShape_VertexPoint::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_VertexPoint::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Point)& aVertexGeometry)
 {

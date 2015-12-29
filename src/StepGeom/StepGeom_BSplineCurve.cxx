@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurve,StepGeom_BoundedCurve)
 StepGeom_BSplineCurve::StepGeom_BSplineCurve ()  {}
 
 void StepGeom_BSplineCurve::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_BSplineCurve::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Standard_Integer aDegree,
 	const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,

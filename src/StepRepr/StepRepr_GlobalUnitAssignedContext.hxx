@@ -40,9 +40,7 @@ public:
   //! Returns a GlobalUnitAssignedContext
   Standard_EXPORT StepRepr_GlobalUnitAssignedContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
   
   Standard_EXPORT void SetUnits (const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
   

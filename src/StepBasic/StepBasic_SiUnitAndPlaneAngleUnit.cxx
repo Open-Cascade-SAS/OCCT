@@ -24,12 +24,6 @@ StepBasic_SiUnitAndPlaneAngleUnit::StepBasic_SiUnitAndPlaneAngleUnit ()
 {
 }
 
-void StepBasic_SiUnitAndPlaneAngleUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-  StepBasic_NamedUnit::Init(aDimensions);
-}
-
-
 void StepBasic_SiUnitAndPlaneAngleUnit::Init(const Standard_Boolean hasAprefix,
 					     const StepBasic_SiPrefix aPrefix,
 					     const StepBasic_SiUnitName aName)

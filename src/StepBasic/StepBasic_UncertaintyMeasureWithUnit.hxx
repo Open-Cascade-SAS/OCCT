@@ -39,9 +39,7 @@ public:
   //! Returns a UncertaintyMeasureWithUnit
   Standard_EXPORT StepBasic_UncertaintyMeasureWithUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_MeasureValueMember)& aValueComponent, const StepBasic_Unit& aUnitComponent) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_MeasureValueMember)& aValueComponent, const StepBasic_Unit& aUnitComponent, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void Init (const Handle(StepBasic_MeasureValueMember)& aValueComponent, const StepBasic_Unit& aUnitComponent, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

@@ -40,8 +40,6 @@ public:
   //! Returns a ExtrudedFaceSolid
   Standard_EXPORT StepShape_ExtrudedFaceSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea) Standard_OVERRIDE;
-  
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea, const Handle(StepGeom_Direction)& aExtrudedDirection, const Standard_Real aDepth);
   
   Standard_EXPORT void SetExtrudedDirection (const Handle(StepGeom_Direction)& aExtrudedDirection);

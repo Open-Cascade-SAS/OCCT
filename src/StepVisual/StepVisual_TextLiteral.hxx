@@ -42,9 +42,7 @@ public:
   //! Returns a TextLiteral
   Standard_EXPORT StepVisual_TextLiteral();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aLiteral, const StepGeom_Axis2Placement& aPlacement, const Handle(TCollection_HAsciiString)& aAlignment, const StepVisual_TextPath aPath, const StepVisual_FontSelect& aFont);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aLiteral, const StepGeom_Axis2Placement& aPlacement, const Handle(TCollection_HAsciiString)& aAlignment, const StepVisual_TextPath aPath, const StepVisual_FontSelect& aFont);
   
   Standard_EXPORT void SetLiteral (const Handle(TCollection_HAsciiString)& aLiteral);
   

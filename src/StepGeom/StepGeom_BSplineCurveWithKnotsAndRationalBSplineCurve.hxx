@@ -47,11 +47,9 @@ public:
   //! Returns a BSplineCurveWithKnotsAndRationalBSplineCurve
   Standard_EXPORT StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect, const Handle(StepGeom_BSplineCurveWithKnots)& aBSplineCurveWithKnots, const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve);
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect, const Handle(StepGeom_BSplineCurveWithKnots)& aBSplineCurveWithKnots, const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve);
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities, const Handle(TColStd_HArray1OfReal)& aKnots, const StepGeom_KnotType aKnotSpec, const Handle(TColStd_HArray1OfReal)& aWeightsData);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities, const Handle(TColStd_HArray1OfReal)& aKnots, const StepGeom_KnotType aKnotSpec, const Handle(TColStd_HArray1OfReal)& aWeightsData);
   
   Standard_EXPORT void SetBSplineCurveWithKnots (const Handle(StepGeom_BSplineCurveWithKnots)& aBSplineCurveWithKnots);
   

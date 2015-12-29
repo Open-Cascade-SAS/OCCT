@@ -38,7 +38,7 @@ public:
   //! Returns a Approval
   Standard_EXPORT StepBasic_Approval();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_ApprovalStatus)& aStatus, const Handle(TCollection_HAsciiString)& aLevel);
+  Standard_EXPORT void Init (const Handle(StepBasic_ApprovalStatus)& aStatus, const Handle(TCollection_HAsciiString)& aLevel);
   
   Standard_EXPORT void SetStatus (const Handle(StepBasic_ApprovalStatus)& aStatus);
   

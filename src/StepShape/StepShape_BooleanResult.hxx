@@ -40,9 +40,7 @@ public:
   //! Returns a BooleanResult
   Standard_EXPORT StepShape_BooleanResult();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepShape_BooleanOperator aOperator, const StepShape_BooleanOperand& aFirstOperand, const StepShape_BooleanOperand& aSecondOperand);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepShape_BooleanOperator aOperator, const StepShape_BooleanOperand& aFirstOperand, const StepShape_BooleanOperand& aSecondOperand);
   
   Standard_EXPORT void SetOperator (const StepShape_BooleanOperator aOperator);
   

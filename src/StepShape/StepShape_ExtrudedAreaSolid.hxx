@@ -40,9 +40,7 @@ public:
   //! Returns a ExtrudedAreaSolid
   Standard_EXPORT StepShape_ExtrudedAreaSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea, const Handle(StepGeom_Direction)& aExtrudedDirection, const Standard_Real aDepth);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea, const Handle(StepGeom_Direction)& aExtrudedDirection, const Standard_Real aDepth);
   
   Standard_EXPORT void SetExtrudedDirection (const Handle(StepGeom_Direction)& aExtrudedDirection);
   

@@ -42,7 +42,7 @@ public:
   //! Returns a PointStyle
   Standard_EXPORT StepVisual_PointStyle();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepVisual_MarkerSelect& aMarker, const StepBasic_SizeSelect& aMarkerSize, const Handle(StepVisual_Colour)& aMarkerColour);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepVisual_MarkerSelect& aMarker, const StepBasic_SizeSelect& aMarkerSize, const Handle(StepVisual_Colour)& aMarkerColour);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

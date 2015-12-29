@@ -40,7 +40,7 @@ public:
   //! Returns a AutoDesignGroupAssignment
   Standard_EXPORT StepAP214_AutoDesignGroupAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Group)& aAssignedGroup, const Handle(StepAP214_HArray1OfAutoDesignGroupedItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_Group)& aAssignedGroup, const Handle(StepAP214_HArray1OfAutoDesignGroupedItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignGroupedItem)& aItems);
   

@@ -42,7 +42,7 @@ public:
   //! Returns a CurveStyle
   Standard_EXPORT StepVisual_CurveStyle();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepVisual_CurveStyleFontSelect& aCurveFont, const StepBasic_SizeSelect& aCurveWidth, const Handle(StepVisual_Colour)& aCurveColour);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepVisual_CurveStyleFontSelect& aCurveFont, const StepBasic_SizeSelect& aCurveWidth, const Handle(StepVisual_Colour)& aCurveColour);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

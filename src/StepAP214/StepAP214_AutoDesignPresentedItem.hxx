@@ -39,7 +39,7 @@ public:
   //! Returns a AutoDesignPresentedItem
   Standard_EXPORT StepAP214_AutoDesignPresentedItem();
   
-  Standard_EXPORT virtual void Init (const Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect)& aItems);
+  Standard_EXPORT void Init (const Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignPresentedItemSelect)& aItems);
   

@@ -42,11 +42,9 @@ public:
   //! Returns a GeometricRepresentationContextAndGlobalUnitAssignedContext
   Standard_EXPORT StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext, const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext);
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext, const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext);
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension, const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension, const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
   
   Standard_EXPORT void SetGeometricRepresentationContext (const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext);
   

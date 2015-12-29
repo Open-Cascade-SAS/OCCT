@@ -41,9 +41,7 @@ public:
   //! Returns a AutoDesignPersonAndOrganizationAssignment
   Standard_EXPORT StepAP214_AutoDesignPersonAndOrganizationAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization, const Handle(StepBasic_PersonAndOrganizationRole)& aRole) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization, const Handle(StepBasic_PersonAndOrganizationRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization, const Handle(StepBasic_PersonAndOrganizationRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
   

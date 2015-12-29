@@ -41,9 +41,7 @@ public:
   //! Returns a ProductRelatedProductCategory
   Standard_EXPORT StepBasic_ProductRelatedProductCategory();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasAdescription, const Handle(TCollection_HAsciiString)& aDescription) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasAdescription, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_HArray1OfProduct)& aProducts);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasAdescription, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_HArray1OfProduct)& aProducts);
   
   Standard_EXPORT void SetProducts (const Handle(StepBasic_HArray1OfProduct)& aProducts);
   

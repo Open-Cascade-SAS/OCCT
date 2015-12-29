@@ -39,9 +39,7 @@ public:
   //! Returns a MappedItem
   Standard_EXPORT StepRepr_MappedItem();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepRepr_RepresentationMap)& aMappingSource, const Handle(StepRepr_RepresentationItem)& aMappingTarget);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepRepr_RepresentationMap)& aMappingSource, const Handle(StepRepr_RepresentationItem)& aMappingTarget);
   
   Standard_EXPORT void SetMappingSource (const Handle(StepRepr_RepresentationMap)& aMappingSource);
   

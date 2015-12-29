@@ -41,9 +41,7 @@ public:
   //! Returns a CartesianTransformationOperator
   Standard_EXPORT StepGeom_CartesianTransformationOperator();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasAaxis1, const Handle(StepGeom_Direction)& aAxis1, const Standard_Boolean hasAaxis2, const Handle(StepGeom_Direction)& aAxis2, const Handle(StepGeom_CartesianPoint)& aLocalOrigin, const Standard_Boolean hasAscale, const Standard_Real aScale);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasAaxis1, const Handle(StepGeom_Direction)& aAxis1, const Standard_Boolean hasAaxis2, const Handle(StepGeom_Direction)& aAxis2, const Handle(StepGeom_CartesianPoint)& aLocalOrigin, const Standard_Boolean hasAscale, const Standard_Real aScale);
   
   Standard_EXPORT void SetAxis1 (const Handle(StepGeom_Direction)& aAxis1);
   

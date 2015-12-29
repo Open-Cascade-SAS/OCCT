@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceBound,StepShape_TopologicalRepresentati
 StepShape_FaceBound::StepShape_FaceBound ()  {}
 
 void StepShape_FaceBound::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_FaceBound::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_Loop)& aBound,
 	const Standard_Boolean aOrientation)

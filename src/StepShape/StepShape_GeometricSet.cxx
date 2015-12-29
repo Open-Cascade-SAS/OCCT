@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet,StepGeom_GeometricRepresentati
 StepShape_GeometricSet::StepShape_GeometricSet ()  {}
 
 void StepShape_GeometricSet::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_GeometricSet::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements)
 {

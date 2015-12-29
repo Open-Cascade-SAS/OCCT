@@ -40,9 +40,7 @@ public:
   //! Returns a SiUnitAndMassUnit
   Standard_EXPORT StepBasic_SiUnitAndMassUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
   
   Standard_EXPORT void SetMassUnit (const Handle(StepBasic_MassUnit)& aMassUnit);
   

@@ -38,9 +38,7 @@ public:
   //! Returns a ProductContext
   Standard_EXPORT StepBasic_ProductContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference, const Handle(TCollection_HAsciiString)& aDisciplineType);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference, const Handle(TCollection_HAsciiString)& aDisciplineType);
   
   Standard_EXPORT void SetDisciplineType (const Handle(TCollection_HAsciiString)& aDisciplineType);
   

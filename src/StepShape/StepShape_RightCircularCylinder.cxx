@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightCircularCylinder,StepGeom_GeometricRep
 StepShape_RightCircularCylinder::StepShape_RightCircularCylinder ()  {}
 
 void StepShape_RightCircularCylinder::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_RightCircularCylinder::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Axis1Placement)& aPosition,
 	const Standard_Real aHeight,

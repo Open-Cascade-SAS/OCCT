@@ -40,9 +40,7 @@ public:
   //! Returns a ConnectedFaceSet
   Standard_EXPORT StepShape_ConnectedFaceSet();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFace)& aCfsFaces);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFace)& aCfsFaces);
   
   Standard_EXPORT virtual void SetCfsFaces (const Handle(StepShape_HArray1OfFace)& aCfsFaces);
   

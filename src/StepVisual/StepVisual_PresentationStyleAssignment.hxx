@@ -39,7 +39,7 @@ public:
   //! Returns a PresentationStyleAssignment
   Standard_EXPORT StepVisual_PresentationStyleAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
+  Standard_EXPORT void Init (const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
   
   Standard_EXPORT void SetStyles (const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
   

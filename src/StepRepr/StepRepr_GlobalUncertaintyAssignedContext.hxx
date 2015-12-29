@@ -40,9 +40,7 @@ public:
   //! Returns a GlobalUncertaintyAssignedContext
   Standard_EXPORT StepRepr_GlobalUncertaintyAssignedContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty);
   
   Standard_EXPORT void SetUncertainty (const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty);
   

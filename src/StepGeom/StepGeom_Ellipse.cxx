@@ -23,14 +23,6 @@ StepGeom_Ellipse::StepGeom_Ellipse ()  {}
 
 void StepGeom_Ellipse::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const StepGeom_Axis2Placement& aPosition)
-{
-
-	StepGeom_Conic::Init(aName, aPosition);
-}
-
-void StepGeom_Ellipse::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const StepGeom_Axis2Placement& aPosition,
 	const Standard_Real aSemiAxis1,
 	const Standard_Real aSemiAxis2)

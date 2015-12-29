@@ -35,7 +35,8 @@ public:
   Standard_EXPORT StepAP242_IdAttribute();
   
   //! Init all field own and inherited
-  Standard_EXPORT virtual   void Init (const Handle(TCollection_HAsciiString)& theAttributeValue, const StepAP242_IdAttributeSelect& theIdentifiedItem) ;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theAttributeValue,
+                             const StepAP242_IdAttributeSelect& theIdentifiedItem);
   
   // Set field AttributeValue
   inline void SetAttributeValue(const Handle(TCollection_HAsciiString)& theAttributeValue)

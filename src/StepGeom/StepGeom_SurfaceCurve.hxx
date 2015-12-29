@@ -42,9 +42,7 @@ public:
   //! Returns a SurfaceCurve
   Standard_EXPORT StepGeom_SurfaceCurve();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aCurve3d, const Handle(StepGeom_HArray1OfPcurveOrSurface)& aAssociatedGeometry, const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aCurve3d, const Handle(StepGeom_HArray1OfPcurveOrSurface)& aAssociatedGeometry, const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation);
   
   Standard_EXPORT void SetCurve3d (const Handle(StepGeom_Curve)& aCurve3d);
   

@@ -38,7 +38,7 @@ public:
   //! Returns a BoxDomain
   Standard_EXPORT StepShape_BoxDomain();
   
-  Standard_EXPORT virtual void Init (const Handle(StepGeom_CartesianPoint)& aCorner, const Standard_Real aXlength, const Standard_Real aYlength, const Standard_Real aZlength);
+  Standard_EXPORT void Init (const Handle(StepGeom_CartesianPoint)& aCorner, const Standard_Real aXlength, const Standard_Real aYlength, const Standard_Real aZlength);
   
   Standard_EXPORT void SetCorner (const Handle(StepGeom_CartesianPoint)& aCorner);
   

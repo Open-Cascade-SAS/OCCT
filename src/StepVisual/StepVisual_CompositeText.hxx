@@ -40,9 +40,7 @@ public:
   //! Returns a CompositeText
   Standard_EXPORT StepVisual_CompositeText();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
   
   Standard_EXPORT void SetCollectedText (const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText);
   

@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetCurve3d,StepGeom_Curve)
 StepGeom_OffsetCurve3d::StepGeom_OffsetCurve3d ()  {}
 
 void StepGeom_OffsetCurve3d::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_OffsetCurve3d::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Curve)& aBasisCurve,
 	const Standard_Real aDistance,

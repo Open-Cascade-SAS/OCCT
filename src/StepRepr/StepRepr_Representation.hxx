@@ -41,7 +41,7 @@ public:
   //! Returns a Representation
   Standard_EXPORT StepRepr_Representation();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepRepr_HArray1OfRepresentationItem)& aItems, const Handle(StepRepr_RepresentationContext)& aContextOfItems);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepRepr_HArray1OfRepresentationItem)& aItems, const Handle(StepRepr_RepresentationContext)& aContextOfItems);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

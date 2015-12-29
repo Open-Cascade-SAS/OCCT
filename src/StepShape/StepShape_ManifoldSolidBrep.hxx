@@ -39,11 +39,9 @@ public:
   //! Returns a ManifoldSolidBrep
   Standard_EXPORT StepShape_ManifoldSolidBrep();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter);
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter);
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ConnectedFaceSet)& aOuter);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ConnectedFaceSet)& aOuter);
   
   Standard_EXPORT void SetOuter (const Handle(StepShape_ConnectedFaceSet)& aOuter);
   

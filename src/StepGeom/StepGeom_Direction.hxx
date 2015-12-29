@@ -40,9 +40,7 @@ public:
   //! Returns a Direction
   Standard_EXPORT StepGeom_Direction();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TColStd_HArray1OfReal)& aDirectionRatios);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TColStd_HArray1OfReal)& aDirectionRatios);
   
   Standard_EXPORT void SetDirectionRatios (const Handle(TColStd_HArray1OfReal)& aDirectionRatios);
   

@@ -35,13 +35,3 @@ Handle(StepBasic_VolumeUnit) StepBasic_SiUnitAndVolumeUnit::VolumeUnit() const
 {
   return volumeUnit;
 }
-
-void StepBasic_SiUnitAndVolumeUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-  StepBasic_NamedUnit::SetDimensions(aDimensions);
-}
-
-Handle(StepBasic_DimensionalExponents) StepBasic_SiUnitAndVolumeUnit::Dimensions() const
-{
-  return StepBasic_NamedUnit::Dimensions();
-}

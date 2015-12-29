@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Sphere,StepGeom_GeometricRepresentationItem
 StepShape_Sphere::StepShape_Sphere ()  {}
 
 void StepShape_Sphere::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_Sphere::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Standard_Real aRadius,
 	const Handle(StepGeom_Point)& aCentre)

@@ -40,7 +40,7 @@ public:
   //! Returns a MeasureWithUnit
   Standard_EXPORT StepBasic_MeasureWithUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_MeasureValueMember)& aValueComponent, const StepBasic_Unit& aUnitComponent);
+  Standard_EXPORT void Init (const Handle(StepBasic_MeasureValueMember)& aValueComponent, const StepBasic_Unit& aUnitComponent);
   
   Standard_EXPORT void SetValueComponent (const Standard_Real aValueComponent);
   

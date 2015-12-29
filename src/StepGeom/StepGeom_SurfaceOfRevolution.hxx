@@ -39,9 +39,7 @@ public:
   //! Returns a SurfaceOfRevolution
   Standard_EXPORT StepGeom_SurfaceOfRevolution();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aSweptCurve) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aSweptCurve, const Handle(StepGeom_Axis1Placement)& aAxisPosition);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aSweptCurve, const Handle(StepGeom_Axis1Placement)& aAxisPosition);
   
   Standard_EXPORT void SetAxisPosition (const Handle(StepGeom_Axis1Placement)& aAxisPosition);
   

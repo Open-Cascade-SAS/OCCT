@@ -41,9 +41,7 @@ public:
   //! Returns a BrepWithVoids
   Standard_EXPORT StepShape_BrepWithVoids();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter, const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aOuter, const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
   
   Standard_EXPORT void SetVoids (const Handle(StepShape_HArray1OfOrientedClosedShell)& aVoids);
   

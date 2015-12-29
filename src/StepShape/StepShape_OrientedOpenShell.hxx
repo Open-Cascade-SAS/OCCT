@@ -42,9 +42,7 @@ public:
   //! Returns a OrientedOpenShell
   Standard_EXPORT StepShape_OrientedOpenShell();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFace)& aCfsFaces) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_OpenShell)& aOpenShellElement, const Standard_Boolean aOrientation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_OpenShell)& aOpenShellElement, const Standard_Boolean aOrientation);
   
   Standard_EXPORT void SetOpenShellElement (const Handle(StepShape_OpenShell)& aOpenShellElement);
   

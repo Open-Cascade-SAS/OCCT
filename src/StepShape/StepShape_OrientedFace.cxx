@@ -24,14 +24,6 @@ StepShape_OrientedFace::StepShape_OrientedFace ()  {}
 
 void StepShape_OrientedFace::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_HArray1OfFaceBound)& aBounds)
-{
-
-	StepShape_Face::Init(aName, aBounds);
-}
-
-void StepShape_OrientedFace::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_Face)& aFaceElement,
 	const Standard_Boolean aOrientation)
 {

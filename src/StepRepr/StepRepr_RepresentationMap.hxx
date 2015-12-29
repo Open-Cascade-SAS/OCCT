@@ -38,7 +38,7 @@ public:
   //! Returns a RepresentationMap
   Standard_EXPORT StepRepr_RepresentationMap();
   
-  Standard_EXPORT virtual void Init (const Handle(StepRepr_RepresentationItem)& aMappingOrigin, const Handle(StepRepr_Representation)& aMappedRepresentation);
+  Standard_EXPORT void Init (const Handle(StepRepr_RepresentationItem)& aMappingOrigin, const Handle(StepRepr_Representation)& aMappedRepresentation);
   
   Standard_EXPORT void SetMappingOrigin (const Handle(StepRepr_RepresentationItem)& aMappingOrigin);
   

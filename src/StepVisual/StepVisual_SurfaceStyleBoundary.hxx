@@ -37,7 +37,7 @@ public:
   //! Returns a SurfaceStyleBoundary
   Standard_EXPORT StepVisual_SurfaceStyleBoundary();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_CurveStyle)& aStyleOfBoundary);
+  Standard_EXPORT void Init (const Handle(StepVisual_CurveStyle)& aStyleOfBoundary);
   
   Standard_EXPORT void SetStyleOfBoundary (const Handle(StepVisual_CurveStyle)& aStyleOfBoundary);
   

@@ -22,14 +22,6 @@ StepGeom_GeometricRepresentationContext::StepGeom_GeometricRepresentationContext
 
 void StepGeom_GeometricRepresentationContext::Init(
 	const Handle(TCollection_HAsciiString)& aContextIdentifier,
-	const Handle(TCollection_HAsciiString)& aContextType)
-{
-
-	StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
-}
-
-void StepGeom_GeometricRepresentationContext::Init(
-	const Handle(TCollection_HAsciiString)& aContextIdentifier,
 	const Handle(TCollection_HAsciiString)& aContextType,
 	const Standard_Integer aCoordinateSpaceDimension)
 {

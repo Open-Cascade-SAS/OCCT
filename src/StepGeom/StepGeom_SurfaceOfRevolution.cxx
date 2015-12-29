@@ -24,14 +24,6 @@ StepGeom_SurfaceOfRevolution::StepGeom_SurfaceOfRevolution ()  {}
 
 void StepGeom_SurfaceOfRevolution::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Curve)& aSweptCurve)
-{
-
-	StepGeom_SweptSurface::Init(aName, aSweptCurve);
-}
-
-void StepGeom_SurfaceOfRevolution::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Curve)& aSweptCurve,
 	const Handle(StepGeom_Axis1Placement)& aAxisPosition)
 {

@@ -40,7 +40,7 @@ public:
   //! Returns a RevolvedFaceSolid
   Standard_EXPORT StepShape_RevolvedFaceSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea);
   
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea, const Handle(StepGeom_Axis1Placement)& aAxis, const Standard_Real aAngle);
   

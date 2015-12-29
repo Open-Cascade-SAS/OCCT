@@ -39,9 +39,7 @@ public:
   //! Returns a Parabola
   Standard_EXPORT StepGeom_Parabola();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aFocalDist);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aFocalDist);
   
   Standard_EXPORT void SetFocalDist (const Standard_Real aFocalDist);
   

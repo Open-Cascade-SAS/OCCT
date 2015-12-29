@@ -39,9 +39,7 @@ public:
   //! Returns a Hyperbola
   Standard_EXPORT StepGeom_Hyperbola();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aSemiAxis, const Standard_Real aSemiImagAxis);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aSemiAxis, const Standard_Real aSemiImagAxis);
   
   Standard_EXPORT void SetSemiAxis (const Standard_Real aSemiAxis);
   

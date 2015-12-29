@@ -40,7 +40,7 @@ public:
   //! Returns a CurveStyleFont
   Standard_EXPORT StepVisual_CurveStyleFont();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfCurveStyleFontPattern)& aPatternList);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfCurveStyleFontPattern)& aPatternList);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

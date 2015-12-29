@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_SweptFaceSolid,StepShape_SolidModel)
 StepShape_SweptFaceSolid::StepShape_SweptFaceSolid ()  {}
 
 void StepShape_SweptFaceSolid::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-  StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_SweptFaceSolid::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_FaceSurface)& aSweptArea)
 {

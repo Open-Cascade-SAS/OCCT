@@ -37,7 +37,7 @@ public:
   //! Returns a SurfaceStyleControlGrid
   Standard_EXPORT StepVisual_SurfaceStyleControlGrid();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid);
+  Standard_EXPORT void Init (const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid);
   
   Standard_EXPORT void SetStyleOfControlGrid (const Handle(StepVisual_CurveStyle)& aStyleOfControlGrid);
   

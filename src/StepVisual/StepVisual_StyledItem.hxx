@@ -41,9 +41,7 @@ public:
   //! Returns a StyledItem
   Standard_EXPORT StepVisual_StyledItem();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(StepRepr_RepresentationItem)& aItem);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(StepRepr_RepresentationItem)& aItem);
   
   Standard_EXPORT void SetStyles (const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles);
   

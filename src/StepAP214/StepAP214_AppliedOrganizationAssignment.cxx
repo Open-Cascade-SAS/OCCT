@@ -24,14 +24,6 @@ StepAP214_AppliedOrganizationAssignment::StepAP214_AppliedOrganizationAssignment
 
 void StepAP214_AppliedOrganizationAssignment::Init(
 	const Handle(StepBasic_Organization)& aAssignedOrganization,
-	const Handle(StepBasic_OrganizationRole)& aRole)
-{
-
-	StepBasic_OrganizationAssignment::Init(aAssignedOrganization, aRole);
-}
-
-void StepAP214_AppliedOrganizationAssignment::Init(
-	const Handle(StepBasic_Organization)& aAssignedOrganization,
 	const Handle(StepBasic_OrganizationRole)& aRole,
 	const Handle(StepAP214_HArray1OfOrganizationItem)& aItems)
 {

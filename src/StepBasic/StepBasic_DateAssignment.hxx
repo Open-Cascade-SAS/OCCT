@@ -35,7 +35,7 @@ class StepBasic_DateAssignment : public MMgt_TShared
 public:
 
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Date)& aAssignedDate, const Handle(StepBasic_DateRole)& aRole);
+  Standard_EXPORT void Init (const Handle(StepBasic_Date)& aAssignedDate, const Handle(StepBasic_DateRole)& aRole);
   
   Standard_EXPORT void SetAssignedDate (const Handle(StepBasic_Date)& aAssignedDate);
   

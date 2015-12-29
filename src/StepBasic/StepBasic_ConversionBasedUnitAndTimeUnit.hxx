@@ -40,9 +40,7 @@ public:
   //! Returns a ConversionBasedUnitAndTimeUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndTimeUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor);
   
   Standard_EXPORT void SetTimeUnit (const Handle(StepBasic_TimeUnit)& aTimeUnit);
   

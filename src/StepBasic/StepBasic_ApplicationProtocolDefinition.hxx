@@ -39,7 +39,7 @@ public:
   //! Returns a ApplicationProtocolDefinition
   Standard_EXPORT StepBasic_ApplicationProtocolDefinition();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aStatus, const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName, const Standard_Integer aApplicationProtocolYear, const Handle(StepBasic_ApplicationContext)& aApplication);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aStatus, const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName, const Standard_Integer aApplicationProtocolYear, const Handle(StepBasic_ApplicationContext)& aApplication);
   
   Standard_EXPORT void SetStatus (const Handle(TCollection_HAsciiString)& aStatus);
   

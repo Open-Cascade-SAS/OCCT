@@ -24,14 +24,6 @@ StepGeom_Axis1Placement::StepGeom_Axis1Placement ()  {}
 
 void StepGeom_Axis1Placement::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_CartesianPoint)& aLocation)
-{
-
-	StepGeom_Placement::Init(aName, aLocation);
-}
-
-void StepGeom_Axis1Placement::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_CartesianPoint)& aLocation,
 	const Standard_Boolean hasAaxis,
 	const Handle(StepGeom_Direction)& aAxis)

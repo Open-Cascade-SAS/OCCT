@@ -37,7 +37,7 @@ public:
   //! Returns a SurfaceStyleFillArea
   Standard_EXPORT StepVisual_SurfaceStyleFillArea();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_FillAreaStyle)& aFillArea);
+  Standard_EXPORT void Init (const Handle(StepVisual_FillAreaStyle)& aFillArea);
   
   Standard_EXPORT void SetFillArea (const Handle(StepVisual_FillAreaStyle)& aFillArea);
   

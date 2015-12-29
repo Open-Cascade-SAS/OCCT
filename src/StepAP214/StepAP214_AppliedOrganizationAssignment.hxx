@@ -41,9 +41,7 @@ public:
   //! Returns a AppliedOrganizationAssignment
   Standard_EXPORT StepAP214_AppliedOrganizationAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole, const Handle(StepAP214_HArray1OfOrganizationItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole, const Handle(StepAP214_HArray1OfOrganizationItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfOrganizationItem)& aItems);
   

@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextLiteral,StepGeom_GeometricRepresentati
 StepVisual_TextLiteral::StepVisual_TextLiteral ()  {}
 
 void StepVisual_TextLiteral::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepVisual_TextLiteral::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(TCollection_HAsciiString)& aLiteral,
 	const StepGeom_Axis2Placement& aPlacement,

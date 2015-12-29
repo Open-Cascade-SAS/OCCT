@@ -25,14 +25,6 @@ StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::StepGeom_Ge
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
 	const Handle(TCollection_HAsciiString)& aContextIdentifier,
-	const Handle(TCollection_HAsciiString)& aContextType)
-{
-
-	StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
-}
-
-void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
-	const Handle(TCollection_HAsciiString)& aContextIdentifier,
 	const Handle(TCollection_HAsciiString)& aContextType,
 	const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext,
 	const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext)

@@ -37,7 +37,7 @@ public:
   //! Returns a FunctionallyDefinedTransformation
   Standard_EXPORT StepRepr_FunctionallyDefinedTransformation();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

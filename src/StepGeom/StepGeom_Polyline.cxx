@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Polyline,StepGeom_BoundedCurve)
 StepGeom_Polyline::StepGeom_Polyline ()  {}
 
 void StepGeom_Polyline::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_Polyline::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_HArray1OfCartesianPoint)& aPoints)
 {

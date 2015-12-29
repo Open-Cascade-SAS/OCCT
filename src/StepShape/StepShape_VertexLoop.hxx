@@ -38,9 +38,7 @@ public:
   //! Returns a VertexLoop
   Standard_EXPORT StepShape_VertexLoop();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aLoopVertex);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aLoopVertex);
   
   Standard_EXPORT void SetLoopVertex (const Handle(StepShape_Vertex)& aLoopVertex);
   

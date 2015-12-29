@@ -39,9 +39,7 @@ public:
   //! Returns a RightCircularCone
   Standard_EXPORT StepShape_RightCircularCone();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis1Placement)& aPosition, const Standard_Real aHeight, const Standard_Real aRadius, const Standard_Real aSemiAngle);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis1Placement)& aPosition, const Standard_Real aHeight, const Standard_Real aRadius, const Standard_Real aSemiAngle);
   
   Standard_EXPORT void SetPosition (const Handle(StepGeom_Axis1Placement)& aPosition);
   

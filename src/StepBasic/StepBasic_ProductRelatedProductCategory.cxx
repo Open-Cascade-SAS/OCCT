@@ -24,15 +24,6 @@ StepBasic_ProductRelatedProductCategory::StepBasic_ProductRelatedProductCategory
 void StepBasic_ProductRelatedProductCategory::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Standard_Boolean hasAdescription,
-	const Handle(TCollection_HAsciiString)& aDescription)
-{
-
-	StepBasic_ProductCategory::Init(aName, hasAdescription, aDescription);
-}
-
-void StepBasic_ProductRelatedProductCategory::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Standard_Boolean hasAdescription,
 	const Handle(TCollection_HAsciiString)& aDescription,
 	const Handle(StepBasic_HArray1OfProduct)& aProducts)
 {

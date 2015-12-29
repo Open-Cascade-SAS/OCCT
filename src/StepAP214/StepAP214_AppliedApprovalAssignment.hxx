@@ -40,9 +40,7 @@ public:
   //! Returns a AppliedApprovalAssignment
   Standard_EXPORT StepAP214_AppliedApprovalAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Approval)& aAssignedApproval) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Approval)& aAssignedApproval, const Handle(StepAP214_HArray1OfApprovalItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_Approval)& aAssignedApproval, const Handle(StepAP214_HArray1OfApprovalItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfApprovalItem)& aItems);
   

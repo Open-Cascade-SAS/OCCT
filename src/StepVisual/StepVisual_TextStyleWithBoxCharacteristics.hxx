@@ -41,9 +41,7 @@ public:
   //! Returns a TextStyleWithBoxCharacteristics
   Standard_EXPORT StepVisual_TextStyleWithBoxCharacteristics();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance, const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance, const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics);
   
   Standard_EXPORT void SetCharacteristics (const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics);
   

@@ -39,9 +39,7 @@ public:
   //! Returns a RightCircularCylinder
   Standard_EXPORT StepShape_RightCircularCylinder();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis1Placement)& aPosition, const Standard_Real aHeight, const Standard_Real aRadius);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis1Placement)& aPosition, const Standard_Real aHeight, const Standard_Real aRadius);
   
   Standard_EXPORT void SetPosition (const Handle(StepGeom_Axis1Placement)& aPosition);
   

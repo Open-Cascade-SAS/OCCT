@@ -40,9 +40,7 @@ public:
   //! Returns a SiUnitAndThermodynamicTemperatureUnit
   Standard_EXPORT StepBasic_SiUnitAndThermodynamicTemperatureUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
   
   Standard_EXPORT void SetThermodynamicTemperatureUnit (const Handle(StepBasic_ThermodynamicTemperatureUnit)& aThermodynamicTemperatureUnit);
   

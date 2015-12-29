@@ -39,9 +39,7 @@ public:
   //! Returns a ContextDependentInvisibility
   Standard_EXPORT StepVisual_ContextDependentInvisibility();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems, const StepVisual_InvisibilityContext& aPresentationContext);
+  Standard_EXPORT void Init (const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems, const StepVisual_InvisibilityContext& aPresentationContext);
   
   Standard_EXPORT void SetPresentationContext (const StepVisual_InvisibilityContext& aPresentationContext);
   

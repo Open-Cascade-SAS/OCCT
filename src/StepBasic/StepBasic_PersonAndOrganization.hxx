@@ -38,7 +38,7 @@ public:
   //! Returns a PersonAndOrganization
   Standard_EXPORT StepBasic_PersonAndOrganization();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Person)& aThePerson, const Handle(StepBasic_Organization)& aTheOrganization);
+  Standard_EXPORT void Init (const Handle(StepBasic_Person)& aThePerson, const Handle(StepBasic_Organization)& aTheOrganization);
   
   Standard_EXPORT void SetThePerson (const Handle(StepBasic_Person)& aThePerson);
   

@@ -40,9 +40,7 @@ public:
   //! Returns a RevolvedAreaSolid
   Standard_EXPORT StepShape_RevolvedAreaSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea, const Handle(StepGeom_Axis1Placement)& aAxis, const Standard_Real aAngle);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea, const Handle(StepGeom_Axis1Placement)& aAxis, const Standard_Real aAngle);
   
   Standard_EXPORT void SetAxis (const Handle(StepGeom_Axis1Placement)& aAxis);
   

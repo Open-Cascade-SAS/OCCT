@@ -38,9 +38,7 @@ public:
   //! Returns a SweptSurface
   Standard_EXPORT StepGeom_SweptSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aSweptCurve);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aSweptCurve);
   
   Standard_EXPORT void SetSweptCurve (const Handle(StepGeom_Curve)& aSweptCurve);
   

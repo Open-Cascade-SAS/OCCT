@@ -26,18 +26,6 @@ void StepGeom_BSplineCurveWithKnots::Init(
 	const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
 	const StepGeom_BSplineCurveForm aCurveForm,
 	const StepData_Logical aClosedCurve,
-	const StepData_Logical aSelfIntersect)
-{
-
-	StepGeom_BSplineCurve::Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
-}
-
-void StepGeom_BSplineCurveWithKnots::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Standard_Integer aDegree,
-	const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
-	const StepGeom_BSplineCurveForm aCurveForm,
-	const StepData_Logical aClosedCurve,
 	const StepData_Logical aSelfIntersect,
 	const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities,
 	const Handle(TColStd_HArray1OfReal)& aKnots,

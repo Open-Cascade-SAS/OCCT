@@ -37,7 +37,7 @@ public:
   //! Returns a ApplicationContext
   Standard_EXPORT StepBasic_ApplicationContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aApplication);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aApplication);
   
   Standard_EXPORT void SetApplication (const Handle(TCollection_HAsciiString)& aApplication);
   

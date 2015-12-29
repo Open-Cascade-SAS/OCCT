@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineSurface,StepGeom_BoundedSurface)
 StepGeom_BSplineSurface::StepGeom_BSplineSurface ()  {}
 
 void StepGeom_BSplineSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_BSplineSurface::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Standard_Integer aUDegree,
 	const Standard_Integer aVDegree,

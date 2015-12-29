@@ -45,9 +45,7 @@ public:
   //! Returns a BSplineSurfaceWithKnots
   Standard_EXPORT StepGeom_BSplineSurfaceWithKnots();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray1OfInteger)& aUMultiplicities, const Handle(TColStd_HArray1OfInteger)& aVMultiplicities, const Handle(TColStd_HArray1OfReal)& aUKnots, const Handle(TColStd_HArray1OfReal)& aVKnots, const StepGeom_KnotType aKnotSpec);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aUDegree, const Standard_Integer aVDegree, const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineSurfaceForm aSurfaceForm, const StepData_Logical aUClosed, const StepData_Logical aVClosed, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray1OfInteger)& aUMultiplicities, const Handle(TColStd_HArray1OfInteger)& aVMultiplicities, const Handle(TColStd_HArray1OfReal)& aUKnots, const Handle(TColStd_HArray1OfReal)& aVKnots, const StepGeom_KnotType aKnotSpec);
   
   Standard_EXPORT void SetUMultiplicities (const Handle(TColStd_HArray1OfInteger)& aUMultiplicities);
   

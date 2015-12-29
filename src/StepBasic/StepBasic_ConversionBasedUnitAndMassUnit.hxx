@@ -39,9 +39,7 @@ public:
   //! Returns a ConversionBasedUnitAndLengthUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndMassUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_MeasureWithUnit)& aConversionFactor);
   
   Standard_EXPORT void SetMassUnit (const Handle(StepBasic_MassUnit)& aMassUnit);
   

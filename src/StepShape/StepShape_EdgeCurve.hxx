@@ -40,9 +40,7 @@ public:
   //! Returns a EdgeCurve
   Standard_EXPORT StepShape_EdgeCurve();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aEdgeStart, const Handle(StepShape_Vertex)& aEdgeEnd) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aEdgeStart, const Handle(StepShape_Vertex)& aEdgeEnd, const Handle(StepGeom_Curve)& aEdgeGeometry, const Standard_Boolean aSameSense);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Vertex)& aEdgeStart, const Handle(StepShape_Vertex)& aEdgeEnd, const Handle(StepGeom_Curve)& aEdgeGeometry, const Standard_Boolean aSameSense);
   
   Standard_EXPORT void SetEdgeGeometry (const Handle(StepGeom_Curve)& aEdgeGeometry);
   

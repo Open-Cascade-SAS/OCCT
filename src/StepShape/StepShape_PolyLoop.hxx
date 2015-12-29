@@ -40,9 +40,7 @@ public:
   //! Returns a PolyLoop
   Standard_EXPORT StepShape_PolyLoop();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon);
   
   Standard_EXPORT void SetPolygon (const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon);
   

@@ -37,7 +37,7 @@ public:
   //! Returns a ApprovalRole
   Standard_EXPORT StepBasic_ApprovalRole();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aRole);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aRole);
   
   Standard_EXPORT void SetRole (const Handle(TCollection_HAsciiString)& aRole);
   

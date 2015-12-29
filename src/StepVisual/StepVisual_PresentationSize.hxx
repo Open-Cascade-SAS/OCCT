@@ -39,7 +39,7 @@ public:
   //! Returns a PresentationSize
   Standard_EXPORT StepVisual_PresentationSize();
   
-  Standard_EXPORT virtual void Init (const StepVisual_PresentationSizeAssignmentSelect& aUnit, const Handle(StepVisual_PlanarBox)& aSize);
+  Standard_EXPORT void Init (const StepVisual_PresentationSizeAssignmentSelect& aUnit, const Handle(StepVisual_PlanarBox)& aSize);
   
   Standard_EXPORT void SetUnit (const StepVisual_PresentationSizeAssignmentSelect& aUnit);
   

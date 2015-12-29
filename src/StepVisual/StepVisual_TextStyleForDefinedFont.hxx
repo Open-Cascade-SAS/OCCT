@@ -37,7 +37,7 @@ public:
   //! Returns a TextStyleForDefinedFont
   Standard_EXPORT StepVisual_TextStyleForDefinedFont();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_Colour)& aTextColour);
+  Standard_EXPORT void Init (const Handle(StepVisual_Colour)& aTextColour);
   
   Standard_EXPORT void SetTextColour (const Handle(StepVisual_Colour)& aTextColour);
   

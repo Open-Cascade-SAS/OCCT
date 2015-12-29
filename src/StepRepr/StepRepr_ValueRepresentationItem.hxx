@@ -37,8 +37,8 @@ public:
   //! Returns a ValueRepresentationItem
   Standard_EXPORT StepRepr_ValueRepresentationItem();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& theName,
-                                     const Handle(StepBasic_MeasureValueMember)& theValueComponentMember);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
+                             const Handle(StepBasic_MeasureValueMember)& theValueComponentMember);
   
   inline void SetValueComponentMember(const Handle(StepBasic_MeasureValueMember)& theValueComponentMember)
   {

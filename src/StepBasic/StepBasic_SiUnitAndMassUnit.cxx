@@ -34,17 +34,6 @@ StepBasic_SiUnitAndMassUnit::StepBasic_SiUnitAndMassUnit ()
 //purpose  : 
 //=======================================================================
 
-void StepBasic_SiUnitAndMassUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-  StepBasic_NamedUnit::Init(aDimensions);
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
 void StepBasic_SiUnitAndMassUnit::Init(const Standard_Boolean hasAprefix,
                                        const StepBasic_SiPrefix aPrefix,
                                        const StepBasic_SiUnitName aName)

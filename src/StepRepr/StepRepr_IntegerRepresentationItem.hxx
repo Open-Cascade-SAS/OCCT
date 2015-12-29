@@ -36,7 +36,7 @@ public:
   //! Returns a IntegerRepresentationItem
   Standard_EXPORT StepRepr_IntegerRepresentationItem();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& theName, const Standard_Integer theValue);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName, const Standard_Integer theValue);
   
   inline void SetValue(const Standard_Integer theValue)
   {

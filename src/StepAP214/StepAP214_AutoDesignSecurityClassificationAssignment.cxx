@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignSecurityClassificationAssignment,
 StepAP214_AutoDesignSecurityClassificationAssignment::StepAP214_AutoDesignSecurityClassificationAssignment ()  {}
 
 void StepAP214_AutoDesignSecurityClassificationAssignment::Init(
-	const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)
-{
-
-	StepBasic_SecurityClassificationAssignment::Init(aAssignedSecurityClassification);
-}
-
-void StepAP214_AutoDesignSecurityClassificationAssignment::Init(
 	const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification,
 	const Handle(StepBasic_HArray1OfApproval)& aItems)
 {

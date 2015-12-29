@@ -39,9 +39,7 @@ public:
   //! Returns a CsgSolid
   Standard_EXPORT StepShape_CsgSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepShape_CsgSelect& aTreeRootExpression);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepShape_CsgSelect& aTreeRootExpression);
   
   Standard_EXPORT void SetTreeRootExpression (const StepShape_CsgSelect& aTreeRootExpression);
   

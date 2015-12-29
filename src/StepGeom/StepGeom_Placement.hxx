@@ -38,9 +38,7 @@ public:
   //! Returns a Placement
   Standard_EXPORT StepGeom_Placement();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation);
   
   Standard_EXPORT void SetLocation (const Handle(StepGeom_CartesianPoint)& aLocation);
   

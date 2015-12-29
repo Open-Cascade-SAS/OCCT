@@ -40,9 +40,7 @@ public:
   //! Returns a AutoDesignApprovalAssignment
   Standard_EXPORT StepAP214_AutoDesignApprovalAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Approval)& aAssignedApproval) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Approval)& aAssignedApproval, const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_Approval)& aAssignedApproval, const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
   

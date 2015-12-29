@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetSurface,StepGeom_Surface)
 StepGeom_OffsetSurface::StepGeom_OffsetSurface ()  {}
 
 void StepGeom_OffsetSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_OffsetSurface::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Surface)& aBasisSurface,
 	const Standard_Real aDistance,

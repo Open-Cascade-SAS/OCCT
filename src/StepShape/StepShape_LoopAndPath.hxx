@@ -42,11 +42,9 @@ public:
   //! Returns a LoopAndPath
   Standard_EXPORT StepShape_LoopAndPath();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Loop)& aLoop, const Handle(StepShape_Path)& aPath);
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Loop)& aLoop, const Handle(StepShape_Path)& aPath);
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
   
   Standard_EXPORT void SetLoop (const Handle(StepShape_Loop)& aLoop);
   

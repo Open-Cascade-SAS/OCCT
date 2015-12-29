@@ -41,9 +41,7 @@ public:
   //! Returns a SiUnitAndRatioUnit
   Standard_EXPORT StepBasic_SiUnitAndRatioUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
   
   Standard_EXPORT void SetRatioUnit (const Handle(StepBasic_RatioUnit)& aRatioUnit);
   

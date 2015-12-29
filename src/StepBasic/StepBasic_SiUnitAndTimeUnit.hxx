@@ -41,9 +41,7 @@ public:
   //! Returns a SiUnitAndTimeUnit
   Standard_EXPORT StepBasic_SiUnitAndTimeUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
   
   Standard_EXPORT void SetTimeUnit (const Handle(StepBasic_TimeUnit)& aTimeUnit);
   

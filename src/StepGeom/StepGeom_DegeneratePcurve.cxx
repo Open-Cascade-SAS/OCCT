@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_DegeneratePcurve,StepGeom_Point)
 StepGeom_DegeneratePcurve::StepGeom_DegeneratePcurve ()  {}
 
 void StepGeom_DegeneratePcurve::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_DegeneratePcurve::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Surface)& aBasisSurface,
 	const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)

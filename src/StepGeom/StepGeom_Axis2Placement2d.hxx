@@ -40,9 +40,7 @@ public:
   //! Returns a Axis2Placement2d
   Standard_EXPORT StepGeom_Axis2Placement2d();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation, const Standard_Boolean hasArefDirection, const Handle(StepGeom_Direction)& aRefDirection);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation, const Standard_Boolean hasArefDirection, const Handle(StepGeom_Direction)& aRefDirection);
   
   Standard_EXPORT void SetRefDirection (const Handle(StepGeom_Direction)& aRefDirection);
   

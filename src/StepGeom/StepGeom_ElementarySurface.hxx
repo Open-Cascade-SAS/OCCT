@@ -38,9 +38,7 @@ public:
   //! Returns a ElementarySurface
   Standard_EXPORT StepGeom_ElementarySurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition);
   
   Standard_EXPORT void SetPosition (const Handle(StepGeom_Axis2Placement3d)& aPosition);
   

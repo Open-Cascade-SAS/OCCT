@@ -883,37 +883,21 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure (const Handle(StepBasic
   for(Standard_Integer i=1; i<=OldHANU->Length(); i++)
     NewHANU->SetValue(i,OldHANU->Value(i));
   // create SiUnitAndTimeUnit
-  Handle(StepBasic_DimensionalExponents) DimExpT = new StepBasic_DimensionalExponents;
-  DimExpT->Init(0.,0.,1.,0.,0.,0.,0.);
-  smodel->AddWithRefs(DimExpT);
-  smodel->SetIdentLabel(DimExpT, smodel->Number(DimExpT));
   Handle(StepBasic_SiUnitAndTimeUnit) SUTU = new StepBasic_SiUnitAndTimeUnit;
-  SUTU->Init(DimExpT);
-  SUTU->SetName(StepBasic_sunSecond);
+  SUTU->Init(Standard_False,StepBasic_spExa,StepBasic_sunSecond);
   smodel->AddWithRefs(SUTU);
   smodel->SetIdentLabel(SUTU, smodel->Number(SUTU));
   NewHANU->SetValue(OldHANU->Length()+1,SUTU);
   //create SiUnitAndMassUnit
-  Handle(StepBasic_DimensionalExponents) DimExpM = new StepBasic_DimensionalExponents;
-  DimExpM->Init(0.,1.,0.,0.,0.,0.,0.);
-  smodel->AddWithRefs(DimExpM);
-  smodel->SetIdentLabel(DimExpM, smodel->Number(DimExpM));
   Handle(StepBasic_SiUnitAndMassUnit) SUMU = new StepBasic_SiUnitAndMassUnit;
-  SUMU->Init(DimExpM);
-  SUMU->SetName(StepBasic_sunGram);
-  SUMU->SetPrefix(StepBasic_spKilo);
+  SUMU->Init(Standard_True,StepBasic_spKilo,StepBasic_sunGram);
   smodel->AddWithRefs(SUMU);
   smodel->SetIdentLabel(SUMU, smodel->Number(SUMU));
   NewHANU->SetValue(OldHANU->Length()+2,SUMU);
   // create SiUnitAndThermodynamicTemperatureUnit
-  Handle(StepBasic_DimensionalExponents) DimExpTT = new StepBasic_DimensionalExponents;
-  DimExpTT->Init(0.,0.,0.,0.,1.,0.,0.);
-  smodel->AddWithRefs(DimExpTT);
-  smodel->SetIdentLabel(DimExpTT, smodel->Number(DimExpTT));
   Handle(StepBasic_SiUnitAndThermodynamicTemperatureUnit) SUTTU =
     new StepBasic_SiUnitAndThermodynamicTemperatureUnit;
-  SUTTU->Init(DimExpTT);
-  SUTTU->SetName(StepBasic_sunDegreeCelsius);
+  SUTTU->Init(Standard_False,StepBasic_spExa,StepBasic_sunDegreeCelsius);
   smodel->AddWithRefs(SUTTU);
   smodel->SetIdentLabel(SUTTU, smodel->Number(SUTTU));
   NewHANU->SetValue(OldHANU->Length()+3,SUTTU);

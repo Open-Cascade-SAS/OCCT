@@ -38,9 +38,7 @@ public:
   //! Returns a WeekOfYearAndDayDate
   Standard_EXPORT StepBasic_WeekOfYearAndDayDate();
   
-  Standard_EXPORT virtual void Init (const Standard_Integer aYearComponent) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Integer aYearComponent, const Standard_Integer aWeekComponent, const Standard_Boolean hasAdayComponent, const Standard_Integer aDayComponent);
+  Standard_EXPORT void Init (const Standard_Integer aYearComponent, const Standard_Integer aWeekComponent, const Standard_Boolean hasAdayComponent, const Standard_Integer aDayComponent);
   
   Standard_EXPORT void SetWeekComponent (const Standard_Integer aWeekComponent);
   

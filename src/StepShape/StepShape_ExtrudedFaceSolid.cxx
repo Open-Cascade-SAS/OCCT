@@ -24,14 +24,6 @@ StepShape_ExtrudedFaceSolid::StepShape_ExtrudedFaceSolid ()  {}
 
 void StepShape_ExtrudedFaceSolid::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_FaceSurface)& aSweptArea)
-{
-
-  StepShape_SweptFaceSolid::Init(aName, aSweptArea);
-}
-
-void StepShape_ExtrudedFaceSolid::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_FaceSurface)& aSweptArea,
 	const Handle(StepGeom_Direction)& aExtrudedDirection,
 	const Standard_Real aDepth)

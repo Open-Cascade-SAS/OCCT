@@ -21,13 +21,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ColourRgb,StepVisual_ColourSpecification)
 StepVisual_ColourRgb::StepVisual_ColourRgb ()  {}
 
 void StepVisual_ColourRgb::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepVisual_ColourSpecification::Init(aName);
-}
-
-void StepVisual_ColourRgb::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Standard_Real aRed,
 	const Standard_Real aGreen,

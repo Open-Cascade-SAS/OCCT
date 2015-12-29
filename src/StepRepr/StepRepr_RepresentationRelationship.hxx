@@ -38,7 +38,7 @@ public:
   //! Returns a RepresentationRelationship
   Standard_EXPORT StepRepr_RepresentationRelationship();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepRepr_Representation)& aRep1, const Handle(StepRepr_Representation)& aRep2);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepRepr_Representation)& aRep1, const Handle(StepRepr_Representation)& aRep2);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

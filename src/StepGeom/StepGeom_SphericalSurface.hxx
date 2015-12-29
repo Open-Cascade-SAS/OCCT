@@ -39,9 +39,7 @@ public:
   //! Returns a SphericalSurface
   Standard_EXPORT StepGeom_SphericalSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aRadius);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aRadius);
   
   Standard_EXPORT void SetRadius (const Standard_Real aRadius);
   

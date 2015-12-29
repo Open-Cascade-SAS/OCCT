@@ -39,9 +39,7 @@ public:
   //! Returns a FaceBound
   Standard_EXPORT StepShape_FaceBound();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Loop)& aBound, const Standard_Boolean aOrientation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_Loop)& aBound, const Standard_Boolean aOrientation);
   
   Standard_EXPORT void SetBound (const Handle(StepShape_Loop)& aBound);
   

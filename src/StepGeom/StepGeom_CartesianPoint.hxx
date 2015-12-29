@@ -40,9 +40,7 @@ public:
   //! Returns a CartesianPoint
   Standard_EXPORT StepGeom_CartesianPoint();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TColStd_HArray1OfReal)& aCoordinates);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TColStd_HArray1OfReal)& aCoordinates);
   
   Standard_EXPORT void Init2D (const Handle(TCollection_HAsciiString)& aName, const Standard_Real X, const Standard_Real Y);
   

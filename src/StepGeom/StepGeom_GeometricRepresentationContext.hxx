@@ -38,9 +38,7 @@ public:
   //! Returns a GeometricRepresentationContext
   Standard_EXPORT StepGeom_GeometricRepresentationContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension);
   
   Standard_EXPORT void SetCoordinateSpaceDimension (const Standard_Integer aCoordinateSpaceDimension);
   

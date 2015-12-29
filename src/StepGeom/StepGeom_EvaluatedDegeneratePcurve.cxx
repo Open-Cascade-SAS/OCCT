@@ -26,15 +26,6 @@ StepGeom_EvaluatedDegeneratePcurve::StepGeom_EvaluatedDegeneratePcurve ()  {}
 void StepGeom_EvaluatedDegeneratePcurve::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Surface)& aBasisSurface,
-	const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)
-{
-
-	StepGeom_DegeneratePcurve::Init(aName, aBasisSurface, aReferenceToCurve);
-}
-
-void StepGeom_EvaluatedDegeneratePcurve::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Surface)& aBasisSurface,
 	const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve,
 	const Handle(StepGeom_CartesianPoint)& aEquivalentPoint)
 {

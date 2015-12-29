@@ -38,9 +38,7 @@ public:
   //! Returns a SweptFaceSolid
   Standard_EXPORT StepShape_SweptFaceSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_FaceSurface)& aSweptArea);
   
   Standard_EXPORT virtual void SetSweptFace (const Handle(StepShape_FaceSurface)& aSweptArea);
   

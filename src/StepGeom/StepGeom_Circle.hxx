@@ -39,9 +39,7 @@ public:
   //! Returns a Circle
   Standard_EXPORT StepGeom_Circle();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aRadius);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aRadius);
   
   Standard_EXPORT void SetRadius (const Standard_Real aRadius);
   

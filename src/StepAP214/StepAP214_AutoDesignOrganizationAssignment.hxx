@@ -41,9 +41,7 @@ public:
   //! Returns a AutoDesignOrganizationAssignment
   Standard_EXPORT StepAP214_AutoDesignOrganizationAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_Organization)& aAssignedOrganization, const Handle(StepBasic_OrganizationRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems);
   

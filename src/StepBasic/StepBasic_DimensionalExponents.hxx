@@ -37,7 +37,7 @@ public:
   //! Returns a DimensionalExponents
   Standard_EXPORT StepBasic_DimensionalExponents();
   
-  Standard_EXPORT virtual void Init (const Standard_Real aLengthExponent, const Standard_Real aMassExponent, const Standard_Real aTimeExponent, const Standard_Real aElectricCurrentExponent, const Standard_Real aThermodynamicTemperatureExponent, const Standard_Real aAmountOfSubstanceExponent, const Standard_Real aLuminousIntensityExponent);
+  Standard_EXPORT void Init (const Standard_Real aLengthExponent, const Standard_Real aMassExponent, const Standard_Real aTimeExponent, const Standard_Real aElectricCurrentExponent, const Standard_Real aThermodynamicTemperatureExponent, const Standard_Real aAmountOfSubstanceExponent, const Standard_Real aLuminousIntensityExponent);
   
   Standard_EXPORT void SetLengthExponent (const Standard_Real aLengthExponent);
   

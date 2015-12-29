@@ -23,14 +23,6 @@ StepGeom_Hyperbola::StepGeom_Hyperbola ()  {}
 
 void StepGeom_Hyperbola::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const StepGeom_Axis2Placement& aPosition)
-{
-
-	StepGeom_Conic::Init(aName, aPosition);
-}
-
-void StepGeom_Hyperbola::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const StepGeom_Axis2Placement& aPosition,
 	const Standard_Real aSemiAxis,
 	const Standard_Real aSemiImagAxis)

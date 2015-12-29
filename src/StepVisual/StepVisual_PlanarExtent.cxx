@@ -21,13 +21,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PlanarExtent,StepGeom_GeometricRepresentat
 StepVisual_PlanarExtent::StepVisual_PlanarExtent ()  {}
 
 void StepVisual_PlanarExtent::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepVisual_PlanarExtent::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Standard_Real aSizeInX,
 	const Standard_Real aSizeInY)

@@ -25,16 +25,6 @@ void StepGeom_DegenerateToroidalSurface::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Axis2Placement3d)& aPosition,
 	const Standard_Real aMajorRadius,
-	const Standard_Real aMinorRadius)
-{
-
-	StepGeom_ToroidalSurface::Init(aName, aPosition, aMajorRadius, aMinorRadius);
-}
-
-void StepGeom_DegenerateToroidalSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Axis2Placement3d)& aPosition,
-	const Standard_Real aMajorRadius,
 	const Standard_Real aMinorRadius,
 	const Standard_Boolean aSelectOuter)
 {

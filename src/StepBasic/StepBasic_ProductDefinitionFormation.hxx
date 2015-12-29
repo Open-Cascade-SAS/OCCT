@@ -38,7 +38,7 @@ public:
   //! Returns a ProductDefinitionFormation
   Standard_EXPORT StepBasic_ProductDefinitionFormation();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_Product)& aOfProduct);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_Product)& aOfProduct);
   
   Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& aId);
   

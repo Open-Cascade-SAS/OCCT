@@ -23,14 +23,6 @@ StepGeom_Circle::StepGeom_Circle ()  {}
 
 void StepGeom_Circle::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const StepGeom_Axis2Placement& aPosition)
-{
-
-	StepGeom_Conic::Init(aName, aPosition);
-}
-
-void StepGeom_Circle::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const StepGeom_Axis2Placement& aPosition,
 	const Standard_Real aRadius)
 {

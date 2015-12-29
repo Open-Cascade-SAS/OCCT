@@ -39,9 +39,7 @@ public:
   //! Returns a Block
   Standard_EXPORT StepShape_Block();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aX, const Standard_Real aY, const Standard_Real aZ);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aX, const Standard_Real aY, const Standard_Real aZ);
   
   Standard_EXPORT void SetPosition (const Handle(StepGeom_Axis2Placement3d)& aPosition);
   

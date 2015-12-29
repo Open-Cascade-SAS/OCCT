@@ -40,8 +40,6 @@ public:
   //! Returns a EdgeLoop
   Standard_EXPORT StepShape_EdgeLoop();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);
   
   Standard_EXPORT void SetEdgeList (const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList);

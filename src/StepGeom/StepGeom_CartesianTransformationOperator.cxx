@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator,StepGeom_Geo
 StepGeom_CartesianTransformationOperator::StepGeom_CartesianTransformationOperator ()  {}
 
 void StepGeom_CartesianTransformationOperator::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_CartesianTransformationOperator::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Standard_Boolean hasAaxis1,
 	const Handle(StepGeom_Direction)& aAxis1,

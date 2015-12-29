@@ -41,9 +41,7 @@ public:
   //! Returns a AutoDesignActualDateAssignment
   Standard_EXPORT StepAP214_AutoDesignActualDateAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Date)& aAssignedDate, const Handle(StepBasic_DateRole)& aRole) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Date)& aAssignedDate, const Handle(StepBasic_DateRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignDatedItem)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_Date)& aAssignedDate, const Handle(StepBasic_DateRole)& aRole, const Handle(StepAP214_HArray1OfAutoDesignDatedItem)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepAP214_HArray1OfAutoDesignDatedItem)& aItems);
   

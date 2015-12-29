@@ -26,14 +26,6 @@ StepShape_FacetedBrepAndBrepWithVoids::StepShape_FacetedBrepAndBrepWithVoids () 
 
 void StepShape_FacetedBrepAndBrepWithVoids::Init
 (const Handle(TCollection_HAsciiString)& aName,
- const Handle(StepShape_ClosedShell)& aOuter)
-{
-  
-  StepShape_ManifoldSolidBrep::Init(aName, aOuter);
-}
-
-void StepShape_FacetedBrepAndBrepWithVoids::Init
-(const Handle(TCollection_HAsciiString)& aName,
  const Handle(StepShape_ClosedShell)& aOuter,
  const Handle(StepShape_FacetedBrep)& aFacetedBrep,
  const Handle(StepShape_BrepWithVoids)& aBrepWithVoids)

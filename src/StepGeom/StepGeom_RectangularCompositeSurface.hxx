@@ -40,9 +40,7 @@ public:
   //! Returns a RectangularCompositeSurface
   Standard_EXPORT StepGeom_RectangularCompositeSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
   
   Standard_EXPORT void SetSegments (const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
   

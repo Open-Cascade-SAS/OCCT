@@ -23,14 +23,6 @@ StepBasic_ProductContext::StepBasic_ProductContext ()  {}
 
 void StepBasic_ProductContext::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepBasic_ApplicationContext)& aFrameOfReference)
-{
-
-	StepBasic_ApplicationContextElement::Init(aName, aFrameOfReference);
-}
-
-void StepBasic_ProductContext::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepBasic_ApplicationContext)& aFrameOfReference,
 	const Handle(TCollection_HAsciiString)& aDisciplineType)
 {

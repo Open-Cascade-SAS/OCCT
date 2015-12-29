@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightCircularCone,StepGeom_GeometricReprese
 StepShape_RightCircularCone::StepShape_RightCircularCone ()  {}
 
 void StepShape_RightCircularCone::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_RightCircularCone::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Axis1Placement)& aPosition,
 	const Standard_Real aHeight,

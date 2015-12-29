@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_PolyLoop,StepShape_Loop)
 StepShape_PolyLoop::StepShape_PolyLoop ()  {}
 
 void StepShape_PolyLoop::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_PolyLoop::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon)
 {

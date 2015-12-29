@@ -21,13 +21,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationStyleByContext,StepVisual_Pres
 StepVisual_PresentationStyleByContext::StepVisual_PresentationStyleByContext ()  {}
 
 void StepVisual_PresentationStyleByContext::Init(
-	const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles)
-{
-
-	StepVisual_PresentationStyleAssignment::Init(aStyles);
-}
-
-void StepVisual_PresentationStyleByContext::Init(
 	const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles,
 	const StepVisual_StyleContextSelect& aStyleContext)
 {

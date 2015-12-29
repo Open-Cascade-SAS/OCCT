@@ -33,19 +33,6 @@ StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit ()  {
 
 void StepBasic_UncertaintyMeasureWithUnit::Init(
 	const Handle(StepBasic_MeasureValueMember)& aValueComponent,
-	const StepBasic_Unit& aUnitComponent)
-{
-
-	StepBasic_MeasureWithUnit::Init(aValueComponent, aUnitComponent);
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepBasic_UncertaintyMeasureWithUnit::Init(
-	const Handle(StepBasic_MeasureValueMember)& aValueComponent,
 	const StepBasic_Unit& aUnitComponent,
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(TCollection_HAsciiString)& aDescription)

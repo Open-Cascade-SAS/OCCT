@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MappedItem,StepRepr_RepresentationItem)
 StepRepr_MappedItem::StepRepr_MappedItem ()  {}
 
 void StepRepr_MappedItem::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepRepr_MappedItem::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepRepr_RepresentationMap)& aMappingSource,
 	const Handle(StepRepr_RepresentationItem)& aMappingTarget)

@@ -45,9 +45,7 @@ public:
   //! Returns a BSplineCurveWithKnots
   Standard_EXPORT StepGeom_BSplineCurveWithKnots();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities, const Handle(TColStd_HArray1OfReal)& aKnots, const StepGeom_KnotType aKnotSpec);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Integer aDegree, const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList, const StepGeom_BSplineCurveForm aCurveForm, const StepData_Logical aClosedCurve, const StepData_Logical aSelfIntersect, const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities, const Handle(TColStd_HArray1OfReal)& aKnots, const StepGeom_KnotType aKnotSpec);
   
   Standard_EXPORT void SetKnotMultiplicities (const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities);
   

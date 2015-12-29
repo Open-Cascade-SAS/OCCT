@@ -41,7 +41,7 @@ public:
   //! Returns a ViewVolume
   Standard_EXPORT StepVisual_ViewVolume();
   
-  Standard_EXPORT virtual void Init (const StepVisual_CentralOrParallel aProjectionType, const Handle(StepGeom_CartesianPoint)& aProjectionPoint, const Standard_Real aViewPlaneDistance, const Standard_Real aFrontPlaneDistance, const Standard_Boolean aFrontPlaneClipping, const Standard_Real aBackPlaneDistance, const Standard_Boolean aBackPlaneClipping, const Standard_Boolean aViewVolumeSidesClipping, const Handle(StepVisual_PlanarBox)& aViewWindow);
+  Standard_EXPORT void Init (const StepVisual_CentralOrParallel aProjectionType, const Handle(StepGeom_CartesianPoint)& aProjectionPoint, const Standard_Real aViewPlaneDistance, const Standard_Real aFrontPlaneDistance, const Standard_Boolean aFrontPlaneClipping, const Standard_Real aBackPlaneDistance, const Standard_Boolean aBackPlaneClipping, const Standard_Boolean aViewVolumeSidesClipping, const Handle(StepVisual_PlanarBox)& aViewWindow);
   
   Standard_EXPORT void SetProjectionType (const StepVisual_CentralOrParallel aProjectionType);
   

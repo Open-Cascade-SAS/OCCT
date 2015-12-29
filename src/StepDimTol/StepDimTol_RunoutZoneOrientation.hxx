@@ -34,7 +34,7 @@ public:
   Standard_EXPORT StepDimTol_RunoutZoneOrientation();
   
   //! Init all field own and inherited
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_PlaneAngleMeasureWithUnit)& theAngle);
+  Standard_EXPORT void Init (const Handle(StepBasic_PlaneAngleMeasureWithUnit)& theAngle);
 
   //! Returns field Angle
   inline Handle(StepBasic_PlaneAngleMeasureWithUnit) Angle()

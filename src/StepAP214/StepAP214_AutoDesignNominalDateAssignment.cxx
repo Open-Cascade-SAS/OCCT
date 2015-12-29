@@ -24,14 +24,6 @@ StepAP214_AutoDesignNominalDateAssignment::StepAP214_AutoDesignNominalDateAssign
 
 void StepAP214_AutoDesignNominalDateAssignment::Init(
 	const Handle(StepBasic_Date)& aAssignedDate,
-	const Handle(StepBasic_DateRole)& aRole)
-{
-
-	StepBasic_DateAssignment::Init(aAssignedDate, aRole);
-}
-
-void StepAP214_AutoDesignNominalDateAssignment::Init(
-	const Handle(StepBasic_Date)& aAssignedDate,
 	const Handle(StepBasic_DateRole)& aRole,
 	const Handle(StepAP214_HArray1OfAutoDesignDatedItem)& aItems)
 {

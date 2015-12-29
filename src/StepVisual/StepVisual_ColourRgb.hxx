@@ -38,9 +38,7 @@ public:
   //! Returns a ColourRgb
   Standard_EXPORT StepVisual_ColourRgb();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aRed, const Standard_Real aGreen, const Standard_Real aBlue);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aRed, const Standard_Real aGreen, const Standard_Real aBlue);
   
   Standard_EXPORT void SetRed (const Standard_Real aRed);
   

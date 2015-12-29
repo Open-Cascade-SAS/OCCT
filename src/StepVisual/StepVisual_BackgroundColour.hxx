@@ -38,7 +38,7 @@ public:
   //! Returns a BackgroundColour
   Standard_EXPORT StepVisual_BackgroundColour();
   
-  Standard_EXPORT virtual void Init (const StepVisual_AreaOrView& aPresentation);
+  Standard_EXPORT void Init (const StepVisual_AreaOrView& aPresentation);
   
   Standard_EXPORT void SetPresentation (const StepVisual_AreaOrView& aPresentation);
   

@@ -24,14 +24,6 @@ StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacter
 
 void StepVisual_TextStyleWithBoxCharacteristics::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance)
-{
-
-	StepVisual_TextStyle::Init(aName, aCharacterAppearance);
-}
-
-void StepVisual_TextStyleWithBoxCharacteristics::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance,
 	const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics)
 {

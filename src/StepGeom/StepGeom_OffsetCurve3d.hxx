@@ -41,9 +41,7 @@ public:
   //! Returns a OffsetCurve3d
   Standard_EXPORT StepGeom_OffsetCurve3d();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aBasisCurve, const Standard_Real aDistance, const StepData_Logical aSelfIntersect, const Handle(StepGeom_Direction)& aRefDirection);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aBasisCurve, const Standard_Real aDistance, const StepData_Logical aSelfIntersect, const Handle(StepGeom_Direction)& aRefDirection);
   
   Standard_EXPORT void SetBasisCurve (const Handle(StepGeom_Curve)& aBasisCurve);
   

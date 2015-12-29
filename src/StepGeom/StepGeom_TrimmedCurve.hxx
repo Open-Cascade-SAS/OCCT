@@ -43,9 +43,7 @@ public:
   //! Returns a TrimmedCurve
   Standard_EXPORT StepGeom_TrimmedCurve();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aBasisCurve, const Handle(StepGeom_HArray1OfTrimmingSelect)& aTrim1, const Handle(StepGeom_HArray1OfTrimmingSelect)& aTrim2, const Standard_Boolean aSenseAgreement, const StepGeom_TrimmingPreference aMasterRepresentation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aBasisCurve, const Handle(StepGeom_HArray1OfTrimmingSelect)& aTrim1, const Handle(StepGeom_HArray1OfTrimmingSelect)& aTrim2, const Standard_Boolean aSenseAgreement, const StepGeom_TrimmingPreference aMasterRepresentation);
   
   Standard_EXPORT void SetBasisCurve (const Handle(StepGeom_Curve)& aBasisCurve);
   

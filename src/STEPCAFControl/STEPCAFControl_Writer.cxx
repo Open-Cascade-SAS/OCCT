@@ -21,6 +21,7 @@
 // Names and validation props are supported for top-level shapes only
 
 #include <BRep_Builder.hxx>
+#include <GeomToStep_MakeCartesianPoint.hxx>
 #include <HeaderSection_FileSchema.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Static.hxx>
@@ -2620,8 +2621,8 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
     Handle(StepGeom_Axis2Placement3d) anOrientation = new StepGeom_Axis2Placement3d();
     gp_Dir aDir;
     theObject->GetDirection(aDir);
-    Handle(StepGeom_CartesianPoint) aLoc = new StepGeom_CartesianPoint();
-    aLoc->Init(new TCollection_HAsciiString());
+    GeomToStep_MakeCartesianPoint MkPoint(theObject->GetPoints()->Value(1));
+    Handle(StepGeom_CartesianPoint) aLoc = MkPoint.Value();
     Handle(StepGeom_Direction) anAxis = new StepGeom_Direction();
     Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
     aCoords->SetValue(1, aDir.X());

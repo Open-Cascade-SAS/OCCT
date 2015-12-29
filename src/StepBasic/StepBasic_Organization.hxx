@@ -38,7 +38,7 @@ public:
   //! Returns a Organization
   Standard_EXPORT StepBasic_Organization();
   
-  Standard_EXPORT virtual void Init (const Standard_Boolean hasAid, const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void Init (const Standard_Boolean hasAid, const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
   
   Standard_EXPORT void SetId (const Handle(TCollection_HAsciiString)& aId);
   

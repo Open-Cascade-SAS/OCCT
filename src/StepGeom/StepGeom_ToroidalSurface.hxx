@@ -39,9 +39,7 @@ public:
   //! Returns a ToroidalSurface
   Standard_EXPORT StepGeom_ToroidalSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aMajorRadius, const Standard_Real aMinorRadius);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Axis2Placement3d)& aPosition, const Standard_Real aMajorRadius, const Standard_Real aMinorRadius);
   
   Standard_EXPORT void SetMajorRadius (const Standard_Real aMajorRadius);
   

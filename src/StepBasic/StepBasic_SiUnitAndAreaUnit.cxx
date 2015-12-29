@@ -35,13 +35,3 @@ Handle(StepBasic_AreaUnit) StepBasic_SiUnitAndAreaUnit::AreaUnit() const
 {
   return areaUnit;
 }
-
-void StepBasic_SiUnitAndAreaUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-  StepBasic_NamedUnit::SetDimensions(aDimensions);
-}
-
-Handle(StepBasic_DimensionalExponents) StepBasic_SiUnitAndAreaUnit::Dimensions() const
-{
-  return StepBasic_NamedUnit::Dimensions();
-}

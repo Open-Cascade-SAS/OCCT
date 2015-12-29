@@ -40,9 +40,7 @@ public:
   //! Returns a AutoDesignSecurityClassificationAssignment
   Standard_EXPORT StepAP214_AutoDesignSecurityClassificationAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification, const Handle(StepBasic_HArray1OfApproval)& aItems);
+  Standard_EXPORT void Init (const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification, const Handle(StepBasic_HArray1OfApproval)& aItems);
   
   Standard_EXPORT void SetItems (const Handle(StepBasic_HArray1OfApproval)& aItems);
   

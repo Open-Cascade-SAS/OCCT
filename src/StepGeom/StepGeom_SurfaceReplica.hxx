@@ -39,9 +39,7 @@ public:
   //! Returns a SurfaceReplica
   Standard_EXPORT StepGeom_SurfaceReplica();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aParentSurface, const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aParentSurface, const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation);
   
   Standard_EXPORT void SetParentSurface (const Handle(StepGeom_Surface)& aParentSurface);
   

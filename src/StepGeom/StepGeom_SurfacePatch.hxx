@@ -39,7 +39,7 @@ public:
   //! Returns a SurfacePatch
   Standard_EXPORT StepGeom_SurfacePatch();
   
-  Standard_EXPORT virtual void Init (const Handle(StepGeom_BoundedSurface)& aParentSurface, const StepGeom_TransitionCode aUTransition, const StepGeom_TransitionCode aVTransition, const Standard_Boolean aUSense, const Standard_Boolean aVSense);
+  Standard_EXPORT void Init (const Handle(StepGeom_BoundedSurface)& aParentSurface, const StepGeom_TransitionCode aUTransition, const StepGeom_TransitionCode aVTransition, const Standard_Boolean aUSense, const Standard_Boolean aVSense);
   
   Standard_EXPORT void SetParentSurface (const Handle(StepGeom_BoundedSurface)& aParentSurface);
   

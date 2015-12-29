@@ -38,9 +38,7 @@ public:
   //! Returns a PlanarExtent
   Standard_EXPORT StepVisual_PlanarExtent();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aSizeInX, const Standard_Real aSizeInY);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aSizeInX, const Standard_Real aSizeInY);
   
   Standard_EXPORT void SetSizeInX (const Standard_Real aSizeInX);
   

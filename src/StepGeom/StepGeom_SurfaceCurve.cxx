@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceCurve,StepGeom_Curve)
 StepGeom_SurfaceCurve::StepGeom_SurfaceCurve ()  {}
 
 void StepGeom_SurfaceCurve::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_SurfaceCurve::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Curve)& aCurve3d,
 	const Handle(StepGeom_HArray1OfPcurveOrSurface)& aAssociatedGeometry,

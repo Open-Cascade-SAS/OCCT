@@ -37,7 +37,7 @@ public:
   //! Returns a SurfaceStyleSilhouette
   Standard_EXPORT StepVisual_SurfaceStyleSilhouette();
   
-  Standard_EXPORT virtual void Init (const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette);
+  Standard_EXPORT void Init (const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette);
   
   Standard_EXPORT void SetStyleOfSilhouette (const Handle(StepVisual_CurveStyle)& aStyleOfSilhouette);
   

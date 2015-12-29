@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Line,StepGeom_Curve)
 StepGeom_Line::StepGeom_Line ()  {}
 
 void StepGeom_Line::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_Line::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_CartesianPoint)& aPnt,
 	const Handle(StepGeom_Vector)& aDir)

@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightAngularWedge,StepGeom_GeometricReprese
 StepShape_RightAngularWedge::StepShape_RightAngularWedge ()  {}
 
 void StepShape_RightAngularWedge::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_RightAngularWedge::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Axis2Placement3d)& aPosition,
 	const Standard_Real aX,

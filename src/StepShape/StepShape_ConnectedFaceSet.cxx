@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet,StepShape_TopologicalRepre
 StepShape_ConnectedFaceSet::StepShape_ConnectedFaceSet ()  {}
 
 void StepShape_ConnectedFaceSet::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_ConnectedFaceSet::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_HArray1OfFace)& aCfsFaces)
 {

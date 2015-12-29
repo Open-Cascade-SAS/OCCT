@@ -39,9 +39,7 @@ public:
   //! Returns a Ellipse
   Standard_EXPORT StepGeom_Ellipse();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aSemiAxis1, const Standard_Real aSemiAxis2);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition, const Standard_Real aSemiAxis1, const Standard_Real aSemiAxis2);
   
   Standard_EXPORT void SetSemiAxis1 (const Standard_Real aSemiAxis1);
   

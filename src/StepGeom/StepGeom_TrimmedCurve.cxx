@@ -23,13 +23,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_TrimmedCurve,StepGeom_BoundedCurve)
 StepGeom_TrimmedCurve::StepGeom_TrimmedCurve ()  {}
 
 void StepGeom_TrimmedCurve::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_TrimmedCurve::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Curve)& aBasisCurve,
 	const Handle(StepGeom_HArray1OfTrimmingSelect)& aTrim1,

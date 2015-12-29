@@ -23,14 +23,6 @@ StepRepr_GlobalUncertaintyAssignedContext::StepRepr_GlobalUncertaintyAssignedCon
 
 void StepRepr_GlobalUncertaintyAssignedContext::Init(
 	const Handle(TCollection_HAsciiString)& aContextIdentifier,
-	const Handle(TCollection_HAsciiString)& aContextType)
-{
-
-	StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
-}
-
-void StepRepr_GlobalUncertaintyAssignedContext::Init(
-	const Handle(TCollection_HAsciiString)& aContextIdentifier,
 	const Handle(TCollection_HAsciiString)& aContextType,
 	const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty)
 {

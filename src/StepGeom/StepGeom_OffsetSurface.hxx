@@ -40,9 +40,7 @@ public:
   //! Returns a OffsetSurface
   Standard_EXPORT StepGeom_OffsetSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Standard_Real aDistance, const StepData_Logical aSelfIntersect);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Standard_Real aDistance, const StepData_Logical aSelfIntersect);
   
   Standard_EXPORT void SetBasisSurface (const Handle(StepGeom_Surface)& aBasisSurface);
   

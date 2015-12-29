@@ -39,9 +39,7 @@ public:
   //! Returns a Conic
   Standard_EXPORT StepGeom_Conic();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const StepGeom_Axis2Placement& aPosition);
   
   Standard_EXPORT void SetPosition (const StepGeom_Axis2Placement& aPosition);
   

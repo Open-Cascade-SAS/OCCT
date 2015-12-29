@@ -24,14 +24,6 @@ StepGeom_Axis2Placement2d::StepGeom_Axis2Placement2d ()  {}
 
 void StepGeom_Axis2Placement2d::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_CartesianPoint)& aLocation)
-{
-
-	StepGeom_Placement::Init(aName, aLocation);
-}
-
-void StepGeom_Axis2Placement2d::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_CartesianPoint)& aLocation,
 	const Standard_Boolean hasArefDirection,
 	const Handle(StepGeom_Direction)& aRefDirection)

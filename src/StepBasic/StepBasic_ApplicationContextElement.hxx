@@ -38,7 +38,7 @@ public:
   //! Returns a ApplicationContextElement
   Standard_EXPORT StepBasic_ApplicationContextElement();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& aFrameOfReference);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

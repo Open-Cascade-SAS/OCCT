@@ -23,14 +23,6 @@ StepGeom_ConicalSurface::StepGeom_ConicalSurface ()  {}
 
 void StepGeom_ConicalSurface::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepGeom_Axis2Placement3d)& aPosition)
-{
-
-	StepGeom_ElementarySurface::Init(aName, aPosition);
-}
-
-void StepGeom_ConicalSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Axis2Placement3d)& aPosition,
 	const Standard_Real aRadius,
 	const Standard_Real aSemiAngle)

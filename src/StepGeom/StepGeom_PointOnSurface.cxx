@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointOnSurface,StepGeom_Point)
 StepGeom_PointOnSurface::StepGeom_PointOnSurface ()  {}
 
 void StepGeom_PointOnSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_PointOnSurface::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Surface)& aBasisSurface,
 	const Standard_Real aPointParameterU,

@@ -39,9 +39,7 @@ public:
   //! Returns a Sphere
   Standard_EXPORT StepShape_Sphere();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aRadius, const Handle(StepGeom_Point)& aCentre);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aRadius, const Handle(StepGeom_Point)& aCentre);
   
   Standard_EXPORT void SetRadius (const Standard_Real aRadius);
   

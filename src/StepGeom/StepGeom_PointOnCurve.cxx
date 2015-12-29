@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointOnCurve,StepGeom_Point)
 StepGeom_PointOnCurve::StepGeom_PointOnCurve ()  {}
 
 void StepGeom_PointOnCurve::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_PointOnCurve::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_Curve)& aBasisCurve,
 	const Standard_Real aPointParameter)

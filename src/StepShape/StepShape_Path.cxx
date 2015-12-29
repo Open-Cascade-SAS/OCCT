@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Path,StepShape_TopologicalRepresentationIte
 StepShape_Path::StepShape_Path ()  {}
 
 void StepShape_Path::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepShape_Path::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList)
 {

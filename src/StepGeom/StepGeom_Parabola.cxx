@@ -23,14 +23,6 @@ StepGeom_Parabola::StepGeom_Parabola ()  {}
 
 void StepGeom_Parabola::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const StepGeom_Axis2Placement& aPosition)
-{
-
-	StepGeom_Conic::Init(aName, aPosition);
-}
-
-void StepGeom_Parabola::Init(
-	const Handle(TCollection_HAsciiString)& aName,
 	const StepGeom_Axis2Placement& aPosition,
 	const Standard_Real aFocalDist)
 {

@@ -38,7 +38,7 @@ public:
   //! Returns a DateAndTime
   Standard_EXPORT StepBasic_DateAndTime();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Date)& aDateComponent, const Handle(StepBasic_LocalTime)& aTimeComponent);
+  Standard_EXPORT void Init (const Handle(StepBasic_Date)& aDateComponent, const Handle(StepBasic_LocalTime)& aTimeComponent);
   
   Standard_EXPORT void SetDateComponent (const Handle(StepBasic_Date)& aDateComponent);
   

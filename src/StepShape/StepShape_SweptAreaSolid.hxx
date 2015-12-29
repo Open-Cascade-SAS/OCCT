@@ -38,9 +38,7 @@ public:
   //! Returns a SweptAreaSolid
   Standard_EXPORT StepShape_SweptAreaSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CurveBoundedSurface)& aSweptArea);
   
   Standard_EXPORT void SetSweptArea (const Handle(StepGeom_CurveBoundedSurface)& aSweptArea);
   

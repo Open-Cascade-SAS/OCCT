@@ -37,9 +37,7 @@ public:
   //! Returns a OrdinalDate
   Standard_EXPORT StepBasic_OrdinalDate();
   
-  Standard_EXPORT virtual void Init (const Standard_Integer aYearComponent) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Integer aYearComponent, const Standard_Integer aDayComponent);
+  Standard_EXPORT void Init (const Standard_Integer aYearComponent, const Standard_Integer aDayComponent);
   
   Standard_EXPORT void SetDayComponent (const Standard_Integer aDayComponent);
   

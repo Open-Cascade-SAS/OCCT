@@ -40,9 +40,7 @@ public:
   //! Returns a Axis1Placement
   Standard_EXPORT StepGeom_Axis1Placement();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation, const Standard_Boolean hasAaxis, const Handle(StepGeom_Direction)& aAxis);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aLocation, const Standard_Boolean hasAaxis, const Handle(StepGeom_Direction)& aAxis);
   
   Standard_EXPORT void SetAxis (const Handle(StepGeom_Direction)& aAxis);
   

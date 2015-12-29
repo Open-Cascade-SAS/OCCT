@@ -37,9 +37,7 @@ public:
   //! Returns a DescriptiveRepresentationItem
   Standard_EXPORT StepRepr_DescriptiveRepresentationItem();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription);
   
   Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& aDescription);
   

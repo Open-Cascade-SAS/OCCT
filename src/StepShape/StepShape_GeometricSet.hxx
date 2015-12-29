@@ -40,9 +40,7 @@ public:
   //! Returns a GeometricSet
   Standard_EXPORT StepShape_GeometricSet();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
   
   Standard_EXPORT void SetElements (const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements);
   

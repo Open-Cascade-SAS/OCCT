@@ -38,7 +38,7 @@ public:
   //! Returns a SurfaceStyleUsage
   Standard_EXPORT StepVisual_SurfaceStyleUsage();
   
-  Standard_EXPORT virtual void Init (const StepVisual_SurfaceSide aSide, const Handle(StepVisual_SurfaceSideStyle)& aStyle);
+  Standard_EXPORT void Init (const StepVisual_SurfaceSide aSide, const Handle(StepVisual_SurfaceSideStyle)& aStyle);
   
   Standard_EXPORT void SetSide (const StepVisual_SurfaceSide aSide);
   

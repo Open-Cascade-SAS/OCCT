@@ -24,14 +24,6 @@ StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssi
 
 void StepAP214_AutoDesignOrganizationAssignment::Init(
 	const Handle(StepBasic_Organization)& aAssignedOrganization,
-	const Handle(StepBasic_OrganizationRole)& aRole)
-{
-
-	StepBasic_OrganizationAssignment::Init(aAssignedOrganization, aRole);
-}
-
-void StepAP214_AutoDesignOrganizationAssignment::Init(
-	const Handle(StepBasic_Organization)& aAssignedOrganization,
 	const Handle(StepBasic_OrganizationRole)& aRole,
 	const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems)
 {

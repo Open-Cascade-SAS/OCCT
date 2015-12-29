@@ -40,7 +40,7 @@ public:
   //! Returns a PresentationLayerAssignment
   Standard_EXPORT StepVisual_PresentationLayerAssignment();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepVisual_HArray1OfLayeredItem)& aAssignedItems);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepVisual_HArray1OfLayeredItem)& aAssignedItems);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

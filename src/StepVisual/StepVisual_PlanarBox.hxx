@@ -40,9 +40,7 @@ public:
   //! Returns a PlanarBox
   Standard_EXPORT StepVisual_PlanarBox();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aSizeInX, const Standard_Real aSizeInY) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aSizeInX, const Standard_Real aSizeInY, const StepGeom_Axis2Placement& aPlacement);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Standard_Real aSizeInX, const Standard_Real aSizeInY, const StepGeom_Axis2Placement& aPlacement);
   
   Standard_EXPORT void SetPlacement (const StepGeom_Axis2Placement& aPlacement);
   

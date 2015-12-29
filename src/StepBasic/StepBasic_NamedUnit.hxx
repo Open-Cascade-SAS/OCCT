@@ -37,7 +37,7 @@ public:
   //! Returns a NamedUnit
   Standard_EXPORT StepBasic_NamedUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions);
+  Standard_EXPORT void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions);
   
   Standard_EXPORT virtual void SetDimensions (const Handle(StepBasic_DimensionalExponents)& aDimensions);
   

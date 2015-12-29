@@ -37,9 +37,7 @@ public:
   //! Returns a CalendarDate
   Standard_EXPORT StepBasic_CalendarDate();
   
-  Standard_EXPORT virtual void Init (const Standard_Integer aYearComponent) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Integer aYearComponent, const Standard_Integer aDayComponent, const Standard_Integer aMonthComponent);
+  Standard_EXPORT void Init (const Standard_Integer aYearComponent, const Standard_Integer aDayComponent, const Standard_Integer aMonthComponent);
   
   Standard_EXPORT void SetDayComponent (const Standard_Integer aDayComponent);
   

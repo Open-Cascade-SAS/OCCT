@@ -39,9 +39,7 @@ public:
   //! Returns a PointOnCurve
   Standard_EXPORT StepGeom_PointOnCurve();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aBasisCurve, const Standard_Real aPointParameter);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aBasisCurve, const Standard_Real aPointParameter);
   
   Standard_EXPORT void SetBasisCurve (const Handle(StepGeom_Curve)& aBasisCurve);
   

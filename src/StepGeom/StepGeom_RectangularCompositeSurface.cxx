@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RectangularCompositeSurface,StepGeom_Bounded
 StepGeom_RectangularCompositeSurface::StepGeom_RectangularCompositeSurface ()  {}
 
 void StepGeom_RectangularCompositeSurface::Init(
-	const Handle(TCollection_HAsciiString)& aName)
-{
-
-	StepRepr_RepresentationItem::Init(aName);
-}
-
-void StepGeom_RectangularCompositeSurface::Init(
 	const Handle(TCollection_HAsciiString)& aName,
 	const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments)
 {

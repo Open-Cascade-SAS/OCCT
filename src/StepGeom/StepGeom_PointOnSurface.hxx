@@ -39,9 +39,7 @@ public:
   //! Returns a PointOnSurface
   Standard_EXPORT StepGeom_PointOnSurface();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Standard_Real aPointParameterU, const Standard_Real aPointParameterV);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBasisSurface, const Standard_Real aPointParameterU, const Standard_Real aPointParameterV);
   
   Standard_EXPORT void SetBasisSurface (const Handle(StepGeom_Surface)& aBasisSurface);
   

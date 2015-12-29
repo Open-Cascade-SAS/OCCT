@@ -39,9 +39,7 @@ public:
   //! Returns a HalfSpaceSolid
   Standard_EXPORT StepShape_HalfSpaceSolid();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBaseSurface, const Standard_Boolean aAgreementFlag);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Surface)& aBaseSurface, const Standard_Boolean aAgreementFlag);
   
   Standard_EXPORT void SetBaseSurface (const Handle(StepGeom_Surface)& aBaseSurface);
   

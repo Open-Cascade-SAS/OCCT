@@ -24,12 +24,6 @@ StepBasic_SiUnitAndTimeUnit::StepBasic_SiUnitAndTimeUnit ()
 {
 }
 
-void StepBasic_SiUnitAndTimeUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-  StepBasic_NamedUnit::Init(aDimensions);
-}
-
-
 void StepBasic_SiUnitAndTimeUnit::Init(const Standard_Boolean hasAprefix,
 				       const StepBasic_SiPrefix aPrefix,
 				       const StepBasic_SiUnitName aName)

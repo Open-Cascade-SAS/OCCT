@@ -40,11 +40,9 @@ public:
   //! empty constructor
   Standard_EXPORT StepGeom_GeometricRepresentationContextAndParametricRepresentationContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext, const Handle(StepRepr_ParametricRepresentationContext)& aParametricRepresentationContext);
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext, const Handle(StepRepr_ParametricRepresentationContext)& aParametricRepresentationContext);
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension);
   
   Standard_EXPORT void SetGeometricRepresentationContext (const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext);
   

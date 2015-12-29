@@ -42,9 +42,7 @@ public:
   //! Returns a OrientedClosedShell
   Standard_EXPORT StepShape_OrientedClosedShell();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_HArray1OfFace)& aCfsFaces) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aClosedShellElement, const Standard_Boolean aOrientation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_ClosedShell)& aClosedShellElement, const Standard_Boolean aOrientation);
   
   Standard_EXPORT void SetClosedShellElement (const Handle(StepShape_ClosedShell)& aClosedShellElement);
   

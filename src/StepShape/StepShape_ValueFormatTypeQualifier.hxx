@@ -36,7 +36,7 @@ public:
   Standard_EXPORT StepShape_ValueFormatTypeQualifier();
   
   //! Init all field own and inherited
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& theFormatType);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theFormatType);
   
   //! Returns field FormatType
   inline Handle(TCollection_HAsciiString) FormatType()

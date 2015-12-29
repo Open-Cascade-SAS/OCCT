@@ -40,9 +40,7 @@ public:
   //! Returns a SiUnit
   Standard_EXPORT StepBasic_SiUnit();
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
+  Standard_EXPORT void Init (const Standard_Boolean hasAprefix, const StepBasic_SiPrefix aPrefix, const StepBasic_SiUnitName aName);
   
   Standard_EXPORT void SetPrefix (const StepBasic_SiPrefix aPrefix);
   

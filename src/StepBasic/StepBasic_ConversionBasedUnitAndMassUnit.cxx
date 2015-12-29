@@ -37,18 +37,6 @@ StepBasic_ConversionBasedUnitAndMassUnit::StepBasic_ConversionBasedUnitAndMassUn
 //=======================================================================
 
 void StepBasic_ConversionBasedUnitAndMassUnit::Init
-  (const Handle(StepBasic_DimensionalExponents)& aDimensions)
-{
-  StepBasic_NamedUnit::Init(aDimensions);
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void StepBasic_ConversionBasedUnitAndMassUnit::Init
   (const Handle(StepBasic_DimensionalExponents)& aDimensions,
    const Handle(TCollection_HAsciiString)& aName,
    const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)

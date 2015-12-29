@@ -42,13 +42,6 @@ public:
   
   Standard_EXPORT Handle(StepBasic_AreaUnit) AreaUnit() const;
   
-  Standard_EXPORT virtual void SetDimensions (const Handle(StepBasic_DimensionalExponents)& aDimensions) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Handle(StepBasic_DimensionalExponents) Dimensions() const Standard_OVERRIDE;
-
-
-
-
   DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnitAndAreaUnit,StepBasic_SiUnit)
 
 protected:

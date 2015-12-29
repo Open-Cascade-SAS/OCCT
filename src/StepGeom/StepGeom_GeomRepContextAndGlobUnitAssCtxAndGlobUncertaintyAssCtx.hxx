@@ -44,11 +44,9 @@ public:
   
   Standard_EXPORT StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType) Standard_OVERRIDE;
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationCtx, const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedCtx, const Handle(StepRepr_GlobalUncertaintyAssignedContext)& aGlobalUncertaintyAssignedCtx);
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationCtx, const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedCtx, const Handle(StepRepr_GlobalUncertaintyAssignedContext)& aGlobalUncertaintyAssignedCtx);
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension, const Handle(StepBasic_HArray1OfNamedUnit)& aUnits, const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& anUncertainty);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType, const Standard_Integer aCoordinateSpaceDimension, const Handle(StepBasic_HArray1OfNamedUnit)& aUnits, const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& anUncertainty);
   
   Standard_EXPORT void SetGeometricRepresentationContext (const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext);
   

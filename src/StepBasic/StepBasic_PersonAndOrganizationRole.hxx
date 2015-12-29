@@ -37,7 +37,7 @@ public:
   //! Returns a PersonAndOrganizationRole
   Standard_EXPORT StepBasic_PersonAndOrganizationRole();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

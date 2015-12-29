@@ -39,9 +39,7 @@ public:
   //! Returns a SolidReplica
   Standard_EXPORT StepShape_SolidReplica();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_SolidModel)& aParentSolid, const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepShape_SolidModel)& aParentSolid, const Handle(StepGeom_CartesianTransformationOperator3d)& aTransformation);
   
   Standard_EXPORT void SetParentSolid (const Handle(StepShape_SolidModel)& aParentSolid);
   

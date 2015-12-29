@@ -39,9 +39,7 @@ public:
   //! Returns a CurveReplica
   Standard_EXPORT StepGeom_CurveReplica();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aParentCurve, const Handle(StepGeom_CartesianTransformationOperator)& aTransformation);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_Curve)& aParentCurve, const Handle(StepGeom_CartesianTransformationOperator)& aTransformation);
   
   Standard_EXPORT void SetParentCurve (const Handle(StepGeom_Curve)& aParentCurve);
   

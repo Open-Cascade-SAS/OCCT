@@ -37,7 +37,7 @@ public:
   //! Returns a RepresentationContext
   Standard_EXPORT StepRepr_RepresentationContext();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aContextIdentifier, const Handle(TCollection_HAsciiString)& aContextType);
   
   Standard_EXPORT void SetContextIdentifier (const Handle(TCollection_HAsciiString)& aContextIdentifier);
   

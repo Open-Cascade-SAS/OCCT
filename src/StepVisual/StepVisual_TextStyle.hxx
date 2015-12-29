@@ -38,7 +38,7 @@ public:
   //! Returns a TextStyle
   Standard_EXPORT StepVisual_TextStyle();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance);
   
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   

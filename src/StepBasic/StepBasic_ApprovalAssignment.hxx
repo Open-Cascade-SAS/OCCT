@@ -34,7 +34,7 @@ class StepBasic_ApprovalAssignment : public MMgt_TShared
 public:
 
   
-  Standard_EXPORT virtual void Init (const Handle(StepBasic_Approval)& aAssignedApproval);
+  Standard_EXPORT void Init (const Handle(StepBasic_Approval)& aAssignedApproval);
   
   Standard_EXPORT void SetAssignedApproval (const Handle(StepBasic_Approval)& aAssignedApproval);
   

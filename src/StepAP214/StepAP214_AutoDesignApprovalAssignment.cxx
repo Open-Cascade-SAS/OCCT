@@ -22,13 +22,6 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignApprovalAssignment,StepBasic_Appr
 StepAP214_AutoDesignApprovalAssignment::StepAP214_AutoDesignApprovalAssignment ()  {}
 
 void StepAP214_AutoDesignApprovalAssignment::Init(
-	const Handle(StepBasic_Approval)& aAssignedApproval)
-{
-
-	StepBasic_ApprovalAssignment::Init(aAssignedApproval);
-}
-
-void StepAP214_AutoDesignApprovalAssignment::Init(
 	const Handle(StepBasic_Approval)& aAssignedApproval,
 	const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems)
 {
@@ -37,7 +30,6 @@ void StepAP214_AutoDesignApprovalAssignment::Init(
 	// --- classe inherited fields ---
 	StepBasic_ApprovalAssignment::Init(aAssignedApproval);
 }
-
 
 void StepAP214_AutoDesignApprovalAssignment::SetItems(const Handle(StepAP214_HArray1OfAutoDesignGeneralOrgItem)& aItems)
 {

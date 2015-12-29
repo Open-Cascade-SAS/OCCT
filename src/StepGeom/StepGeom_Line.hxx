@@ -39,9 +39,7 @@ public:
   //! Returns a Line
   Standard_EXPORT StepGeom_Line();
   
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aPnt, const Handle(StepGeom_Vector)& aDir);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepGeom_CartesianPoint)& aPnt, const Handle(StepGeom_Vector)& aDir);
   
   Standard_EXPORT void SetPnt (const Handle(StepGeom_CartesianPoint)& aPnt);
   
