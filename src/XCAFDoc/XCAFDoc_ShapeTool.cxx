@@ -1282,7 +1282,7 @@ static void DumpAssembly(Standard_OStream& theDumpLog,
 //purpose  : 
 //=======================================================================
 
-void XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog, const Standard_Boolean deep) const
+Standard_OStream& XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog, const Standard_Boolean deep) const
 {
   Standard_Integer level = 0;
 //   TopTools_SequenceOfShape SeqShapes;
@@ -1302,6 +1302,19 @@ void XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog, const Standard_Boolea
     DumpShape(theDumpLog, SeqLabels.Value(i), level, deep);
     theDumpLog<<endl;
   }
+  return theDumpLog;
+}
+
+//=======================================================================
+//function : Dump
+//purpose  : override
+//=======================================================================
+
+Standard_OStream& XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog) const
+{
+  TDF_Attribute::Dump (theDumpLog);
+  Dump (theDumpLog, Standard_False);
+  return theDumpLog;
 }
 
 //=======================================================================

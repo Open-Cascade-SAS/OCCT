@@ -37,18 +37,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_RetrievalDriver,PCDM_Reader)
 
-//=======================================================================
-//function : Read
-//purpose  : 
-//=======================================================================
-void PCDM_RetrievalDriver::Read(Standard_IStream&               /*theIStream*/,
-                                const Handle(Storage_Data)&     /*theStorageData*/,
-                                const Handle(CDM_Document)&     /*theDoc*/,
-                                const Handle(CDM_Application)&  /*theApplication*/)
-{
-  
-}
-
 void PCDM_RetrievalDriver::References(const TCollection_ExtendedString& aFileName, PCDM_SequenceOfReference& theReferences, const Handle(CDM_MessageDriver)& theMsgDriver)
   { PCDM_ReadWriter::Reader(aFileName)->ReadReferences(aFileName, theReferences, theMsgDriver);}
 

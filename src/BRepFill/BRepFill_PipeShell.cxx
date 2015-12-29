@@ -473,7 +473,7 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
 			      const Standard_Boolean WithContact,
 			      const Standard_Boolean WithCorrection) 
 {
- Delete(Profile); // No duplication
+ DeleteProfile(Profile); // No duplication
  if (myIsAutomaticLaw)
  {
    mySeq.Clear();
@@ -582,7 +582,7 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
 //function : Delete
 //purpose  : Delete a section
 //=======================================================================
- void BRepFill_PipeShell::Delete(const TopoDS_Shape&  Profile)
+ void BRepFill_PipeShell::DeleteProfile(const TopoDS_Shape&  Profile)
 {
   Standard_Boolean isVertex = (Profile.ShapeType() == TopAbs_VERTEX);
 

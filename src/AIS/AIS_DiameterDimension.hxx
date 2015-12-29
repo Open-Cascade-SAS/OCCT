@@ -143,7 +143,7 @@ protected:
   //! 2) The plane should inclide th ecircle center to be valid.
   Standard_EXPORT virtual void ComputeAnchorPoint();
 
-  Standard_EXPORT virtual void ComputePlane() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if the center of the circle is on the plane.
   Standard_EXPORT virtual Standard_Boolean CheckPlane (const gp_Pln& thePlane) const Standard_OVERRIDE;

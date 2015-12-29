@@ -44,6 +44,9 @@ public: //! @name methods implementing BVH set interface
   //! Returns AABB of the given triangle.
   BVH_Box<Standard_Real, 3> Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
 
+  //! Make inherited method Box() visible to avoid CLang warning
+  using BVH_PrimitiveSet<Standard_Real, 3>::Box;
+
   //! Returns centroid position along specified axis.
   Standard_Real Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const Standard_OVERRIDE;
 

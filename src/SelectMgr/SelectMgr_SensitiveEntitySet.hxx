@@ -53,6 +53,9 @@ public:
   //! Returns bounding box of entity with index theIdx
   Standard_EXPORT virtual Select3D_BndBox3d Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
 
+  //! Make inherited method Box() visible to avoid CLang warning
+  using BVH_PrimitiveSet<Standard_Real, 3>::Box;
+
   //! Returns geometry center of sensitive entity index theIdx
   //! along the given axis theAxis
   Standard_EXPORT virtual Standard_Real Center (const Standard_Integer theIndex,

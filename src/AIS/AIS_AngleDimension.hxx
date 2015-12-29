@@ -289,7 +289,7 @@ protected:
 
 protected:
 
-  Standard_EXPORT virtual void ComputePlane() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if the plane includes three angle points to build dimension.
   Standard_EXPORT virtual Standard_Boolean CheckPlane (const gp_Pln& thePlane) const Standard_OVERRIDE;

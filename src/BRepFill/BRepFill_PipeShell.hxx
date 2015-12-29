@@ -146,7 +146,7 @@ public:
   Standard_EXPORT void SetLaw (const TopoDS_Shape& Profile, const Handle(Law_Function)& L, const TopoDS_Vertex& Location, const Standard_Boolean WithContact = Standard_False, const Standard_Boolean WithCorrection = Standard_False);
   
   //! Delete an section.
-  Standard_EXPORT void Delete (const TopoDS_Shape& Profile);
+  Standard_EXPORT void DeleteProfile (const TopoDS_Shape& Profile);
   
   //! Say if <me> is ready to build the shape
   //! return False if <me> do not have section definition

@@ -153,7 +153,7 @@ BRepOffsetAPI_MakePipeShell::BRepOffsetAPI_MakePipeShell(const TopoDS_Wire& Spin
 
 void BRepOffsetAPI_MakePipeShell::Delete( const TopoDS_Shape& Profile)
 {
-  myPipe->Delete(Profile);
+  myPipe->DeleteProfile(Profile);
 }
 
 

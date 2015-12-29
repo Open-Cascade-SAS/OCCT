@@ -60,6 +60,9 @@ public:
   
     void Closed (const Standard_Boolean clos);
   
+  //! Returns True if the polyline is closed.
+    virtual Standard_Boolean Closed () const Standard_OVERRIDE { return ClosedPolygon; }
+  
   //! Give the number of Segments in the polyline.
     virtual Standard_Integer NbSegments() const Standard_OVERRIDE;
   

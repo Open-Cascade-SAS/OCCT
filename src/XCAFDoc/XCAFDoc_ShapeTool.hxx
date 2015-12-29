@@ -322,8 +322,10 @@ public:
   //! returns the label under which shapes are stored
   Standard_EXPORT TDF_Label BaseLabel() const;
   
-  Standard_EXPORT void Dump (Standard_OStream& theDumpLog, const Standard_Boolean deep = Standard_False) const;
-  
+  Standard_EXPORT Standard_OStream& Dump (Standard_OStream& theDumpLog, const Standard_Boolean deep) const;
+
+  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& theDumpLog) const Standard_OVERRIDE;
+
   //! Print to ostream <theDumpLog> type of shape found on <L> label
   //! and the entry of <L>, with <level> tabs before.
   //! If <deep>, print also TShape and Location addresses

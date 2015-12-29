@@ -30,6 +30,7 @@
 #include <PCDM_ReadWriter.hxx>
 
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <NCollection_Array1.hxx>
 #include <TDocStd_Document.hxx>
 
@@ -243,6 +244,19 @@ void StdLDrivers_DocumentRetrievalDriver::Read (const TCollection_ExtendedString
     aPDocument->Import (theNewDocument);
 
   theNewDocument->SetComments (hData.Comments());
+}
+
+//=======================================================================
+//function : Read
+//purpose  : not implemented
+//=======================================================================
+
+void StdLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               /*theIStream*/,
+                                                const Handle(Storage_Data)&     /*theStorageData*/,
+                                                const Handle(CDM_Document)&     /*theDoc*/,
+                                                const Handle(CDM_Application)&  /*theApplication*/)
+{
+  Standard_NotImplemented::Raise ("Reading from stream is not supported by StdLDrivers_DocumentRetrievalDriver");
 }
 
 //=======================================================================

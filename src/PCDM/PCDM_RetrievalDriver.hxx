@@ -45,11 +45,6 @@ public:
     const TCollection_ExtendedString& theFileName,
     const Handle(CDM_MessageDriver)&  theMsgDriver);
 
-  Standard_EXPORT virtual void Read (Standard_IStream&              theIStream,
-                                     const Handle(Storage_Data)&    theStorageData,
-                                     const Handle(CDM_Document)&    theDoc,
-                                     const Handle(CDM_Application)& theApplication) Standard_OVERRIDE;
-
   Standard_EXPORT void SetFormat (const TCollection_ExtendedString& aformat);
 
   Standard_EXPORT TCollection_ExtendedString GetFormat() const;

@@ -205,6 +205,10 @@ public:
   //! compound topological shapes for presentation.
   Standard_EXPORT virtual const Bnd_Box& BoundingBox();
   
+  //! AIS_InteractiveObject defines another virtual method BoundingBox,
+  //! which is not the same as above; keep it visible.
+  using AIS_InteractiveObject::BoundingBox;
+
   //! Returns the NameOfColor attributes of the shape accordingly to
   //! the current facing model;
   Standard_EXPORT virtual Quantity_NameOfColor Color() const Standard_OVERRIDE;

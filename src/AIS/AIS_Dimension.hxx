@@ -549,10 +549,6 @@ protected: //! @name Static auxilliary methods for geometry extraction
 
 protected: //! @name Behavior to implement
 
-  //! Override this method to compute automatically dimension plane
-  //! in which the dimension presentation is built.
-  virtual void ComputePlane() { }
-
   //! Override this method to check if user-defined plane
   //! is valid for the dimension geometry.
   //! @param thePlane [in] the working plane for positioning every
