@@ -1160,23 +1160,15 @@ proc ReadFileToList {theFilePath theFileContent theFileEOL} {
   set aFileContent [read $aFile]
   close $aFile
 
-  set aFileEOL "\r"
-  if [regexp "\r\n" $aFileContent] {
+  # detect DOS end-of-lines
+  if { [regexp "\r\n" $aFileContent] } {
     set aFileEOL "\r\n"
-  } elseif [regexp "\n" $aFileContent] {
+    set aList [split [regsub -all "\r\n" $aFileContent "\n"] "\r\n"]
+  } else {
+    # standard UNIX end-of-lines
     set aFileEOL "\n"
+    set aList [split $aFileContent "\n"]
   }
-
-  # convert to unix eol
-  if {"$aFileEOL" != "\n"} {
-    regsub -all {$aFileEOL} $aFileContent "\n" aFileContent
-  }
-
-  set aList [split $aFileContent "\n"]
-#  set aList {}
-#  foreach aLine [split $aFileContent "\n"] {
-#    lappend aList [string trimright $aLine]
-#  }
 
   return $aList
 }
