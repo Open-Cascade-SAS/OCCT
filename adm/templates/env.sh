@@ -3,16 +3,8 @@
 # go to the script directory
 aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
 
-export CASROOT="__CASROOT__"
-
-if [ "${CASROOT}" != "" ] && [ -d "${aScriptPath}/${CASROOT}" ]; then
-  export CASROOT="${aScriptPath}/${CASROOT}"
-fi
-if [ "${CASROOT}" == "" ]; then
-  export CASROOT="${aScriptPath}"
-fi
-
 # Reset values
+export CASROOT="__CASROOT__"
 export CASDEB=""
 export TARGET="";
 export HAVE_TBB="false";
@@ -28,7 +20,15 @@ export CSF_OPT_BIN32=""
 export CSF_OPT_BIN64=""
 
 # ----- Set local settings -----
+if [ "${CASROOT}" != "" ] && [ -e "${CASROOT}/custom.sh" ]; then source "${CASROOT}/custom.sh"; fi
 if [ -e "${aScriptPath}/custom.sh" ]; then source "${aScriptPath}/custom.sh"; fi
+
+if [ "${CASROOT}" != "" ] && [ -d "${aScriptPath}/${CASROOT}" ]; then
+  export CASROOT="${aScriptPath}/${CASROOT}"
+fi
+if [ "${CASROOT}" == "" ]; then
+  export CASROOT="${aScriptPath}"
+fi
 
 # Read script arguments
 shopt -s nocasematch

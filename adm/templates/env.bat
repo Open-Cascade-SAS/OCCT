@@ -9,11 +9,9 @@ rem   vc8 win32 Release
 
 set "SCRIPTROOT=%~dp0"
 set "SCRIPTROOT=%SCRIPTROOT:~0,-1%"
-set "CASROOT=__CASROOT__"
-if not ["%CASROOT%"] == [""] if exist "%SCRIPTROOT%\%CASROOT%" set "CASROOT=%SCRIPTROOT%\%CASROOT%"
-if     ["%CASROOT%"] == [""] set "CASROOT=%SCRIPTROOT%"
 
 rem ----- Reset values to defaults -----
+set "CASROOT=__CASROOT__"
 set "CASDEB="
 set "VCVER=vc8"
 set "ARCH=32"
@@ -31,9 +29,15 @@ set "CSF_OPT_BIN32="
 set "CSF_OPT_BIN64="
 
 rem ----- Load local settings -----
+if not ["%CASROOT%"] == [""] if exist "%CASROOT%\custom.bat" (
+  call "%CASROOT%\custom.bat" %1 %2 %3 %4 %5
+)
 if exist "%~dp0custom.bat" (
   call "%~dp0custom.bat" %1 %2 %3 %4 %5
 )
+
+if not ["%CASROOT%"] == [""] if exist "%SCRIPTROOT%\%CASROOT%" set "CASROOT=%SCRIPTROOT%\%CASROOT%"
+if     ["%CASROOT%"] == [""] set "CASROOT=%SCRIPTROOT%"
 
 rem ----- Read script arguments (override local settings) -----
 if not ["%1"]    == [""]      set "VCVER=%1"

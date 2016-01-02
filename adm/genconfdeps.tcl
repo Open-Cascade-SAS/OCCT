@@ -770,10 +770,10 @@ proc wokdep:SearchVTK {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
       # We didn't find preferred binary path => search through inc path or among all available VTK directories
       if { "$aVtkBinPath" == "" } {
         # Try to find in lib path
-        set aPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aLibPath/bin"]
-        if { "$aPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aLibPath/bin"
-        } elseif { [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aLibPath/lib"] != "" } {
-          lappend ::CSF_OPT_BIN$anArchIter "$aLibPath/lib"
+        set aPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aVtkLibPath/bin"]
+        if { "$aPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aVtkLibPath/bin"
+        } elseif { [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aVtkLibPath/lib"] != "" } {
+          lappend ::CSF_OPT_BIN$anArchIter "$aVtkLibPath/lib"
         } else {
            lappend anErrBin$anArchIter "Error: 'vtkCommonCore-${aVtkVer}.dll' not found (VTK)"
            set isFound "false"

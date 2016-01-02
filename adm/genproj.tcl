@@ -27,7 +27,11 @@
 source [file join [file dirname [info script]] genconfdeps.tcl]
 
 set path ""
+set THE_CASROOT ""
 set fBranch ""
+if { [info exists ::env(CASROOT)] } {
+  set THE_CASROOT "$::env(CASROOT)"
+}
 switch -exact -- "$tcl_platform(platform)" {
   "windows" {set targetStation "wnt"}
   "unix"    {set targetStation "lin"}
@@ -38,10 +42,9 @@ switch -exact -- "$tcl_platform(os)" {
 }
 
 proc _get_options { platform type branch } {
-  global path
   set res ""
-  if {[file exists "$path/adm/CMPLRS"]} {
-    set fd [open "$path/adm/CMPLRS" rb]
+  if {[file exists "$::THE_CASROOT/adm/CMPLRS"]} {
+    set fd [open "$::THE_CASROOT/adm/CMPLRS" rb]
     set opts [split [read $fd] "\n"]
     close $fd
     foreach line $opts {
@@ -56,16 +59,22 @@ proc _get_options { platform type branch } {
 }
 
 proc _get_type { name } {
-  global path
-  if {[file exists "$path/adm/UDLIST"]} {
-    set fd [open "$path/adm/UDLIST" rb]
-    set UDLIST [split [read $fd] "\n"]
+  set UDLIST {}
+  if {[file exists "$::path/adm/UDLIST"]} {
+    set fd [open "$::path/adm/UDLIST" rb]
+    set UDLIST [concat $UDLIST [split [read $fd] "\n"]]
     close $fd
-    foreach uitem $UDLIST {
-      set line [split $uitem]
-      if {[lindex $line 1] == "$name"} {
-        return [lindex $line 0]
-      }
+  }
+  if { "$::path/adm/UDLIST" != "$::THE_CASROOT/adm/UDLIST" && [file exists "$::THE_CASROOT/adm/UDLIST"] } {
+    set fd [open "$::THE_CASROOT/adm/UDLIST" rb]
+    set UDLIST [concat $UDLIST [split [read $fd] "\n"]]
+    close $fd
+  }
+
+  foreach uitem $UDLIST {
+    set line [split $uitem]
+    if {[lindex $line 1] == "$name"} {
+      return [lindex $line 0]
     }
   }
   return ""
@@ -103,9 +112,17 @@ proc _get_used_files { pk {inc true} {src true} } {
   return $lret
 }
 
+# return location of the path within src directory
+proc osutils:findSrcSubPath {theSubPath} {
+  if {[file exists "$::path/src/$theSubPath"]} {
+    return "$::path/src/$theSubPath"
+  }
+  return "$::THE_CASROOT/src/$theSubPath"
+}
+
 # Wrapper-function to generate VS project files
 proc genproj { args } {
-  global path targetStation
+  global path THE_CASROOT targetStation
   set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd" }
   set anArgs $args
 
@@ -200,15 +217,10 @@ proc genproj { args } {
 
   OS:MKPRC "$anAdmPath" "$anTarget" "$aLibType" "$aPlatform"
 
-  genprojbat "$anAdmPath" "$anTarget"
+  genprojbat "$anTarget"
 }
 
-proc genprojbat {thePath theIDE} {
-  global path
-  
-  set anOsIncPath "$path/src/OS"
-  set anOsRootPath "$path"
-
+proc genprojbat {theIDE} {
   set aTargetPlatform "lin"
   if { "$::tcl_platform(platform)" == "windows" } {
     set aTargetPlatform "wnt"
@@ -225,34 +237,31 @@ proc genprojbat {thePath theIDE} {
     set aTargetPlatformExt bat
   }
 
-  set aBox [file normalize "$thePath/.."]
-
   if {"$theIDE" != "cmake"} {
-    set anEnvTmplFile [open "$path/adm/templates/env.${aTargetPlatformExt}" "r"]
+    set anEnvTmplFile [open "$::THE_CASROOT/adm/templates/env.${aTargetPlatformExt}" "r"]
     set anEnvTmpl [read $anEnvTmplFile]
     close $anEnvTmplFile
 
     set aCasRoot ""
-    if { [file normalize "$anOsRootPath"] != "$aBox" } {
-      set aCasRoot [relativePath "$aBox" "$anOsRootPath"]
+    if { [file normalize "$::path"] != [file normalize "$::THE_CASROOT"] } {
+      set aCasRoot [relativePath "$::path" "$::THE_CASROOT"]
     }
-    set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
 
     regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
 
-    set anEnvFile [open "$aBox/env.${aTargetPlatformExt}" "w"]
+    set anEnvFile [open "$::path/env.${aTargetPlatformExt}" "w"]
     puts $anEnvFile $anEnvTmpl
     close $anEnvFile
 
-    file copy -force -- "$path/adm/templates/draw.${aTargetPlatformExt}" "$aBox/draw.${aTargetPlatformExt}"
+    file copy -force -- "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
   }
 
   if {[regexp {(vc)[0-9]*$} $theIDE] == 1} {
-    file copy -force -- "$path/adm/templates/msvc.bat" "$aBox/msvc.bat"
+    file copy -force -- "$::THE_CASROOT/adm/templates/msvc.bat" "$::path/msvc.bat"
   } else {
     switch -exact -- "$theIDE" {
-      "cbp"   { file copy -force -- "$path/adm/templates/codeblocks.sh" "$aBox/codeblocks.sh" }
-      "xcd"   { file copy -force -- "$path/adm/templates/xcode.sh"      "$aBox/xcode.sh" }
+      "cbp"   { file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.sh" "$::path/codeblocks.sh" }
+      "xcd"   { file copy -force -- "$::THE_CASROOT/adm/templates/xcode.sh"      "$::path/xcode.sh" }
     }
   }
 }
@@ -380,43 +389,39 @@ proc OS:MKVC { theOutDir {theModules {}} {theAllSolution ""} {theVcVer "vc8"} } 
 }
 
 proc OS:init {{os {}}} {
-    global path
-    global env
-    global tcl_platform
-    
-    set askplat $os
-    if { "$os" == "" } {
-      set os $tcl_platform(os)
+  set askplat $os
+  set aModules {}
+  if { "$os" == "" } {
+    set os $::tcl_platform(os)
+  }
+
+  if [file exists "$::path/src/VAS/Products.tcl"] {
+    source "$::path/src/VAS/Products.tcl"
+    foreach aModuleIter [VAS:Products] {
+      set aFileTcl "$::path/src/VAS/${aModuleIter}.tcl"
+      if [file exists $aFileTcl] {
+        source $aFileTcl
+        lappend aModules $aModuleIter
+      } else {
+        puts stderr "Definition file for module $aModuleIter is not found in unit VAS"
+      }
     }
+    return $aModules
+  }
 
-    ;# Load list of OCCT modules and their definitions
-    source "$path/src/OS/Modules.tcl"
-    set Modules {}
-    foreach module [OS:Modules] {
-        set f "$path/src/OS/${module}.tcl"
-        if [file exists $f] {
-            source $f
-            lappend Modules $module
-        } else {
-            puts stderr "Definition file for module $module is not found in unit OS"
-        }
+  # Load list of OCCT modules and their definitions
+  source "$::path/src/OS/Modules.tcl"
+  foreach aModuleIter [OS:Modules] {
+    set aFileTcl "$::path/src/OS/${aModuleIter}.tcl"
+    if [file exists $aFileTcl] {
+      source $aFileTcl
+      lappend aModules $aModuleIter
+    } else {
+      puts stderr "Definition file for module $aModuleIter is not found in unit OS"
     }
+  }
 
-    # Load list of products and their definitions
-#    set Products [woklocate -p VAS:source:Products.tcl]
-    #if { "$Products" != "" } {
-	#source "$Products"
-	#foreach product [VAS:Products] {
-	    #set f [woklocate -p VAS:source:${product}.tcl]
-	    #if [file exists $f] {
-		#source $f
-	    #} else {
-		#puts stderr "Definition file for product $product is not found in unit VAS"
-	    #}
-	#}
-    #}
-
-    return $Modules
+  return $aModules
 }
 
 # topological sort. returns a list {  {a h} {b g} {c f} {c h} {d i}  } => { d a b c i g f h }
@@ -560,13 +565,14 @@ proc osutils:tk:close { ltk } {
   set recurse {}
   foreach dir $ltk {
     set ids [LibToLink $dir]
+#    puts "osutils:tk:close($ltk) ids='$ids'"
     set eated [osutils:tk:eatpk $ids]
     set result [concat $result $eated]
     set ids [LibToLink $dir]
     set result [concat $result $ids]
 
     foreach file $eated {
-      set kds "$path/src/$file/EXTERNLIB"
+      set kds [osutils:findSrcSubPath "$file/EXTERNLIB"]
       if { [osutils:tk:eatpk $kds] !=  {} } {
         lappend recurse $file
       }
@@ -598,7 +604,7 @@ proc LibToLink {theTKit} {
     return
   }
   set aToolkits {}
-  set anExtLibList [osutils:tk:eatpk "$path/src/$theTKit/EXTERNLIB"]
+  set anExtLibList [osutils:tk:eatpk [osutils:findSrcSubPath "$theTKit/EXTERNLIB"]]
   foreach anExtLib $anExtLibList {
     set aFullPath [LocateRecur $anExtLib]
     if { "$aFullPath" != "" && [_get_type $anExtLib] == "t" } {
@@ -610,8 +616,7 @@ proc LibToLink {theTKit} {
 # Search unit recursively
 
 proc LocateRecur {theName} {
-  global path
-  set theNamePath "$path/src/$theName"
+  set theNamePath [osutils:findSrcSubPath "$theName"]
   if {[file isdirectory $theNamePath]} {
     return $theNamePath
   }
@@ -677,11 +682,11 @@ proc osutils:collectinc {theModules theIncPath theTargetStation} {
   if { [info exists ::env(SHORTCUT_HEADERS)] && 
        $::env(SHORTCUT_HEADERS) == "true" } {
     # template preparation
-    if { ![file exists $aCasRoot/adm/templates/header.in] } {
-      puts "template file does not exist: $aCasRoot/adm/templates/header.in"
+    if { ![file exists $::THE_CASROOT/adm/templates/header.in] } {
+      puts "template file does not exist: $::THE_CASROOT/adm/templates/header.in"
       return
     }
-    set aHeaderTmpl [wokUtils:FILES:FileToString $aCasRoot/adm/templates/header.in]
+    set aHeaderTmpl [wokUtils:FILES:FileToString $::THE_CASROOT/adm/templates/header.in]
 
     # relative anIncPath in connection with aCasRoot/src
     set aFromBuildIncToSrcPath [relativePath "$anIncPath" "$aCasRoot/src"]
@@ -1023,9 +1028,7 @@ proc osutils:vcproj:readtemplate {theVcVer isexec} {
 }
 
 proc osutils:readtemplate {ext what} {
-  global env
-  global path
-  set loc "$path/adm/templates/template.$ext"
+  set loc "$::THE_CASROOT/adm/templates/template.$ext"
   return [wokUtils:FILES:FileToString $loc]
 }
 # Read a file in a string as is.
@@ -1051,7 +1054,6 @@ proc osutils:compilable { } {
 }
 
 proc osutils:commonUsedTK { theToolKit } {
-  global path
   set anUsedToolKits [list]
   set aDepToolkits [LibToLink $theToolKit]
   foreach tkx $aDepToolkits {
@@ -1423,8 +1425,7 @@ proc osutils:vcx1proj:filters { dir proj theFilesMap } {
 
 # Generate RC file content for ToolKit from template
 proc osutils:readtemplate:rc {theOutDir theToolKit} {
-  global path
-  set aLoc "$path/adm/templates/template_dll.rc"
+  set aLoc "$::THE_CASROOT/adm/templates/template_dll.rc"
   set aBody [wokUtils:FILES:FileToString $aLoc]
   regsub -all -- {__TKNAM__} $aBody $theToolKit aBody
 
@@ -1592,7 +1593,6 @@ proc osutils:tk:loadunit { loc map } {
 # Call unit filter on units name to accept or reject a unit
 # Tfiles lists for each unit the type of file that can be compiled.
 proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } {
-  global path
   set Tfiles(source,nocdlpack)     {source pubinclude}
   set Tfiles(source,toolkit)       {}
   set Tfiles(source,executable)    {source pubinclude}
@@ -1649,7 +1649,6 @@ proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } 
 
 # Generate Visual Studio project file for executable
 proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} } } {
-  global path
   set aVcFiles {}
   foreach f [osutils:tk:files $theToolKit osutils:compilable 0] {
     if { $theProjTmpl == {} } {
@@ -1732,9 +1731,9 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     if { "$theVcVer" == "vc7" || "$theVcVer" == "vc8" } {
       # nothing
     } elseif { "$theVcVer" == "vc9" } {
-      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$path/adm/templates/vcproj.user.vc9x"]
+      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$::THE_CASROOT/adm/templates/vcproj.user.vc9x"]
     } else {
-      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$path/adm/templates/vcxproj.user.vc10x"]
+      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$::THE_CASROOT/adm/templates/vcxproj.user.vc10x"]
     }
     if { "$aCommonSettingsFileTmpl" != "" } {
       regsub -all -- {__VCVER__} $aCommonSettingsFileTmpl $theVcVer aCommonSettingsFileTmpl
@@ -2426,7 +2425,6 @@ proc OS:xcodeproj { theModules theOutDir theGuidsMap theLibType thePlatform} {
 
 # Generates dependencies section for Xcode project files.
 proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection theDepsGuids theDepsRefGuids theIsStatic} {
-  global path
   upvar $theGuidsMap         aGuidsMap
   upvar $theFileRefSection   aFileRefSection
   upvar $theDepsGuids        aDepsGuids
