@@ -27,8 +27,12 @@ source [file join [file dirname [info script]] genconfdeps.tcl]
 package require Tk
 
 set aRowIter 0
+set aCheckRowIter 0
 frame .myFrame -padx 5 -pady 5
 pack  .myFrame -fill both -expand 1
+frame .myFrame.myVsFrame
+frame .myFrame.myHxxChecks
+frame .myFrame.myChecks
 
 set SYS_VS_LIST {}
 set SYS_VC_LIST {}
@@ -86,8 +90,8 @@ proc wokdep:gui:Close {} {
 }
 
 proc wokdep:gui:SwitchConfig {} {
-  set ::VCVER  [lindex $::SYS_VC_LIST     [.myFrame.myVsCombo current]]
-  set ::VCVARS [lindex $::SYS_VCVARS_LIST [.myFrame.myVsCombo current]]
+  set ::VCVER  [lindex $::SYS_VC_LIST     [.myFrame.myVsFrame.myVsCombo current]]
+  set ::VCVARS [lindex $::SYS_VCVARS_LIST [.myFrame.myVsFrame.myVsCombo current]]
 
   set ::CSF_OPT_INC {}
   set ::CSF_OPT_LIB32 {}
@@ -359,38 +363,38 @@ proc wokdep:gui:Show64Bitness { theRowIter } {
 }
 
 # Header
-ttk::label    .myFrame.myVsLbl       -text "Visual Studio configuration" -relief solid -padding {5 5 80 5}
-ttk::combobox .myFrame.myVsCombo     -values $SYS_VS_LIST -state readonly -textvariable VSVER -width 30
-ttk::combobox .myFrame.myArchCombo   -values { {32} {64} } -textvariable ARCH -state readonly -width 6
+ttk::label    .myFrame.myVsFrame.myVsLbl       -text "Visual Studio configuration" -relief solid -padding {5 5 80 5}
+ttk::combobox .myFrame.myVsFrame.myVsCombo     -values $SYS_VS_LIST -state readonly -textvariable VSVER -width 30
+ttk::combobox .myFrame.myVsFrame.myArchCombo   -values { {32} {64} } -textvariable ARCH -state readonly -width 6
 entry         .myFrame.myVcEntry     -textvariable VCVER  -width 6
 entry         .myFrame.myVcVarsEntry -textvariable VCVARS -width 70
 ttk::button   .myFrame.myVcBrowseBtn -text "Browse" -command wokdep:gui:BrowseVcVars
 
 #
-ttk::label    .myFrame.myOcctBuildLbl -text "OCCT headers configuration" -relief solid -padding {5 5 80 5}
-checkbutton   .myFrame.myScutsCheck   -offvalue "false" -onvalue "true" -variable SHORTCUT_HEADERS
-ttk::label    .myFrame.myScutsLbl     -text "Short-cut headers instead original ones in inc"
+ttk::label    .myFrame.myHxxChecks.myOcctBuildLbl -text "OCCT headers configuration" -relief solid -padding {5 5 80 5}
+checkbutton   .myFrame.myHxxChecks.myScutsCheck   -offvalue "false" -onvalue "true" -variable SHORTCUT_HEADERS
+ttk::label    .myFrame.myHxxChecks.myScutsLbl     -text "Short-cut headers instead original ones in inc"
 
 #
 ttk::label    .myFrame.mySrchLbl       -text "3rd-parties search path" -relief solid -padding {5 5 80 5}
 entry         .myFrame.mySrchEntry     -textvariable PRODUCTS_PATH -width 80
 ttk::button   .myFrame.mySrchBrowseBtn -text "Browse" -command wokdep:gui:BrowsePartiesRoot
-checkbutton   .myFrame.myFImageCheck   -offvalue "false" -onvalue "true" -variable HAVE_FREEIMAGE -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myFImageLbl     -text "Use FreeImage"
-checkbutton   .myFrame.myGl2psCheck    -offvalue "false" -onvalue "true" -variable HAVE_GL2PS     -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myGl2psLbl      -text "Use GL2PS"
-checkbutton   .myFrame.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myTbbLbl        -text "Use Intel TBB"
-checkbutton   .myFrame.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myOpenClLbl     -text "Use OpenCL"
-checkbutton   .myFrame.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
-ttk::label    .myFrame.myMacGLXLbl     -text "Use X11 for windows drawing"
-ttk::label    .myFrame.myVtkLbl        -text "Use VTK"
-checkbutton   .myFrame.myVtkCheck      -offvalue "false" -onvalue "true" -variable HAVE_VTK       -command wokdep:gui:UpdateList
-checkbutton   .myFrame.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myQt4Lbl        -text "Search Qt4"
-checkbutton   .myFrame.myJDKCheck      -offvalue "false" -onvalue "true" -variable CHECK_JDK      -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myJDKLbl        -text "Search JDK"
+checkbutton   .myFrame.myChecks.myFImageCheck   -offvalue "false" -onvalue "true" -variable HAVE_FREEIMAGE -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myFImageLbl     -text "Use FreeImage"
+checkbutton   .myFrame.myChecks.myGl2psCheck    -offvalue "false" -onvalue "true" -variable HAVE_GL2PS     -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myGl2psLbl      -text "Use GL2PS"
+checkbutton   .myFrame.myChecks.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myTbbLbl        -text "Use Intel TBB"
+checkbutton   .myFrame.myChecks.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myOpenClLbl     -text "Use OpenCL"
+checkbutton   .myFrame.myChecks.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
+ttk::label    .myFrame.myChecks.myMacGLXLbl     -text "Use X11 for windows drawing"
+ttk::label    .myFrame.myChecks.myVtkLbl        -text "Use VTK"
+checkbutton   .myFrame.myChecks.myVtkCheck      -offvalue "false" -onvalue "true" -variable HAVE_VTK       -command wokdep:gui:UpdateList
+checkbutton   .myFrame.myChecks.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myQt4Lbl        -text "Search Qt4"
+checkbutton   .myFrame.myChecks.myJDKCheck      -offvalue "false" -onvalue "true" -variable CHECK_JDK      -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myJDKLbl        -text "Search JDK"
 
 # Additional headers search paths
 ttk::label    .myFrame.myIncLbl    -text "Additional headers search paths" -relief solid -padding {5 5 80 5}
@@ -449,10 +453,10 @@ ttk::button   .myFrame.myClose -text "Close" -command wokdep:gui:Close
 # Create grid
 # Header
 if { "$tcl_platform(platform)" == "windows" } {
-  grid .myFrame.myVsLbl       -row $aRowIter -column 0 -columnspan 10 -sticky w
-  incr aRowIter
-  grid .myFrame.myVsCombo     -row $aRowIter -column 0 -columnspan 2 -sticky w
-  grid .myFrame.myArchCombo   -row $aRowIter -column 2 -sticky w
+  grid .myFrame.myVsFrame               -row $aRowIter -column 0 -columnspan 10 -sticky w
+  grid .myFrame.myVsFrame.myVsLbl       -row 0 -column 0
+  grid .myFrame.myVsFrame.myVsCombo     -row 0 -column 1 -padx 5
+  grid .myFrame.myVsFrame.myArchCombo   -row 0 -column 2
   incr aRowIter
   grid .myFrame.myVcEntry     -row $aRowIter -column 0
   grid .myFrame.myVcVarsEntry -row $aRowIter -column 1 -columnspan 4 -sticky w
@@ -461,10 +465,10 @@ if { "$tcl_platform(platform)" == "windows" } {
 }
 
 #
-grid .myFrame.myOcctBuildLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
-incr aRowIter
-grid .myFrame.myScutsCheck   -row $aRowIter -column 0 -sticky e
-grid .myFrame.myScutsLbl     -row $aRowIter -column 1 -columnspan 2 -sticky w
+grid .myFrame.myHxxChecks -row $aRowIter -column 0 -columnspan 10 -sticky w
+grid .myFrame.myHxxChecks.myOcctBuildLbl -row 0 -column 0
+grid .myFrame.myHxxChecks.myScutsCheck   -row 0 -column 1
+grid .myFrame.myHxxChecks.myScutsLbl     -row 0 -column 2
 incr aRowIter
 #
 grid .myFrame.mySrchLbl       -row $aRowIter -column 0 -columnspan 10 -sticky w
@@ -472,29 +476,29 @@ incr aRowIter
 grid .myFrame.mySrchEntry     -row $aRowIter -column 0 -columnspan 5
 grid .myFrame.mySrchBrowseBtn -row $aRowIter -column 6
 incr aRowIter
-grid .myFrame.myFImageCheck   -row $aRowIter -column 0 -sticky e
-grid .myFrame.myFImageLbl     -row $aRowIter -column 1 -sticky w
-grid .myFrame.myQt4Check      -row $aRowIter -column 2 -sticky e
-grid .myFrame.myQt4Lbl        -row $aRowIter -column 3 -sticky w
+
+grid .myFrame.myChecks        -row $aRowIter -column 0 -columnspan 10 -sticky w
 incr aRowIter
-grid .myFrame.myGl2psCheck    -row $aRowIter -column 0 -sticky e
-grid .myFrame.myGl2psLbl      -row $aRowIter -column 1 -sticky w
-grid .myFrame.myJDKCheck      -row $aRowIter -column 2 -sticky e
-grid .myFrame.myJDKLbl        -row $aRowIter -column 3 -sticky w
-incr aRowIter
-grid .myFrame.myTbbCheck      -row $aRowIter -column 0 -sticky e
-grid .myFrame.myTbbLbl        -row $aRowIter -column 1 -sticky w
-incr aRowIter
-grid .myFrame.myOpenClCheck   -row $aRowIter -column 0 -sticky e
-grid .myFrame.myOpenClLbl     -row $aRowIter -column 1 -sticky w
-incr aRowIter
-grid .myFrame.myVtkCheck      -row $aRowIter -column 0 -sticky e
-grid .myFrame.myVtkLbl        -row $aRowIter -column 1 -sticky w
-incr aRowIter
+grid .myFrame.myChecks.myFImageCheck   -row $aCheckRowIter -column 0 -sticky e
+grid .myFrame.myChecks.myFImageLbl     -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 2 -sticky e
+grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
+grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 4 -sticky e
+grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 5 -sticky w
+#grid .myFrame.myChecks.myOpenClCheck   -row $aCheckRowIter -column 6 -sticky e
+#grid .myFrame.myChecks.myOpenClLbl     -row $aCheckRowIter -column 7 -sticky w
+incr aCheckRowIter
+grid .myFrame.myChecks.myGl2psCheck    -row $aCheckRowIter -column 0 -sticky e
+grid .myFrame.myChecks.myGl2psLbl      -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myVtkCheck      -row $aCheckRowIter -column 2 -sticky e
+grid .myFrame.myChecks.myVtkLbl        -row $aCheckRowIter -column 3 -sticky w
+grid .myFrame.myChecks.myJDKCheck      -row $aCheckRowIter -column 4 -sticky e
+grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 5 -sticky w
+incr aCheckRowIter
 if { "$::tcl_platform(os)" == "Darwin" } {
-  grid .myFrame.myMacGLXCheck -row $aRowIter -column 0 -sticky e
-  grid .myFrame.myMacGLXLbl   -row $aRowIter -column 1 -sticky w
-  incr aRowIter
+  grid .myFrame.myChecks.myMacGLXCheck -row $aCheckRowIter -column 0 -sticky e
+  grid .myFrame.myChecks.myMacGLXLbl   -row $aCheckRowIter -column 1 -sticky w
+  incr aCheckRowIter
 }
 
 # Additional headers search paths
@@ -528,10 +532,10 @@ grid .myFrame.mySave  -row $aRowIter -column 4 -columnspan 2
 grid .myFrame.myClose -row $aRowIter -column 6 -columnspan 2
 
 # Bind events
-bind .myFrame.myVsCombo <<ComboboxSelected>> {
+bind .myFrame.myVsFrame.myVsCombo <<ComboboxSelected>> {
   wokdep:gui:SwitchConfig
 }
-bind .myFrame.myArchCombo <<ComboboxSelected>> {
+bind .myFrame.myVsFrame.myArchCombo <<ComboboxSelected>> {
   wokdep:gui:SwitchArch
 }
 
