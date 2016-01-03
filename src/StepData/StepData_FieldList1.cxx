@@ -32,6 +32,3 @@ StepData_Field&  StepData_FieldList1::CField (const Standard_Integer num)
   if (num != 1) Standard_OutOfRange::Raise("StepData_FieldList1 : CField");
   return thefield;
 }
-
-void StepData_FieldList1::Destroy () {}
-     

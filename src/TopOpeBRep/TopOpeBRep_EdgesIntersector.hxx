@@ -60,8 +60,7 @@ public:
   
   Standard_EXPORT TopOpeBRep_EdgesIntersector();
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~TopOpeBRep_EdgesIntersector(){Delete() ; }
+  Standard_EXPORT virtual ~TopOpeBRep_EdgesIntersector();
   
   Standard_EXPORT void SetFaces (const TopoDS_Shape& F1, const TopoDS_Shape& F2);
   

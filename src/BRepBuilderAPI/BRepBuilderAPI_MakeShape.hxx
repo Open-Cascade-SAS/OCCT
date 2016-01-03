@@ -40,10 +40,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT virtual void Delete() Standard_OVERRIDE;
-Standard_EXPORT virtual ~BRepBuilderAPI_MakeShape(){Delete() ; }
-  
   //! This is  called by  Shape().  It does  nothing but
   //! may be redefined.
   Standard_EXPORT virtual void Build();

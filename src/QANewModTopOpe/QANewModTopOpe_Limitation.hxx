@@ -81,17 +81,7 @@ public:
   
   Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& S) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Delete() Standard_OVERRIDE;
-Standard_EXPORT  ~QANewModTopOpe_Limitation()  {Delete();}
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT  ~QANewModTopOpe_Limitation();
 
 private:
 

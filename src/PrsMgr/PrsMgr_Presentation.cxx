@@ -389,10 +389,10 @@ Handle(Prs3d_Projector) PrsMgr_Presentation::Projector (const Handle(Graphic3d_D
 }
 
 //=======================================================================
-//function : Destroy
+//function : ~PrsMgr_Presentation
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Destroy()
+PrsMgr_Presentation::~PrsMgr_Presentation()
 {
   Erase();
 }

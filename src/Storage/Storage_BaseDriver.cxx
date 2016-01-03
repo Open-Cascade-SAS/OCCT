@@ -24,7 +24,8 @@
 Storage_BaseDriver::Storage_BaseDriver() : myOpenMode(Storage_VSNone)
 {
 }
-void Storage_BaseDriver::Delete()
+
+Storage_BaseDriver::~Storage_BaseDriver()
 {}
 
 TCollection_AsciiString Storage_BaseDriver::ReadMagicNumber (Standard_IStream& theIStream)

@@ -55,7 +55,7 @@ myUNKNOWNRaise(Standard_False) // no raise if UNKNOWN state found
   InitAreaBuilder(LS,LC,ForceClass);
 }
 
-void TopOpeBRepBuild_AreaBuilder::Delete()
+TopOpeBRepBuild_AreaBuilder::~TopOpeBRepBuild_AreaBuilder()
 {}
 
 //=======================================================================

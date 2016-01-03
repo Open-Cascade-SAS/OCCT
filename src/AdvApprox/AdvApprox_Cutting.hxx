@@ -32,26 +32,9 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~AdvApprox_Cutting(){Delete();}
+  Standard_EXPORT virtual ~AdvApprox_Cutting();
   
   Standard_EXPORT virtual Standard_Boolean Value (const Standard_Real a, const Standard_Real b, Standard_Real& cuttingvalue) const = 0;
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
 
 };
 

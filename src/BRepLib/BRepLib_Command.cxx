@@ -27,7 +27,7 @@ BRepLib_Command::BRepLib_Command() :
 {
 }
 
-void BRepLib_Command::Delete()
+BRepLib_Command::~BRepLib_Command()
 {}
 
 //=======================================================================

@@ -108,35 +108,14 @@ public:
   //! (value of parameter write.surfacecurve.mode)
   Standard_EXPORT Standard_Boolean GetPCurveMode() const;
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~BRepToIGES_BREntity() { Delete(); }
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT virtual ~BRepToIGES_BREntity();
 
 private:
-
-
-
   Handle(IGESData_IGESModel) TheModel;
   Standard_Real TheUnitFactor;
   Standard_Boolean myConvSurface;
   Standard_Boolean myPCurveMode;
   Handle(Transfer_FinderProcess) TheMap;
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRepToIGES_BREntity_HeaderFile

@@ -44,8 +44,7 @@ public:
     MoniTool_TimerSentry(const Handle(MoniTool_Timer)& timer);
   
   //! Destructor stops the associated timer
-    void Destroy();
-Standard_EXPORT ~MoniTool_TimerSentry () { Destroy(); }
+    ~MoniTool_TimerSentry ();
   
     Handle(MoniTool_Timer) Timer() const;
   

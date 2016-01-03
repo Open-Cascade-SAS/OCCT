@@ -27,7 +27,7 @@ myLoopIndex(1), myNbLoop(0)
 {
 }
 
-void TopOpeBRepBuild_LoopSet::Delete()
+TopOpeBRepBuild_LoopSet::~TopOpeBRepBuild_LoopSet()
 {}
 
 //=======================================================================

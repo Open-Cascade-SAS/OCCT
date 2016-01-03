@@ -117,7 +117,7 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
 			  Flatknots->ChangeArray1());     
 }
 // ==================================================================
-void FairCurve_Batten::Delete()
+FairCurve_Batten::~FairCurve_Batten()
 {}
 // ==================================================================
 void FairCurve_Batten::Angles(const gp_Pnt2d& P1, 

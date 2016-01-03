@@ -40,9 +40,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~BRepLib_Command(){Delete() ; }
+  Standard_EXPORT virtual ~BRepLib_Command();
   
   Standard_EXPORT Standard_Boolean IsDone() const;
   

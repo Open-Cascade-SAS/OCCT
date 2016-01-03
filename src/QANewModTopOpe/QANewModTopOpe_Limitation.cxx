@@ -295,7 +295,7 @@ Standard_Boolean QANewModTopOpe_Limitation::IsDeleted(const TopoDS_Shape& S)
 
 }
 
-void QANewModTopOpe_Limitation::Delete()
+QANewModTopOpe_Limitation::~QANewModTopOpe_Limitation()
 {
   delete myCut;
   delete myCommon;

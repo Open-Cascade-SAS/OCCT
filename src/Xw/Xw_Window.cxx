@@ -229,10 +229,10 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
 }
 
 // =======================================================================
-// function : Destroy
+// function : ~Xw_Window
 // purpose  :
 // =======================================================================
-void Xw_Window::Destroy()
+Xw_Window::~Xw_Window()
 {
   if (myIsOwnWin && myXWindow != 0 && !myDisplay.IsNull())
   {

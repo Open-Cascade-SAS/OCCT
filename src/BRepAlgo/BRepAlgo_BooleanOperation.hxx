@@ -47,9 +47,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT virtual void Delete() Standard_OVERRIDE;
-Standard_EXPORT virtual ~BRepAlgo_BooleanOperation() {Delete();}
+  Standard_EXPORT virtual ~BRepAlgo_BooleanOperation();
   
   Standard_EXPORT void PerformDS();
   

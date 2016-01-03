@@ -58,13 +58,8 @@ public:
                              const Window theXWin,
                              const Aspect_FBConfig theFBConfig = NULL);
 
-  //! Destroies the Window and all resourses attached to it
-  Standard_EXPORT virtual void Destroy() Standard_OVERRIDE;
-
-  ~Xw_Window()
-  {
-    Destroy();
-  }
+  //! Destroys the Window and all resourses attached to it
+  Standard_EXPORT ~Xw_Window();
 
   //! Opens the window <me>
   Standard_EXPORT virtual void Map() const Standard_OVERRIDE;

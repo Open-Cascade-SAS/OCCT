@@ -32,9 +32,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~TopOpeBRepBuild_LoopClassifier(){Delete() ; }
+  Standard_EXPORT virtual ~TopOpeBRepBuild_LoopClassifier();
   
   //! Returns the state of loop <L1> compared with loop <L2>.
   Standard_EXPORT virtual TopAbs_State Compare (const Handle(TopOpeBRepBuild_Loop)& L1, const Handle(TopOpeBRepBuild_Loop)& L2) = 0;

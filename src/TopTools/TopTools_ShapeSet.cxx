@@ -44,7 +44,7 @@ TopTools_ShapeSet::TopTools_ShapeSet() : myFormatNb(1)
 {
 }
 
-void TopTools_ShapeSet::Delete()
+TopTools_ShapeSet::~TopTools_ShapeSet()
 {}
 
 //=======================================================================

@@ -72,17 +72,7 @@ public:
   
   Standard_EXPORT const Bnd_Box& Box (const TopoDS_Shape& S) const;
   
-  Standard_EXPORT void Destroy();
-Standard_EXPORT ~TopOpeBRepTool_BoxSort() {Destroy();}
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT ~TopOpeBRepTool_BoxSort();
 
 private:
 

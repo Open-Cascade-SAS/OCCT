@@ -47,8 +47,7 @@ public:
   //! Constructor. Initialize new entity.
   Standard_EXPORT math_Powell(const math_MultipleVarFunction& theFunction, const Standard_Real theTolerance, const Standard_Integer theNbIterations = 200, const Standard_Real theZEPS = 1.0e-12);
   
-  //! Destructor alias
-    void Delete() const;
+  //! Destructor
   Standard_EXPORT virtual ~math_Powell();
   
 

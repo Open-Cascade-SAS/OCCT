@@ -133,10 +133,6 @@ MeshVS_Mesh::MeshVS_Mesh (const Standard_Boolean theIsAllowOverlapped )
   myHilightDrawer->SetDouble  ( MeshVS_DA_MarkerScale, 2.0 );
 }
 
-void MeshVS_Mesh::Destroy()
-{
-}
-
 //================================================================
 // Function : Compute
 // Purpose  :

@@ -60,10 +60,10 @@ TopOpeBRepTool_BoxSort::TopOpeBRepTool_BoxSort(const MTOhbt& HBT)
 
 //modified by NIZNHY-PKV Mon Dec 16 10:26:00 2002 f
 //=======================================================================
-//function : Destroy
-//purpose  : alias ~TopOpeBRepTool_BoxSort
+//function : ~TopOpeBRepTool_BoxSort
+//purpose  : 
 //=======================================================================
-void TopOpeBRepTool_BoxSort::Destroy()
+TopOpeBRepTool_BoxSort::~TopOpeBRepTool_BoxSort()
 {
   if (!myHBT.IsNull()) {
     myHBT->Clear();

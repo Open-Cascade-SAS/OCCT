@@ -108,7 +108,7 @@ TopOpeBRep_EdgesIntersector::TopOpeBRep_EdgesIntersector()
   myselectkeep = Standard_True;
 }
 
-void TopOpeBRep_EdgesIntersector::Delete()
+TopOpeBRep_EdgesIntersector::~TopOpeBRep_EdgesIntersector()
 {}
 
 //=======================================================================

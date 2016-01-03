@@ -80,9 +80,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~ChFi3d_Builder(){Delete() ; }
+  Standard_EXPORT virtual ~ChFi3d_Builder();
   
   Standard_EXPORT void SetParams (const Standard_Real Tang, const Standard_Real Tesp, const Standard_Real T2d, const Standard_Real TApp3d, const Standard_Real TolApp2d, const Standard_Real Fleche);
   

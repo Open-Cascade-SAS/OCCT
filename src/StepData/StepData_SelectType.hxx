@@ -157,17 +157,7 @@ public:
   
   Standard_EXPORT void SetReal (const Standard_Real val, const Standard_CString name = "");
   
-  Standard_EXPORT virtual void Destroy();
-Standard_EXPORT virtual ~StepData_SelectType() { Destroy(); }
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT virtual ~StepData_SelectType();
 
 private:
 

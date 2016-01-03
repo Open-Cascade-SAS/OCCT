@@ -175,8 +175,7 @@ public:
   //! else (in case of syntactic fail)
   Standard_EXPORT virtual Standard_Boolean AnalyseRecord (const Standard_Integer num, const Handle(Standard_Transient)& anent, Handle(Interface_Check)& acheck) = 0;
   
-  Standard_EXPORT virtual void Destroy();
-Standard_EXPORT virtual ~Interface_FileReaderTool() { Destroy(); }
+  Standard_EXPORT virtual ~Interface_FileReaderTool();
   
   //! Ends file reading after reading all the entities
   //! default is doing nothing; redefinable as necessary

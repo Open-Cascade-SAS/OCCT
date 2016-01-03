@@ -524,7 +524,3 @@ Standard_Boolean operator >=(const Handle(Units_Token)& atoken1,const Handle(Uni
 {
   return atoken1->IsGreaterOrEqual(atoken2);
 }
-
-void Units_Token::Destroy () {
-
-}

@@ -62,11 +62,7 @@ public:
   Standard_EXPORT WNT_WClass(const Standard_CString aClassName, const Standard_Address aWndProc, const WNT_Uint& aStyle, const Standard_Integer aClassExtra = 0, const Standard_Integer aWindowExtra = 0, const Aspect_Handle aCursor = 0, const Aspect_Handle anIcon = 0, const Standard_CString aMenuName = 0);
   
   //! Destroys all resources attached to the class
-  Standard_EXPORT virtual void Destroy();
-~WNT_WClass()
-{
-  Destroy();
-}
+  Standard_EXPORT ~WNT_WClass();
   
   //! Returns address of window procedure.
     Standard_Address WndProc() const;

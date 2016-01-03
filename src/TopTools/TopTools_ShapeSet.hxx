@@ -48,8 +48,7 @@ public:
   //! Builds an empty ShapeSet.
   Standard_EXPORT TopTools_ShapeSet();
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~TopTools_ShapeSet(){Delete() ; }
+  Standard_EXPORT virtual ~TopTools_ShapeSet();
   
   Standard_EXPORT void SetFormatNb (const Standard_Integer theFormatNb);
   

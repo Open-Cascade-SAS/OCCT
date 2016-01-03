@@ -16,10 +16,6 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline void math_NewtonMinimum::Delete() const
-{
-}
-
 inline Standard_Boolean math_NewtonMinimum::IsConverged() const 
 {
   return ( (TheStep.Norm() <= XTol ) || 

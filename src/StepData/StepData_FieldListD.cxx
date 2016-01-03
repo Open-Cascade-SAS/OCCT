@@ -39,6 +39,3 @@ StepData_Field&  StepData_FieldListD::CField (const Standard_Integer num)
   if (thefields.IsNull()) Standard_OutOfRange::Raise("StepData_FieldListD::Field");
   return thefields->ChangeValue(num);
 }
-
-void StepData_FieldListD::Destroy () {}
-     

@@ -60,8 +60,7 @@ public:
   //! The method SetTolerance must be called before performing the algorithm.
   Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction, const Standard_Real theFTolerance, const Standard_Integer theNbIterations = 100);
   
-  //! Destructor alias.
-  Standard_EXPORT void Delete() const;
+  //! Destructor
   Standard_EXPORT virtual ~math_NewtonFunctionSetRoot();
   
   //! Initializes the tolerance values for the unknowns.

@@ -70,11 +70,12 @@ CDM_Document::CDM_Document():
 
 
 //=======================================================================
-//function : Destroy
+//function : ~CDM_Document
 //purpose  : 
 //=======================================================================
 
-void CDM_Document::Destroy() {
+CDM_Document::~CDM_Document()
+{
   if(!myMetaData.IsNull()) myMetaData->UnsetDocument();
 }
 

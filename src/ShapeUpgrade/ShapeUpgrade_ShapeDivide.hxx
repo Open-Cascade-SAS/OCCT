@@ -50,8 +50,7 @@ public:
   //! Initialize by a Shape.
   Standard_EXPORT void Init (const TopoDS_Shape& S);
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~ShapeUpgrade_ShapeDivide(){Delete();}
+  Standard_EXPORT virtual ~ShapeUpgrade_ShapeDivide();
   
   //! Defines the spatial precision used for splitting
   Standard_EXPORT void SetPrecision (const Standard_Real Prec);

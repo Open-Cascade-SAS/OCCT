@@ -566,11 +566,11 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity
 
 
 //=======================================================================
-//function : Destroy
+//function : ~Interface_FileReaderTool
 //purpose  : 
 //=======================================================================
 
-void Interface_FileReaderTool::Destroy()
+Interface_FileReaderTool::~Interface_FileReaderTool()
 {}
      
 void Interface_FileReaderTool::Clear()

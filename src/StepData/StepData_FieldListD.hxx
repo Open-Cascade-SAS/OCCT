@@ -53,18 +53,6 @@ public:
   //! Returns the field n0 <num> between 1 and NbFields, in order to
   //! modify its content
   Standard_EXPORT virtual StepData_Field& CField (const Standard_Integer num) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Destroy();
-Standard_EXPORT virtual ~StepData_FieldListD() { Destroy(); }
-
-
-
-
-protected:
-
-
-
-
 
 private:
 

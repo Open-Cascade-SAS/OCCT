@@ -52,8 +52,7 @@ public:
   //! Search the solution.
   Standard_EXPORT void Perform (math_MultipleVarFunctionWithHessian& theFunction, const math_Vector& theStartingPoint);
   
-  //! Destructor alias.
-    void Delete() const;
+  //! Destructor
   Standard_EXPORT virtual ~math_NewtonMinimum();
   
 

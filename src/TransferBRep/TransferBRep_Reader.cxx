@@ -252,5 +252,6 @@ TransferBRep_Reader::TransferBRep_Reader ()
   () const
       {  return theProc;  }
 
-void TransferBRep_Reader::Destroy() {}
+TransferBRep_Reader::~TransferBRep_Reader()
+{}
      

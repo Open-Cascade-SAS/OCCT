@@ -70,8 +70,7 @@ public:
   //! <checkshape>:check (or not) the shapes, startelements, elements added.
   Standard_EXPORT TopOpeBRepBuild_ShapeSet(const TopAbs_ShapeEnum SubShapeType, const Standard_Boolean checkshape = Standard_True);
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~TopOpeBRepBuild_ShapeSet(){Delete() ; }
+  Standard_EXPORT virtual ~TopOpeBRepBuild_ShapeSet();
   
   //! Adds <S> to the list of shapes. (wires or shells).
   Standard_EXPORT virtual void AddShape (const TopoDS_Shape& S);

@@ -61,8 +61,7 @@ public:
   //! constructor.
   Standard_EXPORT math_FunctionSetRoot(math_FunctionSetWithDerivatives& F, const Standard_Integer NbIterations = 100);
   
-  //! Destructor alias.
-  Standard_EXPORT void Delete() const;
+  //! Destructor
   Standard_EXPORT virtual ~math_FunctionSetRoot();
   
   //! Initializes the tolerance values.

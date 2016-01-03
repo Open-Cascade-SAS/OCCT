@@ -68,11 +68,11 @@ WNT_WClass::WNT_WClass (
 }  // end constructor
 
 //=======================================================================
-//function : Destroy
+//function : ~WNT_WClass
 //purpose  : 
 //=======================================================================
 
-void WNT_WClass::Destroy ()
+WNT_WClass::~WNT_WClass ()
 {
 
  UnregisterClass (  lpszName, ( HINSTANCE )hInstance  );

@@ -70,11 +70,7 @@ public:
   Standard_EXPORT Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver);
 
   //! Deletes the manager <me>.
-  Standard_EXPORT virtual void Destroy();
-~Graphic3d_StructureManager()
-{
-  Destroy();
-}
+  Standard_EXPORT ~Graphic3d_StructureManager();
 
   //! Modifies the default attributes for lines
   //! in the visualiser.

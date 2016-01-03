@@ -46,7 +46,6 @@ class Aspect_Window : public MMgt_TShared
 {
 
 public:
-
   
   //! Modifies the window background.
   Standard_EXPORT void SetBackground (const Aspect_Background& ABack);
@@ -75,9 +74,6 @@ public:
   //! Apply the mapping change to the window <me>.
   //! and returns TRUE if the window is mapped at screen.
   Standard_EXPORT virtual Standard_Boolean DoMapping() const = 0;
-  
-  //! Destroy the Window
-  Standard_EXPORT virtual void Destroy() = 0;
   
   //! Returns the window background.
   Standard_EXPORT Aspect_Background Background() const;

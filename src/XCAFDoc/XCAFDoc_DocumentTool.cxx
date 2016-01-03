@@ -313,13 +313,3 @@ Standard_Boolean XCAFDoc_DocumentTool::IsXCAFDocument(const  Handle(TDocStd_Docu
   Handle(TDataStd_TreeNode) aRootNode;
   return RootL.FindAttribute (aRefGuid, aRootNode);
 }
-
-
-//=======================================================================
-//function : Destroy
-//purpose  : No longer required. Kept for binary compatibility only.
-//=======================================================================
-
-void XCAFDoc_DocumentTool::Destroy()
-{
-}

@@ -75,13 +75,6 @@ public:
   //! conversion.
   Standard_EXPORT virtual Standard_Real Divided (const Standard_Real avalue) const Standard_OVERRIDE;
   
-  //! Destroies the Token
-  Standard_EXPORT virtual void Destroy() Standard_OVERRIDE;
-~Units_ShiftedToken()
-{
-  Destroy();
-}
-  
   Standard_EXPORT virtual void Dump (const Standard_Integer ashift, const Standard_Integer alevel) const Standard_OVERRIDE;
 
 

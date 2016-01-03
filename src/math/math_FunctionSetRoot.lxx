@@ -15,11 +15,6 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_DimensionError.hxx>
 
-inline void math_FunctionSetRoot::Delete() const
-{
-}
-
-
 inline Standard_Boolean math_FunctionSetRoot::IsSolutionReached(math_FunctionSetWithDerivatives&)
 {
   for (Standard_Integer i = 1; i <= Sol.Length(); ++i)

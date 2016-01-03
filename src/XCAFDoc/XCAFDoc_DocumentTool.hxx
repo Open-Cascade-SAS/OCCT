@@ -104,17 +104,7 @@ public:
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   
   Standard_EXPORT void Paste (const Handle(TDF_Attribute)& into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
-  //! Unregisters the document holding this attribute from an
-  //! internal global map of XDE documents.
-  Standard_EXPORT virtual void Destroy();
-~XCAFDoc_DocumentTool()
-{
-  Destroy();
-}
-
-
-
+ 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_DocumentTool,TDF_Attribute)
 
 protected:

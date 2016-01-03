@@ -19,6 +19,10 @@
 
 static StepData_Field nulfild;
 
+StepData_FieldList::~StepData_FieldList()
+{
+}
+
 StepData_FieldList::StepData_FieldList  ()    {  }
 
 Standard_Integer  StepData_FieldList::NbFields () const

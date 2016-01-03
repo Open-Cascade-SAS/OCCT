@@ -48,8 +48,7 @@ public:
   //! Warning: constructor does not perform computations.
   Standard_EXPORT math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction, const Standard_Real theTolerance, const Standard_Integer theNbIterations = 200, const Standard_Real theZEPS = 1.0e-12);
   
-  //! Destructor alias.
-  Standard_EXPORT void Delete() const;
+  //! Destructor
   Standard_EXPORT virtual ~math_FRPR();
   
 

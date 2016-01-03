@@ -48,8 +48,7 @@ public:
   //! Parameter <isWithTriangles> is added for XML Persistence
   Standard_EXPORT BinTools_ShapeSet(const Standard_Boolean isWithTriangles = Standard_False);
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~BinTools_ShapeSet(){Delete() ; }
+  Standard_EXPORT virtual ~BinTools_ShapeSet();
   
   //! Define if shape will be stored with triangles
   Standard_EXPORT void SetWithTriangles (const Standard_Boolean isWithTriangles);

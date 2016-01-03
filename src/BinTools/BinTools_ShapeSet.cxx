@@ -79,11 +79,11 @@ BinTools_ShapeSet::BinTools_ShapeSet(const Standard_Boolean isWithTriangles)
 {}
 
 //=======================================================================
-//function : Delete
+//function : ~BinTools_ShapeSet
 //purpose  : 
 //=======================================================================
 
-void BinTools_ShapeSet::Delete()
+BinTools_ShapeSet::~BinTools_ShapeSet()
 {}
 
 //=======================================================================

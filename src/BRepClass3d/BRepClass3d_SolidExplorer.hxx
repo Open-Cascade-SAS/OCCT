@@ -56,8 +56,7 @@ public:
   
   Standard_EXPORT BRepClass3d_SolidExplorer(const TopoDS_Shape& S);
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~BRepClass3d_SolidExplorer(){Destroy() ; }
+  Standard_EXPORT virtual ~BRepClass3d_SolidExplorer();
   
   Standard_EXPORT void InitShape (const TopoDS_Shape& S);
   

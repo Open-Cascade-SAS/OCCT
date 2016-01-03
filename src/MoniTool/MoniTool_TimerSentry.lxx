@@ -36,11 +36,11 @@ inline MoniTool_TimerSentry::MoniTool_TimerSentry (const Handle(MoniTool_Timer)&
 }
 
 //=======================================================================
-//function : Destroy
+//function : Destructor
 //purpose  : make stop for corresponding timer before destroying
 //=======================================================================
 
-inline void MoniTool_TimerSentry::Destroy() 
+inline MoniTool_TimerSentry::~MoniTool_TimerSentry() 
 {
   if ( ! myTimer.IsNull() ) myTimer->Stop();
 }

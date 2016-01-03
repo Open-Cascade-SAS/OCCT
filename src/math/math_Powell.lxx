@@ -15,10 +15,6 @@
 #include <StdFail_NotDone.hxx>
 #include <math_Vector.hxx>
 
-inline void math_Powell::Delete() const
-{
-}
-
 inline Standard_Boolean math_Powell::IsSolutionReached(math_MultipleVarFunction&)
 {  
   return 2.0  *  fabs(PreviousMinimum - TheMinimum) <= 

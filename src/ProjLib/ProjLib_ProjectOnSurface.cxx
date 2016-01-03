@@ -246,7 +246,12 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_HCurve)& C,
   }
 }
 
-void ProjLib_ProjectOnSurface::Delete()
+//=======================================================================
+//function : ~ProjLib_ProjectOnSurface
+//purpose  : 
+//=======================================================================
+
+ProjLib_ProjectOnSurface::~ProjLib_ProjectOnSurface()
 {}
 
 //=======================================================================

@@ -123,10 +123,10 @@ WNT_Window::WNT_Window (const Aspect_Handle        theHandle,
 }
 
 // =======================================================================
-// function : Destroy
+// function : ~WNT_Window
 // purpose  :
 // =======================================================================
-void WNT_Window::Destroy()
+WNT_Window::~WNT_Window()
 {
   if (myHWindow == NULL
    || myIsForeign)

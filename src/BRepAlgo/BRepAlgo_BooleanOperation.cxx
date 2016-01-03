@@ -77,10 +77,10 @@ extern void FDSCNX_Close();// see TopOpeBRepDS_connex.cxx
 extern void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 
 //=======================================================================
-//function : Delete 
-//purpose  : alias ~BRepAlgoAPI_BooleanOperation
+//function : ~BRepAlgo_BooleanOperation
+//purpose  : 
 //=======================================================================
-  void BRepAlgo_BooleanOperation::Delete()
+BRepAlgo_BooleanOperation::~BRepAlgo_BooleanOperation()
 {
   FDSSDM_Close();
   FDSCNX_Close();

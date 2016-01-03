@@ -38,8 +38,7 @@ public:
   
   Standard_EXPORT TopOpeBRepBuild_LoopSet();
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~TopOpeBRepBuild_LoopSet(){Delete() ; }
+  Standard_EXPORT virtual ~TopOpeBRepBuild_LoopSet();
   
   Standard_EXPORT TopOpeBRepBuild_ListOfLoop& ChangeListOfLoop();
   

@@ -53,9 +53,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT void Delete();
-Standard_EXPORT virtual ~Storage_BaseDriver(){Delete();}
+  Standard_EXPORT virtual ~Storage_BaseDriver();
   
   Standard_EXPORT virtual Storage_Error Open (const TCollection_AsciiString& aName, const Storage_OpenMode aMode) = 0;
   

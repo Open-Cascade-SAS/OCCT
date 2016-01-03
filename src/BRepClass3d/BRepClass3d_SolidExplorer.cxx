@@ -771,11 +771,11 @@ BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer(const TopoDS_Shape& S)
 }
 
 //=======================================================================
-//function : Delete
-//purpose  : 
+//function : ~BRepClass3d_SolidExplorer
+//purpose  :
 //=======================================================================
 
-void BRepClass3d_SolidExplorer::Delete()
+BRepClass3d_SolidExplorer::~BRepClass3d_SolidExplorer()
 {
  Destroy() ;
 }

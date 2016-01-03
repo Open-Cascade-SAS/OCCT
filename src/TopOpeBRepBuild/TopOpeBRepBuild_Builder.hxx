@@ -89,8 +89,7 @@ public:
   
   Standard_EXPORT TopOpeBRepBuild_Builder(const TopOpeBRepDS_BuildTool& BT);
   
-  Standard_EXPORT virtual void Destroy();
-Standard_EXPORT virtual ~TopOpeBRepBuild_Builder()  {  Destroy() ; }
+  Standard_EXPORT virtual ~TopOpeBRepBuild_Builder();
   
   Standard_EXPORT TopOpeBRepDS_BuildTool& ChangeBuildTool();
   

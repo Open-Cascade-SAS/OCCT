@@ -150,11 +150,7 @@ public:
   //! Error : same as above (end of iteration)
   Standard_EXPORT Interface_EntityIterator Entities() const;
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~IFGraph_SubPartsIterator() { Delete(); }
-
-
-
+  Standard_EXPORT virtual ~IFGraph_SubPartsIterator();
 
 protected:
 

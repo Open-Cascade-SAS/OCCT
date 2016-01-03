@@ -19,7 +19,7 @@
 #include <AdvApp2Var_Criterion.hxx>
 #include <AdvApp2Var_Patch.hxx>
 
-void AdvApp2Var_Criterion::Delete()
+AdvApp2Var_Criterion::~AdvApp2Var_Criterion()
 {}
 
 //============================================================================

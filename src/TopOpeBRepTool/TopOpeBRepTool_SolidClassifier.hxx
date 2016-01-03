@@ -45,8 +45,7 @@ public:
   
   Standard_EXPORT void Clear();
   
-  Standard_EXPORT void Destroy();
-Standard_EXPORT  ~TopOpeBRepTool_SolidClassifier() {Destroy();}
+  Standard_EXPORT ~TopOpeBRepTool_SolidClassifier();
   
   Standard_EXPORT void LoadSolid (const TopoDS_Solid& S);
   

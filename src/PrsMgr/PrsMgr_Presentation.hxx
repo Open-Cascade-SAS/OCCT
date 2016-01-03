@@ -49,11 +49,7 @@ public:
 
   
   //! Destructor
-  Standard_EXPORT virtual void Destroy();
-~PrsMgr_Presentation()
-{
-  Destroy();
-}
+  Standard_EXPORT ~PrsMgr_Presentation();
   
     const Handle(Prs3d_Presentation)& Presentation() const;
   

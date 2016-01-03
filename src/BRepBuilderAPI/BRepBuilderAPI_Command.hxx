@@ -39,10 +39,8 @@ class BRepBuilderAPI_Command
 public:
 
   DEFINE_STANDARD_ALLOC
-
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~BRepBuilderAPI_Command(){Delete() ; }
+  Standard_EXPORT virtual ~BRepBuilderAPI_Command();
   
   Standard_EXPORT virtual Standard_Boolean IsDone() const;
   

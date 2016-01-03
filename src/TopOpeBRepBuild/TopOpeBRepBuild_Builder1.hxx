@@ -58,8 +58,7 @@ public:
   
   Standard_EXPORT TopOpeBRepBuild_Builder1(const TopOpeBRepDS_BuildTool& BT);
   
-  Standard_EXPORT virtual void Destroy() Standard_OVERRIDE;
-Standard_EXPORT virtual ~TopOpeBRepBuild_Builder1()  {  Destroy() ; }
+  Standard_EXPORT virtual ~TopOpeBRepBuild_Builder1();
   
   //! Removes all splits and merges already performed.
   //! Does NOT clear the handled DS  (except  ShapeWithStatesMaps).

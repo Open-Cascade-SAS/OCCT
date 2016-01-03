@@ -100,10 +100,10 @@ TopOpeBRep_DSFiller::TopOpeBRep_DSFiller()
 
 //modified by NIZNHY-PKV Mon Dec 16 11:12:38 2002 f
 //=======================================================================
-//function : Destroy
-//purpose  : alias ~TopOpeBRep_DSFiller
+//function : ~TopOpeBRep_DSFiller
+//purpose  : 
 //=======================================================================
-void TopOpeBRep_DSFiller::Destroy() 
+TopOpeBRep_DSFiller::~TopOpeBRep_DSFiller() 
 {
   if (myPShapeClassifier) {
     delete myPShapeClassifier;

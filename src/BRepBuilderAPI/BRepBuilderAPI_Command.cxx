@@ -27,7 +27,11 @@ BRepBuilderAPI_Command::BRepBuilderAPI_Command() :
 {
 }
 
-void BRepBuilderAPI_Command::Delete()
+//=======================================================================
+//function : ~BRepBuilderAPI_Command
+//purpose  : 
+//=======================================================================
+BRepBuilderAPI_Command::~BRepBuilderAPI_Command()
 {}
 
 //=======================================================================

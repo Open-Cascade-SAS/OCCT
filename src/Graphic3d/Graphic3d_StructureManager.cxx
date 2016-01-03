@@ -101,8 +101,8 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
 
 //-Destructors
 
-void Graphic3d_StructureManager::Destroy () {
-
+Graphic3d_StructureManager::~Graphic3d_StructureManager ()
+{
         myDisplayedStructure.Clear ();
         myHighlightedStructure.Clear ();
         myDefinedViews.Clear();

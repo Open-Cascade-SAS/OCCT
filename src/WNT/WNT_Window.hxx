@@ -56,12 +56,8 @@ public:
   //! This handle equals ( aPart1 << 16 ) + aPart2.
   Standard_EXPORT WNT_Window(const Aspect_Handle aHandle, const Quantity_NameOfColor aBackColor = Quantity_NOC_MATRAGRAY);
   
-  //! Destroies the Window and all resourses attached to it.
-  Standard_EXPORT virtual void Destroy();
-~WNT_Window()
-{
-  Destroy();
-}
+  //! Destroys the Window and all resourses attached to it.
+  Standard_EXPORT ~WNT_Window();
   
   //! Sets cursor <aCursor> for ENTIRE WINDOW CLASS to which
   //! the Window belongs.

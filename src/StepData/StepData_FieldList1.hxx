@@ -49,18 +49,6 @@ public:
   //! modify its content
   Standard_EXPORT virtual StepData_Field& CField (const Standard_Integer num) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Destroy();
-Standard_EXPORT virtual ~StepData_FieldList1() { Destroy(); }
-
-
-
-
-protected:
-
-
-
-
-
 private:
 
 

@@ -37,9 +37,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~AdvApp2Var_Criterion(){Delete() ; }
+  Standard_EXPORT virtual ~AdvApp2Var_Criterion();
   
   Standard_EXPORT virtual void Value (AdvApp2Var_Patch& P, const AdvApp2Var_Context& C) const = 0;
   

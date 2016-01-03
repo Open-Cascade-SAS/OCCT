@@ -14,10 +14,6 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline void math_BissecNewton::Delete() const
-{
-}
-
 inline Standard_Boolean math_BissecNewton::IsSolutionReached(math_FunctionWithDerivative&)
 {
   return Abs(dx) <= XTol;

@@ -80,11 +80,11 @@ void ShapeUpgrade_ShapeDivide::Init(const TopoDS_Shape &S)
 }
 
 //=======================================================================
-//function : Delete
+//function : ~ShapeUpgrade_ShapeDivide
 //purpose  : 
 //=======================================================================
 
-void ShapeUpgrade_ShapeDivide::Delete()
+ShapeUpgrade_ShapeDivide::~ShapeUpgrade_ShapeDivide()
 {}
 
 

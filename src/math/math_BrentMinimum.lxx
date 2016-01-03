@@ -14,11 +14,6 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline void math_BrentMinimum::Delete() const
-{
-}
-
-
 inline Standard_Boolean math_BrentMinimum::IsSolutionReached(math_Function&)
 {
   const Standard_Real TwoTol = 2.0 * (XTol * fabs(x) + EPSZ);

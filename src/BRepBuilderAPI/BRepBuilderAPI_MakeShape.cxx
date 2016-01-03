@@ -31,10 +31,6 @@ BRepBuilderAPI_MakeShape::BRepBuilderAPI_MakeShape()
 {
 }
 
-void BRepBuilderAPI_MakeShape::Delete()
-{}
-
-
 //=======================================================================
 //function : Build
 //purpose  : 

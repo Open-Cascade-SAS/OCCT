@@ -95,32 +95,11 @@ public:
   //! Warning : type is not controlled
   Standard_EXPORT void Value (Handle(Standard_Transient)& val) const;
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~MoniTool_OptValue() { Delete(); }
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT virtual ~MoniTool_OptValue();
 
 private:
-
-
-
   TCollection_AsciiString theopt;
   Handle(Standard_Transient) theval;
-
-
 };
-
-
-
-
-
-
 
 #endif // _MoniTool_OptValue_HeaderFile

@@ -66,8 +66,7 @@ public:
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT TopOpeBRepBuild_AreaBuilder(TopOpeBRepBuild_LoopSet& LS, TopOpeBRepBuild_LoopClassifier& LC, const Standard_Boolean ForceClass = Standard_False);
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~TopOpeBRepBuild_AreaBuilder(){Delete() ; }
+  Standard_EXPORT virtual ~TopOpeBRepBuild_AreaBuilder();
   
   //! Sets a AreaBuilder to find the areas on
   //! the shapes described by <LS> using the classifier <LC>.

@@ -53,12 +53,6 @@ public:
   //! Its value is stored in drawer
   Standard_EXPORT MeshVS_Mesh(const Standard_Boolean theIsAllowOverlapped = Standard_False);
   
-  Standard_EXPORT virtual void Destroy();
-~MeshVS_Mesh()
-{
-  Destroy();
-}
-  
   //! Computes presentation using builders added to sequence. Each builder computes
   //! own part of mesh presentation according to its type.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& PM, const Handle(Prs3d_Presentation)& Prs, const Standard_Integer DisplayMode) Standard_OVERRIDE;

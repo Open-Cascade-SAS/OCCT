@@ -188,4 +188,5 @@ Standard_Real  StepData_SelectType::Real () const
   thevalue = sm;
 }
 
-void StepData_SelectType::Destroy(){}
+StepData_SelectType::~StepData_SelectType()
+{}

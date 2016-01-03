@@ -167,7 +167,12 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr,
   }
 }
 
-void ChFi3d_Builder::Delete()
+//=======================================================================
+//function : ~ChFi3d_Builder
+//purpose  : 
+//=======================================================================
+
+ChFi3d_Builder::~ChFi3d_Builder()
 {}
 
 //=======================================================================

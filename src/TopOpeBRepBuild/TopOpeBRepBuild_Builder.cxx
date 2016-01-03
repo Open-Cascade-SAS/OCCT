@@ -99,10 +99,10 @@ TopOpeBRepBuild_Builder::TopOpeBRepBuild_Builder(const TopOpeBRepDS_BuildTool& B
 
 //modified by NIZHNY-MZV  Sat May  6 10:04:49 2000
 //=======================================================================
-//function : Destroy
+//function : ~TopOpeBRepBuild_Builder
 //purpose  : virtual destructor
 //=======================================================================
-void TopOpeBRepBuild_Builder::Destroy()
+TopOpeBRepBuild_Builder::~TopOpeBRepBuild_Builder()
 {
 } 
 

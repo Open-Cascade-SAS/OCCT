@@ -150,5 +150,11 @@ Interface_EntityIterator::Interface_EntityIterator ()
   return thelist;
 }
 
-    void  Interface_EntityIterator::Destroy ()
+void  Interface_EntityIterator::Destroy ()
       {  thecurr.Nullify();  }  // redevient vide !
+
+Interface_EntityIterator::~Interface_EntityIterator()
+{
+  Destroy();
+}
+

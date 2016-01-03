@@ -69,8 +69,7 @@ public:
   //! gp_Pnt2d::IsEqual tests to see if this is the case.
   Standard_EXPORT FairCurve_Batten(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const Standard_Real Height, const Standard_Real Slope = 0);
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~FairCurve_Batten(){Delete();}
+  Standard_EXPORT virtual ~FairCurve_Batten();
   
   //! Freesliding is initialized with the default setting false.
   //! When Freesliding is set to true and, as a result, sliding

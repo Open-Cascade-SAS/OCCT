@@ -36,6 +36,8 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Destructor is virtual
+  Standard_EXPORT virtual ~StepData_FieldList();
   
   //! Creates a FieldList of 0 Field
   Standard_EXPORT StepData_FieldList();
@@ -52,28 +54,6 @@ public:
   
   //! Fills an iterator with the entities shared by <me>
   Standard_EXPORT void FillShared (Interface_EntityIterator& iter) const;
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _StepData_FieldList_HeaderFile

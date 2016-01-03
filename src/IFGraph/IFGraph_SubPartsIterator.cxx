@@ -253,9 +253,9 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator
 }
 
 //=======================================================================
-//function : Delete
+//function : ~IFGraph_SubPartsIterator
 //purpose  : 
 //=======================================================================
 
-void IFGraph_SubPartsIterator::Delete() 
+IFGraph_SubPartsIterator::~IFGraph_SubPartsIterator() 
 {} 

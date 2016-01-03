@@ -90,11 +90,10 @@ public:
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) Content() const;
   
   //! Clears data of iteration
-  Standard_EXPORT virtual void Destroy();
-Standard_EXPORT virtual ~Interface_EntityIterator() { Destroy();}
+  Standard_EXPORT void Destroy();
 
-
-
+  //! Destructor
+  Standard_EXPORT virtual ~Interface_EntityIterator();
 
 protected:
 

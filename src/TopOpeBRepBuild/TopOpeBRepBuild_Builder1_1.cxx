@@ -87,10 +87,10 @@ extern Standard_Boolean GLOBAL_faces2d;
 
 //modified by NIZNHY-PKV Mon Dec 16 11:38:55 2002 f
 //=======================================================================
-//function : Destroy
+//function : ~TopOpeBRepBuild_Builder1
 //purpose  : 
 //=======================================================================
-void TopOpeBRepBuild_Builder1::Destroy()
+TopOpeBRepBuild_Builder1::~TopOpeBRepBuild_Builder1()
 {
   processedEdges.Clear();
   theUsedVertexMap.Clear();

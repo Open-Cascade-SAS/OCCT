@@ -58,8 +58,7 @@ public:
   
   Standard_EXPORT TopOpeBRep_DSFiller();
   
-  Standard_EXPORT void Destroy();
-Standard_EXPORT ~TopOpeBRep_DSFiller() {Destroy();}
+  Standard_EXPORT ~TopOpeBRep_DSFiller();
   
   //! return field myPShapeClassifier.
   //! set field myPShapeClassifier.

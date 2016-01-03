@@ -98,10 +98,10 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
 }
 
 //=============================================================================
-//function : Destroy
+//function : ~Graphic3d_Structure
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Destroy()
+Graphic3d_Structure::~Graphic3d_Structure()
 {
   // as myFirstStructureManager can be already destroyed,
   // avoid attempts to access it

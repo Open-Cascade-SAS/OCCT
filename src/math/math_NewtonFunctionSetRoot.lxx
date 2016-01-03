@@ -14,10 +14,6 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline void math_NewtonFunctionSetRoot::Delete() const
-{
-}
-
 inline Standard_Boolean math_NewtonFunctionSetRoot::IsSolutionReached(math_FunctionSetWithDerivatives&)
 {
   for (Standard_Integer i = DeltaX.Lower(); i <= DeltaX.Upper(); ++i)

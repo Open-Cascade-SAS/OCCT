@@ -99,11 +99,7 @@ public:
   
   //! Suppresses the structure <me>.
   //! It will be erased at the next screen update.
-  Standard_EXPORT virtual void Destroy();
-~Graphic3d_Structure()
-{
-  Destroy();
-}
+  Standard_EXPORT ~Graphic3d_Structure();
   
   //! Displays the structure <me> in all the views of the visualiser.
   Standard_EXPORT virtual void Display();

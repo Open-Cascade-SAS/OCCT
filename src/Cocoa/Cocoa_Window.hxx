@@ -78,13 +78,8 @@ public:
   Standard_EXPORT Cocoa_Window (NSView* theViewNS);
 #endif
 
-  //! Destroies the Window and all resourses attached to it
-  Standard_EXPORT virtual  void Destroy();
-
-  ~Cocoa_Window()
-  {
-    Destroy();
-  }
+  //! Destroys the Window and all resourses attached to it
+  Standard_EXPORT ~Cocoa_Window();
 
   //! Opens the window <me>
   Standard_EXPORT virtual void Map() const Standard_OVERRIDE;

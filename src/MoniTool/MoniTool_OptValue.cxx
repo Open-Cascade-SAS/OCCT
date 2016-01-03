@@ -56,9 +56,9 @@ MoniTool_OptValue::MoniTool_OptValue (const Standard_CString opt)
       {  val = theval;  }
 
 //=======================================================================
-//function : Delete
+//function : ~MoniTool_OptValue
 //purpose  : 
 //=======================================================================
 
-void MoniTool_OptValue::Delete() 
+MoniTool_OptValue::~MoniTool_OptValue() 
 {} 

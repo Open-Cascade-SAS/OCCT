@@ -32,9 +32,3 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,MMgt_TShared)
 //-Constructors
 Graphic3d_DataStructureManager::Graphic3d_DataStructureManager () {
 }
-
-//-Destructors
-
-void Graphic3d_DataStructureManager::Destroy () {
-
-}

@@ -82,8 +82,7 @@ public:
   //! Is used to redifine the operator <<.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
   
-  //! Destructor alias.
-    void Delete() const;
+  //! Destructor
   Standard_EXPORT virtual ~math_BissecNewton();
 
 

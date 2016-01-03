@@ -374,9 +374,9 @@ Standard_Boolean BRepToIGES_BREntity::GetPCurveMode () const
 }
 	    
 //=======================================================================
-//function : Delete
+//function : ~BRepToIGES_BREntity
 //purpose  : 
 //=======================================================================
 
-void BRepToIGES_BREntity::Delete() 
+BRepToIGES_BREntity::~BRepToIGES_BREntity() 
 {} 

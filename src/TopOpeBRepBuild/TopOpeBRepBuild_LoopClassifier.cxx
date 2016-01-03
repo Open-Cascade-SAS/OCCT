@@ -18,5 +18,5 @@
 #include <TopOpeBRepBuild_Loop.hxx>
 #include <TopOpeBRepBuild_LoopClassifier.hxx>
 
-void TopOpeBRepBuild_LoopClassifier::Delete()
+TopOpeBRepBuild_LoopClassifier::~TopOpeBRepBuild_LoopClassifier()
 {}

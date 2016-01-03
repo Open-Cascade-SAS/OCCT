@@ -51,8 +51,7 @@ public:
   //! It has to be used if F(Bx) is known.
   Standard_EXPORT math_BrentMinimum(const Standard_Real TolX, const Standard_Real Fbx, const Standard_Integer NbIterations = 100, const Standard_Real ZEPS = 1.0e-12);
   
-  //! Destructor alias.
-    void Delete() const;
+  //! Destructor
   Standard_EXPORT virtual ~math_BrentMinimum();
   
 

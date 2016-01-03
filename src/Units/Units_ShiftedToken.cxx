@@ -91,7 +91,3 @@ void Units_ShiftedToken::Dump(const Standard_Integer ashift,
   for(int i=0; i<ashift; i++)cout<<"  ";
   cout<<"  move  : "<<themove<<endl;
 }
-
-void Units_ShiftedToken::Destroy () {
-
-}

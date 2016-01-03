@@ -17,5 +17,5 @@
 
 #include <AdvApprox_Cutting.hxx>
 
-void AdvApprox_Cutting::Delete()
+AdvApprox_Cutting::~AdvApprox_Cutting()
 {}

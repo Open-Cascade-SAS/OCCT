@@ -34,16 +34,6 @@ class Graphic3d_DataStructureManager : public MMgt_TShared
 
 public:
 
-  
-  //! Deletes the manager <me>.
-  Standard_EXPORT virtual void Destroy();
-~Graphic3d_DataStructureManager()
-{
-  Destroy();
-}
-
-
-
   DEFINE_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,MMgt_TShared)
 
 protected:

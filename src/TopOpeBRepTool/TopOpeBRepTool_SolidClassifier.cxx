@@ -32,10 +32,10 @@ TopOpeBRepTool_SolidClassifier::TopOpeBRepTool_SolidClassifier()
 
 //modified by NIZNHY-PKV Mon Dec 16 10:39:00 2002 f
 //=======================================================================
-//function : Destroy
-//purpose  : alias ~TopOpeBRepTool_SolidClassifier
+//function : ~TopOpeBRepTool_SolidClassifier
+//purpose  : 
 //=======================================================================
-void TopOpeBRepTool_SolidClassifier::Destroy() 
+TopOpeBRepTool_SolidClassifier::~TopOpeBRepTool_SolidClassifier() 
 {
   Standard_Integer i, aNb;
   

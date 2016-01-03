@@ -666,7 +666,6 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theF
 //=======================================================================
 math_FunctionSetRoot::~math_FunctionSetRoot()
 {
-  Delete();
 }
 
 //=======================================================================

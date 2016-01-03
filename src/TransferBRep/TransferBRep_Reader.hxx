@@ -182,11 +182,7 @@ public:
   //! Can be used for queries more accurate than the default ones.
   Standard_EXPORT Handle(Transfer_TransientProcess) TransientProcess() const;
   
-  Standard_EXPORT virtual void Destroy();
-Standard_EXPORT virtual ~TransferBRep_Reader() { Destroy(); }
-
-
-
+  Standard_EXPORT virtual ~TransferBRep_Reader();
 
 protected:
 

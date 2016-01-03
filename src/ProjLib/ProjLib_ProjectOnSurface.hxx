@@ -43,8 +43,7 @@ public:
   //! Create a projector normaly to the surface <S>.
   Standard_EXPORT ProjLib_ProjectOnSurface(const Handle(Adaptor3d_HSurface)& S);
   
-  Standard_EXPORT virtual void Delete();
-Standard_EXPORT virtual ~ProjLib_ProjectOnSurface(){Delete() ; }
+  Standard_EXPORT virtual ~ProjLib_ProjectOnSurface();
   
   //! Set the Surface to <S>.
   //! To compute the projection, you have to Load the Curve.

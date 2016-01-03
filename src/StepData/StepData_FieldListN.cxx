@@ -31,6 +31,3 @@ StepData_Field&  StepData_FieldListN::CField (const Standard_Integer num)
 {
   return thefields.ChangeValue(num);
 }
-
-void StepData_FieldListN::Destroy() {}
-     
