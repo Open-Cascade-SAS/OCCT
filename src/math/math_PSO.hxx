@@ -28,11 +28,11 @@ class math_PSOParticlesPool;
 //!
 //! Algorithm description:
 //! Init Section:
-//! At start of computation a number of “particles” are placed in the search space.
+//! At start of computation a number of "particles" are placed in the search space.
 //! Each particle is assigned a random velocity.
 //!
 //! Computational loop:
-//! The particles are moved in cycle, simulating some “social” behavior, so that new position of
+//! The particles are moved in cycle, simulating some "social" behavior, so that new position of
 //! a particle on each step depends not only on its velocity and previous path, but also on the
 //! position of the best particle in the pool and best obtained position for current particle.
 //! The velocity of the particles is decreased on each step, so that convergence is guaranteed.
@@ -52,6 +52,7 @@ class math_PSOParticlesPool;
 //! Warning: PSO is effective to walk into optimum surrounding, not to get strict optimum.
 //! Run local optimization from pso output point.
 //! Warning: In PSO used fixed seed in RNG, so results are reproducible.
+
 class math_PSO
 {
 public:
