@@ -163,7 +163,7 @@ endif()
 #                 <prefix>/share/opencascade-7.0.0/resources for unix
 if (NOT DEFINED INSTALL_OCCT_RESOURCE_DIR)
   if (UNIX)
-    set (INSTALL_OCCT_RESOURCE_DIR "${INSTALL_DIR}/share/opencascade-${OCC_VERSION_STRING_EXT}/resoures" CACHE PATH "${INSTALL_OCCT_RESOURCE_DIR_DESCR}")
+    set (INSTALL_OCCT_RESOURCE_DIR "${INSTALL_DIR}/share/opencascade-${OCC_VERSION_STRING_EXT}/resources" CACHE PATH "${INSTALL_OCCT_RESOURCE_DIR_DESCR}")
   else()
     set (INSTALL_OCCT_RESOURCE_DIR "${INSTALL_DIR}/src" CACHE PATH "${INSTALL_OCCT_RESOURCE_DIR_DESCR}")
   endif()
