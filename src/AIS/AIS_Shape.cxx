@@ -491,7 +491,7 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   }
   if (!theDrawer->HasOwnPointAspect())
   {
-    theDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_BLACK, 1.0));
+    theDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_BLACK, 1.0));
     if (theDrawer->HasLink())
     {
       *theDrawer->PointAspect()->Aspect() = *theDrawer->Link()->PointAspect()->Aspect();
