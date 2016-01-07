@@ -88,7 +88,7 @@ Standard_Failure::Standard_Failure (const Standard_Failure& theFailure)
   myMessage = copy_message(theFailure.myMessage);
 }
 
-void Standard_Failure::Destroy()
+Standard_Failure::~Standard_Failure()
 {
   deallocate_message(myMessage);
 }
@@ -195,3 +195,13 @@ Handle(Standard_Failure) Standard_Failure::NewInstance(const Standard_CString AS
 {
   return new Standard_Failure(AString)  ;
 }
+
+//=======================================================================
+//function : GetMessageString
+//purpose  : Returns error message
+//=======================================================================
+Standard_CString Standard_Failure::GetMessageString () const
+{
+  return (myMessage ? myMessage+sizeof(Standard_Integer) : "");
+}
+

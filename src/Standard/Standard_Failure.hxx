@@ -41,19 +41,18 @@ public:
 
   //! Creates a status object of type "Failure".
   Standard_EXPORT Standard_Failure();
-Standard_EXPORT Standard_Failure (const Standard_Failure& f);
-  
+
+  //! Copy constructor
+  Standard_EXPORT Standard_Failure (const Standard_Failure& f);
 
   //! Creates a status object of type "Failure".
   Standard_EXPORT Standard_Failure(const Standard_CString aString);
-Standard_EXPORT Standard_Failure& operator= (const Standard_Failure& f);
+
+  //! Assignment operator
+  Standard_EXPORT Standard_Failure& operator= (const Standard_Failure& f);
   
-  Standard_EXPORT void Destroy();
-~Standard_Failure()
-{
-  Destroy();
-}
-  
+  //! Destructor
+  Standard_EXPORT ~Standard_Failure();
 
   //! Prints on the stream <s> the exception name followed by
   //! the error message.
@@ -63,16 +62,12 @@ Standard_EXPORT Standard_Failure& operator= (const Standard_Failure& f);
   //! Handle(Standard_Failure)&)"
   //! is implemented. (This operator uses the method Print)
   Standard_EXPORT void Print (Standard_OStream& s) const;
-void operator<< (Standard_OStream& s) const
-{
-  Print(s);
-}
   
   //! Returns error message
-    Standard_CString GetMessageString() const;
+  Standard_EXPORT virtual Standard_CString GetMessageString() const;
   
   //! Sets error message
-  Standard_EXPORT void SetMessageString (const Standard_CString aMessage);
+  Standard_EXPORT virtual void SetMessageString (const Standard_CString aMessage);
   
   Standard_EXPORT void Reraise();
   
@@ -133,11 +128,11 @@ private:
 
 };
 
-
-#include <Standard_Failure.lxx>
-
-
-
-
+inline Standard_OStream& operator << (Standard_OStream& AStream,
+                                      const Handle(Standard_Failure)& AFailure)
+{
+  AFailure->Print(AStream);
+  return AStream;
+}
 
 #endif // _Standard_Failure_HeaderFile

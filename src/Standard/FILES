@@ -29,7 +29,6 @@ Standard_ExtString.cxx
 Standard_ExtString.hxx
 Standard_Failure.cxx
 Standard_Failure.hxx
-Standard_Failure.lxx
 Standard_GUID.cxx
 Standard_GUID.hxx
 Standard_Handle.hxx
@@ -62,6 +61,7 @@ Standard_NullObject.hxx
 Standard_NullValue.hxx
 Standard_NumericError.hxx
 Standard_OStream.hxx
+Standard_OutOfMemory.cxx
 Standard_OutOfMemory.hxx
 Standard_OutOfRange.hxx
 Standard_Overflow.hxx

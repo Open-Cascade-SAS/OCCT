@@ -18,6 +18,7 @@
 #include <gp_Ax2.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <NCollection_List.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -1251,6 +1252,82 @@ static Standard_Integer SurfaceGenOCC26675_1( Draw_Interpretor& theDI,
   return 0;
 }
 
+namespace AllocTest
+{
+  // The test is based of occupying of all available virtual memory.
+  // Obviously it has no sense on 64-bit platforms.
+
+  enum Status
+  {
+    NotApplicable = 0x1,
+    OUMCatchOK    = 0x2,
+    OUMCatchFail  = 0x4
+  };
+
+  template<int> int test()
+  {
+    // non-32-bit implementation
+    return NotApplicable;
+  }
+  
+  template<> int test<4>()
+  {
+    // 32-bit implementation
+    NCollection_List<Standard_Address> aList;
+    const Standard_Integer aBlockSizes[] = {100000, 10000, 10};
+    int aStatus = 0;
+
+    // start populate memory with blocks of large size, then
+    // smaller ones and so on according to content of the array aBlockSizes
+    for (size_t i=0; i < sizeof(aBlockSizes)/sizeof(int); i++)
+    {
+      try
+      {
+        for (;;)
+          aList.Append(Standard::Allocate(aBlockSizes[i]));
+      }
+      catch (Standard_Failure)
+      {
+        aStatus |= OUMCatchOK;
+      }
+      catch (...)
+      {
+        aStatus |= OUMCatchFail;
+        break;
+      }
+    }
+    // release all allocated blocks
+    for (NCollection_List<Standard_Address>::Iterator it(aList); it.More(); it.Next())
+    {
+      Standard::Free(it.Value());
+    }
+    return aStatus;
+  }
+}
+
+//=======================================================================
+//function : OCC24836
+//purpose :
+//=======================================================================
+static Standard_Integer OCC24836 (Draw_Interpretor& theDI, Standard_Integer n, const char** a)
+{
+  if (n != 1)
+  {
+    theDI << "Usage : " << a[0] << "\n";
+    return 1;
+  }
+
+  int aStatus = AllocTest::test<sizeof(size_t)>();
+
+  if (aStatus & AllocTest::NotApplicable)
+    theDI << "This test case is not applicable for 64-bit and higher platforms\n";
+  if (aStatus & AllocTest::OUMCatchOK)
+    theDI << "out-of-memory has been caught: OK\n";
+  if (aStatus & AllocTest::OUMCatchFail)
+    theDI << "Error: out-of-memory is not always caught\n";
+  return 0;
+}
+
 
 //=======================================================================
 //function : OCC27021 
@@ -1346,6 +1423,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
   theCommands.Add ("OCC26675_1", "OCC26675_1 result", __FILE__, SurfaceGenOCC26675_1, group);
+  theCommands.Add ("OCC24836", "OCC24836", __FILE__, OCC24836, group);
   theCommands.Add("OCC27021", "OCC27021", __FILE__, OCC27021, group);
 
   return;
