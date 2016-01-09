@@ -16,22 +16,6 @@
 #ifndef LDOM_OSStream_HeaderFile
 #define LDOM_OSStream_HeaderFile
 
-//  This implementation allows to increase performance
-//        of outputting data into a string
-//        avoiding reallocation of buffer.
-//  class LDOM_OSStream implements output into a sequence of
-//             strings and getting the result as a string.
-//        It inherits Standard_OStream (ostream).
-//        Beside methods of ostream, it also has additional
-//        useful methods: str(), Length() and Clear().
-//  struct LDOM_StringElem is one element of internal sequence
-//  class LDOM_SBuffer inherits streambuf and
-//             redefines some virtual methods of it
-//             (overflow() and xsputn())
-//        This class contains pointers on first
-//          and current element of sequence,
-//          also it has methods for the sequence management.
-
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_OStream.hxx>
@@ -40,11 +24,15 @@
 #include <stdlib.h>
 #include <stdio.h> /* EOF */
 
-class LDOM_SBuffer : public streambuf
+//! Class LDOM_SBuffer inherits streambuf and
+//! redefines some virtual methods of it (overflow() and xsputn()).
+//! This class contains pointers on first and current element 
+//! of sequence, also it has methods for the sequence management.
+class LDOM_SBuffer : public std::streambuf
 {
-  // One element of sequence.
-  // Can only be allocated by the allocator and assumes
-  // it is IncAllocator, so destructor isn't required.
+  //! One element of sequence.
+  //! Can only be allocated by the allocator and assumes
+  //! it is IncAllocator, so destructor isn't required.
   struct LDOM_StringElem
   {
     char*            buf;  //!< pointer on data string
@@ -62,32 +50,32 @@ class LDOM_SBuffer : public streambuf
   };
 
 public:
+  //! Constructor. Sets a default value for the
+  //!              length of each sequence element.
   Standard_EXPORT LDOM_SBuffer (const Standard_Integer theMaxBuf);
-  // Constructor. Sets a default value for the
-  //              length of each sequence element.
 
+  //! Concatenates strings of all sequence elements
+  //! into one string. Space for output string is allocated
+  //! with operator new.
+  //! Caller of this function is responsible
+  //! for memory release after the string usage.
   Standard_EXPORT Standard_CString str () const;
-  // Concatenates strings of all sequence elements
-  // into one string. Space for output string is allocated
-  // with operator new.
-  // Caller of this function is responsible
-  // for memory release after the string usage.
 
+  //! Returns full length of data contained
   Standard_Integer Length () const {return myLength;}
-  // Returns full length of data contained
 
+  //! Clears first element of sequence and removes all others
   Standard_EXPORT void Clear ();
-  // Clears first element of sequence and removes all others
 
-    // Methods of streambuf
+  // Methods of streambuf
 
-    Standard_EXPORT virtual int overflow(int c = EOF);
-    Standard_EXPORT virtual int underflow();
-    //virtual int uflow();
+  Standard_EXPORT virtual int overflow(int c = EOF) Standard_OVERRIDE;
+  Standard_EXPORT virtual int underflow() Standard_OVERRIDE;
+  //virtual int uflow();
 
-    Standard_EXPORT virtual int xsputn(const char* s, int n);
-    //virtual int xsgetn(char* s, int n);
-    //virtual int sync();
+  Standard_EXPORT virtual std::streamsize xsputn(const char* s, std::streamsize n) Standard_OVERRIDE;
+  //virtual int xsgetn(char* s, int n);
+  //virtual int sync();
 
   Standard_EXPORT ~LDOM_SBuffer ();
   // Destructor
@@ -101,15 +89,22 @@ private:
   Handle(NCollection_BaseAllocator) myAlloc; //allocator for chunks
 };
 
+//! Subclass if std::ostream allowing to increase performance
+//! of outputting data into a string avoiding reallocation of buffer.
+//! Class LDOM_OSStream implements output into a sequence of
+//! strings and getting the result as a string.
+//! It inherits Standard_OStream (ostream).
+//! Beside methods of ostream, it also has additional
+//! useful methods: str(), Length() and Clear().
 class LDOM_OSStream : public Standard_OStream
 {
- public:
-  Standard_EXPORT LDOM_OSStream (const Standard_Integer theMaxBuf);
-  // Constructor
+public:
+  //! Constructor
+  Standard_EXPORT LDOM_OSStream(const Standard_Integer theMaxBuf);
 
   Standard_CString str () const {return myBuffer.str();}
 
-  Standard_Integer Length () const {return myBuffer.Length();}
+  Standard_Integer Length () const { return myBuffer.Length(); }
 
   void Clear () { myBuffer.Clear(); }
 

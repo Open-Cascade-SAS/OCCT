@@ -15,9 +15,9 @@
 
 #include <LDOM_OSStream.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <Standard_Assert.hxx>
+
 #include <string.h>
-#include <Standard.hxx>
-#include <Standard_Integer.hxx>
 
 //=======================================================================
 //function : LDOM_StringElem()
@@ -92,7 +92,8 @@ Standard_CString LDOM_SBuffer::str () const
 int LDOM_SBuffer::overflow(int c)
 {
   char cc = (char)c;
-  return xsputn(&cc,1);
+  xsputn(&cc,1);
+  return c;
 }
 
 //=======================================================================
@@ -112,10 +113,12 @@ int LDOM_SBuffer::underflow()
 //function : xsputn()
 //purpose  : redefined virtual
 //=======================================================================
-int LDOM_SBuffer::xsputn(const char* aStr, int n)
+std::streamsize LDOM_SBuffer::xsputn (const char* aStr, std::streamsize n)
 {
-  int aLen = n + 1;
-  int freeLen = myMaxBuf - myCurString->len - 1;
+  Standard_ASSERT_RAISE (n < IntegerLast(), "LDOM_SBuffer cannot work with strings greater than 2 Gb");
+
+  Standard_Integer aLen = static_cast<int>(n) + 1;
+  Standard_Integer freeLen = myMaxBuf - myCurString->len - 1;
   if (freeLen >= n)
   {
     strncpy(myCurString->buf + myCurString->len, aStr, aLen);
@@ -142,7 +145,7 @@ int LDOM_SBuffer::xsputn(const char* aStr, int n)
   myCurString->len += aLen - 1;
   *(myCurString->buf + myCurString->len) = '\0';
 
-  myLength += n;
+  myLength += static_cast<int>(n);
   return n;
 }
 
