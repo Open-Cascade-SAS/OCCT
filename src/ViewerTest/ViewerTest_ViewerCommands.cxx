@@ -3507,7 +3507,7 @@ static int VColorScale (Draw_Interpretor& theDI,
 
   Standard_Real                   aMinRange    = aCS->GetMin();
   Standard_Real                   aMaxRange    = aCS->GetMax();
-  Standard_Integer                aWidth       = aCS->GetWidth();
+  Standard_Integer                aBreadth     = aCS->GetBreadth();
   Standard_Integer                aHeight      = aCS->GetHeight();
   Standard_Integer                aNbIntervals = aCS->GetNumberOfIntervals();
   Standard_Integer                aTextHeight  = aCS->GetTextHeight();
@@ -3685,7 +3685,7 @@ static int VColorScale (Draw_Interpretor& theDI,
         return 1;
       }
 
-      aWidth = aW.IntegerValue();
+      aBreadth = aW.IntegerValue();
     }
     else if (aFlag == "-height"
           || aFlag == "-h")
@@ -3736,16 +3736,15 @@ static int VColorScale (Draw_Interpretor& theDI,
       }
 
       Standard_Integer anIndex = anInd.IntegerValue();
-      if (anIndex < 0
-       || anIndex > aNbIntervals - 1)
+      if (anIndex <= 0 || anIndex > aNbIntervals)
       {
-        std::cout << "Error: Index value should be within range 0..." << (aNbIntervals - 1) <<"!\n";
+        std::cout << "Error: Index value should be within range 1.." << aNbIntervals <<"!\n";
         return 1;
       }
 
       if (Quantity_Color::ColorFromName (theArgVec[anArgIter + 2], aColorName))
       {
-        aCS->SetColor    (Quantity_Color (aColorName), anIndex);
+        aCS->SetIntervalColor (Quantity_Color (aColorName), anIndex);
         aCS->SetColorType (Aspect_TOCSD_USER);
         anArgIter += 2;
         continue;
@@ -3759,7 +3758,7 @@ static int VColorScale (Draw_Interpretor& theDI,
       {
         return 1;
       }
-      aCS->SetColor     (Quantity_Color (aRedValue, aGreenValue, aBlueValue, Quantity_TOC_RGB), anIndex);
+      aCS->SetIntervalColor (Quantity_Color (aRedValue, aGreenValue, aBlueValue, Quantity_TOC_RGB), anIndex);
       aCS->SetColorType (Aspect_TOCSD_USER);
       anArgIter += 4;
     }
@@ -3777,10 +3776,9 @@ static int VColorScale (Draw_Interpretor& theDI,
       }
 
       Standard_Integer anIndex = Draw::Atoi (theArgVec[anArgIter + 1]);
-      if (anIndex < 0
-       || anIndex > aNbIntervals)
+      if (anIndex <= 0 || anIndex > aNbIntervals+1)
       {
-        std::cout << "Error: Index value should be within range 0..." << aNbIntervals <<"!\n";
+        std::cout << "Error: Index value should be within range 1.." << aNbIntervals+1 <<"!\n";
         return 1;
       }
 
@@ -3914,7 +3912,7 @@ static int VColorScale (Draw_Interpretor& theDI,
       aMinRange    = 0.0;
       aMaxRange    = 100;
       aNbIntervals = 10;
-      aWidth       = 0;
+      aBreadth     = 0;
       aHeight      = 0;
       aLabPosition = Aspect_TOCSP_RIGHT;
       aCS->SetColorType (Aspect_TOCSD_AUTO);
@@ -3926,26 +3924,26 @@ static int VColorScale (Draw_Interpretor& theDI,
       return 1;
     }
   }
-  if (!aWidth || !aHeight)
+  if (!aBreadth || !aHeight)
   {
     Standard_Integer aWinWidth, aWinHeight;
     aView->Window()->Size (aWinWidth, aWinHeight);
-    if (!aWidth)
+    if (!aBreadth)
     {
-      aWidth = aWinWidth;
+      aBreadth = aWinWidth;
     }
     if (!aHeight)
     {
       aHeight = aWinHeight;
     }
   }
-  aCS->SetSize              (aWidth, aHeight);
+  aCS->SetSize              (aBreadth, aHeight);
   aCS->SetPosition          (aPosX, aPosY);
   aCS->SetTextHeight        (aTextHeight);
   aCS->SetRange             (aMinRange, aMaxRange);
   aCS->SetNumberOfIntervals (aNbIntervals);
   aCS->SetLabelPosition     (aLabPosition);
-  aCS->SetBGColor           (aView->BackgroundColor());
+//  aCS->SetColor             (aView->BackgroundColor().Invert());
   aCS->SetToUpdate();
   aContext->Display (aCS);
 

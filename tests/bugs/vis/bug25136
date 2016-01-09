@@ -21,11 +21,11 @@ vcolorscale cs -colors white 0 0 1 green 1 0 0 1 1 1 -labels start 1 2 3 4 end
 vdump ${imagedir}/${casename}_3.png
 
 # change colors of first and last intervals
-vcolorscale cs -color 0 0.42 0.35 0.8
-vcolorscale cs -color 4 pink
+vcolorscale cs -color 1 0.42 0.35 0.8
+vcolorscale cs -color 5 pink
 
 # change last label
-vcolorscale cs -label 5 "last"
+vcolorscale cs -label 6 "last"
 
 # set a title for color scale
 vcolorscale cs -title "My color scale"

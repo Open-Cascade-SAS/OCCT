@@ -24,8 +24,16 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
+//! Class for drawing a custom color scale.
+//!
+//! The color scale consists of rectangular color bar (composed of fixed
+//! number of color intervals), optional labels, and title.
+//! The labels can be positioned either at the boundaries of the intervals,
+//! or at the middle of each interval.
+//! Colors and labels can be either defined automatically or set by the user.
+//! Automatic labels are calculated from numerical limits of the scale,
+//! its type (logarithmic or plain), and formatted by specified format string.
 
-//! Class for drawing a custom color scale
 class AIS_ColorScale : public AIS_InteractiveObject {
 
 public:
@@ -68,13 +76,15 @@ public:
   //! Used if GetLabelType() is TOCSD_AUTO;
   Standard_EXPORT TCollection_AsciiString GetFormat() const { return myFormat; }
 
-  //! Returns the user specified label with index <anIndex>.
+  //! Returns the user specified label with index theIndex.
+  //! Index is in range from 1 to GetNumberOfIntervals() or to
+  //! GetNumberOfIntervals() + 1 if IsLabelAtBorder() is true.
   //! Returns empty string if label not defined.
   Standard_EXPORT TCollection_ExtendedString GetLabel (const Standard_Integer theIndex) const;
 
-  //! Returns the user specified color from color map with index <anIndex>.
-  //! Returns default color if index out of range in color map.
-  Standard_EXPORT Quantity_Color GetColor (const Standard_Integer theIndex) const;
+  //! Returns the user specified color from color map with index <anIndex> (starts at 1).
+  //! Returns default color if index is out of range in color map.
+  Standard_EXPORT Quantity_Color GetIntervalColor (const Standard_Integer theIndex) const;
 
   //! Returns the user specified labels.
   Standard_EXPORT void GetLabels (TColStd_SequenceOfExtendedString& theLabels) const;
@@ -91,7 +101,7 @@ public:
   //! Returns true if the labels and colors used in reversed order.
   Standard_EXPORT Standard_Boolean IsReversed() const { return myReversed; }
 
-  //! Returns true if the labels placed at border of color filled rectangles.
+  //! Returns true if the labels are placed at border of color intervals.
   Standard_EXPORT Standard_Boolean IsLabelAtBorder() const { return myAtBorder; }
 
   //! Returns true if the color scale has logarithmic intervals
@@ -125,19 +135,25 @@ public:
   //! Sets the color scale auto label format specification.
   Standard_EXPORT void SetFormat (const TCollection_AsciiString& theFormat);
 
-  //! Sets the color scale label at index. Index started from 1.
-  Standard_EXPORT void SetLabel (const TCollection_ExtendedString& theLabel, const Standard_Integer anIndex = -1);
+  //! Sets the color scale label at index.
+  //! Index is in range from 1 to GetNumberOfIntervals() or to
+  //! GetNumberOfIntervals() + 1 if IsLabelAtBorder() is true.
+  Standard_EXPORT void SetLabel (const TCollection_ExtendedString& theLabel, const Standard_Integer anIndex);
 
-  //! Sets the color scale color at index. Index started from 1.
-  Standard_EXPORT void SetColor (const Quantity_Color& theColor, const Standard_Integer theIndex = -1);
+  //! Sets the color of the specified interval. 
+  //! Index is in range from 1 to GetNumberOfIntervals().
+  Standard_EXPORT void SetIntervalColor (const Quantity_Color& theColor, const Standard_Integer theIndex);
 
   //! Sets the color scale labels.
+  //! The length of the sequence should be equal to GetNumberOfIntervals() or to
+  //! GetNumberOfIntervals() + 1 if IsLabelAtBorder() is true.
   Standard_EXPORT void SetLabels (const TColStd_SequenceOfExtendedString& theSeq);
 
   //! Sets the color scale colors.
+  //! The length of the sequence should be equal to GetNumberOfIntervals().
   Standard_EXPORT void SetColors (const Aspect_SequenceOfColor& theSeq);
 
-  //! Sets the color scale labels position concerning color filled rectangles.
+  //! Sets the color scale labels position relative to color bar.
   Standard_EXPORT void SetLabelPosition (const Aspect_TypeOfColorScalePosition thePos);
 
   //! Sets the color scale title position.
@@ -146,35 +162,30 @@ public:
   //! Sets true if the labels and colors used in reversed order.
   Standard_EXPORT void SetReversed (const Standard_Boolean theReverse);
 
-  //! Sets true if the labels placed at border of color filled rectangles.
+  //! Sets true if the labels are placed at border of color intervals (true by default).
+  //! If set to False, labels will be drawn at color intervals rather than at borders.
   Standard_EXPORT void SetLabelAtBorder (const Standard_Boolean theOn);
 
   //! Sets true if the color scale has logarithmic intervals.
   void SetLogarithmic (const Standard_Boolean isLogarithmic) { myIsLogarithmic = isLogarithmic; };
 
-  //! Returns the size of color scale.
-  Standard_EXPORT void GetSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const;
+  //! Returns the size of color bar.
+  Standard_EXPORT void GetSize (Standard_Integer& theBreadth, Standard_Integer& theHeight) const;
 
-  //! Returns the width of color scale.
-  Standard_EXPORT Standard_Integer GetWidth() const { return myWidth; }
+  //! Returns the breadth of color bar.
+  Standard_EXPORT Standard_Integer GetBreadth() const { return myBreadth; }
 
-  //! Returns the height of color scale.
+  //! Returns the height of color bar.
   Standard_EXPORT Standard_Integer GetHeight() const { return myHeight; }
 
-  //! Returns the background color of color scale.
-  const Quantity_Color& GetBgColor() const { return myBgColor; }
-
-  //! Sets the size of color scale.
+  //! Sets the size of color bar.
   Standard_EXPORT void SetSize (const Standard_Integer theWidth, const Standard_Integer theHeight);
 
-  //! Sets the width of color scale.
-  Standard_EXPORT void SetWidth (const Standard_Integer theWidth);
+  //! Sets the width of color bar.
+  Standard_EXPORT void SetBreadth (const Standard_Integer theBreadth);
 
-  //! Sets the height of color scale.
+  //! Sets the height of color bar.
   Standard_EXPORT void SetHeight (const Standard_Integer theHeight);
-
-  //! Sets the background color of color scale.
-  void SetBGColor (const Quantity_Color& theBgColor) { myBgColor = theBgColor; };
 
   //! Returns the position of color scale.
   Standard_EXPORT void GetPosition (Standard_Real& theX, Standard_Real& theY) const;
@@ -254,11 +265,8 @@ private:
   //! Returns the format of text.
   TCollection_AsciiString Format() const;
 
-  //! Returns the value of given interval.
-  Standard_Real GetNumber (const Standard_Integer theIndex) const;
-
-  //! Returns the value of given logarithmic interval.
-  Standard_Real GetLogNumber (const Standard_Integer theIndex) const;
+  //! Returns the upper value of given interval, or minimum for theIndex = 0.
+  Standard_Real GetIntervalValue (const Standard_Integer theIndex) const;
 
   //! Returns the color's hue for the given value in the given interval.
   //! @param theValue [in] the current value of interval.
@@ -284,7 +292,7 @@ private:
   Aspect_TypeOfColorScalePosition myTitlePos;
   Standard_Integer myXPos;
   Standard_Integer myYPos;
-  Standard_Integer myWidth;
+  Standard_Integer myBreadth;
   Standard_Integer myHeight;
   Standard_Integer myTextHeight;
   Quantity_Color myBgColor;

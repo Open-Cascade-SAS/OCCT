@@ -60,10 +60,9 @@ myLabelPos (Aspect_TOCSP_RIGHT),
 myTitlePos (Aspect_TOCSP_CENTER),
 myXPos (0),
 myYPos (0),
-myWidth (0),
+myBreadth (0),
 myHeight (0),
-myTextHeight(20),
-myBgColor (Quantity_NOC_BLACK)
+myTextHeight(20)
 {
 }
 
@@ -85,15 +84,17 @@ TCollection_ExtendedString AIS_ColorScale::GetLabel (const Standard_Integer theI
 {
   if (GetLabelType() == Aspect_TOCSD_USER)
   {
-    if (theIndex < 0
-     || theIndex >= myLabels.Length())
+    if (theIndex <= 0 || theIndex > myLabels.Length())
     {
       return "";
     }
-
-    return myLabels.Value (theIndex + 1);
+    return myLabels.Value (theIndex);
   }
-  Standard_Real aVal = IsLogarithmic() ? GetLogNumber(theIndex) : GetNumber (theIndex);
+
+  // value to be shown depends on label position
+  Standard_Real aVal = IsLabelAtBorder() ? GetIntervalValue (theIndex - 1) :
+                       0.5 * (GetIntervalValue (theIndex - 1) + GetIntervalValue (theIndex));
+
   const TCollection_AsciiString aFormat = Format();
   Standard_Character aBuf[1024];
   sprintf (aBuf, aFormat.ToCString(), aVal);
@@ -101,22 +102,21 @@ TCollection_ExtendedString AIS_ColorScale::GetLabel (const Standard_Integer theI
 }
 
 //=======================================================================
-//function : GetColor
+//function : GetIntervalColor
 //purpose  :
 //=======================================================================
-Quantity_Color AIS_ColorScale::GetColor (const Standard_Integer theIndex) const
+Quantity_Color AIS_ColorScale::GetIntervalColor (const Standard_Integer theIndex) const
 {
   if (GetColorType() == Aspect_TOCSD_USER)
   {
-    if (theIndex < 0
-     || theIndex >= myColors.Length())
+    if (theIndex <= 0 || theIndex > myColors.Length())
     {
       return Quantity_Color();
     }
-
-    return myColors.Value (theIndex + 1);
+    return myColors.Value (theIndex);
   }
-  return Quantity_Color (HueFromValue (theIndex, 0, GetNumberOfIntervals() - 1), 1.0, 1.0, Quantity_TOC_HLS);
+
+  return Quantity_Color (HueFromValue (theIndex - 1, 0, GetNumberOfIntervals() - 1), 1.0, 1.0, Quantity_TOC_HLS);
 }
 
 //=======================================================================
@@ -238,36 +238,22 @@ void AIS_ColorScale::SetFormat (const TCollection_AsciiString& theFormat)
 //=======================================================================
 void AIS_ColorScale::SetLabel (const TCollection_ExtendedString& theLabel, const Standard_Integer theIndex)
 {
-  Standard_Integer i = theIndex < 0 ? myLabels.Length() + 1 : theIndex + 1;
-  if (i <= myLabels.Length())
-  {
-    myLabels.SetValue (i, theLabel);
-  }
-  else
-  {
-    while (i > myLabels.Length())
-      myLabels.Append (TCollection_ExtendedString());
-    myLabels.SetValue (i, theLabel);
-  }
+  Standard_Integer i = (theIndex <= 0 ? myLabels.Length() + 1 : theIndex);
+  while (i > myLabels.Length())
+    myLabels.Append (TCollection_ExtendedString());
+  myLabels.SetValue (i, theLabel);
 }
 
 //=======================================================================
-//function : SetColor
+//function : SetIntervalColor
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetColor (const Quantity_Color& theColor, const Standard_Integer theIndex)
+void AIS_ColorScale::SetIntervalColor (const Quantity_Color& theColor, const Standard_Integer theIndex)
 {
-  Standard_Integer i = theIndex < 0 ? myColors.Length() + 1 : theIndex + 1;
-  if (i <= myColors.Length())
-  {
-    myColors.SetValue (i, theColor);
-  }
-  else
-  {
-    while (i > myColors.Length())
-      myColors.Append (Quantity_Color());
-    myColors.SetValue (i, theColor);
-  }
+  Standard_Integer i = (theIndex <= 0 ? myColors.Length() + 1 : theIndex);
+  while (i > myColors.Length())
+    myColors.Append (Quantity_Color());
+  myColors.SetValue (i, theColor);
 }
 
 //=======================================================================
@@ -385,9 +371,9 @@ void AIS_ColorScale::SetYPosition (const Standard_Integer theY)
 //function : GetSize
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::GetSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const
+void AIS_ColorScale::GetSize (Standard_Integer& theBreadth, Standard_Integer& theHeight) const
 {
-  theWidth = myWidth;
+  theBreadth = myBreadth;
   theHeight = myHeight;
 }
 
@@ -395,20 +381,20 @@ void AIS_ColorScale::GetSize (Standard_Integer& theWidth, Standard_Integer& theH
 //function : SetSize
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetSize (const Standard_Integer theWidth, const Standard_Integer theHeight)
+void AIS_ColorScale::SetSize (const Standard_Integer theBreadth, const Standard_Integer theHeight)
 {
-  if (myWidth == theWidth && myHeight == theHeight)
+  if (myBreadth == theBreadth && myHeight == theHeight)
     return;
 
-  myWidth = theWidth;
+  myBreadth = theBreadth;
   myHeight = theHeight;
 }
 
 //=======================================================================
-//function : SetWidth
+//function : SetBreadth
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::SetWidth (const Standard_Integer theWidth)
+void AIS_ColorScale::SetBreadth (const Standard_Integer theWidth)
 {
   SetSize (theWidth, GetHeight());
 }
@@ -419,7 +405,7 @@ void AIS_ColorScale::SetWidth (const Standard_Integer theWidth)
 //=======================================================================
 void AIS_ColorScale::SetHeight (const Standard_Integer theHeight)
 {
-  SetSize (GetWidth(), theHeight);
+  SetSize (GetBreadth(), theHeight);
 }
 
 //=======================================================================
@@ -436,25 +422,19 @@ void AIS_ColorScale::SizeHint (Standard_Integer& theWidth, Standard_Integer& the
   Standard_Integer aColorWidth = 20;
 
   if (GetLabelPosition() != Aspect_TOCSP_NONE)
-    for (Standard_Integer idx = 0; idx < aNum; idx++)
-      aTextWidth = Max (aTextWidth, TextWidth (GetLabel (idx + 1)));
+  {
+    for (Standard_Integer idx = (IsLabelAtBorder() ? 0 : 1); idx <= aNum; idx++)
+      aTextWidth = Max (aTextWidth, TextWidth (GetLabel (idx)));
+  }
 
   Standard_Integer aScaleWidth = 0;
   Standard_Integer aScaleHeight = 0;
 
+  aScaleWidth = aColorWidth + aTextWidth + ( aTextWidth ? 3 : 2 ) * aSpacer;
+  aScaleHeight = (Standard_Integer)( 1.5 * ( aNum + (IsLabelAtBorder() ? 2 : 1) ) * aTextHeight );
+
   Standard_Integer aTitleWidth = 0;
   Standard_Integer aTitleHeight = 0;
-
-  if (IsLabelAtBorder())
-  {
-    aNum++;
-    if (GetTitle().Length())
-      aTitleHeight += 10;
-  }
-
-  aScaleWidth = aColorWidth + aTextWidth + ( aTextWidth ? 3 : 2 ) * aSpacer;
-  aScaleHeight = (Standard_Integer)( 1.5 * ( aNum + 1 ) * aTextHeight );
-
   if (GetTitle().Length())
   {
     aTitleHeight = TextHeight (GetTitle()) + aSpacer;
@@ -475,30 +455,25 @@ TCollection_AsciiString AIS_ColorScale::Format() const
 }
 
 //=======================================================================
-//function : GetNumber
+//function : GetIntervalValue
 //purpose  :
 //=======================================================================
-Standard_Real AIS_ColorScale::GetNumber (const Standard_Integer theIndex) const
+Standard_Real AIS_ColorScale::GetIntervalValue (const Standard_Integer theIndex) const
 {
-  Standard_Real aNum = 0;
-  if (GetNumberOfIntervals() > 0)
-    aNum = GetMin() + theIndex * ( Abs (GetMax() - GetMin()) / GetNumberOfIntervals() );
-  return aNum;
-}
+  if (GetNumberOfIntervals() <= 0)
+    return 0.;
 
-//=======================================================================
-//function : GetLogNumber
-//purpose  :
-//=======================================================================
-Standard_Real AIS_ColorScale::GetLogNumber (const Standard_Integer theIndex) const
-{
-  if (GetNumberOfIntervals() > 0)
+  if (IsLogarithmic())
   {
     Standard_Real aMin = myMin > 0 ? myMin : 1.0;
     Standard_Real aDivisor = std::pow (myMax/aMin, 1.0/myInterval);
     return aMin*std::pow (aDivisor,theIndex);
   }
-  return 0;
+
+  Standard_Real aNum = 0;
+  if (GetNumberOfIntervals() > 0)
+    aNum = GetMin() + theIndex * ( Abs (GetMax() - GetMin()) / GetNumberOfIntervals() );
+  return aNum;
 }
 
 //=======================================================================
@@ -566,7 +541,6 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
 {
   Handle(V3d_Viewer) aViewer= GetContext()->CurrentViewer();
   aViewer->InitActiveViews();
-  Quantity_Color aBgColor = myBgColor;
   Standard_Integer aNum = GetNumberOfIntervals();
   Aspect_TypeOfColorScalePosition aLabPos = GetLabelPosition();
 
@@ -576,8 +550,7 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   Standard_Boolean toDrawLabel = GetLabelPosition() != Aspect_TOCSP_NONE;
   TCollection_ExtendedString aTitle = GetTitle();
   Standard_Integer aTitleHeight = aSpacer;
-  Standard_Integer aGray = (Standard_Integer)(255 * ( aBgColor.Red() * 11 + aBgColor.Green() * 16 + aBgColor.Blue() * 5 ) / 32);
-  Quantity_Color aFgColor (aGray < 128 ? Quantity_NOC_WHITE : Quantity_NOC_BLACK);
+  Quantity_Color aFgColor (hasOwnColor ? myOwnColor : Quantity_NOC_WHITE);
 
   // Draw title
   if (aTitle.Length())
@@ -589,34 +562,35 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   Standard_Boolean toReverse = IsReversed();
 
   Aspect_SequenceOfColor aColors;
-  TColStd_SequenceOfExtendedString aLabels;
-  for (Standard_Integer i = 0; i < aNum; i++)
+  for (Standard_Integer i = 1; i <= aNum; i++)
   {
     if (toReverse)
     {
-      aColors.Prepend (GetColor (i));
+      aColors.Prepend (GetIntervalColor (i));
+    }
+    else
+    {
+      aColors.Append (GetIntervalColor (i));
+    }
+  }
+
+  TColStd_SequenceOfExtendedString aLabels;
+  Standard_Integer aLabCount = IsLabelAtBorder() ? aNum + 1 : aNum;
+  for (Standard_Integer i = 1; i <= aLabCount; i++)
+  {
+    if (toReverse)
+    {
       aLabels.Prepend (GetLabel (i));
     }
     else
     {
-      aColors.Append (GetColor (i));
       aLabels.Append (GetLabel (i));
     }
-  }
-
-  if (IsLabelAtBorder())
-  {
-    if (toReverse)
-      aLabels.Prepend (GetLabel (aNum));
-    else
-      aLabels.Append (GetLabel (aNum));
   }
 
   if (toDrawLabel)
     for (Standard_Integer i = 1; i <= aLabels.Length(); i++)
       aTextWidth = Max (aTextWidth, TextWidth (aLabels.Value (i)));
-
-  Standard_Integer aLabCount = aLabels.Length();
 
   Standard_Integer aSpc = ( myHeight - ( ( Min (aLabCount, 2) + Abs (aLabCount - aNum - 1) ) * aTextHeight ) - aTitleHeight );
   Standard_Real aVal = aSpc != 0 ? 1.0 * ( aLabCount - Min (aLabCount, 0) ) * aTextHeight / aSpc : 0;
@@ -627,9 +601,9 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   Standard_Real aStep = 1.0 * ( myHeight - (aLabCount - aNum + Abs (aLabCount - aNum - 1)) * aTextHeight - aTitleHeight ) / aNum;
 
   Standard_Integer anAscent = 0;
-  Standard_Integer aColorWidth = Max (5, Min (20, myWidth - aTextWidth - 3 * aSpacer));
+  Standard_Integer aColorBreadth = Max (5, Min (20, myBreadth - aTextWidth - 3 * aSpacer));
   if (aLabPos == Aspect_TOCSP_CENTER || !toDrawLabel)
-    aColorWidth += aTextWidth;
+    aColorBreadth += aTextWidth;
 
   // Draw colors
   Standard_Integer aX = (Standard_Integer)myXPos + aSpacer;
@@ -649,9 +623,9 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
     Standard_Integer aY = (Standard_Integer)( myYPos + ( i - 1 )* aStep + anOffset );
     Standard_Integer aColorHeight = (Standard_Integer)( myYPos + ( i ) * aStep + anOffset ) - aY;
     aPrim->AddVertex (gp_Pnt (aX, aY, 0.0), aColors.Value( i ));
-    aPrim->AddVertex (gp_Pnt (aX+aColorWidth, aY, 0.0), aColors.Value( i ));
+    aPrim->AddVertex (gp_Pnt (aX+aColorBreadth, aY, 0.0), aColors.Value( i ));
     aPrim->AddVertex (gp_Pnt (aX, aY+aColorHeight, 0.0), aColors.Value( i ));
-    aPrim->AddVertex (gp_Pnt (aX+aColorWidth, aY+aColorHeight, 0.0), aColors.Value( i ));
+    aPrim->AddVertex (gp_Pnt (aX+aColorBreadth, aY+aColorHeight, 0.0), aColors.Value( i ));
     aPrim->AddEdge(aVertIndex);
     aPrim->AddEdge(aVertIndex+1);
     aPrim->AddEdge(aVertIndex+2);
@@ -663,7 +637,7 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   aGroup->AddPrimitiveArray (aPrim);
 
   if (aStep > 0)
-    DrawFrame (thePresentation, aX - 1, (Standard_Integer)(myYPos + anOffset - 1), aColorWidth + 2, (Standard_Integer)(aColors.Length() * aStep + 2), aFgColor);
+    DrawFrame (thePresentation, aX - 1, (Standard_Integer)(myYPos + anOffset - 1), aColorBreadth + 2, (Standard_Integer)(aColors.Length() * aStep + 2), aFgColor);
 
   // Draw Labels
   anOffset = 1.0 * Abs (aLabCount - aNum - 1) * ( aStep - aTextHeight ) / 2 + 1.0 * Abs (aLabCount - aNum - 1) * aTextHeight / 2;
@@ -680,10 +654,10 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
       case Aspect_TOCSP_LEFT:
         break;
       case Aspect_TOCSP_CENTER:
-        aX += ( aColorWidth - aTextWidth ) / 2;
+        aX += ( aColorBreadth - aTextWidth ) / 2;
         break;
       case Aspect_TOCSP_RIGHT:
-        aX += aColorWidth + aSpacer;
+        aX += aColorBreadth + aSpacer;
         break;
     }
     while (i2 - i1 >= aFilter || ( i2 == 0 && i1 == 0 ))
@@ -733,7 +707,8 @@ void AIS_ColorScale::DrawFrame (const Handle(Prs3d_Presentation)& thePresentatio
   aPrim->AddVertex (theX+theWidth,theY+theHeight,0.0);
   aPrim->AddVertex (theX,theY+theHeight,0.0);
   aPrim->AddVertex (theX,theY,0.0);
-  Handle(Prs3d_LineAspect) anAspect = new Prs3d_LineAspect (theColor, Aspect_TOL_SOLID, 1.0);
+  Handle(Prs3d_LineAspect) anAspect = 
+    new Prs3d_LineAspect (theColor, Aspect_TOL_SOLID, 1.0);
   anAspect->SetColor (theColor);
   aGroup->SetPrimitivesAspect (anAspect->Aspect());
   aGroup->AddPrimitiveArray (aPrim);
