@@ -184,39 +184,39 @@ void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*the
 
     if (DrawHiddenLine)
     {
-      Handle(Prs3d_LineAspect) aLineAspectHighlighted = new Prs3d_LineAspect(Quantity_NOC_RED,
+      Handle(Prs3d_LineAspect) aLineAspectHighlightedHLR = new Prs3d_LineAspect(Quantity_NOC_RED,
         Aspect_TOL_DOTDASH,2);
-      Handle(Prs3d_LineAspect) aLineAspect = new Prs3d_LineAspect(Quantity_NOC_BLUE1,
+      Handle(Prs3d_LineAspect) aLineAspectHLR = new Prs3d_LineAspect(Quantity_NOC_BLUE1,
         Aspect_TOL_DOTDASH,1);
 
       switch(aMode)
       {
       case (6):
         {
-          DrawCompound(thePresentation, HCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, HCompound, aLineAspectHighlightedHLR);
           break;
         }
       case (7):
         {
-          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspectHighlightedHLR);
           break;
         }
       case (8):
         {
-          DrawCompound(thePresentation, RgNLineHCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, RgNLineHCompound, aLineAspectHighlightedHLR);
           break;
         }
       case (9):
         {
-          DrawCompound(thePresentation, OutLineHCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, OutLineHCompound, aLineAspectHighlightedHLR);
           break;
         }
       default:
         {
-          DrawCompound(thePresentation, HCompound, aLineAspect);
-          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspect);
-          DrawCompound(thePresentation, RgNLineHCompound, aLineAspect);
-          DrawCompound(thePresentation, OutLineHCompound, aLineAspect);
+          DrawCompound(thePresentation, HCompound, aLineAspectHLR);
+          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspectHLR);
+          DrawCompound(thePresentation, RgNLineHCompound, aLineAspectHLR);
+          DrawCompound(thePresentation, OutLineHCompound, aLineAspectHLR);
         }
       }
     }
@@ -267,45 +267,45 @@ void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*the
 
     if (DrawHiddenLine)
     {
-      Handle(Prs3d_LineAspect) aLineAspectHighlighted = new Prs3d_LineAspect(Quantity_NOC_RED,
+      Handle(Prs3d_LineAspect) aLineAspectHighlightedHLR = new Prs3d_LineAspect(Quantity_NOC_RED,
         Aspect_TOL_DOT,2);
-      Handle(Prs3d_LineAspect) aLineAspect = new Prs3d_LineAspect(Quantity_NOC_ALICEBLUE,
-        Aspect_TOL_DOT,1);  
 
-            switch(aMode)
+      switch (aMode)
       {
       case (6):
         {
-          DrawCompound(thePresentation, HCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, HCompound, aLineAspectHighlightedHLR);
           break;
         }
       case (7):
         {
-          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspectHighlightedHLR);
           break;
         }
       case (8):
         {
-          DrawCompound(thePresentation, RgNLineHCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, RgNLineHCompound, aLineAspectHighlightedHLR);
           break;
         }
       case (9):
         {
-          DrawCompound(thePresentation, OutLineHCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, OutLineHCompound, aLineAspectHighlightedHLR);
           break;
         }
       case (10):
         {
-          DrawCompound(thePresentation, IsoLineHCompound, aLineAspectHighlighted);
+          DrawCompound(thePresentation, IsoLineHCompound, aLineAspectHighlightedHLR);
           break;
         }
       default:
         {
-          DrawCompound(thePresentation, HCompound, aLineAspect);
-          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspect);
-          DrawCompound(thePresentation, RgNLineHCompound, aLineAspect);
-          DrawCompound(thePresentation, OutLineHCompound, aLineAspect);
-          DrawCompound(thePresentation, IsoLineHCompound, aLineAspect);
+          Handle(Prs3d_LineAspect) aLineAspectHLR =
+            new Prs3d_LineAspect(Quantity_NOC_ALICEBLUE, Aspect_TOL_DOT, 1);
+          DrawCompound(thePresentation, HCompound, aLineAspectHLR);
+          DrawCompound(thePresentation, Rg1LineHCompound, aLineAspectHLR);
+          DrawCompound(thePresentation, RgNLineHCompound, aLineAspectHLR);
+          DrawCompound(thePresentation, OutLineHCompound, aLineAspectHLR);
+          DrawCompound(thePresentation, IsoLineHCompound, aLineAspectHLR);
         }
       }
     }

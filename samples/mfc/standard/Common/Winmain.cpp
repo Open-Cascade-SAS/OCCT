@@ -43,7 +43,7 @@ int AFXAPI AfxWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
   _SYSTEM_INFO lps;
   GetSystemInfo(&lps);
   rep = AllocConsole();
-  hCrt = _open_osfhandle((long) GetStdHandle(STD_OUTPUT_HANDLE),_O_TEXT);
+  hCrt = _open_osfhandle((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE),_O_TEXT);
   hf = _fdopen( hCrt, "w" );
   *stdout = *hf;
   // stop the buffer on stdout

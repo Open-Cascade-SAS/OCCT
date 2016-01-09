@@ -294,8 +294,8 @@ void TexturesExt_Presentation::sampleTerrain()
   
   gp_Trsf aMoveTrsf;
   gp_Ax3 New(gp_Pnt(-30,-30, 0),gp_Dir(0,0,1));
-  gp_Ax3 Current(aPnt,gp_Dir(0,0,1));
-  aMoveTrsf.SetDisplacement(Current, New);
+  gp_Ax3 aCurrent(aPnt,gp_Dir(0,0,1));
+  aMoveTrsf.SetDisplacement(aCurrent, New);
 
   gp_Trsf aScaleTrsf;
   aScaleTrsf.SetScale(aPnt,0.0075);

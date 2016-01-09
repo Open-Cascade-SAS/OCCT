@@ -21,9 +21,9 @@
 #include <Geom_Plane.hxx>
 #include <BRepTools.hxx>
 
-Handle(AIS_Shape) AIS1;
-TopoDS_Face F1,F2;
-TopoDS_Edge E1,E2;
+static Handle(AIS_Shape) AIS1;
+static TopoDS_Face THE_F1, THE_F2;
+static TopoDS_Edge THE_E1, THE_E2;
 
 /////////////////////////////////////////////////////////////////////////////
 // CModelingDoc
@@ -4756,10 +4756,10 @@ void CModelingDoc::OnFillwithtang()
 	if (myAISContext->MoreCurrent()) {
 		Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
 		try {
-			F1 = TopoDS::Face(ashape->Shape());
+                  THE_F1 = TopoDS::Face(ashape->Shape());
 		}
 	    catch(Standard_Failure){}
-		if (F1.IsNull())
+		if (THE_F1.IsNull())
                 {
                     AfxMessageBox (L"Current object is not a face!\n\
 Please, select a face to continue\nthe creation of a tangent surface.");
@@ -4807,7 +4807,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 	if (myState == SELECT_EDGE_PLATE_TGTES_1) {
 		myAISContext->InitSelected();
  		if (myAISContext->MoreSelected()) {
- 			E1 = TopoDS::Edge(myAISContext->SelectedShape());
+ 			THE_E1 = TopoDS::Edge(myAISContext->SelectedShape());
  			myAISContext->CloseLocalContext();
  			myState = SELECT_EDGE_PLATE_TGTES_2;
  			
@@ -4821,7 +4821,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 					myAISContext->SetCurrentObject(aLI.First());
 				myAISContext->InitCurrent();
 				Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
- 				F2 = TopoDS::Face(ashape->Shape());
+ 				THE_F2 = TopoDS::Face(ashape->Shape());
 				myAISContext->OpenLocalContext();
 				myAISContext->Activate(ashape,2);
 				myState = SELECT_EDGE_PLATE_TGTES_3;
@@ -4845,7 +4845,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
  		myAISContext->InitCurrent();
  		if (myAISContext->MoreCurrent()) {
  			Handle(AIS_Shape) ashape = Handle(AIS_Shape)::DownCast(myAISContext->Current());
- 			F2 = TopoDS::Face(ashape->Shape());
+ 			THE_F2 = TopoDS::Face(ashape->Shape());
 			myAISContext->OpenLocalContext();
 			myAISContext->Activate(ashape,2);
 			myState = SELECT_EDGE_PLATE_TGTES_3;
@@ -4857,7 +4857,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 	else if (myState == SELECT_EDGE_PLATE_TGTES_3) {
 		myAISContext->InitSelected();
 		if (myAISContext->MoreSelected()) {
-			E2 = TopoDS::Edge(myAISContext->SelectedShape());
+			THE_E2 = TopoDS::Edge(myAISContext->SelectedShape());
 			myAISContext->CloseLocalContext();
 
 			Standard_Integer i, nbPntsOnFaces=10;
@@ -4868,9 +4868,9 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			gp_Pnt P, PP;
 
 			//get the pcurve, curve and surface
-			BRepAdaptor_Curve   Curve3d1(E1), Curve3d2(E2);
-			BRepAdaptor_Curve2d Curve2d1(E1,F1), Curve2d2(E2,F2);
-			BRepAdaptor_Surface Surf1(F1), Surf2(F2);
+			BRepAdaptor_Curve   Curve3d1(THE_E1), Curve3d2(THE_E2);
+			BRepAdaptor_Curve2d Curve2d1(THE_E1,THE_F1), Curve2d2(THE_E2,THE_F2);
+			BRepAdaptor_Surface Surf1(THE_F1), Surf2(THE_F2);
 
 			//compute the average plane : initial surface
 			Handle(TColgp_HArray1OfPnt) theTanPoints = new
@@ -4981,12 +4981,12 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			// Face building ... 
 			Handle(Geom2d_Curve)C1,C2,C3,C4;
 			Handle(Geom_Curve)C;
-			C = BRep_Tool::Curve(E1,First,Last);
+			C = BRep_Tool::Curve(THE_E1,First,Last);
 			TolProj = 0.01;
 			C1 = GeomProjLib::Curve2d(C,First,Last,theSurface,TolProj);
 			TopoDS_Edge Ed1 = BRepBuilderAPI_MakeEdge(C1,theSurface).Edge();
 
-			C = BRep_Tool::Curve(E2,First,Last);
+			C = BRep_Tool::Curve(THE_E2,First,Last);
 			TolProj = 0.01;
 			C3 = GeomProjLib::Curve2d(C,First,Last,theSurface,TolProj);
 			TopoDS_Edge Ed3 = BRepBuilderAPI_MakeEdge(C3,theSurface).Edge();
@@ -5005,10 +5005,10 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			if (!BRepAlgo::IsValid(theFace)){
 				C2 = GCE2d_MakeSegment(C1->Value(C1->LastParameter()),
 										C3->Value(C3->FirstParameter())).Value();
-				TopoDS_Edge Ed2 = BRepBuilderAPI_MakeEdge(C2,theSurface).Edge();
+				Ed2 = BRepBuilderAPI_MakeEdge(C2,theSurface).Edge();
 				C4 = GCE2d_MakeSegment(C3->Value(C3->LastParameter()),
 								C1->Value(C1->FirstParameter())).Value();
-				TopoDS_Edge Ed4 = BRepBuilderAPI_MakeEdge(C4,theSurface).Edge();
+				Ed4 = BRepBuilderAPI_MakeEdge(C4,theSurface).Edge();
 				Ed3.Reverse();
 				theWire = BRepBuilderAPI_MakeWire(Ed1,Ed2,Ed3,Ed4);
 				theFace = BRepBuilderAPI_MakeFace(theWire);

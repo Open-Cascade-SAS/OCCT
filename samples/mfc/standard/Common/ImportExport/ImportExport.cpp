@@ -728,15 +728,15 @@ Standard_Boolean CImportExport::SaveVRML(const Standard_CString&                
     VrmlData_ShapeConvert converter(scene/*, 0.001*/); // from mm to meters 
     Standard_Integer iShape = 1; // Counter of shapes
 
-	for ( int i = 1; i <= aHSequenceOfShape->Length(); i++ )
-	{
+    for (int i = 1; i <= aHSequenceOfShape->Length(); i++)
+    {
         // Shape
-		TopoDS_Shape shape = aHSequenceOfShape->Value( i );
-		if ( shape.IsNull() )
-		{
-			ReturnMessage += " Error : Invalid shape \n";
-			ReturnValue = Standard_False;
-			continue;
+        TopoDS_Shape shape = aHSequenceOfShape->Value(i);
+        if (shape.IsNull())
+        {
+          ReturnMessage += " Error : Invalid shape \n";
+          ReturnValue = Standard_False;
+          continue;
         }
 
         // Color
@@ -793,8 +793,8 @@ Standard_Boolean CImportExport::SaveVRML(const Standard_CString&                
                 Handle(VrmlData_Node) node = itr.Value();
                 if (node->DynamicType() == STANDARD_TYPE(VrmlData_ShapeNode))
                 {
-                    Handle(VrmlData_ShapeNode) shape = Handle(VrmlData_ShapeNode)::DownCast(node);
-                    shape->SetAppearance(appearance);
+                    Handle(VrmlData_ShapeNode) aShape = Handle(VrmlData_ShapeNode)::DownCast(node);
+                    aShape->SetAppearance(appearance);
                 }
                 else if (itr.Value()->DynamicType() == STANDARD_TYPE(VrmlData_Group))
                 {

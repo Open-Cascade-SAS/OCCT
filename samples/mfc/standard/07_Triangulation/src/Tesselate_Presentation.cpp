@@ -192,7 +192,6 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
   aBuild1.MakeCompound(aComp1);
   aBuild2.MakeCompound(aComp2);
 
-  TopTools_SequenceOfShape aVertices;
   Standard_Integer aCount = 0;
   Standard_Integer aNumOfNodes = 0;
   Standard_Integer aNumOfTriangles = 0;

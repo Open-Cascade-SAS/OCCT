@@ -381,10 +381,10 @@ void CDimensionDlg::OnBnClickedDimLength()
 {
   // Update parameters
   UpdateStandardModeForLength ();
-  (CTabCtrl*) GetDlgItem (IDC_LengthTab)->ShowWindow (SW_SHOW);
-  (CTabCtrl*) GetDlgItem (IDC_AngleTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_LengthTab)->ShowWindow (SW_SHOW);
+  GetDlgItem (IDC_AngleTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_HIDE);
 
   UpdateUnitsListForLength ();
   ((CSliderCtrl*)GetDlgItem(IDC_Flyout))->SetPos (15);
@@ -399,10 +399,10 @@ void CDimensionDlg::OnBnClickedDimAngle()
 {
   // Update parameters
   UpdateStandardModeForAngle();
-  (CTabCtrl*) GetDlgItem (IDC_LengthTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_AngleTab)->ShowWindow (SW_SHOW);
-  (CTabCtrl*) GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_LengthTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_AngleTab)->ShowWindow (SW_SHOW);
+  GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_HIDE);
 
   UpdateUnitsListForAngle();
   ((CSliderCtrl*)GetDlgItem(IDC_Flyout))->SetPos (15);
@@ -420,10 +420,10 @@ void CDimensionDlg::OnBnClickedDimDiameter()
   myAISContext->OpenLocalContext();
   myAISContext->ActivateStandardMode (TopAbs_EDGE);
 
-  (CTabCtrl*) GetDlgItem (IDC_LengthTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_AngleTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_SHOW);
+  GetDlgItem (IDC_LengthTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_AngleTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_SHOW);
 
   UpdateUnitsListForLength();
   ((CSliderCtrl*)GetDlgItem(IDC_Flyout))->SetPos (0);
@@ -440,10 +440,10 @@ void CDimensionDlg::OnBnClickedDimRadius()
   myAISContext->CloseAllContexts();
   myAISContext->OpenLocalContext();
   myAISContext->ActivateStandardMode (TopAbs_EDGE);
-  (CTabCtrl*) GetDlgItem (IDC_LengthTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_AngleTab)->ShowWindow (SW_HIDE);
-  (CTabCtrl*) GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_SHOW);
-  (CTabCtrl*) GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_LengthTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_AngleTab)->ShowWindow (SW_HIDE);
+  GetDlgItem (IDC_RadiusTab)->ShowWindow (SW_SHOW);
+  GetDlgItem (IDC_DiameterTab)->ShowWindow (SW_HIDE);
 
   UpdateUnitsListForLength();
   ((CSliderCtrl*)GetDlgItem(IDC_Flyout))->SetPos (0);
