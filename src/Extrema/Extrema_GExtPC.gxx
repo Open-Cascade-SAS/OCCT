@@ -103,9 +103,9 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       TheCurveTool::BSpline(aCurve)->Knots(aKnots); 
 
       // Workaround to work with:
-      // blend, where knots may be moved from param space.
+      // blend, where knots may be moved from parameter space.
       Standard_Real aPeriodJump = 0.0;
-      // Avoid prolem with too close knots.
+      // Avoid problem with too close knots.
       const Standard_Real aTolCoeff = (myusup - myuinf) * Precision::PConfusion();
       if (TheCurveTool::IsPeriodic(aCurve))
       {
@@ -203,7 +203,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
         }
       }
 
-      // Solve on first and last interval.
+      // Solve on the first and last intervals.
       if (mydist1 > Precision::SquareConfusion())
       {
         ThePoint aP1, aP2;
@@ -216,8 +216,10 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
 
         // Derivatives have opposite signs - min or max inside of interval (sufficient condition).
         // Necessary condition - when point lies on curve.
+        // Necessary condition - when derivative of point is too small.
         if(aVal1 * aVal2 <= 0.0 ||
-           aBase1.Dot(aBase2) <= 0.0)
+           aBase1.Dot(aBase2) <= 0.0 ||
+           2.0 * Abs(aVal1) < Precision::Confusion() )
         {
           myintuinf = aParam(aVal.Lower());
           myintusup = aParam(aVal.Lower() + 1);
@@ -237,8 +239,10 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
 
         // Derivatives have opposite signs - min or max inside of interval (sufficient condition).
         // Necessary condition - when point lies on curve.
+        // Necessary condition - when derivative of point is too small.
         if(aVal1 * aVal2 <= 0.0 ||
-           aBase1.Dot(aBase2) <= 0.0)
+           aBase1.Dot(aBase2) <= 0.0 ||
+           2.0 * Abs(aVal2) < Precision::Confusion() )
         {
           myintuinf = aParam(aVal.Upper() - 1);
           myintusup = aParam(aVal.Upper());
