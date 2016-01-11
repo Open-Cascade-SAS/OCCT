@@ -50,7 +50,7 @@ public:
   //! Sets the shape and  axis on which hole(s)  will be
   //! performed.
     void Init (const TopoDS_Shape& S, const gp_Ax1& Axis);
-  
+
   //! Performs every  holes of   radius  <Radius>.  This
   //! command  has the  same effect as   a cut operation
   //! with an  infinite cylinder   defined by the  given
@@ -100,8 +100,8 @@ public:
 
 protected:
 
-
-
+  //! Unhide the base class member to avoid Clang warnings
+  using BRepFeat_Builder::Perform;
 
 
 private:
