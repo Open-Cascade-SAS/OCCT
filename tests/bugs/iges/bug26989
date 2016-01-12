@@ -1,0 +1,9 @@
+#########################################################################################
+# OCC26989: [Regression in 6.9.0] Export of a reversed face leads to wrong data in 6.9.0
+#########################################################################################
+
+restore [locate_data_file bug26989.brep] a
+newmodel
+brepiges a ${imagedir}/bug26989.igs
+igesbrep ${imagedir}/bug26989.igs result *
+checkprops result -s 56.5487

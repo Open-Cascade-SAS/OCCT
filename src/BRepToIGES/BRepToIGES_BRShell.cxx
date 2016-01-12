@@ -198,6 +198,10 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
         else {
           B.UpdateEdge(anEdge, aCurve1, myface, aTol);
         }
+        // set range for degenerated edges
+        if (BRep_Tool::Degenerated(anEdge)) {
+          B.Range(anEdge, myface, f, l);
+        }
       }
     }
   }
