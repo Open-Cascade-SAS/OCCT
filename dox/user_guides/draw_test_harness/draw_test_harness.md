@@ -2736,7 +2736,7 @@ Creates a window for VTK viewer.
 
 @figure{/user_guides/draw_test_harness/images/draw_image001.png}
 
-@subsection occt_draw_4_6_2	ivtkdisplay
+@subsubsection occt_draw_4_6_2	ivtkdisplay
 
 Syntax:
 ~~~~~
@@ -2755,7 +2755,7 @@ ivtkdisplay c
 
 @figure{/user_guides/draw_test_harness/images/draw_image002.png}
 
-@subsection occt_draw_4_6_3	ivtkerase
+@subsubsection occt_draw_4_6_3	ivtkerase
 
 Syntax:
 ~~~~~
@@ -2781,7 +2781,7 @@ ivtkerase cy
 ivtkerase s c
 ~~~~~
 
-@subsection occt_draw_4_6_4	 ivtkfit
+@subsubsection occt_draw_4_6_4	 ivtkfit
 
 Syntax:
 ~~~~~
@@ -2790,7 +2790,7 @@ ivtkfit
 
 Automatic zoom/panning.
 
-@subsection occt_draw_4_6_5	ivtkdispmode
+@subsubsection occt_draw_4_6_5	ivtkdispmode
 
 Syntax:
 ~~~~~
@@ -2813,7 +2813,7 @@ ivtksetdispmode c 1
 
 @figure{/user_guides/draw_test_harness/images/draw_image003.png}
  
-@subsection occt_draw_4_6_6	ivtksetselmode
+@subsubsection occt_draw_4_6_6	ivtksetselmode
 
 Syntax:
 ~~~~~
@@ -2835,7 +2835,7 @@ ivtksetselmode a 4 1
 
 @figure{/user_guides/draw_test_harness/images/draw_image004.png}
  
-@subsection occt_draw_4_6_7	ivtkmoveto
+@subsubsection occt_draw_4_6_7	ivtkmoveto
 
 Syntax:
 ~~~~~
@@ -2852,7 +2852,7 @@ ivtkdisplay c
 ivtkmoveto 40 50
 ~~~~~
 
-@subsection occt_draw_4_6_8	ivtkselect
+@subsubsection occt_draw_4_6_8	ivtkselect
 
 Syntax:
 ~~~~~
@@ -2869,7 +2869,7 @@ ivtkdisplay c
 ivtkselect 40 50
 ~~~~~
 
-@subsection occt_draw_4_6_9	ivtkdump
+@subsubsection occt_draw_4_6_9	ivtkdump
 
 Syntax:
 ~~~~~
@@ -2890,7 +2890,7 @@ ivtkdisplay c
 ivtkdump D:/ConeSnapshot.png rgb 768 768
 ~~~~~
 
-@subsection occt_draw_4_6_10	ivtkbgcolor
+@subsubsection occt_draw_4_6_10	ivtkbgcolor
 
 
 Syntax:

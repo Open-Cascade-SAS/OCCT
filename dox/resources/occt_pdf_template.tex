@@ -97,7 +97,7 @@
 \fi
 \hypersetup{%
   colorlinks=true,%
-  linkcolor=black,%
+  linkcolor=blue,%
   citecolor=black,%
   urlcolor=blue,%
   unicode%
@@ -127,10 +127,12 @@
 \end{titlepage}
 \clearpage
 \pagenumbering{roman}
-\tableofcontents
 \newpage
 \pagenumbering{arabic}
-\hypersetup{pageanchor=true}
+    \begingroup
+    \hypersetup{pageanchor=true, linkcolor=black, colorlinks=true}
+    \tableofcontents
+    \endgroup
 
 \let\stdsection\section
   \renewcommand\section{\pagebreak\stdsection}
