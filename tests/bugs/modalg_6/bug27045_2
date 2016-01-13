@@ -1,0 +1,14 @@
+puts "=========="
+puts "OCC27045"
+puts "=========="
+puts ""
+############################################################
+# firsthole & holend commands work incorrectly
+############################################################
+
+dall
+restore [locate_data_file bug27045_bean.brep] a
+firsthole r a 5 0 22 0 0 -1 2
+
+checkprops r -s 21543.3
+checkshape r
