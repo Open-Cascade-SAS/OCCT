@@ -466,7 +466,7 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
     Standard_Real preci = ( prec >0. ? prec : BRep_Tool::Tolerance(edge) );
     Handle(Geom_Curve) c3d = BRep_Tool::Curve(edge, /*Loc,*/ First, Last);
     //  Handle(Geom_Curve) c3d = BRep_Tool::Curve(E, First, Last);
-    if (c3d.IsNull() || (Abs(Last-First) <Precision::PConfusion())) {
+    if (c3d.IsNull()) {
       myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL1);
       return Standard_False;
     }

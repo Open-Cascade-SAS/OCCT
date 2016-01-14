@@ -1,0 +1,8 @@
+##################################################################
+# OCC27078: Exception in ShapeFixIntersectionTool::UnionVertexes()
+##################################################################
+
+testreadiges [locate_data_file bug27078.igs] a
+
+# fixshape should not throw an exception
+fixshape result a
