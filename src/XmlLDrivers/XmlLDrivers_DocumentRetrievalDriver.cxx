@@ -216,7 +216,11 @@ void XmlLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&              t
   // 1. Read DOM_Document from file
   LDOMParser aParser;
 
-  if (aParser.parse(theIStream))
+  // if myFileName is not empty, "document" tag is required to be read 
+  // from the received document
+  Standard_Boolean aWithoutRoot = myFileName.IsEmpty();
+
+  if (aParser.parse(theIStream, Standard_False, aWithoutRoot))
   {
     TCollection_AsciiString aData;
     cout << aParser.GetError(aData) << ": " << aData << endl;

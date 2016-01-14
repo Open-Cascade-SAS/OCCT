@@ -167,15 +167,11 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat (Standard_IStream& theISt
   TCollection_ExtendedString aFormat;
 
   Storage_BaseDriver* aFileDriver;
-  if (PCDM::FileDriverType (theIStream, aFileDriver) == PCDM_TOFD_Unknown)
+  if (PCDM::FileDriverType (theIStream, aFileDriver) == PCDM_TOFD_XmlFile)
   {
     return ::TryXmlDriverType (theIStream);
   }
-  
-  // the stream starts with a magic number, FileDriverType has read
-  // them already but returned the stream pos to initial state,
-  // thus we should read them before reading of info section
-  aFileDriver->ReadMagicNumber(theIStream);
+ 
 
   aFileDriver->ReadCompleteInfo (theIStream, theData);
 
@@ -230,23 +226,14 @@ static TCollection_ExtendedString TryXmlDriverType (Standard_IStream& theIStream
 
   if (theIStream.good())
   {
-    streampos aDocumentPos = theIStream.tellg();
-
     // Parse the file; if there is no error or an error appears before retrieval
     // of the DocumentElement, the XML format cannot be defined
-    if (aParser.parse (theIStream))
+    if (aParser.parse (theIStream, Standard_True))
     {
       LDOM_Element anElement = aParser.GetElement();
       if (anElement.getTagName().equals (LDOMString(aDocumentElementName)))
         theFormat = anElement.getAttribute ("format");
     }
-
-    if (!theIStream.good())
-    {
-      theIStream.clear();
-    }
-
-    theIStream.seekg(aDocumentPos);
   }
 
   return theFormat;

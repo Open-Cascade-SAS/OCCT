@@ -48,8 +48,16 @@ class LDOMParser
   // Returns True if error occurred, then GetError() can be called
 
   Standard_EXPORT Standard_Boolean
-                        parse           (istream& anInput);
+                        parse           (istream& anInput,
+                                         const Standard_Boolean theTagPerStep  = Standard_False,
+                                         const Standard_Boolean theWithoutRoot = Standard_False);
   // Parse a C++ stream
+  // theTagPerStep - if true - extract characters from anInput until '>' 
+  //                           extracted character and parse only these characters.
+  //                 if false - extract until eof
+  // theWithoutRoot - if true - create fictive "document" element before parsing
+  //                            and consider that document start element has been already read
+  //                - if false - parse a document as usual (parse header, document tag and etc)
   // Returns True if error occurred, then GetError() can be called
 
   Standard_EXPORT const TCollection_AsciiString&
@@ -73,7 +81,7 @@ class LDOMParser
 
  private:
   // ---------- PRIVATE METHODS ----------
-  Standard_Boolean      ParseDocument   (Standard_IStream& theIStream);
+  Standard_Boolean      ParseDocument   (Standard_IStream& theIStream, const Standard_Boolean theWithoutRoot = Standard_False);
 
   Standard_Boolean      ParseElement    (Standard_IStream& theIStream);
 

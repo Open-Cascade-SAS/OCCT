@@ -111,7 +111,9 @@ const TCollection_AsciiString& LDOMParser::GetError
 //purpose  :
 //=======================================================================
 
-Standard_Boolean LDOMParser::parse (istream& anInput)
+Standard_Boolean LDOMParser::parse (istream& anInput,
+                                    const Standard_Boolean theTagPerStep,
+                                    const Standard_Boolean theWithoutRoot)
 {
   // Open the DOM Document
   myDocument = new LDOM_MemManager (20000);
@@ -119,10 +121,10 @@ Standard_Boolean LDOMParser::parse (istream& anInput)
 
   // Create the Reader instance
   if (myReader) delete myReader;
-  myReader = new LDOM_XmlReader (myDocument, myError);
+  myReader = new LDOM_XmlReader (myDocument, myError, theTagPerStep);
 
   // Parse
-  return ParseDocument (anInput);
+  return ParseDocument (anInput, theWithoutRoot);
 }
 
 //=======================================================================
@@ -151,14 +153,18 @@ Standard_Boolean LDOMParser::parse (const char * const aFileName)
 //purpose  : parse the whole document (abstracted from the XML source)
 //=======================================================================
 
-Standard_Boolean LDOMParser::ParseDocument (istream& theIStream)
+Standard_Boolean LDOMParser::ParseDocument (istream& theIStream, const Standard_Boolean theWithoutRoot)
 {
   Standard_Boolean      isError   = Standard_False;
   Standard_Boolean      isElement = Standard_False;
   Standard_Boolean      isDoctype = Standard_False;
 
+  Standard_Boolean      isInsertFictRootElement = Standard_False;
+
   for(;;) {
-    LDOM_XmlReader::RecordType aType = ReadRecord (*myReader, theIStream, myCurrentData);
+    LDOM_XmlReader::RecordType aType = (theWithoutRoot && !isInsertFictRootElement ?
+                                        LDOM_XmlReader::XML_START_ELEMENT : 
+                                        ReadRecord (*myReader, theIStream, myCurrentData));
     switch (aType) {
     case LDOM_XmlReader::XML_HEADER:
       if (isDoctype || isElement) {
@@ -195,7 +201,18 @@ Standard_Boolean LDOMParser::ParseDocument (istream& theIStream)
     case LDOM_XmlReader::XML_START_ELEMENT:
       if (isElement == Standard_False) {
         isElement = Standard_True;
-        myDocument -> myRootElement = &myReader -> GetElement ();
+
+        if (theWithoutRoot && !isInsertFictRootElement)
+        {
+          isInsertFictRootElement = Standard_True;
+
+          // create fiction root element
+          TCollection_AsciiString aFicName ("document");
+          myReader->CreateElement (aFicName.ToCString(), aFicName.Length());
+        }
+        
+        myDocument->myRootElement = &myReader->GetElement();
+        
         if (startElement()) {
           isError = Standard_True;
           myError = "User abort at startElement()";

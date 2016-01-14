@@ -93,19 +93,10 @@ PCDM_TypeOfFileDriver PCDM::FileDriverType (Standard_IStream& theIStream, PCDM_B
 {
   TCollection_AsciiString aReadMagicNumber;
 
+  // read magic number from the file
   if (theIStream.good())
   {
-    streampos aDocumentPos = theIStream.tellg();
-
-    // read magic number from the file
     aReadMagicNumber = Storage_BaseDriver::ReadMagicNumber (theIStream);
-
-    if (!theIStream.good())
-    {
-      theIStream.clear();
-    }
-
-    theIStream.seekg(aDocumentPos);
   }
 
   if(aReadMagicNumber == FSD_CmpFile::MagicNumber())
@@ -122,6 +113,17 @@ PCDM_TypeOfFileDriver PCDM::FileDriverType (Standard_IStream& theIStream, PCDM_B
   {
     theBaseDriver = new FSD_BinaryFile;
     return PCDM_TOFD_File;
+  }
+  else if (aReadMagicNumber.Search ("<?xml") != -1)
+  {
+    // skip xml declaration
+    char aChar = ' ';
+    while (theIStream.good() && !theIStream.eof() && aChar != '>')
+    {
+      theIStream.get(aChar);
+    }
+
+    return PCDM_TOFD_XmlFile;
   }
 
   theBaseDriver = NULL;

@@ -48,7 +48,8 @@ class LDOM_XmlReader
 
   // ---------- PUBLIC METHODS ----------
   LDOM_XmlReader (const Handle(LDOM_MemManager)& aDocument,
-                  TCollection_AsciiString& anErrorString);
+                  TCollection_AsciiString& anErrorString,
+                  const Standard_Boolean theTagPerStep = Standard_False);
   // Constructor - takes a file descriptor for input
   // Constructor - takes an istream for input
 
@@ -57,6 +58,8 @@ class LDOM_XmlReader
 
   LDOM_BasicElement&    GetElement      () const        { return * myElement; }
   // get the last element retrieved from the stream
+
+  void CreateElement (const char *theName, const Standard_Integer theLen);
 
   static Standard_Boolean getInteger    (LDOMBasicString&       theValue,
                                          const char             * theStart,
@@ -82,6 +85,7 @@ class LDOM_XmlReader
   const char                    * myPtr;
   const char                    * myEndPtr;
   char                          myBuffer [XML_BUFFER_SIZE+4];
+  Standard_Boolean              myTagPerStep;
 };
 
 #endif
