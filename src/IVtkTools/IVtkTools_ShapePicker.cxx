@@ -73,15 +73,15 @@ float IVtkTools_ShapePicker::GetTolerance( ) const
 //  Method: convertDisplayToWorld
 // Purpose: Convert display coordinates to world coordinates
 //============================================================================
-bool IVtkTools_ShapePicker::convertDisplayToWorld (vtkRenderer         *theRenderer,
-                                                   vtkFloatingPointType theDisplayCoord[3],
-                                                   vtkFloatingPointType theWorldCoord[3])
+bool IVtkTools_ShapePicker::convertDisplayToWorld (vtkRenderer *theRenderer,
+                                                   double theDisplayCoord[3],
+                                                   double theWorldCoord[3])
 {
   // Convert the selection point into world coordinates.
   theRenderer->SetDisplayPoint (theDisplayCoord[0], theDisplayCoord[1], theDisplayCoord[2]);
   theRenderer->DisplayToWorld();
 
-  vtkFloatingPointType* const aCoords = theRenderer->GetWorldPoint();
+  double* const aCoords = theRenderer->GetWorldPoint();
   if (aCoords[3] == 0.0)
   {
     return false;

@@ -151,7 +151,7 @@ bool IVtkVTK_View::DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldP
   myRenderer->SetDisplayPoint (theDisplayPnt.X(), theDisplayPnt.Y(), 0.0);
   myRenderer->DisplayToWorld();
 
-  vtkFloatingPointType* const aCoords = myRenderer->GetWorldPoint();
+  double* const aCoords = myRenderer->GetWorldPoint();
   if (aCoords[3] == 0.0) // Point at infinity in homogeneous coordinates
   {
     return false;

@@ -124,8 +124,8 @@ protected:
 
   //! Convert display coordinates to world coordinates
   static bool convertDisplayToWorld (vtkRenderer *theRenderer,
-                                     vtkFloatingPointType theDisplayCoord[3],
-                                     vtkFloatingPointType theWorldCoord[3] );
+                                     double theDisplayCoord[3],
+                                     double theWorldCoord[3] );
 
 private: // not copyable
   IVtkTools_ShapePicker (const IVtkTools_ShapePicker&);
