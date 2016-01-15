@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC27085"
+puts "============"
+puts ""
+###############################
+## ShapeUpgrade_UnifySameDomain very large performance difference for seemingly similar shapes
+###############################
+
+restore [locate_data_file bug27085_fused_primitive.slow.brep] sp
+
+dchrono h reset
+dchrono h start
+
+unifysamedom res sp
+
+dchrono h stop
+set q [dchrono h show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full z
+puts "$z"
+
+set max_time 8
+
+if { $z > ${max_time} } {                                         
+    puts "Elapsed time is more than ${max_time} seconds - Faulty"
+} else {
+    puts "Elapsed time is less than ${max_time} seconds - OK"
+}
