@@ -245,6 +245,7 @@ void OcctJni_Viewer::resize (int theWidth,
   //myView->MustBeResized(); // can be used instead of SetWindow() when EGLsurface has not been changed
 
   EGLContext anEglContext = eglGetCurrentContext();
+  myView->SetImmediateUpdate (Standard_False);
   myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
   //saveSnapshot ("/sdcard/Download/tt.png", theWidth, theHeight);
 }
@@ -554,7 +555,8 @@ void OcctJni_Viewer::fitAll()
     return;
   }
 
-  myView->FitAll();
+  myView->FitAll (0.01, Standard_False);
+  myView->Invalidate();
 }
 
 // =======================================================================
@@ -570,6 +572,7 @@ void OcctJni_Viewer::startRotation (int theStartX,
   }
 
   myView->StartRotation (theStartX, theStartY, 0.45);
+  myView->Invalidate();
 }
 
 // =======================================================================
@@ -585,6 +588,7 @@ void OcctJni_Viewer::onRotation (int theX,
   }
 
   myView->Rotation (theX, theY);
+  myView->Invalidate();
 }
 
 // =======================================================================
@@ -600,6 +604,7 @@ void OcctJni_Viewer::onPanning (int theDX,
   }
 
   myView->Pan (theDX, theDY);
+  myView->Invalidate();
 }
 
 // =======================================================================
@@ -615,7 +620,8 @@ void OcctJni_Viewer::onClick (int theX,
   }
 
   myContext->MoveTo (theX, theY, myView, Standard_False);
-  myContext->Select (Standard_True);
+  myContext->Select (Standard_False);
+  myView->Invalidate();
 }
 
 // =======================================================================
