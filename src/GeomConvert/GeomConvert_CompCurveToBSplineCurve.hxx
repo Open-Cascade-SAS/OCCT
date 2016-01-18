@@ -50,6 +50,11 @@ public:
   //! is   used to   check   continuity  and decrease
   //! Multiplicity at the common Knot until MinM
   //! if MinM = 0, the common Knot can be removed
+  //!
+  //! WithRatio defines whether the resulting curve should have a uniform
+  //! parameterization. Setting WithRatio to Standard_False may greatly
+  //! decrease the speed of algorithms like CPnts_AbscissaPoint::AdvPerform
+  //! when applied to the resulting curve.
   Standard_EXPORT Standard_Boolean Add (const Handle(Geom_BoundedCurve)& NewCurve, const Standard_Real Tolerance, const Standard_Boolean After = Standard_False, const Standard_Boolean WithRatio = Standard_True, const Standard_Integer MinM = 0);
   
   Standard_EXPORT Handle(Geom_BSplineCurve) BSplineCurve() const;
