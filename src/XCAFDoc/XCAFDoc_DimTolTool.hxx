@@ -24,6 +24,8 @@
 #include <TDF_LabelSequence.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TopoDS_Shape.hxx>
+
 class XCAFDoc_ShapeTool;
 class TDF_Label;
 class Standard_GUID;
@@ -185,7 +187,7 @@ public:
 
   //! Returns Datum label defined for label ShapeL
   Standard_EXPORT   Standard_Boolean GetRefDatumLabel (const TDF_Label& theShapeL, TDF_LabelSequence& theDatum)  const;
-  
+    
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   Standard_EXPORT void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;

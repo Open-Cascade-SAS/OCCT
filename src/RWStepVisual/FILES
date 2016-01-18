@@ -1,3 +1,9 @@
+RWStepVisual_RWAnnotationCurveOccurrence.cxx
+RWStepVisual_RWAnnotationCurveOccurrence.hxx
+RWStepVisual_RWAnnotationOccurrence.cxx
+RWStepVisual_RWAnnotationOccurrence.hxx
+RWStepVisual_RWAnnotationPlane.cxx
+RWStepVisual_RWAnnotationPlane.hxx
 RWStepVisual_RWAreaInSet.cxx
 RWStepVisual_RWAreaInSet.hxx
 RWStepVisual_RWBackgroundColour.cxx
@@ -32,6 +38,8 @@ RWStepVisual_RWCurveStyleFont.cxx
 RWStepVisual_RWCurveStyleFont.hxx
 RWStepVisual_RWCurveStyleFontPattern.cxx
 RWStepVisual_RWCurveStyleFontPattern.hxx
+RWStepVisual_RWDraughtingCallout.cxx
+RWStepVisual_RWDraughtingCallout.hxx
 RWStepVisual_RWDraughtingModel.cxx
 RWStepVisual_RWDraughtingModel.hxx
 RWStepVisual_RWDraughtingPreDefinedColour.cxx
@@ -116,3 +124,15 @@ RWStepVisual_RWTextStyleWithBoxCharacteristics.cxx
 RWStepVisual_RWTextStyleWithBoxCharacteristics.hxx
 RWStepVisual_RWViewVolume.cxx
 RWStepVisual_RWViewVolume.hxx
+RWStepVisual_RWTessellatedItem.hxx
+RWStepVisual_RWTessellatedItem.cxx
+RWStepVisual_RWTessellatedAnnotationOccurrence.hxx
+RWStepVisual_RWTessellatedAnnotationOccurrence.cxx
+RWStepVisual_RWTessellatedGeometricSet.hxx
+RWStepVisual_RWTessellatedGeometricSet.cxx
+RWStepVisual_RWCoordinatesList.hxx
+RWStepVisual_RWCoordinatesList.cxx
+RWStepVisual_RWTessellatedCurveSet.hxx
+RWStepVisual_RWTessellatedCurveSet.cxx
+
+

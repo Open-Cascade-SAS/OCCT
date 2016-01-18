@@ -55,7 +55,7 @@ public:
   }
   
   //! Set field DefiningTolerance
-  inline void SetModifiers (const Handle(StepDimTol_HArray1OfToleranceZoneTarget) &theDefiningTolerance)
+  inline void SetDefiningTolerance (const Handle(StepDimTol_HArray1OfToleranceZoneTarget) &theDefiningTolerance)
   {
     myDefiningTolerance = theDefiningTolerance;
   }

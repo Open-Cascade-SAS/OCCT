@@ -22,6 +22,8 @@
 #include <BinMXCAFDoc_ColorDriver.hxx>
 #include <BinMXCAFDoc_ColorToolDriver.hxx>
 #include <BinMXCAFDoc_DatumDriver.hxx>
+#include <BinMXCAFDoc_GeomToleranceDriver.hxx>
+#include <BinMXCAFDoc_DimensionDriver.hxx>
 #include <BinMXCAFDoc_DimTolDriver.hxx>
 #include <BinMXCAFDoc_DimTolToolDriver.hxx>
 #include <BinMXCAFDoc_DocumentToolDriver.hxx>
@@ -61,6 +63,8 @@ void BinMXCAFDoc::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
   theDriverTable->AddDriver( aLocationDriver);
   theDriverTable->AddDriver( new BinMXCAFDoc_VolumeDriver   (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_DatumDriver    (theMsgDrv));
+  theDriverTable->AddDriver( new BinMXCAFDoc_GeomToleranceDriver (theMsgDrv));
+  theDriverTable->AddDriver( new BinMXCAFDoc_DimensionDriver (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_DimTolDriver   (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_MaterialDriver (theMsgDrv));
 

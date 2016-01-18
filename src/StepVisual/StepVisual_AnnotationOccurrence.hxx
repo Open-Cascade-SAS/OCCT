@@ -38,7 +38,6 @@ public:
 
 
 
-
   DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationOccurrence,StepVisual_StyledItem)
 
 protected:

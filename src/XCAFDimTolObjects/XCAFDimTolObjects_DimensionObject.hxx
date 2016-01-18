@@ -32,10 +32,12 @@
 #include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>
 #include <TopoDS_Edge.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Ax2.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <XCAFDimTolObjects_DimensionModif.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 class XCAFDimTolObjects_DimensionObject;
 DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_DimensionObject, Standard_Transient)
@@ -116,6 +118,52 @@ public:
   
   Standard_EXPORT void SetPoints (const Handle(TColgp_HArray1OfPnt)& thePnts);
 
+  Standard_EXPORT void SetPointTextAttach (const gp_Pnt& thePntText)
+  {
+    myPntText = thePntText;
+    myHasPntText = Standard_True;
+  }
+
+  Standard_EXPORT const gp_Pnt& GetPointTextAttach() const { return myPntText; }
+
+  Standard_EXPORT Standard_Boolean HasTextPoint() const 
+  { 
+    return myHasPntText; 
+  }
+
+  Standard_EXPORT void SetPlane (const gp_Ax2& thePlane)
+  {
+    myPlane    = thePlane;
+    myHasPlane = Standard_True;
+  }
+
+  Standard_EXPORT const gp_Ax2& GetPlane() const { return myPlane; }
+
+  Standard_EXPORT Standard_Boolean HasPlane() const { return myHasPlane; }
+
+  Standard_EXPORT Standard_Boolean HasPoints() const { return (!myPnts.IsNull() && myPnts->Length() > 0); }
+
+ 
+
+  //! Set graphical presentation for object
+  Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
+    const Handle(TCollection_HAsciiString)& thePresentationName)
+  {
+    myPresentation = thePresentation;
+    myPresentationName = thePresentationName;
+  }
+
+  //! Returns graphical presentation of the object
+  Standard_EXPORT TopoDS_Shape GetPresentation() const
+  {
+    return myPresentation;
+  }
+
+   //! Returns graphical presentation of the object
+  Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
+  {
+    return myPresentationName;
+  }
 
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject,Standard_Transient)
 
@@ -133,6 +181,12 @@ private:
   TopoDS_Edge myPath;
   gp_Dir myDir;
   Handle(TColgp_HArray1OfPnt) myPnts;
+  gp_Ax2 myPlane;
+  Standard_Boolean myHasPlane;
+  Standard_Boolean myHasPntText;
+  gp_Pnt myPntText;
+  TopoDS_Shape myPresentation;
+  Handle(TCollection_HAsciiString) myPresentationName;
 
 };
 

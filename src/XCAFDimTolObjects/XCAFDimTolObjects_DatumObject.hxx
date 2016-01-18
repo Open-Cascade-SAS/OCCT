@@ -91,6 +91,67 @@ public:
 
   Standard_EXPORT void SetDatumTargetNumber (const Standard_Integer theNumber);
 
+   Standard_EXPORT void SetPlane (const gp_Ax2& thePlane)
+  {
+    myPlane = thePlane;
+    myHasPlane = Standard_True;
+  }
+
+   Standard_EXPORT const gp_Ax2& GetPlane() const { return myPlane; }
+
+   Standard_EXPORT void SetPoint (const gp_Pnt& thePnt)
+  {
+    myPnt = thePnt;
+    myHasPnt = Standard_True;
+  }
+
+   Standard_EXPORT const gp_Pnt& GetPoint() const 
+  { 
+    return myPnt; 
+  }
+
+ 
+   Standard_EXPORT void SetPointTextAttach (const gp_Pnt& thePntText)
+  {
+    myPntText = thePntText;
+    myHasPntText = Standard_True;
+  }
+
+   Standard_EXPORT const gp_Pnt& GetPointTextAttach() const 
+  { 
+    return myPntText; 
+  }
+
+  Standard_Boolean HasPlane() const { return myHasPlane; }
+
+  Standard_Boolean HasPoint() const { return myHasPnt; }
+
+   Standard_EXPORT Standard_Boolean HasPointText() const 
+  { 
+    return myHasPntText; 
+  }
+
+   //! Set graphical presentation for object
+  Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
+    const Handle(TCollection_HAsciiString)& thePresentationName)
+  {
+    myPresentation = thePresentation;
+    myPresentationName = thePresentationName;
+  }
+
+  //! Returns graphical presentation of the object
+  Standard_EXPORT TopoDS_Shape GetPresentation() const
+  {
+    return myPresentation;
+  }
+
+   //! Returns graphical presentation of the object
+  Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
+  {
+    return myPresentationName;
+  }
+
+  
 
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject,Standard_Transient)
 
@@ -108,7 +169,14 @@ private:
   Standard_Real myLength;
   Standard_Real myWidth;
   Standard_Integer myDatumTargetNumber;
-
+  gp_Ax2 myPlane;
+  gp_Pnt myPnt;
+  gp_Pnt myPntText;
+  Standard_Boolean myHasPlane;
+  Standard_Boolean myHasPnt;
+  Standard_Boolean myHasPntText;
+  TopoDS_Shape myPresentation;
+   Handle(TCollection_HAsciiString) myPresentationName;
 };
 
 #endif // _XCAFDimTolObjects_DatumObject_HeaderFile

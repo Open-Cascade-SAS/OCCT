@@ -10,12 +10,16 @@ BinMXCAFDoc_ColorToolDriver.cxx
 BinMXCAFDoc_ColorToolDriver.hxx
 BinMXCAFDoc_DatumDriver.cxx
 BinMXCAFDoc_DatumDriver.hxx
+BinMXCAFDoc_DimensionDriver.cxx
+BinMXCAFDoc_DimensionDriver.hxx
 BinMXCAFDoc_DimTolDriver.cxx
 BinMXCAFDoc_DimTolDriver.hxx
 BinMXCAFDoc_DimTolToolDriver.cxx
 BinMXCAFDoc_DimTolToolDriver.hxx
 BinMXCAFDoc_DocumentToolDriver.cxx
 BinMXCAFDoc_DocumentToolDriver.hxx
+BinMXCAFDoc_GeomToleranceDriver.cxx
+BinMXCAFDoc_GeomToleranceDriver.hxx
 BinMXCAFDoc_GraphNodeDriver.cxx
 BinMXCAFDoc_GraphNodeDriver.hxx
 BinMXCAFDoc_LayerToolDriver.cxx

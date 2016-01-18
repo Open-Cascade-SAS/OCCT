@@ -725,9 +725,19 @@ static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_IntegerRepresentationItem.hxx>
 #include <StepRepr_ValueRepresentationItem.hxx>
+#include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
+#include <StepVisual_AnnotationCurveOccurrence.hxx>
+#include <StepVisual_AnnotationPlane.hxx>
+#include <StepVisual_DraughtingCallout.hxx>
 
+
+#include <StepVisual_TessellatedAnnotationOccurrence.hxx>
+#include <StepVisual_TessellatedItem.hxx>
+#include <StepVisual_TessellatedGeometricSet.hxx>
+#include <StepVisual_TessellatedCurveSet.hxx>
+#include <StepVisual_CoordinatesList.hxx>
 
 static int init = 0;
 static Interface_DataMapOfTransientInteger types(800);
@@ -745,7 +755,7 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepBasic_Address), 1);
   types.Bind (STANDARD_TYPE(StepShape_AdvancedBrepShapeRepresentation), 2);
   types.Bind (STANDARD_TYPE(StepShape_AdvancedFace), 3);
-//  types.Bind (STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence), 4);
+  types.Bind (STANDARD_TYPE(StepVisual_AnnotationCurveOccurrence), 4);
 //  types.Bind (STANDARD_TYPE(StepVisual_AnnotationFillArea), 5);
 //  types.Bind (STANDARD_TYPE(StepVisual_AnnotationFillAreaOccurrence), 6);
   types.Bind (STANDARD_TYPE(StepVisual_AnnotationOccurrence), 7);
@@ -845,7 +855,7 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepBasic_DimensionalExponents), 104);
   types.Bind (STANDARD_TYPE(StepGeom_Direction), 105);
   types.Bind (STANDARD_TYPE(StepVisual_DraughtingAnnotationOccurrence), 106);
-//  types.Bind (STANDARD_TYPE(StepVisual_DraughtingCallout), 107);
+  types.Bind (STANDARD_TYPE(StepVisual_DraughtingCallout), 107);
   types.Bind (STANDARD_TYPE(StepVisual_DraughtingPreDefinedColour), 108);
   types.Bind (STANDARD_TYPE(StepVisual_DraughtingPreDefinedCurveFont), 109);
 //  types.Bind (STANDARD_TYPE(StepVisual_DraughtingSubfigureRepresentation), 110);
@@ -1417,9 +1427,20 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepRepr_IntegerRepresentationItem), 700);
   types.Bind (STANDARD_TYPE(StepRepr_ValueRepresentationItem), 701);
   types.Bind (STANDARD_TYPE(StepRepr_FeatureForDatumTargetRelationship), 702);
+  types.Bind (STANDARD_TYPE(StepAP242_DraughtingModelItemAssociation), 703);
+  types.Bind (STANDARD_TYPE(StepVisual_AnnotationPlane), 704);
   types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol), 705);
   types.Bind (STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTol), 706);
+  //AP242 tesselated
+  types.Bind (STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence), 707);
+  types.Bind (STANDARD_TYPE(StepVisual_TessellatedItem), 708);
+  types.Bind (STANDARD_TYPE(StepVisual_TessellatedGeometricSet), 709);
+  types.Bind (STANDARD_TYPE(StepVisual_TessellatedCurveSet), 710);
+
+  types.Bind (STANDARD_TYPE(StepVisual_CoordinatesList), 711);
 }
+
+
 
 //=======================================================================
 //function : TypeNumber

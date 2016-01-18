@@ -23,6 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject,Standard_Transi
 XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject()
 {
   myHasAxis = Standard_False;
+  myHasPlane = Standard_False;
+  myHasPnt = Standard_False;
+  myHasPntText = Standard_False;
 }
 
 //=======================================================================
@@ -40,8 +43,14 @@ XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject(con
   myValueOfZoneModif = theObj->myValueOfZoneModif;
   myModifiers = theObj->myModifiers;
   myMaxValueModif = theObj->myMaxValueModif;
-  myAxis = theObj->GetAxis();
-  myHasAxis = Standard_False;
+  myAxis = theObj->myAxis;
+  myHasAxis = theObj->myHasAxis;
+  myPlane = theObj->myPlane;
+  myPnt= theObj->myPnt;
+  myPntText= theObj->myPntText;
+  myHasPlane = theObj->myHasPlane;
+  myHasPnt = theObj->myHasPnt;
+  myHasPntText = theObj->myHasPntText;
 }
 
 //=======================================================================

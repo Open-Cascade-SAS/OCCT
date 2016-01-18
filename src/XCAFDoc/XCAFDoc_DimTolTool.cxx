@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
+#include <XCAFDoc_DimTolTool.hxx>
 #include <Precision.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
@@ -33,6 +33,7 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_DimTolTool,TDF_Attribute)
 
@@ -884,6 +885,7 @@ Standard_Boolean XCAFDoc_DimTolTool::GetTolerOfDatumLabels(const TDF_Label& theD
   }
   return Standard_True;
 }
+
 
 
 //=======================================================================

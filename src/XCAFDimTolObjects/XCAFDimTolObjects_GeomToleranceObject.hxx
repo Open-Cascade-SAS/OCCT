@@ -30,6 +30,8 @@
 #include <Standard_Transient.hxx>
 #include <XCAFDimTolObjects_GeomToleranceModif.hxx>
 #include <gp_Ax2.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 class XCAFDimTolObjects_GeomToleranceObject;
 DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_GeomToleranceObject, Standard_Transient)
@@ -84,6 +86,62 @@ public:
    
   Standard_EXPORT Standard_Boolean HasAxis () const;
 
+  void SetPlane (const gp_Ax2& thePlane)
+  {
+    myPlane = thePlane;
+    myHasPlane = Standard_True;
+  }
+
+  const gp_Ax2& GetPlane() const { return myPlane; }
+
+  void SetPoint (const gp_Pnt& thePnt)
+  {
+    myPnt = thePnt;
+    myHasPnt = Standard_True;
+  }
+
+  const gp_Pnt& GetPoint() const { return myPnt; }
+
+  void SetPointTextAttach (const gp_Pnt& thePntText)
+  {
+    myPntText = thePntText;
+    myHasPntText = Standard_True;
+  }
+
+  const gp_Pnt& GetPointTextAttach() const 
+  { 
+    return myPntText; 
+  }
+  Standard_Boolean HasPlane() const { return myHasPlane; }
+
+  Standard_Boolean HasPoint() const { return myHasPnt; }
+  
+  Standard_Boolean HasPointText() const 
+  { 
+    return myHasPntText; 
+  }
+
+ 
+   //! Set graphical presentation for object
+  Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
+    const Handle(TCollection_HAsciiString)& thePresentationName)
+  {
+    myPresentation = thePresentation;
+    myPresentationName = thePresentationName;
+  }
+
+  //! Returns graphical presentation of the object
+  Standard_EXPORT TopoDS_Shape GetPresentation() const
+  {
+    return myPresentation;
+  }
+
+   //! Returns graphical presentation of the object
+  Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
+  {
+    return myPresentationName;
+  }
+
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject,Standard_Transient)
 
 private: 
@@ -98,6 +156,15 @@ private:
   Standard_Real myMaxValueModif;
   gp_Ax2 myAxis;
   Standard_Boolean myHasAxis;
+  gp_Ax2 myPlane;
+  gp_Pnt myPnt;
+  gp_Pnt myPntText;;
+  Standard_Boolean myHasPlane;
+  Standard_Boolean myHasPnt;
+  Standard_Boolean myHasPntText;
+  TopoDS_Shape myPresentation;
+  Handle(TCollection_HAsciiString) myPresentationName;
+
 };
 
 

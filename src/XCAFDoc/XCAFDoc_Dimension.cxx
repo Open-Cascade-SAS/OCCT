@@ -28,6 +28,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TopoDS.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
+#include <TNaming_Tool.hxx>
+#include <TDataStd_Name.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Dimension,TDF_Attribute)
 
@@ -41,7 +43,13 @@ enum ChildLab
   ChildLab_Modifiers,
   ChildLab_Path,
   ChildLab_Dir,
-  ChildLab_Pnts
+  ChildLab_Pnts,
+  ChildLab_PlaneLoc,
+  ChildLab_PlaneN,
+  ChildLab_PlaneRef,
+  ChildLab_PntText,
+  ChildLab_Presentation
+  
 };
 
 //=======================================================================
@@ -171,18 +179,75 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
   Handle(TColgp_HArray1OfPnt) aP = theObject->GetPoints();
   if(!aP.IsNull() && aP->Length() > 0)
   {
-    anArrR = new TColStd_HArray1OfReal(1,6);
+    anArrR = new TColStd_HArray1OfReal(1,aP->Length() * 3);
     Handle(TDataStd_RealArray) aPnts;
     anArrR->SetValue(1,aP->Value(1).X());
     anArrR->SetValue(2,aP->Value(1).Y());
     anArrR->SetValue(3,aP->Value(1).Z());
-    anArrR->SetValue(4,aP->Value(2).X());
-    anArrR->SetValue(5,aP->Value(2).Y());
-    anArrR->SetValue(6,aP->Value(2).Z());
+    if (aP->Length() == 2) {
+      anArrR->SetValue(4,aP->Value(2).X());
+      anArrR->SetValue(5,aP->Value(2).Y());
+      anArrR->SetValue(6,aP->Value(2).Z());
+    }
     aPnts = new TDataStd_RealArray();
     Label().FindChild(ChildLab_Pnts).AddAttribute(aPnts);
     aPnts->ChangeArray(anArrR);
   }
+
+  if (theObject->HasPlane())
+  {
+    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
+    Handle(TDataStd_RealArray) aN = new TDataStd_RealArray();
+    Handle(TDataStd_RealArray) aRAtt = new TDataStd_RealArray();
+    gp_Ax2 anAx = theObject->GetPlane();
+
+    Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aLocArr->SetValue(i, anAx.Location().Coord(i));
+    aLoc->ChangeArray(aLocArr);
+
+    Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aNArr->SetValue(i, anAx.Direction().Coord(i));
+    aN->ChangeArray(aNArr);
+
+    Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aRArr->SetValue(i, anAx.XDirection().Coord(i));
+    aRAtt->ChangeArray(aRArr);
+
+    Label().FindChild(ChildLab_PlaneLoc).AddAttribute(aLoc);
+    Label().FindChild(ChildLab_PlaneN).AddAttribute(aN);
+    Label().FindChild(ChildLab_PlaneRef).AddAttribute(aRAtt);
+  }
+
+  if (theObject->HasTextPoint())
+  {
+    Handle(TDataStd_RealArray) aLoc = new TDataStd_RealArray();
+    gp_Pnt aPntText = theObject->GetPointTextAttach();
+
+    Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aLocArr->SetValue(i, aPntText.Coord(i));
+    aLoc->ChangeArray(aLocArr);
+
+    Label().FindChild(ChildLab_PntText).AddAttribute(aLoc);
+  }
+
+  TopoDS_Shape aPresentation = theObject->GetPresentation();
+  if( !aPresentation.IsNull())
+  {
+    TDF_Label aLPres = Label().FindChild( ChildLab_Presentation);
+    TNaming_Builder tnBuild(aLPres);
+    tnBuild.Generated(aPresentation);
+    Handle(TCollection_HAsciiString) aName =  theObject->GetPresentationName();
+    if( !aName.IsNull() )
+    {
+      TCollection_ExtendedString str ( aName->String() );
+      TDataStd_Name::Set ( aLPres, str );
+    }
+  }
+  
 }
 
 //=======================================================================
@@ -254,14 +319,60 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject()  const
 
   Handle(TDataStd_RealArray) aPnts;
   if(Label().FindChild(ChildLab_Pnts).FindAttribute(TDataStd_RealArray::GetID(), aPnts) 
-     && !aPnts->Array().IsNull() && aPnts->Array()->Length() > 0)
+     && !aPnts->Array().IsNull() && aPnts->Array()->Length() > 2)
   {
-    Handle(TColgp_HArray1OfPnt) aP = new TColgp_HArray1OfPnt(1,2);
-    aP->SetValue(1, gp_Pnt(aPnts->Array()->Value(1), aPnts->Array()->Value(2), aPnts->Array()->Value(3)));
-    aP->SetValue(2, gp_Pnt(aPnts->Array()->Value(4), aPnts->Array()->Value(5), aPnts->Array()->Value(6)));
+    Handle(TColgp_HArray1OfPnt) aP = new TColgp_HArray1OfPnt(1,aPnts->Array()->Length()/3);
+    gp_Pnt aP1(aPnts->Array()->Value(1), aPnts->Array()->Value(2), aPnts->Array()->Value(3)); 
+    aP->SetValue(1, aP1);
+    if (aPnts->Array()->Length() == 6)
+    {
+      gp_Pnt aP2(aPnts->Array()->Value(4), aPnts->Array()->Value(5), aPnts->Array()->Value(6)); 
+      aP->SetValue(2, aP2);
+    }
     anObj->SetPoints(aP);
   }
 
+  Handle(TDataStd_RealArray) aLoc, aN, aR;
+  if(Label().FindChild(ChildLab_PlaneLoc).FindAttribute(TDataStd_RealArray::GetID(), aLoc) && aLoc->Length() == 3 &&
+    Label().FindChild(ChildLab_PlaneN).FindAttribute(TDataStd_RealArray::GetID(), aN) && aN->Length() == 3 &&
+    Label().FindChild(ChildLab_PlaneRef).FindAttribute(TDataStd_RealArray::GetID(), aR) && aR->Length() == 3 )
+  {
+    gp_Pnt aL(aLoc->Value(aLoc->Lower()), aLoc->Value(aLoc->Lower()+1), aLoc->Value(aLoc->Lower()+2));
+    gp_Dir aD(aN->Value(aN->Lower()), aN->Value(aN->Lower()+1), aN->Value(aN->Lower()+2));
+    gp_Dir aDR(aR->Value(aR->Lower()), aR->Value(aR->Lower()+1), aR->Value(aR->Lower()+2));
+    gp_Ax2 anAx(aL, aD, aDR);
+    anObj->SetPlane(anAx);
+  }
+
+  Handle(TDataStd_RealArray) aPntText;
+  if(Label().FindChild(ChildLab_PntText).FindAttribute(TDataStd_RealArray::GetID(), aPntText) && aPntText->Length() == 3 )
+  {
+    gp_Pnt aP(aPntText->Value(aPntText->Lower()), aPntText->Value(aPntText->Lower()+1), aPntText->Value(aPntText->Lower()+2));
+    anObj->SetPointTextAttach(aP);
+  }
+
+  Handle(TNaming_NamedShape) aNS;
+  TDF_Label aLPres = Label().FindChild( ChildLab_Presentation);
+  if ( aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS) ) 
+  {
+
+    TopoDS_Shape aPresentation = TNaming_Tool::GetShape(aNS);
+    if( !aPresentation.IsNull())
+    {
+     
+      Handle(TDataStd_Name) aNameAtrr;
+      Handle(TCollection_HAsciiString) aPresentName;
+      if (aLPres.FindAttribute(TDataStd_Name::GetID(),aNameAtrr))
+      {
+        const TCollection_ExtendedString& aName = aNameAtrr->Get();
+
+        if( !aName.IsEmpty())
+          aPresentName = new TCollection_HAsciiString(aName);
+      }
+
+      anObj->SetPresentation(aPresentation, aPresentName);
+    }
+  }
   return anObj;
 }
 
