@@ -105,6 +105,7 @@ TCollection_AsciiString FindViewId (const NSWindow* theWindow)
 
 - (void )windowWillClose: (NSNotification* )theNotification
 {
+  (void )theNotification;
   TCollection_AsciiString aViewId = "";
   if (ViewerTest_myViews.IsBound2 (ViewerTest::CurrentView()))
   {
@@ -196,6 +197,7 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )drawRect: (NSRect )theDirtyRect
 {
+  (void )theDirtyRect;
   VT_ProcessExpose();
 }
 
@@ -269,6 +271,7 @@ static void getMouseCoords (NSView*           theView,
 // =======================================================================
 - (void )rightMouseUp: (NSEvent* )theEvent
 {
+  (void )theEvent;
   VT_ProcessButton3Release();
 }
 

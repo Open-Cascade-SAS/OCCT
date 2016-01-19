@@ -66,6 +66,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 #endif
   mySwapInterval (theCaps->swapInterval)
 {
+  (void )theDriver;
   myPlatformWindow->Size (myWidth, myHeight);
 
 #if defined(__APPLE__)

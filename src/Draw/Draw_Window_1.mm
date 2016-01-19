@@ -48,7 +48,7 @@
 
 - (void )drawRect: (NSRect )theRect
 {
-
+  (void )theRect;
   NSRect aBounds = NSMakeRect (0.0, 0.0, myImage.size.width, myImage.size.height);
 
   [myImage drawInRect: aBounds
@@ -511,7 +511,8 @@ void Draw_Window::SetColor (const Standard_Integer& theColor)
 //=======================================================================
 void Draw_Window::SetMode (const Standard_Integer& theMode)
 {
-  //
+  // unsupported
+  (void )theMode;
 }
 
 //=======================================================================
@@ -539,8 +540,11 @@ Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
   NSBitmapImageFileType aFileType = (NSBitmapImageFileType )[[aFileTypeDict valueForKey: aFileExtension] intValue];
   NSBitmapImageRep* anImageRep = [NSBitmapImageRep imageRepWithData: [myImageBuffer TIFFRepresentation]];
 
+  NSDictionary* anImgProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8]
+                                                         forKey: NSImageCompressionFactor];
+
   NSData* aData = [anImageRep representationUsingType: aFileType 
-                                           properties: nil];
+                                           properties: anImgProps];
 
   Standard_Boolean isSuccess = [aData writeToFile: aFileName
                                        atomically: NO];
