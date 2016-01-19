@@ -33,7 +33,8 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge()
   myRange1(0., 0.),
   myRange2(0., 0.),
   mySwap(Standard_False),
-  myErrorStatus(0)
+  myErrorStatus(0),
+  myQuickCoincidenceCheck(Standard_False)
 {
 }
 //=======================================================================
@@ -57,7 +58,8 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
   myRange1(0., 0.),
   myRange2(0., 0.),
   mySwap(Standard_False),
-  myErrorStatus(0)
+  myErrorStatus(0),
+  myQuickCoincidenceCheck(Standard_False)
 {
 }
 //=======================================================================
@@ -85,7 +87,8 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
   myRange1(aT11, aT12),
   myRange2(aT21, aT22),
   mySwap(Standard_False),
-  myErrorStatus(0)
+  myErrorStatus(0),
+  myQuickCoincidenceCheck(Standard_False)
 {
 }
 //=======================================================================

@@ -201,7 +201,7 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
     theInds.Append(aCurv.Upper());
   }
 
-#if defined(APPROXINT_KNOTTOOLS_DEBUG) || defined(OCCT_DEBUG)
+#if defined(APPROXINT_KNOTTOOLS_DEBUG)
   {
     cout << "Feature indices new: " << endl;
     i;
@@ -597,7 +597,7 @@ void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt& thePntsXYZ,
   // II: Build draft knot sequence.
   ComputeKnotInds(aCoords, aDim, thePars, aKnots);
 
-#if defined(APPROXINT_KNOTTOOLS_DEBUG) || defined(OCCT_DEBUG)
+#if defined(APPROXINT_KNOTTOOLS_DEBUG)
     cout << "Draft knot sequence: " << endl;
     for(i = aKnots.Lower(); i <= aKnots.Upper();  ++i)
     {
@@ -608,7 +608,7 @@ void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt& thePntsXYZ,
   // III: Build output knot sequence.
   FilterKnots(aKnots, theMinNbPnts, theKnots);
 
-#if defined(APPROXINT_KNOTTOOLS_DEBUG) || defined(OCCT_DEBUG)
+#if defined(APPROXINT_KNOTTOOLS_DEBUG)
     cout << "Result knot sequence: " << endl;
     for(i = theKnots.Lower(); i <= theKnots.Upper();  ++i)
     {

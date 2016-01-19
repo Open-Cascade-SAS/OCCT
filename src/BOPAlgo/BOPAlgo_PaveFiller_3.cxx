@@ -281,8 +281,9 @@ void BOPAlgo_PaveFiller::PerformEE()
     return; 
   }
   //
-  Standard_Boolean bJustAdd;
+  Standard_Boolean bJustAdd, bExpressCompute;
   Standard_Integer i, iX, nE1, nE2, aNbCPrts, k, aNbFdgeEdge;
+  Standard_Integer nV11, nV12, nV21, nV22;
   Standard_Real aTS11, aTS12, aTS21, aTS22, aT11, aT12, aT21, aT22;
   TopAbs_ShapeEnum aType;
   BOPDS_ListIteratorOfListOfPaveBlock aIt1, aIt2;
@@ -330,6 +331,8 @@ void BOPAlgo_PaveFiller::PerformEE()
       }
       aPB1->ShrunkData(aTS11, aTS12, aBB1);
       //
+      aPB1->Indices(nV11, nV12);
+      //
       aIt2.Initialize(aLPB2);
       for (; aIt2.More(); aIt2.Next()) {
         Bnd_Box aBB2;
@@ -347,8 +350,15 @@ void BOPAlgo_PaveFiller::PerformEE()
         aPB1->Range(aT11, aT12);
         aPB2->Range(aT21, aT22);
         //
+        aPB2->Indices(nV21, nV22);
+        //
+        bExpressCompute=((nV11==nV21 && nV12==nV22) ||
+                         (nV12==nV21 && nV11==nV22));
+        //
         BOPAlgo_EdgeEdge& anEdgeEdge=aVEdgeEdge.Append1();
-        // 
+        //
+        anEdgeEdge.UseQuickCoincidenceCheck(bExpressCompute);
+        //
         anEdgeEdge.SetPaveBlock1(aPB1);
         anEdgeEdge.SetPaveBlock2(aPB2);
         //

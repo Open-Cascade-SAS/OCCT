@@ -30,7 +30,6 @@
 #include <IntTools_SequenceOfRanges.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <IntTools_CArray1OfReal.hxx>
-#include <IntTools_SequenceOfRoots.hxx>
 #include <IntTools_SequenceOfCommonPrts.hxx>
 #include <IntTools_Range.hxx>
 class IntTools_Context;
@@ -101,11 +100,6 @@ public:
   //! Initializes algorithm by parameter tolerance
   Standard_EXPORT void SetEpsilonT (const Standard_Real anEpsT);
   
-
-  //! Initializes algorithm by distance tolerance
-  Standard_EXPORT void SetEpsilonNull (const Standard_Real anEpsNull);
-  
-
   //! Sets boundaries for edge.
   //! The algorithm processes edge inside these boundaries.
   Standard_EXPORT void SetRange (const IntTools_Range& aRange);
@@ -149,15 +143,20 @@ public:
 
   //! Returns boundaries for edge
   Standard_EXPORT const IntTools_Range& Range() const;
-  
-  Standard_EXPORT static Standard_Boolean IsEqDistance (const gp_Pnt& aP, const BRepAdaptor_Surface& aS, const Standard_Real aT, Standard_Real& aD);
 
+  //! Sets the flag myQuickCoincidenceCheck
+  void UseQuickCoincidenceCheck(const Standard_Boolean bFlag) {
+    myQuickCoincidenceCheck=bFlag;
+  }
 
+  //! Returns the flag myQuickCoincidenceCheck
+  Standard_Boolean IsCoincidenceCheckedQuickly () {
+    return myQuickCoincidenceCheck;
+  }
 
 
 protected:
-
-  
+  Standard_EXPORT static Standard_Boolean IsEqDistance (const gp_Pnt& aP, const BRepAdaptor_Surface& aS, const Standard_Real aT, Standard_Real& aD);
   Standard_EXPORT void CheckData();
   
   Standard_EXPORT void Prepare();
@@ -168,28 +167,14 @@ protected:
   
   Standard_EXPORT Standard_Real DistanceFunction (const Standard_Real t);
   
-  Standard_EXPORT Standard_Real DerivativeFunction (const Standard_Real t);
-  
-  Standard_EXPORT void PrepareArgsFuncArrays (const Standard_Real t1, const Standard_Real t2);
-  
-  Standard_EXPORT void AddDerivativePoints (const IntTools_CArray1OfReal& t, const IntTools_CArray1OfReal& f);
-  
-  Standard_EXPORT Standard_Real FindSimpleRoot (const Standard_Integer IP, const Standard_Real ta, const Standard_Real tb, const Standard_Real fA);
-  
-  Standard_EXPORT Standard_Real FindGoldRoot (const Standard_Real ta, const Standard_Real tb, const Standard_Real coeff);
-  
   Standard_EXPORT Standard_Integer MakeType (IntTools_CommonPrt& aCP);
-  
-  Standard_EXPORT void IsIntersection (const Standard_Real ta, const Standard_Real tb);
-  
-  Standard_EXPORT void FindDerivativeRoot (const IntTools_CArray1OfReal& t, const IntTools_CArray1OfReal& f);
-  
-  Standard_EXPORT void RemoveIdenticalRoots();
-  
+   
   Standard_EXPORT Standard_Boolean CheckTouch (const IntTools_CommonPrt& aCP, Standard_Real& aTX);
   
   Standard_EXPORT Standard_Boolean CheckTouchVertex (const IntTools_CommonPrt& aCP, Standard_Real& aTX);
 
+  //! Checks if the edge is in the face really.
+  Standard_EXPORT Standard_Boolean IsCoincident();
 
 
 
@@ -203,11 +188,8 @@ private:
   Standard_Real myTolF;
   Standard_Integer myDiscret;
   Standard_Real myEpsT;
-  Standard_Real myEpsNull;
   Standard_Real myDeflection;
   BRepAdaptor_Curve myC;
-  Standard_Real myTmin;
-  Standard_Real myTmax;
   BRepAdaptor_Surface myS;
   Standard_Real myCriteria;
   Standard_Boolean myIsDone;
@@ -215,15 +197,16 @@ private:
   Handle(IntTools_Context) myContext;
   IntTools_SequenceOfRanges myProjectableRanges;
   IntTools_FClass2d myFClass2d;
-  IntTools_CArray1OfReal myFuncArray;
-  IntTools_CArray1OfReal myArgsArray;
-  IntTools_SequenceOfRoots mySequenceOfRoots;
   IntTools_SequenceOfCommonPrts mySeqOfCommonPrts;
-  Standard_Real myPar1;
-  Standard_Boolean myParallel;
   IntTools_Range myRange;
 
-
+  //! Allows avoiding use Edge-Face intersection
+  //! algorithm (i.e. speeding up the Boolean algorithm)
+  //! if the edges are coincided really.
+  //! If it is not evidently set of this flag should
+  //! be avoided (otherwise, the performance of
+  //! Boolean algorithm will be slower).
+  Standard_Boolean myQuickCoincidenceCheck;
 };
 
 

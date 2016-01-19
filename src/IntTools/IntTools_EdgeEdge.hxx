@@ -106,7 +106,15 @@ public:
   const IntTools_SequenceOfCommonPrts& CommonParts() const;
 
 
+  //! Sets the flag myQuickCoincidenceCheck
+  void UseQuickCoincidenceCheck (const Standard_Boolean bFlag) {
+    myQuickCoincidenceCheck=bFlag;
+  }
 
+  //! Returns the flag myQuickCoincidenceCheck
+  Standard_Boolean IsCoincidenceCheckedQuickly () {
+    return myQuickCoincidenceCheck;
+  }
 
 protected:
 
@@ -170,6 +178,8 @@ protected:
   Standard_EXPORT Standard_Boolean IsIntersection (const Standard_Real aT11,
     const Standard_Real aT12, const Standard_Real aT21, const Standard_Real aT22);
 
+  //! Checks if the edges are coincident really.
+  Standard_EXPORT Standard_Boolean IsCoincident();
 
   TopoDS_Edge myEdge1;
   TopoDS_Edge myEdge2;
@@ -191,6 +201,14 @@ protected:
   Standard_Boolean mySwap;
   Standard_Integer myErrorStatus;
   IntTools_SequenceOfCommonPrts myCommonParts;
+
+  //! Allows avoiding use Edge-Edge intersection
+  //! algorithm (i.e. speeding up the Boolean algorithm)
+  //! if the edges are coincided really.
+  //! If it is not evidently set of this flag should
+  //! be avoided (otherwise, the performance of
+  //! Boolean algorithm will be slower).
+  Standard_Boolean myQuickCoincidenceCheck;
 
 private:
 

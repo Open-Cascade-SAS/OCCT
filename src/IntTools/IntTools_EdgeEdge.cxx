@@ -211,6 +211,17 @@ void IntTools_EdgeEdge::Perform()
     return;
   }
   //
+  if (myQuickCoincidenceCheck) {
+    if (IsCoincident()) {
+      Standard_Real aT11, aT12, aT21, aT22;
+      //
+      myRange1.Range(aT11, aT12);
+      myRange2.Range(aT21, aT22);
+      AddSolution(aT11, aT12, aT21, aT22, TopAbs_EDGE);
+      return;
+    }
+  }
+  //
   IntTools_SequenceOfRanges aRanges1, aRanges2;
   //
   //3.2. Find ranges containig solutions
@@ -221,6 +232,47 @@ void IntTools_EdgeEdge::Perform()
   MergeSolutions(aRanges1, aRanges2, bSplit2);
 }
 
+//=======================================================================
+//function :  IsCoincident
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntTools_EdgeEdge::IsCoincident() 
+{
+  Standard_Integer i, iCnt, aNbSeg, aNbP2;
+  Standard_Real dT, aT1, aCoeff, aTresh, aD;
+  Standard_Real aT11, aT12, aT21, aT22;
+  GeomAPI_ProjectPointOnCurve aProjPC;
+  gp_Pnt aP1;
+  //
+  aTresh=0.5;
+  aNbSeg=23;
+  myRange1.Range(aT11, aT12);
+  myRange2.Range(aT21, aT22);
+  //
+  aProjPC.Init(myGeom2, aT21, aT22);
+  //
+  dT=(aT12-aT11)/aNbSeg;
+  //
+  iCnt=0;
+  for(i=0; i <= aNbSeg; ++i) {
+    aT1 = aT11+i*dT;
+    myGeom1->D0(aT1, aP1);
+    //
+    aProjPC.Perform(aP1);
+    aNbP2=aProjPC.NbPoints();
+    if (!aNbP2) {
+      continue;
+    }
+    //
+    aD=aProjPC.LowerDistance();
+    if(aD < myTol) {
+      ++iCnt; 
+    }
+  }
+  //
+  aCoeff=(Standard_Real)iCnt/((Standard_Real)aNbSeg+1);
+  return aCoeff > aTresh;
+}
 //=======================================================================
 //function : FindSolutions
 //purpose  : 

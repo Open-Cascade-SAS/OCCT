@@ -147,6 +147,8 @@ void BOPAlgo_PaveFiller::PerformEF()
   }
   //
   Standard_Boolean bJustAdd, bV[2];
+  Standard_Boolean bV1, bV2, bExpressCompute;
+  Standard_Integer nV1, nV2;
   Standard_Integer nE, nF, aDiscretize, i, aNbCPrts, iX, nV[2];
   Standard_Integer aNbEdgeFace, k;
   Standard_Real aTolE, aTolF, aTS1, aTS2, aT1, aT2, aDeflection;
@@ -186,6 +188,9 @@ void BOPAlgo_PaveFiller::PerformEF()
     BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
     const BOPDS_IndexedMapOfPaveBlock& aMPBF=aFI.PaveBlocksOn();
     //
+    const BOPCol_MapOfInteger& aMVIn=aFI.VerticesIn();
+    const BOPCol_MapOfInteger& aMVOn=aFI.VerticesOn();
+    //
     aTolE=BRep_Tool::Tolerance(aE);
     aTolF=BRep_Tool::Tolerance(aF);
     //
@@ -210,6 +215,11 @@ void BOPAlgo_PaveFiller::PerformEF()
         continue;
       }
       //
+      aPBR->Indices(nV1, nV2);
+      bV1=aMVIn.Contains(nV1) || aMVOn.Contains(nV1);
+      bV2=aMVIn.Contains(nV2) || aMVOn.Contains(nV2);
+      bExpressCompute=bV1 && bV2;
+      //
       BOPAlgo_EdgeFace& aEdgeFace=aVEdgeFace.Append1();
       //
       aEdgeFace.SetIndices(nE, nF);
@@ -221,6 +231,7 @@ void BOPAlgo_PaveFiller::PerformEF()
       aEdgeFace.SetTolF (aTolF);
       aEdgeFace.SetDiscretize (aDiscretize);
       aEdgeFace.SetDeflection (aDeflection);
+      aEdgeFace.UseQuickCoincidenceCheck(bExpressCompute);
       //
       IntTools_Range aSR(aTS1, aTS2);
       IntTools_Range anewSR=aSR;

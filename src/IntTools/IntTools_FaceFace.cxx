@@ -888,10 +888,27 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
     }
     L = aWLine;
 
-    //
-    //if(!myListOfPnts.IsEmpty()) {
-    //  bAvoidLineConstructor = Standard_True;
-    //}
+#ifdef INTTOOLS_FACEFACE_DEBUG
+    if(!myListOfPnts.IsEmpty()) {
+      char aBuff[10000];
+      const IntSurf_PntOn2S& aPt = myListOfPnts.First();
+      Standard_Real u1, v1, u2, v2;
+      aPt.Parameters(u1, v1, u2, v2);
+
+      Sprintf(aBuff,"bopcurves <face1 face2> -2d");
+      IntSurf_ListIteratorOfListOfPntOn2S IterLOP1(myListOfPnts);
+      for(;IterLOP1.More(); IterLOP1.Next())
+      {
+        const IntSurf_PntOn2S& aPt = IterLOP1.Value();
+        Standard_Real u1, v1, u2, v2;
+        aPt.Parameters(u1, v1, u2, v2);
+
+        Sprintf(aBuff, "%s -p %+10.20f %+10.20f %+10.20f %+10.20f", aBuff, u1, v1, u2, v2);
+      }
+
+      cout << aBuff << endl;
+    }
+#endif
 
     Standard_Integer nbp = aWLine->NbPnts();
     const IntSurf_PntOn2S& p1 = aWLine->Point(1);
