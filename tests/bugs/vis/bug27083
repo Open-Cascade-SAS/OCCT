@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC27083"
+puts "========"
+puts ""
+##################################################################
+puts "Visualization, Ray Tracing - shape with visible face boundaries disappears after turning the ray-tracing on"
+##################################################################
+
+pload VISUALIZATION MODELING
+
+box b 1 1 1
+
+vinit
+
+vdisplay b
+vfit
+vsetdispmode 1
+vshowfaceboundary b 1 255 0 0 3
+vraytrace 1
+
+if {[vreadpixel 295 255 name] != "GOLDENROD4 0"} {
+  puts "ERROR: the box with boundary aspect set is not shown in ray-tracing mode!"
+}
+
+if {[vreadpixel 105 58 name] != "RED 0"} {
+  puts "ERROR: the box's boundaries are not shown in ray-tracing mode!"
+}
+
+vdump $imagedir/${casename}.png

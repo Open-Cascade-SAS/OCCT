@@ -1105,6 +1105,10 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
         aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, 0);
       }
 
+      // Reset OpenGl aspects state to default to avoid enabling of
+      // backface culling which is not supported in ray-tracing.
+      myWorkspace->ResetAppliedAspect();
+
       // Ray-tracing polygonal primitive arrays
       raytrace (aSizeX, aSizeY, theProjection, theReadDrawFbo, aCtx);
 
