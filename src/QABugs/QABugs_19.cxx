@@ -5027,6 +5027,32 @@ static Standard_Integer OCC26945_close (Draw_Interpretor& theDI, Standard_Intege
   return 0;
 }
 
+//=======================================================================
+//function : OCC27048
+//purpose  : Calculate value of B-spline surface N times
+//=======================================================================
+static Standard_Integer OCC27048(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc != 5)
+  {
+    std::cout << "Incorrect number of arguments. See usage:" << std::endl;
+    theDI.PrintHelp(theArgv[0]);
+    return 1;
+  }
+
+  Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(theArgv[1]);
+  GeomAdaptor_Surface anAdaptor(aSurf);
+
+  Standard_Real aU = Draw::Atof(theArgv[2]);
+  Standard_Real aV = Draw::Atof(theArgv[3]);
+  Standard_Integer aN = Draw::Atoi(theArgv[4]);
+
+  for (; aN > 0; --aN)
+    anAdaptor.Value(aU, aV);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -5132,6 +5158,10 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "OCC26945 localCtxToClose"
                    "\n\t\t: Closes local context with the ID localCtxToClose",
                    __FILE__, OCC26945_close, group);
+
+  theCommands.Add ("OCC27048",
+                   "OCC27048 surf U V N\nCalculate value of surface N times in the point (U, V)",
+                   __FILE__, OCC27048, group);
   
   return;
 }

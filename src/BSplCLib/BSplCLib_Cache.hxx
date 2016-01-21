@@ -167,6 +167,7 @@ private:
   Standard_Real                 mySpanStart;  ///< parameter for the first point of the span
   Standard_Real                 mySpanLength; ///< length of the span
   Standard_Integer              mySpanIndex;  ///< index of the span on Bezier/B-spline curve
+  Standard_Integer              mySpanIndexMin; ///< minimal index of span on Bezier/B-spline curve
   Standard_Integer              mySpanIndexMax; ///< maximal number of spans on Bezier/B-spline curve
   Standard_Integer              myDegree;     ///< degree of Bezier/B-spline
   Handle(TColStd_HArray1OfReal) myFlatKnots;  ///< knots of Bezier/B-spline (used for periodic normalization of parameters, exists only for periodical splines)

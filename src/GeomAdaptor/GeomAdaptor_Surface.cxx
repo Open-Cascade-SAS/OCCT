@@ -217,6 +217,8 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
     else
       mySurfaceType = GeomAbs_OtherSurface;
   }
+  else // rebuild cache of Bezier and B-spline surface even if the loaded surface is same
+    RebuildCache(myUFirst, myVFirst);
 }
 
 //    --

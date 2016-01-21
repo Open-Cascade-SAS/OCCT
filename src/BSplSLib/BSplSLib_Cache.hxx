@@ -144,6 +144,7 @@ private:
   Standard_Real                 mySpanStart[2];  ///< parameters (u, v) for the frst point of the span
   Standard_Real                 mySpanLength[2]; ///< lengths of the span along corresponding parameter
   Standard_Integer              mySpanIndex[2];  ///< indexes of the span on Bezier/B-spline surface
+  Standard_Integer              mySpanIndexMin[2]; ///< minimal indexes of span
   Standard_Integer              mySpanIndexMax[2]; ///< maximal indexes of span
   Standard_Integer              myDegree[2];     ///< degrees of Bezier/B-spline for each parameter
   Handle(TColStd_HArray1OfReal) myFlatKnots[2];  ///< arrays of knots of Bezier/B-spline 

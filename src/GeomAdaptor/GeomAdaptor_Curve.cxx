@@ -194,7 +194,9 @@ void GeomAdaptor_Curve::load(const Handle(Geom_Curve)& C,
       myTypeCurve = GeomAbs_OtherCurve;
     }
   }
-}  
+  else // rebuild cache of Bezier and B-spline curve even if the loaded curve is same
+    RebuildCache(myFirst);
+}
 
 //    --
 //    --     Global methods - Apply to the whole curve.

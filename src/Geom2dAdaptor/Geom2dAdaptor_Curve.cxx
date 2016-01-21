@@ -237,6 +237,8 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
       myTypeCurve = GeomAbs_OtherCurve;
     }
   }
+  else // rebuild cache of Bezier and B-spline curve even if the loaded curve is same
+    RebuildCache(myFirst);
 }
 
 //    --

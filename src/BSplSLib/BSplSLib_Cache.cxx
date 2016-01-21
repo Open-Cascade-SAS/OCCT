@@ -75,8 +75,10 @@ Standard_Boolean BSplSLib_Cache::IsCacheValid(Standard_Real theParameterU,
 
   Standard_Real aDelta0 = aNewU - mySpanStart[0];
   Standard_Real aDelta1 = aNewV - mySpanStart[1];
-  return (aDelta0 >= -mySpanLength[0] && (aDelta0 < mySpanLength[0] || mySpanIndex[0] == mySpanIndexMax[0]) && 
-          aDelta1 >= -mySpanLength[1] && (aDelta1 < mySpanLength[1] || mySpanIndex[1] == mySpanIndexMax[1]));
+  return ((aDelta0 >= -mySpanLength[0] || mySpanIndex[0] == mySpanIndexMin[0]) &&
+          (aDelta0 < mySpanLength[0] || mySpanIndex[0] == mySpanIndexMax[0]) &&
+          (aDelta1 >= -mySpanLength[1] || mySpanIndex[1] == mySpanIndexMin[1]) &&
+          (aDelta1 < mySpanLength[1] || mySpanIndex[1] == mySpanIndexMax[1]));
 }
 
 void BSplSLib_Cache::PeriodicNormalization(const Standard_Integer& theDegree, 
@@ -164,7 +166,9 @@ void BSplSLib_Cache::BuildCache(const Standard_Real&           theParameterU,
 
   mySpanLength[1] = (theFlatKnotsV.Value(mySpanIndex[1] + 1) - theFlatKnotsV.Value(mySpanIndex[1])) * 0.5;
   mySpanStart[1]  = theFlatKnotsV.Value(mySpanIndex[1]) + mySpanLength[1];
+  mySpanIndexMin[0] = thePeriodicU ? 0 : theDegreeU + 1;
   mySpanIndexMax[0] = theFlatKnotsU.Length() - 1 - theDegreeU;
+  mySpanIndexMin[1] = thePeriodicV ? 0 : theDegreeV + 1;
   mySpanIndexMax[1] = theFlatKnotsV.Length() - 1 - theDegreeV;
 
   // Calculate new cache data
