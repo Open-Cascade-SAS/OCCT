@@ -179,8 +179,8 @@ Default value is 1.
 
 <h4>read.stdsameparameter.mode</h4>
 defines the using of  *BRepLib::SameParameter*. Its possible values are:  
-* 0 (Off) - *BRepLib::SameParameter* is not called,  
-* 1 (On) - *BRepLib::SameParameter* is called.  
+* 0 (Off) -- *BRepLib::SameParameter* is not called,  
+* 1 (On) -- *BRepLib::SameParameter* is called.  
 *BRepLib::SameParameter* is used through  *ShapeFix_Edge::SameParameter*. It ensures that the resulting edge will have the  lowest tolerance taking pcurves either unmodified from the IGES file or  modified by *BRepLib::SameParameter*.  
 Read this parameter  with:  
 ~~~~~
@@ -271,8 +271,8 @@ Please find an example of the resource file for IGES (which  defines parameters 
 In order for the IGES translator to use that file, you have  to define the environment variable   *CSF_IGESDefaults*, which should point to the directory where the resource file  resides.   Note that if you change parameter *read.iges.resource.name*, you should change  the name   of the resource file and the name of the environment variable correspondingly.  The variable should contain a path to the resource file. 
 
 Default values:  
-* read.iges.resource.name - IGES,  
-* read.iges.sequence - FromIGES. 
+* read.iges.resource.name -- IGES,  
+* read.iges.sequence -- FromIGES. 
 
 <h4>xstep.cascade.unit</h4>
 This parameter defines units to which a shape should be  converted when translated   from IGES or STEP to CASCADE. Normally it is MM; only those applications that   work internally in units other than MM should use this parameter.
@@ -319,25 +319,25 @@ faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”);
 ~~~~~
 
 <h4>List of predefined operators that can be used:</h4>
-  * *xst-model-all* - selects all entities. 
-  * *xst-model-roots* - selects all roots. 
-  * *xst-transferrable-all* - selects all translatable entities. 
-  * *xst-transferrable-roots* - selects all translatable roots (default). 
-  * *xst-sharing + \<selection\>* - selects all entities sharing at least one entity selected by  \<selection\>. 
-  * *xst-shared + \<selection\>* - selects all entities shared by at least one entity selected  by \<selection\>. 
-  * *iges-visible-roots* - selects all visible roots, whether translatable or not. 
-  * *iges-visible-transf-roots* - selects all visible and translatable roots. 
-  * *iges-blanked-roots* - selects all blank roots, whether translatable or not. 
-  * *iges-blanked-transf-roots* - selects all blank and translatable roots. 
-  * *iges-status-independant* - selects entities whose IGES Subordinate Status = 0. 
-  * *iges-bypass-group* Selects all root entities. If a root entity is a group  (402/7 or 402/9), the entities in the group are selected. 
-  * *iges-bypass-subfigure* Selects all root entities. If a root entity is a subfigure  definition (308), the entities in the subfigure definition are selected. 
-  * *iges-bypass-group-subfigure* Selects all root entities. If a root entity is a group  (402/7 or 402/9) or a subfigure definition (308), the entities in the group and  in the subfigure definition are selected. 
-  * *iges-curves-3d* - selects 3D curves, whether they are roots or not (e.g. a 3D  curve on a surface). 
-  * *iges-basic-geom* - selects 3D curves and untrimmed surfaces. 
-  * *iges-faces* - selects face-supporting surfaces (trimmed or not). 
-  * *iges-surfaces* - selects surfaces not supporting faces (i.e. with natural  bounds). 
-  * *iges-basic-curves-3d* selects the same entities as iges-curves-3d.  Composite Curves are broken down into their components and the components are  selected. 
+  * *xst-model-all* -- selects all entities. 
+  * *xst-model-roots* -- selects all roots. 
+  * *xst-transferrable-all* -- selects all translatable entities. 
+  * *xst-transferrable-roots* -- selects all translatable roots (default). 
+  * *xst-sharing + \<selection\>* -- selects all entities sharing at least one entity selected by  \<selection\>. 
+  * *xst-shared + \<selection\>* -- selects all entities shared by at least one entity selected  by \<selection\>. 
+  * *iges-visible-roots* -- selects all visible roots, whether translatable or not. 
+  * *iges-visible-transf-roots* -- selects all visible and translatable roots. 
+  * *iges-blanked-roots* -- selects all blank roots, whether translatable or not. 
+  * *iges-blanked-transf-roots* -- selects all blank and translatable roots. 
+  * *iges-status-independant* -- selects entities whose IGES Subordinate Status = 0. 
+  * *iges-bypass-group* -- selects all root entities. If a root entity is a group  (402/7 or 402/9), the entities in the group are selected. 
+  * *iges-bypass-subfigure* -- selects all root entities. If a root entity is a subfigure  definition (308), the entities in the subfigure definition are selected. 
+  * *iges-bypass-group-subfigure* -- selects all root entities. If a root entity is a group  (402/7 or 402/9) or a subfigure definition (308), the entities in the group and  in the subfigure definition are selected. 
+  * *iges-curves-3d* -- selects 3D curves, whether they are roots or not (e.g. a 3D  curve on a surface). 
+  * *iges-basic-geom* -- selects 3D curves and untrimmed surfaces. 
+  * *iges-faces* -- selects face-supporting surfaces (trimmed or not). 
+  * *iges-surfaces* -- selects surfaces not supporting faces (i.e. with natural  bounds). 
+  * *iges-basic-curves-3d* -- selects the same entities as iges-curves-3d.  Composite Curves are broken down into their components and the components are  selected. 
   
 @subsubsection occt_iges_2_3_5 Performing the  IGES file translation
 Perform translation  according to what you want to translate:  
@@ -401,11 +401,11 @@ reader.PrintTransferInfo  (failsonly, mode);
 displays the messages  that appeared during the last invocation of *Transfer* or *TransferRoots*.  
 
 If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it is  *IFSelect_FailAndWarn*, all messages will be output. Parameter “mode” can have  *IFSelect_xxx* values where *xxx* can be:  
-* *GeneralCount* - gives general statistics  on the transfer (number of translated IGES entities, number of fails and  warnings, etc)  
-* *CountByItem* - gives the number of IGES  entities with their types per message. 
-* *ListByItem* - gives the number of IGES  entities with their type and DE numbers per message.  
-* *ResultCount*  - gives the number of  resulting OCCT shapes per type.  
-* *Mapping* gives mapping between  roots of the IGES file and the resulting OCCT shape per IGES and OCCT type.
+* *GeneralCount* -- gives general statistics  on the transfer (number of translated IGES entities, number of fails and  warnings, etc)  
+* *CountByItem* -- gives the number of IGES  entities with their types per message. 
+* *ListByItem* -- gives the number of IGES  entities with their type and DE numbers per message.  
+* *ResultCount*  -- gives the number of  resulting OCCT shapes per type.  
+* *Mapping* -- gives mapping between  roots of the IGES file and the resulting OCCT shape per IGES and OCCT type.
  
 @subsection occt_iges_2_4 Mapping of IGES  entities to Open CASCADE Technology shapes
 
@@ -555,10 +555,10 @@ Geometrical entities are translated by classes  *IGESToBRep_BasicCurve* and *IGE
 Since these objects are not BRep objects, they do not have  tolerances. Hence, tolerance parameters are used in these classes only as  precisions: to detect specific cases (e.g., to distinguish a circle, an  ellipse, a parabola and a hyperbola) and to detect bad cases (such as  coincident points). 
 
 Use of precision parameters is reflected in the following  classes: 
-* *IGESToBRep_BasicCurve* - all parameters and points are compared with precision *EpsGeom*. All transformations (except *IGESToBRep_BasicCurve::TransferTransformation*)  are fulfilled with precision *Epsilon* which is set to 10<sup>-3</sup> (in the *IGESToBRep_BasicCurve::TransferTransformation* the value 10<sup>-5</sup> is  used). 
-* *IGESToBRep_BasicCurve::TransferBSplineCurve* - all weights of *BSplineCurve* are assumed to be more than *Precision::PConfusion* (else the curve is not translated). 
-* *IGESToBRep_BasicSurface* all parameters and points are compared with precision *EpsGeom*. All transformations are fulfilled with precision *Epsilon*,  which is set to 10<sup>-3</sup>. 
-* *IGESToBRep_BasicSurface::TransferBSplineSurface* - all weights of *BSplineSurface* are assumed to be more than  *Precision::PConfusion* (else the surface is not translated). 
+* *IGESToBRep_BasicCurve* -- all parameters and points are compared with precision *EpsGeom*. All transformations (except *IGESToBRep_BasicCurve::TransferTransformation*)  are fulfilled with precision *Epsilon* which is set to 10<sup>-3</sup> (in the *IGESToBRep_BasicCurve::TransferTransformation* the value 10<sup>-5</sup> is  used). 
+* *IGESToBRep_BasicCurve::TransferBSplineCurve* -- all weights of *BSplineCurve* are assumed to be more than *Precision::PConfusion* (else the curve is not translated). 
+* *IGESToBRep_BasicSurface* -- all parameters and points are compared with precision *EpsGeom*. All transformations are fulfilled with precision *Epsilon*,  which is set to 10<sup>-3</sup>. 
+* *IGESToBRep_BasicSurface::TransferBSplineSurface* -- all weights of *BSplineSurface* are assumed to be more than  *Precision::PConfusion* (else the surface is not translated). 
 
 
 <h4>Translating into Topology</h4>
@@ -574,11 +574,11 @@ The following classes show what default tolerances are used  when creating shape
 <h5>Class  IGESToBRep_TopoCurve</h5>
 
 All  methods are in charge of transferring curves  from IGES curve entities <i>(TransferCompositeCurve, Transfer2dCompositeCurve,  TransferCurveOnFace, TransferBoundaryOnFace, TransferOffsetCurve,  TransferTopoBasicCurve)</i> if an entity has transformation call to *IGESData_ToolLocation::ConvertLocation* with *Epsilon* value set to 10<sup>-4</sup>. 
-  * *IGESToBRep_TopoCurve::TransferPoint* - vertex is constructed from a Point entity with tolerance *EpsGeom*UnitFactor*. 
-  * *IGESToBRep_TopoCurve::Transfer2dPoint* - vertex is constructed from a Point entity with tolerance *EpsCoeff*. 
-  * *IGESToBRep_TopoCurve::TransferCompositeCurveGeneral* - obtains shapes (edges or wires) from other methods and adds  them into the resulting wire. Two adjacent edges of the wire can be connected  with tolerance up to *MaxTol*. 
-  * *IGESToBRep_TopoCurve::TransferCurveOnFace* and  *IGESToBRep_TopoCurve::TransferBoundaryOnFace* build a wire from 3D and 2D representations of  a curve on surface. Edges and vertices of the wire cannot have tolerance larger than *MaxTol*. The value *EpsGeom*UnitFactor* is passed into *ShapeFix_Wire::SetPrecision* and *MaxTol* - into *ShapeFix_Wire::MaxTolerance*. To find out how these parameters affect the resulting tolerance changes, please,  refer to class *ShapeFix_Wire*. 
-  * *IGESToBRep_TopoCurve::TransferTopoBasicCurve* and  *IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve* - the boundary vertices of an edge (or a wire if a curve was  of C0 continuity) translated from a basis IGES curve (*BSplineCurve,  CopiousData, Line,* etc.) are built with tolerance *EpsGeom*UnitFactor*, the edge tolerance is *Precision::Confusion*. If a curve was divided into several edges, the common  vertices of such adjacent edges have tolerance *Precision::Confusion*.
+  * *IGESToBRep_TopoCurve::TransferPoint* -- vertex is constructed from a Point entity with tolerance *EpsGeom*UnitFactor*. 
+  * *IGESToBRep_TopoCurve::Transfer2dPoint* -- vertex is constructed from a Point entity with tolerance *EpsCoeff*. 
+  * *IGESToBRep_TopoCurve::TransferCompositeCurveGeneral* -- obtains shapes (edges or wires) from other methods and adds  them into the resulting wire. Two adjacent edges of the wire can be connected  with tolerance up to *MaxTol*. 
+  * *IGESToBRep_TopoCurve::TransferCurveOnFace* and  *IGESToBRep_TopoCurve::TransferBoundaryOnFace* build a wire from 3D and 2D representations of  a curve on surface. Edges and vertices of the wire cannot have tolerance larger than *MaxTol*. The value *EpsGeom*UnitFactor* is passed into *ShapeFix_Wire::SetPrecision* and *MaxTol* is passed into *ShapeFix_Wire::MaxTolerance*. To find out how these parameters affect the resulting tolerance changes, please,  refer to class *ShapeFix_Wire*. 
+  * *IGESToBRep_TopoCurve::TransferTopoBasicCurve* and  *IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve* -- the boundary vertices of an edge (or a wire if a curve was  of C0 continuity) translated from a basis IGES curve (*BSplineCurve,  CopiousData, Line,* etc.) are built with tolerance *EpsGeom*UnitFactor*, the edge tolerance is *Precision::Confusion*. If a curve was divided into several edges, the common  vertices of such adjacent edges have tolerance *Precision::Confusion*.
   
   
 <h5>Class  IGESToBRep_TopoSurface</h5>
@@ -587,10 +587,10 @@ All faces created by this class have tolerance  *Precision::Confusion*.
 
 <h5>Class  IGESToBRep_BRepEntity</h5>
 
-  * *IGESToBRep_BRepEntity::TransferVertex* - the vertices from the *VertexList* entity are constructed with  tolerance *EpsGeom*UnitFactor*. 
-  * *IGESToBRep_BRepEntity::TransferEdge* - the edges from the *EdgeList* entity are constructed with  tolerance *Precision::Confusion*.
-  * *IGESToBRep_BRepEntity::TransferLoop* - this function works like  *IGESToBRep_TopoCurve::TransferCurveOnFace* and *IGESToBRep_TopoCurve::TransferBoundaryOnFace*. 
-  * *IGESToBRep_BRepEntity::TransferFace* the face from the Face IGES entity is constructed with  tolerance *Precision::Confusion*.
+  * *IGESToBRep_BRepEntity::TransferVertex* -- the vertices from the *VertexList* entity are constructed with  tolerance *EpsGeom*UnitFactor*. 
+  * *IGESToBRep_BRepEntity::TransferEdge* -- the edges from the *EdgeList* entity are constructed with  tolerance *Precision::Confusion*.
+  * *IGESToBRep_BRepEntity::TransferLoop* -- this function works like  *IGESToBRep_TopoCurve::TransferCurveOnFace* and *IGESToBRep_TopoCurve::TransferBoundaryOnFace*. 
+  * *IGESToBRep_BRepEntity::TransferFace* -- the face from the *Face* IGES entity is constructed with  tolerance *Precision::Confusion*.
   
 <h5>Shape Healing classes</h5>
 After performing a simple mapping, shape-healing algorithms  are called (class *ShapeFix_Shape*) by *IGESToBRep_Actor::Transfer()*. Shape-healing algorithm performs the correction of the resulting OCCT shape.  
@@ -663,8 +663,8 @@ The result is an *IGESControl_Writer* object.
 The following parameters are used for the OCCT-to-IGES  translation. 
 
 * *write.iges.brep.mode:* allows choosing the  write mode:  
- * "Faces" (0): OCCT *TopoDS_Faces* will be translated into IGES 144 (Trimmed Surface) entities, no B-Rep entities  will be written to the IGES file,  
- * "BRep" (1): OCCT *TopoDS_Faces*  will be translated into IGES 510 (Face) entities, the IGES file will contain  B-Rep entities.  
+ * "Faces" (0): OCCT *TopoDS_Faces* will be translated into IGES 144 (Trimmed Surface) entities, no BRep entities  will be written to the IGES file,  
+ * "BRep" (1): OCCT *TopoDS_Faces*  will be translated into IGES 510 (Face) entities, the IGES file will contain  BRep entities.  
 Read this parameter  with:  
 ~~~~~
 Standard_Integer byvalue =  Interface_Static::IVal("write.iges.brep.mode"); 
@@ -687,7 +687,7 @@ Default value is "Faces" (0).
 * *write.iges.header.product:* gives the name of the  sending product. The default value is  "CAS.CADE IGES processor Vx.x", where *x.x* means the current version of  Open CASCADE Technology.  
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.product")*; 
  * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.product", "product name")*; 
-* *write.iges.header.receiver:* - gives the name of the  receiving company.  The default value is  "" (empty).
+* *write.iges.header.receiver:* -- gives the name of the  receiving company.  The default value is  "" (empty).
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.receiver");* 
  * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.receiver", "reciever name");* 
 * *write.precision.mode:* specifies the mode of  writing the resolution value into the IGES file.  
@@ -715,8 +715,8 @@ Default value is 0.0001.
 
 Default values : 
 ~~~~~
-write.iges.resource.name – IGES,
-write.iges.sequence – ToIGES. 
+write.iges.resource.name - IGES,
+write.iges.sequence - ToIGES. 
 ~~~~~
 
 @subsubsection occt_iges_3_3_3 Performing the Open  CASCADE Technology shape translation
@@ -778,7 +778,7 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 | Geom_SurfaceOfRevolution | 120: Surface Of Revolution | |
 | Geom_OffsetSurface | 140: Offset Surface | |
 
-@subsubsection occt_iges_3_4_3 Topological entities - Translation in Face mode
+@subsubsection occt_iges_3_4_3 Topological entities -- Translation in Face mode
 
 | CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
@@ -793,7 +793,7 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 | TopoDS_CompSolid | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_CompSolid* contains more than one *TopoDS_Solid*. One IGES entity is created per *TopoDS_Solid*. |
 | TopoDS_Compound | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES entity is created per *TopoDS_Shape* in the *TopoDS_Compound*. If *TopoDS_Compound* is nested into another *TopoDS_Compound*, it is not mapped. |
 
-@subsubsection occt_iges_3_4_4 Topological entities - Translation in BRep mode
+@subsubsection occt_iges_3_4_4 Topological entities -- Translation in BRep mode
 
 | CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
@@ -865,10 +865,10 @@ The third argument is  used to set a new value of the given parameter. The resul
 During all interface  operations, the protocol of the process (fail and warning messages, mapping of  the loaded entities into OCCT shapes etc.) can be output to the trace file. Two  parameters are defined in the DRAW session: trace level (integer value from 0  to 9, default is 0), and trace file (default is a standard output).  
 
 Command *xtrace* is  intended to view and change these parameters:  
-* *Draw> xtrace* -  prints current settings (e.g.: "Level=0 -  Standard Output");  
-* *Draw> xtrace #* -  sets the trace level to the value #;  
-* *Draw> xtrace  tracefile.log* - sets the trace file as *tracefile.log*;  
-* *Draw xtrace* - directs all messages to the standard output.  
+* *Draw> xtrace* --  prints current settings (e.g.: "Level=0 -  Standard Output");  
+* *Draw> xtrace #* --  sets the trace level to the value #;  
+* *Draw> xtrace  tracefile.log* -- sets the trace file as *tracefile.log*;  
+* *Draw xtrace* -- directs all messages to the standard output.  
 
 @subsection occt_iges_4_3 Reading IGES files
 For a description of  parameters used in reading an IGES file refer to @ref occt_iges_2_3_3 "Setting the translation parameters".  
@@ -928,10 +928,10 @@ An asterisk “*” can be specified instead of  *selection*, it means *xst-tran
 During the IGES translation, a map of correspondence between  IGES entities and OCCT shapes is created. 
 The following commands are available:  
 
-* *Draw> tpent \#* - provides information on the result of translation of the given  IGES entity;
-* *Draw> tpdraw \#* - creates an OCCT shape corresponding to an IGES entity;
-* *Draw> fromshape \<shape_name\>* provides the number of an IGES entity corresponding to an OCCT  shape;
-* *Draw> tpclear* clears the map of correspondences between IGES entities  and OCCT shapes. 
+* *Draw> tpent \#* -- provides information on the result of translation of the given  IGES entity;
+* *Draw> tpdraw \#* --creates an OCCT shape corresponding to an IGES entity;
+* *Draw> fromshape \<shape_name\>* -- provides the number of an IGES entity corresponding to an OCCT  shape;
+* *Draw> tpclear* -- clears the map of correspondences between IGES entities  and OCCT shapes. 
 
 @subsection occt_iges_4_4  Analyzing the transferred data
 
@@ -980,9 +980,9 @@ Draw> givecount <selection_name> [<selection_name>]
 prints a number of loaded entities defined by <i>selection</i> argument. 
 
 Three commands are used to calculate statistics on the entities in the model:
-* *Draw> count \<counter\> [\<selection\> ...]* - prints only a number of entities per each type matching the criteria defined by arguments.
-* *Draw> sumcount \<counter\> [\<selection\> ...]* - prints the total number of entities of all types matching the criteria defined by arguments and the largest number corresponding to one type.
-* *Draw> listcount \<counter\> [\<selection\> ...]* prints a list of entities per each type matching the criteria defined by arguments.
+* *Draw> count \<counter\> [\<selection\> ...]* -- prints only a number of entities per each type matching the criteria defined by arguments.
+* *Draw> sumcount \<counter\> [\<selection\> ...]* -- prints the total number of entities of all types matching the criteria defined by arguments and the largest number corresponding to one type.
+* *Draw> listcount \<counter\> [\<selection\> ...]* -- prints a list of entities per each type matching the criteria defined by arguments.
 
 Optional <i>\<selection\></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i>\<counter\></i> should be one of the currently defined counters:
 
@@ -1000,10 +1000,10 @@ gives a list of entity types which were encountered in the  last loaded file (wi
 
 Entities in the IGES file are numbered in the succeeding  order. An entity can be identified either by its number (#) or by its label.  Label is the letter ‘D’ followed by the index of the first line with the data  for this entity in the Directory Entry section of the IGES file. The label can  be calculated on the basis of the number as ‘D(2*# -1)’. For example, entity #  6 has label D11. 
 
-* *Draw> elab \#*  - provides  a label for an entity with a known number;
-* *Draw> enum \#* - prints a number for an entity with the given label; 
-* *Draw> entity \# \<level_of_information\>*  - gives the content of an IGES entity;
-* *Draw> estat \#* - provides the list of entities referenced by a given entity and the list of entities referencing to it.
+* *Draw> elab \#*  -- provides  a label for an entity with a known number;
+* *Draw> enum \#* -- prints a number for an entity with the given label; 
+* *Draw> entity \# \<level_of_information\>*  -- gives the content of an IGES entity;
+* *Draw> estat \#* -- provides the list of entities referenced by a given entity and the list of entities referencing to it.
 
 @subsubsection occt_iges_4_4_2 Estimating the results of reading IGES
 All of the following commands are available only after the  data are converted into OCCT shapes (i.e. after command **igesbrep**). 
@@ -1012,17 +1012,17 @@ All of the following commands are available only after the  data are converted i
 Draw> tpstat [*|?]<symbol> [<selection>]
 ~~~~~
 provides all statistics on the last transfer,  including the list of transferred entities with mapping from IGES to OCCT  types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines  what information will be printed: 
-* G - General statistics (list of results and messages)
-* C - Count of all warning and fail messages
-* C - List of all warning and fail messages
-* F - Count of all fail messages
-* F - List of all fail messages
-* N - List of all transferred roots
-* S - The same, with types of source entity and result type
-* B - The same, with messages
-* T - Count of roots for geometrical types
-* R - Count of roots for topological types
-* l - The same, with a type of the source entity
+* G -- General statistics (list of results and messages)
+* C -- Count of all warning and fail messages
+* C -- List of all warning and fail messages
+* F -- Count of all fail messages
+* F -- List of all fail messages
+* N -- List of all transferred roots
+* S -- The same, with types of source entity and result type
+* B -- The same, with messages
+* T -- Count of roots for geometrical types
+* R -- Count of roots for topological types
+* l -- The same, with a type of the source entity
 
 The sign ‘*’ before the parameters **n**, **s**, **b**,  **t**, **r** makes it work on all entities (not only on roots). The sign  ‘?’ before **n**, **s**, **b**, **t** limits the scope of  information to invalid entities. 
 
@@ -1038,11 +1038,11 @@ The second version of the same command is TPSTAT (not  capital spelling).
 Draw:> TPSTAT <symbol> 
 ~~~~~
 Symbol can be of the following values: 
-* g -  General statistics (list of results and messages)
-* c - Count of all warning and fail messages
-* C - List of all warning and fail messages
-* r - Count of resulting OCCT shapes per each type
-* s - Mapping of IGES roots and resulting OCCT shapes
+* g --  General statistics (list of results and messages)
+* c -- Count of all warning and fail messages
+* C -- List of all warning and fail messages
+* r -- Count of resulting OCCT shapes per each type
+* s -- Mapping of IGES roots and resulting OCCT shapes
 
 Sometimes the trimming contours of IGES faces (i.e., entity  141 for 143, 142 for 144) can be lost during translation due to fails. 
 
@@ -1083,10 +1083,10 @@ It outputs maximum, average and minimum values of  tolerances for each kind of s
 When specifying *min* and *max* arguments this  command outputs shapes with names <i>\<shape_name\>...</i> and their total number  with tolerances in the range <i>[min, max]</i>. 
 
 <i>\<Symbol\></i> is used for specifying the kind of sub-shapes to analyze: 
-* v - for vertices,
-* e - for edges,
-* f - for faces,
-* c - for shells and faces. 
+* v -- for vertices,
+* e -- for edges,
+* f -- for faces,
+* c -- for shells and faces. 
 
 @subsection occt_iges_4_5 Writing an IGES file
 

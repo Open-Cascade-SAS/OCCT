@@ -67,10 +67,10 @@ Names of units should not contain underscores, unless the use of underscores is 
 
 The following extensions should be used for source files, depending on their type:
 
-* <i>.cdl</i> - CDL declaration files
-* <i>.cxx</i> - C++ source files
-* <i>.hxx</i> - C++ header files
-* <i>.lxx</i> - headers with definitions of inline methods (CDL packages)
+* <i>.cdl</i> -- CDL declaration files
+* <i>.cxx</i> -- C++ source files
+* <i>.hxx</i> -- C++ header files
+* <i>.lxx</i> -- headers with definitions of inline methods (CDL packages)
 
 ### Prefix for toolkit names [MANDATORY]
 
@@ -452,7 +452,7 @@ The source code is one of the most important references for documentation.
 The comments in the source code should be complete enough to allow understanding the corresponding code and to serve as basis for other documents.
 
 The main reasons why the comments are regarded as documentation and should be maintained are:
-- The comments are easy to reach - they are always together with the source code;
+- The comments are easy to reach -- they are always together with the source code;
 - It is easy to update a description in the comment when the source is modified;
 - The source by itself is a good context to describe various details that would require much more explanations in a separate document;
 - As a summary, this is the most cost-effective documentation.
@@ -950,7 +950,7 @@ Command should warn the user about unknown arguments, including cases when extra
 
 ### Message printing
 
-Informative messages should be printed into standard output *std::cout*, whilst command results (if any) - into Draw Interpreter.
+Informative messages should be printed into standard output *std::cout*, whilst command results (if any) -- into Draw Interpreter.
 
 Information printed into Draw Interpreter should be well-structured to allow usage in TCL script.
 

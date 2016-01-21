@@ -66,7 +66,7 @@ The official repository contains:
   Integration of contributions that have passed certification testing is made exclusively by the Bugmaster. 
   Normally this is made by rebasing the contribution branch on the current master 
   and squashing it into a single commit. This is made to have the master branch history plain and clean, 
-  following the general rule “one issue – one commit”. 
+  following the general rule “one issue -- one commit”. 
   The description of the commit integrated to the master branch is taken from the Mantis issue 
   (ID, 'Summary', followed by the information from 'Documentation' field if present).
   
@@ -222,8 +222,8 @@ The official repository contains:
   
   On Windows, make sure to note the complete path to the generated files (the location of your $HOME might be not obvious). Two key files will be created in the specified location (by default in $HOME/.ssh/):
   
-  * *id_rsa* - private key
-  * *id_rsa.pub* - public key
+  * *id_rsa* -- private key
+  * *id_rsa.pub* -- public key
   
   The content of the public key file (one text line) is the key to be added to the user account on the site (see below).
 
@@ -358,7 +358,7 @@ In TortoiseGit:
     > git commit -a -m "Write meaningful commit message here"
 ~~~~~
 
-  Option –a tells the command to automatically include (stage) files 
+  Option -a tells the command to automatically include (stage) files 
   that have been modified or deleted, but it will omit the new files that might have been added by you. 
   To commit such new files, you must add (stage) them before commit command.
 
@@ -437,7 +437,7 @@ Note that Git forbids pushing a branch if the corresponding remote branch alread
 @image html OCCT_GitGuide_V2_image019.png
 @image latex OCCT_GitGuide_V2_image019.png
 
-Note that the local branches of your repository are the primary place, where your changes are stored until they get integrated to the official version of OCCT (master branch). The branches submitted to official repository are for collaborative work, review, and integration - that repository should not be used for long-term storage of incomplete changes. 
+Note that the local branches of your repository are the primary place, where your changes are stored until they get integrated to the official version of OCCT (master branch). The branches submitted to official repository are for collaborative work, review, and integration -- that repository should not be used for long-term storage of incomplete changes. 
   
 Remove the local branches that you do not need any more. Note that you cannot delete the current branch. It means that you need to switch to another one (e.g. master) if the branch you are going to delete is the current one.
   

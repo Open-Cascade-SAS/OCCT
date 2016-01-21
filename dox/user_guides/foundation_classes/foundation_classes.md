@@ -120,7 +120,7 @@ Inside a package, two data types cannot bear the same  name.
 * **Class  method** Does not work on individual  instances, only on the class itself. 
 
 @subsubsection occt_fcug_2_a_3 Classes
-The fundamental software component in object-oriented software  development is the class. A class is the implementation of a **data type**.  It defines its **behavior** (the services offered by its functions) and its **representation** (the data structure of the class – the fields, which store its data). 
+The fundamental software component in object-oriented software  development is the class. A class is the implementation of a **data type**.  It defines its **behavior** (the services offered by its functions) and its **representation** (the data structure of the class -- the fields, which store its data). 
 
 Classes fall into three categories: 
 * Ordinary classes.
@@ -512,10 +512,10 @@ There are two approaches how to avoid such situation:
 
 Though generation of Handle class and related C++ code is  normally performed by CDL extractor, it is also possible to define a class managed  by handle without CDL. To facilitate that, several macros are provided in the  file Standard_DefineHandle.hxx: 
 
-* **DEFINE_STANDARD_HANDLE(class_name,ancestor_name)** - declares Handle class  for a class *class_name* that inherits class *ancestor_name* (for  instance, *Standard_Transient*). This macro should be put in a header file; the  declaration of the handle to a base class must be available (usually put before  or after the declaration of the class *class_name*, or into a separate  header file).  
-* **IMPLEMENT_STANDARD_HANDLE(class_name,ancestor_name)** - implements method  *DownCast()* of the *Handle* class. Should be located in a C++ file (normally the  file where methods of the class *class_name* are implemented). 
-* **DEFINE_STANDARD_RTTI(class_name)** - declares methods required for  RTTI in the class *class_name* declaration; should be in public: section. 
-* **IMPLEMENT_STANDARD_RTTIEXT(class_name,ancestor_name)** - implements above methods. Usually  put into the C++ file implementing class *class_name*. 
+* **DEFINE_STANDARD_HANDLE(class_name,ancestor_name)** -- declares Handle class  for a class *class_name* that inherits class *ancestor_name* (for  instance, *Standard_Transient*). This macro should be put in a header file; the  declaration of the handle to a base class must be available (usually put before  or after the declaration of the class *class_name*, or into a separate  header file).  
+* **IMPLEMENT_STANDARD_HANDLE(class_name,ancestor_name)** -- implements method  *DownCast()* of the *Handle* class. Should be located in a C++ file (normally the  file where methods of the class *class_name* are implemented). 
+* **DEFINE_STANDARD_RTTI(class_name)** -- declares methods required for  RTTI in the class *class_name* declaration; should be in public: section. 
+* **IMPLEMENT_STANDARD_RTTIEXT(class_name,ancestor_name)** -- implements above methods. Usually  put into the C++ file implementing class *class_name*. 
 Note that it is important to ensure correctness of macro  arguments, especially the ancestor name, otherwise the definition may be  inconsistent (no compiler warnings will be issued in case of mistake). 
 
 In *Appli_ExtSurface.hxx* file:
@@ -762,7 +762,7 @@ It is a widely used practice to include that kind of  protections in a debug bui
 ~~~~~
 where *ErrorTypeName* is the exception type, *condition*  is the logical expression leading to the raise of the exception, and *Error message* is the associated  message. 
   
-The entire call may be removed by defining one of the pre-processor symbols *No_Exception* or <i>No_<ErrorTypeName></i> at compile-time: 
+The entire call may be removed by defining one of the preprocessor symbols *No_Exception* or <i>No_<ErrorTypeName></i> at compile-time: 
 
 ~~~~~
 #define  No_Exception /* remove all raises */ 
@@ -809,7 +809,7 @@ void f(1)
 }
 ~~~~~
 
-Here, the first handler will catch exceptions of *Overflow* type and the second one - exceptions of *NumericError* type and all exceptions derived from it, including *Underflow* and *ZeroDivide*. 
+Here, the first handler will catch exceptions of *Overflow* type and the second one -- exceptions of *NumericError* type and all exceptions derived from it, including *Underflow* and *ZeroDivide*. 
 
 The handlers are checked in order of appearance, from the nearest to the try block to the most distant from it, until one matches the raise expression.  For a try block, it would be a mistake to place a handler for a base exception  type ahead of a handler for its derived type since that would ensure that the  handler for the derived exception would never be invoked.  
 
@@ -1409,7 +1409,7 @@ The NCollection library provides a full replacement of all TCollection generic c
 
 Macro definitions of these classes are stored in *NCollection_Define\*.hxx* files. These definitions are now obsolete though still can be used, particularly for compatibility with the existing code. On the contrary, template classes in *NCollection_\*.hxx* files are recommended, they are supported by OPEN CASCADE Company and further developed according to various needs.
 
-The technology used in this unit continues and complements the one offered in the header file *Standard_DefineHandle* – allowing to implement outside CDL the classes managed by Handle, also providing OCCT RTTI support.
+The technology used in this unit continues and complements the one offered in the header file *Standard_DefineHandle* -- allowing to implement outside CDL the classes managed by Handle, also providing OCCT RTTI support.
 
 @subsubsection occt_fcug_3_3_2 Instantiation of collection classes
 
@@ -1508,11 +1508,11 @@ There are 4 collection types provided as template classes:
 This type is implemented internally as a list of arrays of the same size. Its properties:
 * Direct (constant-time) access to members like in Array1 type; data are allocated in compact blocks, this provides faster iteration.
 * Can grow without limits, like List, Stack or Queue types.
-* Once having the size LEN, it cannot be reduced to any size less than LEN – there is no operation of removal of items.
+* Once having the size LEN, it cannot be reduced to any size less than LEN -- there is no operation of removal of items.
 
 Insertion in a Vector-type class is made by two methods:
-* _SetValue(ind, theValue)_ – array-type insertion, where ind is the index of the inserted item, can be any non-negative number. If it is greater than or equal to Length(), then the vector is enlarged (its Length() grows).
-* _Append(theValue)_ – list-type insertion equivalent to _myVec.SetValue(myVec.Length(), theValue)_ – incrementing the size of the collection.
+* _SetValue(ind, theValue)_ -- array-type insertion, where ind is the index of the inserted item, can be any non-negative number. If it is greater than or equal to Length(), then the vector is enlarged (its Length() grows).
+* _Append(theValue)_ -- list-type insertion equivalent to _myVec.SetValue(myVec.Length(), theValue)_, incrementing the size of the collection.
 
 Other essential properties coming from List and Array1 type collections:
 * Like in *List*, the method *Clear()* destroys all contained objects and releases the allocated memory.
@@ -1617,11 +1617,11 @@ NCollection defines some specific features, in addition to the public API inheri
 
 Every collection defines its Iterator class capable of iterating the members in some predefined order. Every Iterator is defined as a subtype of the particular collection type (e.g., MyPackage_StackOfPnt::Iterator ). The order of iteration is defined by a particular collection type. The methods of Iterator are: 
 
-* _void Init (const MyCollection&)_ - initializes the iterator on the collection object;
-* _Standard_Boolean More () const_ - makes a query if there is another non-iterated member;
-* _void Next ()_ - increments the iterator; 
-* _const ItemType& Value () const_ - returns the current member; 
-* _ItemType& ChangeValue () const_ - returns the mutable current member
+* _void Init (const MyCollection&)_ -- initializes the iterator on the collection object;
+* _Standard_Boolean More () const_ -- makes a query if there is another non-iterated member;
+* _void Next ()_ -- increments the iterator; 
+* _const ItemType& Value () const_ -- returns the current member; 
+* _ItemType& ChangeValue () const_ -- returns the mutable current member
 
 ~~~~~
 typedef Ncollection_Sequence<gp_Pnt>
@@ -1645,9 +1645,9 @@ There is a common abstract base class for all collections for a given item type 
 
 This base class has the following public API:
 * abstract class Iterator as the base class for all Iterators descried above; 
-* _Iterator& CreateIterator () const_ - creates and returns the Iterator on this collection;
-* _Standard_Integer Size () const_ - returns the number of items in this collection;
-* *void Assign (const NCollection_BaseCollection& theOther)* - copies the contents of the Other to this collection object; 
+* _Iterator& CreateIterator () const_ -- creates and returns the Iterator on this collection;
+* _Standard_Integer Size () const_ -- returns the number of items in this collection;
+* *void Assign (const NCollection_BaseCollection& theOther)* -- copies the contents of the Other to this collection object; 
 
 These members enable accessing any collection without knowing its exact type. In particular, it makes possible to implement methods receiving objects of the abstract collection type: 
 
@@ -1672,8 +1672,8 @@ gp_Pnt COG(const MyPackage_BaseCollPnt& theColl)
 ~~~~~
 
 Note that there are fundamental differences between the shown type-independent iterator and the iterator belonging to a particular non-abstract collection:
-* Type-independent iterator can only be obtained via the call CreateIterator(); the typed iterator - only via the explicit construction. 
-* Type-independent iterator is an abstract class, so it is impossible to copy it or to assign it to another collection object; the typed iterators can be copied and reassigned using the method Init() . 
+* Type-independent iterator can only be obtained via the call <i>CreateIterator()</i>; the typed iterator -- only via the explicit construction. 
+* Type-independent iterator is an abstract class, so it is impossible to copy it or to assign it to another collection object; the typed iterators can be copied and reassigned using the method <i>Init()</i>. 
 * Type-independent iterator is actually destroyed when its collection object is destroyed; the typed iterator is destroyed as any other C++ object in the corresponding C++ scope. 
 
 The common point between them is that it is possible to create any number of both types of iterators on the same collection object. 
@@ -1926,7 +1926,7 @@ These are non-persistent classes.
 
 @subsection occt_occt_fcug_4_5 Basic Geometric Libraries
 There are various library packages available which offer a  range of basic computations on curves and surfaces. 
-If you are dealing with objects created from the *gp* package,  the useful algorithms are in the elementary curves and surfaces libraries - the  *ElCLib* and *ElSLib* packages.
+If you are dealing with objects created from the *gp* package,  the useful algorithms are in the elementary curves and surfaces libraries -- the  *ElCLib* and *ElSLib* packages.
 * *EICLib* provides methods for analytic curves. This is a library of simple  computations on curves from the *gp* package (Lines, Circles and Conics).  It is possible to compute points with a given parameter or to compute the parameter for a point. 
 * *EISLib* provides methods for analytic surfaces. This is a library of simple  computations on surfaces from the package *gp* (Planes, Cylinders,  Spheres, Cones, Tori). It is possible to compute points with a given pair of parameters or to compute the parameter for a point. There is a library for calculating normals  on curves and surfaces. 
 

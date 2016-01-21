@@ -30,12 +30,12 @@ The operator can be represented as:
 <i>R<sub>B</sub>=B<sub>j</sub> (G<sub>1</sub>, G<sub>2</sub>),</i>	
 
 where:
-* *R<sub>B</sub>* - result of the operation;
-* *B<sub>j</sub>* - operation of type *j* (Common, Fuse, Cut);
+* *R<sub>B</sub>* -- result of the operation;
+* *B<sub>j</sub>* -- operation of type *j* (Common, Fuse, Cut);
 * *G<sub>1</sub>={S<sub>11</sub>, S<sub>12</sub> ... S<sub>1n1</sub>}*  group of arguments (Objects); 
 * *G<sub>2</sub>={S<sub>21</sub>, S<sub>22</sub> ... S<sub>2n2</sub>}*  group of arguments (Tools);
-* *n<sub>1</sub>* - Number of arguments in *Objects* group; 
-* *n<sub>2</sub>* - Number of arguments in *Tools* group.
+* *n<sub>1</sub>* -- Number of arguments in *Objects* group; 
+* *n<sub>2</sub>* -- Number of arguments in *Tools* group.
 
 
 **Note** There is an operation *Cut21*, which is an extension for forward Cut operation, i.e <i>Cut21=Cut(G2, G1)</i>.
@@ -49,9 +49,9 @@ The GFA operator can be represented as:
 <i>R<sub>GF</sub> = GF (S<sub>1</sub>, S<sub>2</sub> ... S<sub>n</sub>), </i>	
 
 where
-* *R<sub>GF</sub>* - result of the operation,
-* *S<sub>1</sub>, S<sub>2</sub> ... S<sub>n</sub>* - arguments of the operation,
-* *n* - number of arguments.
+* *R<sub>GF</sub>* -- result of the operation,
+* *S<sub>1</sub>, S<sub>2</sub> ... S<sub>n</sub>* -- arguments of the operation,
+* *n* -- number of arguments.
 
 The result of the Boolean operator, *R<sub>B</sub>*, can be obtained from *R<sub>GF</sub>*.
 
@@ -79,11 +79,11 @@ The PA operator can be represented as follows:
 
 <i>R<sub>PA</sub>=PA (G<sub>1</sub>, G<sub>2</sub>),</i>
 where:
-* <i>R<sub>PA</sub></i> - is the result of the operation; 
+* <i>R<sub>PA</sub></i> -- is the result of the operation; 
 * *G<sub>1</sub>={S<sub>11</sub>, S<sub>12</sub> ... S<sub>1n1</sub>}*  group of arguments (Objects); 
 * *G<sub>2</sub>={S<sub>21</sub>, S<sub>22</sub> ... S<sub>2n2</sub>}*  group of arguments (Tools);
-* *n<sub>1</sub>* - Number of arguments in *Objects* group; 
-* *n<sub>2</sub>* - Number of arguments in *Tools* group.
+* *n<sub>1</sub>* -- Number of arguments in *Objects* group; 
+* *n<sub>2</sub>* -- Number of arguments in *Tools* group.
 
 The result *R<sub>PA</sub>* can be obtained from *R<sub>GF</sub>* .
 
@@ -105,9 +105,9 @@ The fact that the *R<sub>GF</sub>* contains the components of *R<sub>PA</sub>* a
 The Section operator *SA* can be applied to arbitrary number of arguments in terms of *TopoDS_Shape*. The result of *SA* contains vertices and edges in accordance with interferences between the arguments 
 The SA operator can be represented as follows:
 <i>R<sub>SA</sub>=SA(S1, S2… Sn)</i>, where
-* <i>R<sub>SA</sub></i> – is result of the operation;
-* <i>S1, S2 … Sn</i> - Arguments of the operation;
-* *n* - Number of arguments.
+* <i>R<sub>SA</sub></i> -- the operation result;
+* <i>S1, S2 ... Sn</i> -- the operation arguments;
+* *n* -- the number of arguments.
 
 @subsection occt_algorithms_2_2 Parts of algorithms 
 
@@ -127,7 +127,7 @@ This chapter provides the background terms and definitions that are necessary to
 
 There are two groups of interferences.
 
-At first, each shape having a boundary representation (vertex, edge, face) has an internal value of geometrical tolerance. The shapes interfere with each other in terms of their tolerances. The shapes that have a boundary representation interfere when there is a part of 3D space where the distance between the underlying geometry of shapes is less or equal to the sum of tolerances of the shapes. Three types of shapes - vertex, edge and face - produce six types of **BRep interferences:**
+At first, each shape having a boundary representation (vertex, edge, face) has an internal value of geometrical tolerance. The shapes interfere with each other in terms of their tolerances. The shapes that have a boundary representation interfere when there is a part of 3D space where the distance between the underlying geometry of shapes is less or equal to the sum of tolerances of the shapes. Three types of shapes: vertex, edge and face -- produce six types of **BRep interferences:**
 * Vertex/Vertex,
 * Vertex/Edge,
 * Vertex/Face,
@@ -350,7 +350,7 @@ If the pave blocks *PBi* geometrically coincide with a face *Fj*, the pave block
 
 In general case a common block *CB* contains:
 * Pave blocks *PBi (i=0,1,2, 3… NbPB)*.
-* A set of faces *Fj (j=0,1... NbF), NbF* - number of faces.
+* A set of faces *Fj (j=0,1... NbF), NbF* -- number of faces.
 
 
 @subsection occt_algorithms_3_6 FaceInfo
@@ -702,12 +702,12 @@ The input data for this step is the DS after computing Face/Face interferences.
 
 | No | Contents	| Implementation  |
 | :---- | :---- | :---- |
-| 1 | For each Face/Face interference *nFi, nFj*, retrieve @ref occt_algorithms_4_6 "FaceInfo". Create draft vertices from intersection points *VPk (k=1, 2…, NbVP)*, where *NbVP* is the number of new vertices, and the draft vertex *VPk* is created from an intersection point if *VPk ≠ Vm (m = 0, 1, 2… NbVm)*, where *Vm* is an existing vertex for the faces *nFi* and *nF,j* (*On* or *In* in terms of *TopoDs_Shape*),  *NbVm* is the number of vertices existing on faces *nFi* and *nF,j* and ≠ - means non-coincidence in terms of @ref occt_algorithms_3_1_1 "Vertex/Vertex interference". | *BOPAlgo_PaveFiller::MakeBlocks()* |
+| 1 | For each Face/Face interference *nFi, nFj*, retrieve @ref occt_algorithms_4_6 "FaceInfo". Create draft vertices from intersection points *VPk (k=1, 2…, NbVP)*, where *NbVP* is the number of new vertices, and the draft vertex *VPk* is created from an intersection point if *VPk ≠ Vm (m = 0, 1, 2… NbVm)*, where *Vm* is an existing vertex for the faces *nFi* and *nF,j* (*On* or *In* in terms of *TopoDs_Shape*),  *NbVm* is the number of vertices existing on faces *nFi* and *nF,j* and ≠ -- means non-coincidence in terms of @ref occt_algorithms_3_1_1 "Vertex/Vertex interference". | *BOPAlgo_PaveFiller::MakeBlocks()* |
 | 2	| For each intersection curve *Cijk* | |	
 | 2.1 | Create paves PVc for the curve using existing vertices, i.e. vertices On or In (in terms of *FaceInfo*) for faces *nFi* and *nFj*. Append the paves *PVc* | *BOPAlgo_PaveFiller::PutPaveOnCurve()* and *BOPDS_PaveBlock::AppendExtPave()* |
 | 2.2 |	Create technological vertices *Vt*, which are the bounding points of an intersection curve (with the value of tolerance *Tol(Cijk)*). Each vertex *Vt* with parameter *Tt* on curve *Cijk* forms pave *PVt* on curve *Cijk*. Append technological paves. | *BOPAlgo_PaveFiller::PutBoundPaveOnCurve()* |
 | 2.3 |	Create pave blocks *PBk* for the curve using paves <i>(k=1, 2…, NbPB)</i>, where *NbPB* is the number of pave blocks |	*BOPAlgo_PaveFiller::MakeBlocks()* |
-| 2.4 |	Build draft section edges *ESk* using the pave blocks <i>(k=1, 2…, NbES)</i>, where *NbES* is the number of draft section edges	The draft section edge is created from a pave block *PBk* if *PBk* has state *In* or *On* for both faces *nFi* and *nF,j* and *PBk ≠ PBm (m=0, 1, 2… NbPBm)*, where *PBm* is an existing pave block for faces *nFi* and *nF,j* (*On* or *In* in terms of *FaceInfo*), *NbVm* is the number of existing pave blocks for faces *nFi* and *nF,j* and ≠ - means non-coincidence (in terms of @ref occt_algorithms_3_1_3 "Vertex/Face interference"). | *BOPTools_Tools::MakeEdge()* |
+| 2.4 |	Build draft section edges *ESk* using the pave blocks <i>(k=1, 2…, NbES)</i>, where *NbES* is the number of draft section edges	The draft section edge is created from a pave block *PBk* if *PBk* has state *In* or *On* for both faces *nFi* and *nF,j* and *PBk ≠ PBm (m=0, 1, 2… NbPBm)*, where *PBm* is an existing pave block for faces *nFi* and *nF,j* (*On* or *In* in terms of *FaceInfo*), *NbVm* is the number of existing pave blocks for faces *nFi* and *nF,j* and ≠ -- means non-coincidence (in terms of @ref occt_algorithms_3_1_3 "Vertex/Face interference"). | *BOPTools_Tools::MakeEdge()* |
 | 3	| Intersect the draft vertices *VPk (k=1, 2…, NbVP)* and the draft section edges *ESk (k=1, 2…, NbES)*. For this: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use vertices *VPk* and edges *ESk* as arguments (in terms of @ref occt_algorithms_4_1 "Arguments") of *PFn*; c) invoke	method *Perform()* for *PFn*. Resulting vertices *VPXk (k=1, 2… NbVPX)* and edges *ESXk (k=1, 2… NbESX)* are obtained via mapping between *VPk, ESk* and the results of *PVn*. | *BOPAlgo_PaveFiller::PostTreatFF()* |
 | 4	| Update face info (sections about pave blocks and vertices) | *BOPAlgo_PaveFiller::PerformFF()* |
 
@@ -736,9 +736,9 @@ Building Part (BP) is used to
 * Provide history information (in terms of <i>\::Generated(), \::Modified()</i> and <i>\::IsDeleted()</i>)
 BP uses the DS prepared by *BOPAlgo_PaveFiller* described at chapter 5 as input data.
 BP is implemented in the following classes:
-* *BOPAlgo_Builder* - for the General Fuse operator  (GFA).
-* *BOPAlgo_BOP* - for the Boolean Operation operator   (BOA).
-* *BOPAlgo_Section* - for the Section operator  (SA).
+* *BOPAlgo_Builder* -- for the General Fuse operator  (GFA).
+* *BOPAlgo_BOP* -- for the Boolean Operation operator   (BOA).
+* *BOPAlgo_Section* -- for the Section operator  (SA).
 
 @figure{/user_guides/boolean_operations/images/operations_image020.svg, "Diagram for BP classes"}
 
@@ -934,8 +934,8 @@ This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Ver
 
 The input data for this step is: 
 * *BOPAlgo_Builder* object after building result of type *Edge*;
-* Original Shape - Wire
-* *Type* - the shape type <i>(TopAbs_WIRE).</i>
+* Original Shape -- Wire
+* *Type* -- the shape type <i>(TopAbs_WIRE).</i>
 
 | No | Contents | Implementation |
 | :---- | :---- | :----- | 
@@ -981,8 +981,8 @@ This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Ver
 @subsubsection occt_algorithms_7_4_11	Build Images for Shells
 The input data for this step is:
 * *BOPAlgo_Builder* object  after building result of type face;
-* *Original Shape* - Shell;
-* *Type* - the type of the shape <i>(TopAbs_SHELL)</i>.
+* *Original Shape* -- a Shell;
+* *Type* -- the type of the shape <i>(TopAbs_SHELL)</i>.
 
 The procedure is the same as for building images for wires. 
 
@@ -1011,8 +1011,8 @@ This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Ver
 
 The input data for this step is:
 * *BOPAlgo_Builder* object after building result of type solid;
-* *Original Shape* - Compsolid;
-* *Type* - the type of the shape <i>(TopAbs_COMPSOLID)</i>.
+* *Original Shape* -- a Compsolid;
+* *Type* -- the type of the shape <i>(TopAbs_COMPSOLID)</i>.
 
 The procedure is the same as for building images for wires. 
 
@@ -1021,9 +1021,9 @@ This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Ver
 
 @subsubsection occt_algorithms_7_4_17 Build Images for Compounds
 The input data for this step is as follows:
-* *BOPAlgo_Builder* object after building results of type compsolid;
-* *Original Shape* - Compound;
-* *Type* - the type of the shape <i>(TopAbs_COMPOUND)</i>.
+* *BOPAlgo_Builder* object after building results of type *compsolid*;
+* *Original Shape* -- a Compound;
+* *Type* -- the type of the shape <i>(TopAbs_COMPOUND)</i>.
 
 The procedure is the same as for building images for wires. 
 
@@ -1845,7 +1845,7 @@ The chapter describes the problems that are considered as Algorithm limitations.
 
 A lot of failures of GFA algorithm can be caused by bugs in low-level algorithms: Intersection Algorithm, Projection Algorithm, Approximation Algorithm, Classification Algorithm, etc.
 * The Intersection, Projection and Approximation Algorithms are mostly used at the Intersection step. Their bugs directly cause wrong section results (i.e. incorrect section edges, section points, missing section edges or micro edges). It is not possible to obtain a correct final result of the GFA if a section result is wrong.
-* The Projection Algorithm is used at the Intersection step. The purpose of Projection Algorithm is to compute 2D-curves on surfaces. Wrong results here lead to incorrect or missing faces in the final GFA result. 
+* The Projection Algorithm is used at the Intersection step. The purpose of Projection Algorithm is to compute 2D curves on surfaces. Wrong results here lead to incorrect or missing faces in the final GFA result. 
 * The Classification Algorithm is used at the Building step. The bugs in the Classification Algorithm lead to errors in selecting shape parts (edges, faces, solids) and ultimately to a wrong final GFA result.
 
 The description below illustrates some known GFA limitations. It does not enumerate exhaustively all problems that can arise in practice. Please, address cases of Algorithm failure to the OCCT Maintenance Service.
@@ -1863,11 +1863,11 @@ However, it is important to note that class *BRepCheck_Analyzer* is just a tool 
 
 Let us consider the following example:
 
-The Analyzer checks distances between couples of 3D check-points <i>(Pi, PSi)</i> of edge *E* on face *F*. Point *Pi* is obtained from the 3D-curve (at the parameter *ti*) of the edge. *PSi* is obtained from 2D-curve (at the parameter *ti*) of the edge on surface *S* of face *F*. To be valid the distance should be less than *Tol(E)* for all couples of check-points. The number of these check-points is a pre-defined value (e.g. 23). 
+The Analyzer checks distances between couples of 3D check-points <i>(Pi, PSi)</i> of edge *E* on face *F*. Point *Pi* is obtained from the 3D curve (at the parameter *ti*) of the edge. *PSi* is obtained from 2D curve (at the parameter *ti*) of the edge on surface *S* of face *F*. To be valid the distance should be less than *Tol(E)* for all couples of check-points. The number of these check-points is a predefined value (e.g. 23). 
 
 Let us consider the case when edge *E* is recognized valid (in terms of *BRepCheck_Analyzer*).
 
-Further, after some operation, edge *E* is split into two edges *E1* and *E2*. Each split edge has the same 3D-curve and 2D-curve as the original edge *E*. 
+Further, after some operation, edge *E* is split into two edges *E1* and *E2*. Each split edge has the same 3D curve and 2D curve as the original edge *E*. 
 
 Let us check *E1* (or E2). The Analyzer again checks the distances between the couples of check-points points <i>(Pi, PSi)</i>. The number of these check-points is the same constant value (23), but there is no guarantee that the distances will be less than *Tol(E)*, because the points chosen for *E1* are not the same as for *E*. 
 
@@ -2071,7 +2071,7 @@ The Fuzzy option is useful on the shapes with gaps or embeddings between the ent
 
 Most likely, the Basic Operations will give unsatisfactory results on such models. The result may contain unexpected and unwanted small entities, faulty entities (in terms of *BRepCheck_Analyzer*), or there can be no result at all.
 
-With the Fuzzy option it is possible to get the expected result - it is just necessary to define the appropriate value of fuzzy tolerance for the operation. To define that value it is necessary to measure the value of the gap (or the value of embedding depth) between the entities of the models, slightly increase it (to make the shifted entities coincident in terms of their tolerance plus the additional one) and pass it to the algorithm.
+With the Fuzzy option it is possible to get the expected result -- it is just necessary to define the appropriate value of fuzzy tolerance for the operation. To define that value it is necessary to measure the value of the gap (or the value of embedding depth) between the entities of the models, slightly increase it (to make the shifted entities coincident in terms of their tolerance plus the additional one) and pass it to the algorithm.
 
 Fuzzy option is included in interface of Intersection Part (class *BOPAlgo_PaveFiller*) and application programming interface (class  *BRepAlgoAPI_BooleanOperation*)
 
@@ -2143,13 +2143,13 @@ The chapter contains some examples of the OCCT Boolean Component usage. The usag
 The package *BRepAlgoAPI* provides the Application Programming Interface of the Boolean Component.
 
 The package consists of the following classes:
-* *BRepAlgoAPI_Algo* – the root class that provides the interface for algorithms. 
-* *BRepAlgoAPI_BuilderAlgo* - the class API level of General Fuse algorithm.
-* *BRepAlgoAPI_BooleanOperation* – the root class for the classes *BRepAlgoAPI_Fuse*. *BRepAlgoAPI_Common*, *BRepAlgoAPI_Cut* and *BRepAlgoAPI_Section*.
-* *BRepAlgoAPI_Fuse* – the class provides Boolean fusion operation. 
-* *BRepAlgoAPI_Common* - the class provides Boolean common operation.
-* *BRepAlgoAPI_Cut* - the class provides Boolean cut operation.
-* *BRepAlgoAPI_Section* - the class provides Boolean section operation.
+* *BRepAlgoAPI_Algo* -- the root class that provides the interface for algorithms. 
+* *BRepAlgoAPI_BuilderAlgo* -- the class API level of General Fuse algorithm.
+* *BRepAlgoAPI_BooleanOperation* -- the root class for the classes *BRepAlgoAPI_Fuse*. *BRepAlgoAPI_Common*, *BRepAlgoAPI_Cut* and *BRepAlgoAPI_Section*.
+* *BRepAlgoAPI_Fuse* -- the class provides Boolean fusion operation. 
+* *BRepAlgoAPI_Common* -- the class provides Boolean common operation.
+* *BRepAlgoAPI_Cut* -- the class provides Boolean cut operation.
+* *BRepAlgoAPI_Section* -- the class provides Boolean section operation.
 
 @figure{/user_guides/boolean_operations/images/operations_image065.svg, "Diagram of BRepAlgoAPI package"} 
 
@@ -2158,8 +2158,8 @@ The detailed description of the classes can be found in corresponding .cdl files
 @subsection occt_algorithms_11b_2 Package BOPTest
 The package *BOPTest* provides the usage of the Boolean Component on Tcl level. The method *BOPTest::APICommands* contains corresponding Tcl commands: 
 
-* *bapibuild* – for General Fuse Operator;
-* *bapibop* – for Boolean Operator and Section Operator.
+* *bapibuild* -- for General Fuse Operator;
+* *bapibop* -- for Boolean Operator and Section Operator.
 
 The examples of how to use the commands are below in this chapter.
 

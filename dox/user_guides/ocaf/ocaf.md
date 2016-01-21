@@ -19,8 +19,8 @@ OCAF (the Open CASCADE Application Framework) is an  easy-to-use platform for ra
   
   Developing a design application requires addressing many technical aspects. 
   In particular, given the functional specification of your application, you must at least:  
- 
-  * Design the  architecture of the application — definition of the software components and the  way they cooperate;
+  
+  * Design the  architecture of the application— definition of the software components and the way they cooperate;
   * Define the  data model able to support the functionality required — a design application  operates on data maintained during the whole end-user working session;
   * Structure  the software in order to:
     * synchronize the display with the  data — commands modifying objects must update the views;  
@@ -35,7 +35,7 @@ Architectural guidance and ready-to-use solutions provided by OCAF offer you the
   * The final application can be developed by industrializing the prototype — you don't need to restart the development from scratch. 
   * The Open Source nature of the platform guarantees the long-term usefulness of your development.   
 
-OCAF is much more than just one toolkit among many in the CAS.CADE Object Libraries. Since it can handle any data and algorithms in these libraries - be it modeling algorithms, topology or geometry - OCAF is their logical supplement. 
+OCAF is much more than just one toolkit among many in the CAS.CADE Object Libraries. Since it can handle any data and algorithms in these libraries -- be it modeling algorithms, topology or geometry -- OCAF is their logical supplement. 
 
 The table below contrasts the design of a modeling application using object libraries alone and using OCAF. 
 
@@ -265,7 +265,7 @@ The root label cannot have brother labels. Consequently, various lamps in the fr
   * a bulb label with tag 2
   * a stem label with tag 3
 
-Label tags are chosen at will. They are only identifiers of the lamp parts. Now you can refine all units: by setting geometry, color, material and other information about the lamp or its parts to the specified label. This information is placed into special attributes of the label: the pure label contains no data – it is only a key to access data. 
+Label tags are chosen at will. They are only identifiers of the lamp parts. Now you can refine all units: by setting geometry, color, material and other information about the lamp or its parts to the specified label. This information is placed into special attributes of the label: the pure label contains no data -- it is only a key to access data. 
 
 Remember that tags are private addresses without any meaning outside the data framework. It would, for instance, be an error to use part names as tags. These might change or be removed from production in next versions of the application, whereas the exact form of that part might be reused in your design, the part name could be integrated into the framework as an attribute. 
 
@@ -292,7 +292,7 @@ In relative identification, a label’s tag has a meaning relative to the father
 
 In absolute identification, a label’s place in the data framework is specified unambiguously by a colon-separated list of tags of all the labels from the one in question to the root of the data framework. This list is called an entry. *TDF_Tool::TagList* allows retrieving the entry for a specific label. 
 
-In both relative and absolute identification, it is important to remember that the value of an integer has no intrinsic semantics whatsoever. In other words, the natural sequence that integers suggest, i.e. 0, 1, 2, 3, 4 ... - has no importance here. The integer value of a tag is simply a key. 
+In both relative and absolute identification, it is important to remember that the value of an integer has no intrinsic semantics whatsoever. In other words, the natural sequence that integers suggest, i.e. 0, 1, 2, 3, 4 ... -- has no importance here. The integer value of a tag is simply a key. 
 
 The tag can be created in two ways: 
 
@@ -327,7 +327,7 @@ Standard_Integer tag = achild.Tag();
 
 @subsection occt_ocaf_3_4 Label
 
-The tag gives a persistent address to a label. The label – the semantics of the tag – is a place in the data framework where attributes, which contain data, are attached. The data framework is, in fact, a tree of labels with a root as the ultimate father label.
+The tag gives a persistent address to a label. The label -- the semantics of the tag -- is a place in the data framework where attributes, which contain data, are attached. The data framework is, in fact, a tree of labels with a root as the ultimate father label.
 
 Label can not be deleted from the data framework, so, the structure of the data framework that has been created can not be removed while the document is opened. Hence any kind of reference to an existing label will be actual while an application is working with the document. 
 
@@ -406,7 +406,7 @@ isroot = father.IsRoot();
 
 @subsection occt_ocaf_3_5 Attribute
 
-The label itself contains no data. All data of any type whatsoever - application or non-application - is contained in attributes. These are attached to labels, and there are different types for different types of data. OCAF provides many ready-to-use standard attributes such as integer, real, constraint, axis and plane. There are also attributes for topological naming, functions and visualization. Each type of attribute is identified by a GUID. 
+The label itself contains no data. All data of any type whatsoever -- application or non-application -- is contained in attributes. These are attached to labels, and there are different types for different types of data. OCAF provides many ready-to-use standard attributes such as integer, real, constraint, axis and plane. There are also attributes for topological naming, functions and visualization. Each type of attribute is identified by a GUID. 
 
 The advantage of OCAF is that all of the above attribute types are handled in the same way. Whatever the attribute type is, you can create new instances of them, retrieve them, attach them to and remove them from labels, "forget" and "remember" the attributes of a particular label. 
 
@@ -485,11 +485,11 @@ There are two ways to implement a new data type: create a new attribute (standar
 
 In order to create a new attribute in the standard way do the following: 
 * Create a class inherited from *TDF_Attribute* and implement all purely virtual and necessary virtual methods:
-	+ **ID()** – returns a unique GUID of a given attribute 
-	+ **Restore(attribute)** – sets fields of this attribute equal to the fields of a given attribute of the same type 
-	+ **Paste(attribute, relocation_table)** – sets fields of a given attribute equal to the field values of this attribute ; if the attribute has references to some objects of the data framework  and relocation_table has this element, then the given attribute must also refer to this object . 
-	+ **NewEmpty()** - returns a new attribute of this class with empty fields 
-	+ **Dump(stream)** -  outputs information about a given attribute to a given stream debug (usually outputs an attribute of type string only) 
+	+ **ID()** -- returns a unique GUID of a given attribute 
+	+ **Restore(attribute)** -- sets fields of this attribute equal to the fields of a given attribute of the same type 
+	+ **Paste(attribute, relocation_table)** -- sets fields of a given attribute equal to the field values of this attribute ; if the attribute has references to some objects of the data framework  and relocation_table has this element, then the given attribute must also refer to this object . 
+	+ **NewEmpty()** -- returns a new attribute of this class with empty fields 
+	+ **Dump(stream)** --  outputs information about a given attribute to a given stream debug (usually outputs an attribute of type string only) 
 * Create the persistence classes for this attribute according to the file format chosen for the document (see below).
 
 Methods *NewEmpty, Restore* and *Paste* are used for the common transactions mechanism (Undo/Redo commands). If you don’t need this attribute to react to undo/redo commands, you can write only stubs of these methods, else you must call the Backup method of the *TDF_Attribute* class every time attribute fields are changed. 
@@ -497,8 +497,8 @@ Methods *NewEmpty, Restore* and *Paste* are used for the common transactions mec
 If you use a standard file format and you want your new attributes to be stored during document saving and retrieved to the data framework whenever a document is opened, you must do the following: 
 
   1. If you place an attribute to a new package, it is desirable (although not mandatory) if your package name starts with letter "T" (transient), for example: attribute *TMyAttributePackage_MyAttribute* in the package *TMyAttributePackage*.
-  2. Create a new package with name "P[package name]" (for example *PMyAttributePackage*) with class *PMyAttributePackage_MyAttribute* inside. The new class inherits the *PDF_Attribute* class and contains fields of attributes, which must be saved or retrieved ("P" - persistent).
-  3. Create a new package with name "M[package name]" (for example *MMyAttributePackage*) with classes *MMyAttributePackage_MyAttributeRetrievalDriver* and *MMyAttributePackage_MyAttributeStorageDriver* inside. The new classes inherit *MDF_ARDriver* and *MDF_ASDriver* classes respectively and contain the translation functionality: from T... attribute to P... and vice versa (M - middle) (see the realization of the standard attributes).
+  2. Create a new package with name "P[package name]" (for example *PMyAttributePackage*) with class *PMyAttributePackage_MyAttribute* inside. The new class inherits the *PDF_Attribute* class and contains fields of attributes, which must be saved or retrieved ("P" -- persistent).
+  3. Create a new package with name "M[package name]" (for example *MMyAttributePackage*) with classes *MMyAttributePackage_MyAttributeRetrievalDriver* and *MMyAttributePackage_MyAttributeStorageDriver* inside. The new classes inherit *MDF_ARDriver* and *MDF_ASDriver* classes respectively and contain the translation functionality: from T... attribute to P... and vice versa (M -- middle) (see the realization of the standard attributes).
   4. M... package must contain *AddStorageDrivers(aDriverSeq : ASDriverHSequence* from MDF) and *AddRetrievalDrivers(aDriverSeq : ASDriverHSequence* from MDF) methods, which append to the given sequence  of drivers *aDriverSeq*, which is a sequence of all new attribute drivers (see the previous point) used for the storage/retrieval of attributes. 
   5 Use the standard schema (*StdSchema* unit) or create a new one to add your P-package and compile it. 
 
@@ -666,7 +666,7 @@ doc = TDocStd_Document::Get(label);
 If in your document you use only standard attributes (from the packages *TDF, TDataStd, TNaming, TFunction, TPrsStd* and *TDocStd*), you just do the following steps: 
 
 * In your application class (which inherits class *TDocStd_Application*) implement two methods:
-	+ Formats (TColStd_SequenceOfExtendedString& theFormats), which append to a given sequence <i>\<theFormats\></i> your document format string, for example, "NewDocumentFormat" – this string is also set in the document creation command 
+	+ Formats (TColStd_SequenceOfExtendedString& theFormats), which append to a given sequence <i>\<theFormats\></i> your document format string, for example, "NewDocumentFormat" -- this string is also set in the document creation command 
 	+ ResourcesName(), which returns a string with a name of resources file (this file contains a description about the extension of the document, storage/retrieval drivers GUIDs...), for example, "NewFormat" 
 * Create the resource file (with name, for example, "NewFormat") with the following strings:
 
@@ -802,7 +802,7 @@ XLinkTool.UpdateLink(target);
 
 #### Without any link between the copy and the original
 
-You can also create a copy of the document with no link between the original and the copy. The syntax to use this option is *TDocStd_XLinkTool::Copy*. The copied document is again represented by the argument *target*, and the original – by *source.* 
+You can also create a copy of the document with no link between the original and the copy. The syntax to use this option is *TDocStd_XLinkTool::Copy*. The copied document is again represented by the argument *target*, and the original -- by *source.* 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 XLinkTool.Copy(target, source); 
@@ -838,9 +838,11 @@ Consider the following example. Two boxes (solids) are fused into one solid (the
 @image html /user_guides/ocaf/images/ocaf_image014.png "Resulting box"
 @image latex /user_guides/ocaf/images/ocaf_image014.png "Resulting box"
 
-After the fuse operation a modified result is placed to a separate label as a named shape, which refers to the old shape – one of the boxes, as well as to the new shape – the shape resulting from the fuse operation – and has evolution MODIFY (see the following figure). 
+After the fuse operation a modified result is placed to a separate label as a named shape, which refers to the old shape (one of the boxes) and to the new shape resulting from the fuse operation, and has evolution MODIFY (see the following figure). 
 
-Named shapes, which contain information about modified faces, belong to the fuse result sub-labels: sub-label with tag 1 – modified faces from box 1, sub-label with tag 2 – modified faces from box 2. 
+Named shapes, which contain information about modified faces, belong to the fuse result sub-labels: 
+* sub-label with tag 1 -- modified faces from box 1, 
+* sub-label with tag 2 -- modified faces from box 2. 
 
 @image html /user_guides/ocaf/images/ocaf_image015.png
 @image latex /user_guides/ocaf/images/ocaf_image015.png
@@ -860,11 +862,11 @@ When using TNaming_NamedShape to create attributes, the following fields of an a
 
 * A list of shapes called the "old" and the "new" shapes A new shape is recomputed as the value of the named shape. The meaning of this pair depends on the type of evolution.
 * The type of evolution, which is a term of the *TNaming_Evolution* enumeration used for the selected shapes that are placed to the separate label: 
-	* PRIMITIVE – newly created topology, with no previous history;
-	* GENERATED – as usual, this evolution of a  named shape means, that the new shape is created from a low-level old shape ( a prism face from an edge, for example );
-	* MODIFY – the new shape is a modified old shape;
-	* DELETE – the new shape is empty; the named shape with this evolution just indicates that the old shape topology is deleted from the model;
-	* SELECTED – a named shape with this evolution has no effect on the history of the topology.
+	* PRIMITIVE -- newly created topology, with no previous history;
+	* GENERATED -- as usual, this evolution of a  named shape means, that the new shape is created from a low-level old shape ( a prism face from an edge, for example );
+	* MODIFY -- the new shape is a modified old shape;
+	* DELETE -- the new shape is empty; the named shape with this evolution just indicates that the old shape topology is deleted from the model;
+	* SELECTED -- a named shape with this evolution has no effect on the history of the topology.
 
 Only pairs of shapes with equal evolution can be stored in one named shape. 
 
@@ -879,7 +881,7 @@ TNaming_Builder builder(label);
 builder.Generated(oldshape1,newshape1); 
 // set another pair of shapes with the same evolution 
 builder.Generated(oldshape2,newshape2); 
-// get the result – TNaming_NamedShape attribute 
+// get the result - TNaming_NamedShape attribute 
 Handle(TNaming_NamedShape) ns = builder.NamedShape(); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -891,7 +893,7 @@ More detailed information about the contents of the named shape or about the mod
 * *TNaming_Tool* provides a common high-level functionality for access to the named shapes contents:
 	* The method <i>GetShape(Handle(TNaming_NamedShape)) </i>  returns a compound of new shapes of the given named shape;
 	* The method <i>CurrentShape(Handle(TNaming_NamedShape))</i>  returns a compound of the shapes, which are latest versions of the shapes from the given named shape;
-	* The method <i>NamedShape(TopoDS_Shape,TDF_Label) </i> returns a named shape, which contains a given shape as a new shape. A given label is any label from the data framework – it just gives access to it.
+	* The method <i>NamedShape(TopoDS_Shape,TDF_Label) </i> returns a named shape, which contains a given shape as a new shape. A given label is any label from the data framework -- it just gives access to it.
 * *TNaming_Iterator* gives access to the named shape and hooks pairs.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -935,7 +937,7 @@ The "correct" history of a used modeling operation serves the basis of naming me
 
 The history should return (and track) only elementary types of sub-shapes, i.e. Faces, Edges and Vertexes, while other so-called aggregation types: Compounds, Shells, Wires, are calculated by Selection mechanism automatically.
 
-There are some simple exceptions for several cases. For example, if the Result contains a seam edge - in conical, cylindrical or spherical surfaces - this seam edge should be tracked by the history and in addition should be defined before the types. All degenerated entities should be filtered and excluded from consideration.
+There are some simple exceptions for several cases. For example, if the Result contains a seam edge -- in conical, cylindrical or spherical surfaces -- this seam edge should be tracked by the history and in addition should be defined before the types. All degenerated entities should be filtered and excluded from consideration.
 
 @subsubsection occt_ocaf_5_6_2 Loading history in data framework
 
@@ -948,9 +950,9 @@ The "Result Label" is *TDF_label* used to keep the algorithm result *Shape* from
 When the Data Framework is filled with all impacted entities (including the data structures resulting from the current modeling operation and the data structures resulting from the previous modeling operations, on which the current operation depends) any sub-shape of the current result can be **selected**, i.e. the corresponding new naming data structures, which support this functionality, can be produced and kept in the Data Framework.
 
 One of the user interfaces for topological naming is the class *TNaming_Selector*. It implements the above mentioned sub-shape "selection" functionality as an additional one. I.e. it can be used for:
-* Storing the selected shape on a label - its **Selection**;
-* Accessing the named shape – check the kept value of the shape
-* Update of this naming – recomputation of an earlier selected shape.
+* Storing the selected shape on a label -- its **Selection**;
+* Accessing the named shape -- check the kept value of the shape
+* Update of this naming -- recomputation of an earlier selected shape.
 
 The selector places a new named shape with evolution **SELECTED** to the given label. The selector creates a **name** of the selected shape, which is a unique description (data structure) of how to find the selected topology using as resources:
 * the given context shape, i.e. the main shape kept on **Result Label**, which contains a selected sub-shape, 
@@ -992,7 +994,7 @@ There may be several nails with different size and position. A **Hammer** should
 *	Makes several Nails of different height and diameter (according to the need),
 *	Chooses (selects) the upper surface of each Nail for the Hammer.
 
-The job is done. The application should do the rest – the Hammer calculates a center point for each selected surface of the Nail and “strikes” each Nail driving it into the wooden plate.
+The job is done. The application should do the rest -- the Hammer calculates a center point for each selected surface of the Nail and “strikes” each Nail driving it into the wooden plate.
 
 What happens if the user changes the position of some Nails? How will the Hammer know about it? It keeps reference to the surface of each Nail. However, if a Nail is relocated, the Hammer should know the new position of the selected surface. Otherwise, it will “strike” at the old position (keep the fingers away!)…
 
@@ -1001,30 +1003,30 @@ Topological naming mechanism should help the Hammer to obtain the relocated surf
 The topological naming is represented as a “black box” in the example above. Now it is time to make the box a little more “transparent”.
 
 The application contains 3 functions:
-* **Nail** - produces a shape representing a nail,
-* **Translator** - translates a shape along the wooden plate,
-* **Hammer** - drives the nail in the wooden plate.
+* **Nail** -- produces a shape representing a nail,
+* **Translator** -- translates a shape along the wooden plate,
+* **Hammer** -- drives the nail in the wooden plate.
 
 Each function gives the topological naming some hints how to “re-solve” the selected sub-shapes:
 * The Nail constructs a solid shape and puts each face of the shape into sub-labels: 
 
 @figure{/user_guides/ocaf/images/ocaf_image021.png, "Distribution of faces through sub-labels of the Nail"}
 
-* The **Translator** moves a shape and registers modification for each face: it puts a pair: “old” shape – “new” shape at a sub-label of each moving Nail. The “old” shape represents a face of the Nail at the initial position. The “new” shape – is the same face, but at a new position:
+* The **Translator** moves a shape and registers modification for each face: it puts a pair: “old” shape -- “new” shape at a sub-label of each moving Nail. The “old” shape represents a face of the Nail at the initial position. The “new” shape -- is the same face, but at a new position:
 
 @figure{/user_guides/ocaf/images/ocaf_image022.png, "Registration of relocation of faces of a Nail"}
 
 How does it work?
 * The Hammer selects a face of a Nail calling *TNaming_Selector::Select()*. This call makes a unique name for the selected shape. In our example, it will be a direct reference to the label of the top face of the Nail (Face 1).
-* When the user moves a Nail along the wooden plate, the Translator registers this modification by putting the pairs: “old” face of the Nail – new face of the Nail into its sub-labels. 
+* When the user moves a Nail along the wooden plate, the Translator registers this modification by putting the pairs: “old” face of the Nail -- new face of the Nail into its sub-labels. 
 * When the Hammer calls *TNaming::Solve()*, the topological naming “looks” at the unique name of the selected shape and tries to re-solve it:
-	* It finds the 1st appearance of the selected shape in the data tree – it is a label under the Nail function *Face 1*.
-	* It follows the evolution of this face. In our case, there is only one evolution – the translation: *Face 1* (top face) – <i>Face 1’</i> (relocated top face). So, the last evolution is the relocated top face.
-* Calling the method *TNaming_Selector::NamedShape()* the Hammer obtains the last evolution of the selected face – the relocated top face.
+	* It finds the 1st appearance of the selected shape in the data tree -- it is a label under the Nail function *Face 1*.
+	* It follows the evolution of this face. In our case, there is only one evolution -- the translation: *Face 1* (top face) -- <i>Face 1’</i> (relocated top face). So, the last evolution is the relocated top face.
+* Calling the method *TNaming_Selector::NamedShape()* the Hammer obtains the last evolution of the selected face -- the relocated top face.
 
 The job is done.
 
-P.S. Let us say a few words about a little more complicated case – selection of a wire of the top face. Its topological name is an “intersection” of two faces. We remember that the **Nail** puts only faces under its label. So, the selected wire will represent an “intersection” of the top face and the conic face keeping the “head” of the nail. Another example is a selected vertex. Its unique name may be represented as an “intersection” of three or even more faces (depends on the shape).
+P.S. Let us say a few words about a little more complicated case -- selection of a wire of the top face. Its topological name is an “intersection” of two faces. We remember that the **Nail** puts only faces under its label. So, the selected wire will represent an “intersection” of the top face and the conic face keeping the “head” of the nail. Another example is a selected vertex. Its unique name may be represented as an “intersection” of three or even more faces (depends on the shape).
 
 
 @section occt_ocaf_6 Standard Attributes
@@ -1042,51 +1044,51 @@ Standard attributes are ready-to-use attributes, which allow creating and modify
 
 ### Geometric attributes
 
-  * **Axis** – simply identifies, that the concerned *TNaming_NamedShape* attribute with an axis shape inside belongs to the same label; 
-  * **Constraint** – contains information about a constraint between geometries: used geometry attributes, type, value (if exists), plane (if exists), "is reversed", "is inverted" and "is verified" flags;
-  * **Geometry** – simply identifies, that the concerned *TNaming_NamedShape* attribute with a specified-type geometry belongs to the same label; 
-  * **Plane** – simply identifies, that the concerned *TNaming_NamedShape* attribute with a plane shape inside belongs to the same label;
-  * **Point** – simply identifies, that the concerned *TNaming_NamedShape* attribute with a  point shape inside belongs to the same label;
-  * **Shape** – simply identifies, that the concerned *TNaming_NamedShape* attribute belongs to the same label;
-  * **PatternStd**  – identifies one of five available pattern models (linear, circular, rectangular, circular rectangular and mirror);
-  * **Position** – identifies the position in 3d global space.
+  * **Axis** -- simply identifies, that the concerned *TNaming_NamedShape* attribute with an axis shape inside belongs to the same label; 
+  * **Constraint** -- contains information about a constraint between geometries: used geometry attributes, type, value (if exists), plane (if exists), "is reversed", "is inverted" and "is verified" flags;
+  * **Geometry** -- simply identifies, that the concerned *TNaming_NamedShape* attribute with a specified-type geometry belongs to the same label; 
+  * **Plane** -- simply identifies, that the concerned *TNaming_NamedShape* attribute with a plane shape inside belongs to the same label;
+  * **Point** -- simply identifies, that the concerned *TNaming_NamedShape* attribute with a  point shape inside belongs to the same label;
+  * **Shape** -- simply identifies, that the concerned *TNaming_NamedShape* attribute belongs to the same label;
+  * **PatternStd**  -- identifies one of five available pattern models (linear, circular, rectangular, circular rectangular and mirror);
+  * **Position** -- identifies the position in 3d global space.
 
 ### General attributes
 
-  * **AsciiString** – contains AsciiString value;
-  * **BooleanArray** – contains an array of Boolean;
-  * **BooleanList** – contains a list of Boolean;
-  * **ByteArray** – contains an array of Byte (unsigned char) values;
-  * **Comment** – contains a string – some comment for a given label (or attribute);
-  * **Expression** – contains an expression string and a list of used variables attributes;
-  * **ExtStringArray** – contains an array of *ExtendedString* values;
-  * **ExtStringList** – contains a list of *ExtendedString* values;
-  * **Integer** – contains an integer value;
-  * **IntegerArray** – contains an array of integer values;
-  * **IntegerList** – contains a list of integer values;
-  * **IntPackedMap** – contains a packed map of integers;
-  * **Name** – contains a string – some name of a given label (or attribute);
-  * **NamedData** – may contain up to 6 of the following named data sets (vocabularies): *DataMapOfStringInteger, DataMapOfStringReal, DataMapOfStringString, DataMapOfStringByte, DataMapOfStringHArray1OfInteger* or *DataMapOfStringHArray1OfReal*;
-  * **NoteBook** – contains a *NoteBook* object attribute;
-  * **Real** – contains a real value;
-  * **RealArray** – contains an array of  real values;
-  * **RealList**    – contains a list of real values;
-  * **Relation** – contains a relation string and a list of used variables attributes;
-  * **Tick** – defines a boolean attribute;
-  * **Variable** – simply identifies, that a variable belongs to this label; contains the flag *is constraint* and a string of used units ("mm", "m"...);
-  * **UAttribute** – attribute with a user-defined GUID. As a rule, this attribute is used as a marker, which is independent of attributes at the same label (note, that attributes with the same GUIDs can not belong to the same label).
+  * **AsciiString** -- contains AsciiString value;
+  * **BooleanArray** -- contains an array of Boolean;
+  * **BooleanList** -- contains a list of Boolean;
+  * **ByteArray** -- contains an array of Byte (unsigned char) values;
+  * **Comment** -- contains a string -- the comment for a given label (or attribute);
+  * **Expression** -- contains an expression string and a list of used variables attributes;
+  * **ExtStringArray** -- contains an array of *ExtendedString* values;
+  * **ExtStringList** -- contains a list of *ExtendedString* values;
+  * **Integer** -- contains an integer value;
+  * **IntegerArray** -- contains an array of integer values;
+  * **IntegerList** -- contains a list of integer values;
+  * **IntPackedMap** -- contains a packed map of integers;
+  * **Name** -- contains a string -- the name of a given label (or attribute);
+  * **NamedData** -- may contain up to 6 of the following named data sets (vocabularies): *DataMapOfStringInteger, DataMapOfStringReal, DataMapOfStringString, DataMapOfStringByte, DataMapOfStringHArray1OfInteger* or *DataMapOfStringHArray1OfReal*;
+  * **NoteBook** -- contains a *NoteBook* object attribute;
+  * **Real** -- contains a real value;
+  * **RealArray** -- contains an array of  real values;
+  * **RealList** -- contains a list of real values;
+  * **Relation** -- contains a relation string and a list of used variables attributes;
+  * **Tick** -- defines a boolean attribute;
+  * **Variable** -- simply identifies, that a variable belongs to this label; contains the flag *is constraint* and a string of used units ("mm", "m"...);
+  * **UAttribute** -- attribute with a user-defined GUID. As a rule, this attribute is used as a marker, which is independent of attributes at the same label (note, that attributes with the same GUIDs can not belong to the same label).
   
 ### Relationship attributes 
 
-  * **Reference** – contains reference to the label of its own data framework;
-  * **ReferenceArray** – contains an array of references;
-  * **ReferenceList** – contains a list of references;
-  * **TreeNode** – this attribute allows to create an internal tree in the data framework; this tree consists of nodes with the specified tree ID; each node contains references to the father, previous brother, next brother, first child nodes and tree ID.
+  * **Reference** -- contains reference to the label of its own data framework;
+  * **ReferenceArray** -- contains an array of references;
+  * **ReferenceList** -- contains a list of references;
+  * **TreeNode** -- this attribute allows to create an internal tree in the data framework; this tree consists of nodes with the specified tree ID; each node contains references to the father, previous brother, next brother, first child nodes and tree ID.
 
 ### Auxiliary attributes
 
-  * **Directory** – high-level tool attribute for sub-labels management;
-  * **TagSource** – this attribute is used for creation of new children: it stores the tag of the last-created child of the label and gives access to the new child label creation functionality.
+  * **Directory** -- high-level tool attribute for sub-labels management;
+  * **TagSource** -- this attribute is used for creation of new children: it stores the tag of the last-created child of the label and gives access to the new child label creation functionality.
 
 All attributes inherit class *TDF_Attribute*, so, each attribute has its own GUID and standard methods for attribute creation, manipulation, getting access to the data framework. 
 
@@ -1167,7 +1169,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   So, this approach may be considered only in case of non-editable data.  
    
   Let’s consider the allocation of data of  each measurement point per label (the second case). 
-  In this case we create 100  000 labels – one label for each measurement point 
+  In this case we create 100  000 labels -- one label for each measurement point 
   and attach an array of double  values to these labels:  
  
 @image html ocaf_tree_wp_image004.png "Allocation of data of each  measurement point as arrays of double values"
@@ -1271,7 +1273,7 @@ TPrsStd_AISPresentation::Set(NS};
 
 @section occt_ocaf_8 Function Services
 
-Function services aggregate data necessary for regeneration of a model. The function mechanism - available in the package TFunction - provides links between functions and any execution algorithms, which take their arguments from the data framework, and write their results inside the same framework. 
+Function services aggregate data necessary for regeneration of a model. The function mechanism -- available in the package *TFunction* -- provides links between functions and any execution algorithms, which take their arguments from the data framework, and write their results inside the same framework. 
 
 When you edit any application model, you have to regenerate the model by propagating the modifications. Each propagation step calls various algorithms. To make these algorithms independent of your application model, you need to use function services. 
 
@@ -1309,10 +1311,10 @@ The procedure of its creation is as follows:
   * the solver calls the driver of the face *F* function for a  regeneration of the face;
   * the driver rebuilds face *F* and adds the label of the face *width* argument to the logbook as touched and the label of the function of face *F* as impacted;
 
-  * the solver detects the function of *P* – it depends on the function of *F*;
+  * the solver detects the function of *P* -- it depends on the function of *F*;
   * the solver calls the driver of the prism *P* function;
   * the driver rebuilds prism *P* and adds the label of this prism to the logbook as  impacted;
-  * the solver detects the function of *L*  – it depends on the function of *P*;
+  * the solver detects the function of *L*  -- it depends on the function of *P*;
   * the solver calls the *L* function driver;
   * the driver rebuilds fillet *L* and adds the label of the fillet to the logbook as impacted.
   
@@ -1327,7 +1329,7 @@ The procedure of its creation is as follows:
 @image latex ocaf_functionmechanism_wp_image003.png " A nail"
 
   These three objects (a cone and two cylinders) are  independent, 
-  but the Function Mechanism makes them connected to each other and representing one object – a nail.  
+  but the Function Mechanism makes them connected to each other and representing one object -- a nail.  
   The object "nail" has the following parameters:  
   
   * The position of the nail is defined by the apex point of the  cone. 
@@ -1400,9 +1402,9 @@ The procedure of its creation is as follows:
   It sets the default values of position, radius and height of  the nail.  
   
   The nail has the following user parameters:  
-  * The position – coincides with the position of the cone  
-  * The radius of the stem part of the nail – coincides with the radius  of the cone  
-  * The height of the nail – a sum of heights of the cone and both  cylinders  
+  * The position -- coincides with the position of the cone  
+  * The radius of the stem part of the nail -- coincides with the radius  of the cone  
+  * The height of the nail -- a sum of heights of the cone and both  cylinders  
   
   The values of the position and the radius of the  nail are defined for the cone object data. 
   The height of the cone is recomputed  as 2 * heights of nail and divided by 9.  
@@ -1444,8 +1446,8 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
   The  only thing the Function Mechanism requires from its user 
   is the implementation  of pure virtual methods of *TFunction_Driver*:  
   
-  * <i>\::Arguments()</i> – returns a list of arguments for the  function  
-  * <i>\::Results()</i> – returns a list of results of the function  
+  * <i>\::Arguments()</i> -- returns a list of arguments for the  function  
+  * <i>\::Results()</i> -- returns a list of results of the function  
   
   These methods give the Function Mechanism the information on the location of arguments 
   and results of the function and allow building a  graph of functions. 
@@ -1460,13 +1462,13 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
   The cone and cylinder functions differ only in geometrical construction algorithms. 
   Other parameters are the same (position, radius and height).  
   
-  It means that it is possible to create a base class – function driver for the three functions, 
+  It means that it is possible to create a base class -- function driver for the three functions, 
   and two descendant classes producing:  a cone or a cylinder.  
   
   For the base function driver the methods <i>\::Arguments()</i>  and <i>\::Results()</i> will be overridden. 
   Two descendant function drivers responsible for creation of a cone and a cylinder will override only the method  <i>\::Execute()</i>. 
   
-  The method <i>\::Arguments()</i> of the function driver of the nail returns the results of the functions located under it in the tree of  leaves.   The method <i>\::Execute()</i> just collects the  results of the functions and makes one shape – a nail. 
+  The method <i>\::Arguments()</i> of the function driver of the nail returns the results of the functions located under it in the tree of leaves.   The method <i>\::Execute()</i> just collects the  results of the functions and makes one shape -- a nail. 
   
   This way the data model using the Function Mechanism is  ready for usage.   Do not forget to introduce the function drivers for a function  driver table with the help of *TFunction_DriverTable* class.
 
@@ -1551,7 +1553,7 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
     // Execution of the function  driver.  
     Int CylinderDriver::Execute( TFunction_Logbook&amp; log )  
     {  
-      // Position of the cylinder – position of the first  function (cone)   
+      // Position of the cylinder - position of the first  function (cone)   
       //is  elevated along Z for height values of all  previous functions.  
       gp_Ax2 axes = …. // out of the scope of this guide.  
       // The radius value is retrieved.  
@@ -1606,7 +1608,7 @@ Writing and reading XML files in OCCT is provided by LDOM package, which constit
 of XML OCAF persistence, which is the optional component provided on top of Open CASCADE Technology.
 
 The Light DOM (LDOM) package contains classes maintaining a data structure whose main principles conform to W3C DOM Level 1 Recommendations. The purpose of these classes as required by XML OCAF persistence schema is to: 
-* Maintain a tree structure of objects in memory representing the XML document. The root of the structure is an object of the *LDOM_Document* type. This object contains all the data corresponding to a given XML document and contains one object of the *LDOM_Element* type named "document element". The document element contains other *LDOM_Element* objects forming a tree. Other types of nodes: *LDOM_Attr, LDOM_Text, LDOM_Comment* and *LDOM_CDATASection* - represent the corresponding XML types and serve as branches of the tree of elements. 
+* Maintain a tree structure of objects in memory representing the XML document. The root of the structure is an object of the *LDOM_Document* type. This object contains all the data corresponding to a given XML document and contains one object of the *LDOM_Element* type named "document element". The document element contains other *LDOM_Element* objects forming a tree. Other types of nodes: *LDOM_Attr, LDOM_Text, LDOM_Comment* and *LDOM_CDATASection* -- represent the corresponding XML types and serve as branches of the tree of elements. 
 * Provide class *LDOM_Parser* to read XML files and convert them to *LDOM_Document* objects.
 * Provide class *LDOM_XmlWriter* to convert *LDOM_Document* to a character stream in XML format and store it in file. 
 
@@ -1631,8 +1633,8 @@ The drivers for document storage and retrieval  manage  conversion between a tra
 Document in memory and its persistent reflection in a container (disk, memory, network). For XML Persistence, they are defined in the package XmlDrivers. 
 
 The main methods (entry points) of these drivers are: 
-* *Write()* - for a storage driver; 
-* *Read()* - for a retrieval driver. 
+* *Write()* -- for a storage driver; 
+* *Read()* -- for a retrieval driver. 
 
 The most common case (which is implemented in XML Persistence) is writing/reading document to/from a regular OS file. Such conversion is performed in two steps: 
 
@@ -1669,10 +1671,10 @@ The basic class *XmlMDF_ADriver* supports errors reporting via the method *Write
 @subsection occt_ocaf_9_3 XML Document Structure
 
 Every XML Document has one root element, which may have attributes and contain other nodes. In OCAF XML Documents the root element is named "document" and has attribute "format" with the name of the OCAF Schema used to generate the file. The standard XML format is "XmlOcaf". The following elements are sub-elements of \<document\> and should be unique entries as its sub-elements, in a specific order. The order is:
-* **Element info** - contains strings identifying the format version and other parameters of the OCAF XML document. Normally, data under the element is used by persistence algorithms to correctly retrieve and initialize an OCAF document. The data also includes a copyright string. 
-* **Element comments** - consists of an unlimited number of \<comment\> sub-elements containing necessary comment strings. 
-* **Element label** is the root label of the document data structure, with the XML attribute "tag" equal to 0. It contains all the OCAF data (labels, attributes) as tree of XML elements. Every sub-label is identified by a tag (positive integer) defining a unique key for all sub-labels of a label. Every label can contain any number of elements representing OCAF attributes (see OCAF Attributes Representation below).
-* **Element shapes** - contains geometrical and topological entities in BRep format. These entities being referenced by OCAF attributes written under the element \<label\>. This element is empty if there are no shapes in the document. It is only output if attribute driver *XmlMNaming_NamedShapeDriver* has been added to drivers table by the *DocumentStorageDriver*.
+* **Element info** -- contains strings identifying the format version and other parameters of the OCAF XML document. Normally, data under the element is used by persistence algorithms to correctly retrieve and initialize an OCAF document. The data also includes a copyright string. 
+* **Element comments** -- consists of an unlimited number of \<comment\> sub-elements containing necessary comment strings. 
+* **Element label** -- the root label of the document data structure, with the XML attribute "tag" equal to 0. It contains all the OCAF data (labels, attributes) as tree of XML elements. Every sub-label is identified by a tag (positive integer) defining a unique key for all sub-labels of a label. Every label can contain any number of elements representing OCAF attributes (see OCAF Attributes Representation below).
+* **Element shapes** -- contains geometrical and topological entities in BRep format. These entities being referenced by OCAF attributes written under the element \<label\>. This element is empty if there are no shapes in the document. It is only output if attribute driver *XmlMNaming_NamedShapeDriver* has been added to drivers table by the *DocumentStorageDriver*.
 
 ### OCAF Attributes Representation 
 
@@ -1682,7 +1684,7 @@ XML types for OCAF attributes are declared with XML W3C Schema in a few XSD file
 
 ### Example of resulting XML file 
 
-The following example is a sample text from an XML file obtained by storing an OCAF document with two labels (0: and 0:2) and two attributes - *TDataStd_Name* (on label 0:) and *TNaming_NamedShape* (on label 0:2). The \<shapes\> section contents are replaced by an ellipsis. 
+The following example is a sample text from an XML file obtained by storing an OCAF document with two labels (0: and 0:2) and two attributes -- *TDataStd_Name* (on label 0:) and *TNaming_NamedShape* (on label 0:2). The \<shapes\> section contents are replaced by an ellipsis. 
 
 ~~~~
 <?xml version="1.0" encoding="UTF-8"?> 
@@ -1781,7 +1783,7 @@ All schemes are independent of each other, but they guarantee that the standard 
 attributes stored and retrieved by one schema will be storable and retrievable by
 the other. Therefore in any OCAF application you can use any persistence schema or
 even all three of them. The choice is made depending on the *Format* string of stored OCAF documents
-or automatically by the file header data - on retrieval.
+or automatically by the file header data -- on retrieval.
 
 Persistent data storage in OCAF using the <i> Standard</i> package is presented in: 
 
@@ -1967,54 +1969,54 @@ aShape.Nullify();
   
 @section occt_ocaf_10 GLOSSARY
 
-* **Application** - a document container holding all documents containing all application data. 
-* **Application data** - the data produced by an application, as opposed to data referring to it. 
-* **Associativity of data** - the ability to propagate modifications made to one document to other documents, which refer to such document. Modification propagation is: 
+* **Application** -- a document container holding all documents containing all application data. 
+* **Application data** -- the data produced by an application, as opposed to data referring to it. 
+* **Associativity of data** -- the ability to propagate modifications made to one document to other documents, which refer to such document. Modification propagation is: 
   * unidirectional, that is, from the referenced to the referencing document(s), or
   * bi-directional, from the referencing to the referenced document and vice-versa.
-* **Attribute** - a container for application data. An attribute is attached to a label in the hierarchy of the data framework. 
-* **Child** - a label created from another label, which by definition, is the father label. 
-* **Compound document** - a set of interdependent documents, linked to each other by means of external references. These references provide the associativity of data. 
-* **Data framework** - a tree-like data structure which in OCAF, is a tree of labels with data attached to them in the form of attributes. This tree of labels is accessible through the services of the *TDocStd_Document* class. 
-* **Document** - a container for a data framework which grants access to the data, and is, in its turn, contained  by an application. A document also allows you to: 
+* **Attribute** -- a container for application data. An attribute is attached to a label in the hierarchy of the data framework. 
+* **Child** -- a label created from another label, which by definition, is the father label. 
+* **Compound document** -- a set of interdependent documents, linked to each other by means of external references. These references provide the associativity of data. 
+* **Data framework** -- a tree-like data structure which in OCAF, is a tree of labels with data attached to them in the form of attributes. This tree of labels is accessible through the services of the *TDocStd_Document* class. 
+* **Document** -- a container for a data framework which grants access to the data, and is, in its turn, contained  by an application. A document also allows you to: 
 	* Manage modifications, providing Undo and Redo functions 
 	* Manage command transactions 
 	* Update external links 
 	* Manage save and restore options 
 	* Store the names of software extensions. 
-* **Driver** - an abstract class, which defines the communications protocol with a system. 
-* **Entry** - an ASCII character string containing the tag list of a label. For example:
+* **Driver** -- an abstract class, which defines the communications protocol with a system. 
+* **Entry** -- an ASCII character string containing the tag list of a label. For example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 0:3:24:7:2:7 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* **External links** - references from one data structure to another data structure in another document. 
+* **External links** -- references from one data structure to another data structure in another document. 
 To store these references properly, a label must also contain an external link attribute. 
-* **Father** - a label, from which other labels have been created. The other labels are, by definition, the children of this label. 
-* **Framework** - a group of co-operating classes which enable a design to be re-used for a given category of problem. The framework guides the architecture of the application by breaking it up into abstract  classes, each of which has different responsibilities and collaborates in a predefined way. Application developer creates a specialized framework by: 
+* **Father** -- a label, from which other labels have been created. The other labels are, by definition, the children of this label. 
+* **Framework** -- a group of co-operating classes which enable a design to be re-used for a given category of problem. The framework guides the architecture of the application by breaking it up into abstract  classes, each of which has different responsibilities and collaborates in a predefined way. Application developer creates a specialized framework by: 
   * defining new classes which inherit from these abstract classes
   * composing framework class instances
   * implementing the services required by the framework.
 
 In C++, the application behavior is implemented in virtual functions redefined in these derived classes. This is known as overriding. 
 
-* **GUID** - Global Universal ID. A string of 37 characters intended to uniquely identify an object. For example:
+* **GUID** -- Global Universal ID. A string of 37 characters intended to uniquely identify an object. For example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 2a96b602-ec8b-11d0-bee7-080009dc3333 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* **Label** - a point in the data framework, which allows data to be attached to it by means of attributes. It has a name in the form of an entry, which identifies its place in the data framework. 
-* **Modified label** - containing attributes whose data has been modified. 
-* **Reference key** - an invariant reference, which may refer to any type of data used in an application. In its transient form, it is a label in the data framework, and the data is attached to it in the form of attributes. In its persistent form, it is an entry of the label. It allows an application to recover any entity in the current session or in a previous session. 
-* **Resource file** - a file containing a list of each document’s schema name and the storage and retrieval plug-ins for that document. 
-* **Root** - the starting point of the data framework. This point is the top label in the framework. It is represented by the [0] entry and is created at the same time with the document you are working on. 
-* **Scope** - the set of all the attributes and labels which depend on a given label. 
-* **Tag list** - a list of integers, which identify the place of a label in the data framework.  This list is displayed in an entry. 
-* **Topological naming** - systematic referencing of topological entities so that these entities can still be identified after the models they belong to have gone through several steps in modeling. In other words, topological naming allows you to track entities through the steps in the modeling process. This referencing is needed when a model is edited and regenerated, and can be seen as a mapping of labels and name attributes of the entities in the old version of a model to those of the corresponding entities in its new version. Note that if the topology of a model changes during the modeling, this mapping may not fully coincide. A Boolean operation, for example, may split edges. 
-* **Topological tracking** - following a topological entity in a model through the steps taken to edit and regenerate that model. 
-* **Valid label** - in a data framework, this is a label, which is already recomputed in the scope of regeneration sequence and includes the label containing a feature which is to be recalculated. Consider the case of a box to which you first add a fillet, then a protrusion feature. For recalculation purposes, only valid labels of each construction stage are used. In recalculating a fillet, they are only those of the box and the fillet, not the protrusion feature which was added afterwards.   
+* **Label** -- a point in the data framework, which allows data to be attached to it by means of attributes. It has a name in the form of an entry, which identifies its place in the data framework. 
+* **Modified label** -- containing attributes whose data has been modified. 
+* **Reference key** -- an invariant reference, which may refer to any type of data used in an application. In its transient form, it is a label in the data framework, and the data is attached to it in the form of attributes. In its persistent form, it is an entry of the label. It allows an application to recover any entity in the current session or in a previous session. 
+* **Resource file** -- a file containing a list of each document’s schema name and the storage and retrieval plug-ins for that document. 
+* **Root** -- the starting point of the data framework. This point is the top label in the framework. It is represented by the [0] entry and is created at the same time with the document you are working on. 
+* **Scope** -- the set of all the attributes and labels which depend on a given label. 
+* **Tag list** -- a list of integers, which identify the place of a label in the data framework.  This list is displayed in an entry. 
+* **Topological naming** -- systematic referencing of topological entities so that these entities can still be identified after the models they belong to have gone through several steps in modeling. In other words, topological naming allows you to track entities through the steps in the modeling process. This referencing is needed when a model is edited and regenerated, and can be seen as a mapping of labels and name attributes of the entities in the old version of a model to those of the corresponding entities in its new version. Note that if the topology of a model changes during the modeling, this mapping may not fully coincide. A Boolean operation, for example, may split edges. 
+* **Topological tracking** -- following a topological entity in a model through the steps taken to edit and regenerate that model. 
+* **Valid label** -- in a data framework, this is a label, which is already recomputed in the scope of regeneration sequence and includes the label containing a feature which is to be recalculated. Consider the case of a box to which you first add a fillet, then a protrusion feature. For recalculation purposes, only valid labels of each construction stage are used. In recalculating a fillet, they are only those of the box and the fillet, not the protrusion feature which was added afterwards.   
 
 @section occt_ocaf_11 Samples
 

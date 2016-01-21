@@ -75,13 +75,13 @@ Geometry types and utilities provide geometric data structures and services for:
  * Calculation of extrema between geometric objects. 
   
 Topology defines relationships between simple geometric entities.  A shape, which is a basic topological entity, can be divided into components (sub-shapes):
- * Vertex – a zero-dimensional shape corresponding to a point;
- * Edge - a shape corresponding to a curve and bounded by a vertex at each extremity;
- * Wire - a sequence of edges connected by their vertices;
- * Face - a part of a plane (in 2D) or a surface (in 3D) bounded by wires;
- * Shell - a collection of faces connected by edges of their wire boundaries;
- * Solid - a finite closed part of 3D space bounded by shells;
- * Compound solid - a collection of solids connected by faces of their shell boundaries.
+ * Vertex -- a zero-dimensional shape corresponding to a point;
+ * Edge -- a shape corresponding to a curve and bounded by a vertex at each extremity;
+ * Wire -- a sequence of edges connected by their vertices;
+ * Face -- a part of a plane (in 2D) or a surface (in 3D) bounded by wires;
+ * Shell -- a collection of faces connected by edges of their wire boundaries;
+ * Solid -- a finite closed part of 3D space bounded by shells;
+ * Compound solid -- a collection of solids connected by faces of their shell boundaries.
 
 Complex shapes can be defined as assemblies of simpler entities.
 
@@ -123,9 +123,9 @@ Top-level API provides the following functionality:
 	* Spheres;
 	* Toruses.
 * Kinematic Modeling: 
-	* Prisms - linear sweeps;
-	* Revolutions - rotational sweeps;
-	* Pipes - general-form sweeps;
+	* Prisms -- linear sweeps;
+	* Revolutions -- rotational sweeps;
+	* Pipes -- general-form sweeps;
 	* Lofting.
 
 @figure{/technical_overview/images/0001.png "Shapes containing pipes with variable radius produced by sweeping"}  

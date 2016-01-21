@@ -15,7 +15,7 @@ This includes:
   * Definition of classes representing data objects. Data objects store their data using primitive OCAF attributes, taking advantage of OCAF mechanisms for Undo/Redo and persistence. At the same time they provide a higher level abstraction over the pure OCAF document structure (labels / attributes).
   * Organization of the data model as a hierarchical (tree-like) structure of objects.
   * Support of cross-references between objects within one model or among different models. In case of cross-model references the models should depend hierarchically.
-  * Persistence mechanism for storing *TObj* objects in OCAF files, which allows storing and retrieving objects of derived types without re-generating the schema. 
+  * Persistence mechanism for storing *TObj* objects in OCAF files, which allows storing and retrieving objects of derived types without regenerating the schema. 
 
 This document describes basic principles of logical and physical organization 
 of TObj-based data models and typical approaches to implementation of classes representing model objects.
@@ -25,7 +25,7 @@ of TObj-based data models and typical approaches to implementation of classes re
 The main purpose of the *TObj* data model is rapid development 
 of the object-oriented data models for applications, using the existing 
 functionality provided by OCAF (Undo/Redo and persistence) 
-without the necessity to re-develop such functionality from scratch.
+without the necessity to redevelop such functionality from scratch.
 
 As opposed to using bare OCAF (at the level of labels and attributes), 
 TObj facilitates dealing with higher level abstracts, which are closer 
@@ -592,7 +592,7 @@ its persistence handler stores the runtime type of the object class.
 When the type is restored the handler dynamically recognizes the type 
 and creates the corresponding object using mechanisms provided by *TObj_Persistence*. 
 
-@subsection occt_tobj_35 Names of objects
+@subsection occt_tobj_3_5 Names of objects
 
 All *TObj* model objects  have names by which the user can refer to the object. 
 Upon creation, each object receives a default name, constructed 
@@ -632,7 +632,7 @@ Attributes a new name to the object and returns **True** if the name has been at
 Returns False if the name has been already attributed to another object. 
 The last two methods are short-cuts to the first one. 
 
-@subsection occt_tobj_36 References between objects 
+@subsection occt_tobj_3_6 References between objects 
 
 Class *TObj_Object* allows creating references to other objects in the model. 
 Such references describe relations among objects which are not adequately reflected 
@@ -711,7 +711,7 @@ Updates back references if theUpdateackRefs is **True**.
 Returns **True** if the reference can be removed and the master object 
 will remain valid (*weak* reference). 
 Returns **False** if the master object cannot be valid without the referred object (*strong* reference). 
-This affects the behaviour of objects removal from the model – if the reference cannot be removed, 
+This affects the behaviour of objects removal from the model -- if the reference cannot be removed, 
 either the referred object will not be removed, or both the referred 
 and the master objects will be removed (depends on the deletion mode in the method **Detach**) 
 
@@ -743,9 +743,9 @@ the reference is removed, otherwise the master object will be removed too
 or the referred object will be kept alive. This check is performed by the method *Detach* , 
 but the behavior depends on the deletion mode *TObj_DeletingMode*: 
 
-  * **TObj_FreeOnly** – the object will be destroyed only if it is free, i.e. there are no references to it from other objects
-  * **TObj_KeepDepending** – the object will be destroyed if there are no strong references to it from master objects (all references can be unlinked)
-  * **TObj_Force** – the object and all depending master objects that have strong references to it will be destroyed.
+  * **TObj_FreeOnly** -- the object will be destroyed only if it is free, i.e. there are no references to it from other objects
+  * **TObj_KeepDepending** -- the object will be destroyed if there are no strong references to it from master objects (all references can be unlinked)
+  * **TObj_Force** -- the object and all depending master objects that have strong references to it will be destroyed.
 
 The most used methods for object removing are: 
 
@@ -803,11 +803,11 @@ Each instance of *TObj_Object* stores a set of bit flags,
 which facilitate the storage of auxiliary logical information assigned to the objects 
 (object state). Several typical state flags are defined in the enumeration *ObjectState*: 
 
-  * ObjectState_Hidden – the object is marked as hidden
-  * ObjectState_Saved – the object has (or should have) the corresponding saved file on disk
-  * ObjectState_Imported – the object is imported from somewhere
-  * ObjectState_ImportedByFile – the object has been imported from file and should be updated to have correct relations with other objects
-  * ObjectState_Ordered – the partition contains objects that can be ordered.
+  * *ObjectState_Hidden* -- the object is marked as hidden
+  * *ObjectState_Saved* -- the object has (or should have) the corresponding saved file on disk
+  * *ObjectState_Imported* -- the object is imported from somewhere
+  * *ObjectState_ImportedByFile* -- the object has been imported from file and should be updated to have correct relations with other objects
+  * *ObjectState_Ordered* -- the partition contains objects that can be ordered.
 
 The user (developer) can define any new flags in descendant classes. 
 To set/get an object, the flags use the following methods: 
@@ -883,18 +883,18 @@ Sets the last reserved index.
 
 Apart from the model and the object, package *TObj* provides a set of auxiliary classes: 
 
-  * *TObj_Application* - defines OCAF application supporting existence and operation with *TObj* documents.
-  * *TObj_Assistant* – class provides an interface to the static data to be used during save and load operations on models. In particular, in case of cross-model dependencies it allows passing information on the parent model to the OCAF loader to correctly resolve the references when loading a dependent model.
-  * *TObj_TReference* - OCAF attribute describes the references between objects in the *TObj* model(s). This attribute stores the label of the referred model object, and provides transparent cross-model references. At runtime, these references are simple Handles; in persistence mode, the cross-model references are automatically detected and processed by the persistence mechanism of *TObj_TReference* attribute. 
-  * Other classes starting with *TObj_T...* - define OCAF attributes used to store TObj-specific classes and some types of data on OCAF labels. 
-  * Iterators – a set of classes implementing *TObj_ObjectIterator* interface, used for iterations on *TObj* objects:
-	  * *TObj_ObjectIterator* – a basic abstract class for other *TObj* iterators. Iterates on *TObj_Object* instances. 
-	  * *TObj_LabelIterator* – iterates on object labels in the *TObj* model document 
-	  * *TObj_ModelIterator* – iterates on all objects in the model. Works with sequences of other iterators. 
-	  * *TObj_OcafObjectIterator* – Iterates on *TObj* data model objects. Can iterate on objects of a specific type. 
-	  * *TObj_ReferenceIterator* – iterates on object references. 
-	  * *TObj_SequenceIterator* – iterates on a sequence of *TObj* objects. 
-	  * *TObj_CheckModel* - a tool that checks the internal consistency of the model. The basic implementation checks only the consistency of references between objects.
+  * *TObj_Application* -- defines OCAF application supporting existence and operation with *TObj* documents.
+  * *TObj_Assistant* -- class provides an interface to the static data to be used during save and load operations on models. In particular, in case of cross-model dependencies it allows passing information on the parent model to the OCAF loader to correctly resolve the references when loading a dependent model.
+  * *TObj_TReference* -- OCAF attribute describes the references between objects in the *TObj* model(s). This attribute stores the label of the referred model object, and provides transparent cross-model references. At runtime, these references are simple Handles; in persistence mode, the cross-model references are automatically detected and processed by the persistence mechanism of *TObj_TReference* attribute. 
+  * Other classes starting with *TObj_T...* -- define OCAF attributes used to store TObj-specific classes and some types of data on OCAF labels. 
+  * Iterators -- a set of classes implementing *TObj_ObjectIterator* interface, used for iterations on *TObj* objects:
+	  * *TObj_ObjectIterator* -- a basic abstract class for other *TObj* iterators. Iterates on *TObj_Object* instances. 
+	  * *TObj_LabelIterator* -- iterates on object labels in the *TObj* model document 
+	  * *TObj_ModelIterator* -- iterates on all objects in the model. Works with sequences of other iterators. 
+	  * *TObj_OcafObjectIterator* -- Iterates on *TObj* data model objects. Can iterate on objects of a specific type. 
+	  * *TObj_ReferenceIterator* -- iterates on object references. 
+	  * *TObj_SequenceIterator* -- iterates on a sequence of *TObj* objects. 
+	  * *TObj_CheckModel* -- a tool that checks the internal consistency of the model. The basic implementation checks only the consistency of references between objects.
 
 The structure of *TObj* iterators hierarchy is presented below: 
 
@@ -906,10 +906,10 @@ The structure of *TObj* iterators hierarchy is presented below:
 
 The *TObj* sources are distributed in the following packages: 
 
-  * *TObj* - defines basic classes that implement *TObj* interfaces for OCAF-based modelers.
-  * *BinLDrivers, XmlLDrivers* – binary and XML driver of *TObj* package
-  * *BinLPlugin, XmlLPlugin* – plugin for binary and XML persistence
-  * *BinMObj, XmlMObj* – binary and XML drivers to store and retrieve specific *TObj* data to or from OCAF document
-  * *TKBinL, TKXmlL* – toolkits of binary and XML persistence
+  * *TObj* -- defines basic classes that implement *TObj* interfaces for OCAF-based modelers.
+  * *BinLDrivers, XmlLDrivers* -- binary and XML driver of *TObj* package
+  * *BinLPlugin, XmlLPlugin* -- plug-in for binary and XML persistence
+  * *BinMObj, XmlMObj* -- binary and XML drivers to store and retrieve specific *TObj* data to or from OCAF document
+  * *TKBinL, TKXmlL* -- toolkits of binary and XML persistence
 
 

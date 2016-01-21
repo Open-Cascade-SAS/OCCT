@@ -35,7 +35,7 @@ The bare sources distribution contains not only the sources of Open CASCADE Tech
 
 Now it is time to run a CMake tool which will generate the actual project files for the target IDE (e.g., Visual Studio 2010 solution).
 
-It is recommended to use *cmake-gui* - cross-platform GUI tool provided by CMake on Windows, Mac and Linux. As a command-line alternative, *ccmake* also can be used.
+It is recommended to use *cmake-gui* -- cross-platform GUI tool provided by CMake on Windows, Mac and Linux. As a command-line alternative, *ccmake* also can be used.
 
 CMake deals with three directories: source, build or binary and install.
 
@@ -47,11 +47,11 @@ CMake deals with three directories: source, build or binary and install.
 
 **Note**: The good practice is not to mix up different build configurations in a single directory and not to use the source directory as a build one, for example:
       
-    d:/occt/                   - the source directory
-    d:/tmp/occt-build-vc10-x64 - the build directory with the generated
-                                 solution and other intermediate files created during a CMake tool working
-    d:/occt-install            - the installation directory that is
-                                 able to contain several OCCT configuratoion
+    d:/occt/                   -- the source directory
+    d:/tmp/occt-build-vc10-x64 -- the build directory with the generated
+                                  solution and other intermediate files created during a CMake tool working
+    d:/occt-install            -- the installation directory that is
+                                  able to contain several OCCT configuratoion
 
 ## Configuration process
 
@@ -93,9 +93,9 @@ The following table enumerates the full list of environment variables used at co
 | CMAKE_BUILD_TYPE | String | Specifies the build type on single-configuration generators (sush as make).  Possible values are Debug, Release and RelWithDebInfo |
 | USE_FREEIMAGE | Boolean flag | Indicates whether Freeimage product should be used in OCCT visualization module for support of popular graphics image formats (PNG, BMP etc) |
 | USE_GL2PS | Boolean flag | Indicates whether GL2PS product should be used in OCCT visualization module for support of vector image formats (PS, EPS etc) |
-| USE_TBB | Boolean flag | Indicates whether TBB 3-rd party is used or not. TBB stands for Threading Building Blocks, the technology of Intel Corp, which comes with different mechanisms and patterns for injecting parallelism into your application. OCCT remains parallel even without TBB product |
-| USE_VTK | Boolean flag | Indicates whether VTK 3-rd party is used or not. VTK stands for Visualization ToolKit, the technology of Kitware Inc intended for general-purpose scientific visualization. OCCT comes with a bridge between CAD data representation and VTK by means of its dedicated VIS component (VTK Integration Services). You may skip this 3-rd party unless you are planning to use VTK visualization for OCCT geometry. The official documentation @ref occt_user_guides__vis for the details on VIS |
-| 3RDPARTY_DIR | Path | Defines the root directory where all required 3-rd party products will be searched. Once you define this path it is very convenient to click "Configure" button in order to let CMake automatically detect all necessary products|
+| USE_TBB | Boolean flag | Indicates whether TBB 3rd party is used or not. TBB stands for Threading Building Blocks, the technology of Intel Corp, which comes with different mechanisms and patterns for injecting parallelism into your application. OCCT remains parallel even without TBB product |
+| USE_VTK | Boolean flag | Indicates whether VTK 3rd party is used or not. VTK stands for Visualization ToolKit, the technology of Kitware Inc intended for general-purpose scientific visualization. OCCT comes with a bridge between CAD data representation and VTK by means of its dedicated VIS component (VTK Integration Services). You may skip this 3rd party unless you are planning to use VTK visualization for OCCT geometry. The official documentation @ref occt_user_guides__vis for the details on VIS |
+| 3RDPARTY_DIR | Path | Defines the root directory where all required 3rd party products will be searched. Once you define this path it is very convenient to click "Configure" button in order to let CMake automatically detect all necessary products|
 | 3RDPARTY_FREETYPE_* | Path | Path to Freetype binaries |
 | 3RDPARTY_TCL_* 3RDPARTY_TK_* | Path | Path to Tcl/Tk binaries |
 | 3RDPARTY_FREEIMAGE* | Path | Path to Freeimage binaries |
@@ -125,18 +125,18 @@ OCCT sources. This way you are able to introduce patches to Open CASCADE Technol
 
 **Note:** In those CMake options defining paths only the forward slashes ("/") are acceptable.
 
-### 3rd-party search mechanism (The variables with <i>3RDPARTY_</i> prefix)
+### 3rd party search mechanism (The variables with <i>3RDPARTY_</i> prefix)
 
-If *3RDPARTY_DIR* directory is defined, required 3rd-party binaries are sought in it, default system folders are ignored.
+If *3RDPARTY_DIR* directory is defined, required 3rd party binaries are sought in it, default system folders are ignored.
 
-The procedure expects to find binary and header files of each 3rd-party product in its own sub-directory: *bin*, *lib* and *include*.
+The procedure expects to find binary and header files of each 3rd party product in its own sub-directory: *bin*, *lib* and *include*.
 
 The result of the search (achived on the next pass of the configuration process) are recorded in the corresponding variables:
 
-* *3RDPARTY_\<PRODUCT\>_DIR* - path to the 3rdparty directory (with directory name) (e.g. <i>D:/3rdparty/tcltk-86-32</i>)
-* *3RDPARTY_\<PRODUCT\>_LIBRARY_DIR* - path to directory containing a library (e.g. <i>D:/3rdparty/tcltk-86-32/lib</i>). 
-* *3RDPARTY_\<PRODUCT\>_INCLUDE_DIR* - path to the directory containing a header file (e.g., <i>D:/3rdparty/tcltk-86-32/include</i>)
-* *3RDPARTY_\<PRODUCT\>_DLL_DIR* - path to the directory containing a shared library (e.g., <i>D:/3rdparty/tcltk-86-32/bin</i>) This variable is only relevant to Windows platforms
+* *3RDPARTY_\<PRODUCT\>_DIR* -- path to the 3rdparty directory (with directory name) (e.g. <i>D:/3rdparty/tcltk-86-32</i>)
+* *3RDPARTY_\<PRODUCT\>_LIBRARY_DIR* -- path to the directory containing a library (e.g. <i>D:/3rdparty/tcltk-86-32/lib</i>). 
+* *3RDPARTY_\<PRODUCT\>_INCLUDE_DIR* -- path to the directory containing a header file (e.g., <i>D:/3rdparty/tcltk-86-32/include</i>)
+* *3RDPARTY_\<PRODUCT\>_DLL_DIR* -- path to the directory containing a shared library (e.g., <i>D:/3rdparty/tcltk-86-32/bin</i>) This variable is only relevant to Windows platforms.
 
 Note: each library and include directory should be the children of product directory if the last one is defined.
 
@@ -194,14 +194,14 @@ Normally you use the installation directory of OCCT to link against your specifi
 
 the directory structure is follow:
     
-    data            - data files for OCCT (brep, iges, stp)
-    doc             - OCCT overview documentation in HTML format
-    inc             - header files
-    samples         - samples
-    src             - all required source files for OCCT
-    tests           - OCCT test suite
-    win32\vc10\bind - binary files (installed 3rdparties and occt)
-              \libd - libraries (installed 3rdparties and occt)
+    data            -- data files for OCCT (brep, iges, stp)
+    doc             -- OCCT overview documentation in HTML format
+    inc             -- header files
+    samples         -- samples
+    src             -- all required source files for OCCT
+    tests           -- OCCT test suite
+    win32\vc10\bind -- binary files (installed 3rdparties and occt)
+              \libd -- libraries (installed 3rdparties and occt)
 
 **Note:** The above example is given for debug configuration. However, it is generally safe to use the same installation directory for the release build. In the latter case the contents of install directory will be enriched with subdirectories and files related to the release configuration. In particular, the binaries directory win64 will be expanded as
 follows:
@@ -211,6 +211,6 @@ follows:
                \bin
                \lib
 
-If CMake installation flags are enabled for the 3-rd party products (e.g. INSTALL_FREETYPE), then the corresponding binaries will be copied to the same bin(d) and lib(d) directories together with the native binaries of OCCT. Such organization of libraries can be especially helpful if your OCCT-based software does not use itself the 3-rd parties of Open CASCADE Technology (thus, there is no sense to pack them into dedicated directories)
+If CMake installation flags are enabled for the 3rd party products (e.g. INSTALL_FREETYPE), then the corresponding binaries will be copied to the same bin(d) and lib(d) directories together with the native binaries of OCCT. Such organization of libraries can be especially helpful if your OCCT-based software does not use itself the 3rd parties of Open CASCADE Technology (thus, there is no sense to pack them into dedicated directories)
 
 The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*), samples (if its were installed) and overview.html (short-cut for installed OCCT overview documentation).

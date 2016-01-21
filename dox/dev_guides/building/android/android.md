@@ -35,7 +35,7 @@ Select "MinGW MakeFiles" item from the list
   - Click "Finish"
 @figure{/dev_guides/building/android/images/android_image003.png}
 
-If ANDROID_NDK environment variable is not defined in current OS, add cache entry ANDROID_NDK (entry type is PATH) - path to the NDK folder ("Add Entry" button)
+If ANDROID_NDK environment variable is not defined in current OS, add cache entry ANDROID_NDK (entry type is PATH) -- path to the NDK folder ("Add Entry" button)
 @figure{/dev_guides/building/android/images/android_image004.png}
 
 If on Windows the message is appeared: "CMake Error: CMake was unable to find a build program corresponding to "MinGW Makefiles"

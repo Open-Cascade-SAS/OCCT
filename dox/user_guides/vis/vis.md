@@ -16,10 +16,10 @@ This document describes both scenarios of VIS integration into application. To u
 @section occt_vis_2	Component Architecture
 @subsection occt_vis_2_1	Common structure
 VIS component consists of the following packages:
-* **IVtk** – common interfaces which define the principal objects playing as foundation of VIS.
-* **IVtkOCC** – implementation of interfaces related to CAD domain. The classes from this package deal with topological shapes, faceting and interactive selection facilities of OCCT;
-* **IVtkVTK** – implementation of interfaces related to VTK visualization toolkit;
-* **IVtkTools** – high-level tools designed for integration into VTK visualization pipelines.
+* **IVtk** -- common interfaces which define the principal objects playing as foundation of VIS.
+* **IVtkOCC** -- implementation of interfaces related to CAD domain. The classes from this package deal with topological shapes, faceting and interactive selection facilities of OCCT;
+* **IVtkVTK** -- implementation of interfaces related to VTK visualization toolkit;
+* **IVtkTools** -- high-level tools designed for integration into VTK visualization pipelines.
 
 @figure{/user_guides/vis/images/vis_image002.png "Dependencies of VIS packages"}
 
@@ -35,36 +35,37 @@ Basically, it is enough to use the first three packages in the end user’s appl
 
 @subsection occt_vis_2_2	 IVtk package
 **IVtk** package contains the following classes:
-* *IVtk_Interface* - Base class for all interfaces of the component. Provides inheritance for *Handle* (OCCT “smart pointer”) functionality.
-* *IVtk_IShape* - Represents a 3D shape of arbitrary nature. Provides its ID property. Implementation of this interface should maintain unique IDs for all visualized shapes. These IDs can be easily converted into original shape objects at the application level.
-* *IVtk_IShapeData* - Represents faceted data. Provides methods for adding coordinates and cells (vertices, lines, triangles).
-* *IVtk_IShapeMesher* - Interface for faceting, i.e. constructing *IVtk_IShapeData* from *IVtk_IShape* input shape.
-* *IVtk_IShapePickerAlgo* - Algorithmic interface for interactive picking of shapes in a scene. Provides methods for finding shapes and their parts (sub-shapes) at a given location according to the chosen selection mode.
-* *IVtk_IView* Interface for obtaining view transformation parameters. It is used by *IVtk_IShapePickerAlgo*.
+* *IVtk_Interface* -- Base class for all interfaces of the component. Provides inheritance for *Handle* (OCCT “smart pointer”) functionality.
+* *IVtk_IShape* -- Represents a 3D shape of arbitrary nature. Provides its ID property. Implementation of this interface should maintain unique IDs for all visualized shapes. These IDs can be easily converted into original shape objects at the application level.
+* *IVtk_IShapeData* -- Represents faceted data. Provides methods for adding coordinates and cells (vertices, lines, triangles).
+* *IVtk_IShapeMesher* -- Interface for faceting, i.e. constructing *IVtk_IShapeData* from *IVtk_IShape* input shape.
+* *IVtk_IShapePickerAlgo* -- Algorithmic interface for interactive picking of shapes in a scene. Provides methods for finding shapes and their parts (sub-shapes) at a given location according to the chosen selection mode.
+* *IVtk_IView* -- Interface for obtaining view transformation parameters. It is used by *IVtk_IShapePickerAlgo*.
 
 @subsection occt_vis_2_3	 IVtkOCC package
 
 **IVtkOCC** package contains the implementation of classes depending on OCCT:
-* *IVtkOCC_Shape* - Implementation of *IVtk_IShape* interface as a wrapper for *TopoDS_Shape*.
-* *IVtkOCC_ShapeMesher* - Implementation of *IVtk_IShapeMesher* interface for construction of facets from *TopoDS* shapes.
-* *IVtkOCC_ShapePickerAlgo* Implementation of interactive picking algorithm. It provides enabling/disabling of selection modes for shapes (*IVtk_IShape* instances) and picking facilities for a given position of cursor.
-* *IVtkOCC_ViewerSelector* - Interactive selector, which implements *Pick()* methods for the picking algorithm *IVtkOCC_ShapePickerAlgo* and connects to the visualization layer with help of abstract *IView* interface.
+* *IVtkOCC_Shape* -- Implementation of *IVtk_IShape* interface as a wrapper for *TopoDS_Shape*.
+* *IVtkOCC_ShapeMesher* -- Implementation of *IVtk_IShapeMesher* interface for construction of facets from *TopoDS* shapes.
+* *IVtkOCC_ShapePickerAlgo* -- Implementation of interactive picking algorithm. It provides enabling/disabling of selection modes for shapes (*IVtk_IShape* instances) and picking facilities for a given position of cursor.
+* *IVtkOCC_ViewerSelector* -- Interactive selector, which implements *Pick()* methods for the picking algorithm *IVtkOCC_ShapePickerAlgo* and connects to the visualization layer with help of abstract *IView* interface.
 
 *IVtkOCC_ViewerSelector* is a descendant of OCCT native *SelectMgr_ViewerSelector*, so it implements OCCT selection mechanism for *IVtkVTK_View* (similarly to *StdSelect_ViewerSelector3D* which implements *SelectMgr_ViewerSelector* for OCCT native *V3d_View*). *IVtkOCC_ViewerSelector* encapsulates all projection transformations for the picking mechanism. These transformations are extracted from *vtkCamera* instance available via VTK Renderer. *IVtkOCC_ViewerSelector* operates with native OCCT *SelectMgr_Selection* entities. Each entity represents one selection mode of an OCCT selectable object. *ViewerSelector* is an internal class, so it is not a part of the public API.
-* *IVtkOCC_SelectableObject* - OCCT shape wrapper used in the picking algorithm for computation of selection primitives of a shape for a chosen selection mode.
+
+* *IVtkOCC_SelectableObject* -- OCCT shape wrapper used in the picking algorithm for computation of selection primitives of a shape for a chosen selection mode.
 
 @subsection occt_vis_2_4 IVtkVtk package
-**IVtkVTK** package contains implementation classes depending on VTK:
-* *IVtkVTK_ShapeData* - Implementation of *IVtk_IShapeData* interface for VTK polydata. This class also stores information related to sub-shape IDs and sub-shape mesh type *IVtk_MeshType* (free vertex, shared vertex, free edge, boundary edge, shared edge, wireframe face or shaded face). This information is stored in VTK data arrays for cells.
-* *IVtkVTK_View* - Implementation of *IVtk_IView* interface for VTK viewer. This implementation class is used to connect *IVtkOCC_ViewerSelector* to VTK renderer.
+**IVtkVTK** package contains implementation of classes depending on VTK:
+* *IVtkVTK_ShapeData* -- Implementation of *IVtk_IShapeData* interface for VTK polydata. This class also stores information related to sub-shape IDs and sub-shape mesh type *IVtk_MeshType* (free vertex, shared vertex, free edge, boundary edge, shared edge, wireframe face or shaded face). This information is stored in VTK data arrays for cells.
+* *IVtkVTK_View* -- Implementation of *IVtk_IView* interface for VTK viewer. This implementation class is used to connect *IVtkOCC_ViewerSelector* to VTK renderer.
 
 @subsection occt_vis_2_5	 IVtkTools package
 **IVtkTools** package gives you a ready-to-use toolbox of algorithms facilitating the integration of OCCT shapes into visualization pipeline of VTK. This package contains the following classes:
-* *IVtkTools_ShapeDataSource* - VTK polygonal data source for OCCT shapes. It inherits *vtkPolyDataAlgorithm* class and provides a faceted representation of OCCT shape for visualization pipelines.
-* *IVtkTools_ShapeObject* - Auxiliary wrapper class for OCCT shapes to pass them through pipelines by means of VTK information keys.
-* *IVtkTools_ShapePicker* - VTK picker for shape actors. Uses OCCT selection algorithm internally.
-* *IVtkTools_DisplayModeFilter* - VTK filter for extracting cells of a particular mesh type according to a given display mode *IVtk_DisplayMode* (Wireframe or Shading).
-* *IVtkTools_SubPolyDataFilter* - VTK filter for extracting the cells corresponding to a given set of sub-shape IDs.
+* *IVtkTools_ShapeDataSource* -- VTK polygonal data source for OCCT shapes. It inherits *vtkPolyDataAlgorithm* class and provides a faceted representation of OCCT shape for visualization pipelines.
+* *IVtkTools_ShapeObject* -- Auxiliary wrapper class for OCCT shapes to pass them through pipelines by means of VTK information keys.
+* *IVtkTools_ShapePicker* -- VTK picker for shape actors. Uses OCCT selection algorithm internally.
+* *IVtkTools_DisplayModeFilter* -- VTK filter for extracting cells of a particular mesh type according to a given display mode *IVtk_DisplayMode* (Wireframe or Shading).
+* *IVtkTools_SubPolyDataFilter* -- VTK filter for extracting the cells corresponding to a given set of sub-shape IDs.
 
 Additionally, *IVtkTools* package contains auxiliary methods in *IVtkTools* namespace. E.g. there is a convenience function populating *vtkLookupTable* instances to set up a color scheme for better visualization of sub-shapes.
 
@@ -259,7 +260,7 @@ DS->SetShape(shapeImpl);
 // Create a new sub-polydata filter for sub-shapes filtering
 vtkSmartPointer<IVtkTools_SubPolyDataFilter> subShapesFilter = IVtkTools_SubPolyDataFilter::New();
 
-// Set a shape source as an input of the subpolydata filter
+// Set a shape source as an input of the sub-polydata filter
 subShapesFilter->SetInputConnection(DS->GetOutputPort());
 
 // Get all picked sub-shapes ids of the shape from a picker (see 3.4)
@@ -309,8 +310,8 @@ vtkPolyData* aPolyData = aDataImpl->GetVtkPolyData();
 
 The resulting *vtkPolyData* instance can be used for initialization of VTK pipelines.
 *IVtkVTK_ShapeData* object is used to keep and pass the mapping between sub-shapes, their mesh types and the resulting mesh cells through a pipeline. It stores sub-shape IDs and mesh type in VTK data arrays for each generated cell. As a result, the generated VTK cells get the following data arrays populated:
-* *SUBSHAPE_IDS* – array of *vtkIdTypeArray* type. It contains the shape IDs the corresponding cells were generated for. The name of this array is defined in *ARRNAME_SUBSHAPE_IDS* constant of *IVtkVTK_ShapeData* class.
-* *MESH_TYPES* – array of *vtkShortArray type*. It contains the type tags of the shape parts the corresponding cells were generated for. The name of this array is defined in *ARRNAME_MESH_TYPES* constant of *IVtkVTK_ShapeData* class.
+* *SUBSHAPE_IDS* - array of *vtkIdTypeArray* type. It contains the shape IDs the corresponding cells were generated for. The name of this array is defined in *ARRNAME_SUBSHAPE_IDS* constant of *IVtkVTK_ShapeData* class.
+* *MESH_TYPES* - array of *vtkShortArray type*. It contains the type tags of the shape parts the corresponding cells were generated for. The name of this array is defined in *ARRNAME_MESH_TYPES* constant of *IVtkVTK_ShapeData* class.
 
 @subsection occt_vis_4_2	 Usage of OCCT picking algorithm
 
@@ -362,5 +363,5 @@ IVtk_ShapeIdList subShapeIds
 @section occt_vis_5	DRAW Test Harness
 
 *TKIVtkDraw* toolkit contains classes for embedding VIS functionality into DRAW Test Harness with possibility of simple interactions, including detection and highlighting.
-* *IVtkDraw_HighlightAndSelectionPipeline* - Creates VTK pipeline with OCCT shape data source and properly initialized VIS filters.
-* *IVtkDraw_Interactor* - Controls simple interactive actions, such as detection and selection of the displayed shapes.
+* *IVtkDraw_HighlightAndSelectionPipeline* -- Creates VTK pipeline with OCCT shape data source and properly initialized VIS filters.
+* *IVtkDraw_Interactor* -- Controls simple interactive actions, such as detection and selection of the displayed shapes.

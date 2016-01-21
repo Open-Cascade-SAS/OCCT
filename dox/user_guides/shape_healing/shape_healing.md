@@ -44,11 +44,11 @@ The following diagram shows dependencies of API packages:
 @figure{/user_guides/shape_healing/images/shape_healing_image009.svg, "Shape Healing packages"}
 
 Each sub-domain has its own scope of functionality: 
-* analysis - exploring shape properties, computing shape features, detecting violation of OCCT requirements (shape itself is not modified);
-* fixing - fixing shape to meet the OCCT requirements (the shape may change its original form: modifying, removing, constructing sub-shapes, etc.); 
-* upgrade - shape improvement for better usability in Open CASCADE Technology or other algorithms (the shape is replaced with a new one, but geometrically they are the same); 
-* customization - modifying shape representation to fit specific needs (shape is not modified, only the form of its representation is modified); 
-* processing  - mechanism of managing shape modification via a user-editable resource file. 
+* analysis -- exploring shape properties, computing shape features, detecting violation of OCCT requirements (shape itself is not modified);
+* fixing -- fixing shape to meet the OCCT requirements (the shape may change its original form: modifying, removing, constructing sub-shapes, etc.); 
+* upgrade -- shape improvement for better usability in Open CASCADE Technology or other algorithms (the shape is replaced with a new one, but geometrically they are the same); 
+* customization -- modifying shape representation to fit specific needs (shape is not modified, only the form of its representation is modified); 
+* processing  -- mechanism of managing shape modification via a user-editable resource file. 
 
 Message management is used for creating messages, filling them with various parameters and storing them in the trace file. This tool provides functionality for attaching messages to the shapes for deferred analysis of various run-time events. In this document only general principles of using Shape Healing will be described. For more detailed information please see the corresponding CDL files. 
 
@@ -59,9 +59,9 @@ Tools responsible for analysis, fixing and upgrading of shapes can give the info
 Each fixing and upgrading tool has its own status, which is reset when their methods are called. The status can contain several flags, which give the information about how the method was performed. For exploring the statuses, a set of methods named *Status...()* is provided. These methods accept enumeration *ShapeExtend_Status* and return True if the status has the corresponding flag set. The meaning of flags for each method is described below. 
 
 The status may contain a set of Boolean flags (internally represented by bits). Flags are coded by enumeration ShapeExtend_Status. This enumeration provides the following families of statuses: 
-* *ShapeExtend_OK*  -  The situation is OK, no operation is necessary and has not been performed. 
-* *ShapeExtend_DONE* - The operation has been successfully performed. 
-* *ShapeExtend_FAIL* - An error has occurred during operation. 
+* *ShapeExtend_OK*  --  The situation is OK, no operation is necessary and has not been performed. 
+* *ShapeExtend_DONE* -- The operation has been successfully performed. 
+* *ShapeExtend_FAIL* -- An error has occurred during operation. 
 
 It is possible to test the status for the presence of some flag(s), using Status...() method(s) provided by the class: 
 
@@ -71,9 +71,9 @@ if ( object.Status.. ( ShapeExtend_DONE ) ) {// something was done
 ~~~~~
 
 8 'DONE' and 8 'FAIL' flags, named ShapeExtend_DONE1 ... ShapeExtend_FAIL8, are defined for a detailed analysis of the encountered situation. Each method assigns its own meaning to each flag, documented in the CDL for that method. There are also three enumerative values used for testing several flags at a time: 
-* *ShapeExtend_OK*   -     if no flags have been set; 
-* *ShapeExtend_DONE* - if at least one ShapeExtend_DONEi has been set; 
-* *ShapeExtend_FAIL* - if at least one ShapeExtend_FAILi has been set. 
+* *ShapeExtend_OK*   --     if no flags have been set; 
+* *ShapeExtend_DONE* -- if at least one ShapeExtend_DONEi has been set; 
+* *ShapeExtend_FAIL* -- if at least one ShapeExtend_FAILi has been set. 
 
 @section occt_shg_2 Repair
 
@@ -89,7 +89,7 @@ The *ShapeFix* package currently includes functions that:
   * limit the tolerance value of shapes within a given range,
   * set a given tolerance value for shapes,
   * repair the connections between adjacent edges of a wire,
-  * correct self–intersecting wires,
+  * correct self-intersecting wires,
   * add seam edges,
   * correct gaps between 3D and 2D curves,
   * merge and remove small edges,
@@ -111,12 +111,13 @@ The sequence of actions is as follows :
         sfs->SetMaxTolerance ( maxTol ); 
         sfs->SetMinTolerance ( mintol );
 
-   where *Prec* – basic precision,  *maxTol* – maximum allowed tolerance, *minTol* – minimal allowed tolerance.
-   * *maxTol* - All problems will be detected for cases when a dimension of invalidity is larger than the basic precision or a tolerance of sub-shape on that problem is detected.
-                The maximum tolerance value limits the increasing tolerance for fixing a problem such as fix of not connenected and self-intersected wires. If a value larger than the maximum allowed tolerance is necessary for correcting a detected problem the problem can not be fixed.
-                The maximal tolerance is not taking into account during computation of tolerance of edges in ShapeFix_SameParameter() method and  ShapeFix_Edge::FixVertexTolerance() method.
+   where:
+   * *Prec* -- basic precision.
+   * *maxTol* -- maximum allowed tolerance. All problems will be detected for cases when a dimension of invalidity is larger than the basic precision or a tolerance of sub-shape on that problem is detected.
+                The maximum tolerance value limits the increasing tolerance for fixing a problem such as fix of not connected and self-intersected wires. If a value larger than the maximum allowed tolerance is necessary for correcting a detected problem the problem can not be fixed.
+                The maximal tolerance is not taking into account during computation of tolerance of edges in *ShapeFix_SameParameter()* method and  *ShapeFix_Edge::FixVertexTolerance()* method.
                 See @ref occt_shg_2_3_8 for details.
-   * *minTol* - The minimal allowed tolerance defines minimal allowed length of edges. Detected edges having length less than specified minimal tolerance will be removed if ModifyTopologyMode in Repairing tool for wires is set to true.
+   * *minTol* --  minimal allowed tolerance. It defines the minimal allowed length of edges. Detected edges having length less than the specified minimal tolerance will be removed if *ModifyTopologyMode* in Repairing tool for wires is set to true.
                 See @ref occt_shg_2_3_7 for details.
 
 3. Launch fixing:
@@ -165,12 +166,12 @@ If you do not want to make fixes on the whole shape or make a definite set of fi
 For each type of sub-shapes there are specific types of fixing tools such as *ShapeFix_Solid, ShapeFix_Shell, ShapeFix_Face, ShapeFix_Wire,* etc.
 
 @subsubsection occt_shg_2_2_1 Fixing sub-shapes
-If you want to make a fix on one subshape of a certain shape it is possible to take the following steps: 
-  * create a tool for a specified subshape type and initialize this tool by the subshape;
+If you want to make a fix on one sub-shape of a certain shape it is possible to take the following steps: 
+  * create a tool for a specified sub-shape type and initialize this tool by the sub-shape;
   * create a tool for rebuilding the shape and initialize it by the whole shape (section 5.1);
-  * set a tool for rebuilding the shape in the tool for fixing the subshape;
-  * fix the subshape;
-  * get the resulting whole shape containing a new corrected subshape.
+  * set a tool for rebuilding the shape in the tool for fixing the sub-shape;
+  * fix the sub-shape;
+  * get the resulting whole shape containing a new corrected sub-shape.
 
 For example, in the following way it is possible to fix face *Face1* of shape *Shape1*: 
 
@@ -277,14 +278,14 @@ cout<< "Initial face is valid with specified precision ="<< precendl;
 Class *ShapeFix_Solid* allows fixing solids and building a solid from a shell to obtain a valid solid with a finite volume. The tool *ShapeFix_Shell* is used for correction of shells belonging to a solid. 
 
 This tool has the following control flags:
-* *FixShellMode* - Mode for applying fixes of ShapeFix_Shell, True by default. 
-* *CreateOpenShellMode* - If it is equal to true solids are created from open shells, else solids are created from closed shells only, False by default. 
+* *FixShellMode* -- Mode for applying fixes of ShapeFix_Shell, True by default. 
+* *CreateOpenShellMode* -- If it is equal to true solids are created from open shells, else solids are created from closed shells only, False by default. 
 
 @subsubsection occt_shg_2_3_5 Repairing tool for shells 
 Class *ShapeFix_Shell* allows fixing wrong orientation of faces in a shell. It changes the orientation of faces in the shell  so that all faces in the shell have coherent orientations. If it is impossible to orient all faces in the shell (like in case of Mebious tape), then a few manifold or non-manifold shells will be created depending on the specified Non-manifold mode. The *ShapeFix_Face* tool is used to correct faces in the shell. 
 This tool has the following control flags:
-* *FixFaceMode* - mode for applying the fixes of  *ShapeFix_Face*, *True* by default. 
-* *FixOrientationMode*  - mode for applying a fix for the orientation of faces in the shell. 
+* *FixFaceMode* -- mode for applying the fixes of  *ShapeFix_Face*, *True* by default. 
+* *FixOrientationMode*  -- mode for applying a fix for the orientation of faces in the shell. 
 
 @subsubsection occt_shg_2_3_6 Repairing tool for faces 
 
@@ -295,11 +296,11 @@ The following fixes are available:
   * fixing the case when the face on the closed surface is defined by a set of closed wires, and the seam is missing (this is not valid in OCCT). In that case, these wires are connected by means of seam edges into the same wire.
 
 This tool has the following control flags: 
-* *FixWireMode*  - mode for applying fixes of a wire, True by default. 
-* *FixOrientationMode*  - mode for orienting a wire to border a limited square, True by default. 
-* *FixAddNaturalBoundMode* - mode for adding natural bounds to a face, False by default. 
-* *FixMissingSeamMode* – mode to fix a missing seam, True by default. If True, tries to insert a seam. 
-* *FixSmallAreaWireMode* - mode to fix a small-area wire, False by default. If True, drops wires bounding small areas. 
+* *FixWireMode*  -- mode for applying fixes of a wire, True by default. 
+* *FixOrientationMode*  -- mode for orienting a wire to border a limited square, True by default. 
+* *FixAddNaturalBoundMode* -- mode for adding natural bounds to a face, False by default. 
+* *FixMissingSeamMode* -- mode to fix a missing seam, True by default. If True, tries to insert a seam. 
+* *FixSmallAreaWireMode* -- mode to fix a small-area wire, False by default. If True, drops wires bounding small areas. 
 
 ~~~~~
 
@@ -346,11 +347,11 @@ The fixing methods can be turned on/off by using their corresponding control fla
 Some fixes can be made in three ways: 
   * Increasing the tolerance of an edge or a vertex. 
   * Changing topology (adding/removing/replacing an edge in the wire and/or replacing the vertex in the edge, copying the edge etc.). 
-  * Changing geometry (shifting a vertex or adjusting ends of an edge curve to vertices, or re-computing a 3D curve or 2D curves of the edge). 
+  * Changing geometry (shifting a vertex or adjusting ends of an edge curve to vertices, or recomputing a 3D curve or 2D curves of the edge). 
   
 When it is possible to make a fix in more than one way (e.g., either by increasing the tolerance or shifting a vertex), it is chosen according to the user-defined flags: 
-* *ModifyTopologyMode* -   allows modifying topology, False by default. 
-* *ModifyGeometryMode* -  allows modifying geometry. Now this flag is used only in fixing self-intersecting edges (allows to modify 2D curves) and is True by default. 
+* *ModifyTopologyMode* --   allows modifying topology, False by default. 
+* *ModifyGeometryMode* --  allows modifying geometry. Now this flag is used only in fixing self-intersecting edges (allows to modify 2D curves) and is True by default. 
   
 #### Fixing disordered edges
 
@@ -373,17 +374,17 @@ When it is possible to make a fix in more than one way (e.g., either by increasi
 These fixes will be activated with the help of a set of fixes from the repairing tool for edges called *ShapeFix_Edge*. Each of these fixes can be forced or forbidden by means of setting the corresponding flag to either True or False. 
 
 The mentioned fixes and the conditions of their execution are: 
-  * fixing a disoriented 2D curve by call to *ShapeFix_Edge::FixReversed2d* - if not forbidden by flag *FixReversed2dMode*;
-  * removing a wrong 2D curve  by call to *ShapeFix_Edge::FixRemovePCurve* - only if forced by flag *FixRemovePCurveMode*;
-  * fixing a missing  2D curve by call to *ShapeFix_Edge::FixAddPCurve* - if not forbidden by flag *FixAddPCurveMode*; 
-  * removing a wrong 3D curve by call to *ShapeFix_Edge::FixRemoveCurve3d* - only if forced by flag *FixRemoveCurve3dMode*; 
-  * fixing a missing 3D curve by call to *ShapeFix_Edge::FixAddCurve3d* - if not forbidden by flag *FixAddCurve3dMode*;
-  * fixing 2D curves of seam edges - if not forbidden by flag *FixSeamMode*; 
-  * fixing 2D curves which can be shifted at an integer number of periods on the closed surface by call to *ShapeFix_Edge::FixShifted*  - if not forbidden by flag *FixShiftedMode*. 
+  * fixing a disoriented 2D curve by call to *ShapeFix_Edge::FixReversed2d* -- if not forbidden by flag *FixReversed2dMode*;
+  * removing a wrong 2D curve  by call to *ShapeFix_Edge::FixRemovePCurve* -- only if forced by flag *FixRemovePCurveMode*;
+  * fixing a missing  2D curve by call to *ShapeFix_Edge::FixAddPCurve* -- if not forbidden by flag *FixAddPCurveMode*; 
+  * removing a wrong 3D curve by call to *ShapeFix_Edge::FixRemoveCurve3d* -- only if forced by flag *FixRemoveCurve3dMode*; 
+  * fixing a missing 3D curve by call to *ShapeFix_Edge::FixAddCurve3d* -- if not forbidden by flag *FixAddCurve3dMode*;
+  * fixing 2D curves of seam edges -- if not forbidden by flag *FixSeamMode*; 
+  * fixing 2D curves which can be shifted at an integer number of periods on the closed surface by call to *ShapeFix_Edge::FixShifted*  -- if not forbidden by flag *FixShiftedMode*. 
   
 This fix is required if 2D curves of some edges in a wire lying on a closed surface were recomputed from 3D curves. In that case, the 2D curve for the edge, which goes along the seam of the surface, can be incorrectly shifted at an integer number of periods. The method *FixShifted* detects such cases and shifts wrong 2D curves back, ensuring that the 2D curves of the edges in the wire are connected.
 
-  * fixing the SameParameter problem by call to *ShapeFix_Edge::FixSameParameter* - if not forbidden by flag *FixSameParameterMode*.
+  * fixing the SameParameter problem by call to *ShapeFix_Edge::FixSameParameter* -- if not forbidden by flag *FixSameParameterMode*.
   
   
 #### Fixing degenerated edges
@@ -399,7 +400,7 @@ This fix is required if 2D curves of some edges in a wire lying on a closed surf
 
 #### Fixing a lacking edge
 
-*FixLacking* method checks whether a wire is not closed in the parametrical space of the surface (while it can be closed in 3D). This is done by checking whether the gap between 2D curves of each of the two adjacent edges in the wire is smaller than the tolerance of the corresponding vertex. The algorithm computes the gap between the edges, analyses positional relationship of the ends of these edges and (if possible) tries to insert a new edge into the gap or increases the tolerance. 
+*FixLacking* method checks whether a wire is not closed in the parametric space of the surface (while it can be closed in 3D). This is done by checking whether the gap between 2D curves of each of the two adjacent edges in the wire is smaller than the tolerance of the corresponding vertex. The algorithm computes the gap between the edges, analyses positional relationship of the ends of these edges and (if possible) tries to insert a new edge into the gap or increases the tolerance. 
 
 #### Fixing gaps in 2D and 3D wire by geometrical filling
 The following methods check gaps between the ends of 2D or 3D curves of adjacent edges:
@@ -535,8 +536,8 @@ Class *ShapeFix_Wireframe* provides methods for geometrical fixing of gaps and m
   * merges and removes small edges.
   
 Fixing of small edges can be managed with the help of two flags: 
-  * *ModeDropSmallEdges()* – mode for removing small edges that can not be merged, by default it is equal to Standard_False. 
-  * *LimitAngle* – maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1).
+  * *ModeDropSmallEdges()* -- mode for removing small edges that can not be merged, by default it is equal to Standard_False. 
+  * *LimitAngle* -- maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1).
 To perform fixes it is necessary to: 
   * create a tool and initialize it by shape,
   * set the working precision problems will be detected with and the maximum allowed tolerance
@@ -649,7 +650,7 @@ These functionalities include:
   * checking the consistency of edge curves, 
   * checking for the presence or missing of degenerated edges, 
   * checking for the presence of self-intersecting edges and intersecting edges (edges intersection is understood as intersection of their 2D curves), 
-  * checking for lacking edges to fill gaps in the surface parametrical space, 
+  * checking for lacking edges to fill gaps in the surface parametric space, 
   * analyzing the wire orientation (to define the outer or the inner bound on the face), 
   * analyzing the orientation of the shape (edge or wire) being added to an already existing wire. 
 
@@ -861,11 +862,11 @@ Methods for calculating the number of geometrical objects or sub-shapes with a s
 and selecting sub-shapes by various criteria. 
 
 The corresponding flags should be set to True for storing a shape by a specified criteria: 
-  * faces based on indirect surfaces - *safc.MofifyIndirectMode() = Standard_True*; 
-  * faces based on offset surfaces - *safc.ModifyOffsetSurfaceMode() = Standard_True*; 
-  * edges if their 3D curves are trimmed - *safc.ModifyTrimmed3dMode() = Standard_True*; 
-  * edges if their 3D curves and 2D curves are offset curves - *safc.ModifyOffsetCurveMode() = Standard_True*; 
-  * edges if their 2D curves are trimmed - *safc.ModifyTrimmed2dMode() = Standard_True*; 
+  * faces based on indirect surfaces -- *safc.MofifyIndirectMode() = Standard_True*; 
+  * faces based on offset surfaces -- *safc.ModifyOffsetSurfaceMode() = Standard_True*; 
+  * edges if their 3D curves are trimmed -- *safc.ModifyTrimmed3dMode() = Standard_True*; 
+  * edges if their 3D curves and 2D curves are offset curves -- *safc.ModifyOffsetCurveMode() = Standard_True*; 
+  * edges if their 2D curves are trimmed -- *safc.ModifyTrimmed2dMode() = Standard_True*; 
 
 Let us, for example, select faces based on offset surfaces.
 
@@ -1051,14 +1052,14 @@ They have methods:
   * for initializing by geometry (method *Init*) 
   * for splitting (method *Perform*)
   * for getting the status after splitting and the results:
-	+ *Status* – for getting the result status; 
-	+ *ResSurface* - for splitting surfaces; 
-	+ *GetCurves* - for splitting 3D and 2D curves. 
+	+ *Status* -- for getting the result status; 
+	+ *ResSurface* -- for splitting surfaces; 
+	+ *GetCurves* -- for splitting 3D and 2D curves. 
 During the process of splitting in the method *Perform* : 
   * splitting values in the parametric space are computed according to a specified criterion (method  *Compute*) 
   * splitting is made in accordance with the values computed for splitting (method *Build*).
 
-To create new tools for geometry splitting it is enough to inherit a new tool from the general tool for splitting a corresponding type of geometry and to re-define the method for computation of splitting values according to the specified criterion in them. (method *Compute*). 
+To create new tools for geometry splitting it is enough to inherit a new tool from the general tool for splitting a corresponding type of geometry and to redefine the method for computation of splitting values according to the specified criterion in them. (method *Compute*). 
 
 Header file for the tool for surface splitting by continuity: 
 
@@ -1276,11 +1277,11 @@ The following flags define whether a specified-type geometry has been converted 
 * *ConvertRevolutionSurf,* 
 * *ConvertExtrusionSurf,* 
 * *ConvertOffsetSurf,* 
-* *ConvertCurve3d,* - for conversion of all types of 3D curves. 
-* *ConvertOffsetCurv3d,* - for conversion of offset 3D curves. 
-* *ConvertCurve2d,* - for conversion of all types of 2D curves. 
-* *ConvertOffsetCurv2d,* - for conversion of offset 2D curves. 
-* *SegmentSurfaceMode* - defines whether the surface would be approximated within the boundaries of the face lying on this surface. 
+* *ConvertCurve3d,* -- for conversion of all types of 3D curves. 
+* *ConvertOffsetCurv3d,* -- for conversion of offset 3D curves. 
+* *ConvertCurve2d,* -- for conversion of all types of 2D curves. 
+* *ConvertOffsetCurv2d,* -- for conversion of offset 2D curves. 
+* *SegmentSurfaceMode* -- defines whether the surface would be approximated within the boundaries of the face lying on this surface. 
 
 
 
@@ -1317,7 +1318,7 @@ The general calling syntax for scaling is
 TopoDS_Shape scaled_shape = ShapeCustom::ScaleShape(shape, scale); 
 ~~~~~
 
-Note that scale is a real value. You can refine your mapping process by using additional calls to follow shape mapping subshape by subshape. The following code along with pertinent includes can be used: 
+Note that scale is a real value. You can refine your mapping process by using additional calls to follow shape mapping sub-shape by sub-shape. The following code along with pertinent includes can be used: 
 
 ~~~~~
 p_Trsf T; 
@@ -1333,7 +1334,7 @@ Shape, TM, context,MD );
 
 The map, called context in our example, contains the history. 
 Substitutions are made one by one and all shapes are transformed. 
-To determine what happens to a particular subshape, it is possible to use: 
+To determine what happens to a particular sub-shape, it is possible to use: 
 
 ~~~~~
 TopoDS_Shape oneres = context.Find (oneshape); 
@@ -1514,14 +1515,14 @@ TopoDS_Shape tempshape1 = Context->Apply(subshape1);
 //replacing the intermediate shape obtained from subshape1 with the newsubshape1. 
 Context->Replace(tempsubshape1,newsubshape1); 
 … 
-//for removing the subshape 
+//for removing the sub-shape 
 TopoDS_Shape tempshape2 = Context->Apply(subshape2); 
 Context->Remove(tempsubshape2); 
 
 //getting the result and the history of modification 
 TopoDS_Shape resultShape = Context->Apply(initialShape); 
 
-//getting the resulting subshape from the subshape1 of the initial shape. 
+//getting the resulting sub-shape from the subshape1 of the initial shape. 
 TopoDS_Shape result_subshape1 = Context->Apply(subshape1); 
 ~~~~~
 
@@ -1721,8 +1722,8 @@ The operator applies the computation *SameParameter* which ensures that various 
 * For each edge coded as *not same parameter* the deviation is computed as in the first case. Then an attempt is made to achieve the edge equality to *same parameter* by means of modification of 2d curves. If the deviation of this modified edge is less than the original deviation then this edge is returned, otherwise the original edge (with non-modified 2d curves) is returned with an increased (if necessary) tolerance.  Computation is done by call to the standard algorithm *BRepLib::SameParameter*. 
 
 This operator can be called with the following parameters: 
-	* *Boolean : Force* (optional) - if True, encodes all edges as *not same parameter* then runs the computation. Else, the computation is done only for those edges already coded as *not same parameter*. 
-	* *Real : Tolerance3d* (optional) - if not defined, the local tolerance of each edge is taken for its own computation. Else, this parameter gives the global tolerance for the whole shape.
+	* *Boolean : Force* (optional) -- if True, encodes all edges as *not same parameter* then runs the computation. Else, the computation is done only for those edges already coded as *not same parameter*. 
+	* *Real : Tolerance3d* (optional) -- if not defined, the local tolerance of each edge is taken for its own computation. Else, this parameter gives the global tolerance for the whole shape.
 	
 ### BSplineRestriction
 
@@ -1767,8 +1768,8 @@ This operator converts elementary periodic surfaces to SurfaceOfRevolution.
 This operator splits surfaces of revolution, cylindrical, toroidal, conical, spherical surfaces in the given shape so that each resulting segment covers not more than the defined number of degrees. 
 
 It can be called with the following parameters: 
-* *Real : Angle* - the maximum allowed angle for resulting faces; 
-*  *Real : MaxTolerance* - the maximum tolerance used in computations.
+* *Real : Angle* -- the maximum allowed angle for resulting faces; 
+*  *Real : MaxTolerance* -- the maximum tolerance used in computations.
  
 ### SurfaceToBSpline
 This operator converts some specific types of Surfaces, to BSpline (according to parameters). 
@@ -1896,9 +1897,9 @@ Various messages about modification, warnings and fails can be generated in the 
 @subsection occt_shg_7_1  Message Gravity
 Enumeration *Message_Gravity* is used for defining message gravity. 
 It provides the following message statuses: 
-* *Message_FAIL* - the message reports a fail;
-* *Message_WARNING*  - the message reports a warning;
-* *Message_INFO* - the message supplies information. 
+* *Message_FAIL* -- the message reports a fail;
+* *Message_WARNING*  -- the message reports a warning;
+* *Message_INFO* -- the message supplies information. 
 
 @subsection occt_shg_7_2 Tool for loading a message file into memory
 Class *Message_MsgFile* allows defining messages by loading a custom message file into memory. It is necessary to create a custom message file before loading it into memory, as its path will be used as the argument to load it. Each message in the message file is identified by a key. The user can get the text content of the message by specifying the message key. 
@@ -1939,9 +1940,9 @@ Message_MsgFile::LoadFile (MsgFilePath);
 The class *Message_Msg* allows using the message file loaded as a template. This class provides a tool for preparing the message, filling it with parameters, storing and outputting to the default trace file. 
 A message is created from a key: this key identifies the message to be created in the message file. The text of the message is taken from the loaded message file (class *Message_MsgFile* is used). 
 The text of the message can contain places for parameters, which are to be filled by the proper values when the message is prepared. These parameters can be of the following types: 
-* string - coded in the text as \%s, 
-* integer - coded in the text as \%d, 
-* real - coded in the text as \%f. 
+* string -- coded in the text as \%s, 
+* integer -- coded in the text as \%d, 
+* real -- coded in the text as \%f. 
 The parameter fields are filled by the message text by calling the corresponding methods *AddInteger, AddReal* and *AddString*. Both the original text of the message and the input text with substituted parameters are stored in the object. The prepared and filled message can be output to the default trace file. The text of the message (either original or filled) can be also obtained. 
 ~~~~~
 Message_Msg msg01 (;SampleKeyword;); 

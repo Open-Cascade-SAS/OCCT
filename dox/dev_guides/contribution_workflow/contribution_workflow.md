@@ -198,9 +198,9 @@ The following lines should provide a description of the context and details on t
 The contents and the recommended structure of the description depend on the nature of the bug. 
   
 In a general case, the following elements should be present:
-* **Problem** – a description of the unwanted behavior;
-* **Change** – a description of the implemented changes, including the names of involved classes / methods / enumerations etc.;
-* **Result** – a description of the current behavior (after the implementation).
+* **Problem** -- a description of the unwanted behavior;
+* **Change** -- a description of the implemented changes, including the names of involved classes / methods / enumerations etc.;
+* **Result** -- a description of the current behavior (after the implementation).
 
 Example:
 

@@ -5,8 +5,8 @@ Visualization    {#occt_user_guides__visualization}
 @section occt_visu_1 Introduction
 
 Visualization in Open CASCADE Technology is based on the  separation of:
-  * on the one hand - the data which stores the geometry and topology  of the entities you want to display and select, and 
-  * on the other hand - its **presentation** (what you see  when an object is displayed in a scene) and **selection** (possibility to choose the whole object or its sub-parts interactively to apply application-defined operations to the selected entities). 
+  * on the one hand -- the data which stores the geometry and topology  of the entities you want to display and select, and 
+  * on the other hand -- its **presentation** (what you see  when an object is displayed in a scene) and **selection** (possibility to choose the whole object or its sub-parts interactively to apply application-defined operations to the selected entities). 
 
 Presentations are managed through the **Presentation** component, and selection through the **Selection** component.
 
@@ -34,7 +34,7 @@ The figure below presents a schematic overview of the relations between the key 
 To answer different needs of CASCADE users, this User's Guide offers the following three paths in reading it.
   
   * If the 3D services proposed in AIS meet your requirements, you  need only read chapter 3  @ref occt_visu_3 "AIS: Application Interactive Services".   
-  * If you need more detail, for example, a selection filter on another type of entity - you should  read chapter 2 @ref occt_visu_2 "Fundamental Concepts", chapter 3 @ref occt_visu_3 "AIS: Application Interactive Services", and 4 @ref occt_visu_4 "3D Presentations". You may want to begin with the chapter presenting AIS.
+  * If you need more detail, for example, a selection filter on another type of entity -- you should  read chapter 2 @ref occt_visu_2 "Fundamental Concepts", chapter 3 @ref occt_visu_3 "AIS: Application Interactive Services", and 4 @ref occt_visu_4 "3D Presentations". You may want to begin with the chapter presenting AIS.
  
 For advanced information on visualization algorithms, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.  
 
@@ -565,7 +565,7 @@ The calculation of Selection primitives (or sensitive  primitives) is done by th
 
 A detailed explanation of the mechanism and the manner of  implementing this function has been given in @ref occt_visu_3_6 "Dynamic Selection" chapter.  
 
-Moreover, just as the most frequently manipulated entity is *TopoDS_Shape*, the most used Interactive Object is *AIS_Shape*. You will see below activation functions for standard selection modes are proposed in the  Interactive context (selection by vertex, by edges etc). To create new classes  of interactive object with the same behavior as *AIS_Shape* - such as vertices  and edges - you must redefine the virtual function *AIS_ConnectedInteractive::AcceptShapeDecomposition*.  
+Moreover, just as the most frequently manipulated entity is *TopoDS_Shape*, the most used Interactive Object is *AIS_Shape*. You will see below activation functions for standard selection modes are proposed in the  Interactive context (selection by vertex, by edges etc). To create new classes  of interactive object with the same behavior as *AIS_Shape* -- such as vertices  and edges -- you must redefine the virtual function *AIS_ConnectedInteractive::AcceptShapeDecomposition*.  
 
 You can change the default selection mode index of an  Interactive Object using the following functions: 
   * *AIS_InteractiveObject::HasSelectionMode* checks if there is a selection mode; 
@@ -667,7 +667,7 @@ Negative  offset values move polygons closer to the viewer while positive values
 
 **Warning**
  
-This  method has a side effect - it creates its own shading aspect if not yet  created, so it is better to set up the object shading aspect first. 
+This  method has a side effect -- it creates its own shading aspect if not yet  created, so it is better to set up the object shading aspect first. 
 
 You can use the following  functions to obtain the current settings for polygon offsets: 
 ~~~~~
@@ -900,12 +900,12 @@ virtual Standard_Boolean MyFilter::IsOk
 In *SelectMgr*, there are also Composition filters (AND  Filters, OR Filters), which allow combining several filters. In  InteractiveContext , all filters that you add are stocked in an OR filter  (which answers *OK* if at least one filter answers *OK*).  
 
 There are Standard filters, which have already been  implemented in several packages:  
-  * *StdSelect_EdgeFilter* - for edges, such as lines and circles;  
-  * *StdSelect_FaceFilter* - for faces, such as planes, cylinders and spheres;  
-  * *StdSelect_ShapeTypeFilter* - for shape types, such as compounds, solids, shells and wires;
-  * *AIS_TypeFilter* - for types  of interactive objects;  
-  * *AIS_SignatureFilter* - for types  and signatures of interactive objects; 
-  * *AIS_AttributeFilter* - for attributes of Interactive Objects, such as color and width.  
+  * *StdSelect_EdgeFilter* -- for edges, such as lines and circles;  
+  * *StdSelect_FaceFilter* -- for faces, such as planes, cylinders and spheres;  
+  * *StdSelect_ShapeTypeFilter* -- for shape types, such as compounds, solids, shells and wires;
+  * *AIS_TypeFilter* -- for types  of interactive objects;  
+  * *AIS_SignatureFilter* -- for types  and signatures of interactive objects; 
+  * *AIS_AttributeFilter* -- for attributes of Interactive Objects, such as color and width.  
 
 As there are specific behaviors on shapes, each new *Filter* class must, if necessary, redefine *AIS_LocalContext::ActsOn* function, which informs the Local Context if it acts on specific types of sub-shapes.  By default, this  function answers *FALSE*.
 
@@ -950,11 +950,11 @@ myContext->MoveTo( xpix,ypix,Vue);
 @subsubsection occt_visu_3_4_6 Selection in the Local Context
  
 Dynamic detection and selection are put into effect in a  straightforward way. There are only a few conventions and functions to be  familiar with. The functions are the same in neutral point and in open local context:   
-  * *AIS_InteractiveContext::MoveTo* - passes  mouse position to Interactive Context selectors  
-  * *AIS_InteractiveContext::Select* - stocks  what has been detected on the last *MoveTo*. Replaces the previously selected  object. Empties the stack if nothing has been detected at the last move  
-  * *AIS_InteractiveContext::ShiftSelect* - if  the object detected at the last move was not already selected, it is added to the list of the selected objects. If not, it is withdrawn. Nothing happens if you  click on an empty area.  
-  * *AIS_InteractiveContext::Select* selects  everything found in the surrounding area.  
-  * *AIS_InteractiveContext::ShiftSelect* selects  what was not previously in the list of selected, deselects those already present.  
+  * *AIS_InteractiveContext::MoveTo* -- passes  mouse position to Interactive Context selectors  
+  * *AIS_InteractiveContext::Select* -- stocks  what has been detected on the last *MoveTo*. Replaces the previously selected  object. Empties the stack if nothing has been detected at the last move  
+  * *AIS_InteractiveContext::ShiftSelect* -- if  the object detected at the last move was not already selected, it is added to the list of the selected objects. If not, it is withdrawn. Nothing happens if you  click on an empty area.  
+  * *AIS_InteractiveContext::Select* -- selects  everything found in the surrounding area.  
+  * *AIS_InteractiveContext::ShiftSelect* -- selects  what was not previously in the list of selected, deselects those already present.  
 
 Highlighting of detected and selected entities is  automatically managed by the Interactive Context, whether you are in neutral  point or Local Context. The Highlight colors are those dealt with above. You  can nonetheless disconnect this automatic mode if you want to manage this part yourself :  
 ~~~~~
@@ -1194,10 +1194,10 @@ myCtx->CloseLocalContext(myIndex);
 Interactive Objects are selectable and viewable objects connecting graphic representation and the underlying reference geometry.
 
 They are divided into four types:
-  * the **Datum** - a construction geometric element;
-  * the **Relation** - a constraint on the interactive shape and the corresponding reference geometry;
-  * the **Object** - a topological shape or connection between shapes;
-  * **None** a token, that instead of eliminating the object, tells the application to look further until it finds an acceptable object definition in its generation.
+  * the **Datum** -- a construction geometric element;
+  * the **Relation** -- a constraint on the interactive shape and the corresponding reference geometry;
+  * the **Object** -- a topological shape or connection between shapes;
+  * **None** -- a token, that instead of eliminating the object, tells the application to look further until it finds an acceptable object definition in its generation.
 
 Inside these categories, there is a possibility of additional characterization by means of a signature. The signature provides an index to the further characterization. By default, the **Interactive Object** has a *None* type and a signature of 0 (equivalent to *None*).
 If you want to give a particular type and signature to your interactive object, you must redefine the two virtual methods: <i>Type</i> and <i>Signature</i>.
@@ -1220,7 +1220,7 @@ when you activate one of modes: 1 2 3 4, you pick AIS  objects of type:
 *AIS_PlaneTrihedron* offers three selection modes:  
   * mode 0 : selection of the whole trihedron; 
   * mode 1 : selection of the origin of the trihedron; 
-  * mode 2 : selection of the axes - same remarks as for the Trihedron.
+  * mode 2 : selection of the axes -- same remarks as for the Trihedron.
 
 For the presentation of planes and trihedra, the default  unit of length is millimeter, and the default value for the representation of  axes is 100. If you modify these dimensions, you must temporarily recover the  object **Drawer**. From it, take the *Aspects* in which the values for length  are stored (*PlaneAspect* for the plane, *FirstAxisAspect* for trihedra), and  change these values inside these Aspects. Finally, recalculate the  presentation.  
 
@@ -1321,7 +1321,7 @@ The list of relations is not exhaustive.
 
 *MeshVS_Mesh* is an Interactive Object that represents meshes. This object differs from the *AIS_Shape* as its geometrical  data is supported by the data source *MeshVS_DataSource* that describes  nodes and elements of the object. As a result, you can provide your own data  source.  
 
-However, the *DataSource* does not provide any  information on attributes, for example nodal colors, but you can apply them in  a special way - by choosing the appropriate presentation builder.  
+However, the *DataSource* does not provide any  information on attributes, for example nodal colors, but you can apply them in  a special way -- by choosing the appropriate presentation builder.  
 
 The presentations of *MeshVS_Mesh* are built with the  presentation builders *MeshVS_PrsBuilder*. You can choose between the  builders to represent the object in a different way. Moreover, you can redefine  the base builder class and provide your own presentation builder. 
 
@@ -1369,9 +1369,9 @@ There is also a set of selection modes flags that can be grouped in a combinatio
   * *MeshVS_SMF_Link*
   * *MeshVS_SMF_Face*
   * *MeshVS_SMF_Volume*
-  * *MeshVS_SMF_Element* - groups *0D, Link, Face* and *Volume*  as a bit mask ;
+  * *MeshVS_SMF_Element* -- groups *0D, Link, Face* and *Volume*  as a bit mask ;
   * *MeshVS_SMF_Node*
-  * *MeshVS_SMF_All* - groups *Element* and *Node* as a bit mask; 
+  * *MeshVS_SMF_All* -- groups *Element* and *Node* as a bit mask; 
   * *MeshVS_SMF_Mesh*
   * *MeshVS_SMF_Group*
 
@@ -1540,15 +1540,15 @@ for(VS->Init();VS->More();VS->Next())
 
 * **Anti-aliasing**	This mode attempts to improve the screen resolution by drawing lines and curves in a mixture of colors so that to the human eye the line or curve is smooth. The quality of the result is linked to the quality of the algorithm used by the workstation hardware.
 * **Depth-cueing**	Reduces the color intensity for the portion of an object further away from the eye to give the impression of depth. This is used for wireframe objects. Shaded objects do not require this.
-* **Group**	- a set of primitives and attributes on those primitives. Primitives and attributes may be added to a group but cannot be removed from a group, except by erasing them globally. A group can have a pick identity.
-* **Light** There are five kinds of light source - ambient, headlight, directional, positional and spot. The light is only activated in a shading context in a view.
-* **Primitive**  - a drawable element. It has a definition in 3D space. Primitives can either be lines, faces, text, or markers. Once displayed markers and text remain the same size. Lines and faces can be modified e.g. zoomed. Primitives must be stored in a group.
-* **Structure** - manages a set of groups. The groups are mutually exclusive. A structure can be edited, adding or removing groups. A structure can reference other structures to form a hierarchy. It has a default (identity) transformation and other transformations may be applied to it (rotation, translation, scale, etc). It has no default attributes for the primitive lines, faces, markers, and text. Attributes may be set in a structure but they are overridden by the attributes in each group. Each structure has a display priority associated with it, which rules the order in which it is redrawn in a 3D viewer. If the visualization mode is incompatible with the view it is not displayed in that view, e.g. a shading-only object is not visualized in a wireframe view. 
-* **View**	- is defined by a view orientation, a view mapping, and a context view.
-* **Viewer** - manages a set of views.
-* **View orientation** - defines the manner in which the observer looks at the scene in terms of View Reference Coordinates.
-* **View mapping** - defines the transformation from View Reference Coordinates to the Normalized Projection Coordinates. This follows the Phigs scheme.
-* **Z-Buffering** -= a form of hidden surface removal in shading mode only. This is always active for a view in the shading mode. It cannot be suppressed.
+* **Group**	-- a set of primitives and attributes on those primitives. Primitives and attributes may be added to a group but cannot be removed from it, unless erased globally. A group can have a pick identity.
+* **Light** There are five kinds of light source -- ambient, headlight, directional, positional and spot. The light is only activated in a shading context in a view.
+* **Primitive**  -- a drawable element. It has a definition in 3D space. Primitives can either be lines, faces, text, or markers. Once displayed markers and text remain the same size. Lines and faces can be modified e.g. zoomed. Primitives must be stored in a group.
+* **Structure** -- manages a set of groups. The groups are mutually exclusive. A structure can be edited, adding or removing groups. A structure can reference other structures to form a hierarchy. It has a default (identity) transformation and other transformations may be applied to it (rotation, translation, scale, etc). It has no default attributes for the primitive lines, faces, markers, and text. Attributes may be set in a structure but they are overridden by the attributes in each group. Each structure has a display priority associated with it, which rules the order in which it is redrawn in a 3D viewer. If the visualization mode is incompatible with the view it is not displayed in that view, e.g. a shading-only object is not visualized in a wireframe view. 
+* **View**	-- is defined by a view orientation, a view mapping, and a context view.
+* **Viewer** -- manages a set of views.
+* **View orientation** -- defines the manner in which the observer looks at the scene in terms of View Reference Coordinates.
+* **View mapping** -- defines the transformation from View Reference Coordinates to the Normalized Projection Coordinates. This follows the Phigs scheme.
+* **Z-Buffering** -- a form of hidden surface removal in shading mode only. This is always active for a view in the shading mode. It cannot be suppressed.
 
 @subsection occt_visu_4_2 Graphic primitives
 
@@ -1579,23 +1579,23 @@ The root is the top of a structure hierarchy or structure network. The attribute
   * Have one closed boundary, 
   * Have at least three vertices, 
   * Are planar and have a normal, 
-  * Have interior attributes - style, color, front and back material,  texture and reflection ratio, 
-  * Have a boundary with the following attributes - type, width scale  factor, color. The boundary is only drawn when the interior style is hollow. 
+  * Have interior attributes -- style, color, front and back material,  texture and reflection ratio, 
+  * Have a boundary with the following attributes -- type, width scale  factor, color. The boundary is only drawn when the interior style is hollow. 
 
 * **Polygons with holes** 
   * Have multiple closed boundaries, each one with at least three  vertices, 
   * Are planar and have a normal, 
-  * Have interior attributes - style, color, front and back material,  
-  * Have a boundary with the following attributes - type, width scale  factor, color. The boundary is only drawn when the interior style is hollow. 
+  * Have interior attributes -- style, color, front and back material,  
+  * Have a boundary with the following attributes -- type, width scale  factor, color. The boundary is only drawn when the interior style is hollow. 
 
 * **Polylines** 
   * Have two or more vertices, 
-  * Have the following attributes - type, width scale factor, color. 
+  * Have the following attributes -- type, width scale factor, color. 
 
 * **Text** 
   * Has geometric and non-geometric attributes, 
-  * Geometric attributes - character height, character up vector,  text path, horizontal and vertical alignment, orientation, three-dimensional  position, zoomable flag
-  * Non-geometric attributes - text font, character spacing,  character expansion factor, color. 
+  * Geometric attributes -- character height, character up vector,  text path, horizontal and vertical alignment, orientation, three-dimensional  position, zoomable flag
+  * Non-geometric attributes -- text font, character spacing,  character expansion factor, color. 
 
 @subsubsection occt_visu_4_2_4 Primitive  arrays
 
@@ -1843,9 +1843,9 @@ aGroup->Text (Standard_CString ("Text"), aPoint, 16.0);
 
 A *Graphic3d_MaterialAspect* is defined by:
   * Transparency;
-  * Diffuse reflection - a component of the object color;
+  * Diffuse reflection -- a component of the object color;
   * Ambient reflection;
-  * Specular reflection - a component of the color of the light source;
+  * Specular reflection -- a component of the color of the light source;
   * Refraction index.
 
 The following items are required to determine the three colors of reflection:
@@ -1977,7 +1977,7 @@ VM->Viewer()->Display();
 aView->Update();
 ~~~~~
 
-As an alternative to manual setting of perspective parameters the V3d_View::ZfitAll() and V3d_View::FitAll() functions can be used:
+As an alternative to manual setting of perspective parameters the *V3d_View::ZfitAll()* and *V3d_View::FitAll()* functions can be used:
 
 ~~~~~
 // Display shape in Viewer VM
@@ -1996,21 +1996,21 @@ V->FitAll();
 
 View projection and orientation in OCCT *v3d* view are driven by camera. The camera calculates and supplies projection and view orientation matrices for rendering by OpenGL. The allows to the user to control all projection parameters. The camera is defined by the following properties:
 
-* **Eye** - Defines the observer (camera) position. Make sure the Eye point never gets between the Front and Back clipping planes.
+* **Eye** -- defines the observer (camera) position. Make sure the Eye point never gets between the Front and Back clipping planes.
 
-* **Center** - defines the origin of View Reference Coordinates (where camera is aimed at).
+* **Center** -- defines the origin of View Reference Coordinates (where camera is aimed at).
 
-* **Direction** - defines the direction of camera view (from the Eye to the Center).
+* **Direction** -- defines the direction of camera view (from the Eye to the Center).
 
-* **Distance** - defines the distance between the Eye and the Center.
+* **Distance** -- defines the distance between the Eye and the Center.
 
-* **Front** Plane - Defines the position of the front clipping plane in View Reference Coordinates system.
+* **Front** Plane -- defines the position of the front clipping plane in View Reference Coordinates system.
 
-* **Back** Plane - Defines the position of the back clipping plane in View Reference Coordinates system.
+* **Back** Plane -- defines the position of the back clipping plane in View Reference Coordinates system.
 
-* **ZNear** - defines the distance between the Eye and the Front plane.
+* **ZNear** -- defines the distance between the Eye and the Front plane.
 
-* **ZFar** - defines the distance between the Eye and the Back plane.
+* **ZFar** -- defines the distance between the Eye and the Back plane.
 
 Most common view manipulations (panning, zooming, rotation) are implemented as convenience methods of *V3d_View* class, however *Graphic3d_Camera* class can also be used directly by application developers:
 
@@ -2038,7 +2038,7 @@ aView->Update();
 
 @subsubsection occt_visu_4_4_5 Perspective Projection
 
-**Field of view (FOVy)** - defines the field of camera view by y axis in degrees (45° is default).
+**Field of view (FOVy)** -- defines the field of camera view by y axis in degrees (45° is default).
 
 @image html camera_perspective.png "Perspective frustum"
 
@@ -2054,15 +2054,15 @@ aView->Update();
 
 @subsubsection occt_visu_4_4_6 Stereographic Projection
 
-**IOD** - defines the intraocular distance (in world space units).
+**IOD** -- defines the intraocular distance (in world space units).
 
 There are two types of IOD:
 * _IODType_Absolute_ : Intraocular distance is defined as an absolute value.
 * _IODType_Relative_ : Intraocular distance is defined relative to the camera focal length (as its coefficient).
 
-**Field of view (FOV)** - defines the field of camera view by y axis in degrees (45° is default).
+**Field of view (FOV)** -- defines the field of camera view by y axis in degrees (45° is default).
 
-**ZFocus** - defines the distance to the point of stereographic focus.
+**ZFocus** -- defines the distance to the point of stereographic focus.
 
 @image html stereo.png "Stereographic projection"
 
@@ -2261,10 +2261,10 @@ To set the image as a  background and change the background image style you can 
 ~~~~~
 
 The *FileName* parameter defines the image file name and the path to it,  the *FillStyle* parameter defines the method of filling the background with the  image. The methods are:  
-  * *Aspect_FM_NONE* -  draws the image in the default position;
-  * *Aspect_FM_CENTERED* - draws the image at the center of the view;
-  * *Aspect_FM_TILED* tiles the view with the image;
-  * *Aspect_FM_STRETCH* stretches the image over the view.
+  * *Aspect_FM_NONE* --  draws the image in the default position;
+  * *Aspect_FM_CENTERED* -- draws the image at the center of the view;
+  * *Aspect_FM_TILED* -- tiles the view with the image;
+  * *Aspect_FM_STRETCH* -- stretches the image over the view.
 
 
 @subsubsection occt_visu_4_4_10 Dumping a 3D scene into an image file

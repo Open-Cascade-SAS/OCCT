@@ -60,7 +60,7 @@ To prevent this, it is suggested to make links:
   Example:
    
 
-  \>  ./configure -prefix=/PRODUCTS/occt-6.5.5 --with-tcl=/PRODUCTS/tcltk-8.5.8/lib --with-tk=/PRODUCTS/tcltk-8.5.8/lib --with-freetype=/PRODUCTS/freetype-2.4.10 --with-gl2ps=/PRODUCTS/gl2ps-1.3.5 --with-freeimage=/PRODUCTS/freeimage-3.14.1 --with-tbb-include=/PRODUCTS/tbb30_018oss/include --with-tbb-library=/PRODUCTS/tbb30_018oss/lib/ia32/cc4.1.0_libc2.4_kernel2.6.16.21 -–with-vtk-include=/PRODUCTS/VTK-6.1.0/include/vtk-6.1 –with-vtk-library=/PRODUCTS/ /VTK-6.1.0//lib
+  \>  ./configure -prefix=/PRODUCTS/occt-6.5.5 --with-tcl=/PRODUCTS/tcltk-8.5.8/lib --with-tk=/PRODUCTS/tcltk-8.5.8/lib --with-freetype=/PRODUCTS/freetype-2.4.10 --with-gl2ps=/PRODUCTS/gl2ps-1.3.5 --with-freeimage=/PRODUCTS/freeimage-3.14.1 --with-tbb-include=/PRODUCTS/tbb30_018oss/include --with-tbb-library=/PRODUCTS/tbb30_018oss/lib/ia32/cc4.1.0_libc2.4_kernel2.6.16.21 --with-vtk-include=/PRODUCTS/VTK-6.1.0/include/vtk-6.1 -with-vtk-library=/PRODUCTS/ /VTK-6.1.0//lib
 
 
   3.If configure exits successfully, you can build OCCT with *make* command.

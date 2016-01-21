@@ -11,12 +11,12 @@ You need to use the same version of MS Visual Studio for building all third-part
 The links for downloading the third-party products are available on the web site of OPEN CASCADE SAS at http://www.opencascade.org/getocc/require/. There are two types of third-party products used  by OCCT: 
 
 * Mandatory  products: 
-	* Tcl/Tk 8.5 - 8.6;
-	* FreeType 2.4.10 - 2.5.3.
+	* Tcl/Tk 8.5 -- 8.6;
+	* FreeType 2.4.10 -- 2.5.3.
 * Optional  products:
-	* TBB 3.x - 4.x;
-	* gl2ps 1.3.5 - 1.3.8;
-	* FreeImage 3.14.1 -3.16.0;
+	* TBB 3.x -- 4.x;
+	* gl2ps 1.3.5 -- 1.3.8;
+	* FreeImage 3.14.1 -- 3.16.0;
 	* VTK 6.1.0.
 
 It is recommended to create a separate new folder on your workstation, where you will unpack the downloaded archives of the third-party  products, and where you will build these products (for example, *c:\\occ3rdparty*). 
@@ -168,9 +168,9 @@ You can download its sources from  http://geuz.org/gl2ps/src/.
    As a result, you will get a folder named, for example, *3rdparty\\gl2ps-1.3.5-source*. 
 
    Rename it into <i>gl2ps-platform-compiler-building mode</i>, where 
-   * **platform** is *win32*  or *win64*; 
-   * **compiler** is *vc8*, *vc9* or *vc10*; 
-   * **building mode** - *opt*  (for release) or *deb* (for debug). 
+   * **platform** -- *win32*  or *win64*; 
+   * **compiler** -- *vc8*, *vc9* or *vc10*; 
+   * **building mode** -- *opt*  (for release) or *deb* (for debug). 
    
    For example, <i>gl2ps-win64-vc10-deb</i>
 
@@ -208,7 +208,7 @@ You can download its sources from  http://geuz.org/gl2ps/src/.
      @image html /dev_guides/building/3rdparty/images/3rdparty_image004.png 
      @image latex /dev_guides/building/3rdparty/images/3rdparty_image004.png 
 
-   * Select the generator (the compiler  and the target platform - 32 or 64 bit) in the pop-up window. 
+   * Select the generator (the compiler  and the target platform -- 32 or 64 bit) in the pop-up window. 
    
      @image html /dev_guides/building/3rdparty/images/3rdparty_image005.png 
      @image latex /dev_guides/building/3rdparty/images/3rdparty_image005.png 

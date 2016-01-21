@@ -72,7 +72,7 @@ Declaration of available plug-ins is done through the special resource file(s). 
 
 @subsubsection occt_draw_1_3_1 Launching DRAW Test Harness
 
-Test Harness executable *DRAWEXE* is located in the <i>$CASROOT/\<platform\>/bin</i> directory (where \<platform\> is Win for Windows and Linux for Linux operating systems). Prior to launching it is important to make sure that the environment is correctly set-up (usually this is done automatically after the installation process on Windows or after launching specific scripts on Linux).  
+Test Harness executable *DRAWEXE* is located in the <i>$CASROOT/\<platform\>/bin</i> directory (where \<platform\> is Win for Windows and Linux for Linux operating systems). Prior to launching it is important to make sure that the environment is correctly setup (usually this is done automatically after the installation process on Windows or after launching specific scripts on Linux).  
 
 
 @subsubsection occt_draw_1_3_2 Plug-in resource file
@@ -103,8 +103,8 @@ pload [-PluginFileName] [[Key1] [Key2]...]
 
 where: 
 
-* <i>-PluginFileName</i> - defines the name of a plug-in resource file (prefix "-" is mandatory) described above. If this parameter is omitted then the default name *DrawPlugin* is used. 
-* *Key…* - defines the key(s) enumerating plug-ins to be loaded. If no keys are specified then the key named *DEFAULT* is used (if there is no such key in the file then no plug-ins are loaded). 
+* <i>-PluginFileName</i> -- defines the name of a plug-in resource file (prefix "-" is mandatory) described above. If this parameter is omitted then the default name *DrawPlugin* is used. 
+* *Key* -- defines the key(s) enumerating plug-ins to be loaded. If no keys are specified then the key named *DEFAULT* is used (if there is no such key in the file then no plug-ins are loaded). 
 
 According to the OCCT resource file management rules, to access the resource file the environment variable *CSF_PluginFileNameDefaults* (and optionally *CSF_PluginFileNameUserDefaults*) must be set and point to the directory storing the resource file. If it is omitted then the plug-in resource file will be searched in the <i>$CASROOT/src/DrawResources</i> directory. 
 
@@ -850,7 +850,7 @@ TopoDS_Solid B = DBRep::Get(argv[1]);
 
 @section occt_draw_4 Graphic Commands
 
-Graphic commands are used to manage the Draw graphic system. Draw provides a 2d and a 3d viewer with up to 30 views. Views are numbered and the index of the view is displayed in the window’s title. Objects are displayed in all 2d views or in all 3d views, depending on their type. 2d objects can only be viewed in 2d views while 3d objects – only in 3d views correspondingly. 
+Graphic commands are used to manage the Draw graphic system. Draw provides a 2d and a 3d viewer with up to 30 views. Views are numbered and the index of the view is displayed in the window’s title. Objects are displayed in all 2d views or in all 3d views, depending on their type. 2d objects can only be viewed in 2d views while 3d objects -- only in 3d views correspondingly. 
 
 @subsection occt_draw_4_1 Axonometric viewer
 
@@ -1274,7 +1274,7 @@ Graphic operations are buffered by Draw (and also by the X system). Usually the 
 
 See also: @ref occt_draw_4_1_11 "pick" command.  
 
-@subsection occt_draw_4_2 AIS viewer – view commands
+@subsection occt_draw_4_2 AIS viewer -- view commands
 
 @subsubsection occt_draw_4_2_1 vinit
 
@@ -1544,13 +1544,13 @@ vstereo [0|1] [-mode Mode] [-reverse {0|1}] [-anaglyph Filter]
 
 Control stereo output mode.
 Available modes for -mode:
- * quadBuffer - OpenGL QuadBuffer stereo, requires driver support. Should be called BEFORE vinit!
- * anaglyph         - Anaglyph glasses
- * rowInterlaced    - row-interlaced display
- * columnInterlaced - column-interlaced display
- * chessBoard       - chess-board output
- * sideBySide       - horizontal pair
- * overUnder        - vertical pair
+ * quadBuffer -- OpenGL QuadBuffer stereo, requires driver support. Should be called BEFORE vinit!
+ * anaglyph         -- Anaglyph glasses
+ * rowInterlaced    -- row-interlaced display
+ * columnInterlaced -- column-interlaced display
+ * chessBoard       -- chess-board output
+ * sideBySide       -- horizontal pair
+ * overUnder        -- vertical pair
 Available Anaglyph filters for -anaglyph:
  * redCyan, redCyanSimple, yellowBlue, yellowBlueSimple, greenMagentaSimple
 
@@ -1576,7 +1576,7 @@ vfrustumculling [toEnable]
 Enables/disables objects clipping.
 
 
-@subsection occt_draw_4_3 AIS viewer – display commands
+@subsection occt_draw_4_3 AIS viewer -- display commands
 
 @subsubsection occt_draw_4_3_1 vdisplay
 
@@ -1607,7 +1607,7 @@ Local selection context will be opened if there is not any.
 * *trsfPersPos* sets an anchor point for transform persistence.
 * *2d|-2dTopDown* displays object in screen coordinates.
 * *dispmode* sets display mode for objects.
-* *highmode* sets hilight mode for objects.
+* *highmode* sets highlight mode for objects.
 * *redisplay* recomputes presentation of objects.
 
 **Example:** 
@@ -1776,7 +1776,7 @@ vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]
 Manage presentation properties of all, selected or named objects.
 When *-subshapes* is specified than following properties will be assigned to specified sub-shapes.
 When *-defaults* is specified than presentation properties will be assigned to all objects that have not their own specified properties and to all objects to be displayed in the future.
-If *-defaults* is used there should not be any objects' names and -subshapes specifier.
+If *-defaults* is used there should not be any names of objects and *-subshapes* specifier.
 
 Aliases:
 ~~~~~
@@ -2009,8 +2009,8 @@ vstate [-entities] [-hasSelected] [name1] ... [nameN]
 ~~~~~ 
 
 Reports show/hidden state for selected or named objects
- * *entities* - print low-level information about detected entities
- * *hasSelected* - prints 1 if context has selected shape and 0 otherwise
+ * *entities* -- prints low-level information about detected entities;
+ * *hasSelected* -- prints 1 if the context has a selected shape and 0 otherwise.
 
 @subsubsection occt_draw_4_3_25 vraytrace
 
@@ -2032,17 +2032,17 @@ vrenderparams [-rayTrace|-raster] [-rayDepth 0..10] [-shadows {on|off}]
 ~~~~~
 
 Manages rendering parameters:
-* rayTrace     - Enables  GPU ray-tracing
-* raster       - Disables GPU ray-tracing
-* rayDepth     - Defines maximum ray-tracing depth
-* shadows      - Enables/disables shadows rendering
-* reflections  - Enables/disables specular reflections
-* fsaa         - Enables/disables adaptive anti-aliasing
-* gleam        - Enables/disables transparency shadow effects
-* gi           - Enables/disables global illumination effects
-* brng         - Enables/disables blocked RNG (fast coherent PT)
-* env          - Enables/disables environment map background
-* shadingModel - Controls shading model from enumeration color, flat, gouraud, phong
+* rayTrace     -- Enables  GPU ray-tracing
+* raster       -- Disables GPU ray-tracing
+* rayDepth     -- Defines maximum ray-tracing depth
+* shadows      -- Enables/disables shadows rendering
+* reflections  -- Enables/disables specular reflections
+* fsaa         -- Enables/disables adaptive anti-aliasing
+* gleam        -- Enables/disables transparency shadow effects
+* gi           -- Enables/disables global illumination effects
+* brng         -- Enables/disables blocked RNG (fast coherent PT)
+* env          -- Enables/disables environment map background
+* shadingModel -- Controls shading model from enumeration color, flat, gouraud, phong
 
 Unlike vcaps, these parameters dramatically change visual properties.
 Command is intended to control presentation quality depending on hardware capabilities and performance.
@@ -2082,7 +2082,7 @@ vinit
 vsetcolorbg 200 0 200
 ~~~~~
 
-@subsection occt_draw_4_4 AIS viewer – object commands
+@subsection occt_draw_4_4 AIS viewer -- object commands
 
 @subsubsection occt_draw_4_4_1 vtrihedron
 
@@ -2186,8 +2186,8 @@ vplane name [PlaneName] [PointName]
 
 Creates a plane from named or interactively selected entities.
 TypeOfSensitivity:
- * 0 - Interior
- * 1 - Boundary
+ * 0 -- Interior
+ * 1 -- Boundary
 
 **Example:** 
 ~~~~~
@@ -2275,15 +2275,15 @@ vselmode [object] mode_number is_turned_on=(1|0)
 Sets the selection mode for an object. If the object value is not defined, the selection mode is set for all displayed objects. 
 *Mode_number* is non-negative integer that has different meaning for different interactive object classes.
 For shapes the following *mode_number* values are allowed:
- * 0 - shape
- * 1 - vertex
- * 2 - edge
- * 3 - wire
- * 4 - face
- * 5 - shell
- * 6 - solid
- * 7 - compsolid
- * 8 - compound
+ * 0 -- shape
+ * 1 -- vertex
+ * 2 -- edge
+ * 3 -- wire
+ * 4 -- face
+ * 5 -- shell
+ * 6 -- solid
+ * 7 -- compsolid
+ * 8 -- compound
 *is_turned_on* is:
  * 1 if mode is to be switched on
  * 0 if mode is to be switched off
@@ -2361,18 +2361,18 @@ vpointcloud name shape [-randColor] [-normals] [-noNormals]
 
 Creates an interactive object for an arbitary set of points from the triangulated shape.
 Additional options:
- * *randColor* - generate random color per point
- * *normals*   - generate normal per point (default)
- * *noNormals* - do not generate normal per point
+ * *randColor* -- generate random color per point
+ * *normals*   -- generate normal per point (default)
+ * *noNormals* -- do not generate normal per point
 
 ~~~~~
 vpointcloud name x y z r npts {surface|volume} [-randColor] [-normals] [-noNormals]
 ~~~~~
 Creates an arbitrary set of points (npts) randomly distributed on a spheric surface or within a spheric volume (x y z r).
 Additional options:
- * *randColor* - generate random color per point
- * *normals*   - generate normal per point (default)
- * *noNormals* - do not generate normal per point
+ * *randColor* -- generate random color per point
+ * *normals*   -- generate normal per point (default)
+ * *noNormals* -- do not generate normal per point
 
 **Example:**
 ~~~~~
@@ -2385,21 +2385,21 @@ vfit
 
 Syntax:
 ~~~~~
-vclipplane maxplanes <view_name> - gets plane limit for the view.
-vclipplane create <plane_name> - creates a new plane.
-vclipplane delete <plane_name> - delete a plane.
-vclipplane clone <source_plane> <plane_name> - clones the plane definition.
-vclipplane set/unset <plane_name> object <object list> - sets/unsets the plane for an IO.
-vclipplane set/unset <plane_name> view <view list> - sets/unsets plane for a view.
-vclipplane change <plane_name> on/off - turns clipping on/off.
-vclipplane change <plane_name> equation <a> <b> <c> <d> - changes plane equation.
-vclipplane change <plane_name> capping on/off - turns capping on/off.
-vclipplane change <plane_name> capping color <r> <g> <b> - sets color.
-vclipplane change <plane name> capping texname <texture> - sets texture.
-vclipplane change <plane_name> capping texscale <sx> <sy> - sets texture scale.
-vclipplane change <plane_name> capping texorigin <tx> <ty> - sets texture origin.
-vclipplane change <plane_name> capping texrotate <angle> - sets texture rotation.
-vclipplane change <plane_name> capping hatch on/off/<id> - sets hatching mask.
+vclipplane maxplanes <view_name> -- gets plane limit for the view.
+vclipplane create <plane_name> -- creates a new plane.
+vclipplane delete <plane_name> -- deletes a plane.
+vclipplane clone <source_plane> <plane_name> -- clones the plane definition.
+vclipplane set/unset <plane_name> object <object list> -- sets/unsets the plane for an IO.
+vclipplane set/unset <plane_name> view <view list> -- sets/unsets plane for a view.
+vclipplane change <plane_name> on/off -- turns clipping on/off.
+vclipplane change <plane_name> equation <a> <b> <c> <d> -- changes plane equation.
+vclipplane change <plane_name> capping on/off -- turns capping on/off.
+vclipplane change <plane_name> capping color <r> <g> <b> -- sets color.
+vclipplane change <plane name> capping texname <texture> -- sets texture.
+vclipplane change <plane_name> capping texscale <sx> <sy> -- sets texture scale.
+vclipplane change <plane_name> capping texorigin <tx> <ty> -- sets texture origin.
+vclipplane change <plane_name> capping texrotate <angle> -- sets texture rotation.
+vclipplane change <plane_name> capping hatch on/off/<id> -- sets hatching mask.
 ~~~~~
 
 Manages clipping planes
@@ -2498,7 +2498,7 @@ vmovedim dim1 -10 30 0
 ~~~~~
 
 
-@subsection occt_draw_4_5 AIS viewer – Mesh Visualization Service
+@subsection occt_draw_4_5 AIS viewer -- Mesh Visualization Service
 
 **MeshVS** (Mesh Visualization Service) component provides flexible means of displaying meshes with associated pre- and post- processor data.
 
@@ -2543,10 +2543,10 @@ meshselmode meshname selectionmode
 ~~~~~ 
 
 Changes the selection mode of object **meshname**. The *selectionmode* is integer OR-combination of mode flags. The basic flags are the following: 
-* *1* – node selection;
-* *2* – 0D elements (not supported in STL); 
-* *4* – links (not supported in STL); 
-* *8* – faces.
+* *1* -- node selection;
+* *2* -- 0D elements (not supported in STL); 
+* *4* -- links (not supported in STL); 
+* *8* -- faces.
  
 **Example:** 
 ~~~~~
@@ -2597,27 +2597,27 @@ meshmat meshname material
 Changes the material of object **meshname**.
 
 *material* is represented with an integer value as follows (equivalent to enumeration *Graphic3d_NameOfMaterial*): 
-* *0 - BRASS,* 
-* *1 - BRONZE,* 
-* *2 - COPPER,* 
-* *3 - GOLD,* 
-* *4 - PEWTER,* 
-* *5 - PLASTER,* 
-* *6 - PLASTIC,* 
-* *7 - SILVER,* 
-* *8 - STEEL,* 
-* *9 - STONE,* 
-* *10 - SHINY_PLASTIC,* 
-* *11 - SATIN,*
-* *12 - METALIZED,* 
-* *13 - NEON_GNC,* 
-* *14 - CHROME,*
-* *15 - ALUMINIUM,*
-* *16 - OBSIDIAN,* 
-* *17 - NEON_PHC,* 
-* *18 - JADE,*
-* *19 - DEFAULT,* 
-* *20 - UserDefined*
+* *0 -- BRASS,* 
+* *1 -- BRONZE,* 
+* *2 -- COPPER,* 
+* *3 -- GOLD,* 
+* *4 -- PEWTER,* 
+* *5 -- PLASTER,* 
+* *6 -- PLASTIC,* 
+* *7 -- SILVER,* 
+* *8 -- STEEL,* 
+* *9 -- STONE,* 
+* *10 -- SHINY_PLASTIC,* 
+* *11 -- SATIN,*
+* *12 -- METALIZED,* 
+* *13 -- NEON_GNC,* 
+* *14 -- CHROME,*
+* *15 -- ALUMINIUM,*
+* *16 -- OBSIDIAN,* 
+* *17 -- NEON_PHC,* 
+* *18 -- JADE,*
+* *19 -- DEFAULT,* 
+* *20 -- UserDefined*
  
 **Example:** 
 ~~~~~
@@ -2949,7 +2949,7 @@ Syntax:
 IsInSession path
 ~~~~~ 
 
-Returns *0*, if **path** document is managed by the application session, *1* – otherwise. 
+Returns *0*, if **path** document is managed by the application session, *1* -- otherwise. 
 
 **Example:** 
 ~~~~~
@@ -3183,7 +3183,7 @@ Syntax:
 NewCommand docname
 ~~~~~ 
 
-This is a short-cut for Commit and Open transaction. 
+This is a shortcut for Commit and Open transaction. 
 
 **Example:** 
 ~~~~~
@@ -3765,7 +3765,7 @@ Finds or creates a Plane attribute at *entry* label and sets *plane* as generate
 
 **Example:** 
 ~~~~~
-plane pl 10 20 30 –1 0 0 
+plane pl 10 20 30 -1 0 0 
 SetPlane D 0:2 pl 
 ~~~~~
 
@@ -4695,7 +4695,7 @@ Syntax:
 ~~~~~
 cone name [x y z [dx dy dz [ux uy uz]]] semi-angle radius 
 ~~~~~
-Creates a cone in the infinite coordinate system along the Z-axis. The radius is that of the circle at the intersection of the cone and the XY plane. The semi-angle is the angle formed by the cone relative to the axis; it should be between –90 and 90. If the radius is 0, the vertex is the origin. 
+Creates a cone in the infinite coordinate system along the Z-axis. The radius is that of the circle at the intersection of the cone and the XY plane. The semi-angle is the angle formed by the cone relative to the axis; it should be between -90 and 90. If the radius is 0, the vertex is the origin. 
 
 **Example:** 
 ~~~~~
@@ -5765,11 +5765,11 @@ normals s (length = 10), disp normals
 range name value value 
 ~~~~~
 
-* **orientation** assigns the orientation of shapes - simple and complex - to one of the following four values: *FORWARD, REVERSED, INTERNAL, EXTERNAL*. 
-* **complement** changes the current orientation of shapes to its complement, *FORWARD - REVERSED, INTERNAL - EXTERNAL*. 
-* **invert** creates a new shape which is a copy of the original with the orientation all subshapes reversed. For example, it may be useful to reverse the normals of a solid. 
-* *normals** returns the assignment of colors to orientation values. 
-* **range** defines the length of a selected edge by defining the values of a starting point and an end point.
+* **orientation** -- assigns the orientation of simple and complex shapes to one of the following four values: *FORWARD, REVERSED, INTERNAL, EXTERNAL*. 
+* **complement** -- changes the current orientation of shapes to its complement: *FORWARD* to *REVERSED* and  *INTERNAL* to *EXTERNAL*. 
+* **invert** -- creates a copy of the original shape with a reversed orientation of all subshapes. For example, it may be useful to reverse the normals of a solid. 
+* *normals** -- returns the assignment of colors to orientation values. 
+* **range** -- defines the length of a selected edge by defining the values of a starting point and an end point.
  
 **Example:** 
 ~~~~~
@@ -5851,7 +5851,7 @@ add name toname
 compound [name ...] compoundname 
 ~~~~~
 
-**emptycopy** returns an empty shape with the same orientation, location, and geometry as the target shape, but with no sub-shapes. If the newname argument is not given, the new shape is stored with the same name. This command is used to modify a frozen shape. A frozen shape is a shape used by another one. To modify it, you must emptycopy it. Its subshape may be reinserted with the **add** command. 
+**emptycopy** returns an empty shape with the same orientation, location, and geometry as the target shape, but with no sub-shapes. If the **newname** argument is not given, the new shape is stored with the same name. This command is used to modify a frozen shape. A frozen shape is a shape used by another one. To modify it, you must **emptycopy** it. Its subshape may be reinserted with the **add** command. 
 
 **add** inserts shape *C* into shape *S*. Verify that *C* and *S* reference compatible types of objects: 
   * Any *Shape* can be added to a *Compound*.
@@ -5884,10 +5884,10 @@ checkshape [-top] shape [result] [-short]
 ~~~~~
 
 Where: 
-* *top* – optional parameter, which allows checking only topological validity of a shape. 
-* *shape*– the only required parameter which represents the name of the shape to check. 
-* *result* – optional parameter which is the prefix of the output shape names. 
-* *short* – a short description of the check. 
+* *top* -- optional parameter, which allows checking only topological validity of a shape. 
+* *shape* -- the only required parameter which represents the name of the shape to check. 
+* *result* -- optional parameter which is the prefix of the output shape names. 
+* *short* -- a short description of the check. 
 
 **checkshape** examines the selected object for topological and geometric coherence. The object should be a three dimensional shape. 
 
@@ -6385,7 +6385,7 @@ All these commands create solid blocks in the default coordinate system, using t
 
 **psphere** creates a solid sphere centered on the origin. If two angles, *angle1* and *angle2*, are given, the solid will be limited by two planes at latitude *angle1* and *angle2*. The angles must be increasing and in the range -90,90. 
 
-**ptorus** creates a solid torus with the given radii, centered on the origin, which is a point along the z axis. If two angles increasing in degree in the range 0 – 360 are given, the solid will be bounded by two planar surfaces at those positions on the circle. 
+**ptorus** creates a solid torus with the given radii, centered on the origin, which is a point along the z axis. If two angles increasing in degree in the range 0 -- 360 are given, the solid will be bounded by two planar surfaces at those positions on the circle. 
 
 **Example:** 
 ~~~~~
@@ -6424,11 +6424,11 @@ halfspace hr b_3 0.5 0.5 0.5
 
 Sweeping creates shapes by sweeping out a shape along a defined path: 
 
-  * **prism** sweeps along a direction.
-  * **revol** sweeps around an axis.
-  * **pipe** sweeps along a wire.
-  * **mksweep** and **buildsweep** are commands to create sweeps by defining the arguments and algorithms.
-  * **thrusections** creates a sweep from wire in different planes.
+  * **prism** -- sweeps along a direction.
+  * **revol** -- sweeps around an axis.
+  * **pipe** -- sweeps along a wire.
+  * **mksweep** and **buildsweep** -- to create sweeps by defining the arguments and algorithms.
+  * **thrusections** -- creates a sweep from wire in different planes.
 
 
 @subsubsection occt_draw_7_4_1  prism
@@ -6511,12 +6511,12 @@ options are :
  * *-G guide* 
 
 These commands are used to create a shape from wires. One wire is designated as the contour that defines the direction; it is called the spine. At least one other wire is used to define the the sweep profile. 
-* **mksweep** initializes the sweep creation and defines the wire to be used as the spine. 
-* **addsweep** defines the wire to be used as the profile. 
-* **deletesweep** cancels the choice of profile wire, without leaving the mksweep mode. You can re-select a profile wire. 
-* **setsweep** commands the algorithms used for the construction of the sweep. 
-* **simulsweep** can be used to create a preview of the shape. [n] is the number of sections that are used to simulate the sweep. 
-* **buildsweep** creates the sweep using the arguments defined by all the commands. 
+* **mksweep** -- initializes the sweep creation and defines the wire to be used as the spine. 
+* **addsweep** -- defines the wire to be used as the profile. 
+* **deletesweep** -- cancels the choice of profile wire, without leaving the mksweep mode. You can re-select a profile wire. 
+* **setsweep** -- commands the algorithms used for the construction of the sweep. 
+* **simulsweep** -- can be used to create a preview of the shape. [n] is the number of sections that are used to simulate the sweep. 
+* **buildsweep** -- creates the sweep using the arguments defined by all the commands. 
 
 **Example:** 
 ~~~~~
@@ -6568,9 +6568,9 @@ Tolerances obtenues   -- 3d : 0
 
 Transformations are applications of matrices. When the transformation is nondeforming, such as translation or rotation, the object is not copied. The topology localcoordinate system feature is used. The copy can be enforced with the **tcopy** command. 
 
-  * **tcopy** makes a copy of the structure of a shape.
-  * **ttranslate**, **trotate**, **tmove**, **reset** move a shape.
-  * **tmirror**, **tscale** always modify the shape.
+  * **tcopy** -- makes a copy of the structure of a shape.
+  * **ttranslate**, **trotate**, **tmove** and **reset** -- move a shape.
+  * **tmirror** and **tscale** -- always modify the shape.
 
 
 @subsubsection occt_draw_7_5_1   tcopy
@@ -6875,19 +6875,19 @@ bop shape1 shape2
 bopsection result 
 ~~~~~
 
-* **bopsection** creates a compound object consisting of the edges for the intersection curves on the faces of two shapes.
-* **bop** fills data structure (DS) of boolean operation for *shape1* and *shape2*. 
-* **bopsection** command used after **bop** command.
+* **bopsection** -- creates a compound object consisting of the edges for the intersection curves on the faces of two shapes.
+* **bop** -- fills data structure (DS) of boolean operation for *shape1* and *shape2*. 
+* **bopsection** -- is used after **bop** command.
  
 Short variant syntax:      
 ~~~~~
 bsection result shape1 shape2 [-2d/-2d1/-2s2] [-a] 
 ~~~~~
 
-* <i>-2d</i>  -  PCurves are computed on both parts. 
-* <i>-2d1</i> - PCurves are computed on first part. 
-* <i>-2d2</i> - PCurves are computed on second part. 
-* <i>-a</i>  -   built geometries  are approximated. 
+* <i>-2d</i>  --  PCurves are computed on both parts. 
+* <i>-2d1</i> -- PCurves are computed on first part. 
+* <i>-2d2</i> -- PCurves are computed on second part. 
+* <i>-a</i>  --   built geometries  are approximated. 
 
 **Example:** 
 
@@ -6914,15 +6914,15 @@ bopargcheck shape1 [[shape2] [-F/O/C/T/S/U] [/R|F|T|V|E|I|P]] [#BF]
 
 **bopargcheck** checks the validity of argument(s) for boolean operations. 
 
-* Boolean Operation - (by default a section is made) : 
+* Boolean Operation -- (by default a section is made) : 
   * **F** (fuse) 
   * **O** (common) 
   * **C** (cut) 
   * **T** (cut21) 
   * **S** (section) 
   * **U** (unknown) 
-* Test Options - (by default all options are enabled) : 
-  * **R** (disable small edges (shrank range) test) 
+* Test Options -- (by default all options are enabled) : 
+  * **R** (disable small edges (shrink range) test) 
   * **F** (disable faces verification test) 
   * **T** (disable tangent faces searching test) 
   * **V** (disable test possibility to merge vertices) 
@@ -6930,8 +6930,8 @@ bopargcheck shape1 [[shape2] [-F/O/C/T/S/U] [/R|F|T|V|E|I|P]] [#BF]
   * **I** (disable self-interference test) 
   * **P** (disable shape type test) 
 * Additional Test Options :
-  * **B** (stop test on first faulty found) - by default it is off; 
-  * **F** (full output for faulty shapes) - by default the output is made in a short format.
+  * **B** (stop test on first faulty found) -- by default it is off; 
+  * **F** (full output for faulty shapes) -- by default the output is made in a short format.
 
 **Note** that Boolean Operation and Test Options are used only for a couple of argument shapes, except for <b>I</b> and <b>P</b> options that are always used to test a couple of shapes as well as a single shape.
 
@@ -7252,11 +7252,11 @@ xdistc2dc2dss curve2d_1 curve2d_2 surface_1 surface_2 startParam finishParam [Nu
 It is assumed that curves have the same parametrization range and *startParam* is less than *finishParam*.
 
 Commands with prefix *xdist* allow checking the distance between two objects on even grid:
-  * **xdistef** - distance between edge and face;
-  * **xdistcs** - distance between curve and surface. This means that the projection of each sample point to the surface is computed;
-  * **xdistcc** - distance between two 3D curves;
-  * **xdistcc2ds** - distance between 3d curve and 2d curve on surface;
-  * **xdistc2dc2dss** - distance between two 2d curves on surface.
+  * **xdistef** -- distance between edge and face;
+  * **xdistcs** -- distance between curve and surface. This means that the projection of each sample point to the surface is computed;
+  * **xdistcc** -- distance between two 3D curves;
+  * **xdistcc2ds** -- distance between 3d curve and 2d curve on surface;
+  * **xdistc2dc2dss** -- distance between two 2d curves on surface.
   
 **Examples**
 ~~~~~
@@ -7693,21 +7693,21 @@ See @ref occt_user_guides__boolean_operations "Boolean operations" user's guide 
 @subsection occt_draw_20_1 Definitions
 
 The following terms and definitions are used in this document:
-* **Objects** – list of shapes that are arguments of the algorithm.
-* **Tools** – list of shapes that are arguments of the algorithm. Difference between Objects and Tools is defined by specific requirements of the operations (Boolean Operations, Partition Operation).
-* **DS** – internal data structure used by the algorithm (*BOPDS_DS* object).
-* **PaveFiller** – intersection part of the algorithm (*BOPAlgo_PaveFiller* object).
-* **Builder** – builder part of the algorithm (*BOPAlgo_Builder* object).
-* **IDS Index** – the index of the vector *myLines*.
+* **Objects** -- list of shapes that are arguments of the algorithm.
+* **Tools** -- list of shapes that are arguments of the algorithm. Difference between Objects and Tools is defined by specific requirements of the operations (Boolean Operations, Partition Operation).
+* **DS** -- internal data structure used by the algorithm (*BOPDS_DS* object).
+* **PaveFiller** -- intersection part of the algorithm (*BOPAlgo_PaveFiller* object).
+* **Builder** -- builder part of the algorithm (*BOPAlgo_Builder* object).
+* **IDS Index** -- the index of the vector *myLines*.
 
 @subsection occt_draw_20_2 General commands
 
-* **bclearobjects** - clears the list of Objects;	
-* **bcleartools**	- clears the list of Tools;	
-* **baddobjects** *S1 S2...Sn*	- adds shapes *S1, S2, ... Sn* as Objects;	
-* **baddtools** *S1 S2...Sn* - adds shapes *S1, S2, ... Sn* as Tools;
-* **bfillds** - performs the Intersection Part of the Algorithm;	
-* **bbuild** *r* - performs the Building Part of the Algorithm; *r* is the resulting shape.
+* **bclearobjects** -- clears the list of Objects;	
+* **bcleartools**	-- clears the list of Tools;	
+* **baddobjects** *S1 S2...Sn*	-- adds shapes *S1, S2, ... Sn* as Objects;	
+* **baddtools** *S1 S2...Sn* -- adds shapes *S1, S2, ... Sn* as Tools;
+* **bfillds** -- performs the Intersection Part of the Algorithm;	
+* **bbuild** *r* -- performs the Building Part of the Algorithm; *r* is the resulting shape.
 
 @subsection occt_draw_20_3 Commands for Intersection Part
 
@@ -7717,14 +7717,14 @@ All commands listed below  are available when the Intersection Part of the algor
 	
 Syntax: 
 ~~~~
-bopds –v [e, f]	
+bopds -v [e, f]	
 ~~~~
 
 Displays:
 * all BRep shapes of arguments that are in the DS [default];
-* <i>–v</i> : only vertices of arguments that are in the DS;
-* <i>–e</i> : only edges of arguments that are in the DS;
-* <i>–f</i> : only faces of arguments that are in the DS.
+* <i>-v</i> : only vertices of arguments that are in the DS;
+* <i>-e</i> : only edges of arguments that are in the DS;
+* <i>-f</i> : only faces of arguments that are in the DS.
 
 @subsubsection occt_draw_20_3_2 bopdsdump
 
@@ -7751,9 +7751,9 @@ Example:
 ~~~~
 
 @code 0 : SOLID { 1 } @endcode has the following meaning:
-* *0* – index in the DS;
-* *SOLID* – type of the shape;
-* <i>{ 1 }</i> – a DS index of the successors.
+* *0* -- index in the DS;
+* *SOLID* -- type of the shape;
+* <i>{ 1 }</i> -- a DS index of the successors.
 
 @subsubsection occt_draw_20_3_3 bopindex
 
@@ -7773,9 +7773,9 @@ bopiterator [t1 t2]
 Prints pairs of DS indices of source shapes that are intersected in terms of bounding boxes.
 
 <i>[t1 t2]</i> are types of the shapes:
-* *7* - vertex;
-* *6* - edge;
-* *4* – face.
+* *7* -- vertex;
+* *6* -- edge;
+* *4* -- face.
 
 Example:
 ~~~~
@@ -7789,7 +7789,7 @@ Example:
 ~~~~
 
 * *bopiterator 6 4* prints pairs of indices for types: edge/face;
-* *z58 z12* - DS indices of intersecting edge and face.
+* *z58 z12* -- DS indices of intersecting edge and face.
 
 
 @subsubsection occt_draw_20_3_5 bopinterf
@@ -7813,9 +7813,9 @@ Example:
 ~~~~
 
 Here, record <i>(58, 12, 68)</i> means:
-* *58* – a DS index of the edge;
-* *12* – a DS index of the face;
-* *68* – a DS index of the new vertex.
+* *58* -- a DS index of the edge;
+* *12* -- a DS index of the face;
+* *68* -- a DS index of the new vertex.
 
 @subsubsection occt_draw_20_3_6 bopsp	
 
@@ -7832,8 +7832,8 @@ Example:
  edge 38 : z38_84 z38_85
 ~~~~
 
-* *edge 58* – 58 is a DS index of the original edge.
-* *z58_74 z58_75* – split edges, where 74, 75 are DS indices of the split edges.
+* *edge 58* -- 58 is a DS index of the original edge.
+* *z58_74 z58_75* -- split edges, where 74, 75 are DS indices of the split edges.
 
 @subsubsection occt_draw_20_3_7 bopcb
 
@@ -7855,13 +7855,13 @@ Example:
 ~~~~
 
 This command dumps common blocks for the source edge with index 17. 
-* *PB* – information about the Pave Block;
-	* *71* – a DS index of the split edge
-	* *17* – a DS index of the original edge
-* <i>Pave1 : { 68 3.000 }</i> – information about the Pave:
-	* *68* – a DS index of the vertex of the pave
-	* *3.000* – a parameter of vertex 68 on edge 17
-* *Faces: 36* – 36 is a DS index of the face the common block belongs to. 
+* *PB* -- information about the Pave Block;
+	* *71* -- a DS index of the split edge
+	* *17* -- a DS index of the original edge
+* <i>Pave1 : { 68 3.000 }</i> -- information about the Pave:
+	* *68* -- a DS index of the vertex of the pave
+	* *3.000* -- a parameter of vertex 68 on edge 17
+* *Faces: 36* -- 36 is a DS index of the face the common block belongs to. 
 
 
 @subsubsection occt_draw_20_3_8 bopfin
@@ -7884,8 +7884,8 @@ Example:
 ~~~~
 
 
-* <i>PB:{ E:71 orE:17 Pave1: { 68 3.000 } Pave2: { 18 10.000 } }</i> – information about the Pave Block; 
-* <i>vrts In ... 18 – 18</i> a DS index of the vertex IN the face.
+* <i>PB:{ E:71 orE:17 Pave1: { 68 3.000 } Pave2: { 18 10.000 } }</i> -- information about the Pave Block; 
+* <i>vrts In ... 18 </i> -- a DS index of the vertex IN the face.
 
 @subsubsection occt_draw_20_3_9 bopfon
 
@@ -7907,8 +7907,8 @@ Example:
  68 69 70 71
 ~~~~
 
-* <i>PB:{ E:72 orE:38 Pave1: { 69 0.000 } Pave2: { 68 10.000 } }</i> – information about the Pave Block; 
-* <i>vrts On: ... 68 69 70 71 – 68, 69, 70, 71 </i> DS indices of the vertices ON the face.
+* <i>PB:{ E:72 orE:38 Pave1: { 69 0.000 } Pave2: { 68 10.000 } }</i> -- information about the Pave Block; 
+* <i>vrts On: ... 68 69 70 71</i> -- DS indices of the vertices ON the face.
 
 @subsubsection occt_draw_20_3_10 bopwho
 
@@ -7925,7 +7925,7 @@ Example:
  rank: 0
 ~~~~
 
-* *rank: 0* – means that shape 5 results from the Argument with index 0.
+* *rank: 0* -- means that shape 5 results from the Argument with index 0.
 
 Example:
 ~~~~
@@ -7937,9 +7937,9 @@ Example:
 ~~~~
 
 This means that shape 68 is a result of the following interferences:
-* *EF: (58, 12)* – edge 58 / face 12
-* *FF curves: (12, 56)* – edge from the intersection curve between faces 12 and 56
-* *FF curves: (12, 64)* – edge from the intersection curve between faces 12 and 64
+* *EF: (58, 12)* -- edge 58 / face 12
+* *FF curves: (12, 56)* -- edge from the intersection curve between faces 12 and 56
+* *FF curves: (12, 64)* -- edge from the intersection curve between faces 12 and 64
 
 @subsubsection occt_draw_20_3_11 bopnews
 
@@ -7948,8 +7948,8 @@ Syntax:
 bopnews -v [-e]
 ~~~~
 
-* <i>-v</i> - displays all new vertices produced during the operation;
-* <i>-e</i> - displays all new edges produced during the operation.
+* <i>-v</i> -- displays all new vertices produced during the operation;
+* <i>-e</i> -- displays all new edges produced during the operation.
 
 @subsection occt_draw_20_4	Commands for the Building Part
 
@@ -8102,11 +8102,11 @@ stepwrite mode shape_name file_name
 Writes an OCCT shape to a STEP file. 
 
 The following  modes are available : 
-    * *a* - as is – mode is selected automatically depending on the type & geometry of the shape; 
-    * *m* - *manifold_solid_brep* or *brep_with_voids* 
-    * *f* - *faceted_brep* 
-    * *w* - *geometric_curve_set* 
-    * *s* - *shell_based_surface_model* 
+    * *a* -- as is -- the mode is selected automatically depending on the type & geometry of the shape; 
+    * *m* -- *manifold_solid_brep* or *brep_with_voids* 
+    * *f* -- *faceted_brep* 
+    * *w* -- *geometric_curve_set* 
+    * *s* -- *shell_based_surface_model* 
  
 For further information see <a href="#user_guides__step.html#occt_step_6_5">Writing a STEP file</a>. 
 
@@ -8412,17 +8412,17 @@ tpstat [*|?]<symbol> [<selection>]
 
 Provides all statistics on the last transfer, including a list of transferred entities with mapping from IGES or STEP to OCCT types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines what information will be printed: 
 
-* *g* - General statistics (a list of results and messages)
-* *c* - Count of all warning and fail messages
-* *C* - List of all warning and fail messages
-* *f* - Count of all fail messages
-* *F* - List of all fail messages
-* *n* - List of all transferred roots
-* *s* - The same, with types of source entity and the type of result
-* *b* - The same, with messages
-* *t* - Count of roots for geometrical types
-* *r* - Count of roots for topological types
-* *l* - The same, with the type of the source entity
+* *g* -- General statistics (a list of results and messages)
+* *c* -- Count of all warning and fail messages
+* *C* -- List of all warning and fail messages
+* *f* -- Count of all fail messages
+* *F* -- List of all fail messages
+* *n* -- List of all transferred roots
+* *s* -- The same, with types of source entity and the type of result
+* *b* -- The same, with messages
+* *t* -- Count of roots for geometrical types
+* *r* -- Count of roots for topological types
+* *l* -- The same, with the type of the source entity
 
 The sign \* before parameters *n, s, b, t, r* makes it work on all entities (not only on roots).
 
@@ -8455,7 +8455,7 @@ xload /disk1/tmp/aaa.stp
 
 @subsection occt_draw_8_4  Overview of XDE commands 
 
-These commands are used for translation of IGES and STEP files into an XCAF document (special document is inherited from CAF document and is intended for Extended Data Exchange (XDE) ) and working with it. XDE translation allows reading and writing of shapes with additional attributes – colors, layers etc. All commands can be divided into the following groups: 
+These commands are used for translation of IGES and STEP files into an XCAF document (special document is inherited from CAF document and is intended for Extended Data Exchange (XDE) ) and working with it. XDE translation allows reading and writing of shapes with additional attributes -- colors, layers etc. All commands can be divided into the following groups: 
   * XDE translation commands
   * XDE general commands
   * XDE shape’s commands
@@ -8607,7 +8607,7 @@ Syntax:
 XShow <document> [ <label1> … ]
 ~~~~~
 
-Shows a shape from a given label in the 3D viewer. If the label is not given – shows all shapes from the document. 
+Shows a shape from a given label in the 3D viewer. If the label is not given -- shows all shapes from the document. 
 
 **Example:**
 ~~~~~
@@ -8759,7 +8759,7 @@ XGetFreeShapes <document> [shape_prefix]
 ~~~~~
 
 Print labels or create DRAW shapes for all free shapes in the document. 
-If *shape_prefix* is absent – prints labels, else – creates DRAW shapes with names 
+If *shape_prefix* is absent -- prints labels, else -- creates DRAW shapes with names 
 <i>shape_prefix</i>_num (i.e. for example: there are 3 free shapes and *shape_prefix* = a therefore shapes will be created with names a_1, a_2 and a_3). 
 
 **Note**: a free shape is a shape to which no other shape refers to. 
@@ -8985,7 +8985,7 @@ Syntax:
 XGetShapeColor <document> <label> <colortype(s|c)>
 ~~~~~
 
-Returns the color defined by label. If <i>colortype</i>=’s’ – returns surface color, else – returns curve color. 
+Returns the color defined by label. If <i>colortype</i>=’s’ -- returns surface color, else -- returns curve color. 
 
 **Example:**
 ~~~~~
@@ -9235,7 +9235,7 @@ Syntax:
 XCheckProps <document> [ {0|deflection} [<shape>|<label>] ]
 ~~~~~
 
-Gets properties for a given shape (*volume*, *area* and <i>centroid</i>) and compares them with the results after internal calculations. If the second parameter is 0, the standard OCCT tool is used for the computation of properties. If the second parameter is not 0, it is processed as a deflection. If the deflection is positive the computation is done by triangulations, if it is negative – meshing is forced. 
+Gets properties for a given shape (*volume*, *area* and <i>centroid</i>) and compares them with the results after internal calculations. If the second parameter is 0, the standard OCCT tool is used for the computation of properties. If the second parameter is not 0, it is processed as a deflection. If the deflection is positive the computation is done by triangulations, if it is negative -- meshing is forced. 
 
 **Example:**
 ~~~~~
@@ -9354,7 +9354,7 @@ Syntax:
 XShapeMassProps <document> [ <deflection> [{<shape>|<label>}] ]
 ~~~~~
 
-Computes and returns real mass and real center of gravity for a given shape or for all shapes in a document. The second parameter is used for calculation of the volume and CG(center of gravity). If it is 0, then the standard CASCADE tool (geometry) is used for computation, otherwise - by triangulations with a given deflection. 
+Computes and returns real mass and real center of gravity for a given shape or for all shapes in a document. The second parameter is used for calculation of the volume and CG(center of gravity). If it is 0, then the standard CASCADE tool (geometry) is used for computation, otherwise -- by triangulations with a given deflection. 
 
 **Example:**
 ~~~~~
@@ -9403,7 +9403,7 @@ Syntax:
 checkfclass2d <face> <ucoord> <vcoord>
 ~~~~~
 
-Shows where a point which is given by coordinates is located in relation to a given face – outbound, inside or at the bounds. 
+Shows where a point which is given by coordinates is located in relation to a given face -- outbound, inside or at the bounds. 
 
 **Example:**
 ~~~~~
@@ -9534,14 +9534,14 @@ The following syntax is used:
   * "+" to set on or  
   * "*" to set default 
 * <i>\<parameter\></i> is identified by  letters: 
-  * l - FixLackingMode 
-  * o - FixOrientationMode 
-  * h - FixShiftedMode 
-  * m - FixMissingSeamMode 
-  * d - FixDegeneratedMode 
-  * s - FixSmallMode 
-  * i - FixSelfIntersectionMode 
-  * n - FixNotchedEdgesMode 
+  * l -- FixLackingMode 
+  * o -- FixOrientationMode 
+  * h -- FixShiftedMode 
+  * m -- FixMissingSeamMode 
+  * d -- FixDegeneratedMode 
+  * s -- FixSmallMode 
+  * i -- FixSelfIntersectionMode 
+  * n -- FixNotchedEdgesMode 
 For enhanced message output, use switch '+?' 
 
 **Example:**
@@ -9720,7 +9720,7 @@ DT_ClosedSplit <result> <shape>
 ~~~~~
 
 Divides all closed faces in the shape (for example cone) and returns result of given shape into shape, which is given as parameter result. Number of faces in resulting shapes will be increased. 
-Note: Closed face – it’s face with one or more seam. 
+Note: A closed face is a face with one or more seam. 
 
 **Example:**
 ~~~~~
@@ -9911,7 +9911,7 @@ void MyPack::CurveCommands(Draw_Interpretor& theCommands)
 ... 
 char* g = "Advanced curves creation"; 
 
-theCommands.Add ( "myadvcurve", "myadvcurve name p1 p2 p3 – Creates my advanced curve from points", 
+theCommands.Add ( "myadvcurve", "myadvcurve name p1 p2 p3 - Creates my advanced curve from points", 
                   __FILE__, myadvcurve, g ); 
 ... 
 } 
@@ -9946,7 +9946,7 @@ DPLUGIN(MyPack)
 As mentioned above, the plug-in resource file must be compliant with Open CASCADE Technology requirements (see *Resource_Manager.cdl* file for details). In particular, it should contain keys separated from their values by a colon (;:;). 
 For every created plug-in there must be a key. For better readability and comprehension it is recommended to have some meaningful name. 
 Thus, the resource file must contain a line mapping this name (key) to the library name. The latter should be without file extension (.dll on Windows, .so on Unix/Linux) and without the ;lib; prefix on Unix/Linux. 
-For several plug-ins one resource file can be created. In such case, keys denoting plug-ins can be combined into groups, these groups - into their groups and so on (thereby creating some hierarchy). Any new parent key must have its value as a sequence of child keys separated by spaces, tabs or commas. Keys should form a tree without cyclic dependencies. 
+For several plug-ins one resource file can be created. In such case, keys denoting plug-ins can be combined into groups, these groups -- into their groups and so on (thereby creating some hierarchy). Any new parent key must have its value as a sequence of child keys separated by spaces, tabs or commas. Keys should form a tree without cyclic dependencies. 
 
 **Examples** (file MyDrawPlugin): 
 ~~~~~

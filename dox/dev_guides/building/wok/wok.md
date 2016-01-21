@@ -115,14 +115,14 @@ and third-party components required for building OCCT.
   LOC:dev:occt> wgenproj [ -target=<TARGET> ] [ -no_wprocess ]
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TARGET:
-  * *vc8* - Visual Studio 2005;
-  * *vc9* - Visual Studio 2008;
-  * *vc10* - Visual Studio 2010;
-  * *vc11* - Visual Studio 2012;
-  * *cbp* - CodeBlocks;
-  * *cmake* - CMake;
-  * *amk* - AutoMake;
-  * *xcd* - Xcode;
+  * *vc8* -- Visual Studio 2005;
+  * *vc9* -- Visual Studio 2008;
+  * *vc10* -- Visual Studio 2010;
+  * *vc11* -- Visual Studio 2012;
+  * *cbp* -- CodeBlocks;
+  * *cmake* -- CMake;
+  * *amk* -- AutoMake;
+  * *xcd* -- Xcode;
   * <i>-no_wprocess</i> option skips generation of derived headers and source files.
 
 Note that this command takes several minutes to complete at the first call. 
@@ -135,14 +135,14 @@ To regenerate derived headers and source files without regeneration of projects 
   LOC:dev:occt> wprocess -DGroups=Src,Xcpp
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The generated building project has been placed into <i>$CASROOT/adm</i> folder:
-  * for vc8 - <i>$CASROOT/adm/msvc/vc8</i>;
-  * for vc9 - <i>$CASROOT/adm/msvc/vc9</i>;
-  * for vc10 - <i>$CASROOT/adm/msvc/vc10</i>;
-  * for vc11 - <i>$CASROOT/adm/msvc/vc11</i>;
-  * for cbp - <i>$CASROOT/adm/\<OS\>/cbp</i>;
-  * for cmake - <i>$CASROOT/adm/cmake</i>;
-  * for amk - <i>$CASROOT/adm/lin/amk</i>;
-  * xcd - <i>$CASROOT/adm/\<OS\>/xcd</i>
+  * for vc8 -- <i>$CASROOT/adm/msvc/vc8</i>;
+  * for vc9 -- <i>$CASROOT/adm/msvc/vc9</i>;
+  * for vc10 -- <i>$CASROOT/adm/msvc/vc10</i>;
+  * for vc11 -- <i>$CASROOT/adm/msvc/vc11</i>;
+  * for cbp -- <i>$CASROOT/adm/\<OS\>/cbp</i>;
+  * for cmake -- <i>$CASROOT/adm/cmake</i>;
+  * for amk -- <i>$CASROOT/adm/lin/amk</i>;
+  * xcd -- <i>$CASROOT/adm/\<OS\>/xcd</i>
 
 @section wok4  Generation of documentation
 
@@ -152,11 +152,11 @@ The generated building project has been placed into <i>$CASROOT/adm</i> folder:
   :LOC:dev:occt> wgendoc 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following options can be used: 
-  * <i>-wb=\<workbench name\></i>  the name of OCCT workbench (the current one by default);
-  * <i>-m=\<list of modules\></i> the list of modules that will be contained in the documentation;
-  * <i>-outdir=\<path\></i> the output directory for the documentation;
-  * <i>-chm</i>  the option to generate CHM file;
-  * <i>-hhc=\<path\></i> the path to HTML Help Compiler *hhc.exe* or equivalent;
-  * <i>-qthelp=\<path\></i> the option to generate Qt Help file, where <i>\<path\></i> is the required path to *qthelpgenerator* executable;
-  * <i>-doxygen=\<path\></i> the path to Doxygen executable;
-  * <i>-dot=\<path\></i> the path to GraphViz dot executable.
+  * <i>-wb=\<workbench name\></i> -- the name of OCCT workbench (the current one by default);
+  * <i>-m=\<list of modules\></i> -- the list of modules that will be contained in the documentation;
+  * <i>-outdir=\<path\></i> -- the output directory for the documentation;
+  * <i>-chm</i> -- the option to generate CHM file;
+  * <i>-hhc=\<path\></i> -- the path to HTML Help Compiler *hhc.exe* or equivalent;
+  * <i>-qthelp=\<path\></i> -- the option to generate Qt Help file, where <i>\<path\></i> is the required path to *qthelpgenerator* executable;
+  * <i>-doxygen=\<path\></i> -- the path to Doxygen executable;
+  * <i>-dot=\<path\></i> -- the path to GraphViz dot executable.

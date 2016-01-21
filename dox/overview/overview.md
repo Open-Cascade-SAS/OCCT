@@ -59,8 +59,8 @@ OPEN CASCADE S.A.S.
 
 **Mac** and the Mac logo are trademarks of Apple Inc., registered in the U.S. and other countries.
 
- Acknowledgements
-------------------
+ Acknowledgments
+-----------------
 
 The following parties are acknowledged for producing tools which are used within 
 Open CASCADE Technology libraries or for release preparation.
@@ -115,7 +115,7 @@ implementation of 3D viewer. OpenGL specification is developed by the
 Khronos group, http://www.khronos.org/opengl/. OCCT code includes header 
 file *glext.h* obtained from Khronos web site.
 
-**VTK** - The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage http://www.vtk.org/.
+**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage http://www.vtk.org/.
 
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
@@ -312,7 +312,7 @@ To run any Open CASCADE Technology application you need to set the environment v
 
 You can define the environment variables with env.bat script located in the 
 $CASROOT folder. This script accepts two arguments to be used: 
-the version of Visual Studio (vc8 - vc12) and the architecture (win32 or win64).
+the version of Visual Studio (vc8 -- vc12) and the architecture (win32 or win64).
 
 The additional environment settings necessary for compiling OCCT libraries and samples 
 by Microsoft Visual Studio can be set using script custom.bat located in the same folder. 
@@ -569,9 +569,9 @@ There are two samples are representing usage OCCT framework on Android mobile pl
 jniviewer
 @image html /overview/images/samples_java_android_occt.jpg
 @image latex /overview/images/samples_java_android_occt.jpg
-Java - See \subpage samples_java_android_occt "Readme" for details.
+Java -- See \subpage samples_java_android_occt "Readme" for details.
 
 AndroidQt
 @image html /overview/images/samples_qml_android_occt.jpg
 @image latex /overview/images/samples_qml_android_occt.jpg
-Qt - See \subpage samples_qml_android_occt "Readme" for details.
+Qt -- See \subpage samples_qml_android_occt "Readme" for details.

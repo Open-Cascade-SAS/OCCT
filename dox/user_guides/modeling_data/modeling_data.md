@@ -452,8 +452,8 @@ and, in particular, to compute the point of parameter u on a curve and the deriv
 
 As a consequence of the parameterization, a <i> Geom2d </i> curve is naturally oriented.
 
-Parameterization and orientation differentiate elementary <i>Geom2d </i>curves from their
-equivalent as provided by <i> gp</i> package. <i>  Geom2d</i> package provides conversion
+Parameterization and orientation differentiate elementary <i>Geom2d</i>curves from their
+equivalent as provided by <i> gp</i> package. <i>Geom2d</i> package provides conversion
 functions to transform a <i> Geom2d</i> object into a <i> gp</i> object, and vice-versa, when this is possible.
 
 Moreover, <i> Geom2d</i> package provides more complex curves, including Bezier curves,
@@ -641,10 +641,10 @@ A surface (for two parameters U and V) has the following local properties:
 - Gaussian curvature
 
 The following methods are available:
-* *CLProps* - calculates the local properties of a curve (tangency, curvature,normal); 
-* *CurAndInf2d* - calculates the maximum and minimum curvatures and the inflection points of 2d curves; 
-* *SLProps* - calculates the local properties of a surface (tangency, the normal and curvature). 
-* *Continuity* - calculates regularity at the junction of two curves. 
+* *CLProps* -- calculates the local properties of a curve (tangency, curvature,normal); 
+* *CurAndInf2d* -- calculates the maximum and minimum curvatures and the inflection points of 2d curves; 
+* *SLProps* -- calculates the local properties of a surface (tangency, the normal and curvature). 
+* *Continuity* -- calculates regularity at the junction of two curves. 
 
 Note that the B-spline curve and surface are accepted but they are not cut into pieces of the desired continuity. It is the global continuity, which is seen. 
 
@@ -686,14 +686,14 @@ Topological library allows you to build pure topological data structures. Topolo
 
 You can, for example, represent a single object made of several distinct bodies containing embedded curves and surfaces connected or non-connected to an outer boundary.
 
-Abstract topological data structure describes a basic entity - a shape, which can be divided into the following component topologies:
-  * Vertex - a zero-dimensional shape corresponding to a point in geometry; 
-  * Edge - a shape corresponding to a curve, and bound by a vertex at each extremity;
-  * Wire - a sequence of edges connected by their vertices; 
-  * Face - part of a plane (in 2D geometry) or a surface (in 3D geometry) bounded by a closed wire;
-  * Shell - a collection of faces connected by some edges of their wire boundaries; 
-  * Solid - a part of 3D space bound by a shell; 
-  * Compound solid - a collection of solids. 
+Abstract topological data structure describes a basic entity -- a shape, which can be divided into the following component topologies:
+  * Vertex -- a zero-dimensional shape corresponding to a point in geometry; 
+  * Edge -- a shape corresponding to a curve, and bound by a vertex at each extremity;
+  * Wire -- a sequence of edges connected by their vertices; 
+  * Face -- part of a plane (in 2D geometry) or a surface (in 3D geometry) bounded by a closed wire;
+  * Shell -- a collection of faces connected by some edges of their wire boundaries; 
+  * Solid -- a part of 3D space bound by a shell; 
+  * Compound solid -- a collection of solids. 
 
 The wire and the solid can be either infinite or closed.
 
@@ -756,15 +756,15 @@ The **TopAbs** package provides general enumerations describing the basic concep
 @subsubsection occt_modat_5_2_1 Topological types
 
 TopAbs contains the *TopAbs_ShapeEnum* enumeration,which lists the different topological types: 
-- COMPOUND - a group of any type of topological objects.
-- COMPSOLID - a composite solid is a set of solids connected by their faces. It expands the notions of WIRE and SHELL to solids.
-- SOLID - a part of space limited by shells. It is three dimensional.
-- SHELL - a set of faces connected by their edges. A shell can be open or closed.
-- FACE - in 2D it is a part of a plane; in 3D it is a part of a surface. Its geometry is constrained (trimmed) by contours. It is two dimensional.
-- WIRE - a set of edges connected by their vertices. It can be an open or closed contour depending on whether the edges are linked or not.
-- EDGE - a topological element corresponding to a restrained curve. An edge is generally limited by vertices. It has one dimension.
-- VERTEX - a topological element corresponding to a point. It has zero dimension.
-- SHAPE - a generic term covering all of the above.
+- COMPOUND -- a group of any type of topological objects.
+- COMPSOLID -- a composite solid is a set of solids connected by their faces. It expands the notions of WIRE and SHELL to solids.
+- SOLID -- a part of space limited by shells. It is three dimensional.
+- SHELL -- a set of faces connected by their edges. A shell can be open or closed.
+- FACE -- in 2D it is a part of a plane; in 3D it is a part of a surface. Its geometry is constrained (trimmed) by contours. It is two dimensional.
+- WIRE -- a set of edges connected by their vertices. It can be an open or closed contour depending on whether the edges are linked or not.
+- EDGE -- a topological element corresponding to a restrained curve. An edge is generally limited by vertices. It has one dimension.
+- VERTEX -- a topological element corresponding to a point. It has zero dimension.
+- SHAPE -- a generic term covering all of the above.
 
 A topological model can be considered as a graph of objects with adjacency relationships. When modeling a part in 2D or 3D space it must belong to one of the categories listed in the ShapeEnum enumeration. The TopAbspackage lists all the objects, which can be found in any model. It cannot be extended but a subset can be used. For example, the notion of solid is useless in 2D. 
 
@@ -799,7 +799,7 @@ Based on this default region the orientation allows definition of the region to 
 @image html /user_guides/modeling_data/images/modeling_data_image007.png "Four Orientations"
 @image latex /user_guides/modeling_data/images/modeling_data_image007.png "Four Orientations"
 
-The notion of orientation is a very general one, and it can be used in any context where regions or boundaries appear. Thus, for example, when describing the intersection of an edge and a contour it is possible to describe not only the vertex of intersection but also how the edge crosses the contour considering it as a boundary. The edge would therefore be divided into two regions - exterior and interior - with the intersection vertex as the boundary. Thus an orientation can be associated with an intersection vertex as in the following figure: 
+The notion of orientation is a very general one, and it can be used in any context where regions or boundaries appear. Thus, for example, when describing the intersection of an edge and a contour it is possible to describe not only the vertex of intersection but also how the edge crosses the contour considering it as a boundary. The edge would therefore be divided into two regions: exterior and interior and the intersection vertex would be the boundary. Thus an orientation can be associated with an intersection vertex as in the following figure: 
 
 | Orientation | Association |
 | :-------- | :-------- |
@@ -847,7 +847,7 @@ OCCT topological descriptions also allow the simple shapes defined in these term
 
 Listing shapes in order of complexity from vertex to composite solid leads us to the notion of the data structure as knowledge of how to break a shape down into a set of simpler shapes. This is in fact, the purpose of the *TopoDS* package. 
 
-The model of a shape is a shareable data structure because it can be used by other shapes. (An edge can be used by more than one face of a solid). A shareable data structure is handled by reference. When a simple reference is insufficient, two pieces of information are added - an orientation and a local coordinate reference. 
+The model of a shape is a shareable data structure because it can be used by other shapes. (An edge can be used by more than one face of a solid). A shareable data structure is handled by reference. When a simple reference is insufficient, two pieces of information are added: an orientation and a local coordinate reference. 
 - An orientation tells how the referenced shape is used in a boundary (*Orientation* from *TopAbs*). 
 - A local reference coordinate (*Location* from *TopLoc*) allows referencing a shape at a position different from that of its definition. 
 
@@ -1070,10 +1070,10 @@ The following steps are performed:
 **TopTools** package contains tools for exploiting the *TopoDS* data structure. It is an instantiation of the tools from *TCollection* package with the Shape classes of *TopoDS*. 
 
 
-* *TopTools_Array1OfShape, HArray1OfShape* -  Instantiation of the *TCollection_Array1* and *TCollection_HArray1* with *TopoDS_Shape*. 
-* *TopTools_SequenceOfShape* - Instantiation of the *TCollection_Sequence* with *TopoDS_Shape*. 
-* *TopTools_MapOfShape* - Instantiation of the *TCollection_Map*. Allows the construction of sets of shapes. 
-* *TopTools_IndexedMapOfShape* -	Instantiation of the *TCollection_IndexedMap*. Allows the construction of tables of shapes and other data structures. 
+* *TopTools_Array1OfShape, HArray1OfShape* -- instantiation of the *TCollection_Array1* and *TCollection_HArray1* with *TopoDS_Shape*. 
+* *TopTools_SequenceOfShape* -- instantiation of the *TCollection_Sequence* with *TopoDS_Shape*. 
+* *TopTools_MapOfShape* - instantiation of the *TCollection_Map*. Allows the construction of sets of shapes. 
+* *TopTools_IndexedMapOfShape* - instantiation of the *TCollection_IndexedMap*. Allows the construction of tables of shapes and other data structures. 
 
 With a *TopTools_Map*, a set of references to Shapes can be kept without duplication. 
 The following example counts the size of a data structure as a number of *TShapes*. 

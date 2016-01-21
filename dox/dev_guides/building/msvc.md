@@ -13,11 +13,11 @@ paragraph 1 of \ref occt_dev_guides__building for instructions.
 
 1. Edit file *custom.bat* to define the environment: 
 
-   - *VCVER* - version of Visual Studio (vc8, vc9, vc10, vc11 or vc12), 
+   - *VCVER* -- version of Visual Studio (vc8, vc9, vc10, vc11 or vc12), 
              and relevant *VCVARS* path
-   - *ARCH* - architecture (32 or 64), affects only *PATH* variable for execution
-   - <i>HAVE_*</i> - flags to enable or disable use of optional third-party products
-   - CSF_OPT_* - paths to search for includes and binaries of all used 
+   - *ARCH* -- architecture (32 or 64), affects only *PATH* variable for execution
+   - <i>HAVE_*</i> -- flags to enable or disable use of optional third-party products
+   - CSF_OPT_* -- paths to search for includes and binaries of all used 
                  third-party products
 
 2. Launch *msvc.bat* to start Visual Studio with all necessary environment 

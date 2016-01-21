@@ -230,10 +230,10 @@ as the left-hand side of the curve in relation to its orientation.
 This technique of qualification of a solution, in relation to the curves to which
 it is tangential, can be used in all algorithms for constructing a circle or a straight
 line by geometric constraints. Four qualifiers are used:
-  * **Enclosing** - the solution(s) must enclose the argument;
-  * **Enclosed** - the solution(s) must be enclosed by the argument;
-  * **Outside** - the solution(s) and the argument must be external to one another;
-  * **Unqualified** - the relative position is not qualified, i.e. all solutions apply.
+  * **Enclosing** -- the solution(s) must enclose the argument;
+  * **Enclosed** -- the solution(s) must be enclosed by the argument;
+  * **Outside** -- the solution(s) and the argument must be external to one another;
+  * **Unqualified** -- the relative position is not qualified, i.e. all solutions apply.
     
 It is possible to create expressions using the qualifiers,  for example:
 ~~~~~
@@ -588,9 +588,9 @@ The class *GeomFill_BoundWithSurf* allows defining a boundary for the surface to
 
 The enumerations *FillingStyle* specify the styles used to build the surface. These include: 
 
-  * *Stretch* - the style with the flattest patches
-  * *Coons* - a rounded style with less depth than *Curved*
-  * *Curved* - the style with the most rounded patches.
+  * *Stretch* -- the style with the flattest patches
+  * *Coons* -- a rounded style with less depth than *Curved*
+  * *Curved* -- the style with the most rounded patches.
 
 @image html /user_guides/modeling_algos/images/modeling_algos_image018.png "Intersecting filleted edges with different radii leave a gap, is filled by a surface"
 @image latex /user_guides/modeling_algos/images/modeling_algos_image018.png "Intersecting filleted edges with different radii leave a gap, is filled by a surface"
@@ -1318,13 +1318,13 @@ If *BRepBuilderAPI_MakeEdge* is used as a class, it can provide two vertices. Th
 
 The *Error* method  returns a term of the *BRepBuilderAPI_EdgeError* enumeration. It can be used to analyze the error when *IsDone* method returns False. The terms are: 
 
-  * **EdgeDone** - No error occurred, *IsDone* returns True. 
-  * **PointProjectionFailed** - No parameters were given, but the projection of  the 3D points on the curve failed. This happens if the point distance to the  curve is greater than the precision. 
-  * **ParameterOutOfRange** - The given parameters are not in the range  *C->FirstParameter()*, *C->LastParameter()* 
-  * **DifferentPointsOnClosedCurve** -  The  two vertices or points have different locations but they are the extremities of  a closed curve. 
-  * **PointWithInfiniteParameter** - A finite coordinate point was associated with an  infinite parameter (see the Precision package for a definition of infinite  values). 
-  * **DifferentsPointAndParameter**  - The distance of the 3D point and the point  evaluated on the curve with the parameter is greater than the precision. 
-  * **LineThroughIdenticPoints** - Two identical points were given to define a line  (construction of an edge without curve), *gp::Resolution* is used to test confusion . 
+  * **EdgeDone** -- No error occurred, *IsDone* returns True. 
+  * **PointProjectionFailed** -- No parameters were given, but the projection of  the 3D points on the curve failed. This happens if the point distance to the  curve is greater than the precision. 
+  * **ParameterOutOfRange** -- The given parameters are not in the range  *C->FirstParameter()*, *C->LastParameter()* 
+  * **DifferentPointsOnClosedCurve** --  The  two vertices or points have different locations but they are the extremities of  a closed curve. 
+  * **PointWithInfiniteParameter** -- A finite coordinate point was associated with an  infinite parameter (see the Precision package for a definition of infinite  values). 
+  * **DifferentsPointAndParameter**  -- The distance of the 3D point and the point  evaluated on the curve with the parameter is greater than the precision. 
+  * **LineThroughIdenticPoints** -- Two identical points were given to define a line  (construction of an edge without curve), *gp::Resolution* is used to test confusion . 
 
 The following example  creates a rectangle centered on the origin of dimensions H, L with fillets of radius R. The edges and the vertices are stored in the arrays *theEdges* and *theVertices*. We use class *Array1OfShape* (i.e. not arrays of edges or vertices).  See the image below. 
 
@@ -1541,11 +1541,11 @@ To add more than one  wire an instance of the *BRepBuilderAPI_MakeFace* class ca
 
 The *Error* method returns  an error status, which is a term from the *BRepBuilderAPI_FaceError* enumeration. 
 
-* *FaceDone* - no  error occurred. 
-* *NoFace* - no initialization of the algorithm; an empty constructor was used. 
-* *NotPlanar* - no  surface was given and the wire was not planar. 
-* *CurveProjectionFailed* - no curve was found  in the parametric space of the surface for an edge. 
-* *ParametersOutOfRange* - the parameters  *umin, umax, vmin, vmax* are out of the surface. 
+* *FaceDone* -- no  error occurred. 
+* *NoFace* -- no initialization of the algorithm; an empty constructor was used. 
+* *NotPlanar* -- no  surface was given and the wire was not planar. 
+* *CurveProjectionFailed* -- no curve was found  in the parametric space of the surface for an edge. 
+* *ParametersOutOfRange* -- the parameters  *umin, umax, vmin, vmax* are out of the surface. 
 
 @subsection occt_modalg_3_6 Wire
 The wire is a composite shape built not from a geometry, but by the assembly of edges. *BRepBuilderAPI_MakeWire* class can build a wire from one or more edges or connect new edges to an  existing wire. 
@@ -1587,10 +1587,10 @@ return MW;
 BRepBuilderAPI_MakeWire class can return the last edge added to the wire (Edge  method). This edge can be different from the original edge if it was copied. 
 
 The Error method returns  a term of the *BRepBuilderAPI_WireError* enumeration: 
-*WireDone* - no  error occurred. 
-*EmptyWire* - no  initialization of the algorithm, an empty constructor was used. 
-*DisconnectedWire* - the last added edge was not connected to the wire. 
-*NonManifoldWire* - the  wire with some singularity. 
+*WireDone* -- no  error occurred. 
+*EmptyWire* -- no  initialization of the algorithm, an empty constructor was used. 
+*DisconnectedWire* -- the last added edge was not connected to the wire. 
+*NonManifoldWire* -- the  wire with some singularity. 
 
 @subsection occt_modalg_3_7 Shell
 The shell is a composite shape built not from a geometry, but by the assembly of faces.
@@ -1744,10 +1744,10 @@ TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H);
 @subsubsection occt_modalg_4_1_6 Sphere
 *BRepPrimAPI_MakeSphere* class allows creating spherical primitives. Like a cylinder, a  sphere is created either in the default coordinate system or in a given  coordinate system *gp_Ax2*. There are four constructions: 
 
-  * From a radius - builds a full  sphere. 
-  * From a radius and an angle - builds  a lune (digon).
-  * From a radius and two angles - builds a wraparound spherical segment between two latitudes. The angles *a1* and *a2* must follow the relation: <i>PI/2 <= a1 < a2 <= PI/2 </i>. 
-  * From a radius and three angles - a combination of two previous methods builds a portion of spherical segment. 
+  * From a radius -- builds a full  sphere. 
+  * From a radius and an angle -- builds  a lune (digon).
+  * From a radius and two angles -- builds a wraparound spherical segment between two latitudes. The angles *a1* and *a2* must follow the relation: <i>PI/2 <= a1 < a2 <= PI/2 </i>. 
+  * From a radius and three angles -- a combination of two previous methods builds a portion of spherical segment. 
 
 The following code  builds four spheres from a radius and three angles. 
 
@@ -1769,10 +1769,10 @@ Note that we could  equally well choose to create Shells instead of Solids.
 @subsubsection occt_modalg_4_1_7 Torus
 *BRepPrimAPI_MakeTorus* class allows creating toroidal primitives. Like the other  primitives, a torus is created either in the default coordinate system or in a  given coordinate system *gp_Ax2*. There are four constructions similar to the  sphere constructions: 
 
-  * Two radii - builds a full  torus.
-  * Two radii and an angle - builds  an angular torus segment.
-  * Two radii and two angles -  builds a wraparound torus segment between two radial planes. The angles a1, a2 must follow  the relation 0 < a2 - a1 < 2*PI. 
-  * Two radii and three angles - a combination of two previous methods builds a portion of torus segment.
+  * Two radii -- builds a full  torus.
+  * Two radii and an angle -- builds  an angular torus segment.
+  * Two radii and two angles --  builds a wraparound torus segment between two radial planes. The angles a1, a2 must follow  the relation 0 < a2 - a1 < 2*PI. 
+  * Two radii and three angles -- a combination of two previous methods builds a portion of torus segment.
 
 @image html /user_guides/modeling_algos/images/modeling_algos_image032.png "Examples of Tori"
 @image latex /user_guides/modeling_algos/images/modeling_algos_image032.png "Examples of Tori"
@@ -1819,9 +1819,9 @@ It is forbidden to sweep  Solids and Composite Solids. A Compound generates a Co
 @image latex /user_guides/modeling_algos/images/modeling_algos_image033.png "Generating a  sweep"
 
 *BRepPrimAPI_MakeSweep class* is a deferred class used as a root of the the following sweep classes:
-* *BRepPrimAPI_MakePrism* - produces a linear sweep
-* *BRepPrimAPI_MakeRevol* - produces a rotational sweep
-* *BRepPrimAPI_MakePipe* - produces a general sweep. 
+* *BRepPrimAPI_MakePrism* -- produces a linear sweep
+* *BRepPrimAPI_MakeRevol* -- produces a rotational sweep
+* *BRepPrimAPI_MakePipe* -- produces a general sweep. 
 
 
 @subsubsection occt_modalg_4_2_2 Prism
@@ -2588,7 +2588,7 @@ TopoDS_Shape res1 = MKPipe.Shape();
 
 Mechanical features include ribs, protrusions and grooves (or slots), depressions along planar (linear) surfaces or revolution surfaces. 
 
-The semantics of  mechanical features is built around giving thickness to a contour. This  thickness can either be symmetrical - on one side of the contour - or  dissymmetrical - on both sides. As in the semantics of form features, the  thickness is defined by construction of shapes in specific contexts. 
+The semantics of  mechanical features is built around giving thickness to a contour. This  thickness can either be symmetrical -- on one side of the contour -- or  dissymmetrical -- on both sides. As in the semantics of form features, the  thickness is defined by construction of shapes in specific contexts. 
 
 The development contexts  differ, however, in the case of mechanical features. 
 Here they include  extrusion: 
@@ -2690,9 +2690,9 @@ The class *BRepFeat_SplitShape* is used to split faces of a shape into wires or 
 
 The class is created or  initialized from a shape (the basic shape). 
 Three Add methods are  available: 
-* *Add(Wire, Face)* - adds  a new wire on a face of the basic shape. 
-* *Add(Edge, Face)* - adds  a new edge on a face of the basic shape. 
-* *Add(EdgeNew, EdgeOld)* - adds  a new edge on an existing one (the old edge must contain the new edge). 
+* *Add(Wire, Face)* -- adds  a new wire on a face of the basic shape. 
+* *Add(Edge, Face)* -- adds  a new edge on a face of the basic shape. 
+* *Add(EdgeNew, EdgeOld)* -- adds  a new edge on an existing one (the old edge must contain the new edge). 
 
 **Note** The added wires and edges must  define closed wires on faces or wires located between two  existing edges. Existing edges must not be intersected. 
 
@@ -2903,7 +2903,7 @@ const Standard_Real anAngularDeflection = 0.5;
 BRepMesh_IncrementalMesh aMesh(aShape, aLinearDeflection, Standard_False, anAngularDeflection);
 ~~~~~
 
-The default meshing algorithm *BRepMesh_IncrementalMesh* has two major options to define triangulation – linear and angular deflections. 
+The default meshing algorithm *BRepMesh_IncrementalMesh* has two major options to define triangulation -- linear and angular deflections. 
 
 At the first step all edges from a face are discretized according to the specified parameters. 
 

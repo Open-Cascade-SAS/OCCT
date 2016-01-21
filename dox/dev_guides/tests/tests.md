@@ -101,7 +101,7 @@ Example:
 The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See @ref testmanual_details_results "Interpretation of test results" for details.
 
 The results and detailed logs of the tests are saved by default to a new subdirectory of the subdirectory *results* in the current folder, whose name is generated automatically using the current date and time, prefixed by Git branch name (if Git is available and current sources are managed by Git).
-If necessary, a non-default output directory can be specified using option <i> –outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>–overwrite</i> to allow writing results in the existing non-empty directory. 
+If necessary, a non-default output directory can be specified using option <i> -outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>-overwrite</i> to allow writing results in the existing non-empty directory. 
 
 Example:
 ~~~~~
@@ -199,7 +199,7 @@ Example:
 * Added files:
 
 ~~~~~
-git status –short
+git status -short
 A tests/bugs/heal/data/bug210_a.brep
 A tests/bugs/heal/data/bug210_b.brep
 A tests/bugs/heal/bug210_1
@@ -570,7 +570,7 @@ Other Tcl variables defined during the test execution are:
 
 In order to ensure that the test works as expected in different environments, observe the following additional rules:
 * Avoid using external commands such as *grep, rm,* etc., as these commands can be absent on another system (e.g. on Windows); use facilities provided by Tcl instead.
-* Do not put call to *locate_data_file* in catch statement – this can prevent correct interpretation of the missing data file by the test system.
+* Do not put call to *locate_data_file* in catch statement -- this can prevent correct interpretation of the missing data file by the test system.
 * Do not use commands *decho* and *dlog* in the test script, to avoid interference with use of these commands by the test system.
 
 @subsection testmanual_details_results Interpretation of test results
@@ -705,15 +705,15 @@ testdiff dir1 dir2 [groupname [gridname]] [options...]
 Here *dir1* and *dir2* are directories containing logs of two test runs.
 
 Possible options are:
-* <i>-save \<filename\> </i> - saves the resulting log in a specified file (<i>$dir1/diff-$dir2.log</i> by default). HTML log is saved with the same name and extension .html;
-* <i>-status {same|ok|all}</i> - allows filtering compared cases by their status:
-	* *same* - only cases with same status are compared (default);
-	* *ok*   - only cases with OK status in both logs are compared;
-	* *all*  - results are compared regardless of status;
-* <i>-verbose \<level\> </i> - defines the scope of output data:
-	* 1 - outputs only differences;
-	* 2 - additionally outputs the list of logs and directories present in one of directories only;
-	* 3 - (by default) additionally outputs progress messages;
+* <i>-save \<filename\> </i> -- saves the resulting log in a specified file (<i>$dir1/diff-$dir2.log</i> by default). HTML log is saved with the same name and extension .html;
+* <i>-status {same|ok|all}</i> -- allows filtering compared cases by their status:
+	* *same* -- only cases with same status are compared (default);
+	* *ok*   -- only cases with OK status in both logs are compared;
+	* *all*  -- results are compared regardless of status;
+* <i>-verbose \<level\> </i> -- defines the scope of output data:
+	* 1 -- outputs only differences;
+	* 2 -- additionally outputs the list of logs and directories present in one of directories only;
+	* 3 -- (by default) additionally outputs progress messages;
 
 Example:
 
@@ -760,9 +760,9 @@ This group allows testing Boolean operations.
 DRAW module: MODELING (packages *BOPTest* and *BRepTest*).
 
 Grids names are based on name of the command used, with suffixes: 
-* <i>_2d</i> – for tests operating with 2d objects (wires, wires, 3d objects, etc.); 
-* <i>_simple</i> – for tests operating on simple shapes (boxes, cylinders, toruses, etc.);
-* <i>_complex</i> – for tests dealing with complex shapes.
+* <i>_2d</i> -- for tests operating with 2d objects (wires, wires, 3d objects, etc.); 
+* <i>_simple</i> -- for tests operating on simple shapes (boxes, cylinders, toruses, etc.);
+* <i>_complex</i> -- for tests dealing with complex shapes.
 
 | Grid	| Commands	| Functionality |
 | :---- | :----- | :------- | 
@@ -1223,9 +1223,9 @@ To check pixel color command *checkcolor* can be used.
 
 Use: checkcolor x y red green blue
 
-  x y - pixel coordinates
+  x, y -- pixel coordinates
 
-  red green blue - expected pixel color (values from 0 to 1)
+  red green blue -- expected pixel color (values from 0 to 1)
 
 This procedure checks color with tolerance (5x5 area)
 

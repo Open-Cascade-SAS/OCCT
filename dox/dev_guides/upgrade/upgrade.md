@@ -438,7 +438,7 @@ To display this object use command *vdisplay*. For example:
 ~~~~~
 pload VISUALIZATION
 vinit
-vcolorscale cs –demo
+vcolorscale cs -demo
 pload MODELING
 box b 100 100 100
 vdisplay b

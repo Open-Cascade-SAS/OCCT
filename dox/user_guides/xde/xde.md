@@ -20,9 +20,9 @@ The XDE component requires @ref occt_user_guides__shape_healing "Shape Healing" 
 @subsection occt_xde_1_1 Basic terms
 
 For better understanding of XDE, certain key terms are defined: 
-* **Shape** - a standalone shape, which does not belong to the assembly structure.
-* **Instance** - a replication of another shape with a location that can be the same location or a different one.
-* **Assembly** - a construction that is either a root or a sub-assembly. 
+* **Shape** -- a standalone shape, which does not belong to the assembly structure.
+* **Instance** -- a replication of another shape with a location that can be the same location or a different one.
+* **Assembly** -- a construction that is either a root or a sub-assembly. 
 
 @subsection occt_xde_1_2 XDE Organization
 
