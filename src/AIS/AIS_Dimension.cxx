@@ -90,7 +90,7 @@ namespace
   // default selection priorities
   static const Standard_Integer THE_NEUTRAL_SEL_PRIORITY = 5;
   static const Standard_Integer THE_LOCAL_SEL_PRIORITY   = 6;
-};
+}
 
 //=======================================================================
 //function : Constructor

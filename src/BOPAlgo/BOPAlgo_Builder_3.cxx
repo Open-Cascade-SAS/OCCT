@@ -358,7 +358,7 @@ void BOPAlgo_FillIn3DParts::Perform()
       }
     }
   } // for (k=0; k<aNbFP; ++k) {
-};
+}
 //=======================================================================
 // function: MapEdgesAndFaces
 // purpose: 

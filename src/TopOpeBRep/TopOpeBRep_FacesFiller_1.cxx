@@ -357,7 +357,7 @@ static Standard_Boolean FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
   return ok;
 } 
 
-Standard_EXPORT Standard_Boolean GLOBAL_btcx = Standard_False;void debtcx(){};
+Standard_EXPORT Standard_Boolean GLOBAL_btcx = Standard_False;void debtcx(){}
 Standard_EXPORT void debtcxmess(Standard_Integer f1,Standard_Integer f2,Standard_Integer il)
 {cout<<"f1,f2,il : "<<f1<<","<<f2<<","<<il<<endl;cout.flush();debtcx();}
 

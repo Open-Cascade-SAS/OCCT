@@ -4647,7 +4647,7 @@ static Standard_Integer OCC26746(
   return 0;     
 }
 
-DEFINE_STANDARD_HANDLE(QABugs_VertexFilter, SelectMgr_Filter);
+DEFINE_STANDARD_HANDLE(QABugs_VertexFilter, SelectMgr_Filter)
 class QABugs_VertexFilter: public SelectMgr_Filter
 {
 public:

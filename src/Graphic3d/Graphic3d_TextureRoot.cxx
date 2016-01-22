@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot,MMgt_TShared)
 namespace
 {
   static volatile Standard_Integer THE_TEXTURE_COUNTER = 0;
-};
+}
 
 // =======================================================================
 // function : TexturesFolder

@@ -173,7 +173,7 @@ Standard_EXPORT void StandardCallBack_Reset()
 namespace {
   // dummy function for break point
   inline void place_for_break_point () {}
-};
+}
 
 //=======================================================================
 //function : StandardCallBack

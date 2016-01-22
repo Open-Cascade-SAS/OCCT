@@ -60,7 +60,7 @@ namespace
   //! Default flag to control parallelization for BRepMesh_IncrementalMesh
   //! tool returned for Mesh Factory
   static Standard_Boolean IS_IN_PARALLEL = Standard_False;
-};
+}
 
 
 //=======================================================================

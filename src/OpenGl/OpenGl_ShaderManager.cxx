@@ -976,7 +976,7 @@ static void PushAspectMarker (const Handle(OpenGl_Context)&       theCtx,
                           5, aParams);
 }
 
-}; // nameless namespace
+} // nameless namespace
 
 // =======================================================================
 // function : PushMaterialState

@@ -39,7 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Solid,BRepCheck_Result)
 
 //
 class BRepCheck_HSC;
-DEFINE_STANDARD_HANDLE(BRepCheck_HSC, MMgt_TShared);
+DEFINE_STANDARD_HANDLE(BRepCheck_HSC, MMgt_TShared)
 //=======================================================================
 //class    : BRepCheck_HSC
 //purpose  :

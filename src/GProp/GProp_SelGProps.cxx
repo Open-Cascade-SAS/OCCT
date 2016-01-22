@@ -25,7 +25,7 @@
 #include <math_Vector.hxx>
 #include <Standard_NotImplemented.hxx>
 
-GProp_SelGProps::GProp_SelGProps(){};
+GProp_SelGProps::GProp_SelGProps(){}
 
 void GProp_SelGProps::SetLocation(const gp_Pnt& SLocation )
 {

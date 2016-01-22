@@ -60,8 +60,8 @@ namespace
     Standard_Real aLogRadix = Log10 (anAbsValue) / Log10 (FLT_RADIX);
     Standard_Real aExp = Floor (aLogRadix);
     return FLT_EPSILON * Pow (FLT_RADIX, aExp);
-  };
-};
+  }
+}
 
 // =======================================================================
 // function : Graphic3d_Camera

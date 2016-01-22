@@ -631,18 +631,18 @@ Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent, const
     if (Normal_rot.Crossed(prevNormal).IsOpposite(prevTangent, Precision::Angular())) 
       angleAT = -angleAT;
   return angleAT;
-};
+}
 //===============================================================
 // Function : ... (OCC78)
 // Purpose : This family of functions produce conversion of angle utility
 //===============================================================
 static Standard_Real corr2PI_PI(Standard_Real Ang){
   return Ang = (Ang < M_PI? Ang: Ang-2*M_PI);
-};
+}
 static Standard_Real diffAng(Standard_Real A, Standard_Real Ao){
   Standard_Real dA = (A-Ao) - Floor((A-Ao)/2.0/M_PI)*2.0*M_PI;
   return dA = dA >= 0? corr2PI_PI(dA): -corr2PI_PI(-dA);
-};
+}
 //===============================================================
 // Function : CalcAngleAT (OCC78)
 // Purpose : Calculate angle of rotation of trihedron normal and its derivatives relative 
@@ -671,7 +671,7 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
     AngP = AngPo + DAng;
   };
   return AngP;
-};
+}
 //===============================================================
 // Function : D0
 // Purpose :

@@ -25,7 +25,7 @@ namespace
 {
   static const TEL_COLOUR myDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
   static const TCollection_AsciiString THE_EMPTY_KEY;
-};
+}
 
 // =======================================================================
 // function : OpenGl_AspectLine

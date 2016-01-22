@@ -33,7 +33,7 @@ Aspect_GradientBackground::Aspect_GradientBackground( const Quantity_Color& ACol
   SetColor( AColor1 );
   MyColor2 = AColor2;
   MyGradientMethod = AMethod;
-};
+}
 
 
 void Aspect_GradientBackground::SetColors( const Quantity_Color& AColor1,

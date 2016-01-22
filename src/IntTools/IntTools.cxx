@@ -207,7 +207,7 @@ namespace {
   {
     return theLeft.Root() < theRight.Root();
   }
-};
+}
 
 //=======================================================================
 //function : SortRoots

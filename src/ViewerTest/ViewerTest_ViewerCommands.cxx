@@ -6463,7 +6463,7 @@ public:
                             const Standard_ShortReal theAngle);
   DEFINE_STANDARD_RTTI_INLINE(OCC_TextureEnv,Graphic3d_TextureEnv);
 };
-DEFINE_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv);
+DEFINE_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv)
 
 
 

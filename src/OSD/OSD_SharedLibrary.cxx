@@ -43,7 +43,11 @@ extern "C" {void    *dlerror (void);}
 
 #include <dlfcn.h>
 
-extern "C" {size_t  strlen  (const  char*  s      );}
+#ifdef __GNU_LIBRARY__
+extern "C" { size_t strlen(const char* s) __THROW; }
+#else
+extern "C" { size_t strlen(const char* s); }
+#endif
 
 
 #define BAD(X)  ((X) == NULL)

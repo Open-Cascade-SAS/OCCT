@@ -20,7 +20,7 @@
 //=======================================================================
 
 inline Standard_Boolean   GeomLib_Interpolate::IsDone() const 
-{ return  myIsDone ; } ; 
+{ return  myIsDone ; }
 //=======================================================================
 //function : Error
 //purpose  : 

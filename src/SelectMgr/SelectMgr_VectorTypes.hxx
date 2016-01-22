@@ -41,6 +41,6 @@ namespace SelectMgr_MatOp
 
     return aRes;
   }
-};
+}
 
 #endif // _SelectMgr_VectorTypes_HeaderFile

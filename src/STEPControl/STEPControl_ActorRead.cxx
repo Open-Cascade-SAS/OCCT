@@ -192,7 +192,7 @@ namespace {
   // The better way is to pass this information via binder or via TopoDS_Shape itself, however,
   // this is very specific info to do so...
   Standard_Boolean NM_DETECTED = Standard_False;
-};
+}
 
 // ============================================================================
 // Method  : STEPControl_ActorRead::STEPControl_ActorRead  ()    

@@ -45,7 +45,7 @@ namespace
     theLibName += ".so";
   #endif
   }
-};
+}
 
 //=======================================================================
 //function : BRepMesh_DiscretFactory

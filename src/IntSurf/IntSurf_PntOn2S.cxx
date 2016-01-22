@@ -16,7 +16,7 @@
 #include <gp_Pnt.hxx>
 #include <IntSurf_PntOn2S.hxx>
 
-IntSurf_PntOn2S::IntSurf_PntOn2S () : pt(0,0,0),u1(0),v1(0),u2(0),v2(0) {};
+IntSurf_PntOn2S::IntSurf_PntOn2S () : pt(0,0,0),u1(0),v1(0),u2(0),v2(0) {}
 
 void IntSurf_PntOn2S::SetValue (const gp_Pnt& Pt,
 				const Standard_Boolean OnFirst,

@@ -418,7 +418,7 @@ namespace
     aPrsGrp->SetGroupPrimitivesAspect (aBoundaryAspect);
     aPrsGrp->AddPrimitiveArray (aSegments);
   }
-};
+}
 
 // =======================================================================
 // function : ExploreSolids

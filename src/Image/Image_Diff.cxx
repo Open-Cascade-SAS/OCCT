@@ -126,7 +126,7 @@ namespace
         || theFormat == Image_PixMap::ImgRGBA
         || theFormat == Image_PixMap::ImgBGRA;
   }
-};
+}
 
 // =======================================================================
 // function : Image_Diff

@@ -108,7 +108,7 @@ namespace {
       tmp_file->Remove();
   }
 
-};
+}
 
 // MKV 29.03.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)

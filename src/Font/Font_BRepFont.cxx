@@ -62,7 +62,7 @@ namespace
     return theSize / Standard_Real(THE_FONT_SIZE) * 72.0 / Standard_Real(THE_RESOLUTION_DPI);
   }
 
-};
+}
 
 // =======================================================================
 // function : Constructor
