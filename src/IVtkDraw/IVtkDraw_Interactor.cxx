@@ -76,7 +76,7 @@ static void ClearHighlightAndSelection (const Handle(ShapePipelineMap)& theMap,
   }
 }
 
-vtkStandardNewMacro(IVtkDraw_Interactor);
+vtkStandardNewMacro(IVtkDraw_Interactor)
 
 //===========================================================
 // Function : Constructor

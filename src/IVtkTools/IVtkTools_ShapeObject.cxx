@@ -121,7 +121,7 @@ void IVtkTools_ShapeObject::SetShapeSource (IVtkTools_ShapeDataSource* theDataSo
 
 //! @class IVtkTools_ShapeObject 
 //! @brief VTK holder class for OCC shapes to pass them through pipelines.
-vtkStandardNewMacro(IVtkTools_ShapeObject);
+vtkStandardNewMacro(IVtkTools_ShapeObject)
 
 //============================================================================
 //  Method: Constructor

@@ -43,7 +43,8 @@ class IVtkDraw_Interactor : public vtkRenderWindowInteractor
 {
 public:
   static IVtkDraw_Interactor *New();
-  vtkTypeMacro (IVtkDraw_Interactor, vtkRenderWindowInteractor);
+
+  vtkTypeMacro (IVtkDraw_Interactor, vtkRenderWindowInteractor)
 
   virtual void Initialize();
   virtual void Enable();

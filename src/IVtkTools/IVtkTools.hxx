@@ -83,6 +83,6 @@ namespace IVtkTools
   Standard_EXPORT void InitShapeMapper (vtkMapper* theMapper, 
                                         vtkLookupTable* theColorTable);
 
-};
+}
 
 #endif // IVtkTOOLS_H

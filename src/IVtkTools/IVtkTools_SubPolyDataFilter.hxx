@@ -26,7 +26,8 @@
 class IVtkTools_EXPORT IVtkTools_SubPolyDataFilter : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(IVtkTools_SubPolyDataFilter,vtkPolyDataAlgorithm);
+  vtkTypeMacro(IVtkTools_SubPolyDataFilter,vtkPolyDataAlgorithm)
+
   static IVtkTools_SubPolyDataFilter *New();
   void PrintSelf (std::ostream& theOs, vtkIndent theIndent);
 

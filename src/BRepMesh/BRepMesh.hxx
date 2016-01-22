@@ -132,6 +132,7 @@ namespace BRepMesh
   //! Other data structures
   typedef std::pair<HArray1OfSegments, HBndBox2dTree>                                               SegmentsTree;
   typedef NCollection_Array1<SegmentsTree>                                                          Array1OfSegmentsTree;
-}
+
+} // namespace BRepMesh
 
 #endif

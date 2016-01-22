@@ -33,7 +33,8 @@ class IVtkTools_EXPORT IVtkTools_ShapeDataSource : public vtkPolyDataAlgorithm
 {
 public:
 
-  vtkTypeMacro(IVtkTools_ShapeDataSource, vtkPolyDataAlgorithm);
+  vtkTypeMacro(IVtkTools_ShapeDataSource, vtkPolyDataAlgorithm)
+
   static IVtkTools_ShapeDataSource* New();
 
 

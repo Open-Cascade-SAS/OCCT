@@ -30,7 +30,7 @@
 //! before the user starts to select interactively, in order for the OCCT selection
 //! algorithm to prepare its internal selection data.
 
-vtkStandardNewMacro(IVtkTools_ShapePicker);
+vtkStandardNewMacro(IVtkTools_ShapePicker)
 
 //============================================================================
 //  Method: IVtkTools_ShapePicker

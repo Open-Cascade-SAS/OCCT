@@ -23,7 +23,7 @@
 #include <vtkIdTypeArray.h>
 
 
-vtkStandardNewMacro(IVtkTools_SubPolyDataFilter);
+vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
 
 //================================================================
 // Function : Constructor

@@ -19,7 +19,7 @@
 #include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
 
-vtkStandardNewMacro(IVtkTools_DisplayModeFilter);
+vtkStandardNewMacro(IVtkTools_DisplayModeFilter)
 
 //============================================================================
 // Method: Constructor

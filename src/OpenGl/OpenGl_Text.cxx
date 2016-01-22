@@ -136,7 +136,7 @@ namespace
   }
 #endif
 
-}
+} // anonymous namespace
 
 // =======================================================================
 // function : OpenGl_Text

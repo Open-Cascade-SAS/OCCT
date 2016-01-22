@@ -31,7 +31,7 @@
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 
-vtkStandardNewMacro(IVtkTools_ShapeDataSource);
+vtkStandardNewMacro(IVtkTools_ShapeDataSource)
 
 //================================================================
 // Function : Constructor

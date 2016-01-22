@@ -81,6 +81,6 @@ namespace Aspect_Convert
     }
   }
 
-}
+} // namespace Aspect_Convert
 
 #endif /* _Aspect_Convert_HeaderFile */

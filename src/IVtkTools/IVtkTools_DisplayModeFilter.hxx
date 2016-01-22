@@ -28,7 +28,8 @@
 class Standard_EXPORT IVtkTools_DisplayModeFilter : public IVtkTools_SubPolyDataFilter
 {
 public:
-  vtkTypeMacro(IVtkTools_DisplayModeFilter,IVtkTools_SubPolyDataFilter);
+  vtkTypeMacro(IVtkTools_DisplayModeFilter,IVtkTools_SubPolyDataFilter)
+
   static IVtkTools_DisplayModeFilter *New();
   void PrintSelf (std::ostream& os, vtkIndent indent);
 

@@ -6461,12 +6461,9 @@ public:
                             const Standard_ShortReal theXShift,
                             const Standard_ShortReal theYShift,
                             const Standard_ShortReal theAngle);
-  DEFINE_STANDARD_RTTI_INLINE(OCC_TextureEnv,Graphic3d_TextureEnv);
+  DEFINE_STANDARD_RTTI_INLINE(OCC_TextureEnv,Graphic3d_TextureEnv)
 };
 DEFINE_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv)
-
-
-
 
 OCC_TextureEnv::OCC_TextureEnv(const Standard_CString theFileName)
   : Graphic3d_TextureEnv(theFileName)

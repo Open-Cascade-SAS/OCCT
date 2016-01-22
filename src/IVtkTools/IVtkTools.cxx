@@ -121,4 +121,5 @@ void InitShapeMapper (vtkMapper* theMapper, vtkLookupTable* theColorTable)
   theMapper->SetLookupTable (theColorTable);
   theMapper->Update();
 }
-};
+
+} // namespace IVtkTools

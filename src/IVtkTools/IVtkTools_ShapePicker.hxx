@@ -29,7 +29,8 @@ class vtkActorCollection;
 class IVtkTools_EXPORT IVtkTools_ShapePicker :  public vtkAbstractPropPicker
 {
 public:
-  vtkTypeMacro(IVtkTools_ShapePicker, vtkAbstractPropPicker);
+  vtkTypeMacro(IVtkTools_ShapePicker, vtkAbstractPropPicker)
+
   static IVtkTools_ShapePicker* New();
 
   //! Pick entities in the given point or area.

@@ -101,7 +101,7 @@ namespace
         return FIT_UNKNOWN;
     }
   }
-};
+}
 #endif
 
 
