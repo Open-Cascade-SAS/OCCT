@@ -3,10 +3,10 @@
 set delta 0.005
 point p1 x y 
 set dyvalue [dval dy] 
-repeat 100  {
-	cmovetangent b1 2.0  x y dx $dyvalue 1
-        set dyvalue [expr $dyvalue + $delta ]
-        repaint }
+repeat 100 {
+    cmovetangent b1 2.0  x y dx $dyvalue 1
+    set dyvalue [expr $dyvalue + $delta ]
+    repaint
+}
 copy b1 result
-set length 5.9590472422107315
-
+checklength result -l 5.9590472422107315

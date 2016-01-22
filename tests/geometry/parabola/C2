@@ -1,14 +1,8 @@
 parabola result 0  0  0  10 10
 dset ech 1.1
 repeat 20 { 
-	2dpscale result 0 0 0 ech; 
-	copy result .; 
+    2dpscale result 0 0 0 ech; 
+    copy result .; 
 }
 set viewer "v2d"
-
-set Center_o_1 0; set Center_o_2 0; 
-set Axis_o_1 0; set Axis_o_2 1; 
-set XAxis_o_1 0; set XAxis_o_2 1; 
-set YAxis_o_1 -1; set YAxis_o_2 0; 
-set LastParam_o_1 67.2749994932561; 
-
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{0 0} {0 1} {0 1} {-1 0} {67.2749994932561}} -eps 0.01

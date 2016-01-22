@@ -3,9 +3,10 @@ set delta 0.007
 2dcvalue law1 1.5 x y  dx dy
 set tvalue [dval dy] 
 repeat 100 { 
-	movelaw law1 1.5  y $tvalue  1  
-	set tvalue [expr $tvalue + $delta] 
-	repaint }
+    movelaw law1 1.5  y $tvalue  1  
+    set tvalue [expr $tvalue + $delta] 
+    repaint
+}
 copy law1 result
-set length 3.3254491241005475
+checklength result -l 3.3254491241005475
 

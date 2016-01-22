@@ -3,11 +3,12 @@ cvalue b1 2.0 x y z dx dy dz
 set delta 0.01
 set yvalue [dval y] 
 set zvalue [dval z] 
-repeat 100  {
-	cmovetangent b1 2.0  x $yvalue $zvalue dx dy dz 1
-        set yvalue [expr $yvalue + $delta ]
-        set zvalue [expr $zvalue + $delta ]
-        repaint }
+repeat 100 {
+    cmovetangent b1 2.0  x $yvalue $zvalue dx dy dz 1
+    set yvalue [expr $yvalue + $delta ]
+    set zvalue [expr $zvalue + $delta ]
+    repaint
+}
 renamevar b1 result
-set length 8.3346946955628098
+checklength result -l 8.3346946955628098
 

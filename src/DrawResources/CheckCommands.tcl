@@ -710,7 +710,7 @@ proc checklength {shape args} {
 
     if { ${compared_notequal_shape} != -1 } {
         upvar ${compared_notequal_shape} ${compared_notequal_shape}
-        regexp regexp "The +length+ ${compared_notequal_shape} +is +(\[-0-9.+eE\]+)" [${CommandName} ${compared_notequal_shape} ${epsilon}] full compared_m
+        regexp "The +length+ ${compared_notequal_shape} +is +(\[-0-9.+eE\]+)" [${CommandName} ${compared_notequal_shape} ${epsilon}] full compared_m
         if { $compared_m == $m } {
             puts "Error: length of shape ${compared_notequal_shape} is equal shape to ${shape}"
         }

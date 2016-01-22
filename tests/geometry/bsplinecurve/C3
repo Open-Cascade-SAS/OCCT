@@ -6,5 +6,5 @@ pl
 pl
 pl
 val3d result 0 4 20
-set length 6.3759776321287411
+checklength result -l 6.3759776321287411
 

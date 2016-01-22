@@ -6,5 +6,5 @@ pl
 pl
 pl
 renamevar b2 result
-set length 6.6067715112002166
+checklength result -l 6.6067715112002166
 

@@ -42,5 +42,5 @@ repeat 10 {comparepnt2d rd1_$i d1_$i  $tol; incr i 1}
 set i 1
 puts " --> Test D2"
 repeat 10 {comparepnt2d rd2_$i d2_$i $tol; incr i 1}
-set length 61.864387478917727
+checklength result -l 61.864387478917727
 

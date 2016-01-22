@@ -1,10 +1,4 @@
 parabola result  0  1  0  1 10
 dmode result U
 set viewer "v2d"
-
-set Center_o_1 0; set Center_o_2 1; 
-set Axis_o_1 0; set Axis_o_2 1; 
-set XAxis_o_1 0; set XAxis_o_2 1; 
-set YAxis_o_1 -1; set YAxis_o_2 0; 
-set LastParam_o_1 10; 
-
+checkdump result -name {Center Axis XAxis YAxis Focal} -ref {{0 1} {0 1} {0 1} {-1 0} {10}} -eps 0.01

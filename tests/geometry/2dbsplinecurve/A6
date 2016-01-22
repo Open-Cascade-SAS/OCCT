@@ -5,5 +5,5 @@ set i 1
 repeat 100 {cmovepoint result 0.3 0. 0.05; incr i 1; repaint}
 set i 1
 repeat 100 {cmovepoint result 0.3 0. -0.05; incr i 1; repaint}
-set length 2.9999999999999996
+checklength result -l 2.9999999999999996
 

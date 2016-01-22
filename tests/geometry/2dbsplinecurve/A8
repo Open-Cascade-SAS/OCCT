@@ -2,10 +2,11 @@
 2dcvalue b1 2.0 x y  dx dy 
 set delta 0.01
 set yvalue [dval y] 
-repeat 100  {
-	cmovetangent b1 2.0  x $yvalue  dx dy  1
-        set yvalue [expr $yvalue + $delta ]
-        repaint }
+repeat 100 {
+    cmovetangent b1 2.0  x $yvalue  dx dy  1
+    set yvalue [expr $yvalue + $delta ]
+    repaint
+}
 copy b1 result
-set length 7.7885445456401925
+checklength result -l 7.7885445456401925
 

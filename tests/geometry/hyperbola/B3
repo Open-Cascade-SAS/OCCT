@@ -8,5 +8,4 @@ convert result hr
 2dpl
 2dpu
 2dpu
-set length 1.6539462322641865
-
+checklength result -l 1.6539462322641865

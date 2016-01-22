@@ -9,5 +9,5 @@ convert result lr
 2dpu
 2dpu
 set viewer "v2d"
-set length 2.9999999999999996
+checklength result -l 2.9999999999999996
 

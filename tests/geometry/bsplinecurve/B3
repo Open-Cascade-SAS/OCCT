@@ -3,5 +3,5 @@ copy b1 b2
 pscale b2 0 0 0 1.4
 repeat 5 {pl}
 renamevar b2 result
-set length 9.5487985926002157
+checklength result -l 9.5487985926002157
 

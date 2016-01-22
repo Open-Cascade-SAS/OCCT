@@ -1,4 +1,4 @@
 circle cer 0 0 0  0 0 1  1
 convert result cer c1
-set length 6.2831853071795871
+checklength result -l 6.2831853071795871
 

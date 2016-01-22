@@ -8,5 +8,5 @@ convert result cr
 2dpu
 2dpu
 set viewer "v2d"
-set length 6.2831853071795853
+checklength result -l 6.2831853071795853
 

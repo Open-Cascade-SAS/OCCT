@@ -5,9 +5,9 @@ pl
 pl
 pl
 repeat 10 {
-rotate b2 0 0 0 1 0 0 10
-copy b2 .
+    rotate b2 0 0 0 1 0 0 10
+    copy b2 .
 }
 renamevar b2 result
-set length 6.8205704232858668
+checklength result -l 6.8205704232858668
 
