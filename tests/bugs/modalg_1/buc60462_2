@@ -1,6 +1,5 @@
-#puts "TODO OCC27024 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC27024 ALL: Tcl Exception: result is not a topological shape!!!"
-puts "TODO OCC27024 All:TEST INCOMPLETE"
+puts "TODO OCC27024 ALL: Error : operation bfuse is WRONG because number of SOLID entities in shape"
+puts "TODO OCC27024 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 puts "=========="
 puts "BUC60462"

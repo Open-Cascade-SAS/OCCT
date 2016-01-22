@@ -18,8 +18,8 @@
 
 #include <NCollection_UBTree.hxx>
 #include <NCollection_Vector.hxx>
-#include <stdlib.h>
-#include <stdio.h>
+
+#include <random>
 
 /**
  * This class is used to fill an UBTree in a random order.
@@ -69,15 +69,8 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
                             const Handle(NCollection_BaseAllocator)& theAlloc=0L,
                             const Standard_Boolean isFullRandom = Standard_True)
     : myTree(theTree), mySeqPtr(1000, theAlloc),
-      mySeed(1), myIsFullRandom (isFullRandom)
-    {
-#ifndef _REENTRANT
-      // We use srand/rand for a single threaded application
-      // and rand_r for a multi threaded one.
-      // _REENTRANT must be defined for a multi threaded application.
-      srand (mySeed);
-#endif
-    }
+      myRandGen (5489u /* == std::mt19937::default_seed, not defined in older environments, e.g, on Debian 6.0 with GCC 4.4.5 */),
+      myIsFullRandom (isFullRandom) {}
 
   //! Adds a pair (theObj, theBnd) to my sequence
   void Add (const TheObjType& theObj, const TheBndType& theBnd)
@@ -137,21 +130,9 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
 
   UBTree&                               myTree;
   NCollection_Vector<ObjBnd>            mySeqPtr;
-  int                                   mySeed;         //!< seed for rand
+  std::mt19937                          myRandGen;      //!< random number generator
   Standard_Boolean                      myIsFullRandom;
 };
-
-#ifdef _REENTRANT
-inline int take_random (int * theSeed)
-{
-  return rand_r ((unsigned *) theSeed);
-}
-#else
-inline int take_random (int *)
-{
-  return rand();
-}
-#endif
 
 //=======================================================================
 //function : Fill
@@ -165,11 +146,7 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType,TheBndType>::Fill ()
   // Fisher-Yates randomization
   if (myIsFullRandom)
     for (i = nbAdd; i > 0; i--) { 
-      unsigned int ind = take_random(&mySeed);
-      if (i > RAND_MAX) {
-        const unsigned int ind1 = take_random(&mySeed);
-        ind += (ind1 << 15);
-      }
+      unsigned int ind = myRandGen();
       ind = ind % i;
       const ObjBnd& aObjBnd = mySeqPtr(ind);
       myTree.Add (aObjBnd.myObj, aObjBnd.myBnd);
@@ -177,7 +154,7 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType,TheBndType>::Fill ()
     }
   else
     for (i = nbAdd; i > 0; i--) { 
-      unsigned int ind = take_random(&mySeed);
+      unsigned int ind = myRandGen();
       ind = i - (ind % i) - 1;
       const ObjBnd& aObjBnd = mySeqPtr(ind);
       myTree.Add (aObjBnd.myObj, aObjBnd.myBnd);

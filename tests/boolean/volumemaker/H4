@@ -1,3 +1,6 @@
+puts "TODO OCC26020 Linux: Error : The area of result shape is"
+puts "TODO OCC26020 Linux: Error: bopcheck failed"
+
 # test script on make volume operation
 # cylinder plane
 

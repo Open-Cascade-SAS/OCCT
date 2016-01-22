@@ -1,3 +1,6 @@
+puts "TODO OCC26020 ALL: Error : The area of result shape is"
+puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 # test script on make volume operation
 # cylinder plane unstable
 
