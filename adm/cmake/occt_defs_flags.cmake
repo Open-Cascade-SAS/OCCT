@@ -5,25 +5,27 @@ if(FLAGS_ALREADY_INCLUDED)
 endif()
 set(FLAGS_ALREADY_INCLUDED 1)
 
-
 if (MSVC)
-  add_definitions(/fp:precise)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fp:precise")
+  set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fp:precise")
 endif()
 
 # set compiler short name and choose SSE2 option for appropriate MSVC compilers
 # ONLY for 32-bit
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
   if (MSVC80 OR MSVC90 OR MSVC10)
-    add_definitions(/arch:SSE2)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
+    set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /arch:SSE2")
   endif()
 endif()
 
 if (WIN32)
-  add_definitions (-wd4996)
-elseif (APPLE)
-  add_definitions (-fexceptions -fPIC -DOCC_CONVERT_SIGNALS)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd4996")
+  set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -wd4996")
 else()
-  add_definitions (-fexceptions -fPIC -DOCC_CONVERT_SIGNALS)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fPIC")
+  set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fexceptions -fPIC")
+  add_definitions(-DOCC_CONVERT_SIGNALS)
 endif()
 
 # enable structured exceptions for MSVC
