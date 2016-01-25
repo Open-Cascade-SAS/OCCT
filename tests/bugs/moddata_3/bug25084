@@ -10,11 +10,7 @@ restore [locate_data_file bug25084_c.draw] c
 restore [locate_data_file bug25084_s10.draw] s
 
 project cx c s
-
-regexp {The length cx is +([0-9.+eE]+)} [length cx] full cx_length
-
-set good_length 4.6201952691345385
-checkreal "length of cp1" ${cx_length} ${good_length} 0.01 0.01
+checklength cx -l 4.6201952691345385
 
 #v2d2
 view 1 -2D-  728 20 400 400

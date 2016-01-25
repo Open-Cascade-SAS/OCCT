@@ -13,18 +13,10 @@ mksurface s f
 mkcurve c e
 
 extrema c s
-regexp {The length ext_1 is +([-0-9.+eE]+)} [length ext_1] full ext_1_length
-set good_length 1.0e-7
-set tol_abs 1.0e-6
-set tol_rel 1.0e-6
-checkreal "length of ext_1" ${ext_1_length} ${good_length} ${tol_abs} ${tol_rel}
+checklength ext_1 -l 8.8817841970012523e-016
 
 trim ct c 3.0050016686511065 3.2781836385284797
 extrema ct s
-regexp {The length ext_1 is +([-0-9.+eE]+)} [length ext_1] full ext_1_length
-set good_length 1.0e-7
-set tol_abs 1.0e-6
-set tol_rel 1.0e-6
-checkreal "length of ext_1" ${ext_1_length} ${good_length} ${tol_abs} ${tol_rel}
+checklength ext_1 -l 8.8817841970012523e-016
 
 xdistcs c s 3.140212946671221 3.142972360508366 10 1e-6

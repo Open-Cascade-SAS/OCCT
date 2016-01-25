@@ -23,15 +23,8 @@ if {${Toler} > ${MaxTol}} {
 if {${NbCurv} != ${GoodNbCurv}} {
   puts "Error: Curve Number is bad!"
 }
-
-set expL1 3.0
-set expL2 3.0
-
-regexp {The length c_1 is ([-0-9.+eE]+)} [length c_1] full ll1
-regexp {The length c_2 is ([-0-9.+eE]+)} [length c_2] full ll2
-
-checkreal "length c_1 " ${ll1} $expL1 0.0 1.0e-6
-checkreal "length c_2 " ${ll2} $expL1 0.0 1.0e-6
+checklength c_1 -l 3.0
+checklength c_2 -l 3.0
 
 axo
 donly f* c_*

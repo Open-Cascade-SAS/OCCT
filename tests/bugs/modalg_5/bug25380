@@ -16,13 +16,7 @@ set MaxTol 1.e-11
 if {${Toler} > ${MaxTol}} {
   puts "Error: Tolerance is too big!"
 }
-
-regexp {The length c_1 is ([-0-9.+eE]+)} [length c_1] full Curve_Length
-
-set expected_length 1.614
-set tol_abs_length 1.e-3
-set tol_rel_length 0.01
-checkreal "Curve length" ${Curve_Length} ${expected_length} ${tol_abs_length} ${tol_rel_length}
+checklength c_1 -l 1.614
 
 smallview
 donly c_1 b1

@@ -9,7 +9,6 @@ puts ""
 
 set absTol 1.0e-6
 set relTol 0.001
-set expectedLength 1.0e-6
 set exp_x 12.700000
 set exp_y 16.8949999999593
 set exp_z  0.534684851975074
@@ -26,10 +25,7 @@ if {![regexp {ext_1} $info1]} {
   puts "Error: No extrema found in case 1"
 }
 # length check
-set case1Info [length ext_1]
-regexp {The length ext_1 is ([-0-9.+eE]+)} $case1Info full case1Length
-checkreal "case 1 extrema value" $case1Length $expectedLength $absTol $relTol
-
+checklength ext_1 -l 1.0e-6
 
 # case 2: Curve
 # existence check
@@ -39,9 +35,7 @@ if {![regexp {ext_1} $info2]} {
   puts "Error: No extrema found in case 2"
 }
 # length check
-set case2Info [length ext_1]
-regexp {The length ext_1 is ([-0-9.+eE]+)} $case2Info full case2Length
-checkreal "case 2 extrema value" $case2Length $expectedLength $absTol $relTol
+checklength ext_1 -l 1.0e-6
 
 #case 3: Point
 # existence check

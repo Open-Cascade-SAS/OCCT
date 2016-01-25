@@ -22,8 +22,7 @@ bnondestructive 1
 
 bop h0 f0
 bopsection result
-
-set length 145.692
+checkprops result -l 142.264
 
 set nbshapes_expected "
 Number of shapes in shape

@@ -6,30 +6,8 @@ puts ""
 # Projection algorithm produces wrong results
 ##########################################################################################################
 
-set int_check 3
-set fract_check 1415927
-
 restore [locate_data_file bug23464_c58.draw] c58
 restore [locate_data_file bug23464_s46.draw] s46
 
 project result c58 s46
-set info [length result]
-regexp {is +([-0-9.+eE]+)} $info full num
-
-set int_part [expr round($num)]
-set y [expr $num - round($num)]
-set z [expr $y*10000000]
-set fract_part [expr round($z)]
-
-if { ${int_check} != ${int_part} } {
-    puts "Error : Integer part of result is incorrect"
-}
-
-if { ${fract_check} != ${fract_part} } {
-    puts "Error : Fractional part of result is incorrect"
-}
-
-
-
-
-
+checklength result -l 3.1415926535898016

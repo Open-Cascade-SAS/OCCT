@@ -14,4 +14,4 @@ sewing s s1 s2 s3 s4
 fixshape  r  s  -maxtaila 10  -maxtailw 0.7
 
 checknbshapes  r  -vertex 5  -edge 7  -wire 4  -face 4  -shell 1  -solid 0  -compsolid 0  -compound 0
-checklength r 69.237606465667483
+checkprops r -l 69.237606465667483

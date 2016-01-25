@@ -9,10 +9,6 @@ puts ""
 
 set len_expected 4.e100
 line line_2d 0 0 1 1
-
 offset result line_2d 10 1 0
 
-set info [length $result]
-regexp {The length result is +([-0-9.+eE]+)} $info full len
-
-checkreal "Length" $len $len_expected 0. 1e-10
+checklength result -l 4.e100

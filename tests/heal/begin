@@ -10,11 +10,3 @@ if { [info exists imagedir] == 0 } {
 if { [info exists test_image ] == 0 } {
    set test_image photo
 }
-
-proc checklength {theShape theLength} {
-  set aLengthDump [uplevel lprops $theShape -full]
-  regexp {Mass\s*:\s*([-0-9.+eE]+)} $aLengthDump dummy aLength
-  if {abs($aLength - $theLength) > $theLength * 1e-14} {
-    puts "Error: result length is too different."
-  }
-}

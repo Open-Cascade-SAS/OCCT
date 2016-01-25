@@ -6,38 +6,10 @@ puts ""
 # Extrema problems. Case: one of the Extrema arguments is an infinite face or an infinite edge.
 ###########################################################
 
-proc GetPercent {Value GoodValue} {
-   set Percent 0.
-   if {${GoodValue} != 0.} {
-      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-   } elseif {${Value} != 0.} {
-      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-   } else {
-      set Percent 0.
-   }
-   return ${Percent}
-}
-
-set BugNumber OCC12522
-
 restore [locate_data_file OCC12522.brep] arc1
 explode arc1 e
 mkcurve curve1 arc1_1
-
 plane plane1 6400 -4000 -160 0 0 1 1 0 0
-
 extrema curve1 plane1
 
-set percent_max 0.1
-set good_length 2.9009126041478908
-
-set ext_1_length [lindex [length ext_1] 4]
-
-set length_percent [GetPercent ${ext_1_length} ${good_length}]
-puts "length_percent = ${length_percent}"
-
-if {${length_percent} > ${percent_max}} {
-   puts "${BugNumber}: Faulty"
-} else {
-   puts "${BugNumber}: OK"
-}
+checklength ext_1 -l 2.9009126041478908

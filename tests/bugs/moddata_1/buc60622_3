@@ -7,40 +7,13 @@ puts "It takes visual check for this BUG"
 puts "=================================="
 puts ""
 
-set len_ch1 1570
-set len_ch2 785
-set len_ch3 785
-set len_ch4 523
-set len_ch5 523
-
 circle c3 500 3000 250
 circle c2 375 3000 125
 circle c1 625 3000 125
 cirtang result c1 c2 c3
 
-set info1 [length $result_1]
-set info2 [length $result_2]
-set info3 [length $result_3]
-set info4 [length $result_4]
-set info5 [length $result_5]
-
-regexp {The length result_1 is +([-0-9.+eE]+)} $info1 full len1
-regexp {The length result_2 is +([-0-9.+eE]+)} $info2 full len2
-regexp {The length result_3 is +([-0-9.+eE]+)} $info3 full len3
-regexp {The length result_4 is +([-0-9.+eE]+)} $info4 full len4
-regexp {The length result_5 is +([-0-9.+eE]+)} $info5 full len5
-
-set len_int1 [expr int($len1)]
-set len_int2 [expr int($len2)]
-set len_int3 [expr int($len3)]
-set len_int4 [expr int($len4)]
-set len_int5 [expr int($len5)]
-
-if { ${len_int1} != ${len_ch1} 
-   || ${len_int2} != ${len_ch2}
-   || ${len_int3} != ${len_ch3}
-   || ${len_int4} != ${len_ch4}
-   || ${len_int5} != ${len_ch5} } {
-   puts "Error : Length is invalid"
-}
-
+checklength result_1 -l 1570.7963267948965
+checklength result_2 -l 785.39816339744868
+checklength result_3 -l 785.39816339744823
+checklength result_4 -l 523.59877559829806
+checklength result_5 -l 523.59877559829806
