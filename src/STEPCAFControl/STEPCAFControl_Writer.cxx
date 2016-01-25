@@ -949,8 +949,7 @@ static Standard_Boolean getStyledItem(const TopoDS_Shape& S,
         
         
         for (Standard_Integer jsi = 1; jsi <= aSelItm->NbStyles() && !found; jsi++) {
-          Handle(StepVisual_PresentationStyleAssignment) aFatherPSA =
-            Handle(StepVisual_PresentationStyleAssignment)::DownCast(aSelItm->StylesValue(jsi));
+          Handle(StepVisual_PresentationStyleAssignment) aFatherPSA = aSelItm->StylesValue(jsi);
           // check for PSA for top-level (not Presentation style by contex for NAUO)
           if (aFatherPSA.IsNull() || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext)))
             continue;
@@ -973,8 +972,7 @@ static Standard_Boolean setDefaultInstanceColor (const Handle(StepVisual_StyledI
 {
    Standard_Boolean found = Standard_False;
   for (Standard_Integer jsi = 1; jsi <= aSelItm->NbStyles() && !found; jsi++) {
-    Handle(StepVisual_PresentationStyleAssignment) aFatherPSA =
-    Handle(StepVisual_PresentationStyleAssignment)::DownCast(aSelItm->StylesValue(jsi));
+    Handle(StepVisual_PresentationStyleAssignment) aFatherPSA = aSelItm->StylesValue(jsi);
   // check for PSA for top-level (not Presentation style by contex for NAUO)
   if (aFatherPSA.IsNull() || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext))) 
     return Standard_False;
@@ -1279,8 +1277,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
         for ( si=1; si <= oldLengthlen; si++ )
           newItems->SetValue( el++, oldItems->Value( si ) );
         for ( si=1; si <= Styles.NbStyles(); si++ ) {
-          newItems->SetValue( el++, Handle(StepRepr_RepresentationItem)::DownCast(Styles.Style(si)));
-//           WP->Model()->AddWithRefs ( Handle(StepRepr_RepresentationItem)::DownCast (Styles.Style(si)));
+          newItems->SetValue( el++, Styles.Style(si));
         }
        
         if (newItems->Length() > 0)
@@ -1294,8 +1291,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
         new StepVisual_HArray1OfInvisibleItem (1,Styles.NbStyles());
       // put all style item into the harray
       for ( Standard_Integer si=1; si <= Styles.NbStyles(); si++ ) {
-        Handle(StepRepr_RepresentationItem) styledItm =
-          Handle(StepRepr_RepresentationItem)::DownCast(Styles.Style(si));
+        Handle(StepRepr_RepresentationItem) styledItm = Styles.Style(si);
         StepVisual_InvisibleItem anInvItem;
         anInvItem.SetValue( styledItm );
         HInvsblItm->SetValue( si, anInvItem );
@@ -1909,7 +1905,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
     Standard_Integer el = 1;
     for ( si=1; si <= oldLengthlen; si++ )
       newItems->SetValue( el++, oldItems->Value( si ) );
-    newItems->SetValue( el++, Handle(StepRepr_RepresentationItem)::DownCast(STEPstyle) );
+    newItems->SetValue (el++, STEPstyle);
     // init MDGPR be new array of styled items
     if (newItems->Length() > 0)
       aMDGPR->SetItems( newItems );
@@ -2846,7 +2842,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
     StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
     aDefinition.SetValue(aDS);
     Handle(StepRepr_HArray1OfRepresentationItem) anReprItems = new StepRepr_HArray1OfRepresentationItem(1, 1);
-    Handle(StepRepr_RepresentationItem) anIdentifiedItem = Handle(StepRepr_RepresentationItem)::DownCast(anAxis);
+    Handle(StepRepr_RepresentationItem) anIdentifiedItem = anAxis;
     anReprItems->SetValue(1, anIdentifiedItem);
     Interface_EntityIterator subs = aGraph.Sharings(aFirstDatum->OfShape());
     Handle(StepShape_ShapeDefinitionRepresentation) aSDR;

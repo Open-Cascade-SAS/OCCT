@@ -777,9 +777,9 @@ Standard_Boolean IsLineOrCircle(const TopoDS_Edge& E,
   Handle(Geom2d_Curve) basisC; 
   Handle(Geom2d_TrimmedCurve) TC = Handle(Geom2d_TrimmedCurve)::DownCast(C);
   if (!TC.IsNull())
-    basisC = Handle(Geom2d_Curve)::DownCast(TC->BasisCurve());
+    basisC = TC->BasisCurve();
   else
-    basisC = Handle(Geom2d_Curve)::DownCast(C);
+    basisC = C;
 
   if ( basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
       || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line) ) {

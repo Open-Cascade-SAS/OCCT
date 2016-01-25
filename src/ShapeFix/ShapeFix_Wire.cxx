@@ -535,7 +535,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
   Handle(ShapeExtend_WireData) sbwd = WireData();
   Standard_Integer i, nb = sbwd->NbEdges();
   TopoDS_Face face = Face();
-  Handle(ShapeFix_Edge) theAdvFixEdge = Handle(ShapeFix_Edge)::DownCast(myFixEdge);
+  Handle(ShapeFix_Edge) theAdvFixEdge = myFixEdge;
   if (theAdvFixEdge.IsNull()) myFixReversed2dMode = Standard_False;
 
   // fix revesred 2d / 3d curves
@@ -1142,7 +1142,7 @@ Standard_Boolean ShapeFix_Wire::FixSmall (const Standard_Integer num,
   if ( ! IsLoaded() || NbEdges() <=1 ) return Standard_False;
 
   // analysis:
-  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = Handle(ShapeAnalysis_Wire)::DownCast(myAnalyzer);
+  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = myAnalyzer;
   if (theAdvAnalyzer.IsNull()) return Standard_False;
   Standard_Integer n = ( num >0 ? num : NbEdges() );
   theAdvAnalyzer->CheckSmall ( n, precsmall );
@@ -2190,7 +2190,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge (const Standard_Integer 
   // analysis
   IntRes2d_SequenceOfIntersectionPoint points2d;
   TColgp_SequenceOfPnt points3d;
-  Handle(ShapeAnalysis_Wire) theAdvAnalyzer =  Handle(ShapeAnalysis_Wire)::DownCast(myAnalyzer);
+  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = myAnalyzer;
   if (theAdvAnalyzer.IsNull()) return Standard_False;
   theAdvAnalyzer->CheckSelfIntersectingEdge ( num, points2d, points3d ); 
   if ( theAdvAnalyzer->LastCheckStatus ( ShapeExtend_FAIL ) ) {
@@ -2385,7 +2385,7 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
   IntRes2d_SequenceOfIntersectionPoint points2d;
   TColgp_SequenceOfPnt points3d;
   TColStd_SequenceOfReal errors;
-  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = Handle(ShapeAnalysis_Wire)::DownCast(myAnalyzer);
+  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = myAnalyzer;
   if (theAdvAnalyzer.IsNull()) return Standard_False;
   theAdvAnalyzer->CheckIntersectingEdges ( num, points2d, points3d, errors );
   if ( theAdvAnalyzer->LastCheckStatus ( ShapeExtend_FAIL ) ) {
@@ -2647,7 +2647,7 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
   IntRes2d_SequenceOfIntersectionPoint points2d;
   TColgp_SequenceOfPnt points3d;
   TColStd_SequenceOfReal errors;
-  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = Handle(ShapeAnalysis_Wire)::DownCast(myAnalyzer);
+  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = myAnalyzer;
   if (theAdvAnalyzer.IsNull()) return Standard_False;
   theAdvAnalyzer->CheckIntersectingEdges ( num1, num2, points2d, points3d, errors);
   if ( theAdvAnalyzer->LastCheckStatus ( ShapeExtend_FAIL ) ) {
@@ -2918,7 +2918,7 @@ Standard_Boolean ShapeFix_Wire::FixLacking (const Standard_Integer num,
   //=============
   // First phase: analysis whether the problem (gap) exists
   gp_Pnt2d p2d1, p2d2;
-  Handle(ShapeAnalysis_Wire)::DownCast(myAnalyzer)->CheckLacking ( num, ( force ? Precision() : 0. ), p2d1, p2d2 );
+  myAnalyzer->CheckLacking ( num, ( force ? Precision() : 0. ), p2d1, p2d2 );
   if ( myAnalyzer->LastCheckStatus ( ShapeExtend_FAIL ) ) {
     myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
   }
@@ -3186,7 +3186,7 @@ Standard_Boolean ShapeFix_Wire::FixNotchedEdges()
   myLastFixStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
   if ( ! IsReady() ) return Standard_False;
   
-  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = Handle(ShapeAnalysis_Wire)::DownCast(myAnalyzer);
+  Handle(ShapeAnalysis_Wire) theAdvAnalyzer = myAnalyzer;
   TopoDS_Face face = Face();
   if ( ! Context().IsNull() ) UpdateWire();
   Handle(ShapeExtend_WireData) sewd = WireData();

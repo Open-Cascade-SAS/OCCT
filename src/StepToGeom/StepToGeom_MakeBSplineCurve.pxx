@@ -19,7 +19,7 @@
 
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
     BSCWR = Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)::DownCast(SC);
-    BSCW = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(BSCWR->BSplineCurveWithKnots());
+    BSCW = BSCWR->BSplineCurveWithKnots();
   }
   else
     BSCW = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(SC);

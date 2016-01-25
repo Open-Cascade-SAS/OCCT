@@ -396,7 +396,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
             // points has less diameter than the tolerance 3D
               Degenerated = Standard_True;
               Standard_Real Dist;
-              Handle(Geom_BSplineCurve) BS3d  = Handle(Geom_BSplineCurve)::DownCast( appr.Curve3d());
+              Handle(Geom_BSplineCurve) BS3d = appr.Curve3d();
               gp_Pnt P1(0.,0.,0.),PP; // skl : I change "P" to "PP"
               Standard_Integer NbPoint,ii ; // skl : I change "i" to "ii"
               Standard_Real Par,DPar;

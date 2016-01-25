@@ -1415,8 +1415,7 @@ static Standard_Boolean findNextSHUOlevel (const Handle(XSControl_WorkSession) &
   if (subSHUO.IsNull())
     return Standard_False;
   
-  Handle(StepRepr_NextAssemblyUsageOccurrence) NUNAUO =
-    Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(subSHUO->NextUsage());
+  Handle(StepRepr_NextAssemblyUsageOccurrence) NUNAUO = subSHUO->NextUsage();
   if (NUNAUO.IsNull())
     return Standard_False;
 //   Handle(Interface_InterfaceModel) Model = WS->Model();
@@ -1454,8 +1453,7 @@ static TDF_Label setSHUOintoDoc (const Handle(XSControl_WorkSession) &WS,
   // get upper usage NAUO from SHUO.
   Handle(StepRepr_NextAssemblyUsageOccurrence) UUNAUO =
     Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(SHUO->UpperUsage());
-  Handle(StepRepr_NextAssemblyUsageOccurrence) NUNAUO =
-    Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(SHUO->NextUsage());
+  Handle(StepRepr_NextAssemblyUsageOccurrence) NUNAUO = SHUO->NextUsage();
   if ( UUNAUO.IsNull() || NUNAUO.IsNull() ) {
 #ifdef OCCT_DEBUG
     cout << "Warning: " << __FILE__ <<": Upper_usage or Next_usage of styled SHUO is null. Skip it" << endl;
@@ -1795,8 +1793,7 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
         Handle(StepRepr_ShapeAspectRelationship) SAR = 
           Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIterC.Value());
         if(SAR.IsNull()) continue;
-        Handle(StepRepr_ShapeAspect) aS = 
-          Handle(StepRepr_ShapeAspect)::DownCast(SAR->RelatedShapeAspect());
+        Handle(StepRepr_ShapeAspect) aS = SAR->RelatedShapeAspect();
         if(aS.IsNull()) continue;
         Interface_EntityIterator anIterSA = aGraph.Sharings(aS);
         for(anIterSA.Start(); anIterSA.More() && aPGISU.IsNull(); anIterSA.Next()) {
@@ -1835,7 +1832,7 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
     Handle(StepRepr_RepresentationItem) aRI;
     for(Standard_Integer i = 1 ; i <= aPGISU->NbIdentifiedItem() && aRI.IsNull(); i++)
     {
-      aRI = Handle(StepRepr_RepresentationItem)::DownCast(aPGISU->IdentifiedItemValue(i));
+      aRI = aPGISU->IdentifiedItemValue(i);
     }
     if(aRI.IsNull()) continue;
     Standard_Integer index = aTP->MapIndex(aRI);
@@ -1891,7 +1888,7 @@ static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
                   = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
                 Handle(StepRepr_RepresentationItem) anItem;
                 if(aPGISU->NbIdentifiedItem() > 0) {
-                  anItem = Handle(StepRepr_RepresentationItem)::DownCast(aPGISU->IdentifiedItemValue(1));
+                  anItem = aPGISU->IdentifiedItemValue(1);
                 }
                 if(anItem.IsNull()) continue;
                 Standard_Integer anItemIndex = aTP->MapIndex(anItem);
@@ -2059,8 +2056,7 @@ static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt
         {
           for(Standard_Integer i = aDRCA->Lower(); i <= aDRCA->Upper(); i++)
           {
-            Handle(StepDimTol_DatumReferenceCompartment) aDRC
-              = Handle(StepDimTol_DatumReferenceCompartment)::DownCast(aDRCA->Value(i));
+            Handle(StepDimTol_DatumReferenceCompartment) aDRC = aDRCA->Value(i);
             //gete modifiers
             Handle(StepDimTol_HArray1OfDatumReferenceModifier) aModif = aDRC->Modifiers();
             XCAFDimTolObjects_DatumModifiersSequence aXCAFModifiers;
@@ -2328,8 +2324,7 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
                     Handle(StepRepr_HArray1OfRepresentationItem) HARI = VR->ItemElement();
                     if(HARI.IsNull()) continue;
                     if(HARI->Length()>0) {
-                      Handle(StepRepr_RepresentationItem) RI1 =
-                        Handle(StepRepr_RepresentationItem)::DownCast(HARI->Value(1));
+                      Handle(StepRepr_RepresentationItem) RI1 = HARI->Value(1);
                       if(RI1.IsNull()) continue;
                       if(RI1->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
                         Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) RILMWU =
@@ -2344,8 +2339,7 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
                       }
                     }
                     if(HARI->Length()>1) {
-                      Handle(StepRepr_RepresentationItem) RI2 =
-                        Handle(StepRepr_RepresentationItem)::DownCast(HARI->Value(2));
+                      Handle(StepRepr_RepresentationItem) RI2 = HARI->Value(2);
                       if(RI2.IsNull()) continue;
                       if(RI2->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
                         Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) RILMWU =
@@ -2635,8 +2629,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         {
           for(Standard_Integer nr = aHARI->Lower(); nr <= aHARI->Upper(); nr++)
           {
-            Handle(StepRepr_RepresentationItem) aDRI =
-              Handle(StepRepr_RepresentationItem)::DownCast(aHARI->Value(nr));
+            Handle(StepRepr_RepresentationItem) aDRI = aHARI->Value(nr);
             if(aDRI.IsNull()) continue;
 
             if(aDRI->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {

@@ -1751,7 +1751,7 @@ static Standard_Integer splitc12d(Draw_Interpretor& di,
    tolerance=Draw::Atof(c[3]);
  if (n==5) 
    angular_tolerance = Draw::Atof(c[4]) ;
- Handle(Geom2d_Curve) ACurve = Handle(Geom2d_Curve)::DownCast(DrawTrSurf::GetCurve2d(c[1])) ;
+ Handle(Geom2d_Curve) ACurve = DrawTrSurf::GetCurve2d(c[1]);
  
  Standard_Real f = ACurve->FirstParameter();
  Standard_Real l = ACurve->LastParameter();
@@ -1805,7 +1805,7 @@ static Standard_Integer canceldenom(Draw_Interpretor& ,
    udirection=Standard_True;
  if (voption)
    vdirection=Standard_True;
- Handle(Geom_BSplineSurface) BSurf = Handle(Geom_BSplineSurface)::DownCast(DrawTrSurf::GetBSplineSurface(c[1]));
+ Handle(Geom_BSplineSurface) BSurf = DrawTrSurf::GetBSplineSurface(c[1]);
  GeomLib::CancelDenominatorDerivative(BSurf,udirection,vdirection);
  DrawTrSurf::Set(c[1],BSurf);
  return 0;

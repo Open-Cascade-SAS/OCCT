@@ -214,8 +214,7 @@ void SelectMgr_SelectionManager::Remove (const Handle(SelectMgr_SelectableObject
     SelectMgr_SequenceOfSelector& aSelectors = myLocal.ChangeFind (theObject);
     for (Standard_Integer aSelectorsIdx = 1; aSelectorsIdx <= aSelectors.Length(); aSelectorsIdx++)
     {
-      Handle(SelectMgr_ViewerSelector) aCurSelector =
-        Handle(SelectMgr_ViewerSelector)::DownCast (aSelectors (aSelectorsIdx));
+      Handle(SelectMgr_ViewerSelector) aCurSelector = aSelectors (aSelectorsIdx);
       if (!aCurSelector->Contains (theObject))
         continue;
 
@@ -334,8 +333,7 @@ void SelectMgr_SelectionManager::Activate (const Handle(SelectMgr_SelectableObje
       SelectMgr_SequenceOfSelector& theSelectors = myLocal.ChangeFind (theObject);
       for (Standard_Integer aSelectorIdx = 1; aSelectorIdx <= theSelectors.Length(); aSelectorIdx++)
       {
-        Handle(SelectMgr_ViewerSelector) aCurSelector =
-          Handle(SelectMgr_ViewerSelector)::DownCast (theSelectors (aSelectorIdx));
+        Handle(SelectMgr_ViewerSelector) aCurSelector = theSelectors (aSelectorIdx);
         Activate (theObject, theMode, aCurSelector);
       }
     }

@@ -296,9 +296,7 @@ void TCollection_HExtendedString::Print(Standard_OStream& S) const
 Standard_Boolean TCollection_HExtendedString::IsSameState
    (const Handle(TCollection_HExtendedString)& other) const
  {
-   Handle(TCollection_HExtendedString) H;
-   H = Handle(TCollection_HExtendedString)::DownCast(other);
-   return ( myString == H->ChangeString() );
+   return myString == other->String();
  }
 
 

@@ -365,7 +365,7 @@ Standard_Boolean ShapeFix_Face::Perform()
 {
   myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
   myFixWire->SetContext ( Context() );
-  Handle(ShapeFix_Wire) theAdvFixWire = Handle(ShapeFix_Wire)::DownCast(myFixWire);
+  Handle(ShapeFix_Wire) theAdvFixWire = myFixWire;
   if (theAdvFixWire.IsNull()) return Standard_False;
 
   BRep_Builder B;

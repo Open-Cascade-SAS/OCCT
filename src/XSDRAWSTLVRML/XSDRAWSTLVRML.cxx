@@ -735,11 +735,11 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
           Standard_Integer aReflection = Draw::Atoi(argv[3]);
 
           for (Standard_Integer aCount = 0 ; aCount < aMesh->GetBuildersCount(); aCount++ ){
-            aTempBuilder = Handle(MeshVS_PrsBuilder)::DownCast(aMesh->FindBuilder("MeshVS_ElementalColorPrsBuilder"));
+            aTempBuilder = aMesh->FindBuilder("MeshVS_ElementalColorPrsBuilder");
             if( !aTempBuilder.IsNull())
               aMesh->RemoveBuilderById(aTempBuilder->GetId());
 
-            aTempBuilder = Handle(MeshVS_PrsBuilder)::DownCast(aMesh->FindBuilder("MeshVS_NodalColorPrsBuilder"));
+            aTempBuilder = aMesh->FindBuilder("MeshVS_NodalColorPrsBuilder");
             if( !aTempBuilder.IsNull())
               aMesh->RemoveBuilderById(aTempBuilder->GetId());
           }
@@ -942,7 +942,7 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
 
   Handle(MeshVS_PrsBuilder) aTempBuilder;
 
-  aTempBuilder = Handle(MeshVS_PrsBuilder)::DownCast(aMesh->FindBuilder("MeshVS_VectorPrsBuilder"));
+  aTempBuilder = aMesh->FindBuilder("MeshVS_VectorPrsBuilder");
   if( !aTempBuilder.IsNull())
     aMesh->RemoveBuilderById(aTempBuilder->GetId());
 

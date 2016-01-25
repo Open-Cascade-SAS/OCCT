@@ -1112,7 +1112,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	   NewPoles(ii).SetCoord(jj,NewPoles(ii).Coord(jj)/NewWeights(ii));
        Curve1= new Geom2d_BSplineCurve(NewPoles,NewWeights,KnotC1,KnotC1Mults,2*Curve1->Degree());
      }
-     Geom2dConvert_CompCurveToBSplineCurve   C(Handle(Geom2d_BSplineCurve)::DownCast(Curve2));
+     Geom2dConvert_CompCurveToBSplineCurve C(Curve2);
      fusion=C.Add(Curve1,
 		  local_tolerance(j-1));          //fusion de deux courbes adjacentes               
      if (fusion==Standard_False)
@@ -1139,7 +1139,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
        if (index==j)                                      //initialisation en debut de groupe
 	 ArrayOfConcatenated->SetValue(i,Curve1);
        else{
-	 Geom2dConvert_CompCurveToBSplineCurve  C(Handle(Geom2d_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(i)));
+	 Geom2dConvert_CompCurveToBSplineCurve  C(ArrayOfConcatenated->Value(i));
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes               
 	 if (fusion==Standard_False)
 	   Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
@@ -1351,7 +1351,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	 }
 	 Curve1= new Geom2d_BSplineCurve(NewPoles,NewWeights,KnotC1,KnotC1Mults,2*Curve1->Degree());
        }
-       Geom2dConvert_CompCurveToBSplineCurve   C(Handle(Geom2d_BSplineCurve)::DownCast(Curve2));
+       Geom2dConvert_CompCurveToBSplineCurve C(Curve2);
        fusion=C.Add(Curve1,
 		    local_tolerance(j-1));          //fusion de deux courbes adjacentes               
        if (fusion==Standard_False)
@@ -1395,7 +1395,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
        if (index==j)                                      //initialisation en debut de groupe
 	 ArrayOfConcatenated->SetValue(i,Curve1);
        else{
-	 Geom2dConvert_CompCurveToBSplineCurve  C(Handle(Geom2d_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(i)));
+	 Geom2dConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(i));
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes               
 	 if (fusion==Standard_False)
 	   Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
@@ -1469,8 +1469,7 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
 			   closed_flag,
 			   tolerance);
     
-   Geom2dConvert_CompCurveToBSplineCurve   
-     C(Handle(Geom2d_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(0)));
+   Geom2dConvert_CompCurveToBSplineCurve C(ArrayOfConcatenated->Value(0));
    if (ArrayOfConcatenated->Length()>=2){
      for (i=1;i<ArrayOfConcatenated->Length();i++){
        fusion=C.Add(ArrayOfConcatenated->Value(i),tolerance);

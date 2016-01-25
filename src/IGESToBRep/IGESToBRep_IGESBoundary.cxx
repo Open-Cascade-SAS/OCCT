@@ -201,8 +201,7 @@ IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary(const IGESToBRep_CurveAndSurfac
   }
   else if (!GTranslate3d && GTranslate2d) {
     for (Standard_Integer i = curves2d->Lower(); i <= curves2d->Upper(); i++) {
-      TopoDS_Shape Sh = TC.Transfer2dTopoCurve (Handle(IGESData_IGESEntity)::DownCast (curves2d->Value (i)),
-						myface, mytrsf, myuFact);
+      TopoDS_Shape Sh = TC.Transfer2dTopoCurve (curves2d->Value (i), myface, mytrsf, myuFact);
       if (!Sh.IsNull()) Gsewd2d->Add (Sh);
     }
     if (toreverse2d)

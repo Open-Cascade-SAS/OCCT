@@ -51,7 +51,7 @@ public:
   {
     Handle(StdObjMgt_Persistent) aTarget = theTarget;
     ReadReference (aTarget);
-    theTarget = Handle(Type)::DownCast (aTarget);
+    theTarget = dynamic_cast<Type*> (aTarget.get());
     return *this;
   }
 

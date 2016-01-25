@@ -895,7 +895,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
     Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(aCurve,First,Last); //protection agains parabols ets
     GeomConvert_ApproxCurve approx (tcurve, myTol3d/*Precision::Approximation()*/, myContinuity2d, myNbMaxSeg, 6 );
     if ( approx.HasResult() )
-      aBSpline = Handle(Geom_BSplineCurve)::DownCast(approx.Curve());
+      aBSpline = approx.Curve();
     else 
       aBSpline = GeomConvert::CurveToBSplineCurve(tcurve,Convert_QuasiAngular);
 
@@ -1202,7 +1202,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
     Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(aCurve,First,Last); //protection agains parabols ets
     Geom2dConvert_ApproxCurve approx (tcurve, myTol2d,myContinuity2d,myNbMaxSeg , 6 );
     if ( approx.HasResult() )
-      aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(approx.Curve());
+      aBSpline2d = approx.Curve();
     else 
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve,Convert_QuasiAngular);
 

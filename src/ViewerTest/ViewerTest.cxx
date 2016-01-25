@@ -4333,7 +4333,7 @@ static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDe
 template <typename T>
 static void printLocalSelectionInfo (const T& theContext, Draw_Interpretor& theDI)
 {
-  const Standard_Boolean isGlobalCtx = !(Handle(AIS_InteractiveContext)::DownCast (theContext).IsNull());
+  const Standard_Boolean isGlobalCtx = (theContext->DynamicType() == STANDARD_TYPE(AIS_InteractiveContext));
   TCollection_AsciiString aPrevName;
   for (theContext->InitSelected(); theContext->MoreSelected(); theContext->NextSelected())
   {

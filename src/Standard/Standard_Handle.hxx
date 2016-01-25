@@ -181,16 +181,34 @@ namespace opencascade {
       return get() < theHandle.get();
     }
 
-    //! Down casting operator
+    //! Down casting operator from handle to base type
     template <class T2>
-    static handle DownCast (const handle<T2>& theObject)
+    static typename std::enable_if<is_base_but_not_same<T2, T>::value, handle>::type
+      DownCast (const handle<T2>& theObject)
     {
       return handle (dynamic_cast<T*>(const_cast<T2*>(theObject.get())));
     }
 
-    //! Down casting operator
+    //! Down casting operator from pointer to base type
     template <class T2>
-    static handle DownCast (const T2* thePtr)
+    static typename std::enable_if<is_base_but_not_same<T2, T>::value, handle>::type 
+      DownCast (const T2* thePtr)
+    {
+      return handle (dynamic_cast<T*>(const_cast<T2*>(thePtr)));
+    }
+
+    //! For compatibility, define down casting operator from non-base type, as deprecated
+    template <class T2>
+    Standard_DEPRECATED("down-casting from object of the same or unrelated type is meaningless")
+    static handle DownCast (const handle<T2>& theObject, typename std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
+    {
+      return handle (dynamic_cast<T*>(const_cast<T2*>(theObject.get())));
+    }
+
+    //! For compatibility, define down casting operator from non-base type, as deprecated
+    template <class T2>
+    Standard_DEPRECATED("down-casting from object of the same or unrelated type is meaningless")
+    static handle DownCast (const T2* thePtr, typename std::enable_if<!is_base_but_not_same<T2, T>::value, void*>::type = 0)
     {
       return handle (dynamic_cast<T*>(const_cast<T2*>(thePtr)));
     }

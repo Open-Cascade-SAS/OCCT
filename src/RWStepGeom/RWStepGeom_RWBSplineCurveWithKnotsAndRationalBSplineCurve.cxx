@@ -335,8 +335,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::Check
    const Interface_ShareTool& aShto,
    Handle(Interface_Check)& ach) const
 {
-  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) aRationalBSC =
-    Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)::DownCast(ent);
+  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) aRationalBSC = ent;
   Handle(StepGeom_BSplineCurveWithKnots) aBSCWK =
     aRationalBSC->BSplineCurveWithKnots();
   RWStepGeom_RWBSplineCurveWithKnots t1;

@@ -937,7 +937,7 @@ private:
 	   NewPoles(ii).SetCoord(jj,NewPoles(ii).Coord(jj)/NewWeights(ii));
        Curve1= new Geom_BSplineCurve(NewPoles,NewWeights,KnotC1,KnotC1Mults,2*Curve1->Degree());
      }
-     GeomConvert_CompCurveToBSplineCurve   C(Handle(Geom_BSplineCurve)::DownCast(Curve2));
+     GeomConvert_CompCurveToBSplineCurve C (Curve2);
      fusion=C.Add(Curve1,
 		  local_tolerance(j-1));                //merge of two consecutive curves               
      if (fusion==Standard_False)
@@ -964,7 +964,7 @@ private:
        if (index==j)                                        //initialisation at the begining of the loop
 	 ArrayOfConcatenated->SetValue(i,Curve1);
        else{
-	 GeomConvert_CompCurveToBSplineCurve   C(Handle(Geom_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(i)));
+	 GeomConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(i));
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));            //merge of two consecutive curves               
 	 if (fusion==Standard_False)
 	   Standard_ConstructionError::Raise("GeomConvert Concatenation Error") ;
@@ -1172,7 +1172,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
 	     NewPoles(ii).SetCoord(jj,NewPoles(ii).Coord(jj)/NewWeights(ii));
 	 Curve1= new Geom_BSplineCurve(NewPoles,NewWeights,KnotC1,KnotC1Mults,2*Curve1->Degree());
        }
-       GeomConvert_CompCurveToBSplineCurve   C(Handle(Geom_BSplineCurve)::DownCast(Curve2));
+       GeomConvert_CompCurveToBSplineCurve C (Curve2);
        fusion=C.Add(Curve1,
 		    local_tolerance(j-1));          //merge of two consecutive curves               
        if (fusion==Standard_False)
@@ -1218,7 +1218,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
        else
        {
          // Merge of two consecutive curves.
-         GeomConvert_CompCurveToBSplineCurve   C(Handle(Geom_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(i)));
+         GeomConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(i));
          fusion=C.Add(Curve1, local_tolerance(j-1), Standard_True);
          if (fusion==Standard_False)
            Standard_ConstructionError::Raise("GeomConvert Concatenation Error");
@@ -1246,8 +1246,7 @@ void GeomConvert::C0BSplineToC1BSplineCurve(Handle(Geom_BSplineCurve)& BS,
   GeomConvert::C0BSplineToArrayOfC1BSplineCurve(BS, ArrayOfConcatenated, 
 						AngularTol, tolerance);
     
-  GeomConvert_CompCurveToBSplineCurve   C
-    (Handle(Geom_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(0)));
+  GeomConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(0));
   if (ArrayOfConcatenated->Length()>=2){
     Standard_Integer i;
     for (i=1;i<ArrayOfConcatenated->Length();i++){

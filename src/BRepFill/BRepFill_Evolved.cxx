@@ -3077,10 +3077,7 @@ void CutEdgeProf (const TopoDS_Edge&                  E,
 
   // project it in the plane and return the associated PCurve 
   gp_Dir Normal = Plane->Pln().Axis().Direction();
-  C = 
-    Handle(Geom_Curve)::DownCast(GeomProjLib::ProjectOnPlane(CT,Plane,
-    Normal,
-    Standard_False));
+  C = GeomProjLib::ProjectOnPlane (CT, Plane, Normal, Standard_False);
   C2d = GeomProjLib::Curve2d(C,Plane);
 
   // Calculate the extrema with the straight line

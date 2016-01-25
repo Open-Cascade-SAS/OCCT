@@ -220,7 +220,7 @@ static Standard_Integer QAHandleBool (Draw_Interpretor& theDI,
   Handle(NCollection_IncAllocator) anInc = Handle(NCollection_IncAllocator)::DownCast (aPtr);
   CHECK (theDI, ! anInc.IsNull(), "cast to NCollection_IncAllocator");
 
-  Handle(NCollection_BaseAllocator) anAlloc = Handle(NCollection_BaseAllocator)::DownCast (aPtr);
+  Handle(NCollection_BaseAllocator) anAlloc = aPtr;
   CHECK (theDI, ! anAlloc.IsNull(), "cast to NCollection_BaseAllocator");
   
   Handle(NCollection_HeapAllocator) aHAlloc = Handle(NCollection_HeapAllocator)::DownCast (aPtr);
@@ -423,178 +423,6 @@ static Standard_Integer QAHandleInc (Draw_Interpretor& theDI,
   return 0;
 }
 
-namespace
-{
-  //! Auxiliary class to perform casting to specified type.
-  template<typename TTo> struct QACast
-  {
-    //! Perform casting using OCCT DownCast() operation.
-    template<typename TFrom>
-    static void doDownCast (Draw_Interpretor& theDI,
-                            const Standard_Integer theNbIters,
-                            const TFrom&           theHandle)
-    {
-      std::vector<TTo> aHandles (theNbIters);
-      {
-        QATimer aTimer (theDI, " ", QATimer::ns, theNbIters);
-        for (Standard_Integer anIter = 0; anIter < theNbIters; ++anIter)
-        {
-          aHandles[anIter] = TTo::DownCast (theHandle);
-        }
-      }
-    }
-
-    //! Perform casting using standard C++ dynamic_cast<> operation.
-    template<typename TFrom>
-    static void doDynamicCast (Draw_Interpretor& theDI,
-                               const Standard_Integer theNbIters,
-                               const TFrom&           theHandle)
-    {
-      std::vector<typename TTo::element_type*> aPointers (theNbIters);
-      {
-        QATimer aTimer (theDI, " ", QATimer::ns, theNbIters);
-        for (Standard_Integer anIter = 0; anIter < theNbIters; ++anIter)
-        {
-          aPointers[anIter] = dynamic_cast<typename TTo::element_type* > (theHandle.operator->());
-        }
-      }
-    }
-
-    //! Perform dynamic casting using shared_ptr::dynamic_pointer_cast operation.
-    template<typename TFrom>
-    static void doShareCast (Draw_Interpretor& theDI,
-                             const Standard_Integer        theNbIters,
-                             const std::shared_ptr<TFrom>& theSharePtr)
-    {
-      std::vector< std::shared_ptr<typename TTo::element_type> > aSharePointers (theNbIters);
-      {
-        QATimer aTimer (theDI, " ", QATimer::ns, theNbIters);
-        for (Standard_Integer anIter = 0; anIter < theNbIters; ++anIter)
-        {
-          aSharePointers[anIter] = std::dynamic_pointer_cast<typename TTo::element_type, TFrom> (theSharePtr);
-        }
-      }
-    }
-
-  };
-
-  template<typename TAs>
-  static void qaCastAs (Draw_Interpretor& theDI,
-                        const qaclass00_50&    theInst,
-                        const Standard_Integer theNbIters)
-  {
-    #define QA_TEST_CAST10(theTens, theDoCast) \
-      QACast<QA_HANDLE_NAME(theTens ## 0)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 5)>::theDoCast(theDI, theNbIters, aPtr);
- 
-    typedef typename TAs::element_type aPtrType;
-    TAs aDummy (new aPtrType());
-    theDI << "Making a pointer:\n";
-    theDI << aDummy->DynamicType()->Name() << "* ptr = new " << theInst.DynamicType()->Name() << "\n";
-    theDI << "then measuring the time of casting it to base classes from qaclass00_50 to qaclass50_50, ns\n";
-    if (!theInst.IsKind (aDummy->DynamicType()))
-    {
-      return;
-    }
-
-    theDI << "\nOCCT Handle: ";
-    {
-      TAs aPtr ((typename TAs::element_type* )theInst.Clone());
-      QA_TEST_CAST10(0, doDownCast);
-      QA_TEST_CAST10(1, doDownCast);
-      QA_TEST_CAST10(2, doDownCast);
-      QA_TEST_CAST10(3, doDownCast);
-      QA_TEST_CAST10(4, doDownCast);
-      QACast<Handle(qaclass50_50)>::doDownCast(theDI, theNbIters, aPtr);
-    }
-    theDI << "\nC++ dynamic_cast: ";
-    {
-      TAs aPtr ((typename TAs::element_type* )theInst.Clone());
-      QA_TEST_CAST10(0, doDynamicCast);
-      QA_TEST_CAST10(1, doDynamicCast);
-      QA_TEST_CAST10(2, doDynamicCast);
-      QA_TEST_CAST10(3, doDynamicCast);
-      QA_TEST_CAST10(4, doDynamicCast);
-      QACast<Handle(qaclass50_50)>::doDynamicCast(theDI, theNbIters, aPtr);
-    }
-    theDI << "\nC++ dynamic_pointer_cast: ";
-    {
-      std::shared_ptr<typename TAs::element_type> aPtr ((typename TAs::element_type* )theInst.Clone());
-      QA_TEST_CAST10(0, doShareCast);
-      QA_TEST_CAST10(1, doShareCast);
-      QA_TEST_CAST10(2, doShareCast);
-      QA_TEST_CAST10(3, doShareCast);
-      QA_TEST_CAST10(4, doShareCast);
-      QACast<Handle(qaclass50_50)>::doShareCast(theDI, theNbIters, aPtr);
-    }
-  }
-
-}
-
-//=======================================================================
-//function : QAHandleCast
-//purpose  : Estimate performance of RTTI mechanisms - dynamic type casting
-//=======================================================================
-static Standard_Integer QAHandleCast (Draw_Interpretor& theDI,
-                                      Standard_Integer  theArgNb,
-                                      const char**      theArgVec)
-{
-  if (theArgNb > 4)
-  {
-    std::cout << "Error: wrong syntax! See usage:\n";
-    theDI.PrintHelp (theArgVec[0]);
-    return 1;
-  }
-  Standard_Integer anArgIter = 0;
-  const Standard_Integer anInst   = (++anArgIter < theArgNb) ? Draw::Atoi (theArgVec[anArgIter]) : 50;
-  const Standard_Integer aPtrTo   = (++anArgIter < theArgNb) ? Draw::Atoi (theArgVec[anArgIter]) : 0;
-  const Standard_Integer aNbIters = (++anArgIter < theArgNb) ? Draw::Atoi (theArgVec[anArgIter]) : 1000000;
-
-  if (aNbIters < 1)
-  {
-    std::cout << "Error: number of iterations (" << aNbIters << ") should be positive!\n";
-    return 1;
-  }
-  if (anInst > 50 || anInst < 0)
-  {
-    std::cout << "Error: class instance (" << anInst << ") should be specified within 0..50 range!\n";
-    return 1;
-  }
-  if (aPtrTo > anInst || aPtrTo < 0)
-  {
-    std::cout << "Error: class pointer (" << aPtrTo << ") should be specified within 0.." << anInst << " range!\n";
-    return 1;
-  }
-  else if (aPtrTo % 10 != 0)
-  {
-    std::cout << "Error: class pointer (" << aPtrTo << ") should be multiple of 10!\n";
-    return 1;
-  }
-
-  Handle(qaclass00_50) aHandle  = new qaclass50_50();
-  for (Standard_Integer anInstIter = 50 - anInst; anInstIter > 0; --anInstIter)
-  {
-    Handle(Standard_Transient) aParent (aHandle->CreateParent());
-    aHandle = Handle(qaclass00_50)::DownCast (aParent);
-  }
-
-  std::ios::fmtflags aFlags = std::cout.flags();
-  std::cout.precision (5);
-
-  switch (aPtrTo)
-  {
-    // vc11 requires /bigobj option
-    case 0:  qaCastAs<Handle(qaclass00_50)>(theDI, *aHandle, aNbIters); break;
-    case 10: qaCastAs<Handle(qaclass10_50)>(theDI, *aHandle, aNbIters); break;
-    case 20: qaCastAs<Handle(qaclass20_50)>(theDI, *aHandle, aNbIters); break;
-    case 30: qaCastAs<Handle(qaclass30_50)>(theDI, *aHandle, aNbIters); break;
-    case 40: qaCastAs<Handle(qaclass40_50)>(theDI, *aHandle, aNbIters); break;
-    case 50: qaCastAs<Handle(qaclass50_50)>(theDI, *aHandle, aNbIters); break;
-  }
-  std::cout.setf (aFlags);
-  return 0;
-}
-
 //=======================================================================
 //function : QAHandleKind
 //purpose  :
@@ -692,12 +520,6 @@ void QANCollection::CommandsHandle (Draw_Interpretor& theCommands)
                    "QAHandleInc nbIter=1000000"
                    "\n\t\t: Test handle increment performance",
                    __FILE__, QAHandleInc,  THE_GROUP);
-  theCommands.Add ("QAHandleCast",
-                   "QAHandleCast [instance=50 [pointerTo=0 [nbIter=1000000]]]"
-                   "\n\t\t: Test handle DownCast performance."
-                   "\n\t\t: instance  - specifies the depth of instantiated class"
-                   "\n\t\t: pointerTo - specifies the depth of pointer class, where instance is stored into",
-                   __FILE__, QAHandleCast, THE_GROUP);
   theCommands.Add ("QAHandleKind",
                    "Test handle IsKind",
                    __FILE__, QAHandleKind, THE_GROUP);

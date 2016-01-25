@@ -128,7 +128,7 @@ Handle(TObj_Object) TObj_TReference::Get() const
   {
     return anObject;
   }
-  anObject = Handle(TObj_Object)::DownCast(aTObject->Get());
+  anObject = aTObject->Get();
   return anObject;
 }
 

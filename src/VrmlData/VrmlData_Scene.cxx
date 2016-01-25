@@ -621,8 +621,7 @@ void VrmlData_Scene::createShape
     const Handle(VrmlData_ShapeNode) aNodeShape =
       Handle(VrmlData_ShapeNode)::DownCast (anIter.Value());
     if (aNodeShape.IsNull() == Standard_False) {
-      const Handle(VrmlData_Geometry) aNodeGeom =
-        Handle(VrmlData_Geometry)::DownCast(aNodeShape->Geometry());
+      const Handle(VrmlData_Geometry) aNodeGeom = aNodeShape->Geometry();
       if (aNodeGeom.IsNull() == Standard_False) {
         if (aSingleShape.IsNull() == Standard_False)
           isSingleShape = Standard_False;

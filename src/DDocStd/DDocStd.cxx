@@ -66,7 +66,7 @@ Standard_Boolean DDocStd::GetDocument (Standard_CString&         Name,
     if (Complain) cout << Name << " is not a Document" << endl; 
     return Standard_False;
   }
-  Handle(TDocStd_Document) STDDOC =  Handle(TDocStd_Document)::DownCast(DD->GetDocument());
+  Handle(TDocStd_Document) STDDOC = DD->GetDocument();
   if (!STDDOC.IsNull()) {
     DOC = STDDOC;
     return Standard_True;

@@ -88,8 +88,7 @@ Standard_Boolean XmlTObjDrivers_ReferenceDriver::Paste
     TDF_Tool::Label (Target->Label().Data(), RefEntry, aLabel, Standard_True);
   else
   {
-    Handle(TObj_Model) aModel = Handle(TObj_Model)::DownCast
-      ( TObj_Assistant::FindModel( InHolderEntry.ToCString() ));
+    Handle(TObj_Model) aModel = TObj_Assistant::FindModel (InHolderEntry.ToCString());
     TDF_Tool::Label (aModel->GetLabel().Data(), RefEntry, aLabel, Standard_True);
   }
   Handle(TObj_TReference) aTarget =
@@ -135,8 +134,7 @@ void XmlTObjDrivers_ReferenceDriver::Paste
   // is reference to other document 
   if (aLabel.Root() == aMasterLabel.Root()) return;
 
-  Handle(TObj_Model) aModel =
-    Handle(TObj_Model)::DownCast( aLObject->GetModel() );
+  Handle(TObj_Model) aModel = aLObject->GetModel();
   TCollection_AsciiString aModelName( aModel->GetModelName()->String() );
   Target.Element().setAttribute(::ReferredModelEntry(), aModelName.ToCString());
 }

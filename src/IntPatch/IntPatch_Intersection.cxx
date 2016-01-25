@@ -554,10 +554,8 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_HSurface)& S1,
   Handle(Geom_Curve) C2Prj =
     GeomProjLib::ProjectOnPlane(C2,GPln,gp_Dir(DV),Standard_True);
   if(C1Prj.IsNull() || C2Prj.IsNull()) return;
-  Handle(Geom2d_Curve) C1Prj2d =
-    GeomProjLib::Curve2d(C1Prj,Handle(Geom_Surface)::DownCast (GPln));
-  Handle(Geom2d_Curve) C2Prj2d =
-    GeomProjLib::Curve2d(C2Prj,Handle(Geom_Surface)::DownCast (GPln));
+  Handle(Geom2d_Curve) C1Prj2d = GeomProjLib::Curve2d (C1Prj,GPln);
+  Handle(Geom2d_Curve) C2Prj2d = GeomProjLib::Curve2d (C2Prj,GPln);
   Geom2dAPI_InterCurveCurve ICC(C1Prj2d,C2Prj2d,1.0e-7);
   if(ICC.NbPoints() > 0 )
   {
@@ -1286,8 +1284,8 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_HSurface)&  
         for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
         {
           gp_Lin lin(sop.Value(ip),gp_Dir(v));
-          Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-          slin.Append(Handle(IntPatch_Line)::DownCast (gl));
+          Handle(IntPatch_Line) gl = new IntPatch_GLine(lin,Standard_False);
+          slin.Append(gl);
         }
 
         done = Standard_True;
@@ -1470,8 +1468,8 @@ void IntPatch_Intersection::
         for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
         {
           gp_Lin lin(sop.Value(ip),gp_Dir(v));
-          Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-          slin.Append(Handle(IntPatch_Line)::DownCast (gl));
+          Handle(IntPatch_Line) gl = new IntPatch_GLine(lin,Standard_False);
+          slin.Append(gl);
         }
 
         done = Standard_True;

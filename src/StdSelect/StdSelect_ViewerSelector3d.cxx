@@ -402,7 +402,7 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(Graphic3d_Str
 
       for (int i = 0; i < anEntities.Length(); i++)
       {
-        Handle(Select3D_SensitiveEntity) SubEnt = Handle(Select3D_SensitiveEntity)::DownCast(anEntities.Value(i));
+        Handle(Select3D_SensitiveEntity) SubEnt = anEntities.Value(i);
 
         //Segment
         if (SubEnt->DynamicType()==STANDARD_TYPE(Select3D_SensitiveSegment))

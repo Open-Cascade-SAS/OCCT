@@ -774,14 +774,14 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   Handle(Geom2d_Curve) basisC1,basisC2; 
   Handle(Geom2d_TrimmedCurve) T1 = Handle(Geom2d_TrimmedCurve)::DownCast(C1);
   if (!T1.IsNull())
-    basisC1 = Handle(Geom2d_Curve)::DownCast(T1->BasisCurve());
+    basisC1 = T1->BasisCurve();
   else
-    basisC1 = Handle(Geom2d_Curve)::DownCast(C1);
+    basisC1 = C1;
   Handle(Geom2d_TrimmedCurve) T2 = Handle(Geom2d_TrimmedCurve)::DownCast(C2);
   if (!T2.IsNull())
-    basisC2 = Handle(Geom2d_Curve)::DownCast(T2->BasisCurve());
+    basisC2 = T2->BasisCurve();
   else
-    basisC2 = Handle(Geom2d_Curve)::DownCast(C2);
+    basisC2 = C2;
 
   if (basisC1->DynamicType() == STANDARD_TYPE(Geom2d_Circle)) {
     Handle(Geom2d_Circle) CC1 = Handle(Geom2d_Circle)::DownCast(basisC1);
@@ -1132,9 +1132,9 @@ Standard_Boolean IsLineOrCircle(const TopoDS_Edge& E,
   Handle(Geom2d_Curve) basisC; 
   Handle(Geom2d_TrimmedCurve) TC = Handle(Geom2d_TrimmedCurve)::DownCast(C);
   if (!TC.IsNull())
-    basisC = Handle(Geom2d_Curve)::DownCast(TC->BasisCurve());
+    basisC = TC->BasisCurve();
   else
-    basisC = Handle(Geom2d_Curve)::DownCast(C);
+    basisC = C;
 
   if ( basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
       || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line) ) {

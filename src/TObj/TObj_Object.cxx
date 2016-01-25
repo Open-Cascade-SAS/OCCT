@@ -1268,8 +1268,7 @@ void TObj_Object::CopyReferences
    new TObj_OcafObjectIterator(GetChildLabel(), NULL, Standard_True);
   for(; aSrcChildren->More(); aSrcChildren->Next())
   {
-    Handle(TObj_Object) aSrcChild =
-      Handle(TObj_Object)::DownCast(aSrcChildren->Value());
+    Handle(TObj_Object) aSrcChild = aSrcChildren->Value();
     TDF_Label aSrcL = aSrcChild->GetLabel();
     TDF_Label aDestLabel;
     if( !theRelocTable->HasRelocation(aSrcL, aDestLabel) )

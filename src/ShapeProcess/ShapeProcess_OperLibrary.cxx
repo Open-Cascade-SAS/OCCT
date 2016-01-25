@@ -692,8 +692,8 @@ static Standard_Boolean fixshape (const Handle(ShapeProcess_Context)& context)
   if ( ! ctx->Messages().IsNull() ) msg = new ShapeExtend_MsgRegistrator;
   
   Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-  Handle(ShapeFix_Face) sff  = Handle(ShapeFix_Face)::DownCast(sfs->FixFaceTool());
-  Handle(ShapeFix_Wire) sfw  = Handle(ShapeFix_Wire)::DownCast(sfs->FixWireTool());
+  Handle(ShapeFix_Face) sff  = sfs->FixFaceTool();
+  Handle(ShapeFix_Wire) sfw  = sfs->FixWireTool();
   sfs->SetMsgRegistrator( msg );
   
   sfs->SetPrecision    ( ctx->RealVal ( "Tolerance3d",    Precision::Confusion() ) );

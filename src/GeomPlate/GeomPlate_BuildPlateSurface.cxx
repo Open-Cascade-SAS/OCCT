@@ -767,8 +767,7 @@ EcartContraintesMil  ( const Standard_Integer c,
 	  }
 	break;
       case 2 :
-	Handle(Geom_Surface) Splate;
-	Splate = Handle(Geom_Surface)::DownCast(myGeomPlateSurface);
+	Handle(Geom_Surface) Splate (myGeomPlateSurface);
 	LocalAnalysis_SurfaceContinuity CG2;
 	for (i=1; i<NbPt; i++)
 	  { U = ( myParCont->Value(c).Value(i) + 
@@ -2532,8 +2531,7 @@ void GeomPlate_BuildPlateSurface::
 	    Ang = M_PI -Ang;
 	  break;
 	case 2 :
-	  Handle(Geom_Surface) Splate;
-	  Splate = Handle(Geom_Surface)::DownCast(myGeomPlateSurface);
+	  Handle(Geom_Surface) Splate (myGeomPlateSurface);
 	  LocalAnalysis_SurfaceContinuity CG2;
 	  P2d = PntCont->Pnt2dOnSurf();
 	  GeomLProp_SLProps Prop (Splate, P2d.Coord(1), P2d.Coord(2), 

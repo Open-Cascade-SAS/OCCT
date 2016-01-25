@@ -177,7 +177,7 @@ void STEPSelections_Counter::Count(const Interface_Graph& graph,
   
   if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation))) {
     DeclareAndCast(StepShape_ContextDependentShapeRepresentation,CDSR,start);
-    DeclareAndCast(StepRepr_RepresentationRelationship,SRR,CDSR->RepresentationRelation());
+    Handle(StepRepr_RepresentationRelationship) SRR = CDSR->RepresentationRelation();
     if ( SRR.IsNull() ) return ;
     
     Handle(StepRepr_Representation) rep;

@@ -322,6 +322,30 @@ os << aLine; // in OCCT 6.9.0, resolves to operator << (void*)
 
 Call method <i>get()</i> explicitly to output the address of the Handle.
 
+#### Method DownCast for non-base types
+
+Method *DownCast()* in OCCT 7.0 is made templated; if it is used with argument which is not a base class, "deprecated" compiler warning is generated.
+This is done to prevent possible unintended errors like this:
+
+~~~~~
+Handle(Geom_Surface) aSurf = ;
+Handle(Geom_Line) aLine = 
+  Handle(Geom_Line)::DownCast (aSurf); // will cause a compiler warning in OCCT 7.0, but not OCCT 6.x
+~~~~~
+
+The places where this cast has been used should be corrected manually.
+
+If down casting is used in a template context where argument can have the same or unrelated type so that *DownCast()* may be not available in all cases, use C++ *dynamic_cast<>* instead, e.g.: 
+
+~~~~~
+template <class T>
+bool CheckLine (const Handle(T) theArg)
+{
+  Handle(Geom_Line) aLine = dynamic_cast<Geom_Line> (theArg.get());
+  ...
+}
+~~~~~
+
 @subsubsection upgrade_occt700_cdl_runtime Possible runtime problems
 
 Here is the list of known possible problems at run time after the upgrade to OCCT 7.0.
@@ -330,6 +354,7 @@ Here is the list of known possible problems at run time after the upgrade to OCC
 
 In previous versions, the compiler was able to detect the situation when a local variable of a "reference to a Handle" type is initialized by temporary object, and ensured that lifetime of that object is longer than that of the variable. 
 In OCCT 7.0 with default options, it will not work if types of the temporary object and variable are different (due to involvement of user-defined type cast), thus such temporary object will be destroyed immediately.
+
 This problem does not appear if macro *OCCT_HANDLE_NOCAST* is used during compilation, see below.
 
 Example:

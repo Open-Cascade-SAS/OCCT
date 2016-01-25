@@ -76,8 +76,7 @@ Standard_Boolean BinTObjDrivers_ReferenceDriver::Paste
   {
     TCollection_AsciiString aName;
     if (! (theSource >> aName)) return Standard_False;
-    Handle(TObj_Model) aModel = Handle(TObj_Model)::DownCast
-      ( TObj_Assistant::FindModel( aName.ToCString() ));
+    Handle(TObj_Model) aModel = TObj_Assistant::FindModel (aName.ToCString());
     if (aModel.IsNull())
     {
       TCollection_AsciiString anEntry;
@@ -133,8 +132,7 @@ void BinTObjDrivers_ReferenceDriver::Paste
   if (! isSameDoc)
   {
     TCollection_AsciiString aName;
-    Handle(TObj_Model) aModel =
-      Handle(TObj_Model)::DownCast( aLObject->GetModel() );
+    Handle(TObj_Model) aModel = aLObject->GetModel();
     aName = TCollection_AsciiString( aModel->GetModelName()->String() );
     theTarget << aName;
   }

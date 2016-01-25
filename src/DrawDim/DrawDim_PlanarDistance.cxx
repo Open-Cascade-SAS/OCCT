@@ -42,7 +42,7 @@ void DrawDim_PlanarDistance::Draw
 {    
   Standard_Real f,l;
   Handle(Geom_Curve) line = BRep_Tool::Curve(edge,f,l);
-  GeomAPI_ProjectPointOnCurve pj (point,Handle(Geom_Curve)::DownCast(line));
+  GeomAPI_ProjectPointOnCurve pj (point, line);
   if (pj.NbPoints() == 1) { 
     gp_Pnt first = point;
     gp_Pnt last = pj.Point(1);

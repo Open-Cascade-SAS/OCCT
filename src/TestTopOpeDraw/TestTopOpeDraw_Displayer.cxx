@@ -139,7 +139,7 @@ void TestTopOpeDraw_Displayer::DisplayShapePrivate()
   if (myPar != -1.0 ) D->SetPar(myPar);
   
   char* pname = (char *)myNameDBRep.ToCString();
-  Draw::Set(pname,Handle(DBRep_DrawableShape)::DownCast(D));
+  Draw::Set(pname,D);
 }
 
 //=======================================================================

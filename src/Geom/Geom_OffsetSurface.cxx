@@ -685,7 +685,7 @@ Standard_Boolean Geom_OffsetSurface::IsUClosed () const
     Handle(Geom_RectangularTrimmedSurface) St = 
       Handle(Geom_RectangularTrimmedSurface)::DownCast(SBasis);
 
-    Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(St->BasisSurface());
+    Handle(Geom_Surface) S = St->BasisSurface();
     if (S->IsKind (STANDARD_TYPE(Geom_ElementarySurface))) {
       UClosed = SBasis->IsUClosed();
     }
@@ -737,7 +737,7 @@ Standard_Boolean Geom_OffsetSurface::IsVClosed () const
     Handle(Geom_RectangularTrimmedSurface) St = 
       Handle(Geom_RectangularTrimmedSurface)::DownCast(SBasis);
 
-    Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(St->BasisSurface());
+    Handle(Geom_Surface) S = St->BasisSurface();
     if (S->IsKind (STANDARD_TYPE(Geom_ElementarySurface))) {
       VClosed = SBasis->IsVClosed();
     }

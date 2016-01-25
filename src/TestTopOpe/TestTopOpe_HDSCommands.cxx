@@ -214,7 +214,7 @@ static void SetPoint
 					 namedisp.ToCString(),namecolor);
   }
   char *pname = (char *)namedbrep.ToCString();
-  Draw::Set(pname,Handle(Draw_Marker3D)::DownCast(D));
+  Draw::Set(pname,D);
   
 }
 void tsee_entity0::See() 
@@ -259,7 +259,7 @@ static void SetCurve
   Handle(TestTopOpeDraw_DrawableC3D) D;
   D = new TestTopOpeDraw_DrawableC3D(GTC,namecolor,namedisp.ToCString(),namecolor);
   char *pname = (char *)namedbrep.ToCString();
-  Draw::Set(pname,Handle(DrawTrSurf_Curve)::DownCast(D));
+  Draw::Set(pname,D);
 }
 
 static TopoDS_Shape bidbid;

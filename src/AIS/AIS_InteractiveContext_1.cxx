@@ -389,8 +389,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
 
   for (aSelector->Init(); aSelector->More(); aSelector->Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (aSelector->Picked());
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked();
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
@@ -527,7 +526,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
   AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
   for (aSelector->Init(); aSelector->More(); aSelector->Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =  Handle(SelectMgr_EntityOwner)::DownCast (aSelector->Picked());
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked();
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 
@@ -578,7 +577,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
   AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
   for (aSelector->Init(); aSelector->More(); aSelector->Next())
   {
-    const Handle(SelectMgr_EntityOwner) anOwner =  Handle(SelectMgr_EntityOwner)::DownCast (aSelector->Picked());
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelector->Picked();
     if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
       continue;
 

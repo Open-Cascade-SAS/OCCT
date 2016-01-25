@@ -503,9 +503,8 @@ Standard_Boolean MAT2d_Tool2d::TrimBisector
   if (Affich) cout<<"TRIM de "<<abisector->BisectorNumber()<<endl;
 #endif
 
-  Handle(Geom2d_TrimmedCurve) 
-    bisector = Handle(Geom2d_TrimmedCurve)
-    ::DownCast(ChangeGeomBis(abisector->BisectorNumber()).ChangeValue());
+  Handle(Geom2d_TrimmedCurve) bisector = 
+    ChangeGeomBis(abisector->BisectorNumber()).ChangeValue();
 
   if(bisector->BasisCurve()->IsPeriodic() && param == Precision::Infinite()) {
     param = bisector->FirstParameter() + 2*M_PI;
@@ -528,9 +527,8 @@ Standard_Boolean MAT2d_Tool2d::TrimBisector
   const Standard_Integer      apoint)
 {
   Standard_Real Param;
-  Handle(Geom2d_TrimmedCurve)
-    Bisector = Handle(Geom2d_TrimmedCurve)::
-    DownCast(ChangeGeomBis(abisector->BisectorNumber()).ChangeValue());
+  Handle(Geom2d_TrimmedCurve) Bisector =
+    ChangeGeomBis(abisector->BisectorNumber()).ChangeValue();
 
   Handle(Bisector_Curve) Bis = Handle(Bisector_Curve)::
     DownCast(Bisector->BasisCurve());
@@ -763,13 +761,11 @@ Standard_Real MAT2d_Tool2d::IntersectBisector (
   Standard_Boolean SolutionValide;
   gp_Pnt2d         PointSolution;
 
-  Handle(Geom2d_TrimmedCurve)
-    Bisector1 = Handle(Geom2d_TrimmedCurve)
-    ::DownCast(ChangeGeomBis(BisectorOne->BisectorNumber()).ChangeValue());
+  Handle(Geom2d_TrimmedCurve) Bisector1 =
+    ChangeGeomBis(BisectorOne->BisectorNumber()).ChangeValue();
 
-  Handle(Geom2d_TrimmedCurve) 
-    Bisector2 = Handle(Geom2d_TrimmedCurve)
-    ::DownCast(ChangeGeomBis(BisectorTwo->BisectorNumber()).ChangeValue());
+  Handle(Geom2d_TrimmedCurve) Bisector2 =
+    ChangeGeomBis(BisectorTwo->BisectorNumber()).ChangeValue();
 
   if(Bisector1.IsNull() || Bisector2.IsNull()) return Precision::Infinite();
 
@@ -1159,8 +1155,8 @@ void MAT2d_Tool2d::BisecFusion(const Standard_Integer I1,
   Handle(Geom2d_TrimmedCurve) Bisector1;
   Handle(Geom2d_TrimmedCurve) Bisector2;
 
-  Bisector1 = Handle(Geom2d_TrimmedCurve)::DownCast(GeomBis(I1).Value());
-  Bisector2 = Handle(Geom2d_TrimmedCurve)::DownCast(GeomBis(I2).Value());
+  Bisector1 = GeomBis(I1).Value();
+  Bisector2 = GeomBis(I2).Value();
   UF1       = Bisector1->FirstParameter();
   UL1       = Bisector1->LastParameter();
 
@@ -1184,7 +1180,7 @@ void MAT2d_Tool2d::BisecFusion(const Standard_Integer I1,
     Bis.Perform(BCC1->Curve(2), BCC1->Curve(1), P2, VBid, VBid, 
 		theDirection, theJoinType, Tolerance, Standard_False); 
 
-    Bisector1 = Handle(Geom2d_TrimmedCurve)::DownCast(Bis.Value());
+    Bisector1 = Bis.Value();
     BCC1      = Handle(Bisector_BisecCC)   ::DownCast(Bisector1->BasisCurve());	
     UF1       = BCC1->FirstParameter();
     UL1       = BCC1->Parameter(P1);
@@ -1246,8 +1242,7 @@ static void SetTrim(Bisector_Bisec& Bis, const Handle(Geom2d_Curve)& Line1)
   Geom2dInt_GInter Intersect; 
   Standard_Real    Distance;  
   Standard_Real    Tolerance = MAT2d_TOLCONF;  
-  Handle(Geom2d_TrimmedCurve) Bisector = 
-    Handle(Geom2d_TrimmedCurve)::DownCast(Bis.ChangeValue());
+  Handle(Geom2d_TrimmedCurve) Bisector = Bis.ChangeValue();
 
   IntRes2d_Domain  Domain1   = Domain(Bisector,Tolerance);
   Standard_Real    UB1       = Bisector->FirstParameter();

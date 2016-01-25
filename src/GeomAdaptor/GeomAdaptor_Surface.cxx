@@ -161,11 +161,10 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
           Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
       // Create nested adaptor for base curve
       Handle(Geom_Curve) aBaseCurve = myRevSurf->BasisCurve();
-      Handle(GeomAdaptor_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
+      Handle(Adaptor3d_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
       // Create corresponding evaluator
-      myNestedEvaluator = new GeomEvaluator_SurfaceOfRevolution(
-          Handle(Adaptor3d_HCurve)::DownCast(aBaseAdaptor),
-          myRevSurf->Direction(), myRevSurf->Location());
+      myNestedEvaluator = 
+        new GeomEvaluator_SurfaceOfRevolution (aBaseAdaptor, myRevSurf->Direction(), myRevSurf->Location());
     }
     else if ( TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
     {
@@ -174,10 +173,10 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
           Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
       // Create nested adaptor for base curve
       Handle(Geom_Curve) aBaseCurve = myExtSurf->BasisCurve();
-      Handle(GeomAdaptor_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
+      Handle(Adaptor3d_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
       // Create corresponding evaluator
-      myNestedEvaluator = new GeomEvaluator_SurfaceOfExtrusion(
-          Handle(Adaptor3d_HCurve)::DownCast(aBaseAdaptor), myExtSurf->Direction());
+      myNestedEvaluator =
+        new GeomEvaluator_SurfaceOfExtrusion (aBaseAdaptor, myExtSurf->Direction());
     }
     else if (TheType == STANDARD_TYPE(Geom_BezierSurface))
     {

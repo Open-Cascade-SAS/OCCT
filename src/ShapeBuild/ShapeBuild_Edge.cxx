@@ -553,7 +553,7 @@ Handle(Geom2d_Curve) ShapeBuild_Edge::TransformPCurve(const Handle(Geom2d_Curve)
       Geom2dConvert_ApproxCurve approx (tcurve, Precision::Approximation(), 
         GeomAbs_C1, 100, 6 );
       if ( approx.HasResult() )
-        aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(approx.Curve());
+        aBSpline2d = approx.Curve();
       else
         aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve,Convert_QuasiAngular);
       aFirst = aBSpline2d->FirstParameter();

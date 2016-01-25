@@ -84,7 +84,7 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
       OCC_CATCH_SIGNALS
       GeomConvert_ApproxCurve approx (tcurve, Tol3d, Continuity, MaxSegments, MaxDeg);
       if ( approx.HasResult() )
-	aBSpline = Handle(Geom_BSplineCurve)::DownCast(approx.Curve());
+	aBSpline = approx.Curve();
       else
 	aBSpline = GeomConvert::CurveToBSplineCurve(C3D,Convert_QuasiAngular);
     }
@@ -117,7 +117,7 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(G
     Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(C2D,First,Last); //protection agains parabols ets
     Geom2dConvert_ApproxCurve approx (tcurve, Tol2d, Continuity, MaxSegments, MaxDegree);
     if ( approx.HasResult() )
-      aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(approx.Curve());
+      aBSpline2d = approx.Curve();
     else 
       aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve,Convert_QuasiAngular);
   } 
@@ -248,7 +248,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
       }
       else {
 	if(anApprox.HasResult()) 
-	  errSpl = Handle(Geom_BSplineSurface)::DownCast(anApprox.Surface());
+	  errSpl = anApprox.Surface();
 #ifdef OCCT_DEBUG
 	cout << "\terror = " << anApprox.MaxError() <<endl;
 #endif

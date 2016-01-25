@@ -1577,7 +1577,7 @@ Standard_Boolean BRepFeat_RibSlot::SlidingProfile(TopoDS_Face& Prof,
     Standard_Real lpar = IntPar(FirstCurve, myLastPnt);
     Handle(Geom_Curve) c;
     if(fpar > lpar) 
-      c = Handle(Geom_Curve)::DownCast(FirstCurve->Reversed());
+      c = FirstCurve->Reversed();
     else 
       c = FirstCurve;
     

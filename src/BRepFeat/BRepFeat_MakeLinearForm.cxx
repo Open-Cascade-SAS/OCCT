@@ -432,10 +432,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 	  pt = myLastPnt;
 	  Standard_Real fpar = IntPar(cc, myFirstPnt);
 	  Standard_Real lpar = IntPar(cc, pt);
-	  Handle(Geom_Curve) ccc;
 	  if(fpar > lpar) {
-	    ccc = Handle(Geom_Curve)::DownCast(cc->Reversed());
-	    cc = ccc;
+	    cc = cc->Reversed();
 	  }
 	}
 	TopoDS_Edge ee1;

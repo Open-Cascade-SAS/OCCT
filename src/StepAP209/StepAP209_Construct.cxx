@@ -691,8 +691,7 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure (const Handle(StepBa
   Handle(StepData_StepModel) smodel = Handle(StepData_StepModel)::DownCast(Model());
 
   // replace existing contexts for using AP209
-  Handle(StepBasic_ProductContext) OldProdCtx = 
-    Handle(StepBasic_ProductContext)::DownCast(Prod->FrameOfReferenceValue(1));
+  Handle(StepBasic_ProductContext) OldProdCtx = Prod->FrameOfReferenceValue(1);
   if(!OldProdCtx.IsNull()) {
     Handle(StepBasic_ProductContext) ProdCtx = new StepBasic_ProductContext;
     ProdCtx->Init(OldProdCtx->Name(),
@@ -704,8 +703,7 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure (const Handle(StepBa
     HAPC->SetValue(1,ProdCtx);
     Prod->SetFrameOfReference(HAPC);
   }
-  Handle(StepBasic_ProductDefinitionContext) OldPDCtx =
-    Handle(StepBasic_ProductDefinitionContext)::DownCast(PD->FrameOfReference());
+  Handle(StepBasic_ProductDefinitionContext) OldPDCtx = PD->FrameOfReference();
   if(!OldPDCtx.IsNull()) {
     Handle(StepBasic_ProductDefinitionContext) PDCtx = new StepBasic_ProductDefinitionContext;
     PDCtx->Init(OldPDCtx->Name(),
@@ -1308,8 +1306,7 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
 
   // replacing contexts:
   Handle(StepBasic_ApplicationContext) ApplCtx;
-  Handle(StepBasic_ProductContext) ProdCtx = 
-    Handle(StepBasic_ProductContext)::DownCast(Prod->FrameOfReferenceValue(1));
+  Handle(StepBasic_ProductContext) ProdCtx = Prod->FrameOfReferenceValue(1);
   if(!ProdCtx.IsNull()) {
     Handle(StepBasic_MechanicalContext) MechCtx = new StepBasic_MechanicalContext;
     MechCtx->Init(ProdCtx->Name(), ProdCtx->FrameOfReference(),
@@ -1320,8 +1317,7 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
     Prod->SetFrameOfReference(HAPC);
     ApplCtx = MechCtx->FrameOfReference();
   }
-  Handle(StepBasic_ProductDefinitionContext) PDCtx = 
-    Handle(StepBasic_ProductDefinitionContext)::DownCast(PD->FrameOfReference());
+  Handle(StepBasic_ProductDefinitionContext) PDCtx = PD->FrameOfReference();
   if(!PDCtx.IsNull()) {
     Handle(StepBasic_DesignContext) DesCtx = new StepBasic_DesignContext;
     DesCtx->Init(PDCtx->Name(), PDCtx->FrameOfReference(),

@@ -102,7 +102,7 @@ static void AddInstances(const Handle(Standard_Transient)& start,
 
   if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation))) {
     DeclareAndCast(StepShape_ContextDependentShapeRepresentation,CDSR,start);
-    DeclareAndCast(StepRepr_RepresentationRelationship,SRR,CDSR->RepresentationRelation());
+    Handle(StepRepr_RepresentationRelationship) SRR = CDSR->RepresentationRelation();
     if ( SRR.IsNull() ) return ;
     
     Handle(StepRepr_Representation) rep;

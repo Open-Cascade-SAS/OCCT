@@ -88,7 +88,7 @@ BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire& Path,
       Standard_Real t1 = OrigParam->Value(ipath-1);
       Standard_Real t2 = OrigParam->Value(ipath);
       Handle(GeomFill_LocationGuide) Loc;
-      Loc = Handle(GeomFill_LocationGuide)::DownCast(theLaw);
+      Loc = theLaw;
       Loc->SetOrigine(t1,t2);
 
       myLaws->SetValue(ipath, Loc->Copy());

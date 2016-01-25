@@ -102,7 +102,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
 {
   Standard_Integer savFixSmallAreaWireMode = 0;
   Standard_Integer savFixVertexTolMode =  myFixVertexTolMode;
-  Handle(ShapeFix_Face) fft = Handle(ShapeFix_Face)::DownCast( FixFaceTool() );
+  Handle(ShapeFix_Face) fft = FixFaceTool();
   if ( !fft.IsNull() ) {
     savFixSmallAreaWireMode = fft->FixSmallAreaWireMode();
     if ( savFixSmallAreaWireMode == -1 &&

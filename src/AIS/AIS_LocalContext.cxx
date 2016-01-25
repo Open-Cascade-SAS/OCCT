@@ -1006,8 +1006,10 @@ void AIS_LocalContext::ClearObjects()
 //	  myMainPM->Clear(SO,CurAtt->DisplayMode());}
       }
       else {
-	if (CurAtt->IsSubIntensityOn()){
-	  myCTX->SubIntensityOff(Handle(AIS_InteractiveObject)::DownCast(SO));}
+	if (CurAtt->IsSubIntensityOn())
+        {
+          myCTX->SubIntensityOff(SO);
+        }
 	Standard_Integer DiMo = SO->HasDisplayMode()?
 	  SO->DisplayMode():myCTX->DisplayMode();
 	if(CurAtt->DisplayMode()!=-1 &&

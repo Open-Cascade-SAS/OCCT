@@ -689,9 +689,7 @@ Handle(Geom_BSplineSurface) StepToGeom::MakeBSplineSurface (const Handle(StepGeo
     BSR =
       Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)
 	::DownCast(SS);
-    BS =
-      Handle(StepGeom_BSplineSurfaceWithKnots)
-	::DownCast(BSR->BSplineSurfaceWithKnots());
+    BS = BSR->BSplineSurfaceWithKnots();
   }
   else
     BS = Handle(StepGeom_BSplineSurfaceWithKnots)::DownCast(SS);
@@ -1526,8 +1524,7 @@ Handle(Geom_Surface) StepToGeom::MakeSurface (const Handle(StepGeom_Surface)& SS
     else if (SS->IsKind(STANDARD_TYPE(StepGeom_SurfaceReplica))) { //:n7 abv 16 Feb 99
       const Handle(StepGeom_SurfaceReplica) SR = Handle(StepGeom_SurfaceReplica)::DownCast(SS);
       const Handle(StepGeom_Surface) PS = SR->ParentSurface();
-      const Handle(StepGeom_CartesianTransformationOperator3d) T =
-        Handle(StepGeom_CartesianTransformationOperator3d)::DownCast(SR->Transformation());
+      const Handle(StepGeom_CartesianTransformationOperator3d) T = SR->Transformation();
       // protect against cyclic references and wrong type of cartop
       if ( !T.IsNull() && PS != SS ) {
         Handle(Geom_Surface) S1 = MakeSurface (PS);

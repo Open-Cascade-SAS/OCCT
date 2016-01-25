@@ -138,7 +138,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       Geom2dConvert_ApproxCurve approx (tcurve, Precision::Approximation(), 
 					GeomAbs_C1, 100, 6 );
       if ( approx.HasResult() )
-	aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(approx.Curve());
+	aBSpline2d = approx.Curve();
       else 
 	aBSpline2d = Geom2dConvert::CurveToBSplineCurve(tcurve,Convert_QuasiAngular);
       
