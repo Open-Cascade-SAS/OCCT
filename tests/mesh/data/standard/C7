@@ -1,15 +1,20 @@
 set TheFileName shading_025.brep
 set bug_freenodes "OCC22687"
 if { [string compare $command "shading"] == 0 } {
-   set nbfreenodes(All) 1
+   set nbfreenodes(All) 3
 } else {
+   set bug_withouttri "OCC27226"
    set bug_freelinks "OCC23105"
-###   set nbfree(ALL) 4
+   ###set nbfree(ALL) 4
    if { [string compare $command "mesh"] == 0 } {
 ###     set nbfree(ALL) 8  ### OCC23106
      set nbfree(ALL) 2
+     set nbwithouttri(All) 1
+     set nbfreenodes(All) 37
    } else {
      set nbfree(ALL) 2
+     set nbwithouttri(All) 1
+     set nbfreenodes(All) 37
    }
-   set nbfreenodes(All) 4
+   ###set nbfreenodes(All) 37
 }

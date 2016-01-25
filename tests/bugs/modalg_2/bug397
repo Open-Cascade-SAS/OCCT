@@ -2,6 +2,9 @@ puts "========================"
 puts " OCC397 "
 puts "========================"
 
+puts "TODO OCC27226 ALL: Colors are not equal in default"
+puts "TODO OCC27226 ALL: Shading is missing in 3D Viewer" 
+
 pload QAcommands
 
 restore [locate_data_file OCC397.brep] a 

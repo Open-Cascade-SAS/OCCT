@@ -64,6 +64,22 @@ static void D2 (const Adaptor2d_Curve2d& C, const Standard_Real U,
   VV2.SetCoord (X, Y, 0.0);
 }
 
+static Standard_Real EstimAngl(const gp_Pnt& P1, const gp_Pnt& Pm, const gp_Pnt& P2)
+{
+  gp_Vec V1(P1, Pm), V2(Pm, P2);
+  Standard_Real L = V1.Magnitude() * V2.Magnitude();
+  //
+  if(L > gp::Resolution())
+  {
+    return V1.CrossMagnitude(V2)/L;
+  }
+  else
+  {
+    return 0.;
+  }
+}
+
+
 // Return number of interval of continuity on which theParam is located.
 // Last parameter is used to increase search speed.
 static Standard_Integer getIntervalIdx(const Standard_Real theParam, 
@@ -81,7 +97,7 @@ static Standard_Integer getIntervalIdx(const Standard_Real theParam,
   }
   return anIdx;
 }
-
+//
 //=======================================================================
 //function : CPnts_TangentialDeflection
 //purpose  : 
@@ -161,22 +177,32 @@ Standard_Real GCPnts_TangentialDeflection::ArcAngularStep(
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Circ.hxx>
+#include <GCPnts_DistFunction.hxx>
 #define TheCurve Adaptor3d_Curve
 #define Handle_TheBezierCurve   Handle(Geom_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom_BSplineCurve)
+#define TheMaxCurvLinDist GCPnts_DistFunction
+#define TheMaxCurvLinDistMV GCPnts_DistFunctionMV
 #include <GCPnts_TangentialDeflection.gxx>
 #undef Handle_TheBezierCurve
 #undef Handle_TheBSplineCurve
 #undef TheCurve
+#undef TheMaxCurvLinDist
+#undef TheMaxCurvLinDistMV
 
 
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <gp_Circ2d.hxx>
+#include <GCPnts_DistFunction2d.hxx>
 #define TheCurve Adaptor2d_Curve2d
 #define Handle_TheBezierCurve   Handle(Geom2d_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom2d_BSplineCurve)
+#define TheMaxCurvLinDist GCPnts_DistFunction2d
+#define TheMaxCurvLinDistMV GCPnts_DistFunction2dMV
 #include <GCPnts_TangentialDeflection.gxx>
 #undef Handle_TheBezierCurve
 #undef Handle_TheBSplineCurve
 #undef TheCurve
+#undef TheMaxCurvLinDist
+#undef TheMaxCurvLinDistMV

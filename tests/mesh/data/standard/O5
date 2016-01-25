@@ -4,6 +4,7 @@ set bug_withouttri "OCC22687"
 set nbwithouttri(ALL) 1
 if { [string compare $command "shading"] == 0 } {
    set rel_tol 0.13
+   set nbwithouttri(ALL) 1
 } else {
    set rel_tol 0.21
 }

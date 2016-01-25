@@ -111,6 +111,7 @@
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
+#include <GCPnts_DistFunction.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <gce_MakeLin.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
@@ -831,97 +832,11 @@ static Standard_Integer movelaw (Draw_Interpretor& di, Standard_Integer n, const
 //Static method computing deviation of curve and polyline
 #include <math_PSO.hxx>
 #include <math_PSOParticlesPool.hxx>
-#include <math_MultipleVarFunctionWithHessian.hxx>
-#include <math_NewtonMinimum.hxx>
+#include <math_MultipleVarFunction.hxx>
+#include <math_BrentMinimum.hxx>
 
-class aMaxCCDist : public math_MultipleVarFunctionWithHessian
-{
-public:
-  aMaxCCDist(const Handle(Geom_Curve)& theCurve,
-             const Handle(Geom_BSplineCurve)& thePnts)
-: myCurve(theCurve),
-  myPnts(thePnts)
-  {
-  }
-
-  virtual Standard_Boolean Value (const math_Vector& X,
-                                  Standard_Real& F)
-  {
-    if (!CheckInputData(X(1)))
-    {
-      return Standard_False;
-    }
-    F = -myCurve->Value(X(1)).SquareDistance(myPnts->Value(X(1)));
-    return Standard_True;
-  }
-
-  
-  virtual Standard_Boolean Gradient (const math_Vector& X, math_Vector& G)
-  {
-    if (!CheckInputData(X(1)))
-    {
-      return Standard_False;
-    }
-    gp_Pnt aPnt1, aPnt2;
-    gp_Vec aVec1, aVec2;
-    myCurve->D1(X(1), aPnt1, aVec1);
-    myPnts->D1 (X(1), aPnt2, aVec2);
-
-    G(1) = 2 * (aPnt1.X() - aPnt2.X()) * (aVec1.X() - aVec2.X())
-         + 2 * (aPnt1.Y() - aPnt2.Y()) * (aVec1.Y() - aVec2.Y())
-         + 2 * (aPnt1.Z() - aPnt2.Z()) * (aVec1.Z() - aVec2.Z());
-    G(1) *= -1.0; // Maximum search.
-
-    return Standard_True;
-  }
-
-  virtual Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G, math_Matrix& H)
-  {
-    if (Value(X, F) && Gradient(X, G))
-    {
-      gp_Pnt aPnt1, aPnt2;
-      gp_Vec aVec11, aVec12, aVec21, aVec22;
-      myCurve->D2(X(1), aPnt1, aVec11, aVec12);
-      myPnts->D2 (X(1), aPnt2, aVec21, aVec22);
-
-      H(1,1) = 2 * (aVec11.X() - aVec21.X()) * (aVec11.X() - aVec21.X())
-             + 2 * (aVec11.Y() - aVec21.Y()) * (aVec11.Y() - aVec21.Y())
-             + 2 * (aVec11.Z() - aVec21.Z()) * (aVec11.Z() - aVec21.Z())
-             + 2 * (aPnt1.X() - aPnt2.X()) * (aVec12.X() - aVec22.X())
-             + 2 * (aPnt1.Y() - aPnt2.Y()) * (aVec12.Y() - aVec22.Y())
-             + 2 * (aPnt1.Z() - aPnt2.Z()) * (aVec12.Z() - aVec22.Z());
-      H(1,1) *= -1.0; // Maximum search.
-
-      return Standard_True;
-    }
-    return Standard_False;
-  }
-
-  virtual Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G)
-  {
-    return (Value(X, F) && Gradient(X, G));
-  }
-
-  virtual Standard_Integer NbVariables() const
-  {
-    return 1;
-  }
-
-private:
-  aMaxCCDist & operator = (const aMaxCCDist & theOther);
-
-  Standard_Boolean CheckInputData(Standard_Real theParam)
-  {
-    if (theParam < myCurve->FirstParameter() || 
-        theParam > myCurve->LastParameter())
-      return Standard_False;
-    return Standard_True;
-  }
-
-  const Handle(Geom_Curve)& myCurve;
-  const Handle(Geom_BSplineCurve)& myPnts;
-};
-
+static Standard_Real CompLocalDev(const Handle(Geom_Curve)& theCurve,  
+                                  const Standard_Real u1, const Standard_Real u2);
 
 static void ComputeDeviation(const Handle(Geom_Curve)& theCurve,
                              const Handle(Geom_BSplineCurve)& thePnts,
@@ -939,42 +854,76 @@ static void ComputeDeviation(const Handle(Geom_Curve)& theCurve,
   Standard_Integer nbp = thePnts->NbKnots();
   TColStd_Array1OfReal aKnots(1, nbp);
   thePnts->Knots(aKnots);
-  math_Vector aLowBorder(1,1);
-  math_Vector aUppBorder(1,1);
-  math_Vector aSteps(1,1);
 
   Standard_Integer i;
   for(i = 1; i < nbp; ++i)
   {
-    aLowBorder(1) = aKnots(i);
-    aUppBorder(1) = aKnots(i+1);
-    aSteps(1) =(aUppBorder(1) - aLowBorder(1)) * 0.01; // Run PSO on even distribution with 100 points.
-
-    Standard_Real aValue;
-    math_Vector aT(1,1);
-    aMaxCCDist aFunc(theCurve, thePnts);
-    math_PSO aFinder(&aFunc, aLowBorder, aUppBorder, aSteps); // Choose 32 best points from 100 above.
-    aFinder.Perform(aSteps, aValue, aT);
-    Standard_Real d = 0.;
-
-    math_NewtonMinimum anOptLoc(aFunc);
-    anOptLoc.Perform(aFunc, aT);
-
-    if (anOptLoc.IsDone())
+    Standard_Real u1 = aKnots(i), u2 = aKnots(i+1);
+    Standard_Real d = CompLocalDev(theCurve, u1, u2);
+    if(d > theDmax)
     {
-      d = -anOptLoc.Minimum();
-      if(d > theDmax)
-      {
-        theDmax = d;
-        theUfMax = aLowBorder(1);
-        theUlMax = aUppBorder(1);
-        theImax = i;
-      }
+      theDmax = d;
+      theImax = i;
+      theUfMax = u1;
+      theUlMax = u2;
     }
   }
-  theDmax = Sqrt(theDmax); // Convert to Euclidean distance.
 }
 
+Standard_Real CompLocalDev(const Handle(Geom_Curve)& theCurve,  
+                           const Standard_Real u1, const Standard_Real u2)
+{
+  math_Vector aLowBorder(1,1);
+  math_Vector aUppBorder(1,1);
+  math_Vector aSteps(1,1);
+  GeomAdaptor_Curve TCurve(theCurve);
+  //
+  aLowBorder(1) = u1;
+  aUppBorder(1) = u2;
+  aSteps(1) =(aUppBorder(1) - aLowBorder(1)) * 0.01; // Run PSO on even distribution with 100 points.
+  //
+  GCPnts_DistFunction aFunc1(TCurve,  u1, u2);
+  //
+  Standard_Real aValue;
+  math_Vector aT(1,1);
+  GCPnts_DistFunctionMV aFunc(aFunc1);
+
+  math_PSO aFinder(&aFunc, aLowBorder, aUppBorder, aSteps); // Choose 32 best points from 100 above.
+  aFinder.Perform(aSteps, aValue, aT);
+  Standard_Real d = 0.;
+
+  Standard_Real d1, d2;
+  Standard_Real x1 = Max(u1, aT(1) - aSteps(1));
+  Standard_Boolean Ok = aFunc1.Value(x1, d1);
+  if(!Ok)
+  {
+    return Sqrt(-aValue);
+  }
+  Standard_Real x2 = Min(u2, aT(1) + aSteps(1));
+  Ok = aFunc1.Value(x2, d2);
+  if(!Ok)
+  {
+    return Sqrt(-aValue);
+  }
+  if(!(d1 > aValue && d2 > aValue))
+  {
+    Standard_Real dmin = Min(d1, Min(aValue, d2));
+    return Sqrt(-dmin);
+  }
+
+  math_BrentMinimum anOptLoc(Precision::PConfusion());
+  anOptLoc.Perform(aFunc1, x1, aT(1), x2);
+
+  if (anOptLoc.IsDone())
+  {
+    d = -anOptLoc.Minimum();
+  }
+  else
+  {
+    d = -aValue;
+  }
+  return Sqrt(d);
+}
 
 //=======================================================================
 //function : crvpoints
@@ -1083,6 +1032,7 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
 
   //check deviation
   ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);
+  //
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n"; 
 
   return 0;

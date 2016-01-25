@@ -24,3 +24,7 @@ GCPnts_UniformDeflection.cxx
 GCPnts_UniformDeflection.gxx
 GCPnts_UniformDeflection.hxx
 GCPnts_UniformDeflection.lxx
+GCPnts_DistFunction.hxx
+GCPnts_DistFunction.cxx
+GCPnts_DistFunction2d.hxx
+GCPnts_DistFunction2d.cxx

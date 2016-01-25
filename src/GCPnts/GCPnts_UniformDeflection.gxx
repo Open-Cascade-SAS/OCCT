@@ -186,7 +186,7 @@ static Standard_Boolean PerformComposite (TColStd_SequenceOfReal& Parameters,
 
     // remove last point to avoid duplication
     Parameters.Remove (Parameters.Length());
-    Points.Remove (Parameters.Length());
+    Points.Remove (Points.Length());
 
     Ua = Ub;
   }

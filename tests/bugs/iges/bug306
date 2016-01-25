@@ -20,7 +20,7 @@ vsetdispmode result 1
 vdisplay result
 vfit
 
-checktrinfo result -tri 9198 -nod 7543
+checktrinfo result -tri 9243 -nod 7586
 
 checkmaxtol result -ref 0.92213088179312575
 checknbshapes result -shell 1
