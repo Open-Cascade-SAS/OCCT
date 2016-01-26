@@ -31,14 +31,13 @@ class gp_Pnt2d;
 
 //! Provides various methods with Geom2d and Geom curves and surfaces.
 //! The methods of this class compute the parameter(s) of a given point on a
-//! curve or a surface. The point must be located either
-//! on the curve (surface) itself or relatively to the latter at
-//! a distance less than the tolerance value.
-//! Return FALSE if the point is beyond the tolerance
+//! curve or a surface. To get the valid result the point must be located rather close 
+//! to the curve (surface) or at least to allow getting unambiguous result
+//! (do not put point at center of circle...),
+//! but choice of "trust" distance between curve/surface and point is 
+//! responcibility of user (parameter MaxDist).
+//! Return FALSE if the point is beyond the MaxDist
 //! limit or if computation fails.
-//! Max Tolerance value is currently limited to 1.e-4 for
-//! geometrical curves and 1.e-3 for BSpline, Bezier and
-//! other parametrical curves.
 class GeomLib_Tool 
 {
 public:
@@ -48,16 +47,16 @@ public:
   
 
   //! Extracts the parameter of a 3D point lying on a 3D curve
-  //! or at a distance less than the tolerance value.
-  Standard_EXPORT static Standard_Boolean Parameter (const Handle(Geom_Curve)& Curve, const gp_Pnt& Point, const Standard_Real Tolerance, Standard_Real& U);
+  //! or at a distance less than the MaxDist value.
+  Standard_EXPORT static Standard_Boolean Parameter (const Handle(Geom_Curve)& Curve, const gp_Pnt& Point, const Standard_Real MaxDist, Standard_Real& U);
   
   //! Extracts the parameter of a 3D point lying on a surface
-  //! or at a distance less than the tolerance value.
-  Standard_EXPORT static Standard_Boolean Parameters (const Handle(Geom_Surface)& Surface, const gp_Pnt& Point, const Standard_Real Tolerance, Standard_Real& U, Standard_Real& V);
+  //! or at a distance less than the MaxDist value.
+  Standard_EXPORT static Standard_Boolean Parameters (const Handle(Geom_Surface)& Surface, const gp_Pnt& Point, const Standard_Real MaxDist, Standard_Real& U, Standard_Real& V);
   
   //! Extracts the parameter of a 2D point lying on a 2D curve
-  //! or at a distance less than the tolerance value.
-  Standard_EXPORT static Standard_Boolean Parameter (const Handle(Geom2d_Curve)& Curve, const gp_Pnt2d& Point, const Standard_Real Tolerance, Standard_Real& U);
+  //! or at a distance less than the MaxDist value.
+  Standard_EXPORT static Standard_Boolean Parameter (const Handle(Geom2d_Curve)& Curve, const gp_Pnt2d& Point, const Standard_Real MaxDist, Standard_Real& U);
 
 
 
