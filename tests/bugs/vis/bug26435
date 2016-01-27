@@ -44,4 +44,4 @@ checkreal "vconvert top - grid lifted" [lindex $output 3] -5.0 1e-7 0.0
 checkreal "vconvert top - grid lifted" [lindex $output 4] 10.0 1e-7 0.0
 
 # do not save any image
-set only_screen 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -53,4 +53,4 @@ if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 }
 
 checkprops result -s 3.66928e+007
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -17,3 +17,4 @@ ttranslate cylb 0 0 2
 bcommon result cyla cylb
 
 checkprops result -s empty
+checkview -display result -2d -s -otherwise { cyla cylb } -path ${imagedir}/${test_image}.png

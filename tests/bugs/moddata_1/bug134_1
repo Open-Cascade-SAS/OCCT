@@ -15,4 +15,4 @@ prism result sh 100 100 100
 checkshape result
 
 checkprops result -s 104057
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

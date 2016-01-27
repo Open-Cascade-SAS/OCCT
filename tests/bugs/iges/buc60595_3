@@ -12,6 +12,6 @@ tpcompound result
 isos result 0
 isos result 15
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

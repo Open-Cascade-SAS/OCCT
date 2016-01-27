@@ -19,5 +19,5 @@ chamf result face edge_10 face_3 A 1 45 edge_6 face_3 A 1 45 edge_11 face_3 A 1 
 checkshape result
 
 checkprops result -s 48913
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

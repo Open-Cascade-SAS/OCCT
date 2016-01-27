@@ -5,3 +5,4 @@ bop sh_1 sh_2
 bopfuse result
 
 checkprops result -s 35009.9
+checkview -display result -2d -otherwise { sh_1 sh_2 } -s -path ${imagedir}/${test_image}.png

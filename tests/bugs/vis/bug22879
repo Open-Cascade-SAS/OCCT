@@ -33,5 +33,5 @@ checkcolor 18 139 0.145 0.000 0.855
 checkcolor 56 160 1.000 0.000 0.000
 checkcolor 30 160 0.188 0.761 0.698
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

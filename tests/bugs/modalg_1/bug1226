@@ -20,6 +20,6 @@ revol result  f  0  0  30 0 1 0 180
 
 checkprops result -s 23211.3 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

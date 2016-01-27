@@ -6,5 +6,5 @@ restore [locate_data_file cts21135a.brep] o
 restore [locate_data_file cts21135b.brep] t
 
 bcut result o t
-
 checkprops result -s 44000
+checkview -display result -2d -s -otherwise { o t } -path ${imagedir}/${test_image}.png

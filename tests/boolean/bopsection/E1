@@ -17,3 +17,4 @@ bopsection result
 
 checkprops result -l 24.3614
 checksection result
+checkview -display result -2d -otherwise { c1 c2 } -l -path ${imagedir}/${test_image}.png

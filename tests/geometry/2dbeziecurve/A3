@@ -3,4 +3,3 @@ trim b2 b1 0 0.2
 trim b3 b1 0.3 0.5
 trim result b1 0.6 0.8
 checklength result -l 3.3427826104791247
-

@@ -1,7 +1,9 @@
 restore [locate_data_file case_8_solid_repaired.brep] a
 restore [locate_data_file case_8_wire6.brep] b
+
 bcommon result b a
+
 checkprops result -l empty
 checksection result
-set nbsh_v 0
-set nbsh_e 0
+checknbshapes result -vertex 0 -edge 0 -t
+

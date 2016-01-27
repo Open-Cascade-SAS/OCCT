@@ -23,5 +23,5 @@ if { [regexp {WIRE} ${wt_is}] } {
     puts "Error : OCC537"
 }
 
-set 2dviewer 2
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

@@ -30,5 +30,5 @@ checkfreebounds result 6
 
 checkprops result -s 20000 
 checkshape result
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

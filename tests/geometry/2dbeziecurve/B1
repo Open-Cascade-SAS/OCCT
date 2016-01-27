@@ -43,4 +43,3 @@ set i 1
 puts " --> Test D2"
 repeat 10 {comparepnt2d rd2_$i d2_$i $tol; incr i 1}
 checklength result -l 14.909963698913938
-

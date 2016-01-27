@@ -8,5 +8,5 @@ pcylinder pc pl1 100 50
 
 bfuse result bl1 pc
 
-
 checkprops result -s 322832
+checkview -display result -2d -otherwise { bl1 pc } -s -path ${imagedir}/${test_image}.png

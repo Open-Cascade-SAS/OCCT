@@ -21,4 +21,4 @@ featperform revol result funtil ffrom
 
 checkprops result -s 560028. 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

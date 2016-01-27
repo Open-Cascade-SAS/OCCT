@@ -29,7 +29,7 @@ set eye_Y    0.31258558886503313
 set eye_Z    0.36550370223815498
 vviewparams -scale ${scale} -eye ${eye_X} ${eye_Y} ${eye_Z} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

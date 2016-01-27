@@ -25,4 +25,4 @@ if { $err1 == $err2  || $err1 == $err3 || $err2 == $err3 } {
     puts "OCC286 OK : Attempt to project the point on surface gives correct result"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

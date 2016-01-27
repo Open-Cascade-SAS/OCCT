@@ -22,5 +22,5 @@ if [catch { bop b1 b2 } catch_result] {
     puts "${BugNumber}  OK"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

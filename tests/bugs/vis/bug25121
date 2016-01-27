@@ -24,4 +24,4 @@ vdrawtext t2 "001 2D" -2d -perspos -1 1 -pos 100 -250 0 -height 16 -font SansFon
 vdrawtext t3 "101 2D" -2d -perspos -1 1 -pos 100 -300 0 -height 16 -font SansFont -color 1 1 1 -disptype normal -subcolor 0 0 1
 vdrawtext t4 "110 2D" -2d -perspos -1 1 -pos 100 -350 0 -height 16 -font SansFont -color 1 1 1 -disptype normal -subcolor 0 0 1
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

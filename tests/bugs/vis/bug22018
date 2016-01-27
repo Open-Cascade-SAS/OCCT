@@ -57,5 +57,5 @@ vmoveto ${x2} ${y}
 checkcolor ${x1} ${y} ${White_R} ${White_G} ${White_B}
 checkcolor ${x2} ${y} ${Select_R} ${Select_G} ${Select_B}
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

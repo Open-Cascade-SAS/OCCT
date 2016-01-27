@@ -64,4 +64,4 @@ if { [file exists ${aFile}] } {
    puts "Faulty : Export to EPS file was not done"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

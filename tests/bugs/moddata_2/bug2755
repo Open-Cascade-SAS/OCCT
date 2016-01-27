@@ -134,6 +134,3 @@ if {[llength ${list}] != ${ll}} {
     }
 
 }
-
-set 3dviewer 0
-

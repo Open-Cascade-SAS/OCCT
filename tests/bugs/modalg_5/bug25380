@@ -23,4 +23,4 @@ donly c_1 b1
 fit
 display b2
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -9,4 +9,3 @@ repeat 50 {
 }
 copy law1 result
 checklength result -l 3.3374712943009293
-

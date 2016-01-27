@@ -25,4 +25,4 @@ if {${EDGE_num_result} != ${EDGE_num_s} || ${EDGE_num_result} == 0} {
     puts "OK ${BugNumber}"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

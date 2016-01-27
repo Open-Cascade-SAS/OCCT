@@ -71,4 +71,4 @@ set eye_z 24.59
 
 vviewparams -scale $scale -up $up_x $up_y $up_z -at $at_x $at_y $at_z -eye $eye_x $eye_y $eye_z
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -34,4 +34,4 @@ if { $info != 0 } {
   puts "OK: images v1 and v2 are similar"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

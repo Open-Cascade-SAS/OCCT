@@ -43,4 +43,4 @@ if { ${Color1} == ${ColorRes1} && ${Color2} == ${ColorRes2} && ${Color3} == ${Co
     puts "Faulty ${BugNumber}"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

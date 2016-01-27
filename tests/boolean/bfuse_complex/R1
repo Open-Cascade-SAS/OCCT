@@ -17,3 +17,4 @@ btolx tool
 bfuse result b tool
 
 checkprops result -s 26012
+checkview -display result -2d -otherwise { b tool } -s -path ${imagedir}/${test_image}.png

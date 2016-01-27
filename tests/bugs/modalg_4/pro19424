@@ -16,5 +16,5 @@ if [catch {evolved result b p o } catch_result] {
 
 checkprops result -s 246.506 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

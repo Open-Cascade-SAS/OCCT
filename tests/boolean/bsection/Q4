@@ -8,3 +8,4 @@ bsection result part tool
 
 checkprops result -l 1113.89
 checksection result
+checkview -display result -2d -otherwise { part tool } -l -path ${imagedir}/${test_image}.png

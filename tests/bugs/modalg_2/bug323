@@ -17,4 +17,4 @@ bsection result f_1 f_3
 checkprops result -l 1 
 checkshape result 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

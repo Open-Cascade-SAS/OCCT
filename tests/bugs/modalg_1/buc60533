@@ -69,5 +69,5 @@ copy r_1 result
 
 checkprops result -s 1.5003e+007
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

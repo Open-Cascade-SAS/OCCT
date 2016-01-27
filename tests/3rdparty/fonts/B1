@@ -29,3 +29,6 @@ foreach aSize $THE_FONT_SIZES {
 }
 
 vfit
+
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

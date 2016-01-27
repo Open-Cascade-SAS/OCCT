@@ -37,5 +37,4 @@ if { $ve != 0 || $ed != 0 || $wi != 0 || $fa != 0 || $sh != 0 || $so != 0 || $cm
 checkprops result -l 39.8616 
 checkshape result 
 checksection result
-set 3dviewer 1
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

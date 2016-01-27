@@ -11,5 +11,4 @@ restore [locate_data_file bug24890_f0.brep] f0
 nurbsconvert result f0
 
 checkshape result
-
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

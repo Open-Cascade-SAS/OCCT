@@ -12,4 +12,4 @@ pload VISUALIZATION QAcommands
 vinit
 OCC26462
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

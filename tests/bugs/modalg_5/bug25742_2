@@ -79,4 +79,4 @@ if { [llength ${CurveNumb}] < 1 } {
     puts "OK : Good intersection"
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -21,4 +21,4 @@ puts "Finish boolean operation ..."
 checkprops result -l 94.4534 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

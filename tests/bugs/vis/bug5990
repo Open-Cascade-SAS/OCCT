@@ -46,4 +46,4 @@ checkcolor ${x1} ${y1} ${KUB_R} ${KUB_G} ${KUB_B}
 checkcolor ${x2} ${y2} ${LINE_R} ${LINE_G} ${LINE_B}
 checkcolor ${x3} ${y3} ${LINE_R} ${LINE_G} ${LINE_B}
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

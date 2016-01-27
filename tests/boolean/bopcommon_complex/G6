@@ -5,3 +5,4 @@ bop a b
 bopcommon result
 
 checkprops result -s 4826.73
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

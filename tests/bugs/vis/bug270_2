@@ -23,4 +23,4 @@ if {${ZClippingMode} != "FRONT"} {
 checkcolor ${x1} ${y1} 1 0 0
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

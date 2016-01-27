@@ -18,4 +18,4 @@ if { [regexp {OK} $che] != 1} {
 }
 
 checkprops result -s 1.93998 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

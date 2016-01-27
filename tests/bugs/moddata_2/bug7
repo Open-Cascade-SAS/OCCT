@@ -20,5 +20,5 @@ if { [regexp "TShape # 1 : EDGE" $info] != 1
    puts "Error : Result is incorrect"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

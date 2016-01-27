@@ -25,4 +25,4 @@ if {[vreadpixel 350 140 rgb name] != "CYAN1"} {
   puts "ERROR: the transformation was not applied to highlight structure"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

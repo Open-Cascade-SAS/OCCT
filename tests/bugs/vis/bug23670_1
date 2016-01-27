@@ -33,5 +33,5 @@ vactivate MyDriver/MyViewer/MyView
 vsetdispmode 1
 checkcolor $x_coord $y_coord 0 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

@@ -34,4 +34,4 @@ if { ${nbnod_s} == 0 } {
 vinit
 vdisplay Cut_1
 vfit
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

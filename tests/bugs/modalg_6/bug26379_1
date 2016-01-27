@@ -22,4 +22,4 @@ if {$bug_info != "DARKGOLDENROD3 1"} {
 checkprops result -s 6.60933e+006 
 checkshape result
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

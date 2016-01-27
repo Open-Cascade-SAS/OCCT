@@ -26,5 +26,5 @@ vdrawtext t2 "Some text on the top face" -pos $x/2 $y/2 $z -color red -height 20
 vdrawtext t3 "First line\nSecond line" -pos $x/2 0 $z/2 -color 0.0 0.0 1.0 -height 20 -plane 0 -1 0 0 0 1 -valign center -halign center -font SansFont
 
 vfit
-
-vdump ${imagedir}/${casename}.png
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

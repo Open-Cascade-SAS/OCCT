@@ -14,6 +14,6 @@ if [catch {proj result 49.86391363636364 440.7894090909091 127.05 } catch_result
     puts "OK OCC348: function PROJECT works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

@@ -17,4 +17,4 @@ blend result s 100 s_16
 
 checkprops result -s 1.54883e+06 
 checkshape result
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

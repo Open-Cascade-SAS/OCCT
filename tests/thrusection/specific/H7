@@ -30,5 +30,4 @@ checkprops result -s 1192.88
 checknbshapes result -vertex 4 -edge 6 -wire 3 -face 3 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 17
 
 
-set 3dviewer 0
 

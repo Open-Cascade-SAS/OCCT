@@ -10,4 +10,4 @@ smallview
 restore [locate_data_file OCC26185_v6_Arcs.brep] a
 mkoffset res a 1 -5. i
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

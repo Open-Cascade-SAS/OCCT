@@ -6,4 +6,3 @@ repeat 100 {cmovepoint result 0 0. 0.05; incr i 1;repaint}
 set i 1
 repeat 100 {cmovepoint result 0 0. -0.05; incr i 1;repaint}
 checklength result -l 3.0000000000000004
-

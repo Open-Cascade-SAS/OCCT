@@ -34,4 +34,4 @@ vfit
 
 checkprops result -s 3.21455e+06 
 checkshape result
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

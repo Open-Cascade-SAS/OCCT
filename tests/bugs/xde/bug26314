@@ -20,4 +20,4 @@ XSetShape d 0:1:1:3 b2
 XShow d
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

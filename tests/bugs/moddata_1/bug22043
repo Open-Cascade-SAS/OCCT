@@ -11,4 +11,4 @@ restore [locate_data_file bug22043_f181.brep] result
 
 checkshape result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

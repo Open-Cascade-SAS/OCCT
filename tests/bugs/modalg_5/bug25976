@@ -10,4 +10,4 @@ smallview
 restore [locate_data_file OCC25976-copiedFace.brep] f
 nurbsconvert r f
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

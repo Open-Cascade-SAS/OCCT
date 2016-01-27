@@ -31,3 +31,6 @@ vzfit
 vzoom 20
 
 vfps
+
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -18,6 +18,6 @@ if { [regexp {Faulty} $che ] == 1} {
     puts "OCC446 OK (case 3): Source shape is Closed"
 }
 checkprops result -s 13694.6 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

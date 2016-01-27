@@ -700,13 +700,13 @@ if { $mist < 1 } {
   if { [info exists res_2] && [isdraw res_2] } {
     donly res_2
     isos res_2 0
-	fit
-	isos res_2 2
+    fit
+    isos res_2 2
   }
 } else {
     fit
 }
-xwd $imagedir/${test_image}.png
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 if { $mist < 1 } {
    if { [catch { Close D_Second } catch_result] } {
       puts "Error : cannot close a document D_Second"

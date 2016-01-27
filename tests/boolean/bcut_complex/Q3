@@ -8,5 +8,5 @@ restore [locate_data_file cts20196_face.rle] cont
 prism prism cont 0 20 0
 
 bcut result base prism
-
 checkprops result -s 250288
+checkview -display result -2d -s -otherwise { base prism } -path ${imagedir}/${test_image}.png

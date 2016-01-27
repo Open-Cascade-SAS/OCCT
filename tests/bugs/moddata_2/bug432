@@ -9,4 +9,4 @@ puts ""
 restore [locate_data_file OCC432.brep] result
 checkshape result r
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

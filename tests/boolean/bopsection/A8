@@ -9,3 +9,4 @@ bopsection result
 
 checkprops result -l 151.416
 checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

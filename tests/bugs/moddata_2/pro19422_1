@@ -16,5 +16,5 @@ checkshape tool
 bcut result shape tool
 
 checkprops result -s 3166.93
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

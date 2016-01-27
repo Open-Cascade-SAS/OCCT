@@ -18,5 +18,5 @@ if {[llength ${list}] > 4} {
    puts "Faulty OCC861"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

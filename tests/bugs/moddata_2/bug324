@@ -16,6 +16,6 @@ if [catch {intersect result s1 s2} catch_result] {
     puts "OCC324 OK: function INTERSECT works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

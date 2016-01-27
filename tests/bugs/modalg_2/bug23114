@@ -19,5 +19,3 @@ if { ${exception_status} == 0 } {
 } else {
    puts "Faulty ${BugNumber}"
 }
-
-set 3dviewer 0

@@ -9,4 +9,4 @@ puts ""
 restore [locate_data_file bug24807_Compound.brep] a
 connectedges result a
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

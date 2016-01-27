@@ -31,4 +31,4 @@ if {$bug_info == "BLACK 0"} {
   puts "ERROR: OCC26305 is reproduced. Prism is incorrect."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -5,5 +5,5 @@ restore [locate_data_file CTO904_cts20366-part.rle] part
 restore [locate_data_file cts20366-tool.rle] tool
 
 bcut result part tool
-
 checkprops result -s 82853.2
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

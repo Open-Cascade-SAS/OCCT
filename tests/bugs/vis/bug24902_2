@@ -28,4 +28,4 @@ vclipplane set pln1 view Driver1/Viewer1/View1
 
 vrotate 0 0.2 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

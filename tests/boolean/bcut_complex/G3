@@ -11,7 +11,5 @@ fsameparameter part
 restore [locate_data_file cts18078-tool.rle] tool
 
 bcut result part tool
-
-
-
 checkprops result -s 147330
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

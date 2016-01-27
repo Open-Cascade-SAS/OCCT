@@ -20,4 +20,4 @@ vselect 289 135
 checkprops result -l 5.82393 
 checkshape result 
 checksection result
-set only_screen 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

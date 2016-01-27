@@ -17,4 +17,4 @@ if ![isdraw result] {
 
 checkprops result -s 1.5708 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

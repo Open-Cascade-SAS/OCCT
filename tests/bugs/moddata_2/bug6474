@@ -18,5 +18,3 @@ if {[llength [directory res*]] != 1} {
 } else {
     puts "OK ${BugNumber}"
 }
-
-set 3dviewer 1

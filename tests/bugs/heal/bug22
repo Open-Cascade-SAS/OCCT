@@ -32,5 +32,5 @@ if [catch { OCC22 res shape compoundToBeDivided 1 } ] {
     puts "OCC22 OK; (case 2)"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

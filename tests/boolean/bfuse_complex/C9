@@ -6,5 +6,5 @@ restore [locate_data_file cts16184b.brep] b
 
 bfuse result a b
 
-
 checkprops result -s 0.0892544
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

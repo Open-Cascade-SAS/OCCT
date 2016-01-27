@@ -13,5 +13,5 @@ to3d c1 c
 offset o c -2
 catch {to3d result o}
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

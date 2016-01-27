@@ -16,4 +16,4 @@ vfit
 
 checkprops result -l 0.04 
 checksection result
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

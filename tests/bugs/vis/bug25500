@@ -22,4 +22,4 @@ vrepaint
 
 checkcolor 60 379 1 0.058823529630899429 0.058823529630899429
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

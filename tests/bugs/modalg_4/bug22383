@@ -42,5 +42,5 @@ if { $status != 0 } {
 
 checkprops result -s 2.04205e-08 
 checkshape result
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

@@ -33,4 +33,4 @@ if { $MaxEdgeTol1 <  $MaxEdgeTol2 || $MaxVertexTol1 < $MaxVertexTol1 } {
 
 checkprops result -s 37.7032 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

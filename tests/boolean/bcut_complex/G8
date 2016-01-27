@@ -7,5 +7,5 @@ restore [locate_data_file ger60598d.rle] prism
 fsameparameter base
 
 bcut result prism base
-
 checkprops result -s 16596
+checkview -display result -2d -s -otherwise { prism base } -path ${imagedir}/${test_image}.png

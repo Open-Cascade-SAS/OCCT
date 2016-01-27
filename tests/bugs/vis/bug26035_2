@@ -22,5 +22,5 @@ catch {vdimension len -length -shapes b_1 p -plane zox -font SansFont}
 
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

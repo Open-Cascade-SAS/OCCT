@@ -39,4 +39,4 @@ if { $dist1 > 1.e-7 || $dist2 > 1.e-7} {
 }
 
 axo
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

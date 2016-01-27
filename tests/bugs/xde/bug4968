@@ -23,5 +23,5 @@ if { ${wire_number2} > ${wire_number1}} {
     puts "Faulty ${BugNumber}: wrong wire number"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

@@ -34,4 +34,4 @@ if { [vreadpixel ${x_coord} ${y_coord} rgb name] != "GRAY80" } {
   puts "Error : color is not gray"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

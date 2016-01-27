@@ -26,4 +26,4 @@ if { ${aStatus} != 0 } {
 
 checkprops result -s 0.38266 
 checkshape result
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

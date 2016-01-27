@@ -22,7 +22,7 @@ if { [expr $z2 > 43] } {
     puts "Elapsed time is less then 43 seconds - OK"      
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

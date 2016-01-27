@@ -31,4 +31,4 @@ if {[vreadpixel 204 301 name] != "GRAY80 1"} {
   puts "ERROR: the face selected is not highlighted with selection color!"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

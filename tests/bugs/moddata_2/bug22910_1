@@ -1,6 +1,7 @@
 puts "TODO OCC11111 ALL: An exception was caught"
 puts "TODO OCC11111 ALL: \\*\\* Exception"
 puts "TODO OCC11111 ALL: Faulty OCC22910"
+puts "TODO OCC11111 ALL: Error: The command cannot be built"
 
 puts "================"
 puts "OCC22910"
@@ -23,5 +24,5 @@ if { ${exception_status} == 0 } {
    puts "Faulty ${BugNumber}"
 }
 
-set sqaure 0
-set 3dviewer 0
+checkprops result -s 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

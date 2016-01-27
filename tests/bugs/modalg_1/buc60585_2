@@ -12,6 +12,6 @@ psection result t pt
 checkprops result -l 22.0446 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 # checksection res

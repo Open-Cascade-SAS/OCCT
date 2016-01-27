@@ -22,4 +22,4 @@ if { "[vreadpixel $x_coord $y_coord rgb name]" != "YELLOW" } {
   puts "Error : color is not yellow"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

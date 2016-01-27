@@ -12,4 +12,4 @@ BUC60614 c
 vmoveto 200 200
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -14,4 +14,3 @@ fillet2d result w 10
 
 checkprops result -l 275.293
 
-set 2dviewer 1

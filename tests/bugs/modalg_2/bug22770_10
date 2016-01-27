@@ -30,4 +30,4 @@ checkfreebounds result 12
 
 checkprops result -s 1.8847e+07 -eps 0.1
 checkshape result
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

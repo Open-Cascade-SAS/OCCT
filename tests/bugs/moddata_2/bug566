@@ -40,4 +40,4 @@ if {$err > 1.0} {
     puts " OCC566 OK"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

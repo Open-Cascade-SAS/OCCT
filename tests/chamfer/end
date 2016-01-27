@@ -22,17 +22,5 @@ if { [string compare $group "equal_dist"] == 0 } {
 compute_chamf result Ed sh
 
 catch { puts [checkshape result] }
-clear
-smallview
-donly result
-fit
-
-if { [info exists imagedir] == 0 } {
-   set imagedir .
-}
-if { [info exists test_image ] == 0 } {
-   set test_image photo
-}
-
-xwd $imagedir/${test_image}.png
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 puts "TEST COMPLETED"

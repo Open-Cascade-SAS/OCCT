@@ -41,4 +41,4 @@ checkreal "extension the section line to the surface boundary?" ${y2_} ${expecte
 smallview
 donly result f1 f2
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

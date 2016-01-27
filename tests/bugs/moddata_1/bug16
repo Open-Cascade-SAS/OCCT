@@ -20,5 +20,5 @@ if { $tri != 2592 || $nod != 1369 }  {
 
 puts "If here is bug - face is displaied in wireframe mode"
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

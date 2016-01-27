@@ -16,5 +16,5 @@ fixshape result res
 checkprops result -l 1.56058
 checksection result
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

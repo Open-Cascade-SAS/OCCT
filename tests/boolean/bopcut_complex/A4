@@ -8,5 +8,5 @@ restore [locate_data_file OCC213-2.brep] b
 bop a b
 bopcut result
 
-
 checkprops result -s 5109.3
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

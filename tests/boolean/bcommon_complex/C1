@@ -10,3 +10,4 @@ restore [locate_data_file CTO900_pro6974_box.rle] box2
 bcommon result rev1 box2
 
 checkprops result -s 2.14421
+checkview -display result -2d -s -otherwise { rev1 box2 } -path ${imagedir}/${test_image}.png

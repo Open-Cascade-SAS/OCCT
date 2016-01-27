@@ -17,5 +17,5 @@ thrusections result 0 0 w1 w2
 checkprops result -l 102.832 
 checkshape result 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

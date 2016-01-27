@@ -59,4 +59,4 @@ if {[llength ${DumpList}] < 40} {
 
 checkprops result -l 278.725 
 checksection result
-set 3dviewer 2
+checkview -display result -3d -path ${imagedir}/${test_image}.png

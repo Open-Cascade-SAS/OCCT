@@ -13,7 +13,7 @@ set BugNumber OCC22796
 vinit
 vdrawtext text0 "MyTest1\rHello,\tWor\vld!\nMyTest2\t\a\bMyTest3" -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular -font SansFont
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

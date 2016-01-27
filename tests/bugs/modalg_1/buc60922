@@ -25,4 +25,4 @@ mkface result result
 
 checkprops result -s 157.932 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

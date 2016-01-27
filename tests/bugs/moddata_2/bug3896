@@ -43,4 +43,4 @@ if {[regexp {Faulty} $info_result] } {
     puts "Faulty ${BugNumber} : checkshape does not detect faulty faces in solid shape"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

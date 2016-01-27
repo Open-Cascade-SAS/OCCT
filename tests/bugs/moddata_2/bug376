@@ -15,5 +15,5 @@ offset r s 1
 mkface result s
 
 checkprops result -s 1256.64
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

@@ -13,5 +13,5 @@ explode rr so
 bop rr_1 p1
 boptuc result
 
-
 checkprops result -s empty
+checkview -display result -2d -otherwise { rr_1 p1 } -s -path ${imagedir}/${test_image}.png

@@ -30,4 +30,4 @@ if { "$aColor5px" == "BLACK" } {
   puts "Error: YELLOW color is expected at pixel ${aCoordX}x${aCoordY}"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

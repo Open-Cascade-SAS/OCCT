@@ -25,4 +25,4 @@ regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ed
 checkprops result -l 288.856 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

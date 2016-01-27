@@ -25,4 +25,4 @@ if { $stat != 1 } {
   puts "OK: valid boundong box"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

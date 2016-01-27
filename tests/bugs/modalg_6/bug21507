@@ -54,4 +54,4 @@ if { [llength $rcfaces] != 1 } {
   puts "Result is as expected"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

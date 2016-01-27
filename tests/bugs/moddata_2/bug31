@@ -30,4 +30,4 @@ chamf result res2 res2_4_1 res2_4 7 7
 checkshape result
 
 checkprops result -s 107634
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

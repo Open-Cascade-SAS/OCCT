@@ -20,6 +20,6 @@ if {$nf < 6} {
 }
 
 checkprops result -s 328116
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

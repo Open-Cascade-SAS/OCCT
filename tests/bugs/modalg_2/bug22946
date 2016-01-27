@@ -15,4 +15,4 @@ splitshape result a a b
 
 checkprops result -s 6.06498e+08 
 checkshape result
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -75,7 +75,7 @@ renamevar result_1 result
 checkprops result -l 1112.83 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 dchrono h stop
 dchrono h show

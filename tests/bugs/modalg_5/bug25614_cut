@@ -45,4 +45,4 @@ baddctools b2
 bapibop result 2
 
 checknbshapes result -vertex 888 -edge 1412 -wire 726 -face 726 -shell 121 -solid 121 -compsolid 0 -compound 1 -shape 3995
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

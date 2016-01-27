@@ -23,6 +23,4 @@ if { $tri != 83 && $nod !=  85 }  {
   puts "Shady OCC19: shading problem may be, nb tri & nod were changed"
 }
 
-set 3dviewer 0
-
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -25,4 +25,4 @@ if [catch {featperformval dprism result 55 cyl_3 } catch_result] {
 
 checkprops result -s 94944.4 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

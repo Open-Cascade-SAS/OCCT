@@ -101,4 +101,4 @@ if { [expr ${mem_heap_2} - ${mem_heap_1}] > ${mem_delta_heap}} {
     puts "Error : there is memory problem (heap)"
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

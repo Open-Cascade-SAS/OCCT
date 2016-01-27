@@ -19,6 +19,6 @@ if { [regexp {Projection} $che] && [regexp {Failed} $che] } {
     puts " OCC360 OK : command PROJECT works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

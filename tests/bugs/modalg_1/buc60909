@@ -12,6 +12,6 @@ featperform revol result boite_1
 
 checkprops result -s 265343 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

@@ -23,6 +23,4 @@ if { $tri < 70 || $nod < 72 }  {
   puts "Error (case 2) : here is shading problem"
 }
 
-set 3dviewer 0
-
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

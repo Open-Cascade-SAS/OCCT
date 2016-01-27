@@ -86,4 +86,4 @@ if { ${status} != 0 } {
 }
 
 checkprops result -s 0
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

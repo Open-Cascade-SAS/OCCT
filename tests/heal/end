@@ -1,15 +1,8 @@
  if { [isdraw result] } {
-   clear
-   smallview
-   donly result
-   fit
-   xwd $imagedir/${test_image}.png
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
 } elseif { [isdraw r] } {
-   pload VISUALIZATION
-   vinit
-   vdisplay r
-   vfit
-   vdump $imagedir/${test_image}.png
+  pload VISUALIZATION
+  checkview -display r -3d -vdispmode 0 -path ${imagedir}/${test_image}.png
 } else {
    puts "Error : the resulting shape is not done."
 }

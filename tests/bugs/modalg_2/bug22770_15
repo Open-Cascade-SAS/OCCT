@@ -35,5 +35,4 @@ checknbshapes result -vertex 964 -edge 1222 -wire 273 -face 259 -shell 18 -solid
 checkmaxtol result -ref 0.046734236640099257
 checknbshapes result -shell 18
 checkfreebounds result 926
-
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

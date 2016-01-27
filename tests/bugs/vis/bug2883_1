@@ -22,5 +22,5 @@ vsetdispmode 1
 vdisplay c
 vfit
 vsetmaterial c JADE
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

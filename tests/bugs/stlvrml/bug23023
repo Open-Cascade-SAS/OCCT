@@ -13,4 +13,4 @@ if [catch { set list [loadvrml result $filepath] } res] {
     puts "OK: VRML reader work properly"
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

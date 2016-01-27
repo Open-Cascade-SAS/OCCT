@@ -22,4 +22,4 @@ if { "[vreadpixel 304 146 rgb name]" != "CYAN1" } {
    puts "Error : Highlighting is broken."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

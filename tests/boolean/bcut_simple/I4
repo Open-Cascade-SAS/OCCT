@@ -11,6 +11,5 @@ profile p3 p 0 0 -1 1 0 0 o 0 0 50 f 50 -75 y -100 x 75 y 100
 prism pr3 p3 0 0 -3
 
 bcut result po1 pr3
-
-
 checkprops result -s 53000
+checkview -display result -2d -s -otherwise { po1 pr3 } -path ${imagedir}/${test_image}.png

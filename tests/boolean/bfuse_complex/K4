@@ -11,3 +11,4 @@ bfuse result a_1 b
 # pkv t
 
 checkprops result -s 65482.8
+checkview -display result -2d -otherwise { a_1 b } -s -path ${imagedir}/${test_image}.png

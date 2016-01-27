@@ -14,6 +14,4 @@ renamevar result_1 result
 checkprops result -l 43.0477 
 checkshape result 
 checksection result
-set 3dviewer 1
-
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

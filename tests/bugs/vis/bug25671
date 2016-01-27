@@ -113,4 +113,4 @@ checkreal "vconvert 25 4.94 35 grid, view 2, Y"     [lindex $vconvert_25_5_35_gr
 checkreal "vconvert 25 4.94 35 grid, view 2, Z"     [lindex $vconvert_25_5_35_grid 4]    0.0 0.05 0.0
 
 # do not save any image
-set only_screen 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

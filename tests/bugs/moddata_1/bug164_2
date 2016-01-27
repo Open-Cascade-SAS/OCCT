@@ -14,6 +14,6 @@ bfuse result sh2 sh1
 checkshape result
 
 checkprops result -s 344595
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

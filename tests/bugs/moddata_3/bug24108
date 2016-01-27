@@ -28,4 +28,4 @@ checkprops result -s 1328.78
 
 # Analysis of "nbshapes result"
 checknbshapes result -vertex 37 -edge 39 -wire 4 -face 3 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 84
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

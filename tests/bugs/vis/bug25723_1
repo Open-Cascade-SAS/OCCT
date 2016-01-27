@@ -45,4 +45,4 @@ if {"[vreadpixel ${x_check_coord} ${y_check_coord} rgb name]" != "GOLDENROD2"} {
   puts "Error : Rotation is not correct"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

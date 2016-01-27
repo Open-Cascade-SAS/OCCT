@@ -78,4 +78,4 @@ if { ![checkcolor 90 300 0.8 0.8 0.8] } {
 
 vselect 50 380 400 50
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -25,4 +25,4 @@ if { [string compare -nocase $log " nb alone Vertices : 0\n\n"] } {
 smallview
 donly result
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

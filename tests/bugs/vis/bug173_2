@@ -33,4 +33,4 @@ if { ${rd2} == ${rd1} || ${gr2} == ${gr1} || ${bl2} == ${bl1} } {
    puts "Error : material of the shape was NOT changed"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

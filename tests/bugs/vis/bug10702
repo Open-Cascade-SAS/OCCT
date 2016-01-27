@@ -39,5 +39,5 @@ puts "\nDisplay nodal color presentation"
 #checkcolor $x_coord $y_coord 0.46 0.12 0.37
 checkcolor $x_coord $y_coord 0.72 0.72 0.70
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

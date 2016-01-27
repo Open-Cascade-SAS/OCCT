@@ -7,3 +7,4 @@ restore [locate_data_file pro13555b.rle] b
 bfuse result a b
 
 checkprops result -s 3479.01
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

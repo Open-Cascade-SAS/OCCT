@@ -86,4 +86,4 @@ if {${delta_H_RB} > ${maxdelta_H}} {
    puts "BUC60857: OK (case 4)"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

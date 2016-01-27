@@ -20,4 +20,4 @@ if [catch {segment result 23.09944997429109 23.6320483505636} catch_result] {
     puts "OCC303 OK (case 2): function SEGMENT works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

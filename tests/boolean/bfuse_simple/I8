@@ -19,7 +19,5 @@ prism ob pl 0 -1 0
 
 bfuse result ba ob
 
-
-
-
 checkprops result -s 180.283
+checkview -display result -2d -otherwise { ba ob } -s -path ${imagedir}/${test_image}.png

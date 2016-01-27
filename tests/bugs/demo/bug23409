@@ -26,9 +26,4 @@ if { [string compare $info_good "" ] != 0 } {
     puts "Error : Tricheck command works incorrect when shape looks good"
 }
 
-set 3dviewer 1
-
-
-
-
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

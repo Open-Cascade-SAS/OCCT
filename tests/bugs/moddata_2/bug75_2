@@ -16,4 +16,4 @@ mkface f1 pl1 -1 11 -5 5
 bsection result ss f1 -n2d
 
 checkprops result -l 10.0009
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

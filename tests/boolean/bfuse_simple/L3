@@ -8,3 +8,4 @@ explode rr so
 bfuse result rr_1 c
 
 checkprops result -s 600
+checkview -display result -2d -otherwise { rr_1 c } -s -path ${imagedir}/${test_image}.png

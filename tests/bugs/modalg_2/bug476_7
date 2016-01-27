@@ -18,4 +18,4 @@ bopcommon result
 checkprops result -s 105.587 
 checkshape result
 checknbshapes result -vertex 15 -edge 26 -wire 12 -face 12 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 68
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

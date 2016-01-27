@@ -8,5 +8,5 @@ restore [locate_data_file cts60025b.rle] f
 prism tool f 0 0 4
 
 bcut result b tool
-
 checkprops result -s 51883
+checkview -display result -2d -s -otherwise { b tool } -path ${imagedir}/${test_image}.png

@@ -21,4 +21,4 @@ if {$resstr=="Faulties, that can not be treated by BOP, are detected.\n"} {
     puts "Faulty ${BugNumber}"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

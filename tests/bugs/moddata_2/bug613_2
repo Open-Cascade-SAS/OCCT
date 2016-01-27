@@ -22,5 +22,4 @@ if { $tri == 0 || $nod == 0 } {
     puts "Error : Meshing algo cannot create mesh for faces with internal edges "
 }
 
-set 3dviewer 1
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

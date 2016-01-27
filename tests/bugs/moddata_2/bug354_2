@@ -19,4 +19,4 @@ chamf result a a_5_6 a_5 A 2 45
 checkshape result
 
 checkprops result -s 589.268
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

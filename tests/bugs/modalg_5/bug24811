@@ -68,4 +68,4 @@ if { $p2_3 >= [expr $z2 - $tol2] && $p2_3 <= [expr $z2 + $tol2] } {
   puts "Error: point2_3 is incorrect"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

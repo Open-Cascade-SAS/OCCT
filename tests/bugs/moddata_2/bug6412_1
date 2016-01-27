@@ -14,4 +14,4 @@ vfit
 vsetdispmode 1
 
 checkprops result -s 3480.05
-set 3dviewer 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

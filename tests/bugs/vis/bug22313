@@ -44,4 +44,4 @@ vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up
 
 checkcolor ${x1} ${y1} ${Artifact_R} ${Artifact_G} ${Artifact_B}
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

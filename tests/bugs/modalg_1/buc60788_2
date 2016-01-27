@@ -17,4 +17,4 @@ checknbshapes result -shell 1 -compound 1 -m "result should be a shell, but not 
 
 checkprops result -s 150200 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

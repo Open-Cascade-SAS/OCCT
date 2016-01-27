@@ -29,4 +29,4 @@ checkprops result -s 141051
 checkshape result
 
 checknbshapes result -vertex 84 -edge 126 -wire 76 -face 53 -shell 5 -solid 5 -compsolid 0 -compound 4 -shape 353
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

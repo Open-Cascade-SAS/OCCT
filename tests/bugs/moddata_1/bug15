@@ -23,5 +23,5 @@ if { ($tri != 5643 || $nod != 2915) }  {
    puts "Shady OCC15 : shading problem may be, nb tri & nod were changed"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

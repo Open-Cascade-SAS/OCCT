@@ -23,7 +23,7 @@ if { [regexp {This shape seems to be valid} $info] } {
 }
 checkprops result -s 290.283
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

@@ -51,5 +51,4 @@ if {$index == -1} {
   
 }
 
-set 3dviewer 0
 

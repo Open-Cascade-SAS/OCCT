@@ -22,4 +22,4 @@ set x_coord 200
 set y_coord 90
 checkcolor $x_coord $y_coord 0.78039216995239258 0.55294120311737061 0.094117648899555206
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

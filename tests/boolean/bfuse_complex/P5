@@ -11,3 +11,4 @@ updatetolerance t 1
 bfuse result s t
 
 checkprops result -s 23108.1
+checkview -display result -2d -otherwise { s t } -s -path ${imagedir}/${test_image}.png

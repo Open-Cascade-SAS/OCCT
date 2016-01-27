@@ -7,5 +7,5 @@ updatetolerance tool 1
 
 bfuse result part tool
 
-
 checkprops result -s 671652
+checkview -display result -2d -otherwise { part tool } -s -path ${imagedir}/${test_image}.png

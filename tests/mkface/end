@@ -39,13 +39,7 @@ if { [isdraw result] } {
          puts "MAX tolerance of a VERTEX of the resulting shape is equal to $maxv"
       }
    } 
-
-   smallview
-   clear
-   donly result
-   fit
-   xwd $imagedir/${test_image}.png
-
+   checkview -display result -2d -path ${imagedir}/${test_image}.png
 } else {
    puts "Error : The mkface can not be built."
 }

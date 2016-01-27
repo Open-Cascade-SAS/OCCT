@@ -45,4 +45,4 @@ bbop result 2
 
 checkprops result -s 142845 
 checknbshapes result -vertex 108 -edge 168 -wire 152 -face 86 -shell 7 -solid 7 -compsolid 0 -compound 1 -shape 529
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

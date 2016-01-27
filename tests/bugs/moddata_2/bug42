@@ -38,5 +38,5 @@ checkmaxtol result -ref 9.43897e+001
 checknbshapes result -shell 1
 checkfreebounds result 86
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

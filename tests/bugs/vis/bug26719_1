@@ -65,4 +65,4 @@ if {[vreadpixel 243 123 name] != "CYAN1 1"} {
 }
 vdump ${imagedir}/${casename}_3.png
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

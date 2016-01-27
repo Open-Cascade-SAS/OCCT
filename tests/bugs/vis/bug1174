@@ -66,4 +66,4 @@ if {${IsGreen} == 1 && ${IsBlue} == 1} {
    puts "OCC1174: Error"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -6,3 +6,5 @@ puts ""
 
 vcolorscale cs -range 10 20 100 -font 16 -textpos right -xy 0 0
 
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

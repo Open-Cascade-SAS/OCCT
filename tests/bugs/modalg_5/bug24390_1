@@ -22,4 +22,4 @@ checkmaxtol result -ref 2.0535401727466399e-005 -source {f1 f2 f3 f4 f5 f6} -min
 checknbshapes result -shell 1
 checkfreebounds result 0
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

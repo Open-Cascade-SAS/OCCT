@@ -21,5 +21,5 @@ if { ![catch {intersect result sh1 sh2} catch_result] } {
     puts "Faulty OCC139 : NO intersection found"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

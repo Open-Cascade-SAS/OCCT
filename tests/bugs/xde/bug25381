@@ -16,4 +16,4 @@ if { "[vreadpixel 198 172 rgb name]" != "WHITE" } {
    puts "Error : XCAFPrs_AISObject ignores visibility flag for sub-shapes"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -26,7 +26,7 @@ vsettransparency p_1 0
 checkcolor 120 150 0.831 0.000 0.000
 checkcolor 180 273 0.000 0.753 0.000
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

@@ -12,3 +12,4 @@ bopsection result
 
 checkprops result -l 1244.52
 checksection result
+checkview -display result -2d -otherwise { a fso } -l -path ${imagedir}/${test_image}.png

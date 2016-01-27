@@ -36,4 +36,4 @@ if { [catch { readstl res_mesh $filepath } catch_result] } {
 }
 checkprops result -s 600 
 checkshape result
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

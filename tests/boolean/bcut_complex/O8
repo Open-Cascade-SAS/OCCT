@@ -43,5 +43,5 @@ bcut r3 r2 p3
 bcut r4 r3 p4
 bcut r5 r4 p5
 bcut result r5 p6
-
 checkprops result -s 55910.6
+checkview -display result -2d -s -otherwise { r5 p6 } -path ${imagedir}/${test_image}.png

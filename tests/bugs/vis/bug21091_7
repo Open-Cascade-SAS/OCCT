@@ -10,7 +10,7 @@ puts ""
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 
 vinit
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 vtrihedron trihedron
 

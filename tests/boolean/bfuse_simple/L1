@@ -22,3 +22,4 @@ puts { Error: The rule of tolerance Tol(V) > Tol(E) > Tol(F) is not observed . T
 puts { The rule of tolerance Tol(V) > Tol(E) > Tol(F) is observed .} 
 
 checkprops result -s 1050
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

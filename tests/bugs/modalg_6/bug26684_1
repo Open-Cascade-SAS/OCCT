@@ -28,4 +28,4 @@ regexp {Tolerance Reached=([-0-9.+eE]+)} $bop_info_2d full Tolerance_2d
 
 checkreal "Reached tolerance" ${Tolerance_2d} 1.4569392656749484e-008 1.e-7 0
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

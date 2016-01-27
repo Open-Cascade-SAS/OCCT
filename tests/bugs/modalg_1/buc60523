@@ -13,6 +13,6 @@ checkfreebounds result 2
 
 checkprops result -s 156.919 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

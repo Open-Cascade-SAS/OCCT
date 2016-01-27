@@ -27,4 +27,4 @@ if [catch { buildsweep result } catch_result] {
 
 checkprops result -s 1674.46 -eps 0.1
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -23,4 +23,4 @@ checknbshapes result -vertex 6 -edge 14 -wire 8 -face 7 -shell 1 -solid 1 -comps
 set rel_tol 1
 set area_eps 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

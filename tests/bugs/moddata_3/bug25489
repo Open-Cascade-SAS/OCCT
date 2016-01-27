@@ -34,4 +34,4 @@ smallview
 donly a_8 r_a_8
 fit
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

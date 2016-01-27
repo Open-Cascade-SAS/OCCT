@@ -6,3 +6,4 @@ restore [locate_data_file CTO908_topo106-n.brep] nervure
 bfuse result poche nervure
 
 checkprops result -s 105275
+checkview -display result -2d -otherwise { poche nervure } -s -path ${imagedir}/${test_image}.png

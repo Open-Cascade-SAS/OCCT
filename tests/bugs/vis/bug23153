@@ -56,6 +56,6 @@ if { ${status} == 0 } {
     puts "Faulty ${BugNumber}"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

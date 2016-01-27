@@ -35,4 +35,4 @@ if { ${word1} == 0 && ${word2} == 0 && ${word3} == 0 } {
   puts "Faulty ${BugNumber}"
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

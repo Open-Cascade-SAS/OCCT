@@ -56,4 +56,4 @@ if { $z > ${max_time} } {
     puts "Elapsed time is less than ${max_time} seconds - OK"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

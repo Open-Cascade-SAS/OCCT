@@ -14,4 +14,4 @@ if [catch {fsameparameter result} catch_result] {
     puts "OK : function fsameparameter works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

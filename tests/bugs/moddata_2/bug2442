@@ -61,5 +61,3 @@ set y0 [lindex $boundbox 1]
 set z0 [lindex $boundbox 2]
 ttranslate a [expr -1 * $x0] [expr -1 * $y0] [expr -1 * $z0]
 ttranslate b [expr -1 * $x0] [expr -1 * $y0] [expr -1 * $z0]
-
-set 3dviewer 1

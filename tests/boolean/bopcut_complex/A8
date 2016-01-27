@@ -44,3 +44,4 @@ bop s t
 bopcut result
 
 checkprops result -s 861220
+checkview -display result -2d -otherwise { s t } -s -path ${imagedir}/${test_image}.png

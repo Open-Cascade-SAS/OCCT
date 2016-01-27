@@ -41,6 +41,6 @@ if { $status != 0 } {
 } else {
     puts  "OK $BugNumber"
 }
-set 3dviewer 0
-checkprops result -s 7.46496e+06
 
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+checkprops result -s 7.46496e+06

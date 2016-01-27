@@ -41,4 +41,4 @@ for {set i 0} {$i < 3} {incr i} {
    }
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -22,7 +22,7 @@ if {[vnbselected] != 26966} {
    puts "Faulty ${BugNumber}"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

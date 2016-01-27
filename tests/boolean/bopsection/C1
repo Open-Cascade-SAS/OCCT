@@ -8,3 +8,4 @@ bopsection result
 
 checkprops result -l 163.7
 checksection result
+checkview -display result -2d -otherwise { coque m_1 } -l -path ${imagedir}/${test_image}.png

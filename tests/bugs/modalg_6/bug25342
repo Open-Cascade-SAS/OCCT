@@ -18,5 +18,4 @@ Number of shapes in shape
 "
 
 checknbshapes result -ref ${nbshapes_expected} -t -m "Number of edges"
-
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

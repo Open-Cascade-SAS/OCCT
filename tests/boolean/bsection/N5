@@ -18,3 +18,4 @@ incr i
 
 checkprops result -l 2.11374e+07
 checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

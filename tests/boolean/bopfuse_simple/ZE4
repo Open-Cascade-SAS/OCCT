@@ -7,3 +7,4 @@ bop b1 b2
 bopfuse result
 
 checkprops result -s 38.0584
+checkview -display result -2d -otherwise { b1 b2 } -s -path ${imagedir}/${test_image}.png

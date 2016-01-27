@@ -35,4 +35,4 @@ if { ${stat} != 1 } {
    puts "Error : Borders of faces are not visible in shrink mode"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

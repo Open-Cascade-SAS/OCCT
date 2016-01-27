@@ -37,4 +37,4 @@ if { $z2 > 110 } {
 
 checkprops result -s 3.65777e+06 
 checkshape result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

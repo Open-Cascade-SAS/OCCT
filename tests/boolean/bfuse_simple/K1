@@ -8,3 +8,4 @@ revol rv wr 50 100 50 0 0 1 360
 bfuse result b rv
 
 checkprops result -s 161571
+checkview -display result -2d -otherwise { b rv } -s -path ${imagedir}/${test_image}.png

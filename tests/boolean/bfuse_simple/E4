@@ -21,6 +21,5 @@ revol ring f 0 0 0 0 0 1 269
 
 bfuse result cyl ring
 
-
-
 checkprops result -s 190.356
+checkview -display result -2d -otherwise { cyl ring } -s -path ${imagedir}/${test_image}.png

@@ -1,6 +1,6 @@
 smallview
 fit
-xwd $imagedir/${test_image}.png
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 
 if {[llength $prlist] > 0} {
   set marker_mass 0

@@ -31,5 +31,5 @@ thrusections res3 0 0 s1_1 s3_1
 donly s1_1 s4_1
 thrusections res4 0 0 s1_1 s4_1
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

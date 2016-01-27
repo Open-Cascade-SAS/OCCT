@@ -26,3 +26,4 @@ bsection result fa fb
 
 checkprops result -l 1
 checksection result
+checkview -display result -2d -otherwise { fa fb } -l -path ${imagedir}/${test_image}.png

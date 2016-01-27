@@ -31,4 +31,4 @@ for {set i ${x1} } {$i <= ${x2} } {incr i} {
     checkcolor ${i} ${y} 0 0 0
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

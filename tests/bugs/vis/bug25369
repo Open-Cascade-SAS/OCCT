@@ -20,4 +20,4 @@ vdrawtext text0 $s -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -an
 vdump $::imagedir/$s
 vtexture b $::imagedir/$s
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -19,4 +19,4 @@ renamevar s2 result
 checkprops result -s 164 
 checkshape result
 checknbshapes result -vertex 10 -edge 11 -wire 3 -face 2 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 27
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

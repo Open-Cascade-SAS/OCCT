@@ -47,4 +47,4 @@ vinit
 vdisplay b1 b2
 vfit
 
-set only_screen 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

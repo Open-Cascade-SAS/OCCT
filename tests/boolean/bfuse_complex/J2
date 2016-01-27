@@ -9,3 +9,4 @@ bfuse result1 part tool1
 bfuse result result1 tool2
 
 checkprops result -s 189131
+checkview -display result -2d -otherwise { result1 tool2 } -s -path ${imagedir}/${test_image}.png

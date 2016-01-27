@@ -18,4 +18,4 @@ if {${max_tol} > 0.02} {
   puts "Error : Bad tolerance"
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -48,5 +48,4 @@ if {$index == -1} {
   puts "Faulty ${BugNumber} : result is not Closed shape"
 }
 
-set 3dviewer 0
 

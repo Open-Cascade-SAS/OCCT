@@ -29,5 +29,5 @@ checkshape fuse321
 
 checkprops result -s 7507.61 
 checkshape result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

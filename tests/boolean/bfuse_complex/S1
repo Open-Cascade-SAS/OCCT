@@ -14,3 +14,4 @@ explode res
 bfuse result base res_1
 
 checkprops result -s 64405.2
+checkview -display result -2d -otherwise { base res_1 } -s -path ${imagedir}/${test_image}.png

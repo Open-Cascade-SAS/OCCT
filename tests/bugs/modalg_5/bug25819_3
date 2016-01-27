@@ -16,4 +16,4 @@ checkshape result
 
 checknbshapes result -vertex 99 -edge 136 -wire 49 -face 36 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 323 -t -m "Result of BOP cut"
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

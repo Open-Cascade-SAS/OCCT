@@ -26,5 +26,5 @@ if { ${word1} == 0 && ${word2} == 0 && ${word3} == 0 && ${word4} == 0 && ${word5
 }
 
 checkprops result -s 7837.39 
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png
 

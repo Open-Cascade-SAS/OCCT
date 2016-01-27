@@ -18,4 +18,4 @@ bfillds
 bbuild result
 
 checknbshapes result -vertex 14 -edge 15 -wire 2 -face 2 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 34
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

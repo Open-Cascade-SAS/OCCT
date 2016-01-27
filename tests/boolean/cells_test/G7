@@ -31,4 +31,3 @@ fit
 
 checkprops result -s 4326.81
 
-set only_screen_axo 1

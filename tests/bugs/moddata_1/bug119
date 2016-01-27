@@ -41,6 +41,6 @@ if { ${mistake} == 1} {
 
 	explode result_2 e
 	blend result result_2 50 result_2_20 50 result_2_22 50 result_2_10
-	set only_screen 1
+	checkview -screenshot -3d -path ${imagedir}/${test_image}.png
     }
 }

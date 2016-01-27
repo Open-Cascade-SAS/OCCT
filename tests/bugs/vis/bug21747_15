@@ -38,4 +38,4 @@ puts "R1=${R1} G1=${G1} B1=${B1} R2=${R2} G2=${G2} B2=${B2} Type=${Type}"
 
 vsetgradientbg ${R1} ${G1} ${B1} ${R2} ${G2} ${B2} ${Type}
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

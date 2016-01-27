@@ -85,4 +85,4 @@ for {set i 0} {$i < [llength $XBlueCoords]} {incr i} {
     checkcolor $XCoord $YCoord 0 0 1
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -18,6 +18,6 @@ checkshape result
 checksection result
 set command bopfuse
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

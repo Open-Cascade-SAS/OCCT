@@ -29,5 +29,4 @@ Number of shapes in shape
  SHAPE     : 595
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "Boolean operations on shapes with fillets"
-
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

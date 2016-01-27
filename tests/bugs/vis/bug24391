@@ -22,4 +22,4 @@ if {  "[vreadpixel 204 205 rgb name]" != "CYAN1"  } {
    puts "Error : Erased object is not displayed after its removing."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -37,4 +37,4 @@ if { ${llength_vfeedback1} < 36 || ${llength_vfeedback2} < 36 || ${IndexTriangle
   }
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

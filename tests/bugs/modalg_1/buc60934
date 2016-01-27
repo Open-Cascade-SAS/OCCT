@@ -10,5 +10,5 @@ mkplane result a
 
 checkprops result -s 40303.1 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

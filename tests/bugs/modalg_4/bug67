@@ -14,4 +14,4 @@ fillet result sh 5 sh_18
 
 checkprops result -s 64281.8 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

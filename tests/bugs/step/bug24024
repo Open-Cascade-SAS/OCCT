@@ -29,5 +29,5 @@ if { $cpu_time > $cpu_check } {
     puts "OK: performance of import of data is high"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

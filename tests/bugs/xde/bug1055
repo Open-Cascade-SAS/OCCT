@@ -15,5 +15,5 @@ if [catch { fixshape result a 1e-7 } res] {
 
 checkprops result -s 162.581 
 checkshape result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

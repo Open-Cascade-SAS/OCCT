@@ -33,4 +33,4 @@ if { $nom != 6} {
 }
 
 checkprops result -s 6207.83 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

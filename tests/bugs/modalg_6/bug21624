@@ -18,4 +18,4 @@ if { [regexp {The Shape result looks OK} $info] } {
   puts "Error: Splitshape produces invalid shape"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

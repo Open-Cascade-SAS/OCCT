@@ -21,4 +21,4 @@ if {$stat != 1} {
    puts "Error : Function VSETTRANSPARENCY works wrongly."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

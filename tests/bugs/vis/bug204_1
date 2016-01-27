@@ -17,4 +17,4 @@ if { ${stat} != 1 } {
     puts "Error : 3 boxes missing in the viewer!"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

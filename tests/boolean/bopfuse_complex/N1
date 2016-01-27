@@ -14,3 +14,4 @@ bop rr_1 p1
 bopfuse result
 
 checkprops result -s 600
+checkview -display result -2d -otherwise { rr_1 p1 } -s -path ${imagedir}/${test_image}.png

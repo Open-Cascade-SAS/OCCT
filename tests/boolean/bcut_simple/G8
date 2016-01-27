@@ -15,3 +15,4 @@ bcut result ab pryz
 #pkv t
 
 checkprops result -s 30
+checkview -display result -2d -s -otherwise { ab pryz } -path ${imagedir}/${test_image}.png

@@ -9,4 +9,3 @@ repeat 100 {
 }
 copy law1 result
 checklength result -l 3.3254491241005475
-

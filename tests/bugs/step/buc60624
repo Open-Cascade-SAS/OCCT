@@ -7,4 +7,4 @@ stepread [locate_data_file buc60624a.stp] a *
 tpcompound result
 checkshape result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

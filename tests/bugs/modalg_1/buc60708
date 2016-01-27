@@ -22,4 +22,4 @@ if {  $end != "result_4" } {
 }
 checkprops result -s 13.4871 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -30,4 +30,4 @@ if { [ catch { OCC486 s -420.1170080179139 926.8792206000001 229.5109675013802 0
     puts "OCC486 case 2 -  OK"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -7,5 +7,5 @@ restore [locate_data_file cts21197d.rle] tool
 
 bfuse result part tool
 
-
 checkprops result -s 4569.66
+checkview -display result -2d -otherwise { part tool } -s -path ${imagedir}/${test_image}.png

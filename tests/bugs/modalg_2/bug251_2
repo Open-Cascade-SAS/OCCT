@@ -32,4 +32,4 @@ if {[llength ${status}] < 1} {
 checkprops result -l 1. 
 checkshape result 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

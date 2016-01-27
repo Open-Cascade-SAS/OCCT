@@ -9,4 +9,3 @@ repeat 100 {
 }
 copy b1 result
 checklength result -l 7.7885445456401925
-

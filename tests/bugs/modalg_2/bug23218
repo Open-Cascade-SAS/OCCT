@@ -44,6 +44,3 @@ if {${ToleranceReached_percent} > ${percent_max}} {
 } else {
    puts "OK ${BugNumber}"
 }
-
-set 3dviewer 0
-

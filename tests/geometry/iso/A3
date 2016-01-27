@@ -8,8 +8,5 @@ nbiso p 20 20
 offset offs1 p 0.3
 uiso curv_u2 offs1 0.2
 copy curv_u2 result
-set viewer "smallview"
+
 checklength result -l 1.3447354805936931
-
-
-

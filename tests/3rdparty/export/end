@@ -1,11 +1,14 @@
 vexport ${aFile} ${format}
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 if { [file exists ${aFile}] } {
     puts "The file has been exported to ${format}."
     set filesize [file size ${aFile}]
-# Check if difference of size is more 5%
+
+    # Check if difference of size is more 5%
     if { $filesize < $size && [expr 1.*($size - $filesize)/$size] > 0.05 } {
-	puts "Error: The file has been exported to ${format}, but the result has a different size ($filesize instead of $size)."
+        puts "Error: The file has been exported to ${format}, but the result has a different size ($filesize instead of $size)."
     }
 } else {
     puts "Error: Impossible to export file to ${format}."

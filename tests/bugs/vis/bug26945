@@ -68,4 +68,4 @@ if {[vreadpixel $edge_x $edge_y name] != "CYAN1 1"} {
   puts "ERROR: Can not select face after closing local context 3"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

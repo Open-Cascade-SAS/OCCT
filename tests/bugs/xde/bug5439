@@ -12,4 +12,4 @@ catch { fixshape result a 1.e-7 }
 
 checkprops result -s 13.1825 -eps 0.1
 checkshape result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

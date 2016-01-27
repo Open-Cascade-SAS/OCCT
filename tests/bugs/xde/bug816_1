@@ -19,6 +19,6 @@ if [ catch { igesbrep $file a *} res ] {
    puts "Faulty OCC816 : igesbrep not complite"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

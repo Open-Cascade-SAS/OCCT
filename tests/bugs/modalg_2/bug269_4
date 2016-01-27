@@ -24,4 +24,4 @@ if { $tri != 7218 && $nod !=  3685 }  {
 }
 checkprops result -s 36.4284 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

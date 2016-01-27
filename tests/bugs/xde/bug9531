@@ -54,4 +54,4 @@ if { ${IsOk} == 1} {
 }
 
 renamevar OCC9531b result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

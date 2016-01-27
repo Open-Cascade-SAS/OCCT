@@ -14,4 +14,4 @@ segment result -4.76283758432072e-05 1.06458532027221
 
 #let's the segment is displaied only
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -23,4 +23,4 @@ vinit
 vdisplay s_overlapped
 vdisplay c_overlapped
 vfit
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

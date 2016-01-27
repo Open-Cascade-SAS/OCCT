@@ -29,6 +29,6 @@ if ![regexp VERTEX [statshape result]] {puts [format "OCC526 FAULTY Z=%f" $Z ] }
 checkprops result -l 27.8021 
 checkshape result 
 checksection result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

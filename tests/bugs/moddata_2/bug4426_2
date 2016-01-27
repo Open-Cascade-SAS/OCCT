@@ -18,5 +18,5 @@ donly tll1 tll2
 puts "ATTENTION! Check following:"
 puts "There is the intersection point (green X) on center of grid axis"
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

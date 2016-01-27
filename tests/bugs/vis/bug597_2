@@ -27,4 +27,4 @@ if {$stat != 1} {
    puts "Error : The right face is highlighted by Move To command."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

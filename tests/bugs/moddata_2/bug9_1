@@ -85,4 +85,4 @@ if { ${Avg_dist} > ${check_dist} } {
     puts "\n OCC9: OK"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

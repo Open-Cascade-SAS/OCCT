@@ -68,4 +68,4 @@ if {${status} == 0} {
 
 checkprops result -s 8464.91
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

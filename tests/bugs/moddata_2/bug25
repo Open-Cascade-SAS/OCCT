@@ -27,6 +27,6 @@ if { [regexp {BRepCheck_BadOrientationOfSubshape} $che] && [regexp {BRepCheck_Un
 
 compound sh1 sh2 result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

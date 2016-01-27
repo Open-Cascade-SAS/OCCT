@@ -28,4 +28,4 @@ if {$bug_info != $ok_color} {
   puts "ERROR: OCC26424 is reproduced. Trihedron does non have text labels."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

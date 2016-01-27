@@ -28,4 +28,4 @@ if {"[vreadpixel $x $y rgb]" == "$R $G $B" } {
    puts "OK : color is good"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

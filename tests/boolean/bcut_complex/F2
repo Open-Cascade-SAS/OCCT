@@ -8,5 +8,5 @@ restore [locate_data_file buc60127-part.rle] part
 restore [locate_data_file buc60127-tool.rle] tool
 
 bcut result part tool
-
 checkprops result -s 0
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

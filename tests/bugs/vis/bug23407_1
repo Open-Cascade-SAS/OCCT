@@ -32,6 +32,6 @@ if { $stat != 01} {
    puts "Error : Boundary of face is not changed"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

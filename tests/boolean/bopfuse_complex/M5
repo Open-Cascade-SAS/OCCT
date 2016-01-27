@@ -11,5 +11,5 @@ prism p1 A1_rr_7 0 0 4
 bop rr p1
 bopfuse result
 
-
 checkprops result -s 664
+checkview -display result -2d -otherwise { rr p1 } -s -path ${imagedir}/${test_image}.png

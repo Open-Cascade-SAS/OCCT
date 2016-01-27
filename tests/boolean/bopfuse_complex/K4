@@ -7,5 +7,5 @@ restore [locate_data_file fra50047b.rle] b
 bop a b
 bopfuse result
 
-
 checkprops result -s 508496
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

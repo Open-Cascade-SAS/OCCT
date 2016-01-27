@@ -5,3 +5,4 @@ bop b a
 bopcut result
 
 checkprops result -s empty
+checkview -display result -2d -otherwise { b a } -s -path ${imagedir}/${test_image}.png

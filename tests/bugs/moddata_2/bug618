@@ -18,4 +18,4 @@ if [catch {bop a b} catch_result] {
     puts "OCC618 OK: BOP operation works OK"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

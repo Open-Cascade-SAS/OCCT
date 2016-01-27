@@ -18,6 +18,6 @@ vvbo 1
 vdrawparray pl01 polylines 0 v 0 0 0 v 0 10 0 v 0 10 10 v 0 0 0 b 4 c 1 0 0
 checkcolor $x_coord $y_coord 1 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

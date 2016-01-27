@@ -30,5 +30,5 @@ if { $tri == 0 || $nod == 0 } {
    puts "Error : here is shading problem"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

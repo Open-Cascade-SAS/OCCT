@@ -46,4 +46,4 @@ if { [lsearch $aCompRes not] != -1 } {
   puts "ERROR: Selected box and selected solid are not equal!"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

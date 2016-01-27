@@ -22,5 +22,5 @@ if { $mistake != 0} {
     puts "OCC503 OK: function SPROPS works without hangs up "
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

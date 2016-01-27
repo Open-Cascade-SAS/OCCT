@@ -8,4 +8,4 @@ igesbrep [locate_data_file buc60894.igs] a xst-transferrable-roots
 
 tpcompound result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

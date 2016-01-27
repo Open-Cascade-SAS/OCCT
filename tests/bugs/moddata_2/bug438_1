@@ -16,5 +16,5 @@ if [catch { checkshape result } catch_result] {
     puts "OCC438 (case 1) OK"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

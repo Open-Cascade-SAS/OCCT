@@ -1,18 +1,2 @@
-$viewer
-if { [string compare "$viewer" "v2d"] == 0 } {
-    2dclear
-    donly result
-    2dfit
-} elseif { [string compare "$viewer" "smallview"] == 0 } {
-    clear
-    donly result
-    fit
-} else {
-    puts "Error : wrong value of variable viewer"
-}
-xwd $imagedir/${test_image}.png
-
 # to end a test script
 puts "TEST COMPLETED"
-
-

@@ -9,3 +9,4 @@ bfuse result base tool
 fsameparameter result
 
 checkprops result -s 46778.2
+checkview -display result -2d -otherwise { base tool } -s -path ${imagedir}/${test_image}.png

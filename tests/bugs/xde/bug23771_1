@@ -12,5 +12,5 @@ test_offset
 brepiges f1 ${imagedir}/f1.igs
 igesread ${imagedir}/f1.igs result *
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

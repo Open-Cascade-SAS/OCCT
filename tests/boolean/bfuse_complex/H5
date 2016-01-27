@@ -9,6 +9,5 @@ restore [locate_data_file CTO902_cts20482c.rle] c
 bfuse result a b
 bfuse result result c
 
-
-
 checkprops result -s 189131
+checkview -display result -2d -otherwise { result c } -s -path ${imagedir}/${test_image}.png

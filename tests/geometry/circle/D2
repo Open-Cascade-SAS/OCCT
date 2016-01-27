@@ -4,6 +4,5 @@ repeat 20 {
     2dpscale result 0 0 0 ech; 
     copy result .; 
 }
-set viewer "v2d"
 checklength result -l 1268.1038650696225
-
+checkview -display result -2d v2d -path ${imagedir}/${test_image}.png

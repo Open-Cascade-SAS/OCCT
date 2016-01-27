@@ -9,3 +9,4 @@ bfuse res a b
 bfuse result res c
 
 checkprops result -s 533100
+checkview -display result -2d -otherwise { res c } -s -path ${imagedir}/${test_image}.png

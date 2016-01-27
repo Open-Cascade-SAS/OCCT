@@ -7,5 +7,5 @@ ttranslate c2 5 0 10
 
 bfuse result c1 c2
 
-
 checkprops result -s 2199.11
+checkview -display result -2d -otherwise { c1 c2 } -s -path ${imagedir}/${test_image}.png

@@ -44,4 +44,4 @@ buildsweep result
 checkshape result -short
 
 checkprops result -s 1.45725e-06 
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

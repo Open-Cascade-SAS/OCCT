@@ -33,4 +33,4 @@ Number of shapes in shape
 
 checknbshapes result -ref ${nbshapes_expected} -t -m "HLRToShape"
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

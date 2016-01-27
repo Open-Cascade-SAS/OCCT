@@ -13,4 +13,4 @@ restore [locate_data_file OCC161.brep] result
 
 checkshape result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

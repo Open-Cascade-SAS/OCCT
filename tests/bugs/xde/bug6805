@@ -14,4 +14,4 @@ checkshape s1
 DT_ApplySeq result s1 ${imagedir}/OCC6805.res
 checkshape result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

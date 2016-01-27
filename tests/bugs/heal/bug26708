@@ -8,4 +8,4 @@ fixshape result face 1e-7 1
 checkshape result
 checknbshapes result -face 1
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

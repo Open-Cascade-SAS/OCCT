@@ -13,4 +13,4 @@ vinit
 vdrawtext text0 HELLO -pos 0 0 0 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular
 vdrawtext text1 [encoding convertfrom unicode \x42\x30] -pos 0 0 200 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font Mona
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

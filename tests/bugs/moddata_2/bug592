@@ -38,4 +38,4 @@ if { [regexp {Faulty} $che] != 1 } {
     puts "OCC592 OK: Checkshape (BRepCheck_Analyzer) detects bad shape"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

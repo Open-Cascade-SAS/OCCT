@@ -7,5 +7,5 @@ restore [locate_data_file pro14957b.rle] b
 explode a so
 
 bcut result a_1 b
-
 checkprops result -s 90833.6
+checkview -display result -2d -s -otherwise { a_1 b } -path ${imagedir}/${test_image}.png

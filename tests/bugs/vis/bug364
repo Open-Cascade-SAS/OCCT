@@ -28,7 +28,7 @@ if { $tri != 92 || $nod != 92 }  {
    puts "Shading of  OCC364 is OK"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

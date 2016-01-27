@@ -8,4 +8,3 @@ set i 1
 repeat 100 {cmovepoint bscurv 0.3 0. -0.05 0.0e0 ; incr i 1;repaint}
 renamevar bscurv result
 checklength result -l 2.9999999999999996
-

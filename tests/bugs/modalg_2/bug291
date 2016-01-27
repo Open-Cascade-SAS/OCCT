@@ -31,5 +31,5 @@ if { $tri == 382 && $nod == 343 } {
 }
 
 checkprops result -s 376.873 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

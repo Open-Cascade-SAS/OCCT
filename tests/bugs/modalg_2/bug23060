@@ -15,5 +15,4 @@ bop result_1 result_2
 checkprops result -l 176.06 
 checkshape result 
 checksection result
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

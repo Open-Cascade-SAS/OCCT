@@ -16,5 +16,4 @@ if [catch { OCC105 result} ] {
   puts "BUC61032: OK"
 }
 
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

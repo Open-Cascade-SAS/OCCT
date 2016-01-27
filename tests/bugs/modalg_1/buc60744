@@ -46,4 +46,4 @@ if {$ne >= $nv} {
 checkprops result -l 228.386 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

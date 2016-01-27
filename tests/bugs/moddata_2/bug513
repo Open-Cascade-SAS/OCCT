@@ -19,5 +19,5 @@ if { [catch {intersect result sa23 sb8} catch_result] } {
     puts "OCC513 OK: function INTERSECTION works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

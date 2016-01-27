@@ -20,4 +20,4 @@ if [catch {pipe result a_1 a_2 } catch_result] {
 }
 checkprops result -s 1246.13 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

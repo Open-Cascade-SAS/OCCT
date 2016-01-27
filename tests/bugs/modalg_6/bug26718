@@ -43,4 +43,4 @@ set tol_abs_MaxTolerance 0.01
 set tol_rel_MaxTolerance 0.01
 checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

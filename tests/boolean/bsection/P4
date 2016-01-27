@@ -10,3 +10,4 @@ compound s s2 result
 
 checkprops result -l 682.142
 checksection result
+checkview -display result -2d -otherwise { c1 m_2 m_4 m_2 } -l -path ${imagedir}/${test_image}.png

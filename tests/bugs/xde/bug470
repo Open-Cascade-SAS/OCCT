@@ -44,5 +44,5 @@ if { $MaxVertex2 > $MaxVertex1 } {
    puts "Error : MaxVertex Tolerance is increased"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

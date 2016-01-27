@@ -18,4 +18,4 @@ bbop result 0
 
 checkprops result -s 424.666
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

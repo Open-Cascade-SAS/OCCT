@@ -30,5 +30,4 @@ if { $tri == 5496 && $nod == 5406 }  {
      puts "Warning OCC428: Shading of OCC428 was made, source shape is invalid"
 }
 
-set 3dviewer 1
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

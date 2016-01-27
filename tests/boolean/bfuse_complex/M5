@@ -10,3 +10,4 @@ bfuse rab a b
 bfuse result rab c
 
 checkprops result -s 12335.6
+checkview -display result -2d -otherwise { rab c } -s -path ${imagedir}/${test_image}.png

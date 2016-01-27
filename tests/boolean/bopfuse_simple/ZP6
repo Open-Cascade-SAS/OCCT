@@ -18,3 +18,4 @@ bop x1 a2
 bopfuse result
 
 checkprops result -s 197700
+checkview -display result -2d -otherwise { x1 a2 } -s -path ${imagedir}/${test_image}.png

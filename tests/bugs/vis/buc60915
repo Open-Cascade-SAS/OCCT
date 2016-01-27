@@ -17,6 +17,6 @@ if {$stat != 1} {
    puts "Error : Cannot set the arrow size when using AIS_LengthDimension or AIS_RadiusDimensin."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

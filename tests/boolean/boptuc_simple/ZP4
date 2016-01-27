@@ -14,3 +14,4 @@ bop r_1 b1
 boptuc result
 
 checkprops result -s 96
+checkview -display result -2d -otherwise { r_1 b1 } -s -path ${imagedir}/${test_image}.png

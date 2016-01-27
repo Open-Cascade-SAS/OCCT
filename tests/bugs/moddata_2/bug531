@@ -12,5 +12,5 @@ restore [locate_data_file OCC531_2.draw] b
 
 intersect result a b
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

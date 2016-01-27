@@ -20,5 +20,5 @@ isos result 15
 
 puts "Previously here was message:  Uninspired signal 8"
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

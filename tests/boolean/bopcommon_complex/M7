@@ -9,5 +9,6 @@ bop bb rr
 bopcommon result
 
 checkprops result -s 2435.25
+checkview -display result -2d -otherwise { bb rr } -s -path ${imagedir}/${test_image}.png
 
 

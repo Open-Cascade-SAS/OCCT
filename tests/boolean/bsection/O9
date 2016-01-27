@@ -5,3 +5,4 @@ bsection result a fass
 
 checkprops result -l 25.708
 checksection result
+checkview -display result -2d -otherwise { a fass } -l -path ${imagedir}/${test_image}.png

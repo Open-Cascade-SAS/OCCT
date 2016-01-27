@@ -17,5 +17,4 @@ if { [regexp "SurfaceOfRevolution" $info] != 1 } {
     puts "Error : surface of revolution becomes a plane"
 }
 
-set 2dviewer 0
-
+checkview -display result -2d -path ${imagedir}/${test_image}.png

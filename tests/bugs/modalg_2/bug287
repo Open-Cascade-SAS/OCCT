@@ -13,8 +13,6 @@ isos result 0
 incmesh result .1
 triangles result
 
-# set 3dviewer 1
-
 set tri 0
 set nod 0
 
@@ -37,5 +35,4 @@ vsetdispmode result 1
 
 checkprops result -s 0 
 checkshape result
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

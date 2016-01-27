@@ -29,6 +29,6 @@ if { $tri != 100 && $nod != 94 }  {
   puts "Faulty OCC17: here can be shading problem"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

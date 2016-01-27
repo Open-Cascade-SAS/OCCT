@@ -51,7 +51,7 @@ if {$IsGood == 1} {
   puts "\nFaulty OCC223\n"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 puts "\n------- Additional Comments From Igor FEOKTISTOV 2002-05-20 12:32 -------\n"
 

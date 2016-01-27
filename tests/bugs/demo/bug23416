@@ -14,7 +14,5 @@ if { $check_error != -1 } {
     puts "Error : crashes during visualization"
 }
 fit
-set only_xwd 1
 
-
-
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -49,4 +49,4 @@ draw_lines 10.0
 checkcolor 804 483 1 0 0
 checkcolor 860 500 1 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

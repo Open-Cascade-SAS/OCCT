@@ -94,4 +94,4 @@ renamevar cutter result
 checkprops result -s 1403.85 
 checkshape result
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

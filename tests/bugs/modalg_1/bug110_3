@@ -39,4 +39,4 @@ bcut result res_2 t
 
 checkprops result -s 861220 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

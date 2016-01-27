@@ -32,4 +32,4 @@ if {[llength $bug_info] != 1} {
   puts "ERROR: OCC21670 is reproduced. Result of bsection command is set of shapes."
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

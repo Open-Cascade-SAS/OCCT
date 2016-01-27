@@ -18,4 +18,4 @@ bop c_3 e3
 bopfuse result
 
 checknbshapes result -vertex 3 -edge 4 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 8
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

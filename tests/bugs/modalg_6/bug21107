@@ -12,4 +12,4 @@ restore [locate_data_file bug21107_SectionShape2.brep] s2
 bsection result s1 s2
 
 checkprops result -l 476.275
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

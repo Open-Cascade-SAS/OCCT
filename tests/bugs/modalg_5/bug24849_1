@@ -18,4 +18,4 @@ wire ww w_1
 pipe result ww f 2
 
 checknbshapes result -vertex 4 -edge 8 -wire 7 -face 7 -shell 2 -solid 2 -compsolid 0 -compound 1 -shape 31
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

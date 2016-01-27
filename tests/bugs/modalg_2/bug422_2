@@ -17,4 +17,4 @@ depouille result f 0 0 1 f_4 4 0 0 30 0 0 1
 
 checkprops result -s 5719.09 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -19,4 +19,4 @@ checkfreebounds result 456
 
 checkprops result -s 0.0141287 
 checkshape result
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

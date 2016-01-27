@@ -15,6 +15,5 @@ bcut r1 p1 p2
 
 
 bcut result r1 p3
-
-
 checkprops result -s 30153
+checkview -display result -2d -s -otherwise { r1 p3 } -path ${imagedir}/${test_image}.png

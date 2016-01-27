@@ -11,9 +11,9 @@ restore [locate_data_file bug23984_bug.brep] result
 vdisplay result
 vsetdispmode 0
 vfit
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 axo
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 

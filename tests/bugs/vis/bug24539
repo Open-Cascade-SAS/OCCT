@@ -13,4 +13,4 @@ vsetdispmode 1
 vdisplay b
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

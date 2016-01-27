@@ -18,5 +18,4 @@ if { $tri != 88 && $nod != 90 }  {
   puts "Faulty OCC19: here is shading problem"
 }
 
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

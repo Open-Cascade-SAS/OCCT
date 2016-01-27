@@ -12,3 +12,4 @@ bop a pp
 bopfuse result
 
 checkprops result -s 358551
+checkview -display result -2d -otherwise { a pp } -s -path ${imagedir}/${test_image}.png

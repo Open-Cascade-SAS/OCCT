@@ -30,4 +30,4 @@ if { $tri == 72 && $nod == 74 } {
 }
 
 checkprops result -s 314.159 
-set 3dviewer 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

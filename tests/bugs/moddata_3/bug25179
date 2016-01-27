@@ -36,4 +36,4 @@ if [catch { tricheck result } ] {
   puts "OK : Building a mesh on specific geometry is good"
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

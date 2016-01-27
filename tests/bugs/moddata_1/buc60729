@@ -11,4 +11,4 @@ if [catch {BUC60729} ] {
   puts "BUC60729: OK"
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

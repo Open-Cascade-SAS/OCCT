@@ -14,3 +14,4 @@ prism cylb f -300 0 0
 bcommon result cyla cylb
 
 checkprops result -s 160000
+checkview -display result -2d -s -otherwise { cyla cylb } -path ${imagedir}/${test_image}.png

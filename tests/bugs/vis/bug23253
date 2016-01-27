@@ -104,4 +104,4 @@ set x2 220
 set y2 250
 checkcolor $x2 $y2 1 1 0.94
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

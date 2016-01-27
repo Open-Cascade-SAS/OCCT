@@ -27,4 +27,4 @@ checknbshapes result -vertex 6 -edge 11 -wire 4 -face 2 -shell 0 -solid 0 -comps
 
 checkprops result -s 306.285 
 checkshape result
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

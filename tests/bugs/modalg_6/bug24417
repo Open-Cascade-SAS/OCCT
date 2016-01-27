@@ -32,4 +32,4 @@ Number of shapes in shape
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "Result of BRepAlgoAPI_Section"
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

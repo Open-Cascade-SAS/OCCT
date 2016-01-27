@@ -34,5 +34,5 @@ if { $z2 > 85 } {
     puts "Elapsed time is less then 85 seconds - OK"      
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

@@ -43,5 +43,5 @@ if { ${delta_first} <= ${maxdelta} && ${delta_last} <= ${maxdelta} } {
    puts "OCC311: OK"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

@@ -22,4 +22,4 @@ if [catch { bopcut result } catch_result] {
 
 checkprops result -s 314742. 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

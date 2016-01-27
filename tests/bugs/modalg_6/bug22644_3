@@ -16,4 +16,4 @@ bopcommon result
 
 checkprops result -s 102.34 
 checkshape result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

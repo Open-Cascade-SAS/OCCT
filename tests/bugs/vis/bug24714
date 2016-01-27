@@ -25,4 +25,4 @@ if { "[vreadpixel 200 9 rgb name]" != "CYAN1" } {
   puts "Error : the view projection size is incorrect!"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

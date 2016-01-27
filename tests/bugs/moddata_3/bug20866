@@ -30,5 +30,5 @@ if [catch { buildsweep result } ] {
 
     checknbshapes result -vertex 161 -edge 299 -wire 138 -face 138 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 737
 }
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

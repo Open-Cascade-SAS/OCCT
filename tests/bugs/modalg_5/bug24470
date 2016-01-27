@@ -22,7 +22,7 @@ bbuild result
 checkshape result
 
 checkprops result -s 595443 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

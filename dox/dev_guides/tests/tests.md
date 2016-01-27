@@ -1156,6 +1156,50 @@ vdump $imagedir/${casename}_shading.png
 
 This image will be included in the HTML log produced by *testgrid* command and will be checked for non-regression through comparison of images by command *testdiff*.
 
+Also it is possible to use command *checkview* to make a snapshot of the viewer.
+
+Use: checkview [options...]
+Allowed options are:
+*   -display shapename: display shape with name 'shapename'
+*   -3d: display shape in 3d viewer
+*   -2d [ v2d / smallview ]: display shape in 2d viewer (default viewer is a 'smallview')
+*   -path PATH: location of saved screenshot of viewer
+*   -vdispmode N: it is possible to set vdispmode for 3d viewer (default value is 1)
+*   -screenshot: procedure will try to make screenshot of already created viewer
+*   Procedure can check some property of shape (length, area or volume) and compare it with some value N:
+	* -l [N]
+	* -s [N]
+	* -v [N]
+	* If current property is equal to value N, shape is marked as valid in procedure.
+	* If value N is not given procedure will mark shape as valid if current property is non-zero.
+*   -with {a b c}: display shapes 'a' 'b' 'c' together with 'shape' (if shape is valid)
+*   -otherwise {d e f}: display shapes 'd' 'e' 'f' instead of 'shape' (if shape is NOT valid)
+
+Note that one of two options -2d/-3d is required.
+
+Examples:
+~~~~~
+checkview -display result -2d -path ${imagedir}/${test_image}.png
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+checkview -display result_2d -2d v2d -path ${imagedir}/${test_image}.png
+~~~~~
+~~~~~
+box a 10 10 10
+box b 5 5 5 10 10 10
+bcut result b a
+set result_vertices [explode result v]
+checkview -display result -2d -with ${result_vertices} -otherwise { a b } -l -path ${imagedir}/${test_image}.png
+~~~~~
+~~~~~
+box a 10 10 10
+box b 5 5 5 10 10 10
+bcut result b a
+vinit
+vdisplay a b
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+~~~~~
+
 @subsubsection testmanual_5_3_6 Number of free edges
 
 To check the number of free edges run the command *checkfreebounds*.

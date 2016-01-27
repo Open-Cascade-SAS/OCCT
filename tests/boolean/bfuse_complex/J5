@@ -8,3 +8,4 @@ trotate b 0 0 75 0 1 0 90
 bfuse result a b
 
 checkprops result -s 85663.7
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

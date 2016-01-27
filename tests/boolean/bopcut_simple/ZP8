@@ -7,3 +7,4 @@ bop pc pcy
 bopcut result
 
 checkprops result -s 254.16
+checkview -display result -2d -otherwise { pc pcy } -s -path ${imagedir}/${test_image}.png

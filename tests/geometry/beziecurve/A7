@@ -6,4 +6,3 @@ repeat 10 {
     copy result .
 }
 checklength result -l 17.264934514807859
-

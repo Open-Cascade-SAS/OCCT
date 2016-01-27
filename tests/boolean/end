@@ -1,54 +1,6 @@
 if { [isdraw result] } {
-    #check if result is valid
-
-    puts "checkshape"
-    set ch [checkshape result]
-    puts $ch
-
-    if {[info exists command] && ${command} == "mkvolume"} {
-        set bcheck [bopcheck result]
-        puts $bcheck
-        if {![regexp {This shape seems to be OK.} $bcheck]} {
-            puts "Error: bopcheck failed"
-        }
-    }
-
-    if { [info exists nbsh_v ] } {
-        set arr_v [explode result v]
-        set nb_v [ llength $arr_v ]
-        if { $nb_v != $nbsh_v } {
-            puts "Error : The resulting shape is WRONG because it must contain $nbsh_v vertexes instead of $nb_v"
-        } else {
-            puts "The resulting shape contains $nb_v vertexes"
-        }
-    }
-
-    if { [info exists nbsh_e ] } {
-        set arr_e [explode result e]
-        set nb_e [ llength $arr_e ]
-        if { $nb_e != $nbsh_e } {
-            puts "Error : The resulting shape is WRONG because it must contain $nbsh_e edges instead of $nb_e"
-        } else {
-            puts "The resulting shape contains $nb_e edges"
-        }
-    }
-
-   smallview
-   if { [info exists display_vertices ] } {
-     regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full mass
-   } else {
-     regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full mass
-   }
-   if { [expr $mass != 0] || [info exists show_only_result]} {
-     donly result
-     if { [info exists nbsh_v ] } {
-       explode result v
-     }
-   } elseif { [isdraw a] || [isdraw b]} {
-     donly a b
-   }
-   fit
-   xwd $imagedir/${test_image}.png
+  checkshape result
 }
+
 # to end a test script
 puts "TEST COMPLETED"

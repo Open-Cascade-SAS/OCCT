@@ -22,5 +22,5 @@ if { $MaxFaceTolerance > 0.000176 || $MaxEdgeTolerance > 0.000176 || $MaxVertexT
 }
 
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

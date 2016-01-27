@@ -14,6 +14,4 @@ checkshape result
 
 checkprops result -s 413318 -eps 1.e-6
 checkshape result
-set 3dviewer 1
-
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

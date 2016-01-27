@@ -31,4 +31,4 @@ revol result a $ax $ay $az $dx $dy $dz 360
 
 checkprops result -s 692942 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

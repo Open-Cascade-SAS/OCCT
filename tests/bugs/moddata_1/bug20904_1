@@ -50,4 +50,4 @@ checknbshapes result -shell 0
 checkfreebounds result 2
 
 checkprops result -s 30078.9
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

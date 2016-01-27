@@ -13,3 +13,4 @@ bsection result obj out
 
 checkprops result -l 1022.03
 checksection result
+checkview -display result -2d -otherwise { obj out } -l -path ${imagedir}/${test_image}.png

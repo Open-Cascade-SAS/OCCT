@@ -31,5 +31,4 @@ if { $tri != 85 && $nod != 87 }  {
 }
 
 checkprops result -s 0 
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

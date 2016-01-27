@@ -23,5 +23,5 @@ if { [catch { bopfuse result } ] } {
 
 checkprops result -s 3387.54 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

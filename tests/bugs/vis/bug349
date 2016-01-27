@@ -5,7 +5,6 @@ puts "========"
 
 vinit
 box b 100 900 300
-set 3dviewer 1
 vdisplay b
 
 OCC280 1 0
@@ -67,4 +66,4 @@ foreach i $black_coords {
   }
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

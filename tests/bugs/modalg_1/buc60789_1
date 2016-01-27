@@ -25,4 +25,4 @@ if { $ve != 0 && $ed != 0 } {
 checkprops result -l 78.3594 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

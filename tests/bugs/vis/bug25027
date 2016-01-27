@@ -14,4 +14,4 @@ vfit
 vcolorscale cs -range 10 20 100 -font 16 -textpos right -xy 0 0
 vmoveto 512 250
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

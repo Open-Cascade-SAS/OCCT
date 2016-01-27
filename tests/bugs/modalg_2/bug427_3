@@ -24,4 +24,4 @@ OFFSETSHAPE 1 {s_2 s_3} $calcul $type
 
 checkprops result -s 885.688 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

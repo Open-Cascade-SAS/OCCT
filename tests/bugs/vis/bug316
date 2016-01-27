@@ -29,5 +29,5 @@ if { $tri == 212909 && $nod == 158362 } {
   }
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

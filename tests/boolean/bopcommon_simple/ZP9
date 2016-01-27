@@ -8,4 +8,5 @@ bop bb s1
 bopcommon result
 
 checkprops result -s 576.293
+checkview -display result -2d -otherwise { bb s1 } -s -path ${imagedir}/${test_image}.png
 

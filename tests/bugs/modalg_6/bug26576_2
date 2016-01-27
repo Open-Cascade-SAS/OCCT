@@ -44,4 +44,4 @@ Number of shapes in shape
 
 checknbshapes result -ref ${nbshapes_expected} -t -m "General fuse"
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

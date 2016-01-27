@@ -33,4 +33,4 @@ checkshape res5
 renamevar res5 result
 
 checkprops result -s 1.23063e+7
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -25,4 +25,4 @@ if {"[vreadpixel ${x_check_coord} ${y_check_coord} rgb name]" == "GREEN"} {
   puts "Error: back-face culling should be turned ON, but back-face is still visible."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

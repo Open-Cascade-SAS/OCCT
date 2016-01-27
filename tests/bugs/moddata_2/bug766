@@ -18,4 +18,4 @@ if {$ll > 0} {
   puts "Faulty OCC770"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

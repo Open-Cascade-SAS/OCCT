@@ -12,4 +12,4 @@ restore [locate_data_file bug23785_Wire_1.brep] w
 
 mkplane result w 0
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

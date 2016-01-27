@@ -51,4 +51,4 @@ if { $stat != 1 } {
   puts "Error : the 2D texture color does not match at px (200, 300)!"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

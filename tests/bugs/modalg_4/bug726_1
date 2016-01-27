@@ -19,4 +19,4 @@ bcommon result a_1 a_2
 
 checkprops result -s 73346.6 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

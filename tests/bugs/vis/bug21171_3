@@ -19,4 +19,4 @@ vfit
 puts ""
 puts "1 vertex is not fit"
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

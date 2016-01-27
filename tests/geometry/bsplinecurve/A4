@@ -3,4 +3,3 @@ copy b1 result
 pscale result 0 0 0 1.4
 repeat 5 {pl}
 checklength result -l 9.5487985926002157
-

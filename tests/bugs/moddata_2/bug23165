@@ -151,7 +151,7 @@ if { ${status} == 0 && ${exception_status} == 0&& ${e1_status} == 0 } {
    puts "${BugNumber}: Faulty"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 checkprops result -l 15.8888 
 checksection result
 

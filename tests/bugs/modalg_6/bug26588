@@ -16,4 +16,4 @@ GetShape D 0:1:27:1:1:2 a
 featdprism s a a 25 0 1
 featperformval dprism result 200
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

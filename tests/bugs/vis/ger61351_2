@@ -19,4 +19,4 @@ if {"[vreadpixel $x_coord $y_coord rgb name]" != "GREEN"} {
    puts "Error : Background color is NOT 0 1 0."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -78,6 +78,3 @@ if { ${status} == 0 } {
 } else {
    puts "${BugNumber}: Faulty"
 }
-
-set 3dviewer 0
-

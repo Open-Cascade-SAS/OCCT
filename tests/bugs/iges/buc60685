@@ -21,4 +21,4 @@ if { ${start} == ${end} && ${start} == 19 } {
   puts "BUC60685: Faulty"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

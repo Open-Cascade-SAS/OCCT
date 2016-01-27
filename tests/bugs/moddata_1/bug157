@@ -23,5 +23,5 @@ if {${ll} < 2} {
     }
 }
 checkprops result -s 2.11095e+06
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

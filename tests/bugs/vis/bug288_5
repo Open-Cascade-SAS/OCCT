@@ -28,5 +28,5 @@ if { ($tri == 6268 && $noe == 6688) } {
    puts " Shady: Shading of OCC288 (case 5) may be bad, nb tri & nod changed"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

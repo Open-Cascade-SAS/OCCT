@@ -6,5 +6,5 @@ stepread [locate_data_file OCC167.step] a *
 
 tpcompound result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

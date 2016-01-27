@@ -8,5 +8,5 @@ tmirror b 0 0 0 1 0 0
 
 bfuse result a b
 
-
 checkprops result -s 19185.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

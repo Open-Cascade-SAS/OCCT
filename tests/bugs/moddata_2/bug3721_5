@@ -22,5 +22,4 @@ if { [catch {bcut result b2 b1} catch_result] } {
 checkshape result
 
 checkprops result -s 71185
-set 3dviewer 1
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

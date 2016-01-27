@@ -17,5 +17,5 @@ ttranslate pcyl 5 0 -2
 ## edge of the cylinder meeting the seam of the cone
 
 bcut result body pcyl
-
 checkprops result -s 727.481
+checkview -display result -2d -s -otherwise { body pcyl } -path ${imagedir}/${test_image}.png

@@ -7,3 +7,4 @@ restore [locate_data_file CTO900_pro9476-tool.rle] tool
 bfuse result part tool
 
 checkprops result -s 1.83166e+06
+checkview -display result -2d -otherwise { part tool } -s -path ${imagedir}/${test_image}.png

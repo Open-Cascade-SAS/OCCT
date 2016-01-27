@@ -9,3 +9,4 @@ ttranslate c2 0 0 50
 bcommon result c1 c2
 
 checkprops result -s 8796.46
+checkview -display result -2d -s -otherwise { c1 c2 } -path ${imagedir}/${test_image}.png

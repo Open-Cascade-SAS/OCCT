@@ -32,4 +32,4 @@ checkprops c3 -s 10
 mu4
 fit
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

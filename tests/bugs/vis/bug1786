@@ -68,4 +68,4 @@ if {${AfterNbSelected} == 4} {
   puts "OCC1786: Error (case 9: after selection)"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

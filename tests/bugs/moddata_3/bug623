@@ -25,6 +25,6 @@ fsameparameter result
 checkshape result
 
 checkprops result -s 32.1968
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

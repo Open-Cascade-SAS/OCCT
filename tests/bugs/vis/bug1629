@@ -94,4 +94,4 @@ if {${CloseNbSelected} == 0} {
     puts "OCC1629: Error (case 13: after close local context)"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

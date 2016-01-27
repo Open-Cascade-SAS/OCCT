@@ -35,4 +35,4 @@ checkcolor 321 128 0.8 0.8 0.8
 # check that mesh is drawn without selection
 checkcolor 316 321 0 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -24,4 +24,4 @@ checkcolor $x_coord $y_coord 0.77 0.54 0.09
 
 checkprops result -s 206399 
 checkshape result
-set 3dviewer 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

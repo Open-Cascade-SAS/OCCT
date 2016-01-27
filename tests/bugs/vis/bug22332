@@ -37,5 +37,5 @@ checkcolor 26 10 0 0 0
 checkcolor 30 10 0 0 0
 checkcolor 32 10 1 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

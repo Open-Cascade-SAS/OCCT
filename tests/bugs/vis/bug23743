@@ -10,4 +10,4 @@ vinit
 vdrawsphere result 100
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -22,4 +22,4 @@ smallview
 donly c_1 b1 b2
 fit
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

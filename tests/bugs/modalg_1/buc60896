@@ -17,4 +17,4 @@ sameparameter result tol 1000
 checkprops result -l 48288.3 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

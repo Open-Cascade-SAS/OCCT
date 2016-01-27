@@ -17,4 +17,4 @@ vmoveto 205 205
 
 checkcolor $x_coord $y_coord 0 1 1
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

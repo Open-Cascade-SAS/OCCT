@@ -8,3 +8,4 @@ fsameparameter a
 bfuse result a b
 
 checkprops result -s 29628.1
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

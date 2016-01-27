@@ -14,4 +14,4 @@ if [catch {sameparameter result} catch_result] {
     puts "OK : SameParameter algorithm works properly"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

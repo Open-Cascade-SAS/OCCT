@@ -48,4 +48,4 @@ if {$NbVertFound != $NbVertGood} {
 smallview
 donly b1 b2 rr
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

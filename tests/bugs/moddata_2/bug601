@@ -19,5 +19,5 @@ if [catch {blend result a 13 a_41 } res] {
     checkshape result
     
     checkprops result -s 32486.0
-    set 2dviewer 0
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
 }

@@ -14,4 +14,4 @@ vviewparams -scale 4.9487928 -proj 0.7329295 0.59461397 0.33052679 -up -0.536849
 
 checkcolor $x_coord $y_coord 0.43 0.48 0.54
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

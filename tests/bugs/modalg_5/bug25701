@@ -39,4 +39,4 @@ for {set i 1} {${i} <= ${Poles}} {incr i} {
    checkreal "V_$i" ${V_i} ${expected_V} ${tol_abs} ${tol_rel}
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

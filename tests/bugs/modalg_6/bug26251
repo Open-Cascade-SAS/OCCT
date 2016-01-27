@@ -42,4 +42,4 @@ if {$NbCurves == 0} {
   puts "Error: Intersection curve is not found"
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

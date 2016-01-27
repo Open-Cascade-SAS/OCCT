@@ -17,11 +17,4 @@ vfit
 vsetcolor result GREEN
 
 checkcolor $x_coord $y_coord 0.00 0.83 0.00
-
-set 3dviewer 1
-
-
-
-
-
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -16,5 +16,5 @@ if { [regexp "iscnv: OK" $info] != 1 } {
     puts "Error : vcontinuity is incorrect"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

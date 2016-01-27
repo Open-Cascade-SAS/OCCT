@@ -32,4 +32,4 @@ if { [catch { intersect result a b } catch_result] } {
     }
 }
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

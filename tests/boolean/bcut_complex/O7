@@ -5,5 +5,5 @@ restore [locate_data_file CTO908_topo108-o.brep] obj
 restore [locate_data_file pro12903b.rle] out
 
 bcut result obj out
-
 checkprops result -s 281453
+checkview -display result -2d -s -otherwise { obj out } -path ${imagedir}/${test_image}.png

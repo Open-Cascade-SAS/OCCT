@@ -7,5 +7,5 @@ restore [locate_data_file ger60041b.rle] b
 
 bfuse result a b 
 
-
 checkprops result -s 17651.7
+checkview -display result -2d -otherwise { a b  } -s -path ${imagedir}/${test_image}.png

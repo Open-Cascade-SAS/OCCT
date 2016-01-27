@@ -35,4 +35,4 @@ if { [expr abs( ${z} - ${good_z} )] > ${toler} } {
     puts "Faulty : the z coordinate of the point is ${z}. It is bad value"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

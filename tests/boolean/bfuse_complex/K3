@@ -11,3 +11,4 @@ prism pp f 0 0 100
 bfuse result s pp
 
 checkprops result -s 358551
+checkview -display result -2d -otherwise { s pp } -s -path ${imagedir}/${test_image}.png

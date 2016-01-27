@@ -35,4 +35,4 @@ if { ${dmax} > ${deflection} } {
     puts "Error : bad value of deflection=${dmax}"
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

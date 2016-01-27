@@ -50,4 +50,4 @@ vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up
 checkcolor ${x1} ${y1} ${Hole1_R} ${Hole1_G} ${Hole1_B}
 checkcolor ${x2} ${y2} ${Hole2_R} ${Hole2_G} ${Hole2_B}
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

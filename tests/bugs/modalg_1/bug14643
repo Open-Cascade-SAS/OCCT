@@ -27,5 +27,5 @@ for {set k 1} {$k < 67} {incr k} {
 puts ""
 puts "End check each solid"
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

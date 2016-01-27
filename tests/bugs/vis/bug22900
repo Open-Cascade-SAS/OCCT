@@ -29,4 +29,4 @@ vsetcolor c1 RED
 
 checkcolor ${x1} ${y1} 1 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

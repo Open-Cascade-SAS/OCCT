@@ -26,6 +26,4 @@ if { $dist1 == 0 && $dist2 == 0 && $dist3 == 0 && $dist4 == 0 } {
     puts "Faulty ${BugNumber}"
 }
 
-set 3dviewer 0
-
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

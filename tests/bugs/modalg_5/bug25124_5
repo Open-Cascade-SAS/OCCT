@@ -35,4 +35,4 @@ if {[string compare $bug_info_1 $bug_info_2] == 0} {
 donly os se
 fit
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

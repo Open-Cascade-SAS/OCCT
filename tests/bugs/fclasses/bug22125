@@ -15,4 +15,4 @@ igesbrep ${imagedir}/Part1_badname_$s.igs result *
 
 file delete -force [glob -nocomplain ${imagedir}/Part1_badname_*.igs]
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

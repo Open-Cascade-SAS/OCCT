@@ -12,3 +12,4 @@ maxtolerance s
 bfuse result s t
 
 checkprops result -s 100110
+checkview -display result -2d -otherwise { s t } -s -path ${imagedir}/${test_image}.png

@@ -18,5 +18,5 @@ vertex v2 $x $y $z
 
 edge result v1 v2
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

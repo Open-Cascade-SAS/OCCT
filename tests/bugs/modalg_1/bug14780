@@ -26,6 +26,6 @@ if { ${Vertices} != ${good_Vertices} } {
 checkprops result -l 171.289 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

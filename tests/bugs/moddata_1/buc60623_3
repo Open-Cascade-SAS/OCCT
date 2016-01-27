@@ -26,5 +26,5 @@ if { $cs2 != 0 } {
     puts "Intersection of S2 and S1 is correct"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

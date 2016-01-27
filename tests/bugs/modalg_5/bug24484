@@ -32,4 +32,4 @@ if { $iner1 != $iner_ch1 || $iner2 != $iner_ch2 || $iner3 != $iner_ch3 } {
     puts "OK : Matrix of Inertia is correct"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

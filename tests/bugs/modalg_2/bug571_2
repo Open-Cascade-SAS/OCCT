@@ -20,4 +20,4 @@ if [catch {fillet result a_1 0.03 a_2 } catch_result] {
 
 checkprops result -s 21209.9 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

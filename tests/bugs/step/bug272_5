@@ -11,5 +11,5 @@ if { [llength [whatis result]] == 3 } {
     puts "Error : There is no result"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

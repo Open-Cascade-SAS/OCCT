@@ -7,4 +7,3 @@ pl
 pl
 renamevar b2 result
 checklength result -l 6.6067715112002166
-

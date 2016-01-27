@@ -25,5 +25,5 @@ checkprops result -l 0.592137
 checkshape result 
 checksection result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

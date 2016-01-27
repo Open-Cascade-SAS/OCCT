@@ -11,5 +11,4 @@ cpulimit 500
 restore [locate_data_file OCC54.brep] result
 
 checkshape result
-
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

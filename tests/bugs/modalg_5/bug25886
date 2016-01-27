@@ -32,4 +32,4 @@ if {$len_c5x != $ok_len_c5x} {
   puts "ERROR: OCC25866 is reproduced. Length of projection is $len_c5x, but expected length is $ok_len_c5x"
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

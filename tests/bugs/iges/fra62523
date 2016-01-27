@@ -14,6 +14,3 @@ vsetdispmode a_1 1
 
 defle a_1 .005
 defle a_1 .001
-
-set 3dviewer 1
-

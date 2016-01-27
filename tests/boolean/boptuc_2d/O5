@@ -1,8 +1,10 @@
 restore [locate_data_file case_9_wire_a.brep] a
 restore [locate_data_file case_9_wire2.brep] b
+
 bop a b
 boptuc result
+
 checkprops result -l 1080.64
 checksection result
-set nbsh_v 6
-set nbsh_e 6
+checknbshapes result -vertex 6 -edge 6 -t
+

@@ -12,5 +12,5 @@ pload QAcommands
 
 OCC15755 [locate_data_file OCC15755.igs] result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

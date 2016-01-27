@@ -19,5 +19,5 @@ if { $MaxFace > 1 || $MaxEdge > 1 || $MaxVertex > 1 } {
    puts "Error : Tolerance of shape is more then 1.0"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

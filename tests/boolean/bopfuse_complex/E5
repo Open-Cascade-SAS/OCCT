@@ -25,3 +25,4 @@ bop res4 sh_5
 bopfuse result
 
 checkprops result -s 1.20917e+07
+checkview -display result -2d -otherwise { res4 sh_5 } -s -path ${imagedir}/${test_image}.png

@@ -34,4 +34,4 @@ checkreal "v2_z" ${v2_z} ${expected_v2_z} ${tol_abs} ${tol_rel}
 
 smallview
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

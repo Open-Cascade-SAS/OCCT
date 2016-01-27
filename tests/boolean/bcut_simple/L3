@@ -16,10 +16,8 @@ prism p3 f3 0 0 -9
 
 bcut r1 p1 p2
 
-
 bcut result r1 p3
 #common result r1 p3r
 
-
-
 checkprops result -s 30153
+checkview -display result -2d -s -otherwise { r1 p3 } -path ${imagedir}/${test_image}.png

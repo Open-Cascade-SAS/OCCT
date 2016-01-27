@@ -42,4 +42,4 @@ if { ${defl_percent} > ${good_percent} } {
   puts "Error: deflection is bad, it has changed to ${defl_percent} %"
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

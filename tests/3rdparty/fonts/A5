@@ -38,3 +38,6 @@ vdrawtext Text8 "Bottom-Right\nFirst line\nLion The Second\n3rd" -pos 700  100 -
 vfit
 
 vfps
+
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

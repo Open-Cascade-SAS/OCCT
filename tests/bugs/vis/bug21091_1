@@ -6,4 +6,4 @@ puts ""
 
 vinit View1
 vcolorscale cs -range 10 20 100 -font 16 -textpos right -xy 0 0
-set only_screen 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

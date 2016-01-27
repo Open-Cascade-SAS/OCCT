@@ -44,3 +44,6 @@ vsetcolor Text6 Text7 Text8 1 1 0
 vfit
 
 vfps
+
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

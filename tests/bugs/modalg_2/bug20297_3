@@ -28,4 +28,4 @@ checkshape result
 
 checknbshapes result -vertex 140 -edge 209 -wire 83 -face 77 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 512
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

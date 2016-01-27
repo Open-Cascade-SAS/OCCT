@@ -21,4 +21,4 @@ if [catch {depouille result a 0 0 1 a_2 10 0 39.6875 0 0. 0. -1 } catch_result] 
 
 checkprops result -s 41956.4 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

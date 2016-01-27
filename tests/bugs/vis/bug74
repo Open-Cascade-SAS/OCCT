@@ -163,4 +163,4 @@ if { [vreadpixel ${Vertex_X} ${Vertex_Y} rgb name] != "YELLOW" } {
   puts "Error : vertex color is not yellow"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

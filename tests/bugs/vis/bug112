@@ -20,7 +20,7 @@ vsetdispmode result 1
 
 checkcolor $x_coord $y_coord 0.77 0.54 0.9
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

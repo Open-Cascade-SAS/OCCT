@@ -35,5 +35,5 @@ if { ${rd2} == ${rd1} || ${gr2} == ${gr1} || ${bl2} == ${bl1} } {
     puts "Error : vsettransparency of shape was NOT made"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

@@ -20,3 +20,6 @@ vfit
 vdrawtext text "$aText"  -pos 100  100 -400 -color 0.0 1.0 1.0 -halign left -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
 
 vfps
+
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

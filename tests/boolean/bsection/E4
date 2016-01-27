@@ -4,3 +4,4 @@ bsection result a b
 
 checkprops result -l 0.374089
 checksection result
+checkview -display result -2d -otherwise { a b } -l -path ${imagedir}/${test_image}.png

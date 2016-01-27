@@ -29,4 +29,3 @@ if [catch { buildsweep result -S} res] {
 checkprops result -s 30092.2 -v 80775.2
 
 checknbshapes result -vertex 3 -edge 5 -wire 4 -face 4 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 18
-set 2dviewer 0

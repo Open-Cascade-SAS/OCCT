@@ -56,4 +56,4 @@ if { [ expr $MaxEdgeTolerance2 > $tolerance ] } {
 renamevar a result
 
 checkprops result -s 449.437
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

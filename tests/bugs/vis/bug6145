@@ -43,4 +43,4 @@ set RED_3 0.86274498701095581
 set GREEN_3 0.61176401376724243
 set BLUE_3 0.10196000337600708
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

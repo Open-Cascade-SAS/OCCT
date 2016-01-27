@@ -24,5 +24,5 @@ if { [regexp {curve} [whatis result_1]] && [regexp {curve} [whatis result_2]] } 
     puts " Faulty OCC504: Result shape is INcorrect !!! "
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

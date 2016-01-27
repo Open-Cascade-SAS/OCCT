@@ -40,5 +40,5 @@ if { ${SOLID_Adress_1} != ${SOLID_Adress_2} } {
   puts "OK ${BugNumber}"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

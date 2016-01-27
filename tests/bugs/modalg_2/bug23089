@@ -24,4 +24,3 @@ if { ${word1} == 0 && ${word2} == 0 && ${word3} == 0 && ${word4} == 0 && ${word5
 } else {
    puts "Faulty ${BugNumber}"
 }
-set 3dviewer 0

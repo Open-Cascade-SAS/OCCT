@@ -28,4 +28,4 @@ vzfit
 set rel_tol 1
 set area_eps 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

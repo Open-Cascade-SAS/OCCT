@@ -14,4 +14,4 @@ OCC527 result
   
 checkprops result -s 3774.42 
 checkshape result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

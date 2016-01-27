@@ -11,4 +11,4 @@ vtop
 vfit
 puts "Angle dimensions have different arrow sizes"
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

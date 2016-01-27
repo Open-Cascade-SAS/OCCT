@@ -7,3 +7,4 @@ trotate b2 0 0 0 0 0 1 34.73
 bcommon result b1 b2
 
 checkprops result -s 3.65032
+checkview -display result -2d -s -otherwise { b1 b2 } -path ${imagedir}/${test_image}.png

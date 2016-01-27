@@ -45,4 +45,4 @@ set tol_abs_MaxTolerance 0.0001
 set tol_rel_MaxTolerance 0.0001
 checkreal "MaxTolerance" ${MaxTolerance2} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -13,3 +13,4 @@ bfuse resafbf af bf
 bfuse result resafbf cf
 
 checkprops result -s 12677.1
+checkview -display result -2d -otherwise { resafbf cf } -s -path ${imagedir}/${test_image}.png

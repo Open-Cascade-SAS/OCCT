@@ -25,4 +25,4 @@ vtexture b ${imagedir}/texture_412.png
 # texture is corrupted during uploading to OpenGL
 vtexture b ${imagedir}/texture_409.png
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

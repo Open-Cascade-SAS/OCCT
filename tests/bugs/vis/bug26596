@@ -28,4 +28,4 @@ if {$aResColor == "0 1 1 1"} {
   puts "ERROR: Zero selection mode was not deactivated at second AIS_InteractiveContext::Erase call"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

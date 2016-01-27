@@ -17,5 +17,4 @@ vdisplay result
 vfit
 
 checkprops result -s 812.984
-set 3dviewer 1
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

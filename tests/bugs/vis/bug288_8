@@ -19,4 +19,4 @@ vsetdispmode 1
 vdisplay result
 vfit
 
-set 3dviewer 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

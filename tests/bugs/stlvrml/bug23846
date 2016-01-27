@@ -8,4 +8,4 @@ puts ""
 
 loadvrml result [locate_data_file T00000112_0000.wrl]
 
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -11,4 +11,3 @@ repeat 100 {
 }
 renamevar b1 result
 checklength result -l 8.3346946955628098
-

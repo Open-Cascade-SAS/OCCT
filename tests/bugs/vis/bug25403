@@ -17,4 +17,4 @@ vdimension dim1 -angle -value 300 -modelunits deg -shapes angleP1 angleP2 angleP
 vdimension dim2 -length -value 10 -modelunits mm -showunits -plane yoz -shapes angleP1 angleP3 -font SansFont
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -12,4 +12,4 @@ restore [locate_data_file OCC26406-Paraboloid.brep] p
 revol r p 0 0 0 0 0 1 180 c
 checkshape r
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -38,4 +38,4 @@ erase
 display s
 foreach i ${Indices} { if {[isdraw r_$i]} {display r_$i} }
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -7,4 +7,4 @@ pload QAcommands
 vinit
 BUC60792
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

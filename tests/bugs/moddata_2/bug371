@@ -19,6 +19,6 @@ trim trgs2 gs2 0.0 1.0 0.24333094700742 0.92374551772989
 #cpulimit 300
 intersect result trgs1 trgs2
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

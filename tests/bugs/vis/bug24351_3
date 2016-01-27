@@ -79,4 +79,4 @@ for {set r 0} {$r < 3} {incr r} {
 }
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

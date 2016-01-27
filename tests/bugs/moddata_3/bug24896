@@ -55,4 +55,4 @@ if { [expr abs( ${z2} - ${good_z2} )] > ${toler} } {
 
 smallview
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

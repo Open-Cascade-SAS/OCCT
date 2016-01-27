@@ -24,4 +24,4 @@ vsetdispmode p_phong 1
 vshaderprog p_phong phong
 
 vfit
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

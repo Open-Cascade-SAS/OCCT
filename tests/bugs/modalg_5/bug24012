@@ -33,4 +33,4 @@ set at_Z     8.5106037329062
 
 vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

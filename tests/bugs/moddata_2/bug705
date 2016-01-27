@@ -29,4 +29,4 @@ if { ${matrix12} != 0. || ${matrix21} != 0. || ${matrix23} != 0. || ${matrix32} 
 
 checkprops result -l 123.755 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

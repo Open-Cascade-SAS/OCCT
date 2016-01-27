@@ -13,5 +13,5 @@ explode a so
 explode b so
 
 bcut result a_1 b_1
-
 checkprops result -s 3020.55
+checkview -display result -2d -s -otherwise { a_1 b_1 } -path ${imagedir}/${test_image}.png

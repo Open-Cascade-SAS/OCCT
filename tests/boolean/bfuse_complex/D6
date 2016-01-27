@@ -6,5 +6,5 @@ restore [locate_data_file CTO900_pro6050b.rle] b
 
 bfuse result a b
 
-
 checkprops result -s 1.06905e+06
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

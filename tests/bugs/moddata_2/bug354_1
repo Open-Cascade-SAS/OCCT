@@ -16,4 +16,4 @@ blend result a 2 a_18
 checkshape result
 
 checkprops result -s 593.527
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

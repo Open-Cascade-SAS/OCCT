@@ -29,5 +29,4 @@ if { ($tri != 114 && $nod != 116) && ($tri != 116 && $nod != 118) }  {
 }
 
 checkprops result -s 150.283 
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

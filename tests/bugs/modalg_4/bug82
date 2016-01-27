@@ -30,5 +30,5 @@ if { $nnv > $nb_edges } {
 checkprops result -l 113.703 
 checkshape result 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

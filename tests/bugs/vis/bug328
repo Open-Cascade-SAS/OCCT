@@ -28,7 +28,7 @@ vselect ${x2} ${y2} 1
 
 checkcolor ${x1} ${y1} 0.8 0.8 0.8
 checkcolor ${x2} ${y2} 0.8 0.8 0.8
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

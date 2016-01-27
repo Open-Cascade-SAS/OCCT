@@ -34,5 +34,5 @@ checkshape buc60591d_iges
 
 renamevar  buc60591d_iges result
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

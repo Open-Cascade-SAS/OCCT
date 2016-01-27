@@ -6,5 +6,5 @@ bcut rr c s
 explode rr so
 
 bcut result c rr_1 
-
 checkprops result -s 50.2655
+checkview -display result -2d -s -otherwise { c rr_1  } -path ${imagedir}/${test_image}.png

@@ -18,4 +18,4 @@ checkshape result r
 checknbshapes result -solid 1 -m "operation bfuse"
 checkprops result -s 93237.9
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

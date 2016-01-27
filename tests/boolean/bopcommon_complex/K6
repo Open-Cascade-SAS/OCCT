@@ -12,3 +12,4 @@ bop rr p1
 bopcommon result
 
 checkprops result -s empty
+checkview -display result -2d -otherwise { rr p1 } -s -path ${imagedir}/${test_image}.png

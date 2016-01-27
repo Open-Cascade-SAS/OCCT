@@ -46,4 +46,4 @@ if { $freenodes1 != $freenodes2 } {
   puts "OK: Free nodes are not equal"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

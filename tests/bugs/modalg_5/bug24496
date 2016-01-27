@@ -20,4 +20,4 @@ if { [llength [explode result]] != 2 } {
 checkprops result -l 11.7031 
 checkshape result 
 checksection result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

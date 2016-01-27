@@ -170,7 +170,15 @@ proc _check_arg {check_name check_result {get_value 0}} {
   upvar narg narg
   upvar args args
   if { $arg == ${check_name} } {
-    if {${get_value}} {
+    if { ${get_value} == "?" } {
+      set next_arg_index [expr $narg + 1]
+      if { $next_arg_index < [llength $args] && ! [regexp {^-[^0-9]} [lindex $args $next_arg_index]] } {
+        set ${check_result} "[lindex $args $next_arg_index]"
+        set narg ${next_arg_index}
+      } else {
+        set ${check_result} "true"
+      }
+    } elseif {${get_value}} {
       incr narg
       if { $narg < [llength $args] && ! [regexp {^-[^0-9]} [lindex $args $narg]] } {
         set ${check_result} "[lindex $args $narg]"
@@ -178,7 +186,7 @@ proc _check_arg {check_name check_result {get_value 0}} {
         error "Option ${check_result} requires argument"
       }
     } else {
-      set ${check_result} 1
+      set ${check_result} "true"
     }
     return 1
   }
@@ -734,4 +742,157 @@ proc checklength {shape args} {
             }
         }
     }
+}
+
+help checkview {
+  Display shape in selected viewer.
+
+  Use: checkview [options...]
+  Allowed options are:
+    -display shapename: display shape with name 'shapename'
+    -3d: display shape in 3d viewer
+    -2d [ v2d / smallview ]: display shape in 2d viewer (default viewer is a 'smallview')
+    -path PATH: location of saved screenshot of viewer
+    -vdispmode N: it is possible to set vdispmode for 3d viewer (default value is 1)
+    -screenshot: procedure will try to make screenshot of already created viewer
+    Procedure can check some property of shape (length, area or volume) and compare it with some value N:
+      -l [N]
+      -s [N]
+      -v [N]
+    If current property is equal to value N, shape is marked as valid in procedure.
+    If value N is not given procedure will mark shape as valid if current property is non-zero.
+    -with {a b c}: display shapes 'a' 'b' 'c' together with 'shape' (if shape is valid)
+    -otherwise {d e f}: display shapes 'd' 'e' 'f' instead of 'shape' (if shape is NOT valid)
+    Note that one of two options -2d/-3d is required.
+}
+
+proc checkview {args} {
+  puts "checkview ${args}"
+
+  set 3dviewer 0
+  set 2dviewer false
+  set shape ""
+  set PathToSave ""
+  set dispmode 1
+  set isScreenshot 0
+  set check_length false
+  set check_area false
+  set check_volume false
+  set otherwise {}
+  set with {}
+
+  set options {{"-3d" 3dviewer 0}
+               {"-2d" 2dviewer ?}
+               {"-display" shape 1}
+               {"-path" PathToSave 1}
+               {"-vdispmode" dispmode 1}
+               {"-screenshot" isScreenshot 0}
+               {"-otherwise" otherwise 1}
+               {"-with" with 1}
+               {"-l" check_length ?}
+               {"-s" check_area ?}
+               {"-v" check_volume ?}}
+
+  # check arguments
+  _check_args ${args} ${options} "checkview"
+
+  if { ${PathToSave} == "" } {
+    set PathToSave "./photo.png"
+  }
+
+  if { ${3dviewer} == 0 && ${2dviewer} == false } {
+    error "Error: wrong using of command 'checkview', please use -2d or -3d option"
+  }
+
+  if { ${isScreenshot} } {
+    if { ${3dviewer} } {
+      vdump ${PathToSave}
+    } else {
+      xwd ${PathToSave}
+    }
+    return
+  }
+
+  set mass 0
+  set isBAD 0
+  upvar ${shape} ${shape}
+  if {[isdraw ${shape}]} {
+    # check area
+    if { [string is boolean ${check_area}] } {
+      if { ${check_area} } {
+        regexp {Mass +: +([-0-9.+eE]+)} [sprops ${shape}] full mass
+      }
+    } else {
+      set mass ${check_area}
+    }
+    # check length
+    if { [string is boolean ${check_length}] } {
+      if { ${check_length} } {
+        regexp {Mass +: +([-0-9.+eE]+)} [lprops ${shape}] full mass
+      }
+    } else {
+      set mass ${check_length}
+    }
+    # check volume
+    if { [string is boolean ${check_volume}] } {
+      if { ${check_volume} } {
+        regexp {Mass +: +([-0-9.+eE]+)} [vprops ${shape}] full mass
+      }
+    } else {
+      set mass ${check_volume}
+    }
+  } else {
+    set isBAD 1
+  }
+  if { ${3dviewer} } {
+    vinit
+    vclear
+  } elseif { ([string is boolean ${2dviewer}] && ${2dviewer}) || ${2dviewer} == "smallview"} {
+    smallview
+    clear
+  } elseif { ${2dviewer} == "v2d"} {
+    v2d
+    2dclear
+  }
+  if {[isdraw ${shape}]} {
+    if { ( ${check_area} == false && ${check_length} == false && ${check_volume} == false ) || ( ${mass} != 0 ) } {
+      foreach s ${with} {
+        upvar ${s} ${s}
+      }
+      lappend with ${shape}
+      if { ${3dviewer} } {
+        vdisplay {*}${with}
+      } else {
+        donly {*}${with}
+      }
+    } else {
+      set isBAD 1
+    }
+  } else {
+    set isBAD 1
+  }
+
+  if { ${isBAD} && [llength ${otherwise}] } {
+    foreach s ${otherwise} {
+      upvar ${s} ${s}
+    }
+    if { ${3dviewer} } {
+      vdisplay {*}${otherwise}
+    } else {
+      donly {*}${otherwise}
+    }
+  }
+
+  if { ${3dviewer} } {
+    vsetdispmode ${dispmode}
+    vfit
+    vdump ${PathToSave}
+  } else {
+    if { ([string is boolean ${2dviewer}] && ${2dviewer}) || ${2dviewer} == "smallview"} {
+      fit
+    } elseif { ${2dviewer} == "v2d"} {
+      2dfit
+    }
+    xwd ${PathToSave}
+  }
 }

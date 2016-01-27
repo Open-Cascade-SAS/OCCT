@@ -45,4 +45,4 @@ checknbshapes result -vertex 60 -edge 90 -wire 42 -face 40 -shell 5 -solid 5 -co
 
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

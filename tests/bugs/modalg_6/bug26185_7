@@ -11,4 +11,4 @@ restore [locate_data_file OCC26185_v6_LineArc.brep] a
 mkoffset res_1 a 1 -5. i
 mkoffset res_2 a 1 5. i
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

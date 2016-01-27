@@ -4,4 +4,3 @@ pscale b2 0 0 0 1.4
 repeat 5 {pl}
 renamevar b2 result
 checklength result -l 9.5487985926002157
-

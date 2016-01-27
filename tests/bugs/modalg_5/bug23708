@@ -9,4 +9,4 @@ puts ""
 restore [locate_data_file bug23708_invalidface.brep] result
 checkshape result
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -18,6 +18,6 @@ if { ${NBTRIANGLES} > 0 } {
     puts "OCC1048: Error"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

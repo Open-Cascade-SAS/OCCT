@@ -30,5 +30,5 @@ checkcolor $x $y ${RED_R1} ${GREEN_R1} ${BLUE_R1}
 
 checkprops result -s 0.0984334 
 checkshape result
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

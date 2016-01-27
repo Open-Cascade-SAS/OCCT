@@ -9,7 +9,7 @@ if { ${nb} != ${check_nb} } {
     puts "Error : It's $nb indtead of $check_nb!"
 }
 puts "Number of Rational BSpline surfaces is $nb"
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

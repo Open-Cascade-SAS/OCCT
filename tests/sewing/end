@@ -1,9 +1,5 @@
 if { [isdraw result] } {
-  clear
-  smallview
-  donly result
-  fit
-  xwd $imagedir/${test_image}.png
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
 } else {
   puts "Error : The sewing cannot be built."
 }

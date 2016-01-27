@@ -20,4 +20,4 @@ checknbshapes result -edge 12
 checkprops result -l 33.6353 
 checkshape result 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

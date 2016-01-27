@@ -57,4 +57,4 @@ if {[string compare $aItem3 "Face #2"] != 0} {
   puts "ERROR: vstate output for selected face in test part 2 is incorrect"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

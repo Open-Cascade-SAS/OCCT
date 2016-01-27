@@ -13,7 +13,7 @@ vinit
 vdisplay result
 vfit
 vsetdispmode 1
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

@@ -11,4 +11,4 @@ set BugNumber OCC22483
 vinit View1
 vzbufftrihedron -position left_lower -scale 0.1 -type zbuffer -colorLabels WHITE
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

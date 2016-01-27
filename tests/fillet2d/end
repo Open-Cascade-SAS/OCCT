@@ -10,43 +10,7 @@ if { [info exists rel_tol] } {
    }
 }
 
-if { [isdraw result] } {
-  if { [info exists 2dviewer] } {
-    clear
-    smallview
-    donly result
-    fit
-    xwd $imagedir/${test_image}.png
-  }
-  if { [info exists 3dviewer] } {
-    #for multiview support: dump result from all opened views
-    set view_str [vviewlist long]
-    set view_list [regexp -all -inline {\S+} $view_str]
-    foreach {view_name} $view_list {
-      vactivate $view_name
-      vclear
-      vdisplay result
-      vsetdispmode 1
-      vfit
-      vzfit
-      vdump $imagedir/${test_image}_[regsub -all {/} $view_name {_}].png
-    }
-  }
-}
-
-if { [info exists only_screen] } {
-  #for multiview support: dump result from all opened views
-  set view_str [vviewlist long]
-  set view_list [regexp -all -inline {\S+} $view_str]
-  foreach {view_name} $view_list {
-    vactivate $view_name
-    vdump $imagedir/${test_image}_[regsub -all {/} $view_name {_}].png
-  }
-}
-
-if { [info exists only_screen_axo] } {
-   xwd $imagedir/${test_image}.png
-}
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 # to end a test script
 puts "TEST COMPLETED"

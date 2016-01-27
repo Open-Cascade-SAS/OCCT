@@ -47,5 +47,4 @@ if { [catch {chfi2d result res3 res3_4 res3_5 F 5} catch_result] } {
 checkprops result -l 31.4159 
 checkshape result 
 checksection result
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

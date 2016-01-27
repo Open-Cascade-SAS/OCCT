@@ -19,5 +19,4 @@ bfuse result cylinder torus
 
 checkprops result -s 28603.8 
 checkshape result
-set 3dviewer 1
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

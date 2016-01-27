@@ -17,5 +17,5 @@ if { $len != 3 } {
     puts "Error : the number of curves is $len, but it should be 3."
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

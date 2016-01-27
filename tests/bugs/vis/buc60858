@@ -31,7 +31,4 @@ if { $tr == 0 || $nd == 0 }  {
    puts "Error : here is shading problem"
 }
 
-set 3dviewer 1
-
-
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -19,7 +19,4 @@ if { $Maxtriangl < 1 } {
    puts "Error : inside mesh for shading wasn't build"
 }
 
-set 3dviewer 0
-
-
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

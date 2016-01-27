@@ -17,6 +17,6 @@ pipe result w f
 
 checkprops result -s 1.12048e+07 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

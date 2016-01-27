@@ -68,4 +68,4 @@ if { $stat != 1 } {
    puts "Error : The trihedron should not be highlighted."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

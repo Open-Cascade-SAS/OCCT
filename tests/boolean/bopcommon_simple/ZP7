@@ -7,3 +7,4 @@ bop pc pcy
 bopcommon result
 
 checkprops result -s 919.56
+checkview -display result -2d -otherwise { pc pcy } -s -path ${imagedir}/${test_image}.png

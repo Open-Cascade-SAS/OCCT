@@ -32,4 +32,4 @@ if {[expr abs([expr $res1 - $res2])]  > 0.0001} then {
    puts "Error : large difference between shapes"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

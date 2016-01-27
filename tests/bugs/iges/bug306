@@ -31,5 +31,4 @@ if { ($tri != 6409 || $nod != 6195) } {
 checkmaxtol result -ref 0.92213088179312575
 checknbshapes result -shell 1
 checkfreebounds result 265
-
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

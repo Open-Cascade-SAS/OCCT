@@ -16,12 +16,4 @@ checkprops result -s 322688
 checkshape result
 
 checknbshapes result -vertex 119 -edge 199 -wire 96 -face 87 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 503
-vinit
-tclean result
-vsetdispmode 1
-vdisplay result
-vfit
-
-set 3dviewer 0
-
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

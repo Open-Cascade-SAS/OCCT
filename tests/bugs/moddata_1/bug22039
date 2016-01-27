@@ -35,4 +35,4 @@ if { ${Color} != ${ColorMove} && ${Color} != ${ColorSelect} && ${ColorMove} != $
 }
 
 checkprops result -s 24859.6
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

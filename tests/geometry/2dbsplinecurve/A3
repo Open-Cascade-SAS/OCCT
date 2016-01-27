@@ -2,4 +2,3 @@
 insertknot result 0.5 1
 remknot result 2 0 0.01
 checklength result -l 1.4087044221396998
-

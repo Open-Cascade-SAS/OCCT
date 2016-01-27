@@ -14,4 +14,4 @@ bopsection result
 
 checknbshapes result -vertex 5 -edge 4 -shape 10
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

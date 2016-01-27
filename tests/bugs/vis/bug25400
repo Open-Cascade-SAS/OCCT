@@ -40,4 +40,4 @@ vpriority b 6
 
 vdump $imagedir/${casename}_new_priority.png
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

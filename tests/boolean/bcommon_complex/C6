@@ -7,3 +7,4 @@ restore [locate_data_file CTO904_cts20527b.rle] b
 bcommon result a b
 
 checkprops result -s 23309.7
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

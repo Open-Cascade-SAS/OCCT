@@ -45,5 +45,4 @@ if { ${xdelta} <= ${maxdelta} && ${ydelta} <= ${maxdelta} && ${zdelta} <= ${maxd
    puts "OCC257: OK"
 }
 
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

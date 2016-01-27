@@ -31,5 +31,4 @@ if { $m != 0 } {
     puts "Error : area is not right"
 }
 
-set 3dviewer 1
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

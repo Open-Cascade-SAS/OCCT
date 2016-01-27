@@ -48,4 +48,4 @@ if {$aNbSelected != "1"} {
   puts "ERROR: b2 is selected after b1's tolerance increased"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

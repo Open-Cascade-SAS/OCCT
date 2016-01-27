@@ -22,4 +22,4 @@ vdimension aDim1 -length -shapes anEdge aFace -text 15 3d sh
 vdimension aDim2 -length -shapes aFace anEdge2 -text 15 3d sh
 vfit
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

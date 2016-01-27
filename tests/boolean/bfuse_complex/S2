@@ -15,5 +15,5 @@ bfuse res2 sh res_3
 
 bfuse result sh res_2
 
-
 checkprops result -s 3734.83
+checkview -display result -2d -otherwise { sh res_2 } -s -path ${imagedir}/${test_image}.png

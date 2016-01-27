@@ -50,4 +50,4 @@ donly result
 fit
 display b1 f3
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

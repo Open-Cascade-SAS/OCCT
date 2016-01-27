@@ -42,7 +42,7 @@ if { $tri_after <= 0 || $nod_after <= 0 } {
     puts "Error : Face is not shaded (number of nodes or triangles is wrong)"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

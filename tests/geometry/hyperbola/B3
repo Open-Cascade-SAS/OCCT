@@ -9,3 +9,4 @@ convert result hr
 2dpu
 2dpu
 checklength result -l 1.6539462322641865
+checkview -display result -2d -path ${imagedir}/${test_image}.png

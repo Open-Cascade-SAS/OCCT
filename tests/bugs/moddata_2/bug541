@@ -17,4 +17,4 @@ if { $err < 1} {
     puts "OCC541 OK (amount of solution): : command extrema works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

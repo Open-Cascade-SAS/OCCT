@@ -16,5 +16,5 @@ if { [regexp {OK} $err] == 1} {
     puts " OCC433  OK: function CHECKSHAPE works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

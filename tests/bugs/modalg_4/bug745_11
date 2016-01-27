@@ -50,5 +50,5 @@ if { [catch { mkoffset result w 10 -7 } status] } {
 checkprops result -l 1930.99 
 checkshape result 
 checksection result
-set 2dviewer 0  
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

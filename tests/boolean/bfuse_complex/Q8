@@ -14,3 +14,4 @@ explode rcut1
 bfuse result base rcut1_2
 
 checkprops result -s 13428.1
+checkview -display result -2d -otherwise { base rcut1_2 } -s -path ${imagedir}/${test_image}.png

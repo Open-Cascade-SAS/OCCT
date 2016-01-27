@@ -21,4 +21,4 @@ checkshape result
 
 checknbshapes result -solid 3
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

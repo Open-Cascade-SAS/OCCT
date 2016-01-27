@@ -12,7 +12,7 @@ psection result s ps
 checkprops result -l 117.81 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 ##      set num [lindex [checksection res] 4]
 #     if { $num != 0 } {

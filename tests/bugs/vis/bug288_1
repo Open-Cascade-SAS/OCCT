@@ -27,5 +27,5 @@ if { $tri != 5148 && $nod != 3042} {
    puts " OCC288 (case 1) : Faulty"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

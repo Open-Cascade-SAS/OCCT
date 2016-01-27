@@ -14,5 +14,5 @@ set s [encoding convertfrom unicode "\x42\x30\x09\x00\x79\x30\x0A\x00\x6F\x30\x4
 #vdrawtext "\x30\x42\x00\x09\x30\x79\x00\x0A\x30\x6F" 0 0 0 255 255 255 0 0 0 1 50 0 Mona 1
 vdrawtext text0 $s -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular -font Mona
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

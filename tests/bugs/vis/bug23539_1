@@ -25,4 +25,4 @@ if { ${NbSelected2} != 0 } {
    puts "Error : Bad number of selected edges after polyginal selection of empty space"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

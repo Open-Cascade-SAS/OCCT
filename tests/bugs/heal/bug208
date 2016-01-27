@@ -11,7 +11,7 @@ restore [locate_data_file OCC208.brep] a
 fixshape result a 0.01 0.01
 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

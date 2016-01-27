@@ -17,4 +17,4 @@ vsetdispmode result 1
 
 checkprops result -s 11309.6 
 checkshape result
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

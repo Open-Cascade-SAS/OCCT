@@ -9,3 +9,4 @@ prism b skface 0 0 -50
 bfuse result a b
 
 checkprops result -s 18033.5
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

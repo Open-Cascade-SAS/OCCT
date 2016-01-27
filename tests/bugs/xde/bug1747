@@ -74,4 +74,4 @@ if { ${exception_status} == 0 } {
    puts "Faulty ${BugNumber}"
 }
 
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

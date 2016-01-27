@@ -7,3 +7,4 @@ restore [locate_data_file cts20528-tool.rle] b
 bfuse result a b
 
 checkprops result -s 112227
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

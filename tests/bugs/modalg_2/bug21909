@@ -57,5 +57,4 @@ if { ${status} != 0 } {
     puts "OK ${BugNumber}"
 }
 
-set 3dviewer 0
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

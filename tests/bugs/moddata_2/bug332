@@ -98,7 +98,7 @@ puts "CircleLength_4 = ${CircleLength_4}"
 puts "CircleLength_5 = ${CircleLength_5}"
 puts "CircleLength_6 = ${CircleLength_6}"
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

@@ -10,5 +10,4 @@ restore [locate_data_file bug24829_faceOutput-wrong.brep] result
 
 checkprops result -s 15.1187 -eps 0.0001
 checkshape result
-
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

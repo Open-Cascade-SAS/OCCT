@@ -28,4 +28,4 @@ Number of shapes in shape
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "Shape produced by Draft angle algorithm"
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

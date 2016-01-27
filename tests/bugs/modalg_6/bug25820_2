@@ -32,4 +32,4 @@ if {$bug_info_cur != 1} {
   puts "ERROR: OCC25820 is reproduced. Too many curves were found."
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

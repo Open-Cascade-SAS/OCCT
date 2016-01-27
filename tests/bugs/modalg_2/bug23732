@@ -14,4 +14,4 @@ mksurface s2 b2
 
 intersect result s1 s2
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

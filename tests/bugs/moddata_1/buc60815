@@ -18,5 +18,5 @@ if [catch { intersect result e1 e3 } catch_result] {
     puts "BUC60815 OK: suitable except"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

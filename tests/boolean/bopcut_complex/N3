@@ -7,3 +7,4 @@ bop m2_o m2_t
 bopcut result
 
 checkprops result -s 266.995
+checkview -display result -2d -otherwise { m2_o m2_t } -s -path ${imagedir}/${test_image}.png

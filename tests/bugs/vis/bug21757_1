@@ -19,5 +19,5 @@ vdisplay result
 vfit
 checkcolor 200 200 0.89 0.63 0.109
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

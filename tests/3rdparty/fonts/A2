@@ -93,3 +93,6 @@ vdrawtext OC18 OpenCascade -pos -200 -200 150 -color 0.0 1.0 1.0 -halign left -v
 vdrawtext OC19 OpenCascade -pos -200 -200 200 -color 1.0 1.0 0.0 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect italic -font SerifFont
 vdrawtext OC20 OpenCascade -pos -200 -200 250 -color 0.0 1.0 0.02 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect bolditalic -font MonoFont
 vdrawtext OC21 OpenCascade -pos -200 -200 300 -color 1.0 0.0 0.02 -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font MonoFont
+
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

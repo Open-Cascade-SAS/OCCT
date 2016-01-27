@@ -8,3 +8,4 @@ explode rr so
 bcommon result rr_1 c
 
 checkprops result -s 625.133
+checkview -display result -2d -s -otherwise { rr_1 c } -path ${imagedir}/${test_image}.png

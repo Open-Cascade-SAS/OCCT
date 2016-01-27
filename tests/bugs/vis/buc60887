@@ -15,6 +15,6 @@ puts [format "Shape res contains %s vertexes" $nb_v]
 if { $nb_v == 0} {
    puts "Error : Result shape is NULL shape"
 } else {
-  set 3dviewer 1
+  checkview -display result -3d -path ${imagedir}/${test_image}.png
 }
 

@@ -9,3 +9,4 @@ restore [locate_data_file CTO900_pro5640b.rle] box2
 bcutblend result box1 box2 0.01
 
 checkprops result -s 0.242811
+checkview -display result -2d -s -otherwise { box1 box2 } -path ${imagedir}/${test_image}.png

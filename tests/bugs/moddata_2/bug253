@@ -38,6 +38,6 @@ if { [regexp "1 : 0.5 4" $result_dump] && [regexp $trueLastKnot $result_dump]} {
 }
 
 2dfit
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

@@ -35,4 +35,4 @@ if { ${NbSelected1} != 1 } {
   puts "Error : (case 2)"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

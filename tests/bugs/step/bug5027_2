@@ -19,4 +19,4 @@ if [catch { stepread $filepath a * } res] {
     checknbshapes result -vertex 44 -edge 72 -wire 36 -face 31 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 186
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

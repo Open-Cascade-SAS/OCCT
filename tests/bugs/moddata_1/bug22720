@@ -17,4 +17,4 @@ mksurface s2 f2
 trim s1t s1 0 2 0 2
 intersect result s1t s2
 
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -16,4 +16,4 @@ bopfuse result
 
 checkprops result -s 681.87 
 checkshape result
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

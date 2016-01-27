@@ -13,7 +13,6 @@ vinit
 vdisplay result
 vfit
 vsetdispmode result 1
-set 3dviewer 1
 
 set tri 0
 set nod 0
@@ -28,4 +27,4 @@ if { $tri == 72 && $nod == 74} {
 }
 
 checkprops result -s 314.159 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

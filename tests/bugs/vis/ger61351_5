@@ -26,4 +26,4 @@ if {$stat != 1} {
    puts "Error : Box color is NOT 0 1 1"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -34,4 +34,4 @@ if {[vreadpixel 29 216 name] == "YELLOW 1"} {
   puts "ERROR: the box's face is not highlighted! Selection mode 4 was not updated after redisplaying the box."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

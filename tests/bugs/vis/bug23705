@@ -19,4 +19,4 @@ set y 295
 
 checkcolor $x $y 0 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

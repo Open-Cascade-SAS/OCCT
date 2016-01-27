@@ -22,4 +22,4 @@ vplace 80 140
 vmoveto 200 180
 checkcolor 200 180 0.78 0.55 0.09
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

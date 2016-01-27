@@ -15,4 +15,4 @@ v2d
 donly c2d2_1 c2d2_2
 2dfit
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

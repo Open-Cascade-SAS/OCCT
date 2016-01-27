@@ -21,5 +21,5 @@ if [catch {chamf result sh sh_6_1 sh_6 A 2 45 sh_6_8 sh_6 A 2 45 } catch_result]
 
 checkprops result -s 48357.5 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

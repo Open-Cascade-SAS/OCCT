@@ -25,4 +25,4 @@ set nb_good_compsolid 0
 set nb_good_compound 1
 set nb_good_shape 7
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

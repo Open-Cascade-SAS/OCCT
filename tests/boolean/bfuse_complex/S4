@@ -15,3 +15,4 @@ copy c2_1 c2
 bfuse result c1 c2
 
 checkprops result -s 570.047
+checkview -display result -2d -otherwise { c1 c2 } -s -path ${imagedir}/${test_image}.png

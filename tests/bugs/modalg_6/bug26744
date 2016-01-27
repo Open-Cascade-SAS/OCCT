@@ -13,4 +13,4 @@ bop a b
 bopcut result
 
 checkprops result -s 1.54891e+06
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

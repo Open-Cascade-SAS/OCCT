@@ -12,7 +12,5 @@ prism pr3 p3 0 0 -30
 
 
 bcut result po1 pr3
-
-
-
 checkprops result -s 98000
+checkview -display result -2d -s -otherwise { po1 pr3 } -path ${imagedir}/${test_image}.png

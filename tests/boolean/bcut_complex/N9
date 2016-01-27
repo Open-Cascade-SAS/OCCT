@@ -7,5 +7,5 @@ restore [locate_data_file CTO904_pro14942a.rle] a
 restore [locate_data_file pro14942b.rle] b
 
 bcut result a b
-
 checkprops result -s 192941
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

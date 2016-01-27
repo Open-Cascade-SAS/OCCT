@@ -21,4 +21,4 @@ if [catch {bfuse result S_3 S_1}] {
 }
 
 checkprops result -s 2.56034e+06
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

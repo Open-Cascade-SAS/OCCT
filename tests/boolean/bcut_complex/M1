@@ -11,5 +11,5 @@ prism p2 w 0 -100 0
 bfuse b p1 p2
 
 bcut result a b
-
 checkprops result -s 60037.4
+checkview -display result -2d -s -otherwise { a b } -path ${imagedir}/${test_image}.png

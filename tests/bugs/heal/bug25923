@@ -25,4 +25,4 @@ if {![regexp {This shape seems to be valid} [checkshape r2] ]} {
   puts "ERRROR: OCC25923 is reproduced. Algorythm of removing small wires on face does not work."
 }
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

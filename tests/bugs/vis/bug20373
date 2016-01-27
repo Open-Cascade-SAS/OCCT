@@ -31,5 +31,4 @@ if { ${tri} == 0 } {
 
 checkprops result -s 9.92128e+06 
 checkshape result
-set 3dviewer 1
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

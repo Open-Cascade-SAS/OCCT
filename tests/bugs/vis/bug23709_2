@@ -27,4 +27,4 @@ set x_coord 86
 set y_coord 221
 checkcolor $x_coord $y_coord 0 0 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -14,4 +14,4 @@ mksurface s f
 
 OCC23945 s 0. -6.337359082e-009 x y z dux duy duz dvx dvy dvz
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -29,5 +29,4 @@ if { "[vreadpixel $x1 $y1 rgb name]" == "BLACK" } {
     puts "OK ${BugNumber}"
 }
 
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -18,4 +18,4 @@ if {[string compare $bug_info "This shape seems to be valid"] != 0} {
 
 donly r
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

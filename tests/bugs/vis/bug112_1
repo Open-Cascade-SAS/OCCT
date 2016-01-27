@@ -24,4 +24,4 @@ if {$first == $second} {
    puts "Faulty OCC112 : Mesh for shading was recalculated !!!"
 }
 
-set 3dviewer 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -19,4 +19,4 @@ if { [regexp {Closed} ${info}] != 1 } {
     puts "Error : value of IsClosed flag is not correct"
 }
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

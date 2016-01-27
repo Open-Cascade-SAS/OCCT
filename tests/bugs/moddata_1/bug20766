@@ -30,5 +30,5 @@ if [catch { intersect result plane c } ] {
   puts "OK ${BugNumber}"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

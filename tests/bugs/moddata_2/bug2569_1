@@ -10,11 +10,11 @@ puts ""
 ######################################################
 cpulimit 60
 vinit
-set out [OCC2569 26 res]
+set out [OCC2569 26 result]
 if {[string compare $out "\n Degree = 25\n"] == 0} {
     puts "OCC2569: OK"
 } else {
     puts "OCC2569: Faulty"
 }    
-
-set 3dviewer 0
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

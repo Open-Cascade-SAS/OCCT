@@ -50,4 +50,4 @@ checkcolor ${Shape_X} ${Shape_Y} 0.78 0.54 0.09
 # Check triedron color
 checkcolor ${Triedron_X} ${Triedron_Y} 1 1 1
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

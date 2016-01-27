@@ -14,5 +14,5 @@ fixshape result a 0.01 0.01
 explode result f
 
 checkshape result_4
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

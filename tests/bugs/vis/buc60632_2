@@ -17,6 +17,6 @@ if { $stat != 1 } {
    puts "Error : Highlighting by Move To command in shading mode is WRONG."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

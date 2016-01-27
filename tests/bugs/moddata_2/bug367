@@ -19,7 +19,7 @@ OCC367 result ${step} ${goodX} ${goodY} ${goodZ} ${percent_tolerance}
 
 checkprops result -l 1760.13 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

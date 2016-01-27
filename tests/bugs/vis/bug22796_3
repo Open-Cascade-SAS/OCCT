@@ -14,7 +14,7 @@ vinit
 vdrawtext text0 "TestString\nHello,\tWorld!" -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular -font SansFont
 vexport $imagedir/${test_image}.pdf PDF
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 
 

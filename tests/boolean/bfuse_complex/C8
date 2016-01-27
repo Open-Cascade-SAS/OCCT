@@ -14,3 +14,4 @@ tscale p2 0 0 0 1*SCALE
 bfuse result p2 p1
 
 checkprops result -s 74.7286
+checkview -display result -2d -otherwise { p2 p1 } -s -path ${imagedir}/${test_image}.png

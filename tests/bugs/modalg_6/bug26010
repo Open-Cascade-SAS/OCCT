@@ -32,4 +32,4 @@ vdisplay result_1
 vdisplay result_2
 vdisplay result_3
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

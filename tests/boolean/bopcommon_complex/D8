@@ -7,3 +7,4 @@ bop sh_1 sh_2
 bopcommon result
 
 checkprops result -s 66231.3
+checkview -display result -2d -otherwise { sh_1 sh_2 } -s -path ${imagedir}/${test_image}.png

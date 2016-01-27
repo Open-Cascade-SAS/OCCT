@@ -10,3 +10,4 @@ bsection result object tool
 
 checkprops result -l 11.8242
 checksection result
+checkview -display result -2d -otherwise { object tool  } -l -path ${imagedir}/${test_image}.png

@@ -63,4 +63,4 @@ for {set i 1} {$i <= 45} {incr i} {
   display v${i}_2
 }
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

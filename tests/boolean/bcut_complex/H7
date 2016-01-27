@@ -6,5 +6,5 @@ restore [locate_data_file pro14240d.rle] tool
 btolx tool
 
 bcut result part tool
-
 checkprops result -s 2.23524e+06
+checkview -display result -2d -s -otherwise { part tool } -path ${imagedir}/${test_image}.png

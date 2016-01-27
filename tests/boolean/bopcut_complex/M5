@@ -8,3 +8,4 @@ bop a b
 bopcut result
 
 checkprops result -s 25189
+checkview -display result -2d -otherwise { a b } -s -path ${imagedir}/${test_image}.png

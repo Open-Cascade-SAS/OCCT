@@ -12,4 +12,4 @@ OCC606 result w2 -t
 
 checkprops result -s 508.243
 checkshape result
-set 3dviewer 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png

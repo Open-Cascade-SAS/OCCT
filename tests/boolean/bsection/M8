@@ -48,3 +48,4 @@ while {$i <= 105} {
 
 checkprops result -l 624193
 checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

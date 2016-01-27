@@ -97,7 +97,7 @@ if { ${status} != 0 } {
 renamevar f result
 checkprops result -s 47123.9 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

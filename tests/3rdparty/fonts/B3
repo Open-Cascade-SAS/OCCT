@@ -32,3 +32,6 @@ vdisplay aBTextN
 vdisplay aBTextC
 
 vfit
+
+vglinfo
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

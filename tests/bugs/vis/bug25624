@@ -28,4 +28,4 @@ checkcolor 170 10 0.8 0.8 0.8
 # without any highlighting
 checkcolor 210 184 1 1 0
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

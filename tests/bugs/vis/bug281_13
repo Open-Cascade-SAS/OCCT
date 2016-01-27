@@ -9,4 +9,4 @@ OCC281 200 320 12
 OCC281 200 320 12
 puts "Type of marker mast be blue small ring!"
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

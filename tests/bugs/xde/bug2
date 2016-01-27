@@ -12,5 +12,5 @@ if { $l != "EDGE"} then {
    puts "Error : Output of statshape is incorrect."
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 	

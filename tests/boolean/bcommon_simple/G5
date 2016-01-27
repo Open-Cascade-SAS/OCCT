@@ -35,3 +35,4 @@ trotate bb 0 0 0 0 0 1 45
 bcommon result ba bb 
 
 checkprops result -s 4.41421
+checkview -display result -2d -s -otherwise { ba bb  } -path ${imagedir}/${test_image}.png

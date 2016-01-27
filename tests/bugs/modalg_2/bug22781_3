@@ -13,5 +13,4 @@ restore [locate_data_file OCC22781-BeforeCont.brep] result
 checkprops result -l 5.82393 
 checkshape result 
 checksection result
-set 3dviewer 0
-
+checkview -display result -3d -path ${imagedir}/${test_image}.png

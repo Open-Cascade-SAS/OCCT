@@ -21,4 +21,4 @@ if {$stat != 1} {
    puts "Error : The style of edge is NOT dash"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

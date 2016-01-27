@@ -25,4 +25,4 @@ if { $m != 4 } {
     puts "Faulty : The amount of edges in SECOND face is more than four"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

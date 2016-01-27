@@ -30,7 +30,4 @@ if { $tri == 9 && $nod == 8 }  {
    puts "Shading of OCC344 looks like OK, but visual checking is required"
 }
 
-set 3dviewer 1
-
-
-
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

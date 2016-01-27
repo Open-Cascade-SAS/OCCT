@@ -12,7 +12,7 @@ set message [fixwgaps result a 0.1]
 if {[string length ${message}] > 0} {
     # Small edges fixed on shape
     checkshape result
-    set 2dviewer 0
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
 } else {
     puts "OCC1430: Error"
 }

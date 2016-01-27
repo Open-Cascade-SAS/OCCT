@@ -22,4 +22,4 @@ if { $tr <= 0 || $nd <= 0 } {
     puts "Error : Problems with shading"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

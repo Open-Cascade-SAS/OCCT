@@ -28,5 +28,5 @@ if { $err1 != "Parameters" || $err2 != "Parameters" || $err3 != "Parameters" || 
     puts "Faulty OCC429 : Attempt to project the point on surface gives incorrect result"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

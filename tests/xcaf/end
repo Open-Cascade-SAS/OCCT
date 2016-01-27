@@ -919,11 +919,7 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
 
 XGetOneShape result D_Second
 if {[isdraw result]} {
-    clear
-    smallview
-    donly result
-    fit
-    xwd $imagedir/${test_image}.png
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
 }
 
 if {[expr $ErrorCode == 2]} { 

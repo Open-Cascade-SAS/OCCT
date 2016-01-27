@@ -42,4 +42,4 @@ vmoveto ${x1} ${y1}
 
 checkcolor $x3 $y3 0.04 0.04 0.5
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

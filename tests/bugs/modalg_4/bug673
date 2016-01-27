@@ -20,7 +20,7 @@ if [catch {spliteshape result a a b} catch_result] {
     puts "OCC673 OK : function SPLITSHAPE works OK"
     checkprops result -s 0 
 checkshape result
-    set 2dviewer 0
+    checkview -display result -2d -path ${imagedir}/${test_image}.png
 }
 
 

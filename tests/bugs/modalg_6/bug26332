@@ -12,5 +12,4 @@ restore [locate_data_file bug26332_w2.brep] w2
 thrusections result 0 1 w1 w2
 
 checkshape result
-
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

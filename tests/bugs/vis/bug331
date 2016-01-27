@@ -34,6 +34,6 @@ if { $tri != 3808 && $nod != 2188} {
 }
 
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

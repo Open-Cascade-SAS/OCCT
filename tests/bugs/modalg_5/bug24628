@@ -13,5 +13,5 @@ bsection result shell cut
 
 checknbshapes result -vertex 14 -edge 13
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

@@ -14,4 +14,4 @@ if [catch {fixshape result a 29.9 } res] {
 
 checkshape result
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

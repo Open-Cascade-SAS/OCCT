@@ -36,3 +36,4 @@ prism bb fb 0 0 -4
 bcommon result ba bb
 
 checkprops result -s 18
+checkview -display result -2d -s -otherwise { ba bb } -path ${imagedir}/${test_image}.png

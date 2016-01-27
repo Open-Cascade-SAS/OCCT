@@ -19,6 +19,3 @@ if {${result1} != "The curve is planar !\n"} {
 } else {
     puts "BUC60924: OK"
 }
-
-set 3dviewer 1
-

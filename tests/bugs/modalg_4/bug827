@@ -43,4 +43,4 @@ if { [ catch { set info_result [OCC827 a1 a2 a3 result1 result2] } ] } {
 
 checkprops result -s 11847.7 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

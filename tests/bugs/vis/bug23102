@@ -29,5 +29,5 @@ if { "[vreadpixel ${x1} ${y1} rgb]" != "$WrongColor" } {
   puts "Faulty ${BugNumber}"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

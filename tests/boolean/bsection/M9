@@ -30,3 +30,4 @@ repeat 21 {
 
 checkprops result -l 2.49755e+06
 checksection result
+checkview -display result -2d -path ${imagedir}/${test_image}.png

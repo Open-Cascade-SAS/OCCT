@@ -9,7 +9,7 @@ restore [locate_data_file buc60965-s.draw] s
 project result c s
 checklength result -l 3.141968717040271
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 
 

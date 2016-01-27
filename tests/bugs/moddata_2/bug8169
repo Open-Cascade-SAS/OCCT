@@ -23,4 +23,4 @@ if { [regexp {Faulty} [OCC8169 e1 e2 result]] == 0 } {
     puts "Faulty ${BugNumber}"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

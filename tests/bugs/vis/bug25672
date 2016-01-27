@@ -44,4 +44,4 @@ checkreal "vconvert 5.0 5.0 10.0 grid, Y" [lindex $vconvert_res 3]  5.0 1e-7 0.0
 checkreal "vconvert 5.0 5.0 10.0 grid, Z" [lindex $vconvert_res 4] 10.0 1e-7 0.0
 
 # do not save any image
-set only_screen 0
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

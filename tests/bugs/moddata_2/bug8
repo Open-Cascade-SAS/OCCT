@@ -18,5 +18,5 @@ if { [regexp "BRepTools_WireExplorer donne 16 Edges" $info] != 1 } {
    puts "Error : BRepTools_WireExplorer gives WRONG number of edges."
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

@@ -20,4 +20,4 @@ if { [catch { bcut result a_1 a_2 } status] } {
 
 checkprops result -s 50704.6 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

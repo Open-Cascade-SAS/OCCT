@@ -23,5 +23,5 @@ bopfuse result
 # it is the final result and does not contain faces of 
 # the tool b.
 
-
 checkprops result -s 22963.8
+checkview -display result -2d -otherwise { a_1 b_1 } -s -path ${imagedir}/${test_image}.png

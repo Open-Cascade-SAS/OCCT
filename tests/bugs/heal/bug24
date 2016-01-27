@@ -23,4 +23,4 @@ if [catch { OCC24 result s c OCC24 Seq } ] {
 
 checkprops result -s 37.6991
 checkshape result
-set 2dviewer 2
+checkview -display result -2d -path ${imagedir}/${test_image}.png

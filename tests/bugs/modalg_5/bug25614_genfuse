@@ -45,4 +45,4 @@ baddcompound b2
 bapibuild result
 
 checknbshapes result -vertex 2728 -edge 7032 -wire 5746 -face 5746 -shell 1441 -solid 1441 -compsolid 0 -compound 1 -shape 24135
-set 3dviewer 1
+checkview -display result -3d -path ${imagedir}/${test_image}.png

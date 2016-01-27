@@ -20,4 +20,4 @@ ksection result shell1 shell2 1000 0.0001 0.00001 0
 checkprops result -l 104.754 
 checkshape result
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

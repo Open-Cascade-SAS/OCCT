@@ -10,3 +10,4 @@ tscale u 0 0 0 0.01
 bfuse result s u
 
 checkprops result -s 2.29992
+checkview -display result -2d -otherwise { s u } -s -path ${imagedir}/${test_image}.png

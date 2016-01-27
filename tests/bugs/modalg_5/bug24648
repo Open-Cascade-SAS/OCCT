@@ -32,5 +32,5 @@ if { [regexp ${type_of_curve} ${info2}] != 1 } {
 smallview
 donly i1_1 i2_1
 fit
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 

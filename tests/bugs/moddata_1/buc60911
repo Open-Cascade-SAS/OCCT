@@ -11,4 +11,4 @@ restore [locate_data_file BUC60911.brep] result
 invert result
 
 checkprops result -s 16353.8
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

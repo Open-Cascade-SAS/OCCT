@@ -23,4 +23,4 @@ checkshape result
 
 # Analysis of "nbshapes res"
 checknbshapes result -vertex 18 -edge 31 -wire 19 -face 19 -shell 6 -solid 6 -compsolid 0 -compound 1 -shape 100
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png

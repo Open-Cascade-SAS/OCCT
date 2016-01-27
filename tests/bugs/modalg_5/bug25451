@@ -27,4 +27,4 @@ fixshape res3 r3
 blend r4 d_1 1. d_2
 fixshape res4 r4
 
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -18,5 +18,5 @@ bopfuse result
 checkprops result -s 9333.96 
 checkshape result
 checknbshapes result -vertex 16 -edge 26 -wire 11 -face 11 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 67
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

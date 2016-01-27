@@ -18,5 +18,5 @@ erase l1 c1
 puts "ATTENTION! Check following:"
 puts "There is only one intersection point (green X)"
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

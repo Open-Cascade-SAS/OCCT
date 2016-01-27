@@ -22,5 +22,5 @@ if { ![regexp {3d} $che] || ![regexp {curve} $che]} {
     puts "OCC271 OK : command INTERSECT works properly"
 }
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

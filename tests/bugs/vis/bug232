@@ -79,4 +79,4 @@ if {$IsFaulty != 0} {
    puts "Error : OCC232"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

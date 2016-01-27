@@ -12,3 +12,4 @@ bop coque1_1 coque2_1
 bopfuse result 
 
 checkprops result -s 3950.89
+checkview -display result -2d -otherwise { coque1_1 coque2_1 } -s -path ${imagedir}/${test_image}.png

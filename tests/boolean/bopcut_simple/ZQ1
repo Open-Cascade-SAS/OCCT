@@ -30,6 +30,7 @@ bop face_1 Union_1
 bopcut result
 
 checkprops result -s 37172.6
+checkview -display result -2d -otherwise { face_1 Union_1 } -s -path ${imagedir}/${test_image}.png
 
 
 

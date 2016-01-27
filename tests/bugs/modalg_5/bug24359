@@ -65,4 +65,4 @@ checknbshapes result -vertex 60 -edge 105 -wire 29 -face 29 -shell 1 -solid 1 -c
 checkprops result -s 150.187 
 checkshape result
 
-set 2dviewer 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -24,4 +24,4 @@ if {$bug_info != "RED"} {
   puts "ERROR: OCC25732 is reproduced. Text is missed."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

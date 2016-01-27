@@ -20,6 +20,6 @@ thrusections result 0 0 ww1 ww2
 
 puts "It necessary to analyse the photo"
 
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 checkprops result -s 148608. 
 checkshape result

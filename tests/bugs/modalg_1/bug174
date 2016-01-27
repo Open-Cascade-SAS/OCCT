@@ -11,5 +11,5 @@ restore [locate_data_file OCC174.brep] result
 
 checkprops result -s 376.873 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

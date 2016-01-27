@@ -32,5 +32,5 @@ if { $stat != 1 } {
     puts "Error : Shading is ON, but should be OFF"
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 

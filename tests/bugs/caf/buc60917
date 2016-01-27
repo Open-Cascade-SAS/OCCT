@@ -41,11 +41,6 @@ if { ${W} != 1 } {
     }
 }
 
-set 3dviewer 2
-
-
-
-
 # This TCL script demonstrates bug in AIS/OCAF viewer 
 #
 # It needs an additional DRAW command to be defined for 
@@ -55,4 +50,3 @@ set 3dviewer 2
 # The problem is that when width is set to AISPresentation attribute
 # and Undo/redo are made, this causes error 'width is 0' in the viewer.
 # It seems that width is not kept during Undo/Redo operations.
-

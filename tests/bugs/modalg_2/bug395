@@ -34,6 +34,6 @@ if { [regexp {Faulty} $che ] == 1 } {
 checkprops result -l 34.9073 
 checkshape result 
 checksection result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 

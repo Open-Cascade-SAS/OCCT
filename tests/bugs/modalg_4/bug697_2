@@ -29,5 +29,5 @@ if { [catch {bfuse result b2 b3} catch_result] } {
 
 checkprops result -s 25357.5 
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

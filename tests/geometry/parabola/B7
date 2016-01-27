@@ -9,4 +9,4 @@ pl
 pu
 pu
 checklength result -l 3.3514748622014476
-
+checkview -display result -2d -path ${imagedir}/${test_image}.png

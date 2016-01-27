@@ -22,5 +22,5 @@ if { [catch { stepread $filepath a * } catch_result] } {
 
 checkprops result -s 35362.3 -eps 1.e-6
 checkshape result
-set 2dviewer 0
+checkview -display result -2d -path ${imagedir}/${test_image}.png
 

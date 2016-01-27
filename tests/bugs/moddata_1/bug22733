@@ -22,6 +22,3 @@ if {${extrema_length} != 1 } {
 } else {
    puts "${BugNumber}: OK"
 }
-
-set 3dviewer 0
-

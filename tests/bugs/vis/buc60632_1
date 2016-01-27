@@ -16,6 +16,6 @@ checkcolor $x_coord $y_coord 0 1 1
 if { $stat != 1 } {
    puts "Error : Highlighting by Move To command in wireframe mode is WRONG."
 }
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

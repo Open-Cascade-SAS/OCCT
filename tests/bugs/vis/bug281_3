@@ -9,4 +9,4 @@ OCC281 200 220 2
 OCC281 200 220 2
 puts "Type of marker mast be blue star!"
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

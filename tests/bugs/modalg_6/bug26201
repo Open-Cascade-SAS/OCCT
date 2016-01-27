@@ -26,4 +26,4 @@ set bug_info [dump dd_val]
 if {[lindex $bug_info 5] > 0.01} {
   puts "ERROR: OCC26201 is reproduced. Minimum distance is too large."
 }
-set only_screen_axo 1
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

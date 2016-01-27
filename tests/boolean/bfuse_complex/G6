@@ -5,3 +5,4 @@ restore [locate_data_file CTO901_cts20205-outil.rle]  outil
 bfuse result base outil
 
 checkprops result -s 542196
+checkview -display result -2d -otherwise { base outil } -s -path ${imagedir}/${test_image}.png

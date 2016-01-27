@@ -24,4 +24,4 @@ if {$bug_info != "No solutions!\n"} {
   puts "ERROR: OCC25063 is reproduced."
 }
 
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

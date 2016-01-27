@@ -29,6 +29,6 @@ vselect 220 170
 
 checkprops result -s 92.9029 
 checkshape result
-set only_screen 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 

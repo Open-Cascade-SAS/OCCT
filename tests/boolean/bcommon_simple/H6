@@ -24,3 +24,4 @@ prism cylb fb 0 0 2
 bcommon result ba cylb
 
 checkprops result -s 18.8496
+checkview -display result -2d -s -otherwise { ba cylb } -path ${imagedir}/${test_image}.png
