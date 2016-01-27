@@ -502,7 +502,7 @@ void ComputeBoundsfromInfinite(TheFunction& Func,
   //
   // - The quadric is a plane, a cylinder, a cone and a sphere.
   // - Idea: We take any point on the arc and the fact grow
-  // - Terminals to the signed distance function values ​​or is likely
+  // - Terminals to the signed distance function values or is likely
   // - S cancel.
   //
   // - WARNING: The following calculations provide a very estimated coarse parameters.

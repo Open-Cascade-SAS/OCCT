@@ -106,7 +106,7 @@ public:
 
 private:
 
-  //! Collects disñrete wires.
+  //! Collects discrete wires.
   //! @param[out] theDWires sequence of discretized wires to be filled.
   //! @return TRUE on success, FALSE in case of open wire.
   Standard_Boolean collectDiscretizedWires(SeqOfDWires& theDWires);

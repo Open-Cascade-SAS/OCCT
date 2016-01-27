@@ -2803,7 +2803,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
 
   if (!aVFTQ.IsNull())
   {
-    //A typical value would be ‘NR2 2.2’
+    //A typical value would be 'NR2 2.2'
     TCollection_HAsciiString aFormat = aVFTQ->FormatType();
     Standard_Integer i = aFormat.Location(1,' ',1,aFormat.Length());
     aFormat.SubString(i+1,i+1)->IntegerValue();
