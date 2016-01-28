@@ -109,8 +109,7 @@ The following table enumerates the full list of environment variables used at co
 | BUILD_MODULE_OcctMfcSamples | Boolean flag | Indicates whether MFC samples should be built together with OCCT. This option is only relevant to Windows platforms |
 | BUILD_DOC_OcctOverview | Boolean flag | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this options leads to automatic search of Doxygen binaries. Building of it will be call Doxygen command to generate the documentation in HTML format |
 | BUILD_PATCH | Path | Points to the directory recognized as a "patch" for OCCT. If specified, the files from this directory take precedence over the corresponding native OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
-| BUILD_WITH_DEBUG | Boolean flag | Points to the directory recognized as a 'patch' for OCCT. If specified, the files from this directory take precedence over the corresponding native
-OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
+| BUILD_WITH_DEBUG | Boolean flag | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing etc |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
 | INSTALL_DIR | Path | Points to the installation directory |
 | INSTALL_FREETYPE | Boolean flag | Indicates whether Freetype binaries should be installed into the installation directory |
