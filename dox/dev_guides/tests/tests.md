@@ -1278,3 +1278,56 @@ If colors are not equal, procedure will check the nearest ones points (5x5 area)
 ~~~~~
 checkcolor 100 100 1 0 0
 ~~~~~
+
+@subsubsection testmanual_5_3_10 Compute length, area and volume of input shape
+
+Procedure *checkprops* computes length, area and volume of input shape.
+
+Use: checkprops shapename [options...]
+
+Allowed options are:
+ * -l LENGTH: command lprops, computes the mass properties of all edges in the shape with a linear density of 1
+ * -s AREA: command sprops, computes the mass properties of all faces with a surface density of 1 
+ * -v VOLUME: command vprops, computes the mass properties of all solids with a density of 1
+ * -eps EPSILON: the epsilon defines relative precision of computation
+ * -equal SHAPE: compare area\volume\length of input shapes. Puts error if its are not equal
+ * -notequal SHAPE: compare area\volume\length of input shapes. Puts error if its are equal
+
+Options -l, -s and -v are independent and can be used in any order. Tolerance epsilon is the same for all options.
+
+~~~~~
+checkprops result -s 6265.68 
+checkprops result -s -equal FaceBrep
+~~~~~
+
+@subsubsection testmanual_5_3_11 Parse output dump and compare it with reference values
+
+Procedure *checkdump* is used to parse output dump and compare it with reference values.
+
+Use: checkdump shapename [options...]
+
+Allowed options are:
+ * -name NAME: list of parsing parameters (e.g. Center, Axis, etc)
+ * -ref VALUE: list of reference values for each parameter in NAME 
+ * -eps EPSILON: the epsilon defines relative precision of computation
+
+~~~~~
+checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{-70 0} {-1 -0} {-1 -0} {0 -1} {20 10}} -eps 0.01
+~~~~~
+
+@subsubsection testmanual_5_3_12 Compute length of input curve
+
+Procedure *checklength* computes length of input curve.
+
+Use: checklength curvename [options...]
+  
+Allowed options are:
+ * -l LENGTH: command length, computes the length of input curve with precision of computation
+ * -eps EPSILON: the epsilon defines relative precision of computation
+ * -equal CURVE: compare length of input curves. Puts error if its are not equal
+ * -notequal CURVE: compare length of input curves. Puts error if its are equal
+
+~~~~~
+checklength cp1 -l 7.278
+checklength res -l -equal ext_1
+~~~~~

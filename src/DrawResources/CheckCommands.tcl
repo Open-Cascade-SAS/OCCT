@@ -662,14 +662,14 @@ proc checkdump {shape args} {
 }
 
 help checklength {
-  Procedure includes commands to compute length of input shape.
+  Procedure includes commands to compute length of input curve.
 
-  Use: checklength shapename [options...]
+  Use: checklength curvename [options...]
   Allowed options are:
     -l LENGTH: command length, computes the length of input curve with precision of computation
     -eps EPSILON: the epsilon defines relative precision of computation
-    -equal SHAPE: compare length of input shapes. Puts error if its are not equal
-    -notequal SHAPE: compare length of input shapes. Puts error if its are equal
+    -equal CURVE: compare length of input curves. Puts error if its are not equal
+    -notequal CURVE: compare length of input curves. Puts error if its are equal
 }
 
 proc checklength {shape args} {
