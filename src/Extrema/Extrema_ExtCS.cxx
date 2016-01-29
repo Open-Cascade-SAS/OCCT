@@ -192,7 +192,10 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
 
           }
 
-
+          if (myS->IsUPeriodic())
+            NbU = 13;
+          if (myS->IsVPeriodic())
+            NbV = 13;
 
           Extrema_GenExtCS Ext(C, *myS, NbT, NbU, NbV, cfirst, clast, ufirst, ulast,
             vfirst, vlast, mytolC, mytolS);
@@ -248,7 +251,9 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         Ext.Perform(C, NbT, tmin, tmax, mytolC); // to avoid overflow
       }
       else {
-        if(myCtype == GeomAbs_Circle && NbT < 13) {
+        if((myCtype == GeomAbs_Circle       && NbT < 13) ||
+           (myCtype == GeomAbs_BSplineCurve && NbT < 13) )
+        {
           NbT = 13;
         }
         Ext.Perform(C, NbT, mytolC);

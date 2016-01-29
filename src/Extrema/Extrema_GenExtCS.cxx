@@ -211,7 +211,7 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
   TUVsup(3) = trimvsup;
 
   // Number of particles used in PSO algorithm (particle swarm optimization).
-  const Standard_Integer aNbParticles = 32;
+  const Standard_Integer aNbParticles = 48;
 
   math_PSOParticlesPool aParticles(aNbParticles, 3);
 

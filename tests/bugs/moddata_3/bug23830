@@ -18,7 +18,7 @@ foreach i ${Indices} {
   if { [isdraw ext_1] } {
     mkedge e ext_1
     regexp {Mass +: +([-0-9.+eE]+)} [lprops e] full l
-    if {$l > 1e-12} {
+    if {$l > 2.5e-12} {
       puts "Error: invalid result"
     }
     renamevar ext_1 r_$i
