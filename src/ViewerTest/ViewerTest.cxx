@@ -2776,6 +2776,7 @@ int VErase (Draw_Interpretor& theDI,
   else if (!toEraseAll && aCtx->NbSelected() > 0)
   {
     // Erase selected objects
+    const Standard_Boolean aHasOpenedContext = aCtx->HasOpenedContext();
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
@@ -2788,11 +2789,16 @@ int VErase (Draw_Interpretor& theDI,
         {
           aCtx->SetViewAffinity (anIO, aView, Standard_False);
         }
-        else
+        else if (aHasOpenedContext)
         {
           aCtx->Erase (anIO, Standard_False);
         }
       }
+    }
+
+    if (!toEraseInView)
+    {
+      aCtx->EraseSelected (Standard_False);
     }
   }
   else

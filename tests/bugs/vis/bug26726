@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC26726 erase selected objects"
+puts "============"
+puts ""
+pload VISUALIZATION
+
+
+vclear
+vclose all
+vinit
+vsetdispmode 1
+
+box b0 5 0 0 1 1 1
+box b1 0 5 0 1 1 1
+box b2 0 0 5 1 1 1
+box b3 5 5 5 1 1 1
+
+vdisplay b0 b1 b2 b3
+
+vdump $imagedir/${casename}_0.png
+
+vfit
+
+vselect 0 0 500 500
+verase
+
+vdump $imagedir/${casename}_1.png
+
+set info_b0 [vreadpixel 205 355 name]
+set info_b1 [vreadpixel 205 190 name]
+set info_b2 [vreadpixel 60 100 name]
+set info_b3 [vreadpixel 350 100 name]
+
+if { $info_b0 != "BLACK 0" || $info_b1 != "BLACK 0" || $info_b2 != "BLACK 0" || $info_b3 != "BLACK 0" } {
+  puts "Error: OCC26726 is reproduced. AIS_InteractiveContext::EraseSelected is incorrect."
+}
