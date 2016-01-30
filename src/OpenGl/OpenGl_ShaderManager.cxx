@@ -1233,7 +1233,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
         EOL"  vec3 aNormal   = transformNormal (occNormal);"
         EOL"  vec3 aReflect  = reflect (normalize (aPosition.xyz), aNormal);"
         EOL"  aReflect.z += 1.0;"
-        EOL"  TexCoord = aReflect.xy * inversesqrt (dot (aReflect, aReflect)) * 0.5 + vec2 (0.5);";
+        EOL"  TexCoord = vec4(aReflect.xy * inversesqrt (dot (aReflect, aReflect)) * 0.5 + vec2 (0.5), 0.0, 1.0);";
 
       aSrcFragGetColor =
         EOL"vec4 getColor(void) { return occTexture2D (occActiveSampler, TexCoord.st); }";
