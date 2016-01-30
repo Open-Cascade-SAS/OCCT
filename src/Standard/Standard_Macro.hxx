@@ -29,6 +29,22 @@
   #define Standard_OVERRIDE
 #endif
 
+// Macro Standard_DEPRECATED("message") can be used to declare a method deprecated.
+// If OCCT_NO_DEPRECATED is defined, Standard_DEPRECATED is defined empty.
+#ifdef OCCT_NO_DEPRECATED
+  #define Standard_DEPRECATED(theMsg)
+#else
+#if defined(_MSC_VER)
+  #define Standard_DEPRECATED(theMsg) __declspec(deprecated(theMsg))
+#elif defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5) || defined(__clang__))
+  #define Standard_DEPRECATED(theMsg) __attribute__((deprecated(theMsg)))
+#elif defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
+  #define Standard_DEPRECATED(theMsg) __attribute__((deprecated))
+#else
+  #define Standard_DEPRECATED(theMsg)
+#endif
+#endif
+
 //======================================================
 // Windows-specific definitions
 //======================================================
