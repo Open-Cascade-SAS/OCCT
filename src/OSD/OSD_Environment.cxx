@@ -323,7 +323,7 @@ void OSD_Environment :: Build () {
 
  str = myName + TEXT( "=" ) + myValue;
 
- putenv (  str.ToCString ()  );
+ _putenv (str.ToCString());
 
 }  // end OSD_Environment :: Build
 
@@ -333,7 +333,7 @@ void OSD_Environment :: Remove () {
 
  str = myName + TEXT( "=" );
 
- putenv (  str.ToCString ()  );
+ _putenv (str.ToCString());
 
 }  // end OSD_Environment :: Remove
 

@@ -34,15 +34,7 @@
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 
-#ifndef _WIN32
-# include <pwd.h>
-# include <netdb.h>
-#else
-# include <winsock2.h>
-#endif
-
-#include <stdio.h>
-
+#include <OSD_Host.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
 
@@ -67,6 +59,10 @@
 #include <StepAP203_HArray1OfDateTimeItem.hxx>
 #include <StepAP203_HArray1OfApprovedItem.hxx>
 #include <StepBasic_ProductCategory.hxx>
+
+#ifndef _WIN32
+# include <pwd.h>
+#endif
 
 //=======================================================================
 //function : STEPConstruct_AP203Context
@@ -164,25 +160,15 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
 {
   if ( defPersonAndOrganization.IsNull() ) {
     // get IP address as a unique id of organization
-#ifdef _WIN32 // adapted for NT which lacks gethostent()
-    char hostname[1024];
-    hostname[0] = '\0';
-    gethostname ( hostname, 1020 );
-    hostname[1020] = '\0';
-    struct hostent *he = gethostbyname ( hostname );
-#else // adapted for Sun2.5, which lacks definition of gethostname()
-    struct hostent *he = gethostent();
-    while ( he && he->h_name && (unsigned char)he->h_addr_list[0][0] == 127 )
-      he = gethostent();
-#endif
-    Handle(TCollection_HAsciiString) orgId = new TCollection_HAsciiString ( "" );
-    if ( he && he->h_addr_list && he->h_length >0 ) {
-      char str[100];
-      unsigned i1 = (unsigned char)he->h_addr_list[0][0];
-      unsigned i2 = (unsigned char)he->h_addr_list[0][1];
-      unsigned i3 = (unsigned char)he->h_addr_list[0][2];
-      sprintf ( str, "IP%03u.%03u.%03u.000", i1, i2, i3 );
-      orgId->AssignCat ( str );
+    Handle(TCollection_HAsciiString) orgId = new TCollection_HAsciiString ( "IP" );
+    OSD_Host aHost;
+    TCollection_AsciiString anIP = aHost.InternetAddress();
+    // cut off last number
+    Standard_Integer aLastDotIndex = anIP.SearchFromEnd (".");
+    if (aLastDotIndex >0)
+    {
+      anIP.Trunc (aLastDotIndex - 1);
+      orgId->AssignCat (anIP.ToCString());
     }
     
     // create organization

@@ -13,6 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#if defined(_MSC_VER)
+  // supress "std::Equal1" warning suggesting using msvc "Checked Iterators"
+  #define _SCL_SECURE_NO_WARNINGS
+#endif
+
 #include <QANCollection.hxx>
 #include <Draw_Interpretor.hxx>
 

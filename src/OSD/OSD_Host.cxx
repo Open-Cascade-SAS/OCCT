@@ -216,6 +216,10 @@ OSD_Host :: OSD_Host () {
   ZeroMemory (&ms, sizeof(ms));
   ZeroMemory (  szHostName, sizeof ( Standard_Character ) *  (MAX_COMPUTERNAME_LENGTH + 1) );
 
+#ifdef _MSC_VER
+  // suppress GetVersionEx() deprecation warning
+  #pragma warning(disable : 4996)
+#endif
   if (  !GetVersionEx ( &osVerInfo )  ) {
 
    _osd_wnt_set_error ( myError, OSD_WHost );
@@ -230,6 +234,9 @@ OSD_Host :: OSD_Host () {
    GlobalMemoryStatus ( &ms );
 
   }  // end else
+#ifdef _MSC_VER
+  #pragma warning(default : 4996)
+#endif
 
   if (  !Failed ()  ) {
   

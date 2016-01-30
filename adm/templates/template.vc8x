@@ -49,7 +49,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
-				PreprocessorDefinitions="_DEBUG;$(CSF_DEFINES)__TKDEFS__;"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;$(CSF_DEFINES)__TKDEFS__;"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -60,7 +60,6 @@
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4996"
 				EnableEnhancedInstructionSet="2"
 			/>
 			<Tool
@@ -146,7 +145,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="NDEBUG;No_Exception;$(CSF_DEFINES)__TKDEFS__;"
+				PreprocessorDefinitions="NDEBUG;No_Exception;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;$(CSF_DEFINES)__TKDEFS__;"
 				StringPooling="true"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -157,7 +156,6 @@
 				ProgramDataBaseFileName=".\..\..\..\win32\vc8\obj\__XQTNAM__/"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
-				DisableSpecificWarnings="4996"
 				EnableEnhancedInstructionSet="2"
 			/>
 			<Tool
@@ -242,7 +240,7 @@
 				AdditionalOptions="/favor:blend"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
-				PreprocessorDefinitions="_DEBUG;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;$(CSF_DEFINES)__TKDEFS__"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -253,7 +251,6 @@
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -340,7 +337,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="NDEBUG;No_Exception;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="NDEBUG;No_Exception;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;$(CSF_DEFINES)__TKDEFS__"
 				StringPooling="true"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -351,7 +348,6 @@
 				ProgramDataBaseFileName=".\..\..\..\win64\vc8\obj\__XQTNAM__/"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
-				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
