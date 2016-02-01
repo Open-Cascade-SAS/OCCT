@@ -152,7 +152,7 @@ Standard_Boolean BRepMesh_CircleTool::MakeCircle(const gp_XY&   thePoint1,
 
   theRadius = Sqrt(Max(Max((thePoint1 - aIntPnt).SquareModulus(), 
                            (thePoint2 - aIntPnt).SquareModulus()),
-                           (thePoint3 - aIntPnt).SquareModulus())) + aPrecision;
+                           (thePoint3 - aIntPnt).SquareModulus())) + 2 * RealEpsilon();
 
   return Standard_True;
 }

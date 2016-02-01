@@ -23,6 +23,71 @@ incmesh result ${Deflection}
 
 checktrinfo result -tri 615414 -nod 311438 -defl 0.0032657364637550075 -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
 
+regexp {deflection +([-0-9.+eE]+)} $tri_info full defl
+
+set env(os_type) $tcl_platform(platform)
+if { [string compare $env(os_type) "windows"] != 0 } {
+   puts "OS = Linux"
+   set good_tri  616054
+   set good_nod  311758
+   set good_defl 0.0032657364637550023
+} else {
+   puts "OS = Windows NT"
+   set good_tri  616054
+   set good_nod  311758
+   set good_defl 0.0032657364637550023
+}
+
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+        set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+
+set percent_max 0.1
+set status 0
+
+set triangle_percent [GetPercent ${tri} ${good_tri}]
+puts "triangle_percent = ${triangle_percent}"
+if { ${triangle_percent} > ${percent_max} } {
+   puts "triangle: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "triangle: OK ${BugNumber}"
+}
+
+set node_percent [GetPercent ${nod} ${good_nod}]
+puts "node_percent = ${node_percent}"
+if { ${node_percent} > ${percent_max} } {
+   puts "node: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "node: OK ${BugNumber}"
+}
+
+set deflection_percent [GetPercent ${defl} ${good_defl}]
+puts "deflection_percent = ${deflection_percent}"
+if { ${deflection_percent} > ${percent_max} } {
+   puts "deflection: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "deflection: OK ${BugNumber}"
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
 vinit
 vdisplay result
 vfit
