@@ -1,4 +1,3 @@
-
 puts "=========="
 puts "FRA62476"
 puts ""                                                                                  
@@ -14,13 +13,5 @@ tclean result
 incmesh result .1
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri !=239 && $nod != 145 } {
-   puts "Shady FRA62476: here may be shading problem, number tri & nod
-   are changed"
-}
-
+checktrinfo result -tri 1919 -nod 1008
 checkview -display result -3d -path ${imagedir}/${test_image}.png

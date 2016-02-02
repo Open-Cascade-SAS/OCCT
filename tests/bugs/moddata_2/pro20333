@@ -1,4 +1,5 @@
-puts "TODO OCC12345 ALL: Faulty PRO20333: here is shading problem"
+puts "TODO OCC12345 ALL: Error: Number of triangles"
+puts "TODO OCC12345 ALL: Error: Number of nodes"
 
 puts "============"
 puts "PRO20333"
@@ -15,12 +16,5 @@ isos result 0
 incmesh result .1
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri != 107 || $nod != 109 } {  
-   puts "Faulty PRO20333: here is shading problem"
-}
-
+checktrinfo result -tri 107 -nod 109
 checkview -display result -3d -path ${imagedir}/${test_image}.png

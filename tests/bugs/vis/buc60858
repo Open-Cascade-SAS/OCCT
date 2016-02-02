@@ -23,12 +23,5 @@ vsetdispmode result 1
 isos result 0
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tr
-regexp { +([-0-9.+eE]+) +nodes} $info full nd
-
-if { $tr == 0 || $nd == 0 }  {
-   puts "Error : here is shading problem"
-}
-
+checktrinfo result -tri -nod
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

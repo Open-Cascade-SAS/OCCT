@@ -20,14 +20,5 @@ isos result 0
 triangles result
 vfit
 
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-
-if { $tri == 5496 && $nod == 5406 }  {
-    puts "Warning OCC428: here is shading problem, but source shape is invalid"
-} else {
-     puts "Warning OCC428: Shading of OCC428 was made, source shape is invalid"
-}
-
+checktrinfo result -tri !5496 -nod !5406
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

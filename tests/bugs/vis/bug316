@@ -14,20 +14,6 @@ vdisplay result
 vsetdispmode result 1
 vfit
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri == 212909 && $nod == 158362 } {
-   puts "Warning OCC316: here is shading problem (some faces are lost)"
-} else {
-  if { $tri == 0 || $nod == 0 } {
-  puts " Warning  OCC316: here is shading problem (shading mesh is NOT created)"
-  isos result 0
-  } else {
-    puts "Warning: Shading of OCC316 looks OK, but visual checking is required"
-  }
-}
-
+checktrinfo result -tri !212909 -nod !158362
+checktrinfo result -tri -nod
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-

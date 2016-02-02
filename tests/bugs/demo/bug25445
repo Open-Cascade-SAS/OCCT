@@ -10,19 +10,9 @@ pcone aCone 100 10 100
 
 tclean aCone
 incmesh aCone 0.01 -a 10.
-set bug_info [trinfo aCone]
-set NbTrian_1 [lindex $bug_info 3]
-set NbNodes_1 [lindex $bug_info 5]
+regexp {([0-9]+) +triangles.*[^0-9]([0-9]+) +nodes} [trinfo aCone] full NbTrian_1 NbNodes_1
 
 tclean aCone
 incmesh aCone 0.01 -a 1.
-set bug_info [trinfo aCone]
-set NbTrian_2 [lindex $bug_info 3]
-set NbNodes_2 [lindex $bug_info 5]
 
-if {$NbTrian_1 == $NbTrian_2} {
-  puts "ERROR: OCC25445 is not fixed. Number of triangles are equal for both meshes."
-}
-if {$NbNodes_1 == $NbNodes_2} {
-  puts "ERROR: OCC25445 is not fixed. Number of nodes are equal for both meshes."
-}
+checktrinfo aCone -tri !${NbTrian_1} -nod !${NbNodes_1}

@@ -15,31 +15,5 @@ fit
 isos a 0
 triangles a
 
-set trinfo_s [trinfo a]
-regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
-regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
-regexp {deflection ([0-9.+e-]+)} ${trinfo_s} str defl_s
-
-set good_nbtri 2721
-set good_nbnod 1405
-set good_defl 0.044436924588798624
-
-set good_percent 5
-
-set nbtri_percent [expr abs (${good_nbtri} - ${nbtri_s}) / double (${nbtri_s}) * 100 ]
-set nbnod_percent [expr abs (${good_nbnod} - ${nbnod_s}) / double (${nbnod_s}) * 100 ]
-set defl_percent  [expr abs (${good_defl} - ${defl_s}) / ${defl_s} * 100 ]
-
-if { ${nbtri_percent} > ${good_percent} } {
-  puts "Error: triangle number is bad, it has changed to ${nbtri_percent} %"
-}
-
-if { ${nbnod_percent} > ${good_percent} } {
-  puts "Error: node number is bad, it has changed to ${nbnod_percent} %"
-}
-
-if { ${defl_percent} > ${good_percent} } {
-  puts "Error: deflection is bad, it has changed to ${defl_percent} %"
-}
-
+checktrinfo a -tri 2721 -nod 1405 -defl 0.044436924588798624 -tol_rel_defl 0.05 -tol_rel_tri 0.05 -tol_rel_nod 0.05
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

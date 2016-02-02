@@ -9,27 +9,10 @@ puts ""
 restore [locate_data_file bug23614_face2.brep] f2
 tclean f2
 incmesh f2 0.01
-set info [trinfo f2]
-regexp {([0-9]+) triangles} $info full tri
-regexp {([0-9]+) nodes} $info full nod
 
-# compare number of triangles
-if { $tri == 0 } {
-    puts "Error: face contains $tri triangles"
-} else {
-    puts "OK: face contains $tri triangles"
-}
-
-# compare number of nodes
-if { $nod == 0 } {
-    puts "Error : face contains $nod nodes"
-} else {
-    puts "OK: face contains $nod nodes"
-}
+checktrinfo f2 -tri -nod
 
 top
 fit
 triangles f2
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
-
-

@@ -24,9 +24,7 @@ if { [regexp {Debug mode} [dversion]] } {
 
 psphere result 50.
 incmesh result 0.01
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full numTriangles
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full numNodes
+trinfo result
 
 set time_info [time {writevrml result ${imagedir}/bug26922.wrl 2 2}]
 regexp {([-0-9.+eE]+)} ${time_info} full time_performance

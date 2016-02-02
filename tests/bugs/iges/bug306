@@ -20,13 +20,7 @@ vsetdispmode result 1
 vdisplay result
 vfit
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { ($tri != 6409 || $nod != 6195) } {
-    puts "Shading problem may be, nb tri & nod"
-} 
+checktrinfo result -tri 19206 -nod 12547
 
 checkmaxtol result -ref 0.92213088179312575
 checknbshapes result -shell 1

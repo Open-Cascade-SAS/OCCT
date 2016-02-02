@@ -15,18 +15,6 @@ vclear
 isos result 0
 triangles result
 
-#smallview
-#fit
-
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-
-if { ($tri != 114 && $nod != 116) && ($tri != 116 && $nod != 118) }  {
-    puts "Shady OCC264_7: here may be shading problem"
-} else {
-    puts "Shading of OCC264_7 is OK"
-}
-
+checktrinfo result -tri 98 -nod 100
 checkprops result -s 150.283 
 checkview -display result -3d -path ${imagedir}/${test_image}.png

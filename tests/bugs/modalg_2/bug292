@@ -19,16 +19,6 @@ vsetdispmode result 1
 isos result 0
 triangles result
 
-      set tri 0
-      set nod 0
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-if { $tri ==6 && $nod == 8} {
-    puts " Warning:  OCC292  looks like OK, but visual checking is required !!!!"
-} else {
-    puts " OCC292 : Faulty"
-}
-
+checktrinfo result -tri 6 -nod 8
 checkprops result -s 1.3135 
 checkview -display result -3d -path ${imagedir}/${test_image}.png

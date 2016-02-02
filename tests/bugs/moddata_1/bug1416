@@ -18,24 +18,6 @@ incmesh result 0.01
 #View the result of mesh
 triangles result
 
-##############################################
-if { [catch { set tri_info [trinfo result] } catch_result] } {
-##############################################
-    puts "Faulty OCC1416"
-} else {
-    set ll [ llength ${tri_info} ]
-    if {${ll} < 6} {
-        puts "Faulty OCC1416"
-    } else {
-	regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-	regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-        if { $tri == 0 || $nod == 0 }  {
-            puts "Faulty OCC1416"
-        } else {
-            puts "Warning: OCC1416 looks like OK, but visual checking is required !!!!"
-        }
-    }
-}
-
+checktrinfo result -tri -nod
 checkprops result -s 863.938
 checkview -display result -3d -path ${imagedir}/${test_image}.png

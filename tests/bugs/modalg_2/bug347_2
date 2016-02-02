@@ -14,18 +14,7 @@ vdisplay result
 vfit
 vsetdispmode result 1
 
-set tri 0
-set nod 0
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-
-if { $tri == 71 && $nod == 73} {
-	puts " OCC347  case 2: OK"
-} else {
-	puts " OCC347  case 2: Faulty"
-}
-
+checktrinfo result -tri 71 -nod 73
 checkprops result -s 100.531 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 

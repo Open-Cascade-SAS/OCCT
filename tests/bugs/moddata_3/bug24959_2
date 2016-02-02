@@ -9,15 +9,8 @@ puts ""
 bsplinesurf s 2 12 0.0 3 0.1 1 0.2 1 0.3 1 0.4 1 0.5 1 0.525 1 0.55 1 0.575 1 0.8 1 0.9 1 1.0 3 1 2 0.0 2 1.0 2 16 0 0 1 14 0 0 1 12 0 0 1 10 0 0 1 8 0 0 1 6 0 0 1 4 0 0 1 2 0 0 1 0 0 0 1 -2 0 0 1 -4 0 0 1 -6 0 0 1 -8 0 0 1 16 5 0 1 14 5 0 1 12 5 0 1 10 5 0 1 8 5 0 1 6 5 0 1 4 5 0 1 1.5 9 0 1 0 5 0 1 -2 5 0 1 -4 5 0 1 -6 5 0 1 -8 5 0 1
 mkface result s
 incmesh result 1
-set tri_info [trinfo result]
-regexp {deflection ([0-9.+e-]+)} $tri_info full defl
 
-# check deflections
-if { $defl > 1 } {
-  puts "Error: too big deflection on original face (${defl} > 1)"
-} else {
-  puts "Deflection is OK (${defl})"
-}
+checktrinfo result -max_defl 1
 
 vdisplay result
 vsetdispmode 1

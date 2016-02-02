@@ -22,12 +22,11 @@ vdisplay a_1
 vfit
 vzfit
 tclean a_1
-set inf_before [trinfo a_1]
+trinfo a_1
 
 vsetdispmode a_1 1
-set inf_after [trinfo a_1]
-regexp { +([-0-9.+eE]+) +triangles} $inf_after full tri_after
-regexp { +([-0-9.+eE]+) +nodes} $inf_after full nod_after
+
+checktrinfo a_1 -tri -nod
 
 set color [vreadpixel ${x1} ${y1} rgb]
 set rd [lindex $color 0]
@@ -38,21 +37,4 @@ if { $rd == 0 || $gr == 0 || $bl == 0 } {
     puts "Error : Face is not shaded (colors are not equal)"
 }
 
-if { $tri_after <= 0 || $nod_after <= 0 } {
-    puts "Error : Face is not shaded (number of nodes or triangles is wrong)"
-}
-
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-
-
-
-
-
-
-
-
-
-
-
-
-

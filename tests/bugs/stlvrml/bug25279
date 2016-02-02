@@ -21,21 +21,12 @@ set mode 2
 
 writevrml res ${aFile} ${version} ${mode}
 
-set TrinfoAfter [trinfo res]
+checktrinfo res -ref "${TrinfoBefore}"
+
 set Log [loadvrml test ${aFile}]
 
-set status 1
-
-if { $TrinfoBefore != $TrinfoAfter } {
-  set status 0 
-}
-
 if { [string length $Log] != 0 } {
-  set status 0 
-}
-
-if {$status == 1} {
-  puts "OK ${BugNumber}"
-} else {
   puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
 }

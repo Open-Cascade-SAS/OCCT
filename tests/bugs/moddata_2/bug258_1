@@ -15,12 +15,5 @@ vsetdispmode result 1
 vfit
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri < 71 || $nod < 73 }  {
-  puts "Error (case 1) : here is shading problem"
-}
-
+checktrinfo result -tri 100 -nod 102
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -1,4 +1,5 @@
-puts "TODO OCC12345 ALL: Faulty BUC61057: here can be shading problem"
+puts "TODO OCC12345 ALL: Error: Number of triangles"
+puts "TODO OCC12345 ALL: Error: Number of nodes"
 
 puts "================"
 puts "BUC61057"
@@ -19,16 +20,6 @@ vdisplay result
 vsetdispmode result 1
 vfit
 
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-
-if { $tri != 294 && $nod != 300 }  {
-    puts "Faulty BUC61057: here can be shading problem"
-} else {
-    puts "Shading of BUC61057 is OK"
-}
-
+checktrinfo result -tri 294 -nod 300
 checkprops result -s 33.8757 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-

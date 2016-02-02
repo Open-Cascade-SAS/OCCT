@@ -14,14 +14,5 @@ vdisplay result
 vsetdispmode result 1
 vfit
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-#($tri != 5370,$nod != 2783)($tri != 5356,$nod != 2774)($tri != 5354,$nod != 2773),aki251103
-if { ($tri != 5643 || $nod != 2915) }  {
-   puts "Shady OCC15 : shading problem may be, nb tri & nod were changed"
-}
-
+checktrinfo result -tri 1009 -nod 593
 checkview -display result -2d -path ${imagedir}/${test_image}.png
-

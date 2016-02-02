@@ -20,14 +20,5 @@ vclear
 isos result 0
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri == 9 && $nod == 8 }  {
-   puts "Warning OCC344: here is shading problem"
-} else {
-   puts "Shading of OCC344 looks like OK, but visual checking is required"
-}
-
+checktrinfo result -tri !9 -nod !8
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

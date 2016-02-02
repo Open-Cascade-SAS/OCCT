@@ -14,12 +14,6 @@ tclean result
 trinfo result
 vsetdispmode 1
 vfit
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tr
-regexp { +([-0-9.+eE]+) +nodes} $info full nd
 
-if { $tr <= 0 || $nd <= 0 } {
-    puts "Error : Problems with shading"
-}
-
+checktrinfo result -tri -nod
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

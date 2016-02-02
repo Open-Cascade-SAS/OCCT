@@ -10,12 +10,5 @@ tclean result
 incmesh result .9
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri != 88 && $nod != 90 }  {
-  puts "Faulty OCC19: here is shading problem"
-}
-
+checktrinfo result -tri 88 -nod 90
 checkview -display result -3d -path ${imagedir}/${test_image}.png

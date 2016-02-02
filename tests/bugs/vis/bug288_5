@@ -13,20 +13,5 @@ isos result 0
 triangles result
 vfit
 
-set tri 0
-set nod 0
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-puts [format " tri= %s  nod= %s " $tri $nod]
-
-# ($tri == 7826 && $noe == 8246) || ($tri == 8218 && $noe == 8638),aki251103
-
-if { ($tri == 6268 && $noe == 6688) } {
-   puts "Shading of OCC288 (case 5)  looks like OK, but visual checking is required !"
-} else {
-   puts " Shady: Shading of OCC288 (case 5) may be bad, nb tri & nod changed"
-}
-
+checktrinfo result -tri 9448 -nod 9080
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-

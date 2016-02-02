@@ -268,16 +268,7 @@ unifysamedom r res
 incmesh r 0.1
 trinfo r
 
-set info [trinfo r]
-regexp { +([-0-9.+eE]+) +triangles} $info full tr
-regexp { +([-0-9.+eE]+) +nodes} $info full nd
-regexp { +([-0-9.+eE]+) +nodes} $info full nd
-regexp {Maximal deflection +([-0-9.+eE]+)} $info full defl
-
-set expected_defl 0.04
-set tol_abs_defl 0.01
-set tol_rel_defl 0.01
-checkreal "Maximal deflection" ${defl} ${expected_defl} ${tol_abs_defl} ${tol_rel_defl}
+checktrinfo r -defl 0.04 -tol_abs_defl 0.01 -tol_rel_defl 0.01
 
 vinit
 vsetdispmode 1

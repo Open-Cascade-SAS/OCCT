@@ -1,4 +1,5 @@
-puts "TODO OCC12345 ALL: Faulty OCC264_8: here is shading problem"
+puts "TODO OCC12345 ALL: Error: Number of triangles"
+puts "TODO OCC12345 ALL: Error: Number of nodes"
 puts "TODO OCC12345 ALL: Error : The area of result shape is"
 
 puts "========"
@@ -17,18 +18,6 @@ vclear
 isos result 0
 triangles result
 
-#smallview
-#fit
-
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-
-if { $tri != 19 && $nod != 21 }  {
-    puts "Faulty OCC264_8: here is shading problem"
-} else {
-    puts "Shading of OCC264_8 is OK"
-}
-
+checktrinfo result -tri 19 -nod 21
 checkprops result -s 0 
 checkview -display result -3d -path ${imagedir}/${test_image}.png

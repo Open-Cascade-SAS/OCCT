@@ -1,4 +1,4 @@
-puts "TODO OCC12345 ALL: Faulty OCC20: here is shading problem"
+puts "TODO OCC12345 ALL: Error: Number of triangles"
 
 puts "================"
 puts "OCC20"
@@ -23,13 +23,5 @@ vviewparams -scale 5.1346924 -proj 0.23495967 -0.302 0.923899 -up -0.7304302 0.5
 isos result 0
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri != 416 || $nod != 367 }  {
-   puts "Faulty OCC20: here is shading problem"
-}
-
+checktrinfo result -tri 416 -nod 367
 checkview -display result -2d -path ${imagedir}/${test_image}.png
-

@@ -13,14 +13,5 @@ vsetdispmode result 1
 isos result 0
 triangles result
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-#$tri/$nod:122/124aki251103
-
-if { $tri != 83 && $nod !=  85 }  {
-  puts "Shady OCC19: shading problem may be, nb tri & nod were changed"
-}
-
+checktrinfo result -tri 129 -nod 131
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

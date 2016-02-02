@@ -10,15 +10,7 @@ vinit
 vdisplay result
 vsetdispmode result 1
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri != 2592 || $nod != 1369 }  {
-   puts "Faulty OCC16: here can be shading problem"
-}
-
 puts "If here is bug - face is displaied in wireframe mode"
 
+checktrinfo result -tri 2592 -nod 1369
 checkview -display result -2d -path ${imagedir}/${test_image}.png
-

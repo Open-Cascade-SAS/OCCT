@@ -19,25 +19,10 @@ set LogBefore [trinfo res]
 
 writestl res ${aFile} ${anASCIImode}
 
-set LogAfter [trinfo res]
+checktrinfo res -ref "${LogBefore}"
 
-set status 1
-if { ![file exists ${aFile}] } {
-  set status 0
-}
-
-# Check file size
-set filesize [ file size ${aFile} ]
-if { ${filesize} == 0 } {
-  set status 0
-}
-
-if { $LogBefore != $LogAfter } {
-  set status 0
-}
-
-if {$status == 1} {
-  puts "OK: STL writer check given shape"
-} else {
+if { ![file exists ${aFile}] || [ file size ${aFile} ] == 0 } {
   puts "Error: STL writer does not check given shape"
+} else {
+  puts "OK: STL writer check given shape"
 }

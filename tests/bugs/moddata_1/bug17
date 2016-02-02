@@ -1,4 +1,5 @@
-puts "TODO OCC12345 ALL: Faulty OCC17: here can be shading problem"
+puts "TODO OCC12345 ALL: Error: Number of triangles"
+puts "TODO OCC12345 ALL: Error: Number of nodes"
 
 puts "================"
 puts "OCC17"
@@ -21,14 +22,5 @@ vdisplay result
 vsetdispmode result 1
 vfit
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nodes} $info full nod
-
-if { $tri != 100 && $nod != 94 }  {
-  puts "Faulty OCC17: here can be shading problem"
-}
-
+checktrinfo result -tri 100 -nod 94
 checkview -display result -2d -path ${imagedir}/${test_image}.png
-
-

@@ -28,8 +28,9 @@ set tri_info [trinfo s]
 regexp { +([-0-9.+eE]+) +triangles} $tri_info full triIncmesh1
 
 vdisplay s
-set tri_info [trinfo s]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full triAutoTrShape
+
+checktrinfo s -tri !${triIncmesh1}
+
 vfit
 vdump $aShapeAutoTr
 
@@ -41,14 +42,8 @@ set tri_info [trinfo s]
 regexp { +([-0-9.+eE]+) +triangles} $tri_info full triIncmesh2
 
 vdisplay s
-set tri_info [trinfo s]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full triNotAutoTrShape
+
+checktrinfo s -tri ${triIncmesh2}
+
 vfit
 vdump $aShapeNotAutoTr
-
-if {${triIncmesh1} == ${triAutoTrShape}} {
-  puts "ERROR : Test failed. Incorrect triangulation in case of enabled auto triangulation feature."
-}
-if {${triIncmesh2} != ${triNotAutoTrShape}} {
-  puts "ERROR : Test failed. Incorrect triangulation in case of disabled auto triangulation feature."
-}

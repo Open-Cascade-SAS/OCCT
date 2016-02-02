@@ -15,20 +15,7 @@ vdisplay result
 vsetdispmode 1
 vfit
 
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-
-puts [format " tri= %s  noe= %s " $tri $nod]
-
-# Resume
-puts ""
-if { ${tri} == 0 } {
-   puts "Faulty ${BugNumber}"
-} else {
-   puts "OK ${BugNumber}"
-}
-
+checktrinfo result -tri
 checkprops result -s 9.92128e+06 
 checkshape result
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

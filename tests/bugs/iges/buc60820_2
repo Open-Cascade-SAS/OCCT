@@ -13,14 +13,6 @@ vdisplay result
 vsetdispmode result 1
 vfit
 
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full tri
-regexp { +([-0-9.+eE]+) +nod} $info full nod
-
-
-if { $tri != 1655 || $nod != 1143 } {
-    puts "Shading problem may be, nb tri & nod were changed"
-}
+checktrinfo result -tri 578 -nod 502
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
-

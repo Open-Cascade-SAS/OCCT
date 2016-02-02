@@ -18,24 +18,8 @@ vinit
 vdisplay result
 vfit
 vsetdispmode result 1
-# checkshape res
-# maxtolerance res
 
-set tri 0
-set nod 0
-
-set tri_info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-
-if { $tri == 12966 && $nod == 6896} {
-    puts " OCC358  looks like OK"
-} else {
-    puts [format " tri= %s  nod= %s " $tri $nod]
-    puts " OCC358  : Shady (bad shading)"
-}
-
+checktrinfo result -tri 34146 -nod 17507
 checkprops result -s 24861.2 
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png
-

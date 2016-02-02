@@ -1331,3 +1331,62 @@ Allowed options are:
 checklength cp1 -l 7.278
 checklength res -l -equal ext_1
 ~~~~~
+@subsubsection testmanual_5_3_13 Check maximum deflection, number of triangles and nodes in mesh
+
+To check maximum deflection, number of nodes and triangles in mesh command *checktrinfo* can be used.
+
+Use: checktrinfo shapename [options...]
+
+Allowed options are:
+ * -tri [N]:  compare current number of triangles in "shapename" mesh with given reference data.
+      If reference value N is not given and current number of triangles is equal to 0
+      procedure checktrinfo will print an error.
+ * -nod [N]:  compare current number of nodes in "shapename" mesh with given reference data.
+      If reference value N is not givenand current number of nodes is equal to 0
+      procedure checktrinfo will print an error.
+ * -defl [N]: compare current value of maximum deflection in "shapename" mesh with given reference data
+      If reference value N is not given and current maximum deflection is equal to 0
+      procedure checktrinfo will print an error.
+ * -max_defl N:     compare current value of maximum deflection in "shapename" mesh with max possible value
+ * -tol_abs_tri N:  absolute tolerance for comparison of number of triangles (default value 0)
+ * -tol_rel_tri N:  relative tolerance for comparison of number of triangles (default value 0)
+ * -tol_abs_nod N:  absolute tolerance for comparison of number of nodes (default value 0)
+ * -tol_rel_nod N:  relative tolerance for comparison of number of nodes (default value 0)
+ * -tol_abs_defl N: absolute tolerance for deflection comparison (default value 0)
+ * -tol_rel_defl N: relative tolerance for deflection comparison (default value 0)
+ * -ref [trinfo a]: compare deflection, number of triangles and nodes in "shapename" and in "a"
+
+Note that options -tri, -nod, -defl do not work together with option -ref.
+
+Examples:
+
+comparison with some reference values
+~~~~~
+checktrinfo result -tri 129 -nod 131 -defl 0.01
+~~~~~
+
+comparison with another mesh
+~~~~~
+checktrinfo result -ref [tringo a]
+~~~~~
+
+comparison of deflection with max possible value
+~~~~~
+checktrinfo result -max_defl 1
+~~~~~
+
+to make sure that current values are not equal to zero
+~~~~~
+checktrinfo result -tri -nod -defl
+~~~~~
+
+to make sure that number of triangles and number of nodes are not equal to some specific values
+~~~~~
+checktrinfo result -tri !10 -nod !8
+~~~~~
+
+it is possible to compare current values with reference values with some tolerances.
+Use options -tol_\* for that.
+~~~~~
+checktrinfo result -defl 1 -tol_abs_defl 0.001
+~~~~~

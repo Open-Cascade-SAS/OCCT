@@ -36,8 +36,4 @@ if { $nbtri_r > [expr 2. * $nbtri_s] } {
 # extra check: deflection on rough mesh on NURBS
 tclean r
 incmesh r 0.1
-set trinfo_r_01 [trinfo r]
-regexp {deflection ([0-9.+e-]+)} $trinfo_r_01 str defl_r_01
-if { $defl_r_01 > 0.1 } {
-    puts "Error: too big deflection on NURBS face ($defl_r > 0.1)"
-}
+checktrinfo r -max_defl 0.1

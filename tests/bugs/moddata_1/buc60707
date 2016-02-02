@@ -12,11 +12,6 @@ checkshape result
 tclean result
 incmesh result .1
 triangles result
-set info [trinfo result]
-regexp { +([-0-9.+eE]+) +triangles} $info full Maxtriangl
 
-if { $Maxtriangl < 1 } {
-   puts "Error : inside mesh for shading wasn't build"
-}
-
+checktrinfo result -tri
 checkview -display result -3d -path ${imagedir}/${test_image}.png

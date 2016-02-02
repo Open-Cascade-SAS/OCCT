@@ -1,5 +1,5 @@
-puts "TODO OCC24938 ALL: Error: shape contains 0 triangles"
-puts "TODO OCC24938 ALL: Error: shape contains 0 nodes"
+puts "TODO OCC24938 ALL: Error: Number of triangles is equal to 0"
+puts "TODO OCC24938 ALL: Error: Number of nodes is equal to 0"
 
 puts "=========="
 puts "OCC24938"
@@ -16,21 +16,8 @@ restore [locate_data_file bug24938_27773.brep] result
 
 tclean result
 incmesh result 1.5 -relative
-set trinfo_s [trinfo result]
-regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
-regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
 
-if { ${nbtri_s} == 0 } {
-  puts "Error: shape contains 0 triangles"
-} else {
-  puts "OK: shape contains ${nbtri_s} triangles"
-}
-
-if { ${nbnod_s} == 0 } {
-  puts "Error: shape contains 0 nodes"
-} else {
-  puts "OK: shape contains ${nbnod_s} nodes"
-}
+checktrinfo result -tri -nod
 
 vinit
 vsetdispmode 1

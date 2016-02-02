@@ -895,4 +895,121 @@ proc checkview {args} {
     }
     xwd ${PathToSave}
   }
+
+}
+
+help checktrinfo {
+  Compare maximum deflection, number of nodes and triangles in "shape" mesh with given reference data
+
+  Use: checktrinfo shapename [options...]
+  Allowed options are:
+    -tri [N]:  compare current number of triangles in "shapename" mesh with given reference data.
+               If reference value N is not given and current number of triangles is equal to 0
+               procedure checktrinfo will print an error.
+    -nod [N]:  compare current number of nodes in "shapename" mesh with given reference data.
+               If reference value N is not givenand current number of nodes is equal to 0
+               procedure checktrinfo will print an error.
+    -defl [N]: compare current value of maximum deflection in "shapename" mesh with given reference data
+               If reference value N is not given and current maximum deflection is equal to 0
+               procedure checktrinfo will print an error.
+    -max_defl N:     compare current value of maximum deflection in "shapename" mesh with max possible value
+    -tol_abs_tri N:  absolute tolerance for comparison of number of triangles (default value 0)
+    -tol_rel_tri N:  relative tolerance for comparison of number of triangles (default value 0)
+    -tol_abs_nod N:  absolute tolerance for comparison of number of nodes (default value 0)
+    -tol_rel_nod N:  relative tolerance for comparison of number of nodes (default value 0)
+    -tol_abs_defl N: absolute tolerance for deflection comparison (default value 0)
+    -tol_rel_defl N: relative tolerance for deflection comparison (default value 0)
+    -ref [trinfo a]: compare deflection, number of triangles and nodes in "shapename" and in "a"
+}
+proc checktrinfo {shape args} {
+    puts "checktrinfo ${shape} ${args}"
+    upvar ${shape} ${shape}
+
+    if {![isdraw ${shape}] || [regexp "${shape} is a \n" [whatis ${shape}]]} {
+        puts "Error: The command cannot be built"
+        return
+    }
+
+    set ref_nb_triangles false
+    set ref_nb_nodes false
+    set ref_deflection false
+    set tol_abs_defl 0
+    set tol_rel_defl 0
+    set tol_abs_tri 0
+    set tol_rel_tri 0
+    set tol_abs_nod 0
+    set tol_rel_nod 0
+    set max_defl -1
+    set ref_info ""
+
+    set options {{"-tri" ref_nb_triangles ?}
+                 {"-nod" ref_nb_nodes ?}
+                 {"-defl" ref_deflection ?}
+                 {"-tol_abs_defl" tol_abs_defl 1}
+                 {"-tol_rel_defl" tol_rel_defl 1}
+                 {"-tol_abs_tri" tol_abs_tri 1}
+                 {"-tol_rel_tri" tol_rel_tri 1}
+                 {"-tol_abs_nod" tol_abs_nod 1}
+                 {"-tol_rel_nod" tol_rel_nod 1}
+                 {"-max_defl" max_defl 1}
+                 {"-ref" ref_info 1}}
+
+    _check_args ${args} ${options} "checktrinfo"
+
+    # get current number of triangles and nodes, value of max deflection
+    set tri_info [trinfo ${shape}]
+    set triinfo_pattern "(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[-0-9.+eE\]+)"
+    if {![regexp "${triinfo_pattern}" ${tri_info} dump cur_nb_triangles cur_nb_nodes cur_deflection]} {
+        puts "Error: command trinfo prints empty info"
+    }
+
+    # get reference values from -ref option
+    if { "${ref_info}" != ""} {
+        if {![regexp "${triinfo_pattern}" ${ref_info} dump ref_nb_triangles ref_nb_nodes ref_deflection]} {
+            puts "Error: reference information gived by -ref option is wrong"
+        }
+    }
+
+    # check number of triangles
+    if { [string is boolean ${ref_nb_triangles}] } {
+        if { ${cur_nb_triangles} <= 0 && ${ref_nb_triangles} } {
+            puts "Error: Number of triangles is equal to 0"
+        }
+    } else {
+        if {[regexp {!([-0-9.+eE]+)} $ref_nb_triangles full ref_nb_triangles_value]} {
+            if  {${ref_nb_triangles_value} == ${cur_nb_triangles} } {
+                puts "Error: Number of triangles is equal to ${ref_nb_triangles_value} but it should not"
+            }
+        } else {
+            checkreal "Number of triangles" ${cur_nb_triangles} ${ref_nb_triangles} ${tol_abs_tri} ${tol_rel_tri}
+        }
+    }
+
+    # check number of nodes
+    if { [string is boolean ${ref_nb_nodes}] } {
+        if { ${cur_nb_nodes} <= 0 && ${ref_nb_nodes} } {
+            puts "Error: Number of nodes is equal to 0"
+        }
+    } else {
+        if {[regexp {!([-0-9.+eE]+)} $ref_nb_nodes full ref_nb_nodes_value]} {
+            if  {${ref_nb_nodes_value} == ${cur_nb_nodes} } {
+                puts "Error: Number of nodes is equal to ${ref_nb_nodes_value} but it should not"
+            }
+        } else {
+            checkreal "Number of nodes" ${cur_nb_nodes} ${ref_nb_nodes} ${tol_abs_nod} ${tol_rel_nod}
+        }
+    }
+
+    # check deflection
+    if { [string is boolean ${ref_deflection}] } {
+        if { ${cur_deflection} <= 0 && ${ref_deflection} } {
+            puts "Error: Maximal deflection is equal to 0"
+        }
+    } else {
+        checkreal "Maximal deflection" ${cur_deflection} ${ref_deflection} ${tol_abs_defl} ${tol_rel_defl}
+    }
+
+    if { ${max_defl} != -1 && ${cur_deflection} > ${max_defl} } {
+        puts "Error: Maximal deflection is too big"
+    }
 }
