@@ -111,14 +111,23 @@ TopoDS_Shape BRepOffsetAPI_MakePipe::LastShape()
   return myPipe.LastShape();
 }
 
+//=======================================================================
+//function : Generated
+//purpose  : standard method
+//=======================================================================
+const TopTools_ListOfShape& BRepOffsetAPI_MakePipe::Generated(const TopoDS_Shape& S) 
+{
+  myPipe.Generated(S, myGenerated);
+  return myGenerated;
+}
 
 //=======================================================================
 //function : Generated
-//purpose  : 
+//purpose  : returns generated elementary subshape
 //=======================================================================
 
-TopoDS_Shape BRepOffsetAPI_MakePipe::Generated (const TopoDS_Shape& SSpine,
-					  const TopoDS_Shape& SProfile)
+TopoDS_Shape BRepOffsetAPI_MakePipe::Generated(const TopoDS_Shape& SSpine,
+                                               const TopoDS_Shape& SProfile)
 {
   if (SProfile.ShapeType () == TopAbs_EDGE) {
     return myPipe.Face (TopoDS::Edge (SSpine), TopoDS::Edge (SProfile));

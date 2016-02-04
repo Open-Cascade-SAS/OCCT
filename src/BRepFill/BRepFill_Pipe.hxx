@@ -27,6 +27,7 @@
 #include <TopTools_HArray2OfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomFill_Trihedron.hxx>
@@ -73,6 +74,10 @@ public:
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
   
   Standard_EXPORT const TopoDS_Shape& LastShape() const;
+  
+  //! Returns the  list   of shapes generated   from the
+  //! shape <S>.
+  Standard_EXPORT void Generated (const TopoDS_Shape& S, TopTools_ListOfShape& L);
   
   //! Returns the face created from an edge of the spine
   //! and an edge of the profile.
@@ -140,6 +145,7 @@ private:
   Standard_Integer myCurIndexOfSectionEdge;
   TopoDS_Shape myFirst;
   TopoDS_Shape myLast;
+  TopTools_DataMapOfShapeListOfShape myGenMap;
   Standard_Integer myDegmax;
   Standard_Integer mySegmax;
   GeomAbs_Shape myContinuity;

@@ -79,7 +79,9 @@ public:
   //! Returns the TopoDS Shape of the top of the prism.
   Standard_EXPORT TopoDS_Shape LastShape() Standard_OVERRIDE;
   
-  Standard_EXPORT TopoDS_Shape Generated (const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
+  Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
+  
+  Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
   
   Standard_EXPORT Standard_Real ErrorOnSurface() const;
 

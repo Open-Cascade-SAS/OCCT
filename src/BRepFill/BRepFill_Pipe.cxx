@@ -70,6 +70,38 @@
 static Standard_Boolean Affich = 0;
 #endif
 
+// ---------------------------------------------------------------------------------
+// static function: UpdateMap
+// purpose:
+// ---------------------------------------------------------------------------------
+static Standard_Boolean UpdateMap(const TopoDS_Shape&                 theKey,
+                                  const TopoDS_Shape&                 theValue,
+                                  TopTools_DataMapOfShapeListOfShape& theMap)
+{
+  if(!theMap.IsBound(theKey))
+  {
+    TopTools_ListOfShape thelist;
+    theMap.Bind(theKey, thelist);
+  }
+  TopTools_ListOfShape& aList = theMap.ChangeFind(theKey);
+  TopTools_ListIteratorOfListOfShape anIt(aList);
+  Standard_Boolean found = Standard_False;
+
+  for(; anIt.More(); anIt.Next())
+  {
+    if(theValue.IsSame(anIt.Value()))
+    {
+      found = Standard_True;
+      break;
+    }
+  }
+
+  if(!found)
+    aList.Append(theValue);
+  
+  return !found;
+}
+
 static void ReverseModifiedEdges(TopoDS_Shape& aShape,
                                  TopTools_MapOfShape& Emap)
 {
@@ -375,6 +407,47 @@ const TopoDS_Shape& BRepFill_Pipe::LastShape() const
   return myLast;
 }
 
+//=======================================================================
+//function : Generated
+//purpose  : 
+//=======================================================================
+void BRepFill_Pipe::Generated(const TopoDS_Shape&   theShape,
+                              TopTools_ListOfShape& theList) 
+{
+  theList.Clear();
+
+  if (theShape.IsSame(myProfile))
+    theList.Append(myShape);
+  else
+  {
+    if (theShape.ShapeType() == TopAbs_FACE ||
+        theShape.ShapeType() == TopAbs_WIRE)
+    {
+      if(myGenMap.IsBound(theShape))
+        theList = myGenMap.Find(theShape);
+    }
+    else if (theShape.ShapeType() == TopAbs_EDGE)
+    {
+      TopoDS_Iterator itw(mySpine);
+      for (; itw.More(); itw.Next())
+      {
+        const TopoDS_Edge& aSpineEdge = TopoDS::Edge(itw.Value());
+        const TopoDS_Shape& aFace = Face(aSpineEdge, TopoDS::Edge(theShape));
+        theList.Append(aFace);
+      }
+    }
+    else if (theShape.ShapeType() == TopAbs_VERTEX)
+    {
+      TopoDS_Iterator itw(mySpine);
+      for (; itw.More(); itw.Next())
+      {
+        const TopoDS_Edge& aSpineEdge = TopoDS::Edge(itw.Value());
+        const TopoDS_Shape& anEdge = Edge(aSpineEdge, TopoDS::Vertex(theShape));
+        theList.Append(anEdge);
+      }
+    }
+  }
+}
 
 //=======================================================================
 //function : Face
@@ -641,6 +714,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.Build( myReversedEdges, myTapes, myRails,
                   BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
+      UpdateMap(TheS.Located(myProfile.Location()), result, myGenMap);
       myErrorOnSurf = MkSw.ErrorOnSurface();
 
       Handle(TopTools_HArray2OfShape) aSections = MkSw.Sections();
@@ -663,6 +737,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.Build( myReversedEdges, myTapes, myRails,
                   BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
+      UpdateMap(TheS.Located(myProfile.Location()), result, myGenMap);
       myErrorOnSurf = MkSw.ErrorOnSurface();
       //Correct <myFirst> and <myLast>
       ReverseModifiedEdges(myFirst, myReversedEdges);
@@ -770,6 +845,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       BS.Add(solid,TopoDS::Shell(aLocalShape));
 //      BS.Add(solid,TopoDS::Shell(result.Reversed()));
     }
+    UpdateMap(TheS.Located(myProfile.Location()), solid, myGenMap);
     return solid;
   }
   else {
