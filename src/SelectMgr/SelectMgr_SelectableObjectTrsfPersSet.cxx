@@ -137,7 +137,10 @@ const NCollection_Handle<BVH_Tree<Standard_Real, 3> >&
     if (anObject->TransformPersistence().Flags && !(anObject->TransformPersistence().Flags & Graphic3d_TMF_2d))
     {
       anObject->BoundingBox (aBoundingBox);
-      anObject->TransformPersistence().Apply (theProjectionMatrix, theWorldViewMatrix, 0, 0, aBoundingBox);
+      if (!aBoundingBox.IsVoid())
+      {
+        anObject->TransformPersistence().Apply (theProjectionMatrix, theWorldViewMatrix, 0, 0, aBoundingBox);
+      }
     }
 
     if (aBoundingBox.IsVoid())
