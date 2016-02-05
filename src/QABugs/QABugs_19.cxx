@@ -3740,7 +3740,6 @@ static Standard_Integer OCC25574 (Draw_Interpretor& theDI, Standard_Integer /*ar
     }
 
     // set the same angles in quaternion
-    gp_Quaternion aQuat;
     aQuat.SetEulerAngles (gp_EulerSequence(i), anAngle[0], anAngle[1], anAngle[2]);
 
     gp_Mat aRQ = aQuat.GetMatrix();
@@ -3808,7 +3807,6 @@ static Standard_Integer OCC25574 (Draw_Interpretor& theDI, Standard_Integer /*ar
     q.Set(0.06766916507860499, 0.21848101129786085, 0.11994599260380681,0.9660744746954637);
 
     q.GetEulerAngles(gp_Intrinsic_ZYX, alpha,beta, gamma);
-    Standard_Real alpha2,beta2,gamma2;
     q.GetEulerAngles(gp_Extrinsic_XYZ, alpha2,beta2,gamma2);
 
     // gp_Intrinsic_ZYX and gp_Extrinsic_XYZ should produce the same values of angles but in opposite order

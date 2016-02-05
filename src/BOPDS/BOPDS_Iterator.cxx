@@ -280,7 +280,6 @@ void BOPDS_Iterator::Intersect()
   BOPDS_MapOfPassKeyBoolean aMPKXB(100, aAllocator);
   BOPDS_PassKeyBoolean aPKXB; 
   //
-  BOPCol_BoxBndTreeSelector aSelector;
   BOPCol_BoxBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   //
