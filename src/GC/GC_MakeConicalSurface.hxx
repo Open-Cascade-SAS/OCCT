@@ -125,7 +125,6 @@ public:
   Standard_EXPORT const Handle(Geom_ConicalSurface)& Value() const;
 
   operator const Handle(Geom_ConicalSurface)& () const { return Value(); }
-  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
   Handle(Geom_ConicalSurface) TheCone;

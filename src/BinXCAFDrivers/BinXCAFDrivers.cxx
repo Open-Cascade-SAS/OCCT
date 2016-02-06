@@ -40,7 +40,7 @@ const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& t
 #ifdef OCCT_DEBUG
     cout << "BinXCAFDrivers : Storage Plugin" << endl;
 #endif
-    static Handle(BinXCAFDrivers_DocumentStorageDriver) model_sd =
+    static Handle(Standard_Transient) model_sd =
       new BinXCAFDrivers_DocumentStorageDriver;
     return model_sd;
   }
@@ -50,7 +50,7 @@ const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& t
 #ifdef OCCT_DEBUG
     cout << "BinXCAFDrivers : Retrieval Plugin" << endl;
 #endif
-    static Handle(BinXCAFDrivers_DocumentRetrievalDriver) model_rd =
+    static Handle(Standard_Transient) model_rd =
       new BinXCAFDrivers_DocumentRetrievalDriver;
     return model_rd;
   }

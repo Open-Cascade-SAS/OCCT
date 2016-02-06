@@ -88,7 +88,6 @@ public:
   Standard_EXPORT const Handle(Geom2d_Ellipse)& Value() const;
 
   operator const Handle(Geom2d_Ellipse)& () const { return Value(); }
-  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
   Handle(Geom2d_Ellipse) TheEllipse;

@@ -102,7 +102,6 @@ public:
   Standard_EXPORT const Handle(Geom_Plane)& Value() const;
 
   operator const Handle(Geom_Plane)& () const { return Value(); }
-  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
   Handle(Geom_Plane) ThePlane;

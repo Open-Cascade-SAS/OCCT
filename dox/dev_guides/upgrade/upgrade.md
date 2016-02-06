@@ -219,6 +219,8 @@ Handle(Geom_TrimmedCurve) aCurve = new Geom_TrimmedCurve (...);
 func (aCurve); // ambiguity error in VC++ 10
 ~~~~~
 
+Note that this problem does not appear if macro *OCCT_HANDLE_NOCAST* is used, see @ref upgrade_occt700_cdl_nocast "below".
+
 To resolve this ambiguity, change your code so that argument type should correspond exactly to the function signature. 
 In some cases this can be done by using the relevant type for the corresponding variable, like in the example above:
 
@@ -261,6 +263,16 @@ or use variable of the appropriate type:
 ~~~~~
 Handle(Geom_TrimmedCurve) aC = GC_MakeLine (p, v); // ok
 ~~~~~
+
+With GCC compiler, similar problem appears when const handle to derived type is used to construct handle to base type via assignment (and in some cases in return statement), for instance:
+
+~~~~~
+  const Handle(Geom_Line) aLine;
+  Handle(Geom_Curve) c1 = aLine; // GCC error 
+  Handle(Geom_Curve) c2 (aLine); // ok
+~~~~~
+
+This problem is specific to GCC and it does not appear if macro *OCCT_HANDLE_NOCAST* is used, see @ref upgrade_occt700_cdl_nocast "below".
 
 #### Incorrect use of STANDARD_TYPE and Handle macros
 
@@ -317,7 +329,8 @@ Here is the list of known possible problems at run time after the upgrade to OCC
 #### References to temporary objects
 
 In previous versions, the compiler was able to detect the situation when a local variable of a "reference to a Handle" type is initialized by temporary object, and ensured that lifetime of that object is longer than that of the variable. 
-Since OCCT 7.0, it will not work if types of the temporary object and variable are different (due to involvement of user-defined type cast), thus such temporary object will be destroyed immediately.
+In OCCT 7.0 with default options, it will not work if types of the temporary object and variable are different (due to involvement of user-defined type cast), thus such temporary object will be destroyed immediately.
+This problem does not appear if macro *OCCT_HANDLE_NOCAST* is used during compilation, see below.
 
 Example:
 
@@ -326,6 +339,42 @@ Example:
 const Handle(Geom_BoundedCurve)& aBC =
 Handle(Geom_TrimmedCurve)::DownCast(aCurve);
 aBC->Transform (T); // access violation in OCCT 7.0
+~~~~~
+
+@subsubsection upgrade_occt700_cdl_nocast Option to avoid cast of handle to reference to base type
+
+In OCCT 6.x and earlier versions the handle classes formed a hierarchy echoing hierarchy of corresponding object classes.
+This automatically enabled possibility to use handle to derived class in all contexts where handle to base class was needed, e.g. pass it in function by reference without copying:
+
+~~~~
+Standard_Boolean GetCurve (Handle(Geom_Curve)& theCurve);
+....
+Handle(Geom_Line) aLine;
+if (GetCurve (aLine)) {
+  // use aLine, unsafe
+}
+~~~~
+
+This feature was used in multiple places in OCCT and dependent projects.
+However it is potentially unsafe: in the above example no checks are done at compile time or at run time to ensure that argument handle is assigned a type compatible with the type of handle passed as argument. 
+If object of incompatible type (e.g. Geom_Circle) is assigned to *theCurve*, the behavior will be unpredictable.
+
+For compatibility with existing code, by default OCCT 7.0 keeps this possibility, providing operators of type cast to handle to base type.
+Besides being unsafe, in specific situations this feature may cause compile-time or run-time errors as described above.
+
+In order to provide safer behavior, this feature can be disabled by defining a compile-time macro *OCCT_HANDLE_NOCAST*.
+When it is defined, constructors and assignment operators are defined (instead of type cast operators) to convert from handle to defived type to handle to base type.
+This implies creation of temporary objects and hence may be more expensive at run time in some circumstances, however this way is more standard, safer, and in general recommended.
+
+The code that relies on possibility of casting to base should be amended so that handle of argument type is always used in function call, and to use DownCast() to safely convert the result to desired type.
+For instance, the code from the example below can be changed as follows:
+
+~~~~~
+Handle(Geom_Line) aLine;
+Handle(Geom_Curve) aCurve;
+if (GetCurve (aCure) && !(aLine = Handle(Geom_Line)::DownCast (aCurve)).IsNull()) {
+  // use aLine safely
+}
 ~~~~~
 
 @subsubsection upgrade_occt700_cdl_compat Preserving compatibility with OCCT 6.x

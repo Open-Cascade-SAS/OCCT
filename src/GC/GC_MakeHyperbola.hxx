@@ -89,7 +89,6 @@ public:
   Standard_EXPORT const Handle(Geom_Hyperbola)& Value() const;
 
   operator const Handle(Geom_Hyperbola)& () const { return Value(); }
-  operator const Handle(Geom_Curve)& () const { return Value(); }
 
 private:
   Handle(Geom_Hyperbola) TheHyperbola;

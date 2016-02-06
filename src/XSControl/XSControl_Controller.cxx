@@ -659,7 +659,7 @@ static IFSelect_ReturnStatus TransferFinder
   dispfiles->SetFinalSelection(slr);
   WS->AddNamedItem ("xst-disp-files",dispfiles);
   Handle(IFSelect_DispPerSignature) dispsign = new IFSelect_DispPerSignature;
-  dispsign->SetSignCounter(new IFSelect_SignCounter(stc));
+  dispsign->SetSignCounter(new IFSelect_SignCounter(Handle(IFSelect_Signature)(stc)));
   dispsign->SetFinalSelection(slr);
   WS->AddNamedItem ("xst-disp-sign",dispsign);
 

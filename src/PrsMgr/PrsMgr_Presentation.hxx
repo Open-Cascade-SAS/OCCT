@@ -133,7 +133,7 @@ private:
   Standard_EXPORT static Handle(Prs3d_Projector) Projector (const Handle(Graphic3d_DataStructureManager)& theProjector);
 
   Handle(PrsMgr_PresentationManager) myPresentationManager;
-  Handle(PrsMgr_Prs) myStructure;
+  Handle(Prs3d_Presentation) myStructure;
   PrsMgr_PresentableObjectPointer myPresentableObject;
   Standard_Boolean myMustBeUpdated;
   Standard_Integer myBeforeHighlightState;

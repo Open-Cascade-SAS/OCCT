@@ -40,7 +40,7 @@ namespace
     State_Visible
   };
 
-  static BeforeHighlightState StructureState(const Handle(PrsMgr_Prs)& theStructure)
+  static BeforeHighlightState StructureState(const Handle(Prs3d_Presentation)& theStructure)
   {
     return !theStructure->IsDisplayed() ?
       State_Empty : !theStructure->IsVisible() ?

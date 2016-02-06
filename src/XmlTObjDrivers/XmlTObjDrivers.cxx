@@ -38,7 +38,7 @@ const Handle(Standard_Transient)& XmlTObjDrivers::Factory(const Standard_GUID& a
 #ifdef OCCT_DEBUG
     cout << "XmlTObjDrivers : Storage Plugin" << endl;
 #endif
-    static Handle(XmlTObjDrivers_DocumentStorageDriver) model_sd
+    static Handle(Standard_Transient) model_sd
       = new XmlTObjDrivers_DocumentStorageDriver
         ("Copyright: Open CASCADE 2004"); // default copyright
     return model_sd;
@@ -49,7 +49,7 @@ const Handle(Standard_Transient)& XmlTObjDrivers::Factory(const Standard_GUID& a
 #ifdef OCCT_DEBUG
     cout << "XmlTObjDrivers : Retrieval Plugin" << endl;
 #endif
-    static Handle (XmlTObjDrivers_DocumentRetrievalDriver) model_rd
+    static Handle (Standard_Transient) model_rd
       = new XmlTObjDrivers_DocumentRetrievalDriver;
     return model_rd;
   }

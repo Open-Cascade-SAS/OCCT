@@ -1350,12 +1350,12 @@ Standard_Boolean AIS_LocalContext::IsShape(const Standard_Integer Index) const
 
 Standard_Boolean AIS_LocalContext::IsValidForSelection(const Handle(AIS_InteractiveObject)& anIObj) const 
 {
-
+  const Handle(SelectMgr_SelectableObject)& aSelObj = anIObj; // to avoid ambiguity
   // Shape was not transfered from AIS_Shape to EntityOwner
   Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(anIObj);
   if( !shape.IsNull() ) 
-    return myFilters->IsOk(new StdSelect_BRepOwner(shape->Shape(),shape));
-  return myFilters->IsOk(new SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)anIObj));
+    return myFilters->IsOk(new StdSelect_BRepOwner(shape->Shape(), aSelObj));
+  return myFilters->IsOk(new SelectMgr_EntityOwner(aSelObj));
 }
 
 

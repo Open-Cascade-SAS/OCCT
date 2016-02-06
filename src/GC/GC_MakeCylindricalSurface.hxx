@@ -113,7 +113,6 @@ public:
   Standard_EXPORT const Handle(Geom_CylindricalSurface)& Value() const;
 
   operator const Handle(Geom_CylindricalSurface)& () const { return Value(); }
-  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
   Handle(Geom_CylindricalSurface) TheCylinder;

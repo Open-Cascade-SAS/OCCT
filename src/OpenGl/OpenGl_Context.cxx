@@ -210,7 +210,7 @@ OpenGl_Context::~OpenGl_Context()
   }
 
   // release shared resources if any
-  if (((const Handle(Standard_Transient)& )mySharedResources)->GetRefCount() <= 1)
+  if (mySharedResources->GetRefCount() <= 1)
   {
     myShaderManager.Nullify();
     for (NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)>::Iterator anIter (*mySharedResources);
@@ -2384,7 +2384,7 @@ void OpenGl_Context::ReleaseResource (const TCollection_AsciiString& theKey,
   {
     return;
   }
-  const Handle(OpenGl_Resource)& aRes = mySharedResources->Find (theKey);
+  auto& aRes = mySharedResources->Find (theKey);
   if (aRes->GetRefCount() > 1)
   {
     return;
@@ -2432,7 +2432,7 @@ void OpenGl_Context::ReleaseDelayed()
       continue;
     }
 
-    Handle(OpenGl_Resource)& aRes = mySharedResources->ChangeFind (aKey);
+    auto& aRes = mySharedResources->ChangeFind (aKey);
     if (aRes->GetRefCount() > 1)
     {
       // should be only 1 instance in mySharedResources

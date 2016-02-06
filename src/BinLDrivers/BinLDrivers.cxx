@@ -45,7 +45,7 @@ const Handle(Standard_Transient)& BinLDrivers::Factory(const Standard_GUID& theG
 #ifdef OCCT_DEBUG
     cout << "BinLDrivers : Storage Plugin" << endl;
 #endif
-    static Handle(BinLDrivers_DocumentStorageDriver) model_sd =
+    static Handle(Standard_Transient) model_sd =
       new BinLDrivers_DocumentStorageDriver;
     return model_sd;
   }
@@ -55,7 +55,7 @@ const Handle(Standard_Transient)& BinLDrivers::Factory(const Standard_GUID& theG
 #ifdef OCCT_DEBUG
     cout << "BinLDrivers : Retrieval Plugin" << endl;
 #endif
-    static Handle(BinLDrivers_DocumentRetrievalDriver) model_rd =
+    static Handle(Standard_Transient) model_rd =
       new BinLDrivers_DocumentRetrievalDriver;
     return model_rd;
   }

@@ -68,7 +68,7 @@ void TopOpeBRepBuild_LoopSet::NextLoop()
 //purpose  : 
 //=======================================================================
 
-const Handle(TopOpeBRepBuild_Loop)& TopOpeBRepBuild_LoopSet::Loop() const
+Handle(TopOpeBRepBuild_Loop) TopOpeBRepBuild_LoopSet::Loop() const
 {
   const Handle(TopOpeBRepBuild_Loop)& L = myLoopIterator.Value();
   return L;

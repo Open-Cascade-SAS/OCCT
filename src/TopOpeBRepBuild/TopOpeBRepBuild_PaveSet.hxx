@@ -57,7 +57,7 @@ public:
   
   Standard_EXPORT virtual void NextLoop() Standard_OVERRIDE;
   
-  Standard_EXPORT virtual const Handle(TopOpeBRepBuild_Loop)& Loop() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(TopOpeBRepBuild_Loop) Loop() const Standard_OVERRIDE;
   
   Standard_EXPORT const TopoDS_Edge& Edge() const;
   

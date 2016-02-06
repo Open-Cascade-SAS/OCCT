@@ -45,7 +45,7 @@ const Handle(Standard_Transient)& XmlLDrivers::Factory(const Standard_GUID& theG
 #ifdef OCCT_DEBUG
     cout << "XmlLDrivers : Storage Plugin" << endl;
 #endif
-    static Handle(XmlLDrivers_DocumentStorageDriver) model_sd =
+    static Handle(Standard_Transient) model_sd =
       new XmlLDrivers_DocumentStorageDriver
         ("Copyright: Open Cascade, 2001-2002"); // default copyright
     return model_sd;
@@ -56,7 +56,7 @@ const Handle(Standard_Transient)& XmlLDrivers::Factory(const Standard_GUID& theG
 #ifdef OCCT_DEBUG
     cout << "XmlLDrivers : Retrieval Plugin" << endl;
 #endif
-    static Handle (XmlLDrivers_DocumentRetrievalDriver) model_rd =
+    static Handle (Standard_Transient) model_rd =
       new XmlLDrivers_DocumentRetrievalDriver ();
     return model_rd;
   }

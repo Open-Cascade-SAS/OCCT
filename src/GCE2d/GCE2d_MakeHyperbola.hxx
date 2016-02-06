@@ -108,7 +108,6 @@ public:
   Standard_EXPORT const Handle(Geom2d_Hyperbola)& Value() const;
 
   operator const Handle(Geom2d_Hyperbola)& () const { return Value(); }
-  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
   Handle(Geom2d_Hyperbola) TheHyperbola;

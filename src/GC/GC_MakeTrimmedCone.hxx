@@ -77,7 +77,6 @@ public:
   Standard_EXPORT const Handle(Geom_RectangularTrimmedSurface)& Value() const;
 
   operator const Handle(Geom_RectangularTrimmedSurface)& () const { return Value(); }
-  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
   Handle(Geom_RectangularTrimmedSurface) TheCone;

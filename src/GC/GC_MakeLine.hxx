@@ -78,7 +78,6 @@ public:
   Standard_EXPORT const Handle(Geom_Line)& Value() const;
 
   operator const Handle(Geom_Line)& () const { return Value(); }
-  operator const Handle(Geom_Curve)& () const { return Value(); }
 
 private:
   Handle(Geom_Line) TheLine;

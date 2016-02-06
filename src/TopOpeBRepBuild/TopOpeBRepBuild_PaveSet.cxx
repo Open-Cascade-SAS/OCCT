@@ -337,10 +337,9 @@ void  TopOpeBRepBuild_PaveSet::NextLoop()
 //purpose  : 
 //=======================================================================
 
-const Handle(TopOpeBRepBuild_Loop)& TopOpeBRepBuild_PaveSet::Loop()const 
+Handle(TopOpeBRepBuild_Loop) TopOpeBRepBuild_PaveSet::Loop()const 
 {
-  const Handle(TopOpeBRepBuild_Loop)& L = myVerticesIt.Value();
-  return L;
+  return Handle(TopOpeBRepBuild_Loop)(myVerticesIt.Value());
 }
 
 

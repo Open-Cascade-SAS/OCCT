@@ -33,7 +33,7 @@ const Handle(Standard_Transient)& XmlXCAFDrivers::Factory(const Standard_GUID& a
 #ifdef OCCT_DEBUG
     cout << "XmlXCAFDrivers : Storage Plugin" << endl;
 #endif
-    static Handle(XmlXCAFDrivers_DocumentStorageDriver) model_sd 
+    static Handle(Standard_Transient) model_sd 
       = new XmlXCAFDrivers_DocumentStorageDriver
         ("Copyright: Open Cascade, 2001-2002"); // default copyright
     return model_sd;
@@ -43,7 +43,7 @@ const Handle(Standard_Transient)& XmlXCAFDrivers::Factory(const Standard_GUID& a
 #ifdef OCCT_DEBUG
     cout << "XmlXCAFDrivers : Retrieval Plugin" << endl;
 #endif
-    static Handle (XmlXCAFDrivers_DocumentRetrievalDriver) model_rd 
+    static Handle (Standard_Transient) model_rd 
       = new XmlXCAFDrivers_DocumentRetrievalDriver;
     return model_rd;
   }

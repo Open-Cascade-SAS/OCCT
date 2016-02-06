@@ -37,7 +37,7 @@ const Handle(Standard_Transient)& BinTObjDrivers::Factory(const Standard_GUID& a
 #ifdef OCCT_DEBUG
     cout << "BinTObjDrivers : Storage Plugin" << endl;
 #endif
-    static Handle(BinTObjDrivers_DocumentStorageDriver) model_sd
+    static Handle(Standard_Transient) model_sd
       = new BinTObjDrivers_DocumentStorageDriver;
     return model_sd;
   }
@@ -47,7 +47,7 @@ const Handle(Standard_Transient)& BinTObjDrivers::Factory(const Standard_GUID& a
 #ifdef OCCT_DEBUG
     cout << "BinTObjDrivers : Retrieval Plugin" << endl;
 #endif
-    static Handle (BinTObjDrivers_DocumentRetrievalDriver) model_rd
+    static Handle (Standard_Transient) model_rd
       = new BinTObjDrivers_DocumentRetrievalDriver;
     return model_rd;
   }
