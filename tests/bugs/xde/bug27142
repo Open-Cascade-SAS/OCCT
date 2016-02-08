@@ -1,0 +1,98 @@
+puts "=========="
+puts "0027142: Data Exchange - add possibility to set location in XCAFDoc_ShapeTool interface"
+puts "=========="
+puts ""
+
+puts "TODO 0027142 ALL: Error: area of d1"
+puts "TODO 0027142 ALL: Error: area of d2"
+puts "TODO 0027142 ALL: Error: center of gravity"
+
+pload OCAF XDE
+Close Doc -silent
+XNewDoc Doc
+
+# Create five boxes 'a', 'b', 'c', 'd', 'e'
+# Box 'e' will stay at origin of coords
+# Boxes 'a', 'b', 'c', 'd' should form the new box of the size 2x2x1 at the point (3 3 0)
+box a 1 1 1
+box b 1 1 1
+ttranslate b 1 1 0
+compound a b ab
+XAddShape Doc ab
+SetName Doc 0:1:1:1 ab
+SetName Doc 0:1:1:1:1 ref_a
+SetName Doc 0:1:1:1:2 ref_b
+SetName Doc 0:1:1:2 a
+SetName Doc 0:1:1:3 b
+box c 1 1 1
+ttranslate c 1 0 0
+box d 0.5 0.5 0.5
+XAddShape Doc c
+SetName Doc 0:1:1:4 ref_c
+SetName Doc 0:1:1:5 c
+XAddShape Doc d
+SetName Doc 0:1:1:6 d
+box e 1 1 1
+XAddShape Doc e
+SetName Doc 0:1:1:7 e
+
+# Set location to the assembly (compound of boxes 'a' and 'b')
+XSetLocation Doc 0:1:1:1 -rotate 0 0 0 0 0 1 90 -move 4 2 0
+SetName Doc 0:1:1:8 ref_ab
+# Set location to the reference to shape (box 'c')
+XSetLocation Doc 0:1:1:4 -move 1 0 0 -move 1 3 0
+# Set location to the simple shape (box 'd')
+XSetLocation Doc 0:1:1:6 -move 2 2 0 -scale 2 2 0 2
+SetName Doc 0:1:1:9 ref_d
+
+# Write the document to files of different formats
+WriteStep Doc ${imagedir}/step.step
+WriteIges Doc ${imagedir}/iges.iges
+XSave Doc ${imagedir}/xbf.xbf
+Close Doc
+
+# Read document back and make screenshots
+vinit
+ReadStep Doc1 ${imagedir}/step.step
+XDisplay Doc1; vfit
+vdump ${imagedir}/step.png
+vclear
+ReadIges Doc2 ${imagedir}/iges.iges
+XDisplay Doc2; vfit
+vdump ${imagedir}/iges.png
+vclear
+XOpen ${imagedir}/xbf.xbf Doc3
+XDisplay Doc3; vfit
+vdump ${imagedir}/xbf.png
+vclose
+
+# Get the box 'd' from the documents
+XGetShape d1 Doc1 0:1:1:8
+XGetShape d2 Doc2 0:1:1:4
+XGetShape d3 Doc3 0:1:1:9
+
+# Saving disk space
+Close Doc1
+Close Doc2
+Close Doc3
+file delete $imagedir/step.step
+file delete $imagedir/iges.iges
+file delete $imagedir/xbf.xbf
+
+# Scale transformation doesn't apply in STEP format and incorrectly applies in IGES format
+
+# Check the areas of the "problem" box 'd'
+puts "Check area of the box from STEP file"
+checkarea d1 6 1e-7 0.001
+puts "Check area of the box from IGES file"
+checkarea d2 6 1e-7 0.001
+puts "Check area of the box from XBF file"
+checkarea d3 6 1e-7 0.001
+
+# Check the gravity centers of the "problem" box 'd'
+puts "Check gravity center of the box from STEP file"
+checkgravitycenter d1 -s 2.5 2.5 0.5 1e-7
+puts "Check gravity center of the box from IGES file"
+checkgravitycenter d2 -s 2.5 2.5 0.5 1e-7
+puts "Check gravity center of the box from XBF file"
+checkgravitycenter d3 -s 2.5 2.5 0.5 1e-7

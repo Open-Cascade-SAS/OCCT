@@ -417,6 +417,40 @@ void XCAFDoc_ShapeTool::MakeReference (const TDF_Label &L,
 }
 
 //=======================================================================
+// function : SetLocation
+// purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_ShapeTool::SetLocation (const TDF_Label& theShapeLabel,
+                                                 const TopLoc_Location& theLoc,
+                                                 TDF_Label& theRefLabel)
+{
+  if (theLoc.IsIdentity())
+  {
+    theRefLabel = theShapeLabel;
+    return Standard_True;
+  }
+  // if input label is reference -> just change the location attribute
+  if (IsReference (theShapeLabel))
+  {
+    TopLoc_Location anOldLoc;
+    anOldLoc = GetLocation (theShapeLabel);
+    TopLoc_Location aNewLoc (theLoc.Transformation() * anOldLoc.Transformation());
+    XCAFDoc_Location::Set(theShapeLabel, aNewLoc);
+    theRefLabel = theShapeLabel;
+    return Standard_True;
+  }
+  // if input label is shape, and it is free -> create reference to the shape
+  if (IsShape(theShapeLabel) && IsFree(theShapeLabel))
+  {
+    theRefLabel = TDF_TagSource::NewChild (Label());
+    MakeReference (theRefLabel, theShapeLabel, theLoc);
+    return Standard_True;
+  }
+  // other cases of label meaning doesn't need to apply new location
+  return Standard_False;
+}
+
+//=======================================================================
 //function : addShape
 //purpose  : private
 //=======================================================================

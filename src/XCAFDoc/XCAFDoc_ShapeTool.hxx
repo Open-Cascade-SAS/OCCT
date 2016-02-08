@@ -401,6 +401,15 @@ public:
   //! from upper_usage component to next_usage
   //! Returns null attribute if no SHUO found
   Standard_EXPORT static Standard_Boolean FindSHUO (const TDF_LabelSequence& Labels, Handle(XCAFDoc_GraphNode)& theSHUOAttr);
+
+  //! Sets location to the shape label
+  //! If label is reference -> changes location attribute
+  //! If label is free shape -> creates reference with location to it
+  //! @param[in] theShapeLabel the shape label to change location
+  //! @param[in] theLoc location to set
+  //! @param[out] theRefLabel the reference label with new location
+  //! @return TRUE if new location was set
+  Standard_EXPORT Standard_Boolean SetLocation (const TDF_Label& theShapeLabel, const TopLoc_Location& theLoc, TDF_Label& theRefLabel);
   
   //! Convert Shape (compound/compsolid/shell/wire) to assembly
   Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape);
