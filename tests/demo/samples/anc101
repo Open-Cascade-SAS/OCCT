@@ -1,0 +1,8 @@
+# test for creation of ANC101 shape
+source $env(CASROOT)/samples/tcl/ANC101.tcl
+
+# check result for validity and make a snapshot
+checkshape result
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

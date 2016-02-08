@@ -1,0 +1,8 @@
+# test for creation of MBBGehauseRohteil shape
+source $env(CASROOT)/samples/tcl/MBBGehauseRohteil.tcl
+
+# check result for validity and make a snapshot
+checkshape result
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"
