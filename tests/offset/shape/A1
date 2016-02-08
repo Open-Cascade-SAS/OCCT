@@ -1,5 +1,5 @@
-puts "TODO OCC23068 Linux: ERROR. offsetperform operation not done."
-puts "TODO OCC23068 Linux: Error : The volume of result shape is"
+puts "TODO OCC23068 All: ERROR. offsetperform operation not done."
+puts "TODO OCC23068 All: Error : The volume of result shape is"
 # Original bug : hkg60144
 # Date : 17Juillet98
 

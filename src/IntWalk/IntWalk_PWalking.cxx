@@ -34,61 +34,63 @@
 #include <TColStd_Array1OfReal.hxx>
 
 //==================================================================================
-// function : IntWalk_PWalking::IntWalk_PWalking
-// purpose  :
-// estimate of max step : To avoid abrupt changes 
-// during change of isos 
+// function : ComputePasInit
+// purpose  : estimate of max step : To avoid abrupt changes during change of isos 
 //==================================================================================
-void ComputePasInit(Standard_Real *pasuv,
-                    Standard_Real Um1,Standard_Real UM1,
-                    Standard_Real Vm1,Standard_Real VM1,
-                    Standard_Real Um2,Standard_Real UM2,
-                    Standard_Real Vm2,Standard_Real VM2,
-                    Standard_Real _Um1,Standard_Real _UM1,
-                    Standard_Real _Vm1,Standard_Real _VM1,
-                    Standard_Real _Um2,Standard_Real _UM2,
-                    Standard_Real _Vm2,Standard_Real _VM2,
-                    const Handle(Adaptor3d_HSurface)& Caro1,
-                    const Handle(Adaptor3d_HSurface)& Caro2,
-                    const Standard_Real Increment,
-                    const Standard_Real tolconf)
-{ 
-  Standard_Real du1=Abs(UM1-Um1);
-  Standard_Real dv1=Abs(VM1-Vm1);
-  Standard_Real du2=Abs(UM2-Um2);
-  Standard_Real dv2=Abs(VM2-Vm2);
+void IntWalk_PWalking::ComputePasInit(const Standard_Real theDeltaU1,
+                                      const Standard_Real theDeltaV1,
+                                      const Standard_Real theDeltaU2,
+                                      const Standard_Real theDeltaV2)
+{
+  const Standard_Real aRangePart = 0.01;
+  const Standard_Real Increment = 2.0*pasMax;
+  const Handle(Adaptor3d_HSurface)& 
+          Caro1 = myIntersectionOn2S.Function().AuxillarSurface1();
+  const Handle(Adaptor3d_HSurface)& 
+          Caro2 = myIntersectionOn2S.Function().AuxillarSurface2();
 
-  Standard_Real _du1=Abs(_UM1-_Um1);
-  Standard_Real _dv1=Abs(_VM1-_Vm1);
-  Standard_Real _du2=Abs(_UM2-_Um2);
-  Standard_Real _dv2=Abs(_VM2-_Vm2);
+  const Standard_Real aDeltaU1=Abs(UM1-Um1);
+  const Standard_Real aDeltaV1=Abs(VM1-Vm1);
+  const Standard_Real aDeltaU2=Abs(UM2-Um2);
+  const Standard_Real aDeltaV2=Abs(VM2-Vm2);
 
   //-- limit the reduction of uv box estimate to 0.01 natural box
-  //--  du1 : On box of Inter
-  //-- _du1 : On parametric space
-  if(_du1<1e50 && du1<0.01*_du1) du1=0.01*_du1;
-  if(_dv1<1e50 && dv1<0.01*_dv1) dv1=0.01*_dv1;
-  if(_du2<1e50 && du2<0.01*_du2) du2=0.01*_du2;
-  if(_dv2<1e50 && dv2<0.01*_dv2) dv2=0.01*_dv2;
+  //--  theDeltaU1 : On box of Inter
+  //-- aDeltaU1 : On parametric space
+  if(!Precision::IsInfinite(aDeltaU1))
+    pasuv[0]=Max(Increment*Max(theDeltaU1, aRangePart*aDeltaU1), pasuv[0]);
+  else
+    pasuv[0]=Max(Increment*theDeltaU1, pasuv[0]);
 
-  pasuv[0]=Increment*du1;
-  pasuv[1]=Increment*dv1;
-  pasuv[2]=Increment*du2;
-  pasuv[3]=Increment*dv2;
+  if(!Precision::IsInfinite(aDeltaV1))
+    pasuv[1]=Max(Increment*Max(theDeltaV1, aRangePart*aDeltaV1), pasuv[1]);
+  else
+    pasuv[1]=Max(Increment*theDeltaV1, pasuv[1]);
 
-  Standard_Real ResoU1tol = Adaptor3d_HSurfaceTool::UResolution(Caro1, tolconf);
-  Standard_Real ResoV1tol = Adaptor3d_HSurfaceTool::VResolution(Caro1, tolconf);
-  Standard_Real ResoU2tol = Adaptor3d_HSurfaceTool::UResolution(Caro2, tolconf);
-  Standard_Real ResoV2tol = Adaptor3d_HSurfaceTool::VResolution(Caro2, tolconf);
+  if(!Precision::IsInfinite(aDeltaU2))
+    pasuv[2]=Max(Increment*Max(theDeltaU2, aRangePart*aDeltaU2), pasuv[2]);
+  else
+    pasuv[2]=Max(Increment*theDeltaU2, pasuv[2]);
 
-  if (pasuv[0] < 2*ResoU1tol)
-    pasuv[0] = 2*ResoU1tol;
-  if (pasuv[1] < 2*ResoV1tol)
-    pasuv[1] = 2*ResoV1tol;
-  if (pasuv[2] < 2*ResoU2tol)
-    pasuv[2] = 2*ResoU2tol;
-  if (pasuv[3] < 2*ResoV2tol)
-    pasuv[3] = 2*ResoV2tol;
+  if(!Precision::IsInfinite(aDeltaV2))
+    pasuv[3]=Max(Increment*Max(theDeltaV2, aRangePart*aDeltaV2), pasuv[3]);
+  else
+    pasuv[3]=Max(Increment*theDeltaV2, pasuv[3]);
+
+  const Standard_Real ResoU1tol = Adaptor3d_HSurfaceTool::UResolution(Caro1, tolconf);
+  const Standard_Real ResoV1tol = Adaptor3d_HSurfaceTool::VResolution(Caro1, tolconf);
+  const Standard_Real ResoU2tol = Adaptor3d_HSurfaceTool::UResolution(Caro2, tolconf);
+  const Standard_Real ResoV2tol = Adaptor3d_HSurfaceTool::VResolution(Caro2, tolconf);
+
+  myStepMin[0] = Max(myStepMin[0], 2.0*ResoU1tol);
+  myStepMin[1] = Max(myStepMin[1], 2.0*ResoV1tol);
+  myStepMin[2] = Max(myStepMin[2], 2.0*ResoU2tol);
+  myStepMin[3] = Max(myStepMin[3], 2.0*ResoV2tol);
+
+  for(Standard_Integer i  = 0; i < 4; i++)
+  {
+    pasuv[i]=Max(myStepMin[i], pasuv[i]);
+  }
 }
 
 //=======================================================================
@@ -267,6 +269,7 @@ done(Standard_True),
 close(Standard_False),
 fleche(Deflection),
 tolconf(Epsilon),
+myTolTang(TolTangency),
 sensCheminement(1),
 myIntersectionOn2S(Caro1,Caro2,TolTangency),
 STATIC_BLOCAGE_SUR_PAS_TROP_GRAND(0),
@@ -377,6 +380,11 @@ STATIC_PRECEDENT_INFLEXION(0)
     }
   }
 
+  myStepMin[0] = 100.0*ResoU1;
+  myStepMin[1] = 100.0*ResoV1;
+  myStepMin[2] = 100.0*ResoU2;
+  myStepMin[3] = 100.0*ResoV2;
+
   //-- ComputePasInit(pasuv,Um1,UM1,Vm1,VM1,Um2,UM2,Vm2,VM2,Caro1,Caro2);
 
   for (Standard_Integer i = 0; i<=3;i++) {
@@ -407,6 +415,7 @@ done(Standard_True),
 close(Standard_False),
 fleche(Deflection),
 tolconf(Epsilon),
+myTolTang(TolTangency),
 sensCheminement(1),
 myIntersectionOn2S(Caro1,Caro2,TolTangency),
 STATIC_BLOCAGE_SUR_PAS_TROP_GRAND(0),
@@ -543,6 +552,12 @@ STATIC_PRECEDENT_INFLEXION(0)
   if(ResoV1>0.0001*pasuv[1]) ResoV1=0.00001*pasuv[1];
   if(ResoU2>0.0001*pasuv[2]) ResoU2=0.00001*pasuv[2];
   if(ResoV2>0.0001*pasuv[3]) ResoV2=0.00001*pasuv[3];
+  
+  myStepMin[0] = 100.0*ResoU1;
+  myStepMin[1] = 100.0*ResoV1;
+  myStepMin[2] = 100.0*ResoU2;
+  myStepMin[3] = 100.0*ResoV2;
+
   //
   TColStd_Array1OfReal Par(1,4);
   Par(1) = U1;
@@ -622,6 +637,7 @@ static Standard_Boolean IsTangentExtCheck(const Handle(Adaptor3d_HSurface)& theS
                                           const Standard_Real theV10,
                                           const Standard_Real theU20,
                                           const Standard_Real theV20,
+                                          const Standard_Real theToler,
                                           const Standard_Real theArrStep[])
 {
   {
@@ -645,7 +661,8 @@ static Standard_Boolean IsTangentExtCheck(const Handle(Adaptor3d_HSurface)& theS
     }
   }
 
-  const Standard_Real aSQToler = 4.0e-14;
+  //For two faces (2^2 = 4)
+  const Standard_Real aSQToler = 4.0*theToler*theToler;
   const Standard_Integer aNbItems = 4;
   const Standard_Real aParUS1[aNbItems] = { theU10 + theArrStep[0],
                                             theU10 - theArrStep[0],
@@ -717,22 +734,8 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   const Standard_Real ULast2  = Adaptor3d_HSurfaceTool::LastUParameter (Caro2);
   const Standard_Real VLast2  = Adaptor3d_HSurfaceTool::LastVParameter (Caro2);
   //
-  ComputePasInit(pasuv,u1min,u1max,v1min,v1max,u2min,u2max,v2min,v2max,
-                 Um1,UM1,Vm1,VM1,Um2,UM2,Vm2,VM2,Caro1,Caro2,pasMax+pasMax,tolconf);
-  //
-  if(pasuv[0]<100.0*ResoU1) {
-    pasuv[0]=100.0*ResoU1; 
-  }
-  if(pasuv[1]<100.0*ResoV1) {
-    pasuv[1]=100.0*ResoV1; 
-  }
-  if(pasuv[2]<100.0*ResoU2) {
-    pasuv[2]=100.0*ResoU2;
-  }
-  if(pasuv[3]<100.0*ResoV2) {
-    pasuv[3]=100.0*ResoV2;
-  }
-  //
+  ComputePasInit(u1max - u1min,v1max - v1min,u2max - u2min,v2max - v2min);
+
   for (Standard_Integer i=0; i<4; ++i)
   {
     if(pasuv[i]>10)
@@ -806,7 +809,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
   previousPoint.Parameters(Param(1),Param(2),Param(3),Param(4));
 
-  if(IsTangentExtCheck(Caro1, Caro2, Param(1), Param(2), Param(3), Param(4), pasuv))
+  if(IsTangentExtCheck(Caro1, Caro2, Param(1), Param(2), Param(3), Param(4), myTolTang, pasuv))
     return;
 
   AddAPoint(line,previousPoint);
@@ -1165,28 +1168,13 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
               {
                 pastroppetit=Standard_True;
 
-                if(pasuv[0]<pasInit[0])
+                for(Standard_Integer i = 0; i < 4; i++)
                 {
-                  pasuv[0]+=(pasInit[0]-pasuv[0])*0.25;
-                  pastroppetit=Standard_False;
-                }
-
-                if(pasuv[1]<pasInit[1])
-                {
-                  pasuv[1]+=(pasInit[1]-pasuv[1])*0.25;
-                  pastroppetit=Standard_False;
-                }
-
-                if(pasuv[2]<pasInit[2])
-                {
-                  pasuv[2]+=(pasInit[2]-pasuv[2])*0.25;
-                  pastroppetit=Standard_False; 
-                }
-
-                if(pasuv[3]<pasInit[3])
-                {
-                  pasuv[3]+=(pasInit[3]-pasuv[3])*0.25;
-                  pastroppetit=Standard_False;
+                  if(pasuv[i]<pasInit[i])
+                  {
+                    pasuv[i]+=(pasInit[i]-pasuv[i])*0.25;
+                    pastroppetit=Standard_False;
+                  }
                 }
 
                 if(pastroppetit)
@@ -1209,6 +1197,32 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
             }
 
             break;
+          }
+        case IntWalk_StepTooSmall:
+          {
+            Standard_Boolean hasStepBeenIncreased = Standard_False;
+
+            for(Standard_Integer i = 0; i < 4; i++)
+            {
+              const Standard_Real aNewStep = Min(1.5*pasuv[i], pasInit[i]);
+              if(aNewStep > pasuv[i])
+              {
+                pasuv[i] = aNewStep;
+                hasStepBeenIncreased = Standard_True;
+              }
+            }
+
+            if(hasStepBeenIncreased)
+            {
+              Param(1)=SvParam[0];
+              Param(2)=SvParam[1];
+              Param(3)=SvParam[2];
+              Param(4)=SvParam[3];
+
+              LevelOfIterWithoutAppend = 0;
+
+              break;
+            }
           }
         case IntWalk_OK:
         case IntWalk_ArretSurPoint://006
@@ -1298,6 +1312,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
                     if(RejectIndex >= RejectIndexMAX)
                     {
+                      Arrive = Standard_True;
                       break;
                     }
 
@@ -1385,6 +1400,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
                       if(RejectIndex >= RejectIndexMAX)
                       {
+                        Arrive = Standard_True;
                         break;
                       }
 
@@ -1618,6 +1634,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
                         if(RejectIndex >= RejectIndexMAX)
                         {
+                          Arrive = Standard_True;
                           break;
                         }
 
@@ -2803,7 +2820,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
   }
 
   IntWalk_StatusDeflection Status = IntWalk_OK;
-  Standard_Real FlecheCourante ,Ratio;
+  Standard_Real FlecheCourante , Ratio = 1.0;
 
   // Caro1 and Caro2
   const Handle(Adaptor3d_HSurface)& Caro1 = myIntersectionOn2S.Function().AuxillarSurface1();
@@ -2819,10 +2836,12 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
 
   const gp_Dir& TgCourante = myIntersectionOn2S.Direction();
 
+  const Standard_Real aCosBetweenTangent = TgCourante.Dot(previousd);
+
   //==================================================================================
   //=========   R i s k   o f    i n f l e x i o n   p o i n t  ============
   //==================================================================================  
-  if (TgCourante.Dot(previousd)<0) {
+  if (aCosBetweenTangent < 0) {
     //------------------------------------------------------------
     //-- Risk of inflexion point : Divide the step by 2
     //-- Initialize STATIC_PRECEDENT_INFLEXION so that 
@@ -2840,7 +2859,6 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
     else 
       return IntWalk_PasTropGrand;
   }
-
   else {
     if(STATIC_PRECEDENT_INFLEXION  > 0) { 
       STATIC_PRECEDENT_INFLEXION -- ;
@@ -2852,15 +2870,20 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
   //=========  D e t e c t    c o n f u s e d    P o in t s       ===========
   //==================================================================================
 
-  Standard_Real Dist = previousPoint.Value().
+  const Standard_Real aSqDist = previousPoint.Value().
     SquareDistance(CurrentPoint.Value());
 
 
-  if (Dist < tolconf*tolconf ) { 
-    pasuv[0] = Max(5.*ResoU1,Min(1.5*pasuv[0],pasInit[0]));
-    pasuv[1] = Max(5.*ResoV1,Min(1.5*pasuv[1],pasInit[1]));
-    pasuv[2] = Max(5.*ResoU2,Min(1.5*pasuv[2],pasInit[2]));
-    pasuv[3] = Max(5.*ResoV2,Min(1.5*pasuv[3],pasInit[3]));
+  if (aSqDist < tolconf*tolconf) { 
+    pasInit[0] = Max(pasInit[0], 5.0*ResoU1);
+    pasInit[1] = Max(pasInit[1], 5.0*ResoV1);
+    pasInit[2] = Max(pasInit[2], 5.0*ResoU2);
+    pasInit[3] = Max(pasInit[3], 5.0*ResoV2);
+
+    for(Standard_Integer i = 0; i < 4; i++)
+    {
+      pasuv[i] = Max(pasuv[i], Min(1.5*pasuv[i], pasInit[i]));
+    }
     //Compute local resolution: for OCC26717
     if (Abs(pasuv[choixIso] - pasInit[choixIso]) <= Precision::Confusion())
     {
@@ -3029,7 +3052,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
   //-- Estimate of the vector           --
   //---------------------------------------
   FlecheCourante =
-    Sqrt(Abs((previousd.XYZ()-TgCourante.XYZ()).SquareModulus()*Dist))/8.;
+    Sqrt(Abs((previousd.XYZ()-TgCourante.XYZ()).SquareModulus()*aSqDist))/8.;
 
   if ( FlecheCourante<= fleche*0.5) {     //-- Current step too small
     if(FlecheCourante>1e-16) { 
@@ -3096,10 +3119,114 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
       Ratio = 0.75 * (fleche / FlecheCourante);
     }
   }
-  pasuv[0] = Max(5.*ResoU1,Min(Min(Ratio*AbsDu1,pasuv[0]),pasInit[0]));
-  pasuv[1] = Max(5.*ResoV1,Min(Min(Ratio*AbsDv1,pasuv[1]),pasInit[1]));
-  pasuv[2] = Max(5.*ResoU2,Min(Min(Ratio*AbsDu2,pasuv[2]),pasInit[2]));
-  pasuv[3] = Max(5.*ResoV2,Min(Min(Ratio*AbsDv2,pasuv[3]),pasInit[3]));
+
+  if(Status != IntWalk_PointConfondu)
+  {
+    //Here, aCosBetweenTangent >= 0.0 definitely.
+
+    /*
+    Brief algorithm description.
+    We have two (not-coincindent) intersection point (P1 and P2). In every point,
+    vector of tangent (to the intersection curve) is known (vectors T1 and T2).
+    Basing on these data, we create osculating circle.
+
+                                    * - arc of osculating circle
+                                *      * 
+                           P1 x----------x P2
+                             /            \
+                            /              \
+                          Vec(T1)         Vec(T2)
+
+    Let me draw your attention to the following facts:
+      1. Vectors T1 and T2 direct FROM (not TO) points P1 and P2. Therefore,
+        one of previously computed vector should be reversed.
+
+    In this case, the absolute (!) value of the deflection between the arc of
+    the osculating circle and the P1P2 segment can be computed as follows:
+          e = d*(1-sin(B/2))/(2*cos(B/2)),      (1)
+    where d is the length of P1P2 segment, B is the angle between vectors T1 and T2.
+    At that,
+              pi/2 <= B <= pi,
+              cos(B/2) >= 0,
+              sin(B/2) > 0,
+              sin(B) > 0,
+              cos(B) < 0.
+
+    Later, the normal state of algorithm work is (as we apply) 
+              tolconf/2 <= e <= tolconf.
+    In this case, we keep previous step.
+
+    If e < tolconf/2 then the local curvature of the intersection curve is small.
+    As result, the step should be increased.
+
+    If e > tolconf then the step is too big. Therefore, we should decrease one.
+
+    Condition (1) is equivalent to
+              sin(B/2) = 1 - 2/(1+(d/(2*e))^2) = Fs(e),
+              cos(B) = 1 - 2*Fs(e)^2 = Fd(e),
+    where Fs(e)and Fd(e) are some function with parameter "deflection".
+
+    Let mean that Fs(e) is decreasing function. Fd(e) is increasing function,
+    in the range, where Fs(e) > 0.0 (i.e. when e < d/2).
+
+    Now, let substitute required deflection (tolconf or tolconf/2) to z. Then
+    it is necessary to check if e < z or if e > z.
+
+    In this case, it is enough to comapare Fs(e) and Fs(z).
+    At that Fs(e) > 0 because sin(B/2) > 0 always.
+
+    Therefore, if Fs(z) < 0.0 then Fs(e) > Fs(z) ==> e < z definitely.
+    If Fs(z) > 0.0 then we can compare Fs(z)^2 and Fs(e)^2 or, in substance,
+    values Fd(e) and Fd(z). If Fd(e) > Fd(z) then e > z and vice versa.
+    */
+
+    //Fd(e) is already known (Fd(e) == -aCosBetweenTangent)
+
+    const Standard_Real anInvSqAbsArcDeflMax = 0.25*aSqDist/(tolconf*tolconf);
+    const Standard_Real aSinB2Max = 1.0 - 2.0/(1.0 + anInvSqAbsArcDeflMax);
+
+    if(aSinB2Max >= 0.0 && (aCosBetweenTangent <= 2.0 * aSinB2Max * aSinB2Max - 1.0))
+    {//Real deflection is greater or equal than tolconf
+      Status = IntWalk_PasTropGrand;
+    }
+    else
+    {//Real deflection is less than tolconf
+      const Standard_Real anInvSqAbsArcDeflMin = 4.0*anInvSqAbsArcDeflMax;
+      const Standard_Real aSinB2Min = 1.0 - 2.0/(1.0 + anInvSqAbsArcDeflMin);
+
+      if((aSinB2Min < 0.0) || (aCosBetweenTangent >= 2.0 * aSinB2Min * aSinB2Min - 1.0))
+      {//Real deflection is less than tolconf/2.0
+        Status = IntWalk_StepTooSmall;
+      }
+    }
+
+    if(Status == IntWalk_PasTropGrand)
+    {
+      pasuv[0]*=0.5; pasuv[1]*=0.5; pasuv[2]*=0.5; pasuv[3]*=0.5;
+      return Status;
+    }
+
+    if(Status == IntWalk_StepTooSmall)
+    {
+      pasuv[0] = Max(pasuv[0], AbsDu1);
+      pasuv[1] = Max(pasuv[1], AbsDv1);
+      pasuv[2] = Max(pasuv[2], AbsDu2);
+      pasuv[3] = Max(pasuv[3], AbsDv2);
+
+      pasInit[0] = Max(pasInit[0], AbsDu1);
+      pasInit[1] = Max(pasInit[1], AbsDv1);
+      pasInit[2] = Max(pasInit[2], AbsDu2);
+      pasInit[3] = Max(pasInit[3], AbsDv2);
+
+      return Status;
+    }
+  }
+
+  pasuv[0] = Max(myStepMin[0],Min(Min(Ratio*AbsDu1,pasuv[0]),pasInit[0]));
+  pasuv[1] = Max(myStepMin[1],Min(Min(Ratio*AbsDv1,pasuv[1]),pasInit[1]));
+  pasuv[2] = Max(myStepMin[2],Min(Min(Ratio*AbsDu2,pasuv[2]),pasInit[2]));
+  pasuv[3] = Max(myStepMin[3],Min(Min(Ratio*AbsDv2,pasuv[3]),pasInit[3]));
+
   if(Status == IntWalk_OK) STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=0;
   return Status;
 }

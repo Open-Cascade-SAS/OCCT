@@ -138,10 +138,19 @@ public:
   
   Standard_EXPORT Standard_Boolean SeekAdditionalPoints (const Handle(Adaptor3d_HSurface)& theASurf1, const Handle(Adaptor3d_HSurface)& theASurf2, const Standard_Integer theMinNbPoints);
 
+  Standard_Real MaxStep(Standard_Integer theIndex)
+  {
+    Standard_OutOfRange_Raise_if((theIndex < 0) || (theIndex > 3), "");
+    return pasInit[theIndex];
+  }
 
 
 
 protected:
+  Standard_EXPORT void ComputePasInit(const Standard_Real theDeltaU1,
+                                      const Standard_Real theDeltaV1,
+                                      const Standard_Real theDeltaU2,
+                                      const Standard_Real theDeltaV2);
 
 
 
@@ -169,7 +178,9 @@ private:
   Standard_Real fleche;
   Standard_Real pasMax;
   Standard_Real tolconf;
+  Standard_Real myTolTang;
   Standard_Real pasuv[4];
+  Standard_Real myStepMin[4];
   Standard_Real pasSav[4];
   Standard_Real pasInit[4];
   Standard_Real Um1;

@@ -149,7 +149,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     default:
     {
       IntPatch_PrmPrmIntersection interpp;
-      interpp.Perform(S1,D1,TolArc,TolTang,myFleche,myUVMaxStep);
+      interpp.Perform(S1,D1,TolTang,TolArc,myFleche,myUVMaxStep);
       if (interpp.IsDone())
       {
         done = Standard_True;
@@ -1237,10 +1237,10 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_HSurface)&  
     Standard_Boolean ClearFlag = Standard_True;
     if(!ListOfPnts.IsEmpty())
     {
-      interpp.Perform(theS1,theD1,theS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep, ListOfPnts, RestrictLine);
+      interpp.Perform(theS1,theD1,theS2,theD2,TolTang,TolArc,myFleche,myUVMaxStep, ListOfPnts, RestrictLine);
       ClearFlag = Standard_False;
     }
-    interpp.Perform(theS1,theD1,theS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep,ClearFlag);   //double call!!!!!!!
+    interpp.Perform(theS1,theD1,theS2,theD2,TolTang,TolArc,myFleche,myUVMaxStep,ClearFlag);   //double call!!!!!!!
   }
   else if((theD1->DomainIsInfinite()) ^ (theD2->DomainIsInfinite()))
   {
@@ -1253,7 +1253,7 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_HSurface)&  
       const Standard_Real AP = Max(MU, MV);
       Handle(Adaptor3d_HSurface) SS;
       FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS1, AP, SS);
-      interpp.Perform(SS,theD1,theS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep);
+      interpp.Perform(SS,theD1,theS2,theD2,TolTang,TolArc,myFleche,myUVMaxStep);
     }
     else
     {
@@ -1263,7 +1263,7 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_HSurface)&  
       const Standard_Real AP = Max(MU, MV);
       Handle(Adaptor3d_HSurface) SS;
       FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS2, AP, SS);
-      interpp.Perform(theS1, theD1, SS, theD2,TolArc,TolTang,myFleche,myUVMaxStep);
+      interpp.Perform(theS1, theD1, SS, theD2,TolTang, TolArc,myFleche,myUVMaxStep);
     }
   }//(theD1->DomainIsInfinite()) ^ (theD2->DomainIsInfinite())
   else
@@ -1302,7 +1302,7 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_HSurface)&  
       Handle(Adaptor3d_HSurface) nS1 = theS1;
       Handle(Adaptor3d_HSurface) nS2 = theS2;
       FUN_TrimBothSurf(theS1,typs1,theS2,typs2,1.e+8,nS1,nS2);
-      interpp.Perform(nS1,theD1,nS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep);
+      interpp.Perform(nS1,theD1,nS2,theD2,TolTang,TolArc,myFleche,myUVMaxStep);
     }// 'NON - COLLINEAR LINES'
   }// both domains are infinite
 
@@ -1652,7 +1652,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   else
   {
     IntPatch_PrmPrmIntersection interpp;
-    interpp.Perform(S1,D1,S2,D2,U1,V1,U2,V2,TolArc,TolTang,myFleche,myUVMaxStep);
+    interpp.Perform(S1,D1,S2,D2,U1,V1,U2,V2,TolTang,TolArc,myFleche,myUVMaxStep);
     if (interpp.IsDone())
     {
       done = Standard_True;

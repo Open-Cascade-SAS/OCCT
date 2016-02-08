@@ -77,6 +77,8 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_HSurface)& theSurf1,
                                     const IntSurf_TypeTrans theTrans1,
                                     const IntSurf_TypeTrans theTrans2,
                                     const Standard_Real theTol,
+                                    const Standard_Real theMaxStepS1,
+                                    const Standard_Real theMaxStepS2,
                                     Handle(IntPatch_WLine)& theWLline)
 {
   if(theSLin.Length() == 0)
@@ -84,7 +86,6 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_HSurface)& theSurf1,
 
   Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
 
-  const Standard_Real aTol2D = 1.e-4;
   Standard_Integer cnbV = theWLline->NbVertex();
   Standard_Integer ciV;
   for( ciV = 1; ciV <= cnbV; ciV++ )
@@ -119,11 +120,14 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_HSurface)& theSurf1,
         Standard_Real vRs2 = theSurf2->Surface().VResolution(tDistance);
         Standard_Real RmaxS1 = Max(uRs1,vRs1);
         Standard_Real RmaxS2 = Max(uRs2,vRs2);
-        if((aPCS1.SquareDistance(aPTS1) < RmaxS1*RmaxS1) && (aPCS2.SquareDistance(aPTS2) < RmaxS2*RmaxS2))
+        
+        if(RmaxS1 < theMaxStepS1 && RmaxS2 < theMaxStepS2)
         {
-          if(RmaxS1 < aTol2D && RmaxS2 < aTol2D)
+          if( pntDMin > tDistance && tDistance > Precision::PConfusion())
           {
-            if( pntDMin > tDistance && tDistance > 1.e-9)
+            const Standard_Real aSqDist1 = aPCS1.SquareDistance(aPTS1),
+                                aSqDist2 = aPCS2.SquareDistance(aPTS2);
+            if((aSqDist1 < RmaxS1*RmaxS1) && (aSqDist2 < RmaxS2*RmaxS2))
             {
               pntDMin = tDistance;
               VDMin = tiV;
@@ -1790,7 +1794,9 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                 wline->AddVertex(vtx);
               }              
 
-              SeveralWlinesProcessing(Surf1, Surf2, SLin, Periods, trans1, trans2, TolTang, wline);
+              SeveralWlinesProcessing(Surf1, Surf2, SLin, Periods, trans1, trans2,
+                                      TolTang, Max(PW.MaxStep(0), PW.MaxStep(1)),
+                                      Max(PW.MaxStep(2), PW.MaxStep(3)), wline);
 
               AddWLine(SLin, wline, Deflection);
               empt = Standard_False;
@@ -2470,7 +2476,9 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
                       lignetrouvee = Standard_True;
 
-                      SeveralWlinesProcessing(Surf1, Surf2, SLin, Periods, trans1, trans2, TolTang, wline);
+                      SeveralWlinesProcessing(Surf1, Surf2, SLin, Periods, trans1, trans2,
+                                              TolTang, Max(PW.MaxStep(0), PW.MaxStep(1)),
+                                              Max(PW.MaxStep(2), PW.MaxStep(3)), wline);
 
                       AddWLine(SLin, wline, Deflection);
                       empt = Standard_False;
