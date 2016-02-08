@@ -1,0 +1,23 @@
+puts "================"
+puts "0027133"
+puts "================"
+puts ""
+##############################################################
+# Incorrect result of the normal projection algorithm
+# Oscillation at the edge end
+##############################################################
+
+restore [locate_data_file bug27133_aE.brep] aE
+restore [locate_data_file bug27133_aF.brep] aF
+
+nproject result aE aF
+
+# Result length check.
+checkprops result -l 0.0037337
+
+# Visual check.
+donly result
+smallview
+fit
+display aE aF
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

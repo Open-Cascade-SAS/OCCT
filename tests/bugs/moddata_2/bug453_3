@@ -1,5 +1,7 @@
 puts "TODO OCC24156 MacOS: Tcl Exception: tolerance ang"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+puts "TODO OCC27203 ALL: Error: Max tolerance" 
+puts "TODO OCC27203 Linux: Error : The area of result shape is"
 
 puts "========"
 puts "OCC453"
@@ -25,6 +27,8 @@ explode result So
 tcopy result_1 result
 
 dchrono h2 stop
+
+# Check computation time
 set q2 [ dchrono h2 show ]
 regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full z2
 puts "$z2"
@@ -34,5 +38,12 @@ if { $z2 > 85 } {
     puts "Elapsed time is less then 85 seconds - OK"      
 }
 
+# Properties check
+checkprops result -s 5.48216e+006
+
+# Tolerance check
+checkmaxtol result -ref 1628.2217761833963
+
+# Visual check
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 
