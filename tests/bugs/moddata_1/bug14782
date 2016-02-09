@@ -8,19 +8,6 @@ puts ""
 
 set BugNumber OCC14782
 
-proc GetPercent {Value GoodValue} {
-   set Percent 0.
-   if {${GoodValue} != 0.} {
-      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-   } elseif {${Value} != 0.} {
-      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-   } else {
-      set Percent 0.
-   }
-   return ${Percent}
-}
-
-
 restore [locate_data_file OCC14782.draw] res
 
 bounds res t1 t2
@@ -63,14 +50,4 @@ if { [llength ${segment_list}] < 7 } {
 set ll2 [lindex [length res] end]
 puts "length2=${ll2}"
 
-set percent_max 0.1
-set length_percent [GetPercent ${ll1} ${ll2}]
-puts "length_percent = ${length_percent}"
-
-puts ""
-if { ${length_percent} > ${percent_max} } {
-   puts "3. Faulty ${BugNumber}"
-} else {
-   puts "3. OK ${BugNumber}"
-}
-
+checkreal "length1" ${ll1} ${ll2} 0 0.001

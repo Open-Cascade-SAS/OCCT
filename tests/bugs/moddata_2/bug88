@@ -32,17 +32,7 @@ intersect res_2 ll surf2
 #set first2 [whatis res_1]
 #set second2 [whatis res_2]
 
-proc CalculatePercent {value good_value} {
-    if {${good_value} == 0. && ${value} == 0.} {
-        set percent 0.
-    } else {
-        set percent [expr abs(${value} - ${good_value}) / double(${good_value}) * 100.]
-    }
-    return ${percent}
-}
-
 set IsGood 1
-set percent_max 0.1
 if {[info exists res1] == 0} {
    puts "Faulty OCC88 (case 2)"
    set IsGood 0
@@ -72,38 +62,7 @@ if {${IsGood} == 1} {
    set y2 [lindex ${dump_list2} 12]
    set z2 [lindex ${dump_list2} 14]
 
-   set x_percent [CalculatePercent ${x1} ${x2}]
-   set y_percent [CalculatePercent ${y1} ${y2}]
-   set z_percent [CalculatePercent ${z1} ${z2}]
-
-   puts "x1 = ${x1}"
-   puts "x2 = ${x2}"
-   puts "x_percent = ${x_percent}\n"
-
-   puts "y1 = ${y1}"
-   puts "y2 = ${y2}"
-   puts "y_percent = ${y_percent}\n"
-
-   puts "z1 = ${z1}"
-   puts "z2 = ${z2}"
-   puts "z_percent = ${z_percent}\n"
-
-   if {${x_percent} > ${percent_max}} {
-      puts "OCC88 Faulty (case 6)"
-      set IsGood 0
-   }
-   if {${y_percent} > ${percent_max}} {
-      puts "OCC88 Faulty (case 7)"
-      set IsGood 0
-   }
-   if {${z_percent} > ${percent_max}} {
-      puts "OCC88 Faulty (case 8)"
-      set IsGood 0
-   }
+   checkreal "x1 case 6" ${x1} ${x2} 0 0.001
+   checkreal "y1 case 7" ${y1} ${y2} 0 0.001
+   checkreal "z1 case 8" ${z1} ${z2} 0 0.001
 }
-
-if {${IsGood} == 1} {
-   puts "OCC88 OK"
-}
-
-

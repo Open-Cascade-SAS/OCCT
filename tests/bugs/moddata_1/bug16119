@@ -8,18 +8,6 @@ puts ""
 
 set BugNumber OCC16119
 
-proc GetPercent {Value GoodValue} {
-   set Percent 0.
-   if {${GoodValue} != 0.} {
-      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-   } elseif {${Value} != 0.} {
-      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-   } else {
-      set Percent 0.
-   }
-   return ${Percent}
-}
-
 restore [locate_data_file OCC16119-c1.draw] c1
 restore [locate_data_file OCC16119-c2.draw] c2
 restore [locate_data_file OCC16119-c31.draw] c31
@@ -38,23 +26,6 @@ set deltaX [dval dvx1-dvx2]
 set deltaY [dval dvy1-dvy2]
 set deltaZ [dval dvz1-dvz2]
 
-set percent_max 0.1
-set good_deltaX -3.5527136788005009e-015
-set good_deltaY -3.5527136788005009e-015
-set good_deltaZ 8.8817841970012523e-016
-
-set deltaX_percent [GetPercent ${deltaX} ${good_deltaX}]
-puts "deltaX_percent = ${deltaX_percent}"
-
-set deltaY_percent [GetPercent ${deltaY} ${good_deltaY}]
-puts "deltaY_percent = ${deltaY_percent}"
-
-set deltaZ_percent [GetPercent ${deltaZ} ${good_deltaZ}]
-puts "deltaZ_percent = ${deltaZ_percent}"
-
-if {${deltaX_percent} > ${percent_max} || ${deltaY_percent} > ${percent_max} || ${deltaZ_percent} > ${percent_max} } {
-   puts "${BugNumber}: Faulty"
-} else {
-   puts "${BugNumber}: OK"
-}
-
+checkreal "deltaX" ${deltaX} -3.5527136788005009e-015 0 0.001
+checkreal "deltaY" ${deltaY} -3.5527136788005009e-015 0 0.001
+checkreal "deltaZ" ${deltaZ} 8.8817841970012523e-016  0 0.001

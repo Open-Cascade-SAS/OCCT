@@ -21,38 +21,12 @@ regexp {FACE[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full FaceTolerance
 regexp {EDGE[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full EdgeTolerance
 regexp {VERTEX[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full VertexTolerance
 
-set percent_max 0.1
-
-proc GetPercent {Value GoodValue} {
-    set Percent 0.
-    if {${GoodValue} != 0.} {
-	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-    } elseif {${Value} != 0.} {
-	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-    } else {
-	set Percent 0.
-    }
-    return ${Percent}
-}
-set IsOk 1
-
 set minTolerance ${EdgeTolerance}
 if { ${minTolerance}  > ${VertexTolerance} } {
    set minTolerance $(VertexTolerance)
 }
 
-set minTolerance_percent [GetPercent ${minTolerance} ${oTolerance}]
-puts "minTolerance_percent = ${minTolerance_percent} %"
-if { ${minTolerance_percent}  > ${percent_max} } {
-   set IsOk 0
-}
-
-if { ${IsOk}  == 0 } {
-   puts "${BugNumber}: Faulty"
-} else {
-   puts "${BugNumber}: OK"
-}
-
+checkreal "Min tolerance" ${minTolerance} ${oTolerance} 0 0.001
 checkmaxtol result -ref 2279.641703013865
 checknbshapes result -shell 1
 checkfreebounds result 5

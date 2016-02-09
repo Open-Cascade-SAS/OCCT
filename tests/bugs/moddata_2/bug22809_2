@@ -21,21 +21,6 @@ puts ""
 
 set BugNumber OCC22809
 
-#
-proc GetPercent {Value GoodValue} {
-    set Percent 0.
-    if {${GoodValue} != 0.} {
-	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-    } elseif {${Value} != 0.} {
-	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-    } else {
-	set Percent 0.
-    }
-    return ${Percent}
-}
-set percent_max 0.1
-#
-
 psphere a 100
 scalexyz r2 a 2 1 1
 line l 0 0 -100 0 0 1
@@ -81,38 +66,11 @@ set dump1 [ dump brics_1 ]
 
 regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} $dump1 full x1 y1 z1
 
-set status_xyz1 0
-set x1_percent [GetPercent ${x1} ${good_x1}]
-puts "x1_percent = ${x1_percent}"
-if { ${x1_percent} > ${percent_max} } {
-   puts "x1: Faulty ${BugNumber}"
-   set status_xyz1 1
-} else {
-   puts "x1: OK ${BugNumber}"
-}
+checkreal "x1" ${x1} ${good_x1} 0 0.001
+checkreal "y1" ${y1} ${good_y1} 0 0.001
 
-set y1_percent [GetPercent ${y1} ${good_y1}]
-puts "y1_percent = ${y1_percent}"
-if { ${y1_percent} > ${percent_max} } {
-   puts "y1: Faulty ${BugNumber}"
-   set status_xyz1 1
-} else {
-   puts "y1: OK ${BugNumber}"
-}
-
-set z1_percent [GetPercent ${z1} ${good_z1}]
-puts "z1_percent = ${z1_percent}"
-if { ${z1_percent} > ${percent_max} } {
-   set z1_percent [GetPercent ${z1} ${good_z2}]
-   puts "z1_percent = ${z1_percent}"
-   if { ${z1_percent} > ${percent_max} } {
-      puts "z1: Faulty ${BugNumber}"
-      set status_xyz1 1
-   } else {
-      puts "z1: OK ${BugNumber}"
-   }
-} else {
-   puts "z1: OK ${BugNumber}"
+if { abs ($z1 - $good_z1) > 0.001 * abs ($good_z1) } {
+  checkreal "z1" ${z1} ${good_z2} 0 0.001
 }
 
 set dump2 [ dump brics_2 ]
@@ -120,45 +78,15 @@ set dump2 [ dump brics_2 ]
 set dump2 [ dump brics_23 ]
 regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} $dump2 full x2 y2 z2
 
-set status_xyz2 0
-set x2_percent [GetPercent ${x2} ${good_x2}]
-puts "x2_percent = ${x2_percent}"
-if { ${x2_percent} > ${percent_max} } {
-   puts "x2: Faulty ${BugNumber}"
-   set status_xyz2 1
-} else {
-   puts "x2: OK ${BugNumber}"
+checkreal "x2" ${x2} ${good_x2} 0 0.001
+checkreal "y2" ${y2} ${good_y2} 0 0.001
+
+if { abs ($z2 - $good_z2) > 0.001 * abs ($good_z2) } {
+  checkreal "z2" ${z2} ${good_z1} 0 0.001
 }
 
-set y2_percent [GetPercent ${y2} ${good_y2}]
-puts "y2_percent = ${y2_percent}"
-if { ${y2_percent} > ${percent_max} } {
-   puts "y2: Faulty ${BugNumber}"
-   set status_xyz2 1
-} else {
-   puts "y2: OK ${BugNumber}"
-}
-
-set z2_percent [GetPercent ${z2} ${good_z2}]
-puts "z2_percent = ${z2_percent}"
-if { ${z2_percent} > ${percent_max} } {
-   set z2_percent [GetPercent ${z2} ${good_z1}]
-   puts "z2_percent = ${z2_percent}"
-   if { ${z2_percent} > ${percent_max} } {
-      puts "z2: Faulty ${BugNumber}"
-      set status_xyz2 1
-   } else {
-      puts "z2: OK ${BugNumber}"
-   }
-} else {
-   puts "z2: OK ${BugNumber}"
-}
-
-# Resume
-puts ""
-if { ${status_point} == 0 && ${status_nb} == 0 && ${status_xyz1} == 0 && ${status_xyz2} == 0 } {
+if { ${status_point} == 0 && ${status_nb} == 0 } {
     puts "OK ${BugNumber}"
 } else {
     puts "Faulty ${BugNumber}"
 }
-

@@ -1,4 +1,4 @@
-puts "TODO OCC25597 ALL: OCC23218: Faulty"
+puts "TODO OCC25597 ALL: Error: Reached tolerance"
 puts "============"
 puts "OCC23218"
 puts "============"
@@ -23,24 +23,4 @@ puts "Finish project operation ..."
 set GoodToleranceReached 6.3315853638232248e-007
 regexp {Tolerance Reached=([-0-9.+eE]+)} $result full ToleranceReached
 
-proc GetPercent {Value GoodValue} {
-    set Percent 0.
-    if {${GoodValue} != 0.} {
-	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-    } elseif {${Value} != 0.} {
-	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-    } else {
-	set Percent 0.
-    }
-    return ${Percent}
-}
-                                    
-                                    
-set percent_max 0.1
-set ToleranceReached_percent [expr abs ( [GetPercent ${ToleranceReached} ${GoodToleranceReached}] ) ]
-
-if {${ToleranceReached_percent} > ${percent_max}} {
-   puts "${BugNumber}: Faulty"
-} else {
-   puts "OK ${BugNumber}"
-}
+checkreal "Reached tolerance" ${ToleranceReached} ${GoodToleranceReached} 0 0.001

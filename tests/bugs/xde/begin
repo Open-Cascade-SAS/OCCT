@@ -1,15 +1,3 @@
 pload XDE
 
 set subgroup xde
-
-proc GetPercent {Value GoodValue} {
-   set Percent 0.
-   if {${GoodValue} != 0.} {
-      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-   } elseif {${Value} != 0.} {
-      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-   } else {
-      set Percent 0.
-   }
-   return ${Percent}
-}

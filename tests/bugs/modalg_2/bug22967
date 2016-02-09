@@ -1,4 +1,5 @@
-puts "TODO OCC25597 ALL: OCC22967: Faulty"
+puts "TODO OCC25597 ALL: Error: Vertex tolerance"
+puts "TODO OCC25597 ALL: Error: Edge tolerance"
 puts "============"
 puts "OCC22967"
 puts "============"
@@ -8,7 +9,6 @@ puts ""
 ###########################################################################################################
 
 set BugNumber OCC22967
-set check_value 8.46459e-006
 
 restore [locate_data_file bug22967_Cylinder_1.brep] b1 
 restore [locate_data_file bug22967_Scale_1.brep] b2 
@@ -19,42 +19,10 @@ set info [ maxtolerance result ]
 regexp {Edge[ \t]*:.*Max[ \t]*([-0-9.+eE]+)} $info full last1
 regexp {Vertex[ \t]*:.*Max[ \t]*([-0-9.+eE]+)} $info full last
 
-proc GetPercent {Value GoodValue} {
-    set Percent 0.
-    if {${GoodValue} != 0.} {
-	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-    } elseif {${Value} != 0.} {
-	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-    } else {
-	set Percent 0.
-    }
-    return ${Percent}
-}
+set check_value 8.46459e-006
 
-set percent_max 5
-set status 0
-
-set Tolerance_percent [expr abs ( [GetPercent ${last} ${check_value}] ) ]
-if {${Tolerance_percent} > ${percent_max}} {
-    set status 1
-} else {
-    set status 0
-}
-
-set Tolerance_percent [expr abs ( [GetPercent ${last1} ${check_value}] ) ]
-if {${Tolerance_percent} > ${percent_max}} {
-    set status 1
-} else {
-    set status 0
-}
-
-# Resume
-if {${status} > 0} {
-   puts "${BugNumber}: Faulty"
-} else {
-   puts "OK ${BugNumber}"
-}
-
+checkreal "Vertex tolerance" ${last} ${check_value} 0 0.05
+checkreal "Edge tolerance" ${last1} ${check_value} 0 0.05
 checkprops result -s 668843 
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

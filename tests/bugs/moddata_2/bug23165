@@ -14,22 +14,6 @@ smallview
 
 # 1 step
 set exception_status 0
-set e1_status 0
-set status 0
-
-set percent_max 0.1
-
-proc GetPercent {Value GoodValue} {
-    set Percent 0.
-    if {${GoodValue} != 0.} {
-        set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
-    } elseif {${Value} != 0.} {
-	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
-    } else {
-	set Percent 0.
-    }
-    return ${Percent}
-}
 
 restore [locate_data_file OCC23165-edge1.brep] e1 
 
@@ -57,38 +41,12 @@ if {$index > -1} {
   set e1_good_y2 5.700038816113608
   set e1_good_z2 -1.6251884728673096
 
-  set e1_x1_percent [GetPercent ${e1_x1} ${e1_good_x1}]
-  set e1_y1_percent [GetPercent ${e1_y1} ${e1_good_y1}]
-  set e1_z1_percent [GetPercent ${e1_z1} ${e1_good_z1}]
-  set e1_x2_percent [GetPercent ${e1_x2} ${e1_good_x2}]
-  set e1_y2_percent [GetPercent ${e1_y2} ${e1_good_y2}]
-  set e1_z2_percent [GetPercent ${e1_z2} ${e1_good_z2}]
-
-  if {${e1_x1_percent} > ${percent_max}} {
-        puts "Faulty ${BugNumber} : x1 for e1 is wrong"
-        set e1_status 1
-  }
-  if {${e1_y1_percent} > ${percent_max}} {
-        puts "Faulty ${BugNumber} : y1 for e1 is wrong"
-        set e1_status 1
-  }
-  if {${e1_z1_percent} > ${percent_max}} {
-        puts "Faulty ${BugNumber} : z1 for e1 is wrong"
-        set e1_status 1
-  }
-  if {${e1_x2_percent} > ${percent_max}} {
-        puts "Faulty ${BugNumber} : x2 for e1 is wrong"
-        set e1_status 1
-  }
-  if {${e1_y2_percent} > ${percent_max}} {
-        puts "Faulty ${BugNumber} : y2 for e1 is wrong"
-        set e1_status 1
-  }
-  if {${e1_z2_percent} > ${percent_max}} {
-        puts "Faulty ${BugNumber} : z2 for e1 is wrong"
-        set e1_status 1
-  }
-
+  checkreal "e1_x1" ${e1_x1} ${e1_good_x1} 0 0.001
+  checkreal "e1_y1" ${e1_y1} ${e1_good_y1} 0 0.001
+  checkreal "e1_z1" ${e1_z1} ${e1_good_z1} 0 0.001
+  checkreal "e1_x2" ${e1_x2} ${e1_good_x2} 0 0.001
+  checkreal "e1_y2" ${e1_y2} ${e1_good_y2} 0 0.001
+  checkreal "e1_z2" ${e1_z2} ${e1_good_z2} 0 0.001
 }
 
 # 2 step
@@ -113,39 +71,14 @@ set good_x2 -17.589416490940806
 set good_y2 5.7000000802283299
 set good_z2 -1.6252272087525899
 
-set x1_percent [GetPercent ${x1} ${good_x1}]
-set y1_percent [GetPercent ${y1} ${good_y1}]
-set z1_percent [GetPercent ${z1} ${good_z1}]
-set x2_percent [GetPercent ${x2} ${good_x2}]
-set y2_percent [GetPercent ${y2} ${good_y2}]
-set z2_percent [GetPercent ${z2} ${good_z2}]
+checkreal "x1" ${x1} ${good_x1} 0 0.001
+checkreal "y1" ${y1} ${good_y1} 0 0.001
+checkreal "z1" ${z1} ${good_z1} 0 0.001
+checkreal "x2" ${x2} ${good_x2} 0 0.001
+checkreal "y2" ${y2} ${good_y2} 0 0.001
+checkreal "z2" ${z2} ${good_z2} 0 0.001
 
-if {${x1_percent} > ${percent_max}} {
-   puts "Faulty ${BugNumber} : x1 is wrong"
-   set status 1
-}
-if {${y1_percent} > ${percent_max}} {
-   puts "Faulty ${BugNumber} : y1 is wrong"
-   set status 1
-}
-if {${z1_percent} > ${percent_max}} {
-   puts "Faulty ${BugNumber} : z1 is wrong"
-   set status 1
-}
-if {${x2_percent} > ${percent_max}} {
-   puts "Faulty ${BugNumber} : x2 is wrong"
-   set status 1
-}
-if {${y2_percent} > ${percent_max}} {
-   puts "Faulty ${BugNumber} : y2 is wrong"
-   set status 1
-}
-if {${z2_percent} > ${percent_max}} {
-   puts "Faulty ${BugNumber} : z2 is wrong"
-   set status 1
-}
-
-if { ${status} == 0 && ${exception_status} == 0&& ${e1_status} == 0 } {
+if { ${exception_status} == 0 } {
    puts "${BugNumber}: OK"
 } else {
    puts "${BugNumber}: Faulty"
@@ -154,4 +87,3 @@ if { ${status} == 0 && ${exception_status} == 0&& ${e1_status} == 0 } {
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 checkprops result -l 15.8888 
 checksection result
-

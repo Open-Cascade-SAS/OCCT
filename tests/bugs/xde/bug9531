@@ -34,23 +34,12 @@ if { ${IsOk} == 1} {
    set aTokList {= }
    set Tol1 [lindex [split [tolerance OCC9531a] ${aTokList}] 2]
    set Tol2 [lindex [split [tolerance OCC9531b] ${aTokList}] 2]
-   set percent_max 0.1
-   set Tolerance_percent [GetPercent ${Tol1} ${Tol2}]
-   puts "Tolerance_percent = ${Tolerance_percent} %"
-   if { ${Tolerance_percent}  > ${percent_max} } {
-      set IsOk 0
-   }
 
+   checkreal "Tolerance" ${Tol1} ${Tol2} 0 0.001
    checknbshapes OCC9531a -vertex 5748 -edge 5680 -wire 915 -face 899 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 13243
    checkprops OCC9531a -s 5236.89
    checkprops OCC9531b -s 5236.89
    checknbshapes OCC9531b -vertex 5748 -edge 5680 -wire 915 -face 899 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 13243
-
-   if { ${IsOk}  == 0 } {
-      puts "${BugNumber}: Faulty"
-   } else {
-      puts "${BugNumber}: OK"
-   }
 }
 
 renamevar OCC9531b result
