@@ -236,10 +236,10 @@ void CViewer3dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 
 void CViewer3dView::OnBUTTONBack() 
 { 
-	myView->SetProj(V3d_Xneg); 
+	myView->SetProj(V3d_Ypos); 
 
 TCollection_AsciiString Message("\
-myView->SetProj(V3d_Xneg);\n\
+myView->SetProj(V3d_Ypos);\n\
   ");
 
   // Update The Result Message Dialog
@@ -247,10 +247,10 @@ GetDocument()->UpdateResultMessageDlg("SetProj",Message);
 } // See the back View
 void CViewer3dView::OnBUTTONFront() 
 { 
-	myView->SetProj(V3d_Xpos); 
+	myView->SetProj(V3d_Yneg); 
 
 TCollection_AsciiString Message("\
-myView->SetProj(V3d_Xpos);\n\
+myView->SetProj(V3d_Yneg);\n\
   ");
 
   // Update The Result Message Dialog
@@ -282,10 +282,10 @@ GetDocument()->UpdateResultMessageDlg("SetProj",Message);
 
 void CViewer3dView::OnBUTTONLeft() 
 { 
-	myView->SetProj(V3d_Ypos); 
+	myView->SetProj(V3d_Xneg); 
 
 TCollection_AsciiString Message("\
-myView->SetProj(V3d_Ypos);\n\
+myView->SetProj(V3d_Xneg);\n\
   ");
 
   // Update The Result Message Dialog
@@ -293,10 +293,10 @@ GetDocument()->UpdateResultMessageDlg("SetProj",Message);
 } // See the left View	
 void CViewer3dView::OnBUTTONRight() 
 { 
-	myView->SetProj(V3d_Yneg); 
+	myView->SetProj(V3d_Xpos); 
 
 TCollection_AsciiString Message("\
-myView->SetProj(V3d_Yneg);\n\
+myView->SetProj(V3d_Xpos);\n\
   ");
 
   // Update The Result Message Dialog

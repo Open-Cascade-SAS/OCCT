@@ -340,7 +340,7 @@ public:
   {
     if (!myView().IsNull())
     {
-      myView()->SetProj(V3d_Xpos);
+      myView()->SetProj(V3d_Yneg);
     }
   }
 
@@ -362,7 +362,7 @@ public:
   {
     if (!myView().IsNull())
     {
-      myView()->SetProj(V3d_Ypos);
+      myView()->SetProj(V3d_Xneg);
     }
   }
 
@@ -373,7 +373,7 @@ public:
   {
     if (!myView().IsNull())
     {
-      myView()->SetProj(V3d_Xneg);
+      myView()->SetProj(V3d_Ypos);
     }
   }
 
@@ -384,7 +384,7 @@ public:
   {
     if (!myView().IsNull())
     {
-      myView()->SetProj(V3d_Yneg);
+      myView()->SetProj(V3d_Xpos);
     }
   }
 

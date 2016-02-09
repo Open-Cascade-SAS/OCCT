@@ -236,9 +236,9 @@ void CAnimationView3D::OnSize(UINT /*nType*/, int cx, int cy)
 }
 
 void CAnimationView3D::OnBUTTONBack() 
-{ myView->SetProj(V3d_Xneg); } // See the back View
+{ myView->SetProj(V3d_Ypos); } // See the back View
 void CAnimationView3D::OnBUTTONFront() 
-{ myView->SetProj(V3d_Xpos); } // See the front View
+{ myView->SetProj(V3d_Yneg); } // See the front View
 
 void CAnimationView3D::OnBUTTONBottom() 
 { myView->SetProj(V3d_Zneg); } // See the bottom View
@@ -246,9 +246,9 @@ void CAnimationView3D::OnBUTTONTop()
 { myView->SetProj(V3d_Zpos); } // See the top View	
 
 void CAnimationView3D::OnBUTTONLeft() 
-{ myView->SetProj(V3d_Ypos); } // See the left View	
+{ myView->SetProj(V3d_Xneg); } // See the left View	
 void CAnimationView3D::OnBUTTONRight() 
-{ myView->SetProj(V3d_Yneg); } // See the right View
+{ myView->SetProj(V3d_Xpos); } // See the right View
 
 void CAnimationView3D::OnBUTTONAxo() 
 { myView->SetProj(V3d_XposYnegZpos); } // See the axonometric View

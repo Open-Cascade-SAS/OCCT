@@ -400,25 +400,25 @@ void CSelectionDialog::OnBottomView()
 
 void CSelectionDialog::OnLeftView() 
 {
-  myActiveView->SetProj(V3d_Ypos);
+  myActiveView->SetProj(V3d_Xneg);
   OnDisplay(true);
 }
 
 void CSelectionDialog::OnRightView() 
 {
-  myActiveView->SetProj(V3d_Yneg);
+  myActiveView->SetProj(V3d_Xpos);
   OnDisplay(true);
 }
 
 void CSelectionDialog::OnFrontView() 
 {
-  myActiveView->SetProj(V3d_Xpos);
+  myActiveView->SetProj(V3d_Yneg);
   OnDisplay(true);
 }
 
 void CSelectionDialog::OnBackView() 
 {
-  myActiveView->SetProj(V3d_Xneg);
+  myActiveView->SetProj(V3d_Ypos);
   OnDisplay(true);
 }
 

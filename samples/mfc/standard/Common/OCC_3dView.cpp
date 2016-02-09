@@ -171,13 +171,13 @@ void OCC_3dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 // See the back View
 void OCC_3dView::OnBUTTONBack() 
 {
-  myView->SetProj(V3d_Xneg);
+  myView->SetProj(V3d_Ypos);
 } 
 
 // See the front View
 void OCC_3dView::OnBUTTONFront() 
 {
-  myView->SetProj(V3d_Xpos);
+  myView->SetProj(V3d_Yneg);
 } 
 
 // See the bottom View
@@ -195,13 +195,13 @@ void OCC_3dView::OnBUTTONTop()
 // See the left View
 void OCC_3dView::OnBUTTONLeft() 
 {
-  myView->SetProj(V3d_Ypos);
+  myView->SetProj(V3d_Xneg);
 }
 
 // See the right View
 void OCC_3dView::OnBUTTONRight() 
 {
-  myView->SetProj(V3d_Yneg);
+  myView->SetProj(V3d_Xpos);
 } 
 
 // See the axonometric View

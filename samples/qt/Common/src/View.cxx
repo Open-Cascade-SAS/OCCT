@@ -154,12 +154,12 @@ void View::globalPan()
 
 void View::front()
 {
-  myView->SetProj( V3d_Xpos );
+  myView->SetProj( V3d_Yneg );
 }
 
 void View::back()
 {
-  myView->SetProj( V3d_Xneg );
+  myView->SetProj( V3d_Ypos );
 }
 
 void View::top()
@@ -174,12 +174,12 @@ void View::bottom()
 
 void View::left()
 {
-  myView->SetProj( V3d_Ypos );
+  myView->SetProj( V3d_Xneg );
 }
 
 void View::right()
 {
-  myView->SetProj( V3d_Yneg );
+  myView->SetProj( V3d_Xpos );
 }
 
 void View::axo()

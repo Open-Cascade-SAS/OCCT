@@ -1009,19 +1009,19 @@ namespace IE_WinForms
           curForm.View.FrontView();
           break;
         case 6:
-          curForm.View.TopView();
-          break;
-        case 7:
-          curForm.View.LeftView();
-          break;
-        case 8:
           curForm.View.BackView();
           break;
+        case 7:
+          curForm.View.TopView();
+          break;
+        case 8:
+          curForm.View.BottomView();
+          break;
         case 9:
-          curForm.View.RightView();
+          curForm.View.LeftView();
           break;
         case 10:
-          curForm.View.BottomView();
+          curForm.View.RightView();
           break;
         case 11:
           curForm.View.AxoView();
