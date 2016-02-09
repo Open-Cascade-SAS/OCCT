@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC27131"
+puts "========"
+puts ""
+##############################################
+# DistShapeShape works slow on attached shapes
+##############################################
+restore [locate_data_file bug27131.brep] aShape
+explode aShape
+
+cpulimit 20
+
+# Check computation time
+chrono h reset; chrono h start
+for { set i 1 } { $i <= 100 } { incr i } {
+  distmini d aShape_1 aShape_2
+}
+chrono h stop; chrono h show
+
+regexp {CPU user time: (\d*)} [dchrono h show] dummy sec
+if {$sec > 1} {
+  puts "Error: too long computation time $sec seconds"
+} else {
+  puts "Computation time is OK"
+}
+
+# Check result of distance distance
+set absTol 1.0e-10
+set relTol 0.001
+set aDist_Exp 0.0029087110153708622
+set aDist [dval d_val]
+checkreal "Distance value check" $aDist $aDist_Exp $absTol $relTol

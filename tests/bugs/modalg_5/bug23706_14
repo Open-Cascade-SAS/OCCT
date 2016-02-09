@@ -13,7 +13,7 @@ set info [2dextrema b9 b10]
 set status 0
 for { set i 1 } { $i <= 1 } { incr i 1 } {
     regexp "dist $i: +(\[-0-9.+eE\]+)" $info full pp
-    if { abs($pp - 3.6712618987696386) > 1.0e-7 } {
+    if { abs($pp - 3.6710534171261284) > 1.0e-7 } {
        puts "Error : Extrema is wrong on dist $i"
        set status 1
     }

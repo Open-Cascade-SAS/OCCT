@@ -201,13 +201,36 @@ void Extrema_GenExtCC::Perform()
   C1.Intervals(anIntervals1, GeomAbs_C2);
   C2.Intervals(anIntervals2, GeomAbs_C2);
 
+  // Lipchitz constant approximation.
+  Standard_Real aLC = 9.0; // Default value.
+  Standard_Boolean isConstLockedFlag = Standard_False;
+  if (C1.GetType() == GeomAbs_Line)
+  {
+    Standard_Real aMaxDer = 1.0 / C2.Resolution(1.0);
+    if (aLC > aMaxDer)
+    {
+      isConstLockedFlag = Standard_True;
+      aLC = aMaxDer;
+    }
+  }
+  if (C2.GetType() == GeomAbs_Line)
+  {
+    Standard_Real aMaxDer = 1.0 / C1.Resolution(1.0);
+    if (aLC > aMaxDer)
+    {
+      isConstLockedFlag = Standard_True;
+      aLC = aMaxDer;
+    }
+  }
+
   Extrema_GlobOptFuncCCC2 aFunc (C1, C2);
-  math_GlobOptMin aFinder(&aFunc, myLowBorder, myUppBorder);
+  math_GlobOptMin aFinder(&aFunc, myLowBorder, myUppBorder, aLC);
+  aFinder.SetLipConstState(isConstLockedFlag);
   Standard_Real aDiscTol = 1.0e-2;
   Standard_Real aValueTol = 1.0e-2;
   Standard_Real aSameTol = myCurveMinTol / (aDiscTol);
   aFinder.SetTol(aDiscTol, aSameTol);
-  aFinder.SetFunctionalMinimalValue(0.0); // Best disntance cannot be lower than 0.0
+  aFinder.SetFunctionalMinimalValue(0.0); // Best distance cannot be lower than 0.0.
 
   // Size computed to have cell index inside of int32 value.
   const Standard_Real aCellSize = Max(anIntervals1.Upper() - anIntervals1.Lower(),
@@ -287,7 +310,7 @@ void Extrema_GenExtCC::Perform()
   // Check for infinity solutions case, for this:
   // Sort points lexicographically and check midpoint between each two neighboring points.
   // If all midpoints functional value is acceptable
-  // then set myParallel flag to true and return one soulution.
+  // then set myParallel flag to true and return one solution.
   std::sort(aPnts.begin(), aPnts.end(), comp);
   Standard_Boolean isParallel = Standard_False;
   Standard_Real aVal = 0.0;

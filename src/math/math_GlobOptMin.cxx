@@ -41,6 +41,7 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myB(1, myN),
   myGlobA(1, myN),
   myGlobB(1, myN),
+  myIsConstLocked(Standard_False),
   myX(1, myN),
   myTmp(1, myN),
   myV(1, myN),
@@ -53,6 +54,7 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
 
   myFunc = theFunc;
   myC = theC;
+  myInitC = theC;
   myIsFindSingleSolution = Standard_False;
   myFunctionalMinimalValue = -Precision::Infinite();
   myZ = -1;
@@ -85,13 +87,14 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   Standard_Integer aSolNb = Standard_Integer(Pow(3.0, Standard_Real(myN)));
   myMinCellFilterSol = Max(2 * aSolNb, aMaxSquareSearchSol);
   initCellSize();
+  ComputeInitSol();
 
   myDone = Standard_False;
 }
 
 //=======================================================================
 //function : SetGlobalParams
-//purpose  : Set params without memory allocation.
+//purpose  : Set parameters without memory allocation.
 //=======================================================================
 void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
                                       const math_Vector& theA,
@@ -104,6 +107,7 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
 
   myFunc = theFunc;
   myC = theC;
+  myInitC = theC;
   myZ = -1;
   mySolCount = 0;
 
@@ -131,13 +135,14 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
   mySameTol = theSameTol;
 
   initCellSize();
+  ComputeInitSol();
 
   myDone = Standard_False;
 }
 
 //=======================================================================
 //function : SetLocalParams
-//purpose  : Set params without memory allocation.
+//purpose  : Set parameters without memory allocation.
 //=======================================================================
 void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA,
                                      const math_Vector& theLocalB)
@@ -145,8 +150,6 @@ void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA,
   Standard_Integer i;
 
   myZ = -1;
-  mySolCount = 0;
-
   for(i = 1; i <= myN; i++)
   {
     myA(i) = theLocalA(i);
@@ -227,8 +230,11 @@ void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
     return;
   }
 
-  // Compute initial values for myF, myY, myC.
-  computeInitialValues();
+  if (!myIsConstLocked)
+  {
+    // Compute initial value for myC.
+    computeInitialValues();
+  }
 
   myE1 = minLength * myTol;
   myE2 = maxLength * myTol;
@@ -236,8 +242,7 @@ void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
   myIsFindSingleSolution = isFindSingleSolution;
   if (isFindSingleSolution)
   {
-    // Run local optimization 
-    // if current value better than optimal.
+    // Run local optimization if current value better than optimal.
     myE3 = 0.0;
   }
   else
@@ -248,13 +253,14 @@ void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
       myE3 = - maxLength * myTol * myC / 4.0;
   }
 
-  // Search single solution and current solution in its neighbourhood.
+  // Search single solution and current solution in its neighborhood.
   if (CheckFunctionalStopCriteria())
   {
     myDone = Standard_True;
     return;
   }
 
+  myLastStep = 0.0;
   isFirstCellFilterInvoke = Standard_True;
   computeGlobalExtremum(myN);
 
@@ -338,35 +344,8 @@ void math_GlobOptMin::computeInitialValues()
   math_Vector aBestPnt(1, myN);
   math_Vector aParamStep(1, myN);
   Standard_Real aCurrVal = RealLast();
-  Standard_Real aBestVal = RealLast();
 
-  // Check functional value in midpoint, low and upp point border and
-  // in each point try to perform local optimization.
-  aBestPnt = (myA + myB) * 0.5;
-  myFunc->Value(aBestPnt, aBestVal);
-
-  for(i = 1; i <= 3; i++)
-  {
-    aCurrPnt = myA + (myB - myA) * (i - 1) / 2.0;
-
-    if(computeLocalExtremum(aCurrPnt, aCurrVal, aCurrPnt))
-    {
-      // Local Extremum finds better solution than current point.
-      if (aCurrVal < aBestVal)
-      {
-        aBestVal = aCurrVal;
-        aBestPnt = aCurrPnt;
-      }
-    }
-  }
-
-  myF = aBestVal;
-  myY.Clear();
-  for(i = 1; i <= myN; i++)
-    myY.Append(aBestPnt(i));
-  mySolCount++;
-
-  // Lipschitz const approximation
+  // Lipchitz const approximation.
   Standard_Real aLipConst = 0.0, aPrevValDiag, aPrevValProj;
   Standard_Integer aPntNb = 13;
   myFunc->Value(myA, aPrevValDiag);
@@ -389,16 +368,23 @@ void math_GlobOptMin::computeInitialValues()
     aPrevValProj = aCurrVal;
   }
 
+  myC = myInitC;
   aLipConst *= Sqrt(myN) / aStep;
-
   if (aLipConst < myC * 0.1)
-  {
     myC = Max(aLipConst * 0.1, 0.01);
-  }
-  else if (aLipConst > myC * 10)
+  else if (aLipConst > myC * 5)
+    myC = Min(myC * 5, 50.0);
+
+  // Clear all solutions except one.
+  if (myY.Size() != myN)
   {
-    myC = Min(myC * 2, 30.0);
+    for(i = 1; i <= myN; i++)
+      aBestPnt(i) = myY(i);
+    myY.Clear();
+    for(i = 1; i <= myN; i++)
+      myY.Append(aBestPnt(i));
   }
+  mySolCount = 1;
 }
 
 //=======================================================================
@@ -411,11 +397,11 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
   Standard_Real d; // Functional in moved point.
   Standard_Real val = RealLast(); // Local extrema computed in moved point.
   Standard_Real aStepBestValue = RealLast();
-  Standard_Real aRealStep = 0.0;
   math_Vector aStepBestPoint(1, myN);
   Standard_Boolean isInside = Standard_False;
   Standard_Real r;
   Standard_Boolean isReached = Standard_False;
+
 
   for(myX(j) = myA(j) + myE1;
      (myX(j) < myB(j) + myE1) && (!isReached);
@@ -434,7 +420,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
     {
       isInside = Standard_False;
       myFunc->Value(myX, d);
-      r = (d + myZ * myC * aRealStep - myF) * myZ;
+      r = (d + myZ * myC * myLastStep - myF) * myZ;
       if(r > myE3)
       {
         isInside = computeLocalExtremum(myX, val, myTmp);
@@ -477,8 +463,8 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       if (CheckFunctionalStopCriteria())
         return; // Best possible value is obtained.
 
-      aRealStep = myE2 + Abs(myF - d) / myC;
-      myV(1) = Min(aRealStep, myMaxV(1));
+      myV(1) = Min(myE2 + Abs(myF - d) / myC, myMaxV(1));
+      myLastStep = myV(1);
     }
     else
     {
@@ -660,10 +646,59 @@ void math_GlobOptMin::initCellSize()
 //=======================================================================
 Standard_Boolean math_GlobOptMin::CheckFunctionalStopCriteria()
 {
-  // Search single solution and current solution in its neighbourhood.
+  // Search single solution and current solution in its neighborhood.
   if (myIsFindSingleSolution &&
       Abs (myF - myFunctionalMinimalValue) < mySameTol * 0.01)
     return Standard_True;
 
   return Standard_False;
+}
+
+//=======================================================================
+//function : ComputeInitSol
+//purpose  :
+//=======================================================================
+void math_GlobOptMin::ComputeInitSol()
+{
+  Standard_Real aCurrVal, aBestVal;
+  math_Vector aCurrPnt(1, myN);
+  math_Vector aBestPnt(1, myN);
+  math_Vector aParamStep(1, myN);
+  // Check functional value in midpoint, lower and upper border points and
+  // in each point try to perform local optimization.
+  aBestPnt = (myGlobA + myGlobB) * 0.5;
+  myFunc->Value(aBestPnt, aBestVal);
+
+  Standard_Integer i;
+  for(i = 1; i <= 3; i++)
+  {
+    aCurrPnt = myA + (myB - myA) * (i - 1) / 2.0;
+
+    if(computeLocalExtremum(aCurrPnt, aCurrVal, aCurrPnt))
+    {
+      // Local search tries to find better solution than current point.
+      if (aCurrVal < aBestVal)
+      {
+        aBestVal = aCurrVal;
+        aBestPnt = aCurrPnt;
+      }
+    }
+  }
+
+  myF = aBestVal;
+  myY.Clear();
+  for(i = 1; i <= myN; i++)
+    myY.Append(aBestPnt(i));
+  mySolCount = 1;
+
+  myDone = Standard_False;
+}
+
+//=======================================================================
+//function : SetLipConstState
+//purpose  :
+//=======================================================================
+void math_GlobOptMin::SetLipConstState(const Standard_Boolean theFlag)
+{
+  myIsConstLocked = theFlag;
 }
