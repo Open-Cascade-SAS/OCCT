@@ -4,8 +4,7 @@ puts "TODO OCC24156 MacOS: Error: unsupported locale specification"
 # Just run multiple conversions of the shape to and from diferent formats and 
 # check that the result is good shape with expected area
 
-set anOS $tcl_platform(os)
-if { ${anOS} == "Linux" } {
+if { [checkplatform -linux] } {
   dlocale LC_ALL fr_FR
 } else {
   dlocale LC_ALL French

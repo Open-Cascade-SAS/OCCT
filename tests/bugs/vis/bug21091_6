@@ -46,10 +46,10 @@ set aFile ${imagedir}/${test_image}.eps
 
 vexport ${aFile} EPS
 
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
-   set refsize 10330
-} else {
+if { [checkplatform -windows] } {
    set refsize 10354
+} else {
+   set refsize 10330
 }
 
 if { [file exists ${aFile}] } {

@@ -1182,7 +1182,7 @@ proc _check_log {dir group gridname casename errors log {_summary {}} {_html_log
             # check if line defines specific treatment of some messages
             if [regexp -nocase {^[ \s]*TODO ([^:]*):(.*)$} $line res platforms pattern] {
                 if { ! [regexp -nocase {\mAll\M} $platforms] && 
-                     ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
+                     ! [regexp -nocase "\\m[checkplatform]\\M" $platforms] } {
                     lappend html_log [_html_highlight IGNORE $line]
                     continue ;# TODO statement is for another platform
                 }
@@ -1206,7 +1206,7 @@ proc _check_log {dir group gridname casename errors log {_summary {}} {_html_log
             }
             if [regexp -nocase {^[ \s]*REQUIRED ([^:]*):[ \s]*(.*)$} $line res platforms pattern] {
                 if { ! [regexp -nocase {\mAll\M} $platforms] && 
-                     ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
+                     ! [regexp -nocase "\\m[checkplatform]\\M" $platforms] } {
                     lappend html_log [_html_highlight IGNORE $line]
                     continue ;# REQUIRED statement is for another platform
                 }
@@ -1741,21 +1741,6 @@ proc _log_xml_summary {logdir filename log include_cout} {
     close $fd
     return
 }
-
-# define custom platform name 
-proc _tests_platform_def {} {
-    global env tcl_platform
-
-    if [info exists env(os_type)] { return }
-    set env(os_type) $tcl_platform(platform)
-    if { $tcl_platform(os) == "Linux" } {
-        set env(os_type) Linux
-    }
-    if { $tcl_platform(os) == "Darwin" } {
-        set env(os_type) MacOS
-    } 
-}
-_tests_platform_def
 
 # Auxiliary procedure to split path specification (usually defined by
 # environment variable) into list of directories or files

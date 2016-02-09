@@ -22,12 +22,11 @@ if { [info exists test_image ] == 0 } {
 
 set WorkDirectory $imagedir
 
-set env(os_type) $tcl_platform(platform)
-if { [regexp "indows" $env(os_type)] } {
+if { [checkplatform -windows] } {
     if {[regexp -nocase {jdk} $env(PATH)] || [regexp -nocase {java} $env(PATH)]} {
-	set Java "java"
+        set Java "java"
     } else {
-	puts "Warning: environment variable PATH doesn't contain path to Java"
+        puts "Warning: environment variable PATH doesn't contain path to Java"
     }
 } else {
     catch {set Java $env(JAVAHOME)/bin/java}

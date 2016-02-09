@@ -1,8 +1,7 @@
 # test for command getsource
 
 # check that path returned for command pload is as expected
-set env(os_type) $tcl_platform(platform)
-if { [string compare $env(os_type) "windows"] == 0 } {
+if { [checkplatform -windows] } {
     set expected src/Draw/Draw_PloadCommands.cxx
 } else {
     set expected /src/Draw/Draw_PloadCommands.cxx

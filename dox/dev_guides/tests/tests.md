@@ -601,12 +601,12 @@ puts "TODO BugNumber ListOfPlatforms: RegularExpression"
 
 Here:
 * *BugNumber* is the bug ID in the tracker. For example: #12345.
-* *ListOfPlatforms* is a list of platforms, at which the bug is reproduced (Linux, Windows, MacOS, or All). Note that the platform name is custom for the OCCT test system; it corresponds to the value of environment variable *os_type* defined in DRAW.
+* *ListOfPlatforms* is a list of platforms, at which the bug is reproduced (Linux, Windows, MacOS, or All). Note that the platform name is custom for the OCCT test system; Use procedure *checkplatform* to get the platform name.
 
 Example:
 ~~~~~
-Draw[2]> puts $env(os_type)
-windows
+Draw[2]> checkplatform
+Windows
 ~~~~~
 
 * RegularExpression is a regular expression, which should be matched against the line indicating the problem in the script output. 

@@ -12,7 +12,7 @@ puts ""
 restore [locate_data_file OCC567a.draw] s1 
 restore [locate_data_file OCC567b.draw] s2 
 
-if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
+if { [checkplatform -windows] }  {
    puts "OS = Windows NT"
    set N_repeat 10
 } else {

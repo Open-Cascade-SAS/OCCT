@@ -20,8 +20,7 @@ set chrono_info [dchrono perf_h show]
 regexp {CPU user time: ([-0-9.+eE]+) seconds} $chrono_info full CPU_time
 puts "Elapsed time is: $CPU_time"
 
-set currentOS $tcl_platform(os)
-if {[string compare $currentOS "Windows NT"] == 0} {
+if { [checkplatform -windows] } {
   if {[regexp {Debug mode} [dversion]]} {
     # initial CPU_time for WINDOWS in DEBUG mode is 90 sec
     puts "Checking WINDOWS performance in debug mode..."
@@ -41,8 +40,7 @@ if {[string compare $currentOS "Windows NT"] == 0} {
       puts "Done!"
     }
   }
-}
-if {[string compare $currentOS "Linux"] == 0} {
+} else {
   if {[regexp {Debug mode} [dversion]]} {
     # initial CPU_time for LINUX in DEBUG mode is 90 sec
     puts "Checking LINUX performance in debug mode..."

@@ -12,15 +12,12 @@ vclear
 vaxo
 vzbufftrihedron
 
-if { [array get env os_type] != "" } {
-   set os $env(os_type)
-}
-if { [string compare $os "windows"] != 0 } {
-  # Linux platform
-  set ok_color "GRAY85"
-} else {
+if { [checkplatform -windows] } {
   # Windows platform
   set ok_color "GRAY52"
+} else {
+  # Linux platform
+  set ok_color "GRAY85"
 }
 
 set bug_info [vreadpixel 71 350 rgb name]

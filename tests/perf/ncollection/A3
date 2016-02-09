@@ -15,17 +15,17 @@ foreach line [split $info "\n"] {
   }
 }
 
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
-  set check_values  { 0.1549615
-                      0.1290805
-                      0.1602191
-                      0.3487175
-                    }
-} else {
+if { [checkplatform -windows] } {
   set check_values  { 0.017762852
                       0.008435507
                       0.018746851
                       0.079263713
+                    }
+} else {
+  set check_values  { 0.1549615
+                      0.1290805
+                      0.1602191
+                      0.3487175
                     }
 }
 

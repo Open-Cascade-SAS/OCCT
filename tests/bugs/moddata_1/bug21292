@@ -33,7 +33,7 @@ puts "CPU_user_time=${CPU_user_time}"
 checkprops result -s 1.40193e+07
 checknbshapes result -vertex 372 -edge 369 -wire 2 -face 1 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 745
 
-if {[string compare $tcl_platform(platform) "windows"] == 0} {
+if { [checkplatform -windows] } {
    puts "windows"
    set Good_CPU_user_time 0.
 } else {

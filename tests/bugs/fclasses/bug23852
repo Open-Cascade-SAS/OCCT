@@ -10,10 +10,7 @@ pload DCAF
 
 set BugNumber OCC23852
 
-set OS_platform $tcl_platform(platform)
-puts "OS = ${OS_platform}"
-
-if { [string compare ${OS_platform} "windows"] == 0 } {
+if { [checkplatform -windows] } {
 
    # Windows, #1
    set OSD_Path "\\\\Server\\Shared\\Folder\\File.Extension"
@@ -51,9 +48,7 @@ if { [string compare ${OS_platform} "windows"] == 0 } {
       puts "${BugNumber}, Extension, #2: Error"
    }
 
-}
-
-if { [string compare ${OS_platform} "unix"] == 0 } {
+} else {
    # Linux
    set OSD_Path "//Server/Shared/Folder/File.Extension"
    puts "OSD_Path = ${OSD_Path}"

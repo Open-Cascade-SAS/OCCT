@@ -47,10 +47,10 @@ set aFile ${imagedir}/${test_image}.pgf
 
 vexport ${aFile} PGF
 
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
-   set refsize 20438
-} else {
+if { [checkplatform -windows] } {
    set refsize 20810
+} else {
+   set refsize 20438
 }
 
 if { [file exists ${aFile}] } {

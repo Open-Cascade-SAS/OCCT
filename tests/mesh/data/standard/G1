@@ -1,5 +1,4 @@
 set TheFileName shading_055.brep
-set env(os_type) $tcl_platform(os)
 if { [string compare $command "shading"] == 0 } {
    set nb 62
 }
@@ -11,4 +10,4 @@ if { [string compare $command "mesh"] == 0 } {
 }
 
 set bug_cross "OCC22687"
-set nbcross($env(os_type)) $nb
+set nbcross([checkplatform]) $nb

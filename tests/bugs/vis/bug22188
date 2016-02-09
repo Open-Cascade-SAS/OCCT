@@ -20,10 +20,10 @@ vdisplay result
 vsetdispmode 1
 vfit
 
-if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
-   set good_tri  6114
-   set good_nod  3080
-   set good_defl 0.50050406431775729
+if { [checkplatform -windows] }  {
+    set good_tri  6114
+    set good_nod  3080
+    set good_defl 0.50050406431775729
 } else {
     set good_tri  6148
     set good_nod  3097

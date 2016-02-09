@@ -49,7 +49,7 @@ if [catch {SaveAs D ${FileName} }] {
     puts "There is not ${FileName2} file"
     #
     
-    if { [string compare $tcl_platform(platform) "windows"] == 0 } {
+    if { [checkplatform -windows] } {
       puts "OS = Windows NT"
       set status 1
     }
@@ -61,7 +61,7 @@ if [catch {SaveAs D ${FileName} }] {
   } else {
     puts "There is not ${FileName3} file"
     #
-    if { [string compare $tcl_platform(platform) "windows"] == 0 } {
+    if { [checkplatform -windows] } {
       puts "OS = Windows NT"
     } else {
       puts "OS = Unix"

@@ -1022,3 +1022,63 @@ proc checktrinfo {shape args} {
         puts "Error: Maximal deflection is too big"
     }
 }
+
+help checkplatform {
+  Return name of current platform if no options are given.
+
+  Use: checkplatform [options...]
+  Allowed options are:
+    -windows : return 1 if current platform is 'Windows', overwise return 0
+    -linux   : return 1 if current platform is 'Linux', overwise return 0
+    -osx     : return 1 if current platform is 'MacOS X', overwise return 0
+
+  Only one option can be used at once.
+  If no option is given, procedure will return the name of current platform.
+}
+proc checkplatform {args} {
+    set check_for_windows false
+    set check_for_linux false
+    set check_for_macosx false
+
+    set options {{"-windows" check_for_windows 0}
+                 {"-linux" check_for_linux 0}
+                 {"-osx" check_for_macosx 0}}
+
+    _check_args ${args} ${options} "checkplatform"
+
+    if { [regexp "indows" $::tcl_platform(os)] } {
+        set current_platform Windows
+    } elseif { $::tcl_platform(os) == "Linux" } {
+        set current_platform Linux
+    } elseif { $::tcl_platform(os) == "Darwin" } {
+        set current_platform MacOS
+    }
+
+    # no args are given
+    if { !${check_for_windows} && !${check_for_linux} && !${check_for_macosx}} {
+        return ${current_platform}
+    }
+
+    # check usage of proc checkplatform
+    if { [expr [string is true ${check_for_windows}] + [string is true ${check_for_linux}] + [string is true ${check_for_macosx}] ] > 1} {
+        error "Error: wrong usage of command checkplatform, only single option can be used at once"
+    }
+
+    # checking for Windows platform
+    if { ${check_for_windows} && ${current_platform} == "Windows" } {
+        return 1
+    }
+
+    # checking for Mac OS X platforms
+    if { ${check_for_linux} && ${current_platform} == "Linux" } {
+        return 1
+    }
+
+    # checking for Mac OS X platforms
+    if { ${check_for_macosx} && ${current_platform} == "MacOS" } {
+        return 1
+    }
+
+    # current platform is not equal to given as argument platform, return false
+    return 0
+}

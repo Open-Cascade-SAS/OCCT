@@ -47,10 +47,10 @@ set aFile ${imagedir}/${test_image}.ps
 
 vexport ${aFile} PS
 
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
-   set refsize 10386
-} else {
+if { [checkplatform -windows] } {
    set refsize 10410
+} else {
+   set refsize 10386
 }
 
 if { [file exists ${aFile}] } {

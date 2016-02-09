@@ -18,7 +18,7 @@ tclean result
 set Deflection 1.
 catch {incmesh result ${Deflection} }
 
-if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
+if { [checkplatform -windows] }  {
    set good_tri  96265
    set good_nod  71339
    set good_defl 27.956052399907215

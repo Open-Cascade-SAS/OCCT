@@ -19,7 +19,7 @@ for {set i 1} {$i <= 1000} {incr i} {
 }
 
 dchrono cr stop
-if { [string compare $tcl_platform(platform) "windows"] == 0 } {
+if { [checkplatform -windows] } {
   set max_time 7.5
 } else {
   set max_time 4.5

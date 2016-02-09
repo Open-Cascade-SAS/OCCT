@@ -47,10 +47,10 @@ set aFile ${imagedir}/${test_image}.pdf
 
 vexport ${aFile} PDF
 
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
-   set refsize 10107
-} else {
+if { [checkplatform -windows] } {
    set refsize 10131
+} else {
+   set refsize 10107
 }
 
 if { [file exists ${aFile}] } {

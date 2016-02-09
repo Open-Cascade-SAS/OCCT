@@ -47,10 +47,10 @@ set aFile ${imagedir}/${test_image}.svg
 
 vexport ${aFile} SVG
 
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
-   set refsize 14207
-} else {
+if { [checkplatform -windows] } {
    set refsize 14091
+} else {
+   set refsize 14207
 }
 
 if { [file exists ${aFile}] } {

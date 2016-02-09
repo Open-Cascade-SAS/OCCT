@@ -61,8 +61,7 @@ set result23 [regexp "$Yellow" [vreadpixel $x4 $y4 rgb]]
 set result24 [regexp "$Yellow" [vreadpixel $x5 $y5 rgb]]
 set result25 [regexp "$Yellow" [vreadpixel $x6 $y6 rgb]]
 
-set env(os_type) $tcl_platform(platform)
-if { [string compare $env(os_type) "windows"] != 0 } {
+if { ![checkplatform -windows] } {
   set result31 [regexp "$Cyan" [vreadpixel $x2 $y2 rgb]]
   if { $result31 == 0 } {
     set IsFaulty 1

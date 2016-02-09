@@ -30,7 +30,7 @@ set q2 [dchrono h2 show]
 #
 regexp {CPU user time: ([-0-9.+eE]+) seconds} $q1 full t1
 puts "$t1"
-if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
+if { [checkplatform -windows] }  {
    puts "OS = Windows NT"
    set max_time1 20
 } else {
@@ -46,7 +46,7 @@ if { $t1 > ${max_time1} } {
 #
 regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full t2
 puts "$t2"
-if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
+if { [checkplatform -windows] }  {
    puts "OS = Windows NT"
    set max_time2 20
 } else {
