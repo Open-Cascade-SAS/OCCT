@@ -2667,7 +2667,7 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
         break;
       }
     }
-    NewEdges.Append(FirstEdge);
+    NewEdges.Append(FirstEdge.Oriented(TopAbs_FORWARD));
     TopoDS_Vertex Vf1, CurVertex;
     TopExp::Vertices(FirstEdge, Vf1, CurVertex);
     itl.Initialize(EdgesOfWire);
@@ -2678,7 +2678,7 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
       TopExp::Vertices(anEdge, V1, V2);
       if (V1.IsSame(CurVertex) || V2.IsSame(CurVertex))
       {
-        NewEdges.Append(anEdge);
+        NewEdges.Append(anEdge.Oriented(TopAbs_FORWARD));
         CurVertex = (V1.IsSame(CurVertex))? V2 : V1;
         EdgesOfWire.Remove(itl);
       }
@@ -2696,30 +2696,32 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
       Vfirst = -M_PI/2.; Vlast = p2d1.Y();
     }
     TopoDS_Face NewSphericalFace = BRepLib_MakeFace(aSphSurf, Ufirst, Ulast, Vfirst, Vlast, Precision::Confusion());
-    TopoDS_Edge OldEdge;
+    TopoDS_Edge OldEdge, DegEdge;
+    for (Explo.Init(NewSphericalFace, TopAbs_EDGE); Explo.More(); Explo.Next())
+    {
+      DegEdge = TopoDS::Edge(Explo.Current());
+      if (BRep_Tool::Degenerated(DegEdge))
+        break;
+    }
+    TopoDS_Vertex DegVertex = TopExp::FirstVertex(DegEdge);
     for (Explo.Init(NewSphericalFace, TopAbs_EDGE); Explo.More(); Explo.Next())
     {
       OldEdge = TopoDS::Edge(Explo.Current());
-      if (!BRep_Tool::Degenerated(OldEdge))
-      {
-        BRepAdaptor_Curve2d BAc2d(OldEdge, NewSphericalFace);
-        p2d1 = BAc2d.Value(BAc2d.FirstParameter());
-        p2d2 = BAc2d.Value(BAc2d.LastParameter());
-        if (Abs(p2d1.X() - Ufirst) <= Precision::Confusion() &&
-            Abs(p2d2.X() - Ulast)  <= Precision::Confusion())
-          break;
-      }
+      TopoDS_Vertex V1, V2;
+      TopExp::Vertices(OldEdge, V1, V2);
+      if (!V1.IsSame(DegVertex) && !V2.IsSame(DegVertex))
+        break;
     }
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(OldEdge, V1, V2);
     TopTools_ListOfShape LV1, LV2;
-    LV1.Append(Vf1);
-    LV2.Append(CurVertex);
+    LV1.Append(Vf1.Oriented(TopAbs_FORWARD));
+    LV2.Append(CurVertex.Oriented(TopAbs_FORWARD));
     BRepTools_Substitution theSubstitutor;
-    theSubstitutor.Substitute(V1, LV1);
+    theSubstitutor.Substitute(V1.Oriented(TopAbs_FORWARD), LV1);
     if (!V1.IsSame(V2))
-      theSubstitutor.Substitute(V2, LV2);
-    theSubstitutor.Substitute(OldEdge, NewEdges);
+      theSubstitutor.Substitute(V2.Oriented(TopAbs_FORWARD), LV2);
+    theSubstitutor.Substitute(OldEdge.Oriented(TopAbs_FORWARD), NewEdges);
     theSubstitutor.Build(NewSphericalFace);
     if (theSubstitutor.IsCopied(NewSphericalFace))
     {
