@@ -124,8 +124,7 @@ public:
   Standard_EXPORT void Remove();
   
   //! Computes axis-aligned bounding box of a structure.
-  //! Category: Methods to modify the class definition
-  Standard_EXPORT void CalculateBoundBox();
+  Standard_EXPORT virtual void CalculateBoundBox();
   
   //! If <theToSet> is Standard_True then <me> is infinite and
   //! the MinMaxValues method method return :

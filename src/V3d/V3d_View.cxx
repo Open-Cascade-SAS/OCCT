@@ -2190,21 +2190,31 @@ void V3d_View::Gravity (Standard_Real& theX,
   {
     const Handle(Graphic3d_Structure)& aStruct = aStructIter.Key();
     if (!aStruct->IsVisible()
-    || (hasSelection && !aStruct->IsHighlighted())
-    ||  aStruct->IsEmpty())
+      || aStruct->IsInfinite()
+      || (hasSelection && !aStruct->IsHighlighted()))
     {
       continue;
     }
 
-    Bnd_Box aBox = aStruct->MinMaxValues();
-    if (aBox.IsVoid() || aStruct->IsInfinite())
+    const Graphic3d_BndBox4f& aBox = aStruct->CStructure()->BoundingBox();
+    if (!aBox.IsValid())
+    {
+      continue;
+    }
+
+    // skip transformation-persistent objects
+    if (aStruct->TransformPersistence().Flags != Graphic3d_TMF_None)
     {
       continue;
     }
 
     // use camera projection to find gravity point
-    aBox.Get (Xmin, Ymin, Zmin,
-              Xmax, Ymax, Zmax);
+    Xmin = (Standard_Real )aBox.CornerMin().x();
+    Ymin = (Standard_Real )aBox.CornerMin().y();
+    Zmin = (Standard_Real )aBox.CornerMin().z();
+    Xmax = (Standard_Real )aBox.CornerMax().x();
+    Ymax = (Standard_Real )aBox.CornerMax().y();
+    Zmax = (Standard_Real )aBox.CornerMax().z();
     gp_Pnt aPnts[THE_NB_BOUND_POINTS] =
     {
       gp_Pnt (Xmin, Ymin, Zmin), gp_Pnt (Xmin, Ymin, Zmax),
@@ -2228,21 +2238,10 @@ void V3d_View::Gravity (Standard_Real& theX,
 
   if (aNbPoints == 0)
   {
-    for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (aSetOfStructures);
-         aStructIter.More(); aStructIter.Next())
+    // fallback - just use bounding box of entire scene
+    Bnd_Box aBox = myView->MinMaxValues (Standard_True);
+    if (!aBox.IsVoid())
     {
-      const Handle(Graphic3d_Structure)& aStruct = aStructIter.Key();
-      if (aStruct->IsEmpty())
-      {
-        continue;
-      }
-
-      Bnd_Box aBox = aStruct->MinMaxValues();
-      if (aBox.IsVoid() || aStruct->IsInfinite())
-      {
-        continue;
-      }
-
       aBox.Get (Xmin, Ymin, Zmin,
                 Xmax, Ymax, Zmax);
       gp_Pnt aPnts[THE_NB_BOUND_POINTS] =

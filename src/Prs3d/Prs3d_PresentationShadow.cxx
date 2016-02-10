@@ -30,3 +30,12 @@ Prs3d_PresentationShadow::Prs3d_PresentationShadow (const Handle(Graphic3d_Struc
 {
   //
 }
+
+//=======================================================================
+//function : CalculateBoundBox
+//purpose  :
+//=======================================================================
+void Prs3d_PresentationShadow::CalculateBoundBox()
+{
+  //
+}

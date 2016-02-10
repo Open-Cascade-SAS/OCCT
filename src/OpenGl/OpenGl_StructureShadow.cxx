@@ -33,6 +33,7 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
   ContainsFacet = myParent->ContainsFacet;
   IsInfinite    = myParent->IsInfinite;
   Transformation = myParent->Transformation;
+  myBndBox       = myParent->BoundingBox();
 
   UpdateTransformation();
   myInstancedStructure = const_cast<OpenGl_Structure*> (myParent->InstancedStructure());
