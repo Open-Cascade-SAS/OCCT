@@ -1,0 +1,23 @@
+puts "================"
+puts "0027135"
+puts "================"
+puts ""
+##############################################################
+# Incorrect result of the normal projection algorithm
+# Degenerated edge in result
+##############################################################
+
+restore [locate_data_file bug27135.brep] aShape
+explode aShape
+
+nproject result aShape_1 aShape_2
+
+# Result length check.
+checkprops result -l 5.74501
+
+# Visual check.
+donly result
+smallview
+fit
+display aShape_2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

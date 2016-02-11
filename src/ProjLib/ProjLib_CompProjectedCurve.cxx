@@ -624,8 +624,8 @@ void ProjLib_CompProjectedCurve::Init()
   //Basic loop  
   while(t <= LastU) 
   {
-    //Search for the begining a new continuous part
-    //To avoid infinite computation in some difficult cases
+    // Search for the beginning of a new continuous part
+    // to avoid infinite computation in some difficult cases.
     new_part = Standard_False;
     if(t > FirstU && Abs(t-prevDeb) <= Precision::PConfusion()) SameDeb=Standard_True;
     while(t <= LastU && !new_part && !FromLastU && !SameDeb)
@@ -637,7 +637,7 @@ void ProjLib_CompProjectedCurve::Init()
       gp_Pnt CPoint;
       Standard_Real ParT,ParU,ParV; 
 
-      // Search an initpoint in the list of Extrema Curve-Surface
+      // Search an initial point in the list of Extrema Curve-Surface
       if(Nend != 0 && !CExt.IsParallel()) 
       {
         for (i=1;i<=Nend;i++)
@@ -861,27 +861,12 @@ void ProjLib_CompProjectedCurve::Init()
         prevStep = Step;
         Triple = gp_Pnt(t, aPrjPS.Solution().X(), aPrjPS.Solution().Y());
 
-        if (mySurface->GetType() == GeomAbs_SurfaceOfRevolution &&
-           (Abs (Triple.Z() - mySurface->FirstVParameter()) < Precision::Confusion() ||
-            Abs (Triple.Z() - mySurface->LastVParameter() ) < Precision::Confusion() ))
-        {
-          // Go out from possible attraktor.
-
-          Standard_Real U,V;
-          InitialPoint(myCurve->Value(t), t, myCurve, mySurface, myTolU, myTolV, U, V);
-          if (Abs (Abs(U - Triple.Y()) - mySurface->UPeriod()) < Precision::Confusion())
-          {
-            // Handle period jump.
-            U = Triple.Y();
-          }
-          Triple.SetY(U);
-          Triple.SetZ(V);
-        }
+        // Check for possible local traps.
+        UpdateTripleByTrapCriteria(Triple);
 
         if((Triple.X() - mySequence->Value(myNbCurves)->Value(mySequence->Value(myNbCurves)->Length()).X()) > 1.e-10)
           mySequence->Value(myNbCurves)->Append(Triple);
         if (t == LastU) {t = LastU + 1; break;}//return;
-
         //Computation of WalkStep
         d2CurvOnSurf(Triple.X(), Triple.Y(), Triple.Z(), D1, D2, myCurve, mySurface);
         MagnD1 = D1.Magnitude();
@@ -899,7 +884,7 @@ void ProjLib_CompProjectedCurve::Init()
       }
     }
   }
-  // Sequence postproceeding
+  // Sequence post-proceeding.
   Standard_Integer j;
 
   // 1. Removing poor parts
@@ -1621,4 +1606,58 @@ Handle(Adaptor2d_HCurve2d) ProjLib_CompProjectedCurve::Trim
 GeomAbs_CurveType ProjLib_CompProjectedCurve::GetType() const 
 {
   return GeomAbs_OtherCurve;
+}
+
+//=======================================================================
+//function : UpdateTripleByTrapCriteria
+//purpose  :
+//=======================================================================
+void ProjLib_CompProjectedCurve::UpdateTripleByTrapCriteria(gp_Pnt &thePoint) const
+{
+  Standard_Boolean isProblemsPossible = Standard_False;
+  // Check possible traps cases:
+
+  // 25892 bug.
+  if (mySurface->GetType() == GeomAbs_SurfaceOfRevolution)
+  {
+    // Compute maximal deviation from 3D and choose the biggest one.
+    Standard_Real aVRes = mySurface->VResolution(Precision::Confusion());
+    Standard_Real aMaxTol = Max(Precision::PConfusion(), aVRes);
+
+    if (Abs (thePoint.Z() - mySurface->FirstVParameter()) < aMaxTol ||
+        Abs (thePoint.Z() - mySurface->LastVParameter() ) < aMaxTol )
+    {
+      isProblemsPossible = Standard_True;
+    }
+  }
+
+  // 27135 bug. Trap on degenerated edge.
+  if (mySurface->GetType() == GeomAbs_Sphere &&
+     (Abs (thePoint.Z() - mySurface->FirstVParameter()) < Precision::PConfusion() ||
+      Abs (thePoint.Z() - mySurface->LastVParameter() ) < Precision::PConfusion() ||
+      Abs (thePoint.Y() - mySurface->FirstUParameter()) < Precision::PConfusion() ||
+      Abs (thePoint.Y() - mySurface->LastUParameter() ) < Precision::PConfusion() ))
+  {
+    isProblemsPossible = Standard_True;
+  }
+
+  if (!isProblemsPossible)
+    return;
+
+  Standard_Real U,V;
+  InitialPoint(myCurve->Value(thePoint.X()), thePoint.X(), myCurve, mySurface, myTolU, myTolV, U, V);
+
+  // Restore original position in case of period jump.
+  if (mySurface->IsUPeriodic() &&
+      Abs (Abs(U - thePoint.Y()) - mySurface->UPeriod()) < Precision::PConfusion())
+  {
+    U = thePoint.Y();
+  }
+  if (mySurface->IsVPeriodic() &&
+      Abs (Abs(V - thePoint.Z()) - mySurface->VPeriod()) < Precision::PConfusion())
+  {
+    V = thePoint.Z();
+  }
+  thePoint.SetY(U);
+  thePoint.SetZ(V);
 }
