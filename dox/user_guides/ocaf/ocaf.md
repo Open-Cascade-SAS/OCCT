@@ -714,7 +714,7 @@ setenv CSF_NewFormatDefaults MyApplicationPath/MyResources
 
 Once these steps are taken you may run your application, create documents and Save/Open them. These resource files already exist in the OCAF (format "Standard"). 
 
-If you use your specific attributes from packages, for example, <i>P-, M-</i> and *TMyAttributePackage*  (see @ref occt_ocaf_3_4_6  "Specific attribute creation") you must take some additional steps for the new plugin implementation: 
+If you use your specific attributes from packages, for example, <i>P-, M-</i> and *TMyAttributePackage*  (see @ref occt_ocaf_3_5_6  "Specific attribute creation") you must take some additional steps for the new plugin implementation: 
 
 1. Add our *P* package to the standard schema. You can get an already existing (in Open CASCADE Technology sources) schema from *StdSchema* unit and add your package string to the cdl-file: package  *PMyAttributePackage*.
 2. The next step consists in the implementation of an executable, which will connect our documents to our application and open/save them. Copy the package *PAppStdPlugin* and change its name to *MyTheBestApplicationPlugin*. In the *PLUGIN* macros type the name of your factory, which will be defined at the next step.

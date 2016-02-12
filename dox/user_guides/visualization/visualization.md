@@ -99,8 +99,8 @@ aContext -> Display(anAis);
 
 The shape is created using the *BRepPrimAPI_MakeWedge*  command. An *AIS_Shape* is then created from the shape. When calling the *Display* command, the interactive context calls the Compute method of the  presentable object to calculate the presentation data and transfer it to the  viewer. See figure below.  
 
-@image html visualization_image004.png "Processes involved in displaying a presentable shape"
-@image latex visualization_image004.png "Processes involved in displaying a presentable shape"
+@image html visualization_image004.svg "Processes involved in displaying a presentable shape"
+@image latex visualization_image004.svg "Processes involved in displaying a presentable shape"
 
 @subsection occt_visu_2_2 Selection 
 

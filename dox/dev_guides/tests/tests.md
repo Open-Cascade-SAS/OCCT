@@ -1290,8 +1290,8 @@ Allowed options are:
  * -s AREA: command sprops, computes the mass properties of all faces with a surface density of 1 
  * -v VOLUME: command vprops, computes the mass properties of all solids with a density of 1
  * -eps EPSILON: the epsilon defines relative precision of computation
- * -equal SHAPE: compare area\volume\length of input shapes. Puts error if its are not equal
- * -notequal SHAPE: compare area\volume\length of input shapes. Puts error if its are equal
+ * -equal SHAPE: compare area/volume/length of input shapes. Puts error if its are not equal
+ * -notequal SHAPE: compare area/volume/length of input shapes. Puts error if its are equal
 
 Options -l, -s and -v are independent and can be used in any order. Tolerance epsilon is the same for all options.
 
