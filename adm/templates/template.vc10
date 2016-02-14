@@ -107,6 +107,7 @@
       <OutputFile>.\..\..\..\win32\__VCVER__\bin\__TKNAM__.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\win32\__VCVER__\lib;$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\win32\__VCVER__\bin\__TKNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>..\..\..\win32\__VCVER__\lib\__TKNAM__.lib</ImportLibrary>
@@ -195,6 +196,7 @@
       <OutputFile>.\..\..\..\win64\__VCVER__\bin\__TKNAM__.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\win64\__VCVER__\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\win64\__VCVER__\bin\__TKNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>..\..\..\win64\__VCVER__\lib\__TKNAM__.lib</ImportLibrary>
