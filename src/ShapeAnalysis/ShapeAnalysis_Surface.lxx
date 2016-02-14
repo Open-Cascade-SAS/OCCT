@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Geom_Surface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
 
 //=======================================================================
 //function : Surface
@@ -54,7 +55,7 @@ inline Standard_Real ShapeAnalysis_Surface::Gap() const
 inline gp_Pnt ShapeAnalysis_Surface::Value (const Standard_Real u,
 					    const Standard_Real v) 
 {
-  return mySurf->Value ( u, v );
+  return myAdSur->Value ( u, v );
 }
 
  
@@ -65,7 +66,7 @@ inline gp_Pnt ShapeAnalysis_Surface::Value (const Standard_Real u,
 
 inline gp_Pnt ShapeAnalysis_Surface::Value(const gp_Pnt2d& p2d) 
 {
-  return mySurf->Value ( p2d.X(), p2d.Y() );
+  return myAdSur->Value ( p2d.X(), p2d.Y() );
 }
 
  

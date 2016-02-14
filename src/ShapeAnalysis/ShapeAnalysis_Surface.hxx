@@ -295,7 +295,6 @@ protected:
   Handle(Geom_Surface) mySurf;
   Handle(GeomAdaptor_HSurface) myAdSur;
   Extrema_ExtPS myExtPS;
-  GeomAdaptor_Surface myExtSrf;
   Standard_Boolean myExtOK;
   Standard_Integer myNbDeg;
   Standard_Real myPreci[4];

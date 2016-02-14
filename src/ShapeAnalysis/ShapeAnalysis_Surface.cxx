@@ -74,7 +74,8 @@ ShapeAnalysis_Surface::ShapeAnalysis_Surface(const Handle(Geom_Surface)& S) :
        myIsoBoxes (Standard_False),
        myGap (0.), myUDelt (0.01), myVDelt (0.01), myUCloseVal (-1), myVCloseVal (-1)
 {
-  S->Bounds(myUF,myUL,myVF,myVL);
+  mySurf->Bounds(myUF,myUL,myVF,myVL);
+  myAdSur = new GeomAdaptor_HSurface (mySurf);
 }
 
 //=======================================================================
@@ -86,10 +87,11 @@ void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& S)
 {
   if (mySurf == S) return;
   myExtOK = Standard_False; //:30
-  mySurf = S;  myAdSur.Nullify();
+  mySurf = S;
   myNbDeg = -1;
   myUCloseVal = myVCloseVal = -1;  myGap = 0.;
   mySurf->Bounds (myUF,myUL,myVF,myVL);
+  myAdSur = new GeomAdaptor_HSurface (mySurf);
   myIsos = Standard_False;
   myIsoBoxes = Standard_False;
   myIsoUF.Nullify(); myIsoUL.Nullify(); myIsoVF.Nullify(); myIsoVL.Nullify();
@@ -117,8 +119,6 @@ void ShapeAnalysis_Surface::Init(const Handle(ShapeAnalysis_Surface)& other)
 
 const Handle(GeomAdaptor_HSurface)& ShapeAnalysis_Surface::Adaptor3d()
 {
-  if (myAdSur.IsNull() && !mySurf.IsNull())
-    myAdSur = new GeomAdaptor_HSurface (mySurf);
   return myAdSur;
 }
 
@@ -191,19 +191,19 @@ void ShapeAnalysis_Surface::ComputeSingularities()
 	   (mySurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))) { //rln S4135
 
     //rln S4135 //:r3
-    myP3d     [0] = mySurf->Value (su1, 0.5 * (sv1 + sv2));
+    myP3d     [0] = myAdSur->Value (su1, 0.5 * (sv1 + sv2));
     myFirstP2d[0].SetCoord (su1, sv2); 
     myLastP2d [0].SetCoord (su1, sv1);
 
-    myP3d     [1] = mySurf->Value (su2, 0.5 * (sv1 + sv2));
+    myP3d     [1] = myAdSur->Value (su2, 0.5 * (sv1 + sv2));
     myFirstP2d[1].SetCoord (su2, sv1); 
     myLastP2d [1].SetCoord (su2, sv2);
 
-    myP3d     [2] = mySurf->Value (0.5 * (su1 + su2), sv1);
+    myP3d     [2] = myAdSur->Value (0.5 * (su1 + su2), sv1);
     myFirstP2d[2].SetCoord (su1, sv1); 
     myLastP2d [2].SetCoord (su2, sv1);
     
-    myP3d     [3] = mySurf->Value (0.5 * (su1 + su2), sv2);
+    myP3d     [3] = myAdSur->Value (0.5 * (su1 + su2), sv2);
     myFirstP2d[3].SetCoord (su2, sv2); 
     myLastP2d [3].SetCoord (su1, sv2);
 
@@ -215,10 +215,10 @@ void ShapeAnalysis_Surface::ComputeSingularities()
     myLastPar [2] = myLastPar [3] = su2;
     myUIsoDeg [2] = myUIsoDeg [3] = Standard_False;
 
-    gp_Pnt Corner1 = mySurf->Value(su1,sv1);
-    gp_Pnt Corner2 = mySurf->Value(su1,sv2);
-    gp_Pnt Corner3 = mySurf->Value(su2,sv1);
-    gp_Pnt Corner4 = mySurf->Value(su2,sv2);
+    gp_Pnt Corner1 = myAdSur->Value(su1,sv1);
+    gp_Pnt Corner2 = myAdSur->Value(su1,sv2);
+    gp_Pnt Corner3 = myAdSur->Value(su2,sv1);
+    gp_Pnt Corner4 = myAdSur->Value(su2,sv2);
 
     myPreci[0] = Max (Corner1.Distance(Corner2), Max (myP3d[0].Distance(Corner1), myP3d[0].Distance(Corner2)));
     myPreci[1] = Max (Corner3.Distance(Corner4), Max (myP3d[1].Distance(Corner3), myP3d[1].Distance(Corner4)));
@@ -587,8 +587,8 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
 	Standard_Integer nbvk = bs->NbVKnots();
 	for (Standard_Integer i = 1; i <= nbvk; i ++) {
 	  Standard_Real v = bs->VKnot(i);
-	  gp_Pnt p1 = bs->Value (uf, v);
-	  gp_Pnt p2 = bs->Value (ul, v);
+	  gp_Pnt p1 = SurfAdapt.Value (uf, v);
+	  gp_Pnt p2 = SurfAdapt.Value (ul, v);
 	  myUCloseVal = Max (myUCloseVal, p1.SquareDistance (p2));
 	  distmin     = Min (distmin,     p1.SquareDistance (p2));
 	  if (i > 1) {
@@ -637,8 +637,8 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
       Standard_Real distmin = RealLast();
       Standard_Integer nbpoints = 101; //can be revised
       for (Standard_Integer i = 0; i < nbpoints; i++) {
-	gp_Pnt p1 = mySurf->Value (uf, vf + (vl - vf ) * i / (nbpoints - 1));
-	gp_Pnt p2 = mySurf->Value (ul, vf + (vl - vf ) * i / (nbpoints - 1));
+	gp_Pnt p1 = SurfAdapt.Value (uf, vf + (vl - vf ) * i / (nbpoints - 1));
+	gp_Pnt p2 = SurfAdapt.Value (ul, vf + (vl - vf ) * i / (nbpoints - 1));
 	myUCloseVal = Max (myUCloseVal, p1.SquareDistance (p2));
 	distmin     = Min (distmin,     p1.SquareDistance (p2));
       }
@@ -713,14 +713,14 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
 	Standard_Integer nbuk = bs->NbUKnots();
 	for (Standard_Integer i = 1; i <= nbuk; i ++) {
 	  Standard_Real u = bs->UKnot(i);
-	  gp_Pnt p1 = bs->Value (u, vf);
-	  gp_Pnt p2 = bs->Value (u, vl);
+	  gp_Pnt p1 = SurfAdapt.Value (u, vf);
+	  gp_Pnt p2 = SurfAdapt.Value (u, vl);
 	  myVCloseVal = Max (myVCloseVal, p1.SquareDistance (p2));
 	  distmin     = Min (distmin,     p1.SquareDistance (p2));
 	  if (i > 1) {
 	    u = 0.5 * (bs->UKnot(i-1) + bs->UKnot(i));
-	    p1 = bs->Value (u, vf);
-	    p2 = bs->Value (u, vl);
+	    p1 = SurfAdapt.Value (u, vf);
+	    p2 = SurfAdapt.Value (u, vl);
 	    myVCloseVal = Max (myVCloseVal, p1.SquareDistance (p2));
 	    distmin     = Min (distmin,     p1.SquareDistance (p2));
 	  }
@@ -763,8 +763,8 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
       Standard_Real distmin = RealLast();
       Standard_Integer nbpoints = 101; //can be revised
       for (Standard_Integer i = 0; i < nbpoints; i++) {
-	gp_Pnt p1 = mySurf->Value (uf + (ul - uf ) * i / (nbpoints - 1), vf);
-	gp_Pnt p2 = mySurf->Value (uf + (ul - uf ) * i / (nbpoints - 1), vl);
+	gp_Pnt p1 = SurfAdapt.Value (uf + (ul - uf ) * i / (nbpoints - 1), vf);
+	gp_Pnt p2 = SurfAdapt.Value (uf + (ul - uf ) * i / (nbpoints - 1), vl);
 	myVCloseVal = Max (myVCloseVal, p1.SquareDistance (p2));
 	distmin     = Min (distmin,     p1.SquareDistance (p2));
       }
@@ -804,7 +804,7 @@ Standard_Boolean ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
   for ( Standard_Integer i=0; i < 25; i++ ) {
     gp_Vec ru, rv, ruu, rvv, ruv;
     gp_Pnt pnt;
-    mySurf->D2 ( U, V, pnt, ru, rv, ruu, rvv, ruv );
+    SurfAdapt.D2 ( U, V, pnt, ru, rv, ruu, rvv, ruv );
 
     // normal
     Standard_Real ru2 = ru * ru, rv2 = rv * rv;
@@ -1036,10 +1036,9 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
       du = Min (myUDelt, SurfAdapt.UResolution (preci));
       dv = Min (myVDelt, SurfAdapt.VResolution (preci));
     }
-        myExtSrf = mySurf;
 	Standard_Real Tol = Precision::PConfusion();
         myExtPS.SetFlag (Extrema_ExtFlag_MIN);
-	myExtPS.Initialize ( myExtSrf, uf-du, ul+du, vf-dv, vl+dv, Tol, Tol );
+	myExtPS.Initialize (SurfAdapt, uf-du, ul+du, vf-dv, vl+dv, Tol, Tol );
 	myExtOK = Standard_True;
       }
       myExtPS.Perform ( P3D );
@@ -1060,7 +1059,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
         // file CEA_cuve-V5.igs Entityes 244, 259, 847, 925
         // if project point3D on SurfaceOfRevolution Extreme recompute 2d point, but
         // returns an old distance from 3d to solution :-(
-        gp_Pnt aCheckPnt = mySurf->Value( S, T );
+        gp_Pnt aCheckPnt = SurfAdapt.Value( S, T );
         dist2Min = P3D.SquareDistance(aCheckPnt);
         // end of WORKAROUND
 	Standard_Real disSurf = sqrt (dist2Min);//, disCurv =1.e10;
@@ -1087,7 +1086,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 	      Standard_Real Tol = Precision::Confusion();
 	      gp_Vec D1U, D1V;
 	      gp_Pnt pnt;
-	      mySurf->D1(UU, VV, pnt, D1U, D1V);
+	      SurfAdapt.D1(UU, VV, pnt, D1U, D1V);
 	      gp_Vec b = D1U.Crossed(D1V);
 	      gp_Vec a (pnt, P3D);
 	      Standard_Real ab = a.Dot(b);
@@ -1170,7 +1169,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
   } //:c9
   //szv#4:S4163:12Mar99 waste raise
   //if (!computed) Standard_NoSuchObject::Raise("PCurveLib_ProjectPointOnSurf::ValueOfUV untreated surface type");
-  if (computed) { if (myGap <= 0) myGap = P3D.Distance (mySurf->Value (S,T)); }
+  if (computed) { if (myGap <= 0) myGap = P3D.Distance (SurfAdapt.Value (S,T)); }
   else { myGap = -1.; S = 0.; T = 0.; }
   return gp_Pnt2d( S, T);
 }
@@ -1192,7 +1191,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d,const Standard_
 
   //  Initialisation des recherches : point deja trouve (?)
   UU = U; VV = V;
-  gp_Pnt depart = mySurf->Value (U,V);
+  gp_Pnt depart = myAdSur->Value (U,V);
   theMin = depart.Distance(P3d);
     
   if (theMin < preci/10) return theMin;  // c etait deja OK
