@@ -41,6 +41,7 @@ class Geom_BoundedSurface;
 class gp_Dir;
 class Adaptor3d_Curve;
 class Geom_BSplineSurface;
+class Geom_BezierSurface;
 class Geom_Surface;
 class gp_Pnt2d;
 class GeomLib_MakeCurvefromApprox;
@@ -187,8 +188,40 @@ public:
   
   Standard_EXPORT static Standard_Integer NormEstim (const Handle(Geom_Surface)& S, const gp_Pnt2d& UV, const Standard_Real Tol, gp_Dir& N);
 
+  //! This method defines if opposite boundaries of surface
+  //! coincide with given tolerance
+  Standard_EXPORT static void IsClosed(const Handle(Geom_Surface)& S, const Standard_Real Tol,
+                                       Standard_Boolean& isUClosed, Standard_Boolean& isVClosed);
 
+  //! Returns true if the poles of U1 isoline and the poles of
+  //! U2 isoline of surface are identical according to tolerance criterion.
+  //! For rational surfaces Weights(i)*Poles(i) are checked.
+  Standard_EXPORT static Standard_Boolean IsBSplUClosed(const Handle(Geom_BSplineSurface)& S, 
+                                                        const Standard_Real U1,
+                                                        const Standard_Real U2,
+                                                        const Standard_Real Tol);
 
+  //! Returns true if the poles of V1 isoline and the poles of
+  //! V2 isoline of surface are identical according to tolerance criterion.
+  //! For rational surfaces Weights(i)*Poles(i) are checked.
+  Standard_EXPORT static Standard_Boolean IsBSplVClosed(const Handle(Geom_BSplineSurface)& S, 
+                                                        const Standard_Real V1,
+                                                        const Standard_Real V2,
+                                                        const Standard_Real Tol);
+
+  //! Returns true if the poles of U1 isoline and the poles of
+  //! U2 isoline of surface are identical according to tolerance criterion.
+  Standard_EXPORT static Standard_Boolean IsBzUClosed(const Handle(Geom_BezierSurface)& S, 
+                                                        const Standard_Real U1,
+                                                        const Standard_Real U2,
+                                                        const Standard_Real Tol);
+
+  //! Returns true if the poles of V1 isoline and the poles of
+  //! V2 isoline of surface are identical according to tolerance criterion.
+  Standard_EXPORT static Standard_Boolean IsBzVClosed(const Handle(Geom_BezierSurface)& S, 
+                                                        const Standard_Real V1,
+                                                        const Standard_Real V2,
+                                                        const Standard_Real Tol);
 
 protected:
 

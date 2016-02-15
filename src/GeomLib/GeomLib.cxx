@@ -135,6 +135,12 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
+//
+static Standard_Boolean CompareWeightPoles(const TColgp_Array1OfPnt& thePoles1, 
+                                           const TColStd_Array1OfReal* const theW1,
+                                           const TColgp_Array1OfPnt& thePoles2,
+                                           const TColStd_Array1OfReal* const theW2,
+                                           const Standard_Real theTol);
 
 //=======================================================================
 //function : ComputeLambda
@@ -2454,5 +2460,314 @@ Standard_Integer GeomLib::NormEstim(const Handle(Geom_Surface)& S,
   }
   return 3;
 }
- 
 
+//=======================================================================
+//function : IsClosed
+//purpose  : 
+//=======================================================================
+void GeomLib::IsClosed (const Handle(Geom_Surface)& S, 
+                        const Standard_Real Tol,
+                        Standard_Boolean& isUClosed, Standard_Boolean& isVClosed) 
+{
+  isUClosed = Standard_False;
+  isVClosed = Standard_False;
+  //
+  GeomAdaptor_Surface aGAS(S);
+  GeomAbs_SurfaceType aSType = aGAS.GetType();
+  //
+  Standard_Real Tol2 = Tol * Tol;
+  switch (aSType)
+  {
+    case GeomAbs_Plane:
+    {
+      return;
+    }
+    case GeomAbs_Cylinder:
+    case GeomAbs_SurfaceOfExtrusion:
+    {
+      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
+      Standard_Real v1 = aGAS.FirstVParameter();
+      if(Precision::IsInfinite(v1))
+        v1 = 0.;
+      gp_Pnt p1 = aGAS.Value(u1, v1);
+      gp_Pnt p2 = aGAS.Value(u2, v1);
+      isUClosed = p1.SquareDistance(p2) <= Tol2;
+      return;
+    }
+    case GeomAbs_Cone:
+    {
+      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
+      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
+      //find v with maximal distance from axis
+      if(!(Precision::IsInfinite(v1) || Precision::IsInfinite(v2)))
+      {
+        gp_Cone aCone = aGAS.Cone();
+        gp_Pnt anApex = aCone.Apex();
+        gp_Pnt P1 = aGAS.Value(u1, v1);
+        gp_Pnt P2 = aGAS.Value(u1, v2);
+        if(P2.SquareDistance(anApex) > P1.SquareDistance(anApex))
+        {
+          v1 = v2;
+        }
+      }
+      else
+      {
+        v1 = 0.;
+      }
+      gp_Pnt p1 = aGAS.Value(u1, v1);
+      gp_Pnt p2 = aGAS.Value(u2, v1);
+      isUClosed = p1.SquareDistance(p2) <= Tol2;
+      return;
+    }
+    case GeomAbs_Sphere:
+    {
+      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
+      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
+      //find v with maximal distance from axis
+      if(v1*v2 <= 0.)
+      {
+        v1 = 0.;
+      }
+      else
+      {
+        if(v1 < 0.)
+        {
+          v1 = v2;
+        }
+      }
+      gp_Pnt p1 = aGAS.Value(u1, v1);
+      gp_Pnt p2 = aGAS.Value(u2, v1);
+      isUClosed = p1.SquareDistance(p2) <= Tol2;
+      return;
+    }
+    case GeomAbs_Torus:
+    {
+      Standard_Real ures = aGAS.UResolution(Tol);
+      Standard_Real vres = aGAS.VResolution(Tol);
+      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
+      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
+      //
+      isUClosed = (u2 - u1) >= aGAS.UPeriod() - ures;
+      isVClosed = (v2 - v1) >= aGAS.VPeriod() - vres;
+      return;
+    }
+    case GeomAbs_BSplineSurface:
+    {
+      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
+      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
+      Handle(Geom_BSplineSurface) aBSpl = aGAS.BSpline();
+      isUClosed = GeomLib::IsBSplUClosed(aBSpl, u1, u2, Tol);
+      isVClosed = GeomLib::IsBSplVClosed(aBSpl, v1, v2, Tol);
+      return;
+    }
+    case GeomAbs_BezierSurface:
+    {
+      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
+      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
+      Handle(Geom_BezierSurface) aBz = aGAS.Bezier();
+      isUClosed = GeomLib::IsBzUClosed(aBz, u1, u2, Tol);
+      isVClosed = GeomLib::IsBzVClosed(aBz, v1, v2, Tol);
+      return;
+    }
+    case GeomAbs_SurfaceOfRevolution:
+    case GeomAbs_OffsetSurface:
+    case GeomAbs_OtherSurface:
+    {
+      Standard_Integer nbp = 23;
+      Standard_Real u1 = aGAS.FirstUParameter(), u2 = aGAS.LastUParameter();
+      Standard_Real v1 = aGAS.FirstVParameter(), v2 = aGAS.LastVParameter();
+      if(Precision::IsInfinite(v1))
+      {
+        v1 = Sign(1., v1);
+      }
+      if(Precision::IsInfinite(v2))
+      {
+        v2 = Sign(1., v2);
+      }
+      //
+      if(aSType == GeomAbs_OffsetSurface ||
+         aSType == GeomAbs_OtherSurface)
+      {
+        if(Precision::IsInfinite(u1))
+        {
+          u1 = Sign(1., u1);
+        }
+        if(Precision::IsInfinite(u2))
+        {
+          u2 = Sign(1., u2);
+        }
+      }
+      isUClosed = Standard_True;
+      Standard_Real dt = (v2 - v1) / (nbp - 1);
+      Standard_Real res = Max(aGAS.UResolution(Tol), Precision::PConfusion());
+      if(dt <= res)
+      {
+        nbp = RealToInt((v2 - v1) /(2.*res)) + 1;
+        nbp = Max(nbp, 2);
+        dt = (v2 - v1) / (nbp - 1);
+      }
+      Standard_Real t;
+      Standard_Integer i;
+      for(i = 0; i < nbp;  ++i)
+      {
+        t = (i == nbp-1 ? v2 : v1 + i * dt);
+        gp_Pnt p1 = aGAS.Value(u1, t);
+        gp_Pnt p2 = aGAS.Value(u2, t);
+        if(p1.SquareDistance(p2) > Tol2)
+        {
+          isUClosed = Standard_False;
+          break;
+        }
+      }
+      // 
+      nbp = 23;
+      isVClosed = Standard_True;
+      dt = (u2 - u1) / (nbp - 1);
+      res = Max(aGAS.VResolution(Tol), Precision::PConfusion());
+      if(dt <= res)
+      {
+        nbp = RealToInt((u2 - u1) /(2.*res)) + 1;
+        nbp = Max(nbp, 2);
+        dt = (u2 - u1) / (nbp - 1);
+      }
+      for(i = 0; i < nbp;  ++i)
+      {
+        t = (i == nbp-1 ? u2 : u1 + i * dt);
+        gp_Pnt p1 = aGAS.Value(t, v1);
+        gp_Pnt p2 = aGAS.Value(t, v2);
+        if(p1.SquareDistance(p2) > Tol2)
+        {
+          isVClosed = Standard_False;
+          break;
+        }
+      }
+      return;
+    }
+    default:
+    {
+      return;
+    }
+  }
+}
+
+//=======================================================================
+//function : IsBSplUClosed
+//purpose  : 
+//=======================================================================
+Standard_Boolean GeomLib::IsBSplUClosed (const Handle(Geom_BSplineSurface)& S, 
+                                         const Standard_Real U1,
+                                         const Standard_Real U2,
+                                         const Standard_Real Tol) 
+{   
+  Handle(Geom_Curve) aCUF = S->UIso( U1 );
+  Handle(Geom_Curve) aCUL = S->UIso( U2 );
+  if(aCUF.IsNull() || aCUL.IsNull())
+    return Standard_False;
+  Standard_Real Tol2 = 2.*Tol;
+  Handle(Geom_BSplineCurve) aBsF = Handle(Geom_BSplineCurve)::DownCast(aCUF);
+  Handle(Geom_BSplineCurve) aBsL = Handle(Geom_BSplineCurve)::DownCast(aCUL);
+  const TColgp_Array1OfPnt& aPF = aBsF->Poles();
+  const TColgp_Array1OfPnt& aPL = aBsL->Poles();
+  const TColStd_Array1OfReal* WF = aBsF->Weights();
+  const TColStd_Array1OfReal* WL = aBsL->Weights();
+  return CompareWeightPoles(aPF, WF, aPL, WL, Tol2);
+}
+
+//=======================================================================
+//function : IsBSplVClosed
+//purpose  : 
+//=======================================================================
+Standard_Boolean GeomLib::IsBSplVClosed (const Handle(Geom_BSplineSurface)& S, 
+                                         const Standard_Real V1,
+                                         const Standard_Real V2,
+                                         const Standard_Real Tol) 
+{
+  Handle(Geom_Curve) aCVF = S->VIso( V1 );
+  Handle(Geom_Curve) aCVL = S->VIso( V2 );
+  if(aCVF.IsNull() || aCVL.IsNull())
+    return Standard_False;
+  Standard_Real Tol2 = 2.*Tol;
+  Handle(Geom_BSplineCurve) aBsF = Handle(Geom_BSplineCurve)::DownCast(aCVF);
+  Handle(Geom_BSplineCurve) aBsL = Handle(Geom_BSplineCurve)::DownCast(aCVL);
+  const TColgp_Array1OfPnt& aPF = aBsF->Poles();
+  const TColgp_Array1OfPnt& aPL = aBsL->Poles();
+  const TColStd_Array1OfReal* WF = aBsF->Weights();
+  const TColStd_Array1OfReal* WL = aBsL->Weights();
+  return CompareWeightPoles(aPF, WF, aPL, WL, Tol2);
+}
+//=======================================================================
+//function : IsBzUClosed
+//purpose  : 
+//=======================================================================
+Standard_Boolean GeomLib::IsBzUClosed (const Handle(Geom_BezierSurface)& S, 
+                                       const Standard_Real U1,
+                                       const Standard_Real U2,
+                                       const Standard_Real Tol) 
+{   
+  Handle(Geom_Curve) aCUF = S->UIso( U1 );
+  Handle(Geom_Curve) aCUL = S->UIso( U2 );
+  if(aCUF.IsNull() || aCUL.IsNull())
+    return Standard_False;
+  Standard_Real Tol2 = 2.*Tol;
+  Handle(Geom_BezierCurve) aBzF = Handle(Geom_BezierCurve)::DownCast(aCUF);
+  Handle(Geom_BezierCurve) aBzL = Handle(Geom_BezierCurve)::DownCast(aCUL);
+  const TColgp_Array1OfPnt& aPF = aBzF->Poles();
+  const TColgp_Array1OfPnt& aPL = aBzL->Poles();
+  //
+  return CompareWeightPoles(aPF, 0, aPL, 0, Tol2);
+}
+
+//=======================================================================
+//function : IsBzVClosed
+//purpose  : 
+//=======================================================================
+Standard_Boolean GeomLib::IsBzVClosed (const Handle(Geom_BezierSurface)& S, 
+                                       const Standard_Real V1,
+                                       const Standard_Real V2,
+                                       const Standard_Real Tol) 
+{
+  Handle(Geom_Curve) aCVF = S->VIso( V1 );
+  Handle(Geom_Curve) aCVL = S->VIso( V2 );
+  if(aCVF.IsNull() || aCVL.IsNull())
+    return Standard_False;
+  Standard_Real Tol2 = 2.*Tol;
+  Handle(Geom_BezierCurve) aBzF = Handle(Geom_BezierCurve)::DownCast(aCVF);
+  Handle(Geom_BezierCurve) aBzL = Handle(Geom_BezierCurve)::DownCast(aCVL);
+  const TColgp_Array1OfPnt& aPF = aBzF->Poles();
+  const TColgp_Array1OfPnt& aPL = aBzL->Poles();
+  //
+  return CompareWeightPoles(aPF, 0, aPL, 0, Tol2);
+}
+
+//=======================================================================
+//function : CompareWeightPoles
+//purpose  : Checks if thePoles1(i)*theW1(i) is equal to thePoles2(i)*theW2(i)
+//            with tolerance theTol.
+//           It is necessary for not rational B-splines and Bezier curves
+//            to set theW1 and theW2 adresses to zero.
+//=======================================================================
+static Standard_Boolean CompareWeightPoles(const TColgp_Array1OfPnt& thePoles1, 
+                                           const TColStd_Array1OfReal* const theW1,
+                                           const TColgp_Array1OfPnt& thePoles2,
+                                           const TColStd_Array1OfReal* const theW2,
+                                           const Standard_Real theTol)
+{
+  if(thePoles1.Length() != thePoles2.Length())
+  {
+    return Standard_False;
+  }
+  //
+  Standard_Integer i = 1;
+  for( i = 1 ; i <= thePoles1.Length(); i++ )
+  {
+    const Standard_Real aW1 = (theW1 == 0) ? 1.0 : theW1->Value(i);
+    const Standard_Real aW2 = (theW2 == 0) ? 1.0 : theW2->Value(i);
+
+    gp_XYZ aPole1 = thePoles1.Value(i).XYZ() * aW1;
+    gp_XYZ aPole2 = thePoles2.Value(i).XYZ() * aW2;
+    if(!aPole1.IsEqual(aPole2, theTol))
+      return Standard_False;
+  }
+  //
+  return Standard_True;
+}
