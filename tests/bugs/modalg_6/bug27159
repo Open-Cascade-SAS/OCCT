@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC27159"
+puts "============"
+puts ""
+#######################################################################
+# Section between two faces is lost
+#######################################################################
+
+smallview
+
+set expected_MaxTolerance 5.00000e-006
+set tol_abs_MaxTolerance 1.e-07
+set tol_rel_MaxTolerance 1.e-07
+
+restore [locate_data_file bug27159_f1f2.brep] a
+explode a
+
+bop a_1 a_2
+bopsection res
+donly res
+fit
+donly a_1 a_2 res
+
+checknbshapes res -vertex 2 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 4
+
+checkshape res
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance res] full MaxTolerance
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+checkprops res -l 0.0100036

@@ -2712,7 +2712,6 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   PointDepart( LOn2S, Surf1, NbU1, NbV1, Surf2, NbU2, NbV2 );
   empt = Standard_True;
   done = Standard_True;
-  SLin.Clear();  
 
   Standard_Integer NbLigCalculee = 0;
   Standard_Real U1,U2,V1,V2;
