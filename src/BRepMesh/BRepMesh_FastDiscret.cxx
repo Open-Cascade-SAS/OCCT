@@ -829,34 +829,43 @@ void BRepMesh_FastDiscret::update(
   else
   {
     const Standard_Integer  aNodesNb = aEdgeTool->NbPoints();
-    TColStd_Array1OfInteger aNewNodes      (1, aNodesNb);
-    TColStd_Array1OfInteger aNewNodInStruct(1, aNodesNb);
-    TColStd_Array1OfReal    aNewParams     (1, aNodesNb);
+    TColStd_Array1OfInteger aNewNodesVec        (1, aNodesNb);
+    TColStd_Array1OfInteger aNewNodesInStructVec(1, aNodesNb);
+    TColStd_Array1OfReal    aNewParamsVec       (1, aNodesNb);
 
-    aNewNodInStruct(1) = ipf;
-    aNewNodes      (1) = isvf;
-    aNewParams     (1) = aEAttr.FirstParam;
+    Standard_Integer aNodesCount = 1;
+    aNewNodesInStructVec(aNodesCount) = ipf;
+    aNewNodesVec        (aNodesCount) = isvf;
+    aNewParamsVec       (aNodesCount) = aEAttr.FirstParam;
 
-    aNewNodInStruct(aNodesNb) = ipl;
-    aNewNodes      (aNodesNb) = isvl;
-    aNewParams     (aNodesNb) = aEAttr.LastParam;
-
+    ++aNodesCount;
     Standard_Integer aLastPointId = myAttribute->LastPointId();
     for (Standard_Integer i = 2; i < aNodesNb; ++i)
     {
       gp_Pnt        aPnt;
       gp_Pnt2d      aUV;
       Standard_Real aParam;
-      aEdgeTool->Value(i, aParam, aPnt, aUV);
+      if (!aEdgeTool->Value(i, aParam, aPnt, aUV))
+        continue;
+
       myBoundaryPoints->Bind(++aLastPointId, aPnt);
 
       Standard_Integer iv2, isv;
       myAttribute->AddNode(aLastPointId, aUV.Coord(), BRepMesh_Frontier, iv2, isv);
 
-      aNewNodInStruct(i) = aLastPointId;
-      aNewNodes      (i) = isv;
-      aNewParams     (i) = aParam;
+      aNewNodesInStructVec(aNodesCount) = aLastPointId;
+      aNewNodesVec        (aNodesCount) = isv;
+      aNewParamsVec       (aNodesCount) = aParam;
+      ++aNodesCount;
     }
+
+    aNewNodesInStructVec(aNodesCount) = ipl;
+    aNewNodesVec        (aNodesCount) = isvl;
+    aNewParamsVec       (aNodesCount) = aEAttr.LastParam;
+
+    TColStd_Array1OfInteger aNewNodes      (aNewNodesVec.First (),        1, aNodesCount);
+    TColStd_Array1OfInteger aNewNodInStruct(aNewNodesInStructVec.First(), 1, aNodesCount);
+    TColStd_Array1OfReal    aNewParams     (aNewParamsVec.First(),        1, aNodesCount);
 
     P1 = new Poly_PolygonOnTriangulation(aNewNodes,       aNewParams);
     P2 = new Poly_PolygonOnTriangulation(aNewNodInStruct, aNewParams);

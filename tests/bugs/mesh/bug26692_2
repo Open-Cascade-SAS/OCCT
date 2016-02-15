@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC26692"
+puts "========"
+puts ""
+#######################################################################
+# BRepMesh hangs on the attached shape due to tessellation points produced out of surface range
+#######################################################################
+
+restore [locate_data_file bug26692_face_bad_shading.brep] a
+
+vinit
+vclear
+
+incmesh a 100
+
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}.png

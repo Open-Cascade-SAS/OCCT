@@ -45,7 +45,7 @@ BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor(
 //function : Value
 //purpose  : 
 //=======================================================================
-void BRepMesh_EdgeTessellationExtractor::Value(
+Standard_Boolean BRepMesh_EdgeTessellationExtractor::Value(
   const Standard_Integer theIndex,
   Standard_Real&         theParameter,
   gp_Pnt&                thePoint,
@@ -56,4 +56,6 @@ void BRepMesh_EdgeTessellationExtractor::Value(
 
   theParameter = myProvider.Parameter(theIndex, thePoint);
   theUV        = myPCurve->Value(theParameter);
+
+  return Standard_True;
 }

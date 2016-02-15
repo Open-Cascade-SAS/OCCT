@@ -58,10 +58,12 @@ public:
   //! @param theParameter parameters on PCurve corresponded to the solution.
   //! @param thePoint tessellation point.
   //! @param theUV coordinates of tessellation point in parametric space of face.
-  virtual void Value(const Standard_Integer theIndex,
-                     Standard_Real&         theParameter,
-                     gp_Pnt&                thePoint,
-                     gp_Pnt2d&              theUV) Standard_OVERRIDE;
+  //! @return True in case of valid result, false elewhere.
+  virtual Standard_Boolean Value(
+    const Standard_Integer theIndex,
+    Standard_Real&         theParameter,
+    gp_Pnt&                thePoint,
+    gp_Pnt2d&              theUV) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellator,BRepMesh_IEdgeTool)
 
@@ -80,6 +82,9 @@ private:
   BRepAdaptor_Curve                     myCOnS;
   Standard_Real                         mySquareEdgeDef;
   Standard_Real                         mySquareMinSize;
+  Standard_Real                         myEdgeSqTol;
+  Standard_Real                         myFaceRangeU[2];
+  Standard_Real                         myFaceRangeV[2];
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_EdgeTessellator, BRepMesh_IEdgeTool)
