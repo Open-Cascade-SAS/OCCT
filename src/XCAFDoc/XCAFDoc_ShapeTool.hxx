@@ -203,11 +203,6 @@ public:
   Standard_EXPORT TDF_Label NewShape() const;
   
   //! Sets representation (TopoDS_Shape) for top-level shape.
-  //! If S has location(location.IsIdentity() is false),
-  //! command will be skipped. Sub-shapes of S which is
-  //! subshape of old shape, will be stored ( all atributes will be stored).
-  //! If a sub-label of L is not a sub-shape of the new shape,
-  //! it will be removed.
   Standard_EXPORT void SetShape (const TDF_Label& L, const TopoDS_Shape& S);
   
   //! Adds a new top-level (creates and returns a new label)
@@ -290,9 +285,6 @@ public:
   
   //! Removes a component from its assembly
   Standard_EXPORT void RemoveComponent (const TDF_Label& comp) const;
-  
-  //! Update labels associated with Label <L>
-  Standard_EXPORT void UpdateAssociatedAssembly (const TDF_Label& L) const;
   
   //! Update an assembly at label <L>
   Standard_EXPORT void UpdateAssembly (const TDF_Label& L) const;

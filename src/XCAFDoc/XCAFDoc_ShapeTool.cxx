@@ -402,32 +402,26 @@ TDF_Label XCAFDoc_ShapeTool::NewShape() const
 //=======================================================================
 
 void XCAFDoc_ShapeTool::SetShape (const TDF_Label& L, const TopoDS_Shape& S)
-{ 
-  if(IsReference(L) || !IsTopLevel(L) || /*IsAssembly(L) ||*/ !S.Location().IsIdentity())
-    return;
-
-  TDF_LabelSequence aSubShapes;
-  GetSubShapes(L, aSubShapes);
-
+{
   TNaming_Builder tnBuild(L);
   tnBuild.Generated(S);
   Handle(XCAFDoc_ShapeMapTool) A = XCAFDoc_ShapeMapTool::Set(L);
+//  if ( ! L.FindAttribute(XCAFDoc_ShapeMapTool::GetID(), A) ) {
+//    A = XCAFDoc_ShapeMapTool::Set(L);
+//    L.AddAttribute(A);
+//  }
   A->SetShape(S);
-
-  for(Standard_Integer i = 1; i<=aSubShapes.Length(); i++)
-  {
-    TDF_Label aSubLabel = aSubShapes(i);
-    if (!IsSubShape(L, GetShape(aSubLabel)))
-    {
-      aSubLabel.ForgetAllAttributes();
-    }
-  }
 
   if(!myShapeLabels.IsBound(S)) {
     myShapeLabels.Bind(S,L);
   }
-
-  UpdateAssociatedAssembly(L);
+  
+  //:abv 31.10.01: update assemblies that refer a shape
+  TDF_LabelSequence Labels;
+  if ( GetUsers ( L, Labels, Standard_True ) ) {
+    for ( Standard_Integer i=Labels.Length(); i >=1; i-- ) 
+      UpdateAssembly ( Labels(i) );
+  }
 }
 
 //=======================================================================
@@ -999,26 +993,6 @@ void XCAFDoc_ShapeTool::RemoveComponent (const TDF_Label& comp) const
 }
 
 //=======================================================================
-//function : UpdateAssociatedAssembly
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_ShapeTool::UpdateAssociatedAssembly (const TDF_Label& L) const
-{
-  TDF_LabelSequence Labels;
-  if ( GetUsers ( L, Labels ) ) {
-    for ( Standard_Integer i=Labels.Length(); i >=1; i-- ) 
-    {
-      TDF_Label anAssemblyLabel = Labels(i).Father();
-      if(!anAssemblyLabel.IsNull())
-      {
-        UpdateAssembly(anAssemblyLabel);
-      }
-    }
-  }
-}
-
-//=======================================================================
 //function : UpdateAssembly
 //purpose  : 
 //=======================================================================
@@ -1027,38 +1001,19 @@ void XCAFDoc_ShapeTool::UpdateAssembly (const TDF_Label& L) const
 {
   if ( ! IsAssembly(L) ) return;
 
+  TopoDS_Compound newassembly;
   BRep_Builder b;
-  TopoDS_Shape aShape = GetShape(L);
-  Standard_Boolean isFree = aShape.Free();
-  if (!isFree)
-    aShape.Free(Standard_True);
-
-  TopTools_SequenceOfShape aSubShapeSeq;
-  TopoDS_Iterator Iterator(aShape);
-  for (; Iterator.More(); Iterator.Next())
-    aSubShapeSeq.Append(Iterator.Value());
-
-  for (Standard_Integer i = 1; i <= aSubShapeSeq.Length(); i++) 
-    b.Remove(aShape, aSubShapeSeq.Value(i));
+  b.MakeCompound(newassembly);
 
   TDF_ChildIterator chldLabIt(L);
   for (; chldLabIt.More(); chldLabIt.Next() ) {
     TDF_Label subLabel = chldLabIt.Value();
     if ( IsComponent ( subLabel ) ) {
-      b.Add(aShape, GetShape(subLabel));
+      b.Add(newassembly, GetShape(subLabel));
     }
   }
-
-  if (!isFree)
-    aShape.Free(Standard_False);
-
   TNaming_Builder tnBuild(L);
-  tnBuild.Generated(aShape);
-
-  Handle(XCAFDoc_ShapeMapTool) A = XCAFDoc_ShapeMapTool::Set(L);
-  A->SetShape(aShape);
-
-  UpdateAssociatedAssembly(L);
+  tnBuild.Generated(newassembly);
 }
 
 //=======================================================================

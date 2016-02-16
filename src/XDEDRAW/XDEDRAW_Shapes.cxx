@@ -102,8 +102,7 @@ static Standard_Integer setShape (Draw_Interpretor& di, Standard_Integer argc, c
 //  XCAFDoc_ShapeTool myAssembly;
 //  myAssembly.Init(Doc);
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  if( !myAssembly->IsAssembly(aLabel))
-    myAssembly->SetShape(aLabel, aShape);
+  myAssembly->SetShape(aLabel, aShape);
   return 0;
 }
 
