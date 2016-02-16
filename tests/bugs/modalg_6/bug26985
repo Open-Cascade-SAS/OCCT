@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC26985"
+puts "============"
+puts ""
+#######################################################################
+# Wrong section between two faces: it has a gap
+#######################################################################
+
+smallview
+
+set expected_MaxTolerance 1.50777e-005
+set tol_abs_MaxTolerance 1.e-06
+set tol_rel_MaxTolerance 1.e-06
+
+restore [locate_data_file bug26985_f1f2.brep] a
+explode a
+
+bop a_1 a_2
+bopsection res
+donly res
+fit
+donly a_1 a_2 res
+
+checknbshapes res -vertex 2 -edge 1 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 4
+
+checkshape res
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance res] full MaxTolerance
+checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}
+
+checkprops res -l 0.00503456

@@ -2930,7 +2930,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
       Standard_Real LocalResol = 0.;
       if (RefDist > gp::Resolution())
         LocalResol = pasuv[choixIso] * tolconf / RefDist;
-      if (pasuv[choixIso] <= LocalResol)
+      if (pasuv[choixIso] < 2*LocalResol)
         pasuv[choixIso] = pasInit[choixIso] = 2*LocalResol;
     }
     ////////////////////////////////////////
