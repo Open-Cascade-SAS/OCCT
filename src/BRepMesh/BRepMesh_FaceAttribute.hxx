@@ -29,6 +29,13 @@ class BRepMesh_FaceAttribute : public Standard_Transient
 {
 public:
 
+  //! Constructor. Initializes empty attribute.
+  //! @param theBoundaryVertices shared map of shape vertices.
+  //! @param theBoundaryPoints shared discretization points of shape boundaries.
+  Standard_EXPORT BRepMesh_FaceAttribute(
+    const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
+    const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints);
+
   //! Constructor.
   //! @param theFace face the attribute is created for. 
   //! Used for default initialization. Attribute keeps reference 
@@ -41,7 +48,7 @@ public:
     const TopoDS_Face&                    theFace,
     const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
     const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints,
-    const Standard_Boolean theAdaptiveMin);
+    const Standard_Boolean                theAdaptiveMin);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_FaceAttribute();
@@ -54,6 +61,16 @@ public: //! @name main geometrical properties.
     return mySurface;
   }
 
+  //! Returns True in case if this attribute has already been intialized.
+  inline Standard_Boolean IsInitialized () const
+  {
+    return !myFace.IsNull ();
+  }
+
+  //! Initializes this attribute by the given face.
+  Standard_EXPORT void SetFace (
+    const TopoDS_Face&     theFace, 
+    const Standard_Boolean theAdaptiveMin);
 
   //! Returns forward oriented face to be used for calculations.
   inline const TopoDS_Face& Face() const

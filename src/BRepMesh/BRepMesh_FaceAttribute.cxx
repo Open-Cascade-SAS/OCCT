@@ -52,10 +52,32 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute()
 //purpose  : 
 //=======================================================================
 BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
+  const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
+  const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints)
+  : myDefFace         (0.),
+    myUMin            (0.),
+    myUMax            (0.),
+    myVMin            (0.),
+    myVMax            (0.),
+    myDeltaX          (1.),
+    myDeltaY          (1.),
+    myMinStep         (-1.),
+    myStatus          (BRepMesh_NoError),
+    myAdaptiveMin     (Standard_False),
+    myBoundaryVertices(theBoundaryVertices),
+    myBoundaryPoints  (theBoundaryPoints)
+{
+}
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
   const TopoDS_Face&                    theFace,
   const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
   const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints,
-  const Standard_Boolean theAdaptiveMin)
+  const Standard_Boolean                theAdaptiveMin)
   : myDefFace         (0.),
     myUMin            (0.),
     myUMax            (0.),
@@ -79,6 +101,20 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
 //=======================================================================
 BRepMesh_FaceAttribute::~BRepMesh_FaceAttribute()
 {
+}
+
+//=======================================================================
+//function : SetFace
+//purpose  : 
+//=======================================================================
+void BRepMesh_FaceAttribute::SetFace (
+  const TopoDS_Face&     theFace, 
+  const Standard_Boolean theAdaptiveMin)
+{
+  myFace        = theFace;
+  myAdaptiveMin = theAdaptiveMin;
+
+  init ();
 }
 
 //=======================================================================

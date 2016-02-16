@@ -179,20 +179,16 @@ void BRepMesh_FastDiscret::resetDataStructure()
 //=======================================================================
 Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
 {
+  myAttribute.Nullify();
+  GetFaceAttribute(theFace, myAttribute, Standard_True);
+
   try
   {
     OCC_CATCH_SIGNALS
 
     // Initialize face attributes
-    myAttribute.Nullify();
-    GetFaceAttribute(theFace, myAttribute);
-    if (myAttribute.IsNull())
-    {
-      myAttribute = new BRepMesh_FaceAttribute(theFace,
-        myBoundaryVertices, myBoundaryPoints,myParameters.AdaptiveMin);
-
-      myAttributes.Bind(theFace, myAttribute);
-    }
+    if (!myAttribute->IsInitialized ())
+      myAttribute->SetFace (theFace, myParameters.AdaptiveMin);
     
     BRepMesh::HIMapOfInteger&            aVertexEdgeMap = myAttribute->ChangeVertexEdgeMap();
     BRepMesh::HDMapOfShapePairOfPolygon& aInternalEdges = myAttribute->ChangeInternalEdges();
@@ -565,14 +561,14 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       myAttribute->SetDeltaX(deltaX);
       myAttribute->SetDeltaY(deltaY);
     }
+
+    myAttribute->ChangeMeshNodes() = 
+      myAttribute->ChangeStructure()->Data()->Vertices();
   }
   catch(Standard_Failure)
   {
     myAttribute->SetStatus(BRepMesh_Failure);
   }
-
-  myAttribute->ChangeMeshNodes() = 
-    myAttribute->ChangeStructure()->Data()->Vertices();
 
   myAttribute->ChangeStructure().Nullify();
   return myAttribute->GetStatus();
@@ -923,12 +919,18 @@ void BRepMesh_FastDiscret::storePolygonSharedData(
 //=======================================================================
 Standard_Boolean BRepMesh_FastDiscret::GetFaceAttribute(
   const TopoDS_Face&              theFace,
-  Handle(BRepMesh_FaceAttribute)& theAttribute ) const
+  Handle(BRepMesh_FaceAttribute)& theAttribute,
+  const Standard_Boolean          isForceCreate) const
 {
   if (myAttributes.IsBound(theFace))
   {
     theAttribute = myAttributes(theFace);
     return Standard_True;
+  }
+  else if (isForceCreate)
+  {
+    theAttribute = new BRepMesh_FaceAttribute(myBoundaryVertices, myBoundaryPoints);
+    myAttributes.Bind(theFace, theAttribute);
   }
 
   return Standard_False;

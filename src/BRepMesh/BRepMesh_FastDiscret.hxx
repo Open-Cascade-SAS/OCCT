@@ -154,9 +154,15 @@ public:
     return mySharedFaces;
   }
 
-  //! Gives face attribute.
-  Standard_EXPORT Standard_Boolean GetFaceAttribute
-    ( const TopoDS_Face& theFace, Handle(BRepMesh_FaceAttribute)& theAttribute ) const;
+  //! Returns attribute descriptor for the given face.
+  //! @param theFace face the attribute should be returned for.
+  //! @param[out] theAttribute attribute found for the specified face.
+  //! @param isForceCreate if True creates new attribute in case if there 
+  //! is no data for the given face.
+  Standard_EXPORT Standard_Boolean GetFaceAttribute (
+    const TopoDS_Face&              theFace, 
+    Handle(BRepMesh_FaceAttribute)& theAttribute,
+    const Standard_Boolean          isForceCreate = Standard_False) const;
 
   //! Remove face attribute as useless to free locate memory.
   Standard_EXPORT void RemoveFaceAttribute( const TopoDS_Face& theFace );
@@ -346,7 +352,7 @@ private:
   TopoDS_Face                                      myFace;
 
   BRepMesh::DMapOfShapePairOfPolygon               myEdges;
-  BRepMesh::DMapOfFaceAttribute                    myAttributes;
+  mutable BRepMesh::DMapOfFaceAttribute            myAttributes;
   TopTools_DataMapOfShapeReal                      myMapdefle;
 
   // Data shared for whole shape
