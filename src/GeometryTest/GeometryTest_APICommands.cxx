@@ -332,6 +332,8 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   Standard_Boolean C2 = Standard_False;
   Standard_Boolean S1 = Standard_False;
   Standard_Boolean S2 = Standard_False;
+  Standard_Boolean isInfinitySolutions = Standard_False;
+  Standard_Real aMinDist = RealLast();
 
   Standard_Real U1f, U1l, U2f, U2l, V1f = 0., V1l = 0., V2f = 0., V2l = 0.;
 
@@ -368,10 +370,9 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   if (C1 && C2)
   {
     GeomAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);
-    if (!Ex.Extrema().IsParallel())
+
+    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
     {
-      for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
-      {
         gp_Pnt aP1, aP2;
         Ex.Points(aJ, aP1, aP2);
         aPnts1.Append(aP1);
@@ -381,12 +382,10 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
         Ex.Parameters(aJ, aU1, aU2);
         aPrms[0].Append(aU1);
         aPrms[2].Append(aU2);
-      }
     }
-    else
-    {
-      di << "Infinite number of extremas, distance = " << Ex.LowerDistance() << "\n";
-    }
+    // Since GeomAPI cannot provide access to flag directly.
+    isInfinitySolutions = Ex.Extrema().IsParallel();
+    aMinDist = Ex.LowerDistance();
   }
   else if (C1 && S2)
   {
@@ -447,9 +446,14 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 
   // Output points.
   const Standard_Integer aPntCount = aPnts1.Size();
-  if (aPntCount == 0)
+  if (aPntCount == 0 || isInfinitySolutions)
   {
-    di << "No solutions!\n";
+    // Infinity solutions flag may be set with 0 number of 
+    // solutions in analytic extrema Curve/Curve.
+    if (isInfinitySolutions) 
+      di << "Infinite number of extremas, distance = " << aMinDist << "\n";
+    else
+      di << "No solutions!\n";
   }
   for (Standard_Integer aJ = 1; aJ <= aPntCount; aJ++)
   {

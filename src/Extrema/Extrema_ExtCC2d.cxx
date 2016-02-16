@@ -521,33 +521,30 @@ void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
   if (myDone)
   {
     myIsPar = AlgExt.IsParallel();
-    if (!myIsPar)
+    NbExt = AlgExt.NbExt();
+    for (i = 1; i <= NbExt; i++)
     {
-      NbExt = AlgExt.NbExt();
-      for (i = 1; i <= NbExt; i++)
-      {
-        // Verification de la validite des parametres pour le cas trimme:
-        AlgExt.Points(i, P1, P2);
-        U = P1.Parameter();
-        if (Period1 != 0.0) 
-          U = ElCLib::InPeriod(U,Ut11,Ut11+Period1);
-        U2 = P2.Parameter();
-        if (Period2 != 0.0) 
-          U2 = ElCLib::InPeriod(U2,Ut21,Ut21+Period2);
+      // Verification de la validite des parametres pour le cas trimme:
+      AlgExt.Points(i, P1, P2);
+      U = P1.Parameter();
+      if (Period1 != 0.0) 
+        U = ElCLib::InPeriod(U,Ut11,Ut11+Period1);
+      U2 = P2.Parameter();
+      if (Period2 != 0.0) 
+        U2 = ElCLib::InPeriod(U2,Ut21,Ut21+Period2);
 
-        if ((U  >= Ut11 - Precision::PConfusion())  && 
-            (U  <= Ut12 + Precision::PConfusion())  &&
-            (U2 >= Ut21 - Precision::PConfusion())  &&
-            (U2 <= Ut22 + Precision::PConfusion()))
-        {
-            mynbext++;
-            Val = AlgExt.SquareDistance(i);
-            P1.SetValues(U, P1.Value());
-            P2.SetValues(U2, P2.Value());
-            mySqDist.Append(Val);
-            mypoints.Append(P1);
-            mypoints.Append(P2);
-        }
+      if ((U  >= Ut11 - Precision::PConfusion())  && 
+        (U  <= Ut12 + Precision::PConfusion())  &&
+        (U2 >= Ut21 - Precision::PConfusion())  &&
+        (U2 <= Ut22 + Precision::PConfusion()))
+      {
+        mynbext++;
+        Val = AlgExt.SquareDistance(i);
+        P1.SetValues(U, P1.Value());
+        P2.SetValues(U2, P2.Value());
+        mySqDist.Append(Val);
+        mypoints.Append(P1);
+        mypoints.Append(P2);
       }
     }
 

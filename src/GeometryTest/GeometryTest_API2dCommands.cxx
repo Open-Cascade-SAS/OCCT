@@ -206,50 +206,6 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
 }
 
 //=======================================================================
-//function : extrema
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if ( n<3) return 1;
-
-  Handle(Geom2d_Curve)   GC1, GC2;
-
-  Standard_Real U1f,U1l,U2f,U2l;
-
-  GC1 = DrawTrSurf::GetCurve2d(a[1]);
-  if ( GC1.IsNull())
-    return 1;
-  U1f = GC1->FirstParameter();
-  U1l = GC1->LastParameter();
-
-  GC2 = DrawTrSurf::GetCurve2d(a[2]);
-  if ( GC2.IsNull())
-    return 1;
-  U2f = GC2->FirstParameter();
-  U2l = GC2->LastParameter();
-
-  char name[100];
-
-  Geom2dAPI_ExtremaCurveCurve Ex(GC1,GC2,U1f,U1l,U2f,U2l);
-  for ( Standard_Integer i = 1; i <= Ex.NbExtrema(); i++) {
-    gp_Pnt2d P1,P2;
-    Ex.Points(i,P1,P2);
-    Handle(Geom2d_Line) L = new Geom2d_Line(P1,gp_Vec2d(P1,P2));
-    Handle(Geom2d_TrimmedCurve) CT = 
-      new Geom2d_TrimmedCurve(L, 0., P1.Distance(P2));
-    Sprintf(name,"%s%d","ext_",i);
-    char* temp = name; // portage WNT
-    DrawTrSurf::Set(temp, CT);
-    di << name << " ";
-  }
-
-  return 0;
-}
-
-
-//=======================================================================
 //function : intersect
 //purpose  : 
 //=======================================================================
@@ -323,9 +279,6 @@ void GeometryTest::API2dCommands(Draw_Interpretor& theCommands)
 		  appro,g);
 
   g = "GEOMETRY curves and surfaces analysis";
-
-  theCommands.Add("2dextrema", "extrema curve curve",__FILE__,
-		  extrema,g);
 
   g = "GEOMETRY intersections";
 
