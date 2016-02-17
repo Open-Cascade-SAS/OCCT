@@ -106,7 +106,7 @@ Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOf
     myIndices.Nullify();
     return;
   }
-  memset (myAttribs->ChangeData (0), 0, myAttribs->Stride * myAttribs->NbElements);
+  memset (myAttribs->ChangeData (0), 0, size_t(myAttribs->Stride) * size_t(myAttribs->NbElements));
 
   if (theMaxBounds > 0)
   {
