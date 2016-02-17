@@ -104,296 +104,349 @@ The shape is created using the *BRepPrimAPI_MakeWedge*  command. An *AIS_Shape* 
 
 @subsection occt_visu_2_2 Selection 
 
-Objects that may be selected graphically, are displayed as sets of sensitive primitives, which provide sensitive zones in 2D graphic space. These zones are sorted according to their position on the screen when starting the selection process.  
-  
-@image html visualization_image006.png "A model"
-@image latex visualization_image006.png "A model"
+Standard OCCT selection algorithm is represented by 2 parts: dynamic and static. Dynamic selection causes objects to be automatically highlighted as the mouse cursor moves over them. Static selection allows to pick particular object (or objects) for further processing.
 
-The position of the mouse is also associated with a sensitive zone. When moving within the window where objects are displayed, the areas touched by the zone of the mouse are analyzed. The owners of these areas  are then highlighted or signaled by other means such as the name of the object highlighted in a list. That way, you are informed of the identity of the detected element.  
+There are 3 different selection types:
+  - **Point selection** -- allows picking and highlighting a single object (or its part) located under the mouse cursor;
+  - **Rectangle selection** -- allows picking objects or parts located under the rectangle defined by the start and end mouse cursor positions;
+  - **Polyline selection** -- allows picking objects or parts located under a user-defined non-self-intersecting polyline.
 
-@image html visualization_image007.png "Modeling faces with sensitive primitives"
-@image latex visualization_image007.png "Modeling faces with sensitive primitives"
+For OCCT selection algorithm, all selectable objects are represented as a set of sensitive zones, called <b>sensitive entities</b>. When the mouse cursor moves in the view, the sensitive entities of each object are analyzed for collision.
 
-@image html visualization_image008.png "In a dynamic selection, each sensitive polygon is represented by its  bounding rectangle"   
-@image latex visualization_image008.png "In a dynamic selection, each sensitive polygon is represented by its  bounding rectangle"
+@subsubsection occt_visu_2_2_1 Terms and notions
 
-@image html visualization_image009.png "Reference to the sensitive primitive, then to the owner"
-@image latex visualization_image009.png "Reference to the sensitive primitive, then to the owner"
+This section introduces basic terms and notions used throughout the algorithm description.
+
+<h4>Sensitive entity</h4>
+
+Sensitive entities in the same way as entity owners are links between objects and the selection mechanism.
+
+The purpose of entities is to define what parts of the object will be selectable in particular. Thus, any object that is meant to be selectable must be split into sensitive entities (one or several). For instance, to apply face selection to an object it is necessary to explode it into faces and use them for creation of a sensitive entity set.
+
+@image html visualization_image005.png "Example of a shape divided into sensitive entities"
+@image latex visualization_image005.png "Example of a shape divided into sensitive entities"
+
+Depending on the user's needs, sensitive entities may be atomic (point or edge) or complex. Complex entities contain many sub-elements that can be handled by detection mechanism in a similar way (for example, a polyline stored as a set of line segments or a triangulation).
+
+Entities are used as internal units of the selection algorithm and do not contain any topological data, hence they have a link to an upper-level interface that maintains topology-specific methods.
+
+<h4>Entity owner</h4>
+
+Each sensitive entity stores a reference to its owner, which is a class connecting the entity and the corresponding selectable object. Besides, owners can store any additional information, for example, the topological shape of the sensitive entity, highlight colors and methods, or if the entity is selected or not.  
+
+<h4>Selection</h4>
+
+To simplify the handling of different selection modes of an object, sensitive entities linked to its owners are organized into sets, called **selections**.
+
+Each selection contains entities created for a certain mode along with the sensitivity and update states.
+
+<h4>Selectable object</h4>
+
+Selectable object stores information about all created selection modes and sensitive entities.
+
+All successors of a selectable object must implement the method that splits its presentation into sensitive entities according to the given mode. The computed entities are arranged in one selection and added to the list of all selections of this object. No selection will be removed from the list until the object is deleted permanently.
+
+For all standard OCCT shapes, zero mode is supposed to select the whole object (but it may be redefined easily in the custom object). For example, the standard OCCT selection mechanism and *AIS_Shape* determine the following modes:
+  - 0 -- selection of the *AIS_Shape*;
+  - 1 -- selection of the vertices;
+  - 2 -- selection of the edges;
+  - 3 -- selection of the wires;
+  - 4 -- selection of the faces;
+  - 5 -- selection of the shells;
+  - 6 -- selection of the constituent solids.
+
+@image html visualization_image006.png "Hierarchy of references from sensitive entity to selectable object"
+@image latex visualization_image006.png "Hierarchy of references from sensitive entity to selectable object"
+
+@image html visualization_image007.png "The principle of entities organization within the selectable object"
+@image latex visualization_image007.png "The principle of entities organization within the selectable object"
+
+<h4>Viewer selector</h4>
+
+For each OCCT viewer there is a **Viewer selector** class instance. It provides a high-level API for the whole selection algorithm and encapsulates the processing of objects and sensitive entities for each mouse pick.
+
+The viewer selector maintains activation and deactivation of selection modes, launches the algorithm, which detects candidate entities to be picked, and stores its results, as well as implements an interface for keeping selection structures up-to-date.
+
+<h4>Selection manager</h4>
+
+Selection manager is a high-level API to manipulate selection of all displayed objects. It handles all viewer selectors, activates and deactivates selection modes for the objects in all or particular selectors, manages computation and update of selections for each object. Moreover, it keeps selection structures updated taking into account applied changes.
+
+@image html visualization_image008.png "The relations chain between viewer selector and selection manager"
+@image latex visualization_image008.png "The relations chain between viewer selector and selection manager"
+
+@subsubsection occt_visu_2_2_2 Algorithm
+
+All three types of OCCT selection are implemented as a single concept, based on the search for overlap between frustum and sensitive entity through 3-level BVH tree traversal.
+
+<h4>Selection Frustum</h4>
+
+The first step of each run of selection algorithm is to build the selection frustum according to the currently activated selection type.
+
+For the point or the rectangular selection the base of the frustum is a rectangle built in conformity with the pixel tolerance or the dimensions of a user-defined area, respectively. For the polyline selection, the polygon defined by the constructed line is triangulated and each triangle is used as the base for its own frustum. Thus, this type of selection uses a set of triangular frustums for overlap detection.
+
+The frustum length is limited by near and far view volume planes and each plane is built parallel to the corresponding view volume plane.
+
+@image html visualization_image009.png "Rectangular frustum: a) after mouse move or click, b) after applying the rectangular selection"
+@image latex visualization_image009.png "Rectangular frustum: a) after mouse move or click, b) after applying the rectangular selection"
+
+@image html visualization_image010.png "Triangular frustum set: a) user-defined polyline, b) triangulation of the polygon based on the given polyline, c) triangular frustum based on one of the triangles"
+@image latex visualization_image010.png "Triangular frustum set: a) user-defined polyline, b) triangulation of the polygon based on the given polyline, c) triangular frustum based on one of the triangles"
+
+<h4>BVH trees</h4>
+
+To maintain selection mechanism at the viewer level, a speedup structure composed of 3 BVH trees is used.
+
+The first level tree is constructed of axis-aligned bounding boxes of each selectable object. Hence, the root of this tree contains the combination of all selectable boundaries even if they have no currently activated selections. Objects are added during the display of <i>AIS_InteractiveObject</i> and will be removed from this tree only when the object is destroyed. The 1st level BVH tree is build on demand simultaneously with the first run of the selection algorithm.
+
+The second level BVH tree consists of all sensitive entities of one selectable object. The 2nd level trees are built automatically when the default mode is activated and rebuilt whenever a new selection mode is calculated for the first time.
+
+The third level BVH tree is used for complex sensitive entities that contain many elements: for example, triangulations, wires with many segments, point sets, etc. It is built on demand for sensitive entities with under 800K sub-elements.
+
+@image html visualization_image022.png "Selection BVH tree hierarchy: from the biggest object-level (first) to the smallest complex entity level (third)"
+@image latex visualization_image022.png "Selection BVH tree hierarchy: from the biggest object-level (first) to the smallest complex entity level (third)"
+
+<h4>Stages of the algorithm</h4>
+
+The algorithm includes pre-processing and three main stages.
+
+* **Pre-processing** -- implies calculation of the selection frustum and its main characteristics.
+* **First stage** -- traverse of the first level BVH tree.
+
+After successful building of the selection frustum, the algorithm starts traversal of the object-level BVH tree. The nodes containing axis-aligned bounding boxes are tested for overlap with the selection frustum following the terms of <i>separating axis theorem (SAT)</i>. When the traverse goes down to the leaf node, it means that a candidate object with possibly overlapping sensitive entities has been found. If no such objects have been detected, the algorithm stops and it is assumed that no object needs to be selected. Otherwise it passes to the next stage to process the entities of the found selectable.
+
+* **Second stage** -- traverse of the second level BVH tree
+
+At this stage it is necessary to determine if there are candidates among all sensitive entities of one object.
+
+First of all, at this stage the algorithm checks if there is any transformation applied for the current object. If it has its own location, then the correspondingly transformed frustum will be used for further calculations. At the next step the nodes of the second level BVH tree of the given object are visited to search for overlapping leaves. If no such leafs have been found, the algorithm returns to the second stage. Otherwise it starts processing the found entities by performing the following checks:
+  - activation check - the entity may be inactive at the moment as it belongs to deactivated selection;
+  - tolerance check - current selection frustum may be too large for further checks as it is always built with the maximum tolerance among all activated entities. Thus, at this step the frustum may be scaled.
+
+After these checks the algorithm passes to the last stage.
+
+* **Third stage** -- overlap or inclusion test of a particular sensitive entity
+
+If the entity is atomic, a simple SAT test is performed. In case of a complex entity, the third level BVH tree is traversed. The quantitative characteristics (like depth, distance to the center of geometry) of matched sensitive entities is analyzed and clipping planes are applied (if they have been set). The result of detection is stored and the algorithm returns to the second stage.
+
+@subsubsection occt_visu_2_2_3 Packages and classes
+
+Selection is implemented as a combination of various algorithms divided among several packages -- <i>SelectBasics</i>, <i>Select3D</i>, <i>SelectMgr</i> and <i>StdSelect</i>.
+
+<h4>SelectBasics</h4>
+
+<i>SelectBasics</i> package contains basic classes and interfaces for selection. The most notable are:
+  - <i>SelectBasics_SensitiveEntity</i> -- the base definition of a sensitive entity;
+  - <i>SelectBasics_EntityOwner</i> -- the base definition of the an entity owner -- the link between the sensitive entity and the object to be selected;
+  - <i>SelectBasics_PickResult</i> -- the structure for storing quantitative results of detection procedure, for example, depth and distance to the center of geometry;
+  - <i>SelectBasics_SelectingVolumeManager</i> -- the interface for interaction with the current selection frustum.
 
 
-@subsubsection occt_visu_2_2_1 The Sensitive Primitive
+Each custom sensitive entity must inherit at least <i>SelectBasics_SensitiveEntity</i>.
 
-The sensitive primitive along with the entity owner allows defining what can be made selectable, and providing the link between the applicative object and the sensitive zones defined by the 2D bounding boxes. To be dynamically selectable, an object has to be  represented either as a sensitive primitive or a set of them, e.g. 2D  boxes that will be included in a sorting algorithm.
+<h4>Select3D</h4>
 
-The use of 2D boxes allows a pre-selection of the detected  entities. After pre-selection, the algorithm checks which sensitive primitives are actually detected. When detected, the primitives provide their owners' identity.
+<i>Select3D</i> package provides a definition of standard sensitive entities, such as:
+  - box;
+  - circle;
+  - curve;
+  - face;
+  - group;
+  - point;
+  - segment;
+  - triangle;
+  - triangulation;
+  - wire.
 
-@image html visualization_image010.png "Example of sensitive primitives"
-@image latex visualization_image010.png "Example of sensitive primitives"
+Each basic sensitive entity inherits <i>Select3D_SensitiveEntity</i>, which is a child class of <i>SelectBasics_SensitiveEntity</i>.
 
-In the example, the sensitive line segment proposes a bounding box to the selector. During selection, positions 1 and 2 of the mouse detect the box  but after sorting, only position 2 retains the line segment as selected by the  algorithm.  
+The package also contains two auxiliary classes, <i>Select3D_SensitivePoly</i> and <i>Select3D_SensitiveSet</i>.
 
-When the Box associated with the position of the mouse intersects the Box of a sensitive primitive, the owner of the sensitive  primitive is called and its presentation is highlighted.  
+<i>Select3D_SensitivePoly</i> -- describes an arbitrary point set and implements basic functions for selection. It is important to know that this class does not perform any internal data checks. Hence, custom implementations of sensitive entity inherited from <i>Select3D_SensitivePoly</i> must satisfy the terms of Separating Axis Theorem to use standard OCCT overlap detection methods.
 
-The notion of sensitive primitive is important for the developer when defining his own classes of sensitive primitives for the chosen selection modes. The classes must contain *Areas* and *Matches*  functions. 
+<i>Select3D_SensitiveSet</i> -- a base class for all complex sensitive entities that require the third level BVH usage. It implements traverse of the tree and defines an interface for the methods that check sub-entities.
 
-The former provides the list of 2D sensitive boxes representing the sensitive primitive at pre-selection and the latter determines if the detection of the primitive by the 2D boxes is valid. 
+<h4>SelectMgr</h4>
 
+<i>SelectMgr</i> package is used to maintain the whole selection process. For this purpose, the package provides the following services:
+  - activation and deactivation of selection modes for all selectable objects;
+  - interfaces to compute selection mode of the object;
+  - definition of selection filter classes;
+  - keeping selection BVH data up-to-date.
 
-@subsubsection occt_visu_2_2_2 Dynamic Selection 
+A brief description of the main classes:
+  - <i>SelectMgr_FrustumBase</i>, <i>SelectMgr_Frustum</i>, <i>SelectMgr_RectangularFrustum</i>, <i>SelectMgr_TriangluarFrustum</i> and <i>SelectMgr_TriangularFrustumSet</i> -- interfaces and implementations of selecting frustums, these classes implement different SAT tests for overlap and inclusion detection. They also contain methods to measure characteristics of detected entities (depth, distance to center of geometry);
+  - <i>SelectMgr_SensitiveEntity</i>, <i>SelectMgr_Selection</i> and <i>SelectMgr_SensitiveEntitySet</i> -- store and handle sensitive entities; <i>SelectMgr_SensitiveEntitySet</i> implements a primitive set for the second level BVH tree;
+  - <i>SelectMgr_SelectableObject</i> and <i>SelectMgr_SelectableObjectSet</i> -- describe selectable objects. They also manage storage, calculation and removal of selections. <i>SelectMgr_SelectableObjectSet</i> implements a primitive set for the first level BVH tree;
+  - <i>SelectMgr_ViewerSelector</i> -- encapsulates all logics of the selection algorithm and implements the third level BVH tree traverse;
+  - <i>SelectMgr_SelectionManager</i> -- manages activation/deactivation, calculation and update of selections of every selectable object, and keeps BVH data up-to-date.
 
-Dynamic selection causes objects in a view to be  automatically highlighted 
-as the mouse cursor moves over them. This allows the  user to be certain that the picked object
- is the correct one. Dynamic Selection  is based on the following two concepts:  
+<h4>StdSelect</h4>
 
-  * a Selectable Object (*AIS_InteractiveObject*) 
-  * an Interactive Context
-  
-<h4>Selectable Object</h4>
+<i>StdSelect</i> package contains the implementation of some <i>SelectMgr</i> classes and tools for creation of selection structures. For example,
+  - <i>StdSelect_BRepOwner</i> -- defines an entity owner with a link to its topological shape and methods for highlighting;
+  - <i>StdSelect_BRepSelectionTool</i> -- contains algorithms for splitting standard AIS shapes into sensitive primitives;
+  - <i>StdSelect_ViewerSelector3d</i> -- an example of <i>SelectMgr_ViewerSelecor</i> implementation, which is used in a default OCCT selection mechanism;
+  - <i>StdSelect_FaceFilter</i>, <i>StdSelect_EdgeFilter</i> -- implementation of selection filters.
 
-A selectable object presents a given number of selection  modes which can be redefined, and which will be activated or deactivated in the selection manager's selectors.  
+@subsubsection occt_visu_2_2_4 Examples of usage
 
-Note that the selection mode of a selectable object, can refer to the selection mode of  the object itself or to the selection mode of its part.
+The first code snippet illustrates the implementation of <i>SelectMgr_SelectableObject::ComputeSelection()</i> method in a custom interactive object. The method is used for computation of user-defined selection modes.
 
-For each selection mode, a *SelectMgr_Selection* object  class is included in the selectable object. (Each selection mode establishes a  priority of selection for each class of selectable object defined.)  
+Let us assume it is required to make a box selectable in two modes -- the whole shape (mode 0) and each of its edges (mode 1).
 
-The notion of **Selection** is comparable to the notion of **Display**.  Just as a display contains a set of graphic primitives that allow display of  the entity in a specific display mode, a **Selection** contains a set of sensitive  primitives, which allow detection of the entities they are associated with.  
+To select the whole box, the application can create a sensitive primitive for each face of the interactive object. In this case, all primitives share the same owner -- the box itself.
 
-<h4>Interactive Context</h4>
-
-The interactive context is used to manage both selectable  objects and selection processes.  
-
-Selection modes may be activated or de-activated for given  selectable objects. Information is then provided about the status of  activated/de-activated selection modes for a given object in a given selector. 
-
-See also @ref occt_visu_3 "AIS: Application Interactive Services".
-
-Let us consider, for example, a 3D selectable shape object, which  corresponds to a topological shape.  
-
-For this class, seven selection modes can be defined:  
-* mode 0 - selection of the shape itself 
-* mode 1 - selection of vertices  
-* mode 2 - selection of edges  
-* mode 3 - selection of wires  
-* mode 4 - selection of faces  
-* mode 5 - selection of shells  
-* mode 6 - selection of solids  
-* mode 7 - selection of compsolids 
-* mode 8 - selection of compounds  
-
-Selection 2 includes the sensitive primitives that model all  the edges of the shape. Each of these primitives contains a reference to the  edge it represents.  
-
-The selections may be calculated before any activation and  are graph independent as long as they are not activated in a given selector.  Activation of selection mode 3 in a selector associated with a view V leads to  the projection of the 3D sensitive primitives contained in the selection; then  the 2D areas which represent the 2D bounding boxes of these primitives are  provided to the sorting process of the selector containing all the detectable  areas.  
-
-To deactivate selection mode 3 remove all those 2D areas. 
-
-
-@subsubsection occt_visu_2_2_3  Selection Packages
-
-Selection of 3D data structures is provided using various algorithms. The following selection packages exist : *SelectBasics*,  *SelectMgr*, *Select3D* and *StdSelect*.
-
-### Basic Selection
-
-*SelectBasics* package contains the basic classes  of the selection:  
-  * the main definition of a sensitive primitive: *SensitiveEntity*, which is a selectable entity in a view;
-  * the definition of a sensitive primitive owner: *EntityOwner* this entity relates the primitive to the application entity which is to be selected in the view.
-  * the algorithm used for sorting sensitive boxes: *SortAlgo* 
-
-*EntityOwner* is used to establish a link from *SensitiveEntity*  to application-level objects. For example, *SelectMgr_EntityOwner* (see  below) class holds a pointer to corresponding *SelectableObject*. 
-
-### Standard Selections
-
-*Select3D* package provides definition of all 3D standard sensitive primitives such as point, curve and face. All these classes inherit from 3D *SensitiveEntry* from *SelectBasics* with an additional method, which allows recovery of the bounding boxes in the 2D graphic selection space, if required. This package also includes the 3D-2D projector.
-
-*StdSelect* package provides standard uses of the classes described above and main tools used to prevent the developer from redefining the selection objects. In particular, *StdSelect* includes standard modes for selection of topological shapes, definition of several filter standard <i> Selection2d.ap </i> classes and 3D viewer selectors.
-
-Note that each new Interactive Object must have all its selection modes defined.
-
-### Selection Management
-
-*SelectMgr* package is used to manage the whole dynamic selection process.
-
-It provides low level services and classes *SelectMgr_SelectionManager* and *SelectMgr_ViewerSelector*. They can be used when you do not want to use the services provided by *AIS*.
-
-There are also implementations of *ViewerSelector*  interface for 3D selection in *StdSelect* package: *ViewerSelector3d*. 
-
-*SelectMgr* manages the process of dynamic selection through the following services:
-
-  * Activating and deactivating selection modes for Interactive Objects.
-  * Adding and removing viewer selectors.
-  * Definitions of abstract filter classes.
-
-The principle of graphic selection consists in representing the objects which you want to select by a bounding box in the selection view.
-The object is selected when you use the mouse to designate the zone produced by the object.
-
-To realize this, the application creates a selection structure which is independent of the point of view.
-This structure is made up of sensitive primitives which have one owner object associated to each of them.
-The role of the sensitive primitive is to reply to the requests of the selection algorithm whereas the owner's purpose is to make the link between the sensitive primitive and the object to be selected.
-Each selection structure corresponds to a selection mode which defines the elements that can be selected.
-
-### Example: Selection of a Geometric Model
-
-For example, to select a complete geometric model, the application can create a sensitive primitive for each face of the interactive object representing the geometric model.
-In this case, all the primitives share the same owner.
-On the other hand, to select an edge in a model, the application must create one sensitive primitive per edge.
+To select box's edge, the application must create one sensitive primitive per edge. Here all sensitive entities cannot share the owner since different geometric primitives must be highlighted as the result of selection procedure.
 
 ~~~~
 
-void InteractiveBox::ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+void InteractiveBox::ComputeSelection (const  Handle(SelectMgr_Selection)& theSel,
                                        const Standard_Integer theMode)
 {
-switch (theMode)
-{
-  case 0: // locating the whole box by making its faces sensitive
+  switch (theMode)
   {
-    Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this, 5);
-    for (Standard_Integer anIt = 1; anIt <= aFacesNb; anIt++)
-    {
-      theSel->Add (new Select3D_SensitiveFace (anOwner,[array of the vertices] face I);
-      break;
-    }
-  case 1: // locating the edges
+  case 0:   // creation of face sensitives for selection of the whole box
   {
-    for (Standard_Integer anIt = 1; anIt <= 12; anIt++)
+    Handle(SelectMgr_EntityOwner) anOwnr = new SelectMgr_EntityOwner (this, 5);
+    for (Standard_Integer  aFaceIdx = 1; aFaceIdx <= myNbFaces; aFaceIdx++)
     {
-      // 1 owner per edge
-      Handle(mypk_EdgeOwner) anOwner = new mypk_EdgeOwner (this, anIt, 6); // 6->priority
-      theSel->Add (new Select3D_SensitiveSegment (anOwner, firstpt (anIt), lastpt (anIt));
+      Select3D_TypeOfSensitivity aIsInteriorSensitivity = myIsInterior;
+      theSel->Add (new  Select3D_SensitiveFace (anOwnr,
+                                                myFaces[aFaceIdx]->PointArray(),
+                                                aIsInteriorSensitivity));
     }
+    break;
+  }
+  case 1: // creation of edge sensitives for selection of box edges only
+  {
+    for (Standard_Integer anEdgeIdx = 1; anEdgeIdx <= 12; anEdgeIdx++)
+    {
+      // 1 owner per edge, where 6 is a priority of the sensitive
+      Handle(MySelection_EdgeOwner) anOwnr = new MySelection_EdgeOwner (this, anEdgeIdx, 6);
+      theSel->Add (new  Select3D_SensitiveSegment (anOwnr,
+                                                   FirstPnt[anEdgeIdx]),
+                                                   LastPnt[anEdgeIdx]));
+    }
+    break;
+  }
   }
 }
 
 ~~~~
 
-The algorithms for creating selection structures store the sensitive primitives in a <i>SelectMgr_Selection</i> object.
-To do this, a set of ready-made sensitive primitives is supplied in the <i>Select3D</i>package.
-New sensitive primitives can be defined through inheritance from <i>SensitiveEntity</i>.
-For the application to make its own objects selectable, it must define owner classes inheriting <i>SelectMgr_EntityOwner</i>.
+The algorithms for creating selection structures store sensitive primitives in <i>SelectMgr_Selection</i> instance. Each <i>SelectMgr_Selection</i> sequence in the list of selections of the object must correspond to a particular selection mode.
 
-Selection structures for any interactive object are generated in <i>ComputeSelection()</i> method.
-In the example below there are different modes of selection on the topological shape contained within the interactive object,
-selection of the shape itself, the vertices, the edges, the wires, the faces.
+To describe the decomposition of the object into selectable primitives, a set of ready-made sensitive entities is supplied in <i>Select3D</i> package. Custom sensitive primitives can be defined through inheritance from <i>SelectBasics_SensitiveEntity</i>.
+
+To make custom interactive objects selectable or customize selection modes of existing objects, the entity owners must be defined. They must inherit <i>SelectMgr_EntityOwner</i> interface.
+
+
+Selection structures for any interactive object are created in <i>SelectMgr_SelectableObject::ComputeSelection()</i> method.
+
+The example below shows how computation of different selection modes of the topological shape can be done using standard OCCT mechanisms, implemented in <i>StdSelect_BRepSelectionTool</i>.
 
 ~~~~
-  void MyPack_MyClass::ComputeSelection(
-                const Handle(SelectMgr_Selection)& theaSelection,
-                const Standard_Integer theMode)
+  void MyInteractiveObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                              const Standard_Integer theMode)
   {
     switch (theMode)
     {
       case 0:
-        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_SHAPE);
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myTopoDSShape, TopAbs_SHAPE);
         break;
       case 1:
-        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_VERTEX);
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myTopoDSShape, TopAbs_VERTEX);
         break;
       case 2:
-        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_EDGE);
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myTopoDSShape, TopAbs_EDGE);
         break;
       case 3:
-        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_WIRE);
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myTopoDSShape, TopAbs_WIRE);
         break;
       case 4:
-        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_FACE);
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myTopoDSShape, TopAbs_FACE);
         break;
     }
   }
 ~~~~
 
-The <i>StdSelect_BRepSelectionTool</i> object provides a high level service which will make the topological shape <i>myShape</i> selectable when the <i>AIS_InteractiveContext</i> is asked to display your object.
-
-Note:
+The <i>StdSelect_BRepSelectionTool</i> class provides a high level API for computing sensitive entities of the given type (for example, face, vertex, edge, wire and others) using topological data from the given <i>TopoDS_Shape</i>.
 
 The traditional way of highlighting selected entity owners adopted by Open CASCADE Technology assumes that each entity owner highlights itself on its own. This approach has two drawbacks:
 
-  * Each entity owner has to maintain its own <i>Prs3d_Presentation object</i>, that results in large memory overhead for thousands of owners.
-  * Drawing selected owners one by one is not efficient from the OpenGL usage viewpoint.
+  - each entity owner has to maintain its own <i>Prs3d_Presentation</i> object, that results in a large memory overhead for thousands of owners;
+  - drawing selected owners one by one is not efficient from the OpenGL usage viewpoint.
 
-That is why a different method has been introduced.
-On the basis of <i>SelectMgr_EntityOwner::IsAutoHilight()</i> return value <i>AIS_LocalContext</i>
-object either uses the traditional way of highlighting (<i>IsAutoHilight()</i> returned true)
-or groups such owners according to their Selectable Objects and finally calls <i> SelectMgr_SelectableObject::HilightSelected()</i> or
-<i>ClearSelected()</i>, passing a group of owners as an argument.
+Therefore, to overcome these limitations, OCCT has an alternative way to implement the highlighting of a selected presentation. Using this approach, the interactive object itself will be responsible for the highlighting, not the entity owner.
 
-Hence, an application can derive its own interactive object and redefine <i> HilightSelected()</i>,
-<i>ClearSelected()</i> and <i>HilightOwnerWithColor()</i> virtual methods
-to take advantage of such OpenGL technique as arrays of primitives.
-In any case, these methods should at least have empty implementation.
+On the basis of <i>SelectMgr_EntityOwner::IsAutoHilight()</i> return value, <i>AIS_LocalContext</i> object either uses the traditional way of highlighting (in case if <i>IsAutoHilight()</i> returns true) or groups such owners according to their selectable objects and finally calls <i> SelectMgr_SelectableObject::HilightSelected()</i> or <i>SelectMgr_SelectableObject::ClearSelected()</i>, passing a group of owners as an argument.
 
-The <i>AIS_LocalContext::UpdateSelected (const Handle(AIS_InteratciveObject)&, Standard_Boolean)</i>
-method can be used for efficient redrawing a selection presentation for a given interactive object from an application code.
 
-Additionally, the <i>SelectMgr_SelectableObject::ClearSelections()</i> method now accepts an optional Boolean argument.
-This parameter defines whether all object selections should be flagged for further update or not.
-This improved method can be used to re-compute an object selection (without redisplaying the object completely)
-when some selection mode is activated not for the first time.
+Hence, an application can derive its own interactive object and redefine virtual methods <i>HilightSelected()</i>, <i>ClearSelected()</i> and <i>HilightOwnerWithColor()</i> from <i>SelectMgr_SelectableObject</i>. <i>SelectMgr_SelectableObject::GetHilightPresentation</i> and <i>SelectMgr_SelectableObject::GetSelectPresentation</i> methods can be used to optimize filling of selection and highlight presentations according to the user's needs.
 
-@subsubsection occt_visu_2_2_4 How to use dynamic selection
+The <i>AIS_InteractiveContext::HighlightSelected()</i> method can be used for efficient redrawing of the selection presentation for a given interactive object from an application code.
 
-Several operations must be performed prior to using dynamic  selection:  
-1. Implement specific sensitive primitives  if those defined in Select3D are not sufficient. These primitives must inherit  from *SensitiveEntity* from *SelectBasics* or from a suitable Select3D  sensitive entity class when a projection from 3D to 2D is necessary.  
-2. Define all the owner types, which will  be used, and the classes of selectable objects, i.e. the number of possible  selection modes for these objects and the calculation of the decomposition of  the object into sensitive primitives of all the primitives describing this  mode. It is possible to define only one default selection mode for a selectable  object if this object is to be selectable in a unique way.  
-3. Install the process, which provides the  user with the identity of the owner of the detected entities in the selection  loop.  
 
-When all these steps have been carried out, follow the  procedure below:  
-1. Create an interactive context.  
-2. Create the selectable objects and  calculate their various possible selections.  
-3. Load these selectable objects in the  interactive context. The objects may be common to all the selectors, i.e. they  will be seen by all the selectors in the selection manager, or local to one  selector or more.  
-4. Activate or deactivate the objects' selection modes in  the selector(s). When activating a selection mode in a selector for a given  object, the manager sends the order to make the sensitive primitives in this  selector selectable. If the primitives are to projected from 3D to 2D, the  selector calls the specific method used to carry out this projection.  
+After all the necessary sensitive entities are computed and packed in <i>SelectMgr_Selection</i> instance with the corresponding owners in a redefinition of <i>SelectMgr_SelectableObject::ComputeSelection()</i> method, it is necessary to register the prepared selection in <i>SelectMgr_SelectionManager</i> through the following steps:
+  - if there was no <i>AIS_InteractiveContext</i> opened, create an interactive context and display the selectable object in it;
+  - load the selectable object to the selection manager of the interactive context using <i>AIS_InteractiveContext::Load()</i> method. If the selection mode passed as a parameter to this method is not equal to -1, <i>ComputeSelection()</i> for this selection mode will be called;
+  - activate or deactivate the defined selection mode using <i>AIS_InteractiveContext::Activate()</i> or <i>AIS_InteractiveContext::Deactivate()</i> methods.
 
-At this stage, the selection of selectable entities in the  selectors is available.  
-The selection loop informs constantly the selectors with the  position of the mouse and questions them about the detected entities.  
+After these steps, the selection manager of the created interactive context will contain the given object  and its selection entities, and they will be involved in the detection procedure.
 
-Let us suppose that you create an application that displays  houses in a viewer of the V3d package and you want to select houses or parts of  these houses (windows, doors, etc.) in the graphic window.  
-You define a selectable object called *House* and  propose four possible selection modes for this object:  
-1. selection of the house itself; 
-2. selection of the rooms  
-3. selection of the walls  
-4. selection of the doors.  
-
-You have to write the method, which calculates the four  selections above, i.e. the sensitive primitives which are activated when the  mode is.  
-You must define the class *Owner* specific to your  application. This class will contain the reference to the house element it  represents: wall, door or room. It inherits from *EntityOwner* from *SelectMgr*.   
-For example, let us consider a house with the following  representation:  
-
-@image html visualization_image011.png "Selection of rooms in a house"
-@image latex visualization_image011.png "Selection of rooms in a house"
-
-To build the selection, which corresponds to the mode "selection  of the rooms" 
-(selection 2 in the list of selection modes), use the following  procedure:  
+The code snippet below illustrates the above steps. It also contains the code to start the detection procedure and parse the results of selection.
 
 ~~~~~
 
-Void House::ComputeSelection 
-	(Const  Handle(SelectMgr_Selection)& Sel, 
-	 const Standard_Integer mode { 
-		 switch(mode){   
-		case 0: //Selection of the rooms  
-		{   
-		for(Standard_Integer i = 1; i <= myNbRooms; i++)   
-		{ 
-		//for every room, create an instance of the owner, the given room  and its name. 
-		Handle(RoomOwner) aRoomOwner = new RoomOwner (Room(i),  NameRoom(i)); 
-		//Room() returns a room and NameRoom() returns its name.  
-	Handle(Select3d_SensitiveBox) aSensitiveBox; 
-	aSensitiveBox = new Select3d_SensitiveBox  
-		(aRoomOwner, Xmin, Ymin, Zmin,  Xmax, Ymax, Zmax); 
-		 Sel -> Add(aSensitiveBox);   
-		}   
-		break;   
-		Case 1: ... //Selection of the doors   
-		} //Switch     
-) // ComputeSelection  
+// Suppose there is an instance of class InteractiveBox from the previous sample.
+// It contains an implementation of method InteractiveBox::ComputeSelection() for selection
+// modes 0 (whole box must be selected) and 1 (edge of the box must be selectable)
+Handle(InteractiveBox) aBox;
+
+// Assume there is a created interactive context
+const Handle(AIS_InteractiveContext)& aContext = GetContext();
+// To prevent automatic activation of the default selection mode
+aContext->SetAutoActivateSelection (Standard_False);
+
+aContext->Display (aBox);
+
+// Load a box to the selection manager without computation of any selection mode
+aContext->Load (aBox, -1, Standard_True);
+// Activate edge selection
+aContext->Activate (aBox, 1);
+
+// Run the detection mechanism for activated entities in the current mouse coordinates and
+// in the current view. Detected owners will be highlighted with context highlight color
+aContext->MoveTo (aXMousePos, aYMousePos, myView);
+// Select the detected owners
+aContext->Select();
+// Iterate through the selected owners
+for (aContext->InitSelected(); aContext->MoreSelected() && !aHasSelected; aContext->NextSelected())
+{
+  Handle(AIS_InteractiveObject) anIO = aContext->SelectedInteractive();
+}
+
+// deactivate all selection modes for aBox1
+aContext->Deactivate (aBox1);
+
 ~~~~~
 
-@image html visualization_image012.png "Activated sensitive boxes  corresponding to selection mode 0 (selection of rooms)"
-@image latex visualization_image012.png "Activated sensitive boxes  corresponding to selection mode 0 (selection of rooms)"
+It is also important to know, that there are 2 types of detection implemented for rectangular selection in OCCT:
+  - <b>inclusive</b> detection. In this case the sensitive primitive is considered detected only when all its points are included in the area defined by the selection rectangle;
+  - <b>overlap</b> detection. In this case the sensitive primitive is considered detected when it is partially overlapped by the selection rectangle.
 
-@image html visualization_image013.png "Activated sensitive rectangles in the selector during dynamic selection in view 1"
-@image latex visualization_image013.png "Activated sensitive rectangles in the selector during dynamic selection in view 1"
+The standard OCCT selection mechanism uses inclusion detection by default. To change this, use the following code:
 
-@image html visualization_image014.png "Activated sensitive polygons corresponding  to selection mode 1 (selection of doors)"
-@image latex visualization_image014.png "Activated sensitive polygons corresponding  to selection mode 1 (selection of doors)"
+~~~~~
 
-@image html visualization_image015.png "Sensitive rectangles in the selector during  dynamic selection in view 2"
-@image latex visualization_image015.png "Sensitive rectangles in the selector during  dynamic selection in view 2"
+// Assume there is a created interactive context 
+const Handle(AIS_InteractiveContext)& aContext = GetContext();
+// Retrieve the current viewer selector
+const Handle(StdSelect_ViewerSelector3d)& aMainSelector = aContext->MainSelector();
+// Set the flag to allow overlap detection
+aMainSelector->AllowOverlapDetection (Standard_True);
+
+~~~~~
 
 @section occt_visu_3 Application Interactive Services 
 @subsection occt_visu_3_1 Introduction 
@@ -555,25 +608,24 @@ void myPk_IsShape::Compute
 
 @subsubsection occt_visu_3_2_4 Selection 
 
-An interactive object can have an indefinite number of selection modes, each representing a "decomposition" into sensitive primitives;  each primitive has an Owner (*SelectMgr_EntityOwner*) which allows identifying the exact entity which has been detected (see ref occt_visu_3_6 "Dynamic Selection" chapter).  
+An interactive object can have an indefinite number of selection modes, each representing a "decomposition" into sensitive primitives. Each primitive has an <i>owner</i> (*SelectMgr_EntityOwner*) which allows identifying the exact interactive object or shape which has been detected (see @ref occt_visu_2_2 "Selection" chapter).  
 
-The set of sensitive primitives, which correspond to a given  mode, is stocked in a SELECTION (*SelectMgr_Selection*). 
+The set of sensitive primitives, which correspond to a given mode, is stocked in a <b>selection</b> (*SelectMgr_Selection*).
 
-Each Selection mode is identified by an index. By  Convention, the default selection mode that allows us to grasp the Interactive  object in its entirety is mode *0*.  
+Each selection mode is identified by an index. By convention, the default selection mode that allows us to grasp the interactive object in its entirety is mode *0*. However, it can be modified in the custom interactive objects using method <i>SelectMgr_SelectableObject::setGlobalSelMode()</i>.
 
-The calculation of Selection primitives (or sensitive  primitives) is done by the intermediary of a virtual function, *ComputeSelection*.  This should be implemented for each type of interactive object on which you  want to make different type selections using the function *AIS_ConnectedInteractive::ComputeSelection*.  
+The calculation of selection primitives (or sensitive entities) is done by the intermediary of a virtual function, *ComputeSelection*. It should be implemented for each type of interactive object that is assumed to have different selection modes using the function *AIS_ConnectedInteractive::ComputeSelection*.  
 
-A detailed explanation of the mechanism and the manner of  implementing this function has been given in @ref occt_visu_3_6 "Dynamic Selection" chapter.  
+A detailed explanation of the mechanism and the manner of implementing this function has been given in @ref occt_visu_2_2 "Selection" chapter.
 
-Moreover, just as the most frequently manipulated entity is *TopoDS_Shape*, the most used Interactive Object is *AIS_Shape*. You will see below activation functions for standard selection modes are proposed in the  Interactive context (selection by vertex, by edges etc). To create new classes  of interactive object with the same behavior as *AIS_Shape* -- such as vertices  and edges -- you must redefine the virtual function *AIS_ConnectedInteractive::AcceptShapeDecomposition*.  
+There are some examples of selection mode calculation for the most widely used interactive object in OCCT -- *AIS_Shape* (selection by vertex, by edges, etc). To create new classes of interactive objects with the same selection behavior as *AIS_Shape* -- such as vertices and edges -- you must redefine the virtual function *AIS_InteractiveObject::AcceptShapeDecomposition*.  
 
-You can change the default selection mode index of an  Interactive Object using the following functions: 
-  * *AIS_InteractiveObject::HasSelectionMode* checks if there is a selection mode; 
-  * *AIS_InteractiveObject::SelectionMode* check the current selection mode; 
-  * *AIS_InteractiveContext::SetSelectionMode* sets a selection mode; 
-  * *AIS_InteractiveContext::UnsetSelectionMode* unsets a selection mode.
+You can change the default selection mode index of a custom interactive object using the following functions:
+  * *AIS_InteractiveObject::setGlobalSelMode* sets global selection mode;
+  * *AIS_InteractiveObject::GlobalSelectionMode* returns global selection mode of the object;
+  * *AIS_InteractiveObject::GlobalSelOwner* returns an entity owner that corresponds to a global selection mode.
   
-These functions can be useful if you decide that the *0*  mode used by default will not do. In the same way, you can temporarily  change the priority of certain interactive objects for selection of 0 mode to facilitate detecting them graphically using the following functions: 
+You also can temporarily change the priority of some interactive objects for selection of the global mode to facilitate their graphic detection using the following functions:
   * *AIS_InteractiveObject::HasSelectionPriority* checks if there is a selection priority setting for the  owner; 
   * *AIS_InteractiveObject::SelectionPriority* checks the current priority; 
   * *AIS_InteractiveObject::SetSelectionPriority* sets a priority; 
@@ -1423,116 +1475,9 @@ aMesh->AddBuilder  (aBuilder, Standard_True);
 
 @subsection occt_visu_3_6 Dynamic Selection 
 
-The idea of dynamic selection is to represent the entities, which you want to select by a bounding box in the actual 2D space of the selection view. The set of these zones is ordered by a powerful sorting  algorithm. 
-To then find the applicative entities actually detected at this position, all you have to do is read which rectangles are touched at mouse position (X,Y) of the view, and judiciously reject some of the entities which  have provided these rectangles.  
+The dynamic selection represents the topological shape, which you want to select, by decomposition of <i>sensitive primitives</i> -- the sub-parts of the shape that will be detected and highlighted. The sets of these primitives are handled by the powerful three-level BVH tree selection algorithm. 
 
-@subsubsection occt_visu_3_6_1 How to go from the objects to 2D boxes 
-
-
-An intermediary stage consists in representing what you can  make selectable by means of sensitive primitives and owners, entities of a high enough level to be known by the selector mechanisms.  
-
-The sensitive primitive is capable of:  
-  * giving a 2D bounding box to the selector. 
-  * answering the rejection criteria positively or negatively by a  "Matches" function. 
-  * being projected from 3D in the 2D space of the view if need be. 
-  * returning the owner which it will represent in terms of  selection. 
-
-A set of standard sensitive primitives exists in Select3D  packages for 3D primitives.  
-
-The owner is the entity, which makes it possible to link the  sensitive primitives and the objects that you really wanted to detect. It  stocks the diverse information, which makes it possible to find objects. An  owner has a priority (*5* by default), which you can change to  make one entity more selectable than another.  
-
-@image html visualization_image021.png 
-@image latex visualization_image021.png 
-
-@subsubsection occt_visu_3_6_2 Implementation in an interactive/selectable object 
-   
-Define the number of selection modes possible, i.e. what  you want to identify by activating each of the selection modes. 
-
-For example: for an  interactive object representing a topological shape:  
-* mode 0: selection of the interactive object itself;  
-* mode 1: selection of the vertices; 
-* mode 2: selection of the edges;  
-* mode 3: selection of the wires;  
-* mode 4: selection of the detectable faces. 
-
-For each selection mode of an interactive object, "model" is the set of entities, which you want to locate by these primitives and these  owners.  
-
-There is an "owner" root class, *SelectMgr_EntityOwner*,  containing a reference to a selectable object, which has created it. If you  want to stock its information, you have to create classes derived from this  root class. Example: for shapes, there is the *StdSelect_BRepOwner* class,  which can save a *TopoDS* shape as a field as well as the Interactive Object.  
-
-The set of sensitive primitives which has been calculated  for a given mode is stocked in *SelectMgr_Selection*.  
-
-For an Interactive object, the modeling is done in the *ComputeSelection* virtual function.  
-
-Let us consider an example of an interactive object representing a box. 
-
-We are interested in two location modes: 
-  * mode 0: location of the whole box.  
-  * mode 1: location of the edges on the box. 
-
-For the first  mode, all sensitive primitives will have the same owner, which will represent  the interactive object. In the second case, we have to create an owner for each  edge, and this owner will have to contain the index for the edge, which it  represents. You will create a class of owner, which derives from *SelectMgr_EntityOwner*. 
-
-The *ComputeSelection*  function for the interactive box can have the following form:  
-
-~~~~~
-void InteractiveBox::ComputeSelection  
-	(const  Handle(SelectMgr_Selection)& Sel, 
-	 const Standard_Integer Mode)  
-{ 
-	switch(Mode) 
-		{  case 0:   //locating the whole box by  making its faces sensitive...  
-		{ 
-	Handle(SelectMgr_EntityOwner)  Ownr = new SelectMgr_EntityOwner(this,5);   
-	for(Standard_Integer  I=1;I<=Nbfaces;I++)  
-	{  
-	//Array is a  TColgp_Array1OfPnt: which represents the array of vertices. Sensitivity is  
-	Select3D_TypeOfSensitivity value 
-	Sel->Add(new  Select3D_SensitiveFace(Ownr,Array,Sensitivity));  
-			} 
-			break;  
-	   } 
-	  case 1:  
-	// locates the edges  {  
-	for(Standard_Integer i=1;i<=12;i++)  
-			{ 
-				// 1 owner  per edge... 
-				Handle(mypk_EdgeOwner)  Ownr = new  mypk_EdgeOwner(this,i,6); 
-					//6->priority 
-					Sel->Add(new  Select3D_SensitiveSegment (Ownr,firstpt(i),lastpt(i)));  
-					} 
-				break;  
-			} 
-		} 
-	} 
-~~~~~
-
-Selectable objects are loaded in the selection manager,  which has one or more selectors; in general, we suggest assigning one selector  per viewer. All you have to do afterwards is to activate or deactivate the  different selection modes for selectable objects. The *SelectionManager*  looks after the call to the *ComputeSelection* functions for different  objects. 
-
-NOTE: This procedure is completely hidden if you use the @ref occt_visu_3_3 "AIS Interactive Context"
-
-<h4>Example </h4>
-~~~~~
-//We have several " interactive boxes " box1, box2, box3;  
-	Handle(SelectMgr_SelectionManager) SM = new  SelectMgr_SelectionManager();  
-	Handle(StdSelect_ViewerSelector3d) VS = new  StdSelect_ViewerSelector3d();  
-		SM->Add(VS); 
-		SM->Load(box1);SM->Load(box2);SM->Load(box3); 
-		// box load.  
-		SM->Activate(box1,0,VS); 
-		// activates  mode 0 of box 1 in the selector VS 
-		SM->Activate(box1,1,VS);   
-		M->Activate(box3,1,VS);   
-VS->Pick(xpix,ypix,vue3d)  
-// detection of primitives by mouse position.  
-Handle(EntityOwner)  POwnr = VS->OnePicked();  
-// picking of the "best" owner detected  
-for(VS->Init();VS->More();VS->Next())   
-	{ 
-	VS->Picked();   
-	// picking of all owners  detected  
-	  } 
-	SM->Deactivate(box1);   
-	// deactivate all active modes  of box1  
-~~~~~
+For more details on the algorithm and examples of usage, please, refer to @ref occt_visu_2_2 "Selection" chapter.
 
 @section occt_visu_4 3D Presentations
 
