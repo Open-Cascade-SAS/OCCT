@@ -240,6 +240,14 @@ public:
   //! immediately used, well initialised
   Standard_EXPORT Standard_Boolean FindTypedTransient (const Handle(Transfer_Finder)& start, const Handle(Standard_Type)& atype, Handle(Standard_Transient)& val) const;
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean FindTypedTransient (const Handle(Transfer_Finder)& start, const Handle(Standard_Type)& atype, Handle(T)& val) const
+  {
+    Handle(Standard_Transient) aVal = val;
+    return FindTypedTransient (start, atype, aVal) && ! (val = Handle(T)::DownCast(aVal)).IsNull();
+  }
+
   //! Searches for a transient result recorded in a Binder, whatever
   //! this Binder is recorded or not in <me>
   //!
@@ -249,6 +257,14 @@ public:
   //! Apart from this, works as FindTypedTransient
   Standard_EXPORT Standard_Boolean GetTypedTransient (const Handle(Transfer_Binder)& binder, const Handle(Standard_Type)& atype, Handle(Standard_Transient)& val) const;
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean GetTypedTransient (const Handle(Transfer_Binder)& start, const Handle(Standard_Type)& atype, Handle(T)& val) const
+  {
+    Handle(Standard_Transient) aVal = val;
+    return GetTypedTransient (start, atype, aVal) && ! (val = Handle(T)::DownCast(aVal)).IsNull();
+  }
+
   //! Returns the maximum possible value for Map Index
   //! (no result can be bound with a value greater than it)
   Standard_EXPORT Standard_Integer NbMapped() const;

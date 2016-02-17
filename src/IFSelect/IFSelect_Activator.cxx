@@ -100,10 +100,13 @@ static Handle(MoniTool_Profile) thealiases;
 {
   TCollection_AsciiString str;
   if (thealiases.IsNull()) return str;
-  Handle(TCollection_HAsciiString) val;
-  if (!thealiases->Value(command,val)) return str;
-  str.AssignCat (val->ToCString());
-    return str;
+  Handle(Standard_Transient) aVal;
+  if (!thealiases->Value(command,aVal)) return str;
+  Handle(TCollection_HAsciiString) val =
+    Handle(TCollection_HAsciiString)::DownCast (aVal);
+  if (!val.IsNull())
+    str.AssignCat (val->ToCString());
+  return str;
 }
 
 

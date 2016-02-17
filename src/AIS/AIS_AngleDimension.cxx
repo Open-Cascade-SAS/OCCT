@@ -860,9 +860,9 @@ Standard_Boolean AIS_AngleDimension::InitTwoEdgesAngle (gp_Pln& theComputedPlane
   // Compute geometry for this plane and edges
   Standard_Boolean isInfinite1,isInfinite2;
   gp_Pnt aFirstPoint1, aLastPoint1, aFirstPoint2, aLastPoint2;
-
+  Handle(Geom_Curve) aFirstCurve = aFirstLine, aSecondCurve = aSecondLine;
   if (!AIS::ComputeGeometry (aFirstEdge, aSecondEdge,
-                             aFirstLine, aSecondLine,
+                             aFirstCurve, aSecondCurve,
                              aFirstPoint1, aLastPoint1,
                              aFirstPoint2, aLastPoint2,
                              isInfinite1, isInfinite2))

@@ -716,6 +716,7 @@ Standard_Boolean IGESData_ParamReader::ReadEntity (const Handle(IGESData_IGESRea
 						   Handle(IGESData_IGESEntity)& val, 
 						   const Standard_Boolean canbenul)
 {
+  aStatus = IGESData_EntityError;
   if (!PrepareRead(PC,Standard_False)) return Standard_False;
   Standard_Integer nval;
 //  if (!ReadingEntityNumber(theindex,amsg,nval)) return Standard_False;
@@ -730,6 +731,8 @@ Standard_Boolean IGESData_ParamReader::ReadEntity (const Handle(IGESData_IGESRea
 
       thelast = Standard_True;
     }
+    else
+      aStatus = IGESData_EntityOK;
     return canbenul;
   }
   else val = GetCasted(IGESData_IGESEntity,IR->BoundEntity(nval));
@@ -745,6 +748,8 @@ Standard_Boolean IGESData_ParamReader::ReadEntity (const Handle(IGESData_IGESRea
         //SendFail (amsg);
         thelast = Standard_True;
       }
+      else
+        aStatus = IGESData_EntityOK;
       return canbenul;
     }
   }
@@ -1344,6 +1349,7 @@ Standard_Boolean IGESData_ParamReader::ReadingReal
   } else if (FP.ParamType() == Interface_ParamVoid) {
     val = 0.0;    // DEFAULT
   } else {
+    val = 0.0;    // DEFAULT
     char ssem[100];
     sprintf(ssem,": not given as Real, rank %d",num);
     AddFail (mess,ssem,": not given as Real, rank %d");

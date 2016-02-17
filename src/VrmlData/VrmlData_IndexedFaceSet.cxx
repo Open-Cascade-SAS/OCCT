@@ -290,17 +290,33 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Read(VrmlData_InBuffer& theBuffer)
     // These four checks should be the last one to avoid their interference
     // with the other tokens (e.g., coordIndex)
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "texCoord"))
-      aStatus = ReadNode (theBuffer, myTxCoords,
+    {
+      Handle(VrmlData_Node) aNode;
+      aStatus = ReadNode (theBuffer, aNode,
                           STANDARD_TYPE(VrmlData_TextureCoordinate));
+      myTxCoords = Handle(VrmlData_TextureCoordinate)::DownCast (aNode);
+    }
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "color"))
-      aStatus = ReadNode (theBuffer, myColors,
+    {
+      Handle(VrmlData_Node) aNode;
+      aStatus = ReadNode (theBuffer, aNode,
                           STANDARD_TYPE(VrmlData_Color));
+      myColors = Handle(VrmlData_Color)::DownCast (aNode);
+    }
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "coord"))
-      aStatus = ReadNode (theBuffer, myCoords,
+    {
+      Handle(VrmlData_Node) aNode;
+      aStatus = ReadNode (theBuffer, aNode,
                           STANDARD_TYPE(VrmlData_Coordinate));
+      myCoords = Handle(VrmlData_Coordinate)::DownCast (aNode);
+    }
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "normal"))
-      aStatus = ReadNode (theBuffer, myNormals,
+    {
+      Handle(VrmlData_Node) aNode;
+      aStatus = ReadNode (theBuffer, aNode,
                           STANDARD_TYPE(VrmlData_Normal));
+      myNormals = Handle(VrmlData_Normal)::DownCast (aNode);
+    }
     if (!OK(aStatus))
       break;
   }

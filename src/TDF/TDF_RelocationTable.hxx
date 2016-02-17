@@ -106,6 +106,14 @@ public:
   //! explanation about the method behavior)
   Standard_EXPORT Standard_Boolean HasRelocation (const Handle(TDF_Attribute)& aSourceAttribute, Handle(TDF_Attribute)& aTargetAttribute) const;
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean HasRelocation (const Handle(TDF_Attribute)& theSource, Handle(T)& theTarget) const
+  {
+    Handle(TDF_Attribute) anAttr = theTarget;
+    return HasRelocation (theSource, anAttr) && ! (theTarget = Handle(T)::DownCast(anAttr)).IsNull();
+  }
+
   //! Sets the relocation value of <aSourceTransient> to
   //! <aTargetTransient>.
   Standard_EXPORT void SetTransientRelocation (const Handle(Standard_Transient)& aSourceTransient, const Handle(Standard_Transient)& aTargetTransient);

@@ -224,6 +224,16 @@ public:
   
   Standard_EXPORT Standard_Boolean ReadEntity (const Handle(IGESData_IGESReaderData)& IR, const IGESData_ParamCursor& PC, IGESData_Status& aStatus, const Handle(Standard_Type)& type, Handle(IGESData_IGESEntity)& val, const Standard_Boolean canbenul = Standard_False);
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean ReadEntity (const Handle(IGESData_IGESReaderData)& IR, const IGESData_ParamCursor& PC, IGESData_Status& aStatus, const Handle(Standard_Type)& type, Handle(T)& val, const Standard_Boolean canbenul = Standard_False)
+  {
+    Handle(IGESData_IGESEntity) aVal = val;
+    Standard_Boolean aRes = ReadEntity (IR, PC, aStatus, type, aVal, canbenul);
+    val = Handle(T)::DownCast(aVal);
+    return aRes && (canbenul || ! val.IsNull());
+  }
+
   //! Works as ReadEntity without Type, but in addition checks the
   //! Type of the Entity, which must be "kind of" a given <type>
   //! Then, gives the same fail cases as ReadEntity without Type,
@@ -231,6 +241,16 @@ public:
   //! (in such a case, returns False and givel <val> = Null)
   Standard_EXPORT Standard_Boolean ReadEntity (const Handle(IGESData_IGESReaderData)& IR, const IGESData_ParamCursor& PC, const Standard_CString mess, const Handle(Standard_Type)& type, Handle(IGESData_IGESEntity)& val, const Standard_Boolean canbenul = Standard_False);
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean ReadEntity (const Handle(IGESData_IGESReaderData)& IR, const IGESData_ParamCursor& PC, const Standard_CString mess, const Handle(Standard_Type)& type, Handle(T)& val, const Standard_Boolean canbenul = Standard_False)
+  {
+    Handle(IGESData_IGESEntity) aVal = val;
+    Standard_Boolean aRes = ReadEntity (IR, PC, mess, type, aVal, canbenul);
+    val = Handle(T)::DownCast(aVal);
+    return aRes && (canbenul || ! val.IsNull());
+  }
+
   Standard_EXPORT Standard_Boolean ReadInts (const IGESData_ParamCursor& PC, const Message_Msg& amsg, Handle(TColStd_HArray1OfInteger)& val, const Standard_Integer index = 1);
   
   //! Reads a list of Integer values, defined by PC (with a count of

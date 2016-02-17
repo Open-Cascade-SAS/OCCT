@@ -144,11 +144,19 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Read
     // These two checks should be the last one to avoid their interference
     // with the other tokens (e.g., coordIndex)
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "color"))
-      aStatus = ReadNode (theBuffer, myColors,
+    {
+      Handle(VrmlData_Node) aNode;
+      aStatus = ReadNode (theBuffer, aNode,
                           STANDARD_TYPE(VrmlData_Color));
+      myColors = Handle(VrmlData_Color)::DownCast (aNode);
+    }
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "coord"))
-      aStatus = ReadNode (theBuffer, myCoords,
+    {
+      Handle(VrmlData_Node) aNode;
+      aStatus = ReadNode (theBuffer, aNode,
                           STANDARD_TYPE(VrmlData_Coordinate));
+      myCoords = Handle(VrmlData_Coordinate)::DownCast (aNode);
+    }
     else
       break;
     if (!OK(aStatus))

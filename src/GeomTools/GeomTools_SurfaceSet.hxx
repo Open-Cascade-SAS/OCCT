@@ -71,9 +71,9 @@ public:
   Standard_EXPORT static void PrintSurface (const Handle(Geom_Surface)& S, Standard_OStream& OS, const Standard_Boolean compact = Standard_False);
   
   //! Reads the surface  from  the stream.  The  surface  is
-  //! assumed   to have  been  writtent  with  the Print
+  //! assumed   to have  been  written  with  the Print
   //! method (compact = True).
-  Standard_EXPORT static Standard_IStream& ReadSurface (Standard_IStream& IS, Handle(Geom_Surface)& S);
+  Standard_EXPORT static Handle(Geom_Surface) ReadSurface (Standard_IStream& IS);
   
   Standard_EXPORT void SetProgress (const Handle(Message_ProgressIndicator)& PR);
   

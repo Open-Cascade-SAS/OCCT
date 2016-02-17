@@ -198,7 +198,7 @@ Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeM
   for (Select3D_EntitySequenceIter anIt (myEntities); anIt.More(); anIt.Next())
   {
     SelectBasics_PickResult aMatchResult;
-    Handle(SelectBasics_SensitiveEntity)& aChild = anIt.ChangeValue();
+    Handle(Select3D_SensitiveEntity)& aChild = anIt.ChangeValue();
     if (!aChild->Matches (theMgr, aMatchResult))
     {
       aMatchResult = SelectBasics_PickResult (RealLast(), RealLast());

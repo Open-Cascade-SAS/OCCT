@@ -280,10 +280,14 @@ static Standard_Boolean IsCurrent (const Standard_CString name)
 
     Handle(TCollection_HAsciiString) sw, val;
     if (!thecurconf->GetItem (name,sw,Standard_True)) sw.Nullify();
+    Handle(Standard_Transient) aVal;
     if (!sw.IsNull()) {
-      if (!opt->Item (sw->ToCString(),val)) val.Nullify();
+      if (!opt->Item (sw->ToCString(),aVal))
+        aVal.Nullify();
     }
-    if (val.IsNull() && !proper) opt->Value(val);
+    if (aVal.IsNull() && !proper)
+      opt->Value(aVal);
+    val = Handle(TCollection_HAsciiString)::DownCast (aVal);
 
 //    On applique
     if (!val.IsNull()) tv->SetHStringValue (val);

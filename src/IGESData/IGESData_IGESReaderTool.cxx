@@ -334,11 +334,16 @@ IGESData_IGESReaderTool::IGESData_IGESReaderTool
    IGESData_ParamReader& PR) const 
 {
   Handle(Interface_Check) ach = new Interface_Check;;
-  Handle(IGESData_ReadWriteModule) module;  Standard_Integer CN;
+  Handle(Interface_ReaderModule) imodule;
+  Standard_Integer CN;
   
 //  Les Modules font tout
-  if (therlib.Select(ent,module,CN))
+  if (therlib.Select(ent,imodule,CN))
+  {
+    Handle(IGESData_ReadWriteModule) module =
+      Handle(IGESData_ReadWriteModule)::DownCast (imodule);
     module->ReadOwnParams(CN,ent,IR,PR);
+  }
   else if (ent.IsNull()) {
 //  Pas trouve dutout
     // Sending of message : Null Entity

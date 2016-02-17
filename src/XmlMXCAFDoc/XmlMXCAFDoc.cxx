@@ -48,8 +48,10 @@ void XmlMXCAFDoc::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
   aDriverTable -> AddDriver (new XmlMXCAFDoc_GraphNodeDriver (anMsgDrv));
   
   //oan: changes for sharing locations map
-  Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver;
-  aDriverTable->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aNamedShapeDriver);
+  Handle(XmlMDF_ADriver) aDriver;
+  aDriverTable->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
+    Handle(XmlMNaming_NamedShapeDriver)::DownCast (aDriver);
   
   Handle(XmlMXCAFDoc_LocationDriver) aLocationDriver = new XmlMXCAFDoc_LocationDriver (anMsgDrv);
   if( !aNamedShapeDriver.IsNull() )

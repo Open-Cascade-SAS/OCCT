@@ -106,13 +106,13 @@ void AIS_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
 {
     aPresentation->Clear();
 
-    Handle(Geom_Line) glin;
+    Handle(Geom_Curve) gcurv;
     gp_Pnt pfirst,plast;
     const TopoDS_Edge& thechamfedge = TopoDS::Edge(myFShape);
-    if (!AIS::ComputeGeometry(thechamfedge, glin,pfirst,plast) ) 
+    if (!AIS::ComputeGeometry (thechamfedge, gcurv, pfirst, plast))
       return;
 
-
+    Handle(Geom_Line) glin = Handle(Geom_Line)::DownCast (gcurv);
     gp_Dir dir1 (glin->Position().Direction());
     gp_Dir norm1 = myPlane->Pln().Axis().Direction();
     myDir = norm1.Crossed(dir1);

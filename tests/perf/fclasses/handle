@@ -23,28 +23,3 @@ set ratio [expr $time_occt / $time_std]
 if { $ratio > 1.05 } {
   puts "Error: OCCT handle is too slow: $time_occt vs. $time_std of shared_ptr"
 }
-
-# Check performance of down casting at different nesting depths.
-# OCCT is expected to be the same as C++
-set depths {3 5 10 50}
-set threshold_std 4.0
-set threshold_ptr 2.5
-for {set i 0} {$i < [llength $depths]} {incr i} {
-  set depth [lindex $depths $i]
-  puts "\nTesting DownCast at nesting depth $depth"
-
-  set res [QAHandleCast $depth 0 100000]
-  set res_lines [split $res \n]
-  set time_occt [lindex [lindex [split [lindex $res_lines end-2] :] end] end]
-  set time_std  [lindex [lindex [split [lindex $res_lines end-1] :] end] end]
-  set time_ptr  [lindex [lindex [split [lindex $res_lines end  ] :] end] end]
-  set ratio_std [expr $time_occt / $time_std]
-  set ratio_ptr [expr $time_occt / $time_ptr]
-  
-  puts "Ratio of time of OCCT DownCast() to dynamic_cast<>: $ratio_std"
-  puts "Ratio of time of OCCT DownCast() to dynamic_pointer_cast<>: $ratio_ptr"
-
-  if { $ratio_std > $threshold_std || $ratio_ptr > $threshold_ptr } {
-    puts "Error: OCCT DownCast is expected to be faster!"
-  }
-}

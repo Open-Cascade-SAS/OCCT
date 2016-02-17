@@ -2402,16 +2402,6 @@ void OpenGl_Context::ReleaseResource (const TCollection_AsciiString& theKey,
 }
 
 // =======================================================================
-// function : DelayedRelease
-// purpose  :
-// =======================================================================
-void OpenGl_Context::DelayedRelease (Handle(OpenGl_Resource)& theResource)
-{
-  myUnusedResources->Prepend (theResource);
-  theResource.Nullify();
-}
-
-// =======================================================================
 // function : ReleaseDelayed
 // purpose  :
 // =======================================================================

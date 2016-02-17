@@ -25,6 +25,7 @@
 #include <Standard_DefineHandle.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Surface.hxx>
@@ -49,8 +50,6 @@ inline void func (const Handle(Geom_Surface)&) {}
 inline void func (const Handle(gp_Pnt)&) {}
 inline void func (const Handle(gp_XYZ)&) {}
 inline void func (const Handle(gp_Trsf)&) {}
-
-inline void gunc (Handle(Geom_Curve)&) {}
 
 static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
                                      Standard_Integer  /*theArgNb*/,
@@ -117,10 +116,7 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   func (cLine);
 #endif
 
-  // passing handle as non-const reference to base type
-  // currently allowed for compatibility
-  gunc (aLine);
-  Handle(Geom_Curve)& aCurve2 = aLine; // cast to base non-const ref
+  const Handle(Geom_Curve)& aCurve2 = aLine; // cast to base const ref
 
   Handle(Geom_Line) qLine = cpLine; // constructor from const pointer -- could be made explicit...
 

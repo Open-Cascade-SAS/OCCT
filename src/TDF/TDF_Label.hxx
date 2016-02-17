@@ -150,6 +150,14 @@ public:
   //! A removed attribute cannot be found.
   Standard_EXPORT Standard_Boolean FindAttribute (const Standard_GUID& anID, Handle(TDF_Attribute)& anAttribute) const;
   
+  //! Safe variant of FindAttribute() for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean FindAttribute (const Standard_GUID& theID, Handle(T)& theAttr) const
+  { 
+    Handle(TDF_Attribute) anAttr = theAttr;
+    return FindAttribute (theID, anAttr) && ! (theAttr = Handle(T)::DownCast(anAttr)).IsNull();
+  }
+
   //! Finds an attribute of the current label, according
   //! to <anID> and <aTransaction>. This attribute
   //! has/had to be a valid one for the given

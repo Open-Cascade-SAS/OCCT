@@ -38,7 +38,7 @@ void  GeomTools::Write(const Handle(Geom_Surface)& S, Standard_OStream& OS)
 
 void GeomTools::Read(Handle(Geom_Surface)& S, Standard_IStream& IS)
 {
-  GeomTools_SurfaceSet::ReadSurface(IS,S);
+  S = GeomTools_SurfaceSet::ReadSurface(IS);
 }
 
 void  GeomTools::Dump(const Handle(Geom_Curve)& C, Standard_OStream& OS)
@@ -53,7 +53,7 @@ void  GeomTools::Write(const Handle(Geom_Curve)& C, Standard_OStream& OS)
 
 void GeomTools::Read(Handle(Geom_Curve)& C, Standard_IStream& IS)
 {
-  GeomTools_CurveSet::ReadCurve(IS,C);
+  C = GeomTools_CurveSet::ReadCurve(IS);
 }
 
 void  GeomTools::Dump(const Handle(Geom2d_Curve)& C, Standard_OStream& OS)
@@ -68,7 +68,7 @@ void  GeomTools::Write(const Handle(Geom2d_Curve)& C, Standard_OStream& OS)
 
 void  GeomTools::Read(Handle(Geom2d_Curve)& C, Standard_IStream& IS)
 {
-  GeomTools_Curve2dSet::ReadCurve2d(IS,C);
+  C = GeomTools_Curve2dSet::ReadCurve2d(IS);
 }
 
 //=======================================================================

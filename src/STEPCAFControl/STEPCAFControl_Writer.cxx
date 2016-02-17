@@ -2754,7 +2754,9 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
     Handle(StepDimTol_HArray1OfDatumReferenceModifier) aModifiers;
     if (aDatumSeqPos.Length() == 1) {
       // Datum entity
-      theDatumMap.Find(aDatumSeqPos.Value(1)->GetName()->String(), aFirstDatum);
+      Handle(Standard_Transient) aFDValue;
+      if (theDatumMap.Find(aDatumSeqPos.Value(1)->GetName()->String(), aFDValue))
+        aFirstDatum = Handle(StepDimTol_Datum)::DownCast (aFDValue);
       aDatumRef.SetValue(aFirstDatum);
       // Modifiers
       XCAFDimTolObjects_DatumModifiersSequence aSimpleModifiers = aDatumSeqPos.Value(1)->GetModifiers();
@@ -2776,7 +2778,9 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
       for (Standard_Integer j = 1; j <= aDatumSeqPos.Length(); j++) {
         // Datum entity
         Handle(StepDimTol_Datum) aDatum;
-        theDatumMap.Find(aDatumSeqPos.Value(j)->GetName()->String(), aDatum);
+        Handle(Standard_Transient) aDValue;
+        if (theDatumMap.Find(aDatumSeqPos.Value(j)->GetName()->String(), aDValue))
+          aDatum = Handle(StepDimTol_Datum)::DownCast (aDValue);
         StepDimTol_DatumOrCommonDatum anElemDatumRef;
         anElemDatumRef.SetValue(aDatum);
         if (aFirstDatum.IsNull())
@@ -3497,9 +3501,10 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
     TCollection_AsciiString aDatumTargetId = TCollection_AsciiString(anObject->GetDatumTargetNumber());
     if (!aNameIdMap.Add(aDatumName.Cat(aDatumTargetId)))
       continue;
-    Handle(StepDimTol_Datum) aWrittenDatum;
+    Handle(Standard_Transient) aWrittenDatum;
     Standard_Boolean isFirstDT = !aDatumMap.Find(aDatumName, aWrittenDatum);
-    Handle(StepDimTol_Datum) aDatum = WriteDatumAP242(WS, aShapeL.First(), aDatumL, isFirstDT, aWrittenDatum);
+    Handle(StepDimTol_Datum) aDatum = WriteDatumAP242(WS, aShapeL.First(), aDatumL, isFirstDT, 
+                                                      Handle(StepDimTol_Datum)::DownCast (aWrittenDatum));
     // Add created Datum into Map
     aDatumMap.Bind(aDatumName, aDatum);
   }

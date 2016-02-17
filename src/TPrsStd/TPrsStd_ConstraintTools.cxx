@@ -1762,7 +1762,9 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
   Standard_Boolean is_planar (aConst->IsPlanar());
   Handle(Geom_Plane) aplane;      
   if (is_planar) {
-    GetGeom (aConst,aplane);
+    Handle(Geom_Geometry) ageom;
+    GetGeom (aConst,ageom);
+    aplane = Handle(Geom_Plane)::DownCast (ageom);
     if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
       cout << "TPrsStd_ConstraintTools::ComputeOffset: null plane" << endl;
@@ -2090,8 +2092,9 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const Handle(TDataXtd_Constraint
   }
   
   TopoDS_Shape shape1,shape2 ;
-  Handle(Geom_Plane) aplane;
-  GetShapesAndGeom(aConst,shape1,shape2,aplane);
+  Handle(Geom_Geometry) ageom;
+  GetShapesAndGeom(aConst,shape1,shape2,ageom);
+  Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast (ageom);
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
     cout << "TPrsStd_ConstraintTools::ComputeCoincident: nul shape" << endl;

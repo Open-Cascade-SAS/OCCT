@@ -71,9 +71,9 @@ public:
   Standard_EXPORT static void PrintCurve2d (const Handle(Geom2d_Curve)& C, Standard_OStream& OS, const Standard_Boolean compact = Standard_False);
   
   //! Reads the curve  from  the stream.  The  curve  is
-  //! assumed   to have  been  writtent  with  the Print
+  //! assumed   to have  been  written  with  the Print
   //! method (compact = True).
-  Standard_EXPORT static Standard_IStream& ReadCurve2d (Standard_IStream& IS, Handle(Geom2d_Curve)& C);
+  Standard_EXPORT static Handle(Geom2d_Curve) ReadCurve2d (Standard_IStream& IS);
   
   Standard_EXPORT void SetProgress (const Handle(Message_ProgressIndicator)& PR);
   

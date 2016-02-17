@@ -1438,8 +1438,7 @@ static void csave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) crestore (istream& is)
 {
-  Handle(Geom_Curve) G;
-  GeomTools_CurveSet::ReadCurve(is,G);
+  Handle(Geom_Curve) G = GeomTools_CurveSet::ReadCurve(is);
   Handle(DrawTrSurf_Curve) N = 
     new DrawTrSurf_Curve(G,CurvColor,Discret,Deflection,DrawMode);
   return N;
@@ -1470,8 +1469,8 @@ static void bzcsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) bzcrestore (istream& is)
 {
-  Handle(Geom_BezierCurve) G;
-  GeomTools_CurveSet::ReadCurve(is,G);
+  Handle(Geom_BezierCurve) G = 
+    Handle(Geom_BezierCurve)::DownCast (GeomTools_CurveSet::ReadCurve(is));
   Handle(DrawTrSurf_BezierCurve) N = 
     new DrawTrSurf_BezierCurve(G,CurvColor,PolesColor,ShowPoles,
 			       Discret,Deflection,DrawMode);
@@ -1503,8 +1502,8 @@ static void bscsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) bscrestore (istream& is)
 {
-  Handle(Geom_BSplineCurve) G;
-  GeomTools_CurveSet::ReadCurve(is,G);
+  Handle(Geom_BSplineCurve) G =
+    Handle(Geom_BSplineCurve)::DownCast (GeomTools_CurveSet::ReadCurve(is));
   Handle(DrawTrSurf_BSplineCurve) N = 
     new DrawTrSurf_BSplineCurve(G, CurvColor,PolesColor,
 				KnotsColor,
@@ -1536,8 +1535,7 @@ static void c2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) c2drestore (istream& is)
 {
-  Handle(Geom2d_Curve) G;
-  GeomTools_Curve2dSet::ReadCurve2d(is,G);
+  Handle(Geom2d_Curve) G = GeomTools_Curve2dSet::ReadCurve2d(is);
   Handle(DrawTrSurf_Curve2d) N = 
     new DrawTrSurf_Curve2d(G,CurvColor,Discret);
   return N;
@@ -1568,8 +1566,8 @@ static void bzc2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) bzc2drestore (istream& is)
 {
-  Handle(Geom2d_BezierCurve) G;
-  GeomTools_Curve2dSet::ReadCurve2d(is,G);
+  Handle(Geom2d_BezierCurve) G =
+    Handle(Geom2d_BezierCurve)::DownCast (GeomTools_Curve2dSet::ReadCurve2d(is));
   Handle(DrawTrSurf_BezierCurve2d) N = 
     new DrawTrSurf_BezierCurve2d(G,CurvColor,PolesColor,ShowPoles,
 			       Discret);
@@ -1601,8 +1599,8 @@ static void bsc2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) bsc2drestore (istream& is)
 {
-  Handle(Geom2d_BSplineCurve) G;
-  GeomTools_Curve2dSet::ReadCurve2d(is,G);
+  Handle(Geom2d_BSplineCurve) G =
+    Handle(Geom2d_BSplineCurve)::DownCast (GeomTools_Curve2dSet::ReadCurve2d(is));
   Handle(DrawTrSurf_BSplineCurve2d) N = 
     new DrawTrSurf_BSplineCurve2d(G, CurvColor,PolesColor,
 				KnotsColor,
@@ -1634,8 +1632,7 @@ static void ssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) srestore (istream& is)
 {
-  Handle(Geom_Surface) G;
-  GeomTools_SurfaceSet::ReadSurface(is,G);
+  Handle(Geom_Surface) G = GeomTools_SurfaceSet::ReadSurface(is);
   Handle(DrawTrSurf_Surface) N = 
     new DrawTrSurf_Surface(G,
 			   NbUIsos,NbVIsos,
@@ -1669,8 +1666,8 @@ static void bzssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) bzsrestore (istream& is)
 {
-  Handle(Geom_BezierSurface) G;
-  GeomTools_SurfaceSet::ReadSurface(is,G);
+  Handle(Geom_BezierSurface) G =
+    Handle(Geom_BezierSurface)::DownCast (GeomTools_SurfaceSet::ReadSurface(is));
   Handle(DrawTrSurf_BezierSurface) N = 
     new DrawTrSurf_BezierSurface(G,NbUIsos,NbVIsos,
 				 BoundsColor,IsosColor,PolesColor,
@@ -1704,8 +1701,8 @@ static void bsssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 
 static Handle(Draw_Drawable3D) bssrestore (istream& is)
 {
-  Handle(Geom_BSplineSurface) G;
-  GeomTools_SurfaceSet::ReadSurface(is,G);
+  Handle(Geom_BSplineSurface) G =
+    Handle(Geom_BSplineSurface)::DownCast (GeomTools_SurfaceSet::ReadSurface(is));
   Handle(DrawTrSurf_BSplineSurface) N;
   if (!knotsIsos) 
     N   = new DrawTrSurf_BSplineSurface(G,

@@ -268,9 +268,17 @@ Interface_CopyTool::Interface_CopyTool
     Handle(Standard_Transient) res;
     if (!themap->Search(ent,res)) continue;        // entite pas transferee
 //    Reconduction des references "Imply".  Attention, ne pas copier si non chargee
-    Handle(Interface_ReportEntity) rep;
-    if (!therep->Search(ent,rep))   Implied (ent,res);
-    else if (!rep->HasNewContent()) Implied (ent,res);
+    Handle(Standard_Transient) aRep;
+    if (!therep->Search(ent,aRep))
+    {
+      Implied (ent,res);
+    }
+    else 
+    {
+      Handle(Interface_ReportEntity) rep = Handle(Interface_ReportEntity)::DownCast (aRep);
+      if (! rep.IsNull() && ! rep->HasNewContent())
+        Implied (ent,res);
+    }
   }
 }
 
@@ -302,7 +310,7 @@ Interface_CopyTool::Interface_CopyTool
     Handle(Standard_Transient) res;
     if (!themap->Search(ent,res)) continue;
     if (withreports) {
-      Handle(Interface_ReportEntity) rep;
+      Handle(Standard_Transient) rep;
       if (therep->Search(ent,rep)) res = rep;
     }
     iter.GetOneItem(res);
@@ -321,7 +329,7 @@ Interface_CopyTool::Interface_CopyTool
     Handle(Standard_Transient) res;
     if (!themap->Search(ent,res)) continue;
     if (withreports) {
-      Handle(Interface_ReportEntity) rep;
+      Handle(Standard_Transient) rep;
       if (therep->Search(ent,rep)) res = rep;
     }
     iter.GetOneItem(res);

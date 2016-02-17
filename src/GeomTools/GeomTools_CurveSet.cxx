@@ -729,8 +729,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   Standard_Real p1=0.,p2=0.;
   GeomTools::GetReal(IS, p1);
   GeomTools::GetReal(IS, p2);
-  Handle(Geom_Curve) BC;
-  GeomTools_CurveSet::ReadCurve(IS,BC);
+  Handle(Geom_Curve) BC = GeomTools_CurveSet::ReadCurve(IS);
   C = new Geom_TrimmedCurve(BC,p1,p2);
   return IS;
 }
@@ -747,8 +746,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   GeomTools::GetReal(IS, p);
   gp_Dir D(1.,0.,0.);
   IS >> D;
-  Handle(Geom_Curve) BC;
-  GeomTools_CurveSet::ReadCurve(IS,BC);
+  Handle(Geom_Curve) BC = GeomTools_CurveSet::ReadCurve(IS);
   C = new Geom_OffsetCurve(BC,p,D);
   return IS;
 }
@@ -758,11 +756,11 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 //purpose  : 
 //=======================================================================
 
-Standard_IStream& GeomTools_CurveSet::ReadCurve(Standard_IStream& IS,
-						Handle(Geom_Curve)& C)
+Handle(Geom_Curve) GeomTools_CurveSet::ReadCurve (Standard_IStream& IS)
 {
   Standard_Integer ctype;
 
+  Handle(Geom_Curve) C;
   try {
     OCC_CATCH_SIGNALS
     IS >> ctype;
@@ -854,9 +852,8 @@ Standard_IStream& GeomTools_CurveSet::ReadCurve(Standard_IStream& IS,
     cout <<"EXCEPTION in GeomTools_CurveSet::ReadCurve(..)!!!" << endl;
     cout << anExc << endl;
 #endif
-    C = NULL;
   }
-  return IS;
+  return C;
 }
 
 //=======================================================================
@@ -873,14 +870,13 @@ void  GeomTools_CurveSet::Read(Standard_IStream& IS)
     return;
   }
 
-  Handle(Geom_Curve) C;
   Standard_Integer i, nbcurve;
   IS >> nbcurve;
   //OCC19559
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "3D Curves", 0, nbcurve, 1);
   for (i = 1; i <= nbcurve && PS.More(); i++, PS.Next()) {
-    GeomTools_CurveSet::ReadCurve(IS,C);
+    Handle(Geom_Curve) C = GeomTools_CurveSet::ReadCurve (IS);
     myMap.Add(C);
   }
 }

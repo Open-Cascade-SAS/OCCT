@@ -175,6 +175,14 @@ public:
   //! some members as Entity, some other not)
   Standard_EXPORT Standard_Boolean ReadMember (const Standard_Integer num, const Standard_Integer nump, const Standard_CString mess, Handle(Interface_Check)& ach, Handle(StepData_SelectMember)& val) const;
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean ReadMember (const Standard_Integer num, const Standard_Integer nump, const Standard_CString mess, Handle(Interface_Check)& ach, Handle(T)& val) const
+  {
+    Handle(StepData_SelectMember) aVal = val;
+    return ReadMember (num, nump, mess, ach, aVal) && ! (val = Handle(T)::DownCast(aVal)).IsNull();
+  }
+
   //! reads parameter <nump> of record <num> into a Field,
   //! controlled by a Parameter Descriptor (PDescr), which controls
   //! its allowed type(s) and value
@@ -230,6 +238,14 @@ public:
   //! is an Entity but is not Kind of required type
   Standard_EXPORT Standard_Boolean ReadEntity (const Standard_Integer num, const Standard_Integer nump, const Standard_CString mess, Handle(Interface_Check)& ach, const Handle(Standard_Type)& atype, Handle(Standard_Transient)& ent) const;
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean ReadEntity (const Standard_Integer num, const Standard_Integer nump, const Standard_CString mess, Handle(Interface_Check)& ach, const Handle(Standard_Type)& atype, Handle(T)& ent) const
+  {
+    Handle(Standard_Transient) anEnt = ent;
+    return ReadEntity (num, nump, mess, ach, atype, anEnt) && ! (ent = Handle(T)::DownCast(anEnt)).IsNull();
+  }
+
   //! Same as above, but a SelectType checks Type Matching, and
   //! records the read Entity (see method Value from SelectType)
   Standard_EXPORT Standard_Boolean ReadEntity (const Standard_Integer num, const Standard_Integer nump, const Standard_CString mess, Handle(Interface_Check)& ach, StepData_SelectType& sel) const;

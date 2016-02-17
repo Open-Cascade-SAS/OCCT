@@ -109,11 +109,11 @@ void IGESGeom_ToolBoundedSurface::ReadOwnParams(const Handle(IGESGeom_BoundedSur
   if (!tempBounds.IsNull()){
     for ( i = 1; i <= num; i++ )
       {
-	Handle(IGESGeom_Boundary) tempEnt;
+	Handle(IGESData_IGESEntity) tempEnt;
 	//st = PR.ReadEntity(IR, PR.Current(), Msg168, tempEnt); //szv#4:S4163:12Mar99 moved in if
 	//st = PR.ReadEntity(IR, PR.Current(), "Boundary Entities", tempEnt);
 	if (PR.ReadEntity(IR, PR.Current(), aStatus, tempEnt))
-	  tempBounds->SetValue(i, tempEnt);
+	  tempBounds->SetValue(i, Handle(IGESGeom_Boundary)::DownCast (tempEnt));
 	else{
 	  Message_Msg Msg168("XTSEP_168");
 	  switch(aStatus) {

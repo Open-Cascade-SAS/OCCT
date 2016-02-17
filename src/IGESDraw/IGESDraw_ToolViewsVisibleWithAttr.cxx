@@ -272,7 +272,7 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnRenew
   up  = another->NbDisplayedEntities();
   if (up == 0) return;
   Handle(IGESData_HArray1OfIGESEntity) tempDisplayEntities;
-  Handle(IGESData_IGESEntity) anew;
+  Handle(Standard_Transient) anew;
   for (I = 1; I <= up; I++) {
     if (TC.Search (another->DisplayedEntity(I),anew)) newdisp.GetOneItem(anew);
   }

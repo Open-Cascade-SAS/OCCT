@@ -49,7 +49,9 @@ public:
   template <class Type>
   StdObjMgt_ReadData& operator >> (Handle(Type)& theTarget)
   {
-    ReadReference (theTarget);
+    Handle(StdObjMgt_Persistent) aTarget = theTarget;
+    ReadReference (aTarget);
+    theTarget = Handle(Type)::DownCast (aTarget);
     return *this;
   }
 

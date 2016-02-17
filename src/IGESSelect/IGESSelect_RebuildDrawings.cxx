@@ -165,11 +165,14 @@ IGESSelect_RebuildDrawings::IGESSelect_RebuildDrawings ()
 //  si View() transfere, mettre a jour ...
     for (setl.Start(); setl.More(); setl.Next()) {
       DeclareAndCast(IGESData_IGESEntity,ent,setl.Value());
-      Handle(IGESData_ViewKindEntity) vieworig, viewnew;
-      vieworig = ent->View();
+      Handle(IGESData_ViewKindEntity) vieworig = ent->View();
       if (vieworig.IsNull()) continue;
-      if (!TC.Search(vieworig,viewnew)) continue;
-      ent->InitView(viewnew);
+      Handle(Standard_Transient) aView;
+      if (!TC.Search(vieworig,aView)) continue;
+      Handle(IGESData_ViewKindEntity) viewnew =
+        Handle(IGESData_ViewKindEntity)::DownCast (aView);
+      if (! viewnew.IsNull())
+        ent->InitView(viewnew);
     }
   }
 

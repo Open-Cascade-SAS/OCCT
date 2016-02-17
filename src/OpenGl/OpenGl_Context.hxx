@@ -401,7 +401,12 @@ public:
 
   //! Append resource to queue for delayed clean up.
   //! Resources in this queue will be released at next redraw call.
-  Standard_EXPORT void DelayedRelease (Handle(OpenGl_Resource)& theResource);
+  template <class T>
+  void DelayedRelease (Handle(T)& theResource)
+  {
+    myUnusedResources->Prepend (theResource);
+    theResource.Nullify();
+  }
 
   //! Clean up the delayed release queue.
   Standard_EXPORT void ReleaseDelayed();

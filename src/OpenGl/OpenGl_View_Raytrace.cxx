@@ -1589,8 +1589,9 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
 // function : nullifyResource
 // purpose  :
 // =======================================================================
+template <class T>
 inline void nullifyResource (const Handle(OpenGl_Context)& theGlContext,
-                             Handle(OpenGl_Resource)&      theResource)
+                             Handle(T)& theResource)
 {
   if (!theResource.IsNull())
   {

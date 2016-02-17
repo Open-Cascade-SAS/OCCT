@@ -180,14 +180,16 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
 //  Traites actuellement (necessaires) :
 //  1(Annotation), aussi 4(pour maillage). 5(ParamUV) traite par AutoCorrect
 
-  Handle(IGESData_GeneralModule)  gmod;
   Standard_Integer CN;
   Standard_Integer i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i ++) {
 //  Subordinate (sur directs en propre seulement)
     Handle(IGESData_IGESEntity) ent = themodel->Entity(i);
     Standard_Integer igt = ent->TypeNumber();
-    if (theglib.Select (ent,gmod,CN)) {
+    Handle(Interface_GeneralModule) gmodule;
+    if (theglib.Select (ent,gmodule,CN)) {
+      Handle(IGESData_GeneralModule) gmod =
+        Handle(IGESData_GeneralModule)::DownCast (gmodule);
       Interface_EntityIterator sh;
       gmod->OwnSharedCase (CN,ent,sh);
       for (sh.Start(); sh.More(); sh.Next()) {
@@ -301,14 +303,16 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
   }
 
 //    Corrections specifiques
-  Handle(IGESData_GeneralModule)  gmod;
-  Handle(IGESData_SpecificModule) smod;
   Standard_Integer CN;
-
-  if (theglib.Select (ent,gmod,CN)) {
+  Handle(Interface_GeneralModule) gmodule;
+  if (theglib.Select (ent,gmodule,CN)) {
+    Handle(IGESData_GeneralModule) gmod =
+      Handle(IGESData_GeneralModule)::DownCast (gmodule);
     IGESData_DirChecker DC = gmod->DirChecker(CN,ent);
     done |= DC.Correct(ent);
   }
+
+  Handle(IGESData_SpecificModule) smod;
   if (theslib.Select (ent,smod,CN)) done |= smod->OwnCorrect (CN,ent);
 
   return done;

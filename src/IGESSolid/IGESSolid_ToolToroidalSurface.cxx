@@ -44,7 +44,7 @@ void  IGESSolid_ToolToroidalSurface::ReadOwnParams
   Handle(IGESGeom_Point) tempCenter;
   Standard_Real majRad, minRad;
   Handle(IGESGeom_Direction) tempAxis;            // default Unparametrised
-  Handle(IGESGeom_Direction) tempRefdir;          // default Unparametrised
+  Handle(IGESData_IGESEntity) tempRefdir;          // default Unparametrised
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR, PR.Current(), "Center point",
@@ -61,7 +61,7 @@ void  IGESSolid_ToolToroidalSurface::ReadOwnParams
     PR.ReadEntity(IR, PR.Current(), "Reference direction", tempRefdir); //szv#4:S4163:12Mar99 `st=` not needed
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init (tempCenter, tempAxis, majRad, minRad, tempRefdir);
+  ent->Init (tempCenter, tempAxis, majRad, minRad, Handle(IGESGeom_Direction)::DownCast (tempRefdir));
 }
 
 void  IGESSolid_ToolToroidalSurface::WriteOwnParams

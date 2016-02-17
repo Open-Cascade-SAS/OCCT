@@ -72,9 +72,25 @@ public:
   //! <exact> : same as for HasItem
   Standard_EXPORT Standard_Boolean GetItem (const Standard_CString name, Handle(Standard_Transient)& anitem, const Standard_Boolean exact = Standard_True) const;
   
+  //! Safe variant of GetItem() for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean GetItem (const Standard_CString theName, Handle(T)& theItem, const Standard_Boolean theExact = Standard_True) const
+  { 
+    Handle(Standard_Transient) anItem = theItem;
+    return GetItem (theName, anItem, theExact) && ! (theItem = Handle(T)::DownCast(anItem)).IsNull();
+  }
+
   //! Works as above method but accepts a String from TCollection
   Standard_EXPORT Standard_Boolean GetItem (const TCollection_AsciiString& name, Handle(Standard_Transient)& anitem, const Standard_Boolean exact = Standard_True) const;
   
+  //! Safe variant of GetItem() for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean GetItem (const TCollection_AsciiString& theName, Handle(T)& theItem, const Standard_Boolean theExact = Standard_True) const
+  { 
+    Handle(Standard_Transient) anItem = theItem;
+    return GetItem (theName, anItem, theExact) && ! (theItem = Handle(T)::DownCast(anItem)).IsNull();
+  }
+
   //! Binds an item to a dictionnary entry
   //! If <name> is already known in the dictionary, its value
   //! is changed. Else, the dictionary entry is created.

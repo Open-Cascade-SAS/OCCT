@@ -104,9 +104,11 @@ void  IGESData_ToolLocation::ResetDependences (const Handle(IGESData_IGESEntity)
 
 void  IGESData_ToolLocation::SetOwnAsDependent (const Handle(IGESData_IGESEntity)& ent)
 {
-  Handle(IGESData_GeneralModule) module;
   Standard_Integer CN;
-  if (!thelib.Select(ent,module,CN)) return;
+  Handle(Interface_GeneralModule) gmodule;
+  if (!thelib.Select(ent,gmodule,CN)) return;
+  Handle(IGESData_GeneralModule) module =
+    Handle(IGESData_GeneralModule)::DownCast (gmodule);
   Interface_EntityIterator list;
   module->OwnSharedCase(CN,ent,list);
   // Remarque : en toute rigueur, il faudrait ignorer les entites referencees

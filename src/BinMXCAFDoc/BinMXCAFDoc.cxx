@@ -47,8 +47,10 @@ void BinMXCAFDoc::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
   theDriverTable->AddDriver( new BinMXCAFDoc_GraphNodeDriver(theMsgDrv));
   
   //oan: changes for sharing locations map
-  Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver;
-  theDriverTable->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aNamedShapeDriver);
+  Handle(BinMDF_ADriver) aNSDriver;
+  theDriverTable->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aNSDriver);
+  Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
+    Handle(BinMNaming_NamedShapeDriver)::DownCast (aNSDriver);
   
   Handle(BinMXCAFDoc_LocationDriver) aLocationDriver = new BinMXCAFDoc_LocationDriver (theMsgDrv);
   if( !aNamedShapeDriver.IsNull() )

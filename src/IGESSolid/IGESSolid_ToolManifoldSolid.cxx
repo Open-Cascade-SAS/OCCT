@@ -56,7 +56,7 @@ void  IGESSolid_ToolManifoldSolid::ReadOwnParams
   Standard_Boolean abool, shellFlag; //szv#4:S4163:12Mar99 `st` moved down
   Standard_Integer nbshells, i;
   Handle(TColStd_HArray1OfInteger) voidShellFlags;
-  Handle(IGESSolid_Shell) shell;
+  Handle(IGESData_IGESEntity) shell;
   Handle(IGESSolid_Shell) ashell;
   Handle(IGESSolid_HArray1OfShell) voidShells;
   IGESData_Status aStatus;
@@ -132,7 +132,7 @@ void  IGESSolid_ToolManifoldSolid::ReadOwnParams
 	}
     }
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init (shell, shellFlag, voidShells, voidShellFlags);
+  ent->Init (Handle(IGESSolid_Shell)::DownCast (shell), shellFlag, voidShells, voidShellFlags);
 }
 
 void  IGESSolid_ToolManifoldSolid::WriteOwnParams

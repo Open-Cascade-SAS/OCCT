@@ -185,6 +185,14 @@ public:
   //! this  method.
   Standard_EXPORT Standard_Boolean FindAttribute (const Standard_GUID& anID, Handle(TDF_Attribute)& anAttribute) const;
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  Standard_Boolean FindAttribute (const Standard_GUID& theID, Handle(T)& theAttr) const
+  {
+    Handle(TDF_Attribute) anAttr = theAttr;
+    return FindAttribute (theID, anAttr) && ! (theAttr = Handle(T)::DownCast(anAttr)).IsNull();
+  }
+
   //! Adds   an   Attribute <other>  to  the   label  of
   //! <me>.Raises if there is  already  one of the same
   //! GUID fhan <other>.

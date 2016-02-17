@@ -143,7 +143,7 @@ static
                                           const Handle(IntTools_Context)& );
 
 static 
-  Standard_Boolean IsCurveValid(Handle(Geom2d_Curve)& thePCurve);
+  Standard_Boolean IsCurveValid(const Handle(Geom2d_Curve)& thePCurve);
 
 static
   Standard_Boolean  ApproxWithPCurves(const gp_Cylinder& theCyl, 
@@ -2622,7 +2622,7 @@ Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter,
 //function : IsCurveValid
 //purpose  : 
 //=======================================================================
-Standard_Boolean IsCurveValid(Handle(Geom2d_Curve)& thePCurve)
+Standard_Boolean IsCurveValid (const Handle(Geom2d_Curve)& thePCurve)
 {
   if(thePCurve.IsNull())
     return Standard_False;

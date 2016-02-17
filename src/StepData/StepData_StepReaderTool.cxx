@@ -211,9 +211,14 @@ Standard_Boolean StepData_StepReaderTool::AnalyseRecord
    Handle(Interface_Check)& acheck)
 {
   DeclareAndCast(StepData_StepReaderData,stepdat,Data());
-  Handle(StepData_ReadWriteModule) module;  Standard_Integer CN;
-  if (therlib.Select(anent,module,CN))
+  Handle(Interface_ReaderModule) imodule;
+  Standard_Integer CN;
+  if (therlib.Select(anent,imodule,CN))
+  {
+    Handle(StepData_ReadWriteModule) module =
+      Handle(StepData_ReadWriteModule)::DownCast (imodule);
     module->ReadStep(CN,stepdat,num,acheck,anent);
+  }
   else {
 //  Pas trouve : tenter UndefinedEntity de StepData
     DeclareAndCast(StepData_UndefinedEntity,und,anent);

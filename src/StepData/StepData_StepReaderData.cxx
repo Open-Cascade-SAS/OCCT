@@ -515,7 +515,8 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer numsub,
     Handle(StepData_SelectNamed) sn = new StepData_SelectNamed;
     val = sn;
     sn->SetName (rectyp.ToCString());
-    if (ReadAny (numsub,1,mess,ach,descr,sn)) return sn->Kind();
+    Handle(Standard_Transient) aSN = sn;
+    if (ReadAny (numsub,1,mess,ach,descr,aSN)) return sn->Kind();
     else return 0;
   }
 
@@ -686,7 +687,11 @@ Standard_Boolean StepData_StepReaderData::ReadMember(const Standard_Integer num,
 {
   Handle(Standard_Transient) v = val;
   Handle(StepData_PDescr) nuldescr;
-  if (v.IsNull()) return ReadAny (num,nump,mess,ach,nuldescr,val);
+  if (v.IsNull())
+  {
+    return ReadAny (num,nump,mess,ach,nuldescr,v) && 
+           ! (val = Handle(StepData_SelectMember)::DownCast(v)).IsNull();
+  }
   Standard_Boolean res = ReadAny (num,nump,mess,ach,nuldescr,v);
   if (v == val) return res;
   //   changement -> refus
@@ -886,9 +891,11 @@ Standard_Boolean StepData_StepReaderData::ReadAny(const Standard_Integer num,
               Handle(TColStd_HSequenceOfReal) aSeq = new TColStd_HSequenceOfReal;
               for(Standard_Integer i=1; i<=nbp2; i++) {
                 if( Param(numsub2,i).ParamType() != Interface_ParamReal ) continue;
-                Handle(StepData_SelectReal) sm1 = new StepData_SelectReal;
-                if( !ReadAny(numsub2,i,mess,ach,descr,sm1) ) continue;
-                aSeq->Append(sm1->Real());
+                Handle(Standard_Transient) asr = new StepData_SelectReal;
+                if( !ReadAny(numsub2,i,mess,ach,descr,asr) ) continue;
+                Handle(StepData_SelectReal) sm1 = Handle(StepData_SelectReal)::DownCast (asr);
+                if (! sm1.IsNull())
+                  aSeq->Append(sm1->Real());
               }
               Handle(TColStd_HArray1OfReal) anArr = new TColStd_HArray1OfReal(1,aSeq->Length());
               for(Standard_Integer nr=1; nr<=aSeq->Length(); nr++) {

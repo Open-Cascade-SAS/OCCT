@@ -61,6 +61,14 @@ public:
   //! that case A is setted.
   Standard_EXPORT static Standard_Boolean Find (const Handle(TDF_Data)& DF, const Standard_CString Entry, const Standard_GUID& ID, Handle(TDF_Attribute)& A, const Standard_Boolean Complain = Standard_True);
   
+  //! Safe variant for arbitrary type of argument
+  template <class T> 
+  static Standard_Boolean Find (const Handle(TDF_Data)& DF, const Standard_CString Entry, const Standard_GUID& ID, Handle(T)& A, const Standard_Boolean Complain = Standard_True)
+  {
+    Handle(TDF_Attribute) anAttr = A;
+    return Find (DF, Entry, ID, anAttr, Complain) && ! (A = Handle(T)::DownCast(anAttr)).IsNull();
+  }
+
   Standard_EXPORT static Draw_Interpretor& ReturnLabel (Draw_Interpretor& theCommands, const TDF_Label& L);
   
   Standard_EXPORT static void AllCommands (Draw_Interpretor& theCommands);

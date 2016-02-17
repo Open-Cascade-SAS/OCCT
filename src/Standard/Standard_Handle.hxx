@@ -239,6 +239,7 @@ namespace opencascade {
     //! Upcast to non-const reference to base type.
     //! NB: this cast can be dangerous, but required for legacy code; see #26377
     template <class T2>
+    Standard_DEPRECATED("Passing non-const reference to handle of base type in function is unsafe; use variable of exact type")
     operator handle<T2>& ()
     {
       // error "type is not a member of enable_if" will be generated if T2 is not sub-type of T
