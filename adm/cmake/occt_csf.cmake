@@ -77,6 +77,7 @@ else()
     set (CSF_ThreadLibs  "pthread rt stdc++")
     set (CSF_OpenGlLibs  "GLU GL")
     set (CSF_XwLibs      "X11 Xext Xmu Xi")
+    set (CSF_dl          "dl")
 
     if (USE_TCL)
       set (CSF_TclLibs     "tcl${3RDPARTY_TCL_LIBRARY_VERSION}")
