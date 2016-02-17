@@ -1227,29 +1227,24 @@ Standard_Real BRepMesh_FastDiscretFace::control(
       Standard_Real aSqDef = -1.;
       Standard_Boolean isSkipped = Standard_False;
       gp_XYZ normal(aLinkVec[0] ^ aLinkVec[1]);
-      try
-      {
-        OCC_CATCH_SIGNALS
-
-        normal.Normalize();
-
-        // Check deflection on triangle
-        gp_XY mi2d = (xy[0] + xy[1] + xy[2]) / 3.0;
-        gFace->D0(mi2d.X(), mi2d.Y(), pDef);
-        aSqDef = Abs(normal * (pDef.XYZ() - p[0]));
-        aSqDef *= aSqDef;
-
-        isSkipped = !checkDeflectionAndInsert(pDef, mi2d, theIsFirst, 
-          aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef);
-
-        if (isSkipped)
-          break;
-      }
-      catch (Standard_Failure)
-      {
+      if (normal.SquareModulus () < gp::Resolution())
         continue;
-      }
 
+      normal.Normalize();
+
+      // Check deflection at triangle centroid
+      gp_XY aCenter2d = (xy[0] + xy[1] + xy[2]) / 3.0;
+      gFace->D0(aCenter2d.X(), aCenter2d.Y(), pDef);
+      aSqDef = Abs(normal * (pDef.XYZ() - p[0]));
+      aSqDef *= aSqDef;
+
+      isSkipped = !checkDeflectionAndInsert(pDef, aCenter2d, theIsFirst, 
+        aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef);
+
+      if (isSkipped)
+        break;
+
+      // Check deflection at triangle links
       for (Standard_Integer i = 0; i < 3 && !isSkipped; ++i)
       {
         if (m[i]) // is a boundary
