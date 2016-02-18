@@ -109,8 +109,8 @@ Draw[]> testgrid -outdir d:/occt/last_results -overwrite
 ~~~~~
 In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
 
-To re-run test cases which were detected as regressions on previous run, option <i>-regress dirname</i> should be used.
-<i>dirname</i> is path to directory containing results of previous run. Only test cases with *FAILED* and *IMPROVEMENT* statuses will be tested.
+To re-run the test cases, which were detected as regressions on the previous run, option <i>-regress dirname</i> should be used.
+<i>dirname</i> is a path to the directory containing the results of the previous run. Only the test cases with *FAILED* and *IMPROVEMENT* statuses will be tested.
 
 Example:
 ~~~~~
@@ -130,10 +130,10 @@ testgrid: Run all tests, or specified group, or one grid
     -overwrite: force writing logs in existing non-empty directory
     -xml filename: write XML report for Jenkins (in JUnit-like format)
     -beep: play sound signal at the end of the tests
-    -regress dirname: re-run only a set of tests that have been detected as regressions on some previous run.
-                      Here "dirname" is path to directory containing results of previous run.
-    Groups, grids, and test cases to be executed can be specified by list of file 
-    masks, separated by spaces or comma; default is all (*).
+    -regress dirname: re-run only a set of tests that have been detected as regressions on the previous run.
+                      Here "dirname" is a path to the directory containing the results of the previous run.
+    Groups, grids, and test cases to be executed can be specified by the list of file 
+    masks separated by spaces or commas; default is all (*).
 ~~~~~
 
 @subsubsection testmanual_1_3_3 Running a Single Test
@@ -1065,6 +1065,7 @@ Error : Number of faults is UNSTABLE
 ~~~~~
 
 @subsubsection testmanual_5_3_2 Shape tolerance
+
 The maximal tolerance of sub-shapes of each kind of the resulting shape can be extracted from output of tolerance command as follows:
 
 ~~~~~
@@ -1079,10 +1080,10 @@ It is possible to use command *checkmaxtol* to check maximal tolerance of shape 
 Use: checkmaxtol shape [options...]
 
 Allowed options are:
- *   -ref: reference value of maximum tolerance
- *   -source: list of shapes to compare with
- *   -min_tol: minimum tolerance for comparison
- *   -multi_tol: tolerance multiplier
+ *   <i>-ref</i> -- reference value of maximum tolerance;
+ *   <i>-source</i> -- list of shapes to compare with;
+ *   <i>-min_tol</i> -- minimum tolerance for comparison;
+ *   <i>-multi_tol</i> -- tolerance multiplier.
 
 The default syntax of *checkmaxtol* command for comparison with the reference value:
 ~~~~~
@@ -1121,9 +1122,10 @@ if { abs($area - $expected) > 0.1 + 0.01 * abs ($area) } {
 
 @subsubsection testmanual_5_3_4 Memory leaks
 
-The test system measures the amount of memory used by each test case, and considerable deviations (as well as overall difference) comparing with reference results will be reported by *testdiff* command.
+The test system measures the amount of memory used by each test case. Considerable deviations (as well as the overall difference) in comparison with reference results can be reported by command *testdiff*  (see @ref testmanual_4_4).
 
-The typical approach to checking memory leak on a particular operation is to run this operation in cycle measuring memory consumption at each step and comparing it with some threshold value. Note that file begin in group bugs defines command *checktrend* that can be used to analyze a sequence of memory measurements to get statistically based evaluation of the leak presence.
+To check memory leak on a particular operation, run it in a cycle, measure the memory consumption at each step and compare it with a threshold value.
+The command *checktrend* (defined in *tests/bugs/begin*) can be used to analyze a sequence of memory measurements and to get a statistically based evaluation of the leak presence.
 
 Example: 
 ~~~~~
@@ -1142,7 +1144,7 @@ for {set i 1} {$i < 100} {incr i} {
 
 @subsubsection testmanual_5_3_5 Visualization
 
-Take a snapshot of the viewer, give it the name of the test case, and save in the directory indicated by Tcl variable *imagedir*. 
+The following command sequence allows you to take a snapshot of the viewer, give it the name of the test case, and save in the directory indicated by Tcl variable *imagedir*. 
 
 ~~~~~
 vinit
@@ -1160,22 +1162,22 @@ Also it is possible to use command *checkview* to make a snapshot of the viewer.
 
 Use: checkview [options...]
 Allowed options are:
-*   -display shapename: display shape with name 'shapename'
-*   -3d: display shape in 3d viewer
-*   -2d [ v2d / smallview ]: display shape in 2d viewer (default viewer is a 'smallview')
-*   -path PATH: location of saved screenshot of viewer
-*   -vdispmode N: it is possible to set vdispmode for 3d viewer (default value is 1)
-*   -screenshot: procedure will try to make screenshot of already created viewer
-*   Procedure can check some property of shape (length, area or volume) and compare it with some value N:
-	* -l [N]
-	* -s [N]
-	* -v [N]
-	* If current property is equal to value N, shape is marked as valid in procedure.
-	* If value N is not given procedure will mark shape as valid if current property is non-zero.
-*   -with {a b c}: display shapes 'a' 'b' 'c' together with 'shape' (if shape is valid)
-*   -otherwise {d e f}: display shapes 'd' 'e' 'f' instead of 'shape' (if shape is NOT valid)
+*   <i>-display shapename </i>  -- displays shape with name *shapename*;
+*   <i>-3d </i> -- displays shape in 3d viewer;
+*   <i>-2d [ v2d / smallview ] </i> - displays shape in 2d viewer (the default viewer is *smallview*);
+*   <i>-path PATH</i> -- sets the location of the saved viewer screenshot;
+*   <i>-vdispmode N</i> -- sets *vdispmode* for 3d viewer (default value is 1)
+*   <i>-screenshot</i> -- makes a screenshot of already created viewer
+*   The procedure can check a property of shape (length, area or volume) and compare it with value *N*:
+	* <i>-l [N]</i>
+	* <i>-s [N]</i>
+	* <i>-v [N]</i>
+	* If the current property is equal to value *N*, the shape is marked as valid in the procedure.
+	* If value *N* is not given, the procedure will mark the shape as valid if the current property is non-zero.
+*   <i>-with {a b c}</i> -- displays shapes *a, b* and *c* together with the shape (if the shape is valid)
+*   <i>-otherwise {d e f}</i> -- displays shapes *d, e* and *f* instead of the shape (if the shape is NOT valid)
 
-Note that one of two options -2d/-3d is required.
+Note that is required to use either option <i> -2d </i> or option <i> -3d</i>.
 
 Examples:
 ~~~~~
@@ -1183,6 +1185,7 @@ checkview -display result -2d -path ${imagedir}/${test_image}.png
 checkview -display result -3d -path ${imagedir}/${test_image}.png
 checkview -display result_2d -2d v2d -path ${imagedir}/${test_image}.png
 ~~~~~
+
 ~~~~~
 box a 10 10 10
 box b 5 5 5 10 10 10
@@ -1190,6 +1193,7 @@ bcut result b a
 set result_vertices [explode result v]
 checkview -display result -2d -with ${result_vertices} -otherwise { a b } -l -path ${imagedir}/${test_image}.png
 ~~~~~
+
 ~~~~~
 box a 10 10 10
 box b 5 5 5 10 10 10
@@ -1202,25 +1206,23 @@ checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
 @subsubsection testmanual_5_3_6 Number of free edges
 
-To check the number of free edges run the command *checkfreebounds*.
-
-It compares number of free edges with reference value.
+Procedure *checkfreebounds* compares the number of free edges with a reference value.
 
 Use: checkfreebounds shape ref_value [options...]
 
 Allowed options are:
- * -tol N: used tolerance (default -0.01)
- * -type N: used type, possible values are "closed" and "opened" (default "closed")
+ * <i>-tol N</i> -- used tolerance (default -0.01);
+ * <i>-type N</i> -- used type, possible values are "closed" and "opened" (default "closed").
 
 ~~~~~
 checkfreebounds result 13
 ~~~~~
 
-Option -tol N is used to set tolerance for command *freebounds*, which is used within command *checkfreebounds*.
+Option <i>-tol N</i> defines tolerance for command *freebounds*, which is used within command *checkfreebounds*.
 
-Option -type N is used to select the type of counted free edges - closed or opened.
+Option <i>-type N</i> is used to select the type of counted free edges: closed or open.
 
-If the number of free edges in the resulting shape is unstable, reference value should be set to "-1".
+If the number of free edges in the resulting shape is unstable, the reference value should be set to "-1".
 As a result command *checkfreebounds* will return the following error:
 
 ~~~~~
@@ -1230,7 +1232,7 @@ Error : Number of free edges is UNSTABLE
 
 @subsubsection testmanual_5_3_7 Compare numbers
 
-Procedure to check equality of two reals with some tolerance (relative and absolute)
+Procedure *checkreal* checks the equality of two reals with a tolerance (relative and absolute).
 
 Use: checkreal name value expected tol_abs tol_rel
 
@@ -1240,11 +1242,12 @@ checkreal "Some important value" $value 5 0.0001 0.01
 
 @subsubsection testmanual_5_3_8 Check number of sub-shapes
 
-Compare number of sub-shapes in "shape" with given reference data
+Procedure *checknbshapes* compares the number of sub-shapes in "shape" with the given reference data.
 
 Use: checknbshapes shape [options...]
+
 Allowed options are:
- * -vertex N
+ * <i>-vertex N
  * -edge N
  * -wire N
  * -face N
@@ -1253,9 +1256,9 @@ Allowed options are:
  * -compsolid N
  * -compound N
  * -shape N
- * -t: compare the number of sub-shapes in "shape" counting
+ * -t</i> -- compares the number of sub-shapes in "shape" counting
       the same sub-shapes with different location as different sub-shapes.
- * -m msg: print "msg" in case of error
+ * <i>-m msg</i> -- prints "msg" in case of error
 
 ~~~~~
 checknbshapes result -vertex 8 -edge 4
@@ -1263,15 +1266,15 @@ checknbshapes result -vertex 8 -edge 4
 
 @subsubsection testmanual_5_3_9 Check pixel color
 
-To check pixel color command *checkcolor* can be used.
+Command *checkcolor* can be used to check pixel color.
 
 Use: checkcolor x y red green blue
 
-  x, y -- pixel coordinates
+where:
+ * <i>x, y</i> -- pixel coordinates;
+ * <i>red green blue</i> -- expected pixel color (values from 0 to 1).
 
-  red green blue -- expected pixel color (values from 0 to 1)
-
-This procedure checks color with tolerance (5x5 area)
+This procedure checks color with tolerance (5x5 area).
 
 Next example will compare color of point with coordinates x=100 y=100 with RGB color R=1 G=0 B=0.
 If colors are not equal, procedure will check the nearest ones points (5x5 area)
@@ -1281,19 +1284,19 @@ checkcolor 100 100 1 0 0
 
 @subsubsection testmanual_5_3_10 Compute length, area and volume of input shape
 
-Procedure *checkprops* computes length, area and volume of input shape.
+Procedure *checkprops* computes length, area and volume of the input shape.
 
 Use: checkprops shapename [options...]
 
 Allowed options are:
- * -l LENGTH: command lprops, computes the mass properties of all edges in the shape with a linear density of 1
- * -s AREA: command sprops, computes the mass properties of all faces with a surface density of 1 
- * -v VOLUME: command vprops, computes the mass properties of all solids with a density of 1
- * -eps EPSILON: the epsilon defines relative precision of computation
- * -equal SHAPE: compare area/volume/length of input shapes. Puts error if its are not equal
- * -notequal SHAPE: compare area/volume/length of input shapes. Puts error if its are equal
+ * <i>-l LENGTH</i> -- command *lprops*, computes the mass properties of all edges in the shape with a linear density of 1;
+ * <i>-s AREA</i> -- command *sprops*, computes the mass properties of all faces with a surface density of 1; 
+ * <i>-v VOLUME</i> -- command *vprops*, computes the mass properties of all solids with a density of 1;
+ * <i>-eps EPSILON</i> -- the epsilon defines relative precision of computation;
+ * <i>-equal SHAPE</i> -- compares area, volume and length of input shapes. Puts error if they are not equal;
+ * <i>-notequal SHAPE</i> -- compares area, volume and length of input shapes. Puts error if they are equal.
 
-Options -l, -s and -v are independent and can be used in any order. Tolerance epsilon is the same for all options.
+Options <i> -l, -s </i> and <i> -v</i> are independent and can be used in any order. Tolerance *epsilon* is the same for all options.
 
 ~~~~~
 checkprops result -s 6265.68 
@@ -1307,9 +1310,9 @@ Procedure *checkdump* is used to parse output dump and compare it with reference
 Use: checkdump shapename [options...]
 
 Allowed options are:
- * -name NAME: list of parsing parameters (e.g. Center, Axis, etc)
- * -ref VALUE: list of reference values for each parameter in NAME 
- * -eps EPSILON: the epsilon defines relative precision of computation
+ * <i>-name NAME</i> -- list of parsing parameters (e.g. Center, Axis, etc.);
+ * <i>-ref VALUE</i> -- list of reference values for each parameter in *NAME*; 
+ * <i>-eps EPSILON</i> -- the epsilon defines relative precision of computation.
 
 ~~~~~
 checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{-70 0} {-1 -0} {-1 -0} {0 -1} {20 10}} -eps 0.01
@@ -1317,15 +1320,15 @@ checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{-70 0} {-1 -0} {-1
 
 @subsubsection testmanual_5_3_12 Compute length of input curve
 
-Procedure *checklength* computes length of input curve.
+Procedure *checklength* computes length of the input curve.
 
 Use: checklength curvename [options...]
   
 Allowed options are:
- * -l LENGTH: command length, computes the length of input curve with precision of computation
- * -eps EPSILON: the epsilon defines relative precision of computation
- * -equal CURVE: compare length of input curves. Puts error if its are not equal
- * -notequal CURVE: compare length of input curves. Puts error if its are equal
+ * <i>-l LENGTH</i> -- command *length*, computes the length of the input curve with precision of computation;
+ * <i>-eps EPSILON</i> -- the epsilon defines a relative precision of computation;
+ * <i>-equal CURVE</i> -- compares the length of input curves. Puts error if they are not equal;
+ * <i>-notequal CURVE</i> -- compares the length of input curves. Puts error if they are equal.
 
 ~~~~~
 checklength cp1 -l 7.278
@@ -1333,60 +1336,57 @@ checklength res -l -equal ext_1
 ~~~~~
 @subsubsection testmanual_5_3_13 Check maximum deflection, number of triangles and nodes in mesh
 
-To check maximum deflection, number of nodes and triangles in mesh command *checktrinfo* can be used.
+Command *checktrinfo* can be used to to check the maximum deflection, as well as the number of nodes and triangles in mesh.
 
 Use: checktrinfo shapename [options...]
 
 Allowed options are:
- * -tri [N]:  compare current number of triangles in "shapename" mesh with given reference data.
-      If reference value N is not given and current number of triangles is equal to 0
-      procedure checktrinfo will print an error.
- * -nod [N]:  compare current number of nodes in "shapename" mesh with given reference data.
-      If reference value N is not givenand current number of nodes is equal to 0
-      procedure checktrinfo will print an error.
- * -defl [N]: compare current value of maximum deflection in "shapename" mesh with given reference data
-      If reference value N is not given and current maximum deflection is equal to 0
-      procedure checktrinfo will print an error.
- * -max_defl N:     compare current value of maximum deflection in "shapename" mesh with max possible value
- * -tol_abs_tri N:  absolute tolerance for comparison of number of triangles (default value 0)
- * -tol_rel_tri N:  relative tolerance for comparison of number of triangles (default value 0)
- * -tol_abs_nod N:  absolute tolerance for comparison of number of nodes (default value 0)
- * -tol_rel_nod N:  relative tolerance for comparison of number of nodes (default value 0)
- * -tol_abs_defl N: absolute tolerance for deflection comparison (default value 0)
- * -tol_rel_defl N: relative tolerance for deflection comparison (default value 0)
- * -ref [trinfo a]: compare deflection, number of triangles and nodes in "shapename" and in "a"
+ * <i>-tri [N]</i> --  compares the current number of triangles in *shapename* mesh with the given reference data.
+      If reference value N is not given and the current number of triangles is equal to 0, procedure *checktrinfo* will print an error.
+ * <i>-nod [N]</i> --  compares the current number of nodes in *shapename* mesh with the given reference data.
+      If reference value N is not given and the current number of nodes is equal to 0, procedure *checktrinfo* will print an error.
+ * <i>-defl [N]</i> -- compares the current value of maximum deflection in *shapename* mesh with the given reference data.
+      If reference value N is not given and current maximum deflection is equal to 0, procedure *checktrinfo* will print an error.
+ * <i>-max_defl N</i> --     compares the current value of maximum deflection in *shapename* mesh with the max possible value.
+ * <i>-tol_abs_tri N</i> --  absolute tolerance for comparison of number of triangles (default value 0).
+ * <i>-tol_rel_tri N</i> --  relative tolerance for comparison of number of triangles (default value 0).
+ * <i>-tol_abs_nod N</i> --  absolute tolerance for comparison of number of nodes (default value 0).
+ * <i>-tol_rel_nod N</i> --  relative tolerance for comparison of number of nodes (default value 0).
+ * <i>-tol_abs_defl N</i> -- absolute tolerance for deflection comparison (default value 0).
+ * <i>-tol_rel_defl N</i> -- relative tolerance for deflection comparison (default value 0).
+ * <i>-ref [trinfo a]</i> -- compares deflection, number of triangles and nodes in *shapename* and *a*.
 
-Note that options -tri, -nod, -defl do not work together with option -ref.
+Note that options <i> -tri, -nod </i> and <i> -defl </i> do not work together with option <i> -ref</i>.
 
 Examples:
 
-comparison with some reference values
+Comparison with some reference values:
 ~~~~~
 checktrinfo result -tri 129 -nod 131 -defl 0.01
 ~~~~~
 
-comparison with another mesh
+Comparison with another mesh:
 ~~~~~
 checktrinfo result -ref [tringo a]
 ~~~~~
 
-comparison of deflection with max possible value
+Comparison of deflection with the max possible value:
 ~~~~~
 checktrinfo result -max_defl 1
 ~~~~~
 
-to make sure that current values are not equal to zero
+Check that the current values are not equal to zero:
 ~~~~~
 checktrinfo result -tri -nod -defl
 ~~~~~
 
-to make sure that number of triangles and number of nodes are not equal to some specific values
+Check that the number of triangles and the number of nodes are not equal to some specific values:
 ~~~~~
 checktrinfo result -tri !10 -nod !8
 ~~~~~
 
-it is possible to compare current values with reference values with some tolerances.
-Use options -tol_\* for that.
+It is possible to compare current values with reference values with some tolerances.
+Use options <i>-tol_\* </i> for that.
 ~~~~~
 checktrinfo result -defl 1 -tol_abs_defl 0.001
 ~~~~~
