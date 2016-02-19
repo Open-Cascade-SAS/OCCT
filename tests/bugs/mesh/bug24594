@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC25045"
+puts "========"
+puts ""
+#################################
+# STEP Import fails to find all surfaces
+#################################
+
+pload XDE
+
+set refnbfaces 22
+
+stepread [locate_data_file bug24594_284965.stp] a *
+renamevar a_1 result
+
+#1
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+#2
+set log1 [explode result f]
+set nbfaces [llength $log1]
+
+#3
+set log2 [tricheck result]
+
+if { $nbfaces != $refnbfaces } {
+  puts "Error : Shape restored incorrectly - number of faces is different than expected value ($nbfaces != $refnbfaces)"
+}
+
+if { [llength $log2] != 0 } {
+  puts "Error : Some faces has failed to mesh"
+}
