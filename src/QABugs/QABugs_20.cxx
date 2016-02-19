@@ -24,7 +24,11 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Draw.hxx>
 #include <DrawTrSurf.hxx>
+#include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 
 #include <TopExp.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -1515,6 +1519,57 @@ static Standard_Integer OCC27235 (Draw_Interpretor& theDI, Standard_Integer n, c
   return 0;
 }
 
+//=======================================================================
+//function : OCC24836
+//purpose :
+//=======================================================================
+static Standard_Integer OCC26930(Draw_Interpretor& theDI,
+                                 Standard_Integer  theNArg,
+                                 const char ** theArgVal)
+{
+  if (theNArg != 5)
+  {
+    cout << "Use: " << theArgVal[0] <<" surface curve start end" << endl;
+    return 1;
+  }
+
+
+
+
+
+  Handle(Geom_Surface) aSurface = DrawTrSurf::GetSurface(theArgVal[1]);
+  Handle(Geom_Curve) aCurve = DrawTrSurf::GetCurve(theArgVal[2]);
+  Standard_Real aStart = Draw::Atof(theArgVal[3]);
+  Standard_Real anEnd = Draw::Atof(theArgVal[4]);
+
+  //project
+  Handle (Geom2d_Curve) aPCurve;
+
+  ShapeConstruct_ProjectCurveOnSurface aProj;
+  aProj.Init(aSurface, Precision::Confusion());
+  {
+    try {
+        Handle (Geom_Curve) aTmpCurve = aCurve; //to use reference in Perform()
+        aProj.Perform (aTmpCurve, aStart, anEnd, aPCurve);
+    } catch (const Standard_Failure&) {
+    }
+  }
+
+  //check results
+  if (aPCurve.IsNull()) {
+    theDI << "Error: pcurve is null\n";
+  }
+  else {
+    if (aPCurve->IsKind(STANDARD_TYPE(Geom2d_Line))) {
+      theDI << "Pcurve is line: OK\n";
+    }
+    else {
+      theDI << "Error: PCurve is not line\n";
+    }
+  }
+
+  return 0;
+}
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -1523,6 +1578,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24836", "OCC24836", __FILE__, OCC24836, group);
   theCommands.Add("OCC27021", "OCC27021", __FILE__, OCC27021, group);
   theCommands.Add("OCC27235", "OCC27235", __FILE__, OCC27235, group);
+  theCommands.Add("OCC26930", "OCC26930", __FILE__, OCC26930, group);
 
   return;
 }

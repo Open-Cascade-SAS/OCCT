@@ -63,6 +63,7 @@
 #include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
+#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
@@ -556,49 +557,101 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
  //! Fix possible period jump and handle walking period parameter.
  static Standard_Boolean fixPeriodictyTroubles(gp_Pnt2d *thePnt, // pointer to gp_Pnt2d[4] beginning
                                                Standard_Integer theIdx, // Index of objective coord: 1 ~ X, 2 ~ Y
-                                               Standard_Real thePeriod) // Period on objective coord
- {
-   Standard_Integer i;
+                                               Standard_Real thePeriod, // Period on objective coord
+                                               Standard_Integer theSavedPoint, // Point number to choose period
+                                               Standard_Real theSavedParam) // Param from cashe to choose period
+{
+  Standard_Real aSavedParam;
+  Standard_Integer aSavedPoint;
+  Standard_Real aMinParam = 0.0, aMaxParam = thePeriod;
+  if (theSavedPoint < 0) {
+    // normalize to first period by default
+    aSavedParam = 0.5 * thePeriod;
+    aSavedPoint = 0;
+  }
+  else {
+    aSavedParam =  theSavedParam;
+    aSavedPoint = theSavedPoint;
+    while (aMinParam > aSavedParam) {
+      aMinParam -= thePeriod;
+      aMaxParam -= thePeriod;
+    }
+    while (aMaxParam < aSavedParam) {
+      aMinParam += thePeriod;
+      aMaxParam += thePeriod;
+    }
+  }
 
-   Standard_Boolean isNeedToFix = Standard_True;
-   for (i = 0; i < 3; i++)
-   {
-     Standard_Real aDiff = Abs (thePnt[i].Coord(theIdx) - thePnt[i + 1].Coord(theIdx));
-     if ( aDiff > Precision::PConfusion() && 
-          aDiff < thePeriod - Precision::PConfusion())
-     {
-       // Walk over period coord -> not walking on another isoline in parameter space.
-       isNeedToFix = Standard_False; 
-     }
-   }
+  Standard_Real aFixIsoParam = aMinParam;
+  Standard_Boolean isIsoLine = Standard_False;
+  if (aMaxParam - aSavedParam < Precision::PConfusion() ||
+      aSavedParam - aMinParam < Precision::PConfusion()) {
+    aFixIsoParam = aSavedParam;
+    isIsoLine = Standard_True;
+  }
+  // normalize all coordinates to [aMinParam, aMaxParam)
+  for (Standard_Integer i = 0; i < 4; i++) {
+    Standard_Real aParam = thePnt[i].Coord(theIdx);
+    Standard_Real aShift = ShapeAnalysis::AdjustToPeriod(aParam, aMinParam, aMaxParam);
+    aParam += aShift;
+    // Walk over period coord -> not walking on another isoline in parameter space.
+    if (isIsoLine) {
+      if (aMaxParam - aParam < Precision::PConfusion() || aParam - aMinParam < Precision::PConfusion())
+        aParam = aFixIsoParam;
+    }
+    else {
+      if (aMaxParam - aParam < Precision::PConfusion())
+        aParam = aMaxParam;
+      if (aParam - aMinParam < Precision::PConfusion())
+          aParam = aMinParam;
+    }
 
-   if (isNeedToFix)
-   {
-     // Walking on isoline on another parameter. Fix period paramter to obtained minimum.
-     Standard_Real aFixParam = Min (thePnt[0].Coord(theIdx), thePnt[3].Coord(theIdx));
-     for(i = 0; i < 4; i++)
-       thePnt[i].SetCoord(theIdx, aFixParam);
-   }
+    thePnt[i].SetCoord(theIdx, aParam);
+  }
 
-   // Fix possible period jump on first point.
-   if ( Abs(thePnt[0].Coord(theIdx) - thePnt[1].Coord(theIdx) ) >  thePeriod / 2.01)
-   {
-     Standard_Real aMult = thePnt[0].Coord(theIdx) < thePnt[1].Coord(theIdx) ? 1.0 : -1.0;
-     Standard_Real aNewParam = thePnt[0].Coord(theIdx) + aMult * thePeriod;
-     thePnt[0].SetCoord(theIdx, aNewParam);
-     return Standard_False;
-   }
+  // find possible period jump and increasing or decreasing coordinates vector
+  Standard_Boolean isJump = Standard_False;
+  Standard_Real aPrevDiff = 0.0;
+  Standard_Real aSumDiff = 1.0;
+  for (Standard_Integer i = 0; i < 3; i++) {
+    Standard_Real aDiff = thePnt[i + 1].Coord(theIdx) - thePnt[i].Coord(theIdx);
+    if (aDiff < -Precision::PConfusion()) {
+      aSumDiff *= -1.0;
+    }
+    //if first derivative changes its sign then period jump may exists in this place
+    if (aDiff * aPrevDiff < -Precision::PConfusion()) {
+      isJump = Standard_True;
+    }
+    aPrevDiff = aDiff;
+  }
 
-   // Fix possible period jump on last point.
-   if ( Abs(thePnt[2].Coord(theIdx) - thePnt[3].Coord(theIdx) ) >  thePeriod / 2.01)
-   {
-     Standard_Real aMult = thePnt[3].Coord(theIdx) < thePnt[2].Coord(theIdx) ? 1.0 : -1.0;
-     Standard_Real aNewParam = thePnt[3].Coord(theIdx) + aMult * thePeriod;
-     thePnt[3].SetCoord(theIdx, aNewParam);
-     return Standard_False;
-   }
+  if (!isJump)
+    return Standard_False;
 
-   return Standard_True;
+  if (aSumDiff > 0) { // decreasing sequence (parameters decrease twice(--) and one period jump(+))
+    for (Standard_Integer i = aSavedPoint; i > 0; i--)
+      if (thePnt[i].Coord(theIdx) > thePnt[i - 1].Coord(theIdx)) {
+        thePnt[i - 1].SetCoord(theIdx, thePnt[i - 1].Coord(theIdx) + thePeriod);
+      }
+    for (Standard_Integer i = aSavedPoint; i < 3; i++)
+      if (thePnt[i].Coord(theIdx) < thePnt[i + 1].Coord(theIdx)) {
+        thePnt[i + 1].SetCoord(theIdx, thePnt[i + 1].Coord(theIdx) - thePeriod);
+      }
+  }
+  else {// increasing sequence (parameters increase twice(++) and one period jump(-))
+    for (Standard_Integer i = aSavedPoint; i > 0; i--)
+      if (thePnt[i].Coord(theIdx) < thePnt[i - 1].Coord(theIdx)) {
+        thePnt[i - 1].SetCoord(theIdx, thePnt[i - 1].Coord(theIdx) - thePeriod);
+      }
+    for (Standard_Integer i = aSavedPoint; i < 3; i++)
+      if (thePnt[i].Coord(theIdx) > thePnt[i + 1].Coord(theIdx)) {
+        thePnt[i + 1].SetCoord(theIdx, thePnt[i + 1].Coord(theIdx) + thePeriod);
+      }
+  }
+
+  // Do not return false, because for nonlinear 2d curves vector of parameters
+  // may change its first derivative and shifted parameters will be broken for this case.
+  return Standard_True;
  }
 
 //=======================================================================
@@ -611,7 +664,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
    const TColStd_Array1OfReal& theparams,
    TColgp_Array1OfPnt2d& thePnt2ds,
    Standard_Real theTol,
-   Standard_Boolean &isRecompute) const 
+   Standard_Boolean &isRecompute,
+   Standard_Boolean &isFromCashe) const 
  {
    Standard_Integer nb =  thepoints.Length();
    gp_Pnt aP[4];
@@ -633,7 +687,12 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
      theTol = Precision::Confusion();
      aTol2 = theTol * theTol;
    }
+   if (aTol2 < Precision::SquareConfusion())
+     aTol2 = Precision::SquareConfusion();
    Standard_Real anOldTol2 = aTol2;
+   // auxiliary variables to choose period for connection with previous 2dcurve (if exist)
+   Standard_Integer aSavedPointNum = -1;
+   gp_Pnt2d aSavedPoint;
 
    // project first and last points
    for( ; i < 4; i +=3)
@@ -644,6 +703,10 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
        {
          aP2d[i] = mySurf->NextValueOfUV (myCashe2d[j], aP[i], theTol, 
            theTol);
+         aSavedPointNum = i;
+         aSavedPoint = myCashe2d[j];
+         if (i == 0)
+           isFromCashe = Standard_True;
          break;
        }
        if ( j >= myNbCashe )
@@ -665,6 +728,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
          if ( myCashe3d[j].SquareDistance (aP[i] ) < aTol2)
          {
            aP2d[i] = mySurf->NextValueOfUV (myCashe2d[j], aP[i], theTol, theTol);
+           aSavedPointNum = i;
+           aSavedPoint = myCashe2d[j];
            break;
          }
          if ( j >= myNbCashe )
@@ -678,13 +743,20 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
 
      if (isPeriodicU)
      {
-       isRecompute = fixPeriodictyTroubles(&aP2d[0], 1 /* X Coord */, mySurf->Surface()->UPeriod());
+       isRecompute = fixPeriodictyTroubles(&aP2d[0], 1 /* X Coord */, mySurf->Surface()->UPeriod(), aSavedPointNum, aSavedPoint.X());
      }
 
      if (isPeriodicV)
      {
-       isRecompute = fixPeriodictyTroubles(&aP2d[0], 2 /* Y Coord */, mySurf->Surface()->VPeriod());
+       isRecompute = fixPeriodictyTroubles(&aP2d[0], 2 /* Y Coord */, mySurf->Surface()->VPeriod(), aSavedPointNum, aSavedPoint.Y());
      }
+   }
+
+   if (isRecompute && mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_SphericalSurface))) {
+     // Do not try to make line, because in this case may be very special case when 3d curve
+     // go over the pole of, e.g., sphere, and partly lies along seam
+     // (see ApproxPCurve() for more information).
+     return 0;
    }
 
    thePnt2ds.SetValue(1, aP2d[0]);
@@ -699,17 +771,40 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
      return 0;
    gp_Vec2d aVec0 (aP2d[0], aP2d[3]);
    gp_Vec2d aVec = aVec0 / dPar;
-   Standard_Real aFirstPointDist = mySurf->Surface()->Value(aP2d[0].X(), aP2d[0].Y()). 
-                                   SquareDistance(thepoints(1));
-   for(i = 2; i <  nb; i++)
-   {
-     gp_XY aCurPoint = aP2d[0].XY() + aVec.XY() * (theparams(i) - theparams(1));
-     gp_Pnt aCurP;
-     mySurf->Surface()->D0(aCurPoint.X(), aCurPoint.Y(), aCurP);
-     Standard_Real aDist1 = aCurP.SquareDistance(thepoints(i));
-
-     if(Abs (aFirstPointDist - aDist1) > aTol2)
-       return 0;
+   Handle(Geom_Surface) aSurf = mySurf->Surface();
+   Standard_Boolean isNormalCheck = aSurf->IsCNu(1) && aSurf->IsCNv(1);
+   if (isNormalCheck) {
+     for(i = 1; i <= nb; i++)
+     {
+       gp_XY aCurPoint = aP2d[0].XY() + aVec.XY() * (theparams(i) - theparams(1));
+       gp_Pnt aCurP;
+       gp_Vec aNormalVec, aDu, aDv;
+       aSurf->D1(aCurPoint.X(), aCurPoint.Y(), aCurP, aDu, aDv);
+       aNormalVec = aDu ^ aDv;
+       if (aNormalVec.SquareMagnitude() < Precision::SquareConfusion()) {
+         isNormalCheck = Standard_False;
+         break;
+       }
+       gp_Lin aNormalLine(aCurP, gp_Dir(aNormalVec));
+       Standard_Real aDist = aNormalLine.Distance(thepoints(i));
+       if (aDist > theTol)
+         return 0;
+     }
+   }
+   if (!isNormalCheck) {
+     Standard_Real aFirstPointDist = mySurf->Surface()->Value(aP2d[0].X(), aP2d[0].Y()). 
+                                     SquareDistance(thepoints(1));
+     aTol2 = Max(aTol2, aTol2 * 2 * aFirstPointDist);
+     for(i = 2; i <  nb; i++)
+     {
+       gp_XY aCurPoint = aP2d[0].XY() + aVec.XY() * (theparams(i) - theparams(1));
+       gp_Pnt aCurP;
+       aSurf->D0(aCurPoint.X(), aCurPoint.Y(), aCurP);
+       Standard_Real aDist1 = aCurP.SquareDistance(thepoints(i));
+     
+       if(Abs (aFirstPointDist - aDist1) > aTol2)
+         return 0;
+     }
    }
 
    // check if pcurve can be represented by Geom2d_Line (parameterised by length)
@@ -752,9 +847,28 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
 {
   // for performance, first try to handle typical case when pcurve is straight
   Standard_Boolean isRecompute = Standard_False;
-  c2d = getLine(points, params, pnt2d, myPreci, isRecompute);
+  Standard_Boolean isFromCasheLine = Standard_False;
+  c2d = getLine(points, params, pnt2d, myPreci, isRecompute, isFromCasheLine);
   if(!c2d.IsNull())
   {
+    // fill cashe
+    Standard_Boolean ChangeCycle = Standard_False;
+    if(myNbCashe>0 && myCashe3d[0].Distance(points(1)) > myCashe3d[0].Distance(points(nbrPnt)) &&
+       myCashe3d[0].Distance(points(nbrPnt))<Precision::Confusion())
+      ChangeCycle = Standard_True;
+    myNbCashe = 2;
+    if(ChangeCycle) {
+      myCashe3d[0] = points(1);
+      myCashe3d[1] = points(nbrPnt);
+      myCashe2d[0] = pnt2d(1);
+      myCashe2d[1] = pnt2d(nbrPnt);
+    }
+    else {
+      myCashe3d[1] = points(1);
+      myCashe3d[0] = points(nbrPnt);
+      myCashe2d[1] = pnt2d(1);
+      myCashe2d[0] = pnt2d(nbrPnt);
+    }
     return Standard_True;
   }
     Standard_Boolean isDone = Standard_True;
@@ -866,6 +980,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
   
   Standard_Real gap = myPreci; //:q1
   Standard_Boolean ChangeCycle = Standard_False; //skl for OCC3430
+  // auxiliaruy variables to shift 2dcurve, according to previous
+  Standard_Boolean isFromCashe = Standard_False;
+  gp_Pnt2d aSavedPoint;
   if( myNbCashe>0 && myCashe3d[0].Distance(points(1))>myCashe3d[0].Distance(points(nbrPnt)) )
     //if(myCashe3d[0].Distance(points(nbrPnt))<myPreci)
     if(myCashe3d[0].Distance(points(nbrPnt))<Precision::Confusion())
@@ -917,6 +1034,10 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
           {
             p2d = pnt2d(i);
             gap = mySurf->Gap();
+            if (i == 1) {
+              isFromCashe = isFromCasheLine;
+              aSavedPoint = p2d;
+            }
             continue;
           }
           else
@@ -928,6 +1049,10 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
               {
                 p2d = mySurf->NextValueOfUV (myCashe2d[j], p3d, myPreci, 
                   Precision::Confusion()+gap);
+                if (i == 1) {
+                  isFromCashe = Standard_True;
+                  aSavedPoint = myCashe2d[j];
+                }
                 break;
               }
               if ( j >= myNbCashe ) p2d = mySurf->ValueOfUV(p3d, myPreci);
@@ -979,8 +1104,26 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
   if (mySurf->IsUClosed(myPreci)) {//#78 rln 12.03.99 S4135
     // Premier point dans le domain [uf, ul]
     Standard_Real prevX, firstX = pnt2d (1).X();
-    while (firstX < uf)  {  firstX += Up;   pnt2d (1).SetX(firstX);  }
-    while (firstX > ul)  {  firstX -= Up;   pnt2d (1).SetX(firstX);  }
+    if (!isFromCashe) {
+      // do not shift 2dcurve, if it connects to previous
+      while (firstX < uf)  {  firstX += Up;   pnt2d (1).SetX(firstX);  }
+      while (firstX > ul)  {  firstX -= Up;   pnt2d (1).SetX(firstX);  }
+    }
+    // shift first point, according to cashe
+    if (mySurf->Surface()->IsUPeriodic() && isFromCashe) {
+      Standard_Real aMinParam = uf, aMaxParam = ul;
+      while (aMinParam > aSavedPoint.X()) {
+        aMinParam -= Up;
+        aMaxParam -= Up;
+      }
+      while (aMaxParam < aSavedPoint.X()) {
+        aMinParam += Up;
+        aMaxParam += Up;
+      }
+      Standard_Real aShift = ShapeAnalysis::AdjustToPeriod(firstX, aMinParam, aMaxParam);
+      firstX += aShift;
+      pnt2d(1).SetX(firstX);
+    }
     prevX = firstX;
     
     //:97 abv 1 Feb 98: treat case when curve is whole out of surface bounds
@@ -1005,12 +1148,15 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
     }
     
     //:97
-    Standard_Real midX = 0.5 * ( minX + maxX );
-    Standard_Real shiftX=0.;
-    if ( midX > ul ) shiftX = -Up;
-    else if ( midX < uf ) shiftX = Up;
-    if ( shiftX != 0. ) 
-      for ( i=1; i <= nbrPnt; i++ ) pnt2d(i).SetX ( pnt2d(i).X() + shiftX );
+    if (!isFromCashe) {
+      // do not shift 2dcurve, if it connects to previous
+      Standard_Real midX = 0.5 * ( minX + maxX );
+      Standard_Real shiftX=0.;
+      if ( midX > ul ) shiftX = -Up;
+      else if ( midX < uf ) shiftX = Up;
+      if ( shiftX != 0. ) 
+        for ( i=1; i <= nbrPnt; i++ ) pnt2d(i).SetX ( pnt2d(i).X() + shiftX );
+      }
   }
   // Si la surface est VCLosed, on recadre les points
   // Same code as UClosed : optimisation souhaitable !!
@@ -1022,8 +1168,26 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
   if (mySurf->IsVClosed(myPreci) || mySurf->Surface()->IsKind (STANDARD_TYPE (Geom_SphericalSurface))) {
     // Premier point dans le domain [vf, vl]
     Standard_Real prevY, firstY = pnt2d (1).Y();
-    while (firstY < vf)  {  firstY += Vp;  pnt2d (1).SetY(firstY);  }
-    while (firstY > vl)  {  firstY -= Vp;  pnt2d (1).SetY(firstY);  }
+    if (!isFromCashe) {
+      // do not shift 2dcurve, if it connects to previous
+      while (firstY < vf)  {  firstY += Vp;  pnt2d (1).SetY(firstY);  }
+      while (firstY > vl)  {  firstY -= Vp;  pnt2d (1).SetY(firstY);  }
+    }
+    // shift first point, according to cashe
+    if (mySurf->Surface()->IsVPeriodic() && isFromCashe) {
+      Standard_Real aMinParam = vf, aMaxParam = vl;
+      while (aMinParam > aSavedPoint.Y()) {
+        aMinParam -= Vp;
+        aMaxParam -= Vp;
+      }
+      while (aMaxParam < aSavedPoint.Y()) {
+        aMinParam += Vp;
+        aMaxParam += Vp;
+      }
+      Standard_Real aShift = ShapeAnalysis::AdjustToPeriod(firstY, aMinParam, aMaxParam);
+      firstY += aShift;
+      pnt2d(1).SetY(firstY);
+    }
     prevY = firstY;
     
     //:97 abv 1 Feb 98: treat case when curve is whole out of surface bounds
@@ -1047,12 +1211,15 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
     }
     
     //:97
-    Standard_Real midY = 0.5 * ( minY + maxY );
-    Standard_Real shiftY=0.;
-    if ( midY > vl ) shiftY = -Vp;
-    else if ( midY < vf ) shiftY = Vp;
-    if ( shiftY != 0. ) 
-      for ( i=1; i <= nbrPnt; i++ ) pnt2d(i).SetY ( pnt2d(i).Y() + shiftY );
+    if (!isFromCashe) {
+      // do not shift 2dcurve, if it connects to previous
+      Standard_Real midY = 0.5 * ( minY + maxY );
+      Standard_Real shiftY=0.;
+      if ( midY > vl ) shiftY = -Vp;
+      else if ( midY < vf ) shiftY = Vp;
+      if ( shiftY != 0. ) 
+        for ( i=1; i <= nbrPnt; i++ ) pnt2d(i).SetY ( pnt2d(i).Y() + shiftY );
+      }
   }
   
   //#69 rln 01.03.99 S4135 bm2_sd_t4-A.stp entity 30

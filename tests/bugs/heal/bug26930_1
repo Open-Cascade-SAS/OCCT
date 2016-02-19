@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC26930"
+puts "========"
+puts ""
+#################################################################################
+# ShapeConstruct_ProjectCurveOnSurface returns a B-Spline instead of line (again)
+#################################################################################
+
+pload QAcommands
+
+restore [locate_data_file bug26930_surf_1.draw] s
+restore [locate_data_file bug26930_curv_1.draw] c
+
+OCC26930 s c 0.0 14.3316
