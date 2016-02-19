@@ -18,11 +18,83 @@
 #include <Adaptor3d_Surface.hxx>
 #include <Extrema_GenExtSS.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <math_BFGS.hxx>
 #include <math_FunctionSetRoot.hxx>
+#include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_Vector.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_TypeMismatch.hxx>
 #include <StdFail_NotDone.hxx>
+
+//! This class represents distance objective function for surface / surface.
+class Extrema_FuncDistSS  : public math_MultipleVarFunctionWithGradient
+{
+public:
+    DEFINE_STANDARD_ALLOC
+
+    Standard_EXPORT Extrema_FuncDistSS(const Adaptor3d_Surface& S1,
+                                       const Adaptor3d_Surface& S2)
+    : myS1(&S1),
+      myS2(&S2)
+    {
+    }
+
+  Standard_EXPORT Standard_Integer NbVariables() const
+  {
+    return 4;
+  }
+
+  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,Standard_Real& F)
+  {
+    F = myS1->Value(X(1), X(2)).SquareDistance(myS2->Value(X(3), X(4)));
+    return true;
+  }
+
+  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X,math_Vector& G)
+  {
+    gp_Pnt P1, P2;
+    gp_Vec Du1s1, Dv1s1;
+    gp_Vec Du2s2, Dv2s2;
+    myS1->D1(X(1),X(2),P1,Du1s1,Dv1s1);
+    myS2->D1(X(3),X(4),P2,Du2s2,Dv2s2);
+
+    gp_Vec P1P2 (P2,P1);
+
+    G(1) = P1P2.Dot(Du1s1);
+    G(2) = P1P2.Dot(Dv1s1);
+    G(3) = -P1P2.Dot(Du2s2);
+    G(4) = -P1P2.Dot(Dv2s2);
+
+    return true;
+  }
+
+  Standard_EXPORT virtual  Standard_Boolean Values(const math_Vector& X,Standard_Real& F,math_Vector& G)
+  {
+    F = myS1->Value(X(1), X(2)).SquareDistance(myS2->Value(X(3), X(4)));
+
+    gp_Pnt P1, P2;
+    gp_Vec Du1s1, Dv1s1;
+    gp_Vec Du2s2, Dv2s2;
+    myS1->D1(X(1),X(2),P1,Du1s1,Dv1s1);
+    myS2->D1(X(3),X(4),P2,Du2s2,Dv2s2);
+
+    gp_Vec P1P2 (P2,P1);
+
+    G(1) = P1P2.Dot(Du1s1);
+    G(2) = P1P2.Dot(Dv1s1);
+    G(3) = -P1P2.Dot(Du2s2);
+    G(4) = -P1P2.Dot(Dv2s2);
+
+    return true;
+  }
+
+protected:
+
+private:
+
+  const Adaptor3d_Surface *myS1;
+  const Adaptor3d_Surface *myS2;
+};
 
 //=======================================================================
 //function : Extrema_GenExtSS
@@ -271,14 +343,42 @@ b- Calcul des minima:
   UV(3) = U20 + (N2Umin - 1) * PasU2;
   UV(4) = V20 + (N2Vmin - 1) * PasV2;
 
-  math_FunctionSetRoot SR1(myF, Tol);
-  SR1.Perform(myF, UV, UVinf, UVsup);
+  Extrema_FuncDistSS aGFSS(S1, *myS2);
+  math_BFGS aBFGSSolver(4);
+  aBFGSSolver.Perform(aGFSS, UV);
+  if (aBFGSSolver.IsDone())
+  {
+    aBFGSSolver.Location(UV);
+
+    //  Store result in myF.
+    myF.Value(UV , UV);
+    myF.GetStateNumber();
+  }
+  else
+  {
+    // If optimum is not computed successfully then compute by old approach.
+
+    // Restore initial point.
+    UV(1) = U10 + (N1Umin - 1) * PasU1;
+    UV(2) = V10 + (N1Vmin - 1) * PasV1;
+    UV(3) = U20 + (N2Umin - 1) * PasU2;
+    UV(4) = V20 + (N2Vmin - 1) * PasV2;
+
+    math_FunctionSetRoot SR1(myF, Tol);
+    SR1.Perform(myF, UV, UVinf, UVsup);
+  }
+
+  //math_FunctionSetRoot SR1(myF, Tol);
+  //SR1.Perform(myF, UV, UVinf, UVsup);
 
   UV(1) = U10 + (N1Umax - 1) * PasU1;
   UV(2) = V10 + (N1Vmax - 1) * PasV1;
   UV(3) = U20 + (N2Umax - 1) * PasU2;
   UV(4) = V20 + (N2Vmax - 1) * PasV2;
 
+  // It is impossible to compute max distance in the same manner,
+  // since for the distance functional for max have bad definition.
+  // So, for max computation old approach is used.
   math_FunctionSetRoot SR2(myF, Tol);
   SR2.Perform(myF, UV, UVinf, UVsup);
 

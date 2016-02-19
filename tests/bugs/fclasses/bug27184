@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC27184"
+puts "========"
+puts ""
+##############################################
+# BRepExtrema_DistShapeShape returns wrong result
+# Correct distance is 0.0
+##############################################
+
+restore [locate_data_file bug27184.brep] aShape
+explode aShape
+set anInfo [distmini d aShape_1 aShape_2]
+
+# Check extrema distance
+set absTol 1.0e-10
+set relTol 0.001
+set aDist_Exp 0.0
+set aDist [dval d_val]
+checkreal "Distance value check" $aDist $aDist_Exp $absTol $relTol
