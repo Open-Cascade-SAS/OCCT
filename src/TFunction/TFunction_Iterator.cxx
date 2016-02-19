@@ -164,7 +164,7 @@ Standard_Boolean TFunction_Iterator::More() const
     }
     return Standard_False;
   }
-  return myPassedFunctions.Extent() < myScope->GetFunctions().Extent();
+  return !myCurrent.IsEmpty();
 }
 
 //=======================================================================
