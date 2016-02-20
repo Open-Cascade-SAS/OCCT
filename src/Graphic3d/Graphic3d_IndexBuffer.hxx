@@ -48,6 +48,12 @@ public:
     return true;
   }
 
+  //! Allocates new empty index array
+  bool InitInt32 (const Standard_Integer theNbElems)
+  {
+    return Init<int> (theNbElems);
+  }
+
   //! Access index at specified position
   Standard_Integer Index (const Standard_Integer theIndex) const
   {

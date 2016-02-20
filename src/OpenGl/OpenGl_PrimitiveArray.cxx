@@ -53,6 +53,9 @@ namespace
       case Graphic3d_TOD_VEC4UB:
         theNbComp = 4;
         return GL_UNSIGNED_BYTE;
+      case Graphic3d_TOD_FLOAT:
+        theNbComp = 1;
+        return GL_FLOAT;
     }
     theNbComp = 0;
     return GL_NONE;

@@ -15,6 +15,7 @@
 #define _Graphic3d_Buffer_HeaderFile
 
 #include <Graphic3d_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Buffer.hxx>
 
 //! Type of attribute in Vertex Buffer
@@ -24,7 +25,7 @@ enum Graphic3d_TypeOfAttribute
   Graphic3d_TOA_NORM,         //!< normal
   Graphic3d_TOA_UV,           //!< texture coordinates
   Graphic3d_TOA_COLOR,        //!< per-vertex color
-  Graphic3d_TOA_CUSTOM = 10,  //!< custom attributes
+  Graphic3d_TOA_CUSTOM,       //!< custom attributes
 };
 
 //! Type of the element in Vertex or Index Buffer
@@ -36,6 +37,7 @@ enum Graphic3d_TypeOfData
   Graphic3d_TOD_VEC3,    //!< 3-components float vector
   Graphic3d_TOD_VEC4,    //!< 4-components float vector
   Graphic3d_TOD_VEC4UB,  //!< 4-components unsigned byte vector
+  Graphic3d_TOD_FLOAT,   //!< float value
 };
 
 //! Vertex attribute definition.
@@ -57,11 +59,14 @@ struct Graphic3d_Attribute
       case Graphic3d_TOD_VEC3:   return sizeof(Graphic3d_Vec3);
       case Graphic3d_TOD_VEC4:   return sizeof(Graphic3d_Vec4);
       case Graphic3d_TOD_VEC4UB: return sizeof(Graphic3d_Vec4ub);
+      case Graphic3d_TOD_FLOAT:  return sizeof(float);
     }
     return 0;
   }
 
 };
+
+typedef NCollection_Array1<Graphic3d_Attribute> Graphic3d_Array1OfAttribute;
 
 //! Buffer of vertex attributes.
 class Graphic3d_Buffer : public NCollection_Buffer
@@ -193,6 +198,13 @@ public:
       }
     }
     return true;
+  }
+
+  //! Allocates new empty array
+  bool Init (const Standard_Integer             theNbElems,
+             const Graphic3d_Array1OfAttribute& theAttribs)
+  {
+    return Init (theNbElems, &theAttribs.First(), theAttribs.Size());
   }
 
 public:

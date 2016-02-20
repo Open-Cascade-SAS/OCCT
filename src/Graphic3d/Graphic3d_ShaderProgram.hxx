@@ -16,6 +16,7 @@
 #ifndef _Graphic3d_ShaderProgram_HeaderFile
 #define _Graphic3d_ShaderProgram_HeaderFile
 
+#include <Graphic3d_ShaderAttribute.hxx>
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderVariable.hxx>
 #include <Graphic3d_TextureParams.hxx>
@@ -26,6 +27,9 @@ typedef NCollection_Sequence<Handle(Graphic3d_ShaderObject)> Graphic3d_ShaderObj
 
 //! List of custom uniform shader variables.
 typedef NCollection_Sequence<Handle(Graphic3d_ShaderVariable)> Graphic3d_ShaderVariableList;
+
+//! List of custom vertex shader attrubures
+typedef NCollection_Sequence<Handle(Graphic3d_ShaderAttribute)> Graphic3d_ShaderAttributeList;
 
 //! This class is responsible for managing shader programs.
 class Graphic3d_ShaderProgram : public Standard_Transient
@@ -82,16 +86,50 @@ public:
   //! Returns list of attached shader objects.
   const Graphic3d_ShaderObjectList& ShaderObjects() const { return myShaderObjects; }
 
-  //! Returns list of custom uniform variables.
+  //! The list of currently pushed but not applied custom uniform variables.
+  //! This list is automatically cleared after applying to GLSL program.
   const Graphic3d_ShaderVariableList& Variables() const { return myVariables; }
 
+  //! Return the list of custom vertex attributes.
+  const Graphic3d_ShaderAttributeList& VertexAttributes() const { return myAttributes; }
+
+  //! Assign the list of custom vertex attributes.
+  //! Should be done before GLSL program initialization.
+  Standard_EXPORT void SetVertexAttributes (const Graphic3d_ShaderAttributeList& theAttributes);
+
   //! Pushes custom uniform variable to the program.
+  //! The list of pushed variables is automatically cleared after applying to GLSL program.
+  //! Thus after program recreation even unchanged uniforms should be pushed anew.
   template<class T>
   Standard_Boolean PushVariable (const TCollection_AsciiString& theName,
                                  const T&                       theValue);
 
   //! Removes all custom uniform variables from the program.
   Standard_EXPORT void ClearVariables();
+
+  //! Pushes float uniform.
+  Standard_Boolean PushVariableFloat (const TCollection_AsciiString& theName, const float theValue)            { return PushVariable (theName, theValue); }
+
+  //! Pushes vec2 uniform.
+  Standard_Boolean PushVariableVec2  (const TCollection_AsciiString& theName, const Graphic3d_Vec2& theValue)  { return PushVariable (theName, theValue); }
+
+  //! Pushes vec3 uniform.
+  Standard_Boolean PushVariableVec3  (const TCollection_AsciiString& theName, const Graphic3d_Vec3& theValue)  { return PushVariable (theName, theValue); }
+
+  //! Pushes vec4 uniform.
+  Standard_Boolean PushVariableVec4  (const TCollection_AsciiString& theName, const Graphic3d_Vec4& theValue)  { return PushVariable (theName, theValue); }
+
+  //! Pushes int uniform.
+  Standard_Boolean PushVariableInt   (const TCollection_AsciiString& theName, const int theValue)              { return PushVariable (theName, theValue); }
+
+  //! Pushes vec2i uniform.
+  Standard_Boolean PushVariableVec2i (const TCollection_AsciiString& theName, const Graphic3d_Vec2i& theValue) { return PushVariable (theName, theValue); }
+
+  //! Pushes vec3i uniform.
+  Standard_Boolean PushVariableVec3i (const TCollection_AsciiString& theName, const Graphic3d_Vec3i& theValue) { return PushVariable (theName, theValue); }
+
+  //! Pushes vec4i uniform.
+  Standard_Boolean PushVariableVec4i (const TCollection_AsciiString& theName, const Graphic3d_Vec4i& theValue) { return PushVariable (theName, theValue); }
 
 public:
 
@@ -105,10 +143,11 @@ public:
 
 private:
 
-  TCollection_AsciiString      myID;            //!< The unique identifier of program object.
-  Graphic3d_ShaderObjectList   myShaderObjects; //!< the list of attached shader objects.
-  Graphic3d_ShaderVariableList myVariables;     //!< the list of custom uniform variables.
-  TCollection_AsciiString      myHeader;        //!< GLSL header with version code and used extensions
+  TCollection_AsciiString       myID;            //!< the unique identifier of program object
+  Graphic3d_ShaderObjectList    myShaderObjects; //!< the list of attached shader objects
+  Graphic3d_ShaderVariableList  myVariables;     //!< the list of custom uniform variables
+  Graphic3d_ShaderAttributeList myAttributes;    //!< the list of custom vertex attributes
+  TCollection_AsciiString       myHeader;        //!< GLSL header with version code and used extensions
 
 };
 

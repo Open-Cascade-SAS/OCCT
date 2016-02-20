@@ -217,3 +217,12 @@ void Graphic3d_ShaderProgram::ClearVariables()
 {
   myVariables.Clear();
 }
+
+// =======================================================================
+// function : SetAttributes
+// purpose  :
+// =======================================================================
+void Graphic3d_ShaderProgram::SetVertexAttributes (const Graphic3d_ShaderAttributeList& theAttributes)
+{
+  myAttributes = theAttributes;
+}
