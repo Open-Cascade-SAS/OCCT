@@ -379,9 +379,10 @@ static Handle(IntPatch_WLine)
       Standard_Real aStepOnS1 = aPntOnS1[0].SquareModulus() / aPntOnS1[1].SquareModulus();
       Standard_Real aStepOnS2 = aPntOnS2[0].SquareModulus() / aPntOnS2[1].SquareModulus();
 
-      Standard_Real aStepCoeff = Min(aStepOnS1, aStepOnS2) / Max(aStepOnS1, aStepOnS2);
-
-      if (aStepCoeff > aLimitCoeff)
+      // Check very rare case when wline fluctuates nearly one point and some of them may be equal.
+      // Middle point will be deleted when such situation occurs.
+      // bugs moddata_2 bug469.
+      if (Min(aStepOnS1, aStepOnS2) >= aLimitCoeff * Max(aStepOnS1, aStepOnS2))
       {
         // Set hash flag to "Delete" state.
         isDeleteState = Standard_True;
