@@ -23,6 +23,7 @@
 #include <Standard_Mutex.hxx>
 #include <Standard_NullObject.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_UtfString.hxx>
 
 #include <errno.h>
 #include <stdio.h>
@@ -239,7 +240,11 @@ Standard_Integer OSD_Environment::Error() const
 
 #include <windows.h>
 
-#pragma warning( disable : 4700 )
+#include <NCollection_UtfString.hxx>
+
+#if defined(_MSC_VER)
+  #pragma warning( disable : 4700 )
+#endif
 
 static void __fastcall _set_error ( OSD_Error&, DWORD );
 
@@ -269,41 +274,39 @@ void OSD_Environment :: SetValue ( const TCollection_AsciiString& Value ) {
 
 }  // end OSD_Environment :: SetValue
 
-TCollection_AsciiString OSD_Environment :: Value () {
+TCollection_AsciiString OSD_Environment::Value()
+{
+  myValue.Clear();
 
- Standard_PCharacter pBuff=0;
- DWORD            dwSize = 0;
- char*            envVal = NULL;
+  SetLastError (ERROR_SUCCESS);
+  wchar_t* anEnvVal = NULL;
+  NCollection_UtfWideString aNameWide (myName.ToCString());
+  DWORD aSize = GetEnvironmentVariableW (aNameWide.ToCString(), NULL, 0);
+  if ((aSize == 0 && GetLastError() != ERROR_SUCCESS)
+   || (anEnvVal = _wgetenv (aNameWide.ToCString())) == NULL)
+  {
+    _set_error (myError, ERROR_ENVVAR_NOT_FOUND);
+    return myValue;
+  }
 
- myValue.Clear ();
-
- SetLastError ( ERROR_SUCCESS );
- dwSize = GetEnvironmentVariable (  myName.ToCString (), pBuff, dwSize  );
-
- if (    ( dwSize == 0 && GetLastError () != ERROR_SUCCESS ) ||
-         (  envVal = getenv (  myName.ToCString ()  )  ) == NULL
- )
-
-  _set_error ( myError, ERROR_ENVVAR_NOT_FOUND );
-
- else if ( envVal != NULL )
-
-  myValue = envVal;
-
- else {
-
-  ++dwSize; 
-  pBuff = new Standard_Character[ dwSize ];
-  GetEnvironmentVariable (  (char *)myName.ToCString (), pBuff, dwSize  );
-  myValue = pBuff;
-  delete [] pBuff;
-  Reset ();
- 
- }  // end else
-
- return myValue;
-
-}  // end OSD_Environment :: Value
+  NCollection_Utf8String aValue;
+  if (anEnvVal != NULL)
+  {
+    aValue.FromUnicode (anEnvVal);
+  }
+  else
+  {
+    aSize += 1; // NULL-terminator
+    wchar_t* aBuff = new wchar_t[aSize];
+    GetEnvironmentVariableW (aNameWide.ToCString(), aBuff, aSize);
+    aBuff[aSize - 1] = L'\0';
+    aValue.FromUnicode (aBuff);
+    delete[] aBuff;
+    Reset();
+  }
+  myValue = aValue.ToCString();
+  return myValue;
+}
 
 void OSD_Environment :: SetName ( const TCollection_AsciiString& name ) {
 
@@ -317,25 +320,17 @@ TCollection_AsciiString OSD_Environment :: Name () const {
 
 }  // end OSD_Environment :: Name
 
-void OSD_Environment :: Build () {
+void OSD_Environment::Build()
+{
+  NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=" + myValue.ToCString();
+  _wputenv (aSetVariable.ToUtfWide().ToCString());
+}
 
- TCollection_AsciiString str;
-
- str = myName + TEXT( "=" ) + myValue;
-
- _putenv (str.ToCString());
-
-}  // end OSD_Environment :: Build
-
-void OSD_Environment :: Remove () {
-
- TCollection_AsciiString str;
-
- str = myName + TEXT( "=" );
-
- _putenv (str.ToCString());
-
-}  // end OSD_Environment :: Remove
+void OSD_Environment::Remove()
+{
+  NCollection_Utf8String aSetVariable = NCollection_Utf8String(myName.ToCString()) + "=";
+  _wputenv (aSetVariable.ToUtfWide().ToCString());
+}
 
 Standard_Boolean OSD_Environment :: Failed () const {
 
