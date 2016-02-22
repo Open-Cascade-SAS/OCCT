@@ -53,10 +53,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! A tool to manage threads
-  //!
   //! Sets signal and exception handlers.
-  //! <b>Windows-specific notes<\b>
+  //!
+  //! ### Windows-specific notes
+  //!
   //! Compiled with MS VC++ sets 3 main handlers:
   //! @li Signal handlers (via ::signal() functions) that translate system signals
   //! (SIGSEGV, SIGFPE, SIGILL) into C++ exceptions (classes inheriting
@@ -75,12 +75,13 @@ public:
   //!
   //! If @a theFloatingSignal is TRUE then floating point exceptions will be
   //! generated in accordance with the mask
-  //! <tt>_EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW<\tt> that is
+  //! <tt>_EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW</tt> that is
   //! used to call ::_controlfp() system function. If @a theFloatingSignal is FALSE
   //! corresponding operations (e.g. division by zero) will gracefully complete
   //! without an exception.
   //!
-  //! <b>Unix-specific notes<\b>
+  //! ### Unix-specific notes
+  //!
   //! OSD::SetSignal() sets handlers (via ::sigaction()) for multiple signals
   //! (SIGFPE, SIGSEGV, etc). Currently the number of handled signals is much
   //! greater than for Windows, in the future this may change to provide better
@@ -92,7 +93,8 @@ public:
   //! When compiled with OBJS macro defined, already set signal handlers (e.g.
   //! by Data Base Managers) are not redefined.
   //!
-  //! <b>Common notes<\b>
+  //! ### Common notes
+  //!
   //! If OSD::SetSignal() method is used in at least one thread, it must also be
   //! called in any other thread where Open CASCADE will be used, to ensure
   //! consistency of behavior. Its @a aFloatingSignal argument must be consistent
@@ -102,6 +104,7 @@ public:
   //! ::throw() will be called) is regulated by the NO_CXX_EXCEPTIONS and
   //! OCC_CONVERT_SIGNALS macros used during compilation of Open CASCADE and
   //! user's code. Refer to Foundation Classes User's Guide for further details.
+  //!
   Standard_EXPORT static void SetSignal (const Standard_Boolean theFloatingSignal = Standard_True);
   
   //! Commands the process to sleep for a number of seconds.

@@ -5,6 +5,12 @@ if(FLAGS_ALREADY_INCLUDED)
 endif()
 set(FLAGS_ALREADY_INCLUDED 1)
 
+# force option -fp:precise for Visual Studio projects.
+#
+# Note that while this option is default for MSVC compiler, Visual Studio
+# project can be switched later to use Intel Compiler (ICC).
+# Enforcing -fp:precise ensures that in such case ICC will use correct
+# option instead of its default -fp:fast which is harmful for OCCT.
 if (MSVC)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fp:precise")
   set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fp:precise")
@@ -31,7 +37,7 @@ endif()
 string (REGEX MATCH "EHsc" ISFLAG "${CMAKE_CXX_FLAGS}")
 if (ISFLAG)
   string (REGEX REPLACE "EHsc" "EHa" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-elseif (WIN32)
+elseif (MSVC)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -EHa")
 endif()
 
