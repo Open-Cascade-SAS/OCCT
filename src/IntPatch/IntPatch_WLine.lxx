@@ -98,6 +98,11 @@ inline const IntPatch_Point& IntPatch_WLine::Vertex (const Standard_Integer Inde
   return svtx(Index);
 }
 
+inline IntPatch_Point& IntPatch_WLine::ChangeVertex (const Standard_Integer Index)
+{
+  return svtx(Index);
+}
+
 inline void IntPatch_WLine::ClearVertexes()
 {
   svtx.Clear();

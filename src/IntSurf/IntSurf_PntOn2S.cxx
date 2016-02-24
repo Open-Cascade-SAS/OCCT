@@ -57,7 +57,7 @@ Standard_Boolean IntSurf_PntOn2S::IsSame( const IntSurf_PntOn2S& theOterPoint,
   if(pt.SquareDistance(theOterPoint.Value()) > theTol3D*theTol3D)
     return Standard_False;
 
-  if(IsEqual(theTol2D, 0.0))
+  if(theTol2D < 0.0)
   {//We need not compare 2D-coordinates of the points
     return Standard_True;
   }

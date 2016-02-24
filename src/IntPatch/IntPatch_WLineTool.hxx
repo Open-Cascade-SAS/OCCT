@@ -18,6 +18,7 @@
 #include <Standard_Macro.hxx>
 #include <IntPatch_WLine.hxx>
 #include <IntPatch_SequenceOfLine.hxx>
+#include <IntSurf_Quadric.hxx>
 class TopoDS_Face;
 class GeomAdaptor_HSurface;
 class GeomInt_LineConstructor;
@@ -76,6 +77,23 @@ public:
                                          const Standard_Real theVfSurf2,
                                          const Standard_Real theVlSurf2);
 
+
+//! Concatenates two some Walking lines from theSlin if it is possible.
+//! This method does not create single line from several. It allows every
+//! extended line to be started/finished in strictly determined point
+//! (in the place of joint of two lines). As result, some gaps between two lines
+//! will vanish.
+//! The Walking lines are supposed (algorithm will do nothing for not-Walking line)
+//! to be computed as a result of intersection of two quadrics.
+//! The quadrics definition is accepted in input parameters.
+  Standard_EXPORT static void ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& theSlin,
+                                                         const IntSurf_Quadric& theS1,
+                                                         const IntSurf_Quadric& theS2,
+                                                         const Standard_Real theToler3D,
+                                                         const Standard_Real theU1Period,
+                                                         const Standard_Real theU2Period,
+                                                         const Standard_Real theV1Period,
+                                                         const Standard_Real theV2Period);
 };
 
 #endif

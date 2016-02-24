@@ -102,6 +102,18 @@ inline const IntPatch_Point& IntPatch_RLine::Vertex (const Standard_Integer Inde
   return svtx(Index);
 }
 
+inline IntPatch_Point& IntPatch_RLine::ChangeVertex (const Standard_Integer Index)
+{
+  return svtx(Index);
+}
+
+inline void IntPatch_RLine::RemoveVertex(const Standard_Integer theIndex)
+{
+  if((theIndex < 1) || (theIndex > NbVertex()))
+    Standard_OutOfRange::Raise("Cannot delete not existing vertex");
+  svtx.Remove(theIndex);
+}
+
 inline Standard_Boolean IntPatch_RLine::HasPolygon () const
 {
   return (!curv.IsNull());

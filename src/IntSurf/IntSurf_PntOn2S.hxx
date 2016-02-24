@@ -74,8 +74,8 @@ public:
   
   //! Returns TRUE if 2D- and 3D-coordinates of theOterPoint are equal to
   //! corresponding coordinates of me (with given tolerance).
-  //! If theTol2D == 0.0 we will compare 3D-points only.
-  Standard_EXPORT Standard_Boolean IsSame (const IntSurf_PntOn2S& theOterPoint, const Standard_Real theTol3D = 0.0, const Standard_Real theTol2D = 0.0) const;
+  //! If theTol2D < 0.0 we will compare 3D-points only.
+  Standard_EXPORT Standard_Boolean IsSame (const IntSurf_PntOn2S& theOterPoint, const Standard_Real theTol3D = 0.0, const Standard_Real theTol2D = -1.0) const;
 
 
 

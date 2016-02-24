@@ -122,7 +122,13 @@ public:
   
   //! Returns the vertex of range Index on the line.
   virtual const IntPatch_Point& Vertex (const Standard_Integer Index) const Standard_OVERRIDE;
+
+  //! Returns the vertex of range Index on the line.
+  virtual IntPatch_Point& ChangeVertex (const Standard_Integer Index) Standard_OVERRIDE;
   
+  //! Removes single vertex from the line
+  virtual void RemoveVertex (const Standard_Integer theIndex) Standard_OVERRIDE;
+
     Standard_Boolean HasPolygon() const;
   
   //! Returns the number of intersection points.

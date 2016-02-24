@@ -60,8 +60,14 @@ public:
   //! Returns the vertex of range Index on the line.
   Standard_EXPORT virtual const IntPatch_Point& Vertex (const Standard_Integer Index) const = 0;
 
+  //! Returns the vertex of range Index on the line.
+  virtual IntPatch_Point& ChangeVertex (const Standard_Integer Index) = 0;
+
   //! Removes vertices from the line
   Standard_EXPORT virtual void ClearVertexes() = 0;
+
+  //! Removes single vertex from the line
+  Standard_EXPORT virtual void RemoveVertex (const Standard_Integer theIndex) = 0;
 
   //! Returns set of intersection points
   Standard_EXPORT virtual Handle(IntSurf_LineOn2S) Curve() const = 0;

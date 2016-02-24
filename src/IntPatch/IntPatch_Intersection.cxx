@@ -1356,73 +1356,98 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
       if (tgte)
         oppo = interii.OppositeFaces();
 
+      Standard_Boolean isQuadSet = Standard_False;
+      IntSurf_Quadric Quad1,Quad2;
+
       for (Standard_Integer i = 1; i <= interii.NbLines(); i++)
       {
         const Handle(IntPatch_Line)& line = interii.Line(i);
         if (line->ArcType() == IntPatch_Analytic)
         {
-          const GeomAbs_SurfaceType aTyps1 = theS1->GetType();
-          const GeomAbs_SurfaceType aTyps2 = theS2->GetType();
-          IntSurf_Quadric Quad1,Quad2;
-          
-          switch(aTyps1)
+          if(!isQuadSet)
           {
-          case GeomAbs_Plane:
-            Quad1.SetValue(theS1->Plane());
-            break;
+            isQuadSet = Standard_True;
+            
+            const GeomAbs_SurfaceType aTyps1 = theS1->GetType();
+            const GeomAbs_SurfaceType aTyps2 = theS2->GetType();
 
-          case GeomAbs_Cylinder:
-            Quad1.SetValue(theS1->Cylinder());
-            break;
+            switch(aTyps1)
+            {
+            case GeomAbs_Plane:
+              Quad1.SetValue(theS1->Plane());
+              break;
 
-          case GeomAbs_Sphere:
-            Quad1.SetValue(theS1->Sphere());
-            break;
+            case GeomAbs_Cylinder:
+              Quad1.SetValue(theS1->Cylinder());
+              break;
 
-          case GeomAbs_Cone:
-            Quad1.SetValue(theS1->Cone());
-            break;
+            case GeomAbs_Sphere:
+              Quad1.SetValue(theS1->Sphere());
+              break;
 
-          case GeomAbs_Torus:
-            Quad1.SetValue(theS1->Torus());
-            break;
+            case GeomAbs_Cone:
+              Quad1.SetValue(theS1->Cone());
+              break;
 
-          default:
-            break;
-          }
+            case GeomAbs_Torus:
+              Quad1.SetValue(theS1->Torus());
+              break;
 
-          switch(aTyps2)
-          {
-          case GeomAbs_Plane:
-            Quad2.SetValue(theS2->Plane());
-            break;
-          case GeomAbs_Cylinder:
-            Quad2.SetValue(theS2->Cylinder());
-            break;
+            default:
+              isQuadSet = Standard_False;
+              break;
+            }
 
-          case GeomAbs_Sphere:
-            Quad2.SetValue(theS2->Sphere());
-            break;
+            switch(aTyps2)
+            {
+            case GeomAbs_Plane:
+              Quad2.SetValue(theS2->Plane());
+              break;
+            case GeomAbs_Cylinder:
+              Quad2.SetValue(theS2->Cylinder());
+              break;
 
-          case GeomAbs_Cone:
-            Quad2.SetValue(theS2->Cone());
-            break;
+            case GeomAbs_Sphere:
+              Quad2.SetValue(theS2->Sphere());
+              break;
 
-          case GeomAbs_Torus:
-            Quad2.SetValue(theS2->Torus());
-            break;
+            case GeomAbs_Cone:
+              Quad2.SetValue(theS2->Cone());
+              break;
 
-          default:
-            break;
+            case GeomAbs_Torus:
+              Quad2.SetValue(theS2->Torus());
+              break;
+
+            default:
+              isQuadSet = Standard_False;
+              break;
+            }
+
+            if(!isQuadSet)
+            {
+              break;
+            }
           }
 
           IntPatch_ALineToWLine AToW(Quad1,Quad2,0.01,0.05,aNbPointsInALine);
-          Handle(IntPatch_WLine) wlin=AToW.MakeWLine((*((Handle(IntPatch_ALine) *)(&line))));
+          Handle(IntPatch_WLine) wlin = 
+                      AToW.MakeWLine(Handle(IntPatch_ALine)::DownCast(line));
           wlin->EnablePurging(Standard_False);
           slin.Append(wlin);
         }
         else
-          slin.Append(interii.Line(i));
+          slin.Append(line);
+      }
+
+      if(isQuadSet)
+      {
+        IntPatch_WLineTool::
+          ExtendTwoWlinesToEachOther(slin, Quad1, Quad2, TolTang,
+                                     theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
+                                     theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
+                                     theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
+                                     theS2->IsVPeriodic()? theS2->VPeriod() : 0.0);
       }
 
       for (Standard_Integer i = 1; i <= interii.NbPnts(); i++)

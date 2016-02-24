@@ -519,12 +519,10 @@ static Standard_Integer IsSeam( const Standard_Real theU1,
 //purpose  : Returns TRUE if segment [thePtf, thePtl] intersects "seam-edge"
 //            (if it exist) or surface boundaries and both thePtf and thePtl do
 //            not match "seam-edge" or boundaries.
-//           Point thePtmid lies in this segment. If thePtmid match
-//            "seam-edge" or boundaries strictly (without any tolerance) then
-//            the function will return TRUE.
+//           Point thePtmid lies in this segment (in both 3D and 2D-space).
+//           If thePtmid match "seam-edge" or boundaries strictly 
+//            (without any tolerance) then the function will return TRUE.
 //            See comments in function body for detail information.
-//
-//           Static subfunction in JoinWLines.
 //=======================================================================
 static Standard_Boolean IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
                                       const IntSurf_PntOn2S& thePtl,
@@ -649,6 +647,107 @@ static Standard_Boolean IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
     return Standard_True;
 
   return Standard_False;
+}
+
+//=======================================================================
+//function : AbjustPeriodicToPrevPoint
+//purpose  : Returns theCurrentParam in order to the distance betwen 
+//            theRefParam and theCurrentParam is less than 0.5*thePeriod.
+//=======================================================================
+static void AbjustPeriodicToPrevPoint(const Standard_Real theRefParam,
+                                      const Standard_Real thePeriod,
+                                      Standard_Real& theCurrentParam)
+{
+  if(thePeriod == 0.0)
+    return;
+
+  Standard_Real aDeltaPar = 2.0*(theRefParam - theCurrentParam);
+  const Standard_Real anIncr = Sign(thePeriod, aDeltaPar);
+  while(Abs(aDeltaPar) > thePeriod)
+  {
+    theCurrentParam += anIncr;
+    aDeltaPar = 2.0*(theRefParam-theCurrentParam);
+  }
+}
+
+//=======================================================================
+//function : IsIntersectionPoint
+//purpose  : Returns True if thePmid is intersection point
+//            between theS1 and theS2 with given tolerance.
+//           In this case, parameters of thePmid on every quadric
+//            will be recomputed and returned.
+//=======================================================================
+static Standard_Boolean IsIntersectionPoint(const gp_Pnt& thePmid,
+                                            const IntSurf_Quadric& theS1,
+                                            const IntSurf_Quadric& theS2,
+                                            const IntSurf_PntOn2S& theRefPt,
+                                            const Standard_Real theTol,
+                                            const Standard_Real theU1Period,
+                                            const Standard_Real theU2Period,
+                                            const Standard_Real theV1Period,
+                                            const Standard_Real theV2Period,
+                                            Standard_Real &theU1,
+                                            Standard_Real &theV1,
+                                            Standard_Real &theU2,
+                                            Standard_Real &theV2)
+{
+  Standard_Real aU1Ref = 0.0, aV1Ref = 0.0, aU2Ref = 0.0, aV2Ref = 0.0;
+  theRefPt.Parameters(aU1Ref, aV1Ref, aU2Ref, aV2Ref);
+  theS1.Parameters(thePmid, theU1, theV1);
+  theS2.Parameters(thePmid, theU2, theV2);
+
+  AbjustPeriodicToPrevPoint(aU1Ref, theU1Period, theU1);
+  AbjustPeriodicToPrevPoint(aV1Ref, theV1Period, theV1);
+  AbjustPeriodicToPrevPoint(aU2Ref, theU2Period, theU2);
+  AbjustPeriodicToPrevPoint(aV2Ref, theV2Period, theV2);
+
+  const gp_Pnt aP1(theS1.Value(theU1, theV1));
+  const gp_Pnt aP2(theS2.Value(theU2, theV2));
+
+  return (aP1.SquareDistance(aP2) <= theTol*theTol);
+}
+
+//=======================================================================
+//function : ExtendFirst
+//purpose  : Adds thePOn2S to the begin of theWline
+//=======================================================================
+static void ExtendFirst(const Handle(IntPatch_WLine)& theWline,
+                        const IntSurf_PntOn2S &thePOn2S)
+{
+  theWline->Curve()->InsertBefore(1, thePOn2S);
+
+  IntPatch_Point &aVert = theWline->ChangeVertex(1);
+
+  Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
+  thePOn2S.Parameters(aU1, aV1, aU2, aV2);
+
+  aVert.SetParameters(aU1, aV1, aU2, aV2);
+  aVert.SetValue(thePOn2S.Value());
+
+  for(Standard_Integer i = 2; i <= theWline->NbVertex(); i++)
+  {
+    IntPatch_Point &aV = theWline->ChangeVertex(i);
+    aV.SetParameter(aV.ParameterOnLine()+1);
+  }
+}
+
+//=======================================================================
+//function : ExtendLast
+//purpose  : Adds thePOn2S to the end of theWline
+//=======================================================================
+static void ExtendLast(const Handle(IntPatch_WLine)& theWline,
+                       const IntSurf_PntOn2S &thePOn2S)
+{
+  theWline->Curve()->Add(thePOn2S);
+
+  IntPatch_Point &aVert = theWline->ChangeVertex(theWline->NbVertex());
+
+  Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
+  thePOn2S.Parameters(aU1, aV1, aU2, aV2);
+
+  aVert.SetParameters(aU1, aV1, aU2, aV2);
+  aVert.SetValue(thePOn2S.Value());
+  aVert.SetParameter(theWline->NbPnts());
 }
 
 //=========================================================================
@@ -950,5 +1049,299 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
 
     if(hasBeenRemoved)
       aNumOfLine1--;
+  }
+}
+
+//=======================================================================
+//function : ExtendTwoWlinesToEachOther
+//purpose  : 
+//=======================================================================
+void IntPatch_WLineTool::ExtendTwoWlinesToEachOther(IntPatch_SequenceOfLine& theSlin,
+                                                    const IntSurf_Quadric& theS1,
+                                                    const IntSurf_Quadric& theS2,
+                                                    const Standard_Real theToler3D,
+                                                    const Standard_Real theU1Period,
+                                                    const Standard_Real theU2Period,
+                                                    const Standard_Real theV1Period,
+                                                    const Standard_Real theV2Period)
+{
+  if(theSlin.Length() < 2)
+    return;
+
+  const Standard_Real aMaxAngle = M_PI/6; //30 degree
+  const Standard_Real aSqToler = theToler3D*theToler3D;
+  Standard_Real aU1=0.0, aV1=0.0, aU2=0.0, aV2=0.0;
+  gp_Pnt aPmid;
+  gp_Vec aVec1, aVec2, aVec3;
+
+  for(Standard_Integer aNumOfLine1 = 1; aNumOfLine1 <= theSlin.Length(); aNumOfLine1++)
+  {
+    Handle(IntPatch_WLine) aWLine1 (Handle(IntPatch_WLine)::
+                                    DownCast(theSlin.Value(aNumOfLine1)));
+
+    if(aWLine1.IsNull())
+    {//We must have failed to join not-point-lines
+      continue;
+    }
+    
+    const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
+
+    for(Standard_Integer aNumOfLine2 = aNumOfLine1 + 1;
+        aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
+    {
+      Handle(IntPatch_WLine) aWLine2 (Handle(IntPatch_WLine)::
+                                    DownCast(theSlin.Value(aNumOfLine2)));
+
+      if(aWLine2.IsNull())
+        continue;
+
+      //Enable/Disable of some ckeck. Bit-mask is used for it.
+      //E.g. if 1st point of aWLine1 matches with
+      //1st point of aWLine2 then we do not need in check
+      //1st point of aWLine1 and last point of aWLine2 etc.
+      enum
+      {
+        IntPatchWT_EnAll = 0x00,
+        IntPatchWT_DisLastLast = 0x01,
+        IntPatchWT_DisLastFirst = 0x02,
+        IntPatchWT_DisFirstLast = 0x04,
+        IntPatchWT_DisFirstFirst = 0x08
+      };
+
+      unsigned int aCheckResult = IntPatchWT_EnAll;
+
+      const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
+
+      const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
+      const IntSurf_PntOn2S& aPntFp1WL1 = aWLine1->Point(2);
+
+      const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+      const IntSurf_PntOn2S& aPntLm1WL1 = aWLine1->Point(aNbPntsWL1-1);
+      
+      const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
+      const IntSurf_PntOn2S& aPntFp1WL2 = aWLine2->Point(2);
+
+      const IntSurf_PntOn2S& aPntLWL2 = aWLine2->Point(aNbPntsWL2);
+      const IntSurf_PntOn2S& aPntLm1WL2 = aWLine2->Point(aNbPntsWL2-1);
+      
+      //if(!(aCheckResult & IntPatchWT_DisFirstFirst))
+      {// First/First
+        aVec1.SetXYZ(aPntFp1WL1.Value().XYZ() - aPntFWL1.Value().XYZ());
+        aVec2.SetXYZ(aPntFWL2.Value().XYZ() - aPntFp1WL2.Value().XYZ());
+        aVec3.SetXYZ(aPntFWL1.Value().XYZ() - aPntFWL2.Value().XYZ());
+
+        if(aVec3.SquareMagnitude() > aSqToler)
+        {
+          if( (aVec1.Angle(aVec2) < aMaxAngle) &&
+              (aVec1.Angle(aVec3) < aMaxAngle) &&
+              (aVec2.Angle(aVec3) < aMaxAngle))
+          {
+            aPmid.SetXYZ(0.5*(aPntFWL1.Value().XYZ()+aPntFWL2.Value().XYZ()));
+            if(IsIntersectionPoint(aPmid, theS1, theS2, aPntFWL1, theToler3D,
+                                   theU1Period, theU2Period, theV1Period, theV2Period,
+                                   aU1, aV1, aU2, aV2))
+            {
+              IntSurf_PntOn2S aPOn2S;
+              aPOn2S.SetValue(aPmid, aU1, aV1, aU2, aV2);
+              
+              Standard_Real aU11 = 0.0, aV11 = 0.0, aU21 = 0.0, aV21 = 0.0,
+                            aU12 = 0.0, aV12 = 0.0, aU22 = 0.0, aV22 = 0.0;
+              aPntFWL1.Parameters(aU11, aV11, aU21, aV21);
+              aPntFWL2.Parameters(aU12, aV12, aU22, aV22);
+
+              if(!IsSeam(aU11, aU12, theU1Period) &&
+                 !IsSeam(aV11, aV12, theV1Period) &&
+                 !IsSeam(aU21, aU22, theU2Period) &&
+                 !IsSeam(aV21, aV22, theV2Period))
+              {
+                aCheckResult |= (IntPatchWT_DisFirstLast |
+                                 IntPatchWT_DisLastFirst);
+
+                if(!aPOn2S.IsSame(aPntFWL1, Precision::Confusion()))
+                {
+                  ExtendFirst(aWLine1, aPOn2S);
+                }
+                else
+                {
+                  aWLine1->Curve()->Value(1, aPOn2S);
+                }
+
+                if(!aPOn2S.IsSame(aPntFWL2, Precision::Confusion()))
+                {
+                  ExtendFirst(aWLine2, aPOn2S);
+                }
+                else
+                {
+                  aWLine2->Curve()->Value(1, aPOn2S);
+                }
+              }
+            }
+          }
+        }//if(aVec3.SquareMagnitude() > aSqToler) cond.
+      }//if(!(aCheckResult & 0x08)) cond.
+
+      if(!(aCheckResult & IntPatchWT_DisFirstLast))
+      {// First/Last
+        aVec1.SetXYZ(aPntFp1WL1.Value().XYZ() - aPntFWL1.Value().XYZ());
+        aVec2.SetXYZ(aPntLWL2.Value().XYZ() - aPntLm1WL2.Value().XYZ());
+        aVec3.SetXYZ(aPntFWL1.Value().XYZ() - aPntLWL2.Value().XYZ());
+
+        if(aVec3.SquareMagnitude() > aSqToler)
+        {
+          if((aVec1.Angle(aVec2) < aMaxAngle) &&
+             (aVec1.Angle(aVec3) < aMaxAngle) &&
+             (aVec2.Angle(aVec3) < aMaxAngle))
+          {
+            aPmid.SetXYZ(0.5*(aPntFWL1.Value().XYZ()+aPntLWL2.Value().XYZ()));
+            if(IsIntersectionPoint(aPmid, theS1, theS2, aPntFWL1, theToler3D,
+                                   theU1Period, theU2Period, theV1Period, theV2Period,
+                                   aU1, aV1, aU2, aV2))
+            {
+              IntSurf_PntOn2S aPOn2S;
+              aPOn2S.SetValue(aPmid, aU1, aV1, aU2, aV2);
+
+              Standard_Real aU11 = 0.0, aV11 = 0.0, aU21 = 0.0, aV21 = 0.0,
+                            aU12 = 0.0, aV12 = 0.0, aU22 = 0.0, aV22 = 0.0;
+              aPntFWL1.Parameters(aU11, aV11, aU21, aV21);
+              aPntLWL2.Parameters(aU12, aV12, aU22, aV22);
+
+              if(!IsSeam(aU11, aU12, theU1Period) &&
+                 !IsSeam(aV11, aV12, theV1Period) &&
+                 !IsSeam(aU21, aU22, theU2Period) &&
+                 !IsSeam(aV21, aV22, theV2Period))
+              {
+                aCheckResult |= IntPatchWT_DisLastLast;
+
+                if(!aPOn2S.IsSame(aPntFWL1, Precision::Confusion()))
+                {
+                  ExtendFirst(aWLine1, aPOn2S);
+                }
+                else
+                {
+                  aWLine1->Curve()->Value(1, aPOn2S);
+                }
+
+                if(!aPOn2S.IsSame(aPntLWL2, Precision::Confusion()))
+                {
+                  ExtendLast(aWLine2, aPOn2S);
+                }
+                else
+                {
+                  aWLine2->Curve()->Value(aWLine2->NbPnts(), aPOn2S);
+                }
+              }
+            }
+          }
+        }//if(aVec3.SquareMagnitude() > aSqToler) cond.
+      }//if(!(aCheckResult & 0x04)) cond.
+
+      if(!(aCheckResult & IntPatchWT_DisLastFirst))
+      {// Last/First
+        aVec1.SetXYZ(aPntLWL1.Value().XYZ() - aPntLm1WL1.Value().XYZ());
+        aVec2.SetXYZ(aPntFp1WL2.Value().XYZ() - aPntFWL2.Value().XYZ());
+        aVec3.SetXYZ(aPntFWL2.Value().XYZ() - aPntLWL1.Value().XYZ());
+
+        if(aVec3.SquareMagnitude() > aSqToler)
+        {
+          if((aVec1.Angle(aVec2) < aMaxAngle) &&
+             (aVec1.Angle(aVec3) < aMaxAngle) &&
+             (aVec2.Angle(aVec3) < aMaxAngle))
+          {
+            aPmid.SetXYZ(0.5*(aPntLWL1.Value().XYZ()+aPntFWL2.Value().XYZ()));
+            if(IsIntersectionPoint(aPmid, theS1, theS2, aPntLWL1, theToler3D,
+                                   theU1Period, theU2Period, theV1Period, theV2Period,
+                                   aU1, aV1, aU2, aV2))
+            {
+              IntSurf_PntOn2S aPOn2S;
+              aPOn2S.SetValue(aPmid, aU1, aV1, aU2, aV2);
+
+              Standard_Real aU11 = 0.0, aV11 = 0.0, aU21 = 0.0, aV21 = 0.0,
+                            aU12 = 0.0, aV12 = 0.0, aU22 = 0.0, aV22 = 0.0;
+              aPntLWL1.Parameters(aU11, aV11, aU21, aV21);
+              aPntFWL2.Parameters(aU12, aV12, aU22, aV22);
+
+              if(!IsSeam(aU11, aU12, theU1Period) &&
+                 !IsSeam(aV11, aV12, theV1Period) &&
+                 !IsSeam(aU21, aU22, theU2Period) &&
+                 !IsSeam(aV21, aV22, theV2Period))
+              {
+                aCheckResult |= IntPatchWT_DisLastLast;
+
+                if(!aPOn2S.IsSame(aPntLWL1, Precision::Confusion()))
+                {
+                  ExtendLast(aWLine1, aPOn2S);
+                }
+                else
+                {
+                  aWLine1->Curve()->Value(aWLine1->NbPnts(), aPOn2S);
+                }
+
+                if(!aPOn2S.IsSame(aPntFWL2, Precision::Confusion()))
+                {
+                  ExtendFirst(aWLine2, aPOn2S);
+                }
+                else
+                {
+                  aWLine2->Curve()->Value(1, aPOn2S);
+                }
+              }
+            }
+          }
+        }//if(aVec3.SquareMagnitude() > aSqToler) cond.
+      }//if(!(aCheckResult & 0x02)) cond.
+
+      if(!(aCheckResult & IntPatchWT_DisLastLast))
+      {// Last/Last
+        aVec1.SetXYZ(aPntLWL1.Value().XYZ() - aPntLm1WL1.Value().XYZ());
+        aVec2.SetXYZ(aPntLm1WL2.Value().XYZ() - aPntLWL2.Value().XYZ());
+        aVec3.SetXYZ(aPntLWL2.Value().XYZ() - aPntLWL1.Value().XYZ());
+
+        if(aVec3.SquareMagnitude() > aSqToler)
+        {
+          if((aVec1.Angle(aVec2) < aMaxAngle) &&
+             (aVec1.Angle(aVec3) < aMaxAngle) &&
+             (aVec2.Angle(aVec3) < aMaxAngle))
+          {
+            aPmid.SetXYZ(0.5*(aPntLWL1.Value().XYZ()+aPntLWL2.Value().XYZ()));
+            if(IsIntersectionPoint(aPmid, theS1, theS2, aPntLWL1, theToler3D,
+                                   theU1Period, theU2Period, theV1Period, theV2Period,
+                                   aU1, aV1, aU2, aV2))
+            {
+              IntSurf_PntOn2S aPOn2S;
+              aPOn2S.SetValue(aPmid, aU1, aV1, aU2, aV2);
+
+              Standard_Real aU11 = 0.0, aV11 = 0.0, aU21 = 0.0, aV21 = 0.0,
+                            aU12 = 0.0, aV12 = 0.0, aU22 = 0.0, aV22 = 0.0;
+              aPntLWL1.Parameters(aU11, aV11, aU21, aV21);
+              aPntLWL2.Parameters(aU12, aV12, aU22, aV22);
+
+              if(!IsSeam(aU11, aU12, theU1Period) &&
+                 !IsSeam(aV11, aV12, theV1Period) &&
+                 !IsSeam(aU21, aU22, theU2Period) &&
+                 !IsSeam(aV21, aV22, theV2Period))
+              {
+                if(!aPOn2S.IsSame(aPntLWL1, Precision::Confusion()))
+                {
+                  ExtendLast(aWLine1, aPOn2S);
+                }
+                else
+                {
+                  aWLine1->Curve()->Value(aWLine1->NbPnts(), aPOn2S);
+                }
+
+                if(!aPOn2S.IsSame(aPntLWL2, Precision::Confusion()))
+                {
+                  ExtendLast(aWLine2, aPOn2S);
+                }
+                else
+                {
+                  aWLine2->Curve()->Value(aWLine2->NbPnts(), aPOn2S);
+                }
+              }
+            }
+          }
+        }//if(aVec3.SquareMagnitude() > aSqToler) cond.
+      }//if(!(aCheckResult & 0x01)) cond.
+    }
   }
 }

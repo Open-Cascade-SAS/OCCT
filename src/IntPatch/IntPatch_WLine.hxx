@@ -113,6 +113,9 @@ public:
   
   //! Returns the vertex of range Index on the line.
   virtual const IntPatch_Point& Vertex (const Standard_Integer Index) const Standard_OVERRIDE;
+
+  //! Returns the vertex of range Index on the line.
+  virtual IntPatch_Point& ChangeVertex (const Standard_Integer Index) Standard_OVERRIDE;
   
   //! Set the parameters of all the vertex on the line.
   //! if a vertex is already in the line,
@@ -154,7 +157,8 @@ public:
   //! Removes vertices from the line (i.e. cleans svtx member)
   virtual void ClearVertexes() Standard_OVERRIDE;
   
-  Standard_EXPORT void RemoveVertex (const Standard_Integer theIndex);
+  //! Removes single vertex from the line
+  virtual void RemoveVertex (const Standard_Integer theIndex) Standard_OVERRIDE;
   
   Standard_EXPORT void InsertVertexBefore (const Standard_Integer theIndex, const IntPatch_Point& thePnt);
   
