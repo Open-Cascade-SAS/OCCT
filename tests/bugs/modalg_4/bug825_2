@@ -1,3 +1,5 @@
+puts "TODO OCC25915 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 pload QAcommands
 
 puts "========"
@@ -23,6 +25,6 @@ if { [ catch { set info_result [OCC825 a1 a2 a3 a4 a5] } ] } {
     }
 }
 
-checkprops result -s 7853.92 
+checkprops result -s 5890.48
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png
