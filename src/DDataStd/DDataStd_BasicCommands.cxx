@@ -1153,7 +1153,7 @@ static Standard_Integer DDataStd_GetExtStringArrayValue (Draw_Interpretor& di,
     return 1;
   } else {
     const TCollection_ExtendedString& value = A->Value(index);
-    di << value << "\n";
+    di << value ;
   }
 
   return 0; 

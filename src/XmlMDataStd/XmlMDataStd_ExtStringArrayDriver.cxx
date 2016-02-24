@@ -30,6 +30,24 @@ IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString, "last")
 IMPLEMENT_DOMSTRING (ExtString,       "string")
 IMPLEMENT_DOMSTRING (IsDeltaOn,       "delta")
+IMPLEMENT_DOMSTRING (Separator,       "separator")
+
+// Searches for a symbol within an array of strings.
+// Returns TRUE if the symbol is found.
+static Standard_Boolean Contains(const Handle(TDataStd_ExtStringArray)& arr,
+                                 const TCollection_ExtendedString& c)
+{
+  for (Standard_Integer i = arr->Lower(); i <= arr->Upper(); i++)
+  {
+    const TCollection_ExtendedString& value = arr->Value(i);
+    if (value.Search(c) != -1)
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
 //=======================================================================
 //function : XmlMDataStd_ExtStringArrayDriver
 //purpose  : Constructor
@@ -85,32 +103,84 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
     return Standard_False;
   }
 
+  // Read separator.
+  TCollection_ExtendedString separator;
+  XmlObjMgt_DOMString aSeparator = anElement.getAttribute(::Separator());
+  if (aSeparator.Type() != XmlObjMgt_DOMString::LDOM_NULL)
+    separator = aSeparator.GetString();
+
   Handle(TDataStd_ExtStringArray) aExtStringArray =
     Handle(TDataStd_ExtStringArray)::DownCast(theTarget);
   aExtStringArray->Init(aFirstInd, aLastInd);
   
-  if ( !anElement.hasChildNodes() )
+  // Read string values.
+  if ( !separator.Length() && anElement.hasChildNodes() )
   {
-    TCollection_ExtendedString aMessageString =
-      TCollection_ExtendedString("Cannot retrieve array of extended string");
-    WriteMessage (aMessageString);
-    return Standard_False;
-  }
-
-  LDOM_Node aCurNode = anElement.getFirstChild();
-  LDOM_Element* aCurElement = (LDOM_Element*)&aCurNode;
-  TCollection_ExtendedString aValueStr;
-  for (ind = aFirstInd; ind <= aLastInd && *aCurElement != anElement.getLastChild(); ind++)
-  {
+    // Read values written by <string>VALUE<\string> notion - as children of the attribute.
+    LDOM_Node aCurNode = anElement.getFirstChild();
+    LDOM_Element* aCurElement = (LDOM_Element*)&aCurNode;
+    TCollection_ExtendedString aValueStr;
+    for (ind = aFirstInd; ind <= aLastInd && *aCurElement != anElement.getLastChild(); ind++)
+    {
+      XmlObjMgt::GetExtendedString( *aCurElement, aValueStr );
+      aExtStringArray->SetValue(ind, aValueStr);
+      aCurNode = aCurElement->getNextSibling();
+      aCurElement = (LDOM_Element*)&aCurNode;
+    }
     XmlObjMgt::GetExtendedString( *aCurElement, aValueStr );
-    aExtStringArray->SetValue(ind, aValueStr);
-    aCurNode = aCurElement->getNextSibling();
-    aCurElement = (LDOM_Element*)&aCurNode;
+    aExtStringArray->SetValue( aLastInd, aValueStr );
+  }
+  else
+  {
+    TCollection_ExtendedString xstr;
+    XmlObjMgt::GetExtendedString(anElement, xstr);
+#ifdef _DEBUG
+    TCollection_AsciiString cstr(xstr, '?');
+#endif
+
+    // Split strings by the separator.
+    Standard_Integer isym(1); // index of symbol in xstr
+    Standard_ExtCharacter xsep = separator.Value(1);
+    for (ind = aFirstInd; ind <= aLastInd; ind++)
+    {
+      // Calculate length of the string-value.
+      Standard_Integer iend = isym;
+      while (iend < xstr.Length())
+      {
+        if (xstr.Value(iend) == xsep)
+        {
+          break;
+        }
+        iend++;
+      }
+      if (iend <= xstr.Length() && 
+          xstr.Value(iend) != xsep)
+      {
+        iend++;
+      }
+
+      // Allocate the string-value.
+      TCollection_ExtendedString xvalue(iend - isym, '\0');
+
+      // Set string-value.
+      for (Standard_Integer i = isym; i < iend; ++i)
+      {
+        const Standard_ExtCharacter x = xstr.Value(i);
+        xvalue.SetValue(i - isym + 1, x);
+      }
+#ifdef _DEBUG
+      TCollection_AsciiString cvalue(xvalue, '?');
+#endif
+
+      // Set value for the array.
+      aExtStringArray->SetValue(ind, xvalue);
+
+      // Next string-value.
+      isym = iend + 1;
+    }
   }
 
-  XmlObjMgt::GetExtendedString( *aCurElement, aValueStr );
-  aExtStringArray->SetValue( aLastInd, aValueStr );
-
+  // Read delta-flag.
   Standard_Boolean aDelta(Standard_False);
   
   if(XmlMDataStd::DocumentVersion() > 2) {
@@ -147,7 +217,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
   Handle(TDataStd_ExtStringArray) aExtStringArray =
     Handle(TDataStd_ExtStringArray)::DownCast(theSource);
 
-  Standard_Integer aL = aExtStringArray->Lower(), anU = aExtStringArray->Upper();
+  Standard_Integer aL = aExtStringArray->Lower(), anU = aExtStringArray->Upper(), i;
 
   XmlObjMgt_Element& anElement = theTarget;
 
@@ -155,14 +225,93 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
   anElement.setAttribute(::LastIndexString(), anU);
   anElement.setAttribute(::IsDeltaOn(), aExtStringArray->GetDelta()); 
 
-  // store a set of elements with string in each of them
-  XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
-  
-  for ( Standard_Integer i = aL; i <= anU; i++ )
+  // Find a separator.
+  Standard_Boolean found(Standard_True);
+  // Preferrable symbols for the separator: - _ . : ^ ~
+  // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
+  Standard_Character c = '-';
+  static Standard_Character aPreferable[] = "-_.:^~";
+  for (i = 0; found && aPreferable[i]; i++)
   {
-    TCollection_ExtendedString aValueStr = aExtStringArray->Value( i );
-    XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
-    XmlObjMgt::SetExtendedString( aCurTarget, aValueStr );
-    anElement.appendChild( aCurTarget );
+    c = aPreferable[i];
+    found = Contains(aExtStringArray, TCollection_ExtendedString(c));
+  }
+  // If all prefferable symbols exist in the array, 
+  // try to use any other simple symbols.
+  if (found)
+  {
+    c = '!';
+    while (found && c < '~')
+    {
+      found = Standard_False;
+#ifdef _DEBUG
+      TCollection_AsciiString cseparator(c); // deb
+#endif
+      TCollection_ExtendedString separator(c);
+      found = Contains(aExtStringArray, separator);
+      if (found)
+      {
+        c++;
+        // Skip forbidden symbols for XML.
+        while (c < '~' && (c == '&' || c == '<'))
+        {
+          c++;
+        }
+      }
+    }
+  }
+  
+  if (found)
+  {
+      // There is no unique separator. Use child elements for storage of strings of the array.
+
+      // store a set of elements with string in each of them
+      XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
+      for ( i = aL; i <= anU; i++ )
+      {
+        const TCollection_ExtendedString& aValueStr = aExtStringArray->Value( i );
+        XmlObjMgt_Element aCurTarget = aDoc.createElement( ::ExtString() );
+        XmlObjMgt::SetExtendedString( aCurTarget, aValueStr );
+        anElement.appendChild( aCurTarget );
+      }
+  }
+  else
+  {
+      // Set the separator.
+      TCollection_AsciiString csep(c);
+      anElement.setAttribute(::Separator(), csep.ToCString());
+
+      // Calculate length of the common string.
+      Standard_Integer len(0);
+      for (i = aL; i <= anU; i++)
+      {
+        const TCollection_ExtendedString& aValueStr = aExtStringArray->Value(i);
+        len += aValueStr.Length();
+        len++; // for separator or ending \0 symbol
+      }
+      if (!len)
+        len++; // for end of line \0 symbol
+
+      // Merge all strings of the array into one extended string separated by the "separator".
+      Standard_Integer isym(1);
+      TCollection_ExtendedString xstr(len, c);
+      for (i = aL; i <= anU; i++)
+      {
+        const TCollection_ExtendedString& aValueStr = aExtStringArray->Value(i);
+        for (Standard_Integer k = 1; k <= aValueStr.Length(); k++)
+        {
+          xstr.SetValue(isym++, aValueStr.Value(k));
+        }
+        xstr.SetValue(isym++, c);
+      }
+      if (xstr.SearchFromEnd(c) == isym - 1)
+        isym--; // replace the last separator by '\0'
+      xstr.SetValue(isym, '\0');
+#ifdef _DEBUG
+      TCollection_AsciiString cstr(xstr, '?'); // deb
+#endif
+
+      // Set UNICODE value.
+      XmlObjMgt::SetExtendedString(theTarget, xstr);
   }
 }
