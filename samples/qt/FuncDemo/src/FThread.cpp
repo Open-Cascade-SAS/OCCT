@@ -1,5 +1,5 @@
 #include "FThread.h"
-#include "GraphWidget.h"
+#include "graphwidget.h"
 
 #include <TFunction_Function.hxx>
 #include <TFunction_IFunction.hxx>
@@ -67,7 +67,11 @@ void FThread::run()
         {
             L = getFreeFunction();
             if (L.IsNull())
-                ::Sleep(100);
+            #ifdef __GNUC__
+               sleep(0.001);
+            #else
+               ::Sleep(100);
+            #endif
             else
                 break;
         }

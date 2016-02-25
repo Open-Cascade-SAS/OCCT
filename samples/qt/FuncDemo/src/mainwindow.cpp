@@ -54,6 +54,9 @@
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
+#ifdef __GNUC__
+#include <unistd.h>
+#endif
 
 MainWindow::MainWindow()
 {
@@ -171,7 +174,11 @@ void MainWindow::compute()
 
             // Process user-events.
             qApp->processEvents();
-            ::Sleep(100);
+            #ifdef __GNUC__
+               sleep(0.001);
+            #else
+               ::Sleep(100);
+            #endif
         }
     }
 
