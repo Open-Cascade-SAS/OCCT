@@ -23,7 +23,8 @@ enum StlAPI_ErrorStatus
 {
 StlAPI_StatusOK,
 StlAPI_MeshIsEmpty,
-StlAPI_CannotOpenFile
+StlAPI_CannotOpenFile,
+StlAPI_WriteError
 };
 
 #endif // _StlAPI_ErrorStatus_HeaderFile

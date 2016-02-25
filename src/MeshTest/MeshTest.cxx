@@ -233,6 +233,155 @@ options:\n\
 }
 
 //=======================================================================
+//function : tessellate
+//purpose  : 
+//=======================================================================
+static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer nbarg, const char** argv)
+{
+  if (nbarg != 5)
+  {
+    std::cerr << "Builds regular triangulation with specified number of triangles\n"
+                 "    Usage: tessellate result {surface|face} nbu nbv\n"
+                 "    Triangulation is put into the face with natural bounds (result);\n"
+                 "    it will have 2*nbu*nbv triangles and (nbu+1)*(nbv+1) nodes";
+    return 1;
+  }
+
+  const char *aResName = argv[1];
+  const char *aSrcName = argv[2];
+  int aNbU = Draw::Atoi (argv[3]);
+  int aNbV = Draw::Atoi (argv[4]);
+
+  if (aNbU <= 0 || aNbV <= 0)
+  {
+    std::cerr << "Error: Arguments nbu and nbv must be both greater than 0\n";
+    return 1;
+  }
+
+  Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(aSrcName);
+  double aUMin, aUMax, aVMin, aVMax;
+  if (! aSurf.IsNull())
+  {
+    aSurf->Bounds (aUMin, aUMax, aVMin, aVMax);
+  }
+  else
+  {
+    TopoDS_Shape aShape = DBRep::Get(aSrcName);
+    if (aShape.IsNull() || aShape.ShapeType() != TopAbs_FACE)
+    {
+      std::cerr << "Error: " << aSrcName << " is not a face\n";
+      return 1;
+    }
+    TopoDS_Face aFace = TopoDS::Face (aShape);
+    aSurf = BRep_Tool::Surface (aFace);
+    if (aSurf.IsNull())
+    {
+      std::cerr << "Error: Face " << aSrcName << " has no surface\n";
+      return 1;
+    }
+
+    BRepTools::UVBounds (aFace, aUMin, aUMax, aVMin, aVMax);
+  }
+  if (Precision::IsInfinite (aUMin) || Precision::IsInfinite (aUMax) || 
+      Precision::IsInfinite (aVMin) || Precision::IsInfinite (aVMax))
+  {
+    std::cerr << "Error: surface has infinite parametric range, aborting\n";
+    return 1;
+  }
+
+  BRepBuilderAPI_MakeFace aFaceMaker (aSurf, aUMin, aUMax, aVMin, aVMax, Precision::Confusion());
+  if (! aFaceMaker.IsDone())
+  {
+    std::cerr << "Error: cannot build face with natural bounds, aborting\n";
+    return 1;
+  }
+  TopoDS_Face aFace = aFaceMaker;
+
+  // create triangulation
+  int aNbNodes = (aNbU + 1) * (aNbV + 1);
+  int aNbTriangles = 2 * aNbU * aNbV;
+  Handle(Poly_Triangulation) aTriangulation =
+    new Poly_Triangulation (aNbNodes, aNbTriangles, Standard_False);
+
+  // fill nodes
+  TColgp_Array1OfPnt &aNodes = aTriangulation->ChangeNodes();
+  GeomAdaptor_Surface anAdSurf (aSurf);
+  double aDU = (aUMax - aUMin) / aNbU;
+  double aDV = (aVMax - aVMin) / aNbV;
+  for (int iU = 0, iShift = 1; iU <= aNbU; iU++, iShift += aNbV + 1)
+  {
+    double aU = aUMin + iU * aDU;
+    for (int iV = 0; iV <= aNbV; iV++)
+    {
+      double aV = aVMin + iV * aDV;
+      gp_Pnt aP = anAdSurf.Value (aU, aV);
+      aNodes.SetValue (iShift + iV, aP);
+    }
+  }
+
+  // fill triangles
+  Poly_Array1OfTriangle &aTriangles = aTriangulation->ChangeTriangles();
+  for (int iU = 0, iShift = 1, iTri = 0; iU < aNbU; iU++, iShift += aNbV + 1)
+  {
+    for (int iV = 0; iV < aNbV; iV++)
+    {
+      int iBase = iShift + iV;
+      Poly_Triangle aTri1 (iBase, iBase + aNbV + 2, iBase + 1);
+      Poly_Triangle aTri2 (iBase, iBase + aNbV + 1, iBase + aNbV + 2);
+      aTriangles.SetValue (++iTri, aTri1);
+      aTriangles.SetValue (++iTri, aTri2);
+    }
+  }
+
+  // put triangulation to face
+  BRep_Builder B;
+  B.UpdateFace (aFace, aTriangulation);
+
+  // fill edge polygons
+  TColStd_Array1OfInteger aUMinIso (1, aNbV + 1), aUMaxIso (1, aNbV + 1);
+  for (int iV = 0; iV <= aNbV; iV++)
+  {
+    aUMinIso.SetValue (1 + iV, 1 + iV);
+    aUMaxIso.SetValue (1 + iV, 1 + iV + aNbU * (1 + aNbV));
+  }
+  TColStd_Array1OfInteger aVMinIso (1, aNbU + 1), aVMaxIso (1, aNbU + 1);
+  for (int iU = 0; iU <= aNbU; iU++)
+  {
+    aVMinIso.SetValue (1 + iU,  1 + iU  * (1 + aNbV));
+    aVMaxIso.SetValue (1 + iU, (1 + iU) * (1 + aNbV));
+  }
+  Handle(Poly_PolygonOnTriangulation) aUMinPoly = new Poly_PolygonOnTriangulation (aUMinIso);
+  Handle(Poly_PolygonOnTriangulation) aUMaxPoly = new Poly_PolygonOnTriangulation (aUMaxIso);
+  Handle(Poly_PolygonOnTriangulation) aVMinPoly = new Poly_PolygonOnTriangulation (aVMinIso);
+  Handle(Poly_PolygonOnTriangulation) aVMaxPoly = new Poly_PolygonOnTriangulation (aVMaxIso);
+  for (TopExp_Explorer exp (aFace, TopAbs_EDGE); exp.More(); exp.Next())
+  {
+    TopoDS_Edge anEdge = TopoDS::Edge (exp.Current());
+    Standard_Real aFirst, aLast;
+    Handle(Geom2d_Curve) aC = BRep_Tool::CurveOnSurface (anEdge, aFace, aFirst, aLast);
+    gp_Pnt2d aPFirst = aC->Value (aFirst);
+    gp_Pnt2d aPLast  = aC->Value (aLast);
+    if (Abs (aPFirst.X() - aPLast.X()) < 0.1 * (aUMax - aUMin)) // U=const
+    {
+      if (BRep_Tool::IsClosed (anEdge, aFace))
+        B.UpdateEdge (anEdge, aUMinPoly, aUMaxPoly, aTriangulation);
+      else
+        B.UpdateEdge (anEdge, (aPFirst.X() < 0.5 * (aUMin + aUMax) ? aUMinPoly : aUMaxPoly), aTriangulation);
+    }
+    else // V=const
+    {
+      if (BRep_Tool::IsClosed (anEdge, aFace))
+        B.UpdateEdge (anEdge, aVMinPoly, aVMaxPoly, aTriangulation);
+      else
+        B.UpdateEdge (anEdge, (aPFirst.Y() < 0.5 * (aVMin + aVMax) ? aVMinPoly : aVMaxPoly), aTriangulation);
+    }
+  }
+
+  DBRep::Set (aResName, aFace);
+  return 0;
+}
+
+//=======================================================================
 //function : MemLeakTest
 //purpose  : 
 //=======================================================================
@@ -1620,6 +1769,7 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
   g = "Mesh Commands";
 
   theCommands.Add("incmesh","Builds triangular mesh for the shape, run w/o args for help",__FILE__, incrementalmesh, g);
+  theCommands.Add("tessellate","Builds triangular mesh for the surface, run w/o args for help",__FILE__, tessellate, g);
   theCommands.Add("MemLeakTest","MemLeakTest",__FILE__, MemLeakTest, g);
   theCommands.Add("fastdiscret","fastdiscret shape deflection",__FILE__, fastdiscret, g);
   theCommands.Add("mesh","mesh result Shape deflection",__FILE__, triangule, g);

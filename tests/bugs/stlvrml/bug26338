@@ -1,0 +1,28 @@
+puts "========"
+puts "0026338: STL export (especially binary) needs a lot of time if selected export path is not local"
+puts "========"
+puts ""
+
+pload MODELING XSDRAW
+
+# check that export to STL correctly takes into account shape locations
+box b1 5 5 5 
+box b2 5 5 5 
+ttranslate b2 10 10 10 
+compound b1 b2 comp
+incmesh comp 1.
+
+# write to binary STL
+writestl comp $imagedir/${casename}.stl 1
+
+# load STL
+readstl result $imagedir/${casename}.stl
+
+# check that bounding box is 
+set bnd [boundingstr result]
+checkreal "XMin" [lindex $bnd 0]  0. 1e-5 0.
+checkreal "YMin" [lindex $bnd 1]  0. 1e-5 0.
+checkreal "ZMin" [lindex $bnd 2]  0. 1e-5 0.
+checkreal "XMax" [lindex $bnd 3] 15. 1e-5 0.
+checkreal "YMax" [lindex $bnd 4] 15. 1e-5 0.
+checkreal "ZMax" [lindex $bnd 5] 15. 1e-5 0.
