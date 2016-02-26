@@ -24,6 +24,7 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
+#include <HLRBRep_TypeOfResultingEdge.hxx>
 class HLRBRep_Algo;
 class TopoDS_Shape;
 class HLRBRep_Data;
@@ -111,7 +112,24 @@ public:
     TopoDS_Shape IsoLineHCompound();
   
     TopoDS_Shape IsoLineHCompound (const TopoDS_Shape& S);
+  
+    //! Returns compound of resulting edges
+    //! of required type and visibility,
+    //! taking into account the kind of space
+    //! (2d or 3d)
+    TopoDS_Shape CompoundOfEdges(const HLRBRep_TypeOfResultingEdge type,
+                                 const Standard_Boolean            visible,
+                                 const Standard_Boolean            In3d);
 
+    //! For specified shape 
+    //! returns compound of resulting edges
+    //! of required type and visibility,
+    //! taking into account the kind of space
+    //! (2d or 3d)
+    TopoDS_Shape CompoundOfEdges(const TopoDS_Shape& S,
+                                 const HLRBRep_TypeOfResultingEdge type,
+                                 const Standard_Boolean            visible,
+                                 const Standard_Boolean            In3d);
 
 
 

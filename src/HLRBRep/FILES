@@ -137,3 +137,4 @@ HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx
 HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf_0.cxx
 HLRBRep_VertexList.cxx
 HLRBRep_VertexList.hxx
+HLRBRep_TypeOfResultingEdge.hxx

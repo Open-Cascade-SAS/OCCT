@@ -193,3 +193,26 @@ inline TopoDS_Shape HLRBRep_HLRToShape::IsoLineHCompound()
 inline TopoDS_Shape
 HLRBRep_HLRToShape::IsoLineHCompound(const TopoDS_Shape& S)
 { return InternalCompound(1,Standard_False,S); }
+
+//=======================================================================
+//function : CompoundOfEdges
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Shape
+HLRBRep_HLRToShape::CompoundOfEdges(const HLRBRep_TypeOfResultingEdge type,
+                                    const Standard_Boolean            visible,
+                                    const Standard_Boolean            In3d)
+{ return InternalCompound(type,visible,TopoDS_Shape(),In3d); }
+
+//=======================================================================
+//function : CompoundOfEdges
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Shape
+HLRBRep_HLRToShape::CompoundOfEdges(const TopoDS_Shape& S,
+                                    const HLRBRep_TypeOfResultingEdge type,
+                                    const Standard_Boolean            visible,
+                                    const Standard_Boolean            In3d)
+{ return InternalCompound(type,visible,S,In3d); }
