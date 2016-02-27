@@ -139,7 +139,7 @@
 #include <TColStd_HArray1OfAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 # define _CRT_SECURE_NO_DEPRECATE
 # pragma warning (disable:4996)
 #endif

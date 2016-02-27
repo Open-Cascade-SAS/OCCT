@@ -184,7 +184,7 @@ Handle(Draw_Drawable3D) DrawTrSurf_Point::Copy() const
 
 void DrawTrSurf_Point::Dump(Standard_OStream& S) const 
 {
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   ios::fmtflags F = S.flags();
   S.setf(ios::scientific,ios::floatfield);
   S.precision(15);
@@ -196,7 +196,7 @@ void DrawTrSurf_Point::Dump(Standard_OStream& S) const
     S << "Point : " << myPoint.X() << ", " << myPoint.Y() << ", " << myPoint.Z() <<endl;
   else
     S << "Point 2d : " << myPoint.X() << ", " << myPoint.Y() <<endl;
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   S.setf(F);
 #else
   S.setf(form);

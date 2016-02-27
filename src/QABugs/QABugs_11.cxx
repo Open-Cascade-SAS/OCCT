@@ -2385,7 +2385,7 @@ static int StackOverflow (int i = -1)
 #endif
 
 // this code does not work with optimize mode on Windows
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #pragma optimize( "", off )
 #endif
 static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -2642,7 +2642,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 
   return 0;
 }
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #pragma optimize( "", on )
 #endif
 

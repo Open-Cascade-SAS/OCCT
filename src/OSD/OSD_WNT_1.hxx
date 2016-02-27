@@ -35,10 +35,6 @@
 #  endif
 # endif  /* OSDAPI */
 
-#if defined(__CYGWIN32__) || defined(__MINGW32__)
-#define _TINT int
-#endif
-
 # ifdef __cplusplus
 extern "C" {
 # endif  /* __cplusplus */

@@ -556,7 +556,7 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   if (aTitle.Length())
   {
     aTitleHeight += myTextHeight + aSpacer;
-    DrawText (thePresentation, aTitle, (Standard_Integer)myXPos + aSpacer, myHeight - ((Standard_Integer)myYPos - 2 * aSpacer + aTitleHeight), aFgColor);
+    drawText (thePresentation, aTitle, (Standard_Integer)myXPos + aSpacer, myHeight - ((Standard_Integer)myYPos - 2 * aSpacer + aTitleHeight), aFgColor);
   }
 
   Standard_Boolean toReverse = IsReversed();
@@ -637,7 +637,7 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
   aGroup->AddPrimitiveArray (aPrim);
 
   if (aStep > 0)
-    DrawFrame (thePresentation, aX - 1, (Standard_Integer)(myYPos + anOffset - 1), aColorBreadth + 2, (Standard_Integer)(aColors.Length() * aStep + 2), aFgColor);
+    drawFrame (thePresentation, aX - 1, (Standard_Integer)(myYPos + anOffset - 1), aColorBreadth + 2, (Standard_Integer)(aColors.Length() * aStep + 2), aFgColor);
 
   // Draw Labels
   anOffset = 1.0 * Abs (aLabCount - aNum - 1) * ( aStep - aTextHeight ) / 2 + 1.0 * Abs (aLabCount - aNum - 1) * aTextHeight / 2;
@@ -666,12 +666,12 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
       Standard_Integer aPos2 = aLabCount - 1 - i2;
       if (aFilter && !( aPos1 % aFilter ))
       {
-        DrawText (thePresentation, aLabels.Value (i1 + 1), aX, (Standard_Integer)( myYPos + i1 * aStep + anAscent + anOffset ), aFgColor);
+        drawText (thePresentation, aLabels.Value (i1 + 1), aX, (Standard_Integer)( myYPos + i1 * aStep + anAscent + anOffset ), aFgColor);
         aLast1 = i1;
       }
       if (aFilter && !( aPos2 % aFilter ))
       {
-        DrawText (thePresentation, aLabels.Value (i2 + 1), aX, (Standard_Integer)( myYPos + i2 * aStep + anAscent + anOffset ), aFgColor);
+        drawText (thePresentation, aLabels.Value (i2 + 1), aX, (Standard_Integer)( myYPos + i2 * aStep + anAscent + anOffset ), aFgColor);
         aLast2 = i2;
       }
       i1++;
@@ -687,15 +687,15 @@ void AIS_ColorScale::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePr
     }
 
     if (i0 != -1)
-      DrawText (thePresentation, aLabels.Value (i0 + 1), aX, (Standard_Integer)( myYPos + i0 * aStep + anAscent + anOffset ), aFgColor);
+      drawText (thePresentation, aLabels.Value (i0 + 1), aX, (Standard_Integer)( myYPos + i0 * aStep + anAscent + anOffset ), aFgColor);
   }
 }
 
 //=======================================================================
-//function : DrawFrame
+//function : drawFrame
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::DrawFrame (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_ColorScale::drawFrame (const Handle(Prs3d_Presentation)& thePresentation,
                        const Standard_Integer theX, const Standard_Integer theY,
                        const Standard_Integer theWidth, const Standard_Integer theHeight,
                        const Quantity_Color& theColor)
@@ -715,10 +715,10 @@ void AIS_ColorScale::DrawFrame (const Handle(Prs3d_Presentation)& thePresentatio
 }
 
 //=======================================================================
-//function : DrawText
+//function : drawText
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::DrawText (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_ColorScale::drawText (const Handle(Prs3d_Presentation)& thePresentation,
                   const TCollection_ExtendedString& theText,
                   const Standard_Integer theX, const Standard_Integer theY,
                   const Quantity_Color& theColor)

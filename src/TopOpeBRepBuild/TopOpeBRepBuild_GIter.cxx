@@ -69,7 +69,11 @@ void TopOpeBRepBuild_GIter::Next()
 
 void TopOpeBRepBuild_GIter::Current(TopAbs_State& s1, TopAbs_State& s2) const 
 {
-  if ( !More() ) return;
+  if ( !More() )
+  {
+    s1 = s2 = TopAbs_UNKNOWN;
+    return;
+  }
   Standard_Integer i1,i2; 
   MYGTOPO.Index(myII,i1,i2);
   s1 = MYGTOPO.GState(i1);

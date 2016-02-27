@@ -58,11 +58,18 @@ void OSD_MemInfo::Update()
     myCounters[anIter] = Standard_Size(-1);
   }
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
+#if (_WIN32_WINNT >= 0x0500)
   MEMORYSTATUSEX aStatEx;
   aStatEx.dwLength = sizeof(aStatEx);
   GlobalMemoryStatusEx (&aStatEx);
   myCounters[MemVirtual] = Standard_Size(aStatEx.ullTotalVirtual - aStatEx.ullAvailVirtual);
+#else
+  MEMORYSTATUS aStat;
+  aStat.dwLength = sizeof(aStat);
+  GlobalMemoryStatus (&aStat);
+  myCounters[MemVirtual] = Standard_Size(aStat.dwTotalVirtual - aStat.dwAvailVirtual);
+#endif
 
   // use Psapi library
   HANDLE aProcess = GetCurrentProcess();

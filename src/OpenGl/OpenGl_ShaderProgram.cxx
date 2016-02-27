@@ -28,6 +28,10 @@
 
 #include <OpenGl_GlCore32.hxx>
 
+#ifdef _WIN32
+  #include <malloc.h> // for alloca()
+#endif
+
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderProgram,OpenGl_Resource)
 
 OpenGl_VariableSetterSelector OpenGl_ShaderProgram::mySetterSelector = OpenGl_VariableSetterSelector();

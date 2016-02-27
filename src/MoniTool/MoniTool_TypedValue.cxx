@@ -181,7 +181,8 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
       break;
     case MoniTool_ValueEnum    : {
       def.AssignCat("Enum");
-      Standard_Integer startcase, endcase; Standard_Boolean match;
+      Standard_Integer startcase=0, endcase=0;
+      Standard_Boolean match=0;
       EnumDef (startcase,endcase,match);
       Sprintf(mess," [%s%d-%d]",(match ? "in " : ""),startcase,endcase);
       def.AssignCat(mess);

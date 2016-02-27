@@ -63,7 +63,7 @@ Standard_Integer HashCodes (const Standard_CString Value,
 #ifdef __APPLE__
   // There are a lot of *_l functions availalbe on Mac OS X - we use them
   #define SAVE_TL()
-#elif defined(_WIN32)
+#elif defined(_WIN32) && !defined(__MINGW32__)
   // MSVCRT has equivalents with slightly different syntax
   #define SAVE_TL()
   #define strtod_l(thePtr, theNextPtr, theLocale)                _strtod_l(thePtr, theNextPtr, theLocale)
@@ -80,7 +80,7 @@ Standard_Integer HashCodes (const Standard_CString Value,
     // glibc version for android platform use locale-independent implementation of
     // strtod, strtol, strtoll functions. For other system with locale-depended
     // implementations problems may appear if "C" locale is not set explicitly.
-    #if !defined(__ANDROID__) && !defined(__QNX__)
+    #if !defined(__ANDROID__) && !defined(__QNX__) && !defined(__MINGW32__)
       #error System does not support xlocale. Import/export could be broken if C locale did not specified by application.
     #endif
     #define strtod_l(thePtr, theNextPtr, theLocale)              strtod(thePtr, theNextPtr)

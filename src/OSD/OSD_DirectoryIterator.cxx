@@ -267,9 +267,7 @@ Standard_Boolean OSD_DirectoryIterator :: More () {
 
 void OSD_DirectoryIterator :: Next () {
 
- if (  myFirstCall && !( _FD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )  ||
-       !myFirstCall
- ) {
+ if ( ! myFirstCall || ! ( _FD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) ) {
  
   do {
   

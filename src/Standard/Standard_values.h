@@ -17,7 +17,7 @@
 #ifndef _Standard_values_HeaderFile
 # define _Standard_values_HeaderFile
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 # include <limits>
 #else
 # include <limits.h>

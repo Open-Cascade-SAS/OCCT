@@ -72,7 +72,7 @@ inline void Standard_ASSERT_DO_NOTHING() {}
 // User messages are activated in debug mode only
 #ifdef _DEBUG
   #if (defined(_WIN32) || defined(__WIN32__))
-    #if defined(_MSC_VER)
+    #if defined(_MSC_VER) || defined(__MINGW64__)
       // VS-specific intrinsic
       #define Standard_ASSERT_DBGBREAK_() __debugbreak()
     #else

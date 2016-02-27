@@ -14,7 +14,7 @@
  commercial license or contractual agreement.
 */
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.

@@ -221,10 +221,10 @@ Aspect_TypeOfResize WNT_Window::DoResize() const
 
   if (wp.showCmd != SW_SHOWMINIMIZED)
   {
-    if (Abs (wp.rcNormalPosition.left   - aXLeft  ) > 2) mask |= 1;
-    if (Abs (wp.rcNormalPosition.right  - aXRight ) > 2) mask |= 2;
-    if (Abs (wp.rcNormalPosition.top    - aYTop   ) > 2) mask |= 4;
-    if (Abs (wp.rcNormalPosition.bottom - aYBottom) > 2) mask |= 8;
+    if (Abs ((int )wp.rcNormalPosition.left   - aXLeft  ) > 2) mask |= 1;
+    if (Abs ((int )wp.rcNormalPosition.right  - aXRight ) > 2) mask |= 2;
+    if (Abs ((int )wp.rcNormalPosition.top    - aYTop   ) > 2) mask |= 4;
+    if (Abs ((int )wp.rcNormalPosition.bottom - aYBottom) > 2) mask |= 8;
 
     switch (mask)
     {

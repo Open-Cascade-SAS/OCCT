@@ -171,7 +171,8 @@ Standard_Boolean TopOpeBRepBuild_GTopo::Value(const TopAbs_State s1,
 
 Standard_Boolean TopOpeBRepBuild_GTopo::Value(const Standard_Integer II) const
 {
-  Standard_Integer i1,i2; Index(II,i1,i2);
+  Standard_Integer i1=0,i2=0;
+  Index(II,i1,i2);
   Standard_Boolean b = Value(i1,i2);
   return b;
 }

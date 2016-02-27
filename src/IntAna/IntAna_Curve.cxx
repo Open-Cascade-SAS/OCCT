@@ -273,6 +273,7 @@
   if((Theta<DomainInf)  ||  
      ((Theta>DomainSup) && (!TwoCurves)) ||  
      (Theta>(DomainSup+DomainSup-DomainInf+0.00000000000001))) {
+    SigneSqrtDis = 0.;
     Standard_DomainError::Raise("IntAna_Curve::Domain");
   }
   

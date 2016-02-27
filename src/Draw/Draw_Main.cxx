@@ -63,13 +63,6 @@
 
 extern Draw_Viewer dout;
 
-static char* ColorNames[MAXCOLOR] = {
-  "White","Red","Green","Blue","Cyan","Gold","Magenta",
-  "Maroon","Orange","Pink","Salmon","Violet","Yellow","Khaki","Coral"
-  };
-
-static   Standard_Boolean XLoop;
-
 // extern Standard_IMPORT Standard_Boolean Draw_Interprete(char* command); //for C21
 Standard_IMPORT Standard_Boolean Draw_Interprete(const char* command); //for C30
 // true if complete command

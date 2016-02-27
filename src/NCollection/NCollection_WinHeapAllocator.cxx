@@ -34,7 +34,7 @@ NCollection_WinHeapAllocator::NCollection_WinHeapAllocator
 #endif
   myToZeroMemory (Standard_False)
 {
-#if(defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32) && (_WIN32_WINNT >= 0x0501)
   // activate LHF to improve small size allocations
   ULONG aHeapInfo = 2;
   HeapSetInformation (myHeapH, HeapCompatibilityInformation,

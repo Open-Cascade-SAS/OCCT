@@ -84,7 +84,7 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   aVar = getenv ("MMGT_OPT");
   Standard_Integer anAllocId   = (aVar ?  atoi (aVar): OCCT_MMGT_OPT_DEFAULT);
 
-#if defined(_WIN32) && !defined(_WIN64)
+#if defined(_WIN32) && !defined(_WIN64) && !defined(__MINGW32__)
   static const DWORD _SSE2_FEATURE_BIT(0x04000000);
   if ( anAllocId == 2 )
   {

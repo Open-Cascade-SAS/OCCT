@@ -65,7 +65,7 @@ public:
 
 #ifdef HAVE_XLOCALE_H
   typedef  locale_t clocale_t;
-#elif defined(_WIN32)
+#elif defined(_WIN32) && !defined(__MINGW32__)
   typedef _locale_t clocale_t;
 #else
   typedef void*     clocale_t;

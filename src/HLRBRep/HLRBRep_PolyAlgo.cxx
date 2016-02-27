@@ -1836,6 +1836,7 @@ Interpolation (const Standard_Real U1,
     TMultiply(X3,Y3,Z3);
     return Standard_True;
   }
+  X3 = Y3 = Z3 = XTI3 = YTI3 = ZTI3 = coef3 = U3 = 0.;
   return Standard_False;
 }
 

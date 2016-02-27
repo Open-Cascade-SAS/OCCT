@@ -1103,7 +1103,7 @@ Standard_Integer OSD_Path :: TrekLength () const {
  Standard_Integer i      = 1;
  Standard_Integer retVal = 0;
 
- if (  myTrek.IsEmpty () || myTrek.Length () == 1 && myTrek.Value ( 1 ) == '|'  )
+ if (  myTrek.IsEmpty () || (myTrek.Length () == 1 && myTrek.Value ( 1 ) == '|') )
 
   return retVal;
 

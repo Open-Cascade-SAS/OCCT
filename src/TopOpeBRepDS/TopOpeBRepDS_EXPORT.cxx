@@ -1446,7 +1446,9 @@ Standard_EXPORT Standard_Integer FUN_ds_hasI2d(
     Standard_Boolean is3d = Standard_False;
     for (; itF.More(); itF.Next()){
       const Handle(TopOpeBRepDS_Interference)& IF = itF.Value();
-      TopOpeBRepDS_Kind GTF,STF; Standard_Integer GF,SF; FDS_data(IF,GTF,GF,STF,SF);
+      TopOpeBRepDS_Kind GTF,STF;
+      Standard_Integer GF=0,SF=0;
+      FDS_data(IF,GTF,GF,STF,SF);
       if (GE != GF) continue;
       if (SF==isb) {
 	is3d = Standard_True;

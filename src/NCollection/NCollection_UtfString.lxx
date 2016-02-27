@@ -272,6 +272,28 @@ void NCollection_UtfString<Type>::FromUnicode (const TypeFrom*        theStringU
   strFree (anOldBuffer);
 }
 
+//! Auxiliary convertion tool.
+class NCollection_UtfStringTool
+{
+public:
+  //! Empty constructor.
+  NCollection_UtfStringTool() : myWideBuffer (NULL) {}
+
+  //! Destructor for temporary resources.
+  Standard_EXPORT ~NCollection_UtfStringTool();
+
+  //! Convert the string from current locale into UNICODE (wide characters) using system APIs.
+  //! Returned pointer will be released by this tool.
+  Standard_EXPORT wchar_t* FromLocale (const char* theString);
+
+  //! Convert the UNICODE (wide characters) string into locale using system APIs.
+  Standard_EXPORT static bool ToLocale (const wchar_t*         theWideString,
+                                        char*                  theBuffer,
+                                        const Standard_Integer theSizeBytes);
+private:
+  wchar_t* myWideBuffer; //!< temporary variable
+};
+
 // =======================================================================
 // function : FromLocale
 // purpose  :
@@ -280,34 +302,14 @@ template<typename Type> inline
 void NCollection_UtfString<Type>::FromLocale (const char*            theString,
                                               const Standard_Integer theLength)
 {
-#if(defined(_WIN32) || defined(__WIN32__))
-  // use WinAPI
-  int aWideSize = MultiByteToWideChar (CP_ACP, MB_PRECOMPOSED, theString, -1, NULL, 0);
-  if (aWideSize <= 0)
+  NCollection_UtfStringTool aConvertor;
+  wchar_t* aWideBuffer = aConvertor.FromLocale (theString);
+  if (aWideBuffer == NULL)
   {
     Clear();
     return;
   }
-  wchar_t* aWideBuffer = new wchar_t[aWideSize + 1];
-  MultiByteToWideChar (CP_ACP, MB_PRECOMPOSED, theString, -1, aWideBuffer, aWideSize);
-  aWideBuffer[aWideSize] = L'\0';
   FromUnicode (aWideBuffer, theLength);
-  delete[] aWideBuffer;
-#else
-  // this is size in bytes but should probably be enough to store string in wide chars
-  // notice that these functions are sensitive to locale set by application!
-  int aMbLen = mblen (theString, MB_CUR_MAX);
-  if (aMbLen <= 0)
-  {
-    Clear();
-    return;
-  }
-  wchar_t* aWideBuffer = new wchar_t[aMbLen + 1];
-  mbstowcs (aWideBuffer, theString, aMbLen);
-  aWideBuffer[aMbLen] = L'\0';
-  FromUnicode (aWideBuffer, theLength);
-  delete[] aWideBuffer;
-#endif
 }
 
 // =======================================================================
@@ -319,17 +321,7 @@ bool NCollection_UtfString<Type>::ToLocale (char*                  theBuffer,
                                             const Standard_Integer theSizeBytes) const
 {
   NCollection_UtfString<wchar_t> aWideCopy (myString, myLength);
-#if(defined(_WIN32) || defined(__WIN32__))
-  int aMbBytes = WideCharToMultiByte (CP_ACP, 0, aWideCopy.ToCString(), -1, theBuffer, theSizeBytes, NULL, NULL);
-#else
-  std::size_t aMbBytes = std::wcstombs (theBuffer, aWideCopy.ToCString(), theSizeBytes);
-#endif
-  if (aMbBytes <= 0)
-  {
-    *theBuffer = '\0';
-    return false;
-  }
-  return true;
+  return NCollection_UtfStringTool::ToLocale (aWideCopy.ToCString(), theBuffer, theSizeBytes);
 }
 
 // =======================================================================

@@ -173,7 +173,7 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
     
 #ifdef _WIN32
     TCollection_ExtendedString hd=UTL::xgetenv("HOMEDRIVE");
-    if(hd.Length() != NULL) {
+    if(hd.Length() != 0) {
       theDefaultFolder=hd;
       theDefaultFolder+=UTL::xgetenv("HOMEPATH");
     }

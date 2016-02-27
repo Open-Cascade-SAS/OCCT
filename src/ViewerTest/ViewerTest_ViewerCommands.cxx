@@ -234,7 +234,7 @@ const Handle(MMgt_TShared)& ViewerTest::WClass()
 #if defined(_WIN32)
   if (theWClass.IsNull())
   {
-    theWClass = new WNT_WClass ("GW3D_Class", AdvViewerWindowProc,
+    theWClass = new WNT_WClass ("GW3D_Class", (Standard_Address )AdvViewerWindowProc,
       CS_VREDRAW | CS_HREDRAW, 0, 0,
       ::LoadCursor (NULL, IDC_ARROW));
   }
@@ -8649,7 +8649,7 @@ static Standard_Integer VProgressiveMode (Draw_Interpretor& /*theDI*/,
     Standard_Boolean toExit = Standard_False;
 
     MSG aMsg;
-    while (PeekMessage (&aMsg, NULL, NULL, NULL, PM_REMOVE))
+    while (PeekMessage (&aMsg, NULL, 0, 0, PM_REMOVE))
     {
       if (aMsg.message == WM_KEYDOWN && (aMsg.wParam == 0x0d || aMsg.wParam == 0x1b))
       {

@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_PrinterOStream,Message_Printer)
 
-#ifndef _WIN32
+#if !defined(_MSC_VER)
   #include <strings.h>
 #endif
 

@@ -197,8 +197,9 @@ Standard_Integer OSD_Process::Error()const{
 #include <OSD_WNT_1.hxx>
 #include <LMCONS.H> /// pour UNLEN  ( see MSDN about GetUserName() )
 
-
-#pragma warning( disable : 4700 )
+#if defined(_MSC_VER)
+  #pragma warning( disable : 4700 )
+#endif
 
 void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 

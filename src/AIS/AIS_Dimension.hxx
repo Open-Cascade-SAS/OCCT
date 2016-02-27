@@ -403,7 +403,7 @@ protected:
   //! @param theLabelPosition [in] the text label vertical and horizontal positioning option
   //! respectively to the main dimension line. 
   //! @return text width relative to the dimension working plane. For 2d text this value will be zero.
-  Standard_EXPORT void DrawText (const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT void drawText (const Handle(Prs3d_Presentation)& thePresentation,
                                  const gp_Pnt& theTextPos,
                                  const gp_Dir& theTextDir,
                                  const TCollection_ExtendedString& theText,

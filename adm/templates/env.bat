@@ -160,9 +160,13 @@ set "CSF_OPT_CMPL=%CSF_OPT_CMPL% -I%1"
 goto :eof
 
 :concatLib32
-set "OPT_LIB32=%OPT_LIB32% /LIBPATH:%1"
+rem Compiler options for Code::Blocks: -L for gcc/mingw and /LIBPATH for msvc
+rem set "OPT_LIB32=%OPT_LIB32% /LIBPATH:%1"
+set "OPT_LIB32=%OPT_LIB32% -L%1"
 goto :eof
 
 :concatLib64
-set "OPT_LIB64=%OPT_LIB64% /LIBPATH:%1"
+rem Compiler options for Code::Blocks: -L for gcc/mingw and /LIBPATH for msvc
+rem set "OPT_LIB64=%OPT_LIB64% /LIBPATH:%1"
+set "OPT_LIB64=%OPT_LIB64% -L%1"
 goto :eof

@@ -345,9 +345,7 @@ Standard_Boolean OSD_FileIterator :: More () {
 
 void OSD_FileIterator :: Next () {
 
- if (  myFirstCall && ( _FD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )  ||
-       !myFirstCall
- ) {
+ if ( ! myFirstCall || ( _FD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) ) {
  
   do {
   

@@ -20,7 +20,9 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#pragma comment( lib, "comdlg32.lib"  )
+#if defined(_MSC_VER)
+  #pragma comment( lib, "comdlg32.lib"  )
+#endif
 #endif
 
 

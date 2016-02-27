@@ -384,7 +384,7 @@ return OSD_UNKNOWN   ;
 // -------------------------------------------------------------------------- 
 // Read content of a file
 // -------------------------------------------------------------------------- 
-void  OSD_File::Read(      Standard_Address&  Buffer, 
+void  OSD_File::Read(const Standard_Address   Buffer, 
                      const Standard_Integer   Nbyte,
                            Standard_Integer&  Readbyte)
 {
@@ -841,11 +841,12 @@ void OSD_File::Rewind() {
 
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #define VAC
-#define _int64 int
 #endif
 
-#pragma comment( lib, "WSOCK32.LIB"  )
-#pragma comment( lib, "WINSPOOL.LIB" )
+#if defined(_MSC_VER)
+  #pragma comment( lib, "WSOCK32.LIB"  )
+  #pragma comment( lib, "WINSPOOL.LIB" )
+#endif
 
 #define ACE_HEADER_SIZE (  sizeof ( ACCESS_ALLOWED_ACE ) - sizeof ( DWORD )  )
 
@@ -1085,19 +1086,18 @@ void OSD_File :: Read (
  }
                                         
  Standard_Integer NbyteRead;
- Standard_Address buff;
 
  TEST_RAISE(  "Read"  );
      
- buff = ( Standard_Address )new Standard_Character[ Nbyte + 1 ];
+ char* buff = new Standard_Character[ Nbyte + 1 ];
 
  Read ( buff, Nbyte, NbyteRead );
 
- (  ( Standard_PCharacter )buff  )[ NbyteRead ] = 0;
+ buff[ NbyteRead ] = 0;
 
  if ( NbyteRead != 0 )
 
-  Buffer = ( Standard_PCharacter )buff;
+  Buffer = buff;
 
  else
 
@@ -1259,7 +1259,7 @@ void OSD_File :: ReadLine (
 // -------------------------------------------------------------------------- 
 
 void OSD_File :: Read (
-                  Standard_Address& Buffer,
+                  const Standard_Address Buffer,
                   const Standard_Integer Nbyte, Standard_Integer& Readbyte
                  ) {
 
@@ -1456,7 +1456,7 @@ OSD_KindFile OSD_File :: KindOfFile () const {
 typedef struct _osd_wnt_key {
 
                 HKEY   hKey;
-                LPTSTR keyPath;
+                const char* keyPath;
 
                } OSD_WNT_KEY;
 
@@ -1627,23 +1627,26 @@ Standard_Boolean OSD_File :: IsLocked () {
 // Return size of a file
 // -------------------------------------------------------------------------- 
 
-Standard_Size OSD_File :: Size () {
-
- Standard_Integer retVal;
-
- TEST_RAISE(  "Size"  );
-
- LARGE_INTEGER aSize;
- aSize.QuadPart = 0;
- retVal = GetFileSizeEx (myFileHandle, &aSize);
-
- if (  retVal == 0  )
-
-  _osd_wnt_set_error ( myError, OSD_WFile );
-
- return (Standard_Size)aSize.QuadPart;
-
-}  // end OSD_File :: Size
+Standard_Size OSD_File::Size()
+{
+  TEST_RAISE("Size");
+#if (_WIN32_WINNT >= 0x0500)
+  LARGE_INTEGER aSize;
+  aSize.QuadPart = 0;
+  if (GetFileSizeEx (myFileHandle, &aSize) == 0)
+  {
+    _osd_wnt_set_error (myError, OSD_WFile);
+  }
+  return (Standard_Size)aSize.QuadPart;
+#else
+  DWORD aSize = GetFileSize (myFileHandle, NULL);
+  if (aSize == INVALID_FILE_SIZE)
+  {
+    _osd_wnt_set_error (myError, OSD_WFile);
+  }
+  return aSize;
+#endif
+}
 
 // -------------------------------------------------------------------------- 
 // Print contains of a file
@@ -1701,9 +1704,9 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd (
  DWORD                dwAccessOwner;
  DWORD                dwAccessWorld;
  DWORD                dwAccessAdminDir;
- DWORD                dwAccessGroupDir;
+// DWORD                dwAccessGroupDir;
  DWORD                dwAccessOwnerDir;
- DWORD                dwAccessWorldDir;
+// DWORD                dwAccessWorldDir;
  DWORD                dwACLsize       = sizeof ( ACL );
  DWORD                dwIndex         = 0;
  PTOKEN_OWNER         pTkOwner        = NULL;
@@ -1769,9 +1772,9 @@ retry:
   dwAccessWorld = _get_access_mask (  prot.World  ()  );
 
   dwAccessAdminDir = _get_dir_access_mask (  prot.System ()  );
-  dwAccessGroupDir = _get_dir_access_mask (  prot.Group  ()  );
+//  dwAccessGroupDir = _get_dir_access_mask (  prot.Group  ()  );
   dwAccessOwnerDir = _get_dir_access_mask (  prot.User   ()  );
-  dwAccessWorldDir = _get_dir_access_mask (  prot.World  ()  );
+//  dwAccessWorldDir = _get_dir_access_mask (  prot.World  ()  );
 
   if (  dwAccessGroup != 0  ) {
                                              

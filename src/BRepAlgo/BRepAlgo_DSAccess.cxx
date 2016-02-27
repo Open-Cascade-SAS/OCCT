@@ -1456,6 +1456,9 @@ void BRepAlgo_DSAccess::PntVtxOnSectEdge
  Standard_Integer& ipv2,
  TopOpeBRepDS_Kind& pvk2)
 {
+  ipv1 = ipv2 = 0;
+  pvk1 = pvk2 = TopOpeBRepDS_UNKNOWN;
+
 //  myHB->ChangeBuilder();
   TopOpeBRepDS_DataStructure& DS = myHDS->ChangeDS();
   TopOpeBRepDS_Kind kind = TopOpeBRepDS_POINT;

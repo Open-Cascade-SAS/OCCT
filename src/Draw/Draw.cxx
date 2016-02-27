@@ -491,7 +491,7 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
     }
 
     TCollection_AsciiString aPluginLibrary("");
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(__MINGW32__)
     aPluginLibrary += "lib";
 #endif
     aPluginLibrary +=  aPluginResource->Value(theKey.ToCString());

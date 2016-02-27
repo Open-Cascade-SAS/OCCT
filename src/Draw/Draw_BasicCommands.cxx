@@ -334,7 +334,7 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
   di << "Cygwin\n";
 #endif
 #if defined(__MINGW64__)
-  di << "MinGW 64 " << __MINGW64_MAJOR_VERSION << "." << __MINGW64_MINOR_VERSION << "\n";
+  di << "MinGW 64 " << __MINGW64_VERSION_MAJOR << "." << __MINGW64_VERSION_MINOR << "\n";
 #elif defined(__MINGW32__)
   di << "MinGW 32 " << __MINGW32_MAJOR_VERSION << "." << __MINGW32_MINOR_VERSION << "\n";
 #endif 

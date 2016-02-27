@@ -232,7 +232,7 @@ protected:
   //! @param theWidth [in] the width of frame.
   //! @param theHeight [in] the height of frame.
   //! @param theColor [in] the color of frame.
-  Standard_EXPORT void DrawFrame (const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT void drawFrame (const Handle(Prs3d_Presentation)& thePresentation,
                        const Standard_Integer theX, const Standard_Integer theY,
                        const Standard_Integer theWidth, const Standard_Integer theHeight,
                        const Quantity_Color& theColor);
@@ -242,7 +242,7 @@ protected:
   //! @param theX [in] the X coordinate of text position.
   //! @param theY [in] the Y coordinate of text position.
   //! @param theColor [in] the color of text.
-  Standard_EXPORT void DrawText (const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT void drawText (const Handle(Prs3d_Presentation)& thePresentation,
                   const TCollection_ExtendedString& theText,
                   const Standard_Integer theX, const Standard_Integer theY,
                   const Quantity_Color& theColor);

@@ -24,6 +24,12 @@
 #endif
 #include <windows.h>
 
+#ifndef STATUS_FLOAT_MULTIPLE_FAULTS
+  // <ntstatus.h>
+  #define STATUS_FLOAT_MULTIPLE_FAULTS     (0xC00002B4L)
+  #define STATUS_FLOAT_MULTIPLE_TRAPS      (0xC00002B5L)
+#endif
+
 #include <OSD_Exception_ACCESS_VIOLATION.hxx>
 #include <OSD_Exception_ARRAY_BOUNDS_EXCEEDED.hxx>
 #include <OSD_Exception_ILLEGAL_INSTRUCTION.hxx>

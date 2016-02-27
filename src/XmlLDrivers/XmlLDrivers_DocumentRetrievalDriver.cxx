@@ -377,14 +377,14 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     chr = dir.Value ( i );
     
     switch ( chr ) {
-      
-    case _TEXT( '|' ):
-      dirRet += _TEXT( "/" );
+
+    case '|':
+      dirRet += "/";
       break;
-      
-    case _TEXT( '^' ):
-      
-      dirRet += _TEXT( ".." );
+
+    case '^':
+
+      dirRet += "..";
       break;
       
     default:

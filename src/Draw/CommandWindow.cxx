@@ -193,7 +193,7 @@ LRESULT APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
   char buffer[COMMANDSIZE];	
 	POINT pos;
-	BOOL rep;
+	BOOL rep = 0;
 	static LRESULT nbline; // Process the buffer of the edit window 
   LRESULT index;
 

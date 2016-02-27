@@ -393,10 +393,10 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
 }
 
 //=======================================================================
-//function : DrawText
-//purpose  : 
+//function : drawText
+//purpose  :
 //=======================================================================
-void AIS_Dimension::DrawText (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
                               const gp_Pnt& theTextPos,
                               const gp_Dir& theTextDir,
                               const TCollection_ExtendedString& theText,
@@ -572,7 +572,7 @@ void AIS_Dimension::DrawExtension (const Handle(Prs3d_Presentation)& thePresenta
     gp_Pnt aTextPos = ElCLib::Value (theExtensionSize, anExtensionLine);
     gp_Dir aTextDir = theExtensionDir;
 
-    DrawText (thePresentation,
+    drawText (thePresentation,
               aTextPos,
               aTextDir,
               theLabelString,
@@ -727,7 +727,7 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
       // add text primitives
       if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
       {
-        DrawText (thePresentation,
+        drawText (thePresentation,
                   aTextPos,
                   aTextDir,
                   aLabelString,

@@ -117,7 +117,7 @@ public:
   //! may be less than Nbyte if the number of bytes left in the file
   //! is less than Nbyte bytes. For this reason the output
   //! parameter Readbyte will contain the number of read bytes.
-  Standard_EXPORT void Read (Standard_Address& Buffer, const Standard_Integer Nbyte, Standard_Integer& Readbyte);
+  Standard_EXPORT void Read (const Standard_Address Buffer, const Standard_Integer Nbyte, Standard_Integer& Readbyte);
   
   //! Attempts to write Nbyte bytes from the AsciiString to the file
   //! associated to the object File.

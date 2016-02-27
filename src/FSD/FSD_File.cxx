@@ -81,7 +81,7 @@ Storage_Error FSD_File::Open(const TCollection_AsciiString& aName,const Storage_
 
   if (OpenMode() == Storage_VSNone) {
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
     TCollection_ExtendedString aWName(aName);
     if (aMode == Storage_VSRead) {
       myStream.open( (const wchar_t*) aWName.ToExtString(),ios::in); // ios::nocreate is not portable

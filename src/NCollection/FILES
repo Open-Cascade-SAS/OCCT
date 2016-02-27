@@ -69,6 +69,7 @@ NCollection_UtfIterator.hxx
 NCollection_UtfIterator.lxx
 NCollection_UtfString.hxx
 NCollection_UtfString.lxx
+NCollection_UtfString.cxx
 NCollection_Vec2.hxx
 NCollection_Vec3.hxx
 NCollection_Vec4.hxx

@@ -128,6 +128,7 @@ proc genproj { args } {
 
   # Setting default IDE.
   set anTarget ""
+  set aCmpl    "gcc"
   switch -exact -- "$targetStation" {
     "wnt"   {set anTarget "$::env(VCVER)"}
     "lin"   {set anTarget "cbp"}
@@ -215,7 +216,7 @@ proc genproj { args } {
 
   set anAdmPath "$path/adm"
 
-  OS:MKPRC "$anAdmPath" "$anTarget" "$aLibType" "$aPlatform"
+  OS:MKPRC "$anAdmPath" "$anTarget" "$aLibType" "$aPlatform" "$aCmpl"
 
   genprojbat "$anTarget"
 }
@@ -260,7 +261,10 @@ proc genprojbat {theIDE} {
     file copy -force -- "$::THE_CASROOT/adm/templates/msvc.bat" "$::path/msvc.bat"
   } else {
     switch -exact -- "$theIDE" {
-      "cbp"   { file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.sh" "$::path/codeblocks.sh" }
+      "cbp"   {
+        file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.sh"  "$::path/codeblocks.sh"
+        file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.bat" "$::path/codeblocks.bat"
+      }
       "xcd"   { file copy -force -- "$::THE_CASROOT/adm/templates/xcode.sh"      "$::path/xcode.sh" }
     }
   }
@@ -279,7 +283,12 @@ set aTKNullKey "TKNull"
 set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
-proc OS:MKPRC { {theOutDir {}} {theIDE ""} {theLibType "dynamic"} {thePlatform ""} } {
+# @param theOutDir   Root directory for project files
+# @param theIDE      IDE code name (vc10 for Visual Studio 2010, cbp for Code::Blocks, xcd for XCode)
+# @param theLibType  Library type - dynamic or static
+# @param thePlatform Optional target platform for cross-compiling, e.g. ios for iOS
+# @param theCmpl     Compiler option (msvc or gcc)
+proc OS:MKPRC { theOutDir theIDE theLibType thePlatform theCmpl } {
   global path targetStation
   set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd" }
 
@@ -352,7 +361,7 @@ proc OS:MKPRC { {theOutDir {}} {theIDE ""} {theLibType "dynamic"} {thePlatform "
     "vc11"   -
     "vc12"   -
     "vc14"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
-    "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
+    "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution $theCmpl }
     "xcd"   {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000"
       OS:MKXCD $anOutDir $aModules $anAllSolution $theLibType $thePlatform
@@ -1076,6 +1085,8 @@ proc osutils:tk:csfInExternlib { EXTERNLIB } {
   return $lret
 }
 
+# Collect dependencies map depending on target OS (libraries for CSF_ codenames used in EXTERNLIB) .
+# @param theOS         - target OS
 # @param theCsfLibsMap - libraries  map
 # @param theCsfFrmsMap - frameworks map, OS X specific
 proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
@@ -1085,59 +1096,74 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
   unset theCsfLibsMap
   unset theCsfFrmsMap
 
+  set aLibsMap(CSF_FREETYPE)  "freetype"
+  set aLibsMap(CSF_TclLibs)   "tcl8.6"
+  set aLibsMap(CSF_TclTkLibs) "tk8.6"
+  if { "$::HAVE_FREEIMAGE" == "true" } {
+    if { "$theOS" == "wnt" } {
+      set aLibsMap(CSF_FreeImagePlus) "FreeImage FreeImagePlus"
+    } else {
+      set aLibsMap(CSF_FreeImagePlus) "freeimage"
+    }
+  }
+  if { "$::HAVE_GL2PS" == "true" } {
+    set aLibsMap(CSF_GL2PS) "gl2ps"
+  }
+  if { "$::HAVE_TBB" == "true" } {
+    set aLibsMap(CSF_TBB) "tbb tbbmalloc"
+  }
+  if { "$::HAVE_VTK" == "true" } {
+    if { "$theOS" == "wnt" } {
+      set aLibsMap(CSF_VTK) [osutils:vtkCsf "wnt"]
+    } else {
+      set aLibsMap(CSF_VTK) [osutils:vtkCsf "unix"]
+    }
+  }
+
   if { "$theOS" == "wnt" } {
     #  WinAPI libraries
-    set aLibsMap(CSF_kernel32)     "kernel32.lib"
-    set aLibsMap(CSF_advapi32)     "advapi32.lib"
-    set aLibsMap(CSF_gdi32)        "gdi32.lib"
-    set aLibsMap(CSF_user32)       "user32.lib"
-    set aLibsMap(CSF_opengl32)     "opengl32.lib"
-    set aLibsMap(CSF_wsock32)      "wsock32.lib"
-    set aLibsMap(CSF_netapi32)     "netapi32.lib"
-    set aLibsMap(CSF_AviLibs)      "ws2_32.lib vfw32.lib"
-    set aLibsMap(CSF_OpenGlLibs)   "opengl32.lib"
+    set aLibsMap(CSF_kernel32)     "kernel32"
+    set aLibsMap(CSF_advapi32)     "advapi32"
+    set aLibsMap(CSF_gdi32)        "gdi32"
+    set aLibsMap(CSF_user32)       "user32 comdlg32"
+    set aLibsMap(CSF_opengl32)     "opengl32"
+    set aLibsMap(CSF_wsock32)      "wsock32"
+    set aLibsMap(CSF_netapi32)     "netapi32"
+    set aLibsMap(CSF_AviLibs)      "ws2_32 vfw32"
+    set aLibsMap(CSF_OpenGlLibs)   "opengl32"
+    set aLibsMap(CSF_winspool)     "Winspool"
+    set aLibsMap(CSF_psapi)        "Psapi"
+    set aLibsMap(CSF_d3d9)         "d3d9"
 
-    set aLibsMap(CSF_QT)           "QtCore4.lib QtGui4.lib"
+    # the naming is different on Windows
+    set aLibsMap(CSF_TclLibs)      "tcl86"
+    set aLibsMap(CSF_TclTkLibs)    "tk86"
 
-    # VTK
-    set aLibsMap(CSF_VTK)         [osutils:vtkCsf "wnt"]
+    set aLibsMap(CSF_QT)           "QtCore4 QtGui4"
+
+    # tbb headers define different pragma lib depending on debug/release
+    set aLibsMap(CSF_TBB) ""
   } else {
-    set aLibsMap(CSF_FREETYPE)     "freetype"
     if { "$theOS" == "mac" } {
       set aLibsMap(CSF_objc)       "objc"
       set aFrmsMap(CSF_Appkit)     "Appkit"
       set aFrmsMap(CSF_IOKit)      "IOKit"
       set aFrmsMap(CSF_OpenGlLibs) "OpenGL"
       set aFrmsMap(CSF_TclLibs)    "Tcl"
+      set aLibsMap(CSF_TclLibs)    ""
       set aFrmsMap(CSF_TclTkLibs)  "Tk"
+      set aLibsMap(CSF_TclTkLibs)  ""
     } else {
       if { "$theOS" == "qnx" } {
-        # CSF_ThreadLibs - pthread API is part og libc on QNX
+        # CSF_ThreadLibs - pthread API is part of libc on QNX
         set aLibsMap(CSF_OpenGlLibs) "EGL GLESv2"
-        set aLibsMap(CSF_TclLibs)    "tcl8.6"
-        set aLibsMap(CSF_TclTkLibs)  "tk8.6"
       } else {
         set aLibsMap(CSF_ThreadLibs) "pthread rt"
         set aLibsMap(CSF_OpenGlLibs) "GL"
-        set aLibsMap(CSF_TclLibs)    "tcl8.6"
         set aLibsMap(CSF_TclTkLibs)  "X11 tk8.6"
         set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
         set aLibsMap(CSF_MotifLibs)  "X11"
       }
-    }
-
-    # optional 3rd-parties
-    if { "$::HAVE_TBB" == "true" } {
-      set aLibsMap(CSF_TBB)        "tbb tbbmalloc"
-    }
-    if { "$::HAVE_FREEIMAGE" == "true" } {
-      set aLibsMap(CSF_FreeImagePlus)  "freeimage"
-    }
-    if { "$::HAVE_GL2PS" == "true" } {
-      set aLibsMap(CSF_GL2PS)      "gl2ps"
-    }
-    if { "$::HAVE_VTK" == "true" } {
-      set aLibsMap(CSF_VTK)         [osutils:vtkCsf "unix"]
     }
   }
 }
@@ -1146,12 +1172,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
 proc osutils:vtkCsf {{theOS ""}} {
   set aVtkVer "6.1"
 
-  set aLibSuffix ""
   set aPathSplitter ":"
-  
   if {"$theOS" == "wnt"} {
     set aPathSplitter ";"
-    set aLibSuffix ".lib"
   }
 
   set anOptIncs [split $::env(CSF_OPT_INC) "$aPathSplitter"]
@@ -1167,7 +1190,7 @@ proc osutils:vtkCsf {{theOS ""}} {
   # Additional suffices for the libraries
   set anIdx 0
   foreach anItem $aLibArray {
-    lset aLibArray $anIdx $anItem-$aVtkVer$aLibSuffix
+    lset aLibArray $anIdx $anItem-$aVtkVer
     incr anIdx
   }
 
@@ -1449,24 +1472,26 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   }
   regsub -all -- {__PROJECT_GUID__} $theProjTmpl $aGuidsMap($theToolKit) theProjTmpl
 
-  set aCommonUsedTK [list]
+  set aUsedLibs [list]
   foreach tkx [osutils:commonUsedTK  $theToolKit] {
-    lappend aCommonUsedTK "${tkx}.lib"
+    lappend aUsedLibs "${tkx}.lib"
   }
 
   osutils:usedOsLibs $theToolKit "wnt" aLibs aFrameworks
-  set aUsedToolKits [concat $aCommonUsedTK $aLibs]
+  foreach aLibIter $aLibs {
+    lappend aUsedLibs "${aLibIter}.lib"
+  }
 
   # correct names of referred third-party libraries that are named with suffix
   # depending on VC version
-  regsub -all -- {vc[0-9]+} $aUsedToolKits $theVcVer aUsedToolKits
+  regsub -all -- {vc[0-9]+} $aUsedLibs $theVcVer aUsedLibs
 
   # and put this list to project file
-  #puts "$theToolKit requires  $aUsedToolKits"
+  #puts "$theToolKit requires  $aUsedLibs"
   if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
-    set aUsedToolKits [join $aUsedToolKits {;}]
+    set aUsedLibs [join $aUsedLibs {;}]
   }
-  regsub -all -- {__TKDEP__} $theProjTmpl $aUsedToolKits theProjTmpl
+  regsub -all -- {__TKDEP__} $theProjTmpl $aUsedLibs theProjTmpl
 
   set anIncPaths "..\\..\\..\\inc"
   set aTKDefines ""
@@ -1666,23 +1691,25 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     }
     regsub -all -- {__PROJECT_GUID__} $aProjTmpl $aGuidsMap($aProjName) aProjTmpl
 
-    set aCommonUsedTK [list]
+    set aUsedLibs [list]
     foreach tkx [osutils:commonUsedTK  $theToolKit] {
-      lappend aCommonUsedTK "${tkx}.lib"
+      lappend aUsedLibs "${tkx}.lib"
     }
 
     osutils:usedOsLibs $theToolKit "wnt" aLibs aFrameworks
-    set aUsedToolKits [concat $aCommonUsedTK $aLibs]
+    foreach aLibIter $aLibs {
+      lappend aUsedLibs "${aLibIter}.lib"
+    }
 
     # correct names of referred third-party libraries that are named with suffix
     # depending on VC version
-    regsub -all -- {vc[0-9]+} $aUsedToolKits $theVcVer aUsedToolKits
+    regsub -all -- {vc[0-9]+} $aUsedLibs $theVcVer aUsedLibs
 
-#    puts "$aProjName requires  $aUsedToolKits"
+#    puts "$aProjName requires  $aUsedLibs"
     if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
-      set aUsedToolKits [join $aUsedToolKits {;}]
+      set aUsedLibs [join $aUsedLibs {;}]
     }
-    regsub -all -- {__TKDEP__} $aProjTmpl $aUsedToolKits aProjTmpl
+    regsub -all -- {__TKDEP__} $aProjTmpl $aUsedLibs aProjTmpl
 
     set aFilesSection ""
     set aVcFilesX(units) ""
@@ -1848,13 +1875,13 @@ proc osutils:justunix { listloc } {
 
 ####### CODEBLOCK ###################################################################
 # Function to generate Code Blocks workspace and project files
-proc OS:MKCBP { theOutDir {theModules {}} {theAllSolution ""} } {
+proc OS:MKCBP { theOutDir theModules theAllSolution theCmpl } {
   puts stderr "Generating project files for Code Blocks"
 
   # Generate projects for toolkits and separate workspace for each module
   foreach aModule $theModules {
-    OS:cworkspace $aModule $aModule $theOutDir
-    OS:cbp        $aModule          $theOutDir
+    OS:cworkspace          $aModule $aModule $theOutDir
+    OS:cbp        $theCmpl $aModule          $theOutDir
   }
 
   # Generate single workspace "OCCT" containing projects from all modules
@@ -1866,30 +1893,69 @@ proc OS:MKCBP { theOutDir {theModules {}} {theAllSolution ""} } {
 }
 
 # Generate Code Blocks projects
-proc OS:cbp { theModules theOutDir } {
+proc OS:cbp { theCmpl theModules theOutDir } {
   set aProjectFiles {}
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
-      lappend aProjectFiles [osutils:cbptk $theOutDir $aToolKit ]
+      lappend aProjectFiles [osutils:cbptk $theCmpl $theOutDir $aToolKit ]
     }
     foreach anExecutable [OS:executable ${aModule}] {
-      lappend aProjectFiles [osutils:cbpx  $theOutDir $anExecutable]
+      lappend aProjectFiles [osutils:cbpx  $theCmpl $theOutDir $anExecutable]
     }
   }
   return $aProjectFiles
 }
 
 # Generate Code::Blocks project file for ToolKit
-proc osutils:cbptk { theOutDir theToolKit } {
-  set aUsedToolKits [list]
+proc osutils:cbptk { theCmpl theOutDir theToolKit } {
+  set aUsedLibs     [list]
   set aFrameworks   [list]
   set anIncPaths    [list]
   set aTKDefines    [list]
   set aTKSrcFiles   [list]
 
-  osutils:tkinfo "../../.." $theToolKit aUsedToolKits aFrameworks anIncPaths aTKDefines aTKSrcFiles
+  global path targetStation
+  set aWokStation "$targetStation"
 
-  return [osutils:cbp $theOutDir $theToolKit $aTKSrcFiles $aUsedToolKits $aFrameworks $anIncPaths $aTKDefines]
+  # collect list of referred libraries to link with
+  osutils:usedOsLibs $theToolKit "$aWokStation" aUsedLibs aFrameworks
+  set aDepToolkits [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]]
+  foreach tkx $aDepToolkits {
+    lappend aUsedLibs "${tkx}"
+  }
+
+  lappend anIncPaths "../../../inc"
+  set listloc [osutils:tk:units $theToolKit]
+
+  if { [llength $listloc] == 0 } {
+    set listloc $theToolKit
+  }
+
+  if { "$aWokStation" == "wnt" } {
+    set resultloc [osutils:justwnt  $listloc]
+  } else {
+    set resultloc [osutils:justunix $listloc]
+  }
+  if [array exists written] { unset written }
+  foreach fxlo $resultloc {
+    set xlo       $fxlo
+    set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
+    foreach aSrcFile [lsort $aSrcFiles] {
+      if { ![info exists written([file tail $aSrcFile])] } {
+        set written([file tail $aSrcFile]) 1
+        lappend aTKSrcFiles "../../../[wokUtils:FILES:wtail $aSrcFile 3]"
+      } else {
+        puts "Warning : more than one occurences for [file tail $aSrcFile]"
+      }
+    }
+
+    # macros for correct DLL exports
+    if { "$aWokStation" == "wnt" } {
+      lappend aTKDefines "__${xlo}_DLL"
+    }
+  }
+
+  return [osutils:cbp $theCmpl $theOutDir $theToolKit $aTKSrcFiles $aUsedLibs $aFrameworks $anIncPaths $aTKDefines]
 }
 
 # Generates Code Blocks workspace.
@@ -1962,7 +2028,7 @@ proc OS:cworkspace { theSolName theModules theOutDir } {
 }
 
 # Generate Code::Blocks project file for Executable
-proc osutils:cbpx { theOutDir theToolKit } {
+proc osutils:cbpx { theCmpl theOutDir theToolKit } {
   global path targetStation
   set aWokStation "$targetStation"
   set aWokArch    "$::env(ARCH)"
@@ -1970,21 +2036,22 @@ proc osutils:cbpx { theOutDir theToolKit } {
   set aCbpFiles {}
   foreach aSrcFile [osutils:tk:files $theToolKit osutils:compilable 0] {
     # collect list of referred libraries to link with
-    set aUsedToolKits [list]
+    set aUsedLibs     [list]
     set aFrameworks   [list]
     set anIncPaths    [list]
     set aTKDefines    [list]
     set aTKSrcFiles   [list]
     set aProjName [file rootname [file tail $aSrcFile]]
 
-    osutils:usedOsLibs $theToolKit "$aWokStation" aUsedToolKits aFrameworks
+    osutils:usedOsLibs $theToolKit "$aWokStation" aUsedLibs aFrameworks
+
     set aDepToolkits [LibToLinkX $theToolKit $aProjName]
     foreach tkx $aDepToolkits {
       if {[_get_type $tkx] == "t"} {
-        lappend aUsedToolKits "${tkx}"
+        lappend aUsedLibs "${tkx}"
       }
       if {[lsearch [glob -tails -directory "$path/src" -types d *] $tkx] == "-1"} {
-        lappend aUsedToolKits "${tkx}"
+        lappend aUsedLibs "${tkx}"
       }
     }
 
@@ -1997,7 +2064,7 @@ proc osutils:cbpx { theOutDir theToolKit } {
 
     if { ![info exists written([file tail $aSrcFile])] } {
       set written([file tail $aSrcFile]) 1
-      lappend aTKSrcFiles $aSrcFile
+      lappend aTKSrcFiles "../../../[wokUtils:FILES:wtail $aSrcFile 3]"
     } else {
       puts "Warning : in cbp there are more than one occurences for [file tail $aSrcFile]"
     }
@@ -2010,25 +2077,14 @@ proc osutils:cbpx { theOutDir theToolKit } {
     # common include paths
     lappend anIncPaths "../../../inc"
 
-    # extra macros
-    if { "$aWokStation" == "wnt" } {
-      lappend aTKDefines "_CRT_SECURE_NO_DEPRECATE"
-    } else {
-      lappend aTKDefines "OCC_CONVERT_SIGNALS"
-      #lappend aTKDefines "_GNU_SOURCE=1"
-    }
-
-    lappend aCbpFiles [osutils:cbp $theOutDir $aProjName $aTKSrcFiles $aUsedToolKits $aFrameworks $anIncPaths $aTKDefines $isExecutable]
+    lappend aCbpFiles [osutils:cbp $theCmpl $theOutDir $aProjName $aTKSrcFiles $aUsedLibs $aFrameworks $anIncPaths $aTKDefines $isExecutable]
   }
 
   return $aCbpFiles
 }
 
-proc osutils:optinal_libs { } {
-  return [list tbb.lib tbbmalloc.lib FreeImage.lib FreeImagePlus.lib gl2ps.lib]
-}
-
 # This function intended to generate Code::Blocks project file
+# @param theCmpl       - the compiler (gcc or msvc)
 # @param theOutDir     - output directory to place project file
 # @param theProjName   - project name
 # @param theSrcFiles   - list of source files
@@ -2037,12 +2093,60 @@ proc osutils:optinal_libs { } {
 # @param theIncPaths   - header search paths
 # @param theDefines    - compiler macro definitions
 # @param theIsExe      - flag to indicate executable / library target
-proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks theIncPaths theDefines {theIsExe "false"} } {
+proc osutils:cbp { theCmpl theOutDir theProjName theSrcFiles theLibsList theFrameworks theIncPaths theDefines {theIsExe "false"} } {
   global targetStation
   set aWokStation "$targetStation"
   set aWokArch    "$::env(ARCH)"
 
-  set aCbpFilePath "${theOutDir}/${theProjName}.cbp"
+  set aCmplCbp "gcc"
+  set aCmplFlags        [list]
+  set aCmplFlagsRelease [list]
+  set aCmplFlagsDebug   [list]
+  set toPassArgsByFile 0
+  set aLibPrefix "lib"
+  if { "$aWokStation" == "wnt" || "$aWokStation" == "qnx" } {
+    set toPassArgsByFile 1
+  }
+  if { "$theCmpl" == "msvc" } {
+    set aCmplCbp "msvc8"
+    set aLibPrefix ""
+  }
+
+  if { "$theCmpl" == "msvc" } {
+    set aCmplFlags        "-arch:SSE2 -EHsc -W4 -MP"
+    set aCmplFlagsRelease "-MD  -O2"
+    set aCmplFlagsDebug   "-MDd -Od -Zi"
+    lappend aCmplFlags    "-D_CRT_SECURE_NO_WARNINGS"
+    lappend aCmplFlags    "-D_CRT_NONSTDC_NO_DEPRECATE"
+  } elseif { "$theCmpl" == "gcc" } {
+    if { "$aWokStation" != "qnx" } {
+      set aCmplFlags      "-mmmx -msse -msse2 -mfpmath=sse"
+    }
+    set aCmplFlagsRelease "-O2"
+    set aCmplFlagsDebug   "-O0 -g"
+    if { "$aWokStation" == "wnt" } {
+      lappend aCmplFlags "-std=gnu++0x"
+      lappend aCmplFlags "-D_WIN32_WINNT=0x0501"
+    } else {
+      lappend aCmplFlags "-std=c++0x"
+      lappend aCmplFlags "-fPIC"
+      lappend aCmplFlags "-DOCC_CONVERT_SIGNALS"
+    }
+    lappend aCmplFlags   "-Wall"
+    lappend aCmplFlags   "-fexceptions"
+  }
+  lappend aCmplFlagsRelease "-DNDEBUG"
+  lappend aCmplFlagsRelease "-DNo_Exception"
+  lappend aCmplFlagsDebug   "-D_DEBUG"
+  if { "$aWokStation" == "qnx" } {
+    lappend aCmplFlags "-D_QNX_SOURCE"
+  }
+
+  set aCbpFilePath    "${theOutDir}/${theProjName}.cbp"
+  set aLnkFileName    "${theProjName}_obj.link"
+  set aLnkDebFileName "${theProjName}_objd.link"
+  set aLnkFilePath    "${theOutDir}/${aLnkFileName}"
+  set aLnkDebFilePath "${theOutDir}/${aLnkDebFileName}"
   set aFile [open $aCbpFilePath "w"]
   puts $aFile "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
   puts $aFile "<CodeBlocks_project_file>"
@@ -2050,11 +2154,7 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   puts $aFile "\t<Project>"
   puts $aFile "\t\t<Option title=\"$theProjName\" />"
   puts $aFile "\t\t<Option pch_mode=\"2\" />"
-  if { "$aWokStation" == "wnt" } {
-    puts $aFile "\t\t<Option compiler=\"msvc8\" />"
-  } else {
-    puts $aFile "\t\t<Option compiler=\"gcc\" />"
-  }
+  puts $aFile "\t\t<Option compiler=\"$aCmplCbp\" />"
   puts $aFile "\t\t<Build>"
 
   # Release target configuration
@@ -2064,55 +2164,40 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
     puts $aFile "\t\t\t\t<Option type=\"1\" />"
   } else {
     if { "$aWokStation" == "wnt" } {
-      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/lib/${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/bin/${aLibPrefix}${theProjName}\" imp_lib=\"../../../${aWokStation}/cbp/lib/\$(TARGET_OUTPUT_BASENAME)\" prefix_auto=\"1\" extension_auto=\"1\" />"
     } else {
       puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/lib/lib${theProjName}.so\" prefix_auto=\"0\" extension_auto=\"0\" />"
     }
     puts $aFile "\t\t\t\t<Option type=\"3\" />"
   }
   puts $aFile "\t\t\t\t<Option object_output=\"../../../${aWokStation}/cbp/obj\" />"
-  if { "$aWokStation" == "wnt" } {
-    puts $aFile "\t\t\t\t<Option compiler=\"msvc8\" />"
-  } else {
-    puts $aFile "\t\t\t\t<Option compiler=\"gcc\" />"
-  }
+  puts $aFile "\t\t\t\t<Option compiler=\"$aCmplCbp\" />"
   puts $aFile "\t\t\t\t<Option createDefFile=\"0\" />"
-  puts $aFile "\t\t\t\t<Option createStaticLib=\"0\" />"
+  if { "$aWokStation" == "wnt" } {
+    puts $aFile "\t\t\t\t<Option createStaticLib=\"1\" />"
+  } else {
+    puts $aFile "\t\t\t\t<Option createStaticLib=\"0\" />"
+  }
 
   # compiler options per TARGET (including defines)
   puts $aFile "\t\t\t\t<Compiler>"
-  if { "$aWokStation" == "wnt" } {
-    puts $aFile "\t\t\t\t\t<Add option=\"-MD\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-arch:SSE2\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-EHsc\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-O2\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-W4\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-MP\" />"
-  } else {
-    puts $aFile "\t\t\t\t\t<Add option=\"-O2\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-std=c++0x\" />"
-    if { "$aWokStation" != "qnx" } {
-      puts $aFile "\t\t\t\t\t<Add option=\"-mmmx\" />"
-      puts $aFile "\t\t\t\t\t<Add option=\"-msse\" />"
-      puts $aFile "\t\t\t\t\t<Add option=\"-msse2\" />"
-      puts $aFile "\t\t\t\t\t<Add option=\"-mfpmath=sse\" />"
-    }
+  foreach aFlagIter $aCmplFlagsRelease {
+    puts $aFile "\t\t\t\t\t<Add option=\"$aFlagIter\" />"
   }
   foreach aMacro $theDefines {
     puts $aFile "\t\t\t\t\t<Add option=\"-D${aMacro}\" />"
   }
-  puts $aFile "\t\t\t\t\t<Add option=\"-DNDEBUG\" />"
-  if { "$aWokStation" == "qnx" } {
-    puts $aFile "\t\t\t\t\t<Add option=\"-D_QNX_SOURCE\" />"
-  }
-  puts $aFile "\t\t\t\t\t<Add option=\"-DNo_Exception\" />"
-
   puts $aFile "\t\t\t\t</Compiler>"
 
   puts $aFile "\t\t\t\t<Linker>"
+  if { $toPassArgsByFile == 1 } {
+    puts $aFile "\t\t\t\t\t<Add option=\"\@$aLnkFileName\" />"
+  }
   puts $aFile "\t\t\t\t\t<Add directory=\"../../../${aWokStation}/cbp/lib\" />"
-  if { "$aWokStation" == "mac" && [ lsearch $theLibsList X11 ] >= 0} {
-    puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
+  if { "$aWokStation" == "mac" } {
+    if { [ lsearch $theLibsList X11 ] >= 0} {
+      puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
+    }
   }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch})\" />"
   puts $aFile "\t\t\t\t</Linker>"
@@ -2126,56 +2211,40 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
     puts $aFile "\t\t\t\t<Option type=\"1\" />"
   } else {
     if { "$aWokStation" == "wnt" } {
-      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/libd/${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/bind/${aLibPrefix}${theProjName}\" imp_lib=\"../../../${aWokStation}/cbp/libd/\$(TARGET_OUTPUT_BASENAME)\" prefix_auto=\"1\" extension_auto=\"1\" />"
     } else {
       puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/libd/lib${theProjName}.so\" prefix_auto=\"0\" extension_auto=\"0\" />"
     }
     puts $aFile "\t\t\t\t<Option type=\"3\" />"
   }
   puts $aFile "\t\t\t\t<Option object_output=\"../../../${aWokStation}/cbp/objd\" />"
-  if { "$aWokStation" == "wnt" } {
-    puts $aFile "\t\t\t\t<Option compiler=\"msvc8\" />"
-  } else {
-    puts $aFile "\t\t\t\t<Option compiler=\"gcc\" />"
-  }
+  puts $aFile "\t\t\t\t<Option compiler=\"$aCmplCbp\" />"
   puts $aFile "\t\t\t\t<Option createDefFile=\"0\" />"
-  puts $aFile "\t\t\t\t<Option createStaticLib=\"0\" />"
+  if { "$aWokStation" == "wnt" } {
+    puts $aFile "\t\t\t\t<Option createStaticLib=\"1\" />"
+  } else {
+    puts $aFile "\t\t\t\t<Option createStaticLib=\"0\" />"
+  }
 
   # compiler options per TARGET (including defines)
   puts $aFile "\t\t\t\t<Compiler>"
-  if { "$aWokStation" == "wnt" } {
-    puts $aFile "\t\t\t\t\t<Add option=\"-MDd\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-arch:SSE2\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-EHsc\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-Od\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-Zi\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-W4\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-MP\" />"
-  } else {
-    puts $aFile "\t\t\t\t\t<Add option=\"-O0\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-std=c++0x\" />"
-    puts $aFile "\t\t\t\t\t<Add option=\"-g\" />"
-    if { "$aWokStation" != "qnx" } {
-      puts $aFile "\t\t\t\t\t<Add option=\"-mmmx\" />"
-      puts $aFile "\t\t\t\t\t<Add option=\"-msse\" />"
-      puts $aFile "\t\t\t\t\t<Add option=\"-msse2\" />"
-      puts $aFile "\t\t\t\t\t<Add option=\"-mfpmath=sse\" />"
-    }
+  foreach aFlagIter $aCmplFlagsDebug {
+    puts $aFile "\t\t\t\t\t<Add option=\"$aFlagIter\" />"
   }
   foreach aMacro $theDefines {
     puts $aFile "\t\t\t\t\t<Add option=\"-D${aMacro}\" />"
   }
-  puts $aFile "\t\t\t\t\t<Add option=\"-D_DEBUG\" />"
-  if { "$aWokStation" == "qnx" } {
-    puts $aFile "\t\t\t\t\t<Add option=\"-D_QNX_SOURCE\" />"
-  }
-  puts $aFile "\t\t\t\t\t<Add option=\"-DDEB\" />"
   puts $aFile "\t\t\t\t</Compiler>"
 
   puts $aFile "\t\t\t\t<Linker>"
+  if { $toPassArgsByFile == 1 } {
+    puts $aFile "\t\t\t\t\t<Add option=\"\@$aLnkDebFileName\" />"
+  }
   puts $aFile "\t\t\t\t\t<Add directory=\"../../../${aWokStation}/cbp/libd\" />"
-  if { "$aWokStation" == "mac" && [ lsearch $theLibsList X11 ] >= 0} {
-    puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
+  if { "$aWokStation" == "mac" } {
+    if { [ lsearch $theLibsList X11 ] >= 0} {
+      puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
+    }
   }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch}D)\" />"
   puts $aFile "\t\t\t\t</Linker>"
@@ -2186,9 +2255,9 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
 
   # COMMON compiler options
   puts $aFile "\t\t<Compiler>"
-  puts $aFile "\t\t\t<Add option=\"-Wall\" />"
-  puts $aFile "\t\t\t<Add option=\"-fexceptions\" />"
-  puts $aFile "\t\t\t<Add option=\"-fPIC\" />"
+  foreach aFlagIter $aCmplFlags {
+    puts $aFile "\t\t\t<Add option=\"$aFlagIter\" />"
+  }
   puts $aFile "\t\t\t<Add option=\"\$(CSF_OPT_CMPL)\" />"
   foreach anIncPath $theIncPaths {
     puts $aFile "\t\t\t<Add directory=\"$anIncPath\" />"
@@ -2197,6 +2266,9 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
 
   # COMMON linker options
   puts $aFile "\t\t<Linker>"
+  if { "$aWokStation" == "wnt" && "$theCmpl" == "gcc" } {
+    puts $aFile "\t\t\t<Add option=\"-Wl,--export-all-symbols\" />"
+  }
   foreach aFrameworkName $theFrameworks {
     if { "$aFrameworkName" != "" } {
       puts $aFile "\t\t\t<Add option=\"-framework $aFrameworkName\" />"
@@ -2204,12 +2276,25 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   }
   foreach aLibName $theLibsList {
     if { "$aLibName" != "" } {
-      puts $aFile "\t\t\t<Add library=\"$aLibName\" />"
+      if { "$theCmpl" == "msvc" } {
+        puts $aFile "\t\t\t<Add library=\"${aLibName}.lib\" />"
+      } else {
+        puts $aFile "\t\t\t<Add library=\"${aLibName}\" />"
+      }
     }
   }
   puts $aFile "\t\t</Linker>"
 
   # list of sources
+
+  set aFileLnkObj ""
+  set aFileLnkObjd ""
+  set isFirstSrcFile 1
+  if { $toPassArgsByFile == 1 } {
+    set aFileLnkObj  [open $aLnkFilePath    "w"]
+    set aFileLnkObjd [open $aLnkDebFilePath "w"]
+  }
+
   foreach aSrcFile $theSrcFiles {
     if {[string equal -nocase [file extension $aSrcFile] ".mm"]} {
       puts $aFile "\t\t<Unit filename=\"$aSrcFile\">"
@@ -2220,9 +2305,26 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
       puts $aFile "\t\t<Unit filename=\"$aSrcFile\">"
       puts $aFile "\t\t\t<Option compilerVar=\"CC\" />"
       puts $aFile "\t\t</Unit>"
+    } elseif { $toPassArgsByFile == 1 && $isFirstSrcFile == 0 && [string equal -nocase [file extension $aSrcFile] ".cxx" ] } {
+      # pass at list single source file to Code::Blocks as is
+      # and pack the list of other files into the dedicated file to workaround process arguments limits on systems like Windows
+      puts $aFile "\t\t<Unit filename=\"$aSrcFile\">"
+      puts $aFile "\t\t\t<Option link=\"0\" />"
+      puts $aFile "\t\t</Unit>"
+
+      set aFileObj  [string map {.cxx .o} [string map [list "/src/" "/$aWokStation/cbp/obj/src/"]  $aSrcFile]]
+      set aFileObjd [string map {.cxx .o} [string map [list "/src/" "/$aWokStation/cbp/objd/src/"] $aSrcFile]]
+      puts -nonewline $aFileLnkObj  "$aFileObj "
+      puts -nonewline $aFileLnkObjd "$aFileObjd "
     } else {
       puts $aFile "\t\t<Unit filename=\"$aSrcFile\" />"
+      set isFirstSrcFile 0
     }
+  }
+
+  if { "$aWokStation" == "wnt" } {
+    close $aFileLnkObj
+    close $aFileLnkObjd
   }
 
   puts $aFile "\t</Project>"
@@ -2230,74 +2332,6 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   close $aFile
 
   return $aCbpFilePath
-}
-
-# Auxiliary function to achieve complete information to build Toolkit
-# @param theRelativePath - relative path to CASROOT
-# @param theToolKit      - Toolkit name
-# @param theUsedLib      - dependencies (libraries  list)
-# @param theFrameworks   - dependencies (frameworks list, Mac OS X specific)
-# @param theIncPaths     - header search paths
-# @param theTKDefines    - compiler macro definitions
-# @param theTKSrcFiles   - list of source files
-proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theIncPaths theTKDefines theTKSrcFiles } {
-  global path targetStation
-  set aWokStation "$targetStation"
-
-  # collect list of referred libraries to link with
-  upvar $theUsedLib    aUsedLibs
-  upvar $theFrameworks aFrameworks
-  upvar $theIncPaths   anIncPaths
-  upvar $theTKDefines  aTKDefines
-  upvar $theTKSrcFiles aTKSrcFiles
-
-  osutils:usedOsLibs $theToolKit "$aWokStation" aUsedLibs aFrameworks
-  set aDepToolkits [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]]
-  foreach tkx $aDepToolkits {
-    lappend aUsedLibs "${tkx}"
-  }
-
-  lappend anIncPaths "$theRelativePath/inc"
-  set listloc [osutils:tk:units $theToolKit]
-
-  if { [llength $listloc] == 0 } {
-    set listloc $theToolKit
-  }
-
-  if { "$aWokStation" == "wnt" } {
-    set resultloc [osutils:justwnt  $listloc]
-  } else {
-    set resultloc [osutils:justunix $listloc]
-  }
-  if [array exists written] { unset written }
-  foreach fxlo $resultloc {
-    set xlo       $fxlo
-    set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
-    foreach aSrcFile [lsort $aSrcFiles] {
-      if { ![info exists written([file tail $aSrcFile])] } {
-        set written([file tail $aSrcFile]) 1
-        lappend aTKSrcFiles "${theRelativePath}/[wokUtils:FILES:wtail $aSrcFile 3]"
-      } else {
-        puts "Warning : more than one occurences for [file tail $aSrcFile]"
-      }
-    }
-
-    # macros for correct DLL exports
-    if { "$aWokStation" == "wnt" } {
-      lappend aTKDefines "__${xlo}_DLL"
-    }
-
-    # common include paths
-#    lappend anIncPaths "${theRelativePath}/src/${xlo}"
-  }
-
-  # extra macros
-  if { "$aWokStation" == "wnt" } {
-    lappend aTKDefines "_CRT_SECURE_NO_DEPRECATE"
-  } else {
-    lappend aTKDefines "OCC_CONVERT_SIGNALS"
-    #lappend aTKDefines "_GNU_SOURCE=1"
-  }
 }
 
 # Define libraries to link using only EXTERNLIB file
@@ -2431,7 +2465,7 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
   upvar $theDepsRefGuids     aDepsRefGuids
 
   set aBuildFileSection ""
-  set aUsedToolKits     [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]]
+  set aUsedLibs         [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]]
   set aDepToolkits      [lappend [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]] $theToolKit]
 
   if { "$theTargetType" == "executable" } {
@@ -2449,9 +2483,9 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
   }
 
   osutils:usedOsLibs $theToolKit "mac" aLibs aFrameworks
-  set aUsedToolKits [concat $aUsedToolKits $aLibs]
-  set aUsedToolKits [concat $aUsedToolKits $aFrameworks]
-  foreach tkx $aUsedToolKits {
+  set aUsedLibs [concat $aUsedLibs $aLibs]
+  set aUsedLibs [concat $aUsedLibs $aFrameworks]
+  foreach tkx $aUsedLibs {
     set aDepLib    "${tkx}_Dep"
     set aDepLibRef "${tkx}_DepRef"
 

@@ -35,7 +35,7 @@
 #endif
 
 // for capturing of cout and cerr (dup(), dup2())
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <io.h>
 #endif
 
@@ -86,8 +86,13 @@ namespace {
       return;
 
     // restore normal descriptors of console stream
+  #ifdef _WIN32
+    _dup2(save_fd, std_fd);
+    _close(save_fd);
+  #else
     dup2(save_fd, std_fd);
     close(save_fd);
+  #endif
 
     // extract all output and copy it to log and optionally to cout
     const int BUFSIZE = 2048;

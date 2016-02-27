@@ -121,14 +121,14 @@ Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(const Standard_Boolean ) c
     chr = dir.Value ( i );
     
     switch ( chr ) {
-      
-    case _TEXT( '|' ):
-      dirRet += _TEXT( "/" );
+
+    case '|':
+      dirRet += "/";
       break;
-      
-    case _TEXT( '^' ):
-      
-      dirRet += _TEXT( ".." );
+
+    case '^':
+
+      dirRet += "..";
       break;
       
     default:

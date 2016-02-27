@@ -559,7 +559,7 @@ void* OpenGl_Context::findProc (const char* theFuncName)
 #if defined(HAVE_EGL)
   return (void* )eglGetProcAddress (theFuncName);
 #elif defined(_WIN32)
-  return wglGetProcAddress (theFuncName);
+  return (void* )wglGetProcAddress (theFuncName);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   return (myGlLibHandle != NULL) ? dlsym (myGlLibHandle, theFuncName) : NULL;
 #else

@@ -57,7 +57,7 @@ TCollection_AsciiString::TCollection_AsciiString()
 // Create an asciistring from a Standard_CString
 // ----------------------------------------------------------------------------
 TCollection_AsciiString::TCollection_AsciiString(const Standard_CString astring)
-     : mystring(0)
+  : mystring(0), mylength(0)
 {
   if (astring) {
     mylength = Standard_Integer( strlen(astring) );
@@ -75,10 +75,9 @@ TCollection_AsciiString::TCollection_AsciiString(const Standard_CString astring)
 // ----------------------------------------------------------------------------
 TCollection_AsciiString::TCollection_AsciiString(const Standard_CString astring,
                                                  const Standard_Integer aLen )
-     : mystring(0)
+  : mystring(0), mylength(aLen)
 {
   if (astring) {
-    mylength = aLen ;
     mystring = Allocate(mylength+1);
     strncpy( mystring , astring , mylength );
     mystring [ mylength ] = '\0' ;

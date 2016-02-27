@@ -2806,7 +2806,7 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
 			      TColStd_Array1OfInteger& NewMults,
 		  	      TColStd_Array1OfReal&    NewPoles)
 {
-  Standard_Integer i, nbpoles, nbknots;
+  Standard_Integer i, nbpoles=0, nbknots=0;
   Standard_Real kk[2];
   Standard_Integer mm[2];
   TColStd_Array1OfReal    K( kk[0], 1, 2 );

@@ -20,6 +20,9 @@
 #include <Standard_Assert.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#ifdef _WIN32
+  #include <malloc.h> // for alloca()
+#endif
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderObject,OpenGl_Resource)
 

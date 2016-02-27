@@ -133,6 +133,7 @@ TCollection_ExtendedString::TCollection_ExtendedString()
 TCollection_ExtendedString::TCollection_ExtendedString
                                           (const Standard_CString astring, 
                                            const Standard_Boolean isMultiByte) 
+  : mystring(0), mylength(0)
 {
   if (astring) {
     if(!isMultiByte) {
@@ -166,6 +167,7 @@ TCollection_ExtendedString::TCollection_ExtendedString
 //--------------------------------------------------------------------------
 TCollection_ExtendedString::TCollection_ExtendedString
                                         (const Standard_ExtString astring) 
+  : mystring(0), mylength(0)
 {
 
   if (astring) {

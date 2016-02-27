@@ -1741,7 +1741,7 @@ static void pntsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 {
   Handle(DrawTrSurf_Point) 
     N = Handle(DrawTrSurf_Point)::DownCast(d);
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   ios::fmtflags F = OS.flags();
   OS.setf(ios::scientific,ios::floatfield);
   OS.precision(15);
@@ -1758,7 +1758,7 @@ static void pntsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
     OS << "0 ";
     OS << P.X() << " " << P.Y() << "\n";
   }
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   OS.setf(F);
 #else
   OS.setf(form);
@@ -1803,7 +1803,7 @@ static void triasave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 {
   Handle(DrawTrSurf_Triangulation) 
     T = Handle(DrawTrSurf_Triangulation)::DownCast(d);
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   ios::fmtflags F = OS.flags();
   OS.setf(ios::scientific,ios::floatfield);
   OS.precision(15);
@@ -1812,7 +1812,7 @@ static void triasave(const Handle(Draw_Drawable3D)&d, ostream& OS)
   std::streamsize prec = OS.precision(15);
 #endif
   Poly::Write(T->Triangulation(),OS);
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   OS.setf(F);
 #else
   OS.setf(form);
@@ -1844,7 +1844,7 @@ static void poly3dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 {
   Handle(DrawTrSurf_Polygon3D) 
     T = Handle(DrawTrSurf_Polygon3D)::DownCast(d);
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   ios::fmtflags F = OS.flags();
   OS.setf(ios::scientific,ios::floatfield);
   OS.precision(15);
@@ -1853,7 +1853,7 @@ static void poly3dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
   std::streamsize prec = OS.precision(15);
 #endif
   Poly::Write(T->Polygon3D(),OS);
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   OS.setf(F);
 #else
   OS.setf(form);
@@ -1884,7 +1884,7 @@ static void poly2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 {
   Handle(DrawTrSurf_Polygon2D) 
     T = Handle(DrawTrSurf_Polygon2D)::DownCast(d);
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   ios::fmtflags F = OS.flags();
   OS.setf(ios::scientific, ios::floatfield);
   OS.precision(15);
@@ -1893,7 +1893,7 @@ static void poly2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
   std::streamsize prec = OS.precision(15);
 #endif
   Poly::Write(T->Polygon2D(),OS);
-#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   OS.setf(F);
 #else
   OS.setf(form);

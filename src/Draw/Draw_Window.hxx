@@ -417,12 +417,12 @@ public:
   Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
 
   __Draw_API DrawWindow();
-  __Draw_API DrawWindow(char*, Standard_Integer, Standard_Integer,
+  __Draw_API DrawWindow(const char*, Standard_Integer, Standard_Integer,
 			Standard_Integer, Standard_Integer);
-  __Draw_API DrawWindow(char*, Standard_Integer, Standard_Integer,
+  __Draw_API DrawWindow(const char*, Standard_Integer, Standard_Integer,
 			Standard_Integer, Standard_Integer, HWND);
   //destructeur
-  __Draw_API ~DrawWindow();
+  __Draw_API virtual ~DrawWindow();
 
   //methods
 public:
@@ -432,7 +432,7 @@ public:
   __Draw_API void SetUseBuffer(Standard_Boolean);
   // Turns on/off usage of off-screen image buffer (can be used for redrawing optimization)
 
-  __Draw_API Standard_Boolean GetUseBuffer() const { return myUseBuffer; }
+  Standard_Boolean GetUseBuffer() const { return myUseBuffer; }
   // Returns Standard_True if off-screen image buffer is being used
 
   //taille et position
@@ -443,7 +443,7 @@ public:
   __Draw_API Standard_Integer WidthWin()  const;
 
   //Title
-  __Draw_API void SetTitle(char*);
+  __Draw_API void SetTitle(const char*);
   __Draw_API char* GetTitle();
 
   //Affichage
@@ -451,7 +451,7 @@ public:
   __Draw_API void Hide();
   __Draw_API void Destroy();
   __Draw_API void Clear();
-  __Draw_API static void Flush() {} ;
+  static void Flush() {} ;
 
   // save snapshot
   __Draw_API Standard_Boolean Save(const char* theFileName) const;

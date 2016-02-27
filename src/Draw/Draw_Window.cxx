@@ -1430,7 +1430,7 @@ DrawWindow::DrawWindow() :
 }
 
 //________________________
-DrawWindow::DrawWindow(char* title,
+DrawWindow::DrawWindow(const char* title,
                        Standard_Integer X, Standard_Integer Y,
                        Standard_Integer dX,Standard_Integer dY) :
        win(0),        next(firstWindow), previous(NULL), myMemHbm(NULL), myUseBuffer(Standard_False)
@@ -1440,7 +1440,7 @@ DrawWindow::DrawWindow(char* title,
   Init(X, Y, dX, dY);
   SetTitle(title);
 }
-DrawWindow::DrawWindow(char* title,
+DrawWindow::DrawWindow(const char* title,
                        Standard_Integer X, Standard_Integer Y,
                        Standard_Integer dX,Standard_Integer dY,
                        HWND theWin) :
@@ -1657,7 +1657,7 @@ Standard_Integer DrawWindow::WidthWin() const
 /*--------------------------------------------------------*\
 |  SetTitle
 \*--------------------------------------------------------*/
-void DrawWindow::SetTitle(char* title)
+void DrawWindow::SetTitle(const char* title)
 {
   SetWindowText(win, title);
 }

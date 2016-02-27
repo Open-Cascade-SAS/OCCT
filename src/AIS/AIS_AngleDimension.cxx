@@ -451,7 +451,7 @@ void AIS_AngleDimension::DrawArcWithText (const Handle(Prs3d_Presentation)& theP
     gp_Dir aTextDir = gce_MakeDir (theFirstAttach, theSecondAttach);
 
     // Drawing text
-    DrawText (thePresentation,
+    drawText (thePresentation,
               aTextPos,
               aTextDir,
               theText,
@@ -696,7 +696,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
                                                 : GetCenterOnArc (aFirstAttach, aSecondAttach, myCenterPoint);
         gp_Dir aTextDir = aDimensionDir;
 
-        DrawText (thePresentation,
+        drawText (thePresentation,
                   aTextPos,
                   aTextDir,
                   aLabelString,

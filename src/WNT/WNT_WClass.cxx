@@ -63,7 +63,7 @@ WNT_WClass::WNT_WClass (
 
   lpszName = new char[ strlen ( aClassName ) + 1 ];
   strcpy ( (Standard_PCharacter)lpszName, aClassName );
-  lpfnWndProc = wc.lpfnWndProc;
+  lpfnWndProc = (void* )wc.lpfnWndProc;
 
 }  // end constructor
 

@@ -376,7 +376,7 @@ Dico_Dictionary::Dico_Dictionary ()
       else                      {  stat = stat2;  reslev = lev2;  return;  }
     }
   }
-  else if (car < thecars[0])    {  acell = this;  stat   = -1;    return;  }
+  else /*if (car < thecars[0])*/{  acell = this;  stat   = -1;    return;  }
 }
 
 
