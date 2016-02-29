@@ -614,6 +614,7 @@ vec3 intersectLight (in SRay theRay, in bool isViewRay, in int theBounce, in flo
 vec4 PathTrace (in SRay theRay, in vec3 theInverse)
 {
   float anOpenGlDepth = ComputeOpenGlDepth (theRay);
+  float aRaytraceDepth = MAXFLOAT;
 
   vec3 aRadiance   = ZERO;
   vec3 aThroughput = UNIT;
@@ -659,10 +660,21 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       vec4 aSrcColorRGBA = ComputeOpenGlColor();
 
       aRadiance   += aThroughput.xyz * aSrcColorRGBA.xyz;
-      aThroughput *= aSrcColorRGBA.w;
+
+      aDepth = INVALID_BOUNCES; // terminate path
     }
 
     theRay.Origin += theRay.Direct * aHit.Time; // get new intersection point
+
+    // Evaluate depth
+    if (aDepth == 0)
+    {
+      // Hit point in NDC-space [-1,1] (the polygon offset is applied in the world space)
+      vec4 aNDCPoint = uViewMat * vec4 (theRay.Origin + theRay.Direct * aPolygonOffset, 1.f);
+      aNDCPoint.xyz *= 1.f / aNDCPoint.w;
+
+      aRaytraceDepth = aNDCPoint.z * 0.5f + 0.5f;
+    }
 
     // fetch material (BSDF)
     SMaterial aMaterial = SMaterial (
@@ -778,6 +790,8 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
 
     anOpenGlDepth = MAXFLOAT; // disable combining image with OpenGL output
   }
+
+  gl_FragDepth = aRaytraceDepth;
 
   return vec4 (aRadiance, 0.f);
 }

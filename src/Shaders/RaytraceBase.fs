@@ -36,6 +36,9 @@ uniform vec3 uDirectRB;
 //! Inverse model-view-projection matrix.
 uniform mat4 uUnviewMat;
 
+//! Model-view-projection matrix.
+uniform mat4 uViewMat;
+
 //! Texture buffer of data records of bottom-level BVH nodes.
 uniform isamplerBuffer uSceneNodeInfoTexture;
 //! Texture buffer of minimum points of bottom-level BVH nodes.
@@ -777,6 +780,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
   int aTrsfId;
 
   float anOpenGlDepth = ComputeOpenGlDepth (theRay);
+  float aRaytraceDepth = MAXFLOAT;
 
   for (int aDepth = 0; aDepth < NB_BOUNCES; ++aDepth)
   {
@@ -830,6 +834,16 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     }
 
     theRay.Origin += theRay.Direct * aHit.Time; // intersection point
+
+    // Evaluate depth
+    if (aDepth == 0)
+    {
+      // Hit point in NDC-space [-1,1] (the polygon offset is applied in the world space)
+      vec4 aNDCPoint = uViewMat * vec4 (theRay.Origin + theRay.Direct * aPolygonOffset, 1.f);
+      aNDCPoint.xyz *= 1.f / aNDCPoint.w;
+
+      aRaytraceDepth = aNDCPoint.z * 0.5f + 0.5f;
+    }
 
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
 
@@ -969,6 +983,8 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
     theRay.Origin += theRay.Direct * uSceneEpsilon;
   }
+
+  gl_FragDepth = aRaytraceDepth;
 
   return vec4 (aResult.x,
                aResult.y,

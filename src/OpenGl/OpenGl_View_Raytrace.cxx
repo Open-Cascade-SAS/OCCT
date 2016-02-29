@@ -1514,6 +1514,8 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
         aShaderProgram->GetUniformLocation (theGlContext, "uDirectLT");
       myUniformLocations[anIndex][OpenGl_RT_uDirectRT] =
         aShaderProgram->GetUniformLocation (theGlContext, "uDirectRT");
+      myUniformLocations[anIndex][OpenGl_RT_uViewMat] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uViewMat");
       myUniformLocations[anIndex][OpenGl_RT_uUnviewMat] =
         aShaderProgram->GetUniformLocation (theGlContext, "uUnviewMat");
 
@@ -1562,6 +1564,9 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
 
     myOutImageProgram->SetSampler (theGlContext,
       "uInputTexture", OpenGl_RT_PrevAccumTexture);
+
+    myOutImageProgram->SetSampler (theGlContext,
+      "uDepthTexture", OpenGl_RT_DepthTexture);
 
     theGlContext->BindProgram (NULL);
   }
@@ -1681,10 +1686,14 @@ void OpenGl_View::updateCamera (const OpenGl_Mat4& theOrientation,
                                 const OpenGl_Mat4& theViewMapping,
                                 OpenGl_Vec3*       theOrigins,
                                 OpenGl_Vec3*       theDirects,
+                                OpenGl_Mat4&       theView,
                                 OpenGl_Mat4&       theUnview)
 {
-  // compute inverse model-view-projection matrix
-  (theViewMapping * theOrientation).Inverted (theUnview);
+  // compute view-projection matrix
+  theView = theViewMapping * theOrientation;
+
+  // compute inverse view-projection matrix
+  theView.Inverted (theUnview);
 
   Standard_Integer aOriginIndex = 0;
   Standard_Integer aDirectIndex = 0;
@@ -2186,6 +2195,7 @@ Standard_Boolean OpenGl_View::updateRaytraceEnvironmentMap (const Handle(OpenGl_
 // =======================================================================
 Standard_Boolean OpenGl_View::setUniformState (const OpenGl_Vec3*            theOrigins,
                                                const OpenGl_Vec3*            theDirects,
+                                               const OpenGl_Mat4&            theViewMat,
                                                const OpenGl_Mat4&            theUnviewMat,
                                                const Standard_Integer        theProgramId,
                                                const Handle(OpenGl_Context)& theGlContext)
@@ -2218,6 +2228,8 @@ Standard_Boolean OpenGl_View::setUniformState (const OpenGl_Vec3*            the
     myUniformLocations[theProgramId][OpenGl_RT_uDirectLT], theDirects[2]);
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uDirectRT], theDirects[3]);
+  theProgram->SetUniform (theGlContext,
+    myUniformLocations[theProgramId][OpenGl_RT_uViewMat], theViewMat);
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uUnviewMat], theUnviewMat);
 
@@ -2337,6 +2349,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
                                                   const Standard_Integer        theSizeY,
                                                   const OpenGl_Vec3*            theOrigins,
                                                   const OpenGl_Vec3*            theDirects,
+                                                  const OpenGl_Mat4&            theViewMat,
                                                   const OpenGl_Mat4&            theUnviewMat,
                                                   Graphic3d_Camera::Projection  theProjection,
                                                   OpenGl_FrameBuffer*           theReadDrawFbo,
@@ -2365,14 +2378,13 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
   else if (myRenderParams.IsAntialiasingEnabled) // if 2-pass ray-tracing is used
   {
     myRaytraceFBO1[aFBOIdx]->BindBuffer (theGlContext);
-
-    glDisable (GL_BLEND);
   }
 
   Standard_Boolean aResult = theGlContext->BindProgram (myRaytraceProgram);
 
   aResult &= setUniformState (theOrigins,
                               theDirects,
+                              theViewMat,
                               theUnviewMat,
                               0, // ID of RT program
                               theGlContext);
@@ -2398,8 +2410,6 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
   if (myRaytraceParameters.GlobalIllumination)
   {
     // Output accumulated image
-    glDisable (GL_BLEND);
-
     theGlContext->BindProgram (myOutImageProgram);
 
     if (theReadDrawFbo != NULL)
@@ -2414,7 +2424,16 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
     aRenderFramebuffer->ColorTexture()->Bind (
       theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
 
+    aRenderFramebuffer->DepthStencilTexture()->Bind (
+      theGlContext, GL_TEXTURE0 + OpenGl_RT_DepthTexture);
+
     theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
+
+    aRenderFramebuffer->DepthStencilTexture()->Unbind (
+      theGlContext, GL_TEXTURE0 + OpenGl_RT_DepthTexture);
+
+    aRenderFramebuffer->ColorTexture()->Unbind (
+      theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
   }
   else if (myRenderParams.IsAntialiasingEnabled)
   {
@@ -2424,6 +2443,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
 
     aResult &= setUniformState (theOrigins,
                                 theDirects,
+                                theViewMat,
                                 theUnviewMat,
                                 1, // ID of FSAA program
                                 theGlContext);
@@ -2532,16 +2552,15 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
 
   OpenGl_Vec3 aOrigins[4];
   OpenGl_Vec3 aDirects[4];
+  OpenGl_Mat4 aViewMat;
   OpenGl_Mat4 anUnviewMat;
 
   updateCamera (aOrientationMatrix,
                 aViewMappingMatrix,
                 aOrigins,
                 aDirects,
+                aViewMat,
                 anUnviewMat);
-
-  glDisable (GL_BLEND);
-  glDisable (GL_DEPTH_TEST);
 
   if (theReadDrawFbo != NULL)
   {
@@ -2559,14 +2578,25 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
         0, GL_DEBUG_SEVERITY_MEDIUM, "Error: Failed to acquire OpenGL image textures");
     }
 
+    // Remember the old depth function
+    GLint aDepthFunc;
+    theGlContext->core11fwd->glGetIntegerv (GL_DEPTH_FUNC, &aDepthFunc);
+
+    glDisable (GL_BLEND);
+    glDepthFunc (GL_ALWAYS);
+
     Standard_Boolean aResult = runRaytraceShaders (theSizeX,
                                                    theSizeY,
                                                    aOrigins,
                                                    aDirects,
+                                                   aViewMat,
                                                    anUnviewMat,
                                                    theProjection,
                                                    theReadDrawFbo,
                                                    theGlContext);
+
+    // Restore depth function
+    glDepthFunc (aDepthFunc);
 
     if (!aResult)
     {
@@ -2582,9 +2612,6 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
 
     myRaytraceScreenQuad.UnbindVertexAttrib (theGlContext, Graphic3d_TOA_POS);
   }
-
-  glDisable (GL_BLEND);
-  glEnable (GL_DEPTH_TEST);
 
   return Standard_True;
 }

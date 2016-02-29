@@ -653,6 +653,7 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uDirectLB,
     OpenGl_RT_uDirectRT,
     OpenGl_RT_uDirectRB,
+    OpenGl_RT_uViewMat,
     OpenGl_RT_uUnviewMat,
 
     // 3D scene params
@@ -705,9 +706,10 @@ protected: //! @name data types related to ray-tracing
 
     OpenGl_RT_FsaaInputTexture = 11,
     OpenGl_RT_PrevAccumTexture = 12,
+    OpenGl_RT_DepthTexture = 13,
 
-    OpenGl_RT_OpenGlColorTexture = 13,
-    OpenGl_RT_OpenGlDepthTexture = 14
+    OpenGl_RT_OpenGlColorTexture = 14,
+    OpenGl_RT_OpenGlDepthTexture = 15
   };
 
   //! Tool class for management of shader sources.
@@ -939,6 +941,7 @@ protected: //! @name methods related to ray-tracing
                      const OpenGl_Mat4& theViewMapping,
                      OpenGl_Vec3*       theOrigins,
                      OpenGl_Vec3*       theDirects,
+                     OpenGl_Mat4&       theView,
                      OpenGl_Mat4&       theUnView);
 
   //! Binds ray-trace textures to corresponding texture units.
@@ -950,6 +953,7 @@ protected: //! @name methods related to ray-tracing
   //! Sets uniform state for the given ray-tracing shader program.
   Standard_Boolean setUniformState (const OpenGl_Vec3*            theOrigins,
                                     const OpenGl_Vec3*            theDirects,
+                                    const OpenGl_Mat4&            theViewMat,
                                     const OpenGl_Mat4&            theUnviewMat,
                                     const Standard_Integer        theProgramId,
                                     const Handle(OpenGl_Context)& theGlContext);
@@ -959,6 +963,7 @@ protected: //! @name methods related to ray-tracing
                                        const Standard_Integer        theSizeY,
                                        const OpenGl_Vec3*            theOrigins,
                                        const OpenGl_Vec3*            theDirects,
+                                       const OpenGl_Mat4&            theViewMat,
                                        const OpenGl_Mat4&            theUnviewMat,
                                        Graphic3d_Camera::Projection  theProjection,
                                        OpenGl_FrameBuffer*           theReadDrawFbo,
