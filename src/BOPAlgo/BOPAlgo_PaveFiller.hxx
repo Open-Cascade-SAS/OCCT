@@ -193,7 +193,7 @@ protected:
      const Standard_Real theTolR3D, const BOPDS_IndexedMapOfPaveBlock& theMPB,
      Handle(BOPDS_PaveBlock)& thePBOut, Standard_Real& theTolNew);
   
-  Standard_EXPORT Standard_Boolean IsExistingPaveBlock (const Handle(BOPDS_PaveBlock)& thePB, const BOPDS_Curve& theNC, const Standard_Real theTolR3D, const BOPCol_ListOfInteger& theLSE);
+  Standard_EXPORT Standard_Boolean IsExistingPaveBlock (const Handle(BOPDS_PaveBlock)& thePB, const BOPDS_Curve& theNC, const BOPCol_ListOfInteger& theLSE);
   
 
   //! Treatment of section edges.

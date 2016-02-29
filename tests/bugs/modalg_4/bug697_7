@@ -1,6 +1,3 @@
-puts "TODO OCC25829 ALL: Error : The area of result shape is"
-puts "TODO OCC25829 ALL: Faulty shapes in variables faulty_1 to"
-
 puts "============"
 puts "OCC697"
 puts "============"
@@ -22,6 +19,6 @@ bop b2 b3
 if { [catch {bopfuse result} catch_result] } {
    puts "Faulty OCC697 "
 }
-checkprops result -s 25357.5 
+checkprops result -s 26041.9
 checkshape result
 checkview -display result -3d -path ${imagedir}/${test_image}.png

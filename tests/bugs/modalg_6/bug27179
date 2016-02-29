@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC27179"
+puts "============"
+puts ""
+###############################
+## The algorithm of sharing edges in Boolean operation should be improved
+###############################
+
+plane pl 0.195808075898442, -0.229262227170656, 4.05546403129991 0 0 1
+psphere s1 pl 0.03101752454
+restore [locate_data_file bug27128-Helix_Pipe.brep] s2
+
+settolerance s1 2.0e-6
+
+explode s1 f
+explode s2 f
+
+bsection result s1_1 s2_2
+
+smallview
+donly s1
+fit
+donly result
+
+if { [string compare -nocase [checksection result] " nb alone Vertices : 0\n\n"] } {
+  puts "ERROR: the section is not closed"
+} else {
+  puts "The section is OK"
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

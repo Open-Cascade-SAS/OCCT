@@ -6,8 +6,6 @@ puts ""
 ## Exception in command 'section'
 ###############################################
 
-puts "TODO #OCC26815 ALL: Error : The length of result shape is"
-
 restore [locate_data_file OCC1255.brep] a 
 checkshape a
 
@@ -16,7 +14,7 @@ mkface f1 p1
 
 bsection result a f1
 
-checkprops result -l 5840.24 
+checkprops result -l 5837.18
 checkshape result
 checksection result
 checkview -display result -2d -path ${imagedir}/${test_image}.png
