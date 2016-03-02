@@ -25,21 +25,16 @@ class StdObjMgt_MapOfInstantiators
                                TCollection_AsciiString>
 {
 public:
-  template <class Type>
+  template <class Persistent>
   void Bind (const TCollection_AsciiString& theTypeName)
   {
     NCollection_DataMap<TCollection_AsciiString,
                         StdObjMgt_Persistent::Instantiator,
                         TCollection_AsciiString>
-      ::Bind (theTypeName, &Instantiate<Type>);
+      ::Bind (theTypeName, Persistent::template Instantiate<Persistent>);
   }
 
   DEFINE_STANDARD_ALLOC
-
-private:
-  template <class Type>
-  static Handle(StdObjMgt_Persistent) Instantiate()
-  { return new Type; }
 };
 
 #endif // _StdObjMgt_MapOfInstantiators_HeaderFile

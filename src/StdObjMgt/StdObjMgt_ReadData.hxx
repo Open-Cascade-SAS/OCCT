@@ -15,43 +15,69 @@
 #define _StdObjMgt_ReadData_HeaderFile
 
 #include <Standard.hxx>
-#include <StdObjMgt_Persistent.hxx>
-#include <NCollection_Array1.hxx>
 #include <Storage_BaseDriver.hxx>
+#include <NCollection_Array1.hxx>
 
+class StdObjMgt_Persistent;
 
 //! Auxiliary data used to read persistent objects from a file.
 class StdObjMgt_ReadData
 {
 public:
-  Standard_EXPORT StdObjMgt_ReadData (Storage_BaseDriver&    theDriver,
-                                      const Standard_Integer theNumberOfObjects);
-
-  void CreateObject (const Standard_Integer             theRef,
-                     StdObjMgt_Persistent::Instantiator theInstantiator)
-    { myPersistentObjects (theRef) = theInstantiator(); }
-
-  Handle(StdObjMgt_Persistent) Object (const Standard_Integer theRef) const
-    { return myPersistentObjects (theRef); }
+  Standard_EXPORT StdObjMgt_ReadData
+    (Storage_BaseDriver& theDriver, const Standard_Integer theNumberOfObjects);
 
   Storage_BaseDriver& Driver() const
     { return *myDriver; }
 
-  Standard_EXPORT void ReadReference (Handle(StdObjMgt_Persistent)& theTarget);
-  
-  template <class Type>
-  StdObjMgt_ReadData& operator >> (Type& aValue)
+  template <class Instantiator>
+  void CreatePersistentObject
+    (const Standard_Integer theRef, Instantiator theInstantiator)
+      { myPersistentObjects (theRef) = theInstantiator(); }
+
+  Standard_EXPORT void ReadPersistentObject
+    (const Standard_Integer theRef);
+
+  Handle(StdObjMgt_Persistent) PersistentObject
+    (const Standard_Integer theRef) const
+      { return myPersistentObjects (theRef); }
+
+  Standard_EXPORT Handle(StdObjMgt_Persistent) ReadReference();
+
+  template <class Persistent>
+  void ReadReference (Handle(Persistent)& theTarget)
   {
-    *myDriver >> aValue;
-    return *this;
+    theTarget = Handle(Persistent)::DownCast (ReadReference());
+  }
+
+  template <class Object>
+  void ReadObject (Object& theObject)
+  {
+    myDriver->BeginReadObjectData();
+    theObject.Read (*this);
+    myDriver->EndReadObjectData();
   }
 
   template <class Type>
-  StdObjMgt_ReadData& operator >> (Handle(Type)& theTarget)
+  void ReadValue (Type& theValue)
   {
-    Handle(StdObjMgt_Persistent) aTarget = theTarget;
-    ReadReference (aTarget);
-    theTarget = dynamic_cast<Type*> (aTarget.get());
+    *myDriver >> theValue;
+  }
+
+  template <class Type>
+  void ReadEnum (Type& theEnum)
+  {
+    Standard_Integer aValue;
+    *myDriver >> aValue;
+    theEnum = static_cast<Type> (aValue);
+  }
+
+  template <class Base> struct Content : Base {};
+
+  template <class Base>
+  StdObjMgt_ReadData& operator >> (Content<Base>& theContent)
+  {
+    theContent.Read (*this);
     return *this;
   }
 

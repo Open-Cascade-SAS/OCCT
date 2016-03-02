@@ -1,0 +1,17 @@
+puts "==========="
+puts "BUC60756"
+puts "BUC60761"
+puts "BUC60762"
+puts "BUC60764"
+puts "==========="
+
+Open [locate_data_file BUC60756_Doc.std] D
+
+######################################################################
+catch {file delete ${imagedir}/Doc2.cbf}
+
+Format D BinOcaf
+SaveAs D ${imagedir}/Doc2.cbf
+Close D
+Open ${imagedir}/Doc2.cbf D 
+

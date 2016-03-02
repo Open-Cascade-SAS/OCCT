@@ -18,6 +18,7 @@
 #include <Storage_Error.hxx>
 
 class StdObjMgt_MapOfInstantiators;
+class StdObjMgt_Persistent;
 
 //! retrieval driver of a Part document
 class StdLDrivers_DocumentRetrievalDriver : public PCDM_RetrievalDriver
@@ -27,7 +28,8 @@ public:
   Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() Standard_OVERRIDE;
 
   //! Retrieve the content of a file into a new document.
-  Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName,
+  Standard_EXPORT virtual void Read (
+    const TCollection_ExtendedString& theFileName,
                                      const Handle(CDM_Document)&       theNewDocument,
                                      const Handle(CDM_Application)&    theApplication) Standard_OVERRIDE;
 
@@ -39,12 +41,18 @@ public:
 
   DEFINE_STANDARD_RTTIEXT (StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
 
-private:
-  //! Update the reader status and raise an exception appropriate for the given storage error.
-  Standard_EXPORT Standard_Boolean RaiseOnStorageError (Storage_Error theError);
-
+protected:
   //! Register types.
-  Standard_EXPORT virtual void BindTypes (StdObjMgt_MapOfInstantiators& theMap);
+  Standard_EXPORT virtual void bindTypes (StdObjMgt_MapOfInstantiators& theMap);
+
+private:
+  //! Read persistent document from a file.
+  Handle(StdObjMgt_Persistent) read (
+    const TCollection_ExtendedString& theFileName,
+    Storage_HeaderData&               theHeaderData);
+
+  //! Update the reader status and raise an exception appropriate for the given storage error.
+  Standard_EXPORT void raiseOnStorageError (Storage_Error theError);
 };
 
 #endif // _StdLDrivers_DocumentRetrievalDriver_HeaderFile

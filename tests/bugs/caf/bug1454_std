@@ -1,0 +1,34 @@
+
+puts "===== OCC1454 ====="
+#######################################################################################
+# Improve performance of TDF_Label::FindChild
+#######################################################################################
+
+puts "Info: Open the document with 80000 sublabels of the label 0:2"
+dchrono h reset
+dchrono h start
+Open [locate_data_file OCC1726.std] D
+dchrono h stop
+set TimeList [dchrono h show]
+
+regexp {Elapsed time: [-0-9.+eE]+ Hours ([-0-9.+eE]+) Minutes ([-0-9.+eE]+) Seconds} $TimeList full ElapsedTime_min ElapsedTime_sec
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $TimeList full CPUusertime
+regexp {CPU system time: ([-0-9.+eE]+) seconds} $TimeList full CPUsystemtime
+
+puts "ElapsedTime = ${ElapsedTime_min} min ${ElapsedTime_sec} sec CPUusertime = ${CPUusertime} CPUsystemtime = ${CPUsystemtime}"
+
+if { ${ElapsedTime_sec} > 20.0 || ${ElapsedTime_min} != 0 } {
+  puts "Elapsed time is more then 20.0 seconds - Faulty"
+  puts "Faulty OCC1454"
+} elseif { ${CPUusertime} > 12 } {
+    puts "CPUusertime is more then 12 seconds - Faulty"
+    puts "Faulty OCC1454"
+} elseif { ${CPUsystemtime} > 0.6 } { 
+    puts "CPUsystemtime is more then 0.6 seconds"
+    puts "Faulty OCC1454"
+} else {
+    puts "Elapsed time is less then 20 seconds - OK"
+    puts "CPU user time is less then 12 seconds - OK"
+    puts "CPU system time is less then 0.6 seconds - OK"
+    puts "OK for OCC1454"
+}

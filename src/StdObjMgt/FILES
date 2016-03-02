@@ -1,6 +1,9 @@
+StdObjMgt_Attribute.hxx
+StdObjMgt_ContentTypes.hxx
 StdObjMgt_MapOfInstantiators.cxx
 StdObjMgt_MapOfInstantiators.hxx
 StdObjMgt_Persistent.cxx
 StdObjMgt_Persistent.hxx
 StdObjMgt_ReadData.cxx
 StdObjMgt_ReadData.hxx
+StdObjMgt_SharedObject.hxx

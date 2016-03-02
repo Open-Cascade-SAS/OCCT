@@ -27,7 +27,6 @@ proc ApplicationFramework:toolkits { } {
                 FWOSPlugin \
                 TKStdL \
                 TKStd \
-                TKShape \
                 TKTObj \
                 TKBinTObj \
                 TKXmlTObj \

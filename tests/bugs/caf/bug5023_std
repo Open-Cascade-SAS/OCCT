@@ -1,0 +1,39 @@
+puts "================"
+puts "OCC5023"
+puts "================"
+puts ""
+######################################################
+# Performance regression in opening OCAF file
+######################################################
+
+set aFile [locate_data_file OCC5023.std]
+
+puts "Info: Restore the document"
+
+if [info exists DD] {
+    catch {Close DD}; unset DD
+}
+
+dchrono h reset
+dchrono h start
+
+Open ${aFile} DD
+dchrono h stop
+set list [dchrono h show]
+Close DD
+
+regexp {CPU user time: +([-0-9.+eE]+)} $list full CPU_user_time
+
+set Good_CPU_user_time 2.
+
+set CPU_user_time_percent [expr (${CPU_user_time} - ${Good_CPU_user_time}) / ${Good_CPU_user_time} * 100.]
+set percent_max 0.1
+
+puts "CPU_user_time = ${CPU_user_time}"
+puts "Good_CPU_user_time = ${Good_CPU_user_time}"
+puts "CPU_user_time_percent = ${CPU_user_time_percent}"
+
+if {${CPU_user_time_percent} > ${percent_max}} {
+    puts "Faulty OCC5023 : CPU user time is wrong"
+}
+

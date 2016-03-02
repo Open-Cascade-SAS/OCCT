@@ -1,0 +1,37 @@
+puts "================"
+puts "CR25969"
+puts "================"
+puts ""
+###############################################
+## Wrong result obtained by 2d classifier algorithm.
+###############################################
+
+pload DCAF
+
+Open [locate_data_file bug25969_pal22851.sgd] D
+
+GetShape D 0:1:15:1:1:2 b1
+GetShape D 0:1:29:1:1:2 b2
+ 
+explode b1
+explode b2
+ 
+bop b1_2 b2_1
+bopcut r
+
+explode r f
+copy r_4 f
+pcurve f
+ 
+point p 12.658283198213592 21.045164979270297 
+ 
+set cls1 [b2dclassifx f p]
+if { [regexp {OUT} $cls1] } {
+    puts "Error : Wrong result of 2d classifier algorithm"
+} else {
+    puts "OK : Good result of 2d classifier algorithm"
+}
+
+smallview
+fit
+set only_screen_axo 1

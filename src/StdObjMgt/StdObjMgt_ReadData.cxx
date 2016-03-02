@@ -12,20 +12,30 @@
 // commercial license or contractual agreement.
 
 #include <StdObjMgt_ReadData.hxx>
+#include <StdObjMgt_Persistent.hxx>
 
 
-StdObjMgt_ReadData::StdObjMgt_ReadData (Storage_BaseDriver&    theDriver,
-                                        const Standard_Integer theNumberOfObjects)
-  : myDriver (&theDriver)
-  , myPersistentObjects (1, theNumberOfObjects) {}
+StdObjMgt_ReadData::StdObjMgt_ReadData
+  (Storage_BaseDriver& theDriver, const Standard_Integer theNumberOfObjects)
+    : myDriver (&theDriver)
+    , myPersistentObjects (1, theNumberOfObjects) {}
 
-void StdObjMgt_ReadData::ReadReference (Handle(StdObjMgt_Persistent)& theTarget)
+void StdObjMgt_ReadData::ReadPersistentObject (const Standard_Integer theRef)
+{
+  Handle(StdObjMgt_Persistent) aPersistent = myPersistentObjects (theRef);
+  if (aPersistent)
+  {
+    Standard_Integer aRef, aType;
+    myDriver->ReadPersistentObjectHeader (aRef, aType);
+    myDriver->BeginReadPersistentObjectData();
+    aPersistent->Read (*this);
+    myDriver->EndReadPersistentObjectData();
+  }
+}
+
+Handle(StdObjMgt_Persistent) StdObjMgt_ReadData::ReadReference()
 {
   Standard_Integer aRef;
   myDriver->GetReference (aRef);
-
-  if (aRef)
-    theTarget = Object (aRef);
-  else
-    theTarget.Nullify();
+  return aRef ? PersistentObject (aRef) : NULL;
 }

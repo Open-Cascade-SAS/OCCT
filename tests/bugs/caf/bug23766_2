@@ -8,7 +8,7 @@ puts ""
 
 # test to check compatibility of old std format
 
-Open [locate_data_file bug23766_ttt1_old.cbf] D
+Open [locate_data_file bug23766_ttt1_old.std] D
 
 GetShape D 0:1:2:1:2 E1
 set info1 [whatis E1]
