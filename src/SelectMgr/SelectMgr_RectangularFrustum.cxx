@@ -491,7 +491,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                          Select3D_TypeOfSensitivity theSensType,
                                                          Standard_Real& theDepth)
 {
@@ -499,15 +499,12 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const Handle(TColgp_HAr
   {
     Standard_Integer aMatchingSegmentsNb = -1;
     theDepth = DBL_MAX;
-    Standard_Integer aLower = theArrayOfPnts->Lower();
-    Standard_Integer anUpper = theArrayOfPnts->Upper();
-
+    const Standard_Integer aLower  = theArrayOfPnts.Lower();
+    const Standard_Integer anUpper = theArrayOfPnts.Upper();
     for (Standard_Integer aPntIter = aLower; aPntIter <= anUpper; ++aPntIter)
     {
-      const gp_Pnt& aStartPnt = theArrayOfPnts->Value (aPntIter);
-      const gp_Pnt& aEndPnt = aPntIter == anUpper ? theArrayOfPnts->Value (aLower)
-        : theArrayOfPnts->Value (aPntIter + 1);
-
+      const gp_Pnt& aStartPnt = theArrayOfPnts.Value (aPntIter);
+      const gp_Pnt& aEndPnt   = theArrayOfPnts.Value (aPntIter == anUpper ? aLower : (aPntIter + 1));
       if (hasOverlap (aStartPnt, aEndPnt))
       {
         aMatchingSegmentsNb++;
@@ -527,7 +524,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const Handle(TColgp_HAr
       return Standard_False;
 
     segmentPlaneIntersection (aPolyNorm,
-                              theArrayOfPnts->Value (theArrayOfPnts->Lower()),
+                              theArrayOfPnts.Value (theArrayOfPnts.Lower()),
                               theDepth);
   }
 
@@ -549,11 +546,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    Handle(TColgp_HArray1OfPnt) aPntsArray = new TColgp_HArray1OfPnt(1, 4);
-    aPntsArray->SetValue (1, thePnt1);
-    aPntsArray->SetValue (2, thePnt2);
-    aPntsArray->SetValue (3, thePnt3);
-    aPntsArray->SetValue (4, thePnt1);
+    const gp_Pnt aPntsArrayBuf[4] = { thePnt1, thePnt2, thePnt3, thePnt1 };
+    const TColgp_Array1OfPnt aPntsArray (aPntsArrayBuf[0], 1, 4);
     return Overlaps (aPntsArray, Select3D_TOS_BOUNDARY, theDepth);
   }
   else if (theSensType == Select3D_TOS_INTERIOR)

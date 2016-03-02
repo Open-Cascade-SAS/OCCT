@@ -76,7 +76,7 @@ protected:
                                                const gp_Pnt& thePnt2);
 
   //! SAT intersection test between frustum given and planar convex polygon represented as ordered point set
-  Standard_EXPORT Standard_Boolean hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+  Standard_EXPORT Standard_Boolean hasOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                gp_Vec& theNormal);
 
   //! SAT intersection test between defined volume and given triangle

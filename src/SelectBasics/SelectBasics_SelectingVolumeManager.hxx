@@ -68,6 +68,12 @@ public:
                                      Standard_Integer theSensType,
                                      Standard_Real& theDepth) = 0;
 
+  //! Returns true if selecting volume is overlapped by planar convex polygon, which points
+  //! are stored in theArrayOfPts, taking into account sensitivity type theSensType
+  virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
+                                     Standard_Integer theSensType,
+                                     Standard_Real& theDepth) = 0;
+
   //! Returns true if selecting volume is overlapped by line segment with start point at thePt1
   //! and end point at thePt2
   virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,

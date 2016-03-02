@@ -210,20 +210,18 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt,
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                         Select3D_TypeOfSensitivity theSensType,
                                                         Standard_Real& /*theDepth*/)
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    Standard_Integer aLower = theArrayOfPnts->Lower();
-    Standard_Integer anUpper = theArrayOfPnts->Upper();
-
+    const Standard_Integer aLower  = theArrayOfPnts.Lower();
+    const Standard_Integer anUpper = theArrayOfPnts.Upper();
     for (Standard_Integer aPtIdx = aLower; aPtIdx <= anUpper; ++aPtIdx)
     {
-      const gp_Pnt& aStartPt = theArrayOfPnts->Value (aPtIdx);
-      const gp_Pnt& aEndPt = aPtIdx == anUpper ? theArrayOfPnts->Value (aLower) : theArrayOfPnts->Value (aPtIdx + 1);
-
+      const gp_Pnt& aStartPt = theArrayOfPnts.Value (aPtIdx);
+      const gp_Pnt& aEndPt   = theArrayOfPnts.Value (aPtIdx == anUpper ? aLower : (aPtIdx + 1));
       if (!hasOverlap (aStartPt, aEndPt))
       {
         return Standard_False;
@@ -265,11 +263,9 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    Handle(TColgp_HArray1OfPnt) aPtsArray = new TColgp_HArray1OfPnt(1, 4);
-    aPtsArray->SetValue (1, thePnt1);
-    aPtsArray->SetValue (2, thePnt2);
-    aPtsArray->SetValue (3, thePnt3);
-    return Overlaps (aPtsArray, Select3D_TOS_BOUNDARY, theDepth);
+    const gp_Pnt aPntsArrayBuf[3] = { thePnt1, thePnt2, thePnt3 };
+    const TColgp_Array1OfPnt aPntsArray (aPntsArrayBuf[0], 1, 3);
+    return Overlaps (aPntsArray, Select3D_TOS_BOUNDARY, theDepth);
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {

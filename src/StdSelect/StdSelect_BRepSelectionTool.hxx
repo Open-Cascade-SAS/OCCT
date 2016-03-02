@@ -118,7 +118,10 @@ public:
   //! if<InteriorFlag> =  False  the face  will  be sensitive only on its boundary
   Standard_EXPORT static Standard_Boolean GetSensitiveForFace (const TopoDS_Face& aFace, const Handle(StdSelect_BRepOwner)& anOwner, Select3D_EntitySequence& OutList, const Standard_Boolean AutoTriangulation = Standard_True, const Standard_Integer NbPOnEdge = 9, const Standard_Real MaxiParam = 500, const Standard_Boolean InteriorFlag = Standard_True);
 
-
+  //! Traverses the selection given and pre-builds BVH trees for heavyweight
+  //! sensitive entities containing more than BVH_PRIMITIVE_LIMIT (defined in .cxx file)
+  //! sub-elements
+  Standard_EXPORT static void PreBuildBVH (const Handle(SelectMgr_Selection)& theSelection);
 
 
 protected:
@@ -129,12 +132,6 @@ protected:
 
 private:
 
-  
-  //! Traverses the selection given and pre-builds BVH trees for heavyweight
-  //! sensitive entities containing more than BVH_PRIMITIVE_LIMIT (defined in .cxx file)
-  //! sub-elements
-  Standard_EXPORT static void preBuildBVH (const Handle(SelectMgr_Selection)& theSelection);
-  
   Standard_EXPORT static void GetEdgeSensitive (const TopoDS_Shape& aShape, const Handle(StdSelect_BRepOwner)& anOwner, const Handle(SelectMgr_Selection)& aSelection, const Standard_Real theDeflection, const Standard_Real theDeflectionAngle, const Standard_Integer NbPOnEdge, const Standard_Real MaximalParameter, Handle(Select3D_SensitiveEntity)& aSensitive);
 
 

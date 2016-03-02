@@ -17,6 +17,7 @@
 #define MeshVS_Buffer_HeaderFile
 
 #include <Standard.hxx>
+#include <gp_Pnt.hxx>
 
 /**
  * General purpose buffer that is allocated on the stack with a
@@ -66,6 +67,12 @@ public:
   operator Standard_Integer& ()
   {
     return * (myDynData ? (Standard_Integer*) myDynData : (Standard_Integer*) myAutoData);
+  }
+
+  //! Interpret the buffer as a reference to gp_Pnt
+  operator gp_Pnt& ()
+  {
+    return * (myDynData ? (gp_Pnt*) myDynData : (gp_Pnt*) myAutoData);
   }
 
 private:

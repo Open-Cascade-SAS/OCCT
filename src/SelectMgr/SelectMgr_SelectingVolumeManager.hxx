@@ -120,6 +120,13 @@ public:
                                                      Standard_Integer theSensType,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
+  //! SAT intersection test between defined volume and given ordered set of points,
+  //! representing line segments. The test may be considered of interior part or
+  //! boundary line defined by segments depending on given sensitivity type
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
+                                                     Standard_Integer theSensType,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
+
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,

@@ -3,6 +3,8 @@ MeshVS_Buffer.hxx
 MeshVS_BuilderPriority.hxx
 MeshVS_ColorHasher.cxx
 MeshVS_ColorHasher.hxx
+MeshVS_CommonSensitiveEntity.hxx
+MeshVS_CommonSensitiveEntity.cxx
 MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger.hxx
 MeshVS_DataMapIteratorOfDataMapOfHArray1OfSequenceOfInteger.hxx
 MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString.hxx
@@ -67,6 +69,8 @@ MeshVS_SensitivePolyhedron.cxx
 MeshVS_SensitivePolyhedron.hxx
 MeshVS_SensitiveSegment.cxx
 MeshVS_SensitiveSegment.hxx
+MeshVS_SensitiveQuad.hxx
+MeshVS_SensitiveQuad.cxx
 MeshVS_SequenceOfPrsBuilder.hxx
 MeshVS_SymmetricPairHasher.hxx
 MeshVS_TextPrsBuilder.cxx

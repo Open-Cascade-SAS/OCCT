@@ -61,7 +61,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 

@@ -66,12 +66,12 @@
 #define BVH_PRIMITIVE_LIMIT 800000
 
 //==================================================
-// function: preBuildBVH
+// function: PreBuildBVH
 // purpose : Pre-builds BVH tree for heavyweight
 //           sensitive entities with sub-elements
 //           amount more than BVH_PRIMITIVE_LIMIT
 //==================================================
-void StdSelect_BRepSelectionTool::preBuildBVH (const Handle(SelectMgr_Selection)& theSelection)
+void StdSelect_BRepSelectionTool::PreBuildBVH (const Handle(SelectMgr_Selection)& theSelection)
 {
   for (theSelection->Init(); theSelection->More(); theSelection->Next())
   {
@@ -196,7 +196,7 @@ void StdSelect_BRepSelectionTool
     anOwner->Set (theSelectableObj);
   }
 
-  preBuildBVH (theSelection);
+  PreBuildBVH (theSelection);
 }
 
 //==================================================

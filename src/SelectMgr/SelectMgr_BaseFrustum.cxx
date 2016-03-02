@@ -176,7 +176,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/)
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 //=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const Handle(TColgp_HArray1OfPnt)& /*theArrayOfPnts*/,
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const TColgp_Array1OfPnt& /*theArrayOfPnts*/,
                                                   Select3D_TypeOfSensitivity /*theSensType*/,
                                                   Standard_Real& /*theDepth*/)
 {

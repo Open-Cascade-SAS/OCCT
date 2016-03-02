@@ -175,7 +175,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
 // function : Overlaps
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
                                                            Select3D_TypeOfSensitivity theSensType,
                                                            Standard_Real& theDepth)
 {

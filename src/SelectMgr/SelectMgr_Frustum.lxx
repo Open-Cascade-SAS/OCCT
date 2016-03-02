@@ -308,15 +308,15 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
 //            polygon represented as ordered point set
 // =======================================================================
 template <int N>
-Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                    gp_Vec& theNormal)
 {
-  Standard_Integer aStartIdx = theArrayOfPnts->Lower();
-  Standard_Integer anEndIdx = theArrayOfPnts->Upper();
+  Standard_Integer aStartIdx = theArrayOfPnts.Lower();
+  Standard_Integer anEndIdx = theArrayOfPnts.Upper();
 
-  const gp_XYZ& aPnt1 = theArrayOfPnts->Value (aStartIdx).XYZ();
-  const gp_XYZ& aPnt2 = theArrayOfPnts->Value (aStartIdx + 1).XYZ();
-  const gp_XYZ& aPnt3 = theArrayOfPnts->Value (aStartIdx + 2).XYZ();
+  const gp_XYZ& aPnt1 = theArrayOfPnts.Value (aStartIdx).XYZ();
+  const gp_XYZ& aPnt2 = theArrayOfPnts.Value (aStartIdx + 1).XYZ();
+  const gp_XYZ& aPnt3 = theArrayOfPnts.Value (aStartIdx + 2).XYZ();
   const gp_XYZ aVec1 = aPnt1 - aPnt2;
   const gp_XYZ aVec2 = aPnt3 - aPnt2;
   theNormal = aVec2.Crossed (aVec1);
@@ -347,7 +347,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1Of
     const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
     for (Standard_Integer aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
     {
-      Standard_Real aProjection = aPlane.Dot (theArrayOfPnts->Value (aPntIter).XYZ());
+      Standard_Real aProjection = aPlane.Dot (theArrayOfPnts.Value (aPntIter).XYZ());
       aMaxPolyg = Max (aMaxPolyg, aProjection);
       aMinPolyg = Min (aMinPolyg, aProjection);
     }
@@ -361,10 +361,10 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1Of
   }
 
   Standard_Integer aDirectionsNb = myIsOrthographic ? 4 : 6;
-  for (Standard_Integer aPntsIter = 0, aLastIdx = anEndIdx - aStartIdx, aLen = theArrayOfPnts->Length(); aPntsIter <= aLastIdx; ++aPntsIter)
+  for (Standard_Integer aPntsIter = 0, aLastIdx = anEndIdx - aStartIdx, aLen = theArrayOfPnts.Length(); aPntsIter <= aLastIdx; ++aPntsIter)
   {
-    const gp_XYZ aSegmDir = theArrayOfPnts->Value ((aPntsIter + 1) % aLen + aStartIdx).XYZ()
-      - theArrayOfPnts->Value (aPntsIter + aStartIdx).XYZ();
+    const gp_XYZ aSegmDir = theArrayOfPnts.Value ((aPntsIter + 1) % aLen + aStartIdx).XYZ()
+      - theArrayOfPnts.Value (aPntsIter + aStartIdx).XYZ();
     for (Standard_Integer aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
     {
       Standard_Real aMaxPolyg = RealFirst();
@@ -375,7 +375,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1Of
 
       for (Standard_Integer aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
       {
-        Standard_Real aProjection = aTestDir.Dot (theArrayOfPnts->Value (aPntIter).XYZ());
+        Standard_Real aProjection = aTestDir.Dot (theArrayOfPnts.Value (aPntIter).XYZ());
         aMaxPolyg = Max (aMaxPolyg, aProjection);
         aMinPolyg = Min (aMinPolyg, aProjection);
       }
