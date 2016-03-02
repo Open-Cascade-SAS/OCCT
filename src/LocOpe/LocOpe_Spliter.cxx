@@ -143,7 +143,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 
   TopTools_MapOfShape theFacesWithSection;
   for (PW->InitEdgeIterator(); PW->MoreEdge(); PW->NextEdge()) {
-    const TopoDS_Edge& edg = PW->Edge();
+    TopoDS_Edge edg = PW->Edge();
     for (exp.Init(edg,TopAbs_VERTEX); exp.More(); exp.Next()) {
       const TopoDS_Vertex& vtx = TopoDS::Vertex(exp.Current());
       if (!mapV.Contains(vtx)) {
@@ -286,7 +286,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
       TopoDS_Shape ebase = lsubs.First();
       lsubs.Clear();
       lsubs.Append(e1.Oriented(ebase.Orientation()));
-      theSubs.Substitute(ebase.Oriented(TopAbs_FORWARD),lsubs);
+      theSubs.Substitute(ebase,lsubs);
     }
     else {
 #ifdef OCCT_DEBUG
