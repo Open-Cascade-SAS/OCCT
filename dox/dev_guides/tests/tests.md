@@ -186,13 +186,13 @@ Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional 
 3.	In the test script:
 	*	Load all necessary DRAW modules by command *pload*.
 	*	Use command *locate_data_file* to get a path to data files used by test script. (Make sure to have this command not inside catch statement if it is used.)
-	*	Use DRAW commands to reproduce the situation being tested.
-	*	Make sure that in case of failure the test produces message containing word "Error" or other recognized by test system as error (add new error patterns in file parse.rules if necessary).
-	*	If test case reports error due to existing problem and the fix is not available, add @ref testmanual_3_6 "TODO" statement for each error to mark it as known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
-	*	To check expected output which should be obtained as a result of a test, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
-	*	If test case produces error messages (contained in parse.rules) which are expected in that test and should not be considered as its failure (e.g. test for checkshape command), add REQUIRED statement for each error to mark it as required output.
-4.	If the test uses data file(s) not yet present in the test database, these can be put to (sub)directory pointed out by *CSF_TestDataPath* variable for running test. The files should be attached to Mantis issue corresponding to the modification being tested.
-5.	Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate to Git branch created for the issue.
+	*	Use DRAW commands to reproduce the tested situation.
+	*	Make sure that in case of failure the test produces a message containing word "Error" or other recognized by the test system as error (add new error patterns in file parse.rules if necessary).
+	*	If the test case reports error due to an existing problem and the fix is not available, add @ref testmanual_3_6 "TODO" statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
+	*	To check expected output which should be obtained as the test result, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
+	*	If the test case produces error messages (contained in parse.rules), which are expected in that test and should not be considered as its failure (e.g. test for *checkshape* command), add REQUIRED statement for each error to mark it as required output.
+4.	If the test uses data file(s) that are not yet present in the test database, it is possible to put them to (sub)directory pointed out by *CSF_TestDataPath* variable for running test. The files should be attached to the Mantis issue corresponding to the tested modification.
+5.	Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate it to the Git branch created for the issue.
 
 Example:
 
@@ -316,7 +316,7 @@ The test group may contain *parse.rules* file. This file defines patterns used f
 
 Each line in the file should specify a status (single word), followed by a regular expression delimited by slashes (*/*) that will be matched against lines in the test output log to check if it corresponds to this status.
 
-The regular expressions should follow <a href="http://www.tcl.tk/man/tcl/TclCmd/re_syntax.htm">Tcl syntax</a>, with special exception that "\b" is considered as word limit (Perl-style), in addition to "\y" used in Tcl.
+The regular expressions should follow <a href="http://www.tcl.tk/man/tcl/TclCmd/re_syntax.htm">Tcl syntax</a>, with a special exception that "\b" is considered as word limit (Perl-style), in addition to "\y" used in Tcl.
 
 The rest of the line can contain a comment message, which will be added to the test report when this status is detected.
 
@@ -631,8 +631,8 @@ puts "TODO OCC22817 All: TEST INCOMPLETE"
 
 @subsection testmanual_3_7 Marking required output
 
-To check expected output which must be obtained as a result of a test for it to be considered correct, add REQUIRED statement for each specific message.
-For that, the following statement should be added to such a test script:
+To check the obtained test output matches the expected results considered correct, add REQUIRED statement for each specific message.
+For that, the following statement should be added to the corresponding test script:
 
 ~~~~~
 puts "REQUIRED ListOfPlatforms: RegularExpression"
@@ -640,7 +640,7 @@ puts "REQUIRED ListOfPlatforms: RegularExpression"
 
 Here *ListOfPlatforms* and *RegularExpression* have the same meaning as in TODO statements described above.
 
-The REQUIRED statement can also be used to mask message that would normally be interpreted as error (according to rules defined in *parse.rules*) but should not be considered as such within current test.
+The REQUIRED statement can also be used to mask the message that would normally be interpreted as error (according to the rules defined in *parse.rules*) but should not be considered as such within the current test.
 
 Example:
 ~~~~~

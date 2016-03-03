@@ -19,7 +19,7 @@ modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
 @section OCCT_OVW_SECTION_2 Copyrights
 
 Open CASCADE Technology and all materials, including this documentation, is 
-Copyright (c) 1999-2015 by OPEN CASCADE S.A.S. All rights reserved.
+Copyright (c) 1999-2016 by OPEN CASCADE S.A.S. All rights reserved.
 
 @htmlonly<center>@endhtmlonly
 http://www.opencascade.com
@@ -73,7 +73,7 @@ and, in case you need any further information, directly contact their authors.
 **Qt** is a cross-platform application framework that is widely used for developing application software 
 with graphical user interface (GUI). Qt is free and open source software distributed under 
 the terms of the GNU Lesser General Public License. In OCCT Qt is used for programming samples. 
-If you need further information on Qt, please, refer to Qt Homepage (http://qt.digia.com).
+If you need further information on Qt, please, refer to Qt Homepage (http://www.qt.io/)
 
 **Tcl** is a high-level programming language. Tk is a graphical user interface (GUI) toolkit, 
 with buttons, menus, listboxes, scrollbars, and so on. Taken together Tcl and Tk provide a solution 
@@ -199,17 +199,18 @@ for which OCCT is certified to work.
 | Linux     | Mandriva 2010, CentOS 6.3, Fedora 18, Ubuntu 14.10 - 15.10, Debian 6.0, Debian 7.0 |
 | OS X      | 10.10 Yosemite / 10.9 Mavericks / 10.8 Mountain Lion / 10.7 Lion |
 | Android   | 6.x, 5.x, 4.0.4+ |
+| iOS       | iOS 7 |
 
 @subsection overview_req_cpp C++ Compiler / IDE
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio: 2010 SP1\*, 2012 Update 4, 2013 Update 5, 2015 <br> Intel C++ Composer XE 2013 SP1 |
+| Windows   | Microsoft Visual Studio: 2010 SP1<sup>1</sup>, 2012 Update 4, 2013 Update 5, 2015 <br> Intel C++ Composer XE 2013 SP1 <br> GCC 4.3+ (Mingw-w64)|
 | Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
 | OS X      | XCode 6 or newer |
 | Android   | NDK r10, GNU gcc 4.8 or newer |
 
-* VC++ 10 64-bit is used for regular testing and for building 
+1) VC++ 10 64-bit is used for regular testing and for building 
   binary package of official release of OCCT on Windows.
 
 @subsection overview_req_libs Third-party libraries
@@ -218,12 +219,13 @@ for which OCCT is certified to work.
 | --------- | ----------- |
 | Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ <br> Direct3D 9 |
 | Qt (for samples and demos) | Desktop: Qt 4.8.6+ http://www.qt.io/download/ <br> Android: Qt 5.3.2+ http://www.qt.io/download/ |
-| TCL (for testing tools)    | Tcl/Tk 8.6.3+ http://www.tcl.tk/software/tcltk/download.html |
-| Freetype (for text rendering) | freetype-2.5.3+ http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.16.0+ http://sourceforge.net/projects/freeimage/files |
+| TCL (for testing tools)    | Tcl/Tk 8.6.3+ http://www.tcl.tk/software/tcltk/download.html <br> or ActiveTcl 8.6 http://www.activestate.com/activetcl/downloads (for Windows)| 
+| Freetype (for text rendering) | FreeType 2.4.11-2.5.5 http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ http://sourceforge.net/projects/freeimage/files |
 | gl2ps (optional, for export contents of OCCT viewer to vector formats) | gl2ps-1.3.8+  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x http://www.threadingbuildingblocks.org/ |
 | VTK (for VTK Integration Services | VTK 6.1+ http://www.vtk.org/VTK/resources/software.html |
+| Doxygen (optional for building documentation) | Doxygen 1.8.5+ http://www.stack.nl/~dimitri/doxygen/download.html |
 
 @subsection overview_req_hw Hardware
 
@@ -233,8 +235,8 @@ for which OCCT is certified to work.
 | Free disk space (complete installation) | 600 MB approx. |
 
 On desktop, 3D viewer for optimal performance requires graphics processing unit (GPU) supporting OpenGL 3.3 or above. 
-Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with GL_ARB_texture_buffer_object_rgb32 extension.
-Textures within ray tracing will be available only when GL_ARB_bindless_texture extension is provided by driver.
+Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with *GL_ARB_texture_buffer_object_rgb32* extension.
+Textures within ray tracing will be available only when *GL_ARB_bindless_texture extension* is provided by driver.
 
 On mobile platforms, OpenGL ES 2.0+ is required for 3D viewer. The ray tracing is not yet available on mobile platforms.
 Some old hardware might be unable to execute complex GLSL programs (e.g. with high number of light sources, clipping planes).
@@ -286,7 +288,7 @@ When the installation is complete, you will find the directories for 3rd party p
 @image html /overview/images/overview_3rdparty.png 
 @image latex /overview/images/overview_3rdparty.png 
 
-The contents of the OCCT-6.9.0 directory (called further "OCCT root", or $CASROOT) are as follows:
+The contents of the OCCT-7.0.0 directory (called further "OCCT root", or $CASROOT) are as follows:
 
 @image html /overview/images/overview_installation.png "The directory tree"
 @image latex /overview/images/overview_installation.png "The directory tree"
@@ -394,14 +396,14 @@ Draw contains:
 You can add new custom test harness commands to Draw in order to test 
 or demonstrate a new functionality, which you are developing.
 
-Currently DRAW Test Harness is a single executable called DRAWEXE.
+Currently DRAW Test Harness is a single executable called *DRAWEXE*.
 
 Commands grouped in toolkits can be loaded at run-time thereby implementing dynamically loaded plug-ins. 
 Thus you can work only with the commands that suit your needs adding 
 the commands dynamically without leaving the Test Harness session.
 
 Declaration of available plug-ins is done through special resource file(s). 
-The pload command loads the plug-in in accordance with 
+The *pload* command loads the plug-in in accordance with 
 the specified resource file and activates the commands implemented in the plug-in.
 
 The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the @ref occt_user_guides__test_harness.

@@ -1116,9 +1116,11 @@ Draw> writeall <filename.igs>
 ~~~~~
 Allows writing the prepared model to a file with name *filename.igs*.
 
-@section occt_iges_5_ Reading from and writing to XDE
+@section occt_iges_5 Reading from and writing to IGES
 
-@subsection occt_iges_5_1 Loading an IGES file
+@subsection occt_iges_5_1 Reading from IGES
+
+### Load an IGES file
 
 Before performing any other operation, you must load an IGES  file with: 
 ~~~~~
@@ -1127,11 +1129,12 @@ IFSelect_ReturnStatus stat = reader.ReadFile(“filename.igs”);
 ~~~~~
 Loading the file only memorizes, but does not translate the  data. 
 
-@subsection occt_iges_5_2 Checking the loaded IGES file
+### Check the loaded IGES file
 
 This step is not obligatory. See the description of @ref occt_iges_2_3_2 "Checking the IGES file" above. 
 
-@subsection occt_iges_5_3 Setting parameters for translation to XDE
+### Set parameters for translation to XDE
+
 See the description of @ref occt_iges_2_3_3 "Setting translation parameters" above. 
 
 In  addition, the following parameters can be set for XDE translation of  attributes: 
@@ -1145,19 +1148,24 @@ reader.SetColorMode(mode);
 reader.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
 ~~~~~
-@subsection occt_iges_5_4 Performing the translation of an IGES file  to XDE
+
+### Translate an IGES file to XDE
+
 The following function performs a translation of the whole  document: 
 ~~~~~
 Standard_Boolean ok = reader.Transfer(doc);  
 ~~~~~
 where *doc* is a variable which contains a handle to the output document and should have a  type *Handle(TDocStd_Document)*. 
 
-@subsection occt_iges_5_5 Initializing the process of translation from XDE to  IGES
-The process can be initialized as follows: 
+
+@subsection occt_iges_5_2 Writing to IGES
+
+The translation from XDE to IGES can be initialized as follows: 
 ~~~~~
 IGESCAFControl_Writer aWriter(XSDRAW::Session(),Standard_False); 
 ~~~~~
-@subsection occt_iges_5_6 Setting parameters for translation from XDE to IGES
+
+### Set parameters for translation from XDE to IGES
 
 The  following parameters can be set for translation of attributes to IGES: 
 * For transferring colors: 
@@ -1170,7 +1178,8 @@ aWriter.SetColorMode(mode);
 aWriter.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
 ~~~~~
-@subsection occt_iges_5_7 Performing the translation of an XDE  document to IGES
+
+### Translate an XDE  document to IGES
 
 You can perform the translation of a document by calling the  function: 
 ~~~~~
@@ -1178,7 +1187,8 @@ IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc);
 ~~~~~
 where "doc" is a variable which contains a handle to the input document for transferring  and should have a type *Handle(TDocStd_Document)*.
  
-@subsection occt_iges_5_8 Writing an IGES file
+### Write an IGES file
+
 Write an IGES file with: 
 ~~~~~
 IFSelect_ReturnStatus statw =  aWriter.WriteFile("filename.igs"); 

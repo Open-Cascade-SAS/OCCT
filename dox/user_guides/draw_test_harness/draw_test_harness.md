@@ -1282,11 +1282,15 @@ Syntax:
 ~~~~~
 vinit 
 ~~~~~
-Creates new View window with specified name view_name.
-By default the new view is created in the viewer and in graphic driver shared with active view.
-* *name* = {driverName/viewerName/viewName | viewerName/viewName | viewName}.
-If driverName isn't specified the driver will be shared with active view.
-If viewerName isn't specified the viewer will be shared with active view.
+Creates a new View window with the specified *view_name*.
+By default the view is created in the viewer and in the graphic driver shared with the active view.
+
+~~~~
+name = {driverName/viewerName/viewName | viewerName/viewName | viewName}
+~~~~
+
+If *driverName* is not specified the driver will be shared with the active view.
+If *viewerName* is not specified the viewer will be shared with the active view.
 
 @subsubsection occt_draw_4_2_2 vhelp
 
@@ -1361,7 +1365,7 @@ Syntax:
 ~~~~~
 vrepaint 
 ~~~~~
-Forcebly redisplays the shape in the 3D viewer window. 
+Forcibly redisplays the shape in the 3D viewer window. 
 
 @subsubsection occt_draw_4_2_8 vfit
 
@@ -1401,7 +1405,7 @@ Emulates different types of selection:
   * single mouse click selection
   * selection with a rectangle having the upper left and bottom right corners in <i>(x1,y1)</i> and <i>(x2,y2)</i> respectively
   * selection with a polygon having the corners in pixel positions <i>(x1,y1), (x2,y2),…, (xn,yn)</i>
-  * -allowoverlap manages overlap and inclusion detection in rectangular selection. If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined rectangle will be detected, otherwise algorithm will chose only fully included sensitives. Default behavior is to detect only full inclusion.
+  * <i> -allowoverlap </i> manages overlap and inclusion detection in rectangular selection. If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined rectangle will be detected, otherwise algorithm will chose only fully included sensitives. Default behavior is to detect only full inclusion.
   * any of these selections if shift_selection is set to 1.
 
 @subsubsection occt_draw_4_2_12  vmoveto
@@ -1419,15 +1423,15 @@ Syntax:
 ~~~~~
 vviewparams [-scale [s]] [-eye [x y z]] [-at [x y z]] [-up [x y z]] [-proj [x y z]] [-center x y] [-size sx]
 ~~~~~
-Gets or sets current view parameters.
+Gets or sets the current view parameters.
 * If called without arguments, all view parameters are printed.
 * The options are:
-*   -scale [s]    : prints or sets viewport relative scale.
-*   -eye [x y z]  : prints or sets eye location.
-*   -at [x y z]   : prints or sets center of look.
-*   -up [x y z]   : prints or sets direction of up vector.
-*   -proj [x y z] : prints or sets direction of look.
-*   -center x y   : sets location of center of the screen in pixels.
+*   -scale [s]    : prints or sets the relative scale of viewport.
+*   -eye [x y z]  : prints or sets the eye location.
+*   -at [x y z]   : prints or sets the view center.
+*   -up [x y z]   : prints or sets the up vector direction.
+*   -proj [x y z] : prints or sets the view direction.
+*   -center x y   : sets the screen center location in pixels.
 *   -size [sx]    : prints viewport projection width and height sizes or changes the size of its maximum dimension.
 
 @subsubsection occt_draw_4_2_14  vchangeselected
@@ -1480,8 +1484,8 @@ Syntax:
 vhlr is_enabled={on|off} [show_hidden={1|0}]
 ~~~~~
 Hidden line removal algorithm:
- * is_enabled: if is on HLR algorithm is applied.
- * show_hidden: if equals to 1, hidden lines are drawn as dotted ones.
+ * <i>is_enabled</i> applies HLR algorithm.
+ * <i>show_hidden</i> if equals to 1, hidden lines are drawn as dotted ones.
 
 @subsubsection occt_draw_4_2_20  vhlrtype
 
@@ -1509,22 +1513,25 @@ vcamera [-ortho] [-projtype]
         [-zfocus [Value]] [-zfocusType [absolute|relative]]
 ~~~~~
 
-Manage camera parameters.
-Prints current value when option called without argument.
+Manages camera parameters.
+Prints the current value when the option is called without argument.
+
 Orthographic camera:
- * -ortho activate orthographic projection
+ * -ortho -- activates orthographic projection.
+ 
 Perspective camera:
- * -persp activate perspective  projection (mono)
- * -fovy  field of view in y axis, in degrees
- * -distance distance of eye from camera center
+ * -persp -- activated perspective  projection (mono);
+ * -fovy  -- field of view in y axis, in degrees;
+ * -distance -- distance of eye from the camera center.
+ 
 Stereoscopic camera:
- * -stereo perspective  projection (stereo)
- * -leftEye perspective  projection (left  eye)
- * -rightEye perspective  projection (right eye)
- * -iod intraocular distance value
- * -iodType distance type, absolute or relative
- * -zfocus stereographic focus value
- * -zfocusType focus type, absolute or relative"
+ * -stereo -- perspective  projection (stereo);
+ * -leftEye -- perspective  projection (left  eye);
+ * -rightEye -- perspective  projection (right eye);
+ * -iod -- intraocular distance value;
+ * -iodType -- distance type, absolute or relative;
+ * -zfocus -- stereographic focus value;
+ * -zfocusType -- focus type, absolute or relative.
 
 **Example:**
 ~~~~~
@@ -1542,17 +1549,16 @@ Syntax:
 vstereo [0|1] [-mode Mode] [-reverse {0|1}] [-anaglyph Filter]
 ~~~~~
 
-Control stereo output mode.
-Available modes for -mode:
- * quadBuffer -- OpenGL QuadBuffer stereo, requires driver support. Should be called BEFORE vinit!
- * anaglyph         -- Anaglyph glasses
- * rowInterlaced    -- row-interlaced display
- * columnInterlaced -- column-interlaced display
- * chessBoard       -- chess-board output
- * sideBySide       -- horizontal pair
- * overUnder        -- vertical pair
+Defines the stereo output mode. The following modes are available:
+ * quadBuffer -- OpenGL QuadBuffer stereo, requires driver support. Should be called BEFORE *vinit*!
+ * anaglyph         -- Anaglyph glasses;
+ * rowInterlaced    -- row-interlaced display;
+ * columnInterlaced -- column-interlaced display;
+ * chessBoard       -- chess-board output;
+ * sideBySide       -- horizontal pair;
+ * overUnder        -- vertical pair;
 Available Anaglyph filters for -anaglyph:
- * redCyan, redCyanSimple, yellowBlue, yellowBlueSimple, greenMagentaSimple
+ * redCyan, redCyanSimple, yellowBlue, yellowBlueSimple, greenMagentaSimple.
 
 **Example:**
 ~~~~~
@@ -1591,19 +1597,19 @@ vdisplay [-noupdate|-update] [-local] [-mutable] [-neutral]
 ~~~~~
 
 Displays named objects.
-Option -local enables displaying of objects in local selection context.
+Option <i>-local</i> enables display of objects in the local selection context.
 Local selection context will be opened if there is not any.
 
 * *noupdate* suppresses viewer redraw call.
-* *mutable* enables optimizations for mutable objects.
-* *neutral* draws objects in main viewer.
-* *layer* sets z-layer for objects. It can use '-overlay|-underlay|-top|-topmost' instead of '-layer index' for the default z-layers.
-* *top* draws objects on top of main presentations but below topmost.
+* *mutable* enables optimization for mutable objects.
+* *neutral* draws objects in the main viewer.
+* *layer* sets z-layer for objects. It can use <i>-overlay|-underlay|-top|-topmost</i> instead of <i>-layer index</i> for the default z-layers.
+* *top* draws objects on top of main presentations but below the topmost level.
 * *topmost* draws in overlay for 3D presentations with independent Depth.
 * *overlay* draws objects in overlay for 2D presentations (On-Screen-Display).
 * *underlay* draws objects in underlay for 2D presentations (On-Screen-Display).
 * *selectable|-noselect* controls selection of objects.
-* *trsfPers* sets a transform persistence flags. Flag 'full' is pan, zoom and rotate.
+* *trsfPers* sets transform persistence flags. Flag *full* allows to pan, zoom and rotate.
 * *trsfPersPos* sets an anchor point for transform persistence.
 * *2d|-2dTopDown* displays object in screen coordinates.
 * *dispmode* sets display mode for objects.
@@ -1645,7 +1651,7 @@ vdisplayall [-local]
 ~~~~~ 
 
 Displays all erased interactive objects (see vdir and vstate).
-Option -local enables displaying of the objects in local selection context.
+Option <i>-local</i> enables displaying objects in the local selection context.
 
 **Example:** 
 ~~~~~ 
@@ -1773,10 +1779,10 @@ vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]
 
 ~~~~~
 
-Manage presentation properties of all, selected or named objects.
-When *-subshapes* is specified than following properties will be assigned to specified sub-shapes.
-When *-defaults* is specified than presentation properties will be assigned to all objects that have not their own specified properties and to all objects to be displayed in the future.
-If *-defaults* is used there should not be any names of objects and *-subshapes* specifier.
+Manages presentation properties of all, selected or named objects.
+* *-subshapes* -- assigns presentation properties to the specified sub-shapes.
+* *-defaults* -- assigns presentation properties to all objects that do not have their own specified properties and to all objects to be displayed in the future.
+If *-defaults* option is used there should not be any names of objects and *-subshapes* specifier.
 
 Aliases:
 ~~~~~
@@ -2008,7 +2014,7 @@ Syntax:
 vstate [-entities] [-hasSelected] [name1] ... [nameN]
 ~~~~~ 
 
-Reports show/hidden state for selected or named objects
+Reports show/hidden state for selected or named objects:
  * *entities* -- prints low-level information about detected entities;
  * *hasSelected* -- prints 1 if the context has a selected shape and 0 otherwise.
 
@@ -2044,8 +2050,8 @@ Manages rendering parameters:
 * env          -- Enables/disables environment map background
 * shadingModel -- Controls shading model from enumeration color, flat, gouraud, phong
 
-Unlike vcaps, these parameters dramatically change visual properties.
-Command is intended to control presentation quality depending on hardware capabilities and performance.
+Unlike *vcaps*, these parameters dramatically change visual properties.
+The command is intended to control presentation quality depending on hardware capabilities and performance.
 
 **Example:**
 ~~~~~
@@ -2106,7 +2112,7 @@ Syntax:
 vplanetri name
 ~~~~~ 
 
-Create a plane from a trihedron selection. If no arguments are set, the default 
+Creates a plane from a trihedron selection. If no arguments are set, the default plane is created. 
 
 
 @subsubsection occt_draw_4_4_3 vsize
@@ -2273,7 +2279,7 @@ vselmode [object] mode_number is_turned_on=(1|0)
 ~~~~~ 
 
 Sets the selection mode for an object. If the object value is not defined, the selection mode is set for all displayed objects. 
-*Mode_number* is non-negative integer that has different meaning for different interactive object classes.
+*Mode_number* is a non-negative integer encoding different interactive object classes.
 For shapes the following *mode_number* values are allowed:
  * 0 -- shape
  * 1 -- vertex
@@ -2304,7 +2310,7 @@ Syntax:
 vconnect vconnect name Xo Yo Zo object1 object2 ... [color=NAME]
 ~~~~~ 
 
-Creates and displays AIS_ConnectedInteractive object from input object and location
+Creates *AIS_ConnectedInteractive* object from the input object and location and displays it.
 
 **Example:** 
 ~~~~~
@@ -2359,20 +2365,20 @@ Syntax:
 vpointcloud name shape [-randColor] [-normals] [-noNormals]
 ~~~~~
 
-Creates an interactive object for an arbitary set of points from the triangulated shape.
+Creates an interactive object for an arbitrary set of points from the triangulated shape.
 Additional options:
- * *randColor* -- generate random color per point
- * *normals*   -- generate normal per point (default)
- * *noNormals* -- do not generate normal per point
+ * *randColor* -- generates a random color per point;
+ * *normals*   -- generates a normal per point (default);
+ * *noNormals* -- does not generate a normal per point.
 
 ~~~~~
 vpointcloud name x y z r npts {surface|volume} [-randColor] [-normals] [-noNormals]
 ~~~~~
 Creates an arbitrary set of points (npts) randomly distributed on a spheric surface or within a spheric volume (x y z r).
 Additional options:
- * *randColor* -- generate random color per point
- * *normals*   -- generate normal per point (default)
- * *noNormals* -- do not generate normal per point
+ * *randColor* -- generates a random color per point;
+ * *normals*   -- generates a normal per point (default);
+ * *noNormals* -- does not generate a normal per point.
 
 **Example:**
 ~~~~~

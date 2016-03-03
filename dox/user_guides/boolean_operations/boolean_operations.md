@@ -1065,7 +1065,7 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 
 * For Boolean operation Fuse all arguments should have equal dimensions.
 * For Boolean operation Cut the minimal dimension of *S2* should not be less than the maximal dimension of *S1*.
-* For Boolean operation Common the arguments could have any dimension.
+* For Boolean operation Common the arguments can have any dimension.
 
 @subsection occt_algorithms_9_3	Results. General Rules
 
@@ -1074,12 +1074,12 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 * The result of the operation Fuse is defined for arguments *S1* and *S2* that have the same dimension value : *Dim(S1)=Dim(S2)*. If the arguments have different dimension values the result of the operation Fuse is not defined. The dimension of the result is equal to the dimension of the arguments. For example, it is impossible to fuse an edge and a face.
 * The result of the operation Fuse for arguments *S1* and *S2* contains the parts of arguments that have states **OUT** relative to the opposite arguments.
 * The result of the operation Fuse for arguments *S1* and *S2* having dimension value 3 (Solids) is refined by removing all possible internal faces to provide minimal number of solids.
-* The result of the operation Common for arguments *S1* and *S2* is defined for all values of the dimensions of the arguments. The result can contain the shapes of different dimension, but the minimal dimension of the result will be equal to the minimal dimension of the arguments. For example, the result of the operation Common between edges cannot be a vertex. 
+* The result of the operation Common for arguments *S1* and *S2* is defined for all values of the dimensions of the arguments. The result can contain shapes of different dimensions, but the minimal dimension of the result will be equal to the minimal dimension of the arguments. For example, the result of the operation Common between edges cannot be a vertex. 
 * The result of the operation Common for the arguments *S1* and *S2* contains the parts of the argument that have states **IN** and **ON** relative to the opposite argument.
-* The result of the operation Cut is defined for arguments *S1* and *S2* that have values of dimensions *Dim(S2)* that should not be less than *Dim(S1)*. The result can contain the shapes of different dimension, but the minimal dimension of the result will be equal to the minimal dimension of the objects *Dim(S1)*. The result of the operation *Cut12* is not defined for other cases. For example, it is impossible to cut an edge from a solid, because a solid without an edge is not defined. 
+* The result of the operation Cut is defined for arguments *S1* and *S2* that have values of dimensions *Dim(S2)* that should not be less than *Dim(S1)*. The result can contain shapes of different dimensions, but the minimal dimension of the result will be equal to the minimal dimension of the objects *Dim(S1)*. The result of the operation *Cut12* is not defined for other cases. For example, it is impossible to cut an edge from a solid, because a solid without an edge is not defined. 
 * The result of the operation *Cut12* for arguments *S1* and *S2* contains the parts of argument *S1* that have state **OUT** relative to the opposite argument *S2*.
 * The result of the operation *Cut21* for arguments *S1* and *S2* contains the parts of argument *S2* that have state **OUT** relative to the opposite argument *S1*.
-* For the argumenst of collection type (WIRE, SHELL, COMPSOLID) the type will be passed in the result. For example, the result of Common operation between Shell and Wire will be compound containing Wire.
+* For the arguments of collection type (WIRE, SHELL, COMPSOLID) the type will be passed in the result. For example, the result of Common operation between Shell and Wire will be a compound containing Wire.
 
 @subsection occt_algorithms_9_4 Examples
 
@@ -1540,7 +1540,7 @@ Let us consider Shell *Sh* and Wire *W* as the objects and Solid *S* as the tool
   	
 @figure{/user_guides/boolean_operations/images/boolean_image138.png}	
 	
-* The result of *Cut21* operation is not defined as the objects have lower dimension than the tool. 
+* The result of *Cut21* operation is not defined as the objects have a lower dimension than the tool. 
 
 
 @subsection occt_algorithms_9_5 Class BOPAlgo_BOP

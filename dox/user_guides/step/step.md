@@ -1385,8 +1385,9 @@ Mode (0 end, 1 file) :
 ~~~~~
 It is necessary to call command *newmodel* to perform a new translation of the next OCCT shape. 
 
-@section occt_step_7 Reading from and writing to XDE
-The *STEPCAFControl* package (TKXDESTEP toolkit) provides tools to read and write STEP files to and from XDE format (see XDE User’s Guide). 
+@section occt_step_7 Reading from and writing to STEP
+
+The *STEPCAFControl* package (TKXDESTEP toolkit) provides tools to read and write STEP files (see XDE User’s Guide). 
 
 In addition to the translation of shapes implemented in basic translator, it provides the following: 
   * STEP assemblies, read as OCCT compounds by basic translator, are translated to XDE assemblies;
@@ -1395,9 +1396,9 @@ In addition to the translation of shapes implemented in basic translator, it pro
   * Colors, layers, materials and validation properties assigned to parts or subparts are translated;
   * STEP dimensional tolerances are translated.
   
-@subsection occt_step_7_1 Description of the process
+@subsection occt_step_7_1 Reading from STEP
 
-@subsubsection occt_step_7_1_1 Loading a STEP file
+### Load a STEP file
 Before performing any other operation, you must load a STEP file with: 
 ~~~~~
 STEPCAFControl_Reader reader(XSDRAW::Session(), Standard_False); 
@@ -1405,10 +1406,11 @@ IFSelect_ReturnStatus stat = reader.ReadFile("filename.stp");
 ~~~~~
 Loading the file only memorizes the data, it does not translate it. 
 
-@subsubsection occt_step_7_1_2 Checking the loaded STEP file
+### Check the loaded STEP file
 This step is not obligatory. See a description of this step in section @ref occt_step_2_3_2 "Checking the STEP file". 
 
-@subsubsection occt_step_7_1_3 Setting the parameters for translation to XDE
+### Set parameters for translation to XDE
+
 See a description of this step in section @ref occt_step_2_3_3 "Setting the translation parameters". 
 
 In addition, the following parameters can be set for XDE translation of attributes: 
@@ -1422,38 +1424,46 @@ reader.SetColorMode(mode);
 reader.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
 ~~~~~
-@subsubsection occt_step_7_1_4 Performing the translation of a STEP file to XDE
+
+### Translate a STEP file to XDE
+
 The following function performs a translation of the whole document: 
 ~~~~~
 Standard_Boolean ok = reader.Transfer(doc); 
 ~~~~~
 where *doc* is a variable which contains a handle to the output document and should have a type *Handle(TDocStd_Document)*. 
-@subsubsection occt_step_7_1_5 Initializing the process of translation from XDE to STEP
-Here is how to initialize the process: 
+
+@subsection occt_step_7_2 Writing to STEP
+
+The translation from XDE to STEP can be initialized as follows: 
 ~~~~~
 STEPCAFControl_Writer aWriter(XSDRAW::Session(),Standard_False); 
 ~~~~~
-@subsubsection occt_step_7_1_6 Setting the parameters for translation from XDE to STEP
+
+### Set parameters for translation from XDE to STEP
 
 The following parameters can be set for a translation of attributes to STEP: 
-  *  Parameter for transferring colors: 
+  *  For transferring colors: 
 ~~~~~
 aWriter.SetColorMode(mode); 
 // mode can be Standard_True or Standard_False 
 ~~~~~
-  *  Parameter for transferring names: 
+  *  For transferring names: 
 ~~~~~
 aWriter.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
 ~~~~~
-@subsubsection occt_step_7_1_7 Performing the translation of an XDE document to STEP
+
+### Translate an XDE document to STEP
+
 You can perform the translation of document by calling the function: 
 ~~~~~
 IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
 ~~~~~
 where *doc*  is a variable, which contains a handle to the input document for transferring and should have a type *Handle(TDocStd_Document)*. 
 
-@subsubsection occt_step_7_18 Writing a STEP file
+### Write a STEP file
+
 Write a STEP file with: 
 ~~~~~
 IFSelect_ReturnStatus statw = aWriter.WriteFile("filename.stp"); 

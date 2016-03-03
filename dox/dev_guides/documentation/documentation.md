@@ -37,8 +37,8 @@ Follow the instructions to proceed (define proxy settings if needed, select a mi
 
 **MathJax** is used for rendering math formulas in browser (HTML and CHM outputs): http://www.mathjax.org.
 
-By default MathJAX scripts and fonts are taken from http://cdn.mathjax.org/mathjax/latest and no installation of MathJAX is necessary if Internet is accessible.
-If you need to use OCCT documentation while off-line, you can install a local copy of MatJAX, see http://www.mathjax.org/download/.
+By default MathJAX scripts and fonts work on-line and no installation of MathJAX is necessary if Internet is accessible.
+If you need to use OCCT documentation while off-line, you can install a local copy of MatJAX, see https://docs.mathjax.org/en/v2.6-latest/start.html#installing-your-own-copy-of-mathjax.
 See \ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressions. 
 
 @section OCCT_DM_SECTION_2_1 Documentation Generation
