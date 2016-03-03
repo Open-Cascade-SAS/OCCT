@@ -11,10 +11,9 @@ set "SCRIPTROOT=%~dp0"
 set "SCRIPTROOT=%SCRIPTROOT:~0,-1%"
 
 rem ----- Reset values to defaults -----
-set "CASROOT=__CASROOT__"
 set "CASDEB="
-set "VCVER=vc8"
-set "ARCH=32"
+set "VCVER=vc10"
+set "ARCH=64"
 set "VCVARS="
 set "HAVE_TBB=false"
 set "HAVE_OPENCL=false"
@@ -49,19 +48,14 @@ if /I ["%3"]     == ["d"]     set "CASDEB=d"
 if /I ["%3"]     == ["i"]     set "CASDEB=i"
 if /I ["%3"]     == ["relwithdeb"] set "CASDEB=i"
 
-set "CSF_OPT_INC=%CSF_OPT_INC%;%CASROOT%\inc"
-set "CSF_OPT_LIB32D=%CSF_OPT_LIB32%;%CASROOT%\win32\%VCVER%\libd"
-set "CSF_OPT_LIB64D=%CSF_OPT_LIB64%;%CASROOT%\win64\%VCVER%\libd"
-set "CSF_OPT_BIN32D=%CSF_OPT_BIN32%;%CASROOT%\win32\%VCVER%\bind"
-set "CSF_OPT_BIN64D=%CSF_OPT_BIN64%;%CASROOT%\win64\%VCVER%\bind"
-set "CSF_OPT_LIB32I=%CSF_OPT_LIB32%;%CASROOT%\win32\%VCVER%\libi"
-set "CSF_OPT_LIB64I=%CSF_OPT_LIB64%;%CASROOT%\win64\%VCVER%\libi"
-set "CSF_OPT_BIN32I=%CSF_OPT_BIN32%;%CASROOT%\win32\%VCVER%\bini"
-set "CSF_OPT_BIN64I=%CSF_OPT_BIN64%;%CASROOT%\win64\%VCVER%\bini"
-set "CSF_OPT_LIB32=%CSF_OPT_LIB32%;%CASROOT%\win32\%VCVER%\lib"
-set "CSF_OPT_LIB64=%CSF_OPT_LIB64%;%CASROOT%\win64\%VCVER%\lib"
-set "CSF_OPT_BIN32=%CSF_OPT_BIN32%;%CASROOT%\win32\%VCVER%\bin"
-set "CSF_OPT_BIN64=%CSF_OPT_BIN64%;%CASROOT%\win64\%VCVER%\bin"
+set "CSF_OPT_LIB32D=%CSF_OPT_LIB32%"
+set "CSF_OPT_LIB64D=%CSF_OPT_LIB64%"
+set "CSF_OPT_BIN32D=%CSF_OPT_BIN32%"
+set "CSF_OPT_BIN64D=%CSF_OPT_BIN64%"
+set "CSF_OPT_LIB32I=%CSF_OPT_LIB32%"
+set "CSF_OPT_LIB64I=%CSF_OPT_LIB64%"
+set "CSF_OPT_BIN32I=%CSF_OPT_BIN32%"
+set "CSF_OPT_BIN64I=%CSF_OPT_BIN64%"
 
 rem ----- Optional 3rd-parties should be enabled by HAVE macros -----
 set "CSF_OPT_CMPL="
@@ -149,9 +143,6 @@ rem Draw Harness special stuff
 if exist "%CASROOT%\src\DrawResources" (
   set "DRAWHOME=%CASROOT%\src\DrawResources"
   set "CSF_DrawPluginDefaults=%DRAWHOME%"
-)
-if exist "%SCRIPTROOT%\src\DrawResourcesProducts" (
-  set "CSF_DrawPluginProductsDefaults=%SCRIPTROOT%\src\DrawResourcesProducts"
 )
 goto :eof
 

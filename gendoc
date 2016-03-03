@@ -12,7 +12,7 @@ anOldDyLd="$DYLD_LIBRARY_PATH"
 aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
 if [ -e "${aScriptPath}/env.sh" ]; then source "${aScriptPath}/env.sh"; fi
 
-tclsh "${aScriptPath}/adm/start.tcl" $anArgs
+tclsh "${aScriptPath}/adm/start.tcl" gendoc $anArgs
 
 export PATH="$anOldPath"
 export LD_LIBRARY_PATH="$anOldLd"

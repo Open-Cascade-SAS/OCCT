@@ -29,7 +29,8 @@ if [ ! -e "${aScriptPath}/custom.sh" ]; then
 fi
 
 if [ ! -e "${aScriptPath}/custom.sh" ]; then
-  echo custom.sh is not created. Run the script again and generate custom.sh
+  echo "Error: custom.sh is not present."
+  echo "Run the script again to generate custom.sh, or create it manually"
   exit 1
 fi
 source "${aScriptPath}/custom.sh"

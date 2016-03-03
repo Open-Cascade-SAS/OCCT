@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Helper script to configure environment for genproj tool.
+# Running it requires that Tcl should be in the PATH
+
+# initialize environment
+aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
+if [ ! -e "${aScriptPath}/env.sh" ]; then 
+cat ${aScriptPath}/adm/templates/env.sh | sed -e '/__CASROOT__/d' > ${aScriptPath}/env.sh
+fi
+
+# run GUI tool
+tclsh "${aScriptPath}/adm/genconf.tcl"
