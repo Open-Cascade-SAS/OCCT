@@ -124,38 +124,8 @@ The fundamental software component in object-oriented software  development is t
 
 Classes fall into three categories: 
 * Ordinary classes.
-* Deferred classes. A **deferred class** cannot be instantiated. The purpose  of having such classes is to have a given behavior shared by a hierarchy of  classes and dependent on the implementation of the descendants. This is a way  of guaranteeing a certain base of inherited behavior common to all the classes  based on a particular deferred class. The C++ equivalent of a deferred CDL  class is an abstract class. 
-* Generic classes. A **generic class** offers a set of functional behaviors  to manipulate other data types. Instantiation of a generic class requires that  a data type is given for its argument(s). The generic classes in CDL perform  the same mission as template classes in C++.
-  
-@subsubsection occt_fcug_2_a_4 Generic Classes 
-Generic classes are implemented in two steps. First you  declare the generic class to establish the model, then you instantiate this  class by giving information about the generic types. 
-
-#### Declaring a Generic Class
-
-The generic classes in Open CASCADE Technology are similar  by their intent to C++ templates with explicit instantiation. 
-A generic class is declared in CDL as operating on data  items of non-fixed types which are declared as arguments of the generic class.  It is possible to put a restriction on these data types to be of subtype of  some definite class. Definition of the generic class does not create new class  type in C++ terms; it only defines a pattern for generation (instantiation) of  the real classes.
- 
-#### Instantiation of a Generic Class
-
-When a generic class is instantiated, its argument types are  substituted by actually existing data types (elementary types or classes). The  result of instantiation is a new C++ class with an arbitrary name (specified in  the instantiating declaration). By convention, the name of the instantiated class  is usually constructed from the name of the generic class and names of actual  argument types. As for any other class, the name of the class instantiating a generic  type is prefixed by the name of the package in which instantiation is declared. 
-@code
-class Array1OfReal instantiates Array1 from TCollection  (Real);
-@endcode
-
-This declaration located in a CDL file of the *TColStd*  package defines a new C++ class *TColStd_Array1OfReal* as the instantiation of  generic class *TCollection_Array1* for *Real* values. 
-More than one class can be instantiated from the same  generic class with the same argument types. Such classes will be identical by  implementation, but considered as two different classes by C++.  
-No class can inherit from a generic class. 
-A generic class can be a deferred class. A generic class can  also accept a deferred class as its argument. In both these cases, any class  instantiated from it will also be deferred. The resulting class can then be  inherited by another class. 
-
-#### Nested Generic Classes
-
-It often happens that many classes are linked by a common  generic type. This is the case when a base structure furnishes an iterator. In  this context, it is necessary to make sure that the group of linked generic  classes is indeed instantiated for the same type of object. In order to group  the instantiation, you may declare certain classes as being nested. 
-When generic class is instantiated, its nested classes are  instantiated as well. The name of the instantiation of the nested class is  constructed from the name of that nested class and name of the main generic  class, connected by ‘Of’. 
-@code
-class MapOfReal instantiates Map from TCollection  (Real,MapRealHasher);
-@endcode
-This declaration in *TColStd* defines not only class  *TColStd_MapOfReal*, but also class *TColStd_MapIteratorOfMapOfReal*, which is  instantiated from nested class *MapIterator* of the generic class  *TCollection_Map*. Note that instantiation of the nested class is separate class,  it is not nested class to the instantiation of the main class. 
-**Nested classes**, even though they are described as  non-generic classes, are generic by construction being inside the class they  are a member of. 
+* Abstract classes. An **abstract class** cannot be instantiated. The purpose  of having such classes is to have a given behavior shared by a hierarchy of  classes and dependent on the implementation of the descendants. This is a way  of guaranteeing a certain base of inherited behavior common to all the classes  based on a particular deferred class. 
+* Template classes. A **template class** offers a set of functional behaviors  to manipulate other data types. Instantiation of a template class requires that  a data type is given for its argument(s).
 
 @subsubsection occt_fcug_2_a_5 Inheritance
 The purpose of inheritance is to reduce the development  workload. The inheritance mechanism allows a new class to be declared already  containing the characteristics of an existing class. This new class can then be  rapidly specialized for the task in hand. This avoids the necessity of  developing each component “from scratch”. 
@@ -163,16 +133,7 @@ For example, having already developed a class *BankAccount* you  could quickly s
 
 The corollary of this is that when two or more classes  inherit from a parent (or ancestor) class, all these classes guarantee as a  minimum the behavior of their parent (or ancestor). For example, if the parent  class BankAccount contains the method Print which tells it to print itself out,  then all its descendant classes guarantee to offer the same service. 
 
-One way of ensuring the use of inheritance is to declare  classes at the top of a hierarchy as being **deferred**. In such classes,  the methods are not implemented. This forces the user to create a new class  which redefines the methods. This is a way of guaranteeing a certain minimum of  behavior among descendant classes. 
-
-@subsection occt_fcug_2_b Persistence  and Data Schema
-The data schema is the structure used by an application to  store its data. Data schemas consist of persistent classes. 
-
-An object is called **persistent** if it can be  permanently stored. Thus, the object can be reused at a later date by the  application, which created it, or by another application.
- 
-In order for an object to be persistent for CDL, its type  must be declared as inheriting from the class *Standard_Persistent* or have a  parent class inheriting from the *Standard_Persistent* class. Note that classes  inheriting from *Standard_Persistent* are handled by a reference. 
-
-Objects instantiated from classes which inherit from the  Standard_Storable class cannot themselves be stored individually, but they can  be stored as fields of an object which inherits from *Standard_Persistent*. Note  that objects inheriting from *Standard_Storable* are handled by a value. 
+One way of ensuring the use of inheritance is to declare  classes at the top of a hierarchy as being **abstract**. In such classes,  the methods are not implemented. This forces the user to create a new class  which redefines the methods. This is a way of guaranteeing a certain minimum of  behavior among descendant classes. 
 
 @subsection occt_fcug_2_1 Data Types
 
@@ -203,19 +164,17 @@ In Open CASCADE Technology, the  Handles are specific classes that are used to s
 @subsubsection occt_fcug_2_1_1 Primitive Types
 
 The primitive types are predefined in the language and they  are **manipulated by value**. 
-Some of these primitives inherit from the **Storable** class.  This means they can be used in the implementation of persistent objects, either  contained in entities declared within the methods of the object, or they form  part of the internal representation of the object. 
 
-The primitives inheriting from *Standard_Storable* are the  following: 
 * **Boolean** is used to represent logical  data. It may have only two values: *Standard_True*  and *Standard_False*. 
 * **Character** designates any ASCII  character. 
 * **ExtCharacter** is an extended character. 
 * **Integer** is a whole number. 
 * **Real** denotes  a real number (i.e. one with whole and a fractional part, either of which may  be null). 
 * **ShortReal** is a real with a smaller choice of  values and memory size. 
-There are also non-Storable primitives. They are: 
 * **CString** is used for literal  constants. 
 * **ExtString** is an extended string. 
 * **Address** represents a byte address of  undetermined size. 
+
 The services offered by each of these types are described in  the **Standard** Package. 
 The table below presents the equivalence existing between  C++ fundamental types and OCCT primitive types. 
 
@@ -251,30 +210,20 @@ The table below presents the equivalence existing between  C++ fundamental types
 There are three categories of types which are manipulated by  value: 
   * Primitive types
   * Enumerated types
-  * Types defined by classes not inheriting from *Standard_Persistent* or *Standard_Transient*, whether directly or not.
+  * Types defined by classes not inheriting from *Standard_Transient*, whether directly or not.
 Types which are manipulated by value behave in a more direct  fashion than those manipulated by handle and thus can be expected to perform  operations faster, but they cannot be stored independently in a file. 
 
 @image html /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
 @image latex /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
 
-Types that are known to the schema (i.e. they are either **primitives** or they inherit from *Storable*) and are manipulated by value, can be  stored inside a persistent object as part of the representation. Only in this  way can a “manipulated by value” object be stored in a file. 
-
 @subsubsection occt_fcug_2_1_3 Types manipulated by reference (handle)
-There are two categories of types which are manipulated by  handle: 
-  * Types defined by classes inheriting from the *Persistent* class,  which are therefore storable in a file.
-  * Types defined by classes inheriting from the *Transient* class.
+
+These are types defined by classes inheriting from the *Transient* class.
   
 @image html /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
 @image latex /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
   
 @subsubsection occt_fcug_2_1_4 When is it necessary to use a handle?
-
-The following table summarizes how various data types are handled and stored.
-
-| Type        | Manipulated by handle | Manipulated by value |
-| :------- | :-------------------- | :-------------------- |
-| storable |     Persistent	| Primitive, Storable (if nested in a persistent class)|
-|temporary | Transient	| Other |
 
 When you design an object, it can be difficult to choose how to manipulate that
 object: by value or by handle. The following ideas can help you to make up your mind: 
@@ -296,21 +245,27 @@ global variable.
 
 @subsubsection occt_fcug_2_2_1 Handle Definition
 
-A handle may be compared with a C++ pointer. Several handles  can reference the same object. Also, a single handle may reference several  objects, but only one at a time. To have access to the object it refers to, the  handle must be de-referenced just as with a C++ pointer. 
-
-Transient and Persistent classes may be manipulated either  with handles or with values. Handles which reference non-persistent objects are  called non-storable handles; therefore, a persistent object cannot contain a  non-storable handle.  
+A handle is OCCT implementation of a smart pointer.
+Several handles  can reference the same object.
+Also, a single handle may reference several  objects, but only one at a time.
+To have access to the object it refers to, the  handle must be de-referenced just as with a C++ pointer. 
 
 #### Organization of Classes
 
-Classes used with handles are persistent or transient. 
-
-Classes that inherit from *Standard_Transient*  are transient while classes that inherit from *Standard_Persistent*  are persistent. 
-
-In this chapter we will discuss only transient classes and  relevant handles. Persistent classes and their handles are organized in a similar  manner. 
-
 Class *Standard_Transient* is a root of a big hierarchy of OCCT  classes that are said to be operable by handles. It provides a reference  counter field, inherited by all its descendant classes, that is used by  associated *Handle()* classes to track a number of handles pointing to this  instance of the object. 
 
-For every class derived (directly or indirectly) from *Transient*, CDL extractor creates associated class *Handle()* whose name is the  same as the name of that class prefixed by *Handle_*. Open CASCADE Technology  provides preprocessor macro *Handle()* that produces a name of a *Handle()* class  for a given transient class name. 
+Objects of classes derived (directly or indirectly) from *Transient*, are normally allocated in dynamic memory using operator **new**, and manipulated by handle.
+Handle is defined as template class *opencascade::handle<>*.
+Open CASCADE Technology  provides preprocessor macro *Handle()* that is historically used throughout OCCT code to name a handle:
+~~~~~{.cpp}
+Handle(Geom_Line) aLine; // "Handle(Geom_Line)" is expanded to "opencascade::handleL<Geom_Line>"
+~~~~~
+
+In addition, for standard OCCT classes additional typedef is defined for a handle, as name of a class prefixed by *Handle_*.
+For instance, above example can be also coded as:
+~~~~~{.cpp}
+Handle_Geom_Line aLine; // "Handle_Geom_Line" is typedef to "opencascade::handleL<Geom_Line>"
+~~~~~
 
 #### Using a Handle
 
@@ -329,17 +284,61 @@ To initialize a handle, either a new object should be  created or the value of a
 
 @subsubsection occt_fcug_2_2_2 Type Management
 
-Open CASCADE Technology provides a means to describe the hierarchy  of data types in a generic way, with a possibility to check the exact type of  the given object at run-time (similarly to C++ RTTI). For every class type  derived from *Standard_Transient*, CDL extractor creates a code instantiating single  instance of the class *Standard_Type* (type descriptor) that holds information on  that type: its name and list of ancestor types. 
+Open CASCADE Technology provides a means to describe the hierarchy  of data types in a generic way, with a possibility to check the exact type of  the given object at run-time (similarly to C++ RTTI). 
 
-That instance (actually, a handle on it) is returned by the  virtual method *DynamicType()* of the class derived from *Standard_Transient*. The  other virtual method *IsKind()* provides a means to check whether a given object  has specified type or inherits it. 
+To enable this feature, a class declaration should include declaration of OCCT RTTI.
+Header *Standard_Type.hxx* provides two variants of preprocessor macros facilitating this:
 
-In order to refer to the type descriptor object for a given  class type, use macros *STANDARD_TYPE()* with argument being a name of the class. 
+* Inline variant, declares and defines RTTI methods by single line of code:
+~~~~~{.cpp}
+#include <Geom_Surface.hxx>
+class Appli_ExtSurface : public Geom_Surface
+{
+. . .
+public:
+  DEFINE_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
+};
+~~~~~
+
+* Out-of line variant, using one macros in declaration (normally put in header file), and another for implementation (to be put in C++ source):
+
+  In *Appli_ExtSurface.hxx* file:
+~~~~~{.cpp}
+#include <Geom_Surface.hxx>
+class Appli_ExtSurface : public Geom_Surface
+{
+. . .
+public:
+  DEFINE_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
+};
+~~~~~
+
+   In *Appli_ExtSurface.cxx* file:
+~~~~~{.cpp}
+#include <Appli_ExtSurface.hxx>
+IMPLEMENT_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
+~~~~~
+
+These macros define method *DynamicType()* that returns a type descriptor - handle to singleton instance of the class *Standard_Type* describing the class.
+Type descriptor stores name of the class and descriptor of its parent class.
+
+Note that while inline version is easier to use, for widely used classes this method may lead to bloating of binary code of dependent libraries, due to multiple instantiations of inline method.
+
+To get the type descriptor for a given class type, use macros *STANDARD_TYPE()* with name of the class as argument.
+
+Example of usage:
+~~~~~{.cpp}
+if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (dynamic_cast<Geom_Line>(aCurve.get()) != 0)"
+{
+...
+}
+~~~~~
 
 #### Type Conformity
 
 The type used in the declaration of a handle is the static  type of the object, the type seen by the compiler. A handle can reference an  object instantiated from a subclass of its static type. Thus, the dynamic type  of an object (also called the actual type of an object) can be a descendant of  the type which appears in the handle declaration through which it is  manipulated. 
 
-Consider the persistent class *CartesianPoint*, a  sub-class of *Point*; the rule of type conformity can be illustrated as  follows: 
+Consider the class *CartesianPoint*, a  sub-class of *Point*; the rule of type conformity can be illustrated as  follows: 
 
 ~~~~~
 Handle (Geom_Point) p1;
@@ -418,7 +417,7 @@ p = new Geom_CartesianPoint (0, 0, 0);
 Unlike for a pointer, the **delete** operator does not  work on a handle; the referenced object is automatically destroyed when no  longer in use. 
 
 @subsubsection occt_fcug_2_2_4 Invoking Methods
-Once you have a handle on a persistent or transient object,  you can use it like a pointer in C++. To invoke a method which acts on the  referenced object, you translate this method by the standard *arrow* operator, or  alternatively, by function call syntax when this is available. 
+Once you have a handle to an object,  you can use it like a pointer in C++. To invoke a method which acts on the  referenced object, you translate this method by the standard *arrow* operator, or  alternatively, by function call syntax when this is available. 
 
 To test or to modify the state of the handle, the method is  translated by the *dot* operator. 
 The example below illustrates how to access the coordinates  of an (optionally initialized) point object: 
@@ -508,123 +507,6 @@ There are two approaches how to avoid such situation:
   * Use C++ pointer for one kind of references, e.g. from a primitive  to the graph
   * Nullify one set of handles (e.g. handles to a graph in  primitives) when a graph object needs to be destroyed
   
-@subsubsection occt_fcug_2_2_7 Creating  Transient Classes without CDL
-
-Though generation of Handle class and related C++ code is  normally performed by CDL extractor, it is also possible to define a class managed  by handle without CDL. To facilitate that, several macros are provided in the  file Standard_DefineHandle.hxx: 
-
-* **DEFINE_STANDARD_HANDLE(class_name,ancestor_name)** -- declares Handle class  for a class *class_name* that inherits class *ancestor_name* (for  instance, *Standard_Transient*). This macro should be put in a header file; the  declaration of the handle to a base class must be available (usually put before  or after the declaration of the class *class_name*, or into a separate  header file).  
-* **IMPLEMENT_STANDARD_HANDLE(class_name,ancestor_name)** -- implements method  *DownCast()* of the *Handle* class. Should be located in a C++ file (normally the  file where methods of the class *class_name* are implemented). 
-* **DEFINE_STANDARD_RTTI(class_name)** -- declares methods required for  RTTI in the class *class_name* declaration; should be in public: section. 
-* **IMPLEMENT_STANDARD_RTTIEXT(class_name,ancestor_name)** -- implements above methods. Usually  put into the C++ file implementing class *class_name*. 
-Note that it is important to ensure correctness of macro  arguments, especially the ancestor name, otherwise the definition may be  inconsistent (no compiler warnings will be issued in case of mistake). 
-
-In *Appli_ExtSurface.hxx* file:
-~~~~~
-#include <Geom_Surface.hxx>
-class Appli_ExtSurface : public Geom_Surface
-{
-. . .
-public:
-  DEFINE_STANDARD_RTTI(Appli_ExtSurface)
-}
-DEFINE_STANDARD_HANDLE(Appli_ExtSurface,Geom_Surface)
-~~~~~
-
-In *Appli_ExtSurface.cxx* file:
-~~~~~
-#include <Appli_ExtSurface.hxx>
-IMPLEMENT_STANDARD_HANDLE(Appli_ExtSurface,Geom_Surface)
-IMPLEMENT_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
-~~~~~
-
-#### Example
-
-The following example shows how to define a class <i> SamplePoint </i> manipulated by handle.
-
-First you need to define *Sample_Point.hxx* :
-
-~~~~
-
-    #ifndef _Sample_Point_HeaderFile
-    #define _Sample_Point_HeaderFile
-    #ifndef _Standard_Macro_HeaderFile
-    #include <Standard_Macro.hxx>
-    #endif
-    #include <MMgt_TShared.hxx>
-    #include <Standard_DefineHandle.hxx>
-    // Handle definition
-    //
-
-    DEFINE_STANDARD_HANDLE(Sample_Point,MMgt_TShared)
-    class Sample_Point: public MMgt_TShared {
-    public:
-    Sample_Point();
-    Sample_Point(const Standard_Real, const
-    Standard_Real);
-    void SetX(const Standard_Real x) {
-    myX = x;
-    }
-    void SetY(const Standard_Real y) {
-    myY = y;
-    }
-    Standard_Real X() const {
-    return myX;
-    }
-    Standard_Real Y() const {
-    return myY;
-    }
-    // some methods like DynamicType() or
-    IsKind()
-    //
-    DEFINE_STANDARD_RTTI(Sample_Point)
-    private:
-    Standard_Real myX;
-    Standard_Real myY;
-    };
-    #endif
-
-~~~~
-
-Then you need to define *Sample_Point.cxx* :
-
-~~~~
-
-    #include <Sample_Point.hxx>
-
-    // Implementation of Handle and type mgt
-
-    IMPLEMENT_STANDARD_HANDLE(Sample_Point,MMgt_TShared)
-    IMPLEMENT_STANDARD_RTTI(Sample_Point,MMgt_TShared)
-
-    // For ancestors, we add a IMPLEMENT_STANDARD_SUPERTYPE and
-    // a IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY  macro.
-    // We must respect the order: from the direct ancestor class to the base class.
-
-    IMPLEMENT_STANDARD_TYPE(Sample_Point)
-    IMPLEMENT_STANDARD_SUPERTYPE(MMgt_TShared)
-    IMPLEMENT_STANDARD_SUPERTYPE(Standard_Transient)
-    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY()
-    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(MMgt_TShared)
-    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(Standard_Transient)
-    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_END()
-    IMPLEMENT_STANDARD_TYPE_END(Sample_Point)
-
-   // Constructors implementation
-
-    Sample_Point::Sample_Point(const
-    Standard_Real x, const Standard_Real y)
-    {
-    myX = x;
-    myY = y;
-    }
-    Sample_Point::Sample_Point()
-    {
-    myX = 0.0;
-    myY = 0.0;
-    }
-~~~~
-
-
 @subsection occt_fcug_2_3 Memory Management 
 
 In a work session, geometric modeling  applications create and delete a considerable number of C++ objects allocated  in the dynamic memory (heap). In this context, performance of standard  functions for allocating and deallocating memory may be not sufficient. For this reason, Open CASCADE Technology employs a specialized memory manager implemented in the *Standard* package. 
@@ -642,7 +524,8 @@ To  allocate memory in a C code with Open CASCADE Technology memory manager, sim
 
 In C++, operators *new()* and *delete()* for a class may be  defined so as to allocate memory using *Standard::Allocate()* and free it using  *Standard::Free()*. In that case all objects of that class and all inherited  classes will be allocated using the OCCT memory manager. 
 
-CDL extractor defines *new()* and *delete()* in this way for all  classes declared with CDL. Thus all OCCT classes (apart from a few exceptions)  are allocated using the OCCT memory manager. 
+Preprocessor macro *DEFINE_STANDARD_ALLOC* provided by header *Standard_DefineAlloc.hxx* defines *new()* and *delete()* in this way.
+It is used for all OCCT classes (apart from a few exceptions) which thus are allocated using the OCCT memory manager. 
 Since operators *new()* and *delete()* are inherited, this is  also true for any class derived from an OCCT class, for instance, for all  classes derived from *Standard_Transient*. 
 
 **Note** that it is possible (though not  recommended unless really unavoidable) to redefine *new()* and *delete()* functions  for a class inheriting *Standard_Transient*. If that is done, the method  *Delete()* should be also redefined to apply operator *delete* to this pointer. This will ensure that appropriate *delete()* function will be called,  even if the object is manipulated by a handle to a base class.
@@ -1073,21 +956,6 @@ The **Collections** component provides a wide range of  generic collections:
   * **Lists** are similar to sequences but have different algorithms to explore them. 
   * Specific iterators for sequences and maps. 
   
-Most collections follow value semantics: their  instances are the actual collections, not **handles** to a collection. Only  arrays and sequences may also be manipulated by handle, and therefore shared. 
-
-Each collection directly used as an argument in Open CASCADE Technology public syntax
-is instantiated in an OCCT component using the corresponding generic class in package
-<i> TCollection</i>, by means of compiling the CDL declaration of the instance. 
-Thus OCCT generic classes require compilation of definitions in the CDL language and therefore
-can only be instantiated in WOK.
-
-If you do not use CDL in your project (CDL compilation under WOK is necessary
-to instantiate any generic Collection from package <i>TCollection</i>), then you should
-use the Collections defined in <i> NCollection</i> package. It contains definitions of the
-same generic collection classes described above, but in a form of C++ templates.
-Therefore, to instantiate any collection type no additional support is required beyond
-the ANSI C++ compiler.
-
 @subsubsection occt_fcug_3_1_2 Generic general-purpose Aggregates
 
 #### TCollection_Array1
@@ -1152,14 +1020,6 @@ Sequences have about the same goal as unidimensional arrays  *TCollection_HArray
   * *Item*, the type of element in the sequence,
   * *Seq*, the actual type of sequence handled by *HSequence*.  This is an instantiation with *Item* of the *TCollection_Sequence* generic  class.
   
-#### TCollection_HSet
-
-This is a collection of non-ordered items without any duplicates. At  each transaction, the system checks if  there are no duplicates. 
-*HSet* objects are *handles* to sets. 
-*HSet* is a generic class which depends on two  parameters: 
-  * *Item*, the type of element in the set,
-  * *Set*, the actual type of set handled by *HSet*. This  is an instantiation with *TCollection_Set* generic class.
-  
 #### TCollection_List
 
 These are ordered lists of non-unique objects which can be accessed  sequentially using an iterator. 
@@ -1174,32 +1034,12 @@ A sequence is a better structure when searching for items by  value.
 
 Queues and stacks are other kinds of list with a different  access to data. 
 
-#### TCollection_Queue
-
-This is a structure, where items are added at the end and removed  from the front. The first item entered will be the first removed (**FIFO**  structure: First In First Out). *Queue* is a generic class which depends  on *Item*, the type of element in the structure. 
-
 #### TCollection_Sequence
 
 This is a sequence of items indexed by an integer. 
 Sequences have about the same goal as unidimensional arrays  (*TCollection_Array1*): they are commonly used as elementary data  structures for more complex objects. But a sequence is a structure of *variable  size*: sequences avoid the use of large and quasi-empty arrays. Exploring a  sequence data structure is effective when the exploration is done *in sequence*; elsewhere a sequence item is longer to read than an array item.  Note also that sequences are not effective when they have to support numerous  algorithmic explorations: a map is better for that. 
 
 *Sequence* is a generic class which depends on *Item*,  the type of element in the sequence. 
-
-#### TCollection_Set
-
-This is a collection of non-ordered items without any duplicates. At  each transaction, the system checks if there are no duplicates. 
-
-A set generates the same result as a map. A map is more  effective; so it is advisable to use maps instead of sets. 
-
-*Set* is a generic class which depends on *Item*,  the type of element in the set. 
-Use *SetIterator* iterator to explore a *Set* structure. 
-
-#### TCollection_Stack
-
-This is a structure where items are added and removed from the top.  The last item entered will be the first removed. 
-
-*Stack* is a generic class which depends on *Item*,  the type of element in the structure. 
-Use a *StackIterator* iterator to explore a *Stack* structure. 
 
 @subsubsection occt_fcug_3_1_3 Generic Maps
 
@@ -1403,13 +1243,9 @@ These instantiations are the following:
 @subsection occt_fcug_3_3 NCollections
 @subsubsection occt_fcug_3_3_1 Overview  
   
-*NCollection* package allows to not use WOK development environment in projects. Though it is quite natural to develop a code based on OCCT in any environment accepted in the industry, there is still one limitation: the so-called OCCT generic classes provided in TCollection package require compilation of the definitions in the CDL language and therefore can only be instantiated in WOK development environment.
+The *NCollection* package provides a set of template collection classes used throughout OCCT.
 
-The NCollection library provides a full replacement of all TCollection generic classes so that any OCCT collection could be instantiated via C++ template or macro definitions. It can be used in WOK as a package development unit, or in any other configuration, since it only uses the standard capabilities of C++ compiler.
-
-Macro definitions of these classes are stored in *NCollection_Define\*.hxx* files. These definitions are now obsolete though still can be used, particularly for compatibility with the existing code. On the contrary, template classes in *NCollection_\*.hxx* files are recommended, they are supported by OPEN CASCADE Company and further developed according to various needs.
-
-The technology used in this unit continues and complements the one offered in the header file *Standard_DefineHandle* -- allowing to implement outside CDL the classes managed by Handle, also providing OCCT RTTI support.
+Macro definitions of these classes are stored in *NCollection_Define\*.hxx* files. These definitions are now obsolete though still can be used, particularly for compatibility with the existing code.
 
 @subsubsection occt_fcug_3_3_2 Instantiation of collection classes
 
@@ -1478,24 +1314,26 @@ Source code file will be *MyPackage_HSequenceOfPnt.cxx* or any other .cxx file (
 IMPLEMENT_HSEQUENCE (MyPackage_HSequenceOfPnt)
 ~~~~~
 
-@subsubsection occt_fcug_3_3_3 Class architecture
+@subsubsection occt_fcug_3_3_3 Arrays and sequences
 
+Standard collections provided by OCCT are:
+* *NCollection_Array1* - fixed-size (at initialization) one-dimensional array; note that index can start at any value, usually 1
+* *NCollection_Array2* - fixed-size (at initialization) two-dimensional array; note that index can start at any value, usually 1
+* *NCollection_List* - plain list
+* *NCollection_Sequence* - double-connected list with access by index; note that index starts at 1
 
-To understand the basic architecture of the classes instantiated from *NCollection* macros, please refer to the documentation on *TCollection* package, particularly to CDL files. Almost all API described there is preserved in *NCollection*. Changes are described in corresponding *NCollection_Define\*.hxx* files. 
+These classes provide STL-style iterators (methods begin() and end()) and thus can be used in STL algorithms.
 
-Nevertheless the internal structure of NCollection classes is more complex than that of *TCollection* ones, providing more capabilities. The advanced layer of architecture is described in the next chapter Features.
+@subsubsection occt_fcug_3_3_3x Maps
 
-There are two principal changes:
-* In *TCollection* some classes ( Stack, List, Set, Map, DataMap, DoubleMap ) define the Iterator type, the name of Iterator being like *MyPackage_DoubleMapIteratorOfDoubleMapOfIntegerReal*. In *NCollection* each Iterator is always defined as subtype of the collection *MyPackage_DoubleMapOfIntegerReal::Iterator*. 
-* Hashed collections (of type Map\* ) require in *TCollection* that the special class *Map\*Hasher* is defined. In *NCollection* it is only required that the global functions *IsEqual* and *HashCode* are defined. 
+NCollection provides several classes for storage of objects by value, providing fast search due to use of hash:
+* *NCollection_Map* - hash set
+* *NCollection_IndexedMap* - set with prefixed order of elements, allowing fast access by index or by value (hash-based)
+* *NCollection_DataMap* - hash map
+* *NCollection_IndexedDataMap* - map with prefixed order of elements, allowing fast access by index or by value (hash-based)
+* *NCollection_DoubleMap* - two-side hash map (with two keys)
 
-#### Interface to classes defined in CDL
-
-The classes defined above can be used as types for fields, parameters of methods and return values in CDL definitions. In our example, if MyPackage is a CDL package, you will need to create the file *MyPackage_SequenceOfPnt.hxx* containing or including the above definitions, and then to add the line: imported *SequenceOfPnt* to file *MyPackage.cdl*;
-
-Then the new collection type can be used in any CDL definition under the name *SequenceOfPnt* from *MyPackage*.
-
-@subsubsection occt_fcug_3_3_4 New collection types
+@subsubsection occt_fcug_3_3_4 Other collection types
 
 There are 4 collection types provided as template classes:
 * *NCollection_Vector*
@@ -1904,7 +1742,7 @@ They provide:
   
 All these functions are provided by geometric processor package <i> gp</i>. Its classes for 2d and 3d objects are handled by value rather than by reference. When this sort of object is copied, it is copied entirely. Changes in one instance will not be  reflected in another. 
 
-The *gp* package defines the basic non-persistent  geometric entities used for algebraic calculation and basic analytical geometry  in 2d & 3d space. It also provides basic transformations such as identity,  rotation, translation, mirroring, scale transformations, combinations of  transformations, etc. Entities are handled by value.  
+The *gp* package defines the basic geometric entities used for algebraic calculation and basic analytical geometry  in 2d & 3d space. It also provides basic transformations such as identity,  rotation, translation, mirroring, scale transformations, combinations of  transformations, etc. Entities are handled by value.  
 
 Please, note that <i> gp</i> curves and surfaces are analytic: there is no parameterization and no orientation on <i>gp</i> entities, i.e. these entities do not provide functions which work with these properties. 
 
@@ -1922,7 +1760,6 @@ Note: the <i> gp</i> entities cannot be shared when they are inside more complex
 Before creating a geometric object, you must decide whether  you are in a 2d or in a 3d context and how you want to handle the object. 
 If you do not need a single instance of a geometric  primitive but a set of them then the package which deals with collections of  this sort of object, *TColgp*, will provide the necessary functionality. 
 In particular, this package provides standard and frequently  used instantiations of generic classes with geometric objects, i.e. *XY*, *XYZ*,  *Pnt*, *Pnt2d*, *Vec*, *Vec2d*, *Lin*, *Lin2d*, *Circ*,  *Circ2d.* 
-These are non-persistent classes. 
 
 @subsection occt_occt_fcug_4_5 Basic Geometric Libraries
 There are various library packages available which offer a  range of basic computations on curves and surfaces. 
@@ -2134,77 +1971,4 @@ This is reasonable precision to pass to an Intersection process as  a limit of r
 
 This is a reasonable precision to pass to an approximation process  as a limit of refinement of fitting. The approximation is greater than the other  precisions because it is designed to be used when the time is at a premium. It has  been provided as a reasonable compromise by the designers of the Approximation  algorithm. The current value is *Confusion() * 10*. 
 Note that Approximation is greater than Confusion, so care  must be taken when using Confusion in an approximation process. 
-
-@section occt_fcug_5 Data Storage
-@subsection occt_fcug_5_1 Saving and Opening Files
-
-@image html /user_guides/foundation_classes/images/foundation_classes_image007.png "Example of Saving-Opening workflow"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image007.png "Example of Saving-Opening workflow"
-   
-In the example, the roots of the transferable transient objects *TopoDS_Shape, Geom_Geometry* and *Geom2d_Geometry* are used in algorithms, they contain data and temporary results. 
-The associated objects in the persistent domain are *PTopoDS_HShape, PGeom_Geometry* and *PGeom2d_Geometry*. They contain a real data  structure which is stored in a file. 
-Note that when an object is stored, if it contains another  stored object, the references to the contained object are also managed. 
-@image html /user_guides/foundation_classes/images/foundation_classes_image008.png "Saving-Opening mechanism"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image008.png "Saving-Opening mechanism"
-
-
-@subsection occt_fcug_5_2 Basic Storage Procedures
-
-@subsubsection occt_fcug_5_2_1 Saving
-
-The storage procedure of a transient object follows five  main steps. 
-1. Create  an I/O driver for files. For example, *FSD_File f()*; 
-2. Instance the data schema, which will process your persistent information. The schema is  used for read/write operations. If ShapeSchema is the name of your schema: 
-~~~~~
-Handle(ShapeSchema) s = new ShapeSchema; 
-~~~~~
-3. Create a persistent shape from a transient shape. 
-~~~~~
-TopoDS_Shape  aShape; 
-PTColStd_TransientPersistentMap  aMap; 
-Handle(PTopoDS_HShape)  aPShape = MgtBRep::Translate 
-  (aShape, aMap, MgtBRep_WithoutTriangle); 
-~~~~~
-4. Create  a new container and fill it using the *AddRoot()* method. 
-~~~~~
-Handle(Storage_Data)  d = new Storage_Data; 
-d  -> AddRoot (“ObjectName”, aPShape); 
-~~~~~
-You may add as  many objects as you want in this container. 
-5. Save  to the archive. 
-~~~~~
-s -> Write (f,d); 
-~~~~~
-
-@subsubsection occt_fcug_5_2_2 Opening
-The retrieval mechanism is the opposite of the storage  mechanism. The procedure for retrieving an object is as follows:
- 
-1. Create  an I/O driver and instance a data schema (if not done). 
-2. Read  the persistent object from the archive and get the list of objects using *Roots()* method. 
-~~~~~
-Handle(Storage_Data)  d = s -> Read(f); 
-Handle(Storage_HSeqOfRoot)  roots = d-> Roots(); 
-~~~~~
-3. Loop  on root objects to get *Standard_Persistent* objects (the following sequence only  gets the first root). 
-~~~~~
-Handle(Standard_Persistent)  p; 
-Handle(Standard_Root)  r; 
-if(roots  -> Length() >= 1) { 
-   r = roots -> Value(1); 
-   p = r -> Object(); 
-} 
-~~~~~
-4. DownCast  the persistent object to a *PTopoDS_Hshape*. 
-~~~~~
-Handle(PTopoDS_HShape) aPShape; 
-aPShape =  Handle(PTopoDS_HShape)::DownCast(p); 
-~~~~~
-5. Create  the *TopoDS_Shape*. 
-~~~~~
-TopoDS_Shape aShape; 
-PTColStd_PersistentTransientMap aMap;    
-MgtBRep::Translate (aPShape, aMap,  aShape, MgtBRep_WithoutTriangle); 
-~~~~~
-
-
 

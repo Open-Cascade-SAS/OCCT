@@ -265,8 +265,7 @@ Click **Save** to input the key to the system.
 
   * Create a new branch for your development, basing on the selected version of the sources 
    (usually the current master) and switch your working copy to it
-  * Develop and test your change. Note that for the first time, and after any changes 
-   made in CDL files you will have to re-generate build scripts or Visual Studio projects using WOK. 
+  * Develop and test your change.
   * Do as many commits in your branch as you feel convenient; 
    the general recommendation is to commit every stable state (even incomplete), to record the history of your development.
   * Push your branch to the repository when your development is complete or when you need to share it with other people (e.g. for review)

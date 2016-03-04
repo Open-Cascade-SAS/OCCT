@@ -105,7 +105,7 @@ The *Application* is an abstract class in charge of handling documents during th
   
 In addition,  application-specific data can be added by defining new attribute classes; naturally, this changes the standard file format. The only functions that have to be implemented are:
     * Copying the  attribute
-    * Converting  it from and to its persistent homologue (persistence is briefly presented in the paragraph @ref occt_ocaf_9a_3 "Persistent Data Storage")
+    * Converting  it from and persistent data storage
 	
 @subsection occt_ocaf_1_3  Reference-key model
 
@@ -483,32 +483,23 @@ If the set of existing and ready to use attributes implementing standard data ty
 
 There are two ways to implement a new data type: create a new attribute (standard approach), or use the notion of User Attribute by means of a combination of standard attributes  (alternative way) 
 
-In order to create a new attribute in the standard way do the following: 
-* Create a class inherited from *TDF_Attribute* and implement all purely virtual and necessary virtual methods:
-	+ **ID()** -- returns a unique GUID of a given attribute 
-	+ **Restore(attribute)** -- sets fields of this attribute equal to the fields of a given attribute of the same type 
-	+ **Paste(attribute, relocation_table)** -- sets fields of a given attribute equal to the field values of this attribute ; if the attribute has references to some objects of the data framework  and relocation_table has this element, then the given attribute must also refer to this object . 
-	+ **NewEmpty()** -- returns a new attribute of this class with empty fields 
-	+ **Dump(stream)** --  outputs information about a given attribute to a given stream debug (usually outputs an attribute of type string only) 
-* Create the persistence classes for this attribute according to the file format chosen for the document (see below).
+In order to create a new attribute in the standard way, create a class inherited from *TDF_Attribute* and implement all purely virtual and necessary virtual methods:
+* **ID()** -- returns a unique GUID of a given attribute 
+* **Restore(attribute)** -- sets fields of this attribute equal to the fields of a given attribute of the same type 
+* **Paste(attribute, relocation_table)** -- sets fields of a given attribute equal to the field values of this attribute ; if the attribute has references to some objects of the data framework  and relocation_table has this element, then the given attribute must also refer to this object . 
+* **NewEmpty()** -- returns a new attribute of this class with empty fields 
+* **Dump(stream)** --  outputs information about a given attribute to a given stream debug (usually outputs an attribute of type string only) 
 
 Methods *NewEmpty, Restore* and *Paste* are used for the common transactions mechanism (Undo/Redo commands). If you don’t need this attribute to react to undo/redo commands, you can write only stubs of these methods, else you must call the Backup method of the *TDF_Attribute* class every time attribute fields are changed. 
 
-If you use a standard file format and you want your new attributes to be stored during document saving and retrieved to the data framework whenever a document is opened, you must do the following: 
-
-  1. If you place an attribute to a new package, it is desirable (although not mandatory) if your package name starts with letter "T" (transient), for example: attribute *TMyAttributePackage_MyAttribute* in the package *TMyAttributePackage*.
-  2. Create a new package with name "P[package name]" (for example *PMyAttributePackage*) with class *PMyAttributePackage_MyAttribute* inside. The new class inherits the *PDF_Attribute* class and contains fields of attributes, which must be saved or retrieved ("P" -- persistent).
-  3. Create a new package with name "M[package name]" (for example *MMyAttributePackage*) with classes *MMyAttributePackage_MyAttributeRetrievalDriver* and *MMyAttributePackage_MyAttributeStorageDriver* inside. The new classes inherit *MDF_ARDriver* and *MDF_ASDriver* classes respectively and contain the translation functionality: from T... attribute to P... and vice versa (M -- middle) (see the realization of the standard attributes).
-  4. M... package must contain *AddStorageDrivers(aDriverSeq : ASDriverHSequence* from MDF) and *AddRetrievalDrivers(aDriverSeq : ASDriverHSequence* from MDF) methods, which append to the given sequence  of drivers *aDriverSeq*, which is a sequence of all new attribute drivers (see the previous point) used for the storage/retrieval of attributes. 
-  5 Use the standard schema (*StdSchema* unit) or create a new one to add your P-package and compile it. 
-
-If you use the XML format, do the following: 
+To enable possibility to save / restore the new attribute in XML format, do the following: 
   1. Create a new package with the name Xml[package name] (for example *XmlMyAttributePackage*) containing  class *XmlMyAttributePackage_MyAttributeDriver*. The new class inherits *XmlMDF_ADriver* class and contains the translation functionality: from transient to persistent and vice versa (see the realization of the standard attributes in the packages *XmlMDataStd*, for example). Add package method AddDrivers which adds your class to a driver table (see below).
   2. Create a new package (or do it in the current one) with two package methods: 
 	  * *Factory*, which loads the document storage and retrieval drivers; and 
 	  * *AttributeDrivers*, which calls the methods AddDrivers for all packages responsible for persistence of the document.
   3. Create a plug-in implemented as an executable (see example *XmlPlugin*). It calls a macro PLUGIN with the package name where you implemented the method Factory.
-If you use the binary format, do the following: 
+
+To enable possibility to save / restore the new attribute in binary format, do the following: 
   1. Create a new package with name <i> Bin[package name] </i> (for example *BinMyAttributePackage*) containing a class *BinMyAttributePackage_MyAttributeDriver*. The new class inherits *BinMDF_ADriver* class and contains the translation functionality: from transient to persistent and vice versa (see the realization of the standard attributes in the packages *BinMDataStd*, for example). Add package method *AddDrivers*, which adds your class to a driver table.
   2. Create a new package (or do it in the current one) with two package methods: 
 	  * Factory, which loads the document storage and retrieval drivers; and 
@@ -1745,25 +1736,11 @@ Both the XML format and the XML OCAF persistence code are extensible in the sens
 In OCAF, persistence, that is, the mechanism used to  save a document in a file, is based on an explicit formal description of the  data saved.  
  
 When you open a document, the application reads the corresponding file and first creates a memory representation of it. This representation is then converted to the application data model —  the OCAF-based data structure the application operates on. The file's memory representation  consists of objects defined by classes known as persistent. 
-  
-The persistent  classes needed by an application to save its documents make the application's data schema. This schema defines the way the data are organized in the file — the format of the data. In other words, the file is simply an ASCII dump of the  persistent data defined by the schema, the persistent data being created from  the application data model during the save process.  
    
-Only canonical information is saved. As a matter of  fact, the application data model usually contains additional data to optimize  processing. For example, the persistent Bézier curve is defined by its poles, whereas its data model equivalent also contains coefficients used to compute a point at a given parameter.  The additional data is calculated when the document is opened.  
- 
-The major advantages of this approach are the following:  
-  * Providing  that the data format is published, files created by OCAF-based applications 
-   can be read without needing a runtime of the application (openness)
-  * Although the  persistence approach makes the data format more stable, 
-   OCAF provides a  framework for managing compatibility of data between versions of the application — 
-   modification of the data format is supported through the  versioning of schema.
- 
-  OCAF includes a ready-to-use schema suitable for most  applications. 
-  However, it can be extended if needed. For that, the only things  you have to do are:  
-
-  * To define  the additional persistent attributes
-  * To implement  the functions converting these persistent attribute to and from the application  data model.
+OCAF includes a ready-to-use schema suitable for most  applications. 
+However, it can be extended if needed. 
   
-Applications using compound documents extensively (saving data in many files linked together) should implement data management services. As a matter of fact, it's out the scope of OCAF to provide functions such as:
+Applications using compound documents extensively (saving data in many files linked together) should implement data management services. It is out the scope of OCAF to provide functions such as:
 * Version and configuration management of compound documents;
 * Querying a referenced document for its referencing documents.
 
@@ -1774,198 +1751,14 @@ In order to ease the delegation of document management to a data management appl
 
 There are three schemes of persistence, which you can use to store and retrieve OCAF data (documents):
 
-  * <i> Standard</i> persistence schema, compatible with previous OCAF applications
+  * <i> Standard</i> persistence schema, compatible with previous OCAF applications. This schema is deprecated and supports only reading of standard attributes (no writing).
   * <i> XmlOcaf</i> persistence, allowing the storage of all OCAF data in XML form
   * <i> BinOcaf</i> persistence, allowing the storage of all OCAF data in binary format form
 
 
-All schemes are independent of each other, but they guarantee that the standard OCAF
-attributes stored and retrieved by one schema will be storable and retrievable by
-the other. Therefore in any OCAF application you can use any persistence schema or
+In an OCAF application you can use any persistence schema or
 even all three of them. The choice is made depending on the *Format* string of stored OCAF documents
 or automatically by the file header data -- on retrieval.
-
-Persistent data storage in OCAF using the <i> Standard</i> package is presented in: 
-
-  * Basic Data Storage 
-  * Persistent Collections 
-
-Persistent storage of shapes is presented in the following chapters:
-
-  * Persistent Geometry 
-  * Persistent Topology 
-
-Finally, information about opening and saving persistent data is presented in Standard
-Documents. 
-
-@subsection occt_ocaf_9a_3 Basic Data Storage
-
-Normally, all data structures provided by Open CASCADE Technology are run-time structures,
-in other words, transient data. As transient data, they exist only while an application
-is running and are not stored permanently. However, the Data Storage module provides
-resources, which enable an application to store data on disk as persistent data.
-
-Data storage services also provide libraries of persistent classes and translation
-functions needed to translate data from transient to persistent state and vice-versa.
-
-#### Libraries of persistent classes
-
-Libraries of persistent classes are extensible libraries of elementary classes you
-use to define the database schema of your application. They include:
-* Unicode (8-bit or 16-bit character type) strings 
-* Collections of any kind of persistent data such as arrays.
-
-All persistent classes are derived from the \b Persistent base class, which defines
-a unique way of creating and handling persistent objects. You create new persistent
-classes by inheriting from this base class.
-
-#### Translation Functions
-
-Translation functions allow you to convert persistent objects to transient ones and
-vice-versa. These translation functions are used to build Storage and Retrieval drivers
-of an application.
-
-For each class of 2D and 3D geometric types, and for the general shape class in the
-topological data structure library, there are corresponding persistent class libraries,
-which allow you to translate your data with ease.
-
-#### Creation of Persistent Classes
-
-If you use Unix platforms as well as WOK and CDL, you can create your own persistent
-classes. In this case, data storage is achieved by implementing *Storage* and *Retrieval*
-drivers.
-
-The <i> Storage </i> package is used to write and read persistent objects. 
-These objects are read and written by a retrieval or storage algorithm 
-(<i> Storage_Schema </i>object) in a container (disk, memory, network ...). 
-Drivers (<i> FSD_File</i> objects) assign a physical container for data to be stored or retrieved.
-
-The standard procedure for an application in reading a container is as follows:
-
-* open the driver in reading mode,
-* call the Read function from the schema, setting the driver as a parameter. This function returns an instance of the <i> Storage_Data </i> class which contains the data being read,
-* close the driver.
-
-The standard procedure for an application in writing a container is as follows:
-
-* open the driver in writing mode,
-* create an instance of the <i> Storage_Data </i> class, then add the persistent data to write with the function <i> AddRoot</i>,
-* call the function <i> Write </i> from the schema, setting the driver and the <i> Storage_Data </i> instance as parameters,
-* close the driver.
-
-@subsection occt_ocaf_9a_4 Persistent Collections
-
-Persistent collections are classes which handle dynamically sized collections of data that can be stored in the database. These collections provide three categories of service:
-
-  * persistent strings,
-  * generic arrays of data, 
-  * commonly used instantiations of arrays.
-
-Persistent strings are concrete classes that handle sequences of characters based
-on both ASCII (normal 8-bit) and Unicode (16-bit) character sets.
-
-Arrays are generic classes, that is, they can hold a variety of objects not necessarily inheriting from a unique root class. These arrays can be instantiated with any kind of storable or persistent object, and then inserted into the persistent data model of a user application.
-
-The purpose of these data collections is simply to convert transient data into its persistent equivalent so that it can be stored in the database. To this end, the collections are used to create the persistent data model and assure the link with the database. They do not provide editing or query capabilities because it is more efficient, within the operative data model of the application, to work with transient data structures (from the <i> TCollection</i> package).
-
-For this reason:
-
-  * the persistent strings only provide constructors and functions to convert between transient and persistent strings, and
-  * the persistent data collections are limited to arrays. In other words, <i> PCollection</i> does not include sequences, lists, and so on (unlike <i> TCollection</i>).
-
-Persistent string and array classes are found in the <i> PCollection</i> package. In addition, <i> PColStd</i> package provides standard, and frequently used, instantiations of persistent arrays, for very simple objects.
-
-@subsection occt_ocaf_9a_5 Persistent Geometry
-
-The Persistent Geometry component describes geometric data structures which can be stored in the database. These packages provide a way to convert data from the transient "world" to the persistent "world".
-
-Persistent Geometry consists of a set of atomic data models parallel to the geometric data structures described in the geometry packages. Geometric data models, independent of each other, can appear within the data model of any application. The system provides the means to convert each atomic transient data model into a persistent one, but it does not provide a way for these data models to share data.
-
-Consequently, you can create a data model using these components, store data in, and retrieve it from a file or a database, using the geometric components provided in the transient and persistent "worlds". In other words, you customize the system by declaring your own objects, and the conversion of the geometric components from persistent to transient and vice versa is automatically managed for you by the system.
-
-However, these simple objects cannot be shared within a more complex data model. To allow data to be shared, you must provide additional tools.
-
-Persistent Geometry is provided by several packages.
-
-The <i> PGeom</i> package describes geometric persistent objects in 3D space, such as points,
-vectors, positioning systems, curves and surfaces.
-
-These objects are persistent versions of those provided by the <i> Geom</i> package: for
-each type of transient object provided by Geom there is a corresponding type of persistent
-object in the <i>PGeom</i> package. In particular the inheritance structure is parallel.
-
-However the <i> PGeom </i>package does not provide any functions to construct, edit or access
-the persistent objects. Instead the objects are manipulated as follows:
-
-  * Persistent objects are constructed by converting the equivalent transient <i> Geom </i> objects. To do this you use the <i>MgtGeom::Translate</i> function.
-  * Persistent objects created in this way are used to build persistent data structures that are then stored in a file or database.
-  * When these objects are retrieved from the file or database, they are converted back into the corresponding transient objects from the Geom package. To do this, you use <i>MgtGeom::Translate</i> function.
-
-In other words, you always edit or query transient data structures within the transient
-data model supplied by the session.
-Consequently, the documentation for the <i> PGeom </i> package consists simply of a list of available objects.
-
-The <i> PGeom2d </i> package describes persistent geometric objects in 2D space, such as points,
-vectors, positioning systems and curves. This package provides the same type of services
-as the <i> PGeom</i> package, but for the 2D geometric objects provided by the <i> Geom2d</i> package.
-Conversions are provided by the <i>MgtGeom::Translate</i> function.
-
-~~~~
-//Create a coordinate system
-Handle(Geom_Axis2Placement) aSys;
-
-
-//Create a persistent coordinate PTopoDS_HShape.cdlsystem
-Handle(PGeom_Axis2placement)
-	aPSys = MgtGeom::Translate(aSys);
-
-//Restore a transient coordinate system
-Handle(PGeom_Axis2Placement) aPSys;
-
-Handle(Geom_Axis2Placement)
-	aSys = MgtGeom::Translate(aPSys);
-~~~~
-
-
-@subsection occt_ocaf_9a_6 Persistent Topology
-
-The Persistent Topology component describes topological data structures which can be stored in the database. These packages provide a way to convert data from the transient "world" to the persistent "world".
-
-Persistent Topology is based on the BRep concrete data model provided by the topology packages. Unlike the components of the Persistent Geometry package, topological components can be fully shared within a single model, as well as between several models.
-
-Each topological component is considered to be a shape: a <i> TopoDS_Shape</i> object. The system's capacity to convert a transient shape into a persistent shape and vice-versa applies to all objects, irrespective of their complexity: vertex, edge, wire, face, shell, solid, and so on.
-
-When a user creates a data model using BRep shapes, he uses the conversion functions that the system provides to store the data in, and retrieve it from the database. The data can also be shared.
-
-Persistent Topology is provided by several packages.
-
-The <i> PTopoDS</i> package describes the persistent data model associated with any BRep shape; it is the persistent version of any shape of type <i> TopoDS_Shape</i>. As is the case for persistent geometric models, this data structure is never edited or queried, it is simply stored in or retrieved from the database. It is created or converted by the <i>MgtBRep::Translate</i> function.
-
-The <i> MgtBRepAbs</i> and <i> PTColStd </i> packages provide tools used by the conversion functions of topological objects.
-
-~~~~
-//Create a shape
-TopoDS_Shape aShape;
-
-//Create a persistent shape
-PtColStd_DoubleTransientPersistentMap aMap;
-
-Handle(PTopoDS_HShape) aPShape =
-	aMap.Bind2(MgtBRep::Translate
-		aShape,aMap,MgtBRepAbs_WithTriangle));
-
-aPShape.Nullify();
-
-//Restore a transient shape
-Handle(PTopoDS_HShape) aPShape;
-
-Handle(TopoDS_HShape) aShape =
-	aMap.Bind1(MgtBRep::Translate
-		(aPShape,aMap,MgtBRepAbs_WithTriangle));
-
-aShape.Nullify();
-~~~~
-
   
 @section occt_ocaf_10 GLOSSARY
 
@@ -1986,7 +1779,6 @@ aShape.Nullify();
 	* Store the names of software extensions. 
 * **Driver** -- an abstract class, which defines the communications protocol with a system. 
 * **Entry** -- an ASCII character string containing the tag list of a label. For example:
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 0:3:24:7:2:7 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2002,7 +1794,6 @@ To store these references properly, a label must also contain an external link a
 In C++, the application behavior is implemented in virtual functions redefined in these derived classes. This is known as overriding. 
 
 * **GUID** -- Global Universal ID. A string of 37 characters intended to uniquely identify an object. For example:
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 2a96b602-ec8b-11d0-bee7-080009dc3333 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2148,162 +1939,109 @@ ad696002-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
  
 
 
-@subsection occt_ocaf_11_1 Implementation of Attribute Transformation in a CDL file
+@subsection occt_ocaf_11_1 Implementation of Attribute Transformation in a HXX file
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-class Transformation from MyPackage inherits Attribute from TDF 
+\#include <TDF_Attribute.hxx>
 
-    ---Purpose: This attribute implements a transformation data container. 
+\#include <gp_Ax3.hxx>
+\#include <gp_Pnt.hxx>
+\#include <gp_Vec.hxx>
+\#include <gp_Trsf.hxx>
 
-uses 
+//! This attribute implements a transformation data container
+class MyPackage_Transformation : public TDF_Attribute
+{
+public:
+  //!@name Static methods 
 
-     Attribute       from TDF, 
-     Label           from TDF, 
-     GUID            from Standard, 
-     RelocationTable from TDF, 
-     Pnt             from gp, 
-     Ax1             from gp, 
-     Ax2             from gp, 
-     Ax3             from gp, 
-     Vec             from gp, 
-     Trsf            from gp, 
-     TrsfForm        from gp 
+  //! The method returns a unique GUID of this attribute. 
+  //! By means of this GUID this attribute may be identified   
+  //! among other attributes attached to the same label. 
+  Standard_EXPORT static const Standard_GUID& GetID ();
 
-is 
+  //! Finds or creates the attribute attached to <theLabel>. 
+  //! The found or created attribute is returned. 
+  Standard_EXPORT static Handle(MyPackage_Transformation) Set (const TDF_Label theLabel);
 
-    ---Category: Static methods 
-    --          =============== 
-
-    GetID (myclass)     
-    ---C++: return const &    
-    ---Purpose: The method returns a unique GUID of this attribute. 
-    --          By means of this GUID this attribute may be identified   
-    --          among other attributes attached to the same label. 
-    returns GUID from Standard; 
-
-    Set (myclass; theLabel : Label from TDF) 
-    ---Purpose: Finds or creates the attribute attached to <theLabel>. 
-    --          The found or created attribute is returned. 
-    returns Transformation from MyPackage; 
-
-
-    ---Category: Methods for access to the attribute data 
-    --           ======================================== 
+  //!@name Methods for access to the attribute data 
       
-    Get (me) 
-    ---Purpose: The method returns the transformation. 
-    returns Trsf from gp; 
+  //! The method returns the transformation. 
+  Standard_EXPORT gp_Trsf Get () const; 
 
+  //!@name Methods for setting the data of transformation 
 
-    ---Category: Methods for setting the data of transformation 
-    --           ============================================== 
+  //! The method defines a rotation type of transformation. 
+  Standard_EXPORT void SetRotation (const gp_Ax1& theAxis, Standard_Real theAngle); 
 
-    SetRotation (me : mutable; 
-                         theAxis : Ax1 from gp; 
-                         theAngle : Real from Standard); 
-    ---Purpose: The method defines a rotation type of transformation. 
+  //! The method defines a translation type of transformation. 
+  Standard_EXPORT void SetTranslation (const gp_Vec& theVector); 
 
-    SetTranslation (me : mutable; 
-                            theVector : Vec from gp); 
-    ---Purpose: The method defines a translation type of transformation. 
+  //! The method defines a point mirror type of transformation (point symmetry). 
+  Standard_EXPORT void SetMirror (const gp_Pnt& thePoint); 
 
-    SetMirror (me : mutable; 
-                   thePoint : Pnt from gp); 
-    ---Purpose: The method defines a point mirror type of transformation 
-    --          (point symmetry). 
+  //! The method defines an axis mirror type of transformation (axial symmetry). 
+  Standard_EXPORT void SetMirror (const gp_Ax1& theAxis); 
 
-    SetMirror (me : mutable; 
-                   theAxis : Ax1 from gp); 
-    ---Purpose: The method defines an axis mirror type of transformation 
-    --          (axial symmetry). 
+  //! The method defines a point mirror type of transformation (planar symmetry). 
+  Standard_EXPORT void SetMirror (const gp_Ax2& thePlane); 
 
-    SetMirror (me : mutable; 
-                   thePlane : Ax2 from gp); 
-    ---Purpose: The method defines a point mirror type of transformation 
-    --          (planar symmetry). 
+  //! The method defines a scale type of transformation. 
+  Standard_EXPORT void SetScale (const gp_Pnt& thePoint, Standard_Real theScale); 
 
-    SetScale (me : mutable; 
-                  thePoint : Pnt from gp; 
-                  theScale : Real from Standard); 
-    ---Purpose: The method defines a scale type of transformation. 
+  //! The method defines a complex type of transformation from one co-ordinate system to another. 
+  Standard_EXPORT void SetTransformation (const gp_Ax3& theCoordinateSystem1, const gp_Ax3& theCoordinateSystem2); 
 
-    SetTransformation (me : mutable; 
-                               theCoordinateSystem1 : Ax3 from gp; 
-                               theCoordinateSystem2 : Ax3 from gp); 
-    ---Purpose: The method defines a complex type of transformation 
-    --          from one co-ordinate system to another. 
-
-
-    ---Category: Overridden methods from TDF_Attribute 
-    --           ===================================== 
+  //!@name Overridden methods from TDF_Attribute 
       
-    ID (me) 
-    ---C++: return const &   
-    ---Purpose: The method returns a unique GUID of the attribute. 
-    --          By means of this GUID this attribute may be identified   
-    --          among other attributes attached to the same label. 
-    returns GUID from Standard; 
+  //! The method returns a unique GUID of the attribute. 
+  //! By means of this GUID this attribute may be identified among other attributes attached to the same label. 
+  Standard_EXPORT const Standard_GUID& ID () const; 
 
-    Restore (me: mutable;   
-                 theAttribute : Attribute from TDF); 
-    ---Purpose: The method is called on Undo / Redo. 
-    --          It copies the content of <theAttribute> 
-    --          into this attribute (copies the fields). 
+  //! The method is called on Undo / Redo. 
+  //! It copies the content of theAttribute into this attribute (copies the fields). 
+  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& theAttribute); 
 
-    NewEmpty (me) 
-    ---Purpose: It creates a new instance of this attribute. 
-    --          It is called on Copy / Paste, Undo / Redo. 
-    returns mutable Attribute from TDF; 
+  //! It creates a new instance of this attribute. 
+  //! It is called on Copy / Paste, Undo / Redo. 
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty () const;
 
-    Paste (me;   
-               theAttribute : mutable Attribute from TDF; 
-               theRelocationTable : mutable RelocationTable from TDF); 
-    ---Purpose:: The method is called on Copy / Paste. 
-    --           It copies the content of this attribute into 
-    --           <theAttribute> (copies the fields). 
+  //! The method is called on Copy / Paste. 
+  //! It copies the content of this attribute into theAttribute (copies the fields). 
+  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& theAttribute, const Handle(TDF_RelocationTable)& theRelocationTable); 
 
-    Dump(me; anOS : in out OStream from Standard) 
-    ---C++: return; 
-    ---Purpose: Prints the content of this attribute into the stream. 
-    returns OStream from Standard is redefined; 
+  //! Prints the content of this attribute into the stream. 
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS);
 
+  //!@name Constructor 
 
-    ---Category: Constructor 
-    --           =========== 
+  //! The C++ constructor of this atribute class. 
+  //! Usually it is never called outside this class. 
+  Standard_EXPORT MyPackage_Transformation();
 
-    Create 
-    ---Purpose: The C++ constructor of this atribute class. 
-    --          Usually it is never called outside this class. 
-    returns mutable Transformation from MyPackage;      
+private:
+  gp_TrsfForm myType;
 
+  // Axes (Ax1, Ax2, Ax3) 
+  gp_Ax1 myAx1;
+  gp_Ax2 myAx2;
+  gp_Ax3 myFirstAx3;
+  gp_Ax3 mySecondAx3;
 
-fields 
+  // Scalar values 
+  Standard_Real myAngle;
+  Standard_Real myScale;
 
-    -- Type of transformation 
-    myType : TrsfForm from gp; 
-
-    -- Axes (Ax1, Ax2, Ax3) 
-    myAx1 : Ax1 from gp; 
-    myAx2 : Ax2 from gp; 
-    myFirstAx3 : Ax3 from gp; 
-    mySecondAx3 : Ax3 from gp; 
-      
-    -- Scalar values 
-    myAngle : Real from Standard; 
-    myScale : Real from Standard; 
-      
-    -- Points 
-    myFirstPoint : Pnt from gp; 
-    mySecondPoint : Pnt from gp; 
-
-
-end Transformation; 
+  // Points 
+  gp_Pnt myFirstPoint;
+  gp_Pnt mySecondPoint;
+}; 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @subsection occt_ocaf_11_2 Implementation of Attribute Transformation in a CPP file
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-#include MyPackage_Transformation.ixx; 
+\#include <MyPackage_Transformation.hxx> 
 
 //======================================================================= 
 //function : GetID 

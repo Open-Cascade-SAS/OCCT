@@ -8,7 +8,9 @@ This document presents guidelines for building third-party products used by Open
 
 You need to use the same version of MS Visual Studio for building all third-party products and OCCT itself, in order to receive a consistent set of run-time binaries. 
 
-The links for downloading the third-party products are available on the web site of OPEN CASCADE SAS at http://www.opencascade.org/getocc/require/. There are two types of third-party products used  by OCCT: 
+The links for downloading the third-party products are available on the web site of OPEN CASCADE SAS at http://www.opencascade.com/content/3rd-party-components.
+
+There are two types of third-party products used  by OCCT: 
 
 * Mandatory  products: 
 	* Tcl/Tk 8.5 -- 8.6;

@@ -8,8 +8,7 @@ This document presents additional guidelines for building third-party products
 used by Open CASCADE Technology and samples on Mac OS X platform (10.6.4  and later). 
 
 The links for downloading the third-party products are available 
-on the web site of OPEN CASCADE SAS at 
-http://www.opencascade.org/getocc/require/</a>. 
+on the web site of OPEN CASCADE SAS at http://www.opencascade.com/content/3rd-party-components. 
 
 There are two types of third-party products, which are  necessary to build OCCT: 
   

@@ -50,7 +50,7 @@ for (Standard_Integer aGr = 1; aGr <= aLen; ++aGr)
 ~~~~
 
 * All occurrences of *Select3D_Projector* in the application code (if any) should be replaced with *Handle(Select3D_Projector)*.
-* The code of inheritors of *Select3D_SensitiveEntity* should be updated if they override <i>::Matches()</i> (this is probable, if clipping planes are used).
+* The code of inheritors of *Select3D_SensitiveEntity* should be updated if they override <i>Matches()</i> (this is probable, if clipping planes are used).
 * Constructor for *V3d_Plane* has been changed, so the extra argument should be removed if used in the application. It is necessary to add a new plane using method *V3d_Viewer::AddPlane()* if *V3d_Viewer* has been used to manage clipping planes list (this does not affect clipping planes representation). Please, have a look at the source code for new DRAWEXE *vclipplane* command in *ViewerTest_ObjectsCommands.cxx, VClipPlane* to see how clipping planes can be managed in the application.
 
 @section upgrade_652 Upgrade to OCCT 6.5.2
@@ -68,7 +68,7 @@ Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret 
 ~~~~
 
 * The default state of *BRepMesh* parallelization has been turned off. The user should switch this flag explicitly:
-    *	by using methods *BRepMesh_IncrementalMesh::SetParallel(Standard_True)* for each *BRepMesh_IncrementalMesh* instance before <i>::Preform()</i>;
+    *	by using methods *BRepMesh_IncrementalMesh::SetParallel(Standard_True)* for each *BRepMesh_IncrementalMesh* instance before <i>Perform()</i>;
     *	by calling *BRepMesh_IncrementalMesh::SetParallelDefault(Standard_True)* when *BRepMesh_DiscretFactory* is used to retrieve the meshing tool (this also affects auto-triangulation in *AIS*).
 
 @section upgrade_653 Upgrade to OCCT 6.5.3
@@ -79,7 +79,7 @@ Porting of user applications from an earlier OCCT version to version 6.5.3 requi
 * The applications that might have used internal functions provided by *TKOpenGl* or removed primitives will need to be updated.
 * In connection with the implementation of Z-layers it might be necessary to revise the application code or revise the custom direct descendant classes of *Graphic3d_GraphicDriver* and *Graphic3d_StructureManager* to use the Z-layer feature.
 * Global variables *Standard_PI* and *PI* have been eliminated (use macro *M_PI* instead). 
-* Method *HashCode()* has been removed from class *Standard_Transient*. It is advisable to use global function <i>::HashCode()</i> for Handle objects instead. 
+* Method *HashCode()* has been removed from class *Standard_Transient*. It is advisable to use global function <i>HashCode()</i> for Handle objects instead. 
 * Declaration of operators new/delete for classes has become consistent and is encapsulated in macros.
 * Memory management has been changed to use standard heap <i>(MMGT_OPT=0)</i> and reentrant mode <i>(MMGT_REENTRANT=1)</i> by default.
 * Map classes in *NCollection* package now accept one more argument defining a hash tool.
@@ -299,10 +299,10 @@ SelectBasics_PickResult (aDepth, theMgr.DistToGeometryCenter (myCenter3d));
 ~~~~
 
 The interface of *SelectBasics_SensitiveEntity* now contains four new pure virtual functions that should be implemented by each custom sensitive:
-* <i>::BoundingBox()</i> – returns a bounding box of the entity;
-* <i>::Clear()</i> – clears up all the resources and memory allocated for complex sensitive entities;
-* <i>::BVH()</i> – builds a BVH tree for complex sensitive entities, if it is needed;
-* <i>::NbSubElements()</i> – returns atomic sub-entities of a complex sensitive entity, which will be used as primitives for BVH building. If the entity is simple and no BVH is required, this method returns 1.
+* <i>BoundingBox()</i> – returns a bounding box of the entity;
+* <i>Clear()</i> – clears up all the resources and memory allocated for complex sensitive entities;
+* <i>BVH()</i> – builds a BVH tree for complex sensitive entities, if it is needed;
+* <i>NbSubElements()</i> – returns atomic sub-entities of a complex sensitive entity, which will be used as primitives for BVH building. If the entity is simple and no BVH is required, this method returns 1.
 
 Each sensitive entity now has its own tolerance, which can be overridden by method *SelectBasics_SensitiveEntity::SetSensitivityFactor()* called from constructor.
 
@@ -321,10 +321,12 @@ Porting of user applications from an earlier OCCT version to version 7.0.0 requi
 
 @subsection upgrade_700_persist Removal of legacy persistence
 
-Legacy persistence for shapes and OCAF data based on *Storage_Schema* (toolkits *TKShapeShcema, TLStdLSchema, TKStdSchema* and *TKXCAFSchema*) has been removed in OCCT 7.0.0.
+Legacy persistence for shapes and OCAF data based on *Storage_Schema* (toolkits *TKPShape*, *TKPLCAF*, *TKPCAF*, *TKShapeShcema, TLStdLSchema, TKStdSchema*, and *TKXCAFSchema*) has been removed in OCCT 7.0.0.
 The applications that used these data persistence tools need to be updated to use other persistence mechanisms.
 
-The existing data files in standard formats can be converted using OCCT 6.9.0 or a previous version, as follows.
+@note For compatibility with previous versions, possibility to read standard OCAF data (TKLCAF, TKCAF) from the files stored in old format is preserved (toolkits *TKStdL*, *TKStd*).
+
+The existing data files in standard formats can be converted using OCCT 6.9.1 or a previous version, as follows.
 
 #### CSFDB files
 
@@ -340,7 +342,8 @@ The easiest way to do that is to use ImportExport sample provided with OCCT 6.9.
 #### OCAF and XCAF documents
 
 Files containing OCAF data saved in the old format usually have extensions <i>.std, .sgd</i> or <i>.dxc</i> (XDE documents).
-These files can be converted to XML or binary OCAF formats using DRAW Test Harness commands available in OCCT 6.9.0 or earlier.
+These files can be converted to XML or binary OCAF formats using DRAW Test Harness commands.
+Note that if the file contains only attributes defined in TKLCAF and TKCAF, this action can be performed in OCCT 7.0; otherwise OCCT 6.9.1 or earlier should be used.
 
 For that, start *DRAWEXE* and perform the following commands: 
 
@@ -512,7 +515,7 @@ Handle(Geom_TrimmedCurve) aCurve = new Geom_TrimmedCurve (...);
 func (aCurve); // ambiguity error in VC++ 10
 ~~~~~
 
-Note that this problem does not appear if macro *OCCT_HANDLE_NOCAST* is used, see @ref upgrade_occt700_cdl_nocast "below".
+Note that this problem can be avoided in many cases if macro *OCCT_HANDLE_NOCAST* is used, see @ref upgrade_occt700_cdl_nocast "below".
 
 To resolve this ambiguity, change your code so that argument type should correspond exactly to the function signature. 
 In some cases this can be done by using the relevant type for the corresponding variable, like in the example above:

@@ -23,7 +23,8 @@ The tests are organized in three levels:
   
 See @ref testmanual_5_1 "Test Groups" chapter for the current list of available test groups and grids.
 
-Some tests involve data files (typically CAD models) which are located separately and are not included with OCCT code. The archive with publicly available test data files should be downloaded and installed independently on OCCT sources (see http://dev.opencascade.org).
+@note Many tests involve data files (typically CAD models) which are located separately and (except a few) are not included with OCCT code. 
+These tests will be skipped if data files are not available.
 
 @subsection testmanual_1_2 Intended Use of Automatic Tests
 

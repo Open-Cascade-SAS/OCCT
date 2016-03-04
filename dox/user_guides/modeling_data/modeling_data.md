@@ -202,9 +202,9 @@ construction or construction error) is described by the enumeration <i>gce_Error
 Note, that classes, which construct geometric transformations do not return a status, and therefore do not inherit from *Root*.
 
 
-@subsubsection occt_modat_1_2_1 Non-persistent entities
+@subsubsection occt_modat_1_2_1 Simple geometric entities
 
-The following algorithms used to build entities from non-persistent *gp* entities are provided by *gce* package. 
+The following algorithms used to build entities from *gp* package are provided by *gce* package. 
 - 2D line parallel to another at a distance, 
 - 2D line parallel to another passing through a point, 
 - 2D circle passing through two points, 
@@ -264,9 +264,11 @@ This is useful if you are uncertain as to whether the arguments can create the *
 gp_Lin2d l = gce_MakeLin2d(Point1,Point2); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@subsubsection occt_modat_1_2_2 Persistent entities
+@subsubsection occt_modat_1_2_2 Geometric entities manipulated by handle
 
-*GC* and *GCE2d* packages provides an implementation of algorithms used to build entities from *Geom* and *Geom2D* packages. They implement the same algorithms as the *gce* package but create **persistent** entities, and also contain algorithms for trimmed surfaces and curves. The following algorithms are available: 
+*GC* and *GCE2d* packages provides an implementation of algorithms used to build entities from *Geom* and *Geom2D* packages.
+They implement the same algorithms as the *gce* package, and also contain algorithms for trimmed surfaces and curves.
+The following algorithms are available: 
 - arc of a circle trimmed by two points, 
 - arc of a circle trimmed by two parameters, 
 - arc of a circle trimmed by one point and one parameter, 
@@ -420,7 +422,7 @@ The *GeomAPI_ExtremaSurfaceSurface* class allows calculation of all extrema betw
 
 @section occt_modat_2 2D Geometry
 
-*Geom2d* package defines geometric objects in 2dspace. All geometric entities are STEP processed. The objects are non-persistent and are handled by reference.
+*Geom2d* package defines geometric objects in 2dspace. All geometric entities are STEP processed. The objects are handled by reference.
 
 In particular, <i>Geom2d</i> package provides classes for:
 * description of points, vectors and curves,
@@ -484,7 +486,7 @@ In particular, it provides classes for:
  * their positioning in 3D space using axis or coordinate systems, and
  * their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
 
-The following non-persistent and reference-handled objects are available: 
+The following objects are available: 
 - Point 
 - Cartesian point 
 - Vector

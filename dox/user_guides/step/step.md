@@ -40,7 +40,7 @@ These modules share common architecture and capabilities with other exchange mod
 In addition, Open Cascade provides tools to process models described using STEP: to reflect EXPRESS descriptions, to read, write and check data, to analyze the whole models ... Their key features are:
 
 * Modularity by sets of data types, which can be hierarchized to reflect the original modularity describing the resources and application protocols;
-* Implementation as CDL/C++ classes, providing comprehensive access to their members;
+* Implementation as C++ classes, providing comprehensive access to their members;
 * Early binding is basically used, providing good performance, easy installation and use as well as the capability to support non-compiled descriptions.
 
 This provides a natural way to deal with non-supported protocols when they share common definitions, as for geometry, which can then be exploited. The common frame, as the already supported data types, give a good foundation to go towards new uses of STEP, either on data definition (protocols from ISO or from industrial consortia) or on mapping with applicative data.
@@ -1105,14 +1105,14 @@ writer.Write(;Output.stp;);
 @subsection occt_step_4_1 Architecture of STEP Read and Write classes
 @subsubsection occt_step_4_1_1 General principles
 
-To perform data loading from a STEP file and to translate this data it is necessary to create correspondence between the EXPRESS schema and the structure of CDL classes. There are two possibilities to organize such correspondence: the so-called early binding and late binding. 
+To perform data loading from a STEP file and to translate this data it is necessary to create correspondence between the EXPRESS schema and the structure of the classes. There are two possibilities to organize such correspondence: the so-called early binding and late binding. 
 * Late binding means that the processor works with a description of the schema. The processor builds a dictionary of entities and can recognize and read any entity that is described in the schema. To change the behavior and the scope of processor based on late binding it is enough to change the description of the schema. However, this binding has some disadvantages (for example low speed of reading process). 
-* In case of early binding, the structure of CDL classes is created beforehand with the help of a specific automatic tool or manually. If the processor finds an entity that is not found in this schema, it will simply be ignored. The processor calls constructors of appropriate classes and their read methods. To add a new type in the scope of the processor it is necessary to create a class corresponding to the new entity. 
+* In case of early binding, the structure of the classes is created beforehand with the help of a specific automatic tool or manually. If the processor finds an entity that is not found in this schema, it will simply be ignored. The processor calls constructors of appropriate classes and their read methods. To add a new type in the scope of the processor it is necessary to create a class corresponding to the new entity. 
 
-The STEP processor is based on early binding principles. It means that specific classes for each EXPRESS type have been created with the help of an automatic tool from the EXPRESS schema. There are two CDL classes for each EXPRESS type. The first class (named the representing class) represents the STEP entity in memory. The second one (RW-class) is intended to perform the initialization of the representing class and to output data to an intermediate structure to be written in a STEP file. 
+The STEP processor is based on early binding principles. It means that specific classes for each EXPRESS type have been created with the help of an automatic tool from the EXPRESS schema. There are two classes for each EXPRESS type. The first class (named the representing class) represents the STEP entity in memory. The second one (RW-class) is intended to perform the initialization of the representing class and to output data to an intermediate structure to be written in a STEP file. 
 
 @subsubsection occt_step_4_1_2 Complex entities
-EXPRESS schema allows multiple inheritance. Entities that are built on the basis of multiple inheritance are called complex entities. Multiple inheritance is not available in CDL. EXPRESS enables any type of complex entities that can be inherited from any EXPRESS type. In the manner of early binding it is not possible to create a CDL class for any possible complex type. Thus, only widespread complex entities have corresponding representing classes and RW-classes that are created manually beforehand. 
+EXPRESS schema allows multiple inheritance. Entities that are built on the basis of multiple inheritance are called complex entities. EXPRESS enables any type of complex entities that can be inherited from any EXPRESS type. In the manner of early binding it is not possible to create a C++ class for any possible complex type. Thus, only widespread complex entities have corresponding representing classes and RW-classes that are created manually beforehand. 
 
 @subsection occt_step_4_2 Physical file reading
 Physical file reading consists of the following steps: 
@@ -1140,7 +1140,7 @@ The final phase is building a graph of references between entities. For each ent
 @subsection occt_step_4_3 How to add a new entity in scope of the STEP processor
 If it is necessary to read and translate a new entity by the STEP processor the Reader and Actor scope should be enhanced. Note that some actions to be made for adding a new type are different for simple and complex types. 
 The following steps should be taken: 
-* Create a CDL class representing a new entity. This can be *Stepxxx_NewEntity* class where xxx can be one of the following: 
+* Create a class representing a new entity. This can be *Stepxxx_NewEntity* class where xxx can be one of the following: 
      * Basic 
      * Geom 
      * Shape 

@@ -15,7 +15,7 @@ This includes:
   * Definition of classes representing data objects. Data objects store their data using primitive OCAF attributes, taking advantage of OCAF mechanisms for Undo/Redo and persistence. At the same time they provide a higher level abstraction over the pure OCAF document structure (labels / attributes).
   * Organization of the data model as a hierarchical (tree-like) structure of objects.
   * Support of cross-references between objects within one model or among different models. In case of cross-model references the models should depend hierarchically.
-  * Persistence mechanism for storing *TObj* objects in OCAF files, which allows storing and retrieving objects of derived types without regenerating the schema. 
+  * Persistence mechanism for storing *TObj* objects in OCAF files, which allows storing and retrieving objects of derived types without writing additional code to support persistence. 
 
 This document describes basic principles of logical and physical organization 
 of TObj-based data models and typical approaches to implementation of classes representing model objects.

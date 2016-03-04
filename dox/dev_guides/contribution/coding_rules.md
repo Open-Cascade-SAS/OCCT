@@ -36,7 +36,6 @@ Open CASCADE Technology is an open source platform available for an internationa
 Names should be meaningful or, at least, contain a meaningful part. To better understand this requirement, let us examine the existing names of toolkits, packages, classes and methods:
 - Packages containing words *Geom* or *Geom2d* in their names are related to geometrical data and operations.
 - Packages containing words *TopoDS* or *BRep* in their names are related to topological data and operations.
-- In OCAF, packages that define transient, persistent data classes and drivers to map between them, have similar names prefixed by *T*, *P*, and *M* correspondingly (e.g. *TDocStd*, *PDocStd*, *MDocStd*).
 - Packages ending with <i>...Test</i> define Draw Harness plugins.
 - Methods starting with *Get...* and *Set...* are usually responsible for correspondingly retrieving and storing data.
 
@@ -67,10 +66,9 @@ Names of units should not contain underscores, unless the use of underscores is 
 
 The following extensions should be used for source files, depending on their type:
 
-* <i>.cdl</i> -- CDL declaration files
 * <i>.cxx</i> -- C++ source files
 * <i>.hxx</i> -- C++ header files
-* <i>.lxx</i> -- headers with definitions of inline methods (CDL packages)
+* <i>.lxx</i> -- additional headers containing definitions of inline methods and auxiliary code
 
 ### Prefix for toolkit names [MANDATORY]
 

@@ -10,7 +10,7 @@ products used by Open CASCADE Technology and samples on Linux platform.
 
 The links for downloading the third-party products are available on the web site 
 of OPEN CASCADE SAS at 
-http://www.opencascade.org/getocc/require/. 
+http://www.opencascade.com/content/3rd-party-components. 
 
 There are two types of third-party products, which are  necessary to build OCCT: 
   
