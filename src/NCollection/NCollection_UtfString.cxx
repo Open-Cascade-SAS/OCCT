@@ -19,6 +19,7 @@
 
 #include <NCollection_UtfString.hxx>
 
+#if !defined(__ANDROID__)
 //=======================================================================
 //function : ~NCollection_UtfStringTool
 //purpose  :
@@ -87,3 +88,4 @@ bool NCollection_UtfStringTool::ToLocale (const wchar_t*         theWideString,
   }
   return true;
 }
+#endif

@@ -272,6 +272,7 @@ void NCollection_UtfString<Type>::FromUnicode (const TypeFrom*        theStringU
   strFree (anOldBuffer);
 }
 
+#if !defined(__ANDROID__)
 //! Auxiliary convertion tool.
 class NCollection_UtfStringTool
 {
@@ -293,6 +294,7 @@ public:
 private:
   wchar_t* myWideBuffer; //!< temporary variable
 };
+#endif
 
 // =======================================================================
 // function : FromLocale
@@ -302,6 +304,10 @@ template<typename Type> inline
 void NCollection_UtfString<Type>::FromLocale (const char*            theString,
                                               const Standard_Integer theLength)
 {
+#if defined(__ANDROID__)
+  // no locales on Android
+  FromUnicode (theString, theLength);
+#else
   NCollection_UtfStringTool aConvertor;
   wchar_t* aWideBuffer = aConvertor.FromLocale (theString);
   if (aWideBuffer == NULL)
@@ -310,6 +316,7 @@ void NCollection_UtfString<Type>::FromLocale (const char*            theString,
     return;
   }
   FromUnicode (aWideBuffer, theLength);
+#endif
 }
 
 // =======================================================================
@@ -320,8 +327,20 @@ template<typename Type> inline
 bool NCollection_UtfString<Type>::ToLocale (char*                  theBuffer,
                                             const Standard_Integer theSizeBytes) const
 {
+#if defined(__ANDROID__)
+  // no locales on Android
+  NCollection_UtfString<Standard_Utf8Char> anUtf8Copy (myString, myLength);
+  const Standard_Integer aSize = anUtf8Copy.Size() + 1;
+  if (theSizeBytes < aSize)
+  {
+    return false;
+  }
+  std::memcpy (theBuffer, anUtf8Copy.ToCString(), (Standard_Size )aSize);
+  return true;
+#else
   NCollection_UtfString<wchar_t> aWideCopy (myString, myLength);
   return NCollection_UtfStringTool::ToLocale (aWideCopy.ToCString(), theBuffer, theSizeBytes);
+#endif
 }
 
 // =======================================================================
