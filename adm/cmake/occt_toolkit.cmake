@@ -192,9 +192,14 @@ get_property (OCC_VERSION_MAJOR GLOBAL PROPERTY OCC_VERSION_MAJOR)
 get_property (OCC_VERSION_MINOR GLOBAL PROPERTY OCC_VERSION_MINOR)
 get_property (OCC_VERSION_MAINTENANCE GLOBAL PROPERTY OCC_VERSION_MAINTENANCE)
 
-set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}"
-                                                  SOVERSION     "${OCC_VERSION_MAJOR}"
-                                                  VERSION       "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")               
+if (ANDROID)
+  # do not append version to the filename
+  set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}")
+else()
+  set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}"
+                                                    SOVERSION     "${OCC_VERSION_MAJOR}"
+                                                    VERSION       "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")
+endif()
 
 set (USED_TOOLKITS_BY_CURRENT_PROJECT)
 set (USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT)
