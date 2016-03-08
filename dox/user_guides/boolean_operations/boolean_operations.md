@@ -2153,7 +2153,8 @@ The package consists of the following classes:
 
 @figure{/user_guides/boolean_operations/images/operations_image065.svg, "Diagram of BRepAlgoAPI package"} 
 
-The detailed description of the classes can be found in corresponding .cdl files. The examples are below in this chapter.
+The detailed description of the classes can be found in corresponding header files.
+The examples are below in this chapter.
 
 @subsection occt_algorithms_11b_2 Package BOPTest
 The package *BOPTest* provides the usage of the Boolean Component on Tcl level. The method *BOPTest::APICommands* contains corresponding Tcl commands: 

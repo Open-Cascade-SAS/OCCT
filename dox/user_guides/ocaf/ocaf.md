@@ -672,29 +672,7 @@ NewDocumentFormat.AttributeStoragePlugin:57b0b826-d931-11d1-b5da-00a0c9064368
 NewDocumentFormat.AttributeRetrievalPlugin:57b0b827-d931-11d1-b5da-00a0c9064368 
 ~~~~~
 
-* Create the resource file "Plugin" with GUIDs and corresponding plugin libraries, which looks like this:
-
-**Example** 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-! Description of available plugins 
-! ************ 
- 
-b148e300-5740-11d1-a904-080036aaa103.Location: libFWOSPlugin.so 
-! 
-! standard document drivers plugin 
-! 
-bd696000-5b34-11d1-b5ba-00a0c9064368.Location: libPAppStdPlugin.so 
-bd696001-5b34-11d1-b5ba-00a0c9064368.Location: libPAppStdPlugin.so 
-! 
-! standard schema plugin 
-! 
-bd696002-5b34-11d1-b5ba-00a0c9064368.Location: libPAppStdPlugin.so 
-! 
-! standard attribute drivers plugin 
-! 
-57b0b826-d931-11d1-b5da-00a0c9064368.Location: libPAppStdPlugin.so 
-57b0b827-d931-11d1-b5da-00a0c9064368.Location: libPAppStdPlugin.so 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Copy the resource file "Plugin" from $CASROOT/src/StdResource
 
 In order to set the paths for these files it is necessary to set the environments: *CSF_PluginDefaults* and *CSF_NewFormatDefaults*. For example, set the files in the directory *MyApplicationPath/MyResources*: 
 
@@ -703,14 +681,7 @@ setenv CSF_PluginDefaults MyApplicationPath/MyResources
 setenv CSF_NewFormatDefaults MyApplicationPath/MyResources 
 ~~~~~
 
-Once these steps are taken you may run your application, create documents and Save/Open them. These resource files already exist in the OCAF (format "Standard"). 
-
-If you use your specific attributes from packages, for example, <i>P-, M-</i> and *TMyAttributePackage*  (see @ref occt_ocaf_3_5_6  "Specific attribute creation") you must take some additional steps for the new plugin implementation: 
-
-1. Add our *P* package to the standard schema. You can get an already existing (in Open CASCADE Technology sources) schema from *StdSchema* unit and add your package string to the cdl-file: package  *PMyAttributePackage*.
-2. The next step consists in the implementation of an executable, which will connect our documents to our application and open/save them. Copy the package *PAppStdPlugin* and change its name to *MyTheBestApplicationPlugin*. In the *PLUGIN* macros type the name of your factory, which will be defined at the next step.
-3. *Factory* is a method, which returns drivers (standard drivers and our defined drivers from the *M* package) by a GUID. Copy the package to the location, where the standard factory is defined (it is PAppStd in the OCAF sources). Change its name to *MyTheBestSchemaLocation*. The *Factory()* method of the *PappStd* package checks the GUID set as its argument and returns the corresponding table of drivers. Set two new GUIDs for your determined storage and retrieval drivers. Append two *if* declarations inside the *Factory()* method, which should check whether the set GUID coincides with GUIDs defined by the *Factory()* method as far as our storage and retrieval drivers are concerned. If the GUID coincides with one of them, the method should return a table of storage or retrieval drivers respectively.
-4. Recompile all and add the strings with GUIDs  to the *Plugin* file in accordance with your plugin library GUID.
+Once these steps are taken you may run your application, create documents and Save/Open them.
 
 @subsubsection occt_ocaf_4_3_4 Opening the document from a file
 

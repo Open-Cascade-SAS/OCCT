@@ -261,8 +261,8 @@ Open CASCADE Technology  provides preprocessor macro *Handle()* that is historic
 Handle(Geom_Line) aLine; // "Handle(Geom_Line)" is expanded to "opencascade::handleL<Geom_Line>"
 ~~~~~
 
-In addition, for standard OCCT classes additional typedef is defined for a handle, as name of a class prefixed by *Handle_*.
-For instance, above example can be also coded as:
+In addition, for standard OCCT classes additional *typedef* is defined for a handle, as the name of a class prefixed by *Handle_*.
+For instance, the above example can be also coded as:
 ~~~~~{.cpp}
 Handle_Geom_Line aLine; // "Handle_Geom_Line" is typedef to "opencascade::handleL<Geom_Line>"
 ~~~~~
@@ -286,10 +286,10 @@ To initialize a handle, either a new object should be  created or the value of a
 
 Open CASCADE Technology provides a means to describe the hierarchy  of data types in a generic way, with a possibility to check the exact type of  the given object at run-time (similarly to C++ RTTI). 
 
-To enable this feature, a class declaration should include declaration of OCCT RTTI.
+To enable this feature, a class declaration should include the declaration of OCCT RTTI.
 Header *Standard_Type.hxx* provides two variants of preprocessor macros facilitating this:
 
-* Inline variant, declares and defines RTTI methods by single line of code:
+* Inline variant, which declares and defines RTTI methods by a single line of code:
 ~~~~~{.cpp}
 #include <Geom_Surface.hxx>
 class Appli_ExtSurface : public Geom_Surface
@@ -300,7 +300,7 @@ public:
 };
 ~~~~~
 
-* Out-of line variant, using one macros in declaration (normally put in header file), and another for implementation (to be put in C++ source):
+* Out-of line variant, which uses one macro in the declaration (normally in the header file), and another in the implementation (in C++ source):
 
   In *Appli_ExtSurface.hxx* file:
 ~~~~~{.cpp}
@@ -320,11 +320,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
 ~~~~~
 
 These macros define method *DynamicType()* that returns a type descriptor - handle to singleton instance of the class *Standard_Type* describing the class.
-Type descriptor stores name of the class and descriptor of its parent class.
+The type descriptor stores the name of the class and the descriptor of its parent class.
 
 Note that while inline version is easier to use, for widely used classes this method may lead to bloating of binary code of dependent libraries, due to multiple instantiations of inline method.
 
-To get the type descriptor for a given class type, use macros *STANDARD_TYPE()* with name of the class as argument.
+To get the type descriptor for a given class type, use macro *STANDARD_TYPE()* with the name of the class as argument.
 
 Example of usage:
 ~~~~~{.cpp}
@@ -370,7 +370,7 @@ If conversion is not compatible with the actual type of the  referenced object, 
 ~~~~~~
 void MyFunction (const Handle(A) & a)
 {
-  Handle(B) b =  Handle(B)::Downcast(a);
+  Handle(B) b =  Handle(B)::DownCast(a);
   if (! b.IsNull()) {
     // we can use “b” if class B inherits from A
   }
@@ -1317,21 +1317,21 @@ IMPLEMENT_HSEQUENCE (MyPackage_HSequenceOfPnt)
 @subsubsection occt_fcug_3_3_3 Arrays and sequences
 
 Standard collections provided by OCCT are:
-* *NCollection_Array1* - fixed-size (at initialization) one-dimensional array; note that index can start at any value, usually 1
-* *NCollection_Array2* - fixed-size (at initialization) two-dimensional array; note that index can start at any value, usually 1
-* *NCollection_List* - plain list
-* *NCollection_Sequence* - double-connected list with access by index; note that index starts at 1
+* *NCollection_Array1* -- fixed-size (at initialization) one-dimensional array; note that the index can start at any value, usually 1;
+* *NCollection_Array2* -- fixed-size (at initialization) two-dimensional array; note that the index can start at any value, usually 1;
+* *NCollection_List* -- plain list;
+* *NCollection_Sequence* -- double-connected list with access by index; note that the index starts at 1.
 
 These classes provide STL-style iterators (methods begin() and end()) and thus can be used in STL algorithms.
 
 @subsubsection occt_fcug_3_3_3x Maps
 
 NCollection provides several classes for storage of objects by value, providing fast search due to use of hash:
-* *NCollection_Map* - hash set
-* *NCollection_IndexedMap* - set with prefixed order of elements, allowing fast access by index or by value (hash-based)
-* *NCollection_DataMap* - hash map
-* *NCollection_IndexedDataMap* - map with prefixed order of elements, allowing fast access by index or by value (hash-based)
-* *NCollection_DoubleMap* - two-side hash map (with two keys)
+* *NCollection_Map* -- hash set;
+* *NCollection_IndexedMap* -- set with a prefixed order of elements, allowing fast access by index or by value (hash-based);
+* *NCollection_DataMap* -- hash map;
+* *NCollection_IndexedDataMap* -- map with a prefixed order of elements, allowing fast access by index or by value (hash-based);
+* *NCollection_DoubleMap* -- two-side hash map (with two keys).
 
 @subsubsection occt_fcug_3_3_4 Other collection types
 

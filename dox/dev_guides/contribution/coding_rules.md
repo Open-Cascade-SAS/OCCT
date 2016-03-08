@@ -81,7 +81,7 @@ Usually the names of source files located in a unit start from the unit name sep
 Thus, the names of files containing sources of C++ classes that belong to a package are constructed according to the following template:
 
 ~~~~~
-    <package-name>_<class-name>.cxx (or .hxx, or .cdl)
+    <package-name>_<class-name>.cxx (or .hxx)
 ~~~~~
 
 For example, file *Adaptor2d_Curve2d.cxx* belongs to the package *Adaptor2d*
@@ -459,12 +459,12 @@ The comments should be compatible with Doxygen tool for automatic documentation 
 
 ### Documenting classes [MANDATORY]
 
-Each class should be documented in its header file (.hxx or .cdl).
+Each class should be documented in its header file (.hxx).
 The comment should give enough details for the reader to understand the purpose of the class and the main way of work with it.
 
 ### Documenting class methods [MANDATORY]
 
-Each class or package method should be documented in the header file (.hxx or .cdl).
+Each class or package method should be documented in the header file (.hxx).
 
 The comment should explain the purpose of the method, its parameters, and returned value(s).
 Accepted style is:
@@ -690,71 +690,35 @@ Take care about cycling of handled references to avoid chains, which will never 
 
 See the following example:
 
-In *MyPackage.cdl* :
+~~~~{.cpp}
+    class Slave;
 
+    class Master : public Standard_Transient
+    {
+    ...
+      void SetSlave (const Handle(Slave)& theSlave)
+      { 
+        mySlave = theSlave;
+      }
+    ...
+    private:
+      Handle(Slave) theSlave; // smart pointer
+    ...
+    }
+
+    class Slave : public Standard_Transient
+    {
+    ...
+      void SetMaster (const Handle(Master)& theMaster)
+      { 
+        myMaster = theMaster.get();
+      }
+    ...
+    private:
+      Master* theMaster; // simple pointer
+    ...
+    }
 ~~~~
-    class MyFirstHandle;
-    class MySecondHandle;
-    pointer MySecondPointer to MySecondHandle;
-    ...
-~~~~
-
-In *MyPackage_MyFirstHandle.cdl* :
-
-~~~~
-    class MyFirstHandle from MyPackage
-    ...
-    is
-    ...
-      SetSecondHandleA (me: mutable; theSecond: MySecondHandle from MyPackage);
-      SetSecondHandleB (me: mutable; theSecond: MySecondHandle from MyPackage);
-    ...
-    fields
-    ...
-      mySecondHandle  : MySecondHandle  from MyPackage;
-      mySecondPointer : MySecondPointer from MyPackage;
-    ...
-    end MyFirstHandle from MyPackage;
-~~~~
-
-In *MyPackage_MySecondHandle.cdl* :
-
-~~~~
-    class MySecondHandle from MyPackage
-    ...
-    is
-    ...
-      SetFirstHandle (me: mutable; theFirst: MyFirstHandle from MyPackage);
-    ...
-    fields
-    ...
-      myFirstHandle : MyFirstHandle from MyPackage;
-    ...
-    end MySecondHandle from MyPackage;
-~~~~
-
-In C++ code:
-
-~~~~~{.cpp}
-void MyFunction()
-{
-  Handle(MyPackage_MyFirstHandle)  anObj1 = new MyPackage_MyFirstHandle();
-  Handle(MyPackage_MySecondHandle) anObj2 = new MyPackage_MySecondHandle();
-  Handle(MyPackage_MySecondHandle) anObj3 = new MyPackage_MySecondHandle();
-
-  anObj1->SetSecondHandleA(anObj2);
-  anObj1->SetSecondHandleB(anObj3);
-  anObj2->SetFirstHandle(anObj1);
-  anObj3->SetFirstHandle(anObj1);
-
-  // memory is not freed here !!!
-  anObj1.Nullify();
-  anObj2.Nullify();
-
-  // memory is freed here
-  anObj3.Nullify();
-}
-~~~~~
 
 ### C++ memory allocation
 

@@ -79,7 +79,7 @@ Test Harness executable *DRAWEXE* is located in the <i>$CASROOT/\<platform\>/bin
 
 Open CASCADE Technology is shipped with the DrawPlugin resource file located in the <i>$CASROOT/src/DrawResources</i> directory. 
 
-The format of the file is compliant with standard Open CASCADE Technology resource files (see the *Resource_Manager.cdl* file for details). 
+The format of the file is compliant with standard Open CASCADE Technology resource files (see the *Resource_Manager.hxx* file for details). 
 
 Each key defines a sequence of either further (nested) keys or a name of the dynamic library. Keys can be nested down to an arbitrary level. However, cyclic dependencies between the keys are not checked. 
 
@@ -9949,7 +9949,7 @@ DPLUGIN(MyPack)
 
 @subsection occt_draw_11_4 Creation of the plug-in resource file
 
-As mentioned above, the plug-in resource file must be compliant with Open CASCADE Technology requirements (see *Resource_Manager.cdl* file for details). In particular, it should contain keys separated from their values by a colon (;:;). 
+As mentioned above, the plug-in resource file must be compliant with Open CASCADE Technology requirements (see *Resource_Manager.hxx* file for details). In particular, it should contain keys separated from their values by a colon (;:;). 
 For every created plug-in there must be a key. For better readability and comprehension it is recommended to have some meaningful name. 
 Thus, the resource file must contain a line mapping this name (key) to the library name. The latter should be without file extension (.dll on Windows, .so on Unix/Linux) and without the ;lib; prefix on Unix/Linux. 
 For several plug-ins one resource file can be created. In such case, keys denoting plug-ins can be combined into groups, these groups -- into their groups and so on (thereby creating some hierarchy). Any new parent key must have its value as a sequence of child keys separated by spaces, tabs or commas. Keys should form a tree without cyclic dependencies. 
