@@ -162,7 +162,7 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
     myDegree = Max( myDegree, (mySequence(i))->Length() -1);
   }
 
-  Standard_Real D1, D2, Lambda, Det=0;
+  Standard_Real Det=0;
   gp_Pnt2d P1, P2, P3;
   Standard_Integer Deg, Inc, MaxDegree = myDegree;
   TColgp_Array1OfPnt2d Points(1, myDegree+1);
@@ -196,31 +196,25 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
       P2 = Points(1);
       P3 = Points(2);
       gp_Vec2d V1(P1, P2), V2(P2, P3);
-      D1 = P1.SquareDistance(P2);
-      D2 = P3.SquareDistance(P2);
-      Lambda = Sqrt(D2/D1);
-
 
       // Processing of the tangency between the Bezier and the previous.
       // This allows guaranteeing at least continuity C1 if the tangents are coherent.
-      
-
       // Test of angle at myAngular
-
-      if (V1.Magnitude() > gp::Resolution() &&
-	  V2.Magnitude() > gp::Resolution() &&
-	  V1.IsParallel(V2, myAngular )) {
-	KnotsMultiplicities.Append(MaxDegree-1);
-	CurveKnVals(i) = CurveKnVals(i-1) * Lambda;
-	Det += CurveKnVals(i);
-
+      Standard_Real D1 = V1.SquareMagnitude();
+      Standard_Real D2 = V2.SquareMagnitude();
+      if (MaxDegree > 1 && //rln 20.06.99 work-around
+          D1 > gp::Resolution() && D2 > gp::Resolution() && V1.IsParallel(V2, myAngular ))
+      {
+        Standard_Real Lambda = Sqrt(D2/D1);
+        KnotsMultiplicities.Append(MaxDegree - 1);
+        CurveKnVals(i) = CurveKnVals(i - 1) * Lambda;
       }
       else {
-	CurveKnVals(i) = 1.0e0 ;
-	Det += CurveKnVals(i) ;
-	CurvePoles.Append(Points(1));
-	KnotsMultiplicities.Append(MaxDegree);
+        CurvePoles.Append(Points(1));
+        KnotsMultiplicities.Append(MaxDegree);
+        CurveKnVals(i) = 1.0;
       }
+      Det += CurveKnVals(i);
 
       // Store poles.
       for (Standard_Integer j = 2 ; j <= MaxDegree ; j++) {
