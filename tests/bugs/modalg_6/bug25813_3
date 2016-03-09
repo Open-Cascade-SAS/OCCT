@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC25813"
+puts "============"
+puts ""
+######################################################
+# regression in Hidden Line Removal
+######################################################
+
+ptorus result 30 10
+vinit
+vdisplay result
+vfit
+vhlr on
+vhlrtype algo result
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
