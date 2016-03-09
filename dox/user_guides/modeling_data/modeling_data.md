@@ -406,19 +406,27 @@ These packages calculate the extrema of distance between:
 - a curve and a surface, 
 - two surfaces. 
 
+### Extrema between Point and Curve / Surface
+
+The *GeomAPI_ProjectPointOnCurve* class allows calculation of all extrema between a point and a curve. Extrema are the lengths of the segments orthogonal to the curve.
+The *GeomAPI_ProjectPointOnSurface* class allows calculation of all  extrema between a point and a surface. Extrema are the lengths of the segments orthogonal to the surface.
+These classes use the "Projection" criteria for optimization.
+
 ### Extrema between Curves
 
-The *Geom2dAPI_ExtremaCurveCurve* class allows calculation of all extrema between two 2D geometric curves. Extrema are the lengths of the segments orthogonal to two curves. 
-
-The *GeomAPI_ExtremaCurveCurve* class allows calculation of all extrema between two 3D geometric curves. Extrema are the lengths of the segments orthogonal to two curves. 
+The *Geom2dAPI_ExtremaCurveCurve* class allows calculation of all minimal distances between two 2D geometric curves.
+The *GeomAPI_ExtremaCurveCurve* class allows calculation of all minimal distances two 3D geometric curves.
+These classes use Euclidean distance as the criteria for optimization.
 
 ### Extrema between Curve and Surface
 
-The *GeomAPI_ExtremaCurveSurface* class allows calculation of all  extrema between a 3D curve and a surface. Extrema are the lengths of the segments orthogonal to the curve and the surface. 
+The *GeomAPI_ExtremaCurveSurface* class allows calculation of one extrema between a 3D curve and a surface. Extrema are the lengths of the segments orthogonal to the curve and the surface.
+This class use the "Projection" criteria for optimization.
 
 ### Extrema between Surfaces
 
-The *GeomAPI_ExtremaSurfaceSurface* class allows calculation of all extrema between two surfaces. Extrema are the lengths of the segments orthogonal to two surfaces. 
+The *GeomAPI_ExtremaSurfaceSurface* class allows calculation of one minimal and one maximal distance between two surfaces.
+This class use Euclidean distance to compute minimum and "Projection" criteria to compute maximum.
 
 @section occt_modat_2 2D Geometry
 
