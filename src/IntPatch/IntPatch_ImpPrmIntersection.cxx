@@ -1572,7 +1572,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   // Now slin is filled as follows: lower indices correspond to Restriction line,
   // after (higher indices) - only Walking-line.
 
-  const Standard_Real aTol3d = Func.Tolerance(); 
+  const Standard_Real aTol3d = Max(Func.Tolerance(), TolTang); 
   const Handle(Adaptor3d_HSurface)& aQSurf = (reversed) ? Surf2 : Surf1;
   const Handle(Adaptor3d_HSurface)& anOtherSurf = (reversed) ? Surf1 : Surf2;
 
