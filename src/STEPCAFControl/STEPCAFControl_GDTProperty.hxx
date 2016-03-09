@@ -31,6 +31,7 @@
 #include <StepDimTol_HArray1OfDatumReferenceModifier.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepRepr_CompoundRepresentationItem.hxx>
+#include <StepVisual_TessellatedGeometricSet.hxx>
 #include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>
 #include <StepShape_LimitsAndFits.hxx>
 #include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
@@ -105,6 +106,8 @@ public:
                                                                                                  const XCAFDimTolObjects_DatumModifWithValue theModifWithVal,
                                                                                                  const Standard_Real theValue,
                                                                                                  const StepBasic_Unit theUnit);
+
+  Standard_EXPORT static Handle(StepVisual_TessellatedGeometricSet) GetTessellation(const TopoDS_Shape theShape);
 
 };
 

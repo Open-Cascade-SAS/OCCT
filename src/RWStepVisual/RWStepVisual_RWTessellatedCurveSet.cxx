@@ -103,3 +103,15 @@ void RWStepVisual_RWTessellatedCurveSet::WriteStep
   }
   SW.CloseSub();
 }
+
+//=======================================================================
+//function : Share
+//purpose  : 
+//=======================================================================
+void RWStepVisual_RWTessellatedCurveSet::Share (const Handle(StepVisual_TessellatedCurveSet) &ent,
+                                                Interface_EntityIterator& iter) const
+{
+  // Own filed : coordinates
+  iter.AddItem (ent->CoordList());
+}
+

@@ -35,6 +35,19 @@
 #include <TopoDS.hxx>
 #include <DBRep.hxx>
 
+#include <BRepGProp.hxx>
+#include <DDocStd.hxx>
+#include <GProp_GProps.hxx>
+#include <TDocStd_Document.hxx>
+#include <XCAFDimTolObjects_DatumObject.hxx>
+#include <XCAFDimTolObjects_DimensionObject.hxx>
+#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
+#include <XCAFDoc_Datum.hxx>
+#include <XCAFDoc_Dimension.hxx>
+#include <XCAFDoc_DimTolTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_GeomTolerance.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 //=======================================================================
 //function : SurfaceGenOCC26675_1 
 //purpose  : Generates a surface for intersect (in corresponding
@@ -1418,6 +1431,90 @@ static Standard_Integer OCC27021(Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : OCC27235
+//purpose : check presentation in GDT document
+//=======================================================================
+static Standard_Integer OCC27235 (Draw_Interpretor& theDI, Standard_Integer n, const char** a)
+{
+  if (n < 2) {
+    theDI<<"Use: OCC27235 Doc";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(a[1], Doc);
+  if ( Doc.IsNull() ) { theDI << a[1] << " is not a document\n"; return 1; }
+  Handle(XCAFDoc_DimTolTool) aDimTolTool= XCAFDoc_DocumentTool::DimTolTool(Doc->Main());
+  Handle(XCAFDoc_ShapeTool) aShapeTool= XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  TopoDS_Compound aPresentations;
+  BRep_Builder B;
+  B.MakeCompound(aPresentations);
+
+  TDF_LabelSequence aLabels;
+  aShapeTool->GetShapes(aLabels);
+  for ( Standard_Integer i=1; i <= aLabels.Length(); i++ )
+  {
+    aShapeTool->GetSubShapes(aLabels.Value(i), aLabels);
+  }
+
+  TDF_LabelSequence aGDTs;
+  aDimTolTool->GetDimensionLabels(aGDTs);
+  for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
+    Handle(XCAFDoc_Dimension) aDimAttr;
+    if (!aGDTs.Value(i).FindAttribute(XCAFDoc_Dimension::GetID(),aDimAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_DimensionObject) anObject = aDimAttr->GetObject();
+    if (anObject.IsNull())
+      continue;
+    TopoDS_Shape aShape = anObject->GetPresentation();
+    if (!aShape.IsNull())
+      B.Add(aPresentations, aShape);
+  }
+
+  aGDTs.Clear();
+  aDimTolTool->GetGeomToleranceLabels(aGDTs);
+  for (Standard_Integer i = 1; i <= aGDTs.Length(); i++) {
+    Handle(XCAFDoc_GeomTolerance) aGTAttr;
+    if (!aGDTs.Value(i).FindAttribute(XCAFDoc_GeomTolerance::GetID(),aGTAttr)) 
+      continue;
+    Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = aGTAttr->GetObject();
+    if (anObject.IsNull())
+      continue;
+    TopoDS_Shape aShape = anObject->GetPresentation();
+    if (!aShape.IsNull())
+      B.Add(aPresentations, aShape);
+  }
+
+  for ( Standard_Integer i=1; i <= aLabels.Length(); i++ )
+  {
+    TDF_LabelSequence aDatL;
+    if(aDimTolTool->GetRefDatumLabel(aLabels.Value(i), aDatL))
+    {
+      for(Standard_Integer j = aDatL.Lower(); j <= aDatL.Upper(); j++)
+      {
+        Handle(XCAFDoc_Datum) aDat;
+        if(!aDatL.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDat))
+          continue;
+        Handle(XCAFDimTolObjects_DatumObject) anObject = aDat->GetObject();
+        if (anObject.IsNull())
+          continue;
+        TopoDS_Shape aShape = anObject->GetPresentation();
+        if (!aShape.IsNull())
+          B.Add(aPresentations, aShape);
+      }
+    }
+  }
+
+  GProp_GProps aG;
+  BRepGProp::LinearProperties(aPresentations, aG);
+  gp_Pnt aPnt = aG.CentreOfMass();
+  theDI << "Centre of mass: " << aPnt.X() << " " << aPnt.Y() << " " << aPnt.Z() << "\n";
+  theDI << "Mass: " << aG.Mass() << "\n";
+
+  return 0;
+}
+
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -1425,6 +1522,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26675_1", "OCC26675_1 result", __FILE__, SurfaceGenOCC26675_1, group);
   theCommands.Add ("OCC24836", "OCC24836", __FILE__, OCC24836, group);
   theCommands.Add("OCC27021", "OCC27021", __FILE__, OCC27021, group);
+  theCommands.Add("OCC27235", "OCC27235", __FILE__, OCC27235, group);
 
   return;
 }

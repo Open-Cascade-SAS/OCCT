@@ -5076,6 +5076,13 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
       tool.Share(anent,iter);
     }
     break;
+  case 710:
+    {
+      DeclareAndCast(StepVisual_TessellatedCurveSet,anent,ent);
+      RWStepVisual_RWTessellatedCurveSet tool;
+      tool.Share(anent,iter);
+    }
+    break;
     default : break;
     }
 }

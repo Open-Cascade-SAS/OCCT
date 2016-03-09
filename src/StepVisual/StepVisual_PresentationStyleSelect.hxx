@@ -26,6 +26,7 @@
 class Standard_Transient;
 class StepVisual_PointStyle;
 class StepVisual_CurveStyle;
+class StepVisual_NullStyleMember;
 class StepVisual_SurfaceStyleUsage;
 
 
@@ -47,6 +48,7 @@ public:
   //! 4 -> SymbolStyle
   //! 5 -> FillAreaStyle
   //! 6 -> TextStyle
+  //! 7 -> NullStyle
   //! 0 else
   Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
   
@@ -55,6 +57,9 @@ public:
   
   //! returns Value as a CurveStyle (Null if another type)
   Standard_EXPORT Handle(StepVisual_CurveStyle) CurveStyle() const;
+
+  //! returns Value as a NullStyleMember (Null if another type)
+  Standard_EXPORT Handle(StepVisual_NullStyleMember) NullStyle() const;
   
   //! returns Value as a SurfaceStyleUsage (Null if another type)
   Standard_EXPORT Handle(StepVisual_SurfaceStyleUsage) SurfaceStyleUsage() const;

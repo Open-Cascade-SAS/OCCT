@@ -26,10 +26,8 @@
 
 class Standard_Transient;
 
-typedef NCollection_Array1<Handle(StepVisual_TessellatedItem)> StepVisual_Array1OfTessellaltedItem;
-//typedef NCollection_Handle<StepVisual_Array1OfTessellaltedItem> Handle(StepVisual_Array1OfTessellaltedItem);
+typedef NCollection_Array1<Handle(StepVisual_TessellatedItem)> StepVisual_Array1OfTessellatedItem;
 
-//DEFINE_HARRAY1(StepVisual_HArray1OfTessellaltedItem, StepVisual_Array1OfTessellaltedItem)
 DEFINE_STANDARD_HANDLE(StepVisual_TessellatedGeometricSet, StepVisual_TessellatedItem)
 class StepVisual_TessellatedGeometricSet  : public StepVisual_TessellatedItem
 {
@@ -40,12 +38,12 @@ public:
   //! Returns a DraughtingCalloutElement select type
   Standard_EXPORT StepVisual_TessellatedGeometricSet();
 
-   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName, const NCollection_Handle<StepVisual_Array1OfTessellaltedItem>& theItems);
+   Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName, const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems);
   
-   Standard_EXPORT NCollection_Handle<StepVisual_Array1OfTessellaltedItem> Items() const;
+   Standard_EXPORT NCollection_Handle<StepVisual_Array1OfTessellatedItem> Items() const;
 
 private:
-  NCollection_Handle<StepVisual_Array1OfTessellaltedItem> myItems;
+  NCollection_Handle<StepVisual_Array1OfTessellatedItem> myItems;
 
 public:
 

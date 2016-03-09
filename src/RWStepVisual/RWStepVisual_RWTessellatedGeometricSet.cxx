@@ -48,11 +48,11 @@ void RWStepVisual_RWTessellatedGeometricSet::ReadStep
   Handle(TCollection_HAsciiString) aName;
   data->ReadString (num, 1, "name", ach, aName);
   
-  NCollection_Handle<StepVisual_Array1OfTessellaltedItem> anItems;
+  NCollection_Handle<StepVisual_Array1OfTessellatedItem> anItems;
 	Standard_Integer nsub2;
 	if (data->ReadSubList (num,2,"items",ach,nsub2)) {
 	  Standard_Integer nb2 = data->NbParams(nsub2);
-	  anItems = new StepVisual_Array1OfTessellaltedItem(1, nb2);
+	  anItems = new StepVisual_Array1OfTessellatedItem(1, nb2);
 	  for (Standard_Integer i2 = 1; i2 <= nb2; i2 ++) {
 	    Handle(StepVisual_TessellatedItem) anItem;// = new StepVisual_TesselatedItem;
 	    if (data->ReadEntity (nsub2,i2,"item",ach,STANDARD_TYPE(StepVisual_TessellatedItem), anItem))

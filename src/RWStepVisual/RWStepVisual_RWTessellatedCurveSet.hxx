@@ -43,5 +43,7 @@ public:
 	 const Handle(StepVisual_TessellatedCurveSet)& ent) const;
   
   Standard_EXPORT void WriteStep (StepData_StepWriter& SW, const  Handle(StepVisual_TessellatedCurveSet)& ent) const;
+
+  Standard_EXPORT void Share (const Handle(StepVisual_TessellatedCurveSet) &ent, Interface_EntityIterator& iter) const;
 };
 #endif // _RWStepVisual_RWTessellatedItem_HeaderFile

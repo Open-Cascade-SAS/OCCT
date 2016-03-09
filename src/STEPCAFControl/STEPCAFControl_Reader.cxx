@@ -1886,7 +1886,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
       Handle(StepVisual_TessellatedGeometricSet) aTessSet = Handle(StepVisual_TessellatedGeometricSet)::DownCast(aTessItem);
       if( aTessSet.IsNull())
         continue;
-      NCollection_Handle<StepVisual_Array1OfTessellaltedItem> aListItems = aTessSet->Items();
+      NCollection_Handle<StepVisual_Array1OfTessellatedItem> aListItems = aTessSet->Items();
       Standard_Integer nb = aListItems.IsNull() ? 0 : aListItems->Length();
       Handle(StepVisual_TessellatedCurveSet) aTessCurve;
       for (Standard_Integer n = 1; n <= nb && aTessCurve.IsNull(); n++)

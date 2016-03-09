@@ -13,6 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRep_Tool.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <ShapeConstruct_Curve.hxx>
 #include <STEPCAFControl_GDTProperty.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepGeom_CartesianPoint.hxx>
@@ -25,6 +30,11 @@
 #include <StepDimTol_StraightnessTolerance.hxx>
 #include <StepDimTol_SurfaceProfileTolerance.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
+#include <StepVisual_CoordinatesList.hxx>
+#include <StepVisual_TessellatedCurveSet.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 #include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
 
@@ -973,7 +983,7 @@ Handle(StepGeom_Axis2Placement3d) STEPCAFControl_GDTProperty::GetAxis2Placement3
     aDirCoords->SetValue(i, theAxis.XDirection().Coord(i));
   aRefDirection = new StepGeom_Direction();
   aRefDirection->Init(new TCollection_HAsciiString(), aDirCoords);
-  anA2P3D->Init(new TCollection_HAsciiString("orientation"), aPoint, Standard_True, anAxis, Standard_True, aRefDirection);
+  anA2P3D->Init(new TCollection_HAsciiString(), aPoint, Standard_True, anAxis, Standard_True, aRefDirection);
   return anA2P3D;
 }
 
@@ -1320,4 +1330,59 @@ Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetTolValueType(con
     default:
       return new TCollection_HAsciiString("unknown");
   }
+}
+
+//=======================================================================
+//function : GetTessellation
+//purpose  : 
+//=======================================================================
+Handle(StepVisual_TessellatedGeometricSet) STEPCAFControl_GDTProperty::GetTessellation(const TopoDS_Shape theShape)
+{
+  // Build coordinate list and curves
+  NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aCurves = new StepVisual_VectorOfHSequenceOfInteger;
+  NCollection_Vector<gp_XYZ> aCoords;
+  Standard_Integer aPntNb = 1;
+  for (TopExp_Explorer aCurveIt(theShape, TopAbs_EDGE); aCurveIt.More(); aCurveIt.Next()) {
+    Handle(TColStd_HSequenceOfInteger) aCurve = new TColStd_HSequenceOfInteger;
+    // Find out type of edge curve
+    Standard_Real aFirst = 0, aLast = 0;
+    Handle(Geom_Curve) anEdgeCurve = BRep_Tool::Curve(TopoDS::Edge(aCurveIt.Current()), aFirst, aLast);
+    if (anEdgeCurve.IsNull())
+      continue;
+    // Line
+    if (anEdgeCurve->IsKind(STANDARD_TYPE(Geom_Line))) {
+      for (TopExp_Explorer aVertIt(aCurveIt.Current(), TopAbs_VERTEX); aVertIt.More(); aVertIt.Next()) {
+        aCoords.Append(BRep_Tool::Pnt(TopoDS::Vertex(aVertIt.Current())).XYZ());
+        aCurve->Append(aPntNb);
+        aPntNb++;
+      }
+    }
+    // BSpline
+    else {
+      ShapeConstruct_Curve aSCC;
+      Handle(Geom_BSplineCurve) aBSCurve = aSCC.ConvertToBSpline(anEdgeCurve,
+          aFirst, aLast, Precision::Confusion());
+      for (Standard_Integer i = 1; i <= aBSCurve->NbPoles(); i++) {
+        aCoords.Append(aBSCurve->Pole(i).XYZ());
+        aCurve->Append(aPntNb);
+        aPntNb++;
+      }
+    }
+    aCurves->Append(aCurve);
+  }
+
+  Handle(TColgp_HArray1OfXYZ) aPoints = new TColgp_HArray1OfXYZ(1, aCoords.Length());
+  for (Standard_Integer i = 1; i <= aPoints->Length(); i++) {
+    aPoints->SetValue(i, aCoords.Value(i - 1));
+  }
+  // STEP entities
+  Handle(StepVisual_CoordinatesList) aCoordList = new StepVisual_CoordinatesList();
+  aCoordList->Init(new TCollection_HAsciiString(), aPoints);
+  Handle(StepVisual_TessellatedCurveSet) aCurveSet = new StepVisual_TessellatedCurveSet();
+  aCurveSet->Init(new TCollection_HAsciiString(), aCoordList, aCurves);
+  NCollection_Handle<StepVisual_Array1OfTessellatedItem> aTessItems = new StepVisual_Array1OfTessellatedItem(1, 1);
+  aTessItems->SetValue(1, aCurveSet);
+  Handle(StepVisual_TessellatedGeometricSet) aGeomSet = new StepVisual_TessellatedGeometricSet();
+  aGeomSet->Init(new TCollection_HAsciiString(), aTessItems);
+  return aGeomSet;
 }

@@ -1,6 +1,6 @@
-// Created on: 2015-07-16
+// Created on: 2016-03-09
 // Created by: Irina KRYLOVA
-// Copyright (c) 2015 OPEN CASCADE SAS
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StepDimTol_SimpleDatumReferenceModifierMember_HeaderFile
-#define _StepDimTol_SimpleDatumReferenceModifierMember_HeaderFile
+#ifndef _StepVisual_NullStyleMember_HeaderFile
+#define _StepVisual_NullStyleMember_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -23,24 +23,24 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
-#include <StepDimTol_SimpleDatumReferenceModifier.hxx>
+#include <StepVisual_NullStyle.hxx>
 
-class StepDimTol_SimpleDatumReferenceModifierMember;
-DEFINE_STANDARD_HANDLE(StepDimTol_SimpleDatumReferenceModifierMember, StepData_SelectInt)
-//! Defines SimpleDatumReferenceModifier as unique member of DatumReferenceModifier
+class StepVisual_NullStyleMember;
+DEFINE_STANDARD_HANDLE(StepVisual_NullStyleMember, StepData_SelectInt)
+//! Defines NullStyle as unique member of PresentationStyleSelect
 //! Works with an EnumTool
-class StepDimTol_SimpleDatumReferenceModifierMember : public StepData_SelectInt
+class StepVisual_NullStyleMember : public StepData_SelectInt
 {
 
 public:
   
-  Standard_EXPORT StepDimTol_SimpleDatumReferenceModifierMember();
+  Standard_EXPORT StepVisual_NullStyleMember();
   
   virtual Standard_Boolean HasName() const Standard_OVERRIDE
     {  return Standard_True;  }
 
   virtual Standard_CString Name() const Standard_OVERRIDE
-    {  return "SIMPLE_DATUM_REFERENCE_MODIFIER";  }
+    {  return "NULL_STYLE";  }
 
   virtual Standard_Boolean SetName(const Standard_CString /*theName*/) Standard_OVERRIDE
     {  return Standard_True;  }
@@ -52,10 +52,10 @@ public:
   
   Standard_EXPORT virtual   void SetEnumText (const Standard_Integer theValue, const Standard_CString theText)  Standard_OVERRIDE;
   
-  Standard_EXPORT   void SetValue (const StepDimTol_SimpleDatumReferenceModifier theValue) ;
+  Standard_EXPORT   void SetValue (const StepVisual_NullStyle theValue) ;
   
-  Standard_EXPORT   StepDimTol_SimpleDatumReferenceModifier Value()  const;
+  Standard_EXPORT   StepVisual_NullStyle Value()  const;
 
-  DEFINE_STANDARD_RTTIEXT(StepDimTol_SimpleDatumReferenceModifierMember,StepData_SelectInt)
+  DEFINE_STANDARD_RTTIEXT(StepVisual_NullStyleMember,StepData_SelectInt)
 };
-#endif // _StepDimTol_SimpleDatumReferenceModifierMember_HeaderFile
+#endif // _StepVisual_NullStyleMember_HeaderFile

@@ -27,9 +27,11 @@
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <MoniTool_DataMapIteratorOfDataMapOfShapeTransient.hxx>
+#include <NCollection_Vector.hxx>
 #include <OSD_Path.hxx>
 #include <Quantity_TypeOfColor.hxx>
 #include <StepAP214_Protocol.hxx>
+#include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
@@ -106,6 +108,7 @@
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepGeom_Plane.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_CompositeShapeAspect.hxx>
@@ -153,7 +156,10 @@
 #include <StepShape_ToleranceValue.hxx>
 #include <StepShape_TypeQualifier.hxx>
 #include <StepShape_ValueFormatTypeQualifier.hxx>
+#include <StepVisual_AnnotationPlane.hxx>
 #include <StepVisual_CurveStyle.hxx>
+#include <StepVisual_DraughtingCallout.hxx>
+#include <StepVisual_DraughtingModel.hxx>
 #include <StepVisual_HArray1OfInvisibleItem.hxx>
 #include <StepVisual_HArray1OfLayeredItem.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
@@ -161,6 +167,7 @@
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
+#include <StepVisual_NullStyleMember.hxx>
 #include <StepVisual_PointStyle.hxx>
 #include <StepVisual_PresentationLayerAssignment.hxx>
 #include <StepVisual_PresentationRepresentation.hxx>
@@ -168,6 +175,8 @@
 #include <StepVisual_PresentationStyleByContext.hxx>
 #include <StepVisual_StyledItem.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
+#include <StepVisual_TessellatedAnnotationOccurrence.hxx>
+#include <StepVisual_TessellatedGeometricSet.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -232,6 +241,9 @@ enum DimensionalValueNumber {
   DimensionalValueNumber_Lower,
   DimensionalValueNumber_Upper
 };
+static NCollection_Vector<Handle(StepVisual_AnnotationPlane)> gdtAnnotationPlanes;
+static Handle(StepVisual_DraughtingModel) gdtPresentationDM;
+static Handle(StepVisual_HArray1OfPresentationStyleAssignment) gdtPrsCurveStyle;
 
 // added by skl 15.01.2004 for D&GT writing
 //#include <StepRepr_CompoundItemDefinition.hxx>
@@ -2303,6 +2315,69 @@ static Handle(StepRepr_ShapeAspect) WriteShapeAspect (const Handle(XSControl_Wor
 }
 
 //=======================================================================
+//function : WritePresentation
+//purpose  : auxiliary (write annotation plane and presentation)
+//======================================================================
+static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
+                              const TopoDS_Shape thePresentation,
+                              const gp_Ax2 theAnnotationPlane,
+                              const Handle(Standard_Transient) theDimension)
+{
+  if (thePresentation.IsNull())
+    return;
+  // Get working data
+  Handle(Interface_InterfaceModel) aModel = WS->Model();
+
+  // Presentation
+  Handle(StepVisual_TessellatedGeometricSet) aGeomSet = STEPCAFControl_GDTProperty::GetTessellation(thePresentation);
+  Handle(StepVisual_TessellatedAnnotationOccurrence) aTAO = new StepVisual_TessellatedAnnotationOccurrence();
+  aTAO->Init(new TCollection_HAsciiString(), gdtPrsCurveStyle, aGeomSet);
+  StepVisual_DraughtingCalloutElement aDCElement;
+  aDCElement.SetValue(aTAO);
+  Handle(StepVisual_HArray1OfDraughtingCalloutElement) aTAOs = new StepVisual_HArray1OfDraughtingCalloutElement(1, 1);
+  aTAOs->SetValue(1, aDCElement);
+  Handle(StepVisual_DraughtingCallout) aDCallout = new StepVisual_DraughtingCallout();
+  aDCallout->Init(new TCollection_HAsciiString(), aTAOs);
+  Handle(StepRepr_HArray1OfRepresentationItem) aDCsForDMIA = new StepRepr_HArray1OfRepresentationItem(1, 1);
+  aDCsForDMIA->SetValue(1, aDCallout);
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition aDimension;
+  aDimension.SetValue(theDimension);
+  Handle(StepAP242_DraughtingModelItemAssociation) aDMIA =
+    new StepAP242_DraughtingModelItemAssociation();
+  aDMIA->Init(new TCollection_HAsciiString("PMI representation to presentation link"),
+      new TCollection_HAsciiString(), aDimension, gdtPresentationDM, aDCsForDMIA);
+  aModel->AddWithRefs(aDMIA);
+
+  // Annotation plane
+  // Presentation Style
+  Handle(StepVisual_NullStyleMember) aNullStyle = new StepVisual_NullStyleMember();
+  aNullStyle->SetEnumText(0, ".NULL.");
+  StepVisual_PresentationStyleSelect aStyleItem;
+  aStyleItem.SetValue(aNullStyle);
+  Handle(StepVisual_HArray1OfPresentationStyleSelect) aStyles = new StepVisual_HArray1OfPresentationStyleSelect(1, 1);
+  aStyles->SetValue(1, aStyleItem);
+  Handle(StepVisual_PresentationStyleAssignment) aPrsStyle = new StepVisual_PresentationStyleAssignment();
+  aPrsStyle->Init(aStyles);
+  Handle(StepVisual_HArray1OfPresentationStyleAssignment) aPrsStyles = 
+    new StepVisual_HArray1OfPresentationStyleAssignment(1, 1);
+  aPrsStyles->SetValue(1, aPrsStyle);
+  // Plane
+  Handle(StepGeom_Plane) aPlane = new StepGeom_Plane();
+  Handle(StepGeom_Axis2Placement3d) anAxis = STEPCAFControl_GDTProperty::GetAxis2Placement3D(theAnnotationPlane);
+  aPlane->Init(new TCollection_HAsciiString(), anAxis);
+  // Annotation plane element
+  StepVisual_AnnotationPlaneElement aPlaneElement;
+  aPlaneElement.SetValue(aDCallout);
+  Handle(StepVisual_HArray1OfAnnotationPlaneElement) aDCsForAnnPln = new StepVisual_HArray1OfAnnotationPlaneElement(1, 1);
+  aDCsForAnnPln->SetValue(1, aPlaneElement);
+  // Init AnnotationPlane entity
+  Handle(StepVisual_AnnotationPlane) anAnnPlane = new StepVisual_AnnotationPlane();
+  anAnnPlane->Init(new TCollection_HAsciiString(), aPrsStyles, aPlane, aDCsForAnnPln);
+  gdtAnnotationPlanes.Append(anAnnPlane);
+  aModel->AddWithRefs(anAnnPlane);
+}
+
+//=======================================================================
 //function : WriteDatumAP242
 //purpose  : auxiliary (write Datum entity for given shape or write all 
 //           necessary entities and link them to already written datum 
@@ -2416,6 +2491,7 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
       gp_Ax2 aDTAxis = anObject->GetDatumTargetAxis();
       Handle(StepGeom_Axis2Placement3d) anA2P3D = 
         STEPCAFControl_GDTProperty::GetAxis2Placement3D(aDTAxis);
+      anA2P3D->SetName(new TCollection_HAsciiString("orientation"));
       Handle(StepRepr_HArray1OfRepresentationItem) anItems;
       // Process each datum target type
       if (aDatumType == XCAFDimTolObjects_DatumTargetType_Point) {
@@ -2497,6 +2573,9 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
   aRDefinition.SetValue(aPD);
   aSDR->Init(aRDefinition, aShapeRepr);
   Model->AddWithRefs(aSDR);
+
+  //Annotation plane and Presentation
+  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), aSA);
 
   return aDatum;
 }
@@ -2838,6 +2917,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
   if (anObject->HasAxis()) {
     Handle(StepGeom_Axis2Placement3d) anAxis =
       STEPCAFControl_GDTProperty::GetAxis2Placement3D(anObject->GetAxis());
+    anAxis->SetName(new TCollection_HAsciiString("orientation"));
     Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
     StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
     aDefinition.SetValue(aDS);
@@ -3087,6 +3167,8 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
   }
   Model->AddWithRefs(aGeomTol);
   WriteToleranceZone(WS, anObject, aGeomTol, theRC);
+  //Annotation plane and Presentation
+  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), aGeomTol);
 }
 
 //=======================================================================
@@ -3474,6 +3556,14 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
   if(DGTTool.IsNull())
     return Standard_False;
 
+  // Common entities for presentation
+  gdtPresentationDM = new StepVisual_DraughtingModel();
+  STEPConstruct_Styles aStyles (WS);
+  Handle(StepVisual_Colour) aCurvColor = aStyles.EncodeColor(Quantity_NOC_WHITE);
+  Handle(StepRepr_RepresentationItem) anItem = NULL;
+  gdtPrsCurveStyle = new StepVisual_HArray1OfPresentationStyleAssignment(1, 1);
+  gdtPrsCurveStyle->SetValue(1, aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor));
+
   TDF_LabelSequence aDGTLabels;
   STEPConstruct_DataMapOfAsciiStringTransient aDatumMap;
   Handle(StepRepr_RepresentationContext) aRC;
@@ -3642,6 +3732,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
 
     // Write values
     WriteDimValues(WS, anObject, aRC, aDimension);
+    //Annotation plane and Presentation
+    WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), aDimension.Value());
   }
 
   //----------------------------//
@@ -3661,6 +3753,18 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
       aDatumSystem = WriteDatumSystem(WS, aGeomTolL, aDatumSeq, aDatumMap, aRC);
     WriteGeomTolerance(WS, aFirstShapeL, aGeomTolL, aDatumSystem, aRC);
   }
+
+  // Write Draughting model for Annotation Planes
+  if (gdtAnnotationPlanes.Length() == 0)
+    return Standard_True;
+
+  Handle(StepRepr_HArray1OfRepresentationItem) aItems =
+    new StepRepr_HArray1OfRepresentationItem(1, gdtAnnotationPlanes.Length());
+  for (Standard_Integer i = 1; i <= aItems->Length(); i++) {
+    aItems->SetValue(i, gdtAnnotationPlanes.Value(i - 1));
+  }
+  gdtPresentationDM->Init(new TCollection_HAsciiString(), aItems, aRC);
+  aModel->AddWithRefs(gdtPresentationDM);
 
   return Standard_True;
 }

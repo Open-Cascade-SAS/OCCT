@@ -14090,7 +14090,7 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     break;
       case 711:
     {
-       DeclareAndCast(StepVisual_CoordinatesList,anent,ent);
+      DeclareAndCast(StepVisual_CoordinatesList,anent,ent);
       RWStepVisual_RWCoordinatesList tool;
       tool.WriteStep(SW,anent);
      

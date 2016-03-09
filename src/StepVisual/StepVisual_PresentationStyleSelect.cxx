@@ -16,6 +16,7 @@
 #include <Standard_Transient.hxx>
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_FillAreaStyle.hxx>
+#include <StepVisual_NullStyleMember.hxx>
 #include <StepVisual_PointStyle.hxx>
 #include <StepVisual_PresentationStyleSelect.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
@@ -32,6 +33,7 @@ Standard_Integer StepVisual_PresentationStyleSelect::CaseNum(const Handle(Standa
 //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SymbolStyle))) return 4;
 //	if (ent->IsKind(STANDARD_TYPE(StepVisual_FillAreaStyle))) return 5;
 //	if (ent->IsKind(STANDARD_TYPE(StepVisual_TextStyle))) return 6;
+  if (ent->IsKind(STANDARD_TYPE(StepVisual_NullStyleMember))) return 7;
 	return 0;
 }
 
@@ -43,6 +45,11 @@ Handle(StepVisual_PointStyle) StepVisual_PresentationStyleSelect::PointStyle () 
 Handle(StepVisual_CurveStyle) StepVisual_PresentationStyleSelect::CurveStyle () const
 {
 	return GetCasted(StepVisual_CurveStyle,Value());
+}
+
+Handle(StepVisual_NullStyleMember) StepVisual_PresentationStyleSelect::NullStyle () const
+{
+	return GetCasted(StepVisual_NullStyleMember,Value());
 }
 
 Handle(StepVisual_SurfaceStyleUsage) StepVisual_PresentationStyleSelect::SurfaceStyleUsage () const

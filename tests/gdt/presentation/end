@@ -3,25 +3,16 @@
 set dump_file 0
 ########################################################################
 set mist 0;
-# Dimensions
-set nbDim_First 0; set nbDim_Second 0;
-set nbDimSize_First 0; set nbDimSize_Second 0;
-set nbDimLoc_First 0; set nbDimLoc_Second 0;
-set nbAng_First 0; set nbAng_Second 0;
-set nbDimWthPath_First 0; set nbDimWthPath_Second 0;
-# Tolerances
-set nbTol_First 0; set nbTol_Second 0;
-set nbTolWthMod_First 0; set nbTolWthMod_Second 0;
-set nbTolWthMax_First 0; set nbTolWthMax_Second 0;
-set nbTolWthDat_First 0; set nbTolWthDat_Second 0;
-# Datums
-set nbDat_First 0;
-set nbDatT_First 0;
-set nbAttDat_First 0;
+# First
+set x_First 0; set y_First 0; set z_First 0;
+set mass_First 0;
+# Second
+set x_Second 0; set y_Second 0; set z_Second 0;
+set mass_Second 0;
 ###################################################################
 set ref_Compare 0
 set todo_msg ""
-set todo_mask "puts \"TODO CR26859 ALL: "
+set todo_mask "puts \"TODO CR27235 ALL: "
 set end_line "\" \n"
 ##################################################################
 
@@ -38,27 +29,17 @@ if { [string length $filename] > 1} {
   set mist 1
 }
 
-# Get information about translation
+# Get information presentations
 if { $mist < 1} {           
   puts ""
-  set xst [ XDumpNbDGTs D_First f] 
+  set xst [ OCC27235 D_First] 
 
   if { [llength $xst] > 0 } {
-    regexp {NbOfDimensions +: +([-0-9.+eE]+)} $xst full nbDim_First
-    regexp {NbOfDimensionalSize +: +([-0-9.+eE]+)} $xst full nbDimSize_First
-    regexp {NbOfDimensionalLocation +: +([-0-9.+eE]+)} $xst full nbDimLoc_First
-    regexp {NbOfAngular +: +([-0-9.+eE]+)} $xst full nbAng_First
-    regexp {NbOfWithPath +: +([-0-9.+eE]+)} $xst full nbWthPath_First
-    regexp {NbOfTolerances +: +([-0-9.+eE]+)} $xst full nbTol_First
-    regexp {NbOfGTWithModifiers +: +([-0-9.+eE]+)} $xst full nbTolWthMod_First
-    regexp {NbOfGTWithMaxTolerance +: +([-0-9.+eE]+)} $xst full nbTolWthMax_First
-    regexp {NbOfGTWithDatums +: +([-0-9.+eE]+)} $xst full nbTolWthDat_First
-    regexp {NbOfDatumFeature +: +([-0-9.+eE]+)} $xst full nbDat_First
-    regexp {NbOfAttachedDatum +: +([-0-9.+eE]+)} $xst full nbAttDat_First
-    regexp {NbOfDatumTarget +: +([-0-9.+eE]+)} $xst full nbDatT_First
+    regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $xst full x_First y_First z_First
+    regexp {Mass+: +([-0-9.+eE]+)} $xst full mass_First
   } else {
       puts " GDT information was NOT provided"
-    }
+  }
 }
 
 if { $mist != 1 } {  
@@ -96,24 +77,14 @@ if { [catch { Close D_First } catch_result] } {
 # Get information about translation
 if { $mist < 1} {           
   puts ""
-  set xst2 [ XDumpNbDGTs D_Second f] 
+  set xst2 [ OCC27235 D_Second] 
 
-  if { [llength $xst2] > 0 } {
-    regexp {NbOfDimensions +: +([-0-9.+eE]+)} $xst2 full nbDim_Second
-    regexp {NbOfDimensionalSize +: +([-0-9.+eE]+)} $xst2 full nbDimSize_Second
-    regexp {NbOfDimensionalLocation +: +([-0-9.+eE]+)} $xst2 full nbDimLoc_Second
-    regexp {NbOfAngular +: +([-0-9.+eE]+)} $xst2 full nbAng_Second
-    regexp {NbOfWithPath +: +([-0-9.+eE]+)} $xst2 full nbWthPath_Second
-    regexp {NbOfTolerances +: +([-0-9.+eE]+)} $xst2 full nbTol_Second
-    regexp {NbOfGTWithModifiers +: +([-0-9.+eE]+)} $xst2 full nbTolWthMod_Second
-    regexp {NbOfGTWithMaxTolerance +: +([-0-9.+eE]+)} $xst2 full nbTolWthMax_Second
-    regexp {NbOfGTWithDatums +: +([-0-9.+eE]+)} $xst2 full nbTolWthDat_Second
-    regexp {NbOfDatumFeature +: +([-0-9.+eE]+)} $xst2 full nbDat_Second
-    regexp {NbOfAttachedDatum +: +([-0-9.+eE]+)} $xst2 full nbAttDat_Second
-    regexp {NbOfDatumTarget +: +([-0-9.+eE]+)} $xst2 full nbDatT_Second
+  if { [llength $xst] > 0 } {
+    regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $xst2 full x_Second y_Second z_Second
+    regexp {Mass+: +([-0-9.+eE]+)} $xst2 full mass_Second
   } else {
       puts " GDT information was NOT provided"
-    }
+  }
   if { [catch { Close D_Second } catch_result] } {
     set err_msg "Error : cannot close a document D_Second - exception"
     puts $err_msg
@@ -143,34 +114,37 @@ if { $dump_file == 1 } {
   puts "========================== Comparision with reference data ========"
   puts ""
   # Comparision of reference data with obtained result
-  set ref_list [split $ref_data \n]
-  set cur_list [split $result \n]
-  set cur2_list [split $result2 \n]
-  set nb_ref [llength $ref_list]
-  for { set i 0 } { $i < $nb_ref } { incr i } {
-    set j [expr $i +1]
-    set refstr [lindex $ref_list $j]
-    set curstr [lindex $cur_list $i]
-    set cur2str [lindex $cur2_list $i]
-    set isOK 1; 
+  set x_Ref 0; set y_Ref 0; set z_Ref 0;
+  set mass_Ref 0;
+  regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $ref_data full x_Ref y_Ref z_Ref
+  regexp {Mass+: +([-0-9.+eE]+)} $ref_data full mass_Ref
 
-    if {[string equal $refstr $curstr] == 0} {
-      set isOK 0 
-    }
+  if {[expr abs($x_Ref - $x_First)] > 1e-4 || [expr abs($x_Ref - $x_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $x_Ref\n"
+    append err_compare_ref " Current data - $x_Second ($x_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
+  }
     
-    if {[string equal $curstr $cur2str] == 0} {
-      set isOK 0 
-    } 
-
-    if { $isOK == 0}  {
-      incr ref_Compare
-      append err_compare_ref " Reference data             - $refstr\n"
-      append err_compare_ref " Current data               - $curstr\n"
-      append err_compare_ref " Current data after writing - $cur2str\n"
-      append err_compare_ref "--------------------------------------------------------------------\n"
+  if {[expr abs($y_Ref - $y_First)] > 1e-4 || [expr abs($y_Ref - $y_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $y_Ref\n"
+    append err_compare_ref " Current data - $y_Second ($y_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
+    }
+  if {[expr abs($z_Ref - $z_First)] > 1e-4 || [expr abs($z_Ref - $z_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $z_Ref\n"
+    append err_compare_ref " Current data - $z_Second ($z_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
+    }
+  if {[expr abs($mass_Ref - $mass_First)] > 1e-4 || [expr abs($mass_Ref - $mass_Second)] > 1e-4} {
+    incr ref_Compare
+    append err_compare_ref " Reference data - $mass_Ref\n"
+    append err_compare_ref " Current data - $mass_Second ($mass_First)\n"
+    append err_compare_ref "--------------------------------------------------------------------\n"
     }
   }
-}
 
 if { $dump_file != 0 } {
     puts "Error : Running in regeneration mode, comparision was not performed!"

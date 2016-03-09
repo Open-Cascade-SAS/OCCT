@@ -21,13 +21,13 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet,StepGeom_Tessellat
 
 StepVisual_TessellatedGeometricSet::StepVisual_TessellatedGeometricSet ()  {}
 
-void StepVisual_TessellatedGeometricSet::Init(const Handle(TCollection_HAsciiString)& theName, const NCollection_Handle<StepVisual_Array1OfTessellaltedItem>& theItems)
+void StepVisual_TessellatedGeometricSet::Init(const Handle(TCollection_HAsciiString)& theName, const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems)
 {
   StepRepr_RepresentationItem::Init(theName);
   myItems = theItems;
 }
 
-NCollection_Handle<StepVisual_Array1OfTessellaltedItem> StepVisual_TessellatedGeometricSet::Items() const
+NCollection_Handle<StepVisual_Array1OfTessellatedItem> StepVisual_TessellatedGeometricSet::Items() const
 {
   return myItems;
 }
