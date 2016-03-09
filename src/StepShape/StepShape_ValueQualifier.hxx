@@ -42,6 +42,7 @@ public:
   //! 1 -> PrecisionQualifier from StepShape
   //! 2 -> TypeQualifier from StepShape
   //! 3 -> UnceraintyQualifier .. not yet implemented
+  //! 4 -> ValueFormatTypeQualifier
   Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
   
   //! Returns Value as PrecisionQualifier

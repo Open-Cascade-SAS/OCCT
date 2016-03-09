@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& theName,
                              const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-                             const Handle(StepRepr_RepresentationItem)& theItem,
+                             const Handle(MMgt_TShared)& theItem,
                              const Handle(StepVisual_HArray1OfAnnotationPlaneElement)& theElements);
   
     //! Returns field Elements

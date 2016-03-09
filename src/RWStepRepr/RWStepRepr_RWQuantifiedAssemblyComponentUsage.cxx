@@ -62,11 +62,11 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::ReadStep (const Handle(StepD
     hasProductDefinitionRelationship_Description = Standard_False;
   }
 
-  Handle(StepBasic_ProductDefinition) aProductDefinitionRelationship_RelatingProductDefinition;
-  data->ReadEntity (num, 4, "product_definition_relationship.relating_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aProductDefinitionRelationship_RelatingProductDefinition);
+  StepBasic_ProductDefinitionOrReference aProductDefinitionRelationship_RelatingProductDefinition;
+  data->ReadEntity (num, 4, "product_definition_relationship.relating_product_definition", ach, aProductDefinitionRelationship_RelatingProductDefinition);
 
-  Handle(StepBasic_ProductDefinition) aProductDefinitionRelationship_RelatedProductDefinition;
-  data->ReadEntity (num, 5, "product_definition_relationship.related_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aProductDefinitionRelationship_RelatedProductDefinition);
+  StepBasic_ProductDefinitionOrReference aProductDefinitionRelationship_RelatedProductDefinition;
+  data->ReadEntity (num, 5, "product_definition_relationship.related_product_definition", ach, aProductDefinitionRelationship_RelatedProductDefinition);
 
   // Inherited fields of AssemblyComponentUsage
 
@@ -116,9 +116,9 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::WriteStep (StepData_StepWrit
   }
   else SW.SendUndef();
 
-  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinition());
+  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 
-  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinition());
+  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinitionAP242().Value());
 
   // Inherited fields of AssemblyComponentUsage
 
@@ -143,9 +143,9 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::Share (const Handle(StepRepr
 
   // Inherited fields of ProductDefinitionRelationship
 
-  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinition());
+  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 
-  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinition());
+  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinitionAP242().Value());
 
   // Inherited fields of AssemblyComponentUsage
 

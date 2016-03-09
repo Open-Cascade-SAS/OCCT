@@ -27,8 +27,6 @@ class Standard_Transient;
 class StepBasic_ApprovalPersonOrganization;
 class StepAP214_AppliedPersonAndOrganizationAssignment;
 class StepAP214_AppliedOrganizationAssignment;
-class StepBasic_Effectivity;
-
 
 
 class StepAP214_DateAndTimeItem  : public StepAP214_ApprovalItem
@@ -69,12 +67,6 @@ public:
   
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
   Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment() const;
-  
-  //! returns Value as a Effectivity (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Effectivity) Effectivity() const;
-
-
-
 
 protected:
 

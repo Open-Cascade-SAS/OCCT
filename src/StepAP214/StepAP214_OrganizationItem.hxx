@@ -26,6 +26,7 @@
 class Standard_Transient;
 class StepAP214_AppliedOrganizationAssignment;
 class StepBasic_Approval;
+class StepAP214_AppliedSecurityClassificationAssignment;
 
 
 
@@ -48,7 +49,8 @@ public:
   //! returns Value as a Approval (Null if another type)
   Standard_EXPORT Handle(StepBasic_Approval) Approval() const;
 
-
+  //! returns Value as a AppliedSecurityClassificationAssignment (Null if another type)
+  Standard_EXPORT Handle(StepAP214_AppliedSecurityClassificationAssignment) AppliedSecurityClassificationAssignment() const;
 
 
 protected:

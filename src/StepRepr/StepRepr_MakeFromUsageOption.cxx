@@ -61,6 +61,35 @@ void StepRepr_MakeFromUsageOption::Init (const Handle(TCollection_HAsciiString) 
 }
 
 //=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void StepRepr_MakeFromUsageOption::Init (const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Id,
+                                         const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Name,
+                                         const Standard_Boolean hasProductDefinitionRelationship_Description,
+                                         const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Description,
+                                         const StepBasic_ProductDefinitionOrReference &aProductDefinitionRelationship_RelatingProductDefinition,
+                                         const StepBasic_ProductDefinitionOrReference &aProductDefinitionRelationship_RelatedProductDefinition,
+                                         const Standard_Integer aRanking,
+                                         const Handle(TCollection_HAsciiString) &aRankingRationale,
+                                         const Handle(StepBasic_MeasureWithUnit) &aQuantity)
+{
+  StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,
+                                        aProductDefinitionRelationship_Name,
+                                        hasProductDefinitionRelationship_Description,
+                                        aProductDefinitionRelationship_Description,
+                                        aProductDefinitionRelationship_RelatingProductDefinition,
+                                        aProductDefinitionRelationship_RelatedProductDefinition);
+
+  theRanking = aRanking;
+
+  theRankingRationale = aRankingRationale;
+
+  theQuantity = aQuantity;
+}
+
+//=======================================================================
 //function : Ranking
 //purpose  : 
 //=======================================================================

@@ -66,6 +66,9 @@ public:
   
   //! Returns True if APD.schema_name is automotive_design
   Standard_EXPORT Standard_Boolean IsAP214() const;
+
+  //! Returns True if APD.schema_name is ap242_managed_model_based_3d_engineering
+  Standard_EXPORT Standard_Boolean IsAP242() const;
   
   Standard_EXPORT Handle(TCollection_HAsciiString) GetACstatus();
   

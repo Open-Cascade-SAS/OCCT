@@ -137,6 +137,11 @@ void STEPConstruct_ContextTool::AddAPD (const Standard_Boolean enforce)
     theAPD->SetApplicationInterpretedModelSchemaName
       (new TCollection_HAsciiString("automotive_design"));
     break;
+  case 5: theAPD->SetApplicationProtocolYear (2013);
+    theAPD->SetStatus (new TCollection_HAsciiString("international standard"));
+    theAPD->SetApplicationInterpretedModelSchemaName
+      (new TCollection_HAsciiString("ap242_managed_model_based_3d_engineering"));
+    break;
   }
 
   if (theAPD->Application().IsNull())
@@ -148,6 +153,8 @@ void STEPConstruct_ContextTool::AddAPD (const Standard_Boolean enforce)
   case 2: appl = new TCollection_HAsciiString ( "core data for automotive mechanical design processes" );
           break;
   case 3: appl = new TCollection_HAsciiString ( "configuration controlled 3D designs of mechanical parts and assemblies" );
+          break;
+  case 5: appl = new TCollection_HAsciiString ( "Managed model based 3d engineering");
           break;
   }
   theAPD->Application()->SetApplication ( appl );
@@ -182,6 +189,21 @@ Standard_Boolean STEPConstruct_ContextTool::IsAP214 () const
   TCollection_AsciiString sch = schema->String();
   sch.LowerCase();
   return sch == "automotive_design";
+}
+
+//=======================================================================
+//function : IsAP242
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean STEPConstruct_ContextTool::IsAP242 () const
+{
+  if ( theAPD.IsNull() ) return Standard_False;
+  Handle(TCollection_HAsciiString) schema = theAPD->ApplicationInterpretedModelSchemaName();
+  if ( schema.IsNull() ) return Standard_False;
+  TCollection_AsciiString sch = schema->String();
+  sch.LowerCase();
+  return sch == "ap242_managed_model_based_3d_engineering";
 }
 
 // ================================================================

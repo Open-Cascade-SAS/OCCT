@@ -36,8 +36,15 @@ class StepBasic_ProductDefinitionRelationship;
 class StepRepr_PropertyDefinition;
 class StepShape_ShapeRepresentation;
 class StepBasic_SecurityClassification;
-
-
+class StepRepr_ConfigurationItem;
+class StepBasic_Date;
+class StepBasic_Document;
+class StepBasic_Effectivity;
+class StepBasic_Group;
+class StepBasic_GroupRelationship;
+class StepBasic_ProductDefinitionFormationRelationship;
+class StepRepr_Representation;
+class StepRepr_ShapeAspectRelationship;
 
 class StepAP214_ApprovalItem  : public StepData_SelectType
 {
@@ -62,6 +69,15 @@ public:
   //! 10 -> PropertyDefinition
   //! 11 -> ShapeRepresentation
   //! 12 -> SecurityClassification
+  //! 13 -> ConfigurationItem
+  //! 14 -> Date
+  //! 15 -> Document
+  //! 16 -> Effectivity
+  //! 17 -> Group
+  //! 18 -> GroupRelationship
+  //! 19 -> ProductDefinitionFormationRelationship
+  //! 20 -> Representation
+  //! 21 -> ShapeAspectRelationship
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
   
@@ -101,8 +117,32 @@ public:
   //! returns Value as a SecurityClassification (Null if another type)
   Standard_EXPORT virtual Handle(StepBasic_SecurityClassification) SecurityClassification() const;
 
+  //! returns Value as a ConfigurationItem (Null if another type)
+  Standard_EXPORT virtual Handle(StepRepr_ConfigurationItem) ConfigurationItem() const;
 
+  //! returns Value as a Date (Null if another type)
+  Standard_EXPORT virtual Handle(StepBasic_Date) Date() const;
 
+  //! returns Value as a Document (Null if another type)
+  Standard_EXPORT virtual Handle(StepBasic_Document) Document() const;
+
+  //! returns Value as a Effectivity (Null if another type)
+  Standard_EXPORT virtual Handle(StepBasic_Effectivity) Effectivity() const;
+
+  //! returns Value as a Group (Null if another type)
+  Standard_EXPORT virtual Handle(StepBasic_Group) Group() const;
+
+  //! returns Value as a GroupRelationship (Null if another type)
+  Standard_EXPORT virtual Handle(StepBasic_GroupRelationship) GroupRelationship() const;
+
+  //! returns Value as a ProductDefinitionFormationRelationship (Null if another type)
+  Standard_EXPORT virtual Handle(StepBasic_ProductDefinitionFormationRelationship) ProductDefinitionFormationRelationship() const;
+
+  //! returns Value as a Representation (Null if another type)
+  Standard_EXPORT virtual Handle(StepRepr_Representation) Representation() const;
+
+  //! returns Value as a ShapeAspectRelationship (Null if another type)
+  Standard_EXPORT virtual Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
 
 protected:
 

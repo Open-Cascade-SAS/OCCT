@@ -69,9 +69,3 @@ Handle(StepAP214_AppliedPersonAndOrganizationAssignment) StepAP214_DateAndTimeIt
 
 Handle(StepAP214_AppliedOrganizationAssignment) StepAP214_DateAndTimeItem::AppliedOrganizationAssignment() const
 {  return GetCasted(StepAP214_AppliedOrganizationAssignment,Value());  }
-
-
-Handle(StepBasic_Effectivity) StepAP214_DateAndTimeItem::Effectivity() const
-{  return GetCasted(StepBasic_Effectivity,Value());  }
-
-

@@ -42,6 +42,9 @@ public:
   
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name, const Standard_Boolean hasProductDefinitionRelationship_Description, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description, const Handle(StepBasic_ProductDefinition)& aProductDefinitionRelationship_RelatingProductDefinition, const Handle(StepBasic_ProductDefinition)& aProductDefinitionRelationship_RelatedProductDefinition, const Standard_Boolean hasAssemblyComponentUsage_ReferenceDesignator, const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator, const Handle(StepRepr_AssemblyComponentUsage)& aUpperUsage, const Handle(StepRepr_NextAssemblyUsageOccurrence)& aNextUsage);
+
+  //! Initialize all fields (own and inherited)
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name, const Standard_Boolean hasProductDefinitionRelationship_Description, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description, const StepBasic_ProductDefinitionOrReference& aProductDefinitionRelationship_RelatingProductDefinition, const StepBasic_ProductDefinitionOrReference& aProductDefinitionRelationship_RelatedProductDefinition, const Standard_Boolean hasAssemblyComponentUsage_ReferenceDesignator, const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator, const Handle(StepRepr_AssemblyComponentUsage)& aUpperUsage, const Handle(StepRepr_NextAssemblyUsageOccurrence)& aNextUsage);
   
   //! Returns field UpperUsage
   Standard_EXPORT Handle(StepRepr_AssemblyComponentUsage) UpperUsage() const;

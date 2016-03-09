@@ -26,6 +26,7 @@ Standard_Integer  StepShape_ValueQualifier::CaseNum
   if (ent.IsNull()) return 0;
   if (ent->IsKind(STANDARD_TYPE(StepShape_PrecisionQualifier))) return 1;
   if (ent->IsKind(STANDARD_TYPE(StepShape_TypeQualifier))) return 2;
+  if (ent->IsKind(STANDARD_TYPE(StepShape_ValueFormatTypeQualifier))) return 4;
   return 0;
 }
 

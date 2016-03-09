@@ -27,9 +27,7 @@ class Standard_Transient;
 class StepBasic_ApprovalPersonOrganization;
 class StepAP214_AppliedPersonAndOrganizationAssignment;
 class StepAP214_AppliedOrganizationAssignment;
-class StepBasic_Effectivity;
-
-
+class StepAP214_AppliedSecurityClassificationAssignment;
 
 class StepAP214_DateItem  : public StepAP214_ApprovalItem
 {
@@ -57,6 +55,8 @@ public:
   //! 13 -> ProductDefinitionRelationship
   //! 14 -> PropertyDefinition
   //! 15 -> ShapeRepresentation
+  //! 16 -> AppliedSecurityClassificationAssignment
+  //! 17 -> Document
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
@@ -68,12 +68,9 @@ public:
   
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
   Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment() const;
-  
-  //! returns Value as a Effectivity (Null if another type)
-  Standard_EXPORT Handle(StepBasic_Effectivity) Effectivity() const;
 
-
-
+  //! returns Value as a AppliedSecurityClassificationAssignment (Null if another type)
+  Standard_EXPORT Handle(StepAP214_AppliedSecurityClassificationAssignment) AppliedSecurityClassificationAssignment() const;
 
 protected:
 

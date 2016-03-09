@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_StyledItem.hxx>
+#include <StepVisual_StyledItemTarget.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_StyledItem,StepRepr_RepresentationItem)
@@ -23,45 +23,60 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_StyledItem,StepRepr_RepresentationItem)
 StepVisual_StyledItem::StepVisual_StyledItem ()  {}
 
 void StepVisual_StyledItem::Init(
-	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-	const Handle(StepRepr_RepresentationItem)& aItem)
+  const Handle(TCollection_HAsciiString)& aName,
+  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
+  const Handle(MMgt_TShared)& aItem)
 {
-	// --- classe own fields ---
-	styles = aStyles;
-	item = aItem;
-	// --- classe inherited fields ---
-	StepRepr_RepresentationItem::Init(aName);
+  // --- classe own fields ---
+  myStyles = aStyles;
+  myItem = aItem;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
 }
-
 
 void StepVisual_StyledItem::SetStyles(const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles)
 {
-	styles = aStyles;
+  myStyles = aStyles;
 }
 
 Handle(StepVisual_HArray1OfPresentationStyleAssignment) StepVisual_StyledItem::Styles() const
 {
-	return styles;
+  return myStyles;
 }
 
 Handle(StepVisual_PresentationStyleAssignment) StepVisual_StyledItem::StylesValue(const Standard_Integer num) const
 {
-	return styles->Value(num);
+  return myStyles->Value(num);
 }
 
 Standard_Integer StepVisual_StyledItem::NbStyles () const
 {
-	if (styles.IsNull()) return 0;
-	return styles->Length();
+  if (myStyles.IsNull()) return 0;
+  return myStyles->Length();
 }
 
 void StepVisual_StyledItem::SetItem(const Handle(StepRepr_RepresentationItem)& aItem)
 {
-	item = aItem;
+  myItem = aItem;
+}
+
+void StepVisual_StyledItem::SetItem(const StepVisual_StyledItemTarget& theItem)
+{
+    myItem = Handle(MMgt_TShared)::DownCast(theItem.Value());
 }
 
 Handle(StepRepr_RepresentationItem) StepVisual_StyledItem::Item() const
 {
-	return item;
+  if (myItem->IsKind(STANDARD_TYPE(StepRepr_RepresentationItem)))
+    return Handle(StepRepr_RepresentationItem)::DownCast(myItem);
+  else
+    return NULL;
+}
+
+StepVisual_StyledItemTarget StepVisual_StyledItem::ItemAP242() const
+{
+  StepVisual_StyledItemTarget anItem;
+  if (anItem.CaseNum(myItem) > 0)
+    anItem.SetValue(myItem);
+  return anItem;
 }

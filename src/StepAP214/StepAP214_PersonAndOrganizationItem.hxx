@@ -25,6 +25,8 @@
 #include <Standard_Integer.hxx>
 class Standard_Transient;
 class StepAP214_AppliedOrganizationAssignment;
+class StepAP214_AppliedSecurityClassificationAssignment;
+class StepBasic_Approval;
 
 
 
@@ -52,14 +54,19 @@ public:
   //! 11 -> PropertyDefinition
   //! 12 -> ShapeRepresentation
   //! 13 -> SecurityClassification
+  //! 14 -> AppliedSecurityClassificationAssignment
+  //! 15 -> Approval
   //! 0 else
   Standard_EXPORT virtual Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
   
   //! returns Value as a AppliedOrganizationAssignment (Null if another type)
   Standard_EXPORT Handle(StepAP214_AppliedOrganizationAssignment) AppliedOrganizationAssignment() const;
 
+  //! returns Value as a AppliedSecurityClassificationAssignment (Null if another type)
+  Standard_EXPORT Handle(StepAP214_AppliedSecurityClassificationAssignment) AppliedSecurityClassificationAssignment() const;
 
-
+  //! returns Value as a Approval (Null if another type)
+  Standard_EXPORT Handle(StepBasic_Approval) Approval() const;
 
 protected:
 

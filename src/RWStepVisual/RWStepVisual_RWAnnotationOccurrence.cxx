@@ -62,8 +62,8 @@ void RWStepVisual_RWAnnotationOccurrence::ReadStep
   }
 
   // Inherited field : item
-  Handle(StepRepr_RepresentationItem) aItem;
-  data->ReadEntity(num, 3, "item", ach, STANDARD_TYPE(StepRepr_RepresentationItem), aItem);
+  Handle(MMgt_TShared) aItem;
+  data->ReadEntity(num, 3,"item", ach, STANDARD_TYPE(MMgt_TShared), aItem);
 
   // Initialisation of the read entity
   ent->Init(aName, aStyles, aItem);

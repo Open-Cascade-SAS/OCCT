@@ -21,6 +21,7 @@
 
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
+#include <StepBasic_ProductDefinitionOrReference.hxx>
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinition;
 
@@ -40,6 +41,9 @@ public:
   
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasDescription, const Handle(TCollection_HAsciiString)& aDescription, const Handle(StepBasic_ProductDefinition)& aRelatingProductDefinition, const Handle(StepBasic_ProductDefinition)& aRelatedProductDefinition);
+
+  //! Initialize all fields (own and inherited)
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aId, const Handle(TCollection_HAsciiString)& aName, const Standard_Boolean hasDescription, const Handle(TCollection_HAsciiString)& aDescription, const StepBasic_ProductDefinitionOrReference& aRelatingProductDefinition, const StepBasic_ProductDefinitionOrReference& aRelatedProductDefinition);
   
   //! Returns field Id
   Standard_EXPORT Handle(TCollection_HAsciiString) Id() const;
@@ -64,17 +68,27 @@ public:
   
   //! Returns field RelatingProductDefinition
   Standard_EXPORT Handle(StepBasic_ProductDefinition) RelatingProductDefinition() const;
+
+  //! Returns field RelatingProductDefinition in AP242
+  Standard_EXPORT StepBasic_ProductDefinitionOrReference RelatingProductDefinitionAP242() const;
   
   //! Set field RelatingProductDefinition
   Standard_EXPORT void SetRelatingProductDefinition (const Handle(StepBasic_ProductDefinition)& RelatingProductDefinition);
   
+  //! Set field RelatingProductDefinition in AP242
+  Standard_EXPORT void SetRelatingProductDefinition (const StepBasic_ProductDefinitionOrReference& RelatingProductDefinition);
+
   //! Returns field RelatedProductDefinition
   Standard_EXPORT Handle(StepBasic_ProductDefinition) RelatedProductDefinition() const;
+
+  //! Returns field RelatedProductDefinition in AP242
+  Standard_EXPORT StepBasic_ProductDefinitionOrReference RelatedProductDefinitionAP242() const;
   
   //! Set field RelatedProductDefinition
   Standard_EXPORT void SetRelatedProductDefinition (const Handle(StepBasic_ProductDefinition)& RelatedProductDefinition);
 
-
+  //! Set field RelatedProductDefinition in AP242
+  Standard_EXPORT void SetRelatedProductDefinition (const StepBasic_ProductDefinitionOrReference& RelatedProductDefinition);
 
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionRelationship,MMgt_TShared)
@@ -90,8 +104,8 @@ private:
   Handle(TCollection_HAsciiString) theId;
   Handle(TCollection_HAsciiString) theName;
   Handle(TCollection_HAsciiString) theDescription;
-  Handle(StepBasic_ProductDefinition) theRelatingProductDefinition;
-  Handle(StepBasic_ProductDefinition) theRelatedProductDefinition;
+  StepBasic_ProductDefinitionOrReference theRelatingProductDefinition;
+  StepBasic_ProductDefinitionOrReference theRelatedProductDefinition;
   Standard_Boolean defDescription;
 
 

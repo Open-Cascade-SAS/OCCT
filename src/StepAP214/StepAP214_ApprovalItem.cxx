@@ -15,15 +15,24 @@
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_ApprovalItem.hxx>
+#include <StepBasic_Date.hxx>
+#include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentFile.hxx>
+#include <StepBasic_Effectivity.hxx>
+#include <StepBasic_Group.hxx>
+#include <StepBasic_GroupRelationship.hxx>
 #include <StepBasic_Product.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductDefinitionFormationRelationship.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepBasic_SecurityClassification.hxx>
 #include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
+#include <StepRepr_ConfigurationItem.hxx>
 #include <StepRepr_MaterialDesignation.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 #include <StepVisual_PresentationArea.hxx>
@@ -46,8 +55,16 @@ Standard_Integer StepAP214_ApprovalItem::CaseNum(const Handle(Standard_Transient
   if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition))) return 10;
   if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation))) return 11;
   if (ent->IsKind(STANDARD_TYPE(StepBasic_SecurityClassification))) return 12;
-	
-	return 0;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_ConfigurationItem))) return 13;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Date))) return 14;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Document))) return 15;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Effectivity))) return 16;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Group))) return 17;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_GroupRelationship))) return 18;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormationRelationship))) return 19;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation))) return 20;
+  if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))) return 21;
+  return 0;
 }
 
 
@@ -87,3 +104,30 @@ Handle(StepShape_ShapeRepresentation) StepAP214_ApprovalItem::ShapeRepresentatio
 
 Handle(StepBasic_SecurityClassification) StepAP214_ApprovalItem::SecurityClassification() const
 {  return GetCasted(StepBasic_SecurityClassification,Value());  }
+
+Handle(StepRepr_ConfigurationItem) StepAP214_ApprovalItem::ConfigurationItem() const
+{  return GetCasted(StepRepr_ConfigurationItem,Value());  }
+
+Handle(StepBasic_Date) StepAP214_ApprovalItem::Date() const
+{  return GetCasted(StepBasic_Date,Value());  }
+
+Handle(StepBasic_Document) StepAP214_ApprovalItem::Document() const
+{  return GetCasted(StepBasic_Document,Value());  }
+
+Handle(StepBasic_Effectivity) StepAP214_ApprovalItem::Effectivity() const
+{  return GetCasted(StepBasic_Effectivity,Value());  }
+
+Handle(StepBasic_Group) StepAP214_ApprovalItem::Group() const
+{  return GetCasted(StepBasic_Group,Value());  }
+
+Handle(StepBasic_GroupRelationship) StepAP214_ApprovalItem::GroupRelationship() const
+{  return GetCasted(StepBasic_GroupRelationship,Value());  }
+
+Handle(StepBasic_ProductDefinitionFormationRelationship) StepAP214_ApprovalItem::ProductDefinitionFormationRelationship() const
+{  return GetCasted(StepBasic_ProductDefinitionFormationRelationship,Value());  }
+
+Handle(StepRepr_Representation) StepAP214_ApprovalItem::Representation() const
+{  return GetCasted(StepRepr_Representation,Value());  }
+
+Handle(StepRepr_ShapeAspectRelationship) StepAP214_ApprovalItem::ShapeAspectRelationship() const
+{  return GetCasted(StepRepr_ShapeAspectRelationship,Value());  }

@@ -15,6 +15,7 @@
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
+#include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
 #include <StepAP214_OrganizationItem.hxx>
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_DocumentFile.hxx>
@@ -49,6 +50,7 @@ Standard_Integer  StepAP214_OrganizationItem::CaseNum (const Handle(Standard_Tra
   if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition))) return 12;
   if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation))) return 13;
   if (ent->IsKind(STANDARD_TYPE(StepBasic_SecurityClassification))) return 14;
+  if (ent->IsKind(STANDARD_TYPE(StepAP214_AppliedSecurityClassificationAssignment))) return 15;
   return 0;
 }
 
@@ -57,3 +59,6 @@ Handle(StepAP214_AppliedOrganizationAssignment)  StepAP214_OrganizationItem::App
 
 Handle(StepBasic_Approval)  StepAP214_OrganizationItem::Approval() const
 {  return GetCasted(StepBasic_Approval,Value());  }
+
+Handle(StepAP214_AppliedSecurityClassificationAssignment)  StepAP214_OrganizationItem::AppliedSecurityClassificationAssignment() const
+{  return GetCasted(StepAP214_AppliedSecurityClassificationAssignment,Value());  }

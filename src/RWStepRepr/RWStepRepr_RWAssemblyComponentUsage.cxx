@@ -62,27 +62,27 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep (const Handle(StepData_StepRe
     hasProductDefinitionRelationship_Description = Standard_False;
   }
 
-  Handle(StepBasic_ProductDefinition) aProductDefinitionRelationship_RelatingProductDefinition;
-  data->ReadEntity (num, 4, "product_definition_relationship.relating_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aProductDefinitionRelationship_RelatingProductDefinition);
-  if (aProductDefinitionRelationship_RelatingProductDefinition.IsNull())
+  StepBasic_ProductDefinitionOrReference aProductDefinitionRelationship_RelatingProductDefinition;
+  data->ReadEntity (num, 4, "product_definition_relationship.relating_product_definition", ach, aProductDefinitionRelationship_RelatingProductDefinition);
+  if (aProductDefinitionRelationship_RelatingProductDefinition.Value().IsNull())
   {
     Handle(StepRepr_ProductDefinitionShape) aProductDefinitionShape;
     data->ReadEntity (num, 4, "product_definition_relationship.relating_product_definition_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aProductDefinitionShape);
     if (!aProductDefinitionShape.IsNull())
     {
-      aProductDefinitionRelationship_RelatingProductDefinition = aProductDefinitionShape->Definition().ProductDefinition();
+        aProductDefinitionRelationship_RelatingProductDefinition.SetValue(aProductDefinitionShape->Definition().ProductDefinition());
     }
   }
 
-  Handle(StepBasic_ProductDefinition) aProductDefinitionRelationship_RelatedProductDefinition;
-  data->ReadEntity (num, 5, "product_definition_relationship.related_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aProductDefinitionRelationship_RelatedProductDefinition);
-  if (aProductDefinitionRelationship_RelatedProductDefinition.IsNull())
+  StepBasic_ProductDefinitionOrReference aProductDefinitionRelationship_RelatedProductDefinition;
+  data->ReadEntity (num, 5, "product_definition_relationship.related_product_definition", ach, aProductDefinitionRelationship_RelatedProductDefinition);
+  if (aProductDefinitionRelationship_RelatedProductDefinition.Value().IsNull())
   {
     Handle(StepRepr_ProductDefinitionShape) aProductDefinitionShape;
     data->ReadEntity (num, 5, "product_definition_relationship.related_product_definition_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aProductDefinitionShape);
     if (!aProductDefinitionShape.IsNull())
     {
-      aProductDefinitionRelationship_RelatedProductDefinition = aProductDefinitionShape->Definition().ProductDefinition();
+        aProductDefinitionRelationship_RelatedProductDefinition.SetValue(aProductDefinitionShape->Definition().ProductDefinition());
     }
   }
 
@@ -128,9 +128,9 @@ void RWStepRepr_RWAssemblyComponentUsage::WriteStep (StepData_StepWriter& SW,
   }
   else SW.SendUndef();
 
-  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinition());
+  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 
-  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinition());
+  SW.Send (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinitionAP242().Value());
 
   // Own fields of AssemblyComponentUsage
 
@@ -151,9 +151,9 @@ void RWStepRepr_RWAssemblyComponentUsage::Share (const Handle(StepRepr_AssemblyC
 
   // Inherited fields of ProductDefinitionRelationship
 
-  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinition());
+  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 
-  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinition());
+  iter.AddItem (ent->StepBasic_ProductDefinitionRelationship::RelatedProductDefinitionAP242().Value());
 
   // Own fields of AssemblyComponentUsage
 }

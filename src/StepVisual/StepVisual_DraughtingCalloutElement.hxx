@@ -24,6 +24,7 @@
 #include <Standard_Integer.hxx>
 class Standard_Transient;
 class StepVisual_AnnotationCurveOccurrence;
+class StepVisual_AnnotationTextOccurrence;
 class StepVisual_TessellatedAnnotationOccurrence;
 
 class StepVisual_DraughtingCalloutElement  : public StepData_SelectType
@@ -37,13 +38,18 @@ public:
   
   //! Recognizes a IdAttributeSelect Kind Entity that is :
   //! 1 -> AnnotationCurveOccurrence
+  //! 2 -> AnnotationTextOccurrence
+  //! 3 -> TessellatedAnnotationOccurrence
   //! 0 else
   Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent)  const;
   
   //! returns Value as a AnnotationCurveOccurrence (Null if another type)
   Standard_EXPORT Handle(StepVisual_AnnotationCurveOccurrence) AnnotationCurveOccurrence()  const;
 
-    //! returns Value as a AnnotationOccurrence for Tesselated Anotation Occurence
+  //! returns Value as a AnnotationTextOccurrence
+  Standard_EXPORT Handle(StepVisual_AnnotationTextOccurrence) AnnotationTextOccurrence()  const;
+
+  //! returns Value as a TessellatedAnnotationOccurrence
   Standard_EXPORT Handle(StepVisual_TessellatedAnnotationOccurrence) TessellatedAnnotationOccurrence()  const;
 };
 #endif // StepVisual_DraughtingCalloutElement

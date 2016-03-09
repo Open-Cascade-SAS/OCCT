@@ -1,6 +1,6 @@
-// Created on: 2015-10-29
+// Created on: 2016-03-30
 // Created by: Irina KRYLOVA
-// Copyright (c) 2015 OPEN CASCADE SAS
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,26 +13,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Type.hxx>
-#include <StepVisual_AnnotationPlane.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationPlane,StepVisual_AnnotationOccurrence)
+#include <Standard_Type.hxx>
+#include <StepBasic_ExternalSource.hxx>
+#include <StepBasic_ProductDefinitionReferenceWithLocalRepresentation.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReferenceWithLocalRepresentation, StepBasic_ProductDefinition)
 
 //=======================================================================
-//function : StepVisual_AnnotationPlane
+//function : StepBasic_ProductDefinitionReferenceWithLocalRepresentation
 //purpose  : 
 //=======================================================================
-StepVisual_AnnotationPlane::StepVisual_AnnotationPlane ()  {}
+StepBasic_ProductDefinitionReferenceWithLocalRepresentation::StepBasic_ProductDefinitionReferenceWithLocalRepresentation ()  {}
 
 //=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================
-void StepVisual_AnnotationPlane::Init (const Handle(TCollection_HAsciiString)& theName,
-                                       const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-                                       const Handle(MMgt_TShared)& theItem,
-                                       const Handle(StepVisual_HArray1OfAnnotationPlaneElement)& theElements)
+void StepBasic_ProductDefinitionReferenceWithLocalRepresentation::Init(
+  const Handle(StepBasic_ExternalSource)& theSource,
+  const Handle(TCollection_HAsciiString)& theId,
+  const Handle(TCollection_HAsciiString)& theDescription,
+  const Handle(StepBasic_ProductDefinitionFormation)& theFormation,
+  const Handle(StepBasic_ProductDefinitionContext)& theFrameOfReference)
 {
-  StepVisual_AnnotationOccurrence::Init(theName, theStyles, theItem);
-  myElements = theElements;
+  StepBasic_ProductDefinition::Init(theId, theDescription, theFormation, theFrameOfReference);
+  mySource = theSource;
 }

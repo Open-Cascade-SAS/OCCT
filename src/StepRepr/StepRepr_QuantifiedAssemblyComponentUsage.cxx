@@ -59,6 +59,33 @@ void StepRepr_QuantifiedAssemblyComponentUsage::Init (const Handle(TCollection_H
 }
 
 //=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void StepRepr_QuantifiedAssemblyComponentUsage::Init (const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Id,
+                                                      const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Name,
+                                                      const Standard_Boolean hasProductDefinitionRelationship_Description,
+                                                      const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Description,
+                                                      const StepBasic_ProductDefinitionOrReference &aProductDefinitionRelationship_RelatingProductDefinition,
+                                                      const StepBasic_ProductDefinitionOrReference &aProductDefinitionRelationship_RelatedProductDefinition,
+                                                      const Standard_Boolean hasAssemblyComponentUsage_ReferenceDesignator,
+                                                      const Handle(TCollection_HAsciiString) &aAssemblyComponentUsage_ReferenceDesignator,
+                                                      const Handle(StepBasic_MeasureWithUnit) &aQuantity)
+{
+  StepRepr_AssemblyComponentUsage::Init(aProductDefinitionRelationship_Id,
+                                        aProductDefinitionRelationship_Name,
+                                        hasProductDefinitionRelationship_Description,
+                                        aProductDefinitionRelationship_Description,
+                                        aProductDefinitionRelationship_RelatingProductDefinition,
+                                        aProductDefinitionRelationship_RelatedProductDefinition,
+                                        hasAssemblyComponentUsage_ReferenceDesignator,
+                                        aAssemblyComponentUsage_ReferenceDesignator);
+
+  theQuantity = aQuantity;
+}
+
+//=======================================================================
 //function : Quantity
 //purpose  : 
 //=======================================================================

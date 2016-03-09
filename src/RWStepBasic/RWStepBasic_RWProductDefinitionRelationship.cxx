@@ -18,7 +18,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepBasic_RWProductDefinitionRelationship.hxx>
-#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionOrReference.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -61,11 +61,11 @@ void RWStepBasic_RWProductDefinitionRelationship::ReadStep (const Handle(StepDat
     hasDescription = Standard_False;
   }
 
-  Handle(StepBasic_ProductDefinition) aRelatingProductDefinition;
-  data->ReadEntity (num, 4, "relating_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aRelatingProductDefinition);
+  StepBasic_ProductDefinitionOrReference aRelatingProductDefinition;
+  data->ReadEntity (num, 4, "relating_product_definition", ach, aRelatingProductDefinition);
 
-  Handle(StepBasic_ProductDefinition) aRelatedProductDefinition;
-  data->ReadEntity (num, 5, "related_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aRelatedProductDefinition);
+  StepBasic_ProductDefinitionOrReference aRelatedProductDefinition;
+  data->ReadEntity (num, 5, "related_product_definition", ach, aRelatedProductDefinition);
 
   // Initialize entity
   ent->Init(aId,
@@ -96,9 +96,9 @@ void RWStepBasic_RWProductDefinitionRelationship::WriteStep (StepData_StepWriter
   }
   else SW.SendUndef();
 
-  SW.Send (ent->RelatingProductDefinition());
+  SW.Send (ent->RelatingProductDefinitionAP242().Value());
 
-  SW.Send (ent->RelatedProductDefinition());
+  SW.Send (ent->RelatedProductDefinitionAP242().Value());
 }
 
 //=======================================================================
@@ -112,7 +112,7 @@ void RWStepBasic_RWProductDefinitionRelationship::Share (const Handle(StepBasic_
 
   // Own fields of ProductDefinitionRelationship
 
-  iter.AddItem (ent->RelatingProductDefinition());
+  iter.AddItem (ent->RelatingProductDefinitionAP242().Value());
 
-  iter.AddItem (ent->RelatedProductDefinition());
+  iter.AddItem (ent->RelatedProductDefinitionAP242().Value());
 }

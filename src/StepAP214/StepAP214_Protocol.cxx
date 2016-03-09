@@ -25,6 +25,7 @@ static Standard_CString schemaAP214CD  = "AUTOMOTIVE_DESIGN_CC2 { 1 2 10303 214 
 static Standard_CString schemaAP214DIS = "AUTOMOTIVE_DESIGN { 1 2 10303 214 0 1 1 1 }";
 static Standard_CString schemaAP214IS  = "AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }";
 static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
+static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF. {1 0 10303 442 1 1 4 }";
 
 #include <HeaderSection_Protocol.hxx>
 
@@ -1468,6 +1469,7 @@ Standard_CString StepAP214_Protocol::SchemaName() const
   case 2 : return schemaAP214DIS; break; 
   case 3 : return schemaAP203;    break;
   case 4:  return schemaAP214IS; break;
+  case 5 : return schemaAP242DIS; break;
   }
 }
 

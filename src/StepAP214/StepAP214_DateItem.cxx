@@ -16,6 +16,7 @@
 #include <Standard_Transient.hxx>
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
 #include <StepAP214_AppliedPersonAndOrganizationAssignment.hxx>
+#include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
 #include <StepAP214_DateItem.hxx>
 #include <StepBasic_ApprovalPersonOrganization.hxx>
 #include <StepBasic_DocumentFile.hxx>
@@ -51,6 +52,8 @@ Standard_Integer StepAP214_DateItem::CaseNum(const Handle(Standard_Transient)& e
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionRelationship))) return 13;
   if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition))) return 14;
   if (ent->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation))) return 15;
+  if (ent->IsKind(STANDARD_TYPE(StepAP214_AppliedSecurityClassificationAssignment))) return 16;
+  if (ent->IsKind(STANDARD_TYPE(StepBasic_Document))) return 17;
   return 0;
 }
 
@@ -67,8 +70,5 @@ Handle(StepAP214_AppliedPersonAndOrganizationAssignment) StepAP214_DateItem::App
 Handle(StepAP214_AppliedOrganizationAssignment) StepAP214_DateItem::AppliedOrganizationAssignment() const
 {  return GetCasted(StepAP214_AppliedOrganizationAssignment,Value());  }
 
-
-Handle(StepBasic_Effectivity) StepAP214_DateItem::Effectivity() const
-{  return GetCasted(StepBasic_Effectivity,Value());  }
-
-
+Handle(StepAP214_AppliedSecurityClassificationAssignment) StepAP214_DateItem::AppliedSecurityClassificationAssignment() const
+{  return GetCasted(StepAP214_AppliedSecurityClassificationAssignment,Value());  }

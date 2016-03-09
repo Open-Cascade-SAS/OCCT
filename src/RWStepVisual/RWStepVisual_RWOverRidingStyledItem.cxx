@@ -61,9 +61,8 @@ void RWStepVisual_RWOverRidingStyledItem::ReadStep
 
 	// --- inherited field : item ---
 
-	Handle(StepRepr_RepresentationItem) aItem;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	data->ReadEntity(num, 3,"item", ach, STANDARD_TYPE(StepRepr_RepresentationItem), aItem);
+  Handle(MMgt_TShared) aItem;
+  data->ReadEntity(num, 3,"item", ach, STANDARD_TYPE(MMgt_TShared), aItem);
 
 	// --- own field : overRiddenStyle ---
 

@@ -628,8 +628,14 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
       WriteSHUOs (  writer.WS(), sublabels );
     
     // write G&DTs
-    if(GetDimTolMode())
-      WriteDGTs(writer.WS(),sublabels);
+    if(GetDimTolMode()) {
+      if (ap == 5) {
+        WriteDGTsAP242(writer.WS(), sublabels);
+      }
+      else {
+        WriteDGTs(writer.WS(), sublabels);
+      }
+    }
 
     // write Materials
     if(GetMaterialMode())
@@ -3195,11 +3201,6 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   if(DGTTool.IsNull() ) return Standard_False;
 
   TDF_LabelSequence DGTLabels;
-
-  // Check for number of Application Protocol
-  DGTTool->GetDimTolLabels(DGTLabels);
-  if (DGTLabels.Length() == 0)
-    return WriteDGTsAP242(WS, labels);
 
   STEPConstruct_DataMapOfAsciiStringTransient DatumMap;
 

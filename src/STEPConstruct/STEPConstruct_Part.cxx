@@ -73,6 +73,7 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
   case 1: PC = new StepBasic_MechanicalContext;
           break;
   case 4:
+  case 5:
   case 2: PC = new StepBasic_ProductContext;
           break;
   case 3: PC = new StepBasic_MechanicalContext; 
@@ -95,7 +96,8 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
   switch (schema) {
   default:
   case 1: 
-  case 2: PDF = new StepBasic_ProductDefinitionFormation;
+  case 2: 
+  case 5: PDF = new StepBasic_ProductDefinitionFormation;
           break;
   case 3: PDF = new StepBasic_ProductDefinitionFormationWithSpecifiedSource;
           Handle(StepBasic_ProductDefinitionFormationWithSpecifiedSource)::DownCast(PDF)->
@@ -112,7 +114,8 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
   switch (schema) {
   default:
   case 1: 
-  case 2: PDC = new StepBasic_ProductDefinitionContext;
+  case 2: 
+  case 5: PDC = new StepBasic_ProductDefinitionContext;
           PDCname = new TCollection_HAsciiString ("part definition");
           break;
   case 3: PDC = new StepBasic_DesignContext;
@@ -151,7 +154,8 @@ void STEPConstruct_Part::MakeSDR(const Handle(StepShape_ShapeRepresentation)& SR
     PRPCName = new TCollection_HAsciiString("part") ;
     break;
   case 4:
-  case 2: 
+  case 2:
+  case 5:
     myPRPC = new StepBasic_ProductRelatedProductCategory; 
     PRPCName = new TCollection_HAsciiString("part");
     break;

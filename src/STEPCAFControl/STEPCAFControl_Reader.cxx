@@ -914,89 +914,97 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
       continue;
     
     // find shape
-    TopoDS_Shape S = STEPConstruct::FindShape ( Styles.TransientProcess(), style->Item() );
-    Standard_Boolean isSkipSHUOstyle = Standard_False;
-    // take shape with real location.
-    while ( IsComponent ) {
-      // take SR of NAUO
-      Handle(StepShape_ShapeRepresentation) aSR;
-      findStyledSR( style, aSR );
-      // search for SR along model
-      if (aSR.IsNull())
+    NCollection_Vector<Handle(MMgt_TShared)> anItems;
+    if (!style->Item().IsNull()) {
+      anItems.Append(style->Item());
+    }
+    else if (!style->ItemAP242().Representation().IsNull()){
+      //special case for AP242: item can be Reprsentation
+      Handle(StepRepr_Representation) aRepr = style->ItemAP242().Representation();
+      for (Standard_Integer i = 1; i <= aRepr->Items()->Length(); i++)
+        anItems.Append(aRepr->Items()->Value(i));
+    }
+    for (Standard_Integer itemIt = 0; itemIt < anItems.Length(); itemIt++) {
+      TopoDS_Shape S = STEPConstruct::FindShape ( Styles.TransientProcess(),
+        Handle(StepRepr_RepresentationItem)::DownCast(anItems.Value(itemIt)) );
+      Standard_Boolean isSkipSHUOstyle = Standard_False;
+      // take shape with real location.
+      while ( IsComponent ) {
+        // take SR of NAUO
+        Handle(StepShape_ShapeRepresentation) aSR;
+        findStyledSR( style, aSR );
+        // search for SR along model
+        if (aSR.IsNull())
+          break;
+        Handle(XSControl_TransferReader) TR = WS->TransferReader();
+        Handle(Transfer_TransientProcess) TP = TR->TransientProcess();
+        Interface_EntityIterator subs = WS->HGraph()->Graph().Sharings( aSR );
+        Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+        for (subs.Start(); subs.More(); subs.Next()) {
+          aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs.Value());
+          if ( aSDR.IsNull() )
+            continue;
+          StepRepr_RepresentedDefinition aPDSselect = aSDR->Definition();
+          Handle(StepRepr_ProductDefinitionShape) PDS = 
+            Handle(StepRepr_ProductDefinitionShape)::DownCast(aPDSselect.PropertyDefinition());
+          if ( PDS.IsNull() )
+            continue;
+          StepRepr_CharacterizedDefinition aCharDef = PDS->Definition();
+          
+          Handle(StepRepr_AssemblyComponentUsage) ACU = 
+            Handle(StepRepr_AssemblyComponentUsage)::DownCast(aCharDef.ProductDefinitionRelationship());
+          // PTV 10.02.2003 skip styled item that refer to SHUO
+          if (ACU->IsKind(STANDARD_TYPE(StepRepr_SpecifiedHigherUsageOccurrence))) {
+            isSkipSHUOstyle = Standard_True;
+            break;
+          }
+          Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO =
+            Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(ACU);
+          if ( NAUO.IsNull() )
+            continue;
+          
+          TopoDS_Shape aSh;
+          // PTV 10.02.2003 to find component of assembly CORRECTLY
+          STEPConstruct_Tool Tool( WS );
+          TDF_Label aShLab = FindInstance ( NAUO, CTool->ShapeTool(), Tool, PDFileMap, ShapeLabelMap );
+          aSh = CTool->ShapeTool()->GetShape(aShLab);
+          if (!aSh.IsNull()) {
+            S = aSh;
+            break;
+          }
+        }
         break;
-//       Handle(Interface_InterfaceModel) Model = WS->Model();
-      Handle(XSControl_TransferReader) TR = WS->TransferReader();
-      Handle(Transfer_TransientProcess) TP = TR->TransientProcess();
-      Interface_EntityIterator subs = WS->HGraph()->Graph().Sharings( aSR );
-      Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
-      for (subs.Start(); subs.More(); subs.Next()) {
-        aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs.Value());
-        if ( aSDR.IsNull() )
-          continue;
-        StepRepr_RepresentedDefinition aPDSselect = aSDR->Definition();
-        Handle(StepRepr_ProductDefinitionShape) PDS = 
-          Handle(StepRepr_ProductDefinitionShape)::DownCast(aPDSselect.PropertyDefinition());
-        if ( PDS.IsNull() )
-          continue;
-        StepRepr_CharacterizedDefinition aCharDef = PDS->Definition();
-        
-        Handle(StepRepr_AssemblyComponentUsage) ACU = 
-          Handle(StepRepr_AssemblyComponentUsage)::DownCast(aCharDef.ProductDefinitionRelationship());
-        // PTV 10.02.2003 skip styled item that refer to SHUO
-        if (ACU->IsKind(STANDARD_TYPE(StepRepr_SpecifiedHigherUsageOccurrence))) {
-          isSkipSHUOstyle = Standard_True;
-          break;
-        }
-        Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO =
-          Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(ACU);
-        if ( NAUO.IsNull() )
-          continue;
-        
-        TopoDS_Shape aSh;
-        // PTV 10.02.2003 to find component of assembly CORRECTLY
-        STEPConstruct_Tool Tool( WS );
-        TDF_Label aShLab = FindInstance ( NAUO, CTool->ShapeTool(), Tool, PDFileMap, ShapeLabelMap );
-        aSh = CTool->ShapeTool()->GetShape(aShLab);
-//         Handle(Transfer_Binder) binder = TP->Find(NAUO);
-//         if ( binder.IsNull() || ! binder->HasResult() )
-//           continue;
-//         aSh = TransferBRep::ShapeResult ( TP, binder );
-        if (!aSh.IsNull()) {
-          S = aSh;
-          break;
-        }
       }
-      break;
-    }
-    if (isSkipSHUOstyle)
-      continue; // skip styled item which refer to SHUO
-    
-    if ( S.IsNull() )
-      continue;
-    
-    if ( ! SurfCol.IsNull() ) {
-      Quantity_Color col;
-      Styles.DecodeColor ( SurfCol, col );
-      if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorSurf ))
-	SetColorToSubshape( CTool, S, col, XCAFDoc_ColorSurf );
-    }
-    if ( ! BoundCol.IsNull() ) {
-      Quantity_Color col;
-      Styles.DecodeColor ( BoundCol, col );
-      if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorCurv ))
-	SetColorToSubshape(  CTool, S, col, XCAFDoc_ColorCurv );
-    }
-    if ( ! CurveCol.IsNull() ) {
-      Quantity_Color col;
-      Styles.DecodeColor ( CurveCol, col );
-      if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorCurv ))
-	SetColorToSubshape(  CTool, S, col, XCAFDoc_ColorCurv );
-    }
-    if ( !IsVisible ) {
-      // sets the invisibility for shape.
-      TDF_Label aInvL;
-      if ( CTool->ShapeTool()->Search( S, aInvL ) )
-        CTool->SetVisibility( aInvL, Standard_False );
+      if (isSkipSHUOstyle)
+        continue; // skip styled item which refer to SHUO
+      
+      if ( S.IsNull() )
+        continue;
+      
+      if ( ! SurfCol.IsNull() ) {
+        Quantity_Color col;
+        Styles.DecodeColor ( SurfCol, col );
+        if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorSurf ))
+          SetColorToSubshape( CTool, S, col, XCAFDoc_ColorSurf );
+      }
+      if ( ! BoundCol.IsNull() ) {
+        Quantity_Color col;
+        Styles.DecodeColor ( BoundCol, col );
+        if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorCurv ))
+          SetColorToSubshape(  CTool, S, col, XCAFDoc_ColorCurv );
+      }
+      if ( ! CurveCol.IsNull() ) {
+        Quantity_Color col;
+        Styles.DecodeColor ( CurveCol, col );
+        if ( ! CTool->SetColor ( S, col, XCAFDoc_ColorCurv ))
+          SetColorToSubshape(  CTool, S, col, XCAFDoc_ColorCurv );
+      }
+      if ( !IsVisible ) {
+        // sets the invisibility for shape.
+        TDF_Label aInvL;
+        if ( CTool->ShapeTool()->Search( S, aInvL ) )
+          CTool->SetVisibility( aInvL, Standard_False );
+      }
     }
   }
   CTool->ReverseChainsOfTreeNodes();

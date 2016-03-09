@@ -22,6 +22,7 @@
 
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include <StepRepr_RepresentationItem.hxx>
+#include <StepVisual_StyledItemTarget.hxx>
 #include <Standard_Integer.hxx>
 class StepRepr_RepresentationItem;
 class TCollection_HAsciiString;
@@ -41,7 +42,7 @@ public:
   //! Returns a StyledItem
   Standard_EXPORT StepVisual_StyledItem();
   
-  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(StepRepr_RepresentationItem)& aItem);
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aName, const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles, const Handle(MMgt_TShared)& aItem);
   
   Standard_EXPORT void SetStyles (const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles);
   
@@ -55,6 +56,9 @@ public:
   
   Standard_EXPORT Handle(StepRepr_RepresentationItem) Item() const;
 
+  Standard_EXPORT void SetItem (const StepVisual_StyledItemTarget& aItem);
+  
+  Standard_EXPORT StepVisual_StyledItemTarget ItemAP242() const;
 
 
 
@@ -68,9 +72,9 @@ protected:
 private:
 
 
-  Handle(StepVisual_HArray1OfPresentationStyleAssignment) styles;
-  Handle(StepRepr_RepresentationItem) item;
-
+  Handle(StepVisual_HArray1OfPresentationStyleAssignment) myStyles;
+  // May be StepRepr_RepresentationItem for AP214(203) and StepVisual_StyledItemTarget for AP242
+  Handle(MMgt_TShared) myItem;
 
 };
 

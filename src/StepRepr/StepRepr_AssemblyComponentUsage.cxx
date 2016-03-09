@@ -60,6 +60,34 @@ void StepRepr_AssemblyComponentUsage::Init (const Handle(TCollection_HAsciiStrin
 }
 
 //=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void StepRepr_AssemblyComponentUsage::Init (const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Id,
+                                            const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Name,
+                                            const Standard_Boolean hasProductDefinitionRelationship_Description,
+                                            const Handle(TCollection_HAsciiString) &aProductDefinitionRelationship_Description,
+                                            const StepBasic_ProductDefinitionOrReference &aProductDefinitionRelationship_RelatingProductDefinition,
+                                            const StepBasic_ProductDefinitionOrReference &aProductDefinitionRelationship_RelatedProductDefinition,
+                                            const Standard_Boolean hasReferenceDesignator,
+                                            const Handle(TCollection_HAsciiString) &aReferenceDesignator)
+{
+  StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,
+                                        aProductDefinitionRelationship_Name,
+                                        hasProductDefinitionRelationship_Description,
+                                        aProductDefinitionRelationship_Description,
+                                        aProductDefinitionRelationship_RelatingProductDefinition,
+                                        aProductDefinitionRelationship_RelatedProductDefinition);
+
+  defReferenceDesignator = hasReferenceDesignator;
+  if (defReferenceDesignator) {
+    theReferenceDesignator = aReferenceDesignator;
+  }
+  else theReferenceDesignator.Nullify();
+}
+
+//=======================================================================
 //function : ReferenceDesignator
 //purpose  : 
 //=======================================================================

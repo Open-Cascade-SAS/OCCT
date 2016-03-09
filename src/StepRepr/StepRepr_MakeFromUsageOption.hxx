@@ -42,6 +42,9 @@ public:
   
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name, const Standard_Boolean hasProductDefinitionRelationship_Description, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description, const Handle(StepBasic_ProductDefinition)& aProductDefinitionRelationship_RelatingProductDefinition, const Handle(StepBasic_ProductDefinition)& aProductDefinitionRelationship_RelatedProductDefinition, const Standard_Integer aRanking, const Handle(TCollection_HAsciiString)& aRankingRationale, const Handle(StepBasic_MeasureWithUnit)& aQuantity);
+
+  //! Initialize all fields (own and inherited)
+  Standard_EXPORT void Init (const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name, const Standard_Boolean hasProductDefinitionRelationship_Description, const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description, const StepBasic_ProductDefinitionOrReference& aProductDefinitionRelationship_RelatingProductDefinition, const StepBasic_ProductDefinitionOrReference& aProductDefinitionRelationship_RelatedProductDefinition, const Standard_Integer aRanking, const Handle(TCollection_HAsciiString)& aRankingRationale, const Handle(StepBasic_MeasureWithUnit)& aQuantity);
   
   //! Returns field Ranking
   Standard_EXPORT Standard_Integer Ranking() const;

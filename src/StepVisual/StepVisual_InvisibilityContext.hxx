@@ -24,6 +24,7 @@
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
 class Standard_Transient;
+class StepVisual_DraughtingModel;
 class StepVisual_PresentationRepresentation;
 class StepVisual_PresentationSet;
 
@@ -42,6 +43,7 @@ public:
   //! Recognizes a InvisibilityContext Kind Entity that is :
   //! 1 -> PresentationRepresentation
   //! 2 -> PresentationSet
+  //! 2 -> DraughtingModel
   //! 0 else
   Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
   
@@ -51,6 +53,8 @@ public:
   //! returns Value as a PresentationSet (Null if another type)
   Standard_EXPORT Handle(StepVisual_PresentationSet) PresentationSet() const;
 
+  //! returns Value as a PresentationSet (Null if another type)
+  Standard_EXPORT Handle(StepVisual_DraughtingModel) DraughtingModel() const;
 
 
 

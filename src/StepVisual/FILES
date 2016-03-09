@@ -175,6 +175,8 @@ StepVisual_StyleContextSelect.cxx
 StepVisual_StyleContextSelect.hxx
 StepVisual_StyledItem.cxx
 StepVisual_StyledItem.hxx
+StepVisual_StyledItemTarget.cxx
+StepVisual_StyledItemTarget.hxx
 StepVisual_SurfaceSide.hxx
 StepVisual_SurfaceSideStyle.cxx
 StepVisual_SurfaceSideStyle.hxx
