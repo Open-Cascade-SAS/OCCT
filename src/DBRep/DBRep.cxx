@@ -21,6 +21,7 @@
 #include <BRepTools.hxx>
 #include <BRepTools_ShapeSet.hxx>
 #include <BRepTools_WireExplorer.hxx>
+#include <BinTools.hxx>
 #include <DBRep.hxx>
 #include <DBRep_DrawableShape.hxx>
 #include <Draw.hxx>
@@ -1275,6 +1276,51 @@ static Standard_Integer XProgress (Draw_Interpretor& di, Standard_Integer argc, 
 }
 
 //=======================================================================
+// binsave
+//=======================================================================
+
+static Standard_Integer binsave(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n <= 2) return 1;
+
+  TopoDS_Shape aShape = DBRep::Get (a[1]);
+  if (aShape.IsNull())
+  {
+    di << a[1] << " is not a shape";
+    return 1;
+  }
+
+  if (!BinTools::Write (aShape, a[2]))
+  {
+    di << "Cannot write to the file " << a[2];
+    return 1;
+  }
+
+  di << a[1];
+  return 0;
+}
+
+//=======================================================================
+// binrestore
+//=======================================================================
+
+static Standard_Integer binrestore(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n <= 2) return 1;
+
+  TopoDS_Shape aShape;
+  if (!BinTools::Read (aShape, a[1]))
+  {
+    di << "Cannot read from the file " << a[1];
+    return 1;
+  }
+
+  DBRep::Set (a[2], aShape);
+  di << a[2];
+  return 0;
+}
+
+//=======================================================================
 //function : BasicCommands
 //purpose  : 
 //=======================================================================
@@ -1326,6 +1372,13 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   
   // Add command for DRAW-specific ProgressIndicator
   theCommands.Add ( "XProgress","XProgress [+|-t] [+|-g]: switch on/off textual and graphical mode of Progress Indicator",XProgress,"DE: General");
+
+  theCommands.Add("binsave", "binsave shape filename\n"
+                  "\t\tsave the shape in the binary format file",
+                  __FILE__, binsave, g);
+  theCommands.Add("binrestore", "binrestore filename shape\n"
+                  "\t\trestore the shape from the binary format file",
+                  __FILE__, binrestore, g);
 }
 
 //=======================================================================

@@ -1,0 +1,25 @@
+# test binsave and binrestore commands
+
+pload TOPTEST
+
+set file binpersist.bin
+
+box b 10 20 30 100 200 300
+
+if [regexp "Cannot write to the file $file" [binsave b $file]] {
+  puts "Error: binsave"
+} elseif [regexp "Cannot read from the file $file" [binrestore $file bb]] {
+  puts "Error: binrestore"
+} else {
+  file delete $file
+  if {[bounding b] != [bounding bb]} {
+    puts "Error: restored shape has another bounding box"
+  }
+  checkshape bb
+  checknbshapes bb -ref [nbshapes b]
+  checkprops bb -l 4800
+  checkprops bb -s 220000
+  checkprops bb -v 6000000
+}
+
+puts "TEST COMPLETED"

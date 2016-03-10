@@ -20,12 +20,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_OStream.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_ExtCharacter.hxx>
+#include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
+
+class TopoDS_Shape;
 class BinTools_ShapeSet;
 class BinTools_Curve2dSet;
 class BinTools_CurveSet;
@@ -56,9 +58,18 @@ public:
   Standard_EXPORT static Standard_IStream& GetBool (Standard_IStream& IS, Standard_Boolean& theValue);
   
   Standard_EXPORT static Standard_IStream& GetExtChar (Standard_IStream& IS, Standard_ExtCharacter& theValue);
-
-
-
+  
+  //! Writes <theShape> on <theStream> in binary format.
+  Standard_EXPORT static void Write (const TopoDS_Shape& theShape, Standard_OStream& theStream);
+  
+  //! Reads a shape from <theStream> and returns it in <theShape>.
+  Standard_EXPORT static void Read (TopoDS_Shape& theShape, Standard_IStream& theStream);
+  
+  //! Writes <theShape> in <theFile>.
+  Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& theShape, const Standard_CString theFile);
+  
+  //! Reads a shape from <theFile> and returns it in <theShape>.
+  Standard_EXPORT static Standard_Boolean Read (TopoDS_Shape& theShape, const Standard_CString theFile);
 
 protected:
 

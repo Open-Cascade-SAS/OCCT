@@ -15,7 +15,9 @@
 
 
 #include <BinTools.hxx>
+#include <BinTools_ShapeSet.hxx>
 #include <FSD_FileHeader.hxx>
+#include <OSD_OpenFile.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>
 
 //=======================================================================
@@ -128,4 +130,65 @@ Standard_IStream& BinTools::GetBool(Standard_IStream& IS, Standard_Boolean& aVal
 {
   aValue = (Standard_Boolean)IS.get();
   return IS;
+}
+
+//=======================================================================
+//function : Write
+//purpose  : 
+//=======================================================================
+
+void BinTools::Write (const TopoDS_Shape& theShape, Standard_OStream& theStream)
+{
+  BinTools_ShapeSet aShapeSet(Standard_True);
+  aShapeSet.SetFormatNb (3);
+  aShapeSet.Add (theShape);
+  aShapeSet.Write (theStream);
+  aShapeSet.Write (theShape, theStream);
+}
+
+//=======================================================================
+//function : Read
+//purpose  : 
+//=======================================================================
+
+void BinTools::Read (TopoDS_Shape& theShape, Standard_IStream& theStream)
+{
+  BinTools_ShapeSet aShapeSet(Standard_True);
+  aShapeSet.Read (theStream);
+  aShapeSet.Read (theShape, theStream, aShapeSet.NbShapes());
+}
+
+//=======================================================================
+//function : Write
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape, const Standard_CString theFile)
+{
+  ofstream aStream;
+  aStream.precision (15);
+  OSD_OpenStream (aStream, theFile, ios::out | ios::binary);
+  if (!aStream.good())
+    return Standard_False;
+
+  Write (theShape, aStream);
+  aStream.close();
+  return aStream.good();
+}
+
+//=======================================================================
+//function : Read
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BinTools::Read (TopoDS_Shape& theShape, const Standard_CString theFile)
+{
+  filebuf aBuf;
+  OSD_OpenFileBuf (aBuf, theFile, ios::in | ios::binary);
+  if (!aBuf.is_open())
+    return Standard_False;
+
+  Standard_IStream aStream (&aBuf);
+  Read (theShape, aStream);
+  return aStream.good();
 }

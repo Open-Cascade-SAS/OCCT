@@ -1247,4 +1247,19 @@ For example, in the wire in the image we want to recuperate the edges in the ord
   } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+@subsection occt_modat_5_6 Storage of shapes
 
+**BRepTools** and **BinTools** packages contain methods *Read* and *Write* allowing to read and write a Shape to/from a stream or a file.
+The methods provided by **BRepTools** package use ASCII storage format; **BinTools** package use binary format.
+Each of these methods has two arguments:
+- a *TopoDS_Shape* object to be read/written;
+- a stream object or a file name to read from/write to.
+
+The following sample code reads a shape from ASCII file and writes it to a binary one:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+  TopoDS_Shape aShape;
+  if (BRepTools::Read (aShape, "source_file.txt")) {
+    BinTools::Write (aShape, "result_file.bin");
+  }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

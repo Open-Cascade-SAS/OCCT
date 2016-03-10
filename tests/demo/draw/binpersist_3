@@ -1,0 +1,26 @@
+# test binsave and binrestore commands
+
+pload TOPTEST
+
+set file binpersist.bin
+
+restore [locate_data_file OCC615.brep] b
+
+if [regexp "Cannot write to the file $file" [binsave b $file]] {
+  puts "Error: binsave"
+} elseif [regexp "Cannot read from the file $file" [binrestore $file bb]] {
+  puts "Error: binrestore"
+} else {
+  file delete $file
+  if {[bounding b] != [bounding bb]} {
+    puts "Error: restored shape has another bounding box"
+  }
+  checkshape bb
+  checknbshapes bb -ref [nbshapes b]
+  checkprops bb -l 5501.4
+  checkprops bb -s 201237
+  checkprops bb -v 4.68509e+006
+  checktrinfo bb -ref [trinfo b]
+}
+
+puts "TEST COMPLETED"
