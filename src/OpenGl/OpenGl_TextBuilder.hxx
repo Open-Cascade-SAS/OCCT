@@ -34,7 +34,7 @@ class OpenGl_TextBuilder
 public:
 
   //! Creates empty object.
-  OpenGl_TextBuilder();
+  Standard_EXPORT OpenGl_TextBuilder();
 
   //! Creates texture quads for the given text.
   Standard_EXPORT void Perform (const Font_TextFormatter&                        theFormatter,
