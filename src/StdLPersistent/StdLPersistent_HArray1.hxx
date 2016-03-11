@@ -16,7 +16,10 @@
 #define _StdLPersistent_HArray1_HeaderFile
 
 #include <StdObjMgt_Persistent.hxx>
-#include <StdLPersistent_HArray1OfPersistent.hxx>
+#include <StdObjMgt_ReadData.hxx>
+
+#include <NCollection_DefineHArray1.hxx>
+
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfByte.hxx>
@@ -26,9 +29,13 @@ class TDF_Label;
 class TDF_Data;
 
 
-class StdLPersistent_HArray1 : protected StdObjMgt_ContentTypes
+DEFINE_HARRAY1 (StdLPersistent_HArray1OfPersistent,
+                NCollection_Array1<Handle(StdObjMgt_Persistent)>)
+
+
+class StdLPersistent_HArray1
 {
-  class commonBase : public StdObjMgt_Persistent
+  class base : public StdObjMgt_Persistent
   {
   public:
     //! Read persistent data from a file.
@@ -44,7 +51,7 @@ class StdLPersistent_HArray1 : protected StdObjMgt_ContentTypes
 
 protected:
   template <class ArrayClass>
-  class base : public commonBase
+  class instance : public base
   {
   public:
     typedef Handle(ArrayClass)              ArrayHandle;
@@ -60,24 +67,23 @@ protected:
                               const Standard_Integer theUpperBound)
       { myArray = new ArrayClass (theLowerBound, theUpperBound); }
 
+    virtual void readValue (StdObjMgt_ReadData& theReadData,
+                            const Standard_Integer theIndex)
+      { theReadData >> myArray->ChangeValue (theIndex); }
+
   protected:
     Handle(ArrayClass) myArray;
   };
 
-private:
-  template <class ArrayClass, class ValueClass = Value<typename ArrayClass::value_type> >
-  class instance : public base<ArrayClass>
-  {
-  protected:
-    Standard_EXPORT virtual void readValue (StdObjMgt_ReadData& theReadData,
-                                            const Standard_Integer theIndex);
-  };
-
 public:
-  typedef instance<TColStd_HArray1OfInteger>                         Integer;
-  typedef instance<TColStd_HArray1OfReal>                            Real;
-  typedef instance<TColStd_HArray1OfByte, Value<Standard_Character> >Byte;
-  typedef instance<StdLPersistent_HArray1OfPersistent, Reference<> >        Persistent;
+  typedef instance<TColStd_HArray1OfInteger>           Integer;
+  typedef instance<TColStd_HArray1OfReal>              Real;
+  typedef instance<TColStd_HArray1OfByte>              Byte;
+  typedef instance<StdLPersistent_HArray1OfPersistent> Persistent;
 };
+
+inline StdObjMgt_ReadData& operator >>
+  (StdObjMgt_ReadData& theReadData, Standard_Byte& theByte)
+    { return theReadData >> reinterpret_cast<Standard_Character&> (theByte); }
 
 #endif

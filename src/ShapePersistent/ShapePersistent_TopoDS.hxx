@@ -30,18 +30,14 @@
 class ShapePersistent_TopoDS : public StdPersistent_TopoDS
 {
 public:
-  class Shape : public StdObjMgt_Persistent
+  class HShape : public StdObjMgt_Persistent, public StdObject_Shape
   {
   public:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
 
-    //! Import transient object from the persistent data.
-    TopoDS_Shape Import() const  { return myShape.Import(); }
-
   private:
-    Reference<>     myEntry;
-    StdObject_Shape myShape;
+    Handle(StdObjMgt_Persistent) myEntry;
   };
 
 protected:

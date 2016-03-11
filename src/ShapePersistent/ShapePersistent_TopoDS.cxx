@@ -31,10 +31,10 @@ enum
 //function : Read
 //purpose  : Read persistent data from a file
 //=======================================================================
-void ShapePersistent_TopoDS::Shape::Read (StdObjMgt_ReadData& theReadData)
+void ShapePersistent_TopoDS::HShape::Read (StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myEntry;
-  myShape.Read (theReadData);
+  StdObject_Shape::read (theReadData);
 }
 
 void ShapePersistent_TopoDS::pTBase::setFlags
@@ -52,8 +52,8 @@ void ShapePersistent_TopoDS::pTBase::setFlags
 static inline void AddShape
   (TopoDS_Shape& theParent, const Handle(StdObjMgt_Persistent)& theRef)
 {
-  Handle(ShapePersistent_TopoDS::Shape) aShape =
-    Handle(ShapePersistent_TopoDS::Shape)::DownCast (theRef);
+  Handle(ShapePersistent_TopoDS::HShape) aShape =
+    Handle(ShapePersistent_TopoDS::HShape)::DownCast (theRef);
 
   if (aShape)
     BRep_Builder().Add (theParent, aShape->Import());
@@ -69,8 +69,8 @@ template <class ShapesArray>
 void ShapePersistent_TopoDS::pTBase::addShapesT
   (TopoDS_Shape& theParent) const
 {
-  Handle(ShapesArray) aShapes;
-  if (myShapes.Cast (aShapes))
+  Handle(ShapesArray) aShapes = Handle(ShapesArray)::DownCast (myShapes);
+  if (aShapes)
   {
     typename ShapesArray::Iterator anIter (*aShapes->Array());
     for (; anIter.More(); anIter.Next())

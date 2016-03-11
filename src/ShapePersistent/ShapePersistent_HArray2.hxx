@@ -16,6 +16,8 @@
 #define _ShapePersistent_HArray2_HeaderFile
 
 #include <StdLPersistent_HArray2.hxx>
+#include <StdObject_gp_Vectors.hxx>
+#include <StdObject_gp_Curves.hxx>
 
 #include <TColgp_HArray2OfXYZ.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
@@ -31,14 +33,6 @@
 
 class ShapePersistent_HArray2 : private StdLPersistent_HArray2
 {
-  template <class ArrayClass>
-  class instance : public StdLPersistent_HArray2::base<ArrayClass>
-  {
-    virtual void readValue (StdObjMgt_ReadData&    theReadData,
-                            const Standard_Integer theRow,
-                            const Standard_Integer theCol);
-  };
-
 public:
   typedef instance<TColgp_HArray2OfXYZ>    XYZ;
   typedef instance<TColgp_HArray2OfPnt>    Pnt;

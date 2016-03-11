@@ -19,16 +19,17 @@
 #include <NCollection_Array1.hxx>
 
 class StdObjMgt_Persistent;
+class Standard_GUID;
+
 
 //! Auxiliary data used to read persistent objects from a file.
 class StdObjMgt_ReadData
 {
 public:
+  class Object;
+
   Standard_EXPORT StdObjMgt_ReadData
     (Storage_BaseDriver& theDriver, const Standard_Integer theNumberOfObjects);
-
-  Storage_BaseDriver& Driver() const
-    { return *myDriver; }
 
   template <class Instantiator>
   void CreatePersistentObject
@@ -45,45 +46,69 @@ public:
   Standard_EXPORT Handle(StdObjMgt_Persistent) ReadReference();
 
   template <class Persistent>
-  void ReadReference (Handle(Persistent)& theTarget)
+  StdObjMgt_ReadData& operator >> (Handle(Persistent)& theTarget)
   {
     theTarget = Handle(Persistent)::DownCast (ReadReference());
-  }
-
-  template <class Object>
-  void ReadObject (Object& theObject)
-  {
-    myDriver->BeginReadObjectData();
-    theObject.Read (*this);
-    myDriver->EndReadObjectData();
-  }
-
-  template <class Type>
-  void ReadValue (Type& theValue)
-  {
-    *myDriver >> theValue;
-  }
-
-  template <class Type>
-  void ReadEnum (Type& theEnum)
-  {
-    Standard_Integer aValue;
-    *myDriver >> aValue;
-    theEnum = static_cast<Type> (aValue);
-  }
-
-  template <class Base> struct Content : Base {};
-
-  template <class Base>
-  StdObjMgt_ReadData& operator >> (Content<Base>& theContent)
-  {
-    theContent.Read (*this);
     return *this;
   }
+
+  StdObjMgt_ReadData& operator >> (Handle(StdObjMgt_Persistent)& theTarget)
+  {
+    theTarget = ReadReference();
+    return *this;
+  }
+
+  template <class Type>
+  StdObjMgt_ReadData& ReadValue (Type& theValue)
+  {
+    *myDriver >> theValue;
+    return *this;
+  }
+
+  StdObjMgt_ReadData& operator >> (Standard_Character& theValue)
+    { return ReadValue (theValue); }
+  
+  StdObjMgt_ReadData& operator >> (Standard_ExtCharacter& theValue)
+    { return ReadValue (theValue); }
+  
+  StdObjMgt_ReadData& operator >> (Standard_Integer& theValue)
+    { return ReadValue (theValue); }
+  
+  StdObjMgt_ReadData& operator >> (Standard_Boolean& theValue)
+    { return ReadValue (theValue); }
+  
+  StdObjMgt_ReadData& operator >> (Standard_Real& theValue)
+    { return ReadValue (theValue); }
+  
+  StdObjMgt_ReadData& operator >> (Standard_ShortReal& theValue)
+    { return ReadValue (theValue); }
 
 private:
   Storage_BaseDriver* myDriver;
   NCollection_Array1<Handle(StdObjMgt_Persistent)> myPersistentObjects;
 };
+
+class StdObjMgt_ReadData::Object
+{
+public:
+  Object (StdObjMgt_ReadData& theData) : myReadData (&theData)
+    { myReadData->myDriver->BeginReadObjectData(); }
+
+  ~Object()
+    { myReadData->myDriver->EndReadObjectData(); }
+
+  operator StdObjMgt_ReadData&()
+    { return *myReadData; }
+
+  template <class Data>
+  StdObjMgt_ReadData& operator >> (Data& theData)
+    { return *myReadData >> theData; }
+
+private:
+  StdObjMgt_ReadData* myReadData;
+};
+
+Standard_EXPORT StdObjMgt_ReadData& operator >>
+  (StdObjMgt_ReadData::Object theReadData, Standard_GUID& theGUID);
 
 #endif // _StdObjMgt_ReadData_HeaderFile

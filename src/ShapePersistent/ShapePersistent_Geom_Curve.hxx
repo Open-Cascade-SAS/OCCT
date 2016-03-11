@@ -48,9 +48,9 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
     virtual Handle(Geom_Curve) Import() const;
 
   private:
-    Value     <Standard_Boolean>             myRational;
-    Reference <ShapePersistent_HArray1::Pnt> myPoles;
-    Reference <StdLPersistent_HArray1::Real> myWeights;
+    Standard_Boolean                     myRational;
+    Handle(ShapePersistent_HArray1::Pnt) myPoles;
+    Handle(StdLPersistent_HArray1::Real) myWeights;
   };
 
   class pBSpline : public pBounded
@@ -65,13 +65,13 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
     virtual Handle(Geom_Curve) Import() const;
 
   private:
-    Value     <Standard_Boolean>                myRational;
-    Value     <Standard_Boolean>                myPeriodic;
-    Value     <Standard_Integer>                mySpineDegree;
-    Reference <ShapePersistent_HArray1::Pnt>    myPoles;
-    Reference <StdLPersistent_HArray1::Real>    myWeights;
-    Reference <StdLPersistent_HArray1::Real>    myKnots;
-    Reference <StdLPersistent_HArray1::Integer> myMultiplicities;
+    Standard_Boolean                        myRational;
+    Standard_Boolean                        myPeriodic;
+    Standard_Integer                        mySpineDegree;
+    Handle(ShapePersistent_HArray1::Pnt)    myPoles;
+    Handle(StdLPersistent_HArray1::Real)    myWeights;
+    Handle(StdLPersistent_HArray1::Real)    myKnots;
+    Handle(StdLPersistent_HArray1::Integer) myMultiplicities;
   };
 
   class pTrimmed : public pBounded
@@ -83,9 +83,9 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
     virtual Handle(Geom_Curve) Import() const;
 
   private:
-    Reference<Curve>     myBasisCurve;
-    Value<Standard_Real> myFirstU;
-    Value<Standard_Real> myLastU;
+    Handle(Curve) myBasisCurve;
+    Standard_Real myFirstU;
+    Standard_Real myLastU;
   };
 
   class pOffset : public pBase
@@ -97,9 +97,9 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
     virtual Handle(Geom_Curve) Import() const;
 
   private:
-    Reference<Curve>             myBasisCurve;
-    StdObject_gp::Object<gp_Dir> myOffsetDirection;
-    Value<Standard_Real>         myOffsetValue;
+    Handle(Curve) myBasisCurve;
+    gp_Dir        myOffsetDirection;
+    Standard_Real myOffsetValue;
   };
 
 public:

@@ -28,7 +28,7 @@ class Poly_Triangulation;
 
 class ShapePersistent_Poly : private StdObjMgt_SharedObject
 {
-  class pPolygon2D : public PersistentBase
+  class pPolygon2D : public Standard_Transient
   {
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
@@ -37,11 +37,11 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     Handle(Poly_Polygon2D) Import() const;
 
   private:
-    Value     <Standard_Real>                  myDeflection;
-    Reference <ShapePersistent_HArray1::Pnt2d> myNodes;
+    Standard_Real                          myDeflection;
+    Handle(ShapePersistent_HArray1::Pnt2d) myNodes;
   };
 
-  class pPolygon3D : public PersistentBase
+  class pPolygon3D : public Standard_Transient
   {
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
@@ -50,12 +50,12 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     Handle(Poly_Polygon3D) Import() const;
 
   private:
-    Value     <Standard_Real>                myDeflection;
-    Reference <ShapePersistent_HArray1::Pnt> myNodes;
-    Reference <StdLPersistent_HArray1::Real> myParameters;
+    Standard_Real                        myDeflection;
+    Handle(ShapePersistent_HArray1::Pnt) myNodes;
+    Handle(StdLPersistent_HArray1::Real) myParameters;
   };
 
-  class pPolygonOnTriangulation : public PersistentBase
+  class pPolygonOnTriangulation : public Standard_Transient
   {
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
@@ -64,12 +64,12 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     Handle(Poly_PolygonOnTriangulation) Import() const;
 
   private:
-    Value     <Standard_Real>                   myDeflection;
-    Reference <StdLPersistent_HArray1::Integer> myNodes;
-    Reference <StdLPersistent_HArray1::Real>    myParameters;
+    Standard_Real                           myDeflection;
+    Handle(StdLPersistent_HArray1::Integer) myNodes;
+    Handle(StdLPersistent_HArray1::Real)    myParameters;
   };
 
-  class pTriangulation : public PersistentBase
+  class pTriangulation : public Standard_Transient
   {
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
@@ -78,10 +78,10 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     Handle(Poly_Triangulation) Import() const;
 
   private:
-    Value     <Standard_Real>                     myDeflection;
-    Reference <ShapePersistent_HArray1::Pnt>      myNodes;
-    Reference <ShapePersistent_HArray1::Pnt2d>    myUVNodes;
-    Reference <ShapePersistent_HArray1::Triangle> myTriangles;
+    Standard_Real                             myDeflection;
+    Handle(ShapePersistent_HArray1::Pnt)      myNodes;
+    Handle(ShapePersistent_HArray1::Pnt2d)    myUVNodes;
+    Handle(ShapePersistent_HArray1::Triangle) myTriangles;
   };
 
   template <class Persistent, class Transient>

@@ -18,7 +18,6 @@
 #include <StdObjMgt_Attribute.hxx>
 
 #include <TDataStd_Real.hxx>
-#include <TDataStd_RealEnum.hxx>
 
 
 class StdLPersistent_Real : public StdObjMgt_Attribute<TDataStd_Real>
@@ -31,13 +30,13 @@ public:
   //! Import transient attribuite from the persistent data.
   void Import (const Handle(TDataStd_Real)& theAttribute) const
   {
-    theAttribute->Set (myValue);
-    theAttribute->SetDimension (myDimension);
+    theAttribute->Set          (myValue);
+    theAttribute->SetDimension (static_cast<TDataStd_RealEnum> (myDimension));
   }
 
 private:
-  Value<Standard_Real>    myValue;
-  Enum<TDataStd_RealEnum> myDimension;
+  Standard_Real    myValue;
+  Standard_Integer myDimension;
 };
 
 #endif

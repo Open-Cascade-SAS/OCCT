@@ -19,7 +19,7 @@
 //purpose  : Import transient attribuite from the persistent data
 //=======================================================================
 void StdPersistent_DataXtd::Geometry::ImportAttribute()
-  { myTransient->SetType (myData); }
+  { myTransient->SetType (static_cast<TDataXtd_GeometryEnum> (myData)); }
 
 //=======================================================================
 //function : ImportAttribute

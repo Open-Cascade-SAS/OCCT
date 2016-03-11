@@ -20,8 +20,7 @@
 
 //! Root class for a temporary persistent object corresponding to an attribute.
 template <class Transient>
-class StdObjMgt_Attribute : public    Standard_Transient,
-                            protected StdObjMgt_ContentTypes
+class StdObjMgt_Attribute : public Standard_Transient
 {
   class base : public StdObjMgt_Persistent
   {
@@ -53,8 +52,8 @@ public:
     DataType myData;
   };
 
-  struct SingleInt : Simple <Value<Standard_Integer> > {};
-  struct SingleRef : Simple <Reference<> > {};
+  struct SingleInt : Simple<Standard_Integer> {};
+  struct SingleRef : Simple<Handle(StdObjMgt_Persistent)> {};
 
 private:
   template <class Persistent>

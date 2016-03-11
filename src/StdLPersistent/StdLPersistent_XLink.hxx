@@ -39,8 +39,8 @@ public:
   }
 
 private:
-  Reference<StdLPersistent_HString::Ascii> myDocEntry;
-  Reference<StdLPersistent_HString::Ascii> myLabEntry;
+  Handle(StdLPersistent_HString::Ascii) myDocEntry;
+  Handle(StdLPersistent_HString::Ascii) myLabEntry;
 };
 
 #endif

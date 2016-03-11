@@ -21,9 +21,7 @@
 //=======================================================================
 TopLoc_Location StdObject_Location::Import() const
 {
-  Handle(StdPersistent_TopLoc::ItemLocation) anItemLocation;
-  if (myData.Cast (anItemLocation))
-    return anItemLocation->Import();
-  else
-    return TopLoc_Location();
+  Handle(StdPersistent_TopLoc::ItemLocation) anItemLocation =
+    Handle(StdPersistent_TopLoc::ItemLocation)::DownCast (myData);
+  return anItemLocation ? anItemLocation->Import() : TopLoc_Location();
 }

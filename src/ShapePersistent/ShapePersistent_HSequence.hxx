@@ -16,7 +16,7 @@
 #define _ShapePersistent_HSequence_HeaderFile
 
 #include <StdObjMgt_Persistent.hxx>
-#include <StdObject_gp.hxx>
+#include <StdObject_gp_Vectors.hxx>
 
 #include <TColgp_HSequenceOfXYZ.hxx>
 #include <TColgp_HSequenceOfPnt.hxx>
@@ -41,9 +41,9 @@ class ShapePersistent_HSequence
     const ItemType&     Item()     const  { return myItem; }
 
   private:
-    Reference<node>                myPreviuos;
-    Reference<node>                myNext;
-    StdObject_gp::Object<ItemType> myItem;
+    Handle(node) myPreviuos;
+    Handle(node) myNext;
+    ItemType     myItem;
   };
 
   template <class SequenceClass>
@@ -60,9 +60,9 @@ class ShapePersistent_HSequence
     Standard_EXPORT Handle(SequenceClass) Import() const;
 
   private:
-    Reference<Node>         myFirst;
-    Reference<Node>         myLast;
-    Value<Standard_Integer> mySize;
+    Handle(Node)     myFirst;
+    Handle(Node)     myLast;
+    Standard_Integer mySize;
   };
 
 public:

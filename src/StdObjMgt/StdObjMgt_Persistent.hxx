@@ -18,7 +18,6 @@
 #include <Standard.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Transient.hxx>
-#include <StdObjMgt_ContentTypes.hxx>
 
 #include <TDF_Label.hxx>
 
@@ -32,8 +31,7 @@ class TCollection_HExtendedString;
 
 //! Root class for a temporary persistent object that reads data from a file
 //! and then creates transient object using the data.
-class StdObjMgt_Persistent : public    Standard_Transient,
-                             protected StdObjMgt_ContentTypes
+class StdObjMgt_Persistent : public Standard_Transient
 {
 public:
   //! Derived class instance create function.

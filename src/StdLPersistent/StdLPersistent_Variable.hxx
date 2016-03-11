@@ -37,8 +37,8 @@ public:
   }
 
 private:
-  Value     <Standard_Boolean>              myIsConstant;
-  Reference <StdLPersistent_HString::Ascii> myUnit;
+  Standard_Boolean                      myIsConstant;
+  Handle(StdLPersistent_HString::Ascii) myUnit;
 };
 
 #endif

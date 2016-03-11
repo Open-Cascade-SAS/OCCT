@@ -19,7 +19,6 @@
 #include <StdLPersistent_HArray1.hxx>
 
 #include <TDataXtd_Constraint.hxx>
-#include <TDataXtd_ConstraintEnum.hxx>
 
 
 class StdPersistent_DataXtd_Constraint
@@ -37,13 +36,13 @@ public:
   void Import (const Handle(TDataXtd_Constraint)& theAttribute) const;
 
 private:
-  Enum<TDataXtd_ConstraintEnum> myType;
-  Reference<StdLPersistent_HArray1::Persistent> myGeometries;
-  Reference<>                   myValue;
-  Value<Standard_Boolean>       myIsReversed;
-  Value<Standard_Boolean>       myIsInverted;
-  Value<Standard_Boolean>       myIsVerified;
-  Reference<>                   myPlane;
+  Standard_Integer              myType;
+  Handle(StdLPersistent_HArray1::Persistent) myGeometries;
+  Handle(StdObjMgt_Persistent)  myValue;
+  Standard_Boolean              myIsReversed;
+  Standard_Boolean              myIsInverted;
+  Standard_Boolean              myIsVerified;
+  Handle(StdObjMgt_Persistent)  myPlane;
 };
 
 #endif

@@ -16,9 +16,9 @@
 #define _StdLPersistent_Function_HeaderFile
 
 #include <StdObjMgt_Attribute.hxx>
-#include <StdLObject_GUID.hxx>
 
 #include <TFunction_Function.hxx>
+#include <Standard_GUID.hxx>
 
 
 class StdLPersistent_Function : public StdObjMgt_Attribute<TFunction_Function>
@@ -36,8 +36,8 @@ public:
   }
 
 private:
-  Object<StdLObject_GUID> myDriverGUID;
-  Value<Standard_Integer> myFailure;
+  Standard_GUID    myDriverGUID;
+  Standard_Integer myFailure;
 };
 
 #endif

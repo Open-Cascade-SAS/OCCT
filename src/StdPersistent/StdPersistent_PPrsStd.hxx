@@ -37,12 +37,12 @@ public:
     void Import (const Handle(TDataXtd_Presentation)& theAttribute) const;
 
   private:
-    Value<Standard_Boolean> myIsDisplayed;
-    Reference<>             myDriverGUID;
-    Value<Standard_Real>    myTransparency;
-    Value<Standard_Integer> myColor;
-    Value<Standard_Integer> myMaterial;
-    Value<Standard_Real>    myWidth;
+    Standard_Boolean             myIsDisplayed;
+    Handle(StdObjMgt_Persistent) myDriverGUID;
+    Standard_Real                myTransparency;
+    Standard_Integer             myColor;
+    Standard_Integer             myMaterial;
+    Standard_Real                myWidth;
   };
 
   class AISPresentation_1 : public AISPresentation
@@ -59,7 +59,7 @@ public:
     void Import (const Handle(TDataXtd_Presentation)& theAttribute) const;
 
   private:
-    Value<Standard_Integer> myMode;
+    Standard_Integer myMode;
   };
 };
 

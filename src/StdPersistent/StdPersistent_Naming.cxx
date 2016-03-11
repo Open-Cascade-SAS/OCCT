@@ -68,8 +68,8 @@ void StdPersistent_Naming::Name::Read (StdObjMgt_ReadData& theReadData)
 void StdPersistent_Naming::Name::Import
   (TNaming_Name& theName, const Handle(TDF_Data)&) const
 {
-  theName.Type      (myType);
-  theName.ShapeType (myShapeType);
+  theName.Type      (static_cast<TNaming_NameType> (myType));
+  theName.ShapeType (static_cast<TopAbs_ShapeEnum> (myShapeType));
 
   if (myArgs)
   {
@@ -134,7 +134,7 @@ void StdPersistent_Naming::Name_2::Import
   (TNaming_Name& theName, const Handle(TDF_Data)& theDF) const
 {
   Name_1::Import (theName, theDF);
-  theName.Orientation (myOrientation);
+  theName.Orientation (static_cast<TopAbs_Orientation> (myOrientation));
 }
 
 //=======================================================================
@@ -143,8 +143,8 @@ void StdPersistent_Naming::Name_2::Import
 //=======================================================================
 void StdPersistent_Naming::Naming::ImportAttribute()
 {
-  Handle(Name) aName;
-  if (myData.Cast (aName))
+  Handle(Name) aName = Handle(Name)::DownCast (myData);
+  if (aName)
   {
     aName->Import (myTransient->ChangeName(), myTransient->Label().Data());
     myData.Nullify();

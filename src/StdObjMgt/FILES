@@ -1,5 +1,4 @@
 StdObjMgt_Attribute.hxx
-StdObjMgt_ContentTypes.hxx
 StdObjMgt_MapOfInstantiators.cxx
 StdObjMgt_MapOfInstantiators.hxx
 StdObjMgt_Persistent.cxx

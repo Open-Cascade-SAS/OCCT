@@ -15,28 +15,39 @@
 #ifndef _StdObject_Shape_HeaderFile
 #define _StdObject_Shape_HeaderFile
 
-#include <StdObjMgt_ContentTypes.hxx>
+#include <StdObjMgt_ReadData.hxx>
 #include <StdObject_Location.hxx>
 #include <StdPersistent_TopoDS.hxx>
 
-#include <TopAbs_Orientation.hxx>
 #include <TopoDS_Shape.hxx>
 
 
-class StdObject_Shape : private StdObjMgt_ContentTypes
+class StdObject_Shape
 {
 public:
-  //! Read persistent data from a file.
-  inline void Read (StdObjMgt_ReadData& theReadData)
-    { theReadData >> myTShape >> myLocation >> myOrient; }
-
   //! Import transient object from the persistent data.
   Standard_EXPORT TopoDS_Shape Import() const;
 
+protected:
+  //! Read persistent data from a file.
+  inline void read (StdObjMgt_ReadData& theReadData)
+    { theReadData >> myTShape >> myLocation >> myOrient; }
+
 private:
-  Reference <StdPersistent_TopoDS::TShape> myTShape;
-  Object    <StdObject_Location>           myLocation;
-  Enum      <TopAbs_Orientation>           myOrient;
+  Handle(StdPersistent_TopoDS::TShape) myTShape;
+  StdObject_Location                   myLocation;
+  Standard_Integer                     myOrient;
+
+  friend StdObjMgt_ReadData& operator >>
+    (StdObjMgt_ReadData::Object, StdObject_Shape&);
 };
+
+//! Read persistent data from a file.
+inline StdObjMgt_ReadData& operator >>
+  (StdObjMgt_ReadData::Object theReadData, StdObject_Shape& theShape)
+{
+  theShape.read (theReadData);
+  return theReadData;
+}
 
 #endif

@@ -12,44 +12,23 @@
 // commercial license or contractual agreement.
 
 #include <StdLPersistent_HArray1.hxx>
-#include <StdObjMgt_ReadData.hxx>
 
 
 //=======================================================================
 //function : Read
 //purpose  : Read persistent data from a file
 //=======================================================================
-void StdLPersistent_HArray1::commonBase::Read (StdObjMgt_ReadData& theReadData)
+void StdLPersistent_HArray1::base::Read (StdObjMgt_ReadData& theReadData)
 {
-  Value<Standard_Integer> aLowerBound, anUpperBound;
+  Standard_Integer aLowerBound, anUpperBound;
   theReadData >> aLowerBound >> anUpperBound;
   createArray (aLowerBound, anUpperBound);
 
-  theReadData.Driver().BeginReadObjectData();
+  StdObjMgt_ReadData::Object anObjectData (theReadData);
 
   Standard_Integer aSize;
-  theReadData.ReadValue (aSize);
+  anObjectData >> aSize;
 
   for (Standard_Integer i = aLowerBound; i <= anUpperBound; i++)
-    readValue (theReadData, i);
-
-  theReadData.Driver().EndReadObjectData();
+    readValue (anObjectData, i);
 }
-
-template <class ArrayClass, class ValueClass>
-void StdLPersistent_HArray1::instance<ArrayClass, ValueClass>::readValue (
-  StdObjMgt_ReadData& theReadData,
-  const Standard_Integer theIndex)
-{
-  ValueClass aValue;
-  theReadData >> aValue;
-  this->myArray->SetValue (theIndex, static_cast<typename ArrayClass::value_type> (aValue));
-}
-
-
-template class StdLPersistent_HArray1::instance<TColStd_HArray1OfInteger>;
-template class StdLPersistent_HArray1::instance<TColStd_HArray1OfReal>;
-template class StdLPersistent_HArray1::instance<TColStd_HArray1OfByte,
-  StdObjMgt_ContentTypes::Value<Standard_Character> >;
-template class StdLPersistent_HArray1::instance<StdLPersistent_HArray1OfPersistent,
-  StdObjMgt_ContentTypes::Reference<> >;

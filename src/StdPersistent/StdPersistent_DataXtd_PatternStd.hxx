@@ -35,16 +35,16 @@ public:
   void Import (const Handle(TDataXtd_PatternStd)& theAttribute) const;
 
 private:
-  Value<Standard_Integer> mySignature;
-  Value<Standard_Boolean> myAxis1Reversed;
-  Value<Standard_Boolean> myAxis2Reversed;
-  Reference<>             myAxis1;
-  Reference<>             myAxis2;
-  Reference<>             myValue1;
-  Reference<>             myValue2;
-  Reference<>             myNb1;
-  Reference<>             myNb2;
-  Reference<>             myMirror;
+  Standard_Integer             mySignature;
+  Standard_Boolean             myAxis1Reversed;
+  Standard_Boolean             myAxis2Reversed;
+  Handle(StdObjMgt_Persistent) myAxis1;
+  Handle(StdObjMgt_Persistent) myAxis2;
+  Handle(StdObjMgt_Persistent) myValue1;
+  Handle(StdObjMgt_Persistent) myValue2;
+  Handle(StdObjMgt_Persistent) myNb1;
+  Handle(StdObjMgt_Persistent) myNb2;
+  Handle(StdObjMgt_Persistent) myMirror;
 };
 
 #endif

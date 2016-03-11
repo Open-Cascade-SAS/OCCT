@@ -28,8 +28,7 @@ public:
   Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() Standard_OVERRIDE;
 
   //! Retrieve the content of a file into a new document.
-  Standard_EXPORT virtual void Read (
-    const TCollection_ExtendedString& theFileName,
+  Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName,
                                      const Handle(CDM_Document)&       theNewDocument,
                                      const Handle(CDM_Application)&    theApplication) Standard_OVERRIDE;
 

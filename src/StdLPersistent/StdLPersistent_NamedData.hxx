@@ -25,35 +25,39 @@
 class StdLPersistent_NamedData : public StdObjMgt_Attribute<TDataStd_NamedData>
 {
   template <class HValuesArray>
-  class element
+  class pMapData
   {
   public:
+    typedef typename HValuesArray::ValueType ValueType;
+
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myKeys >> myValues; }
 
     inline operator bool() const
-      { return ! myKeys.IsNull(); }
+      { return !myKeys.IsNull(); }
 
-    template <class Value>
-    inline const TCollection_ExtendedString& Get
-      (Standard_Integer theIndex, Value& theValue) const
-    {
-      if (myValues)
-        theValue = myValues->Array()->Value(theIndex);
-      return myKeys->Array()->Value(theIndex)->ExtString()->String();
-    }
+    const TCollection_ExtendedString& Key (Standard_Integer theIndex) const
+      { return myKeys->Array()->Value(theIndex)->ExtString()->String(); }
+
+    ValueType Value (Standard_Integer theIndex) const
+      { return myValues ? myValues->Array()->Value(theIndex) : 0; }
 
   private:
-    Reference <StdLPersistent_HArray1::Persistent> myKeys;
-    Reference <HValuesArray>                       myValues;
+    Handle(StdLPersistent_HArray1::Persistent) myKeys;
+    Handle(HValuesArray)                       myValues;
   };
 
 public:
   //! Read persistent data from a file.
   inline void Read (StdObjMgt_ReadData& theReadData)
   {
-    theReadData >> myDimensions >>
-      myInts >> myReals >> myStrings >> myBytes >> myIntArrays >> myRealArrays;
+    theReadData >> myDimensions;
+    myInts      .Read (theReadData);
+    myReals     .Read (theReadData);
+    myStrings   .Read (theReadData);
+    myBytes     .Read (theReadData);
+    myIntArrays .Read (theReadData);
+    myRealArrays.Read (theReadData);
   }
 
   //! Import transient attribuite from the persistent data.
@@ -64,13 +68,13 @@ private:
   inline Standard_Integer upper (Standard_Integer theIndex) const;
 
 private:
-  Reference <StdLPersistent_HArray2::Integer>           myDimensions;
-  Object <element<StdLPersistent_HArray1::Integer>    > myInts;
-  Object <element<StdLPersistent_HArray1::Real>       > myReals;
-  Object <element<StdLPersistent_HArray1::Persistent> > myStrings;
-  Object <element<StdLPersistent_HArray1::Byte>       > myBytes;
-  Object <element<StdLPersistent_HArray1::Persistent> > myIntArrays;
-  Object <element<StdLPersistent_HArray1::Persistent> > myRealArrays;
+  Handle(StdLPersistent_HArray2::Integer)      myDimensions;
+  pMapData<StdLPersistent_HArray1::Integer>    myInts;
+  pMapData<StdLPersistent_HArray1::Real>       myReals;
+  pMapData<StdLPersistent_HArray1::Persistent> myStrings;
+  pMapData<StdLPersistent_HArray1::Byte>       myBytes;
+  pMapData<StdLPersistent_HArray1::Persistent> myIntArrays;
+  pMapData<StdLPersistent_HArray1::Persistent> myRealArrays;
 };
 
 #endif

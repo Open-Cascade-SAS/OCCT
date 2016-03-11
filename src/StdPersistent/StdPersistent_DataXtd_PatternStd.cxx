@@ -25,6 +25,10 @@
 void StdPersistent_DataXtd_PatternStd::Import
   (const Handle(TDataXtd_PatternStd)& theAttribute) const
 {
+  theAttribute->Signature     (mySignature);
+  theAttribute->Axis1Reversed (myAxis1Reversed);
+  theAttribute->Axis2Reversed (myAxis2Reversed);
+
   if (mySignature < 5)
   {
     theAttribute->Axis1 (

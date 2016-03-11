@@ -34,9 +34,9 @@ private:
   class Parser;
 
 private:
-  Value     <Standard_Integer>                   myVersion;
-  Reference <StdLPersistent_HArray1::Integer>    myLabels;
-  Reference <StdLPersistent_HArray1::Persistent> myAttributes;
+  Standard_Integer                           myVersion;
+  Handle(StdLPersistent_HArray1::Integer)    myLabels;
+  Handle(StdLPersistent_HArray1::Persistent) myAttributes;
 };
 
 #endif

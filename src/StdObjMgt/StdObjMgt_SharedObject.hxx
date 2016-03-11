@@ -21,11 +21,8 @@
 class StdObjMgt_SharedObject
 {
 public:
-  class PersistentBase : public    Standard_Transient,
-                         protected StdObjMgt_ContentTypes {};
-
   template <class Transient>
-  class AbstractPersistentBase : public PersistentBase
+  class AbstractPersistentBase : public Standard_Transient
   {
   public:
     virtual Handle(Transient) Import() const = 0;

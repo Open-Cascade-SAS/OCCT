@@ -9,7 +9,6 @@ StdLPersistent_Dependency.hxx
 StdLPersistent_Document.cxx
 StdLPersistent_Document.hxx
 StdLPersistent_Function.hxx
-StdLPersistent_HArray1OfPersistent.hxx
 StdLPersistent_HArray1.cxx
 StdLPersistent_HArray1.hxx
 StdLPersistent_HArray2.cxx

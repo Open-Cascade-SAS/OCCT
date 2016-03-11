@@ -1,0 +1,333 @@
+puts "==========="
+puts "0027241: Create a complete test case to verify reading of all attribute types from MDTV-Standard document"
+puts "==========="
+puts ""
+
+# Set Create_Doc to 1 to generate the document (using OCCT 6.9.1 or earlier)
+set Create_Doc 0
+
+set test_file_name bug27241_ocaf_all_attributes.std
+
+set test_name "OCC26961"
+set test_int 123
+set test_real 123.456e-7
+set test_int_arr {10 20}
+set test_real_arr {1.1 3.14 5.4e18}
+set test_extstr_arr {"sample string 1" "string 2"}
+set test_bool_arr {0 1}
+set test_ref_arr {"0:1:2:3:2" "0:1:2:3:1"}
+set test_byte_arr {15 25}
+set test_map {1 5 2 10}
+set test_map_sorted {1 2 5 10}
+set test_named_ints {i1 1 i2 2}
+set test_named_reals {r1 1.1 r2 2.2}
+set test_named_strings {s1 string1 s2 string2}
+set test_named_bytes {b1 65 b2 66}
+set test_ref "0:1:1"
+set test_guid "00000000-0000-0000-2222-000000000000"
+set test_comment "Sample document containing various attributes"
+set test_string "Sample string"
+set test_expr "2*pi*r"
+set test_var1 "0:1:2:3:2"
+set test_var2 "0:1:2:3:1"
+set test_point "111 222 333"
+set test_axisPos "10 10 30"
+set test_axisDir "11 22 33"
+set test_plane "15 25 35"
+set test_boxXYZ "10 20 30"
+set test_boxDX 100
+set test_boxDY 200
+set test_boxDZ 300
+set test_geom_t "cir"
+set test_failure 1
+set test_driver "G"
+set test_driver_id "2a96b604-ec8b-11d0-bee7-080009dc3333"
+set test_transp 0.5
+set test_color 11
+set test_material 22
+set test_positionX 100
+set test_positionY 200
+set test_positionZ 300
+
+proc checkarray {name array expected} {
+  set exp_len [llength $expected]
+  if {$exp_len != [llength $array]} {puts "Error: invalid $name"; return}
+  for {set i 0} {$i < $exp_len} {incr i} {
+    if {[lindex $array $i] != [lindex $expected $i]} {puts "Error: invalid $name"}
+  }
+}
+
+pload TOPTEST
+
+catch {Close D}
+
+# Normal test execution
+if !$Create_Doc {
+
+  # Load document
+  Open [locate_data_file $test_file_name] D
+
+
+  # Simple values
+  if [catch {GetInteger D 0:1:1 i}] {puts "Error: Integer not found"
+  } elseif {[dval i] != $test_int} {puts "Error: invalid Integer"}
+
+  if [catch {GetReal D 0:1:1 r}] {puts "Error: Real not found"
+  } elseif {[dval r] != $test_real} {puts "Error: invalid Real"}
+
+  if [catch {set name [GetName D 0:1:1]}] {puts "Error: Name not found"
+  } elseif {$name != $test_name} {puts "Error: invalid Name"}
+
+  if [catch {set comment [GetComment D 0:1:1]}] {puts "Error: Comment not found"
+  } elseif {$comment != $test_comment} {puts "Error: invalid Comment"}
+
+  if [catch {set string [GetAsciiString D 0:1:1]}] {puts "Error: AsciiString not found"}
+
+
+  # TagSource
+  if [catch {NewTag D 0:1:2}] {puts "Error: TagSource not found"}
+
+  
+  # Reference
+  if [catch {set ref [GetReference D 0:1:3]}] {puts "Error: Reference not found"
+  } elseif {[string compare $ref $test_ref] != 0} {puts "Error: invalid Reference"}
+
+
+  # Directory
+  if [catch {AddDirectory D 0:1:2:1}] {puts "Error: Directory not found"}
+
+
+  # UAttribute
+  if [catch {set guid [GetUAttribute D 0:1:2:2 $test_guid]}] {puts "Error: no label for UAttribute"
+  } elseif {$guid == "No UAttribute Attribute on label"} {puts "Error: $guid"
+  } elseif {$guid != $test_guid} {puts "Error: invalid UAttribute"}
+
+
+  # Variable
+  if [regexp "no such attribute" [GetVariable D $test_var2 is_const units]] {puts "Error: Variable not found"
+  } elseif {$is_const != 0 || $units != "mm"} {puts "Error: invalid Variable"}
+
+
+  # Relation
+  if [catch {set rel_dump [DumpRelation D 0:1:2:3]}] {puts "Error: Relation not found"
+  } elseif ![regexp "$test_expr.*$test_var1 $test_var2" $rel_dump] {
+      puts "Error: invalid Relation"}
+
+
+  # TreeNode
+  if [catch {set root_node [RootNode D 0:1:2:4]}] {puts "Error: TreeNode not found"
+  } elseif {$root_node != "0:1:2:4"} {puts "Error: invalid TreeNode"}
+
+
+  # Arrays
+  if [catch {set iarr [GetIntArray D 0:1:1]}] {puts "Error: IntegerArray not found"
+  } else { checkarray "IntegerArray" $iarr $test_int_arr }
+
+  if [catch {set rarr [GetRealArray D 0:1:1]}] {puts "Error: RealArray not found"
+  } else { checkarray "RealArray" $rarr $test_real_arr }
+
+  if [catch {set esarr [GetExtStringArray D 0:1:1]}] {puts "Error: ExtStringArray not found"
+  } else { checkarray "ExtStringArray" $esarr [join $test_extstr_arr " "]}
+
+  if [catch {set boolarr [GetBooleanArray D 0:1:1]}] {puts "Error: BooleanArray not found"
+  } else { checkarray "BooleanArray" $boolarr $test_bool_arr }
+
+  if [catch {set refarr [GetRefArray D 0:1:1]}] {puts "Error: ReferenceArray not found"
+  } else { checkarray "ReferenceArray" $refarr $test_ref_arr }
+
+  if [catch {set bytearr [GetByteArray D 0:1:1]}] {puts "Error: ByteArray not found"
+  } else { checkarray "ByteArray" $bytearr $test_byte_arr }
+
+
+  # Lists
+  if [catch {set ilst [GetIntegerList D 0:1:1]}] {puts "Error: IntegerList not found"
+  } else { checkarray "IntegerList" $ilst $test_int_arr }
+
+  if [catch {set rlst [GetRealList D 0:1:1]}] {puts "Error: RealList not found"
+  } else { checkarray "RealList" $rlst $test_real_arr }
+
+  if [catch {set eslst [GetExtStringList D 0:1:1]}] {puts "Error: ExtStringList not found"
+  } else { checkarray "ExtStringList" $eslst [join $test_extstr_arr " "]}
+
+  if [catch {set blst [GetBooleanList D 0:1:1]}] {puts "Error: BooleanList not found"
+  } else { checkarray "BooleanList" $blst $test_bool_arr }
+
+  if [catch {set reflst [GetReferenceList D 0:1:1]}] {puts "Error: ReferenceList not found"
+  } else { checkarray "ReferenceList" $reflst $test_ref_arr }
+
+
+  # IntPackedMap
+  if [catch {set map [GetIntPackedMap D 0:1:1]}] {puts "Error: IntPackedMap not found"
+  } else { checkarray "IntPackedMap" $map $test_map_sorted }
+
+
+  # NamedData
+  if [catch {GetNDIntegers   D 0:1:4}] {puts "Error: NamedData not found"}
+  if [catch {GetNDReals      D 0:1:4}] {puts "Error: NamedData not found"}
+  if [catch {GetNDStrings    D 0:1:4}] {puts "Error: NamedData not found"}
+  if [catch {GetNDBytes      D 0:1:4}] {puts "Error: NamedData not found"}
+  if [catch {GetNDIntArrays  D 0:1:4}] {puts "Error: NamedData not found"}
+  if [catch {GetNDRealArrays D 0:1:4}] {puts "Error: NamedData not found"}
+
+
+  # NamedShape
+  eval box Box $test_boxXYZ $test_boxDX $test_boxDY $test_boxDZ
+  if [catch {GetShape D 0:1:6 b}] {puts "Error: NamedShape not found"
+  } elseif {[bounding b] != [bounding Box]} {puts "Error: invalid NamedShape"
+  } else {
+    checkshape b
+    checkprops b -l [expr $test_boxDX * 8 + $test_boxDY * 8 + $test_boxDZ * 8]
+    checkprops b -s [expr $test_boxDX * $test_boxDY * 2 + $test_boxDY * $test_boxDZ * 2 + $test_boxDX * $test_boxDZ * 2]
+    checkprops b -v [expr $test_boxDX * $test_boxDY * $test_boxDZ]
+  }
+
+
+  # Point, Axis, Plane
+  if [catch {GetPoint D 0:1:5:1 pnt}] {puts "Error: Point not found"}
+  if [catch {GetAxis  D 0:1:5:2 axs}] {puts "Error: Axis not found"}
+  if [catch {GetPlane D 0:1:5:3 pln}] {puts "Error: Plane not found"}
+
+
+  # Geometry
+  if [catch {set geom_t [GetGeometryType D 0:1:6]}] {puts "Error: Geometry not found"
+  } elseif {$geom_t != $test_geom_t} { puts "Error: invalid Geometry" }
+
+
+  # Constraint
+  if [catch {set constraint [GetConstraint D 0:1:1]}] {puts "Error: Constraint not found"
+  } elseif {$constraint != "0:1:1 COINCIDENT G_1 (0:1:6) "} { puts "Error: invalid Constraint" }
+
+
+  # PatternStd
+  if [catch {set pattern [DumpPattern D 0:1:1]}] {puts "Error: PatternStd not found"
+  } elseif {$pattern != "0:1:1 signature = 5 Mirror (0:1:6)"} { puts "Error: invalid PatternStd" }
+
+
+  # Function
+  if [catch {GetFunction D 0:1:1 fguid failure}] {puts "Error: Function not found"
+  } elseif {$fguid != $test_guid || $failure != $test_failure} { puts "Error: invalid Function" }
+
+
+  # AISPresentation
+  AISInitViewer D
+  if       [catch {set driver   [AISDriver       D 0:1:1]}] {puts "Error: AISPresentation not found"
+  } elseif [catch {set transp   [AISTransparency D 0:1:1]}] {puts "Error: AISPresentation not found"
+  } elseif [catch {set color    [AISColor        D 0:1:1]}] {puts "Error: AISPresentation not found"
+  } elseif [catch {set material [AISMaterial     D 0:1:1]}] {puts "Error: AISPresentation not found"
+  } elseif {$driver != $test_driver_id}                          { puts "Error: invalid AISPresentation"
+  } elseif {[lindex [split $transp   "\n"] 1] != $test_transp}   { puts "Error: invalid AISPresentation"
+  } elseif {[lindex [split $color    "\n"] 1] != $test_color}    { puts "Error: invalid AISPresentation"
+  } elseif {[lindex [split $material "\n"] 1] != $test_material} { puts "Error: invalid AISPresentation" }
+
+
+  # Position
+  if [catch {GetPosition D 0:1:1 posX posY posZ}] {puts "Error: Position not found"
+  } elseif {$posX != $test_positionX} { puts "Error: invalid Position"
+  } elseif {$posY != $test_positionY} { puts "Error: invalid Position"
+  } elseif {$posZ != $test_positionZ} { puts "Error: invalid Position" }
+
+} else {
+
+  # Creation of the document to be used in normal execution.
+  # Note! This will work only on OCCT versions older than 7.0,
+  # as since 7.0 there is no more storage driver for old persistence.
+
+  puts "Creating document"
+  NewDocument D MDTV-Standard
+
+  # Simple values
+  SetInteger     D 0:1:1 $test_int
+  SetReal        D 0:1:1 $test_real
+  SetName        D 0:1:1 $test_name
+  SetComment     D 0:1:1 $test_comment
+  SetAsciiString D 0:1:1 $test_string
+
+  # TagSource
+  SetTagger D 0:1:2
+  
+  # Reference
+  SetReference D 0:1:3 $test_ref
+  
+  # Directory
+  NewDirectory D 0:1:2:1
+
+  # UAttribute
+  SetUAttribute D 0:1:2:2 $test_guid
+
+  # Variable
+  SetVariable D $test_var2 0 mm
+  SetVariable D $test_var1 1 ""
+
+  # Relation
+  SetRelation D 0:1:2:3 "2*pi*r" $test_var1 $test_var2
+
+  # TreeNode
+  SetNode D 0:1:2:4
+
+  # Arrays
+  eval SetIntArray       D 0:1:1 1 1 2 $test_int_arr
+  eval SetRealArray      D 0:1:1 1 1 3 $test_real_arr
+  eval SetExtStringArray D 0:1:1 1 1 2 $test_extstr_arr
+  eval SetBooleanArray   D 0:1:1 1 1 2 $test_bool_arr
+  eval SetRefArray       D 0:1:1   1 2 $test_ref_arr
+  eval SetByteArray      D 0:1:1 1 1 2 $test_byte_arr
+
+  # Lists
+  eval SetIntegerList   D 0:1:1 $test_int_arr
+  eval SetRealList      D 0:1:1 $test_real_arr
+  eval SetExtStringList D 0:1:1 $test_extstr_arr
+  eval SetBooleanList   D 0:1:1 $test_bool_arr
+  eval SetReferenceList D 0:1:1 $test_ref_arr
+
+  # IntPackedMap
+  eval SetIntPackedMap  D 0:1:1 1 $test_map
+
+  # NamedData
+  eval SetNDataIntegers   D 0:1:4 2 $test_named_ints
+  eval SetNDataReals      D 0:1:4 2 $test_named_reals
+  eval SetNDataStrings    D 0:1:4 2 $test_named_strings
+  eval SetNDataBytes      D 0:1:4 2 $test_named_bytes
+  eval SetNDataIntArrays  D 0:1:4 ia 2 $test_int_arr
+  eval SetNDataRealArrays D 0:1:4 ra 3 $test_real_arr
+
+  # NamedShape  
+  eval box Box $test_boxXYZ $test_boxDX $test_boxDY $test_boxDZ
+  SetShape D 0:1:6 Box
+
+  # Point
+  eval point Point $test_point
+  SetPoint D 0:1:5:1 Point
+
+  # Axis
+  eval line Axis $test_axisPos $test_axisDir
+  SetAxis D 0:1:5:2 Axis
+
+  # Plane
+  eval plane Plane $test_plane
+  SetPlane D 0:1:5:3 Plane
+
+  # Geometry
+  SetGeometry D 0:1:6 $test_geom_t
+
+  # Constraint
+  SetConstraint D 0:1:1 equal 0:1:6
+
+  # PatternStd
+  SetPattern D 0:1:1 5 0:1:6
+
+  # Function
+  SetFunction D 0:1:1 $test_guid $test_failure
+
+  # AISPresentation
+  AISInitViewer D
+  AISSet          D 0:1:1 $test_driver
+  AISTransparency D 0:1:1 $test_transp
+  AISColor        D 0:1:1 $test_color
+  AISMaterial     D 0:1:1 $test_material
+
+  # Position
+  SetPosition D 0:1:1 $test_positionX $test_positionY $test_positionZ
+
+  SaveAs D $imagedir/ocaf_all_attributes.std
+  puts "Document saved to $imagedir/$test_file_name"
+}

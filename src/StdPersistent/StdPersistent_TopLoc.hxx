@@ -43,9 +43,9 @@ public:
     Standard_EXPORT TopLoc_Location Import() const;
 
   private:
-    Reference<Datum3D>         myDatum;
-    Value<Standard_Integer>    myPower;
-    Object<StdObject_Location> myNext;
+    Handle(Datum3D)    myDatum;
+    Standard_Integer   myPower;
+    StdObject_Location myNext;
   };
 };
 

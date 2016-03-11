@@ -34,8 +34,9 @@ void StdLPersistent_Value::integer<AttribClass>::ImportAttribute()
 template <class AttribClass, class HStringClass>
 void StdLPersistent_Value::string<AttribClass, HStringClass>::ImportAttribute()
 {
-  Handle(HStringClass) anHString;
-  if (this->myData.Cast (anHString))
+  Handle(HStringClass) anHString =
+    Handle(HStringClass)::DownCast (this->myData);
+  if (anHString)
   {
     this->myTransient->Set (anHString->Value()->String());
     this->myData.Nullify();
@@ -83,7 +84,7 @@ Handle(TDF_Attribute) StdLPersistent_Value::UAttribute::CreateAttribute()
   }
 
   return this->myTransient;
-  }
+}
 
 
 template class StdLPersistent_Value::integer <TDataStd_Integer>;

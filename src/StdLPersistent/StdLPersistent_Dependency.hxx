@@ -37,8 +37,8 @@ class StdLPersistent_Dependency
     void Import (const Handle(AttribClass)& theAttribute) const;
 
   private:
-    StdObjMgt_ContentTypes::Reference<StdLPersistent_HString::Extended>   myName;
-    StdObjMgt_ContentTypes::Reference<StdLPersistent_HArray1::Persistent> myVariables;
+    Handle(StdLPersistent_HString::Extended)   myName;
+    Handle(StdLPersistent_HArray1::Persistent) myVariables;
   };
 
 public:

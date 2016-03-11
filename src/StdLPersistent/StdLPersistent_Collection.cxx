@@ -66,17 +66,17 @@ private:
 //function : Read
 //purpose  : Read persistent data from a file
 //=======================================================================
-template <class Persistent>
-void StdLPersistent_Collection::booleanArrayBase<Persistent>::Read
+template <class Base>
+void StdLPersistent_Collection::booleanArrayBase<Base>::Read
   (StdObjMgt_ReadData& theReadData)
 {
-  StdLPersistent_Collection::booleanArrayBase<Persistent>::SingleRef::Read (theReadData);
+  Base::Read (theReadData);
   theReadData >> myLower >> myUpper;
 }
 
-template <class Persistent>
+template <class Base>
 template <class ArrayHandle, class Converter>
-void StdLPersistent_Collection::booleanArrayBase<Persistent>::import
+void StdLPersistent_Collection::booleanArrayBase<Base>::import
   (const ArrayHandle& theArray, Converter theConverter) const
 {
   Handle(TColStd_HArray1OfByte) aByteArray =
@@ -89,17 +89,17 @@ void StdLPersistent_Collection::booleanArrayBase<Persistent>::import
   this->myTransient->SetInternalArray (aByteArray);
 }
 
-template <class Persistent>
+template <class Base>
 template <class ArrayHandle, class Converter>
-void StdLPersistent_Collection::directArrayBase<Persistent>::import
+void StdLPersistent_Collection::directArrayBase<Base>::import
   (const ArrayHandle& theArray, Converter) const
 {
   this->myTransient->ChangeArray (theArray);
 }
 
-template <class Persistent>
+template <class Base>
 template <class ArrayHandle, class Converter>
-void StdLPersistent_Collection::arrayBase<Persistent>::import
+void StdLPersistent_Collection::arrayBase<Base>::import
   (const ArrayHandle& theArray, Converter theConverter) const
 {
   this->myTransient->Init (theArray->Lower(), theArray->Upper());
@@ -107,18 +107,18 @@ void StdLPersistent_Collection::arrayBase<Persistent>::import
     this->myTransient->SetValue (i, theConverter (theArray->Value(i)));
 }
 
-template <class Persistent>
+template <class Base>
 template <class ArrayHandle, class Converter>
-void StdLPersistent_Collection::listBase<Persistent>::import
+void StdLPersistent_Collection::listBase<Base>::import
   (const ArrayHandle& theArray, Converter theConverter) const
 {
   for (Standard_Integer i = theArray->Lower(); i <= theArray->Upper(); i++)
     this->myTransient->Append (theConverter (theArray->Value(i)));
 }
 
-template <class Persistent>
+template <class Base>
 template <class ArrayHandle, class Converter>
-void StdLPersistent_Collection::mapBase<Persistent>::import
+void StdLPersistent_Collection::mapBase<Base>::import
   (const ArrayHandle& theArray, Converter theConverter) const
 {
   Handle(TColStd_HPackedMapOfInteger) anHMap = new TColStd_HPackedMapOfInteger;
@@ -138,8 +138,8 @@ template <template<class> class BaseT,
 void StdLPersistent_Collection::
        instance<BaseT, HArrayClass, AttribClass, Converter>::ImportAttribute()
 {
-  Handle(HArrayClass) anHArray;
-  if (this->myData.Cast (anHArray))
+  Handle(HArrayClass) anHArray = Handle(HArrayClass)::DownCast (this->myData);
+  if (anHArray)
   {
     typename HArrayClass::ArrayHandle anArray = anHArray->Array();
     if (anArray)

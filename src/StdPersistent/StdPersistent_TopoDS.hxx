@@ -24,15 +24,15 @@
 class StdPersistent_TopoDS : protected StdObjMgt_SharedObject
 {
 protected:
-  class pTShape : public PersistentBase
+  class pTShape : public Standard_Transient
   {
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myShapes >> myFlags; }
 
   protected:
-    Reference<>             myShapes;
-    Value<Standard_Integer> myFlags;
+    Handle(StdObjMgt_Persistent) myShapes;
+    Standard_Integer             myFlags;
   };
 
 public:

@@ -16,7 +16,12 @@
 #define _ShapePersistent_Geom_HeaderFile
 
 #include <StdObjMgt_SharedObject.hxx>
-#include <StdObject_gp.hxx>
+
+#include <StdObject_gp_Vectors.hxx>
+#include <StdObject_gp_Axes.hxx>
+#include <StdObject_gp_Curves.hxx>
+#include <StdObject_gp_Surfaces.hxx>
+#include <StdObject_gp_Trsfs.hxx>
 
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Direction.hxx>
@@ -52,7 +57,16 @@ protected:
   };
 
   template <class Base, class GpData>
-  struct subBase_gp : subBase <Base, StdObject_gp::Object<GpData> > {};
+  struct subBase_gp : public Base
+  {
+  public:
+    //! Read persistent data from a file.
+    Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
+    {
+      GpData aData;
+      theReadData >> aData;
+    }
+  };
 
   template <class Base>
   struct subBase_empty : Base {};
@@ -64,7 +78,7 @@ protected:
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData)
     {
-      StdObject_gp::Object<Data> aData;
+      Data aData;
       theReadData >> aData;
       this->myTransient = new Target (aData);
     }

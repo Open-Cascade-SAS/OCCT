@@ -16,14 +16,21 @@
 #define _StdLPersistent_HArray2_HeaderFile
 
 #include <StdObjMgt_Persistent.hxx>
+#include <StdObjMgt_ReadData.hxx>
+
+#include <NCollection_DefineHArray2.hxx>
 
 #include <TColStd_HArray2OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
 
+DEFINE_HARRAY2 (StdLPersistent_HArray2OfPersistent,
+                NCollection_Array2<Handle(StdObjMgt_Persistent)>)
+
+
 class StdLPersistent_HArray2
 {
-  class commonBase : public StdObjMgt_Persistent
+  class base : public StdObjMgt_Persistent
   {
   public:
     //! Read persistent data from a file.
@@ -42,7 +49,7 @@ class StdLPersistent_HArray2
 
 protected:
   template <class ArrayClass>
-  class base : public commonBase
+  class instance : public base
   {
   public:
     typedef Handle(ArrayClass) ArrayHandle;
@@ -60,23 +67,19 @@ protected:
                                 theLowerCol, theUpperCol);
     }
 
+    virtual void readValue (StdObjMgt_ReadData&    theReadData,
+                            const Standard_Integer theRow,
+                            const Standard_Integer theCol)
+      { theReadData >> myArray->ChangeValue (theRow, theCol); }
+
   protected:
     Handle(ArrayClass) myArray;
   };
 
-private:
-  template <class ArrayClass>
-  class instance : public base<ArrayClass>
-  {
-  protected:
-    Standard_EXPORT virtual void readValue (StdObjMgt_ReadData&    theReadData,
-                                            const Standard_Integer theRow,
-                                            const Standard_Integer theCol);
-  };
-
 public:
-  typedef instance<TColStd_HArray2OfInteger> Integer;
-  typedef instance<TColStd_HArray2OfReal>    Real;
+  typedef instance<TColStd_HArray2OfInteger>           Integer;
+  typedef instance<TColStd_HArray2OfReal>              Real;
+  typedef instance<StdLPersistent_HArray2OfPersistent> Persistent;
 };
 
 #endif

@@ -14,6 +14,8 @@
 #include <StdObjMgt_ReadData.hxx>
 #include <StdObjMgt_Persistent.hxx>
 
+#include <Standard_GUID.hxx>
+
 
 StdObjMgt_ReadData::StdObjMgt_ReadData
   (Storage_BaseDriver& theDriver, const Standard_Integer theNumberOfObjects)
@@ -38,4 +40,24 @@ Handle(StdObjMgt_Persistent) StdObjMgt_ReadData::ReadReference()
   Standard_Integer aRef;
   myDriver->GetReference (aRef);
   return aRef ? PersistentObject (aRef) : NULL;
+}
+
+//=======================================================================
+//function : operator >>
+//purpose  : Read persistent data from a file
+//=======================================================================
+StdObjMgt_ReadData& operator >>
+  (StdObjMgt_ReadData::Object theReadData, Standard_GUID& theGUID)
+{
+  Standard_Integer      a32b;
+  Standard_ExtCharacter a16b[3];
+  Standard_Character    a8b [6];
+
+  theReadData >> a32b >> a16b[0] >> a16b[1] >> a16b[2];
+  theReadData >> a8b[0] >> a8b[1] >> a8b[2] >> a8b[3] >> a8b[4] >> a8b[5];
+
+  theGUID = Standard_GUID (a32b, a16b[0], a16b[1], a16b[2],
+                           a8b[0], a8b[1], a8b[2], a8b[3], a8b[4], a8b[5]);
+
+  return theReadData;
 }

@@ -11,9 +11,7 @@ ShapePersistent_Geom_Surface.hxx
 ShapePersistent_Geom2d.hxx
 ShapePersistent_Geom2d_Curve.cxx
 ShapePersistent_Geom2d_Curve.hxx
-ShapePersistent_HArray1.cxx
 ShapePersistent_HArray1.hxx
-ShapePersistent_HArray2.cxx
 ShapePersistent_HArray2.hxx
 ShapePersistent_HSequence.cxx
 ShapePersistent_HSequence.hxx

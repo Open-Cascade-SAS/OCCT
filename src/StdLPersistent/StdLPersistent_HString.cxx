@@ -25,20 +25,18 @@ template <class StringClass, typename CharType>
 void StdLPersistent_HString::instance<StringClass, CharType>::Read
   (StdObjMgt_ReadData& theReadData)
 {
-  theReadData.Driver().BeginReadObjectData();
+  StdObjMgt_ReadData::Object anObjectData (theReadData);
 
   Standard_Integer aSize;
-  theReadData.ReadValue (aSize);
+  anObjectData >> aSize;
   myValue = new StringClass (aSize, 0);
 
   for (Standard_Integer i = 1; i <= aSize; i++)
   {
     CharType aChar;
-    theReadData.ReadValue (aChar);
+    anObjectData >> aChar;
     myValue->SetValue (i, aChar);
   }
-
-  theReadData.Driver().EndReadObjectData();
 }
 
 //=======================================================================

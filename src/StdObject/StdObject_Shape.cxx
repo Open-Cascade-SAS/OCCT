@@ -27,7 +27,7 @@ TopoDS_Shape StdObject_Shape::Import() const
     aShape.TShape (myTShape->Import());
 
   aShape.Location (myLocation.Import());
-  aShape.Orientation (myOrient);
+  aShape.Orientation (static_cast<TopAbs_Orientation> (myOrient));
 
   return aShape;
 }

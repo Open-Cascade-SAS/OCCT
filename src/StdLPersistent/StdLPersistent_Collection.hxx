@@ -32,7 +32,7 @@
 #include <TDataStd_IntPackedMap.hxx>
 
 
-class StdLPersistent_Collection : private StdObjMgt_ContentTypes
+class StdLPersistent_Collection
 {
   // Converters
   struct noConversion;
@@ -54,8 +54,8 @@ class StdLPersistent_Collection : private StdObjMgt_ContentTypes
       const;
 
   protected:
-    Value<Standard_Integer> myLower;
-    Value<Standard_Integer> myUpper;
+    Standard_Integer myLower;
+    Standard_Integer myUpper;
   };
 
   template <class Base>
@@ -118,7 +118,7 @@ class StdLPersistent_Collection : private StdObjMgt_ContentTypes
     Standard_EXPORT virtual void ImportAttribute();
 
   private:
-    Value<Standard_Boolean> myDelta;
+    Standard_Boolean myDelta;
   };
 
 

@@ -24,7 +24,7 @@
 void StdPersistent_DataXtd_Constraint::Import
   (const Handle(TDataXtd_Constraint)& theAttribute) const
 {
-  theAttribute->SetType  (myType);
+  theAttribute->SetType  (static_cast<TDataXtd_ConstraintEnum> (myType));
   theAttribute->Reversed (myIsReversed);
   theAttribute->Inverted (myIsInverted);
   theAttribute->Verified (myIsVerified);

@@ -74,11 +74,12 @@ void ShapePersistent_BRep::PointOnCurve::Read
 Handle(BRep_PointRepresentation)
   ShapePersistent_BRep::PointOnCurve::import() const
 {
-  if (myCurve.IsNull())
-    return NULL;
+  Handle(Geom_Curve) aCurve;
+  if (myCurve)
+    aCurve = myCurve->Import();
 
   return new BRep_PointOnCurve
-    (myParameter, myCurve->Import(), myLocation.Import());
+    (myParameter, aCurve, myLocation.Import());
 }
 
 void ShapePersistent_BRep::PointsOnSurface::Read
@@ -98,11 +99,16 @@ void ShapePersistent_BRep::PointOnCurveOnSurface::Read
 Handle(BRep_PointRepresentation)
   ShapePersistent_BRep::PointOnCurveOnSurface::import() const
 {
-  if (mySurface.IsNull() || myPCurve.IsNull())
-    return NULL;
+  Handle(Geom2d_Curve) aPCurve;
+  if (myPCurve)
+    aPCurve = myPCurve->Import();
+
+  Handle(Geom_Surface) aSurface;
+  if (mySurface)
+    aSurface = mySurface->Import();
 
   return new BRep_PointOnCurveOnSurface
-    (myParameter, myPCurve->Import(), mySurface->Import(), myLocation.Import());
+    (myParameter, aPCurve, aSurface, myLocation.Import());
 }
 
 void ShapePersistent_BRep::PointOnSurface::Read
@@ -115,11 +121,12 @@ void ShapePersistent_BRep::PointOnSurface::Read
 Handle(BRep_PointRepresentation)
   ShapePersistent_BRep::PointOnSurface::import() const
 {
-  if (mySurface.IsNull())
-    return NULL;
+  Handle(Geom_Surface) aSurface;
+  if (mySurface)
+    aSurface = mySurface->Import();
 
   return new BRep_PointOnSurface
-    (myParameter, myParameter2, mySurface->Import(), myLocation.Import());
+    (myParameter, myParameter2, aSurface, myLocation.Import());
 }
 
 //=======================================================================
@@ -164,12 +171,12 @@ void ShapePersistent_BRep::Curve3D::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::Curve3D::import() const
 {
-  Handle(Geom_Curve) aCurve;
+  Handle(Geom_Curve) aCurve3D;
   if (myCurve3D)
-    aCurve = myCurve3D->Import();
+    aCurve3D = myCurve3D->Import();
 
   Handle(BRep_Curve3D) aRepresentation =
-    new BRep_Curve3D (aCurve, myLocation.Import());
+    new BRep_Curve3D (aCurve3D, myLocation.Import());
 
   aRepresentation->SetRange (myFirst, myLast);
   return aRepresentation;
@@ -185,18 +192,21 @@ void ShapePersistent_BRep::CurveOnSurface::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::CurveOnSurface::import() const
 {
-  if (myPCurve.IsNull() || mySurface.IsNull())
-    return NULL;
+  Handle(Geom2d_Curve) aPCurve;
+  if (myPCurve)
+    aPCurve = myPCurve->Import();
 
-  Handle(BRep_CurveOnSurface) aCurve =
-    new BRep_CurveOnSurface (myPCurve->Import(),
-                             mySurface->Import(),
-                             myLocation.Import());
+  Handle(Geom_Surface) aSurface;
+  if (mySurface)
+    aSurface = mySurface->Import();
 
-  aCurve->SetUVPoints (myUV1, myUV2);
-  aCurve->SetRange (myFirst, myLast);
+  Handle(BRep_CurveOnSurface) aRepresentation =
+    new BRep_CurveOnSurface (aPCurve, aSurface, myLocation.Import());
 
-  return aCurve;
+  aRepresentation->SetUVPoints (myUV1, myUV2);
+  aRepresentation->SetRange (myFirst, myLast);
+
+  return aRepresentation;
 }
 
 void ShapePersistent_BRep::CurveOnClosedSurface::Read
@@ -209,21 +219,29 @@ void ShapePersistent_BRep::CurveOnClosedSurface::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::CurveOnClosedSurface::import() const
 {
-  if (myPCurve.IsNull() || mySurface.IsNull() || myPCurve2.IsNull())
-    return NULL;
+  Handle(Geom2d_Curve) aPCurve;
+  if (myPCurve)
+    aPCurve = myPCurve->Import();
 
-  Handle(BRep_CurveOnClosedSurface) aCurve =
-    new BRep_CurveOnClosedSurface (myPCurve->Import(),
-                                   myPCurve2->Import(),
-                                   mySurface->Import(),
-                                   myLocation.Import(),
-                                   myContinuity);
+  Handle(Geom2d_Curve) aPCurve2;
+  if (myPCurve2)
+    aPCurve2 = myPCurve2->Import();
 
-  aCurve->SetUVPoints  (myUV1  , myUV2 );
-  aCurve->SetUVPoints2 (myUV21 , myUV22);
-  aCurve->SetRange     (myFirst, myLast);
+  Handle(Geom_Surface) aSurface;
+  if (mySurface)
+    aSurface = mySurface->Import();
 
-  return aCurve;
+  GeomAbs_Shape aContinuity = static_cast<GeomAbs_Shape> (myContinuity);
+
+  Handle(BRep_CurveOnClosedSurface) aRepresentation =
+    new BRep_CurveOnClosedSurface
+      (aPCurve, aPCurve2, aSurface, myLocation.Import(), aContinuity);
+
+  aRepresentation->SetUVPoints  (myUV1  , myUV2 );
+  aRepresentation->SetUVPoints2 (myUV21 , myUV22);
+  aRepresentation->SetRange     (myFirst, myLast);
+
+  return aRepresentation;
 }
 
 void ShapePersistent_BRep::Polygon3D::Read
@@ -236,10 +254,11 @@ void ShapePersistent_BRep::Polygon3D::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::Polygon3D::import() const
 {
-  if (myPolygon3D.IsNull())
-    return NULL;
+  Handle(Poly_Polygon3D) aPolygon3D;
+  if (myPolygon3D)
+    aPolygon3D = myPolygon3D->Import();
 
-  return new BRep_Polygon3D (myPolygon3D->Import(), myLocation.Import());
+  return new BRep_Polygon3D (aPolygon3D, myLocation.Import());
 }
 
 void ShapePersistent_BRep::PolygonOnTriangulation::Read
@@ -252,12 +271,16 @@ void ShapePersistent_BRep::PolygonOnTriangulation::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::PolygonOnTriangulation::import() const
 {
-  if (myPolygon.IsNull() || myTriangulation.IsNull())
-    return NULL;
+  Handle(Poly_PolygonOnTriangulation) aPolygon;
+  if (myPolygon)
+    aPolygon = myPolygon->Import();
 
-  return new BRep_PolygonOnTriangulation (myPolygon->Import(),
-                                          myTriangulation->Import(),
-                                          myLocation.Import());
+  Handle(Poly_Triangulation) aTriangulation;
+  if (myTriangulation)
+    aTriangulation = myTriangulation->Import();
+
+  return new BRep_PolygonOnTriangulation
+    (aPolygon, aTriangulation, myLocation.Import());
 }
 
 void ShapePersistent_BRep::PolygonOnClosedTriangulation::Read
@@ -270,13 +293,20 @@ void ShapePersistent_BRep::PolygonOnClosedTriangulation::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::PolygonOnClosedTriangulation::import() const
 {
-  if (myPolygon.IsNull() || myTriangulation.IsNull() || myPolygon2.IsNull())
-    return NULL;
+  Handle(Poly_PolygonOnTriangulation) aPolygon;
+  if (myPolygon)
+    aPolygon = myPolygon->Import();
 
-  return new BRep_PolygonOnClosedTriangulation (myPolygon->Import(),
-                                                myPolygon2->Import(),
-                                                myTriangulation->Import(),
-                                                myLocation.Import());
+  Handle(Poly_PolygonOnTriangulation) aPolygon2;
+  if (myPolygon2)
+    aPolygon2 = myPolygon2->Import();
+
+  Handle(Poly_Triangulation) aTriangulation;
+  if (myTriangulation)
+    aTriangulation = myTriangulation->Import();
+
+  return new BRep_PolygonOnClosedTriangulation
+    (aPolygon, aPolygon2, aTriangulation, myLocation.Import());
 }
 
 void ShapePersistent_BRep::PolygonOnSurface::Read
@@ -289,12 +319,15 @@ void ShapePersistent_BRep::PolygonOnSurface::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::PolygonOnSurface::import() const
 {
-  if (myPolygon2D.IsNull() || mySurface.IsNull())
-    return NULL;
+  Handle(Poly_Polygon2D) aPolygon2D;
+  if (myPolygon2D)
+    aPolygon2D = myPolygon2D->Import();
 
-  return new BRep_PolygonOnSurface (myPolygon2D->Import(),
-                                    mySurface->Import(),
-                                    myLocation.Import());
+  Handle(Geom_Surface) aSurface;
+  if (mySurface)
+    aSurface = mySurface->Import();
+
+  return new BRep_PolygonOnSurface (aPolygon2D, aSurface, myLocation.Import());
 }
 
 void ShapePersistent_BRep::PolygonOnClosedSurface::Read
@@ -307,13 +340,20 @@ void ShapePersistent_BRep::PolygonOnClosedSurface::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::PolygonOnClosedSurface::import() const
 {
-  if (myPolygon2D.IsNull() || mySurface.IsNull() || myPolygon2.IsNull())
-    return NULL;
+  Handle(Poly_Polygon2D) aPolygon2D;
+  if (myPolygon2D)
+    aPolygon2D = myPolygon2D->Import();
 
-  return new BRep_PolygonOnClosedSurface (myPolygon2D->Import(),
-                                          myPolygon2->Import(),
-                                          mySurface->Import(),
-                                          myLocation.Import());
+  Handle(Poly_Polygon2D) aPolygon2;
+  if (myPolygon2)
+    aPolygon2 = myPolygon2->Import();
+
+  Handle(Geom_Surface) aSurface;
+  if (mySurface)
+    aSurface = mySurface->Import();
+
+  return new BRep_PolygonOnClosedSurface
+    (aPolygon2D, aPolygon2, aSurface, myLocation.Import());
 }
 
 void ShapePersistent_BRep::CurveOn2Surfaces::Read
@@ -326,14 +366,18 @@ void ShapePersistent_BRep::CurveOn2Surfaces::Read
 Handle(BRep_CurveRepresentation)
   ShapePersistent_BRep::CurveOn2Surfaces::import() const
 {
-  if (mySurface.IsNull() || mySurface2.IsNull())
-    return NULL;
+  Handle(Geom_Surface) aSurface;
+  if (mySurface)
+    aSurface = mySurface->Import();
 
-  return new BRep_CurveOn2Surfaces (mySurface->Import(),
-                                    mySurface2->Import(),
-                                    myLocation.Import(),
-                                    myLocation2.Import(),
-                                    myContinuity);
+  Handle(Geom_Surface) aSurface2;
+  if (mySurface2)
+    aSurface2 = mySurface2->Import();
+
+  GeomAbs_Shape aContinuity = static_cast<GeomAbs_Shape> (myContinuity);
+
+  return new BRep_CurveOn2Surfaces
+    (aSurface, aSurface2, myLocation.Import(), myLocation2.Import(), aContinuity);
 }
 
 //=======================================================================

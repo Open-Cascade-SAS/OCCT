@@ -15,23 +15,29 @@
 #ifndef _StdObject_Location_HeaderFile
 #define _StdObject_Location_HeaderFile
 
-#include <StdObjMgt_ContentTypes.hxx>
+#include <StdObjMgt_ReadData.hxx>
 
 #include <TopLoc_Location.hxx>
 
 
-class StdObject_Location : private StdObjMgt_ContentTypes
+class StdObject_Location
 {
 public:
-  //! Read persistent data from a file.
-  inline void Read (StdObjMgt_ReadData& theReadData)
-    { theReadData >> myData; }
-
   //! Import transient object from the persistent data.
   TopLoc_Location Import() const;
 
 private:
-  Reference<> myData;
+  Handle(StdObjMgt_Persistent) myData;
+
+  friend StdObjMgt_ReadData& operator >>
+    (StdObjMgt_ReadData::Object, StdObject_Location&);
 };
+
+//! Read persistent data from a file.
+inline StdObjMgt_ReadData& operator >>
+  (StdObjMgt_ReadData::Object theReadData, StdObject_Location& theLocation)
+{
+  return theReadData >> theLocation.myData;
+}
 
 #endif

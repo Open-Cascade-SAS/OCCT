@@ -16,6 +16,8 @@
 #define _ShapePersistent_HArray1_HeaderFile
 
 #include <StdLPersistent_HArray1.hxx>
+#include <StdObject_gp_Vectors.hxx>
+#include <StdObject_gp_Curves.hxx>
 
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
@@ -32,13 +34,6 @@
 
 class ShapePersistent_HArray1 : private StdLPersistent_HArray1
 {
-  template <class ArrayClass>
-  class instance : public StdLPersistent_HArray1::base<ArrayClass>
-  {
-    virtual void readValue (StdObjMgt_ReadData& theReadData,
-                            const Standard_Integer theIndex);
-  };
-
 public:
   typedef instance<TColgp_HArray1OfXYZ>    XYZ;
   typedef instance<TColgp_HArray1OfPnt>    Pnt;
@@ -52,5 +47,14 @@ public:
   typedef instance<TColgp_HArray1OfCirc2d> Circ2d;
   typedef instance<Poly_HArray1OfTriangle> Triangle;
 };
+
+inline StdObjMgt_ReadData& operator >>
+  (StdObjMgt_ReadData& theReadData, Poly_Triangle& theTriangle)
+{
+  Standard_Integer N1, N2, N3;
+  theReadData >> N1 >> N2 >> N3;
+  theTriangle.Set (N1, N2, N3);
+  return theReadData;
+}
 
 #endif

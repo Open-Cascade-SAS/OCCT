@@ -2856,7 +2856,7 @@ static Standard_Integer DDataStd_SetAsciiString (Draw_Interpretor& di,
     DDF::AddLabel(DF, arg[2], aLabel);
     TCollection_AsciiString aString(arg[3]);
     Handle(TDataStd_AsciiString) anAtt;
-    if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
+    if(!aLabel.FindAttribute(TDataStd_AsciiString::GetID(), anAtt))
       anAtt = TDataStd_AsciiString::Set(aLabel, aString);
     if(anAtt.IsNull()) {
       di << "AsciiString attribute is not found or not set"  << "\n";

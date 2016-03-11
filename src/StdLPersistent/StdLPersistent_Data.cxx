@@ -23,7 +23,7 @@ class StdLPersistent_Data::Parser
 {
 public:
   //! Start parsing a persistent data.
-  Parser (const TColStd_HArray1OfInteger&    theLabels,
+  Parser (const TColStd_HArray1OfInteger&           theLabels,
           const StdLPersistent_HArray1OfPersistent& theAttributes)
     : myLabelsIter (theLabels)
     , myAttribIter (theAttributes) {}
@@ -67,7 +67,7 @@ public:
   }
 
 private:
-  TColStd_HArray1OfInteger   ::Iterator myLabelsIter;
+  TColStd_HArray1OfInteger          ::Iterator myLabelsIter;
   StdLPersistent_HArray1OfPersistent::Iterator myAttribIter;
 };
 

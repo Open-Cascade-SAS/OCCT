@@ -13,8 +13,6 @@
 
 #include <StdLPersistent_NamedData.hxx>
 
-#include <TCollection_HExtendedString.hxx>
-
 #include <TColStd_DataMapOfStringInteger.hxx>
 #include <TDataStd_DataMapOfStringReal.hxx>
 #include <TDataStd_DataMapOfStringString.hxx>
@@ -22,6 +20,24 @@
 #include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_DataMapOfStringHArray1OfReal.hxx>
 
+
+static const TCollection_ExtendedString&
+  String (Handle(StdObjMgt_Persistent) theValue)
+{
+  if (theValue)
+    return theValue->ExtString()->String();
+
+  static TCollection_ExtendedString anEmptyString;
+  return anEmptyString;
+}
+
+template <class HArray>
+static typename HArray::ArrayHandle
+  Array (Handle(StdObjMgt_Persistent) theValue)
+{
+  Handle(HArray) anArray = Handle(HArray)::DownCast (theValue);
+  return anArray ? anArray->Array() : NULL;
+}
 
 //=======================================================================
 //function : Import
@@ -37,10 +53,8 @@ void StdLPersistent_NamedData::Import
   {
     TColStd_DataMapOfStringInteger aMap;
     for (Standard_Integer i = lower(0); i <= upper(0); i++)
-    {
-      Standard_Integer aValue = 0;
-      aMap.Bind (myInts.Get (i, aValue), aValue);
-    }
+      aMap.Bind (myInts.Key(i), myInts.Value(i));
+
     theAttribute->ChangeIntegers (aMap);
   }
 
@@ -48,10 +62,8 @@ void StdLPersistent_NamedData::Import
   {
     TDataStd_DataMapOfStringReal aMap;
     for (Standard_Integer i = lower(1); i <= upper(1); i++)
-    {
-      Standard_Real aValue = 0.0;
-      aMap.Bind (myReals.Get (i, aValue), aValue);
-    }
+      aMap.Bind (myReals.Key(i), myReals.Value(i));
+
     theAttribute->ChangeReals (aMap);
   }
 
@@ -59,12 +71,8 @@ void StdLPersistent_NamedData::Import
   {
     TDataStd_DataMapOfStringString aMap;
     for (Standard_Integer i = lower(2); i <= upper(2); i++)
-    {
-      Handle(StdObjMgt_Persistent) aValue;
-      aMap.Bind (myStrings.Get (i, aValue),
-                 aValue ? aValue->ExtString()->String()
-                        : TCollection_ExtendedString());
-    }
+      aMap.Bind (myStrings.Key(i), String (myStrings.Value(i)));
+
     theAttribute->ChangeStrings (aMap);
   }
 
@@ -72,10 +80,8 @@ void StdLPersistent_NamedData::Import
   {
     TDataStd_DataMapOfStringByte aMap;
     for (Standard_Integer i = lower(3); i <= upper(3); i++)
-    {
-      Standard_Byte aValue = 0;
-      aMap.Bind (myBytes.Get (i, aValue), aValue);
-    }
+      aMap.Bind (myBytes.Key(i), myBytes.Value(i));
+
     theAttribute->ChangeBytes (aMap);
   }
 
@@ -83,19 +89,9 @@ void StdLPersistent_NamedData::Import
   {
     TDataStd_DataMapOfStringHArray1OfInteger aMap;
     for (Standard_Integer i = lower(4); i <= upper(4); i++)
-    {
-      Handle(StdObjMgt_Persistent)      aValue;
-      const TCollection_ExtendedString& aKey = myIntArrays.Get (i, aValue);
+      aMap.Bind (myIntArrays.Key(i),
+                 Array<StdLPersistent_HArray1::Integer> (myIntArrays.Value(i)));
 
-      Handle(StdLPersistent_HArray1::Integer) aPArray =
-        Handle(StdLPersistent_HArray1::Integer)::DownCast (aValue);
-
-      Handle(TColStd_HArray1OfInteger) aTArray;
-      if (aPArray)
-        aTArray = aPArray->Array();
-
-      aMap.Bind (aKey, aTArray);
-    }
     theAttribute->ChangeArraysOfIntegers (aMap);
   }
 
@@ -103,19 +99,9 @@ void StdLPersistent_NamedData::Import
   {
     TDataStd_DataMapOfStringHArray1OfReal aMap;
     for (Standard_Integer i = lower(5); i <= upper(5); i++)
-    {
-      Handle(StdObjMgt_Persistent)      aValue;
-      const TCollection_ExtendedString& aKey = myRealArrays.Get (i, aValue);
+      aMap.Bind (myRealArrays.Key(i),
+                 Array<StdLPersistent_HArray1::Real> (myRealArrays.Value(i)));
 
-      Handle(StdLPersistent_HArray1::Real) aPArray =
-        Handle(StdLPersistent_HArray1::Real)::DownCast (aValue);
-
-      Handle(TColStd_HArray1OfReal) aTArray;
-      if (aPArray)
-        aTArray = aPArray->Array();
-
-      aMap.Bind (aKey, aTArray);
-    }
     theAttribute->ChangeArraysOfReals (aMap);
   }
 }

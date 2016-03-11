@@ -12,6 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <ShapePersistent_Geom.hxx>
+#include <StdObject_gp_Axes.hxx>
+#include <StdObject_gp_Vectors.hxx>
 
 
 //=======================================================================
@@ -29,8 +31,8 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom::AxisPlacement,
                                     Geom_Axis2Placement>
   ::Read (StdObjMgt_ReadData& theReadData)
 {
-  StdObject_gp::Object<gp_Ax1> anAxis;
-  StdObject_gp::Object<gp_Dir> anXDirection;
+  gp_Ax1 anAxis;
+  gp_Dir anXDirection;
 
   theReadData >> anAxis >> anXDirection;
 

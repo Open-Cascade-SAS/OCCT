@@ -40,15 +40,15 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 {
   typedef Surface::PersistentBase pBase;
 
-  class pSweptData : protected StdObjMgt_ContentTypes
+  class pSweptData
   {
   public:
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myBasisCurve >> myDirection; }
 
   protected:
-    Reference            <Curve>  myBasisCurve;
-    StdObject_gp::Object <gp_Dir> myDirection;
+    Handle(Curve) myBasisCurve;
+    gp_Dir        myDirection;
   };
 
   struct pSwept : pBase, pSweptData {};
@@ -71,7 +71,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     virtual Handle(Geom_Surface) Import() const;
 
   private:
-    StdObject_gp::Object<gp_Pnt> myLocation;
+    gp_Pnt myLocation;
   };
 
   typedef pBase pBounded;
@@ -85,10 +85,10 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     virtual Handle(Geom_Surface) Import() const;
 
   private:
-    Value     <Standard_Boolean>             myURational;
-    Value     <Standard_Boolean>             myVRational;
-    Reference <ShapePersistent_HArray2::Pnt> myPoles;
-    Reference <StdLPersistent_HArray2::Real> myWeights;
+    Standard_Boolean                     myURational;
+    Standard_Boolean                     myVRational;
+    Handle(ShapePersistent_HArray2::Pnt) myPoles;
+    Handle(StdLPersistent_HArray2::Real) myWeights;
   };
 
   class pBSpline : public pBounded
@@ -108,18 +108,18 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     virtual Handle(Geom_Surface) Import() const;
 
   private:
-    Value     <Standard_Boolean>                myURational;
-    Value     <Standard_Boolean>                myVRational;
-    Value     <Standard_Boolean>                myUPeriodic;
-    Value     <Standard_Boolean>                myVPeriodic;
-    Value     <Standard_Integer>                myUSpineDegree;
-    Value     <Standard_Integer>                myVSpineDegree;
-    Reference <ShapePersistent_HArray2::Pnt>    myPoles;
-    Reference <StdLPersistent_HArray2::Real>    myWeights;
-    Reference <StdLPersistent_HArray1::Real>    myUKnots;
-    Reference <StdLPersistent_HArray1::Real>    myVKnots;
-    Reference <StdLPersistent_HArray1::Integer> myUMultiplicities;
-    Reference <StdLPersistent_HArray1::Integer> myVMultiplicities;
+    Standard_Boolean                        myURational;
+    Standard_Boolean                        myVRational;
+    Standard_Boolean                        myUPeriodic;
+    Standard_Boolean                        myVPeriodic;
+    Standard_Integer                        myUSpineDegree;
+    Standard_Integer                        myVSpineDegree;
+    Handle(ShapePersistent_HArray2::Pnt)    myPoles;
+    Handle(StdLPersistent_HArray2::Real)    myWeights;
+    Handle(StdLPersistent_HArray1::Real)    myUKnots;
+    Handle(StdLPersistent_HArray1::Real)    myVKnots;
+    Handle(StdLPersistent_HArray1::Integer) myUMultiplicities;
+    Handle(StdLPersistent_HArray1::Integer) myVMultiplicities;
   };
 
   class pRectangularTrimmed : public pBounded
@@ -134,11 +134,11 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     virtual Handle(Geom_Surface) Import() const;
 
   private:
-    Reference<Surface>   myBasisSurface;
-    Value<Standard_Real> myFirstU;
-    Value<Standard_Real> myLastU;
-    Value<Standard_Real> myFirstV;
-    Value<Standard_Real> myLastV;
+    Handle(Surface) myBasisSurface;
+    Standard_Real   myFirstU;
+    Standard_Real   myLastU;
+    Standard_Real   myFirstV;
+    Standard_Real   myLastV;
   };
 
   class pOffset : public pBase
@@ -150,8 +150,8 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     virtual Handle(Geom_Surface) Import() const;
 
   private:
-    Reference<Surface>   myBasisSurface;
-    Value<Standard_Real> myOffsetValue;
+    Handle(Surface) myBasisSurface;
+    Standard_Real   myOffsetValue;
   };
 
 public:

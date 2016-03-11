@@ -16,9 +16,9 @@
 #define _StdLPersistent_TreeNode_HeaderFile
 
 #include <StdObjMgt_Attribute.hxx>
-#include <StdLObject_GUID.hxx>
 
 #include <TDataStd_TreeNode.hxx>
+#include <Standard_GUID.hxx>
 
 
 class StdLPersistent_TreeNode
@@ -37,12 +37,12 @@ public:
 private:
   struct dynamic : public Standard_Transient
   {
-    Reference <StdLPersistent_TreeNode> First;
-    Object    <StdLObject_GUID>         TreeID;
+    Handle(StdLPersistent_TreeNode) First;
+    Standard_GUID                   TreeID;
   };
 
   Handle(dynamic) myDynamicData;
-  Reference<StdLPersistent_TreeNode> myNext;
+  Handle(StdLPersistent_TreeNode) myNext;
 };
 
 #endif

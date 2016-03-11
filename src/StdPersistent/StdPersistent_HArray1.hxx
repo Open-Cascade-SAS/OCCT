@@ -16,17 +16,19 @@
 #define _StdPersistent_HArray1_HeaderFile
 
 #include <StdLPersistent_HArray1.hxx>
-#include <StdPersistent_HArray1OfShape1.hxx>
+#include <StdObject_Shape.hxx>
+
+#include <NCollection_DefineHArray1.hxx>
+
+
+DEFINE_HARRAY1 (StdPersistent_HArray1OfShape1,
+                NCollection_Array1<StdObject_Shape>)
 
 
 class StdPersistent_HArray1 : private StdLPersistent_HArray1
 {
 public:
-  class Shape1 : public StdLPersistent_HArray1::base<StdPersistent_HArray1OfShape1>
-  {
-    virtual void readValue (StdObjMgt_ReadData& theReadData,
-                            const Standard_Integer theIndex);
-  };
+  typedef instance<StdPersistent_HArray1OfShape1> Shape1;
 };
 
 #endif

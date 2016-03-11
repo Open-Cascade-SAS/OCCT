@@ -21,11 +21,6 @@
 #include <StdLPersistent_HArray1.hxx>
 #include <StdLPersistent_HString.hxx>
 
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopAbs_Orientation.hxx>
-
-#include <TNaming_NameType.hxx>
-
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Naming.hxx>
 
@@ -46,10 +41,10 @@ public:
     void Import (const Handle(TNaming_NamedShape)& theAttribute) const;
 
   private:
-    Reference <StdPersistent_HArray1::Shape1> myOldShapes;
-    Reference <StdPersistent_HArray1::Shape1> myNewShapes;
-    Value     <Standard_Integer>              myShapeStatus;
-    Value     <Standard_Integer>              myVersion;
+    Handle(StdPersistent_HArray1::Shape1) myOldShapes;
+    Handle(StdPersistent_HArray1::Shape1) myNewShapes;
+    Standard_Integer                      myShapeStatus;
+    Standard_Integer                      myVersion;
   };
 
   class Name : public StdObjMgt_Persistent
@@ -63,11 +58,11 @@ public:
       (TNaming_Name& theName, const Handle(TDF_Data)& theDF) const;
 
   private:
-    Enum      <TNaming_NameType>                   myType;
-    Enum      <TopAbs_ShapeEnum>                   myShapeType;
-    Reference <StdLPersistent_HArray1::Persistent> myArgs;
-    Reference<>                                    myStop;
-    Value     <Standard_Integer>                   myIndex;
+    Standard_Integer                           myType;
+    Standard_Integer                           myShapeType;
+    Handle(StdLPersistent_HArray1::Persistent) myArgs;
+    Handle(StdObjMgt_Persistent)               myStop;
+    Standard_Integer                           myIndex;
   };
 
   class Name_1 : public Name
@@ -81,7 +76,7 @@ public:
       (TNaming_Name& theName, const Handle(TDF_Data)& theDF) const;
 
   private:
-    Reference<StdLPersistent_HString::Ascii> myContextLabel;
+    Handle(StdLPersistent_HString::Ascii) myContextLabel;
   };
 
   class Name_2 : public Name_1
@@ -95,7 +90,7 @@ public:
       (TNaming_Name& theName, const Handle(TDF_Data)& theDF) const;
 
   private:
-    Enum<TopAbs_Orientation> myOrientation;
+    Standard_Integer myOrientation;
   };
 
   class Naming : public StdObjMgt_Attribute<TNaming_Naming>::SingleRef

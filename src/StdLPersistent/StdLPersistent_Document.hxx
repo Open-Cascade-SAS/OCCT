@@ -32,7 +32,7 @@ public:
     (const Handle(TDocStd_Document)& theDocument) const;
 
 private:
-  Reference<StdLPersistent_Data> myData;
+  Handle(StdLPersistent_Data) myData;
 };
 
 #endif

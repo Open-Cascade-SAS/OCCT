@@ -13,9 +13,7 @@
 
 #include <StdPersistent_TopLoc.hxx>
 #include <StdObjMgt_ReadData.hxx>
-#include <StdObject_gp.hxx>
-
-#include <gp_Trsf.hxx>
+#include <StdObject_gp_Trsfs.hxx>
 
 
 //=======================================================================
@@ -24,7 +22,7 @@
 //=======================================================================
 void StdPersistent_TopLoc::Datum3D::Read (StdObjMgt_ReadData& theReadData)
 {
-  StdObject_gp::Object<gp_Trsf> aTrsf;
+  gp_Trsf aTrsf;
   theReadData >> aTrsf;
   myTransient = new TopLoc_Datum3D (aTrsf);
 }

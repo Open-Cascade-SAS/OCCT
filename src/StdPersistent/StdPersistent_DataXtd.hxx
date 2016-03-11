@@ -15,10 +15,9 @@
 #ifndef _StdPersistent_DataXtd_HeaderFile
 #define _StdPersistent_DataXtd_HeaderFile
 
-#include <StdObjMgt_ContentTypes.hxx>
 #include <StdObjMgt_Attribute.hxx>
 #include <StdLPersistent_Void.hxx>
-#include <StdObject_gp.hxx>
+#include <StdObject_gp_Vectors.hxx>
 
 #include <TDataXtd_Shape.hxx>
 #include <TDataXtd_Point.hxx>
@@ -29,7 +28,7 @@
 #include <TDataXtd_Position.hxx>
 
 
-class StdPersistent_DataXtd : private StdObjMgt_ContentTypes
+class StdPersistent_DataXtd
 {
   class _void : private StdLPersistent_Void
   {
@@ -45,16 +44,14 @@ public:
   typedef _void::Instance<TDataXtd_Plane>     Plane;
   typedef _void::Instance<TDataXtd_Placement> Placement;
 
-  class Geometry : public StdObjMgt_Attribute<TDataXtd_Geometry>::
-                            Simple <Enum<TDataXtd_GeometryEnum> >
+  class Geometry : public StdObjMgt_Attribute<TDataXtd_Geometry>::SingleInt
   {
   public:
     //! Import transient attribuite from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 
-  class Position : public StdObjMgt_Attribute<TDataXtd_Position>::
-                            Simple <StdObject_gp::Object<gp_Pnt> >
+  class Position : public StdObjMgt_Attribute<TDataXtd_Position>::Simple<gp_Pnt>
   {
   public:
     //! Import transient attribuite from the persistent data.

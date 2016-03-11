@@ -15,6 +15,7 @@
 #include <StdObjMgt_MapOfInstantiators.hxx>
 
 #include <StdLPersistent_HArray1.hxx>
+#include <StdLPersistent_HArray2.hxx>
 #include <StdPersistent_TopoDS.hxx>
 #include <ShapePersistent_TopoDS.hxx>
 #include <ShapePersistent_HArray1.hxx>
@@ -36,16 +37,32 @@
 void ShapePersistent::BindTypes (StdObjMgt_MapOfInstantiators& theMap)
 {
   theMap.Bind <StdLPersistent_HArray1::Persistent> ("PTopoDS_HArray1OfHShape");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom_HArray1OfCurve");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom_HArray1OfBoundedCurve");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom_HArray1OfBezierCurve");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom_HArray1OfBSplineCurve");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom_HArray1OfSurface");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom_HArray1OfBoundedSurface");
+  theMap.Bind <StdLPersistent_HArray2::Persistent> ("PColPGeom_HArray2OfSurface");
+  theMap.Bind <StdLPersistent_HArray2::Persistent> ("PColPGeom_HArray2OfBoundedSurface");
+  theMap.Bind <StdLPersistent_HArray2::Persistent> ("PColPGeom_HArray2OfBezierSurface");
+  theMap.Bind <StdLPersistent_HArray2::Persistent> ("PColPGeom_HArray2OfBSplineSurface");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom2d_HArray1OfCurve");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom2d_HArray1OfBoundedCurve");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom2d_HArray1OfBezierCurve");
+  theMap.Bind <StdLPersistent_HArray1::Persistent> ("PColPGeom2d_HArray1OfBSplineCurve");
 
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_HShape");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_Vertex");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_Edge");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_Wire");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_Face");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_Shell");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_Solid");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_CompSolid");
-  theMap.Bind <ShapePersistent_TopoDS::Shape>       ("PTopoDS_Compound");
+  theMap.Bind <StdLPersistent_HArray2::Real>       ("PColStd_HArray2OfReal");
+
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_HShape");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_Vertex");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_Edge");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_Wire");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_Face");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_Shell");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_Solid");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_CompSolid");
+  theMap.Bind <ShapePersistent_TopoDS::HShape>      ("PTopoDS_Compound");
 
   theMap.Bind <StdPersistent_TopoDS::TShape>        ("PTopoDS_TShape");
 

@@ -6,8 +6,6 @@ StdPersistent_DataXtd_Constraint.cxx
 StdPersistent_DataXtd_Constraint.hxx
 StdPersistent_DataXtd_PatternStd.cxx
 StdPersistent_DataXtd_PatternStd.hxx
-StdPersistent_HArray1OfShape1.hxx
-StdPersistent_HArray1.cxx
 StdPersistent_HArray1.hxx
 StdPersistent_Naming.cxx
 StdPersistent_Naming.hxx

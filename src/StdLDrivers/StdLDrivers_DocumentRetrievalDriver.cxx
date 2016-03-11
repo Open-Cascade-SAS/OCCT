@@ -50,24 +50,22 @@ Handle(CDM_Document) StdLDrivers_DocumentRetrievalDriver::CreateDocument()
 //function : Read
 //purpose  : Retrieve the content of a file into a new document
 //=======================================================================
-void StdLDrivers_DocumentRetrievalDriver::Read (
-  const TCollection_ExtendedString& theFileName,
+void StdLDrivers_DocumentRetrievalDriver::Read (const TCollection_ExtendedString& theFileName,
                                                 const Handle(CDM_Document)&       theNewDocument,
                                                 const Handle(CDM_Application)&)
 {
   // Read header data and persistent document
   Storage_HeaderData aHeaderData;
   Handle(StdObjMgt_Persistent) aPDocument = read (theFileName, aHeaderData);
+  if (aPDocument.IsNull())
+    return;
 
   // Import transient document from the persistent one
-  if (!aPDocument.IsNull())
-  {
-    aPDocument->ImportDocument (
-      Handle(TDocStd_Document)::DownCast (theNewDocument));
+  aPDocument->ImportDocument (
+    Handle(TDocStd_Document)::DownCast (theNewDocument));
 
-    // Copy comments from the header data
-    theNewDocument->SetComments (aHeaderData.Comments());
-  }
+  // Copy comments from the header data
+  theNewDocument->SetComments (aHeaderData.Comments());
 }
 
 //=======================================================================
@@ -91,20 +89,20 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   NCollection_Handle<Storage_BaseDriver> aFileDriver (aFileDriverPtr);
 
   // Try to open the file
-    try
-    {
-      OCC_CATCH_SIGNALS
-      PCDM_ReadWriter::Open (*aFileDriver, theFileName, Storage_VSRead);
-      myReaderStatus = PCDM_RS_OK;
-    } 
-    catch (Standard_Failure)
-    {
-      myReaderStatus = PCDM_RS_OpenError;
+  try
+  {
+    OCC_CATCH_SIGNALS
+    PCDM_ReadWriter::Open (*aFileDriver, theFileName, Storage_VSRead);
+    myReaderStatus = PCDM_RS_OK;
+  } 
+  catch (Standard_Failure)
+  {
+    myReaderStatus = PCDM_RS_OpenError;
 
-      Standard_SStream aMsg;
-      aMsg << Standard_Failure::Caught() << endl;
-      Standard_Failure::Raise (aMsg);
-    }
+    Standard_SStream aMsg;
+    aMsg << Standard_Failure::Caught() << endl;
+    Standard_Failure::Raise (aMsg);
+  }
   
   // Read header section
   if (!theHeaderData.Read (*aFileDriver))
