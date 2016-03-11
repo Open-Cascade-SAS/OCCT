@@ -280,8 +280,8 @@ void  TopOpeBRepBuild_PaveSet::Prepare()
     myVerticesIt.Initialize(myVertices);
     if ( MoreLoop() ) cout<<"--- PaveSet : Prepare"<<endl;
     for (; MoreLoop(); NextLoop() ) {
-      const Handle(TopOpeBRepBuild_Pave)& PV = 
-	*((Handle(TopOpeBRepBuild_Pave)*)&(Loop()));
+      Handle(TopOpeBRepBuild_Pave) PV = 
+	Handle(TopOpeBRepBuild_Pave)::DownCast(Loop());
       const TopoDS_Vertex& v = TopoDS::Vertex(PV->Vertex());
       Standard_Real p = PV->Parameter();
       Standard_Boolean b = PV->IsShape();

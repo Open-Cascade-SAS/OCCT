@@ -135,9 +135,9 @@ void Convert_Presentation::drawCurveAndItsBSpline(Handle(Geom_Curve) theCurve,
   
   if (WAIT_A_LITTLE) return;
 
-  Handle(Geom_BSplineCurve) aBSpline = GeomConvert::CurveToBSplineCurve(theCurve);
+  Handle(Geom_Curve) aBSpline = GeomConvert::CurveToBSplineCurve(theCurve);
 
-  drawCurve (Handle(Geom_Curve)::DownCast(aBSpline), BSplineColor);
+  drawCurve (aBSpline, BSplineColor);
 }
 
 
@@ -367,8 +367,8 @@ void Convert_Presentation::sampleRevolSurface()
   aPoles(3) = gp_Pnt(350, 150, 0);  aWeights(3) =120;
   aPoles(4) = gp_Pnt(500, 500, 0);  aWeights(4) = 1;
 
-  Handle(Geom_BezierCurve) aBezierCurve = new Geom_BezierCurve(aPoles, aWeights);
-  drawCurve(Handle(Geom_Curve)::DownCast(aBezierCurve));
+  Handle(Geom_Curve) aBezierCurve = new Geom_BezierCurve(aPoles, aWeights);
+  drawCurve(aBezierCurve);
 
   // creating a surface of revolution of the bezier curve around Y axis
   gp_Ax1 anAx(gp_Pnt(0,0,0), gp_Dir(0,1,0));

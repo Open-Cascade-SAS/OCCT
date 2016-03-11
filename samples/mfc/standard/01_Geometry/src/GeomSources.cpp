@@ -531,7 +531,7 @@ void GeomSources::gpTest7(CGeometryDoc* aDoc)
   gp_Pnt2d P2(5.5,1);                                     
   gp_Pnt2d P3(-2,2);                                      
 
-  Handle(Geom2d_TrimmedCurve) C =                         
+  Handle(Geom2d_Curve) C =                         
     GCE2d_MakeArcOfCircle (P1,P2,P3).Value();           
 
   Standard_Real FirstParameter = C->FirstParameter();
@@ -569,7 +569,7 @@ C->D1(param,P,V);                                   \n\
   AddSeparator(aDoc,Message);
   //--------------------------------------------------------------
 
-  DisplayCurve(aDoc,Handle(Geom2d_Curve)::DownCast(C));
+  DisplayCurve(aDoc,C);
   Handle(ISession_Direction) aDirection = new ISession_Direction(P,V);
   aDoc->GetISessionContext()->Display(aDirection, Standard_False);
 
@@ -844,7 +844,7 @@ void GeomSources::gpTest12(CGeometryDoc* aDoc)
 
   gp_Pnt N,Q,P(1,2,3);
   Standard_Real distance, radius = 5;
-  Handle(Geom_Circle) C = new Geom_Circle(gp::XOY(),radius);
+  Handle(Geom_Curve) C = new Geom_Circle(gp::XOY(),radius);
   GeomAPI_ProjectPointOnCurve PPC (P,C);
   N = PPC.NearestPoint();
   Standard_Integer NbResults = PPC.NbPoints();
@@ -890,7 +890,7 @@ if(NbResults>0){                                            \n\
   aString += Message2;
 
   DisplayPoint(aDoc,N,aString.ToCString(),false,0.5,0,-0.5);
-  DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(C),Quantity_NOC_YELLOW,false);
+  DisplayCurve(aDoc,C,Quantity_NOC_YELLOW,false);
 
   if(NbResults>0)
   {
@@ -1052,8 +1052,8 @@ if (ICQ.IsDone()){                                        \n\
 
  DisplaySurface(aDoc,aSurface);
 
- Handle(Geom_Ellipse) anEllips = GC_MakeEllipse(EL).Value();
- DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(anEllips),Quantity_NOC_YELLOW,false);
+ Handle(Geom_Curve) anEllips = GC_MakeEllipse(EL).Value();
+ DisplayCurve(aDoc,anEllips,Quantity_NOC_YELLOW,false);
 
  TCollection_AsciiString aString;
 
@@ -1718,7 +1718,7 @@ gp_Ax2d C2DCircleXAxis = C2DCircle->XAxis();            \n\
  Message += aC2DEntityTypeName; Message += " \n";
 
  DisplayCurve(aDoc,circ2d,4,false);
- DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(C3D),Quantity_NOC_YELLOW,false);
+ DisplayCurve(aDoc,C3D,Quantity_NOC_YELLOW,false);
  DisplayCurve(aDoc,C2D,5,false);
 
  Handle(ISession_Direction) aC3DCircleXAxisDirection = new ISession_Direction(C3DCircleXAxis.Location(),C3DCircleXAxis.Direction(),5.2);
@@ -3103,7 +3103,7 @@ void GeomSources::gpTest40(CGeometryDoc* aDoc)
   array1.SetValue(4,gp_Pnt (-5,4,-7));
   array1.SetValue(5,gp_Pnt (-3,5,-12));
 
-  Handle(Geom_BSplineCurve) SPL1 =
+  Handle(Geom_Curve) SPL1 =
   GeomAPI_PointsToBSpline(array1).Curve();
 
   GeomFill_Pipe aPipe(SPL1,1);
@@ -3126,7 +3126,7 @@ void GeomSources::gpTest40(CGeometryDoc* aDoc)
   GC_MakeSegment(gp_Pnt(1,1,1),gp_Pnt(5,5,5));
   Handle(Geom_TrimmedCurve) TC2 =
   GC_MakeSegment(gp_Pnt(1,1,0),gp_Pnt(4,5,6));
-  GeomFill_Pipe aPipe3(Handle(Geom_Curve)::DownCast(SPL1),TC1,TC2);
+  GeomFill_Pipe aPipe3(SPL1,TC1,TC2);
   aPipe3.Perform();
   Handle(Geom_Surface) aSurface3 = aPipe3.Surface();
   Standard_CString aSurfaceEntityTypeName3="Not Computed";
@@ -3667,8 +3667,8 @@ void GeomSources::gpTest46(CGeometryDoc* aDoc)
   GeomFill_BSplineCurves aGeomFill1(SPL1,SPL2,Type);
   Handle(Geom_BSplineSurface) aGeomSurface = aGeomFill1.Surface();
 
-  Handle(Geom_BSplineSurface) aTranslatedGeomSurface =
-    Handle(Geom_BSplineSurface)::DownCast(aGeomSurface->Copy());
+  Handle(Geom_BoundedSurface) aTranslatedGeomSurface =
+    Handle(Geom_BoundedSurface)::DownCast(aGeomSurface->Copy());
 
   Standard_Real extension = 3;
   Standard_Integer continuity = 2;
@@ -3694,8 +3694,8 @@ GeomFill_FillingStyle Type = GeomFill_StretchStyle;               \n\
 GeomFill_BSplineCurves aGeomFill1(SPL1,SPL2,Type);                \n\
 Handle(Geom_BSplineSurface) aGeomSurface = aGeomFill1.Surface();  \n\
                                                                   \n\
-Handle(Geom_BSplineSurface) aTranslatedGeomSurface =              \n\
-   Handle(Geom_BSplineSurface)::DownCast(aGeomSurface->Copy());   \n\
+Handle(Geom_BoundedSurface) aTranslatedGeomSurface =              \n\
+   Handle(Geom_BoundedSurface)::DownCast(aGeomSurface->Copy());   \n\
                                                                   \n\
 Standard_Real extension = 3;                                      \n\
 Standard_Integer continuity = 2;                                  \n\

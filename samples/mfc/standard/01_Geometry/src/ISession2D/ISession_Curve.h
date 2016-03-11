@@ -17,7 +17,7 @@ DEFINE_STANDARD_HANDLE(ISession_Curve,AIS_InteractiveObject)
 class ISession_Curve : public AIS_InteractiveObject  
 {
 public:
-  ISession_Curve(Handle(Geom_Curve)& aCurve);
+  ISession_Curve(const Handle(Geom_Curve)& aCurve);
   virtual ~ISession_Curve();
 
   DEFINE_STANDARD_RTTIEXT(ISession_Curve,AIS_InteractiveObject)

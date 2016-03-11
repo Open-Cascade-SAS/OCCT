@@ -600,7 +600,7 @@ D->CommitCommand(); \n\
 		Sleep(1000);
 
 		// Get the TOcafFunction_CutDriver using its Standard_GUID in the TFunction_DriverTable
-		Handle(TOcafFunction_CutDriver) myCutDriver;
+		Handle(TFunction_Driver) myCutDriver;
 		if (TFunction_DriverTable::Get()->FindDriver(myDriverID, myCutDriver))
             myCutDriver->Init(LabObject);
 
@@ -643,7 +643,7 @@ TOcaf_Commands TSC(ToolLab); \n\
 TSC.ModifyBox(m_x, m_y, m_z, m_w, m_l, m_h, Name); \n\
  \n\
 //  Getting the TOcafFunction_CutDriver used to create the cut\n\
-Handle(TOcafFunction_CutDriver) myCutDriver; \n\
+Handle(TFunction_Driver) myCutDriver; \n\
 TFunction_DriverTable::Get()->FindDriver(myDriverID, myCutDriver); \n\
  \n\
 //  Recompute the cut if it must be (if an attribute was modified)\n\

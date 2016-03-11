@@ -17,7 +17,7 @@ class ISession_Surface : public AIS_InteractiveObject
 {
 public:
 	ISession_Surface();
-	ISession_Surface(Handle(Geom_Surface)& aSurface);
+	ISession_Surface(const Handle(Geom_Surface)& aSurface);
 	virtual ~ISession_Surface();
 
 DEFINE_STANDARD_RTTIEXT(ISession_Surface,AIS_InteractiveObject)

@@ -19,7 +19,7 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 
 
-ISession_Curve::ISession_Curve(Handle(Geom_Curve)& aCurve)
+ISession_Curve::ISession_Curve(const Handle(Geom_Curve)& aCurve)
 :AIS_InteractiveObject(),myCurve(aCurve)
 {
 

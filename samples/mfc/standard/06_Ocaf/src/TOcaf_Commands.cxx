@@ -90,7 +90,7 @@ TDF_Label TOcaf_Commands::CreateBox(Standard_Real x, Standard_Real y, Standard_R
 	// Initialize and execute the box driver (look at the "Execute()" code)
     Handle(TFunction_Logbook) log = TFunction_Logbook::Set(L);
 
-	Handle(TOcafFunction_BoxDriver) myBoxDriver;
+	Handle(TFunction_Driver) myBoxDriver;
     // Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_BoxDriver::GetID(), myBoxDriver)) return L;
 	
@@ -145,7 +145,7 @@ TDF_Label TOcaf_Commands::CreateCyl(Standard_Real x, Standard_Real y, Standard_R
 	// Initialize and execute the cylinder driver (look at the "Execute()" code)
     Handle(TFunction_Logbook) log = TFunction_Logbook::Set(L);
 
-	Handle(TOcafFunction_CylDriver) myCylDriver;
+	Handle(TFunction_Driver) myCylDriver;
 	// Find the TOcafFunction_CylDriver in the TFunction_DriverTable using its GUID
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_CylDriver::GetID(), myCylDriver)) return L;
 
@@ -223,7 +223,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 
 	// Get the TFunction_FunctionDriver GUID used with the TFunction_Function
 	Standard_GUID myDriverID=TFF->GetDriverGUID();
-	Handle(TOcafFunction_BoxDriver) myBoxDriver;
+	Handle(TFunction_Driver) myBoxDriver;
 	// Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID 
 	TFunction_DriverTable::Get()->FindDriver(myDriverID, myBoxDriver);
 	// Execute the cut if it must be (if an attribute changes)
@@ -298,7 +298,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 
 	// Get the TFunction_FunctionDriver GUID used with the TFunction_Function
 	Standard_GUID myDriverID=TFF->GetDriverGUID();
-	Handle(TOcafFunction_CylDriver) myCylDriver;
+	Handle(TFunction_Driver) myCylDriver;
 	// Find the TOcafFunction_CylDriver in the TFunction_DriverTable using its GUID 
 	TFunction_DriverTable::Get()->FindDriver(myDriverID, myCylDriver);
 	// Execute the cut if it must be (if an attribute changes)
@@ -346,7 +346,7 @@ TDF_Label TOcaf_Commands::Cut(TDF_Label ObjectLab, TDF_Label ToolObjectLab)
 	// Initialize and execute the cut driver (look at the "Execute()" code)
     Handle(TFunction_Logbook) log = TFunction_Logbook::Set(L);
 
-	Handle(TOcafFunction_CutDriver) myCutDriver;
+	Handle(TFunction_Driver) myCutDriver;
     // Find the TOcafFunction_CutDriver in the TFunction_DriverTable using its GUID 
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_CutDriver::GetID(), myCutDriver)) return L;
 		

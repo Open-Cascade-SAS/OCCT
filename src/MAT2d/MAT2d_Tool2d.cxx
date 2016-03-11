@@ -1078,7 +1078,7 @@ void MAT2d_Tool2d::Dump(const Standard_Integer bisector,
   if(bisector == -1) return;
   if(bisector > theNumberOfBisectors) return;
 
-  Handle(Geom2d_Curve) thebisector = Handle(Geom2d_Curve)::DownCast(GeomBis(bisector).Value());
+  Handle(Geom2d_Curve) thebisector = GeomBis(bisector).Value();
 
   MAT2d_DrawCurve(thebisector,3);
 

@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ISession_Surface,AIS_InteractiveObject)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ISession_Surface::ISession_Surface(Handle(Geom_Surface)& aSurface)
+ISession_Surface::ISession_Surface(const Handle(Geom_Surface)& aSurface)
 :AIS_InteractiveObject(),mySurface(aSurface)
 {
 }
