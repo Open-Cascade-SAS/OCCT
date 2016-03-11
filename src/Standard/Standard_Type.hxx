@@ -184,7 +184,7 @@ namespace opencascade {
   template <typename T>
   const Handle(Standard_Type)& type_instance<T>::get ()
   {
-#if (defined(_MSC_VER) && _MSC_VER < 1800) || \
+#if (defined(_MSC_VER) && _MSC_VER < 1900) || \
     (defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 3)) && \
      ! defined(__clang__) && ! defined(__INTEL_COMPILER))
     // ensure that myInstance is instantiated
@@ -207,7 +207,7 @@ namespace opencascade {
   // and is claimed to support N2660 on Linux and on Windows "in VS2015 mode".
   // CLang should support N2660 since version 2.9, but it is not clear how to 
   // check its version reliably (on Linux it says it is GCC 4.2).
-#if (defined(_MSC_VER) && _MSC_VER < 1800) || \
+#if (defined(_MSC_VER) && _MSC_VER < 1900) || \
     (defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 3)) && \
      ! defined(__clang__) && ! defined(__INTEL_COMPILER))
 
