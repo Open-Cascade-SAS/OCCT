@@ -43,7 +43,7 @@ For instance, in Terminal application:
 
 ~~~~~
   $ cd /dev/OCCT/opencascade-7.0.0
-  $ ./genproj.sh
+  $ ./genproj
 ~~~~~
 
 @section build_xcode_build Building

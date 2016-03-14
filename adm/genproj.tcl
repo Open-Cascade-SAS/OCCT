@@ -16,29 +16,17 @@
 
 # =======================================================================
 # This script defines Tcl command genproj generating project files for 
-# different IDEs: 
-# "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd"
-#
-# Example:
-#      genproj -path=D:/occt -target=vc10
-#      genproj -target=xcd -ios -static
+# different IDEs and platforms. Run it with -help to get synopsis.
 # =======================================================================
 
 source [file join [file dirname [info script]] genconfdeps.tcl]
 
-set path ""
+# the script is assumed to be run from CASROOT (or dependent Products root)
+set path [file normalize .]
 set THE_CASROOT ""
 set fBranch ""
 if { [info exists ::env(CASROOT)] } {
   set THE_CASROOT "$::env(CASROOT)"
-}
-switch -exact -- "$tcl_platform(platform)" {
-  "windows" {set targetStation "wnt"}
-  "unix"    {set targetStation "lin"}
-}
-
-switch -exact -- "$tcl_platform(os)" {
-  "Darwin"  {set targetStation "mac"}
 }
 
 proc _get_options { platform type branch } {
@@ -121,84 +109,56 @@ proc osutils:findSrcSubPath {theSubPath} {
 }
 
 # Wrapper-function to generate VS project files
-proc genproj { args } {
-  global path THE_CASROOT targetStation
-  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd" }
-  set anArgs $args
-
-  # Setting default IDE.
-  set anTarget ""
-  set aCmpl    "gcc"
-  switch -exact -- "$targetStation" {
-    "wnt"   {set anTarget "$::env(VCVER)"}
-    "lin"   {set anTarget "cbp"}
-    "mac"   {set anTarget "xcd"}
-  }
-
-  set isTargetDefault true
-  if { [set anIndex [lsearch -nocase $anArgs -target=*]] != -1 } {
-    regsub -nocase "\\-target=" [lindex $anArgs $anIndex] "" anTarget
-    set anArgs [removeAllOccurrencesOf -target=* $anArgs]
-    set isTargetDefault false
-  }
-
-  if { [set anIndex [lsearch -nocase $anArgs -path=*]] != -1} {
-    regsub -nocase "\\-path=" [lindex $anArgs $anIndex] "" path
-    set anArgs [removeAllOccurrencesOf -path=* $anArgs]
-    puts "Starting work with \"$path\""
-  }
-
-  if { [llength $anArgs] == 0 && $isTargetDefault == true } {
-    puts "the default \'$anTarget\' target has been applied"
-  }
-
+proc genproj {theIDE args} {
+  set aSupportedIDEs { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd" }
+  set aSupportedPlatforms { "wnt" "lin" "mac" "ios" "qnx" }
   set isHelpRequire false
-  if { [lsearch -nocase $anArgs -h] != -1} {
-    set anArgs [removeAllOccurrencesOf -h $anArgs]
+
+  # check IDE argument
+  if { $theIDE == "-h" || $theIDE == "-help" || $theIDE == "--help" } {
+    set isHelpRequire true
+  } elseif { [lsearch -exact $aSupportedIDEs $theIDE] < 0 } {
+    puts "Error: genproj: unrecognized IDE \"$theIDE\""
     set isHelpRequire true
   }
 
-  if {$path == ""} {
-    set isHelpRequire true
+  # choice of compiler for Code::Blocks, currently hard-coded
+  set aCmpl "gcc"
+
+  # Determine default platform: wnt for vc*, mac for xcd, current for cbp
+  if { [regexp "^vc" $theIDE] } {
+    set aPlatform "wnt"
+  } elseif { $theIDE == "xcd" || $::tcl_platform(os) == "Darwin" } {
+    set aPlatform "mac"
+  } elseif { $::tcl_platform(platform) == "windows" } {
+    set aPlatform "wnt"
+  } elseif { $::tcl_platform(platform) == "unix" } {
+    set aPlatform "lin"
   }
 
+  # Check optional arguments
   set aLibType "dynamic"
-  if { [lsearch -nocase $anArgs "-static"] != -1} {
-    set anArgs [removeAllOccurrencesOf "-static" $anArgs]
-    set aLibType "static"
-    puts "static build has been selected"
-  } elseif { [lsearch -nocase $anArgs "-dynamic"] != -1} {
-    set anArgs [removeAllOccurrencesOf "-dynamic" $anArgs]
-    set aLibType "dynamic"
-    puts "dynamic build has been selected"
-  }
-
-  set aPlatform ""
-  if { [lsearch -nocase $anArgs "-ios"] != -1} {
-    set anArgs [removeAllOccurrencesOf "-ios" $anArgs]
-    set aPlatform "ios"
-  }
-
-  if { [lsearch -nocase $aSupportedTargets $anTarget] == -1} {
-    puts "the \'$anTarget\' is wrong TARGET"
-    set isHelpRequire true
-  }
-
-  if {[llength $anArgs] > 0} {
-    set isHelpRequire true
-
-    foreach anArg $anArgs {
-      puts "genproj: unrecognized option \'$anArg\'"
+  foreach arg $args {
+    if { $arg == "-h" || $arg == "-help" || $arg == "--help" } {
+      set isHelpRequire true
+    } elseif { [lsearch -exact $aSupportedPlatforms $arg] >= 0 } {
+      set aPlatform $arg
+    } elseif { $arg == "-static" } {
+      set aLibType "static"
+      puts "Static build has been selected"
+    } elseif { $arg == "-dynamic" } {
+      set aLibType "dynamic"
+      puts "Dynamic build has been selected"
+    } else {
+      puts "Error: genproj: unrecognized option \"$arg\""
+      set isHelpRequire true
     }
   }
 
   if {  $isHelpRequire == true } {
-    puts "usage: genproj \[ -target=<TARGET> \] \[ -path=<PATH> \]
+    puts "usage: genproj IDE \[Platform\] \[-static\] \[-h|-help|--help\]
 
-    PATH: 
-      path to the project
-
-    TARGET:
+    IDE must be one of:
       vc8   -  Visual Studio 2005
       vc9   -  Visual Studio 2008
       vc10  -  Visual Studio 2010
@@ -206,53 +166,59 @@ proc genproj { args } {
       vc12  -  Visual Studio 2013
       vc14  -  Visual Studio 2015
       cbp   -  CodeBlocks
-      xcd   -  XCode"
-      return
+      xcd   -  XCode
+
+    Platform (optional, only for CodeBlocks and XCode):
+      wnt   -  Windows
+      lin   -  Linux
+      mac   -  OS X
+      ios   -  iOS
+      qnx   -  QNX
+
+    Option -static can be used with XCode to build static libraries
+    "
+    return
   }
 
-  if {!$isTargetDefault} {
-    puts "the \'$anTarget\' target has been applied"
+  if { ! [info exists aPlatform] } {
+    puts "Error: genproj: Cannon identify default platform, please specify!"
+    return
   }
 
-  set anAdmPath "$path/adm"
+  puts "Preparing to generate $theIDE projects for $aPlatform platform..."
 
-  OS:MKPRC "$anAdmPath" "$anTarget" "$aLibType" "$aPlatform" "$aCmpl"
+  # path to where to generate projects, hardcoded from current dir
+  set anAdmPath [file normalize "${::path}/adm"]
 
-  genprojbat "$anTarget"
+  OS:MKPRC "$anAdmPath" "$theIDE" "$aLibType" "$aPlatform" "$aCmpl"
+
+  genprojbat "$theIDE" $aPlatform
 }
 
-proc genprojbat {theIDE} {
-  set aTargetPlatform "lin"
-  if { "$::tcl_platform(platform)" == "windows" } {
-    set aTargetPlatform "wnt"
-  }
-  
-  if {[regexp {(vc)[0-9]*$} $theIDE] == 1} {
-    set aTargetPlatform wnt
-  } elseif {"$theIDE" == "xcd"} {
-    set aTargetPlatform mac
-  }
-
+proc genprojbat {theIDE thePlatform} {
   set aTargetPlatformExt sh
-  if { "$aTargetPlatform" == "wnt" } {
+  if { $thePlatform == "wnt" } {
     set aTargetPlatformExt bat
   }
 
   if {"$theIDE" != "cmake"} {
-    set anEnvTmplFile [open "$::THE_CASROOT/adm/templates/env.${aTargetPlatformExt}" "r"]
-    set anEnvTmpl [read $anEnvTmplFile]
-    close $anEnvTmplFile
+    # copy env.bat/sh only if not yet present
+    if { ! [file exists "$::path/env.${aTargetPlatformExt}"] } {
+      set anEnvTmplFile [open "$::THE_CASROOT/adm/templates/env.${aTargetPlatformExt}" "r"]
+      set anEnvTmpl [read $anEnvTmplFile]
+      close $anEnvTmplFile
 
-    set aCasRoot ""
-    if { [file normalize "$::path"] != [file normalize "$::THE_CASROOT"] } {
-      set aCasRoot [relativePath "$::path" "$::THE_CASROOT"]
+      set aCasRoot ""
+      if { [file normalize "$::path"] != [file normalize "$::THE_CASROOT"] } {
+        set aCasRoot [relativePath "$::path" "$::THE_CASROOT"]
+      }
+
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
+
+      set anEnvFile [open "$::path/env.${aTargetPlatformExt}" "w"]
+      puts $anEnvFile $anEnvTmpl
+      close $anEnvFile
     }
-
-    regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
-
-    set anEnvFile [open "$::path/env.${aTargetPlatformExt}" "w"]
-    puts $anEnvFile $anEnvTmpl
-    close $anEnvFile
 
     file copy -force -- "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
   }
@@ -264,6 +230,9 @@ proc genprojbat {theIDE} {
       "cbp"   {
         file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.sh"  "$::path/codeblocks.sh"
         file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.bat" "$::path/codeblocks.bat"
+        # Code::Blocks 16.01 does not create directory for import libs, help him
+        file mkdir "$::path/$thePlatform/cbp/lib"
+        file mkdir "$::path/$thePlatform/cbp/libd"
       }
       "xcd"   { file copy -force -- "$::THE_CASROOT/adm/templates/xcode.sh"      "$::path/xcode.sh" }
     }
@@ -289,22 +258,14 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 # @param thePlatform Optional target platform for cross-compiling, e.g. ios for iOS
 # @param theCmpl     Compiler option (msvc or gcc)
 proc OS:MKPRC { theOutDir theIDE theLibType thePlatform theCmpl } {
-  global path targetStation
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "xcd" }
-
-  if { [lsearch $aSupportedIDE $theIDE] < 0 } {
-    puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
-    return
-  }
-  
+  global path
   set anOutRoot $theOutDir
   if { $anOutRoot == "" } {
     error "Error : \"theOutDir\" is not initialized"
   }
 
   # Create output directory
-  set aWokStation "$targetStation"
-
+  set aWokStation "$thePlatform"
   if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12 vc14} $theIDE] != -1 } {
     set aWokStation "msvc"
   }
@@ -350,7 +311,7 @@ proc OS:MKPRC { theOutDir theIDE theLibType thePlatform theCmpl } {
 
   # collect all required header files
   puts "Collecting required header files into $path/inc ..."
-  osutils:collectinc $aModules $path/inc $targetStation
+  osutils:collectinc $aModules $path/inc
 
   # Generating project files for the selected IDE
   switch -exact -- "$theIDE" {
@@ -361,7 +322,7 @@ proc OS:MKPRC { theOutDir theIDE theLibType thePlatform theCmpl } {
     "vc11"   -
     "vc12"   -
     "vc14"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
-    "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution $theCmpl }
+    "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution $thePlatform $theCmpl }
     "xcd"   {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000"
       OS:MKXCD $anOutDir $aModules $anAllSolution $theLibType $thePlatform
@@ -606,7 +567,6 @@ proc osutils:tk:eatpk { EXTERNLIB  } {
 # Define libraries to link using only EXTERNLIB file
 
 proc LibToLink {theTKit} {
-  global path
   regexp {^.*:([^:]+)$} $theTKit dummy theTKit
   set type [_get_type $theTKit]
   if {$type != "t" && $type != "x"} {
@@ -652,9 +612,8 @@ proc OS:genGUID { {theIDE "vc"} } {
 }
 
 # collect all include file that required for theModules in theOutDir
-proc osutils:collectinc {theModules theIncPath theTargetStation} {
+proc osutils:collectinc {theModules theIncPath} {
   global path
-
   set aCasRoot [file normalize $path]
   set anIncPath [file normalize $theIncPath]
 
@@ -1051,12 +1010,10 @@ proc wokUtils:FILES:FileToString { fin } {
 	return {}
     }
 }
-# List extensions of compilable files in OCCT
 
-proc osutils:compilable { } {
-  global targetStation
-  set aWokStation "$targetStation"
-  if { "$aWokStation" == "mac" } {
+# List extensions of compilable files in OCCT
+proc osutils:compilable {thePlatform} {
+  if { "$thePlatform" == "mac" || "$thePlatform" == "ios" } {
     return [list .c .cxx .cpp .mm]
   }
   return [list .c .cxx .cpp]
@@ -1463,7 +1420,7 @@ proc osutils:readtemplate:rc {theOutDir theToolKit} {
 proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} } } {
   if { $theProjTmpl == {} } {set theProjTmpl [osutils:vcproj:readtemplate $theVcVer 0]}
 
-  set l_compilable [osutils:compilable]
+  set l_compilable [osutils:compilable wnt]
   regsub -all -- {__TKNAM__} $theProjTmpl $theToolKit theProjTmpl
 
   upvar $theGuidsMap aGuidsMap
@@ -1509,7 +1466,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   set fxloparam ""
   foreach fxlo $resultloc {
     set xlo $fxlo
-    set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
+    set aSrcFiles [osutils:tk:files $xlo wnt]
 	set fxlo_cmplrs_options_cxx [_get_options wnt cmplrs_cxx $fxlo]
     if {$fxlo_cmplrs_options_cxx == ""} {
       set fxlo_cmplrs_options_cxx [_get_options wnt cmplrs_cxx b]
@@ -1615,24 +1572,16 @@ proc osutils:tk:loadunit { loc map } {
 }
 
 # Returns the list of all compilable files name in a toolkit, or devunit of any type
-# Call unit filter on units name to accept or reject a unit
 # Tfiles lists for each unit the type of file that can be compiled.
-proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } {
+proc osutils:tk:files { tkloc thePlatform } {
   set Tfiles(source,nocdlpack)     {source pubinclude}
   set Tfiles(source,toolkit)       {}
   set Tfiles(source,executable)    {source pubinclude}
   set listloc [concat [osutils:tk:units $tkloc] $tkloc]
   #puts " listloc = $listloc"
-  if { $l_compilable == {} } {
-    set l_comp [list .c .cxx .cpp]
-  } else {
-    set l_comp [$l_compilable]
-  }
-  if { $unitfilter == {} } {
-    set resultloc $listloc
-  } else {
-    set resultloc [$unitfilter $listloc]
-  }
+
+  set l_comp [osutils:compilable $thePlatform]
+  set resultloc $listloc
   set lret {}
   foreach loc $resultloc {
     set utyp [_get_type $loc]
@@ -1656,15 +1605,7 @@ proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } 
       foreach f $map($type) {
         #puts $f
         if { [lsearch $l_comp [file extension $f]] != -1 } {
-          if { $justail == 1 } {
-            if {$type == "source"} {
-              if {[lsearch $lret "@top_srcdir@/src/$loc/[file tail $f]"] == -1} {
-                lappend lret @top_srcdir@/src/$loc/[file tail $f]
-              }
-            }
-          } else {
-            lappend lret $f
-          }
+          lappend lret $f
         }
       }
     }
@@ -1675,14 +1616,14 @@ proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } 
 # Generate Visual Studio project file for executable
 proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} } } {
   set aVcFiles {}
-  foreach f [osutils:tk:files $theToolKit osutils:compilable 0] {
+  foreach f [osutils:tk:files $theToolKit wnt] {
     if { $theProjTmpl == {} } {
       set aProjTmpl [osutils:vcproj:readtemplate $theVcVer 1]
     } else {
       set aProjTmpl $theProjTmpl
     }
     set aProjName [file rootname [file tail $f]]
-    set l_compilable [osutils:compilable]
+    set l_compilable [osutils:compilable wnt]
     regsub -all -- {__XQTNAM__} $aProjTmpl $aProjName aProjTmpl
 
     upvar $theGuidsMap aGuidsMap
@@ -1875,13 +1816,13 @@ proc osutils:justunix { listloc } {
 
 ####### CODEBLOCK ###################################################################
 # Function to generate Code Blocks workspace and project files
-proc OS:MKCBP { theOutDir theModules theAllSolution theCmpl } {
+proc OS:MKCBP { theOutDir theModules theAllSolution thePlatform theCmpl } {
   puts stderr "Generating project files for Code Blocks"
 
   # Generate projects for toolkits and separate workspace for each module
   foreach aModule $theModules {
     OS:cworkspace          $aModule $aModule $theOutDir
-    OS:cbp        $theCmpl $aModule          $theOutDir
+    OS:cbp        $theCmpl $aModule          $theOutDir $thePlatform
   }
 
   # Generate single workspace "OCCT" containing projects from all modules
@@ -1893,32 +1834,29 @@ proc OS:MKCBP { theOutDir theModules theAllSolution theCmpl } {
 }
 
 # Generate Code Blocks projects
-proc OS:cbp { theCmpl theModules theOutDir } {
+proc OS:cbp { theCmpl theModules theOutDir thePlatform } {
   set aProjectFiles {}
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
-      lappend aProjectFiles [osutils:cbptk $theCmpl $theOutDir $aToolKit ]
+      lappend aProjectFiles [osutils:cbptk $theCmpl $theOutDir $aToolKit $thePlatform]
     }
     foreach anExecutable [OS:executable ${aModule}] {
-      lappend aProjectFiles [osutils:cbpx  $theCmpl $theOutDir $anExecutable]
+      lappend aProjectFiles [osutils:cbpx  $theCmpl $theOutDir $anExecutable $thePlatform]
     }
   }
   return $aProjectFiles
 }
 
 # Generate Code::Blocks project file for ToolKit
-proc osutils:cbptk { theCmpl theOutDir theToolKit } {
+proc osutils:cbptk { theCmpl theOutDir theToolKit thePlatform} {
   set aUsedLibs     [list]
   set aFrameworks   [list]
   set anIncPaths    [list]
   set aTKDefines    [list]
   set aTKSrcFiles   [list]
 
-  global path targetStation
-  set aWokStation "$targetStation"
-
   # collect list of referred libraries to link with
-  osutils:usedOsLibs $theToolKit "$aWokStation" aUsedLibs aFrameworks
+  osutils:usedOsLibs $theToolKit $thePlatform aUsedLibs aFrameworks
   set aDepToolkits [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]]
   foreach tkx $aDepToolkits {
     lappend aUsedLibs "${tkx}"
@@ -1931,7 +1869,7 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit } {
     set listloc $theToolKit
   }
 
-  if { "$aWokStation" == "wnt" } {
+  if { $thePlatform == "wnt" } {
     set resultloc [osutils:justwnt  $listloc]
   } else {
     set resultloc [osutils:justunix $listloc]
@@ -1939,7 +1877,7 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit } {
   if [array exists written] { unset written }
   foreach fxlo $resultloc {
     set xlo       $fxlo
-    set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
+    set aSrcFiles [osutils:tk:files $xlo $thePlatform]
     foreach aSrcFile [lsort $aSrcFiles] {
       if { ![info exists written([file tail $aSrcFile])] } {
         set written([file tail $aSrcFile]) 1
@@ -1950,12 +1888,12 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit } {
     }
 
     # macros for correct DLL exports
-    if { "$aWokStation" == "wnt" } {
+    if { $thePlatform == "wnt" } {
       lappend aTKDefines "__${xlo}_DLL"
     }
   }
 
-  return [osutils:cbp $theCmpl $theOutDir $theToolKit $aTKSrcFiles $aUsedLibs $aFrameworks $anIncPaths $aTKDefines]
+  return [osutils:cbp $theCmpl $theOutDir $theToolKit $thePlatform $aTKSrcFiles $aUsedLibs $aFrameworks $anIncPaths $aTKDefines]
 }
 
 # Generates Code Blocks workspace.
@@ -2028,13 +1966,12 @@ proc OS:cworkspace { theSolName theModules theOutDir } {
 }
 
 # Generate Code::Blocks project file for Executable
-proc osutils:cbpx { theCmpl theOutDir theToolKit } {
-  global path targetStation
-  set aWokStation "$targetStation"
+proc osutils:cbpx { theCmpl theOutDir theToolKit thePlatform } {
+  global path
   set aWokArch    "$::env(ARCH)"
 
   set aCbpFiles {}
-  foreach aSrcFile [osutils:tk:files $theToolKit osutils:compilable 0] {
+  foreach aSrcFile [osutils:tk:files $theToolKit $thePlatform] {
     # collect list of referred libraries to link with
     set aUsedLibs     [list]
     set aFrameworks   [list]
@@ -2043,7 +1980,7 @@ proc osutils:cbpx { theCmpl theOutDir theToolKit } {
     set aTKSrcFiles   [list]
     set aProjName [file rootname [file tail $aSrcFile]]
 
-    osutils:usedOsLibs $theToolKit "$aWokStation" aUsedLibs aFrameworks
+    osutils:usedOsLibs $theToolKit $thePlatform aUsedLibs aFrameworks
 
     set aDepToolkits [LibToLinkX $theToolKit $aProjName]
     foreach tkx $aDepToolkits {
@@ -2070,14 +2007,14 @@ proc osutils:cbpx { theCmpl theOutDir theToolKit } {
     }
 
     # macros for correct DLL exports
-    if { "$aWokStation" == "wnt" } {
+    if { $thePlatform == "wnt" } {
       lappend aTKDefines "__${theToolKit}_DLL"
     }
 
     # common include paths
     lappend anIncPaths "../../../inc"
 
-    lappend aCbpFiles [osutils:cbp $theCmpl $theOutDir $aProjName $aTKSrcFiles $aUsedLibs $aFrameworks $anIncPaths $aTKDefines $isExecutable]
+    lappend aCbpFiles [osutils:cbp $theCmpl $theOutDir $aProjName $thePlatform $aTKSrcFiles $aUsedLibs $aFrameworks $anIncPaths $aTKDefines $isExecutable]
   }
 
   return $aCbpFiles
@@ -2093,9 +2030,8 @@ proc osutils:cbpx { theCmpl theOutDir theToolKit } {
 # @param theIncPaths   - header search paths
 # @param theDefines    - compiler macro definitions
 # @param theIsExe      - flag to indicate executable / library target
-proc osutils:cbp { theCmpl theOutDir theProjName theSrcFiles theLibsList theFrameworks theIncPaths theDefines {theIsExe "false"} } {
-  global targetStation
-  set aWokStation "$targetStation"
+proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibsList theFrameworks theIncPaths theDefines {theIsExe "false"} } {
+  set aWokStation $thePlatform
   set aWokArch    "$::env(ARCH)"
 
   set aCmplCbp "gcc"
@@ -2469,7 +2405,7 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
   set aDepToolkits      [lappend [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]] $theToolKit]
 
   if { "$theTargetType" == "executable" } {
-    set aFile [osutils:tk:files $theToolKit osutils:compilable 0]
+    set aFile [osutils:tk:files $theToolKit mac]
     set aProjName [file rootname [file tail $aFile]]
     set aDepToolkits [LibToLinkX $theToolKit $aProjName]
   }
@@ -2535,7 +2471,7 @@ proc osutils:xcdtk:sources {theToolKit theTargetType theSrcFileRefSection theGro
       set aGuidsMap($aPackage) [OS:genGUID "xcd"]
     }
 
-    set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
+    set aSrcFiles [osutils:tk:files $xlo mac]
     foreach aSrcFile [lsort $aSrcFiles] {
       set aFileExt "sourcecode.cpp.cpp"
 

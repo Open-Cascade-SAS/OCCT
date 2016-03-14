@@ -136,9 +136,9 @@ proc wokdep:gui:UpdateList {} {
   if { "$::HAVE_TBB" == "true" } {
     wokdep:SearchTBB     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
-  if { "$::HAVE_OPENCL" == "true" } {
-    wokdep:SearchOpenCL  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
-  }
+#  if { "$::HAVE_OPENCL" == "true" } {
+#    wokdep:SearchOpenCL  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+#  }
   if { "$::HAVE_VTK" == "true" } {
     wokdep:SearchVTK  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -384,8 +384,8 @@ checkbutton   .myFrame.myChecks.myGl2psCheck    -offvalue "false" -onvalue "true
 ttk::label    .myFrame.myChecks.myGl2psLbl      -text "Use GL2PS"
 checkbutton   .myFrame.myChecks.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myTbbLbl        -text "Use Intel TBB"
-checkbutton   .myFrame.myChecks.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myChecks.myOpenClLbl     -text "Use OpenCL"
+#checkbutton   .myFrame.myChecks.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
+#ttk::label    .myFrame.myChecks.myOpenClLbl     -text "Use OpenCL"
 checkbutton   .myFrame.myChecks.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
 ttk::label    .myFrame.myChecks.myMacGLXLbl     -text "Use X11 for windows drawing"
 ttk::label    .myFrame.myChecks.myVtkLbl        -text "Use VTK"

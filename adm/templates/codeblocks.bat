@@ -11,6 +11,7 @@ if not "%4" == "" (
 )
 
 if "%CB_PATH%"=="" if exist "%PROGRAMFILES%\CodeBlocks" set "CB_PATH=%PROGRAMFILES%\CodeBlocks\codeblocks.exe"
+if "%CB_PATH%"=="" if exist "%PROGRAMFILES(x86)%\CodeBlocks" set "CB_PATH=%PROGRAMFILES(x86)%\CodeBlocks\codeblocks.exe"
 if "%CB_PATH%"=="" set "CB_PATH=codeblocks.exe"
 
 set "CASBIN=wnt\cbp"
