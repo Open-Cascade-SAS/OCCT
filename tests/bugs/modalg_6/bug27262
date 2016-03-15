@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC27262"
+puts "================"
+puts ""
+#######################################################################
+# General Fuse operation is failed on the attached shapes
+#######################################################################
+
+restore [locate_data_file  bug27262_cmpd.brep] b
+explode b
+
+bclearobjects
+bcleartools
+baddobjects b_1
+baddtools b_2
+bfillds
+bbuild result
+checkshape result
+checknbshapes result -solid 22
+checkprops result -v 16263.5
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

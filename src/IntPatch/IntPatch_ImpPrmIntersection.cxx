@@ -1834,31 +1834,6 @@ static Handle(IntSurf_LineOn2S) GetVertices(const Handle(IntPatch_PointLine)& th
   return vertices;
 }
 
-static Standard_Boolean AreSamePoints(const IntSurf_PntOn2S& P1,
-  const IntSurf_PntOn2S& P2)
-{
-  Standard_Boolean result = Standard_False;
-  Standard_Real T2D = 1.e-9, T3D = 1.e-8;
-  const gp_Pnt& P3D1 = P1.Value();
-  const gp_Pnt& P3D2 = P2.Value();
-  if(P3D1.Distance(P3D2) <= T3D) {
-    Standard_Real U1 = 0., V1 = 0., U2 = 0., V2 = 0., U3 = 0., V3 = 0., U4 = 0., V4 = 0.;
-    P1.ParametersOnS1(U1,V1);
-    P1.ParametersOnS2(U2,V2);
-    P2.ParametersOnS1(U3,V3);
-    P2.ParametersOnS2(U4,V4);
-    gp_Pnt2d P2D11(U1,V1);
-    gp_Pnt2d P2D12(U2,V2);
-    gp_Pnt2d P2D21(U3,V3);
-    gp_Pnt2d P2D22(U4,V4);
-    Standard_Boolean sameS1 = (P2D11.Distance(P2D21) <= T2D) ? Standard_True : Standard_False;
-    Standard_Boolean sameS2 = (P2D12.Distance(P2D22) <= T2D) ? Standard_True : Standard_False;
-    if(sameS1 && sameS2)
-      result = Standard_True;
-  }
-  return result;
-}
-
 static void SearchVertices(const Handle(IntSurf_LineOn2S)& Line,
   const Handle(IntSurf_LineOn2S)& Vertices,
   TColStd_Array1OfInteger&        PTypes)
@@ -1870,7 +1845,7 @@ static void SearchVertices(const Handle(IntSurf_LineOn2S)& Line,
     Standard_Integer type = 0;
     for(iv = 1; iv <= nbv; iv++) {
       const IntSurf_PntOn2S& aV = Vertices->Value(iv);
-      if(AreSamePoints(aP,aV)) {
+      if(aP.IsSame(aV, Precision::Confusion(), Precision::PConfusion())) {
         type = iv; 
         break;
       }
@@ -2229,7 +2204,7 @@ static void VerifyVertices( const Handle(IntSurf_LineOn2S)&    Line,
 
   for(iv = 1; iv <= nbv; iv++) {
     const IntSurf_PntOn2S& aV = Vertices->Value(iv);
-    if(AreSamePoints(aPF,aV)) {
+    if(aPF.IsSame(aV, Precision::Confusion(), Precision::PConfusion())) {
       FIndexSame = iv;
       break;
     }
@@ -2262,7 +2237,7 @@ static void VerifyVertices( const Handle(IntSurf_LineOn2S)&    Line,
 
   for(iv = 1; iv <= nbv; iv++) {
     const IntSurf_PntOn2S& aV = Vertices->Value(iv);
-    if(AreSamePoints(aPL,aV)) {
+    if(aPL.IsSame(aV, Precision::Confusion(), Precision::PConfusion())) {
       LIndexSame = iv;
       break;
     }
@@ -2410,9 +2385,9 @@ static Standard_Boolean AddVertices(Handle(IntSurf_LineOn2S)& Line,
 }
 
 
-static void PutIntVertices(const Handle(IntPatch_Line)&    Line,
+static void PutIntVertices(const Handle(IntPatch_PointLine)&    Line,
   Handle(IntSurf_LineOn2S)& Result,
-  Standard_Boolean          ,//IsReversed,
+  Standard_Boolean          theIsReversed,
   Handle(IntSurf_LineOn2S)& Vertices,
   const Standard_Real       ArcTol)
 {
@@ -2421,7 +2396,8 @@ static void PutIntVertices(const Handle(IntPatch_Line)&    Line,
   if(nbp < 3)
     return;
 
-  Handle(IntPatch_WLine) WLine (Handle(IntPatch_WLine)::DownCast (Line));
+  const Handle(IntPatch_RLine) aRLine = Handle(IntPatch_RLine)::DownCast(Line);
+
   Standard_Integer ip = 0, iv = 0;
   gp_Pnt aPnt;
   IntPatch_Point thePnt;
@@ -2431,14 +2407,41 @@ static void PutIntVertices(const Handle(IntPatch_Line)&    Line,
     const IntSurf_PntOn2S& aP = Result->Value(ip);
     for(iv = 1; iv <= nbv; iv++) {
       const IntSurf_PntOn2S& aV = Vertices->Value(iv);
-      if(AreSamePoints(aP,aV)) {
+      if(aP.IsSame(aV, Precision::Confusion(), Precision::PConfusion())) {
         aPnt = Result->Value(ip).Value();
         Result->Value(ip).ParametersOnS1(U1,V1);
         Result->Value(ip).ParametersOnS2(U2,V2);
         thePnt.SetValue(aPnt,ArcTol,Standard_False);
         thePnt.SetParameters(U1,V1,U2,V2);
-        thePnt.SetParameter((Standard_Real)ip);
-        WLine->AddVertex(thePnt);
+        
+        Standard_Real aParam = (Standard_Real)ip;
+
+        if(!aRLine.IsNull())
+        {
+          //In fact, aRLine is always on the parametric surface.
+          //If (theIsReversed == TRUE) then (U1, V1) - point on
+          //parametric surface, otherwise - point on quadric.
+          const Handle(Adaptor2d_HCurve2d)& anArc = aRLine->IsArcOnS1() ?
+                                                    aRLine->ArcOnS1() :
+                                                    aRLine->ArcOnS2();
+
+          const gp_Lin2d aLin(anArc->Curve2d().Line());
+          gp_Pnt2d aPSurf;
+
+          if(theIsReversed)
+          {
+            aPSurf.SetCoord(U1, V1);
+          }
+          else
+          {
+            aPSurf.SetCoord(U2, V2);
+          }
+
+          aParam = ElCLib::Parameter(aLin, aPSurf);
+        }
+        
+        thePnt.SetParameter(aParam);
+        Line->AddVertex(thePnt);
       }
     }
   }
@@ -2458,7 +2461,7 @@ static Standard_Boolean HasInternals(Handle(IntSurf_LineOn2S)& Line,
     const IntSurf_PntOn2S& aP = Line->Value(ip);
     for(iv = 1; iv <= nbv; iv++) {
       const IntSurf_PntOn2S& aV = Vertices->Value(iv);
-      if(AreSamePoints(aP,aV)) {
+      if(aP.IsSame(aV, Precision::Confusion(), Precision::PConfusion())) {
         result = Standard_True;
         break;
       }

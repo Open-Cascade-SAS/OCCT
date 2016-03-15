@@ -1,0 +1,34 @@
+puts "================"
+puts "OCC27263"
+puts "================"
+puts ""
+#######################################################################
+# Regression vs 6.9.1: Exception is raised during intersection of two faces
+#######################################################################
+
+set MaxTol 1.e-7
+set GoodNbCurv 1
+
+restore [locate_data_file  bug27262_cmpd.brep] b
+explode b
+
+smallview
+explode b_1 f
+don b_1_27 b_2
+fit
+
+set log [bopcurves b_1_27 b_2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+ee]+)\n+([-0-9.+ee]+)} ${log} full Toler NbCurv
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+
+checklength c_1 -l 3.0642043054782868
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
