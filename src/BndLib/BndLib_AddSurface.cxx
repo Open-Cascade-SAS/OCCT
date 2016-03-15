@@ -195,6 +195,11 @@ void ComputePolesIndexes(const TColStd_Array1OfReal &theFlatKnots,
                          Standard_Integer &theOutMinIdx,
                          Standard_Integer &theOutMaxIdx)
 {
+  // Set initial values for the result indexes to handle situation when requested parameter space
+  // is slightly greater than B-spline parameter space.
+  theOutMinIdx = theFlatKnots.Lower();
+  theOutMaxIdx = theFlatKnots.Upper();
+
   // Compute first and last used flat knots.
   for(Standard_Integer aKnotIdx = theFlatKnots.Lower();
       aKnotIdx < theFlatKnots.Upper();

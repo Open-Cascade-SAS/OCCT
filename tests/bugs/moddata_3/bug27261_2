@@ -1,0 +1,15 @@
+puts "================"
+puts "0027261"
+puts "================"
+puts ""
+############################################################### 
+# Incorrect bounding box is created for the face
+##############################################################
+
+restore [locate_data_file bug27261_f2.brep] f2
+bounding f2
+
+# Visual check.
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
