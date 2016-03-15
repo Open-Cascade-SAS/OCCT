@@ -91,6 +91,14 @@ private:
 
 
   TopoDS_Face myFace;
+
+  //! This variable stores information about algorithm internal state.
+  //! Type of this variable differs from TopAbs_State since it contains 
+  //! additional information about error status.
+  //! 1 - Error inside of the algorithm.
+  //! 2 - ON.
+  //! 3 - IN.
+  //! 4 - OUT.
   Standard_Integer myState;
 
 

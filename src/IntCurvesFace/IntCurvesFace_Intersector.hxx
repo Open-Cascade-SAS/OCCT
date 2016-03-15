@@ -58,9 +58,13 @@ public:
   //! on the line can be a negative value (greater than -Tol).
   //! If aRestr = true UV bounding box of face is used to restrict 
   //! it's underlined surface,
-  //! otherwise surface is not restricted
+  //! otherwise surface is not restricted.
+  //! If UseBToler = false then the 2d-point of intersection is classified with null-tolerance
+  //! (relative to face);
+  //! otherwise it's using maximium between input tolerance(aTol) and tolerances of face bounds (edges).
   Standard_EXPORT IntCurvesFace_Intersector(const TopoDS_Face& F, const Standard_Real aTol, 
-                                            const Standard_Boolean aRestr = Standard_True);
+                                            const Standard_Boolean aRestr = Standard_True,
+                                            const Standard_Boolean UseBToler = Standard_True);
   
   //! Perform the intersection between the
   //! segment L and the loaded face.
@@ -117,6 +121,12 @@ public:
   Standard_EXPORT TopAbs_State ClassifyUVPoint (const gp_Pnt2d& Puv) const;
   
   Standard_EXPORT Bnd_Box Bounding() const;
+
+  //! Sets the boundary tolerance flag
+  Standard_EXPORT void SetUseBoundToler(Standard_Boolean UseBToler );
+
+  //! Returns the boundary tolerance flag
+  Standard_EXPORT Standard_Boolean GetUseBoundToler() const;
   
   Standard_EXPORT void Destroy();
 ~IntCurvesFace_Intersector()
@@ -149,6 +159,7 @@ private:
   TopoDS_Face face;
   Standard_Address PtrOnPolyhedron;
   Standard_Address PtrOnBndBounding;
+  Standard_Boolean myUseBoundTol;
 
 
 };

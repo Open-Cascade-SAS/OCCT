@@ -28,10 +28,11 @@
 #include <gp_Vec.hxx>
 #include <IntCurvesFace_Intersector.hxx>
 #include <math_BullardGenerator.hxx>
-#include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopExp.hxx>
 
 #include <vector>
 
@@ -45,7 +46,14 @@ static
 static 
   Standard_Real GetAddToParam(const gp_Lin& L,const Standard_Real P,const Bnd_Box& B);
 
+//gets transition of line <L> passing through/near the edge <e> of faces <f1>, <f2>. <param> is
+// a parameter on the edge where the minimum distance between <l> and <e> was found 
+static Standard_Integer GetTransi(const TopoDS_Face& f1, const TopoDS_Face& f2, const TopoDS_Edge e, 
+                     Standard_Real param, const Geom_Line& L, IntCurveSurface_TransitionOnCurve& trans);
 
+static Standard_Boolean GetNormalOnFaceBound(const TopoDS_Edge& E, const TopoDS_Face& F, Standard_Real param, gp_Dir& OutDir);
+
+static void Trans(Standard_Real parmin, IntCurveSurface_TransitionOnCurve& tran, int& state);
 
 //=======================================================================
 //function : BRepClass3d_SClassifier
@@ -116,8 +124,8 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   }
 
   // iteratively try up to 10 probing points from each face
-  const int NB_MAX_POINTS_PER_FACE = 10;
-  for (int itry = 0; itry < NB_MAX_POINTS_PER_FACE; itry++)
+  const Standard_Integer NB_MAX_POINTS_PER_FACE = 10;
+  for (Standard_Integer itry = 0; itry < NB_MAX_POINTS_PER_FACE; itry++)
   {
     for (std::vector<TopoDS_Face>::iterator iFace = aFaces.begin(); iFace != aFaces.end(); ++iFace)
     {
@@ -182,230 +190,263 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
 //purpose  : 
 //=======================================================================
 void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
-				      const gp_Pnt&  P,
-				      const Standard_Real Tol) 
+                                      const gp_Pnt&  P,
+                                      const Standard_Real Tol)
 { 
-
-
-  if(SolidExplorer.Reject(P)) { 
-    myState=3; //-- in ds solid case without face 
+  if(SolidExplorer.Reject(P))
+  {
+    // Solid without faces => the whole space. Always in.
+    myState = 3; // IN
     return;
   }
 
+  const BRepClass3d_BndBoxTree & aTree = SolidExplorer.GetTree();
+  const TopTools_IndexedMapOfShape & aMapEV = SolidExplorer.GetMapEV();
+
+  // Vertices/Edges vs Point.
+  BRepClass3d_BndBoxTreeSelectorPoint aSelectorPoint(aMapEV);
+  aSelectorPoint.SetCurrentPoint(P);
+
+  Standard_Integer SelsVE = 0;
+  SelsVE = aTree.Select(aSelectorPoint); 
+
+  if (SelsVE > 0)
+  {
+    // The point P lays inside the tolerance area of vertices/edges => return ON state.
+    myState = 2; // ON.
+    return;
+  }
+
+  TopTools_IndexedDataMapOfShapeListOfShape mapEF;
+  TopExp::MapShapesAndAncestors(SolidExplorer.GetShape(), TopAbs_EDGE, TopAbs_FACE, mapEF);
+  
+  BRepClass3d_BndBoxTreeSelectorLine aSelectorLine(aMapEV);
 
   myFace.Nullify();
   myState = 0;
-  if(SolidExplorer.Reject(P) == Standard_False) { 
-    gp_Lin L;
-    Standard_Real Par;
-    //-- We compute the intersection betwwen the line builded in the Solid Explorer
-    //-- and the shape.
 
-    //-- --------------------------------------------------------------------------------
-    //-- Calculate intersection with the face closest to the direction of bounding boxes 
-    //-- by priority so that to have the smallest possible parmin. 
-    //-- optimization to produce as much as possible rejections with other faces. 
-    Standard_Integer iFlag;
-    //
+  gp_Lin L;
+  Standard_Real Par;
 
-    //  Modified by skv - Thu Sep  4 11:22:05 2003 OCC578 Begin
-    //  If found line passes through a bound of any face, it means that the line
-    //  is not found properly and it is necessary to repeat whole procedure.
-    //  That's why the main loop while is added.
-    Standard_Boolean isFaultyLine = Standard_True;
-    Standard_Integer anIndFace    = 0;
-    Standard_Real    parmin = 0.;
+  // We compute the intersection between the line built in the Solid Explorer and the shape.
+  //-- --------------------------------------------------------------------------------
+  // Calculate intersection with the face closest to the direction of bounding boxes 
+  // by priority so that to have the smallest possible parmin.
+  // Optimization to produce as much as possible rejections with other faces.
+  Standard_Integer iFlag;
 
-    while (isFaultyLine) {
-      if (anIndFace == 0) {
-	iFlag = SolidExplorer.Segment(P,L,Par);
-      } else {
-	iFlag = SolidExplorer.OtherSegment(P,L,Par);
-      }
+  // If found line passes through a bound of any face, it means that the line
+  // is not found properly and it is necessary to repeat whole procedure.
+  // That's why the main loop while is added.
+  Standard_Boolean isFaultyLine = Standard_True;
+  Standard_Integer anIndFace    = 0;
+  Standard_Real    parmin = 0.0;
+  while (isFaultyLine)
+  {
+    if (anIndFace == 0)
+      iFlag = SolidExplorer.Segment(P,L,Par);
+    else
+      iFlag = SolidExplorer.OtherSegment(P,L,Par);
 
-      Standard_Integer aCurInd = SolidExplorer.GetFaceSegmentIndex();
+    Standard_Integer aCurInd = SolidExplorer.GetFaceSegmentIndex();
 
-      if (aCurInd > anIndFace) {
-	anIndFace = aCurInd;
-      } else {
-	myState = 1;
-
-	return;
-      }
-      //  Modified by skv - Thu Sep  4 11:22:10 2003 OCC578 End
-
-      if (iFlag==1) {
-	// IsOnFace
-	// iFlag==1 i.e face is Infinite
-	myState=2; 
-
-	return;
-      }
-      //SolidExplorer.Segment(P,L,Par);
-      //
-      //process results from uncorrected shells
-      //
-      //if(Par > 1.e+100 && L.Direction().IsParallel(gp_Dir(0.,0.,1.),1.e-8)) {
-      if (iFlag==2) {
-	myState = 4;
-	return;
-      }
-      //-- BRepClass3d_Intersector3d Intersector3d;
-    
-      //  Modified by skv - Thu Sep  4 13:48:27 2003 OCC578 Begin
-      // Check if the point is ON surface but OUT of the face. 
-      // Just skip this face because it is bad for classification.
-      if (iFlag == 3)
-	continue;
-
-      isFaultyLine = Standard_False;
-//       Standard_Real parmin = RealLast();
-
-//       for(SolidExplorer.InitShell();
-// 	  SolidExplorer.MoreShell();
-// 	  SolidExplorer.NextShell()) { 
-      parmin = RealLast();
-
-      for(SolidExplorer.InitShell();
-	  SolidExplorer.MoreShell() && !isFaultyLine;
-	  SolidExplorer.NextShell()) { 
-//  Modified by skv - Thu Sep  4 13:48:27 2003 OCC578 End
-
-	if(SolidExplorer.RejectShell(L) == Standard_False) { 
-
-//  Modified by skv - Thu Sep  4 13:48:27 2003 OCC578 Begin
-// 	  for(SolidExplorer.InitFace(); 
-// 	      SolidExplorer.MoreFace(); 
-// 	      SolidExplorer.NextFace()) {
-	  for(SolidExplorer.InitFace(); 
-	      SolidExplorer.MoreFace() && !isFaultyLine; 
-	      SolidExplorer.NextFace()) {
-//  Modified by skv - Thu Sep  4 13:48:27 2003 OCC578 End
-	  
-	    if(SolidExplorer.RejectFace(L) == Standard_False) { 
-	    
-	      //-- Intersector3d.Perform(L,Par,Tol,SolidExplorer.CurrentFace());
-	      TopoDS_Shape aLocalShape = SolidExplorer.CurrentFace();
-	      TopoDS_Face f = TopoDS::Face(aLocalShape);
-	      //	    TopoDS_Face f = TopoDS::Face(SolidExplorer.CurrentFace());
-	      IntCurvesFace_Intersector& Intersector3d = SolidExplorer.Intersector(f);
-
-	      // MSV Oct 25, 2001: prolong segment, since there are cases when
-	      // the intersector does not find intersection points with the original
-	      // segment due to rough triangulation of a parametrized surface
-	      Standard_Real addW = Max(10*Tol, 0.01*Par);
-              Standard_Real AddW = addW;
-
-	      Bnd_Box aBoxF = Intersector3d.Bounding();
-
-              // MSV 23.09.2004: the box must be finite in order to
-              // correctly prolong the segment to its bounds
-              if (!aBoxF.IsVoid() && !aBoxF.IsWhole()) {
-                Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-                aBoxF.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-
-                Standard_Real boxaddW = GetAddToParam(L,Par,aBoxF);
-                addW = Max(addW,boxaddW);
-              }
-
-	      Standard_Real minW = -AddW;//-addW;
-	      Standard_Real maxW = Min(Par*10,Par+addW);//Par+addW;
-              //cout << "range [" << minW << "," << maxW << "]" << endl << endl;
-	      Intersector3d.Perform(L,minW,maxW);
-	      //Intersector3d.Perform(L,-Tol,Par+10.0*Tol);
-	      if(Intersector3d.IsDone()) { 
-		Standard_Integer i;
-		for (i=1; i <= Intersector3d.NbPnt(); i++) { 
-		  if(Abs(Intersector3d.WParameter(i)) < Abs(parmin) - Precision::PConfusion()) {
- 
-		    parmin = Intersector3d.WParameter(i);
-		    //  Modified by skv - Thu Sep  4 12:46:32 2003 OCC578 Begin
-		    TopAbs_State aState = Intersector3d.State(i);
-		    //  Modified by skv - Thu Sep  4 12:46:33 2003 OCC578 End
-		    if(Abs(parmin)<=Tol) { 
-		      myState = 2;
-		      myFace  = f;
-		    }
-		    //  Modified by skv - Thu Sep  4 12:46:32 2003 OCC578 Begin
-		    //  Treatment of case TopAbs_ON separately.
-
-		    else if(aState==TopAbs_IN) { 
-		    //  Modified by skv - Thu Sep  4 12:46:32 2003 OCC578 End
-
-		      //-- The intersection point between the line and a face F 
-		      // -- of the solid is in the face F 
-
-		      IntCurveSurface_TransitionOnCurve tran = Intersector3d.Transition(i);
-		      if (tran == IntCurveSurface_Tangent) {
-#ifdef OCCT_DEBUG
-			cout<<"*Problem ds BRepClass3d_SClassifier.cxx"<<endl;
-#endif
-			continue; // ignore this point
-		      }
-		      // if parmin is negative we should reverse transition
-		      if (parmin < 0)
-			tran = (tran == IntCurveSurface_Out 
-				? IntCurveSurface_In : IntCurveSurface_Out);
-		      if(tran == IntCurveSurface_Out) { 
-			//-- The line is going from inside the solid to outside 
-			//-- the solid.
-			myState = 3; //-- IN --
-		      }
-		      else /* if(tran == IntCurveSurface_In) */ { 
-			myState = 4; //-- OUT --
-		      }
-		      myFace  = f;
-		    }
-		    //  Modified by skv - Thu Sep  4 12:48:50 2003 OCC578 Begin
-		    // If the state is TopAbs_ON, it is necessary to chose
-		    // another line and to repeat the whole procedure.
-		    else if(aState==TopAbs_ON) {
-		      isFaultyLine = Standard_True;
-
-		      break;
-		    }
-		    //  Modified by skv - Thu Sep  4 12:48:50 2003 OCC578 End
-		  }
-		  else { 
-		    //-- No point has been found by the Intersector3d.
-		    //-- Or a Point has been found with a greater parameter.
-		  }
-		} //-- loop by intersection points
-	      } //-- Face has not been rejected
-	      else { 
-		myState = 1;
-	      }
-	    }
-	  } //-- Exploration of the faces
-	} //-- Shell has not been rejected
-	else { 
-	  myState=1; 
-	}
-      } //-- Exploration of the shells
-
-      //  Modified by skv - Thu Sep  4 11:42:03 2003 OCC578 Begin
-      // The end of main loop.
+    if (aCurInd > anIndFace)
+      anIndFace = aCurInd;
+    else
+    {
+      myState = 1; // Faulty.
+      return;
     }
-    //  Modified by skv - Thu Sep  4 11:42:03 2003 OCC578 End
+
+    if (iFlag==1)
+    {
+      // IsOnFace iFlag==1 i.e face is Infinite
+      myState = 2; // ON.
+      return;
+    }
+    if (iFlag == 2) 
+    {
+      myState = 4; // OUT.
+      return;
+    }
+
+    // Check if the point is ON surface but OUT of the face.
+    // Just skip this face because it is bad for classification.
+    if (iFlag == 3)
+      continue;
+
+    isFaultyLine = Standard_False;
+    parmin = RealLast();
+
+    Standard_Real NearFaultPar = RealLast(); // Parameter on line.
+    aSelectorLine.ClearResults();
+    aSelectorLine.SetCurrentLine(L, Par);
+    Standard_Integer SelsEVL = 0;
+    SelsEVL = aTree.Select(aSelectorLine); //SelsEE > 0 => Line/Edges & Line/Vertex intersection
+    if (SelsEVL > 0 )
+    {    
+      // Line and edges / vertices interference.
+      Standard_Integer VLInterNb = aSelectorLine.GetNbVertParam();
+      TopoDS_Vertex NearIntVert;
+      TopTools_MapOfShape LVInts;
+      for (Standard_Integer i = 1; i <= VLInterNb; i++)
+      {
+        // Line and vertex.
+        Standard_Real LP = 0;
+        TopoDS_Vertex V;
+        aSelectorLine.GetVertParam(i, V, LP);
+
+        LVInts.Add(V);
+        if (Abs(LP) < Abs(NearFaultPar))
+          NearFaultPar = LP;
+      }
+
+      Standard_Real param = 0.0;
+      TopoDS_Edge EE;
+      Standard_Real Lpar = RealLast();
+      for (Standard_Integer i = 1; i <= aSelectorLine.GetNbEdgeParam(); i++)
+      {
+        // Line and edge.
+        aSelectorLine.GetEdgeParam(i, EE, param, Lpar);
+        const TopTools_ListOfShape& ffs = mapEF.FindFromKey(EE); //ffs size == 2
+        if (ffs.Extent() != 2)
+          continue;
+        TopoDS_Face f1 = TopoDS::Face(ffs.First());
+        TopoDS_Face f2 = TopoDS::Face(ffs.Last());
+        IntCurveSurface_TransitionOnCurve tran;
+        TopoDS_Vertex V1, V2;
+        TopExp::Vertices(EE, V1, V2);
+        if (LVInts.Contains(V1) || LVInts.Contains(V2))
+          continue;
+        Standard_Integer Tst = GetTransi(f1, f2, EE, param, L, tran);
+        if (Tst == 1 && Abs(Lpar) < Abs(parmin))
+        {
+          parmin = Lpar;
+          Trans(parmin, tran, myState);
+        }
+        else if (Abs(Lpar) < Abs(NearFaultPar))
+          NearFaultPar = Lpar;
+      }
+    }
+
+    for(SolidExplorer.InitShell();
+        SolidExplorer.MoreShell() && !isFaultyLine;
+        SolidExplorer.NextShell())
+    {
+        if(SolidExplorer.RejectShell(L) == Standard_False)
+        {
+          for(SolidExplorer.InitFace(); 
+              SolidExplorer.MoreFace() && !isFaultyLine; 
+              SolidExplorer.NextFace())
+          {
+              if(SolidExplorer.RejectFace(L) == Standard_False)
+              {
+                TopoDS_Shape aLocalShape = SolidExplorer.CurrentFace();
+                TopoDS_Face f = TopoDS::Face(aLocalShape);
+                IntCurvesFace_Intersector& Intersector3d = SolidExplorer.Intersector(f);
+
+                // Prolong segment, since there are cases when
+                // the intersector does not find intersection points with the original
+                // segment due to rough triangulation of a parameterized surface.
+                Standard_Real addW = Max(10*Tol, 0.01*Par);
+                Standard_Real AddW = addW;
+
+                Bnd_Box aBoxF = Intersector3d.Bounding();
+
+                // The box must be finite in order to correctly prolong the segment to its bounds.
+                if (!aBoxF.IsVoid() && !aBoxF.IsWhole())
+                {
+                  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+                  aBoxF.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+
+                  Standard_Real boxaddW = GetAddToParam(L,Par,aBoxF);
+                  addW = Max(addW,boxaddW);
+                }
+
+                Standard_Real minW = -AddW;
+                Standard_Real maxW = Min(Par*10,Par+addW);
+                Intersector3d.Perform(L,minW,maxW);
+                if(Intersector3d.IsDone())
+                {
+                  for (Standard_Integer i = 1; i <= Intersector3d.NbPnt(); i++)
+                  {
+                    if(Abs(Intersector3d.WParameter(i)) < Abs(parmin) - Precision::PConfusion())
+                    {
+                      parmin = Intersector3d.WParameter(i);
+                      TopAbs_State aState = Intersector3d.State(i);
+                      if(Abs(parmin)<=Tol) 
+                      { 
+                        myState = 2;
+                        myFace  = f;
+                      }
+                      //  Treatment of case TopAbs_ON separately.
+                      else if(aState==TopAbs_IN)
+                      {
+                        //-- The intersection point between the line and a face F 
+                        // -- of the solid is in the face F 
+
+                        IntCurveSurface_TransitionOnCurve tran = Intersector3d.Transition(i);
+                        if (tran == IntCurveSurface_Tangent)
+                        {
+                          #ifdef OCCT_DEBUG
+                            cout<<"*Problem ds BRepClass3d_SClassifier.cxx"<<endl;
+                          #endif
+                          continue; // ignore this point
+                        }
+
+                        Trans(parmin, tran, myState);
+                        myFace  = f;
+                      }
+                      // If the state is TopAbs_ON, it is necessary to chose
+                      // another line and to repeat the whole procedure.
+                      else if(aState==TopAbs_ON)
+                      {
+                        isFaultyLine = Standard_True;
+                        break;
+                      }
+                    }
+                    else
+                    {
+                      //-- No point has been found by the Intersector3d.
+                      //-- Or a Point has been found with a greater parameter.
+                    }
+                  } //-- loop by intersection points
+                } //-- Face has not been rejected
+                else
+                  myState = 1;
+              }
+          } //-- Exploration of the faces
+        } //-- Shell has not been rejected
+        else
+          myState = 1;
+    } //-- Exploration of the shells
+
+    if (NearFaultPar != RealLast() &&
+        Abs(parmin) >= Abs(NearFaultPar) - Precision::PConfusion())
+    {
+      isFaultyLine = Standard_True;
+    }
+  }
 
 #ifdef OCCT_DEBUG
-    //#################################################
-    SolidExplorer.DumpSegment(P,L,parmin,State());
-    //#################################################
+  //#################################################
+  SolidExplorer.DumpSegment(P,L,parmin,State());
+  //#################################################
 #endif
-
-  } //-- Solid has not been rejected
-  else { 
-    myState = 1;
-  }
 }
 
 
-TopAbs_State BRepClass3d_SClassifier::State() const { 
-  if(myState==2)  return(TopAbs_ON);
-  if(myState==4)        return(TopAbs_OUT);          //--
-  else if(myState==3)   return(TopAbs_IN);           //-- 
-  return(TopAbs_OUT);             
+TopAbs_State BRepClass3d_SClassifier::State() const
+{
+  if(myState == 2)
+    return(TopAbs_ON);
+  else if(myState == 3)
+    return(TopAbs_IN);
+  else if(myState == 4)
+    return(TopAbs_OUT);
+
+  // return OUT state when there is an error during execution.
+  return(TopAbs_OUT);
 }
 
 TopoDS_Face BRepClass3d_SClassifier::Face() const {  
@@ -483,4 +524,104 @@ Standard_Boolean FaceNormal (const TopoDS_Face& aF,
     aDN.Reverse();
   }
   return Standard_True;
+}
+
+//=======================================================================
+//function : GetNormalOnFaceBound
+//purpose  : 
+//=======================================================================
+static Standard_Boolean GetNormalOnFaceBound(const TopoDS_Edge& E,
+                                             const TopoDS_Face& F,
+                                             const Standard_Real param,
+                                             gp_Dir& OutDir)
+{ 
+  Standard_Real f = 0, l = 0;
+
+  gp_Pnt2d P2d;
+  Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface(E, F, f, l);
+  if (c2d.IsNull())
+    return Standard_False;
+  if (param < f || param > l)
+    return Standard_False;
+  c2d->D0(param, P2d);
+  if (!FaceNormal(F, P2d.X(), P2d.Y(), OutDir))
+    return Standard_False;
+  return Standard_True;
+}
+
+//=======================================================================
+//function : GetTransi
+//purpose  : 
+//=======================================================================
+static Standard_Integer GetTransi(const TopoDS_Face& f1,
+                                  const TopoDS_Face& f2,
+                                  const TopoDS_Edge e,
+                                  const Standard_Real param,
+                                  const Geom_Line& L,
+                                  IntCurveSurface_TransitionOnCurve& trans)
+{
+  //return statuses:
+  //1 => OK
+  //0 => skip
+  //-1 => probably a faulty line
+  gp_Dir nf1, nf2;
+  if (!GetNormalOnFaceBound(e, f1, param, nf1))
+    return -1;
+  if (!GetNormalOnFaceBound(e, f2, param, nf2))
+    return -1;
+
+  const gp_Dir& LDir = L.Lin().Direction();
+
+  if(Abs(LDir.Dot(nf1)) < Precision::Angular() || Abs(LDir.Dot(nf2)) < Precision::Angular())
+  {
+    //line is orthogonal to normal(s)
+    //trans = IntCurveSurface_Tangent;
+    return -1;
+  }
+
+  if (nf1.IsEqual(nf2, Precision::Angular()))
+  {
+    Standard_Real angD = nf1.Dot(LDir);
+    if (Abs(angD) < Precision::Angular())
+      return -1;
+    else if (angD > 0)
+      trans = IntCurveSurface_Out;
+    else //angD < -Precision::Angular())
+      trans = IntCurveSurface_In;
+    return 1;
+  }
+
+  gp_Vec N = nf1^nf2;
+  gp_Dir ProjL = N.XYZ() ^ LDir.XYZ() ^ N.XYZ(); //proj LDir on the plane defined by nf1/nf2 directions
+
+  Standard_Real fAD = nf1.Dot(ProjL); 
+  Standard_Real sAD = nf2.Dot(ProjL);  
+
+  if (fAD < -Precision::Angular() && sAD < -Precision::Angular())
+    trans = IntCurveSurface_In;
+  else if (fAD > Precision::Angular() && sAD > Precision::Angular())
+    trans = IntCurveSurface_Out;
+  else
+    return 0;
+  return 1;
+}
+
+//=======================================================================
+//function : Trans
+//purpose  : 
+//=======================================================================
+static void Trans(const Standard_Real parmin, 
+                  IntCurveSurface_TransitionOnCurve& tran,
+                  int& state)
+{
+  // if parmin is negative we should reverse transition
+  if (parmin < 0)
+    tran = (tran == IntCurveSurface_Out ? IntCurveSurface_In : IntCurveSurface_Out);
+
+  if(tran == IntCurveSurface_Out)
+    //-- The line is going from inside the solid to outside 
+    //-- the solid.
+    state = 3; // IN
+  else
+    state = 4; // OUT
 }
