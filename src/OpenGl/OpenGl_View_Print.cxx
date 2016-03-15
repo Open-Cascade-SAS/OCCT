@@ -17,7 +17,6 @@
 
 #include <OpenGl_FrameBuffer.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <OpenGl_telem_util.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
 #include <OpenGl_PrinterContext.hxx>

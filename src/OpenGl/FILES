@@ -58,11 +58,8 @@ OpenGl_Texture.cxx
 OpenGl_Texture.hxx
 OpenGl_Resource.hxx
 OpenGl_Resource.cxx
-OpenGl_telem_util.hxx
-OpenGl_telem_util.cxx
 OpenGl_Font.hxx
 OpenGl_Font.cxx
-OpenGl_tgl_funcs.hxx
 OpenGl_BackgroundArray.cxx
 OpenGl_BackgroundArray.hxx
 OpenGl_BVHClipPrimitiveSet.cxx

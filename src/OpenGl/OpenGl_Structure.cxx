@@ -20,7 +20,6 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_StructureShadow.hxx>
-#include <OpenGl_telem_util.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>

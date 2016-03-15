@@ -17,7 +17,6 @@
 #include <stdlib.h>
 
 #include <OpenGl_GlCore11.hxx>
-#include <OpenGl_tgl_funcs.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TextureParams.hxx>
