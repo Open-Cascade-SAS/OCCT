@@ -1204,6 +1204,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     if(aWL.IsNull())
       continue;
 
+    if(!aWL->IsPurgingAllowed())
+      continue;
+
     Handle(IntPatch_WLine) aRW = IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2);
 
     if(aRW.IsNull())
@@ -1414,7 +1417,8 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
           }
 
           IntPatch_ALineToWLine AToW(Quad1,Quad2,0.01,0.05,aNbPointsInALine);
-          Handle(IntPatch_Line) wlin=AToW.MakeWLine((*((Handle(IntPatch_ALine) *)(&line))));
+          Handle(IntPatch_WLine) wlin=AToW.MakeWLine((*((Handle(IntPatch_ALine) *)(&line))));
+          wlin->EnablePurging(Standard_False);
           slin.Append(wlin);
         }
         else

@@ -41,7 +41,8 @@ IntPatch_WLine::IntPatch_WLine (const Handle(IntSurf_LineOn2S)& Line,
                                 const IntSurf_TypeTrans Trans1,
                                 const IntSurf_TypeTrans Trans2) :
   IntPatch_PointLine(Tang,Trans1,Trans2),fipt(Standard_False),lapt(Standard_False),
-  hasArcOnS1(Standard_False),hasArcOnS2(Standard_False)
+  hasArcOnS1(Standard_False),hasArcOnS2(Standard_False),
+  myIsPurgerAllowed(Standard_True)
 {
   typ = IntPatch_Walking;
   curv = Line;
@@ -57,7 +58,8 @@ IntPatch_WLine::IntPatch_WLine (const Handle(IntSurf_LineOn2S)& Line,
                                 const IntSurf_Situation Situ1,
                                 const IntSurf_Situation Situ2) :
   IntPatch_PointLine(Tang,Situ1,Situ2),fipt(Standard_False),lapt(Standard_False),
-  hasArcOnS1(Standard_False),hasArcOnS2(Standard_False)
+  hasArcOnS1(Standard_False),hasArcOnS2(Standard_False),
+  myIsPurgerAllowed(Standard_True)
 {
   typ = IntPatch_Walking;
   curv = Line;
@@ -71,7 +73,8 @@ IntPatch_WLine::IntPatch_WLine (const Handle(IntSurf_LineOn2S)& Line,
 IntPatch_WLine::IntPatch_WLine (const Handle(IntSurf_LineOn2S)& Line,
                                 const Standard_Boolean Tang) :
   IntPatch_PointLine(Tang),fipt(Standard_False),lapt(Standard_False),
-  hasArcOnS1(Standard_False),hasArcOnS2(Standard_False)
+  hasArcOnS1(Standard_False),hasArcOnS2(Standard_False),
+  myIsPurgerAllowed(Standard_True)
 {
   typ = IntPatch_Walking;
   curv = Line;

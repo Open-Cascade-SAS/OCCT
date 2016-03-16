@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC27267"
+puts "================"
+puts ""
+#######################################################################
+# [Regression to 6.9.1] geom/boolean_operations_06/G3: Cut produces invalid shape
+#######################################################################
+
+restore [locate_data_file bug27267_cmpd.brep] a
+explode a
+
+bcut result a_1 a_2
+checkshape result
+checknbshapes result -solid 1 -shell 1 -face 7
+checkprops result -s 0.00128248
+
+smallview
+don a_2
+fit
+don result 
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
