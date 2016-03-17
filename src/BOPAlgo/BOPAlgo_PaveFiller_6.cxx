@@ -2517,57 +2517,117 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
 {
   BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
   NCollection_IndexedDataMap<Standard_Integer,BOPDS_ListOfPaveBlock> aMVIPBs;
+  BOPCol_MapOfInteger aMVIToReduce;
   //
-  // iterate on all sections F-F
+  // 1. iterate on all sections F-F
   Standard_Integer aNb = aFFs.Extent(), i;
   for (i = 0; i < aNb; ++i) {
     const BOPDS_InterfFF& aFF = aFFs(i);
     Standard_Real aTolR3D = aFF.TolR3D();
     Standard_Real aTolReal = aFF.TolReal();
-    if (aTolReal < aTolR3D) {
-      // tolerance of intersection has been increased, so process this intersection
-      const BOPDS_VectorOfCurve& aVNC = aFF.Curves();
-      Standard_Integer aNbC = aVNC.Extent(), k;
-      for (k = 0; k < aNbC; ++k) {
-        const BOPDS_Curve& aNC = aVNC(k);
-        const BOPDS_ListOfPaveBlock& aLPB = aNC.PaveBlocks();
-        BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
-        for (; aItLPB.More(); aItLPB.Next()) {
-          const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
-          Standard_Integer nE;
-          if (!aPB->HasEdge(nE) || aPB->OriginalEdge() >= 0) {
-            continue;
-          }
+    Standard_Boolean bToReduce = aTolReal < aTolR3D;
+    // tolerance of intersection has been increased, so process this intersection
+    const BOPDS_VectorOfCurve& aVNC = aFF.Curves();
+    Standard_Integer aNbC = aVNC.Extent(), k;
+    for (k = 0; k < aNbC; ++k) {
+      const BOPDS_Curve& aNC = aVNC(k);
+      const BOPDS_ListOfPaveBlock& aLPB = aNC.PaveBlocks();
+      BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
+      for (; aItLPB.More(); aItLPB.Next()) {
+        const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+        Standard_Integer nE;
+        if (!aPB->HasEdge(nE)) {
+          continue;
+        }
+        //
+        Standard_Boolean bIsReduced = Standard_False;
+        if (bToReduce && (aPB->OriginalEdge() < 0)) {
           const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
           Standard_Real aTolE = BRep_Tool::Tolerance(aE);
           if (aTolReal < aTolE) {
             // reduce edge tolerance
             reinterpret_cast<BRep_TEdge*>(aE.TShape().operator->())->Tolerance(aTolReal);
+            bIsReduced = Standard_True;
           }
-
-          // fill in the map vertex index - pave blocks
-          Handle(BOPDS_PaveBlock) aPBR = myDS->RealPaveBlock(aPB);
-          for (Standard_Integer j=0; j < 2; j++) {
-            Standard_Integer nV = (j == 0 ? aPBR->Pave1().Index() : aPBR->Pave2().Index());
-            BOPDS_ListOfPaveBlock *pPBList = aMVIPBs.ChangeSeek(nV);
-            if (!pPBList) {
-              pPBList = &aMVIPBs.ChangeFromIndex(aMVIPBs.Add(nV, BOPDS_ListOfPaveBlock()));
-            }
-            pPBList->Append(aPBR);
+        }
+        //
+        // fill in the map vertex index - pave blocks
+        for (Standard_Integer j=0; j < 2; j++) {
+          Standard_Integer nV = (j == 0 ? aPB->Pave1().Index() : aPB->Pave2().Index());
+          BOPDS_ListOfPaveBlock *pPBList = aMVIPBs.ChangeSeek(nV);
+          if (!pPBList) {
+            pPBList = &aMVIPBs.ChangeFromIndex(aMVIPBs.Add(nV, BOPDS_ListOfPaveBlock()));
+          }
+          pPBList->Append(aPB);
+          if (bIsReduced) {
+            aMVIToReduce.Add(nV);
           }
         }
       }
     }
   }
-  // try to reduce tolerances of connected vertices
+  //
+  if (aMVIToReduce.IsEmpty()) {
+    return;
+  }
+  //
+  // 2. try to reduce tolerances of connected vertices
+  // 2.1 find all other edges containing these connected vertices to avoid
+  //     reducing the tolerance to the value less than the tolerances of edges,
+  //     i.e. minimal tolerance for the vertex is the max tolerance of the
+  //     edges containing this vertex
+  BOPCol_DataMapOfIntegerReal aMVITol;
+  BOPDS_VectorOfListOfPaveBlock& aPBP = myDS->ChangePaveBlocksPool();
+  aNb = aPBP.Extent();
+  for (i = 0; i < aNb; ++i) {
+    const BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
+    BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
+    for (; aItLPB.More(); aItLPB.Next()) {
+      const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
+      Standard_Integer nE;
+      if (!aPB->HasEdge(nE)) {
+        continue;
+      }
+      const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
+      Standard_Real aTolE = BRep_Tool::Tolerance(aE);
+      //
+      Standard_Integer nV[2];
+      aPB->Indices(nV[0], nV[1]);
+      //
+      for (Standard_Integer j = 0; j < 2; j++) {
+        if (aMVIToReduce.Contains(nV[j])) {
+          Standard_Real *aMaxTol = aMVITol.ChangeSeek(nV[j]);
+          if (!aMaxTol) {
+            aMVITol.Bind(nV[j], aTolE);
+          }
+          else if (aTolE > *aMaxTol) {
+            *aMaxTol = aTolE;
+          }
+        }
+      }
+    }
+  }
+  //
+  // 2.2 reduce tolerances if possible
   aNb = aMVIPBs.Extent();
   for (i = 1; i <= aNb; ++i) {
     Standard_Integer nV = aMVIPBs.FindKey(i);
+    if (!aMVIToReduce.Contains(nV)) {
+      continue;
+    }
+    //
     const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV));
-    gp_Pnt aP = BRep_Tool::Pnt(aV);
+    Standard_Real aTolV = BRep_Tool::Tolerance(aV);
+    Standard_Real aMaxTol = aMVITol.IsBound(nV) ? aMVITol.Find(nV) : 0.;
+    // it makes no sense to compute the real tolerance if it is
+    // impossible to reduce the tolerance at least 0.1% of the current value
+    if (aTolV - aMaxTol < 0.001 * aTolV) {
+      continue;
+    }
     //
     // compute the maximal distance from the vertex to the adjacent edges
-    Standard_Real aMaxTol = 0.;
+    gp_Pnt aP = BRep_Tool::Pnt(aV);
+    //
     const BOPDS_ListOfPaveBlock& aLPB = aMVIPBs.FindFromIndex(i);
     BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
     for (; aItLPB.More(); aItLPB.Next()) {
@@ -2583,7 +2643,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
         aMaxTol = aDist;
       }
     }
-    Standard_Real aTolV = BRep_Tool::Tolerance(aV);
+    //
     if (aMaxTol < aTolV) {
       reinterpret_cast<BRep_TVertex*>(aV.TShape().operator->())->Tolerance(aMaxTol);
     }

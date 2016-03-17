@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC27274"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result of General Fuse operation on two cylinders
+#######################################################################
+
+pcylinder b1 50 145
+tcopy b1 b2
+trotate b2 0 0 0 1 0 0 45
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+checkshape result
+
+set nbshapes_expected "
+ VERTEX    : 5
+ EDGE      : 11
+ WIRE      : 10
+ FACE      : 10
+ SHELL     : 3
+ SOLID     : 3
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 43
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t
+
+checkprops result -s 154518
