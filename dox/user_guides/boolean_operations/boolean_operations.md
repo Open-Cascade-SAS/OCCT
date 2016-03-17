@@ -1080,6 +1080,9 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 * The result of the operation *Cut12* for arguments *S1* and *S2* contains the parts of argument *S1* that have state **OUT** relative to the opposite argument *S2*.
 * The result of the operation *Cut21* for arguments *S1* and *S2* contains the parts of argument *S2* that have state **OUT** relative to the opposite argument *S1*.
 * For the arguments of collection type (WIRE, SHELL, COMPSOLID) the type will be passed in the result. For example, the result of Common operation between Shell and Wire will be a compound containing Wire.
+* For the arguments of collection type (WIRE, SHELL, COMPSOLID) containing overlapping parts the overlapping parts passed into result will be repeated for each container from the input shapes containing such parts.
+* The result of the operation Fuse for the arguments of collection type (WIRE, SHELL, COMPSOLID) will contain the same number of containers as the arguments. The overlapping parts (EDGES/FACES/SOLIDS) will be shared among them. For example, the result of Fuse operation between two wires will be two wires sharing coinciding edges if any.
+* The result of the operation Common for the arguments of collection type (WIRE, SHELL, COMPSOLID) will consist of the containers containing the same overlapping parts. For example, the result of Common operation between two fully/partially overlapping wires will be two wires containing the same edges.
 
 @subsection occt_algorithms_9_4 Examples
 
@@ -1500,7 +1503,7 @@ argument *S1* has a common part with solid *S2* so the corresponding part is not
   	
 @figure{/user_guides/boolean_operations/images/boolean_image065.png}	
 	
-* The result of *Cut21* operation is a  compound containing split part of the argument *S2*. In this case 
+* The result of *Cut21* operation is a compound containing split part of the argument *S2*. In this case 
 argument *S2* has a common part with solid *S1* so the corresponding part is not included into the result.
 @figure{/user_guides/boolean_operations/images/boolean_image066.png}
 
@@ -1536,11 +1539,33 @@ Let us consider Shell *Sh* and Wire *W* as the objects and Solid *S* as the tool
 
 @figure{/user_guides/boolean_operations/images/boolean_image137.png}	
 
-* The result of *Cut12* operation is a compound containing the parts of the initial Shell and Wire out of the Solid. The new Shell and Wire are created from the objects.
+* The result of *Cut12* operation is a  compound containing new Shell and Wire split from the arguments *Sh* and *W*. In this case they have a common part with solid *S* so the corresponding part is not included into the result.
   	
 @figure{/user_guides/boolean_operations/images/boolean_image138.png}	
 	
 * The result of *Cut21* operation is not defined as the objects have a lower dimension than the tool. 
+
+@subsubsection occt_algorithms_9_4_24	Case 24: Two Wires that have overlapping edges.
+
+Let us consider two Wires that have overlapping edges, *W1* is the object and *W2* is the tool:
+
+@figure{/user_guides/boolean_operations/images/boolean_image139.png}
+
+* The result of *Fuse* operation is a compound containing two Wires, which share an overlapping edge. The new Wires are created from the objects:
+
+@figure{/user_guides/boolean_operations/images/boolean_image140.png}
+ 	
+* The result of *Common* operation is a compound containing two Wires both consisting of an overlapping edge. The new Wires are created from the objects:
+
+@figure{/user_guides/boolean_operations/images/boolean_image141.png}	
+
+* The result of *Cut12* operation is a compound containing a wire split from object *W1*. Its common part with *W2* is not included into the result.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image142.png}	
+	
+* The result of *Cut21* operation is a compound containing a wire split from *W2*. Its common part with *W1* is not included into the result.
+	
+@figure{/user_guides/boolean_operations/images/boolean_image143.png}	
 
 
 @subsection occt_algorithms_9_5 Class BOPAlgo_BOP
@@ -2153,8 +2178,7 @@ The package consists of the following classes:
 
 @figure{/user_guides/boolean_operations/images/operations_image065.svg, "Diagram of BRepAlgoAPI package"} 
 
-The detailed description of the classes can be found in corresponding header files.
-The examples are below in this chapter.
+The detailed description of the classes can be found in the corresponding .hxx files. The examples are below in this chapter.
 
 @subsection occt_algorithms_11b_2 Package BOPTest
 The package *BOPTest* provides the usage of the Boolean Component on Tcl level. The method *BOPTest::APICommands* contains corresponding Tcl commands: 

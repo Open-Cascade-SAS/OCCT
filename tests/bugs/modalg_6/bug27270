@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC27270"
+puts "============"
+puts ""
+###########################################################################################################
+#  Boolean operations: incorrect assembling of sub-shapes in container shapes (wires, shells, compsolids)
+###########################################################################################################
+
+box b1 200 200 200
+explode b1 w
+compound b1_1 b1_2 b1_3 b1_4 b1_5 b1_6 c1
+tcopy c1 c2
+ttranslate c2 100 0 300
+bfuse result c1 c2
+set info [explode result]
+if { [llength $info] > 2 } {
+  puts "OK: result is correct"
+} else {
+  puts "Error: incorrect assembling of sub-shapes in container shapes"
+}
+
+checkprops result -l 9600
+checkshape result
+checkview -display result -3d -path ${imagedir}/${test_image}.png

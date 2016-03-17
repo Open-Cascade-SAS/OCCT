@@ -739,7 +739,7 @@ void BOPAlgo_BOP::BuildShape()
   TopoDS_Compound aResult;
   aBB.MakeCompound(aResult);
   //
-  BOPCol_MapOfShape aMSRC, aMFence;
+  BOPCol_MapOfShape aMSRC;
   BOPTools::MapShapes(myRC, aMSRC);
   //
   // collect images of containers
@@ -769,12 +769,12 @@ void BOPAlgo_BOP::BuildShape()
         aItLSIm.Initialize(aLSIm);
         for (; aItLSIm.More(); aItLSIm.Next()) {
           const TopoDS_Shape& aSIm = aItLSIm.Value();
-          if (aMSRC.Contains(aSIm) && aMFence.Add(aSIm)) {
+          if (aMSRC.Contains(aSIm)) {
             aBB.Add(aRC, aSIm);
           }
         }
       }
-      else if (aMSRC.Contains(aS) && aMFence.Add(aS)) {
+      else if (aMSRC.Contains(aS)) {
         aBB.Add(aRC, aS);
       }
     }

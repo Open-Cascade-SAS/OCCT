@@ -3,7 +3,7 @@ restore [locate_data_file case_3_wire2.brep] b
 
 bfuse result a b
 
-checkprops result -l 739.311
+checkprops result -l 1085.29
 checksection result
 checknbshapes result -vertex 20 -edge 20 -t
 

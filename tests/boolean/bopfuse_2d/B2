@@ -4,7 +4,7 @@ restore [locate_data_file case_9_wire2.brep] b
 bop a b
 bopfuse result
 
-checkprops result -l 1982.81
+checkprops result -l 2126.59
 checksection result
 checknbshapes result -vertex 10 -edge 11 -t
 
