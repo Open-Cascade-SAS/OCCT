@@ -29,7 +29,7 @@
 #include <gp_Vec2d.hxx>
 
 
-static Standard_Real GetParameterLengthRatio(TheCurve& C)
+static Standard_Real GetParameterLengthRatio(const TheCurve& C)
 {
   switch (C.GetType()) {
     
@@ -55,7 +55,7 @@ static Standard_Real GetParameterLengthRatio(TheCurve& C)
 }
 
 
-static GCPnts_AbscissaType GetAbsType(TheCurve& C)
+static GCPnts_AbscissaType GetAbsType(const TheCurve& C)
 {
   if (C.NbIntervals(GeomAbs_C1) > 1)
     return GCPnts_AbsComposite;
@@ -87,7 +87,7 @@ static GCPnts_AbscissaType GetAbsType(TheCurve& C)
 }
 
 static Standard_Boolean Perform(Handle(TColStd_HArray1OfReal)& HParameters,
-				TheCurve& C, 
+				const TheCurve& C,
 				const Standard_Real Abscissa,
 				const Standard_Real U1,
 				const Standard_Real U2,
@@ -160,7 +160,7 @@ static Standard_Boolean Perform(Handle(TColStd_HArray1OfReal)& HParameters,
 
 static Standard_Boolean 
 PerformLengthParametrized( Handle(TColStd_HArray1OfReal)& HParameters,
-			  TheCurve& C, 
+			  const TheCurve& C,
 			  const Standard_Real Abscissa,
 			  const Standard_Real U1,
 			  const Standard_Real U2,
@@ -222,7 +222,7 @@ PerformLengthParametrized( Handle(TColStd_HArray1OfReal)& HParameters,
 //purpose  : 
 //=======================================================================
 
-void GCPnts_UniformAbscissa::Initialize  (TheCurve& C, 
+void GCPnts_UniformAbscissa::Initialize  (const TheCurve& C,
 					  const Standard_Real Abscissa, 
 					  const Standard_Real Tol)
 {
@@ -235,7 +235,7 @@ void GCPnts_UniformAbscissa::Initialize  (TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (TheCurve& C, 
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (const TheCurve& C,
 						 const Standard_Real Abscissa,
 						 const Standard_Real Tol)
 {
@@ -247,7 +247,7 @@ GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (TheCurve& C, 
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (const TheCurve& C,
 						 const Standard_Real Abscissa, 
 						 const Standard_Real U1, 
 						 const Standard_Real U2,
@@ -261,7 +261,7 @@ GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(TheCurve& C, 
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(const TheCurve& C,
 					       const Standard_Integer NbPoints, 
 					       const Standard_Real Tol)
 {
@@ -273,7 +273,7 @@ GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(TheCurve& C, 
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(const TheCurve& C,
 					       const Standard_Integer NbPoints,
 					       const Standard_Real U1, 
 					       const Standard_Real U2,
@@ -287,7 +287,7 @@ GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-void GCPnts_UniformAbscissa::Initialize(TheCurve& C, 
+void GCPnts_UniformAbscissa::Initialize(const TheCurve& C,
 					const Standard_Real Abscissa, 
 					const Standard_Real U1,
 					const Standard_Real U2,
@@ -372,7 +372,7 @@ void GCPnts_UniformAbscissa::Initialize(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-void GCPnts_UniformAbscissa::Initialize(TheCurve& C, 
+void GCPnts_UniformAbscissa::Initialize(const TheCurve& C,
 					const Standard_Integer NbPoints,
 					const Standard_Real Tol)
 {
@@ -386,7 +386,7 @@ void GCPnts_UniformAbscissa::Initialize(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-void GCPnts_UniformAbscissa::Initialize(TheCurve& C, 
+void GCPnts_UniformAbscissa::Initialize(const TheCurve& C,
 					const Standard_Integer NbPoints,
 					const Standard_Real U1, 
 					const Standard_Real U2,

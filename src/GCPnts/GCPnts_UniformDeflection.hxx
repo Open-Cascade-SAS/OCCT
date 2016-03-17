@@ -58,35 +58,35 @@ public:
   //! the Curve <C>.
   //! if <WithControl> is True,the algorithm controls the estimate
   //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
   
   //! Computes a uniform Deflection distribution of points on
   //! the Curve <C>.
   //! if <WithControl> is True,the algorithm controls the estimate
   //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
   
   //! Computes a Uniform Deflection distribution of points
   //! on a part of the Curve <C>.
   //! if <WithControl> is True,the algorithm controls the estimate
   //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
   
   //! Computes a Uniform Deflection distribution of points
   //! on a part of the Curve <C>.
   //! if <WithControl> is True,the algorithm controls the estimate
   //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
   
   //! Initialize the algoritms with <C>, <Deflection>
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
   
   //! Initialize the algoritms with <C>, <Deflection>
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
   
   //! Initialize the algoritms with <C>, <Deflection>,
   //! <U1>,<U2>
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
   
   //! Initialize the algoritms with <C>, <Deflection>,
   //! <U1>,<U2>
@@ -131,7 +131,7 @@ public:
   //! Adaptor2d_Curve2d curve) or a 3D curve from
   //! the package Geom (in the case of an Adaptor3d_Curve curve),
   //! -   and those required on the curve by the computation algorithm.
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
   
   //! Returns true if the computation was successful.
   //! IsDone is a protection against:

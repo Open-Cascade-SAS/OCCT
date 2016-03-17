@@ -48,78 +48,78 @@ public:
   //! Computes a uniform abscissa distribution of points on
   //! the Curve <C>. Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
   
   //! Computes a Uniform abscissa distribution of points
   //! on a part of the Curve <C>. Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
   //! Computes a uniform abscissa distribution of points on
   //! the Curve <C>.
   //! <NbPoints> defines the nomber of desired points.
   //! Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
   
   //! Computes a Uniform abscissa distribution of points
   //! on a part of the Curve <C>.
   //! Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <Toler>
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <NbPoints>, <Toler> and
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>.
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
   //! Computes a uniform abscissa distribution of points on
   //! the Curve2d <C>.
   //! Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
   
   //! Computes a Uniform abscissa distribution of points
   //! on a part of the Curve2d <C>.
   //! Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
   //! Computes a uniform abscissa distribution of points on
   //! the Curve2d <C>.
   //! <NbPoints> defines the nomber of desired points.
   //! Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
   
   //! Computes a Uniform abscissa distribution of points
   //! on a part of the Curve2d <C>.
   //! Parameter Toler is equal Precision::Confusion by default.
   //! It Is used for more precise calculation of curve length
-  Standard_EXPORT GCPnts_UniformAbscissa(Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <Toler>
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <NbPoints>, <Toler> and
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>.
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
     Standard_Boolean IsDone() const;
   

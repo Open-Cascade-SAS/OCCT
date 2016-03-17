@@ -54,7 +54,7 @@ public:
   //! Computes a uniform abscissa distribution of points
   //! -   on the curve C where Abscissa is the curvilinear distance between
   //! two consecutive points of the distribution.
-  Standard_EXPORT GCPnts_QuasiUniformAbscissa(Adaptor3d_Curve& C, const Standard_Integer NbPoints);
+  Standard_EXPORT GCPnts_QuasiUniformAbscissa(const Adaptor3d_Curve& C, const Standard_Integer NbPoints);
   
   //! Computes a uniform abscissa distribution of points
   //! on the part of curve C limited by the two parameter values U1 and U2,
@@ -84,30 +84,30 @@ public:
   //! Adaptor2d_Curve2d curve) or a 3D curve from
   //! the package Geom (in the case of an Adaptor3d_Curve curve),
   //! -   and those required on the curve by the computation algorithm.
-  Standard_EXPORT GCPnts_QuasiUniformAbscissa(Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
+  Standard_EXPORT GCPnts_QuasiUniformAbscissa(const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   
   //! Initialize the algoritms with <C>, <NbPoints> and
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Integer NbPoints);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
   //! <U2>.
-  Standard_EXPORT void Initialize (Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   
   //! Computes a uniform abscissa distribution of points on
   //! the Curve2d <C>.
   //! <NbPoints> defines the nomber of desired points.
-  Standard_EXPORT GCPnts_QuasiUniformAbscissa(Adaptor2d_Curve2d& C, const Standard_Integer NbPoints);
+  Standard_EXPORT GCPnts_QuasiUniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints);
   
   //! Computes a Uniform abscissa distribution of points
   //! on a part of the Curve2d <C>.
-  Standard_EXPORT GCPnts_QuasiUniformAbscissa(Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
+  Standard_EXPORT GCPnts_QuasiUniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   
   //! Initialize the algoritms with <C>, <NbPoints> and
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Integer NbPoints);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints);
   
   //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
   //! <U2>.
-  Standard_EXPORT void Initialize (Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   
   //! Returns true if the computation was successful.
   //! IsDone is a protection against:

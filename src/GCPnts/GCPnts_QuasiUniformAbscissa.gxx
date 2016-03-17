@@ -19,7 +19,7 @@
 //purpose  : 
 //=======================================================================
 
-GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(TheCurve& C, 
+GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(const TheCurve& C,
 					       const Standard_Integer NbPoints)
 {
   Initialize(C, NbPoints);
@@ -30,7 +30,7 @@ GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(TheCurve& C, 
+GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(const TheCurve& C,
 					       const Standard_Integer NbPoints,
 					       const Standard_Real U1, 
 					       const Standard_Real U2)
@@ -43,7 +43,7 @@ GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C, 
+void GCPnts_QuasiUniformAbscissa::Initialize(const TheCurve& C,
 					const Standard_Integer NbPoints)
 {
   Initialize(C, NbPoints, C.FirstParameter(),
@@ -57,7 +57,7 @@ void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C,
 //            equal length. It returns array of parameters in the
 //            control points.
 //=======================================================================
-void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C, 
+void GCPnts_QuasiUniformAbscissa::Initialize(const TheCurve& C,
 					     const Standard_Integer NbPoints,
 					     const Standard_Real U1, 
 					     const Standard_Real U2)

@@ -103,7 +103,7 @@ static Standard_Boolean PerformCircular (const TheCurve& C,
 }
 
 
-static GCPnts_DeflectionType GetDefType (TheCurve& C)
+static GCPnts_DeflectionType GetDefType (const TheCurve& C)
 {
   if (C.NbIntervals (GeomAbs_C2) > 1)
     return GCPnts_DefComposite;
@@ -156,7 +156,7 @@ static Standard_Boolean PerformCurve (TColStd_SequenceOfReal& Parameters,
 //=======================================================================
 static Standard_Boolean PerformComposite (TColStd_SequenceOfReal& Parameters,
                                           TColgp_SequenceOfPnt& Points,
-                                          TheCurve& C,
+                                          const TheCurve& C,
                                           const Standard_Real Deflection,
                                           const Standard_Real U1,
                                           const Standard_Real U2,
@@ -197,7 +197,7 @@ static Standard_Boolean PerformComposite (TColStd_SequenceOfReal& Parameters,
 //function : GCPnts_UniformDeflection
 //purpose  :
 //=======================================================================
-GCPnts_UniformDeflection::GCPnts_UniformDeflection (TheCurve& C,
+GCPnts_UniformDeflection::GCPnts_UniformDeflection (const TheCurve& C,
                                                     const Standard_Real Deflection,
                                                     const Standard_Real U1,
                                                     const Standard_Real U2,
@@ -211,7 +211,7 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection (TheCurve& C,
 //function : GCPnts_UniformDeflection
 //purpose  :
 //=======================================================================
-GCPnts_UniformDeflection::GCPnts_UniformDeflection (TheCurve& C,
+GCPnts_UniformDeflection::GCPnts_UniformDeflection (const TheCurve& C,
                                                     const Standard_Real Deflection,
                                                     const Standard_Boolean WithControl)
 {
@@ -223,7 +223,7 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection (TheCurve& C,
 //function : Initialize
 //purpose  :
 //=======================================================================
-void   GCPnts_UniformDeflection::Initialize (TheCurve& C,
+void   GCPnts_UniformDeflection::Initialize (const TheCurve& C,
                                              const Standard_Real Deflection,
                                              const Standard_Boolean WithControl)
 {
@@ -235,7 +235,7 @@ void   GCPnts_UniformDeflection::Initialize (TheCurve& C,
 //function : Initialize
 //purpose  :
 //=======================================================================
-void GCPnts_UniformDeflection::Initialize (TheCurve& C,
+void GCPnts_UniformDeflection::Initialize (const TheCurve& C,
                                            const Standard_Real Deflection,
                                            const Standard_Real theU1,
                                            const Standard_Real theU2,

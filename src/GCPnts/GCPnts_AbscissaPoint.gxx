@@ -27,7 +27,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <BSplCLib.hxx>
 
-static GCPnts_AbscissaType computeType( TheCurve& C,
+static GCPnts_AbscissaType computeType( const TheCurve& C,
 				       Standard_Real& Ratio)
 {
   GCPnts_AbscissaType LocalType ;
@@ -77,7 +77,7 @@ static GCPnts_AbscissaType computeType( TheCurve& C,
 // using Ui as initial guess
 
 static void Compute(CPnts_AbscissaPoint& theComputer,
-                    TheCurve& C,
+                    const TheCurve& C,
                     Standard_Real& Abscis,
 		    Standard_Real& U0,
 		    Standard_Real& Ui,
@@ -161,7 +161,7 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
 // performs more apropriate tolerance managment
 
 static void AdvCompute(CPnts_AbscissaPoint& theComputer,
-                    TheCurve& C,
+                    const TheCurve& C,
                     Standard_Real& Abscis,
 		    Standard_Real& U0,
 		    Standard_Real& Ui,
@@ -284,7 +284,7 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
 //purpose  : 
 //=======================================================================
 
-Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C)
+Standard_Real GCPnts_AbscissaPoint::Length(const TheCurve& C)
 {
   return GCPnts_AbscissaPoint::Length(C,C.FirstParameter(), 
 				      C.LastParameter());
@@ -295,7 +295,7 @@ Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C)
 //purpose  : 
 //=======================================================================
 
-Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
+Standard_Real GCPnts_AbscissaPoint::Length(const TheCurve& C,
 					   const Standard_Real Tol)
 {
   return GCPnts_AbscissaPoint::Length(C,C.FirstParameter(), 
@@ -308,7 +308,7 @@ Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
+Standard_Real GCPnts_AbscissaPoint::Length(const TheCurve& C,
 					   const Standard_Real U1,
 					   const Standard_Real U2)
 {
@@ -348,7 +348,7 @@ Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
 //purpose  : 
 //=======================================================================
 
-Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
+Standard_Real GCPnts_AbscissaPoint::Length(const TheCurve& C,
 					   const Standard_Real U1,
 					   const Standard_Real U2,
 					   const Standard_Real Tol)
@@ -392,7 +392,7 @@ Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
 //=======================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
-                                  (TheCurve& C,
+                                  (const TheCurve& C,
 				   const Standard_Real   Abscissa,
 				   const Standard_Real   U0)
 {
@@ -415,7 +415,7 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
                                   (const Standard_Real Tol,
-				   TheCurve& C,
+				   const TheCurve& C,
 				   const Standard_Real   Abscissa,
 				   const Standard_Real   U0)
 {
@@ -443,7 +443,7 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
 //=======================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
-                                  (TheCurve& C,
+                                  (const TheCurve& C,
 				   const Standard_Real   Abscissa,
 				   const Standard_Real   U0,
 				   const Standard_Real   Ui)
@@ -461,7 +461,7 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
 //=======================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
-                                  (TheCurve& C,
+                                  (const TheCurve& C,
 				   const Standard_Real   Abscissa,
 				   const Standard_Real   U0,
 				   const Standard_Real   Ui,
