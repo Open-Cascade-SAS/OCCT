@@ -1,0 +1,12 @@
+puts "==========="
+puts "0027277: geom/extruded_00/A0: OCAF document is not opened correctly"
+puts "==========="
+
+
+Open [locate_data_file bug27277_GEOM.sgd] D
+
+# check result of reading by number of attributes in dump
+set dump [XDumpDF D]
+if { ! [regexp {418 attributes dumped between 418} $dump] } {
+  puts "Error: expected 418 attributes in resulting document"
+}

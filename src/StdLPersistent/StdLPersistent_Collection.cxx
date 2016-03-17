@@ -40,14 +40,12 @@ struct StdLPersistent_Collection::stringConverter
   const TCollection_ExtendedString& operator()
     (const Handle(StdObjMgt_Persistent)& theValue) const
   {
-    Handle(TCollection_HExtendedString) aString = theValue->ExtString();
-    if (aString)
-      return aString->String();
-    else
-    {
-      static TCollection_ExtendedString anEmptyString;
+    static TCollection_ExtendedString anEmptyString;
+    if (theValue.IsNull())
       return anEmptyString;
-    }
+
+    Handle(TCollection_HExtendedString) aString = theValue->ExtString();
+    return aString ? aString->String() : anEmptyString;
   }
 };
 
