@@ -62,7 +62,7 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
                                            // Dans EvalBsplineBasis C' <=> DerivOrder = 2
                                            // et il faut ajouter 1 rang dans la matrice Base => 3 rang
    
-  ier  =  BSplCLib::EvalBsplineBasis( 1, 1,  MyBSplOrder, 
+  ier  =  BSplCLib::EvalBsplineBasis(1,  MyBSplOrder, 
                                     MyFlatKnots->Array1(), TParam(TParam.Lower()),
                                     FirstNonZero, Base );
   if (ier != 0) return Standard_False;

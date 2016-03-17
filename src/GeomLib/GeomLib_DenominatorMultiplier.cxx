@@ -107,7 +107,6 @@ Standard_Real GeomLib_DenominatorMultiplier::Value(const Standard_Real  UParamet
  Standard_Integer        index,i;
 
  BSplCLib::EvalBsplineBasis(1,
-			    1,
 			    4,
 			    myKnotFlatVector,
 			    0.0,
@@ -116,7 +115,6 @@ Standard_Real GeomLib_DenominatorMultiplier::Value(const Standard_Real  UParamet
  B1prim0=BSplineBasisDeriv(2,2);
  
  BSplCLib::EvalBsplineBasis(1,
-			    1,
 			    4,
 			    myKnotFlatVector,
 			    1.0,
@@ -125,8 +123,7 @@ Standard_Real GeomLib_DenominatorMultiplier::Value(const Standard_Real  UParamet
  Bprelastprim1=BSplineBasisDeriv(2,3);
 
  math_Matrix             BSplineBasisValue(1,1,1,4,0.0);
- BSplCLib::EvalBsplineBasis(1,
-			    0,
+ BSplCLib::EvalBsplineBasis(0,
 			    4,
 			    myKnotFlatVector,
 			    UParameter,

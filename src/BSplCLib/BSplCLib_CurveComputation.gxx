@@ -1230,8 +1230,7 @@ void BSplCLib::MovePoint (const Standard_Real            U,
   math_Matrix BSplineBasis(1, 1,
 			   1, Degree+1);
   Standard_Integer ErrorCode =
-    BSplCLib::EvalBsplineBasis(1,
-			       0,
+    BSplCLib::EvalBsplineBasis(0,
 			       Degree+1,
 			       FlatKnots,
 			       U,

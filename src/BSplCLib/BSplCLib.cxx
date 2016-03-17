@@ -3211,8 +3211,7 @@ void  BSplCLib::Eval
 
   BSplCLib_LocalMatrix BsplineBasis (LocalRequest, Order);
   ErrorCode =
-    BSplCLib::EvalBsplineBasis(1,
-			       LocalRequest,
+    BSplCLib::EvalBsplineBasis(LocalRequest,
 			       Order,
 			       FlatKnots,
 			       LocalParameter,
@@ -3410,8 +3409,7 @@ void  BSplCLib::Eval
   BSplCLib_LocalMatrix BsplineBasis (LocalRequest, Order);
   
   ErrorCode =
-    BSplCLib::EvalBsplineBasis(1,
-			       LocalRequest,
+    BSplCLib::EvalBsplineBasis(LocalRequest,
 			       Order,
 			       FlatKnots,
 			       LocalParameter,

@@ -55,7 +55,7 @@ Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TPara
                                            // Dans EvalBsplineBasis C" <=> DerivOrder = 3
                                            // et il faut ajouter 1 rang dans la matrice Base => 4 rang
    
-  ier  =  BSplCLib::EvalBsplineBasis(1, 2,  MyBSplOrder, 
+  ier  =  BSplCLib::EvalBsplineBasis(2,  MyBSplOrder, 
                                      MyFlatKnots->Array1(), TParam(TParam.Lower()),
                                      FirstNonZero, Base );
   if (ier != 0) return Standard_False;

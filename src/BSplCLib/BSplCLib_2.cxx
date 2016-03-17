@@ -346,8 +346,7 @@ BSplCLib::BuildBSpMatrix(const  TColStd_Array1OfReal&     Parameters,
   
   for (ii = Parameters.Lower() ; ii <= Parameters.Upper() ; ii++) {
     ErrorCode =
-      BSplCLib::EvalBsplineBasis(1,
-				 ContactOrderArray(ii),
+      BSplCLib::EvalBsplineBasis(ContactOrderArray(ii),
 				 Order,
 				 FlatKnots,
 				 Parameters(ii),
@@ -433,9 +432,7 @@ BSplCLib::FactorBandedMatrix(math_Matrix&   Matrix,
 
 Standard_Integer 
 BSplCLib::EvalBsplineBasis
-//(const Standard_Integer              Side, // = 1 rigth side, -1 left side 
-(const Standard_Integer              , // = 1 rigth side, -1 left side 
- const  Standard_Integer              DerivativeRequest,
+(const  Standard_Integer              DerivativeRequest,
  const  Standard_Integer              Order,
  const  TColStd_Array1OfReal&         FlatKnots,
  const  Standard_Real                 Parameter,

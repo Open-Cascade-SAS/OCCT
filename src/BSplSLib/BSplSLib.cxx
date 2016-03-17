@@ -2805,8 +2805,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
   Standard_Integer UFirstNonZeroBsplineIndex;
   math_Matrix UBSplineBasis(1, 1,
 			    1, UDegree+1);
-  Standard_Integer ErrorCod1 =  BSplCLib::EvalBsplineBasis(1,
-							   0,
+  Standard_Integer ErrorCod1 =  BSplCLib::EvalBsplineBasis(0,
 							   UDegree+1,
 							   UFlatKnots,
 							   U,
@@ -2816,8 +2815,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
   Standard_Integer VFirstNonZeroBsplineIndex;
   math_Matrix VBSplineBasis(1, 1,
 			    1, VDegree+1);
-  Standard_Integer ErrorCod2 =  BSplCLib::EvalBsplineBasis(1,
-							   0,
+  Standard_Integer ErrorCod2 =  BSplCLib::EvalBsplineBasis(0,
 							   VDegree+1,
 							   VFlatKnots,
 							   V,

@@ -702,7 +702,13 @@ public:
   //! value of Nth derivative of first non vanishing
   //! Bspline function which has Index FirstNonZeroBsplineIndex
   //! if N <= DerivativeOrder + 1
-  Standard_EXPORT static Standard_Integer EvalBsplineBasis (const Standard_Integer Side, const Standard_Integer DerivativeOrder, const Standard_Integer Order, const TColStd_Array1OfReal& FlatKnots, const Standard_Real Parameter, Standard_Integer& FirstNonZeroBsplineIndex, math_Matrix& BsplineBasis, const Standard_Boolean isPeriodic = Standard_False);
+  Standard_EXPORT static Standard_Integer EvalBsplineBasis (const Standard_Integer DerivativeOrder,
+                                                            const Standard_Integer Order,
+                                                            const TColStd_Array1OfReal& FlatKnots,
+                                                            const Standard_Real Parameter,
+                                                            Standard_Integer& FirstNonZeroBsplineIndex,
+                                                            math_Matrix& BsplineBasis,
+                                                            const Standard_Boolean isPeriodic = Standard_False);
   
   //! This Builds   a fully  blown   Matrix of
   //! (ni)
