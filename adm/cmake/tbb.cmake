@@ -236,38 +236,38 @@ macro (TBB_PRODUCT_SEARCH PRODUCT_NAME)
     OCCT_MAKE_COMPILER_SHORT_NAME()
 
     if (WIN32)
-      if (DEFINED INSTALL_BIN_DIR)
-        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL} DESTINATION "${INSTALL_BIN_DIR}")
+      if (SINGLE_GENERATOR)
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL} DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
       else()
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
                  CONFIGURATIONS Release
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
                  CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}i")
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
                  CONFIGURATIONS Debug
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
       endif()
     else()
       get_filename_component (PRODUCT_LIBRARY_NAME ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} NAME)
 
-      if (DEFINED INSTALL_LIB_DIR)
+      if (SINGLE_GENERATOR)
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
-                 DESTINATION "${INSTALL_LIB_DIR}"
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
       else()
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
                  CONFIGURATIONS Release
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
                  CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}i"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
                  CONFIGURATIONS Debug
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}d"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
       endif()
     endif()

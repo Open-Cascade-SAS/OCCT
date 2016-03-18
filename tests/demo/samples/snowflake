@@ -1,5 +1,5 @@
 # test for generating funny shape 
-source $env(CASROOT)/samples/tcl/snowflake.tcl
+source $env(CSF_OCCTSamplesPath)/tcl/snowflake.tcl
 
 # make a snapshot
 vdump $imagedir/${test_image}.png

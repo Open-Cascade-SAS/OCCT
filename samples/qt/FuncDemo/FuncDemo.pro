@@ -3,12 +3,12 @@ CONFIG += debug_and_release qt
 
 TARGET = FuncDemo
 
-SAMPLESROOT = $$quote($$(CASROOT)/samples/qt)
+SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
 
 HEADERS = src/*.h
 SOURCES = src/*.cpp
 
-INCLUDEPATH += $$quote($$(CASROOT)/inc)
+INCLUDEPATH += $$quote($$(CSF_OCCTIncludePath))
 
 OCCT_DEFINES = $$(CSF_DEFINES)
 
@@ -45,14 +45,13 @@ win32 {
         DESTDIR = ./win$(ARCH)/$(VCVER)/bind
         OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/objd
         MOC_DIR = ./src
-        LIBS = -L$$(QTDIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/libd
     } else {
         DEFINES += NDEBUG
         DESTDIR = ./win$(ARCH)/$(VCVER)/bin
         OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/obj
         MOC_DIR = ./src
-        LIBS = -L$$(QTDIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/lib
     }
+    LIBS = -L$$(QTDIR)/lib;$$(CSF_OCCTLibPath)
 }
 
 LIBS += -lTKernel -lTKMath -lTKBRep -lTKGeomBase -lTKGeomAlgo -lTKG3d -lTKG2d \

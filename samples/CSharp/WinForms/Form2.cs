@@ -646,7 +646,7 @@ namespace IE_WinForms
       int theformat = 10;
       System.Windows.Forms.OpenFileDialog openDialog = new OpenFileDialog();
 
-      string DataDir = ((Environment.GetEnvironmentVariable("CASROOT")) + "\\..\\data");
+      string DataDir = Environment.GetEnvironmentVariable("CSF_OCCTDataPath");
 
       string filter = "";
 
@@ -689,7 +689,7 @@ namespace IE_WinForms
     {
       int theformat = 10;
       System.Windows.Forms.SaveFileDialog saveDialog = new SaveFileDialog();
-      string DataDir = ((Environment.GetEnvironmentVariable("CASROOT")) + "\\..\\data");
+      string DataDir = Environment.GetEnvironmentVariable("CSF_OCCTDataPath");
       string filter = "";
       switch (format)
       {

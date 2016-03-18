@@ -39,4 +39,4 @@ testmat $imagedir ${casename}_rt
 vclear
 vrenderparams -rasterization
 vtextureenv off
-source $env(CASROOT)/samples/tcl/materials.tcl
+source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl

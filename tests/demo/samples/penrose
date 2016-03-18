@@ -1,5 +1,5 @@
 # test for generating funny shape 
-source $env(CASROOT)/samples/tcl/Penrose.tcl
+source $env(CSF_OCCTSamplesPath)/tcl/Penrose.tcl
 
 # make a snapshot
 vdump $imagedir/${test_image}.png

@@ -18,9 +18,9 @@ BEGIN
       VALUE "FileDescription", "__TKNAM__ Toolkit\000"
       VALUE "FileVersion",     OCC_VERSION_STRING_EXT "\000"
       VALUE "LegalCopyright",  "\251 OPEN CASCADE SAS\000"
-      VALUE "ProductName",     "__TKNAM__\000"
+      VALUE "ProductName",     "Open CASCADE Technology\000"
       VALUE "ProductVersion",  OCC_VERSION_STRING_EXT "\000"
-      VALUE "OfficialSite",    "www.opencascade.org\000"
+      VALUE "OfficialSite",    "www.opencascade.com\000"
     END
   END
   BLOCK "VarFileInfo"

@@ -116,9 +116,9 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadBREP()
 		  L"BREP Files (*.brep , *.rle)|*.brep;  *.BREP; *.rle; *.RLE; |All Files (*.*)|*.*||",
 		  NULL ); 
 
-  CString CASROOTValue;
-  CASROOTValue.GetEnvironmentVariable (L"CASROOT");
-  CString initdir = (CASROOTValue + "\\..\\data\\occ");
+  CString SHAREPATHValue;
+  SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+  CString initdir = (SHAREPATHValue + "\\occ");
 
   dlg.m_ofn.lpstrInitialDir = initdir;
 
@@ -201,9 +201,9 @@ Standard_Boolean CImportExport::SaveBREP(const TopoDS_Shape& aShape)
   CFileDialog dlg (FALSE, L"*.brep",NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
                    L"BREP Files (*.brep)|*.brep;|BREP Files (*.BREP)|*.BREP;||", NULL);
   
-CString CASROOTValue;
-CASROOTValue.GetEnvironmentVariable (L"CASROOT");
-CString initdir = (CASROOTValue + "\\..\\data\\occ");
+CString SHAREPATHValue;
+SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+CString initdir = (SHAREPATHValue + "\\occ");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
 
@@ -262,9 +262,9 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadIGES()// not by reference -
                   L"IGES Files (*.iges , *.igs)|*.iges; *.igs|All Files (*.*)|*.*||",
                   NULL );
 
-CString CASROOTValue;
-CASROOTValue.GetEnvironmentVariable (L"CASROOT");
-CString initdir = (CASROOTValue + "\\..\\data\\iges");
+CString SHAREPATHValue;
+SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+CString initdir = (SHAREPATHValue + "\\iges");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
   
@@ -326,9 +326,9 @@ Standard_Boolean CImportExport::SaveIGES(const Handle(TopTools_HSequenceOfShape)
   CFileDialog dlg(FALSE, L"*.iges",NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
                   L"IGES Files (*.iges )|*.iges;|IGES Files (*.igs )| *.igs;||", NULL);
 
-CString CASROOTValue;
-CASROOTValue.GetEnvironmentVariable (L"CASROOT");
-CString initdir = (CASROOTValue + "\\..\\data\\iges");
+CString SHAREPATHValue;
+SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+CString initdir = (SHAREPATHValue + "\\iges");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
   
@@ -389,9 +389,9 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadSTEP()// not by reference -
                   L"STEP Files (*.stp;*.step)|*.stp; *.step|All Files (*.*)|*.*||",
                   NULL );
 
-CString CASROOTValue;
-CASROOTValue.GetEnvironmentVariable(L"CASROOT");
-CString initdir = (CASROOTValue + "\\..\\data\\step");
+CString SHAREPATHValue;
+SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+CString initdir = (SHAREPATHValue + "\\step");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
   
@@ -594,9 +594,9 @@ Standard_Boolean CImportExport::SaveSTL(const Handle(TopTools_HSequenceOfShape)&
   CFileDialog dlg(FALSE, L"*.stl", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 	              L"stl Files (*.stl)|*.stl;|STL Files (*.STL)|*.STL;||", NULL);
 
-CString CASROOTValue;
-CASROOTValue.GetEnvironmentVariable(L"CASROOT");
-CString initdir = (CASROOTValue + "\\..\\data\\stl");
+CString SHAREPATHValue;
+SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+CString initdir = (SHAREPATHValue + "\\stl");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
 
@@ -685,9 +685,9 @@ Standard_Boolean CImportExport::SaveVRML(const Handle(TopTools_HSequenceOfShape)
   CFileDialog dlg(FALSE, L"*.vrml", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 	              L"vrml Files (*.vrml)|*.vrml;|vrm Files (*.vrm)|*.vrm;||", NULL);
 
-CString CASROOTValue;
-CASROOTValue.GetEnvironmentVariable(L"CASROOT");
-CString initdir = (CASROOTValue + "\\..\\data\\vrml");
+CString SHAREPATHValue;
+SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+CString initdir = (SHAREPATHValue + "\\vrml");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
   

@@ -13,14 +13,14 @@
 
 set Draw_GEOMETRY 1
 
-if {[array names ::env OCCT_RESOURCE_PATH] != "" && "$::env(OCCT_RESOURCE_PATH)" != "" && [file exists $::env(OCCT_RESOURCE_PATH)/DrawResources/CURVES.tcl]} {
-  source $env(OCCT_RESOURCE_PATH)/DrawResources/CURVES.tcl
+if {[array names ::env CSF_OCCTResourcePath] != "" && "$::env(CSF_OCCTResourcePath)" != "" && [file exists $::env(CSF_OCCTResourcePath)/DrawResources/CURVES.tcl]} {
+  source $env(CSF_OCCTResourcePath)/DrawResources/CURVES.tcl
 } else {
   source $env(CASROOT)/src/DrawResources/CURVES.tcl
 }
 
-if {[array names ::env OCCT_RESOURCE_PATH] != "" && "$::env(OCCT_RESOURCE_PATH)" != "" && [file exists $::env(OCCT_RESOURCE_PATH)/DrawResources/SURFACES.tcl]} {
-  source $env(OCCT_RESOURCE_PATH)/DrawResources/SURFACES.tcl
+if {[array names ::env CSF_OCCTResourcePath] != "" && "$::env(CSF_OCCTResourcePath)" != "" && [file exists $::env(CSF_OCCTResourcePath)/DrawResources/SURFACES.tcl]} {
+  source $env(CSF_OCCTResourcePath)/DrawResources/SURFACES.tcl
 } else {
   source $env(CASROOT)/src/DrawResources/SURFACES.tcl
 }

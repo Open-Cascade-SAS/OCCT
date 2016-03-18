@@ -59,33 +59,30 @@ if { [file isdirectory $dir] } {
 }
 
 # set default testing environment
-if {[array names ::env OCCT_SHARE_PATH] != "" && "$::env(OCCT_SHARE_PATH)" != ""} {
-    if {[file isdirectory $env(OCCT_SHARE_PATH)/tests]} {
-      if { ! [info exists env(CSF_TestScriptsPath)] } {
-          set env(CSF_TestScriptsPath) $env(OCCT_SHARE_PATH)/tests
-      } else {
-          set env(CSF_TestScriptsPath) $env(CSF_TestScriptsPath)[_path_separator]$env(OCCT_SHARE_PATH)/tests
-      }  
-    }
-
-    if {[file isdirectory $env(OCCT_SHARE_PATH)/data]} {
-      if { ! [info exists env(CSF_TestDataPath)] } {
-          set env(CSF_TestDataPath) $env(OCCT_SHARE_PATH)/data
-      } else {
-          set env(CSF_TestDataPath) $env(CSF_TestDataPath)[_path_separator]$env(OCCT_SHARE_PATH)/data
-      }
-    }
-} 
-if { [info exists env(CASROOT)] && [file isdirectory $env(CASROOT)/tests] } {
+if {[info exists ::env(CSF_OCCTTestsPath)] && [file isdirectory $env(CSF_OCCTTestsPath)]} {
   if { ! [info exists env(CSF_TestScriptsPath)] } {
-      set env(CSF_TestScriptsPath) $env(CASROOT)/tests
+    set env(CSF_TestScriptsPath) $env(CSF_OCCTTestsPath)
   } else {
-      set env(CSF_TestScriptsPath) $env(CSF_TestScriptsPath)[_path_separator]$env(CASROOT)/tests
+    set env(CSF_TestScriptsPath) $env(CSF_TestScriptsPath)[_path_separator]$env(CSF_OCCTTestsPath)
+  }  
+} elseif { [info exists env(CASROOT)] && [file isdirectory $env(CASROOT)/tests] } {
+  if { ! [info exists env(CSF_TestScriptsPath)] } {
+    set env(CSF_TestScriptsPath) $env(CASROOT)/tests
+  } else {
+    set env(CSF_TestScriptsPath) $env(CSF_TestScriptsPath)[_path_separator]$env(CASROOT)/tests
   }
+}
+if {[info exists ::env(CSF_OCCTDataPath)] && [file isdirectory $env(CSF_OCCTDataPath)]} {
   if { ! [info exists env(CSF_TestDataPath)] } {
-      set env(CSF_TestDataPath) $env(CASROOT)/data
+    set env(CSF_TestDataPath) $env(CSF_OCCTDataPath)
   } else {
-      set env(CSF_TestDataPath) $env(CSF_TestDataPath)[_path_separator]$env(CASROOT)/data
+    set env(CSF_TestDataPath) $env(CSF_TestDataPath)[_path_separator]$env(CSF_OCCTDataPath)
+  }
+} elseif { [info exists env(CASROOT)] && [file isdirectory $env(CASROOT)/tests] } {
+  if { ! [info exists env(CSF_TestDataPath)] } {
+    set env(CSF_TestDataPath) $env(CASROOT)/data
+  } else {
+    set env(CSF_TestDataPath) $env(CSF_TestDataPath)[_path_separator]$env(CASROOT)/data
   }
 }
 

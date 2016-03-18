@@ -41,15 +41,16 @@ add_executable (Triangulation WIN32 ${Triangulation_SOURCE_FILES}
 
 set_property (TARGET Triangulation PROPERTY FOLDER Samples)
 
-install (TARGETS Triangulation
-         CONFIGURATIONS Release
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Triangulation
-         CONFIGURATIONS RelWithDebInfo
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Triangulation
-         CONFIGURATIONS Debug
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+if (SINGLE_GENERATOR)
+  install (TARGETS Triangulation DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+else()
+  install (TARGETS Triangulation
+           CONFIGURATIONS Release RelWithDebInfo
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS Triangulation
+           CONFIGURATIONS Debug
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/07_Triangulation

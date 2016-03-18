@@ -90,12 +90,21 @@ The following table enumerates the full list of environment variables used at co
 | BUILD_LIBRARY_TYPE | String |  Specifies the type of library to be created. "Shared" libraries are linked dynamically and loaded at runtime. "Static" libraries are archives of object files for use when linking other targets |
 | BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODUE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
 | BUILD_YACCLEX | Boolean flag | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this options leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
-| BUILD_MODULE_OcctMfcSamples | Boolean flag | Indicates whether MFC samples should be built together with OCCT. This option is only relevant to Windows platforms |
-| BUILD_DOC_OcctOverview | Boolean flag | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this options leads to automatic search of Doxygen binaries. Building of it will be call Doxygen command to generate the documentation in HTML format |
+| BUILD_MODULE_MfcSamples | Boolean flag | Indicates whether MFC samples should be built together with OCCT. This option is only relevant to Windows platforms |
+| BUILD_DOC_Overview | Boolean flag | Indicates whether OCCT overview documentation project should be created together with OCCT. It is not built together with OCCT. Checking this options leads to automatic search of Doxygen binaries. Building of it will be call Doxygen command to generate the documentation in HTML format |
 | BUILD_PATCH | Path | Points to the directory recognized as a "patch" for OCCT. If specified, the files from this directory take precedence over the corresponding native OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
 | BUILD_WITH_DEBUG | Boolean flag | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing etc |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
-| INSTALL_DIR | Path | Points to the installation directory |
+| INSTALL_DIR | Path | Points to the installation directory. INSTALL_DIR is synonym of CMAKE_INSTALL_PREFIX . User can specify both INSTALL_DIR or CMAKE_INSTALL_PREFIX |
+| INSTALL_DIR_BIN | Path | Relative path to the binaries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_BIN}) |
+| INSTALL_DIR_SCRIPT | Path | Relative path to the scripts installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SCRIPT}) |
+| INSTALL_DIR_LIB | Path | Relative path to the libraries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_LIB}) |
+| INSTALL_DIR_INCLUDE | Path | Relative path to the includes installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}) |
+| INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
+| INSTALL_DIR_DATA | Path | Relative path to the data files installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
+| INSTALL_DIR_SAMPLES | Path | Relative path to the samples installation directory. Note that only "samples/tcl" folder will be installed. (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}) |
+| INSTALL_DIR_TESTS | Path | Relative path to the tests installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
+| INSTALL_DIR_DOC | Path | Relative path to the documentation installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DOC}) |
 | INSTALL_FREETYPE | Boolean flag | Indicates whether Freetype binaries should be installed into the installation directory |
 | INSTALL_FREEIMAGE* | Boolean flag | Indicates whether Freeimage binaries should be installed into the installation directory |
 | INSTALL_GL2PS | Boolean flag | Indicates whether GL2PS binaries should be installed into the installation directory |
@@ -103,8 +112,7 @@ The following table enumerates the full list of environment variables used at co
 | INSTALL_VTK | Boolean flag | Indicates whether VTK binaries should be installed into the installation directory |
 | INSTALL_TCL | Boolean flag | Indicates whether TCL binaries should be installed into the installation directory |
 | INSTALL_TEST_CASES | Boolean flag | Indicates whether non-regression OCCT test scripts should be installed into the installation directory |
-| INSTALL_SAMPLES | Boolean flag | Indicates whether OCCT samples should be installed into the installation directory |
-| INSTALL_DOC_OcctOverview | Boolean flag | Indicates whether OCCT overview documentation should be installed into the installation directory |
+| INSTALL_DOC_Overview | Boolean flag | Indicates whether OCCT overview documentation should be installed into the installation directory |
 
 **Note:** In those CMake options defining paths only the forward slashes ("/") are acceptable.
 
@@ -164,7 +172,7 @@ Go to the build folder, start the Visual Studio solution *OCCT.sln* and build it
 By default the build solution process skips the building of the INSTALL and Overview project.
 
 When the building process is finished build:
-* Overview project to generate OCCT overview documentation (if BUILD_DOC_OcctOverview variable is checked)
+* Overview project to generate OCCT overview documentation (if BUILD_DOC_Overview variable is checked)
 * the *INSTALL* project to run **the installation process**
 
 For this, right-click on the *Overview/INSTALL* project and select **Project Only -> Build Only** -> *Overview/INSTALL* in the solution explorer. 

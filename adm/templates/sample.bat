@@ -16,16 +16,19 @@ if ["%1"] == [""] (
   echo    HLR
   echo    Animation
   echo    Convert
+  PAUSE
   exit /B
 )
 
 call "%~dp0env.bat" %2 %3 %4
+set "EXE_PATH=%CSF_OCCTBinPath%/%1.exe"
 
-if not exist "%~dp0/%BIN_TAIL%/%1.exe" (
-  echo Executable %~dp0/%BIN_TAIL%/%1.exe not found.
+if not exist "%EXE_PATH%" (
+  echo Executable %EXE_PATH% not found.
   echo Probably you didn't compile the application.
+  PAUSE
   exit /B
 )
 
-"%~dp0/%BIN_TAIL%/%1.exe"
+"%EXE_PATH%"
 

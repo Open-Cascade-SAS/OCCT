@@ -1,5 +1,5 @@
 # test for generating funny shape 
-source $env(CASROOT)/samples/tcl/pencil.tcl
+source $env(CSF_OCCTSamplesPath)/tcl/pencil.tcl
 
 # check shape validity and make a snapshot
 XGetOneShape res D

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$COMPILER" == "@COMPILER@" ]; then
-  if [ "$ARCH" == "@COMPILER_BITNESS@" ]; then
+if [ "$1" == "@BIN_LETTER@" ]; then
+  if [ "$2" == "@COMPILER_BITNESS@" ]; then
     export TCL_DIR="@3RDPARTY_TCL_LIBRARY_DIR@"
     export TK_DIR="@3RDPARTY_TK_LIBRARY_DIR@"
     export FREETYPE_DIR="@3RDPARTY_FREETYPE_LIBRARY_DIR@"
@@ -9,6 +9,21 @@ if [ "$COMPILER" == "@COMPILER@" ]; then
     export GL2PS_DIR="@3RDPARTY_GL2PS_LIBRARY_DIR@"
     export TBB_DIR="@3RDPARTY_TBB_LIBRARY_DIR@"
     export VTK_DIR="@3RDPARTY_VTK_LIBRARY_DIR@"
+
+    export TCL_VERSION_WITH_DOT="@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
+    export TK_VERSION_WITH_DOT="@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
+
+    export CSF_OCCTBinPath="@CMAKE_RUNTIME_OUTPUT_DIRECTORY@"
+    export CSF_OCCTLibPath="@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@"
+    export CSF_OCCTIncludePath="@CMAKE_BINARY_DIR@/inc"
+    export CSF_OCCTResourcePath="@CMAKE_SOURCE_DIR@/src"
+    export CSF_OCCTDataPath="@CMAKE_SOURCE_DIR@/data"
+    export CSF_OCCTSamplesPath="@CMAKE_SOURCE_DIR@/samples"
+    export CSF_OCCTTestsPath="@CMAKE_SOURCE_DIR@/tests"
+    export CSF_OCCTDocPath="@CMAKE_SOURCE_DIR@/doc"
+
+    # for compatability with external application using CASROOT
+    export CASROOT="@CMAKE_SOURCE_DIR@"
   fi
 fi
 

@@ -3,7 +3,7 @@ CONFIG += debug_and_release qt
 
 TARGET = IESample
 
-SAMPLESROOT = $$quote($$(CASROOT)/samples/qt)
+SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
 
 HEADERS   = $${SAMPLESROOT}/Common/src/*.h \
             $${SAMPLESROOT}/Interface/src/*.h
@@ -22,7 +22,7 @@ RES_DIR   = $$quote($$(RES_DIR))
 
 INCLUDEPATH += $$quote($${SAMPLESROOT}/Common/src)
 INCLUDEPATH += $$quote($${SAMPLESROOT}/Interface/src)
-INCLUDEPATH += $$quote($$(CASROOT)/inc)
+INCLUDEPATH += $$quote($$(CSF_OCCTIncludePath))
 
 OCCT_DEFINES = $$(CSF_DEFINES)
 
@@ -61,14 +61,13 @@ win32 {
         DESTDIR = ./win$(ARCH)/$(VCVER)/bind
         OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/objd
         MOC_DIR = ./win$(ARCH)/$(VCVER)/mocd
-        LIBS = -L$$(QTDIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/libd
     } else {
         DEFINES += NDEBUG
         DESTDIR = ./win$(ARCH)/$(VCVER)/bin
         OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/obj
         MOC_DIR = ./win$(ARCH)/$(VCVER)/moc
-        LIBS = -L$$(QTDIR)/lib;$$(CASROOT)/win$$(ARCH)/$$(VCVER)/lib
     }
+    LIBS = -L$$(QTDIR)/lib;$$(CSF_OCCTLibPath)
     DEFINES += NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }
 

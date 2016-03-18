@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath);&quot;$(DXSDK_DIR)Include&quot;"
 				PreprocessorDefinitions="_DEBUG"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
@@ -68,7 +68,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy_D3D.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CASROOT)/win32/$(VCVER)/libd"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(OutDir)/OCCTProxy_D3D.pdb"
@@ -128,7 +128,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath);&quot;$(DXSDK_DIR)Include&quot;"
 				PreprocessorDefinitions="_DEBUG"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
@@ -150,7 +150,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy_D3D.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CASROOT)/win64/$(VCVER)/libd"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(OutDir)/OCCTProxy_D3D.pdb"
@@ -208,7 +208,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath);&quot;$(DXSDK_DIR)Include&quot;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -227,7 +227,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy_D3D.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CASROOT)/win32/$(VCVER)/lib"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -286,7 +286,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc;&quot;$(DXSDK_DIR)Include&quot;"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath);&quot;$(DXSDK_DIR)Include&quot;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -305,7 +305,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy_D3D.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CASROOT)/win64/$(VCVER)/lib"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

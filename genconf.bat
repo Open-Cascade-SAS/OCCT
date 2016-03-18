@@ -54,6 +54,6 @@ if not defined TCL_FOUND (
 ) 
 
 :: run GUI tool
-%TCL_FOUND% %~dp0adm/genconf.tcl
+"%TCL_FOUND%" %~dp0adm/genconf.tcl
 
 SET "PATH=%OLD_PATH%"

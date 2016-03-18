@@ -105,7 +105,7 @@ void MDIWindow::onWindowActivated ()
 
 void MDIWindow::dump()
 {
-  QString datadir = (QString(qgetenv ("CASROOT").constData()) + "/../data/images");
+  QString datadir = (QString(qgetenv ("CSF_OCCTDataPath").constData()) + "/images");
   static QString filter;
   filter = "Images Files (*.bmp *.ppm *.png *.jpg *.tiff *.tga *.gif *.exr *.ps *.eps *.tex *.pdf *.svg *.pgf)";
   QFileDialog fd ( 0 );

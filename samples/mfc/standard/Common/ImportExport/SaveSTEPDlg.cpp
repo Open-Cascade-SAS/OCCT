@@ -27,9 +27,9 @@ CFileSaveSTEPDialog::CFileSaveSTEPDialog(CWnd* pParent /*=NULL*/)
 	m_Cc1ModelType = STEPControl_AsIs;
 	//}}AFX_DATA_INIT
 
-CString CASROOTValue;
-CASROOTValue.GetEnvironmentVariable (L"CASROOT");
-CString initdir = (CASROOTValue + "\\..\\data\\step");
+CString SHAREPATHValue;
+SHAREPATHValue.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+CString initdir = (SHAREPATHValue + "\\step");
 
 	m_ofn.lpstrInitialDir = initdir;
 	m_ofn.Flags |= OFN_ENABLETEMPLATE;

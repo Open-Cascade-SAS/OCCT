@@ -35,15 +35,16 @@ add_executable (Viewer2d WIN32 ${Viewer2d_SOURCE_FILES}
 
 set_property (TARGET Viewer2d PROPERTY FOLDER Samples)
 
-install (TARGETS Viewer2d
-         CONFIGURATIONS Release
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Viewer2d
-         CONFIGURATIONS RelWithDebInfo
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Viewer2d
-         CONFIGURATIONS Debug
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+if (SINGLE_GENERATOR)
+  install (TARGETS Viewer2d DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+else()
+  install (TARGETS Viewer2d
+           CONFIGURATIONS Release RelWithDebInfo
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS Viewer2d
+           CONFIGURATIONS Debug
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/03_Viewer2d

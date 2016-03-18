@@ -29,9 +29,11 @@ if { [info exists tk_library] } {
 
 #fills menu "Load" with submenus
 proc fillloadmenu {} {
-  set drawplugpath "$::env(CASROOT)/src/DrawResources/DrawPlugin"
-  if {[array names ::env OCCT_RESOURCE_PATH] != "" && "$::env(OCCT_RESOURCE_PATH)" != "" && [file exists $::env(OCCT_RESOURCE_PATH)/DrawResources/DrawPlugin]} {
-    set drawplugpath "$::env(OCCT_RESOURCE_PATH)/DrawResources/DrawPlugin"
+  set drawplugpath ""
+  if {[array names ::env CSF_OCCTResourcePath] != "" && "$::env(CSF_OCCTResourcePath)" != "" && [file exists $::env(CSF_OCCTResourcePath)/DrawResources/DrawPlugin]} {
+    set drawplugpath "$::env(CSF_OCCTResourcePath)/DrawResources/DrawPlugin"
+  } elseif {[array names ::env CASROOT] != "" && "$::env(CASROOT)" != "" && [file exists $::env(CASROOT)/src/DrawResources/DrawPlugin]} {
+    set drawplugpath "$::env(CASROOT)/src/DrawResources/DrawPlugin"
   }
 
   set chan [open [file nativename $drawplugpath]]
@@ -236,9 +238,11 @@ proc vsamples {} {
   #create list {{category} {title} {filename}}
   set alistofthree ""
 
-  set samplespath "$::env(CASROOT)/samples/tcl/"
-  if { [array names ::env OCCT_SHARE_PATH] != "" && "$::env(OCCT_SHARE_PATH)" != "" && [file exists $::env(OCCT_SHARE_PATH)/samples/tcl/]} {
-    set samplespath "$::env(OCCT_SHARE_PATH)/samples/tcl/"
+  set samplespath ""
+  if { [array names ::env CSF_OCCTSamplesPath] != "" && "$::env(CSF_OCCTSamplesPath)" != "" && [file exists $::env(CSF_OCCTSamplesPath)/tcl/]} {
+    set samplespath "$::env(CSF_OCCTSamplesPath)/tcl/"
+  } elseif { [array names ::env CASROOT] != "" && "$::env(CASROOT)" != "" && [file exists $::env(CASROOT)/samples/tcl/]} {
+    set samplespath "$::env(CASROOT)/samples/tcl/"
   }
 
   foreach fname [glob -path "${samplespath}" *.tcl] {
@@ -406,9 +410,11 @@ proc about {} {
   set screenwidth [expr {int([winfo screenwidth .]*0.5-200)}]
   wm geometry .about 400x200+$screenwidth+$screenheight
 
-  set logopath "$::env(CASROOT)/src/DrawResources/OCC_logo.png"
-  if {[array names ::env OCCT_RESOURCE_PATH] != "" && "$::env(OCCT_RESOURCE_PATH)" != "" && [file exists $::env(OCCT_RESOURCE_PATH)/DrawResources/OCC_logo.png]} {
-    set logopath "$::env(OCCT_RESOURCE_PATH)/DrawResources/OCC_logo.png"
+  set logopath ""
+  if {[array names ::env CSF_OCCTResourcePath] != "" && "$::env(CSF_OCCTResourcePath)" != "" && [file exists $::env(CSF_OCCTResourcePath)/DrawResources/OCC_logo.png]} {
+    set logopath "$::env(CSF_OCCTResourcePath)/DrawResources/OCC_logo.png"
+  } elseif {[array names ::env CASROOT] != "" && "$::env(CASROOT)" != "" && [file exists $::env(CASROOT)/src/DrawResources/OCC_logo.png]} {
+    set logopath "$::env(CASROOT)/src/DrawResources/OCC_logo.png"
   }
 
   image create photo occlogo -file $logopath -format png
@@ -462,13 +468,13 @@ proc _launchBrowser {url} {
 # Else opens a site with this guide
 ################################################################
 proc openuserguide {} {
-  if { [array names ::env OCCT_SHARE_PATH] != "" && "$::env(OCCT_SHARE_PATH)" != "" && [file exists $::env(OCCT_SHARE_PATH)/doc/pdf/user_guides/occt_test_harness.pdf]} {
-    _launchBrowser $::env(OCCT_SHARE_PATH)/doc/pdf/user_guides/occt_test_harness.pdf
-  } elseif {  [array names ::env OCCT_SHARE_PATH] != "" && "$::env(OCCT_SHARE_PATH)" != "" && [file exists $::env(OCCT_SHARE_PATH)/doc/overview/html/occt_user_guides__test_harness.html]} {
-    _launchBrowser $::env(OCCT_SHARE_PATH)/doc/overview/html/occt_user_guides__test_harness.html
-  } elseif [file exists $::env(CASROOT)/doc/pdf/user_guides/occt_test_harness.pdf] {
+  if { [array names ::env CSF_OCCTDocPath] != "" && "$::env(CSF_OCCTDocPath)" != "" && [file exists $::env(CSF_OCCTDocPath)/pdf/user_guides/occt_test_harness.pdf]} {
+    _launchBrowser $::env(CSF_OCCTDocPath)/pdf/user_guides/occt_test_harness.pdf
+  } elseif {  [array names ::env CSF_OCCTDocPath] != "" && "$::env(CSF_OCCTDocPath)" != "" && [file exists $::env(CSF_OCCTDocPath)/overview/html/occt_user_guides__test_harness.html]} {
+    _launchBrowser $::env(CSF_OCCTDocPath)/overview/html/occt_user_guides__test_harness.html
+  } elseif { [array names ::env CASROOT] != "" && "$::env(CASROOT)" != "" && [file exists $::env(CASROOT)/doc/pdf/user_guides/occt_test_harness.pdf]} {
     _launchBrowser $::env(CASROOT)/doc/pdf/user_guides/occt_test_harness.pdf
-  } elseif [file exists $::env(CASROOT)/doc/overview/html/occt_user_guides__test_harness.html] {
+  } elseif {  [array names ::env CASROOT] != "" && "$::env(CASROOT)" != "" && [file exists $::env(CASROOT)/doc/overview/html/occt_user_guides__test_harness.html]} {
     _launchBrowser $::env(CASROOT)/doc/overview/html/occt_user_guides__test_harness.html
   } else {
     launchBrowser {http://dev.opencascade.org/doc/overview/html/occt_user_guides__test_harness.html}

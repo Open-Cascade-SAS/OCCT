@@ -39,15 +39,16 @@ add_executable ( Modeling WIN32 ${Modeling_SOURCE_FILES}
 
 set_property (TARGET Modeling PROPERTY FOLDER Samples)
 
-install (TARGETS Modeling
-         CONFIGURATIONS Release
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Modeling
-         CONFIGURATIONS RelWithDebInfo
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Modeling
-         CONFIGURATIONS Debug
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+if (SINGLE_GENERATOR)
+  install (TARGETS Modeling DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+else()
+  install (TARGETS Modeling
+           CONFIGURATIONS Release RelWithDebInfo
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS Modeling
+           CONFIGURATIONS Debug
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/02_Modeling

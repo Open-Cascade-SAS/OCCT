@@ -1,5 +1,5 @@
 # test for creation of cutter shape
-source $env(CASROOT)/samples/tcl/cutter.tcl
+source $env(CSF_OCCTSamplesPath)/tcl/cutter.tcl
 
 # make a snapshot
 vdump $imagedir/${test_image}.png

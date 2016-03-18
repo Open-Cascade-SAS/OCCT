@@ -204,46 +204,41 @@ if (INSTALL_TCL)
     # collect and install all dlls from tcl dll dirs
     file (GLOB TCL_DLLS "${3RDPARTY_TCL_DLL_DIR}/*.dll")
 
-    if (DEFINED INSTALL_BIN_DIR)
-      install (FILES ${TCL_DLLS} DESTINATION "${INSTALL_BIN_DIR}")
+    if (SINGLE_GENERATOR)
+      install (FILES ${TCL_DLLS} DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
     else()
       install (FILES ${TCL_DLLS}
                CONFIGURATIONS Release
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
       install (FILES ${TCL_DLLS}
                CONFIGURATIONS RelWithDebInfo
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}i")
       install (FILES ${TCL_DLLS}
                CONFIGURATIONS Debug
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
     endif()
   else()
     get_filename_component(3RDPARTY_TCL_LIBRARY_REALPATH ${3RDPARTY_TCL_LIBRARY} REALPATH)
 
-    if (DEFINED INSTALL_LIB_DIR)
-      install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH} DESTINATION "${INSTALL_LIB_DIR}")
+    if (SINGLE_GENERATOR)
+      install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH} DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}")
     else()
       install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
                CONFIGURATIONS Release
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}")
       install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
                CONFIGURATIONS RelWithDebInfo
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
+               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}i")
       install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
                CONFIGURATIONS Debug
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
+               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}d")
     endif()
   endif()
 
   if (TCL_TCLSH_VERSION)
     # tcl is required to install in lib folder (without)
-    if (DEFINED INSTALL_LIB_DIR)
-      install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl8"                    DESTINATION "${INSTALL_LIB_DIR}")
-      install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl${TCL_TCLSH_VERSION}" DESTINATION "${INSTALL_LIB_DIR}")
-    else()
-      install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl8"                    DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
-      install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl${TCL_TCLSH_VERSION}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
-    endif()
+    install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl8"                    DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}")
+    install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl${TCL_TCLSH_VERSION}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}")
   else()
     message (STATUS "\nWarning: tclX.X subdir won't be copyied during the installation process.")
     message (STATUS "Try seeking tcl within another folder by changing 3RDPARTY_TCL_DIR variable.")

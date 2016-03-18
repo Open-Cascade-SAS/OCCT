@@ -96,7 +96,7 @@ namespace IE_WPF_D3D
     {
       int aFormat = 10;
       OpenFileDialog anOpenDialog = new OpenFileDialog ();
-      string aDataDir = ((Environment.GetEnvironmentVariable ("CASROOT")) + "\\..\\data");
+      string aDataDir = Environment.GetEnvironmentVariable ("CSF_OCCTDataPath");
       string aFilter = "";
 
       switch (theFormat)
@@ -141,7 +141,7 @@ namespace IE_WPF_D3D
     {
       int aFormat = 10;
       SaveFileDialog saveDialog = new SaveFileDialog ();
-      string aDataDir = ((Environment.GetEnvironmentVariable ("CASROOT")) + "\\..\\data");
+      string aDataDir = Environment.GetEnvironmentVariable ("CSF_OCCTDataPath");
       string aFilter = "";
 
       switch (theFormat)

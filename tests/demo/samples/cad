@@ -1,5 +1,5 @@
 # test for generating funny shape 
-source $env(CASROOT)/samples/tcl/cad.tcl
+source $env(CSF_OCCTSamplesPath)/tcl/cad.tcl
 
 # check shape validity and make a snapshot
 checkshape res

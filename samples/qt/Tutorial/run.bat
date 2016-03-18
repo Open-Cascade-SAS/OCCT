@@ -1,3 +1,5 @@
+Setlocal EnableDelayedExpansion
+
 call "%~dp0env.bat" %1 %2 %3
 
 set "BIN_DIR=win%ARCH%\%VCVER%\bind"

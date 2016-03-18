@@ -1,4 +1,4 @@
-source $env(CASROOT)/samples/tcl/raytrace.tcl
+source $env(CSF_OCCTSamplesPath)/tcl/raytrace.tcl
 vdump $imagedir/${test_image}.png
 
 puts "TEST COMPLETED"

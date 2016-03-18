@@ -12,7 +12,7 @@ pload VISUALIZATION MODELING
 vinit
 vsetdispmode 1
 
-restore $env(CASROOT)/data/occ/face1.brep f
+restore [locate_data_file face1.brep] f
 vdisplay f
 box b1 50 50 50
 vdisplay b1 -trsfPers zoom -trsfPersPos 0 0 0

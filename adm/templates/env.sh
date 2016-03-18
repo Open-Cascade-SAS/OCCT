@@ -175,16 +175,27 @@ else
   export CSF_OPT_LNK32I="$OPT_LINKER_OPTIONS_REL_WITH_DEB_INFO"
 fi
 
+# ----- Default paths to sub-folders (can be different in install env) -----
+export CSF_OCCTIncludePath="${CSF_OCCTIncludePath:-$CASROOT/inc}"
+export CSF_OCCTResourcePath="${CSF_OCCTResourcePath:-$CASROOT/src}"
+export CSF_OCCTSamplesPath="${CSF_OCCTSamplesPath:-$CASROOT/samples}"
+export CSF_OCCTDataPath="${CSF_OCCTDataPath:-$CASROOT/data}"
+export CSF_OCCTTestsPath="${CSF_OCCTTestsPath:-$CASROOT/tests}"
 
-BIN_PATH="${CASBIN}/bin${CASDEB}"
-LIBS_PATH="${CASBIN}/lib${CASDEB}"
 if [ "${TARGET}" == "xcd" ]; then
-  [[ "${CASDEB}" == "d" ]] && BIN_PATH="${CASBIN}/Debug" || BIN_PATH="${CASBIN}/Release"
-  LIBS_PATH="$BIN_PATH"
+  if [ "${CASDEB}" == "d" ]; then
+    export CSF_OCCTBinPath="${CSF_OCCTBinPath:-$CASROOT/$CASBIN/Debug}"
+  else
+    export CSF_OCCTBinPath="${CSF_OCCTBinPath:-$CASROOT/$CASBIN/Release}"
+  fi
+  export CSF_OCCTLibPath="${CSF_OCCTLibPath:-$CSF_OCCTBinPath}"
+else
+  export CSF_OCCTBinPath="${CSF_OCCTBinPath:-$CASROOT/$CASBIN/bin$CASDEB}"
+  export CSF_OCCTLibPath="${CSF_OCCTLibPath:-$CASROOT/$CASBIN/lib$CASDEB}"
 fi
 
-export PATH="${CASROOT}/${BIN_PATH}:${PATH}"
-export LD_LIBRARY_PATH="${CASROOT}/${LIBS_PATH}:${LD_LIBRARY_PATH}"
+export PATH="${CSF_OCCTBinPath}:${PATH}"
+export LD_LIBRARY_PATH="${CSF_OCCTLibPath}:${LD_LIBRARY_PATH}"
 if [ "$WOKSTATION" == "mac" ]; then
   export DYLD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}"
 fi
@@ -192,7 +203,6 @@ fi
 # Set envoronment variables used by OCCT
 export CSF_LANGUAGE="us"
 export MMGT_CLEAR="1"
-export CSF_EXCEPTION_PROMPT="1"
 export CSF_SHMessage="${CASROOT}/src/SHMessage"
 export CSF_MDTVTexturesDirectory="${CASROOT}/src/Textures"
 export CSF_ShadersDirectory="${CASROOT}/src/Shaders"
@@ -214,7 +224,4 @@ export CSF_MIGRATION_TYPES="${CASROOT}/src/StdResource/MigrationSheet.txt"
 if [ -e "${CASROOT}/src/DrawResources" ]; then
   export DRAWHOME="${CASROOT}/src/DrawResources"
   export CSF_DrawPluginDefaults="${DRAWHOME}"
-fi
-if [ -e "${aScriptPath}/src/DrawResourcesProducts" ]; then
-  export CSF_DrawPluginProductsDefaults="${aScriptPath}/src/DrawResourcesProducts"
 fi

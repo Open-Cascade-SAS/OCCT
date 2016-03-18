@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath)"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -67,7 +67,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(CASROOT)/win32/$(VCVER)/libd"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(OutDir)/OCCTProxy.pdb"
@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath)"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -148,7 +148,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(CASROOT)/win64/$(VCVER)/libd"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ProgramDatabaseFile="$(OutDir)/OCCTProxy.pdb"
@@ -206,7 +206,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath)"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -225,7 +225,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CASROOT)/win32/$(VCVER)/lib"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -284,7 +284,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\OCC\;$(CASROOT)/inc"
+				AdditionalIncludeDirectories="..\OCC\;$(CSF_OCCTIncludePath)"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -303,7 +303,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/OCCTProxy.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(CASROOT)/win64/$(VCVER)/lib"
+				AdditionalLibraryDirectories="$(CSF_OCCTLibPath)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

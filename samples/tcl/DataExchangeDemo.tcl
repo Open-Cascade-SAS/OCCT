@@ -42,7 +42,9 @@ if { [winfo exists .h ] } {
 }
 
 set ddir .
-if { [info exists env(CASROOT)] } {
+if { [info exists env(CSF_OCCTDataPath)] } {
+    set ddir [file join $env(CSF_OCCTDataPath) occ]
+} else if { [info exists env(CASROOT)] } {
     set ddir [file join $env(CASROOT) data occ]
 }
 

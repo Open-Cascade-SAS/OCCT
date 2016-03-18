@@ -1,5 +1,7 @@
 @echo off
 
+Setlocal EnableDelayedExpansion
+
 if "%1" == "-h" (
   goto err_bat
 )

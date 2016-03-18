@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$1" == "@COMPILER@" ]; then
+if [ "$1" == "@BIN_LETTER@" ]; then
   if [ "$2" == "@COMPILER_BITNESS@" ]; then
     export TCL_DIR="@USED_3RDPARTY_TCL_DIR@"
     export TK_DIR="@USED_3RDPARTY_TK_DIR@"
@@ -10,31 +10,20 @@ if [ "$1" == "@COMPILER@" ]; then
     export TBB_DIR="@USED_3RDPARTY_TBB_DIR@"
     export VTK_DIR="@USED_3RDPARTY_VTK_DIR@"
 
-    export BIN_PATH="@INSTALL_BIN_DIR@"
-    if [ "$BIN_PATH" != "" ]; then
-      export PATH="${BIN_PATH}:${PATH}"
-    fi
+    export TCL_VERSION_WITH_DOT="@3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT@"
+    export TK_VERSION_WITH_DOT="@3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT@"
 
-    export LIB_PATH="@INSTALL_LIB_DIR@"
-    if [ "$LIB_PATH" != "" ]; then
-      if [ "$LD_LIBRARY_PATH" != "" ]; then
-        export LD_LIBRARY_PATH="${LIB_PATH}:${LD_LIBRARY_PATH}"
-      else
-        export LD_LIBRARY_PATH="${LIB_PATH}"
-      fi
-    fi
+    export CSF_OCCTBinPath="@INSTALL_DIR@/@INSTALL_DIR_BIN@"
+    export CSF_OCCTLibPath="@INSTALL_DIR@/@INSTALL_DIR_LIB@"
+    export CSF_OCCTIncludePath="@INSTALL_DIR@/@INSTALL_DIR_INCLUDE@"
+    export CSF_OCCTResourcePath="@INSTALL_DIR@/@INSTALL_DIR_RESOURCE@"
+    export CSF_OCCTDataPath="@INSTALL_DIR@/@INSTALL_DIR_DATA@"
+    export CSF_OCCTSamplesPath="@INSTALL_DIR@/@INSTALL_DIR_SAMPLES@"
+    export CSF_OCCTTestsPath="@INSTALL_DIR@/@INSTALL_DIR_TESTS@"
+    export CSF_OCCTDocPath="@INSTALL_DIR@/@INSTALL_DIR_DOC@"
     
-    export OCCT_RESOURCE_PATH="${CASROOT}/src"
-    if [ "@INSTALL_OCCT_RESOURCE_DIR@" != "" ]; then
-      export OCCT_RESOURCE_PATH="@INSTALL_OCCT_RESOURCE_DIR@"
-    fi
-
-    # required for set default testing environment
-    # and "Samples" window creation in DRAW
-    export OCCT_SHARE_PATH="${CASROOT}"
-    if [ "@INSTALL_SHARE_DIR@" != "" ]; then
-      export OCCT_SHARE_PATH="@INSTALL_SHARE_DIR@"
-    fi
+    # for compatability with external application using CASROOT
+    export CASROOT="@INSTALL_DIR@"
   fi
 fi
 

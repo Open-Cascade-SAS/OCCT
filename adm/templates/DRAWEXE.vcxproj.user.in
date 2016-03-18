@@ -1,21 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|@X_COMPILER_BITNESS@'">
- <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+  <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+CSF_OCCTResourcePath=@CMAKE_SOURCE_DIR@/src
+CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
+CSF_OCCTSamplesPath=@CMAKE_SOURCE_DIR@/samples
+CSF_OCCTTestsPath=@CMAKE_SOURCE_DIR@/tests
+CSF_OCCTDocPath=@CMAKE_SOURCE_DIR@/doc
 PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
  <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|@X_COMPILER_BITNESS@'">
- <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+  <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+CSF_OCCTResourcePath=@CMAKE_SOURCE_DIR@/src
+CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
+CSF_OCCTSamplesPath=@CMAKE_SOURCE_DIR@/samples
+CSF_OCCTTestsPath=@CMAKE_SOURCE_DIR@/tests
+CSF_OCCTDocPath=@CMAKE_SOURCE_DIR@/doc
 PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
  <LocalDebuggerWorkingDirectory>@CMAKE_BINARY_DIR@</LocalDebuggerWorkingDirectory>
  </PropertyGroup>
  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|@X_COMPILER_BITNESS@'">
- <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+  <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+CSF_OCCTResourcePath=@CMAKE_SOURCE_DIR@/src
+CSF_OCCTDataPath=@CMAKE_SOURCE_DIR@/data
+CSF_OCCTSamplesPath=@CMAKE_SOURCE_DIR@/samples
+CSF_OCCTTestsPath=@CMAKE_SOURCE_DIR@/tests
+CSF_OCCTDocPath=@CMAKE_SOURCE_DIR@/doc
 PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
  </LocalDebuggerEnvironment>
  <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>

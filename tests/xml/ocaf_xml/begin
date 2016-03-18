@@ -1,4 +1,5 @@
-set SchemaFile [file join $env(CASROOT) src XmlOcafResource XmlOcaf.xsd]
+# Note: we use CSF_OCCTResourcePath and not CSF_XmlOcafResource to allow running from Visual Studio in CMake build
+set SchemaFile [file join $env(CSF_OCCTResourcePath) XmlOcafResource XmlOcaf.xsd]
 set FileSuffix "xml"
 
 # Create a new document and set UndoLimit

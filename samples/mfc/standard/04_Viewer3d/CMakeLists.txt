@@ -63,15 +63,16 @@ add_executable (Viewer3d WIN32 ${Viewer3d_SOURCE_FILES}
 
 set_property (TARGET Viewer3d PROPERTY FOLDER Samples)
 
-install (TARGETS Viewer3d
-         CONFIGURATIONS Release
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Viewer3d
-         CONFIGURATIONS RelWithDebInfo
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-install (TARGETS Viewer3d
-         CONFIGURATIONS Debug
-         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+if (SINGLE_GENERATOR)
+  install (TARGETS Viewer3d DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+else()
+  install (TARGETS Viewer3d
+           CONFIGURATIONS Release RelWithDebInfo
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS Viewer3d
+           CONFIGURATIONS Debug
+           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc
                      ${Viewer3d_SRC_DIR}

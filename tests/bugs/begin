@@ -3,9 +3,6 @@
 if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
     pload TOPTEST
     pload VISUALIZATION
-#    set env(CSF_DrawPluginQADefaults) $env(CASROOT)/src/DrawResources/.
-#    pload QAcommands
-#    pload -DrawPluginQA QAcommands
 }
 
 # to prevent loops limit to 16 minutes

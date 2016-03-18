@@ -19,3 +19,5 @@ TKIVtk
 vtkIOImage
 vtkImagingCore
 vtkInteractionStyle
+vtkRenderingOpenGL
+vtkRenderingFreeTypeOpenGL

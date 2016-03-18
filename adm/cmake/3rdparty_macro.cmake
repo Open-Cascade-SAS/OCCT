@@ -191,18 +191,18 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
     OCCT_MAKE_COMPILER_SHORT_NAME()
 
     if (WIN32)
-      if (DEFINED INSTALL_BIN_DIR)
-        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" DESTINATION "${INSTALL_BIN_DIR}")
+      if (SINGLE_GENERATOR)
+        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
       else()
-        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
+        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}"
                  CONFIGURATIONS Release
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}"
                  CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
-        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}i")
+        install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}"
                  CONFIGURATIONS Debug
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
       endif()
     else()
       get_filename_component(ABS_PATH ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} REALPATH)
@@ -210,20 +210,20 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
       if ("${PRODUCT_NAME}" STREQUAL "FREEIMAGE")
         get_filename_component(FREEIMLIB ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} NAME)
 
-        if (DEFINED INSTALL_LIB_DIR)
-          install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_LIB_DIR}" RENAME ${FREEIMLIB}.3)
+        if (SINGLE_GENERATOR)
+          install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}" RENAME ${FREEIMLIB}.3)
         else()
           install (FILES "${ABS_PATH}"
                    CONFIGURATIONS Release
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                   DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
                    RENAME ${FREEIMLIB}.3)
           install (FILES "${ABS_PATH}"
                    CONFIGURATIONS RelWithDebInfo
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
+                   DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}i"
                    RENAME ${FREEIMLIB}.3)
           install (FILES "${ABS_PATH}"
                    CONFIGURATIONS Debug
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+                   DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}d"
                    RENAME ${FREEIMLIB}.3)
         endif()
       endif()
@@ -231,20 +231,20 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
       if("${PRODUCT_NAME}" STREQUAL "GL2PS")
         get_filename_component(GL2PSLIB ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} NAME)
 
-        if (DEFINED INSTALL_LIB_DIR)
-          install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_LIB_DIR}" RENAME ${GL2PSLIB}.1)
+        if (SINGLE_GENERATOR)
+          install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}" RENAME ${GL2PSLIB}.1)
         else()
           install (FILES "${ABS_PATH}"
                    CONFIGURATIONS Release
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                   DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
                    RENAME ${GL2PSLIB}.1)
           install (FILES "${ABS_PATH}"
                    CONFIGURATIONS RelWithDebInfo
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
+                   DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}i"
                    RENAME ${GL2PSLIB}.1)
           install (FILES "${ABS_PATH}"
                    CONFIGURATIONS Debug
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+                   DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}d"
                    RENAME ${GL2PSLIB}.1)
         endif()
       endif()

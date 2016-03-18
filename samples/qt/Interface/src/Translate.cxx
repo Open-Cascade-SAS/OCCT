@@ -364,8 +364,6 @@ TranslateDlg* Translate::getDialog( const int format, const bool import )
     ((QFileDialog*)myDlg)->setFileMode( QFileDialog::AnyFile );
   }
 
-  QString datadir = (QString (qgetenv ("CASROOT").constData()) + QObject::tr( QString("INF_PATH_%1").arg( format ).toLatin1().constData() ) );
-
   myDlg->clear();
 
   if ( !import )

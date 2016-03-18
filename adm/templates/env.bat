@@ -28,9 +28,6 @@ set "CSF_OPT_BIN32="
 set "CSF_OPT_BIN64="
 
 rem ----- Load local settings -----
-if not ["%CASROOT%"] == [""] if exist "%CASROOT%\custom.bat" (
-  call "%CASROOT%\custom.bat" %1 %2 %3 %4 %5
-)
 if exist "%~dp0custom.bat" (
   call "%~dp0custom.bat" %1 %2 %3 %4 %5
 )
@@ -106,42 +103,50 @@ set "CSF_OPT_LNK64D=%CSF_OPT_LNK64D% %OPT_LIB64%"
 set "CSF_OPT_LNK32I=%CSF_OPT_LNK32I% %OPT_LIB32%"
 set "CSF_OPT_LNK64I=%CSF_OPT_LNK64I% %OPT_LIB64%"
 
-set "CASBIN=win%ARCH%\%VCVER%"
+rem ----- Default paths to sub-folders (can be different in install env) -----
+if "%CSF_OCCTIncludePath%" == "" set "CSF_OCCTIncludePath=%CASROOT%\inc"
+if "%CSF_OCCTResourcePath%" == "" set "CSF_OCCTResourcePath=%CASROOT%\src"
+if "%CSF_OCCTSamplesPath%" == "" set "CSF_OCCTSamplesPath=%CASROOT%\samples"
+if "%CSF_OCCTDataPath%" == "" set "CSF_OCCTDataPath=%CASROOT%\data"
+if "%CSF_OCCTTestsPath%" == "" set "CSF_OCCTTestsPath=%CASROOT%\tests"
+if "%CSF_OCCTBinPath%" == "" set "CSF_OCCTBinPath=%CASROOT%\win%ARCH%\%VCVER%\bin%CASDEB%"
+if "%CSF_OCCTLibPath%" == "" set "CSF_OCCTLibPath=%CASROOT%\win%ARCH%\%VCVER%\lib%CASDEB%"
 
 rem ----- Set path to 3rd party and OCCT libraries -----
-set "PATH=%SCRIPTROOT%\%CASBIN%\bin%CASDEB%;%PATH%"
+set "PATH=%CSF_OCCTBinPath%;%PATH%"
 if ["%CASDEB%"] == [""] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32%;%PATH%"
 if ["%CASDEB%"] == [""] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64%;%PATH%"
 if ["%CASDEB%"] == ["d"] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32D%;%PATH%"
 if ["%CASDEB%"] == ["d"] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64D%;%PATH%"
-
 if ["%CASDEB%"] == ["i"] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32I%;%PATH%"
 if ["%CASDEB%"] == ["i"] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64I%;%PATH%"
 
 rem ----- Set envoronment variables used by OCCT -----
 set CSF_LANGUAGE=us
 set MMGT_CLEAR=1
-set CSF_EXCEPTION_PROMPT=1
-set "CSF_SHMessage=%CASROOT%\src\SHMessage"
-set "CSF_MDTVTexturesDirectory=%CASROOT%\src\Textures"
-set "CSF_ShadersDirectory=%CASROOT%\src\Shaders"
-set "CSF_XSMessage=%CASROOT%\src\XSMessage"
-set "CSF_TObjMessage=%CASROOT%\src\TObj"
-set "CSF_StandardDefaults=%CASROOT%\src\StdResource"
-set "CSF_PluginDefaults=%CASROOT%\src\StdResource"
-set "CSF_XCAFDefaults=%CASROOT%\src\StdResource"
-set "CSF_TObjDefaults=%CASROOT%\src\StdResource"
-set "CSF_StandardLiteDefaults=%CASROOT%\src\StdResource"
-set "CSF_UnitsLexicon=%CASROOT%\src\UnitsAPI\Lexi_Expr.dat"
-set "CSF_UnitsDefinition=%CASROOT%\src\UnitsAPI\Units.dat"
-set "CSF_IGESDefaults=%CASROOT%\src\XSTEPResource"
-set "CSF_STEPDefaults=%CASROOT%\src\XSTEPResource"
-set "CSF_XmlOcafResource=%CASROOT%\src\XmlOcafResource"
-set "CSF_MIGRATION_TYPES=%CASROOT%\src\StdResource\MigrationSheet.txt"
+set "CSF_SHMessage=%CSF_OCCTResourcePath%\SHMessage"
+set "CSF_MDTVTexturesDirectory=%CSF_OCCTResourcePath%\Textures"
+set "CSF_ShadersDirectory=%CSF_OCCTResourcePath%\Shaders"
+set "CSF_XSMessage=%CSF_OCCTResourcePath%\XSMessage"
+set "CSF_TObjMessage=%CSF_OCCTResourcePath%\TObj"
+set "CSF_StandardDefaults=%CSF_OCCTResourcePath%\StdResource"
+set "CSF_PluginDefaults=%CSF_OCCTResourcePath%\StdResource"
+set "CSF_XCAFDefaults=%CSF_OCCTResourcePath%\StdResource"
+set "CSF_TObjDefaults=%CSF_OCCTResourcePath%\StdResource"
+set "CSF_StandardLiteDefaults=%CSF_OCCTResourcePath%\StdResource"
+set "CSF_UnitsLexicon=%CSF_OCCTResourcePath%\UnitsAPI\Lexi_Expr.dat"
+set "CSF_UnitsDefinition=%CSF_OCCTResourcePath%\UnitsAPI\Units.dat"
+set "CSF_IGESDefaults=%CSF_OCCTResourcePath%\XSTEPResource"
+set "CSF_STEPDefaults=%CSF_OCCTResourcePath%\XSTEPResource"
+set "CSF_XmlOcafResource=%CSF_OCCTResourcePath%\XmlOcafResource"
+set "CSF_MIGRATION_TYPES=%CSF_OCCTResourcePath%\StdResource\MigrationSheet.txt"
 
 rem Draw Harness special stuff
-if exist "%CASROOT%\src\DrawResources" (
-  set "DRAWHOME=%CASROOT%\src\DrawResources"
+if exist "%CSF_OCCTResourcePath%\DrawResources\DrawDefault" (
+  set "DRAWDEFAULT=%CSF_OCCTResourcePath%\DrawResources\DrawDefault"
+)
+if exist "%CSF_OCCTResourcePath%\DrawResources" (
+  set "DRAWHOME=%CSF_OCCTResourcePath%\DrawResources"
   set "CSF_DrawPluginDefaults=%DRAWHOME%"
 )
 goto :eof
