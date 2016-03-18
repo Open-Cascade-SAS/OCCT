@@ -71,18 +71,16 @@ SelectMgr_SelectableObject::SelectMgr_SelectableObject (const PrsMgr_TypeOfPrese
 
 
 //==================================================
-// Function: 
+// Function: HasSelection
 // Purpose :
 //==================================================
-
-Standard_Boolean SelectMgr_SelectableObject
-::HasSelection(const Standard_Integer aMode) const
+Standard_Boolean SelectMgr_SelectableObject::HasSelection (const Standard_Integer theMode) const
 {
-  Standard_Boolean Found=Standard_False;
-  for (Standard_Integer I=1;I<= myselections.Length() && !Found;I++)
-    { if(((myselections.Value(I))->Mode())==aMode) 
-        return Standard_True;
-    }
+  for (Standard_Integer aSelIdx = 1; aSelIdx <= myselections.Length(); ++aSelIdx)
+  {
+    if (((myselections.Value (aSelIdx))->Mode()) == theMode)
+      return Standard_True;
+  }
   return Standard_False;
 }
 

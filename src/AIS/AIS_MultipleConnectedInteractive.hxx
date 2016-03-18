@@ -99,6 +99,9 @@ public:
   //! Returns the owner of mode for selection of object as a whole
   Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE;
 
+  //! Returns true if a selection corresponding to the selection mode theMode was computed for all
+  //! children of multiple connected interactive object.
+  Standard_EXPORT virtual Standard_Boolean HasSelection (const Standard_Integer theMode) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)
 

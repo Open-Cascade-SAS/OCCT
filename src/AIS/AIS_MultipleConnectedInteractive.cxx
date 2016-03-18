@@ -402,3 +402,22 @@ Handle(SelectMgr_EntityOwner) AIS_MultipleConnectedInteractive::GlobalSelOwner()
 {
   return myAssemblyOwner;
 }
+
+//=======================================================================
+//function : HasSelection
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_MultipleConnectedInteractive::HasSelection (const Standard_Integer theMode) const
+{
+  for (PrsMgr_ListOfPresentableObjectsIter anIter (Children()); anIter.More(); anIter.Next())
+  {
+    Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast (anIter.Value());
+    if (aChild.IsNull())
+      continue;
+
+    if (!aChild->HasSelection (theMode))
+      return Standard_False;
+  }
+
+  return Standard_True;
+}

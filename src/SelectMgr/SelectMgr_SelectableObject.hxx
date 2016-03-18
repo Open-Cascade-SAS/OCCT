@@ -95,8 +95,8 @@ public:
   Standard_EXPORT const Handle(SelectMgr_Selection)& Selection (const Standard_Integer aMode) const;
   
   //! Returns true if a selection corresponding to the
-  //! selection mode aMode is present in this framework.
-  Standard_EXPORT Standard_Boolean HasSelection (const Standard_Integer aMode) const;
+  //! selection mode theMode was computed for this object.
+  Standard_EXPORT virtual Standard_Boolean HasSelection (const Standard_Integer theMode) const;
   
   //! Begins the iteration scanning for sensitive primitives.
     void Init();
