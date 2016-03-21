@@ -1,0 +1,35 @@
+puts "================"
+puts "OCC27283"
+puts "================"
+puts ""
+#######################################################################
+# Regression vs 6.9.1: smesh/bugs_11/L9: invalid result of General Fuse
+#######################################################################
+
+restore [locate_data_file bug27283_shapes.brep] a
+set lst [explode a]
+
+bclearobjects
+bcleartools
+baddobjects a_1
+eval baddtools [lrange $lst 1 end]
+bfillds
+bbuild result0
+
+checkshape result0
+
+# extract the parts of result corresponding to object
+shape result C
+foreach s [explode a_1 So] {
+  bmodified r_$s $s
+  add r_$s result
+}
+
+checknbshapes result -solid 76 -shell 76 -face 279
+checkprops result -s 1880.4
+
+smallview
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

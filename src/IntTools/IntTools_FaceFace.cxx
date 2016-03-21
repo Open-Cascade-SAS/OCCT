@@ -427,7 +427,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
                                 const TopoDS_Face& aF2)
 {
-  Standard_Boolean RestrictLine = Standard_False, hasCone = Standard_False;
+  Standard_Boolean RestrictLine = Standard_False;
   
   if (myContext.IsNull()) {
     myContext=new IntTools_Context;
@@ -555,11 +555,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace2, (aTolF1 + aTolF2) * 2., umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
-    //
-    if( aType2==GeomAbs_Cone ) { 
-      TolArc = 0.0001; 
-      hasCone = Standard_True; 
-    }
   }
   else if ((aType2==GeomAbs_Plane) && isFace1Quad)
   {
@@ -572,11 +567,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
-    //
-    if( aType1==GeomAbs_Cone ) {
-      TolArc = 0.0001; 
-      hasCone = Standard_True; 
-    }
   }
   else
   {
@@ -599,7 +589,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 
   {
     const Standard_Real UVMaxStep = 0.001;
-    const Standard_Real Deflection = (hasCone) ? 0.085 : 0.1;
+    const Standard_Real Deflection = 0.1;
     myIntersector.SetTolerances(TolArc, TolTang, UVMaxStep, Deflection); 
   }
   
