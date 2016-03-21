@@ -63,6 +63,14 @@ Sets the specified shape as a value of DRAW interpreter variable with the given 
 - *theShapePtr* -- a pointer to *TopoDS_Shape* variable.
 
 ~~~~~
+const char* DBRep_SetComp (const char* theNameStr, void* theListPtr)
+~~~~~
+
+Makes a compound from the specified list of shapes and sets it as a value of DRAW interpreter variable with the given name.
+- *theNameStr* -- the DRAW interpreter variable name to set.
+- *theListPtr* -- a pointer to *TopTools_ListOfShape* variable.
+
+~~~~~
 const char* DrawTrSurf_Set (const char* theNameStr, void* theHandlePtr)
 const char* DrawTrSurf_SetPnt (const char* theNameStr, void* thePntPtr)
 const char* DrawTrSurf_SetPnt2d (const char* theNameStr, void* thePnt2dPtr)
@@ -140,6 +148,7 @@ For convenience it is possible to define aliases to commands in this window, for
 ~~~~~
 >alias deval      ? ({,,TKDraw}Draw_Eval)
 >alias dsetshape  ? ({,,TKDraw}DBRep_Set)
+>alias dsetcomp   ? ({,,TKDraw}DBRep_SetComp)
 >alias dsetgeom   ? ({,,TKDraw}DrawTrSurf_Set)
 >alias dsetpnt    ? ({,,TKDraw}DrawTrSurf_SetPnt)
 >alias dsetpnt2d  ? ({,,TKDraw}DrawTrSurf_SetPnt2d)

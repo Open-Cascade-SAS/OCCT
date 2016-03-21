@@ -17,6 +17,9 @@
 #include <DBRep.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Compound.hxx>
+#include <BRep_Builder.hxx>
 
 // This file defines global functions not declared in any public header,
 // intended for use from debugger prompt (Command Window in Visual Studio)
@@ -30,6 +33,39 @@ Standard_EXPORT const char* DBRep_Set (const char* theNameStr, void* theShapePtr
   }
   try {
     DBRep::Set (theNameStr, *(TopoDS_Shape*)theShapePtr);
+    return theNameStr;
+  }
+  catch (Standard_Failure)
+  {
+    return Standard_Failure::Caught()->GetMessageString();
+  }
+}
+
+//=======================================================================
+//function : DBRep_SetComp
+//purpose  : make compound from the given list of shapes
+//=======================================================================
+Standard_EXPORT const char* DBRep_SetComp(const char* theNameStr, void* theListPtr)
+{
+  if (theNameStr == 0 || theListPtr == 0)
+  {
+    return "Error: name or list of shapes is null";
+  }
+  try {
+    TopTools_ListOfShape *pLS;
+    pLS = (TopTools_ListOfShape *)theListPtr;
+
+    TopoDS_Compound aC;
+    BRep_Builder aBB;
+    TopTools_ListIteratorOfListOfShape aIt;
+
+    aBB.MakeCompound(aC);
+    aIt.Initialize(*pLS);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Shape& aE = aIt.Value();
+      aBB.Add(aC, aE);
+    }
+    DBRep::Set(theNameStr, aC);
     return theNameStr;
   }
   catch (Standard_Failure)
