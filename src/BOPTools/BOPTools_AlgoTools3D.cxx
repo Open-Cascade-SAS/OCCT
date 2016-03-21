@@ -27,7 +27,6 @@
 #include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepGProp.hxx>
 #include <BRepTools.hxx>
@@ -332,7 +331,7 @@ Standard_Boolean BOPTools_AlgoTools3D::GetNormalToSurface
 //function : GetApproxNormalToFaceOnEdge
 //purpose  : 
 //=======================================================================
-void BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge
+Standard_Boolean BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge
   (const TopoDS_Edge& aE,
    const TopoDS_Face& aF,
    const Standard_Real aT,
@@ -340,29 +339,27 @@ void BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge
    gp_Dir& aDNF,
    Standard_Real aDt2D)
 {
-  Standard_Real aFirst, aLast;
-  Handle(Geom2d_Curve) aC2D= 
-    BRep_Tool::CurveOnSurface (aE, aF, aFirst, aLast);
-  
-  if (aC2D.IsNull()) {
-    return;
-  }
   gp_Pnt2d aPx2DNear;
-  PointNearEdge (aE, aF, aT, aDt2D, aPx2DNear, aPNear);
-  Handle(Geom_Surface) aS=BRep_Tool::Surface(aF);
+  Standard_Integer iErr = BOPTools_AlgoTools3D::PointNearEdge
+    (aE, aF, aT, aDt2D, aPx2DNear, aPNear);
+  if (iErr != 1) {
+    Handle(Geom_Surface) aS=BRep_Tool::Surface(aF);
   
-  BOPTools_AlgoTools3D::GetNormalToSurface 
-    (aS, aPx2DNear.X(), aPx2DNear.Y(), aDNF);
+    BOPTools_AlgoTools3D::GetNormalToSurface 
+      (aS, aPx2DNear.X(), aPx2DNear.Y(), aDNF);
   
-  if (aF.Orientation()==TopAbs_REVERSED){
-    aDNF.Reverse();
+    if (aF.Orientation()==TopAbs_REVERSED){
+      aDNF.Reverse();
+    }
   }
+  //
+  return (iErr == 0);
 }
 //=======================================================================
 //function : GetApproxNormalToFaceOnEdge
 //purpose  : 
 //=======================================================================
-void BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge 
+Standard_Boolean BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge 
   (const TopoDS_Edge& aE,
    const TopoDS_Face& aF,
    const Standard_Real aT,
@@ -370,37 +367,62 @@ void BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge
    gp_Dir& aDNF,
    Handle(IntTools_Context)& theContext)
 {
-  Standard_Real aFirst, aLast;
-  Handle(Geom2d_Curve) aC2D= 
-    BRep_Tool::CurveOnSurface (aE, aF, aFirst, aLast);
-  
-  if (aC2D.IsNull()) {
-    return;
-  }
-  //gp_Pnt aPNear;
   gp_Pnt2d aPx2DNear;
-  BOPTools_AlgoTools3D::PointNearEdge 
+  Standard_Integer iErr = BOPTools_AlgoTools3D::PointNearEdge 
     (aE, aF, aT, aPx2DNear, aPNear, theContext);
+  if (iErr != 1) {
+    Handle(Geom_Surface) aS=BRep_Tool::Surface(aF);
   
-  Handle(Geom_Surface) aS=BRep_Tool::Surface(aF);
+    BOPTools_AlgoTools3D::GetNormalToSurface 
+      (aS, aPx2DNear.X(), aPx2DNear.Y(), aDNF);
   
-  BOPTools_AlgoTools3D::GetNormalToSurface 
-    (aS, aPx2DNear.X(), aPx2DNear.Y(), aDNF);
-  
-  if (aF.Orientation()==TopAbs_REVERSED){
-    aDNF.Reverse();
+    if (aF.Orientation()==TopAbs_REVERSED){
+      aDNF.Reverse();
+    }
   }
+  //
+  return (iErr == 0);
+}
+//=======================================================================
+//function : GetApproxNormalToFaceOnEdge
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge 
+  (const TopoDS_Edge& aE,
+   const TopoDS_Face& aF,
+   const Standard_Real aT,
+   const Standard_Real theStep,
+   gp_Pnt& aPNear,
+   gp_Dir& aDNF,
+   Handle(IntTools_Context)& theContext)
+{
+  gp_Pnt2d aPx2DNear;
+  Standard_Integer iErr = BOPTools_AlgoTools3D::PointNearEdge 
+    (aE, aF, aT, theStep, aPx2DNear, aPNear, theContext);
+  if (iErr != 1) {
+    Handle(Geom_Surface) aS=BRep_Tool::Surface(aF);
+  
+    BOPTools_AlgoTools3D::GetNormalToSurface 
+      (aS, aPx2DNear.X(), aPx2DNear.Y(), aDNF);
+  
+    if (aF.Orientation()==TopAbs_REVERSED){
+      aDNF.Reverse();
+    }
+  }
+  //
+  return (iErr == 0);
 }
 //=======================================================================
 //function : PointNearEdge
 //purpose  : 
 //=======================================================================
-void BOPTools_AlgoTools3D::PointNearEdge (const TopoDS_Edge& aE,
-                                          const TopoDS_Face& aF,
-                                          const Standard_Real aT, 
-                                          const Standard_Real aDt2D, 
-                                          gp_Pnt2d& aPx2DNear,
-                                          gp_Pnt& aPxNear)
+Standard_Integer BOPTools_AlgoTools3D::PointNearEdge 
+  (const TopoDS_Edge& aE,
+   const TopoDS_Face& aF,
+   const Standard_Real aT, 
+   const Standard_Real aDt2D, 
+   gp_Pnt2d& aPx2DNear,
+   gp_Pnt& aPxNear)
 {
   Standard_Real aFirst, aLast, aETol, aFTol, transVal;
   GeomAbs_SurfaceType aTS;
@@ -408,9 +430,9 @@ void BOPTools_AlgoTools3D::PointNearEdge (const TopoDS_Edge& aE,
   Handle(Geom_Surface) aS;
   //
   aC2D= BRep_Tool::CurveOnSurface (aE, aF, aFirst, aLast);
-  if (aC2D.IsNull()) {
-    aPx2DNear.SetCoord (99., 99);
-    return;
+  Standard_Integer iErr = aC2D.IsNull() ? 1 : 0;
+  if (iErr) {
+    return iErr;
   }
   //
   aS=BRep_Tool::Surface(aF);
@@ -472,12 +494,13 @@ void BOPTools_AlgoTools3D::PointNearEdge (const TopoDS_Edge& aE,
   }
   //
   aS->D0(aPx2DNear.X(), aPx2DNear.Y(), aPxNear);
+  return iErr;
 }
 //=======================================================================
 //function : PointNearEdge
 //purpose  : 
 //=======================================================================
-void BOPTools_AlgoTools3D::PointNearEdge 
+Standard_Integer BOPTools_AlgoTools3D::PointNearEdge 
   (const TopoDS_Edge& aE,
    const TopoDS_Face& aF,
    const Standard_Real aT, 
@@ -496,7 +519,7 @@ void BOPTools_AlgoTools3D::PointNearEdge
   if (aGAS.GetType()==GeomAbs_Cylinder ||
       aGAS.GetType()==GeomAbs_Sphere) {
     dT2D=10.*dT2D;
-  } 
+  }
   //
   aTolE = BRep_Tool::Tolerance(aE);
   aTolF = BRep_Tool::Tolerance(aF);
@@ -505,44 +528,63 @@ void BOPTools_AlgoTools3D::PointNearEdge
     dT2D=dTx;
   }
   //
-  BOPTools_AlgoTools3D::PointNearEdge 
+  Standard_Integer iErr = BOPTools_AlgoTools3D::PointNearEdge 
     (aE, aF, aT, dT2D, aPx2DNear, aPxNear);
-  if (!theContext->IsPointInOnFace(aF, aPx2DNear)) {
-    Standard_Integer iErr;
-    Standard_Real aU1, aU2, aV1, aV2, dV, dU, dTresh;
+  if ((iErr != 1) && !theContext->IsPointInOnFace(aF, aPx2DNear)) {
     gp_Pnt aP;
     gp_Pnt2d aP2d;
     //
-    if (theContext.IsNull()) {
-      BRepTools::UVBounds(aF, aU1, aU2, aV1, aV2);
+    iErr = BOPTools_AlgoTools3D::PointInFace
+      (aF, aE, aT, dT2D, aP, aP2d, theContext);
+    if (iErr == 0) {
+      aPxNear = aP;
+      aPx2DNear = aP2d;
     }
     else {
-      theContext->UVBounds(aF, aU1, aU2, aV1, aV2);
-    }
-    // 
-    dU=aU2-aU1;
-    dV=aV2-aV1;
-    //
-    dTresh=1.e-4;
-    if (dT2D > dTresh) {
-      dTresh=dT2D;
-    }
-    //
-    if (dU < dTresh || dV < dTresh) {
-      iErr = BOPTools_AlgoTools3D::PointInFace
-        (aF, aP, aP2d, theContext);
-      if (!iErr) {
-        aPxNear = aP;
-        aPx2DNear = aP2d;
-      }
+      iErr = 2; // point is out of the face
     }
   }
+  //
+  return iErr;
+}
+
+//=======================================================================
+//function : PointNearEdge
+//purpose  : 
+//=======================================================================
+Standard_Integer BOPTools_AlgoTools3D::PointNearEdge 
+  (const TopoDS_Edge& aE,
+   const TopoDS_Face& aF,
+   const Standard_Real aT, 
+   const Standard_Real theStep,
+   gp_Pnt2d& aPx2DNear,
+   gp_Pnt& aPxNear,
+   Handle(IntTools_Context)& theContext)
+{
+  Standard_Integer iErr = BOPTools_AlgoTools3D::PointNearEdge 
+    (aE, aF, aT, theStep, aPx2DNear, aPxNear);
+  if ((iErr != 1) && !theContext->IsPointInOnFace(aF, aPx2DNear)) {
+    gp_Pnt aP;
+    gp_Pnt2d aP2d;
+    //
+    iErr = BOPTools_AlgoTools3D::PointInFace
+      (aF, aE, aT, theStep, aP, aP2d, theContext);
+    if (iErr == 0) {
+      aPxNear = aP;
+      aPx2DNear = aP2d;
+    }
+    else {
+      iErr = 2; // point is out of the face
+    }
+  }
+  //
+  return iErr;
 }
 //=======================================================================
 // function: PointNearEdge
 // purpose: 
 //=======================================================================
-void  BOPTools_AlgoTools3D::PointNearEdge 
+Standard_Integer BOPTools_AlgoTools3D::PointNearEdge
   (const TopoDS_Edge& aE,
    const TopoDS_Face& aF, 
    gp_Pnt2d& aPInFace2D, 
@@ -551,18 +593,20 @@ void  BOPTools_AlgoTools3D::PointNearEdge
 {
   Standard_Real aT, aT1, aT2;
   //
-  // 1. 
+  // 1. compute parameter on edge
   BRep_Tool::Range(aE, aT1, aT2);
   aT=BOPTools_AlgoTools2D::IntermediatePoint(aT1, aT2);
   //
-  // 2. a Point inside Face near aPOnEdge aPInFace;
+  // 2. compute point inside the face near the edge
   TopoDS_Face aFF=aF;
   TopoDS_Edge aERight;
   aFF.Orientation(TopAbs_FORWARD);
   BOPTools_AlgoTools3D::OrientEdgeOnFace (aE, aFF, aERight);
-  
-  BOPTools_AlgoTools3D::PointNearEdge 
+  //
+  Standard_Integer iErr = BOPTools_AlgoTools3D::PointNearEdge 
     (aERight, aFF, aT, aPInFace2D, aPInFace, theContext);
+  //
+  return iErr;
 }
 //=======================================================================
 //function : MinStepIn2d
@@ -732,108 +776,158 @@ void BOPTools_AlgoTools3D::OrientEdgeOnFace (const TopoDS_Edge& aE,
 //purpose  :
 //=======================================================================
 Standard_Integer BOPTools_AlgoTools3D::PointInFace
-  (const TopoDS_Face& aF,
+  (const TopoDS_Face& theF,
    gp_Pnt& theP,
    gp_Pnt2d& theP2D,
    Handle(IntTools_Context)& theContext)
 {
-  Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
-  Standard_Integer iErr, aIx = 0, aNbDomains = 0;
-  Standard_Real aUMin, aUMax, aVMin, aVMax;
-  Standard_Real aVx = 0., aUx, aV1, aV2;
-  gp_Dir2d aD2D (0., 1.);
-  gp_Pnt2d aP2D;
-  gp_Pnt aPx;
-  Handle(Geom2d_Curve) aC2D;
-  Handle(Geom2d_Line) aL2D;
-  Handle(Geom_Surface) aS;
-  TopoDS_Face aFF;
+  Standard_Integer i, iErr = 1;
+  Standard_Real aUMin, aUMax, aVMin, aVMax, aUx;
   //
-  Geom2dHatch_Hatcher& aHatcher = theContext->Hatcher(aF);
+  theContext->UVBounds(theF, aUMin, aUMax, aVMin, aVMax);
   //
-  iErr=0;
+  gp_Dir2d aD2D(0. , 1.);
+  aUx = IntTools_Tools::IntermediatePoint(aUMin, aUMax);
   //
-  aFF=aF;
-  aFF.Orientation (TopAbs_FORWARD);
-  //
-  aS=BRep_Tool::Surface(aFF);
-  if (theContext.IsNull()) {
-    BRepTools::UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
-  }
-  else {
-    theContext->UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
-  }
-  //
-  aUx=IntTools_Tools::IntermediatePoint(aUMin, aUMax);
-  Standard_Integer i;
-  for(i = 1; i <= 2; ++i)
-  {
-    aP2D.SetCoord(aUx, 0.);
-    aL2D=new Geom2d_Line (aP2D, aD2D);
-    Geom2dAdaptor_Curve aHCur(aL2D);
-    //
-    aIx=aHatcher.AddHatching(aHCur) ;
-    //
-    aHatcher.Trim(aIx);
-    bIsDone=aHatcher.TrimDone(aIx);
-    if (!bIsDone) {
-      iErr=1;
-      return iErr;
-    }
-    //
-    if(aHatcher.NbPoints(aIx) > 1)
-    {
-      aHatcher.ComputeDomains(aIx);
-      bIsDone=aHatcher.IsDone(aIx);
-      if (!bIsDone) {
-        iErr=2;
-        return iErr;
-      }
+  for (i = 0; i < 2; ++i) {
+    gp_Pnt2d aP2D(aUx, 0.);
+    Handle(Geom2d_Line) aL2D = new Geom2d_Line (aP2D, aD2D);
+    iErr = BOPTools_AlgoTools3D::PointInFace
+      (theF, aL2D, theP, theP2D, theContext);
+    if (iErr == 0) {
+      // done
       break;
     }
-    else
-    {
+    else {
+      // possible reason - incorrect computation of the 2d box of the face.
+      // try to compute the point with the translated line.
       aUx = aUMax - (aUx - aUMin);
     }
   }
   //
-  if(!aHatcher.IsDone(aIx))
-  {
-    iErr=2;
+  return iErr;
+}
+//=======================================================================
+//function : PointInFace
+//purpose  :
+//=======================================================================
+Standard_Integer BOPTools_AlgoTools3D::PointInFace
+  (const TopoDS_Face& theF,
+   const TopoDS_Edge& theE,
+   const Standard_Real theT,
+   const Standard_Real theDt2D,
+   gp_Pnt& theP,
+   gp_Pnt2d& theP2D,
+   Handle(IntTools_Context)& theContext)
+{
+  Standard_Integer iErr;
+  Standard_Real f, l;
+  Handle(Geom2d_Curve) aC2D;
+  //
+  iErr = 0;
+  aC2D = BRep_Tool::CurveOnSurface (theE, theF, f, l);
+  if (aC2D.IsNull()) {
+    iErr = 5;
     return iErr;
   }
-
-  aNbDomains=aHatcher.NbDomains(aIx);
-  if (aNbDomains > 0) {
-    const HatchGen_Domain& aDomain=aHatcher.Domain (aIx, 1);
-    bHasFirstPoint=aDomain.HasFirstPoint();
+  //
+  gp_Pnt2d aP2D;
+  gp_Vec2d aV2D;
+  //
+  aC2D->D1(theT, aP2D, aV2D);
+  gp_Dir2d aD2Dx(aV2D);
+  //
+  gp_Dir2d aD2D;
+  aD2D.SetCoord (-aD2Dx.Y(), aD2Dx.X());
+  //
+  if (theE.Orientation()==TopAbs_REVERSED){
+    aD2D.Reverse();
+  }
+  //
+  if (theF.Orientation()==TopAbs_REVERSED) {
+    aD2D.Reverse();
+  }
+  //
+  Handle(Geom2d_Line) aL2D = new Geom2d_Line(aP2D, aD2D);
+  Handle(Geom2d_TrimmedCurve) aL2DTrim =
+    new Geom2d_TrimmedCurve(aL2D, 0., Precision::Infinite());
+  //
+  iErr = BOPTools_AlgoTools3D::PointInFace
+    (theF, aL2DTrim, theP, theP2D, theContext, theDt2D);
+  //
+  return iErr;
+}
+//=======================================================================
+//function : PointInFace
+//purpose  :
+//=======================================================================
+Standard_Integer BOPTools_AlgoTools3D::PointInFace
+  (const TopoDS_Face& theF,
+   const Handle(Geom2d_Curve)& theL2D,
+   gp_Pnt& theP,
+   gp_Pnt2d& theP2D,
+   Handle(IntTools_Context)& theContext,
+   const Standard_Real theDt2D)
+{
+  Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
+  Standard_Integer iErr, aIH, aNbDomains;
+  Standard_Real aVx, aV1, aV2;
+  //
+  Geom2dHatch_Hatcher& aHatcher = theContext->Hatcher(theF);
+  //
+  Geom2dAdaptor_Curve aHCur(theL2D);
+  //
+  aHatcher.ClrHatchings();
+  aIH = aHatcher.AddHatching(aHCur);
+  //
+  iErr = 0;
+  for (;;) {
+    aHatcher.Trim();
+    bIsDone = aHatcher.TrimDone(aIH);
+    if (!bIsDone) {
+      iErr = 1;
+      break;
+    }
+    //
+    aHatcher.ComputeDomains(aIH);
+    bIsDone = aHatcher.IsDone(aIH);
+    if (!bIsDone) {
+      iErr = 2;
+      break;
+    }
+    //
+    aNbDomains = aHatcher.NbDomains(aIH);
+    if (aNbDomains == 0) {
+      iErr = 2;
+      break;
+    }
+    //
+    const HatchGen_Domain& aDomain = aHatcher.Domain (aIH, 1);
+    bHasFirstPoint = aDomain.HasFirstPoint();
     if (!bHasFirstPoint) {
-      iErr=3;
-      return iErr;
+      iErr = 3;
+      break;
     }
     //
-    aV1=aDomain.FirstPoint().Parameter();
-    //
-    bHasSecondPoint=aDomain.HasSecondPoint();
+    bHasSecondPoint = aDomain.HasSecondPoint();
     if (!bHasSecondPoint) {
-      iErr=4;
-      return iErr;
+      iErr = 4;
+      break;
     }
     //
-    aV2=aDomain.SecondPoint().Parameter();
+    aV1 = aDomain.FirstPoint().Parameter();
+    aV2 = aDomain.SecondPoint().Parameter();
     //
-    aVx=IntTools_Tools::IntermediatePoint(aV1, aV2);
+    aVx = (theDt2D > 0. && (aV2 - aV1) > theDt2D) ? (aV1 + theDt2D) :
+      IntTools_Tools::IntermediatePoint(aV1, aV2);
     //
+    Handle(Geom_Surface) aS = BRep_Tool::Surface(theF);
+    //
+    theL2D->D0(aVx, theP2D);
+    aS->D0(theP2D.X(), theP2D.Y(), theP);
+    break;
   }
-  else {
-    iErr=2;
-    return iErr;
-  }
   //
-  aS->D0(aUx, aVx, aPx);
-  //
-  theP2D.SetCoord(aUx, aVx);
-  theP=aPx;
-  //
+  aHatcher.RemHatching(aIH);
   return iErr;
 }

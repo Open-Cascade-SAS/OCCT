@@ -1,6 +1,3 @@
-puts "TODO #22911 ALL: Error : The command is not valid. The area is"
-puts "TODO #22911 ALL: Error : The area of result shape is"
-
 restore [locate_data_file a158] a
 restore [locate_data_file b148] b
 
