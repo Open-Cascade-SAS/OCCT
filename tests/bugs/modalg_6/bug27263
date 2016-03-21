@@ -29,6 +29,6 @@ if {${NbCurv} != ${GoodNbCurv}} {
   puts "Error: Curve Number is bad!"
 }
 
-checklength c_1 -l 3.0642043054782868
+checklength c_1 -l 2.9620641619623407
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
