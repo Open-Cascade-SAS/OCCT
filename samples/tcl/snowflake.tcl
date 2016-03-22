@@ -65,9 +65,6 @@ tcopy w w1
 tmirror w1 -6 0 0 0 1 0
 wire w w w1
 mkface w p w
-shape wsh Sh
-add w wsh
-renamevar wsh w
 donly w
 
 # construct complete snowflake
@@ -86,6 +83,10 @@ bfuse w w w2
 bfuse w w w3
 bfuse w w w4
 bfuse w w w5
+shape wsh Sh
+foreach f [explode w f] {add $f wsh}
+renamevar wsh w
+save w w.brep
 unifysamedom r w
 
 # keep only wires in compound
@@ -137,7 +138,7 @@ vfit
 
 # add dimension
 explode snowflake v
-vdimension length -length -shapes snowflake_64 snowflake_140 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
+vdimension length -length -shapes snowflake_89 snowflake_15 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
 
 if { [regexp HAVE_GL2PS [dversion]] } {
     puts "You can use command vexport to generate PDF: vexport your_file_path.pdf"

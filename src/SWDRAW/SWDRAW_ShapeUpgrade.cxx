@@ -69,7 +69,7 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <stdio.h>
+#include <stdio.h> 
 //#include <SWDRAW_ShapeUpgrade.hxx>
 //#include <ShapeUpgrade_SupportModification.hxx>
 //#include <ShapeExtend_WireData.hxx>
@@ -1285,11 +1285,12 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
 {
   if (n < 3 || n > 6)
   {
-    di << "Use unifysamedom result shape [-f] [-e] [+b]\n";
-    di << "where [-f]. [-e], [+b] is available options\n";
+    di << "Use unifysamedom result shape [-f] [-e] [+b] [-i]\n";
+    di << "options:\n";
     di << "[-f] to switch off 'unify-faces' mode \n";
     di << "[-e] to switch off 'unify-edges' mode\n";
-    di << "[+b] to switch on a 'concat bspline' mode\n";
+    di << "[+b] to switch on 'concat bspline' mode\n";
+    di << "[+i] to switch on 'allow internal edges' mode\n";
     di << "'unify-faces' and 'unify-edges' modes are switched on by default";
     return 1;
   }
@@ -1302,6 +1303,7 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
   Standard_Boolean anUFaces = Standard_True;
   Standard_Boolean anUEdges = Standard_True;
   Standard_Boolean anConBS = Standard_False;
+  Standard_Boolean isAllowInternal = Standard_False;
 
   if (n > 3)
     for ( int i = 3; i < n; i++ ) 
@@ -1312,9 +1314,12 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
         anUEdges = Standard_False;
       else if (!strcmp(a[i], "+b"))
         anConBS = Standard_True;
+      else if (!strcmp(a[i], "+i"))
+        isAllowInternal = Standard_True;
     }
 
   Unifier().Initialize(aShape, anUEdges, anUFaces, anConBS);
+  Unifier().AllowInternalEdges(isAllowInternal);
   Unifier().Build();
   TopoDS_Shape Result = Unifier().Shape();
 
@@ -1470,7 +1475,7 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
   
   theCommands.Add ("unifysamedom",
                    "unifysamedom result shape [-f] [-e] [+b]", __FILE__,unifysamedom,g);
-
+  
   theCommands.Add ("unifysamedomgen",
                    "unifysamedomgen newshape oldshape : get new shape generated "
                    "by unifysamedom command from the old one",

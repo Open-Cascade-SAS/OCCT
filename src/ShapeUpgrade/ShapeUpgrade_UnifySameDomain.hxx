@@ -56,6 +56,12 @@ public:
   //! Initializes with a shape
   Standard_EXPORT void Initialize (const TopoDS_Shape& aShape, const Standard_Boolean UnifyEdges = Standard_True, const Standard_Boolean UnifyFaces = Standard_True, const Standard_Boolean ConcatBSplines = Standard_False);
   
+  //! Sets the flag defining whether it is allowed to create
+  //! internal edges inside merged faces in the case of non-manifold
+  //! topology. Without this flag merging through multi connected edge
+  //! is forbidden. Default value is false.
+  Standard_EXPORT void AllowInternalEdges (const Standard_Boolean theValue);
+  
   //! Builds the resulting shape
   Standard_EXPORT void Build();
   
@@ -93,6 +99,7 @@ private:
   Standard_Boolean myUnifyFaces;
   Standard_Boolean myUnifyEdges;
   Standard_Boolean myConcatBSplines;
+  Standard_Boolean myAllowInternal;
   TopoDS_Shape myShape;
   Handle(ShapeBuild_ReShape) myContext;
   TopTools_DataMapOfShapeShape myOldShapes; 
