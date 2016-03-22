@@ -85,7 +85,10 @@ public:
   //! No check is performed to verify that the shape S
   //! retains truly linear properties. If S is simply a vertex, it
   //! is not considered to present any additional global properties.
-  Standard_EXPORT static void LinearProperties (const TopoDS_Shape& S, GProp_GProps& LProps);
+  //! SkipShared is special flag, which allows to take in calculation shared topological entities or not
+  //! For ex., if SkipShared = True, edges, shared by two or more faces, are taken into calculation only once.
+  //! If we have cube with sizes 1, 1, 1, its linear properties = 12 for SkipEdges = true and 24 for SkipEdges = false.
+  Standard_EXPORT static void LinearProperties (const TopoDS_Shape& S, GProp_GProps& LProps, const Standard_Boolean SkipShared = Standard_False);
   
   //! Computes the surface global properties of the
   //! shape S, i.e. the global properties induced by each
@@ -119,7 +122,9 @@ public:
   //! retains truly surface properties. If S is simply a
   //! vertex, an edge or a wire, it is not considered to
   //! present any additional global properties.
-  Standard_EXPORT static void SurfaceProperties (const TopoDS_Shape& S, GProp_GProps& SProps);
+  //! SkipShared is special flag, which allows to take in calculation shared topological entities or not
+  //! For ex., if SkipShared = True, faces, shared by two or more shells, are taken into calculation only once.
+  Standard_EXPORT static void SurfaceProperties (const TopoDS_Shape& S, GProp_GProps& SProps, const Standard_Boolean SkipShared = Standard_False);
   
   //! Updates <SProps> with the shape <S>, that contains its pricipal properties.
   //! The surface properties of all the faces in <S> are computed.
@@ -129,6 +134,9 @@ public:
   //! for two successive steps of adaptive integration.
   //! Method returns estimation of relative error reached for whole shape.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
+  //! SkipShared is special flag, which allows to take in calculation shared topological entities or not
+  //! For ex., if SkipShared = True, faces, shared by two or more shells, are taken into calculation only once.
+  Standard_EXPORT static Standard_Real SurfaceProperties (const TopoDS_Shape& S, GProp_GProps& SProps, const Standard_Real Eps, const Standard_Boolean SkipShared = Standard_False);
   //!
   //! Computes the global volume properties of the solid
   //! S, and brings them together with the global
@@ -161,10 +169,10 @@ public:
   //! oriented in a coherent way. Nonetheless, S must be
   //! exempt of any free boundary. Note that these
   //! conditions of coherence are not checked by this
-  //! algorithm, and results will be false if they are not respected.
-  Standard_EXPORT static Standard_Real SurfaceProperties (const TopoDS_Shape& S, GProp_GProps& SProps, const Standard_Real Eps);
-  
-  Standard_EXPORT static void VolumeProperties (const TopoDS_Shape& S, GProp_GProps& VProps, const Standard_Boolean OnlyClosed = Standard_False);
+  //! algorithm, and results will be false if they are not respected. 
+  //! SkipShared is special flag, which allows to take in calculation shared topological entities or not
+  //! For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
+  Standard_EXPORT static void VolumeProperties (const TopoDS_Shape& S, GProp_GProps& VProps, const Standard_Boolean OnlyClosed = Standard_False, const Standard_Boolean SkipShared = Standard_False);
   
   //! Updates <VProps> with the shape <S>, that contains its pricipal properties.
   //! The volume properties of all the FORWARD and REVERSED faces in <S> are computed.
@@ -175,7 +183,9 @@ public:
   //! for two successive steps of adaptive integration.
   //! Method returns estimation of relative error reached for whole shape.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
-  Standard_EXPORT static Standard_Real VolumeProperties (const TopoDS_Shape& S, GProp_GProps& VProps, const Standard_Real Eps, const Standard_Boolean OnlyClosed = Standard_False);
+  //! SkipShared is special flag, which allows to take in calculation shared topological entities or not
+  //! For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
+  Standard_EXPORT static Standard_Real VolumeProperties (const TopoDS_Shape& S, GProp_GProps& VProps, const Standard_Real Eps, const Standard_Boolean OnlyClosed = Standard_False, const Standard_Boolean SkipShared = Standard_False);
   
   //! Updates <VProps> with the shape <S>, that contains its pricipal properties.
   //! The volume properties of all the FORWARD and REVERSED faces in <S> are computed.
@@ -188,9 +198,11 @@ public:
   //! that is used for properties computation.
   //! Method returns estimation of relative error reached for whole shape.
   //! Returns negative value if the computation is failed.
-  Standard_EXPORT static Standard_Real VolumePropertiesGK (const TopoDS_Shape& S, GProp_GProps& VProps, const Standard_Real Eps = 0.001, const Standard_Boolean OnlyClosed = Standard_False, const Standard_Boolean IsUseSpan = Standard_False, const Standard_Boolean CGFlag = Standard_False, const Standard_Boolean IFlag = Standard_False);
+  //! SkipShared is special flag, which allows to take in calculation shared topological entities or not
+  //! For ex., if SkipShared = True, the volumes formed by the equal (the same TShape, location and orientation) faces are taken into calculation only once.
+  Standard_EXPORT static Standard_Real VolumePropertiesGK (const TopoDS_Shape& S, GProp_GProps& VProps, const Standard_Real Eps = 0.001, const Standard_Boolean OnlyClosed = Standard_False, const Standard_Boolean IsUseSpan = Standard_False, const Standard_Boolean CGFlag = Standard_False, const Standard_Boolean IFlag = Standard_False, const Standard_Boolean SkipShared = Standard_False);
   
-  Standard_EXPORT static Standard_Real VolumePropertiesGK (const TopoDS_Shape& S, GProp_GProps& VProps, const gp_Pln& thePln, const Standard_Real Eps = 0.001, const Standard_Boolean OnlyClosed = Standard_False, const Standard_Boolean IsUseSpan = Standard_False, const Standard_Boolean CGFlag = Standard_False, const Standard_Boolean IFlag = Standard_False);
+  Standard_EXPORT static Standard_Real VolumePropertiesGK (const TopoDS_Shape& S, GProp_GProps& VProps, const gp_Pln& thePln, const Standard_Real Eps = 0.001, const Standard_Boolean OnlyClosed = Standard_False, const Standard_Boolean IsUseSpan = Standard_False, const Standard_Boolean CGFlag = Standard_False, const Standard_Boolean IFlag = Standard_False, const Standard_Boolean SkipShared = Standard_False);
 
 
 

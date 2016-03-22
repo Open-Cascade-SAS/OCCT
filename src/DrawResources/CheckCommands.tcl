@@ -503,6 +503,7 @@ help checkprops {
     -eps EPSILON: the epsilon defines relative precision of computation
     -equal SHAPE: compare area\volume\length of input shapes. Puts error if its are not equal
     -notequal SHAPE: compare area\volume\length of input shapes. Puts error if its are equal
+    -skip: count shared shapes only once, skipping repeatitions
   Options -l, -s and -v are independent and can be used in any order. Tolerance epsilon is the same for all options.
 }
 
@@ -522,10 +523,12 @@ proc checkprops {shape args} {
     set compared_equal_shape -1
     set compared_notequal_shape -1
     set equal_check 0
+    set skip 0
 
     set options {{"-eps" epsilon 1}
                  {"-equal" compared_equal_shape 1}
-                 {"-notequal" compared_notequal_shape 1}}
+                 {"-notequal" compared_notequal_shape 1}
+                 {"-skip" skip 0}}
 
     if { [regexp {\-[not]*equal} $args] } {
         lappend options {"-s" area 0}
@@ -557,12 +560,18 @@ proc checkprops {shape args} {
         set prop "volume"
         set equal_check 0
     }
+
+    set skip_option ""
+    if { $skip } {
+        set skip_option "-skip"
+    }
+        
     
-    regexp {Mass +: +([-0-9.+eE]+)} [${CommandName} ${shape} ${epsilon}] full m
+    regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${shape} ${epsilon} $skip_option] full m
 
     if { ${compared_equal_shape} != -1 } {
         upvar ${compared_equal_shape} ${compared_equal_shape}
-        regexp {Mass +: +([-0-9.+eE]+)} [${CommandName} ${compared_equal_shape} ${epsilon}] full compared_m
+        regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${compared_equal_shape} ${epsilon} $skip_option] full compared_m
         if { $compared_m != $m } {
             puts "Error: Shape ${compared_equal_shape} is not equal to shape ${shape}"
         }
@@ -570,7 +579,7 @@ proc checkprops {shape args} {
 
     if { ${compared_notequal_shape} != -1 } {
         upvar ${compared_notequal_shape} ${compared_notequal_shape}
-        regexp {Mass +: +([-0-9.+eE]+)} [${CommandName} ${compared_notequal_shape} ${epsilon}] full compared_m
+        regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${compared_notequal_shape} ${epsilon} $skip_option] full compared_m
         if { $compared_m == $m } {
             puts "Error: Shape ${compared_notequal_shape} is equal shape to ${shape}"
         }

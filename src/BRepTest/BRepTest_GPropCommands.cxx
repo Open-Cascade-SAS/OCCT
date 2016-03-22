@@ -41,11 +41,12 @@ Standard_IMPORT Draw_Viewer dout;
 Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 2) {
-    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-full]\n";
+    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-skip] [-full]\n";
     di << "Compute properties of the shape\n";
     di << "The epsilon, if given, defines relative precision of computation\n";
     di << "The \"closed\" flag, if present, do computation only closed shells of the shape\n";
     di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n";
+    di << "Shared entities will be take in account only one time in the skip mode\n";
     di << "All values are outputted with the full precision in the full mode.\n\n";
     return 1;
   }
@@ -54,6 +55,12 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
   if (n >= 2 && strcmp(a[n-1], "-full") == 0)
   {
     isFullMode = Standard_True;
+    --n;
+  }
+  Standard_Boolean SkipShared = Standard_False;
+  if (n >= 2 && strcmp(a[n-1], "-skip") == 0)
+  {
+    SkipShared = Standard_True;
     --n;
   }
 
@@ -71,19 +78,19 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
   if (witheps){
     if (Abs(eps) < Precision::Angular()) return 2;
     if (*a[0] == 'l')
-      BRepGProp::LinearProperties(S,G);
+      BRepGProp::LinearProperties(S,G,SkipShared);
     else if (*a[0] == 's')
-      eps = BRepGProp::SurfaceProperties(S,G,eps);
+      eps = BRepGProp::SurfaceProperties(S,G,eps,SkipShared);
     else 
-      eps = BRepGProp::VolumeProperties(S,G,eps,onlyClosed);
+      eps = BRepGProp::VolumeProperties(S,G,eps,onlyClosed,SkipShared);
   }
   else {
     if (*a[0] == 'l')
-      BRepGProp::LinearProperties(S,G);
+      BRepGProp::LinearProperties(S,G,SkipShared);
     else if (*a[0] == 's')
-      BRepGProp::SurfaceProperties(S,G);
+      BRepGProp::SurfaceProperties(S,G,SkipShared);
     else 
-      BRepGProp::VolumeProperties(S,G,onlyClosed);
+      BRepGProp::VolumeProperties(S,G,onlyClosed,SkipShared);
   }
   
   gp_Pnt P = G.CentreOfMass();
@@ -174,7 +181,7 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 2) {
-    di << "Use: " << a[0] << " shape epsilon closed span mode [x y z]\n";
+    di << "Use: " << a[0] << " shape epsilon closed span mode [x y z] [-skip]\n";
     di << "Compute properties of the shape\n";
     di << "The epsilon defines relative precision of computation\n";
     di << "The \"closed\" flag, if equal 1, causes computation only closed shells of the shape\n";
@@ -196,6 +203,12 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
   if (S.IsNull()) return 0;
 
   GProp_GProps G;
+  Standard_Boolean SkipShared = Standard_False;
+  if (n >= 2 && strcmp(a[n-1], "-skip") == 0)
+  {
+    SkipShared = Standard_True;
+    --n;
+  }
 
   Standard_Boolean onlyClosed  = Standard_False;
   Standard_Boolean isUseSpan   = Standard_False;
@@ -219,7 +232,7 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 
   //aChrono.Reset();
   //aChrono.Start();
-  eps = BRepGProp::VolumePropertiesGK(S, G, eps, onlyClosed, isUseSpan, CGFlag, IFlag);
+  eps = BRepGProp::VolumePropertiesGK(S, G, eps, onlyClosed, isUseSpan, CGFlag, IFlag, SkipShared);
   //aChrono.Stop();
 
   Standard_SStream aSStream0;
@@ -315,15 +328,15 @@ void  BRepTest::GPropCommands(Draw_Interpretor& theCommands)
 
   const char* g = "Global properties";
   theCommands.Add("lprops",
-    "lprops name [x y z] [-full] : compute linear properties",
+    "lprops name [x y z] [-skip] [-full] : compute linear properties",
     __FILE__, props, g);
-  theCommands.Add("sprops", "sprops name [epsilon] [x y z] [-full] :\n"
+  theCommands.Add("sprops", "sprops name [epsilon] [x y z] [-skip] [-full] :\n"
 "  compute surfacic properties", __FILE__, props, g);
-  theCommands.Add("vprops", "vprops name [epsilon] [c[losed]] [x y z] [-full] :\n"
+  theCommands.Add("vprops", "vprops name [epsilon] [c[losed]] [x y z] [-skip] [-full] :\n"
 "  compute volumic properties", __FILE__, props, g);
 
   theCommands.Add("vpropsgk",
-		  "vpropsgk name epsilon closed span mode [x y z] : compute volumic properties",
+		  "vpropsgk name epsilon closed span mode [x y z] [-skip] : compute volumic properties",
 		  __FILE__,
 		  vpropsgk,
 		  g);
