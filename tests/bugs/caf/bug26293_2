@@ -1,0 +1,17 @@
+puts "==========="
+puts "OCC26293"
+puts "==========="
+puts ""
+#################################
+# Error opening the document
+#################################
+
+Open [locate_data_file bug26293_all_geom.sgd] D
+vinit
+for {set i 1} {$i < 1065} {incr i} {
+  if { ![catch {GetShape D 0:1:$i:1:1:2 res$i}] } {
+    vdisplay res$i
+  }
+}
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

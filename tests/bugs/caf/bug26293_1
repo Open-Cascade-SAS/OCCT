@@ -1,0 +1,9 @@
+puts "==========="
+puts "OCC26293"
+puts "==========="
+puts ""
+#################################
+# Error opening the document
+#################################
+
+Open [locate_data_file bug26293_Study1_GEOM.sgd] D
