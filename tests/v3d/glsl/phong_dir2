@@ -1,0 +1,24 @@
+puts "========"
+puts "Per-fragment lighting using built-in GLSL program, two directional light sources."
+puts "Visual comparison with the reference snapshot should be performed for this test case."
+puts "========"
+
+# setup viewer
+vcaps -ffp 0
+vrenderparams -shadingModel phong
+vlight delete 0
+vlight delete 0
+vlight delete 0
+vlight delete 0
+vlight delete 0
+vlight add ambient                color WHITE
+vlight add directional dir  1 0 0 color GREEN headlight 1
+vlight add directional dir -1 0 0 color RED1  headlight 1
+
+# display shape
+restore [locate_data_file occ/fuse.brep] f
+vaxo
+vdisplay f -dispmode 1
+vfit
+vrotate -0.5 0.0 0.0
+vfit

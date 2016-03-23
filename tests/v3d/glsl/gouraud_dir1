@@ -1,0 +1,16 @@
+puts "========"
+puts "Per-vertex lighting using built-in GLSL program, one directional light source."
+puts "Visual comparison with the reference snapshot should be performed for this test case."
+puts "========"
+
+# setup viewer
+vcaps -ffp 0
+vrenderparams -shadingModel vert
+
+# display shape
+restore [locate_data_file occ/fuse.brep] f
+vaxo
+vdisplay f -dispmode 1
+vfit
+vrotate -0.5 0.0 0.0
+vfit

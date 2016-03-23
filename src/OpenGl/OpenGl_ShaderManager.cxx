@@ -187,6 +187,35 @@ const char THE_FUNC_directionalLight[] =
   EOL"  Specular += occLight_Specular (theId).rgb * aSpecl;"
   EOL"}";
 
+//! The same as THE_FUNC_directionalLight but for the light with zero index
+//! (avoids limitations on some mobile devices).
+const char THE_FUNC_directionalLightFirst[] =
+  EOL"void directionalLightFirst (in vec3 theNormal,"
+  EOL"                            in vec3 theView,"
+  EOL"                            in bool theIsFront)"
+  EOL"{"
+  EOL"  vec3 aLight = normalize (occLightSources[1].xyz);"
+  EOL"  if (occLight_IsHeadlight (0) == 0)"
+  EOL"  {"
+  EOL"    aLight = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight, 0.0));"
+  EOL"  }"
+  EOL
+  EOL"  vec3 aHalf = normalize (aLight + theView);"
+  EOL
+  EOL"  vec3  aFaceSideNormal = theIsFront ? theNormal : -theNormal;"
+  EOL"  float aNdotL = max (0.0, dot (aFaceSideNormal, aLight));"
+  EOL"  float aNdotH = max (0.0, dot (aFaceSideNormal, aHalf ));"
+  EOL
+  EOL"  float aSpecl = 0.0;"
+  EOL"  if (aNdotL > 0.0)"
+  EOL"  {"
+  EOL"    aSpecl = pow (aNdotH, theIsFront ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());"
+  EOL"  }"
+  EOL
+  EOL"  Diffuse  += occLightSources[0].rgb * aNdotL;"
+  EOL"  Specular += occLightSources[0].rgb * aSpecl;"
+  EOL"}";
+
 //! Process clipping planes in Fragment Shader.
 //! Should be added at the beginning of the main() function.
 const char THE_FRAG_CLIP_PLANES[] =
@@ -1354,7 +1383,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
 // =======================================================================
 TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (const Standard_Boolean theHasVertColor)
 {
-  bool aLightsMap[Graphic3d_TOLS_SPOT + 1] = { false, false, false, false };
+  Standard_Integer aLightsMap[Graphic3d_TOLS_SPOT + 1] = { 0, 0, 0, 0 };
   TCollection_AsciiString aLightsFunc, aLightsLoop;
   const OpenGl_ListOfLight* aLights = myLightSourceState.LightSources();
   if (aLights != NULL)
@@ -1377,21 +1406,29 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (const Standard
           aLightsLoop = aLightsLoop + EOL"    spotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
           break;
       }
-
-      bool& aTypeBit = aLightsMap[aLightIter.Value().Type];
-      if (aTypeBit)
-      {
-        continue;
-      }
-
-      aTypeBit = true;
-      switch (aLightIter.Value().Type)
-      {
-        case Graphic3d_TOLS_AMBIENT:     break;
-        case Graphic3d_TOLS_DIRECTIONAL: aLightsFunc += THE_FUNC_directionalLight; break;
-        case Graphic3d_TOLS_POSITIONAL:  aLightsFunc += THE_FUNC_pointLight;       break;
-        case Graphic3d_TOLS_SPOT:        aLightsFunc += THE_FUNC_spotLight;        break;
-      }
+      aLightsMap[aLightIter.Value().Type] += 1;
+    }
+    const Standard_Integer aNbLoopLights = aLightsMap[Graphic3d_TOLS_DIRECTIONAL]
+                                         + aLightsMap[Graphic3d_TOLS_POSITIONAL]
+                                         + aLightsMap[Graphic3d_TOLS_SPOT];
+    if (aLightsMap[Graphic3d_TOLS_DIRECTIONAL] == 1
+     && aNbLoopLights == 1)
+    {
+      // use the version with hard-coded first index
+      aLightsLoop = EOL"    directionalLightFirst(theNormal, theView, theIsFront);";
+      aLightsFunc += THE_FUNC_directionalLightFirst;
+    }
+    else if (aLightsMap[Graphic3d_TOLS_DIRECTIONAL] > 0)
+    {
+      aLightsFunc += THE_FUNC_directionalLight;
+    }
+    if (aLightsMap[Graphic3d_TOLS_POSITIONAL] > 0)
+    {
+      aLightsFunc += THE_FUNC_pointLight;
+    }
+    if (aLightsMap[Graphic3d_TOLS_SPOT] > 0)
+    {
+      aLightsFunc += THE_FUNC_spotLight;
     }
   }
 
