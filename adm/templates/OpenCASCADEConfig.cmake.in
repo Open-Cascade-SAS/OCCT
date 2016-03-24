@@ -1,0 +1,55 @@
+#-----------------------------------------------------------------------------
+#
+# OpenCASCADEConfig.cmake - OpenCASCADE CMake configuration file for external projects.
+#
+# This file is configured by OpenCASCADE.
+#
+
+# The OpenCASCADE version number
+set (OpenCASCADE_MAJOR_VERSION       "@OCC_VERSION_MAJOR@")
+set (OpenCASCADE_MINOR_VERSION       "@OCC_VERSION_MINOR@")
+set (OpenCASCADE_MAINTENANCE_VERSION "@OCC_VERSION_MAINTENANCE@")
+set (OpenCASCADE_DEVELOPMENT_VERSION "@OCC_VERSION_DEVELOPMENT@")
+
+# Compute the installation prefix from this OpenCASCADEConfig.cmake file location.
+# This file should be always installed three levels below install dir:
+# - in UNIX style: lib/cmake/opencascade-<version>
+# - in Windows style: win64/vc10/lib
+get_filename_component (OpenCASCADE_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
+get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
+get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
+
+# Set OpenCASCADE paths to headers, binaries, libraries, resources, tests, samples, data
+set (OpenCASCADE_BINARY_DIR   "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_BIN@")
+set (OpenCASCADE_LIBRARY_DIR  "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_LIB@")
+set (OpenCASCADE_SCRIPT_DIR   "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_SCRIPT@")
+set (OpenCASCADE_INCLUDE_DIR  "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_INCLUDE@")
+set (OpenCASCADE_RESOURCE_DIR "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_RESOURCE@")
+
+# The C and C++ flags added by OpenCASCADE to the cmake-configured flags.
+set (OpenCASCADE_C_FLAGS      "@CMAKE_C_FLAGS@")
+set (OpenCASCADE_CXX_FLAGS    "@CMAKE_CXX_FLAGS@")
+@SET_OpenCASCADE_LINKER_FLAGS@
+
+# List of available OpenCASCADE modules.
+set (OpenCASCADE_MODULES @OCCT_MODULES_ENABLED@)
+
+# List of available OpenCASCADE libraries.
+set (OpenCASCADE_LIBRARIES @OCCT_LIBRARIES@)
+
+# OpenCASCADE global configuration options.
+set (OpenCASCADE_COMPILER          "@COMPILER@")
+set (OpenCASCADE_BUILD_WITH_DEBUG  @BUILD_WITH_DEBUG@)
+set (OpenCASCADE_BUILD_SHARED_LIBS @BUILD_SHARED_LIBS@)
+@SET_OpenCASCADE_BUILD_TYPE@
+
+# Use of third-party libraries
+set (OpenCASCADE_WITH_TCL       @USE_TCL@)
+set (OpenCASCADE_WITH_FREETYPE  @USE_FREETYPE@)
+set (OpenCASCADE_WITH_FREEIMAGE @USE_FREEIMAGE@)
+set (OpenCASCADE_WITH_GL2PS     @USE_GL2PS@)
+set (OpenCASCADE_WITH_TBB       @USE_TBB@)
+set (OpenCASCADE_WITH_VTK       @USE_VTK@)
+@SET_OpenCASCADE_WITH_D3D@
+@SET_OpenCASCADE_WITH_GLX@

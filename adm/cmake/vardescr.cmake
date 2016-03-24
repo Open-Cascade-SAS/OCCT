@@ -54,6 +54,9 @@ set (INSTALL_DIR_TESTS_DESCR
 "Subdirectory of INSTALL_DIR where test scripts will be installed")
 set (INSTALL_DIR_SCRIPT_DESCR 
 "Subdirectory of INSTALL_DIR where scripts will be installed")
+set (INSTALL_DIR_CMAKE_DESCR 
+"Subdirectory of INSTALL_DIR where CMake configuration files will be installed.
+Must be three levels below INSTALL_DIR")
 
 macro (INSTALL_MESSAGE INSTALL_TARGET_VARIABLE INSTALL_TARGET_STRING)
 set (${INSTALL_TARGET_VARIABLE}_DESCR
@@ -110,8 +113,8 @@ to generate the documentation in HTML format. The documentation will be availabl
 installation directory (overview.bat script) if INSTALL_DOC_Overview variable is checked")
 
 set (3RDPARTY_DIR_DESCR
-"The root directory where all required 3-rd party products will be searched. If a
-3-rd party product have been found - corresponding CMake variables will be specified
+"The root directory where all required third-party products will be searched. If a
+third-party product have been found - corresponding CMake variables will be specified
 (VTK: 3RDPARTY_VTK_DIR, 3RDPARTY_VTK_INCLUDE_DIR, 3RDPARTY_VTK_LIBRARY_DIR)")
 
 set (USE_FREEIMAGE_DESCR
@@ -123,12 +126,12 @@ set (USE_GL2PS_DESCR
 module for support of vector image formats (PS, EPS etc)")
 
 set (USE_TBB_DESCR
-"Indicates whether TBB 3-rd party is used or not. TBB stands for Threading Building Blocks,
+"Indicates whether TBB is used or not. TBB stands for Threading Building Blocks,
 the technology of Intel Corp, which comes with different mechanisms and patterns for
 injecting parallelism into your application. OCCT remains parallel even without TBB product")
 
 set (USE_VTK_DESCR
-"Indicates whether VTK 3-rd party is used or not. VTK stands for Visualization
+"Indicates whether VTK is used or not. VTK stands for Visualization
 ToolKit, the technology of Kitware Inc intended for general-purpose scientific
 visualization. OCCT comes with a bridge between CAD data representation and
 VTK by means of its dedicated VIS component (VTK Integration Services).")

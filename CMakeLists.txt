@@ -256,6 +256,19 @@ if (NOT DEFINED INSTALL_DIR_DOC)
   endif()
 endif()
 
+# define folder contaning CMake configuration files
+if (NOT DEFINED INSTALL_DIR_CMAKE)
+  if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
+    if (INSTALL_DIR_WITH_VERSION)
+      set (INSTALL_DIR_CMAKE "lib/cmake/opencascade-${OCC_VERSION_STRING_EXT}" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
+    else()
+      set (INSTALL_DIR_CMAKE "lib/cmake/opencascade" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
+    endif()
+  else()
+    set (INSTALL_DIR_CMAKE "${OS_WITH_BIT}/${COMPILER}/lib" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
+  endif()
+endif()
+
 # install LICENSE_LGPL_21.txt and OCCT_LGPL_EXCEPTION.txt files
 if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
   OCCT_INSTALL_FILE_OR_DIR ("LICENSE_LGPL_21.txt" "${INSTALL_DIR}/${INSTALL_DIR_DOC}")
@@ -746,3 +759,54 @@ if (BUILD_MODULE_MfcSamples)
   add_subdirectory(samples/mfc/standard/09_Animation)
   add_subdirectory(samples/mfc/standard/10_Convert)
 endif()
+
+# Prepare variables for configuration of OpenCASCADE cmake config file
+set (OCCT_MODULES_ENABLED)
+set (OCCT_LIBRARIES)
+foreach (OCCT_TOOLKIT ${BUILD_TOOLKITS})
+  if (TARGET ${OCCT_TOOLKIT})
+
+    # get all libraries
+    get_target_property (${OCCT_TOOLKIT}_TYPE ${OCCT_TOOLKIT} "TYPE")
+    if ("${${OCCT_TOOLKIT}_TYPE}" STREQUAL "STATIC_LIBRARY" OR "${${OCCT_TOOLKIT}_TYPE}" STREQUAL "SHARED_LIBRARY" )
+      list (APPEND OCCT_LIBRARIES ${OCCT_TOOLKIT})
+    endif()
+
+    # get all modules
+    get_target_property (${OCCT_TOOLKIT}_FOLDER ${OCCT_TOOLKIT} "FOLDER")
+    string (REGEX MATCH "/(.+)" ${OCCT_TOOLKIT}_MODULE "${${OCCT_TOOLKIT}_FOLDER}")
+    if (NOT "${CMAKE_MATCH_1}" STREQUAL "")
+      list (APPEND OCCT_MODULES_ENABLED ${CMAKE_MATCH_1})
+    endif()
+  endif()
+endforeach()
+list (REMOVE_DUPLICATES OCCT_MODULES_ENABLED)
+
+if (CMAKE_BUILD_TYPE)
+  set (SET_OpenCASCADE_BUILD_TYPE "set (OpenCASCADE_BUILD_TYPE        \"${CMAKE_BUILD_TYPE}\")")
+endif()
+
+if (BUILD_SHARED_LIBS)
+  set (SET_OpenCASCADE_LINKER_FLAGS "set (OpenCASCADE_LINKER_FLAGS   \"${CMAKE_SHARED_LINKER_FLAGS}\")")
+else()
+  set (SET_OpenCASCADE_LINKER_FLAGS "set (OpenCASCADE_LINKER_FLAGS   \"${CMAKE_STATIC_LINKER_FLAGS}\")")
+endif()
+
+if (WIN32)
+  set (SET_OpenCASCADE_WITH_D3D "set (OpenCASCADE_WITH_D3D       ${USE_D3D})")
+endif()
+if (APPLE)
+  set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_GLX})")
+endif()
+
+# Configure and install cmake config file
+OCCT_CONFIGURE_AND_INSTALL ("adm/templates/OpenCASCADEConfig.cmake.in" "OpenCASCADEConfig.cmake" "OpenCASCADEConfig.cmake" "${INSTALL_DIR}/${INSTALL_DIR_CMAKE}")
+
+# Configure cmake version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file( ${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.cmake
+                                  VERSION ${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}
+                                  COMPATIBILITY ExactVersion )
+
+# Install cmake version file
+install (FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.cmake" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_CMAKE}")
