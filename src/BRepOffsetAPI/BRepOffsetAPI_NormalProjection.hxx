@@ -38,7 +38,6 @@ class TopoDS_Edge;
 //! A framework to define projection onto a shape
 //! according to the normal from each point to be projected.
 //! The target shape is a face, and the source shape is an edge or a wire.
-//! The target face is considered to be a 2D surface.
 class BRepOffsetAPI_NormalProjection  : public BRepBuilderAPI_MakeShape
 {
 public:
