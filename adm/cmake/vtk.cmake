@@ -73,11 +73,9 @@ if (VTK_FOUND)
     set (3RDPARTY_VTK_LIBRARY_DIRS)
     set (3RDPARTY_VTK_DLL_DIRS)
 
-    set (HARDCODED_D3D9_LIB "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x64/d3d9.lib")
-
     foreach (VTK_LIBRARY ${VTK_LIBRARIES})
       string (REGEX MATCH "^vtk" IS_VTK_LIBRARY ${VTK_LIBRARY})
-      if (IS_VTK_LIBRARY)
+      if (IS_VTK_LIBRARY AND TARGET ${VTK_LIBRARY})
         # get paths from corresponding variables
         if (${VTK_LIBRARY}_INCLUDE_DIRS AND EXISTS "${${VTK_LIBRARY}_INCLUDE_DIRS}")
           list (APPEND 3RDPARTY_VTK_INCLUDE_DIRS "${${VTK_LIBRARY}_INCLUDE_DIRS}")
@@ -106,14 +104,30 @@ if (VTK_FOUND)
           #  endforeach()
           #endif()
 
+          # Work-around against link failure in case if VTK contains dependency
+          # on DirectX: its run-time is always present on Windows, but SDK can
+          # be absent on current workstation, while not actually needed for 
+          # OCCT linking.
+          # VTK 6.1 for VC 10
           get_target_property (TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${VTK_LIBRARY} IMPORTED_LINK_INTERFACE_LIBRARIES_${CHOSEN_IMPORT_CONF})
           if(TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES)
-            list (FIND TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES "${HARDCODED_D3D9_LIB}" D3D9_INDEX)
-            if (NOT D3D9_INDEX EQUAL -1)
-              message (STATUS "Warning: ${HARDCODED_D3D9_LIB} has been removed from ${VTK_LIBRARY}")
+            string (REGEX MATCH "[^;]*d3d[0-9]+[.]lib" HARDCODED_D3D9_LIB "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
+            if (HARDCODED_D3D9_LIB)
+              message (STATUS "Warning: ${HARDCODED_D3D9_LIB} has been removed from imported dependencies of ${VTK_LIBRARY}")
               
-              list (REMOVE_AT TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${D3D9_INDEX})
+              list (REMOVE_ITEM TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${HARDCODED_D3D9_LIB})
               set_target_properties (${VTK_LIBRARY} PROPERTIES IMPORTED_LINK_INTERFACE_LIBRARIES_${CHOSEN_IMPORT_CONF} "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
+            endif()            
+          endif()
+          # VTK 6.1 for VC 12, 14
+          get_target_property (TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${VTK_LIBRARY} INTERFACE_LINK_LIBRARIES)
+          if(TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES)
+            string (REGEX MATCH "[^;]*d3d[0-9]+[.]lib" HARDCODED_D3D9_LIB "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
+            if (HARDCODED_D3D9_LIB)
+              message (STATUS "Warning: ${HARDCODED_D3D9_LIB} has been removed from imported dependencies of ${VTK_LIBRARY}")
+              
+              list (REMOVE_ITEM TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${HARDCODED_D3D9_LIB})
+              set_target_properties (${VTK_LIBRARY} PROPERTIES INTERFACE_LINK_LIBRARIES "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
             endif()            
           endif()
 
