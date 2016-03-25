@@ -1,0 +1,23 @@
+puts "================"
+puts "0027299"
+puts "================"
+puts ""
+##############################################################
+# Incorrect result of the normal projection algorithm
+# Exception during the exectuion
+##############################################################
+
+restore [locate_data_file bug27299_2.brep] aShape
+explode aShape
+
+nproject result aShape_1 aShape_2
+
+# Result length check.
+checkprops result -l 10086
+
+# Visual check.
+donly result
+smallview
+fit
+display aShape_2
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

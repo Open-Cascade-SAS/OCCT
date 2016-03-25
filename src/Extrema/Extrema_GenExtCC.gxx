@@ -194,12 +194,21 @@ void Extrema_GenExtCC::Perform()
   Curve2 &C2 = *(Curve2*)myC[1];
 
   Standard_Integer aNbInter[2];
-  aNbInter[0] = C1.NbIntervals(GeomAbs_C2);
-  aNbInter[1] = C2.NbIntervals(GeomAbs_C2);
+  GeomAbs_Shape aContinuity = GeomAbs_C2;
+  aNbInter[0] = C1.NbIntervals(aContinuity);
+  aNbInter[1] = C2.NbIntervals(aContinuity);
+
+  if (aNbInter[0] * aNbInter[1] > 100)
+  {
+    aContinuity = GeomAbs_C1;
+    aNbInter[0] = C1.NbIntervals(aContinuity);
+    aNbInter[1] = C2.NbIntervals(aContinuity);
+  }
+
   TColStd_Array1OfReal anIntervals1(1, aNbInter[0] + 1);
   TColStd_Array1OfReal anIntervals2(1, aNbInter[1] + 1);
-  C1.Intervals(anIntervals1, GeomAbs_C2);
-  C2.Intervals(anIntervals2, GeomAbs_C2);
+  C1.Intervals(anIntervals1, aContinuity);
+  C2.Intervals(anIntervals2, aContinuity);
 
   // Lipchitz constant approximation.
   Standard_Real aLC = 9.0; // Default value.
@@ -226,6 +235,7 @@ void Extrema_GenExtCC::Perform()
   Extrema_GlobOptFuncCCC2 aFunc (C1, C2);
   math_GlobOptMin aFinder(&aFunc, myLowBorder, myUppBorder, aLC);
   aFinder.SetLipConstState(isConstLockedFlag);
+  aFinder.SetContinuity(aContinuity == GeomAbs_C2 ? 2 : 1);
   Standard_Real aDiscTol = 1.0e-2;
   Standard_Real aValueTol = 1.0e-2;
   Standard_Real aSameTol = myCurveMinTol / (aDiscTol);

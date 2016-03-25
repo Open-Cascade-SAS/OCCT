@@ -152,6 +152,12 @@ public:
   //! Get functional minimal value.
   Standard_EXPORT Standard_Real GetFunctionalMinimalValue();
 
+  //! Get continuity of local borders splits.
+  inline Standard_Integer GetContinuity() const {return myCont; }
+
+  //! Set continuity of local borders splits.
+  inline void SetContinuity(const Standard_Integer theCont) { myCont = theCont; }
+
 private:
 
   // Compute cell size.
@@ -222,6 +228,9 @@ private:
   Standard_Integer myMinCellFilterSol;
   Standard_Boolean isFirstCellFilterInvoke;
   NCollection_CellFilter<NCollection_CellFilter_Inspector> myFilter;
+
+  // Continuity of local borders.
+  Standard_Integer myCont;
 
   Standard_Real myF; // Current value of Global optimum.
 };

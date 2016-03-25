@@ -48,7 +48,8 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myMaxV(1, myN),
   myExpandCoeff(1, myN),
   myCellSize(0, myN - 1),
-  myFilter(theFunc->NbVariables())
+  myFilter(theFunc->NbVariables()),
+  myCont(2)
 {
   Standard_Integer i;
 
@@ -278,7 +279,8 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
   Standard_Integer i;
 
   //Newton method
-  if (dynamic_cast<math_MultipleVarFunctionWithHessian*>(myFunc))
+  if (myCont >= 2 &&
+      dynamic_cast<math_MultipleVarFunctionWithHessian*>(myFunc))
   {
     math_MultipleVarFunctionWithHessian* aTmp = 
       dynamic_cast<math_MultipleVarFunctionWithHessian*> (myFunc);
@@ -295,7 +297,8 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
   } else
 
   // BFGS method used.
-  if (dynamic_cast<math_MultipleVarFunctionWithGradient*>(myFunc))
+  if (myCont >= 1 &&
+      dynamic_cast<math_MultipleVarFunctionWithGradient*>(myFunc))
   {
     math_MultipleVarFunctionWithGradient* aTmp =
       dynamic_cast<math_MultipleVarFunctionWithGradient*> (myFunc);

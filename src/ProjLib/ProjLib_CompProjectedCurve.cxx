@@ -15,6 +15,8 @@
 // commercial license or contractual agreement.
 
 
+#include <algorithm>
+
 #include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HSurface.hxx>
@@ -38,6 +40,11 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColgp_HSequenceOfPnt.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Extrema_ExtCC.hxx>
+#include <NCollection_Vector.hxx>
 
 #define FuncTol 1.e-10
 
@@ -64,6 +71,59 @@ static void ResultChron( OSD_Chronometer & ch, Standard_Real & time)
 }
 #endif
 
+// Structure to perform splits computation.
+// This structure is not thread-safe since operations under mySplits should be performed in a critical section.
+// myPeriodicDir - 0 for U periodicity and 1 for V periodicity.
+struct SplitDS
+{
+  SplitDS(const Handle(Adaptor3d_HCurve)   &theCurve,
+          const Handle(Adaptor3d_HSurface) &theSurface,
+          NCollection_Vector<Standard_Real> &theSplits)
+  : myCurve(theCurve),
+    mySurface(theSurface),
+    mySplits(theSplits)
+  { }
+
+  // Assignment operator is forbidden.
+  void operator=(const SplitDS &theSplitDS);
+
+  const Handle(Adaptor3d_HCurve) myCurve;
+  const Handle(Adaptor3d_HSurface) mySurface;
+  NCollection_Vector<Standard_Real> &mySplits;
+
+  Standard_Real myPerMinParam;
+  Standard_Real myPerMaxParam;
+  Standard_Integer myPeriodicDir;
+
+  Extrema_ExtCC *myExtCC;
+  Extrema_ExtPS *myExtPS;
+};
+
+  //! Compute split points in the parameter space of the curve.
+  static void BuildCurveSplits(const Handle(Adaptor3d_HCurve)   &theCurve,
+                               const Handle(Adaptor3d_HSurface) &theSurface,
+                               const Standard_Real theTolU,
+                               const Standard_Real theTolV,
+                               NCollection_Vector<Standard_Real> &theSplits);
+
+  //! Perform splitting on a specified direction. Sub-method in BuildCurveSplits.
+  static void SplitOnDirection(SplitDS & theSplitDS);
+
+  //! Perform recursive search of the split points.
+  static void FindSplitPoint(SplitDS & theSplitDS,
+                             const Standard_Real theMinParam,
+                             const Standard_Real theMaxParam);
+
+
+//=======================================================================
+//function : Comparator
+//purpose  : used in sort algorithm
+//=======================================================================
+inline Standard_Boolean Comparator(const Standard_Real theA,
+                                   const Standard_Real theB)
+{
+  return theA < theB;
+}
 
 //=======================================================================
 //function : d1
@@ -564,34 +624,37 @@ ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve
 void ProjLib_CompProjectedCurve::Init() 
 {
   myTabInt.Nullify();
+  NCollection_Vector<Standard_Real> aSplits;
+  aSplits.Clear();
 
   Standard_Real Tol;// Tolerance for ExactBound
-  Standard_Integer i, Nend = 0;
-  Standard_Boolean FromLastU=Standard_False;
+  Standard_Integer i, Nend = 0, aSplitIdx = 0;
+  Standard_Boolean FromLastU = Standard_False,
+                   isSplitsComputed = Standard_False;
 
-  //new part (to discard far solutions)
-  Standard_Real TolC = Precision::Confusion(), TolS = Precision::Confusion();
-  Extrema_ExtCS CExt(myCurve->Curve(),
-    mySurface->Surface(),
-    TolC,
-    TolS);
-  if (CExt.IsDone() && CExt.NbExt()) 
+  const Standard_Real aTol3D = Precision::Confusion();
+  Extrema_ExtCS CExt(myCurve->Curve(), mySurface->Surface(), aTol3D, aTol3D);
+  if (CExt.IsDone() && CExt.NbExt())
   {
-    // Search for the minimum solution
-    Nend = CExt.NbExt();
+    // Search for the minimum solution.
+    // Avoid usage of extrema result that can be wrong for extrusion.
     if(myMaxDist > 0 &&
-       // Avoid usage of extrema result that can be wrong for extrusion
+
        mySurface->GetType() != GeomAbs_SurfaceOfExtrusion)
     {
       Standard_Real min_val2;
       min_val2 = CExt.SquareDistance(1);
+
+      Nend = CExt.NbExt();
       for(i = 2; i <= Nend; i++)
-        if (CExt.SquareDistance(i) < min_val2) min_val2 = CExt.SquareDistance(i);
+      {
+        if (CExt.SquareDistance(i) < min_val2) 
+          min_val2 = CExt.SquareDistance(i);
+      }
       if (min_val2 > myMaxDist * myMaxDist)
-        return;
+        return; // No near solution -> exit.
     }
   }
-  // end of new part
 
   Standard_Real FirstU, LastU, Step, SearchStep, WalkStep, t;
 
@@ -605,12 +668,9 @@ void ProjLib_CompProjectedCurve::Init()
   SearchStep = 10*MinStep;
   Step = SearchStep;
 
-  //Initialization of aPrjPS
-  Standard_Real Uinf = mySurface->FirstUParameter();
-  Standard_Real Usup = mySurface->LastUParameter();
-  Standard_Real Vinf = mySurface->FirstVParameter();
-  Standard_Real Vsup = mySurface->LastVParameter();
-
+  gp_Pnt2d aLowBorder(mySurface->FirstUParameter(),mySurface->FirstVParameter());
+  gp_Pnt2d aUppBorder(mySurface->LastUParameter(), mySurface->LastVParameter());
+  gp_Pnt2d aTol(myTolU, myTolV);
   ProjLib_PrjResolve aPrjPS(myCurve->Curve(), mySurface->Surface(), 1);
 
   t = FirstU;
@@ -648,10 +708,8 @@ void ProjLib_CompProjectedCurve::Init()
           ParT=P1.Parameter();
           P2.Parameter(ParU, ParV);
 
-          aPrjPS.Perform(ParT, ParU, ParV, gp_Pnt2d(myTolU, myTolV), 
-            gp_Pnt2d(mySurface->FirstUParameter(),mySurface->FirstVParameter()), 
-            gp_Pnt2d(mySurface->LastUParameter(), mySurface->LastVParameter()), 
-            FuncTol, Standard_True);           
+          aPrjPS.Perform(ParT, ParU, ParV, aTol, aLowBorder, aUppBorder, FuncTol, Standard_True);
+
           if ( aPrjPS.IsDone() && P1.Parameter() > Max(FirstU,t-Step+Precision::PConfusion()) 
             && P1.Parameter() <= t) 
           {
@@ -665,7 +723,7 @@ void ProjLib_CompProjectedCurve::Init()
         }
       }
       if (!initpoint) 
-      {        
+      {
         myCurve->D0(t,CPoint);
 #ifdef OCCT_DEBUG_CHRONO
         InitChron(chr_init_point);
@@ -684,37 +742,36 @@ void ProjLib_CompProjectedCurve::Init()
         gp_Vec2d D;
 
         if ((mySurface->IsUPeriodic() &&
-            Abs(Usup - Uinf - mySurface->UPeriod()) < Precision::Confusion()) ||
+            Abs(aUppBorder.X() - aLowBorder.X() - mySurface->UPeriod()) < Precision::Confusion()) ||
             (mySurface->IsVPeriodic() && 
-            Abs(Vsup - Vinf - mySurface->VPeriod()) < Precision::Confusion()))
+            Abs(aUppBorder.Y() - aLowBorder.Y() - mySurface->VPeriod()) < Precision::Confusion()))
         {
-          if((Abs(U - Uinf) < mySurface->UResolution(Precision::PConfusion())) &&
+          if((Abs(U - aLowBorder.X()) < mySurface->UResolution(Precision::PConfusion())) &&
             mySurface->IsUPeriodic())
           { 
             d1(t, U, V, D, myCurve, mySurface);
-            if (D.X() < 0 ) U = Usup;
+            if (D.X() < 0 ) U = aUppBorder.X();
           }
-          else if((Abs(U - Usup) < mySurface->UResolution(Precision::PConfusion())) &&
+          else if((Abs(U - aUppBorder.X()) < mySurface->UResolution(Precision::PConfusion())) &&
             mySurface->IsUPeriodic())
           {
             d1(t, U, V, D, myCurve, mySurface);
-            if (D.X() > 0) U = Uinf;
+            if (D.X() > 0) U = aLowBorder.X();
           }
 
-          if((Abs(V - Vinf) < mySurface->VResolution(Precision::PConfusion())) && 
+          if((Abs(V - aLowBorder.Y()) < mySurface->VResolution(Precision::PConfusion())) && 
             mySurface->IsVPeriodic()) 
           {
             d1(t, U, V, D, myCurve, mySurface);
-            if (D.Y() < 0) V = Vsup;
+            if (D.Y() < 0) V = aUppBorder.Y();
           }
-          else if((Abs(V - Vsup) <= mySurface->VResolution(Precision::PConfusion())) &&
+          else if((Abs(V - aUppBorder.Y()) <= mySurface->VResolution(Precision::PConfusion())) &&
             mySurface->IsVPeriodic())
           {
             d1(t, U, V, D, myCurve, mySurface);
-            if (D.Y() > 0) V = Vinf;
+            if (D.Y() > 0) V = aLowBorder.Y();
           }
         }
-
 
         if (myMaxDist > 0) 
         {
@@ -765,7 +822,6 @@ void ProjLib_CompProjectedCurve::Init()
     }
     if (!new_part) break;
 
-
     //We have found a new continuous part
     Handle(TColgp_HSequenceOfPnt) hSeq = new TColgp_HSequenceOfPnt();    
     mySequence->Append(hSeq);
@@ -790,9 +846,7 @@ void ProjLib_CompProjectedCurve::Init()
     if (t > LastU) t = LastU;
     Standard_Real prevStep = Step;
     Standard_Real U0, V0;
-    gp_Pnt2d aLowBorder(mySurface->FirstUParameter(),mySurface->FirstVParameter());
-    gp_Pnt2d aUppBorder(mySurface->LastUParameter(), mySurface->LastVParameter());
-    gp_Pnt2d aTol(myTolU, myTolV);
+
     //Here we are trying to prolong continuous part
     while (t <= LastU && new_part) 
     {
@@ -865,6 +919,33 @@ void ProjLib_CompProjectedCurve::Init()
         // Check for possible local traps.
         UpdateTripleByTrapCriteria(Triple);
 
+        // Protection from case when the whole curve lies on a seam.
+        if (!isSplitsComputed)
+        {
+          Standard_Boolean isUPossible = Standard_False;
+          if (mySurface->IsUPeriodic() &&
+             (Abs(Triple.Y() - mySurface->FirstUParameter() ) > Precision::PConfusion() &&
+              Abs(Triple.Y() - mySurface->LastUParameter()  ) > Precision::PConfusion()))
+          {
+            isUPossible = Standard_True;
+          }
+
+          Standard_Boolean isVPossible = Standard_False;
+          if (mySurface->IsVPeriodic() &&
+             (Abs(Triple.Z() - mySurface->FirstVParameter() ) > Precision::PConfusion() &&
+              Abs(Triple.Z() - mySurface->LastVParameter()  ) > Precision::PConfusion()))
+          {
+            isVPossible = Standard_True;
+          }
+
+          if (isUPossible || isVPossible)
+          {
+            // When point is good conditioned.
+            BuildCurveSplits(myCurve, mySurface, myTolU, myTolV, aSplits);
+            isSplitsComputed = Standard_True;
+          }
+        }
+
         if((Triple.X() - mySequence->Value(myNbCurves)->Value(mySequence->Value(myNbCurves)->Length()).X()) > 1.e-10)
           mySequence->Value(myNbCurves)->Append(Triple);
         if (t == LastU) {t = LastU + 1; break;}//return;
@@ -877,14 +958,37 @@ void ProjLib_CompProjectedCurve::Init()
 
         Step = WalkStep;
         t += Step;
-        if (t > (LastU-MinStep/2) ) 
+        if (t > (LastU-MinStep/2))
         {
-          Step =Step+LastU-t;
+          Step = Step + LastU - t;
           t = LastU;
-        }	
+        }
+
+        // We assume at least one point of cache inside of a split.
+        const Standard_Integer aSize = aSplits.Size();
+        for(Standard_Integer anIdx = aSplitIdx; anIdx < aSize; ++anIdx)
+        {
+          const Standard_Real aParam = aSplits(anIdx);
+          if (Abs(aParam - Triple.X() ) < Precision::PConfusion())
+          {
+            // The current point is equal to a split point.
+            new_part = Standard_False;
+
+            // Move split index to avoid check of the whole list.
+            ++aSplitIdx;
+            break;
+          }
+          else if (aParam < t + Precision::PConfusion() )
+          {
+            // The next point crosses the split point.
+            t = aParam;
+            Step = t - prevTriple.X();
+          }
+        } // for(Standard_Integer anIdx = aSplitIdx; anIdx < aSize; ++anIdx)
       }
     }
   }
+
   // Sequence post-proceeding.
   Standard_Integer j;
 
@@ -1666,4 +1770,161 @@ void ProjLib_CompProjectedCurve::UpdateTripleByTrapCriteria(gp_Pnt &thePoint) co
   }
   thePoint.SetY(U);
   thePoint.SetZ(V);
+}
+
+//=======================================================================
+//function : BuildCurveSplits
+//purpose  : 
+//=======================================================================
+void BuildCurveSplits(const Handle(Adaptor3d_HCurve)   &theCurve,
+                      const Handle(Adaptor3d_HSurface) &theSurface,
+                      const Standard_Real theTolU,
+                      const Standard_Real theTolV,
+                      NCollection_Vector<Standard_Real> &theSplits)
+{
+  SplitDS aDS(theCurve, theSurface, theSplits);
+
+  Extrema_ExtPS anExtPS;
+  anExtPS.Initialize(theSurface->Surface(),
+                     theSurface->FirstUParameter(), theSurface->LastUParameter(),
+                     theSurface->FirstVParameter(), theSurface->LastVParameter(),
+                     theTolU, theTolV);
+  aDS.myExtPS = &anExtPS;
+
+  if (theSurface->IsUPeriodic())
+  {
+    aDS.myPeriodicDir = 0;
+    SplitOnDirection(aDS);
+  }
+  if (theSurface->IsVPeriodic())
+  {
+    aDS.myPeriodicDir = 1;
+    SplitOnDirection(aDS);
+  }
+
+  std::sort(aDS.mySplits.begin(), aDS.mySplits.end(), Comparator);
+}
+
+//=======================================================================
+//function : SplitOnDirection
+//purpose  : This method compute points in the parameter space of the curve
+//           on which curve should be split since period jump is happen.
+//=======================================================================
+void SplitOnDirection(SplitDS & theSplitDS)
+{
+  // Algorithm:
+  // Create 3D curve which is correspond to the periodic bound in 2d space.
+  // Run curve / curve extrema and run extrema point / surface to check that
+  // the point will be projected to the periodic bound.
+  // In this method assumed that the points cannot be closer to each other that 1% of the parameter space.
+
+  gp_Pnt2d aStartPnt(theSplitDS.mySurface->FirstUParameter(), theSplitDS.mySurface->FirstVParameter());
+  gp_Dir2d aDir(theSplitDS.myPeriodicDir, (Standard_Integer)!theSplitDS.myPeriodicDir);
+
+  theSplitDS.myPerMinParam = !theSplitDS.myPeriodicDir ? theSplitDS.mySurface->FirstUParameter():
+                                                         theSplitDS.mySurface->FirstVParameter();
+  theSplitDS.myPerMaxParam = !theSplitDS.myPeriodicDir ? theSplitDS.mySurface->LastUParameter():
+                                                         theSplitDS.mySurface->LastVParameter();
+  Standard_Real aLast2DParam = theSplitDS.myPeriodicDir ? 
+                               theSplitDS.mySurface->LastUParameter() - theSplitDS.mySurface->FirstUParameter():
+                               theSplitDS.mySurface->LastVParameter() - theSplitDS.mySurface->FirstVParameter();
+
+  // Create line which is represent periodic border.
+  Handle(Geom2d_Curve) aC2GC = new Geom2d_Line(aStartPnt, aDir);
+  Handle(Geom2dAdaptor_HCurve) aC = new Geom2dAdaptor_HCurve(aC2GC, 0, aLast2DParam);
+  Adaptor3d_CurveOnSurface  aCOnS(aC, theSplitDS.mySurface);
+
+  Extrema_ExtCC anExtCC;
+  anExtCC.SetCurve(1, aCOnS);
+  anExtCC.SetCurve(2, theSplitDS.myCurve->Curve());
+  anExtCC.SetSingleSolutionFlag(Standard_True); // Search only one solution since multiple invocations are needed.
+  anExtCC.SetRange(1, 0, aLast2DParam);
+  theSplitDS.myExtCC = &anExtCC;
+
+  FindSplitPoint(theSplitDS,
+                 theSplitDS.myCurve->FirstParameter(), // Initial curve range.
+                 theSplitDS.myCurve->LastParameter());
+}
+
+
+//=======================================================================
+//function : FindSplitPoint
+//purpose  : 
+//=======================================================================
+void FindSplitPoint(SplitDS &theSplitDS,
+                    const Standard_Real theMinParam,
+                    const Standard_Real theMaxParam)
+{
+  // Make extrema copy to avoid dependencies between different levels of the recursion.
+  Extrema_ExtCC anExtCC(*theSplitDS.myExtCC);
+  anExtCC.SetRange(2, theMinParam, theMaxParam);
+  anExtCC.Perform();
+
+  if (anExtCC.IsDone())
+  {
+    const Standard_Integer aNbExt = anExtCC.NbExt();
+    for (Standard_Integer anIdx = 1; anIdx <= aNbExt; ++anIdx)
+    {
+      Extrema_POnCurv aPOnC1, aPOnC2;
+      anExtCC.Points(anIdx, aPOnC1, aPOnC2);
+
+      theSplitDS.myExtPS->Perform(aPOnC2.Value());
+      if (!theSplitDS.myExtPS->IsDone())
+        return;
+
+      // Find point with the minimal Euclidean distance to avoid
+      // false positive points detection.
+      Standard_Integer aMinIdx = -1;
+      Standard_Real aMinSqDist = RealLast();
+      const Standard_Integer aNbPext = theSplitDS.myExtPS->NbExt();
+      for(Standard_Integer aPIdx = 1; aPIdx <= aNbPext; ++aPIdx)
+      {
+        const Standard_Real aCurrSqDist = theSplitDS.myExtPS->SquareDistance(aPIdx);
+
+        if (aCurrSqDist < aMinSqDist)
+        {
+          aMinSqDist = aCurrSqDist;
+          aMinIdx = aPIdx;
+        }
+      }
+
+      // Check that is point will be projected to the periodic border.
+      const Extrema_POnSurf &aPOnS = theSplitDS.myExtPS->Point(aMinIdx);
+      Standard_Real U, V, aProjParam;
+      aPOnS.Parameter(U, V);
+      aProjParam = theSplitDS.myPeriodicDir ? V : U;
+
+
+      if (Abs(aProjParam - theSplitDS.myPerMinParam) < Precision::PConfusion() ||
+          Abs(aProjParam - theSplitDS.myPerMaxParam) < Precision::PConfusion() )
+      {
+        const Standard_Real aParam = aPOnC2.Parameter();
+        const Standard_Real aCFParam = theSplitDS.myCurve->FirstParameter();
+        const Standard_Real aCLParam = theSplitDS.myCurve->LastParameter();
+
+        if (aParam > aCFParam + Precision::PConfusion() &&
+            aParam < aCLParam  - Precision::PConfusion() )
+        {
+          // Add only inner points.
+          theSplitDS.mySplits.Append(aParam);
+        }
+
+        const Standard_Real aDeltaCoeff = 0.01;
+        const Standard_Real aDelta = (theMaxParam - theMinParam + 
+                                      aCLParam - aCFParam) * aDeltaCoeff;
+
+        if (aParam - aDelta > theMinParam + Precision::PConfusion())
+        {
+          FindSplitPoint(theSplitDS,
+                         theMinParam, aParam - aDelta); // Curve parameters.
+        }
+
+        if (aParam + aDelta < theMaxParam - Precision::PConfusion())
+        {
+          FindSplitPoint(theSplitDS,
+                         aParam + aDelta, theMaxParam); // Curve parameters.
+        }
+      }
+    } // for (Standard_Integer anIdx = 1; anIdx <= aNbExt; ++anIdx)
+  }
 }
