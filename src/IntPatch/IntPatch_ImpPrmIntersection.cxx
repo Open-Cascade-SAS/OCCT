@@ -2832,7 +2832,8 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aPrePointExist = PrePoint_NONE;
 
           FuncPreciseSeam aF(theQSurf, thePSurf, Standard_False);
-          math_Vector aTol(1, 3), aStartPoint(1,3);
+          math_Vector aTol(1, 3), aStartPoint(1,3),
+                      anInfBound(1, 3), aSupBound(1, 3);
           
           //Parameters on parametric surface
           Standard_Real aUp = 0.0, aVp = 0.0;
@@ -2851,9 +2852,15 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aStartPoint(1) = 0.5*(aU0 + aUp);
           aStartPoint(2) = 0.5*(aV0 + aVp);
           aStartPoint(3) = 0.5*(aUQuadRef + U1);
+          anInfBound(1) = thePSurf->FirstUParameter();
+          anInfBound(2) = thePSurf->FirstVParameter();
+          anInfBound(3) = theQSurf->FirstUParameter();
+          aSupBound(1) = thePSurf->LastUParameter();
+          aSupBound(2) = thePSurf->LastVParameter();
+          aSupBound(3) = theQSurf->LastUParameter();
 
           math_FunctionSetRoot aSRF(aF, aTol);
-          aSRF.Perform(aF, aStartPoint);
+          aSRF.Perform(aF, aStartPoint, anInfBound, aSupBound);
 
           if(!aSRF.IsDone())
           {
@@ -3205,7 +3212,8 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aPrePointExist = PrePoint_NONE;
 
           FuncPreciseSeam aF(theQSurf, thePSurf, Standard_True);
-          math_Vector aTol(1, 3), aStartPoint(1,3);
+          math_Vector aTol(1, 3), aStartPoint(1,3),
+                      anInfBound(1, 3), aSupBound(1, 3);
           
           //Parameters on parametric surface
           Standard_Real aUp = 0.0, aVp = 0.0;
@@ -3224,9 +3232,15 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           aStartPoint(1) = 0.5*(aU0 + aUp);
           aStartPoint(2) = 0.5*(aV0 + aVp);
           aStartPoint(3) = 0.5*(aVQuadRef + V1);
+          anInfBound(1) = thePSurf->FirstUParameter();
+          anInfBound(2) = thePSurf->FirstVParameter();
+          anInfBound(3) = theQSurf->FirstVParameter();
+          aSupBound(1) = thePSurf->LastUParameter();
+          aSupBound(2) = thePSurf->LastVParameter();
+          aSupBound(3) = theQSurf->LastVParameter();
 
           math_FunctionSetRoot aSRF(aF, aTol);
-          aSRF.Perform(aF, aStartPoint);
+          aSRF.Perform(aF, aStartPoint, anInfBound, aSupBound);
 
           if(!aSRF.IsDone())
           {
