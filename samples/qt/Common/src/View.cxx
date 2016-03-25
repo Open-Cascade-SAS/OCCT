@@ -16,6 +16,10 @@
 #include <QRubberBand>
 #include <QMdiSubWindow>
 #include <QStyleFactory>
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && QT_VERSION < 0x050000
+  #include <QX11Info>
+#endif
+
 
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
@@ -50,6 +54,9 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
   myRaytraceActions( 0 ),
   myBackMenu( NULL )
 {
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && QT_VERSION < 0x050000
+  XSynchronize(x11Info().display(),true);
+#endif
   myContext = theContext;
 
   myXmin = 0;
