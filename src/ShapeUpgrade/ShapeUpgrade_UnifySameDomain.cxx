@@ -86,6 +86,8 @@
 #include <gp_Circ.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepClass_FaceClassifier.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <gp_Vec2d.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,MMgt_TShared)
 
@@ -95,6 +97,42 @@ struct SubSequenceOfEdges
   TopoDS_Edge UnionEdges;
 };
 
+static Standard_Boolean IsLikeSeam(const TopoDS_Edge& anEdge,
+                                   const TopoDS_Face& aFace,
+                                   const Handle(Geom_Surface)& aBaseSurface)
+{
+  if (!aBaseSurface->IsUPeriodic() && !aBaseSurface->IsVPeriodic())
+    return Standard_False;
+
+  BRepAdaptor_Curve2d BAcurve2d(anEdge, aFace);
+  gp_Pnt2d FirstPoint, LastPoint;
+  gp_Vec2d FirstDir, LastDir;
+  BAcurve2d.D1(BAcurve2d.FirstParameter(), FirstPoint, FirstDir);
+  BAcurve2d.D1(BAcurve2d.LastParameter(),  LastPoint,  LastDir);
+  Standard_Real Length = FirstDir.Magnitude();
+  if (Length <= gp::Resolution())
+    return Standard_False;
+  else
+    FirstDir /= Length;
+  Length = LastDir.Magnitude();
+  if (Length <= gp::Resolution())
+    return Standard_False;
+  else
+    LastDir /= Length;
+  
+  Standard_Real Tol = 1.e-7;
+  if (aBaseSurface->IsUPeriodic() &&
+    (Abs(FirstDir.X()) < Tol) &&
+    (Abs(LastDir.X()) < Tol))
+    return Standard_True;
+
+  if (aBaseSurface->IsVPeriodic() &&
+    (Abs(FirstDir.Y()) < Tol) &&
+    (Abs(LastDir.Y()) < Tol))
+    return Standard_True;
+
+  return Standard_False;
+}
 
 //=======================================================================
 //function : AddOrdinaryEdges
@@ -641,11 +679,11 @@ static Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& aChain, Topo
       }
       if (Abs(FP) < Precision::PConfusion())
       {
-      B.MakeEdge (E,Cir,Precision::Confusion());
-      B.Add(E,V1);
-      B.Add(E,V2);
-      E.Orientation(FE.Orientation());
-    }
+        B.MakeEdge (E,Cir, Precision::Confusion());
+        B.Add(E,V1);
+        B.Add(E,V2);
+        E.Orientation(FE.Orientation());
+      }
       else
       {
         GC_MakeCircle MC1 (adef.Value(FP), adef.Value((FP + LP) * 0.5), adef.Value(LP));
@@ -869,7 +907,7 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
           if (!aMapVE.Contains(aV))
             aMapVE.Add(aV, TopTools_ListOfShape());
           aMapVE.ChangeFromKey(aV).Append(anEdge);
-        }
+  }
       }
     }
   }
@@ -891,7 +929,7 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
 
     // make chain for unite
     TopTools_SequenceOfShape aChain;
-    aChain.Append(edge);
+        aChain.Append(edge);
     aUsedEdges.Add(edge);
     TopoDS_Vertex V[2];
     TopExp::Vertices(edge, V[0], V[1], Standard_True);
@@ -912,7 +950,7 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
           if (!aUsedEdges.Contains(edge))
           {
             if (j == 0)
-              aChain.Prepend(edge);
+        aChain.Prepend(edge);
             else
               aChain.Append(edge);
             aUsedEdges.Add(edge);
@@ -921,17 +959,17 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
             V[j] = (VF2.IsSame(V[j]) ? VL2 : VF2);
             isAdded = Standard_True;
             break;
-          }
-        }
       }
+    }
+  }
     }
 
     if (aChain.Length() < 2)
       continue;
 
-    Standard_Boolean IsClosed = Standard_False;
+  Standard_Boolean IsClosed = Standard_False;
     if (V[0].IsSame ( V[1] ))
-      IsClosed = Standard_True;
+    IsClosed = Standard_True;
 
     // split chain by vertices at which merging is not possible
     NCollection_Sequence<SubSequenceOfEdges> aOneSeq;
@@ -1199,6 +1237,10 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             continue;
 
           if (IsSameDomain(aFace,anCheckedFace)) {
+
+            // hotfix for 27271: prevent merging along periodic direction.
+            if (IsLikeSeam(edge, aFace, aBaseSurface))
+              continue;
 
             // replacing pcurves
             TopoDS_Face aMockUpFace;
@@ -1483,11 +1525,11 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             }
             else
             {
-              Handle(ShapeExtend_WireData) sbwd =
+            Handle(ShapeExtend_WireData) sbwd =
                 new ShapeExtend_WireData (aWire);
-              ShapeFix_WireSegment seg ( sbwd, TopAbs_REVERSED );
-              wires.Append(seg);
-            }
+            ShapeFix_WireSegment seg ( sbwd, TopAbs_REVERSED );
+            wires.Append(seg);
+          }
           }
 
           CompShell.DispatchWires ( parts,wires );
