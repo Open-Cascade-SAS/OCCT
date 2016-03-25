@@ -16,3 +16,5 @@ don result
 smallview; l; fit
 bopcheck result
 checknbshapes result -m UnifySameDomain -face 14 -edge 28
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1208,8 +1208,25 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
               anAvoidFaces.Add(aLF.Last());
             }
             for (i = 1; i <= faces.Length(); ) {
-              if (anAvoidFaces.Contains(faces(i)))
+              if (anAvoidFaces.Contains(faces(i))) {
+                // update the boundaries of merged area, for that
+                // remove from 'edges' the edges of this face and add to 'edges' 
+                // the edges of this face that were not present in 'edges' before
+                TopExp_Explorer ex(faces(i), TopAbs_EDGE);
+                for (; ex.More(); ex.Next()) {
+                  TopoDS_Shape aE = ex.Current();
+                  Standard_Integer j;
+                  for (j = 1; j <= edges.Length(); j++) {
+                    if (edges(j).IsSame(aE))
+                      break;
+                  }
+                  if (j <= edges.Length())
+                    edges.Remove(j);
+                  else
+                    edges.Append(aE);
+                }
                 faces.Remove(i);
+              }
               else
                 i++;
             }
