@@ -38,7 +38,7 @@ static Standard_Boolean comp(const gp_XY& theA,
   {
     if (theA.X() == theB.X())
     {
-      if (theA.Y() <= theB.Y())
+      if (theA.Y() < theB.Y())
         return Standard_True;
     }
   }

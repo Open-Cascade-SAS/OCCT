@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC26929"
+puts "============"
+puts ""
+#############################################################################################
+## Extrema_ECC hang/crash in ShapeSplitter
+#############################################################################################
+cpulimit 100
+
+restore [locate_data_file OCC26629-face.brep] aF
+restore [locate_data_file OCC26629-edge.brep] aE
+
+pload MODELING
+
+# Hang check.
+dchrono cr reset
+dchrono cr start
+
+set ss ""
+foreach s [explode aE e] {set ss "$ss aF $s"}
+eval splitshape result aF $ss
+
+dchrono cr stop
+
+set max_time 20.0
+set log [dchrono cr show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $log full z
+
+
+if { $z > ${max_time} } {
+    puts "Elapsed time of BRepFeat_SplitShape is more than ${max_time} seconds - Error"
+} else {
+    puts "Elapsed time of BRepFeat_SplitShape is less than ${max_time} seconds - OK"
+}
+
+# Check result validity.
+checkshape result
+
+# Visual check.
+set 2dviewer 1
