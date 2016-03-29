@@ -1,22 +1,25 @@
 puts "============"
-puts "OCC27282"
+puts "OCC27302"
 puts "============"
 puts ""
 ###############################
-## [Regression to 6.9.1] smesh/bugs_00/A6: Cut produces an empty shape
+## Invalid curves number in intersection result
 ###############################
 
-set MaxTol 4.8106952270863644e-006
+set MaxTol 9.9579577516847715e-005
 set GoodNbCurv 1
 
-restore [locate_data_file bug27282_cmpd.brep] a
+restore [locate_data_file CTO900_pro12913a.rle] a
+restore [locate_data_file CTO900_pro12913b.rle] b
+
 explode a f
+explode b f
 
 smallview
-don a_2 a_5
+don a_34 b_9
 fit
 
-set log [bopcurves a_2 a_5 -2d]
+set log [bopcurves a_34 b_9 -2d]
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
 
@@ -41,5 +44,5 @@ if {${NbCurv} != ${GoodNbCurv}} {
     }
   }
 } else {
-  checklength c_1 -l 833.56846557106064
+  checklength c_1 -l 86.536841230136204
 }

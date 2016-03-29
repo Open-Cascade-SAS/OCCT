@@ -45,8 +45,12 @@ class IntPatch_PointLine : public IntPatch_Line
 
 public:
 
-  //! Adds a vertex in the list.
-  Standard_EXPORT virtual void AddVertex (const IntPatch_Point& Pnt) = 0;
+  //! Adds a vertex in the list. If theIsPrepend == TRUE the new
+  //! vertex will be added before the first element of vertices sequence.
+  //! Otherwise, to the end of the sequence
+  Standard_EXPORT virtual
+            void AddVertex (const IntPatch_Point& Pnt,
+                            const Standard_Boolean theIsPrepend = Standard_False) = 0;
 
   //! Returns the number of intersection points.
   Standard_EXPORT virtual Standard_Integer NbPnts() const = 0;

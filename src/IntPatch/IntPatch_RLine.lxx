@@ -32,9 +32,13 @@ inline const Handle(Adaptor2d_HCurve2d)& IntPatch_RLine::ArcOnS2() const
 //-- Il faut mettre cet include ici , car l include fait un define Handle(Adaptor2d_HCurve2d) ...
 //-- et en fin de fichier un undef Handle(Adaptor2d_HCurve2d) ... 
 
-inline void IntPatch_RLine::AddVertex (const IntPatch_Point& Pnt)
+inline void IntPatch_RLine::AddVertex (const IntPatch_Point& thePnt,
+                                       const Standard_Boolean theIsPrepend)
 {
-  svtx.Append(Pnt);
+  if(theIsPrepend)
+    svtx.Prepend(thePnt);
+  else
+    svtx.Append(thePnt);
 }
 
 inline void IntPatch_RLine::Replace (const Standard_Integer Index,

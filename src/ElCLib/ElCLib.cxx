@@ -48,20 +48,25 @@ static Standard_Real PIPI = M_PI + M_PI;
 
 //=======================================================================
 //function : InPeriod
-//purpose  : 
+//purpose  : Value theULast is never returned.
 //=======================================================================
-
-Standard_Real  ElCLib::InPeriod(const Standard_Real U, 
-				const Standard_Real UFirst, 
-				const Standard_Real ULast)
+Standard_Real  ElCLib::InPeriod(const Standard_Real theU, 
+                                const Standard_Real theUFirst, 
+                                const Standard_Real theULast)
 {
-  Standard_Real u = U, period = ULast - UFirst;
-  Standard_Real Eps = Epsilon(period);
+  if( Precision::IsInfinite(theU) ||
+      Precision::IsInfinite(theUFirst) ||
+      Precision::IsInfinite(theULast))
+  {//In order to avoid FLT_Overflow exception
+    return theU;
+  }
 
-  while (Eps < (UFirst-u)) u += period;
-  while (Eps > (ULast -u)) u -= period;
-  if ( u < UFirst) u = UFirst;
-  return u;
+  const Standard_Real aPeriod = theULast - theUFirst;
+
+  if(aPeriod < Epsilon(theULast))
+    return theU;
+
+  return Max(theUFirst, theU + aPeriod*Ceiling((theUFirst-theU)/aPeriod));
 }
 
 //=======================================================================
