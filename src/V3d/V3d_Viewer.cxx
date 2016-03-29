@@ -48,8 +48,7 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
                         const V3d_TypeOfShadingModel  theShadingModel,
                         const V3d_TypeOfUpdate        theUpdateMode,
                         const Standard_Boolean        theComputedMode,
-                        const Standard_Boolean        theDefaultComputedMode,
-                        const V3d_TypeOfSurfaceDetail theSurfaceDetail)  
+                        const Standard_Boolean        theDefaultComputedMode)
 :myNextCount (-1),
 myDriver (theDriver),
 myName (TCollection_ExtendedString (theName)),
@@ -78,7 +77,6 @@ myZLayerGenId (1, IntegerLast())
   SetDefaultBackgroundColor (theViewBackground);
   SetDefaultVisualization (theVisualization);
   SetDefaultShadingModel (theShadingModel);
-  SetDefaultSurfaceDetail (theSurfaceDetail); 
   SetDefaultAngle (M_PI / 2.);
   SetDefaultTypeOfView (V3d_ORTHOGRAPHIC);
 
@@ -319,11 +317,6 @@ void V3d_Viewer::SetDefaultShadingModel(const V3d_TypeOfShadingModel Type) {
   MyShadingModel = Type ;
 }
 
-void V3d_Viewer::SetDefaultSurfaceDetail(const V3d_TypeOfSurfaceDetail Type) {
-
-  MySurfaceDetail = Type ;
-}
-
 void V3d_Viewer::SetDefaultAngle(const Quantity_PlaneAngle Angle) {
   MyDefaultAngle = Angle;
 }
@@ -370,10 +363,6 @@ V3d_TypeOfVisualization V3d_Viewer::DefaultVisualization() const {
 
 V3d_TypeOfShadingModel V3d_Viewer::DefaultShadingModel() const {
   return MyShadingModel ;
-}
-
-V3d_TypeOfSurfaceDetail V3d_Viewer::DefaultSurfaceDetail() const {
-  return MySurfaceDetail ;
 }
 
 Quantity_PlaneAngle V3d_Viewer::DefaultAngle() const {

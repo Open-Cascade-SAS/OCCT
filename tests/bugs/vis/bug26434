@@ -1,0 +1,42 @@
+puts "============"
+puts "CR26434"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - Textured objects should have priority over the environment mapping"
+##########################################################################################
+
+pload MODELING VISUALIZATION
+
+vclear
+vclose all
+
+vinit View1
+
+vsetdispmode 1
+
+box b0 -1 -1 -1 1 2 3
+box b1 1 1 1 1 2 3
+
+vdisplay b0 b1
+vzbufftrihedron
+
+vfit
+
+vdump $imagedir/${casename}_0.png
+
+vtexture b1 0
+
+vdump $imagedir/${casename}_1.png
+
+puts "Checking that texture have priority over the environment mapping"
+vtextureenv on 0
+
+vdump $imagedir/${casename}_2.png
+
+vcaps -ffp 0
+vmoveto 100 300
+vmoveto 0 0
+
+vdump $imagedir/${casename}_3.png

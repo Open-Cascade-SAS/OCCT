@@ -2166,7 +2166,7 @@ Standard_Boolean OpenGl_View::updateRaytraceEnvironmentMap (const Handle(OpenGl_
     {
       aResult &= theGlContext->BindProgram (aProgram);
 
-      if (!myTextureEnv.IsNull() && mySurfaceDetail != Graphic3d_TOD_NONE)
+      if (!myTextureEnv.IsNull())
       {
         myTextureEnv->Bind (theGlContext,
           GL_TEXTURE0 + OpenGl_RT_EnvironmentMapTexture);

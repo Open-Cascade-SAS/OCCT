@@ -31,7 +31,6 @@ V3d_TypeOfPickCamera.hxx
 V3d_TypeOfPickLight.hxx
 V3d_TypeOfRepresentation.hxx
 V3d_TypeOfShadingModel.hxx
-V3d_TypeOfSurfaceDetail.hxx
 V3d_TypeOfUpdate.hxx
 V3d_TypeOfView.hxx
 V3d_TypeOfVisualization.hxx

@@ -34,7 +34,6 @@
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
-#include <Graphic3d_TypeOfSurfaceDetail.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 
@@ -308,16 +307,6 @@ public:
   //! Sets shading model of the view.
   virtual void SetShadingModel (const Graphic3d_TypeOfShadingModel theModel) Standard_OVERRIDE { myShadingModel = theModel; }
 
-  //! Returns surface detail type of the view.
-  virtual Graphic3d_TypeOfSurfaceDetail SurfaceDetailType() const Standard_OVERRIDE { return mySurfaceDetail; }
-
-  //! Sets surface detail type of the view.
-  virtual void SetSurfaceDetailType (const Graphic3d_TypeOfSurfaceDetail theType) Standard_OVERRIDE
-  {
-    mySurfaceDetail          = theType;
-    myToUpdateEnvironmentMap = Standard_True;
-  }
-
   //! Return backfacing model used for the view.
   virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const Standard_OVERRIDE { return myBackfacing; }
 
@@ -562,7 +551,6 @@ protected:
   Standard_Boolean                myAntiAliasing;
   Standard_Boolean                myCulling;
   Graphic3d_TypeOfShadingModel    myShadingModel;
-  Graphic3d_TypeOfSurfaceDetail   mySurfaceDetail;
   Graphic3d_TypeOfBackfacingModel myBackfacing;
   TEL_COLOUR                      myBgColor;
   OPENGL_FOG                      myFog;

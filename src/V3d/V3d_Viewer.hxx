@@ -48,7 +48,6 @@
 #include <V3d_ListOfTransient.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfShadingModel.hxx>
-#include <V3d_TypeOfSurfaceDetail.hxx>
 #include <V3d_TypeOfUpdate.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
@@ -91,7 +90,7 @@ public:
   //! This limitation might be addressed in some future OCCT releases.
   //! If the size of the view is <= 0
   //! Warning: Client must creates a graphic driver
-  Standard_EXPORT V3d_Viewer(const Handle(Graphic3d_GraphicDriver)& theDriver, const Standard_ExtString theName, const Standard_CString theDomain = "", const Quantity_Length theViewSize = 1000.0, const V3d_TypeOfOrientation theViewProj = V3d_XposYnegZpos, const Quantity_NameOfColor theViewBackground = Quantity_NOC_GRAY30, const V3d_TypeOfVisualization theVisualization = V3d_ZBUFFER, const V3d_TypeOfShadingModel theShadingModel = V3d_GOURAUD, const V3d_TypeOfUpdate theUpdateMode = V3d_WAIT, const Standard_Boolean theComputedMode = Standard_True, const Standard_Boolean theDefaultComputedMode = Standard_True, const V3d_TypeOfSurfaceDetail theSurfaceDetail = V3d_TEX_NONE);
+  Standard_EXPORT V3d_Viewer(const Handle(Graphic3d_GraphicDriver)& theDriver, const Standard_ExtString theName, const Standard_CString theDomain = "", const Quantity_Length theViewSize = 1000.0, const V3d_TypeOfOrientation theViewProj = V3d_XposYnegZpos, const Quantity_NameOfColor theViewBackground = Quantity_NOC_GRAY30, const V3d_TypeOfVisualization theVisualization = V3d_ZBUFFER, const V3d_TypeOfShadingModel theShadingModel = V3d_GOURAUD, const V3d_TypeOfUpdate theUpdateMode = V3d_WAIT, const Standard_Boolean theComputedMode = Standard_True, const Standard_Boolean theDefaultComputedMode = Standard_True);
   
   //! creates a view in the viewer according to its
   //! default parameters.
@@ -179,9 +178,6 @@ public:
   //! Gives the default type of SHADING.
   Standard_EXPORT void SetDefaultShadingModel (const V3d_TypeOfShadingModel Type);
   
-  //! Gives the default type of texture mapping.
-  Standard_EXPORT void SetDefaultSurfaceDetail (const V3d_TypeOfSurfaceDetail Type);
-  
   Standard_EXPORT void SetDefaultAngle (const Quantity_PlaneAngle Angle);
   
   //! Defines the mode of regenerating the views making
@@ -239,9 +235,6 @@ public:
   
   //! Returns the default type of Shading
   Standard_EXPORT V3d_TypeOfShadingModel DefaultShadingModel() const;
-  
-  //! Returns the default type of texture mapping
-  Standard_EXPORT V3d_TypeOfSurfaceDetail DefaultSurfaceDetail() const;
   
   Standard_EXPORT Quantity_PlaneAngle DefaultAngle() const;
   
@@ -489,7 +482,6 @@ private:
   V3d_TypeOfOrientation MyViewProj;
   V3d_TypeOfVisualization MyVisualization;
   V3d_TypeOfShadingModel MyShadingModel;
-  V3d_TypeOfSurfaceDetail MySurfaceDetail;
   Quantity_PlaneAngle MyDefaultAngle;
   V3d_TypeOfView MyDefaultTypeOfView;
   Graphic3d_RenderingParams myDefaultRenderingParams;

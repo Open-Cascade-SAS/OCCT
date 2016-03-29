@@ -159,7 +159,6 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
   SetAxis (0.,0.,0.,1.,1.,1.);
   SetVisualization (theViewer->DefaultVisualization());
   SetShadingModel (theViewer->DefaultShadingModel());
-  SetSurfaceDetail (theViewer->DefaultSurfaceDetail());
   SetTwist (0.);
   SetAt (0.,0.,0.);
   SetProj (theViewer->DefaultViewProj());
@@ -623,15 +622,6 @@ void V3d_View::SetAxis(const Standard_Real X, const Standard_Real Y, const Stand
 void V3d_View::SetShadingModel (const V3d_TypeOfShadingModel theShadingModel)
 {
   myView->SetShadingModel (static_cast<Graphic3d_TypeOfShadingModel> (theShadingModel));
-}
-
-//=============================================================================
-//function : SetSurfaceDetail
-//purpose  :
-//=============================================================================
-void V3d_View::SetSurfaceDetail (const V3d_TypeOfSurfaceDetail theSurfaceDetail)
-{
-  myView->SetSurfaceDetailType (static_cast<Graphic3d_TypeOfSurfaceDetail> (theSurfaceDetail));
 }
 
 //=============================================================================
@@ -2419,15 +2409,6 @@ Standard_Real V3d_View::Twist() const
 V3d_TypeOfShadingModel V3d_View::ShadingModel() const
 {
   return static_cast<V3d_TypeOfShadingModel> (myView->ShadingModel());
-}
-
-//=============================================================================
-//function : SurfaceDetail
-//purpose  :
-//=============================================================================
-V3d_TypeOfSurfaceDetail V3d_View::SurfaceDetail() const
-{
-  return static_cast<V3d_TypeOfSurfaceDetail> (myView->SurfaceDetailType());
 }
 
 //=============================================================================

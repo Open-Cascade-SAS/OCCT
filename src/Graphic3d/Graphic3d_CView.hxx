@@ -40,7 +40,6 @@
 #include <Graphic3d_TypeOfAnswer.hxx>
 #include <Graphic3d_TypeOfBackfacingModel.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
-#include <Graphic3d_TypeOfSurfaceDetail.hxx>
 #include <Graphic3d_TypeOfVisualization.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
@@ -433,12 +432,6 @@ public:
 
   //! Sets shading model of the view.
   virtual void SetShadingModel (const Graphic3d_TypeOfShadingModel theModel) = 0;
-
-  //! Returns surface detail type of the view.
-  virtual Graphic3d_TypeOfSurfaceDetail SurfaceDetailType() const = 0;
-
-  //! Sets surface detail type of the view.
-  virtual void SetSurfaceDetailType (const Graphic3d_TypeOfSurfaceDetail theType) = 0;
 
   //! Return backfacing model used for the view.
   virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const = 0;

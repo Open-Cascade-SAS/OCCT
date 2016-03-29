@@ -791,7 +791,13 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
           const Standard_Boolean isLightOnFace = isLightOn
                                               && (aTexture.IsNull()
                                                || aTexture->GetParams()->IsModulate());
-          aCtx->ShaderManager()->BindProgram (anAspectFace, aTexture, isLightOnFace, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
+          const Standard_Boolean toEnableEnvMap = (!aTexture.IsNull() && (aTexture == theWorkspace->EnvironmentTexture()));
+          aCtx->ShaderManager()->BindProgram (anAspectFace,
+                                              aTexture,
+                                              isLightOnFace,
+                                              hasVertColor,
+                                              toEnableEnvMap,
+                                              anAspectFace->ShaderProgramRes (aCtx));
           break;
         }
       }

@@ -23,7 +23,6 @@
 #define OPENGL_NS_ANTIALIASING (1<<5)
 #define OPENGL_NS_2NDPASSNEED  (1<<6)
 #define OPENGL_NS_2NDPASSDO    (1<<7)
-#define OPENGL_NS_FORBIDSETTEX (1<<8)
-#define OPENGL_NS_WHITEBACK    (1<<9)
+#define OPENGL_NS_WHITEBACK    (1<<8)
 
 #endif //_OpenGl_NamedStatus_Header

@@ -1015,11 +1015,10 @@ void View::onEnvironmentMap()
     Handle(Graphic3d_TextureEnv) aTexture = new Graphic3d_TextureEnv( fileName.toLatin1().data() );
 
     myView->SetTextureEnv (aTexture);
-    myView->SetSurfaceDetail (V3d_TEX_ENVIRONMENT);
   }
   else
   {
-    myView->SetSurfaceDetail (V3d_TEX_NONE);
+    myView->SetTextureEnv (Handle(Graphic3d_TextureEnv)());
   }
   
   myView->Redraw();

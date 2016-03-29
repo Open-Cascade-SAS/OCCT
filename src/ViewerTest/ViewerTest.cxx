@@ -3201,8 +3201,6 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
   Standard_Integer aPreviousMode = 0;
 
-  ViewerTest::CurrentView()->SetSurfaceDetail (V3d_TEX_ALL);
-
   TCollection_AsciiString aShapeName (theArgv[1]);
   Handle(AIS_InteractiveObject) anIO;
 

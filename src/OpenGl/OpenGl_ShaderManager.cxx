@@ -853,25 +853,6 @@ const OpenGl_MaterialState* OpenGl_ShaderManager::MaterialState (const Handle(Op
   return &myMaterialStates.Find (theProgram);
 }
 
-// =======================================================================
-// function : SurfaceDetailState
-// purpose  : Returns current state of OCCT surface detail
-// =======================================================================
-const OpenGl_SurfaceDetailState& OpenGl_ShaderManager::SurfaceDetailState() const
-{
-  return mySurfaceDetailState;
-}
-
-// =======================================================================
-// function : UpdateSurfaceDetailStateTo
-// purpose  : Updates state of OCCT surface detail
-// =======================================================================
-void OpenGl_ShaderManager::UpdateSurfaceDetailStateTo (const Graphic3d_TypeOfSurfaceDetail theDetail)
-{
-  mySurfaceDetailState.Set (theDetail);
-  mySurfaceDetailState.Update();
-}
-
 namespace
 {
 

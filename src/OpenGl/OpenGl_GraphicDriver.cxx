@@ -101,6 +101,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   Graphic3d_ZLayerSettings anUnderlaySettings;
   anUnderlaySettings.Flags = 0;
   anUnderlaySettings.IsImmediate = false;
+  anUnderlaySettings.UseEnvironmentTexture = false;
   myLayerIds.Add             (Graphic3d_ZLayerId_BotOSD);
   myLayerSeq.Append          (Graphic3d_ZLayerId_BotOSD);
   myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_BotOSD, anUnderlaySettings);
@@ -133,6 +134,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   Graphic3d_ZLayerSettings anOsdSettings;
   anOsdSettings.Flags = 0;
   anOsdSettings.IsImmediate = true;
+  anOsdSettings.UseEnvironmentTexture = false;
   myLayerIds.Add             (Graphic3d_ZLayerId_TopOSD);
   myLayerSeq.Append          (Graphic3d_ZLayerId_TopOSD);
   myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_TopOSD, anOsdSettings);

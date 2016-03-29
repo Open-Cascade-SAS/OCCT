@@ -47,8 +47,7 @@ Handle(V3d_Viewer) DocumentCommon::Viewer (const Standard_ExtString theName,
                          V3d_GOURAUD,
                          V3d_WAIT,
                          theComputedMode,
-                         theDefaultComputedMode,
-                         V3d_TEX_NONE);
+                         theDefaultComputedMode);
 }
 
 DocumentCommon::DocumentCommon( const int theIndex, ApplicationCommonWindow* app )

@@ -839,11 +839,6 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
             aBuilder->SetInvalidColor(Quantity_NOC_BLACK);
             aBuilder->SetTextureCoords(aScaleMap);
             aMesh->AddBuilder(aBuilder, Standard_True);
-
-            //set viewer to display texures
-            const Handle(V3d_Viewer)& aViewer = anIC->CurrentViewer();
-            for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
-                 aViewer->ActiveView()->SetSurfaceDetail(V3d_TEX_ALL);
           }
 
           aMesh->GetDrawer()->SetBoolean ( MeshVS_DA_ColorReflection, Standard_Boolean(aReflection) );

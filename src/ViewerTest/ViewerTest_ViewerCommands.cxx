@@ -4473,21 +4473,7 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
   }
   else if (argc < 2)
   {
-    di << "Use: vzlayer ";
-    di << " add/del/get/settings/enable/disable [id]\n";
-    di << " add - add new z layer to viewer and print its id\n";
-    di << " del - del z layer by its id\n";
-    di << " get - print sequence of z layers in increasing order of their overlay level\n";
-    di << " settings - print status of z layer settings\n";
-    di << " enable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    enables given setting for the z layer\n";
-    di << " enable (p[ositive]offset/n[egative]offset) \n    enables given setting for the z layer\n";
-    di << " disable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    disables given setting for the z layer\n";
-    di << "\nWhere id is the layer identificator\n";
-    di << "\nExamples:\n";
-    di << "   vzlayer add\n";
-    di << "   vzlayer enable poffset 1\n";
-    di << "   vzlayer disable depthtest 1\n";
-    di << "   vzlayer del 1\n";
+    di << di.PrintHelp (argv[0]);
     return 1;
   }
 
@@ -4625,6 +4611,10 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
     {
       aSettings.SetDepthOffsetNegative();
     }
+    else if (aSubOp == "textureenv")
+    {
+      aSettings.UseEnvironmentTexture = true;
+    }
 
     aViewer->SetZLayerSettings (anId, aSettings);
   }
@@ -4661,6 +4651,10 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
     else if (aSubOp == "depthoffset" || aSubOp == "offset")
     {
       aSettings.DisableSetting (Graphic3d_ZLayerDepthOffset);
+    }
+    else if (aSubOp == "textureenv")
+    {
+      aSettings.UseEnvironmentTexture = false;
     }
 
     aViewer->SetZLayerSettings (anId, aSettings);
@@ -6572,11 +6566,9 @@ static int VTextureEnv (Draw_Interpretor& /*theDI*/, Standard_Integer theArgNb, 
         );
     }
     aView->SetTextureEnv(aTexEnv);
-    aView->SetSurfaceDetail(V3d_TEX_ENVIRONMENT);
   }
   else // Disabling environment mapping
   {
-    aView->SetSurfaceDetail(V3d_TEX_NONE);
     Handle(Graphic3d_TextureEnv) aTexture;
     aView->SetTextureEnv(aTexture); // Passing null handle to clear the texture data
   }
@@ -6978,40 +6970,6 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
 
   theDi << theArgVec[0] << ": invalid command. Type help for more information.\n";
   return 1;
-}
-
-//===============================================================================================
-//function : VSetTextureMode
-//purpose  :
-//===============================================================================================
-static int VSetTextureMode (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
-{
-  if (theArgsNb < 3)
-  {
-    theDi << theArgVec[0] << ": insufficient command arguments. Type help for more information.\n";
-    return 1;
-  }
-
-  TCollection_AsciiString aViewName (theArgVec[1]);
-  if (!ViewerTest_myViews.IsBound1 (aViewName))
-  {
-    theDi << theArgVec[0] << ": view is not found.\n";
-    return 1;
-  }
-
-  const Handle(V3d_View)& aView = ViewerTest_myViews.Find1 (aViewName);
-  switch (atoi (theArgVec[2]))
-  {
-    case 0: aView->SetSurfaceDetail (V3d_TEX_NONE); break;
-    case 1: aView->SetSurfaceDetail (V3d_TEX_ENVIRONMENT); break;
-    case 2: aView->SetSurfaceDetail (V3d_TEX_ALL); break;
-    default:
-      theDi << theArgVec[0] << ": invalid mode.\n";
-      return 1;
-  }
-
-  aView->Redraw();
-  return 0;
 }
 
 //===============================================================================================
@@ -9023,7 +8981,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " settings - print status of z layer settings\n"
     " enable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    enables given setting for the z layer\n"
     " enable (p[ositive]offset/n[egative]offset) \n    enables given setting for the z layer\n"
+    " enable textureenv \n    enables environment texture mapping\n"
     " disable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    disables given setting for the z layer\n"
+    " disable textureenv \n    disables environment texture mapping\n"
     "\nWhere id is the layer identificator\n"
     "\nExamples:\n"
     "   vzlayer add\n"
@@ -9278,13 +9238,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "  change <plane_name> capping hatch on/off/<id> - set hatching mask.\n"
     "  please use VSetTextureMode command to enable texture rendering in view.\n"
     , __FILE__, VClipPlane, group);
-  theCommands.Add("vsettexturemode", "vsettexturemode view_name mode \n"
-    "  mode can be:\n"
-    "  0 - no textures enabled in view.\n"
-    "  1 - only environment textures enabled.\n"
-    "  2 - all textures enabled.\n"
-    "  this command sets texture details mode for the specified view.\n"
-    , __FILE__, VSetTextureMode, group);
   theCommands.Add("vdefaults",
                "vdefaults [-absDefl value]"
        "\n\t\t:           [-devCoeff value]"

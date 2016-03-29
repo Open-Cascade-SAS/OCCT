@@ -86,7 +86,6 @@ vclipplane change pb capping on
 vclipplane change pb capping color 1.0 0.8 0.0
 vclipplane set    pb object b
 
-vsettexturemode Driver1/Viewer1/View1 2
 vclipplane change pa capping texname $aHatch
 vclipplane change pa capping texscale 0.05 -0.05
 vclipplane change pb capping texname $aHatch

@@ -932,7 +932,12 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
     aContext->ProjectionState.SetCurrent (myCamera->ProjectionStereoRightF());
     aContext->ApplyProjectionMatrix();
   }
+
+  myWorkspace->SetEnvironmentTexture (myTextureEnv);
+
   renderScene (theProjection, theOutputFBO, theToDrawImmediate);
+
+  myWorkspace->SetEnvironmentTexture (Handle(OpenGl_Texture)());
 
   // ===============================
   //      Step 4: Trihedron
@@ -1136,7 +1141,14 @@ void OpenGl_View::renderTrihedron (const Handle(OpenGl_Workspace) &theWorkspace)
   // display global trihedron
   if (myToShowTrihedron)
   {
+    // disable environment texture
+    Handle(OpenGl_Texture) anEnvironmentTexture = theWorkspace->EnvironmentTexture();
+    theWorkspace->SetEnvironmentTexture (Handle(OpenGl_Texture)());
+
     myTrihedron.Render (theWorkspace);
+
+    // restore environment texture
+    theWorkspace->SetEnvironmentTexture (anEnvironmentTexture);
   }
   if (myToShowGradTrihedron)
   {
@@ -1283,84 +1295,49 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   // Clear status bitfields
   myWorkspace->NamedStatus &= ~(OPENGL_NS_2NDPASSNEED | OPENGL_NS_2NDPASSDO);
 
-  // Update state of surface detail level
-  myWorkspace->GetGlContext()->ShaderManager()->UpdateSurfaceDetailStateTo (mySurfaceDetail);
+  // First pass
+  renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
+  myWorkspace->DisableTexture();
 
-  // Added PCT for handling of textures
-  switch (mySurfaceDetail)
+  // Second pass
+  if (myWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED)
   {
-    case Graphic3d_TOD_NONE:
-      myWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-      myWorkspace->DisableTexture();
-      // Render the view
-      renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
-      break;
+    myWorkspace->NamedStatus |= OPENGL_NS_2NDPASSDO;
 
-    case Graphic3d_TOD_ENVIRONMENT:
-      myWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-      if (myRenderParams.Method != Graphic3d_RM_RAYTRACING)
-      {
-        myWorkspace->EnableTexture (myTextureEnv);
-      }
-      // Render the view
-      renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
-      myWorkspace->DisableTexture();
-      break;
+    // Remember OpenGl properties
+    GLint aSaveBlendDst = GL_ONE_MINUS_SRC_ALPHA, aSaveBlendSrc = GL_SRC_ALPHA;
+    GLint aSaveZbuffFunc;
+    GLboolean aSaveZbuffWrite;
+    glGetBooleanv (GL_DEPTH_WRITEMASK, &aSaveZbuffWrite);
+    glGetIntegerv (GL_DEPTH_FUNC, &aSaveZbuffFunc);
+  #if !defined(GL_ES_VERSION_2_0)
+    glGetIntegerv (GL_BLEND_DST, &aSaveBlendDst);
+    glGetIntegerv (GL_BLEND_SRC, &aSaveBlendSrc);
+  #endif
+    GLboolean wasZbuffEnabled = glIsEnabled (GL_DEPTH_TEST);
+    GLboolean wasBlendEnabled = glIsEnabled (GL_BLEND);
 
-    case Graphic3d_TOD_ALL:
-      // First pass
-      myWorkspace->NamedStatus &= ~OPENGL_NS_FORBIDSETTEX;
-      // Render the view
-      renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
-      myWorkspace->DisableTexture();
+    // Change the properties for second rendering pass
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable (GL_BLEND);
 
-      // Second pass
-      if (myWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED)
-      {
-        myWorkspace->NamedStatus |= OPENGL_NS_2NDPASSDO;
-        if (myRenderParams.Method != Graphic3d_RM_RAYTRACING)
-        {
-          myWorkspace->EnableTexture (myTextureEnv);
-        }
+    glDepthFunc (GL_EQUAL);
+    glDepthMask (GL_FALSE);
+    glEnable (GL_DEPTH_TEST);
 
-        // Remember OpenGl properties
-        GLint aSaveBlendDst = GL_ONE_MINUS_SRC_ALPHA, aSaveBlendSrc = GL_SRC_ALPHA;
-        GLint aSaveZbuffFunc;
-        GLboolean aSaveZbuffWrite;
-        glGetBooleanv (GL_DEPTH_WRITEMASK, &aSaveZbuffWrite);
-        glGetIntegerv (GL_DEPTH_FUNC, &aSaveZbuffFunc);
-      #if !defined(GL_ES_VERSION_2_0)
-        glGetIntegerv (GL_BLEND_DST, &aSaveBlendDst);
-        glGetIntegerv (GL_BLEND_SRC, &aSaveBlendSrc);
-      #endif
-        GLboolean wasZbuffEnabled = glIsEnabled (GL_DEPTH_TEST);
-        GLboolean wasBlendEnabled = glIsEnabled (GL_BLEND);
+    // Render the view
+    renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
+    myWorkspace->DisableTexture();
 
-        // Change the properties for second rendering pass
-        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable (GL_BLEND);
+    // Restore properties back
+    glBlendFunc (aSaveBlendSrc, aSaveBlendDst);
+    if (!wasBlendEnabled)
+      glDisable (GL_BLEND);
 
-        glDepthFunc (GL_EQUAL);
-        glDepthMask (GL_FALSE);
-        glEnable (GL_DEPTH_TEST);
-
-        myWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-
-        // Render the view
-        renderStructs (theProjection, theReadDrawFbo, theToDrawImmediate);
-        myWorkspace->DisableTexture();
-
-        // Restore properties back
-        glBlendFunc (aSaveBlendSrc, aSaveBlendDst);
-        if (!wasBlendEnabled)
-          glDisable (GL_BLEND);
-
-        glDepthFunc (aSaveZbuffFunc);
-        glDepthMask (aSaveZbuffWrite);
-        if (!wasZbuffEnabled)
-          glDisable (GL_DEPTH_FUNC);
-      }
-      break;
+    glDepthFunc (aSaveZbuffFunc);
+    glDepthMask (aSaveZbuffWrite);
+    if (!wasZbuffEnabled)
+      glDisable (GL_DEPTH_FUNC);
   }
 
   // Apply restored view matrix.

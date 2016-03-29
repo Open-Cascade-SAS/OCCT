@@ -160,7 +160,6 @@ Graphic3d_TypeOfReflection.hxx
 Graphic3d_TypeOfShaderObject.hxx
 Graphic3d_TypeOfShadingModel.hxx
 Graphic3d_TypeOfStructure.hxx
-Graphic3d_TypeOfSurfaceDetail.hxx
 Graphic3d_TypeOfTexture.hxx
 Graphic3d_TypeOfTextureFilter.hxx
 Graphic3d_TypeOfTextureMode.hxx

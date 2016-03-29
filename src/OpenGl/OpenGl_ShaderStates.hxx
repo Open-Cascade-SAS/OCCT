@@ -16,7 +16,6 @@
 #ifndef _OpenGl_State_HeaderFile
 #define _OpenGl_State_HeaderFile
 
-#include <Graphic3d_TypeOfSurfaceDetail.hxx>
 #include <InterfaceGraphic_tgl_all.hxx>
 #include <NCollection_List.hxx>
 #include <OpenGl_Element.hxx>
@@ -180,30 +179,6 @@ protected:
   Standard_Size                   myIndex;      //!< Current state index
   Standard_Size                   myNextIndex;  //!< Next    state index
   NCollection_List<Standard_Size> myStateStack; //!< Stack of previous states
-
-};
-
-//! Defines generic state of OCCT surface detail.
-class OpenGl_SurfaceDetailState : public OpenGl_StateInterface
-{
-public:
-
-  //! Creates new surface detail state.
-  OpenGl_SurfaceDetailState (const Graphic3d_TypeOfSurfaceDetail theDetail = Graphic3d_TOD_NONE)
-  : myDetail (theDetail)
-  {
-    //
-  }
-
-  //! Sets new surface detail.
-  void Set (const Graphic3d_TypeOfSurfaceDetail theDetail) { myDetail = theDetail; }
-
-  //! Returns surface detail.
-  Graphic3d_TypeOfSurfaceDetail Detail() const { return myDetail; }
-
-private:
-
-  Graphic3d_TypeOfSurfaceDetail myDetail; //!< OCCT surface detail
 
 };
 

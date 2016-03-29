@@ -546,10 +546,6 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
 
   TCollection_AsciiString anOldName = ViewerTest::GetCurrentViewName();
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-  if (Draw::Atoi (argv[2]))
-  {
-    aViewer->SetDefaultSurfaceDetail (V3d_TEX_ALL);
-  }
   aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
   Handle(Aspect_Window) asp = ViewerTest::CurrentView()->Window();
   Handle(V3d_View) aNewView = aViewer->CreateView();

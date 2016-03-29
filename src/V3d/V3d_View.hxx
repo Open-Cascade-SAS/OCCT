@@ -75,7 +75,6 @@
 #include <V3d_TypeOfBackfacingModel.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfShadingModel.hxx>
-#include <V3d_TypeOfSurfaceDetail.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
 #include <V3d_TypeOfZclipping.hxx>
@@ -259,9 +258,6 @@ public:
 
   //! Defines the shading model for the visualization. Various models are available.
   Standard_EXPORT void SetShadingModel (const V3d_TypeOfShadingModel theShadingModel);
-
-  //! Selects the kind of rendering for texture mapping. No texture mapping by default.
-  Standard_EXPORT void SetSurfaceDetail (const V3d_TypeOfSurfaceDetail theSurfaceDetail);
 
   //! Sets the environment texture to use. No environment texture by default.
   Standard_EXPORT void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTexture);
@@ -720,8 +716,6 @@ public:
 
   //! Returns the current shading model.
   Standard_EXPORT V3d_TypeOfShadingModel ShadingModel() const;
-
-  Standard_EXPORT V3d_TypeOfSurfaceDetail SurfaceDetail() const;
 
   Standard_EXPORT Handle(Graphic3d_TextureEnv) TextureEnv() const;
 

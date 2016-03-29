@@ -971,3 +971,9 @@ Zoom persistent selection introduces a new structure *Graphic3d_TransformPers* f
 * Transformation matrix utilities from *OpenGl_Utils* namespace have been moved to *Graphic3d_TransformUtils* and *Graphic3d_TransformUtils.hxx* header respectively.
 * Matrix stack utilities from *OpenGl_Utils* namespace have been moved to *OpenGl_MatrixStack* class and *OpenGl_MatrixStack.hxx* header respectively.
 * *OpenGl_View* methods *Begin/EndTransformPersistence* have been removed. Please, use *Graphic3d_TransformPers::Apply()* instead to apply persistence to perspective and world-view projection matrices.
+
+@subsection Correction of texture mapping of objects
+
+Interaction of texture and environment texture is fixed. Textured objects have priority over the environment mapping.
+Redundant enumerations V3d_TypeOfSurface and Graphic3d_TypeOfSurface, class OpenGl_SurfaceDetailState, corresponding methods from Graphic3d_CView, OpenGl_ShaderManager, OpenGl_View, V3d_View, V3d_Viewer are deleted.
+Draw command VSetTextureMode is deleted.

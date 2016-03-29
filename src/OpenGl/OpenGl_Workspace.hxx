@@ -236,6 +236,18 @@ public:
     return myFrontCulling;
   }
 
+  //! Sets a new environment texture.
+  void SetEnvironmentTexture (const Handle(OpenGl_Texture)& theTexture)
+  {
+    myEnvironmentTexture = theTexture;
+  }
+
+  //! Returns environment texture.
+  const Handle(OpenGl_Texture)& EnvironmentTexture() const
+  {
+    return myEnvironmentTexture;
+  }
+
 protected:
 
   void updateMaterial (const int theFlag);
@@ -280,6 +292,8 @@ protected: //! @name fields related to status
   TEL_POFFSET_PARAM PolygonOffset_applied; //!< Currently applied polygon offset.
 
   OpenGl_AspectFace myAspectFaceHl; //!< Hiddenline aspect
+
+  Handle(OpenGl_Texture) myEnvironmentTexture;
 
 public: //! @name type definition
 

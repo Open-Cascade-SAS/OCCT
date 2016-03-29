@@ -100,7 +100,6 @@ void OCC_2dView::OnInitialUpdate()
   myV2dView =((OCC_2dDoc*)GetDocument())->GetViewer2D()->CreateView();
   myV2dView->SetWindow(aWNTWindow);
   myV2dView->SetZClippingType(V3d_OFF);
-  myV2dView->SetSurfaceDetail(V3d_TEX_ALL);
   // initialize the grids dialogs
   TheRectangularGridDialog.Create(CRectangularGrid::IDD, NULL);
   TheCircularGridDialog.Create(CCircularGrid::IDD, NULL);

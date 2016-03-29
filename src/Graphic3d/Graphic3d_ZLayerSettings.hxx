@@ -35,7 +35,8 @@ struct Graphic3d_ZLayerSettings
       Flags (Graphic3d_ZLayerDepthTest
            | Graphic3d_ZLayerDepthWrite
            | Graphic3d_ZLayerDepthClear),
-      IsImmediate (false)
+      IsImmediate (false),
+      UseEnvironmentTexture (true)
   {}
 
   //! Returns true if theSetting is enabled.
@@ -76,10 +77,11 @@ struct Graphic3d_ZLayerSettings
 
 public:
 
-  Standard_ShortReal DepthOffsetFactor; //!< factor argument value for OpenGl glPolygonOffset function
-  Standard_ShortReal DepthOffsetUnits;  //!< units  argument value for OpenGl glPolygonOffset function
-  Standard_Integer   Flags;             //!< storage field for settings
-  bool               IsImmediate;       //!< immediate layer will be drawn after all normal layers
+  Standard_ShortReal DepthOffsetFactor;     //!< factor argument value for OpenGl glPolygonOffset function
+  Standard_ShortReal DepthOffsetUnits;      //!< units  argument value for OpenGl glPolygonOffset function
+  Standard_Integer   Flags;                 //!< storage field for settings
+  bool               IsImmediate;           //!< immediate layer will be drawn after all normal layers
+  bool               UseEnvironmentTexture; //!< flag to allow/prevent environment texture mapping usage for specific layer
 
 };
 
