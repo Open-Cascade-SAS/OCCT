@@ -6,8 +6,8 @@ puts ""
 ## Wrong distance found by xdistef command for attached shapes
 ###############################
 
-set Tol 1.0e-14
-set dist_good 8.5127062130336385e-006
+set Tol 5.0e-14
+set dist_good 8.512706220911343e-006
 
 restore [locate_data_file bug698_f.brep] f
 nexplode f e

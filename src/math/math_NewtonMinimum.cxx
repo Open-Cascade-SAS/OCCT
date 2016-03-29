@@ -140,8 +140,9 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
 	     }
 	 }
        else {
-           TheStatus = math_FunctionError;
-           return;
+         Done = Standard_False;
+         TheStatus = math_FunctionError;
+         return;
        }
      }
 

@@ -98,6 +98,11 @@ public:
   //! calculation of the minimum.
   //! The exception NotDone is raised if an error has occured.
     Standard_Integer NbIterations() const;
+
+  //! Returns the Status of computation.
+  //! The exception NotDone is raised if an error has occured.
+    math_Status GetStatus() const;
+
   
   //! Prints on the stream o information on the current state
   //! of the object.

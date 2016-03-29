@@ -1,5 +1,3 @@
-puts "TODO OCC27300 ALL: ERROR. result is not valid for BOP"
-
 puts "============"
 puts "OCC27282"
 puts "============"

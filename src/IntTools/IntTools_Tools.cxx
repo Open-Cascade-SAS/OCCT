@@ -797,8 +797,16 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
   if (!aCS.IsDone()) {
     return Standard_False;
   }
-  //
-  theMaxDist = aCS.MaxDistance();
+
+  //Obtaining precise result is impossible if we use 
+  //numeric methods for solution. Therefore, we must provide
+  //some margin. Otherwise, in the future
+  //(when geometrical properties of the curve will be changed,
+  //e.g. after trimming) we will be able to come
+  //to the more precise minimum point. As result, this curve with the
+  //tolerance computed earlier will become invalid.
+  const Standard_Real anEps = (1.0+1.0e-9);
+  theMaxDist = anEps*aCS.MaxDistance();
   theMaxPar  = aCS.MaxParameter();
   //
   return Standard_True;

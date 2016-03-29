@@ -576,6 +576,56 @@ Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
 }
 
 //=======================================================================
+//class   : PSO_Perform
+//purpose : Searches minimal distance with math_PSO class
+//=======================================================================
+Standard_Boolean PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
+                             const math_Vector &theParInf,
+                             const math_Vector &theParSup,
+                             const Standard_Real theEpsilon,
+                             const Standard_Integer theNbParticles, 
+                             Standard_Real& theBestValue,
+                             math_Vector &theOutputParam)
+{
+  const Standard_Real aDeltaParam = theParSup(1) - theParInf(1);
+  if(aDeltaParam < Precision::PConfusion())
+    return Standard_False;
+
+  math_Vector aStepPar(1, 1);
+  aStepPar(1) = theEpsilon*aDeltaParam;
+
+  math_PSOParticlesPool aParticles(theNbParticles, 1);
+
+  //They are used for finding a position of theNbParticles worst places
+  const Standard_Integer aNbControlPoints = 3*theNbParticles;
+
+  const Standard_Real aStep = aDeltaParam/(aNbControlPoints-1);
+  Standard_Integer aCount = 1;
+  for(Standard_Real aPrm = theParInf(1); aCount <= aNbControlPoints; aCount++,
+    aPrm = (aCount == aNbControlPoints)? theParSup(1) : aPrm+aStep)
+  {
+    Standard_Real aVal = RealLast();
+    if(!theFunction.Value(aPrm, aVal))
+      continue;
+
+    PSO_Particle* aParticle = aParticles.GetWorstParticle();
+
+    if(aVal > aParticle->BestDistance)
+      continue;
+
+    aParticle->Position[0] = aPrm;
+    aParticle->BestPosition[0] = aPrm;
+    aParticle->Distance     = aVal;
+    aParticle->BestDistance = aVal;
+  }
+
+  math_PSO aPSO(&theFunction, theParInf, theParSup, aStepPar);
+  aPSO.Perform(aParticles, theNbParticles, theBestValue, theOutputParam);
+
+  return Standard_True;
+}
+
+//=======================================================================
 //class   : MinComputing
 //purpose : Performs computing minimal value
 //=======================================================================
@@ -590,61 +640,52 @@ Standard_Boolean MinComputing (
   {
     OCC_CATCH_SIGNALS
 
-    //They are used for finding a position of theNbParticles worst places
-    const Standard_Integer aNbControlPoints = 3*theNbParticles;
     //
-    math_Vector aParInf(1, 1), aParSup(1, 1), anOutputParam(1, 1), aStepPar(1,1);
+    math_Vector aParInf(1, 1), aParSup(1, 1), anOutputParam(1, 1);
     aParInf(1) = theFunction.FirstParameter();
     aParSup(1) = theFunction.LastParameter();
     theBestParameter = aParInf(1);
     theBestValue = RealLast();
 
-    const Standard_Real aDeltaParam = aParSup(1) - aParInf(1);
-    if(aDeltaParam < Precision::PConfusion())
-        return Standard_False;
-
-    aStepPar(1) = theEpsilon*aDeltaParam;
-
-    math_PSOParticlesPool aParticles(theNbParticles, 1);
-
-    const Standard_Real aStep = aDeltaParam/(aNbControlPoints-1);
-    Standard_Integer aCount = 1;
-    for(Standard_Real aPrm = aParInf(1); aCount <= aNbControlPoints; aCount++,
-                      aPrm = (aCount == aNbControlPoints)? aParSup(1) : aPrm+aStep)
-    {
-      Standard_Real aVal = RealLast();
-      theFunction.Value(aPrm, aVal);
-
-      PSO_Particle* aParticle = aParticles.GetWorstParticle();
-
-      if(aVal > aParticle->BestDistance)
-        continue;
-
-      aParticle->Position[0] = aPrm;
-      aParticle->BestPosition[0] = aPrm;
-      aParticle->Distance     = aVal;
-      aParticle->BestDistance = aVal;
-    }
-
-    math_PSO aPSO(&theFunction, aParInf, aParSup, aStepPar);
-    aPSO.Perform(aParticles, theNbParticles, theBestValue, anOutputParam);
-
-    //Here, anOutputParam contains parameter, which is near to optimal.
-    //It needs to be more precise. Precision is made by math_NewtonMinimum.
-    math_NewtonMinimum anA(theFunction);
-    anA.Perform(theFunction, anOutputParam);
-
-    if(!anA.IsDone())
+    if(!PSO_Perform(theFunction, aParInf, aParSup, theEpsilon, theNbParticles,
+                    theBestValue, anOutputParam))
     {
 #ifdef OCCT_DEBUG
-      cout << "BRepLib_CheckCurveOnSurface::Compute(): No solution found!" << endl;
+      cout << "BRepLib_CheckCurveOnSurface::Compute(): math_PSO is failed!" << endl;
 #endif
       return Standard_False;
     }
 
-    anA.Location(anOutputParam);
-    theBestParameter =  anOutputParam(1);
-    theBestValue = anA.Minimum();
+    theBestParameter = anOutputParam(1);
+
+    //Here, anOutputParam contains parameter, which is near to optimal.
+    //It needs to be more precise. Precision is made by math_NewtonMinimum.
+    math_NewtonMinimum aMinSol(theFunction);
+    aMinSol.Perform(theFunction, anOutputParam);
+
+    if(aMinSol.IsDone() && (aMinSol.GetStatus() == math_OK))
+    {//math_NewtonMinimum has precised the value. We take it.
+      aMinSol.Location(anOutputParam);
+      theBestParameter =  anOutputParam(1);
+      theBestValue = aMinSol.Minimum();
+    }
+    else
+    {//Use math_PSO again but on smaller range.
+      const Standard_Real aStep = theEpsilon*(aParSup(1) - aParInf(1));
+      aParInf(1) = theBestParameter - 0.5*aStep;
+      aParSup(1) = theBestParameter + 0.5*aStep;
+
+      Standard_Real aValue = RealLast();
+      if(PSO_Perform(theFunction, aParInf, aParSup, theEpsilon, theNbParticles,
+                     aValue, anOutputParam))
+      {
+        if(aValue < theBestValue)
+        {
+          theBestValue = aValue;
+          theBestParameter = anOutputParam(1);
+        }
+      }
+    }
   }
   catch(Standard_Failure)
   {

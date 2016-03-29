@@ -63,3 +63,7 @@ inline Standard_Integer math_NewtonMinimum::NbIterations() const
    return nbiter;
 }
 
+inline math_Status math_NewtonMinimum::GetStatus() const 
+{
+  return TheStatus;
+}
