@@ -69,6 +69,17 @@ SelectMgr_SelectableObject::SelectMgr_SelectableObject (const PrsMgr_TypeOfPrese
   myHilightDrawer->Link (myDrawer);
 }
 
+//==================================================
+// Function: Destructor
+// Purpose : Clears all selections of the object
+//==================================================
+SelectMgr_SelectableObject::~SelectMgr_SelectableObject()
+{
+  for (Standard_Integer aSelIdx = 1; aSelIdx <= myselections.Length(); ++aSelIdx)
+  {
+    myselections.Value (aSelIdx)->Clear();
+  }
+}
 
 //==================================================
 // Function: HasSelection

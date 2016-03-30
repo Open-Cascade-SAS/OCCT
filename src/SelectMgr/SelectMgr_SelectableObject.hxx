@@ -56,6 +56,8 @@ class SelectMgr_SelectableObject : public PrsMgr_PresentableObject
 
 public:
 
+  //! Clears all selections of the object
+  Standard_EXPORT virtual ~SelectMgr_SelectableObject();
   
   //! Recovers and calculates any sensitive primitive,
   //! aSelection, available in Shape mode, specified by

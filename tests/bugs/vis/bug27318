@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC27318"
+puts "========"
+puts ""
+##################################################################
+puts "Memory is not released in Select3D_SensitiveSet when destroying AIS_InteractiveContext without removing objects"
+##################################################################
+
+pload VISUALIZATION QAcommands
+
+# to measure initial memory correctly, open and close interactive context
+# to load FreeImage
+vinit
+vclose
+set aMemInit [meminfo h]
+puts "Initial mem: [expr $aMemInit   / (1024 * 1024)] MiB ([expr $aMemInit])"
+
+# create a box and display it in each interactive context. The context is
+# the only instance that references to the box. Therefore, the box must be
+# removed completely after each context's closing
+for {set anIter 0} {$anIter < 300} {incr anIter} {
+  vinit
+  OCC27318
+  vclose
+}
+
+set aMemAfter [meminfo h]
+puts "Memory after closing interactive context several times: [expr $aMemAfter   / (1024 * 1024)] MiB ([expr $aMemAfter])"
+
+set aRatio [expr $aMemAfter / double($aMemInit)]
+
+# check if the memory difference is greater than 5%
+if [expr $aRatio > 1.05] {
+    puts "Error : TEST FAILED"
+}

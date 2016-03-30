@@ -5140,6 +5140,26 @@ static Standard_Integer OCC27065(Draw_Interpretor& di,
   return 0;
 }
 
+//========================================================================
+//function : OCC27318
+//purpose  : Creates a box that is not listed in map of AIS objects of ViewerTest
+//========================================================================
+static Standard_Integer OCC27318 (Draw_Interpretor& /*theDI*/, Standard_Integer /*theArgc*/, const char** theArgv)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
+    return 1;
+  }
+
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox (20, 20, 20).Shape();
+  Handle(AIS_Shape) aBoxObj = new AIS_Shape (aBox);
+  aCtx->Display (aBoxObj, Standard_True);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -5253,6 +5273,10 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27065",
                    "OCC27065 spine profile",
                    __FILE__, OCC27065, group);
-  
+
+  theCommands.Add ("OCC27318",
+                   "OCC27318: Creates a box that is not listed in map of AIS objects of ViewerTest",
+                   __FILE__, OCC27318, group);
+
   return;
 }
