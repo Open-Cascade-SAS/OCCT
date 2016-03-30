@@ -9,7 +9,7 @@ puts ""
 set MaxTol 1.e-3
 set GoodNbCurv 11
 
-restore [locate_data_file bug27167-pipe.brep] a1
+restore [locate_data_file bug27167_pipe.brep] a1
 pcylinder a2 100 300
 
 explode a1 f

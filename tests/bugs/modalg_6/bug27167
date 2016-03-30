@@ -1,0 +1,14 @@
+puts "=========="
+puts "OCC27167"
+puts "=========="
+puts ""
+#####################################################
+# Boolean operations produce an invalid shape
+#####################################################
+
+restore [locate_data_file bug27167_pipe.brep] a1
+pcylinder a2 100 300
+bfuse result a1 a2
+checkshape result
+checkprops result -s 295465
+checkview -display result -2d -path ${imagedir}/${test_image}.png
