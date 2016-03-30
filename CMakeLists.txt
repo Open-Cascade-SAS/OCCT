@@ -316,7 +316,17 @@ if (ANDROID AND BUILD_MODULE_Draw)
 endif()
 
 # Overview
-set (BUILD_DOC_Overview OFF CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
+if (NOT DEFINED BUILD_DOC_Overview)
+  set (DO_ONLY_CHECK_FOR_DOXYGEN ON)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
+  set (DO_ONLY_CHECK_FOR_DOXYGEN OFF)
+  
+  if (CAN_DOXYGEN_BE_USED)
+    message (STATUS "Info. Overview building is turned on")
+  endif()
+
+  set (BUILD_DOC_Overview ${CAN_DOXYGEN_BE_USED} CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
+endif()
 
 if (NOT USE_D3D)
   list (REMOVE_ITEM Visualization_TOOLKITS TKD3DHost)
