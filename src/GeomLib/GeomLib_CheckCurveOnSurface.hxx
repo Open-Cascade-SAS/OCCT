@@ -16,6 +16,7 @@
 #define _GeomLib_CheckCurveOnSurface_HeaderFile
 
 #include <Geom_Curve.hxx>
+#include <Precision.hxx>
 #include <Standard.hxx>
 
 class Geom_Surface;
@@ -33,16 +34,20 @@ public:
   Standard_EXPORT GeomLib_CheckCurveOnSurface(void);
   
   //! Contructor
-  Standard_EXPORT GeomLib_CheckCurveOnSurface(const Handle(Geom_Curve)& theCurve, 
-                                              const Handle(Geom_Surface)& theSurface, 
-                                              const Standard_Real theFirst, 
-                                              const Standard_Real theLast);
+  Standard_EXPORT
+    GeomLib_CheckCurveOnSurface(const Handle(Geom_Curve)& theCurve, 
+                                const Handle(Geom_Surface)& theSurface, 
+                                const Standard_Real theFirst, 
+                                const Standard_Real theLast,
+                                const Standard_Real theTolRange = 
+                                                      Precision::PConfusion());
   
   //! Sets the data for the algorithm
   Standard_EXPORT void Init (const Handle(Geom_Curve)& theCurve, 
                              const Handle(Geom_Surface)& theSurface, 
                              const Standard_Real theFirst, 
-                             const Standard_Real theLast);
+                             const Standard_Real theLast,
+                             const Standard_Real theTolRange = Precision::PConfusion());
 
   //! Initializes all members by dafault values
   Standard_EXPORT void Init();
@@ -112,6 +117,7 @@ private:
   Standard_Integer myErrorStatus;
   Standard_Real myMaxDistance;
   Standard_Real myMaxParameter;
+  Standard_Real myTolRange;
 };
 
 #endif // _BRepLib_CheckCurveOnSurface_HeaderFile

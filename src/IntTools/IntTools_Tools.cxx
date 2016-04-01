@@ -787,11 +787,12 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
    const Standard_Real theFirst,
    const Standard_Real theLast,
    Standard_Real& theMaxDist,
-   Standard_Real& theMaxPar)
+   Standard_Real& theMaxPar,
+   const Standard_Real theTolRange)
 {
   GeomLib_CheckCurveOnSurface aCS;
   //
-  aCS.Init(theCurve3D, theSurf, theFirst, theLast);
+  aCS.Init(theCurve3D, theSurf, theFirst, theLast, theTolRange);
   aCS.Perform(theCurve2D);
   if (!aCS.IsDone()) {
     return Standard_False;

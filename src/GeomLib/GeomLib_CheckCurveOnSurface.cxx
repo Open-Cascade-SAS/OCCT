@@ -310,7 +310,8 @@ GeomLib_CheckCurveOnSurface::GeomLib_CheckCurveOnSurface()
   myLast(0.),
   myErrorStatus(0),
   myMaxDistance(RealLast()),
-  myMaxParameter(0.)
+  myMaxParameter(0.),
+  myTolRange(Precision::PConfusion())
 {
 }
 
@@ -322,14 +323,16 @@ GeomLib_CheckCurveOnSurface::
   GeomLib_CheckCurveOnSurface(const Handle(Geom_Curve)& theCurve,
                               const Handle(Geom_Surface)& theSurface,
                               const Standard_Real theFirst,
-                              const Standard_Real theLast):
+                              const Standard_Real theLast,
+                              const Standard_Real theTolRange):
   myCurve(theCurve),
   mySurface(theSurface),
   myFirst(theFirst),
   myLast(theLast),
   myErrorStatus(0),
   myMaxDistance(RealLast()),
-  myMaxParameter(0.)
+  myMaxParameter(0.),
+  myTolRange(theTolRange)
 {
 }
 
@@ -346,6 +349,7 @@ void GeomLib_CheckCurveOnSurface::Init()
   myErrorStatus = 0;
   myMaxDistance = RealLast();
   myMaxParameter = 0.0;
+  myTolRange = Precision::PConfusion();
 }
 
 //=======================================================================
@@ -355,7 +359,8 @@ void GeomLib_CheckCurveOnSurface::Init()
 void GeomLib_CheckCurveOnSurface::Init( const Handle(Geom_Curve)& theCurve,
                                         const Handle(Geom_Surface)& theSurface,
                                         const Standard_Real theFirst,
-                                        const Standard_Real theLast)
+                                        const Standard_Real theLast,
+                                        const Standard_Real theTolRange)
 {
   myCurve = theCurve;
   mySurface = theSurface;
@@ -364,13 +369,13 @@ void GeomLib_CheckCurveOnSurface::Init( const Handle(Geom_Curve)& theCurve,
   myErrorStatus = 0;
   myMaxDistance = RealLast();
   myMaxParameter = 0.0;
+  myTolRange = theTolRange;
 }
 
 //=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
-
 #ifndef HAVE_TBB
 //After fixing bug # 26365, this fragment should be deleted
 //(together the text "#ifdef HAVE_TBB")
@@ -392,10 +397,10 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
     return;
   }
 
-  if( (myCurve->FirstParameter() > myFirst) ||
-      (myCurve->LastParameter() < myLast) ||
-      (thePCurve->FirstParameter() > myFirst) ||
-      (thePCurve->LastParameter() < myLast))
+  if(((myCurve->FirstParameter() - myFirst) > myTolRange) ||
+     ((myCurve->LastParameter() - myLast) < -myTolRange) ||
+     ((thePCurve->FirstParameter() - myFirst) > myTolRange) ||
+     ((thePCurve->LastParameter() - myLast) < -myTolRange))
   {
     myErrorStatus = 2;
     return;

@@ -44,6 +44,7 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   BOPTest::HistoryCommands   (theCommands);
   BOPTest::DebugCommands     (theCommands);
   BOPTest::CellsCommands     (theCommands);
+  BOPTest::UtilityCommands   (theCommands);
 }
 //=======================================================================
 //function : Factory

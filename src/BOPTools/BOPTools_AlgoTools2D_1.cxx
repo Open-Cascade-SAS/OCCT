@@ -114,7 +114,7 @@ Standard_Integer BOPTools_AlgoTools2D::AttachExistingPCurve
   Handle(Geom_Surface) aSF = BRep_Tool::Surface(aF);
   //
   bComp = IntTools_Tools::ComputeTolerance
-    (aCE1, aC2DT, aSF, aT11, aT12, aTolSP, aTMax);
+    (aCE1, aC2DT, aSF, aT11, aT12, aTolSP, aTMax, aTolPPC);
   if (!bComp) {
     iRet = 3;
     return iRet;
