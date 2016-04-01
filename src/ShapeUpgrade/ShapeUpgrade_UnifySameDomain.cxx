@@ -837,26 +837,16 @@ static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
 //function : MergeEdges
 //purpose  : auxilary
 //=======================================================================
-static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
+static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
                                    const Standard_Real Tol,
                                    const Standard_Boolean ConcatBSplines,
                                    NCollection_Sequence<SubSequenceOfEdges>& SeqOfSubSeqOfEdges,
                                    const TopTools_MapOfShape& NonMergVrt )
 {
-  // make chain for union
-  //BRep_Builder B;
-  ShapeAnalysis_Edge sae;
-  TopoDS_Edge FirstE = TopoDS::Edge(SeqEdges.Value(1));
-  TopoDS_Edge LastE = FirstE;
-  TopoDS_Vertex VF = sae.FirstVertex(FirstE);
-  TopoDS_Vertex VL = sae.LastVertex(LastE);
-  TopTools_SequenceOfShape aChain;
-  aChain.Append(FirstE);
-  TColStd_MapOfInteger IndUsedEdges;
-  IndUsedEdges.Add(1);
+  // skip degenerated edges, and forbid merging through them
+  TopTools_IndexedDataMapOfShapeListOfShape aMapVE;
   Standard_Integer j;
   TopTools_MapOfShape VerticesToAvoid;
-  TopTools_SequenceOfShape SeqEdges1;
   for (j = 1; j <= SeqEdges.Length(); j++)
   {
     TopoDS_Edge anEdge = TopoDS::Edge(SeqEdges(j));
@@ -866,38 +856,90 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
       TopExp::Vertices(anEdge, V1, V2);
       VerticesToAvoid.Add(V1);
       VerticesToAvoid.Add(V2);
-      continue;
+      SeqEdges.Remove(j--);
     }
-    SeqEdges1.Append(anEdge);
-  }
-
-  for(j=2; j<=SeqEdges1.Length(); j++) {
-    for(Standard_Integer k=2; k<=SeqEdges1.Length(); k++) {
-      if(IndUsedEdges.Contains(k)) continue;
-      TopoDS_Edge edge = TopoDS::Edge(SeqEdges1.Value(k));
-      TopoDS_Vertex VF2 = sae.FirstVertex(edge);
-      TopoDS_Vertex VL2 = sae.LastVertex(edge);
-      if(VF2.IsSame(VL)) {
-        aChain.Append(edge);
-        LastE = edge;
-        VL = sae.LastVertex(LastE);
-        IndUsedEdges.Add(k);
-      }
-      else if(VL2.IsSame(VF)) {
-        aChain.Prepend(edge);
-        FirstE = edge;
-        VF = sae.FirstVertex(FirstE);
-        IndUsedEdges.Add(k);
+    else
+    {
+      // fill in the map V-E
+      for (TopoDS_Iterator it(anEdge.Oriented(TopAbs_FORWARD)); it.More(); it.Next())
+      {
+        TopoDS_Shape aV = it.Value();
+        if (aV.Orientation() == TopAbs_FORWARD || aV.Orientation() == TopAbs_REVERSED)
+        {
+          if (!aMapVE.Contains(aV))
+            aMapVE.Add(aV, TopTools_ListOfShape());
+          aMapVE.ChangeFromKey(aV).Append(anEdge);
+        }
       }
     }
   }
-
-  Standard_Boolean IsClosed = Standard_False;
-  if (VF.IsSame ( VL ))
-    IsClosed = Standard_True;
-
   VerticesToAvoid.Unite(NonMergVrt);
-  GenerateSubSeq(aChain, SeqOfSubSeqOfEdges, IsClosed, Tol, VerticesToAvoid);
+
+  // do loop while there are unused edges
+  TopTools_MapOfShape aUsedEdges;
+  for (;;)
+  {
+    TopoDS_Edge edge;
+    for(j=1; j <= SeqEdges.Length(); j++)
+    {
+      edge = TopoDS::Edge(SeqEdges.Value(j));
+      if (!aUsedEdges.Contains(edge))
+        break;
+    }
+    if (j > SeqEdges.Length())
+      break; // all edges have been used
+
+    // make chain for unite
+    TopTools_SequenceOfShape aChain;
+    aChain.Append(edge);
+    aUsedEdges.Add(edge);
+    TopoDS_Vertex V[2];
+    TopExp::Vertices(edge, V[0], V[1], Standard_True);
+
+    // connect more edges to the chain in both directions
+    for (j = 0; j < 2; j++)
+    {
+      Standard_Boolean isAdded = Standard_True;
+      while (isAdded)
+      {
+        isAdded = Standard_False;
+        if (V[j].IsNull())
+          break;
+        const TopTools_ListOfShape& aLE = aMapVE.FindFromKey(V[j]);
+        for (TopTools_ListIteratorOfListOfShape itL(aLE); itL.More(); itL.Next())
+        {
+          edge = TopoDS::Edge(itL.Value());
+          if (!aUsedEdges.Contains(edge))
+          {
+            if (j == 0)
+              aChain.Prepend(edge);
+            else
+              aChain.Append(edge);
+            aUsedEdges.Add(edge);
+            TopoDS_Vertex VF2, VL2;
+            TopExp::Vertices(edge, VF2, VL2, Standard_True);
+            V[j] = (VF2.IsSame(V[j]) ? VL2 : VF2);
+            isAdded = Standard_True;
+            break;
+          }
+        }
+      }
+    }
+
+    if (aChain.Length() < 2)
+      continue;
+
+    Standard_Boolean IsClosed = Standard_False;
+    if (V[0].IsSame ( V[1] ))
+      IsClosed = Standard_True;
+
+    // split chain by vertices at which merging is not possible
+    NCollection_Sequence<SubSequenceOfEdges> aOneSeq;
+    GenerateSubSeq(aChain, aOneSeq, IsClosed, Tol, VerticesToAvoid);
+
+    // put sub-chains in the result
+    SeqOfSubSeqOfEdges.Append(aOneSeq);
+  }
 
   for (int i = 1; i <= SeqOfSubSeqOfEdges.Length(); i++)
   {
@@ -916,7 +958,7 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
 //which lies on the same geometry
 //=======================================================================
 
-static Standard_Boolean MergeSeq (const TopTools_SequenceOfShape& SeqEdges,
+static Standard_Boolean MergeSeq (TopTools_SequenceOfShape& SeqEdges,
                                   const Standard_Real Tol,
                                   const Standard_Boolean ConcatBSplines,
                                   Handle(ShapeBuild_ReShape)& theContext,
