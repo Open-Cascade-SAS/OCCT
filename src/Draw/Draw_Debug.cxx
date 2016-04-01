@@ -33,6 +33,7 @@ Standard_EXPORT const char* Draw_Eval (const char *theCommandStr)
   try {
     OCC_CATCH_SIGNALS
     theCommands.Eval (theCommandStr);
+    cout << theCommands.Result() << endl;
     return theCommands.Result();
   }
   catch (Standard_Failure)
