@@ -248,6 +248,7 @@ if [info exists i7_show_3dview] {
   vinit Driver1/Viewer1/View1
   vclear 
   vsetdispmode 1
+  vrenderparams -msaa 8
 
   vlight clear
   vlight add amb
@@ -265,7 +266,7 @@ if [info exists i7_show_3dview] {
   vsetcolor board_4 0 0.6 0.55
   vsetcolor board_5 0 0.6 0.55
   vsetcolor board_12 0 0.3 0.33
-  vsetcolor board_15 0 0.3 0.33
+  vsetcolor board_14 0 0.3 0.33
 
   vdisplay rpads
   vsetcolor rpads 0.7 0.6 0.4
@@ -290,7 +291,7 @@ foreach f [explode board f] { XSetColor D $f 0.7 0.5 0.3 }
 XSetColor D board_4 0 0.6 0.55
 XSetColor D board_5 0 0.6 0.55
 XSetColor D board_12 0 0.3 0.33
-XSetColor D board_15 0 0.3 0.33
+XSetColor D board_14 0 0.3 0.33
 
 SetName D [XAddShape D case 0] "Case"
 XSetColor D case 0.7 0.7 0.7
@@ -322,6 +323,7 @@ vlight clear
 vlight add amb
 vlight add directional direction 1 -1 -2 head 1
 vsetdispmode 1
+vrenderparams -msaa 8
 vfit
 
 # save to STEP if variable i7_save_xde is defined (specifies file name)

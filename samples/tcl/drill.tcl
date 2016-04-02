@@ -140,6 +140,7 @@ puts "Displaying result..."
 incmesh drill 0.01
 vdisplay drill
 vsetdispmode drill 1
+vrenderparams -msaa 8
 vfit
 
 # show section and sweep path

@@ -85,5 +85,6 @@ checkshape cutter
 incmesh cutter 0.01
 vdisplay cutter
 vsetdispmode cutter 1
+vrenderparams -msaa 8
 incmesh profile_1 0.01; vdisplay profile_1
 vfit

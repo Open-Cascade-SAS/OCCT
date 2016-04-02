@@ -96,5 +96,6 @@ vbottom
 vrotate -0.3 -0.3 0
 vfit
 vzoom 1.2
+vrenderparams -msaa 8
 
 puts "Done."

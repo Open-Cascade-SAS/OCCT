@@ -58,6 +58,7 @@ XShow D
 
 vfit
 vsetdispmode 1
+vrenderparams -msaa 8
 vsetcolorbg 255 255 255
 
 #param write.iges.brep.mode 1

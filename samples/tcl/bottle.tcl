@@ -112,3 +112,4 @@ puts "Showing result..."
 vdisplay bottle
 vfit
 vsetdispmode 1
+vaspects -isoontriangulation 1

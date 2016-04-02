@@ -83,12 +83,6 @@ the copyright allows you to use, modify, and redistribute Tcl/Tk for any purpose
 explicit license agreement and without paying any license fees or royalties. 
 To use Tcl/Tk, please refer to the Licensing Terms (http://www.tcl.tk/software/tcltk/license.html).
 
-**Robert Boehne** has developed **GNU Autoconf**, **Automake** and **Libtool** scripts and makefiles 
-for the Open CASCADE project http://sourceforge.net/projects/autoopencas/, 
-which became an initial groundwork for the build scripts based on respective GNU tools 
-(autoconf, automake and libtool) in Open CASCADE Technology version 4.0. 
-These scripts are now maintained by the OPEN CASCADE company.
-
 **GL2PS** is developed by Christophe Geuzaine and others. It is optionally used by OCCT to
 export content of OpenGL scene to vector graphics formats (PS, PDF, EMF, SVG). 
 The library is licensed under GL2PS LICENSE http://www.geuz.org/gl2ps/COPYING.GL2PS Version 2, November 2003.

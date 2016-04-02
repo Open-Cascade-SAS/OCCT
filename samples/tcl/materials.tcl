@@ -72,6 +72,7 @@ vglinfo
 vsetgradientbg 180 200 255 180 180 180 2
 vlight change 0 pos -1 1 1
 vsetdispmode 1
+vrenderparams -msaa 8
 
 # adjust scene bounding box
 box bnd 0 0 0 180 210 1

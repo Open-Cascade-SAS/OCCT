@@ -61,4 +61,5 @@ vinit
 vdisplay res
 vsetdispmode 1
 vshowfaceboundary res 1 255 255 255
+vaspects -isoontriangulation 1
 vfit

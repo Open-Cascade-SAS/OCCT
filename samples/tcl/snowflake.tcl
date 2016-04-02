@@ -127,6 +127,7 @@ compound snowflake lines text drawing
 # display in 3d view
 vinit Driver1/Viewer1/View1 w=1024 h=768
 vdisplay snowflake lines text
+vrenderparams -msaa 8
 vsetcolor snowflake 0 0 0 
 vsetcolor lines 0 0 0 
 vsetcolor text 0 0 0 
