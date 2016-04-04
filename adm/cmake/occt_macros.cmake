@@ -539,3 +539,40 @@ macro (CHECK_PATH_FOR_CONSISTENCY THE_ROOT_PATH_NAME THE_BEING_CHECKED_PATH_NAME
   endif()
 
 endmacro()
+
+# Adds OCCT_INSTALL_BIN_LETTER variable ("" for Release, "d" for Debug and 
+# "i" for RelWithDebInfo) in OpenCASCADETargets-*.cmake files during 
+# installation process.
+# This and the following macros are used to overcome limitation of CMake
+# prior to version 3.3 not supporting per-configuration install paths
+# for install target files (see https://cmake.org/Bug/view.php?id=14317)
+macro (OCCT_UPDATE_TARGET_FILE)
+  if (NOT SINGLE_GENERATOR)
+    OCCT_INSERT_CODE_FOR_TARGET ()
+  endif()
+
+  install (CODE
+  "cmake_policy(PUSH)
+  cmake_policy(SET CMP0007 NEW)
+  string (TOLOWER \"\${CMAKE_INSTALL_CONFIG_NAME}\" CMAKE_INSTALL_CONFIG_NAME_LOWERCASE)
+  file (GLOB ALL_OCCT_TARGET_FILES \"${INSTALL_DIR}/${INSTALL_DIR_CMAKE}/OpenCASCADE*Targets-\${CMAKE_INSTALL_CONFIG_NAME_LOWERCASE}.cmake\")
+  foreach(TARGET_FILENAME \${ALL_OCCT_TARGET_FILES})
+    file (STRINGS \"\${TARGET_FILENAME}\" TARGET_FILE_CONTENT)
+    file (REMOVE \"\${TARGET_FILENAME}\")
+    foreach (line IN LISTS TARGET_FILE_CONTENT)
+      string (REGEX REPLACE \"[\\\\]?[\\\$]{OCCT_INSTALL_BIN_LETTER}\" \"\${OCCT_INSTALL_BIN_LETTER}\" line \"\${line}\")
+      file (APPEND \"\${TARGET_FILENAME}\" \"\${line}\\n\")
+    endforeach()
+  endforeach()
+  cmake_policy(POP)")
+endmacro()
+
+macro (OCCT_INSERT_CODE_FOR_TARGET)
+  install(CODE "if (\"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$\")
+    set (OCCT_INSTALL_BIN_LETTER \"\")
+  elseif (\"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$\")
+    set (OCCT_INSTALL_BIN_LETTER \"i\")
+  elseif (\"\${CMAKE_INSTALL_CONFIG_NAME}\" MATCHES \"^([Dd][Ee][Bb][Uu][Gg])$\")
+    set (OCCT_INSTALL_BIN_LETTER \"d\")
+  endif()")
+endmacro()

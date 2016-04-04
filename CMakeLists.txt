@@ -265,7 +265,7 @@ if (NOT DEFINED INSTALL_DIR_CMAKE)
       set (INSTALL_DIR_CMAKE "lib/cmake/opencascade" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
     endif()
   else()
-    set (INSTALL_DIR_CMAKE "${OS_WITH_BIT}/${COMPILER}/lib" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
+    set (INSTALL_DIR_CMAKE "cmake" CACHE PATH "${INSTALL_DIR_CMAKE_DESCR}")
   endif()
 endif()
 
@@ -556,7 +556,7 @@ endif()
 if (3RDPARTY_INCLUDE_DIRS)
   list (REMOVE_DUPLICATES 3RDPARTY_INCLUDE_DIRS)
   string (REGEX REPLACE ";" "\n\t" 3RDPARTY_INCLUDE_DIRS_WITH_ENDS "${3RDPARTY_INCLUDE_DIRS}")
-  message (STATUS "Info: The directories of 3rdparty headers: ${3RDPARTY_INCLUDE_DIRS_WITH_ENDS}")
+  message (STATUS "Info: The directories of 3rdparty headers: \n\t${3RDPARTY_INCLUDE_DIRS_WITH_ENDS}")
   include_directories (${3RDPARTY_INCLUDE_DIRS})
 endif()
 
@@ -566,7 +566,7 @@ include_directories (${CMAKE_BINARY_DIR}/inc)
 if (3RDPARTY_LIBRARY_DIRS)
   list (REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
   string (REGEX REPLACE ";" "\n\t" 3RDPARTY_LIBRARY_DIRS_WITH_ENDS "${3RDPARTY_LIBRARY_DIRS}")
-  message (STATUS "Info: The directories of 3rdparty libraries: ${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")
+  message (STATUS "Info: The directories of 3rdparty libraries: \n\t${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")
   link_directories (${3RDPARTY_LIBRARY_DIRS})
 endif()
 
@@ -763,6 +763,7 @@ endif()
 # Prepare variables for configuration of OpenCASCADE cmake config file
 set (OCCT_MODULES_ENABLED)
 set (OCCT_LIBRARIES)
+set (SET_OpenCASCADE_MODULES_TOOLKITS "\n# List of available OpenCASCADE libraries for each module\n")
 foreach (OCCT_TOOLKIT ${BUILD_TOOLKITS})
   if (TARGET ${OCCT_TOOLKIT})
 
@@ -770,17 +771,28 @@ foreach (OCCT_TOOLKIT ${BUILD_TOOLKITS})
     get_target_property (${OCCT_TOOLKIT}_TYPE ${OCCT_TOOLKIT} "TYPE")
     if ("${${OCCT_TOOLKIT}_TYPE}" STREQUAL "STATIC_LIBRARY" OR "${${OCCT_TOOLKIT}_TYPE}" STREQUAL "SHARED_LIBRARY" )
       list (APPEND OCCT_LIBRARIES ${OCCT_TOOLKIT})
-    endif()
 
-    # get all modules
-    get_target_property (${OCCT_TOOLKIT}_FOLDER ${OCCT_TOOLKIT} "FOLDER")
-    string (REGEX MATCH "/(.+)" ${OCCT_TOOLKIT}_MODULE "${${OCCT_TOOLKIT}_FOLDER}")
-    if (NOT "${CMAKE_MATCH_1}" STREQUAL "")
-      list (APPEND OCCT_MODULES_ENABLED ${CMAKE_MATCH_1})
+      # get all modules
+      get_target_property (${OCCT_TOOLKIT}_MODULE ${OCCT_TOOLKIT} "MODULE")
+      list (APPEND OCCT_MODULES_ENABLED ${${OCCT_TOOLKIT}_MODULE})
+      list (APPEND OpenCASCADE_${${OCCT_TOOLKIT}_MODULE}_TOOLKITS ${OCCT_TOOLKIT})
     endif()
   endif()
 endforeach()
 list (REMOVE_DUPLICATES OCCT_MODULES_ENABLED)
+
+foreach (OCCT_MODULE ${OCCT_MODULES})
+  if (BUILD_MODULE_${OCCT_MODULE})
+    set (SET_OpenCASCADE_MODULES_TOOLKITS "${SET_OpenCASCADE_MODULES_TOOLKITS}set (OpenCASCADE_${OCCT_MODULE}_LIBRARIES ${OpenCASCADE_${OCCT_MODULE}_TOOLKITS})\n")
+  endif()
+endforeach()
+
+# Add all targets to the build-tree export set
+export (TARGETS ${OCCT_LIBRARIES} FILE "${CMAKE_BINARY_DIR}/OpenCASCADETargets.cmake")
+
+# Export the package for use from the build-tree
+# (this registers the build-tree with a global CMake-registry)
+export(PACKAGE OpenCASCADE)
 
 if (CMAKE_BUILD_TYPE)
   set (SET_OpenCASCADE_BUILD_TYPE "set (OpenCASCADE_BUILD_TYPE        \"${CMAKE_BUILD_TYPE}\")")
@@ -799,8 +811,13 @@ if (APPLE)
   set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_GLX})")
 endif()
 
+if (NOT SINGLE_GENERATOR)
+  OCCT_INSERT_CODE_FOR_TARGET()
+endif()
+
 # Configure and install cmake config file
-OCCT_CONFIGURE_AND_INSTALL ("adm/templates/OpenCASCADEConfig.cmake.in" "OpenCASCADEConfig.cmake" "OpenCASCADEConfig.cmake" "${INSTALL_DIR}/${INSTALL_DIR_CMAKE}")
+configure_file("${CMAKE_SOURCE_DIR}/adm/templates/OpenCASCADEConfig.cmake.in" "OpenCASCADEConfig.cmake" @ONLY)
+install(FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfig.cmake" DESTINATION  "${INSTALL_DIR}/${INSTALL_DIR_CMAKE}")
 
 # Configure cmake version file
 include(CMakePackageConfigHelpers)
@@ -810,3 +827,14 @@ write_basic_package_version_file( ${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.c
 
 # Install cmake version file
 install (FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.cmake" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_CMAKE}")
+
+# Install the export set for use with the install-tree for each configuration
+foreach (OCCT_MODULE ${OCCT_MODULES})
+  if (BUILD_MODULE_${OCCT_MODULE})
+    install(EXPORT OpenCASCADE${OCCT_MODULE}Targets DESTINATION "${INSTALL_DIR_CMAKE}")
+  endif()
+endforeach()
+
+# Update generated OpenCASCADETargets-*.cmake files 
+# to have correct paths to libraries depending on the configuration
+OCCT_UPDATE_TARGET_FILE ()
