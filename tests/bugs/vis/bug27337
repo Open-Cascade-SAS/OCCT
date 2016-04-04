@@ -1,0 +1,18 @@
+puts "================"
+puts "0027337: \[Regression vs. 6.9.1\] Selection highlight is poor in ray traced mode with FSAA"
+puts "================"
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+vdisplay b
+vsetdispmode 1
+vfit
+vrenderparams -rayTrace -fsaa
+vmoveto 200 200
+
+puts "Check result by color in the middle of the top face:"
+puts "should be color of shading and not of highlight (blue)"
+checkcolor 205 100 0.64 0.56 0.08
+
+puts "Check result by image: selection highlight should show only visible edges"
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -2358,6 +2358,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
   bindRaytraceTextures (theGlContext);
 
   Handle(OpenGl_FrameBuffer) aRenderFramebuffer;
+  Handle(OpenGl_FrameBuffer) aDepthSourceFramebuffer;
   Handle(OpenGl_FrameBuffer) anAccumFramebuffer;
 
   // Choose proper set of framebuffers for stereo rendering
@@ -2369,6 +2370,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
   {
     aRenderFramebuffer = myAccumFrames % 2 ? myRaytraceFBO1[aFBOIdx] : myRaytraceFBO2[aFBOIdx];
     anAccumFramebuffer = myAccumFrames % 2 ? myRaytraceFBO2[aFBOIdx] : myRaytraceFBO1[aFBOIdx];
+    aDepthSourceFramebuffer = aRenderFramebuffer;
 
     anAccumFramebuffer->ColorTexture()->Bind (
       theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
@@ -2407,36 +2409,10 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
 
   theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
-  if (myRaytraceParameters.GlobalIllumination)
+  if (myRenderParams.IsAntialiasingEnabled)
   {
-    // Output accumulated image
-    theGlContext->BindProgram (myOutImageProgram);
+    glDepthMask (GL_FALSE);
 
-    if (theReadDrawFbo != NULL)
-    {
-      theReadDrawFbo->BindBuffer (theGlContext);
-    }
-    else
-    {
-      aRenderFramebuffer->UnbindBuffer (theGlContext);
-    }
-
-    aRenderFramebuffer->ColorTexture()->Bind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
-
-    aRenderFramebuffer->DepthStencilTexture()->Bind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_DepthTexture);
-
-    theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
-
-    aRenderFramebuffer->DepthStencilTexture()->Unbind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_DepthTexture);
-
-    aRenderFramebuffer->ColorTexture()->Unbind (
-      theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
-  }
-  else if (myRenderParams.IsAntialiasingEnabled)
-  {
     myRaytraceFBO1[aFBOIdx]->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
 
     aResult &= theGlContext->BindProgram (myPostFSAAProgram);
@@ -2482,29 +2458,48 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
 
       Handle(OpenGl_FrameBuffer)& aFramebuffer = anIt % 2 ? myRaytraceFBO2[aFBOIdx] : myRaytraceFBO1[aFBOIdx];
 
-      if (anIt == 3) // disable FBO on last iteration
-      {
-        if (theReadDrawFbo != NULL)
-        {
-          theReadDrawFbo->BindBuffer (theGlContext);
-        }
-        else
-        {
-          aFramebuffer->UnbindBuffer (theGlContext);
-        }
-      }
-      else
-      {
-        aFramebuffer->BindBuffer (theGlContext);
-      }
+      aFramebuffer->BindBuffer (theGlContext);
 
       theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
-      if (anIt != 3) // set input for the next pass
-      {
-        aFramebuffer->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
-      }
+      aFramebuffer->ColorTexture()->Bind (theGlContext, GL_TEXTURE0 + OpenGl_RT_FsaaInputTexture);
     }
+
+    aRenderFramebuffer = myRaytraceFBO2[aFBOIdx];
+    aDepthSourceFramebuffer = myRaytraceFBO1[aFBOIdx];
+  }
+
+  if (myRaytraceParameters.GlobalIllumination || myRenderParams.IsAntialiasingEnabled)
+  {
+    // Output accumulated image
+    glDepthMask (GL_TRUE);
+
+    theGlContext->BindProgram (myOutImageProgram);
+
+    myOutImageProgram->SetUniform (theGlContext, "uApplyGamma", static_cast<Standard_Integer> (myRaytraceParameters.GlobalIllumination));
+
+    if (theReadDrawFbo != NULL)
+    {
+      theReadDrawFbo->BindBuffer (theGlContext);
+    }
+    else
+    {
+      aRenderFramebuffer->UnbindBuffer (theGlContext);
+    }
+
+    aRenderFramebuffer->ColorTexture()->Bind (
+      theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
+
+    aDepthSourceFramebuffer->DepthStencilTexture()->Bind (
+      theGlContext, GL_TEXTURE0 + OpenGl_RT_DepthTexture);
+
+    theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
+
+    aDepthSourceFramebuffer->DepthStencilTexture()->Unbind (
+      theGlContext, GL_TEXTURE0 + OpenGl_RT_DepthTexture);
+
+    aRenderFramebuffer->ColorTexture()->Unbind (
+      theGlContext, GL_TEXTURE0 + OpenGl_RT_PrevAccumTexture);
   }
 
   unbindRaytraceTextures (theGlContext);
@@ -2578,9 +2573,12 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
         0, GL_DEBUG_SEVERITY_MEDIUM, "Error: Failed to acquire OpenGL image textures");
     }
 
-    // Remember the old depth function
+    // Remember the old depth function and mask
     GLint aDepthFunc;
     theGlContext->core11fwd->glGetIntegerv (GL_DEPTH_FUNC, &aDepthFunc);
+
+    GLboolean aDepthMask;
+    theGlContext->core11fwd->glGetBooleanv (GL_DEPTH_WRITEMASK, &aDepthMask);
 
     glDisable (GL_BLEND);
     glDepthFunc (GL_ALWAYS);
@@ -2595,8 +2593,9 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
                                                    theReadDrawFbo,
                                                    theGlContext);
 
-    // Restore depth function
+    // Restore depth function and mask
     glDepthFunc (aDepthFunc);
+    glDepthMask (aDepthMask);
 
     if (!aResult)
     {
