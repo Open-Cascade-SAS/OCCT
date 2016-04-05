@@ -106,10 +106,30 @@
   #define GL_RG16F    0x822F
   #define GL_RG32F    0x8230
 
+  #define GL_R8I      0x8231
+  #define GL_R8UI     0x8232
+  #define GL_R16I     0x8233
+  #define GL_R16UI    0x8234
   #define GL_R32I     0x8235
+  #define GL_R32UI    0x8236
+  #define GL_RG8I     0x8237
+  #define GL_RG8UI    0x8238
+  #define GL_RG16I    0x8239
+  #define GL_RG16UI   0x823A
   #define GL_RG32I    0x823B
-  #define GL_RGB32I   0x8D83
+  #define GL_RG32UI   0x823C
+  #define GL_RGBA32UI 0x8D70
+  #define GL_RGB32UI  0x8D71
+  #define GL_RGBA16UI 0x8D76
+  #define GL_RGB16UI  0x8D77
+  #define GL_RGBA8UI  0x8D7C
+  #define GL_RGB8UI   0x8D7D
   #define GL_RGBA32I  0x8D82
+  #define GL_RGB32I   0x8D83
+  #define GL_RGBA16I  0x8D88
+  #define GL_RGB16I   0x8D89
+  #define GL_RGBA8I   0x8D8E
+  #define GL_RGB8I    0x8D8F
 
   // GL_OES_packed_depth_stencil
   #define GL_DEPTH_STENCIL                  0x84F9

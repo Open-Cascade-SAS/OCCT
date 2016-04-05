@@ -182,6 +182,88 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 }
 
 // =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
+                                    const GLuint theComponentsNb,
+                                    const GLsizei theElemsNb,
+                                    const GLushort* theData)
+{
+  if (theGlCtx->arbTBO == NULL)
+  {
+    return false;
+  }
+  else if (theComponentsNb < 1
+        || theComponentsNb > 4)
+  {
+    // unsupported format
+    return false;
+  }
+  else if (!Create (theGlCtx)
+        || !OpenGl_VertexBuffer::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
+  {
+    return false;
+  }
+
+  switch (theComponentsNb)
+  {
+    case 1: myTexFormat = GL_R16I;    break;
+    case 2: myTexFormat = GL_RG16I;   break;
+    case 3: myTexFormat = GL_RGB16I;  break;
+    case 4: myTexFormat = GL_RGBA16I; break;
+  }
+
+  Bind (theGlCtx);
+  BindTexture (theGlCtx);
+  theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
+  UnbindTexture (theGlCtx);
+  Unbind (theGlCtx);
+  return true;
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
+                                    const GLuint   theComponentsNb,
+                                    const GLsizei  theElemsNb,
+                                    const GLubyte*  theData)
+{
+  if (theGlCtx->arbTBO == NULL)
+  {
+    return false;
+  }
+  else if (theComponentsNb < 1
+        || theComponentsNb > 4)
+  {
+    // unsupported format
+    return false;
+  }
+  else if (!Create (theGlCtx)
+        || !OpenGl_VertexBuffer::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
+  {
+    return false;
+  }
+
+  switch (theComponentsNb)
+  {
+    case 1: myTexFormat = GL_R8;    break;
+    case 2: myTexFormat = GL_RG8;   break;
+    case 3: myTexFormat = GL_RGB8;  break;
+    case 4: myTexFormat = GL_RGBA8; break;
+  }
+
+  Bind (theGlCtx);
+  BindTexture (theGlCtx);
+  theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
+  UnbindTexture (theGlCtx);
+  Unbind (theGlCtx);
+  return true;
+}
+
+// =======================================================================
 // function : BindTexture
 // purpose  :
 // =======================================================================

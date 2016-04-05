@@ -76,6 +76,20 @@ public:
                              const GLsizei  theElemsNb,
                              const GLuint*  theData);
 
+  //! Perform TBO initialization with specified data.
+  //! Existing data will be deleted.
+  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theGlCtx,
+                             const GLuint     theComponentsNb,
+                             const GLsizei    theElemsNb,
+                             const GLushort*  theData);
+
+  //! Perform TBO initialization with specified data.
+  //! Existing data will be deleted.
+  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theGlCtx,
+                             const GLuint    theComponentsNb,
+                             const GLsizei   theElemsNb,
+                             const GLubyte*  theData);
+
   //! Bind TBO to specified Texture Unit.
   Standard_EXPORT void BindTexture (const Handle(OpenGl_Context)& theGlCtx,
                                     const GLenum theTextureUnit = GL_TEXTURE0) const;
