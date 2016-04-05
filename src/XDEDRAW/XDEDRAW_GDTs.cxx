@@ -2117,7 +2117,7 @@ static Standard_Integer addDimDir (Draw_Interpretor& di, Standard_Integer argc, 
 static Standard_Integer getDimDir (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
-    di<<"Use: XSetDimensionDir Doc Dim_Label\n";
+    di<<"Use: XGetDimensionDir Doc Dim_Label\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
@@ -2140,6 +2140,72 @@ static Standard_Integer getDimDir (Draw_Interpretor& di, Standard_Integer argc, 
     if(aDimension->GetObject()->GetDirection(dir))
     {
       di << dir.X()<< ";"<< dir.Y()<< ";"<<dir.Z(); 
+    }
+  }
+  return 0;
+}
+
+static Standard_Integer addDimDescr (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 4) {
+    di<<"Use: XAddDimensionDescr Doc Dim_Label Description [DescriptionName]\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if ( aLabel.IsNull() ) 
+  {
+    di << "Dimension "<< argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  Handle(XCAFDoc_Dimension) aDimension;
+  if(aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
+  {
+    Handle(XCAFDimTolObjects_DimensionObject) anObj = aDimension->GetObject();
+    Handle(TCollection_HAsciiString) aDescription = new TCollection_HAsciiString(argv[3]);
+    Handle(TCollection_HAsciiString) aDescrName = (argc == 4) ? new TCollection_HAsciiString()
+        : new TCollection_HAsciiString(argv[4]);
+    anObj->AddDescription(aDescription, aDescrName);
+    aDimension->SetObject(anObj);
+  }
+  return 0;
+}
+
+static Standard_Integer getDimDescr (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di << "Use: XGetDimensionDescr Doc Dim_Label\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) {
+    di << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if ( aLabel.IsNull() ) 
+  {
+    di << "Dimension "<< argv[2] << " is absent in " << argv[1] << "\n";
+    return 1;
+  }
+  Handle(XCAFDoc_Dimension) aDimension;
+  if(aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
+  {
+    Handle(XCAFDimTolObjects_DimensionObject) anObject = aDimension->GetObject();
+    for (Standard_Integer i = 0; i < anObject->NbDescriptions(); i++) {
+      Handle(TCollection_HAsciiString) aDescription = anObject->GetDescription(i);
+      Handle(TCollection_HAsciiString) aDescrName = anObject->GetDescriptionName(i);
+      di << "name: " << aDescrName->ToCString() << " description: " << aDescription->ToCString() << "\n";
     }
   }
   return 0;
@@ -2481,4 +2547,13 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
 
   di.Add ("XGetDimensionDir","XGetDimensionDir Doc Dim_Label",
     __FILE__, getDimDir, g);
+
+  di.Add ("XAddDimensionDescr","XAddDimensionDescr Doc Dim_Label Description [DescriptionName]\n"
+    "Add named text description to given Dimension, if DescriptionName is missed"
+    "name will be an empty string.",
+    __FILE__, addDimDescr, g);
+
+  di.Add ("XGetDimensionDescr","XGetDimensionDescr Doc Dim_Label\n"
+    "Return all descriptions of given Dimension.",
+    __FILE__, getDimDescr, g);
 }

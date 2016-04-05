@@ -16,7 +16,6 @@
 #include <Precision.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject,Standard_Transient)
 
 //=======================================================================
@@ -442,4 +441,26 @@ Handle(TColgp_HArray1OfPnt) XCAFDimTolObjects_DimensionObject::GetPoints ()  con
 void XCAFDimTolObjects_DimensionObject::SetPoints (const Handle(TColgp_HArray1OfPnt)& thePnts)
 {
   myPnts = thePnts;
+}
+
+//=======================================================================
+//function : RemoveDescription
+//purpose  : 
+//=======================================================================
+void XCAFDimTolObjects_DimensionObject::RemoveDescription(const Standard_Integer theNumber)
+{
+  if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
+    return;
+  NCollection_Vector<Handle(TCollection_HAsciiString)> aDescriptions;
+  NCollection_Vector<Handle(TCollection_HAsciiString)> aDescriptionNames;
+  for (Standard_Integer i = aDescriptions.Lower(); i < theNumber; i++) {
+    aDescriptions.Append(myDescriptions.Value(i));
+    aDescriptionNames.Append(myDescriptionNames.Value(i));
+  }
+  for (Standard_Integer i = theNumber + 1; i <= aDescriptions.Upper(); i++) {
+    aDescriptions.Append(myDescriptions.Value(i));
+    aDescriptionNames.Append(myDescriptionNames.Value(i));
+  }
+  myDescriptions = aDescriptions;
+  myDescriptionNames = aDescriptionNames;
 }

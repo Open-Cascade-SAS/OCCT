@@ -236,11 +236,6 @@
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
 
-enum DimensionalValueNumber {
-  DimensionalValueNumber_Nominal = 1,
-  DimensionalValueNumber_Lower,
-  DimensionalValueNumber_Upper
-};
 static NCollection_Vector<Handle(StepVisual_AnnotationPlane)> gdtAnnotationPlanes;
 static Handle(StepVisual_DraughtingModel) gdtPresentationDM;
 static Handle(StepVisual_HArray1OfPresentationStyleAssignment) gdtPrsCurveStyle;
@@ -2613,14 +2608,15 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
 
   // Values
   Handle(StepRepr_HArray1OfRepresentationItem) aValues;
-  Standard_Integer aNbValItems = 1, aNbAddItems = 0;
+  Standard_Integer aNbItems = 1, aValIt = 1;
   if (theObject->IsDimWithRange())
-    aNbValItems += 2;
+    aNbItems += 2;
   if (aModifiers.Length() > 0)
-    aNbAddItems++;
+    aNbItems++;
   if (theObject->GetType() == XCAFDimTolObjects_DimensionType_Location_Oriented)
-    aNbAddItems++;
-  aValues = new StepRepr_HArray1OfRepresentationItem(1, aNbValItems + aNbAddItems);
+    aNbItems++;
+  aNbItems += theObject->NbDescriptions();
+  aValues = new StepRepr_HArray1OfRepresentationItem(1, aNbItems);
 
   // Nominal value
   Standard_Real aNominal = theObject->GetValue();
@@ -2662,22 +2658,27 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
     aQRI->SetQualifiers(aQualifiers);
     Handle(StepRepr_ReprItemAndMeasureWithUnit) anItem = CreateDimValue(aNominal, aUnit,
       new TCollection_HAsciiString("nominal value"), aMeasureName, isAngle, Standard_True, aQRI);
-    aValues->SetValue(DimensionalValueNumber_Nominal, anItem);
+    aValues->SetValue(aValIt, anItem);
+    aValIt++;
   }
   // Without qualifiers
   else {
     Handle(StepRepr_ReprItemAndMeasureWithUnit) anItem = CreateDimValue(aNominal, aUnit,
       new TCollection_HAsciiString("nominal value"), aMeasureName, isAngle);
-    aValues->SetValue(DimensionalValueNumber_Nominal, anItem);
+    aValues->SetValue(aValIt, anItem);
+    aValIt++;
   }
+
   // Ranges
   if (theObject->IsDimWithRange()) {
     Handle(StepRepr_ReprItemAndMeasureWithUnit) aLowerItem = CreateDimValue(theObject->GetLowerBound(), aUnit,
       new TCollection_HAsciiString("lower limit"), aMeasureName, isAngle);
     Handle(StepRepr_ReprItemAndMeasureWithUnit) anUpperItem = CreateDimValue(theObject->GetUpperBound(), aUnit,
       new TCollection_HAsciiString("upper limit"), aMeasureName, isAngle);
-    aValues->SetValue(DimensionalValueNumber_Lower, aLowerItem);
-    aValues->SetValue(DimensionalValueNumber_Upper, anUpperItem);
+    aValues->SetValue(aValIt, aLowerItem);
+    aValIt++;
+    aValues->SetValue(aValIt, anUpperItem);
+    aValIt++;
   }
 
   // Modifiers
@@ -2694,7 +2695,8 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
       aModifItems->SetValue(i, aModifItem);
     }
     aCompoundRI->Init(new TCollection_HAsciiString(), aModifItems);
-    aValues->SetValue(aNbValItems + 1, aCompoundRI);
+    aValues->SetValue(aValIt, aCompoundRI);
+    aValIt++;
   }
 
   // Orientation
@@ -2711,7 +2713,18 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
     aCoords->SetValue(3, aDir.Z());
     anAxis->Init(new TCollection_HAsciiString(), aCoords);
     anOrientation->Init(new TCollection_HAsciiString("orientation"), aLoc, Standard_True, anAxis, Standard_False, NULL);
-    aValues->SetValue(aValues->Length(), anOrientation);
+    aValues->SetValue(aValIt, anOrientation);
+    aValIt++;
+  }
+
+  // Descriptions
+  if (theObject->HasDescriptions()) {
+    for (Standard_Integer i = 0; i < theObject->NbDescriptions(); i++) {
+      Handle(StepRepr_DescriptiveRepresentationItem) aDRI = new StepRepr_DescriptiveRepresentationItem();
+      aDRI->Init(theObject->GetDescriptionName(i), theObject->GetDescription(i));
+      aValues->SetValue(aValIt, aDRI);
+      aValIt++;
+    }
   }
 
   for (Standard_Integer i = 1; i <= aValues->Length(); i++)

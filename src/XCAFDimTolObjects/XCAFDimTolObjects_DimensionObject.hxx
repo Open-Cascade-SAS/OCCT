@@ -38,6 +38,8 @@
 #include <Standard_Real.hxx>
 #include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Vector.hxx>
+#include <TColStd_HArray1OfExtendedString.hxx>
 
 class XCAFDimTolObjects_DimensionObject;
 DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_DimensionObject, Standard_Transient)
@@ -143,8 +145,6 @@ public:
 
   Standard_EXPORT Standard_Boolean HasPoints() const { return (!myPnts.IsNull() && myPnts->Length() > 0); }
 
- 
-
   //! Set graphical presentation for object
   Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
     const Handle(TCollection_HAsciiString)& thePresentationName)
@@ -163,6 +163,44 @@ public:
   Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
   {
     return myPresentationName;
+  }
+
+  //! Returns true, if the object has descriptions
+  Standard_EXPORT Standard_Boolean HasDescriptions() const
+  {
+    return (myDescriptions.Length() > 0);
+  }
+
+  //! Returns number of descriptions
+  Standard_EXPORT Standard_Integer NbDescriptions() const
+  {
+    return myDescriptions.Length();
+  }
+
+  //! Returns description with the given number
+  Standard_EXPORT Handle(TCollection_HAsciiString) GetDescription(const Standard_Integer theNumber) const
+  {
+    if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
+      return  new TCollection_HAsciiString();
+    return myDescriptions.Value(theNumber);
+  }
+
+  //! Returns name of description with the given number
+  Standard_EXPORT Handle(TCollection_HAsciiString) GetDescriptionName(const Standard_Integer theNumber) const
+  {
+    if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
+      return new TCollection_HAsciiString();
+    return myDescriptionNames.Value(theNumber);
+  }
+
+  //! Remove description with the given number
+  Standard_EXPORT void RemoveDescription(const Standard_Integer theNumber);
+
+  //! Add new description
+  Standard_EXPORT void AddDescription(const Handle(TCollection_HAsciiString) theDescription, const Handle(TCollection_HAsciiString) theName)
+  {
+    myDescriptions.Append(theDescription);
+    myDescriptionNames.Append(theName);
   }
 
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject,Standard_Transient)
@@ -187,6 +225,8 @@ private:
   gp_Pnt myPntText;
   TopoDS_Shape myPresentation;
   Handle(TCollection_HAsciiString) myPresentationName;
+  NCollection_Vector<Handle(TCollection_HAsciiString)> myDescriptions;
+  NCollection_Vector<Handle(TCollection_HAsciiString)> myDescriptionNames;
 
 };
 

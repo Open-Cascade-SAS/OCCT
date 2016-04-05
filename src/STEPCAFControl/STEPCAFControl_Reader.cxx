@@ -2890,6 +2890,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
   Handle(StepShape_DimensionalLocation) aDimLocation = 
     Handle(StepShape_DimensionalLocation)::DownCast(theEnt);
 
+  aDimObj = new XCAFDimTolObjects_DimensionObject();
   Standard_Real aDim1=-1.,aDim2=-1.,aDim3=-1.;
   Handle(StepShape_TypeQualifier) aTQ;
   Handle(StepShape_ValueFormatTypeQualifier) aVFTQ;
@@ -3008,6 +3009,11 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
                 aVFTQ = aQRI->Qualifiers()->Value(l).ValueFormatTypeQualifier();
               }
             }
+            else if (aDRI->IsKind(STANDARD_TYPE(StepRepr_DescriptiveRepresentationItem))) {
+              Handle(StepRepr_DescriptiveRepresentationItem) aDescription =
+                Handle(StepRepr_DescriptiveRepresentationItem)::DownCast(aDRI);
+              aDimObj->AddDescription(aDescription->Description(), aDescription->Name());
+            }
             else if(aDRI->IsKind(STANDARD_TYPE(StepRepr_CompoundRepresentationItem))) {
               aCRI = Handle(StepRepr_CompoundRepresentationItem)::DownCast(aDRI);
             }
@@ -3059,7 +3065,6 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
 
   if(aDim1<0) return;
 
-  aDimObj = new XCAFDimTolObjects_DimensionObject();
   if(aDim2 < 0)
     aDimObj->SetValue(aDim1);
   else if (aDim3 < 0)

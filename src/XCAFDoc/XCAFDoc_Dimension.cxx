@@ -21,6 +21,7 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_IntegerArray.hxx>
+#include <TDataStd_ExtStringArray.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TNaming_Builder.hxx>
@@ -48,8 +49,9 @@ enum ChildLab
   ChildLab_PlaneN,
   ChildLab_PlaneRef,
   ChildLab_PntText,
-  ChildLab_Presentation
-  
+  ChildLab_Presentation,
+  ChildLab_Descriptions,
+  ChildLab_DescriptionNames
 };
 
 //=======================================================================
@@ -247,7 +249,24 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
       TDataStd_Name::Set ( aLPres, str );
     }
   }
-  
+
+  if (theObject->HasDescriptions())
+  {
+    Handle(TDataStd_ExtStringArray) aDescriptions = new TDataStd_ExtStringArray();
+    Handle(TDataStd_ExtStringArray) aDescriptionNames = new TDataStd_ExtStringArray();
+    Handle(TColStd_HArray1OfExtendedString) aDescrArr = new TColStd_HArray1OfExtendedString(1, theObject->NbDescriptions());
+    Handle(TColStd_HArray1OfExtendedString) aDescrNameArr = new TColStd_HArray1OfExtendedString(1, theObject->NbDescriptions());
+    for (Standard_Integer i = 0; i < theObject->NbDescriptions(); i++) {
+      TCollection_ExtendedString aDescr(theObject->GetDescription(i)->String());
+      aDescrArr->SetValue(i + 1, aDescr);
+      TCollection_ExtendedString aDescrName(theObject->GetDescriptionName(i)->String());
+      aDescrNameArr->SetValue(i + 1, aDescrName);
+    }
+    aDescriptions->ChangeArray(aDescrArr);
+    aDescriptionNames->ChangeArray(aDescrNameArr);
+    Label().FindChild(ChildLab_Descriptions).AddAttribute(aDescriptions);
+    Label().FindChild(ChildLab_DescriptionNames).AddAttribute(aDescriptionNames);
+  }
 }
 
 //=======================================================================
@@ -371,6 +390,17 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject()  const
       }
 
       anObj->SetPresentation(aPresentation, aPresentName);
+    }
+  }
+
+  Handle(TDataStd_ExtStringArray) aDescriptions, aDescriptionNames;
+  if (Label().FindChild(ChildLab_Descriptions).FindAttribute(TDataStd_ExtStringArray::GetID(), aDescriptions) &&
+    Label().FindChild(ChildLab_DescriptionNames).FindAttribute(TDataStd_ExtStringArray::GetID(), aDescriptionNames)) {
+    for (Standard_Integer i = 1; i <= aDescriptions->Length(); i++) {
+      Handle(TCollection_HAsciiString) aDescription, aDescriptionName;
+      aDescription = new TCollection_HAsciiString(TCollection_AsciiString(aDescriptions->Value(i)));
+      aDescriptionName = new TCollection_HAsciiString(TCollection_AsciiString(aDescriptionNames->Value(i)));
+      anObj->AddDescription(aDescription, aDescriptionName);
     }
   }
   return anObj;

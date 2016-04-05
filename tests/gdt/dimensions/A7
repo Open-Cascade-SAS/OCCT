@@ -1,0 +1,33 @@
+# test text descriptions
+box b 10 10 10
+explode b e
+
+NewDocument D_init
+XAddShape D_init b
+XAddDimension D_init b_1
+#0:1:4:1
+XSetDimensionType D_init 0:1:4:1 14
+XSetDimensionValue D_init 0:1:4:1 10
+XAddDimensionDescr D_init 0:1:4:1 description1
+XAddDimensionDescr D_init 0:1:4:1 description2 name2
+# Export
+set isOK 1
+if { [catch { WriteStep D_init $imagedir/${casename}_D_init.stp } catch_result] } {
+  puts "Error: File was not written - exception"
+  set isOK 0
+  }
+# Import
+if {$isOK} {
+  if { [catch { ReadStep D $imagedir/${casename}_D_init.stp } catch_result] } {
+    puts "Error: File was not read - exception"
+    set isOK 0
+    }
+  }
+# Reference data
+if {$isOK} {
+set c_value "10"
+set c_type "Size_CurveLength"
+set c_descr {name:  description: description1
+name: name2 description: description2
+}
+}
