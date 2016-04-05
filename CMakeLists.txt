@@ -70,10 +70,13 @@ set (INSTALL_SAMPLES OFF CACHE BOOL "${INSTALL_SAMPLES_DESCR}")
 # install dir of the project
 if (NOT DEFINED INSTALL_DIR)
   # set default install directory for Windows
-  if (WIN32)
+  if (WIN32 AND NOT DEFINED CMAKE_INSTALL_PREFIX)
     set (CMAKE_INSTALL_PREFIX "C:/opencascade-${OCC_VERSION_STRING_EXT}")
   endif()
   set (INSTALL_DIR "${CMAKE_INSTALL_PREFIX}" CACHE PATH "${INSTALL_DIR_DESCR}")
+else()
+  file (TO_CMAKE_PATH ${INSTALL_DIR} INSTALL_DIR)
+  set (INSTALL_DIR "${INSTALL_DIR}" CACHE PATH "${INSTALL_DIR_DESCR}" FORCE)
 endif()
 
 # choose a variant of the layout of the install paths
@@ -377,6 +380,9 @@ endif()
 if (NOT DEFINED 3RDPARTY_DIR)
   set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_DESCR})
   get_filename_component (3RDPARTY_DIR "${3RDPARTY_DIR}" ABSOLUTE)
+else()
+  file (TO_CMAKE_PATH ${3RDPARTY_DIR} 3RDPARTY_DIR)
+  set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH "${3RDPARTY_DIR_DESCR}" FORCE)
 endif()
 
 # search for CSF_TclLibs variable in EXTERNLIB of each being used toolkit
