@@ -55,7 +55,7 @@ endif()
 COMPLIANCE_PRODUCT_CONSISTENCY(TCL)
 
 # use default (CMake) TCL search
-find_package(TCL)
+find_package(TCL QUIET)
 
 # tcl include dir
 if (NOT 3RDPARTY_TCL_INCLUDE_DIR)

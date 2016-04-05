@@ -59,7 +59,7 @@ endif()
 COMPLIANCE_PRODUCT_CONSISTENCY(TK)
 
 # use default (CMake) TCL search
-find_package(TCL)
+find_package(TCL QUIET)
 
 # tk include dir
 if (NOT 3RDPARTY_TK_INCLUDE_DIR)

@@ -1,0 +1,14 @@
+#-----------------------------------------------------------------------------
+#
+# OpenCASCADECompileDefinitionsAndFlags-@OCCT_CONFIGURATION_LOWER@.cmake - OpenCASCADE CMake file 
+# with compile definitions and C/C++ flags for @OCCT_CONFIGURATION@ configuration.
+#
+# This file is configured by OpenCASCADE.
+#
+
+# The C and C++ flags added by OpenCASCADE to the cmake-configured flags.
+set (OpenCASCADE_C_FLAGS_@OCCT_CONFIGURATION_UPPER@      "@SET_OpenCASCADE_CMAKE_C_FLAGS@")
+set (OpenCASCADE_CXX_FLAGS_@OCCT_CONFIGURATION_UPPER@    "@SET_OpenCASCADE_CMAKE_CXX_FLAGS@")
+
+# The compile definitions used by OpenCASCADE.
+@SET_OpenCASCADE_COMPILE_DEFINITIONS@

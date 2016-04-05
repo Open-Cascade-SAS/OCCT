@@ -54,7 +54,7 @@ set (OpenCASCADE_BUILD_WITH_DEBUG  @BUILD_WITH_DEBUG@)
 set (OpenCASCADE_BUILD_SHARED_LIBS @BUILD_SHARED_LIBS@)
 @SET_OpenCASCADE_BUILD_TYPE@
 
-# Use of third-party libraries
+# Use of third-party libraries.
 set (OpenCASCADE_WITH_TCL       @USE_TCL@)
 set (OpenCASCADE_WITH_FREETYPE  @USE_FREETYPE@)
 set (OpenCASCADE_WITH_FREEIMAGE @USE_FREEIMAGE@)
@@ -63,6 +63,12 @@ set (OpenCASCADE_WITH_TBB       @USE_TBB@)
 set (OpenCASCADE_WITH_VTK       @USE_VTK@)
 @SET_OpenCASCADE_WITH_D3D@
 @SET_OpenCASCADE_WITH_GLX@
+
+# Import OpenCASCADE compile definitions, C and C++ flags for each installed configuration.
+file(GLOB CONFIG_FILES "${CMAKE_CURRENT_LIST_DIR}/OpenCASCADECompileDefinitionsAndFlags-*.cmake")
+foreach(f ${CONFIG_FILES})
+  include(${f})
+endforeach()
 
 if (NOT OpenCASCADE_FIND_COMPONENTS)
   set (OpenCASCADE_FIND_COMPONENTS ${OpenCASCADE_MODULES})
