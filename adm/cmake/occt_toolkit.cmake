@@ -91,10 +91,40 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
         string (COMPARE EQUAL ${CURRENT_FLEX_FILE_NAME} ${CURRENT_BISON_FILE_NAME} ARE_FILES_EQUAL)
 
         if (EXISTS "${CURRENT_FLEX_FILE}" AND EXISTS "${CURRENT_BISON_FILE}" AND ${ARE_FILES_EQUAL})
-          set (BISON_OUTPUT_FILE ${CURRENT_BISON_FILE_NAME}.tab.c)
-          set (FLEX_OUTPUT_FILE lex.${CURRENT_FLEX_FILE_NAME}.c)
-          BISON_TARGET (Parser_${CURRENT_BISON_FILE_NAME} ${CURRENT_BISON_FILE} ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${BISON_OUTPUT_FILE} COMPILE_FLAGS "-p ${CURRENT_BISON_FILE_NAME} -l")
-          FLEX_TARGET  (Scanner_${CURRENT_FLEX_FILE_NAME} ${CURRENT_FLEX_FILE} ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${FLEX_OUTPUT_FILE} COMPILE_FLAGS "-P${CURRENT_FLEX_FILE_NAME} -L")
+
+          # Note: files are generated in original source directory (not in patch!)
+          set (FLEX_BISON_TARGET_DIR "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}")
+
+          # choose apropriate extension for generated files: "cxx" if source file contains
+          # instruction to generate C++ code, "c" otherwise
+          set (BISON_OUTPUT_FILE_EXT "c")
+          set (FLEX_OUTPUT_FILE_EXT "c")
+          file (STRINGS "${CURRENT_BISON_FILE}" FILE_BISON_CONTENT)
+          foreach (FILE_BISON_CONTENT_LINE ${FILE_BISON_CONTENT})
+            string (REGEX MATCH "%language \"C\\+\\+\"" CXX_BISON_LANGUAGE_FOUND ${FILE_BISON_CONTENT_LINE})
+            if (CXX_BISON_LANGUAGE_FOUND)
+              set (BISON_OUTPUT_FILE_EXT "cxx")
+            endif()
+          endforeach()
+          file (STRINGS "${CURRENT_FLEX_FILE}" FILE_FLEX_CONTENT)
+          foreach (FILE_FLEX_CONTENT_LINE ${FILE_FLEX_CONTENT})
+            string (REGEX MATCH "%option c\\+\\+" CXX_FLEX_LANGUAGE_FOUND ${FILE_FLEX_CONTENT_LINE})
+            if (CXX_FLEX_LANGUAGE_FOUND)
+              set (FLEX_OUTPUT_FILE_EXT "cxx")
+
+              # install copy of FlexLexer.h locally to allow further building without flex
+              if (FLEX_INCLUDE_DIR AND EXISTS "${FLEX_INCLUDE_DIR}/FlexLexer.h")
+                configure_file("${FLEX_INCLUDE_DIR}/FlexLexer.h" "${FLEX_BISON_TARGET_DIR}/FlexLexer.h" @ONLY NEWLINE_STYLE LF)
+              endif()
+            endif()
+          endforeach()
+          set (BISON_OUTPUT_FILE ${CURRENT_BISON_FILE_NAME}.tab.${BISON_OUTPUT_FILE_EXT})
+          set (FLEX_OUTPUT_FILE lex.${CURRENT_FLEX_FILE_NAME}.${FLEX_OUTPUT_FILE_EXT})
+
+          BISON_TARGET (Parser_${CURRENT_BISON_FILE_NAME} ${CURRENT_BISON_FILE} "${FLEX_BISON_TARGET_DIR}/${BISON_OUTPUT_FILE}"
+                        COMPILE_FLAGS "-p ${CURRENT_BISON_FILE_NAME} -l -M ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/=")
+          FLEX_TARGET  (Scanner_${CURRENT_FLEX_FILE_NAME} ${CURRENT_FLEX_FILE} "${FLEX_BISON_TARGET_DIR}/${FLEX_OUTPUT_FILE}"
+                        COMPILE_FLAGS "-P${CURRENT_FLEX_FILE_NAME} -L")
           ADD_FLEX_BISON_DEPENDENCY (Scanner_${CURRENT_FLEX_FILE_NAME} Parser_${CURRENT_BISON_FILE_NAME})
            
           list (APPEND SOURCE_FILES ${BISON_OUTPUT_FILE} ${FLEX_OUTPUT_FILE})

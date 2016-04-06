@@ -268,17 +268,30 @@ static Standard_Integer stepread (Draw_Interpretor& di, Standard_Integer argc, c
 //function : testreadstep
 //purpose  : 
 //=======================================================================
-static Standard_Integer testread (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer testreadstep (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc != 3)                                                                                      
-    {                                                                                             
-      di << "ERROR in " << argv[0] << "Wrong Number of Arguments.\n";                     
-      di << " Usage : " << argv[0] <<" file_name shape_name\n";                          
-      return 1;                                                                                 
-    }
+  if (argc < 3 || argc > 4)                                                                                      
+  {
+    di << "ERROR in " << argv[0] << "Wrong Number of Arguments.\n";
+    di << " Usage : " << argv[0] << " file_name shape_name [-stream]\n";
+    di << " Option -stream forces usage of API accepting stream\n";
+    return 1;
+  }
+
+  Standard_Boolean useStream = (argc > 3 && ! strcasecmp (argv[3], "-stream"));
+
   STEPControl_Reader Reader;
   Standard_CString filename = argv[1];
-  IFSelect_ReturnStatus readstat = Reader.ReadFile(filename);
+  IFSelect_ReturnStatus readstat;
+  if (useStream)
+  {
+    std::ifstream aStream (filename);
+    readstat = Reader.ReadStream(filename, aStream);
+  }
+  else
+  {
+    readstat = Reader.ReadFile(filename);
+  }
   di<<"Status from reading STEP file "<<filename<<" : ";  
   switch(readstat) {                                                              
     case IFSelect_RetVoid  : { di<<"empty file\n"; return 1; }            
@@ -540,7 +553,7 @@ void XSDRAWSTEP::InitCommands (Draw_Interpretor& theCommands)
   theCommands.Add("stepwrite" ,    "stepwrite mode[0-4 afsmw] shape",  __FILE__, stepwrite,     g);
   theCommands.Add("testwritestep", "testwritestep filename.stp shape", __FILE__, testwrite,     g);
   theCommands.Add("stepread",      "stepread  [file] [f or r (type of model full or reduced)]",__FILE__, stepread,      g);
-  theCommands.Add("testreadstep",  "testreadstep [file] [name DRAW]",  __FILE__, testread,      g);
+  theCommands.Add("testreadstep",  "testreadstep file shape [-stream]",__FILE__, testreadstep,  g);
   theCommands.Add("steptrans",     "steptrans shape stepax1 stepax2",  __FILE__, steptrans,     g);
   theCommands.Add("countexpected","TEST",                              __FILE__, countexpected, g);
   theCommands.Add("dumpassembly", "TEST",                              __FILE__, dumpassembly,  g);

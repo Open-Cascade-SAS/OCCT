@@ -104,6 +104,9 @@ public:
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
   Standard_EXPORT IFSelect_ReturnStatus ReadFile (const Standard_CString filename);
+
+  //! Loads a file from stream and returns the read status
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const Standard_CString theName, std::istream& theIStream);
   
   //! Returns the model. It can then be consulted (header, product)
   Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;

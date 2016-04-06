@@ -73,8 +73,22 @@ Standard_Integer  StepSelect_WorkLibrary::ReadFile
   Handle(StepData_StepModel) stepmodel  = new StepData_StepModel;
   model  = stepmodel;
   StepFile_ReadTrace (0);
-  char *pName=(char *)name;
-  status = StepFile_Read (pName,stepmodel,stepro);
+  status = StepFile_Read(name, 0, stepmodel, stepro);
+  return status;
+}
+
+Standard_Integer  StepSelect_WorkLibrary::ReadStream (const Standard_CString theName,
+                                                      std::istream& theIStream,
+                                                      Handle(Interface_InterfaceModel)& model,
+                                                      const Handle(Interface_Protocol)& protocol) const
+{
+  long status = 1;
+  DeclareAndCast(StepData_Protocol, stepro, protocol);
+  if (stepro.IsNull()) return 1;
+  Handle(StepData_StepModel) stepmodel = new StepData_StepModel;
+  model = stepmodel;
+  StepFile_ReadTrace(0);
+  status = StepFile_Read(theName, &theIStream, stepmodel, stepro);
   return status;
 }
 

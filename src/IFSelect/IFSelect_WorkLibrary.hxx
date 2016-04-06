@@ -61,6 +61,16 @@ public:
   //! and recognize the Entities)
   Standard_EXPORT virtual Standard_Integer ReadFile (const Standard_CString name, Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol) const = 0;
   
+  //! Interface to read a data from the specified stream.
+  //! @param model is the resulting Model, which has to be created by this method. 
+  //!        In case of error, model must be returned Null
+  //! Return value is a status: 0 - OK, 1 - read failure, -1 - stream failure.
+  //! 
+  //! Default implementation returns 1 (error).
+  Standard_EXPORT virtual Standard_Integer ReadStream (const Standard_CString theName, std::istream& theIStream, 
+                                                       Handle(Interface_InterfaceModel)& model, 
+                                                       const Handle(Interface_Protocol)& protocol) const;
+
   //! Gives the way to Write a File from a Model.
   //! <ctx> contains all necessary informations : the model, the
   //! protocol, the file name, and the list of File Modifiers to be

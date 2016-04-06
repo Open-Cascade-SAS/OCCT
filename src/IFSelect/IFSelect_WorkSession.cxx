@@ -207,8 +207,7 @@ void  IFSelect_WorkSession::SetModel
 //purpose  : 
 //=======================================================================
 
-IFSelect_ReturnStatus  IFSelect_WorkSession::ReadFile
-                                        (const Standard_CString filename)
+IFSelect_ReturnStatus  IFSelect_WorkSession::ReadFile(const Standard_CString filename)
 {
   if (thelibrary.IsNull()) return IFSelect_RetVoid;
   if (theprotocol.IsNull()) return IFSelect_RetVoid;
@@ -216,7 +215,7 @@ IFSelect_ReturnStatus  IFSelect_WorkSession::ReadFile
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   try {
     OCC_CATCH_SIGNALS
-    Standard_Integer stat = thelibrary->ReadFile (filename,model,theprotocol);
+    Standard_Integer stat = thelibrary->ReadFile(filename, model, theprotocol);
     if (stat == 0) status = IFSelect_RetDone;
     else if (stat < 0) status = IFSelect_RetError;
     else status = IFSelect_RetFail;
@@ -232,6 +231,39 @@ IFSelect_ReturnStatus  IFSelect_WorkSession::ReadFile
   if (model.IsNull()) return IFSelect_RetVoid;
   SetModel (model);
   SetLoadedFile (filename);
+  return status;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+IFSelect_ReturnStatus  IFSelect_WorkSession::ReadStream(const Standard_CString theName,
+                                                        std::istream& theIStream)
+{
+  if (thelibrary.IsNull()) return IFSelect_RetVoid;
+  if (theprotocol.IsNull()) return IFSelect_RetVoid;
+  Handle(Interface_InterfaceModel) model;
+  IFSelect_ReturnStatus status = IFSelect_RetVoid;
+  try {
+    OCC_CATCH_SIGNALS
+    Standard_Integer stat = thelibrary->ReadStream(theName, theIStream, model, theprotocol);
+    if (stat == 0) status = IFSelect_RetDone;
+    else if (stat < 0) status = IFSelect_RetError;
+    else status = IFSelect_RetFail;
+  }
+  catch (Standard_Failure const& anException) {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "    ****    Interruption ReadFile par Exception :   ****\n";
+    sout << anException.GetMessageString();
+    sout << "\n    Abandon" << std::endl;
+    status = IFSelect_RetFail;
+  }
+  if (status != IFSelect_RetDone) return status;
+  if (model.IsNull()) return IFSelect_RetVoid;
+  SetModel(model);
+  SetLoadedFile(theName);
   return status;
 }
 

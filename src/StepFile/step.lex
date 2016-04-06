@@ -13,15 +13,46 @@
  commercial license or contractual agreement.
 */ 
 
+/*
+    c++                 generate C++ parser class
+    8bit                don't fail on 8-bit input characters
+    warn                warn about inconsistencies
+    nodefault           don't create default echo-all rule
+    noyywrap            don't use yywrap() function
+    yyclass             define name of the scanner class
+*/
+%option c++
+%option 8bit warn nodefault
+%option noyywrap
+%option yyclass="step::scanner"
+
+%top{
+// This file is part of Open CASCADE Technology software library.
+// This file is generated, do not modify it directly; edit source file step.lex instead.
+
+// Pre-include stdlib.h to avoid redefinition of integer type macros (INT8_MIN and similar in generated code)
+#if !defined(_MSC_VER) || (_MSC_VER >= 1600) // Visual Studio 2010+
+#include "stdint.h"
+#endif
+}
+
 %{
-#include "step.tab.h"
+#include "step.tab.hxx"
 #include "recfile.ph"
 #include "stdio.h"
-#include <StepFile_CallFailure.hxx>
+
+// Tell flex which function to define
+#ifdef  YY_DECL
+# undef YY_DECL
+#endif
+#define YY_DECL int step::scanner::lex (step::parser::semantic_type* /*yylval*/, step::parser::location_type* /*yylloc*/)
+
+typedef step::parser::token token;
 
 /* skl 31.01.2002 for OCC133(OCC96,97) - uncorrect
 long string in files Henri.stp and 401.stp*/
-#define YY_FATAL_ERROR(msg) StepFile_CallFailure( msg )
+#include <Standard_Failure.hxx>
+#define YY_FATAL_ERROR(msg) Standard_Failure::Raise(msg);
 
 /* abv 07.06.02: force inclusion of stdlib.h on WNT to avoid warnings */
 #ifdef _MSC_VER
@@ -48,33 +79,13 @@ long string in files Henri.stp and 401.stp*/
 
 #endif /* MSC_VER */
 
-/*
-void steperror ( FILE *input_file );
-void steprestart ( FILE *input_file );
-*/
-void rec_restext(char *newtext, int lentext);
+void rec_restext(const char *constnewtext, int lentext);
 void rec_typarg(int argtype);
- 
- /* Counter of lines in the file  */
-int  steplineno;
-  
-/* Reset the lexical scanner before reading */
-void rec_inityyll()
-{ 
-  yy_init  = yy_start = 1;  
-}
-
-/* Record current match (text string) for further processing */
-void resultat()
-{ 
-  rec_restext(yytext,yyleng);
-}
 
 // disable GCC warnings in flex code
 #ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wunused-function"
 #endif
-
 %}
 %x Com End Text
 %%
@@ -84,46 +95,53 @@ void resultat()
 <Com>[*]+[/]       { BEGIN(INITIAL); } /* end of comment - reset the scanner to initial state */
 
 [']                { BEGIN(Text); yymore(); }   /* start of quoted text string - put the scanner in the "Text" state, but keep ' as part of yytext */
-<Text>[\n]         { yymore(); steplineno ++; } /* newline in text string - increment line counter and keep collecting yytext */
+<Text>[\n]         { yymore(); yylineno ++; }   /* newline in text string - increment line counter and keep collecting yytext */
 <Text>[']          { yymore(); }                /* single ' inside text string - keep collecting yytext*/
 <Text>[^\n']+      { yymore(); }                /* a sequence of any characters except ' and \n - keep collecting yytext */
-<Text>[']/[" "\n\r]*[\)\,]    { BEGIN(INITIAL); resultat(); rec_typarg(rec_argText); return(QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
+<Text>[']/[" "\n\r]*[\)\,]    { BEGIN(INITIAL); rec_restext(YYText(),YYLeng()); rec_typarg(rec_argText); return(token::QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
 
 "	"	{;}
 " "		{;}
-<*>[\n]		{ steplineno ++; } /* count lines (one rule for all start conditions) */
+<*>[\n]		{ yylineno ++; } /* count lines (one rule for all start conditions) */
 [\r]    	{;} /* abv 30.06.00: for reading DOS files */
 [\0]+		{;} /* fix from C21. for test load e3i file with line 15 with null symbols */
 
-#[0-9]+/=		{ resultat(); return(ENTITY); }
-#[0-9]+/[ 	]*=	{ resultat(); return(ENTITY); }
-#[0-9]+		{ resultat(); return(IDENT); }
-[-+0-9][0-9]*	{ resultat(); rec_typarg(rec_argInteger); return(QUID); }
-[-+\.0-9][\.0-9]+	{ resultat(); rec_typarg(rec_argFloat); return(QUID); }
-[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ resultat(); rec_typarg(rec_argFloat); return(QUID); }
-["][0-9A-F]+["] 	{ resultat(); rec_typarg(rec_argHexa); return(QUID); }
-[.][A-Z0-9_]+[.]	{ resultat(); rec_typarg(rec_argEnum); return(QUID); }
+#[0-9]+/=		{ rec_restext(YYText(),YYLeng()); return(token::ENTITY); }
+#[0-9]+/[ 	]*=	{ rec_restext(YYText(),YYLeng()); return(token::ENTITY); }
+#[0-9]+		{ rec_restext(YYText(),YYLeng()); return(token::IDENT); }
+[-+0-9][0-9]*	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argInteger); return(token::QUID); }
+[-+\.0-9][\.0-9]+	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argFloat); return(token::QUID); }
+[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argFloat); return(token::QUID); }
+["][0-9A-F]+["] 	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argHexa); return(token::QUID); }
+[.][A-Z0-9_]+[.]	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argEnum); return(token::QUID); }
 [(]		{ return ('('); }
 [)]		{ return (')'); }
 [,]		{ return (','); }
-[$]		{ resultat(); rec_typarg(rec_argNondef); return(QUID); }
+[$]		{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argNondef); return(token::QUID); }
 [=]		{ return ('='); }
 [;]		{ return (';'); }
 
-STEP;		{ return(STEP); }
-HEADER;		{ return(HEADER); }
-ENDSEC;		{ return(ENDSEC); }
-DATA;		{ return(DATA); }
-ENDSTEP;	{ return(ENDSTEP);}
-"ENDSTEP;".*	 { return(ENDSTEP);}
-END-ISO[0-9\-]*; { BEGIN(End); return(ENDSTEP); } /* at the end of the STEP data, enter dedicated start condition "End" to skip everything that follows */
-ISO[0-9\-]*;	 { return(STEP); }
+STEP;		{ return(token::STEP); }
+HEADER;		{ return(token::HEADER); }
+ENDSEC;		{ return(token::ENDSEC); }
+DATA;		{ return(token::DATA); }
+ENDSTEP;	{ return(token::ENDSTEP);}
+"ENDSTEP;".*	 { return(token::ENDSTEP);}
+END-ISO[0-9\-]*; { BEGIN(End); return(token::ENDSTEP); } /* at the end of the STEP data, enter dedicated start condition "End" to skip everything that follows */
+ISO[0-9\-]*;	 { return(token::STEP); }
 
 [/]		{ return ('/'); }
-&SCOPE		{ return(SCOPE); }
-ENDSCOPE	{ return(ENDSCOPE); }
-[a-zA-Z0-9_]+	{ resultat(); return(TYPE); }
-![a-zA-Z0-9_]+	{ resultat(); return(TYPE); }
-[^)]		{ resultat(); rec_typarg(rec_argMisc); return(QUID); }
+&SCOPE		{ return(token::SCOPE); }
+ENDSCOPE	{ return(token::ENDSCOPE); }
+[a-zA-Z0-9_]+	{ rec_restext(YYText(),YYLeng()); return(token::TYPE); }
+![a-zA-Z0-9_]+	{ rec_restext(YYText(),YYLeng()); return(token::TYPE); }
+[^)]		{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argMisc); return(token::QUID); }
 
 <End>[^\n]      {;} /* skip any characters (except newlines) */
+
+%%
+
+step::scanner::scanner(std::istream* in, std::ostream* out)
+    : stepFlexLexer(in, out)
+{
+}

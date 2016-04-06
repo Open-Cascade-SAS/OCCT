@@ -50,31 +50,31 @@
   static char* restext = NULL ;  /* texte courant  (allocation dynamique) */
   /* static int   resalloc = 0 ;*/    /*   alloue (memoire a liberer) ou non   */
 
-static char txt_cart_p[]   = "CARTESIAN_POINT";
-
-void rec_restext(char* newtext, int lentext)         /* destine a etre appele de l'exterieur */
+void rec_restext(const char* theNewText, int theLenText)         /* destine a etre appele de l'exterieur */
 {
-  char *res, *text;
-  if(strcmp(newtext,txt_cart_p)==0) {
+  // optimization for most frequent entity, CARTESIAN_POINT
+  static char txt_cart_p[] = "CARTESIAN_POINT";
+  if(strcmp(theNewText,txt_cart_p)==0) {
     restext = txt_cart_p;
     return;
   }
   
-  if (onecarpage->used > Maxcar-lentext-1) {   /* allouer nouvelle page */
+  if (onecarpage->used > Maxcar-theLenText-1) {   /* allouer nouvelle page */
     struct carpage *newpage;
     int sizepage = sizeof(struct carpage);
-    if (lentext >= Maxcar) sizepage += (lentext+1 - Maxcar);
+    if (theLenText >= Maxcar) sizepage += (theLenText+1 - Maxcar);
     newpage = (struct carpage*) malloc (sizepage);
     newpage->next = onecarpage;
     onecarpage = newpage;
     onecarpage->used = 0;
   }
   restext  = onecarpage->cars + onecarpage->used;
-  onecarpage->used += (lentext + 1);
+  onecarpage->used += (theLenText + 1);
 /*   strcpy   */
-  res = restext ; text = newtext;
-  while (*text != '\0') { *res=*text ; res++ ; text++ ; }
-  *res = '\0' ;
+  char *aRes = restext ; 
+  const char *aText = theNewText;
+  while (*aText != '\0') { *aRes=*aText ; aRes++ ; aText++ ; }
+  *aRes = '\0' ;
 }
 
 void rec_gettext(char* *r)
@@ -167,10 +167,18 @@ static char idzero[]   = "#0";
 
 
 /*              Trace pour controle            */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void recfile_modeprint(int mode)
 {  modeprint = mode;  }
 
-void rec_inityyll ();
+#ifdef __cplusplus
+}
+#endif
+
 
 
 /*   INITIALISATION   */
@@ -189,7 +197,6 @@ void rec_debfile()
   curscope = NULL ;
   oneargpage = (struct argpage*) malloc ( sizeof(struct argpage) );
   oneargpage->next = NULL; oneargpage->used = 0;
-  rec_inityyll();
 }
 
 /*   INTERMEDIAIRE : passage de Header a Data    */
@@ -471,7 +478,9 @@ void scope_fin()
 
      La liberation de la memoire est faite par lir_file_fin, en une fois
 */
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 void lir_file_nbr(int* nbh, int* nbr, int* nbp)
 /*  initialise le traitement et retourne la taille du directory et du header */
 {
@@ -551,6 +560,9 @@ int lir_file_arg(int* type, char* *val)
  return (1) ;
 }
 
+#ifdef __cplusplus
+}
+#endif
 
 /*   Verification de l'integrite des donnees   */
 
@@ -587,7 +599,4 @@ void rec_check(int mode)
   if (mode == 0 && nr != nbrec) printf
     ("Liste des records pourrie, nb note %d relu %d\n",nbrec,nr) ;
 }
-
-void steperror (char *mess);
-int  steplex (void);
 

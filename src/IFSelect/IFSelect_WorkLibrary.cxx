@@ -87,3 +87,12 @@ IFSelect_WorkLibrary::IFSelect_WorkLibrary ()  {  thelevdef = 0;  }
   if (str.IsNull()) return "";
   return str->ToCString();
 }
+
+Standard_Integer IFSelect_WorkLibrary::ReadStream(const Standard_CString /*name*/,
+                                                  std::istream& /*istream*/,
+                                                  Handle(Interface_InterfaceModel)& /*model*/,
+                                                  const Handle(Interface_Protocol)& /*protocol*/) const
+{
+  return 1;
+}
+

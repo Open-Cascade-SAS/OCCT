@@ -7,7 +7,7 @@ unset (3RDPARTY_BISON_EXECUTABLE CACHE)
 
 # delete BISON_EXECUTABLE cache variable if it is empty, otherwise find_package will fail
 # without reasonable diagnostic
-if (NOT BISON_EXECUTABLE)
+if (NOT BISON_EXECUTABLE OR NOT EXISTS "${BISON_EXECUTABLE}")
   unset (BISON_EXECUTABLE CACHE)
 endif()
 
@@ -22,8 +22,6 @@ if (3RDPARTY_DIR)
   endforeach()
 endif()
  
-find_package (BISON 2.7)
-
-if (NOT BISON_FOUND OR NOT BISON_EXECUTABLE OR NOT EXISTS "${BISON_EXECUTABLE}")
-  list (APPEND 3RDPARTY_NOT_INCLUDED BISON_EXECUTABLE)
-endif()
+# bison 3.2 is required because it provides options to avoid generation of redundant header
+# files and embedding of local paths in the generated code
+find_package (BISON 3.2)

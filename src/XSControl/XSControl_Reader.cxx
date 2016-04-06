@@ -124,14 +124,30 @@ Handle(XSControl_WorkSession) XSControl_Reader::WS () const
 //purpose  : 
 //=======================================================================
 
-IFSelect_ReturnStatus  XSControl_Reader::ReadFile
-  (const Standard_CString filename)
+IFSelect_ReturnStatus  XSControl_Reader::ReadFile (const Standard_CString filename)
 {
   IFSelect_ReturnStatus stat = thesession->ReadFile(filename);
   thesession->InitTransferReader(4);
   return stat;
 }
 
+//=======================================================================
+//function : ReadStream
+//purpose  : 
+//=======================================================================
+
+IFSelect_ReturnStatus  XSControl_Reader::ReadStream(const Standard_CString theName,
+                                                    std::istream& theIStream)
+{
+  IFSelect_ReturnStatus stat = thesession->ReadStream(theName, theIStream);
+  thesession->InitTransferReader(4);
+  return stat;
+}
+
+//=======================================================================
+//function : Model
+//purpose  : 
+//=======================================================================
 
 Handle(Interface_InterfaceModel) XSControl_Reader::Model () const
 {
