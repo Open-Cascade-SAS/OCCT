@@ -29,6 +29,8 @@
 #include <HLRTopoBRep_OutLiner.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Compound.hxx>
+#include <BRep_Builder.hxx>
 
 static Handle(HLRBRep_Algo) hider;
 #ifdef _WIN32
@@ -450,6 +452,53 @@ static Standard_Integer reflectlines(Draw_Interpretor& , Standard_Integer n, con
 }
 
 //=======================================================================
+//function : hlrin3d
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer hlrin3d(Draw_Interpretor& , Standard_Integer n, const char** a)
+{
+  if (n < 6)
+    return 1;
+
+  TopoDS_Shape aShape =  DBRep::Get(a[2]);
+  if (aShape.IsNull())
+    return 1;
+
+  Standard_Real anAISViewProjX = atof(a[3]);
+  Standard_Real anAISViewProjY = atof(a[4]);
+  Standard_Real anAISViewProjZ = atof(a[5]);
+  
+  gp_Pnt anOrigin(0.,0.,0.);
+  gp_Dir aNormal(anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+  gp_Ax2 theAxes(anOrigin, aNormal);
+  gp_Dir aDX = theAxes.XDirection();
+
+  HLRAppli_ReflectLines Reflector(aShape);
+
+  Reflector.SetAxes(aNormal.X(), aNormal.Y(), aNormal.Z(),
+                    anOrigin.X(), anOrigin.Y(), anOrigin.Z(),
+                    aDX.X(), aDX.Y(), aDX.Z());
+
+  Reflector.Perform();
+
+  TopoDS_Compound Result;
+  BRep_Builder BB;
+  BB.MakeCompound(Result);
+  
+  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, Standard_True);
+  BB.Add(Result, SharpEdges);
+  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, Standard_True);
+  BB.Add(Result, OutLines);
+  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, Standard_True);
+  BB.Add(Result, SmoothEdges);
+  
+  DBRep::Set(a[1], Result);
+
+  return 0;
+}
+
+//=======================================================================
 //function : Commands
 //purpose  : 
 //=======================================================================
@@ -476,6 +525,10 @@ void HLRTest::Commands (Draw_Interpretor& theCommands)
   theCommands.Add("reflectlines",
                   "reflectlines res shape proj_X proj_Y proj_Z",
                   __FILE__, reflectlines, g);
+  
+  theCommands.Add("hlrin3d",
+                  "hlrin3d res shape proj_X proj_Y proj_Z",
+                  __FILE__, hlrin3d, g);
   
   hider = new HLRBRep_Algo();
 }
