@@ -1607,6 +1607,8 @@ static Standard_Boolean InscribeInterval(const Standard_Real theUfTarget,
 //=======================================================================
 static Standard_Boolean ExcludeNearElements(Standard_Real theArr[],
                                             const Standard_Integer theNOfMembers,
+                                            const Standard_Real theUSurf1f,
+                                            const Standard_Real theUSurf1l,
                                             const Standard_Real theTol)
 {
   Standard_Boolean aRetVal = Standard_False;
@@ -1622,7 +1624,10 @@ static Standard_Boolean ExcludeNearElements(Standard_Real theArr[],
 
     if((anA-anB) < theTol)
     {
-      anA = (anA + anB)/2.0;
+      if((anB != 0.0) && (anB != theUSurf1f) && (anB != theUSurf1l)) 
+        anA = (anA + anB)/2.0;
+      else
+        anA = anB;
 
       //Make this element infinite an forget it
       //(we will not use it in next iterations).
@@ -2093,8 +2098,169 @@ static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
 }
 
 //=======================================================================
+//function : BoundariesComputing
+//purpose  : Computes true domain of future intersection curve (allows
+//            avoiding excess iterations)
+//=======================================================================
+//=======================================================================
+static Standard_Boolean BoundariesComputing(const stCoeffsValue& theCoeffs,
+                                            const Standard_Real thePeriod,
+                                            Standard_Real theU1f[],
+                                            Standard_Real theU1l[])
+{
+  if(theCoeffs.mB > 0.0)
+  {
+    if(theCoeffs.mB + Abs(theCoeffs.mC) < -1.0)
+    {//There is NOT intersection
+      return Standard_False;
+    }
+    else if(theCoeffs.mB + Abs(theCoeffs.mC) <= 1.0)
+    {//U=[0;2*PI]+aFI1
+      theU1f[0] = theCoeffs.mFI1;
+      theU1l[0] = thePeriod + theCoeffs.mFI1;
+    }
+    else if((1 + theCoeffs.mC <= theCoeffs.mB) &&
+            (theCoeffs.mB <= 1 - theCoeffs.mC))
+    {
+      Standard_Real anArg = -(theCoeffs.mC + 1) / theCoeffs.mB;
+      if(anArg > 1.0)
+        anArg = 1.0;
+      if(anArg < -1.0)
+        anArg = -1.0;
+
+      const Standard_Real aDAngle = acos(anArg);
+      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1)
+      theU1f[0] = theCoeffs.mFI1;
+      theU1l[0] = aDAngle + theCoeffs.mFI1;
+      theU1f[1] = thePeriod - aDAngle + theCoeffs.mFI1;
+      theU1l[1] = thePeriod + theCoeffs.mFI1;
+    }
+    else if((1 - theCoeffs.mC <= theCoeffs.mB) &&
+            (theCoeffs.mB <= 1 + theCoeffs.mC))
+    {
+      Standard_Real anArg = (1 - theCoeffs.mC) / theCoeffs.mB;
+      if(anArg > 1.0)
+        anArg = 1.0;
+      if(anArg < -1.0)
+        anArg = -1.0;
+
+      const Standard_Real aDAngle = acos(anArg);
+      //U=[aDAngle;2*PI-aDAngle]+aFI1
+
+      theU1f[0] = aDAngle + theCoeffs.mFI1;
+      theU1l[0] = thePeriod - aDAngle + theCoeffs.mFI1;
+    }
+    else if(theCoeffs.mB - Abs(theCoeffs.mC) >= 1.0)
+    {
+      Standard_Real anArg1 = (1 - theCoeffs.mC) / theCoeffs.mB,
+                    anArg2 = -(theCoeffs.mC + 1) / theCoeffs.mB;
+      if(anArg1 > 1.0)
+        anArg1 = 1.0;
+      if(anArg1 < -1.0)
+        anArg1 = -1.0;
+
+      if(anArg2 > 1.0)
+        anArg2 = 1.0;
+      if(anArg2 < -1.0)
+        anArg2 = -1.0;
+
+      const Standard_Real aDAngle1 = acos(anArg1), aDAngle2 = acos(anArg2);
+      //(U=[aDAngle1;aDAngle2]+aFI1) ||
+      //(U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1)
+
+      theU1f[0] = aDAngle1 + theCoeffs.mFI1;
+      theU1l[0] = aDAngle2 + theCoeffs.mFI1;
+      theU1f[1] = thePeriod - aDAngle2 + theCoeffs.mFI1;
+      theU1l[1] = thePeriod - aDAngle1 + theCoeffs.mFI1;
+    }
+    else
+    {
+      return Standard_False;
+    }
+  }
+  else if(theCoeffs.mB < 0.0)
+  {
+    if(theCoeffs.mB + Abs(theCoeffs.mC) > 1.0)
+    {//There is NOT intersection
+      return Standard_False;
+    }
+    else if(-theCoeffs.mB + Abs(theCoeffs.mC) <= 1.0)
+    {//U=[0;2*PI]+aFI1
+      theU1f[0] = theCoeffs.mFI1;
+      theU1l[0] = thePeriod + theCoeffs.mFI1;
+    }
+    else if((-theCoeffs.mC - 1 <= theCoeffs.mB) &&
+            ( theCoeffs.mB <= theCoeffs.mC - 1))
+    {
+      Standard_Real anArg = (1 - theCoeffs.mC) / theCoeffs.mB;
+      if(anArg > 1.0)
+        anArg = 1.0;
+      if(anArg < -1.0)
+        anArg = -1.0;
+
+      const Standard_Real aDAngle = acos(anArg);
+      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1)
+
+      theU1f[0] = theCoeffs.mFI1;
+      theU1l[0] = aDAngle + theCoeffs.mFI1;
+      theU1f[1] = thePeriod - aDAngle + theCoeffs.mFI1;
+      theU1l[1] = thePeriod + theCoeffs.mFI1;
+    }
+    else if((theCoeffs.mC - 1 <= theCoeffs.mB) &&
+            (theCoeffs.mB <= -theCoeffs.mB - 1))
+    {
+      Standard_Real anArg = -(theCoeffs.mC + 1) / theCoeffs.mB;
+      if(anArg > 1.0)
+        anArg = 1.0;
+      if(anArg < -1.0)
+        anArg = -1.0;
+
+      const Standard_Real aDAngle = acos(anArg);
+      //U=[aDAngle;2*PI-aDAngle]+aFI1
+
+      theU1f[0] = aDAngle + theCoeffs.mFI1;
+      theU1l[0] = thePeriod - aDAngle + theCoeffs.mFI1;
+    }
+    else if(-theCoeffs.mB - Abs(theCoeffs.mC) >= 1.0)
+    {
+      Standard_Real anArg1 = -(theCoeffs.mC + 1) / theCoeffs.mB,
+                    anArg2 = (1 - theCoeffs.mC) / theCoeffs.mB;
+      if(anArg1 > 1.0)
+        anArg1 = 1.0;
+      if(anArg1 < -1.0)
+        anArg1 = -1.0;
+
+      if(anArg2 > 1.0)
+        anArg2 = 1.0;
+      if(anArg2 < -1.0)
+        anArg2 = -1.0;
+
+      const Standard_Real aDAngle1 = acos(anArg1), aDAngle2 = acos(anArg2);
+      //(U=[aDAngle1;aDAngle2]+aFI1) ||
+      //(U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1)
+
+      theU1f[0] = aDAngle1 + theCoeffs.mFI1;
+      theU1l[0] = aDAngle2 + theCoeffs.mFI1;
+      theU1f[1] = thePeriod - aDAngle2 + theCoeffs.mFI1;
+      theU1l[1] = thePeriod - aDAngle1 + theCoeffs.mFI1;
+    }
+    else
+    {
+      return Standard_False;
+    }
+  }
+  else
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
 //function : CriticalPointsComputing
-//purpose  : theNbCritPointsMax contains true number of critical points
+//purpose  : theNbCritPointsMax contains true number of critical points.
+//            It must be initialized correctly before function calling
 //=======================================================================
 static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
                                     const Standard_Real theUSurf1f,
@@ -2106,15 +2272,15 @@ static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
                                     Standard_Integer& theNbCritPointsMax,
                                     Standard_Real theU1crit[])
 {
-  //[0...1] - in these points parameter U1 goes through
-  //          the seam-edge of the first cylinder.
-  //[2...3] - First and last U1 parameter.
-  //[4...5] - in these points parameter U2 goes through
-  //          the seam-edge of the second cylinder.
-  //[6...9] - in these points an intersection line goes through
-  //          U-boundaries of the second surface.
-
-  theNbCritPointsMax = 10;
+  //[0...1]   - in these points parameter U1 goes through
+  //            the seam-edge of the first cylinder.
+  //[2...3]   - First and last U1 parameter.
+  //[4...5]   - in these points parameter U2 goes through
+  //            the seam-edge of the second cylinder.
+  //[6...9]   - in these points an intersection line goes through
+  //            U-boundaries of the second surface.
+  //[10...11] - Boundary of monotonicity interval of U2(U1) function
+  //            (see CylCylMonotonicity() function)
 
   theU1crit[0] = 0.0;
   theU1crit[1] = thePeriod;
@@ -2154,6 +2320,9 @@ static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
                   acos((aSl - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 :
                   Precision::Infinite();
 
+  theU1crit[10] = theCoeffs.mFI1;
+  theU1crit[11] = M_PI+theCoeffs.mFI1;
+
   //preparative treatment of array. This array must have faled to contain negative
   //infinity number
 
@@ -2175,7 +2344,8 @@ static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
   {
     std::sort(theU1crit, theU1crit + theNbCritPointsMax);
   }
-  while(ExcludeNearElements(theU1crit, theNbCritPointsMax, theTol2D));
+  while(ExcludeNearElements(theU1crit, theNbCritPointsMax,
+                            theUSurf1f, theUSurf1l, theTol2D));
 
   //Here all not infinite elements in theU1crit are different and sorted.
 
@@ -2281,151 +2451,8 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
   Standard_Real aU1f[aNbOfBoundaries] = {-Precision::Infinite(), -Precision::Infinite()};
   Standard_Real aU1l[aNbOfBoundaries] = {Precision::Infinite(), Precision::Infinite()};
 
-  if(anEquationCoeffs.mB > 0.0)
-  {
-    if(anEquationCoeffs.mB + Abs(anEquationCoeffs.mC) < -1.0)
-    {//There is NOT intersection
-      return Standard_True;
-    }
-    else if(anEquationCoeffs.mB + Abs(anEquationCoeffs.mC) <= 1.0)
-    {//U=[0;2*PI]+aFI1
-      aU1f[0] = anEquationCoeffs.mFI1;
-      aU1l[0] = aPeriod + anEquationCoeffs.mFI1;
-    }
-    else if((1 + anEquationCoeffs.mC <= anEquationCoeffs.mB) &&
-            (anEquationCoeffs.mB <= 1 - anEquationCoeffs.mC))
-    {
-      Standard_Real anArg = -(anEquationCoeffs.mC + 1) / anEquationCoeffs.mB;
-      if(anArg > 1.0)
-        anArg = 1.0;
-      if(anArg < -1.0)
-        anArg = -1.0;
-
-      const Standard_Real aDAngle = acos(anArg);
-      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1)
-      aU1f[0] = anEquationCoeffs.mFI1;
-      aU1l[0] = aDAngle + anEquationCoeffs.mFI1;
-      aU1f[1] = aPeriod - aDAngle + anEquationCoeffs.mFI1;
-      aU1l[1] = aPeriod + anEquationCoeffs.mFI1;
-    }
-    else if((1 - anEquationCoeffs.mC <= anEquationCoeffs.mB) &&
-            (anEquationCoeffs.mB <= 1 + anEquationCoeffs.mC))
-    {
-      Standard_Real anArg = (1 - anEquationCoeffs.mC) / anEquationCoeffs.mB;
-      if(anArg > 1.0)
-        anArg = 1.0;
-      if(anArg < -1.0)
-        anArg = -1.0;
-
-      const Standard_Real aDAngle = acos(anArg);
-      //U=[aDAngle;2*PI-aDAngle]+aFI1
-
-      aU1f[0] = aDAngle + anEquationCoeffs.mFI1;
-      aU1l[0] = aPeriod - aDAngle + anEquationCoeffs.mFI1;
-    }
-    else if(anEquationCoeffs.mB - Abs(anEquationCoeffs.mC) >= 1.0)
-    {
-      Standard_Real anArg1 = (1 - anEquationCoeffs.mC) / anEquationCoeffs.mB,
-                    anArg2 = -(anEquationCoeffs.mC + 1) / anEquationCoeffs.mB;
-      if(anArg1 > 1.0)
-        anArg1 = 1.0;
-      if(anArg1 < -1.0)
-        anArg1 = -1.0;
-
-      if(anArg2 > 1.0)
-        anArg2 = 1.0;
-      if(anArg2 < -1.0)
-        anArg2 = -1.0;
-
-      const Standard_Real aDAngle1 = acos(anArg1), aDAngle2 = acos(anArg2);
-      //(U=[aDAngle1;aDAngle2]+aFI1) ||
-      //(U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1)
-
-      aU1f[0] = aDAngle1 + anEquationCoeffs.mFI1;
-      aU1l[0] = aDAngle2 + anEquationCoeffs.mFI1;
-      aU1f[1] = aPeriod - aDAngle2 + anEquationCoeffs.mFI1;
-      aU1l[1] = aPeriod - aDAngle1 + anEquationCoeffs.mFI1;
-    }
-    else
-    {
-      Standard_Failure::Raise("Error. Exception. Unhandled case (Range computation)!");
-    }
-  }
-  else if(anEquationCoeffs.mB < 0.0)
-  {
-    if(anEquationCoeffs.mB + Abs(anEquationCoeffs.mC) > 1.0)
-    {//There is NOT intersection
-      return Standard_True;
-    }
-    else if(-anEquationCoeffs.mB + Abs(anEquationCoeffs.mC) <= 1.0)
-    {//U=[0;2*PI]+aFI1
-      aU1f[0] = anEquationCoeffs.mFI1;
-      aU1l[0] = aPeriod + anEquationCoeffs.mFI1;
-    }
-    else if((-anEquationCoeffs.mC - 1 <= anEquationCoeffs.mB) &&
-            ( anEquationCoeffs.mB <= anEquationCoeffs.mC - 1))
-    {
-      Standard_Real anArg = (1 - anEquationCoeffs.mC) / anEquationCoeffs.mB;
-      if(anArg > 1.0)
-        anArg = 1.0;
-      if(anArg < -1.0)
-        anArg = -1.0;
-
-      const Standard_Real aDAngle = acos(anArg);
-      //(U=[0;aDAngle]+aFI1) || (U=[2*PI-aDAngle;2*PI]+aFI1)
-
-      aU1f[0] = anEquationCoeffs.mFI1;
-      aU1l[0] = aDAngle + anEquationCoeffs.mFI1;
-      aU1f[1] = aPeriod - aDAngle + anEquationCoeffs.mFI1;
-      aU1l[1] = aPeriod + anEquationCoeffs.mFI1;
-    }
-    else if((anEquationCoeffs.mC - 1 <= anEquationCoeffs.mB) &&
-            (anEquationCoeffs.mB <= -anEquationCoeffs.mB - 1))
-    {
-      Standard_Real anArg = -(anEquationCoeffs.mC + 1) / anEquationCoeffs.mB;
-      if(anArg > 1.0)
-        anArg = 1.0;
-      if(anArg < -1.0)
-        anArg = -1.0;
-
-      const Standard_Real aDAngle = acos(anArg);
-      //U=[aDAngle;2*PI-aDAngle]+aFI1
-
-      aU1f[0] = aDAngle + anEquationCoeffs.mFI1;
-      aU1l[0] = aPeriod - aDAngle + anEquationCoeffs.mFI1;
-    }
-    else if(-anEquationCoeffs.mB - Abs(anEquationCoeffs.mC) >= 1.0)
-    {
-      Standard_Real anArg1 = -(anEquationCoeffs.mC + 1) / anEquationCoeffs.mB,
-                    anArg2 = (1 - anEquationCoeffs.mC) / anEquationCoeffs.mB;
-      if(anArg1 > 1.0)
-        anArg1 = 1.0;
-      if(anArg1 < -1.0)
-        anArg1 = -1.0;
-
-      if(anArg2 > 1.0)
-        anArg2 = 1.0;
-      if(anArg2 < -1.0)
-        anArg2 = -1.0;
-
-      const Standard_Real aDAngle1 = acos(anArg1), aDAngle2 = acos(anArg2);
-      //(U=[aDAngle1;aDAngle2]+aFI1) ||
-      //(U=[2*PI-aDAngle2;2*PI-aDAngle1]+aFI1)
-
-      aU1f[0] = aDAngle1 + anEquationCoeffs.mFI1;
-      aU1l[0] = aDAngle2 + anEquationCoeffs.mFI1;
-      aU1f[1] = aPeriod - aDAngle2 + anEquationCoeffs.mFI1;
-      aU1l[1] = aPeriod - aDAngle1 + anEquationCoeffs.mFI1;
-    }
-    else
-    {
-      Standard_Failure::Raise("Error. Exception. Unhandled case (Range computation)!");
-    }
-  }
-  else
-  {
-    Standard_Failure::Raise("Error. Exception. Unhandled case (B-parameter computation)!");
-  }
+  if(!BoundariesComputing(anEquationCoeffs, aPeriod, aU1f, aU1l))
+    return Standard_True;
 
   for(Standard_Integer i = 0; i < aNbOfBoundaries; i++)
   {
@@ -2450,8 +2477,10 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
   }
 
   //Critical points
-  const Standard_Integer aNbCritPointsMax = 10;
+  const Standard_Integer aNbCritPointsMax = 12;
   Standard_Real anU1crit[aNbCritPointsMax] = {Precision::Infinite(),
+                                              Precision::Infinite(),
+                                              Precision::Infinite(),
                                               Precision::Infinite(),
                                               Precision::Infinite(),
                                               Precision::Infinite(),
@@ -2622,7 +2651,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
               //correct value.
 
               Standard_Boolean isIncreasing = Standard_True;
-              CylCylMonotonicity(anU1, i, anEquationCoeffs, aPeriod, isIncreasing);
+              CylCylMonotonicity(anU1+aStepMin, i, anEquationCoeffs, aPeriod, isIncreasing);
 
               //If U2(U1) is increasing and U2 is considered to be equal aUSurf2l
               //then after the next step (when U1 will be increased) U2 will be
