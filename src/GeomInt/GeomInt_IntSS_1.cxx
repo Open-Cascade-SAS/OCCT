@@ -1167,11 +1167,27 @@ void GeomInt_IntSS::BuildPCurves (Standard_Real f,
   // in class ProjLib_Function the range of parameters is shrank by 1.e-09
   if((l - f) > 2.e-09) {
     C2d = GeomProjLib::Curve2d(C,f,l,S,umin,umax,vmin,vmax,Tol);
-    //
     if (C2d.IsNull()) {
       // proj. a circle that goes through the pole on a sphere to the sphere     
       Tol += Precision::Confusion();
       C2d = GeomProjLib::Curve2d(C,f,l,S,Tol);
+    }
+    const Handle(Standard_Type)& aType = C2d->DynamicType();
+    if ( aType == STANDARD_TYPE(Geom2d_BSplineCurve)) 
+    { 
+      //Check first, last knots to avoid problems with trimming
+      //First, last knots can differ from f, l because of numerical error 
+      //of projection and approximation
+      //The same checking as in Geom2d_TrimmedCurve
+      if((C2d->FirstParameter() - f > Precision::PConfusion()) ||
+        (l - C2d->LastParameter() > Precision::PConfusion()))   
+      {
+        Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(C2d);
+        TColStd_Array1OfReal aKnots(1, aBspl->NbKnots());
+        aBspl->Knots(aKnots);
+        BSplCLib::Reparametrize(f, l, aKnots);
+        aBspl->SetKnots(aKnots);
+      }
     }
   }
   else {

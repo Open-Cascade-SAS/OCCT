@@ -1,4 +1,4 @@
-puts "TODO OCC111111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+#puts "TODO OCC111111 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC111111 ALL: Error : The area of result shape is"
 
 pload QAcommands

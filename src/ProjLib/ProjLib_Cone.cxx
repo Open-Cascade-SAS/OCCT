@@ -96,48 +96,24 @@ void  ProjLib_Cone::Project(const gp_Lin& L)
 {
 
   Standard_Real U,V;
-  
-  // Compute V
-  V = gp_Vec(myCone.Location(),L.Location())
-    .Dot(gp_Vec(myCone.Position().Direction()));
-  V /= Cos( myCone.SemiAngle());
-
-  // Compute U
-  gp_Ax3 CPos  = myCone.Position();
-  gp_Dir ZCone = CPos.XDirection() ^ CPos.YDirection();
-  
-  gp_Ax3 RightHanded(CPos.Location(), ZCone, CPos.XDirection());
-  gp_Trsf T;
-  T.SetTransformation(RightHanded);
-
-  gp_Dir D = L.Position().Direction();
-  D.Transform(T);
-
-  if ( D.Z() < 0.) D.Reverse();
-  D.SetCoord(3, 0.);
-  U = gp::DX().AngleWithRef( D, gp::DZ());
-
-  Standard_Integer a1 = 
-    (ZCone.IsEqual(CPos.Direction(), Precision::Angular())) ? 1 : -1;
-  Standard_Integer a2 = 
-    (myCone.SemiAngle() > 0) ? 1 : -1;
-  if ( ( a1 * a2) == -1) U -= M_PI;
-
-  if ( U < 0.) U += 2.*M_PI;
-
+ 
+  ElSLib::ConeParameters(myCone.Position(), myCone.RefRadius(), myCone.SemiAngle(), L.Location(),
+			                   U, V);
+  //
   gp_Pnt P;
   gp_Vec Vu, Vv;
 
-  ElSLib::ConeD1(U, V, CPos, myCone.RefRadius(), myCone.SemiAngle(),
+  ElSLib::ConeD1(U, V, myCone.Position(), myCone.RefRadius(), myCone.SemiAngle(),
 		 P, Vu, Vv);
 
-  if(Vv.IsParallel(gp_Vec(L.Position().Direction()), Precision::Angular())) {
+  gp_Dir Dv(Vv);
+  if(Dv.IsParallel(L.Direction(), Precision::Angular())) {
 
     myType = GeomAbs_Line;
 
     gp_Pnt2d P2d(U,V);
   
-    Standard_Real Signe = L.Direction().Dot(myCone.Position().Direction());
+    Standard_Real Signe = L.Direction().Dot(Dv);
     Signe = (Signe > 0.) ? 1. : -1.;
     gp_Dir2d D2d(0., Signe);
   

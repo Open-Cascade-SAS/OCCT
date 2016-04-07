@@ -225,8 +225,28 @@ static void Function_SetUVBounds(Standard_Real& myU1,
   switch ( mySurface->GetType()) {
 
     case GeomAbs_Cone:    {
+      Standard_Real tol = Epsilon(1.);
+      Standard_Real ptol = Precision::PConfusion();
       gp_Cone Cone = mySurface->Cone();
       VCouture = Standard_False;
+      //Calculation of cone parameters for P == ConeApex often produces wrong
+      //values of U
+      gp_Pnt ConeApex = Cone.Apex();
+      if(ConeApex.XYZ().IsEqual(P1.XYZ(), tol))
+      {
+        W1 += ptol;
+        P1 = myCurve->Value(W1);
+      }
+      if(ConeApex.XYZ().IsEqual(P2.XYZ(), tol))
+      {
+        W2 -= ptol;
+        P2 = myCurve->Value(W2);
+      }
+      if(ConeApex.XYZ().IsEqual(P.XYZ(), tol))
+      {
+        W += ptol;
+        P = myCurve->Value(W);
+      }
 
       switch( myCurve->GetType() ){
       case GeomAbs_Parabola:
@@ -255,6 +275,10 @@ static void Function_SetUVBounds(Standard_Real& myU1,
         myU1 = U1; myU2 = U1; Uf = U1; 
         Standard_Real Step = .1;
         Standard_Integer nbp = (Standard_Integer)((W2 - W1) / Step + 1);
+        if(myCurve->GetType() == GeomAbs_Line)
+        {
+          nbp = 3;
+        }
         nbp = Max(nbp, 3);
         Step = (W2 - W1) / (nbp - 1);
         Standard_Boolean isclandper = (!(myCurve->IsClosed()) && !(myCurve->IsPeriodic()));

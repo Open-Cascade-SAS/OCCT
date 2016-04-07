@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC27322"
+puts "========"
+puts ""
+####################################################
+# geom/revolution_00/A1: Incorrect pcurve creation
+####################################################
+
+restore [locate_data_file bug27325_edge.brep] en
+restore [locate_data_file bug27325_face.brep] f
+
+bhaspc en f do
+mk2dcurve c1 en f
+explode f e
+mk2dcurve c2 f_3 f
+2dcvalue c1 0.0025 x y
+2dproj c2 x y
+
+set bug_info [string trim [length ext_1]]
+set bug_info [string trim [string range $bug_info [expr {[string last " " $bug_info] + 1}] [expr {[string length $bug_info] - 1}]]]
+if {$bug_info >= 1.e-9} {
+  puts "ERROR: OCC27322 is reproduced. Incorrect pcurve creation."
+}
