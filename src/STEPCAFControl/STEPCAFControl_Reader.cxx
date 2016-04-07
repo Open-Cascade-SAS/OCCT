@@ -1805,26 +1805,20 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
     if (theDimObject->IsKind(STANDARD_TYPE(XCAFDimTolObjects_DimensionObject))) {
       Handle(XCAFDimTolObjects_DimensionObject) anObj = 
         Handle(XCAFDimTolObjects_DimensionObject)::DownCast(theDimObject);
-
       Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, 1);
       anObj->SetPlane(aPlaneAxes);
-    
-
     }
     else if (theDimObject->IsKind(STANDARD_TYPE(XCAFDimTolObjects_DatumObject))) {
       Handle(XCAFDimTolObjects_DatumObject) anObj =
         Handle(XCAFDimTolObjects_DatumObject)::DownCast(theDimObject);
       anObj->SetPlane(aPlaneAxes);
-      
     }
     else if (theDimObject->IsKind(STANDARD_TYPE(XCAFDimTolObjects_GeomToleranceObject))) {
       Handle(XCAFDimTolObjects_GeomToleranceObject) anObj =
         Handle(XCAFDimTolObjects_GeomToleranceObject)::DownCast(theDimObject);
       anObj->SetPlane(aPlaneAxes);
-     
     }
   }
-
 
   // Retrieve presentation
   Handle(StepVisual_AnnotationCurveOccurrence) anACO;
@@ -1953,11 +1947,21 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   if(!nbShapes)
     return;
   gp_Pnt aPtext(0., 0., 0.);
+  // if Annotation plane location inside bounding box set it to text position
+  // else set the center of bounding box to text position
   if(!aBox.IsVoid())
   {
     Standard_Real aXmin, aYmin, aZmin,aXmax, aYmax, aZmax; 
     aBox.Get(aXmin, aYmin, aZmin,aXmax, aYmax, aZmax);
-    aPtext = gp_Pnt((aXmin + aXmax) * 0.5, (aYmin + aYmax) * 0.5, (aZmin + aZmax) * 0.5);
+    if (isHasPlane && !aBox.IsOut(aPlaneAxes.Location())) {
+      aPtext = aPlaneAxes.Location();
+    }
+    else {
+      aPtext = gp_Pnt((aXmin + aXmax) * 0.5, (aYmin + aYmax) * 0.5, (aZmin + aZmax) * 0.5);
+    }
+  }
+  else {
+    aPtext = aPlaneAxes.Location();
   }
 
   // set point to XCAF

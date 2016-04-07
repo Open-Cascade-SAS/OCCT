@@ -11,3 +11,4 @@ set c_mod 0
 set c_plusminus 0
 set c_dump 0
 set c_descr 0
+set c_pos 0

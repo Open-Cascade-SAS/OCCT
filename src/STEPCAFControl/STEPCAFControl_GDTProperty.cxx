@@ -975,12 +975,12 @@ Handle(StepGeom_Axis2Placement3d) STEPCAFControl_GDTProperty::GetAxis2Placement3
   Handle(StepGeom_Direction) anAxis, aRefDirection;
   Handle(TColStd_HArray1OfReal) anAxisCoords = new TColStd_HArray1OfReal(1, 3);
   for (Standard_Integer i = 1; i <= 3; i++)
-    anAxisCoords->SetValue(i, theAxis.Direction().Coord(i));
+    anAxisCoords->SetValue(i, theAxis.XDirection().Coord(i));
   anAxis = new StepGeom_Direction();
   anAxis->Init(new TCollection_HAsciiString(), anAxisCoords);
   Handle(TColStd_HArray1OfReal) aDirCoords = new TColStd_HArray1OfReal(1, 3);
   for (Standard_Integer i = 1; i <= 3; i++)
-    aDirCoords->SetValue(i, theAxis.XDirection().Coord(i));
+    aDirCoords->SetValue(i, theAxis.YDirection().Coord(i));
   aRefDirection = new StepGeom_Direction();
   aRefDirection->Init(new TCollection_HAsciiString(), aDirCoords);
   anA2P3D->Init(new TCollection_HAsciiString(), aPoint, Standard_True, anAxis, Standard_True, aRefDirection);

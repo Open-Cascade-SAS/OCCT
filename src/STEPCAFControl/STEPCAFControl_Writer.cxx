@@ -2322,6 +2322,7 @@ static Handle(StepRepr_ShapeAspect) WriteShapeAspect (const Handle(XSControl_Wor
 static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
                               const TopoDS_Shape thePresentation,
                               const gp_Ax2 theAnnotationPlane,
+                              const gp_Pnt theTextPosition,
                               const Handle(Standard_Transient) theDimension)
 {
   if (thePresentation.IsNull())
@@ -2365,6 +2366,13 @@ static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
   // Plane
   Handle(StepGeom_Plane) aPlane = new StepGeom_Plane();
   Handle(StepGeom_Axis2Placement3d) anAxis = STEPCAFControl_GDTProperty::GetAxis2Placement3D(theAnnotationPlane);
+  // Set text position to plane origin
+  Handle(StepGeom_CartesianPoint) aTextPos = new StepGeom_CartesianPoint();
+  Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
+  for (Standard_Integer i = 1; i <= 3; i++)
+    aCoords->SetValue(i, theTextPosition.Coord(i));
+  aTextPos->Init(new TCollection_HAsciiString(), aCoords);
+  anAxis->SetLocation(aTextPos);
   aPlane->Init(new TCollection_HAsciiString(), anAxis);
   // Annotation plane element
   StepVisual_AnnotationPlaneElement aPlaneElement;
@@ -2576,7 +2584,7 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
   Model->AddWithRefs(aSDR);
 
   //Annotation plane and Presentation
-  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), aSA);
+  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), anObject->GetPointTextAttach(), aSA);
 
   return aDatum;
 }
@@ -3187,7 +3195,7 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
   Model->AddWithRefs(aGeomTol);
   WriteToleranceZone(WS, anObject, aGeomTol, theRC);
   //Annotation plane and Presentation
-  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), aGeomTol);
+  WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), anObject->GetPointTextAttach(), aGeomTol);
 }
 
 //=======================================================================
@@ -3747,7 +3755,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
     // Write values
     WriteDimValues(WS, anObject, aRC, aDimension);
     //Annotation plane and Presentation
-    WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), aDimension.Value());
+    WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), anObject->GetPointTextAttach(), aDimension.Value());
   }
 
   //----------------------------//

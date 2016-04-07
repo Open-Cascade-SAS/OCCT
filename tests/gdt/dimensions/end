@@ -62,11 +62,10 @@ if {$c_descr != 0} {
   if {$nb_ref != $nb_cur} {
     puts "Error: wrong number of descriptions"
   } else {
+    set isOK 1;
     for { set i 0 } { $i < $nb_ref } { incr i } {
       set refstr [lindex $ref_list $i]
-      set curstr [lindex $cur_list $i]
-      set isOK 1;
-    
+      set curstr [lindex $cur_list $i]    
       if {[string equal $refstr $curstr] == 0} {
         set isOK 0 
       }
@@ -74,6 +73,32 @@ if {$c_descr != 0} {
   }
   if {$isOK == 0} {
     puts "Error: wrong descriptions"
+  }
+}
+
+# annotation plane and text position
+if {$c_pos != 0} {
+  set position [XGetGDTPosition D 0:1:4:1]
+  set ref_list [split $position \n]
+  set cur_list [split $c_pos \n]
+  set nb_ref [llength $ref_list]
+  set nb_cur [llength $cur_list]
+  if {$nb_ref != $nb_cur} {
+    puts "Error: wrong position"
+  } else {
+    set isOK 1;
+    for { set i 0 } { $i < $nb_ref } { incr i } {
+      set refstr [lindex $ref_list $i]
+      set curstr [lindex $cur_list $i]
+      puts $refstr
+      puts $curstr
+      if {[string equal $refstr $curstr] == 0} {
+        set isOK 0 
+      }
+    }
+  }
+  if {$isOK == 0} { 
+    puts "Error: wrong position"
   }
 }
 
