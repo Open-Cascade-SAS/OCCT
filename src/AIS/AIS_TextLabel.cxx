@@ -14,7 +14,12 @@
 
 #include <AIS_TextLabel.hxx>
 
+#include <AIS_InteractiveContext.hxx>
+#include <Font_FTFont.hxx>
+#include <Font_FontMgr.hxx>
+#include <Font_Rect.hxx>
 #include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_RenderingParams.hxx>
 
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -22,6 +27,8 @@
 #include <Select3D_SensitivePoint.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+
+#include <V3d_Viewer.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_TextLabel,AIS_InteractiveObject)
@@ -34,7 +41,8 @@ AIS_TextLabel::AIS_TextLabel()
 : myText             ("?"),
   myFont             ("Courier"),
   myFontAspect       (Font_FA_Regular),
-  myHasOrientation3D (Standard_False)
+  myHasOrientation3D (Standard_False),
+  myHasFlipping      (Standard_False)
 {
   myDrawer->SetTextAspect (new Prs3d_TextAspect());
 
@@ -181,12 +189,30 @@ const gp_Ax2& AIS_TextLabel::Orientation3D() const
 }
 
 //=======================================================================
-//function : HasOrientation3D()
+//function : HasOrientation3D
 //purpose  :
 //=======================================================================
 Standard_Boolean AIS_TextLabel::HasOrientation3D() const
 {
   return myHasOrientation3D;
+}
+
+//=======================================================================
+//function : SetFlipping
+//purpose  :
+//=======================================================================
+void AIS_TextLabel::SetFlipping (const Standard_Boolean theIsFlipping)
+{
+  myHasFlipping = theIsFlipping;
+}
+
+//=======================================================================
+//function : HasFlipping
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_TextLabel::HasFlipping() const
+{
+  return myHasFlipping;
 }
 
 //=======================================================================
@@ -207,6 +233,7 @@ void AIS_TextLabel::SetColorSubTitle (const Quantity_Color& theColor)
   myDrawer->TextAspect()->Aspect()->SetColorSubTitle(theColor);
 }
 
+#include <Graphic3d_ArrayOfPoints.hxx>
 //=======================================================================
 //function : Compute
 //purpose  :
@@ -220,10 +247,67 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
     case 0:
     {
       Handle(Prs3d_TextAspect) anAsp = myDrawer->TextAspect();
+      gp_Pnt aPosition = Position();
 
       if (myHasOrientation3D)
       {
-        Prs3d_Text::Draw (thePrs, anAsp, myText, myOrientation3D);
+        Standard_Boolean isInit = Standard_False;
+        if (myHasFlipping)
+        {
+          // Get width and height of text
+          Font_FTFont aFont;
+          Quantity_Color aColor;
+          Standard_CString aName;
+          Standard_Real anExpFactor;
+          Standard_Real aSpace;
+        
+          anAsp->Aspect()->Values (aColor, aName, anExpFactor, aSpace);
+          unsigned int aResolution = GetContext()->CurrentViewer()->DefaultRenderingParams().Resolution;
+          if (aFont.Init (aName, anAsp->Aspect()->GetTextFontAspect(), (unsigned int)anAsp->Height(), aResolution))
+          {
+            isInit = Standard_True;
+            const NCollection_String aText ((Standard_Utf16Char* )myText.ToExtString());
+            Font_Rect aBndBox = aFont.BoundingBox (aText, anAsp->HorizontalJustification(), anAsp->VerticalJustification());
+            Standard_Real aWidth = Abs (aBndBox.Width());
+            Standard_Real aHeight = Abs (aBndBox.Height());
+            gp_Pnt aCenterOfLabel = aPosition;
+
+            if (anAsp->VerticalJustification() == Graphic3d_VTA_BOTTOM)
+            {
+              aCenterOfLabel.ChangeCoord() += myOrientation3D.YDirection().XYZ() * aHeight * 0.5;
+            }
+            else if (anAsp->VerticalJustification() == Graphic3d_VTA_TOP)
+            {
+              aCenterOfLabel.ChangeCoord() -= myOrientation3D.YDirection().XYZ() * aHeight * 0.5;
+            }
+            if (anAsp->HorizontalJustification() == Graphic3d_HTA_LEFT)
+            {
+              aCenterOfLabel.ChangeCoord() += myOrientation3D.XDirection().XYZ() * aWidth * 0.5;
+            }
+            else if (anAsp->HorizontalJustification() == Graphic3d_HTA_RIGHT)
+            {
+              aCenterOfLabel.ChangeCoord() -= myOrientation3D.XDirection().XYZ() * aWidth * 0.5;
+            }
+
+            if (!anAsp->Aspect()->GetTextZoomable())
+            {
+              anAsp->Aspect()->SetTextZoomable (Standard_True);
+              SetTransformPersistence (GetTransformPersistenceMode() | Graphic3d_TMF_ZoomPers, aPosition);
+              aPosition = gp::Origin();
+            }
+
+            gp_Ax2 aFlippingAxes (aCenterOfLabel, myOrientation3D.Direction(), myOrientation3D.XDirection());
+            Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_True, aFlippingAxes);
+          }
+        }
+
+        gp_Ax2 anOrientation = myOrientation3D;
+        anOrientation.SetLocation (aPosition);
+        Prs3d_Text::Draw (thePrs, anAsp, myText, myOrientation3D, !myHasFlipping);
+        if (myHasFlipping && isInit)
+        {
+          Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_False, gp_Ax2());
+        }
       }
       else
       {

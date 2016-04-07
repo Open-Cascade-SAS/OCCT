@@ -2727,6 +2727,10 @@ static int VDrawText (Draw_Interpretor& theDI,
 
       aHasPlane = Standard_True;
     }
+    else if (aParam == "-flipping")
+    {
+      aTextPrs->SetFlipping (Standard_True);
+    }
     else if (aParam == "-disptype"
           || aParam == "-displaytype")
     {
@@ -6410,6 +6414,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-subcolor {R G B|name}=white]"
                    "\n\t\t: [-noupdate]"
                    "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]"
+                   "\n\t\t: [-flipping]"
                    "\n\t\t: Display text label at specified position.",
     __FILE__, VDrawText, group);
 

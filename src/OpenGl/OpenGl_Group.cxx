@@ -243,7 +243,8 @@ void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
                          const Graphic3d_TextPath                theTp,
                          const Graphic3d_HorizontalTextAlignment theHTA,
                          const Graphic3d_VerticalTextAlignment   theVTA,
-                         const Standard_Boolean                  theToEvalMinMax)
+                         const Standard_Boolean                  theToEvalMinMax,
+                         const Standard_Boolean                  theHasOwnAnchor)
 {
   if (IsDeleted())
   {
@@ -257,7 +258,7 @@ void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
   aParams.HAlign      = theHTA;
   aParams.VAlign      = theVTA;
 
-  OpenGl_Text* aText = new OpenGl_Text (theTextUtf, theOrientation, aParams);
+  OpenGl_Text* aText = new OpenGl_Text (theTextUtf, theOrientation, aParams, theHasOwnAnchor != Standard_False);
 
   AddElement (aText);
 
@@ -268,7 +269,8 @@ void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
                          theTp,
                          theHTA,
                          theVTA,
-                         theToEvalMinMax);
+                         theToEvalMinMax,
+                         theHasOwnAnchor);
 
 }
 

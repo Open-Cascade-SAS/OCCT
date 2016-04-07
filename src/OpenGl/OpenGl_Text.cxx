@@ -149,7 +149,8 @@ OpenGl_Text::OpenGl_Text()
   myScaleHeight (1.0f),
   myPoint  (0.0f, 0.0f, 0.0f),
   myIs2d   (false),
-  myHasPlane (false)
+  myHasPlane (false),
+  myHasAnchorPoint (true)
 {
   myParams.Height = 10;
   myParams.HAlign = Graphic3d_HTA_LEFT;
@@ -172,7 +173,8 @@ OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
   myString (theText),
   myPoint  (thePoint),
   myIs2d   (false),
-  myHasPlane (false)
+  myHasPlane (false),
+  myHasAnchorPoint (true)
 {
   //
 }
@@ -183,7 +185,8 @@ OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
 // =======================================================================
 OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
                           const gp_Ax2&            theOrientation,
-                          const OpenGl_TextParam&  theParams)
+                          const OpenGl_TextParam&  theParams,
+                          const bool               theHasOwnAnchor)
 : myWinX         (0.0),
   myWinY         (0.0),
   myWinZ         (0.0),
@@ -193,7 +196,8 @@ OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
   myString       (theText),
   myIs2d         (false),
   myOrientation  (theOrientation),
-  myHasPlane     (true)
+  myHasPlane     (true),
+  myHasAnchorPoint (theHasOwnAnchor)
 {
   const gp_Pnt& aPoint = theOrientation.Location();
   myPoint = OpenGl_Vec3 (static_cast<Standard_ShortReal> (aPoint.X()),
@@ -479,8 +483,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 {
   OpenGl_Mat4d aModViewMat;
   OpenGl_Mat4d aProjectMat;
-
-  if (myHasPlane)
+  if (myHasPlane && myHasAnchorPoint)
   {
     aProjectMat = myProjMatrix * myOrientationMatrix;
   }
@@ -516,10 +519,21 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
       const gp_Dir& aVectorUp    = myOrientation.Direction();
       const gp_Dir& aVectorRight = myOrientation.YDirection();
 
-      aModViewMat.SetColumn (3, OpenGl_Vec3d (anObjX, anObjY, anObjZ));
       aModViewMat.SetColumn (2, OpenGl_Vec3d (aVectorUp.X(), aVectorUp.Y(), aVectorUp.Z()));
       aModViewMat.SetColumn (1, OpenGl_Vec3d (aVectorRight.X(), aVectorRight.Y(), aVectorRight.Z()));
       aModViewMat.SetColumn (0, OpenGl_Vec3d (aVectorDir.X(), aVectorDir.Y(), aVectorDir.Z()));
+
+      if (!myHasAnchorPoint)
+      {
+        OpenGl_Mat4d aPosMat;
+        aPosMat.SetColumn (3, OpenGl_Vec3d (myPoint.x(), myPoint.y(), myPoint.z()));
+        aPosMat *= aModViewMat;
+        aModViewMat.SetColumn (3, aPosMat.GetColumn (3));
+      }
+      else
+      {
+        aModViewMat.SetColumn (3, OpenGl_Vec3d (anObjX, anObjY, anObjZ));
+      }
     }
     else
     {
@@ -549,7 +563,16 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     }
   }
 
-  theCtx->WorldViewState.SetCurrent<Standard_Real> (aModViewMat);
+  if (myHasPlane && !myHasAnchorPoint)
+  {
+    OpenGl_Mat4d aCurrentWorldViewMat;
+    aCurrentWorldViewMat.Convert (theCtx->WorldViewState.Current());
+    theCtx->WorldViewState.SetCurrent<Standard_Real> (aCurrentWorldViewMat * aModViewMat);
+  }
+  else
+  {
+    theCtx->WorldViewState.SetCurrent<Standard_Real> (aModViewMat);
+  }
   theCtx->ApplyWorldViewMatrix();
 
   if (!myIs2d)
@@ -758,7 +781,18 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   myExportHeight = 1.0f;
   myScaleHeight  = 1.0f;
 
-  theCtx->WorldViewState.Push();
+  if (myHasPlane && !myHasAnchorPoint)
+  {
+    OpenGl_Mat4d aWorldViewMat;
+    aWorldViewMat.Convert (theCtx->WorldViewState.Current());
+    theCtx->WorldViewState.Push();
+    theCtx->WorldViewState.SetCurrent<Standard_Real> (aWorldViewMat);
+    theCtx->ApplyWorldViewMatrix();
+  }
+  else
+  {
+    theCtx->WorldViewState.Push();
+  }
 
   myModelMatrix.Convert (theCtx->WorldViewState.Current() * theCtx->ModelWorldState.Current());
 

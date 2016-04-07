@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC27359"
+puts "========"
+puts ""
+##################################################################
+puts "Visualization - add support of flipping for textured text"
+##################################################################
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+set m_pi 3,14
+set m_pi2 1,57
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit
+vclear
+vright
+
+set x 10
+set y 50
+set z 30
+
+box b $x $y $z
+vdisplay b
+vtrihedron t
+
+vdrawtext t0 "top left text\n on yoz" -pos $x 0 0 -color green -height 30 -plane 1 0 0 0 1 0 -flipping -valign top -halign left -font SansFont
+vdrawtext t2 "center text" -pos 0 $y/2 $z/2 -color red -height 30 -plane 1 0 0 0 1 0 -flipping -valign center -halign center -font SansFont
+
+vfit
+vright
+vdump $anImage1
+
+vrotate $m_pi 0 0
+vfit
+vdump $anImage2
+
+vright
+vrotate 0 $m_pi 0
+vfit
+vdump $anImage3

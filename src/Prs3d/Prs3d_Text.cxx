@@ -66,7 +66,8 @@ void Prs3d_Text::Draw (
 void Prs3d_Text::Draw (const Handle(Prs3d_Presentation)& thePresentation,
                        const Handle(Prs3d_TextAspect)&   theAspect,
                        const TCollection_ExtendedString& theText,
-                       const gp_Ax2&                     theOrientation)
+                       const gp_Ax2&                     theOrientation,
+                       const Standard_Boolean            theHasOwnAnchor)
 {
   Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (theAspect->Aspect());
   Prs3d_Root::CurrentGroup (thePresentation)->Text (theText,
@@ -75,5 +76,7 @@ void Prs3d_Text::Draw (const Handle(Prs3d_Presentation)& thePresentation,
                                                     theAspect->Angle(),
                                                     theAspect->Orientation(),
                                                     theAspect->HorizontalJustification(),
-                                                    theAspect->VerticalJustification());
+                                                    theAspect->VerticalJustification(),
+                                                    Standard_True,
+                                                    theHasOwnAnchor);
 }

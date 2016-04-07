@@ -46,7 +46,8 @@ public:
   //! Creates new text in 3D space.
   Standard_EXPORT OpenGl_Text (const Standard_Utf8Char* theText,
                                const gp_Ax2&            theOrientation,
-                               const OpenGl_TextParam&  theParams);
+                               const OpenGl_TextParam&  theParams,
+                               const bool               theHasOwnAnchor = true);
 
   //! Setup new string and position
   Standard_EXPORT void Init (const Handle(OpenGl_Context)& theCtx,
@@ -168,6 +169,7 @@ protected:
   bool               myIs2d;
   gp_Ax2             myOrientation; //!< Text orientation in 3D space.
   bool               myHasPlane;    //!< Check if text have orientation in 3D space.
+  bool               myHasAnchorPoint; //!< Shows if it has own attach point
 
 public:
 

@@ -226,7 +226,8 @@ public:
                                      const Graphic3d_TextPath                theTp,
                                      const Graphic3d_HorizontalTextAlignment theHTA,
                                      const Graphic3d_VerticalTextAlignment   theVTA,
-                                     const Standard_Boolean                  theToEvalMinMax = Standard_True);
+                                     const Standard_Boolean                  theToEvalMinMax = Standard_True,
+                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True);
 
   //! Creates the string <theText> at orientation <theOrientation> in 3D space.
   Standard_EXPORT virtual void Text (const TCollection_ExtendedString&       theText,
@@ -236,7 +237,8 @@ public:
                                      const Graphic3d_TextPath                theTp,
                                      const Graphic3d_HorizontalTextAlignment theHTA,
                                      const Graphic3d_VerticalTextAlignment   theVTA,
-                                     const Standard_Boolean                  theToEvalMinMax = Standard_True);
+                                     const Standard_Boolean                  theToEvalMinMax = Standard_True,
+                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True);
 
 
   //! Adds an array of primitives for display

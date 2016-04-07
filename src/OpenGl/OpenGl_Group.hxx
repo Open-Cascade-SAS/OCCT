@@ -85,7 +85,8 @@ public:
                                      const Graphic3d_TextPath                theTp,
                                      const Graphic3d_HorizontalTextAlignment theHTA,
                                      const Graphic3d_VerticalTextAlignment   theVTA,
-                                     const Standard_Boolean                  theToEvalMinMax) Standard_OVERRIDE;
+                                     const Standard_Boolean                  theToEvalMinMax,
+                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True) Standard_OVERRIDE;
 
   //! Add flipping element
   Standard_EXPORT virtual void SetFlippingOptions (const Standard_Boolean theIsEnabled,

@@ -1149,7 +1149,8 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
                             const Graphic3d_TextPath                theTP,
                             const Graphic3d_HorizontalTextAlignment theHTA,
                             const Graphic3d_VerticalTextAlignment   theVTA,
-                            const Standard_Boolean                  theToEvalMinMax)
+                            const Standard_Boolean                  theToEvalMinMax,
+                            const Standard_Boolean                  theHasOwnAnchor)
 {
   const NCollection_String aText ((Standard_Utf16Char*)(theText.ToExtString()));
   Text (aText.ToCString(),
@@ -1159,7 +1160,8 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
         theTP,
         theHTA,
         theVTA,
-        theToEvalMinMax);
+        theToEvalMinMax,
+        theHasOwnAnchor);
 }
 
 // =======================================================================
@@ -1173,7 +1175,8 @@ void Graphic3d_Group::Text (const Standard_CString                  /*theText*/,
                             const Graphic3d_TextPath                /*theTp*/,
                             const Graphic3d_HorizontalTextAlignment /*theHta*/,
                             const Graphic3d_VerticalTextAlignment   /*theVta*/,
-                            const Standard_Boolean                  theToEvalMinMax)
+                            const Standard_Boolean                  theToEvalMinMax,
+                            const Standard_Boolean                  /*theHasOwnAnchor*/)
 {
   if (IsDeleted())
   {

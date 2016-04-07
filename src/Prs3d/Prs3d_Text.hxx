@@ -54,7 +54,8 @@ public:
   Standard_EXPORT static void Draw (const Handle(Prs3d_Presentation)& thePresentation,
                                     const Handle(Prs3d_TextAspect)&   theAspect,
                                     const TCollection_ExtendedString& theText,
-                                    const gp_Ax2&                     theOrientation);
+                                    const gp_Ax2&                     theOrientation,
+                                    const Standard_Boolean            theHasOwnAnchor = Standard_True);
   
   //! Defines the display of the text aText at the point
   //! AttachmentPoint.
