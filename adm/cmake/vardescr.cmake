@@ -22,6 +22,9 @@ set (BUILD_WITH_DEBUG_DESCR
 "Enables extended messages of many OCCT algorithms, usually printed to cout. 
 These include messages on internal errors and special cases encountered, timing etc")
 
+set (BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR
+"Append the postfix to names of output libraries")
+
 # install variables
 set (INSTALL_DIR_DESCR 
 "The place where built OCCT libraries, headers, test cases (INSTALL_TEST_CASES variable),

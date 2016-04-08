@@ -24,9 +24,14 @@ endif()
 
 if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
   set (BUILD_SHARED_LIBS ON)
+
+  if (NOT DEFINED BUILD_SHARED_LIBRARY_NAME_POSTFIX)
+    set (BUILD_SHARED_LIBRARY_NAME_POSTFIX "" CACHE STRING "${BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR}" FORCE)
+  endif()
 else()
   unset (BUILD_SHARED_LIBS)
   message (STATUS "Info: Only 3rdparty's header files are used for building of static OCCT libraries")
+  unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
 endif()
 
 # the name of the project
@@ -723,6 +728,11 @@ foreach(RESOURCE ${RESOURCES})
     OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}")
   endif()
 endforeach()
+
+# patch installed DrawDefault file if BUILD_SHARED_LIBRARY_NAME_POSTFIX is changed
+if (NOT "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}" STREQUAL "")
+  OCCT_UPDATE_DRAW_DEFAULT_FILE()
+endif()
 
 # define CSF variable
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
