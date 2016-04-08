@@ -212,17 +212,16 @@ void PrsMgr_PresentableObject::ToBeUpdated(TColStd_ListOfInteger& OutList) const
 {
   OutList.Clear();
   // on dimensionne les buckets a la taille de la seq.
-  static TColStd_MapOfInteger MI(myPresentations.Length()); 
+  TColStd_MapOfInteger MI(myPresentations.Length()); 
   
   for(Standard_Integer IP =1; IP<=myPresentations.Length();IP++){
     const PrsMgr_ModedPresentation& MP = myPresentations(IP);
     if(MP.Presentation()->MustBeUpdated())
       if(!MI.Contains(MP.Mode())){
-	OutList.Append(MP.Mode());
-	MI.Add(MP.Mode());
+        OutList.Append(MP.Mode());
+        MI.Add(MP.Mode());
       }
   }
-  MI.Clear();
 }
 
 //=======================================================================

@@ -51,28 +51,6 @@
 #include <V3d_Viewer.hxx>
 
 /*----------------------------------------------------------------------*/
-/*
- * Static variable
- */
-static TCollection_AsciiString _XLetter() {
-    static TCollection_AsciiString XLetter("X");
-return XLetter;
-}
-#define XLetter _XLetter()
-
-static TCollection_AsciiString _YLetter() {
-    static TCollection_AsciiString YLetter("Y");
-return YLetter;
-}
-#define YLetter _YLetter()
-
-static TCollection_AsciiString _ZLetter() {
-    static TCollection_AsciiString ZLetter("Z");
-return ZLetter;
-}
-#define ZLetter _ZLetter()
-
-/*----------------------------------------------------------------------*/
 
 void V3d_Viewer::SetPrivilegedPlane(const gp_Ax3& aPlane)
 {
@@ -127,17 +105,17 @@ void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quan
     const gp_Pnt pX(p0.XYZ() + myDisplayPlaneLength*myPrivilegedPlane.XDirection().XYZ());
     aPrims->AddVertex(p0);
     aPrims->AddVertex(pX);
-    Group->Text(XLetter.ToCString(),Graphic3d_Vertex(pX.X(),pX.Y(),pX.Z()),1./81.);
+    Group->Text("X",Graphic3d_Vertex(pX.X(),pX.Y(),pX.Z()),1./81.);
 
     const gp_Pnt pY(p0.XYZ() + myDisplayPlaneLength*myPrivilegedPlane.YDirection().XYZ());
     aPrims->AddVertex(p0);
     aPrims->AddVertex(pY);
-    Group->Text(YLetter.ToCString(),Graphic3d_Vertex(pY.X(),pY.Y(),pY.Z()),1./81.);
+    Group->Text("Y",Graphic3d_Vertex(pY.X(),pY.Y(),pY.Z()),1./81.);
     
     const gp_Pnt pZ(p0.XYZ() + myDisplayPlaneLength*myPrivilegedPlane.Direction().XYZ());
     aPrims->AddVertex(p0);
     aPrims->AddVertex(pZ);
-    Group->Text(ZLetter.ToCString(),Graphic3d_Vertex(pZ.X(),pZ.Y(),pZ.Z()),1./81.);
+    Group->Text("Z",Graphic3d_Vertex(pZ.X(),pZ.Y(),pZ.Z()),1./81.);
 
     Group->AddPrimitiveArray(aPrims);
 

@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TCollection_AsciiString.hxx>
 #include <AIS_NListTransient.hxx>
 #include <AIS_NListIteratorOfListTransient.hxx>
 #include <AIS_NDataMapOfTransientIteratorOfListTransient.hxx>
@@ -45,80 +44,45 @@ class AIS_Selection : public MMgt_TShared
 public:
 
   
-  //! creates a new selection and make it current in the session.
-  //! the selection will be accessible later through its name
-  //! to make it again current.
-  //!
-  //! Note that if a session has been created, a session with
-  //! the name  "default" is created.
-  //!
-  //! In this case, the is always a current selection which
-  //! is the last one created  until SetCurrentSelection is used.
-  //!
-  //! The class methods deals with the current selection.
-  //!
-  //! Warning : Better Call AIS_Selection::CreateSelection.
-  Standard_EXPORT AIS_Selection(const Standard_CString aName);
+  //! creates a new selection.
+
+  Standard_EXPORT AIS_Selection();
   
-  Standard_EXPORT static void Remove (const Standard_CString aName);
+  //! removes all the object of the selection.
+  Standard_EXPORT void Select();
   
-  //! returns True if a selection having this name exsits.
-  Standard_EXPORT static Standard_Boolean Find (const Standard_CString aName);
-  
-  //! calls the private constructor and puts the new Selection
-  //! in the list of existing selections.
-  //! returns False if the selection exists.
-  Standard_EXPORT static Standard_Boolean CreateSelection (const Standard_CString aName);
-  
-  Standard_EXPORT static Handle(AIS_Selection) Selection (const Standard_CString aName);
-  
-  //! returns False if There is no selection of name <aName>
-  Standard_EXPORT static Standard_Boolean SetCurrentSelection (const Standard_CString aName);
-  
-  Standard_EXPORT static Handle(AIS_Selection) CurrentSelection();
-  
-  //! Clears selection.
-  Standard_EXPORT static void ClearCurrentSelection();
-  
-  //! removes all the object of the currentselection.
-  Standard_EXPORT static void Select();
-  
-  //! if the object is not yet in the current selection, it will be added.
-  //! if the object is already in the current selection, it will be removed.
-  Standard_EXPORT static AIS_SelectStatus Select (const Handle(Standard_Transient)& anObject);
+  //! if the object is not yet in the selection, it will be added.
+  //! if the object is already in the selection, it will be removed.
+  Standard_EXPORT AIS_SelectStatus Select (const Handle(Standard_Transient)& anObject);
   
   //! the object is always add int the selection.
   //! faster when the number of objects selected is great.
-  Standard_EXPORT static AIS_SelectStatus AddSelect (const Handle(Standard_Transient)& anObject);
+  Standard_EXPORT AIS_SelectStatus AddSelect (const Handle(Standard_Transient)& anObject);
   
   //! clears the selection and adds the object in the selection.
-  Standard_EXPORT static void ClearAndSelect (const Handle(Standard_Transient)& anObject);
-  
-  Standard_EXPORT static Standard_Boolean IsSelected (const Handle(Standard_Transient)& anObject);
+  Standard_EXPORT void ClearAndSelect (const Handle(Standard_Transient)& anObject);
+
+  //! checks if the object is in the selection.
+  Standard_EXPORT Standard_Boolean IsSelected (const Handle(Standard_Transient)& anObject) const;
   
   //! returns the number of objects selected.
-  Standard_EXPORT static Standard_Integer Extent();
+  Standard_EXPORT Standard_Integer Extent() const;
   
   //! returns the single object selected.
   //! Warning: raises TypeMismatch from Standard if Extent is not equal to 1.
-  Standard_EXPORT static Handle(Standard_Transient) Single();
+  Standard_EXPORT Handle(Standard_Transient) Single();
   
-    void Init();
+  void Init();
   
-    Standard_Boolean More() const;
+  Standard_Boolean More() const;
   
-    void Next();
+  void Next();
   
-    const Handle(Standard_Transient)& Value() const;
+  const Handle(Standard_Transient)& Value() const;
   
-    Standard_Integer NbStored() const;
+  Standard_Integer NbStored() const;
   
-    const AIS_NListTransient& Objects() const;
-  
-  Standard_EXPORT static Standard_Integer Index (const Standard_CString aName);
-
-
-
+  const AIS_NListTransient& Objects() const;
 
   DEFINE_STANDARD_RTTIEXT(AIS_Selection,MMgt_TShared)
 
@@ -129,8 +93,6 @@ protected:
 
 private:
 
-
-  TCollection_AsciiString myName;
   AIS_NListTransient myresult;
   AIS_NListIteratorOfListTransient myIterator;
   AIS_NDataMapOfTransientIteratorOfListTransient myResultMap;

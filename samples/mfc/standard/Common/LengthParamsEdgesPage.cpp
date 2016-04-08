@@ -78,9 +78,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge1Btn()
     return;
   }
 
-  // Workaround for AIS_LocalContext::SelectedShape()
-  myFirstEdge = TopoDS::Edge (CDimensionDlg::SelectedShape());
-  //myFirstEdge =  TopoDS::Edge (myAISContext->LocalContext()->SelectedShape());
+  myFirstEdge = TopoDS::Edge (myAISContext->SelectedShape());
 
   myAISContext->LocalContext()->ClearSelected();
 }
@@ -100,9 +98,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
     return;
   }
 
-  // Workaround for AIS_LocalContext::SelectedShape()
-  mySecondEdge = TopoDS::Edge (CDimensionDlg::SelectedShape());
-  //mySecondEdge = TopoDS::Edge (myAISContext->LocalContext()->SelectedShape());
+  mySecondEdge = TopoDS::Edge (myAISContext->SelectedShape());
 
   myAISContext->LocalContext()->ClearSelected();
 

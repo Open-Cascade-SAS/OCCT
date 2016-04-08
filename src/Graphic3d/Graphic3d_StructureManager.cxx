@@ -30,72 +30,24 @@
 #include <Graphic3d_InitialisationError.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include "Graphic3d_StructureManager.pxx"
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager,MMgt_TShared)
 
-static Standard_Boolean Initialisation = Standard_True;
-static int StructureManager_ArrayId[StructureManager_MAX];
-static Standard_Integer StructureManager_CurrentId = 0;
-
-#include "Graphic3d_Structure.pxx"
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_CView.hxx>
 
 Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver)
 : myViewGenId (0, 31)
 {
+  myAspectLine3d          = new Graphic3d_AspectLine3d ();
+  myAspectText3d          = new Graphic3d_AspectText3d ();
+  myAspectMarker3d        = new Graphic3d_AspectMarker3d ();
+  myAspectFillArea3d      = new Graphic3d_AspectFillArea3d ();
 
-Standard_Real Coef;
-Standard_Integer i;
-Standard_Boolean NotFound       = Standard_True;
-Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
-
-        /* Initialize PHIGS and start up */
-        if (Initialisation) {
-
-                Initialisation = Standard_False;
-                /* table to manage IDs of StructureManager */
-                for (i=0; i<Limit; i++) StructureManager_ArrayId[i]    = 0;
-
-                StructureManager_CurrentId      = 0;
-                StructureManager_ArrayId[0]     = 1;
-
-        }
-        else {
-                for (i=0; i<Limit && NotFound; i++)
-                        if (StructureManager_ArrayId[i] == 0) {
-                                NotFound        = Standard_False;
-                                StructureManager_CurrentId      = i;
-                                StructureManager_ArrayId[i]     = 1;
-                        }
-
-                if (NotFound)
-                {
-                  Standard_SStream anErrorDescription;
-                  anErrorDescription<<"You are trying to create too many ViewManagers at the same time!\n"<<
-                    "The number of simultaneously created ViewManagers can't exceed "<<Limit<<".\n";
-                  Graphic3d_InitialisationError::Raise(anErrorDescription);
-                }
-        }
-
-        Coef            = (Structure_IDMIN+Structure_IDMAX)/Limit;
-        Aspect_GenId theGenId(
-          Standard_Integer (Structure_IDMIN+Coef*(StructureManager_CurrentId)),
-          Standard_Integer (Structure_IDMIN+Coef*(StructureManager_CurrentId+1)-1));
-        myStructGenId   = theGenId;
-
-        myId                    = StructureManager_CurrentId;
-
-        myAspectLine3d          = new Graphic3d_AspectLine3d ();
-        myAspectText3d          = new Graphic3d_AspectText3d ();
-        myAspectMarker3d        = new Graphic3d_AspectMarker3d ();
-        myAspectFillArea3d      = new Graphic3d_AspectFillArea3d ();
-
-        myUpdateMode            = Aspect_TOU_WAIT;
-        myGraphicDriver         = theDriver;
+  myUpdateMode            = Aspect_TOU_WAIT;
+  myGraphicDriver         = theDriver;
 
 }
 
@@ -103,10 +55,9 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
 
 Graphic3d_StructureManager::~Graphic3d_StructureManager ()
 {
-        myDisplayedStructure.Clear ();
-        myHighlightedStructure.Clear ();
-        myDefinedViews.Clear();
-        StructureManager_ArrayId[myId]  = 0;
+  myDisplayedStructure.Clear ();
+  myHighlightedStructure.Clear ();
+  myDefinedViews.Clear();
 
 }
 
@@ -227,12 +178,6 @@ Handle(Graphic3d_AspectFillArea3d) Graphic3d_StructureManager::FillArea3dAspect 
 
 }
 
-void Graphic3d_StructureManager::Remove (const Standard_Integer theId) {
-
-        myStructGenId.Free (theId);
-
-}
-
 void Graphic3d_StructureManager::DisplayedStructures (Graphic3d_MapOfStructure& SG) const {
 
   SG.Assign(myDisplayedStructure);
@@ -264,14 +209,6 @@ void Graphic3d_StructureManager::HighlightedStructures (Graphic3d_MapOfStructure
 
 }
 
-Standard_Integer Graphic3d_StructureManager::NewIdentification () {
-
-Standard_Integer Id     = myStructGenId.Next ();
-
-        return Id;
-
-}
-
 Handle(Graphic3d_Structure) Graphic3d_StructureManager::Identification (const Standard_Integer AId) const {
 
 //  Standard_Integer ind=0;
@@ -299,28 +236,9 @@ Handle(Graphic3d_Structure) Graphic3d_StructureManager::Identification (const St
 
 }
 
-Standard_Integer Graphic3d_StructureManager::Identification () const {
- 
-        return (myId);
- 
-}
-
-Standard_Integer Graphic3d_StructureManager::Limit () {
-
-        return (StructureManager_MAX);
-
-}
-
-Standard_Integer Graphic3d_StructureManager::CurrentId () {
-
-        return (StructureManager_CurrentId);
-
-}
-
-const Handle(Graphic3d_GraphicDriver)& Graphic3d_StructureManager::GraphicDriver () const {
-
-        return (myGraphicDriver);
-
+const Handle(Graphic3d_GraphicDriver)& Graphic3d_StructureManager::GraphicDriver () const 
+{
+  return (myGraphicDriver);
 }
 
 void Graphic3d_StructureManager::RecomputeStructures()

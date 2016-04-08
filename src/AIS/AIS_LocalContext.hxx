@@ -40,6 +40,7 @@
 #include <TColStd_MapOfTransient.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Real.hxx>
+#include <AIS_Selection.hxx>
 class AIS_InteractiveContext;
 class SelectMgr_SelectionManager;
 class SelectMgr_OrFilter;
@@ -91,7 +92,7 @@ public:
   
   Standard_EXPORT void SetContext (const Handle(AIS_InteractiveContext)& aCtx);
   
-    const TCollection_AsciiString& SelectionName() const;
+    const Handle(AIS_Selection) Selection() const;
   
   Standard_EXPORT void Terminate (const Standard_Boolean updateviewer = Standard_True);
   
@@ -166,6 +167,8 @@ public:
   Standard_EXPORT Standard_Boolean UnhilightLastDetected (const Handle(V3d_View)& aView);
   
   //! returns the number of selected
+  Standard_EXPORT AIS_StatusOfPick AddSelect (const Handle(Standard_Transient)& theObject);
+
   Standard_EXPORT AIS_StatusOfPick Select (const Standard_Boolean updateviewer = Standard_True);
   
   Standard_EXPORT AIS_StatusOfPick ShiftSelect (const Standard_Boolean updateviewer = Standard_True);
@@ -411,7 +414,6 @@ private:
   Handle(SelectMgr_SelectionManager) mySM;
   Handle(StdSelect_ViewerSelector3d) myMainVS;
   Handle(PrsMgr_PresentationManager3d) myMainPM;
-  TCollection_AsciiString mySelName;
   Handle(StdSelect_ViewerSelector3d) myCollVS;
   AIS_DataMapOfSelStat myActiveObjects;
   Handle(SelectMgr_OrFilter) myFilters;
@@ -419,6 +421,7 @@ private:
   Handle(SelectMgr_Filter) myStdFilters[9];
   Standard_Boolean myAutoHilight;
   Handle(SelectMgr_IndexedMapOfOwner) myMapOfOwner;
+  Handle(AIS_Selection) mySelection;
   Standard_Integer mylastindex;
   Standard_Integer mylastgood;
   Standard_Integer myCurrentOwner;

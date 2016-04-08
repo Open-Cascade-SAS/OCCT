@@ -565,6 +565,7 @@ protected:
   Handle(Graphic3d_TextureEnv)    myTextureEnvData;
   Graphic3d_GraduatedTrihedron    myGTrihedronData;
 
+  OpenGl_ListOfLight              myNoShadingLight;
   OpenGl_ListOfLight              myLights;
   OpenGl_LayerList                myZLayers; //!< main list of displayed structure, sorted by layers
 

@@ -1009,33 +1009,36 @@ typedef struct _Material
   Graphic3d_TypeOfMaterial type;
 } Material;
 
-static Material theMaterials[] =
+namespace
 {
-  {"Brass",            Graphic3d_MATERIAL_PHYSIC},
-  {"Bronze",           Graphic3d_MATERIAL_PHYSIC},
-  {"Copper",           Graphic3d_MATERIAL_PHYSIC},
-  {"Gold",             Graphic3d_MATERIAL_PHYSIC},
-  {"Pewter",           Graphic3d_MATERIAL_PHYSIC},
-  {"Plastered",        Graphic3d_MATERIAL_ASPECT},
-  {"Plastified",       Graphic3d_MATERIAL_ASPECT},
-  {"Silver",           Graphic3d_MATERIAL_PHYSIC},
-  {"Steel",            Graphic3d_MATERIAL_PHYSIC},
-  {"Stone",            Graphic3d_MATERIAL_PHYSIC},
-  {"Shiny_plastified", Graphic3d_MATERIAL_ASPECT},
-  {"Satined",          Graphic3d_MATERIAL_ASPECT},
-  {"Metalized",        Graphic3d_MATERIAL_ASPECT},
-  {"Ionized",          Graphic3d_MATERIAL_ASPECT},
-  {"Chrome",           Graphic3d_MATERIAL_PHYSIC},
-  {"Aluminium",        Graphic3d_MATERIAL_PHYSIC},
-  {"Obsidian",         Graphic3d_MATERIAL_PHYSIC},
-  {"Neon",             Graphic3d_MATERIAL_PHYSIC},
-  {"Jade",             Graphic3d_MATERIAL_PHYSIC},
-  {"Charcoal",         Graphic3d_MATERIAL_PHYSIC},
-  {"Water",            Graphic3d_MATERIAL_PHYSIC},
-  {"Glass",            Graphic3d_MATERIAL_PHYSIC},
-  {"Diamond",          Graphic3d_MATERIAL_PHYSIC}
+  static const Material theMaterials[] =
+  {
+    {"Brass",            Graphic3d_MATERIAL_PHYSIC},
+    {"Bronze",           Graphic3d_MATERIAL_PHYSIC},
+    {"Copper",           Graphic3d_MATERIAL_PHYSIC},
+    {"Gold",             Graphic3d_MATERIAL_PHYSIC},
+    {"Pewter",           Graphic3d_MATERIAL_PHYSIC},
+    {"Plastered",        Graphic3d_MATERIAL_ASPECT},
+    {"Plastified",       Graphic3d_MATERIAL_ASPECT},
+    {"Silver",           Graphic3d_MATERIAL_PHYSIC},
+    {"Steel",            Graphic3d_MATERIAL_PHYSIC},
+    {"Stone",            Graphic3d_MATERIAL_PHYSIC},
+    {"Shiny_plastified", Graphic3d_MATERIAL_ASPECT},
+    {"Satined",          Graphic3d_MATERIAL_ASPECT},
+    {"Metalized",        Graphic3d_MATERIAL_ASPECT},
+    {"Ionized",          Graphic3d_MATERIAL_ASPECT},
+    {"Chrome",           Graphic3d_MATERIAL_PHYSIC},
+    {"Aluminium",        Graphic3d_MATERIAL_PHYSIC},
+    {"Obsidian",         Graphic3d_MATERIAL_PHYSIC},
+    {"Neon",             Graphic3d_MATERIAL_PHYSIC},
+    {"Jade",             Graphic3d_MATERIAL_PHYSIC},
+    {"Charcoal",         Graphic3d_MATERIAL_PHYSIC},
+    {"Water",            Graphic3d_MATERIAL_PHYSIC},
+    {"Glass",            Graphic3d_MATERIAL_PHYSIC},
+    {"Diamond",          Graphic3d_MATERIAL_PHYSIC}
 
-};
+  };
+}
 
 // =======================================================================
 // function : NumberOfMaterials

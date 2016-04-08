@@ -20,12 +20,4 @@
 #define Structure_MAX_PRIORITY 10
 #define Structure_MIN_PRIORITY 0
 
-#include "Graphic3d_StructureManager.pxx"
-
-// structures identifiers : possible range
-	// check the value of View_IDMAX (must be < Structure_IDMIN)
-#define Structure_IDMIN 10001
-// /2 pour eviter les problemes d'overflow
-#define Structure_IDMAX INT_MAX/2
-
 #endif

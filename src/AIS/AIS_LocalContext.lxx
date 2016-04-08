@@ -18,9 +18,8 @@
 
 #include <SelectMgr_OrFilter.hxx>
 
-inline const TCollection_AsciiString& AIS_LocalContext::
-SelectionName() const 
-{return mySelName;}
+inline const Handle(AIS_Selection) AIS_LocalContext::Selection() const 
+{return mySelection;}
 
 inline void AIS_LocalContext::SetAutomaticHilight(const Standard_Boolean aStatus)
 {myAutoHilight = aStatus;}

@@ -23,7 +23,6 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_LocalContext.hxx>
 #include <AIS_LocalStatus.hxx>
-#include <AIS_Selection.hxx>
 #include <AIS_Shape.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Graphic3d_Structure.hxx>
@@ -51,17 +50,6 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(AIS_LocalContext,MMgt_TShared)
 
-static TCollection_AsciiString AIS_Local_SelName(const Standard_Address address,
-                                                 const Standard_Integer anIndex)
-{
-//  TCollection_AsciiString SelName;
-  char string[100];
-  sprintf(string,"%p_%d", address, anIndex);	// works under any system 
-  TCollection_AsciiString SelName(string);
-  return SelName;
-}
-
-
 //=======================================================================
 //function : AIS_LocalContext
 //purpose  : 
@@ -85,6 +73,7 @@ myMainVS(aCtx->MainSelector()),
 myFilters(new SelectMgr_OrFilter()),
 myAutoHilight(Standard_True),
 myMapOfOwner (new SelectMgr_IndexedMapOfOwner()),
+mySelection(new AIS_Selection()),
 mylastindex(0),
 mylastgood(0),
 myCurDetected(0),
@@ -98,8 +87,6 @@ myAISCurDetected(0)
 
   myMainVS->ResetSelectionActivationStatus();
   myMainPM = aCtx->MainPrsMgr();
-  mySelName = AIS_Local_SelName(this, Index);
-  AIS_Selection::CreateSelection(mySelName.ToCString());
 
   mySM->Add(myMainVS);
   if(myLoadDisplayed) LoadContextObjects();
@@ -626,18 +613,13 @@ void AIS_LocalContext::Terminate (const Standard_Boolean theToUpdate)
   // clear the selector...
   myMainVS->Clear();
   
-
-  AIS_Selection::SetCurrentSelection(mySelName.ToCString());
-  Handle(AIS_Selection) S = AIS_Selection::CurrentSelection();
   Handle(Standard_Transient) Tr;
-  for(S->Init();S->More();S->Next()){
-    Tr = S->Value();
+  for (mySelection->Init(); mySelection->More(); mySelection->Next()){
+    Tr = mySelection->Value();
     Handle(SelectMgr_EntityOwner)::DownCast (Tr)->SetSelected (Standard_False);
   }
 
-      
-  AIS_Selection::Select();
-  AIS_Selection::Remove(mySelName.ToCString());
+  mySelection->Select();
 
   Handle(V3d_View) aDummyView;
   myMainVS->ClearSensitive (aDummyView);

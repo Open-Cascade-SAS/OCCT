@@ -104,6 +104,14 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
     if (sscanf (anAaEnv, "%d", &v) > 0) myAntiAliasing = v;
   }
 
+  OpenGl_Light       aLight;
+  aLight.Type        = Graphic3d_TOLS_AMBIENT;
+  aLight.IsHeadlight = Standard_False;
+  aLight.Color.r()   = 1.;
+  aLight.Color.g()   = 1.;
+  aLight.Color.b()   = 1.;
+  myNoShadingLight.Append (aLight);
+
   myCurrLightSourceState  = myStateCounter->Increment();
   myMainSceneFbos[0]      = new OpenGl_FrameBuffer();
   myMainSceneFbos[1]      = new OpenGl_FrameBuffer();

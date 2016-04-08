@@ -783,7 +783,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   const Handle(OpenGl_ShaderManager)& aManager   = aContext->ShaderManager();
   if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
   {
-    aManager->UpdateLightSourceStateTo (myShadingModel == Graphic3d_TOSM_NONE ? &OpenGl_NoShadingLight() : &myLights);
+    aManager->UpdateLightSourceStateTo (myShadingModel == Graphic3d_TOSM_NONE ? &myNoShadingLight : &myLights);
     myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
   }
 
@@ -1270,7 +1270,7 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
                                    THE_DEFAULT_AMBIENT[3]);
     GLenum aLightGlId = GL_LIGHT0;
 
-    OpenGl_ListOfLight::Iterator aLightIt (myShadingModel == Graphic3d_TOSM_NONE ? OpenGl_NoShadingLight() : myLights);
+    OpenGl_ListOfLight::Iterator aLightIt (myShadingModel == Graphic3d_TOSM_NONE ? myNoShadingLight : myLights);
     for (; aLightIt.More(); aLightIt.Next())
     {
       bindLight (aLightIt.Value(), aLightGlId, anAmbientColor, myWorkspace);

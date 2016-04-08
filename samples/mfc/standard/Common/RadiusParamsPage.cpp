@@ -69,9 +69,7 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
   Standard_Boolean isAttachPoint = Standard_False;
   Standard_Real aFirstPar = 0, aLastPar = 0;
 
-   // Workaround for AIS_LocalContext::SelectedShape()
-  TopoDS_Shape aSelShape = CDimensionDlg::SelectedShape();
-  //TopoDS_Shape aSelShape = myAISContext->LocalContext()->SelectedShape();
+  TopoDS_Shape aSelShape = myAISContext->SelectedShape();
 
   if (aSelShape.ShapeType() != TopAbs_EDGE &&
       aSelShape.ShapeType() != TopAbs_FACE &&

@@ -70,8 +70,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Shape,AIS_InteractiveObject)
 
-static Standard_Boolean myFirstCompute;
-
 static Standard_Boolean IsInList(const TColStd_ListOfInteger& LL, const Standard_Integer aMode)
 {
   TColStd_ListIteratorOfListOfInteger It(LL);
@@ -92,7 +90,6 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant),
 myInitAng(0.)
 {
   Set (shap);
-  myFirstCompute = Standard_True;
   SetHilightMode(0);
   myDrawer->SetShadingAspectGlobal(Standard_False);
 }
@@ -398,8 +395,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
       return;
   }
 
-  static TopAbs_ShapeEnum TypOfSel;
-  TypOfSel = AIS_Shape::SelectionType(aMode);
+  TopAbs_ShapeEnum TypOfSel = AIS_Shape::SelectionType(aMode);
   TopoDS_Shape shape = myshape;
 
 // POP protection against crash in low layers

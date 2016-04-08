@@ -118,7 +118,6 @@ Graphic3d_Structure.pxx
 Graphic3d_StructureDefinitionError.hxx
 Graphic3d_StructureManager.cxx
 Graphic3d_StructureManager.hxx
-Graphic3d_StructureManager.pxx
 Graphic3d_StructureManagerPtr.hxx
 Graphic3d_StructurePtr.hxx
 Graphic3d_TextPath.hxx

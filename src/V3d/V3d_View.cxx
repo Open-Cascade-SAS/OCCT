@@ -131,6 +131,7 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
   MyActiveLights(),
   myActiveLightsIterator(),
   SwitchSetFront (Standard_False),
+  myZRotation (Standard_False),
   MyTrsf (1, 4, 1, 4)
 {
   myView = theViewer->Driver()->CreateView (theViewer->StructureManager());
@@ -188,6 +189,7 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const Handle(V3d_View)&
   MyActiveLights(),
   myActiveLightsIterator(),
   SwitchSetFront(Standard_False),
+  myZRotation (Standard_False),
   MyTrsf (1, 4, 1, 4)
 {
   myView = theViewer->Driver()->CreateView (theViewer->StructureManager());
@@ -2777,7 +2779,6 @@ void V3d_View::FitAll(const Handle(Aspect_Window)& aWindow,
 //function : StartRotation
 //purpose  :
 //=============================================================================
-static Standard_Boolean zRotation = Standard_False;
 void V3d_View::StartRotation(const Standard_Integer X,
                              const Standard_Integer Y,
                              const Quantity_Ratio zRotationThreshold)
@@ -2789,13 +2790,13 @@ void V3d_View::StartRotation(const Standard_Integer X,
   ry = Standard_Real(Convert(y));
   Gravity(gx,gy,gz);
   Rotate(0.,0.,0.,gx,gy,gz,Standard_True);
-  zRotation = Standard_False;
+  myZRotation = Standard_False;
   if( zRotationThreshold > 0. ) {
     Standard_Real dx = Abs(sx - rx/2.);
     Standard_Real dy = Abs(sy - ry/2.);
-    //  if( dx > rx/3. || dy > ry/3. ) zRotation = Standard_True;
+    //  if( dx > rx/3. || dy > ry/3. ) myZRotation = Standard_True;
     Standard_Real dd = zRotationThreshold * (rx + ry)/2.;
-    if( dx > dd || dy > dd ) zRotation = Standard_True;
+    if( dx > dd || dy > dd ) myZRotation = Standard_True;
   }
 
 }
@@ -2812,7 +2813,7 @@ void V3d_View::Rotation(const Standard_Integer X,
     return;
   }
   Standard_Real dx=0.,dy=0.,dz=0.;
-  if( zRotation ) {
+  if( myZRotation ) {
     dz = atan2(Standard_Real(X)-rx/2., ry/2.-Standard_Real(Y)) -
       atan2(sx-rx/2.,ry/2.-sy);
   } else {

@@ -60,7 +60,6 @@ CButton* CLengthParamsEdgePage::GetButton()
   return (CButton*)GetDlgItem (IDC_ChooseEdgeBtn);
 }
 
-#include <AIS_Selection.hxx>
 //=======================================================================
 //function : OnBnClickedChooseEdgeBtn
 //purpose  :
@@ -76,9 +75,7 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
     return;
   }
 
-  // Workaround for AIS_LocalContext::SelectedShape()
-  //TopoDS_Shape aSelShape = myAISContext->LocalContext()->SelectedShape();
-  TopoDS_Shape aSelShape = CDimensionDlg::SelectedShape();
+  TopoDS_Shape aSelShape = myAISContext->SelectedShape();
   const TopoDS_Edge& anEdge = TopoDS::Edge (aSelShape);
 
   myAISContext->LocalContext()->ClearSelected();

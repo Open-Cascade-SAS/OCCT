@@ -17,6 +17,7 @@
 #include "Graphic3d_Structure.pxx"
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient)
@@ -26,8 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient)
 //purpose  :
 //=============================================================================
 Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureManager)& theManager)
-: Id               (theManager->NewIdentification()),
-  myZLayer         (Graphic3d_ZLayerId_Default),
+: myZLayer         (Graphic3d_ZLayerId_Default),
   Priority         (Structure_MAX_PRIORITY / 2),
   PreviousPriority (Structure_MAX_PRIORITY / 2),
   ContainsFacet    (0),
@@ -41,6 +41,8 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   Is2dText         (Standard_False),
   myGraphicDriver  (theManager->GraphicDriver())
 {
+  Id = myGraphicDriver->NewIdentification();
+
   ContextLine.IsDef     = 1,
   ContextFillArea.IsDef = 1,
   ContextMarker.IsDef   = 1,

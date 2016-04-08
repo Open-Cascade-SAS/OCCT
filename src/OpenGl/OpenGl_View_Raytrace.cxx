@@ -2068,7 +2068,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
 
   myRaytraceGeometry.Ambient = BVH_Vec4f (0.0f, 0.0f, 0.0f, 0.0f);
 
-  OpenGl_ListOfLight::Iterator aLightIter (myShadingModel == Graphic3d_TOSM_NONE ? OpenGl_NoShadingLight() : myLights);
+  OpenGl_ListOfLight::Iterator aLightIter (myShadingModel == Graphic3d_TOSM_NONE ? myNoShadingLight : myLights);
   for (; aLightIter.More(); aLightIter.Next())
   {
     const OpenGl_Light& aLight = aLightIter.Value();

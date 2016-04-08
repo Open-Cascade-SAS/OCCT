@@ -129,9 +129,6 @@ public:
   //! Returns the values of the current default attributes.
   Standard_EXPORT Handle(Graphic3d_AspectFillArea3d) FillArea3dAspect() const;
 
-  //! Returns maximum number of managers defineable.
-  Standard_EXPORT static Standard_Integer Limit();
-
   //! Returns the values of the current default attributes.
   Standard_EXPORT Handle(Graphic3d_AspectLine3d) Line3dAspect() const;
 
@@ -143,9 +140,6 @@ public:
 
   //! Returns the values of the current default attributes.
   Standard_EXPORT Handle(Graphic3d_AspectText3d) Text3dAspect() const;
-
-  //! Returns a current identifier available.
-  Standard_EXPORT static Standard_Integer CurrentId();
 
   //! Forces a new construction of the structure.
   //! if <theStructure> is displayed and TOS_COMPUTED.
@@ -200,14 +194,8 @@ public:
   //! view must have an identification and we have different managers.
   Standard_EXPORT Standard_Integer MaxNumOfViews() const;
 
-  //! Returns the identification number of the manager.
-  Standard_EXPORT virtual Standard_Integer Identification() const;
-
   //! Returns the structure with the identification number <AId>.
   Standard_EXPORT virtual Handle(Graphic3d_Structure) Identification (const Standard_Integer AId) const;
-
-  //! Returns a new identification number for a new structure in the manager.
-  Standard_EXPORT Standard_Integer NewIdentification();
 
   //! Suppress the highlighting on the structure <AStructure>.
   Standard_EXPORT virtual void UnHighlight (const Handle(Graphic3d_Structure)& AStructure);
@@ -237,15 +225,7 @@ protected:
   //! Returns the structure displayed in visualizer <me>.
   Standard_EXPORT Standard_Integer NumberOfDisplayedStructures() const;
 
-private:
-
-  //! Frees the identifier of a structure.
-  void Remove (const Standard_Integer theId);
-
-protected:
-
   Standard_Integer myId;
-  Aspect_GenId myStructGenId;
   Aspect_GenId myViewGenId;
   Aspect_TypeOfUpdate myUpdateMode;
   Handle(Graphic3d_AspectLine3d) myAspectLine3d;

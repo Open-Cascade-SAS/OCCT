@@ -188,15 +188,9 @@ void Graphic3d_Structure::Remove()
 
   // Destruction of me in the graphic library
   const Standard_Integer aStructId = myCStructure->Id;
+  myCStructure->GraphicDriver()->RemoveIdentification(aStructId);
   myCStructure->GraphicDriver()->RemoveStructure (myCStructure);
   myCStructure.Nullify();
-
-  // Liberation of the identification if the destroyed structure
-  // in the first manager that performs creation of the structure.
-  if (myFirstStructureManager != NULL)
-  {
-    myFirstStructureManager->Remove (aStructId);
-  }
 }
 
 //=============================================================================

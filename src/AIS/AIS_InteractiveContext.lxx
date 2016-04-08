@@ -79,9 +79,6 @@ inline Standard_Boolean AIS_InteractiveContext::HasOpenedContext() const
 inline Handle(AIS_LocalContext) AIS_InteractiveContext::LocalContext() const
 { return (myCurLocalIndex > 0) ? myLocalContexts(myCurLocalIndex) : NULL; }
 
-inline const TCollection_AsciiString& AIS_InteractiveContext::CurrentName() const 
-{return myCurrentName;} 
-
 inline  Standard_Boolean AIS_InteractiveContext::WasCurrentTouched() const 
 {return myCurrentTouched;}
 

@@ -49,6 +49,7 @@
 #include <SelectMgr_ListOfFilter.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <Standard_CString.hxx>
+#include <AIS_Selection.hxx>
 class SelectMgr_SelectionManager;
 class V3d_Viewer;
 class AIS_InteractiveObject;
@@ -60,7 +61,6 @@ class Quantity_Color;
 class TCollection_ExtendedString;
 class Prs3d_LineAspect;
 class Prs3d_BasicAspect;
-class TopoDS_Shape;
 class SelectMgr_EntityOwner;
 class Standard_Transient;
 class SelectMgr_Filter;
@@ -882,6 +882,9 @@ public:
   //! Same as previous methods in reverse direction...
   Standard_EXPORT Standard_Integer HilightPreviousDetected (const Handle(V3d_View)& theView, const Standard_Boolean theToRedrawImmediate = Standard_True);
   
+  //! Adds object in the selection.
+  Standard_EXPORT AIS_StatusOfPick AddSelect (const Handle(Standard_Transient)& theObject);
+
   //! Selects everything found in the bounding rectangle
   //! defined by the pixel minima and maxima, XPMin,
   //! YPMin, XPMax, and YPMax in the view, aView
@@ -1489,21 +1492,6 @@ public:
   //! Returns true if there is an open context.
     Standard_Boolean HasOpenedContext() const;
   
-
-  //! Returns the name of the current selected entity in Neutral Point.
-  //! Objects selected when there is no open local context
-  //! are called current objects; those selected in open
-  //! local context, selected objects.
-    const TCollection_AsciiString& CurrentName() const;
-  
-
-  //! Returns the name of the current selected entity in
-  //! open local context.
-  //! Objects selected when there is no open local context
-  //! are called current objects; those selected in open
-  //! local context, selected objects.
-  Standard_EXPORT const TCollection_AsciiString& SelectionName() const;
-  
   //! Returns the domain name of the main viewer.
   Standard_EXPORT Standard_CString DomainOfMainViewer() const;
   
@@ -1623,8 +1611,6 @@ private:
   Handle(PrsMgr_PresentationManager3d) myMainPM;
   Handle(V3d_Viewer) myMainVwr;
   Handle(StdSelect_ViewerSelector3d) myMainSel;
-  TCollection_AsciiString mySelectionName;
-  TCollection_AsciiString myCurrentName;
   Handle(SelectMgr_EntityOwner) myLastPicked;
   Handle(SelectMgr_EntityOwner) myLastinMain;
   Standard_Boolean myWasLastMain;
@@ -1633,6 +1619,7 @@ private:
   Standard_Boolean myToHilightSelected;
   Handle(SelectMgr_OrFilter) myFilters;
   Handle(Prs3d_Drawer) myDefaultDrawer;
+  Handle(AIS_Selection) mySelection;
   Quantity_NameOfColor myDefaultColor;
   Quantity_NameOfColor myHilightColor;
   Quantity_NameOfColor mySelectionColor;

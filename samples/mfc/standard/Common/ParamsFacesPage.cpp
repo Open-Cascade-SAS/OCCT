@@ -51,9 +51,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn1()
     return;
   }
 
-  // Workaround for AIS_LocalContext::SelectedShape()
-  myFirstFace = TopoDS::Face (CDimensionDlg::SelectedShape());
-  //myFirstFace = TopoDS::Face (myAISContext->LocalContext()->SelectedShape());
+  myFirstFace = TopoDS::Face (myAISContext->SelectedShape());
 
   myAISContext->LocalContext()->ClearSelected();
 }
@@ -69,9 +67,8 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
     return;
   }
 
-  // Workaround for AIS_LocalContext::SelectedShape()
-  mySecondFace = TopoDS::Face (CDimensionDlg::SelectedShape());
-  //mySecondFace = TopoDS::Face (myAISContext->LocalContext()->SelectedShape());
+  mySecondFace = TopoDS::Face (myAISContext->SelectedShape());
+
   myAISContext->LocalContext()->ClearSelected();
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(GetParentOwner());

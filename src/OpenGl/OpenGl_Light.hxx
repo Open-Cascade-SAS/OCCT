@@ -24,20 +24,4 @@
 typedef Graphic3d_CLight       OpenGl_Light;
 typedef Graphic3d_ListOfCLight OpenGl_ListOfLight;
 
-static inline OpenGl_ListOfLight& OpenGl_NoShadingLight()
-{
-  static OpenGl_ListOfLight aLights;
-  if (aLights.IsEmpty())
-  {
-    OpenGl_Light       aLight;
-    aLight.Type        = Graphic3d_TOLS_AMBIENT;
-    aLight.IsHeadlight = Standard_False;
-    aLight.Color.r()   = 1.;
-    aLight.Color.g()   = 1.;
-    aLight.Color.b()   = 1.;
-    aLights.Append (aLight);
-  }
-  return aLights;
-}
-
 #endif // OpenGl_Light_Header

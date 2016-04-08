@@ -1092,6 +1092,7 @@ private:
   Standard_Real gz;
   Standard_Boolean myComputedMode;
   Standard_Boolean SwitchSetFront;
+  Standard_Boolean myZRotation;
   Standard_Integer MyZoomAtPointX;
   Standard_Integer MyZoomAtPointY;
   Handle(Aspect_Grid) MyGrid;

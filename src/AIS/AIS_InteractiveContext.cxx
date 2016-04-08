@@ -27,7 +27,6 @@
 #include <AIS_LocalStatus.hxx>
 #include <AIS_MapIteratorOfMapOfInteractive.hxx>
 #include <AIS_MultipleConnectedInteractive.hxx>
-#include <AIS_Selection.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
@@ -67,21 +66,6 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveContext,MMgt_TShared)
 //#include <AIS_DataMapIteratorOfDataMapOfInteractiveInteger.hxx>
 namespace
 {
-  static volatile Standard_Integer THE_AIS_INDEX_SEL = 0;
-  static volatile Standard_Integer THE_AIS_INDEX_CUR = 0;
-
-  static TCollection_AsciiString AIS_Context_NewSelName()
-  {
-    return TCollection_AsciiString ("AIS_SelContext_")
-         + TCollection_AsciiString (Standard_Atomic_Increment (&THE_AIS_INDEX_SEL));
-  }
-
-  static TCollection_AsciiString AIS_Context_NewCurName()
-  {
-    return TCollection_AsciiString ("AIS_CurContext_")
-         + TCollection_AsciiString (Standard_Atomic_Increment (&THE_AIS_INDEX_CUR));
-  }
-
   typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)> AIS_MapOfObjectOwners;
   typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)>::Iterator AIS_MapIteratorOfMapOfObjectOwners;
 }
@@ -102,6 +86,7 @@ mySelectedTouched(Standard_False),
 myToHilightSelected(Standard_True),
 myFilters(new SelectMgr_OrFilter()),
 myDefaultDrawer(new Prs3d_Drawer()),
+mySelection(new AIS_Selection()),
 myDefaultColor(Quantity_NOC_GOLDENROD),
 myHilightColor(Quantity_NOC_CYAN1),
 mySelectionColor(Quantity_NOC_GRAY80),
@@ -111,27 +96,15 @@ myDisplayMode(0),
 myCurLocalIndex(0),
 myAISCurDetected(0),
 myZDetectionFlag(0),
-myIsAutoActivateSelMode( Standard_True )
+myIsAutoActivateSelMode(Standard_True)
 { 
   InitAttributes();
 }
 
 void AIS_InteractiveContext::Delete() const
 {
-  // clear the static current selection
-  AIS_Selection::ClearCurrentSelection();
-
-  // to avoid an exception
-  if (AIS_Selection::Find (mySelectionName.ToCString()))
-  {
-    AIS_Selection::Remove (mySelectionName.ToCString());
-  }
-
-  // to avoid an exception
-  if (AIS_Selection::Find (myCurrentName.ToCString()))
-  {
-    AIS_Selection::Remove (myCurrentName.ToCString());
-  }
+  // clear the current selection
+  mySelection->Select();
 
   // let's remove one reference explicitly. this operation's supposed to
   // be performed when mgrSelector will be destroyed but anyway...
@@ -150,20 +123,6 @@ void AIS_InteractiveContext::Delete() const
   }
   MMgt_TShared::Delete();
 }
-
-//=======================================================================
-//function : AIS_SelectionName
-//purpose  : 
-//=======================================================================
-const TCollection_AsciiString& AIS_InteractiveContext::SelectionName() const 
-{
-  if(!HasOpenedContext())
-    return mySelectionName;
-  return myLocalContexts(myCurLocalIndex)->SelectionName();
-
-} 
-
-
 
 //=======================================================================
 //function : UpdateCurrentViewer
@@ -697,10 +656,9 @@ void AIS_InteractiveContext::DisplaySelected (const Standard_Boolean theToUpdate
   }
 
   Standard_Boolean      isFound  = Standard_False;
-  Handle(AIS_Selection) aSelIter = AIS_Selection::Selection (myCurrentName.ToCString());
-  for (aSelIter->Init(); aSelIter->More(); aSelIter->Next())
+  for (mySelection->Init(); mySelection->More(); mySelection->Next())
   {
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter->Value());
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (mySelection->Value());
     Display (anObj, Standard_False);
     isFound = Standard_True;
   }
@@ -723,18 +681,16 @@ void AIS_InteractiveContext::EraseSelected (const Standard_Boolean theToUpdateVi
   }
 
   Standard_Boolean      isFound  = Standard_False;
-  Handle(AIS_Selection) aSelIter = AIS_Selection::Selection(myCurrentName.ToCString());
-
-  aSelIter->Init();
-  while (aSelIter->More())
+  mySelection->Init();
+  while (mySelection->More())
   {
-    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aSelIter->Value());
+    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
     Handle(AIS_InteractiveObject) anObj   = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
 
     Erase (anObj, Standard_False);
     isFound = Standard_True;
 
-    aSelIter->Init();
+    mySelection->Init();
   }
 
   if (isFound && theToUpdateViewer)
@@ -2285,16 +2241,14 @@ void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)&
   }
 
   Standard_Boolean isFound = Standard_False;
-  Handle(AIS_Selection) aSelIter = AIS_Selection::Selection (myCurrentName.ToCString());
-  for (aSelIter->Init(); aSelIter->More(); aSelIter->Next())
+  for (mySelection->Init(); mySelection->More(); mySelection->Next())
   {
     isFound = Standard_True;
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter->Value());
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (mySelection->Value());
     anObj->SetAspect (theAspect, theIsGlobalChange);
   }
 
-  if (isFound
-   && theToUpdateViewer)
+  if (isFound && theToUpdateViewer)
   {
     myMainVwr->Update();
   }
@@ -2481,22 +2435,21 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
 //=======================================================================
 void AIS_InteractiveContext::unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject)
 {
-  Handle(AIS_Selection) aSel = AIS_Selection::Selection (myCurrentName.ToCString());
-  aSel->Init();
-  while (aSel->More())
+  mySelection->Init();
+  while (mySelection->More())
   {
     const Handle(SelectMgr_EntityOwner) anOwner =
-      Handle(SelectMgr_EntityOwner)::DownCast (aSel->Value());
+      Handle(SelectMgr_EntityOwner)::DownCast (mySelection->Value());
     if (anOwner->Selectable() == theObject)
     {
       if (anOwner->IsSelected())
       {
         AddOrRemoveSelected (anOwner, Standard_False);
-        aSel->Init();
+        mySelection->Init();
         continue;
       }
     }
-    aSel->Next();
+    mySelection->Next();
   }
 }
 
@@ -2801,11 +2754,6 @@ Standard_Boolean AIS_InteractiveContext::IsInLocal (const Handle(AIS_Interactive
 void AIS_InteractiveContext::InitAttributes()
 {
   mgrSelector->Add (myMainSel);
-  myCurrentName   = AIS_Context_NewCurName();
-  mySelectionName = AIS_Context_NewSelName();
-
-  AIS_Selection::CreateSelection (mySelectionName.ToCString());
-  AIS_Selection::CreateSelection (myCurrentName.ToCString());
 
   myDefaultDrawer->SetShadingAspectGlobal (Standard_False);
   Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
@@ -2974,13 +2922,11 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
                                           const Standard_Real theMargin,
                                           const Standard_Boolean theToUpdate)
 {
-  Standard_CString aSelName = HasOpenedContext() ?
-      myLocalContexts (myCurLocalIndex)->SelectionName().ToCString()
-    : myCurrentName.ToCString();
+  const Handle(AIS_Selection)& aSelection = HasOpenedContext() ?
+      myLocalContexts(myCurLocalIndex)->Selection() : mySelection;
 
   Bnd_Box aBndSelected;
 
-  const Handle(AIS_Selection)& aSelection = AIS_Selection::Selection (aSelName);
   AIS_MapOfObjectOwners anObjectOwnerMap;
   for (aSelection->Init(); aSelection->More(); aSelection->Next())
   {

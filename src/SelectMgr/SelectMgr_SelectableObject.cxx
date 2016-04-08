@@ -183,7 +183,6 @@ void SelectMgr_SelectableObject::ClearSelections(const Standard_Boolean update)
 const Handle(SelectMgr_Selection)& SelectMgr_SelectableObject
 ::Selection(const Standard_Integer aMode) const
 {
-  static Handle(SelectMgr_Selection) bidsel;
   Standard_Boolean Found = Standard_False;
   Standard_Integer Rank=0;
   for (Standard_Integer i=1;i<=myselections.Length() && !Found;i++)

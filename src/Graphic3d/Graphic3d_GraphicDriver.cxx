@@ -55,3 +55,21 @@ void Graphic3d_GraphicDriver::ResetDeviceLostFlag()
 {
   myDeviceLostFlag = Standard_False;
 }
+
+// =======================================================================
+// function : NewIdentification
+// purpose  :
+// =======================================================================
+Standard_Integer Graphic3d_GraphicDriver::NewIdentification()
+{
+  return myStructGenId.Next();
+}
+
+// =======================================================================
+// function : RemoveIdentification
+// purpose  :
+// =======================================================================
+void Graphic3d_GraphicDriver::RemoveIdentification(const Standard_Integer theId)
+{
+  myStructGenId.Free(theId);
+}

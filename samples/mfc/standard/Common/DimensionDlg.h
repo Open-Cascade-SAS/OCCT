@@ -38,12 +38,6 @@ public:
   const Quantity_Color GetDimensionColor() const;
 
 public:
-
-  // Workaround: AIS_LocalContext::SelectedShape() doesn't take into account local location of selected TopoDS shape,
-  // and operates with selected interactive object transformation only.
-  static TopoDS_Shape SelectedShape();
-
-public:
   // Dialog Data
   enum { IDD = IDD_Dimension };
   // Initialization of dialog

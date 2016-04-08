@@ -87,9 +87,7 @@ void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     StdPrs_Point::Add(aPresentation,myComponent,myDrawer);
   else if (aMode== -99)
     {
-      // Beeurk.. a revoir - rob-25/04/97
-      static Handle(Graphic3d_AspectMarker3d) PtA = 
-	new Graphic3d_AspectMarker3d ();
+      Handle(Graphic3d_AspectMarker3d) PtA = new Graphic3d_AspectMarker3d ();
       PtA->SetType(Aspect_TOM_PLUS);
       PtA->SetScale(3.);
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);

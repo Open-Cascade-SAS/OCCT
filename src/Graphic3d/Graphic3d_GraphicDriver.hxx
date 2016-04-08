@@ -40,6 +40,7 @@
 #include <Standard_Address.hxx>
 #include <Image_PixMap.hxx>
 #include <Graphic3d_BufferType.hxx>
+#include <Aspect_GenId.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_PrintAlgo.hxx>
 #include <Graphic3d_ExportFormat.hxx>
@@ -139,6 +140,12 @@ public:
   
   Standard_EXPORT void ResetDeviceLostFlag();
 
+  //! Returns a new identification number for a new structure.
+  Standard_EXPORT Standard_Integer NewIdentification();
+
+  //! Frees the identifier of a structure.
+  Standard_EXPORT void RemoveIdentification(const Standard_Integer theId);
+
   DEFINE_STANDARD_RTTIEXT(Graphic3d_GraphicDriver,MMgt_TShared)
 
 protected:
@@ -149,6 +156,8 @@ protected:
 
   Handle(Aspect_DisplayConnection) myDisplayConnection;
   Standard_Boolean myDeviceLostFlag;
+
+  Aspect_GenId myStructGenId;
 
 
 private:
