@@ -82,11 +82,6 @@ public:
   Standard_EXPORT gce_MakeParab2d(const gp_Ax2d& D, const gp_Pnt2d& F, const Standard_Boolean Sense = Standard_True);
   
 
-  //! Creates a parabola with the local coordinate system and
-  //! the focus point.
-  //! The sense of parametrization is given by Sense.
-  Standard_EXPORT gce_MakeParab2d(const gp_Ax22d& D, const gp_Pnt2d& F);
-  
   //! Make an Parab2d with S1 as the Focal point and Center
   //! as the apex of the parabola
   //! Warning

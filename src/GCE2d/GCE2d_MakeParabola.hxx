@@ -70,11 +70,6 @@ public:
   //! Status is "NegativeFocusLength" if Focal < 0.0
   Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& MirrorAxis, const Standard_Real Focal, const Standard_Boolean Sense);
   
-  //! Creates a parabola with the local coordinate system and the focus point.
-  //! The sense of parametrization is given by Sense.
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax22d& D, const gp_Pnt2d& F);
-  
-
   //! D is the directrix of the parabola and F the focus point.
   //! The symmetry axis "XAxis" of the parabola is normal to the
   //! directrix and pass through the focus point F, but its

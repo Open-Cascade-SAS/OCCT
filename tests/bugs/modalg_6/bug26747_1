@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC25605"
+puts "========"
+puts ""
+#################################################
+# 0026747: Some constructors of gp_Parab2d classes have not understandable interface and create wrong parabola
+#################################################
+
+pload QAcommands
+
+OCC26747_1 result
+
+v2d
+don result
+2dfit
+
+checkview -screenshot -2d -l -path ${imagedir}/${test_image}.png

@@ -62,35 +62,45 @@ public:
 
   
   //! Creates an indefinite parabola.
-    gp_Parab2d();
+  gp_Parab2d();
   
 
   //! Creates a parabola with its vertex point, its axis of symmetry
   //! ("XAxis") and its focal length.
-  //! The sense of parametrization is given by Sense.
-  //! Warnings : It is possible to have Focal = 0.
-  //! Raises ConstructionError if Focal < 0.0
-    gp_Parab2d(const gp_Ax2d& MirrorAxis, const Standard_Real Focal, const Standard_Boolean Sense = Standard_True);
+  //! The sense of parametrization is given by theSense. If theSense == TRUE
+  //! (by default) then right-handed coordinate system is used,
+  //! otherwise - left-handed.
+  //! Warnings : It is possible to have FocalLength = 0. In this case,
+  //! the parabola looks like a line, which is parallel to the symmetry-axis.
+  //! Raises ConstructionError if FocalLength < 0.0
+  gp_Parab2d(const gp_Ax2d& theMirrorAxis,
+             const Standard_Real theFocalLength,
+             const Standard_Boolean theSense = Standard_True);
   
 
   //! Creates a parabola with its vertex point, its axis of symmetry
-  //! ("XAxis") and its focal length.
-  //! The sense of parametrization is given by A.
-  //! Warnings : It is possible to have Focal = 0.
+  //! ("XAxis"), correspond Y-axis and its focal length.
+  //! Warnings : It is possible to have FocalLength = 0. In this case,
+  //! the parabola looks like a line, which is parallel to the symmetry-axis.
   //! Raises ConstructionError if Focal < 0.0
-    gp_Parab2d(const gp_Ax22d& A, const Standard_Real Focal);
+  gp_Parab2d(const gp_Ax22d& theAxes, const Standard_Real theFocalLength);
   
 
   //! Creates a parabola with the directrix and the focus point.
-  //! The sense of parametrization is given by Sense.
-  Standard_EXPORT gp_Parab2d(const gp_Ax2d& D, const gp_Pnt2d& F, const Standard_Boolean Sense = Standard_True);
+  //! Y-axis of the parabola (in User Coordinate System - UCS) is
+  //! the direction of theDirectrix. X-axis always directs from theDirectrix
+  //! to theFocus point and always comes through theFocus.
+  //! Apex of the parabola is a middle point between the theFocus and the
+  //! intersection point of theDirectrix and the X-axis.
+  //! Warnings : It is possible to have FocalLength = 0 (when theFocus lies
+  //! in theDirectrix). In this case, X-direction of the parabola is defined 
+  //! by theSense parameter. If theSense == TRUE (by default) then right-handed
+  //! coordinate system is used, otherwise - left-handed. Result parabola will look
+  //! like a line, which is perpendicular to the directrix.
+  Standard_EXPORT gp_Parab2d(const gp_Ax2d& theDirectrix,
+                             const gp_Pnt2d& theFocus,
+                             const Standard_Boolean theSense = Standard_True);
   
-
-  //! Creates a parabola with the directrix and the focus point.
-  //! The Sense of parametrization is given by D.
-  Standard_EXPORT gp_Parab2d(const gp_Ax22d& D, const gp_Pnt2d& F);
-  
-
   //! Changes the focal distance of the parabola
   //! Warnings : It is possible to have Focal = 0.
   //! Raises ConstructionError if Focal < 0.0
@@ -114,9 +124,12 @@ public:
     void SetAxis (const gp_Ax22d& A);
   
 
-  //! Computes the coefficients of the implicit equation of the parabola.
+  //! Computes the coefficients of the implicit equation of the parabola
+  //! (in WCS - World Coordinate System).
   //! A * (X**2) + B * (Y**2) + 2*C*(X*Y) + 2*D*X + 2*E*Y + F = 0.
-  Standard_EXPORT void Coefficients (Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& D, Standard_Real& E, Standard_Real& F) const;
+  Standard_EXPORT void Coefficients (Standard_Real& A, Standard_Real& B,
+                                     Standard_Real& C, Standard_Real& D,
+                                     Standard_Real& E, Standard_Real& F) const;
   
 
   //! Computes the directrix of the parabola.

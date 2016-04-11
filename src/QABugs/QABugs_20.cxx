@@ -1709,6 +1709,272 @@ static Standard_Integer OCC27466(Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <GCE2d_MakeParabola.hxx>
+#include <gp_Ax22d.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <gp_Parab2d.hxx>
+
+namespace Parab2d_Bug26747
+{
+  //Directrix and X-axe direction
+  gp_Ax2d Axes;
+
+  //Focus
+  gp_Pnt2d FocusPoint;
+
+  //Focal length
+  Standard_Real FocalLength;
+
+  //Coordiantes of the vertex
+  Standard_Real VertX, VertY;
+
+  //Parameter
+  Standard_Real Parameter;
+
+  //Coefficients
+  Standard_Real Coeffs[6];
+}
+
+//========================================================================
+//function : OCC26747_CheckParabola
+//purpose  : Checks if created parabola is correct
+//========================================================================
+static void OCC26747_CheckParabola(Draw_Interpretor& theDI,
+                                   const char *theName,
+                                   const Standard_Boolean theSense = Standard_True)
+{
+  const Standard_Real aCompareTol = 1.0e-12;
+
+  //                      Directrix,                    Focus
+  GCE2d_MakeParabola aPrb(Parab2d_Bug26747::Axes, Parab2d_Bug26747::FocusPoint, theSense);
+
+  DrawTrSurf::Set(theName, aPrb.Value());
+
+  gp_Pnt2d aVert(aPrb.Value()->Parab2d().Location());
+
+  theDI << "Focal Length: " << aPrb.Value()->Parab2d().Focal() << "\n";
+  theDI << "Vertex (" << aVert.X() << ", " << aVert.Y() << ")\n";
+  theDI << "Parameter = " << aPrb.Value()->Parab2d().Parameter() << "\n";
+
+  Standard_Real aF[6] = {RealLast(), RealLast(), RealLast(),
+                         RealLast(), RealLast(), RealLast()};  
+  aPrb.Value()->Parab2d().Coefficients(aF[0], aF[1], aF[2], aF[3], aF[4], aF[5]);
+  theDI << "A = " << aF[0] << ", B = " << aF[1] << ", C = " << aF[2] <<
+           ", D = " << aF[3] << ", E = " << aF[4] << ", F = " << aF[5] << "\n";
+
+  if(Abs(aPrb.Value()->Parab2d().Focal() - 
+                        Parab2d_Bug26747::FocalLength) > aCompareTol)
+    theDI << "Error in focal length computation!\n";
+
+  if( (Abs(aVert.X() - Parab2d_Bug26747::VertX) > aCompareTol) ||
+      (Abs(aVert.Y() - Parab2d_Bug26747::VertY) > aCompareTol))
+    theDI << "Error in vertex computation!\n";
+
+  if(Abs(aPrb.Value()->Parab2d().Parameter() -
+                        Parab2d_Bug26747::Parameter) > aCompareTol)
+    theDI << "Error in parameter computation!\n";
+
+  for(int i = 0; i < 6; i++)
+  {
+    if(Abs(aF[i] - Parab2d_Bug26747::Coeffs[i]) > aCompareTol)
+    {
+      theDI << "Error in " << i << "-th coefficient computation!\n";
+    }
+  }
+}
+
+//========================================================================
+//function : OCC26747_1
+//purpose  : Creates a 2D-parabola for testing
+//========================================================================
+static Standard_Integer OCC26747_1(Draw_Interpretor& theDI, 
+                                   Standard_Integer  theNArg, 
+                                   const char **     theArgVal)
+{
+  if(theNArg < 2)
+  {
+    theDI << "Use: OCC26747_1 result\n";
+    return 1;
+  }
+
+  //Expected parabola:
+
+  //  ^ Y
+  //  |
+  //  |
+  //  |
+  //  |
+  //  |                 o
+  //  |    A   o   F
+  //  |     o     x
+  //  |        o
+  //  |                 o
+  //  |
+  //  ---------------------------> X
+
+  //  where
+  //  Y-axe is the directrix of the parabola,
+  //  A(0.5, 3.0) is a Vertex of the parabola,
+  //  F(1.0, 3.0) is the focus of the parabola,
+  //  Focal length is 0.5,
+  //  Parameter of the parabola is 1.
+  //  Equation: (y-3)^2=2*p*(x-0.5), i.e. (y-3)^2=2*(x-0.5)
+  //  A * X^2 + B * Y^2 + 2*C*X*Y + 2*D*X    + 2*E*Y    + F = 0.
+  //                  OR
+  //  0 * X^2 + 1 * Y^2 + 2*0*X*Y + 2*(-1)*X + 2*(-3)*Y + 10 = 0.
+
+  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 3.0), gp_Dir2d(0.0, 1.0));
+  Parab2d_Bug26747::FocusPoint.SetCoord(1.0, 3.0);
+
+  Parab2d_Bug26747::FocalLength = 0.5;
+
+  Parab2d_Bug26747::VertX = 0.5;
+  Parab2d_Bug26747::VertY = 3.0;
+
+  Parab2d_Bug26747::Parameter = 1.0;
+
+  Parab2d_Bug26747::Coeffs[0] = 0.0;
+  Parab2d_Bug26747::Coeffs[1] = 1.0;
+  Parab2d_Bug26747::Coeffs[2] = 0.0;
+  Parab2d_Bug26747::Coeffs[3] = -1.0;
+  Parab2d_Bug26747::Coeffs[4] = -3.0;
+  Parab2d_Bug26747::Coeffs[5] = 10.0;
+
+  OCC26747_CheckParabola(theDI, theArgVal[1]);
+
+  return 0;
+}
+
+//=======================================================================
+//function : OCC26747_2
+//purpose  : Creates a 2D-parabola for testing
+//=======================================================================
+static Standard_Integer OCC26747_2(Draw_Interpretor& theDI,
+                                   Standard_Integer  theNArg,
+                                   const char **     theArgVal)
+{
+  if(theNArg < 2)
+  {
+    theDI << "Use: OCC26747_2 result\n";
+    return 1;
+  }
+
+  //Expected parabola:
+
+  //                          ^ Y
+  //                          |
+  //        o                 |
+  //                 o        |
+  //            F x     o A   |
+  //                 o        |
+  //        o                 |
+  //                          |
+  //  <------------------------
+  //  X
+
+  //  where (in UCS - User Coordinate System, - which
+  //  is shown in the picture):
+  //    Y-axe is the directrix of the parabola,
+  //    A(0.5, 3.0) is a Vertex of the parabola,
+  //    F(1.0, 3.0) is the focus of the parabola.
+  //
+  //  In WCS (World Coordinate System) these points have coordinates:
+  //    A(-0.5, 3.0), F(-1.0, 3.0).
+  //
+  //  Focal length is 0.5,
+  //  Parameter of the parabola is 1.
+  //  Equation (in WCS): (y-3)^2=2*p*(-x-0.5), i.e. (y-3)^2=2*(-x-0.5)
+  //  A * X^2 + B * (Y^2) + 2*C*(X*Y) + 2*D*X + 2*E*Y    + F = 0.
+  //  0 * X^2 + 1 * (Y^2) + 2*0*(X*Y) + 2*1*X + 2*(-3)*Y + 10 = 0.
+
+
+  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Parab2d_Bug26747::FocusPoint.SetCoord(-1.0, 3.0);
+
+  Parab2d_Bug26747::FocalLength = 0.5;
+
+  Parab2d_Bug26747::VertX = -0.5;
+  Parab2d_Bug26747::VertY = 3.0;
+
+  Parab2d_Bug26747::Parameter = 1.0;
+
+  Parab2d_Bug26747::Coeffs[0] = 0.0;
+  Parab2d_Bug26747::Coeffs[1] = 1.0;
+  Parab2d_Bug26747::Coeffs[2] = 0.0;
+  Parab2d_Bug26747::Coeffs[3] = 1.0;
+  Parab2d_Bug26747::Coeffs[4] = -3.0;
+  Parab2d_Bug26747::Coeffs[5] = 10.0;
+
+  OCC26747_CheckParabola(theDI, theArgVal[1], Standard_False);
+
+  return 0;
+}
+
+//=======================================================================
+//function : OCC26747_3
+//purpose  : Creates a 2D-parabola for testing
+//=======================================================================
+static Standard_Integer OCC26747_3(Draw_Interpretor& theDI,
+                                   Standard_Integer  theNArg,
+                                   const char **     theArgVal)
+{
+  if(theNArg < 2)
+  {
+    theDI << "Use: OCC26747_2 result\n";
+    return 1;
+  }
+
+  //Expected parabola:
+
+  //                    ^ Y
+  //                    |
+  //        o           |
+  //                 o  |
+  //            F x     o A
+  //                 o  |
+  //        o           |
+  //                    |
+  //  <------------------
+  //  X
+
+  //  where (in UCS - User Coordinate System, - which
+  //  is shown in the picture):
+  //    Y-axe is the directrix of the parabola,
+  //    A(0.0, 3.0) is a Vertex of the parabola,
+  //    F(0.0, 3.0) is the focus of the parabola (the Focus
+  //                matches with the Apex).
+  //
+  //  In WCS (World Coordinate System) these points have coordinates:
+  //    A(0.0, 3.0), F(0.0, 3.0).
+  //
+  //  Focal length is 0.0,
+  //  Parameter of the parabola is 0.0.
+  //  Equation (in WCS): (y-3)^2=2*p*(-x-0.0), i.e. (y-3)^2=0 (looks like a line y=3)
+  //  A * X^2 + B * (Y^2) + 2*C*(X*Y) + 2*D*X + 2*E*Y    + F = 0.
+  //  0 * X^2 + 1 * (Y^2) + 2*0*(X*Y) + 2*0*X + 2*(-3)*Y + 9 = 0.
+
+  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(0.0, 1.0));
+  Parab2d_Bug26747::FocusPoint.SetCoord(0.0, 3.0);
+
+  Parab2d_Bug26747::FocalLength = 0.0;
+
+  Parab2d_Bug26747::VertX = 0.0;
+  Parab2d_Bug26747::VertY = 3.0;
+
+  Parab2d_Bug26747::Parameter = 0.0;
+
+  Parab2d_Bug26747::Coeffs[0] = 0.0;
+  Parab2d_Bug26747::Coeffs[1] = 1.0;
+  Parab2d_Bug26747::Coeffs[2] = 0.0;
+  Parab2d_Bug26747::Coeffs[3] = 0.0;
+  Parab2d_Bug26747::Coeffs[4] = -3.0;
+  Parab2d_Bug26747::Coeffs[5] = 9.0;
+
+  OCC26747_CheckParabola(theDI, theArgVal[1], Standard_False);
+
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1721,6 +1987,9 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC27341",
                   "OCC27341 res shape axo/top/bottom/front/back/left/right",
                   __FILE__, OCC27341, group);
+  theCommands.Add ("OCC26747_1", "OCC26747_1 result", __FILE__, OCC26747_1, group);
+  theCommands.Add ("OCC26747_2", "OCC26747_2 result", __FILE__, OCC26747_2, group);
+  theCommands.Add ("OCC26747_3", "OCC26747_3 result", __FILE__, OCC26747_3, group);
 
   return;
 }

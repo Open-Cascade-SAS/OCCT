@@ -23,40 +23,25 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
 
-gp_Parab2d::gp_Parab2d (const gp_Ax22d& D, 
-			const gp_Pnt2d& F)
+gp_Parab2d::gp_Parab2d (const gp_Ax2d& theDirectrix,
+                        const gp_Pnt2d& theFocus,
+                        const Standard_Boolean theSense)
 {
-  gp_XY DCoord = D.XDirection().XY();
-  gp_XY GCoord = D.YDirection().XY();
-  gp_XY PCoord = D.Location().XY();
-  gp_XY MCoord = F.XY();
-  focalLength = DCoord.Dot ( MCoord.Subtracted (PCoord));
-  if (focalLength < 0) focalLength = - focalLength;
-  gp_XY N = GCoord;
-  N.Multiply (focalLength);
-  MCoord.Add (N);
-  N.Reverse();
-  pos = gp_Ax22d (gp_Pnt2d (MCoord), gp_Dir2d (N));
-  focalLength = focalLength / 2.0;
-}
+  const gp_Pnt2d &aDirLoc = theDirectrix.Location();
+  const gp_Dir2d &aDirVec = theDirectrix.Direction();
 
-gp_Parab2d::gp_Parab2d (const gp_Ax2d& D, 
-			const gp_Pnt2d& F,
-			const Standard_Boolean Sense)
-{
-  gp_XY DCoord = D.Direction().XY();
-  gp_XY PCoord = D.Location().XY();
-  gp_XY MCoord = F.XY();
-  focalLength = DCoord.Dot ( MCoord.Subtracted (PCoord));
-  if (focalLength < 0) focalLength = - focalLength;
-  gp_XY N;
-  if (Sense) N.SetCoord(DCoord.Y(), -DCoord.X());
-  else  N.SetCoord(-DCoord.Y(), DCoord.X());
-  N.Multiply (focalLength);
-  MCoord.Add (N);
-  N.Reverse();
-  pos = gp_Ax22d (gp_Pnt2d (MCoord), gp_Dir2d (N),Sense);
-  focalLength = focalLength / 2.0;
+  const gp_Vec2d aFVec(aDirLoc, theFocus);
+
+  const gp_Pnt2d anOrigin(aDirLoc.XY()+aDirVec.XY()*(aFVec.Dot(aDirVec)));
+  const gp_Pnt2d anApex(0.5*(anOrigin.XY()+theFocus.XY()));
+
+  focalLength = 0.5*anOrigin.Distance(theFocus);
+
+  gp_Dir2d aXDir = (focalLength > 0.0) ? gp_Dir2d(theFocus.XY()-anOrigin.XY()) :
+                        theDirectrix.Rotated(aDirLoc,
+                                             theSense ? -M_PI_2 : M_PI_2).Direction();
+
+  pos = gp_Ax22d(anApex, aXDir, aDirVec);
 }
 
 void gp_Parab2d::Coefficients

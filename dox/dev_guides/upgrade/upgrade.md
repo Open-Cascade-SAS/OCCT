@@ -976,8 +976,18 @@ Zoom persistent selection introduces a new structure *Graphic3d_TransformPers* f
 * Matrix stack utilities from *OpenGl_Utils* namespace have been moved to *OpenGl_MatrixStack* class and *OpenGl_MatrixStack.hxx* header respectively.
 * *OpenGl_View* methods *Begin/EndTransformPersistence* have been removed. Please, use *Graphic3d_TransformPers::Apply()* instead to apply persistence to perspective and world-view projection matrices.
 
-@subsection Correction of texture mapping of objects
+@subsection upgrade_occt700_correction_of_texture Correction of texture mapping of objects
 
 Interaction of texture and environment texture is fixed. Textured objects have priority over the environment mapping.
 Redundant enumerations V3d_TypeOfSurface and Graphic3d_TypeOfSurface, class OpenGl_SurfaceDetailState, corresponding methods from Graphic3d_CView, OpenGl_ShaderManager, OpenGl_View, V3d_View, V3d_Viewer are deleted.
 Draw command VSetTextureMode is deleted.
+
+@section upgrade_occt710 Upgrade to OCCT 7.1.0
+
+@subsection upgrade_occt710_correction_of_Parab2d Correction in gp_Parab2d, gce_MakeParab2d and GCE2d_MakeParabola classes
+
+1. Constructors GCE2d_MakeParabola(const gp_Ax22d& D, const gp_Pnt2d& F), gce_MakeParab2d(const gp_Ax22d& D, const gp_Pnt2d& F) and gp_Parab2d(const gp_Ax22d& D, const gp_Pnt2d& F) have been deleted. 
+
+2. Objects created with some constructors of gp_Parab2d class may be differ from previous version. Please see updated documentation for gp_Parab2d class (file gp_Parab2d.hxx).
+
+3. Result returned by gp_Parab2d::Directrix() method has another direction in compare with previous OCCT-version.

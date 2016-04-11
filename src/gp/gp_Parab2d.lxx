@@ -14,23 +14,23 @@
 
 #include <Standard_ConstructionError.hxx>
 
-inline gp_Parab2d::gp_Parab2d () :
-focalLength(RealLast())
-{ }
+inline gp_Parab2d::gp_Parab2d () :focalLength(RealLast()){ }
 
-inline gp_Parab2d::gp_Parab2d (const gp_Ax22d& A, 
-			       const Standard_Real Focal) :
-			       pos (A), 
-			       focalLength (Focal) 
-{ Standard_ConstructionError_Raise_if(Focal < 0.0,""); }
-
-inline gp_Parab2d::gp_Parab2d (const gp_Ax2d& MirrorAxis, 
-			       const Standard_Real Focal,
-			       const Standard_Boolean Sense) :
-			       focalLength (Focal) 
+inline gp_Parab2d::gp_Parab2d(const gp_Ax22d& theMirrorAxis, 
+                              const Standard_Real theFocalLength) :
+        pos (theMirrorAxis),
+        focalLength (theFocalLength)
 {
-  pos = gp_Ax22d(MirrorAxis,Sense);
-  Standard_ConstructionError_Raise_if(Focal < 0.0,"");
+  Standard_ConstructionError_Raise_if(theFocalLength < 0.0,"");
+}
+
+inline gp_Parab2d::gp_Parab2d(const gp_Ax2d& theMirrorAxis, 
+                              const Standard_Real theFocalLength,
+                              const Standard_Boolean theSense) :
+        focalLength (theFocalLength) 
+{
+  pos = gp_Ax22d(theMirrorAxis,theSense);
+  Standard_ConstructionError_Raise_if(theFocalLength < 0.0,"");
 }
 
 inline void gp_Parab2d::SetFocal (const Standard_Real Focal)
@@ -52,8 +52,8 @@ inline gp_Ax2d gp_Parab2d::Directrix() const
 {
   gp_Pnt2d P (pos.Location().X() - focalLength * pos.XDirection().X(),
 	      pos.Location().Y() - focalLength * pos.XDirection().Y() );
-  gp_Dir2d V (pos.YDirection().Reversed());
-  return gp_Ax2d (P, V);
+  gp_Dir2d V (pos.YDirection());
+  return gp_Ax2d(P, V);
 }
 
 inline   Standard_Real gp_Parab2d::Focal() const
