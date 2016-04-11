@@ -225,6 +225,37 @@ static void IntersectCurveAndBoundary(const Handle(Geom2d_Curve)& theC2d,
 }
 
 //=======================================================================
+//function : isDegenerated
+//purpose  : Check if theAHC2d corresponds to a degenerated edge.
+//=======================================================================
+static Standard_Boolean isDegenerated(const Handle(GeomAdaptor_HSurface)& theGAHS,
+                                      const Handle(Adaptor2d_HCurve2d)& theAHC2d,
+                                      const Standard_Real theFirstPar,
+                                      const Standard_Real theLastPar)
+{
+  const Standard_Real aSqTol = Precision::Confusion()*Precision::Confusion();
+  gp_Pnt2d aP2d;
+  gp_Pnt aP1, aP2;
+
+  theAHC2d->D0(theFirstPar, aP2d);
+  theGAHS->D0(aP2d.X(), aP2d.Y(), aP1);
+
+  theAHC2d->D0(theLastPar, aP2d);
+  theGAHS->D0(aP2d.X(), aP2d.Y(), aP2);
+
+  if(aP1.SquareDistance(aP2) > aSqTol)
+    return Standard_False;
+
+  theAHC2d->D0(0.5*(theFirstPar+theLastPar), aP2d);
+  theGAHS->D0(aP2d.X(), aP2d.Y(), aP2);
+
+  if(aP1.SquareDistance(aP2) > aSqTol)
+    return Standard_False;
+
+  return Standard_True;
+}
+
+//=======================================================================
 //function : MakeCurve
 //purpose  : 
 //=======================================================================
@@ -1117,6 +1148,12 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)& theRL,
   {
     return;
   }
+
+  //Restriction line can correspond to a degenerated edge.
+  //In this case we return null-curve.
+  if(isDegenerated(aGAHS, anAHC2d, tf, tl))
+    return;
+
   //
   //To provide sameparameter it is necessary to get 3d curve as
   //approximation of curve on surface.

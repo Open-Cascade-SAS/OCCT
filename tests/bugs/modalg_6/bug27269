@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC27269"
+puts "============"
+puts ""
+###############################
+## Intersection algorithm produces null-length curve
+###############################
+
+
+restore [locate_data_file bug27267_cmpd.brep] a
+explode a f
+
+#############################
+set log [bopcurves a_1 a_7 -2d]
+#############################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c_$i U1 U2
+  
+  dump U1 U2
+  
+  if {[dval U2-U1] < 1.0e-20} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  set le [length c_$i]
+  regexp "The length c_$i is +(\[-0-9.+eE\]+)" ${le} full ll
+  
+  if { $ll < 1.0e-7 } {
+    puts "Error: Curve c_$i is too small!"
+  }
+}
+
+
