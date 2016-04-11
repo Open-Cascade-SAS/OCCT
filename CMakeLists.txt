@@ -801,7 +801,14 @@ foreach (OCCT_MODULE ${OCCT_MODULES})
   if (BUILD_MODULE_${OCCT_MODULE})
     set (SET_OpenCASCADE_MODULES_TOOLKITS "${SET_OpenCASCADE_MODULES_TOOLKITS}set (OpenCASCADE_${OCCT_MODULE}_LIBRARIES ${OpenCASCADE_${OCCT_MODULE}_TOOLKITS})\n")
   endif()
+
+  # sort enabled modules for correct work of OpenCASCADE config file
+  list(FIND OCCT_MODULES_ENABLED "${OCCT_MODULE}" OCCT_MODULE_INDEX)
+  if (NOT ${OCCT_MODULE_INDEX} EQUAL -1)
+    list (APPEND OCCT_MODULES_ENABLED_SORTED ${OCCT_MODULE})
+  endif()
 endforeach()
+set (OCCT_MODULES_ENABLED ${OCCT_MODULES_ENABLED_SORTED})
 
 # Add all targets to the build-tree export set
 export (TARGETS ${OCCT_LIBRARIES} FILE "${CMAKE_BINARY_DIR}/OpenCASCADETargets.cmake")
@@ -845,10 +852,8 @@ write_basic_package_version_file( ${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.c
 install (FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.cmake" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_CMAKE}")
 
 # Install the export set for use with the install-tree for each configuration
-foreach (OCCT_MODULE ${OCCT_MODULES})
-  if (BUILD_MODULE_${OCCT_MODULE})
-    install(EXPORT OpenCASCADE${OCCT_MODULE}Targets DESTINATION "${INSTALL_DIR_CMAKE}")
-  endif()
+foreach (OCCT_MODULE ${OCCT_MODULES_ENABLED})
+  install(EXPORT OpenCASCADE${OCCT_MODULE}Targets DESTINATION "${INSTALL_DIR_CMAKE}")
 endforeach()
 
 # Update generated OpenCASCADETargets-*.cmake files 
