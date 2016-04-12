@@ -88,6 +88,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
+#include <TColgp_Array1OfXY.hxx>
 
 // TODO - not thread-safe static variables
 static Standard_Real thePrecision = Precision::Confusion();     
@@ -1580,17 +1581,15 @@ Standard_Boolean BRepLib::OrientClosedSolid(TopoDS_Solid& solid)
 
   return Standard_True;
 }
-
 //=======================================================================
 //function : tgtfaces
 //purpose  : check the angle at the border between two squares.
 //           Two shares should have a shared front edge.
 //=======================================================================
-
-static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
+static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
   const TopoDS_Face& F1,
   const TopoDS_Face& F2,
-  const Standard_Real ta,
+  const Standard_Real theAngleTol,
   const Standard_Boolean couture)
 {
   // Check if pcurves exist on both faces of edge
@@ -1598,20 +1597,31 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
   Handle(Geom2d_Curve) aCurve;
   aCurve = BRep_Tool::CurveOnSurface(Ed,F1,aFirst,aLast);
   if(aCurve.IsNull())
-    return Standard_False;
+    return GeomAbs_C0;
   aCurve = BRep_Tool::CurveOnSurface(Ed,F2,aFirst,aLast);
   if(aCurve.IsNull())
-    return Standard_False;
-
+    return GeomAbs_C0;
+  
   Standard_Real u;
   TopoDS_Edge E = Ed;
   BRepAdaptor_Surface aBAS1(F1,Standard_False);
   BRepAdaptor_Surface aBAS2(F2,Standard_False);
-  Handle(BRepAdaptor_HSurface) HS1 = new BRepAdaptor_HSurface(aBAS1);
+  
+  // seam edge on elementary surface is always CN
+  Standard_Boolean isElementary =
+    (aBAS1.Surface().Surface()->IsKind(STANDARD_TYPE(Geom_ElementarySurface)) &&
+     aBAS1.Surface().Surface()->IsKind(STANDARD_TYPE(Geom_ElementarySurface)));
+  if (couture && isElementary)
+  {
+    return GeomAbs_CN;
+  }
+  
+  Handle(BRepAdaptor_HSurface) HS1 = new BRepAdaptor_HSurface (aBAS1);
   Handle(BRepAdaptor_HSurface) HS2;
   if(couture) HS2 = HS1;
   else HS2 = new BRepAdaptor_HSurface(aBAS2);
-
+  //case when edge lies on the one face
+  
   E.Orientation(TopAbs_FORWARD);
   Handle(BRepAdaptor_HCurve2d) HC2d1 = new BRepAdaptor_HCurve2d();
   HC2d1->ChangeCurve2d().Initialize(E,F1);
@@ -1623,8 +1633,7 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
 
   Standard_Boolean rev1 = (F1.Orientation() == TopAbs_REVERSED);
   Standard_Boolean rev2 = (F2.Orientation() == TopAbs_REVERSED);
-  Standard_Real f,l,eps, angmax = -M_PI;
-  Standard_Real ang =0.;
+  Standard_Real f,l,eps;
   BRep_Tool::Range(E,f,l);
   Extrema_LocateExtPC ext;
   Standard_Boolean IsInitialized = Standard_False;
@@ -1634,34 +1643,55 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
   l -= eps; // points of pointed squares.
   gp_Pnt2d p;
   gp_Pnt pp1,pp2;//,PP;
-  gp_Vec du,dv;
+  gp_Vec du1, dv1, d2u1, d2v1, d2uv1;
+  gp_Vec du2, dv2, d2u2, d2v2, d2uv2;
   gp_Vec d1,d2;
   Standard_Real uu, vv, norm;
 
   Standard_Integer i;
-  Standard_Boolean Nok;
-  for(i = 0; (i<= 20) && (angmax<=ta) ; i++){
+  GeomAbs_Shape aCont = (isElementary ? GeomAbs_CN : GeomAbs_C2);
+  for(i = 0; i<= 20 && aCont > GeomAbs_C0; i++)
+  {
     // First suppose that this is sameParameter
-    Nok = Standard_True;
     u = f + (l-f)*i/20;
+
+    // take derivatives of surfaces at the same u, and compute normals
     HC2d1->D0(u,p);
-    HS1->D1(p.X(),p.Y(),pp1,du,dv);
-    d1 = (du.Crossed(dv));
+    HS1->D2 (p.X(), p.Y(), pp1, du1, dv1, d2u1, d2v1, d2uv1);
+    d1 = (du1.Crossed(dv1));
     norm = d1.Magnitude(); 
     if (norm > 1.e-12) d1 /= norm;
-    else Nok=Standard_False;
+    else continue; // skip degenerated point
     if(rev1) d1.Reverse();
 
     HC2d2->D0(u,p);
-    HS2->D1(p.X(), p.Y(), pp2, du, dv);
-    d2 = (du.Crossed(dv));
+    HS2->D2 (p.X(), p.Y(), pp2, du2, dv2, d2u2, d2v2, d2uv2);
+    d2 = (du2.Crossed(dv2));
     norm = d2.Magnitude();
-    if (norm> 1.e-12) d2 /= norm;
-    else Nok=Standard_False;
+    if (norm > 1.e-12) d2 /= norm;
+    else continue; // skip degenerated point
     if(rev2) d2.Reverse();
-    if (Nok) ang = d1.Angle(d2);
 
-    if (Nok &&(ang > ta)) { // Refine by projection
+    // check 
+    Standard_Real ang = d1.Angle(d2);
+
+    // check special case of precise equality of derivatives,
+    // occurring when edge connects two faces built on equally 
+    // defined surfaces (e.g. seam-like edges on periodic surfaces, 
+    // or planar faces on the same plane)
+    if (aCont >= GeomAbs_C2 && ang < Precision::Angular() &&
+        d2u1 .IsEqual (d2u2,  Precision::PConfusion(), Precision::Angular()) &&
+        d2v1 .IsEqual (d2v2,  Precision::PConfusion(), Precision::Angular()) &&
+        d2uv1.IsEqual (d2uv2, Precision::PConfusion(), Precision::Angular()))
+    {
+      continue;
+    }
+
+    aCont = GeomAbs_G1;
+
+    // Refine by projection
+    if (ang > theAngleTol)
+    {
       if (! IsInitialized ) {
         ext.Initialize(C2,f,l,Precision::PConfusion());
         IsInitialized = Standard_True;
@@ -1673,20 +1703,20 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
 
         HC2d2->D0(v,p);
         p.Coord(uu,vv);
-        HS2->D1(p.X(), p.Y(), pp2, du, dv);
-        d2 = (du.Crossed(dv));
+        HS2->D1(p.X(), p.Y(), pp2, du2, dv2);
+        d2 = (du2.Crossed(dv2));
         norm = d2.Magnitude();
         if (norm> 1.e-12) d2 /= norm;
-        else Nok = Standard_False;
+        else continue; // degenerated point
         if(rev2) d2.Reverse();
-        if (Nok) ang = d1.Angle(d2);
+        ang = d1.Angle(d2);
       }
+      if (ang > theAngleTol)
+        return GeomAbs_C0;
     }
-    if(ang >= angmax) angmax = ang;
   }     
 
-  return (angmax<=ta);
-
+  return aCont;
 }
 
 
@@ -1735,9 +1765,8 @@ void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
       if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
 
         try {
-          if(tgtfaces(E, F1, F2, TolAng, couture)){
-            B.Continuity(E,F1,F2,GeomAbs_G1);
-          }
+          GeomAbs_Shape aCont = tgtfaces(E, F1, F2, TolAng, couture);
+          B.Continuity(E,F1,F2,aCont);
         }
         catch(Standard_Failure)
         {
@@ -1760,9 +1789,9 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
   BRep_Builder B;
   if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
     try {
-      if( tgtfaces(E, F1, F2, TolAng, F1.IsEqual(F2))) {
-        B.Continuity(E,F1,F2,GeomAbs_G1);
-      }
+      GeomAbs_Shape aCont = tgtfaces(E, F1, F2, TolAng, F1.IsEqual(F2));
+      B.Continuity(E,F1,F2,aCont);
+      
     }
     catch(Standard_Failure)
     {

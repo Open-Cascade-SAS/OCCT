@@ -1,0 +1,17 @@
+puts "========"
+puts "0027272: FixMissingSeam function creates G1 seam curves"
+puts "========"
+puts ""
+puts "Check regularity setting after FixMissingSeam (original problem)"
+
+restore [locate_data_file bug27272_SeamTest_unfixed.brep] a
+fixshape res a 1.e-7 1.
+encoderegularity res
+
+explode res f
+explode res_3 e
+explode res_4 e
+if { ! [regexp "CN" [getedgeregularity res_3_2 res_3]] ||
+     ! [regexp "CN" [getedgeregularity res_4_2 res_4]] } {
+  puts "Error: Invalid regularity of the seam edge, expected CN"
+}

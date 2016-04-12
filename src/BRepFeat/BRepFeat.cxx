@@ -23,7 +23,6 @@
 #include <BRepBuilderAPI.hxx>
 #include <BRepFeat.hxx>
 #include <BRepLib_MakeFace.hxx>
-#include <BRepLProp.hxx>
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <ElSLib.hxx>

@@ -182,31 +182,6 @@ static Standard_Integer XSHAPE_ssolid
   return 0; // Done
 }
 
-
-static Standard_Integer XSHAPE_edgeregul
-  (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  //cky/rln 03.02.99 To eliminate dependence of SWDRAW on TKXSBase (to use only ShapeHealing)
-  Standard_Real tolang = Precision::Angular(); // = Interface_Static::RVal("XSTEP.encoderegularity.angle");
-//  if (argc < 3) di<<"Current value for regularity angle : "<<tolang<<"\n";
-  if (argc < 3) {
-    di<<"Donner nom de shape.\n + option : angle en radian, sinon la valeur courante est prise\n";
-    return 0;
-  }
-  Standard_CString arg1 = argv[1];
-  Standard_CString arg2 = argv[2];
-  if (argc > 2) tolang = Draw::Atof (arg2);
-  if (tolang <= 0) {
-    di<<"Not a suitable value : "<<tolang<<"\n";
-    return 1 /* Error */;
-  }
-  TopoDS_Shape Shape = DBRep::Get(arg1);
-  if (Shape.IsNull()) { di<<"Shape unknown : "<<arg1<<"\n"; return 1 /* Error */; }
-
-  BRepLib::EncodeRegularity (Shape,tolang);
-  return 0; // Done
-}
-
 static Standard_Integer samerange (Draw_Interpretor& di,  Standard_Integer argc, const char** argv)  
 {
   if ( argc ==2 ) {
@@ -262,9 +237,6 @@ void  SWDRAW_ShapeTool::InitCommands (Draw_Interpretor& theCommands)
 
   theCommands.Add ("ssolid","nom shell + nouveau nom solid",
 		   __FILE__,XSHAPE_ssolid,g);
-
-  theCommands.Add ("edgeregul","shape val",
-		   __FILE__,XSHAPE_edgeregul,g);
 
   theCommands.Add ("samerange","{ shape | result curve2d first last newfirst newlast }",
 		   __FILE__,samerange,g);

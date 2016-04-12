@@ -539,6 +539,41 @@ static Standard_Integer encoderegularity (Draw_Interpretor& ,
   return 0;
 }
 
+static Standard_Integer getedgeregul
+  (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if( argc < 3)
+  {
+    cout<<"Invalid number of arguments. Should be: checkedgeregularity edge face1 [face2]"<<endl;
+    return 1;
+  }
+  
+  TopoDS_Shape anEdge =  DBRep::Get(argv[1],TopAbs_EDGE);
+  TopoDS_Shape aFace1 = DBRep::Get(argv[2],TopAbs_FACE);
+  TopoDS_Shape aFace2 = (argc > 3  ? DBRep::Get(argv[3],TopAbs_FACE) : aFace1);
+  if( anEdge.IsNull() || aFace1.IsNull() || aFace2.IsNull())
+  {
+    cout<<"Invalid number of arguments. Should be: getedgeregularity edge face1 [face2]"<<endl;
+    return 1;
+  }
+ 
+  GeomAbs_Shape aRegularity = BRep_Tool::Continuity(TopoDS::Edge(anEdge), TopoDS::Face(aFace1),  TopoDS::Face(aFace2));
+  TCollection_AsciiString aStrReg("Regularity of edge : ");
+  switch( aRegularity)
+  {
+    default:
+    case GeomAbs_C0 : aStrReg += "C0"; break;
+    case GeomAbs_G1 : aStrReg += "G1"; break;
+    case GeomAbs_C1 : aStrReg += "C1"; break;
+    case GeomAbs_G2 : aStrReg += "G2"; break;
+    case GeomAbs_C2 : aStrReg += "C2"; break;
+    case GeomAbs_C3 : aStrReg += "C3"; break;
+    case GeomAbs_CN : aStrReg += "CN"; break;
+  };
+
+  di<<aStrReg.ToCString()<<"\n";
+  return 0; // Done
+}
 
 //=======================================================================
 //function : SurfaceCommands
@@ -594,5 +629,6 @@ void  BRepTest::SurfaceCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add ("fastsewing", "fastsewing result [-tol <value>] <list_of_faces>", 
                                                 __FILE__, fastsewing, g);
+  theCommands.Add ("getedgeregularity", "getedgeregularity edge face1 [face2]",  __FILE__,getedgeregul,g);
 }
 

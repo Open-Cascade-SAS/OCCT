@@ -32,7 +32,6 @@
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <BRepAlgo_FaceRestrictor.hxx>
 #include <BRepExtrema_ExtPF.hxx>
-#include <BRepLProp_SLProps.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
