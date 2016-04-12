@@ -27,3 +27,24 @@ checkprops result -s 668843
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 
+
+############################################################################################################
+# Addition checks according to the issue OCC26918
+###########################################################################################################
+
+set i 1
+set Lf [explode result f]
+foreach ff $Lf {
+  set Le [explode $ff e]
+  
+  set j 1
+  foreach ee $Le {
+    if { [string first "Tolerance cannot be computed" [xdistef $ee $ff]] >= 0 } {
+      puts "Error: \"xdistef result_$i_$j result_$i\" cannot find maximal distance "
+    }
+    
+    incr j
+  }
+  
+  incr i
+}
