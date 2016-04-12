@@ -11,7 +11,7 @@ ellipse c2 4 0 2 1
 
 set info [2dextrema c1 c2]
 
-set tol_abs 1.e-5
+set tol_abs 7.e-5
 set tol_rel 0.01
 
 #-1
@@ -36,7 +36,7 @@ checkreal "Parameter2" ${Parameter2} ${expected_Parameter2} ${tol_abs} ${tol_rel
 set expected_OriginX 2.
 checkreal "OriginX" ${OriginX} ${expected_OriginX} ${tol_abs} ${tol_rel}
 
-set expected_OriginY 7.e-05 
+set expected_OriginY 0.0
 checkreal "OriginY" ${OriginY} ${expected_OriginY} ${tol_abs} ${tol_rel}
 
 set expected_AxisX 1.

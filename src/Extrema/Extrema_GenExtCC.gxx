@@ -210,8 +210,15 @@ void Extrema_GenExtCC::Perform()
   C1.Intervals(anIntervals1, aContinuity);
   C2.Intervals(anIntervals2, aContinuity);
 
-  // Lipchitz constant approximation.
+  // Lipchitz constant computation.
   Standard_Real aLC = 9.0; // Default value.
+  const Standard_Real aMaxDer1 = 1.0 / C1.Resolution(1.0);
+  const Standard_Real aMaxDer2 = 1.0 / C2.Resolution(1.0);
+  const Standard_Real aMaxDer = Max(aMaxDer1, aMaxDer2) * Sqrt(2.0);
+  if (aLC > aMaxDer)
+    aLC = aMaxDer;
+
+  // Change constant value according to the concrete curve types.
   Standard_Boolean isConstLockedFlag = Standard_False;
   if (C1.GetType() == GeomAbs_Line)
   {

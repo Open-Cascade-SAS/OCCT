@@ -25,6 +25,27 @@
 #include <Standard_Real.hxx>
 #include <Precision.hxx>
 
+//=======================================================================
+//function : DistanceToBorder
+//purpose  :
+//=======================================================================
+static Standard_Real DistanceToBorder(const math_Vector & theX,
+                                      const math_Vector & theMin,
+                                      const math_Vector & theMax)
+{
+  Standard_Real aDist = RealLast();
+
+  for (Standard_Integer anIdx = theMin.Lower(); anIdx <= theMin.Upper(); ++anIdx)
+  {
+    const Standard_Real aDist1 = Abs (theX(anIdx) - theMin(anIdx));
+    const Standard_Real aDist2 = Abs (theX(anIdx) - theMax(anIdx));
+
+    aDist = Min (aDist, Min (aDist1, aDist2));
+  }
+
+  return aDist;
+}
+
 
 //=======================================================================
 //function : math_GlobOptMin
@@ -46,7 +67,6 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myTmp(1, myN),
   myV(1, myN),
   myMaxV(1, myN),
-  myExpandCoeff(1, myN),
   myCellSize(0, myN - 1),
   myFilter(theFunc->NbVariables()),
   myCont(2)
@@ -73,12 +93,6 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   for(i = 1; i <= myN; i++)
   {
     myMaxV(i) = (myB(i) - myA(i)) / 3.0;
-  }
-
-  myExpandCoeff(1) = 1.0;
-  for(i = 2; i <= myN; i++)
-  {
-    myExpandCoeff(i) = (myB(i) - myA(i)) / (myB(i - 1) - myA(i - 1));
   }
 
   myTol = theDiscretizationTol;
@@ -126,12 +140,6 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
     myMaxV(i) = (myB(i) - myA(i)) / 3.0;
   }
 
-  myExpandCoeff(1) = 1.0;
-  for(i = 2; i <= myN; i++)
-  {
-    myExpandCoeff(i) = (myB(i) - myA(i)) / (myB(i - 1) - myA(i - 1));
-  }
-
   myTol = theDiscretizationTol;
   mySameTol = theSameTol;
 
@@ -162,12 +170,6 @@ void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA,
     myMaxV(i) = (myB(i) - myA(i)) / 3.0;
   }
 
-  myExpandCoeff(1) = 1.0;
-  for(i = 2; i <= myN; i++)
-  {
-    myExpandCoeff(i) = (myB(i) - myA(i)) / (myB(i - 1) - myA(i - 1));
-  }
-
   myDone = Standard_False;
 }
 
@@ -194,32 +196,26 @@ void math_GlobOptMin::GetTol(Standard_Real& theDiscretizationTol,
 }
 
 //=======================================================================
-//function : ~math_GlobOptMin
-//purpose  : 
-//=======================================================================
-math_GlobOptMin::~math_GlobOptMin()
-{
-}
-
-//=======================================================================
 //function : Perform
 //purpose  : Compute Global extremum point
 //=======================================================================
 // In this algo indexes started from 1, not from 0.
 void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
 {
-  Standard_Integer i;
+  myDone = Standard_False;
 
   // Compute parameters range
   Standard_Real minLength = RealLast();
   Standard_Real maxLength = RealFirst();
-  for(i = 1; i <= myN; i++)
+  for(Standard_Integer i = 1; i <= myN; i++)
   {
     Standard_Real currentLength = myB(i) - myA(i);
     if (currentLength < minLength)
       minLength = currentLength;
     if (currentLength > maxLength)
       maxLength = currentLength;
+
+    myV(i) = 0.0;
   }
 
   if (minLength < Precision::PConfusion())
@@ -397,18 +393,16 @@ void math_GlobOptMin::computeInitialValues()
 void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
 {
   Standard_Integer i;
-  Standard_Real d; // Functional in moved point.
+  Standard_Real d = RealLast(), aPrevVal; // Functional in original and moved points.
   Standard_Real val = RealLast(); // Local extrema computed in moved point.
   Standard_Real aStepBestValue = RealLast();
   math_Vector aStepBestPoint(1, myN);
-  Standard_Boolean isInside = Standard_False;
-  Standard_Real r;
-  Standard_Boolean isReached = Standard_False;
+  Standard_Boolean isInside = Standard_False,
+                   isReached = Standard_False;
 
+  Standard_Real r1, r2, r;
 
-  for(myX(j) = myA(j) + myE1;
-     (myX(j) < myB(j) + myE1) && (!isReached);
-      myX(j) += myV(j))
+  for(myX(j) = myA(j) + myE1; !isReached; myX(j) += myV(j))
   {
     if (myX(j) > myB(j))
     {
@@ -422,11 +416,30 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
     if (j == 1)
     {
       isInside = Standard_False;
+      aPrevVal = d;
       myFunc->Value(myX, d);
-      r = (d + myZ * myC * myLastStep - myF) * myZ;
+      r1 = (d + myZ * myC * myLastStep - myF) * myZ; // Evtushenko estimation.
+      r2 = ((d + aPrevVal - myC * myLastStep) * 0.5 - myF) * myZ; // Shubert / Piyavsky estimation.
+      r = Min(r1, r2);
       if(r > myE3)
       {
-        isInside = computeLocalExtremum(myX, val, myTmp);
+        Standard_Real aSaveParam = myX(1);
+
+        // Piyavsky midpoint estimation.
+        Standard_Real aParam = (2 * myX(1) - myV(1) ) * 0.5 + (aPrevVal - d) * 0.5 / myC;
+        if (Precision::IsInfinite(aPrevVal))
+          aParam = myX(1) - myV(1) * 0.5; // Protection from upper dimension step.
+
+        myX(1) = aParam;
+        Standard_Real aVal = 0;
+        myFunc->Value(myX, aVal);
+        myX(1) = aSaveParam;
+
+        if ( (aVal < d && aVal < aPrevVal) ||
+              DistanceToBorder(myX, myA, myB) < myE1 ) // Condition optimization case near the border.
+        {
+          isInside = computeLocalExtremum(myX, val, myTmp);
+        }
       }
       aStepBestValue = (isInside && (val < d))? val : d;
       aStepBestPoint = (isInside && (val < d))? myTmp : myX;
@@ -478,10 +491,9 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       for(i = 1; i < j; i++)
         myV(i) = 0.0;
     }
-    // Compute step in (j + 1) dimension according to scale.
     if (j < myN)
     {
-      Standard_Real aUpperDimStep =  myV(j) * myExpandCoeff(j + 1);
+      Standard_Real aUpperDimStep =  Max(myV(j), myE2);
       if (myV(j + 1) > aUpperDimStep)
       {
         if (aUpperDimStep > myMaxV(j + 1)) // Case of too big step.
@@ -574,51 +586,6 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
 }
 
 //=======================================================================
-//function : NbExtrema
-//purpose  :
-//=======================================================================
-Standard_Integer math_GlobOptMin::NbExtrema()
-{
-  return mySolCount;
-}
-
-//=======================================================================
-//function : GetF
-//purpose  :
-//=======================================================================
-Standard_Real math_GlobOptMin::GetF()
-{
-  return myF;
-}
-
-//=======================================================================
-//function : SetFunctionalMinimalValue
-//purpose  :
-//=======================================================================
-void math_GlobOptMin::SetFunctionalMinimalValue(const Standard_Real theMinimalValue)
-{
-  myFunctionalMinimalValue = theMinimalValue;
-}
-
-//=======================================================================
-//function : GetFunctionalMinimalValue
-//purpose  :
-//=======================================================================
-Standard_Real math_GlobOptMin::GetFunctionalMinimalValue()
-{
-  return myFunctionalMinimalValue;
-}
-
-//=======================================================================
-//function : IsDone
-//purpose  :
-//=======================================================================
-Standard_Boolean math_GlobOptMin::isDone()
-{
-  return myDone;
-}
-
-//=======================================================================
 //function : Points
 //purpose  :
 //=======================================================================
@@ -693,15 +660,4 @@ void math_GlobOptMin::ComputeInitSol()
   for(i = 1; i <= myN; i++)
     myY.Append(aBestPnt(i));
   mySolCount = 1;
-
-  myDone = Standard_False;
-}
-
-//=======================================================================
-//function : SetLipConstState
-//purpose  :
-//=======================================================================
-void math_GlobOptMin::SetLipConstState(const Standard_Boolean theFlag)
-{
-  myIsConstLocked = theFlag;
 }
