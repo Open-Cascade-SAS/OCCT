@@ -1,6 +1,6 @@
 # tbb
 
-if (NOT DEFINED INSTALL_TBB)
+if (NOT DEFINED INSTALL_TBB AND BUILD_SHARED_LIBS)
   set (INSTALL_TBB OFF CACHE BOOL "${INSTALL_TBB_DESCR}")
 endif()
 
@@ -9,7 +9,7 @@ if (NOT DEFINED 3RDPARTY_TBB_DIR)
   set (3RDPARTY_TBB_DIR "" CACHE PATH "The directory containing tbb")
 endif()
 
-if (MSVC)
+if (MSVC AND BUILD_SHARED_LIBS)
   add_definitions (-D__TBB_NO_IMPLICIT_LINKAGE)
   add_definitions (-D__TBBMALLOC_NO_IMPLICIT_LINKAGE)
 endif()
@@ -275,18 +275,18 @@ macro (TBB_PRODUCT_SEARCH PRODUCT_NAME)
   mark_as_advanced (3RDPARTY_${PRODUCT_NAME}_LIBRARY 3RDPARTY_${PRODUCT_NAME}_DLL)
 endmacro()
 
+if (BUILD_SHARED_LIBS)
+  TBB_PRODUCT_SEARCH (TBB)
+  TBB_PRODUCT_SEARCH (TBBMALLOC)
 
-TBB_PRODUCT_SEARCH (TBB)
-TBB_PRODUCT_SEARCH (TBBMALLOC)
-
-
-if (INSTALL_TBB)
-  set (USED_3RDPARTY_TBB_DIR "")
-else()
-  # the library directory for using by the executable
-  if (WIN32)
-    set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_DLL_DIR})
+  if (INSTALL_TBB)
+    set (USED_3RDPARTY_TBB_DIR "")
   else()
-    set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_LIBRARY_DIR})
+    # the library directory for using by the executable
+    if (WIN32)
+      set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_DLL_DIR})
+    else()
+      set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_LIBRARY_DIR})
+    endif()
   endif()
 endif()

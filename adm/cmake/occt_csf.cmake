@@ -10,7 +10,7 @@ if (NOT DEFINED USE_TCL)
   OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
 endif()
 
-if (USE_TCL)
+if (USE_TCL AND BUILD_SHARED_LIBS)
   if ("${3RDPARTY_TCL_LIBRARY_VERSION}" STREQUAL "")
     message (STATUS "Warning: TCL version has not been specified by CSF_TclLibs defining thus it will be used as 8.6")
     set (3RDPARTY_TCL_LIBRARY_VERSION "8.6")

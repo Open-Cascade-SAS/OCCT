@@ -26,6 +26,7 @@ if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
   set (BUILD_SHARED_LIBS ON)
 else()
   unset (BUILD_SHARED_LIBS)
+  message (STATUS "Info: Only 3rdparty's header files are used for building of static OCCT libraries")
 endif()
 
 # the name of the project
@@ -579,7 +580,7 @@ endif()
 # include <cmake binary folder>/inc
 include_directories (${CMAKE_BINARY_DIR}/inc)
 
-if (3RDPARTY_LIBRARY_DIRS)
+if (3RDPARTY_LIBRARY_DIRS AND BUILD_SHARED_LIBS)
   list (REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
   string (REGEX REPLACE ";" "\n\t" 3RDPARTY_LIBRARY_DIRS_WITH_ENDS "${3RDPARTY_LIBRARY_DIRS}")
   message (STATUS "Info: The directories of 3rdparty libraries: \n\t${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")

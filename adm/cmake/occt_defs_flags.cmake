@@ -104,10 +104,6 @@ elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMP
     elseif(NOT WIN32)
       set (CMAKE_SHARED_LINKER_FLAGS "-lm ${CMAKE_SHARED_LINKER_FLAGS}")
     endif()
-  else()
-    if (NOT ANDROID AND NOT MINGW)
-      set (CMAKE_STATIC_LINKER_FLAGS "-lm ${CMAKE_SHARED_STATIC_FLAGS}")
-    endif()
   endif()
 endif()
 

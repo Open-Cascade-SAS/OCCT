@@ -1,6 +1,6 @@
 # freetype
 
-if (NOT DEFINED INSTALL_FREETYPE)
+if (NOT DEFINED INSTALL_FREETYPE AND BUILD_SHARED_LIBS)
   set (INSTALL_FREETYPE OFF CACHE BOOL "${INSTALL_FREETYPE_DESCR}")
 endif()
 
@@ -37,23 +37,25 @@ if (NOT DEFINED 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2)
   set (3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 "" CACHE FILEPATH "the path of freetype2")
 endif()
 
-if (NOT DEFINED 3RDPARTY_FREETYPE_LIBRARY OR NOT 3RDPARTY_FREETYPE_LIBRARY_DIR OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY_DIR}")
-  set (3RDPARTY_FREETYPE_LIBRARY               "" CACHE FILEPATH "freetype library" FORCE)
-endif()
-
-if (NOT DEFINED 3RDPARTY_FREETYPE_LIBRARY_DIR)
-  set (3RDPARTY_FREETYPE_LIBRARY_DIR           "" CACHE PATH "The directory containing freetype library")
-endif()
-
-if (WIN32)
-  if (NOT DEFINED 3RDPARTY_FREETYPE_DLL OR NOT 3RDPARTY_FREETYPE_DLL_DIR OR NOT EXISTS "${3RDPARTY_FREETYPE_DLL_DIR}")
-    set (3RDPARTY_FREETYPE_DLL                 "" CACHE FILEPATH "freetype shared library" FORCE)
+if (BUILD_SHARED_LIBS)
+  if (NOT DEFINED 3RDPARTY_FREETYPE_LIBRARY OR NOT 3RDPARTY_FREETYPE_LIBRARY_DIR OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY_DIR}")
+    set (3RDPARTY_FREETYPE_LIBRARY               "" CACHE FILEPATH "freetype library" FORCE)
   endif()
-endif()
 
-if (WIN32)
-  if (NOT DEFINED 3RDPARTY_FREETYPE_DLL_DIR)
-    set (3RDPARTY_FREETYPE_DLL_DIR               "" CACHE PATH "The directory containing freetype shared library")
+  if (NOT DEFINED 3RDPARTY_FREETYPE_LIBRARY_DIR)
+    set (3RDPARTY_FREETYPE_LIBRARY_DIR           "" CACHE PATH "The directory containing freetype library")
+  endif()
+
+  if (WIN32)
+    if (NOT DEFINED 3RDPARTY_FREETYPE_DLL OR NOT 3RDPARTY_FREETYPE_DLL_DIR OR NOT EXISTS "${3RDPARTY_FREETYPE_DLL_DIR}")
+      set (3RDPARTY_FREETYPE_DLL                 "" CACHE FILEPATH "freetype shared library" FORCE)
+    endif()
+  endif()
+
+  if (WIN32)
+    if (NOT DEFINED 3RDPARTY_FREETYPE_DLL_DIR)
+      set (3RDPARTY_FREETYPE_DLL_DIR               "" CACHE PATH "The directory containing freetype shared library")
+    endif()
   endif()
 endif()
 
@@ -61,24 +63,25 @@ endif()
 if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
   CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build FILEPATH "the path to ft2build.h")
   CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2 FILEPATH "the path to ftheader.h")
-  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_LIBRARY FILEPATH "the path to freetype library")
+  if (BUILD_SHARED_LIBS)
+    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_LIBRARY FILEPATH "the path to freetype library")
 
-  if (3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-    get_filename_component (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY}" PATH)
-    set (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
-  else()
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_LIBRARY_DIR PATH "The directory containing freetype library")
-  endif()
-
-  if (WIN32)
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_DLL FILEPATH "the path to freetype shared library")
-
-    if (3RDPARTY_FREETYPE_DLL AND EXISTS "${3RDPARTY_FREETYPE_DLL}")
-      get_filename_component (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL}" PATH)
-      set (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL_DIR}" CACHE PATH "The directory containing freetype shared library" FORCE)
+    if (3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
+      get_filename_component (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY}" PATH)
+      set (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
     else()
-    
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_DLL_DIR PATH "The directory containing freetype shared library")
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_LIBRARY_DIR PATH "The directory containing freetype library")
+    endif()
+
+    if (WIN32)
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_DLL FILEPATH "the path to freetype shared library")
+
+      if (3RDPARTY_FREETYPE_DLL AND EXISTS "${3RDPARTY_FREETYPE_DLL}")
+        get_filename_component (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL}" PATH)
+        set (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL_DIR}" CACHE PATH "The directory containing freetype shared library" FORCE)
+      else()
+        CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR 3RDPARTY_FREETYPE_DLL_DIR PATH "The directory containing freetype shared library")
+      endif()
     endif()
   endif()
 endif()
@@ -118,7 +121,9 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
   if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
     CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_ft2build FILEPATH "the path to ft2build.h")
     CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_freetype2 FILEPATH "the path to ftheader.h")
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_LIBRARY FILEPATH "freetype library")
+    if (BUILD_SHARED_LIBS)
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_LIBRARY FILEPATH "freetype library")
+    endif()
   endif()
 
   # assign the found paths to corresponding 3RDPARTY_FREETYPE_ variables
@@ -134,17 +139,19 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
     endif()
   endif()
 
-  if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-    if (FREETYPE_LIBRARY AND EXISTS "${FREETYPE_LIBRARY}")
-      set (3RDPARTY_FREETYPE_LIBRARY  "${FREETYPE_LIBRARY}" CACHE FILEPATH "The path to freetype library" FORCE)
+  if (BUILD_SHARED_LIBS)
+    if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
+      if (FREETYPE_LIBRARY AND EXISTS "${FREETYPE_LIBRARY}")
+        set (3RDPARTY_FREETYPE_LIBRARY  "${FREETYPE_LIBRARY}" CACHE FILEPATH "The path to freetype library" FORCE)
+      endif()
     endif()
-  endif()
 
-  if (3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-    get_filename_component (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY}" PATH)
-    set (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
-  else()
-    set (3RDPARTY_FREETYPE_LIBRARY_DIR "" CACHE PATH "The directory containing freetype library" FORCE)
+    if (3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
+      get_filename_component (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY}" PATH)
+      set (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
+    else()
+      set (3RDPARTY_FREETYPE_LIBRARY_DIR "" CACHE PATH "The directory containing freetype library" FORCE)
+    endif()
   endif()
 endif()
 
@@ -211,131 +218,132 @@ else()
 endif()
 
 # freetype library
-if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-  set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
+if (BUILD_SHARED_LIBS)
+  if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
+    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
 
-  set (FREETYPE_PATH_SUFFIXES lib)
-  if (ANDROID)
-    set (FREETYPE_PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES} libs/${ANDROID_ABI})
-  endif()
+    set (FREETYPE_PATH_SUFFIXES lib)
+    if (ANDROID)
+      set (FREETYPE_PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES} libs/${ANDROID_ABI})
+    endif()
 
-  # set 3RDPARTY_FREETYPE_LIBRARY as notfound, otherwise find_library can't assign a new value to 3RDPARTY_FREETYPE_LIBRARY
-  set (3RDPARTY_FREETYPE_LIBRARY "3RDPARTY_FREETYPE_LIBRARY-NOTFOUND" CACHE FILEPATH "The path to freetype library" FORCE)
-
-  if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
-    find_library (3RDPARTY_FREETYPE_LIBRARY freetype
-                                            PATHS "${3RDPARTY_FREETYPE_LIBRARY_DIR}" "${3RDPARTY_FREETYPE_DIR}"
-                                            PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
-                                            CMAKE_FIND_ROOT_PATH_BOTH
-                                            NO_DEFAULT_PATH)
-  else()
-    find_library (3RDPARTY_FREETYPE_LIBRARY freetype 
-                                            PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
-                                            CMAKE_FIND_ROOT_PATH_BOTH)
-  endif()
-
-  if (3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-    get_filename_component (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY}" PATH)
-    set (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
-  else()
-    set (3RDPARTY_FREETYPE_LIBRARY_DIR "" CACHE PATH "The directory containing freetype library" FORCE)
-  endif()
-endif()
-
-if (3RDPARTY_FREETYPE_LIBRARY_DIR AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY_DIR}")
-  list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_FREETYPE_LIBRARY_DIR}")
-else()
-  list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_FREETYPE_LIBRARY_DIR)
-
-  set (3RDPARTY_FREETYPE_LIBRARY "" CACHE FILEPATH "The path to freetype library" FORCE)
-endif()
-
-# freetype shared library
-if (WIN32)
-  if (NOT 3RDPARTY_FREETYPE_DLL OR NOT EXISTS "${3RDPARTY_FREETYPE_DLL}")
-    
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .dll)
-
-    # set 3RDPARTY_FREETYPE_DLL as notfound, otherwise find_library can't assign a new value to 3RDPARTY_FREETYPE_DLL
-    set (3RDPARTY_FREETYPE_DLL "3RDPARTY_FREETYPE_DLL-NOTFOUND" CACHE FILEPATH "The path to freetype shared library" FORCE)
+    # set 3RDPARTY_FREETYPE_LIBRARY as notfound, otherwise find_library can't assign a new value to 3RDPARTY_FREETYPE_LIBRARY
+    set (3RDPARTY_FREETYPE_LIBRARY "3RDPARTY_FREETYPE_LIBRARY-NOTFOUND" CACHE FILEPATH "The path to freetype library" FORCE)
 
     if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
-      find_library (3RDPARTY_FREETYPE_DLL freetype
-                                          PATHS "${3RDPARTY_FREETYPE_DIR}"
-                                          PATH_SUFFIXES bin
-                                          NO_DEFAULT_PATH)
+      find_library (3RDPARTY_FREETYPE_LIBRARY freetype
+                                              PATHS "${3RDPARTY_FREETYPE_LIBRARY_DIR}" "${3RDPARTY_FREETYPE_DIR}"
+                                              PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
+                                              CMAKE_FIND_ROOT_PATH_BOTH
+                                              NO_DEFAULT_PATH)
     else()
-      find_library (3RDPARTY_FREETYPE_DLL freetype
-                                          PATH_SUFFIXES bin)
+      find_library (3RDPARTY_FREETYPE_LIBRARY freetype 
+                                              PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
+                                              CMAKE_FIND_ROOT_PATH_BOTH)
     endif()
 
-    if (3RDPARTY_FREETYPE_DLL AND EXISTS "${3RDPARTY_FREETYPE_DLL}")
-      get_filename_component (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL}" PATH)
-      set (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
+    if (3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
+      get_filename_component (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY}" PATH)
+      set (3RDPARTY_FREETYPE_LIBRARY_DIR "${3RDPARTY_FREETYPE_LIBRARY_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
     else()
-      set (3RDPARTY_FREETYPE_DLL_DIR "" CACHE PATH "The directory containing freetype shared library" FORCE)
-
-      set (3RDPARTY_FREETYPE_DLL "" CACHE FILEPATH "freetype shared library" FORCE)
+      set (3RDPARTY_FREETYPE_LIBRARY_DIR "" CACHE PATH "The directory containing freetype library" FORCE)
     endif()
   endif()
 
-  if (3RDPARTY_FREETYPE_DLL_DIR OR EXISTS "${3RDPARTY_FREETYPE_DLL_DIR}")
-    list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_FREETYPE_DLL_DIR}")
+  if (3RDPARTY_FREETYPE_LIBRARY_DIR AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY_DIR}")
+    list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_FREETYPE_LIBRARY_DIR}")
   else()
-    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_FREETYPE_DLL_DIR)
+    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_FREETYPE_LIBRARY_DIR)
+
+    set (3RDPARTY_FREETYPE_LIBRARY "" CACHE FILEPATH "The path to freetype library" FORCE)
   endif()
-endif()
 
-
-# install instructions
-if (INSTALL_FREETYPE)
-  OCCT_MAKE_OS_WITH_BITNESS()
-
+  # freetype shared library
   if (WIN32)
-    if (SINGLE_GENERATOR)
-      install (FILES "${3RDPARTY_FREETYPE_DLL}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
-    else()
-      install (FILES "${3RDPARTY_FREETYPE_DLL}"
-               CONFIGURATIONS Release
-               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
-      install (FILES "${3RDPARTY_FREETYPE_DLL}"
-               CONFIGURATIONS RelWithDebInfo
-               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}i")
-      install (FILES "${3RDPARTY_FREETYPE_DLL}"
-               CONFIGURATIONS Debug
-               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
-    endif()
-  else()
-    get_filename_component(3RDPARTY_FREETYPE_LIBRARY_ABS ${3RDPARTY_FREETYPE_LIBRARY} REALPATH)
-    get_filename_component(3RDPARTY_FREETYPE_LIBRARY_NAME ${3RDPARTY_FREETYPE_LIBRARY} NAME)
+    if (NOT 3RDPARTY_FREETYPE_DLL OR NOT EXISTS "${3RDPARTY_FREETYPE_DLL}")
 
-    if (SINGLE_GENERATOR)
-      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
-               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
-               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+      set (CMAKE_FIND_LIBRARY_SUFFIXES .dll)
+
+      # set 3RDPARTY_FREETYPE_DLL as notfound, otherwise find_library can't assign a new value to 3RDPARTY_FREETYPE_DLL
+      set (3RDPARTY_FREETYPE_DLL "3RDPARTY_FREETYPE_DLL-NOTFOUND" CACHE FILEPATH "The path to freetype shared library" FORCE)
+
+      if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
+        find_library (3RDPARTY_FREETYPE_DLL freetype
+                                            PATHS "${3RDPARTY_FREETYPE_DIR}"
+                                            PATH_SUFFIXES bin
+                                            NO_DEFAULT_PATH)
+      else()
+        find_library (3RDPARTY_FREETYPE_DLL freetype
+                                            PATH_SUFFIXES bin)
+      endif()
+
+      if (3RDPARTY_FREETYPE_DLL AND EXISTS "${3RDPARTY_FREETYPE_DLL}")
+        get_filename_component (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL}" PATH)
+        set (3RDPARTY_FREETYPE_DLL_DIR "${3RDPARTY_FREETYPE_DLL_DIR}" CACHE PATH "The directory containing freetype library" FORCE)
+      else()
+        set (3RDPARTY_FREETYPE_DLL_DIR "" CACHE PATH "The directory containing freetype shared library" FORCE)
+
+        set (3RDPARTY_FREETYPE_DLL "" CACHE FILEPATH "freetype shared library" FORCE)
+      endif()
+    endif()
+
+    if (3RDPARTY_FREETYPE_DLL_DIR OR EXISTS "${3RDPARTY_FREETYPE_DLL_DIR}")
+      list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_FREETYPE_DLL_DIR}")
     else()
-      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
-               CONFIGURATIONS Release
-               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
-               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
-      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
-               CONFIGURATIONS RelWithDebInfo
-               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}i"
-               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
-      install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
-               CONFIGURATIONS Debug
-               DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}d"
-               RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+      list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_FREETYPE_DLL_DIR)
     endif()
   endif()
 
-  set (USED_3RDPARTY_FREETYPE_DIR "")
-else()
-  # the library directory for using by the executable
-  if (WIN32)
-    set (USED_3RDPARTY_FREETYPE_DIR ${3RDPARTY_FREETYPE_DLL_DIR})
+  # install instructions
+  if (INSTALL_FREETYPE)
+    OCCT_MAKE_OS_WITH_BITNESS()
+
+    if (WIN32)
+      if (SINGLE_GENERATOR)
+        install (FILES "${3RDPARTY_FREETYPE_DLL}" DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+      else()
+        install (FILES "${3RDPARTY_FREETYPE_DLL}"
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+        install (FILES "${3RDPARTY_FREETYPE_DLL}"
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}i")
+        install (FILES "${3RDPARTY_FREETYPE_DLL}"
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+      endif()
+    else()
+      get_filename_component(3RDPARTY_FREETYPE_LIBRARY_ABS ${3RDPARTY_FREETYPE_LIBRARY} REALPATH)
+      get_filename_component(3RDPARTY_FREETYPE_LIBRARY_NAME ${3RDPARTY_FREETYPE_LIBRARY} NAME)
+
+      if (SINGLE_GENERATOR)
+        install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
+                 RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+      else()
+        install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
+                 RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+        install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}i"
+                 RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+        install (FILES "${3RDPARTY_FREETYPE_LIBRARY_ABS}"
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}d"
+                 RENAME ${3RDPARTY_FREETYPE_LIBRARY_NAME}.6)
+      endif()
+    endif()
+
+    set (USED_3RDPARTY_FREETYPE_DIR "")
   else()
-    set (USED_3RDPARTY_FREETYPE_DIR ${3RDPARTY_FREETYPE_LIBRARY_DIR})
+    # the library directory for using by the executable
+    if (WIN32)
+      set (USED_3RDPARTY_FREETYPE_DIR ${3RDPARTY_FREETYPE_DLL_DIR})
+    else()
+      set (USED_3RDPARTY_FREETYPE_DIR ${3RDPARTY_FREETYPE_LIBRARY_DIR})
+    endif()
   endif()
 endif()
 
@@ -344,4 +352,12 @@ OCCT_CHECK_AND_UNSET(FREETYPE_INCLUDE_DIR_ft2build)
 OCCT_CHECK_AND_UNSET(FREETYPE_INCLUDE_DIR_freetype2)
 OCCT_CHECK_AND_UNSET(FREETYPE_LIBRARY)
 
-mark_as_advanced (3RDPARTY_FREETYPE_LIBRARY 3RDPARTY_FREETYPE_DLL)
+if (BUILD_SHARED_LIBS)
+  mark_as_advanced (3RDPARTY_FREETYPE_LIBRARY 3RDPARTY_FREETYPE_DLL)
+else()
+  OCCT_CHECK_AND_UNSET(3RDPARTY_FREETYPE_DLL)
+  OCCT_CHECK_AND_UNSET(3RDPARTY_FREETYPE_DLL_DIR)
+  OCCT_CHECK_AND_UNSET(3RDPARTY_FREETYPE_LIBRARY)
+  OCCT_CHECK_AND_UNSET(3RDPARTY_FREETYPE_LIBRARY_DIR)
+  OCCT_CHECK_AND_UNSET(INSTALL_FREETYPE)
+endif()

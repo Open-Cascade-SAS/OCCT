@@ -31,23 +31,27 @@ if (NOT DEFINED 3RDPARTY_VTK_INCLUDE_DIR)
   set (3RDPARTY_VTK_INCLUDE_DIR "" CACHE PATH "The directory containing headers of VTK")
 endif()
 
-# vtk library directory
-if (NOT DEFINED 3RDPARTY_VTK_LIBRARY_DIR)
-  set (3RDPARTY_VTK_LIBRARY_DIR "" CACHE PATH "The directory containing VTK libraries")
-endif()
+if (BUILD_SHARED_LIBS)
+  # vtk library directory
+  if (NOT DEFINED 3RDPARTY_VTK_LIBRARY_DIR)
+    set (3RDPARTY_VTK_LIBRARY_DIR "" CACHE PATH "The directory containing VTK libraries")
+  endif()
 
-# vtk dll directory
-if (WIN32 AND NOT DEFINED 3RDPARTY_VTK_DLL_DIR)
-  set (3RDPARTY_VTK_DLL_DIR "" CACHE PATH "The directory containing VTK shared libraries")
+  # vtk dll directory
+  if (WIN32 AND NOT DEFINED 3RDPARTY_VTK_DLL_DIR)
+    set (3RDPARTY_VTK_DLL_DIR "" CACHE PATH "The directory containing VTK shared libraries")
+  endif()
 endif()
 
 # check 3RDPARTY_VTK_ paths for consistency with specified 3RDPARTY_VTK_DIR
 if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_INCLUDE_DIR PATH "The directory containing headers of VTK")
-  CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_LIBRARY_DIR PATH "The directory containing VTK libraries")
+  if (BUILD_SHARED_LIBS)
+    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_LIBRARY_DIR PATH "The directory containing VTK libraries")
 
-  if (WIN32)
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_DLL_DIR PATH "The directory containing VTK shared library")
+    if (WIN32)
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_VTK_DIR 3RDPARTY_VTK_DLL_DIR PATH "The directory containing VTK shared library")
+    endif()
   endif()
 endif()
 
@@ -70,8 +74,11 @@ if (VTK_FOUND)
   if (VTK_LIBRARIES)
 
     set (3RDPARTY_VTK_INCLUDE_DIRS)
-    set (3RDPARTY_VTK_LIBRARY_DIRS)
-    set (3RDPARTY_VTK_DLL_DIRS)
+
+    if (BUILD_SHARED_LIBS)
+      set (3RDPARTY_VTK_LIBRARY_DIRS)
+      set (3RDPARTY_VTK_DLL_DIRS)
+    endif()
 
     foreach (VTK_LIBRARY ${VTK_LIBRARIES})
       string (REGEX MATCH "^vtk" IS_VTK_LIBRARY ${VTK_LIBRARY})
@@ -81,70 +88,71 @@ if (VTK_FOUND)
           list (APPEND 3RDPARTY_VTK_INCLUDE_DIRS "${${VTK_LIBRARY}_INCLUDE_DIRS}")
         endif()
 
-        if (${VTK_LIBRARY}_LIBRARY_DIRS AND EXISTS "${${VTK_LIBRARY}_LIBRARY_DIRS}")
-          list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${${VTK_LIBRARY}_LIBRARY_DIRS}")
-        endif()
-
-        if (${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS AND EXISTS "${${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
-          list (APPEND 3RDPARTY_VTK_DLL_DIRS "${${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
-          if (NOT WIN32)
-            list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
-          endif()
-        endif()
-
-        # get paths from corresponding properties
-        get_target_property (TARGET_VTK_IMPORT_CONFS ${VTK_LIBRARY} IMPORTED_CONFIGURATIONS)
-
-        if (TARGET_VTK_IMPORT_CONFS)
-          list (GET TARGET_VTK_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
-          
-          # todo: choose configuration in connection with the build type
-          #if (CMAKE_BUILD_TYPE)
-          #  foreach (IMPORT_CONF ${TARGET_VTK_IMPORT_CONFS})
-          #  endforeach()
-          #endif()
-
-          # Work-around against link failure in case if VTK contains dependency
-          # on DirectX: its run-time is always present on Windows, but SDK can
-          # be absent on current workstation, while not actually needed for 
-          # OCCT linking.
-          # VTK 6.1 for VC 10
-          get_target_property (TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${VTK_LIBRARY} IMPORTED_LINK_INTERFACE_LIBRARIES_${CHOSEN_IMPORT_CONF})
-          if(TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES)
-            string (REGEX MATCH "[^;]*d3d[0-9]+[.]lib" HARDCODED_D3D9_LIB "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
-            if (HARDCODED_D3D9_LIB)
-              message (STATUS "Warning: ${HARDCODED_D3D9_LIB} has been removed from imported dependencies of ${VTK_LIBRARY}")
-              
-              list (REMOVE_ITEM TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${HARDCODED_D3D9_LIB})
-              set_target_properties (${VTK_LIBRARY} PROPERTIES IMPORTED_LINK_INTERFACE_LIBRARIES_${CHOSEN_IMPORT_CONF} "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
-            endif()            
-          endif()
-          # VTK 6.1 for VC 12, 14
-          get_target_property (TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${VTK_LIBRARY} INTERFACE_LINK_LIBRARIES)
-          if(TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES)
-            string (REGEX MATCH "[^;]*d3d[0-9]+[.]lib" HARDCODED_D3D9_LIB "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
-            if (HARDCODED_D3D9_LIB)
-              message (STATUS "Warning: ${HARDCODED_D3D9_LIB} has been removed from imported dependencies of ${VTK_LIBRARY}")
-              
-              list (REMOVE_ITEM TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${HARDCODED_D3D9_LIB})
-              set_target_properties (${VTK_LIBRARY} PROPERTIES INTERFACE_LINK_LIBRARIES "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
-            endif()            
+          if (${VTK_LIBRARY}_LIBRARY_DIRS AND EXISTS "${${VTK_LIBRARY}_LIBRARY_DIRS}")
+            list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${${VTK_LIBRARY}_LIBRARY_DIRS}")
           endif()
 
-          get_target_property (TARGET_PROPERTY_IMP_PATH ${VTK_LIBRARY} IMPORTED_IMPLIB_${CHOSEN_IMPORT_CONF})
-          if(TARGET_PROPERTY_IMP_PATH AND EXISTS "${TARGET_PROPERTY_IMP_PATH}")
-            get_filename_component (TARGET_PROPERTY_IMP_DIR "${TARGET_PROPERTY_IMP_PATH}" PATH)
-            list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${TARGET_PROPERTY_IMP_DIR}")
+          if (${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS AND EXISTS "${${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
+            list (APPEND 3RDPARTY_VTK_DLL_DIRS "${${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
+            if (NOT WIN32)
+              list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${${VTK_LIBRARY}_RUNTIME_LIBRARY_DIRS}")
+            endif()
           endif()
 
-          get_target_property (TARGET_PROPERTY_LOCATION_PATH ${VTK_LIBRARY} IMPORTED_LOCATION_${CHOSEN_IMPORT_CONF})
-          if(TARGET_PROPERTY_LOCATION_PATH AND EXISTS "${TARGET_PROPERTY_LOCATION_PATH}")
-            get_filename_component (TARGET_PROPERTY_LOCATION_DIR "${TARGET_PROPERTY_LOCATION_PATH}" PATH)
+          # get paths from corresponding properties
+          get_target_property (TARGET_VTK_IMPORT_CONFS ${VTK_LIBRARY} IMPORTED_CONFIGURATIONS)
 
-            if (WIN32)
-              list (APPEND 3RDPARTY_VTK_DLL_DIRS "${TARGET_PROPERTY_LOCATION_DIR}")
-            else()
-              list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${TARGET_PROPERTY_LOCATION_DIR}")
+          if (TARGET_VTK_IMPORT_CONFS)
+            list (GET TARGET_VTK_IMPORT_CONFS 0 CHOSEN_IMPORT_CONF)
+
+            # todo: choose configuration in connection with the build type
+            #if (CMAKE_BUILD_TYPE)
+            #  foreach (IMPORT_CONF ${TARGET_VTK_IMPORT_CONFS})
+            #  endforeach()
+            #endif()
+
+            # Work-around against link failure in case if VTK contains dependency
+            # on DirectX: its run-time is always present on Windows, but SDK can
+            # be absent on current workstation, while not actually needed for 
+            # OCCT linking.
+            # VTK 6.1 for VC 10
+            get_target_property (TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${VTK_LIBRARY} IMPORTED_LINK_INTERFACE_LIBRARIES_${CHOSEN_IMPORT_CONF})
+            if(TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES)
+              string (REGEX MATCH "[^;]*d3d[0-9]+[.]lib" HARDCODED_D3D9_LIB "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
+              if (HARDCODED_D3D9_LIB)
+                message (STATUS "Warning: ${HARDCODED_D3D9_LIB} has been removed from imported dependencies of ${VTK_LIBRARY}")
+
+                list (REMOVE_ITEM TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${HARDCODED_D3D9_LIB})
+                set_target_properties (${VTK_LIBRARY} PROPERTIES IMPORTED_LINK_INTERFACE_LIBRARIES_${CHOSEN_IMPORT_CONF} "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
+              endif()
+            endif()
+            # VTK 6.1 for VC 12, 14
+            get_target_property (TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${VTK_LIBRARY} INTERFACE_LINK_LIBRARIES)
+            if(TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES)
+              string (REGEX MATCH "[^;]*d3d[0-9]+[.]lib" HARDCODED_D3D9_LIB "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
+              if (HARDCODED_D3D9_LIB)
+                message (STATUS "Warning: ${HARDCODED_D3D9_LIB} has been removed from imported dependencies of ${VTK_LIBRARY}")
+
+                list (REMOVE_ITEM TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES ${HARDCODED_D3D9_LIB})
+                set_target_properties (${VTK_LIBRARY} PROPERTIES INTERFACE_LINK_LIBRARIES "${TARGET_PROPERTY_IMP_LINK_INTERFACE_LIBRARIES}")
+              endif()
+            endif()
+
+            get_target_property (TARGET_PROPERTY_IMP_PATH ${VTK_LIBRARY} IMPORTED_IMPLIB_${CHOSEN_IMPORT_CONF})
+            if(TARGET_PROPERTY_IMP_PATH AND EXISTS "${TARGET_PROPERTY_IMP_PATH}")
+              get_filename_component (TARGET_PROPERTY_IMP_DIR "${TARGET_PROPERTY_IMP_PATH}" PATH)
+              list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${TARGET_PROPERTY_IMP_DIR}")
+            endif()
+
+            get_target_property (TARGET_PROPERTY_LOCATION_PATH ${VTK_LIBRARY} IMPORTED_LOCATION_${CHOSEN_IMPORT_CONF})
+            if(TARGET_PROPERTY_LOCATION_PATH AND EXISTS "${TARGET_PROPERTY_LOCATION_PATH}")
+              get_filename_component (TARGET_PROPERTY_LOCATION_DIR "${TARGET_PROPERTY_LOCATION_PATH}" PATH)
+
+              if (WIN32)
+                list (APPEND 3RDPARTY_VTK_DLL_DIRS "${TARGET_PROPERTY_LOCATION_DIR}")
+              else()
+                list (APPEND 3RDPARTY_VTK_LIBRARY_DIRS "${TARGET_PROPERTY_LOCATION_DIR}")
+              endif()
             endif()
           endif()
         endif()
@@ -160,24 +168,25 @@ if (VTK_FOUND)
     set (3RDPARTY_VTK_INCLUDE_DIR "${3RDPARTY_VTK_INCLUDE_DIR}" CACHE PATH "The directory containing headers of VTK" FORCE)
   endif()
 
-  if (3RDPARTY_VTK_LIBRARY_DIRS)
-    list (REMOVE_DUPLICATES 3RDPARTY_VTK_LIBRARY_DIRS)
-    list (APPEND 3RDPARTY_LIBRARY_DIRS ${3RDPARTY_VTK_LIBRARY_DIRS})
+  if (BUILD_SHARED_LIBS)
+    if (3RDPARTY_VTK_LIBRARY_DIRS)
+      list (REMOVE_DUPLICATES 3RDPARTY_VTK_LIBRARY_DIRS)
+      list (APPEND 3RDPARTY_LIBRARY_DIRS ${3RDPARTY_VTK_LIBRARY_DIRS})
 
-    list (GET 3RDPARTY_VTK_LIBRARY_DIRS 0 3RDPARTY_VTK_LIBRARY_DIR)
-    set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_LIBRARY_DIR}" CACHE PATH "The directory containing VTK libraries" FORCE)
-  endif()
+      list (GET 3RDPARTY_VTK_LIBRARY_DIRS 0 3RDPARTY_VTK_LIBRARY_DIR)
+      set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_LIBRARY_DIR}" CACHE PATH "The directory containing VTK libraries" FORCE)
+    endif()
 
-  if (WIN32)
-    if (3RDPARTY_VTK_DLL_DIRS)
-      list (REMOVE_DUPLICATES 3RDPARTY_VTK_DLL_DIRS)
-      list (APPEND 3RDPARTY_DLL_DIRS ${3RDPARTY_VTK_DLL_DIRS})
+    if (WIN32)
+      if (3RDPARTY_VTK_DLL_DIRS)
+        list (REMOVE_DUPLICATES 3RDPARTY_VTK_DLL_DIRS)
+        list (APPEND 3RDPARTY_DLL_DIRS ${3RDPARTY_VTK_DLL_DIRS})
 
-      list (GET 3RDPARTY_VTK_DLL_DIRS 0 3RDPARTY_VTK_DLL_DIR)
-      set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DLL_DIR}" CACHE PATH "The directory containing VTK shared libraries" FORCE)
+        list (GET 3RDPARTY_VTK_DLL_DIRS 0 3RDPARTY_VTK_DLL_DIR)
+        set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DLL_DIR}" CACHE PATH "The directory containing VTK shared libraries" FORCE)
+      endif()
     endif()
   endif()
-endif()
 
 if (3RDPARTY_VTK_INCLUDE_DIR AND EXISTS "${3RDPARTY_VTK_INCLUDE_DIR}")
   list (APPEND 3RDPARTY_INCLUDE_DIRS ${3RDPARTY_VTK_INCLUDE_DIR})
@@ -185,17 +194,19 @@ else()
   list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_INCLUDE_DIR)
 endif()
 
-if (3RDPARTY_VTK_LIBRARY_DIR AND EXISTS "${3RDPARTY_VTK_LIBRARY_DIR}")
-  list (APPEND 3RDPARTY_LIBRARY_DIRS ${3RDPARTY_VTK_LIBRARY_DIR})
-else()
-  list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_LIBRARY_DIR)
-endif()
-
-if (WIN32)
-  if (3RDPARTY_VTK_DLL_DIR OR EXISTS "${3RDPARTY_VTK_DLL_DIR}")
-    list (APPEND 3RDPARTY_DLL_DIRS ${3RDPARTY_VTK_DLL_DIR})
+if (BUILD_SHARED_LIBS)
+  if (3RDPARTY_VTK_LIBRARY_DIR AND EXISTS "${3RDPARTY_VTK_LIBRARY_DIR}")
+    list (APPEND 3RDPARTY_LIBRARY_DIRS ${3RDPARTY_VTK_LIBRARY_DIR})
   else()
-    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_DLL_DIR)
+    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_LIBRARY_DIR)
+  endif()
+
+  if (WIN32)
+    if (3RDPARTY_VTK_DLL_DIR OR EXISTS "${3RDPARTY_VTK_DLL_DIR}")
+      list (APPEND 3RDPARTY_DLL_DIRS ${3RDPARTY_VTK_DLL_DIR})
+    else()
+      list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_VTK_DLL_DIR)
+    endif()
   endif()
 endif()
 
