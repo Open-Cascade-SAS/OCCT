@@ -413,6 +413,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   const GLint anIntFormat  = theCtx->IsGlGreaterEqual (3, 0) ? theTextFormat : thePixelFormat;
 #endif
 
+  if (theDataType == GL_FLOAT && !theCtx->arbTexFloat)
+  {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         "Error: floating-point textures are not supported by hardware.");
+    Release (theCtx.operator->());
+    return false;
+  }
+
   const GLsizei aMaxSize = theCtx->MaxTextureSize();
   if (theSizeX > aMaxSize
    || theSizeY > aMaxSize)
@@ -515,7 +523,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexImage1D (GL_PROXY_TEXTURE_1D, 0, anIntFormat,
                     theSizeX, 0,
                     thePixelFormat, theDataType, NULL);
-      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
+      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
       if (aTestWidth == 0)
       {
         // no memory or broken input parameters
@@ -540,6 +548,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       Unbind (theCtx);
       return true;
     #else
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "Error: 1D textures are not supported by hardware.");
       Release (theCtx.operator->());
       return false;
     #endif
