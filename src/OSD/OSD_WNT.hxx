@@ -29,10 +29,4 @@
 #  endif
 # endif  // OSDAPI
 
-void     OSDAPI SetErrorStream ( ostream* );
-//ostream* OSDAPI ErrorStream    ( void     );
-ostream OSDAPI *ErrorStream    ( void     );    // for VisualAge
-void     OSDAPI EnablePrefix   ( int      );
-int      OSDAPI ErrorPrefix    ( void     );
-
 #endif  // __OSD_WNT_HXX

@@ -29,13 +29,6 @@ static Units_UnitsSystem LocalSystemUnits,SILocalSystemUnits,MDTVLocalSystemUnit
 static TCollection_AsciiString rstring;
 static UnitsAPI_SystemUnits localSystem = UnitsAPI_SI;
 static UnitsAPI_SystemUnits currentSystem = UnitsAPI_DEFAULT;
-static OSD_Environment env1("CSF_UnitsLexicon");
-static OSD_Environment env2("CSF_UnitsDefinition");
-#ifdef _WIN32
-static OSD_Environment env3("CSF_CurrentUnits");
-static OSD_Environment env4("CSF_MDTVCurrentUnits");
-#endif
-
 
 //=======================================================================
 //function : CheckLoading
@@ -45,6 +38,7 @@ static OSD_Environment env4("CSF_MDTVCurrentUnits");
 void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
 {
   if( currentSystem != aSystemUnits || CurrentUnits.IsNull()) {
+    OSD_Environment env1("CSF_UnitsLexicon");
     TCollection_AsciiString slexiconfile(env1.Value());
     if( slexiconfile.Length() > 0 )
       Units::LexiconFile(slexiconfile.ToCString());
@@ -59,6 +53,7 @@ void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
 	Standard_NoSuchObject::Raise("environment variable CSF_UnitsLexicon undefined");
       }
     }
+    OSD_Environment env2("CSF_UnitsDefinition");
     TCollection_AsciiString sunitsfile(env2.Value());
     if( sunitsfile.Length() > 0 )
       Units::UnitsFile(sunitsfile.ToCString());
@@ -80,6 +75,7 @@ void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
         currentSystem = UnitsAPI_SI; 
         if( SICurrentUnits.IsNull() ) {
 #ifdef _WIN32
+          OSD_Environment env3("CSF_CurrentUnits");
           TCollection_AsciiString csfcurrent (env3.Value());
           if( csfcurrent.Length() > 0 )
                 SICurrentUnits = new Resource_Manager(csfcurrent.ToCString());
@@ -96,6 +92,7 @@ void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
         currentSystem = UnitsAPI_MDTV; 
         if( MDTVCurrentUnits.IsNull() )  {
 #ifdef _WIN32
+          OSD_Environment env4("CSF_MDTVCurrentUnits");
           TCollection_AsciiString csfmdtvcurrent (env4.Value());
           if( csfmdtvcurrent.Length() > 0 )
                 MDTVCurrentUnits = new Resource_Manager(csfmdtvcurrent.ToCString());

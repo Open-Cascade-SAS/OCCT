@@ -344,14 +344,9 @@ void OSD_Environment :: Reset () {
 
 }  // end OSD_Environment :: Reset
 
-void OSD_Environment :: Perror () {
-
- if (  ErrorPrefix ()  )
-
-  (  *ErrorStream ()  ) << TEXT( '\'' ) << myName.ToCString () << TEXT( "' - " );
-
- myError.Perror ();
-
+void OSD_Environment :: Perror ()
+{
+  myError.Perror ();
 }  // end OSD_Environment :: Perror
 
 Standard_Integer OSD_Environment :: Error () const {
