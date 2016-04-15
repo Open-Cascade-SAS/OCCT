@@ -874,6 +874,21 @@ void BRepTools::Clean(const TopoDS_Shape& theShape)
 
     aBuilder.UpdateFace(aFace, aNullTriangulation);
   }
+
+  // Iterate over all edges seeking for 3d polygons
+  Handle (Poly_Polygon3D) aNullPoly3d;
+  TopExp_Explorer aEdgeIt (theShape, TopAbs_EDGE);
+  for (; aEdgeIt.More (); aEdgeIt.Next ())
+  {
+    const TopoDS_Edge& aEdge = TopoDS::Edge (aEdgeIt.Current ());
+
+    TopLoc_Location aLoc;
+    Handle (Poly_Polygon3D) aPoly3d = BRep_Tool::Polygon3D (aEdge, aLoc);
+    if (aPoly3d.IsNull ())
+      continue;
+
+    aBuilder.UpdateEdge (aEdge, aNullPoly3d);  
+  }
 }
 
 //=======================================================================
