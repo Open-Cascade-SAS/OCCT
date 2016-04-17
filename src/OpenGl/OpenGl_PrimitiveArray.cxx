@@ -467,7 +467,7 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
 
   if (aGlContext->core20fwd != NULL)
   {
-    aGlContext->ShaderManager()->BindProgram (anAspect, NULL, Standard_False, Standard_False, anAspect->ShaderProgramRes (aGlContext));
+    aGlContext->ShaderManager()->BindLineProgram (NULL, anAspect->Type() != Aspect_TOL_SOLID, Standard_False, Standard_False, anAspect->ShaderProgramRes (aGlContext));
   }
 
   /// OCC22236 NOTE: draw edges for all situations:
@@ -771,18 +771,18 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                                       ? anAspectMarker->SpriteHighlightRes (aCtx)
                                                       : aSpriteNorm;
             theWorkspace->EnableTexture (aSprite);
-            aCtx->ShaderManager()->BindProgram (anAspectMarker, aSprite, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+            aCtx->ShaderManager()->BindMarkerProgram (aSprite, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
           }
           else
           {
-            aCtx->ShaderManager()->BindProgram (anAspectMarker, NULL, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+            aCtx->ShaderManager()->BindMarkerProgram (NULL, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
           }
           break;
         }
         case GL_LINES:
         case GL_LINE_STRIP:
         {
-          aCtx->ShaderManager()->BindProgram (anAspectLine, NULL, isLightOn, hasVertColor, anAspectLine->ShaderProgramRes (aCtx));
+          aCtx->ShaderManager()->BindLineProgram (NULL, anAspectLine->Type() != Aspect_TOL_SOLID, isLightOn, hasVertColor, anAspectLine->ShaderProgramRes (aCtx));
           break;
         }
         default:
@@ -792,15 +792,20 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                               && (aTexture.IsNull()
                                                || aTexture->GetParams()->IsModulate());
           const Standard_Boolean toEnableEnvMap = (!aTexture.IsNull() && (aTexture == theWorkspace->EnvironmentTexture()));
-          aCtx->ShaderManager()->BindProgram (anAspectFace,
-                                              aTexture,
-                                              isLightOnFace,
-                                              hasVertColor,
-                                              toEnableEnvMap,
-                                              anAspectFace->ShaderProgramRes (aCtx));
+          aCtx->ShaderManager()->BindFaceProgram (aTexture,
+                                                  isLightOnFace,
+                                                  hasVertColor,
+                                                  toEnableEnvMap,
+                                                  anAspectFace->ShaderProgramRes (aCtx));
           break;
         }
       }
+    }
+
+    // All primitives should gather material properties from the AspectFace in shading mode
+    if (isLightOn)
+    {
+      aCtx->SetShadingMaterial (anAspectFace);
     }
 
     if (!theWorkspace->ActiveTexture().IsNull()

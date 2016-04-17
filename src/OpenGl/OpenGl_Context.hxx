@@ -128,6 +128,7 @@ typedef OpenGl_TmplCore44<OpenGl_GlCore43>     OpenGl_GlCore44;
 class OpenGl_ShaderManager;
 class OpenGl_Sampler;
 class OpenGl_FrameBuffer;
+class OpenGl_AspectFace;
 
 class OpenGl_Context;
 DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)
@@ -548,6 +549,9 @@ public: //! @name methods to alter or retrieve current state
   //! or unbind previous one when NULL specified.
   //! @return true if some program is bound to context
   Standard_EXPORT Standard_Boolean BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram);
+
+  //! Setup current shading material.
+  Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect);
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);

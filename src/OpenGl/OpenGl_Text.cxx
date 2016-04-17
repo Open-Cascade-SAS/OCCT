@@ -418,8 +418,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   // Bind custom shader program or generate default version
   if (aCtx->core20fwd != NULL)
   {
-    aCtx->ShaderManager()->BindProgram (
-      aTextAspect, aTextAspect->ShaderProgramRes (aCtx));
+    aCtx->ShaderManager()->BindFontProgram (aTextAspect->ShaderProgramRes (aCtx));
   }
 
   myOrientationMatrix = theWorkspace->View()->Camera()->OrientationMatrix();
@@ -899,7 +898,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     #if !defined(GL_ES_VERSION_2_0)
       if (theCtx->core11 != NULL)
       {
-        theCtx->core11->glColor3fv (theColorSubs.rgb);
+        theCtx->SetColor4fv (*(const OpenGl_Vec4* )theColorSubs.rgb);
         setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
 
         glBindTexture (GL_TEXTURE_2D, 0);

@@ -37,9 +37,6 @@ class OpenGl_View;
 //! List of shader programs.
 typedef NCollection_Sequence<Handle(OpenGl_ShaderProgram)> OpenGl_ShaderProgramList;
 
-//! Map to declare per-program states of OCCT materials.
-typedef NCollection_DataMap<Handle(OpenGl_ShaderProgram), OpenGl_MaterialState> OpenGl_MaterialStates;
-
 class OpenGl_ShaderManager;
 DEFINE_STANDARD_HANDLE(OpenGl_ShaderManager, Standard_Transient)
 
@@ -79,80 +76,78 @@ public:
   Standard_EXPORT Standard_Boolean IsEmpty() const;
 
   //! Bind program for filled primitives rendering
-  Standard_Boolean BindProgram (const OpenGl_AspectFace*            theAspect,
-                                const Handle(OpenGl_Texture)&       theTexture,
-                                const Standard_Boolean              theToLightOn,
-                                const Standard_Boolean              theHasVertColor,
-                                const Standard_Boolean              theEnableEnvMap,
-                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  Standard_Boolean BindFaceProgram (const Handle(OpenGl_Texture)&       theTexture,
+                                    const Standard_Boolean              theToLightOn,
+                                    const Standard_Boolean              theHasVertColor,
+                                    const Standard_Boolean              theEnableEnvMap,
+                                    const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
     if (!theCustomProgram.IsNull()
      || myContext->caps->ffpEnable)
     {
-      return bindProgramWithState (theCustomProgram, theAspect);
+      return bindProgramWithState (theCustomProgram);
     }
 
     const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor, theEnableEnvMap);
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
-    return bindProgramWithState (aProgram, theAspect);
+    return bindProgramWithState (aProgram);
   }
 
   //! Bind program for line rendering
-  Standard_Boolean BindProgram (const OpenGl_AspectLine*            theAspect,
-                                const Handle(OpenGl_Texture)&       theTexture,
-                                const Standard_Boolean              theToLightOn,
-                                const Standard_Boolean              theHasVertColor,
-                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  Standard_Boolean BindLineProgram (const Handle(OpenGl_Texture)&       theTexture,
+                                    const Standard_Boolean              theStipple,
+                                    const Standard_Boolean              theToLightOn,
+                                    const Standard_Boolean              theHasVertColor,
+                                    const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
     if (!theCustomProgram.IsNull()
      || myContext->caps->ffpEnable)
     {
-      return bindProgramWithState (theCustomProgram, theAspect);
+      return bindProgramWithState (theCustomProgram);
     }
 
     Standard_Integer aBits = getProgramBits (theTexture, theHasVertColor);
-    if (theAspect->Type() != Aspect_TOL_SOLID)
+    if (theStipple)
     {
       aBits |= OpenGl_PO_StippleLine;
     }
 
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
-    return bindProgramWithState (aProgram, theAspect);
+    return bindProgramWithState (aProgram);
   }
 
   //! Bind program for point rendering
-  Standard_Boolean BindProgram (const OpenGl_AspectMarker*          theAspect,
-                                const Handle(OpenGl_Texture)&       theTexture,
-                                const Standard_Boolean              theToLightOn,
-                                const Standard_Boolean              theHasVertColor,
-                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  Standard_Boolean BindMarkerProgram (const Handle(OpenGl_Texture)&       theTexture,
+                                      const Standard_Boolean              theToLightOn,
+                                      const Standard_Boolean              theHasVertColor,
+                                      const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
     if (!theCustomProgram.IsNull()
      || myContext->caps->ffpEnable)
     {
-      return bindProgramWithState (theCustomProgram, theAspect);
+      return bindProgramWithState (theCustomProgram);
     }
 
     const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor) | OpenGl_PO_Point;
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
-    return bindProgramWithState (aProgram, theAspect);
+    return bindProgramWithState (aProgram);
   }
 
   //! Bind program for rendering alpha-textured font.
-  Standard_Boolean BindProgram (const OpenGl_AspectText*            theAspect,
-                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  Standard_Boolean BindFontProgram (const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
     if (!theCustomProgram.IsNull()
      || myContext->caps->ffpEnable)
     {
-      return bindProgramWithState (theCustomProgram, theAspect);
+      return bindProgramWithState (theCustomProgram);
     }
 
     if (myFontProgram.IsNull())
     {
       prepareStdProgramFont();
     }
-    return bindProgramWithState (myFontProgram, theAspect);
+
+    return bindProgramWithState (myFontProgram);
   }
 
   //! Bind program for FBO blit operation.
@@ -237,21 +232,6 @@ public:
 
   //! Pushes current state of OCCT clipping planes to specified program.
   Standard_EXPORT void PushClippingState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
-
-public:
-
-  //! Resets state of OCCT material for all programs.
-  Standard_EXPORT void ResetMaterialStates();
-
-  //! Updates state of OCCT material for specified program.
-  Standard_EXPORT void UpdateMaterialStateTo (const Handle(OpenGl_ShaderProgram)& theProgram,
-                                              const OpenGl_Element*               theAspect);
-
-  //! Pushes current state of OCCT material to specified program.
-  Standard_EXPORT void PushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
-
-  //! Returns current state of OCCT material for specified program.
-  Standard_EXPORT const OpenGl_MaterialState* MaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
 
@@ -341,6 +321,12 @@ protected:
     return aProgram;
   }
 
+  //! Prepare standard GLSL program for accessing point sprite alpha.
+  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc();
+
+  //! Prepare standard GLSL program for computing point sprite shading.
+  Standard_EXPORT TCollection_AsciiString pointSpriteShadingSrc (const TCollection_AsciiString theBaseColorSrc, const Standard_Integer theBits);
+
   //! Prepare standard GLSL program for textured font.
   Standard_EXPORT Standard_Boolean prepareStdProgramFont();
 
@@ -373,8 +359,7 @@ protected:
   Standard_EXPORT TCollection_AsciiString stdComputeLighting (const Standard_Boolean theHasVertColor);
 
   //! Bind specified program to current context and apply state.
-  Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
-                                                         const OpenGl_Element*               theAspect);
+  Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram);
 
   //! Set pointer myLightPrograms to active lighting programs set from myMapOfLightPrograms
   Standard_EXPORT void switchLightPrograms();
@@ -399,7 +384,6 @@ protected:
 
 protected:
 
-  OpenGl_MaterialStates              myMaterialStates;     //!< Per-program state of OCCT material
   OpenGl_ProjectionState             myProjectionState;    //!< State of OCCT projection  transformation
   OpenGl_ModelWorldState             myModelWorldState;    //!< State of OCCT model-world transformation
   OpenGl_WorldViewState              myWorldViewState;     //!< State of OCCT world-view  transformation
@@ -413,7 +397,6 @@ private:
 public:
 
   DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderManager,Standard_Transient)
-
 };
 
 #endif // _OpenGl_ShaderManager_HeaderFile

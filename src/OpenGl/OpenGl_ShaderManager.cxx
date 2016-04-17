@@ -338,7 +338,6 @@ void OpenGl_ShaderManager::Unregister (TCollection_AsciiString&      theShareKey
       }
 
       myProgramList.Remove (anIt);
-      myMaterialStates.UnBind (theProgram);
       break;
     }
   }
@@ -810,230 +809,12 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
 }
 
 // =======================================================================
-// function : UpdateMaterialStateTo
-// purpose  : Updates state of OCCT material for specified program
-// =======================================================================
-void OpenGl_ShaderManager::UpdateMaterialStateTo (const Handle(OpenGl_ShaderProgram)& theProgram,
-                                                  const OpenGl_Element*               theAspect)
-{
-  if (myMaterialStates.IsBound (theProgram))
-  {
-    OpenGl_MaterialState& aState = myMaterialStates.ChangeFind (theProgram);
-    aState.Set (theAspect);
-    aState.Update();
-  }
-  else
-  {
-    myMaterialStates.Bind       (theProgram, OpenGl_MaterialState (theAspect));
-    myMaterialStates.ChangeFind (theProgram).Update();
-  }
-}
-
-// =======================================================================
-// function : ResetMaterialStates
-// purpose  : Resets state of OCCT material for all programs
-// =======================================================================
-void OpenGl_ShaderManager::ResetMaterialStates()
-{
-  for (OpenGl_ShaderProgramList::Iterator anIt (myProgramList); anIt.More(); anIt.Next())
-  {
-    anIt.Value()->UpdateState (OpenGl_MATERIALS_STATE, 0);
-  }
-}
-
-// =======================================================================
-// function : MaterialState
-// purpose  : Returns state of OCCT material for specified program
-// =======================================================================
-const OpenGl_MaterialState* OpenGl_ShaderManager::MaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const
-{
-  if (!myMaterialStates.IsBound (theProgram))
-    return NULL;
-
-  return &myMaterialStates.Find (theProgram);
-}
-
-namespace
-{
-
-static const OpenGl_Vec4 THE_COLOR_BLACK_VEC4 (0.0f, 0.0f, 0.0f, 0.0f);
-
-// =======================================================================
-// function : PushAspectFace
-// purpose  :
-// =======================================================================
-static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
-                            const Handle(OpenGl_ShaderProgram)& theProgram,
-                            const OpenGl_AspectFace*            theAspect)
-{
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
-                          theAspect->DoTextureMap());
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_ACTIVE_SAMPLER),
-                          0 /* GL_TEXTURE0 */);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
-                          theAspect->DistinguishingMode());
-
-  OpenGl_Material aParams;
-  for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
-  {
-    const GLint aLoc = theProgram->GetStateLocation (anIndex == 0
-                                                   ? OpenGl_OCCT_FRONT_MATERIAL
-                                                   : OpenGl_OCCT_BACK_MATERIAL);
-    if (aLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
-    {
-      continue;
-    }
-
-    const OPENGL_SURF_PROP& aProp = anIndex == 0 || theAspect->DistinguishingMode() != TOn
-                                  ? theAspect->IntFront()
-                                  : theAspect->IntBack();
-    aParams.Init (aProp);
-    aParams.Diffuse.a() = aProp.trans;
-    theProgram->SetUniform (theCtx, aLoc, OpenGl_Material::NbOfVec4(),
-                            aParams.Packed());
-  }
-}
-
-// =======================================================================
-// function : PushAspectLine
-// purpose  :
-// =======================================================================
-static void PushAspectLine (const Handle(OpenGl_Context)&       theCtx,
-                            const Handle(OpenGl_ShaderProgram)& theProgram,
-                            const OpenGl_AspectLine*            theAspect)
-{
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),   TOff);
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE), TOff);
-
-  const OpenGl_Vec4 aDiffuse (theAspect->Color().rgb[0],
-                              theAspect->Color().rgb[1],
-                              theAspect->Color().rgb[2],
-                              theAspect->Color().rgb[3]);
-  OpenGl_Vec4 aParams[5];
-  aParams[0] = THE_COLOR_BLACK_VEC4;
-  aParams[1] = THE_COLOR_BLACK_VEC4;
-  aParams[2] = aDiffuse;
-  aParams[3] = THE_COLOR_BLACK_VEC4;
-  aParams[4].x() = 0.0f; // shininess
-  aParams[4].y() = 0.0f; // transparency
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
-                          5, aParams);
-}
-
-// =======================================================================
-// function : PushAspectText
-// purpose  :
-// =======================================================================
-static void PushAspectText (const Handle(OpenGl_Context)&       theCtx,
-                            const Handle(OpenGl_ShaderProgram)& theProgram,
-                            const OpenGl_AspectText*            theAspect)
-{
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),   TOn);
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE), TOff);
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_ACTIVE_SAMPLER),   0 /* GL_TEXTURE0 */);
-
-  OpenGl_Vec4 aDiffuse (theAspect->Color().rgb[0],
-                        theAspect->Color().rgb[1],
-                        theAspect->Color().rgb[2],
-                        theAspect->Color().rgb[3]);
-  if (theAspect->DisplayType() == Aspect_TODT_DEKALE
-   || theAspect->DisplayType() == Aspect_TODT_SUBTITLE)
-  {
-    aDiffuse = OpenGl_Vec4 (theAspect->SubtitleColor().rgb[0],
-                            theAspect->SubtitleColor().rgb[1],
-                            theAspect->SubtitleColor().rgb[2],
-                            theAspect->SubtitleColor().rgb[3]);
-  }
-
-  OpenGl_Vec4 aParams[5];
-  aParams[0] = THE_COLOR_BLACK_VEC4;
-  aParams[1] = THE_COLOR_BLACK_VEC4;
-  aParams[2] = aDiffuse;
-  aParams[3] = THE_COLOR_BLACK_VEC4;
-  aParams[4].x() = 0.0f; // shininess
-  aParams[4].y() = 0.0f; // transparency
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
-                          5, aParams);
-}
-
-// =======================================================================
-// function : PushAspectMarker
-// purpose  :
-// =======================================================================
-static void PushAspectMarker (const Handle(OpenGl_Context)&       theCtx,
-                              const Handle(OpenGl_ShaderProgram)& theProgram,
-                              const OpenGl_AspectMarker*          theAspect)
-{
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),   TOn);
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE), TOff);
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_ACTIVE_SAMPLER),   0 /* GL_TEXTURE0 */);
-
-  const OpenGl_Vec4 aDiffuse (theAspect->Color().rgb[0],
-                              theAspect->Color().rgb[1],
-                              theAspect->Color().rgb[2],
-                              theAspect->Color().rgb[3]);
-  OpenGl_Vec4 aParams[5];
-  aParams[0] = THE_COLOR_BLACK_VEC4;
-  aParams[1] = THE_COLOR_BLACK_VEC4;
-  aParams[2] = aDiffuse;
-  aParams[3] = THE_COLOR_BLACK_VEC4;
-  aParams[4].x() = 0.0f; // shininess
-  aParams[4].y() = 0.0f; // transparency
-  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
-                          5, aParams);
-}
-
-} // nameless namespace
-
-// =======================================================================
-// function : PushMaterialState
-// purpose  : Pushes current state of OCCT material to the program
-// =======================================================================
-void OpenGl_ShaderManager::PushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const
-{
-  if (!myMaterialStates.IsBound (theProgram))
-  {
-    return;
-  }
-
-  const OpenGl_MaterialState& aState = myMaterialStates.Find (theProgram);
-  if (aState.Index() == theProgram->ActiveState (OpenGl_MATERIALS_STATE))
-  {
-    return;
-  }
-
-  const OpenGl_Element* anAspect = aState.Aspect();
-  if (typeid (*anAspect) == typeid (OpenGl_AspectFace))
-  {
-    PushAspectFace   (myContext, theProgram, dynamic_cast<const OpenGl_AspectFace*> (anAspect));
-  }
-  else if (typeid (*anAspect) == typeid (OpenGl_AspectLine))
-  {
-    PushAspectLine   (myContext, theProgram, dynamic_cast<const OpenGl_AspectLine*> (anAspect));
-  }
-  else if (typeid (*anAspect) == typeid (OpenGl_AspectText))
-  {
-    PushAspectText   (myContext, theProgram, dynamic_cast<const OpenGl_AspectText*> (anAspect));
-  }
-  else if (typeid (*anAspect) == typeid (OpenGl_AspectMarker))
-  {
-    PushAspectMarker (myContext, theProgram, dynamic_cast<const OpenGl_AspectMarker*> (anAspect));
-  }
-
-  theProgram->UpdateState (OpenGl_MATERIALS_STATE, aState.Index());
-}
-
-// =======================================================================
 // function : PushState
 // purpose  : Pushes state of OCCT graphics parameters to the program
 // =======================================================================
 void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
   PushClippingState    (theProgram);
-  PushMaterialState    (theProgram);
   PushWorldViewState   (theProgram);
   PushModelWorldState  (theProgram);
   PushProjectionState  (theProgram);
@@ -1160,6 +941,37 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
 }
 
 // =======================================================================
+// function : pointSpriteAlphaSrc
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_ShaderManager::pointSpriteAlphaSrc()
+{
+  TCollection_AsciiString aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, gl_PointCoord).a; }";
+#if !defined(GL_ES_VERSION_2_0)
+  if (myContext->core11 == NULL)
+  {
+    aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, gl_PointCoord).r; }";
+  }
+#endif
+
+  return aSrcGetAlpha;
+}
+
+namespace
+{
+
+  // =======================================================================
+  // function : textureUsed
+  // purpose  :
+  // =======================================================================
+  static bool textureUsed (const Standard_Integer theBits)
+  {
+    return (theBits & OpenGl_PO_TextureA) != 0 || (theBits & OpenGl_PO_TextureRGB) != 0;
+  }
+
+}
+
+// =======================================================================
 // function : prepareStdProgramFlat
 // purpose  :
 // =======================================================================
@@ -1167,7 +979,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
                                                               const Standard_Integer        theBits)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcFrag, aSrcFragExtraOut, aSrcFragExtraMain;
+  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcVertExtraFunc, aSrcGetAlpha, aSrcFrag, aSrcFragExtraOut, aSrcFragExtraMain;
   TCollection_AsciiString aSrcFragGetColor     = EOL"vec4 getColor(void) { return occColor; }";
   TCollection_AsciiString aSrcFragMainGetColor = EOL"  occFragColor = getColor();";
   if ((theBits & OpenGl_PO_Point) != 0)
@@ -1175,50 +987,31 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
   #if defined(GL_ES_VERSION_2_0)
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
-    if ((theBits & OpenGl_PO_TextureA) != 0)
+
+    if (textureUsed (theBits))
     {
-      TCollection_AsciiString
-        aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, gl_PointCoord).a; }";
-    #if !defined(GL_ES_VERSION_2_0)
-      if (myContext->core11 == NULL)
-      {
-        aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, gl_PointCoord).r; }";
-      }
-      else if (myContext->IsGlGreaterEqual (2, 1))
-      {
-        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
-      }
-    #endif
+      aSrcGetAlpha = pointSpriteAlphaSrc();
 
-      aSrcFragGetColor = aSrcGetAlpha
-      + EOL"vec4  getColor(void)"
-        EOL"{"
-        EOL"  vec4 aColor = occColor;"
-        EOL"  aColor.a *= getAlpha();"
-        EOL"  return aColor;"
-        EOL"}";
-
-      aSrcFragMainGetColor =
-        EOL"  vec4 aColor = getColor();"
-        EOL"  if (aColor.a <= 0.1) discard;"
-        EOL"  occFragColor = aColor;";
+      #if !defined(GL_ES_VERSION_2_0)
+        if (myContext->core11 != NULL
+         && myContext->IsGlGreaterEqual (2, 1))
+        {
+          aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+        }
+      #endif
     }
-    else if ((theBits & OpenGl_PO_TextureRGB) != 0)
+
+    if ((theBits & OpenGl_PO_TextureRGB) != 0)
     {
       aSrcFragGetColor =
         EOL"vec4 getColor(void) { return occTexture2D(occActiveSampler, gl_PointCoord); }";
-      aSrcFragMainGetColor =
-        EOL"  vec4 aColor = getColor();"
-        EOL"  if (aColor.a <= 0.1) discard;"
-        EOL"  occFragColor = aColor;";
-    #if !defined(GL_ES_VERSION_2_0)
-      if (myContext->core11 != NULL
-       && myContext->IsGlGreaterEqual (2, 1))
-      {
-        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
-      }
-    #endif
     }
+
+    aSrcFragMainGetColor =
+      EOL"  vec4 aColor = getColor();"
+      EOL"  aColor.a = getAlpha();"
+      EOL"  if (aColor.a <= 0.1) discard;"
+      EOL"  occFragColor = aColor;";
   }
   else
   {
@@ -1334,6 +1127,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
   aSrcFrag =
       aSrcFragExtraOut
     + aSrcFragGetColor
+    + aSrcGetAlpha
     + EOL"void main()"
       EOL"{"
     + aSrcFragExtraMain
@@ -1356,6 +1150,40 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     return Standard_False;
   }
   return Standard_True;
+}
+
+// =======================================================================
+// function : pointSpriteShadingSrc
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_ShaderManager::pointSpriteShadingSrc (const TCollection_AsciiString theBaseColorSrc,
+                                                                     const Standard_Integer theBits)
+{
+  TCollection_AsciiString aSrcFragGetColor;
+  if ((theBits & OpenGl_PO_TextureA) != 0)
+  {
+    aSrcFragGetColor = pointSpriteAlphaSrc() +
+      EOL"vec4 getColor(void)"
+      EOL"{"
+      EOL"  vec4 aColor = " + theBaseColorSrc + ";"
+      EOL"  aColor.a = getAlpha();"
+      EOL"  if (aColor.a <= 0.1) discard;"
+      EOL"  return aColor;"
+      EOL"}";
+  }
+  else if ((theBits & OpenGl_PO_TextureRGB) != 0)
+  {
+    aSrcFragGetColor = TCollection_AsciiString() +
+      EOL"vec4 getColor(void)"
+      EOL"{"
+      EOL"  vec4 aColor = " + theBaseColorSrc + ";"
+      EOL"  aColor = occTexture2D(occActiveSampler, gl_PointCoord) * aColor;"
+      EOL"  if (aColor.a <= 0.1) discard;"
+      EOL"  return aColor;"
+      EOL"}";
+  }
+
+  return aSrcFragGetColor;
 }
 
 // =======================================================================
@@ -1462,28 +1290,18 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   #if defined(GL_ES_VERSION_2_0)
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
-  }
-  if ((theBits & OpenGl_PO_VertColor) != 0)
-  {
-    aSrcVertColor = EOL"vec4 getVertColor(void) { return occVertColor; }";
-  }
-  if ((theBits & OpenGl_PO_Point) != 0)
-  {
-    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+
+    if (textureUsed (theBits))
     {
-      aSrcFragGetColor =
-        EOL"vec4 getColor(void)"
-        EOL"{"
-        EOL"  vec4 aColor = gl_FrontFacing ? FrontColor : BackColor;"
-        EOL"  return occTexture2D(occActiveSampler, gl_PointCoord) * aColor;"
-        EOL"}";
-    #if !defined(GL_ES_VERSION_2_0)
-      if (myContext->core11 != NULL
-       && myContext->IsGlGreaterEqual (2, 1))
-      {
-        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
-      }
-    #endif
+      #if !defined(GL_ES_VERSION_2_0)
+        if (myContext->core11 != NULL
+         && myContext->IsGlGreaterEqual (2, 1))
+        {
+          aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+        }
+      #endif
+
+      aSrcFragGetColor = pointSpriteShadingSrc ("gl_FrontFacing ? FrontColor : BackColor", theBits);
     }
   }
   else
@@ -1502,6 +1320,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
         EOL"}";
     }
   }
+
+  if ((theBits & OpenGl_PO_VertColor) != 0)
+  {
+    aSrcVertColor = EOL"vec4 getVertColor(void) { return occVertColor; }";
+  }
+
   if ((theBits & OpenGl_PO_ClipPlanes) != 0)
   {
     aSrcVertExtraOut +=
@@ -1584,32 +1408,18 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   #if defined(GL_ES_VERSION_2_0)
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
-  }
-  if ((theBits & OpenGl_PO_VertColor) != 0)
-  {
-    aSrcVertExtraOut    += EOL"THE_SHADER_OUT vec4 VertColor;";
-    aSrcVertExtraMain   += EOL"  VertColor = occVertColor;";
-    aSrcFragGetVertColor = EOL"THE_SHADER_IN  vec4 VertColor;"
-                           EOL"vec4 getVertColor(void) { return VertColor; }";
-  }
 
-  if ((theBits & OpenGl_PO_Point) != 0)
-  {
-    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    if (textureUsed (theBits))
     {
-      aSrcFragGetColor =
-        EOL"vec4 getColor(void)"
-        EOL"{"
-        EOL"  vec4 aColor = " thePhongCompLight ";"
-        EOL"  return occTexture2D(occActiveSampler, gl_PointCoord) * aColor;"
-        EOL"}";
-    #if !defined(GL_ES_VERSION_2_0)
-      if (myContext->core11 != NULL
-       && myContext->IsGlGreaterEqual (2, 1))
-      {
-        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
-      }
-    #endif
+      #if !defined(GL_ES_VERSION_2_0)
+        if (myContext->core11 != NULL
+         && myContext->IsGlGreaterEqual (2, 1))
+        {
+          aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+        }
+      #endif
+
+      aSrcFragGetColor = pointSpriteShadingSrc (thePhongCompLight, theBits);
     }
   }
   else
@@ -1627,6 +1437,14 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
         EOL"  return occTexture2D(occActiveSampler, TexCoord.st / TexCoord.w) * aColor;"
         EOL"}";
     }
+  }
+
+  if ((theBits & OpenGl_PO_VertColor) != 0)
+  {
+    aSrcVertExtraOut    += EOL"THE_SHADER_OUT vec4 VertColor;";
+    aSrcVertExtraMain   += EOL"  VertColor = occVertColor;";
+    aSrcFragGetVertColor = EOL"THE_SHADER_IN  vec4 VertColor;"
+                           EOL"vec4 getVertColor(void) { return VertColor; }";
   }
 
   if ((theBits & OpenGl_PO_ClipPlanes) != 0)
@@ -1914,20 +1732,13 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
 // function : bindProgramWithState
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_ShaderManager::bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
-                                                             const OpenGl_Element*               theAspect)
+Standard_Boolean OpenGl_ShaderManager::bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram)
 {
   if (!myContext->BindProgram (theProgram))
   {
     return Standard_False;
   }
   theProgram->ApplyVariables (myContext);
-
-  const OpenGl_MaterialState* aMaterialState = MaterialState (theProgram);
-  if (aMaterialState == NULL || aMaterialState->Aspect() != theAspect)
-  {
-    UpdateMaterialStateTo (theProgram, theAspect);
-  }
 
   PushState (theProgram);
   return Standard_True;

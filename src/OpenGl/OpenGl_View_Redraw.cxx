@@ -952,7 +952,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
   if (!aManager->IsEmpty())
   {
-    aManager->ResetMaterialStates();
     aManager->RevertClippingState();
 
     // We need to disable (unbind) all shaders programs to ensure

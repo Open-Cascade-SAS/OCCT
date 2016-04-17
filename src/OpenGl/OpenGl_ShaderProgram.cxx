@@ -341,6 +341,19 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     }
   }
 
+  // set uniform defaults
+  const GLint aLocSampler   = GetStateLocation (OpenGl_OCCT_ACTIVE_SAMPLER);
+  const GLint aLocTexEnable = GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE);
+  if (aLocSampler   != INVALID_LOCATION
+   || aLocTexEnable != INVALID_LOCATION)
+  {
+    const Handle(OpenGl_ShaderProgram)& anOldProgram = theCtx->ActiveProgram();
+    theCtx->core20fwd->glUseProgram (myProgramID);
+    SetUniform (theCtx, aLocSampler,   0); // GL_TEXTURE0
+    SetUniform (theCtx, aLocTexEnable, 0); // Off
+    theCtx->core20fwd->glUseProgram (!anOldProgram.IsNull() ? anOldProgram->ProgramId() : OpenGl_ShaderProgram::NO_PROGRAM);
+  }
+
   return Standard_True;
 }
 

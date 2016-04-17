@@ -29,6 +29,8 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_Workspace.hxx>
+#include <OpenGl_AspectFace.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 
 #include <Message_Messenger.hxx>
@@ -2506,6 +2508,43 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
   Handle(OpenGl_FrameBuffer) aFbo = myDefaultFbo;
   myDefaultFbo = theFbo;
   return aFbo;
+}
+
+// =======================================================================
+// function : SetShadingMaterial
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect)
+{
+  if (!myActiveProgram.IsNull())
+  {
+    myActiveProgram->SetUniform (this,
+                                 myActiveProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
+                                 theAspect->DoTextureMap());
+    myActiveProgram->SetUniform (this,
+                                 myActiveProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
+                                 theAspect->DistinguishingMode());
+
+    OpenGl_Material aParams;
+    for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
+    {
+      const GLint aLoc = myActiveProgram->GetStateLocation (anIndex == 0
+                                                          ? OpenGl_OCCT_FRONT_MATERIAL
+                                                          : OpenGl_OCCT_BACK_MATERIAL);
+      if (aLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
+      {
+        continue;
+      }
+
+      const OPENGL_SURF_PROP& aProp = anIndex == 0 || theAspect->DistinguishingMode() != TOn
+                                    ? theAspect->IntFront()
+                                    : theAspect->IntBack();
+      aParams.Init (aProp);
+      aParams.Diffuse.a() = aProp.trans;
+      myActiveProgram->SetUniform (this, aLoc, OpenGl_Material::NbOfVec4(),
+                                   aParams.Packed());
+    }
+  }
 }
 
 // =======================================================================
