@@ -220,7 +220,7 @@ endif()
 # freetype library
 if (BUILD_SHARED_LIBS)
   if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
+    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib .a)
 
     set (FREETYPE_PATH_SUFFIXES lib)
     if (ANDROID)

@@ -44,6 +44,12 @@ if (WIN32)
     set (CSF_FREETYPE)
   endif()
 
+  if (USE_GL2PS)
+    set (CSF_GL2PS "gl2ps.lib")
+  else()
+    set (CSF_GL2PS)
+  endif()
+
   if (USE_FREEIMAGE)
     set (CSF_FreeImagePlus "freeimage.lib freeimageplus.lib")
   else()

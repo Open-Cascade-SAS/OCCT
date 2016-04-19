@@ -129,7 +129,7 @@ macro (TBB_PRODUCT_SEARCH PRODUCT_NAME)
   # tbb/tbbmalloc library
   if (NOT 3RDPARTY_${PRODUCT_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
     
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
+    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib .a)
     set (PRODUCT_PATH_SUFFIXES lib ${lower_PRODUCT_NAME})
 
     # set 3RDPARTY_${PRODUCT_NAME}_LIBRARY as notfound, otherwise find_library can't assign a new value to 3RDPARTY_${PRODUCT_NAME}_LIBRARY
