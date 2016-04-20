@@ -1,4 +1,5 @@
 Select3D_BndBox3d.hxx
+Select3D_BVHIndexBuffer.hxx
 Select3D_BVHPrimitiveContent.cxx
 Select3D_BVHPrimitiveContent.hxx
 Select3D_EntitySequence.hxx
@@ -25,6 +26,8 @@ Select3D_SensitivePoint.hxx
 Select3D_SensitivePoly.cxx
 Select3D_SensitivePoly.hxx
 Select3D_SensitivePoly.lxx
+Select3D_SensitivePrimitiveArray.cxx
+Select3D_SensitivePrimitiveArray.hxx
 Select3D_SensitiveSegment.cxx
 Select3D_SensitiveSegment.hxx
 Select3D_SensitiveSegment.lxx

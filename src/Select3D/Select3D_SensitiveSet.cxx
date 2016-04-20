@@ -127,7 +127,7 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
         }
         else // overlap test
         {
-          Standard_Real aCurrentDepth = 0.0;
+          Standard_Real aCurrentDepth = aMinDepth;
 
           if (!overlapsElement (theMgr, anElemIdx, aCurrentDepth))
           {

@@ -27,6 +27,7 @@
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_Presentations.hxx>
 #include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitivePrimitiveArray.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <StdPrs_BndBox.hxx>
@@ -461,15 +462,41 @@ void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
 //purpose  :
 //=======================================================================
 void AIS_PointCloud::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                       const Standard_Integer             /*theMode*/)
+                                       const Standard_Integer             theMode)
 {
+  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this);
+  switch (theMode)
+  {
+    case SM_Points:
+    {
+      const Handle(Graphic3d_ArrayOfPoints) aPoints = GetPoints();
+      if (!aPoints.IsNull()
+       && !aPoints->Attributes().IsNull())
+      {
+        Handle(Select3D_SensitivePrimitiveArray) aSensitive = new Select3D_SensitivePrimitiveArray (anOwner);
+        aSensitive->SetSensitivityFactor (8);
+        aSensitive->InitPoints (aPoints->Attributes(), aPoints->Indices(), TopLoc_Location());
+        aSensitive->BVH();
+        theSelection->Add (aSensitive);
+        return;
+      }
+      break;
+    }
+    case SM_BndBox:
+    {
+      break;
+    }
+    default:
+    {
+      return;
+    }
+  }
+
   Bnd_Box aBndBox = GetBoundingBox();
   if (aBndBox.IsVoid())
   {
     return;
   }
-
-  Handle(SelectMgr_EntityOwner) anOwner  = new SelectMgr_EntityOwner (this);
   Handle(Select3D_SensitiveBox) aSensBox = new Select3D_SensitiveBox (anOwner, aBndBox);
   theSelection->Add (aSensBox);
 }

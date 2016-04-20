@@ -224,7 +224,7 @@ Standard_EXPORT virtual ~PrsMgr_PresentableObject();
   //! updates. The latter are managed by aPresentationManager.
   //! aPresentableObject has the display mode aMode;
   //! this has the default value of 0, that is, the wireframe display mode.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0);
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode);
   
   //! Calculates the 3D view aPresentation and its
   //! updates. The latter are managed by
@@ -262,7 +262,7 @@ Standard_EXPORT virtual ~PrsMgr_PresentableObject();
   Standard_EXPORT void Update (const Standard_Integer aMode, const Standard_Boolean ClearOther);
   
   //! High-level interface for controlling polygon offsets
-  Standard_EXPORT virtual void Fill (const Handle(PrsMgr_PresentationManager)& aPresentationManager, const Handle(PrsMgr_Presentation)& aPresentation, const Standard_Integer aMode = 0);
+  Standard_EXPORT virtual void Fill (const Handle(PrsMgr_PresentationManager)& aPresentationManager, const Handle(PrsMgr_Presentation)& aPresentation, const Standard_Integer aMode);
   
   //! Sets myCombinedParentTransform to theTransformation. Thus object receives transformation
   //! from parent node and able to derive its own.

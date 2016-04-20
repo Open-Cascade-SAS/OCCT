@@ -63,6 +63,7 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Select3D_SensitiveWire.hxx>
+#include <Select3D_SensitivePrimitiveArray.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
@@ -4506,6 +4507,14 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
         Handle(Select3D_SensitiveEntity) aSen = aWire->GetLastDetected();
         theDI << "                       Detected Child: "
               << aSen->DynamicType()->Name()
+              << "\n";
+      }
+
+      Handle(Select3D_SensitivePrimitiveArray) aPrimArr = Handle(Select3D_SensitivePrimitiveArray)::DownCast (anEntity);
+      if (!aPrimArr.IsNull())
+      {
+        theDI << "                       Detected Element: "
+              << aPrimArr->LastDetectedElement()
               << "\n";
       }
     }

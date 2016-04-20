@@ -53,6 +53,13 @@ public:
     DM_BndBox = 2  //!< display as bounding box,  default for highlighting
   };
 
+  //! Selection modes supported by this Point Cloud object
+  enum SelectionMode
+  {
+    SM_Points = 0, //!< detected by points
+    SM_BndBox = 2  //!< detected by bounding box
+  };
+
 public:
 
   //! Constructor.

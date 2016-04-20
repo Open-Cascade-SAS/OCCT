@@ -41,7 +41,8 @@ template<class T, int N>
 BVH_Box<T, N> BVH_Set<T, N>::Box() const
 {
   BVH_Box<T, N> aBox;
-  for (Standard_Integer anIndex = 0; anIndex < Size(); ++anIndex)
+  const Standard_Integer aSize = Size();
+  for (Standard_Integer anIndex = 0; anIndex < aSize; ++anIndex)
   {
     aBox.Combine (Box (anIndex));
   }

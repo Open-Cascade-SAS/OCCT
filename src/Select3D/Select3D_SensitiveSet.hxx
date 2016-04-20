@@ -95,7 +95,8 @@ public:
 
 protected:
 
-  //! Checks whether the entity with index theIdx overlaps the current selecting volume
+  //! Checks whether the entity with index theIdx overlaps the current selecting volume.
+  //! @param theMatchDepth set to the current minimum depth by Select3D_SensitiveSet; should be set to the new depth when overlapping is detected
   virtual Standard_Boolean overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                             Standard_Integer theElemIdx,
                                             Standard_Real& theMatchDepth) = 0;
@@ -108,7 +109,7 @@ protected:
   virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) = 0;
 
 protected:
-  Standard_Integer myDetectedIdx;     //!< Index of detected primitive in BVH sorted primitive array, for debug purposes
+  Standard_Integer myDetectedIdx;     //!< Index of detected primitive in BVH sorted primitive array
 
 private:
 

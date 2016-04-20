@@ -384,8 +384,8 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
                                      const BVH_Box<T, N>& theBox)
 {
   Standard_STATIC_ASSERT (N == 3 || N == 4);
-
-  if (theBVH == NULL || theSet->Size() == 0)
+  const Standard_Integer aSetSize = theSet->Size();
+  if (theBVH == NULL || aSetSize == 0)
   {
     return;
   }
@@ -405,10 +405,10 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
   const T aReverseSizeY = static_cast<T> (aDimensionY) / Max (aMinSize, aSceneMax.y() - aSceneMin.y());
   const T aReverseSizeZ = static_cast<T> (aDimensionZ) / Max (aMinSize, aSceneMax.z() - aSceneMin.z());
 
-  std::vector<BVH_EncodedLink> anEncodedLinks (theSet->Size(), BVH_EncodedLink());
+  std::vector<BVH_EncodedLink> anEncodedLinks (aSetSize, BVH_EncodedLink());
 
   // Step 1 -- Assign Morton code to each primitive
-  for (Standard_Integer aPrimIdx = 0; aPrimIdx < theSet->Size(); ++aPrimIdx)
+  for (Standard_Integer aPrimIdx = 0; aPrimIdx < aSetSize; ++aPrimIdx)
   {
     const BVH_VecNt aCenter = theSet->Box (aPrimIdx).Center();
 
@@ -456,9 +456,8 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
   // Step 3 -- Emitting BVH hierarchy from sorted Morton codes
   EmitHierachy (theBVH, 29, 0, anEncodedLinks.begin(), anEncodedLinks.end());
 
-  NCollection_Array1<Standard_Integer> aLinkMap (0, theSet->Size() - 1);
-
-  for (Standard_Integer aLinkIdx = 0; aLinkIdx < theSet->Size(); ++aLinkIdx)
+  NCollection_Array1<Standard_Integer> aLinkMap (0, aSetSize - 1);
+  for (Standard_Integer aLinkIdx = 0; aLinkIdx < aSetSize; ++aLinkIdx)
   {
     aLinkMap (anEncodedLinks[aLinkIdx].second) = aLinkIdx;
   }
@@ -466,7 +465,7 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
   // Step 4 -- Rearranging primitive list according to Morton codes (in place)
   Standard_Integer aPrimIdx = 0;
 
-  while (aPrimIdx < theSet->Size())
+  while (aPrimIdx < aSetSize)
   {
     const Standard_Integer aSortIdx = aLinkMap (aPrimIdx);
 
