@@ -9,6 +9,10 @@ endif()
 
 set (PRECOMPILED_DEFS)
 
+if (NOT BUILD_SHARED_LIBS)
+  list (APPEND PRECOMPILED_DEFS "-DOCCT_NO_PLUGINS")
+endif()
+
 # Get all used packages from toolkit
 foreach (OCCT_PACKAGE ${USED_PACKAGES})
   

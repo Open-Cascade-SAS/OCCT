@@ -799,7 +799,7 @@ Foundation classes provide in the package *Plugin* a  method named *Load()*, whi
 That method reads the information regarding available  plug-ins and their locations from the resource file *Plugin* found by environment  variable *CSF_PluginDefaults*:
 
 ~~~~~ 
-$CSF_PluginDefaults/.Plugin 
+$CSF_PluginDefaults/Plugin 
 ~~~~~
 
 The *Load* method looks for the library name in the resource file or registry  through its GUID, for example, on UNIX:
@@ -807,132 +807,85 @@ The *Load* method looks for the library name in the resource file or registry  t
 ! METADATADRIVER whose value must be OS or DM.
 
 ! FW
-a148e300-5740-11d1-a904-080036aaa103.Location:
- 
-libFWOSPlugin.so
-a148e300-5740-11d1-a904-080036aaa103.CCL:
-/adv_44/CAS/BAG/FW-K4C/inc/FWOS.ccl
-
-! FWDM
-a148e301-5740-11d1-a904-080036aaa103.Location:
-libFWDMPlugin.so
-a148e301-5740-11d1-a904-080036aaa103.CCL:
-/adv_44/CAS/BAG/DESIGNMANAGER-K4C/inc/DMAccess.ccl|/
-adv_44/CAS/BAG/DATABASE-K4C/inc/FWDMCommands.ccl
-a148e301-5740-11d1-a904-080036aaa103.Message:  /adv_44/CAS/
-BAG/DESIGNMANAGER-K4C/etc/locale/DMAccess
-
-! Copy-Paste
-5ff7dc00-8840-11d1-b5c2-00a0c9064368.Location:
-libCDMShapeDriversPlugin.so
-5ff7dc01-8840-11d1-b5c2-00a0c9064368.Location:
-libCDMShapeDriversPlugin.so
-5ff7dc02-8840-11d1-b5c2-00a0c9064368.Location:
-libCDMShapeDriversPlugin.so
-5ff7dc03-8840-11d1-b5c2-00a0c9064368.Location:
-libCDMShapeDriversPlugin.so
-5ff7dc04-8840-11d1-b5c2-00a0c9064368.Location:
-libCDMShapeDriversPlugin.so
-
-! Plugs 2d plotters:
-d0d722a2-b4c9-11d1-b561-0000f87a4710.location: FWOSPlugin
-d0d722a2-b4c9-11d1-b561-0000f87a4710.CCL: /adv_44/CAS/BAG/
-VIEWERS-K4C/inc/CCLPlotters.ccl
-d0d722a2-b4c9-11d1-b561-0000f87a4710.Message: /adv_44/CAS/
-BAG/VIEWERS-K4C/etc/locale/CCLPlotters
-
-!SHAPES
-e3708f72-b1a8-11d0-91c2-080036424703.Location:
-libBRepExchangerPlugin.so
-e3708f72-b1a8-11d0-91c2-080036424703.CCL: /adv_44/CAS/BAG/
-FW-K4C/inc/BRep.ccl
+a148e300-5740-11d1-a904-080036aaa103.Location: libFWOSPlugin.so
 ~~~~~
 
-
-Then the *Load* method loads the library according to the rules of the operating system  of the host machine (for example, by using environment variables such as  *LD_LIBRARY_PATH* with Unix and *PATH* with Windows). After that it invokes the *Factory*  method to return the object which supports the required service.
+Then the *Load* method loads the library according to the rules of the operating system  of the host machine (for example, by using environment variables such as  *LD_LIBRARY_PATH* with Unix and *PATH* with Windows). After that it invokes the *PLUGINFACTORY*  method to return the object which supports the required service.
 The client may then call the functions supported by this  object. 
 
 #### C++ Client Plug-In  Implementation
 
-To invoke one of the services provided by the plug-in, you  may call the *Plugin::ServiceFactory* global function with the *Standard_GUID* of the requested service as follows: 
+To invoke one of the services provided by the plug-in, you  may call the *Plugin::Load()* global function with the *Standard_GUID* of the requested service as follows:
 
-~~~~~
-Handle(FADriver_PartStorer)::DownCast 
-(PlugIn::ServiceFactory 
-(PlugIn_ServiceId(yourStandardGUID))) 
+~~~~~{.cpp}
+Handle(FADriver_PartStorer)::DownCast(PlugIn::Load (yourStandardGUID));
 ~~~~~
 
-Let us take *FAFactory.cxx* as an example:
+Let us take *FAFactory.hxx* and *FAFactory.cxx* as an example:
 
+~~~~~{.cpp}
+#include <Standard_Macro.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Transient.hxx>
+
+class FAFactory
+{
+public:
+  Standard_EXPORT static Handle(Standard_Transient) Factory (const Standard_GUID& theGUID);
+};
 ~~~~~
-#include <FAFactory.ixx>
+
+~~~~~{.cpp}
+#include <FAFactory.hxx>
 
 #include <FADriver_PartRetriever.hxx>
 #include <FADriver_PartStorer.hxx>
 #include <FirstAppSchema.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Failure.hxx>
 #include <FACDM_Application.hxx>
 #include <Plugin_Macro.hxx>
 
-PLUGIN(FAFactory)
-
-static Standard_GUID 
-       StorageDriver(“45b3c690-22f3-11d2-b09e-0000f8791463”);
-static Standard_GUID 
-       RetrievalDriver(“45b3c69c-22f3-11d2-b09e-0000f8791463”);
-static Standard_GUID 
-       Schema(“45b3c6a2-22f3-11d2-b09e-0000f8791463”);
+static Standard_GUID StorageDriver  ("45b3c690-22f3-11d2-b09e-0000f8791463");
+static Standard_GUID RetrievalDriver("45b3c69c-22f3-11d2-b09e-0000f8791463");
+static Standard_GUID Schema         ("45b3c6a2-22f3-11d2-b09e-0000f8791463");
 
 //======================================================
 // function : Factory
 // purpose :
 //======================================================
  
-Handle(Standard_Transient)  FAFactory::Factory(const Standard_GUID& aGUID) 
+Handle(Standard_Transient) FAFactory::Factory (const Standard_GUID& theGUID)
 {
-  if(aGUID == StorageDriver) {
-    cout  “FAFactory : Create store driver”   endl;
-    static  Handle(FADriver_PartStorer) sd = new FADriver_PartStorer();
+  if (theGUID == StorageDriver)
+  {
+    std::cout << "FAFactory : Create store driver\n";
+    static Handle(FADriver_PartStorer) sd = new FADriver_PartStorer();
     return sd;
   }
 
-  if(aGUID == RetrievalDriver) {
-    cout  “FAFactory : Create retrieve driver”   endl;
-    static Handle(FADriver_PartRetriever)
-    rd = new FADriver_PartRetriever();
+  if (theGUID == RetrievalDriver)
+  {
+    std::cout << "FAFactory : Create retrieve driver\n";
+    static Handle(FADriver_PartRetriever) rd = new FADriver_PartRetriever();
     return rd;
   }
 
-  if(aGUID == Schema) {
-    cout  “FAFactory : Create schema”   endl;
-    static Handle(FirstAppSchema) s = new  FirstAppSchema();
+  if (theGUID == Schema)
+  {
+    std::cout << "FAFactory : Create schema\n";
+    static Handle(FirstAppSchema) s = new FirstAppSchema();
     return s;
   }
 
-  Standard_Failure::Raise(“FAFactory: unknown GUID”);
-  Handle(Standard_Transient) t;
-  return t;
+  Standard_Failure::Raise ("FAFactory: unknown GUID");
+  return Handle(Standard_Transient)();
 }
+
+// export plugin function "PLUGINFACTORY"
+PLUGIN(FAFactory)
 ~~~~~
 
-#### Without using the Software  Factory
-
-To create a factory without using the Software Factory,  define a *dll* project under Windows or a library under UNIX by using a  source file as specified above. The *FAFactory* class is implemented as follows: 
-
-~~~~~
-#include <Handle_Standard_Transient.hxx>
-#include <Standard_Macro.hxx>
-class Standard_Transient;
-class Standard_GUID;
-class FAFactory {
-public:
-  Standard_EXPORT  static Handle_Standard_Transient
-                  Factory(const Standard_GUID& aGUID)  ;
-  . . .
-};
-~~~~~
-
+Application might also instantiate a factory by linking to the library and calling FAFactory::Factory() directly.
 
 @section occt_fcug_3 Collections,  Strings, Quantities and Unit Conversion
 

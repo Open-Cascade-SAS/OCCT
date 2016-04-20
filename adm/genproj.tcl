@@ -2551,6 +2551,9 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap theIsStatic thePlatform {t
   set anExecPrefix "\t\t\t\tEXECUTABLE_PREFIX = lib;"
   set aWrapperExtension "\t\t\t\tWRAPPER_EXTENSION = dylib;"
   set aTKDefines [list "OCC_CONVERT_SIGNALS"]
+  if { $theIsStatic == 1 } {
+    lappend aTKDefines "OCCT_NO_PLUGINS"
+  }
 
   if { "$theTargetType" == "executable" } {
     set aPBXBuildPhase "CopyFiles"
