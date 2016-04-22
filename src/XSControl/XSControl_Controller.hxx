@@ -26,11 +26,8 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <MMgt_TShared.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
+#include <NCollection_Vector.hxx>
 #include <IFSelect_ReturnStatus.hxx>
-class MoniTool_Profile;
 class IFSelect_WorkLibrary;
 class Interface_Protocol;
 class IFSelect_Signature;
@@ -59,10 +56,6 @@ DEFINE_STANDARD_HANDLE(XSControl_Controller, MMgt_TShared)
 //! IGES-5.1) and an application data model (CasCade Shapes for
 //! instance).
 //!
-//! A Controller brings a Profile, this allows to have several
-//! variants on the same basic definition, for instance keep the
-//! norm definition but give several transfer actors, etc
-//!
 //! Finally, Controller can be gathered in a general dictionary then
 //! retreived later by a general call (method Recorded)
 //!
@@ -70,18 +63,20 @@ DEFINE_STANDARD_HANDLE(XSControl_Controller, MMgt_TShared)
 //! link between the norm and the application
 class XSControl_Controller : public MMgt_TShared
 {
-
-public:
-
+ public:
   
   //! Changes names
   //! if a name is empty, the formerly set one remains
   //! Remark : Does not call Record or AutoRecord
-  Standard_EXPORT void SetNames (const Standard_CString longname, const Standard_CString shortname);
+  Standard_EXPORT void SetNames (const Standard_CString theLongName, const Standard_CString theShortName);
   
   //! Records <me> is a general dictionary under Short and Long
   //! Names (see method Name)
-  Standard_EXPORT void AutoRecord() const;
+  void AutoRecord() const
+  {
+    Record (Name(Standard_True));
+    Record (Name(Standard_False));
+  }
   
   //! Records <me> in a general dictionary under a name
   //! Error if <name> already used for another one
@@ -91,60 +86,24 @@ public:
   //! Returns a Null Handle if <name> is unknown
   Standard_EXPORT static Handle(XSControl_Controller) Recorded (const Standard_CString name);
   
-  //! Returns the list of names of recorded norms, according to mode
-  //! = 0 (D) : all the recorded names
-  //! < 0 : for each distinct norm, its resource (short) name
-  //! > 0 : for each distinct norm, its complete (long)  name
-  Standard_EXPORT static Handle(TColStd_HSequenceOfHAsciiString) ListRecorded (const Standard_Integer mode = 0);
-  
   //! Returns a name, as given when initializing :
   //! rsc = False (D) : True Name attached to the Norm (long name)
   //! rsc = True : Name of the ressource set (i.e. short name)
-  Standard_EXPORT Standard_CString Name (const Standard_Boolean rsc = Standard_False) const;
-  
-  //! Returns the Profile
-  //! It starts with a first configuration Base (empty) and the
-  //! following options :
-  //! protocol    for the Protocol
-  //! sign-type   for the SignType (Default Signature for Type)
-  //! access      for the WorkLibrary
-  //! tr-read  for ActorRead  (import processor)
-  //! tr-write for ActorWrite (export processor)
-  Standard_EXPORT Handle(MoniTool_Profile) Profile() const;
-  
-  //! Considers the current state of the Controller as defining a
-  //! configuration, newly created or already existing
-  Standard_EXPORT void DefineProfile (const Standard_CString confname);
-  
-  //! Sets the Controller in a given Configuration of its Profile
-  //! Calls SettingProfile (which can be redefined)
-  //!
-  //! Returns True if done, False if <confname> unknown
-  Standard_EXPORT Standard_Boolean SetProfile (const Standard_CString confname);
-  
-  //! This method is called by SetProfile, it can be redefined
-  //! for specific sub-class of Controller
-  //! The default does nothing
-  Standard_EXPORT virtual Standard_Boolean SettingProfile (const Standard_CString confname);
-  
-  //! Applies a Configuration of the Profile to the WorkSession
-  //! I.E. calls SetProfile then fills WorkSession with definitions
-  Standard_EXPORT Standard_Boolean ApplyProfile (const Handle(XSControl_WorkSession)& WS, const Standard_CString confname);
-  
-  //! Called by ApplyProfile, can be redefined for specific
-  //! sub-class of Controller
-  //! The default does nothing
-  Standard_EXPORT virtual Standard_Boolean ApplyingProfile (const Handle(XSControl_WorkSession)& WS, const Standard_CString confname);
+  Standard_CString Name (const Standard_Boolean rsc = Standard_False) const
+  { return (rsc ? myShortName.ToCString() : myLongName.ToCString()); }
   
   //! Returns the Protocol attached to the Norm (from field)
-  Standard_EXPORT Handle(Interface_Protocol) Protocol() const;
+  const Handle(Interface_Protocol) & Protocol () const
+  { return myAdaptorProtocol; }
   
   //! Returns the SignType attached to the norm (from field)
-  Standard_EXPORT Handle(IFSelect_Signature) SignType() const;
+  //szv:const Handle(IFSelect_Signature) & SignType1() const
+  //szv:{ return mySignType; }
   
   //! Returns the WorkLibrary attached to the Norm. Remark that it
   //! has to be in phase with the Protocol  (read from field)
-  Standard_EXPORT Handle(IFSelect_WorkLibrary) WorkLibrary() const;
+  const Handle(IFSelect_WorkLibrary) & WorkLibrary() const
+  { return myAdaptorLibrary; }
   
   //! Creates a new empty Model ready to receive data of the Norm
   //! Used to write data from Imagine to an interface file
@@ -153,21 +112,11 @@ public:
   //! Returns the Actor for Read attached to the pair (norm,appli)
   //! It can be adapted for data of the input Model, as required
   //! Can be read from field then adapted with Model as required
-  Standard_EXPORT virtual Handle(Transfer_ActorOfTransientProcess) ActorRead (const Handle(Interface_InterfaceModel)& model) const = 0;
+  Standard_EXPORT virtual Handle(Transfer_ActorOfTransientProcess) ActorRead (const Handle(Interface_InterfaceModel)& model) const;
   
   //! Returns the Actor for Write attached to the pair (norm,appli)
   //! Read from field. Can be redefined
   Standard_EXPORT virtual Handle(Transfer_ActorOfFinderProcess) ActorWrite() const;
-  
-  //! Updates static values
-  //! <mode> precises the kind of updating : (see Items from Static)
-  //! -1 : a precise static item : criter = its name
-  //! 0  : all items of a family : criter = the family name
-  //! 1  : all items which match regexp name : criter = regexp name
-  //! By default (criter empty) should consider all relevant statics
-  //! If <name> is defined, can consider only this static item
-  //! The provided default method does nothing, to be redefined
-  Standard_EXPORT virtual void UpdateStatics (const Standard_Integer mode, const Standard_CString criter = "") const;
   
   //! Sets mininum and maximum values for modetrans (write)
   //! Erases formerly recorded bounds and values
@@ -219,120 +168,55 @@ public:
   //! Returned value is a status, as follows :
   //! Done  OK ,  Void : No Result ,  Fail : Fail (e.g. exception)
   //! Error : bad conditions , bad model or null model
-  //! Resolution of file clusters
-  //! According to each norm, there can (or not) be files of which
-  //! definition is not complete but refers to other files : this defines
-  //! a file cluster.
-  //! It can then be resolved by two calls :
-  //! - ClusterContext prepares the resolution, specific of each case
-  //! - ResolveCluster performs the resolution, its result consists in
-  //! having all data gathered in one final model
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape (const TopoDS_Shape& shape, const Handle(Transfer_FinderProcess)& FP, const Handle(Interface_InterfaceModel)& model, const Standard_Integer modetrans = 0) const;
   
-  //! Prepares and returns a context to resolve a cluster
-  //! All data to be used are detained by the WorkSession
-  //! The definition of this context is free and proper to each case
-  //! remark that it is aimed to be used in ResolveCluster
-  //!
-  //! The context must be prepared, but resolution must not have
-  //! began
-  //!
-  //! If no cluster has to be resolved, should return a null handle
-  //! This is the default case, which can be redefined
-  Standard_EXPORT virtual Handle(Standard_Transient) ClusterContext (const Handle(XSControl_WorkSession)& WS) const;
-  
-  //! Performs the resolution itself, from the starting data and
-  //! the cluster context
-  //!
-  //! Can fill a CheckList as necessary (especially when one or
-  //! more references remain unresolved)
-  //!
-  //! Default does nothing and returns an empty CheckList
-  Standard_EXPORT virtual Interface_CheckIterator ResolveCluster (const Handle(XSControl_WorkSession)& WS, const Handle(Standard_Transient)& context) const;
-  
-  //! Adds an item in the control list
-  //! A control item of a controller is accessed by its name which
-  //! is specific of a kind of item (i.e. a kind of functionnality)
-  //! Adds or replaces if <name> is already recorded
-  Standard_EXPORT void AddControlItem (const Handle(Standard_Transient)& item, const Standard_CString name);
-  
-  //! Returns a control item from its name, Null if <name> unknown
-  //! To be used then, it just remains to be down-casted
-  Standard_EXPORT Handle(Standard_Transient) ControlItem (const Standard_CString name) const;
-  
-  //! Records the name of a Static to be traced for a given use
-  Standard_EXPORT void TraceStatic (const Standard_CString name, const Standard_Integer use);
-  
-  //! Records a Session Item, to be added for customisation of the
-  //! Work Session. It must have a specific name.
+  //! Records a Session Item, to be added for customisation of the Work Session.
+  //! It must have a specific name.
   //! <setapplied> is used if <item> is a GeneralModifier, to decide
-  //! to which hook list it will be applied, if not empty (else,
-  //! not applied to any hook list)
-  //! ACTUAL : only one hook list is managed : "send"
-  //! Remark : this method is to be called at Create time, the
-  //! recorded items will be used by Customise
+  //! If set to true, <item> will be applied to the hook list "send".
+  //! Else, it is not applied to any hook list.
+  //! Remark : this method is to be called at Create time,
+  //! the recorded items will be used by Customise
   //! Warning : if <name> conflicts, the last recorded item is kept
-  Standard_EXPORT void AddSessionItem (const Handle(Standard_Transient)& item, const Standard_CString name, const Standard_CString setapplied = "");
+  Standard_EXPORT void AddSessionItem (const Handle(Standard_Transient)& theItem, const Standard_CString theName, const Standard_Boolean toApply = Standard_False);
   
   //! Returns an item given its name to record in a Session
   //! If <name> is unknown, returns a Null Handle
-  Standard_EXPORT Handle(Standard_Transient) SessionItem (const Standard_CString name) const;
+  Standard_EXPORT Handle(Standard_Transient) SessionItem (const Standard_CString theName) const;
   
-  //! Returns True if <item> is recorded as <setapplied = True>
-  Standard_EXPORT Standard_Boolean IsApplied (const Handle(Standard_Transient)& item) const;
-  
-  //! Customises a WorkSession, by adding to it the recorded items
-  //! (by AddSessionItem), then by calling a specific method
-  //! Customising, set by default to do nothing
+  //! Customises a WorkSession, by adding to it the recorded items (by AddSessionItem)
   Standard_EXPORT virtual void Customise (Handle(XSControl_WorkSession)& WS);
   
-  //! Specific customisation method, which can be redefined
-  //! Default does nothing
-  Standard_EXPORT void Customising (Handle(XSControl_WorkSession)& WS);
-  
-  Standard_EXPORT Handle(Dico_DictionaryOfTransient) AdaptorSession() const;
-
-
-
+  const Handle(Dico_DictionaryOfTransient) & AdaptorSession() const
+  { return myAdaptorSession; }
 
   DEFINE_STANDARD_RTTIEXT(XSControl_Controller,MMgt_TShared)
 
-protected:
-
+ protected:
   
   //! Initializing with names
-  //! <longname>  is for the complete, official, long  name
-  //! <shortname> is for the short name used for resources
-  Standard_EXPORT XSControl_Controller(const Standard_CString longname, const Standard_CString shortname);
+  //! <theLongName>  is for the complete, official, long  name
+  //! <theShortName> is for the short name used for resources
+  Standard_EXPORT XSControl_Controller(const Standard_CString theLongName, const Standard_CString theShortName);
 
-  TCollection_AsciiString theShortName;
-  TCollection_AsciiString theLongName;
-  Handle(IFSelect_WorkLibrary) theAdaptorLibrary;
-  Handle(Interface_Protocol) theAdaptorProtocol;
-  Handle(IFSelect_Signature) theSignType;
-  Handle(Transfer_ActorOfTransientProcess) theAdaptorRead;
-  Handle(Transfer_ActorOfFinderProcess) theAdaptorWrite;
-  Handle(Dico_DictionaryOfTransient) theAdaptorSession;
+  //! Records the name of a Static to be traced for a given use
+  Standard_EXPORT void TraceStatic (const Standard_CString theName, const Standard_Integer theUse);
 
+  TCollection_AsciiString myShortName;
+  TCollection_AsciiString myLongName;
+  Handle(IFSelect_WorkLibrary) myAdaptorLibrary;
+  Handle(Interface_Protocol) myAdaptorProtocol;
+  //szv:Handle(IFSelect_Signature) mySignType;
+  Handle(Transfer_ActorOfTransientProcess) myAdaptorRead;
+  Handle(Transfer_ActorOfFinderProcess) myAdaptorWrite;
+  Handle(Dico_DictionaryOfTransient) myAdaptorSession;
 
-private:
+ private:
 
-
-  Handle(MoniTool_Profile) theProfile;
-  Handle(Dico_DictionaryOfTransient) theItems;
-  TColStd_SequenceOfTransient theAdaptorApplied;
-  Handle(TColStd_HSequenceOfHAsciiString) theAdaptorHooks;
-  TColStd_SequenceOfTransient theParams;
-  TColStd_SequenceOfInteger theParamUses;
-  Handle(Interface_HArray1OfHAsciiString) theModeWriteShapeN;
-
-
+  TColStd_SequenceOfTransient myAdaptorApplied;
+  NCollection_Vector<Handle(Standard_Transient)> myParams;
+  NCollection_Vector<Standard_Integer> myParamUses;
+  Handle(Interface_HArray1OfHAsciiString) myModeWriteShapeN;
 };
-
-
-
-
-
-
 
 #endif // _XSControl_Controller_HeaderFile

@@ -81,21 +81,6 @@ public:
   //! Removes a Command, if it is recorded (else, does nothing)
   Standard_EXPORT static void Remove (const Standard_CString command);
   
-  //! Records, for a configuration named <conf>, that the command
-  //! <command> may be aliased by another command <alias>
-  //!
-  //! To be used by call to Alias (no automatic redirection)
-  //! The configuration typically refers to a norm
-  Standard_EXPORT static void SetAlias (const Standard_CString conf, const Standard_CString command, const Standard_CString aliasname);
-  
-  //! Sets <conf> as current configuration for aliases
-  Standard_EXPORT static void SetCurrentAlias (const Standard_CString conf);
-  
-  //! Returns, in the current configuration, what alias has been
-  //! recorded for <command>
-  //! The returned string is empty if no alias is recorded
-  Standard_EXPORT static TCollection_AsciiString Alias (const Standard_CString command);
-  
   //! Selects, for a Command given by its title, an actor with its
   //! command number. Returns True if found, False else
   Standard_EXPORT static Standard_Boolean Select (const Standard_CString command, Standard_Integer& number, Handle(IFSelect_Activator)& actor);

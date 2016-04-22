@@ -48,7 +48,6 @@ class IGESControl_Writer
 public:
 
   DEFINE_STANDARD_ALLOC
-
   
   //! Creates a writer object with the
   //! default unit (millimeters) and write mode (Face).
@@ -73,13 +72,16 @@ public:
   Standard_EXPORT IGESControl_Writer(const Handle(IGESData_IGESModel)& model, const Standard_Integer modecr = 0);
   
   //! Returns the IGES model to be written in output.
-  Standard_EXPORT Handle(IGESData_IGESModel) Model() const;
-  
-  Standard_EXPORT Handle(Transfer_FinderProcess) TransferProcess() const;
-  
+  const Handle(IGESData_IGESModel) & Model() const
+  { return myModel; }
+
+  const Handle(Transfer_FinderProcess) & TransferProcess() const
+  { return myTP; }
+
   //! Returns/Sets the TransferProcess : it contains final results
   //! and if some, check messages
-  Standard_EXPORT void SetTransferProcess (const Handle(Transfer_FinderProcess)& TP);
+  void SetTransferProcess (const Handle(Transfer_FinderProcess)& TP)
+  { myTP = TP; }
   
   //! Translates a Shape to IGES Entities and adds them to the model
   //! Returns True if done, False if Shape not suitable for IGES or null
@@ -109,36 +111,14 @@ public:
   //! False if an error occurred (for instance,
   //! if the processor could not create the file).
   Standard_EXPORT Standard_Boolean Write (const Standard_CString file, const Standard_Boolean fnes = Standard_False);
-  
-  //! Prints Statistics about Transfer
-  Standard_EXPORT void PrintStatsTransfer (const Standard_Integer what, const Standard_Integer mode = 0) const;
 
+ private:
 
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-  Handle(Transfer_FinderProcess) theTP;
-  Handle(IGESData_IGESModel) themod;
-  IGESData_BasicEditor thedit;
-  Standard_Integer thecr;
-  Standard_Boolean thest;
-
-
+  Handle(Transfer_FinderProcess) myTP;
+  Handle(IGESData_IGESModel) myModel;
+  IGESData_BasicEditor myEditor;
+  Standard_Integer myWriteMode;
+  Standard_Boolean myIsComputed;
 };
-
-
-
-
-
-
 
 #endif // _IGESControl_Writer_HeaderFile

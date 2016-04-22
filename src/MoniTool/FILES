@@ -20,12 +20,6 @@ MoniTool_Macros.hxx
 MoniTool_MTHasher.cxx
 MoniTool_MTHasher.hxx
 MoniTool_MTHasher.lxx
-MoniTool_Option.cxx
-MoniTool_Option.hxx
-MoniTool_OptValue.cxx
-MoniTool_OptValue.hxx
-MoniTool_Profile.cxx
-MoniTool_Profile.hxx
 MoniTool_RealVal.cxx
 MoniTool_RealVal.hxx
 MoniTool_SequenceOfElement.hxx

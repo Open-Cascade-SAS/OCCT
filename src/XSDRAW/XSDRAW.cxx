@@ -157,11 +157,9 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
       {  return Session()->NormAdaptor();  }
 
     Standard_Boolean  XSDRAW::SetNorm
-  (const Standard_CString norm, const Standard_CString profile)
+  (const Standard_CString norm)
 {
-  Standard_Boolean stat = Session()->SelectNorm (norm,profile);
-  if (stat) IFSelect_Activator::SetCurrentAlias (Session()->SelectedNorm(Standard_True));
-  return stat;
+  return Session()->SelectNorm (norm);
 }
 
     Handle(Interface_Protocol)   XSDRAW::Protocol ()

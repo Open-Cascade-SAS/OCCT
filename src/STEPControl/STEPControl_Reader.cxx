@@ -38,7 +38,6 @@
 #include <StepBasic_SolidAngleMeasureWithUnit.hxx>
 #include <StepBasic_SolidAngleUnit.hxx>
 #include <STEPConstruct_UnitContext.hxx>
-#include <STEPControl_ActorRead.hxx>
 #include <STEPControl_Controller.hxx>
 #include <STEPControl_Reader.hxx>
 #include <StepData_StepModel.hxx>
@@ -198,7 +197,7 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
       //}
       if (IsRoot) {
         theroots.Append(ent);
-        WS()->MapReader()->RootsForTransfer()->Append(ent);
+        WS()->TransferReader()->TransientProcess()->RootsForTransfer()->Append(ent);
       }
     }
     TCollection_AsciiString aProdMode = Interface_Static::CVal("read.step.product.mode");
@@ -232,7 +231,7 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
         }
         if(IsRoot) {
           theroots.Append(ent);
-          WS()->MapReader()->RootsForTransfer()->Append(ent);
+          WS()->TransferReader()->TransientProcess()->RootsForTransfer()->Append(ent);
         }
       }
       if(ent->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation))) {
@@ -285,7 +284,7 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
         }
         if(IsRoot) {
           theroots.Append(ent);
-          WS()->MapReader()->RootsForTransfer()->Append(ent);
+          WS()->TransferReader()->TransientProcess()->RootsForTransfer()->Append(ent);
         }
       }
     }
@@ -390,7 +389,7 @@ void STEPControl_Reader::FileUnits( TColStd_SequenceOfAsciiString& theUnitLength
   //for case when units was not found through PDF or SDR
   if(theUnitLengthNames.IsEmpty())
   {
-    Handle(Interface_InterfaceModel) aModel = WS()->Model();
+    const Handle(Interface_InterfaceModel) &aModel = WS()->Model();
     if(aModel.IsNull())
       return;
     Standard_Integer nb = aModel->NbEntities();

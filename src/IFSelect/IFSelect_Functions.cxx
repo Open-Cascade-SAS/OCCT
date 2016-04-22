@@ -161,17 +161,6 @@ static IFSelect_ReturnStatus fun3
   return status;
 }
 
-static IFSelect_ReturnStatus fun_whatfile
-  (const Handle(IFSelect_SessionPilot)& pilot)
-{
-  TCollection_AsciiString whatcom = IFSelect_Activator::Alias ("whatfile");
-  if (whatcom.Length() > 0) return pilot->ExecuteAlias (whatcom);
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout<<"Load File : "<<pilot->Session()->LoadedFile()<<endl;
-  sout<<"No specific whatfile available"<<endl;
-  return IFSelect_RetVoid;
-}
-
 static IFSelect_ReturnStatus fun4
   (const Handle(IFSelect_SessionPilot)& pilot)
 {
@@ -256,7 +245,7 @@ static IFSelect_ReturnStatus fun8
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) { sout<<"Give label to search"<<endl; return IFSelect_RetError; }
   if (!WS->HasModel()) { sout<<"No loaded model, abandon"<<endl; return IFSelect_RetError; }
-  Handle(Interface_InterfaceModel) model = WS->Model();
+  const Handle(Interface_InterfaceModel) &model = WS->Model();
   Standard_Integer i, cnt = 0;
   Standard_Boolean exact = Standard_False;
   sout<<" **  Search Entity Number for Label : "<<arg1<<endl;
@@ -1984,7 +1973,7 @@ static IFSelect_ReturnStatus fun91
   }
   DeclareAndCast(IFSelect_SelectPointed,sp,WS->NamedItem(arg1));
   if (sp.IsNull()) { sout<<"Pas une SelectPointed:"<<arg1<<endl; return IFSelect_RetError; }
-  Handle(Interface_InterfaceModel) model = WS->Model();  // pour Print
+  const Handle(Interface_InterfaceModel) &model = WS->Model();  // pour Print
   if (argc == 2) {    // listage simple
     Standard_Integer nb = sp->NbItems();
     sout<<" SelectPointed : "<<arg1<<" : "<<nb<<" Items :"<<endl;
@@ -2459,9 +2448,7 @@ static int initactor = 0;
   IFSelect_Act::AddFunc("xstatus","Lists XSTEP Status : Version, System Name ...",funstatus);
   IFSelect_Act::AddFunc("handler","Toggle status catch Handler Error of the session",fun1);
   IFSelect_Act::AddFunc("xload","file:string  : Read File -> Load Model",fun3);
-// IFSelect_Act::AddFunc("load","file:string  : Read File -> Load Model",fun3);
   IFSelect_Act::AddFunc("xread","file:string  : Read File -> Load Model",fun3);
-  IFSelect_Act::AddFunc("whatfile"," -> analyses a file (specific per norm)",fun_whatfile);
   IFSelect_Act::AddFunc("writeall","file:string  : Write all model (no split)",fun4);
   IFSelect_Act::AddFunc("writesel","file:string sel:Selection : Write Selected (no split)",fun5);
   IFSelect_Act::AddFunc("writeent","file:string  n1ent n2ent...:integer : Write Entite(s) (no split)",fun6);

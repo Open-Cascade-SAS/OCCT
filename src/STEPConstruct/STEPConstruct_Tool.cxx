@@ -58,13 +58,12 @@ Standard_Boolean STEPConstruct_Tool::SetWS (const Handle(XSControl_WorkSession) 
   myHGraph = myWS->HGraph();
   
   // collect data on reading process
-  Handle(XSControl_TransferReader) TR = WS->TransferReader();
+  const Handle(XSControl_TransferReader) &TR = WS->TransferReader();
   if ( ! TR.IsNull() ) myTransientProcess = TR->TransientProcess();
 
   // collect data on writing process
-  Handle(XSControl_TransferWriter) TW = myWS->TransferWriter();
+  const Handle(XSControl_TransferWriter) &TW = myWS->TransferWriter();
   if ( ! TW.IsNull() ) myFinderProcess = TW->FinderProcess();
 
   return ! myTransientProcess.IsNull() && ! myFinderProcess.IsNull();
 }
-

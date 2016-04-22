@@ -143,9 +143,9 @@ void  IGESControl_Reader::PrintTransferInfo
   (const IFSelect_PrintFail failsonly, const IFSelect_PrintCount mode) const
 {
   Standard_Integer nbWarn = 0, nbFail= 0, nbEntities =0, nbRoots = 0, nbResults = 0;  
-  Handle(Transfer_TransientProcess) TP = WS()->MapReader();
+  const Handle(Transfer_TransientProcess) &TP = WS()->TransferReader()->TransientProcess();
   Handle(Message_Messenger) TF = TP->Messenger();
-  Handle(Interface_InterfaceModel) model = TP->Model();
+  const Handle(Interface_InterfaceModel) &model = TP->Model();
   if (! model.IsNull()) {
     nbEntities = model->NbEntities();
     nbRoots = TP->NbRoots();

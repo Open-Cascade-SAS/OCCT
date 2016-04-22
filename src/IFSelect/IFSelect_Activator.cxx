@@ -17,10 +17,7 @@
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <Interface_Macros.hxx>
-#include <MoniTool_Option.hxx>
-#include <MoniTool_Profile.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
@@ -31,8 +28,6 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Activator,MMgt_TShared)
 static Handle(Dico_DictionaryOfInteger) thedico; // = new Dico_DictionaryOfInteger;
 static TColStd_SequenceOfInteger   thenums, themodes;
 static TColStd_SequenceOfTransient theacts;
-
-static Handle(MoniTool_Profile) thealiases;
 
 
     void IFSelect_Activator::Adding
@@ -66,49 +61,6 @@ static Handle(MoniTool_Profile) thealiases;
 
     void IFSelect_Activator::Remove (const Standard_CString command)
       {  thedico->RemoveItem(command);  }
-
-//  ALIAS : gere avec un Profile
-//  Chaque commande est representee par une Option
-//   Au sein de laquelle chaque configuration nomme un cas, dont la valeur
-//   est le nom de son alias pour cette conf
-//  Et chaque conf porte un switch sur cette option avec pour valeur le propre
-//   nom de la conf
-
-    void  IFSelect_Activator::SetAlias
-  (const Standard_CString conf,
-   const Standard_CString command, const Standard_CString alias)
-{
-  if (thealiases.IsNull()) thealiases = new MoniTool_Profile;
-  Handle(MoniTool_Option) opt = thealiases->Option(command);
-  if (opt.IsNull()) {
-    opt = new MoniTool_Option(STANDARD_TYPE(TCollection_HAsciiString),command);
-    thealiases->AddOption (opt);
-  }
-  opt->Add (conf,new TCollection_HAsciiString(alias));
-
-  if (!thealiases->HasConf(conf)) thealiases->AddConf (conf);
-  thealiases->AddSwitch (conf,command,conf);
-}
-
-    void  IFSelect_Activator::SetCurrentAlias (const Standard_CString conf)
-{
-  if (!thealiases.IsNull()) thealiases->SetCurrent (conf);
-}
-
-    TCollection_AsciiString  IFSelect_Activator::Alias
-  (const Standard_CString command)
-{
-  TCollection_AsciiString str;
-  if (thealiases.IsNull()) return str;
-  Handle(Standard_Transient) aVal;
-  if (!thealiases->Value(command,aVal)) return str;
-  Handle(TCollection_HAsciiString) val =
-    Handle(TCollection_HAsciiString)::DownCast (aVal);
-  if (!val.IsNull())
-    str.AssignCat (val->ToCString());
-  return str;
-}
-
 
     Standard_Boolean IFSelect_Activator::Select
   (const Standard_CString command, Standard_Integer& number,

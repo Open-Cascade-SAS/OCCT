@@ -68,18 +68,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESControl_Controller,XSControl_Controller)
 
-//szv#4:S4163:12Mar99 never referenced
-//static const Standard_CString thelong  = "IGES";
-//static const Standard_CString theshort = "iges";
 //=======================================================================
 //function : IGESControl_Controller
 //purpose  : 
 //=======================================================================
+
 IGESControl_Controller::IGESControl_Controller (const Standard_Boolean mod)
-//JR/Hp
-     : XSControl_Controller ((Standard_CString ) (mod ? "FNES" : "IGES") , (Standard_CString ) (mod ? "fnes" : "iges") ) ,
-//     : XSControl_Controller ( (mod ? "FNES" : "iges") , (mod ? "fnes" : "iges") ) ,
-       themode (mod)
+: XSControl_Controller ((Standard_CString ) (mod ? "FNES" : "IGES") , (Standard_CString ) (mod ? "fnes" : "iges") ),
+  themode (mod)
 {
   static Standard_Boolean init = Standard_False;
   if (!init) {
@@ -87,54 +83,48 @@ IGESControl_Controller::IGESControl_Controller (const Standard_Boolean mod)
     IGESAppli::Init();
     init = Standard_True;
   }
-   AddSessionItem (new IGESSelect_RemoveCurves(Standard_True) ,"iges-remove-pcurves");
+  AddSessionItem (new IGESSelect_RemoveCurves(Standard_True) ,"iges-remove-pcurves");
   AddSessionItem (new IGESSelect_RemoveCurves(Standard_False),"iges-remove-curves-3d");
   AddSessionItem (new IGESSelect_SetLabel (0,Standard_True) ,"iges-clear-label");
   AddSessionItem (new IGESSelect_SetLabel (1,Standard_False),"iges-set-label-dnum");
 
-  AddSessionItem (new IGESSelect_AutoCorrect,"iges-auto-correct","send");
-  AddSessionItem (new IGESSelect_ComputeStatus,"iges-compute-status","send");
+  AddSessionItem (new IGESSelect_AutoCorrect,"iges-auto-correct",Standard_True);
+  AddSessionItem (new IGESSelect_ComputeStatus,"iges-compute-status",Standard_True);
+
   Handle(IGESSelect_FloatFormat) flf = new IGESSelect_FloatFormat;
   flf->SetDefault (12);
-  AddSessionItem (flf,"iges-float-digits-12","send");
+  AddSessionItem (flf,"iges-float-digits-12",Standard_True);
 
-//   --   Sender Product Identification   --  (pas un statique ...)
+  //  --   Sender Product Identification   --  (pas un statique ...)
   Handle(IGESSelect_SetGlobalParameter) set3 = new IGESSelect_SetGlobalParameter(3);
-//#58 rln Handle(TCollection_HAsciiString) pa3 = new TCollection_HAsciiString("MDTV X-STEP");
-  Handle(TCollection_HAsciiString) pa3 =
-    Interface_Static::Static("write.iges.header.product")->HStringValue();
+  Handle(TCollection_HAsciiString) pa3 = Interface_Static::Static("write.iges.header.product")->HStringValue();
   set3->SetValue(pa3);
   AddSessionItem (pa3, "iges-header-val-sender");
-  AddSessionItem (set3,"iges-header-set-sender","send");
+  AddSessionItem (set3,"iges-header-set-sender",Standard_True);
 
-  AddSessionItem (new IGESSelect_UpdateFileName,"iges-update-file-name","send");
+  AddSessionItem (new IGESSelect_UpdateFileName,"iges-update-file-name",Standard_True);
 
-//   --   Receiver   --   Acces par Static, ajustable
+  //  --   Receiver   --   Acces par Static, ajustable
   Handle(IGESSelect_SetGlobalParameter) set12 = new IGESSelect_SetGlobalParameter(12);
-//  Handle(TCollection_HAsciiString) pa12 = new TCollection_HAsciiString("Unknown");
-  Handle(TCollection_HAsciiString) pa12 =
-    Interface_Static::Static("write.iges.header.receiver")->HStringValue();
+  Handle(TCollection_HAsciiString) pa12 = Interface_Static::Static("write.iges.header.receiver")->HStringValue();
   set12->SetValue(pa12);
   AddSessionItem (pa12, "iges-header-val-receiver");
-  AddSessionItem (set12,"iges-header-set-receiver","send");
+  AddSessionItem (set12,"iges-header-set-receiver",Standard_True);
 
-//   --   Auteur   --   acces par Static (demarre par whoami), ajustable
+  //  --   Auteur   --   acces par Static (demarre par whoami), ajustable
   Handle(IGESSelect_SetGlobalParameter) set21 = new IGESSelect_SetGlobalParameter(21);
-//  Handle(TCollection_HAsciiString) pa21 = new TCollection_HAsciiString("Unknown");
-  Handle(TCollection_HAsciiString) pa21 =
-    Interface_Static::Static("write.iges.header.author")->HStringValue();
+  Handle(TCollection_HAsciiString) pa21 = Interface_Static::Static("write.iges.header.author")->HStringValue();
   set21->SetValue(pa21);
   AddSessionItem (pa21, "iges-header-val-author");
-  AddSessionItem (set21,"iges-header-set-author","send");
+  AddSessionItem (set21,"iges-header-set-author",Standard_True);
 
-//   --   Compagnie (de l auteur)   --   acces par Static, ajustable
+  //  --   Compagnie (de l auteur)   --   acces par Static, ajustable
   Handle(IGESSelect_SetGlobalParameter) set22 = new IGESSelect_SetGlobalParameter(22);
-//  Handle(TCollection_HAsciiString) pa22 = new TCollection_HAsciiString("MATRA-DATAVISION");
-  Handle(TCollection_HAsciiString) pa22 =
-    Interface_Static::Static("write.iges.header.company")->HStringValue();
+  Handle(TCollection_HAsciiString) pa22 = Interface_Static::Static("write.iges.header.company")->HStringValue();
   set22->SetValue(pa22);
   AddSessionItem (pa22, "iges-header-val-company");
-  AddSessionItem (set22,"iges-header-set-company","send");
+  AddSessionItem (set22,"iges-header-set-company",Standard_True);
+
   //  -- STATICS
 
   TraceStatic ("read.iges.bspline.approxd1.mode",5);
@@ -146,56 +136,55 @@ IGESControl_Controller::IGESControl_Controller (const Standard_Boolean mod)
   TraceStatic ("write.iges.unit",6);
   TraceStatic ("write.iges.brep.mode",6);
 
-  theAdaptorLibrary  = new IGESSelect_WorkLibrary(themode);
-  theAdaptorProtocol = IGESSelect_WorkLibrary::DefineProtocol();
+  myAdaptorLibrary  = new IGESSelect_WorkLibrary(themode);
+  myAdaptorProtocol = IGESSelect_WorkLibrary::DefineProtocol();
 
   Handle(IGESToBRep_Actor) anactiges = new IGESToBRep_Actor;
   anactiges->SetContinuity(0);
-  theAdaptorRead     = anactiges;
+  myAdaptorRead     = anactiges;
 
-  theAdaptorWrite    = new IGESControl_ActorWrite;
+  myAdaptorWrite    = new IGESControl_ActorWrite;
+
   SetModeWrite (0,1);
   SetModeWriteHelp (0,"Faces");
   SetModeWriteHelp (1,"BRep");
 }
+
 void IGESControl_Controller::Customise(Handle(XSControl_WorkSession)& WS) 
 {
   XSControl_Controller::Customise(WS);
  
+  //   ---  SELECTIONS, SIGNATURES, COMPTEURS, EDITEURS
+  //   --   BypassGroup / xst-model-roots
 
-//   ---  SELECTIONS, SIGNATURES, COMPTEURS, EDITEURS
-//   --   BypassGroup / xst-model-roots
-  
-  
-  //DeclareAndCast(IFSelect_Selection,xma,SessionItem("xst-model-all"));
+  // Should be already set by the above call to Customise
   Handle(IFSelect_SelectModelEntities) xma;
   Handle(Standard_Transient) xma1 = WS->NamedItem("xst-model-all");
-  if(xma1.IsNull()) xma = new  IFSelect_SelectModelEntities;
+  if (xma1.IsNull()) xma = new IFSelect_SelectModelEntities;
   else {
-    xma =Handle(IFSelect_SelectModelEntities)::DownCast(xma1);
+    xma = Handle(IFSelect_SelectModelEntities)::DownCast(xma1);
     WS->AddNamedItem ("xst-model-all",xma);
   }
   
-  //DeclareAndCast(IFSelect_Selection,xmr,SessionItem("xst-model-roots"));
-   Handle(IFSelect_SelectModelRoots) xmr;
+  Handle(IFSelect_SelectModelRoots) xmr;
   Handle(Standard_Transient) xmr1 = WS->NamedItem("xst-model-roots");
-  if(!xmr1.IsNull())
+  if (!xmr1.IsNull())
     xmr = Handle(IFSelect_SelectModelRoots)::DownCast(xmr1);
   else  {
     xmr = new IFSelect_SelectModelRoots;
     WS->AddNamedItem ("xst-model-roots",xmr);
   }
-//  DeclareAndCast(IFSelect_Selection,xtr,SessionItem("xst-transferrable-roots"));
+
   Handle(XSControl_SelectForTransfer) xtr;
   Handle(Standard_Transient) xtr1 = WS->NamedItem("xst-transferrable-roots");
-  if(!xtr1.IsNull())
+  if (!xtr1.IsNull())
     xtr = Handle(XSControl_SelectForTransfer)::DownCast(xtr1);
-  //st1->SetInput (slr);
   else {
-    xtr= new XSControl_SelectForTransfer;
+    xtr = new XSControl_SelectForTransfer;
     xtr->SetReader (WS->TransferReader());
     WS->AddNamedItem ("xst-transferrable-roots",xtr);
   }
+
   if (!xmr.IsNull()) {
     Handle(IGESSelect_SelectVisibleStatus) visa = new IGESSelect_SelectVisibleStatus;
     visa->SetInput(xmr);
@@ -300,10 +289,9 @@ void IGESControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
     Handle(IFSelect_EditForm) eddirpf = eddirp->Form(Standard_False);
     WS->AddNamedItem ("iges-dir-part",eddirpf);
 
-    theSignType = typnam;
+    //szv:mySignType = typnam;
+    WS->SetSignType( typnam );
   }
-
-
 }
 
 
@@ -312,9 +300,9 @@ void IGESControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
 //purpose  : 
 //=======================================================================
 
- Handle(Interface_InterfaceModel)  IGESControl_Controller::NewModel () const
+Handle(Interface_InterfaceModel) IGESControl_Controller::NewModel () const
 {
-//  On prend un modele qu on prepare avec les statiques enregistres
+  //  On prend un modele qu on prepare avec les statiques enregistres
   DeclareAndCast(IGESData_IGESModel,igm,Interface_InterfaceModel::Template("iges"));
   IGESData_GlobalSection GS = igm->GlobalSection();
 
@@ -332,21 +320,17 @@ void IGESControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
 //purpose  : 
 //=======================================================================
 
- Handle(Transfer_ActorOfTransientProcess)  IGESControl_Controller::ActorRead
-  (const Handle(Interface_InterfaceModel)& model) const
+Handle(Transfer_ActorOfTransientProcess) IGESControl_Controller::ActorRead (const Handle(Interface_InterfaceModel)& model) const
 {
-  DeclareAndCast(IGESToBRep_Actor,anactiges,theAdaptorRead);
-  if (anactiges.IsNull()) return theAdaptorRead;
-  //sln 14.01.2002 OCC51 : verifying whether entry model is IGESDatat_IGESModel,
-  // if this condition is false new model is created 
-  Handle(Interface_InterfaceModel) aModel;
-  if(model->IsKind(STANDARD_TYPE(IGESData_IGESModel)))
-    aModel = model;
-  else
-    aModel = NewModel();
-  anactiges->SetModel(GetCasted(IGESData_IGESModel,aModel));
-  anactiges->SetContinuity(Interface_Static::IVal("read.iges.bspline.continuity"));
-  return anactiges;
+  DeclareAndCast(IGESToBRep_Actor,anactiges,myAdaptorRead);
+  if (!anactiges.IsNull()) {
+    // sln 14.01.2002 OCC51 : verifying whether entry model is IGESDatat_IGESModel,
+    // if this condition is false new model is created
+    Handle(Interface_InterfaceModel) aModel = (model->IsKind(STANDARD_TYPE(IGESData_IGESModel))? model : NewModel());
+    anactiges->SetModel(GetCasted(IGESData_IGESModel,aModel));
+    anactiges->SetContinuity(Interface_Static::IVal("read.iges.bspline.continuity"));
+  }
+  return myAdaptorRead;
 }
 
 //  ####    TRANSFERT (ECRITURE SHAPE)    ####
@@ -357,10 +341,10 @@ void IGESControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
 //purpose  : 
 //=======================================================================
 
- IFSelect_ReturnStatus  IGESControl_Controller::TransferWriteShape (const TopoDS_Shape& shape,
-                                                                    const Handle(Transfer_FinderProcess)& FP,
-                                                                    const Handle(Interface_InterfaceModel)& model,
-                                                                    const Standard_Integer modetrans) const
+IFSelect_ReturnStatus IGESControl_Controller::TransferWriteShape (const TopoDS_Shape& shape,
+                                                                  const Handle(Transfer_FinderProcess)& FP,
+                                                                  const Handle(Interface_InterfaceModel)& model,
+                                                                  const Standard_Integer modetrans) const
 {
   return XSControl_Controller::TransferWriteShape (shape,FP,model,modetrans);
 }
@@ -370,7 +354,7 @@ void IGESControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean  IGESControl_Controller::Init ()
+Standard_Boolean IGESControl_Controller::Init ()
 {
   static Standard_Boolean inic = Standard_False;
   if (!inic) {

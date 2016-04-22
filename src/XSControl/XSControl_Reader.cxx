@@ -237,7 +237,7 @@ Standard_Boolean  XSControl_Reader::TransferEntity
   (const Handle(Standard_Transient)& start)
 {
   if (start.IsNull()) return Standard_False;
-  Handle(XSControl_TransferReader) TR = thesession->TransferReader();
+  const Handle(XSControl_TransferReader) &TR = thesession->TransferReader();
   TR->BeginTransfer();
   if (TR->TransferOne (start) == 0) return Standard_False;
   TopoDS_Shape sh = TR->ShapeResult(start);
@@ -260,7 +260,7 @@ Standard_Integer  XSControl_Reader::TransferList
   if (list.IsNull()) return 0;
   Standard_Integer nbt = 0;
   Standard_Integer i, nb = list->Length();
-  Handle(XSControl_TransferReader) TR = thesession->TransferReader();
+  const Handle(XSControl_TransferReader) &TR = thesession->TransferReader();
   TR->BeginTransfer();
   ClearShapes();
   ShapeExtend_Explorer STU;
@@ -286,12 +286,12 @@ Standard_Integer  XSControl_Reader::TransferRoots ()
   NbRootsForTransfer();
   Standard_Integer nbt = 0;
   Standard_Integer i, nb = theroots.Length();
-  Handle(XSControl_TransferReader) TR = thesession->TransferReader();
+  const Handle(XSControl_TransferReader) &TR = thesession->TransferReader();
    
   TR->BeginTransfer();
   ClearShapes();
   ShapeExtend_Explorer STU;
-  Handle(Transfer_TransientProcess) proc = thesession->MapReader();
+  const Handle(Transfer_TransientProcess) &proc = thesession->TransferReader()->TransientProcess();
   Message_ProgressSentry PS ( proc->GetProgress(), "Root", 0, nb, 1 );
   for (i = 1; i <= nb && PS.More(); i ++,PS.Next()) {
     Handle(Standard_Transient) start = theroots.Value(i);
@@ -415,7 +415,7 @@ void XSControl_Reader::GetStatsTransfer (const Handle(TColStd_HSequenceOfTransie
 					 Standard_Integer& nbWithResult,
 					 Standard_Integer& nbWithFail) const
 {
-  Handle(Transfer_TransientProcess) TP = thesession->MapReader();
+  const Handle(Transfer_TransientProcess) &TP = thesession->TransferReader()->TransientProcess();
   Transfer_IteratorOfProcessForTransient itrp(Standard_True);
   itrp = TP->CompleteResult(Standard_True);
   if(!list.IsNull()) itrp.Filter (list);

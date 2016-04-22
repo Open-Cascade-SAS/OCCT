@@ -43,6 +43,9 @@
 #ifdef Status
   #undef Status
 #endif
+#ifdef Opposite
+  #undef Opposite
+#endif
 
 #endif
 

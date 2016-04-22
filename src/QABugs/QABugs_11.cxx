@@ -4675,15 +4675,15 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
       di<<"  To modify : command  param read.iges.bspline.continuity\n";
       Handle(XSControl_WorkSession) thesession = Reader.WS();
       thesession->ClearContext();
-      XSDRAW::SetTransferProcess (thesession->MapReader());
+      XSDRAW::SetTransferProcess (thesession->TransferReader()->TransientProcess());
       progress->NewScope ( 80, "Translation" );
       progress->Show();
-      thesession->MapReader()->SetProgress ( progress );
+      thesession->TransferReader()->TransientProcess()->SetProgress ( progress );
       
       if (modepri == 1) Reader.SetReadVisible (Standard_True);
       Reader.TransferRoots();
       
-      thesession->MapReader()->SetProgress ( 0 );
+      thesession->TransferReader()->TransientProcess()->SetProgress ( 0 );
       progress->EndScope();
       progress->Show();
       // result in only one shape for all the roots
@@ -4776,15 +4776,15 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
         di<<"  To modify : command  param read.iges.bspline.continuity\n";
         Handle(XSControl_WorkSession) thesession = Reader.WS();
         thesession->ClearContext();
-        XSDRAW::SetTransferProcess (thesession->MapReader());
+        XSDRAW::SetTransferProcess (thesession->TransferReader()->TransientProcess());
         progress->NewScope ( 80, "Translation" );
         progress->Show();
-        thesession->MapReader()->SetProgress ( progress );
+        thesession->TransferReader()->TransientProcess()->SetProgress ( progress );
       
         Reader.SetReadVisible (Standard_True);
         Reader.TransferRoots();
       
-        thesession->MapReader()->SetProgress ( 0 );
+        thesession->TransferReader()->TransientProcess()->SetProgress ( 0 );
         progress->EndScope();
         progress->Show();
         
@@ -4854,10 +4854,10 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	  Standard_Integer nbt = 0;
 	  Handle(XSControl_WorkSession) thesession = Reader.WS();
 	
-	  XSDRAW::SetTransferProcess (thesession->MapReader());
+	  XSDRAW::SetTransferProcess (thesession->TransferReader()->TransientProcess());
           progress->NewScope ( 80, "Translation" );
           progress->Show();
-          thesession->MapReader()->SetProgress ( progress );
+          thesession->TransferReader()->TransientProcess()->SetProgress ( progress );
 
           Message_ProgressSentry PSentry ( progress, "Root", 0, nbl, 1 );
 	  for (Standard_Integer ill = 1; ill <= nbl && PSentry.More(); ill ++, PSentry.Next()) {
@@ -4875,7 +4875,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
               nbt++;
 	    }
 	  }
-	  thesession->MapReader()->SetProgress ( 0 );
+	  thesession->TransferReader()->TransientProcess()->SetProgress ( 0 );
           progress->EndScope();
           progress->Show();
 	  di<<"Nb Shapes successfully produced : "<<nbt<<"\n";
@@ -4888,8 +4888,8 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 
   // *New* 
   //In order to clear memory after IGES reading you could add the following code
-  Handle(XSControl_TransferReader) TR = Reader.WS()->TransferReader();
-  Handle(Transfer_TransientProcess) TP = TR->TransientProcess();
+  const Handle(XSControl_TransferReader) &TR = Reader.WS()->TransferReader();
+  const Handle(Transfer_TransientProcess) &TP = TR->TransientProcess();
   TP->Clear();
   TR->Clear(2);
   Reader.WS()->Model()->Clear();

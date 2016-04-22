@@ -25,8 +25,6 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
-#include <MoniTool_Option.hxx>
-#include <MoniTool_Profile.hxx>
 #include <RWHeaderSection.hxx>
 #include <RWStepAP214.hxx>
 #include <Standard_Type.hxx>
@@ -56,10 +54,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_Controller,XSControl_Controller)
 
-//#include <StepAP214.hxx>
 //  Pour NewModel et Write : definition de produit (temporaire ...)
 STEPControl_Controller::STEPControl_Controller ()
-     : XSControl_Controller ("STEP", "step")
+: XSControl_Controller ("STEP", "step")
 {
   static Standard_Boolean init = Standard_False;
   if (!init) {
@@ -199,14 +196,13 @@ STEPControl_Controller::STEPControl_Controller ()
 
   Handle(STEPControl_ActorWrite) ActWrite = new STEPControl_ActorWrite;
   ActWrite->SetGroupMode (Interface_Static::IVal("write.step.assembly"));
-  theAdaptorWrite = ActWrite;
+  myAdaptorWrite = ActWrite;
 
   Handle(StepSelect_WorkLibrary) swl = new StepSelect_WorkLibrary;
   swl->SetDumpLabel(1);
-  theAdaptorLibrary  = swl;
-  theAdaptorProtocol =  STEPEdit::Protocol();
-//  theAdaptorProtocol =  StepAP214::Protocol();
-  theAdaptorRead     = new STEPControl_ActorRead;  // par ex pour Recognize
+  myAdaptorLibrary  = swl;
+  myAdaptorProtocol = STEPEdit::Protocol();
+  myAdaptorRead     = new STEPControl_ActorRead;  // par ex pour Recognize
 
   SetModeWrite (0,4);
   SetModeWriteHelp (0,"As Is");
@@ -216,21 +212,20 @@ STEPControl_Controller::STEPControl_Controller ()
   SetModeWriteHelp (4,"Wireframe");
   TraceStatic ("read.surfacecurve.mode",5);
 
-//   ---  SELECTIONS, SIGNATURES, COMPTEURS, EDITEURS
+  //   ---  SELECTIONS, SIGNATURES, COMPTEURS, EDITEURS
 
   DeclareAndCast(IFSelect_Selection,xmr,SessionItem("xst-model-roots"));
   if (!xmr.IsNull()) {
     Handle(IFSelect_Signature) sty = STEPEdit::SignType();
     AddSessionItem (sty,"step-type");
-    Handle(IFSelect_SignCounter) tys = new IFSelect_SignCounter
-      (sty,Standard_False,Standard_True);
+    Handle(IFSelect_SignCounter) tys = new IFSelect_SignCounter(sty,Standard_False,Standard_True);
     AddSessionItem (tys,"step-types");
-    theSignType = sty;
 
+    //szv:mySignType = sty;
     
     //pdn S4133 18.02.99
-    Handle(IFSelect_SignAncestor)sta =  new IFSelect_SignAncestor();
-    AddSessionItem (sta,"xst-derived");
+    AddSessionItem (new IFSelect_SignAncestor(),"xst-derived");
+
     Handle(STEPSelections_SelectDerived) stdvar = new STEPSelections_SelectDerived();
     stdvar->SetProtocol(STEPEdit::Protocol());
     AddSessionItem (stdvar,"step-derived");
@@ -238,12 +233,10 @@ STEPControl_Controller::STEPControl_Controller ()
     Handle(IFSelect_SelectSignature) selsdr = STEPEdit::NewSelectSDR();
     selsdr->SetInput (xmr);
     AddSessionItem (selsdr,"step-shape-def-repr");
-    Handle(IFSelect_SelectSignature) selrrs = STEPEdit::NewSelectPlacedItem();
-//    selrrs->SetInput (xmr);  deja prete avec ModelAll
-    AddSessionItem (selrrs,"step-placed-items");
-    Handle(IFSelect_SelectSignature) selsr = STEPEdit::NewSelectShapeRepr();
-//    input deja pret avec ModelAll
-    AddSessionItem (selsr,"step-shape-repr");
+
+    AddSessionItem (STEPEdit::NewSelectPlacedItem(),"step-placed-items");
+    // input deja pret avec ModelAll
+    AddSessionItem (STEPEdit::NewSelectShapeRepr(),"step-shape-repr");
   }
   
   //pdn
@@ -277,45 +270,12 @@ STEPControl_Controller::STEPControl_Controller ()
   Handle(IFSelect_EditForm) edsdrf = new IFSelect_EditForm (edsdr,Standard_False,Standard_True,"STEP Product Data (SDR)");
   AddSessionItem (edsdr,"step-SDR-edit");
   AddSessionItem (edsdrf,"step-SDR-data");
-
-//    ####    PROFILE    ####
-
-//  ActorRead : on ajoute le cas Shape possible, a part du default
-//  ainsi, on l a tjrs sous la main
-  Handle(MoniTool_Option) optacrd = Profile()->Option("tr-read");
-  optacrd->Add ("shape",theAdaptorRead);
-
-//  ActorWrite : on ajoute les cas possibles (NB : shape == default)
-//  On garde a part les cas shape compound (= shape traitee globale ou en
-//   assembly), peuvent etre utiles. Tandis que les autres cas sont
-//   susceptibles d etre remplaces si on fait du Model-Editor
-  Handle(MoniTool_Option) optacwr = Profile()->Option("tr-write");
-  Handle(STEPControl_ActorWrite) ActWSh = new STEPControl_ActorWrite;
-  ActWSh->SetGroupMode(0);
-  optacwr->Add ("shape",ActWSh);
-  Handle(STEPControl_ActorWrite) ActWA1 = new STEPControl_ActorWrite;
-  ActWA1->SetGroupMode(1);
-  optacwr->Add ("compound",ActWA1);
-  optacwr->Add ("assembly",ActWA1);
-  optacwr->Add ("SRWT",ActWA1);
-
-  Profile()->AddConf ("Shape");
-  Profile()->AddSwitch ("Shape","tr-write","shape");
-
-  Profile()->AddConf ("Assembly");
-  Profile()->AddSwitch ("Assembly","tr-write","SRWT");
 }
 
 Handle(Interface_InterfaceModel)  STEPControl_Controller::NewModel () const
 {
   return STEPEdit::NewModel();
 }
-
-Handle(Transfer_ActorOfTransientProcess)  STEPControl_Controller::ActorRead
-       (const Handle(Interface_InterfaceModel)& ) const
-{
-  return theAdaptorRead;
-}    // new Cc1ToTopoDSAct_Actor ??
 
 //  ####    PROVISOIRE ???   ####
 
@@ -327,7 +287,7 @@ IFSelect_ReturnStatus  STEPControl_Controller::TransferWriteShape
 {
   if (modeshape < 0 || modeshape > 4) return IFSelect_RetError;
   Handle(STEPControl_ActorWrite) ActWrite =
-    Handle(STEPControl_ActorWrite)::DownCast(theAdaptorWrite);
+    Handle(STEPControl_ActorWrite)::DownCast(myAdaptorWrite);
 //    A PRESENT ON PASSE PAR LE PROFILE
   if (!ActWrite.IsNull()) 
     ActWrite->SetGroupMode (Interface_Static::IVal("write.step.assembly"));
@@ -351,9 +311,10 @@ Standard_Boolean STEPControl_Controller::Init ()
 //purpose  : 
 //=======================================================================
 
- void STEPControl_Controller::Customise(Handle(XSControl_WorkSession)& WS) 
+void STEPControl_Controller::Customise(Handle(XSControl_WorkSession)& WS) 
 {
   XSControl_Controller::Customise(WS);
+
   Handle(IFSelect_SelectModelRoots) slr;
   Handle(Standard_Transient) slr1 = WS->NamedItem("xst-model-roots");
   if(!slr1.IsNull())
@@ -362,27 +323,23 @@ Standard_Boolean STEPControl_Controller::Init ()
     slr = new IFSelect_SelectModelRoots;
     WS->AddNamedItem ("xst-model-roots",slr);
   }
-  
-  
+
   Handle(STEPSelections_SelectForTransfer) st1= new STEPSelections_SelectForTransfer;
   st1->SetReader (WS->TransferReader());
   WS->AddNamedItem ("xst-transferrable-roots",st1);
-  
-  
-   //DeclareAndCast(IFSelect_Selection,xmr,SessionItem("xst-model-roots"));
+
   if (!slr.IsNull()) {
     Handle(IFSelect_Signature) sty = STEPEdit::SignType();
     WS->AddNamedItem ("step-type",sty);
     
-    Handle(IFSelect_SignCounter) tys = new IFSelect_SignCounter
-      (sty,Standard_False,Standard_True);
+    Handle(IFSelect_SignCounter) tys = new IFSelect_SignCounter(sty,Standard_False,Standard_True);
     WS->AddNamedItem ("step-types",tys);
-    theSignType = sty;
 
+	//szv:mySignType = sty;
+    WS->SetSignType( sty );
     
     //pdn S4133 18.02.99
-    Handle(IFSelect_SignAncestor)sta =  new IFSelect_SignAncestor();
-    WS->AddNamedItem ("xst-derived",sta);
+    WS->AddNamedItem ("xst-derived",new IFSelect_SignAncestor());
     Handle(STEPSelections_SelectDerived) stdvar = new STEPSelections_SelectDerived();
     stdvar->SetProtocol(STEPEdit::Protocol());
     WS->AddNamedItem ("step-derived",stdvar);
@@ -391,10 +348,9 @@ Standard_Boolean STEPControl_Controller::Init ()
     selsdr->SetInput (slr);
     WS->AddNamedItem ("step-shape-def-repr",selsdr);
     Handle(IFSelect_SelectSignature) selrrs = STEPEdit::NewSelectPlacedItem();
-//    selrrs->SetInput (slr);  deja prete avec ModelAll
     WS->AddNamedItem ("step-placed-items",selrrs);
     Handle(IFSelect_SelectSignature) selsr = STEPEdit::NewSelectShapeRepr();
-//    input deja pret avec ModelAll
+    // input deja pret avec ModelAll
     WS->AddNamedItem ("step-shape-repr",selsr);
   }
   

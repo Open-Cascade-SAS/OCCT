@@ -14,122 +14,116 @@
 
 #include <Interface_Category.hxx>
 #include <Interface_GeneralModule.hxx>
-#include <Interface_GTool.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Mutex.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
+#include <NCollection_Vector.hxx>
 
 static int init = 0;
 static Standard_CString unspec = "unspecified";
 
-static TColStd_SequenceOfAsciiString& thecats()
+static Standard_Mutex gMapTypesMutex;
+static volatile Standard_Boolean gMapTypesInit = Standard_False;
+
+static NCollection_Vector<TCollection_AsciiString>& theCats()
 {
-  static TColStd_SequenceOfAsciiString thecat;
-  return thecat;
+  static NCollection_Vector<TCollection_AsciiString> aCat;
+  return aCat;
 }
 
-
-
-
-    Interface_Category::Interface_Category ()
-    : thegtool (new Interface_GTool)    {  Init();  }
-
-    Interface_Category::Interface_Category
-  (const Handle(Interface_Protocol)& protocol)
-    : thegtool (new Interface_GTool(protocol))    {  Init();  }
-
-    Interface_Category::Interface_Category
-  (const Handle(Interface_GTool)& gtool)
-    : thegtool (gtool)    {  Init();  }
-
-    void  Interface_Category::SetProtocol
-  (const Handle(Interface_Protocol)& protocol)
-      {  thegtool->SetProtocol(protocol);  }
-
-    Standard_Integer Interface_Category::CatNum
-  (const Handle(Standard_Transient)& ent, const Interface_ShareTool& shares)
+Standard_Integer Interface_Category::CatNum
+  (const Handle(Standard_Transient)& theEnt,
+   const Interface_ShareTool& theShares)
 {
-  if (ent.IsNull()) return 0;
+  if (theEnt.IsNull()) return 0;
   Standard_Integer CN;
-  Handle(Interface_GeneralModule) module;
-  if (!thegtool->Select (ent,module,CN)) return 0;
-  return module->CategoryNumber (CN,ent,shares);
+  Handle(Interface_GeneralModule) aModule;
+  if (!myGTool->Select (theEnt,aModule,CN)) return 0;
+  return aModule->CategoryNumber (CN,theEnt,theShares);
 }
 
-    void  Interface_Category::ClearNums ()
-      {  thenum.Nullify();  }
-
-    void  Interface_Category::Compute
-  (const Handle(Interface_InterfaceModel)& model,
-   const Interface_ShareTool& shares)
+void Interface_Category::Compute
+  (const Handle(Interface_InterfaceModel)& theModel,
+   const Interface_ShareTool& theShares)
 {
   ClearNums();
-  if (model.IsNull()) return;
-  Standard_Integer CN, i, nb = model->NbEntities();
-  thegtool->Reservate (nb);
+  if (theModel.IsNull()) return;
+  Standard_Integer CN, i, nb = theModel->NbEntities();
+  myGTool->Reservate (nb);
   if (nb == 0) return;
-  thenum = new TColStd_HArray1OfInteger (1,nb);  thenum->Init(0);
+  myNum = new TColStd_HArray1OfInteger (1,nb);  myNum->Init(0);
   for (i = 1; i <= nb; i ++) {
-    Handle(Standard_Transient) ent = model->Value(i);
-    if (ent.IsNull()) continue;
-    Handle(Interface_GeneralModule) module;
-    if (!thegtool->Select (ent,module,CN)) continue;
-    thenum->SetValue (i,module->CategoryNumber (CN,ent,shares));
+    Handle(Standard_Transient) anEnt = theModel->Value(i);
+    if (anEnt.IsNull()) continue;
+    Handle(Interface_GeneralModule) aModule;
+    if (!myGTool->Select (anEnt,aModule,CN)) continue;
+    myNum->SetValue (i,aModule->CategoryNumber (CN,anEnt,theShares));
   }
 }
 
-Standard_Integer  Interface_Category::Num (const Standard_Integer nument) const
+Standard_Integer Interface_Category::Num (const Standard_Integer theNumEnt) const
 {
-  if (thenum.IsNull()) return 0;
-  if (nument < 1 || nument > thenum->Length()) return 0;
-  return thenum->Value(nument);
+  if (myNum.IsNull()) return 0;
+  if (theNumEnt < 1 || theNumEnt > myNum->Length()) return 0;
+  return myNum->Value(theNumEnt);
 }
 
+// List of Categories
 
-//  ##########    LISTE DES CATEGORIES    ##########
-
-    Standard_Integer  Interface_Category::AddCategory (const Standard_CString name)
+Standard_Integer Interface_Category::AddCategory (const Standard_CString theName)
 {
-  Standard_Integer num = Interface_Category::Number (name);
-  if (num > 0) return num;
-  thecats().Append (TCollection_AsciiString(name));
-  return thecats().Length()+1;
+  Standard_Integer aNum = Interface_Category::Number (theName);
+  if (aNum > 0) return aNum;
+  theCats().Append (TCollection_AsciiString(theName));
+  return theCats().Length()+1;
 }
 
-    Standard_Integer  Interface_Category::NbCategories ()
-      {  return thecats().Length();  }
-
-    Standard_CString  Interface_Category::Name   (const Standard_Integer num)
+Standard_Integer Interface_Category::NbCategories()
 {
-  if (num < 0) return "";
-  if (num < 1 || num > thecats().Length()) return unspec;
-  return thecats().Value(num).ToCString();
+  return theCats().Length();
 }
 
-
-    Standard_Integer  Interface_Category::Number (const Standard_CString name)
+Standard_CString Interface_Category::Name (const Standard_Integer theNum)
 {
-  Standard_Integer i, nb = thecats().Length();
+  if (theNum < 0) return "";
+  if (theNum < 1 || theNum > theCats().Length()) return unspec;
+  return theCats().ChangeValue(theNum).ToCString();
+}
+
+Standard_Integer Interface_Category::Number (const Standard_CString theName)
+{
+  Standard_Integer i, nb = theCats().Length();
   for (i = 1; i <= nb; i ++) {
-    if (thecats().Value(i).IsEqual(name)) return i;
+    if (theCats().ChangeValue(i).IsEqual(theName)) return i;
   }
   return 0;
 }
 
-
-    void Interface_Category::Init ()
+void Interface_Category::Init ()
 {
-  if (init) return;  init = 1;
-  init = Interface_Category::AddCategory ("Shape");
-  init = Interface_Category::AddCategory ("Drawing");
-  init = Interface_Category::AddCategory ("Structure");
-  init = Interface_Category::AddCategory ("Description");
-  init = Interface_Category::AddCategory ("Auxiliary");
-  init = Interface_Category::AddCategory ("Professional");
-  init = Interface_Category::AddCategory ("FEA");
-  init = Interface_Category::AddCategory ("Kinematics");
-  init = Interface_Category::AddCategory ("Piping");
+  // On first call, initialize static map
+  if ( !gMapTypesInit )
+  {
+    gMapTypesMutex.Lock();
+    if ( !gMapTypesInit )
+    {
+      if (init) return;  init = 1;
+      init = Interface_Category::AddCategory ("Shape");
+      init = Interface_Category::AddCategory ("Drawing");
+      init = Interface_Category::AddCategory ("Structure");
+      init = Interface_Category::AddCategory ("Description");
+      init = Interface_Category::AddCategory ("Auxiliary");
+      init = Interface_Category::AddCategory ("Professional");
+      init = Interface_Category::AddCategory ("FEA");
+      init = Interface_Category::AddCategory ("Kinematics");
+      init = Interface_Category::AddCategory ("Piping");
+
+      gMapTypesInit = Standard_True;
+    }
+    gMapTypesMutex.Unlock();
+  }
 }

@@ -35,6 +35,7 @@
 #include <VrmlData_ShapeNode.hxx>
 
 #include <XSControl_WorkSession.hxx>
+#include <XSControl_TransferReader.hxx>
 #include <STEPConstruct_Styles.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <STEPConstruct.hxx>
@@ -430,7 +431,7 @@ IFSelect_ReturnStatus CImportExport::ReadSTEP(const Standard_CString& aFileName,
   if (status != IFSelect_RetDone)
     return status;
 
-  aReader.WS()->MapReader()->SetTraceLevel(2); // increase default trace level
+  aReader.WS()->TransferReader()->TransientProcess()->SetTraceLevel(2); // increase default trace level
 
   Standard_Boolean failsonly = Standard_False;
   aReader.PrintCheckLoad(failsonly, IFSelect_ItemsByEntity);

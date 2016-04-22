@@ -18,10 +18,6 @@
 #define _XSDRAW_Functions_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-
 
 //! Defines additionnal commands for XSDRAW to :
 //! - control of initialisation (xinit, xnorm, newmodel)
@@ -35,35 +31,10 @@
 //! basic features from user callable forms
 class XSDRAW_Functions 
 {
-public:
-
-  DEFINE_STANDARD_ALLOC
-
+ public:
   
   //! Defines and loads all basic functions for XSDRAW (as ActFunc)
   Standard_EXPORT static void Init();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XSDRAW_Functions_HeaderFile

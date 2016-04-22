@@ -47,64 +47,47 @@
 #include <Transfer_FinderProcess.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <XSControl_TransferWriter.hxx>
 
 #include <errno.h>
 IGESControl_Writer::IGESControl_Writer ()
-    :  theTP (new Transfer_FinderProcess(10000)) ,
-       thest (Standard_False)
+    :  myTP (new Transfer_FinderProcess(10000)) ,
+       myIsComputed (Standard_False)
 {
 //  faudrait aussi (?) prendre les parametres par defaut ... ?
   IGESControl_Controller::Init();
-  thedit.Init(IGESSelect_WorkLibrary::DefineProtocol());
-  thedit.SetUnitName(Interface_Static::CVal ("write.iges.unit"));
-  thedit.ApplyUnit(); 
-  thecr = Interface_Static::IVal ("write.iges.brep.mode");
-  themod = thedit.Model();
+  myEditor.Init(IGESSelect_WorkLibrary::DefineProtocol());
+  myEditor.SetUnitName(Interface_Static::CVal ("write.iges.unit"));
+  myEditor.ApplyUnit(); 
+  myWriteMode = Interface_Static::IVal ("write.iges.brep.mode");
+  myModel = myEditor.Model();
 }
 
 IGESControl_Writer::IGESControl_Writer
   (const Standard_CString unit, const Standard_Integer modecr)
-    :  theTP (new Transfer_FinderProcess(10000)) ,
-       thecr (modecr) , thest (Standard_False)
+    :  myTP (new Transfer_FinderProcess(10000)) ,
+       myWriteMode (modecr) , myIsComputed (Standard_False)
 {
 //  faudrait aussi (?) prendre les parametres par defaut ... ?
   IGESControl_Controller::Init();
-  thedit.Init(IGESSelect_WorkLibrary::DefineProtocol());
-  thedit.SetUnitName(unit);
-  thedit.ApplyUnit();
-  themod = thedit.Model();
+  myEditor.Init(IGESSelect_WorkLibrary::DefineProtocol());
+  myEditor.SetUnitName(unit);
+  myEditor.ApplyUnit();
+  myModel = myEditor.Model();
 }
 
 IGESControl_Writer::IGESControl_Writer
   (const Handle(IGESData_IGESModel)& model, const Standard_Integer modecr)
-    :  theTP (new Transfer_FinderProcess(10000)) ,
-       themod (model) , 
-       thedit (model,IGESSelect_WorkLibrary::DefineProtocol()) ,
-       thecr (modecr) , thest (Standard_False)     {  }
-
-Handle(IGESData_IGESModel) IGESControl_Writer::Model () const
-{
-  return themod;
-}
-
-Handle(Transfer_FinderProcess) IGESControl_Writer::TransferProcess () const
-{
-  return theTP;
-}
-
-void IGESControl_Writer::SetTransferProcess
-  (const Handle(Transfer_FinderProcess)& TP)
-{
-  theTP = TP;
-}
+    :  myTP (new Transfer_FinderProcess(10000)) ,
+       myModel (model) , 
+       myEditor (model,IGESSelect_WorkLibrary::DefineProtocol()) ,
+       myWriteMode (modecr) , myIsComputed (Standard_False)     {  }
 
 Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull()) return Standard_False;
   
   // for progress indication
-  Handle(Message_ProgressIndicator) progress = theTP->GetProgress();
+  Handle(Message_ProgressIndicator) progress = myTP->GetProgress();
   if ( ! progress.IsNull() ) { 
     Standard_Integer nbfaces=0;
     for( TopExp_Explorer exp(theShape,TopAbs_FACE); exp.More(); exp.Next() )
@@ -123,25 +106,23 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
                                                               "write.iges.sequence", info,
                                                               progress );
   //  modified by NIZHNY-EAP Tue Aug 29 11:17:01 2000 ___END___
-  Handle(IGESData_IGESEntity) ent; 
-  BRepToIGES_BREntity   B0;  B0.SetTransferProcess(theTP); B0.SetModel(themod);
-  BRepToIGESBRep_Entity B1;  B1.SetTransferProcess(theTP); B1.SetModel(themod);
-  if (thecr) ent = B1.TransferShape(Shape);
-  else       ent = B0.TransferShape(Shape);
+  BRepToIGES_BREntity   B0;  B0.SetTransferProcess(myTP); B0.SetModel(myModel);
+  BRepToIGESBRep_Entity B1;  B1.SetTransferProcess(myTP); B1.SetModel(myModel);
+  Handle(IGESData_IGESEntity) ent = myWriteMode? B1.TransferShape(Shape) : B0.TransferShape(Shape);
 
   if(ent.IsNull())
     return Standard_False;
 //  modified by NIZHNY-EAP Tue Aug 29 11:37:18 2000 ___BEGIN___
-  XSAlgo::AlgoContainer()->MergeTransferInfo(theTP, info);
+  XSAlgo::AlgoContainer()->MergeTransferInfo(myTP, info);
 //  modified by NIZHNY-EAP Tue Aug 29 11:37:25 2000 ___END___
   
   //22.10.98 gka BUC60080
 
-  Standard_Integer oldnb = themod->NbEntities();
+  Standard_Integer oldnb = myModel->NbEntities();
   Standard_Boolean aent = AddEntity (ent);
-  Standard_Integer newnb = themod->NbEntities();
+  Standard_Integer newnb = myModel->NbEntities();
 
-  Standard_Real oldtol = themod->GlobalSection().Resolution(), newtol;
+  Standard_Real oldtol = myModel->GlobalSection().Resolution(), newtol;
   
   Standard_Integer tolmod = Interface_Static::IVal("write.precision.mode");
   if (tolmod == 2)
@@ -165,7 +146,7 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
     }
   }
   
-  IGESData_GlobalSection gs = themod->GlobalSection();
+  IGESData_GlobalSection gs = myModel->GlobalSection();
   gs.SetResolution (newtol / gs.UnitValue());//rln 28.12.98 CCI60005
 
   //#34 22.10.98 rln BUC60081
@@ -182,7 +163,7 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
 			     aZmin / gs.UnitValue()));
   }
 
-  themod->SetGlobalSection(gs);
+  myModel->SetGlobalSection(gs);
 
   return aent;
 }
@@ -199,11 +180,11 @@ Standard_Boolean IGESControl_Writer::AddGeom (const Handle(Standard_Transient)& 
 //   quid de Point; Geom2d ?
 
 //  GeomToIGES_GeomPoint GP;
-  GeomToIGES_GeomCurve GC;    GC.SetModel(themod);
-  GeomToIGES_GeomSurface GS;  GS.SetModel(themod);
+  GeomToIGES_GeomCurve GC;    GC.SetModel(myModel);
+  GeomToIGES_GeomSurface GS;  GS.SetModel(myModel);
 
   //#34 22.10.98 rln BUC60081
-  IGESData_GlobalSection gs = themod->GlobalSection();
+  IGESData_GlobalSection gs = myModel->GlobalSection();
   Bnd_Box box;
 
   if (!Curve.IsNull()) {
@@ -224,24 +205,25 @@ Standard_Boolean IGESControl_Writer::AddGeom (const Handle(Standard_Transient)& 
   gs.MaxMaxCoords (gp_XYZ (aXmin / gs.UnitValue(),
 			   aYmin / gs.UnitValue(),
 			   aZmin / gs.UnitValue()));
-  themod->SetGlobalSection(gs);
+  myModel->SetGlobalSection(gs);
   return AddEntity (ent);
 }
 
 Standard_Boolean IGESControl_Writer::AddEntity (const Handle(IGESData_IGESEntity)& ent)
 {
   if (ent.IsNull()) return Standard_False;
-  themod->AddWithRefs(ent,IGESSelect_WorkLibrary::DefineProtocol());
-  thest = Standard_False;
+  myModel->AddWithRefs(ent,IGESSelect_WorkLibrary::DefineProtocol());
+  myIsComputed = Standard_False;
   return Standard_True;
 }
 
 void IGESControl_Writer::ComputeModel ()
 {
-  if (thest) return;
-  thedit.ComputeStatus();
-  thedit.AutoCorrectModel();
-  thest = Standard_True;
+  if (!myIsComputed) {
+    myEditor.ComputeStatus();
+    myEditor.AutoCorrectModel();
+    myIsComputed = Standard_True;
+  }
 }
 
 Standard_Boolean IGESControl_Writer::Write
@@ -249,13 +231,13 @@ Standard_Boolean IGESControl_Writer::Write
 {
   if (!S) return Standard_False;
   ComputeModel();
-  Standard_Integer nbEnt = themod->NbEntities();
+  Standard_Integer nbEnt = myModel->NbEntities();
 #ifdef OCCT_DEBUG
   cout<<" IGES Write : "<<nbEnt<<" ent.s"<< flush;
 #endif
   if(!nbEnt)
     return Standard_False;
-  IGESData_IGESWriter IW (themod);
+  IGESData_IGESWriter IW (myModel);
 //  ne pas oublier le mode fnes ... a transmettre a IW
   IW.SendModel (IGESSelect_WorkLibrary::DefineProtocol());
 #ifdef OCCT_DEBUG
@@ -285,10 +267,4 @@ Standard_Boolean IGESControl_Writer::Write
   res = fout.good() && res && !errno;
 
   return res;
-}
-
-void IGESControl_Writer::PrintStatsTransfer
-  (const Standard_Integer what, const Standard_Integer mode) const
-{
-  XSControl_TransferWriter::PrintStatsProcess (theTP,what,mode);
 }

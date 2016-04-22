@@ -637,11 +637,10 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
       WriteMaterials(writer.WS(),sublabels);
 
     // register all MDGPRs in model
+    const Handle(Interface_InterfaceModel) &Model = writer.WS()->Model();
     MoniTool_DataMapIteratorOfDataMapOfShapeTransient anItr(myMapCompMDGPR);
-    for (; anItr.More(); anItr.Next()) {
-      Handle(Interface_InterfaceModel) Model = writer.WS()->Model();
+    for (; anItr.More(); anItr.Next())
       Model->AddWithRefs( anItr.Value() );
-    }
   }
   
   if ( multi ) { // external refs
@@ -666,8 +665,8 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
 
   if ( Interface_Static::IVal("write.stepcaf.subshapes.name") )
   {
-    Handle(XSControl_TransferWriter) TW = this->ChangeWriter().WS()->TransferWriter();
-    Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+    const Handle(XSControl_TransferWriter) &TW = this->ChangeWriter().WS()->TransferWriter();
+    const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
 
     for ( int i = 1; i <= labels.Length(); i++ )
     {
@@ -803,8 +802,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
 {
   if ( labels.Length() <=0 ) return Standard_False;
 
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
   STEPConstruct_ExternRefs EFTool ( WS );
   Standard_Integer schema = Interface_Static::IVal("write.step.schema");
   for ( Standard_Integer k=1; k <= labels.Length(); k++ ) {
@@ -1255,8 +1254,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
     }
     else {
       // create SDR and add to model.
-      Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-      Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+      const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+      const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
       Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
       Handle(StepShape_ContextDependentShapeRepresentation) CDSR;
       if ( FP->FindTypedTransient(mapper, 
@@ -1330,11 +1329,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteNames (const Handle(XSControl_WorkS
   if ( labels.Length() <=0 ) return Standard_False;
 
   // get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
-//  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( labels(1) );
-//  if ( STool.IsNull() ) return Standard_False;
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
 
   // Iterate on requested shapes
   for ( Standard_Integer i=1; i <= labels.Length(); i++ ) {
@@ -1547,9 +1543,9 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
   if ( labels.Length() <=0 ) return Standard_False;
 
   // get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
   Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool( labels(1) );
   if (LTool.IsNull() ) return Standard_False;
 
@@ -1682,8 +1678,8 @@ static Standard_Boolean getProDefinitionOfNAUO(const Handle(XSControl_WorkSessio
   if ( theShape.IsNull() )
     return Standard_False;
   // get CDSR
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
   Handle(StepShape_ContextDependentShapeRepresentation) CDSR;
   Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, theShape );
   if (!FP->FindTypedTransient(mapper, 
@@ -1852,8 +1848,8 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   Handle(StepVisual_StyledItem) override; //null styled item
   
   // find the repr item of the shape
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
   Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, Sh );
   Handle(StepShape_ContextDependentShapeRepresentation) CDSR;
   FP->FindTypedTransient(mapper, 
@@ -1963,20 +1959,15 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
   if ( labels.Length() <=0 ) return Standard_False;
 
   // get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
   Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool( labels(1) );
   if (CTool.IsNull() )
     return Standard_False;
   // map of transfered SHUO
   TColStd_MapOfTransient aMapOfMainSHUO;
-//   TColStd_IndexedDataMapOfTransientTransient aIndxMapOfSHUOEnt;
   // Iterate on requested shapes
   for ( Standard_Integer i=1; i <= labels.Length(); i++ ) {
     TDF_Label L = labels.Value(i);
     if ( ! myLabels.IsBound ( L ) ) continue; // not recorded as translated, skip
-//     TopoDS_Shape S = myLabels.Find ( L );
     if ( XCAFDoc_ShapeTool::IsAssembly ( L ) ) {
       TDF_LabelSequence seq;
       XCAFDoc_ShapeTool::GetComponents ( L, seq );
@@ -2250,9 +2241,9 @@ static Handle(StepRepr_ShapeAspect) WriteShapeAspect (const Handle(XSControl_Wor
                                                       Handle(StepAP242_GeometricItemSpecificUsage)& theGISU)
 {
   // Get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
   const Handle(Interface_HGraph) aHGraph = WS->HGraph();
   if (aHGraph.IsNull())
     return NULL;
@@ -2328,7 +2319,7 @@ static void WritePresentation(const Handle(XSControl_WorkSession) &WS,
   if (thePresentation.IsNull())
     return;
   // Get working data
-  Handle(Interface_InterfaceModel) aModel = WS->Model();
+  const Handle(Interface_InterfaceModel) &aModel = WS->Model();
 
   // Presentation
   Handle(StepVisual_TessellatedGeometricSet) aGeomSet = STEPCAFControl_GDTProperty::GetTessellation(thePresentation);
@@ -2399,9 +2390,9 @@ static Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSessi
                                                 const Handle(StepDimTol_Datum) theWrittenDatum)
 {
   // Get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
   const Handle(Interface_HGraph) aHGraph = WS->HGraph();
   if (aHGraph.IsNull())
     return NULL;
@@ -2600,7 +2591,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
                            const StepShape_DimensionalCharacteristic theDimension)
 {
   // Get working data
-  Handle(Interface_InterfaceModel) aModel = WS->Model();
+  const Handle(Interface_InterfaceModel) &aModel = WS->Model();
   XCAFDimTolObjects_DimensionModifiersSequence aModifiers = theObject->GetModifiers();
   Handle(Standard_Transient) aDim = theDimension.Value();
   Standard_Boolean isAngle = aDim->IsKind(STANDARD_TYPE(StepShape_AngularLocation)) ||
@@ -2806,7 +2797,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
                                                                            const Handle(StepRepr_RepresentationContext)& theRC)
 {
   // Get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
   const Handle(Interface_HGraph) aHGraph = WS->HGraph();
   if (aHGraph.IsNull())
     return NULL;
@@ -2979,7 +2970,7 @@ static void WriteToleranceZone (const Handle(XSControl_WorkSession) &WS,
                                 const Handle(StepRepr_RepresentationContext)& theRC)
 {
   // Get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
   if (theEntity.IsNull() || theObject.IsNull())
     return;
 
@@ -3029,7 +3020,7 @@ static void WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
                                 const Handle(StepRepr_RepresentationContext)& theRC)
 {
   // Get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
   Handle(XCAFDoc_GeomTolerance) aGTAttr;
   if (!theGeomTolL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTAttr)) 
     return;
@@ -3209,9 +3200,9 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   if ( labels.Length() <=0 ) return Standard_False;
   
   // get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
 
   const Handle(Interface_HGraph) aHGraph = WS->HGraph();
   if(aHGraph.IsNull())
@@ -3565,9 +3556,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
                                                         const TDF_LabelSequence  &labels ) const
 {
   // Get working data
-  Handle(Interface_InterfaceModel) aModel = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_InterfaceModel) &aModel = WS->Model();
 
   const Handle(Interface_HGraph) aHGraph = WS->HGraph();
   if(aHGraph.IsNull())
@@ -3833,9 +3822,9 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
   if ( labels.Length() <=0 ) return Standard_False;
 
   // get working data
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
-  Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+  const Handle(Interface_InterfaceModel) &Model = WS->Model();
+  const Handle(XSControl_TransferWriter) &TW = WS->TransferWriter();
+  const Handle(Transfer_FinderProcess) &FP = TW->FinderProcess();
 
   const Handle(Interface_HGraph) aHGraph = WS->HGraph();
   if(aHGraph.IsNull())

@@ -24,11 +24,8 @@
 #include <Interface_IntVal.hxx>
 #include <Interface_Macros.hxx>
 #include <Message_Messenger.hxx>
-#include <MoniTool_Profile.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_Binder.hxx>
@@ -41,23 +38,21 @@
 #include <TransferBRep.hxx>
 #include <XSControl_Controller.hxx>
 #include <XSControl_TransferReader.hxx>
-#include <XSControl_TransferWriter.hxx>
 #include <XSControl_Vars.hxx>
 #include <XSControl_WorkSession.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_WorkSession,IFSelect_WorkSession)
 
-// tpent
 //=======================================================================
 //function : XSControl_WorkSession
 //purpose  : 
 //=======================================================================
+
 XSControl_WorkSession::XSControl_WorkSession ()
+: myTransferReader(new XSControl_TransferReader),
+  myTransferWriter(new XSControl_TransferWriter),
+  myVars(new XSControl_Vars)
 {
-  theModeWriteShape = 0;
-  theTransferRead  = new XSControl_TransferReader;
-  theTransferWrite = new XSControl_TransferWriter;
-  theVars = new XSControl_Vars;
 }
 
 
@@ -76,11 +71,11 @@ void  XSControl_WorkSession::ClearData (const Standard_Integer mode)
   // 7 : Management, y compris tous transferts (forces/calcules), views
 
   if (mode == 5 || mode == 7) {
-    theTransferRead->Clear(-1);
-    theTransferWrite->Clear(-1);
+    myTransferReader->Clear(-1);
+    myTransferWriter->Clear(-1);
   }
-  if (mode == 6 && !theTransferRead.IsNull()) theTransferRead->Clear(1);
-  theTransferRead->SetGraph (HGraph());
+  if (mode == 6 && !myTransferReader.IsNull()) myTransferReader->Clear(1);
+  myTransferReader->SetGraph (HGraph());
 }
 
 
@@ -89,36 +84,18 @@ void  XSControl_WorkSession::ClearData (const Standard_Integer mode)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  XSControl_WorkSession::SelectNorm(const Standard_CString normname,
-                                                    const Standard_CString profile)
+Standard_Boolean  XSControl_WorkSession::SelectNorm(const Standard_CString normname)
 {
-  //   RAZ ancienne norme  et resultats
-  theTransferRead->Clear(-1);
+  // Old norm and results
+  myTransferReader->Clear(-1);
   //  ????  En toute rigueur, menage a faire dans XWS : virer les items
   //        ( a la limite, pourquoi pas, refaire XWS en entier)
 
-  Handle(XSControl_Controller) newadapt =
-    XSControl_Controller::Recorded (normname);
+  Handle(XSControl_Controller) newadapt = XSControl_Controller::Recorded (normname);
   if (newadapt.IsNull()) return Standard_False;
-  if (newadapt == theController) return Standard_True;
+  if (newadapt == myController) return Standard_True;
   SetController (newadapt);
-  if (profile && profile[0] != '\0') newadapt->Profile()->SetCurrent(profile);
-
-//  cout<<"##########################\n"
-//      <<"##  Select Norm : "<<normname<<"\n"
-//      <<"##########################"<<endl;
   return Standard_True;
-}
-
-
-//=======================================================================
-//function : SelectProfile
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean  XSControl_WorkSession::SelectProfile(const Standard_CString profile)
-{
-  return theController->Profile()->SetCurrent(profile);
 }
 
 
@@ -127,31 +104,24 @@ Standard_Boolean  XSControl_WorkSession::SelectProfile(const Standard_CString pr
 //purpose  : 
 //=======================================================================
 
-void  XSControl_WorkSession::SetController(const Handle(XSControl_Controller)& ctl)
+void XSControl_WorkSession::SetController(const Handle(XSControl_Controller)& ctl)
 {
-  theController = ctl;
+  myController = ctl;
 
-  SetLibrary   ( theController->WorkLibrary() );
-  SetProtocol  ( theController->Protocol() );
-  ClearItems();  ClearFinalModifiers();
-  ClearShareOut(Standard_False);  ClearFile();
-  Handle(XSControl_WorkSession) aWorkSession = this;
-  theController->Customise (aWorkSession);
-  SetSignType  ( theController->SignType() );
-  theTransferRead->SetController (theController);
-  theTransferWrite->SetController (theController);
+  SetLibrary   ( myController->WorkLibrary() );
+  SetProtocol  ( myController->Protocol() );
 
-  AdaptNorm ();
-}
+  ClearItems();
+  ClearFinalModifiers();
+  ClearShareOut(Standard_False);
+  ClearFile();
 
+  // Set worksession parameters from teh controller
+  Handle(XSControl_WorkSession) aWorkSession(this);
+  myController->Customise (aWorkSession);
 
-//=======================================================================
-//function : AdaptNorm
-//purpose  : 
-//=======================================================================
-
-void XSControl_WorkSession::AdaptNorm ()
-{
+  myTransferReader->SetController (myController);
+  myTransferWriter->SetController (myController);
 }
 
 
@@ -163,20 +133,8 @@ void XSControl_WorkSession::AdaptNorm ()
 Standard_CString XSControl_WorkSession::SelectedNorm(const Standard_Boolean rsc) const
 {
   //JR/Hp :
-  Standard_CString astr = (Standard_CString ) (theController.IsNull() ? "" : theController->Name(rsc));
+  Standard_CString astr = (Standard_CString ) (myController.IsNull() ? "" : myController->Name(rsc));
   return astr ;
-}
-//      {  return (theController.IsNull() ? "" : theController->Name(rsc));  }
-
-
-//=======================================================================
-//function : NormAdaptor
-//purpose  : 
-//=======================================================================
-
-Handle(XSControl_Controller) XSControl_WorkSession::NormAdaptor () const
-{
-  return theController;
 }
 
 
@@ -186,25 +144,14 @@ Handle(XSControl_Controller) XSControl_WorkSession::NormAdaptor () const
 
 
 //=======================================================================
-//function : Context
-//purpose  : 
-//=======================================================================
-
-Handle(Dico_DictionaryOfTransient) XSControl_WorkSession::Context () const
-{
-  return theContext;
-}
-
-
-//=======================================================================
 //function : SetAllContext
 //purpose  : 
 //=======================================================================
 
 void XSControl_WorkSession::SetAllContext(const Handle(Dico_DictionaryOfTransient)& context)
 {
-  theContext = context;
-  theTransferRead->Context() = context;
+  myContext = context;
+  myTransferReader->Context() = context;
 }
 
 
@@ -215,8 +162,8 @@ void XSControl_WorkSession::SetAllContext(const Handle(Dico_DictionaryOfTransien
 
 void XSControl_WorkSession::ClearContext ()
 {
-  Handle(Dico_DictionaryOfTransient) nulctx;
-  SetAllContext(nulctx);
+  myContext.Nullify();
+  myTransferReader->Context().Nullify();
 }
 
 
@@ -234,8 +181,8 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
                                                              const Standard_Boolean wri,
                                                              const Handle(Message_Messenger)& S) const
 {
-  Handle(Transfer_FinderProcess)    FP = MapWriter();
-  Handle(Transfer_TransientProcess) TP = MapReader();
+  const Handle(Transfer_FinderProcess)    &FP = myTransferWriter->FinderProcess();
+  Handle(Transfer_TransientProcess) TP = myTransferReader->TransientProcess();
 
   Handle(Transfer_Binder) binder;
   Handle(Transfer_Finder) finder;
@@ -266,7 +213,7 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
     FP->StartTrace (binder,finder,0,0);  // pb sout/S
     if (!ent.IsNull()) {
       S<<" ** Resultat Transient, type "<<ent->DynamicType()->Name();
-      Handle(Interface_InterfaceModel) model = Model();
+      const Handle(Interface_InterfaceModel) &model = Model();
       if (!model.IsNull())
 	{  S<<" In output Model, Entity ";  model->Print(ent,S);  }
       S<<endl;
@@ -327,33 +274,33 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
 
 void  XSControl_WorkSession::InitTransferReader(const Standard_Integer mode)
 {
-  if (mode == 0 || mode == 5)  theTransferRead->Clear(-1);  // full clear
-  if (theTransferRead.IsNull()) SetTransferReader (new XSControl_TransferReader);
-  else SetTransferReader (theTransferRead);
+  if (mode == 0 || mode == 5)  myTransferReader->Clear(-1);  // full clear
+  if (myTransferReader.IsNull()) SetTransferReader (new XSControl_TransferReader);
+  else SetTransferReader (myTransferReader);
 
   // mode = 0 fait par SetTransferReader suite a Nullify
   if (mode == 1) {
-    if (!theTransferRead.IsNull()) theTransferRead->Clear(-1);
+    if (!myTransferReader.IsNull()) myTransferReader->Clear(-1);
     else SetTransferReader (new XSControl_TransferReader);
   }
   if (mode == 2) {
-    Handle(Transfer_TransientProcess) TP = theTransferRead->TransientProcess();
+    Handle(Transfer_TransientProcess) TP = myTransferReader->TransientProcess();
     if (TP.IsNull()) {
       TP = new Transfer_TransientProcess;
-      theTransferRead->SetTransientProcess(TP);
+      myTransferReader->SetTransientProcess(TP);
       TP->SetGraph (HGraph());
     }
-    Handle(TColStd_HSequenceOfTransient) lis = theTransferRead->RecordedList();
+    Handle(TColStd_HSequenceOfTransient) lis = myTransferReader->RecordedList();
     Standard_Integer i, nb = lis->Length();
     for (i = 1; i <= nb; i ++) TP->SetRoot(lis->Value(i));
   }
   if (mode == 3) {
-    Handle(Transfer_TransientProcess) TP = theTransferRead->TransientProcess();
+    Handle(Transfer_TransientProcess) TP = myTransferReader->TransientProcess();
     if (TP.IsNull()) return;
     Standard_Integer i, nb = TP->NbRoots();
-    for (i = 1; i <= nb; i ++) theTransferRead->RecordResult(TP->Root(i));
+    for (i = 1; i <= nb; i ++) myTransferReader->RecordResult(TP->Root(i));
   }
-  if (mode == 4 || mode == 5) theTransferRead->BeginTransfer();
+  if (mode == 4 || mode == 5) myTransferReader->BeginTransfer();
 }
 
 
@@ -364,10 +311,10 @@ void  XSControl_WorkSession::InitTransferReader(const Standard_Integer mode)
 
 void XSControl_WorkSession::SetTransferReader(const Handle(XSControl_TransferReader)& TR)
 {
-  if (theTransferRead != TR) //i1 pdn 03.04.99 BUC60301
-    theTransferRead = TR;
+  if (myTransferReader != TR) //i1 pdn 03.04.99 BUC60301
+    myTransferReader = TR;
   if (TR.IsNull()) return;
-  TR->SetController (theController);
+  TR->SetController (myController);
   TR->SetGraph (HGraph());
   if (!TR->TransientProcess().IsNull()) return;
   Handle(Transfer_TransientProcess) TP = new Transfer_TransientProcess
@@ -379,43 +326,20 @@ void XSControl_WorkSession::SetTransferReader(const Handle(XSControl_TransferRea
 
 
 //=======================================================================
-//function : TransferReader
-//purpose  : 
-//=======================================================================
-
-Handle(XSControl_TransferReader) XSControl_WorkSession::TransferReader () const
-{
-  return theTransferRead;
-}
-
-
-//=======================================================================
-//function : MapReader
-//purpose  : 
-//=======================================================================
-
-Handle(Transfer_TransientProcess) XSControl_WorkSession::MapReader () const
-{
-  return theTransferRead->TransientProcess();
-}
-
-
-//=======================================================================
 //function : SetMapReader
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  XSControl_WorkSession::SetMapReader
-  (const Handle(Transfer_TransientProcess)& TP)
+Standard_Boolean XSControl_WorkSession::SetMapReader (const Handle(Transfer_TransientProcess)& TP)
 {
-  if ( TP.IsNull())  return Standard_False;
+  if (TP.IsNull()) return Standard_False;
   if (TP->Model().IsNull()) TP->SetModel (Model());
   TP->SetGraph (HGraph());
   if (TP->Model() != Model()) return Standard_False;
 //  TR ne doit pas bouger, c est un "crochet" pour signatures, selections ...
 //  En revanche, mieux vaut le RAZ
 //  Handle(XSControl_TransferReader) TR = new XSControl_TransferReader;
-  Handle(XSControl_TransferReader) TR = theTransferRead;
+  Handle(XSControl_TransferReader) TR = myTransferReader;
   TR->Clear(-1);
 
   SetTransferReader (TR);        // avec le meme mais le reinitialise
@@ -438,12 +362,12 @@ Handle(Standard_Transient)  XSControl_WorkSession::Result
   Handle(Transfer_Binder) binder;
   Handle(Transfer_ResultFromModel) resu;
 
-  if (ouca !=  1) resu = theTransferRead->FinalResult(ent);
+  if (ouca !=  1) resu = myTransferReader->FinalResult(ent);
   if (mode == 20) return resu;
 
   if (!resu.IsNull()) binder = resu->MainResult()->Binder();
   if (binder.IsNull() && ouca > 0)
-    binder = theTransferRead->TransientProcess()->Find(ent);
+    binder = myTransferReader->TransientProcess()->Find(ent);
 
   if (kica == 1) return binder;
   DeclareAndCast(Transfer_SimpleBinderOfTransient,trb,binder);
@@ -461,15 +385,14 @@ Handle(Standard_Transient)  XSControl_WorkSession::Result
 //purpose  : 
 //=======================================================================
 
-Standard_Integer  XSControl_WorkSession::TransferReadOne
-  (const Handle(Standard_Transient)& ent)
+Standard_Integer XSControl_WorkSession::TransferReadOne (const Handle(Standard_Transient)& ent)
 {
   Handle(Interface_InterfaceModel) model = Model();
   if (ent == model) return TransferReadRoots();
 
   Handle(TColStd_HSequenceOfTransient) list = GiveList(ent);
-  if (list->Length() == 1) return theTransferRead->TransferOne(list->Value(1));
-  else return theTransferRead->TransferList (list);
+  if (list->Length() == 1) return myTransferReader->TransferOne(list->Value(1));
+  else return myTransferReader->TransferList (list);
 }
 
 
@@ -478,9 +401,9 @@ Standard_Integer  XSControl_WorkSession::TransferReadOne
 //purpose  : 
 //=======================================================================
 
-Standard_Integer  XSControl_WorkSession::TransferReadRoots ()
+Standard_Integer XSControl_WorkSession::TransferReadRoots ()
 {
-  return theTransferRead->TransferRoots(Graph());
+  return myTransferReader->TransferRoots(Graph());
 }
 
 
@@ -496,75 +419,17 @@ Standard_Integer  XSControl_WorkSession::TransferReadRoots ()
 Handle(Interface_InterfaceModel) XSControl_WorkSession::NewModel ()
 {
   Handle(Interface_InterfaceModel) newmod;
-  if (theController.IsNull()) return newmod;
-  newmod = theController->NewModel();
+  if (myController.IsNull()) return newmod;
+  newmod = myController->NewModel();
   
   SetModel(newmod);
-  if(!MapReader().IsNull())
-    MapReader()->Clear();
+  if(!myTransferReader->TransientProcess().IsNull())
+    myTransferReader->TransientProcess()->Clear();
   //clear all contains of WS
-  theTransferRead->Clear(3);
-  theTransferWrite->Clear(-1);
+  myTransferReader->Clear(3);
+  myTransferWriter->Clear(-1);
 
   return newmod;
-}
-
-
-//=======================================================================
-//function : TransferWriter
-//purpose  : 
-//=======================================================================
-
-Handle(XSControl_TransferWriter) XSControl_WorkSession::TransferWriter () const
-{
-  return theTransferWrite;
-}
-
-
-//=======================================================================
-//function : MapWriter
-//purpose  : 
-//=======================================================================
-
-Handle(Transfer_FinderProcess) XSControl_WorkSession::MapWriter () const
-{
-  return theTransferWrite->FinderProcess();
-}
-
-
-//=======================================================================
-//function : SetMapWriter
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean XSControl_WorkSession::SetMapWriter
-  (const Handle(Transfer_FinderProcess)& FP)
-{
-  if ( FP.IsNull())  return Standard_False;
-  theTransferWrite->SetFinderProcess (FP);
-  return Standard_True;
-}
-
-
-//=======================================================================
-//function : SetModeWriteShape
-//purpose  : 
-//=======================================================================
-
-void XSControl_WorkSession::SetModeWriteShape(const Standard_Integer mode)
-{
-  theTransferWrite->SetTransferMode(mode);
-}
-
-
-//=======================================================================
-//function : ModeWriteShape
-//purpose  : 
-//=======================================================================
-
-Standard_Integer XSControl_WorkSession::ModeWriteShape () const
-{
-  return theTransferWrite->TransferMode();
 }
 
 
@@ -573,15 +438,14 @@ Standard_Integer XSControl_WorkSession::ModeWriteShape () const
 //purpose  : 
 //=======================================================================
 
-IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape
-  (const TopoDS_Shape& shape, const Standard_Boolean compgraph)
+IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape (const TopoDS_Shape& shape, const Standard_Boolean compgraph)
 {
   IFSelect_ReturnStatus  status;
-  if (theController.IsNull()) return IFSelect_RetError;
-  Handle(Interface_InterfaceModel) model = Model();
+  if (myController.IsNull()) return IFSelect_RetError;
+  const Handle(Interface_InterfaceModel) &model = Model();
   if (model.IsNull()) return IFSelect_RetVoid;
 
-  status = theTransferWrite->TransferWriteShape (model,shape);
+  status = myTransferWriter->TransferWriteShape (model,shape);
   //  qui s occupe de tout, try/catch inclus
 
   //skl insert param compgraph for XDE writing 10.12.2003
@@ -598,29 +462,7 @@ IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape
 
 Interface_CheckIterator XSControl_WorkSession::TransferWriteCheckList () const
 {
-  return theTransferWrite->ResultCheckList (Model());
-}
-
-
-//=======================================================================
-//function : Vars
-//purpose  : 
-//=======================================================================
-
-Handle(XSControl_Vars) XSControl_WorkSession::Vars () const
-{
-  return theVars;
-}
-
-
-//=======================================================================
-//function : SetVars
-//purpose  : 
-//=======================================================================
-
-void XSControl_WorkSession::SetVars (const Handle(XSControl_Vars)& newvars)
-{
-  theVars = newvars;
+  return myTransferWriter->ResultCheckList (Model());
 }
 
 
@@ -631,7 +473,7 @@ void XSControl_WorkSession::SetVars (const Handle(XSControl_Vars)& newvars)
 
 void XSControl_WorkSession::ClearBinders()
 {
-  Handle(Transfer_FinderProcess) FP = theTransferWrite->FinderProcess();
+  const Handle(Transfer_FinderProcess) &FP = myTransferWriter->FinderProcess();
   //Due to big number of chains of binders it is necessary to 
   //collect head binders of each chain in the sequence
   TColStd_SequenceOfTransient aSeqBnd;
@@ -665,16 +507,3 @@ void XSControl_WorkSession::ClearBinders()
   }
 
 }
-
-
-//=======================================================================
-//function : Destroy
-//purpose  : 
-//=======================================================================
-
-void XSControl_WorkSession::Destroy()
-{
-  ClearBinders();
-}
-
-

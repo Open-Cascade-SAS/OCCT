@@ -18,13 +18,9 @@
 #define _XSDRAW_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 class IFSelect_SessionPilot;
@@ -49,11 +45,8 @@ class XSDRAW_Vars;
 //! FinderProcess
 class XSDRAW 
 {
-public:
+ public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   //! Takes variables to/from the DRAW session
   //! Implements ProgressIndicator for DRAW
   //! Changes the name under which a command of xstep is known by
@@ -119,9 +112,7 @@ public:
   
   //! Sets a norm by its name (controller recorded as <normname> )
   //! Returns True if done, False if this norm is unknown
-  //! If <profile> is given, also sets the norm to <profile>
-  //! (if <profile> is undefined for <normname>, it is ignored)
-  Standard_EXPORT static Standard_Boolean SetNorm (const Standard_CString normname, const Standard_CString profile = "");
+  Standard_EXPORT static Standard_Boolean SetNorm (const Standard_CString normname);
   
   //! Returns the actually defined Protocol
   Standard_EXPORT static Handle(Interface_Protocol) Protocol();
@@ -213,30 +204,6 @@ public:
   //! completed (Append without Clear) by the Shapes found
   //! Returns 0 if no Shape could be found
   Standard_EXPORT static Standard_Integer MoreShapes (Handle(TopTools_HSequenceOfShape)& list, const Standard_CString name);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XSDRAW_Functions;
-friend class XSDRAW_Vars;
-
 };
-
-
-
-
-
-
 
 #endif // _XSDRAW_HeaderFile

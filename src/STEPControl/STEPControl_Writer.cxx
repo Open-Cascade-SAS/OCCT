@@ -134,11 +134,10 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
     default : break;
   }
   if (mws < 0) return IFSelect_RetError;    // cas non reconnu
-  thesession->SetModeWriteShape (mws);
+  thesession->TransferWriter()->SetTransferMode (mws);
 
   // for progress indicator.
-  Handle(Message_ProgressIndicator) progress =
-    WS()->TransferWriter()->FinderProcess()->GetProgress();
+  Handle(Message_ProgressIndicator) progress = WS()->TransferWriter()->FinderProcess()->GetProgress();
   if ( ! progress.IsNull() ) {
     Standard_Integer nbfaces=0;
     for( TopExp_Explorer exp(sh, TopAbs_FACE); exp.More(); exp.Next())  nbfaces++;

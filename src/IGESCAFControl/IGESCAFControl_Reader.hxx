@@ -20,12 +20,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IGESControl_Reader.hxx>
-#include <Standard_CString.hxx>
+#include <TCollection_AsciiString.hxx>
 class XSControl_WorkSession;
 class TDocStd_Document;
-class TCollection_AsciiString;
 
 
 //! Provides a tool to read IGES file and put it into
@@ -48,80 +46,63 @@ class TCollection_AsciiString;
 //! Standard_Boolean namemode = reader.GetNameMode();
 class IGESCAFControl_Reader  : public IGESControl_Reader
 {
-public:
+ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a reader with an empty
   //! IGES model and sets ColorMode, LayerMode and NameMode to Standard_True.
-  Standard_EXPORT IGESCAFControl_Reader();
+  IGESCAFControl_Reader()
+  : myColorMode( Standard_True ),
+    myNameMode ( Standard_True ),
+    myLayerMode( Standard_True )
+  {}
   
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
-  Standard_EXPORT IGESCAFControl_Reader(const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
+  IGESCAFControl_Reader(const Handle(XSControl_WorkSession)& theWS, const Standard_Boolean FromScratch = Standard_True)
+  : myColorMode( Standard_True ),
+    myNameMode ( Standard_True ),
+    myLayerMode( Standard_True )
+  { SetWS (theWS,FromScratch); }
   
   //! Translates currently loaded IGES file into the document
   //! Returns True if succeeded, and False in case of fail
-  Standard_EXPORT Standard_Boolean Transfer (Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean Transfer (Handle(TDocStd_Document)& theDoc);
   
-  Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& filename, Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& theFileName, Handle(TDocStd_Document)& theDoc)
+  { return Perform (theFileName.ToCString(), theDoc); }
   
   //! Translate IGES file given by filename into the document
   //! Return True if succeeded, and False in case of fail
-  Standard_EXPORT Standard_Boolean Perform (const Standard_CString filename, Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean Perform (const Standard_CString theFileName, Handle(TDocStd_Document)& theDoc);
   
   //! Set ColorMode for indicate read Colors or not.
-  Standard_EXPORT void SetColorMode (const Standard_Boolean colormode);
-  
-  Standard_EXPORT Standard_Boolean GetColorMode() const;
+  void SetColorMode (const Standard_Boolean theMode)
+  { myColorMode = theMode; }
+
+  Standard_Boolean GetColorMode() const
+  { return myColorMode; }
   
   //! Set NameMode for indicate read Name or not.
-  Standard_EXPORT void SetNameMode (const Standard_Boolean namemode);
-  
-  Standard_EXPORT Standard_Boolean GetNameMode() const;
+  void SetNameMode (const Standard_Boolean theMode)
+  { myNameMode = theMode; }
+
+  Standard_Boolean GetNameMode() const
+  { return myNameMode; }
   
   //! Set LayerMode for indicate read Layers or not.
-  Standard_EXPORT void SetLayerMode (const Standard_Boolean layermode);
-  
-  Standard_EXPORT Standard_Boolean GetLayerMode() const;
+  void SetLayerMode (const Standard_Boolean theMode)
+  { myLayerMode = theMode; }
 
+  Standard_Boolean GetLayerMode() const
+  { return myLayerMode; }
 
-
-
-protected:
-
-  
-  //! Reads colors of IGES entities and sets
-  //! corresponding color assignments in the DECAF document
-  Standard_EXPORT Standard_Boolean ReadColors (Handle(TDocStd_Document)& doc) const;
-  
-  //! Reads Names of IGES entities and sets
-  //! corresponding name to label with shape in the DECAF document
-  Standard_EXPORT Standard_Boolean ReadNames (Handle(TDocStd_Document)& doc) const;
-  
-  //! Reads layers of parts defined in the IGES model and
-  //! set reference between shape and layers in the DECAF document
-  Standard_EXPORT Standard_Boolean ReadLayers (Handle(TDocStd_Document)& doc) const;
-
-
-
-
-private:
-
-
+ private:
 
   Standard_Boolean myColorMode;
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESCAFControl_Reader_HeaderFile

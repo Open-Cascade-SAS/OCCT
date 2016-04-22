@@ -32,47 +32,33 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferWriter,MMgt_TShared)
 
-XSControl_TransferWriter::XSControl_TransferWriter ()
-{  theTransferWrite = new Transfer_FinderProcess;  theTransferMode = 0;  }
 
-    Handle(Transfer_FinderProcess)  XSControl_TransferWriter::FinderProcess () const
-      {  return theTransferWrite;  }
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
 
-    void  XSControl_TransferWriter::SetFinderProcess (const Handle(Transfer_FinderProcess)& FP)
-      {  theTransferWrite = FP;  }
-
-    Handle(XSControl_Controller)  XSControl_TransferWriter::Controller () const
-      {  return theController;  }
-
-    void  XSControl_TransferWriter::SetController (const Handle(XSControl_Controller)& ctl)
+void XSControl_TransferWriter::Clear (const Standard_Integer mode)
 {
-  theController = ctl;
-  Clear(-1);
+  if (mode < 0 || myTransferWriter.IsNull())
+    myTransferWriter = new Transfer_FinderProcess;
+  else myTransferWriter->Clear();
 }
 
-    void  XSControl_TransferWriter::Clear (const Standard_Integer mode)
+//=======================================================================
+//function : PrintStats
+//purpose  : 
+//=======================================================================
+
+void XSControl_TransferWriter::PrintStats (const Standard_Integer , const Standard_Integer ) const
 {
-  if (mode < 0 || theTransferWrite.IsNull())
-    theTransferWrite = new Transfer_FinderProcess;
-  else theTransferWrite->Clear();
-}
-
-    Standard_Integer  XSControl_TransferWriter::TransferMode () const
-      {  return theTransferMode;  }
-
-    void  XSControl_TransferWriter::SetTransferMode (const Standard_Integer mod)
-      {  theTransferMode = mod;  }
-
-    void  XSControl_TransferWriter::PrintStats
-  (const Standard_Integer , const Standard_Integer ) const
-{
-  Handle(Message_Messenger) sout = theTransferWrite->Messenger();
+  Handle(Message_Messenger) sout = myTransferWriter->Messenger();
 //  A ameliorer ... !
   sout<<"\n*******************************************************************\n";
   sout << "******        Statistics on Transfer (Write)                 ******"<<endl;
   sout<<"\n*******************************************************************\n";
-  sout << "******        Transfer Mode = "<<theTransferMode;
-  Standard_CString modehelp = theController->ModeWriteHelp (theTransferMode);
+  sout << "******        Transfer Mode = "<<myTransferMode;
+  Standard_CString modehelp = myController->ModeWriteHelp (myTransferMode);
   if (modehelp && modehelp[0] != 0) sout<<"  I.E.  "<<modehelp;
   sout<<"       ******"<<endl;
 }
@@ -80,36 +66,45 @@ XSControl_TransferWriter::XSControl_TransferWriter ()
 
 //  ##########    LES ACTIONS    ##########
 
-    Standard_Boolean  XSControl_TransferWriter::RecognizeTransient
-  (const Handle(Standard_Transient)& obj)
+//=======================================================================
+//function : RecognizeTransient
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean XSControl_TransferWriter::RecognizeTransient (const Handle(Standard_Transient)& obj)
 {
-  if (theController.IsNull()) return Standard_False;
+  if (myController.IsNull()) return Standard_False;
   XSControl_Utils xu;
   TopoDS_Shape sh = xu.BinderShape (obj);
   if (!sh.IsNull()) return RecognizeShape (sh);
-  return theController->RecognizeWriteTransient (obj,theTransferMode);
+  return myController->RecognizeWriteTransient (obj,myTransferMode);
 }
 
-    IFSelect_ReturnStatus  XSControl_TransferWriter::TransferWriteTransient
+//=======================================================================
+//function : TransferWriteTransient
+//purpose  : 
+//=======================================================================
+
+IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient
   (const Handle(Interface_InterfaceModel)& model,
    const Handle(Standard_Transient)& obj)
 {
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
-  if (theController.IsNull()) return IFSelect_RetError;
+  if (myController.IsNull()) return IFSelect_RetError;
   if (model.IsNull()) return IFSelect_RetVoid;
 
-  if (theTransferWrite.IsNull()) theTransferWrite = new Transfer_FinderProcess;
+  if (myTransferWriter.IsNull()) myTransferWriter = new Transfer_FinderProcess;
   Handle(Transfer_ActorOfFinderProcess) nulact;
-  theTransferWrite->SetActor (nulact);
+  myTransferWriter->SetActor (nulact);
   Handle(Standard_Transient) resultat;
-  Handle(Message_Messenger) sout = theTransferWrite->Messenger();
+  Handle(Message_Messenger) sout = myTransferWriter->Messenger();
   try {
     OCC_CATCH_SIGNALS
-    PrintStats(theTransferMode);
+    PrintStats(myTransferMode);
     sout << "******        Transferring Transient, CDL Type = ";
     sout<<obj->DynamicType()->Name()<<"   ******"<<endl;
-    status = theController->TransferWriteTransient
-      (obj,theTransferWrite,model,theTransferMode);
+    status = myController->TransferWriteTransient
+      (obj,myTransferWriter,model,myTransferMode);
   }
   catch(Standard_Failure) {
     sout<<"****  ****  TransferWriteShape, EXCEPTION : ";
@@ -120,37 +115,44 @@ XSControl_TransferWriter::XSControl_TransferWriter ()
   return status;
 }
 
+//=======================================================================
+//function : RecognizeShape
+//purpose  : 
+//=======================================================================
 
-    Standard_Boolean  XSControl_TransferWriter::RecognizeShape
-  (const TopoDS_Shape& shape)
+Standard_Boolean XSControl_TransferWriter::RecognizeShape (const TopoDS_Shape& shape)
 {
-  if (theController.IsNull()) return Standard_False;
+  if (myController.IsNull()) return Standard_False;
   if (shape.IsNull()) return Standard_False;
-  return theController->RecognizeWriteShape (shape,theTransferMode);
+  return myController->RecognizeWriteShape (shape,myTransferMode);
 }
 
+//=======================================================================
+//function : TransferWriteShape
+//purpose  : 
+//=======================================================================
 
-    IFSelect_ReturnStatus  XSControl_TransferWriter::TransferWriteShape
+IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape
   (const Handle(Interface_InterfaceModel)& model,
    const TopoDS_Shape& shape)
 {
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
-  if (theController.IsNull()) return IFSelect_RetError;
+  if (myController.IsNull()) return IFSelect_RetError;
   if (model.IsNull()) return IFSelect_RetVoid;
 
-  if (theTransferWrite.IsNull()) theTransferWrite = new Transfer_FinderProcess;
+  if (myTransferWriter.IsNull()) myTransferWriter = new Transfer_FinderProcess;
 //  effacer l actor : Controller s en charge
   Handle(Transfer_ActorOfFinderProcess) nulact;
-  theTransferWrite->SetActor (nulact);
+  myTransferWriter->SetActor (nulact);
   Handle(Standard_Transient) resultat;
-  Handle(Message_Messenger) sout = theTransferWrite->Messenger();
+  Handle(Message_Messenger) sout = myTransferWriter->Messenger();
   try {
     OCC_CATCH_SIGNALS
-    PrintStats(theTransferMode);
+    PrintStats(myTransferMode);
     sout << "******        Transferring Shape, ShapeType = " << shape.ShapeType();
     sout<<"                      ******"<<endl;
-    status = theController->TransferWriteShape
-      (shape,theTransferWrite,model,theTransferMode);
+    status = myController->TransferWriteShape
+      (shape,myTransferWriter,model,myTransferMode);
   }
   catch(Standard_Failure) {
     sout<<"****  ****  TransferWriteShape, EXCEPTION : "; 
@@ -161,35 +163,42 @@ XSControl_TransferWriter::XSControl_TransferWriter ()
   return status;
 }
 
+//=======================================================================
+//function : CheckList
+//purpose  : 
+//=======================================================================
 
-    Interface_CheckIterator  XSControl_TransferWriter::CheckList () const
+Interface_CheckIterator XSControl_TransferWriter::CheckList () const
 {
   Interface_CheckIterator  chl;
-  if (theTransferWrite.IsNull()) return chl;
-  Standard_Integer i, nb = theTransferWrite->NbMapped();
+  if (myTransferWriter.IsNull()) return chl;
+  Standard_Integer i, nb = myTransferWriter->NbMapped();
   for (i = 1; i <= nb; i ++) {
-    DeclareAndCast(Transfer_SimpleBinderOfTransient,tb,theTransferWrite->MapItem
-(i));
+    DeclareAndCast(Transfer_SimpleBinderOfTransient,tb,myTransferWriter->MapItem(i));
     if (tb.IsNull()) continue;
     Handle(Interface_Check) ach = tb->Check();
     if (ach->NbFails() == 0 || ach->NbWarnings() == 0) continue;
-    DeclareAndCast(Transfer_TransientMapper,tm,theTransferWrite->Mapped(i));
-    if (tm.IsNull()) ach->GetEntity (theTransferWrite->Mapped(i));
+    DeclareAndCast(Transfer_TransientMapper,tm,myTransferWriter->Mapped(i));
+    if (tm.IsNull()) ach->GetEntity (myTransferWriter->Mapped(i));
     else  ach->GetEntity (tm->Value());
     chl.Add(ach);
   }
   return chl;
 }
 
-    Interface_CheckIterator  XSControl_TransferWriter::ResultCheckList
+//=======================================================================
+//function : ResultCheckList
+//purpose  : 
+//=======================================================================
+
+Interface_CheckIterator XSControl_TransferWriter::ResultCheckList
   (const Handle(Interface_InterfaceModel)& model) const
 {
   Interface_CheckIterator  chl;
-  if (theTransferWrite.IsNull()) return chl;
-  Standard_Integer i, nb = theTransferWrite->NbMapped();
+  if (myTransferWriter.IsNull()) return chl;
+  Standard_Integer i, nb = myTransferWriter->NbMapped();
   for (i = 1; i <= nb; i ++) {
-    DeclareAndCast(Transfer_SimpleBinderOfTransient,tb,theTransferWrite->MapItem
-(i));
+    DeclareAndCast(Transfer_SimpleBinderOfTransient,tb,myTransferWriter->MapItem(i));
     if (tb.IsNull()) continue;
     const Handle(Interface_Check) ach = tb->Check();
     if (ach->NbFails() == 0 || ach->NbWarnings() == 0) continue;
@@ -199,8 +208,3 @@ XSControl_TransferWriter::XSControl_TransferWriter ()
   }
   return chl;
 }
-
-    void  XSControl_TransferWriter::PrintStatsProcess
-  (const Handle(Transfer_FinderProcess)& ,
-   const Standard_Integer , const Standard_Integer )
-{  }

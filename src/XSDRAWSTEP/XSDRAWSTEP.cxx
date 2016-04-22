@@ -44,6 +44,7 @@
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <XSControl_Controller.hxx>
+#include <XSControl_TransferReader.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
@@ -178,7 +179,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
 
       progress->NewScope ( 80, "Translation" );
       progress->Show();
-      sr.WS()->MapReader()->SetProgress ( progress );
+      sr.WS()->TransferReader()->TransientProcess()->SetProgress ( progress );
 
       if (!sr.TransferRoot (num)) di<<"Transfer root n0 "<<num<<" : no result\n";
       else {
@@ -190,7 +191,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
         DBRep::Set (shname,sh);
       }
 
-      sr.WS()->MapReader()->SetProgress ( 0 );
+      sr.WS()->TransferReader()->TransientProcess()->SetProgress ( 0 );
       progress->EndScope();
       progress->Show();
     }
@@ -240,7 +241,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
 
       progress->NewScope ( 80, "Translation" );
       progress->Show();
-      sr.WS()->MapReader()->SetProgress ( progress );
+      sr.WS()->TransferReader()->TransientProcess()->SetProgress ( progress );
 
       Message_ProgressSentry PSentry ( progress, "Root", 0, nbl, 1 );
       for (ill = 1; ill <= nbl && PSentry.More(); ill ++, PSentry.Next()) {
@@ -256,7 +257,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
           DBRep::Set (shname,sh);
         }
       }
-      sr.WS()->MapReader()->SetProgress ( 0 );
+      sr.WS()->TransferReader()->TransientProcess()->SetProgress ( 0 );
       progress->EndScope();
       progress->Show();
     }

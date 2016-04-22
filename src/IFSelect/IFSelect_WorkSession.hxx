@@ -25,6 +25,7 @@
 #include <Interface_CheckIterator.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <MMgt_TShared.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_CString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Integer.hxx>
@@ -86,13 +87,15 @@ public:
   Standard_EXPORT IFSelect_WorkSession();
   
   //! Changes the Error Handler status (by default, it is not set)
-  Standard_EXPORT void SetErrorHandle (const Standard_Boolean hand);
+  Standard_EXPORT void SetErrorHandle (const Standard_Boolean toHandle);
   
   //! Returns the Error Handler status
-  Standard_EXPORT Standard_Boolean ErrorHandle() const;
+  Standard_Boolean ErrorHandle() const
+  { return theerrhand; }
   
   //! Returns the ShareOut defined at creation time
-  Standard_EXPORT const Handle(IFSelect_ShareOut)& ShareOut() const;
+  const Handle(IFSelect_ShareOut) & ShareOut() const
+  { return theshareout; }
   
   //! Sets a new ShareOut. Fills Items which its content
   //! Warning : data from the former ShareOut are lost
@@ -101,17 +104,21 @@ public:
   //! Set value of mode responsible for precence of selections after loading
   //! If mode set to true that different selections will be accessible after loading
   //! else selections will be not accessible after loading( for economy memory in applicatios)
-  Standard_EXPORT void SetModeStat (const Standard_Boolean theMode);
+  void SetModeStat (const Standard_Boolean theMode)
+  { themodelstat = theMode; }
   
   //! Return value of mode defining of filling selection during loading
-  Standard_EXPORT Standard_Boolean GetModeStat() const;
+  Standard_Boolean GetModeStat() const
+  { return themodelstat; }
   
   //! Sets a WorkLibrary, which will be used to Read and Write Files
-  Standard_EXPORT void SetLibrary (const Handle(IFSelect_WorkLibrary)& lib);
+  void SetLibrary (const Handle(IFSelect_WorkLibrary) &theLib)
+  { thelibrary = theLib; }
   
   //! Returns the WorkLibrary. Null Handle if not yet set
   //! should be C++ : return const &
-  Standard_EXPORT Handle(IFSelect_WorkLibrary) WorkLibrary() const;
+  const Handle(IFSelect_WorkLibrary) & WorkLibrary() const
+  { return thelibrary; }
   
   //! Sets a Protocol, which will be used to determine Graphs, to
   //! Read and to Write Files
@@ -119,7 +126,8 @@ public:
   
   //! Returns the Protocol. Null Handle if not yet set
   //! should be C++ : return const &
-  Standard_EXPORT Handle(Interface_Protocol) Protocol() const;
+  const Handle(Interface_Protocol) & Protocol() const
+  { return theprotocol; }
   
   //! Sets a specific Signature to be the SignType, i.e. the
   //! Signature which will determine TypeName from the Model
@@ -131,7 +139,8 @@ public:
   Standard_EXPORT Handle(IFSelect_Signature) SignType() const;
   
   //! Returns True is a Model has been set
-  Standard_EXPORT Standard_Boolean HasModel() const;
+  Standard_Boolean HasModel() const
+  { return (!myModel.IsNull()); }
   
   //! Sets a Model as input : this will be the Model from which the
   //! ShareOut will work
@@ -143,15 +152,18 @@ public:
   
   //! Returns the Model of the Work Session (Null Handle if none)
   //! should be C++ : return const &
-  Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
+  const Handle(Interface_InterfaceModel) & Model () const
+  { return myModel; }
   
   //! Stores the filename used for read for setting the model
   //! It is cleared by SetModel and ClearData(1)
-  Standard_EXPORT void SetLoadedFile (const Standard_CString filename);
+  void SetLoadedFile (const Standard_CString theFileName)
+  { theloaded = theFileName; }
   
   //! Returns the filename used to load current model
   //! empty if unknown
-  Standard_EXPORT Standard_CString LoadedFile() const;
+  Standard_CString LoadedFile() const
+  { return theloaded.ToCString(); }
   
   //! Reads a file with the WorkLibrary (sets Model and LoadedFile)
   //! Returns a integer status which can be :
@@ -273,7 +285,8 @@ public:
   //! Cleared by SetModel or ClearData(1)
   //! The field is protected, hence a specialized WorkSession may
   //! fill it
-  Standard_EXPORT Interface_CheckIterator LastRunCheckList() const;
+  Interface_CheckIterator LastRunCheckList() const
+  { return thecheckrun; }
   
   //! Returns the Maximum Value for an Item Identifier. It can be
   //! greater to the count of known Items, because some can have
@@ -531,7 +544,8 @@ public:
   Standard_EXPORT Standard_Integer DispatchRank (const Handle(IFSelect_Dispatch)& disp) const;
   
   //! Gives access to the complete ModelCopier
-  Standard_EXPORT Handle(IFSelect_ModelCopier) ModelCopier() const;
+  const Handle(IFSelect_ModelCopier) & ModelCopier() const
+  { return thecopier; }
   
   //! Sets a new ModelCopier. Fills Items which its content
   Standard_EXPORT void SetModelCopier (const Handle(IFSelect_ModelCopier)& copier);
@@ -968,7 +982,7 @@ public:
   //! xst-params-split    4     Split
   //! xst-param-read      5     Transfer on Reading
   //! xst-param-write     6     Transfer on Writing
-  Standard_EXPORT void SetParams (const TColStd_SequenceOfTransient& params, const TColStd_SequenceOfInteger& uselist);
+  Standard_EXPORT void SetParams (const NCollection_Vector<Handle(Standard_Transient)>& params, const NCollection_Vector<Standard_Integer>& uselist);
   
   //! Traces the Statics attached to a given use number
   //! If <use> is given positive (normal), the trace is embedded
@@ -1073,28 +1087,22 @@ public:
   //! 2 gives a form suitable for givelist : (n1,n2,n3...)
   Standard_EXPORT void ListEntities (const Interface_EntityIterator& iter, const Standard_Integer mode) const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_WorkSession,MMgt_TShared)
 
-protected:
-
+ protected:
 
   Handle(Interface_HGraph) thegraph;
   Interface_CheckIterator thecheckrun;
   TColStd_IndexedDataMapOfTransientTransient theitems;
   Handle(Dico_DictionaryOfTransient) thenames;
 
-
-private:
-
+ private:
 
   Standard_Boolean theerrhand;
   Handle(IFSelect_ShareOut) theshareout;
   Handle(IFSelect_WorkLibrary) thelibrary;
   Handle(Interface_Protocol) theprotocol;
-  Handle(Interface_InterfaceModel) themodel;
+  Handle(Interface_InterfaceModel) myModel;
   TCollection_AsciiString theloaded;
   Handle(Interface_GTool) thegtool;
   Standard_Boolean thecheckdone;
@@ -1103,14 +1111,6 @@ private:
   Handle(IFSelect_ModelCopier) thecopier;
   Handle(Interface_InterfaceModel) theoldel;
   Standard_Boolean themodelstat;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_WorkSession_HeaderFile
