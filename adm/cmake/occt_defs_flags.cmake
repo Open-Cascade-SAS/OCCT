@@ -108,6 +108,16 @@ elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMP
 endif()
 
 if(MINGW)
+  # Set default release optimization option to O2 instead of O3, since in
+  # some OCCT related examples, this gives significantly smaller binaries
+  # at comparable performace with MinGW-w64.
+  string (REGEX MATCH "-O3" IS_O3_CXX "${CMAKE_CXX_FLAGS_RELEASE}")
+  if (IS_O3_CXX)
+    string (REGEX REPLACE "-O3" "-O2" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+  else()
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+  endif()
+
   set (CMAKE_CXX_FLAGS "-std=gnu++0x ${CMAKE_CXX_FLAGS}")
   add_definitions(-D_WIN32_WINNT=0x0501)
   # workaround bugs in mingw with vtable export
