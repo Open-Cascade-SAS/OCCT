@@ -90,14 +90,14 @@ Standard_Integer Interface_Category::NbCategories()
 Standard_CString Interface_Category::Name (const Standard_Integer theNum)
 {
   if (theNum < 0) return "";
-  if (theNum < 1 || theNum > theCats().Length()) return unspec;
+  if (theNum < theCats().Lower() || theNum > theCats().Upper()) return unspec;
   return theCats().ChangeValue(theNum).ToCString();
 }
 
 Standard_Integer Interface_Category::Number (const Standard_CString theName)
 {
-  Standard_Integer i, nb = theCats().Length();
-  for (i = 1; i <= nb; i ++) {
+  Standard_Integer i;
+  for (i = theCats().Lower(); i <= theCats().Upper(); i ++) {
     if (theCats().ChangeValue(i).IsEqual(theName)) return i;
   }
   return 0;

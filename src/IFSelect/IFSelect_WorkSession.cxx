@@ -2796,7 +2796,7 @@ void IFSelect_WorkSession::SetParams
   Standard_Integer i, nbp = params.Length(), nbu = uselist.Length();
   Handle(IFSelect_ParamEditor) editor = new IFSelect_ParamEditor
     (nbp+nbu+50,"Parameter Editor");
-  for (i = 1; i <= nbp; i ++) {
+  for (i = params.Lower(); i <= params.Upper(); i ++) {
     DeclareAndCast(Interface_TypedValue,val,params.Value(i));
     if (val.IsNull()) continue;
     editor->AddValue(val);
@@ -2808,7 +2808,7 @@ void IFSelect_WorkSession::SetParams
 
 //  On attaque les EditForms partielles
   TColStd_SequenceOfInteger listgen,listload,listsend,listsplit,listread,listwrite;
-  for (i = 1; i <= nbu; i ++) {
+  for (i = uselist.Lower(); i <= uselist.Upper(); i ++) {
     Standard_Integer use = uselist.Value(i);
     switch (use) {
     case 1 : listgen.Append(i);   break;
