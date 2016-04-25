@@ -44,7 +44,8 @@ enum ChildLab
   ChildLab_Modifiers,
   ChildLab_Path,
   ChildLab_Dir,
-  ChildLab_Pnts,
+  ChildLab_Pnt1,
+  ChildLab_Pnt2,
   ChildLab_PlaneLoc,
   ChildLab_PlaneN,
   ChildLab_PlaneRef,
@@ -178,22 +179,30 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
     aDir->ChangeArray(anArrR);
   }
 
-  Handle(TColgp_HArray1OfPnt) aP = theObject->GetPoints();
-  if(!aP.IsNull() && aP->Length() > 0)
+  if (theObject->HasPoint())
   {
-    anArrR = new TColStd_HArray1OfReal(1,aP->Length() * 3);
-    Handle(TDataStd_RealArray) aPnts;
-    anArrR->SetValue(1,aP->Value(1).X());
-    anArrR->SetValue(2,aP->Value(1).Y());
-    anArrR->SetValue(3,aP->Value(1).Z());
-    if (aP->Length() == 2) {
-      anArrR->SetValue(4,aP->Value(2).X());
-      anArrR->SetValue(5,aP->Value(2).Y());
-      anArrR->SetValue(6,aP->Value(2).Z());
-    }
-    aPnts = new TDataStd_RealArray();
-    Label().FindChild(ChildLab_Pnts).AddAttribute(aPnts);
-    aPnts->ChangeArray(anArrR);
+    Handle(TDataStd_RealArray) aPnt = new TDataStd_RealArray();
+    gp_Pnt aPnt1 = theObject->GetPoint();
+
+    Handle(TColStd_HArray1OfReal) aPntArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aPntArr->SetValue(i, aPnt1.Coord(i));
+    aPnt->ChangeArray(aPntArr);
+
+    Label().FindChild(ChildLab_Pnt1).AddAttribute(aPnt);
+  }
+
+  if (theObject->HasPoint2())
+  {
+    Handle(TDataStd_RealArray) aPnt = new TDataStd_RealArray();
+    gp_Pnt aPnt2 = theObject->GetPoint2();
+
+    Handle(TColStd_HArray1OfReal) aPntArr = new TColStd_HArray1OfReal(1, 3);
+    for (Standard_Integer i = 1; i <= 3; i++)
+      aPntArr->SetValue(i, aPnt2.Coord(i));
+    aPnt->ChangeArray(aPntArr);
+
+    Label().FindChild(ChildLab_Pnt2).AddAttribute(aPnt);
   }
 
   if (theObject->HasPlane())
@@ -336,19 +345,18 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject()  const
     anObj->SetDirection(aD);
   }
 
-  Handle(TDataStd_RealArray) aPnts;
-  if(Label().FindChild(ChildLab_Pnts).FindAttribute(TDataStd_RealArray::GetID(), aPnts) 
-     && !aPnts->Array().IsNull() && aPnts->Array()->Length() > 2)
+  Handle(TDataStd_RealArray) aPnt1;
+  if(Label().FindChild(ChildLab_Pnt1).FindAttribute(TDataStd_RealArray::GetID(), aPnt1) && aPnt1->Length() == 3 )
   {
-    Handle(TColgp_HArray1OfPnt) aP = new TColgp_HArray1OfPnt(1,aPnts->Array()->Length()/3);
-    gp_Pnt aP1(aPnts->Array()->Value(1), aPnts->Array()->Value(2), aPnts->Array()->Value(3)); 
-    aP->SetValue(1, aP1);
-    if (aPnts->Array()->Length() == 6)
-    {
-      gp_Pnt aP2(aPnts->Array()->Value(4), aPnts->Array()->Value(5), aPnts->Array()->Value(6)); 
-      aP->SetValue(2, aP2);
-    }
-    anObj->SetPoints(aP);
+    gp_Pnt aP(aPnt1->Value(aPnt1->Lower()), aPnt1->Value(aPnt1->Lower()+1), aPnt1->Value(aPnt1->Lower()+2));
+    anObj->SetPoint(aP);
+  }
+
+  Handle(TDataStd_RealArray) aPnt2;
+  if(Label().FindChild(ChildLab_Pnt2).FindAttribute(TDataStd_RealArray::GetID(), aPnt2) && aPnt2->Length() == 3 )
+  {
+    gp_Pnt aP(aPnt2->Value(aPnt2->Lower()), aPnt2->Value(aPnt2->Lower()+1), aPnt2->Value(aPnt2->Lower()+2));
+    anObj->SetPoint2(aP);
   }
 
   Handle(TDataStd_RealArray) aLoc, aN, aR;

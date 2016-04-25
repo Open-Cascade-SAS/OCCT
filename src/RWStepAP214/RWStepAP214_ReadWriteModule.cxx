@@ -1381,12 +1381,16 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <StepVisual_TessellatedGeometricSet.hxx>
 #include <StepVisual_TessellatedCurveSet.hxx>
 #include <StepVisual_CoordinatesList.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentation.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 
 #include <RWStepVisual_RWTessellatedAnnotationOccurrence.hxx>
 #include <RWStepVisual_RWTessellatedItem.hxx>
 #include <RWStepVisual_RWTessellatedGeometricSet.hxx>
 #include <RWStepVisual_RWTessellatedCurveSet.hxx>
 #include <RWStepVisual_RWCoordinatesList.hxx>
+#include <RWStepRepr_RWConstructiveGeometryRepresentation.hxx>
+#include <RWStepRepr_RWConstructiveGeometryRepresentationRelationship.hxx>
 
 // -- General Declarations (Recognize, StepType) ---
 
@@ -2022,6 +2026,8 @@ static TCollection_AsciiString Reco_TessellatedAnnotationOccurrence("TESSELLATED
 static TCollection_AsciiString Reco_TessellatedGeometricSet("TESSELLATED_GEOMETRIC_SET");
 static TCollection_AsciiString Reco_TessellatedCurveSet("TESSELLATED_CURVE_SET");
 static TCollection_AsciiString Reco_CoordinatesList("COORDINATES_LIST");
+static TCollection_AsciiString Reco_ConstructiveGeometryRepresentation("CONSTRUCTIVE_GEOMETRY_REPRESENTATION");
+static TCollection_AsciiString Reco_ConstructiveGeometryRepresentationRelationship("CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP");
 // -- Definition of the libraries --
 
 static Handle(Dico_DictionaryOfInteger) typenums;
@@ -2673,6 +2679,8 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
 
   typenums->SetItem ( Reco_TessellatedCurveSet, 710);
   typenums->SetItem ( Reco_CoordinatesList, 711);
+  typenums->SetItem ( Reco_ConstructiveGeometryRepresentation, 712);
+  typenums->SetItem ( Reco_ConstructiveGeometryRepresentationRelationship, 713);
 
   
 //    SHORT NAMES
@@ -3214,6 +3222,8 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typeshor->SetItem ("VLRPIT",701);
   typeshor->SetItem ("DMIA", 703);
   typeshor->SetItem ("ANNPLN", 704);
+  typeshor->SetItem ("CNGMRP", 712);
+  typeshor->SetItem ("CGRR", 713);
     
 }
 
@@ -4492,6 +4502,8 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
 
   case 710 : return Reco_TessellatedCurveSet;
   case 711 : return Reco_CoordinatesList;
+  case 712 : return Reco_ConstructiveGeometryRepresentation;
+  case 713 : return Reco_ConstructiveGeometryRepresentationRelationship;
 
   default : return PasReco;
   }
@@ -9309,6 +9321,20 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
       tool.ReadStep (data,num,ach,anent);
     }
     break;
+     case 712:
+    {
+      DeclareAndCast(StepRepr_ConstructiveGeometryRepresentation,anent,ent);
+      RWStepRepr_RWConstructiveGeometryRepresentation tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
+     case 713:
+    {
+      DeclareAndCast(StepRepr_ConstructiveGeometryRepresentationRelationship,anent,ent);
+      RWStepRepr_RWConstructiveGeometryRepresentationRelationship tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
 
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
@@ -14093,7 +14119,20 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
       DeclareAndCast(StepVisual_CoordinatesList,anent,ent);
       RWStepVisual_RWCoordinatesList tool;
       tool.WriteStep(SW,anent);
-     
+    }
+    break;
+      case 712:
+    {
+      DeclareAndCast(StepRepr_ConstructiveGeometryRepresentation,anent,ent);
+      RWStepRepr_RWConstructiveGeometryRepresentation tool;
+      tool.WriteStep(SW,anent);
+    }
+    break;
+      case 713:
+    {
+      DeclareAndCast(StepRepr_ConstructiveGeometryRepresentationRelationship,anent,ent);
+      RWStepRepr_RWConstructiveGeometryRepresentationRelationship tool;
+      tool.WriteStep(SW,anent);
     }
     break;
 

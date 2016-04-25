@@ -112,6 +112,9 @@
 #include <StepGeom_Surface.hxx>
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_CompositeShapeAspect.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentation.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
+#include <StepRepr_DerivedShapeAspect.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_FeatureForDatumTargetRelationship.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
@@ -127,6 +130,7 @@
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_ShapeAspectDerivingRelationship.hxx>
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepRepr_SpecifiedHigherUsageOccurrence.hxx>
 #include <StepRepr_ValueRange.hxx>
@@ -2703,7 +2707,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
     Handle(StepGeom_Axis2Placement3d) anOrientation = new StepGeom_Axis2Placement3d();
     gp_Dir aDir;
     theObject->GetDirection(aDir);
-    GeomToStep_MakeCartesianPoint MkPoint(theObject->GetPoints()->Value(1));
+    GeomToStep_MakeCartesianPoint MkPoint(gp_Pnt(0, 0, 0));
     Handle(StepGeom_CartesianPoint) aLoc = MkPoint.Value();
     Handle(StepGeom_Direction) anAxis = new StepGeom_Direction();
     Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
@@ -2782,6 +2786,59 @@ static void WriteDimValues(const Handle(XSControl_WorkSession) &WS,
     Handle(StepShape_PlusMinusTolerance) aPlusMinusTol = new StepShape_PlusMinusTolerance();
     aPlusMinusTol->Init(aMethod, theDimension);
     aModel->AddWithRefs(aPlusMinusTol);
+  }
+}
+
+//=======================================================================
+//function : WriteDerivedGeometry
+//purpose  : auxiliary (write connection point for dimensions)
+//======================================================================
+static void WriteDerivedGeometry (const Handle(XSControl_WorkSession) &WS,
+                                  const Handle(XCAFDimTolObjects_DimensionObject)& theObject,
+                                  const Handle(StepRepr_ConstructiveGeometryRepresentation) theRepr,
+                                  Handle(StepRepr_ShapeAspect)& theFirstSA,
+                                  Handle(StepRepr_ShapeAspect)& theSecondSA,
+                                  NCollection_Vector<Handle(StepGeom_CartesianPoint)>& thePnts)
+{
+  const Handle(Interface_InterfaceModel) &aModel = WS->Model();
+  // First point
+  if (theObject->HasPoint()) {
+    GeomToStep_MakeCartesianPoint aPointMaker(theObject->GetPoint());
+    Handle(StepGeom_CartesianPoint) aPoint = aPointMaker.Value();
+    thePnts.Append(aPoint);
+    Handle(StepRepr_DerivedShapeAspect) aDSA = new StepRepr_DerivedShapeAspect();
+    aDSA->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), theFirstSA->OfShape(), StepData_LFalse);
+    Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
+    StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
+    aDefinition.SetValue(aDSA);
+    Handle(StepRepr_HArray1OfRepresentationItem) anItem = new StepRepr_HArray1OfRepresentationItem(1, 1);
+    anItem->SetValue(1, aPoint);
+    aGISU->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aDefinition, theRepr, anItem);
+    Handle(StepRepr_ShapeAspectDerivingRelationship) aSADR = new StepRepr_ShapeAspectDerivingRelationship();
+    aSADR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aDSA, theFirstSA);
+    theFirstSA = aDSA;
+    aModel->AddWithRefs(aGISU);
+    aModel->AddWithRefs(aSADR);
+  }
+  
+  // Second point (for locations)
+  if (theObject->HasPoint2()) {
+    GeomToStep_MakeCartesianPoint aPointMaker(theObject->GetPoint2());
+    Handle(StepGeom_CartesianPoint) aPoint = aPointMaker.Value();
+    thePnts.Append(aPoint);
+    Handle(StepRepr_DerivedShapeAspect) aDSA = new StepRepr_DerivedShapeAspect();
+    aDSA->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), theFirstSA->OfShape(), StepData_LFalse);
+    Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
+    StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
+    aDefinition.SetValue(aDSA);
+    Handle(StepRepr_HArray1OfRepresentationItem) anItem = new StepRepr_HArray1OfRepresentationItem(1, 1);
+    anItem->SetValue(1, aPoint);
+    aGISU->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), aDefinition, theRepr, anItem);
+    Handle(StepRepr_ShapeAspectDerivingRelationship) aSADR = new StepRepr_ShapeAspectDerivingRelationship();
+    aSADR->Init(new TCollection_HAsciiString(), Standard_False, new TCollection_HAsciiString(), aDSA, theSecondSA);
+    theSecondSA = aDSA;
+    aModel->AddWithRefs(aGISU);
+    aModel->AddWithRefs(aSADR);
   }
 }
 
@@ -3611,6 +3668,14 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
   //------------------//
   aDGTLabels.Clear();
   DGTTool->GetDimensionLabels(aDGTLabels);
+  // Auxiliary entities for derived geometry
+  Handle(StepRepr_ConstructiveGeometryRepresentation) aCGRepr =
+    new StepRepr_ConstructiveGeometryRepresentation();
+  Handle(StepRepr_ConstructiveGeometryRepresentationRelationship) aCGReprRel =
+    new StepRepr_ConstructiveGeometryRepresentationRelationship();
+  NCollection_Vector<Handle(StepGeom_CartesianPoint)> aConnectionPnts;
+  Handle(StepRepr_RepresentationContext) dummyRC;
+  Handle(StepAP242_GeometricItemSpecificUsage) dummyGISU;
   for (Standard_Integer i = 1; i <= aDGTLabels.Length(); i++) {
     TDF_Label aDimensionL = aDGTLabels.Value(i);
     TDF_LabelSequence aFirstShapeL, aSecondShapeL;
@@ -3624,8 +3689,6 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
       continue;
 
     // Write links with shapes
-    Handle(StepRepr_RepresentationContext) dummyRC;
-    Handle(StepAP242_GeometricItemSpecificUsage) dummyGISU;
     Handle(StepRepr_ShapeAspect) aFirstSA, aSecondSA;
     if (aFirstShapeL.Length() == 1) {
       TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(aFirstShapeL.Value(1));
@@ -3679,6 +3742,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
 
     // Write dimensions
     StepShape_DimensionalCharacteristic aDimension;
+    if (anObject->HasPoint() || anObject->HasPoint2())
+      WriteDerivedGeometry(WS, anObject, aCGRepr, aFirstSA, aSecondSA, aConnectionPnts);
     XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
     if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType)) {
       // Dimensional_Location
@@ -3745,6 +3810,15 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
     WriteDimValues(WS, anObject, aRC, aDimension);
     //Annotation plane and Presentation
     WritePresentation(WS, anObject->GetPresentation(), anObject->GetPlane(), anObject->GetPointTextAttach(), aDimension.Value());
+  }
+  // Write Derived geometry
+  if (aConnectionPnts.Length() > 0) {
+    Handle(StepRepr_HArray1OfRepresentationItem) anItems = new StepRepr_HArray1OfRepresentationItem(1, aConnectionPnts.Length());
+    for (Standard_Integer i = 0; i < aConnectionPnts.Length(); i++)
+      anItems->SetValue(i + 1, aConnectionPnts(i));
+    aCGRepr->Init(new TCollection_HAsciiString(), anItems, dummyRC);
+    aCGReprRel->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), dummyGISU->UsedRepresentation(), aCGRepr);
+    aModel->AddWithRefs(aCGReprRel);
   }
 
   //----------------------------//

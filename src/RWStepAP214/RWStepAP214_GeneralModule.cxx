@@ -354,6 +354,8 @@
 #include <RWStepRepr_RWCompoundRepresentationItem.hxx>
 #include <RWStepRepr_RWConfigurationDesign.hxx>
 #include <RWStepRepr_RWConfigurationEffectivity.hxx>
+#include <RWStepRepr_RWConstructiveGeometryRepresentation.hxx>
+#include <RWStepRepr_RWConstructiveGeometryRepresentationRelationship.hxx>
 #include <RWStepRepr_RWDataEnvironment.hxx>
 #include <RWStepRepr_RWDefinitionalRepresentation.hxx>
 #include <RWStepRepr_RWDerivedShapeAspect.hxx>
@@ -888,6 +890,8 @@
 #include <StepRepr_CompoundRepresentationItem.hxx>
 #include <StepRepr_ConfigurationDesign.hxx>
 #include <StepRepr_ConfigurationEffectivity.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentation.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepRepr_DataEnvironment.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
 #include <StepRepr_DerivedShapeAspect.hxx>
@@ -5083,6 +5087,20 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
       tool.Share(anent,iter);
     }
     break;
+  case 712:
+    {
+      DeclareAndCast(StepRepr_ConstructiveGeometryRepresentation,anent,ent);
+      RWStepRepr_RWConstructiveGeometryRepresentation tool;
+      tool.Share(anent,iter);
+    }
+    break;
+  case 713:
+    {
+      DeclareAndCast(StepRepr_ConstructiveGeometryRepresentationRelationship,anent,ent);
+      RWStepRepr_RWConstructiveGeometryRepresentationRelationship tool;
+      tool.Share(anent,iter);
+    }
+    break;
     default : break;
     }
 }
@@ -7059,17 +7077,25 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
      ent = new StepVisual_TessellatedItem;     
     break;
 
-     case 709:
-       ent = new StepVisual_TessellatedGeometricSet;
-     break;
+   case 709:
+     ent = new StepVisual_TessellatedGeometricSet;
+   break;
 
-     case 710:
-       ent = new StepVisual_TessellatedCurveSet;
-     break;
-    
-      case 711:
-          ent = new StepVisual_CoordinatesList;
-      break;
+   case 710:
+     ent = new StepVisual_TessellatedCurveSet;
+   break;
+   
+   case 711:
+       ent = new StepVisual_CoordinatesList;
+   break;
+
+   case 712:
+       ent = new StepRepr_ConstructiveGeometryRepresentation;
+   break;
+
+   case 713:
+       ent = new StepRepr_ConstructiveGeometryRepresentationRelationship;
+   break;
     
   default: 
     return Standard_False;
@@ -7660,8 +7686,9 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 708: 
   case 709:
   case 710:
-  case 711: 
-    return cataux;
+  case 711: return cataux;
+  case 712:
+  case 713: return catsh;
     
   default : break;
   }

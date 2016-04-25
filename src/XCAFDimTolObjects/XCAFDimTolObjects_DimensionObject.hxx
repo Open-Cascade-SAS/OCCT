@@ -117,8 +117,6 @@ public:
   Standard_EXPORT Standard_Boolean SetDirection (const gp_Dir& theDir);
   
   Standard_EXPORT Handle(TColgp_HArray1OfPnt) GetPoints() const;
-  
-  Standard_EXPORT void SetPoints (const Handle(TColgp_HArray1OfPnt)& thePnts);
 
   Standard_EXPORT void SetPointTextAttach (const gp_Pnt& thePntText)
   {
@@ -143,7 +141,36 @@ public:
 
   Standard_EXPORT Standard_Boolean HasPlane() const { return myHasPlane; }
 
-  Standard_EXPORT Standard_Boolean HasPoints() const { return (!myPnts.IsNull() && myPnts->Length() > 0); }
+  //! Returns true, if connection point exists (for dimesional_size),
+  //! if connection point for first shape exists (for dimensional_location)
+  Standard_EXPORT Standard_Boolean HasPoint() const { return myHasPoint1; }
+
+  // Returns true, if connection point for second shape exists (for dimensional_location only)
+  Standard_EXPORT Standard_Boolean HasPoint2() const { return myHasPoint2; }
+
+  //! Set connection point (for dimesional_size),
+  //! Set connection point for first shape (for dimensional_location)
+  Standard_EXPORT void SetPoint(const gp_Pnt thePnt) {
+    myPnt1 = thePnt;
+    myHasPoint1 = Standard_True;
+  }
+
+  // Set connection point for second shape(for dimensional_location only)
+  Standard_EXPORT void SetPoint2(const gp_Pnt thePnt) {
+    myPnt2 = thePnt;
+    myHasPoint2 = Standard_True;
+  }
+
+  //! Get connection point (for dimesional_size),
+  //! Get connection point for first shape (for dimensional_location)
+  Standard_EXPORT gp_Pnt GetPoint() const {
+    return myPnt1;
+  }
+
+  // Get connection point for second shape(for dimensional_location only)
+  Standard_EXPORT gp_Pnt GetPoint2() const {
+    return myPnt2;
+  }
 
   //! Set graphical presentation for object
   Standard_EXPORT void SetPresentation(const TopoDS_Shape& thePresentation, 
@@ -218,7 +245,8 @@ private:
   XCAFDimTolObjects_DimensionModifiersSequence myModifiers;
   TopoDS_Edge myPath;
   gp_Dir myDir;
-  Handle(TColgp_HArray1OfPnt) myPnts;
+  gp_Pnt myPnt1, myPnt2;
+  Standard_Boolean myHasPoint1, myHasPoint2;
   gp_Ax2 myPlane;
   Standard_Boolean myHasPlane;
   Standard_Boolean myHasPntText;

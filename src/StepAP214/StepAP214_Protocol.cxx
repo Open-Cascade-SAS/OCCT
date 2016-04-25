@@ -739,6 +739,8 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_TessellatedGeometricSet.hxx>
 #include <StepVisual_TessellatedCurveSet.hxx>
 #include <StepVisual_CoordinatesList.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentation.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 
 static int init = 0;
 static Interface_DataMapOfTransientInteger types(800);
@@ -1437,8 +1439,9 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepVisual_TessellatedItem), 708);
   types.Bind (STANDARD_TYPE(StepVisual_TessellatedGeometricSet), 709);
   types.Bind (STANDARD_TYPE(StepVisual_TessellatedCurveSet), 710);
-
   types.Bind (STANDARD_TYPE(StepVisual_CoordinatesList), 711);
+  types.Bind (STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentation), 712);
+  types.Bind (STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentationRelationship), 713);
 }
 
 

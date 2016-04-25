@@ -27,6 +27,8 @@ XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject()
 {
   myHasPlane = Standard_False;
   myHasPntText = Standard_False;
+  myHasPoint1 = Standard_False;
+  myHasPoint2 = Standard_False;
 }
 
 //=======================================================================
@@ -47,7 +49,10 @@ XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject(const Handl
   myModifiers = theObj->myModifiers;
   myPath = theObj->myPath;
   myDir = theObj->myDir;
-  myPnts = theObj->myPnts;
+  myHasPoint1 = theObj->myHasPoint1;
+  myPnt1 = theObj->myPnt1;
+  myHasPoint2 = theObj->myHasPoint2;
+  myPnt2 = theObj->myPnt2;
   myPntText= theObj->myPntText;
   myHasPlane = theObj->myHasPlane;
   myPlane = theObj->myPlane;
@@ -423,24 +428,6 @@ Standard_Boolean XCAFDimTolObjects_DimensionObject::SetDirection (const gp_Dir& 
 {
   myDir = theDir;
   return Standard_True;
-}
-
-//=======================================================================
-//function : GetPoints
-//purpose  : 
-//=======================================================================
-Handle(TColgp_HArray1OfPnt) XCAFDimTolObjects_DimensionObject::GetPoints ()  const
-{
-  return myPnts;
-}
-  
-//=======================================================================
-//function : SetPoints
-//purpose  : 
-//=======================================================================
-void XCAFDimTolObjects_DimensionObject::SetPoints (const Handle(TColgp_HArray1OfPnt)& thePnts)
-{
-  myPnts = thePnts;
 }
 
 //=======================================================================

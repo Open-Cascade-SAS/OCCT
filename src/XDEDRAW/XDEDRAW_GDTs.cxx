@@ -2018,8 +2018,8 @@ static Standard_Integer addDimPath (Draw_Interpretor& di, Standard_Integer argc,
 
 static Standard_Integer addDimPoints (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 5) {
-    di<<"Use: XSetDimensionPoints Doc Dim_Label v1 v2\n";
+  if (argc < 4) {
+    di<<"Use: XSetDimensionPoints Doc Dim_Label v1 [v2]\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;
@@ -2038,17 +2038,19 @@ static Standard_Integer addDimPoints (Draw_Interpretor& di, Standard_Integer arg
   Handle(XCAFDoc_Dimension) aDimension;
   if(aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
+    Handle(XCAFDimTolObjects_DimensionObject) anObj = aDimension->GetObject();
+
     TopoDS_Vertex aV1 = TopoDS::Vertex(DBRep::Get(argv[3],TopAbs_VERTEX));
-    TopoDS_Vertex aV2 = TopoDS::Vertex(DBRep::Get(argv[4],TopAbs_VERTEX));
-    if(!aV1.IsNull() && !aV1.IsNull())
-    {
-      Handle(TColgp_HArray1OfPnt) arr = new TColgp_HArray1OfPnt(1,2);
-      arr->SetValue(1, BRep_Tool::Pnt(aV1));
-      arr->SetValue(2, BRep_Tool::Pnt(aV2));
-      Handle(XCAFDimTolObjects_DimensionObject) anObj = aDimension->GetObject();
-      anObj->SetPoints(arr);
-      aDimension->SetObject(anObj);
+    if(!aV1.IsNull()) {
+      anObj->SetPoint(BRep_Tool::Pnt(aV1));
     }
+    if (argc == 5) {
+      TopoDS_Vertex aV2 = TopoDS::Vertex(DBRep::Get(argv[4],TopAbs_VERTEX));
+      if(!aV2.IsNull()) {
+        anObj->SetPoint2(BRep_Tool::Pnt(aV2));
+      }
+    }
+    aDimension->SetObject(anObj);
   }
   return 0;
 }
@@ -2075,11 +2077,12 @@ static Standard_Integer getDimPoints (Draw_Interpretor& di, Standard_Integer arg
   Handle(XCAFDoc_Dimension) aDimension;
   if(aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
-    Handle(TColgp_HArray1OfPnt) pnts = aDimension->GetObject()->GetPoints();
-    if(!pnts.IsNull() && pnts->Length() == 2)
-    {
-      di << pnts->Value(1).X() << ";" << pnts->Value(1).Y() << ";" << pnts->Value(1).Z() << " ";
-      di << pnts->Value(2).X() << ";" << pnts->Value(2).Y() << ";" << pnts->Value(2).Z();
+    Handle(XCAFDimTolObjects_DimensionObject) anObj = aDimension->GetObject();
+    if(anObj->HasPoint()) {
+      di << anObj->GetPoint().X() << ";" << anObj->GetPoint().Y() << ";" << anObj->GetPoint().Z() << " ";
+    }
+    if(anObj->HasPoint2()) {
+      di << anObj->GetPoint2().X() << ";" << anObj->GetPoint2().Y() << ";" << anObj->GetPoint2().Z();
     }
  }
   return 0;
@@ -2732,7 +2735,7 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
   di.Add ("XSetDimensionPath","XSetDimensionPath Doc Dim_Label path(edge)",
     __FILE__, addDimPath, g);
 
-  di.Add ("XSetDimensionPoints","XSetDimensionPoints Doc Dim_Label v1 v2",
+  di.Add ("XSetDimensionPoints","XSetDimensionPoints Doc Dim_Label v1 [v2]",
     __FILE__, addDimPoints, g);
 
   di.Add ("XGetDimensionPoints","XGetDimensionPoints Doc Dim_Label",

@@ -103,6 +103,7 @@
 #include <StepRepr_AssemblyComponentUsage.hxx>
 #include <StepRepr_CharacterizedDefinition.hxx>
 #include <StepRepr_CompoundRepresentationItem.hxx>
+#include <StepRepr_DerivedShapeAspect.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
@@ -119,6 +120,7 @@
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
 #include <StepRepr_SequenceOfRepresentationItem.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_ShapeAspectDerivingRelationship.hxx>
 #include <StepRepr_CompositeShapeAspect.hxx>
 #include <StepRepr_AllAroundShapeAspect.hxx>
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
@@ -1724,7 +1726,7 @@ static Standard_Boolean GetMassConversionFactor(Handle(StepBasic_NamedUnit)& NU,
 
 //=======================================================================
 //function : readAnnotation
-//purpose  : return annotation plane and position for given GDT
+//purpose  : read annotation plane and position for given GDT
 // (Dimension, Geometric_Tolerance, Datum_Feature or Placed_Datum_Target_Feature)
 //=======================================================================
 void readAnnotation(const Handle(XSControl_TransferReader)& theTR, 
@@ -1981,6 +1983,97 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
     anObj->SetPresentation(aResAnnotation, aPresentName);
   }
   return;
+}
+
+//=======================================================================
+//function : readConnectionPoints
+//purpose  : read connection points for given dimension
+//=======================================================================
+void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR, 
+  const Handle(Standard_Transient) theGDT,
+  const Handle(XCAFDimTolObjects_DimensionObject)& theDimObject)
+{
+  Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  
+  if (theGDT->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
+    // retrieve derived geometry
+    Handle(StepShape_DimensionalSize) aDim = Handle(StepShape_DimensionalSize)::DownCast(theGDT);
+    Handle(StepRepr_DerivedShapeAspect) aDSA = Handle(StepRepr_DerivedShapeAspect)::DownCast(aDim->AppliesTo());
+    if (aDSA.IsNull())
+      return;
+    Handle(StepAP242_GeometricItemSpecificUsage) aGISU = NULL;
+    for (Interface_EntityIterator anIt = aGraph.Sharings(aDSA); aGISU.IsNull() && anIt.More(); anIt.Next()) {
+      aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIt.Value());
+    }
+    if (aGISU.IsNull() || aGISU->NbIdentifiedItem() == 0)
+      return;
+    Handle(StepGeom_CartesianPoint) aPoint = Handle(StepGeom_CartesianPoint)::DownCast(aGISU->IdentifiedItem()->Value(1));
+    if (aPoint.IsNull()) {
+      // try Axis2Placement3d.location instead of CartesianPoint
+      Handle(StepGeom_Axis2Placement3d) anA2P3D =
+        Handle(StepGeom_Axis2Placement3d)::DownCast(aGISU->IdentifiedItem()->Value(1));
+      if (anA2P3D.IsNull())
+        return;
+      aPoint = anA2P3D->Location();
+    }
+  
+    // set connection point to object
+    gp_Pnt aPnt(aPoint->CoordinatesValue(1), aPoint->CoordinatesValue(2), aPoint->CoordinatesValue(3));
+    theDimObject->SetPoint(aPnt);
+  }
+  else if (theGDT->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) {
+    // retrieve derived geometry
+    Handle(StepShape_DimensionalLocation) aDim = Handle(StepShape_DimensionalLocation)::DownCast(theGDT);
+    Handle(StepRepr_DerivedShapeAspect) aDSA1 = Handle(StepRepr_DerivedShapeAspect)::DownCast(aDim->RelatingShapeAspect());
+    Handle(StepRepr_DerivedShapeAspect) aDSA2 = Handle(StepRepr_DerivedShapeAspect)::DownCast(aDim->RelatedShapeAspect());
+    if (aDSA1.IsNull() && aDSA2.IsNull())
+      return;
+    Handle(StepAP242_GeometricItemSpecificUsage) aGISU1 = NULL;
+    Handle(StepAP242_GeometricItemSpecificUsage) aGISU2 = NULL;
+    if (!aDSA1.IsNull()) {
+      for (Interface_EntityIterator anIt = aGraph.Sharings(aDSA1); aGISU1.IsNull() && anIt.More(); anIt.Next()) {
+        aGISU1 = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIt.Value());
+      }
+    }
+    if (!aDSA2.IsNull()) {
+      for (Interface_EntityIterator anIt = aGraph.Sharings(aDSA2); aGISU2.IsNull() && anIt.More(); anIt.Next()) {
+        aGISU2 = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIt.Value());
+      }
+    }
+    // first point
+    if (!aGISU1.IsNull() && aGISU1->NbIdentifiedItem() > 0) {
+      Handle(StepGeom_CartesianPoint) aPoint = Handle(StepGeom_CartesianPoint)::DownCast(aGISU1->IdentifiedItem()->Value(1));
+      if (aPoint.IsNull()) {
+        // try Axis2Placement3d.location instead of CartesianPoint
+        Handle(StepGeom_Axis2Placement3d) anA2P3D =
+          Handle(StepGeom_Axis2Placement3d)::DownCast(aGISU1->IdentifiedItem()->Value(1));
+        if (!anA2P3D.IsNull())
+          aPoint = anA2P3D->Location();
+      }
+      if (!aPoint.IsNull()) {
+        // set connection point to object
+        gp_Pnt aPnt(aPoint->CoordinatesValue(1), aPoint->CoordinatesValue(2), aPoint->CoordinatesValue(3));
+        theDimObject->SetPoint(aPnt);
+      }
+    }
+    // second point
+    if (!aGISU2.IsNull() && aGISU2->NbIdentifiedItem() > 0) {
+      Handle(StepGeom_CartesianPoint) aPoint = Handle(StepGeom_CartesianPoint)::DownCast(aGISU2->IdentifiedItem()->Value(1));
+      if (aPoint.IsNull()) {
+        // try Axis2Placement3d.location instead of CartesianPoint
+        Handle(StepGeom_Axis2Placement3d) anA2P3D =
+          Handle(StepGeom_Axis2Placement3d)::DownCast(aGISU2->IdentifiedItem()->Value(1));
+        if (!anA2P3D.IsNull())
+          aPoint = anA2P3D->Location();
+      }
+      if (!aPoint.IsNull()) {
+        // set connection point to object
+        gp_Pnt aPnt(aPoint->CoordinatesValue(1), aPoint->CoordinatesValue(2), aPoint->CoordinatesValue(3));
+        theDimObject->SetPoint2(aPnt);
+      }
+    }
+  }
 }
 
 //=======================================================================
@@ -2433,7 +2526,49 @@ static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt
 }
 
 //=======================================================================
-//function : craeteGeomTolObjectInXCAF
+//function : collectShapeAspect
+//purpose  : 
+//=======================================================================
+static void collectShapeAspect(const Handle(StepRepr_ShapeAspect)& theSA,
+                               const Handle(XSControl_WorkSession)& theWS,
+                               NCollection_Sequence<Handle(StepRepr_ShapeAspect)>& theSAs)
+{
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  // Retrieve Shape_Aspect, connected to Representation_Item from Derived_Shape_Aspect
+  if (theSA->IsKind(STANDARD_TYPE(StepRepr_DerivedShapeAspect))) {
+    Interface_EntityIterator anIter = aGraph.Sharings(theSA);
+    Handle(StepRepr_ShapeAspectDerivingRelationship) aSADR = NULL;
+    for (; aSADR.IsNull() && anIter.More(); anIter.Next()) {
+      aSADR = Handle(StepRepr_ShapeAspectDerivingRelationship)::DownCast(anIter.Value());
+    }
+    if (!aSADR.IsNull())
+      collectShapeAspect(aSADR->RelatedShapeAspect(), theWS, theSAs);
+  }
+  else {
+    // Find all children Shape_Aspect
+    Standard_Boolean isSimple = Standard_True;
+    Interface_EntityIterator anIter = aGraph.Sharings(theSA);
+    for (; anIter.More(); anIter.Next()) {
+      if (anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)) &&
+          !anIter.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) {
+        Handle(StepRepr_ShapeAspectRelationship) aSAR =
+          Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIter.Value());
+        if (aSAR->RelatingShapeAspect() == theSA) {
+          collectShapeAspect(aSAR->RelatedShapeAspect(), theWS, theSAs);
+          isSimple = Standard_False;
+        }
+      }
+    }
+    // If not Composite_Shape_Aspect (or subtype) append to sequence.
+    if (isSimple)
+      theSAs.Append(theSA);
+  }
+}
+
+//=======================================================================
+//function : createGeomTolObjectInXCAF
 //purpose  : 
 //=======================================================================
 static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
@@ -2459,6 +2594,7 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
   // find RepresentationItem for current Ent
   NCollection_Sequence<Handle(Standard_Transient)> aSeqRI1, aSeqRI2;
 
+  // Collect all Shape_Aspect entities
   Interface_EntityIterator anIter = aGraph.Shareds(theEnt);
   for(anIter.Start(); anIter.More(); anIter.Next()) {
     Handle(Standard_Transient) anAtr = anIter.Value();
@@ -2492,69 +2628,27 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
       Interface_EntityIterator anIterDim = aGraph.Shareds(anAtr);
       for(anIterDim.Start(); anIterDim.More(); anIterDim.Next()) 
       {
-        Handle(Standard_Transient) anAtrDim = anIterDim.Value();
-        if(anAtrDim->IsKind(STANDARD_TYPE(StepRepr_CompositeShapeAspect)) || 
-          anAtrDim->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
-        {
-          Interface_EntityIterator anIterCSA = aGraph.Sharings(anAtrDim);
-          for(anIterCSA.Start(); anIterCSA.More(); anIterCSA.Next()) {
-            if (anIterCSA.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))){
-              Interface_EntityIterator anIterSAR = aGraph.Shareds(anIterCSA.Value());
-              for(anIterSAR.Start(); anIterSAR.More(); anIterSAR.Next()) {
-                if (anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect))){
-                  aSAs.Append(Handle(StepRepr_ShapeAspect)::DownCast(anIterSAR.Value()));
-                }
-              }
-            }
-          }
-        }
-        else if(anAtrDim->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
-        {
-          aSAs.Append( Handle(StepRepr_ShapeAspect)::DownCast(anAtrDim));
-        }
-      }
-    }
-    else if(anAtr->IsKind(STANDARD_TYPE(StepRepr_CompositeShapeAspect)) || 
-      anAtr->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
-    {
-      //processing for composite entity
-      Handle(Standard_Transient) anAtrTmp = anAtr;
-      if(anAtr->IsKind(STANDARD_TYPE(StepRepr_AllAroundShapeAspect)))
-      {
-        // if applyed AllAround Modifier
-        isAllAround = Standard_True;
-        Interface_EntityIterator anIterAASA = aGraph.Sharings(anAtrTmp);
-        for(anIterAASA.Start(); anIterAASA.More(); anIterAASA.Next()) {
-          if (anIterAASA.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))){
-            Interface_EntityIterator anIterSAR = aGraph.Shareds(anIterAASA.Value());
-            for(anIterSAR.Start(); anIterSAR.More(); anIterSAR.Next()) {
-              if ((anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_CompositeShapeAspect)) || 
-                anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp))) &&
-                anAtrTmp != anIterSAR.Value()){
-                  anAtrTmp = anIterSAR.Value();
-                  break;
-              }
-            }
-          }
-        }
-      }
-      Interface_EntityIterator anIterCSA = aGraph.Sharings(anAtrTmp);
-      for(anIterCSA.Start(); anIterCSA.More(); anIterCSA.Next()) {
-        if (anIterCSA.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))){
-          Interface_EntityIterator anIterSAR = aGraph.Shareds(anIterCSA.Value());
-          for(anIterSAR.Start(); anIterSAR.More(); anIterSAR.Next()) {
-            if (anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect))){
-              aSAs.Append(Handle(StepRepr_ShapeAspect)::DownCast(anIterSAR.Value()));
-            }
-          }
+        Handle(StepRepr_ShapeAspect) aSA = Handle(StepRepr_ShapeAspect)::DownCast(anIterDim.Value());
+        if(!aSA.IsNull()) {
+          collectShapeAspect(aSA, theWS, aSAs);
         }
       }
     }
     else if(anAtr->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
     {
-      //default
-      aSAs.Append( Handle(StepRepr_ShapeAspect)::DownCast(anAtr));
+      if(anAtr->IsKind(STANDARD_TYPE(StepRepr_AllAroundShapeAspect)))
+      {
+        // if applyed AllAround Modifier
+        isAllAround = Standard_True;
+      }
+      // dimensions and default tolerances
+      Handle(StepRepr_ShapeAspect) aSA = Handle(StepRepr_ShapeAspect)::DownCast(anAtr);
+      if(!aSA.IsNull()) {
+        collectShapeAspect(aSA, theWS, aSAs);
+      }
     }
+
+    // Collect all representation items
     if(!aSAs.IsEmpty())
     {
       //get representation items
@@ -2767,8 +2861,8 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
         else
         {
           if(aGISU.IsNull()) continue;
-          if(aGISU->NbIdentifiedItem() > 0) {
-            aSeqRI.Append(aGISU->IdentifiedItemValue(1));
+          for (Standard_Integer i = 1; i <= aGISU->NbIdentifiedItem(); i++) {
+            aSeqRI.Append(aGISU->IdentifiedItemValue(i));
           }
         }
       }
@@ -2785,6 +2879,7 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
 
   TDF_LabelSequence aShLS1, aShLS2;
 
+  // Collect shapes
   for(Standard_Integer i = aSeqRI1.Lower(); i <= aSeqRI1.Upper() ;i++)
   {
     Standard_Integer anIndex = aTP->MapIndex(aSeqRI1.Value(i));
@@ -3058,7 +3153,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
       }
       else
       {
-        // calss of tolerance
+        // class of tolerance
         aLAF = aTMD.LimitsAndFits();
       }
     }
@@ -3249,6 +3344,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
     if(aDimL.FindAttribute(XCAFDoc_Dimension::GetID(),aDim))
     {
       readAnnotation(aTR, theEnt, aDimObj);
+      readConnectionPoints(aTR, theEnt, aDimObj);
       aDim->SetObject(aDimObj);
     }
   }
