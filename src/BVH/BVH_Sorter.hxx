@@ -18,24 +18,21 @@
 
 #include <BVH_Set.hxx>
 
-//! Performs centroid-based sorting of abstract set.
+//! Tool object to sort abstract primitive set.
 template<class T, int N>
 class BVH_Sorter
 {
 public:
 
-  //! Sorts the set by centroids coordinates in specified axis.
-  static void Perform (BVH_Set<T, N>*         theSet,
-                       const Standard_Integer theAxis);
+  //! Releases resources of BVH sorter.
+  virtual ~BVH_Sorter() { }
 
-  //! Sorts the set by centroids coordinates in specified axis.
-  static void Perform (BVH_Set<T, N>*         theSet,
-                       const Standard_Integer theAxis,
-                       const Standard_Integer theBegElement,
-                       const Standard_Integer theEndElement);
+  //! Sorts the set.
+  virtual void Perform (BVH_Set<T, N>* theSet) = 0;
+
+  //! Sorts the given (inclusive) range in the set.
+  virtual void Perform (BVH_Set<T, N>* theSet, const Standard_Integer theStart, const Standard_Integer theFinal) = 0;
 
 };
-
-#include <BVH_Sorter.lxx>
 
 #endif // _BVH_Sorter_Header

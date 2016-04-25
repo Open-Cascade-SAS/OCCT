@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BVH_Sorter.hxx>
+#include <BVH_QuickSorter.hxx>
 
 #include <NCollection_Array1.hxx>
 
@@ -79,7 +79,7 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_SweepPlaneBuilder<T, N>::Bui
       continue;
     }
 
-    BVH_Sorter<T, N>::Perform (theSet, anAxis, aNodeBegPrimitive, aNodeEndPrimitive);
+    BVH_QuickSorter<T, N> (anAxis).Perform (theSet, aNodeBegPrimitive, aNodeEndPrimitive);
 
     BVH_Box<T, N> aLftBox;
     BVH_Box<T, N> aRghBox;
@@ -127,7 +127,7 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_SweepPlaneBuilder<T, N>::Bui
 
   if (aMinSplitAxis != (N < 4 ? N - 1 : 2))
   {
-    BVH_Sorter<T, N>::Perform (theSet, aMinSplitAxis, aNodeBegPrimitive, aNodeEndPrimitive);
+    BVH_QuickSorter<T, N> (aMinSplitAxis).Perform (theSet, aNodeBegPrimitive, aNodeEndPrimitive);
   }
 
   BVH_Box<T, N> aMinSplitBoxLft;

@@ -16,9 +16,7 @@
 #ifndef _BVH_LinearBuilder_Header
 #define _BVH_LinearBuilder_Header
 
-#include <BVH_Builder.hxx>
-
-typedef std::pair<Standard_Integer, Standard_Integer> BVH_EncodedLink;
+#include <BVH_RadixSorter.hxx>
 
 //! Performs fast BVH construction using LBVH building approach.
 //! Algorithm uses spatial Morton codes to reduce the BVH construction
@@ -53,12 +51,26 @@ public:
 
 protected:
 
+    typedef NCollection_Array1<BVH_EncodedLink>::iterator LinkIterator;
+
+protected:
+
   //! Emits hierarchy from sorted Morton codes.
-  Standard_Integer EmitHierachy (BVH_Tree<T, N>*                        theBVH,
-                                 const Standard_Integer                 theBit,
-                                 const Standard_Integer                 theShift,
-                                 std::vector<BVH_EncodedLink>::iterator theStart,
-                                 std::vector<BVH_EncodedLink>::iterator theFinal);
+  Standard_Integer EmitHierachy (BVH_Tree<T, N>*        theBVH,
+                                 const Standard_Integer theBit,
+                                 const Standard_Integer theShift,
+                                 const Standard_Integer theStart,
+                                 const Standard_Integer theFinal);
+
+  //! Returns index of the first element which does not compare less than the given one.
+  Standard_Integer LowerBound (Standard_Integer theStart,
+                               Standard_Integer theFinal,
+                               Standard_Integer theDigit);
+
+protected:
+
+  //! Tool object to perform radix sort of BVH primitives.
+  NCollection_Handle<BVH_RadixSorter<T, N> > myRadixSorter;
 
 };
 

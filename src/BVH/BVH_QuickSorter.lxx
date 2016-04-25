@@ -1,6 +1,6 @@
-// Created on: 2014-01-10
+// Created on: 2016-04-13
 // Created by: Denis BOGOLEPOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2013-2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -18,10 +18,9 @@
 // purpose  :
 // =======================================================================
 template<class T, int N>
-void BVH_Sorter<T, N>::Perform (BVH_Set<T, N>*         theSet,
-                                const Standard_Integer theAxis)
+void BVH_QuickSorter<T, N>::Perform (BVH_Set<T, N>* theSet)
 {
-  Perform (theSet, theAxis, 0, theSet->Size() - 1);
+  Perform (theSet, 0, theSet->Size() - 1);
 }
 
 // =======================================================================
@@ -29,24 +28,21 @@ void BVH_Sorter<T, N>::Perform (BVH_Set<T, N>*         theSet,
 // purpose  :
 // =======================================================================
 template<class T, int N>
-void BVH_Sorter<T, N>::Perform (BVH_Set<T, N>*         theSet,
-                                const Standard_Integer theAxis,
-                                const Standard_Integer theBegElement,
-                                const Standard_Integer theEndElement)
+void BVH_QuickSorter<T, N>::Perform (BVH_Set<T, N>* theSet, const Standard_Integer theStart, const Standard_Integer theFinal)
 {
-  Standard_Integer aLft = theBegElement;
-  Standard_Integer aRgh = theEndElement;
+  Standard_Integer aLft = theStart;
+  Standard_Integer aRgh = theFinal;
 
-  T aPivot = theSet->Center ((aRgh + aLft) / 2, theAxis);
+  T aPivot = theSet->Center ((aRgh + aLft) / 2, myAxis);
 
   while (aLft < aRgh)
   {
-    while (theSet->Center (aLft, theAxis) < aPivot && aLft < theEndElement)
+    while (theSet->Center (aLft, myAxis) < aPivot && aLft < theFinal)
     {
       ++aLft;
     }
 
-    while (theSet->Center (aRgh, theAxis) > aPivot && aRgh > theBegElement)
+    while (theSet->Center (aRgh, myAxis) > aPivot && aRgh > theStart)
     {
       --aRgh;
     }
@@ -63,13 +59,13 @@ void BVH_Sorter<T, N>::Perform (BVH_Set<T, N>*         theSet,
     }
   }
 
-  if (aRgh > theBegElement)
+  if (aRgh > theStart)
   {
-    Perform (theSet, theAxis, theBegElement, aRgh);
+    Perform (theSet, theStart, aRgh);
   }
 
-  if (aLft < theEndElement)
+  if (aLft < theFinal)
   {
-    Perform (theSet, theAxis, aLft, theEndElement);
+    Perform (theSet, aLft, theFinal);
   }
 }

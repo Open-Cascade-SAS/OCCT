@@ -29,7 +29,10 @@ BVH_QueueBuilder.lxx
 BVH_Set.hxx
 BVH_Set.lxx
 BVH_Sorter.hxx
-BVH_Sorter.lxx
+BVH_QuickSorter.hxx
+BVH_QuickSorter.lxx
+BVH_RadixSorter.hxx
+BVH_RadixSorter.lxx
 BVH_SpatialMedianBuilder.hxx
 BVH_SpatialMedianBuilder.lxx
 BVH_SweepPlaneBuilder.hxx

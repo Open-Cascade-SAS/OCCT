@@ -13,23 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <algorithm>
-
 #include <Standard_Assert.hxx>
-
-#include <NCollection_Array1.hxx>
-
-#ifdef HAVE_TBB
-  // On Windows, function TryEnterCriticalSection has appeared in Windows NT
-  // and is surrounded by #ifdef in MS VC++ 7.1 headers.
-  // Thus to use it we need to define appropriate macro saying that we will
-  // run on Windows NT 4.0 at least
-  #if defined(_WIN32) && !defined(_WIN32_WINNT)
-    #define _WIN32_WINNT 0x0501
-  #endif
-
-  #include <tbb/task.h>
-#endif
 
 // =======================================================================
 // function : BVH_LinearBuilder
@@ -54,69 +38,78 @@ BVH_LinearBuilder<T, N>::~BVH_LinearBuilder()
   //
 }
 
+// =======================================================================
+// function : LowerBound
+// purpose  : Returns index of first element greater than the given one
+// =======================================================================
+template<class T, int N>
+Standard_Integer BVH_LinearBuilder<T, N>::LowerBound (Standard_Integer theStart,
+                                                      Standard_Integer theFinal,
+                                                      Standard_Integer theDigit)
+{
+  Standard_Integer aNbPrims = theFinal - theStart;
+
+  while (aNbPrims > 0)
+  {
+    const Standard_Integer aStep = aNbPrims / 2;
+
+    if (myRadixSorter->EncodedLinks().Value (theStart + aStep).first & (1 << theDigit))
+    {
+      aNbPrims = aStep;
+    }
+    else
+    {
+      theStart += aStep + 1;
+      aNbPrims -= aStep + 1;
+    }
+  }
+
+  return theStart;
+}
+
+// =======================================================================
+// function : EmitHierachy
+// purpose  : Emits hierarchy from sorted Morton codes
+// =======================================================================
+template<class T, int N>
+Standard_Integer BVH_LinearBuilder<T, N>::EmitHierachy (BVH_Tree<T, N>*        theBVH,
+                                                        const Standard_Integer theBit,
+                                                        const Standard_Integer theShift,
+                                                        const Standard_Integer theStart,
+                                                        const Standard_Integer theFinal)
+{
+  if (theFinal - theStart > BVH_Builder<T, N>::myLeafNodeSize)
+  {
+    const Standard_Integer aPosition = theBit < 0 ?
+      (theStart + theFinal) / 2 : LowerBound (theStart, theFinal, theBit);
+
+    if (aPosition == theStart || aPosition == theFinal)
+    {
+      return EmitHierachy (theBVH, theBit - 1, theShift, theStart, theFinal);
+    }
+
+    // Build inner node
+    const Standard_Integer aNode = theBVH->AddInnerNode (0, 0);
+
+    const Standard_Integer aRghNode = theShift + aPosition - theStart;
+
+    const Standard_Integer aLftChild = EmitHierachy (theBVH, theBit - 1, theShift, theStart, aPosition);
+    const Standard_Integer aRghChild = EmitHierachy (theBVH, theBit - 1, aRghNode, aPosition, theFinal);
+
+    theBVH->NodeInfoBuffer()[aNode].y() = aLftChild;
+    theBVH->NodeInfoBuffer()[aNode].z() = aRghChild;
+
+    return aNode;
+  }
+  else
+  {
+    // Build leaf node
+    return theBVH->AddLeafNode (theShift, theShift + theFinal - theStart - 1);
+  }
+}
+
 namespace BVH
 {
-  // Radix sort STL predicate for 32-bit integer.
-  class BitPredicate
-  {
-    Standard_Integer myBit;
-
-  public:
-    
-    //! Creates new radix sort predicate.
-    BitPredicate (const Standard_Integer theBit) : myBit (theBit) 
-    {
-      //
-    }
-    
-    //! Returns predicate value.
-    bool operator() (const BVH_EncodedLink theLink) const
-    {
-      const Standard_Integer aMask = 1 << myBit;
-
-      return !(theLink.first & aMask); // 0-bit to the left side
-    }
-  };
-
-  //! STL compare tool used in binary search algorithm.
-  class BitComparator
-  {
-    Standard_Integer myBit;
-
-  public:
-
-    //! Creates new STL comparator.
-    BitComparator (const Standard_Integer theBit) : myBit (theBit) 
-    {
-      //
-    }
-
-    //! Checks left value for the given bit.
-    bool operator() (BVH_EncodedLink theLink1, BVH_EncodedLink /*theLink2*/)
-    {
-      return !(theLink1.first & (1 << myBit));
-    }
-  };
-
-  //! Tool object for sorting link array using radix sort algorithm.
-  struct RadixSorter
-  {
-    typedef std::vector<BVH_EncodedLink>::iterator LinkIterator;
-
-    // Performs MSD (most significant digit) radix sort.
-    static void Perform (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theBit = 29)
-    {
-      while (theStart != theFinal && theBit >= 0)
-      {
-        LinkIterator anOffset = std::partition (theStart, theFinal, BitPredicate (theBit--));
-        
-        Perform (theStart, anOffset, theBit);
-      
-        theStart = anOffset;
-      }
-    }
-  };
-
   //! Calculates bounding boxes (AABBs) for the given BVH tree. 
   template<class T, int N>
   Standard_Integer UpdateBounds (BVH_Set<T, N>* theSet, BVH_Tree<T, N>* theTree, const Standard_Integer theNode = 0)
@@ -168,107 +161,8 @@ namespace BVH
 
     return 0;
   }
-}
-
-// =======================================================================
-// function : EmitHierachy
-// purpose  : Emits hierarchy from sorted Morton codes
-// =======================================================================
-template<class T, int N>
-Standard_Integer BVH_LinearBuilder<T, N>::EmitHierachy (BVH_Tree<T, N>*                        theBVH,
-                                                        const Standard_Integer                 theBit,
-                                                        const Standard_Integer                 theShift,
-                                                        std::vector<BVH_EncodedLink>::iterator theStart,
-                                                        std::vector<BVH_EncodedLink>::iterator theFinal)
-{
-  if (theFinal - theStart > BVH_Builder<T, N>::myLeafNodeSize)
-  {
-    std::vector<BVH_EncodedLink>::iterator aPosition =
-      (theBit >= 0) ? std::lower_bound (theStart, theFinal, BVH_EncodedLink(), BVH::BitComparator (theBit))
-                    :                   theStart + ((theFinal - theStart) / 2);
-
-    if (aPosition == theStart || aPosition == theFinal)
-    {
-      return EmitHierachy (theBVH, theBit - 1, theShift, theStart, theFinal);
-    }
-
-    // Build inner node
-    const Standard_Integer aNode = theBVH->AddInnerNode (0, 0);
-
-    const Standard_Integer aRghNode = theShift + static_cast<Standard_Integer> (aPosition - theStart);
-    
-    const Standard_Integer aLftChild = EmitHierachy (theBVH, theBit - 1, theShift, theStart, aPosition);
-    const Standard_Integer aRghChild = EmitHierachy (theBVH, theBit - 1, aRghNode, aPosition, theFinal);
-
-    theBVH->NodeInfoBuffer()[aNode].y() = aLftChild;
-    theBVH->NodeInfoBuffer()[aNode].z() = aRghChild;
-    
-    return aNode;
-  }
-  else
-  {
-    // Build leaf node
-    return theBVH->AddLeafNode (theShift, theShift + static_cast<Standard_Integer> (theFinal - theStart) - 1);
-  }
-}
 
 #ifdef HAVE_TBB
-
-namespace BVH
-{
-  //! TBB task for parallel radix sort.
-  class RadixSortTask : public tbb::task
-  {
-    typedef std::vector<BVH_EncodedLink>::iterator LinkIterator;
-
-  private:
-
-    //! Start range element.
-    LinkIterator myStart;
-    
-    //! Final range element.
-    LinkIterator myFinal;
-
-    //! Bit position for range partition.
-    Standard_Integer myDigit;
-
-  public:
-
-    //! Creates new TBB radix sort task.
-    RadixSortTask (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theDigit)
-    : myStart (theStart),
-      myFinal (theFinal),
-      myDigit (theDigit)
-    {
-      //
-    }
-
-    //! Executes the task.
-    tbb::task* execute()
-    {
-      if (myDigit < 28)
-      {
-        BVH::RadixSorter::Perform (myStart, myFinal, myDigit);
-      }
-      else
-      {
-        LinkIterator anOffset = std::partition (myStart, myFinal, BitPredicate (myDigit));
-
-        tbb::task_list aList;
-
-        aList.push_back (*new ( allocate_child() )
-          RadixSortTask (myStart, anOffset, myDigit - 1));
-
-        aList.push_back (*new ( allocate_child() )
-          RadixSortTask (anOffset, myFinal, myDigit - 1));
-
-        set_ref_count (3); // count + 1
-        spawn_and_wait_for_all (aList);
-      }
-
-      return NULL;
-    }
-  };
 
   //! TBB task for parallel bounds updating.
   template<class T, int N>
@@ -370,9 +264,9 @@ namespace BVH
       return NULL;
     }
   };
-}
 
 #endif
+}
 
 // =======================================================================
 // function : Build
@@ -392,116 +286,35 @@ void BVH_LinearBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
 
   theBVH->Clear();
 
-  const Standard_Integer aDimensionX = 1024;
-  const Standard_Integer aDimensionY = 1024;
-  const Standard_Integer aDimensionZ = 1024;
+  // Step 0 -- Initialize parameter of virtual grid
+  myRadixSorter = new BVH_RadixSorter<T, N> (theBox);
 
-  const BVH_VecNt aSceneMin = theBox.CornerMin();
-  const BVH_VecNt aSceneMax = theBox.CornerMax();
+  // Step 1 - Perform radix sorting of primitive set
+  myRadixSorter->Perform (theSet);
 
-  const T aMinSize = static_cast<T> (BVH::THE_NODE_MIN_SIZE);
+  // Step 2 -- Emitting BVH hierarchy from sorted Morton codes
+  EmitHierachy (theBVH, 29, 0, 0, theSet->Size());
 
-  const T aReverseSizeX = static_cast<T> (aDimensionX) / Max (aMinSize, aSceneMax.x() - aSceneMin.x());
-  const T aReverseSizeY = static_cast<T> (aDimensionY) / Max (aMinSize, aSceneMax.y() - aSceneMin.y());
-  const T aReverseSizeZ = static_cast<T> (aDimensionZ) / Max (aMinSize, aSceneMax.z() - aSceneMin.z());
-
-  std::vector<BVH_EncodedLink> anEncodedLinks (aSetSize, BVH_EncodedLink());
-
-  // Step 1 -- Assign Morton code to each primitive
-  for (Standard_Integer aPrimIdx = 0; aPrimIdx < aSetSize; ++aPrimIdx)
-  {
-    const BVH_VecNt aCenter = theSet->Box (aPrimIdx).Center();
-
-    Standard_Integer aVoxelX = BVH::IntFloor ((aCenter.x() - aSceneMin.x()) * aReverseSizeX);
-    Standard_Integer aVoxelY = BVH::IntFloor ((aCenter.y() - aSceneMin.y()) * aReverseSizeY);
-    Standard_Integer aVoxelZ = BVH::IntFloor ((aCenter.z() - aSceneMin.z()) * aReverseSizeZ);
-
-    aVoxelX = Max (0, Min (aVoxelX, aDimensionX - 1));
-    aVoxelY = Max (0, Min (aVoxelY, aDimensionY - 1));
-    aVoxelZ = Max (0, Min (aVoxelZ, aDimensionZ - 1));
-
-    aVoxelX = (aVoxelX | (aVoxelX << 16)) & 0x030000FF;
-    aVoxelX = (aVoxelX | (aVoxelX <<  8)) & 0x0300F00F;
-    aVoxelX = (aVoxelX | (aVoxelX <<  4)) & 0x030C30C3;
-    aVoxelX = (aVoxelX | (aVoxelX <<  2)) & 0x09249249;
-
-    aVoxelY = (aVoxelY | (aVoxelY << 16)) & 0x030000FF;
-    aVoxelY = (aVoxelY | (aVoxelY <<  8)) & 0x0300F00F;
-    aVoxelY = (aVoxelY | (aVoxelY <<  4)) & 0x030C30C3;
-    aVoxelY = (aVoxelY | (aVoxelY <<  2)) & 0x09249249;
-
-    aVoxelZ = (aVoxelZ | (aVoxelZ << 16)) & 0x030000FF;
-    aVoxelZ = (aVoxelZ | (aVoxelZ <<  8)) & 0x0300F00F;
-    aVoxelZ = (aVoxelZ | (aVoxelZ <<  4)) & 0x030C30C3;
-    aVoxelZ = (aVoxelZ | (aVoxelZ <<  2)) & 0x09249249;
-
-    anEncodedLinks[aPrimIdx] = BVH_EncodedLink (
-      aVoxelX | (aVoxelY << 1) | (aVoxelZ << 2), aPrimIdx);
-  }
-
-  // Step 2 -- Sort primitives by their Morton codes using radix sort
-#ifdef HAVE_TBB
-
-  BVH::RadixSortTask& aSortTask = *new ( tbb::task::allocate_root() )
-    BVH::RadixSortTask (anEncodedLinks.begin(), anEncodedLinks.end(), 29);
-
-  tbb::task::spawn_root_and_wait (aSortTask);
-
-#else
-
-  BVH::RadixSorter::Perform (anEncodedLinks.begin(), anEncodedLinks.end());
-
-#endif
-
-  // Step 3 -- Emitting BVH hierarchy from sorted Morton codes
-  EmitHierachy (theBVH, 29, 0, anEncodedLinks.begin(), anEncodedLinks.end());
-
-  NCollection_Array1<Standard_Integer> aLinkMap (0, aSetSize - 1);
-  for (Standard_Integer aLinkIdx = 0; aLinkIdx < aSetSize; ++aLinkIdx)
-  {
-    aLinkMap (anEncodedLinks[aLinkIdx].second) = aLinkIdx;
-  }
-
-  // Step 4 -- Rearranging primitive list according to Morton codes (in place)
-  Standard_Integer aPrimIdx = 0;
-
-  while (aPrimIdx < aSetSize)
-  {
-    const Standard_Integer aSortIdx = aLinkMap (aPrimIdx);
-
-    if (aPrimIdx != aSortIdx)
-    {
-      theSet->Swap (aPrimIdx, aSortIdx);
-
-      std::swap (aLinkMap (aPrimIdx),
-                 aLinkMap (aSortIdx));
-    }
-    else
-    {
-      ++aPrimIdx;
-    }
-  }
-
-  // Step 5 -- Compute bounding boxes of BVH nodes
+  // Step 3 -- Compute bounding boxes of BVH nodes
   theBVH->MinPointBuffer().resize (theBVH->NodeInfoBuffer().size());
   theBVH->MaxPointBuffer().resize (theBVH->NodeInfoBuffer().size());
 
-  Standard_Integer aDepth = 0;
+  Standard_Integer aHeight = 0;
 
 #ifdef HAVE_TBB
 
   // Note: Although TBB tasks are allocated using placement
   // new, we do not need to delete them explicitly
   BVH::UpdateBoundTask<T, N>& aRootTask = *new ( tbb::task::allocate_root() )
-    BVH::UpdateBoundTask<T, N> (theSet, theBVH, 0, 0, &aDepth);
+    BVH::UpdateBoundTask<T, N> (theSet, theBVH, 0, 0, &aHeight);
 
   tbb::task::spawn_root_and_wait (aRootTask);
 
 #else
 
-  aDepth = BVH::UpdateBounds (theSet, theBVH, 0);
+  aHeight = BVH::UpdateBounds (theSet, theBVH, 0);
 
 #endif
 
-  BVH_Builder<T, N>::UpdateDepth (theBVH, aDepth);
+  BVH_Builder<T, N>::UpdateDepth (theBVH, aHeight);
 }
