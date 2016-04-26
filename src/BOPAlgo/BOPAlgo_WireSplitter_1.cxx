@@ -48,6 +48,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <Geom2dLProp_CLProps2d.hxx>
 typedef NCollection_DataMap \
   <TopoDS_Shape, Standard_Boolean, TopTools_ShapeMapHasher> \
   BOPCol_DataMapOfShapeBoolean; 
@@ -292,7 +293,6 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
   for (i=1; i<=aNb; i++) {
     const TopoDS_Vertex& aV = (*(TopoDS_Vertex *)(&mySmartMap.FindKey(i))); 
     const BOPAlgo_ListOfEdgeInfo& aLEI= mySmartMap(i);
-
     aItLEI.Initialize(aLEI);
     for (; aItLEI.More(); aItLEI.Next()) {
       BOPAlgo_EdgeInfo& aEI=aItLEI.ChangeValue();
@@ -365,6 +365,7 @@ void Path (const GeomAdaptor_Surface& aGAS,
   TopoDS_Vertex aVa, aVb;
   TopoDS_Edge aEOuta;
   BOPAlgo_ListIteratorOfListOfEdgeInfo anIt;
+  Standard_Real eps = Epsilon(1.);
   //
   aVa = aVFirst;
   aEOuta = aEFirst;
@@ -536,7 +537,7 @@ void Path (const GeomAdaptor_Surface& aGAS,
           anAngleOut=anEI.Angle();
           anAngle=ClockWiseAngle(anAngleIn, anAngleOut);
         }
-        if (anAngle < aMinAngle) {
+        if (anAngle < aMinAngle - eps) {
           aMinAngle=anAngle;
           pEdgeInfo=&anEI;
           anIsFound=Standard_True;
@@ -725,10 +726,30 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
   //
   BOPTools_AlgoTools2D::CurveOnSurface (anEdge, myFace, aC2D, 
                                         aFirst, aLast, aToler);
-  dt=2.*Tolerance2D(aV, aGAS);
+  Standard_Real tol2d =2.*Tolerance2D(aV, aGAS);
   //
+  GeomAbs_CurveType aType;
+  Geom2dAdaptor_Curve aGAC2D(aC2D);
+  //
+  dt = Max(aGAC2D.Resolution(tol2d), Precision::PConfusion());
+  //
+  aType=aGAC2D.GetType();
+  if (aType != GeomAbs_Line ) 
+  {
+    Geom2dLProp_CLProps2d LProp(aC2D,  aTV, 2, Precision::PConfusion());
+    if(LProp.IsTangentDefined())
+    {
+      Standard_Real R = LProp.Curvature();
+      if(R > Precision::PConfusion())
+      {
+        R = 1./R;
+        Standard_Real cosphi = R / (R + tol2d);
+        dt = Max(dt, ACos(cosphi)); //to avoid small dt for big R.
+      }
+    }
+  }
   //for case chl/927/r9
-  aTX=0.05*(aLast - aFirst);//aTX=0.25*(aLast - aFirst);
+  aTX=0.05*(aLast - aFirst);//aTX=0.25*(aLast - aFirst);  
   if (aTX < 5.e-5) {
     aTX = 5.e-5;
   }
@@ -737,14 +758,7 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
     // in the case of big tolerances
     dt = aTX; 
   }
-  //
-  GeomAbs_CurveType aType;
-  Geom2dAdaptor_Curve aGAC2D(aC2D);
-  aType=aGAC2D.GetType();
-  if (aType==GeomAbs_BSplineCurve || 
-      aType==GeomAbs_BezierCurve) {
-    dt=1.1*dt;
-  }
+
   if (fabs (aTV-aFirst) < fabs(aTV - aLast)) {
     aTV1=aTV + dt;
   }
@@ -752,25 +766,10 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
     aTV1=aTV - dt;
   }
   //
-  if (aType==GeomAbs_Circle) {
-    Standard_Real aTM;
-    TopAbs_Orientation aOrE;
-    gp_Pnt2d aPM;
-    //
-    aTM=0.5*(aTV1+aTV);
-    //
-    aGAC2D.D1(aTM, aPM, aV2D);
-    aOrE=anEdge.Orientation();
-    if (aOrE==TopAbs_REVERSED) {
-      aV2D.Reverse();
-    }
-  }
-  else {
-    aGAC2D.D0 (aTV1, aPV1);
-    aGAC2D.D0 (aTV, aPV);
-    //
-    aV2D = bIsIN ? gp_Vec2d(aPV1, aPV) : gp_Vec2d(aPV, aPV1);
-  }
+  aGAC2D.D0 (aTV1, aPV1);
+  aGAC2D.D0 (aTV, aPV);
+  //
+  aV2D = bIsIN ? gp_Vec2d(aPV1, aPV) : gp_Vec2d(aPV, aPV1);
   //
   gp_Dir2d aDir2D(aV2D);
   anAngle=Angle(aDir2D);

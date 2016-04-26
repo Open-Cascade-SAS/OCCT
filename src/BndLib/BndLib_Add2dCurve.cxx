@@ -32,6 +32,10 @@
 #include <gp.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
+#include <math_MultipleVarFunction.hxx>
+#include <math_Function.hxx>
+#include <math_BrentMinimum.hxx>
+#include <math_PSO.hxx>
 
 //=======================================================================
 //function : BndLib_Box2dCurve
@@ -56,6 +60,8 @@ class BndLib_Box2dCurve  {
   const Bnd_Box2d& Box() const;
 
   void Perform();
+
+  void PerformOptimal(const Standard_Real Tol);
 
   void Clear();
 
@@ -89,6 +95,17 @@ class BndLib_Box2dCurve  {
 				 const Standard_Real );
   //
   void PerformOnePoint();
+  //
+  void PerformGenCurv(const Standard_Real Tol = Precision::PConfusion());
+  //
+  Standard_Integer NbSamples();
+  //
+  Standard_Real AdjustExtr(const Standard_Real UMin,
+                           const Standard_Real UMax,
+                           const Standard_Real Extr0,
+                           const Standard_Integer CoordIndx,
+                           const Standard_Real Tol, 
+                           const Standard_Boolean IsMin);
   //-----------------------------
  protected:
   Handle(Geom2d_Curve) myCurve;
@@ -101,7 +118,109 @@ class BndLib_Box2dCurve  {
   Standard_Real myT2;
   GeomAbs_CurveType myTypeBase;
 };
+//
+class Curv2dMaxMinCoordMVar : public math_MultipleVarFunction
+{
+public:
+  Curv2dMaxMinCoordMVar(const Handle(Geom2d_Curve)& theCurve, 
+                        const Standard_Real UMin,
+                        const Standard_Real UMax,
+                        const Standard_Integer CoordIndx,
+                        const Standard_Real Sign)
+: myCurve(theCurve),
+  myUMin(UMin),
+  myUMax(UMax),
+  myCoordIndx(CoordIndx),
+  mySign(Sign)
+  {
+  }
 
+  Standard_Boolean Value (const math_Vector& X,
+                                Standard_Real& F)
+  {
+    if (!CheckInputData(X(1)))
+    {
+      return Standard_False;
+    }
+    gp_Pnt2d aP = myCurve->Value(X(1));
+
+    F = mySign * aP.Coord(myCoordIndx);
+
+    return Standard_True;
+  }
+
+  
+
+  Standard_Integer NbVariables() const
+  {
+    return 1;
+  }
+
+private:
+  Curv2dMaxMinCoordMVar & operator = (const Curv2dMaxMinCoordMVar & theOther);
+
+  Standard_Boolean CheckInputData(Standard_Real theParam)
+  {
+    if (theParam < myUMin || 
+        theParam > myUMax)
+      return Standard_False;
+    return Standard_True;
+  }
+
+  const Handle(Geom2d_Curve)& myCurve;
+  Standard_Real myUMin;
+  Standard_Real myUMax;
+  Standard_Integer myCoordIndx;
+  Standard_Real mySign;
+};
+//
+class Curv2dMaxMinCoord : public math_Function
+{
+public:
+  Curv2dMaxMinCoord(const Handle(Geom2d_Curve)& theCurve, 
+                     const Standard_Real UMin,
+                     const Standard_Real UMax,
+                     const Standard_Integer CoordIndx,
+                     const Standard_Real Sign)
+: myCurve(theCurve),
+  myUMin(UMin),
+  myUMax(UMax),
+  myCoordIndx(CoordIndx),
+  mySign(Sign)
+  {
+  }
+
+  Standard_Boolean Value (const Standard_Real X,
+                                Standard_Real& F)
+  {
+    if (!CheckInputData(X))
+    {
+      return Standard_False;
+    }
+    gp_Pnt2d aP = myCurve->Value(X);
+
+    F = mySign * aP.Coord(myCoordIndx);
+
+    return Standard_True;
+  }
+
+private:
+  Curv2dMaxMinCoord & operator = (const Curv2dMaxMinCoord & theOther);
+
+  Standard_Boolean CheckInputData(Standard_Real theParam)
+  {
+    if (theParam < myUMin || 
+        theParam > myUMax)
+      return Standard_False;
+    return Standard_True;
+  }
+
+  const Handle(Geom2d_Curve)& myCurve;
+  Standard_Real myUMin;
+  Standard_Real myUMax;
+  Standard_Integer myCoordIndx;
+  Standard_Real mySign;
+};
 
 //=======================================================================
 //function : 
@@ -244,6 +363,41 @@ void BndLib_Box2dCurve::Perform()
   }
 }
 //=======================================================================
+//function : PerformOptimal
+//purpose  : 
+//=======================================================================
+void BndLib_Box2dCurve::PerformOptimal(const Standard_Real Tol)
+{
+  Clear();
+  myErrorStatus=0;
+  CheckData();
+
+  if(myErrorStatus) {
+    return;
+  }
+  
+  if (myT1==myT2) {
+    PerformOnePoint();
+    return;
+  }
+  
+  GetInfoBase();
+  if(myErrorStatus) {
+    return;
+  }
+  
+  if (myTypeBase==GeomAbs_Line ||
+      myTypeBase==GeomAbs_Circle ||
+      myTypeBase==GeomAbs_Ellipse ||
+      myTypeBase==GeomAbs_Parabola ||
+      myTypeBase==GeomAbs_Hyperbola) { // LineConic
+    PerformLineConic();
+  }
+  else {
+    PerformGenCurv(Tol);
+  }
+}
+//=======================================================================
 //function : PerformOnePoint
 //purpose  : 
 //=======================================================================
@@ -377,6 +531,209 @@ void BndLib_Box2dCurve::PerformOther()
   }
   myCurve->D0(myT2, aP2D);
   myBox.Add(aP2D);
+}
+//=======================================================================
+//function : NbSamples
+//purpose  : 
+//=======================================================================
+Standard_Integer BndLib_Box2dCurve::NbSamples()
+{
+  Standard_Integer N;
+  switch (myTypeBase) {
+  case GeomAbs_BezierCurve: 
+    {
+      Handle(Geom2d_BezierCurve) aCBz=Handle(Geom2d_BezierCurve)::DownCast(myCurveBase);
+      N = aCBz->NbPoles();
+      //By default parametric range of Bezier curv is [0, 1]
+      Standard_Real du = myT2 - myT1;
+      if(du < .9)
+      {
+        N = RealToInt(du*N) + 1;
+        N = Max(N, 5);
+      }
+      break;
+    }
+  case GeomAbs_BSplineCurve: 
+    {
+      Handle(Geom2d_BSplineCurve) aCBS=Handle(Geom2d_BSplineCurve)::DownCast(myCurveBase);
+      N = (aCBS->Degree() + 1)*(aCBS->NbKnots() -1);
+      Standard_Real umin = aCBS->FirstParameter(), 
+                    umax = aCBS->LastParameter();
+      Standard_Real du = (myT2 - myT1) / (umax - umin);
+      if(du < .9)
+      {
+        N = RealToInt(du*N) + 1;
+        N = Max(N, 5);
+      }
+      break;
+    }
+  default:
+    N = 17;
+  }
+  return Min (23,N);
+}
+//=======================================================================
+//function : AdjustExtr
+//purpose  : 
+//=======================================================================
+Standard_Real BndLib_Box2dCurve::AdjustExtr(const Standard_Real UMin,
+                                            const Standard_Real UMax,
+                                            const Standard_Real Extr0,
+                                            const Standard_Integer CoordIndx,                                 
+                                            const Standard_Real Tol, 
+                                            const Standard_Boolean IsMin)
+{
+  Standard_Real aSign = IsMin ? 1.:-1.;
+  Standard_Real extr = aSign * Extr0;
+  //
+  Standard_Real Du = (myCurve->LastParameter() - myCurve->FirstParameter());
+  //
+  Geom2dAdaptor_Curve aGAC(myCurve);
+  Standard_Real UTol = Max(aGAC.Resolution(Tol), Precision::PConfusion());
+  Standard_Real reltol = UTol / Max(Abs(UMin), Abs(UMax));
+  if(UMax - UMin < 0.01 * Du)
+  {
+    //It is suggested that function has one extremum on small interval
+    math_BrentMinimum anOptLoc(reltol, 100, UTol);
+    Curv2dMaxMinCoord aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
+    anOptLoc.Perform(aFunc, UMin, (UMin+UMax)/2., UMax);
+    if(anOptLoc.IsDone())
+    {
+      extr = anOptLoc.Minimum();
+      return aSign * extr;
+    }
+  }
+  //
+  Standard_Integer aNbParticles = Max(8, RealToInt(32 * (UMax - UMin) / Du));
+  Standard_Real maxstep = (UMax - UMin) / (aNbParticles + 1);
+  math_Vector aT(1,1);
+  math_Vector aLowBorder(1,1);
+  math_Vector aUppBorder(1,1);
+  math_Vector aSteps(1,1);
+  aLowBorder(1) = UMin;
+  aUppBorder(1) = UMax;
+  aSteps(1) = Min(0.1 * Du, maxstep);
+
+  Curv2dMaxMinCoordMVar aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
+  math_PSO aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles); 
+  aFinder.Perform(aSteps, extr, aT);
+  //
+  math_BrentMinimum anOptLoc(reltol, 100, UTol);
+  Curv2dMaxMinCoord aFunc1(myCurve, UMin, UMax, CoordIndx, aSign);
+  anOptLoc.Perform(aFunc1, Max(aT(1) - aSteps(1), UMin), aT(1), Min(aT(1) + aSteps(1), UMax));
+
+  if(anOptLoc.IsDone())
+  {
+    extr = anOptLoc.Minimum();
+    return aSign * extr;
+  }
+
+  return aSign * extr;
+}
+
+//=======================================================================
+//function : PerformGenCurv
+//purpose  : 
+//=======================================================================
+void BndLib_Box2dCurve::PerformGenCurv(const Standard_Real Tol)
+{
+  //
+  Standard_Integer Nu = NbSamples();
+  //
+  Standard_Real CoordMin[2] = {RealLast(), RealLast()}; 
+  Standard_Real CoordMax[2] = {-RealLast(), -RealLast()};
+  Standard_Real DeflMax[2] = {-RealLast(), -RealLast()};
+  //
+  gp_Pnt2d P;
+  Standard_Integer i, k;
+  Standard_Real du = (myT2 - myT1)/(Nu-1), du2 = du / 2.;
+  NCollection_Array1<gp_XY> aPnts(1, Nu);
+  Standard_Real u;
+  for (i = 1, u = myT1; i <= Nu; i++, u += du)
+  {
+    D0(u,P);
+    aPnts(i) = P.XY();
+    //
+    for(k = 0; k < 2; ++k)
+    {
+      if(CoordMin[k] > P.Coord(k+1))
+      {
+        CoordMin[k] = P.Coord(k+1);
+      }
+      if(CoordMax[k] < P.Coord(k+1))
+      {
+        CoordMax[k] = P.Coord(k+1);
+      }
+    }
+    //
+    if(i > 1)
+    {
+      gp_XY aPm = 0.5 * (aPnts(i-1) + aPnts(i));
+      D0(u - du2, P);
+      gp_XY aD = (P.XY() - aPm);
+      for(k = 0; k < 2; ++k)
+      {
+        if(CoordMin[k] > P.Coord(k+1))
+        {
+          CoordMin[k] = P.Coord(k+1);
+        }
+        if(CoordMax[k] < P.Coord(k+1))
+        {
+          CoordMax[k] = P.Coord(k+1);
+        }
+        Standard_Real d = Abs(aD.Coord(k+1));
+        if(DeflMax[k] < d)
+        {
+          DeflMax[k] = d;
+        }
+      }
+    }
+  }
+  //
+  //Adjusting minmax 
+  for(k = 0; k < 2; ++k)
+  {
+    Standard_Real d = DeflMax[k];
+    if(d <= Tol)
+    {
+      continue;
+    }
+    Standard_Real CMin = CoordMin[k];
+    Standard_Real CMax = CoordMax[k];
+    for(i = 1; i <= Nu; ++i)
+    {
+      if(aPnts(i).Coord(k+1) - CMin < d)
+      {
+        Standard_Real tmin, tmax;
+        tmin = myT1 + Max(0, i-2) * du;
+        tmax = myT1 + Min(Nu-1, i) * du;
+        Standard_Real cmin = AdjustExtr(tmin, tmax,
+                                        CMin, k + 1, Tol, Standard_True);
+        if(cmin < CMin)
+        {
+          CMin = cmin;
+        }
+      }
+      else if(CMax - aPnts(i).Coord(k+1) < d)
+      {
+        Standard_Real tmin, tmax;
+        tmin = myT1 + Max(0, i-2) * du;
+        tmax = myT1 + Min(Nu-1, i) * du;
+        Standard_Real cmax = AdjustExtr(tmin, tmax,
+                                        CMax, k + 1, Tol, Standard_False);
+        if(cmax > CMax)
+        {
+          CMax = cmax;
+        }
+      }
+    }
+    CoordMin[k] = CMin;
+    CoordMax[k] = CMax;
+  }
+
+  myBox.Add(gp_Pnt2d(CoordMin[0], CoordMin[1]));
+  myBox.Add(gp_Pnt2d(CoordMax[0], CoordMax[1]));
+  myBox.Enlarge(Tol);
 }
 //=======================================================================
 //function : D0
@@ -890,6 +1247,27 @@ void BndLib_Add2dCurve::Add(const Handle(Geom2d_Curve)& aC2D,
   aBC.SetRange(aT1, aT2);
   //
   aBC.Perform();
+  //
+  const Bnd_Box2d& aBoxC=aBC.Box();
+  aBox2D.Add(aBoxC);
+  aBox2D.Enlarge(aTol);
+}
+//=======================================================================
+//function : AddOptimal
+//purpose  : 
+//=======================================================================
+void BndLib_Add2dCurve::AddOptimal(const Handle(Geom2d_Curve)& aC2D,
+                                   const Standard_Real aT1,
+                                   const Standard_Real aT2,
+                                   const Standard_Real aTol,
+                                   Bnd_Box2d& aBox2D)
+{
+  BndLib_Box2dCurve aBC;
+  //
+  aBC.SetCurve(aC2D);
+  aBC.SetRange(aT1, aT2);
+  //
+  aBC.PerformOptimal(aTol);
   //
   const Bnd_Box2d& aBoxC=aBC.Box();
   aBox2D.Add(aBoxC);

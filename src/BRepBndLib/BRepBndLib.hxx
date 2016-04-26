@@ -68,6 +68,18 @@ public:
   //! box is closer to the shape S.
   Standard_EXPORT static void AddClose (const TopoDS_Shape& S, Bnd_Box& B);
 
+  //! Adds the shape S to the bounding box B.
+  //! This algorith builds precise bounding box,
+  //! which differs from exact geometry boundaries of shape only on shape entities tolerances
+  //! Algorithm is the same as for method Add(..), but uses more precise methods for building boxes 
+  //! for geometry objects.
+  //! If useShapeTolerance = True, bounding box is enlardged by shape tolerances and 
+  //! these tolerances are used for numerical methods of bounding box size calculations, 
+  //! otherwise bounding box is built according to sizes of uderlined geometrical entities,
+  //! numerical calculation use tolerance Precision::Confusion().
+  Standard_EXPORT static void AddOptimal (const TopoDS_Shape& S, Bnd_Box& B, 
+                                          const Standard_Boolean useTriangulation = Standard_True,
+                                          const Standard_Boolean useShapeTolerance = Standard_False);
 
 
 

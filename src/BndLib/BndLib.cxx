@@ -37,6 +37,7 @@
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <Standard_Failure.hxx>
+#include <ElSLib.hxx>
 
 static 
   Standard_Integer ComputeBox(const gp_Hypr& aHypr, 
@@ -389,25 +390,165 @@ void BndLib::Add( const gp_Lin2d& L,const Standard_Real P1,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add( const gp_Circ& C,const Standard_Real Tol, Bnd_Box& B) {
+void BndLib::Add( const gp_Circ& C, const Standard_Real Tol, Bnd_Box& B) 
+{
+  Standard_Real U1 = 0., U2 = 2.*M_PI;
+  Add(C, U1, U2, Tol, B);
+}
 
+void BndLib::Add(const gp_Circ& C,
+                 const Standard_Real U1,
+                 const Standard_Real U2,
+                 const Standard_Real Tol, 
+                 Bnd_Box& B) 
+{
+  Standard_Real period = 2.*M_PI - Epsilon(2.*M_PI);
+
+  Standard_Real utrim1 = U1, utrim2 = U2;
+  if(U2 - U1 > period)
+  {
+    utrim1 = 0.;
+    utrim2 = 2.*M_PI;
+  }
+  else
+  {
+    Standard_Real tol = Epsilon(1.);
+    ElCLib::AdjustPeriodic(0., 2.*M_PI,
+                           tol,
+                           utrim1, utrim2);
+  }
   Standard_Real R = C.Radius();
   gp_XYZ O  = C.Location().XYZ();
   gp_XYZ Xd = C.XAxis().Direction().XYZ();
   gp_XYZ Yd = C.YAxis().Direction().XYZ();
-  B.Add(gp_Pnt(O -R*Xd -R*Yd));
-  B.Add(gp_Pnt(O -R*Xd +R*Yd));
-  B.Add(gp_Pnt(O +R*Xd -R*Yd));
-  B.Add(gp_Pnt(O +R*Xd +R*Yd));
-  B.Enlarge(Tol);
-}
-
-void BndLib::Add( const gp_Circ& C,const Standard_Real P1,
-  const Standard_Real P2,
-  const Standard_Real Tol, Bnd_Box& B) {
-
-  Compute(P1,P2,C.Radius(),C.Radius(),gp_Pnt(C.XAxis().Direction().XYZ()), 
-          gp_Pnt(C.YAxis().Direction().XYZ()),C.Location(),B);
+  const gp_Ax2& pos = C.Position();
+  //
+  Standard_Real tt;
+  Standard_Real xmin, xmax, txmin, txmax;
+  if(Abs(Xd.X()) > gp::Resolution())
+  {
+    txmin = ATan(Yd.X() / Xd.X());
+    txmin = ElCLib::InPeriod(txmin, 0., 2.*M_PI);
+  }
+  else
+  {
+    txmin = M_PI/ 2.;
+  }
+  txmax = txmin <= M_PI? txmin + M_PI : txmin - M_PI;
+  xmin = R * Cos(txmin) * Xd.X() + R * Sin(txmin) * Yd.X() + O.X();
+  xmax = R * Cos(txmax) * Xd.X() + R * Sin(txmax) * Yd.X() + O.X();
+  if(xmin > xmax)
+  {
+    tt = xmin;
+    xmin = xmax;
+    xmax = tt;
+    tt = txmin;
+    txmin = txmax;
+    txmax = tt;
+  }
+  //
+  Standard_Real ymin, ymax, tymin, tymax;
+  if(Abs(Xd.Y()) > gp::Resolution())
+  {
+    tymin = ATan(Yd.Y() / Xd.Y());
+    tymin = ElCLib::InPeriod(tymin, 0., 2.*M_PI);
+  }
+  else
+  {
+    tymin = M_PI/ 2.;
+  }
+  tymax = tymin <= M_PI? tymin + M_PI : tymin - M_PI;
+  ymin = R * Cos(tymin) * Xd.Y() + R * Sin(tymin) * Yd.Y() + O.Y();
+  ymax = R * Cos(tymax) * Xd.Y() + R * Sin(tymax) * Yd.Y() + O.Y();
+  if(ymin > ymax)
+  {
+    tt = ymin;
+    ymin = ymax;
+    ymax = tt;
+    tt = tymin;
+    tymin = tymax;
+    tymax = tt;
+  }
+  //
+  Standard_Real zmin, zmax, tzmin, tzmax;
+  if(Abs(Xd.Z()) > gp::Resolution())
+  {
+    tzmin = ATan(Yd.Z() / Xd.Z());
+    tzmin = ElCLib::InPeriod(tzmin, 0., 2.*M_PI);
+  }
+  else
+  {
+    tzmin = M_PI/ 2.;
+  }
+  tzmax = tzmin <= M_PI? tzmin + M_PI : tzmin - M_PI;
+  zmin = R * Cos(tzmin) * Xd.Z() + R * Sin(tzmin) * Yd.Z() + O.Z();
+  zmax = R * Cos(tzmax) * Xd.Z() + R * Sin(tzmax) * Yd.Z() + O.Z();
+  if(zmin > zmax)
+  {
+    tt = zmin;
+    zmin = zmax;
+    zmax = tt;
+    tt = tzmin;
+    tzmin = tzmax;
+    tzmax = tt;
+  }
+  //
+  if(utrim2 - utrim1 >= period)
+  {
+    B.Update(xmin, ymin, zmin, xmax, ymax, zmax);
+  }
+  else
+  {
+    gp_Pnt P = ElCLib::CircleValue(utrim1, pos, R);
+    B.Add(P);
+    P = ElCLib::CircleValue(utrim2, pos, R);
+    B.Add(P);
+    Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+    B.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+    Standard_Real gap = B.GetGap();
+    Xmin += gap;
+    Ymin += gap;
+    Zmin += gap;
+    Xmax -= gap;
+    Ymax -= gap;
+    Zmax -= gap;
+    //
+    txmin = ElCLib::InPeriod(txmin, utrim1, utrim1 + 2. * M_PI);
+    if(txmin >= utrim1 && txmin <= utrim2)
+    {
+      Xmin = Min(xmin, Xmin);
+    }
+    txmax = ElCLib::InPeriod(txmax, utrim1, utrim1 + 2. * M_PI);
+    if(txmax >= utrim1 && txmax <= utrim2)
+    {
+      Xmax = Max(xmax, Xmax);
+   }
+    //
+    tymin = ElCLib::InPeriod(tymin, utrim1, utrim1 + 2. * M_PI);
+    if(tymin >= utrim1 && tymin <= utrim2)
+    {
+      Ymin = Min(ymin, Ymin);
+    }
+    tymax = ElCLib::InPeriod(tymax, utrim1, utrim1 + 2. * M_PI);
+    if(tymax >= utrim1 && tymax <= utrim2)
+    {
+      Ymax = Max(ymax, Ymax);
+    }
+    //
+    tzmin = ElCLib::InPeriod(tzmin, utrim1, utrim1 + 2. * M_PI);
+    if(tzmin >= utrim1 && tzmin <= utrim2)
+    {
+      Zmin = Min(zmin, Zmin);
+    }
+    tzmax = ElCLib::InPeriod(tzmax, utrim1, utrim1 + 2. * M_PI);
+    if(tzmax >= utrim1 && tzmax <= utrim2)
+    {
+      Zmax = Max(zmax, Zmax);
+    }
+    //
+    B.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+  }
+  //
   B.Enlarge(Tol);
 }
 
@@ -433,26 +574,166 @@ void BndLib::Add(const gp_Circ2d& C,const Standard_Real P1,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add( const gp_Elips& C,const Standard_Real Tol, Bnd_Box& B) {
-
-  Standard_Real Ra = C.MajorRadius();
-  Standard_Real Rb = C.MinorRadius();
-  gp_XYZ Xd = C.XAxis().Direction().XYZ();
-  gp_XYZ Yd = C.YAxis().Direction().XYZ();
-  gp_XYZ O  = C.Location().XYZ();
-  B.Add(gp_Pnt(O +Ra*Xd +Rb*Yd));
-  B.Add(gp_Pnt(O -Ra*Xd +Rb*Yd));
-  B.Add(gp_Pnt(O -Ra*Xd -Rb*Yd));
-  B.Add(gp_Pnt(O +Ra*Xd -Rb*Yd));
-  B.Enlarge(Tol);
+void BndLib::Add(const gp_Elips& C, const Standard_Real Tol, Bnd_Box& B) 
+{
+  Standard_Real U1 = 0., U2 = 2.*M_PI;
+  Add(C, U1, U2, Tol, B);
 }
 
-void BndLib::Add( const gp_Elips& C,const Standard_Real P1,
-                 const Standard_Real P2,
-                 const Standard_Real Tol, Bnd_Box& B) {
+void BndLib::Add(const gp_Elips& C,
+                 const Standard_Real U1,
+                 const Standard_Real U2,
+                 const Standard_Real Tol, 
+                 Bnd_Box& B) 
+{
+  Standard_Real period = 2.*M_PI - Epsilon(2.*M_PI);
 
-  Compute(P1,P2,C.MajorRadius(),C.MinorRadius(),gp_Pnt(C.XAxis().Direction().XYZ()), 
-          gp_Pnt(C.YAxis().Direction().XYZ()),C.Location(),B);
+  Standard_Real utrim1 = U1, utrim2 = U2;
+  if(U2 - U1 > period)
+  {
+    utrim1 = 0.;
+    utrim2 = 2.*M_PI;
+  }
+  else
+  {
+    Standard_Real tol = Epsilon(1.);
+    ElCLib::AdjustPeriodic(0., 2.*M_PI,
+                           tol,
+                           utrim1, utrim2);
+  }
+  Standard_Real MajR = C.MajorRadius();
+  Standard_Real MinR = C.MinorRadius();
+  gp_XYZ O  = C.Location().XYZ();
+  gp_XYZ Xd = C.XAxis().Direction().XYZ();
+  gp_XYZ Yd = C.YAxis().Direction().XYZ();
+  const gp_Ax2& pos = C.Position();
+  //
+  Standard_Real tt;
+  Standard_Real xmin, xmax, txmin, txmax;
+  if(Abs(Xd.X()) > gp::Resolution())
+  {
+    txmin = ATan((MinR*Yd.X()) / (MajR*Xd.X()));
+    txmin = ElCLib::InPeriod(txmin, 0., 2.*M_PI);
+  }
+  else
+  {
+    txmin = M_PI/ 2.;
+  }
+  txmax = txmin <= M_PI? txmin + M_PI : txmin - M_PI;
+  xmin = MajR * Cos(txmin) * Xd.X() + MinR * Sin(txmin) * Yd.X() + O.X();
+  xmax = MajR * Cos(txmax) * Xd.X() + MinR * Sin(txmax) * Yd.X() + O.X();
+  if(xmin > xmax)
+  {
+    tt = xmin;
+    xmin = xmax;
+    xmax = tt;
+    tt = txmin;
+    txmin = txmax;
+    txmax = tt;
+  }
+  //
+  Standard_Real ymin, ymax, tymin, tymax;
+  if(Abs(Xd.Y()) > gp::Resolution())
+  {
+    tymin = ATan((MinR*Yd.Y()) / (MajR*Xd.Y()));
+    tymin = ElCLib::InPeriod(tymin, 0., 2.*M_PI);
+  }
+  else
+  {
+    tymin = M_PI/ 2.;
+  }
+  tymax = tymin <= M_PI? tymin + M_PI : tymin - M_PI;
+  ymin = MajR * Cos(tymin) * Xd.Y() + MinR * Sin(tymin) * Yd.Y() + O.Y();
+  ymax = MajR * Cos(tymax) * Xd.Y() + MinR * Sin(tymax) * Yd.Y() + O.Y();
+  if(ymin > ymax)
+  {
+    tt = ymin;
+    ymin = ymax;
+    ymax = tt;
+    tt = tymin;
+    tymin = tymax;
+    tymax = tt;
+  }
+  //
+  Standard_Real zmin, zmax, tzmin, tzmax;
+  if(Abs(Xd.Z()) > gp::Resolution())
+  {
+    tzmin = ATan((MinR*Yd.Z()) / (MajR*Xd.Z()));
+    tzmin = ElCLib::InPeriod(tzmin, 0., 2.*M_PI);
+  }
+  else
+  {
+    tzmin = M_PI/ 2.;
+  }
+  tzmax = tzmin <= M_PI? tzmin + M_PI : tzmin - M_PI;
+  zmin = MajR * Cos(tzmin) * Xd.Z() + MinR * Sin(tzmin) * Yd.Z() + O.Z();
+  zmax = MajR * Cos(tzmax) * Xd.Z() + MinR * Sin(tzmax) * Yd.Z() + O.Z();
+  if(zmin > zmax)
+  {
+    tt = zmin;
+    zmin = zmax;
+    zmax = tt;
+    tt = tzmin;
+    tzmin = tzmax;
+    tzmax = tt;
+  }
+  //
+  if(utrim2 - utrim1 >= period)
+  {
+    B.Update(xmin, ymin, zmin, xmax, ymax, zmax);
+  }
+  else
+  {
+    gp_Pnt P = ElCLib::EllipseValue(utrim1, pos, MajR, MinR);
+    B.Add(P);
+    P = ElCLib::EllipseValue(utrim2, pos, MajR, MinR);
+    B.Add(P);
+    Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+    B.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+    Standard_Real gap = B.GetGap();
+    Xmin += gap;
+    Ymin += gap;
+    Zmin += gap;
+    Xmax -= gap;
+    Ymax -= gap;
+    Zmax -= gap;
+    //
+    txmin = ElCLib::InPeriod(txmin, utrim1, utrim1 + 2. * M_PI);
+    if(txmin >= utrim1 && txmin <= utrim2)
+    {
+      Xmin = Min(xmin, Xmin);
+    }
+    txmax = ElCLib::InPeriod(txmax, utrim1, utrim1 + 2. * M_PI);
+    if(txmax >= utrim1 && txmax <= utrim2)
+    {
+      Xmax = Max(xmax, Xmax);
+    }
+    //
+    tymin = ElCLib::InPeriod(tymin, utrim1, utrim1 + 2. * M_PI);
+    if(tymin >= utrim1 && tymin <= utrim2)
+    {
+      Ymin = Min(ymin, Ymin);
+    }
+    tymax = ElCLib::InPeriod(tymax, utrim1, utrim1 + 2. * M_PI);
+    if(tymax >= utrim1 && tymax <= utrim2)
+    {
+      Ymax = Max(ymax, Ymax);
+    }
+    //
+    tzmin = ElCLib::InPeriod(tzmin, utrim1, utrim1 + 2. * M_PI);
+    if(tzmin >= utrim1 && tzmin <= utrim2)
+    {
+      Zmin = Min(zmin, Zmin);
+    }
+    tzmax = ElCLib::InPeriod(tzmax, utrim1, utrim1 + 2. * M_PI);
+    if(tzmax >= utrim1 && tzmax <= utrim2)
+    {
+      Zmax = Max(zmax, Zmax);
+    }
+    //
+    B.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+  }
+  //
   B.Enlarge(Tol);
 }
 
@@ -661,57 +942,70 @@ void BndLib::Add(const gp_Hypr2d& H,const Standard_Real P1,
   B.Enlarge(Tol);
 }
 
+static void ComputeCyl(const gp_Cylinder& Cyl, 
+                       const Standard_Real UMin, const Standard_Real UMax, 
+                       const Standard_Real VMin, const Standard_Real VMax, 
+                       Bnd_Box& B)
+{
+  gp_Circ aC = ElSLib::CylinderVIso(Cyl.Position(), Cyl.Radius(), VMin);
+  BndLib::Add(aC, UMin, UMax, 0., B);
+  //
+  gp_Vec aT = (VMax - VMin) * Cyl.Axis().Direction();
+  aC.Translate(aT);
+  BndLib::Add(aC, UMin, UMax, 0., B);
+}
+
 void BndLib::Add( const gp_Cylinder& S,const Standard_Real UMin,
                  const Standard_Real UMax,const Standard_Real VMin,
-                 const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) {
-
-  if (Precision::IsNegativeInfinite(VMin)) {
-    if (Precision::IsNegativeInfinite(VMax)) {
+                 const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B)
+{
+  if (Precision::IsNegativeInfinite(VMin))
+  {
+    if (Precision::IsNegativeInfinite(VMax))
+    {
       Standard_Failure::Raise("BndLib::bad parameter");
     }
-    else if (Precision::IsPositiveInfinite(VMax)) {
-       OpenMinMax(S.Axis().Direction(),B);
-    }
-    else {
-      Compute(UMin,UMax,S.Radius(),S.Radius(),
-       gp_Pnt(S.XAxis().Direction().XYZ()),
-       gp_Pnt(S.YAxis().Direction().XYZ()),
-       gp_Pnt(S.Location().XYZ() + VMax*S.Axis().Direction().XYZ()),B);
-      OpenMin(S.Axis().Direction(),B);
-    }
-  }
-  else if (Precision::IsPositiveInfinite(VMin)) {
-    if (Precision::IsNegativeInfinite(VMax)) {
+    else if (Precision::IsPositiveInfinite(VMax))
+    {
       OpenMinMax(S.Axis().Direction(),B);
     }
-    else if (Precision::IsPositiveInfinite(VMax)) {
-      Standard_Failure::Raise("BndLib::bad parameter");
-    }
-    else {
-      Compute(UMin,UMax,S.Radius(),S.Radius(),
-       gp_Pnt(S.XAxis().Direction().XYZ()),
-       gp_Pnt(S.YAxis().Direction().XYZ()),
-       gp_Pnt(S.Location().XYZ() + VMax*S.Axis().Direction().XYZ()),B);
-      OpenMax(S.Axis().Direction(),B);
-    }
-
-  }
-  else {
-    Compute(UMin,UMax,S.Radius(),S.Radius(),
-     gp_Pnt(S.XAxis().Direction().XYZ()),
-     gp_Pnt(S.YAxis().Direction().XYZ()),
-     gp_Pnt(S.Location().XYZ() + VMin*S.Axis().Direction().XYZ()),B);
-    if (Precision::IsNegativeInfinite(VMax)) {
+    else
+    {
+      ComputeCyl(S, UMin, UMax, 0., VMax,B);
       OpenMin(S.Axis().Direction(),B);
     }
-    else if (Precision::IsPositiveInfinite(VMax)) {
+  }
+  else if (Precision::IsPositiveInfinite(VMin)) 
+  {
+    if (Precision::IsNegativeInfinite(VMax)) 
+    {
+      OpenMinMax(S.Axis().Direction(),B);
+    }
+    else if (Precision::IsPositiveInfinite(VMax))
+    {
+      Standard_Failure::Raise("BndLib::bad parameter");
+    }
+    else
+    {
+      ComputeCyl(S, UMin, UMax, 0., VMax, B);
+      OpenMax(S.Axis().Direction(),B);
+    }
+  }
+  else
+  {
+    if (Precision::IsNegativeInfinite(VMax))
+    {
+      ComputeCyl(S, UMin, UMax, VMin, 0., B);
+      OpenMin(S.Axis().Direction(),B);
+    }
+    else if (Precision::IsPositiveInfinite(VMax)) 
+    {
+      ComputeCyl(S, UMin, UMax, VMin, 0., B);
       OpenMax(S.Axis().Direction(),B); 
     }
-    else {
-      Compute(UMin,UMax,S.Radius(),S.Radius(),
-       gp_Pnt(S.XAxis().Direction().XYZ()),
-       gp_Pnt(S.YAxis().Direction().XYZ()),
-       gp_Pnt(S.Location().XYZ() + VMax*S.Axis().Direction().XYZ()),B);
+    else 
+    {
+      ComputeCyl(S, UMin, UMax, VMin, VMax, B);
     }
   }
 
@@ -725,73 +1019,96 @@ void BndLib::Add( const gp_Cylinder& S,const Standard_Real VMin,
   BndLib::Add(S,0.,2.*M_PI,VMin,VMax,Tol,B);
 }
 
+static void ComputeCone (const gp_Cone& Cone, 
+                         const Standard_Real UMin, const Standard_Real UMax, 
+                         const Standard_Real VMin, const Standard_Real VMax, 
+                         Bnd_Box& B)
+{
+  const gp_Ax3& aPos = Cone.Position();
+  Standard_Real R = Cone.RefRadius();
+  Standard_Real sang = Cone.SemiAngle();
+  gp_Circ aC = ElSLib::ConeVIso(aPos, R, sang, VMin);
+  if(aC.Radius() > Precision::Confusion())
+  {
+    BndLib::Add(aC, UMin, UMax, 0., B);
+  }
+  else
+  {
+    B.Add(aC.Location());
+  }
+  //
+  aC = ElSLib::ConeVIso(aPos, R, sang, VMax);
+  if(aC.Radius() > Precision::Confusion())
+  {
+    BndLib::Add(aC, UMin, UMax, 0., B);
+  }
+  else
+  {
+    B.Add(aC.Location());
+  }
+}
+
 void BndLib::Add(const gp_Cone& S,const Standard_Real UMin,
                  const Standard_Real UMax,const Standard_Real VMin,
                  const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) {
 
-  Standard_Real R = S.RefRadius();
   Standard_Real A = S.SemiAngle();
-  if (Precision::IsNegativeInfinite(VMin)) {
-    if (Precision::IsNegativeInfinite(VMax)) {
+  if (Precision::IsNegativeInfinite(VMin)) 
+  {
+    if (Precision::IsNegativeInfinite(VMax)) 
+    {
       Standard_Failure::Raise("BndLib::bad parameter");
     }
-    else if (Precision::IsPositiveInfinite(VMax)) {
+    else if (Precision::IsPositiveInfinite(VMax)) 
+    {
       gp_Dir D(Cos(A)*S.Axis().Direction());
       OpenMinMax(D,B); 
     }
-    else {
-      Compute(UMin,UMax,R+VMax*Sin(A),R+VMax*Sin(A),
-       gp_Pnt(S.XAxis().Direction().XYZ()),
-       gp_Pnt(S.YAxis().Direction().XYZ()),
-       gp_Pnt(S.Location().XYZ() + 
-       VMax*Cos(A)*S.Axis().Direction().XYZ()),B);
+    else 
+    {
+      ComputeCone(S, UMin, UMax, 0., VMax, B);
       gp_Dir D(Cos(A)*S.Axis().Direction());
       OpenMin(D,B);     
     }
 
   }
-  else if (Precision::IsPositiveInfinite(VMin)) {
-    if (Precision::IsNegativeInfinite(VMax)) {
+  else if (Precision::IsPositiveInfinite(VMin)) 
+  {
+    if (Precision::IsNegativeInfinite(VMax))
+    {
       gp_Dir D(Cos(A)*S.Axis().Direction());
       OpenMinMax(D,B);
     }
-    else if (Precision::IsPositiveInfinite(VMax)) {
+    else if (Precision::IsPositiveInfinite(VMax)) 
+    {
       Standard_Failure::Raise("BndLib::bad parameter");
     }
-    else {
-      Compute(UMin,UMax,R+VMax*Sin(A),R+VMax*Sin(A),
-       gp_Pnt(S.XAxis().Direction().XYZ()),
-       gp_Pnt(S.YAxis().Direction().XYZ()),
-       gp_Pnt(S.Location().XYZ() + 
-       VMax*Cos(A)*S.Axis().Direction().XYZ()),B);
+    else 
+    {
+      ComputeCone(S, UMin, UMax, 0., VMax, B);
       gp_Dir D(Cos(A)*S.Axis().Direction());
       OpenMax(D,B);
     }
-
   }
-  else {
-    Compute(UMin,UMax,R+VMin*Sin(A),R+VMin*Sin(A),
-     gp_Pnt(S.XAxis().Direction().XYZ()),
-     gp_Pnt(S.YAxis().Direction().XYZ()),
-     gp_Pnt(S.Location().XYZ() + 
-     VMin*Cos(A)*S.Axis().Direction().XYZ()),B);
-    if (Precision::IsNegativeInfinite(VMax)) {
+  else 
+  {
+    if (Precision::IsNegativeInfinite(VMax)) 
+    {
+      ComputeCone(S, UMin, UMax, VMin, 0., B);
       gp_Dir D(Cos(A)*S.Axis().Direction());
       OpenMin(D,B);
     }
-    else if (Precision::IsPositiveInfinite(VMax)) {
+    else if (Precision::IsPositiveInfinite(VMax)) 
+    {
+      ComputeCone(S, UMin, UMax, VMin, 0., B);
       gp_Dir D(Cos(A)*S.Axis().Direction());
       OpenMax(D,B);
     }
-    else {
-      Compute(UMin,UMax,R+VMax*Sin(A),R+VMax*Sin(A),
-       gp_Pnt(S.XAxis().Direction().XYZ()),
-       gp_Pnt(S.YAxis().Direction().XYZ()),
-       gp_Pnt(S.Location().XYZ() + 
-       VMax*Cos(A)*S.Axis().Direction().XYZ()),B);
+    else 
+    {
+      ComputeCone(S, UMin, UMax, VMin, VMax, B);
     }
   }
-
 
   B.Enlarge(Tol);
 }
@@ -802,102 +1119,118 @@ void BndLib::Add( const gp_Cone& S,const Standard_Real VMin,
   BndLib::Add(S,0.,2.*M_PI,VMin,VMax,Tol,B);
 }
 
-void BndLib::Add(const gp_Sphere& S,const Standard_Real UMin,
-                 const Standard_Real UMax,const Standard_Real VMin,
-                 const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) {
-
-#if 0
- Standard_Real Fi1;
- Standard_Real Fi2;
- if (VMax<VMin) {
-   Fi1 = VMax;
-   Fi2 = VMin;
- }
- else {
-   Fi1 = VMin;
-   Fi2 = VMax;
- }
- 
- if (-Fi1>Precision::Angular()) {
-   if (-Fi2>Precision::Angular()) {
-     Compute(UMin,UMax,S.Radius(),S.Radius(),
-        gp_Pnt(S.XAxis().Direction().XYZ()),gp_Pnt(S.YAxis().Direction().XYZ()),
-        S.Location(),B);
-     Compute(UMin,UMax,S.Radius(),S.Radius(),
-        gp_Pnt(S.XAxis().Direction().XYZ()),gp_Pnt(S.YAxis().Direction().XYZ()),
-     gp_Pnt(S.Location().XYZ()- S.Radius()*S.Position().Axis().Direction().XYZ()),B);
-   }
-   else {
-     Compute(UMin,UMax,S.Radius(),S.Radius(),
-     gp_Pnt(S.XAxis().Direction().XYZ()),gp_Pnt(S.YAxis().Direction().XYZ()),
-     gp_Pnt(S.Location().XYZ()+ S.Radius()*S.Position().Axis().Direction().XYZ()),B);
-     Compute(UMin,UMax,S.Radius(),S.Radius(),
-     gp_Pnt(S.XAxis().Direction().XYZ()),gp_Pnt(S.YAxis().Direction().XYZ()),
-     gp_Pnt(S.Location().XYZ()- S.Radius()*S.Position().Axis().Direction().XYZ()),B);
-   }
- }
- else {
-   Compute(UMin,UMax,S.Radius(),S.Radius(),
-      gp_Pnt(S.XAxis().Direction().XYZ()),gp_Pnt(S.YAxis().Direction().XYZ()),
-      S.Location(),B);
-   Compute(UMin,UMax,S.Radius(),S.Radius(),
-   gp_Pnt(S.XAxis().Direction().XYZ()),gp_Pnt(S.YAxis().Direction().XYZ()),
-   gp_Pnt(S.Location().XYZ() +S.Radius()*S.Position().Axis().Direction().XYZ()),B);
- } 
- B.Enlarge(Tol);
-#else
- Standard_Real u,v,du,dv;
- Standard_Integer iu,iv;
- du = (UMax-UMin)/10;
- dv = (VMax-VMin)/10;
- Standard_Real COSV[11];
- Standard_Real SINV[11];
- for(iv=0,v=VMin;iv<=10;iv++) { 
-   COSV[iv]=cos(v);
-   SINV[iv]=sin(v);   
-   v+=dv;
- }
- for(u=UMin,iu=0; iu<=10 ; iu++) { 
-   Standard_Real Radiuscosu=S.Radius()*cos(u);
-   Standard_Real Radiussinu=S.Radius()*sin(u);
-   for(v=VMin,iv=0; iv<=10 ; iv++) { 
-     Standard_Real sinv=SINV[iv];
-     Standard_Real cosv=COSV[iv];
-     gp_XYZ M;
-     M.SetLinearForm (cosv*Radiuscosu, S.Position().XDirection().XYZ(),
-        cosv*Radiussinu, S.Position().YDirection().XYZ(),
-        S.Radius()*sinv,     S.Position().Direction().XYZ() ,
-        S.Position().Location().XYZ()  );
-     //-- static int t=0;
-     //-- cout<<"point p"<<++t<<" "<<M.X()<<" "<<M.Y()<<" "<<M.Z()<<endl;
-     B.Add(gp_Pnt(M));
-     v+=dv;
-   }
-   u+=du;
- }
- 
- Standard_Real Maxduv = Max(du,dv)*0.5;
- Standard_Real Fleche = S.Radius() * (1 - cos(Maxduv));
- B.Enlarge(Fleche);
- B.Enlarge(10*Tol);
-#endif
+static void ComputeSphere (const gp_Sphere& Sphere, 
+                           const Standard_Real UMin, const Standard_Real UMax, 
+                           const Standard_Real VMin, const Standard_Real VMax, 
+                           Bnd_Box& B)
+{
+  gp_Pnt P = Sphere.Location();
+  Standard_Real R = Sphere.Radius();
+  Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
+  xmin = P.X() - R;
+  xmax = P.X() + R;
+  ymin = P.Y() - R;
+  ymax = P.Y() + R;
+  zmin = P.Z() - R;
+  zmax = P.Z() + R;
+  
+  Standard_Real uper = 2. * M_PI - Precision::PConfusion();
+  Standard_Real vper = M_PI - Precision::PConfusion();
+  if (UMax - UMin >= uper && VMax - VMin >= vper)
+  {
+    // a whole sphere
+    B.Update(xmin, ymin, zmin, xmax, ymax, zmax);
+  }
+  else
+  {
+    Standard_Real u, v;
+    Standard_Real umax = UMin + 2. * M_PI;
+    const gp_Ax3& Pos = Sphere.Position();
+    gp_Pnt PExt = P;
+    PExt.SetX(xmin);
+    ElSLib::SphereParameters(Pos, R, PExt, u, v);
+    u = ElCLib::InPeriod(u, UMin, umax);
+    if(u >= UMin && u <= UMax && v >= VMin && v <= VMax)
+    {
+      B.Add(PExt);
+    }
+    //
+    PExt.SetX(xmax);
+    ElSLib::SphereParameters(Pos, R, PExt, u, v);
+    u = ElCLib::InPeriod(u, UMin, umax);
+    if(u >= UMin && u <= UMax && v >= VMin && v <= VMax)
+    {
+      B.Add(PExt);
+    }
+    PExt.SetX(P.X());
+    //
+    PExt.SetY(ymin);
+    ElSLib::SphereParameters(Pos, R, PExt, u, v);
+    u = ElCLib::InPeriod(u, UMin, umax);
+    if(u >= UMin && u <= UMax && v >= VMin && v <= VMax)
+    {
+      B.Add(PExt);
+    }
+    //
+    PExt.SetY(ymax);
+    ElSLib::SphereParameters(Pos, R, PExt, u, v);
+    u = ElCLib::InPeriod(u, UMin, umax);
+    if(u >= UMin && u <= UMax && v >= VMin && v <= VMax)
+    {
+      B.Add(PExt);
+    }
+    PExt.SetY(P.Y());
+    //
+    PExt.SetZ(zmin);
+    ElSLib::SphereParameters(Pos, R, PExt, u, v);
+    u = ElCLib::InPeriod(u, UMin, umax);
+    if(u >= UMin && u <= UMax && v >= VMin && v <= VMax)
+    {
+      B.Add(PExt);
+    }
+    //
+    PExt.SetZ(zmax);
+    ElSLib::SphereParameters(Pos, R, PExt, u, v);
+    u = ElCLib::InPeriod(u, UMin, umax);
+    if(u >= UMin && u <= UMax && v >= VMin && v <= VMax)
+    {
+      B.Add(PExt);
+    }
+    //
+    // Add boundaries of patch
+    // UMin, UMax
+    gp_Circ aC = ElSLib::SphereUIso(Pos, R, UMin);
+    BndLib::Add(aC, VMin, VMax, 0., B);
+    aC = ElSLib::SphereUIso(Pos, R, UMax);
+    BndLib::Add(aC, VMin, VMax, 0., B);
+    // VMin, VMax
+    aC = ElSLib::SphereVIso(Pos, R, VMin);
+    BndLib::Add(aC, UMin, UMax, 0., B);
+    aC = ElSLib::SphereVIso(Pos, R, VMax);
+    BndLib::Add(aC, UMin, UMax, 0., B);
+  }
 }
 
-void BndLib::Add( const gp_Sphere& S,const Standard_Real Tol, Bnd_Box& B) {
+void BndLib::Add(const gp_Sphere& S,const Standard_Real UMin,
+                 const Standard_Real UMax,const Standard_Real VMin,
+                 const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) 
+{
+  ComputeSphere(S, UMin, UMax, VMin, VMax, B);
+  B.Enlarge(Tol);
+}
 
+void BndLib::Add( const gp_Sphere& S,const Standard_Real Tol, Bnd_Box& B) 
+{
+  gp_Pnt P = S.Location();
   Standard_Real R = S.Radius();
-  gp_XYZ O = S.Location().XYZ();
-  gp_XYZ Xd = S.XAxis().Direction().XYZ();
-  gp_XYZ Yd = S.YAxis().Direction().XYZ();
-  gp_XYZ Zd = S.Position().Axis().Direction().XYZ();
-  B.Add(gp_Pnt(O -R*Xd -R*Yd+ R*Zd)); 
-  B.Add(gp_Pnt(O -R*Xd +R*Yd+ R*Zd)); 
-  B.Add(gp_Pnt(O +R*Xd -R*Yd+ R*Zd)); 
-  B.Add(gp_Pnt(O +R*Xd +R*Yd+ R*Zd)); 
-  B.Add(gp_Pnt(O +R*Xd -R*Yd- R*Zd)); 
-  B.Add(gp_Pnt(O -R*Xd -R*Yd- R*Zd)); 
-  B.Add(gp_Pnt(O +R*Xd +R*Yd- R*Zd)); 
-  B.Add(gp_Pnt(O -R*Xd +R*Yd- R*Zd)); 
+  Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
+  xmin = P.X() - R;
+  xmax = P.X() + R;
+  ymin = P.Y() - R;
+  ymax = P.Y() + R;
+  zmin = P.Z() - R;
+  zmax = P.Z() + R;
+  B.Update(xmin, ymin, zmin, xmax, ymax, zmax);
   B.Enlarge(Tol);
 }
 

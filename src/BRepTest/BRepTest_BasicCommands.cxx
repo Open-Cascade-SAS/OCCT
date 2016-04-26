@@ -440,6 +440,92 @@ static Standard_Integer bounding(Draw_Interpretor& di,Standard_Integer n,const c
   return 0;
 }
 //=======================================================================
+//function : optbounding
+//purpose  : 
+//=======================================================================
+static Standard_Integer optbounding(Draw_Interpretor& di,Standard_Integer n,const char** a)
+{
+  if (n < 2)
+  {
+    di << "Usage: optbounding shape [usetri [usetol]]\n";
+    di << "usetri and usetol can be 0 or 1, by default usetri = 1, usetol = 0\n";
+    return 1;
+  }
+  Standard_Real axmin,aymin,azmin,axmax,aymax,azmax;
+  Bnd_Box B; Handle(Draw_Box) DB;
+  
+  TopoDS_Shape S = DBRep::Get(a[1]);
+  if (S.IsNull()) 
+  {
+    di << "Null shape\n";
+    return 1;
+  }
+  Standard_Boolean useTri = Standard_True;
+  Standard_Boolean useTol = Standard_False;
+  if(n > 2 )
+  {
+    Standard_Integer ii = atoi(a[2]);
+    useTri = ii > 0;
+  }
+  if(n > 3 )
+  {
+    Standard_Integer ii = atoi(a[3]);
+    useTol = ii > 0;
+  }
+  BRepBndLib::AddOptimal(S, B, useTri, useTol);
+  B.Get(axmin, aymin, azmin, axmax, aymax, azmax);
+  DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_vert);
+  dout<<DB;
+  di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
+  return 0;
+}
+//=======================================================================
+//function : gbounding
+//purpose  : 
+//=======================================================================
+#include <GeomAdaptor_Surface.hxx>
+#include <BndLib_AddSurface.hxx>
+#include <BndLib_Add3dCurve.hxx>
+static Standard_Integer gbounding(Draw_Interpretor& di,Standard_Integer n,const char** a)
+{
+  if (n < 2) 
+  {
+    di << "Usage: gbounding surf/curve \n";
+    return 1;
+  }
+  Standard_Real axmin,aymin,azmin,axmax,aymax,azmax;
+  Bnd_Box B; Handle(Draw_Box) DB;
+  
+  if (n == 2) { 
+    Handle(Geom_Curve) C;
+    Handle(Geom_Surface) S;
+    S = DrawTrSurf::GetSurface(a[1]);
+    if (S.IsNull())
+    {
+      C = DrawTrSurf::GetCurve(a[1]);
+    }
+    if(!S.IsNull())
+    {
+      GeomAdaptor_Surface aGAS(S);
+      BndLib_AddSurface::AddOptimal(aGAS, Precision::Confusion(), B);
+    }
+    else if(!C.IsNull())
+    {
+      GeomAdaptor_Curve aGAC(C);
+      BndLib_Add3dCurve::AddOptimal(aGAC, Precision::Confusion(), B);
+    }
+    else
+    {
+      di << "Wrong argument \n";
+      return 1;
+    }
+    B.Get(axmin,aymin,azmin,axmax,aymax,azmax);
+    DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_vert);
+    dout<<DB;
+    di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
+  }
+  return 0;
+}//=======================================================================
 //function : findplane
 //purpose  : 
 //=======================================================================
@@ -952,6 +1038,16 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  "bounding shape [ xmin ymin zmin xmax ymax zmax] ; draw bounds",
 		  __FILE__,
 		  bounding,g);
+
+  theCommands.Add("optbounding",
+		  "optbounding shape [usetri (0/1) [usetol (0/1)]] ; ",
+		  __FILE__,
+		  optbounding,g);
+ //
+  theCommands.Add("gbounding",
+		  "gbounding curve/surf ",
+		  __FILE__,
+		  gbounding,g);
 
   theCommands.Add("boundingstr",
 		  "boundingstr shape [ xmin ymin zmin xmax ymax zmax] ; print bounding box",

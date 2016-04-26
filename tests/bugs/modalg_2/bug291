@@ -17,6 +17,6 @@ vfit
 isos result 0
 triangles result
 
-checktrinfo result -tri 1145 -nod 831
+checktrinfo result -tri 1111 -nod 814
 checkprops result -s 376.873 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -13,7 +13,7 @@ catch {pload XDE}
 set x1 210
 set y1 184
 
-set x2 205
+set x2 207
 set y2 180
 
 stepread [locate_data_file OCC23012-Sample_3.stp] a *

@@ -22,8 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
+//
 class Adaptor3d_Curve;
 class Bnd_Box;
+class gp_Circ;
+class gp_Elips;
 
 
 //! Computes the bounding box for a curve in 3d.
@@ -92,8 +95,22 @@ public:
   //! numbers, or two positive infinite real numbers.
   Standard_EXPORT static void Add (const Adaptor3d_Curve& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol, Bnd_Box& B);
 
-
-
+  //! Adds to the bounding box B the curve C
+  //! These methods use more precise algorithms for building bnd box
+  //! then methods Add(...)
+  Standard_EXPORT static void AddOptimal (const Adaptor3d_Curve& C, const Standard_Real Tol, Bnd_Box& B);
+  Standard_EXPORT static void AddOptimal (const Adaptor3d_Curve& C, 
+                                          const Standard_Real U1, const Standard_Real U2, 
+                                          const Standard_Real Tol, Bnd_Box& B);
+  //! Adds to the bounding box B the curve C
+  //! using numerical minimization algorithms
+  //! This method is used in AddOptimal for not analytical curves.
+  //! if Tol < Precision::Confusion(), Precision:;Confusion is used as computation tolerance
+  Standard_EXPORT static void AddGenCurv(const Adaptor3d_Curve& C, 
+                                         const Standard_Real UMin,
+                                         const Standard_Real UMax,
+                                         const Standard_Real Tol,
+                                         Bnd_Box& B);
 
 protected:
 

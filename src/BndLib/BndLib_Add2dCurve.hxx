@@ -115,7 +115,19 @@ public:
   //! -   if not, the points of an approximation of the curve C.
   Standard_EXPORT static void Add (const Handle(Geom2d_Curve)& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol, Bnd_Box2d& B);
 
-
+  //! Adds to the bounding box B the part of curve C
+  //! B is then enlarged by the tolerance value Tol.
+  //! U1, U2 - the parametric range to comute the bounding box;
+  //! Note: depending on the type of curve, one of the following
+  //! algorithms  is used to include it in the bounding box B:
+  //! -   an exact analytical if C is built from a line, a circle or a conic curve,
+  //! -   numerical calculation of bounding box sizes, based on minimization algorithm,  for other types of curve
+  //! If Tol = < Precision::PConfusion(), Precision::PConfusion is used as tolerance for calculation
+  Standard_EXPORT static void AddOptimal(const Handle(Geom2d_Curve)& C,
+			                                   const Standard_Real U1,
+			                                   const Standard_Real U2,
+			                                   const Standard_Real Tol,
+			                                   Bnd_Box2d& B);
 
 
 protected:
