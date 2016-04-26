@@ -214,7 +214,7 @@ void Extrema_GenExtCC::Perform()
   Standard_Real aLC = 9.0; // Default value.
   const Standard_Real aMaxDer1 = 1.0 / C1.Resolution(1.0);
   const Standard_Real aMaxDer2 = 1.0 / C2.Resolution(1.0);
-  const Standard_Real aMaxDer = Max(aMaxDer1, aMaxDer2) * Sqrt(2.0);
+  Standard_Real aMaxDer = Max(aMaxDer1, aMaxDer2) * Sqrt(2.0);
   if (aLC > aMaxDer)
     aLC = aMaxDer;
 
@@ -222,7 +222,7 @@ void Extrema_GenExtCC::Perform()
   Standard_Boolean isConstLockedFlag = Standard_False;
   if (C1.GetType() == GeomAbs_Line)
   {
-    Standard_Real aMaxDer = 1.0 / C2.Resolution(1.0);
+    aMaxDer = 1.0 / C2.Resolution(1.0);
     if (aLC > aMaxDer)
     {
       isConstLockedFlag = Standard_True;
@@ -231,7 +231,7 @@ void Extrema_GenExtCC::Perform()
   }
   if (C2.GetType() == GeomAbs_Line)
   {
-    Standard_Real aMaxDer = 1.0 / C1.Resolution(1.0);
+    aMaxDer = 1.0 / C1.Resolution(1.0);
     if (aLC > aMaxDer)
     {
       isConstLockedFlag = Standard_True;

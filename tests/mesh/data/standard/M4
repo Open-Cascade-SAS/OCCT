@@ -3,5 +3,5 @@ set bug_area "OCC22687"
 if { [string compare $command "shading"] == 0 } {
    set rel_tol 1.7
 } else {
-   set rel_tol 1.55
+   set rel_tol 1.54
 }

@@ -106,10 +106,6 @@ private:
   //! @param theNewVertices list of vertices to be extended and added to mesh.
   void insertInternalVerticesTorus(BRepMesh::ListOfVertex& theNewVertices);
 
-  //! Calculates nodes lying on Bezier/BSpline surface.
-  //! @param theNewVertices list of vertices to be extended and added to mesh.
-  void insertInternalVerticesBSpline(BRepMesh::ListOfVertex& theNewVertices);
-
   //! Calculates nodes lying on custom-type surface.
   //! @param theNewVertices list of vertices to be extended and added to mesh.
   void insertInternalVerticesOther(BRepMesh::ListOfVertex& theNewVertices);

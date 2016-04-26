@@ -25,9 +25,9 @@ if { [regexp {Debug mode} [dversion]] } {
     set max_t_001 600
 } else {
   if { [regexp {Windows} [dversion]] } {
-    set max_t_001 360
+    set max_t_001 189
   } else {
-    set max_t_001 400
+    set max_t_001 182
   }
 }
 

@@ -921,8 +921,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
     else if (!style->ItemAP242().Representation().IsNull()){
       //special case for AP242: item can be Reprsentation
       Handle(StepRepr_Representation) aRepr = style->ItemAP242().Representation();
-      for (Standard_Integer i = 1; i <= aRepr->Items()->Length(); i++)
-        anItems.Append(aRepr->Items()->Value(i));
+      for (Standard_Integer j = 1; j <= aRepr->Items()->Length(); j++)
+        anItems.Append(aRepr->Items()->Value(j));
     }
     for (Standard_Integer itemIt = 0; itemIt < anItems.Length(); itemIt++) {
       TopoDS_Shape S = STEPConstruct::FindShape ( Styles.TransientProcess(),

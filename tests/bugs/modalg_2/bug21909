@@ -32,6 +32,7 @@ set y2 228
 restore [locate_data_file OCC21909-render_error.brep] result
 
 vinit
+vdefaults -angDefl 7
 vdisplay result
 vfit
 

@@ -230,8 +230,8 @@ void LocOpe_SplitShape::Add(const TopoDS_Vertex& V,
       aNewList.Append(E2);
       for (; itl.More(); itl.Next()) 
       {
-        const TopoDS_Edge& edg = TopoDS::Edge(itl.Value());
-        aNewList.Append(edg);
+        const TopoDS_Edge& edg1 = TopoDS::Edge(itl.Value());
+        aNewList.Append(edg1);
       }
       myMap.UnBind(E);
       myMap.Bind(E, aNewList);

@@ -21,9 +21,9 @@ puts "t_01=${t_01}"
 trinfo b
 
 if { [regexp {Debug mode} [dversion]] } {
-    set max_t_01 180
+  set max_t_01 180
 } else {
-  set max_t_01 50
+  set max_t_01 1
 }
 
 if {${max_t_01} > ${t_01}} {

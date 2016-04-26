@@ -23,7 +23,8 @@ if {$report != ""} {
 }
 
 # Checking triangulation area (triarea command)...
-set rel_tol 1
+set max_rel_tol_diff 1
+set rel_tol 0.29
 set area_eps 0
 
 smallview
