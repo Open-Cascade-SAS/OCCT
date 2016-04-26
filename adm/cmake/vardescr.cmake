@@ -19,8 +19,9 @@ ExprIntrp functionality are generated automatically with Flex/Bison. Checking th
 leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files")
 
 set (BUILD_WITH_DEBUG_DESCR
-"Enables extended messages of many OCCT algorithms, usually printed to cout. 
-These include messages on internal errors and special cases encountered, timing etc")
+"Enables extended messages of many OCCT algorithms, usually printed to cout.
+These include messages on internal errors and special cases encountered, timing etc.
+Applies only for Debug configuration.")
 
 set (BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR
 "Append the postfix to names of output libraries")

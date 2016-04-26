@@ -65,9 +65,16 @@ if (DEFINED CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE) # single-configuration ge
 endif()
 
 # enable extended messages of many OCCT algorithms
-set (BUILD_WITH_DEBUG OFF CACHE BOOL "${BUILD_WITH_DEBUG_DESCR}")
+if ((SINGLE_GENERATOR AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug") OR NOT SINGLE_GENERATOR)
+  if (NOT BUILD_WITH_DEBUG)
+    set (BUILD_WITH_DEBUG OFF CACHE BOOL "${BUILD_WITH_DEBUG_DESCR}")
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET (BUILD_WITH_DEBUG)
+endif()
+
 if (BUILD_WITH_DEBUG)
-  add_definitions (-DOCCT_DEBUG)
+  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:DEBUG>:OCCT_DEBUG>)
 endif()
 
 # copy samples to install directory
