@@ -247,6 +247,10 @@ The class *Select3D_Projector* now supports both orientation and projection tran
 
 Porting of user applications from an earlier OCCT version to version 6.9.0 requires taking into account the following major changes.
 
+@subsection upgrade_690_shaders 3D Viewer initialization
+
+3D Viewer now uses GLSL programs for managing frame buffer and stereoscopic output.
+For proper initialization, application should configure **CSF_ShadersDirectory** environment variable pointing to a folder with GLSL resources - files from folder **CASROOT**/src/Shaders.
 
 @subsection upgrade_690_selection Changes in Selection
 
