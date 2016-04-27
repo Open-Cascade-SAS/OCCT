@@ -846,6 +846,7 @@ void BRepMesh_FastDiscret::update(
     aNewParamsVec       (aNodesCount) = aEAttr.FirstParam;
 
     ++aNodesCount;
+    Standard_Integer aPrevNodeId  = ivf;
     Standard_Integer aLastPointId = myAttribute->LastPointId();
     for (Standard_Integer i = 2; i < aNodesNb; ++i)
     {
@@ -855,15 +856,21 @@ void BRepMesh_FastDiscret::update(
       if (!aEdgeTool->Value(i, aParam, aPnt, aUV))
         continue;
 
-      myBoundaryPoints->Bind(++aLastPointId, aPnt);
-
+      // Imitate index of 3d point in order to not to add points to map without necessity.
       Standard_Integer iv2, isv;
-      myAttribute->AddNode(aLastPointId, aUV.Coord(), BRepMesh_Frontier, iv2, isv);
+      myAttribute->AddNode(aLastPointId + 1, aUV.Coord(), BRepMesh_Frontier, iv2, isv);
+      if (aPrevNodeId == iv2)
+        continue;
+
+      // Ok, now we can add point to the map.
+      myBoundaryPoints->Bind (++aLastPointId, aPnt);
 
       aNewNodesInStructVec(aNodesCount) = aLastPointId;
       aNewNodesVec        (aNodesCount) = isv;
       aNewParamsVec       (aNodesCount) = aParam;
+
       ++aNodesCount;
+      aPrevNodeId = iv2;
     }
 
     aNewNodesInStructVec(aNodesCount) = ipl;
