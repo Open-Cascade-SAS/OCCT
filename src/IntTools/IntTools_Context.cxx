@@ -840,14 +840,19 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
   aFirst=aC3D->FirstParameter();
   aLast =aC3D->LastParameter();
   //
-  //Checking extermities first
+  // Checking extermities first
+  // It is necessary to chose the closest bound to the point
+  Standard_Boolean bFirstValid = Standard_False;
+  Standard_Real aFirstDist = Precision::Infinite();
+  //
   if (!Precision::IsInfinite(aFirst)) {
     gp_Pnt aPCFirst=aC3D->Value(aFirst);
-    aDist=aPv.Distance(aPCFirst);
-    if (aDist < aTolSum) {
+    aFirstDist = aPv.Distance(aPCFirst);
+    if (aFirstDist < aTolSum) {
+      bFirstValid = Standard_True;
       aT=aFirst;
       //
-      if(aDist > aTolV) {
+      if (aFirstDist > aTolV) {
         Extrema_LocateExtPC anExt(aPv, aGAC, aFirst, 1.e-10);
         
         if(anExt.IsDone()) {
@@ -889,15 +894,16 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
         }
 
       }
-      //
-      return Standard_True;
     }
   }
   //
-  //if (!Precision::IsInfinite(aFirst)) {
   if (!Precision::IsInfinite(aLast)) {
     gp_Pnt aPCLast=aC3D->Value(aLast);
     aDist=aPv.Distance(aPCLast);
+    if (bFirstValid && (aFirstDist < aDist)) {
+      return Standard_True;
+    }
+    //
     if (aDist < aTolSum) {
       aT=aLast;
       //
@@ -945,6 +951,9 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
       //
       return Standard_True;
     }
+  }
+  else if (bFirstValid) {
+    return Standard_True;
   }
   //
   GeomAPI_ProjectPointOnCurve& aProjector=ProjPT(aC3D);
