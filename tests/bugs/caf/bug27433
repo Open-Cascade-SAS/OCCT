@@ -1,0 +1,21 @@
+puts "==========="
+puts "OCC27433 Opening/Saving OCAF Documents With Own Document Format Does Not Work"
+puts "==========="
+
+# make variable ends with "/" to get empty myName in OSD_Path
+dsetenv "CSF_PluginDefaults" [dgetenv CSF_PluginDefaults]/
+
+# Create simple document with some data
+NewDocument Doc BinOcaf
+SetInteger Doc 0:2 100
+
+# Save the document
+set aFile ${imagedir}/OCC27433-[file tail [info script]].cbf
+file delete ${aFile}
+puts ${aFile}
+catch {SaveAs Doc ${aFile}}
+if { ![file exists ${aFile}] } {
+	puts "Error: Can not save the file with path to plugins ended with slash"
+}
+
+Close Doc

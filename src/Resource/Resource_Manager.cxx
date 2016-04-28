@@ -113,9 +113,9 @@ void Resource_Manager::Load(TCollection_AsciiString& aPath,
 {
   Resource_KindOfLine aKind;
   TCollection_AsciiString Token1, Token2;
-  TCollection_AsciiString Directory, Name;
-  TCollection_AsciiString FileName;
-  OSD_File File = OSD_Path(aPath);
+  OSD_Path Path(aPath);
+  OSD_File File = Path;
+  TCollection_AsciiString FileName = Path.Name();
   File.Open(OSD_ReadOnly,OSD_Protection());
   if (File.Failed()) {
     if (myVerbose)
@@ -486,7 +486,12 @@ void Resource_Manager::GetResourcePath (TCollection_AsciiString& aPath, const St
   TCollection_AsciiString aResPath(dir);
 
   OSD_Path anOSDPath(aResPath);
-  anOSDPath.DownTrek(anOSDPath.Name());
+
+  if (!anOSDPath.Name().IsEmpty())
+  {
+    anOSDPath.DownTrek(anOSDPath.Name());
+  }
+
   anOSDPath.SetName(aName);
 
   anOSDPath.SystemName(aPath);
