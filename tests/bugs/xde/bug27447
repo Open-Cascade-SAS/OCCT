@@ -1,0 +1,47 @@
+puts "========"
+puts "OCC27447"
+puts "========"
+puts ""
+##########################################
+# Add support for long IGES entity names
+##########################################
+
+pload OCAF
+
+# Part of samples/tcl/xde.tcl
+pcylinder pin 1 10
+pcylinder nut 2 2
+compound nut nut nuts
+explode nuts
+ttranslate nuts_1 0 0 7
+ttranslate nuts_2 0 0 1
+compound pin nuts_1 nuts_2 link
+NewDocument D XCAF
+XAddShape D link
+SetName D [XFindShape D pin] "Pin"
+SetName D [XFindShape D nut] "Nut"
+# Modification of label "Link" to "Very long link name" according to bug's description
+SetName D [XFindShape D link] "Very long link name"
+SetName D [XFindShape D link]:1 "Pin instance"
+SetName D [XFindShape D link]:2 "Nut instance 1"
+SetName D [XFindShape D link]:3 "Nut instance 2"
+
+# Write IGES file
+catch {exec rm ${imagedir}/bug27447_link.igs}
+WriteIges D ${imagedir}/bug27447_link.igs
+
+# Processing of IGES file
+set is_bug27447_fixed "FALSE"
+set file_27447 [open ${imagedir}/bug27447_link.igs RDONLY]
+while {[eof $file_27447] == 0} {
+  set file_27447_line [string trim [gets $file_27447]]
+  if {[string first "Very long link name" $file_27447_line] != -1} {
+    set is_bug27447_fixed "TRUE"
+  }
+}
+close $file_27447
+
+# Results validation
+if {[string compare $is_bug27447_fixed "FALSE"] == 0} {
+  puts "ERROR: OCC27447 is reproduced. Long labels in IGES files are not supported."
+}

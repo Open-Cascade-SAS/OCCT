@@ -21,10 +21,12 @@
 #include <IGESGraph_Color.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESSolid_Face.hxx>
+#include <IGESBasic_Name.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -526,6 +528,14 @@ Standard_Boolean IGESCAFControl_Writer::WriteNames (const TDF_LabelSequence& the
         anAsciiName->SetValue (aNameLength+1, IsAnAscii (aName.Value (aCharPos)) ? (Standard_Character )aName.Value (aCharPos) : '?');
       }
       anIGESEntity->SetLabel (anAsciiName);
+
+      // Set long IGES name using 406 form 15 entity
+      Handle(IGESBasic_Name) aLongNameEntity = new IGESBasic_Name;
+      Handle(TCollection_HExtendedString) aTmpStr = new TCollection_HExtendedString(aName);
+      aLongNameEntity->Init(1, new TCollection_HAsciiString(aTmpStr, '_'));
+
+      anIGESEntity->AddProperty(aLongNameEntity);
+      AddEntity(aLongNameEntity);
     }
   }
 
