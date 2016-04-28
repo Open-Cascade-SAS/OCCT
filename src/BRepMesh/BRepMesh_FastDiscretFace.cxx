@@ -617,19 +617,29 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesCylinder(
   gp_Cylinder aCylinder = myAttribute->Surface()->Cylinder();
   const Standard_Real aRadius = aCylinder.Radius();
 
-  // Calculate parameters for iteration in U direction
-  Standard_Real Du = GCPnts_TangentialDeflection::ArcAngularStep(
-    aRadius, myAttribute->GetDefFace(), myAngle, myMinSize);
-
+  Standard_Integer nbU = 0;
+  Standard_Integer nbV = 0;
   const Standard_Real su = umax - umin;
-  const Standard_Integer nbU = (Standard_Integer)(su / Du);
-  Du = su / (nbU + 1);
-
-  // Calculate parameters for iteration in V direction
   const Standard_Real sv = vmax - vmin;
-  Standard_Integer nbV = (Standard_Integer)(nbU*sv / (su*aRadius));
-  nbV = Min(nbV, 100 * nbU);
-  Standard_Real Dv = sv / (nbV + 1);
+  const Standard_Real aArcLen = su * aRadius;
+  if (aArcLen > myAttribute->GetDefFace ())
+  {
+    // Calculate parameters for iteration in U direction
+    const Standard_Real Du = GCPnts_TangentialDeflection::ArcAngularStep (
+      aRadius, myAttribute->GetDefFace (), myAngle, myMinSize);
+    nbU = (Standard_Integer)(su / Du);
+
+    // Calculate parameters for iteration in V direction
+    const Standard_Real aDv = nbU*sv / aArcLen;
+    // Protection against overflow during casting to int in case 
+    // of long cylinder with small radius.
+    nbV = aDv > static_cast<Standard_Real> (IntegerLast ()) ? 
+      0 : (Standard_Integer)(aDv);
+    nbV = Min (nbV, 100 * nbU);
+  }
+
+  const Standard_Real Du = su / (nbU + 1);
+  const Standard_Real Dv = sv / (nbV + 1);
 
   Standard_Real pasu, pasv, pasvmax = vmax - Dv*0.5, pasumax = umax - Du*0.5;
   for (pasv = vmin + Dv; pasv < pasvmax; pasv += Dv)

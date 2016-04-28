@@ -1,0 +1,21 @@
+puts "========="
+puts "OCC27442"
+puts "========="
+puts ""
+#################################
+# Rotation sweep can't be rendered in 3D
+#################################
+cpulimit 20
+
+pload ALL
+restore [locate_data_file bug27442_facerot.brep] f
+revol result f 444.5 -958.0 4 0 1 0 95
+vdisplay result
+vsetdispmode 1
+vfit
+
+# relative tolerance (%)
+set rel_tol 1
+set area_eps 0
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
