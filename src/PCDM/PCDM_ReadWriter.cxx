@@ -166,12 +166,16 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat (Standard_IStream& theISt
 {
   TCollection_ExtendedString aFormat;
 
-  Storage_BaseDriver* aFileDriver;
+  Storage_BaseDriver* aFileDriver = 0L;
   if (PCDM::FileDriverType (theIStream, aFileDriver) == PCDM_TOFD_XmlFile)
   {
     return ::TryXmlDriverType (theIStream);
   }
- 
+  if (!aFileDriver)
+  {
+    // type is not recognized, return empty string
+    return aFormat;
+  }
 
   aFileDriver->ReadCompleteInfo (theIStream, theData);
 
