@@ -1594,7 +1594,7 @@ void ShapeFix_ComposeShell::SplitByLine (ShapeFix_SequenceOfWireSegment &wires,
 
   // merge null-length tangential segments into one-point tangencies or intersections
   for ( i = 1; i < SplitLinePar.Length(); i++ ) {
-    if ( Abs ( SplitLinePar(i+1) - SplitLinePar(i) ) > ::Precision::PConfusion() ) continue;
+    if ( Abs ( SplitLinePar(i+1) - SplitLinePar(i) ) > ::Precision::PConfusion() && !SplitLineVertex(i).IsSame(SplitLineVertex(i+1)) ) continue;
     if ( ( SplitLineCode(i) & ITP_ENDSEG &&
 	   SplitLineCode(i+1) & ITP_BEGSEG ) ||
          ( SplitLineCode(i) & ITP_BEGSEG &&
@@ -1615,7 +1615,7 @@ void ShapeFix_ComposeShell::SplitByLine (ShapeFix_SequenceOfWireSegment &wires,
   Standard_Integer tanglevel = 0;  // tangency nesting level
   for ( i = 1; i <= SplitLinePar.Length(); i++ ) {
     Standard_Integer code = SplitLineCode(i);
-    Standard_Boolean interior = ( ! tanglevel && parity % 2 ); // create an edge
+    Standard_Boolean interior = ( !tanglevel && parity % 2 ); // create an edge
     if ( code & ITP_INTER ) { // crossing
       parity++;
     }
@@ -2221,9 +2221,10 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
         wire->Reverse ( myFace );
         sbwd->Add ( wire );
       }
-      if ( seg.Orientation() == TopAbs_EXTERNAL ) 
-           seg.Orientation ( reverse ? TopAbs_REVERSED : TopAbs_FORWARD );
-      else seg.Orientation ( TopAbs_INTERNAL );
+      if ( seg.Orientation() == TopAbs_EXTERNAL )
+        seg.Orientation ( reverse ? TopAbs_REVERSED : TopAbs_FORWARD );
+      else
+        seg.Orientation ( TopAbs_INTERNAL );
       seqw.SetValue ( index, seg );
     }
     else if ( sbwd.IsNull() ) break; // stop when no free segments available
