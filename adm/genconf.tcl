@@ -384,6 +384,10 @@ checkbutton   .myFrame.myChecks.myGl2psCheck    -offvalue "false" -onvalue "true
 ttk::label    .myFrame.myChecks.myGl2psLbl      -text "Use GL2PS"
 checkbutton   .myFrame.myChecks.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myTbbLbl        -text "Use Intel TBB"
+if { "$::tcl_platform(platform)" == "windows" } {
+  checkbutton .myFrame.myChecks.myD3dCheck      -offvalue "false" -onvalue "true" -variable HAVE_D3D       -command wokdep:gui:UpdateList
+  ttk::label  .myFrame.myChecks.myD3dLbl        -text "Use Direct3D"
+}
 #checkbutton   .myFrame.myChecks.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
 #ttk::label    .myFrame.myChecks.myOpenClLbl     -text "Use OpenCL"
 checkbutton   .myFrame.myChecks.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
@@ -483,6 +487,10 @@ grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 2 -sticky e
 grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
 grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 4 -sticky e
 grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 5 -sticky w
+if { "$::tcl_platform(platform)" == "windows" } {
+  grid .myFrame.myChecks.myD3dCheck    -row $aCheckRowIter -column 6 -sticky e
+  grid .myFrame.myChecks.myD3dLbl      -row $aCheckRowIter -column 7 -sticky w
+}
 #grid .myFrame.myChecks.myOpenClCheck   -row $aCheckRowIter -column 6 -sticky e
 #grid .myFrame.myChecks.myOpenClLbl     -row $aCheckRowIter -column 7 -sticky w
 incr aCheckRowIter

@@ -46,6 +46,7 @@ set SHORTCUT_HEADERS "ShortCut"
 set HAVE_FREEIMAGE "false"
 set HAVE_GL2PS     "false"
 set HAVE_TBB       "false"
+set HAVE_D3D       "false"
 set HAVE_OPENCL    "false"
 set HAVE_VTK       "false"
 set MACOSX_USE_GLX "false"
@@ -84,6 +85,9 @@ if { [info exists ::env(HAVE_GL2PS)] } {
 }
 if { [info exists ::env(HAVE_TBB)] } {
   set HAVE_TBB "$::env(HAVE_TBB)"
+}
+if { [info exists ::env(HAVE_D3D)] } {
+  set HAVE_D3D "$::env(HAVE_D3D)"
 }
 if { [info exists ::env(HAVE_OPENCL)] } {
   set HAVE_OPENCL "$::env(HAVE_OPENCL)"
@@ -952,6 +956,7 @@ proc wokdep:SaveCustom {} {
     puts $aFile "set HAVE_FREEIMAGE=$::HAVE_FREEIMAGE"
     puts $aFile "set HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "set HAVE_TBB=$::HAVE_TBB"
+    puts $aFile "set HAVE_D3D=$::HAVE_D3D"
     puts $aFile "set HAVE_OPENCL=$::HAVE_OPENCL"
     puts $aFile "set HAVE_VTK=$::HAVE_VTK"
     puts $aFile "set CHECK_QT4=$::CHECK_QT4"
