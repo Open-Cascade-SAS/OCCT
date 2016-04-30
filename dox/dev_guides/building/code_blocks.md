@@ -20,7 +20,10 @@ The environment is defined in the file *custom.sh* (on Linux and OS X) or *custo
 
 * Add paths to includes of used third-party libraries in variable *CSF_OPT_INC*. 
 * Add paths to their binary libraries in variable  *CSF_OPT_LIB64*.
-* Set variable *SHORTCUT_HEADERS* to "true" to have folder *inc* populated by short-cut files pointing to actual headers located in *src*; otherwise, header files will be copied to *inc*.
+* Set variable *SHORTCUT_HEADERS* to specify a method for population of folder *inc* by header files. Supported methods are:
+  * *Copy* - headers will be copied from *src*;
+  * *ShortCut* - short-cut header files will be created, redirecting to same-named header located in *src*;
+  * "HardLink* - hard links to headers located in *src* will be created.
 * For optional  third-party libraries, set corresponding environment variable <i>HAVE_<LIBRARY_NAME></i> to either *false*,  e.g.:
 ~~~~~
        export HAVE_GL2PS=false

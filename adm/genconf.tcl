@@ -371,8 +371,8 @@ entry         .myFrame.myVcVarsEntry -textvariable VCVARS -width 70
 ttk::button   .myFrame.myVcBrowseBtn -text "Browse" -command wokdep:gui:BrowseVcVars
 
 #
-checkbutton   .myFrame.myHxxChecks.myScutsCheck   -offvalue "false" -onvalue "true" -variable SHORTCUT_HEADERS
-ttk::label    .myFrame.myHxxChecks.myScutsLbl     -text "Create short-cuts to headers in inc folder instead of copying"
+ttk::combobox .myFrame.myHxxChecks.myScutsCombo   -values { {ShortCut} {Copy} {HardLink} } -textvariable SHORTCUT_HEADERS -state readonly -width 12
+ttk::label    .myFrame.myHxxChecks.myScutsLbl     -text "Strategy for filling headers folder inc:"
 
 #
 ttk::label    .myFrame.mySrchLbl       -text "3rd-parties search path:" -padding {5 5 80 5}
@@ -465,8 +465,8 @@ if { "$tcl_platform(platform)" == "windows" } {
 
 #
 grid .myFrame.myHxxChecks -row $aRowIter -column 0 -columnspan 10 -sticky w
-grid .myFrame.myHxxChecks.myScutsCheck   -row 0 -column 0
-grid .myFrame.myHxxChecks.myScutsLbl     -row 0 -column 1
+grid .myFrame.myHxxChecks.myScutsLbl     -row 0 -column 0
+grid .myFrame.myHxxChecks.myScutsCombo   -row 0 -column 1
 incr aRowIter
 #
 grid .myFrame.mySrchLbl       -row $aRowIter -column 0 -columnspan 10 -sticky w

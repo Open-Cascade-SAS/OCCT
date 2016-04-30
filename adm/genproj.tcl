@@ -639,16 +639,27 @@ proc osutils:collectinc {theModules theIncPath} {
       }
     }
   }
-  lsort -unique $anUsedToolKits
+  set anUsedToolKits [lsort -unique $anUsedToolKits]
 
   set anUnits {}
   foreach anUsedToolKit $anUsedToolKits {
     set anUnits [concat $anUnits [osutils:tk:units $anUsedToolKit]]
   }
-  lsort -unique $anUnits
+  set anUnits [lsort -unique $anUnits]
 
-  if { [info exists ::env(SHORTCUT_HEADERS)] && 
-       $::env(SHORTCUT_HEADERS) == "true" } {
+  # define copying style
+  set aCopyType "copy"
+  if { [info exists ::env(SHORTCUT_HEADERS)] } {
+    if { [string equal -nocase $::env(SHORTCUT_HEADERS) "hard"]
+      || [string equal -nocase $::env(SHORTCUT_HEADERS) "hardlink"] } {
+      set aCopyType "hardlink"
+    } elseif { [string equal -nocase $::env(SHORTCUT_HEADERS) "true"]
+            || [string equal -nocase $::env(SHORTCUT_HEADERS) "shortcut"] } {
+      set aCopyType "shortcut"
+    }
+  }
+
+  if { $aCopyType == "shortcut" } {
     # template preparation
     if { ![file exists $::THE_CASROOT/adm/templates/header.in] } {
       puts "template file does not exist: $::THE_CASROOT/adm/templates/header.in"
@@ -683,6 +694,7 @@ proc osutils:collectinc {theModules theIncPath} {
               continue
             }
           }
+          file delete -force "$theIncPath/$aHeaderFileName"
         }
 
         set aShortCutHeaderFile [open "$theIncPath/$aHeaderFileName" "w"]
@@ -690,7 +702,7 @@ proc osutils:collectinc {theModules theIncPath} {
         puts $aShortCutHeaderFile $aShortCutHeaderFileContent
         close $aShortCutHeaderFile
       }
-    }  
+    }
   } else {
     set nbcopied 0
     foreach anUnit $anUnits {
@@ -700,14 +712,20 @@ proc osutils:collectinc {theModules theIncPath} {
 
         # copy file only if target does not exist or is older than original
         set torig [file mtime $aHeaderFile]
-        if { ! [file isfile $anIncPath/$aHeaderFileName] } {
-          set tcopy 0
-        } else {
+        set tcopy 0
+        if { [file isfile $anIncPath/$aHeaderFileName] } {
           set tcopy [file mtime $anIncPath/$aHeaderFileName]
         }
         if { $tcopy < $torig } {
           incr nbcopied
-          file copy -force $aHeaderFile $anIncPath/$aHeaderFileName
+          if { $aCopyType == "hardlink" } {
+            if { $tcopy != 0 } {
+              file delete -force "$theIncPath/$aHeaderFileName"
+            }
+            file link -hard  $anIncPath/$aHeaderFileName $aHeaderFile
+          } else {
+            file copy -force $aHeaderFile $anIncPath/$aHeaderFileName
+          }
         } elseif { $tcopy != $torig } {
           puts "Warning: file $anIncPath/$aHeaderFileName is newer than $aHeaderFile, not changed!"
         }

@@ -41,7 +41,7 @@ if { "$tcl_platform(platform)" == "unix" } {
   set VCVARS ""
 }
 
-set SHORTCUT_HEADERS "true"
+set SHORTCUT_HEADERS "ShortCut"
 
 set HAVE_FREEIMAGE "false"
 set HAVE_GL2PS     "false"
@@ -72,6 +72,9 @@ if { [info exists ::env(VCVARS)] } {
 }
 if { [info exists ::env(SHORTCUT_HEADERS)] } {
   set SHORTCUT_HEADERS "$::env(SHORTCUT_HEADERS)"
+  if { $SHORTCUT_HEADERS == "true" } {
+    set SHORTCUT_HEADERS "ShortCut"
+  }
 }
 if { [info exists ::env(HAVE_FREEIMAGE)] } {
   set HAVE_FREEIMAGE "$::env(HAVE_FREEIMAGE)"

@@ -30,13 +30,16 @@ If you have Visual Studio projects already available (pre-installed or generated
 * *ARCH* -- architecture (32 or 64), affects only *PATH* variable for execution
 * <i>HAVE_*</i> -- flags to enable or disable use of optional third-party products
 * <i>CSF_OPT_*</i> -- paths to search for includes and binaries of all used  third-party products
-* *SHORTCUT_HEADERS* -- if set to "true", folder *inc* will be populated by short-cut files pointing to actual headers located in *src*; otherwise, header files will be copied to *inc*.
+* *SHORTCUT_HEADERS* -- defines method for population of folder *inc* by header files. Supported methods are:
+  * *Copy* - headers will be copied from *src*;
+  * *ShortCut* - short-cut header files will be created, redirecting to same-named header located in *src*;
+  * "HardLink* - hard links to headers located in *src* will be created.
 
 Alternatively, you can launch **genconf**, a GUI tool allowing to configure build options interactively.
 That tool will analyze your environment and propose you to choose available options:
 
 * Version of Visual Studio to be used (from the list of installed ones, detected by presence of environment variables like *VS100COMNTOOLS*)
-* Option to use short-cuts to header files in folder *inc* (enabled by default).
+* Method to populate folder *inc* (short-cuts by default).
 * Location of third-party libraries (usually downloaded from OCCT web site, see above).
 * Path to common directory where third-party libraries are located (optional)
 * Paths to headers and binaries of the third-party libraries (found automatically basing on previous options; click button "Reset" to update).
