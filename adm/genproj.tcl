@@ -2154,6 +2154,9 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
     }
   }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch})\" />"
+  if { "$aWokStation" == "lin" } {
+    puts $aFile "\t\t\t\t\t<Add option=\"-Wl,-rpath-link=../../../${aWokStation}/cbp/lib\" />"
+  }
   puts $aFile "\t\t\t\t</Linker>"
 
   puts $aFile "\t\t\t</Target>"
@@ -2201,6 +2204,9 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
     }
   }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch}D)\" />"
+  if { "$aWokStation" == "lin" } {
+    puts $aFile "\t\t\t\t\t<Add option=\"-Wl,-rpath-link=../../../${aWokStation}/cbp/libd\" />"
+  }
   puts $aFile "\t\t\t\t</Linker>"
 
   puts $aFile "\t\t\t</Target>"

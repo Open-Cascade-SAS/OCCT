@@ -49,6 +49,7 @@ Release
 /*.m4
 /*.ac
 /*.sh
+/codeblocks.bat
 /custom.bat
 /autom4te.cache
 /build_configure
