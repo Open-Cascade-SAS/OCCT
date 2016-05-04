@@ -324,6 +324,15 @@ void XSControl_WorkSession::SetTransferReader(const Handle(XSControl_TransferRea
   TR->SetTransientProcess(TP);
 }
 
+//=======================================================================
+//function : MapReader
+//purpose  :
+//=======================================================================
+
+Handle(Transfer_TransientProcess) XSControl_WorkSession::MapReader() const
+{
+  return myTransferReader->TransientProcess();
+}
 
 //=======================================================================
 //function : SetMapReader

@@ -115,7 +115,10 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   //! Returns the Transfer Reader, Null if not set
   const Handle(XSControl_TransferReader) & TransferReader () const
   { return myTransferReader; }
-  
+
+  //! Returns the TransientProcess(internal data for TransferReader)
+  Standard_EXPORT Handle(Transfer_TransientProcess) MapReader() const;
+
   //! Changes the Map Reader, i.e. considers that the new one
   //! defines the relevant read results (forgets the former ones)
   //! Returns True when done, False in case of bad definition, i.e.
