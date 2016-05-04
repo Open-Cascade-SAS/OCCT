@@ -28,7 +28,7 @@ class Poly_Triangulation;
 class Poly_PolygonOnTriangulation;
 class TopoDS_Edge;
 class TopoDS_Face;
-class Geom2d_Curve;
+class Geom2dAdaptor_HCurve;
 
 //! Auxiliary class implements functionality retrieving tessellated
 //! representation of an edge stored in polygon.
@@ -40,7 +40,7 @@ public:
   //! Initializes extractor.
   BRepMesh_EdgeTessellationExtractor(
     const TopoDS_Edge&                          theEdge,
-    const Handle(Geom2d_Curve)&                 thePCurve,
+    const Handle(Geom2dAdaptor_HCurve)&         thePCurve,
     const TopoDS_Face&                          theFace,
     const Handle(Poly_Triangulation)&           theTriangulation,
     const Handle(Poly_PolygonOnTriangulation)&  thePolygon,
@@ -76,7 +76,7 @@ private:
 private:
 
   BRepMesh_EdgeParameterProvider myProvider;
-  const Handle(Geom2d_Curve)&    myPCurve;
+  Handle(Geom2dAdaptor_HCurve)   myPCurve;
   const TColgp_Array1OfPnt&      myNodes;
   const TColStd_Array1OfInteger& myIndices;
   const TopLoc_Location          myLoc;

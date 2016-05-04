@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_EdgeTessellationExtractor.hxx>
-#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepMesh_ShapeTool.hxx>
@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor,BRepMesh_IEdgeTool
 //=======================================================================
 BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor(
   const TopoDS_Edge&                          theEdge,
-  const Handle(Geom2d_Curve)&                 thePCurve,
+  const Handle(Geom2dAdaptor_HCurve)&         thePCurve,
   const TopoDS_Face&                          theFace,
   const Handle(Poly_Triangulation)&           theTriangulation,
   const Handle(Poly_PolygonOnTriangulation)&  thePolygon,

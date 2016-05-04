@@ -69,8 +69,7 @@ private:
   void add(const Handle(BRepMesh_FaceAttribute)& theAttribute);
   void add(const TopoDS_Vertex& theVertex);
 
-  Standard_Real control(BRepMesh::ListOfVertex&  theNewVertices,
-                        BRepMesh_Delaun&         theMeshBuilder,
+  Standard_Real control(BRepMesh_Delaun&         theMeshBuilder,
                         const Standard_Boolean   theIsFirst);
 
   //! Registers the given nodes in mesh data structure and
@@ -84,11 +83,9 @@ private:
     BRepMesh_Delaun&              theMeshBuilder);
 
   //! Calculates nodes lying on face's surface and inserts them to a mesh.
-  //! @param theNewVertices list of vertices to be extended and added to mesh.
   //! @param theMeshBuilder initialized tool refining mesh 
   //! in respect to inserting nodes.
-  void insertInternalVertices(BRepMesh::ListOfVertex&  theNewVertices,
-                              BRepMesh_Delaun&         theMeshBuilder);
+  void insertInternalVertices(BRepMesh_Delaun&         theMeshBuilder);
 
   //! Calculates nodes lying on spherical surface.
   //! @param theNewVertices list of vertices to be extended and added to mesh.

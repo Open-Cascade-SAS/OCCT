@@ -130,7 +130,6 @@ Standard_Real BRepMesh_ShapeTool::RelativeEdgeDeflection(
 gp_XY BRepMesh_ShapeTool::FindUV(
   const Standard_Integer                theIndexOfPnt3d,
   const gp_Pnt2d&                       thePnt2d,
-  const TopoDS_Vertex&                  theVertex,
   const Standard_Real                   theMinDistance,
   const Handle(BRepMesh_FaceAttribute)& theFaceAttribute)
 {
@@ -164,8 +163,7 @@ gp_XY BRepMesh_ShapeTool::FindUV(
     }
   }
 
-  const Standard_Real aTolerance = 
-    Min(2. * BRep_Tool::Tolerance(theVertex), theMinDistance);
+  const Standard_Real aTolerance = theMinDistance;
 
   // Get face limits
   Standard_Real aDiffU = theFaceAttribute->GetUMax() - theFaceAttribute->GetUMin();

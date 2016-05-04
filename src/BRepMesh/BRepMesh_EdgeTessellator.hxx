@@ -23,10 +23,10 @@
 #include <BRepMesh_GeomTool.hxx>
 #include <BRepMesh_FaceAttribute.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
-class Geom_Surface;
-class Geom2d_Curve;
+class Adaptor3d_Surface;
 class TopoDS_Edge;
 class BRepAdaptor_HSurface;
 
@@ -70,8 +70,8 @@ public:
 private:
 
   //! 
-  void splitSegment(const Handle(Geom_Surface)& theSurf,
-                    const Handle(Geom2d_Curve)& theCurve2d,
+  void splitSegment(const Adaptor3d_Surface&    theSurf,
+                    const Geom2dAdaptor_Curve&  theCurve2d,
                     const Standard_Real         theFirst,
                     const Standard_Real         theLast,
                     const Standard_Integer      theNbIter);
@@ -80,6 +80,7 @@ private:
   NCollection_Handle<BRepMesh_GeomTool> myTool;
   Handle(BRepAdaptor_HSurface)          mySurface;
   BRepAdaptor_Curve                     myCOnS;
+  Geom2dAdaptor_Curve                   myCurve2d;
   Standard_Real                         mySquareEdgeDef;
   Standard_Real                         mySquareMinSize;
   Standard_Real                         myEdgeSqTol;

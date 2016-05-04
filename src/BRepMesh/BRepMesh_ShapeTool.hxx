@@ -67,12 +67,8 @@ public:
   //! representation should be associated.
   //! @param thePnt2d 2d representation of the point with the 
   //! given index.
-  //! @param theVertex vertex corresponded to 3d point with the 
-  //! given index. Used to extract vertex tolerance in 3d space.
   //! @param theMinDistance minimum distance between vertices 
   //! regarding which they could be treated as distinct ones.
-  //! This value is defined by mesher using parameters given by
-  //! user in connection with shape metrics.
   //! @param theFaceAttribute attributes contining data calculated
   //! according to face geomtry and define limits of face in parametric 
   //! space. If defined, will be used instead of surface parameter.
@@ -83,7 +79,6 @@ public:
   Standard_EXPORT static gp_XY FindUV(
     const Standard_Integer                theIndexOfPnt3d,
     const gp_Pnt2d&                       thePnt2d,
-    const TopoDS_Vertex&                  theVertex,
     const Standard_Real                   theMinDistance,
     const Handle(BRepMesh_FaceAttribute)& theFaceAttribute);
 

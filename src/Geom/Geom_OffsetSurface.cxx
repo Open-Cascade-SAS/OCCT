@@ -49,6 +49,7 @@
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomEvaluator_OffsetSurface.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
@@ -456,7 +457,7 @@ public:
     Standard_Integer *ErrorCode);
 
 private:
-  Handle(Geom_Surface) CurrentSurface;
+  GeomAdaptor_Surface CurrentSurface;
   Standard_Real IsoPar;
 };
 
@@ -469,14 +470,14 @@ void Geom_OffsetSurface_UIsoEvaluator::Evaluate(Standard_Integer *,/*Dimension*/
 { 
   gp_Pnt P;
   if (*DerivativeRequest == 0) {
-    P = CurrentSurface->Value(IsoPar,*Parameter);
+    P = CurrentSurface.Value(IsoPar,*Parameter);
     Result[0] = P.X();
     Result[1] = P.Y();
     Result[2] = P.Z();
   }
   else {
     gp_Vec DU,DV;
-    CurrentSurface->D1(IsoPar,*Parameter,P,DU,DV);
+    CurrentSurface.D1(IsoPar,*Parameter,P,DU,DV);
     Result[0] = DV.X();
     Result[1] = DV.Y();
     Result[2] = DV.Z();

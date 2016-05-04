@@ -180,10 +180,10 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
 {
   myFirst = UFirst;
   myLast  = ULast;
+  myCurveCache.Nullify();
 
   if ( myCurve != C) {
     myCurve = C;
-    myCurveCache.Nullify();
     myNestedEvaluator.Nullify();
     myBSplineCurve.Nullify();
 
@@ -209,20 +209,10 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
     }
     else if ( TheType == STANDARD_TYPE(Geom2d_BezierCurve)) {
       myTypeCurve = GeomAbs_BezierCurve;
-      // Create cache for Bezier
-      Handle(Geom2d_BezierCurve) aBezier = Handle(Geom2d_BezierCurve)::DownCast(myCurve);
-      Standard_Integer aDeg = aBezier->Degree();
-      TColStd_Array1OfReal aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
-      myCurveCache = new BSplCLib_Cache(aDeg, aBezier->IsPeriodic(), aFlatKnots,
-          aBezier->Poles(), aBezier->Weights());
     }
     else if ( TheType == STANDARD_TYPE(Geom2d_BSplineCurve)) {
       myTypeCurve = GeomAbs_BSplineCurve;
-      // Create cache for B-spline
-      Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
-      myBSplineCurve = aBspl;
-      myCurveCache = new BSplCLib_Cache(aBspl->Degree(), aBspl->IsPeriodic(),
-          aBspl->KnotSequence(), aBspl->Poles(), aBspl->Weights());
+      myBSplineCurve = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
     }
     else if ( TheType == STANDARD_TYPE(Geom2d_OffsetCurve))
     {
@@ -237,8 +227,6 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
       myTypeCurve = GeomAbs_OtherCurve;
     }
   }
-  else // rebuild cache of Bezier and B-spline curve even if the loaded curve is same
-    RebuildCache(myFirst);
 }
 
 //    --
@@ -569,14 +557,22 @@ void Geom2dAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
 {
   if (myTypeCurve == GeomAbs_BezierCurve)
   {
+    // Create cache for Bezier
     Handle(Geom2d_BezierCurve) aBezier = Handle(Geom2d_BezierCurve)::DownCast(myCurve);
     Standard_Integer aDeg = aBezier->Degree();
     TColStd_Array1OfReal aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
+    if (myCurveCache.IsNull())
+      myCurveCache = new BSplCLib_Cache(aDeg, aBezier->IsPeriodic(), aFlatKnots,
+        aBezier->Poles(), aBezier->Weights());
     myCurveCache->BuildCache(theParameter, aDeg, aBezier->IsPeriodic(), aFlatKnots,
       aBezier->Poles(), aBezier->Weights());
   }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
   {
+    // Create cache for B-spline
+    if (myCurveCache.IsNull())
+      myCurveCache = new BSplCLib_Cache(myBSplineCurve->Degree(), myBSplineCurve->IsPeriodic(),
+        myBSplineCurve->KnotSequence(), myBSplineCurve->Poles(), myBSplineCurve->Weights());
     myCurveCache->BuildCache(theParameter, myBSplineCurve->Degree(),
       myBSplineCurve->IsPeriodic(), myBSplineCurve->KnotSequence(),
       myBSplineCurve->Poles(), myBSplineCurve->Weights());
@@ -643,14 +639,13 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
     {
       myBSplineCurve->LocalD0(U, aStart, aFinish, P);
     }
-    else if (!myCurveCache.IsNull()) // use cached data
+    else
     {
-      if (!myCurveCache->IsCacheValid(U))
+      // use cached data
+      if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D0(U, P);
     }
-    else
-      myCurve->D0(U, P);
     break;
   }
 
@@ -681,14 +676,13 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U,
     {
       myBSplineCurve->LocalD1(U, aStart, aFinish, P, V);
     }
-    else if (!myCurveCache.IsNull()) // use cached data
+    else
     {
-      if (!myCurveCache->IsCacheValid(U))
+      // use cached data
+      if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D1(U, P, V);
     }
-    else
-      myCurve->D1(U, P, V);
     break;
   }
 
@@ -719,14 +713,13 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U,
     {
       myBSplineCurve->LocalD2(U, aStart, aFinish, P, V1, V2);
     }
-    else if (!myCurveCache.IsNull()) // use cached data
+    else
     {
-      if (!myCurveCache->IsCacheValid(U))
+      // use cached data
+      if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D2(U, P, V1, V2);
     }
-    else
-      myCurve->D2(U, P, V1, V2);
     break;
   }
 
@@ -758,14 +751,13 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
     {
       myBSplineCurve->LocalD3(U, aStart, aFinish, P, V1, V2, V3);
     }
-    else if (!myCurveCache.IsNull()) // use cached data
+    else
     {
-      if (!myCurveCache->IsCacheValid(U))
+      // use cached data
+      if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D3(U, P, V1, V2, V3);
     }
-    else
-      myCurve->D3(U, P, V1, V2, V3);
     break;
   }
 

@@ -288,7 +288,7 @@ public:
   
   //! Returns the pole of range Index.
   //! Raised if Index is not in the range [1, NbPoles]
-  Standard_EXPORT gp_Pnt Pole (const Standard_Integer Index) const;
+  Standard_EXPORT const gp_Pnt& Pole (const Standard_Integer Index) const;
   
   //! Returns all the poles of the curve.
   //!

@@ -496,7 +496,8 @@ void BndLib_Box2dCurve::PerformBSpline()
   }
 
   //
-  if (!(aT1==aTb[0] && aT2==aTb[1])) {
+  const Standard_Real eps = Precision::PConfusion();
+  if (fabs(aT1-aTb[0]) > eps || fabs(aT2-aTb[1]) > eps) {
     aG=aCBS->Copy();
     //
     aCBSs=Handle(Geom2d_BSplineCurve)::DownCast(aG);
@@ -799,7 +800,6 @@ void BndLib_Box2dCurve::GetInfoBase()
     return;
   }
   //
-  aC2DB=myCurve;
   while(!bIsTypeBase) {
     iTrimmed=0;
     iOffset=0;

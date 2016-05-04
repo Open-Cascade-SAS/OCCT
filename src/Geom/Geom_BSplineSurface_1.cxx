@@ -426,7 +426,7 @@ gp_Vec Geom_BSplineSurface::LocalDN  (const Standard_Real    U,
 //purpose  : 
 //=======================================================================
 
-gp_Pnt Geom_BSplineSurface::Pole (const Standard_Integer UIndex,
+const gp_Pnt& Geom_BSplineSurface::Pole(const Standard_Integer UIndex,
 				  const Standard_Integer VIndex) const
 {
   Standard_OutOfRange_Raise_if

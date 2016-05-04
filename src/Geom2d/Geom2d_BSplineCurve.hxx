@@ -762,7 +762,7 @@ public:
   
   //! Returns the pole of range Index.
   //! Raised if Index < 1 or Index > NbPoles.
-  Standard_EXPORT gp_Pnt2d Pole (const Standard_Integer Index) const;
+  Standard_EXPORT const gp_Pnt2d& Pole (const Standard_Integer Index) const;
   
   //! Returns the poles of the B-spline curve;
   //!

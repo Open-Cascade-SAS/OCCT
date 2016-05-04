@@ -198,7 +198,7 @@ private:
   Standard_Real myLast;
 
   Handle(Geom2d_BSplineCurve) myBSplineCurve; ///< B-spline representation to prevent castings
-  Handle(BSplCLib_Cache) myCurveCache; ///< Cached data for B-spline or Bezier curve
+  mutable Handle(BSplCLib_Cache) myCurveCache; ///< Cached data for B-spline or Bezier curve
   Handle(Geom2dEvaluator_Curve) myNestedEvaluator; ///< Calculates value of offset curve
 
 

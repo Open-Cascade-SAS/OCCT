@@ -8,7 +8,7 @@ set bug_area "OCC358"
 set max_rel_tol_diff 1
 puts $command
 if { [string compare $command "shading"] == 0 } {
-  set rel_tol 2.07
+  set rel_tol 0.43
 } else {
   set rel_tol 0.676
 }

@@ -899,7 +899,7 @@ public:
   //!
   //! Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or
   //! VIndex > NbVPoles.
-  Standard_EXPORT gp_Pnt Pole (const Standard_Integer UIndex, const Standard_Integer VIndex) const;
+  Standard_EXPORT const gp_Pnt& Pole(const Standard_Integer UIndex, const Standard_Integer VIndex) const;
   
   //! Returns the poles of the B-spline surface.
   //!

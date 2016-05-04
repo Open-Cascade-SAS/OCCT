@@ -56,6 +56,11 @@
 
 #include <algorithm>
 
+//#define DEBUG_MESH "mesh.tcl"
+#ifdef DEBUG_MESH
+#include <fstream>
+#endif
+
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscretFace,Standard_Transient)
 
@@ -393,27 +398,28 @@ void BRepMesh_FastDiscretFace::add(const Handle(BRepMesh_FaceAttribute)& theAttr
   Standard_Real aDef = -1;
   if ( !isaline && myStructure->ElementsOfDomain().Extent() > 0 )
   {
-    Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
-    BRepMesh::ListOfVertex aNewVertices(anAlloc);
     if (!rajout)
     {
-      aDef = control(aNewVertices, trigu, Standard_True);
+      // compute maximal deflection
+      aDef = control(trigu, Standard_True);
       rajout = (aDef > myAttribute->GetDefFace() || aDef < 0.);
     }
-
-    if (!rajout && useUVParam)
+    if (thetype != GeomAbs_Plane)
     {
-      rajout = (myVParam.Extent() > 2 && 
-        (gFace->IsUClosed() || gFace->IsVClosed()));
-    }
+      if (!rajout && useUVParam)
+      {
+        rajout = (myVParam.Extent() > 2 &&
+          (gFace->IsUClosed() || gFace->IsVClosed()));
+      }
 
-    if (rajout)
-    {
-      insertInternalVertices(aNewVertices, trigu);
+      if (rajout)
+      {
+        insertInternalVertices(trigu);
 
-      //control internal points
-      if (myIsControlSurfaceDeflection)
-        aDef = control(aNewVertices, trigu, Standard_False);
+        //control internal points
+        if (myIsControlSurfaceDeflection)
+          aDef = control(trigu, Standard_False);
+      }
     }
   }
 
@@ -455,7 +461,7 @@ Standard_Boolean BRepMesh_FastDiscretFace::addVerticesToMesh(
 }
 
 //=======================================================================
-//function : insertInternalVertices
+//function : filterParameters
 //purpose  : 
 //=======================================================================
 static void filterParameters(const BRepMesh::IMapOfReal& theParams,
@@ -516,35 +522,39 @@ static void filterParameters(const BRepMesh::IMapOfReal& theParams,
   theResult.Append(aParamArray(aParamLength));
 }
 
-void BRepMesh_FastDiscretFace::insertInternalVertices(
-  BRepMesh::ListOfVertex&  theNewVertices,
-  BRepMesh_Delaun&         theMeshBuilder)
+//=======================================================================
+//function : insertInternalVertices
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::insertInternalVertices(BRepMesh_Delaun& theMeshBuilder)
 {
+  Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+  BRepMesh::ListOfVertex aNewVertices(anAlloc);
   const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
   switch (gFace->GetType())
   {
   case GeomAbs_Sphere:
-      insertInternalVerticesSphere(theNewVertices);
-      break;
+    insertInternalVerticesSphere(aNewVertices);
+    break;
 
   case GeomAbs_Cylinder:
-      insertInternalVerticesCylinder(theNewVertices);
-      break;
+    insertInternalVerticesCylinder(aNewVertices);
+    break;
 
   case GeomAbs_Cone:
-    insertInternalVerticesCone(theNewVertices);
+    insertInternalVerticesCone(aNewVertices);
     break;
 
   case GeomAbs_Torus:
-    insertInternalVerticesTorus(theNewVertices);
+    insertInternalVerticesTorus(aNewVertices);
     break;
 
   default:
-    insertInternalVerticesOther(theNewVertices);
+    insertInternalVerticesOther(aNewVertices);
     break;
   }
   
-  addVerticesToMesh(theNewVertices, theMeshBuilder);
+  addVerticesToMesh(aNewVertices, theMeshBuilder);
 }
 
 //=======================================================================
@@ -856,41 +866,119 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
 
   // check intermediate isolines
   Handle (Geom_Surface) aSurface = gFace->ChangeSurface ().Surface ().Surface ();
-  const BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
 
   BRepMesh::MapOfReal aParamsToRemove[2] = { BRepMesh::MapOfReal(1, anAlloc),
                                              BRepMesh::MapOfReal(1, anAlloc) };
   BRepMesh::MapOfReal aParamsForbiddenToRemove[2] = { BRepMesh::MapOfReal(1, anAlloc),
                                                       BRepMesh::MapOfReal(1, anAlloc) };
 
-  // precision for compare square distances
-  const Standard_Real aPrecision = Precision::Confusion();
+  // insert additional points where it is needed to conform criteria.
+  // precision for normals calculation
+  const Standard_Real aNormPrec = Precision::Confusion();
   for (Standard_Integer k = 0; k < 2; ++k)
   {
     const Standard_Integer aOtherIndex = (k + 1) % 2;
     BRepMesh::SequenceOfReal& aParams1 = aParams[k];
     BRepMesh::SequenceOfReal& aParams2 = aParams[aOtherIndex];
     const Standard_Boolean isU = (k == 0);
-    Standard_Integer aStartIndex, aEndIndex; 
-    if (isU)
+    for (Standard_Integer i = 2; i < aParams1.Length(); ++i)
     {
-      aStartIndex = 1;
-      aEndIndex   = aParams1.Length();
-    }
-    else
-    {
-      aStartIndex = 2;
-      aEndIndex   = aParams1.Length() - 1;
-    }
+      const Standard_Real aParam1 = aParams1(i);
+      GeomAdaptor_Curve aIso(isU ?
+        aSurface->UIso(aParam1) : aSurface->VIso(aParam1));
 
+      Standard_Real aPrevParam2 = aParams2(1);
+      gp_Pnt aPrevPnt2;
+      gp_Vec aPrevVec2;
+      aIso.D1(aPrevParam2, aPrevPnt2, aPrevVec2);
+      for (Standard_Integer j = 2; j <= aParams2.Length();)
+      {
+        Standard_Real aParam2 = aParams2(j);
+        gp_Pnt aPnt2;
+        gp_Vec aVec2;
+        aIso.D1(aParam2, aPnt2, aVec2);
+
+        Standard_Real aMidParam = 0.5 * (aPrevParam2 + aParam2);
+        gp_Pnt aMidPnt = aIso.Value(aMidParam);
+
+        Standard_Real aDist = deflectionOfSegment(aPrevPnt2, aPnt2, aMidPnt);
+        if (aDist > aDefFace && aDist > myMinSize)
+        {
+          // insertion 
+          aParams2.InsertBefore(j, aMidParam);
+          continue;
+        }
+        //put regular grig for normals
+        gp_Pnt2d aStPnt1, aStPnt2;
+        if (isU)
+        {
+          aStPnt1 = gp_Pnt2d(aParam1, aPrevParam2);
+          aStPnt2 = gp_Pnt2d(aParam1, aMidParam);
+        }
+        else
+        {
+          aStPnt1 = gp_Pnt2d(aPrevParam2, aParam1);
+          aStPnt2 = gp_Pnt2d(aMidParam, aParam1);
+        }
+
+        gp_Dir N1(0, 0, 1), N2(0, 0, 1);
+        Standard_Integer aSt1 = GeomLib::NormEstim(aSurface, aStPnt1, aNormPrec, N1);
+        Standard_Integer aSt2 = GeomLib::NormEstim(aSurface, aStPnt2, aNormPrec, N2);
+
+        const Standard_Real aAngle = N2.Angle(N1);
+        if (aSt1 < 1 && aSt2 < 1 && aAngle > myAngle)
+        {
+          const Standard_Real aLen = GCPnts_AbscissaPoint::Length(
+            aIso, aPrevParam2, aMidParam, aDefFace);
+
+          if (aLen > myMinSize)
+          {
+            // insertion 
+            aParams2.InsertBefore(j, aMidParam);
+            continue;
+          }
+        }
+        aPrevParam2 = aParam2;
+        aPrevPnt2 = aPnt2;
+        aPrevVec2 = aVec2;
+
+        ++j;
+      }
+    }
+  }
+#ifdef DEBUG_InsertInternal
+  // output numbers of parameters along U and V
+  cout << "aParams: " << aParams[0].Length() << " " << aParams[1].Length() << endl;
+#endif
+  // try to reduce number of points evaluating of isolines sampling
+  for (Standard_Integer k = 0; k < 2; ++k)
+  {
+    const Standard_Integer aOtherIndex = (k + 1) % 2;
+    BRepMesh::SequenceOfReal& aParams1 = aParams[k];
+    BRepMesh::SequenceOfReal& aParams2 = aParams[aOtherIndex];
+    const Standard_Boolean isU = (k == 0);
     BRepMesh::MapOfReal& aToRemove2          = aParamsToRemove[aOtherIndex];
     BRepMesh::MapOfReal& aForbiddenToRemove1 = aParamsForbiddenToRemove[k];
     BRepMesh::MapOfReal& aForbiddenToRemove2 = aParamsForbiddenToRemove[aOtherIndex];
-    for (Standard_Integer i = aStartIndex; i <= aEndIndex; ++i)
+    for (Standard_Integer i = 2; i < aParams1.Length(); ++i)
     {
       const Standard_Real aParam1 = aParams1(i);
       GeomAdaptor_Curve aIso(isU ?
         aSurface->UIso (aParam1) : aSurface->VIso (aParam1));
+#ifdef DEBUG_InsertInternal
+      // write polyline containing initial parameters to the file
+      {
+        ofstream ff(DEBUG_InsertInternal, std::ios_base::app);
+        ff << "polyline " << (k == 0 ? "u" : "v") << i << " ";
+        for (Standard_Integer j = 1; j <= aParams2.Length(); j++)
+        {
+          gp_Pnt aP;
+          aIso.D0(aParams2(j), aP);
+          ff << aP.X() << " " << aP.Y() << " " << aP.Z() << " ";
+        }
+        ff << endl;
+      }
+#endif
 
       Standard_Real aPrevParam2 = aParams2(1);
       gp_Pnt aPrevPnt2;
@@ -903,115 +991,114 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
         gp_Vec aVec2;
         aIso.D1 (aParam2, aPnt2, aVec2);
 
-        Standard_Real aMidParam = 0.5 * (aPrevParam2 + aParam2);
-        gp_Pnt aMidPnt = aIso.Value(aMidParam);
-
-        Standard_Real aDist = deflectionOfSegment (aPrevPnt2, aPnt2, aMidPnt);
-        if (aDist > aDefFace && aDist > myMinSize)
+        // Here we should leave at least 3 parameters as far as
+        // we must have at least one parameter related to surface
+        // internals in order to prevent movement of triangle body
+        // outside the surface in case of highly curved ones, e.g.
+        // BSpline springs.
+        if (aParams2.Length() > 3 && j < aParams2.Length())
         {
-          // insertion 
-          aParams2.InsertBefore(j, aMidParam);
-        }
-        else
-        {
-          //put regular grig for normals
-          gp_Pnt2d aStPnt1, aStPnt2;
-          if (isU)
-          {
-            aStPnt1 = gp_Pnt2d(aParam1, aPrevParam2);
-            aStPnt2 = gp_Pnt2d(aParam1, aMidParam);
-          }
-          else
-          {
-            aStPnt1 = gp_Pnt2d(aPrevParam2, aParam1);
-            aStPnt2 = gp_Pnt2d(aMidParam,   aParam1);
-          }
+          // Remove too dense points
+          const Standard_Real aNextParam = aParams2(j + 1);
+          gp_Pnt aNextPnt;
+          gp_Vec aNextVec;
+          aIso.D1(aNextParam, aNextPnt, aNextVec);
 
-          gp_Dir N1(0, 0, 1), N2(0, 0, 1);
-          Standard_Boolean aSt1 = GeomLib::NormEstim (aSurface, aStPnt1, aPrecision, N1);
-          Standard_Boolean aSt2 = GeomLib::NormEstim (aSurface, aStPnt2, aPrecision, N2);
-
-          const Standard_Real aAngle = N2.Angle(N1);
-          if (aSt1 < 1 && aSt2 < 1 && aAngle > myAngle)
+          // Lets check current parameter.
+          // If it fits deflection, we can remove it.
+          Standard_Real aDist = deflectionOfSegment(aPrevPnt2, aNextPnt, aPnt2);
+          if (aDist < aDefFace)
           {
-            const Standard_Real aLen = GCPnts_AbscissaPoint::Length (
-              aIso, aPrevParam2, aMidParam, aDefFace);
-
-            if (aLen > myMinSize)
+            // Lets check parameters for angular deflection.
+            if (aPrevVec2.Angle(aNextVec) < myAngle)
             {
-              // insertion 
-              aParams2.InsertBefore(j, aMidParam);
+              // For current Iso line we can remove this parameter.
+#ifdef DEBUG_InsertInternal
+              // write point of removed parameter
+              {
+                ofstream ff(DEBUG_InsertInternal, std::ios_base::app);
+                ff << "point " << (k == 0 ? "u" : "v") << i << "r_" << j << " "
+                  << aPnt2.X() << " " << aPnt2.Y() << " " << aPnt2.Z() << endl;
+              }
+#endif
+              aToRemove2.Add(aParam2);
+              aPrevParam2 = aNextParam;
+              aPrevPnt2 = aNextPnt;
+              aPrevVec2 = aNextVec;
+              j += 2;
               continue;
             }
-          }
-
-          // Here we should leave at least 3 parameters as far as
-          // we must have at least one parameter related to surface
-          // internals in order to prevent movement of triangle body
-          // outside the surface in case of highly curved ones, e.g.
-          // BSpline springs.
-          if (aDist < aDefFace       &&
-              aParams2.Length () > 3 && 
-              j < aParams2.Length ())
-          {
-            // Remove too dense points
-            const Standard_Real aTmpParam = aParams2 (j + 1);
-            gp_Pnt aTmpPnt;
-            gp_Vec aTmpVec;
-            aIso.D1 (aTmpParam, aTmpPnt, aTmpVec);
-
-            Standard_Real aTmpMidParam = 0.5 * (aPrevParam2 + aTmpParam);
-            gp_Pnt        aTmpMidPnt = aIso.Value (aTmpMidParam);
-
-            // Lets check next parameter.
-            // If it also fits deflection, we can remove previous parameter.
-            aDist = deflectionOfSegment (aPrevPnt2, aTmpPnt, aTmpMidPnt);
-            if (aDist < aDefFace)
-            {
-              // Lets check parameters for angular deflection.
-              if (aPrevVec2.SquareMagnitude() < gp::Resolution() ||
-                  aTmpVec.SquareMagnitude()   < gp::Resolution() ||
-                  aPrevVec2.Angle (aTmpVec)   < myAngle)
+            else {
+              // We have found a place on the surface refusing 
+              // removement of this parameter.
+#ifdef DEBUG_InsertInternal
+              // write point of forbidden to remove parameter
               {
-                // For current Iso line we can remove this parameter.
-                aToRemove2.Add (aParam2);
-                aParam2 = aTmpParam;
-                aPnt2   = aTmpPnt;
-                aVec2   = aTmpVec;
-                ++j;
+                ofstream ff(DEBUG_InsertInternal, std::ios_base::app);
+                ff << "vertex " << (k == 0 ? "u" : "v") << i << "f_" << j << " "
+                  << aPnt2.X() << " " << aPnt2.Y() << " " << aPnt2.Z() << endl;
               }
-              else {
-                // We have found a place on the surface refusing 
-                // removement of this parameter.
-                aForbiddenToRemove1.Add (aParam1);
-                aForbiddenToRemove2.Add (aParam2);
-              }
+#endif
+              aForbiddenToRemove1.Add(aParam1);
+              aForbiddenToRemove2.Add(aParam2);
             }
           }
-
-          aPrevParam2 = aParam2;
-          aPrevPnt2   = aPnt2;
-          aPrevVec2   = aVec2;
-
-          ++j;
         }
+        aPrevParam2 = aParam2;
+        aPrevPnt2 = aPnt2;
+        aPrevVec2 = aVec2;
+        ++j;
       }
     }
   }
+  // remove filtered out parameters
+  for (Standard_Integer k = 0; k < 2; ++k)
+  {
+    BRepMesh::SequenceOfReal& aParamsk = aParams[k];
+    for (Standard_Integer i = 1; i <= aParamsk.Length();)
+    {
+      const Standard_Real aParam = aParamsk.Value(i);
+      if (aParamsToRemove[k].Contains(aParam) &&
+        !aParamsForbiddenToRemove[k].Contains(aParam))
+      {
+        aParamsk.Remove(i);
+      }
+      else
+        i++;
+    }
+  }
+#ifdef DEBUG_InsertInternal
+  // write polylines containing remaining parameters
+  {
+    ofstream ff(DEBUG_InsertInternal, std::ios_base::app);
+    for (Standard_Integer k = 0; k < 2; ++k)
+    {
+      for (Standard_Integer i = 1; i <= aParams[k].Length(); i++)
+      {
+        ff << "polyline " << (k == 0 ? "uo" : "vo") << i << " ";
+        for (Standard_Integer j = 1; j <= aParams[1 - k].Length(); j++)
+        {
+          gp_Pnt aP;
+          if (k == 0)
+            gFace->D0(aParams[k](i), aParams[1 - k](j), aP);
+          else
+            gFace->D0(aParams[1 - k](j), aParams[k](i), aP);
+          ff << aP.X() << " " << aP.Y() << " " << aP.Z() << " ";
+        }
+        ff << endl;
+      }
+    }
+  }
+#endif
 
   // insert nodes of the regular grid
+  const BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
   for (Standard_Integer i = 1; i <= aParams[0].Length(); ++i)
   {
     const Standard_Real aParam1 = aParams[0].Value (i);
-    if (aParamsToRemove[0].Contains (aParam1) && !aParamsForbiddenToRemove[0].Contains (aParam1))
-      continue;
-
     for (Standard_Integer j = 1; j <= aParams[1].Length(); ++j)
     {
       const Standard_Real aParam2 = aParams[1].Value (j);
-      if (aParamsToRemove[1].Contains (aParam2) && !aParamsForbiddenToRemove[1].Contains (aParam2))
-        continue;
-
       gp_Pnt2d aPnt2d(aParam1, aParam2);
 
       // Classify intersection point
@@ -1091,7 +1178,6 @@ Standard_Boolean BRepMesh_FastDiscretFace::checkDeflectionAndInsert(
 //purpose  : 
 //=======================================================================
 Standard_Real BRepMesh_FastDiscretFace::control(
-  BRepMesh::ListOfVertex&  theNewVertices,
   BRepMesh_Delaun&         theTrigu,
   const Standard_Boolean   theIsFirst)
 {
@@ -1115,7 +1201,7 @@ Standard_Real BRepMesh_FastDiscretFace::control(
     new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
   NCollection_DataMap<Standard_Integer, gp_Dir> aNorMap(1, anAlloc);
   BRepMesh::MapOfIntegerInteger                 aStatMap(1, anAlloc);
-  NCollection_Map<BRepMesh_OrientedEdge>        aCouples(3 * aTrianglesNb, anAlloc);
+  NCollection_Map<BRepMesh_Edge>                aCouples(3 * aTrianglesNb, anAlloc);
   const BRepMesh_CircleTool& aCircles = theTrigu.Circles();
 
   // Perform refinement passes
@@ -1131,7 +1217,7 @@ Standard_Real BRepMesh_FastDiscretFace::control(
   for (; aPass <= aPassesNb && aInsertedNb && !isAllDegenerated; ++aPass)
   {
     aTempAlloc->Reset(Standard_False);
-    theNewVertices.Clear();
+    BRepMesh::ListOfVertex aNewVertices(aTempAlloc);
 
     // Reset stop condition
     aInsertedNb      = 0;
@@ -1206,7 +1292,7 @@ Standard_Real BRepMesh_FastDiscretFace::control(
       aSqDef *= aSqDef;
 
       isSkipped = !checkDeflectionAndInsert(pDef, aCenter2d, theIsFirst, 
-        aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef, aTempAlloc);
+        aSqDef, aSqDefFace, aCircles, aNewVertices, aMaxSqDef, aTempAlloc);
 
       if (isSkipped)
         break;
@@ -1217,30 +1303,18 @@ Standard_Real BRepMesh_FastDiscretFace::control(
         if (m[i]) // is a boundary
           continue;
 
-        Standard_Integer j = (i + 1) % 3;
         // Check if this link was already processed
-        Standard_Integer aFirstVertex, aLastVertex;
-        if (v[i] < v[j])
-        { 
-          aFirstVertex = v[i];
-          aLastVertex = v[j];
-        }
-        else
-        {
-          aFirstVertex = v[j];
-          aLastVertex = v[i];
-        }
-
-        if (aCouples.Add(BRepMesh_OrientedEdge(aFirstVertex, aLastVertex)))
+        if (aCouples.Add(myStructure->GetLink(e[i])))
         {
           // Check deflection on edge 1
+          Standard_Integer j = (i + 1) % 3;
           gp_XY mi2d = (xy[i] + xy[j]) * 0.5;
           gFace->D0(mi2d.X(), mi2d.Y(), pDef);
           gp_Lin aLin(p[i], gp_Vec(p[i], p[j]));
           aSqDef = aLin.SquareDistance(pDef);
 
           isSkipped = !checkDeflectionAndInsert(pDef, mi2d, theIsFirst, 
-            aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef, aTempAlloc);
+            aSqDef, aSqDefFace, aCircles, aNewVertices, aMaxSqDef, aTempAlloc);
         }
       }
 
@@ -1286,7 +1360,43 @@ Standard_Real BRepMesh_FastDiscretFace::control(
     if (theIsFirst)
       continue;
 
-    if (addVerticesToMesh(theNewVertices, theTrigu))
+#ifdef DEBUG_MESH
+    // append to the file triangles in the form of polyline commands;
+    // so the file can be sourced in draw to analyze triangles on each pass of the algorithm.
+    // write triangles
+    ofstream ftt(DEBUG_MESH, std::ios_base::app);
+    Standard_Integer nbElem = myStructure->NbElements();
+    for (Standard_Integer i = 1; i <= nbElem; i++)
+    {
+      const BRepMesh_Triangle& aTri = myStructure->GetElement(i);
+      if (aTri.Movability() == BRepMesh_Deleted)
+        continue;
+      Standard_Integer n[3];
+      myStructure->ElementNodes(aTri, n);
+      const BRepMesh_Vertex& aV1 = myStructure->GetNode(n[0]);
+      const BRepMesh_Vertex& aV2 = myStructure->GetNode(n[1]);
+      const BRepMesh_Vertex& aV3 = myStructure->GetNode(n[2]);
+      const gp_Pnt& aP1 = myAttribute->GetPoint(aV1);
+      const gp_Pnt& aP2 = myAttribute->GetPoint(aV2);
+      const gp_Pnt& aP3 = myAttribute->GetPoint(aV3);
+      ftt << "polyline t" << aPass << "_" << i << " "
+        << aP1.X() << " " << aP1.Y() << " " << aP1.Z() << " "
+        << aP2.X() << " " << aP2.Y() << " " << aP2.Z() << " "
+        << aP3.X() << " " << aP3.Y() << " " << aP3.Z() << " "
+        << aP1.X() << " " << aP1.Y() << " " << aP1.Z() << endl;
+    }
+    // write points to insert on the current pass
+    BRepMesh::ListOfVertex::Iterator it(aNewVertices);
+    for (Standard_Integer i=1; it.More(); it.Next(), i++)
+    {
+      const BRepMesh_Vertex& aVertex = it.Value();
+      const gp_Pnt& aP = myAttribute->GetPoint(aVertex);
+      ftt << "vertex vt" << aPass << "_" << i << " "
+        << aP.X() << " " << aP.Y() << " " << aP.Z() << endl;
+    }
+#endif
+
+    if (addVerticesToMesh(aNewVertices, theTrigu))
       ++aInsertedNb;
   }
 
@@ -1314,7 +1424,7 @@ void BRepMesh_FastDiscretFace::add(const TopoDS_Vertex& theVertex)
     NCollection_Handle<FixedVExplorer> aFixedVExplorer = new FixedVExplorer(theVertex);
     Standard_Integer aIndex = myAttribute->GetVertexIndex(aFixedVExplorer);
     gp_XY anUV = BRepMesh_ShapeTool::FindUV(aIndex, aPnt2d,
-      theVertex, BRep_Tool::Tolerance(theVertex), myAttribute);
+      BRep_Tool::Tolerance(theVertex), myAttribute);
 
     Standard_Integer aTmpId1, aTmpId2;
     anUV = myAttribute->Scale(anUV, Standard_True);

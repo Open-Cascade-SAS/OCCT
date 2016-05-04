@@ -9,13 +9,13 @@ puts ""
 restore [locate_data_file bug25519_testtriangulation.brep] a
 
 tclean a
-incmesh a 0.001
+incmesh a 0.01 -a 50
 set bug_info [trinfo a]
 set TNumber_1 [lindex $bug_info 3]
 set NNumber_1 [lindex $bug_info 5]
 
 tclean a
-incmesh a 0.001 -surf_def_off
+incmesh a 0.01 -a 50 -surf_def_off
 set bug_info [trinfo a]
 set TNumber_2 [lindex $bug_info 3]
 set NNumber_2 [lindex $bug_info 5]

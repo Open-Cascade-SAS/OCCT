@@ -627,7 +627,8 @@ Handle(Geom_BezierCurve) BRepAdaptor_Curve::Bezier() const
   else {
     BC = myConSurf->Bezier();
   }
-  return Handle(Geom_BezierCurve)::DownCast(BC->Transformed(myTrsf));
+  return myTrsf.Form() == gp_Identity
+    ? BC : Handle(Geom_BezierCurve)::DownCast(BC->Transformed(myTrsf));
 }
 
 
@@ -645,5 +646,6 @@ Handle(Geom_BSplineCurve) BRepAdaptor_Curve::BSpline() const
   else {
     BS = myConSurf->BSpline();
   }
-  return Handle(Geom_BSplineCurve)::DownCast(BS->Transformed(myTrsf));
+  return myTrsf.Form() == gp_Identity
+    ? BS : Handle(Geom_BSplineCurve)::DownCast(BS->Transformed(myTrsf));
 }

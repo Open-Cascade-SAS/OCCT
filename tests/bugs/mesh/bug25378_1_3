@@ -31,6 +31,7 @@ if { [regexp {Debug mode} [dversion]] } {
   }
 }
 
-if {${max_t_001} > ${t_001}} {
-   puts "Error. Time of building of triangulation, ${t_001} seconds, is less than expected minimum time - ${max_t_001} seconds"
-}
+# this test case is redundant, as we must not set lower limit for computation time
+#if {${max_t_001} > ${t_001}} {
+#   puts "Error. Time of building of triangulation, ${t_001} seconds, is less than expected minimum time - ${max_t_001} seconds"
+#}

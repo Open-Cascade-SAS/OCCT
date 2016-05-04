@@ -14,7 +14,7 @@ isos result 0
 incmesh result .1
 triangles result
 
-checktrinfo result -tri !604 -nod !363
+checktrinfo result -tri !1315 -nod !784
 checkprops result -s 0 
 checkshape result
 checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -656,7 +656,7 @@ Standard_Integer Geom2d_BezierCurve::NbPoles () const
 //purpose  : 
 //=======================================================================
 
-gp_Pnt2d Geom2d_BezierCurve::Pole (const Standard_Integer Index) const
+const gp_Pnt2d& Geom2d_BezierCurve::Pole (const Standard_Integer Index) const
 {
   Standard_OutOfRange_Raise_if (Index < 1 || Index > poles->Length(),
 				"Geom2d_BezierCurve::Pole");

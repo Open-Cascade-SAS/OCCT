@@ -665,7 +665,7 @@ Standard_Integer Geom_BSplineCurve::NbPoles () const
 //purpose  : 
 //=======================================================================
 
-gp_Pnt Geom_BSplineCurve::Pole (const Standard_Integer Index) const
+const gp_Pnt& Geom_BSplineCurve::Pole (const Standard_Integer Index) const
 {
   Standard_OutOfRange_Raise_if (Index < 1 || Index > poles->Length(),
 				"Geom_BSplineCurve::Pole");

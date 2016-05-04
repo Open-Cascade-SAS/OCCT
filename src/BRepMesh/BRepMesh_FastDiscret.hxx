@@ -40,8 +40,8 @@ class Bnd_Box;
 class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
+class Geom2dAdaptor_HCurve;
 class BRepAdaptor_HSurface;
-class Geom2d_Curve;
 class BRepMesh_Edge;
 class BRepMesh_Vertex;
 class gp_Pnt;
@@ -273,27 +273,18 @@ private:
     gp_Pnt2d                            FirstUV;
     gp_Pnt2d                            LastUV;
 
+    Standard_Real                       Deflection;
     Standard_Boolean                    IsSameUV;
-    Standard_Real                       MinDist;
 
     NCollection_Handle<TopoDSVExplorer> FirstVExtractor;
     NCollection_Handle<TopoDSVExplorer> LastVExtractor;
-  };
-
-  //! Structure keeps geometrical parameters of edge's PCurve.
-  //! Used for caching.
-  struct EdgePCurve
-  {
-    Handle(Geom2d_Curve) Curve2d;
-    Standard_Real        FirstParam;
-    Standard_Real        LastParam;
   };
 
   //! Fills structure of by attributes of the given edge.
   //! @return TRUE on success, FALSE elsewhere.
   Standard_Boolean getEdgeAttributes(
     const TopoDS_Edge&  theEdge,
-    const EdgePCurve&   thePCurve,
+    const Handle(Geom2dAdaptor_HCurve)& thePCurve,
     const Standard_Real theDefEdge,
     EdgeAttributes&     theAttributes) const;
 
@@ -311,7 +302,7 @@ private:
   //! Adds tessellated representation of the given edge to
   //! mesh data structure of currently processed face.
   void add(const TopoDS_Edge&  theEdge,
-           const EdgePCurve&   theCurve2D,
+           const Handle(Geom2dAdaptor_HCurve)& theCurve2D,
            const Standard_Real theEdgeDeflection);
 
   //! Updates tessellated representation of the given edge.
@@ -320,7 +311,7 @@ private:
   //! Computes tessellation using edge's geometry elsewhere.
   void update(
     const TopoDS_Edge&          theEdge,
-    const Handle(Geom2d_Curve)& theCurve2D,
+    const Handle(Geom2dAdaptor_HCurve)& theCurve2D,
     const Standard_Real         theEdgeDeflection,
     EdgeAttributes&             theAttributes);
 

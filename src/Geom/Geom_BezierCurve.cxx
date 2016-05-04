@@ -655,7 +655,7 @@ Standard_Integer Geom_BezierCurve::NbPoles () const
 //purpose  : 
 //=======================================================================
 
-gp_Pnt Geom_BezierCurve::Pole (const Standard_Integer Index) const
+const gp_Pnt& Geom_BezierCurve::Pole (const Standard_Integer Index) const
 {
   if(Index < 1 || Index > poles->Length()) 
     Standard_OutOfRange::Raise("Geom_BezierCurve::Pole");

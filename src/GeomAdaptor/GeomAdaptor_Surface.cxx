@@ -132,10 +132,10 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
   myULast  = ULast;
   myVFirst = VFirst;
   myVLast  = VLast;
+  mySurfaceCache.Nullify();
 
   if ( mySurface != S) {
     mySurface = S;
-    mySurfaceCache.Nullify();
     myNestedEvaluator.Nullify();
     myBSplineSurface.Nullify();
 
@@ -181,26 +181,10 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
     else if (TheType == STANDARD_TYPE(Geom_BezierSurface))
     {
       mySurfaceType = GeomAbs_BezierSurface;
-      // Create cache for Bezier
-      Handle(Geom_BezierSurface) aBezier = Handle(Geom_BezierSurface)::DownCast(mySurface);
-      Standard_Integer aDegU = aBezier->UDegree();
-      Standard_Integer aDegV = aBezier->VDegree();
-      TColStd_Array1OfReal aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
-      TColStd_Array1OfReal aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
-      mySurfaceCache = new BSplSLib_Cache(
-        aDegU, aBezier->IsUPeriodic(), aFlatKnotsU,
-        aDegV, aBezier->IsVPeriodic(), aFlatKnotsV,
-        aBezier->Poles(), aBezier->Weights());
     }
     else if (TheType == STANDARD_TYPE(Geom_BSplineSurface)) {
       mySurfaceType = GeomAbs_BSplineSurface;
-      Handle(Geom_BSplineSurface) myBspl = Handle(Geom_BSplineSurface)::DownCast(mySurface);
-      myBSplineSurface = myBspl;
-      // Create cache for B-spline
-      mySurfaceCache = new BSplSLib_Cache( 
-        myBspl->UDegree(), myBspl->IsUPeriodic(), myBspl->UKnotSequence(), 
-        myBspl->VDegree(), myBspl->IsVPeriodic(), myBspl->VKnotSequence(), 
-        myBspl->Poles(), myBspl->Weights());
+      myBSplineSurface = Handle(Geom_BSplineSurface)::DownCast(mySurface);
     }
     else if ( TheType == STANDARD_TYPE(Geom_OffsetSurface))
     {
@@ -216,8 +200,6 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
     else
       mySurfaceType = GeomAbs_OtherSurface;
   }
-  else // rebuild cache of Bezier and B-spline surface even if the loaded surface is same
-    RebuildCache(myUFirst, myVFirst);
 }
 
 //    --
@@ -679,11 +661,17 @@ void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU,
 {
   if (mySurfaceType == GeomAbs_BezierSurface)
   {
+    // Create cache for Bezier
     Handle(Geom_BezierSurface) aBezier = Handle(Geom_BezierSurface)::DownCast(mySurface);
     Standard_Integer aDegU = aBezier->UDegree();
     Standard_Integer aDegV = aBezier->VDegree();
     TColStd_Array1OfReal aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
     TColStd_Array1OfReal aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
+    if (mySurfaceCache.IsNull())
+      mySurfaceCache = new BSplSLib_Cache(
+        aDegU, aBezier->IsUPeriodic(), aFlatKnotsU,
+        aDegV, aBezier->IsVPeriodic(), aFlatKnotsV,
+        aBezier->Poles(), aBezier->Weights());
     mySurfaceCache->BuildCache(theU, theV,
       aDegU, aBezier->IsUPeriodic(), aFlatKnotsU,
       aDegV, aBezier->IsVPeriodic(), aFlatKnotsV,
@@ -691,10 +679,16 @@ void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU,
   }
   else if (mySurfaceType == GeomAbs_BSplineSurface)
   {
-      mySurfaceCache->BuildCache(theU, theV,
+    // Create cache for B-spline
+    if (mySurfaceCache.IsNull())
+      mySurfaceCache = new BSplSLib_Cache(
         myBSplineSurface->UDegree(), myBSplineSurface->IsUPeriodic(), myBSplineSurface->UKnotSequence(),
         myBSplineSurface->VDegree(), myBSplineSurface->IsVPeriodic(), myBSplineSurface->VKnotSequence(),
         myBSplineSurface->Poles(), myBSplineSurface->Weights());
+    mySurfaceCache->BuildCache(theU, theV,
+      myBSplineSurface->UDegree(), myBSplineSurface->IsUPeriodic(), myBSplineSurface->UKnotSequence(),
+      myBSplineSurface->VDegree(), myBSplineSurface->IsVPeriodic(), myBSplineSurface->VKnotSequence(),
+      myBSplineSurface->Poles(), myBSplineSurface->Weights());
   }
 }
 
@@ -723,14 +717,9 @@ void GeomAdaptor_Surface::D0(const Standard_Real U,
   {
   case GeomAbs_BezierSurface:
   case GeomAbs_BSplineSurface:
-    if (!mySurfaceCache.IsNull())
-    {
-      if (!mySurfaceCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      mySurfaceCache->D0(U, V, P);
-    }
-    else
-      mySurface->D0(U, V, P);
+    if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
+      RebuildCache(U, V);
+    mySurfaceCache->D0(U, V, P);
     break;
 
   case GeomAbs_OffsetSurface:
@@ -772,14 +761,12 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
         (USide != 0 || VSide != 0) && 
         IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
       myBSplineSurface->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
-    else if (!mySurfaceCache.IsNull())
+    else
     {
-      if (!mySurfaceCache->IsCacheValid(U, V))
+      if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
         RebuildCache(U, V);
       mySurfaceCache->D1(U, V, P, D1U, D1V);
     }
-    else
-      mySurface->D1(u, v, P, D1U, D1V);
     break;
     }
 
@@ -824,14 +811,12 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
         (USide != 0 || VSide != 0) && 
         IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
       myBSplineSurface->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
-    else if (!mySurfaceCache.IsNull())
+    else
     {
-      if (!mySurfaceCache->IsCacheValid(U, V))
+      if (mySurfaceCache.IsNull() || !mySurfaceCache->IsCacheValid(U, V))
         RebuildCache(U, V);
       mySurfaceCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
     }
-    else
-      mySurface->D2(u, v, P, D1U, D1V, D2U, D2V, D2UV);
     break;
   }
 

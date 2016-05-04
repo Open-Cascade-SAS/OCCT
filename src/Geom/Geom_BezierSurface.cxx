@@ -1587,7 +1587,7 @@ Standard_Integer Geom_BezierSurface::NbVPoles () const
 //purpose  : 
 //=======================================================================
 
-gp_Pnt Geom_BezierSurface::Pole (const Standard_Integer UIndex,
+const gp_Pnt& Geom_BezierSurface::Pole (const Standard_Integer UIndex,
 				 const Standard_Integer VIndex) const
 {
   Standard_OutOfRange_Raise_if

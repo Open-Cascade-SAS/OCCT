@@ -1086,10 +1086,17 @@ Standard_Boolean BRepMesh_Delaun::checkIntersection(
 //function : addTriangle
 //purpose  : Add a triangle based on the given oriented edges into mesh
 //=======================================================================
-inline void BRepMesh_Delaun::addTriangle( const Standard_Integer (&theEdgesId)[3],
-                                          const Standard_Boolean (&theEdgesOri)[3],
-                                          const Standard_Integer (&theNodesId)[3] )
+void BRepMesh_Delaun::addTriangle( const Standard_Integer (&theEdgesId)[3],
+                                   const Standard_Boolean (&theEdgesOri)[3],
+                                   const Standard_Integer (&theNodesId)[3])
 {
+  for (Standard_Integer i = 0; i < 3; ++i)
+  {
+    const BRepMesh_PairOfIndex& aPair = myMeshData->ElementsConnectedTo(theEdgesId[i]);
+    if (aPair.Extent() == 2)
+      // it is forbidden to have more than two triangles connected to the same link
+      return;
+  }
   Standard_Integer aNewTriangleId = 
     myMeshData->AddElement(BRepMesh_Triangle(theEdgesId, 
       theEdgesOri, BRepMesh_Free));

@@ -76,10 +76,8 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(
 //=======================================================================
 Standard_Boolean BRepMesh_GeomTool::Value(
   const Standard_Integer              theIndex,
-  const Handle(BRepAdaptor_HSurface)& theSurface,
   Standard_Real&                      theParam,
-  gp_Pnt&                             thePoint,
-  gp_Pnt2d&                           theUV) const
+  gp_Pnt&                             thePoint) const
 {
   if (theIndex < 1 || theIndex > NbPoints())
     return Standard_False;
@@ -89,14 +87,6 @@ Standard_Boolean BRepMesh_GeomTool::Value(
 
   thePoint = myDiscretTool.Value(theIndex);
   theParam = myDiscretTool.Parameter(theIndex);
-
-  const TopoDS_Face& aFace = ((BRepAdaptor_Surface*)&(theSurface->Surface()))->Face();
-
-  Standard_Real aFirst, aLast;
-  Handle(Geom2d_Curve) aCurve = 
-    BRep_Tool::CurveOnSurface(*myEdge, aFace, aFirst, aLast);
-
-  aCurve->D0(theParam, theUV);
 
   return Standard_True;
 }
