@@ -48,6 +48,7 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_MapOfTransient.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
@@ -125,8 +126,11 @@ BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
 //=======================================================================
 void BRepMesh_IncrementalMesh::clear()
 {
-  myEdges.Clear();
-  myEdgeDeflection.Clear();
+  // the allocator will be alive while the structures are alive
+  Handle(NCollection_IncAllocator) anAlloc =
+    new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
+  myEdges.Clear(anAlloc);
+  myEdgeDeflection.Clear(anAlloc);
   myFaces.Clear();
   myMesh.Nullify();
 }
@@ -146,15 +150,18 @@ void BRepMesh_IncrementalMesh::init()
   collectFaces();
 
   Bnd_Box aBox;
-  BRepBndLib::Add(myShape, aBox, Standard_False);
-
-  if (aBox.IsVoid())
+  if ( myParameters.Relative ) 
   {
-    // Nothing to mesh.
-    return;
-  }
+    BRepBndLib::Add(myShape, aBox, Standard_False);
 
-  BRepMesh_ShapeTool::BoxMaxDimension(aBox, myMaxShapeSize);
+    if (aBox.IsVoid())
+    {
+      // Nothing to mesh.
+      return;
+    }
+
+    BRepMesh_ShapeTool::BoxMaxDimension(aBox, myMaxShapeSize);
+  }
 
   myMesh = new BRepMesh_FastDiscret (aBox, myParameters);
   
@@ -167,22 +174,21 @@ void BRepMesh_IncrementalMesh::init()
 //=======================================================================
 void BRepMesh_IncrementalMesh::collectFaces()
 {
-  TopTools_ListOfShape aFaceList;
+  Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+  TopTools_ListOfShape aFaceList(anAlloc);
   BRepLib::ReverseSortFaces(myShape, aFaceList);
-  TopTools_MapOfShape aFaceMap;
+  TColStd_MapOfTransient aTFaceMap(1, anAlloc);
 
   // make array of faces suitable for processing (excluding faces without surface)
   TopLoc_Location aDummyLoc;
-  const TopLoc_Location aEmptyLoc;
   TopTools_ListIteratorOfListOfShape aFaceIter(aFaceList);
   for (; aFaceIter.More(); aFaceIter.Next())
   {
-    TopoDS_Shape aFaceNoLoc = aFaceIter.Value();
-    aFaceNoLoc.Location(aEmptyLoc);
-    if (!aFaceMap.Add (aFaceNoLoc))
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceIter.Value());
+    const Handle(TopoDS_TShape)& aTFace = aFace.TShape();
+    if (!aTFaceMap.Add (aTFace))
       continue; // already processed
 
-    TopoDS_Face aFace = TopoDS::Face(aFaceIter.Value());
     const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(aFace, aDummyLoc);
     if (aSurf.IsNull())
       continue;
@@ -282,8 +288,9 @@ void BRepMesh_IncrementalMesh::discretizeFreeEdges()
 Standard_Real BRepMesh_IncrementalMesh::edgeDeflection(
   const TopoDS_Edge& theEdge)
 {
-  if (myEdgeDeflection.IsBound(theEdge))
-    return myEdgeDeflection(theEdge);
+  const Standard_Real* pDef = myEdgeDeflection.Seek(theEdge);
+  if (pDef)
+    return *pDef;
 
   Standard_Real aEdgeDeflection;
   if ( myParameters.Relative ) 
@@ -329,7 +336,7 @@ Standard_Real BRepMesh_IncrementalMesh::faceDeflection(
 void BRepMesh_IncrementalMesh::update(const TopoDS_Edge& theEdge)
 {
   if (!myEdges.IsBound(theEdge))
-    myEdges.Bind(theEdge, BRepMesh::DMapOfTriangulationBool());
+    myEdges.Bind(theEdge, BRepMesh::DMapOfTriangulationBool(3, myEdges.Allocator()));
 
   Standard_Real aEdgeDeflection = edgeDeflection(theEdge);
   // Check that triangulation relies to face of the given shape.

@@ -207,8 +207,8 @@ void BRepMesh_FastDiscretFace::initDataStructure()
   myStructure->Data()->SetTolerance( aTolU     / deltaX, aTolV     / deltaY);
 
   myAttribute->ChangeStructure() = myStructure;
-  myAttribute->ChangeSurfacePoints() = new BRepMesh::DMapOfIntegerPnt;
-  myAttribute->ChangeSurfaceVertices()= new BRepMesh::DMapOfVertexInteger;
+  myAttribute->ChangeSurfacePoints() = new BRepMesh::DMapOfIntegerPnt(1, aAllocator);
+  myAttribute->ChangeSurfaceVertices()= new BRepMesh::DMapOfVertexInteger(1, aAllocator);
 
   // Check the necessity to fill the map of parameters
   const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
@@ -217,8 +217,8 @@ void BRepMesh_FastDiscretFace::initDataStructure()
                                       thetype == GeomAbs_BSplineSurface);
   const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus || IsCompexSurface (thetype));
 
-  myUParam.Clear(); 
-  myVParam.Clear();
+  myUParam.Clear(aAllocator); 
+  myVParam.Clear(aAllocator);
 
   // essai de determination de la longueur vraie:
   // akm (bug OCC16) : We must calculate these measures in non-singular
@@ -393,7 +393,8 @@ void BRepMesh_FastDiscretFace::add(const Handle(BRepMesh_FaceAttribute)& theAttr
   Standard_Real aDef = -1;
   if ( !isaline && myStructure->ElementsOfDomain().Extent() > 0 )
   {
-    BRepMesh::ListOfVertex aNewVertices;
+    Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+    BRepMesh::ListOfVertex aNewVertices(anAlloc);
     if (!rajout)
     {
       aDef = control(aNewVertices, trigu, Standard_True);
@@ -463,8 +464,6 @@ static void filterParameters(const BRepMesh::IMapOfReal& theParams,
                              BRepMesh::SequenceOfReal&   theResult)
 {
   // Sort sequence of parameters
-  BRepMesh::SequenceOfReal aParamTmp;
-  Standard_Integer aParamLength = 1;
   const Standard_Integer anInitLen = theParams.Extent();
     
   TColStd_Array1OfReal aParamArray(1, anInitLen);
@@ -475,37 +474,26 @@ static void filterParameters(const BRepMesh::IMapOfReal& theParams,
   std::sort (aParamArray.begin(), aParamArray.end());
 
   // mandatory pre-filtering using the first (minimal) filter value
-  Standard_Real aP1, aP2;
-  aP1 = aParamArray(1);
-  aParamTmp.Append(aP1);
+  Standard_Integer aParamLength = 1;
   for (j = 2; j <= anInitLen; j++) 
   {
-    aP2 = aParamArray(j);
-    if ((aP2-aP1) > theMinDist)
+    if ((aParamArray(j)-aParamArray(aParamLength)) > theMinDist)
     {
-      aParamTmp.Append(aP2);
-      aP1 = aP2;
-      aParamLength++;
+      if (++aParamLength < j)
+        aParamArray(aParamLength) = aParamArray(j);
     }
-  }
-
-  //add last point if required
-  if(aParamArray(anInitLen)-theParams(aParamLength) > theMinDist)
-  {
-    aParamTmp.Append(aParamArray(anInitLen));
-    aParamLength++;
   }
   
   //perform filtering on series
   Standard_Real aLastAdded, aLastCandidate;
   Standard_Boolean isCandidateDefined = Standard_False;
-  aLastAdded = aParamTmp.First();
+  aLastAdded = aParamArray(1);
   aLastCandidate = aLastAdded;
-  theResult.Append(aParamTmp.First());
+  theResult.Append(aLastAdded);
   
-  for(j=2;j<aParamTmp.Length();j++) 
+  for(j=2; j < aParamLength; j++)
   {
-    Standard_Real aVal = aParamTmp.Value(j);
+    Standard_Real aVal = aParamArray(j);
     if(aVal-aLastAdded > theFilterDist) 
     {
       //adds the parameter
@@ -525,7 +513,7 @@ static void filterParameters(const BRepMesh::IMapOfReal& theParams,
     aLastCandidate = aVal;
     isCandidateDefined = Standard_True;
   }
-  theResult.Append(aParamTmp.Last());
+  theResult.Append(aParamArray(aParamLength));
 }
 
 void BRepMesh_FastDiscretFace::insertInternalVertices(
@@ -842,7 +830,9 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
   const Standard_Real                 aDefFace = myAttribute->GetDefFace();
   const Handle(BRepAdaptor_HSurface)& gFace    = myAttribute->Surface();
 
-  BRepMesh::SequenceOfReal aParams[2];
+  Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+  BRepMesh::SequenceOfReal aParams[2] = { BRepMesh::SequenceOfReal(anAlloc), 
+                                          BRepMesh::SequenceOfReal(anAlloc) };
   for (Standard_Integer i = 0; i < 2; ++i)
   {
     Standard_Boolean isU = (i == 0);
@@ -868,8 +858,10 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
   Handle (Geom_Surface) aSurface = gFace->ChangeSurface ().Surface ().Surface ();
   const BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
 
-  BRepMesh::MapOfReal aParamsToRemove[2];
-  BRepMesh::MapOfReal aParamsForbiddenToRemove[2];
+  BRepMesh::MapOfReal aParamsToRemove[2] = { BRepMesh::MapOfReal(1, anAlloc),
+                                             BRepMesh::MapOfReal(1, anAlloc) };
+  BRepMesh::MapOfReal aParamsForbiddenToRemove[2] = { BRepMesh::MapOfReal(1, anAlloc),
+                                                      BRepMesh::MapOfReal(1, anAlloc) };
 
   // precision for compare square distances
   const Standard_Real aPrecision = Precision::Confusion();
@@ -1043,7 +1035,8 @@ Standard_Boolean BRepMesh_FastDiscretFace::checkDeflectionAndInsert(
   const Standard_Real        theFaceDeflection,
   const BRepMesh_CircleTool& theCircleTool,
   BRepMesh::ListOfVertex&    theVertices,
-  Standard_Real&             theMaxTriangleDeflection)
+  Standard_Real&             theMaxTriangleDeflection,
+  const Handle(NCollection_IncAllocator)& theTempAlloc)
 {
   if (theTriangleDeflection > theMaxTriangleDeflection)
     theMaxTriangleDeflection = theTriangleDeflection;
@@ -1058,9 +1051,7 @@ Standard_Boolean BRepMesh_FastDiscretFace::checkDeflectionAndInsert(
       const_cast<BRepMesh_CircleTool&>(theCircleTool).Select(
       myAttribute->Scale(theUV, Standard_True));
     
-    Handle(NCollection_IncAllocator) aAllocator =
-      new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
-    BRepMesh::MapOfInteger aUsedNodes(10, aAllocator);
+    BRepMesh::MapOfInteger aUsedNodes(10, theTempAlloc);
     BRepMesh::ListOfInteger::Iterator aCircleIt(aCirclesList);
     for (; aCircleIt.More(); aCircleIt.Next())
     {
@@ -1118,9 +1109,11 @@ Standard_Real BRepMesh_FastDiscretFace::control(
   if (IsCompexSurface (aSurfType) && aSurfType != GeomAbs_SurfaceOfExtrusion)
     aBSpline = gFace->ChangeSurface ().Surface().Surface();
 
-  NCollection_DataMap<Standard_Integer, gp_Dir> aNorMap;
-  BRepMesh::MapOfIntegerInteger                 aStatMap;
-  NCollection_Map<BRepMesh_OrientedEdge>        aCouples(3 * aTrianglesNb);
+  Handle(NCollection_IncAllocator) anAlloc =
+    new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
+  NCollection_DataMap<Standard_Integer, gp_Dir> aNorMap(1, anAlloc);
+  BRepMesh::MapOfIntegerInteger                 aStatMap(1, anAlloc);
+  NCollection_Map<BRepMesh_OrientedEdge>        aCouples(3 * aTrianglesNb, anAlloc);
   const BRepMesh_CircleTool& aCircles = theTrigu.Circles();
 
   // Perform refinement passes
@@ -1131,8 +1124,11 @@ Standard_Real BRepMesh_FastDiscretFace::control(
   Standard_Real aMaxSqDef = -1.;
   Standard_Integer aPass = 1, aInsertedNb = 1;
   Standard_Boolean isAllDegenerated = Standard_False;
+  Handle(NCollection_IncAllocator) aTempAlloc =
+    new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
   for (; aPass <= aPassesNb && aInsertedNb && !isAllDegenerated; ++aPass)
   {
+    aTempAlloc->Reset(Standard_False);
     theNewVertices.Clear();
 
     // Reset stop condition
@@ -1208,7 +1204,7 @@ Standard_Real BRepMesh_FastDiscretFace::control(
       aSqDef *= aSqDef;
 
       isSkipped = !checkDeflectionAndInsert(pDef, aCenter2d, theIsFirst, 
-        aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef);
+        aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef, aTempAlloc);
 
       if (isSkipped)
         break;
@@ -1242,7 +1238,7 @@ Standard_Real BRepMesh_FastDiscretFace::control(
           aSqDef = aLin.SquareDistance(pDef);
 
           isSkipped = !checkDeflectionAndInsert(pDef, mi2d, theIsFirst, 
-            aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef);
+            aSqDef, aSqDefFace, aCircles, theNewVertices, aMaxSqDef, aTempAlloc);
         }
       }
 
@@ -1409,6 +1405,8 @@ void BRepMesh_FastDiscretFace::commitSurfaceTriangulation()
   BRepMesh_ShapeTool::AddInFace(aFace, aNewTriangulation);
 
   // Delete unused data
+  myUParam.Clear(0L);
+  myVParam.Clear(0L);
   myAttribute->ChangeStructure().Nullify();
   myAttribute->ChangeSurfacePoints().Nullify();
   myAttribute->ChangeSurfaceVertices().Nullify();

@@ -30,13 +30,11 @@ public:
   typedef Standard_Integer Target;
 
   //! Constructor.
-  //! @param theReservedSize size to be reserved for vector of vertices.
   //! @param theAllocator memory allocator to be used by internal collections.
   Standard_EXPORT BRepMesh_VertexInspector (
-    const Standard_Integer                  theReservedSize,
     const Handle(NCollection_IncAllocator)& theAllocator)
     : myResIndices(theAllocator),
-      myVertices  (new BRepMesh::VectorOfVertex(theReservedSize)),
+      myVertices  (new BRepMesh::VectorOfVertex),
       myDelNodes  (theAllocator)
   {
     SetTolerance( Precision::Confusion() );

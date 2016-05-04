@@ -36,10 +36,8 @@ public:
   DEFINE_STANDARD_ALLOC
   
   //! Constructor.
-  //! @param theReservedSize size to be reserved for vector of vertices.
   //! @param theAllocator memory allocator to be used by internal collections.
   Standard_EXPORT BRepMesh_VertexTool(
-    const Standard_Integer                  theReservedSize,
     const Handle(NCollection_IncAllocator)& theAllocator);
 
   //! Sets new size of cell for cellfilter equal in both directions.

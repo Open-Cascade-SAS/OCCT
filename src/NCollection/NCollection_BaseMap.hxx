@@ -149,6 +149,10 @@ public:
   //! Statistics
   Standard_EXPORT void Statistics(Standard_OStream& S) const;
 
+  //! Returns attached allocator
+  const Handle(NCollection_BaseAllocator)& Allocator() const
+  { return myAllocator; }
+
  protected:
   // -------- PROTECTED METHODS -----------
 

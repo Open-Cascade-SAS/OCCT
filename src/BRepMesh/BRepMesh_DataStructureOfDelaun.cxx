@@ -35,7 +35,8 @@ BRepMesh_DataStructureOfDelaun::BRepMesh_DataStructureOfDelaun(
   const Handle(NCollection_IncAllocator)& theAllocator,
   const Standard_Integer                  theReservedNodeSize)
   : myAllocator       (theAllocator),
-    myNodes           (new BRepMesh_VertexTool(theReservedNodeSize, myAllocator)),
+    myNodes           (new BRepMesh_VertexTool(myAllocator)),
+    myNodeLinks       (theReservedNodeSize * 3, myAllocator),
     myLinks           (theReservedNodeSize * 3, myAllocator),
     myDelLinks        (myAllocator),
     myElements        (theReservedNodeSize * 2, myAllocator),

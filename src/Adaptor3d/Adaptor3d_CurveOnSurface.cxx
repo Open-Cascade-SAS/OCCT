@@ -846,16 +846,19 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals (const GeomAbs_Shape S) c
   Standard_Integer nu,nv,nc;
   nu=mySurface->NbUIntervals(S);
   nv=mySurface->NbVIntervals(S);
+  nc=myCurve->NbIntervals(S);
 
-  TColStd_Array1OfReal TabU(1,nu+1);
-  TColStd_Array1OfReal TabV(1,nv+1);
+  // Allocate the memory for arrays TabU, TabV, TabC only once using the buffer TabBuf.
+  TColStd_Array1OfReal TabBuf(1, nu + nv + nc + 3);
+  TColStd_Array1OfReal TabU(TabBuf(1), 1, nu+1);
+  TColStd_Array1OfReal TabV(TabBuf(nu + 2), 1, nv+1);
+  TColStd_Array1OfReal TabC(TabBuf(nu + nv + 3), 1, nc+1);
+
   Standard_Integer NbSample = 20;
   Standard_Real U,V,Tdeb,Tfin;
   Tdeb=myCurve->FirstParameter();
   Tfin=myCurve->LastParameter();
 
-  nc=myCurve->NbIntervals(S);
-  TColStd_Array1OfReal TabC(1,nc+1);
   myCurve->Intervals(TabC,S);
 
   Standard_Real Tol= Precision::PConfusion()/10;

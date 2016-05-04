@@ -102,6 +102,10 @@ public:
       Standard_Boolean   IsEmpty     () const {return (mySize == 0);}
       Standard_Integer   Length      () const {return mySize;}
 
+      //! Returns attached allocator
+      const Handle(NCollection_BaseAllocator)& Allocator() const
+      { return myAllocator; }
+
  protected:
   // Methods PROTECTED
   // 

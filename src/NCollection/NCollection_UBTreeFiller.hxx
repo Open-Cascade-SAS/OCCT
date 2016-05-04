@@ -68,7 +68,7 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
   NCollection_UBTreeFiller (UBTree& theTree,
                             const Handle(NCollection_BaseAllocator)& theAlloc=0L,
                             const Standard_Boolean isFullRandom = Standard_True)
-    : myTree(theTree), mySeqPtr(1000, theAlloc),
+    : myTree(theTree), mySeqPtr(256, theAlloc),
       myRandGen (5489u /* == std::mt19937::default_seed, not defined in older environments, e.g, on Debian 6.0 with GCC 4.4.5 */),
       myIsFullRandom (isFullRandom) {}
 

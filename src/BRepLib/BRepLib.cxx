@@ -2006,18 +2006,17 @@ void  BRepLib::ReverseSortFaces (const TopoDS_Shape& Sh,
   TopTools_ListOfShape& LF)
 {
   LF.Clear();
-  TopTools_ListOfShape LTri,LPlan,LCyl,LCon,LSphere,LTor,LOther;
+  // Use the allocator of the result LF for intermediate results
+  TopTools_ListOfShape LTri(LF.Allocator()), LPlan(LF.Allocator()),
+    LCyl(LF.Allocator()), LCon(LF.Allocator()), LSphere(LF.Allocator()),
+    LTor(LF.Allocator()), LOther(LF.Allocator());
   TopExp_Explorer exp(Sh,TopAbs_FACE);
   TopLoc_Location l;
-  Handle(Geom_Surface) S;
 
   for (; exp.More(); exp.Next()) {
     const TopoDS_Face&   F = TopoDS::Face(exp.Current());
-    S = BRep_Tool::Surface(F, l);
+    const Handle(Geom_Surface)& S = BRep_Tool::Surface(F, l);
     if (!S.IsNull()) {
-      if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-        S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
-      }
       GeomAdaptor_Surface AS(S);
       switch (AS.GetType()) {
       case GeomAbs_Plane: 

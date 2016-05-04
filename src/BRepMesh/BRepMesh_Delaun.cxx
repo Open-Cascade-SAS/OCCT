@@ -429,8 +429,6 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
   Handle(NCollection_IncAllocator) aAllocator =
     new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
 
-  BRepMesh::MapOfIntegerInteger aLoopEdges(10, aAllocator);
-
   Standard_Real aTolU, aTolV;
   myMeshData->Data()->GetTolerance(aTolU, aTolV);
   const Standard_Real aSqTol = aTolU * aTolU + aTolV * aTolV;
@@ -442,8 +440,8 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
   Standard_Integer anUpper = theVertexIndexes.Upper();
   for( ; anIndex <= anUpper; ++anIndex ) 
   {
-    aLoopEdges.Clear();
     aAllocator->Reset(Standard_False);
+    BRepMesh::MapOfIntegerInteger aLoopEdges(10, aAllocator);
     
     Standard_Integer aVertexIdx = theVertexIndexes( anIndex );    
     const BRepMesh_Vertex& aVertex = GetVertex( aVertexIdx );
@@ -598,6 +596,7 @@ void BRepMesh_Delaun::cleanupMesh()
 
   for(;;)
   {
+    aAllocator->Reset(Standard_False);
     BRepMesh::MapOfIntegerInteger aLoopEdges(10, aAllocator);
     BRepMesh::MapOfInteger aDelTriangles(10, aAllocator);
 
@@ -679,7 +678,6 @@ void BRepMesh_Delaun::cleanupMesh()
         myMeshData->RemoveLink( aLoopEdgesIt.Key() );
     }
 
-    aAllocator->Reset(Standard_False);
     if ( aDeletedTrianglesNb == 0 )
       break;
   }
@@ -2173,7 +2171,8 @@ Standard_Boolean BRepMesh_Delaun::UseEdge( const Standard_Integer /*theIndex*/ )
 BRepMesh::HMapOfInteger BRepMesh_Delaun::getEdgesByType(
   const BRepMesh_DegreeOfFreedom theEdgeType ) const
 {
-  BRepMesh::HMapOfInteger aResult = new BRepMesh::MapOfInteger;
+  Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
+  BRepMesh::HMapOfInteger aResult = new BRepMesh::MapOfInteger(1, anAlloc);
   BRepMesh::MapOfInteger::Iterator anEdgeIt( myMeshData->LinksOfDomain() );
 
   for ( ; anEdgeIt.More(); anEdgeIt.Next() )

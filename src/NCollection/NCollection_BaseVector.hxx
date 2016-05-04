@@ -212,6 +212,12 @@ public: //! @name public API
     }
   }
 
+  //! Returns attached allocator
+  const Handle(NCollection_BaseAllocator)& Allocator() const
+  {
+    return myAllocator;
+  }
+
 protected: //! @name Protected fields
 
   Handle(NCollection_BaseAllocator) myAllocator;

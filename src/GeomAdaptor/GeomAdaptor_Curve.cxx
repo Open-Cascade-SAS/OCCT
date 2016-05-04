@@ -81,10 +81,8 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const Standard_Real U1,
   Standard_Integer Index1 = 0;
   Standard_Integer Index2 = 0;
   Standard_Real newFirst, newLast;
-  TColStd_Array1OfReal    TK(1,Nb);
-  TColStd_Array1OfInteger TM(1,Nb);
-  myBSplineCurve->Knots(TK);
-  myBSplineCurve->Multiplicities(TM);
+  const TColStd_Array1OfReal& TK = myBSplineCurve->Knots();
+  const TColStd_Array1OfInteger& TM = myBSplineCurve->Multiplicities();
   BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,U1,myBSplineCurve->IsPeriodic(),
 			    1,Nb,Index1,newFirst);
   BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,U2,myBSplineCurve->IsPeriodic(),
@@ -293,10 +291,8 @@ Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
           Standard_Integer Index1 = 0;
           Standard_Integer Index2 = 0;
           Standard_Real newFirst, newLast;
-          TColStd_Array1OfReal    TK(1,Nb);
-          TColStd_Array1OfInteger TM(1,Nb);
-          myBSplineCurve->Knots(TK);
-          myBSplineCurve->Multiplicities(TM);
+          const TColStd_Array1OfReal& TK = myBSplineCurve->Knots();
+          const TColStd_Array1OfInteger& TM = myBSplineCurve->Multiplicities();
           BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,myFirst,
                                     myBSplineCurve->IsPeriodic(),
                                     1,Nb,Index1,newFirst);
@@ -418,10 +414,8 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 	    Standard_Integer Index1 = 0;
 	    Standard_Integer Index2 = 0;
 	    Standard_Real newFirst, newLast;
-	    TColStd_Array1OfReal    TK(1,Nb);
-	    TColStd_Array1OfInteger TM(1,Nb);
-	    myBSplineCurve->Knots(TK);
-	    myBSplineCurve->Multiplicities(TM);
+            const TColStd_Array1OfReal& TK = myBSplineCurve->Knots();
+            const TColStd_Array1OfInteger& TM = myBSplineCurve->Multiplicities();
 	    BSplCLib::LocateParameter(myBSplineCurve->Degree(),TK,TM,myFirst,
 				      myBSplineCurve->IsPeriodic(),
 				      1,Nb,Index1,newFirst);

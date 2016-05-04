@@ -13,6 +13,6 @@ vdisplay result
 vsetdispmode result 1
 vfit
 
-checktrinfo result -tri 444 -nod 435
+checktrinfo result -tri 430 -nod 428
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

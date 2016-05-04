@@ -56,11 +56,10 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(
 //purpose  : 
 //=======================================================================
 BRepMesh_VertexTool::BRepMesh_VertexTool(
-  const Standard_Integer                  theReservedSize,
   const Handle(NCollection_IncAllocator)& theAllocator)
   : myAllocator (theAllocator),
     myCellFilter(0., myAllocator),
-    mySelector  (Max(theReservedSize, 64),myAllocator)
+    mySelector  (myAllocator)
 {
   const Standard_Real aTol = Precision::Confusion();
   SetCellSize ( aTol + 0.05 * aTol );

@@ -47,6 +47,7 @@
 #include <Extrema_LocateExtPC.hxx>
 
 #include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfCharacter.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
@@ -82,6 +83,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscret,Standard_Transient)
 BRepMesh_FastDiscret::BRepMesh_FastDiscret( const Bnd_Box&         theBox,
                                             const BRepMesh_FastDiscret::Parameters& theParams)
    :
+  myMapdefle(1000, new NCollection_IncAllocator()),
   myBoundaryVertices(new BRepMesh::DMapOfVertexInteger),
   myBoundaryPoints(new BRepMesh::DMapOfIntegerPnt),
   myParameters(theParams),
@@ -195,7 +197,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
 
     resetDataStructure();
 
-    Standard_Real defedge;
+    Standard_Real defedge = myParameters.Deflection;
     Standard_Integer nbEdge = 0;
     Standard_Real savangle = myParameters.Angle;
     Standard_Real cdef;
@@ -205,18 +207,14 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
     if (!myParameters.Relative)
       defface = Max(myParameters.Deflection, maxdef);
 
-    NCollection_Sequence<EdgePCurve>  aPCurves;
-    NCollection_Sequence<TopoDS_Edge> aFaceEdges;
-
     const TopoDS_Face&                  aFace = myAttribute->Face();
-    const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
-    TopExp_Explorer aWireIt(aFace, TopAbs_WIRE);
-    for (; aWireIt.More(); aWireIt.Next())
+    for (TopoDS_Iterator aWireIt(aFace); aWireIt.More(); aWireIt.Next())
     {
-      TopExp_Explorer aEdgeIt(aWireIt.Current(), TopAbs_EDGE);
-      for (; aEdgeIt.More(); aEdgeIt.Next(), ++nbEdge)
+      for (TopoDS_Iterator aEdgeIt(aWireIt.Value()); aEdgeIt.More(); aEdgeIt.Next(), ++nbEdge)
       {
-        const TopoDS_Edge& aEdge = TopoDS::Edge(aEdgeIt.Current());
+        const TopoDS_Edge& aEdge = TopoDS::Edge(aEdgeIt.Value());
+        if (aEdge.IsNull())
+          continue;
         if (!myMapdefle.IsBound(aEdge))
         {
           if (myParameters.Relative)
@@ -265,8 +263,6 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
           continue;
 
         EdgePCurve aPCurve = { aCurve2d, aFirstParam, aLastParam };
-        aPCurves.Append(aPCurve);
-        aFaceEdges.Append(aEdge);
 
         add(aEdge, aPCurve, defedge);
         myParameters.Angle = savangle;
@@ -293,6 +289,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
 
     TopLoc_Location aLoc;
     Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
+    const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
 
     if ( aTriangulation.IsNull() )
     {
@@ -401,16 +398,29 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
             ++nbmaill;
 
             resetDataStructure();
-            for (Standard_Integer j = 1; j <= aFaceEdges.Length(); ++j)
+
+            for (TopoDS_Iterator aWireIt(aFace); aWireIt.More(); aWireIt.Next())
             {
-              const TopoDS_Edge& anEdge = aFaceEdges(j);
-              if (myEdges.IsBound(anEdge))
-                myEdges.UnBind(anEdge);
+              for (TopoDS_Iterator aEdgeIt(aWireIt.Value()); aEdgeIt.More(); aEdgeIt.Next(), ++nbEdge)
+              {
+                const TopoDS_Edge& anEdge = TopoDS::Edge(aEdgeIt.Value());
+                if (anEdge.IsNull())
+                  continue;
+                if (myEdges.IsBound(anEdge))
+                  myEdges.UnBind(anEdge);
 
-              defedge = Max(myMapdefle(anEdge) / 3.0, eps);
-              myMapdefle.Bind(anEdge, defedge);
+                defedge = Max(myMapdefle(anEdge) / 3.0, eps);
+                myMapdefle.Bind(anEdge, defedge);
 
-              add(anEdge, aPCurves(j), defedge);
+                Standard_Real aFirstParam, aLastParam;
+                Handle(Geom2d_Curve) aCurve2d =
+                  BRep_Tool::CurveOnSurface(anEdge, aFace, aFirstParam, aLastParam);
+                if (aCurve2d.IsNull())
+                  continue;
+
+                EdgePCurve aPCurve = { aCurve2d, aFirstParam, aLastParam };
+                add(anEdge, aPCurve, defedge);
+              }
             }
 
             aDFaceChecker.ReCompute(aClassifier);
@@ -806,18 +816,13 @@ void BRepMesh_FastDiscret::update(
   Handle(Poly_PolygonOnTriangulation) P1, P2;
   if (BRepMesh_ShapeTool::IsDegenerated(theEdge, aFace))
   {
-    const Standard_Integer  aNodesNb = 2;
-    TColStd_Array1OfInteger aNewNodes      (1, aNodesNb);
-    TColStd_Array1OfInteger aNewNodInStruct(1, aNodesNb);
-    TColStd_Array1OfReal    aNewParams     (1, aNodesNb);
-
-    aNewNodInStruct(1) = ipf;
-    aNewNodes      (1) = isvf;
-    aNewParams     (1) = aEAttr.FirstParam;
-
-    aNewNodInStruct(aNodesNb) = ipl;
-    aNewNodes      (aNodesNb) = isvl;
-    aNewParams     (aNodesNb) = aEAttr.LastParam;
+    // two nodes
+    Standard_Integer aNewNodesArr[] = {isvf, isvl};
+    Standard_Integer aNewNodInStructArr[] = {ipf, ipl};
+    Standard_Real aNewParamsArr[] = {aEAttr.FirstParam, aEAttr.LastParam};
+    TColStd_Array1OfInteger aNewNodes      (aNewNodesArr[0], 1, 2);
+    TColStd_Array1OfInteger aNewNodInStruct(aNewNodInStructArr[0], 1, 2);
+    TColStd_Array1OfReal    aNewParams     (aNewParamsArr[0], 1, 2);
 
     P1 = new Poly_PolygonOnTriangulation(aNewNodes,       aNewParams);
     P2 = new Poly_PolygonOnTriangulation(aNewNodInStruct, aNewParams);
@@ -825,9 +830,15 @@ void BRepMesh_FastDiscret::update(
   else
   {
     const Standard_Integer  aNodesNb = aEdgeTool->NbPoints();
-    TColStd_Array1OfInteger aNewNodesVec        (1, aNodesNb);
-    TColStd_Array1OfInteger aNewNodesInStructVec(1, aNodesNb);
-    TColStd_Array1OfReal    aNewParamsVec       (1, aNodesNb);
+    // Allocate the memory for arrays aNewNodesVec, aNewNodesInStructVec, aNewParamsVec
+    // only once using the buffer aBuf.
+    TColStd_Array1OfCharacter aBuf(1, aNodesNb * (2*sizeof(Standard_Integer) + sizeof(Standard_Real)));
+    TColStd_Array1OfInteger aNewNodesVec(*reinterpret_cast<const Standard_Integer*>
+      (&aBuf(1)), 1, aNodesNb);
+    TColStd_Array1OfInteger aNewNodesInStructVec(*reinterpret_cast<const Standard_Integer*>
+      (&aBuf(1 + aNodesNb*sizeof(Standard_Integer))), 1, aNodesNb);
+    TColStd_Array1OfReal    aNewParamsVec(*reinterpret_cast<const Standard_Real*>
+      (&aBuf(1 + aNodesNb*2*sizeof(Standard_Integer))), 1, aNodesNb);
 
     Standard_Integer aNodesCount = 1;
     aNewNodesInStructVec(aNodesCount) = ipf;

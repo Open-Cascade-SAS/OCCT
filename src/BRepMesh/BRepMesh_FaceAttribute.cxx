@@ -25,7 +25,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <BRep_Tool.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceAttribute,Standard_Transient)
 
 //=======================================================================
@@ -141,14 +140,12 @@ void BRepMesh_FaceAttribute::init()
     // between vertices
 
     myMinStep = RealLast();
-    for (TopExp_Explorer anExp(myFace, TopAbs_WIRE); anExp.More(); anExp.Next()) 
+    for (TopoDS_Iterator aFaceIt(myFace); aFaceIt.More(); aFaceIt.Next()) 
     {
-      TopoDS_Wire aWire = TopoDS::Wire(anExp.Current());
-
-      for (TopoDS_Iterator aWireExp(aWire); aWireExp.More(); aWireExp.Next()) 
+      for (TopoDS_Iterator aWireIt(aFaceIt.Value()); aWireIt.More(); aWireIt.Next()) 
       {
-        TopoDS_Edge anEdge = TopoDS::Edge(aWireExp.Value());
-        if (BRep_Tool::IsClosed(anEdge))
+        const TopoDS_Edge& anEdge = TopoDS::Edge(aWireIt.Value());
+        if (anEdge.IsNull() || BRep_Tool::IsClosed(anEdge))
           continue;
 
         // Get end points on 2d curve

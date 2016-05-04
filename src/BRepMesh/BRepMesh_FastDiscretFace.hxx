@@ -174,7 +174,8 @@ private:
     const Standard_Real        theFaceDeflection,
     const BRepMesh_CircleTool& theCircleTool,
     BRepMesh::ListOfVertex&    theVertices,
-    Standard_Real&             theMaxTriangleDeflection);
+    Standard_Real&             theMaxTriangleDeflection,
+    const Handle(NCollection_IncAllocator)& theTempAlloc);
 
 private:
 

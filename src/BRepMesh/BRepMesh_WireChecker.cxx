@@ -22,7 +22,8 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <BRepMesh_PairOfPolygon.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
@@ -147,10 +148,11 @@ BRepMesh_WireChecker::BRepMesh_WireChecker(
   TopoDS_Face aFace = theFace;
   aFace.Orientation(TopAbs_FORWARD);
 
-  TopExp_Explorer aFaceExplorer(aFace, TopAbs_WIRE);
-  for (; aFaceExplorer.More(); aFaceExplorer.Next())
+  for (TopoDS_Iterator aFaceIt(aFace); aFaceIt.More(); aFaceIt.Next())
   {
-    const TopoDS_Wire& aWire = TopoDS::Wire(aFaceExplorer.Current());
+    if (aFaceIt.Value().IsNull() || aFaceIt.Value().ShapeType() != TopAbs_WIRE) // may be inner vertex
+      continue;
+    const TopoDS_Wire& aWire = TopoDS::Wire(aFaceIt.Value());
 
     myWiresEdges.Append(ListOfEdges());
     ListOfEdges& aEdges = myWiresEdges.ChangeLast();

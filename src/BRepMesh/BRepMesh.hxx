@@ -56,8 +56,16 @@ class BRepMesh_VertexTool;
 
 namespace BRepMesh
 {
-  //! Default size for memory block allocated by IncAllocator.
+  //! Default size for memory block allocated by IncAllocator. 
+  /**
+   * The idea here is that blocks of the given size are returned to the system
+   * rather than retained in the malloc heap, at least on WIN32 and WIN64 platforms.
+   */
+#ifdef _WIN64
+  const size_t MEMORY_BLOCK_SIZE_HUGE = 1024 * 1024;
+#else
   const size_t MEMORY_BLOCK_SIZE_HUGE = 512 * 1024;
+#endif
 
   //! Structure keeping parameters of segment.
   struct Segment
