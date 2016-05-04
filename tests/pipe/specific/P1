@@ -26,6 +26,6 @@ if [catch { buildsweep result -S} res] {
   puts "Faulty OCC1477: buildsweep is wrong"
 }
 
-checkprops result -s 30041.6 -v 76900.9
+checkprops result -s 28191 -v 76900.9
 
 checknbshapes result -vertex 15 -edge 25 -wire 12 -face 12 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 66

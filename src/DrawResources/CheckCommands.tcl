@@ -543,21 +543,15 @@ proc checkprops {shape args} {
     _check_args ${args} ${options} "checkprops"
 
     if { ${length} != -1 || ${equal_check} == 1 } {
-        set CommandName lprops
-        set mass $length
-        set prop "length"
+        lappend CommandNames {lprops}
         set equal_check 0
     }
     if { ${area} != -1 || ${equal_check} == 1 } {
-        set CommandName sprops
-        set mass $area
-        set prop "area"
+        lappend CommandNames {sprops}
         set equal_check 0
     }
     if { ${volume} != -1 || ${equal_check} == 1 } {
-        set CommandName vprops
-        set mass $volume
-        set prop "volume"
+        lappend CommandNames {vprops}
         set equal_check 0
     }
 
@@ -565,41 +559,47 @@ proc checkprops {shape args} {
     if { $skip } {
         set skip_option "-skip"
     }
-        
     
-    regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${shape} ${epsilon} $skip_option] full m
-
-    if { ${compared_equal_shape} != -1 } {
-        upvar ${compared_equal_shape} ${compared_equal_shape}
-        regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${compared_equal_shape} ${epsilon} $skip_option] full compared_m
-        if { $compared_m != $m } {
-            puts "Error: Shape ${compared_equal_shape} is not equal to shape ${shape}"
+    foreach CommandName ${CommandNames} {
+        switch $CommandName {
+            "lprops"    { set mass ${length}; set prop "length" }
+            "sprops"    { set mass ${area}; set prop "area" }
+            "vprops"    { set mass ${volume}; set prop "volume" }
         }
-    }
+        regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${shape} ${epsilon} $skip_option] full m
 
-    if { ${compared_notequal_shape} != -1 } {
-        upvar ${compared_notequal_shape} ${compared_notequal_shape}
-        regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${compared_notequal_shape} ${epsilon} $skip_option] full compared_m
-        if { $compared_m == $m } {
-            puts "Error: Shape ${compared_notequal_shape} is equal shape to ${shape}"
+        if { ${compared_equal_shape} != -1 } {
+            upvar ${compared_equal_shape} ${compared_equal_shape}
+            regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${compared_equal_shape} ${epsilon} $skip_option] full compared_m
+            if { $compared_m != $m } {
+                puts "Error: Shape ${compared_equal_shape} is not equal to shape ${shape}"
+            }
         }
-    }
 
-    if { ${compared_equal_shape} == -1 && ${compared_notequal_shape} == -1 } {
-        if { [string compare "$mass" "empty"] != 0 } {
-            if { $m == 0 } {
-                puts "Error : The command is not valid. The $prop is 0."
+        if { ${compared_notequal_shape} != -1 } {
+            upvar ${compared_notequal_shape} ${compared_notequal_shape}
+            regexp {Mass +: +([-0-9.+eE]+)} [eval ${CommandName} ${compared_notequal_shape} ${epsilon} $skip_option] full compared_m
+            if { $compared_m == $m } {
+                puts "Error: Shape ${compared_notequal_shape} is equal shape to ${shape}"
             }
-            if { $mass > 0 } {
-                puts "The expected $prop is $mass"
-            }
-            #check of change of area is < 1%
-            if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
-                puts "Error : The $prop of result shape is $m"
-            }
-        } else {
-            if { $m != 0 } {
-                puts "Error : The command is not valid. The $prop is $m"
+        }
+
+        if { ${compared_equal_shape} == -1 && ${compared_notequal_shape} == -1 } {
+            if { [string compare "$mass" "empty"] != 0 } {
+                if { $m == 0 } {
+                    puts "Error : The command is not valid. The $prop is 0."
+                }
+                if { $mass > 0 } {
+                    puts "The expected $prop is $mass"
+                }
+                #check of change of area is < 1%
+                if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
+                    puts "Error : The $prop of result shape is $m"
+                }
+            } else {
+                if { $m != 0 } {
+                    puts "Error : The command is not valid. The $prop is $m"
+                }
             }
         }
     }
