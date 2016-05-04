@@ -1,0 +1,11 @@
+puts "========"
+puts "0027448: BOPTools_AlgoTools::IsMicroEdge does not correspond to shape validity criteria"
+puts "========"
+puts ""
+
+restore [locate_data_file bug27448_e.brep] e
+set bcheck [bopargcheck e /FTVEIPCS]
+puts $bcheck
+if {[regexp {Faulties, that can not be treated by BOP} $bcheck]} {
+  puts "Error: bopargcheck failed"
+}

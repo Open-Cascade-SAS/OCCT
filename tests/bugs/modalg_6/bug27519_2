@@ -1,0 +1,20 @@
+puts "========"
+puts "0027519: Inconsistent result of SECTION operation"
+puts "========"
+puts ""
+
+restore [locate_data_file bug27448_b1255_2.brep] b
+plane p 0 -36.8067 0 0 1 0
+mkface f p
+bsection result b f
+set chsec [checksection result]
+puts $chsec
+if {![regexp {nb alone Vertices : 4} $chsec]} { 
+  puts "Error: the section is not closed"
+}
+
+set chsi [bopcheck result]
+puts $chsi
+if {![regexp {This shape seems to be OK.} $chsi]} { 
+  puts "Error: the section is self-interfered"
+}

@@ -181,18 +181,22 @@ public:
   //! Sets the shrunk data for the pave block
   //! <theTS1>,  <theTS2> - shrunk range
   //! <theBox> - the bounding box
+  //! <theIsSplittable> - defines whether the edge can be split
   Standard_EXPORT void SetShrunkData (const Standard_Real theTS1, 
                                       const Standard_Real theTS2, 
-                                      const Bnd_Box& theBox);
+                                      const Bnd_Box& theBox,
+                                      const Standard_Boolean theIsSplittable);
   
 
   //! Selector
   //! Returns  the shrunk data for the pave block
   //! <theTS1>,  <theTS2> - shrunk range
   //! <theBox> - the bounding box
+  //! <theIsSplittable> - defines whether the edge can be split
   Standard_EXPORT void ShrunkData (Standard_Real& theTS1, 
                                    Standard_Real& theTS2, 
-                                   Bnd_Box& theBox) const;
+                                   Bnd_Box& theBox,
+                                   Standard_Boolean& theIsSplittable) const;
   
 
   //! Query
@@ -202,6 +206,13 @@ public:
   
   Standard_EXPORT void Dump() const;
 
+  //! Query
+  //! Returns FALSE if the pave block has a too short
+  //! shrunk range and cannot be split, otherwise returns TRUE
+  Standard_Boolean IsSplittable() const
+  {
+    return myIsSplittable;
+  }
 
 
 
@@ -220,7 +231,7 @@ protected:
   Standard_Real myTS2;
   Bnd_Box myShrunkBox;
   BOPCol_MapOfInteger myMFence;
-
+  Standard_Boolean myIsSplittable;
 
 private:
 

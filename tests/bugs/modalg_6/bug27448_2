@@ -1,0 +1,13 @@
+puts "========"
+puts "0027448: BOPTools_AlgoTools::IsMicroEdge does not correspond to shape validity criteria"
+puts "Problem with Boolean CUT operation"
+puts "========"
+puts ""
+
+restore [locate_data_file bug27448_gdml_ZF6.brep] b
+explode b
+bcut result b_1 b_2
+checkshape result
+checknbshapes result -solid 1
+checkprops result -s 38.0808
+checkprops result -v 9.95429

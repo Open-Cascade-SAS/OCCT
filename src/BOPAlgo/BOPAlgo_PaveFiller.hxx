@@ -33,6 +33,7 @@
 #include <Standard_Integer.hxx>
 #include <BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks.hxx>
 #include <Standard_Boolean.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_DataMapOfIntegerReal.hxx>
 #include <BOPCol_ListOfInteger.hxx>
@@ -51,9 +52,10 @@ class BOPDS_DS;
 class BOPAlgo_SectionAttribute;
 class BOPDS_PaveBlock;
 class BOPDS_CommonBlock;
-class TopoDS_Vertex;
 class gp_Pnt;
 class BOPDS_Curve;
+class TopoDS_Vertex;
+class TopoDS_Edge;
 class TopoDS_Face;
 
 
@@ -106,6 +108,12 @@ public:
 
 
 protected:
+
+  typedef NCollection_DataMap
+            <Handle(BOPDS_PaveBlock),
+             Bnd_Box,
+             TColStd_MapTransientHasher> BOPAlgo_DataMapOfPaveBlockBndBox;
+
 
   //! Sets non-destructive mode automatically if an argument 
   //! contains a locked sub-shape (see TopoDS_Shape::Locked()).
@@ -197,7 +205,12 @@ protected:
   
 
   //! Treatment of section edges.
-  Standard_EXPORT Standard_Integer PostTreatFF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB, BOPCol_DataMapOfShapeInteger& theMVI, BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges, BOPCol_DataMapOfIntegerInteger& theDMI, const BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT Standard_Integer PostTreatFF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
+                                                BOPCol_DataMapOfShapeInteger& theMVI,
+                                                BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges,
+                                                BOPCol_DataMapOfIntegerInteger& theDMI,
+                                                const BOPCol_IndexedMapOfShape& theMicroEdges,
+                                                const BOPCol_BaseAllocator& theAllocator);
   
   Standard_EXPORT void FindPaveBlocks (const Standard_Integer theV, const Standard_Integer theF, BOPDS_ListOfPaveBlock& theLPB);
   
@@ -321,6 +334,34 @@ protected:
   Standard_EXPORT void RemovePaveBlocks(const BOPCol_MapOfInteger theEdges);
 
   Standard_EXPORT void CorrectToleranceOfSE();
+
+  //! Reduce the intersection range using the common ranges of
+  //! Edge/Edge interferences to avoid creation of close
+  //! intersection vertices
+  Standard_EXPORT void ReduceIntersectionRange(const Standard_Integer theV1,
+                                               const Standard_Integer theV2,
+                                               const Standard_Integer theE,
+                                               const Standard_Integer theF,
+                                               Standard_Real& theTS1,
+                                               Standard_Real& theTS2);
+
+  //! Gets the bounding box for the given Pave Block.
+  //! If Pave Block has shrunk data it will be used to get the box,
+  //! and the Shrunk Range (<theSFirst>, <theSLast>).
+  //! Otherwise the box will be computed using BndLib_Add3dCurve method,
+  //! and the Shrunk Range will be equal to the PB's range.
+  //! To avoid re-computation of the bounding box for the same Pave Block
+  //! it will be saved in the map <thePBBox>.
+  //! Returns FALSE in case the PB's range is less than the
+  //! Precision::PConfusion(), otherwise returns TRUE.
+  Standard_EXPORT Standard_Boolean GetPBBox(const TopoDS_Edge& theE,
+                                            const Handle(BOPDS_PaveBlock)& thePB,
+                                            BOPAlgo_DataMapOfPaveBlockBndBox& thePBBox,
+                                            Standard_Real& theFirst,
+                                            Standard_Real& theLast,
+                                            Standard_Real& theSFirst,
+                                            Standard_Real& theSLast,
+                                            Bnd_Box& theBox);
 
   BOPCol_ListOfShape myArguments;
   BOPDS_PDS myDS;

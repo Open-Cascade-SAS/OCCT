@@ -264,8 +264,12 @@ public:
   Standard_EXPORT static Standard_Boolean IsBlockInOnFace (const IntTools_Range& aShR, const TopoDS_Face& aF, const TopoDS_Edge& aE, Handle(IntTools_Context)& aContext);
   
 
-  //! Checks if it is possible to compute shrunk range for the edge <aE>.
-  Standard_EXPORT static Standard_Boolean IsMicroEdge (const TopoDS_Edge& theEdge, const Handle(IntTools_Context)& theContext);
+  //! Checks if it is possible to compute shrunk range for the edge <aE>
+  //! Flag <theCheckSplittable> defines whether to take into account 
+  //! the possiblity to split the edge or not.
+  Standard_EXPORT static Standard_Boolean IsMicroEdge (const TopoDS_Edge& theEdge,
+                                                       const Handle(IntTools_Context)& theContext,
+                                                       const Standard_Boolean theCheckSplittable = Standard_True);
   
 
   //! Corrects tolerance values of the sub-shapes of the shape <theS> if needed.

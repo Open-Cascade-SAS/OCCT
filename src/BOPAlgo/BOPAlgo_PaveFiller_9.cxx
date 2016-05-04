@@ -40,8 +40,7 @@
 class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange {
  public:
   BOPAlgo_ShrunkRange() 
-  : IntTools_ShrunkRange(),
-    myWarningStatus(0) {
+  : IntTools_ShrunkRange() {
   }
   //
   virtual ~BOPAlgo_ShrunkRange() {
@@ -56,21 +55,10 @@ class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange {
   }
   //
   virtual void Perform() {
-    //
-    myWarningStatus=0;
-    //
     IntTools_ShrunkRange::Perform();
-    if (myErrorStatus) {
-      myWarningStatus=1;
-    }
-  }
-  //
-  Standard_Integer WarningStatus() const {
-    return myWarningStatus;
   }
   //
  protected:
-  Standard_Integer myWarningStatus;
   Handle(BOPDS_PaveBlock) myPB;
 };
 //
@@ -108,7 +96,7 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
   }
   //
   Standard_Boolean bJustAdd;
-  Standard_Integer i, nS[2], nE, nV1, nV2, aNbVSD, k, iWrn;
+  Standard_Integer i, nS[2], nE, nV1, nV2, aNbVSD, k;
   Standard_Real aT1, aT2, aTS1, aTS2;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   BOPCol_MapOfInteger aMI; 
@@ -167,15 +155,15 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
   //
   for (k=0; k < aNbVSD; ++k) {
     BOPAlgo_ShrunkRange& aSD=aVSD(k);
-    iWrn=aSD.WarningStatus();
-    if (iWrn==1) {
+    if (!aSD.IsDone()) {
       continue;
     }
     //
     Handle(BOPDS_PaveBlock)& aPB=aSD.PaveBlock();
     aSD.ShrunkRange(aTS1, aTS2);
     const Bnd_Box& aBox=aSD.BndBox();
+    Standard_Boolean bIsSplittable = aSD.IsSplittable();
     //
-    aPB->SetShrunkData(aTS1, aTS2, aBox);
+    aPB->SetShrunkData(aTS1, aTS2, aBox, bIsSplittable);
   }
 }

@@ -198,7 +198,12 @@ void BOPAlgo_PaveFiller::PerformVE()
     }
     //
     const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks(nE);
-    if (aLPB.IsEmpty() || !aLPB.First()->HasShrunkData()) {
+    if (aLPB.IsEmpty()) {
+      continue;
+    }
+    //
+    const Handle(BOPDS_PaveBlock)& aPB = aLPB.First();
+    if (!aPB->IsSplittable()) {
       // this is a micro edge, ignore it
       continue;
     }
@@ -231,13 +236,14 @@ void BOPAlgo_PaveFiller::PerformVE()
       const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks(nE);
       const Handle(BOPDS_PaveBlock)& aPB = aLPB.First();
       Bnd_Box aBox;
+      Standard_Boolean bIsPBSplittable;
       aPB->Range(aT1, aT2);
-      aPB->ShrunkData(aTS1, aTS2, aBox);
+      aPB->ShrunkData(aTS1, aTS2, aBox, bIsPBSplittable);
       IntTools_Range aPaveR[2] = { IntTools_Range(aT1, aTS1), IntTools_Range(aTS2, aT2) };
       Standard_Real aTol = Precision::Confusion();
       Standard_Boolean isOnPave = Standard_False;
       for (Standard_Integer i = 0; i < 2; i++) {
-        if (IntTools_Tools::IsOnPave1(aT, aPaveR[i], aTol)) {
+        if (!bIsPBSplittable || IntTools_Tools::IsOnPave1(aT, aPaveR[i], aTol)) {
           Standard_Integer nV1 = (i == 0 ? aPB->Pave1().Index() : aPB->Pave2().Index());
           if (!myDS->HasInterf(nV, nV1)) {
             BOPCol_ListOfInteger aLI;

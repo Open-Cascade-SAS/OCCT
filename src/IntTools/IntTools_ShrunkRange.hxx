@@ -60,26 +60,21 @@ Standard_EXPORT virtual ~IntTools_ShrunkRange();
   
   Standard_EXPORT void Perform();
   
+  //! Returns TRUE in case the shrunk range is computed
+  Standard_Boolean IsDone() const
+  {
+    return myIsDone;
+  }
 
-  //! Returns code of computing shrunk range
-  //! completion
-  //! 0 - means successful completion
-  //! 1 - nothing has been done
-  //! 2 - initial range is out of edge's range
-  //! 3 - first boundary of initial range is more than
-  //! last boundary
-  //! 4 - projection of first vertex failed
-  //! 5 - projection of second vertex failed
-  //! 6 - shrunk range can not be computed
-  //! shrunk range is setted to initial range
-  Standard_EXPORT Standard_Integer ErrorStatus() const;
-
-
-
+  //! Returns FALSE in case the shrunk range is
+  //! too short and the edge cannot be split,
+  //! otherwise returns TRUE
+  Standard_Boolean IsSplittable() const
+  {
+    return myIsSplittable;
+  }
 
 protected:
-
-
 
   TopoDS_Edge myEdge;
   TopoDS_Vertex myV1;
@@ -90,21 +85,11 @@ protected:
   Standard_Real myTS2;
   Bnd_Box myBndBox;
   Handle(IntTools_Context) myCtx;
-  Standard_Integer myErrorStatus;
-
+  Standard_Boolean myIsDone;
+  Standard_Boolean myIsSplittable;
 
 private:
 
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IntTools_ShrunkRange_HeaderFile

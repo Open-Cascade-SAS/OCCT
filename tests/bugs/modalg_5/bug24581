@@ -14,6 +14,10 @@ addsweep profile
 
 buildsweep r -C -S
 
+checkprops r -s 314717
+checkprops r -v 3.12204e+006
+checknbshapes r -vertex 22 -edge 31 -wire 11 -face 11 -shell 1 -solid 1
+
 top
 fit
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

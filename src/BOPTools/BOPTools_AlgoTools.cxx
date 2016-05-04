@@ -1866,10 +1866,10 @@ Standard_Boolean BOPTools_AlgoTools::IsBlockInOnFace
 //=======================================================================
 Standard_Boolean BOPTools_AlgoTools::IsMicroEdge
   (const TopoDS_Edge& aE,
-   const Handle(IntTools_Context)& aCtx) 
+   const Handle(IntTools_Context)& aCtx,
+   const Standard_Boolean bCheckSplittable)
 {
   Standard_Boolean bRet;
-  Standard_Integer iErr;
   Standard_Real aT1, aT2, aTmp;
   Handle(Geom_Curve) aC3D;
   TopoDS_Vertex aV1, aV2;
@@ -1894,8 +1894,10 @@ Standard_Boolean BOPTools_AlgoTools::IsMicroEdge
   aSR.SetContext(aCtx);
   aSR.SetData(aE, aT1, aT2, aV1, aV2);
   aSR.Perform();
-  iErr=aSR.ErrorStatus();
-  bRet = !(iErr==0);
+  bRet = !aSR.IsDone();
+  if (!bRet && bCheckSplittable) {
+    bRet = !aSR.IsSplittable();
+  }
   //
   return bRet;
 }

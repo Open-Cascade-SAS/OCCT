@@ -18,5 +18,6 @@ bfillds
 bbop result 0
 
 checkprops result -s 44.5496
+checknbshapes result -vertex 14 -edge 15 -wire 2 -face 2
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

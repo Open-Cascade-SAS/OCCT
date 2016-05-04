@@ -37,6 +37,7 @@
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BndLib_Add3dCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -146,7 +147,7 @@ void BOPAlgo_PaveFiller::PerformEF()
     return; 
   }
   //
-  Standard_Boolean bJustAdd, bV[2];
+  Standard_Boolean bJustAdd, bV[2], bIsPBSplittable;
   Standard_Boolean bV1, bV2, bExpressCompute;
   Standard_Integer nV1, nV2;
   Standard_Integer nE, nF, aDiscretize, i, aNbCPrts, iX, nV[2];
@@ -163,6 +164,7 @@ void BOPAlgo_PaveFiller::PerformEF()
   BOPCol_MapOfInteger aMIEFC(100, aAllocator);
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMVCPB(100, aAllocator);
   BOPDS_IndexedDataMapOfPaveBlockListOfInteger aMPBLI(100, aAllocator);
+  BOPAlgo_DataMapOfPaveBlockBndBox aDMPBBox(100, aAllocator);
   //
   aDiscretize=35;
   aDeflection=0.01;
@@ -204,12 +206,10 @@ void BOPAlgo_PaveFiller::PerformEF()
         continue;
       }
       //
-      if (!aPB->HasShrunkData()) {
+      Bnd_Box aBBE;
+      if (!GetPBBox(aE, aPB, aDMPBBox, aT1, aT2, aTS1, aTS2, aBBE)) {
         continue;
       }
-      //
-      Bnd_Box aBBE;
-      aPB->ShrunkData(aTS1, aTS2, aBBE);
       //
       if (aBBF.IsOut (aBBE)) {
         continue;
@@ -238,7 +238,6 @@ void BOPAlgo_PaveFiller::PerformEF()
       BOPTools_AlgoTools::CorrectRange(aE, aF, aSR, anewSR);
       aEdgeFace.SetNewSR(anewSR);
       //
-      aPB->Range(aT1, aT2);
       IntTools_Range aPBRange(aT1, aT2);
       aSR = aPBRange;
       BOPTools_AlgoTools::CorrectRange(aE, aF, aSR, aPBRange);
@@ -271,6 +270,17 @@ void BOPAlgo_PaveFiller::PerformEF()
     //
     aPB->Range(aT1, aT2);
     aPB->Indices(nV[0], nV[1]);
+    bIsPBSplittable = aPB->IsSplittable();
+    //
+    Standard_Real aTS1, aTS2;
+    anewSR.Range(aTS1, aTS2);
+    //
+    // extend vertices ranges using Edge/Edge intersections
+    // between the edge aE and the edges of the face aF.
+    // thereby the edge's intersection range is reduced
+    ReduceIntersectionRange(nV[0], nV[1], nE, nF, aTS1, aTS2);
+    //
+    IntTools_Range aR1(aT1, aTS1), aR2(aTS2, aT2);
     //
     BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
     const BOPCol_MapOfInteger& aMIFOn=aFI.VerticesOn();
@@ -292,7 +302,7 @@ void BOPAlgo_PaveFiller::PerformEF()
       const IntTools_CommonPrt& aCPart=aCPrts(i);
       aType=aCPart.Type();
       switch (aType) {
-        case TopAbs_VERTEX:  {
+        case TopAbs_VERTEX: {
           Standard_Boolean bIsOnPave[2];
           Standard_Integer j;
           Standard_Real aT, aTolToDecide; 
@@ -303,8 +313,6 @@ void BOPAlgo_PaveFiller::PerformEF()
           //
           const IntTools_Range& aR=aCPart.Range1();
           aTolToDecide=5.e-8;
-          //
-          IntTools_Range aR1(aT1,anewSR.First()),aR2(anewSR.Last(), aT2);
           //
           bIsOnPave[0]=IntTools_Tools::IsInRange(aR1, aR, aTolToDecide); 
           bIsOnPave[1]=IntTools_Tools::IsInRange(aR2, aR, aTolToDecide); 
@@ -328,6 +336,11 @@ void BOPAlgo_PaveFiller::PerformEF()
               break;
             }
           }
+          //
+          if (!bIsPBSplittable) {
+            continue;
+          }
+          //
           for (j=0; j<2; ++j) {
             if (bIsOnPave[j]) {
               bV[j]=CheckFacePaves(nV[j], aMIFOn, aMIFIn);
@@ -342,15 +355,14 @@ void BOPAlgo_PaveFiller::PerformEF()
                 gp_Pnt aP1 = BRep_Tool::Pnt(aV);
                 gp_Pnt aP2 = aCur->Value(aT);
                 //
-                
                 aDistPP=aP1.Distance(aP2);
-                
+                //
                 aTolPC=Precision::PConfusion();
                 aTolV=BRep_Tool::Tolerance(aV);
                 if (aDistPP > (aTolV+aTolPC)) {
                   aTolVnew=Max(aTolE, aDistPP);
                   UpdateVertex(nV[j], aTolVnew);
-              }
+                }
               }
               else {
                 bIsOnPave[j] = ForceInterfVF(nV[j], nF);
@@ -722,4 +734,78 @@ Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVF
     aMVIn.Add(nVx);
   }
   return bRet;
+}
+//=======================================================================
+//function : ReduceIntersectionRange
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::ReduceIntersectionRange(const Standard_Integer theV1,
+                                                 const Standard_Integer theV2,
+                                                 const Standard_Integer theE,
+                                                 const Standard_Integer theF,
+                                                 Standard_Real& theTS1,
+                                                 Standard_Real& theTS2)
+{
+  if (!myDS->IsNewShape(theV1) &&
+      !myDS->IsNewShape(theV2)) {
+    return;
+  }
+  //
+  BOPDS_VectorOfInterfEE& aEEs = myDS->InterfEE();
+  Standard_Integer aNbEEs = aEEs.Extent();
+  if (!aNbEEs) {
+    return;
+  }
+  //
+  Standard_Integer i, nV, nE1, nE2;
+  Standard_Real aTR1, aTR2;
+  //
+  // get face's edges to check that E/E contains the edge from the face
+  BOPCol_MapOfInteger aMFE;
+  const BOPCol_ListOfInteger& aLI = myDS->ShapeInfo(theF).SubShapes();
+  BOPCol_ListIteratorOfListOfInteger aItLI(aLI);
+  for (; aItLI.More(); aItLI.Next()) {
+    nE1 = aItLI.Value();
+    if (myDS->ShapeInfo(nE1).ShapeType() == TopAbs_EDGE) {
+      aMFE.Add(nE1);
+    }
+  }
+  //
+  for (i = 0; i < aNbEEs; ++i) {
+    BOPDS_InterfEE& aEE = aEEs(i);
+    if (!aEE.HasIndexNew()) {
+      continue;
+    }
+    //
+    // check the vertex
+    nV = aEE.IndexNew();
+    if (nV != theV1 && nV != theV2) {
+      continue;
+    }
+    //
+    // check that the intersection is between the edge
+    // and one of the face's edge
+    aEE.Indices(nE1, nE2);
+    if (((theE != nE1) && (theE != nE2)) ||
+        (!aMFE.Contains(nE1) && !aMFE.Contains(nE2))) {
+      continue;
+    }
+    //
+    // update the intersection range
+    const IntTools_CommonPrt& aCPart = aEE.CommonPart();
+    const IntTools_Range& aCRange = 
+      (theE == nE1) ? aCPart.Range1() : aCPart.Ranges2().First();
+    aCRange.Range(aTR1, aTR2);
+    //
+    if (nV == theV1) {
+      if (theTS1 < aTR2) {
+        theTS1 = aTR2;
+      }
+    }
+    else {
+      if (theTS2 > aTR1) {
+        theTS2 = aTR1;
+      }
+    }
+  }
 }

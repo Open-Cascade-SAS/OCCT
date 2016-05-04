@@ -16,5 +16,12 @@ bsection result a f1
 
 checkprops result -l 5837.18
 checkshape result
-checksection result
+
+set chsec [checksection result]
+puts $chsec
+if {![regexp {nb alone Vertices : 0} $chsec]} { 
+  puts "Error: The section is not closed"
+}
+
 checkview -display result -2d -path ${imagedir}/${test_image}.png
+

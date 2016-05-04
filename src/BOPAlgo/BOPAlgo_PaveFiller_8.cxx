@@ -280,6 +280,9 @@ void BOPAlgo_PaveFiller::ProcessDE()
   for (; aItLPB.More(); aItLPB.Next()) {
     const Handle(BOPDS_PaveBlock)& aPB=aItLPB.Value();
     nE=aPB->Edge();
+    if (nE < 0) {
+      continue;
+    }
     const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE)));
     aC2D=BRep_Tool::CurveOnSurface(aE, aDF, aT1, aT2);
     if (aC2D.IsNull()) {
