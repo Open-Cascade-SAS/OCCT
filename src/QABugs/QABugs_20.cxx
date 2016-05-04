@@ -16,6 +16,7 @@
 #include <QABugs.hxx>
 
 #include <gp_Ax2.hxx>
+#include <Extrema_GenLocateExtPS.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <NCollection_List.hxx>
@@ -36,6 +37,7 @@
 #include <TopoDS_Edge.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <TopoDS.hxx>
 #include <DBRep.hxx>
 
@@ -1571,6 +1573,55 @@ static Standard_Integer OCC26930(Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : OCC27466
+//purpose :
+//=======================================================================
+static Standard_Integer OCC27466(Draw_Interpretor& theDI,
+  Standard_Integer  theNArg,
+  const char ** theArgVal)
+{
+  if (theNArg != 4)
+  {
+    cout << "Use: " << theArgVal[0] << " face point start_pnt2d" << endl;
+    return 1;
+  }
+
+  TopoDS_Face aFace = TopoDS::Face(DBRep::Get(theArgVal[1], TopAbs_FACE, Standard_True));
+  if (aFace.IsNull())
+    return 1;
+  gp_Pnt aPnt;
+  if (!DrawTrSurf::GetPoint(theArgVal[2], aPnt))
+    return 1;
+  gp_Pnt2d aUV;
+  if (!DrawTrSurf::GetPoint2d(theArgVal[3], aUV))
+    return 1;
+  BRepAdaptor_Surface aSurf(aFace);
+
+  Standard_Real aTolU = Precision::PConfusion();
+  Standard_Real aTolV = Precision::PConfusion();
+
+  Extrema_GenLocateExtPS anExtrema(aSurf, aTolU, aTolV);
+  anExtrema.Perform(aPnt, aUV.X(), aUV.Y(), Standard_True);
+
+  if (!anExtrema.IsDone())
+  {
+    theDI << "Error: Extrema is not done";
+  }
+  else
+  {
+    Standard_Real aSqDist = anExtrema.SquareDistance();
+    gp_Pnt aResPnt = anExtrema.Point().Value();
+    Standard_Real u, v;
+    anExtrema.Point().Parameter(u, v);
+    gp_Pnt2d aResUV(u, v);
+    DrawTrSurf::Set((TCollection_AsciiString(theArgVal[2]) + "_res").ToCString(), aResPnt);
+    DrawTrSurf::Set((TCollection_AsciiString(theArgVal[3]) + "_res").ToCString(), aResUV);
+    theDI << theArgVal[2] << "_res and " << theArgVal[3] << "_res are created, dist=" << sqrt(aSqDist);
+  }
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1579,6 +1630,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC27021", "OCC27021", __FILE__, OCC27021, group);
   theCommands.Add("OCC27235", "OCC27235", __FILE__, OCC27235, group);
   theCommands.Add("OCC26930", "OCC26930", __FILE__, OCC26930, group);
+  theCommands.Add("OCC27466", "OCC27466", __FILE__, OCC27466, group);
 
   return;
 }

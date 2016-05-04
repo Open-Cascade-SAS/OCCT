@@ -15,94 +15,117 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Surface.hxx>
-#include <Extrema_FuncExtPS.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
+
+#include <Adaptor3d_Surface.hxx>
+#include <Extrema_FuncPSNorm.hxx>
+#include <Extrema_FuncPSDist.hxx>
 #include <Extrema_POnSurf.hxx>
-#include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
-#include <math_NewtonFunctionSetRoot.hxx>
+#include <math_BFGS.hxx>
 #include <math_Vector.hxx>
-#include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=============================================================================
-Extrema_GenLocateExtPS::Extrema_GenLocateExtPS () { myDone = Standard_False; }
-//=============================================================================
+//=======================================================================
+//function : Extrema_GenLocateExtPS
+//purpose  : 
+//=======================================================================
+Extrema_GenLocateExtPS::Extrema_GenLocateExtPS(const Adaptor3d_Surface& theS,
+                                               const Standard_Real theTolU,
+                                               const Standard_Real theTolV)
+: mySurf(theS),
+  myTolU(theTolU), myTolV(theTolV),
+  myDone(Standard_False),
+  mySqDist(-1.0)
+{
+}
 
-Extrema_GenLocateExtPS::Extrema_GenLocateExtPS (const gp_Pnt&          P,
-						const Adaptor3d_Surface& S, 
-						const Standard_Real    U0, 
-						const Standard_Real    V0,
-						const Standard_Real    TolU, 
-						const Standard_Real    TolV)
-/*-----------------------------------------------------------------------------
-Function:
-  Find (U,V) close to (U0,V0) so that dist(S(U,V),P) was extreme.
-
-Method:
-  If (u,v) is a solution, it is possible to write:
-   { F1(u,v) = (S(u,v)-P).dS/du(u,v) = 0.
-   { F2(u,v) = (S(u,v)-P).dS/dv(u,v) = 0.
-  The problem consists in finding, in the interval of surface definition,
-  the root of the system closest to (U0,V0).
-  Use class math_FunctionSetRoot with the following construction arguments:
-  - F: Extrema_FuncExtPS created from P and S,
-  - U0V0: math_Vector (U0,V0),
-  - Tol: Min(TolU,TolV),            
-				    
-  - math_Vector (Uinf,Usup),
-  - math_Vector (Vinf,Vsup),
-  - 100. .
----------------------------------------------------------------------------*/  
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
+                                     const Standard_Real theU0,
+                                     const Standard_Real theV0,
+                                     const Standard_Boolean isDistanceCriteria)
 {
   myDone = Standard_False;
 
-  Standard_Real Uinf, Usup, Vinf, Vsup;
-  Uinf = S.FirstUParameter();
-  Usup = S.LastUParameter();
-  Vinf = S.FirstVParameter();
-  Vsup = S.LastVParameter();
+  // Prepare initial data structures.
+  math_Vector aTol(1, 2), aStart(1, 2), aBoundInf(1, 2), aBoundSup(1, 2);
 
-  Extrema_FuncExtPS F (P,S);
-  math_Vector Tol(1, 2), Start(1, 2), BInf(1, 2), BSup(1, 2);
+  // Tolerance.
+  aTol(1) = myTolU;
+  aTol(2) = myTolV;
 
-  Tol(1) = TolU;
-  Tol(2) = TolV;
+  // Initial solution approximation.
+  aStart(1) = theU0;
+  aStart(2) = theV0;
 
-  Start(1) = U0;
-  Start(2) = V0;
+  // Borders.
+  aBoundInf(1) = mySurf.FirstUParameter();
+  aBoundInf(2) = mySurf.FirstVParameter();
+  aBoundSup(1) = mySurf.LastUParameter();
+  aBoundSup(2) = mySurf.LastVParameter();
 
-  BInf(1) = Uinf;
-  BInf(2) = Vinf;
-  BSup(1) = Usup;
-  BSup(2) = Vsup;
+  if (isDistanceCriteria == Standard_False)
+  {
+    // Normal projection criteria.
+    Extrema_FuncPSNorm F(theP,mySurf);
 
-  math_FunctionSetRoot SR (F, Tol);
-  SR.Perform(F, Start, BInf, BSup);
-  if (!SR.IsDone()) 
-    return;
+    math_FunctionSetRoot SR (F, aTol);
+    SR.Perform(F, aStart, aBoundInf, aBoundSup);
+    if (!SR.IsDone()) 
+      return;
 
-  mySqDist = F.SquareDistance(1);
-  myPoint = F.Point(1);
-  myDone = Standard_True;
+    mySqDist = F.SquareDistance(1);
+    myPoint = F.Point(1);
+    myDone = Standard_True;
+  }
+  else
+  {
+    // Distance criteria.
+    Extrema_FuncPSDist F(mySurf, theP);
+    math_BFGS aSolver(2);
+    aSolver.Perform(F, aStart);
+
+    if (!aSolver.IsDone()) 
+      return;
+
+    math_Vector aResPnt(1,2);
+    aSolver.Location(aResPnt);
+    mySqDist = aSolver.Minimum();
+    myPoint.SetParameters(aResPnt(1), aResPnt(2), mySurf.Value(aResPnt(1), aResPnt(2)));
+    myDone = Standard_True;
+  }
 }
-//=============================================================================
 
-Standard_Boolean Extrema_GenLocateExtPS::IsDone () const { return myDone; }
-//=============================================================================
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+Standard_Boolean Extrema_GenLocateExtPS::IsDone () const
+{
+  return myDone;
+}
 
+//=======================================================================
+//function : SquareDistance
+//purpose  : 
+//=======================================================================
 Standard_Real Extrema_GenLocateExtPS::SquareDistance () const
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return mySqDist;
 }
-//=============================================================================
 
+//=======================================================================
+//function : Point
+//purpose  : 
+//=======================================================================
 const Extrema_POnSurf& Extrema_GenLocateExtPS::Point () const
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return myPoint;
 }
-//=============================================================================

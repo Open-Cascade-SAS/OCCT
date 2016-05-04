@@ -72,8 +72,10 @@ Extrema_FuncExtCC.lxx
 Extrema_FuncExtCS.cxx
 Extrema_FuncExtCS.hxx
 Extrema_FuncExtPC.gxx
-Extrema_FuncExtPS.cxx
-Extrema_FuncExtPS.hxx
+Extrema_FuncPSNorm.cxx
+Extrema_FuncPSNorm.hxx
+Extrema_FuncPSDist.cxx
+Extrema_FuncPSDist.hxx
 Extrema_FuncExtSS.cxx
 Extrema_FuncExtSS.hxx
 Extrema_GenExtCC.gxx

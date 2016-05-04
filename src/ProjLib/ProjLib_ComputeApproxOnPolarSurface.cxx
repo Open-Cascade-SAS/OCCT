@@ -367,7 +367,8 @@ static gp_Pnt2d Function_Value(const Standard_Real theU,
   }
 
   // Try to run simple search with initial point (U0, V0).
-  Extrema_GenLocateExtPS  locext(p, SurfLittle, U0, V0, theData.myTolU, theData.myTolV);
+  Extrema_GenLocateExtPS  locext(SurfLittle, theData.myTolU, theData.myTolV);
+  locext.Perform(p, U0, V0);
   if (locext.IsDone()) 
   {
     locext.Point().Parameter(u, v);
@@ -1218,9 +1219,9 @@ Handle(Adaptor2d_HCurve2d)
 	  myProjIsDone = Standard_False;
 	  Dist2Min = RealLast();
 	  Curve->D0(Param.Value(i), pntproj);
-	  Extrema_GenLocateExtPS  aLocateExtPS
-	    (pntproj, Surf->Surface(), U0, V0, TolU, TolV) ;
-	  
+          Extrema_GenLocateExtPS  aLocateExtPS(Surf->Surface(), TolU, TolV);
+          aLocateExtPS.Perform(pntproj, U0, V0);
+
 	  if (aLocateExtPS.IsDone())
           {
 	    if (aLocateExtPS.SquareDistance() < DistTol3d * DistTol3d)
@@ -1315,9 +1316,10 @@ Handle(Adaptor2d_HCurve2d)
 	      Uaux = 2*aUinf - U0 + uperiod;
 	    else 
 	      Uaux = 2*aUsup - U0 - uperiod;
-	    Extrema_GenLocateExtPS  locext(pntproj, 
-					   Surf->Surface(), 
-					   Uaux, V0, TolU, TolV);
+
+            Extrema_GenLocateExtPS  locext(Surf->Surface(), TolU, TolV);
+            locext.Perform(pntproj, Uaux, V0);
+
 	    if (locext.IsDone())
 	      if (locext.SquareDistance() < DistTol3d * DistTol3d) {  //OCC217
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
@@ -1341,9 +1343,10 @@ Handle(Adaptor2d_HCurve2d)
 	      Vaux = 2*aVinf - V0 + vperiod;
 	    else 
 	      Vaux = 2*aVsup - V0 - vperiod;
-	    Extrema_GenLocateExtPS  locext(pntproj, 
-					   Surf->Surface(), 
-					   U0, Vaux, TolU, TolV) ;
+
+            Extrema_GenLocateExtPS  locext(Surf->Surface(), TolU, TolV);
+            locext.Perform(pntproj, U0, Vaux);
+
 	    if (locext.IsDone())
 	      if (locext.SquareDistance() < DistTol3d * DistTol3d) {  //OCC217
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
@@ -1369,9 +1372,10 @@ Handle(Adaptor2d_HCurve2d)
 	      Vaux = 2*Vinf - V0 + vperiod;
 	    else 
 	      Vaux = 2*Vsup - V0 - vperiod;
-	    Extrema_GenLocateExtPS  locext(pntproj, 
-					   Surf->Surface(), 
-					   Uaux, Vaux, TolU, TolV);
+
+            Extrema_GenLocateExtPS  locext(Surf->Surface(), TolU, TolV);
+            locext.Perform(pntproj, Uaux, Vaux);
+
 	    if (locext.IsDone())
 	      if (locext.SquareDistance() < DistTol3d * DistTol3d) {
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
@@ -1584,8 +1588,10 @@ Handle(Geom2d_BSplineCurve)
 	  for(i = 1;i <= Curve->NbPoles();i++) {
 	    myProjIsDone = Standard_False;
 	    Dist2Min = IntegerLast();
-	    Extrema_GenLocateExtPS  extrloc(BSC->Pole(i),Surf->Surface(),(p11.X()+p22.X())/2,
-					    (p11.Y()+p22.Y())/2,TolU,TolV) ;
+
+            Extrema_GenLocateExtPS  extrloc(Surf->Surface(), TolU, TolV);
+            extrloc.Perform(BSC->Pole(i), (p11.X()+p22.X())/2, (p11.Y()+p22.Y())/2);
+
 	    if (extrloc.IsDone()) {
 	      Dist2Min = (Standard_Integer ) extrloc.SquareDistance();
 	      if (Dist2Min < DistTol3d * DistTol3d) {  //OCC217
@@ -1622,8 +1628,10 @@ Handle(Geom2d_BSplineCurve)
 	  TColgp_Array1OfPnt2d Poles2d(1,Curve->NbPoles());
 	  for(i = 1;i <= Curve->NbPoles();i++) {
 	    Dist2Min = IntegerLast();
-	    Extrema_GenLocateExtPS  extrloc(BC->Pole(i),Surf->Surface(),0.5,
-					    0.5,TolU,TolV) ;
+
+            Extrema_GenLocateExtPS  extrloc(Surf->Surface(), TolU, TolV);
+            extrloc.Perform(BC->Pole(i), 0.5, 0.5);
+
 	    if (extrloc.IsDone()) {
 	      Dist2Min = (Standard_Integer ) extrloc.SquareDistance();
 	      if (Dist2Min < DistTol3d * DistTol3d) {  //OCC217
@@ -1685,8 +1693,10 @@ Handle(Geom2d_BSplineCurve)
 	  for(i = 1;i <= Curve->NbPoles();i++) {
 	    myProjIsDone = Standard_False;
 	    Dist2Min = IntegerLast();
-	    Extrema_GenLocateExtPS  extrloc(BSC->Pole(i),Surf->Surface(),(p11.X()+p22.X())/2,
-					    (p11.Y()+p22.Y())/2,TolU,TolV) ;
+
+            Extrema_GenLocateExtPS  extrloc(Surf->Surface(), TolU, TolV);
+            extrloc.Perform(BSC->Pole(i), (p11.X()+p22.X())/2, (p11.Y()+p22.Y())/2);
+
 	    if (extrloc.IsDone()) {
 	      Dist2Min = (Standard_Integer ) extrloc.SquareDistance();
 	      if (Dist2Min < DistTol3d * DistTol3d) {  //OCC217
@@ -1723,8 +1733,10 @@ Handle(Geom2d_BSplineCurve)
 	  TColgp_Array1OfPnt2d Poles2d(1,Curve->NbPoles());
 	  for(i = 1;i <= Curve->NbPoles();i++) {
 	    Dist2Min = IntegerLast();
-	    Extrema_GenLocateExtPS  extrloc(BC->Pole(i),Surf->Surface(),0.5,
-					    0.5,TolU,TolV) ;
+
+            Extrema_GenLocateExtPS  extrloc(Surf->Surface(), TolU, TolV);
+            extrloc.Perform(BC->Pole(i), 0.5, 0.5);
+
 	    if (extrloc.IsDone()) {
 	      Dist2Min = (Standard_Integer ) extrloc.SquareDistance();
 	      if (Dist2Min < DistTol3d * DistTol3d) {  //OCC217

@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <Extrema_FuncExtPS.hxx>
+#include <Extrema_FuncPSNorm.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Ax2.hxx>
 #include <Extrema_GenExtPS.hxx>
@@ -98,7 +98,7 @@ private:
   Standard_Real myvinf;
   Standard_Real myvsup;
   Standard_Real mytolv;
-  Extrema_FuncExtPS myF;
+  Extrema_FuncPSNorm myF;
   Handle(Adaptor3d_HCurve) myC;
   Handle(GeomAdaptor_HSurfaceOfLinearExtrusion) myS;
   gp_Vec myDirection;

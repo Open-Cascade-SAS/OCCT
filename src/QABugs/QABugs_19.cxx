@@ -1364,7 +1364,7 @@ static Standard_Integer OCC24945 (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-#include <Extrema_FuncExtPS.hxx>
+#include <Extrema_FuncPSNorm.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Vector.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
@@ -1401,7 +1401,7 @@ static Standard_Integer OCC24137 (Draw_Interpretor& theDI, Standard_Integer theN
 
   gp_Pnt aPnt = BRep_Tool::Pnt (aVert), aRes;
 
-  Extrema_FuncExtPS    anExtFunc;
+  Extrema_FuncPSNorm    anExtFunc;
   math_FunctionSetRoot aRoot (anExtFunc, aNbIts);
 
   math_Vector aTolUV (1, 2), aUVinf  (1, 2), aUVsup  (1, 2), aFromUV (1, 2);

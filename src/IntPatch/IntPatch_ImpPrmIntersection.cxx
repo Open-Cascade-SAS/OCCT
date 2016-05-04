@@ -2782,9 +2782,8 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
 
           theQSurf->D0(aUquad, aVquad, aPQuad);
 
-          Extrema_GenLocateExtPS anExtr(aPQuad, thePSurf->Surface(), aU0, aV0,
-                                        Precision::PConfusion(),
-                                        Precision::PConfusion());
+          Extrema_GenLocateExtPS anExtr(thePSurf->Surface());
+          anExtr.Perform(aPQuad, aU0, aV0);
 
           if(!anExtr.IsDone())
           {
@@ -2946,9 +2945,8 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
           
           theQSurf->D0(aUquad, aVquad, aPQuad);
 
-          Extrema_GenLocateExtPS anExtr(aPQuad, thePSurf->Surface(), aU0, aV0,
-                                        Precision::PConfusion(),
-                                        Precision::PConfusion());
+          Extrema_GenLocateExtPS anExtr(thePSurf->Surface());
+          anExtr.Perform(aPQuad, aU0, aV0);
 
           if(!anExtr.IsDone())
           {

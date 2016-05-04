@@ -27,7 +27,7 @@
 #include <Extrema_HArray2OfPOnSurfParams.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>
 #include <Bnd_HArray1OfSphere.hxx>
-#include <Extrema_FuncExtPS.hxx>
+#include <Extrema_FuncPSNorm.hxx>
 #include <Adaptor3d_SurfacePtr.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_ExtAlgo.hxx>
@@ -148,7 +148,7 @@ private:
   Handle(Extrema_HArray2OfPOnSurfParams) myPoints;
   Extrema_HUBTreeOfSphere mySphereUBTree;
   Handle(Bnd_HArray1OfSphere) mySphereArray;
-  Extrema_FuncExtPS myF;
+  Extrema_FuncPSNorm myF;
   Adaptor3d_SurfacePtr myS;
   Extrema_ExtFlag myFlag;
   Extrema_ExtAlgo myAlgo;

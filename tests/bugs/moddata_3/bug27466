@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC27466: "
+puts "================"
+puts ""
+####################
+## The algorithm Extrema_GenLocateExtPS gives incorrect result
+####################
+
+pload QAcommands
+
+restore [locate_data_file bug27466.brep] a
+
+point pnt -5.909487750466874e-006 -0.1557578329355927 0.1298542821722014
+point uv0 0.748729882974883 0.5000000063028793
+
+set out [OCC27466 a pnt uv0]
+if [regexp {dist=([0-9.+-e]*)} $out dummy dist] {
+  if {$dist > 1e-7} {
+    puts "Error: distance of projection is too large ($dist)"
+  } else {
+    puts "Test passed"
+  }
+} else {
+  puts "Error: projection failure"
+}

@@ -14,12 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Extrema_FuncExtPS_HeaderFile
-#define _Extrema_FuncExtPS_HeaderFile
+#ifndef _Extrema_FunctPSNorm_HeaderFile
+#define _Extrema_FunctPSNorm_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Adaptor3d_SurfacePtr.hxx>
@@ -58,16 +57,16 @@ class Extrema_POnSurf;
 //! Dvf2(u,v) = Sv^2    + (S-P) * Svv
 //!
 //! Here * denotes scalar product, and ^2 is square power.
-class Extrema_FuncExtPS  : public math_FunctionSetWithDerivatives
+class Extrema_FuncPSNorm  : public math_FunctionSetWithDerivatives
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT Extrema_FuncExtPS();
+  Standard_EXPORT Extrema_FuncPSNorm();
   
-  Standard_EXPORT Extrema_FuncExtPS(const gp_Pnt& P, const Adaptor3d_Surface& S);
+  Standard_EXPORT Extrema_FuncPSNorm(const gp_Pnt& P, const Adaptor3d_Surface& S);
   
   //! sets the field mysurf of the function.
   Standard_EXPORT void Initialize (const Adaptor3d_Surface& S);
@@ -100,18 +99,7 @@ public:
   //! Returns the Nth extremum.
   Standard_EXPORT const Extrema_POnSurf& Point (const Standard_Integer N) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   gp_Pnt myP;
   Adaptor3d_SurfacePtr myS;
@@ -122,14 +110,5 @@ private:
   Extrema_SequenceOfPOnSurf myPoint;
   Standard_Boolean myPinit;
   Standard_Boolean mySinit;
-
-
 };
-
-
-
-
-
-
-
-#endif // _Extrema_FuncExtPS_HeaderFile
+#endif // _Extrema_FunctPSNorm_HeaderFile

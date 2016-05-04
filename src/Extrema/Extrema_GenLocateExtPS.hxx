@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
@@ -33,23 +32,27 @@ class Extrema_POnSurf;
 
 //! With a close point, it calculates the distance
 //! between a point and a surface.
-//! This distance can be a minimum or a maximum.
+//! Criteria type is defined in "Perform" method.
 class Extrema_GenLocateExtPS 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Constructor.
+  Standard_EXPORT Extrema_GenLocateExtPS(const Adaptor3d_Surface& theS,
+                                         const Standard_Real theTolU = Precision::PConfusion(),
+                                         const Standard_Real theTolV = Precision::PConfusion());
   
-  Standard_EXPORT Extrema_GenLocateExtPS();
-  
-  //! Calculates the distance with a close point.
-  //! The close point is defined by the parameter values
-  //! U0 and V0.
-  //! The function F(u,v)=distance(S(u,v),p) has an
-  //! extremun when gradient(F)=0. The algorithm searchs
-  //! a zero near the close point.
-  Standard_EXPORT Extrema_GenLocateExtPS(const gp_Pnt& P, const Adaptor3d_Surface& S, const Standard_Real U0, const Standard_Real V0, const Standard_Real TolU, const Standard_Real TolV);
+  //! Calculates the extrema between the point and the surface using a close point.
+  //! The close point is defined by the parameter values theU0 and theV0.
+  //! Type of the algorithm depends on the isDistanceCriteria flag.
+  //! If flag value is false - normal projection criteria will be used.
+  //! If flag value is true - distance criteria will be used.
+  Standard_EXPORT void Perform(const gp_Pnt& theP,
+                               const Standard_Real theU0,
+                               const Standard_Real theV0,
+                               const Standard_Boolean isDistanceCriteria = Standard_False);
   
   //! Returns True if the distance is found.
   Standard_EXPORT Standard_Boolean IsDone() const;
@@ -60,20 +63,19 @@ public:
   //! Returns the point of the extremum distance.
   Standard_EXPORT const Extrema_POnSurf& Point() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
+  const Extrema_GenLocateExtPS& operator=(const Extrema_GenLocateExtPS&);
+  Extrema_GenLocateExtPS(const Extrema_GenLocateExtPS&);
 
+  // Input.
+  const Adaptor3d_Surface& mySurf;
+  Standard_Real myTolU, myTolV;
 
+  // State.
   Standard_Boolean myDone;
+
+  // Result.
   Standard_Real mySqDist;
   Extrema_POnSurf myPoint;
 

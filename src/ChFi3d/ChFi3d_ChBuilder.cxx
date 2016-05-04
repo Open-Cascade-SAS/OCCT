@@ -1332,8 +1332,11 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     
     Standard_Real tol = tolesp*1.e2;
 //    Standard_Real u,v;
-    Extrema_GenLocateExtPS proj1(pt1,S1->Surface(),SolDep(1),SolDep(2),tol,tol);
-    Extrema_GenLocateExtPS proj2(pt2,S2->Surface(),SolDep(3),SolDep(4),tol,tol);
+    Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
+    proj1.Perform(pt1, SolDep(1), SolDep(2));
+    Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
+    proj2.Perform(pt2, SolDep(3), SolDep(4));
+
     if( proj1.IsDone() ){
       (proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
     }
@@ -1389,8 +1392,12 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     
     Standard_Real tol = tolesp*1.e2;
 //    Standard_Real u,v;
-    Extrema_GenLocateExtPS proj1(pt1,S1->Surface(),SolDep(1),SolDep(2),tol,tol);
-    Extrema_GenLocateExtPS proj2(pt2,S2->Surface(),SolDep(3),SolDep(4),tol,tol);
+
+    Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
+    proj1.Perform(pt1, SolDep(1), SolDep(2));
+    Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
+    proj2.Perform(pt2, SolDep(3), SolDep(4));
+
     if( proj1.IsDone() ){
       (proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
     }
@@ -1457,8 +1464,10 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       
       Standard_Real tol = tolesp*1.e2;
 //      Standard_Real u,v;
-      Extrema_GenLocateExtPS proj1(pt1,S1->Surface(),SolDep(1),SolDep(2),tol,tol);
-      Extrema_GenLocateExtPS proj2(pt2,S2->Surface(),SolDep(3),SolDep(4),tol,tol);
+      Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
+      proj1.Perform(pt1, SolDep(1), SolDep(2));
+      Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
+      proj2.Perform(pt2, SolDep(3), SolDep(4));
       if( proj1.IsDone() ){
 	(proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
       }
@@ -1525,8 +1534,10 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       
       Standard_Real tol = tolesp*1.e2;
 //      Standard_Real u,v;
-      Extrema_GenLocateExtPS proj1(pt1,S2->Surface(),SolDep(1),SolDep(2),tol,tol);
-      Extrema_GenLocateExtPS proj2(pt2,S1->Surface(),SolDep(3),SolDep(4),tol,tol);
+      Extrema_GenLocateExtPS proj1(S2->Surface(), tol, tol);
+      proj1.Perform(pt1, SolDep(1), SolDep(2));
+      Extrema_GenLocateExtPS proj2(S1->Surface(), tol, tol);
+      proj2.Perform(pt2, SolDep(3), SolDep(4));
       if( proj1.IsDone() ) {
 	(proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
       }

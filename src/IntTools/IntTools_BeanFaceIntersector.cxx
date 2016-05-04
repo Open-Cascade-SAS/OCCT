@@ -1312,8 +1312,9 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const Standard_Boo
 
     // 
     gp_Pnt aPoint = myCurve.Value(aCurPar);
-    Extrema_GenLocateExtPS anExtrema(aPoint, mySurface, U, V, 1.e-10, 1.e-10);
-    
+    Extrema_GenLocateExtPS anExtrema(mySurface, 1.e-10, 1.e-10);
+    anExtrema.Perform(aPoint, U, V);
+
     if(anExtrema.IsDone()) {
       if(anExtrema.SquareDistance() < myCriteria * myCriteria) {
         Extrema_POnSurf aPOnSurf = anExtrema.Point();

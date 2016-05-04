@@ -617,8 +617,9 @@ static Standard_Real SQDistPointSurface(const gp_Pnt &thePnt,
                                         const Standard_Real theU0,
                                         const Standard_Real theV0)
 {
-  const Extrema_GenLocateExtPS aExtPS(thePnt, theSurf, theU0, theV0,
-                      Precision::PConfusion(), Precision::PConfusion());
+  Extrema_GenLocateExtPS aExtPS(theSurf);
+  aExtPS.Perform(thePnt, theU0, theV0);
+
   if(!aExtPS.IsDone())
     return RealLast();
   
