@@ -36,9 +36,13 @@
 Extrema_ExtElC2d::Extrema_ExtElC2d () { myDone = Standard_False; }
 //=============================================================================
 
-Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1, 
-				    const gp_Lin2d& C2,
-				    const Standard_Real)
+//=======================================================================
+//function : Extrema_ExtElC2d
+//purpose  :
+//=======================================================================
+Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1,
+                                    const gp_Lin2d& C2,
+                                    const Standard_Real)
 /*-----------------------------------------------------------------------------
 Function:
    Find min distance between 2 straight lines.
@@ -57,15 +61,37 @@ Method:
   myIsPar = Standard_False;
   myNbExt = 0;
 
-  gp_Dir2d D1 = C1.Direction();
-  gp_Dir2d D2 = C2.Direction();
-  if (D1.IsParallel(D2, Precision::Angular())) {
+  gp_Vec2d D1(C1.Direction());
+  gp_Vec2d D2(C2.Direction());
+  if (D1.IsParallel(D2, Precision::Angular()))
+  {
     myIsPar = Standard_True;
     mySqDist[0] = C2.SquareDistance(C1.Location());
   }
-  else {
-    myNbExt = 0;
+  else
+  {
+    // Vector from P1 to P2 (P2 - P1).
+    gp_Vec2d aP1P2(C1.Location(), C2.Location());
+
+    // Solve linear system using Cramer's rule:
+    // D1.X * t1 + D2.X * (-t2)  = P2.X - P1.X
+    // D1.Y * t1 + D2.Y * (-t2)  = P2.Y - P1.Y
+
+    // There is no division by zero since lines are not parallel.
+    Standard_Real aDelim = 1 / (D1^D2);
+
+    Standard_Real aParam1 = (aP1P2 ^ D2) * aDelim;
+    Standard_Real aParam2 = -(D1 ^ aP1P2) * aDelim; // -1.0 coefficient before t2.
+
+    gp_Pnt2d P1 = ElCLib::Value(aParam1, C1);
+    gp_Pnt2d P2 = ElCLib::Value(aParam2, C2);
+
+    mySqDist[myNbExt] = 0.0;
+    myPoint[myNbExt][0] = Extrema_POnCurv2d(aParam1,P1);
+    myPoint[myNbExt][1] = Extrema_POnCurv2d(aParam2,P2);
+    myNbExt = 1;
   }
+
   myDone = Standard_True;
 }
 //=============================================================================
