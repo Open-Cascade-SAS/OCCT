@@ -774,7 +774,7 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
     Standard_Boolean withOutL = Standard_False;
     
     for (myFaceItr1.InitEdge(*fd);
-	 myFaceItr1.MoreEdge() && !cut && !withOutL;
+	 myFaceItr1.MoreEdge();
 	 myFaceItr1.NextEdge()) {
       if (myFaceItr1.Internal()) {
 	withOutL = Standard_True;

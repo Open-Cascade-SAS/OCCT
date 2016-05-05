@@ -174,12 +174,8 @@ static void drawCurve (Adaptor3d_Curve&              aCurve,
           NumberOfPoints = Algo.NbPoints();
 
           if (NumberOfPoints > 0) {
-            for (i=1;i<NumberOfPoints;i++) { 
+            for (i = 1; i <= NumberOfPoints; i++)
               SeqP.Append(Algo.Value(i)); 
-            }
-            if (j == nbinter) {
-              SeqP.Append(Algo.Value(NumberOfPoints));
-            }
           }
         }
       }

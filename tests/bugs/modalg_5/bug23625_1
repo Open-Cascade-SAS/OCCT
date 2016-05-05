@@ -15,8 +15,9 @@ fit
 
 reflectlines result a 0 1 0
 
-checkprops result -l 3730.32 
-checkshape result 
+checkprops result -l 3882.71
+checkshape result
 checksection result
 
+donly result
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

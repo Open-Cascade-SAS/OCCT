@@ -60,8 +60,8 @@ HLRBRep_CurveTool::NbSamples (const Standard_Address C)
 
 Standard_Integer
 HLRBRep_CurveTool::NbSamples (const Standard_Address C,
-                              const Standard_Real /*u1*/,
-                              const Standard_Real /*u2*/) 
+                              const Standard_Real u1,
+                              const Standard_Real u2) 
 { 
   GeomAbs_CurveType typC = ((HLRBRep_Curve *)C)->GetType();
   static Standard_Real nbsOther = 10.0;
@@ -72,7 +72,9 @@ HLRBRep_CurveTool::NbSamples (const Standard_Address C,
   else if(typC == GeomAbs_BezierCurve) 
     nbs = 3 + ((HLRBRep_Curve *)C)->NbPoles();
   else if(typC == GeomAbs_BSplineCurve) { 
-    nbs = ((HLRBRep_Curve *)C)->NbKnots();
+    Handle(Geom_Curve) aCurve = ((HLRBRep_Curve *)C)->Curve().Curve().Curve();
+    GeomAdaptor_Curve GAcurve(aCurve, u1, u2);
+    nbs = GAcurve.NbIntervals(GeomAbs_CN) + 1;
     nbs*= ((HLRBRep_Curve *)C)->Degree();
     if(nbs < 2.0) nbs=2;
   }

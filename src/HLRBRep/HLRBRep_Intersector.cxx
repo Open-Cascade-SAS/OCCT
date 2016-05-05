@@ -118,7 +118,10 @@ void  HLRBRep_Intersector::Perform (const Standard_Address A1,
   b = ((HLRBRep_Curve*)myC1)->Parameter2d(b);
   IntRes2d_Domain D1(pa,a,(Standard_Real)ta,pb,b,(Standard_Real)tb);
 
-  tol = (Standard_Real)(((HLRBRep_EdgeData*) A1)->Tolerance());
+  //modified by jgv, 18.04.2016 for OCC27341
+  //tol = (Standard_Real)(((HLRBRep_EdgeData*) A1)->Tolerance());
+  tol = Precision::Confusion();
+  //////////////////////////////////////////
 
   myIntersector.Perform(myC1,D1,tol,tol);
 }
@@ -155,8 +158,12 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer /*nA*/,
   Standard_Real a1,b1,a2,b2,d,dd,tol,tol1,tol2;
   Standard_ShortReal ta,tb;
 
-  tol1 = (Standard_Real)(((HLRBRep_EdgeData*) A1)->Tolerance());
-  tol2 = (Standard_Real)(((HLRBRep_EdgeData*) A2)->Tolerance());
+  //modified by jgv, 18.04.2016 for OCC27341
+  //tol1 = (Standard_Real)(((HLRBRep_EdgeData*) A1)->Tolerance());
+  //tol2 = (Standard_Real)(((HLRBRep_EdgeData*) A2)->Tolerance());
+  tol1 = Precision::Confusion();
+  tol2 = Precision::Confusion();
+  //////////////////////////////////////////
   if (tol1 > tol2) tol = tol1;
   else             tol = tol2;
 

@@ -19,4 +19,5 @@ checkprops result -l 4843.56
 checkshape result 
 checksection result
 
+donly result
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

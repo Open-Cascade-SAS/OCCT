@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27341"
+puts "============"
+puts ""
+######################################################
+# Incorrect exact HLR results
+######################################################
+
+restore [locate_data_file bug27341_hlrsave.brep] result
+
+vinit
+vdisplay result
+vfit
+vhlr on
+vhlrtype algo result
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
