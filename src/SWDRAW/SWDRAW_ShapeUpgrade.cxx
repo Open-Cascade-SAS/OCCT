@@ -22,6 +22,7 @@
 #include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepTools.hxx>
+#include <BRepTools_ReShape.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
@@ -1376,6 +1377,87 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
   
 }
 
+Standard_Integer reshape(Draw_Interpretor& di,
+                         Standard_Integer n,
+                         const char** a)
+{
+  if ( n < 3 )
+  {
+    di << "Error: wrong number of arguments. Type 'help " << a[0] << "'\n";
+    return 1;
+  }
+
+  TopoDS_Shape source = DBRep::Get(a[2]);
+  if ( source.IsNull() )
+  {
+    di << "Error: source shape ('" << a[2] << "') is null\n";
+    return 1;
+  }
+
+  Handle(BRepTools_ReShape) ReShaper = new BRepTools_ReShape;
+
+  // Record the requested modifications
+  for ( Standard_Integer i = 1; i < n; ++i )
+  {
+    Standard_CString        arg = a[i];
+    TCollection_AsciiString opt(arg);
+    opt.LowerCase();
+
+    if ( opt == "-replace" )
+    {
+      if ( n - i < 3 )
+      {
+        di << "Error: not enough arguments for replacement\n";
+        return 1;
+      }
+
+      TopoDS_Shape what = DBRep::Get(a[++i]);
+      if ( what.IsNull() )
+      {
+        di << "Error: argument shape ('" << a[i] << "') is null\n";
+        return 1;
+      }
+
+      TopoDS_Shape with = DBRep::Get(a[++i]);
+      if ( with.IsNull() )
+      {
+        di << "Error: replacement shape ('" << a[i] << "') is null\n";
+        return 1;
+      }
+
+      ReShaper->Replace(what, with);
+    }
+    else if ( opt == "-remove" )
+    {
+      if ( n - i < 2 )
+      {
+        di << "Error: not enough arguments for removal\n";
+        return 1;
+      }
+
+      TopoDS_Shape what = DBRep::Get(a[++i]);
+      if ( what.IsNull() )
+      {
+        di << "Error: shape to remove ('" << a[i] << "') is null\n";
+        return 1;
+      }
+
+      ReShaper->Remove(what);
+    }
+  }
+
+  // Apply all the recorded modifications
+  TopoDS_Shape result = ReShaper->Apply(source);
+  if ( result.IsNull() )
+  {
+    di << "Error: result shape is null\n";
+    return 1;
+  }
+
+  DBRep::Set(a[1], result);
+  return 0;
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -1482,4 +1564,11 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
                    __FILE__,unifysamedomgen,g);
   
   theCommands.Add ("copytranslate","result shape dx dy dz",__FILE__,copytranslate,g);
+
+  theCommands.Add ("reshape",
+    "\n    Basic utility for topological modification: "
+    "\n      '-replace what with'   Replaces 'what' sub-shape with 'with' sub-shape"
+    "\n      '-remove what'         Removes 'what' sub-shape"
+    "\n    Requests '-replace' and '-remove' can be repeated many times.",
+    __FILE__, reshape, g);
 }

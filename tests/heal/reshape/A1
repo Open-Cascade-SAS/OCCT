@@ -1,0 +1,64 @@
+restore [locate_data_file bug26243_anc101.brep] model
+
+#-----------------------------------------------------------------------------#
+# Prepare feature faces
+#-----------------------------------------------------------------------------#
+
+explode model f
+
+set hole_bottom_faces {35 36 37 38 39 40 41 42 43}
+set hole_side_faces {11 12 13 14 15 16 17 18 19}
+
+set feature_faces [concat $hole_bottom_faces $hole_side_faces]
+
+#-----------------------------------------------------------------------------#
+# Prepare the argument list for suppression
+#-----------------------------------------------------------------------------#
+
+set request ""
+foreach fidx $feature_faces {
+
+  renamevar model_${fidx} feature_face_${fidx}
+  set request [concat $request " -remove feature_face_${fidx}"]
+
+  set wires [explode feature_face_${fidx} w]
+  set widx 0
+  foreach w $wires {
+    incr widx
+    renamevar $w feature_wire_${fidx}_${widx}
+    set request [concat $request " -remove feature_wire_${fidx}_${widx}"]
+  }
+
+  set edges [explode feature_face_${fidx} e]
+  set eidx 0
+  foreach e $edges {
+    incr eidx
+    renamevar $e feature_edge_${fidx}_${eidx}
+    set request [concat $request " -remove feature_edge_${fidx}_${eidx}"]
+  }
+
+  set vertices [explode feature_face_${fidx} v]
+  set vidx 0
+  foreach v $vertices {
+    incr vidx
+    renamevar $v feature_vertex_${fidx}_${vidx}
+    set request [concat $request " -remove feature_vertex_${fidx}_${vidx}"]
+  }
+}
+
+set request [concat "reshape result model" $request]
+
+#-----------------------------------------------------------------------------#
+# Re-Shape!
+#-----------------------------------------------------------------------------#
+
+eval $request
+
+#-----------------------------------------------------------------------------#
+# Set reference counts for topological entities (the ones expected)
+#-----------------------------------------------------------------------------#
+
+set ref_num_faces    86
+set ref_num_wires    107
+set ref_num_edges    201
+set ref_num_vertices 121
