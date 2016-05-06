@@ -313,7 +313,7 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
   {
     math_Matrix m(1, myN, 1, myN, 0.0);
     for(i = 1; i <= myN; i++)
-      m(1, 1) = 1.0;
+      m(i, i) = 1.0;
 
     math_Powell powell(*myFunc, 1e-10);
     powell.Perform(*myFunc, thePnt, m);
