@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Aspect_DisplayConnection.hxx>
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
 #include <Graphic3d_CView.hxx>
@@ -51,6 +50,7 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
+class Aspect_DisplayConnection;
 class Graphic3d_CView;
 class Graphic3d_GraphicDriver;
 class Graphic3d_TransformError;
