@@ -1164,8 +1164,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames (const Handle(XSControl_WorkSe
         Handle(StepBasic_ProductDefinitionRelationship) PDR = PDS->Definition().ProductDefinitionRelationship();
         if ( PDR.IsNull() ) continue;
         if ( PDR->HasDescription() && 
-            PDR->Description()->Length() >0 ) name = PDR->Description();
-        else if ( !PDR->Name().IsNull() && PDR->Name()->Length() >0 ) name = PDR->Name();
+            PDR->Description()->UsefullLength() >0 ) name = PDR->Description();
+        else if ( !PDR->Name().IsNull() && PDR->Name()->UsefullLength() >0 ) name = PDR->Name();
         else if ( !PDR->Id().IsNull()) name = PDR->Id();
         else name = new TCollection_HAsciiString;
       }
@@ -2861,8 +2861,9 @@ static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
         else
         {
           if(aGISU.IsNull()) continue;
-          for (Standard_Integer i = 1; i <= aGISU->NbIdentifiedItem(); i++) {
-            aSeqRI.Append(aGISU->IdentifiedItemValue(i));
+          Standard_Integer j =1;
+          for ( ; j <= aGISU->NbIdentifiedItem(); j++) {
+            aSeqRI.Append(aGISU->IdentifiedItemValue(j));
           }
         }
       }
