@@ -1428,7 +1428,7 @@ proc _html_color {status} {
     if { $status == "OK" } { 
         return lightgreen
     } elseif { [regexp -nocase {^FAIL} $status] } { 
-        return red
+        return ff8080
     } elseif { [regexp -nocase {^BAD} $status] } { 
         return yellow
     } elseif { [regexp -nocase {^IMP} $status] } { 
@@ -1976,7 +1976,7 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
         # put a line; highlight considerable (> ${highlight_percent}%) deviations of CPU and memory
         if { [regexp "\[\\\[](\[0-9.e+-]+)%\[\]]" $line res value] && 
              [expr abs($value)] > ${highlight_percent} } {
-            puts $fd "<table><tr><td bgcolor=\"[expr $value > 0 ? \"red\" : \"lightgreen\"]\">$line</td></tr></table>"
+            puts $fd "<table><tr><td bgcolor=\"[expr $value > 0 ? \"ff8080\" : \"lightgreen\"]\">$line</td></tr></table>"
         } else {
             puts $fd $line
         }
