@@ -39,7 +39,6 @@ mkcurve cu21 res2_1
 mkcurve cu22 res2_2
 mkcurve cu23 res2_3
 mkcurve cu24 res2_4
-mkcurve cu25 res2_5
 
 explode res2 face
 

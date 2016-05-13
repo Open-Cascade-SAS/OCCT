@@ -1716,8 +1716,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
         if(PW.IsDone())	{
           if(PW.NbPoints()>2)
           {
-            //Try to extend the intersection line to boundary, if it is possibly
-            Standard_Boolean hasBeenAdded = PW.PutToBoundary(Surf1, Surf2);
+            //Try to extend the intersection line to boundary, if it is possible.
+            PW.PutToBoundary(Surf1, Surf2);
 
             RejetLigne = Standard_False;
             Point3dDebut = PW.Value(1).Value();
@@ -1773,8 +1773,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
               Standard_Real TolTang = TolTangency;
               Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
               if (RestrictLine){
-                IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang,hasBeenAdded);
-                IntPatch_RstInt::PutVertexOnLine(wline,Surf2,D2,Surf1,Standard_False,TolTang,hasBeenAdded);
+                IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
+                IntPatch_RstInt::PutVertexOnLine(wline,Surf2,D2,Surf1,Standard_False,TolTang);
               }
 
               if(wline->NbVertex() == 0) {
@@ -2345,13 +2345,12 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
                   if( iPWNbPoints > 2 )
                   {
                     //Try to extend the intersection line to boundary, if it is possibly
-                    Standard_Boolean hasBeenAdded = PW.PutToBoundary(Surf1, Surf2);
+                    PW.PutToBoundary(Surf1, Surf2);
 
                     const Standard_Integer aMinNbPoints = 40;
                     if(iPWNbPoints < aMinNbPoints)
                     {
-                      hasBeenAdded = 
-                        PW.SeekAdditionalPoints(Surf1, Surf2, aMinNbPoints) || hasBeenAdded;
+                      PW.SeekAdditionalPoints(Surf1, Surf2, aMinNbPoints);
                       iPWNbPoints = PW.NbPoints();
                     }
                     
@@ -2453,9 +2452,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
                       Standard_Real TolTang = TolTangency;
                       Handle(IntPatch_WLine) wline = new IntPatch_WLine(PW.Line(),Standard_False,trans1,trans2);
-                      IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang,hasBeenAdded);
-                      IntPatch_RstInt::PutVertexOnLine(wline,Surf2,D2,Surf1,Standard_False,TolTang,hasBeenAdded);
-
+                      IntPatch_RstInt::PutVertexOnLine(wline,Surf1,D1,Surf2,Standard_True,TolTang);
+                      IntPatch_RstInt::PutVertexOnLine(wline,Surf2,D2,Surf1,Standard_False,TolTang);
                       if(wline->NbVertex() == 0)
                       {
                         IntPatch_Point vtx;

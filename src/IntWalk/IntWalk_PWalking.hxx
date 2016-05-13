@@ -167,6 +167,11 @@ private:
   
   Standard_EXPORT Standard_Boolean SeekPointOnBoundary (const Handle(Adaptor3d_HSurface)& theASurf1, const Handle(Adaptor3d_HSurface)& theASurf2, const Standard_Real theU1, const Standard_Real theV1, const Standard_Real theU2, const Standard_Real theV2, const Standard_Boolean isTheFirst);
 
+  // Method to handle single singular point. Sub-method in SeekPointOnBoundary.
+  Standard_Boolean HandleSingleSingularPoint(const Handle(Adaptor3d_HSurface) &theASurf1,
+                                             const Handle(Adaptor3d_HSurface) &theASurf2,
+                                             const Standard_Real the3DTol,
+                                             TColStd_Array1OfReal &thePnt);
 
   Standard_Boolean done;
   Handle(IntSurf_LineOn2S) line;

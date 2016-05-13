@@ -255,8 +255,7 @@ inline Standard_Boolean CompareVerticesOnS2(const IntPatch_Point& vtx1, const In
 {return CompareVerticesOnSurf (vtx1, vtx2, Standard_False);}
 
 
-void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol,
-                                              const Standard_Boolean hasBeenAdded)
+void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol)
 {
   // MSV Oct 15, 2001: use tolerance of vertex instead of RTol where 
   //                   it is possible
@@ -505,30 +504,8 @@ void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol,
   for(i=1; i<=nbvtx; i++) {
     const gp_Pnt& P    = svtx.Value(i).Value();
     Standard_Real vTol = svtx.Value(i).Tolerance();
-    
-    if(hasBeenAdded)
-    {
-      if(nbvtx == 2)
-      {
-        if(i == nbvtx)
-        {
-          indicevertex = curv->NbPoints();
-        }
-        else
-        {
-          indicevertex = svtx.Value(i).ParameterOnLine();
-        }
-      }
-      else
-      {
-        indicevertex = svtx.Value(i).ParameterOnLine();
-      }
-    }
-    else
-    {
-      indicevertex = svtx.Value(i).ParameterOnLine();
-    }
-    
+
+    indicevertex = svtx.Value(i).ParameterOnLine();
     indicevertexonline = (Standard_Integer)indicevertex;
     //--------------------------------------------------
     //-- On Compare le vertex avec les points de la ligne

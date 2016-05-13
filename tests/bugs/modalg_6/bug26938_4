@@ -1,0 +1,27 @@
+puts "TODO OCC24694 ALL: Error : The result of cut operation is self-interfered shape"
+puts "=========="
+puts "OCC26938  "
+puts "=========="
+puts ""
+#####################################################
+# Boolean operations fail between two ellipsoids
+#####################################################
+
+restore [locate_data_file bug26938.brep] a
+explode a
+
+bcut result a_2 a_1
+
+# Check shape validity
+checkshape result
+
+# Check area
+checkprops result -s 4.86143e+006
+
+# Check self-intersection
+set info [bopcheck result]
+if { [regexp "This shape seems to be OK" ${info}] != 1 } {
+    puts "Error : The result of cut operation is self-interfered shape"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

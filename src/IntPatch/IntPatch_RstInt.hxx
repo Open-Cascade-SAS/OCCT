@@ -38,7 +38,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT static void PutVertexOnLine (const Handle(IntPatch_Line)& L, const Handle(Adaptor3d_HSurface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain, const Handle(Adaptor3d_HSurface)& OtherSurf, const Standard_Boolean OnFirst, const Standard_Real Tol, const Standard_Boolean hasBeenAdded = Standard_False);
+  Standard_EXPORT static void PutVertexOnLine (const Handle(IntPatch_Line)& L,
+                                               const Handle(Adaptor3d_HSurface)& Surf,
+                                               const Handle(Adaptor3d_TopolTool)& Domain,
+                                               const Handle(Adaptor3d_HSurface)& OtherSurf,
+                                               const Standard_Boolean OnFirst,
+                                               const Standard_Real Tol);
 
 };
 

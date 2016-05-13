@@ -442,12 +442,11 @@ static Standard_Boolean IsSegment2dSmall(const IntPatch_Polygo& Pol,
 //=======================================================================
 
 void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
-				       const Handle(Adaptor3d_HSurface)& Surf,
-				       const Handle(Adaptor3d_TopolTool)& Domain,
-				       const Handle(Adaptor3d_HSurface)& OtherSurf,
-				       const Standard_Boolean OnFirst,
-				       const Standard_Real Tol,
-                                       const Standard_Boolean hasBeenAdded)
+                                       const Handle(Adaptor3d_HSurface)& Surf,
+                                       const Handle(Adaptor3d_TopolTool)& Domain,
+                                       const Handle(Adaptor3d_HSurface)& OtherSurf,
+                                       const Standard_Boolean OnFirst,
+                                       const Standard_Real Tol)
  {
 
 // Domain est le domaine de restriction de la surface Surf.
@@ -1243,7 +1242,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 */
 
     wlin->SetPeriod(pu1,pv1,pu2,pv2);
-    wlin->ComputeVertexParameters(Tol, hasBeenAdded);
+    wlin->ComputeVertexParameters(Tol);
   }
   else {
     rlin->ComputeVertexParameters(Tol);

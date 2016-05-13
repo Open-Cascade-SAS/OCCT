@@ -1,5 +1,3 @@
-puts "TODO OCC1111 Windows: Error : The area of result shape is"
-puts "BUC60290 (the same problem with cut and common)"
 
 restore [locate_data_file buc60290a.rle] sol1
 restore [locate_data_file buc60290b.rle] sol2
