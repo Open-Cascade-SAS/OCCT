@@ -294,6 +294,10 @@ else()
   OCCT_INSTALL_FILE_OR_DIR ("OCCT_LGPL_EXCEPTION.txt" "${INSTALL_DIR}")
 endif()
 
+if(APPLE)
+  set (INSTALL_NAME_DIR "" CACHE STRING "install_name library suffix on OS X (e.g. @executable_path/../Frameworks)")
+endif()
+
 # a directory recognized as a 'patch' for OCCT
 set (BUILD_PATCH "" CACHE PATH "${BUILD_PATCH_DESCR}")
 
