@@ -38,7 +38,7 @@ struct Font_FontMgr_FontAliasMapNode
 static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
 {
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__APPLE__)
 
   { "Courier"                  , "Courier New"    , Font_FA_Regular },
   { "Times-Roman"              , "Times New Roman", Font_FA_Regular  },
@@ -122,15 +122,21 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
       "ttc",
       "pfa",
       "pfb",
+    #ifdef __APPLE__
+      // Datafork TrueType (OS X), obsolete
+      //"dfont",
+    #endif
       NULL
     };
 
+  #if !defined(__ANDROID__) && !defined(__APPLE__)
     // X11 configuration file in plain text format (obsolete - doesn't exists in modern distributives)
     static Standard_CString myFontServiceConf[] = {"/etc/X11/fs/config",
                                                    "/usr/X11R6/lib/X11/fs/config",
                                                    "/usr/X11/lib/X11/fs/config",
                                                    NULL
                                                   };
+  #endif
 
   #ifdef __APPLE__
     // default fonts paths in Mac OS X
@@ -384,6 +390,7 @@ void Font_FontMgr::InitFontDataBase()
 #else
 
   NCollection_Map<TCollection_AsciiString> aMapOfFontsDirs;
+#if !defined(__ANDROID__) && !defined(__APPLE__)
   const OSD_Protection aProtectRead (OSD_R, OSD_R, OSD_R, OSD_R);
 
   // read fonts directories from font service config file (obsolete)
@@ -440,6 +447,7 @@ void Font_FontMgr::InitFontDataBase()
     }
     aFile.Close();
   }
+#endif
 
   // append default directories
   for (Standard_Integer anIter = 0; myDefaultFontsDirs[anIter] != NULL; ++anIter)
@@ -461,7 +469,7 @@ void Font_FontMgr::InitFontDataBase()
   for (NCollection_Map<TCollection_AsciiString>::Iterator anIter (aMapOfFontsDirs);
        anIter.More(); anIter.Next())
   {
-  #ifdef __ANDROID__
+  #if defined(__ANDROID__) || defined(__APPLE__)
     OSD_Path aFolderPath (anIter.Value());
     for (OSD_FileIterator aFileIter (aFolderPath, "*"); aFileIter.More(); aFileIter.Next())
     {
