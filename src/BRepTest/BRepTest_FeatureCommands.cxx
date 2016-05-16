@@ -732,10 +732,22 @@ static Standard_Integer PRF(Draw_Interpretor& theCommands,
 static Standard_Integer SPLS(Draw_Interpretor& ,
 			     Standard_Integer narg, const char** a)
 {
-  Standard_Integer newnarg ;
+  Standard_Integer newnarg;
 
-  if (narg<3) return 1;
+  if (narg < 3)
+  {
+    cout << "Invalid number of arguments. Should be : splitshape result shape [splitedges] \
+            [face wire/edge/compound [wire/edge/compound ...] \
+            [face wire/edge/compound [wire/edge/compound...] ...] \
+            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]" << endl;
+    return 1;
+  }
   TopoDS_Shape S = DBRep::Get(a[2]);
+  if (S.IsNull())
+  {
+    cout << "Invalid input shape " << a[2]<<endl;
+    return 1;
+  }
   BRepFeat_SplitShape Spls(S);
   Standard_Boolean pick = Standard_False;
   TopoDS_Shape EF;
@@ -752,20 +764,42 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
       (newnarg !=narg && ((narg-newnarg)<=2 || (narg-newnarg)%2 != 1))) {
     return 1;
   }
-
-  if (i<newnarg) {
+  Standard_Boolean isSplittingEdges = Standard_False;
+  TopTools_SequenceOfShape aSplitEdges;
+  if (i < newnarg) {
     pick = (a[i][0] == '.');
-    EF = DBRep::Get(a[i],TopAbs_FACE);
-    if (EF.IsNull()) return 1;
+   
+    TopoDS_Shape aSh = DBRep::Get(a[i]);
+    if (aSh.IsNull())
+    {
+      cout << "Invalid input shape " <<a[i]<<endl;
+      return 1;
+    }
+
+
+    if (aSh.ShapeType() == TopAbs_FACE)
+      EF = TopoDS::Face(aSh);
+    else
+    {
+      if (aSh.ShapeType() == TopAbs_COMPOUND || aSh.ShapeType() == TopAbs_WIRE || aSh.ShapeType() == TopAbs_EDGE)
+      {
+        TopExp_Explorer aExpE(aSh, TopAbs_EDGE, TopAbs_FACE);
+        for (; aExpE.More(); aExpE.Next())
+          aSplitEdges.Append(aExpE.Current());
+
+        isSplittingEdges = (aSplitEdges.Length());
+      }
+    }
+
   }
-  
+  i++;
   while (i < newnarg) {
     if (pick) {
       DBRep_DrawableShape::LastPick(EF,u,v);
     }
-    if (EF.ShapeType() == TopAbs_FACE) {
+    if (!isSplittingEdges  && !EF.IsNull() && EF.ShapeType() == TopAbs_FACE) {
       // face wire/edge ...
-      i++;
+     
       while (i < newnarg) {
 	TopoDS_Shape W;
 	Standard_Boolean rever = Standard_False;
@@ -811,11 +845,36 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
       }
     }
     else
-      return 1;
+    {
+      if (isSplittingEdges)
+      {
+        TopoDS_Shape aSh = DBRep::Get(a[i]);
+        if (aSh.IsNull())
+        {
+          cout << "Invalid input shape " <<a[i]<< endl;
+          return 1;
+        }
+        TopExp_Explorer aExpE(aSh, TopAbs_EDGE, TopAbs_FACE);
+        for (; aExpE.More(); aExpE.Next())
+          aSplitEdges.Append(aExpE.Current());
+      }
+      else
+      {
+         cout << "Invalid input arguments. Should be : splitshape result shape [splitedges] \
+            [face wire/edge/compound [wire/edge/compound ...] \
+            [face wire/edge/compound [wire/edge/compound...] ...] \
+            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]"<<endl;
+        return 1;
+      }
+    }
+    i++;
   }
   
+  if (isSplittingEdges)
+    Spls.Add(aSplitEdges);
+
   // ici, i vaut newnarg
-  for (i++; i<narg; i+=2) {
+  for (; i < narg; i += 2) {
     TopoDS_Shape Ew,Es;
     TopoDS_Shape aLocalShape(DBRep::Get(a[i],TopAbs_EDGE));
     Es = TopoDS::Edge(aLocalShape);
@@ -827,6 +886,7 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
     Ew = TopoDS::Edge(aLocalShape);
 //    Ew = TopoDS::Edge(DBRep::Get(a[i+1],TopAbs_EDGE));
     if (Ew.IsNull()) {
+      cout << "Invalid input shape " <<a[i+1]<< endl;
       return 1;
     }
     Spls.Add(TopoDS::Edge(Ew),TopoDS::Edge(Es));
@@ -2250,8 +2310,8 @@ void BRepTest::FeatureCommands (Draw_Interpretor& theCommands)
 
 
   theCommands.Add("splitshape",
-		  "splitshape result shape face wire/edge/compound [wire/edge/compound ...][face wire/edge/compound [wire/edge/compound...] ...] [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]",
-		  __FILE__,SPLS,g);
+    "splitshape result shape [splitedges] [face wire/edge/compound [wire/edge/compound ...][face wire/edge/compound [wire/edge/compound...] ...] [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]",
+    __FILE__, SPLS, g);
 
 
   theCommands.Add("thickshell",

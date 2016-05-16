@@ -48,7 +48,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+
 
 //#include <LocOpe_ProjectedWires.hxx>
 //  Modified by skv - Mon May 31 13:00:30 2004 OCC5865 Begin
@@ -100,6 +100,8 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
       if (!mapV.Contains(vtx)) {
 	if (PW->OnVertex(vtx,Vb)) {
 	  mapV.Add(vtx);
+          if (vtx.IsSame(Vb))
+            continue;
 	  lsubs.Clear();
 	  TopoDS_Vertex vsub = TopoDS::Vertex(vtx.Oriented(TopAbs_FORWARD));
 	  gp_Pnt p1 = BRep_Tool::Pnt(vsub), p2 = BRep_Tool::Pnt(Vb);

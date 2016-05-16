@@ -56,6 +56,10 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfOrientedShape.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+
+#include <Geom_Surface.hxx>
 
 static Standard_Boolean IsInside(const TopoDS_Face&,
                                  const TopoDS_Wire&,
@@ -75,8 +79,7 @@ static Standard_Boolean ChoixUV(const TopoDS_Edge&,
                     const TopTools_IndexedMapOfShape&,
                     TopoDS_Edge&,
                     gp_Pnt2d&,
-                    gp_Vec2d&,
-                    const Standard_Real tol);
+                    gp_Vec2d&);
 
 static TopoDS_Shape ChooseDirection(const TopoDS_Shape&,
                                     const TopoDS_Vertex&,
@@ -679,6 +682,50 @@ Standard_Boolean LocOpe_SplitShape::AddClosedWire(const TopoDS_Wire& W,
   return Standard_True;
 }
 
+//=======================================================================
+//function : checkOverlapping
+//purpose  : 
+//=======================================================================
+
+static Standard_Boolean checkOverlapping(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2,
+  const TopoDS_Face& theFace)
+{
+
+  BRepAdaptor_Surface anAdS(theFace,Standard_False );
+   
+  Standard_Real MaxTol = (BRep_Tool::Tolerance(theEdge1) + BRep_Tool::Tolerance(theEdge2));
+ 
+  Standard_Real aMaxTol2d = Max(anAdS.UResolution(MaxTol),anAdS.VResolution(MaxTol));
+  Standard_Real aTolAng = M_PI/180.;
+  Geom2dAPI_ProjectPointOnCurve proj;
+  Standard_Real aF1, aL1,aF2, aL2;
+
+  Handle(Geom2d_Curve) aCrv1 = BRep_Tool::CurveOnSurface(theEdge1, theFace, aF1, aL1);
+  Handle(Geom2d_Curve) aCrv2 = BRep_Tool::CurveOnSurface(theEdge2, theFace, aF2, aL2);
+  Standard_Integer j =1, nbP = 4;
+  Standard_Real aStep = ( aL2 - aF2)/nbP;
+  for( ; j < nbP; j++)
+  {
+    Standard_Real par2 = aF2 + aStep * j;
+    gp_Pnt2d aP2d; 
+    gp_Vec2d aV2;
+    aCrv2->D1(par2, aP2d, aV2);
+
+    proj.Init(aP2d,aCrv1, aF1, aL1);
+    //check intermediate points
+    if(!proj.NbPoints() ||  proj.LowerDistance() > aMaxTol2d)
+      return Standard_False;
+    Standard_Real par1 = proj.LowerDistanceParameter();
+    gp_Pnt2d aP2d1; 
+    gp_Vec2d aV1;
+    aCrv1->D1(par1, aP2d1, aV1);
+
+     if( !aV1.IsParallel(aV2, aTolAng))
+      return Standard_False;
+  }
+  return Standard_True;
+
+}
 
 //=======================================================================
 //function : AddOpenWire
@@ -883,7 +930,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
         TopoDS_Shape aLocalFaceTemp  = FaceRef.Oriented(wfirst.Orientation());
         
         if(!ChoixUV(LastEdge, TopoDS::Face(aLocalFaceTemp), PossE,
-                aNextEdge, plast, dlast, toll))
+                aNextEdge, plast, dlast))
                 return Standard_False;
 
       }
@@ -922,16 +969,58 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
       tol1 = Max(BAS.UResolution(tol1), BAS.VResolution(tol1));
       
     }
-    
+   
+    Standard_Integer nbAddBound =0;
     TopTools_ListIteratorOfListOfShape lexp(WiresFirst);
+    TopoDS_Shape anE1, anE2;
     for (; lexp.More(); lexp.Next()) {    
       const TopoDS_Edge& edg = TopoDS::Edge(lexp.Value());
       if (!MapE.Contains(edg)) {
         B.Add(newW2,edg);
         MapE.Add(edg);
+        nbAddBound++;
+        if(anE1.IsNull())
+          anE1 = edg;
+        else
+          anE2 = edg;
+        
       }
     }        
-   
+    //check overlapping edges for second face
+    if(nbAddBound <2)
+      return Standard_False;
+    if(nbAddBound ==2 && !anE1.IsNull() && !anE2.IsNull())
+    {
+      if(checkOverlapping(TopoDS::Edge(anE1), TopoDS::Edge(anE2),FaceRef ))
+        return Standard_False;
+      
+    }
+
+    nbAddBound =0;
+    
+    TopoDS_Shape anE11, anE12;
+    TopoDS_Iterator anItE(newW1, Standard_False);
+    for( ; anItE.More(); anItE.Next())
+    {
+      if( anItE.Value().ShapeType() != TopAbs_EDGE)
+        continue;
+      nbAddBound++;
+      if(anE11.IsNull())
+        anE11 = anItE.Value();
+      else
+        anE12 = anItE.Value();
+     
+    }
+    //check overlapping edges for first face
+    if(nbAddBound <2)
+      return Standard_False;
+    if(nbAddBound  ==2 && !anE11.IsNull() && !anE12.IsNull())
+    {
+      if(checkOverlapping(TopoDS::Edge(anE11), TopoDS::Edge(anE12), FaceRef))
+        return Standard_False;
+      
+    }
+
     TopoDS_Face newF1,newF2;
     aLocalFace = FaceRef.EmptyCopied();
     newF1 = TopoDS::Face(aLocalFace);
@@ -1168,7 +1257,33 @@ void LocOpe_SplitShape::Put(const TopoDS_Shape& S)
   }
 }
 
+static void updateToleraces(const TopoDS_Face& theFace, const TopTools_DataMapOfShapeListOfShape& theMap)
+{
+  TopExp_Explorer aExpE(theFace, TopAbs_EDGE);
+  for (; aExpE.More(); aExpE.Next())
+  {
+    if (!theMap.IsBound(aExpE.Current()))
+      continue;
+    const TopTools_ListOfShape& lEdges = theMap(aExpE.Current());
+    if (lEdges.Extent() <= 1)
+      continue;
 
+    TopTools_ListIteratorOfListOfShape itrE(lEdges);
+    ShapeAnalysis_Edge aSae;
+    
+    for (; itrE.More(); itrE.Next())
+    {
+      TopoDS_Edge aCurE = TopoDS::Edge(itrE.Value());
+      Standard_Real amaxdev = 0.;
+      if (aSae.CheckSameParameter(aCurE, theFace, amaxdev))
+      {
+        BRep_Builder aB;
+        aB.UpdateEdge(aCurE, amaxdev);
+      }
+    }
+  }
+
+}
 //=======================================================================
 //function : Rebuild
 //purpose  : 
@@ -1177,7 +1292,8 @@ void LocOpe_SplitShape::Put(const TopoDS_Shape& S)
 Standard_Boolean LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
 
 {
-
+  if (S.ShapeType() == TopAbs_FACE)
+    updateToleraces(TopoDS::Face(S), myMap);
   TopTools_ListIteratorOfListOfShape itr(myMap(S));
   if (itr.More()) {
     if (itr.Value().IsSame(S)) {
@@ -1387,8 +1503,7 @@ Standard_Boolean ChoixUV(const TopoDS_Edge& Last,
                     const TopTools_IndexedMapOfShape& Poss,
                     TopoDS_Edge& theResEdge,
                     gp_Pnt2d& plst,
-                    gp_Vec2d& dlst,
-                    const Standard_Real toll)
+                    gp_Vec2d& dlst)
 {
   gp_Pnt2d p2d;
   gp_Vec2d v2d;
@@ -1397,30 +1512,20 @@ Standard_Boolean ChoixUV(const TopoDS_Edge& Last,
   BRepAdaptor_Surface surf(F,Standard_False); // no restriction
   surf.D0 (plst.X(), plst.Y(), aPlst);
 
-  Standard_Real tol;
-
   gp_Dir2d ref2d(dlst);
 
   Handle(Geom2d_Curve) C2d;
   
 
   Standard_Integer index = 0, imin=0;
-  Standard_Real  angmax = -M_PI, dist, ang;
+  Standard_Real  angmax = -M_PI, ang;
   
   for (index = 1; index <= Poss.Extent(); index++) {
     TopoDS_Edge anEdge = TopoDS::Edge (Poss.FindKey (index));
     
-    TopoDS_Vertex aVF = TopExp::FirstVertex(anEdge, Standard_True);
-		if( aVF.IsNull())
-      return 0;
-    tol = BRep_Tool::Tolerance(aVF);
-    GetDirection (anEdge, F, p2d, v2d, Standard_True);
+    GetDirection(anEdge, F, p2d, v2d, Standard_True);
 
     surf.D0 (p2d.X(), p2d.Y(), aPCur);
-
-    tol = Max(toll, tol); tol *= tol;
-
-    dist = aPCur.SquareDistance(aPlst);
 
     if (!Last.IsSame(anEdge)) {
       ang = ref2d.Angle(gp_Dir2d(v2d));
@@ -1429,7 +1534,7 @@ Standard_Boolean ChoixUV(const TopoDS_Edge& Last,
       ang = -M_PI;
     }
 
-    if ((dist - tol < Epsilon(1.0))  && (ang > angmax)) {
+    if ( (ang > angmax)) {
       imin = index;
       angmax = ang;
     }
@@ -1438,7 +1543,7 @@ Standard_Boolean ChoixUV(const TopoDS_Edge& Last,
   if (imin)
   {
     theResEdge = TopoDS::Edge (Poss.FindKey (imin));
-    GetDirection (theResEdge, F, plst, dlst, Standard_False);
+    GetDirection(theResEdge, F, plst, dlst, Standard_False);
   }
 
   return (imin);

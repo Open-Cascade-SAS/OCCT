@@ -1,0 +1,18 @@
+# Main script in this test grid; does all the job.
+# Individual test scripts are used only to specify data file and reference
+# test data (expected values of test execution).
+# The procedure is:
+# - load specified data files
+# - check validity of result shape, vizualize building compartments, 
+
+########################################################################
+
+splitshape result shape edges
+checkshape result
+maxtolerance result
+checknbshapes  $result -face $ref_nbf
+
+smallview
+display result
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

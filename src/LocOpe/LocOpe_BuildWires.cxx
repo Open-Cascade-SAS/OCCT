@@ -95,14 +95,15 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape& L,
   TopTools_MapOfShape Bords;
 //  for (Standard_Integer i = 1; i <= theMapVE.Extent(); i++) {
   Standard_Integer i ;
+ 
   for ( i = 1; i <= theMapVE.Extent(); i++) {
 //  Modified by skv - Mon May 31 13:07:50 2004 OCC5865 Begin
 //     if (theMapVE(i).Extent() == 1) {
     TopoDS_Vertex vtx = TopoDS::Vertex(theMapVE.FindKey(i));
     TopoDS_Edge   etmp;
+    TopoDS_Vertex aV_border;
     Standard_Real partmp;
-
-    if (theMapVE(i).Extent() == 1 || PW->OnEdge(vtx, etmp, partmp)) {
+    if (theMapVE(i).Extent() == 1 || (PW->OnVertex(vtx, aV_border) || PW->OnEdge(vtx, etmp, partmp)) ) {
       Bords.Add(vtx);
 //  Modified by skv - Mon May 31 13:07:50 2004 OCC5865 End
     }

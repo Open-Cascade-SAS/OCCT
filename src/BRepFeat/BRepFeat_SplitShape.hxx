@@ -25,6 +25,8 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+
 class LocOpe_WiresOnShape;
 class StdFail_NotDone;
 class Standard_ConstructionError;
@@ -60,7 +62,12 @@ public:
     BRepFeat_SplitShape();
   
   //! Creates the process  with the shape <S>.
-    BRepFeat_SplitShape(const TopoDS_Shape& S);
+  BRepFeat_SplitShape(const TopoDS_Shape& S);
+
+  //! Add splitting edges or wires for whole initial shape
+  //! withot additional specification edge->face, edge->edge
+  //! This method puts edge on the corresponding faces from initial shape
+  Standard_EXPORT Standard_Boolean Add(const TopTools_SequenceOfShape& theEdges);
   
   //! Initializes the process on the shape <S>.
     void Init (const TopoDS_Shape& S);

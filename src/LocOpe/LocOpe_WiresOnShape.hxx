@@ -28,6 +28,8 @@
 #include <Standard_Integer.hxx>
 #include <MMgt_TShared.hxx>
 #include <Standard_Real.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+
 class TopoDS_Shape;
 class TopoDS_Wire;
 class TopoDS_Face;
@@ -49,6 +51,11 @@ public:
   Standard_EXPORT LocOpe_WiresOnShape(const TopoDS_Shape& S);
   
   Standard_EXPORT void Init (const TopoDS_Shape& S);
+
+  //! Add splitting edges or wires for whole initial shape
+  //! withot additional specification edge->face, edge->edge
+  //! This method puts edge on the corresponding faces from initial shape
+  Standard_EXPORT Standard_Boolean Add(const TopTools_SequenceOfShape& theEdges);
   
   //! Set the flag of check internal intersections
   //! default value is True (to check)
