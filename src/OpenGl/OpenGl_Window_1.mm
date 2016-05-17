@@ -255,7 +255,25 @@ void OpenGl_Window::Resize()
   if (myWidthPt  == aWidthPt
    && myHeightPt == aHeightPt)
   {
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     return;
+  #else
+    // check backing store change (moving to another screen)
+    NSOpenGLContext* aGLCtx = myGlContext->myGContext;
+    NSView* aView = [aGLCtx view];
+    if (![aView respondsToSelector: @selector(convertSizeToBacking:)])
+    {
+      return;
+    }
+
+    NSRect aBounds = [aView bounds];
+    NSSize aRes    = [aView convertSizeToBacking: aBounds.size];
+    if (myWidth  == Standard_Integer(aRes.width)
+     && myHeight == Standard_Integer(aRes.height))
+    {
+      return;
+    }
+  #endif
   }
 
   myWidthPt  = aWidthPt;
