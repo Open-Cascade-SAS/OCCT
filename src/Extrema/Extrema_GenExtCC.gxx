@@ -335,8 +335,7 @@ void Extrema_GenExtCC::Perform()
 
   // Avoid mark parallel case when have duplicates out of tolerance.
   // Bad conditioned task: bug25635_1, bug23706_10, bug23706_13.
-  const Standard_Integer aMinNbInfSol = 100;
-  if (aPnts.Size() >= aMinNbInfSol)
+  if (aPnts.Size() >= 2)
   {
     isParallel = Standard_True;
     for(Standard_Integer anIdx = aPnts.Lower(); anIdx <= aPnts.Upper() - 1; anIdx++)

@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC27493"
+puts "============"
+puts ""
+#########################################################################
+# [Regression relative to OCCT 7.0.0] Extrema_ExtCC does not set flag "IsParallel" equal to true for the overlapped curves
+#########################################################################
+
+restore [locate_data_file bug27493.brep] anEdges
+explode anEdges
+mkcurve c1 anEdges_1
+mkcurve c2 anEdges_2
+
+# Check infinite solutions flag value
+set info [extrema c1 c2]
+if { [regexp "Infinite number of extremas" ${info}] != 1 } {
+    puts "Error : Infinite solution flag have incorrect value"
+}
+
+# Check extrema distance
+regexp {distance = +([-0-9.+eE]+)} $info full aDist
+set absTol 1.0e-9
+set relTol 0.001
+set aDist_Exp 0.0
+checkreal "Distance value check" $aDist $aDist_Exp $absTol $relTol
