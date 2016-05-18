@@ -5,7 +5,7 @@ Building with CMake {#occt_dev_guides__building_cmake}
 
 @section build_cmake_intro General
 
-This article describes **CMake**-based build process which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources. *OCCT requires CMake version 2.8.12 or later*.
+This article describes the **CMake**-based build process which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources. *OCCT requires CMake version 2.8.12 or later*.
 
 @note Comparing to the previous (6.x) releases of Open CASCADE Technology, OCCT 7.0 comes with a complete set of CMake scripts and projects, so that there is no need to use WOK anymore. Moreover, CMake gives you a powerful configuration tool which allows to control many aspects of OCCT deployment. At the same time this tool is quite intuitive which is a significant advantage over the legacy WOK utilities.
 
@@ -25,7 +25,7 @@ CMake deals with three directories: source, build or binary and install.
 
 * The source directory is where the sources of OCCT are located in your filesystem
 * The build or binary directory is where all the files created during CMake configuration and generation process will be located. The mentioned process will be described below.
-* The installation directory is where binaries will be installed after build the *INSTALL* project that is created by CMake generation process, along with header files and resources required for OCCT use in applications. 
+* The installation directory is where binaries will be installed after building the *INSTALL* project that is created by CMake generation process, along with header files and resources required for OCCT use in applications. 
 
 The good practice is not to use the source directory as a build one.
 Different configurations should be built in different build directories to avoid conflicts. 
@@ -35,7 +35,7 @@ It is however possible to choose one installation directory for several configur
     d:/tmp/occt-build-vc10-x64 -- the build directory with the generated
                                   solution and other intermediate files created during a CMake tool working
     d:/occt-install            -- the installation directory that is
-                                  able to contain several OCCT configuratoion
+                                  able to contain several OCCT configurations
 
 @section build_cmake_conf Configuration process
 
@@ -60,13 +60,13 @@ Once the source and build directories are selected, "Configure" button should be
 
 @figure{/dev_guides/building/cmake/images/cmake_image002.png}
 
-Once "Finish" button is pressed, the first pass the configuration process is executed. At the end of the process, CMake outputs the list of environment variables which have to be properly specified for successful configuration. 
+Once "Finish" button is pressed, the first pass of the configuration process is executed. At the end of the process, CMake outputs the list of environment variables which have to be properly specified for successful configuration. 
 
 @figure{/dev_guides/building/cmake/images/cmake_image003.png}
 
 The error message provides an information about these variables. This message will appear after each pass of the process until all required variables are specified correctly.
 
-The change of the state of some variables can lead to a new variable appearance. The new variables appeared after the pass of the configuration process is notified with red color by CMake GUI tool.
+The change of the state of some variables can lead to the appearance of new variables. The new variables appeared after the pass of the configuration process is notified with red color by CMake GUI tool.
 
 Note: There is "grouped" option which groups variables with a common prefix.
 
@@ -122,14 +122,14 @@ If *3RDPARTY_DIR* directory is defined, then required 3rd party binaries are sou
 
 The procedure expects to find binary and header files of each 3rd party product in its own sub-directory: *bin*, *lib* and *include*.
 
-The result of the search (achived on the next pass of the configuration process) are recorded in the corresponding variables:
+The results of the search (achived on the next pass of the configuration process) are recorded in the corresponding variables:
 
 * *3RDPARTY_\<PRODUCT\>_DIR* -- path to the 3rdparty directory (with directory name) (e.g. <i>D:/3rdparty/tcltk-86-32</i>)
 * *3RDPARTY_\<PRODUCT\>_LIBRARY_DIR* -- path to the directory containing a library (e.g. <i>D:/3rdparty/tcltk-86-32/lib</i>). 
 * *3RDPARTY_\<PRODUCT\>_INCLUDE_DIR* -- path to the directory containing a header file (e.g., <i>D:/3rdparty/tcltk-86-32/include</i>)
 * *3RDPARTY_\<PRODUCT\>_DLL_DIR* -- path to the directory containing a shared library (e.g., <i>D:/3rdparty/tcltk-86-32/bin</i>) This variable is only relevant to Windows platforms.
 
-Note: each library and include directory should be the children of product directory if the last one is defined.
+Note: each library and include directory should be children of the product directory if the last one is defined.
 
 The search process is as follows:
 
@@ -140,7 +140,7 @@ The search process is as follows:
    2. *3RDPARTY_\<PRODUCT\>_LIBRARY_DIR*
    3. *3RDPARTY_\<PRODUCT\>_DLL_DIR*
 
-If a variable of any level is not defined (empty or <i> \<variable name\>-NOTFOUND </i>) and the upper level variable is defined, the content of the non-defined variable will be sought at the next configuration step. If search process at level 3 does not find the required files, it seeks in default places.
+If a variable of any level is not defined (empty or <i> \<variable name\>-NOTFOUND </i>) and the upper level variable is defined, the content of the non-defined variable will be sought at the next configuration step. If the search process at level 3 does not find the required files, it seeks in default places.
 
 If a search result (include path, or library path, or dll path) does not meet your expectations, you can change *3RDPARTY_\<PRODUCT\>_*_DIR variable*, clear (if they are not empty) *3RDPARTY_\<PRODUCT\>_DLL_DIR, 3RDPARTY_\<PRODUCT\>_INCLUDE_DIR* and 3RDPARTY_\<PRODUCT\>_LIBRARY_DIR variables (or clear one of them) and run the configuration process again.
 
@@ -155,13 +155,13 @@ can be changed to
 
     d:/3rdparty/freetype-2.5.3
 
-During the configuration process the related variables (*3RDPARTY_FREETYPE_DLL_DIR*, *3RDPARTY_FREETYPE_INCLUDE_DIR* and *3RDPARTY_FREETYPE_LIBRARY_DIR*) will be filled with new found values
+During the configuration process the related variables (*3RDPARTY_FREETYPE_DLL_DIR*, *3RDPARTY_FREETYPE_INCLUDE_DIR* and *3RDPARTY_FREETYPE_LIBRARY_DIR*) will be filled with new found values.
 
 **Note**: The names of searched libraries and header files are hard-coded. If there is the need to change their names, change appropriate cmake variables (edit CMakeCache.txt file or edit in cmake-gui in advance mode) without reconfiguration: *3RDPARTY_\<PRODUCT\>_INCLUDE* for include, *3RDPARTY_\<PRODUCT\>_LIB* for library and *3RDPARTY_\<PRODUCT\>_DLL* for shared library.
 
 @section build_cmake_gen Projects generation
 
-Once the configuration process is done, "Generate" button is used to prepare project files for the target IDE. In our exercise the Visual Studio solution will be automatically created in the buid directory.
+Once the configuration process is done, the "Generate" button is used to prepare project files for the target IDE. In our exercise the Visual Studio solution will be automatically created in the buid directory.
 
 @section build_cmake_build Building
 
@@ -179,11 +179,11 @@ For this, right-click on the *Overview/INSTALL* project and select **Project Onl
 
 @section build_cmake_install Installation
 
-Installation is a process of extracting redistributable resources (binaries,include files etc) from the build directory into the installation one. The installation directory will be free of project files, intermediate object files and any other information related to the build routines. 
+Installation is a process of extracting redistributable resources (binaries, include files etc) from the build directory into the installation one. The installation directory will be free of project files, intermediate object files and any other information related to the build routines. 
 
 Normally you use the installation directory of OCCT to link against your specific application. 
 
-the directory structure is follow:
+The directory structure is as follows:
     
     data            -- data files for OCCT (brep, iges, stp)
     doc             -- OCCT overview documentation in HTML format
@@ -202,6 +202,6 @@ follows:
                \bin
                \lib
 
-If CMake installation flags are enabled for the 3rd party products (e.g. INSTALL_FREETYPE), then the corresponding binaries will be copied to the same bin(d) and lib(d) directories together with the native binaries of OCCT. Such organization of libraries can be especially helpful if your OCCT-based software does not use itself the 3rd parties of Open CASCADE Technology (thus, there is no sense to pack them into dedicated directories)
+If CMake installation flags are enabled for the 3rd party products (e.g. INSTALL_FREETYPE), then the corresponding binaries will be copied to the same bin(d) and lib(d) directories together with the native binaries of OCCT. Such organization of libraries can be especially helpful if your OCCT-based software does not use itself the 3rd parties of Open CASCADE Technology (thus, there is no sense to pack them into dedicated directories).
 
-The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*), samples (if its were installed) and overview.html (short-cut for installed OCCT overview documentation).
+The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*), samples (if they were installed) and overview.html (short-cut for installed OCCT overview documentation).
