@@ -1,7 +1,6 @@
 # test script on make volume operation
 # cylinder plane
 
-puts "TODO OCC26737 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC26737 ALL: Error: bopcheck failed"
 
 # planar face 

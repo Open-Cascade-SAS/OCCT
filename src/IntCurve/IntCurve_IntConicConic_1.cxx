@@ -1234,8 +1234,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
   IntRes2d_IntersectionPoint PtSeg1,PtSeg2;
   Standard_Real aHalfSinL1L2;
   Standard_Real Tol = TolR;
-  if(TolR< 1e-10) Tol = 1e-10;
-  
+  if(Tol < Precision::PConfusion())
+    Tol = Precision::PConfusion();
 
   LineLineGeometricIntersection(L1,L2,Tol,U1,U2,aHalfSinL1L2,nbsol);
 
