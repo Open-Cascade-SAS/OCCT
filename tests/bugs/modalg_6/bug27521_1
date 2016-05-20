@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC27521"
+puts "============"
+puts ""
+###############################
+## Standard_ConstructionError when trying to use unifySameDom into a shape
+###############################
+
+restore [locate_data_file bug27521_dom8443-good.brep] a
+unifysamedom result a
+
+don result
+smallview; fit
+checkshape result
+checknbshapes result -m UnifySameDomain -face 31 -edge 286
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

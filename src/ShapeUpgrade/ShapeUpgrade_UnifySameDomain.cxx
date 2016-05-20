@@ -907,7 +907,7 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
           if (!aMapVE.Contains(aV))
             aMapVE.Add(aV, TopTools_ListOfShape());
           aMapVE.ChangeFromKey(aV).Append(anEdge);
-  }
+        }
       }
     }
   }
@@ -929,7 +929,7 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
 
     // make chain for unite
     TopTools_SequenceOfShape aChain;
-        aChain.Append(edge);
+    aChain.Append(edge);
     aUsedEdges.Add(edge);
     TopoDS_Vertex V[2];
     TopExp::Vertices(edge, V[0], V[1], Standard_True);
@@ -949,27 +949,31 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
           edge = TopoDS::Edge(itL.Value());
           if (!aUsedEdges.Contains(edge))
           {
-            if (j == 0)
-        aChain.Prepend(edge);
-            else
-              aChain.Append(edge);
-            aUsedEdges.Add(edge);
-            TopoDS_Vertex VF2, VL2;
-            TopExp::Vertices(edge, VF2, VL2, Standard_True);
-            V[j] = (VF2.IsSame(V[j]) ? VL2 : VF2);
-            isAdded = Standard_True;
-            break;
+            TopoDS_Vertex V2[2];
+            TopExp::Vertices(edge, V2[0], V2[1], Standard_True);
+            // the neighboring edge must have V[j] reversed and located on the opposite end
+            if (V2[1 - j].IsEqual(V[j].Reversed()))
+            {
+              if (j == 0)
+                aChain.Prepend(edge);
+              else
+                aChain.Append(edge);
+              aUsedEdges.Add(edge);
+              V[j] = V2[j];
+              isAdded = Standard_True;
+              break;
+            }
+          }
+        }
       }
-    }
-  }
     }
 
     if (aChain.Length() < 2)
       continue;
 
-  Standard_Boolean IsClosed = Standard_False;
+    Standard_Boolean IsClosed = Standard_False;
     if (V[0].IsSame ( V[1] ))
-    IsClosed = Standard_True;
+      IsClosed = Standard_True;
 
     // split chain by vertices at which merging is not possible
     NCollection_Sequence<SubSequenceOfEdges> aOneSeq;
@@ -1525,11 +1529,11 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             }
             else
             {
-            Handle(ShapeExtend_WireData) sbwd =
+              Handle(ShapeExtend_WireData) sbwd =
                 new ShapeExtend_WireData (aWire);
-            ShapeFix_WireSegment seg ( sbwd, TopAbs_REVERSED );
-            wires.Append(seg);
-          }
+              ShapeFix_WireSegment seg ( sbwd, TopAbs_REVERSED );
+              wires.Append(seg);
+            }
           }
 
           CompShell.DispatchWires ( parts,wires );
