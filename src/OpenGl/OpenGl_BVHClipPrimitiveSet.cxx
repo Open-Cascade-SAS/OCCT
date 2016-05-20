@@ -54,8 +54,17 @@ Standard_ShortReal OpenGl_BVHClipPrimitiveSet::Center (const Standard_Integer th
 {
   Graphic3d_BndBox4f aBndBox = myStructs.FindKey (theIdx + 1)->BoundingBox();
 
-  return (aBndBox.CornerMin()[theAxis] +
-          aBndBox.CornerMax()[theAxis]) * 0.5f;
+  // to prevent float overflow
+  const Standard_Real aMin = Standard_Real (aBndBox.CornerMin()[theAxis]);
+  const Standard_Real aMax = Standard_Real (aBndBox.CornerMax()[theAxis]);
+  const Standard_Real aCenter = (aMin + aMax) * 0.5;
+
+  if (aCenter <= Standard_Real (-ShortRealLast()))
+    return -ShortRealLast();
+  if (aCenter >= Standard_Real (ShortRealLast()))
+    return ShortRealLast();
+
+  return Standard_ShortReal (aCenter);
 }
 
 // =======================================================================

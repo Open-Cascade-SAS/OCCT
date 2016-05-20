@@ -321,3 +321,12 @@ Select3D_BndBox3d MeshVS_CommonSensitiveEntity::BoundingBox()
 {
   return myBndBox;
 }
+
+//=======================================================================
+//function : CenterOfGeometry
+//purpose  :
+//=======================================================================
+gp_Pnt MeshVS_CommonSensitiveEntity::CenterOfGeometry() const
+{
+  return myCOG;
+}

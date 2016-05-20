@@ -55,6 +55,9 @@ public:
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
+  //! Returns center of a mesh
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+
 public:
 
   DEFINE_STANDARD_RTTIEXT (MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
