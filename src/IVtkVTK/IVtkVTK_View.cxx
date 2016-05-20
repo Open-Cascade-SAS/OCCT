@@ -27,7 +27,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_View,IVtk_IView)
 // Since VTK 6 the factory methods require "auto-initialization" depending on
 // what modules are enabled at VTK configure time.
 // Some defines are needed in order to make the factories work properly.
+#ifdef VTK_OPENGL2_BACKEND
+VTK_MODULE_INIT(vtkRenderingOpenGL2)
+#else
 VTK_MODULE_INIT(vtkRenderingOpenGL)
+#endif
 VTK_MODULE_INIT(vtkInteractionStyle)
 
 // Handle implementation

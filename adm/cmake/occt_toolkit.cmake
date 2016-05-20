@@ -235,6 +235,21 @@ if (APPLE)
   endif()
 endif()
 
+# Update list of used VTK libraries if OpenGL2 Rendering BackEnd is used.
+# Add VTK_OPENGL2_BACKEND definition.
+if("${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL2")
+  add_definitions(-DVTK_OPENGL2_BACKEND)
+  foreach (VTK_EXCLUDE_LIBRARY vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL)
+    list (FIND USED_TOOLKITS_BY_CURRENT_PROJECT "${VTK_EXCLUDE_LIBRARY}" IS_VTK_OPENGL_FOUND)
+    if (NOT ${IS_VTK_OPENGL_FOUND} EQUAL -1)
+      list (REMOVE_ITEM USED_TOOLKITS_BY_CURRENT_PROJECT ${VTK_EXCLUDE_LIBRARY})
+      if (${VTK_EXCLUDE_LIBRARY} STREQUAL vtkRenderingOpenGL)
+        list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT vtkRenderingOpenGL2)
+      endif()
+    endif()
+  endforeach()
+endif()
+
 if (BUILD_SHARED_LIBS)
   target_link_libraries (${PROJECT_NAME} ${USED_TOOLKITS_BY_CURRENT_PROJECT} ${USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT})
 endif()
