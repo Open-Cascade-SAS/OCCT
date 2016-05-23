@@ -269,11 +269,12 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
       thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
       return Standard_False;
     }
+    else
+    {
+      thePickResult = SelectBasics_PickResult (aDepth, theMgr.DistToGeometryCenter (myCenter3D));
+    }
   }
 
-
-  aDistToCOG = theMgr.DistToGeometryCenter (myCenter3D);
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
   return Standard_True;
 }
 
@@ -368,4 +369,13 @@ void Select3D_SensitiveCircle::computeCenter3D()
 gp_Pnt Select3D_SensitiveCircle::CenterOfGeometry() const
 {
   return myCenter3D;
+}
+
+//=======================================================================
+// function : distanceToCOG
+// purpose  :
+//=======================================================================
+Standard_Real Select3D_SensitiveCircle::distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr)
+{
+  return theMgr.DistToGeometryCenter (myCenter3D);
 }

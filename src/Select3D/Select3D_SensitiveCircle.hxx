@@ -101,6 +101,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveCircle,Select3D_SensitivePoly)
 
+protected:
+
+  //! Calculates distance from the 3d projection of used-picked screen point
+  //! to center of the geometry
+  virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
+
 private:
 
   //! Computes myCenter3D as the barycenter of points from mypolyg3d
