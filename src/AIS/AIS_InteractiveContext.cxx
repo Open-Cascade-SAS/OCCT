@@ -449,7 +449,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
       return;
     }
 
-    // Erase presentations for all display modes different from aDispMode.
+    // Mark the presentation modes hidden of interactive object different from aDispMode.
     // Then make sure aDispMode is displayed and maybe highlighted.
     // Finally, activate selection mode <SelMode> if not yet activated.
     TColStd_ListOfInteger aModesToRemove;
@@ -463,7 +463,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
         {
           myMainPM->Unhighlight (theIObj, anOldMode);
         }
-        myMainPM->Erase (theIObj, anOldMode);
+        myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
       }
     }
 
