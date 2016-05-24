@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC27529"
+puts "================"
+puts ""
+#######################################################################
+# Invalid result of CUT operation
+#######################################################################
+
+restore [locate_data_file bug27529_shapes.brep] aS
+explode aS
+
+bcut result aS_1 aS_2
+
+# Check result validity.
+checkshape result
+
+# Check number of topological entities in the result.
+checknbshapes result -solid 1 -shell 1 -face 6 -vertex 8
+
+# Check result area.
+checkprops result -s 1.5015e+008
+
+smallview
+don result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
