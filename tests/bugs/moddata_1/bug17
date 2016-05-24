@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: Error: Number of triangles"
-puts "TODO OCC12345 ALL: Error: Number of nodes"
-
 puts "================"
 puts "OCC17"
 puts "================"
@@ -22,5 +19,5 @@ vdisplay result
 vsetdispmode result 1
 vfit
 
-checktrinfo result -tri 100 -nod 94
+checktrinfo result -tri 96 -nod 94
 checkview -display result -2d -path ${imagedir}/${test_image}.png

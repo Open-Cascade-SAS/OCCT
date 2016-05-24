@@ -13,5 +13,5 @@ vsetdispmode result 1
 isos result 0
 triangles result
 
-checktrinfo result -tri 129 -nod 131
+checktrinfo result -tri 50 -nod 52
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

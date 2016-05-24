@@ -14,6 +14,6 @@ vdisplay result
 vfit
 vsetdispmode result 1
 
-checktrinfo result -tri 72 -nod 74
+checktrinfo result -tri 74 -nod 76
 checkprops result -s 314.159 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

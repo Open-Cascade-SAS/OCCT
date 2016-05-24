@@ -69,7 +69,7 @@ if { [string compare $bug_freelinks ""] != 0 } {
 # It may be different for different OS
     foreach os_freelinks [array names nbfree] {
 	if { $nbfree($os_freelinks) != 0 } { 
-	    puts "TODO $bug_freelinks $os_freelinks:^\\s*Error: Free links: $nbfree($os_freelinks)\\b\\s*"
+	    puts "TODO $bug_freelinks $os_freelinks:^\\s*Error: Free links"
 	}
     }
 }
