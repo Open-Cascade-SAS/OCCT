@@ -28,6 +28,7 @@
 #include <HLRBRep_EdgeInterferenceTool.hxx>
 #include <HLRBRep_Hider.hxx>
 #include <HLRBRep_VertexList.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 //=======================================================================
@@ -350,8 +351,56 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	  Standard_Integer level = 0;
 	  if (!myDS->SimpleHidingFace())                    // Level at Start
 	    level = myDS->HidingStartLevel(E,ed,ILHidden);  // **************
-	  	  HLRAlgo_ListIteratorOfInterferenceList It(ILHidden); 
-	  
+
+          HLRAlgo_ListIteratorOfInterferenceList It(ILHidden);
+          if (myDS->SimpleHidingFace()) //remove excess interferences
+          {
+            TColStd_SequenceOfReal ToRemove;
+            TopAbs_Orientation PrevTrans = TopAbs_EXTERNAL;
+            Standard_Real PrevParam = 0.;
+            for (; It.More(); It.Next())
+            {
+              const HLRAlgo_Interference& Int = It.Value();
+              TopAbs_Orientation aTrans = Int.Transition();
+              if (aTrans == PrevTrans)
+              {
+                if (aTrans == TopAbs_FORWARD)
+                {
+                  ToRemove.Append(Int.Intersection().Parameter());
+#ifdef OCCT_DEBUG
+                  cout<<"Two adjacent interferences with transition FORWARD"<<endl;
+#endif
+                }
+                else if (aTrans == TopAbs_REVERSED)
+                {
+                  ToRemove.Append(PrevParam);
+#ifdef OCCT_DEBUG
+                  cout<<"Two adjacent interferences with transition REVERSED"<<endl;
+#endif
+                }
+              }
+              PrevTrans = aTrans;
+              PrevParam = Int.Intersection().Parameter();
+            }
+            It.Initialize(ILHidden);
+            while (It.More())
+            {
+              Standard_Real aParam = It.Value().Intersection().Parameter();
+              Standard_Boolean found = Standard_False;
+              for (Standard_Integer i = 1; i <= ToRemove.Length(); i++)
+                if (aParam == ToRemove(i))
+                {
+                  found = Standard_True;
+                  ILHidden.Remove(It);
+                  ToRemove.Remove(i);
+                  break;
+                }
+              if (!found)
+                It.Next();
+            }
+          } //remove excess interferences
+          
+          It.Initialize(ILHidden);
 	  while(It.More()) {           // suppress multi-inside Intersections
 	                               // ***********************************
 	  
@@ -361,16 +410,20 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	    case TopAbs_FORWARD  :
 	      {
 		Standard_Integer decal = Int.Intersection().Level();
-		if (level > 0) ILHidden.Remove(It);
-		else           It.Next();
+		if (level > 0)
+                  ILHidden.Remove(It);
+		else
+                  It.Next();
 		level = level + decal;
 	      }
 	      break;
 	    case TopAbs_REVERSED : 
 	      { 
 		level = level - Int.Intersection().Level();
-		if (level > 0) ILHidden.Remove(It);
-		else           It.Next();
+		if (level > 0)
+                  ILHidden.Remove(It);
+		else
+                  It.Next();
 	      }
 	      break;
 	    case TopAbs_EXTERNAL :

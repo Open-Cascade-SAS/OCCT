@@ -95,7 +95,9 @@ public:
   //! Create a domain from a curve
   Standard_EXPORT IntRes2d_Domain ComputeDomain (const Adaptor2d_Curve2d& C1, const Standard_Real TolDomain) const;
 
-
+  //! Set / get minimum number of points in polygon intersection.
+  Standard_EXPORT void SetMinNbSamples (const Standard_Integer theMinNbSamples);
+  Standard_EXPORT Standard_Integer GetMinNbSamples () const;
 
 
 protected:

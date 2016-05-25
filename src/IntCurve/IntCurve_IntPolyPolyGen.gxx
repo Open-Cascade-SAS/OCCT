@@ -50,10 +50,7 @@
 
 //======================================================================
 
-//  Modified by skv - Tue Mar  1 14:22:09 2005 OCC8169 Begin
-// #define NBITER_MAX_POLYGON 3
 #define NBITER_MAX_POLYGON 10
-//  Modified by skv - Tue Mar  1 14:22:09 2005 OCC8169 End
 #define TOL_CONF_MINI   0.0000000001
 #define TOL_MINI        0.0000000001
 
@@ -84,7 +81,10 @@ Standard_Boolean HeadOrEndPoint( const IntRes2d_Domain& D1
 
 
 //======================================================================
-IntCurve_IntPolyPolyGen::IntCurve_IntPolyPolyGen(void) {
+IntCurve_IntPolyPolyGen::IntCurve_IntPolyPolyGen()
+{
+  const Standard_Integer aMinPntNb = 20; // Minimum number of samples.
+  myMinPntNb = aMinPntNb;
   done = Standard_False;
 }
 //======================================================================
@@ -631,50 +631,43 @@ Standard_Boolean HeadOrEndPoint( const IntRes2d_Domain& D1
     return(Standard_False);
 }
 
-
-//======================================================================
-void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
-				      ,const IntRes2d_Domain& D1
-				      ,const TheCurve& C2
-				      ,const IntRes2d_Domain& D2
-				      ,const Standard_Real TolConf
-				      ,const Standard_Real Tol
-				      ,const Standard_Integer NbIter
-				      ,const Standard_Real DeltaU
-				      ,const Standard_Real DeltaV) {
-
+//=======================================================================
+//function : Perform
+//purpose  : Base method to perform polyline / polyline intersection for
+//           pair of curves.
+//=======================================================================
+void IntCurve_IntPolyPolyGen::Perform(const TheCurve& C1,
+                                      const IntRes2d_Domain& D1,
+                                      const TheCurve& C2,
+                                      const IntRes2d_Domain& D2,
+                                      const Standard_Real TolConf,
+                                      const Standard_Real Tol,
+                                      const Standard_Integer NbIter,
+                                      const Standard_Real DeltaU,
+                                      const Standard_Real DeltaV)
+{
   Standard_Integer nbsamplesOnC1,nbsamplesOnC2;
   done = Standard_False;
 
   if(NbIter>NBITER_MAX_POLYGON) return;
 
-  nbsamplesOnC1 = TheCurveTool::NbSamples(C1,D1.FirstParameter(),D1.LastParameter());      
-
-  if (NbIter == 0) // first time
-  {
-    if (nbsamplesOnC1 < 20)
-      nbsamplesOnC1 = 20;
-  }
-  else // NbIter > 0
-  {
-    nbsamplesOnC1=(5*(nbsamplesOnC1*NbIter))/4;
-  }
-  /////////////////////////////////////////////
-
+  // Number of samples tunning.
+  nbsamplesOnC1 = TheCurveTool::NbSamples(C1,D1.FirstParameter(),D1.LastParameter());
   nbsamplesOnC2 = TheCurveTool::NbSamples(C2,D2.FirstParameter(),D2.LastParameter());
-  
-  if (NbIter == 0) // first time
-  {
-    if (nbsamplesOnC2 < 20)
-      nbsamplesOnC2 = 20;
-  }
-  else // NbIter > 0
-  {
-    nbsamplesOnC2=(5*(nbsamplesOnC2*NbIter))/4;
-  }
-  /////////////////////////////////////////////
 
-  
+  if (NbIter == 0)
+  {
+    // Minimal number of points.
+    nbsamplesOnC1 = Max(nbsamplesOnC1, myMinPntNb);
+    nbsamplesOnC2 = Max(nbsamplesOnC2, myMinPntNb);
+  }
+  else
+  {
+    // Increase number of samples in second and next iterations.
+    nbsamplesOnC1=(5 * (nbsamplesOnC1 * NbIter)) / 4;
+    nbsamplesOnC2=(5 * (nbsamplesOnC2 * NbIter)) / 4;
+  }
+
   NCollection_Handle<IntCurve_ThePolygon2d>
     aPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol),
     aPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol);
@@ -1183,4 +1176,22 @@ void GetIntersection(const TheCurve& theC1, const Standard_Real theT1f, const St
     GetIntersection(theC1, aT1m, theT1l, theC2, aT2m, theT2l, theTolConf, theMaxCount, thePInt, theDist, theCount);
   }
 
+}
+
+//=======================================================================
+//function : GetMinNbPoints
+//purpose  : 
+//=======================================================================
+Standard_Integer IntCurve_IntPolyPolyGen::GetMinNbSamples() const
+{
+  return myMinPntNb;
+}
+
+//=======================================================================
+//function : SetMinNbPoints
+//purpose  : 
+//=======================================================================
+void IntCurve_IntPolyPolyGen::SetMinNbSamples(const Standard_Integer theMinNbSamples)
+{
+  myMinPntNb = theMinNbSamples;
 }

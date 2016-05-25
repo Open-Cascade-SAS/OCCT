@@ -84,6 +84,10 @@ myPolyhedron(NULL)
   =NbInters=NbIntersVides=NbInters1Segment=NbInters1Point=NbIntersNPoints
   = NbIntersNSegments=NbIntersPointEtSegment=NbIntersCSVides=0;
 #endif
+
+  // Set minimal number of samples in case of HLR polygonal intersector.
+  const Standard_Integer aMinNbHLRSamples = 4;
+  myIntersector.SetMinNbSamples(aMinNbHLRSamples);
 }
 
 //=======================================================================

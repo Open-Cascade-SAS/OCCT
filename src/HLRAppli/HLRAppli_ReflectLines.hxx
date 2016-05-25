@@ -55,9 +55,10 @@ public:
 
   //! returns resulting compound of lines
   //! of specified type and visibility
-  //! represented by edges in 3d
+  //! represented by edges in 3d or 2d
   Standard_EXPORT TopoDS_Shape GetCompoundOf3dEdges(const HLRBRep_TypeOfResultingEdge type,
-                                                    const Standard_Boolean            visible);
+                                                    const Standard_Boolean            visible,
+                                                    const Standard_Boolean            In3d);
 
 
 

@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC27341"
+puts "============"
+puts ""
+######################################################
+# Incorrect exact HLR results
+######################################################
+
+pload XDE
+pload QAcommands
+
+testreadstep [locate_data_file bug27341_211808_PCLNL12K8-15x32.stp] a
+
+set viewname "right"
+
+smallview
+top
+clear
+
+OCC27341 result a ${viewname}
+build3d result
+
+fit
+
+checkprops result -l 425.969
+
+# 0027526: Excess micro-edge in HLR visualization of a torus
+if { [regexp {Windows} [dversion]] } {
+   checknbshapes result -vertex 198 -edge 99
+} else {
+   checknbshapes result -vertex 200 -edge 100
+}
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

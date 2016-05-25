@@ -49,8 +49,9 @@ public:
   
   Standard_EXPORT void Perform (const Standard_Address& Curve1, const IntRes2d_Domain& Domain1, const Standard_Real TolConf, const Standard_Real Tol);
 
-
-
+  //! Set / get minimum number of points in polygon for intersection.
+  Standard_EXPORT void SetMinNbSamples (const Standard_Integer theMinNbSamples);
+  Standard_EXPORT Standard_Integer GetMinNbSamples () const;
 
 protected:
 
@@ -76,7 +77,8 @@ private:
   IntRes2d_Domain DomainOnCurve1;
   IntRes2d_Domain DomainOnCurve2;
 
-
+  //! Minimal number of sample points
+  Standard_Integer myMinPntNb;
 };
 
 

@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC27341"
+puts "============"
+puts ""
+######################################################
+# Incorrect exact HLR results
+######################################################
+
+pload QAcommands
+
+restore [locate_data_file bug27341_hlrsave.brep] a
+
+set viewname "front"
+
+smallview
+top
+clear
+
+OCC27341 result a ${viewname}
+build3d result
+
+fit
+
+checkprops result -l 7.39488
+checknbshapes result -vertex 46 -edge 23
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -1223,7 +1223,7 @@ void HLRBRep_Data::NextInterference ()
     if (myFEOri == TopAbs_FORWARD ||
 	myFEOri == TopAbs_REVERSED) {
       // Edge from the boundary
-      if (!((HLRBRep_EdgeData*)myFEData)->Vertical() && !myFEDouble) {
+      if (!((HLRBRep_EdgeData*)myFEData)->Vertical() && !(myFEDouble && !myFEOutLine)) {
 	// not a vertical edge and not a double Edge
 	Standard_Address MinMaxFEdg = ((HLRBRep_EdgeData*)myFEData)->MinMax();
 	//-- -----------------------------------------------------------------------

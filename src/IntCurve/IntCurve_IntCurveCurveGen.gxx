@@ -1116,57 +1116,20 @@ IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve& C1,
   }
 }
 
-	
-	
-	
-	
+//=======================================================================
+//function : SetMinNbSamples
+//purpose  : 
+//=======================================================================
+void IntCurve_IntCurveCurveGen::SetMinNbSamples(const Standard_Integer theMinNbSamples)
+{
+  intcurvcurv.SetMinNbSamples(theMinNbSamples);
+}
 
-
-
-	
-	
-	
-
-
-//----------------------------------------------------------------------
-//--   InterComposite ( C1 , Num1 , C2 , Num2 , Recursion_sur_C2 )
-//--    
-//--       Boolean Arret = False
-//--
-//--       Si C2.Type() == Composite   Max2 = C2.GetIntervals() Sinon Max2=2
-//-- 
-//--       Si C1.Type() == Composite   Max1 = C1.GetIntervals() Sinon Max1=2
-//--
-//--       Si Num2 > Max2  RETURN; 
-//--
-//--       Sinon
-//--
-//--          Si Recursion_sur_C2 == True 
-//--
-//--               for i = Num1  -->  Max1
-//--
-//--                   Num1 = i
-//--
-//--                   InterComposite(C2,Num2,C1,Num1,False);
-//-- 
-//--               Si Num2 < Max2
-//--
-//--                    Num2++ 
-//--
-//--                    Num1 = 1 
-//--
-//--                    InterComposite(C1,Num1,C2,Num2,True);
-//--
-//--          Sinon
-//--
-//--               *** INTERSECTION ENTRE C2[num2] et C1[Num1] ***
-//--
-//--      Fin
-//--
-//--
-//-- (( Appel avec C1 , 1 , C2 , 1 , True))
-//--
-//--  Exemple :     C1 = ABCD   C2= 12
-//-- 
-//--             donne :      A,1  B,1  C,1  D,1   A,2  B,2  C,2  D,2  
-//----------------------------------------------------------------------
+//=======================================================================
+//function : GetMinNbSamples
+//purpose  : 
+//=======================================================================
+Standard_Integer IntCurve_IntCurveCurveGen::GetMinNbSamples() const
+{
+  return intcurvcurv.GetMinNbSamples();
+}

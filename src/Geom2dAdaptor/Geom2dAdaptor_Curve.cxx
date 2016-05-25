@@ -991,7 +991,7 @@ Handle(Geom2d_BSplineCurve) Geom2dAdaptor_Curve::BSpline() const
 static Standard_Integer nbPoints(const Handle(Geom2d_Curve)& theCurve) 
 {
  
-  Standard_Integer nbs = 10;
+  Standard_Integer nbs = 20;
   
   if(theCurve->IsKind(STANDARD_TYPE( Geom2d_Line)) )
     nbs = 2;

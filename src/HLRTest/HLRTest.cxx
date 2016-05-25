@@ -486,11 +486,11 @@ static Standard_Integer hlrin3d(Draw_Interpretor& , Standard_Integer n, const ch
   BRep_Builder BB;
   BB.MakeCompound(Result);
   
-  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, Standard_True);
+  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, Standard_True, Standard_True);
   BB.Add(Result, SharpEdges);
-  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, Standard_True);
+  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, Standard_True, Standard_True);
   BB.Add(Result, OutLines);
-  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, Standard_True);
+  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, Standard_True, Standard_True);
   BB.Add(Result, SmoothEdges);
   
   DBRep::Set(a[1], Result);

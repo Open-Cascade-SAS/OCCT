@@ -1792,7 +1792,7 @@ Standard_Integer  build3d(Draw_Interpretor& di,
   }
 
   Standard_Boolean Ok;
-  TopoDS_Shape S = DBRep::Get(a[1],TopAbs_FACE);
+  TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull()) return 1;
 
   if (n==2) { Ok = BRepLib::BuildCurves3d(S); }
