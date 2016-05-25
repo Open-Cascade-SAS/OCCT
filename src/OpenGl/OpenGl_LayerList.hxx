@@ -95,6 +95,9 @@ public:
   //! Returns the set of OpenGL Z-layers.
   const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
 
+  //! Returns the map of Z-layer IDs to indexes.
+  const OpenGl_LayerSeqIds& LayerIDs() const { return myLayerIds; }
+
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
   void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId);

@@ -3257,7 +3257,11 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
     aViewSizeYv = aViewSizeZv;
   }
 
-  Scale (theCamera, aViewSizeXv * (1.0 + theMargin), aViewSizeYv * (1.0 + theMargin));
+  Scale (theCamera, aViewSizeXv, aViewSizeYv);
+
+  const Standard_Real aZoomCoef = myView->ConsiderZoomPersistenceObjects();
+
+  Scale (theCamera, theCamera->ViewDimensions().X() * (aZoomCoef + theMargin), theCamera->ViewDimensions().Y() * (aZoomCoef + theMargin));
 
   return Standard_True;
 }

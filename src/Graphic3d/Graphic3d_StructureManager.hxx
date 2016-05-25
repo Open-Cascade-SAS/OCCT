@@ -109,8 +109,10 @@ public:
   //! TOU_WAIT	on demand (Update)
   Standard_EXPORT Aspect_TypeOfUpdate UpdateMode() const;
 
-  //! Updates screen in function of modifications of the structures.
-  Standard_EXPORT virtual void Update (const Aspect_TypeOfUpdate theMode = Aspect_TOU_ASAP) const;
+  //! Updates screen in function of modifications of the structures
+  //! and invalidates bounding box of specified ZLayerId.
+  Standard_EXPORT virtual void Update (const Aspect_TypeOfUpdate theMode = Aspect_TOU_ASAP,
+                                       const Graphic3d_ZLayerId  theLayerId = Graphic3d_ZLayerId_UNKNOWN) const;
 
   //! Deletes and erases the 3D structure manager.
   Standard_EXPORT virtual void Remove();

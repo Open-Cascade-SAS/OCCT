@@ -17,6 +17,29 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CView,Graphic3d_DataStructureManager)
 
+namespace
+{
+  static const int THE_DEFAULT_LAYERS[] = { Graphic3d_ZLayerId_Top,
+                                            Graphic3d_ZLayerId_Topmost,
+                                            Graphic3d_ZLayerId_BotOSD,
+                                            Graphic3d_ZLayerId_TopOSD };
+
+  static const int THE_NB_DEFAULT_LAYERS = sizeof(THE_DEFAULT_LAYERS) / sizeof(*THE_DEFAULT_LAYERS);
+
+  void combineBox (Bnd_Box& aCombined, const Graphic3d_BndBox4f& theBox)
+  {
+    if (theBox.IsValid())
+    {
+      aCombined.Add (gp_Pnt (theBox.CornerMin().x(),
+                             theBox.CornerMin().y(),
+                             theBox.CornerMin().z()));
+      aCombined.Add (gp_Pnt (theBox.CornerMax().x(),
+                             theBox.CornerMax().y(),
+                             theBox.CornerMax().z()));
+    }
+  }
+}
+
 //=======================================================================
 //function : Constructor
 //purpose  :
@@ -349,9 +372,11 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
 // function : Update
 // purpose  :
 // =======================================================================
-void Graphic3d_CView::Update (const Aspect_TypeOfUpdate theUpdateMode)
+void Graphic3d_CView::Update (const Aspect_TypeOfUpdate theUpdateMode,
+                              const Graphic3d_ZLayerId  theLayerId)
 {
-  myMinMax.Invalidate();
+  InvalidateZLayerBoundingBox (theLayerId);
+
   if (theUpdateMode == Aspect_TOU_ASAP)
   {
     Compute();
@@ -409,13 +434,68 @@ void Graphic3d_CView::DisplayedStructures (Graphic3d_MapOfStructure& theStructur
 // =======================================================================
 Bnd_Box Graphic3d_CView::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  if (myMinMax.IsOutdated (theToIgnoreInfiniteFlag))
+  Bnd_Box aResult;
+
+  if (!IsDefined())
   {
-    myMinMax.BoundingBox (theToIgnoreInfiniteFlag) = MinMaxValues (myStructsDisplayed, theToIgnoreInfiniteFlag);
-    myMinMax.IsOutdated  (theToIgnoreInfiniteFlag) = Standard_False;
+    return aResult;
   }
 
-  return myMinMax.BoundingBox (theToIgnoreInfiniteFlag);
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  Standard_Integer aWinWidth  = 0;
+  Standard_Integer aWinHeight = 0;
+
+  Window()->Size (aWinWidth, aWinHeight);
+
+  for (Standard_Integer aLayer = 0; aLayer < THE_NB_DEFAULT_LAYERS; ++aLayer)
+  {
+    Graphic3d_BndBox4f aBox = ZLayerBoundingBox (THE_DEFAULT_LAYERS[aLayer],
+                                                 aCamera,
+                                                 aWinWidth,
+                                                 aWinHeight,
+                                                 theToIgnoreInfiniteFlag);
+    combineBox (aResult, aBox);
+  }
+
+  Standard_Integer aMaxZLayer = ZLayerMax();
+  for (Standard_Integer aLayerId = Graphic3d_ZLayerId_Default; aLayerId <= aMaxZLayer; ++aLayerId)
+  {
+    Graphic3d_BndBox4f aBox = ZLayerBoundingBox (aLayerId, aCamera, aWinWidth, aWinHeight, theToIgnoreInfiniteFlag);
+    combineBox (aResult, aBox);
+  }
+
+  return aResult;
+}
+
+// =======================================================================
+// function : ConsiderZoomPersistenceObjects
+// purpose  :
+// =======================================================================
+Standard_Real Graphic3d_CView::ConsiderZoomPersistenceObjects()
+{
+  if (!IsDefined())
+  {
+    return 1.0;
+  }
+
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  Standard_Integer aWinWidth  = 0;
+  Standard_Integer aWinHeight = 0;
+
+  Window()->Size (aWinWidth, aWinHeight);
+
+  Standard_Real aMaxCoef = 1.0;
+  for (Standard_Integer aLayer = 0; aLayer < THE_NB_DEFAULT_LAYERS; ++aLayer)
+  {
+    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (THE_DEFAULT_LAYERS[aLayer], aCamera, aWinWidth, aWinHeight, Standard_False));
+  }
+
+  for (Standard_Integer aLayer = Graphic3d_ZLayerId_Default; aLayer <= ZLayerMax(); ++aLayer)
+  {
+    aMaxCoef = Max (aMaxCoef, considerZoomPersistenceObjects (aLayer, aCamera, aWinWidth, aWinHeight, Standard_False));
+  }
+
+  return aMaxCoef;
 }
 
 // =======================================================================
@@ -672,7 +752,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
 
     theStructure->CalculateBoundBox();
     displayStructure (theStructure->CStructure(), theStructure->DisplayPriority());
-    Update (theUpdateMode);
+    Update (theUpdateMode, theStructure->GetZLayer());
     return;
   }
   else if (anAnswer != Graphic3d_TOA_COMPUTE)
@@ -693,7 +773,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
       }
 
       displayStructure (anOldStruct->CStructure(), theStructure->DisplayPriority());
-      Update (theUpdateMode);
+      Update (theUpdateMode, anOldStruct->GetZLayer());
       return;
     }
     else
@@ -716,7 +796,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
         const Handle(Graphic3d_Structure)& aNewStruct = myStructsComputed.Value (aNewIndex);
         myStructsComputed.SetValue (anIndex, aNewStruct);
         displayStructure (aNewStruct->CStructure(), theStructure->DisplayPriority());
-        Update (theUpdateMode);
+        Update (theUpdateMode, aNewStruct->GetZLayer());
         return;
       }
       else
@@ -807,7 +887,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure,
   myStructsDisplayed.Add (theStructure);
   displayStructure (aStruct->CStructure(), theStructure->DisplayPriority());
 
-  Update (theUpdateMode);
+  Update (theUpdateMode, aStruct->GetZLayer());
 }
 
 // =======================================================================
@@ -851,7 +931,7 @@ void Graphic3d_CView::Erase (const Handle(Graphic3d_Structure)& theStructure,
     }
   }
   myStructsDisplayed.Remove (theStructure);
-  Update (theUpdateMode);
+  Update (theUpdateMode, theStructure->GetZLayer());
 }
 
 // =======================================================================

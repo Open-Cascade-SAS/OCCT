@@ -231,6 +231,22 @@ public:
   Standard_EXPORT virtual void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId,
                                                   const Graphic3d_ZLayerSettings& theSettings) Standard_OVERRIDE;
 
+  //! Returns the maximum Z layer ID.
+  //! First layer ID is Graphic3d_ZLayerId_Default, last ID is ZLayerMax().
+  Standard_EXPORT virtual Standard_Integer ZLayerMax() const Standard_OVERRIDE;
+
+  //! Returns the bounding box of all structures displayed in the Z layer.
+  //! Never fails. If Z layer does not exist nothing happens.
+  Standard_EXPORT virtual void InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId) const Standard_OVERRIDE;
+
+  //! Returns the bounding box of all structures displayed in the Z layer.
+  //! Never fails. If Z layer does not exist the empty box is returned.
+  Standard_EXPORT virtual Graphic3d_BndBox4f ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
+                                                                const Handle(Graphic3d_Camera)& theCamera,
+                                                                const Standard_Integer          theWindowWidth,
+                                                                const Standard_Integer          theWindowHeight,
+                                                                const Standard_Boolean          theToIgnoreInfiniteFlag) const Standard_OVERRIDE;
+
   //! Returns pointer to an assigned framebuffer object.
   Standard_EXPORT virtual Handle(Standard_Transient) FBO() const Standard_OVERRIDE;
 
@@ -527,6 +543,13 @@ private:
   //! Changes the priority of a structure within its Z layer in the specified view.
   Standard_EXPORT virtual void changePriority (const Handle(Graphic3d_CStructure)& theCStructure,
                                                const Standard_Integer theNewPriority) Standard_OVERRIDE;
+
+  //! Returns zoom-scale factor.
+  Standard_EXPORT virtual Standard_Real considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
+                                                                        const Handle(Graphic3d_Camera)& theCamera,
+                                                                        const Standard_Integer          theWindowWidth,
+                                                                        const Standard_Integer          theWindowHeight,
+                                                                        const Standard_Boolean          theToIgnoreInfiniteFlag) const Standard_OVERRIDE;
 
 private:
 

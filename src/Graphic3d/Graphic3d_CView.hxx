@@ -108,8 +108,10 @@ public:
   //! Computes the new presentation of the structure  displayed in this view with the type Graphic3d_TOS_COMPUTED.
   Standard_EXPORT void ReCompute (const Handle(Graphic3d_Structure)& theStructure);
 
-  //! Updates screen in function of modifications of the structures.
-  Standard_EXPORT void Update (const Aspect_TypeOfUpdate theUpdateMode);
+  //! Updates screen in function of modifications of the structures
+  //! and invalidates bounding box of specified ZLayerId.
+  Standard_EXPORT void Update (const Aspect_TypeOfUpdate theUpdateMode,
+                               const Graphic3d_ZLayerId  theLayerId = Graphic3d_ZLayerId_UNKNOWN);
 
   //! Returns Standard_True if one of the structures displayed in the view contains Polygons, Triangles or Quadrangles.
   Standard_EXPORT Standard_Boolean ContainsFacet() const;
@@ -134,8 +136,7 @@ public:
   Standard_EXPORT Standard_Boolean IsComputed (const Standard_Integer theStructId,
                                                Handle(Graphic3d_Structure)& theComputedStruct) const;
 
-  //! Returns the coordinates of the boundary box of all
-  //! structures displayed in the view.
+  //! Returns the bounding box of all structures displayed in the view.
   //! If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
   //! also includes minimum and maximum limits of graphical elements
   //! forming parts of infinite structures.
@@ -336,6 +337,20 @@ public:
   //! ID for the structure.
   virtual void AddZLayer (const Graphic3d_ZLayerId theLayerId) = 0;
 
+  //! Returns the maximum Z layer ID.
+  //! First layer ID is Graphic3d_ZLayerId_Default, last ID is ZLayerMax().
+  virtual Standard_Integer ZLayerMax() const = 0;
+
+  //! Returns the bounding box of all structures displayed in the Z layer.
+  virtual void InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId) const = 0;
+
+  //! Returns the bounding box of all structures displayed in the Z layer.
+  virtual Graphic3d_BndBox4f ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
+                                                const Handle(Graphic3d_Camera)& theCamera,
+                                                const Standard_Integer          theWindowWidth,
+                                                const Standard_Integer          theWindowHeight,
+                                                const Standard_Boolean          theToIgnoreInfiniteFlag) const = 0;
+
   //! Remove Z layer from the specified view. All structures
   //! displayed at the moment in layer will be displayed in default layer
   //! ( the bottom-level z layer ). To unset layer ID from associated
@@ -345,6 +360,9 @@ public:
   //! Sets the settings for a single Z layer of specified view.
   virtual void SetZLayerSettings (const Graphic3d_ZLayerId theLayerId,
                                   const Graphic3d_ZLayerSettings& theSettings) = 0;
+
+  //! Returns zoom-scale factor.
+  Standard_EXPORT Standard_Real ConsiderZoomPersistenceObjects();
 
   //! Returns pointer to an assigned framebuffer object.
   virtual Handle(Standard_Transient) FBO() const = 0;
@@ -522,29 +540,12 @@ private:
   virtual void changePriority (const Handle(Graphic3d_CStructure)& theCStructure,
                                const Standard_Integer theNewPriority) = 0;
 
-protected:
-
-  struct CachedMinMax
-  {
-    CachedMinMax() { Invalidate(); }
-
-    Bnd_Box& BoundingBox (const Standard_Boolean theToIgnoreInfiniteFlag)
-    {
-      return !theToIgnoreInfiniteFlag ? myBoundingBox[0] : myBoundingBox[1];
-    }
-    Standard_Boolean& IsOutdated (const Standard_Boolean theToIgnoreInfiniteFlag)
-    {
-      return !theToIgnoreInfiniteFlag ? myIsOutdated[0] : myIsOutdated[1];
-    }
-    void Invalidate()
-    {
-      myIsOutdated[0] = Standard_True;
-      myIsOutdated[1] = Standard_True;
-    }
-
-    Standard_Boolean myIsOutdated [2];
-    Bnd_Box          myBoundingBox[2];
-  };
+  //! Returns zoom-scale factor.
+  virtual Standard_Real considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
+                                                        const Handle(Graphic3d_Camera)& theCamera,
+                                                        const Standard_Integer          theWindowWidth,
+                                                        const Standard_Integer          theWindowHeight,
+                                                        const Standard_Boolean          theToIgnoreInfiniteFlag) const = 0;
 
 protected:
 
@@ -559,7 +560,6 @@ protected:
   Standard_Boolean myIsActive;
   Standard_Boolean myIsRemoved;
   Graphic3d_TypeOfVisualization myVisualization;
-  mutable CachedMinMax myMinMax;
 
 private:
 

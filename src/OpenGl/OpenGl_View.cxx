@@ -522,6 +522,91 @@ void OpenGl_View::SetZLayerSettings (const Graphic3d_ZLayerId        theLayerId,
 }
 
 //=======================================================================
+//function : ZLayerMax
+//purpose  :
+//=======================================================================
+Standard_Integer OpenGl_View::ZLayerMax() const
+{
+  Standard_Integer aLayerMax = Graphic3d_ZLayerId_Default;
+  for (OpenGl_LayerSeqIds::Iterator aMapIt(myZLayers.LayerIDs()); aMapIt.More(); aMapIt.Next())
+  {
+    aLayerMax = Max (aLayerMax, aMapIt.Value());
+  }
+
+  return aLayerMax;
+}
+
+//=======================================================================
+//function : InvalidateZLayerBoundingBox
+//purpose  :
+//=======================================================================
+void OpenGl_View::InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theLayerId) const
+{
+  if (myZLayers.LayerIDs().IsBound (theLayerId))
+  {
+    myZLayers.Layer (theLayerId).InvalidateBoundingBox();
+  }
+  else
+  {
+    for (Standard_Integer aLayerId = Graphic3d_ZLayerId_Default; aLayerId < ZLayerMax(); ++aLayerId)
+    {
+      if (myZLayers.LayerIDs().IsBound (aLayerId))
+      {
+        const OpenGl_Layer& aLayer = myZLayers.Layer (aLayerId);
+        if (aLayer.NbOfTransformPersistenceObjects() > 0)
+        {
+          aLayer.InvalidateBoundingBox();
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : ZLayerBoundingBox
+//purpose  :
+//=======================================================================
+Graphic3d_BndBox4f OpenGl_View::ZLayerBoundingBox (const Graphic3d_ZLayerId        theLayerId,
+                                                   const Handle(Graphic3d_Camera)& theCamera,
+                                                   const Standard_Integer          theWindowWidth,
+                                                   const Standard_Integer          theWindowHeight,
+                                                   const Standard_Boolean          theToIgnoreInfiniteFlag) const
+{
+  if (myZLayers.LayerIDs().IsBound (theLayerId))
+  {
+    return myZLayers.Layer (theLayerId).BoundingBox (Identification(),
+                                                     theCamera,
+                                                     theWindowWidth,
+                                                     theWindowHeight,
+                                                     theToIgnoreInfiniteFlag);
+  }
+
+  return Graphic3d_BndBox4f();
+}
+
+//=======================================================================
+//function : considerZoomPersistenceObjects
+//purpose  :
+//=======================================================================
+Standard_Real OpenGl_View::considerZoomPersistenceObjects (const Graphic3d_ZLayerId        theLayerId,
+                                                           const Handle(Graphic3d_Camera)& theCamera,
+                                                           const Standard_Integer          theWindowWidth,
+                                                           const Standard_Integer          theWindowHeight,
+                                                           const Standard_Boolean          theToIgnoreInfiniteFlag) const
+{
+  if (myZLayers.LayerIDs().IsBound (theLayerId) && theCamera->IsOrthographic())
+  {
+    return myZLayers.Layer (theLayerId).considerZoomPersistenceObjects (Identification(),
+                                                                        theCamera,
+                                                                        theWindowWidth,
+                                                                        theWindowHeight,
+                                                                        theToIgnoreInfiniteFlag);
+  }
+
+  return 1.0;
+}
+
+//=======================================================================
 //function : FBO
 //purpose  :
 //=======================================================================
@@ -742,6 +827,8 @@ void OpenGl_View::changeZLayer (const Handle(Graphic3d_CStructure)& theStructure
   const Graphic3d_ZLayerId anOldLayer = theStructure->ZLayer();
   const OpenGl_Structure* aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure.operator->());
   myZLayers.ChangeLayer (aStruct, anOldLayer, theNewLayerId);
+  Update (Aspect_TOU_WAIT, anOldLayer);
+  Update (Aspect_TOU_WAIT, theNewLayerId);
 }
 
 //=======================================================================

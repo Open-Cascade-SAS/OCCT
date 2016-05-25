@@ -532,9 +532,9 @@ private:
   //! Returns the manager to which <me> is associated.
   Standard_EXPORT Handle(Graphic3d_StructureManager) StructureManager() const;
   
-  //! Calls the Update method of the StructureManager which
-  //! contains the Structure <me>.
-  Standard_EXPORT void Update() const;
+  //! Calls the Update method of the StructureManager which contains the Structure <me>.
+  //! If theUpdateLayer is true then invalidates bounding box of ZLayer.
+  Standard_EXPORT void Update (const bool theUpdateLayer = false) const;
   
   //! Updates the c structure associated to <me>.
   Standard_EXPORT void UpdateStructure (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF);

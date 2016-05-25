@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC27374"
+puts "========"
+puts ""
+################################################################################
+puts "Visualization - add support zoom persistence objects for FitAll operation"
+################################################################################
+
+vinit
+vclear
+
+box b0 30 0 0 3 3 3
+box b1 -30 -30 30 10 20 30
+box b2 30 0 30 100 100 100
+vdisplay b0
+vdisplay b1 -trsfPers zoom -perspos 10 0 0
+vdisplay b2 -trsfPers zoom -perspos 40 0 30
+vfit
+
+vdump $imagedir/${casename}.png

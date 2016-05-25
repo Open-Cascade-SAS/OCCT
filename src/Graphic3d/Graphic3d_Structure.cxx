@@ -123,7 +123,7 @@ void Graphic3d_Structure::Clear (const Standard_Boolean theWithDestruction)
   myCStructure->ContainsFacet = 0;
   myStructureManager->Clear (this, theWithDestruction);
 
-  Update();
+  Update (true);
 }
 
 //=======================================================================
@@ -363,7 +363,7 @@ void Graphic3d_Structure::SetVisible (const Standard_Boolean theValue)
 
   myCStructure->visible = isVisible;
   myCStructure->OnVisibilityChanged();
-  Update();
+  Update (true);
 }
 
 //=============================================================================
@@ -1385,7 +1385,7 @@ void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& theStructu
     GraphicConnect (theStructure);
     myStructureManager->Connect (this, theStructure);
 
-    Update();
+    Update (true);
   }
   else // Graphic3d_TOC_ANCESTOR
   {
@@ -1422,7 +1422,7 @@ void Graphic3d_Structure::Disconnect (const Handle(Graphic3d_Structure)& theStru
     myStructureManager->Disconnect (this, theStructure);
 
     CalculateBoundBox();
-    Update();
+    Update (true);
   }
   else if (RemoveAncestor (aStructure))
   {
@@ -1562,7 +1562,7 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal&       theMat
   myCStructure->UpdateTransformation();
   myStructureManager->SetTransform (this, aNewTrsf);
 
-  Update();
+  Update (true);
 }
 
 //=============================================================================
@@ -1986,14 +1986,15 @@ void Graphic3d_Structure::PrintNetwork (const Handle(Graphic3d_Structure)& theSt
 //function : Update
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Update() const
+void Graphic3d_Structure::Update (const bool theUpdateLayer) const
 {
   if (IsDeleted())
   {
     return;
   }
 
-  myStructureManager->Update (myStructureManager->UpdateMode());
+  myStructureManager->Update (myStructureManager->UpdateMode(),
+                              theUpdateLayer ? myCStructure->ZLayer() : Graphic3d_ZLayerId_UNKNOWN);
 }
 
 //=============================================================================

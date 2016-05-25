@@ -92,11 +92,37 @@ public:
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
-  void InvalidateBVHData();
+  void InvalidateBVHData() const;
+
+  //! Marks cached bounding box as obsolete.
+  void InvalidateBoundingBox() const
+  {
+    myIsBoundingBoxNeedsReset[0] = myIsBoundingBoxNeedsReset[1] = true;
+  }
+
+  //! Returns layer bounding box.
+  const Graphic3d_BndBox4f& BoundingBox (const Standard_Integer          theViewId,
+                                         const Handle(Graphic3d_Camera)& theCamera,
+                                         const Standard_Integer          theWindowWidth,
+                                         const Standard_Integer          theWindowHeight,
+                                         const Standard_Boolean          theToIgnoreInfiniteFlag) const;
+
+  //! Returns zoom-scale factor.
+  Standard_Real considerZoomPersistenceObjects (const Standard_Integer          theViewId,
+                                                const Handle(Graphic3d_Camera)& theCamera,
+                                                const Standard_Integer          theWindowWidth,
+                                                const Standard_Integer          theWindowHeight,
+                                                const Standard_Boolean          theToIgnoreInfiniteFlag) const;
 
   // Render all structures.
   void Render (const Handle(OpenGl_Workspace)&   theWorkspace,
                const OpenGl_GlobalLayerSettings& theDefaultSettings) const;
+
+  //! Returns number of transform persistence objects.
+  Standard_Integer NbOfTransformPersistenceObjects() const
+  {
+    return myBVHPrimitivesTrsfPers.Size();
+  }
 
 protected:
 
@@ -131,6 +157,12 @@ private:
 
   //! Defines if the primitive set for BVH is outdated.
   mutable Standard_Boolean myIsBVHPrimitivesNeedsReset;
+
+  //! Defines if the cached bounding box is outdated.
+  mutable bool myIsBoundingBoxNeedsReset[2];
+
+  //! Cached layer bounding box.
+  mutable Graphic3d_BndBox4f myBoundingBox[2];
 
 public:
 

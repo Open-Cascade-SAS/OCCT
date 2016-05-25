@@ -83,11 +83,12 @@ Aspect_TypeOfUpdate Graphic3d_StructureManager::UpdateMode() const
 // function : Update
 // purpose  :
 // ========================================================================
-void Graphic3d_StructureManager::Update (const Aspect_TypeOfUpdate theMode) const
+void Graphic3d_StructureManager::Update (const Aspect_TypeOfUpdate theMode,
+                                         const Graphic3d_ZLayerId  theLayerId) const
 {
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
   {
-    aViewIt.Value()->Update (theMode);
+    aViewIt.Value()->Update (theMode, theLayerId);
   }
 }
 
