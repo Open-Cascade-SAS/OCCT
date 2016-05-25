@@ -84,7 +84,16 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_ComposeShell,ShapeFix_Root)
 //purpose  : 
 //=======================================================================
 ShapeFix_ComposeShell::ShapeFix_ComposeShell () : 
-       myStatus(0), myClosedMode(Standard_False)
+       myOrient(TopAbs_FORWARD),
+       myStatus(0),
+       myUResolution(RealLast()),
+       myVResolution(RealLast()),
+       myInvertEdgeStatus(Standard_True),
+       myClosedMode(Standard_False),
+       myUClosed(Standard_False),
+       myVClosed(Standard_False),
+       myUPeriod(0.),
+       myVPeriod(0.)
 {
   myTransferParamTool = new ShapeAnalysis_TransferParametersProj;
 }
