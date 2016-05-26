@@ -851,9 +851,11 @@ Standard_Boolean IntPatch_InterferencePolyhedron::TangentZoneValue
     // If one of the triangles is not in the zone of tangency, it is necessary to find
     // the points of intersection edge/edge :
 
-    Standard_Real parO[6], parT[6];
+    // Last indexes are not used.
+    // Arrays are increased to eliminate gcc warning.
+    Standard_Real parO[10], parT[10];
     Standard_Integer nbNoInserted=0;
-    Standard_Integer piToInsert[6];
+    Standard_Integer piToInsert[10];
 
     for (nob=0; nob<3; nob++) {
       //processing of the object segment P[nob], P[nob+1]
@@ -866,7 +868,7 @@ Standard_Boolean IntPatch_InterferencePolyhedron::TangentZoneValue
 	if (dpOeT[nob][nou]*dpOeT[nob2][nou]<0. &&
 	    deOpT[nob][nou]*deOpT[nob][nou2]<0.) {
 
-	  if (nbpInt>=6) {
+	  if (nbpInt>=5) {
 	    break;
 	  }
 	  else {
@@ -890,7 +892,7 @@ Standard_Boolean IntPatch_InterferencePolyhedron::TangentZoneValue
 	  }
 	}
       }
-      if (nbpInt>=6) break; // Number of pi passed in TZ !
+      if (nbpInt>=5) break; // Number of pi passed in TZ !
     }
     nob=nbNoInserted-1;
     while (nob>=0) {
