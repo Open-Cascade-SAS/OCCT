@@ -1639,13 +1639,13 @@ void FSD_BinaryFile::ReadExtendedString (Standard_IStream& theIStream, TCollecti
       Storage_StreamReadError::Raise();
     }
 
-    theIStream.read ((char *)c, size*sizeof(Standard_ExtCharacter));
-
-    if (theIStream.gcount() != size)
+    const std::streamsize aNbBytes = std::streamsize(sizeof(Standard_ExtCharacter) * size);
+    theIStream.read ((char *)c, aNbBytes);
+    if (theIStream.gcount() != aNbBytes)
     {
       Storage_StreamReadError::Raise();
     }
-          
+
     c[size] = '\0';
 
 #if OCCT_BINARY_FILE_DO_INVERSE
