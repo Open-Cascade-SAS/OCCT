@@ -76,6 +76,8 @@
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPTools_AlgoTools.hxx>
 
 #include <stdio.h>
 #ifdef DRAW 
@@ -100,166 +102,99 @@ static TopoDS_Vertex CommonVertex(TopoDS_Edge& E1,
 				  TopoDS_Edge& E2)
 {
   TopoDS_Vertex V1[2],V2[2],V;
-  //  Modified by skv - Wed Dec 24 18:08:39 2003 OCC4455 Begin
-//  TopExp::Vertices(E1,V1[0],V1[1]);
-//  TopExp::Vertices(E2,V2[0],V2[1]);
-
+  //
   TopExp::Vertices(E1,V1[0],V1[1], Standard_True);
   TopExp::Vertices(E2,V2[0],V2[1], Standard_True);
   // The first edge is the current one, the second edge is the next one.
   // We check last vertex of the first edge first.
-//  if (V1[0].IsSame(V2[0]) || V1[0].IsSame(V2[1])) return V1[0];
-//  if (V1[1].IsSame(V2[0]) || V1[1].IsSame(V2[1])) return V1[1];
   if (V1[1].IsSame(V2[0]) || V1[1].IsSame(V2[1])) return V1[1];
   if (V1[0].IsSame(V2[0]) || V1[0].IsSame(V2[1])) return V1[0];
-  //  Modified by skv - Wed Dec 24 18:08:40 2003 OCC4455 End
+  //
   return V;
 }
 
 //=======================================================================
 //function : Store
-//purpose  : 
+//purpose  : The vertices are added despite of the coincidence with
+//           already added vertices. When all vertices for all edges
+//           are added the coinciding chains of vertices should be fused
+//           using FuseVertices() method.
 //=======================================================================
-
-static void  Store (const TopoDS_Edge&       E1,
-                    const TopoDS_Edge&       E2,
-                    TopTools_ListOfShape&    LV1,
-                    TopTools_ListOfShape&    LV2,
-                    Handle(BRepAlgo_AsDes)   AsDes,
-                    Standard_Real            Tol)
+static void  Store (const TopoDS_Edge&     E1,
+                    const TopoDS_Edge&     E2,
+                    const TopTools_ListOfShape&  LV1,
+                    const TopTools_ListOfShape&  LV2,
+                    Handle(BRepAlgo_AsDes) AsDes,
+                    Standard_Real          Tol,
+                    TopTools_IndexedDataMapOfShapeListOfShape& aDMVV)
 {
-  //-------------------------------------------------------------
-  // Test if the points of intersection correspond to existing 
-  // vertices. Otherwise add edges in the descendants.
-  // Note: at this stage only vertices of intersection are in the descendants.
-  //-------------------------------------------------------------
-  const TopTools_ListOfShape& VOnE1 = AsDes->Descendant(E1);
-  const TopTools_ListOfShape& VOnE2 = AsDes->Descendant(E2);
-  TopTools_ListOfShape        NewVOnE1;   
-  TopTools_ListOfShape        NewVOnE2; 
-  gp_Pnt                      P,P1,P2;
-  TopoDS_Vertex               V1,V2;
-  TopTools_ListIteratorOfListOfShape it, itLV1, itLV2;
-  BRep_Builder                       B;
-  TopAbs_Orientation                 O1,O2;
-  Standard_Real                      U1,U2;
-  Standard_Boolean                   OnE1,OnE2;
-
-  for (itLV1.Initialize(LV1),itLV2.Initialize(LV2); 
-       itLV1.More(); 
-       itLV1.Next()  ,itLV2.Next()) {
-
-    TopoDS_Vertex V    = TopoDS::Vertex(itLV1.Value());
-
-    U1 = (BRep_Tool::Degenerated(E1))?
-      BRep_Tool::Parameter(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)), E1) :
-      BRep_Tool::Parameter(V, E1);
-    U2 = (BRep_Tool::Degenerated(E2))?
-      BRep_Tool::Parameter(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)), E2) :
-      BRep_Tool::Parameter(V, E2);
-    O1 = V.Orientation();
-    O2 = itLV2.Value().Orientation();
-    P  = BRep_Tool::Pnt(V);
-    OnE1 = OnE2 = Standard_False;
-    
-    if (!VOnE1.IsEmpty()) {
-      //-----------------------------------------------------------------
-      // Find if the point of intersection corresponds to a vertex of E1.
-      //-----------------------------------------------------------------
-      for (it.Initialize(VOnE1); it.More(); it.Next()) {
-        P1 = BRep_Tool::Pnt(TopoDS::Vertex(it.Value()));
-        if (P.IsEqual(P1,Tol)) {
-          V    = TopoDS::Vertex(it.Value());
-          V1   = V;
-          OnE1 = Standard_True;
+  BRep_Builder aBB;
+  for (Standard_Integer i = 0; i < 2; ++i) {
+    const TopoDS_Edge& aE = !i ? E1 : E2;
+    const TopTools_ListOfShape& aLV = !i ? LV1 : LV2;
+    const TopTools_ListOfShape& aLVEx = AsDes->Descendant(aE);
+    if (aLVEx.IsEmpty()) {
+      if (aLV.Extent()) AsDes->Add(aE, aLV);
+      continue;
+    }
+    //
+    TopTools_MapOfShape aMV;
+    TopTools_ListIteratorOfListOfShape aIt(aLV);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Vertex& aV = TopoDS::Vertex(aIt.Value());
+      if (!aMV.Add(aV)) {
+        continue;
+      }
+      gp_Pnt aP = BRep_Tool::Pnt(aV);
+      //
+      TopTools_ListOfShape aLVC;
+      TopTools_ListIteratorOfListOfShape aItEx(aLVEx);
+      for (; aItEx.More(); aItEx.Next()) {
+        const TopoDS_Vertex& aVEx = TopoDS::Vertex(aItEx.Value());
+        if (aV.IsSame(aVEx)) {
           break;
         }
+        gp_Pnt aPEx = BRep_Tool::Pnt(aVEx);
+        //
+        if (aP.IsEqual(aPEx, Tol)) {
+          aLVC.Append(aVEx);
+        }
       }
-    }
-    if (!VOnE2.IsEmpty()) {
-      if (OnE1) {
-        //-----------------------------------------------------------------
-        // Find if the vertex found on E1 is not already on E2.
-        //-----------------------------------------------------------------
-        for (it.Initialize(VOnE2); it.More(); it.Next()) {
-          if (it.Value().IsSame(V)) {
-            OnE2 = Standard_True;
-            V2   = V;
-            break;
+      //
+      if (aItEx.More()) {
+        continue;
+      }
+      //
+      if (aLVC.Extent()) {
+        TopTools_ListOfShape aLVN;
+        aLVN.Append(aV);
+        //
+        TopTools_ListIteratorOfListOfShape aItLV(aLVC);
+        for (; aItLV.More(); aItLV.Next()) {
+          const TopoDS_Shape& aVC = aItLV.Value();
+          TopTools_ListOfShape* pLV = aDMVV.ChangeSeek(aVC);
+          if (!pLV) {
+            aDMVV.Add(aVC, aLVN);
+          }
+          else {
+            pLV->Append(aV);
           }
         }
-      }
-      for (it.Initialize(VOnE2); it.More(); it.Next()) {
-        //-----------------------------------------------------------------
-        // Find if the point of intersection corresponds to a vertex of E2.
-        //-----------------------------------------------------------------
-        P2 = BRep_Tool::Pnt(TopoDS::Vertex(it.Value()));
-        if (P.IsEqual(P2,Tol)) {
-          V  = TopoDS::Vertex(it.Value());
-          V2 = V;
-          OnE2 = Standard_True;
-          break;
+        //
+        TopTools_ListOfShape* pLV = aDMVV.ChangeSeek(aV);
+        if (!pLV) {
+          aDMVV.Add(aV, aLVC);
         }
-      }      
-    }  
-    if (OnE1 && OnE2) {
-      if (!V1.IsSame(V2)) {
-        //---------------------------------------------------------------
-        // Two vertices are actually the same.
-        // V2 will be replaced by V1. 
-        // update the parameters of vertex on edges.
-        //---------------------------------------------------------------
-        Standard_Real UV2;
-        TopoDS_Edge   EWE2;
-        const TopTools_ListOfShape& EdgeWithV2 = AsDes->Ascendant(V2);
-
-        for (it.Initialize(EdgeWithV2); it.More(); it.Next()) {
-          EWE2  = TopoDS::Edge(it.Value());
-          TopoDS_Shape aLocalShape =V2.Oriented(TopAbs_INTERNAL);
-          UV2   = BRep_Tool::Parameter(TopoDS::Vertex(aLocalShape),EWE2);
-//          UV2   = 
-//            BRep_Tool::Parameter(TopoDS::Vertex(V2.Oriented(TopAbs_INTERNAL)),EWE2);
-          aLocalShape = V1.Oriented(TopAbs_INTERNAL);
-          B.UpdateVertex(TopoDS::Vertex(aLocalShape),UV2,EWE2,Tol);
-//          B.UpdateVertex(TopoDS::Vertex(V1.Oriented(TopAbs_INTERNAL)),
-//                         UV2,EWE2,Tol);
+        else {
+          pLV->Append(aLVC);
         }
-        AsDes->Replace(V2,V1);
       }
+      //
+      aBB.UpdateVertex(aV, Tol);
+      AsDes->Add(aE, aV);
     }
-    if (!OnE1) {
-      if (OnE2) {
-        TopoDS_Shape aLocalShape = V.Oriented(TopAbs_INTERNAL);
-        B.UpdateVertex(TopoDS::Vertex(aLocalShape),U1,E1,Tol);
-//        B.UpdateVertex(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)),
-//                       U1,E1,Tol);
-      }
-      NewVOnE1.Append(V.Oriented(O1));
-    }
-    if (!OnE2) {
-      if (OnE1) {
-        TopoDS_Shape aLocalShape = V.Oriented(TopAbs_INTERNAL);
-        B.UpdateVertex(TopoDS::Vertex(aLocalShape),U2,E2,Tol);
-//        B.UpdateVertex(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)),
-//                       U2,E2,Tol);
-      }
-      NewVOnE2.Append(V.Oriented(O2));
-    }
-    
-#ifdef DRAW
-   if (Inter2dAffichInt2d) {          
-     if (!OnE1 && !OnE2) {
-       char name[256];
-       sprintf(name,"VV_%d",NbNewVertices++);        
-       DBRep::Set(name,V);
-     }
-   }  
-#endif    
   }
-  if (!NewVOnE1.IsEmpty()) AsDes->Add(E1,NewVOnE1);
-  if (!NewVOnE2.IsEmpty()) AsDes->Add(E2,NewVOnE2);
 }
-
 
 //=======================================================================
 //function : EdgeInter
@@ -272,7 +207,8 @@ static void EdgeInter(const TopoDS_Face&              F,
                       const TopoDS_Edge&              E2,
                       const Handle(BRepAlgo_AsDes)&   AsDes,
                       Standard_Real                   Tol,
-                      Standard_Boolean                WithOri)
+                      Standard_Boolean                WithOri,
+                      TopTools_IndexedDataMapOfShapeListOfShape& aDMVV)
 {
 #ifdef DRAW
   if (Inter2dAffichInt2d) {
@@ -444,32 +380,26 @@ static void EdgeInter(const TopoDS_Face&              F,
     if (V1[j].IsNull()) continue;
     for (Standard_Integer k = 0; k < 2; k++) {
       if (V2[k].IsNull()) continue;
+      if (V1[j].IsSame(V2[k])) {
+        if (AsDes->HasAscendant(V1[j])) {
+          continue;
+        }
+      }
+      //
       gp_Pnt P1 = BRep_Tool::Pnt(V1[j]);
       gp_Pnt P2 = BRep_Tool::Pnt(V2[k]);
       Standard_Real Dist = P1.Distance(P2); 
       if (Dist < TolConf) {
+        Standard_Real aTol = 
+          Max(BRep_Tool::Tolerance(V1[j]), BRep_Tool::Tolerance(V2[k]));
         TopoDS_Vertex V = BRepLib_MakeVertex(P1);
         U1 = (j == 0) ? f[1] : l[1];
         U2 = (k == 0) ? f[2] : l[2];
+        //
         TopoDS_Shape aLocalShape = V.Oriented(TopAbs_INTERNAL);
-//  Modified by skv - Thu Jan 22 18:16:01 2004 OCC4455 Begin
-        Standard_Real aTol = BRep_Tool::Tolerance(V1[j]);
-
-        if (!V1[j].IsSame(V2[k])) {
-          Standard_Real aTol2 = BRep_Tool::Tolerance(V2[k]);
-
-          aTol = Max(aTol, aTol2);
-        }
-
         B.UpdateVertex(TopoDS::Vertex(aLocalShape),U1,E1,aTol);
         B.UpdateVertex(TopoDS::Vertex(aLocalShape),U2,E2,aTol);
-//         B.UpdateVertex(TopoDS::Vertex(aLocalShape),U1,E1,Tol);
-//         B.UpdateVertex(TopoDS::Vertex(aLocalShape),U2,E2,Tol);
-//        B.UpdateVertex(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)),
-//                       U1,E1,Tol);
-//        B.UpdateVertex(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)),
-//                       U2,E2,Tol);
-//  Modified by skv - Thu Jan 22 18:16:01 2004 OCC4455 End
+        //
         LV1.Prepend(V.Oriented(V1[j].Orientation()));
         LV2.Prepend(V.Oriented(V2[k].Orientation()));
       }
@@ -521,15 +451,9 @@ static void EdgeInter(const TopoDS_Face&              F,
     //---------------------------------
     // Vertex storage in DS.
     //---------------------------------
-//  Modified by skv - Tue Jan 13 15:14:30 2004 Begin
     Standard_Real TolStore = BRep_Tool::Tolerance(E1) + BRep_Tool::Tolerance(E2);
-
     TolStore = Max(TolStore, 10.*Tol);
-
-    Store (E1,E2,LV1,LV2,AsDes,TolStore);
-//    Store (E1,E2,LV1,LV2,AsDes,10.*Tol);
-//    Store (E1,E2,LV1,LV2,AsDes,Tol);
-//  Modified by skv - Tue Jan 13 15:14:30 2004 End
+    Store (E1,E2,LV1,LV2,AsDes,TolStore, aDMVV);
   }
 }
 //=======================================================================
@@ -544,7 +468,8 @@ static void RefEdgeInter(const TopoDS_Face&              F,
                          const Handle(BRepAlgo_AsDes)&   AsDes,
                          Standard_Real                   Tol,
                          Standard_Boolean                WithOri,
-                         gp_Pnt&                         Pref)
+                         gp_Pnt&                         Pref,
+                         TopTools_IndexedDataMapOfShapeListOfShape& aDMVV)
 {
 #ifdef DRAW
   if (Inter2dAffichInt2d) {
@@ -712,6 +637,12 @@ static void RefEdgeInter(const TopoDS_Face&              F,
     if (V1[j].IsNull()) continue;
     for (Standard_Integer k = 0; k < 2; k++) {
       if (V2[k].IsNull()) continue;
+      if (V1[j].IsSame(V2[k])) {
+        if (AsDes->HasAscendant(V1[j])) {
+          continue;
+        }
+      }
+      //
       gp_Pnt P1 = BRep_Tool::Pnt(V1[j]);
       gp_Pnt P2 = BRep_Tool::Pnt(V2[k]);
       Standard_Real Dist = P1.Distance(P2); 
@@ -722,10 +653,6 @@ static void RefEdgeInter(const TopoDS_Face&              F,
         TopoDS_Shape aLocalShape = V.Oriented(TopAbs_INTERNAL);
         B.UpdateVertex(TopoDS::Vertex(aLocalShape),U1,E1,Tol);
         B.UpdateVertex(TopoDS::Vertex(aLocalShape),U2,E2,Tol);
-//        B.UpdateVertex(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)),
-//                       U1,E1,Tol);
-//        B.UpdateVertex(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)),
-//                       U2,E2,Tol);
         LV1.Prepend(V.Oriented(V1[j].Orientation()));
         LV2.Prepend(V.Oriented(V2[k].Orientation()));
       }
@@ -794,16 +721,9 @@ static void RefEdgeInter(const TopoDS_Face&              F,
     }
       
 ////-----------------------------------------------------
-
-//  Modified by skv - Tue Jan 13 15:14:30 2004 Begin
     Standard_Real TolStore = BRep_Tool::Tolerance(E1) + BRep_Tool::Tolerance(E2);
-
     TolStore = Max(TolStore, 10.*Tol);
-
-    Store (E1,E2,LV1,LV2,AsDes,TolStore);
-//    Store (E1,E2,LV1,LV2,AsDes,10.*Tol);
-//    Store (E1,E2,LV1,LV2,AsDes,Tol);
-//  Modified by skv - Tue Jan 13 15:14:30 2004 End
+    Store (E1,E2,LV1,LV2,AsDes,TolStore, aDMVV);
   }
 }
 
@@ -1403,7 +1323,8 @@ static Standard_Boolean  UpdateVertex(TopoDS_Vertex V,
 void BRepOffset_Inter2d::Compute (const Handle(BRepAlgo_AsDes)&     AsDes,
                                   const TopoDS_Face&                F,
                                   const TopTools_IndexedMapOfShape& NewEdges,
-                                  const Standard_Real               Tol)
+                                  const Standard_Real               Tol,
+                                  TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
 {
 #ifdef DRAW
   NbF2d++;
@@ -1445,7 +1366,7 @@ void BRepOffset_Inter2d::Compute (const Handle(BRepAlgo_AsDes)&     AsDes,
       if ( (!EdgesOfFace.Contains(E1) || !EdgesOfFace.Contains(E2)) &&
            (NewEdges.Contains(E1) || NewEdges.Contains(E2)) ) {
         TopoDS_Shape aLocalShape = F.Oriented(TopAbs_FORWARD);
-        EdgeInter(TopoDS::Face(aLocalShape),BAsurf,E1,E2,AsDes,Tol,Standard_True);
+        EdgeInter(TopoDS::Face(aLocalShape),BAsurf,E1,E2,AsDes,Tol,Standard_True, theDMVV);
 //          EdgeInter(TopoDS::Face(F.Oriented(TopAbs_FORWARD)),E1,E2,AsDes,Tol,Standard_True);
       }
       it2LE.Next();
@@ -1470,7 +1391,8 @@ void BRepOffset_Inter2d::ConnexIntByInt
  const Handle(BRepAlgo_AsDes)& AsDes,
  const Handle(BRepAlgo_AsDes)& AsDes2d,
  const Standard_Real           Offset,
- const Standard_Real           Tol)
+ const Standard_Real           Tol,
+ TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
 //  Modified by skv - Fri Dec 26 16:53:18 2003 OCC4455 End
 {  
 
@@ -1584,7 +1506,7 @@ void BRepOffset_Inter2d::ConnexIntByInt
         for (Exp1.Init(NE1,TopAbs_EDGE) ; Exp1.More(); Exp1.Next()) {
           for (Exp2.Init(NE2,TopAbs_EDGE) ; Exp2.More(); Exp2.Next()) {
             RefEdgeInter(FIO,BAsurf,TopoDS::Edge(Exp1.Current()),TopoDS::Edge(Exp2.Current()),
-                      AsDes2d,Tol,Standard_True/*Standard_False*/, Pref);
+                      AsDes2d,Tol,Standard_True/*Standard_False*/, Pref, theDMVV);
           }
         }
         //
@@ -1599,12 +1521,12 @@ void BRepOffset_Inter2d::ConnexIntByInt
             //
             for (Exp1.Init(NE1,TopAbs_EDGE) ; Exp1.More(); Exp1.Next()) {
               RefEdgeInter(FIO,BAsurf,TopoDS::Edge(Exp1.Current()),aE3,
-                           AsDes2d,Tol,Standard_True/*Standard_False*/, Pref);
+                           AsDes2d,Tol,Standard_True/*Standard_False*/, Pref, theDMVV);
             }
             //
             for (Exp1.Init(NE2,TopAbs_EDGE) ; Exp1.More(); Exp1.Next()) {
               RefEdgeInter(FIO,BAsurf,TopoDS::Edge(Exp1.Current()),aE3,
-                           AsDes2d,Tol,Standard_True/*Standard_False*/, Pref);
+                           AsDes2d,Tol,Standard_True/*Standard_False*/, Pref, theDMVV);
             }
           }
         }
@@ -1622,6 +1544,74 @@ void BRepOffset_Inter2d::ConnexIntByInt
         }
       }
       CurE = NextE;
+    }
+  }
+}
+
+//=======================================================================
+//function : MakeChain
+//purpose  : 
+//=======================================================================
+static void MakeChain(const TopoDS_Shape& theV,
+                      const TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
+                      TopTools_MapOfShape& theMDone,
+                      BOPCol_ListOfShape& theChain)
+{
+  if (theMDone.Add(theV)) {
+    theChain.Append(theV);
+    const TopTools_ListOfShape* pLV = theDMVV.Seek(theV);
+    if (pLV) {
+      TopTools_ListIteratorOfListOfShape aIt(*pLV);
+      for (; aIt.More(); aIt.Next()) {
+        MakeChain(aIt.Value(), theDMVV, theMDone, theChain);
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : FuseVertices
+//purpose  : 
+//=======================================================================
+void BRepOffset_Inter2d::FuseVertices(const TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
+                                      const Handle(BRepAlgo_AsDes)& theAsDes)
+{
+  BRep_Builder aBB;
+  TopTools_MapOfShape aMVDone;
+  Standard_Integer i, aNb = theDMVV.Extent();
+  for (i = 1; i <= aNb; ++i) {
+    const TopoDS_Vertex& aV = TopoDS::Vertex(theDMVV.FindKey(i));
+    //
+    // find chain of vertices
+    BOPCol_ListOfShape aLVChain;
+    MakeChain(aV, theDMVV, aMVDone, aLVChain);
+    //
+    if (aLVChain.Extent() < 2) {
+      continue;
+    }
+    //
+    // make new vertex
+    TopoDS_Vertex aVNew;
+    BOPTools_AlgoTools::MakeVertex(aLVChain, aVNew);
+    //
+    TopoDS_Vertex aVNewInt = TopoDS::Vertex(aVNew.Oriented(TopAbs_INTERNAL));
+    //
+    BOPCol_ListIteratorOfListOfShape aIt(aLVChain);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Shape& aVOld = aIt.Value();
+      // update the parameters on edges
+      TopoDS_Vertex aVOldInt = TopoDS::Vertex(aVOld.Oriented(TopAbs_INTERNAL));
+      const TopTools_ListOfShape& aLE = theAsDes->Ascendant(aVOld);
+      //
+      TopTools_ListIteratorOfListOfShape aItLE(aLE);
+      for (; aItLE.More(); aItLE.Next()) {
+        const TopoDS_Edge& aE = TopoDS::Edge(aItLE.Value());
+        Standard_Real aTolE = BRep_Tool::Tolerance(aE);
+        Standard_Real aT = BRep_Tool::Parameter(aVOldInt, aE);
+        aBB.UpdateVertex(aVNewInt, aT, aE, aTolE);
+      }
+      // and replace the vertex
+      theAsDes->Replace(aVOld, aVNew);
     }
   }
 }

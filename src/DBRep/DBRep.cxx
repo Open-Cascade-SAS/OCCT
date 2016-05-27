@@ -584,6 +584,11 @@ static Standard_Integer nexplode(Draw_Interpretor& di,
     typ = TopAbs_EDGE;
     break;
     
+  case 'V' :
+  case 'v' :
+    typ = TopAbs_VERTEX;
+    break;
+    
     default :
       return 1;
   }
@@ -604,20 +609,26 @@ static Standard_Integer nexplode(Draw_Interpretor& di,
     }
     Exp.Next();
   }
-  
+  //
   TColStd_Array1OfInteger OrderInd(1,MaxShapes);
-//  gp_Pnt GPoint;
+  gp_Pnt GPoint;
   GProp_GProps GPr;
-//  Standard_Integer InOfminX = 1,aTemp;
   Standard_Integer aTemp;
   TColStd_Array1OfReal MidXYZ(1,MaxShapes); //X,Y,Z;
   Standard_Boolean NoSort = Standard_True;
-  
-  // Computing of CentreOfMass
+  //
+  // Computing of CentreOfMass for edge and face
+  // and for vertex use its point
   for (Index=1; Index <= MaxShapes; Index++) {
     OrderInd.SetValue(Index,Index);
-    BRepGProp::LinearProperties(aShapes(Index),GPr);
-    gp_Pnt GPoint = GPr.CentreOfMass();
+    const TopoDS_Shape& aS = aShapes(Index);
+    if (aS.ShapeType() != TopAbs_VERTEX) {
+      BRepGProp::LinearProperties(aS, GPr);
+      GPoint = GPr.CentreOfMass();
+    }
+    else {
+      GPoint = BRep_Tool::Pnt(TopoDS::Vertex(aS));
+    }
     MidXYZ.SetValue(Index, GPoint.X()*999 + GPoint.Y()*99 +
 		    GPoint.Z()*0.9);
   }   
@@ -1288,7 +1299,7 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("compound","compound [name1 name2 ..] compound",__FILE__,compound,g);
   theCommands.Add("add","add name1 name2",__FILE__,add,g);
   theCommands.Add("explode","explode name [Cd/C/So/Sh/F/W/E/V]",__FILE__,explode,g);
-  theCommands.Add("nexplode","stable numbered explode for edge and face: nexplode name [F/E]",__FILE__,nexplode,g);
+  theCommands.Add("nexplode","stable numbered explode for vertex, edge and face: nexplode name [V/E/F]",__FILE__,nexplode,g);
   theCommands.Add("exwire","exwire wirename",__FILE__,exwire,g);
   theCommands.Add("emptycopy","emptycopy [copyshape] originalshape",__FILE__,emptycopy,g);
   theCommands.Add("check","check shape1 shape2 ...",__FILE__,check,g);

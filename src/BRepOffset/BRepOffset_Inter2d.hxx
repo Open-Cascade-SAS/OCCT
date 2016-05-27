@@ -24,6 +24,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Standard_Real.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 class BRepAlgo_AsDes;
 class TopoDS_Face;
 class BRepOffset_Offset;
@@ -41,11 +42,21 @@ public:
   //! Computes the intersections between the edges stored
   //! is AsDes as descendants of <F> . Intersections is computed
   //! between two edges if one of them is bound in NewEdges.
+  //! When all faces of the shape are treated the intersection
+  //! vertices have to be fused using the FuseVertices method.
+  //! theDMVV contains the vertices that should be fused
   Standard_EXPORT static void Compute (const Handle(BRepAlgo_AsDes)& AsDes, 
                                        const TopoDS_Face& F, 
                                        const TopTools_IndexedMapOfShape& NewEdges, 
-                                       const Standard_Real Tol);
-  
+                                       const Standard_Real Tol,
+                                       TopTools_IndexedDataMapOfShapeListOfShape& theDMVV);
+
+  //! Computes the intersection between the offset edges
+  //! stored in AsDes as descendatnds on <F>. All intersection
+  //! vertices will be stored in AsDes2d. When all faces of the
+  //! shape are treated the intersection vertices have to be fused
+  //! using the FuseVertices method.
+  //! theDMVV contains the vertices that should be fused.
   Standard_EXPORT static void ConnexIntByInt (const TopoDS_Face& FI, 
                                               BRepOffset_Offset& OFI, 
                                               TopTools_DataMapOfShapeShape& MES, 
@@ -53,10 +64,14 @@ public:
                                               const Handle(BRepAlgo_AsDes)& AsDes, 
                                               const Handle(BRepAlgo_AsDes)& AsDes2d, 
                                               const Standard_Real Offset, 
-                                              const Standard_Real Tol);
+                                              const Standard_Real Tol,
+                                              TopTools_IndexedDataMapOfShapeListOfShape& theDMVV);
 
-
-
+  //! Fuses the chains of vertices in the theDMVV
+  //! and updates AsDes by replacing the old vertices
+  //! with the new ones.
+  Standard_EXPORT static void FuseVertices(const TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
+                                           const Handle(BRepAlgo_AsDes)& theAsDes);
 
 protected:
 
