@@ -175,38 +175,78 @@ std::string ViewerTest_CmdParser::Arg (const std::string& theOptionName, Standar
 //function : ArgVec3f
 //purpose  :
 //===============================================================================================
-Graphic3d_Vec3 ViewerTest_CmdParser::ArgVec3f (const std::string& theOptionName)
+Graphic3d_Vec3 ViewerTest_CmdParser::ArgVec3f (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return Graphic3d_Vec3 (static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, 0).c_str())),
-                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, 1).c_str())),
-                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, 2).c_str())));
+  return Graphic3d_Vec3 (static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str())),
+                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str())),
+                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str())));
 }
 
 //===============================================================================================
 //function : ArgVec3d
 //purpose  :
 //===============================================================================================
-Graphic3d_Vec3d ViewerTest_CmdParser::ArgVec3d (const std::string& theOptionName)
+Graphic3d_Vec3d ViewerTest_CmdParser::ArgVec3d (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return Graphic3d_Vec3d ( Draw::Atof (Arg (theOptionName, 0).c_str()),
-                           Draw::Atof (Arg (theOptionName, 1).c_str()),
-                           Draw::Atof (Arg (theOptionName, 2).c_str()));
+  return Graphic3d_Vec3d ( Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
+                           Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
+                           Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()));
+}
+
+//===============================================================================================
+//function : ArgVec
+//purpose  :
+//===============================================================================================
+gp_Vec ViewerTest_CmdParser::ArgVec (const std::string& theOptionName, Standard_Integer theArgumentIndex)
+{
+  return gp_Vec ( Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()));
+}
+
+//===============================================================================================
+//function : ArgPnt
+//purpose  :
+//===============================================================================================
+gp_Pnt ViewerTest_CmdParser::ArgPnt (const std::string& theOptionName, Standard_Integer theArgumentIndex)
+{
+  return gp_Pnt ( Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()));
 }
 
 //===============================================================================================
 //function : ArgDouble
 //purpose  :
 //===============================================================================================
-Standard_Real ViewerTest_CmdParser::ArgDouble (const std::string& theOptionName)
+Standard_Real ViewerTest_CmdParser::ArgDouble (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return Draw::Atof (Arg (theOptionName, 0).c_str());
+  return Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str());
 }
 
 //===============================================================================================
 //function : ArgFloat
 //purpose  :
 //===============================================================================================
-Standard_ShortReal ViewerTest_CmdParser::ArgFloat (const std::string& theOptionName)
+Standard_ShortReal ViewerTest_CmdParser::ArgFloat (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, 0).c_str()));
+  return static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()));
+}
+
+//===============================================================================================
+//function : ArgInt
+//purpose  :
+//===============================================================================================
+Standard_Integer ViewerTest_CmdParser::ArgInt (const std::string& theOptionName, const Standard_Integer theArgumentIndex)
+{
+  return static_cast<Standard_Integer> (Draw::Atoi (Arg (theOptionName, theArgumentIndex).c_str()));
+}
+
+//===============================================================================================
+//function : ArgBool
+//purpose  :
+//===============================================================================================
+Standard_Boolean ViewerTest_CmdParser::ArgBool (const std::string& theOptionName, const Standard_Integer theArgumentIndex)
+{
+  return static_cast<Standard_Boolean> (Draw::Atoi (Arg (theOptionName, theArgumentIndex).c_str()));
 }

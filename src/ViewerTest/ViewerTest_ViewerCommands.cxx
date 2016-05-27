@@ -16,6 +16,7 @@
 
 #include <OpenGl_GlCore20.hxx>
 #include <AIS_ColorScale.hxx>
+#include <AIS_Manipulator.hxx>
 #include <AIS_RubberBand.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -36,6 +37,7 @@
 #include <ViewerTest_EventManager.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
+#include <ViewerTest_CmdParser.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_PositionalLight.hxx>
@@ -205,6 +207,27 @@ Standard_EXPORT const Handle(AIS_RubberBand)& GetRubberBand()
     aBand->SetDisplayMode (0);
   }
   return aBand;
+}
+
+typedef NCollection_Map<AIS_Manipulator*> ViewerTest_MapOfAISManipulators;
+
+Standard_EXPORT ViewerTest_MapOfAISManipulators& GetMapOfAISManipulators()
+{
+  static ViewerTest_MapOfAISManipulators aMap;
+  return aMap;
+}
+
+Standard_EXPORT Handle(AIS_Manipulator) GetActiveAISManipulator()
+{
+  ViewerTest_MapOfAISManipulators::Iterator anIt (GetMapOfAISManipulators());
+  for (; anIt.More(); anIt.Next())
+  {
+    if (anIt.Value()->HasActiveMode())
+    {
+      return anIt.Value();
+    }
+  }
+  return NULL;
 }
 
 //==============================================================================
@@ -1912,9 +1935,16 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
         }
       }
       break;
+
     case WM_LBUTTONUP:
-      if (!DragFirst)
+      if (IsDragged && !DragFirst)
       {
+        if (!GetActiveAISManipulator().IsNull())
+        {
+          GetActiveAISManipulator()->StopTransform();
+          ViewerTest::GetAISContext()->ClearSelected();
+        }
+
         if (ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
         {
           ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
@@ -1926,44 +1956,77 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
       IsDragged = Standard_False;
       return ViewerWindowProc( hwnd, Msg, wParam, lParam );
 
-    case WM_LBUTTONDOWN:
-      if( fwKeys == MK_LBUTTON || fwKeys == ( MK_LBUTTON | MK_SHIFT ) )
+    case WM_RBUTTONUP:
+      if (IsDragged && !DragFirst)
       {
-        IsDragged = Standard_True;
+        if (!GetActiveAISManipulator().IsNull())
+        {
+          GetActiveAISManipulator()->StopTransform (Standard_False);
+          ViewerTest::GetAISContext()->ClearSelected();
+        }
+        IsDragged = Standard_False;
+      }
+      return ViewerWindowProc (hwnd, Msg, wParam, lParam);
+
+    case WM_LBUTTONDOWN:
+      if (!GetActiveAISManipulator().IsNull())
+      {
+        IsDragged = ( fwKeys == MK_LBUTTON );
+      }
+      else
+      {
+        IsDragged = ( fwKeys == MK_LBUTTON || fwKeys == ( MK_LBUTTON | MK_SHIFT ) );
+      }
+
+      if (IsDragged)
+      {
         DragFirst = Standard_True;
         X_ButtonPress = LOWORD(lParam);
         Y_ButtonPress = HIWORD(lParam);
       }
       return ViewerWindowProc( hwnd, Msg, wParam, lParam );
 
-      break;
-
     case WM_MOUSEMOVE:
       if (IsDragged)
       {
-        bool toRedraw = false;
-        if (!DragFirst && ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
+        X_Motion = LOWORD (lParam);
+        Y_Motion = HIWORD (lParam);
+        if (!GetActiveAISManipulator().IsNull())
         {
-          ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
-          toRedraw = true;
+          if (DragFirst)
+          {
+            GetActiveAISManipulator()->StartTransform (X_ButtonPress, Y_ButtonPress, ViewerTest::CurrentView());
+          }
+          else
+          {
+            GetActiveAISManipulator()->Transform (X_Motion, Y_Motion, ViewerTest::CurrentView());
+            ViewerTest::GetAISContext()->CurrentViewer()->Redraw();
+          }
+        }
+        else
+        {
+          bool toRedraw = false;
+          if (!DragFirst && ViewerTest::GetAISContext()->IsDisplayed (GetRubberBand()))
+          {
+            ViewerTest::GetAISContext()->Remove (GetRubberBand(), Standard_False);
+            toRedraw = true;
+          }
+
+          RECT aRect;
+          if (GetClientRect (hwnd, &aRect))
+          {
+            int aHeight = aRect.bottom - aRect.top;
+            GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
+            ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, Standard_True, AIS_DS_Displayed);
+            toRedraw = true;
+          }
+          if (toRedraw)
+          {
+            ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
+          }
         }
 
         DragFirst = Standard_False;
-        X_Motion = LOWORD (lParam);
-        Y_Motion = HIWORD (lParam);
-
-        RECT aRect;
-        if (GetClientRect (hwnd, &aRect))
-        {
-          int aHeight = aRect.bottom - aRect.top;
-          GetRubberBand()->SetRectangle (X_ButtonPress, aHeight - Y_ButtonPress, X_Motion, aHeight - Y_Motion);
-          ViewerTest::GetAISContext()->Display (GetRubberBand(), 0, -1, Standard_False, Standard_True, AIS_DS_Displayed);
-          toRedraw = true;
-        }
-        if (toRedraw)
-        {
-          ViewerTest::GetAISContext()->CurrentViewer()->RedrawImmediate();
-        }
       }
       else
         return ViewerWindowProc( hwnd, Msg, wParam, lParam );
@@ -8786,6 +8849,295 @@ static Standard_Integer VXRotate (Draw_Interpretor& di,
   return 0;
 }
 
+//===============================================================================================
+//class   : ViewerTest_AISManipulator
+//purpose : Proxy class maintaining automated registry map to enlist existing AIS_Manipulator instances
+//===============================================================================================
+DEFINE_STANDARD_HANDLE (ViewerTest_AISManipulator, AIS_Manipulator)
+
+class ViewerTest_AISManipulator : public AIS_Manipulator
+{
+public:
+
+  ViewerTest_AISManipulator() : AIS_Manipulator()
+  {
+    GetMapOfAISManipulators().Add (this);
+  }
+
+  virtual ~ViewerTest_AISManipulator()
+  {
+    GetMapOfAISManipulators().Remove (this);
+  }
+
+  DEFINE_STANDARD_RTTIEXT(ViewerTest_AISManipulator, AIS_Manipulator)
+};
+
+IMPLEMENT_STANDARD_HANDLE (ViewerTest_AISManipulator, AIS_Manipulator)
+IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_AISManipulator, AIS_Manipulator)
+
+//===============================================================================================
+//function : VManipulator
+//purpose  :
+//===============================================================================================
+static int VManipulator (Draw_Interpretor& theDi,
+                         Standard_Integer  theArgsNb,
+                         const char**      theArgVec)
+{
+  Handle(V3d_View)   aView   = ViewerTest::CurrentView();
+  Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
+  ViewerTest::GetAISContext()->MainSelector()->SetPickClosest (Standard_False);
+  if (aView.IsNull()
+   || aViewer.IsNull())
+  {
+    std::cerr << "No active viewer!\n";
+    return 1;
+  }
+
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), ViewerTest::CurrentView());
+  Standard_Integer anArgIter = 1;
+  for (; anArgIter < theArgsNb; ++anArgIter)
+  {
+    anUpdateTool.parseRedrawMode (theArgVec[anArgIter]);
+  }
+
+  ViewerTest_CmdParser aCmd;
+  aCmd.AddDescription ("Manages manipulator for interactive objects:");
+  aCmd.AddOption ("attach",         "... object - attach manipulator to an object");
+  aCmd.AddOption ("adjustPosition", "... {0|1} - adjust position when attaching");
+  aCmd.AddOption ("adjustSize",     "... {0|1} - adjust size when attaching ");
+  aCmd.AddOption ("enableModes",    "... {0|1} - enable modes when attaching ");
+  aCmd.AddOption ("detach",         "...       - detach manipulator");
+
+  aCmd.AddOption ("startTransform",   "... mouse_x mouse_y - invoke start transformation");
+  aCmd.AddOption ("transform",        "... mouse_x mouse_y - invoke transformation");
+  aCmd.AddOption ("stopTransform",    "... [abort] - invoke stop transformation");
+
+  aCmd.AddOption ("move",   "... x y z - move object");
+  aCmd.AddOption ("rotate", "... x y z dx dy dz angle - rotate object");
+  aCmd.AddOption ("scale",  "... factor - scale object");
+
+  aCmd.AddOption ("autoActivate",      "... {0|1} - set activation on detection");
+  aCmd.AddOption ("followTranslation", "... {0|1} - set following translation transform");
+  aCmd.AddOption ("followRotation",    "... {0|1} - set following rotation transform");
+  aCmd.AddOption ("gap",               "... value - set gap between sub-parts");
+  aCmd.AddOption ("part",              "... axis mode {0|1} - set visual part");
+  aCmd.AddOption ("pos",               "... x y z [nx ny nz [xx xy xz]] - set position of manipulator");
+  aCmd.AddOption ("size",              "... size - set size of manipulator");
+  aCmd.AddOption ("zoomable",          "... {0|1} - set zoom persistence");
+
+  aCmd.Parse (theArgsNb, theArgVec);
+
+  if (aCmd.HasOption ("help"))
+  {
+    theDi.PrintHelp (theArgVec[0]);
+    return 0;
+  }
+
+  ViewerTest_DoubleMapOfInteractiveAndName& aMapAIS = GetMapOfAIS();
+
+  TCollection_AsciiString aName (aCmd.Arg ("", 0).c_str());
+
+  if (aName.IsEmpty())
+  {
+    std::cerr << theArgVec[0] << " error: please specify AIS manipulator's name as the first argument.\n";
+    return 1;
+  }
+
+  // ----------------------------------
+  // detach existing manipulator object
+  // ----------------------------------
+
+  if (aCmd.HasOption ("detach"))
+  {
+    if (!aMapAIS.IsBound2 (aName))
+    {
+      std::cerr << theArgVec[0] << " error: could not find \"" << aName << "\" AIS object.\n";
+      return 1;
+    }
+
+    Handle(AIS_Manipulator) aManipulator = Handle(AIS_Manipulator)::DownCast (aMapAIS.Find2 (aName));
+    if (aManipulator.IsNull())
+    {
+      std::cerr << theArgVec[0] << " error: \"" << aName << "\" is not an AIS manipulator.\n";
+      return 1;
+    }
+
+    aManipulator->Detach();
+    aMapAIS.UnBind2 (aName);
+    ViewerTest::GetAISContext()->Remove (aManipulator);
+
+    return 0;
+  }
+
+  // -----------------------------------------------
+  // find or create manipulator if it does not exist
+  // -----------------------------------------------
+
+  Handle(AIS_Manipulator) aManipulator;
+  if (!aMapAIS.IsBound2 (aName))
+  {
+    std::cout << theArgVec[0] << ": AIS object \"" << aName << "\" has been created.\n";
+
+    aManipulator = new ViewerTest_AISManipulator();
+    aMapAIS.Bind (aManipulator, aName);
+  }
+  else
+  {
+    aManipulator = Handle(AIS_Manipulator)::DownCast (aMapAIS.Find2 (aName));
+    if (aManipulator.IsNull())
+    {
+      std::cerr << theArgVec[0] << " error: \"" << aName << "\" is not an AIS manipulator.\n";
+      return 1;
+    }
+  }
+
+  // -----------------------------------------
+  // change properties of manipulator instance
+  // -----------------------------------------
+
+  if (aCmd.HasOption ("autoActivate", 1, Standard_True))
+  {
+    aManipulator->SetModeActivationOnDetection (aCmd.ArgBool ("autoActivate"));
+  }
+  if (aCmd.HasOption ("followTranslation", 1, Standard_True))
+  {
+    aManipulator->ChangeTransformBehavior().SetFollowTranslation (aCmd.ArgBool ("followTranslation"));
+  }
+  if (aCmd.HasOption ("followRotation", 1, Standard_True))
+  {
+    aManipulator->ChangeTransformBehavior().SetFollowRotation (aCmd.ArgBool ("followRotation"));
+  }
+  if (aCmd.HasOption ("gap", 1, Standard_True))
+  {
+    aManipulator->SetGap (aCmd.ArgFloat ("gap"));
+  }
+  if (aCmd.HasOption ("part", 3, Standard_True))
+  {
+    Standard_Integer anAxis = aCmd.ArgInt  ("part", 0);
+    Standard_Integer aMode  = aCmd.ArgInt  ("part", 1);
+    Standard_Boolean aOnOff = aCmd.ArgBool ("part", 2);
+    if (aMode < 1 || aMode > 3)
+    {
+      std::cerr << theArgVec[0] << " error: mode value should be in range [1, 3].\n";
+      return 1;
+    }
+
+    aManipulator->SetPart (anAxis, static_cast<AIS_ManipulatorMode> (aMode), aOnOff);
+  }
+  if (aCmd.HasOption ("pos", 3, Standard_True))
+  {
+    gp_Pnt aLocation = aCmd.ArgPnt ("pos", 0);
+    gp_Dir aVDir     = aCmd.HasOption ("pos", 6) ? gp_Dir (aCmd.ArgVec ("pos", 3)) : aManipulator->Position().Direction();
+    gp_Dir aXDir     = aCmd.HasOption ("pos", 9) ? gp_Dir (aCmd.ArgVec ("pos", 6)) : aManipulator->Position().XDirection();
+
+    aManipulator->SetPosition (gp_Ax2 (aLocation, aVDir, aXDir));
+  }
+  if (aCmd.HasOption ("size", 1, Standard_True))
+  {
+    aManipulator->SetSize (aCmd.ArgFloat ("size"));
+  }
+  if (aCmd.HasOption ("zoomable", 1, Standard_True))
+  {
+    aManipulator->SetZoomPersistence (!aCmd.ArgBool ("zoomable"));
+
+    if (ViewerTest::GetAISContext()->IsDisplayed (aManipulator))
+    {
+      ViewerTest::GetAISContext()->Remove  (aManipulator, Standard_False);
+      ViewerTest::GetAISContext()->Display (aManipulator, Standard_False);
+    }
+  }
+
+  // ---------------------------------------------------
+  // attach, detach or access manipulator from an object
+  // ---------------------------------------------------
+
+  if (aCmd.HasOption ("attach"))
+  {
+    // Find an object and attach manipulator to it
+    if (!aCmd.HasOption ("attach", 1, Standard_True))
+    {
+      return 1;
+    }
+
+    TCollection_AsciiString anObjName (aCmd.Arg ("attach", 0).c_str());
+    if (!aMapAIS.IsBound2 (anObjName))
+    {
+      std::cerr << theArgVec[0] << " error: AIS object \"" << anObjName << "\" does not exist.\n";
+      return 1;
+    }
+
+    Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (aMapAIS.Find2 (anObjName));
+    ViewerTest_MapOfAISManipulators::Iterator anIt (GetMapOfAISManipulators());
+    for (; anIt.More(); anIt.Next())
+    {
+      if (anIt.Value()->IsAttached()
+       && anIt.Value()->Object() == anObject)
+      {
+        std::cerr << theArgVec[0] << " error: AIS object \"" << anObjName << "\" already has manipulator.\n";
+        return 1;
+      }
+    }
+
+    AIS_Manipulator::OptionsForAttach anOptions;
+    if (aCmd.HasOption ("adjustPosition", 1, Standard_True))
+    {
+      anOptions.SetAdjustPosition (aCmd.ArgBool ("adjustPosition"));
+    }
+    if (aCmd.HasOption ("adjustSize", 1, Standard_True))
+    {
+      anOptions.SetAdjustSize (aCmd.ArgBool ("adjustSize"));
+    }
+    if (aCmd.HasOption ("enableModes", 1, Standard_True))
+    {
+      anOptions.SetEnableModes (aCmd.ArgBool ("enableModes"));
+    }
+
+    aManipulator->Attach (anObject, anOptions);
+  }
+
+  // --------------------------------------
+  // apply transformation using manipulator
+  // --------------------------------------
+
+  if (aCmd.HasOption ("startTransform", 2, Standard_True))
+  {
+    aManipulator->StartTransform (aCmd.ArgInt ("startTransform", 0), aCmd.ArgInt ("startTransform", 1), ViewerTest::CurrentView());
+  }
+  if (aCmd.HasOption ("transform", 2, Standard_True))
+  {
+    aManipulator->Transform (aCmd.ArgInt ("transform", 0), aCmd.ArgInt ("transform", 1), ViewerTest::CurrentView());
+  }
+  if (aCmd.HasOption ("stopTransform"))
+  {
+    Standard_Boolean toApply = !aCmd.HasOption ("stopTransform", 1) || (aCmd.Arg ("stopTransform", 0) != "abort");
+
+    aManipulator->StopTransform (toApply);
+  }
+
+  gp_Trsf aT;
+  if (aCmd.HasOption ("move", 3, Standard_True))
+  {
+    aT.SetTranslationPart (aCmd.ArgVec ("move"));
+  }
+  if (aCmd.HasOption ("rotate", 7, Standard_True))
+  {
+    aT.SetRotation (gp_Ax1 (aCmd.ArgPnt ("rotate", 0), aCmd.ArgVec ("rotate", 3)), aCmd.ArgDouble ("rotate", 6));
+  }
+  if (aCmd.HasOption ("scale", 1))
+  {
+    aT.SetScale (gp_Pnt(), aCmd.ArgDouble("scale"));
+  }
+
+  if (aT.Form() != gp_Identity)
+  {
+    aManipulator->Transform (aT);
+  }
+
+  ViewerTest::GetAISContext()->Redisplay (aManipulator);
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -9307,6 +9659,31 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vxrotate",
     "vxrotate",
     __FILE__,VXRotate,group);
+
+    theCommands.Add("vmanipulator",
+      "\n    vmanipulator Name [-attach AISObject | -detach | ...]"
+      "\n    tool to create and manage AIS manipulators."
+      "\n    Options: "
+      "\n      '-attach AISObject'                 attach manipulator to AISObject"
+      "\n      '-adjustPosition {0|1}'             adjust position when attaching"
+      "\n      '-adjustSize     {0|1}'             adjust size when attaching"
+      "\n      '-enableModes    {0|1}'             enable modes when attaching"
+      "\n      '-detach'                           detach manipulator"
+      "\n      '-startTransform mouse_x mouse_y' - invoke start of transformation"
+      "\n      '-transform      mouse_x mouse_y' - invoke transformation"
+      "\n      '-stopTransform  [abort]'         - invoke stop of transformation"
+      "\n      '-move x y z'                     - move attached object"
+      "\n      '-rotate x y z dx dy dz angle'    - rotate attached object"
+      "\n      '-scale factor'                   - scale attached object"
+      "\n      '-autoActivate      {0|1}'        - set activation on detection"
+      "\n      '-followTranslation {0|1}'        - set following translation transform"
+      "\n      '-followRotation    {0|1}'        - set following rotation transform"
+      "\n      '-gap value'                      - set gap between sub-parts"
+      "\n      '-part axis mode    {0|1}'        - set visual part"
+      "\n      '-pos x y z [nx ny nz [xx xy xz]' - set position of manipulator"
+      "\n      '-size value'                     - set size of manipulator"
+      "\n      '-zoomable {0|1}'                 - set zoom persistence",
+    __FILE__, VManipulator, group);
 
 #if defined(_WIN32)
   theCommands.Add("vprogressive",

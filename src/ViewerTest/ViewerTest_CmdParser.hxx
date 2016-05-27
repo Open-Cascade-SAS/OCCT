@@ -23,6 +23,7 @@
 
 #include <Standard.hxx>
 #include <Graphic3d_Vec.hxx>
+#include <gp_Vec.hxx>
 
 //! Command parser.
 class ViewerTest_CmdParser
@@ -57,17 +58,29 @@ public:
   //! Accesses local argument of option 'theOptionName' with index 'theArgumentIndex'.
   std::string Arg (const std::string& theOptionName, Standard_Integer theArgumentIndex);
 
-  // Interprets arguments of option 'theOptionName' as float vector.
-  Graphic3d_Vec3 ArgVec3f (const std::string& theOptionName);
+  // Interprets arguments of option 'theOptionName' as float vector starting with index 'theArgumentIndex'.
+  Graphic3d_Vec3 ArgVec3f (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
 
-  // Interprets arguments of option 'theOptionName' as double vector.
-  Graphic3d_Vec3d ArgVec3d (const std::string& theOptionName);
+  // Interprets arguments of option 'theOptionName' as double vector starting with index 'theArgumentIndex'.
+  Graphic3d_Vec3d ArgVec3d (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
 
-  // Interprets arguments of option 'theOptionName' as double.
-  Standard_Real ArgDouble (const std::string& theOptionName);
+  // Interprets arguments of option 'theOptionName' as gp vector starting with index 'theArgumentIndex'.
+  gp_Vec ArgVec (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
 
-  // Interprets arguments of option 'theOptionName' as float.
-  Standard_ShortReal ArgFloat (const std::string& theOptionName);
+  // Interprets arguments of option 'theOptionName' as gp vector starting with index 'theArgumentIndex'.
+  gp_Pnt ArgPnt (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
+
+  // Interprets arguments of option 'theOptionName' as double at index 'theArgumentIndex'.
+  Standard_Real ArgDouble (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
+
+  // Interprets arguments of option 'theOptionName' as float at index 'theArgumentIndex'.
+  Standard_ShortReal ArgFloat (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
+
+  // Interprets arguments of option 'theOptionName' as integer at index 'theArgumentIndex'.
+  Standard_Integer ArgInt (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
+
+  // Interprets arguments of option 'theOptionName' as boolean at index 'theArgumentIndex'.
+  Standard_Boolean ArgBool (const std::string& theOptionName, const Standard_Integer theArgumentIndex = 0);
 
 private:
 
