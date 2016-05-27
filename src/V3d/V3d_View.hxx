@@ -1070,7 +1070,6 @@ protected:
   gp_Pnt myCamStartOpEye;
   Standard_Real myCamStartOpBnd[6];
   gp_Pnt myCamStartOpCenter;
-  Handle(Graphic3d_Camera) myCamera;
   Handle(Graphic3d_Camera) myDefaultCamera;
   Handle(Graphic3d_CView) myView;
   Standard_Boolean myImmediateUpdate;
