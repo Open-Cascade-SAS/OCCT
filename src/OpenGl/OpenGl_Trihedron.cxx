@@ -39,17 +39,17 @@ namespace
 // =======================================================================
 void OpenGl_Trihedron::resetTransformations (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
-  const OpenGl_View*            aView    = theWorkspace->View();
-  GLdouble anU = 1.0;
-  GLdouble aV = 1.0;
-  if (aView->Height() < aView->Width())
+  const Handle(OpenGl_Context)&   aContext = theWorkspace->GetGlContext();
+  const Handle(Graphic3d_Camera)& aCamera  = theWorkspace->View()->Camera();
+  double anU = 1.0;
+  double aV  = 1.0;
+  if (aCamera->ViewDimensions().X() < aCamera->ViewDimensions().Y())
   {
-    aV = aView->Width() / aView->Height();
+    aV  = aCamera->ViewDimensions().Y() / aCamera->ViewDimensions().X();
   }
   else
   {
-    anU = aView->Height() / aView->Width();
+    anU = aCamera->ViewDimensions().X() / aCamera->ViewDimensions().Y();
   }
 
   // Reading the transformation matrices and projection of sight

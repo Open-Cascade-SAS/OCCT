@@ -425,12 +425,6 @@ public:
   void SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
                       const Handle(Graphic3d_TextureEnv)& theTexture);
 
-  //! Returns height of view volume.
-  Standard_Real Height () const { return myCamera->ViewDimensions().X(); }
-
-  //! Returns width of view volume.
-  Standard_Real Width () const { return myCamera->ViewDimensions().Y(); }
-
   void SetBackgroundTextureStyle (const Aspect_FillMethod FillStyle);
 
   void SetBackgroundGradient (const Quantity_Color& AColor1, const Quantity_Color& AColor2, const Aspect_GradientFillMethod AType);
