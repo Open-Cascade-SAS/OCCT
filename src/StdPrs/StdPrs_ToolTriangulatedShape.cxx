@@ -252,3 +252,37 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate (const TopoDS_Shape&  
 
   return wasRecomputed;
 }
+
+// =======================================================================
+// function : ClearOnOwnDeflectionChange
+// purpose  :
+// =======================================================================
+void StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (const TopoDS_Shape&         theShape,
+                                                               const Handle(Prs3d_Drawer)& theDrawer,
+                                                               const Standard_Boolean      theToResetCoeff)
+{
+  if (!theDrawer->IsAutoTriangulation()
+    || theShape.IsNull())
+  {
+    return;
+  }
+
+  const Standard_Boolean isOwnDeviationAngle       = theDrawer->HasOwnDeviationAngle();
+  const Standard_Boolean isOwnDeviationCoefficient = theDrawer->HasOwnDeviationCoefficient();
+  const Standard_Real anAngleNew  = theDrawer->DeviationAngle();
+  const Standard_Real anAnglePrev = theDrawer->PreviousDeviationAngle();
+  const Standard_Real aCoeffNew   = theDrawer->DeviationCoefficient();
+  const Standard_Real aCoeffPrev  = theDrawer->PreviousDeviationCoefficient();
+  if ((!isOwnDeviationAngle       || Abs (anAngleNew - anAnglePrev) <= Precision::Angular())
+   && (!isOwnDeviationCoefficient || Abs (aCoeffNew  - aCoeffPrev)  <= Precision::Confusion()))
+  {
+    return;
+  }
+
+  BRepTools::Clean (theShape);
+  if (theToResetCoeff)
+  {
+    theDrawer->UpdatePreviousDeviationAngle();
+    theDrawer->UpdatePreviousDeviationCoefficient();
+  }
+}

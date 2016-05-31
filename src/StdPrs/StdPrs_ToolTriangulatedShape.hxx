@@ -59,6 +59,18 @@ public:
   //! @return true if tesselation was recomputed and false otherwise.
   Standard_EXPORT static Standard_Boolean Tessellate (const TopoDS_Shape& theShape,
                                                       const Handle(Prs3d_Drawer)& theDrawer);
+
+  //! If presentation has own deviation coefficient and IsAutoTriangulation() is true,
+  //! function will compare actual coefficients with previous values and will clear triangulation on their change
+  //! (regardless actual tessellation quality).
+  //! Function is placed here for compatibility reasons - new code should avoid using IsAutoTriangulation().
+  //! @param theShape  [in] the shape
+  //! @param theDrawer [in] the display settings
+  //! @param theToResetCoeff [in] updates coefficients in theDrawer to actual state to avoid redundant recomputations
+  Standard_EXPORT static void ClearOnOwnDeflectionChange (const TopoDS_Shape& theShape,
+                                                          const Handle(Prs3d_Drawer)& theDrawer,
+                                                          const Standard_Boolean theToResetCoeff);
+
 };
 
 #endif

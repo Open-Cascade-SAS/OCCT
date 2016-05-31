@@ -310,14 +310,8 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
     if (myDrawer->IsAutoTriangulation())
     {
       // compute mesh for entire shape beforehand to ensure consistency and optimizations (parallelization)
-      Standard_Real anAnglePrev, anAngleNew, aCoeffPrev, aCoeffNew;
-      Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle      (anAngleNew, anAnglePrev);
-      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(aCoeffNew,  aCoeffPrev);
-      if ((isOwnDeviationAngle       && Abs (anAngleNew - anAnglePrev) > Precision::Angular())
-       || (isOwnDeviationCoefficient && Abs (aCoeffNew  - aCoeffPrev)  > Precision::Confusion()))
-      {
-        BRepTools::Clean (myshape);
-      }
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
+
       // After this call if type of deflection is relative
       // computed deflection coefficient is stored as absolute.
       Standard_Boolean wasRecomputed = StdPrs_ToolTriangulatedShape::Tessellate (myshape, myDrawer);
@@ -331,6 +325,8 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
   }
   else // WireFrame mode
   {
+    StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
+
     // After this call if type of deflection is relative
     // computed deflection coefficient is stored as absolute.
     Prs3d::GetDeflection (myshape, myDrawer);

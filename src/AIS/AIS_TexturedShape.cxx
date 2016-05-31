@@ -440,28 +440,14 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
   {
     case AIS_WireFrame:
     {
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
       StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       break;
     }
     case AIS_Shaded:
     case 3: // texture mapping on triangulation
     {
-      if (myDrawer->IsAutoTriangulation())
-      {
-        Standard_Real aPrevAngle;
-        Standard_Real aNewAngle;
-        Standard_Real aPrevCoeff;
-        Standard_Real aNewCoeff;
-
-        Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle (aNewAngle, aPrevAngle);
-        Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient (aNewCoeff,aPrevCoeff);
-        if (((Abs (aNewAngle - aPrevAngle) > Precision::Angular()) && isOwnDeviationAngle) ||
-            ((Abs (aNewCoeff - aPrevCoeff) > Precision::Confusion()) && isOwnDeviationCoefficient))
-        {
-          BRepTools::Clean (myshape);
-        }
-      }
-
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
       if (myshape.ShapeType() > TopAbs_FACE)
       {
         StdPrs_WFShape::Add (thePrs, myshape, myDrawer);

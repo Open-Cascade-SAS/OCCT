@@ -202,6 +202,15 @@ public:
          : 0.0;
   }
 
+  //! Updates the previous value used for the chordal deviation coefficient to the current state.
+  void UpdatePreviousDeviationCoefficient()
+  {
+    if (myHasOwnDeviationCoefficient)
+    {
+      myPreviousDeviationCoefficient = DeviationCoefficient();
+    }
+  }
+
   //! Sets the deviation coefficient aCoefficient for removal
   //! of hidden lines created by different viewpoints in
   //! different presentations. The Default value is 0.02.
@@ -280,6 +289,15 @@ public:
     return myHasOwnDeviationAngle
          ? myPreviousDeviationAngle
          : 0.0;
+  }
+
+  //! Updates the previous deviation angle to the current value
+  void UpdatePreviousDeviationAngle()
+  {
+    if (myHasOwnDeviationAngle)
+    {
+      myPreviousDeviationAngle = DeviationAngle();
+    }
   }
 
   //! Sets anAngle, the angle of maximum chordal deviation for removal of hidden lines created by

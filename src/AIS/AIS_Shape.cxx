@@ -122,7 +122,7 @@ Standard_Boolean AIS_Shape::AcceptShapeDecomposition() const
 //=======================================================================
 void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                         const Handle(Prs3d_Presentation)& aPrs,
-                        const Standard_Integer aMode)
+                        const Standard_Integer theMode)
 {  
   aPrs->Clear();
   if(myshape.IsNull()) return;
@@ -144,13 +144,14 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
 
   if (IsInfinite())
   {
-    aPrs->SetInfiniteState (Standard_True); //not taken in account duting FITALL
+    aPrs->SetInfiniteState (Standard_True); //not taken in account during FITALL
   }
 
-  switch (aMode)
+  switch (theMode)
   {
     case AIS_WireFrame:
     {
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
       try
       {
         OCC_CATCH_SIGNALS
@@ -169,18 +170,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     }
     case AIS_Shaded:
     {
-      if (myDrawer->IsAutoTriangulation())
-      {
-        Standard_Real anAnglePrev, anAngleNew, aCoeffPrev, aCoeffNew;
-        Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle      (anAngleNew, anAnglePrev);
-        Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(aCoeffNew,  aCoeffPrev);
-        if ((isOwnDeviationAngle       && Abs (anAngleNew - anAnglePrev) > Precision::Angular())
-         || (isOwnDeviationCoefficient && Abs (aCoeffNew  - aCoeffPrev)  > Precision::Confusion()))
-        {
-          BRepTools::Clean (myshape);
-        }
-      }
-
+      StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
       if ((Standard_Integer) myshape.ShapeType() > 4)
       {
         StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
