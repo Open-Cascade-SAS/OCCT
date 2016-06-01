@@ -51,6 +51,10 @@ class Geom_BSplineCurve;
 //! - GeomAdaptor_Curve for a curve from the Geom package
 //! - Adaptor3d_CurveOnSurface for a curve lying on
 //! a surface from the Geom package.
+//!
+//! Polynomial coefficients of BSpline curves used for their evaluation are
+//! cached for better performance. Therefore these evaluations are not
+//! thread-safe and parallel evaluations need to be prevented.
 class Adaptor3d_Curve 
 {
 public:

@@ -49,6 +49,10 @@ class Geom2d_BSplineCurve;
 //! the curve by algorithms, which use it.
 //! A derived concrete class is provided:
 //! Geom2dAdaptor_Curve for a curve from the Geom2d package.
+//!
+//! Polynomial coefficients of BSpline curves used for their evaluation are
+//! cached for better performance. Therefore these evaluations are not
+//! thread-safe and parallel evaluations need to be prevented.
 class Adaptor2d_Curve2d 
 {
 public:

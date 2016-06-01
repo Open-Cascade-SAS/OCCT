@@ -61,6 +61,10 @@ class Adaptor3d_HCurve;
 //! Warning: All the methods are virtual and implemented with a
 //! raise to allow to redefined only the methods realy
 //! used.
+//!
+//! Polynomial coefficients of BSpline surfaces used for their evaluation are
+//! cached for better performance. Therefore these evaluations are not
+//! thread-safe and parallel evaluations need to be prevented.
 class Adaptor3d_Surface 
 {
 public:
