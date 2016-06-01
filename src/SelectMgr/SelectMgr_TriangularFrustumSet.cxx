@@ -109,7 +109,7 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
 NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustumSet::ScaleAndTransform (const Standard_Integer theScale,
-                                                                                             const gp_Trsf& theTrsf)
+                                                                                             const gp_GTrsf& theTrsf)
 {
   SelectMgr_TriangularFrustumSet* aRes = new SelectMgr_TriangularFrustumSet();
 

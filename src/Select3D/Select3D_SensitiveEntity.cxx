@@ -85,7 +85,7 @@ Standard_Boolean Select3D_SensitiveEntity::HasInitLocation() const
 // purpose  : Returns inversed location transformation matrix if the shape corresponding
 //            to this entity has init location set. Otherwise, returns identity matrix.
 //=======================================================================
-gp_Trsf Select3D_SensitiveEntity::InvInitLocation() const
+gp_GTrsf Select3D_SensitiveEntity::InvInitLocation() const
 {
-  return gp_Trsf();
+  return gp_GTrsf();
 }

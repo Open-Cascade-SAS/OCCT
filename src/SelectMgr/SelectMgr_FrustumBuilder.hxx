@@ -62,6 +62,9 @@ public:
 
   Standard_EXPORT void InvalidateViewport();
 
+  Standard_EXPORT void WindowSize (Standard_Integer& theWidth,
+                                   Standard_Integer& theHeight);
+
   //! Calculates signed distance between plane with equation
   //! theEq and point thePnt
   Standard_EXPORT Standard_Real SignedPlanePntDist (const SelectMgr_Vec3& theEq,

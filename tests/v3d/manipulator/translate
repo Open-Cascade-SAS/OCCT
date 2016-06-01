@@ -33,7 +33,7 @@ vfit
 # attach manipulator
 # ------------------
 
-vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
 vmanipulator m -followRotation 1
 vmanipulator m -followTranslation 1
 
@@ -100,7 +100,7 @@ vfit
 # attach manipulator and rotate around z axis
 # -------------------------------------------
 
-vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
 vmanipulator m -followRotation 1
 vmanipulator m -followTranslation 1
 

@@ -779,6 +779,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
   // Update states of OpenGl_BVHTreeSelector (frustum culling algorithm).
   myBVHSelector.SetViewVolume (myCamera);
+  myBVHSelector.SetViewportSize (myWindow->Width(), myWindow->Height());
 
   const Handle(OpenGl_ShaderManager)& aManager   = aContext->ShaderManager();
   if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)

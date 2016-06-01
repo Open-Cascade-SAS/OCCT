@@ -47,7 +47,7 @@ public:
   //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
   //!    - scale only is needed: @theTrsf must be set to gp_Identity.
   Standard_EXPORT virtual SelectMgr_SelectingVolumeManager ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                              const gp_Trsf& theTrsf);
+                                                                              const gp_GTrsf& theTrsf);
 
   Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const Standard_OVERRIDE;
 
@@ -67,6 +67,8 @@ public:
 
   //! @return current world view transformation common for all selecting volumes
   Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
+
+  Standard_EXPORT void WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight);
 
   //! @return current camera world view projection transformation state common for all selecting volumes
   Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;

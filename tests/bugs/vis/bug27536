@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC27536"
+puts "========"
+puts ""
+##################################################################
+puts "Visualization - incorrect behavior of zoom persisted objects"
+##################################################################
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+vinit
+vclear
+vaxo
+
+box b -50 -50 -50 100 100 100
+vdisplay b -trsfPers zoom -trsfPersPos 0 0 0 -dispmode 1
+
+vdump $anImage1
+
+vinit View2 w=200 h=400
+vaxo
+vfit
+
+# Check that box was't resized in small view
+if {[vreadpixel 165 200 name] != "DARKGOLDENROD3 1"} {
+  puts "ERROR: zoom persistent box is resized on view sizes changed!"
+}
+
+vdump $anImage2

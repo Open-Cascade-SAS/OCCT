@@ -16,6 +16,7 @@
 #ifndef _SelectMgr_BaseFrustum_HeaderFile
 #define _SelectMgr_BaseFrustum_HeaderFile
 
+#include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pln.hxx>
 
@@ -70,6 +71,9 @@ public:
   Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth, 
                                       const Standard_Integer theHeight);
 
+  Standard_EXPORT void WindowSize (Standard_Integer& theWidth,
+                                   Standard_Integer& theHeight);
+
   //! Passes viewport parameters to builder
   Standard_EXPORT void SetViewport (const Standard_Real theX,
                                     const Standard_Real theY,
@@ -102,8 +106,8 @@ public:
   //! There are no default parameters, but in case if:
   //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
   //!    - scale only is needed: @theTrsf must be set to gp_Identity.
-  virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer /*theScaleFactor*/,
-                                                                       const gp_Trsf& /*theTrsf*/) { return NULL; }
+  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer /*theScaleFactor*/,
+                                                                                       const gp_GTrsf& /*theTrsf*/) { return NULL; }
 
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,

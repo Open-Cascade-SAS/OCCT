@@ -44,7 +44,7 @@ SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager (Standard_Boo
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 //=======================================================================
 SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                                      const gp_Trsf& theTrsf)
+                                                                                      const gp_GTrsf& theTrsf)
 {
   SelectMgr_SelectingVolumeManager aMgr (Standard_False);
 
@@ -135,6 +135,15 @@ const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::WorldViewMatrix() const
 const Graphic3d_WorldViewProjState& SelectMgr_SelectingVolumeManager::WorldViewProjState() const
 {
   return mySelectingVolumes[Frustum]->WorldViewProjState();
+}
+
+//=======================================================================
+// function : WindowSize
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight)
+{
+  mySelectingVolumes[Frustum]->WindowSize (theWidth, theHeight);
 }
 
 //=======================================================================

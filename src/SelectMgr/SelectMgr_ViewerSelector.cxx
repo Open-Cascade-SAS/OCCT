@@ -19,6 +19,7 @@
 //              AGV OCT/23/03 : Optimize the method SortResult() (OCC4201)
 
 #include <BVH_Tree.hxx>
+#include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
@@ -267,12 +268,12 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
 //           necessary calculations
 //=======================================================================
 void SelectMgr_ViewerSelector::computeFrustum (const Handle(SelectBasics_SensitiveEntity)& theEnt,
-                                               const gp_Trsf&                              theInvTrsf,
+                                               const gp_GTrsf&                             theInvTrsf,
                                                SelectMgr_FrustumCache&                     theCachedMgrs,
                                                SelectMgr_SelectingVolumeManager&           theResMgr)
 {
   Standard_Integer aScale = isToScaleFrustum (theEnt) ? sensitivity (theEnt) : 1;
-  const gp_Trsf aTrsfMtr = theEnt->HasInitLocation() ? theEnt->InvInitLocation() * theInvTrsf : theInvTrsf;
+  const gp_GTrsf aTrsfMtr = theEnt->HasInitLocation() ? theEnt->InvInitLocation() * theInvTrsf : theInvTrsf;
   const Standard_Boolean toScale = aScale != 1;
   const Standard_Boolean toTransform = aTrsfMtr.Form() != gp_Identity;
   if (toScale && toTransform)
@@ -309,7 +310,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
 
   const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aSensitivesTree = anEntitySet->BVH();
 
-  gp_Trsf aInversedTrsf;
+  gp_GTrsf aInversedTrsf;
 
   if (theObject->HasTransformation() || theObject->TransformPersistence().Flags)
   {
@@ -321,14 +322,24 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     {
       const Graphic3d_Mat4d& aProjection = mySelectingVolumeMgr.ProjectionMatrix();
       const Graphic3d_Mat4d& aWorldView  = mySelectingVolumeMgr.WorldViewMatrix();
+      Standard_Integer aViewportWidth;
+      Standard_Integer aViewportHeight;
+      mySelectingVolumeMgr.WindowSize (aViewportWidth, aViewportHeight);
 
-      gp_Trsf aTPers;
-      Graphic3d_Mat4d aMat = theObject->TransformPersistence().Compute (aProjection, aWorldView, 0, 0);
-      aTPers.SetValues (aMat.GetValue (0, 0), aMat.GetValue (0, 1), aMat.GetValue (0, 2), aMat.GetValue (0, 3),
-                        aMat.GetValue (1, 0), aMat.GetValue (1, 1), aMat.GetValue (1, 2), aMat.GetValue (1, 3),
-                        aMat.GetValue (2, 0), aMat.GetValue (2, 1), aMat.GetValue (2, 2), aMat.GetValue (2, 3));
+      gp_GTrsf aTPers;
+      Graphic3d_Mat4d aMat = theObject->TransformPersistence().Compute (aProjection, aWorldView, aViewportWidth, aViewportHeight);
+      aTPers.SetValue (1, 1, aMat.GetValue (0, 0));
+      aTPers.SetValue (1, 2, aMat.GetValue (0, 1));
+      aTPers.SetValue (1, 3, aMat.GetValue (0, 2));
+      aTPers.SetValue (2, 1, aMat.GetValue (1, 0));
+      aTPers.SetValue (2, 2, aMat.GetValue (1, 1));
+      aTPers.SetValue (2, 3, aMat.GetValue (1, 2));
+      aTPers.SetValue (3, 1, aMat.GetValue (2, 0));
+      aTPers.SetValue (3, 2, aMat.GetValue (2, 1));
+      aTPers.SetValue (3, 3, aMat.GetValue (2, 2));
+      aTPers.SetTranslationPart (gp_XYZ (aMat.GetValue (0, 3), aMat.GetValue (1, 3), aMat.GetValue (2, 3)));
 
-      aInversedTrsf = (aTPers * theObject->Transformation()).Inverted();
+      aInversedTrsf = (aTPers * gp_GTrsf (theObject->Transformation())).Inverted();
     }
   }
 
@@ -429,7 +440,10 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
       const Graphic3d_Mat4d& aProjection            = mySelectingVolumeMgr.ProjectionMatrix();
       const Graphic3d_Mat4d& aWorldView             = mySelectingVolumeMgr.WorldViewMatrix();
       const Graphic3d_WorldViewProjState& aWVPState = mySelectingVolumeMgr.WorldViewProjState();
-      aBVHTree = mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aWVPState);
+      Standard_Integer aViewportWidth;
+      Standard_Integer aViewportHeight;
+      mySelectingVolumeMgr.WindowSize (aViewportWidth, aViewportHeight);
+      aBVHTree = mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
     }
     else
     {
@@ -842,9 +856,12 @@ void SelectMgr_ViewerSelector::RebuildObjectsTree (const Standard_Boolean theIsF
     const Graphic3d_Mat4d& aProjection            = mySelectingVolumeMgr.ProjectionMatrix();
     const Graphic3d_Mat4d& aWorldView             = mySelectingVolumeMgr.WorldViewMatrix();
     const Graphic3d_WorldViewProjState& aWVPState = mySelectingVolumeMgr.WorldViewProjState();
+    Standard_Integer aViewportWidth;
+    Standard_Integer aViewportHeight;
+    mySelectingVolumeMgr.WindowSize (aViewportWidth, aViewportHeight);
 
     mySelectableObjects.BVH();
-    mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aWVPState);
+    mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
   }
 }
 

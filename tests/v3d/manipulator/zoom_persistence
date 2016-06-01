@@ -58,7 +58,7 @@ vdump $anImage3
 
 vfit
 
-vmanipulator m2 -attach b2 -adjustPosition 1 -adjustSize 0 -enableModes 1 -zoomable 0 -size 100
+vmanipulator m2 -attach b2 -adjustPosition 1 -adjustSize 0 -enableModes 1 -zoomable 0 -size 40
 
 set mouse_pick_1 {341 283}
 set mouse_pick_2 {277 246}

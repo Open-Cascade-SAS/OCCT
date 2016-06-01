@@ -489,7 +489,10 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
       const OpenGl_Mat4& aProjection                = theSelector.ProjectionMatrix();
       const OpenGl_Mat4& aWorldView                 = theSelector.WorldViewMatrix();
       const Graphic3d_WorldViewProjState& aWVPState = theSelector.WorldViewProjState();
-      aBVHTree = myBVHPrimitivesTrsfPers.BVH (aProjection, aWorldView, aWVPState);
+      const Standard_Integer aViewportWidth         = theSelector.ViewportWidth();
+      const Standard_Integer aViewportHeight        = theSelector.ViewportHeight();
+
+      aBVHTree = myBVHPrimitivesTrsfPers.BVH (aProjection, aWorldView, aViewportWidth, aViewportHeight, aWVPState);
     }
     else
     {

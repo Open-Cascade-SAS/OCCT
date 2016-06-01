@@ -208,7 +208,7 @@ public:
 
   //! Returns inversed location transformation matrix if the shape corresponding
   //! to this entity has init location set. Otherwise, returns identity matrix.
-  virtual gp_Trsf InvInitLocation() const Standard_OVERRIDE
+  virtual gp_GTrsf InvInitLocation() const Standard_OVERRIDE
   {
     return myInvInitLocation;
   }
@@ -261,7 +261,7 @@ private:
   gp_Pnt                           myCDG3D;              //!< Center of the whole triangulation
   Select3D_BVHIndexBuffer          myBvhIndices;         //!< Indexes of edges or triangles for BVH tree
   mutable Select3D_BndBox3d        myBndBox;             //!< Bounding box of the whole triangulation
-  gp_Trsf                          myInvInitLocation;
+  gp_GTrsf                         myInvInitLocation;
   Standard_Real                    myMinDepthElem;       //!< the depth of nearest detected element
   Standard_Real                    myMinDepthNode;       //!< the depth of nearest detected node
   Standard_Real                    myMinDepthEdge;       //!< the depth of nearest detected edge

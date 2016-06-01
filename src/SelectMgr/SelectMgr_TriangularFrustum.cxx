@@ -129,22 +129,16 @@ void SelectMgr_TriangularFrustum::Build (const gp_Pnt2d& theP1,
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 //=======================================================================
 NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::ScaleAndTransform (const Standard_Integer /*theScale*/,
-                                                                                          const gp_Trsf& theTrsf)
+                                                                                          const gp_GTrsf& theTrsf)
 {
   SelectMgr_TriangularFrustum* aRes = new SelectMgr_TriangularFrustum();
 
-  // V0_Near
-  aRes->myVertices[0] = myVertices[0].Transformed (theTrsf);
-  // V1_Near
-  aRes->myVertices[1] = myVertices[1].Transformed (theTrsf);
-  // V2_Near
-  aRes->myVertices[2] = myVertices[2].Transformed (theTrsf);
-  // V0_Far
-  aRes->myVertices[3] = myVertices[3].Transformed (theTrsf);
-  // V1_Far
-  aRes->myVertices[4] = myVertices[4].Transformed (theTrsf);
-  // V2_Far
-  aRes->myVertices[5] = myVertices[5].Transformed (theTrsf);
+  for (Standard_Integer anIt = 0; anIt < 6; anIt++)
+  {
+    gp_Pnt aPoint = myVertices[anIt];
+    theTrsf.Transforms (aPoint.ChangeCoord());
+    aRes->myVertices[anIt] = aPoint;
+  }
 
   aRes->myIsOrthographic = myIsOrthographic;
 

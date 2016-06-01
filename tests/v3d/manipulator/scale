@@ -34,7 +34,7 @@ vfit
 # attach manipulator
 # ------------------
 
-vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1
+vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 40
 
 # --------------------------
 # test hilight and detection

@@ -158,10 +158,22 @@ void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
     }
 
     // Prevent zooming.
-    if ((Flags & Graphic3d_TMF_ZoomPers) || (Flags == Graphic3d_TMF_TriedronPers))
+    if (Flags & Graphic3d_TMF_ZoomPers)
+    {
+      const T aDet00 = (2.0f / theViewportWidth) / theProjection.GetValue(0, 0);
+      const T aDet11 = (2.0f / theViewportHeight) / theProjection.GetValue(1, 1);
+      const T aDet2 = Max (aDet00, aDet11);
+
+      theProjection.ChangeValue(0, 0) *= aDet00;
+      theProjection.ChangeValue(1, 1) *= aDet11;
+      theProjection.ChangeValue(2, 2) *= aDet2;
+    }
+
+    if (Flags == Graphic3d_TMF_TriedronPers)
     {
       // Compute fixed-zoom multiplier. Actually function works ugly with TelPerspective!
       const T aDet2 = static_cast<T> (0.002) / Max (theProjection.GetValue (1, 1), theProjection.GetValue (0, 0));
+
       theProjection.ChangeValue (0, 0) *= aDet2;
       theProjection.ChangeValue (1, 1) *= aDet2;
       theProjection.ChangeValue (2, 2) *= aDet2;

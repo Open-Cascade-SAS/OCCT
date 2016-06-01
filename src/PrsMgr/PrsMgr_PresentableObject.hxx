@@ -26,6 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <PrsMgr_PresentableObjectPointer.hxx>
+#include <gp_GTrsf.hxx>
 #include <gp_Trsf.hxx>
 #include <PrsMgr_ListOfPresentableObjects.hxx>
 #include <MMgt_TShared.hxx>
@@ -133,7 +134,7 @@ public:
   
     const gp_Trsf& Transformation() const;
   
-    const gp_Trsf& InversedTransformation() const;
+    const gp_GTrsf& InversedTransformation() const;
   
   //! resets local transformation to identity.
   Standard_EXPORT virtual void ResetTransformation();
@@ -288,7 +289,7 @@ private:
   PrsMgr_PresentableObjectPointer myParent;
   gp_Trsf myLocalTransformation;
   gp_Trsf myTransformation;
-  gp_Trsf myInvTransformation;
+  gp_GTrsf myInvTransformation;
   gp_Trsf myCombinedParentTransform;
   PrsMgr_ListOfPresentableObjects myChildren;
 

@@ -119,6 +119,8 @@ Standard_Boolean SelectMgr_SelectableObjectTrsfPersSet::Remove (const Handle(Sel
 const NCollection_Handle<BVH_Tree<Standard_Real, 3> >&
   SelectMgr_SelectableObjectTrsfPersSet::BVH (const Graphic3d_Mat4d& theProjectionMatrix,
                                               const Graphic3d_Mat4d& theWorldViewMatrix,
+                                              const Standard_Integer theViewportWidth,
+                                              const Standard_Integer theViewportHeight,
                                               const Graphic3d_WorldViewProjState& theWVPState)
 {
   if (!myIsDirty && (myObjectBoxesState.IsValid() && !myObjectBoxesState.IsChanged(theWVPState)))
@@ -139,7 +141,7 @@ const NCollection_Handle<BVH_Tree<Standard_Real, 3> >&
       anObject->BoundingBox (aBoundingBox);
       if (!aBoundingBox.IsVoid())
       {
-        anObject->TransformPersistence().Apply (theProjectionMatrix, theWorldViewMatrix, 0, 0, aBoundingBox);
+        anObject->TransformPersistence().Apply (theProjectionMatrix, theWorldViewMatrix, theViewportWidth, theViewportHeight, aBoundingBox);
       }
     }
 

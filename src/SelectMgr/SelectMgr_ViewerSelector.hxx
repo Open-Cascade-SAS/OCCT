@@ -310,9 +310,10 @@ private:
   //! needs to be scaled and transformed for the entity and performs
   //! necessary calculations
   void computeFrustum (const Handle(SelectBasics_SensitiveEntity)& theEnt,
-                       const gp_Trsf&                              theInvTrsf,
+                       const gp_GTrsf&                             theInvTrsf,
                        SelectMgr_FrustumCache&                     theCachedMgrs,
                        SelectMgr_SelectingVolumeManager&           theResMgr);
+
 
 protected:
 

@@ -37,15 +37,15 @@ vinit
 vtrihedron tri
 vpan 50 50
 
-box b1 50 50 50
-box b2 50 50 50
+box b1 20.3 20.3 20.3
+box b2 20.3 20.3 20.3
 box b3 150 150 150 100 100 100
 
 vpoint p1 200 200 200
 
 vdisplay b1 -trsfPers zoom -trsfPersPos 200 200 200
 vdisplay b2 -trsfPers zoom -trsfPersPos 200 200 200
-vsetlocation b2 -50 -50 -50
+vsetlocation b2 -20.3 -20.3 -20.3
 vdisplay b3
 
 vsetdispmode 1

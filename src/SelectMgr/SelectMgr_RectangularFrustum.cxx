@@ -323,7 +323,7 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
 NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                                           const gp_Trsf& theTrsf)
+                                                                                           const gp_GTrsf& theTrsf)
 {
   Standard_ASSERT_RAISE (theScaleFactor > 0,
     "Error! Pixel tolerance for selection should be greater than zero");
@@ -357,26 +357,24 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAnd
 
   if (isToTrsf)
   {
-    aRes->myNearPickedPnt = aRef->myNearPickedPnt.Transformed (theTrsf);
-    aRes->myFarPickedPnt  = aRef->myFarPickedPnt.Transformed (theTrsf);
+    const Standard_Real aRefScale = aRef->myFarPickedPnt.SquareDistance (aRef->myNearPickedPnt);
+
+    gp_Pnt aPoint = aRef->myNearPickedPnt;
+    theTrsf.Transforms (aPoint.ChangeCoord());
+    aRes->myNearPickedPnt = aPoint;
+
+    aPoint.SetXYZ (aRef->myFarPickedPnt.XYZ());
+    theTrsf.Transforms (aPoint.ChangeCoord());
+    aRes->myFarPickedPnt = aPoint;
+
     aRes->myViewRayDir    = aRes->myFarPickedPnt.XYZ() - aRes->myNearPickedPnt.XYZ();
 
-      // LeftTopNear
-    aRes->myVertices[0] = aRef->myVertices[0].Transformed (theTrsf);
-    // LeftTopFar
-    aRes->myVertices[1] = aRef->myVertices[1].Transformed (theTrsf);
-    // LeftBottomNear
-    aRes->myVertices[2] = aRef->myVertices[2].Transformed (theTrsf);
-    // LeftBottomFar
-    aRes->myVertices[3] = aRef->myVertices[3].Transformed (theTrsf);
-    // RightTopNear
-    aRes->myVertices[4] = aRef->myVertices[4].Transformed (theTrsf);
-    // RightTopFar
-    aRes->myVertices[5] = aRef->myVertices[5].Transformed (theTrsf);
-    // RightBottomNear
-    aRes->myVertices[6] = aRef->myVertices[6].Transformed (theTrsf);
-    // RightBottomFar
-    aRes->myVertices[7] = aRef->myVertices[7].Transformed (theTrsf);
+    for (Standard_Integer anIt = 0; anIt < 8; anIt++)
+    {
+      aPoint = aRef->myVertices[anIt];
+      theTrsf.Transforms (aPoint.ChangeCoord());
+      aRes->myVertices[anIt] = aPoint;
+    }
 
     // Horizontal
     aRes->myEdgeDirs[0] = aRes->myVertices[4].XYZ() - aRes->myVertices[0].XYZ();
@@ -391,7 +389,8 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAnd
     // RightUpper
     aRes->myEdgeDirs[5] = aRes->myVertices[4].XYZ() - aRes->myVertices[5].XYZ();
 
-    aRes->myScale = 1.0 / theTrsf.ScaleFactor();
+    // Compute scale to transform depth from local coordinate system to world coordinate system
+    aRes->myScale = Sqrt (aRefScale / aRes->myFarPickedPnt.SquareDistance (aRes->myNearPickedPnt));
   }
 
   // compute frustum normals

@@ -32,7 +32,7 @@ inline const gp_Trsf& PrsMgr_PresentableObject::Transformation() const
   return myTransformation;
 }
 
-inline const gp_Trsf& PrsMgr_PresentableObject::InversedTransformation() const
+inline const gp_GTrsf& PrsMgr_PresentableObject::InversedTransformation() const
 {
   return myInvTransformation;
 }

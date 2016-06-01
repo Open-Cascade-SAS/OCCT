@@ -123,6 +123,17 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
 }
 
 // =======================================================================
+// function : SetViewportSize
+// purpose  :
+// =======================================================================
+void OpenGl_BVHTreeSelector::SetViewportSize (const Standard_Integer theViewportWidth,
+                                              const Standard_Integer theViewportHeight)
+{
+  myViewportHeight = theViewportHeight;
+  myViewportWidth = theViewportWidth;
+}
+
+// =======================================================================
 // function : SignedPlanePointDistance
 // purpose  :
 // =======================================================================

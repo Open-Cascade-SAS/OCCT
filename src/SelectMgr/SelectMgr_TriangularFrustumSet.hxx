@@ -48,7 +48,7 @@ public:
 
   //! Returns a copy of the frustum with all sub-volumes transformed according to the matrix given
   Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer theScale,
-                                                                                       const gp_Trsf& theTrsf) Standard_OVERRIDE;
+                                                                                       const gp_GTrsf& theTrsf) Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                      const SelectMgr_Vec3& theMaxPnt,

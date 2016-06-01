@@ -83,7 +83,7 @@ public:
 
   //! Returns inversed location transformation matrix if the shape corresponding
   //! to this entity has init location set. Otherwise, returns identity matrix.
-  Standard_EXPORT virtual gp_Trsf InvInitLocation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_GTrsf InvInitLocation() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveEntity,SelectBasics_SensitiveEntity)
 

@@ -41,7 +41,7 @@ public:
 
   //! Returns a copy of the frustum transformed according to the matrix given
   Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer theScale,
-                                                                                       const gp_Trsf& theTrsf) Standard_OVERRIDE;
+                                                                                       const gp_GTrsf& theTrsf) Standard_OVERRIDE;
 
   // SAT Tests for different objects
 

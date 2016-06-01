@@ -17,6 +17,7 @@
 #ifndef _SelectBasics_SensitiveEntity_HeaderFile
 #define _SelectBasics_SensitiveEntity_HeaderFile
 
+#include <gp_GTrsf.hxx>
 #include <gp_Trsf.hxx>
 
 #include <Standard.hxx>
@@ -83,7 +84,7 @@ public:
 
   //! Returns inversed location transformation matrix if the shape corresponding
   //! to this entity has init location set. Otherwise, returns identity matrix.
-  virtual gp_Trsf InvInitLocation() const = 0;
+  virtual gp_GTrsf InvInitLocation() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(SelectBasics_SensitiveEntity,MMgt_TShared)
 

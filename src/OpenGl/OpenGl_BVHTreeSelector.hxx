@@ -33,6 +33,8 @@ public:
   //! Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
   Standard_EXPORT void SetViewVolume (const Handle(Graphic3d_Camera)& theCamera);
 
+  Standard_EXPORT void SetViewportSize (const Standard_Integer theViewportWidth, const Standard_Integer theViewportHeight);
+
   //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
   //! @param theMinPt [in] maximum point of AABB.
   //! @param theMaxPt [in] minimum point of AABB.
@@ -54,6 +56,16 @@ public:
   const OpenGl_Mat4& WorldViewMatrix() const
   {
     return myWorldViewMat;
+  }
+
+  Standard_Integer ViewportWidth() const
+  {
+    return myViewportWidth;
+  }
+
+  Standard_Integer ViewportHeight() const
+  {
+    return myViewportHeight;
   }
 
   //! Returns state of current world view projection transformation matrices.
@@ -117,6 +129,9 @@ protected:
 
   OpenGl_Mat4 myProjectionMat;
   OpenGl_Mat4 myWorldViewMat;
+
+  Standard_Integer myViewportWidth;
+  Standard_Integer myViewportHeight;
 
   Graphic3d_WorldViewProjState myWorldViewProjState; //!< State of world view projection matrices.
 };

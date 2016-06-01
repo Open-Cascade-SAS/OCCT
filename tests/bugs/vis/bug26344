@@ -11,8 +11,8 @@ vinit View1 w=409 h=409
 vtrihedron tri
 vpan 50 50
 
-box b1 50 50 50
-box b2 50 50 50
+box b1 25 25 25
+box b2 25 25 25
 box b3 100 100 100
 box b4 100 100 100
 box b5 100 100 100
@@ -22,7 +22,7 @@ vpoint p1 200 200 200
 
 vdisplay b1 -trsfPers zoom -trsfPersPos 200 200 200
 vdisplay b2 -trsfPers zoom -trsfPersPos 200 200 200
-vsetlocation b2 -50 -50 -50
+vsetlocation b2 -25 -25 -25
 
 vmoveto 384 78
 if { ![checkcolor 384 78 0 1 1] } {

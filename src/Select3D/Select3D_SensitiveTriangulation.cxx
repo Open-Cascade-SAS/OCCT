@@ -429,7 +429,7 @@ Standard_Boolean Select3D_SensitiveTriangulation::HasInitLocation() const
 //function : InvInitLocation
 //purpose  :
 //=======================================================================
-gp_Trsf Select3D_SensitiveTriangulation::InvInitLocation() const
+gp_GTrsf Select3D_SensitiveTriangulation::InvInitLocation() const
 {
   return myInvInitLocation;
 }

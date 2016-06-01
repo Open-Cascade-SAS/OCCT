@@ -4449,16 +4449,27 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
       const Handle(SelectBasics_SensitiveEntity)& anEntity = aSelector->DetectedEntity();
       Handle(SelectMgr_EntityOwner) anOwner    = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
       Handle(AIS_InteractiveObject) anObj      = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-      gp_Trsf anInvTrsf;
+      gp_GTrsf anInvTrsf;
       if (anObj->TransformPersistence().Flags)
       {
         const Graphic3d_Mat4d& aProjection = aMgr.ProjectionMatrix();
         const Graphic3d_Mat4d& aWorldView  = aMgr.WorldViewMatrix();
+        Standard_Integer aViewportWidth = 0;
+        Standard_Integer aViewportHeight = 0;
+        aMgr.WindowSize (aViewportWidth, aViewportHeight);
 
-        Graphic3d_Mat4d aMat = anObj->TransformPersistence().Compute (aProjection, aWorldView, 0, 0);
-        anInvTrsf.SetValues (aMat.GetValue (0, 0), aMat.GetValue (0, 1), aMat.GetValue (0, 2), aMat.GetValue (0, 3),
-          aMat.GetValue (1, 0), aMat.GetValue (1, 1), aMat.GetValue (1, 2), aMat.GetValue (1, 3),
-          aMat.GetValue (2, 0), aMat.GetValue (2, 1), aMat.GetValue (2, 2), aMat.GetValue (2, 3));
+        Graphic3d_Mat4d aMat = anObj->TransformPersistence().Compute (aProjection, aWorldView, aViewportWidth, aViewportHeight);
+
+        anInvTrsf.SetValue (1, 1, aMat.GetValue (0, 0));
+        anInvTrsf.SetValue (1, 2, aMat.GetValue (0, 1));
+        anInvTrsf.SetValue (1, 3, aMat.GetValue (0, 2));
+        anInvTrsf.SetValue (2, 1, aMat.GetValue (1, 0));
+        anInvTrsf.SetValue (2, 2, aMat.GetValue (1, 1));
+        anInvTrsf.SetValue (2, 3, aMat.GetValue (1, 2));
+        anInvTrsf.SetValue (3, 1, aMat.GetValue (2, 0));
+        anInvTrsf.SetValue (3, 2, aMat.GetValue (2, 1));
+        anInvTrsf.SetValue (3, 3, aMat.GetValue (2, 2));
+        anInvTrsf.SetTranslationPart (gp_XYZ(aMat.GetValue (0, 3), aMat.GetValue (1, 3), aMat.GetValue (2, 3)));
         anInvTrsf.Invert();
       }
       if (anObj->HasTransformation())
@@ -4477,8 +4488,13 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
                               : aMgr;
       SelectBasics_PickResult aResult;
       anEntity->Matches (anEntMgr, aResult);
-      gp_Pnt aDetectedPnt = anInvTrsf.Form() == gp_Identity ?
-        anEntMgr.DetectedPoint (aResult.Depth()) : anEntMgr.DetectedPoint (aResult.Depth()).Transformed (anInvTrsf.Inverted());
+
+      gp_Pnt aDetectedPnt = anEntMgr.DetectedPoint (aResult.Depth());
+
+      if (anInvTrsf.Form() != gp_Identity)
+      {
+        anInvTrsf.Inverted().Transforms (aDetectedPnt.ChangeCoord());
+      }
 
       TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
       aName.LeftJustify (20, ' ');

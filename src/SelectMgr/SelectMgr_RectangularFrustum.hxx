@@ -51,7 +51,7 @@ public:
   //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
   //!    - scale only is needed: @theTrsf must be set to gp_Identity.
   Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                                       const gp_Trsf& theTrsf) Standard_OVERRIDE;
+                                                                                       const gp_GTrsf& theTrsf) Standard_OVERRIDE;
 
 
   // SAT Tests for different objects
