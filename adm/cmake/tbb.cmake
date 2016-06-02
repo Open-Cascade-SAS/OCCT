@@ -231,7 +231,7 @@ macro (TBB_PRODUCT_SEARCH PRODUCT_NAME)
   endif()
 
   # install tbb/tbbmalloc
-  if (INSTALL_${PRODUCT_NAME})
+  if (INSTALL_TBB)
     OCCT_MAKE_OS_WITH_BITNESS()
     OCCT_MAKE_COMPILER_SHORT_NAME()
 
