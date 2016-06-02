@@ -42,92 +42,26 @@
 #include <Standard_OutOfRange.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-#ifdef OCCT_DEBUG
-#ifdef DRAW
-#include <DrawTrSurf.hxx>
-#endif
-#include <Geom2d_BSplineCurve.hxx>
-#include <stdio.h>
-static Standard_Boolean Voir     = Standard_False;
-static Standard_Boolean AffichFw = Standard_False;
-static Standard_Integer NbCurve = 0;
-#endif
-//
-//   allows testing if Extrema produces correct results/
-
-
-static void ProjectPointOnCurve(const Standard_Real      InitValue,
-  const gp_Pnt             APoint,
-  const Standard_Real      Tolerance,
-  const Standard_Integer   NumIteration,
-  const Adaptor3d_Curve&     Curve,
-  Standard_Boolean&        Status,
-  Standard_Real&           Result)
-{
-  Standard_Integer num_iter = 0,
-    not_done = 1,
-    ii ;
-
-  gp_Pnt a_point ;
-  gp_Vec   vector,
-    d1,
-    d2 ;
-  Standard_Real func,
-    func_derivative,
-    param = InitValue ;
-  Status = Standard_False ;
-  Standard_Real Toler = 1.0e-12;
-  do {
-    num_iter += 1 ;
-    Curve.D2(param,
-      a_point,
-      d1,
-      d2) ;
-    for (ii = 1 ; ii <= 3 ; ii++) {
-      vector.SetCoord(ii, APoint.Coord(ii) - a_point.Coord(ii)) ;
-    }
-    func = vector.Dot(d1) ;
-    func_derivative = vector.Dot(d2) ;
-    func_derivative -= d1.Dot(d1) ;
-    if ( Abs(func) < Tolerance * d1.Magnitude()) {
-      not_done = 0 ;
-      Status = Standard_True ;
-    }
-    else
-    { // fixing a bug PRO18577 : avoid divizion by zero
-      if( Abs(func_derivative) > Toler )  {
-        param -= func / func_derivative ;
-      }
-      param = Max(param,Curve.FirstParameter()) ;
-      param = Min(param,Curve.LastParameter())  ;
-      //Status = Standard_True ;
-    }
-  } 
-  while (not_done && num_iter <= NumIteration) ;
-  Result = param ;
-}  
-
-
-
 //=======================================================================
-//class : Approx_SameParameter_Evaluator
-//purpose  : 
+//class    : Approx_SameParameter_Evaluator
+//purpose  : Used in same parameterization curve approximation.
 //=======================================================================
-
 class Approx_SameParameter_Evaluator : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_SameParameter_Evaluator (const TColStd_Array1OfReal& theFlatKnots, 
-    const TColStd_Array1OfReal& thePoles,
-    const Handle(Adaptor2d_HCurve2d)& theHCurve2d) 
-    : FlatKnots(theFlatKnots), Poles(thePoles), HCurve2d(theHCurve2d) {}
+  Approx_SameParameter_Evaluator (const TColStd_Array1OfReal& theFlatKnots,
+                                  const TColStd_Array1OfReal& thePoles,
+                                  const Handle(Adaptor2d_HCurve2d)& theHCurve2d)
+    : FlatKnots(theFlatKnots),
+      Poles(thePoles),
+      HCurve2d(theHCurve2d) {}
 
   virtual void Evaluate (Standard_Integer *Dimension,
-    Standard_Real     StartEnd[2],
-    Standard_Real    *Parameter,
-    Standard_Integer *DerivativeRequest,
-    Standard_Real    *Result, // [Dimension]
-    Standard_Integer *ErrorCode);
+                         Standard_Real     StartEnd[2],
+                         Standard_Real    *Parameter,
+                         Standard_Integer *DerivativeRequest,
+                         Standard_Real    *Result, // [Dimension]
+                         Standard_Integer *ErrorCode);
 
 private:
   const TColStd_Array1OfReal& FlatKnots;
@@ -135,166 +69,183 @@ private:
   Handle(Adaptor2d_HCurve2d) HCurve2d;
 };
 
+//=======================================================================
+//function : Evaluate
+//purpose  : 
+//=======================================================================
 void Approx_SameParameter_Evaluator::Evaluate (Standard_Integer *,/*Dimension*/
-  Standard_Real    /*StartEnd*/[2],
-  Standard_Real    *Parameter,
-  Standard_Integer *DerivativeRequest,
-  Standard_Real    *Result,
-  Standard_Integer *ReturnCode) 
-{ 
-  gp_Pnt2d Point ;
-  gp_Vec2d Vector ;
-  Standard_Integer extrap_mode[2] ;
-  extrap_mode[0] = extrap_mode[1] = 3;
-  Standard_Real eval_result[2] ;
-  Standard_Real *PolesArray =
-    (Standard_Real *) &Poles(Poles.Lower()) ;
-  //
-  // evaluate the 1D bspline that represents the change in parameterization
-  //
+                                               Standard_Real    /*StartEnd*/[2],
+                                               Standard_Real    *Parameter,
+                                               Standard_Integer *DerivativeRequest,
+                                               Standard_Real    *Result,
+                                               Standard_Integer *ReturnCode) 
+{
+  const Standard_Integer aDegree = 3;
+  Standard_Integer extrap_mode[2] = {aDegree, aDegree};
+  Standard_Real eval_result[2];
+  Standard_Real *PolesArray = (Standard_Real *) &Poles(Poles.Lower()) ;
+
+  // Evaluate the 1D B-Spline that represents the change in parameterization.
   BSplCLib::Eval(*Parameter,
-    Standard_False,
-    *DerivativeRequest,
-    extrap_mode[0],
-    3,
-    FlatKnots,
-    1,
-    PolesArray[0],
-    eval_result[0]) ;
+                 Standard_False,
+                 *DerivativeRequest,
+                 extrap_mode[0],
+                 aDegree,
+                 FlatKnots,
+                 1,
+                 PolesArray[0],
+                 eval_result[0]);
 
+  gp_Pnt2d aPoint;
+  gp_Vec2d aVector;
+  if (*DerivativeRequest == 0)
+  {
+    HCurve2d->D0(eval_result[0], aPoint);
+    aPoint.Coord(Result[0],Result[1]);
+  }
+  else if (*DerivativeRequest == 1)
+  {
+    HCurve2d->D1(eval_result[0], aPoint, aVector);
+    aVector.Multiply(eval_result[1]);
+    aVector.Coord(Result[0],Result[1]);
+  }
 
-  if (*DerivativeRequest == 0){
-    HCurve2d->D0(eval_result[0],Point);
-    Point.Coord(Result[0],Result[1]);
-  }
-  else if (*DerivativeRequest == 1){
-    HCurve2d->D1(eval_result[0], Point, Vector);
-    Vector.Multiply(eval_result[1]);
-    Vector.Coord(Result[0],Result[1]);
-  }
-  ReturnCode[0] = 0 ;
+  ReturnCode[0] = 0;
 }
 
-static Standard_Real ComputeTolReached(const Handle(Adaptor3d_HCurve)& c3d,
-  const Adaptor3d_CurveOnSurface& cons,
-  const Standard_Integer        nbp)
+//=======================================================================
+//function : ProjectPointOnCurve
+//purpose  : 
+//=======================================================================
+static void ProjectPointOnCurve(const Standard_Real      InitValue,
+                                const gp_Pnt             APoint,
+                                const Standard_Real      Tolerance,
+                                const Standard_Integer   NumIteration,
+                                const Adaptor3d_Curve&   Curve,
+                                Standard_Boolean&        Status,
+                                Standard_Real&           Result)
 {
-  Standard_Real d2 = 0.;
+  Standard_Integer num_iter = 0, not_done = 1, ii;
+
+  gp_Pnt a_point;
+  gp_Vec vector, d1, d2;
+  Standard_Real func, func_derivative,
+                param = InitValue;
+  Status = Standard_False;
+  do
+  {
+    num_iter++;
+    Curve.D2(param, a_point, d1, d2);
+    for (ii = 1 ; ii <= 3 ; ii++) 
+      vector.SetCoord(ii, APoint.Coord(ii) - a_point.Coord(ii));
+
+    func = vector.Dot(d1);
+    if ( Abs(func) < Tolerance * d1.Magnitude())
+    {
+      not_done = 0;
+      Status = Standard_True;
+    }
+    else
+    {
+      func_derivative = vector.Dot(d2) - d1.Dot(d1);
+
+      // Avoid division by zero.
+      const Standard_Real Toler = 1.0e-12;
+      if( Abs(func_derivative) > Toler )
+        param -= func / func_derivative;
+
+      param = Max(param,Curve.FirstParameter());
+      param = Min(param,Curve.LastParameter());
+    }
+  } while (not_done && num_iter <= NumIteration);
+
+  Result = param;
+}
+
+//=======================================================================
+//function : ComputeTolReached
+//purpose  :
+//=======================================================================
+static Standard_Real ComputeTolReached(const Handle(Adaptor3d_HCurve)& c3d,
+                                       const Adaptor3d_CurveOnSurface& cons,
+                                       const Standard_Integer        nbp)
+{
+  Standard_Real d2 = 0.0; // Square max discrete deviation.
   const Standard_Real first = c3d->FirstParameter();
   const Standard_Real last  = c3d->LastParameter();
-  for(Standard_Integer i = 0; i <= nbp; i++){
-    Standard_Real t = IntToReal(i)/IntToReal(nbp);
-    Standard_Real u = first*(1.-t) + last*t;
+  for(Standard_Integer i = 0; i <= nbp; i++)
+  {
+    Standard_Real t = IntToReal(i) / IntToReal(nbp);
+    Standard_Real u = first * (1.0 - t) + last * t;
     gp_Pnt Pc3d = c3d->Value(u);
     gp_Pnt Pcons = cons.Value(u);
     if (Precision::IsInfinite(Pcons.X()) ||
-      Precision::IsInfinite(Pcons.Y()) ||
-      Precision::IsInfinite(Pcons.Z())) {
+        Precision::IsInfinite(Pcons.Y()) ||
+        Precision::IsInfinite(Pcons.Z()))
+    {
         d2=Precision::Infinite();
         break;
     }
-    Standard_Real temp = Pc3d.SquareDistance(Pcons);
-    if(temp > d2) d2 = temp;
+    d2 = Max(d2, Pc3d.SquareDistance(Pcons));
   }
-  d2 = 1.5*sqrt(d2);
-  if(d2<1.e-7) d2 = 1.e-7;
-  return d2;
+
+  const Standard_Real aMult = 1.5; // To be tolerant to discrete tolerance computing.
+  Standard_Real aDeviation = aMult * sqrt(d2);
+  aDeviation = Max(aDeviation, Precision::Confusion()); // Tolerance in modeling space.
+  return aDeviation;
 }
 
+//=======================================================================
+//function : Check
+//purpose  : Check current interpolation for validity.
+//=======================================================================
 static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots, 
-  const TColStd_Array1OfReal& Poles,
-  const Standard_Integer nbp,
-  const TColStd_Array1OfReal& pc3d,
-  //			      const TColStd_Array1OfReal& pcons,
-  const TColStd_Array1OfReal& ,
-  const Handle(Adaptor3d_HCurve)& c3d,
-  const Adaptor3d_CurveOnSurface& cons,
-  Standard_Real& tol,
-  const Standard_Real oldtol)
+                              const TColStd_Array1OfReal& Poles,
+                              const Standard_Integer nbp,
+                              const TColStd_Array1OfReal& pc3d,
+                              const TColStd_Array1OfReal& ,
+                              const Handle(Adaptor3d_HCurve)& c3d,
+                              const Adaptor3d_CurveOnSurface& cons,
+                              Standard_Real& tol,
+                              const Standard_Real oldtol)
 {
-  Standard_Real d = tol;
-  Standard_Integer extrap_mode[2] ;
-  extrap_mode[0] = extrap_mode[1] = 3;
-  Standard_Integer i;
-#ifdef OCCT_DEBUG
-  if (Voir) {
-    cout<<endl;
-    cout<<"Control the change of variable : "<<endl;
-    cout<<"yawn mesured by projection : "<<d<<endl;
-    cout<<"Number of points : "<<nbp<<endl;
-  }
-#endif
-#if 0
-  Standard_Real glis = 0., dglis = 0.;
-  for(i = 1; i <= nbp; i++){
-    Standard_Real tc3d = pc3d(i);
-    gp_Pnt Pc3d = c3d->Value(tc3d);
-    Standard_Real tcons;
-    BSplCLib::Eval(tc3d,Standard_False,0,extrap_mode[0],
-      3,FlatKnots,1, (Standard_Real&)Poles(1),tcons);
-    gp_Pnt Pcons = cons.Value(tcons);
-    Standard_Real temp = Pc3d.SquareDistance(Pcons);
-    if(temp >= dglis) dglis = temp;
-    temp = Abs(tcons-pcons(i));
-    if(temp >= glis) glis = temp;
-  }
-  dglis = sqrt(dglis);
-#ifdef OCCT_DEBUG
-  if ( Voir) {
-    cout<<"shift of parameter to the imposed points : "<<glis<<endl;
-    cout<<"shift distance at the imposed points : "<<dglis<<endl;
-  }
-#endif
-  dglis = 0.;
-  for(i = 1; i < nbp; i++){
-    Standard_Real tc3d = 0.5*(pc3d(i)+pc3d(i+1));
-    gp_Pnt Pc3d = c3d->Value(tc3d);
-    Standard_Real tcons;
-    BSplCLib::Eval(tc3d,Standard_False,0,extrap_mode[0],
-      3,FlatKnots,1, (Standard_Real&)Poles(1),tcons);
-    gp_Pnt Pcons = cons.Value(tcons);
-    Standard_Real temp = Pc3d.SquareDistance(Pcons);
-    if(temp >= dglis) dglis = temp;
-  }
-  dglis = sqrt(dglis);
-#ifdef OCCT_DEBUG
-  if (Voir)
-    cout<<"distance de glissement en milieu d intervals : "<<dglis<<endl;
-#endif
-#endif
+  const Standard_Integer aDegree = 3;
+  Standard_Integer extrap_mode[2] = {aDegree, aDegree};
 
-  Standard_Real d2 = 0.;
-  Standard_Integer nn = 2*nbp;
-  Standard_Real unsurnn = 1./nn;
-  //  Modified by skv - Wed Jun  2 11:49:59 2004 OCC5898 Begin
   // Correction of the interval of valid values. This condition has no sensible
   // grounds. But it is better then the old one (which is commented out) because
   // it fixes the bug OCC5898. To develop more or less sensible criterion it is
   // necessary to deeply investigate this problem which is not possible in frames
   // of debugging.
+  Standard_Real aParamFirst = 3.0 * pc3d(1)   - 2.0 * pc3d(nbp);
+  Standard_Real aParamLast = 3.0 * pc3d(nbp) - 2.0 * pc3d(1);
 
-  //   Standard_Real firstborne= 2*pc3d(1)-pc3d(nbp);
-  //   Standard_Real lastborne= 2*pc3d(nbp)-pc3d(1);
-  Standard_Real firstborne= 3.*pc3d(1)   - 2.*pc3d(nbp);
-  Standard_Real lastborne = 3.*pc3d(nbp) - 2.*pc3d(1);
-  //  Modified by skv - Wed Jun  2 11:50:03 2004 OCC5898 End
-  //jgv
   Standard_Real FirstPar = cons.FirstParameter();
   Standard_Real LastPar  = cons.LastParameter();
-  if (firstborne < FirstPar)
-    firstborne = FirstPar;
-  if (lastborne > LastPar)
-    lastborne = LastPar;
-  /////
-  for(i = 0; i <= nn; i++){
+  if (aParamFirst < FirstPar)
+    aParamFirst = FirstPar;
+  if (aParamLast > LastPar)
+    aParamLast = LastPar;
+
+
+  Standard_Real d2 = 0.0; // Maximum square deviation on the samples.
+  const Standard_Real d = tol;
+  const Standard_Integer nn = 2 * nbp;
+  const Standard_Real unsurnn = 1.0/nn;
+  for(Standard_Integer i = 0; i <= nn; i++)
+  {
+    // Compute corresponding parameter on 2d curve.
+    // It should be inside of 3d curve parameter space.
     Standard_Real t = unsurnn*i;
     Standard_Real tc3d = pc3d(1)*(1.-t) + pc3d(nbp)*t;
     gp_Pnt Pc3d = c3d->Value(tc3d);
     Standard_Real tcons;
     BSplCLib::Eval(tc3d,Standard_False,0,extrap_mode[0],
-      3,FlatKnots,1, (Standard_Real&)Poles(1),tcons);
-    if (tcons < firstborne || tcons > lastborne) {
-      tol=Precision::Infinite();
+                   aDegree,FlatKnots,1, (Standard_Real&)Poles(1),tcons);
+    if (tcons < aParamFirst ||
+        tcons > aParamLast)
+    {
+      tol = Precision::Infinite();
       return Standard_False;
     }
     gp_Pnt Pcons = cons.Value(tcons);
@@ -302,24 +253,30 @@ static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots,
     if(temp > d2) d2 = temp;
   }
   tol = sqrt(d2);
-#ifdef OCCT_DEBUG
-  if (Voir)
-    cout<<"distance max on "<<nn<<" points : "<<tol<<endl<<endl;
-#endif
-  return ((tol <= d) || (tol > 0.8 * oldtol));
-}
 
+  // Check poles parameters to be ordered.
+  for(Standard_Integer i = Poles.Lower() + 1; i <= Poles.Upper(); ++i)
+  {
+    const Standard_Real aPreviousParam = Poles(i - 1);
+    const Standard_Real aCurrentParam  = Poles(i);
+
+    if (aPreviousParam > aCurrentParam)
+      return Standard_False;
+  }
+
+  return (tol <= d || tol > 0.8 * oldtol);
+}
 
 //=======================================================================
 //function : Approx_SameParameter
 //purpose  : 
 //=======================================================================
-
 Approx_SameParameter::Approx_SameParameter(const Handle(Geom_Curve)&   C3D,
-  const Handle(Geom2d_Curve)& C2D,
-  const Handle(Geom_Surface)& S,
-  const Standard_Real         Tol):
-mySameParameter(Standard_True), myDone(Standard_False)
+                                           const Handle(Geom2d_Curve)& C2D,
+                                           const Handle(Geom_Surface)& S,
+                                           const Standard_Real         Tol)
+: mySameParameter(Standard_True),
+  myDone(Standard_False)
 {
   myHCurve2d = new Geom2dAdaptor_HCurve(C2D);
   myC3d      = new GeomAdaptor_HCurve(C3D);
@@ -327,17 +284,16 @@ mySameParameter(Standard_True), myDone(Standard_False)
   Build(Tol);
 }
 
-
 //=======================================================================
 //function : Approx_SameParameter
 //purpose  : 
 //=======================================================================
-
 Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_HCurve)&   C3D,
-  const Handle(Geom2d_Curve)&     C2D,
-  const Handle(Adaptor3d_HSurface)& S,
-  const Standard_Real            Tol):
-mySameParameter(Standard_True), myDone(Standard_False)
+                                           const Handle(Geom2d_Curve)&       C2D,
+                                           const Handle(Adaptor3d_HSurface)& S,
+                                           const Standard_Real               Tol)
+: mySameParameter(Standard_True),
+  myDone(Standard_False)
 {
   myC3d = C3D;
   mySurf = S;
@@ -345,24 +301,22 @@ mySameParameter(Standard_True), myDone(Standard_False)
   Build(Tol);
 }
 
-
 //=======================================================================
 //function : Approx_SameParameter
 //purpose  : 
 //=======================================================================
-
 Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_HCurve)&   C3D,
-  const Handle(Adaptor2d_HCurve2d)& C2D,
-  const Handle(Adaptor3d_HSurface)& S,
-  const Standard_Real            Tol):
-mySameParameter(Standard_True), myDone(Standard_False)
+                                           const Handle(Adaptor2d_HCurve2d)& C2D,
+                                           const Handle(Adaptor3d_HSurface)& S,
+                                           const Standard_Real               Tol)
+: mySameParameter(Standard_True),
+  myDone(Standard_False)
 {
   myC3d = C3D;
   mySurf = S;
   myHCurve2d = C2D;
   Build(Tol);
 }
-
 
 //=======================================================================
 //function : Build
@@ -381,10 +335,6 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   Standard_Real fc3d = myC3d->FirstParameter();
   Standard_Real lc3d = myC3d->LastParameter();
 
-  GeomAbs_Shape Continuity = myHCurve2d->Continuity();
-
-  if(Continuity > GeomAbs_C1) Continuity = GeomAbs_C1;
-
   //Control tangents at the extremities to know if the
   //reparametring is possible and calculate the tangents 
   //at the extremities of the function of change of variable.
@@ -392,45 +342,37 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   gp_Pnt Pcons,Pc3d;
   gp_Vec Vcons,Vc3d;
 
-  Standard_Real Tol = Tolerance;
-  Standard_Real Tol2 = Tol * Tol;
-  Standard_Real deltamin = Precision::PConfusion();//50*Tolp;
+  const Standard_Real Tol = Tolerance;
+  const Standard_Real Tol2 = Tol * Tol;
+  Standard_Real deltamin = Precision::PConfusion();
 
   Standard_Real besttol2 = Tol2;
-  Standard_Boolean extrok = 0;
 
-  extrok = 1;
+  // Check tangency on curve border.
+  Standard_Boolean extrok = 1;
   CurveOnSurface.D1(fcons,Pcons,Vcons);
   myC3d->D1(fc3d,Pc3d,Vc3d);
   Standard_Real dist2 = Pcons.SquareDistance(Pc3d);
   Standard_Real dmax2 = dist2;
 
   Standard_Real magVcons = Vcons.Magnitude();
-  if (magVcons > 1.e-12){
+  if (magVcons > 1.e-12)
     tangent[0] = Vc3d.Magnitude() / magVcons;
-  }
   else extrok = 0;
 
   CurveOnSurface.D1(lcons,Pcons,Vcons);
   myC3d->D1(lc3d,Pc3d,Vc3d);
   dist2 = Pcons.SquareDistance(Pc3d);
 
-  if(dist2 > dmax2) dmax2 = dist2;
+  dmax2 = Max(dmax2, dist2);
   magVcons = Vcons.Magnitude();
-  if (magVcons > 1.e-12){
+  if (magVcons > 1.e-12)
     tangent[1] = Vc3d.Magnitude() / magVcons;
-  }
   else extrok = 0;
 
 
-  //if(dmax2 > besttol2) besttol2 = dmax2;
-
   //Take a multiple of the sample pof CheckShape,
   //at least the control points will be correct. No comment!!!
-
-#ifdef OCCT_DEBUG
-  Standard_Integer nbcoups = 0;
-#endif
 
   Standard_Boolean interpolok = 0;
   Standard_Real tolsov = 1.e200;
@@ -445,7 +387,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   Standard_Real wc3d  = fc3d;
 
   Standard_Real qpcons[aMaxArraySize], qnewpcons[aMaxArraySize], 
-    qpc3d[aMaxArraySize], qnewpc3d[aMaxArraySize];
+                 qpc3d[aMaxArraySize], qnewpc3d[aMaxArraySize];
   Standard_Real * pcons = qpcons; Standard_Real * newpcons = qnewpcons;
   Standard_Real * pc3d = qpc3d; Standard_Real * newpc3d = qnewpc3d;
 
@@ -458,8 +400,12 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   pcons[NCONTROL] = lcons;
   pc3d[NCONTROL]  = lc3d;
 
+  // Change number of points in case of C0 continuity.
   Standard_Integer New_NCONTROL = NCONTROL;
-  if(Continuity < GeomAbs_C1) {
+  GeomAbs_Shape Continuity = myHCurve2d->Continuity();
+  if(Continuity > GeomAbs_C1) Continuity = GeomAbs_C1;
+  if(Continuity < GeomAbs_C1)
+  {
     Standard_Integer NbInt = myHCurve2d->NbIntervals(GeomAbs_C1) + 1;
     TColStd_Array1OfReal Param_de_decoupeC1 (1, NbInt);
     myHCurve2d->Intervals(Param_de_decoupeC1, GeomAbs_C1);
@@ -502,12 +448,12 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     pc3d[New_NCONTROL]  = lc3d;
   }
 
-
+  // Check existing same parameter state.
   Extrema_LocateExtPC Projector;
   Projector.Initialize(myC3d->Curve(),fc3d,lc3d,Tol);
 
   Standard_Integer count = 1;
-  Standard_Real previousp = fc3d, initp=0, curp;//, deltamin = 50*Tolp;
+  Standard_Real previousp = fc3d, initp=0, curp;
   Standard_Real bornesup = lc3d - deltamin;
   Standard_Boolean projok = 0, 
     use_parameter ;
@@ -596,7 +542,6 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
       {
         //Projector
 #ifdef OCCT_DEBUG
-        // JAG
         cout << "Projection not done" << endl;
 #endif
       }
@@ -608,7 +553,9 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     return;
   }
 
-  if(!extrok) { // If not already SameP and tangent to mill, abandon.
+  if(!extrok)
+  {
+    // If not already SameP and tangent to mill, abandon.
     mySameParameter = Standard_False;
 #ifdef OCCT_DEBUG
     cout<<"SameParameter problem  : zero tangent to extremities"<<endl;
@@ -619,30 +566,11 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   pcons[count] = lcons;
   pc3d[count]  = lc3d;
 
-#ifdef OCCT_DEBUG
-  if (AffichFw) {
-    char Name[17];
-    Name[0]='\0';
-    TColgp_Array1OfPnt2d    DEBP2d  (0,count);
-    TColStd_Array1OfInteger DEBMults(0,count); 
-    DEBMults.Init(1); DEBMults(0) = 2; DEBMults(count) = 2;
-    TColStd_Array1OfReal    DEBKnots(0,count);
-    for (Standard_Integer DEBi = 0; DEBi <= count; DEBi++) {
-      DEBKnots(DEBi) = DEBi;
-      DEBP2d  (DEBi) = gp_Pnt2d(pc3d[DEBi],pcons[DEBi]);
-    }
-    Handle(Geom2d_BSplineCurve) DEBBS = 
-      new Geom2d_BSplineCurve(DEBP2d,DEBKnots,DEBMults,1);
-    Sprintf(Name,"DEBC2d_%d",++NbCurve);
-#ifdef DRAW
-    DrawTrSurf::Set(Name,DEBBS);
-#endif
-  }
-#endif
-
+  // There is at least one point where same parameter is broken.
+  // Try to build B-spline interpolation curve with degree 3.
+  // The loop is organized over number of poles.
   Standard_Boolean hasCountChanged = Standard_False;
-
-  while(!interpolok)
+  do
   {
     // The tables and their limits for the interpolation.
     Standard_Integer num_knots = count + 7;
@@ -679,53 +607,6 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
       Standard_ConstructionError::Raise();
     }
 
-    //-------------------------------------------
-#ifdef OCCT_DEBUG
-    if (AffichFw) {
-      nbcoups ++;
-      char Name[17];
-      Name[0] = '\0';
-      Standard_Integer nnn = 100;
-      TColgp_Array1OfPnt2d    DEBP2d  (0,nnn);
-      TColStd_Array1OfInteger DEBMults(0,nnn); 
-      DEBMults.Init(1); DEBMults(0) = 2; DEBMults(nnn) = 2;
-      TColStd_Array1OfReal    DEBKnots(0,nnn);
-      Standard_Real du = (lc3d - fc3d) / nnn;
-      Standard_Real u3d = fc3d;
-      Standard_Integer extrap_mode[2] ;
-      extrap_mode[0] = extrap_mode[1] = 3;
-      Standard_Real eval_result[2] ;
-      Standard_Integer DerivativeRequest = 0;
-      Standard_Real *PolesArray =
-        (Standard_Real *) &Poles(Poles.Lower()) ;
-
-      for (Standard_Integer DEBi = 0; DEBi <= nnn; DEBi++) {
-        DEBKnots(DEBi) = DEBi;
-        BSplCLib::Eval(u3d,
-          Standard_False,
-          DerivativeRequest,
-          extrap_mode[0],
-          3,
-          FlatKnots,
-          1,
-          PolesArray[0],
-          eval_result[0]) ;
-
-        DEBP2d  (DEBi) = gp_Pnt2d(u3d,eval_result[0]);
-        u3d += du;
-      }
-
-      Handle(Geom2d_BSplineCurve) DEBBS = 
-        new Geom2d_BSplineCurve(DEBP2d,DEBKnots,DEBMults,1);
-      Sprintf(Name,"DEBC2d_%d_%d",NbCurve,nbcoups );
-#ifdef DRAW
-      DrawTrSurf::Set(Name,DEBBS);
-#endif
-    }
-#endif
-    //-------------------------------------------    
-
-    //-------------------------------------------
     // Test if par2d(par3d) is monotonous function or not           ----- IFV, Jan 2000
     // and try to insert new point to improve BSpline interpolation
 
@@ -772,7 +653,6 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
         }
         else {
 #ifdef OCCT_DEBUG
-          // JAG
           cout << "Projection not done" << endl;
 #endif
         }
@@ -790,14 +670,19 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     pcons = newpcons;
     newpcons = temp;
 
-    if((count != newcount) && newcount < aMaxArraySize) { count = newcount; continue;}
+    if((count != newcount) && newcount < aMaxArraySize)
+    {
+      hasCountChanged = Standard_True;
+      count = newcount;
+      continue;
+    }
 
     count = newcount;
 
     Standard_Real algtol = sqrt(besttol2);
 
     interpolok = Check (FlatKnots, Poles, count+1, Paramc3d, Paramcons, 
-      myC3d, CurveOnSurface, algtol, tolsov);
+                        myC3d, CurveOnSurface, algtol, tolsov);
 
     if (Precision::IsInfinite(algtol)) {
       mySameParameter = Standard_False;
@@ -809,17 +694,12 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     tolsov = algtol;
 
-    interpolok = (interpolok || count >= aMaxArraySize);
+    interpolok = (interpolok || // Good result.
+                  count >= aMaxArraySize - 1 ); // Number of points.
 
     if(interpolok) {
       Standard_Real besttol = sqrt(besttol2);
-#ifdef OCCT_DEBUG
-      if (Voir) {
-        if(algtol > besttol){
-          cout<<"SameParameter : Tol can't be reached before approx"<<endl;
-        }
-      }
-#endif
+
       Handle(TColStd_HArray1OfReal) tol1d,tol2d,tol3d;
       tol1d = new TColStd_HArray1OfReal(1,2) ;
       tol1d->SetValue(1, mySurf->UResolution(besttol));
@@ -840,7 +720,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
         if(myTolReached > anErrorMAX)
         {
-          //This tolerance is too big. Probably, we will not can get 
+          //This tolerance is too big. Probably, we will not be able to get 
           //edge with sameparameter in this case.
 
           myDone = Standard_False;
@@ -853,7 +733,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
                               //(else we can have circularity)
         {
           myCurve2d = aC2d;
-          myHCurve2d  = new Geom2dAdaptor_HCurve(myCurve2d);
+          myHCurve2d  = aHCurve2d;
           myDone = Standard_True;
         }
         else
@@ -866,10 +746,6 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     
     if(!interpolok)
     {
-#ifdef OCCT_DEBUG
-      if (Voir)
-        cout<<"SameParameter : Not enough points, enrich"<<endl;
-#endif
 
       newcount = 0;
       for(Standard_Integer n = 0; n < count; n++){
@@ -902,7 +778,6 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
         }
         else {
 #ifdef OCCT_DEBUG
-          // JAG
           cout << "Projection not done" << endl;
 #endif
         }
@@ -927,5 +802,82 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
         hasCountChanged = Standard_False;
       }
     }
+  } while(!interpolok && hasCountChanged);
+
+  if (!myDone)
+  {
+    // Loop is finished unsuccessfully. Fix tolerance by maximal deviation,
+    // using data from the last loop iteration.
+    Standard_Integer num_knots = count + 7;
+    Standard_Integer num_poles = count + 3;
+    TColStd_Array1OfReal    Paramc3d(*pc3d,1,count + 1);
+    TColStd_Array1OfReal    Paramcons(*pcons,1,count + 1);
+    TColStd_Array1OfInteger ContactOrder(1,num_poles) ;
+    TColStd_Array1OfReal    Poles(1,num_poles) ;
+    TColStd_Array1OfReal    InterpolationParameters(1,num_poles) ;
+    TColStd_Array1OfReal    FlatKnots(1,num_knots) ; 
+
+    // Fill tables taking attention to end values.
+    ContactOrder.Init(0);
+    ContactOrder(2) = ContactOrder(num_poles - 1) = 1;
+
+    FlatKnots(1) = FlatKnots(2) = FlatKnots(3) = FlatKnots(4) = fc3d;
+    FlatKnots(num_poles + 1) = FlatKnots(num_poles + 2) = 
+      FlatKnots(num_poles + 3) = FlatKnots(num_poles + 4) = lc3d;
+
+    Poles(1) = fcons; Poles(num_poles) = lcons;
+    Poles(2) = tangent[0]; Poles(num_poles - 1) = tangent[1];
+
+    InterpolationParameters(1) = InterpolationParameters(2) = fc3d;
+    InterpolationParameters(num_poles - 1) = InterpolationParameters(num_poles) = lc3d;
+
+    for (ii = 3; ii <= num_poles - 2; ii++)
+    {
+      Poles(ii) = Paramcons(ii - 1);
+      InterpolationParameters(ii) = FlatKnots(ii+2) = Paramc3d(ii - 1);
+    }
+    Standard_Integer inversion_problem;
+    BSplCLib::Interpolate(3,FlatKnots,InterpolationParameters,ContactOrder,
+                          1,Poles(1),inversion_problem);
+    if(inversion_problem)
+    {
+      Standard_ConstructionError::Raise();
+    }
+
+    Standard_Real besttol = sqrt(besttol2);
+    Handle(TColStd_HArray1OfReal) tol1d,tol2d,tol3d;
+    tol1d = new TColStd_HArray1OfReal(1,2) ;
+    tol1d->SetValue(1, mySurf->UResolution(besttol));
+    tol1d->SetValue(2, mySurf->VResolution(besttol));
+
+    Approx_SameParameter_Evaluator ev (FlatKnots, Poles, myHCurve2d); 
+    AdvApprox_ApproxAFunction  anApproximator(2,0,0,tol1d,tol2d,tol3d,fc3d,lc3d,
+                                              Continuity,11,40,ev);
+
+    if (!anApproximator.IsDone() &&
+        !anApproximator.HasResult() )
+    {
+      myDone = Standard_False;
+      return;
+    }
+
+    GeomLib_MakeCurvefromApprox  aCurveBuilder(anApproximator) ;
+    Handle(Geom2d_BSplineCurve) aC2d = aCurveBuilder.Curve2dFromTwo1d(1,2) ;
+    Handle(Adaptor2d_HCurve2d) aHCurve2d = new Geom2dAdaptor_HCurve(aC2d);
+    CurveOnSurface.Load(aHCurve2d);
+
+    myTolReached = ComputeTolReached(myC3d,CurveOnSurface,NCONTROL);
+
+    if(myTolReached > anErrorMAX)
+    {
+      //This tolerance is too big. Probably, we will not be able to get
+      //edge with sameparameter in this case.
+      myDone = Standard_False;
+      return;
+    }
+
+    myCurve2d = aC2d;
+    myHCurve2d  = aHCurve2d;
+    myDone = Standard_True;
   }
 }

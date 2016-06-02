@@ -23,11 +23,12 @@ regexp {VERTEX[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full VertexTolerance
 
 set minTolerance ${EdgeTolerance}
 if { ${minTolerance}  > ${VertexTolerance} } {
-   set minTolerance $(VertexTolerance)
+   set minTolerance ${VertexTolerance}
 }
 
+
 checkreal "Min tolerance" ${minTolerance} ${oTolerance} 0 0.001
-checkmaxtol result -ref 2279.641703013865
+checkmaxtol result -ref 2352.4465999220711
 checknbshapes result -shell 1
 checkfreebounds result 5
 

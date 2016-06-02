@@ -1247,7 +1247,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
           }
           else if (SameP.IsDone()) {
             Standard_Real tolreached = SameP.TolReached();
-            if(tolreached < error) {
+            if(tolreached <= error) {
               curPC = SameP.Curve2d();
               updatepc = Standard_True;
               maxdist = Max(maxdist,tolreached);
@@ -1280,7 +1280,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
 
         //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
         if (!IsSameP) {
-          if (anEdgeTol > error) {
+          if (anEdgeTol >= error) {
             maxdist = Max(maxdist, anEdgeTol);
             IsSameP = Standard_True;
           }

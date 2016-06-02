@@ -1,0 +1,17 @@
+puts "TODO OCC27531 ALL: Error: Max tolerance"
+puts "========"
+puts "0027015: Sewing returns invalid shape if some faces are nearly plane cones"
+puts "========"
+puts ""
+
+
+restore [locate_data_file bug27015.brep] aS
+sewing result 0.2 aS
+
+# check result shape for validity.
+checkshape result
+
+# Check tolerance of the result shape.
+# Currently same parameter algorithm can not interpolate pcurve.
+#"same parameter" state is obtained increasing tolerance to ~130.0 mm (max deviation between curves in 3d and 2d).
+checkmaxtol result -ref 1.0
