@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC27565: "
+puts "================"
+puts ""
+####################
+## [Regression to OCCT 7.0.0] Number of Intersections Is Wrong
+####################
+
+restore [locate_data_file bug27565.brep] a
+explode a
+
+# Test number of solutions in a result.
+set info [distmini d a_1 a_2 1.0]
+if { [llength $info] != 9 } {
+    puts "Error : Extrema is wrong"
+} else {
+    puts "OK: Extrema is valid"
+}

@@ -31,6 +31,7 @@
 #include <OSD_Timer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <Precision.hxx>
 
 
 //#ifdef _MSC_VER
@@ -65,16 +66,18 @@ static Standard_Integer distance (Draw_Interpretor& di,
 }
 
 static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{ 
-  Standard_Integer i1;
-  //  gp_Pnt P;
-
-  if (n != 4) return 1;
+{
+  if (n != 4 && n != 5 )
+    return 1;
 
   const char *ns1 = (a[2]), *ns2 = (a[3]), *ns0 = (a[1]);
-  TopoDS_Shape S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2))  ;
-  BRepExtrema_DistShapeShape dst(S1 ,S2 );
+  TopoDS_Shape S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
 
+  Standard_Real aDeflection = Precision::Confusion();
+  if (n == 5)
+    aDeflection = Draw::Atoi(a[4]);
+
+  BRepExtrema_DistShapeShape dst(S1 ,S2, aDeflection);
 
   if (dst.IsDone()) 
   { 
@@ -95,7 +98,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
     Draw::Set(tempd,dst.Value());
     di << named << " ";
 
-    for (i1=1; i1<= dst.NbSolution(); i1++)
+    for (Standard_Integer i1 = 1; i1<= dst.NbSolution(); i1++)
     {
       gp_Pnt P1,P2;
       P1 = (dst.PointOnShape1(i1));
@@ -416,7 +419,7 @@ void BRepTest::ExtremaCommands (Draw_Interpretor& theCommands)
                    aGroup);
 
   theCommands.Add ("distmini",
-                   "distmini name Shape1 Shape2",
+                   "distmini name Shape1 Shape2 [deflection]",
                    __FILE__,
                    distmini,
                    aGroup);

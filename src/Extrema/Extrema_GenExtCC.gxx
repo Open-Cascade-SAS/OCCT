@@ -250,10 +250,10 @@ void Extrema_GenExtCC::Perform()
   aFinder.SetFunctionalMinimalValue(0.0); // Best distance cannot be lower than 0.0.
 
   // Size computed to have cell index inside of int32 value.
-  const Standard_Real aCellSize = Max(anIntervals1.Upper() - anIntervals1.Lower(),
-                                      anIntervals2.Upper() - anIntervals2.Lower())
+  const Standard_Real aCellSize = Max(anIntervals1.Last() - anIntervals1.First(),
+                                      anIntervals2.Last() - anIntervals2.First())
                                   * Precision::PConfusion() / (2.0 * Sqrt(2.0));
-  Extrema_CCPointsInspector anInspector(Precision::PConfusion());
+  Extrema_CCPointsInspector anInspector(aCellSize);
   NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(aCellSize);
   NCollection_Vector<gp_XY> aPnts;
 
