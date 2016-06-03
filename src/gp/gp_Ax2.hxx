@@ -94,7 +94,7 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if A1 is parallel to the "X
   //! Direction" of this coordinate system.
-  Standard_EXPORT void SetAxis (const gp_Ax1& A1);
+  void SetAxis (const gp_Ax1& A1);
   
 
   //! Changes the "main Direction" of this coordinate system,
@@ -104,11 +104,11 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if V is parallel to the "X
   //! Direction" of this coordinate system.
-  Standard_EXPORT void SetDirection (const gp_Dir& V);
+  void SetDirection (const gp_Dir& V);
   
 
   //! Changes the "Location" point (origin) of <me>.
-  Standard_EXPORT void SetLocation (const gp_Pnt& P);
+  void SetLocation (const gp_Pnt& P);
   
 
   //! Changes the "Xdirection" of <me>. The main direction
@@ -118,7 +118,7 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if Vx or Vy is parallel to
   //! the "main Direction" of this coordinate system.
-  Standard_EXPORT void SetXDirection (const gp_Dir& Vx);
+  void SetXDirection (const gp_Dir& Vx);
   
 
   //! Changes the "Ydirection" of <me>. The main direction is not
@@ -129,13 +129,13 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if Vx or Vy is parallel to
   //! the "main Direction" of this coordinate system.
-  Standard_EXPORT void SetYDirection (const gp_Dir& Vy);
+  void SetYDirection (const gp_Dir& Vy);
   
 
   //! Computes the angular value, in radians, between the main direction of
   //! <me> and the main direction of <Other>. Returns the angle
   //! between 0 and PI in radians.
-  Standard_EXPORT Standard_Real Angle (const gp_Ax2& Other) const;
+  Standard_Real Angle (const gp_Ax2& Other) const;
   
 
   //! Returns the main axis of <me>. It is the "Location" point
@@ -158,7 +158,7 @@ public:
   //! Returns the "YDirection" of <me>.
     const gp_Dir& YDirection() const;
   
-  Standard_EXPORT Standard_Boolean IsCoplanar (const gp_Ax2& Other, const Standard_Real LinearTolerance, const Standard_Real AngularTolerance) const;
+  Standard_Boolean IsCoplanar (const gp_Ax2& Other, const Standard_Real LinearTolerance, const Standard_Real AngularTolerance) const;
   
 
   //! Returns True if

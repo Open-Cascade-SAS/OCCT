@@ -102,8 +102,8 @@ public:
   //! There are no default parameters, but in case if:
   //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
   //!    - scale only is needed: @theTrsf must be set to gp_Identity.
-  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer /*theScaleFactor*/,
-                                                                                       const gp_Trsf& /*theTrsf*/) { return NULL; }
+  virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer /*theScaleFactor*/,
+                                                                       const gp_Trsf& /*theTrsf*/) { return NULL; }
 
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
@@ -160,7 +160,7 @@ public:
 
   //! Valid for point selection only!
   //! Computes depth range for global (defined for the whole view) clipping planes.
-  Standard_EXPORT virtual void SetViewClipping (const Graphic3d_SequenceOfHClipPlane& /*thePlanes*/) {};
+  virtual void SetViewClipping (const Graphic3d_SequenceOfHClipPlane& /*thePlanes*/) {};
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum,Standard_Transient)
 

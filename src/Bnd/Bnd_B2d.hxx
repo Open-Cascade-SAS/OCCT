@@ -54,7 +54,7 @@ public:
   Standard_EXPORT void Add (const gp_XY& thePnt);
   
   //! Update the box by a point.
-  Standard_EXPORT void Add (const gp_Pnt2d& thePnt);
+  void Add (const gp_Pnt2d& thePnt);
   
   //! Update the box by another box.
     void Add (const Bnd_B2d& theBox);

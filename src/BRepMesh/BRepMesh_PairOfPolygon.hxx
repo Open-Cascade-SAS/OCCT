@@ -27,7 +27,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor. Creates empty pair with null fileds.
-  Standard_EXPORT BRepMesh_PairOfPolygon()
+  BRepMesh_PairOfPolygon()
   {
   }
 

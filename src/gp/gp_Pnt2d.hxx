@@ -72,7 +72,7 @@ public:
   //! Index = 1 => X is returned
   //! Index = 2 => Y is returned
   //! Raises OutOfRange if Index != {1, 2}.
-  Standard_EXPORT Standard_Real Coord (const Standard_Integer Index) const;
+  Standard_Real Coord (const Standard_Integer Index) const;
   
   //! For this point returns its two coordinates as a number pair.
     void Coord (Standard_Real& Xp, Standard_Real& Yp) const;

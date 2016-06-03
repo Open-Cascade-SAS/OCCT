@@ -43,7 +43,7 @@ public:
   //! Creates new empty sensitive set and its content
   Standard_EXPORT Select3D_SensitiveSet (const Handle(SelectBasics_EntityOwner)& theOwnerId);
 
-  Standard_EXPORT ~Select3D_SensitiveSet() {};
+  ~Select3D_SensitiveSet() {};
 
 public:
 

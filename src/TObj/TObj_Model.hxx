@@ -73,11 +73,11 @@ class TObj_Model : public MMgt_TShared
   */
   
   //! Set messenger to use for messages output
-  Standard_EXPORT void SetMessenger (const Handle(Message_Messenger) &theMsgr) { myMessenger = theMsgr; }
+  void SetMessenger (const Handle(Message_Messenger) &theMsgr) { myMessenger = theMsgr; }
 
   //! Get messenger used for messages output (by default, the messenger from
   //! application is used)
-  Standard_EXPORT Handle(Message_Messenger) Messenger () const { return myMessenger; }
+  Handle(Message_Messenger) Messenger () const { return myMessenger; }
    
  public:
   /**
@@ -302,7 +302,7 @@ class TObj_Model : public MMgt_TShared
 
   //! Sets OCAF label on which model data are stored.
   //! Used by persistence mechanism.
-  void Standard_EXPORT SetLabel(const TDF_Label& theLabel) { myLabel = theLabel; }
+  void SetLabel(const TDF_Label& theLabel) { myLabel = theLabel; }
 
  protected:
 

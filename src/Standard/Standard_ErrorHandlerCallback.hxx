@@ -51,7 +51,7 @@ public:
   void UnregisterCallback();
 
   //! Destructor
-  virtual Standard_EXPORT ~Standard_ErrorHandlerCallback ();
+  virtual ~Standard_ErrorHandlerCallback ();
   
   //! The callback function to perform necessary callback action.
   //! Called by the exception handler when it is being destroyed but

@@ -90,7 +90,7 @@ public:
   //!@name Reference counting, for use by handle<>
 
   //! Get the reference counter of this object
-  Standard_EXPORT Standard_Integer GetRefCount() const { return count; }
+  Standard_Integer GetRefCount() const { return count; }
 
   //! Increments the reference counter of this object
   Standard_EXPORT void IncrementRefCounter() const;

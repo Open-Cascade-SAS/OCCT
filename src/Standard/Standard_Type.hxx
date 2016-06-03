@@ -176,7 +176,7 @@ namespace opencascade {
   class type_instance<void>
   {
   public:
-    Standard_EXPORT static Handle(Standard_Type) get () { return 0; }
+    static Handle(Standard_Type) get () { return 0; }
   };
 
   // Implementation of static function returning instance of the

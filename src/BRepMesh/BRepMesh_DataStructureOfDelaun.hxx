@@ -63,7 +63,7 @@ public: //! @name API for accessing mesh nodes.
   //! Finds the index of the given node.
   //! @param theNode node to find.
   //! @return index of the given element of zero if node is not in the mesh.
-  Standard_EXPORT Standard_Integer IndexOf(const BRepMesh_Vertex& theNode)
+  Standard_Integer IndexOf(const BRepMesh_Vertex& theNode)
   {
     return myNodes->FindIndex(theNode);
   }
@@ -95,8 +95,8 @@ public: //! @name API for accessing mesh nodes.
   //! @param theIndex index of node to be removed.
   //! @param isForce if TRUE node will be removed even if movability
   //! is not Free.
-  Standard_EXPORT void RemoveNode(const Standard_Integer theIndex,
-                                  const Standard_Boolean isForce = Standard_False)
+  void RemoveNode(const Standard_Integer theIndex,
+                  const Standard_Boolean isForce = Standard_False)
   {
     if (isForce || myNodes->FindKey(theIndex).Movability() == BRepMesh_Free)
     {
@@ -131,7 +131,7 @@ public: //! @name API for accessing mesh links.
   //! Finds the index of the given link.
   //! @param theLink link to find.
   //! @return index of the given element of zero if link is not in the mesh.
-  Standard_EXPORT Standard_Integer IndexOf(const BRepMesh_Edge& theLink) const
+  Standard_Integer IndexOf(const BRepMesh_Edge& theLink) const
   {
     return myLinks.FindIndex(theLink);
   }
@@ -139,7 +139,7 @@ public: //! @name API for accessing mesh links.
   //! Get link by the index.
   //! @param theIndex index of a link.
   //! @return link with the given index.
-  Standard_EXPORT const BRepMesh_Edge& GetLink(const Standard_Integer theIndex)
+  const BRepMesh_Edge& GetLink(const Standard_Integer theIndex)
   {
     return myLinks.FindKey(theIndex);
   }
@@ -168,7 +168,7 @@ public: //! @name API for accessing mesh links.
   //! Returns indices of elements conected to the link with the given index.
   //! @param theLinkIndex index of link whose data should be retrieved.
   //! @return indices of elements conected to the link.
-  Standard_EXPORT const BRepMesh_PairOfIndex& ElementsConnectedTo(
+  const BRepMesh_PairOfIndex& ElementsConnectedTo(
     const Standard_Integer theLinkIndex) const
   {
     return myLinks.FindFromIndex(theLinkIndex);
@@ -192,7 +192,7 @@ public: //! @name API for accessing mesh elements.
   //! Finds the index of the given element.
   //! @param theElement element to find.
   //! @return index of the given element of zero if element is not in the mesh.
-  Standard_EXPORT Standard_Integer IndexOf(const BRepMesh_Triangle& theElement) const
+  Standard_Integer IndexOf(const BRepMesh_Triangle& theElement) const
   {
     return myElements.FindIndex(theElement);
   }
@@ -200,7 +200,7 @@ public: //! @name API for accessing mesh elements.
   //! Get element by the index.
   //! @param theIndex index of an element.
   //! @return element with the given index.
-  Standard_EXPORT const BRepMesh_Triangle& GetElement(const Standard_Integer theIndex)
+  const BRepMesh_Triangle& GetElement(const Standard_Integer theIndex)
   {
     return myElements.FindKey(theIndex);
   }
@@ -254,7 +254,7 @@ public: //! @name Auxilary API
 
   //! Substitutes deleted items by the last one from corresponding map 
   //! to have only non-deleted elements, links or nodes in the structure.
-  Standard_EXPORT void ClearDeleted()
+  void ClearDeleted()
   {
     clearDeletedLinks();
     clearDeletedNodes();

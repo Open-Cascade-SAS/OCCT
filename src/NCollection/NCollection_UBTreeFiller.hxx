@@ -83,7 +83,7 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
    * @return
    *   the number of objects added to the tree.
    */
-  Standard_EXPORT Standard_Integer Fill ();
+  Standard_Integer Fill ();
 
   /**
    * Remove all data from Filler, partculary if the Tree no more needed
@@ -97,7 +97,7 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
    * @return
    *   the tree size (the same value is returned by method Fill()).
    */ 
-  Standard_EXPORT Standard_Integer CheckTree (Standard_OStream& theStream);
+  Standard_Integer CheckTree (Standard_OStream& theStream);
 
   /**
    * Destructor. Fills the tree with accumulated items if they have not been

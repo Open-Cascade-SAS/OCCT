@@ -94,7 +94,7 @@ public:
   //! It is yet  possible to create an Hyperbola with
   //! MajorRadius <= MinorRadius.
   //! Raises ConstructionError if MajorRadius < 0.0 or MinorRadius < 0.0
-  Standard_EXPORT gp_Hypr2d(const gp_Ax2d& MajorAxis, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const Standard_Boolean Sense = Standard_True);
+  gp_Hypr2d(const gp_Ax2d& MajorAxis, const Standard_Real MajorRadius, const Standard_Real MinorRadius, const Standard_Boolean Sense = Standard_True);
   
 
   //! a hyperbola with radii MajorRadius and
@@ -251,7 +251,7 @@ public:
   //! -   the unit vector is the "X Direction" or "Y Direction"
   //! respectively of the local coordinate system of this hyperbola
   //! Returns the major axis of the hyperbola.
-  Standard_EXPORT gp_Ax2d XAxis() const;
+  gp_Ax2d XAxis() const;
   
   //! Computes an axis whose
   //! -   the origin is the center of this hyperbola, and

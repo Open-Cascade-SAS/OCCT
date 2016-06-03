@@ -57,7 +57,7 @@ public:
   //! allows a better sensitivity for
   //! a specific entity in selection algorithms
   //! useful for small sized entities.
-  Standard_EXPORT Standard_Integer SensitivityFactor() const;
+  Standard_Integer SensitivityFactor() const;
 
   //! Allows to manage sensitivity of a particular sensitive entity
   Standard_EXPORT void SetSensitivityFactor (const Standard_Integer theNewSens);

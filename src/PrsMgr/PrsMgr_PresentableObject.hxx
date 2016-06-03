@@ -73,10 +73,10 @@ public:
 
   
   Standard_EXPORT PrsMgr_Presentations& Presentations();
-  
+
   //! Returns information on whether the object accepts display in HLR mode or not.
-  Standard_EXPORT PrsMgr_TypeOfPresentation3d TypeOfPresentation3d() const;
-  
+  PrsMgr_TypeOfPresentation3d TypeOfPresentation3d() const;
+
   //! Sets up Transform Persistence Mode for this object.
   //! This function used to lock in object position, rotation and / or zooming relative to camera position.
   //! Object will be drawn in the origin setted by APoint parameter (except Graphic3d_TMF_TriedronPers flag
@@ -191,13 +191,13 @@ public:
   Standard_EXPORT virtual void RemoveChild (const Handle(PrsMgr_PresentableObject)& theObject);
   
   //! Returns children of the current object.
-  Standard_EXPORT const PrsMgr_ListOfPresentableObjects& Children() const;
-  
+  const PrsMgr_ListOfPresentableObjects& Children() const;
+
   //! Returns true if object should have own presentations.
-  Standard_EXPORT Standard_Boolean HasOwnPresentations() const;
-  
+  Standard_Boolean HasOwnPresentations() const;
+
   //! Returns parent of current object in scene hierarchy.
-  Standard_EXPORT PrsMgr_PresentableObjectPointer Parent() const;
+  PrsMgr_PresentableObjectPointer Parent() const;
 
 
 friend class PrsMgr_Presentation;

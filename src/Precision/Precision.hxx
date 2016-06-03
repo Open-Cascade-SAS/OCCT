@@ -123,7 +123,7 @@ public:
   //! you can use :
   //! If ( Abs( D1.D2 ) < Precision::Angular() ) ...
   //! (although the function IsNormal does exist).
-  Standard_EXPORT static Standard_Real Angular();
+  static Standard_Real Angular();
   
 
   //! Returns the recommended precision value when
@@ -166,12 +166,12 @@ public:
   //! distance (1 / 10 millimeter). This distance
   //! becomes easily measurable, but only within a restricted
   //! space which contains some small objects of the complete scene.
-  Standard_EXPORT static Standard_Real Confusion();
+  static Standard_Real Confusion();
   
 
   //! Returns square of Confusion.
   //! Created for speed and convenience.
-  Standard_EXPORT static Standard_Real SquareConfusion();
+  static Standard_Real SquareConfusion();
   
   //! Returns the precision value in real space, frequently
   //! used by intersection algorithms to decide that a solution is reached.
@@ -195,7 +195,7 @@ public:
   //! The tolerance of intersection is equal to :
   //! Precision::Confusion() / 100.
   //! (that is, 1.e-9).
-  Standard_EXPORT static Standard_Real Intersection();
+  static Standard_Real Intersection();
   
   //! Returns the precision value in real space, frequently used
   //! by approximation algorithms.
@@ -210,7 +210,7 @@ public:
   //! (that is, 1.e-6).
   //! You may use a smaller tolerance in an approximation
   //! algorithm, but this option might be costly.
-  Standard_EXPORT static Standard_Real Approximation();
+  static Standard_Real Approximation();
   
   //! Convert a real  space precision  to  a  parametric
   //! space precision.   <T>  is the mean  value  of the
@@ -264,7 +264,7 @@ public:
   //! 2.Pi without impacting on the resulting point.
   //! Therefore, take great care when adjusting a parametric
   //! tolerance to your own algorithm.
-  Standard_EXPORT static Standard_Real PConfusion (const Standard_Real T);
+  static Standard_Real PConfusion (const Standard_Real T);
   
 
   //! Returns a precision value in parametric space, which
@@ -280,7 +280,7 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Intersection() / 100., or Precision::Intersection() / T.
-  Standard_EXPORT static Standard_Real PIntersection (const Standard_Real T);
+  static Standard_Real PIntersection (const Standard_Real T);
   
   //! Returns a precision value in parametric space, which may
   //! be used by approximation algorithms. The purpose of this
@@ -295,13 +295,13 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Approximation() / 100., or Precision::Approximation() / T.
-  Standard_EXPORT static Standard_Real PApproximation (const Standard_Real T);
+  static Standard_Real PApproximation (const Standard_Real T);
   
   //! Convert a real  space precision  to  a  parametric
   //! space precision on a default curve.
   //!
   //! Value is Parametric(P,1.e+2)
-  Standard_EXPORT static Standard_Real Parametric (const Standard_Real P);
+  static Standard_Real Parametric (const Standard_Real P);
   
   //! Used  to test distances  in parametric  space on a
   //! default curve.
@@ -323,19 +323,19 @@ public:
   
   //! Returns True if R may be considered as an infinite
   //! number. Currently Abs(R) > 1e100
-  Standard_EXPORT static Standard_Boolean IsInfinite (const Standard_Real R);
+  static Standard_Boolean IsInfinite (const Standard_Real R);
   
   //! Returns True if R may be considered as  a positive
   //! infinite number. Currently R > 1e100
-  Standard_EXPORT static Standard_Boolean IsPositiveInfinite (const Standard_Real R);
+  static Standard_Boolean IsPositiveInfinite (const Standard_Real R);
   
   //! Returns True if R may  be considered as a negative
   //! infinite number. Currently R < -1e100
-  Standard_EXPORT static Standard_Boolean IsNegativeInfinite (const Standard_Real R);
+  static Standard_Boolean IsNegativeInfinite (const Standard_Real R);
   
   //! Returns a  big number that  can  be  considered as
   //! infinite. Use -Infinite() for a negative big number.
-  Standard_EXPORT static Standard_Real Infinite();
+  static Standard_Real Infinite();
 
 
 

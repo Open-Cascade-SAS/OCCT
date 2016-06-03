@@ -43,7 +43,7 @@ class BRepExtrema_DistShapeShape
   //! create tool and load both shapes into it <br>
   Standard_EXPORT BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape1,const TopoDS_Shape& Shape2,const Standard_Real theDeflection,const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,const Extrema_ExtAlgo A = Extrema_ExtAlgo_Grad);
   
-  Standard_EXPORT void SetDeflection(const Standard_Real theDeflection)
+  void SetDeflection(const Standard_Real theDeflection)
   {
     myEps = theDeflection;
   }
@@ -58,12 +58,12 @@ class BRepExtrema_DistShapeShape
   //!          Returns IsDone status. <br>
   Standard_EXPORT Standard_Boolean Perform();
   //! True if the minimum distance is found. <br>
-  Standard_EXPORT Standard_Boolean IsDone() const
+  Standard_Boolean IsDone() const
   { 
     return myIsDone;
   }
   //! Returns the number of solutions satisfying the minimum distance. <br>
-  Standard_EXPORT Standard_Integer NbSolution() const
+  Standard_Integer NbSolution() const
   { 
     return mySolutionsShape1.Length();
   }
@@ -71,17 +71,17 @@ class BRepExtrema_DistShapeShape
   Standard_EXPORT Standard_Real Value() const;
   //! True if one of the shapes is a solid and the other shape <br>
   //! is completely or partially inside the solid. <br>
-  Standard_EXPORT Standard_Boolean InnerSolution() const
+  Standard_Boolean InnerSolution() const
   { 
     return myInnerSol;
   }
   //! Returns the Point corresponding to the <N>th solution on the first Shape <br>
-  Standard_EXPORT const gp_Pnt & PointOnShape1(const Standard_Integer N) const
+  const gp_Pnt & PointOnShape1(const Standard_Integer N) const
   { 
     return mySolutionsShape1.Value(N).Point();
   }
   //! Returns the Point corresponding to the <N>th solution on the second Shape <br>
-  Standard_EXPORT const gp_Pnt & PointOnShape2(const Standard_Integer N) const
+  const gp_Pnt & PointOnShape2(const Standard_Integer N) const
   { 
     return mySolutionsShape2.Value(N).Point();
   }
@@ -90,7 +90,7 @@ class BRepExtrema_DistShapeShape
   //!   IsOnEdge => the Nth soluion on the first shape is on a Edge <br>
   //!   IsInFace => the Nth solution on the first shape is inside a face <br>
   //! the corresponding support is obtained by the method SupportOnShape1 <br>
-  Standard_EXPORT BRepExtrema_SupportType SupportTypeShape1(const Standard_Integer N) const
+  BRepExtrema_SupportType SupportTypeShape1(const Standard_Integer N) const
   { 
     return mySolutionsShape1.Value(N).SupportKind();
   }
@@ -99,7 +99,7 @@ class BRepExtrema_DistShapeShape
   //!   IsOnEdge => the Nth soluion on the secondt shape is on a Edge <br>
   //!   IsInFace => the Nth solution on the second shape is inside a face <br>
   //! the corresponding support is obtained by the method SupportOnShape2 <br>
-  Standard_EXPORT BRepExtrema_SupportType SupportTypeShape2(const Standard_Integer N) const
+  BRepExtrema_SupportType SupportTypeShape2(const Standard_Integer N) const
   { 
     return mySolutionsShape2.Value(N).SupportKind();
   }
@@ -124,12 +124,12 @@ class BRepExtrema_DistShapeShape
   //! Prints on the stream o information on the current state of the object. <br>
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-  Standard_EXPORT void SetFlag(const Extrema_ExtFlag F)
+  void SetFlag(const Extrema_ExtFlag F)
   {
     myFlag = F;
   }
 
-  Standard_EXPORT void SetAlgo(const Extrema_ExtAlgo A)
+  void SetAlgo(const Extrema_ExtAlgo A)
   {
     myAlgo = A;
   }

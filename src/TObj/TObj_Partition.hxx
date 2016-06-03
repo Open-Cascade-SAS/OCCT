@@ -86,7 +86,7 @@ class TObj_Partition : public TObj_Object
                         (const Handle(TCollection_HExtendedString)& thePrefix);
 
   //! Returns prefix for names of the objects in partition.
-  Standard_EXPORT Handle(TCollection_HExtendedString) GetNamePrefix() const
+  Handle(TCollection_HExtendedString) GetNamePrefix() const
   { return myPrefix; }
   
   //! Generates and returns name for new object in partition.
@@ -117,7 +117,7 @@ class TObj_Partition : public TObj_Object
   */
   
   //! Does nothing in the partition.
-  virtual Standard_EXPORT Standard_Boolean Update()
+  virtual Standard_Boolean Update()
   {return Standard_True;}
 
  protected:

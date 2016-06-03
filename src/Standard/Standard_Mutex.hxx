@@ -150,7 +150,7 @@ public:
   Standard_EXPORT Standard_Boolean TryLock ();
 
   //! Method to unlock the mutex; releases it to other users
-  Standard_EXPORT void Unlock ();
+  void Unlock ();
 
 private:
 

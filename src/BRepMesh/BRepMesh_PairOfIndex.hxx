@@ -26,7 +26,7 @@ class BRepMesh_PairOfIndex
 public:
 
   //! Default constructor
-  Standard_EXPORT BRepMesh_PairOfIndex()
+  BRepMesh_PairOfIndex()
   {
     Clear();
   }

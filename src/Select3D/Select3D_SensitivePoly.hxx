@@ -68,7 +68,7 @@ public:
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
 
   //! Returns the 3D points of the array used at construction time.
-  Standard_EXPORT void Points3D (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt);
+  void Points3D (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt);
 
   //! Returns bounding box of a polygon. If location
   //! transformation is set, it will be applied

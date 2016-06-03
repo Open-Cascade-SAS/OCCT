@@ -87,37 +87,37 @@ public:
   //! It is possible to create an ellipse with
   //! MajorRadius = MinorRadius.
   //! Raises ConstructionError if MajorRadius < MinorRadius or MinorRadius < 0.0
-  Standard_EXPORT gp_Elips2d(const gp_Ax22d& A, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
+  gp_Elips2d(const gp_Ax22d& A, const Standard_Real MajorRadius, const Standard_Real MinorRadius);
   
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! -   its origin becomes P.
-  Standard_EXPORT void SetLocation (const gp_Pnt2d& P);
+  void SetLocation (const gp_Pnt2d& P);
   
   //! Changes the value of the major radius.
   //! Raises ConstructionError if MajorRadius < MinorRadius.
-  Standard_EXPORT void SetMajorRadius (const Standard_Real MajorRadius);
+  void SetMajorRadius (const Standard_Real MajorRadius);
   
   //! Changes the value of the minor radius.
   //! Raises ConstructionError if MajorRadius < MinorRadius or MinorRadius < 0.0
-  Standard_EXPORT void SetMinorRadius (const Standard_Real MinorRadius);
+  void SetMinorRadius (const Standard_Real MinorRadius);
   
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! it becomes A.
-  Standard_EXPORT void SetAxis (const gp_Ax22d& A);
+  void SetAxis (const gp_Ax22d& A);
   
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! its origin and its "X Direction"  become those
   //! of the axis A. The "Y  Direction"  is then
   //! recomputed. The orientation of the local coordinate
   //! system is not modified.
-  Standard_EXPORT void SetXAxis (const gp_Ax2d& A);
+  void SetXAxis (const gp_Ax2d& A);
   
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! its origin and its "Y Direction"  become those
   //! of the axis A. The "X  Direction"  is then
   //! recomputed. The orientation of the local coordinate
   //! system is not modified.
-  Standard_EXPORT void SetYAxis (const gp_Ax2d& A);
+  void SetYAxis (const gp_Ax2d& A);
   
   //! Computes the area of the ellipse.
     Standard_Real Area() const;
@@ -217,34 +217,34 @@ public:
   //! to an axis placement which is the axis of the symmetry.
   Standard_EXPORT gp_Elips2d Mirrored (const gp_Ax2d& A) const;
   
-  Standard_EXPORT void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
+  void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   
-  Standard_EXPORT gp_Elips2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+  gp_Elips2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
-  Standard_EXPORT void Scale (const gp_Pnt2d& P, const Standard_Real S);
+  void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
 
   //! Scales a ellipse. S is the scaling value.
-  Standard_EXPORT gp_Elips2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+  gp_Elips2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
+  void Transform (const gp_Trsf2d& T);
   
 
   //! Transforms an ellipse with the transformation T from class Trsf2d.
-  Standard_EXPORT gp_Elips2d Transformed (const gp_Trsf2d& T) const;
+  gp_Elips2d Transformed (const gp_Trsf2d& T) const;
   
-  Standard_EXPORT void Translate (const gp_Vec2d& V);
+  void Translate (const gp_Vec2d& V);
   
 
   //! Translates a ellipse in the direction of the vector V.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_EXPORT gp_Elips2d Translated (const gp_Vec2d& V) const;
+  gp_Elips2d Translated (const gp_Vec2d& V) const;
   
-  Standard_EXPORT void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
+  void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
   
 
   //! Translates a ellipse from the point P1 to the point P2.
-  Standard_EXPORT gp_Elips2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+  gp_Elips2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
 
 
 

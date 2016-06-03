@@ -162,11 +162,11 @@ public:
   
   //! Returns current number of opened scopes
   //! This number is always >=1 as top-level scale is always present
-  Standard_EXPORT Standard_Integer GetNbScopes() const;
+  Standard_Integer GetNbScopes() const;
   
   //! Returns data for scale of index-th scope
   //! The first scope is current one, the last is the top-level one
-  Standard_EXPORT const Message_ProgressScale& GetScope (const Standard_Integer index) const;
+  const Message_ProgressScale& GetScope (const Standard_Integer index) const;
 
 
 

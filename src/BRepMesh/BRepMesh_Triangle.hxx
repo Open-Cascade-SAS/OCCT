@@ -33,7 +33,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor.
-  Standard_EXPORT BRepMesh_Triangle()
+  BRepMesh_Triangle()
   : myEdge1(0),
     myEdge2(0),
     myEdge3(0),
@@ -48,7 +48,7 @@ public:
   //! @param theEdges array of edges of triangle.
   //! @param theOrientations array of edge's orientations.
   //! @param theMovability movability of triangle.
-  Standard_EXPORT BRepMesh_Triangle(
+  BRepMesh_Triangle(
     const Standard_Integer          (&theEdges)[3],
     const Standard_Boolean          (&theOrientations)[3],
     const BRepMesh_DegreeOfFreedom  theMovability)
@@ -103,7 +103,7 @@ public:
   //! Returns hash code for this triangle.
   //! @param theUpper upper index in the container.
   //! @return hash code.
-  Standard_EXPORT Standard_Integer HashCode(const Standard_Integer theUpper) const
+  Standard_Integer HashCode(const Standard_Integer theUpper) const
   {
     return ::HashCode(myEdge1 + myEdge2 + myEdge3, theUpper);
   }
@@ -111,7 +111,7 @@ public:
   //! Checks for equality with another triangle.
   //! @param theOther triangle to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  Standard_EXPORT Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
+  Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
       return Standard_False;
@@ -141,7 +141,7 @@ public:
   }
   
   //! Alias for IsEqual.
-  Standard_EXPORT Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
+  Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
   {
     return IsEqual(theOther);
   }

@@ -225,7 +225,7 @@ public:
   Standard_EXPORT virtual void ChangeStorageFormat (const TCollection_ExtendedString& newStorageFormat);
   
   //! Sets nested transaction mode if isAllowed == Standard_True
-  Standard_EXPORT void SetNestedTransactionMode (const Standard_Boolean isAllowed = Standard_True);
+  void SetNestedTransactionMode (const Standard_Boolean isAllowed = Standard_True);
   
   //! Returns Standard_True if mode is set
     Standard_Boolean IsNestedTransactionMode() const;

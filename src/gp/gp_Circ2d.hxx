@@ -82,7 +82,7 @@ public:
     gp_Circ2d(const gp_Ax22d& Axis, const Standard_Real Radius);
   
   //! Changes the location point (center) of the circle.
-  Standard_EXPORT void SetLocation (const gp_Pnt2d& P);
+  void SetLocation (const gp_Pnt2d& P);
   
   //! Changes the X axis of the circle.
     void SetXAxis (const gp_Ax2d& A);

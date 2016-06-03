@@ -120,7 +120,7 @@ public:
   
   //! Reverses the   V   parametrization of   the  torus
   //! reversing the ZAxis.
-  Standard_EXPORT void VReverse();
+  void VReverse();
   
   //! returns true if the Ax3, the local coordinate system of this torus, is right handed.
     Standard_Boolean Direct() const;

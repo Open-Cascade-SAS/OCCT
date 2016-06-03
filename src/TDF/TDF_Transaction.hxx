@@ -88,7 +88,7 @@ public:
     Standard_Integer Transaction() const;
   
   //! Returns the transaction name.
-  Standard_EXPORT const TCollection_AsciiString& Name() const;
+  const TCollection_AsciiString& Name() const;
   
   //! Returns true if the transaction is open.
     Standard_Boolean IsOpen() const;

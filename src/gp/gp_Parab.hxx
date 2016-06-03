@@ -107,7 +107,7 @@ public:
     void SetLocation (const gp_Pnt& P);
   
   //! Changes the local coordinate system of the parabola.
-  Standard_EXPORT void SetPosition (const gp_Ax2& A2);
+  void SetPosition (const gp_Ax2& A2);
   
 
   //! Returns the main axis of the parabola.

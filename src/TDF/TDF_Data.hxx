@@ -63,7 +63,7 @@ public:
     const TDF_Label Root() const;
   
   //! Returns the current transaction number.
-  Standard_EXPORT Standard_Integer Transaction() const;
+  Standard_Integer Transaction() const;
   
   //! Returns the current tick. It is incremented each Commit.
     Standard_Integer Time() const;

@@ -182,7 +182,7 @@ class TObj_Object : public MMgt_TShared
 
   //! Returns name for copy
   //! default implementation returns the same name
-  virtual Standard_EXPORT Handle(TCollection_HExtendedString) GetNameForClone
+  virtual Handle(TCollection_HExtendedString) GetNameForClone
     ( const Handle(TObj_Object)& ) const
   { return GetName(); }
 
@@ -272,7 +272,7 @@ class TObj_Object : public MMgt_TShared
   //! Invokes from TObj_TReference::BeforeForget().
   //! theLabel - label on that reference become removed
   //! Default implementation is empty
-  virtual Standard_EXPORT void BeforeForgetReference( const TDF_Label& /*theLabel*/ )
+  virtual void BeforeForgetReference( const TDF_Label& /*theLabel*/ )
   {}
 
  public:

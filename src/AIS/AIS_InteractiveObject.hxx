@@ -349,10 +349,10 @@ public:
     Standard_Boolean HasWidth() const;
   
   //! Returns the width setting of the Interactive Object.
-  Standard_EXPORT Standard_Real Width() const;
+  Standard_Real Width() const;
   
   //! Returns true if the Interactive Object has a setting for material.
-  Standard_EXPORT Standard_Boolean HasMaterial() const;
+  Standard_Boolean HasMaterial() const;
   
   //! Returns the current material setting.
   //! This will be on of the following materials:
@@ -362,7 +362,7 @@ public:
   //! -   Pewter
   //! -   Silver
   //! -   Stone.
-  Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const;
+  virtual Graphic3d_NameOfMaterial Material() const;
   
   //! Sets the name aName for material defining this
   //! display attribute for the interactive object.

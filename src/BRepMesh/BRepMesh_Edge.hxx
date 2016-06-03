@@ -26,14 +26,14 @@ class BRepMesh_Edge : public BRepMesh_OrientedEdge
 public:
 
     //! Default constructor.
-  Standard_EXPORT BRepMesh_Edge()
+  BRepMesh_Edge()
     : BRepMesh_OrientedEdge(),
       myMovability(BRepMesh_Deleted)
   {
   }
 
   //! Constructs a link between two vertices.
-  Standard_EXPORT BRepMesh_Edge(
+  BRepMesh_Edge(
     const Standard_Integer         theFirstNode,
     const Standard_Integer         theLastNode,
     const BRepMesh_DegreeOfFreedom theMovability)

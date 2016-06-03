@@ -123,7 +123,7 @@ public:
   Standard_EXPORT void RedrawImmediate (const Handle(V3d_Viewer)& theViewer);
 
   //! Returns true if Presentation Manager is accumulating transient list of presentations to be displayed in immediate mode.
-  Standard_EXPORT Standard_Boolean IsImmediateModeOn() const;
+  Standard_Boolean IsImmediateModeOn() const;
 
   //! Highlights the graphic object thePrsObject in the color theColor.
   //! thePrsObject has the display mode theMode;

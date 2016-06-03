@@ -160,7 +160,7 @@ public:
   //! Ang is the angular value of the rotation in radians.
     gp_Lin2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
-  Standard_EXPORT void Scale (const gp_Pnt2d& P, const Standard_Real S);
+  void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
 
   //! Scales a line. S is the scaling value. Only the

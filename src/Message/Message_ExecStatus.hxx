@@ -39,7 +39,7 @@
  * - Fail flags correspond to cases when algorithm failed to complete
  */
 
-class Standard_EXPORT Message_ExecStatus 
+class Message_ExecStatus
 {
 
  private:

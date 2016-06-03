@@ -77,17 +77,17 @@ public:
   
   //! Creates an object corresponding to the reference
   //! coordinate system (OXYZ).
-  Standard_EXPORT gp_Ax3();
+  gp_Ax3();
   
   //! Creates  a  coordinate  system from a right-handed
   //! coordinate system.
-  Standard_EXPORT gp_Ax3(const gp_Ax2& A);
+  gp_Ax3(const gp_Ax2& A);
   
   //! Creates a  right handed axis placement with the
   //! "Location"  point  P  and  two  directions, N    gives the
   //! "Direction" and Vx gives the "XDirection".
   //! Raises ConstructionError if N and Vx are parallel (same or opposite orientation).
-  Standard_EXPORT gp_Ax3(const gp_Pnt& P, const gp_Dir& N, const gp_Dir& Vx);
+  gp_Ax3(const gp_Pnt& P, const gp_Dir& N, const gp_Dir& Vx);
   
 
   //! Creates an axis placement with the  "Location" point <P>
@@ -95,13 +95,13 @@ public:
   Standard_EXPORT gp_Ax3(const gp_Pnt& P, const gp_Dir& V);
   
   //! Reverses the X direction of <me>.
-  Standard_EXPORT void XReverse();
+  void XReverse();
   
   //! Reverses the Y direction of <me>.
-  Standard_EXPORT void YReverse();
+  void YReverse();
   
   //! Reverses the Z direction of <me>.
-  Standard_EXPORT void ZReverse();
+  void ZReverse();
   
   //! Assigns the origin and "main Direction" of the axis A1 to
   //! this coordinate system, then recomputes its "X Direction" and "Y Direction".
@@ -115,7 +115,7 @@ public:
   //! are parallel (same or opposite orientation) because it is
   //! impossible to calculate the new "XDirection" and the new
   //! "YDirection".
-  Standard_EXPORT void SetAxis (const gp_Ax1& A1);
+  void SetAxis (const gp_Ax1& A1);
   
 
   //! Changes the main direction of this coordinate system,
@@ -127,11 +127,11 @@ public:
   //! Raises ConstructionError if <V< and the previous "XDirection" are parallel
   //! because it is impossible to calculate the new "XDirection"
   //! and the new "YDirection".
-  Standard_EXPORT void SetDirection (const gp_Dir& V);
+  void SetDirection (const gp_Dir& V);
   
 
   //! Changes the "Location" point (origin) of <me>.
-  Standard_EXPORT void SetLocation (const gp_Pnt& P);
+  void SetLocation (const gp_Pnt& P);
   
 
   //! Changes the "Xdirection" of <me>. The main direction
@@ -140,7 +140,7 @@ public:
   //! is computed as follows XDirection = Direction ^ (Vx ^ Direction).
   //! Raises ConstructionError if <Vx> is parallel (same or opposite
   //! orientation) to the main direction of <me>
-  Standard_EXPORT void SetXDirection (const gp_Dir& Vx);
+  void SetXDirection (const gp_Dir& Vx);
   
 
   //! Changes the "Ydirection" of <me>. The main direction is not
@@ -168,7 +168,7 @@ public:
   //! If this coordinate system is right-handed, the result
   //! returned is the same coordinate system. If this
   //! coordinate system is left-handed, the result is reversed.
-  Standard_EXPORT gp_Ax2 Ax2() const;
+  gp_Ax2 Ax2() const;
   
 
   //! Returns the main direction of <me>.
@@ -245,15 +245,15 @@ public:
   //! the "XDirection" and the "YDirection" after transformation.
   Standard_EXPORT gp_Ax3 Mirrored (const gp_Ax2& A2) const;
   
-  Standard_EXPORT void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
+  void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   
 
   //! Rotates an axis placement. <A1> is the axis of the
   //! rotation . Ang is the angular value of the rotation
   //! in radians.
-  Standard_EXPORT gp_Ax3 Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+  gp_Ax3 Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
-  Standard_EXPORT void Scale (const gp_Pnt& P, const Standard_Real S);
+  void Scale (const gp_Pnt& P, const Standard_Real S);
   
 
   //! Applies a scaling transformation on the axis placement.
@@ -263,9 +263,9 @@ public:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  Standard_EXPORT gp_Ax3 Scaled (const gp_Pnt& P, const Standard_Real S) const;
+  gp_Ax3 Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
-  Standard_EXPORT void Transform (const gp_Trsf& T);
+  void Transform (const gp_Trsf& T);
   
 
   //! Transforms an axis placement with a Trsf.
@@ -273,21 +273,21 @@ public:
   //! "YDirection" are transformed with T.  The resulting
   //! main "Direction" of <me> is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  Standard_EXPORT gp_Ax3 Transformed (const gp_Trsf& T) const;
+  gp_Ax3 Transformed (const gp_Trsf& T) const;
   
-  Standard_EXPORT void Translate (const gp_Vec& V);
+  void Translate (const gp_Vec& V);
   
 
   //! Translates an axis plaxement in the direction of the vector
   //! <V>. The magnitude of the translation is the vector's magnitude.
-  Standard_EXPORT gp_Ax3 Translated (const gp_Vec& V) const;
+  gp_Ax3 Translated (const gp_Vec& V) const;
   
-  Standard_EXPORT void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
+  void Translate (const gp_Pnt& P1, const gp_Pnt& P2);
   
 
   //! Translates an axis placement from the point <P1> to the
   //! point <P2>.
-  Standard_EXPORT gp_Ax3 Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+  gp_Ax3 Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
 

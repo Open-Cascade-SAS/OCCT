@@ -41,7 +41,7 @@ public:
     const Handle(NCollection_IncAllocator)& theAllocator);
 
   //! Sets new size of cell for cellfilter equal in both directions.
-  Standard_EXPORT void SetCellSize(const Standard_Real theSize)
+  void SetCellSize(const Standard_Real theSize)
   {
     myCellFilter.Reset(theSize, myAllocator);
     mySelector.Clear();
@@ -50,8 +50,8 @@ public:
   //! Sets new size of cell for cellfilter.
   //! @param theSizeX size for X dimension.
   //! @param theSizeY size for Y dimension.
-  Standard_EXPORT void SetCellSize(const Standard_Real theSizeX,
-                                   const Standard_Real theSizeY)
+  void SetCellSize(const Standard_Real theSizeX,
+                   const Standard_Real theSizeY)
   {
     Standard_Real aCellSizeC[2] = { theSizeX, theSizeY };
     NCollection_Array1<Standard_Real> aCellSize(aCellSizeC[0], 1, 2);
@@ -61,7 +61,7 @@ public:
 
   //! Sets the tolerance to be used for identification of 
   //! coincident vertices equal for both dimensions.
-  Standard_EXPORT void SetTolerance(const Standard_Real theTolerance)
+  void SetTolerance(const Standard_Real theTolerance)
   {
     mySelector.SetTolerance( theTolerance );
     myTolerance[0] = theTolerance;
@@ -72,8 +72,8 @@ public:
   //! coincident vertices.
   //! @param theToleranceX tolerance for X dimension.
   //! @param theToleranceY tolerance for Y dimension.
-  Standard_EXPORT void SetTolerance(const Standard_Real theToleranceX,
-                                    const Standard_Real theToleranceY)
+  void SetTolerance(const Standard_Real theToleranceX,
+                    const Standard_Real theToleranceY)
   {
     mySelector.SetTolerance( theToleranceX, theToleranceY );
     myTolerance[0] = theToleranceX;
@@ -84,8 +84,8 @@ public:
   //! coincident vertices.
   //! @param theToleranceX tolerance for X dimension.
   //! @param theToleranceY tolerance for Y dimension.
-  Standard_EXPORT void GetTolerance(Standard_Real& theToleranceX,
-                                    Standard_Real& theToleranceY)
+  void GetTolerance(Standard_Real& theToleranceX,
+                    Standard_Real& theToleranceY)
   {
     theToleranceX = myTolerance[0];
     theToleranceY = myTolerance[1];
@@ -122,7 +122,7 @@ public:
   }
 
   //! Returns index of the given vertex.
-  Standard_EXPORT Standard_Integer FindIndex(const BRepMesh_Vertex& theVertex)
+  Standard_Integer FindIndex(const BRepMesh_Vertex& theVertex)
   {
     mySelector.SetPoint(theVertex.Coord());
     myCellFilter.Inspect (theVertex.Coord(), mySelector);

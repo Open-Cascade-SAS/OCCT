@@ -31,7 +31,7 @@ public:
 
   //! Constructor.
   //! @param theAllocator memory allocator to be used by internal collections.
-  Standard_EXPORT BRepMesh_VertexInspector (
+  BRepMesh_VertexInspector (
     const Handle(NCollection_IncAllocator)& theAllocator)
     : myResIndices(theAllocator),
       myVertices  (new BRepMesh::VectorOfVertex),
@@ -42,7 +42,7 @@ public:
 
   //! Registers the given vertex.
   //! @param theVertex vertex to be registered.
-  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex& theVertex)
+  Standard_Integer Add(const BRepMesh_Vertex& theVertex)
   {
     if( myDelNodes.IsEmpty() )
     {
@@ -145,7 +145,7 @@ public:
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const Standard_Integer theTargetIndex);
 
   //! Checks indices for equlity.
-  Standard_EXPORT static Standard_Boolean IsEqual(const Standard_Integer theIndex,
+  static Standard_Boolean IsEqual(const Standard_Integer theIndex,
                                                   const Standard_Integer theTargetIndex)
   {
     return (theIndex == theTargetIndex);

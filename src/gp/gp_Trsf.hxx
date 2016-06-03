@@ -197,7 +197,7 @@ public:
   //! Raises ConstructionError  If S is null.
   Standard_EXPORT void SetScaleFactor (const Standard_Real S);
   
-  Standard_EXPORT void SetForm (const gp_TrsfForm P);
+  void SetForm (const gp_TrsfForm P);
   
   //! Sets the coefficients  of the transformation.  The
   //! transformation  of the  point  x,y,z is  the point

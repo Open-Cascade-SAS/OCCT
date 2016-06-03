@@ -63,8 +63,8 @@ public:
   //! Creates a line passing through point P and parallel to
   //! vector V (P and V are, respectively, the origin and
   //! the unit vector of the positioning axis of the line).
-  Standard_EXPORT gp_Lin(const gp_Pnt& P, const gp_Dir& V);
-  
+  gp_Lin(const gp_Pnt& P, const gp_Dir& V);
+
     void Reverse();
   
   //! Reverses the direction of the line.

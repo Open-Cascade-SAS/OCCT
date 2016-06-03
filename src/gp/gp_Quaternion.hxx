@@ -43,32 +43,32 @@ public:
 
   
   //! Creates an identity quaternion
-    gp_Quaternion();
+  gp_Quaternion();
   
   //! Creates quaternion directly from component values
-  Standard_EXPORT gp_Quaternion(const Standard_Real x, const Standard_Real y, const Standard_Real z, const Standard_Real w);
+  gp_Quaternion(const Standard_Real x, const Standard_Real y, const Standard_Real z, const Standard_Real w);
   
   //! Creates copy of another quaternion
-  Standard_EXPORT gp_Quaternion(const gp_Quaternion& theToCopy);
+  gp_Quaternion(const gp_Quaternion& theToCopy);
   
   //! Creates quaternion representing shortest-arc rotation
   //! operator producing vector theVecTo from vector theVecFrom.
-  Standard_EXPORT gp_Quaternion(const gp_Vec& theVecFrom, const gp_Vec& theVecTo);
+  gp_Quaternion(const gp_Vec& theVecFrom, const gp_Vec& theVecTo);
   
   //! Creates quaternion representing shortest-arc rotation
   //! operator producing vector theVecTo from vector theVecFrom.
   //! Additional vector theHelpCrossVec defines preferred direction for
   //! rotation and is used when theVecTo and theVecFrom are directed
   //! oppositely.
-  Standard_EXPORT gp_Quaternion(const gp_Vec& theVecFrom, const gp_Vec& theVecTo, const gp_Vec& theHelpCrossVec);
+  gp_Quaternion(const gp_Vec& theVecFrom, const gp_Vec& theVecTo, const gp_Vec& theHelpCrossVec);
   
   //! Creates quaternion representing rotation on angle
   //! theAngle around vector theAxis
-  Standard_EXPORT gp_Quaternion(const gp_Vec& theAxis, const Standard_Real theAngle);
+  gp_Quaternion(const gp_Vec& theAxis, const Standard_Real theAngle);
   
   //! Creates quaternion from rotation matrix 3*3
   //! (which should be orthonormal skew-symmetric matrix)
-  Standard_EXPORT gp_Quaternion(const gp_Mat& theMat);
+  gp_Quaternion(const gp_Mat& theMat);
   
   //! Simple equal test without precision
   Standard_EXPORT Standard_Boolean IsEqual (const gp_Quaternion& theOther) const;
@@ -109,49 +109,49 @@ public:
   //! Returns Euler angles describing current rotation
   Standard_EXPORT void GetEulerAngles (const gp_EulerSequence theOrder, Standard_Real& theAlpha, Standard_Real& theBeta, Standard_Real& theGamma) const;
   
-  Standard_EXPORT void Set (const Standard_Real x, const Standard_Real y, const Standard_Real z, const Standard_Real w);
+  void Set (const Standard_Real x, const Standard_Real y, const Standard_Real z, const Standard_Real w);
   
-  Standard_EXPORT void Set (const gp_Quaternion& theQuaternion);
+  void Set (const gp_Quaternion& theQuaternion);
   
-  Standard_EXPORT Standard_Real X() const;
+  Standard_Real X() const;
   
-  Standard_EXPORT Standard_Real Y() const;
+  Standard_Real Y() const;
   
-  Standard_EXPORT Standard_Real Z() const;
+  Standard_Real Z() const;
   
-  Standard_EXPORT Standard_Real W() const;
+  Standard_Real W() const;
   
   //! Make identity quaternion (zero-rotation)
-  Standard_EXPORT void SetIdent();
+  void SetIdent();
   
   //! Reverse direction of rotation (conjugate quaternion)
-  Standard_EXPORT void Reverse();
+  void Reverse();
   
   //! Return rotation with reversed direction (conjugated quaternion)
-  Standard_EXPORT gp_Quaternion Reversed() const;
+  gp_Quaternion Reversed() const;
   
   //! Inverts quaternion (both rotation direction and norm)
-  Standard_EXPORT void Invert();
+  void Invert();
   
   //! Return inversed quaternion q^-1
-  Standard_EXPORT gp_Quaternion Inverted() const;
+  gp_Quaternion Inverted() const;
   
   //! Returns square norm of quaternion
-  Standard_EXPORT Standard_Real SquareNorm() const;
+  Standard_Real SquareNorm() const;
   
   //! Returns norm of quaternion
-  Standard_EXPORT Standard_Real Norm() const;
+  Standard_Real Norm() const;
   
   //! Scale all components by quaternion by theScale; note that
   //! rotation is not changed by this operation (except 0-scaling)
-  Standard_EXPORT void Scale (const Standard_Real theScale);
+  void Scale (const Standard_Real theScale);
 void operator *= (const Standard_Real theScale)
 {
   Scale(theScale);
 }
   
   //! Returns scaled quaternion
-  Standard_EXPORT gp_Quaternion Scaled (const Standard_Real theScale) const;
+  gp_Quaternion Scaled (const Standard_Real theScale) const;
 gp_Quaternion operator * (const Standard_Real theScale) const
 {
   return Scaled(theScale);
@@ -168,26 +168,26 @@ gp_Quaternion operator * (const Standard_Real theScale) const
   Standard_EXPORT void Normalize();
   
   //! Returns quaternion scaled so that its norm goes to 1.
-  Standard_EXPORT gp_Quaternion Normalized() const;
+  gp_Quaternion Normalized() const;
   
   //! Returns quaternion with all components negated.
   //! Note that this operation does not affect neither
   //! rotation operator defined by quaternion nor its norm.
-  Standard_EXPORT gp_Quaternion Negated() const;
+  gp_Quaternion Negated() const;
 gp_Quaternion operator -() const
 {
   return Negated();
 }
   
   //! Makes sum of quaternion components; result is "rotations mix"
-  Standard_EXPORT gp_Quaternion Added (const gp_Quaternion& theOther) const;
+  gp_Quaternion Added (const gp_Quaternion& theOther) const;
 gp_Quaternion operator + (const gp_Quaternion& theOther) const
 {
   return Added(theOther);
 }
   
   //! Makes difference of quaternion components; result is "rotations mix"
-  Standard_EXPORT gp_Quaternion Subtracted (const gp_Quaternion& theOther) const;
+  gp_Quaternion Subtracted (const gp_Quaternion& theOther) const;
 gp_Quaternion operator - (const gp_Quaternion& theOther) const
 {
   return Subtracted(theOther);
@@ -199,35 +199,35 @@ gp_Quaternion operator - (const gp_Quaternion& theOther) const
   //! Notices than:
   //! qq' != q'q;
   //! qq^-1 = q;
-  Standard_EXPORT gp_Quaternion Multiplied (const gp_Quaternion& theOther) const;
+  gp_Quaternion Multiplied (const gp_Quaternion& theOther) const;
 gp_Quaternion operator * (const gp_Quaternion& theOther) const
 {
   return Multiplied(theOther);
 }
   
   //! Adds componnets of other quaternion; result is "rotations mix"
-  Standard_EXPORT void Add (const gp_Quaternion& theOther);
+  void Add (const gp_Quaternion& theOther);
 void operator += (const gp_Quaternion& theOther)
 {
   Add(theOther);
 }
   
   //! Subtracts componnets of other quaternion; result is "rotations mix"
-  Standard_EXPORT void Subtract (const gp_Quaternion& theOther);
+  void Subtract (const gp_Quaternion& theOther);
 void operator -= (const gp_Quaternion& theOther)
 {
   Subtract(theOther);
 }
   
   //! Adds rotation by multiplication
-  Standard_EXPORT void Multiply (const gp_Quaternion& theOther);
+  void Multiply (const gp_Quaternion& theOther);
 void operator *= (const gp_Quaternion& theOther)
 {
   Multiply(theOther);
 }
   
   //! Computes inner product / scalar product / Dot
-  Standard_EXPORT Standard_Real Dot (const gp_Quaternion& theOther) const;
+  Standard_Real Dot (const gp_Quaternion& theOther) const;
   
   //! Return rotation angle from -PI to PI
   Standard_EXPORT Standard_Real GetRotationAngle() const;

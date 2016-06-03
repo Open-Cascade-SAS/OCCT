@@ -33,7 +33,7 @@ public:
   //! @param theTolerance tolerance to be used for identification of shot circles.
   //! @param theReservedSize size to be reserved for vector of circles.
   //! @param theAllocator memory allocator to be used by internal collections.
-  Standard_EXPORT BRepMesh_CircleInspector(
+  BRepMesh_CircleInspector(
     const Standard_Real                     theTolerance,
     const Standard_Integer                  theReservedSize,
     const Handle(NCollection_IncAllocator)& theAllocator)
@@ -87,7 +87,7 @@ public:
     const Standard_Integer theTargetIndex);
 
   //! Checks indices for equlity.
-  Standard_EXPORT static Standard_Boolean IsEqual(
+  static Standard_Boolean IsEqual(
     const Standard_Integer theIndex,
     const Standard_Integer theTargetIndex)
   {
