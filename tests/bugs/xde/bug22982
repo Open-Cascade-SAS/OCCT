@@ -1,5 +1,3 @@
-puts "TODO OCC22982 ALL: Error on Record"
-# errors appear during reading source step file
 pload QAcommands
 
 puts "============"

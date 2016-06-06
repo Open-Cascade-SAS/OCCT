@@ -1,4 +1,4 @@
-puts "REQUIRED All: \\*\\*\\*  Error on Record"
+#puts "REQUIRED All: \\*\\*\\*  Error on Record"
 puts "============"
 puts "OCC23153"
 puts "============"

@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: Error on Record"
-puts "TODO OCC12345 ALL: OCC2368: Error during reading attached IGES file"
-
 puts "============"
 puts "OCC2368"
 puts "============"

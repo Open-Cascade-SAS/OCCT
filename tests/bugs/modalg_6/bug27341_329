@@ -1,5 +1,3 @@
-puts "TODO OCC27532 ALL: Error on Record"
-
 puts "============"
 puts "OCC27341"
 puts "============"

@@ -1,5 +1,4 @@
 FAILED /\bFaulty\b/ error
-IGNORE /Error on Record/ message during loading file
 IGNORE /Software error/ message in tpstat
 IGNORE /Syntax error/ message in data c
 IGNORE /Transfer error/ message in tpstat

@@ -178,16 +178,13 @@ void StepData_StepReaderData::SetRecord (const Standard_Integer num,
 	  //themults.SetValue(prev,num);
           themults.Bind(prev,num);
           if(thenametypes.FindKey(thetypes.Value(num)).IsLess(thenametypes.FindKey(thetypes.Value(prev)))) {
-	  //if (thetypes.Value(num).IsLess(thetypes.Value(prev))) 
-
-//  ERREUR : Type complexe pas en ordre alphabetique. On enregistre.
+      //  Warning: components in complex entity are not in alphabetical order.
 	    TCollection_AsciiString errm("Complex Type incorrect : ");
 	    errm.AssignCat(thenametypes.FindKey(thetypes.Value(prev)));
 	    errm.AssignCat(" / ");
 	    errm.AssignCat(thenametypes.FindKey(thetypes.Value(num)));
 	    errm.AssignCat(" ... ");
-	    thecheck->AddFail(errm.ToCString(),"Complex Type incorrect : ");
-//  On Affiche a l ecran, le plus de donnees possibles
+#ifdef OCCT_DEBUG
 	    while (theidents(prev) <= 0) {
 	      prev --;  if (prev <= 0) break;
 	    }
@@ -196,6 +193,8 @@ void StepData_StepReaderData::SetRecord (const Standard_Integer num,
 	      << " -> " << num*100/NbRecords() << " % in File)  ***";
 	    if (prev > 0) sout << "  Ident #" << theidents(prev);
 	    sout << "\n" << errm << endl;
+#endif
+      thecheck->AddWarning(errm.ToCString(),"Complex Type incorrect : ");
 	  }
 	  break;
 	}
