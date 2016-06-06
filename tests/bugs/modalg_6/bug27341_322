@@ -23,12 +23,6 @@ build3d result
 fit
 
 checkprops result -l 6584.94
-
-# 0027526: Excess micro-edge in HLR visualization of a torus
-if { [regexp {Windows} [dversion]] } {
-   checknbshapes result -vertex 819 -edge 410
-} else {
-   checknbshapes result -vertex 818 -edge 409
-}
+checknbshapes result -vertex 774 -edge 387
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

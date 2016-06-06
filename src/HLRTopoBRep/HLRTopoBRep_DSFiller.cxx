@@ -454,6 +454,46 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
       }
     }
   }
+
+  //Correction of internal outlines: unite coinciding vertices
+  const Standard_Real SqTol = tol*tol;
+  TopTools_ListIteratorOfListOfShape itl1(IntL);
+  for (; itl1.More(); itl1.Next())
+  {
+    TopoDS_Edge anIntLine = TopoDS::Edge(itl1.Value());
+    anIntLine.Orientation(TopAbs_FORWARD);
+    TopoDS_Vertex aVer [2];
+    TopExp::Vertices(anIntLine, aVer[0], aVer[1]);
+    TopTools_ListIteratorOfListOfShape itl2 = itl1;
+    for (; itl2.More(); itl2.Next())
+    {
+      TopoDS_Edge anIntLine2 = TopoDS::Edge(itl2.Value());
+      anIntLine2.Orientation(TopAbs_FORWARD);
+      if (anIntLine2.IsSame(anIntLine))
+        continue;
+      TopoDS_Vertex aVer2 [2];
+      TopExp::Vertices(anIntLine2, aVer2[0], aVer2[1]);
+      for (Standard_Integer i = 0; i < 2; i++)
+      {
+        if (i == 1 && aVer[0].IsSame(aVer[1]))
+          continue;
+        gp_Pnt Pnt1 = BRep_Tool::Pnt(aVer[i]);
+        for (Standard_Integer j = 0; j < 2; j++)
+        {
+          if (aVer[i].IsSame(aVer2[j]))
+            continue;
+          gp_Pnt Pnt2 = BRep_Tool::Pnt(aVer2[j]);
+          if (Pnt1.SquareDistance(Pnt2) <= SqTol)
+          {
+            BRep_Builder aBB;
+            aBB.Remove(anIntLine2, aVer2[j]);
+            aVer[i].Orientation((j==0)? TopAbs_FORWARD : TopAbs_REVERSED);
+            aBB.Add(anIntLine2, aVer[i]);
+          }
+        }
+      }
+    }
+  }
 }
 
 //=======================================================================

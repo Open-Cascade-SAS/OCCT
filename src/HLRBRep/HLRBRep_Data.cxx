@@ -1987,7 +1987,7 @@ HLRBRep_Data::Classify (const Standard_Integer E,
     HLRAlgo::EncodeMinMax((Standard_Address)VertMin,
 			  (Standard_Address)VertMax,
 			  (Standard_Address)MinMaxVert);
-
+    /*
 #ifdef OCCT_DEBUG
 	{
 	  Standard_Integer qwe,qwep8,q,q1,q2;
@@ -2027,6 +2027,7 @@ HLRBRep_Data::Classify (const Standard_Integer E,
 	  cout<<endl;
 	}
  #endif
+    */
 
     if (((MaxFace1 - MinVert1) & 0x80008000) != 0 ||
 	((MaxVert1 - MinFace1) & 0x80008000) != 0 ||
@@ -2109,7 +2110,9 @@ HLRBRep_Data::Classify (const Standard_Integer E,
 	    
 	    do {
 	      gp_Pnt2d pnt2d(u,v);
-	      if (myClassifier->Classify(pnt2d,0.0)!=TopAbs_OUT) {
+	      if (myClassifier->Classify(pnt2d,Precision::PConfusion())
+                  != TopAbs_OUT)
+              {
 		InsideRestriction = Standard_True;
 		state = TopAbs_IN;
 		Level++;

@@ -11,7 +11,7 @@ pload QAcommands
 
 testreadstep [locate_data_file bug27341_conboom.stp] a
 
-set viewname "right"
+set viewname "back"
 
 smallview
 top
@@ -22,7 +22,7 @@ build3d result
 
 fit
 
-checkprops result -l 23600.7
-checknbshapes result -vertex 174 -edge 87
+checkprops result -l 48596.2
+checknbshapes result -vertex 312 -edge 156
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

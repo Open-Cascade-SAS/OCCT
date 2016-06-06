@@ -20,15 +20,15 @@ compound vl v1l vnl vol vil result
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 167
- EDGE      : 84
+ VERTEX    : 93
+ EDGE      : 47
  WIRE      : 0
  FACE      : 0
  SHELL     : 0
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 1
- SHAPE     : 252
+ SHAPE     : 141
 "
 
 checknbshapes result -ref ${nbshapes_expected} -t -m "HLRToShape"
