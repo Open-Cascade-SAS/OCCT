@@ -12,6 +12,7 @@ mkface face p 0 100 0 100
 smallview
 donly face
 
+setflags face locked
 nurbsconvert r face
 mksurface s r
 

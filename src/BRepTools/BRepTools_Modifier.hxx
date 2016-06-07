@@ -22,17 +22,26 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <Standard_Boolean.hxx>
 
 #include <Message_ProgressIndicator.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <TopLoc_Location.hxx>
 
 class Standard_NullObject;
 class Standard_NoSuchObject;
 class TopoDS_Shape;
 class BRepTools_Modification;
 class Message_ProgressIndicator;
-
+class Geom_Curve;
+class Geom_Surface;
 
 //! Performs geometric modifications on a shape.
 class BRepTools_Modifier 
@@ -40,10 +49,9 @@ class BRepTools_Modifier
 public:
 
   DEFINE_STANDARD_ALLOC
-
   
   //! Creates an empty Modifier.
-  Standard_EXPORT BRepTools_Modifier();
+  Standard_EXPORT BRepTools_Modifier(Standard_Boolean theMutableInput = Standard_False);
   
   //! Creates a modifier on the shape <S>.
   Standard_EXPORT BRepTools_Modifier(const TopoDS_Shape& S);
@@ -60,32 +68,72 @@ public:
   
   //! Returns Standard_True if the modification has
   //! been computed successfully.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const;
+
+  //! Returns the current mutable input state
+  Standard_EXPORT Standard_Boolean IsMutableInput() const;
+
+  //! Sets the mutable input state
+  //! If true then the input (original) shape can be modified 
+  //! during modification process
+  Standard_EXPORT void SetMutableInput(Standard_Boolean theMutableInput);
+
   //! Returns the modified shape corresponding to <S>.
-    const TopoDS_Shape& ModifiedShape (const TopoDS_Shape& S) const;
-
-
-
+  const TopoDS_Shape& ModifiedShape (const TopoDS_Shape& S) const;
+  
 
 protected:
-
-
-
+  
 
 
 private:
 
-  
+  struct NewCurveInfo
+  {
+    Handle(Geom_Curve) myCurve;
+    TopLoc_Location myLoc;
+    Standard_Real myToler;
+  };
+
+  struct NewSurfaceInfo
+  {
+    Handle(Geom_Surface) mySurface;
+    TopLoc_Location myLoc;
+    Standard_Real myToler;
+    Standard_Boolean myRevWires;
+    Standard_Boolean myRevFace;
+  };
+
   Standard_EXPORT void Put (const TopoDS_Shape& S);
   
-  Standard_EXPORT Standard_Boolean Rebuild (const TopoDS_Shape& S, const Handle(BRepTools_Modification)& M, const Handle(Message_ProgressIndicator)& aProgress = NULL);
+  Standard_EXPORT Standard_Boolean Rebuild (const TopoDS_Shape& S,
+                                            const Handle(BRepTools_Modification)& M,
+                                            Standard_Boolean& theNewGeom,
+                                            const Handle(Message_ProgressIndicator)& aProgress = NULL);
 
+  Standard_EXPORT void CreateNewVertices(
+    const TopTools_IndexedDataMapOfShapeListOfShape& theMVE, 
+    const Handle(BRepTools_Modification)& M);
+
+  Standard_EXPORT void FillNewCurveInfo(
+    const TopTools_IndexedDataMapOfShapeListOfShape& theMEF, 
+    const Handle(BRepTools_Modification)& M);
+
+  Standard_EXPORT void FillNewSurfaceInfo(const Handle(BRepTools_Modification)& M);
+
+  Standard_EXPORT void CreateOtherVertices(
+    const TopTools_IndexedDataMapOfShapeListOfShape& theMVE, 
+    const TopTools_IndexedDataMapOfShapeListOfShape& theMEF, 
+    const Handle(BRepTools_Modification)& M);
 
   TopTools_DataMapOfShapeShape myMap;
   TopoDS_Shape myShape;
   Standard_Boolean myDone;
-
+  NCollection_DataMap<TopoDS_Edge, NewCurveInfo, TopTools_ShapeMapHasher> myNCInfo;
+  NCollection_DataMap<TopoDS_Face, NewSurfaceInfo, TopTools_ShapeMapHasher> myNSInfo;
+  TopTools_MapOfShape myNonUpdFace;
+  TopTools_MapOfShape myHasNewGeom;
+  Standard_Boolean myMutableInput;
 
 };
 

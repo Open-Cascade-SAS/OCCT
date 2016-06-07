@@ -12,6 +12,7 @@ pload XDE
 
 stepread [locate_data_file OCC623.step] a *
 
+setflags a_1 locked
 dchrono h reset
 dchrono h start
 nurbsconvert result a_1

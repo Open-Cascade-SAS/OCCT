@@ -61,7 +61,8 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier (const TopoDS_Shape &S,
                                                       const Handle(ShapeProcess_ShapeContext)& context,
                                                       const Handle(BRepTools_Modification) &M,
                                                       TopTools_DataMapOfShapeShape &map,
-                                                      const Handle(ShapeExtend_MsgRegistrator) &msg)
+                                                      const Handle(ShapeExtend_MsgRegistrator) &msg,
+                                                      Standard_Boolean theMutableInput)
 {
   // protect against INTERNAL/EXTERNAL shapes
   TopoDS_Shape SF = S.Oriented(TopAbs_FORWARD);
@@ -81,7 +82,7 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier (const TopoDS_Shape &S,
 	res = map.Find ( shape ).Oriented ( shape.Orientation() );
 
       else {
-	res = ApplyModifier (shape, context, M, map );
+	res = ApplyModifier (shape, context, M, map, 0, theMutableInput );
 	map.Bind ( shape, res );
       }
       if ( ! res.IsSame ( shape ) ) locModified = Standard_True;
@@ -95,7 +96,9 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier (const TopoDS_Shape &S,
   }
 
   // Modify the shape
-  BRepTools_Modifier MD(SF,M);
+  BRepTools_Modifier MD(SF);
+  MD.SetMutableInput(theMutableInput);
+  MD.Perform(M);
   context->RecordModification ( SF, MD, msg );
   return MD.ModifiedShape(SF).Oriented(S.Orientation());
 }
@@ -118,7 +121,7 @@ static Standard_Boolean directfaces (const Handle(ShapeProcess_Context)& context
   Handle(ShapeCustom_DirectModification) DM = new ShapeCustom_DirectModification;
   DM->SetMsgRegistrator( msg );
   TopTools_DataMapOfShapeShape map;
-  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, DM, map, msg );
+  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, DM, map,  msg, Standard_True );
   ctx->RecordModification ( map, msg );
   ctx->SetResult ( res );
   return Standard_True;
@@ -271,7 +274,7 @@ static Standard_Boolean bsplinerestriction (const Handle(ShapeProcess_Context)& 
 					 aMaxDeg, aMaxSeg, ModeDeg, Rational, aParameters );
   LD->SetMsgRegistrator( msg );
   TopTools_DataMapOfShapeShape map;
-  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, LD, map, msg );
+  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, LD, map,  msg, Standard_True );
   ctx->RecordModification ( map, msg );
   ctx->SetResult ( res );
   return Standard_True;
@@ -295,7 +298,7 @@ static Standard_Boolean torevol (const Handle(ShapeProcess_Context)& context)
   Handle(ShapeCustom_ConvertToRevolution) CR = new ShapeCustom_ConvertToRevolution();
   CR->SetMsgRegistrator( msg );
   TopTools_DataMapOfShapeShape map;
-  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, CR, map, msg );
+  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, CR, map,  msg, Standard_True );
   ctx->RecordModification ( map, msg );
   ctx->SetResult ( res );
   return Standard_True;
@@ -319,7 +322,7 @@ static Standard_Boolean swepttoelem (const Handle(ShapeProcess_Context)& context
   Handle(ShapeCustom_SweptToElementary) SE = new ShapeCustom_SweptToElementary();
   SE->SetMsgRegistrator( msg );
   TopTools_DataMapOfShapeShape map;
-  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, SE, map, msg );
+  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, SE, map, msg, Standard_True  );
   ctx->RecordModification ( map, msg );
   ctx->SetResult ( res );
   return Standard_True;
@@ -415,7 +418,7 @@ static Standard_Boolean converttobspline (const Handle(ShapeProcess_Context)& co
   CBspl->SetMsgRegistrator( msg );
     
   TopTools_DataMapOfShapeShape map;
-  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier( ctx->Result(), ctx, CBspl, map, msg );
+  TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier( ctx->Result(), ctx, CBspl, map,  msg, Standard_True );
   ctx->RecordModification ( map, msg );
   ctx->SetResult ( res );
   return Standard_True;

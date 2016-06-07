@@ -8,6 +8,7 @@ puts ""
 
 smallview
 restore [locate_data_file OCC25976-copiedFace.brep] f
+setflags f locked
 nurbsconvert r f
 fit
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

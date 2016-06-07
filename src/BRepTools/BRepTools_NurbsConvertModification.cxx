@@ -662,6 +662,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewParameter
     Standard_Real& P, 
     Standard_Real& Tol)
 {
+  Tol =  BRep_Tool::Tolerance(V);
   if(BRep_Tool::Degenerated(E))
     return Standard_False;
   Standard_Real f, l, param = BRep_Tool::Parameter(V,E);
