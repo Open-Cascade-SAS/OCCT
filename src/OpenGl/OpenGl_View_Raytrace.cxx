@@ -2409,7 +2409,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Standard_Integer        
 
   theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
-  if (myRenderParams.IsAntialiasingEnabled)
+  if (myRenderParams.IsAntialiasingEnabled && !myRenderParams.IsGlobalIlluminationEnabled)
   {
     glDepthMask (GL_FALSE);
 
