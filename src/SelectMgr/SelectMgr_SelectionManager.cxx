@@ -649,6 +649,28 @@ void SelectMgr_SelectionManager::rebuildSelectionStructures (const Handle(Select
 }
 
 //==================================================
+// Function: recomputeSelectionMode
+// Purpose :
+//==================================================
+void SelectMgr_SelectionManager::recomputeSelectionMode (const Handle(SelectMgr_SelectableObject)& theObject,
+                                                         const Handle(SelectMgr_Selection)& theSelection,
+                                                         const Standard_Integer theMode)
+{
+  theSelection->UpdateStatus (SelectMgr_TOU_Full);
+
+  for (TColStd_MapIteratorOfMapOfTransient aSelectorIter (mySelectors); aSelectorIter.More(); aSelectorIter.Next())
+  {
+    Handle(SelectMgr_ViewerSelector) aCurSelector = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key());
+
+    ClearSelectionStructures (theObject, theMode, aCurSelector);
+    theObject->RecomputePrimitives (theMode);
+    RestoreSelectionStructures (theObject, theMode, aCurSelector);
+    theSelection->UpdateStatus (SelectMgr_TOU_None);
+    theSelection->UpdateBVHStatus (SelectMgr_TBU_None);
+  }
+}
+
+//==================================================
 // Function: Update
 // Purpose :
 //==================================================
@@ -686,24 +708,22 @@ void SelectMgr_SelectionManager::RecomputeSelection (const Handle(SelectMgr_Sele
   if (!(myGlobal.Contains (theObject) || myLocal.IsBound (theObject)))
     return;
 
-  for(theObject->Init(); theObject->More(); theObject->Next())
+  if (theMode == -1)
   {
-    const Handle(SelectMgr_Selection)& aSelection = theObject->CurrentSelection();
-    aSelection->UpdateStatus (SelectMgr_TOU_Full);
-    Standard_Integer aSelMode = aSelection->Mode();
-
-    for (TColStd_MapIteratorOfMapOfTransient aSelectorIter (mySelectors); aSelectorIter.More(); aSelectorIter.Next())
+    for (theObject->Init(); theObject->More(); theObject->Next())
     {
-      Handle(SelectMgr_ViewerSelector) aCurSelector (Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key()));
-      if (aCurSelector->Status (aSelection) == SelectMgr_SOS_Activated)
-      {
-          ClearSelectionStructures (theObject, aSelMode, aCurSelector);
-          theObject->RecomputePrimitives(aSelMode);
-          RestoreSelectionStructures (theObject, aSelMode, aCurSelector);
-          aSelection->UpdateStatus (SelectMgr_TOU_None);
-          aSelection->UpdateBVHStatus (SelectMgr_TBU_None);
-      }
+      const Handle(SelectMgr_Selection)& aSelection = theObject->CurrentSelection();
+      Standard_Integer aSelMode = aSelection->Mode();
+      recomputeSelectionMode (theObject, aSelection, aSelMode);
     }
+  }
+  else
+  {
+    if (!theObject->HasSelection (theMode))
+      return;
+
+    const Handle(SelectMgr_Selection)& aSelection = theObject->Selection (theMode);
+    recomputeSelectionMode (theObject, aSelection, theMode);
   }
 }
 

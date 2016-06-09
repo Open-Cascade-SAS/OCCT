@@ -129,7 +129,10 @@ public:
 
 protected:
 
-
+  //! Recomputes given selection mode and updates BVHs in all viewer selectors
+  Standard_EXPORT void recomputeSelectionMode (const Handle(SelectMgr_SelectableObject)& theObject,
+                                               const Handle(SelectMgr_Selection)& theSelection,
+                                               const Standard_Integer theMode);
 
 
 private:

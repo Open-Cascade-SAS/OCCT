@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC27523"
+puts "============"
+puts ""
+####################################################################################
+# Visualization - selection owner contains obsolete shape
+####################################################################################
+
+
+pload QAcommands VISUALIZATION
+
+vinit
+OCC27523
+
+checkview -screenshot -3d -path ${imagedir}/${casename}.png

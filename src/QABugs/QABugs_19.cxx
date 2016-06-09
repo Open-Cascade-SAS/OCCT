@@ -54,6 +54,7 @@
 #include <TopExp_Explorer.hxx>
 
 #include <SelectMgr_Filter.hxx>
+#include <StdSelect_BRepOwner.hxx>
 
 #include <Standard_Version.hxx>
 
@@ -5160,6 +5161,78 @@ static Standard_Integer OCC27318 (Draw_Interpretor& /*theDI*/, Standard_Integer 
   return 0;
 }
 
+//========================================================================
+//function : OCC27523
+//purpose  : Checks recomputation of deactivated selection mode after object's redisplaying
+//========================================================================
+static Standard_Integer OCC27523 (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 1)
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if(anAISContext.IsNull())
+  {
+    std::cerr << "Error: no active view. Please call vinit.\n";
+    return 1;
+  }
+
+  gp_Pnt aStart (100, 100, 100);
+  gp_Pnt anEnd (300, 400, 600);
+  BRepBuilderAPI_MakeEdge anEdgeBuilder (aStart, anEnd);
+  TopoDS_Edge anEdge = anEdgeBuilder.Edge();
+  Handle(AIS_InteractiveObject) aTestAISShape = new AIS_Shape (anEdge);
+  anAISContext->Display (aTestAISShape);
+
+  // activate it in selection modes
+  TColStd_SequenceOfInteger aModes;
+  aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_VERTEX));
+
+  anAISContext->OpenLocalContext();
+  anAISContext->Deactivate (aTestAISShape);
+  anAISContext->Load (aTestAISShape, -1, true);
+  anAISContext->Activate (aTestAISShape, 0);
+  anAISContext->Deactivate (aTestAISShape, 0);
+
+  // activate in vertices mode
+  for (Standard_Integer anIt = 1; anIt <= aModes.Length(); ++anIt)
+  {
+    anAISContext->Activate (aTestAISShape, aModes (anIt));
+  }
+
+  TopoDS_Shape aVertexShape = BRepBuilderAPI_MakeVertex (gp_Pnt (75, 0, 0));
+  TopAbs_ShapeEnum aVertexShapeType = aVertexShape.ShapeType();
+  Handle(AIS_Shape)::DownCast (aTestAISShape)->Set (aVertexShape);
+  aTestAISShape->Redisplay();
+
+  anAISContext->AddOrRemoveSelected (aTestAISShape);
+
+  bool aValidShapeType = false;
+  for (anAISContext->InitSelected(); anAISContext->MoreSelected(); anAISContext->NextSelected())
+  {
+    Handle(SelectMgr_EntityOwner) anOwner = anAISContext->SelectedOwner();
+    Handle(StdSelect_BRepOwner) aBRO = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
+    if (!aBRO.IsNull() && aBRO->HasShape())
+    {
+      TopoDS_Shape aShape = aBRO->Shape();
+
+      aValidShapeType = aShape.ShapeType() == aVertexShapeType;
+    }
+  }
+
+  if (!aValidShapeType)
+  {
+    std::cerr << "Error: shape type is invalid.\n";
+    return 1;
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -5277,6 +5350,9 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27318",
                    "OCC27318: Creates a box that is not listed in map of AIS objects of ViewerTest",
                    __FILE__, OCC27318, group);
+  theCommands.Add ("OCC27523",
+                   "OCC27523: Checks recomputation of deactivated selection mode after object's redisplaying",
+                   __FILE__, OCC27523, group);
 
   return;
 }
