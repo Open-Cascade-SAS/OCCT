@@ -95,6 +95,9 @@ private:
   //! to create a new one if doesn't exist yet)
   //! (ssv; 13.11.2010)
   Standard_EXPORT Handle(StepShape_NonManifoldSurfaceShapeRepresentation) getNMSSRForGroup (const Handle(TopTools_HSequenceOfShape)& shapeGroup, const Handle(Transfer_FinderProcess)& FP, Standard_Boolean& isNMSSRCreated) const;
+  
+  //! bind already written shared faces to STEP entity for non-manifold
+  Standard_EXPORT void mergeInfoForNM(const Handle(Transfer_FinderProcess)& theFP, const Handle(Standard_Transient) &theInfo) const;
 
   Standard_Integer mygroup;
   Standard_Real mytoler;
