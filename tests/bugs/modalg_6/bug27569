@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC27569"
+puts "============"
+puts ""
+######################################################
+# [Regression in 6.9.0] Projecting a curve hangs
+######################################################
+
+pload QAcommands
+
+restore [locate_data_file bug27569.brep] aS
+explode aS
+mkcurve c aS_1
+mksurface s aS_2
+
+# Performance check
+chrono h reset; chrono h start
+OCC24008 c s;
+chrono h stop; set q [dchrono h show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full aTime
+
+set MAX_TIME 1.0
+
+if { $aTime > ${MAX_TIME} } {
+    puts "Elapsed time is more than ${MAX_TIME} seconds - Faulty"
+} else {
+    puts "Elapsed time is less than ${MAX_TIME} seconds - OK"
+}

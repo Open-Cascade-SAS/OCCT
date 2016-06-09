@@ -289,7 +289,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
     }
 
     GeomAdaptor_Curve aC3DAdaptor(c3d);
-
+    Standard_Real aMinParSpeed = Precision::Infinite(); // Minimal parameterization speed.
     for(; anIdx <= bspl->NbKnots() && aFirstParam < Last; anIdx++)
     {
       // Fill current knot interval.
@@ -320,8 +320,12 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
       {
         Standard_Real aParam = aFirstParam + aStep * anIntIdx;
         aC3DAdaptor.D0 (aParam, p3d2);
-        aLength3d += p3d2.Distance(p3d1);
+        const Standard_Real aDist = p3d2.Distance(p3d1);
+
+        aLength3d += aDist;
         p3d1 = p3d2;
+
+        aMinParSpeed = Min(aMinParSpeed, aDist / aStep);
       }
       const Standard_Real aCoeff = aLength3d / (aLastParam - aFirstParam);
       if (Abs(aCoeff) > gp::Resolution())
@@ -337,7 +341,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
     }
 
     const Standard_Real aMaxQuotientCoeff = 1500.0;
-    if (anEvenlyCoeff > aMaxQuotientCoeff)
+    if (anEvenlyCoeff > aMaxQuotientCoeff &&
+        aMinParSpeed > Precision::Confusion() )
     {
       PerformByProjLib(c3d, First, Last, c2d);
       // PerformByProjLib fail detection:
