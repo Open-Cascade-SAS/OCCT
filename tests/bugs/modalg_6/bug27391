@@ -1,0 +1,10 @@
+puts "============"
+puts "OCC27391"
+puts "============"
+puts ""
+######################################################
+# BRepLib::EnsureNormalConsistency() raises exception in case of asynchronious PolygonOnTriangulation problem
+######################################################
+
+restore [locate_data_file bug27391_Ficomirrors_ExportBinMoldflow.brep] a
+correctnormals a

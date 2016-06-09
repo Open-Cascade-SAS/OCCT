@@ -1899,6 +1899,10 @@ Standard_Boolean BRepLib::
     TShort_Array1OfShortReal& aNormArr1 = aPT1->ChangeNormals();
     TShort_Array1OfShortReal& aNormArr2 = aPT2->ChangeNormals();
 
+    if (aPTEF1->Nodes().Lower() != aPTEF2->Nodes().Lower() || 
+        aPTEF1->Nodes().Upper() != aPTEF2->Nodes().Upper()) 
+      continue; 
+
     for(Standard_Integer anEdgNode = aPTEF1->Nodes().Lower();
                          anEdgNode <= aPTEF1->Nodes().Upper(); anEdgNode++)
     {
