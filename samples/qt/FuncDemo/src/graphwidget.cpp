@@ -200,7 +200,7 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
     gradient.setColorAt(0, Qt::white);
     gradient.setColorAt(1, Qt::lightGray);
-    painter->fillRect(rect.intersect(sceneRect), gradient);
+    painter->fillRect(rect.intersected(sceneRect), gradient);
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(sceneRect);
 }

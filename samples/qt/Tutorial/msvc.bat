@@ -6,15 +6,11 @@ rem Setup environment
 call "%~dp0env.bat" %1 %2 %3
 
 rem Define path to project file
-set "PRJFILE=%~dp0Tutorial-%VCVER%.sln"
+set "PRJFILE=%~dp0Tutorial.sln"
 
 set "VisualStudioExpressName=VCExpress"
 
-if /I "%VCVER%" == "vc8" (
-  set "DevEnvDir=%VS80COMNTOOLS%..\IDE"
-) else if /I "%VCVER%" == "vc9" (
-  set "DevEnvDir=%VS90COMNTOOLS%..\IDE"
-) else if /I "%VCVER%" == "vc10" (
+if /I "%VCVER%" == "vc10" (
   set "DevEnvDir=%VS100COMNTOOLS%..\IDE"
 ) else if /I "%VCVER%" == "vc11" (
   set "DevEnvDir=%VS110COMNTOOLS%..\IDE"
@@ -23,6 +19,9 @@ if /I "%VCVER%" == "vc8" (
   set "VisualStudioExpressName=WDExpress"
 ) else if /I "%VCVER%" == "vc12" (
   set "DevEnvDir=%VS120COMNTOOLS%..\IDE"
+  set "VisualStudioExpressName=WDExpress"
+) else if /I "%VCVER%" == "vc14" (
+  set "DevEnvDir=%VS140COMNTOOLS%..\IDE"
   set "VisualStudioExpressName=WDExpress"
 ) else (
   echo Error: wrong VS identifier

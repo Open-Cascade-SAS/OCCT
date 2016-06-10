@@ -73,7 +73,7 @@ copy_res.CONFIG += no_link target_predeps
 win32: copy_res.commands = type ${QMAKE_FILE_IN} > $${RES_DIR}/${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
 unix:  copy_res.commands = cp -f ${QMAKE_FILE_IN} $${RES_DIR}
 QMAKE_EXTRA_COMPILERS += copy_res
-#QMAKE_CXXFLAGS += /wd4996
+QMAKE_EXTRA_COMPILERS += copy_res
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets

@@ -6,7 +6,7 @@ rem Setup environment
 call "%~dp0env.bat" %1 %2 %3
 
 rem Define path to project file
-set "PRJFILE=%~dp0IESample-%VCVER%.sln"
+set "PRJFILE=%~dp0IESample.sln"
 
 set "VisualStudioExpressName=VCExpress"
 

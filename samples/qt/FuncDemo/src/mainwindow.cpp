@@ -20,6 +20,10 @@
 ****************************************************************************/
 
 #include <QtGui>
+#include <QtGlobal>
+#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
+#include <QtWidgets>
+#endif
 
 #include "mainwindow.h"
 #include "graphwidget.h"
@@ -192,7 +196,7 @@ void MainWindow::compute()
 void MainWindow::nbThreads()
 {
     bool ok;
-    int nb = QInputDialog::getInteger(this, tr("Number of threads"), tr("(1 - 4): "), 
+    int nb = QInputDialog::getInt(this, tr("Number of threads"), tr("(1 - 4): "),
                                       graph->getNbThreads(), 1, 4, 1, &ok);
     if (ok)
         graph->setNbThreads(nb);
