@@ -177,9 +177,9 @@ std::string ViewerTest_CmdParser::Arg (const std::string& theOptionName, Standar
 //===============================================================================================
 Graphic3d_Vec3 ViewerTest_CmdParser::ArgVec3f (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return Graphic3d_Vec3 (static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str())),
-                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str())),
-                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str())));
+  return Graphic3d_Vec3 (static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex    ).c_str())),
+                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex + 1).c_str())),
+                         static_cast<Standard_ShortReal> (Draw::Atof (Arg (theOptionName, theArgumentIndex + 2).c_str())));
 }
 
 //===============================================================================================
@@ -188,9 +188,9 @@ Graphic3d_Vec3 ViewerTest_CmdParser::ArgVec3f (const std::string& theOptionName,
 //===============================================================================================
 Graphic3d_Vec3d ViewerTest_CmdParser::ArgVec3d (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return Graphic3d_Vec3d ( Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
-                           Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
-                           Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()));
+  return Graphic3d_Vec3d ( Draw::Atof (Arg (theOptionName, theArgumentIndex    ).c_str()),
+                           Draw::Atof (Arg (theOptionName, theArgumentIndex + 1).c_str()),
+                           Draw::Atof (Arg (theOptionName, theArgumentIndex + 2).c_str()));
 }
 
 //===============================================================================================
@@ -199,9 +199,9 @@ Graphic3d_Vec3d ViewerTest_CmdParser::ArgVec3d (const std::string& theOptionName
 //===============================================================================================
 gp_Vec ViewerTest_CmdParser::ArgVec (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return gp_Vec ( Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
-                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
-                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()));
+  return gp_Vec ( Draw::Atof (Arg (theOptionName, theArgumentIndex    ).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex + 1).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex + 2).c_str()));
 }
 
 //===============================================================================================
@@ -210,9 +210,9 @@ gp_Vec ViewerTest_CmdParser::ArgVec (const std::string& theOptionName, Standard_
 //===============================================================================================
 gp_Pnt ViewerTest_CmdParser::ArgPnt (const std::string& theOptionName, Standard_Integer theArgumentIndex)
 {
-  return gp_Pnt ( Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
-                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()),
-                  Draw::Atof (Arg (theOptionName, theArgumentIndex).c_str()));
+  return gp_Pnt ( Draw::Atof (Arg (theOptionName, theArgumentIndex    ).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex + 1).c_str()),
+                  Draw::Atof (Arg (theOptionName, theArgumentIndex + 2).c_str()));
 }
 
 //===============================================================================================
