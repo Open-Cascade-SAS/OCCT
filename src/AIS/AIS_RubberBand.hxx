@@ -22,6 +22,8 @@
 #include <Graphic3d_Vec2.hxx>
 #include <NCollection_Sequence.hxx>
 
+DEFINE_STANDARD_HANDLE(AIS_RubberBand, AIS_InteractiveObject)
+
 //! Presentation for drawing rubber band selection.
 //! It supports rectangle and polygonal selection.
 //! It is constructed in 2d overlay.
@@ -130,8 +132,8 @@ protected:
                                         const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Does not fill selection primitives for rubber band.
-  void virtual ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
-                                         const Standard_Integer /*aMode*/) Standard_OVERRIDE { };
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
+                                 const Standard_Integer /*aMode*/) Standard_OVERRIDE { };
 
   //! Fills triangles primitive array for rubber band filling.
   //! It uses Delaunay triangulation.
