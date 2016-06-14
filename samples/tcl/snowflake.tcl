@@ -86,7 +86,6 @@ bfuse w w w5
 shape wsh Sh
 foreach f [explode w f] {add $f wsh}
 renamevar wsh w
-save w w.brep
 unifysamedom r w
 
 # keep only wires in compound
