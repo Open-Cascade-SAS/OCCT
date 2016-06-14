@@ -60,7 +60,19 @@ public:
   
   Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& ShaderProgram() const;
 
+  //! Check for equality with another line aspect.
+  bool IsEqual (const Graphic3d_AspectLine3d& theOther)
+  {
+    if (this == &theOther)
+    {
+      return true;
+    }
 
+    return MyShaderProgram == theOther.MyShaderProgram
+        && MyType  == theOther.MyType
+        && MyColor == theOther.MyColor
+        && MyWidth == theOther.MyWidth;
+  }
 
 
   DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectLine3d,Aspect_AspectLine)

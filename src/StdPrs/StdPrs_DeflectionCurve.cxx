@@ -285,25 +285,26 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
                                   const Handle (Prs3d_Drawer)&       aDrawer,
                                   const Standard_Boolean theToDrawCurve)
 {
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
+  Handle(Graphic3d_Group) aGroup;
+  if (theToDrawCurve)
+  {
+    aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+    aGroup->SetPrimitivesAspect (aDrawer->LineAspect()->Aspect());
+  }
 
   Standard_Real V1, V2;
   if (FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
   {
     TColgp_SequenceOfPnt Points;
-    Handle(Graphic3d_Group) aGroup;
-    if (theToDrawCurve)
-    {
-      aGroup = Prs3d_Root::CurrentGroup (aPresentation);
-    }
-
     drawCurve(aCurve,
               aGroup,
               GetDeflection(aCurve, V1, V2, aDrawer),
               aDrawer->DeviationAngle(),
               V1, V2, Points);
 
-    if (aDrawer->LineArrowDraw()) {
+    if (aDrawer->LineArrowDraw()
+    && !aGroup.IsNull())
+    {
       gp_Pnt Location;
       gp_Vec Direction;
       aCurve.D1(V2, Location,Direction);
@@ -348,7 +349,9 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
             aDrawer->DeviationAngle(),
             V1 , V2, Points);
 
-  if (aDrawer->LineArrowDraw()) {
+  if (aDrawer->LineArrowDraw()
+  && !aGroup.IsNull())
+  {
     gp_Pnt Location;
     gp_Vec Direction;
     aCurve.D1(V2, Location,Direction);

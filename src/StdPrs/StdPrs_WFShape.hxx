@@ -19,6 +19,7 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
+#include <Prs3d_NListOfSequenceOfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
@@ -39,16 +40,13 @@ public:
 private:
 
   //! Compute edge presentations for a shape.
-  //! @param thePresentation [in] the presentation.
   //! @param theEdges [in] the list of edges.
-  //! @param theAspect [in] the edge drawing aspect.
   //! @param theDrawer [in] the drawer settings.
   //! @param theShapeDeflection [in] the deflection for the wireframe shape.
-  static void addEdges (const Handle (Prs3d_Presentation)& thePresentation,
-                        const TopTools_ListOfShape&        theEdges,
-                        const Handle (Prs3d_LineAspect)&   theAspect,
-                        const Handle (Prs3d_Drawer)&       theDrawer,
-                        const Standard_Real                theShapeDeflection);
+  static void addEdges (const TopTools_ListOfShape& theEdges,
+                        const Handle(Prs3d_Drawer)& theDrawer,
+                        const Standard_Real         theShapeDeflection,
+                        Prs3d_NListOfSequenceOfPnt& thePolylines);
 
   //! Compute free and boundary edges on a triangulation of a face.
   //! @param thePresentation [in] the presentation.

@@ -474,7 +474,7 @@ const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::UIsoAspect()
     }
     if (myUIsoAspect.IsNull())
     {
-      myUIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1);
+      myUIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
     }
   }
   return myUIsoAspect;
@@ -506,7 +506,7 @@ const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::VIsoAspect()
     }
     if (myVIsoAspect.IsNull())
     {
-      myVIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1);
+      myVIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
     }
   }
   return myVIsoAspect;
@@ -827,7 +827,7 @@ const Handle(Prs3d_LineAspect)& Prs3d_Drawer::HiddenLineAspect()
     }
     if (myHiddenLineAspect.IsNull())
     {
-      myHiddenLineAspect = new Prs3d_LineAspect (Quantity_NOC_YELLOW, Aspect_TOL_DASH, 0.5);
+      myHiddenLineAspect = new Prs3d_LineAspect (Quantity_NOC_YELLOW, Aspect_TOL_DASH, 1.0);
     }
   }
   return myHiddenLineAspect;

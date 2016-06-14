@@ -81,7 +81,7 @@ protected:
 
 
 
-private:
+protected:
 
 
   Quantity_Color MyColor;
