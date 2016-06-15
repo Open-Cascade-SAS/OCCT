@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC27568"
+puts "============"
+puts ""
+######################################################
+# Exception is thrown when a degenerated edge is added to a wire
+######################################################
+
+restore [locate_data_file bug27568_curves.brep] c
+
+explode c
+
+wire result c_1 c_2
+
+checknbshapes result -vertex 2 -edge 2 -wire 1
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${casename}.png

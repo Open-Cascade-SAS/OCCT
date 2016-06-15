@@ -179,6 +179,7 @@ const Handle(Geom_Curve)&  BRep_Tool::Curve(const TopoDS_Edge& E,
     itcr.Next();
   }
   L.Identity();
+  First = Last = 0.;
   return nullCurve;
 }
 
@@ -346,6 +347,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
 
     if (C3d.IsNull())
     {
+      First = Last = 0.;
       return nullPCurve;
     }
 
@@ -384,6 +386,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
     return pc;
   }
   
+  First = Last = 0.;
   return nullPCurve;
 }
 
@@ -416,9 +419,10 @@ void  BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
     itcr.Next();
   }
   
-  C = Handle(Geom2d_Curve)();
-  S = Handle(Geom_Surface)();
-  L = TopLoc_Location();
+  C.Nullify();
+  S.Nullify();
+  L.Identity();
+  First = Last = 0.;
 }
 
 //=======================================================================
@@ -465,9 +469,10 @@ void  BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
     itcr.Next();
   }
   
-  C = Handle(Geom2d_Curve)();
-  S = Handle(Geom_Surface)();
-  L = TopLoc_Location();
+  C.Nullify();
+  S.Nullify();
+  L.Identity();
+  First = Last = 0.;
 }
 
 //=======================================================================
@@ -553,9 +558,9 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      E,
     itcr.Next();
   }
   
-  L = TopLoc_Location();
-  P = Handle(Poly_Polygon2D)();
-  S = Handle(Geom_Surface)();
+  L.Identity();
+  P.Nullify();
+  S.Nullify();
 }
 
 //=======================================================================
@@ -591,9 +596,9 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      E,
     itcr.Next();
   }
   
-  L = TopLoc_Location();
-  P = Handle(Poly_Polygon2D)();
-  S = Handle(Geom_Surface)();
+  L.Identity();
+  P.Nullify();
+  S.Nullify();
 }
 
 //=======================================================================
@@ -659,9 +664,9 @@ BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                   E,
     itcr.Next();
   }
   
-  L = TopLoc_Location();
-  P = Handle(Poly_PolygonOnTriangulation)();
-  T = Handle(Poly_Triangulation)();
+  L.Identity();
+  P.Nullify();
+  T.Nullify();
 }
 
 //=======================================================================
@@ -699,9 +704,9 @@ BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                   E,
     itcr.Next();
   }
   
-  L = TopLoc_Location();
-  P = Handle(Poly_PolygonOnTriangulation)();
-  T = Handle(Poly_Triangulation)();
+  L.Identity();
+  P.Nullify();
+  T.Nullify();
 }
 
 //=======================================================================
@@ -839,7 +844,7 @@ void  BRep_Tool::Range(const TopoDS_Edge& E,
   //  set the range to all the representations
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
   BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
-
+  
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurve3D()) {
@@ -847,17 +852,18 @@ void  BRep_Tool::Range(const TopoDS_Edge& E,
       if (!CR->Curve3D().IsNull()) {
         First = CR->First(); 
         Last = CR->Last();
-        break;
+        return;
       }
     }
     else if (cr->IsCurveOnSurface()) {
       const BRep_GCurve* CR = static_cast<const BRep_GCurve*>(cr.get());
       First = CR->First(); 
       Last = CR->Last();
-      break;
+      return;
     }
     itcr.Next();
   }
+  First = Last = 0.;
 }
 
 //=======================================================================
@@ -890,7 +896,7 @@ void  BRep_Tool::Range(const TopoDS_Edge& E,
     Range(E,First,Last);
   }
   E.TShape()->Modified(Standard_True);
- }
+}
 
 //=======================================================================
 //function : Range
@@ -979,7 +985,12 @@ void  BRep_Tool::UVPoints(const TopoDS_Edge& E,
       ElSLib::Parameters(pln,PL,u,v);
     }
     PLast.SetCoord(u,v);
-  }    
+  }
+  else
+  {
+    PFirst.SetCoord (0., 0.);
+    PLast.SetCoord (0., 0.);
+  }
 }
 
 //=======================================================================
