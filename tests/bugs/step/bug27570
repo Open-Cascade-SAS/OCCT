@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC27570"
+puts "========"
+puts ""
+###########################################################
+# Unacceptable performance during reading large STEP files
+###########################################################
+
+set max_time 8
+
+dchrono cr reset
+dchrono cr start
+ReadStep D [locate_data_file bug27570.stp]
+dchrono cr stop
+
+# check time
+set chrono_info [dchrono cr show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $chrono_info full CPU_time
+if { $CPU_time > ${max_time} } {
+  puts "CPU user time of STEP translation is more than ${max_time} seconds - Error"
+} else {
+  puts "CPU user time of STEP translation is less than ${max_time} seconds - OK"
+}
+
+# check number of shapes
+XGetOneShape result D
+checknbshapes result -solid 1000 -compound 1111

@@ -29,6 +29,7 @@ class StepGeom_Axis2Placement3d;
 class StepRepr_NextAssemblyUsageOccurrence;
 class Interface_InterfaceModel;
 class StepShape_ContextDependentShapeRepresentation;
+class Interface_Graph;
 
 
 //! This operator creates and checks an item of an assembly, from its
@@ -70,7 +71,7 @@ public:
   
   //! Checks whether SRR's definition of assembly and component contradicts
   //! with NAUO definition or not, according to model schema (AP214 or AP203)
-  Standard_EXPORT static Standard_Boolean CheckSRRReversesNAUO (const Handle(Interface_InterfaceModel)& Model, const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR);
+  Standard_EXPORT static Standard_Boolean CheckSRRReversesNAUO (const Interface_Graph& theGraph, const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR);
 
 
 

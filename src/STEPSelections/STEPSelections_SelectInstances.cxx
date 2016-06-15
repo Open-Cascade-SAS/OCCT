@@ -106,7 +106,7 @@ static void AddInstances(const Handle(Standard_Transient)& start,
     if ( SRR.IsNull() ) return ;
     
     Handle(StepRepr_Representation) rep;
-    Standard_Boolean SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO ( graph.Model(), CDSR );
+    Standard_Boolean SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO ( graph, CDSR );
     if(SRRReversed)
       rep = SRR->Rep2();
     else

@@ -679,7 +679,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
       IsDepend=Standard_True;
       Handle(StepRepr_RepresentationRelationship) RR = CDSR->RepresentationRelation();
       if (RR.IsNull()) continue;
-      SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO ( TP->Model(), CDSR );
+      SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO ( graph, CDSR );
       Handle(StepRepr_Representation) rep = ( SRRReversed ? RR->Rep2() : RR->Rep1() );
       iatrsf = ComputeSRRWT ( RR, TP, Trsf );
       // find real ProductDefinition used rep
@@ -928,7 +928,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   //DeclareAndCast(StepRepr_RepresentationRelationship,SRR,CDSR->RepresentationRelation());
   if ( SRR.IsNull() ) return shbinder;
   
-  Standard_Boolean SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO ( TP->Model(), CDSR );
+  Standard_Boolean SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO ( TP->Graph(), CDSR );
   Handle(StepRepr_Representation) rep1 = ( SRRReversed ? SRR->Rep2() : SRR->Rep1() );
   Handle(StepShape_ShapeRepresentation) rep = Handle(StepShape_ShapeRepresentation)::DownCast(rep1);
 

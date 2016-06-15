@@ -15,6 +15,8 @@
 // :j4 16.03.99 gka S4134
 // abv 18.11.99 renamed from StepPDR_MakeItem
 
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_ApplicationContext.hxx>
@@ -179,7 +181,7 @@ Handle(StepRepr_NextAssemblyUsageOccurrence) STEPConstruct_Assembly::GetNAUO () 
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(const Handle(Interface_InterfaceModel) &Model,
+Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(const Interface_Graph& theGraph,
 							      const Handle(StepShape_ContextDependentShapeRepresentation) &CDSR)
 {
   Handle(StepRepr_NextAssemblyUsageOccurrence) nauo = 
@@ -191,26 +193,35 @@ Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(const Handle(Inter
 #endif
     return Standard_False;
   }
-  
+
   Handle(StepBasic_ProductDefinition) pd1, pd2;
   Handle(StepRepr_Representation) rep1 = CDSR->RepresentationRelation()->Rep1();
   Handle(StepRepr_Representation) rep2 = CDSR->RepresentationRelation()->Rep2();
   
   // find SDRs corresponding to Rep1 and Rep2 and remember their PDs
   Handle(Standard_Type) tSDR = STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation);
-  Standard_Integer nb = Model->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i ++) {
-    Handle(Standard_Transient) enti = Model->Value(i);
+  Interface_EntityIterator anIter = theGraph.Sharings(rep1);
+  for (; anIter.More() && pd1.IsNull(); anIter.Next()) {
+      Handle(Standard_Transient) enti = anIter.Value();
     if (enti->DynamicType() == tSDR) {
       Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-	Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(enti);
+        Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(enti);
       if ( SDR->UsedRepresentation() == rep1 ) 
-	pd1 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
-      if ( SDR->UsedRepresentation() == rep2 ) 
-	pd2 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
+        pd1 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
     }
   }
   
+  anIter = theGraph.Sharings(rep2);
+  for (; anIter.More() && pd2.IsNull(); anIter.Next()) {
+      Handle(Standard_Transient) enti = anIter.Value();
+    if (enti->DynamicType() == tSDR) {
+      Handle(StepShape_ShapeDefinitionRepresentation) SDR =
+        Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(enti);
+      if ( SDR->UsedRepresentation() == rep2 ) 
+        pd2 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
+    }
+  }
+
   // checks..
   
   if ( pd1 == nauo->RelatedProductDefinition() && // OK
