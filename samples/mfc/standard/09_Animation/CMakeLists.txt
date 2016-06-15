@@ -47,14 +47,14 @@ add_executable (Animation WIN32 ${Animation_SOURCE_FILES}
 set_property (TARGET Animation PROPERTY FOLDER Samples)
 
 if (SINGLE_GENERATOR)
-  install (TARGETS Animation DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS Animation DESTINATION "${INSTALL_DIR_BIN}")
 else()
   install (TARGETS Animation
            CONFIGURATIONS Release RelWithDebInfo
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+           DESTINATION "${INSTALL_DIR_BIN}")
   install (TARGETS Animation
            CONFIGURATIONS Debug
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+           DESTINATION "${INSTALL_DIR_BIN}d")
 endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc

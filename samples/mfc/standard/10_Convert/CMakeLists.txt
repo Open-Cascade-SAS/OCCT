@@ -64,14 +64,14 @@ add_executable (Convert WIN32 ${Convert_SOURCE_FILES}
 set_property (TARGET Convert PROPERTY FOLDER Samples)
 
 if (SINGLE_GENERATOR)
-  install (TARGETS Convert DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS Convert DESTINATION "${INSTALL_DIR_BIN}")
 else()
   install (TARGETS Convert
            CONFIGURATIONS Release RelWithDebInfo
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+           DESTINATION "${INSTALL_DIR_BIN}")
   install (TARGETS Convert
            CONFIGURATIONS Debug
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+           DESTINATION "${INSTALL_DIR_BIN}d")
 endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc

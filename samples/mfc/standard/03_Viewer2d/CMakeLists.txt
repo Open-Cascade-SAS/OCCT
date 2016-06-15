@@ -36,14 +36,14 @@ add_executable (Viewer2d WIN32 ${Viewer2d_SOURCE_FILES}
 set_property (TARGET Viewer2d PROPERTY FOLDER Samples)
 
 if (SINGLE_GENERATOR)
-  install (TARGETS Viewer2d DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS Viewer2d DESTINATION "${INSTALL_DIR_BIN}")
 else()
   install (TARGETS Viewer2d
            CONFIGURATIONS Release RelWithDebInfo
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+           DESTINATION "${INSTALL_DIR_BIN}")
   install (TARGETS Viewer2d
            CONFIGURATIONS Debug
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+           DESTINATION "${INSTALL_DIR_BIN}d")
 endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc

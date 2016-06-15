@@ -38,14 +38,14 @@ add_executable (ImportExport WIN32 ${ImportExport_SOURCE_FILES}
 set_property (TARGET ImportExport PROPERTY FOLDER Samples)
 
 if (SINGLE_GENERATOR)
-  install (TARGETS ImportExport DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS ImportExport DESTINATION "${INSTALL_DIR_BIN}")
 else()
   install (TARGETS ImportExport
            CONFIGURATIONS Release RelWithDebInfo
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+           DESTINATION "${INSTALL_DIR_BIN}")
   install (TARGETS ImportExport
            CONFIGURATIONS Debug
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+           DESTINATION "${INSTALL_DIR_BIN}d")
 endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc

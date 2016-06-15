@@ -237,37 +237,37 @@ macro (TBB_PRODUCT_SEARCH PRODUCT_NAME)
 
     if (WIN32)
       if (SINGLE_GENERATOR)
-        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL} DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+        install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL} DESTINATION "${INSTALL_DIR_BIN}")
       else()
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
                  CONFIGURATIONS Release
-                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+                 DESTINATION "${INSTALL_DIR_BIN}")
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
                  CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}i")
+                 DESTINATION "${INSTALL_DIR_BIN}i")
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_DLL}
                  CONFIGURATIONS Debug
-                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+                 DESTINATION "${INSTALL_DIR_BIN}d")
       endif()
     else()
       get_filename_component (PRODUCT_LIBRARY_NAME ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} NAME)
 
       if (SINGLE_GENERATOR)
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
-                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
+                 DESTINATION "${INSTALL_DIR_LIB}"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
       else()
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
                  CONFIGURATIONS Release
-                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}"
+                 DESTINATION "${INSTALL_DIR_LIB}"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
                  CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}i"
+                 DESTINATION "${INSTALL_DIR_LIB}i"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
         install (FILES ${3RDPARTY_${PRODUCT_NAME}_LIBRARY}.2
                  CONFIGURATIONS Debug
-                 DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_LIB}d"
+                 DESTINATION "${INSTALL_DIR_LIB}d"
                  RENAME ${PRODUCT_LIBRARY_NAME}.2)
       endif()
     endif()

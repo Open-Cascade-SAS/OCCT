@@ -64,14 +64,14 @@ add_executable (HLR WIN32 ${HLR_SOURCE_FILES}
 set_property (TARGET HLR PROPERTY FOLDER Samples)
 
 if (SINGLE_GENERATOR)
-  install (TARGETS HLR DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+  install (TARGETS HLR DESTINATION "${INSTALL_DIR_BIN}")
 else()
   install (TARGETS HLR
            CONFIGURATIONS Release RelWithDebInfo
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}")
+           DESTINATION "${INSTALL_DIR_BIN}")
   install (TARGETS HLR
            CONFIGURATIONS Debug
-           DESTINATION "${INSTALL_DIR}/${INSTALL_DIR_BIN}d")
+           DESTINATION "${INSTALL_DIR_BIN}d")
 endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc
