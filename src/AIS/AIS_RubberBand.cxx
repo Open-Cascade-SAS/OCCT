@@ -324,7 +324,7 @@ Standard_Boolean AIS_RubberBand::fillTriangles()
 
 
   Standard_Boolean toFill = Standard_False;
-  if (myTriangles.IsNull() || myTriangles->VertexNumber() != myPoints.Length() + 1)
+  if (myTriangles.IsNull() || myTriangles->VertexNumber() != aTriangles.Extent() * 3)
   {
     toFill = Standard_True;
     myTriangles = new Graphic3d_ArrayOfTriangles (aTriangles.Extent() * 3, 0, Standard_True);
