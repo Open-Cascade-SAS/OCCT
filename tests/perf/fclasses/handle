@@ -1,4 +1,4 @@
-puts "TODO OCC24023 ALL: Checking local reference of handle to base type to temporary handle object"
+puts "TODO OCC24023 Windows: Checking local reference of handle to base type to temporary handle object"
 
 puts "========"
 puts "CR24023, check operability and performance of OCCT RTTI and handles"
@@ -13,13 +13,4 @@ QAHandleKind
 QAHandleOps
 
 # check performance of creation and destruction handles, vs. C++ shared_ptr
-set res [QAHandleInc]
-set res_lines [split $res \n]
-set time_occt [lindex [split [lindex $res_lines 1] :] end]
-set time_std  [lindex [split [lindex $res_lines 2] :] end]
-set ratio [expr $time_occt / $time_std]
-
-# allow 5% deviation
-if { $ratio > 1.05 } {
-  puts "Error: OCCT handle is too slow: $time_occt vs. $time_std of shared_ptr"
-}
+QAHandleInc

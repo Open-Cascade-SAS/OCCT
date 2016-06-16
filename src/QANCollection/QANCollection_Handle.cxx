@@ -439,7 +439,7 @@ static Standard_Integer QAHandleInc (Draw_Interpretor& theDI,
   theDI << "Time of creating and destroying " << aNbIters << " smart pointers to the same object, per item, ns:";
   {
     {
-      QATimer aTimer (theDI, "\nOCCT Handle: ", QATimer::ns, aNbIters);
+      QATimer aTimer (theDI, "\nOCCT Handle:    ", QATimer::ns, aNbIters);
       {
         std::vector<Handle(Standard_Transient)> aHandles (aNbIters);
         for (Standard_Integer anIter = 0; anIter < aNbIters; ++anIter)
@@ -449,7 +449,7 @@ static Standard_Integer QAHandleInc (Draw_Interpretor& theDI,
       }
     }
     {
-      QATimer aTimer (theDI, "\nsC++ shared_ptr: ", QATimer::ns, aNbIters);
+      QATimer aTimer (theDI, "\nC++ shared_ptr: ", QATimer::ns, aNbIters);
       {
         std::vector< std::shared_ptr<Standard_Transient> > aSharePointers (aNbIters);
         for (Standard_Integer anIter = 0; anIter < aNbIters; ++anIter)
