@@ -616,7 +616,8 @@ protected: //! @name Rendering properties
   OpenGl_VertexBuffer        myFullScreenQuadFlip;
   Standard_Boolean           myToFlipOutput;          //!< Flag to draw result image upside-down
   unsigned int               myFrameCounter;          //!< redraw counter, for debugging
-  Standard_Boolean           myHasFboBlit;
+  Standard_Boolean           myHasFboBlit;            //!< disable FBOs on failure
+  Standard_Boolean           myToDisableMSAA;         //!< disable MSAA after failure
   Standard_Boolean           myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
   Standard_Boolean           myBackBufferRestored;
   Standard_Boolean           myIsImmediateDrawn;     //!< flag indicates that immediate mode buffer contains some data

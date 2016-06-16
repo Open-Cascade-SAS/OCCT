@@ -250,6 +250,8 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 //=======================================================================
 void OpenGl_View::Redraw()
 {
+  const Standard_Boolean wasDisabledMSAA = myToDisableMSAA;
+  const Standard_Boolean hadFboBlit      = myHasFboBlit;
   if (myRenderParams.Method == Graphic3d_RM_RAYTRACING
   && !myCaps->vboDisable
   && !myCaps->keepArrayData)
@@ -292,7 +294,9 @@ void OpenGl_View::Redraw()
   Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myWindow->Height();
 
   // determine multisampling parameters
-  Standard_Integer aNbSamples = Max (Min (myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0);
+  Standard_Integer aNbSamples = !myToDisableMSAA
+                              ? Max (Min (myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
+                              : 0;
   if (aNbSamples != 0)
   {
     aNbSamples = OpenGl_Context::GetPowerOfTwo (aNbSamples, aCtx->MaxMsaaSamples());
@@ -479,6 +483,13 @@ void OpenGl_View::Redraw()
 
   // bind default FBO
   bindDefaultFbo();
+
+  if (wasDisabledMSAA != myToDisableMSAA
+   || hadFboBlit      != myHasFboBlit)
+  {
+    // retry on error
+    Redraw();
+  }
 
   // Swap the buffers
   if (toSwap)
@@ -1497,6 +1508,32 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     aCtx->arbFBOBlit->glBlitFramebuffer (0, 0, theReadFbo->GetVPSizeX(), theReadFbo->GetVPSizeY(),
                                          0, 0, theReadFbo->GetVPSizeX(), theReadFbo->GetVPSizeY(),
                                          aCopyMask, GL_NEAREST);
+    const int anErr = ::glGetError();
+    if (anErr != GL_NO_ERROR)
+    {
+      // glBlitFramebuffer() might fail in several cases:
+      // - Both FBOs have MSAA and they are samples number does not match.
+      //   OCCT checks that this does not happen,
+      //   however some graphics drivers provide an option for overriding MSAA.
+      //   In this case window MSAA might be non-zero (and application can not check it)
+      //   and might not match MSAA of our offscreen FBOs.
+      // - Pixel formats of FBOs do not match.
+      //   This also might happen with window has pixel format,
+      //   e.g. Mesa fails blitting RGBA8 -> RGB8 while other drivers support this conversion.
+      TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "FBO blitting has failed [Error #" + anErr + "]\n"
+                                      + "  Please check your graphics driver settings or try updating driver.";
+      if (theReadFbo->NbSamples() != 0)
+      {
+        myToDisableMSAA = true;
+        aMsg += "\n  MSAA settings should not be overridden by driver!";
+      }
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+                         GL_DEBUG_TYPE_ERROR,
+                         0,
+                         GL_DEBUG_SEVERITY_HIGH,
+                         aMsg);
+    }
+
     if (theDrawFbo != NULL
      && theDrawFbo->IsValid())
     {
