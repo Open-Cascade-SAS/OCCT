@@ -114,9 +114,15 @@ public:
   //! A set of helper functions that return rectangular selecting frustum data
   inline const gp_Pnt* GetVertices() const { return myVertices; }
 
-  inline gp_Pnt GetNearPnt() const { return myNearPickedPnt; }
+  //! Returns projection of 2d mouse picked point or projection
+  //! of center of 2d rectangle (for point and rectangular selection
+  //! correspondingly) onto near view frustum plane
+  inline const gp_Pnt& GetNearPnt() const { return myNearPickedPnt; }
 
-  inline gp_Pnt GetFarPnt() const { return myFarPickedPnt; }
+  //! Returns projection of 2d mouse picked point or projection
+  //! of center of 2d rectangle (for point and rectangular selection
+  //! correspondingly) onto far view frustum plane
+  inline const gp_Pnt& GetFarPnt() const { return myFarPickedPnt; }
 protected:
 
   Standard_EXPORT void segmentSegmentDistance (const gp_Pnt& theSegPnt1,

@@ -171,9 +171,17 @@ public:
   //! A set of helper functions that return rectangular selecting frustum data
   Standard_EXPORT const gp_Pnt* GetVertices() const;
 
-  Standard_EXPORT gp_Pnt GetNearPnt() const;
+  //! Valid only for point and rectangular selection.
+  //! Returns projection of 2d mouse picked point or projection
+  //! of center of 2d rectangle (for point and rectangular selection
+  //! correspondingly) onto near view frustum plane
+  Standard_EXPORT virtual gp_Pnt GetNearPickedPnt() const Standard_OVERRIDE;
 
-  Standard_EXPORT gp_Pnt GetFarPnt() const;
+  //! Valid only for point and rectangular selection.
+  //! Returns projection of 2d mouse picked point or projection
+  //! of center of 2d rectangle (for point and rectangular selection
+  //! correspondingly) onto far view frustum plane
+  Standard_EXPORT virtual gp_Pnt GetFarPickedPnt() const Standard_OVERRIDE;
 
 private:
   enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes

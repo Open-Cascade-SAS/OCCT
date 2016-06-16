@@ -430,10 +430,10 @@ const gp_Pnt* SelectMgr_SelectingVolumeManager::GetVertices() const
 }
 
 //=======================================================================
-// function : GetNearPnt
+// function : GetNearPickedPnt
 // purpose  :
 //=======================================================================
-gp_Pnt SelectMgr_SelectingVolumeManager::GetNearPnt() const
+gp_Pnt SelectMgr_SelectingVolumeManager::GetNearPickedPnt() const
 {
   if (myActiveSelectionType == Polyline)
     return gp_Pnt();
@@ -444,10 +444,10 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetNearPnt() const
 }
 
 //=======================================================================
-// function : GetFarPnt
+// function : GetFarPickedPnt
 // purpose  :
 //=======================================================================
-gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPnt() const
+gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPickedPnt() const
 {
   if (myActiveSelectionType == Polyline)
     return gp_Pnt();

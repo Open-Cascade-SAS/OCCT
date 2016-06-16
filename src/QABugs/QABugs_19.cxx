@@ -4140,8 +4140,8 @@ static Standard_Integer OCC26195 (Draw_Interpretor& theDI, Standard_Integer theA
     aMgr->BuildSelectingVolume (aPxPnt1);
   }
   const gp_Pnt* aVerts = aMgr->GetVertices();
-  gp_Pnt aNearPnt = aMgr->GetNearPnt();
-  gp_Pnt aFarPnt  = aMgr->GetFarPnt();
+  gp_Pnt aNearPnt = aMgr->GetNearPickedPnt();
+  gp_Pnt aFarPnt  = aMgr->GetFarPickedPnt();
   BRepBuilderAPI_MakePolygon aWireBldrs[4];
 
   aWireBldrs[0].Add (gp_Pnt (aVerts[0].X(), aVerts[0].Y(), aVerts[0].Z()));
