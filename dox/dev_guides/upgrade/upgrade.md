@@ -328,13 +328,13 @@ Porting of user applications from an earlier OCCT version to version 7.0.0 requi
 Legacy persistence for shapes and OCAF data based on *Storage_Schema* (toolkits *TKPShape*, *TKPLCAF*, *TKPCAF*, *TKShapeShcema, TLStdLSchema, TKStdSchema*, and *TKXCAFSchema*) has been removed in OCCT 7.0.0.
 The applications that used these data persistence tools need to be updated to use other persistence mechanisms.
 
-@note For compatibility with previous versions, possibility to read standard OCAF data (TKLCAF, TKCAF) from the files stored in old format is preserved (toolkits *TKStdL*, *TKStd*).
+@note For compatibility with previous versions, the possibility to read standard OCAF data (*TKLCAF* and *TKCAF*) from  files stored in the old format is preserved (toolkits *TKStdL* and *TKStd*).
 
 The existing data files in standard formats can be converted using OCCT 6.9.1 or a previous version, as follows.
 
 #### CSFDB files
 
-Files in CSFDB format (usually with extension .csfdb) contain OCCT shape data that can be converted to BRep format. 
+Files in *CSFDB* format (usually with extension .csfdb) contain OCCT shape data that can be converted to BRep format. 
 The easiest way to do that is to use ImportExport sample provided with OCCT 6.9.0 (or earlier):
 
 - Start ImportExport sample;
@@ -347,7 +347,7 @@ The easiest way to do that is to use ImportExport sample provided with OCCT 6.9.
 
 Files containing OCAF data saved in the old format usually have extensions <i>.std, .sgd</i> or <i>.dxc</i> (XDE documents).
 These files can be converted to XML or binary OCAF formats using DRAW Test Harness commands.
-Note that if the file contains only attributes defined in TKLCAF and TKCAF, this action can be performed in OCCT 7.0; otherwise OCCT 6.9.1 or earlier should be used.
+Note that if the file contains only attributes defined in *TKLCAF* and *TKCAF*, this action can be performed in OCCT 7.0; otherwise OCCT 6.9.1 or earlier should be used.
 
 For that, start *DRAWEXE* and perform the following commands: 
 
@@ -507,7 +507,7 @@ This will eliminate the need to include the header *A* in each source file where
 
 #### Ambiguity of calls to overloaded functions
 
-This issue appears in the compilers that do not support default arguments in template functions (known cases are Visual C++ 10 and 11): the compiler reports an ambiguity error if a handle is used in the argument of a call to the function that has two or move overloaded versions, accepting handles to different types. 
+This issue appears in the compilers that do not support default arguments in template functions (known cases are Visual C++ 10 and 11): the compiler reports an ambiguity error if a handle is used in the argument of a call to the function that has two or more overloaded versions, accepting handles to different types. 
 The problem is that operator  <i> const handle<T2>& </i> is defined for any type *T2*, thus the compiler cannot make the right choice.
 
 Example:
@@ -550,7 +550,7 @@ For example:
 Handle(Geom_Geometry) aC = GC_MakeLine (p, v); // compiler error
 ~~~~~
 
-The problem is that the class *GCE2d_MakeSegment* has a user-defined conversion to <i>const Handle(Geom_TrimmedCurve)&,</i> which is not the same as the type of the local variable *aC*.
+The problem is that the class *GC_MakeLine* has a user-defined conversion to <i>const Handle(Geom_TrimmedCurve)&,</i> which is not the same as the type of the local variable *aC*.
 
 To resolve this, use method <i>Value()</i>:
 
@@ -564,7 +564,7 @@ or use variable of the appropriate type:
 Handle(Geom_TrimmedCurve) aC = GC_MakeLine (p, v); // ok
 ~~~~~
 
-With GCC compiler, similar problem appears when const handle to derived type is used to construct handle to base type via assignment (and in some cases in return statement), for instance:
+A similar problem appears with GCC compiler, when *const* handle to derived type is used to construct handle to base type via assignment (and in some cases in return statement), for instance:
 
 ~~~~~
   const Handle(Geom_Line) aLine;
@@ -624,7 +624,7 @@ Call method <i>get()</i> explicitly to output the address of the Handle.
 
 #### Method DownCast for non-base types
 
-Method *DownCast()* in OCCT 7.0 is made templated; if it is used with argument which is not a base class, "deprecated" compiler warning is generated.
+Method *DownCast()* in OCCT 7.0 is made templated; if its argument is not a base class, "deprecated" compiler warning is generated.
 This is done to prevent possible unintended errors like this:
 
 ~~~~~
@@ -635,7 +635,7 @@ Handle(Geom_Line) aLine =
 
 The places where this cast has been used should be corrected manually.
 
-If down casting is used in a template context where argument can have the same or unrelated type so that *DownCast()* may be not available in all cases, use C++ *dynamic_cast<>* instead, e.g.: 
+If down casting is used in a template context where the argument can have the same or unrelated type so that *DownCast()* may be not available in all cases, use C++ *dynamic_cast<>* instead, e.g.: 
 
 ~~~~~
 template <class T>
@@ -668,8 +668,8 @@ aBC->Transform (T); // access violation in OCCT 7.0
 
 @subsubsection upgrade_occt700_cdl_nocast Option to avoid cast of handle to reference to base type
 
-In OCCT 6.x and earlier versions the handle classes formed a hierarchy echoing hierarchy of corresponding object classes.
-This automatically enabled possibility to use handle to derived class in all contexts where handle to base class was needed, e.g. pass it in function by reference without copying:
+In OCCT 6.x and earlier versions the handle classes formed a hierarchy echoing the hierarchy of the corresponding object classes .
+This automatically enabled the possibility to use the handle to a derived class in all contexts where the handle to a base class was needed, e.g. to pass it in a function by reference without copying:
 
 ~~~~
 Standard_Boolean GetCurve (Handle(Geom_Curve)& theCurve);
@@ -681,17 +681,16 @@ if (GetCurve (aLine)) {
 ~~~~
 
 This feature was used in multiple places in OCCT and dependent projects.
-However it is potentially unsafe: in the above example no checks are done at compile time or at run time to ensure that argument handle is assigned a type compatible with the type of handle passed as argument. 
-If object of incompatible type (e.g. Geom_Circle) is assigned to *theCurve*, the behavior will be unpredictable.
+However it is potentially unsafe: in the above example no checks are done at compile time or at run time to ensure that the type assigned to the argument handle is compatible with the type of the handle passed as argument. 
+If an object of incompatible type (e.g. Geom_Circle) is assigned to *theCurve*, the behavior will be unpredictable. 
 
-For compatibility with existing code, by default OCCT 7.0 keeps this possibility, providing operators of type cast to handle to base type.
-Besides being unsafe, in specific situations this feature may cause compile-time or run-time errors as described above.
+For compatibility with the existing code, OCCT 7.0 keeps this possibility by default, providing operators of type cast to the handle to a base type. However, this feature is unsafe and in specific situations it may cause compile-time or run-time errors as described above.
 
-In order to provide safer behavior, this feature can be disabled by defining a compile-time macro *OCCT_HANDLE_NOCAST*.
-When it is defined, constructors and assignment operators are defined (instead of type cast operators) to convert from handle to defived type to handle to base type.
+To provide a safer behavior, this feature can be disabled by a compile-time macro *OCCT_HANDLE_NOCAST*.
+When it is used, constructors and assignment operators are defined (instead of type cast operators) to convert handles to a derived type into handles to a base type.
 This implies creation of temporary objects and hence may be more expensive at run time in some circumstances, however this way is more standard, safer, and in general recommended.
 
-The code that relies on possibility of casting to base should be amended so that handle of argument type is always used in function call, and to use DownCast() to safely convert the result to desired type.
+The code that relies on the possibility of casting to base should be amended to always use the handle of argument type in function call and to use *DownCast()* to safely convert the result to the desired type.
 For instance, the code from the example below can be changed as follows:
 
 ~~~~~
@@ -731,7 +730,7 @@ The upgrade script and sources of a specialized WOK version used for OCCT code u
 
 @subsection upgrade_occt700_bspline Separation of BSpline cache
 
-Implementation of NURBS curves and surfaces has been revised: the cache of polynomial coefficients, which is used to accelerate calculate values of B-spline, has been separated from data objects *Geom2d_BSplineCurve, Geom_BSplineCurve* and *Geom_BSplineSurface* into the dedicated classes *BSplCLib_Cache* and *BSplSLib_Cache*. 
+Implementation of NURBS curves and surfaces has been revised: the cache of polynomial coefficients, which is used to accelerate the calculation of values of a B-spline, has been separated from data objects *Geom2d_BSplineCurve, Geom_BSplineCurve* and *Geom_BSplineSurface* into the dedicated classes *BSplCLib_Cache* and *BSplSLib_Cache*. 
 
 The benefits of this change are:
 * Reduced memory footprint of OCCT shapes (up to 20% on some cases)
@@ -964,30 +963,31 @@ When using documents loaded from a file, make sure to call method *TPrsStd_AISVi
 
 Conversion of *gp_Quaternion* to and from intrinsic Tait-Bryan angles (including *gp_YawPitchRoll*) is fixed.
 
-Before that fix the sequence of rotation axes was opposite to the intended; e.g. *gp_YawPitchRoll* (equivalent to *gp_Intrinsic_ZYX*) actually  defined intrinsic rotations around X, then Y, then Z. Now the rotations are made in correct order.
+Before that fix the sequence of rotation axes was opposite to the intended; e.g. *gp_YawPitchRoll* (equivalent to *gp_Intrinsic_ZYX*) actually  defined intrinsic rotations around X, then Y, then Z. Now the rotations are made in the correct order.
 
-Applications that use *gp_Quaternion* to convert Yaw-Pitch-Roll angles (or other intrinsic Tait-Bryan sequences) may need to be updated to take this change into account.
+The applications that use *gp_Quaternion* to convert Yaw-Pitch-Roll angles (or other intrinsic Tait-Bryan sequences) may need to be updated to take this change into account.
 
 @subsection upgrade_zoom_persistent_selection Zoom Persistent Selection
 
-Zoom persistent selection introduces a new structure *Graphic3d_TransformPers* for transform persistence methods and parameters and a new class *Graphic3d_WorldViewProjState* for referring camera transformation state. You might need to update your code to deal with the new classes if you were using the related features. Please, keep in mind the following: 
+Zoom persistent selection introduces a new structure *Graphic3d_TransformPers* to transform persistence methods and parameters and a new class *Graphic3d_WorldViewProjState* to refer to the camera transformation state. You might need to update your code to deal with the new classes if you were using the related features. Please, keep in mind the following: 
 * *Graphic3d_Camera::ModelViewState* has been renamed to *Graphic3d_Camera::WorldViewState*.
 * Transformation matrix utilities from *OpenGl_Utils* namespace have been moved to *Graphic3d_TransformUtils* and *Graphic3d_TransformUtils.hxx* header respectively.
 * Matrix stack utilities from *OpenGl_Utils* namespace have been moved to *OpenGl_MatrixStack* class and *OpenGl_MatrixStack.hxx* header respectively.
 * *OpenGl_View* methods *Begin/EndTransformPersistence* have been removed. Please, use *Graphic3d_TransformPers::Apply()* instead to apply persistence to perspective and world-view projection matrices.
 
-@subsection upgrade_occt700_correction_of_texture Correction of texture mapping of objects
+@subsection upgrade_occt700_correction_of_texture Texture mapping of objects
 
-Interaction of texture and environment texture is fixed. Textured objects have priority over the environment mapping.
-Redundant enumerations V3d_TypeOfSurface and Graphic3d_TypeOfSurface, class OpenGl_SurfaceDetailState, corresponding methods from Graphic3d_CView, OpenGl_ShaderManager, OpenGl_View, V3d_View, V3d_Viewer are deleted.
-Draw command VSetTextureMode is deleted.
+Textured objects now have the priority over the environment mapping.
+
+Redundant enumerations *V3d_TypeOfSurface* and *Graphic3d_TypeOfSurface*, class *OpenGl_SurfaceDetailState*, the corresponding methods from *Graphic3d_CView, OpenGl_ShaderManager, OpenGl_View, V3d_View* and *V3d_Viewer* have been deleted.
+Draw command *VSetTextureMode* has been deleted.
 
 @section upgrade_occt710 Upgrade to OCCT 7.1.0
 
-@subsection upgrade_occt710_correction_of_Parab2d Correction in gp_Parab2d, gce_MakeParab2d and GCE2d_MakeParabola classes
+@subsection upgrade_occt710_correction_of_Parab2d Correction in *gp_Parab2d, gce_MakeParab2d* and *GCE2d_MakeParabola* classes:
 
-1. Constructors GCE2d_MakeParabola(const gp_Ax22d& D, const gp_Pnt2d& F), gce_MakeParab2d(const gp_Ax22d& D, const gp_Pnt2d& F) and gp_Parab2d(const gp_Ax22d& D, const gp_Pnt2d& F) have been deleted. 
+1. Constructors *GCE2d_MakeParabola(const gp_Ax22d& D, const gp_Pnt2d& F)*, *gce_MakeParab2d(const gp_Ax22d& D, const gp_Pnt2d& F)* and *gp_Parab2d(const gp_Ax22d& D, const gp_Pnt2d& F)* have been deleted. 
 
-2. Objects created with some constructors of gp_Parab2d class may be differ from previous version. Please see updated documentation for gp_Parab2d class (file gp_Parab2d.hxx).
+2. Objects created with some constructors of *gp_Parab2d* class may differ from the previous version. Please see the updated documentation for *gp_Parab2d* class (file *gp_Parab2d.hxx*).
 
-3. Result returned by gp_Parab2d::Directrix() method has another direction in compare with previous OCCT-version.
+3. The result returned by *gp_Parab2d::Directrix()* method has a different direction compared to the previous OCCT-version.
