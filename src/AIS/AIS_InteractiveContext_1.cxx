@@ -216,9 +216,14 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
 
   if (aNewDetected >= 1)
   {
-    // does nothing if previously detected object is equal to the current one
+    // Does nothing if previously detected object is equal to the current one.
+    // However in advanced selection modes the owners comparison
+    // is not effective because in that case only one owner manage the
+    // selection in current selection mode. It is necessary to check the current detected
+    // entity and hilight it only if the detected entity is not the same as
+    // previous detected (IsForcedHilight call)
     Handle(SelectMgr_EntityOwner) aNewPickedOwner = myMainSel->Picked (aNewDetected);
-    if (aNewPickedOwner == myLastPicked)
+    if (aNewPickedOwner == myLastPicked && !aNewPickedOwner->IsForcedHilight())
     {
       return myLastPicked->IsSelected()
            ? AIS_SOD_Selected
