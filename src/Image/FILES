@@ -5,5 +5,4 @@ Image_Diff.cxx
 Image_Diff.hxx
 Image_PixMap.cxx
 Image_PixMap.hxx
-Image_PixMap_Handle.hxx
 Image_PixMapData.hxx

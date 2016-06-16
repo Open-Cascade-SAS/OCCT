@@ -23,7 +23,7 @@
 #include <Graphic3d_NameOfTexture2D.hxx>
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TypeOfTexture.hxx>
-#include <Image_PixMap_Handle.hxx>
+#include <Image_PixMap.hxx>
 #include <Standard_Integer.hxx>
 class Standard_OutOfRange;
 class TCollection_AsciiString;
@@ -64,7 +64,7 @@ protected:
   
   Standard_EXPORT Graphic3d_Texture2D(const Graphic3d_NameOfTexture2D theName, const Graphic3d_TypeOfTexture theType);
   
-  Standard_EXPORT Graphic3d_Texture2D(const Image_PixMap_Handle& thePixMap, const Graphic3d_TypeOfTexture theType);
+  Standard_EXPORT Graphic3d_Texture2D(const Handle(Image_PixMap)& thePixMap, const Graphic3d_TypeOfTexture theType);
 
 
 

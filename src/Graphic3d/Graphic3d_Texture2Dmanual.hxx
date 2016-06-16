@@ -22,7 +22,6 @@
 
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_NameOfTexture2D.hxx>
-#include <Image_PixMap_Handle.hxx>
 class TCollection_AsciiString;
 
 
@@ -45,7 +44,7 @@ public:
   Standard_EXPORT Graphic3d_Texture2Dmanual(const Graphic3d_NameOfTexture2D theNOT);
   
   //! Creates a texture from the pixmap.
-  Standard_EXPORT Graphic3d_Texture2Dmanual(const Image_PixMap_Handle& thePixMap);
+  Standard_EXPORT Graphic3d_Texture2Dmanual(const Handle(Image_PixMap)& thePixMap);
 
 
 

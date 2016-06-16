@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <Image_PixMap_Handle.hxx>
+#include <Image_PixMap.hxx>
 #include <OSD_Path.hxx>
 #include <Graphic3d_TypeOfTexture.hxx>
 #include <MMgt_TShared.hxx>
@@ -75,7 +75,6 @@ public:
   //!
   //! @return texture identifier.
   Standard_EXPORT const TCollection_AsciiString& GetId() const;
-  
 
   //! This method will be called by graphic driver each time when texture resource should be created.
   //! Default constructors allow defining the texture source as path to texture image or directly as pixmap.
@@ -84,8 +83,8 @@ public:
   //! Inheritors may dynamically generate the image.
   //! Notice, image data should be in Bottom-Up order (see Image_PixMap::IsTopDown())!
   //! @return the image for texture.
-  Standard_EXPORT virtual Image_PixMap_Handle GetImage() const;
-  
+  Standard_EXPORT virtual Handle(Image_PixMap) GetImage() const;
+
   //! @return low-level texture parameters
   Standard_EXPORT const Handle(Graphic3d_TextureParams)& GetParams() const;
   
@@ -109,11 +108,11 @@ protected:
   //! Creates a texture from pixmap.
   //! Please note that the implementation expects the image data
   //! to be in Bottom-Up order (see Image_PixMap::IsTopDown()).
-  Standard_EXPORT Graphic3d_TextureRoot(const Image_PixMap_Handle& thePixmap, const Graphic3d_TypeOfTexture theType);
+  Standard_EXPORT Graphic3d_TextureRoot(const Handle(Image_PixMap)& thePixmap, const Graphic3d_TypeOfTexture theType);
 
   Handle(Graphic3d_TextureParams) myParams;
   TCollection_AsciiString myTexId;
-  Image_PixMap_Handle myPixMap;
+  Handle(Image_PixMap) myPixMap;
   OSD_Path myPath;
 
 

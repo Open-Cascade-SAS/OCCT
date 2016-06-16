@@ -124,6 +124,45 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   const Handle(Geom_Curve)& aTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
   CHECK(theDI, ! aTmpRef.IsNull(),  "local reference of handle to base type to temporary handle object");
 
+  // check operations with Handle_* classes
+  Handle(Geom_Line) hLine = aLine;
+  CHECK(theDI, ! hLine.IsNull(), "hhandle for non-null");
+
+  const Handle_Geom_Line& chLine = aLine; // cast to self const ref
+  const Handle_Geom_Curve& chCurve = aLine; // cast to base const ref
+  const Handle_Geom_Line& hhLine = hLine; // cast to self const ref
+  const Handle_Geom_Curve& hhCurve = hLine; // cast to base const ref
+  Handle_Geom_Curve hCurve = aLine; // copy from handle to derived type
+  Handle_Geom_Line phLine (aLine.get()); // construct from pointer
+
+  hLine = Handle_Geom_Line::DownCast (cCurve); // inheritance of downcast
+  CHECK(theDI, ! hLine.IsNull(), "down cast");
+
+  // comparison operators
+  CHECK(theDI, hLine == hLine, "equality of hhandle to itself");
+  CHECK(theDI, hLine == aLine, "equality of hhandle to handle");
+  CHECK(theDI, hhLine == hLine, "equality of hhandle to const");
+  CHECK(theDI, chLine == hLine, "equality of hhandle to const");
+  CHECK(theDI, hhCurve == hLine, "equality of hhandle to const");
+  CHECK(theDI, chCurve == hLine, "equality of hhandle to const");
+  CHECK(theDI, hLine, "cast to bool");
+
+  // passing hhandle as reference to base class
+  f (hLine);
+
+  // passing handle to overloaded function accepting handle to another type
+  // will fail on VC below 12 and GCC below 4.3 due to ambiguity of overloads
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800) || (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3)
+  func (hLine);
+  func (chLine);
+#endif
+
+  Handle_Geom_Line qhLine = cpLine; // constructor from const pointer -- could be made explicit...
+
+  // check whether compiler will destroy reference to temporary handle
+  const Handle_Geom_Curve& hTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
+  CHECK(theDI, ! hTmpRef.IsNull(),  "local reference of handle to base type to temporary handle object");
+
   Handle(Geom_Surface) aSurf;
   (void)aSurf;
 
@@ -134,21 +173,21 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   Handle(Geom_Line) xLine = cCurve; // copy from handle to base type
   Handle(Geom_BSplineCurve) aBSpl (new Geom_Line (gp::Origin(), gp::DX())); // construction from pointer to incompatible type
 
-  CHECK(theDI, aLine == aSurf, "equality of handles of incompatible types");
-  CHECK(theDI, aSurf == cLine, "equality of const and non-const handle");
+  CHECK(theDI, aLine == aSurf,  "equality of handles of incompatible types");
+  CHECK(theDI, aSurf == cLine,  "equality of const and non-const handle");
   CHECK(theDI, aSurf == cCurve, "equality of handle and base handle");
   CHECK(theDI, aSurf == pLine,  "equality of handle and pointer");
   CHECK(theDI, pLine == aSurf,  "equality of pointer and handle");
-  CHECK(theDI, aSurf == cpLine,  "equality of handle and const pointer");
-  CHECK(theDI, cpLine != aSurf,  "equality of const pointer and handle");
+  CHECK(theDI, aSurf == cpLine, "equality of handle and const pointer");
+  CHECK(theDI, cpLine != aSurf, "equality of const pointer and handle");
 
-  CHECK(theDI, aLine != aSurf, "inequality of handles of incompatible types");
-  CHECK(theDI, aSurf != cLine, "inequality of const and non-const handle");
+  CHECK(theDI, aLine != aSurf,  "inequality of handles of incompatible types");
+  CHECK(theDI, aSurf != cLine,  "inequality of const and non-const handle");
   CHECK(theDI, aSurf != cCurve, "inequality of handle and base handle");
   CHECK(theDI, aSurf != pLine,  "inequality of handle and pointer");
   CHECK(theDI, pLine != aSurf,  "inequality of pointer and handle");
-  CHECK(theDI, aSurf != cpLine,  "inequality of handle and const pointer");
-  CHECK(theDI, cpLine != aSurf,  "inequality of const pointer and handle");
+  CHECK(theDI, aSurf != cpLine, "inequality of handle and const pointer");
+  CHECK(theDI, cpLine != aSurf, "inequality of const pointer and handle");
 #endif
 
   // ===============================================================

@@ -22,7 +22,6 @@
 
 #include <Graphic3d_NameOfTextureEnv.hxx>
 #include <Graphic3d_TextureRoot.hxx>
-#include <Image_PixMap_Handle.hxx>
 #include <Standard_Integer.hxx>
 class Standard_OutOfRange;
 class TCollection_AsciiString;
@@ -45,7 +44,7 @@ public:
   Standard_EXPORT Graphic3d_TextureEnv(const Graphic3d_NameOfTextureEnv theName);
   
   //! Creates an environment texture from the pixmap.
-  Standard_EXPORT Graphic3d_TextureEnv(const Image_PixMap_Handle& thePixMap);
+  Standard_EXPORT Graphic3d_TextureEnv(const Handle(Image_PixMap)& thePixMap);
   
 
   //! Returns the name of the predefined textures or NOT_ENV_UNKNOWN

@@ -26,7 +26,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfByte.hxx>
-#include <Image_PixMap_Handle.hxx>
+#include <Image_PixMap.hxx>
 class Quantity_Color;
 
 
@@ -58,7 +58,7 @@ public:
   
   //! Creates a context table for marker primitives
   //! defined with the specified values.
-  Standard_EXPORT Graphic3d_AspectMarker3d(const Image_PixMap_Handle& theTextureImage);
+  Standard_EXPORT Graphic3d_AspectMarker3d(const Handle(Image_PixMap)& theTextureImage);
   
   //! Returns marker's texture size.
   Standard_EXPORT void GetTextureSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const;

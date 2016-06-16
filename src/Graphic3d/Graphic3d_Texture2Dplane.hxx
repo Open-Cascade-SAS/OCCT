@@ -23,7 +23,6 @@
 #include <Graphic3d_NameOfTexturePlane.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_NameOfTexture2D.hxx>
-#include <Image_PixMap_Handle.hxx>
 #include <Standard_ShortReal.hxx>
 class TCollection_AsciiString;
 
@@ -46,7 +45,7 @@ public:
   Standard_EXPORT Graphic3d_Texture2Dplane(const Graphic3d_NameOfTexture2D theNOT);
   
   //! Creates a texture from the pixmap.
-  Standard_EXPORT Graphic3d_Texture2Dplane(const Image_PixMap_Handle& thePixMap);
+  Standard_EXPORT Graphic3d_Texture2Dplane(const Handle(Image_PixMap)& thePixMap);
   
   //! Defines the texture projection plane for texture coordinate S
   //! default is <1.0, 0.0, 0.0, 0.0>

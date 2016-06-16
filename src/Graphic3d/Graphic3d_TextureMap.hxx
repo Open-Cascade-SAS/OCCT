@@ -22,7 +22,6 @@
 
 #include <Graphic3d_TextureRoot.hxx>
 #include <Graphic3d_TypeOfTexture.hxx>
-#include <Image_PixMap_Handle.hxx>
 #include <Standard_Boolean.hxx>
 #include <Graphic3d_LevelOfTextureAnisotropy.hxx>
 class TCollection_AsciiString;
@@ -95,7 +94,7 @@ protected:
   
   Standard_EXPORT Graphic3d_TextureMap(const TCollection_AsciiString& theFileName, const Graphic3d_TypeOfTexture theType);
   
-  Standard_EXPORT Graphic3d_TextureMap(const Image_PixMap_Handle& thePixMap, const Graphic3d_TypeOfTexture theType);
+  Standard_EXPORT Graphic3d_TextureMap(const Handle(Image_PixMap)& thePixMap, const Graphic3d_TypeOfTexture theType);
 
 
 
