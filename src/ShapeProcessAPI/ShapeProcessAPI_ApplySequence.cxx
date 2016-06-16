@@ -64,6 +64,8 @@ TopoDS_Shape ShapeProcessAPI_ApplySequence::PrepareShape(const TopoDS_Shape& sha
                                                          const Standard_Boolean /*fillmap*/,
                                                          const TopAbs_ShapeEnum /*until*/)
 {
+  if (shape.IsNull())
+    return shape;
   Handle(Resource_Manager) rsc = myContext->ResourceManager();
   myContext->Init(shape);
   
