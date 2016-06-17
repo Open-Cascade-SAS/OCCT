@@ -87,11 +87,14 @@ Geom2dGcc_Circ2d2TanOn::
 			       GccEnt_QualifiedCirc(c2,Qualified2.Qualifier()),
 					CCon->Circ2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+            }
 	  }
 	  else {
 	    Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
@@ -99,11 +102,14 @@ Geom2dGcc_Circ2d2TanOn::
 			       GccEnt_QualifiedCirc(c2,Qualified2.Qualifier()),
 					LLon->Lin2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+            }
 	  }
 	}
 	else {
@@ -115,11 +121,14 @@ Geom2dGcc_Circ2d2TanOn::
 			       GccEnt_QualifiedLin(l2,Qualified2.Qualifier()),
 					CCon->Circ2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+            }
 	  }
 	  else {
 	    Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
@@ -127,11 +136,14 @@ Geom2dGcc_Circ2d2TanOn::
 			       GccEnt_QualifiedLin(l2,Qualified2.Qualifier()),
 					LLon->Lin2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+            }
 	  }
 	}
       }
@@ -149,12 +161,15 @@ Geom2dGcc_Circ2d2TanOn::
 						       Qualified2.Qualifier()),
 					Ql1,CCon->Circ2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
-	    Invert = Standard_True;
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+              Invert = Standard_True;
+            }
 	  }
 	  else {
 	    Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
@@ -162,12 +177,15 @@ Geom2dGcc_Circ2d2TanOn::
 						       Qualified2.Qualifier()),
 					Ql1,LLon->Lin2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
-	    Invert = Standard_True;
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+              Invert = Standard_True;
+            }
 	  }
 	}
 	else {
@@ -179,11 +197,14 @@ Geom2dGcc_Circ2d2TanOn::
 			       GccEnt_QualifiedLin(l2,Qualified2.Qualifier()),
 					CCon->Circ2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+            }
 	  }
 	  else {
 	    Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
@@ -191,11 +212,14 @@ Geom2dGcc_Circ2d2TanOn::
 			       GccEnt_QualifiedLin(l2,Qualified2.Qualifier()),
 					LLon->Lin2d(),Tolerance);
 	    WellDone = CircAna.IsDone();
-	    NbrSol = CircAna.NbSolutions();
-	    for(Standard_Integer i=1; i<=NbrSol; i++) {
-	      CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	    }
-	    Results(CircAna);
+            if (WellDone)
+            {
+              NbrSol = CircAna.NbSolutions();
+              for(Standard_Integer i=1; i<=NbrSol; i++) {
+                CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+              }
+              Results(CircAna);
+            }
 	  }
 	}
       }
@@ -218,11 +242,14 @@ Geom2dGcc_Circ2d2TanOn::
 	    GccEnt_QualifiedCirc(c2,Qualified2.Qualifier());
 	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc1,Qc2,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
-	  NbrSol = CircGeo.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircGeo);
+          if (WellDone)
+          {
+            NbrSol = CircGeo.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircGeo);
+          }
 	}
 	else {
 	  Handle(Geom2d_Line) LL2 = Handle(Geom2d_Line)::DownCast(CC2);
@@ -231,11 +258,14 @@ Geom2dGcc_Circ2d2TanOn::
 	    GccEnt_QualifiedLin(l2,Qualified2.Qualifier());
 	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc1,Ql2,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
-	  NbrSol = CircGeo.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircGeo);
+          if (WellDone)
+          {
+            NbrSol = CircGeo.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircGeo);
+          }
 	}
       }
       else {
@@ -250,12 +280,15 @@ Geom2dGcc_Circ2d2TanOn::
 	    GccEnt_QualifiedCirc(c2,Qualified2.Qualifier());
 	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc2,Ql1,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
-	  NbrSol = CircGeo.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircGeo);
-	  Invert = Standard_True;
+          if (WellDone)
+          {
+            NbrSol = CircGeo.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircGeo);
+            Invert = Standard_True;
+          }
 	}
 	else {
 	  Handle(Geom2d_Line) LL2 = Handle(Geom2d_Line)::DownCast(CC2);
@@ -264,11 +297,14 @@ Geom2dGcc_Circ2d2TanOn::
 	    GccEnt_QualifiedLin(l2,Qualified2.Qualifier());
 	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Ql1,Ql2,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
-	  NbrSol = CircGeo.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircGeo);
+          if (WellDone)
+          {
+            NbrSol = CircGeo.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircGeo);
+          }
 	}
       }
     }
@@ -282,43 +318,52 @@ Geom2dGcc_Circ2d2TanOn::
 	Geom2dGcc_Circ2d2TanOnIter Circ(Qc1,Qc2,CCon->Circ2d(),
 				   Param1,Param2,ParamOn,Tolerance);
 	WellDone = Circ.IsDone();
-	NbrSol = 1;
-	cirsol(1)   = Circ.ThisSolution();
-	if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
-	else {TheSame1(1) = 0; }
-	if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
-	else {TheSame2(1) = 0; }
-	Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
-	Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        if (WellDone)
+        {
+          NbrSol = 1;
+          cirsol(1)   = Circ.ThisSolution();
+          if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
+          else {TheSame1(1) = 0; }
+          if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
+          else {TheSame2(1) = 0; }
+          Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
+          Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        }
       }
       else {
 	Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
 	Geom2dGcc_Circ2d2TanOnIter Circ(Qc1,Qc2,LLon->Lin2d(),
 				       Param1,Param2,ParamOn,Tolerance);
 	WellDone = Circ.IsDone();
-	NbrSol = 1;
-	cirsol(1)   = Circ.ThisSolution();
-	if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
-	else {TheSame1(1) = 0; }
-	if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
-	else {TheSame2(1) = 0; }
-	Circ.WhichQualifier(qualifier1(1),qualifier2(1));
-	Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
-	Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        if (WellDone)
+        {
+          NbrSol = 1;
+          cirsol(1)   = Circ.ThisSolution();
+          if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
+          else {TheSame1(1) = 0; }
+          if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
+          else {TheSame2(1) = 0; }
+          Circ.WhichQualifier(qualifier1(1),qualifier2(1));
+          Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
+          Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        }
       }
     }
     Geom2dGcc_Circ2d2TanOnIter Circ(Qc1,Qc2,OnCurve,
 				   Param1,Param2,ParamOn,Tolerance);
     WellDone = Circ.IsDone();
-    NbrSol = 1;
-    cirsol(1)   = Circ.ThisSolution();
-    if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
-    else {TheSame1(1) = 0; }
-    if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
-    else {TheSame2(1) = 0; }
-    Circ.WhichQualifier(qualifier1(1),qualifier2(1));
-    Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
-    Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+    if (WellDone)
+    {
+      NbrSol = 1;
+      cirsol(1)   = Circ.ThisSolution();
+      if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
+      else {TheSame1(1) = 0; }
+      if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
+      else {TheSame2(1) = 0; }
+      Circ.WhichQualifier(qualifier1(1),qualifier2(1));
+      Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
+      Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+    }
   }
 }
 
@@ -366,21 +411,27 @@ Geom2dGcc_Circ2d2TanOn::
 	  Handle(Geom2d_Circle) CCon = Handle(Geom2d_Circle)::DownCast(Con);
 	  GccAna_Circ2d2TanOn CircAna(Qc1,pnt,CCon->Circ2d(),Tolerance);
 	  WellDone = CircAna.IsDone();
-	  NbrSol = CircAna.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircAna);
+          if (WellDone)
+          {
+            NbrSol = CircAna.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircAna);
+          }
 	}
 	else if (Type3 == GeomAbs_Line) {
 	  Handle(Geom2d_Line) CCon = Handle(Geom2d_Line)::DownCast(Con);
 	  GccAna_Circ2d2TanOn CircAna(Qc1,pnt,CCon->Lin2d(),Tolerance);
 	  WellDone = CircAna.IsDone();
-	  NbrSol = CircAna.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircAna);
+          if (WellDone)
+          {
+            NbrSol = CircAna.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircAna);
+          }
 	}
       }
       else {
@@ -391,21 +442,27 @@ Geom2dGcc_Circ2d2TanOn::
 	  Handle(Geom2d_Circle) CCon = Handle(Geom2d_Circle)::DownCast(Con);
 	  GccAna_Circ2d2TanOn CircAna(Ql1,pnt,CCon->Circ2d(),Tolerance);
 	  WellDone = CircAna.IsDone();
-	  NbrSol = CircAna.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircAna);
+          if (WellDone)
+          {
+            NbrSol = CircAna.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircAna);
+          }
 	}
 	else if (Type3 == GeomAbs_Line) {
 	  Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
 	  GccAna_Circ2d2TanOn CircAna(Ql1,pnt,LLon->Lin2d(),Tolerance);
 	  WellDone = CircAna.IsDone();
-	  NbrSol = CircAna.NbSolutions();
-	  for(Standard_Integer i=1; i<=NbrSol; i++) {
-	    CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	  }
-	  Results(CircAna);
+          if (WellDone)
+          {
+            NbrSol = CircAna.NbSolutions();
+            for(Standard_Integer i=1; i<=NbrSol; i++) {
+              CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+            }
+            Results(CircAna);
+          }
 	}
       }
     }
@@ -420,11 +477,14 @@ Geom2dGcc_Circ2d2TanOn::
 	GccEnt_QualifiedCirc Qc1(c1,Qualified1.Qualifier());
 	Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc1,Point->Pnt2d(),OnCurve,Tolerance);
 	WellDone = CircGeo.IsDone();
-	NbrSol = CircGeo.NbSolutions();
-	for(Standard_Integer i=1; i<=NbrSol; i++) {
-	  CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	}
-	Results(CircGeo);
+        if (WellDone)
+        {
+          NbrSol = CircGeo.NbSolutions();
+          for(Standard_Integer i=1; i<=NbrSol; i++) {
+            CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+          }
+          Results(CircGeo);
+        }
       }
       else {
 	Handle(Geom2d_Line) LLL1 = Handle(Geom2d_Line)::DownCast(CC1);
@@ -432,11 +492,14 @@ Geom2dGcc_Circ2d2TanOn::
 	GccEnt_QualifiedLin Ql1(l1,Qualified1.Qualifier());
 	Geom2dGcc_Circ2d2TanOnGeo CircGeo(Ql1,Point->Pnt2d(),OnCurve,Tolerance);
 	WellDone = CircGeo.IsDone();
-	NbrSol = CircGeo.NbSolutions();
-	for(Standard_Integer i=1; i<=NbrSol; i++) {
-	  CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
-	}
-	Results(CircGeo);
+        if (WellDone)
+        {
+          NbrSol = CircGeo.NbSolutions();
+          for(Standard_Integer i=1; i<=NbrSol; i++) {
+            CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+          }
+          Results(CircGeo);
+        }
       }
     }
   }                                   
@@ -448,41 +511,50 @@ Geom2dGcc_Circ2d2TanOn::
 	Geom2dGcc_Circ2d2TanOnIter Circ(Qc1,Point->Pnt2d(),CCon->Circ2d(),
 				   Param1,ParamOn,Tolerance);
 	WellDone = Circ.IsDone();
-	NbrSol = 1;
-	cirsol(1)   = Circ.ThisSolution();
-	if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
-	else {TheSame1(1) = 0; }
-	Circ.WhichQualifier(qualifier1(1),qualifier2(1));
-	Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
-	Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        if (WellDone)
+        {
+          NbrSol = 1;
+          cirsol(1)   = Circ.ThisSolution();
+          if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
+          else {TheSame1(1) = 0; }
+          Circ.WhichQualifier(qualifier1(1),qualifier2(1));
+          Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
+          Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        }
       }
       else {
 	Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
 	Geom2dGcc_Circ2d2TanOnIter Circ(Qc1,Point->Pnt2d(),LLon->Lin2d(),
 				       Param1,ParamOn,Tolerance);
 	WellDone = Circ.IsDone();
-	NbrSol = 1;
-	cirsol(1)   = Circ.ThisSolution();
-	if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
-	else {TheSame1(1) = 0; }
-	Circ.WhichQualifier(qualifier1(1),qualifier2(1));
-	Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
-	Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        if (WellDone)
+        {
+          NbrSol = 1;
+          cirsol(1)   = Circ.ThisSolution();
+          if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
+          else {TheSame1(1) = 0; }
+          Circ.WhichQualifier(qualifier1(1),qualifier2(1));
+          Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
+          Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+        }
       }
     }
     else {
       Geom2dGcc_Circ2d2TanOnIter Circ(Qc1,Point->Pnt2d(),OnCurve,
 				 Param1,ParamOn,Tolerance);
       WellDone = Circ.IsDone();
-      NbrSol = 1;
-      cirsol(1)   = Circ.ThisSolution();
-      if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
-      else {TheSame1(1) = 0; }
-      if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
-      else {TheSame2(1) = 0; }
-      Circ.WhichQualifier(qualifier1(1),qualifier2(1));
-      Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
-      Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+      if (WellDone)
+      {
+        NbrSol = 1;
+        cirsol(1)   = Circ.ThisSolution();
+        if (Circ.IsTheSame1()) { TheSame1(1) = 1; }
+        else {TheSame1(1) = 0; }
+        if (Circ.IsTheSame2()) { TheSame2(1) = 1; }
+        else {TheSame2(1) = 0; }
+        Circ.WhichQualifier(qualifier1(1),qualifier2(1));
+        Circ.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
+        Circ.Tangency2(par2sol(1),pararg2(1),pnttg2sol(1));
+      }
     }
   }
 }
@@ -523,21 +595,27 @@ Geom2dGcc_Circ2d2TanOn::
       Handle(Geom2d_Circle) CCon = Handle(Geom2d_Circle)::DownCast(Con);
       GccAna_Circ2d2TanOn CircAna(pnt1,pnt2,CCon->Circ2d(),Tolerance);
       WellDone = CircAna.IsDone();
-      NbrSol = CircAna.NbSolutions();
-      for(Standard_Integer i=1; i<=NbrSol; i++) {
-	CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+      if (WellDone)
+      {
+        NbrSol = CircAna.NbSolutions();
+        for(Standard_Integer i=1; i<=NbrSol; i++) {
+          CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+        }
+        Results(CircAna);
       }
-      Results(CircAna);
     }
     else {
       Handle(Geom2d_Line) LLon = Handle(Geom2d_Line)::DownCast(Con);
       GccAna_Circ2d2TanOn CircAna(pnt1,pnt2,LLon->Lin2d(),Tolerance);
       WellDone = CircAna.IsDone();
-      NbrSol = CircAna.NbSolutions();
-      for(Standard_Integer i=1; i<=NbrSol; i++) {
-	CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+      if (WellDone)
+      {
+        NbrSol = CircAna.NbSolutions();
+        for(Standard_Integer i=1; i<=NbrSol; i++) {
+          CircAna.WhichQualifier(i,qualifier1(i),qualifier2(i));
+        }
+        Results(CircAna);
       }
-      Results(CircAna);
     }
   }
 
@@ -549,11 +627,14 @@ Geom2dGcc_Circ2d2TanOn::
     Geom2dGcc_Circ2d2TanOnGeo CircGeo(Point1->Pnt2d(),Point2->Pnt2d(),
 				     OnCurve,Tolerance);
     WellDone = CircGeo.IsDone();
-    NbrSol = CircGeo.NbSolutions();
-    for(Standard_Integer i=1; i<=NbrSol; i++) {
-      CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+    if (WellDone)
+    {
+      NbrSol = CircGeo.NbSolutions();
+      for(Standard_Integer i=1; i<=NbrSol; i++) {
+        CircGeo.WhichQualifier(i,qualifier1(i),qualifier2(i));
+      }
+      Results(CircGeo);
     }
-    Results(CircGeo);
   }
 }
 

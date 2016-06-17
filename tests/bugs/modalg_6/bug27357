@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC27357"
+puts "========"
+puts ""
+#################################################################
+# Geom2dGcc_Circ2d2TanOn: check status of sub-algorithms to avoid exceptions
+#################################################################
+
+pload QAcommands
+
+set info [OCC27357]
+if { [regexp "Exception" $info] != 0 } {
+    puts "Error : Exception was caught"
+} else {
+    puts "OK"
+}
