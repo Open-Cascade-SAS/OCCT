@@ -17,21 +17,15 @@
 #ifndef _GCPnts_QuasiUniformAbscissa_HeaderFile
 #define _GCPnts_QuasiUniformAbscissa_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Real.hxx>
+
 class Standard_DomainError;
 class Standard_ConstructionError;
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
-
 
 //! This class provides an algorithm to compute a uniform abscissa
 //! distribution of points on a curve, i.e. a sequence of
@@ -113,8 +107,10 @@ public:
   //! IsDone is a protection against:
   //! -   non-convergence of the algorithm
   //! -   querying the results before computation.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone () const
+  {
+    return myDone;
+  }
 
   //! Returns the number of points of the distribution
   //! computed by this algorithm.
@@ -128,7 +124,11 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-    Standard_Integer NbPoints() const;
+  Standard_Integer NbPoints () const
+  {
+    StdFail_NotDone_Raise_if (!myDone, "GCPnts_QuasiUniformAbscissa::NbPoints()");
+    return myNbPoints;
+  }
   
   //! Returns the parameter of the point of index Index in
   //! the distribution computed by this algorithm.
@@ -140,33 +140,16 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-    Standard_Real Parameter (const Standard_Integer Index) const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_Real Parameter (const Standard_Integer Index) const
+  {
+    StdFail_NotDone_Raise_if (!myDone, "GCPnts_QuasiUniformAbscissa::Parameter()");
+    return myParams->Value (Index);
+  }
 
 private:
-
-
-
   Standard_Boolean myDone;
   Standard_Integer myNbPoints;
   Handle(TColStd_HArray1OfReal) myParams;
-
-
 };
-
-
-#include <GCPnts_QuasiUniformAbscissa.lxx>
-
-
-
-
 
 #endif // _GCPnts_QuasiUniformAbscissa_HeaderFile

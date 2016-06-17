@@ -17,16 +17,11 @@
 #ifndef _GCPnts_QuasiUniformDeflection_HeaderFile
 #define _GCPnts_QuasiUniformDeflection_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
+
 class Standard_DomainError;
 class Standard_ConstructionError;
 class Standard_OutOfRange;
@@ -34,7 +29,6 @@ class StdFail_NotDone;
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
 class gp_Pnt;
-
 
 //! This  class computes  a  distribution of  points  on a
 //! curve. The points may respect the deflection. The algorithm
@@ -186,15 +180,21 @@ public:
   //! IsDone is a protection against:
   //! -   non-convergence of the algorithm
   //! -   querying the results before computation.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone () const
+  {
+    return myDone;
+  }
 
   //! Returns the number of points of the distribution
   //! computed by this algorithm.
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-    Standard_Integer NbPoints() const;
+  Standard_Integer NbPoints () const
+  {
+    StdFail_NotDone_Raise_if (!myDone, "GCPnts_QuasiUniformDeflection::NbPoints()");
+    return myParams.Length ();
+  }
   
   //! Returns the parameter of the point of index Index in
   //! the distribution computed by this algorithm.
@@ -206,7 +206,11 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-    Standard_Real Parameter (const Standard_Integer Index) const;
+  Standard_Real Parameter (const Standard_Integer Index) const
+  {
+    StdFail_NotDone_Raise_if (!myDone, "GCPnts_QuasiUniformDeflection::Parameter()");
+    return myParams (Index);
+  }
   
   //! Returns the point of index Index in the distribution
   //! computed by this algorithm.
@@ -228,35 +232,18 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-    Standard_Real Deflection() const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_Real Deflection () const
+  {
+    StdFail_NotDone_Raise_if (!myDone, "GCPnts_QuasiUniformDeflection::Deflection()");
+    return myDeflection;
+  }
 
 private:
-
-
-
   Standard_Boolean myDone;
   Standard_Real myDeflection;
   TColStd_SequenceOfReal myParams;
   TColgp_SequenceOfPnt myPoints;
   GeomAbs_Shape myCont;
-
-
 };
-
-
-#include <GCPnts_QuasiUniformDeflection.lxx>
-
-
-
-
 
 #endif // _GCPnts_QuasiUniformDeflection_HeaderFile

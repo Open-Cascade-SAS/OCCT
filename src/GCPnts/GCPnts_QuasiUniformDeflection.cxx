@@ -91,7 +91,7 @@ GCPnts_QuasiUniformDeflection::GCPnts_QuasiUniformDeflection ()
 #define Handle_TheBezierCurve   Handle(Geom_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom_BSplineCurve)
 
-#include <GCPnts_QuasiUniformDeflection.gxx>
+#include "GCPnts_QuasiUniformDeflection.pxx"
 
 #undef TheCurve
 #undef Handle_TheBezierCurve
@@ -104,7 +104,7 @@ GCPnts_QuasiUniformDeflection::GCPnts_QuasiUniformDeflection ()
 #define Handle_TheBezierCurve   Handle(Geom2d_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom2d_BSplineCurve)
 
-#include <GCPnts_QuasiUniformDeflection.gxx>
+#include "GCPnts_QuasiUniformDeflection.pxx"
 
 
 

@@ -36,7 +36,7 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint()
 #define Handle_TheBezierCurve   Handle(Geom_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom_BSplineCurve)
 
-#include <GCPnts_AbscissaPoint.gxx>
+#include "GCPnts_AbscissaPoint.pxx"
 
 #undef TheCurve
 #undef Handle_TheBezierCurve
@@ -49,5 +49,4 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint()
 #define Handle_TheBezierCurve   Handle(Geom2d_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom2d_BSplineCurve)
 
-#include <GCPnts_AbscissaPoint.gxx>
-
+#include "GCPnts_AbscissaPoint.pxx"

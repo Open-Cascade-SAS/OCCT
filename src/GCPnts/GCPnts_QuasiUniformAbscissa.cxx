@@ -53,7 +53,7 @@ GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa ()
 #define TheArray1OfPnt          TColgp_Array1OfPnt
 #define ThePnt                  gp_Pnt
 
-#include <GCPnts_QuasiUniformAbscissa.gxx>
+#include "GCPnts_QuasiUniformAbscissa.pxx"
 
 #undef TheCurve
 #undef Handle_TheBezierCurve
@@ -70,7 +70,7 @@ GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa ()
 #define TheArray1OfPnt          TColgp_Array1OfPnt2d
 #define ThePnt                  gp_Pnt2d
 
-#include <GCPnts_QuasiUniformAbscissa.gxx>
+#include "GCPnts_QuasiUniformAbscissa.pxx"
 
 
 

@@ -39,7 +39,7 @@ GCPnts_UniformAbscissa::GCPnts_UniformAbscissa ()
 #define Handle_TheBezierCurve   Handle(Geom_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom_BSplineCurve)
 
-#include <GCPnts_UniformAbscissa.gxx>
+#include "GCPnts_UniformAbscissa.pxx"
 
 #undef TheCurve
 #undef Handle_TheBezierCurve
@@ -52,7 +52,7 @@ GCPnts_UniformAbscissa::GCPnts_UniformAbscissa ()
 #define Handle_TheBezierCurve   Handle(Geom2d_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom2d_BSplineCurve)
 
-#include <GCPnts_UniformAbscissa.gxx>
+#include "GCPnts_UniformAbscissa.pxx"
 
 
 

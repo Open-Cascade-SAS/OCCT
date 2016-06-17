@@ -178,12 +178,13 @@ Standard_Real GCPnts_TangentialDeflection::ArcAngularStep(
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Circ.hxx>
 #include <GCPnts_DistFunction.hxx>
+
 #define TheCurve Adaptor3d_Curve
 #define Handle_TheBezierCurve   Handle(Geom_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom_BSplineCurve)
 #define TheMaxCurvLinDist GCPnts_DistFunction
 #define TheMaxCurvLinDistMV GCPnts_DistFunctionMV
-#include <GCPnts_TangentialDeflection.gxx>
+#include "GCPnts_TangentialDeflection.pxx"
 #undef Handle_TheBezierCurve
 #undef Handle_TheBSplineCurve
 #undef TheCurve
@@ -200,7 +201,7 @@ Standard_Real GCPnts_TangentialDeflection::ArcAngularStep(
 #define Handle_TheBSplineCurve  Handle(Geom2d_BSplineCurve)
 #define TheMaxCurvLinDist GCPnts_DistFunction2d
 #define TheMaxCurvLinDistMV GCPnts_DistFunction2dMV
-#include <GCPnts_TangentialDeflection.gxx>
+#include "GCPnts_TangentialDeflection.pxx"
 #undef Handle_TheBezierCurve
 #undef Handle_TheBSplineCurve
 #undef TheCurve

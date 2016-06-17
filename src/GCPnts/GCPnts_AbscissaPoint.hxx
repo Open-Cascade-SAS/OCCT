@@ -17,18 +17,12 @@
 #ifndef _GCPnts_AbscissaPoint_HeaderFile
 #define _GCPnts_AbscissaPoint_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <CPnts_AbscissaPoint.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
+
 class StdFail_NotDone;
 class Standard_ConstructionError;
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
-
 
 //! Provides an algorithm to compute a point on a curve
 //! situated at a given distance from another point on the
@@ -127,38 +121,23 @@ public:
   //! IsDone is a protection against:
   //! -   non-convergence of the algorithm
   //! -   querying the results before computation.
-    Standard_Boolean IsDone() const;
+  Standard_Boolean IsDone () const
+  {
+    return myComputer.IsDone ();
+  }
   
   //! Returns the parameter on the curve of the point
   //! solution of this algorithm.
   //! Exceptions
   //! StdFail_NotDone if the computation was not
   //! successful, or was not done.
-    Standard_Real Parameter() const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_Real Parameter () const
+  {
+    return myComputer.Parameter ();
+  }
 
 private:
-
-
-
   CPnts_AbscissaPoint myComputer;
-
-
 };
-
-
-#include <GCPnts_AbscissaPoint.lxx>
-
-
-
-
 
 #endif // _GCPnts_AbscissaPoint_HeaderFile

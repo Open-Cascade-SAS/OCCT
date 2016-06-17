@@ -65,10 +65,11 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection ()
 
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+
 #define TheCurve                 Adaptor3d_Curve
 #define Handle_TheBezierCurve   Handle(Geom_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom_BSplineCurve)
-#include <GCPnts_UniformDeflection.gxx>
+#include "GCPnts_UniformDeflection.pxx"
 #undef TheCurve
 #undef Handle_TheBezierCurve
 #undef Handle_TheBSplineCurve
@@ -78,7 +79,7 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection ()
 #define TheCurve                 Adaptor2d_Curve2d
 #define Handle_TheBezierCurve   Handle(Geom2d_BezierCurve)
 #define Handle_TheBSplineCurve  Handle(Geom2d_BSplineCurve)
-#include <GCPnts_UniformDeflection.gxx>
+#include "GCPnts_UniformDeflection.pxx"
 #undef TheCurve
 #undef Handle_TheBezierCurve
 #undef Handle_TheBSplineCurve
