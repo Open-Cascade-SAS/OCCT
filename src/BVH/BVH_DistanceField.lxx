@@ -311,9 +311,9 @@ namespace BVH
   {
     Standard_STATIC_ASSERT (N == 3 || N == 4);
 
-    const NCollection_Handle<BVH_Tree<T, N> >& aBVH = theGeometry.BVH();
+    const BVH_Tree<T, N, BVH_BinaryTree>* aBVH = theGeometry.BVH().get();
 
-    if (aBVH.IsNull())
+    if (aBVH == NULL)
     {
       return Standard_False;
     }

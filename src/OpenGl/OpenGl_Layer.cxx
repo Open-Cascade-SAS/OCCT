@@ -516,8 +516,8 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
     {
       if (!aBVHTree->IsOuter (aNode))
       {
-        const Standard_Integer aLeftChildIdx  = aBVHTree->LeftChild  (aNode);
-        const Standard_Integer aRightChildIdx = aBVHTree->RightChild (aNode);
+        const Standard_Integer aLeftChildIdx  = aBVHTree->Child<0> (aNode);
+        const Standard_Integer aRightChildIdx = aBVHTree->Child<1> (aNode);
         const Standard_Boolean isLeftChildIn  = theSelector.Intersect (aBVHTree->MinPoint (aLeftChildIdx),
                                                                        aBVHTree->MaxPoint (aLeftChildIdx));
         const Standard_Boolean isRightChildIn = theSelector.Intersect (aBVHTree->MinPoint (aRightChildIdx),

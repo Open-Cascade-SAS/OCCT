@@ -49,7 +49,7 @@ void Select3D_SensitiveSet::BVH()
 Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                  SelectBasics_PickResult& thePickResult)
 {
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aBVH = myContent->GetBVH();
+  const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent->GetBVH().get();
 
   thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
 

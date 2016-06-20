@@ -1,6 +1,6 @@
-// Created on: 2013-12-20
+// Created on: 2016-06-20
 // Created by: Denis BOGOLEPOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,12 +13,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// =======================================================================
-// function : ~BVH_TreeBase
-// purpose  : Releases resources of BVH tree
-// =======================================================================
+#ifndef _BVH_QuadTree_Header
+#define _BVH_QuadTree_Header
+
+#include <BVH_Tree.hxx>
+
+//! Specialization of quad BVH (QBVH) tree.
 template<class T, int N>
-BVH_TreeBase<T, N>::~BVH_TreeBase()
+class BVH_Tree<T, N, BVH_QuadTree> : public BVH_TreeBase<T, N>
 {
-  //
-}
+public: //! @name general methods
+
+  //! Creates new empty BVH tree.
+  BVH_Tree() : BVH_TreeBase<T, N>() { }
+
+  //! Returns index of the K-th child of the given inner node.
+  //! \tparam K the index of node child (from 0 to 3)
+  template<int K>
+  int Child (const int theNodeIndex) const;
+
+};
+
+#include <BVH_QuadTree.lxx>
+
+#endif // _BVH_QuadTree_Header

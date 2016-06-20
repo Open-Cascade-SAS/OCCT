@@ -1225,7 +1225,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
       return Standard_True;
 
     const Standard_Integer aRequiredStackSize =
-      myRaytraceGeometry.HighLevelTreeDepth() + myRaytraceGeometry.BottomLevelTreeDepth();
+      myRaytraceGeometry.TopLevelTreeDepth() + myRaytraceGeometry.BotLevelTreeDepth();
 
     if (myRaytraceParameters.StackSize < aRequiredStackSize)
     {
@@ -1335,7 +1335,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Handle(OpenGl_Context
     if (myIsRaytraceDataValid)
     {
       myRaytraceParameters.StackSize = Max (THE_DEFAULT_STACK_SIZE,
-        myRaytraceGeometry.HighLevelTreeDepth() + myRaytraceGeometry.BottomLevelTreeDepth());
+        myRaytraceGeometry.TopLevelTreeDepth() + myRaytraceGeometry.BotLevelTreeDepth());
     }
 
     TCollection_AsciiString aPrefixString  = generateShaderPrefix (theGlContext);
@@ -1861,13 +1861,13 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
     aTotalVerticesNb += aTriangleSet->Vertices.size();
     aTotalElementsNb += aTriangleSet->Elements.size();
 
-    Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
+    Standard_ASSERT_RETURN (!aTriangleSet->QuadBVH().IsNull(),
       "Error: Failed to get bottom-level BVH of OpenGL element", Standard_False);
 
-    aTotalBVHNodesNb += aTriangleSet->BVH()->NodeInfoBuffer().size();
+    aTotalBVHNodesNb += aTriangleSet->QuadBVH()->NodeInfoBuffer().size();
   }
 
-  aTotalBVHNodesNb += myRaytraceGeometry.BVH()->NodeInfoBuffer().size();
+  aTotalBVHNodesNb += myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().size();
 
   if (aTotalBVHNodesNb != 0)
   {
@@ -1911,7 +1911,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
     return Standard_False;
   }
 
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = myRaytraceGeometry.BVH();
+  const QuadBvhHandle& aBVH = myRaytraceGeometry.QuadBVH();
 
   if (aBVH->Length() > 0)
   {
@@ -1938,16 +1938,16 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
     Standard_ASSERT_RETURN (aBVHOffset != OpenGl_RaytraceGeometry::INVALID_OFFSET,
       "Error: Failed to get offset for bottom-level BVH", Standard_False);
 
-    const Standard_Integer aBvhBuffersSize = aTriangleSet->BVH()->Length();
+    const Standard_Integer aBvhBuffersSize = aTriangleSet->QuadBVH()->Length();
 
     if (aBvhBuffersSize != 0)
     {
       aResult &= mySceneNodeInfoTexture->SubData (theGlContext, aBVHOffset, aBvhBuffersSize,
-        reinterpret_cast<const GLuint*> (&aTriangleSet->BVH()->NodeInfoBuffer().front()));
+        reinterpret_cast<const GLuint*> (&aTriangleSet->QuadBVH()->NodeInfoBuffer().front()));
       aResult &= mySceneMinPointTexture->SubData (theGlContext, aBVHOffset, aBvhBuffersSize,
-        reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MinPointBuffer().front()));
+        reinterpret_cast<const GLfloat*> (&aTriangleSet->QuadBVH()->MinPointBuffer().front()));
       aResult &= mySceneMaxPointTexture->SubData (theGlContext, aBVHOffset, aBvhBuffersSize,
-        reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MaxPointBuffer().front()));
+        reinterpret_cast<const GLfloat*> (&aTriangleSet->QuadBVH()->MaxPointBuffer().front()));
 
       if (!aResult)
       {
@@ -2014,38 +2014,40 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
 #ifdef RAY_TRACE_PRINT_INFO
 
-  Standard_ShortReal aMemUsed = 0.f;
+  Standard_ShortReal aMemTrgUsed = 0.f;
+  Standard_ShortReal aMemBvhUsed = 0.f;
 
   for (Standard_Integer anElemIdx = 0; anElemIdx < myRaytraceGeometry.Size(); ++anElemIdx)
   {
-    OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
-      myRaytraceGeometry.Objects().ChangeValue (anElemIdx).operator->());
+    OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (myRaytraceGeometry.Objects()(anElemIdx).get());
 
-    aMemUsed += static_cast<Standard_ShortReal> (
+    aMemTrgUsed += static_cast<Standard_ShortReal> (
       aTriangleSet->Vertices.size() * sizeof (BVH_Vec3f));
-    aMemUsed += static_cast<Standard_ShortReal> (
+    aMemTrgUsed += static_cast<Standard_ShortReal> (
       aTriangleSet->Normals.size() * sizeof (BVH_Vec3f));
-    aMemUsed += static_cast<Standard_ShortReal> (
+    aMemTrgUsed += static_cast<Standard_ShortReal> (
       aTriangleSet->TexCrds.size() * sizeof (BVH_Vec2f));
-    aMemUsed += static_cast<Standard_ShortReal> (
+    aMemTrgUsed += static_cast<Standard_ShortReal> (
       aTriangleSet->Elements.size() * sizeof (BVH_Vec4i));
 
-    aMemUsed += static_cast<Standard_ShortReal> (
-      aTriangleSet->BVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
-    aMemUsed += static_cast<Standard_ShortReal> (
-      aTriangleSet->BVH()->MinPointBuffer().size() * sizeof (BVH_Vec3f));
-    aMemUsed += static_cast<Standard_ShortReal> (
-      aTriangleSet->BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec3f));
+    aMemBvhUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->QuadBVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
+    aMemBvhUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->QuadBVH()->MinPointBuffer().size() * sizeof (BVH_Vec3f));
+    aMemBvhUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->QuadBVH()->MaxPointBuffer().size() * sizeof (BVH_Vec3f));
   }
 
-  aMemUsed += static_cast<Standard_ShortReal> (
-    myRaytraceGeometry.BVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
-  aMemUsed += static_cast<Standard_ShortReal> (
-    myRaytraceGeometry.BVH()->MinPointBuffer().size() * sizeof (BVH_Vec3f));
-  aMemUsed += static_cast<Standard_ShortReal> (
-    myRaytraceGeometry.BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec3f));
+  aMemBvhUsed += static_cast<Standard_ShortReal> (
+    myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
+  aMemBvhUsed += static_cast<Standard_ShortReal> (
+    myRaytraceGeometry.QuadBVH()->MinPointBuffer().size() * sizeof (BVH_Vec3f));
+  aMemBvhUsed += static_cast<Standard_ShortReal> (
+    myRaytraceGeometry.QuadBVH()->MaxPointBuffer().size() * sizeof (BVH_Vec3f));
 
-  std::cout << "GPU Memory Used (MB): ~" << aMemUsed / 1048576 << std::endl;
+  std::cout << "GPU Memory Used (Mb):\n"
+    << "\tFor mesh: " << aMemTrgUsed / 1048576 << "\n"
+    << "\tFor BVHs: " << aMemBvhUsed / 1048576 << "\n";
 
 #endif
 

@@ -39,6 +39,10 @@ BVH_SweepPlaneBuilder.hxx
 BVH_SweepPlaneBuilder.lxx
 BVH_Tree.hxx
 BVH_Tree.lxx
+BVH_BinaryTree.hxx
+BVH_BinaryTree.lxx
+BVH_QuadTree.hxx
+BVH_QuadTree.lxx
 BVH_Triangulation.hxx
 BVH_Triangulation.lxx
 BVH_Types.hxx

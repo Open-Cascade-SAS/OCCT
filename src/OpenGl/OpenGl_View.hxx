@@ -771,7 +771,7 @@ protected: //! @name data types related to ray-tracing
   static const Standard_Integer THE_DEFAULT_NB_BOUNCES = 3;
 
   //! Default size of traversal stack.
-  static const Standard_Integer THE_DEFAULT_STACK_SIZE = 24;
+  static const Standard_Integer THE_DEFAULT_STACK_SIZE = 10;
 
   //! Compile-time ray-tracing parameters.
   struct RaytracingParams

@@ -26,7 +26,7 @@ void main (void)
 #else
   ivec2 aWinSize = textureSize (uAccumTexture, 0);
 
-  SeedRand (uFrameRndSeed, aWinSize.x, uBlockedRngEnabled == 0 ? 1 : 16);
+  SeedRand (uFrameRndSeed, aWinSize.x, uBlockedRngEnabled == 0 ? 1 : 8);
 
   SRay aRay = GenerateRay (vPixel +
     vec2 (RandFloat() + 1.f, RandFloat() + 1.f) / vec2 (aWinSize));

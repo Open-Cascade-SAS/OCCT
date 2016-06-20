@@ -118,6 +118,26 @@ OpenGl_RaytraceLight::OpenGl_RaytraceLight (const BVH_Vec4f& theDiffuse,
 }
 
 // =======================================================================
+// function : QuadBVH
+// purpose  : Returns quad BVH (QBVH) tree produced from binary BVH
+// =======================================================================
+const QuadBvhHandle& OpenGl_TriangleSet::QuadBVH()
+{
+  if (!myIsDirty)
+  {
+    Standard_ASSERT_RAISE (!myQuadBVH.IsNull(), "Error! BVH was not collapsed into QBVH");
+  }
+  else
+  {
+    myQuadBVH = BVH()->CollapseToQuadTree(); // build binary BVH and collapse it
+
+    myBVH->Clear(); // erase binary BVH
+  }
+
+  return myQuadBVH;
+}
+
+// =======================================================================
 // function : Center
 // purpose  : Returns centroid position along the given axis
 // =======================================================================
@@ -225,7 +245,7 @@ struct OpenGL_BVHParallelBuilder
       Set->Objects().ChangeValue (static_cast<Standard_Integer> (theObjectIdx)).operator->());
 
     if (aTriangleSet != NULL)
-      aTriangleSet->BVH();
+      aTriangleSet->QuadBVH();
   }
 };
 
@@ -246,9 +266,9 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
   aTimer.Start();
 #endif
 
-  OSD_Parallel::For(0, Size(), OpenGL_BVHParallelBuilder(this));
+  OSD_Parallel::For (0, Size(), OpenGL_BVHParallelBuilder (this));
 
-  myBottomLevelTreeDepth = 0;
+  myBotLevelTreeDepth = 1;
 
   for (Standard_Integer anObjectIdx = 0; anObjectIdx < Size(); ++anObjectIdx)
   {
@@ -258,10 +278,10 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
     Standard_ASSERT_RETURN (aTriangleSet != NULL,
       "Error! Failed to get triangulation of OpenGL element", Standard_False);
 
-    Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
+    Standard_ASSERT_RETURN (!aTriangleSet->QuadBVH().IsNull(),
       "Error! Failed to update bottom-level BVH of OpenGL element", Standard_False);
 
-    NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> > aBVH = aTriangleSet->BVH();
+    QuadBvhHandle aBVH = aTriangleSet->QuadBVH();
 
     // correct data array of bottom-level BVH to set special flag for outer
     // nodes in order to distinguish them from outer nodes of top-level BVH
@@ -273,7 +293,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
       }
     }
 
-    myBottomLevelTreeDepth = Max (myBottomLevelTreeDepth, aTriangleSet->BVH()->Depth());
+    myBotLevelTreeDepth = Max (myBotLevelTreeDepth, aTriangleSet->QuadBVH()->Depth());
   }
 
 #ifdef RAY_TRACE_PRINT_INFO
@@ -288,7 +308,12 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
   aTimer.Start();
 #endif
 
-  NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> > aBVH = BVH();
+  QuadBvhHandle aBVH = QuadBVH();
+
+  Standard_ASSERT_RETURN (!aBVH.IsNull(),
+    "Error! Failed to update high-level BVH of ray-tracing scene", Standard_False);
+
+  myTopLevelTreeDepth = aBVH->Depth();
 
 #ifdef RAY_TRACE_PRINT_INFO
   aTimer.Stop();
@@ -297,43 +322,60 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
     aTimer.ElapsedTime() << std::endl;
 #endif
 
-  Standard_ASSERT_RETURN (!aBVH.IsNull(),
-    "Error! Failed to update high-level BVH of ray-tracing scene", Standard_False);
-
-  myHighLevelTreeDepth = aBVH->Depth();
-
   Standard_Integer aVerticesOffset = 0;
   Standard_Integer aElementsOffset = 0;
-  Standard_Integer aBVHNodesOffset = BVH()->Length();
+  Standard_Integer aBvhNodesOffset = QuadBVH()->Length();
 
   for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
   {
-    if (!aBVH->IsOuter (aNodeIdx))
-      continue;
+    if (aBVH->IsOuter (aNodeIdx))
+    {
+      Standard_ASSERT_RETURN (aBVH->BegPrimitive (aNodeIdx) == aBVH->EndPrimitive (aNodeIdx),
+        "Error! Invalid leaf node in high-level BVH (contains several objects)", Standard_False);
 
-    Standard_ASSERT_RETURN (aBVH->BegPrimitive (aNodeIdx) == aBVH->EndPrimitive (aNodeIdx),
-      "Error! Invalid leaf node in high-level BVH (contains several objects)", Standard_False);
+      const Standard_Integer anObjectIdx = aBVH->BegPrimitive (aNodeIdx);
 
-    Standard_Integer anObjectIdx = aBVH->BegPrimitive (aNodeIdx);
+      Standard_ASSERT_RETURN (anObjectIdx < myObjects.Size(),
+        "Error! Invalid leaf node in high-level BVH (contains out-of-range object)", Standard_False);
 
-    Standard_ASSERT_RETURN (anObjectIdx < myObjects.Size(),
-      "Error! Invalid leaf node in high-level BVH (contains out-of-range object)", Standard_False);
+      OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (myObjects (anObjectIdx).get());
 
-    OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
-      myObjects.ChangeValue (anObjectIdx).operator->());
+      // Note: We overwrite node info record to store parameters
+      // of bottom-level BVH and triangulation of OpenGL element
 
-    // Note: We overwrite node info record to store parameters
-    // of bottom-level BVH and triangulation of OpenGL element
+      aBVH->NodeInfoBuffer()[aNodeIdx] = BVH_Vec4i (anObjectIdx + 1, // to keep leaf flag
+                                                    aBvhNodesOffset,
+                                                    aVerticesOffset,
+                                                    aElementsOffset);
 
-    aBVH->NodeInfoBuffer().at (aNodeIdx) = BVH_Vec4i (
-      anObjectIdx + 1 /* to keep leaf flag */, aBVHNodesOffset, aVerticesOffset, aElementsOffset);
+      aVerticesOffset += static_cast<Standard_Integer> (aTriangleSet->Vertices.size());
+      aElementsOffset += static_cast<Standard_Integer> (aTriangleSet->Elements.size());
 
-    aVerticesOffset += (int)aTriangleSet->Vertices.size();
-    aElementsOffset += (int)aTriangleSet->Elements.size();
-    aBVHNodesOffset += aTriangleSet->BVH()->Length();
+      aBvhNodesOffset += aTriangleSet->QuadBVH()->Length();
+    }
   }
 
   return Standard_True;
+}
+
+// =======================================================================
+// function : QuadBVH
+// purpose  : Returns quad BVH (QBVH) tree produced from binary BVH
+// =======================================================================
+const QuadBvhHandle& OpenGl_RaytraceGeometry::QuadBVH()
+{
+  if (!myIsDirty)
+  {
+    Standard_ASSERT_RAISE (!myQuadBVH.IsNull(), "Error! BVH was not collapsed into QBVH");
+  }
+  else
+  {
+    myQuadBVH = BVH()->CollapseToQuadTree(); // build binary BVH and collapse it
+
+    myBVH->Clear(); // erase binary BVH
+  }
+
+  return myQuadBVH;
 }
 
 // =======================================================================
@@ -342,7 +384,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 // =======================================================================
 Standard_Integer OpenGl_RaytraceGeometry::AccelerationOffset (Standard_Integer theNodeIdx)
 {
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = BVH();
+  const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
     return INVALID_OFFSET;
@@ -356,7 +398,7 @@ Standard_Integer OpenGl_RaytraceGeometry::AccelerationOffset (Standard_Integer t
 // =======================================================================
 Standard_Integer OpenGl_RaytraceGeometry::VerticesOffset (Standard_Integer theNodeIdx)
 {
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = BVH();
+  const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
     return INVALID_OFFSET;
@@ -370,7 +412,7 @@ Standard_Integer OpenGl_RaytraceGeometry::VerticesOffset (Standard_Integer theNo
 // =======================================================================
 Standard_Integer OpenGl_RaytraceGeometry::ElementsOffset (Standard_Integer theNodeIdx)
 {
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = BVH();
+  const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
     return INVALID_OFFSET;
@@ -384,7 +426,7 @@ Standard_Integer OpenGl_RaytraceGeometry::ElementsOffset (Standard_Integer theNo
 // =======================================================================
 OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet (Standard_Integer theNodeIdx)
 {
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = BVH();
+  const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
     return NULL;
@@ -392,8 +434,8 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet (Standard_Integer theNo
   if (aBVH->NodeInfoBuffer().at (theNodeIdx).x() > myObjects.Size())
     return NULL;
 
-  return dynamic_cast<OpenGl_TriangleSet*> (myObjects.ChangeValue (
-    aBVH->NodeInfoBuffer().at (theNodeIdx).x() - 1).operator->());
+  return dynamic_cast<OpenGl_TriangleSet*> (
+    myObjects (aBVH->NodeInfoBuffer().at (theNodeIdx).x() - 1).get());
 }
 
 // =======================================================================

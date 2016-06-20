@@ -17,7 +17,7 @@
 #define _BVH_Builder_Header
 
 #include <BVH_Set.hxx>
-#include <BVH_Tree.hxx>
+#include <BVH_BinaryTree.hxx>
 
 namespace BVH
 {

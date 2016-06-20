@@ -1,6 +1,6 @@
-// Created on: 2013-12-20
+// Created on: 2016-06-20
 // Created by: Denis BOGOLEPOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,11 +14,11 @@
 // commercial license or contractual agreement.
 
 // =======================================================================
-// function : ~BVH_TreeBase
-// purpose  : Releases resources of BVH tree
+// function : Child
+// purpose  : Returns index of the K-th child of the given inner node
 // =======================================================================
-template<class T, int N>
-BVH_TreeBase<T, N>::~BVH_TreeBase()
+template<class T, int N> template<int K>
+int BVH_Tree<T, N, BVH_QuadTree>::Child (const int theNodeIndex) const
 {
-  //
+  return BVH::Array<int, 4>::Value (this->myNodeInfoBuffer, theNodeIndex).y() + K;
 }

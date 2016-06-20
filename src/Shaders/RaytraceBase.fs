@@ -322,50 +322,33 @@ float IntersectSphere (in SRay theRay, in float theRadius)
 // function : IntersectTriangle
 // purpose  : Computes ray-triangle intersection (branchless version)
 // =======================================================================
-float IntersectTriangle (in SRay theRay,
-                         in vec3 thePnt0,
-                         in vec3 thePnt1,
-                         in vec3 thePnt2,
-                         out vec2 theUV,
-                         out vec3 theNorm)
+void IntersectTriangle (in SRay theRay,
+                        in vec3 thePnt0,
+                        in vec3 thePnt1,
+                        in vec3 thePnt2,
+                        out vec3 theUVT,
+                        out vec3 theNorm)
 {
+  vec3 aToTrg = thePnt0 - theRay.Origin;
+
   vec3 aEdge0 = thePnt1 - thePnt0;
   vec3 aEdge1 = thePnt0 - thePnt2;
 
   theNorm = cross (aEdge1, aEdge0);
 
-  vec3 aEdge2 = (1.0f / dot (theNorm, theRay.Direct)) * (thePnt0 - theRay.Origin);
+  vec3 theVect = cross (theRay.Direct, aToTrg);
 
-  float aTime = dot (theNorm, aEdge2);
+  theUVT = vec3 (dot (theNorm, aToTrg),
+                 dot (theVect, aEdge1),
+                 dot (theVect, aEdge0)) * (1.f / dot (theNorm, theRay.Direct));
 
-  vec3 theVec = cross (theRay.Direct, aEdge2);
-
-  theUV.x = dot (theVec, aEdge1);
-  theUV.y = dot (theVec, aEdge0);
-
-  return bool (int(aTime >= 0.0f) &
-               int(theUV.x >= 0.0f) &
-               int(theUV.y >= 0.0f) &
-               int(theUV.x + theUV.y <= 1.0f)) ? aTime : MAXFLOAT;
+  theUVT.x = any (lessThan (theUVT, ZERO)) || (theUVT.y + theUVT.z) > 1.f ? MAXFLOAT : theUVT.x;
 }
 
-//! Identifies the absence of intersection.
-#define INALID_HIT ivec4 (-1)
+#define EMPTY_ROOT ivec4(0)
 
-//! Global stack shared between traversal functions.
-int Stack[STACK_SIZE];
-
-#define MATERIAL_AMBN(index) (18 * index + 0)
-#define MATERIAL_DIFF(index) (18 * index + 1)
-#define MATERIAL_SPEC(index) (18 * index + 2)
-#define MATERIAL_EMIS(index) (18 * index + 3)
-#define MATERIAL_REFL(index) (18 * index + 4)
-#define MATERIAL_REFR(index) (18 * index + 5)
-#define MATERIAL_TRAN(index) (18 * index + 6)
-#define MATERIAL_TRS1(index) (18 * index + 7)
-#define MATERIAL_TRS2(index) (18 * index + 8)
-#define MATERIAL_TRS3(index) (18 * index + 9)
-
+//! Utility structure containing information about
+//! currently traversing sub-tree of scene's BVH.
 struct SSubTree
 {
   //! Transformed ray.
@@ -378,12 +361,54 @@ struct SSubTree
   ivec4 SubData;
 };
 
+#define MATERIAL_AMBN(index) (18 * index + 0)
+#define MATERIAL_DIFF(index) (18 * index + 1)
+#define MATERIAL_SPEC(index) (18 * index + 2)
+#define MATERIAL_EMIS(index) (18 * index + 3)
+#define MATERIAL_REFL(index) (18 * index + 4)
+#define MATERIAL_REFR(index) (18 * index + 5)
+#define MATERIAL_TRAN(index) (18 * index + 6)
+#define MATERIAL_TRS1(index) (18 * index + 7)
+#define MATERIAL_TRS2(index) (18 * index + 8)
+#define MATERIAL_TRS3(index) (18 * index + 9)
+
 #define TRS_OFFSET(treelet) treelet.SubData.x
 #define BVH_OFFSET(treelet) treelet.SubData.y
 #define VRT_OFFSET(treelet) treelet.SubData.z
 #define TRG_OFFSET(treelet) treelet.SubData.w
 
-#define EMPTY_ROOT ivec4(0)
+//! Identifies the absence of intersection.
+#define INALID_HIT ivec4 (-1)
+
+//! Global stack shared between traversal functions.
+int Stack[STACK_SIZE];
+
+// =======================================================================
+// function : pop
+// purpose  :
+// =======================================================================
+int pop (inout int theHead)
+{
+  int aData = Stack[theHead];
+
+  int aMask = aData >> 26;
+  int aNode = aMask & 0x3;
+
+  aMask >>= 2;
+
+  if ((aMask & 0x3) == aNode)
+  {
+    --theHead;
+  }
+  else
+  {
+    aMask |= (aMask << 2) & 0x30;
+
+    Stack[theHead] = (aData & 0x03FFFFFF) | (aMask << 26);
+  }
+
+  return (aData & 0x03FFFFFF) + aNode;
+}
 
 // =======================================================================
 // function : SceneNearestHit
@@ -399,55 +424,90 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
 
   SSubTree aSubTree = SSubTree (theRay, theInverse, EMPTY_ROOT);
 
-  for (bool toContinue = true; toContinue;)
+  for (bool toContinue = true; toContinue; /* none */)
   {
     ivec4 aData = texelFetch (uSceneNodeInfoTexture, aNode);
 
     if (aData.x == 0) // if inner node
     {
-      float aTimeOut;
-      float aTimeLft;
-      float aTimeRgh;
-
       aData.y += BVH_OFFSET (aSubTree);
-      aData.z += BVH_OFFSET (aSubTree);
 
-      vec3 aNodeMinLft = texelFetch (uSceneMinPointTexture, aData.y).xyz;
-      vec3 aNodeMinRgh = texelFetch (uSceneMinPointTexture, aData.z).xyz;
-      vec3 aNodeMaxLft = texelFetch (uSceneMaxPointTexture, aData.y).xyz;
-      vec3 aNodeMaxRgh = texelFetch (uSceneMaxPointTexture, aData.z).xyz;
+      vec4 aHitTimes = vec4 (MAXFLOAT,
+                             MAXFLOAT,
+                             MAXFLOAT,
+                             MAXFLOAT);
 
-      vec3 aTime0 = (aNodeMinLft - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
-      vec3 aTime1 = (aNodeMaxLft - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
+      vec3 aRayOriginInverse = -aSubTree.TrsfRay.Origin * aSubTree.Inverse;
 
-      vec3 aTimeMax = max (aTime0, aTime1);
-      vec3 aTimeMin = min (aTime0, aTime1);
+      vec3 aNodeMin0 = texelFetch (uSceneMinPointTexture, aData.y +                0).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMin1 = texelFetch (uSceneMinPointTexture, aData.y +                1).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMin2 = texelFetch (uSceneMinPointTexture, aData.y + min (2, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMin3 = texelFetch (uSceneMinPointTexture, aData.y + min (3, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax0 = texelFetch (uSceneMaxPointTexture, aData.y +                0).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax1 = texelFetch (uSceneMaxPointTexture, aData.y +                1).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax2 = texelFetch (uSceneMaxPointTexture, aData.y + min (2, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax3 = texelFetch (uSceneMaxPointTexture, aData.y + min (3, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
 
-      aTime0 = (aNodeMinRgh - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
-      aTime1 = (aNodeMaxRgh - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
+      vec3 aTimeMax = max (aNodeMin0, aNodeMax0);
+      vec3 aTimeMin = min (aNodeMin0, aNodeMax0);
 
-      aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
-      aTimeLft = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+      float aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      float aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      int aHitLft = int(aTimeLft <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeLft <= theHit.Time);
+      aHitTimes.x = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f);
 
-      aTimeMax = max (aTime0, aTime1);
-      aTimeMin = min (aTime0, aTime1);
+      aTimeMax = max (aNodeMin1, aNodeMax1);
+      aTimeMin = min (aNodeMin1, aNodeMax1);
 
-      aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
-      aTimeRgh = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+      aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      int aHitRgh = int(aTimeRgh <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeRgh <= theHit.Time);
+      aHitTimes.y = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f);
 
-      aNode = (aHitLft != 0) ? aData.y : aData.z;
+      aTimeMax = max (aNodeMin2, aNodeMax2);
+      aTimeMin = min (aNodeMin2, aNodeMax2);
 
-      if (aHitLft + aHitRgh == 2) // hit both children
+      aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+
+      aHitTimes.z = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f && aData.z > 1);
+
+      aTimeMax = max (aNodeMin3, aNodeMax3);
+      aTimeMin = min (aNodeMin3, aNodeMax3);
+
+      aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+
+      aHitTimes.w = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theHit.Time && aTimeLeave >= 0.f && aData.z > 2);
+
+      ivec4 aChildren = ivec4 (0, 1, 2, 3);
+
+      aChildren.xy = aHitTimes.y < aHitTimes.x ? aChildren.yx : aChildren.xy;
+      aHitTimes.xy = aHitTimes.y < aHitTimes.x ? aHitTimes.yx : aHitTimes.xy;
+      aChildren.zw = aHitTimes.w < aHitTimes.z ? aChildren.wz : aChildren.zw;
+      aHitTimes.zw = aHitTimes.w < aHitTimes.z ? aHitTimes.wz : aHitTimes.zw;
+      aChildren.xz = aHitTimes.z < aHitTimes.x ? aChildren.zx : aChildren.xz;
+      aHitTimes.xz = aHitTimes.z < aHitTimes.x ? aHitTimes.zx : aHitTimes.xz;
+      aChildren.yw = aHitTimes.w < aHitTimes.y ? aChildren.wy : aChildren.yw;
+      aHitTimes.yw = aHitTimes.w < aHitTimes.y ? aHitTimes.wy : aHitTimes.yw;
+      aChildren.yz = aHitTimes.z < aHitTimes.y ? aChildren.zy : aChildren.yz;
+      aHitTimes.yz = aHitTimes.z < aHitTimes.y ? aHitTimes.zy : aHitTimes.yz;
+
+      if (aHitTimes.x != MAXFLOAT)
       {
-        aNode = (aTimeLft < aTimeRgh) ? aData.y : aData.z;
+        int aHitMask = (aHitTimes.w != MAXFLOAT ? aChildren.w : aChildren.z) << 2
+                     | (aHitTimes.z != MAXFLOAT ? aChildren.z : aChildren.y);
 
-        Stack[++aHead] = (aTimeLft < aTimeRgh) ? aData.z : aData.y;
+        if (aHitTimes.y != MAXFLOAT)
+          Stack[++aHead] = aData.y | (aHitMask << 2 | aChildren.y) << 26;
+
+        aNode = aData.y + aChildren.x;
       }
-      else if (aHitLft == aHitRgh) // no hit
+      else
       {
         toContinue = (aHead >= 0);
 
@@ -456,13 +516,14 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
           aStop = -1; aSubTree = SSubTree (theRay, theInverse, EMPTY_ROOT);
         }
 
-        aNode = Stack[abs (aHead)]; --aHead;
+        if (aHead >= 0)
+          aNode = pop (aHead);
       }
     }
-    else if (aData.x < 0) // leaf node (containg triangles)
+    else if (aData.x < 0) // leaf node (contains triangles)
     {
       vec3 aNormal;
-      vec2 aParams;
+      vec3 aTimeUV;
 
       for (int anIdx = aData.y; anIdx <= aData.z; ++anIdx)
       {
@@ -472,16 +533,15 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
         vec3 aPoint1 = texelFetch (uGeometryVertexTexture, aTriangle.y += VRT_OFFSET (aSubTree)).xyz;
         vec3 aPoint2 = texelFetch (uGeometryVertexTexture, aTriangle.z += VRT_OFFSET (aSubTree)).xyz;
 
-        float aTime = IntersectTriangle (aSubTree.TrsfRay,
-          aPoint0, aPoint1, aPoint2, aParams, aNormal);
+        IntersectTriangle (aSubTree.TrsfRay, aPoint0, aPoint1, aPoint2, aTimeUV, aNormal);
 
-        if (aTime < theHit.Time)
+        if (aTimeUV.x < theHit.Time)
         {
           aTriIndex = aTriangle;
 
           theTrsfId = TRS_OFFSET (aSubTree);
 
-          theHit = SIntersect (aTime, aParams, aNormal);
+          theHit = SIntersect (aTimeUV.x, aTimeUV.yz, aNormal);
         }
       }
 
@@ -492,7 +552,8 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
         aStop = -1; aSubTree = SSubTree (theRay, theInverse, EMPTY_ROOT);
       }
 
-      aNode = Stack[abs (aHead)]; --aHead;
+      if (aHead >= 0)
+        aNode = pop (aHead);
     }
     else if (aData.x > 0) // switch node
     {
@@ -540,55 +601,90 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 
   SSubTree aSubTree = SSubTree (theRay, theInverse, EMPTY_ROOT);
 
-  for (bool toContinue = true; toContinue;)
+  for (bool toContinue = true; toContinue; /* none */)
   {
     ivec4 aData = texelFetch (uSceneNodeInfoTexture, aNode);
 
     if (aData.x == 0) // if inner node
     {
-      float aTimeOut;
-      float aTimeLft;
-      float aTimeRgh;
-
       aData.y += BVH_OFFSET (aSubTree);
-      aData.z += BVH_OFFSET (aSubTree);
 
-      vec3 aNodeMinLft = texelFetch (uSceneMinPointTexture, aData.y).xyz;
-      vec3 aNodeMinRgh = texelFetch (uSceneMinPointTexture, aData.z).xyz;
-      vec3 aNodeMaxLft = texelFetch (uSceneMaxPointTexture, aData.y).xyz;
-      vec3 aNodeMaxRgh = texelFetch (uSceneMaxPointTexture, aData.z).xyz;
+      vec4 aHitTimes = vec4 (MAXFLOAT,
+                             MAXFLOAT,
+                             MAXFLOAT,
+                             MAXFLOAT);
 
-      vec3 aTime0 = (aNodeMinLft - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
-      vec3 aTime1 = (aNodeMaxLft - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
+      vec3 aRayOriginInverse = -aSubTree.TrsfRay.Origin * aSubTree.Inverse;
 
-      vec3 aTimeMax = max (aTime0, aTime1);
-      vec3 aTimeMin = min (aTime0, aTime1);
+      vec3 aNodeMin0 = texelFetch (uSceneMinPointTexture, aData.y +                0).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMin1 = texelFetch (uSceneMinPointTexture, aData.y +                1).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMin2 = texelFetch (uSceneMinPointTexture, aData.y + min (2, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMin3 = texelFetch (uSceneMinPointTexture, aData.y + min (3, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax0 = texelFetch (uSceneMaxPointTexture, aData.y +                0).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax1 = texelFetch (uSceneMaxPointTexture, aData.y +                1).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax2 = texelFetch (uSceneMaxPointTexture, aData.y + min (2, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
+      vec3 aNodeMax3 = texelFetch (uSceneMaxPointTexture, aData.y + min (3, aData.z)).xyz * aSubTree.Inverse + aRayOriginInverse;
 
-      aTime0 = (aNodeMinRgh - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
-      aTime1 = (aNodeMaxRgh - aSubTree.TrsfRay.Origin) * aSubTree.Inverse;
+      vec3 aTimeMax = max (aNodeMin0, aNodeMax0);
+      vec3 aTimeMin = min (aNodeMin0, aNodeMax0);
 
-      aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
-      aTimeLft = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+      float aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      float aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      int aHitLft = int(aTimeLft <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeLft <= theDistance);
+      aHitTimes.x = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f);
 
-      aTimeMax = max (aTime0, aTime1);
-      aTimeMin = min (aTime0, aTime1);
+      aTimeMax = max (aNodeMin1, aNodeMax1);
+      aTimeMin = min (aNodeMin1, aNodeMax1);
 
-      aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
-      aTimeRgh = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+      aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
-      int aHitRgh = int(aTimeRgh <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeRgh <= theDistance);
+      aHitTimes.y = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f);
 
-      aNode = (aHitLft != 0) ? aData.y : aData.z;
+      aTimeMax = max (aNodeMin2, aNodeMax2);
+      aTimeMin = min (aNodeMin2, aNodeMax2);
 
-      if (aHitLft + aHitRgh == 2) // hit both children
+      aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+
+      aHitTimes.z = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f && aData.z > 1);
+
+      aTimeMax = max (aNodeMin3, aNodeMax3);
+      aTimeMin = min (aNodeMin3, aNodeMax3);
+
+      aTimeLeave = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
+      aTimeEnter = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
+
+      aHitTimes.w = mix (MAXFLOAT, aTimeEnter,
+        aTimeEnter <= aTimeLeave && aTimeEnter <= theDistance && aTimeLeave >= 0.f && aData.z > 2);
+
+      ivec4 aChildren = ivec4 (0, 1, 2, 3);
+
+      aChildren.xy = aHitTimes.y < aHitTimes.x ? aChildren.yx : aChildren.xy;
+      aHitTimes.xy = aHitTimes.y < aHitTimes.x ? aHitTimes.yx : aHitTimes.xy;
+      aChildren.zw = aHitTimes.w < aHitTimes.z ? aChildren.wz : aChildren.zw;
+      aHitTimes.zw = aHitTimes.w < aHitTimes.z ? aHitTimes.wz : aHitTimes.zw;
+      aChildren.xz = aHitTimes.z < aHitTimes.x ? aChildren.zx : aChildren.xz;
+      aHitTimes.xz = aHitTimes.z < aHitTimes.x ? aHitTimes.zx : aHitTimes.xz;
+      aChildren.yw = aHitTimes.w < aHitTimes.y ? aChildren.wy : aChildren.yw;
+      aHitTimes.yw = aHitTimes.w < aHitTimes.y ? aHitTimes.wy : aHitTimes.yw;
+      aChildren.yz = aHitTimes.z < aHitTimes.y ? aChildren.zy : aChildren.yz;
+      aHitTimes.yz = aHitTimes.z < aHitTimes.y ? aHitTimes.zy : aHitTimes.yz;
+
+      if (aHitTimes.x != MAXFLOAT)
       {
-        aNode = (aTimeLft < aTimeRgh) ? aData.y : aData.z;
+        int aHitMask = (aHitTimes.w != MAXFLOAT ? aChildren.w : aChildren.z) << 2
+                     | (aHitTimes.z != MAXFLOAT ? aChildren.z : aChildren.y);
 
-        Stack[++aHead] = (aTimeLft < aTimeRgh) ? aData.z : aData.y;
+        if (aHitTimes.y != MAXFLOAT)
+          Stack[++aHead] = aData.y | (aHitMask << 2 | aChildren.y) << 26;
+
+        aNode = aData.y + aChildren.x;
       }
-      else if (aHitLft == aHitRgh) // no hit
+      else
       {
         toContinue = (aHead >= 0);
 
@@ -597,13 +693,14 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
           aStop = -1; aSubTree = SSubTree (theRay, theInverse, EMPTY_ROOT);
         }
 
-        aNode = Stack[abs (aHead)]; --aHead;
+        if (aHead >= 0)
+          aNode = pop (aHead);
       }
     }
     else if (aData.x < 0) // leaf node
     {
       vec3 aNormal;
-      vec2 aParams;
+      vec3 aTimeUV;
 
       for (int anIdx = aData.y; anIdx <= aData.z; ++anIdx)
       {
@@ -613,30 +710,30 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
         vec3 aPoint1 = texelFetch (uGeometryVertexTexture, aTriangle.y += VRT_OFFSET (aSubTree)).xyz;
         vec3 aPoint2 = texelFetch (uGeometryVertexTexture, aTriangle.z += VRT_OFFSET (aSubTree)).xyz;
 
-        float aTime = IntersectTriangle (aSubTree.TrsfRay,
-          aPoint0, aPoint1, aPoint2, aParams, aNormal);
+        IntersectTriangle (aSubTree.TrsfRay, aPoint0, aPoint1, aPoint2, aTimeUV, aNormal);
 
 #ifdef TRANSPARENT_SHADOWS
-        if (aTime < theDistance)
+        if (aTimeUV.x < theDistance)
         {
           aFactor *= 1.f - texelFetch (uRaytraceMaterialTexture, MATERIAL_TRAN (aTriangle.w)).x;
         }
 #else
-        if (aTime < theDistance)
+        if (aTimeUV.x < theDistance)
         {
           aFactor = 0.f;
         }
 #endif
       }
 
-      toContinue = (aHead >= 0) && (aFactor > 0.1f);
+      toContinue = (aHead >= 0);
 
       if (aHead == aStop) // go to top-level BVH
       {
         aStop = -1; aSubTree = SSubTree (theRay, theInverse, EMPTY_ROOT);
       }
 
-      aNode = Stack[abs (aHead)]; --aHead;
+      if (aHead >= 0)
+        aNode = pop (aHead);
     }
     else if (aData.x > 0) // switch node
     {

@@ -361,8 +361,8 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   {
     if (!aSensitivesTree->IsOuter (aNode))
     {
-      const Standard_Integer aLeftChildIdx  = aSensitivesTree->LeftChild  (aNode);
-      const Standard_Integer aRightChildIdx = aSensitivesTree->RightChild (aNode);
+      const Standard_Integer aLeftChildIdx  = aSensitivesTree->Child<0> (aNode);
+      const Standard_Integer aRightChildIdx = aSensitivesTree->Child<1> (aNode);
       const Standard_Boolean isLeftChildIn  =  aMgr.Overlaps (aSensitivesTree->MinPoint (aLeftChildIdx),
                                                               aSensitivesTree->MaxPoint (aLeftChildIdx));
       const Standard_Boolean isRightChildIn = aMgr.Overlaps (aSensitivesTree->MinPoint (aRightChildIdx),
@@ -467,8 +467,8 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
     {
       if (!aBVHTree->IsOuter (aNode))
       {
-        const Standard_Integer aLeftChildIdx  = aBVHTree->LeftChild  (aNode);
-        const Standard_Integer aRightChildIdx = aBVHTree->RightChild (aNode);
+        const Standard_Integer aLeftChildIdx  = aBVHTree->Child<0> (aNode);
+        const Standard_Integer aRightChildIdx = aBVHTree->Child<1> (aNode);
         const Standard_Boolean isLeftChildIn  =
           mySelectingVolumeMgr.Overlaps (aBVHTree->MinPoint (aLeftChildIdx),
                                          aBVHTree->MaxPoint (aLeftChildIdx));
