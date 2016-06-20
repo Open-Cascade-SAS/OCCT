@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC27622"
+puts "========"
+puts ""
+########################################################################
+# Data Exchange - STL file having less than 4 triangles cannot be read
+########################################################################
+
+readstl result [locate_data_file bug27622_Design1.stl]
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : 4
+ EDGE      : 5
+ WIRE      : 2
+ FACE      : 2
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 14
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result of STL-reading operation"
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

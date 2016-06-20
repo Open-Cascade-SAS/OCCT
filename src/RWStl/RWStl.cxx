@@ -20,6 +20,8 @@
 #include <gp.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressSentry.hxx>
 #include <OSD.hxx>
@@ -66,7 +68,6 @@ static Standard_Integer AddVertex(Handle(StlMesh_Mesh)& mesh,
 // constants
 static const size_t HEADER_SIZE           =  84;
 static const size_t SIZEOF_STL_FACET      =  50;
-static const size_t STL_MIN_FILE_SIZE     = 284;
 static const size_t ASCII_LINES_PER_FACET =   7;
 
 static const int IND_THRESHOLD = 1000; // increment the indicator every 1k triangles
@@ -356,7 +357,6 @@ Handle(StlMesh_Mesh) RWStl::ReadFile (const OSD_Path& thePath,
 Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
                                        const Handle(Message_ProgressIndicator)& /*theProgInd*/)
 {
-  Standard_Integer NBFACET;
   Standard_Integer ifacet;
   Standard_Real fx,fy,fz,fx1,fy1,fz1,fx2,fy2,fz2,fx3,fy3,fz3;
   Standard_Integer i1,i2,i3,lread;
@@ -374,14 +374,34 @@ Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
   // compute file size
   Standard_Size filesize = theFile.Size();
 
-  if ( (filesize - HEADER_SIZE) % SIZEOF_STL_FACET !=0
-	|| (filesize < STL_MIN_FILE_SIZE)) {
+  // don't trust the number of triangles which is coded in the file sometimes it is wrong
+  Standard_Integer NBFACET = (Standard_Integer)((filesize - HEADER_SIZE) / SIZEOF_STL_FACET);
+  if (NBFACET < 1)
+  {
     Standard_NoMoreObject::Raise("RWStl::ReadBinary (wrong file size)");
   }
 
-  // don't trust the number of triangles which is coded in the file
-  // sometimes it is wrong, and with this technique we don't need to swap endians for integer
-  NBFACET = (Standard_Integer)((filesize - HEADER_SIZE) / SIZEOF_STL_FACET);
+  theFile.Seek (80, OSD_FromBeginning);
+  theFile.Read (adr, 4, lread);
+  Standard_Integer aNbTrisInHeader = (((char*           )buftest)[3] << 24) | (((Standard_Byte* )buftest)[2] << 16)
+                                    | (((Standard_Byte* )buftest)[1] << 8 ) | (((Standard_Byte* )buftest)[0] << 0 );
+  if (NBFACET < aNbTrisInHeader)
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString ("RWStl - Binary STL file defines more triangles (") + aNbTrisInHeader
+                                     + ") that can be read (" + NBFACET + ") - probably corrupted file",
+                                       Message_Warning);
+  }
+  else if (NBFACET > aNbTrisInHeader)
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString ("RWStl - Binary STL file defines less triangles (") + aNbTrisInHeader
+                                     + ") that can be read (" + NBFACET + ") - probably corrupted file",
+                                       Message_Warning);
+  }
+  else if ((filesize - HEADER_SIZE) % SIZEOF_STL_FACET != 0)
+  {
+    Message::DefaultMessenger()->Send (TCollection_AsciiString ("RWStl - Binary STL file has unidentified tail"),
+                                       Message_Warning);
+  }
 
   // skip the header
   theFile.Seek(HEADER_SIZE,OSD_FromBeginning);
