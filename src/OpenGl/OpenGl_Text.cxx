@@ -411,7 +411,7 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_AspectText*      aTextAspect  = theWorkspace->AspectText (Standard_True);
+  const OpenGl_AspectText*      aTextAspect  = theWorkspace->ApplyAspectText();
   const Handle(OpenGl_Texture)  aPrevTexture = theWorkspace->DisableTexture();
   const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
 
@@ -425,24 +425,12 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   myProjMatrix.Convert (aCtx->ProjectionState.Current());
 
   // use highlight color or colors from aspect
-  if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
-  {
-    render (theWorkspace->PrinterContext(),
-            aCtx,
-            *aTextAspect,
-            *theWorkspace->HighlightColor,
-            *theWorkspace->HighlightColor,
-            theWorkspace->View()->RenderingParams().Resolution);
-  }
-  else
-  {
-    render (theWorkspace->PrinterContext(),
-            aCtx,
-            *aTextAspect,
-            aTextAspect->Color(),
-            aTextAspect->SubtitleColor(),
-            theWorkspace->View()->RenderingParams().Resolution);
-  }
+  render (theWorkspace->PrinterContext(),
+          aCtx,
+          *aTextAspect,
+          theWorkspace->TextColor(),
+          theWorkspace->TextSubtitleColor(),
+          theWorkspace->View()->RenderingParams().Resolution);
 
   aCtx->BindProgram (NULL);
 

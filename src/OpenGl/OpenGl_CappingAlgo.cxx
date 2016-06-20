@@ -65,7 +65,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
   }
 
   // remember current aspect face defined in workspace
-  const OpenGl_AspectFace* aFaceAsp = theWorkspace->AspectFace (Standard_False);
+  const OpenGl_AspectFace* aFaceAsp = theWorkspace->AspectFace();
 
   // replace primitive groups rendering filter
   Handle(OpenGl_RenderFilter) aRenderFilter = theWorkspace->GetRenderFilter();
@@ -104,7 +104,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
 
     // override aspects, disable culling
     theWorkspace->SetAspectFace (&theWorkspace->NoneCulling());
-    theWorkspace->AspectFace (Standard_True);
+    theWorkspace->ApplyAspectFace();
 
     // evaluate number of pair faces
     glDisable (GL_DEPTH_TEST);
@@ -117,7 +117,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
 
     // override material, cull back faces
     theWorkspace->SetAspectFace (&theWorkspace->FrontCulling());
-    theWorkspace->AspectFace (Standard_True);
+    theWorkspace->ApplyAspectFace();
 
     // enable all clip plane except the rendered one
     for (aPlaneIt.Init (aContextPlanes); aPlaneIt.More(); aPlaneIt.Next())
@@ -176,7 +176,7 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
 
   aPlaneRes->Update (aContext);
 
-  const OpenGl_AspectFace* aFaceAspect = theWorkspace->AspectFace (Standard_False);
+  const OpenGl_AspectFace* aFaceAspect  = theWorkspace->AspectFace();
   const OpenGl_AspectFace* aPlaneAspect = aPlaneRes->AspectFace();
   if (aPlaneAspect != NULL)
   {

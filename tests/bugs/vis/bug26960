@@ -21,7 +21,7 @@ if {[vreadpixel 350 140 rgb name] != "BLACK"} {
   puts "ERROR: wrong inital location"
 }
 vsetlocation b 0.5 0 0
-if {[vreadpixel 350 140 rgb name] != "CYAN1"} {
+if {[vreadpixel 350 140 rgb name] != "DARKTURQUOISE"} {
   puts "ERROR: the transformation was not applied to highlight structure"
 }
 

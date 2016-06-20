@@ -16,20 +16,20 @@ meshcolors m elem2 1
 vselmode 0 1
 
 vmoveto 200 200
-if {[vreadpixel 197 257 name] != "CYAN1 1"} {
+if {[vreadpixel 197 257 rgb name] != "CYAN1"} {
   puts "ERROR: presentation for dynamic highlight of the object is wrong!"
 }
 vmoveto 0 0
-if {[vreadpixel 197 257 name] != "BLUE2 1"} {
+if {[vreadpixel 197 257 rgb name] != "BLUE2"} {
   puts "ERROR: the object is not unhighlighted after dynamic highlight!"
 }
 
 vselect 200 200
-if {[vreadpixel 197 257 name] != "GRAY80 1"} {
+if {[vreadpixel 197 257 rgb name] != "GRAY93"} {
   puts "ERROR: presentation for selection highlight is wrong!"
 }
 vselect 0 0
-if {[vreadpixel 197 257 name] != "BLUE2 1"} {
+if {[vreadpixel 197 257 rgb name] != "BLUE2"} {
   puts "ERROR: the object is not unhighlighted after selection highlight!"
 }
 

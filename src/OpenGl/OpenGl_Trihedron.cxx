@@ -196,7 +196,7 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   OpenGl_Mat4d aModelViewZ (aModelMatrix);
 
   // Set line aspect
-  const OpenGl_AspectLine* aCurrentAspectLine = theWorkspace->AspectLine (Standard_True);
+  const OpenGl_AspectLine* aCurrentAspectLine = theWorkspace->ApplyAspectLine();
   CALL_DEF_CONTEXTLINE aLineAspect = {1, 1, { 1.F, 1.F, 1.F },  aCurrentAspectLine->Type(), aCurrentAspectLine->Width(), 0};
   aLineAspect.Color.r = myZColor.r();
   aLineAspect.Color.g = myZColor.g();
@@ -325,7 +325,7 @@ void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspa
 
   const GLdouble aScale = myScale * myRatio;
 
-  const OpenGl_AspectLine* anAspectLine = theWorkspace->AspectLine (Standard_True);
+  const OpenGl_AspectLine* anAspectLine = theWorkspace->ApplyAspectLine();
   const TEL_COLOUR&        aLineColor   = anAspectLine->Color();
 
   // Create the trihedron

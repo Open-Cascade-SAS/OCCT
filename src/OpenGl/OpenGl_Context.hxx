@@ -551,7 +551,8 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT Standard_Boolean BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram);
 
   //! Setup current shading material.
-  Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect);
+  Standard_EXPORT void SetShadingMaterial (const OpenGl_AspectFace* theAspect,
+                                           const OpenGl_Vec4* theHighlightColor = NULL);
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);

@@ -35,10 +35,6 @@
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Window.hxx>
 
-class OpenGl_AspectLine;
-class OpenGl_AspectMarker;
-class OpenGl_AspectText;
-class OpenGl_Element;
 class OpenGl_View;
 class Image_PixMap;
 
@@ -57,6 +53,14 @@ struct OpenGl_Material
 
   Standard_ShortReal  Transparency()       const { return Params.y(); }
   Standard_ShortReal& ChangeTransparency()       { return Params.y(); }
+
+  //! Set material color.
+  void SetColor (const OpenGl_Vec4& theColor)
+  {
+    // apply the same formula as in Graphic3d_MaterialAspect::SetColor()
+    Ambient.xyz() = theColor.rgb() * 0.25f;
+    Diffuse.xyz() = theColor.rgb();
+  }
 
   //! Initialize material
   void Init (const OPENGL_SURF_PROP& theProps);
@@ -171,18 +175,101 @@ public:
 
   const TEL_COLOUR* HighlightColor;
 
+  //! Return true if following structures should apply highlight color.
+  bool ToHighlight() const { return myToHighlight; }
+
+  //! Set highlight.
+  void SetHighlight (bool theToHighlight) { myToHighlight = theToHighlight; }
+
+  //! Return line color taking into account highlight flag.
+  const TEL_COLOUR& LineColor() const
+  {
+    return myToHighlight
+         ? *HighlightColor
+         : myAspectLineSet->Color();
+  }
+
+  //! Return edge color taking into account highlight flag.
+  const TEL_COLOUR& EdgeColor() const
+  {
+    return myToHighlight
+         ? *HighlightColor
+         : myAspectFaceSet->AspectEdge()->Color();
+  }
+
+  //! Return marker color taking into account highlight flag.
+  const TEL_COLOUR& MarkerColor() const
+  {
+    return myToHighlight
+         ? *HighlightColor
+         : myAspectMarkerSet->Color();
+  }
+
+  //! Return Interior color taking into account highlight flag.
+  const TEL_COLOUR& InteriorColor() const
+  {
+    return myToHighlight
+         ? *HighlightColor
+         : myAspectFaceSet->IntFront().matcol;
+  }
+
+  //! Return text color taking into account highlight flag.
+  const TEL_COLOUR& TextColor() const
+  {
+    return myToHighlight
+         ? *HighlightColor
+         : myAspectTextSet->Color();
+  }
+
+  //! Return text Subtitle color taking into account highlight flag.
+  const TEL_COLOUR& TextSubtitleColor() const
+  {
+    return myToHighlight
+         ? *HighlightColor
+         : myAspectTextSet->SubtitleColor();
+  }
+
+  //! Currently set line aspect (can differ from applied).
+  const OpenGl_AspectLine*   AspectLine()   const { return myAspectLineSet; }
+
+  //! Currently set face aspect (can differ from applied).
+  const OpenGl_AspectFace*   AspectFace()   const { return myAspectFaceSet; }
+
+  //! Currently set marker aspect (can differ from applied).
+  const OpenGl_AspectMarker* AspectMarker() const { return myAspectMarkerSet; }
+
+  //! Currently set text aspect (can differ from applied).
+  const OpenGl_AspectText*   AspectText()   const { return myAspectTextSet; }
+
+  //! Assign new line aspect (will be applied within ApplyAspectLine()).
   Standard_EXPORT const OpenGl_AspectLine*   SetAspectLine   (const OpenGl_AspectLine*   theAspect);
+
+  //! Assign new face aspect (will be applied within ApplyAspectFace()).
   Standard_EXPORT const OpenGl_AspectFace*   SetAspectFace   (const OpenGl_AspectFace*   theAspect);
+
+  //! Assign new marker aspect (will be applied within ApplyAspectMarker()).
   Standard_EXPORT const OpenGl_AspectMarker* SetAspectMarker (const OpenGl_AspectMarker* theAspect);
+
+  //! Assign new text aspect (will be applied within ApplyAspectText()).
   Standard_EXPORT const OpenGl_AspectText*   SetAspectText   (const OpenGl_AspectText*   theAspect);
 
-  //// THESE METHODS ARE EXPORTED AS THEY PROVIDE STATE INFO TO USERDRAW
-  Standard_EXPORT const OpenGl_AspectLine*   AspectLine   (const Standard_Boolean theWithApply);
-  Standard_EXPORT const OpenGl_AspectFace*   AspectFace   (const Standard_Boolean theWithApply);
-  Standard_EXPORT const OpenGl_AspectMarker* AspectMarker (const Standard_Boolean theWithApply);
-  Standard_EXPORT const OpenGl_AspectText*   AspectText   (const Standard_Boolean theWithApply);
+  //! Apply line aspect.
+  //! @return aspect set by SetAspectLine()
+  const OpenGl_AspectLine* ApplyAspectLine() { return myAspectLineSet; }
 
-  //! Clear the applied aspect state.
+  //! Apply face aspect.
+  //! @return aspect set by SetAspectFace()
+  Standard_EXPORT const OpenGl_AspectFace*   ApplyAspectFace();
+
+  //! Apply marker aspect.
+  //! @return aspect set by SetAspectMarker()
+  Standard_EXPORT const OpenGl_AspectMarker* ApplyAspectMarker();
+
+  //! Apply text aspect.
+  //! @return aspect set by SetAspectText()
+  const OpenGl_AspectText* ApplyAspectText() { return myAspectTextSet; }
+
+  //! Clear the applied aspect state to default values.
   void ResetAppliedAspect();
 
   Standard_EXPORT Handle(OpenGl_Texture) DisableTexture();
@@ -274,10 +361,13 @@ protected: //! @name fields related to status
 
   Handle(OpenGl_RenderFilter) myRenderFilter;
   Handle(OpenGl_Texture) myTextureBound;    //!< currently bound texture (managed by OpenGl_AspectFace and OpenGl_View environment texture)
-  const OpenGl_AspectLine *AspectLine_set, *AspectLine_applied;
-  const OpenGl_AspectFace *AspectFace_set, *AspectFace_applied;
-  const OpenGl_AspectMarker *AspectMarker_set, *AspectMarker_applied;
-  const OpenGl_AspectText *AspectText_set, *AspectText_applied;
+  const OpenGl_AspectLine*   myAspectLineSet;
+  const OpenGl_AspectFace*   myAspectFaceSet;
+  const OpenGl_AspectFace*   myAspectFaceApplied;
+  const OpenGl_AspectMarker* myAspectMarkerSet;
+  const OpenGl_AspectMarker* myAspectMarkerApplied;
+  const OpenGl_AspectText*   myAspectTextSet;
+  bool                       myAspectFaceAppliedWithHL;
 
   const OpenGl_Matrix* ViewMatrix_applied;
   const OpenGl_Matrix* StructureMatrix_applied;
@@ -286,6 +376,7 @@ protected: //! @name fields related to status
   OpenGl_Material myMatBack;     //!< current back  material state
   OpenGl_Material myMatTmp;      //!< temporary variable
   TelCullMode     myCullingMode; //!< back face culling mode, applied from face aspect
+  bool            myToHighlight; //!< flag indicating highlighting mode
 
   OpenGl_Matrix myModelViewMatrix; //!< Model matrix with applied structure transformations
 

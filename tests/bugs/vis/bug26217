@@ -26,7 +26,7 @@ vselect 0 0
 
 vselect 40 120 185 320 -allowoverlap 1
 set aColor [vreadpixel 120 200 rgb name]
-if {$aColor != "GRAY80"} {
+if {$aColor != "GRAY66"} {
   puts "ERROR: the circle is not selected with overlap mode activated"
 }
 

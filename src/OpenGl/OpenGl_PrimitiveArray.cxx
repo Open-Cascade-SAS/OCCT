@@ -361,7 +361,7 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
                                        const Standard_Boolean          theHasVertColor) const
 {
   const Handle(OpenGl_Context)& aGlContext  = theWorkspace->GetGlContext();
-  const bool                    toHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) != 0;
+  const bool                    toHilight   = theWorkspace->ToHighlight();
   bool                          hasVColors  = theHasVertColor && !toHilight;
   if (myVboAttribs.IsNull())
   {
@@ -456,10 +456,8 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   }
 #endif
 
-  const OpenGl_AspectLine* anAspectLineOld = NULL;
-
-  anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace (Standard_True)->AspectEdge());
-  const OpenGl_AspectLine* anAspect = theWorkspace->AspectLine (Standard_True);
+  const OpenGl_AspectLine* anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace()->AspectEdge());
+  const OpenGl_AspectLine* anAspect = theWorkspace->ApplyAspectLine();
 
 #if !defined(GL_ES_VERSION_2_0)
   glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
@@ -531,7 +529,7 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
 // =======================================================================
 void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_AspectMarker* anAspectMarker     = theWorkspace->AspectMarker (Standard_True);
+  const OpenGl_AspectMarker* anAspectMarker     = theWorkspace->ApplyAspectMarker();
   const Handle(OpenGl_Context)&     aCtx        = theWorkspace->GetGlContext();
   const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx);
   if (!aSpriteNorm.IsNull()
@@ -692,9 +690,11 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     return;
   }
 
-  const OpenGl_AspectFace*   anAspectFace   = theWorkspace->AspectFace   (Standard_True);
-  const OpenGl_AspectLine*   anAspectLine   = theWorkspace->AspectLine   (Standard_True);
-  const OpenGl_AspectMarker* anAspectMarker = theWorkspace->AspectMarker (myDrawMode == GL_POINTS);
+  const OpenGl_AspectFace*   anAspectFace   = theWorkspace->ApplyAspectFace();
+  const OpenGl_AspectLine*   anAspectLine   = theWorkspace->ApplyAspectLine();
+  const OpenGl_AspectMarker* anAspectMarker = myDrawMode == GL_POINTS
+                                            ? theWorkspace->ApplyAspectMarker()
+                                            : theWorkspace->AspectMarker();
 
   // create VBOs on first render call
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
@@ -712,17 +712,6 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   }
 
   Tint aFrontLightingModel = anAspectFace->IntFront().color_mask;
-  const TEL_COLOUR* anInteriorColor = &anAspectFace->IntFront().matcol;
-  const TEL_COLOUR* anEdgeColor = &anAspectFace->AspectEdge()->Color();
-  const TEL_COLOUR* aLineColor  = myDrawMode == GL_POINTS ? &anAspectMarker->Color() : &anAspectLine->Color();
-
-  // Use highlight colors
-  if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
-  {
-    anEdgeColor = anInteriorColor = aLineColor = theWorkspace->HighlightColor;
-    aFrontLightingModel = 0;
-  }
-
   const Standard_Boolean hasColorAttrib = !myVboAttribs.IsNull()
                                         && myVboAttribs->HasColorAttribute();
   const Standard_Boolean isLightOn = aFrontLightingModel != 0
@@ -752,10 +741,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   if ((myDrawMode >  GL_LINE_STRIP && anAspectFace->InteriorStyle() != Aspect_IS_EMPTY) ||
       (myDrawMode <= GL_LINE_STRIP))
   {
-    const bool            toHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) != 0;
-    const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->InteriorStyle() != Aspect_IS_HIDDENLINE
-                                      ?  myBounds->Colors
-                                      :  NULL;
+    const bool             toHilight    = theWorkspace->ToHighlight();
     const Standard_Boolean hasVertColor = hasColorAttrib && !toHilight;
     if (aCtx->core20fwd != NULL)
     {
@@ -805,7 +791,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     // All primitives should gather material properties from the AspectFace in shading mode
     if (isLightOn)
     {
-      aCtx->SetShadingMaterial (anAspectFace);
+      aCtx->SetShadingMaterial (anAspectFace, theWorkspace->ToHighlight() ? (const OpenGl_Vec4* )theWorkspace->HighlightColor : NULL);
     }
 
     if (!theWorkspace->ActiveTexture().IsNull()
@@ -814,7 +800,16 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       aCtx->SetTextureMatrix (theWorkspace->ActiveTexture()->GetParams());
     }
 
-    aCtx->SetColor4fv (*(const OpenGl_Vec4* )(myDrawMode <= GL_LINE_STRIP ? aLineColor->rgb : anInteriorColor->rgb));
+    if (myDrawMode <= GL_LINE_STRIP)
+    {
+      const TEL_COLOUR& aLineColor = myDrawMode == GL_POINTS ? theWorkspace->MarkerColor() : theWorkspace->LineColor();
+      aCtx->SetColor4fv (*(const OpenGl_Vec4* )aLineColor.rgb);
+    }
+    else
+    {
+      const TEL_COLOUR& anInteriorColor = theWorkspace->InteriorColor();
+      aCtx->SetColor4fv (*(const OpenGl_Vec4* )anInteriorColor.rgb);
+    }
     if (myDrawMode == GL_LINES
      || myDrawMode == GL_LINE_STRIP)
     {
@@ -822,6 +817,9 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       aCtx->SetLineWidth  (anAspectLine->Width());
     }
 
+    const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->InteriorStyle() != Aspect_IS_HIDDENLINE
+                                      ?  myBounds->Colors
+                                      :  NULL;
     drawArray (theWorkspace, aFaceColors, hasColorAttrib);
   }
 
@@ -834,6 +832,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     if (anAspectFace->Edge()
      || anAspectFace->InteriorStyle() == Aspect_IS_HIDDENLINE)
     {
+      const TEL_COLOUR* anEdgeColor = &theWorkspace->EdgeColor();
       drawEdges (anEdgeColor, theWorkspace);
 
       // restore OpenGL polygon mode if needed

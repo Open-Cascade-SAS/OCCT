@@ -2514,7 +2514,8 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
 // function : SetShadingMaterial
 // purpose  :
 // =======================================================================
-void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect)
+void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
+                                         const OpenGl_Vec4* theHighlightColor)
 {
   if (!myActiveProgram.IsNull())
   {
@@ -2541,6 +2542,12 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect)
                                     : theAspect->IntBack();
       aParams.Init (aProp);
       aParams.Diffuse.a() = aProp.trans;
+
+      if (theHighlightColor != NULL)
+      {
+        aParams.SetColor (*theHighlightColor);
+      }
+
       myActiveProgram->SetUniform (this, aLoc, OpenGl_Material::NbOfVec4(),
                                    aParams.Packed());
     }

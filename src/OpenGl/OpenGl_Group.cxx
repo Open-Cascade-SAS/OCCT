@@ -332,10 +332,10 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   const Handle(OpenGl_RenderFilter)& aFilter = theWorkspace->GetRenderFilter();
 
   // Setup aspects
-  const OpenGl_AspectLine*   aBackAspectLine   = theWorkspace->AspectLine   (Standard_False);
-  const OpenGl_AspectFace*   aBackAspectFace   = theWorkspace->AspectFace   (Standard_False);
-  const OpenGl_AspectMarker* aBackAspectMarker = theWorkspace->AspectMarker (Standard_False);
-  const OpenGl_AspectText*   aBackAspectText   = theWorkspace->AspectText   (Standard_False);
+  const OpenGl_AspectLine*   aBackAspectLine   = theWorkspace->AspectLine();
+  const OpenGl_AspectFace*   aBackAspectFace   = theWorkspace->AspectFace();
+  const OpenGl_AspectMarker* aBackAspectMarker = theWorkspace->AspectMarker();
+  const OpenGl_AspectText*   aBackAspectText   = theWorkspace->AspectText();
   Standard_Boolean isLineSet   = myAspectLine   && myAspectLine->RenderFiltered (theWorkspace, aFilter);
   Standard_Boolean isFaceSet   = myAspectFace   && myAspectFace->RenderFiltered (theWorkspace, aFilter);
   Standard_Boolean isMarkerSet = myAspectMarker && myAspectMarker->RenderFiltered (theWorkspace, aFilter);

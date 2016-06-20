@@ -68,13 +68,12 @@ public:
   {
   #if !defined(GL_ES_VERSION_2_0)
     // Apply line aspect
-    const OpenGl_AspectLine*     anAspectLine = theWorkspace->AspectLine (Standard_True);
     const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 
     glDisable (GL_LIGHTING);
 
     // Use highlight colors
-    theWorkspace->GetGlContext()->core11->glColor3fv ((theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) ? theWorkspace->HighlightColor->rgb : anAspectLine->Color().rgb);
+    theWorkspace->GetGlContext()->core11->glColor3fv (theWorkspace->LineColor().rgb);
 
     glEnableClientState (GL_VERTEX_ARRAY);
     glVertexPointer (3, GL_FLOAT, 0, (GLfloat* )&myVerts);
@@ -466,10 +465,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   // Render named status
-  const Standard_Integer aNamedStatus = theWorkspace->NamedStatus;
   if (highlight)
   {
-    theWorkspace->NamedStatus |= OPENGL_NS_HIGHLIGHT;
+    theWorkspace->SetHighlight (true);
   }
 
   // Apply local transformation
@@ -500,11 +498,11 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Take into account transform persistence
   aCtx->ApplyModelViewMatrix();
 
-  // Apply aspects
-  const OpenGl_AspectLine *anAspectLine = theWorkspace->AspectLine (Standard_False);
-  const OpenGl_AspectFace *anAspectFace = theWorkspace->AspectFace (Standard_False);
-  const OpenGl_AspectMarker *anAspectMarker = theWorkspace->AspectMarker (Standard_False);
-  const OpenGl_AspectText *anAspectText = theWorkspace->AspectText (Standard_False);
+  // remember aspects
+  const OpenGl_AspectLine*   aPrevAspectLine   = theWorkspace->AspectLine();
+  const OpenGl_AspectFace*   aPrevAspectFace   = theWorkspace->AspectFace();
+  const OpenGl_AspectMarker* aPrevAspectMarker = theWorkspace->AspectMarker();
+  const OpenGl_AspectText*   aPrevAspectText   = theWorkspace->AspectText();
 
   // Apply correction for mirror transform
   if (myIsMirrored)
@@ -597,10 +595,10 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   theWorkspace->HighlightColor = aHighlightColor;
 
   // Restore aspects
-  theWorkspace->SetAspectLine (anAspectLine);
-  theWorkspace->SetAspectFace (anAspectFace);
-  theWorkspace->SetAspectMarker (anAspectMarker);
-  theWorkspace->SetAspectText (anAspectText);
+  theWorkspace->SetAspectLine   (aPrevAspectLine);
+  theWorkspace->SetAspectFace   (aPrevAspectFace);
+  theWorkspace->SetAspectMarker (aPrevAspectMarker);
+  theWorkspace->SetAspectText   (aPrevAspectText);
 
   // Apply highlight box
   if (!myHighlightBox.IsNull())
@@ -609,7 +607,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 
   // Restore named status
-  theWorkspace->NamedStatus = aNamedStatus;
+  theWorkspace->SetHighlight (false);
 }
 
 // =======================================================================

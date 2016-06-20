@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC27617: Visualization, TKOpenGl - apply highlighting color without disabling lighting"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vclear
+vinit View1
+vdisplay -highMode 1 -dispMode 1 b
+vaxo
+vfit
+vrotate 1 0 0
+vfit
+vmoveto 250 150
+set aColor [vreadpixel 200 150 name rgb]
+if { "$aColor" != "TURQUOISE4" } {
+  puts "Error: Wrong dynamic highlight color"
+}

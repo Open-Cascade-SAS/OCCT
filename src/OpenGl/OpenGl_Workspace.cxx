@@ -148,17 +148,18 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   myUseDepthWrite (Standard_True),
   myUseGLLight (Standard_True),
   //
-  AspectLine_set (&myDefaultAspectLine),
-  AspectLine_applied (NULL),
-  AspectFace_set (&myDefaultAspectFace),
-  AspectFace_applied (NULL),
-  AspectMarker_set (&myDefaultAspectMarker),
-  AspectMarker_applied (NULL),
-  AspectText_set   (&myDefaultAspectText),
-  AspectText_applied (NULL),
+  myAspectLineSet (&myDefaultAspectLine),
+  myAspectFaceSet (&myDefaultAspectFace),
+  myAspectFaceApplied (NULL),
+  myAspectMarkerSet (&myDefaultAspectMarker),
+  myAspectMarkerApplied (NULL),
+  myAspectTextSet (&myDefaultAspectText),
+  myAspectFaceAppliedWithHL (false),
+  //
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
   myCullingMode (TelCullUndefined),
+  myToHighlight (false),
   myModelViewMatrix (myDefaultMatrix),
   PolygonOffset_applied (THE_DEFAULT_POFFSET)
 {
@@ -242,22 +243,19 @@ void OpenGl_Workspace::ResetAppliedAspect()
 
   NamedStatus           = !myTextureBound.IsNull() ? OPENGL_NS_TEXTURE : 0;
   HighlightColor        = &THE_WHITE_COLOR;
-  AspectLine_set        = &myDefaultAspectLine;
-  AspectLine_applied    = NULL;
-  AspectFace_set        = &myDefaultAspectFace;
-  AspectFace_applied    = NULL;
-  AspectMarker_set      = &myDefaultAspectMarker;
-  AspectMarker_applied  = NULL;
-  AspectText_set        = &myDefaultAspectText;
-  AspectText_applied    = NULL;
-
+  myAspectLineSet       = &myDefaultAspectLine;
+  myAspectFaceSet       = &myDefaultAspectFace;
+  myAspectFaceApplied   = NULL;
+  myAspectMarkerSet     = &myDefaultAspectMarker;
+  myAspectMarkerApplied = NULL;
+  myAspectTextSet       = &myDefaultAspectText;
   PolygonOffset_applied = THE_DEFAULT_POFFSET;
   myCullingMode         = TelCullUndefined;
 
-  AspectLine(Standard_True);
-  AspectFace(Standard_True);
-  AspectMarker(Standard_True);
-  AspectText(Standard_True);
+  ApplyAspectLine();
+  ApplyAspectFace();
+  ApplyAspectMarker();
+  ApplyAspectText();
 
   myGlContext->SetTypeOfLine (myDefaultAspectLine.Type());
   myGlContext->SetLineWidth  (myDefaultAspectLine.Width());
@@ -648,31 +646,35 @@ static void TelUpdatePolygonOffsets (const TEL_POFFSET_PARAM& theOffsetData)
 void OpenGl_Workspace::updateMaterial (const int theFlag)
 {
   // Case of hidden line
-  if (AspectFace_set->InteriorStyle() == Aspect_IS_HIDDENLINE)
+  if (myAspectFaceSet->InteriorStyle() == Aspect_IS_HIDDENLINE)
   {
-    myAspectFaceHl = *AspectFace_set; // copy all values including line edge aspect
+    myAspectFaceHl = *myAspectFaceSet; // copy all values including line edge aspect
     myAspectFaceHl.ChangeIntFront().matcol     = myView->BackgroundColor();
     myAspectFaceHl.ChangeIntFront().color_mask = 0;
     myAspectFaceHl.ChangeIntFront().color_mask = 0;
 
-    AspectFace_set = &myAspectFaceHl;
+    myAspectFaceSet = &myAspectFaceHl;
     return;
   }
 
-  const OPENGL_SURF_PROP* aProps = &AspectFace_set->IntFront();
+  const OPENGL_SURF_PROP* aProps = &myAspectFaceSet->IntFront();
   GLenum aFace = GL_FRONT_AND_BACK;
   if (theFlag == TEL_BACK_MATERIAL)
   {
     aFace  = GL_BACK;
-    aProps = &AspectFace_set->IntBack();
+    aProps = &myAspectFaceSet->IntBack();
   }
-  else if (AspectFace_set->DistinguishingMode() == TOn
+  else if (myAspectFaceSet->DistinguishingMode() == TOn
         && !(NamedStatus & OPENGL_NS_RESMAT))
   {
     aFace = GL_FRONT;
   }
 
   myMatTmp.Init (*aProps);
+  if (myToHighlight)
+  {
+    myMatTmp.SetColor (*(const OpenGl_Vec4* )HighlightColor);
+  }
 
   // handling transparency
   if (NamedStatus & OPENGL_NS_2NDPASSDO)
@@ -798,83 +800,64 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
 // function : SetAspectLine
 // purpose  :
 // =======================================================================
-const OpenGl_AspectLine * OpenGl_Workspace::SetAspectLine(const OpenGl_AspectLine *AnAspect)
+const OpenGl_AspectLine* OpenGl_Workspace::SetAspectLine (const OpenGl_AspectLine* theAspect)
 {
-  const OpenGl_AspectLine *AspectLine_old = AspectLine_set;
-  AspectLine_set = AnAspect;
-  return AspectLine_old;
+  const OpenGl_AspectLine* aPrevAspectLine = myAspectLineSet;
+  myAspectLineSet = theAspect;
+  return aPrevAspectLine;
 }
 
 // =======================================================================
 // function : SetAspectFace
 // purpose  :
 // =======================================================================
-const OpenGl_AspectFace * OpenGl_Workspace::SetAspectFace(const OpenGl_AspectFace *AnAspect)
+const OpenGl_AspectFace * OpenGl_Workspace::SetAspectFace (const OpenGl_AspectFace* theAspect)
 {
-  const OpenGl_AspectFace *AspectFace_old = AspectFace_set;
-  AspectFace_set = AnAspect;
-  return AspectFace_old;
+  const OpenGl_AspectFace* aPrevAspectFace = myAspectFaceSet;
+  myAspectFaceSet = theAspect;
+  return aPrevAspectFace;
 }
 
 // =======================================================================
 // function : SetAspectMarker
 // purpose  :
 // =======================================================================
-const OpenGl_AspectMarker * OpenGl_Workspace::SetAspectMarker(const OpenGl_AspectMarker *AnAspect)
+const OpenGl_AspectMarker* OpenGl_Workspace::SetAspectMarker (const OpenGl_AspectMarker* theAspect)
 {
-  const OpenGl_AspectMarker *AspectMarker_old = AspectMarker_set;
-  AspectMarker_set = AnAspect;
-  return AspectMarker_old;
+  const OpenGl_AspectMarker* aPrevAspectMarker = myAspectMarkerSet;
+  myAspectMarkerSet = theAspect;
+  return aPrevAspectMarker;
 }
 
 // =======================================================================
 // function : SetAspectText
 // purpose  :
 // =======================================================================
-const OpenGl_AspectText * OpenGl_Workspace::SetAspectText(const OpenGl_AspectText *AnAspect)
+const OpenGl_AspectText * OpenGl_Workspace::SetAspectText (const OpenGl_AspectText* theAspect)
 {
-  const OpenGl_AspectText *AspectText_old = AspectText_set;
-  AspectText_set = AnAspect;
-  return AspectText_old;
+  const OpenGl_AspectText* aPrevAspectText = myAspectTextSet;
+  myAspectTextSet = theAspect;
+  return aPrevAspectText;
 }
 
 // =======================================================================
-// function : AspectLine
+// function : ApplyAspectFace
 // purpose  :
 // =======================================================================
-const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean theWithApply)
+const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
 {
-  if (theWithApply)
-  {
-    AspectLine_applied = AspectLine_set;
-  }
-
-  return AspectLine_set;
-}
-
-// =======================================================================
-// function : AspectFace
-// purpose  :
-// =======================================================================
-const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean theToApply)
-{
-  if (!theToApply)
-  {
-    return AspectFace_set;
-  }
-
   if (myView->BackfacingModel() == Graphic3d_TOBM_AUTOMATIC)
   {
     // manage back face culling mode, disable culling when clipping is enabled
     TelCullMode aCullingMode = (myGlContext->Clipping().IsClippingOrCappingOn()
-                             || AspectFace_set->InteriorStyle() == Aspect_IS_HATCH)
+                             || myAspectFaceSet->InteriorStyle() == Aspect_IS_HATCH)
                              ? TelCullNone
-                             : (TelCullMode )AspectFace_set->CullingMode();
+                             : (TelCullMode )myAspectFaceSet->CullingMode();
     if (aCullingMode != TelCullNone
      && !(NamedStatus & OPENGL_NS_2NDPASSDO))
     {
       // disable culling in case of translucent shading aspect
-      if (AspectFace_set->IntFront().trans != 1.0f)
+      if (myAspectFaceSet->IntFront().trans != 1.0f)
       {
         aCullingMode = TelCullNone;
       }
@@ -906,14 +889,17 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
     }
   }
 
-  if (AspectFace_set == AspectFace_applied)
+  if (myAspectFaceSet == myAspectFaceApplied
+   && myToHighlight == myAspectFaceAppliedWithHL)
   {
-    return AspectFace_set;
+    return myAspectFaceSet;
   }
+  myAspectFaceAppliedWithHL = myToHighlight;
 
 #if !defined(GL_ES_VERSION_2_0)
-  const Aspect_InteriorStyle anIntstyle = AspectFace_set->InteriorStyle();
-  if (AspectFace_applied == NULL || AspectFace_applied->InteriorStyle() != anIntstyle)
+  const Aspect_InteriorStyle anIntstyle = myAspectFaceSet->InteriorStyle();
+  if (myAspectFaceApplied == NULL
+   || myAspectFaceApplied->InteriorStyle() != anIntstyle)
   {
     switch (anIntstyle)
     {
@@ -926,7 +912,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
       case Aspect_IS_HATCH:
       {
         glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-        myLineAttribs->SetTypeOfHatch (AspectFace_applied != NULL ? AspectFace_applied->Hatch() : TEL_HS_SOLID);
+        myLineAttribs->SetTypeOfHatch (myAspectFaceApplied != NULL ? myAspectFaceApplied->Hatch() : TEL_HS_SOLID);
         break;
       }
       case Aspect_IS_SOLID:
@@ -949,8 +935,9 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
 
   if (anIntstyle == Aspect_IS_HATCH)
   {
-    const Tint hatchstyle = AspectFace_set->Hatch();
-    if (AspectFace_applied == NULL || AspectFace_applied->Hatch() != hatchstyle)
+    const Tint hatchstyle = myAspectFaceSet->Hatch();
+    if (myAspectFaceApplied == NULL
+     || myAspectFaceApplied->Hatch() != hatchstyle)
     {
       myLineAttribs->SetTypeOfHatch (hatchstyle);
     }
@@ -958,28 +945,28 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
 #endif
 
   // Aspect_POM_None means: do not change current settings
-  if ((AspectFace_set->PolygonOffset().mode & Aspect_POM_None) != Aspect_POM_None)
+  if ((myAspectFaceSet->PolygonOffset().mode & Aspect_POM_None) != Aspect_POM_None)
   {
-    if (PolygonOffset_applied.mode   != AspectFace_set->PolygonOffset().mode
-     || PolygonOffset_applied.factor != AspectFace_set->PolygonOffset().factor
-     || PolygonOffset_applied.units  != AspectFace_set->PolygonOffset().units)
+    if (PolygonOffset_applied.mode   != myAspectFaceSet->PolygonOffset().mode
+     || PolygonOffset_applied.factor != myAspectFaceSet->PolygonOffset().factor
+     || PolygonOffset_applied.units  != myAspectFaceSet->PolygonOffset().units)
     {
-      SetPolygonOffset (AspectFace_set->PolygonOffset().mode,
-                        AspectFace_set->PolygonOffset().factor,
-                        AspectFace_set->PolygonOffset().units);
+      SetPolygonOffset (myAspectFaceSet->PolygonOffset().mode,
+                        myAspectFaceSet->PolygonOffset().factor,
+                        myAspectFaceSet->PolygonOffset().units);
     }
   }
 
   updateMaterial (TEL_FRONT_MATERIAL);
-  if (AspectFace_set->DistinguishingMode() == TOn)
+  if (myAspectFaceSet->DistinguishingMode() == TOn)
   {
     updateMaterial (TEL_BACK_MATERIAL);
   }
 
-  if (AspectFace_set->DoTextureMap())
+  if (myAspectFaceSet->DoTextureMap())
   {
-    EnableTexture (AspectFace_set->TextureRes (myGlContext),
-                   AspectFace_set->TextureParams());
+    EnableTexture (myAspectFaceSet->TextureRes (myGlContext),
+                   myAspectFaceSet->TextureParams());
   }
   else
   {
@@ -994,8 +981,8 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
     }
   }
 
-  AspectFace_applied = AspectFace_set;
-  return AspectFace_set;
+  myAspectFaceApplied = myAspectFaceSet;
+  return myAspectFaceSet;
 }
 
 //=======================================================================
@@ -1014,39 +1001,26 @@ void OpenGl_Workspace::SetPolygonOffset (int theMode,
 }
 
 // =======================================================================
-// function : AspectMarker
+// function : ApplyAspectMarker
 // purpose  :
 // =======================================================================
-const OpenGl_AspectMarker* OpenGl_Workspace::AspectMarker (const Standard_Boolean theToApply)
+const OpenGl_AspectMarker* OpenGl_Workspace::ApplyAspectMarker()
 {
-  if (theToApply && (AspectMarker_set != AspectMarker_applied))
+  if (myAspectMarkerSet != myAspectMarkerApplied)
   {
-    if (!AspectMarker_applied || (AspectMarker_set->Scale() != AspectMarker_applied->Scale()))
+    if (myAspectMarkerApplied == NULL
+    || (myAspectMarkerSet->Scale() != myAspectMarkerApplied->Scale()))
     {
     #if !defined(GL_ES_VERSION_2_0)
-      glPointSize (AspectMarker_set->Scale());
+      glPointSize (myAspectMarkerSet->Scale());
     #ifdef HAVE_GL2PS
-      gl2psPointSize (AspectMarker_set->Scale());
+      gl2psPointSize (myAspectMarkerSet->Scale());
     #endif
     #endif
     }
-    AspectMarker_applied = AspectMarker_set;
+    myAspectMarkerApplied = myAspectMarkerSet;
   }
-  return AspectMarker_set;
-}
-
-// =======================================================================
-// function : AspectText
-// purpose  :
-// =======================================================================
-const OpenGl_AspectText* OpenGl_Workspace::AspectText (const Standard_Boolean theWithApply)
-{
-  if (theWithApply)
-  {
-    AspectText_applied = AspectText_set;
-  }
-
-  return AspectText_set;
+  return myAspectMarkerSet;
 }
 
 // =======================================================================

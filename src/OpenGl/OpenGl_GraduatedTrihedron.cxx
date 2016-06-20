@@ -615,8 +615,8 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
   Standard_ExtCharacter anAxesState = getGridAxes (aCorners, aGridAxes);
 
   // Remember current aspects
-  const OpenGl_AspectLine* anOldAspectLine = theWorkspace->AspectLine (Standard_False);
-  const OpenGl_AspectText* anOldAspectText = theWorkspace->AspectText (Standard_False);
+  const OpenGl_AspectLine* anOldAspectLine = theWorkspace->AspectLine();
+  const OpenGl_AspectText* anOldAspectText = theWorkspace->AspectText();
 
   OpenGl_Mat4 aModelMatrix;
   aModelMatrix.Convert (aContext->WorldViewState.Current());
