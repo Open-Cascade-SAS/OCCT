@@ -241,7 +241,6 @@ n BinObjMgt
 n BinTools
 n CDF
 n CDM
-n FWOSDriver
 n PCDM
 n StdLDrivers
 n StdLPersistent
@@ -269,7 +268,6 @@ n XmlMNaming
 n XmlObjMgt
 r StdResource
 r XmlOcafResource
-t FWOSPlugin
 
 t TKBin
 t TKBinL

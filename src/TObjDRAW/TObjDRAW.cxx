@@ -26,12 +26,16 @@
 #include <TDF_Data.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
+#include <TObj_Application.hxx>
 #include <TObj_Model.hxx>
 #include <TObj_Object.hxx>
 #include <TObj_ObjectIterator.hxx>
 #include <TObj_TModel.hxx>
 #include <TObj_TNameContainer.hxx>
 #include <TObjDRAW.hxx>
+
+#include <BinTObjDrivers.hxx>
+#include <XmlTObjDrivers.hxx>
 
 #include <stdio.h>
 // avoid warnings on 'extern "C"' functions returning C++ classes
@@ -508,6 +512,16 @@ void TObjDRAW::Init(Draw_Interpretor& di)
 //==============================================================================
 void TObjDRAW::Factory(Draw_Interpretor& theDI)
 {
+  // Initialize TObj OCAF formats
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  BinTObjDrivers::DefineFormat(anApp);
+  XmlTObjDrivers::DefineFormat(anApp);
+
+  // define formats for TObj specific application
+  anApp = TObj_Application::GetInstance();
+  BinTObjDrivers::DefineFormat(anApp);
+  XmlTObjDrivers::DefineFormat(anApp);
+
   TObjDRAW::Init(theDI);
 
 #ifdef OCCT_DEBUG

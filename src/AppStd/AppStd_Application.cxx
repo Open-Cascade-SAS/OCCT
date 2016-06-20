@@ -16,40 +16,8 @@
 //AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
 
 #include <AppStd_Application.hxx>
-#include <CDM_COutMessageDriver.hxx>
-#include <CDM_MessageDriver.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AppStd_Application,TDocStd_Application)
-
-//=======================================================================
-//function : AppStd_Application
-//purpose  : 
-//=======================================================================
-AppStd_Application::AppStd_Application()
-{
-  myMessageDriver = new CDM_COutMessageDriver;
-}
-
-//=======================================================================
-//function : MessageDriver
-//purpose  : 
-//=======================================================================
-
-Handle(CDM_MessageDriver) AppStd_Application::MessageDriver ()
-{
-  return myMessageDriver;
-}
-
-//=======================================================================
-//function : Formats
-//purpose  : 
-//=======================================================================
-void AppStd_Application::Formats(TColStd_SequenceOfExtendedString& theFormats) 
-{
-  theFormats.Append("XmlOcaf");
-  theFormats.Append("BinOcaf");
-}
 
 //=======================================================================
 //function : ResourcesName

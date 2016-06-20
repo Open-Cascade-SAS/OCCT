@@ -56,8 +56,7 @@ static Standard_Integer DDocStd_ListDocuments (Draw_Interpretor& di,
 					       const char** /*a*/)
 {  
   if (nb == 1) {
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) return 1;
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     Handle(TDocStd_Document) D;
     Standard_Integer nbdoc = A->NbDocuments();
     for (Standard_Integer i = 1; i <= nbdoc; i++) {
@@ -105,8 +104,7 @@ static Standard_Integer DDocStd_NewDocument (Draw_Interpretor& di,
   }
   if (nb == 3) {   
     if (!DDocStd::GetDocument(a[1],D,Standard_False)) {  
-      Handle(TDocStd_Application) A;
-      if (!DDocStd::Find(A)) return 1;
+      Handle(TDocStd_Application) A = DDocStd::GetApplication();
       A->NewDocument(a[2],D);  
       DD = new DDocStd_DrawDocument(D);  
       TDataStd_Name::Set(D->GetData()->Root(),a[1]);  
@@ -132,8 +130,7 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
 {   
   if (nb >= 3) {
     TCollection_ExtendedString path (a[1]); 
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) return 1;
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     Handle(TDocStd_Document) D;
     Standard_Integer insession = A->IsInSession(path);
     if (insession > 0) {  
@@ -216,8 +213,7 @@ static Standard_Integer DDocStd_Save (Draw_Interpretor& di,
   if (nb == 2) {
     Handle(TDocStd_Document) D;    
     if (!DDocStd::GetDocument(a[1],D)) return 1;
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) return 1;  
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     if (!D->IsSaved()) {
       di << "this document has never been saved\n";
       return 0;
@@ -242,8 +238,7 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     Handle(TDocStd_Document) D;    
     if (!DDocStd::GetDocument(a[1],D)) return 1;  
     TCollection_ExtendedString path (a[2]); 
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) return 1;
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     PCDM_StoreStatus theStatus;
     
     Standard_Boolean anUseStream = Standard_False;
@@ -341,11 +336,7 @@ static Standard_Integer DDocStd_Close (Draw_Interpretor& /*theDI*/,
     }
   }
 
-  Handle(TDocStd_Application) aDocApp;
-  if (!DDocStd::Find (aDocApp))
-  {
-    return 1;
-  }
+  Handle(TDocStd_Application) aDocApp = DDocStd::GetApplication();
 
   aDocApp->Close (aDoc);
 
@@ -365,8 +356,7 @@ static Standard_Integer DDocStd_IsInSession (Draw_Interpretor& di,
 					     const char** a)
 {   
   if (nb == 2) {   
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) return 1;
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     di << A->IsInSession(a[1]);
     return 0;
   }  
@@ -441,8 +431,7 @@ static Standard_Integer DDocStd_AddComment (Draw_Interpretor& di,
     Handle(TDocStd_Document) D;    
     if (!DDocStd::GetDocument(a[1],D)) return 1;  
     TCollection_ExtendedString comment (a[2]); 
-//    Handle(TDocStd_Application) A;
-//    if (!DDocStd::Find(A)) return 1;
+//    Handle(TDocStd_Application) A = DDocStd::GetApplication();
 //    A->AddComment(D,comment);
     D->AddComment(comment);
     return 0; 

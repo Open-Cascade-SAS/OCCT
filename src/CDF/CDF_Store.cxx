@@ -65,34 +65,6 @@ void CDF_Store::Init() {
   myCurrentDocument = myMainDocument;
 }
 
-CDF_TryStoreStatus CDF_Store::Check() {
-  if(!PCDM::FindStorageDriver(myMainDocument))  return CDF_TS_NoDriver;
-
-  
-  // Checking the subcomponent.
-  Handle(CDM_Document) theCurrentDocument;
-  myList->Init();
-  for ( myList->Init(); myList->More(); myList->Next()) {
-    theCurrentDocument = myList->Value();
-
-    if(theCurrentDocument != myMainDocument) {
-      if( theCurrentDocument->IsModified()) {
-   
-	myLastName = theCurrentDocument->Presentation();
-	
-	if(!PCDM::FindStorageDriver(theCurrentDocument))  return CDF_TS_NoDriver;
-	
-      }
-    }
-  }
-  return CDF_TS_OK;
-}
-
-
-Standard_ExtString CDF_Store::LastName() const {
-  return myLastName.ToExtString();
-}
-
 Standard_ExtString CDF_Store::Folder() const {
   static TCollection_ExtendedString retv;
   if(myCurrentDocument->HasRequestedFolder())

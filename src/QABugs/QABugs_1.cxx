@@ -202,8 +202,7 @@ static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, 
     di << "DocOwner1 = NOTNULL\n";
   }
  
-  Handle(TDocStd_Application) A;
-  if (!DDocStd::Find(A)) return 1;
+  Handle(TDocStd_Application) A = DDocStd::GetApplication();
   A->Close(D); 
 
   Handle(Draw_Drawable3D) DD = Draw::Get(argv[1],Standard_False);

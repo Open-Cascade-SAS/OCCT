@@ -16,50 +16,17 @@
 //AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
 
 #include <AppStdL_Application.hxx>
-#include <CDM_COutMessageDriver.hxx>
-#include <CDM_MessageDriver.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AppStdL_Application,TDocStd_Application)
-
-//=======================================================================
-//function : AppStdL_Application
-//purpose  : 
-//=======================================================================
-AppStdL_Application::AppStdL_Application()
-{
-  myMessageDriver = new CDM_COutMessageDriver;
-}
-
-//=======================================================================
-//function : MessageDriver
-//purpose  : 
-//=======================================================================
-
-Handle(CDM_MessageDriver) AppStdL_Application::MessageDriver ()
-{
-  return myMessageDriver;
-}
-
-//=======================================================================
-//function : Formats
-//purpose  : 
-//=======================================================================
-void AppStdL_Application::Formats(TColStd_SequenceOfExtendedString& theFormats) 
-{
-  theFormats.Append("OCC-StdLite");
-  theFormats.Append("XmlLOcaf");
-  theFormats.Append("BinLOcaf");
-}
 
 //=======================================================================
 //function : ResourcesName
 //purpose  : 
 //=======================================================================
 
-Standard_CString AppStdL_Application::ResourcesName() {
+Standard_CString AppStdL_Application::ResourcesName()
+{
   const Standard_CString aRes = "StandardLite";
-  //const Standard_CString aRes = "Standard";
   return aRes;
 }
 

@@ -60,12 +60,7 @@ CDM_Document::CDM_Document():
   myRequestedNameIsDefined      (Standard_False),
   myRequestedPreviousVersionIsDefined(Standard_False),
   myFileExtensionWasFound       (Standard_False),
-  myDataTypeWasFound            (Standard_False),
-  myVersionDataTypeWasFound     (Standard_False),
-  myDescriptionWasFound         (Standard_False),
-  myDomainWasFound              (Standard_False),
-  myStoragePluginWasFound       (Standard_False),
-  myDefaultPresentationWasFound (Standard_False)
+  myDescriptionWasFound         (Standard_False)
 {}
 
 
@@ -518,7 +513,7 @@ void CDM_Document::Comments(TColStd_SequenceOfExtendedString& aComments) const
 Standard_ExtString CDM_Document::Comment() const
 {
   if (myComments.Length() < 1)
-    return TCollection_ExtendedString().ToExtString();
+    return 0;
   return myComments(1).ToExtString();
 }
 
@@ -556,7 +551,6 @@ void CDM_Document::ComputePresentation()
   TCollection_ExtendedString presentation("");
   static Standard_Integer theUnnamedDocuments(0);
   static CDM_NamesDirectory theNames;
-  static CDM_NamesDirectory theTypes;
 
   if(!myMetaData.IsNull()) {
     presentation += myMetaData->Name();
@@ -571,21 +565,8 @@ void CDM_Document::ComputePresentation()
     }
   }
   else {
-    LoadResources();
-    if(myDefaultPresentationWasFound) {
-//      presentation += "$";
-      presentation += myDefaultPresentation;
-      if(!theTypes.IsBound(presentation)) theTypes.Bind(presentation,0);
-      Standard_Integer range = theTypes(presentation);
-      range +=1;
-      theTypes(presentation) = range;
-      presentation += "_";
-      presentation += range;
-    }
-    else {
-      presentation += TCollection_ExtendedString("Document_");
-      presentation += ++theUnnamedDocuments;
-    }
+    presentation = "Document_";
+    presentation += ++theUnnamedDocuments;
   }
   
   if(getPresentations().IsBound(presentation)) {
@@ -1168,45 +1149,12 @@ void CDM_Document::LoadResources()
          theResourceName,myFileExtensionWasFound,myFileExtension);
     
     theResourceName=theFormat;
-    theResourceName+="DataType";
-    FIND(theDocumentResource,theResourceName,myDataTypeWasFound,myDataType);
-    
-    
-    theResourceName=theFormat;
-    theResourceName+="VersionDataType";
-    FIND(theDocumentResource,
-         theResourceName,myVersionDataTypeWasFound,myVersionDataType);
-    
-    theResourceName=theFormat;
     theResourceName+="Description";
     FIND(theDocumentResource,theResourceName,myDescriptionWasFound,myDescription);
     
-    theResourceName=theFormat;
-    theResourceName+="Domain";
-    FIND(theDocumentResource,theResourceName,myDomainWasFound,myDomain);
-    
-    theResourceName=theFormat;
-    theResourceName+="Presentation";
-    FIND(theDocumentResource,
-         theResourceName,myDefaultPresentationWasFound,myDefaultPresentation);
-    
-    theResourceName=theFormat;
-    theResourceName+="StoragePlugin";
-    TCollection_ExtendedString thePluginId;
-    FIND(theDocumentResource,theResourceName,myStoragePluginWasFound,thePluginId);
-    if(myStoragePluginWasFound)
-    {
-      // Check whether the GUID (as a string) contains blanks before and after the string.
-      // If it is so, remove them.
-      if (thePluginId.Search(' ') != -1)
-        thePluginId.RemoveAll(' ');
-      
-      // Convert to GUID.
-      myStoragePlugin=UTL::GUID(thePluginId);
-    }
     myResourcesAreLoaded=Standard_True;
     
-//    cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" << myFileExtension << ", DataType:" <<  myDataType << ", VersionDataType:" << myVersionDataType << ", Description:" << myDescription << ", Domain:" << myDomain << endl;
+//    cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" << myFileExtension << ", Description:" << myDescription << endl;
   }
   return;
 }
@@ -1234,50 +1182,6 @@ TCollection_ExtendedString CDM_Document::FileExtension()
 }
 
 //=======================================================================
-//function : FindDataType
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean CDM_Document::FindDataType ()
-{
-  LoadResources();
-  return myDataTypeWasFound;
-}
-
-//=======================================================================
-//function : DataType
-//purpose  : 
-//=======================================================================
-
-TCollection_ExtendedString CDM_Document::DataType()
-{
-  LoadResources();
-  return myDataType;
-}
-
-//=======================================================================
-//function : FindVersionDataType
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean CDM_Document::FindVersionDataType ()
-{
-  LoadResources();
-  return myVersionDataTypeWasFound;
-}
-
-//=======================================================================
-//function : VersionDataType
-//purpose  : 
-//=======================================================================
-
-TCollection_ExtendedString CDM_Document::VersionDataType()
-{
-  LoadResources();
-  return myVersionDataType;
-}
-
-//=======================================================================
 //function : FindDescription
 //purpose  : 
 //=======================================================================
@@ -1297,50 +1201,6 @@ TCollection_ExtendedString CDM_Document::Description()
 {
   LoadResources();
   return myDescription;
-}
-
-//=======================================================================
-//function : FindDomain
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean CDM_Document::FindDomain ()
-{
-  LoadResources();
-  return myDomainWasFound;
-}
-
-//=======================================================================
-//function : Domain
-//purpose  : 
-//=======================================================================
-
-TCollection_ExtendedString CDM_Document::Domain()
-{
-  LoadResources();
-  return myDomain;
-}
-
-//=======================================================================
-//function : FindStoragePlugin
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean CDM_Document::FindStoragePlugin()
-{
-  LoadResources();
-  return myStoragePluginWasFound;
-}
-
-//=======================================================================
-//function : StoragePlugin
-//purpose  : 
-//=======================================================================
-
-Standard_GUID CDM_Document::StoragePlugin()
-{
-  LoadResources();
-  return myStoragePlugin;
 }
 
 //=======================================================================

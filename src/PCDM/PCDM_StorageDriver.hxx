@@ -64,10 +64,6 @@ public:
   //! by the previous Make method.
   Standard_EXPORT virtual void Make (const Handle(CDM_Document)& aDocument, PCDM_SequenceOfDocument& Documents);
   
-  Standard_EXPORT virtual TCollection_ExtendedString SchemaName() const = 0;
-  
-  Standard_EXPORT virtual void LoadExtensions (const Handle(Storage_Schema)& aSchema, const TColStd_SequenceOfExtendedString& Extensions);
-  
   //! Warning! raises DriverError if an error occurs during inside the
   //! Make method.
   //! stores the content of the Document into a new file.

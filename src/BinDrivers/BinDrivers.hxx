@@ -16,8 +16,6 @@
 #ifndef _BinDrivers_HeaderFile
 #define _BinDrivers_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 class Standard_Transient;
@@ -27,47 +25,22 @@ class CDM_MessageDriver;
 class TCollection_AsciiString;
 class BinDrivers_DocumentStorageDriver;
 class BinDrivers_DocumentRetrievalDriver;
-
-
+class TDocStd_Application;
 
 class BinDrivers 
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT static const Handle(Standard_Transient)& Factory (const Standard_GUID& theGUID);
   
+  //! Defines format "BinOcaf" and registers its read and write drivers
+  //! in the specified application
+  Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
+
   //! Creates the table of drivers of types supported
   Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& MsgDrv);
   
   //! returns "1"
   Standard_EXPORT static TCollection_AsciiString StorageVersion();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BinDrivers_DocumentStorageDriver;
-friend class BinDrivers_DocumentRetrievalDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _BinDrivers_HeaderFile

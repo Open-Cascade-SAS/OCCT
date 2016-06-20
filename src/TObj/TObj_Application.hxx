@@ -89,13 +89,6 @@ public:
   //! Return name of resource (i.e. "TObj")
   virtual Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 
-  //! Return format (i.e "TObj")
-  virtual Standard_EXPORT void Formats(TColStd_SequenceOfExtendedString& theFormats) Standard_OVERRIDE;
-
-  //! Defines message driver for CDM layer
-  virtual Standard_EXPORT Handle(CDM_MessageDriver) MessageDriver() Standard_OVERRIDE
-  { return myMessageDriver; }
-
  protected:
   /**
   * Constructor
@@ -113,7 +106,6 @@ public:
   Standard_Boolean          myIsError;       //!< error flag
   Standard_Boolean          myIsVerbose;     //!< verbose flag
   Handle(Message_Messenger) myMessenger;     //!< messenger
-  Handle(CDM_MessageDriver) myMessageDriver; //!< message driver
 
  public:
   //! CASCADE RTTI

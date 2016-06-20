@@ -17,7 +17,7 @@
 #include <Plugin_Macro.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
-#include <Standard_Transient.hxx>
+#include <TDocStd_Application.hxx>
 #include <XmlDrivers.hxx>
 #include <XmlXCAFDrivers.hxx>
 #include <XmlXCAFDrivers_DocumentRetrievalDriver.hxx>
@@ -49,6 +49,17 @@ const Handle(Standard_Transient)& XmlXCAFDrivers::Factory(const Standard_GUID& a
   }
   
   return XmlDrivers::Factory (aGUID);
+}
+
+//=======================================================================
+//function : DefineFormat
+//purpose  : 
+//=======================================================================
+void XmlXCAFDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+{
+  theApp->DefineFormat ("XmlXCAF", "Xml XCAF Document", "xml",
+                        new XmlXCAFDrivers_DocumentRetrievalDriver, 
+                        new XmlXCAFDrivers_DocumentStorageDriver ("Copyright: Open Cascade, 2001-2002"));
 }
 
 PLUGIN(XmlXCAFDrivers)

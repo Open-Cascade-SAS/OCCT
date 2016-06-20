@@ -768,10 +768,24 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
 	    aValue = aLine.Token(" \t\n\r", 2);
 	    aDMap.Bind(aKey, aValue);
 	  }
-	}
+        }
+      }
+      else
+      {
+        // hard-code migration table for known types
+        aDMap.Bind("TDataStd_Shape",          "TDataXtd_Shape");
+        aDMap.Bind("TDataStd_Constraint",     "TDataXtd_Constraint");
+        aDMap.Bind("TDataStd_Geometry",       "TDataXtd_Geometry");
+        aDMap.Bind("TDataStd_Axis",           "TDataXtd_Axis");
+        aDMap.Bind("TDataStd_Point",          "TDataXtd_Point");
+        aDMap.Bind("TDataStd_Plane",          "TDataXtd_Plane");
+        aDMap.Bind("TDataStd_Position",       "TDataXtd_Position");
+        aDMap.Bind("TDataStd_Placement",      "TDataXtd_Placement");
+        aDMap.Bind("TDataStd_PatternStd",     "TDataXtd_PatternStd");
+        aDMap.Bind("TPrsStd_AISPresentation", "TDataXtd_Presentation");
       }
 #ifdef OCCT_DEBUG
-      cout << "Storage_Sheme:: aDataMap.Size = " << aDMap.Extent() <<endl;
+      cout << "Storage_Sheme:: aDataMap.Size = " << aDMap.Extent() << endl;
 #endif
     }
   }

@@ -27,6 +27,7 @@
 #include <XmlTObjDrivers_IntSparseArrayDriver.hxx>
 
 #include <Plugin_Macro.hxx>
+#include <TDocStd_Application.hxx>
 
 static Standard_GUID XmlStorageDriver  ("f78ff4a0-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID XmlRetrievalDriver("f78ff4a1-a779-11d5-aab4-0050044b1af1");
@@ -55,6 +56,17 @@ const Handle(Standard_Transient)& XmlTObjDrivers::Factory(const Standard_GUID& a
   }
 
   return XmlLDrivers::Factory (aGUID);
+}
+
+//=======================================================================
+//function : DefineFormat
+//purpose  : 
+//=======================================================================
+void XmlTObjDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+{
+  theApp->DefineFormat ("TObjXml", "Xml TObj OCAF Document", "xml",
+                        new XmlTObjDrivers_DocumentRetrievalDriver, 
+                        new XmlTObjDrivers_DocumentStorageDriver ("Copyright: Open Cascade, 2004"));
 }
 
 //=======================================================================

@@ -23,8 +23,9 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <CDM_COutMessageDriver.hxx>
 #include <Message_Msg.hxx>
-#include <stdio.h>
+#include <Resource_Manager.hxx>
 
+#include <stdio.h>
 
 IMPLEMENT_STANDARD_RTTIEXT(TObj_Application,TDocStd_Application)
 
@@ -47,19 +48,7 @@ Handle(TObj_Application) TObj_Application::GetInstance()
 TObj_Application::TObj_Application () : myIsError(Standard_False)
 {
   myMessenger = new Message_Messenger;
-  myMessageDriver = new CDM_COutMessageDriver;
   myIsVerbose = Standard_False;
-}
-
-//=======================================================================
-//function : Formats
-//purpose  : 
-//=======================================================================
-
-void TObj_Application::Formats(TColStd_SequenceOfExtendedString& theFormats) 
-{
-  theFormats.Append(TCollection_ExtendedString ("TObjXml"));
-  theFormats.Append(TCollection_ExtendedString ("TObjBin"));
 }
 
 //=======================================================================

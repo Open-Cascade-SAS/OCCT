@@ -26,51 +26,11 @@ class Standard_Transient;
 class Standard_GUID;
 class Resource_Manager;
 
-
-
 class Plugin 
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
   
-  Standard_EXPORT static Handle(Standard_Transient) Load (const Standard_GUID& aGUID, const Standard_Boolean theVerbose = Standard_True);
-  
-  //! Returns a global map of {guid, plugin_library} pairs.
-  //! The Load() method will use this map to search for plugins if and only if
-  //! the GUID is not found in the Plugin file specified by the CSF_PluginDefaults
-  //! (or CSF_PluginUserDefaults) environment variable, or if they are not defined.
-  //!
-  //! This allows to populate this additional resource manager
-  //! in run-time and to avoid using the above environment variables.
-  //! This map must be populated (using Resource_Manager::SetResource() method)
-  //! following syntax conventions of the Plugin file, for instance:
-  //! const Handle(Resource_Manager)& aPluginMap = Plugin::AdditionalPluginMap();
-  //! aPluginMap->SetResource ("ad696000-5b34-11d1-b5ba-00a0c9064368.Location", "TKStdSchema");
-  Standard_EXPORT static const Handle(Resource_Manager)& AdditionalPluginMap();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  Standard_EXPORT static Handle(Standard_Transient) Load (const Standard_GUID& aGUID, const Standard_Boolean theVerbose = Standard_True);  
 };
-
-
-
-
-
-
 
 #endif // _Plugin_HeaderFile

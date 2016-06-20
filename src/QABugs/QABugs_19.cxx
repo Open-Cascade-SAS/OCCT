@@ -52,11 +52,12 @@
 #include <GeomFill_Trihedron.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <TopExp_Explorer.hxx>
-
 #include <SelectMgr_Filter.hxx>
 #include <StdSelect_BRepOwner.hxx>
 
 #include <Standard_Version.hxx>
+#include <XmlDrivers_DocumentRetrievalDriver.hxx>
+#include <XmlDrivers_DocumentStorageDriver.hxx>
 
 #define QCOMPARE(val1, val2) \
   di << "Checking " #val1 " == " #val2 << \
@@ -201,16 +202,16 @@ static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*
 }
 
 #include <TDocStd_Application.hxx>
-#include <XCAFApp_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <TDF_Label.hxx>
 #include <TDataStd_Name.hxx>
+#include <DDocStd.hxx>
 
 static Standard_Integer OCC23595 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char** /*argv*/)
 {
-  Handle(TDocStd_Application) anApp = XCAFApp_Application::GetApplication();
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
   Handle(TDocStd_Document) aDoc;
   anApp->NewDocument ("XmlXCAF", aDoc);
   QCOMPARE (!aDoc.IsNull(), Standard_True);
@@ -1936,7 +1937,6 @@ static TopoDS_Shape CreateTestShape (int& theShapeNb)
   return aComp;
 }
 
-#include <AppStd_Application.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TNaming_Builder.hxx>
 static Standard_Integer OCC24931 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -1948,7 +1948,7 @@ static Standard_Integer OCC24931 (Draw_Interpretor& di, Standard_Integer argc, c
   TCollection_ExtendedString aFileName (argv[1]);
   PCDM_StoreStatus aSStatus  = PCDM_SS_Failure;
 
-  Handle(TDocStd_Application) anApp = new AppStd_Application;
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
   {
     Handle(TDocStd_Document) aDoc;
     anApp->NewDocument ("XmlOcaf", aDoc);
@@ -1966,9 +1966,6 @@ static Standard_Integer OCC24931 (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-#include <AppStdL_Application.hxx>
-#include <TDocStd_Application.hxx>
-#include <TDataStd_Integer.hxx>
 #include <TDF_AttributeIterator.hxx>
 //=======================================================================
 //function : OCC24755
@@ -1982,7 +1979,7 @@ static Standard_Integer OCC24755 (Draw_Interpretor& di, Standard_Integer n, cons
     return 1;
   }
 
-  Handle(TDocStd_Application) anApp = new AppStdL_Application;
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
   Handle(TDocStd_Document) aDoc;
   anApp->NewDocument ("BinOcaf", aDoc);
   TDF_Label aLab = aDoc->Main();
@@ -2288,32 +2285,24 @@ class Test_TDocStd_Application : public TDocStd_Application
 {
 public:
 
-  static void initGlobalPluginMap (const TCollection_AsciiString& thePlugin,
-                                   const TCollection_AsciiString& theSaver,
-                                   const TCollection_AsciiString& theLoader)
+  Test_TDocStd_Application ()
   {
-    const Handle(Resource_Manager)& aManager = Plugin::AdditionalPluginMap();
-    aManager->SetResource ((theSaver  + ".Location").ToCString(), thePlugin.ToCString());
-    aManager->SetResource ((theLoader + ".Location").ToCString(), thePlugin.ToCString());
-  }
-
-  Test_TDocStd_Application (const TCollection_AsciiString& thePlugin,
-                            const TCollection_AsciiString& theSaver,
-                            const TCollection_AsciiString& theLoader)
-  {
-    initGlobalPluginMap (thePlugin, theSaver, theLoader);
-
     // explicitly initialize resource manager
     myResources = new Resource_Manager ("");
     myResources->SetResource ("xml.FileFormat", THE_QATEST_DOC_FORMAT);
     myResources->SetResource (THE_QATEST_DOC_FORMAT ".Description",     "Test XML Document");
     myResources->SetResource (THE_QATEST_DOC_FORMAT ".FileExtension",   "xml");
-    myResources->SetResource (THE_QATEST_DOC_FORMAT ".StoragePlugin",   theSaver.ToCString());
-    myResources->SetResource (THE_QATEST_DOC_FORMAT ".RetrievalPlugin", theLoader.ToCString());
   }
 
-  virtual Standard_CString ResourcesName() { return ""; }
-  virtual void Formats (TColStd_SequenceOfExtendedString& theFormats) { theFormats.Clear(); }
+  virtual Handle(PCDM_Reader) ReaderFromFormat (const TCollection_ExtendedString&) Standard_OVERRIDE
+  {
+    return new XmlDrivers_DocumentRetrievalDriver ();
+  }
+  virtual Handle(PCDM_StorageDriver) WriterFromFormat (const TCollection_ExtendedString&) Standard_OVERRIDE
+  {
+    return new XmlDrivers_DocumentStorageDriver ("Test");
+  }
+  virtual Standard_CString ResourcesName() Standard_OVERRIDE { return ""; }
 };
 
 //=======================================================================
@@ -2347,7 +2336,7 @@ static Standard_Integer OCC24925 (Draw_Interpretor& theDI,
   PCDM_StoreStatus  aSStatus = PCDM_SS_Failure;
   PCDM_ReaderStatus aRStatus = PCDM_RS_OpenError;
 
-  Handle(TDocStd_Application) anApp = new Test_TDocStd_Application (aPlugin, aSaver, aLoader);
+  Handle(TDocStd_Application) anApp = new Test_TDocStd_Application ();
   {
     Handle(TDocStd_Document) aDoc;
     anApp->NewDocument (THE_QATEST_DOC_FORMAT, aDoc);
@@ -2457,46 +2446,6 @@ static Standard_Integer OCC24606 (Draw_Interpretor& theDI,
   aView->DepthFitAll();
   aView->FitAll();
 
-  return 0;
-}
-
-//=======================================================================
-//function : OCC23010
-//purpose  :
-//=======================================================================
-#include <STEPCAFControl_Reader.hxx>
-
-class mOcafApplication : public TDocStd_Application
-{
-  void Formats(TColStd_SequenceOfExtendedString& Formats)
-  {
-    Formats.Append(TCollection_ExtendedString("mOcafApplication"));
-  }
-  Standard_CString ResourcesName()
-  {
-    return Standard_CString("Resources");
-  }
-};
-
-static Standard_Integer OCC23010 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc != 2) {
-    di << "Usage: " << argv[0] << " invalid number of arguments\n";
-    return 1;
-  }
-  std::string fileName=argv[1];
-  mOcafApplication *mCasApp = new mOcafApplication();
-  Handle(TDocStd_Document) doc;
-  mCasApp->NewDocument("BinXCAF", doc);
-  STEPCAFControl_Reader stepReader;
-  IFSelect_ReturnStatus status = stepReader.ReadFile (fileName.c_str());
-  if (status != IFSelect_RetDone)
-    return false;
-  stepReader.SetColorMode(Standard_True);
-  stepReader.SetLayerMode(Standard_True);
-  stepReader.SetNameMode(Standard_True);
-  stepReader.Transfer(doc); // ERROR HERE!!!
-  delete mCasApp;
   return 0;
 }
 
@@ -5280,7 +5229,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "OCC24925 filename [pluginLib=TKXml storageGuid retrievalGuid]"
                    "\nOCAF persistence without setting environment variables",
                    __FILE__, OCC24925, group);
-  theCommands.Add ("OCC23010", "OCC23010 STEP_file", __FILE__, OCC23010, group);
   theCommands.Add ("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
   theCommands.Add ("OCC24826,", "This test performs simple saxpy test.\n Usage: OCC24826 length", __FILE__, OCC24826, group);
   theCommands.Add ("OCC24606", "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)", __FILE__, OCC24606, group);

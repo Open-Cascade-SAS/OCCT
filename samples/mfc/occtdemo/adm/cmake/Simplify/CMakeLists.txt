@@ -37,8 +37,6 @@ source_group ( "Common\\Resource Files" FILES
 # lib to include:
 set ( LINK_LIBRARIES         
          TKSHHealing.lib
-         FWOSPlugin.lib
-         PTKernel.lib
          TKBool.lib
          TKCAF.lib
          TKCDF.lib

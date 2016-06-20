@@ -42,8 +42,8 @@ class CDM_Application : public Standard_Transient
 public:
 
   
-  //! the manager returned by  this virtual  method will be
-  //! used to search for Format`.Retrieval  resource items.
+  //! The manager returned by  this virtual  method will be
+  //! used to search for Format.Retrieval  resource items.
   Standard_EXPORT virtual Handle(Resource_Manager) Resources() = 0;
   
   //! By default returns a NullMessageDriver;

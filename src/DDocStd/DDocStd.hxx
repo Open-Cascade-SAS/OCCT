@@ -50,9 +50,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! return the application of the session. False
-  //! if there is noone current application.
-  Standard_EXPORT static Standard_Boolean Find (Handle(TDocStd_Application)& Appli, const Standard_Boolean Complain = Standard_True);
+  //! Returns the global instance of application.
+  Standard_EXPORT static const Handle(TDocStd_Application)& GetApplication ();
   
   Standard_EXPORT static Standard_Boolean GetDocument (Standard_CString& Name, Handle(TDocStd_Document)& Doc, const Standard_Boolean Complain = Standard_True);
   

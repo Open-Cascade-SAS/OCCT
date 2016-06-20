@@ -24,6 +24,9 @@
 #include <Standard_GUID.hxx>
 #include <Plugin_Macro.hxx>
 
+#include <PCDM_StorageDriver.hxx>
+#include <TDocStd_Application.hxx>
+
 static Standard_GUID StdRetrievalDriver ("ad696001-5b34-11d1-b5ba-00a0c9064368");
 
 //=======================================================================
@@ -45,6 +48,16 @@ Handle(Standard_Transient) StdDrivers::Factory (const Standard_GUID& aGUID)
  
   Standard_Failure::Raise ("StdDrivers : unknown GUID");
   return NULL;
+}
+
+//=======================================================================
+//function : DefineFormat
+//purpose  : 
+//=======================================================================
+void StdDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+{
+  theApp->DefineFormat ("MDTV-Standard", "Standard OCAF Document", "std",
+                        new StdDrivers_DocumentRetrievalDriver, 0);
 }
 
 //=======================================================================

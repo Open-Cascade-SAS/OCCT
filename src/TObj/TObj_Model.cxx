@@ -20,6 +20,7 @@
 #include <OSD_File.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_GUID.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TDataStd_Integer.hxx>

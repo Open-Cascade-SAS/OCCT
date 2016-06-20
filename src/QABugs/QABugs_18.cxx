@@ -55,8 +55,7 @@ static Standard_Integer OCC267 (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(TDocStd_Document) D;
   if (!DDocStd::GetDocument(argv[1],D)) return 1;
   TCollection_ExtendedString path (argv[2]);
-  Handle(TDocStd_Application) A;
-  if (!DDocStd::Find(A)) return 1;
+  Handle(TDocStd_Application) A = DDocStd::GetApplication();
 
   PCDM_StoreStatus theStatus = A->SaveAs(D,path);
   if (theStatus == PCDM_SS_OK ) {

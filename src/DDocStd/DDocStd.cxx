@@ -30,22 +30,35 @@
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 
+#include <StdLDrivers.hxx>
+#include <BinLDrivers.hxx>
+#include <XmlLDrivers.hxx>
+#include <StdDrivers.hxx>
+#include <BinDrivers.hxx>
+#include <XmlDrivers.hxx>
+
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-Standard_Boolean DDocStd::Find (Handle(TDocStd_Application)& A,
-				const Standard_Boolean /*Complain*/)
-{  
-  if (!CDF_Session::Exists()) 
-    Standard_DomainError::Raise("DDocStd::Find no applicative session");
-  Handle(CDF_Session) S = CDF_Session::CurrentSession();  
-  Handle(TDocStd_Application) APP;
-  if (!S->HasCurrentApplication())  
-    Standard_DomainError::Raise("DDocStd::Find no applicative session");
-  APP = Handle(TDocStd_Application)::DownCast(S->CurrentApplication());
-  A = APP;
-  return Standard_True;
+
+const Handle(TDocStd_Application)& DDocStd::GetApplication()
+{
+  static Handle(TDocStd_Application) anApp;
+  if (anApp.IsNull())
+  {
+    anApp = new TDocStd_Application;
+
+    // Initialize standard document formats at creation - they should
+    // be available even if this DRAW plugin is not loaded by pload command
+    StdLDrivers::DefineFormat(anApp);
+    BinLDrivers::DefineFormat(anApp);
+    XmlLDrivers::DefineFormat(anApp);
+    StdDrivers::DefineFormat(anApp);
+    BinDrivers::DefineFormat(anApp);
+    XmlDrivers::DefineFormat(anApp);
+  }
+  return anApp;
 }
 
 
@@ -135,7 +148,6 @@ void DDocStd::AllCommands(Draw_Interpretor& theCommands)
   static Standard_Boolean done = Standard_False;
   if (done) return;
   done = Standard_True;
-
 
   // define commands
   DDocStd::ApplicationCommands(theCommands);

@@ -123,17 +123,9 @@ Handle(CDF_MetaDataDriver) CDF_Session::MetaDataDriver() const {
 //=======================================================================
 void CDF_Session::LoadDriver() {
   if (myMetaDataDriver.IsNull()) {
+    // for compatibility with old code, initialize useless driver directly
+    // instead of loading it as plugin
     Handle(CDF_MetaDataDriverFactory) aFactory;
-    try {
-      aFactory = Handle(CDF_MetaDataDriverFactory)::DownCast (
-        Plugin::Load (Standard_GUID ("a148e300-5740-11d1-a904-080036aaa103"),
-                      Standard_False /*theVerbose*/));
-    } catch (const Standard_Failure&) {
-    }
-    if (!aFactory.IsNull()) {
-      myMetaDataDriver = aFactory->Build();
-    } else {
-      myMetaDataDriver = new CDF_FWOSDriver;
-    }
+    myMetaDataDriver = new CDF_FWOSDriver;
   }
 }

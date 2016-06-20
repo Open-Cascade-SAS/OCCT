@@ -33,34 +33,6 @@
 #include <UTL.hxx>
 
 //=======================================================================
-//function : StorageDriver
-//purpose  : gets   in the  EuclidDesktop   resource  the plugin
-//           identifier of the driver plugs the driver.
-//=======================================================================
-Handle(PCDM_StorageDriver) PCDM::StorageDriver(const Handle(CDM_Document)& aDocument) {
-  
-  if(!PCDM::FindStorageDriver(aDocument)) {    
-    Standard_SStream aMsg; aMsg << "could not find the storage driver plugin resource for the format: " << aDocument->StorageFormat()<<(char) 0;
-    Standard_NoSuchObject::Raise(aMsg);
-  }  
-  //return Handle(PCDM_StorageDriver)::DownCast(Plugin::Load(aDocument->StoragePlugin()));
-  Handle(PCDM_StorageDriver) DRIVER = 
-    Handle(PCDM_StorageDriver)::DownCast(Plugin::Load(aDocument->StoragePlugin()));
-  if (!DRIVER.IsNull()) DRIVER->SetFormat(aDocument->StorageFormat());
-  return DRIVER;
-}
-
-//=======================================================================
-//function : FindStorageDriver
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean PCDM::FindStorageDriver(const Handle(CDM_Document)& aDocument) {
-  
-  return aDocument->FindStoragePlugin();
-}
-
-//=======================================================================
 //function : FileDriverType
 //purpose  : 
 //=======================================================================

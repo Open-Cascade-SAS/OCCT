@@ -34,12 +34,6 @@ class TCollection_AsciiString;
 class PCDM 
 {
 public:
-  Standard_EXPORT static Standard_Boolean FindStorageDriver (const Handle(CDM_Document)& aDocument);
-  
-  //! gets   in the  EuclidDesktop   resource  the plugin
-  //! identifier of the driver plugs the driver.
-  Standard_EXPORT static Handle(PCDM_StorageDriver) StorageDriver (const Handle(CDM_Document)& aDocument);
-  
   Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (const TCollection_AsciiString& aFileName, PCDM_BaseDriverPointer& aBaseDriver);
   
   Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (Standard_IStream& theIStream, PCDM_BaseDriverPointer& theBaseDriver);

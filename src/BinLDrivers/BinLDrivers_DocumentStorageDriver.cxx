@@ -57,17 +57,6 @@ BinLDrivers_DocumentStorageDriver::BinLDrivers_DocumentStorageDriver ()
 }
 
 //=======================================================================
-//function : SchemaName
-//purpose  :
-//=======================================================================
-
-TCollection_ExtendedString BinLDrivers_DocumentStorageDriver::SchemaName() const
-{
-  TCollection_ExtendedString schemaname;
-  return schemaname;
-}
-
-//=======================================================================
 //function : Write
 //purpose  :
 //=======================================================================
@@ -442,7 +431,7 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
                                               aObjNb,
                                               BinLDrivers::StorageVersion(),
                                               Storage_Schema::ICreationDate(),
-                                              TCollection_AsciiString(SchemaName(),'?'),
+                                              "", // schema name
                                               aShemaVer,
                                               theData->ApplicationName(),
                                               theData->ApplicationVersion(),
@@ -471,7 +460,7 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
                              aObjNb,
                              BinLDrivers::StorageVersion(),
                              Storage_Schema::ICreationDate(),
-                             TCollection_AsciiString(SchemaName(),'?'),
+                             "", // schema name
                              aShemaVer,
                              theData->ApplicationName(),
                              theData->ApplicationVersion(),

@@ -1558,8 +1558,7 @@ static int BUC60862(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 static int BUC60867(Draw_Interpretor& di, Standard_Integer argc, const char ** argv) {
   if (argc == 2) {
     TCollection_ExtendedString path (argv[1]); 
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) {di<<1;return 0;}
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     Handle(TDocStd_Document) D;
     Standard_Integer insession = A->IsInSession(path);
     if (insession > 0) {  

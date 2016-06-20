@@ -46,11 +46,6 @@ void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCol
 {
   Handle(Storage_Schema) theSchema = new Storage_Schema;
 
-  TColStd_SequenceOfExtendedString theExtensions;
-  aDocument->Extensions(theExtensions);
-  LoadExtensions(theSchema,theExtensions);
-
-
   Handle(Storage_Data) theData = new Storage_Data;
 
   static Standard_Boolean Failure;
@@ -114,9 +109,6 @@ void PCDM_StorageDriver::Write (const Handle(CDM_Document)& /*aDocument*/, Stand
 {
   
 }
-//void PCDM_StorageDriver::LoadExtensions(const Handle(Storage_Schema)& aSchema, const TColStd_SequenceOfExtendedString& Extensions) {}
-void PCDM_StorageDriver::LoadExtensions(const Handle(Storage_Schema)& , const TColStd_SequenceOfExtendedString& ) {}
-
 
 //Handle(PCDM_Document) PCDM_StorageDriver::Make(const Handle(CDM_Document)& aDocument) {
 Handle(PCDM_Document) PCDM_StorageDriver::Make(const Handle(CDM_Document)& ) {

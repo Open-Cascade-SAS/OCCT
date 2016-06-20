@@ -34,9 +34,6 @@ class XCAFApp_Application : public TDocStd_Application
 
 public:
 
-  
-  Standard_EXPORT virtual void Formats (TColStd_SequenceOfExtendedString& Formats) Standard_OVERRIDE;
-  
   //! methods from TDocStd_Application
   //! ================================
   Standard_EXPORT virtual Standard_CString ResourcesName() Standard_OVERRIDE;
@@ -51,31 +48,11 @@ public:
   //! any actions with documents in order to init application
   Standard_EXPORT static Handle(XCAFApp_Application) GetApplication();
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(XCAFApp_Application,TDocStd_Application)
 
 protected:
-
   
-  //! methods from CDF_Application
-  //! ============================
   Standard_EXPORT XCAFApp_Application();
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XCAFApp_Application_HeaderFile

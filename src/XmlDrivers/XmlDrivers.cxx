@@ -17,7 +17,7 @@
 #include <CDM_MessageDriver.hxx>
 #include <Plugin_Macro.hxx>
 #include <Standard_GUID.hxx>
-#include <Standard_Transient.hxx>
+#include <TDocStd_Application.hxx>
 #include <XmlDrivers.hxx>
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlDrivers_DocumentStorageDriver.hxx>
@@ -64,6 +64,17 @@ const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGU
   Standard_Failure::Raise ("XmlDrivers : unknown GUID");
   static Handle(Standard_Transient) aNullHandle;
   return aNullHandle;
+}
+
+//=======================================================================
+//function : DefineFormat
+//purpose  : 
+//=======================================================================
+void XmlDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+{
+  theApp->DefineFormat ("XmlOcaf", "Xml OCAF Document", "xml",
+                        new XmlDrivers_DocumentRetrievalDriver, 
+                        new XmlDrivers_DocumentStorageDriver ("Copyright: Open Cascade, 2001-2002"));
 }
 
 //=======================================================================

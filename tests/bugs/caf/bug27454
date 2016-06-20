@@ -10,7 +10,8 @@ puts ""
 
 cpulimit 10
 
-catch {Open [locate_data_file bug27454_test.xml] D -stream} msg
+set file [locate_data_file bug27454_test.xml]
+catch {Open $file D -stream} msg
 
 cpulimit
 

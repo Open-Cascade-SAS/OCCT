@@ -16,23 +16,17 @@
 #ifndef _XmlXCAFDrivers_HeaderFile
 #define _XmlXCAFDrivers_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 class Standard_Transient;
 class Standard_GUID;
 class XmlXCAFDrivers_DocumentRetrievalDriver;
 class XmlXCAFDrivers_DocumentStorageDriver;
-
-
+class TDocStd_Application;
 
 class XmlXCAFDrivers 
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
   
   //! Depending from the  ID, returns a list of  storage
   //! or retrieval attribute drivers. Used for plugin.
@@ -49,29 +43,9 @@ public:
   //! ed8793fa-3142-11d4-b9b5-0060b0ee281b XCAFSchema
   Standard_EXPORT static const Handle(Standard_Transient)& Factory (const Standard_GUID& aGUID);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XmlXCAFDrivers_DocumentRetrievalDriver;
-friend class XmlXCAFDrivers_DocumentStorageDriver;
-
+  //! Defines format "XmlXCAF" and registers its read and write drivers
+  //! in the specified application
+  Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
 };
-
-
-
-
-
-
 
 #endif // _XmlXCAFDrivers_HeaderFile

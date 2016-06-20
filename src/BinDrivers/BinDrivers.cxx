@@ -31,6 +31,7 @@
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TDocStd_Application.hxx>
 
 static Standard_GUID BinStorageDriver  ("03a56835-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID BinRetrievalDriver("03a56836-8269-11d5-aab2-0050044b1af1");
@@ -64,6 +65,17 @@ const Handle(Standard_Transient)& BinDrivers::Factory(const Standard_GUID& theGU
   Standard_Failure::Raise ("BinDrivers : unknown GUID");
   static Handle(Standard_Transient) aNullHandle;
   return aNullHandle;
+}
+
+//=======================================================================
+//function : DefineFormat
+//purpose  : 
+//=======================================================================
+void BinDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+{
+  theApp->DefineFormat ("BinOcaf", "Binary OCAF Document", "cbf",
+                        new BinDrivers_DocumentRetrievalDriver, 
+                        new BinDrivers_DocumentStorageDriver);
 }
 
 //=======================================================================

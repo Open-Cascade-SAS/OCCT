@@ -767,8 +767,7 @@ static Standard_Integer OCC381_Save (Draw_Interpretor& di, Standard_Integer nb, 
   Handle(TDocStd_Document) D;
   if (!DDocStd::GetDocument(a[1],D)) return 1;
 
-  Handle(TDocStd_Application) A;
-  if (!DDocStd::Find(A)) return 1;
+  Handle(TDocStd_Application) A = DDocStd::GetApplication();
 
   TCollection_ExtendedString theStatusMessage;
   if (!D->IsSaved()) {
@@ -821,8 +820,7 @@ static Standard_Integer OCC381_SaveAs (Draw_Interpretor& di, Standard_Integer nb
   if (!DDocStd::GetDocument(a[1],D)) return 1;
 
   TCollection_ExtendedString path (a[2]);
-  Handle(TDocStd_Application) A;
-  if (!DDocStd::Find(A)) return 1;
+  Handle(TDocStd_Application) A = DDocStd::GetApplication();
 
   TCollection_ExtendedString theStatusMessage;
   PCDM_StoreStatus theStatus = A->SaveAs(D,path, theStatusMessage);
@@ -1065,8 +1063,7 @@ static Standard_Integer OCC363 (Draw_Interpretor& di, Standard_Integer argc, con
     if(argc < 3) { di <<"Error OCC363 : Use : OCC363 document filename\n"; return 1; }
 
     // 2. Retrieve DDocStd application
-    Handle(TDocStd_Application) App;
-    if (!DDocStd::Find(App)) { di << "Error OCC363 : There is no current DDocStd application\n";return 1;}
+    Handle(TDocStd_Application) App = DDocStd::GetApplication();
 
     // 3. Open document
     TCollection_ExtendedString name(argv[2]);

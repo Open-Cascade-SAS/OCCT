@@ -592,7 +592,7 @@ The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the d
 
 Standard documents offer ready-to-use documents containing a TDF-based data framework. Each document can contain only one framework. 
 
-The documents themselves are contained in the instantiation of a class inheriting from *TDocStd_Application*. This application manages the creation, storage and retrieval of documents. 
+The documents themselves are contained in the instantiation of a class *TDocStd_Application* (or its descendant). This application manages the creation, storage and retrieval of documents. 
 
 You can implement undo and redo in your document, and refer from the data framework of one document to that of another one. This is done by means of external link attributes, which store the path and the entry of external links. 
 
@@ -605,17 +605,15 @@ To sum up, standard documents alone provide access to the data framework. They a
 
 @subsection occt_ocaf_4_2 The Application
 
-As a container for your data framework, you need a document, and your document must be contained in your application. This application will be a class inheriting from *TDocStd_Application*. 
+As a container for your data framework, you need a document, and your document must be contained in your application. This application will be a class *TDocStd_Application* or a class inheriting from it. 
 
 @subsubsection occt_ocaf_4_2_1 Creating an application
 
 To create an application, use the following syntax. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-Handle(TDocStd_Application) app 
-= new MyApplication_Application (); 
+Handle(TDocStd_Application) app = new TDocStd_Application (); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Note that *MyApplication_Application* is a class, which you have to create and which will inherit from *TDocStd_Application*. 
 
 @subsubsection occt_ocaf_4_2_2 Creating a new document
 
@@ -626,13 +624,16 @@ Handle(TDocStd_Document) doc;
 app->NewDocument("NewDocumentFormat", doc); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Here "NewDocumentFormat" is identifier of the format of your document.
+OCCT defines several standard formats, distinguishing by a set of OCAF attributes supported, and method of encoding (e.g. binary data or XML), described below.
+If your application defines specific OCAF attributes, you need to define your own format for it.
+
 @subsubsection occt_ocaf_4_2_3 Retrieving the application to which the document belongs
 
 To retrieve the application containing your document, you use the syntax below. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-app = Handle(TDocStd_Application)::DownCast 
-(doc->Application()); 
+app = Handle(TDocStd_Application)::DownCast (doc->Application()); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @subsection occt_ocaf_4_3 The Document
 
@@ -652,36 +653,96 @@ To retrieve the document from a label in its data framework, you use *TDocStd_Do
 doc = TDocStd_Document::Get(label); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@subsubsection occt_ocaf_4_3_3 Saving the document
+@subsubsection occt_ocaf_4_3_format Defining storage format
 
-If in your document you use only standard attributes (from the packages *TDF, TDataStd, TNaming, TFunction, TPrsStd* and *TDocStd*), you just do the following steps: 
+OCAF uses customizable mechanism for storage of the documents.
+In order to use OCAF persistence to save and read your documents to / from the file, you need to define one or several formats in your application.
 
-* In your application class (which inherits class *TDocStd_Application*) implement two methods:
-	+ Formats (TColStd_SequenceOfExtendedString& theFormats), which append to a given sequence <i>\<theFormats\></i> your document format string, for example, "NewDocumentFormat" -- this string is also set in the document creation command 
-	+ ResourcesName(), which returns a string with a name of resources file (this file contains a description about the extension of the document, storage/retrieval drivers GUIDs...), for example, "NewFormat" 
-* Create the resource file (with name, for example, "NewFormat") with the following strings:
+For that, use method TDocStd_Application::DefineFormat(), for instance:
+~~~~~
+app->DefineFormat ("NewDocumentFormat", "New format for OCAF documents", "ndf",
+                   new NewDocumentFormat_RetrievalDriver(),
+                   new NewDocumentFormat_StorageDriver());
+~~~~~
+
+Here format "NewDocumentFormat" is defined, with default file extension "ndf", and drivers for reading and storing documents from and to that format are instantiated.
+Either of the drivers can be null, in this case corresponding action will not be supported for that format.
+
+OCAF provides several standard formats, each covering some set of OCAF attributes:
+
+<table>
+<tr><th>Format</th><th>Persistent toolkit</th><th>OCAF attributes covered</th></tr>
+<tr><td colspan=3>Legacy formats (read only)</td></tr>
+<tr><td>OCC-StdLite    </td><td> TKStdL             </td><td> TKLCAF </td></tr>
+<tr><td>MDTV-Standard  </td><td> TKStd              </td><td> TKLCAF + TKCAF </td></tr>
+<tr><td colspan=3>Binary formats</td></tr>
+<tr><td>BinLOcaf       </td><td> TKBinL             </td><td> TKLCAF </td></tr>
+<tr><td>BinOcaf        </td><td> TKBin              </td><td> TKLCAF + TKCAF </td></tr>
+<tr><td>BinXCAF        </td><td> TKBinXCAF          </td><td> TKLCAF + TKCAF + TKXCAF </td></tr>
+<tr><td>TObjBin        </td><td> TKBinTObj          </td><td> TKLCAF + TKTObj </td></tr>
+<tr><td colspan=3>XML formats</td></tr>
+<tr><td>XmlLOcaf       </td><td> TKXmlL             </td><td> TKLCAF </td></tr>
+<tr><td>XmlOcaf        </td><td> TKXml              </td><td> TKLCAF + TKCAF </td></tr>
+<tr><td>XmlXCAF        </td><td> TKXmlXCAF          </td><td> TKLCAF + TKCAF + TKXCAF </td></tr>
+<tr><td>TObjXml        </td><td> TKXmlTObj          </td><td> TKLCAF + TKTObj </td></tr>
+</table>
+
+For convenience, these toolkits provide static methods DefineFormat() accepting handle to application.
+These methods allow defining corresponding formats easily, e.g.:
 
 ~~~~~
-formatlist:NewDocumentFormat 
-NewDocumentFormat: New Document Format Version 1.0 
+BinDrivers::DefineFormat (app); // define format "BinOcaf"
+~~~~~
+
+Use these toolkits as example for implementation of persistence drivers for custom attributes, or new persistence formats.
+
+The application can define several storage formats.
+On save, the format specified in the document (see TDocStd_Document::StorageFormat()) will be used (it will fail if that format is not defined in the application).
+On reading, format identifier stored in the file is used, and recorded in the document.
+
+@subsubsection occt_ocaf_4_3_plugins Defining storage format by resource files 
+
+Alternative (legacy, used in earlier versions of OCCT) method to define formats is via usage of resource files.
+This method allows loading persistence drivers on demand, using plugin mechanism.
+
+To use this method, create your own application class inheriting from *TDocStd_Application*, and override method ResourcesName().
+That method should return a string with a name of resource file, e.g. "NewDocumentFormat", which will contain description of the format.
+
+Then create that resource file and define parameters of your format:
+
+~~~~~
+ndf.FileFormat: NewDocumentFormat
+NewDocumentFormat.Description: New Document Format Version 1.0 
 NewDocumentFormat.FileExtension: ndf 
-NewDocumentFormat.StoragePlugin: bd696000-5b34-11d1-b5ba-00a0c9064368 
-NewDocumentFormat.RetrievalPlugin: bd696001-5b34-11d1-b5ba-00a0c9064368 
-NewDocumentFormatSchema: bd696002-5b34-11d1-b5ba-00a0c9064368 
-NewDocumentFormat.AttributeStoragePlugin:57b0b826-d931-11d1-b5da-00a0c9064368 
-NewDocumentFormat.AttributeRetrievalPlugin:57b0b827-d931-11d1-b5da-00a0c9064368 
+NewDocumentFormat.StoragePlugin: bb5aa176-c65c-4c84-862e-6b7c1fe16921
+NewDocumentFormat.RetrievalPlugin: 76fb4c04-ea9a-46aa-88a2-25f6a228d902 
 ~~~~~
 
-* Copy the resource file "Plugin" from $CASROOT/src/StdResource
+Here GUIDs should be unique and correspond to the GUIDs supported by relevant plugin.
+You can use either one of existing plugins (see the table above) or create your own.
 
-In order to set the paths for these files it is necessary to set the environments: *CSF_PluginDefaults* and *CSF_NewFormatDefaults*. For example, set the files in the directory *MyApplicationPath/MyResources*: 
+Finally, make a copy of the resource file "Plugin" from $CASROOT/src/StdResource, and, if necessary, add definition of your plugin in it, for instance:
+
+~~~~~
+bb5aa176-c65c-4c84-862e-6b7c1fe16921.Location: TKNewFormat
+76fb4c04-ea9a-46aa-88a2-25f6a228d902.Location: TKNewFormat
+~~~~~
+
+In order to have these resource files loaded during the program execution, it is necessary to set two environment variables: *CSF_PluginDefaults* and *CSF_NewFormatDefaults*.
+For example, set the files in the directory *MyApplicationPath/MyResources*: 
 
 ~~~~~
 setenv CSF_PluginDefaults MyApplicationPath/MyResources 
 setenv CSF_NewFormatDefaults MyApplicationPath/MyResources 
 ~~~~~
 
-Once these steps are taken you may run your application, create documents and Save/Open them.
+@subsubsection occt_ocaf_4_3_3 Saving a document
+
+To save the document, make sure that its parameter StorageFormat() corresponds to one of formats defined in the application, and use method *TDocStd_Application::SaveAs*, for instance: 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+app->SaveAs(doc, "/tmp/example.caf"); 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @subsubsection occt_ocaf_4_3_4 Opening the document from a file
 
@@ -1700,37 +1761,6 @@ Both the XML format and the XML OCAF persistence code are extensible in the sens
 * Add (in the new *DocumentStorageDriver*) the *targetNamespace* accompanied with its prefix, using method *XmlDrivers_DocumentStorageDriver::AddNamespace*. The same is done for all namespaces objects which are used by the new persistence, with the exception of the "ocaf" namespace. 
 * Pass (in every OCAF attribute driver) the namespace prefix of the *targetNamespace* to the constructor of *XmlMDF_ADriver*. 
 
-@section occt_ocaf_9a Persistent  Data Storage
-
-@subsection occt_ocaf_9a_1 Introduction
-
-In OCAF, persistence, that is, the mechanism used to  save a document in a file, is based on an explicit formal description of the  data saved.  
- 
-When you open a document, the application reads the corresponding file and first creates a memory representation of it. This representation is then converted to the application data model —  the OCAF-based data structure the application operates on. The file's memory representation  consists of objects defined by classes known as persistent. 
-   
-OCAF includes a ready-to-use schema suitable for most  applications. 
-However, it can be extended if needed. 
-  
-Applications using compound documents extensively (saving data in many files linked together) should implement data management services. It is out the scope of OCAF to provide functions such as:
-* Version and configuration management of compound documents;
-* Querying a referenced document for its referencing documents.
-
-In order to ease the delegation of document management to a data management application, OCAF encapsulates the file management functions in a driver (the meta-data driver). You have to implement this driver for your application to communicate with the data management system of your choice.
-
- 
-@subsection occt_ocaf_9a_2 Schemes of Persistence
-
-There are three schemes of persistence, which you can use to store and retrieve OCAF data (documents):
-
-  * <i> Standard</i> persistence schema, compatible with previous OCAF applications. This schema is deprecated and supports only reading of standard attributes (no writing).
-  * <i> XmlOcaf</i> persistence, allowing the storage of all OCAF data in XML form
-  * <i> BinOcaf</i> persistence, allowing the storage of all OCAF data in binary format form
-
-
-In an OCAF application you can use any persistence schema or
-even all three of them. The choice is made depending on the *Format* string of stored OCAF documents
-or automatically by the file header data -- on retrieval.
-  
 @section occt_ocaf_10 GLOSSARY
 
 * **Application** -- a document container holding all documents containing all application data. 
@@ -1815,116 +1845,21 @@ In C++, the application behavior is implemented in virtual functions redefined i
   You can also implement the user interface in the Java language using 
   the Swing-based Java Application Desktop component (JAD)  provided with OCAF.  
   
-@subsection occt_ocaf_11_b An example of OCAF usage
-
-To create a useful OCAF-based application, it is necessary to redefine two deferred methods: <i> Formats</i> and <i> ResourcesName</i>
-
-In the <i> Formats </i> method, add the format of the documents, which need to be read by the application and may have been built in other applications.
-
-For example:
-
-~~~~
-    void myApplication::Formats(TColStd_SequenceOfExtendedString& Formats)
-    {
-      Formats.Append(TCollection_ExtendedString ("OCAF-myApplication"));
-    }
-~~~~
-
-In the <i> ResourcesName</i> method, you only define the name of the resource file. This
-file contains several definitions for the saving and opening mechanisms associated
-with each format and calling of the plug-in file.
-
-~~~~
-    Standard_CString myApplication::ResourcesName()
-    {
-      return Standard_CString ("Resources");
-    }
-~~~~
-
-To obtain the saving and opening mechanisms, it is necessary to set two environment variables: <i> CSF_PluginDefaults</i>, which defines the path of the plug-in file, and <i> CSF_ResourcesDefault</i>, which defines the resource file:
-
-~~~~
-    SetEnvironmentVariable ( "CSF_ResourcesDefaults",myDirectory);
-    SetEnvironmentVariable ( "CSF_PluginDefaults",myDirectory);
-~~~~
-
-The plugin and the resource files of the application will be located in <i> myDirector</i>.
-The name of the plugin file must be <i>Plugin</i>.
-
-### Resource File
-
-The resource file describes the documents (type and extension) and 
-the type of data that the application can manipulate 
-by identifying the storage and retrieval drivers appropriate for this data.
-
-Each driver is unique and identified by a GUID generated, for example, with the <i> uuidgen </i> tool in Windows.
-
-Five drivers are required to use all standard attributes provided within OCAF:
-
-  * the schema driver (ad696002-5b34-11d1-b5ba-00a0c9064368)
-  * the document storage driver (ad696000-5b34-11d1-b5ba-00a0c9064368)
-  * the document retrieval driver (ad696001-5b34-11d1-b5ba-00a0c9064368)
-  * the attribute storage driver (47b0b826-d931-11d1-b5da-00a0c9064368)
-  * the attribute retrieval driver (47b0b827-d931-11d1-b5da-00a0c9064368)
-
-These drivers are provided as plug-ins and are located in the <i> PappStdPlugin</i> library.
-
-
-For example, this is a resource file, which declares a new model document OCAF-MyApplication:
-
-~~~~
-formatlist:OCAF-MyApplication
-OCAF-MyApplication.Description: MyApplication Document Version 1.0
-OCAF-MyApplication.FileExtension: sta
-OCAF-MyApplication.StoragePlugin: ad696000-5b34-11d1-b5ba-00a0c9064368
-OCAF-MyApplication.RetrievalPlugin: ad696001-5b34-11d1-b5ba-00a0c9064368
-OCAF-MyApplicationSchema: ad696002-5b34-11d1-b5ba-00a0c9064368
-OCAF-MyApplication.AttributeStoragePlugin: 47b0b826-d931-11d1-b5da-00a0c9064368
-OCAF-MyApplication.AttributeRetrievalPlugin: 47b0b827-d931-11d1-b5da-00a0c9064368
-~~~~
- 
-  
-### Plugin File
-
-The plugin file describes the list of required plug-ins to run the application and the
-libraries in which plug-ins are located.
-
-You need at least the <i> FWOSPlugin</i> and the plug-in drivers to run an OCAF application.
-
-The syntax of each item is <i> Identification.Location Library_Name, </i> where:
-* Identification is GUID.
-* Location defines the location of the Identification (where its definition is found).
-* Library_Name is the name (and path to) the library, where the plug-in is located.
-
-For example, this is a Plugin file:
-
-~~~~
-a148e300-5740-11d1-a904-080036aaa103.Location: FWOSPlugin
-! base document drivers plugin
-ad696000-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
-ad696001-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
-ad696002-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
-47b0b826-d931-11d1-b5da-00a0c9064368.Location: PAppStdPlugin
-47b0b827-d931-11d1-b5da-00a0c9064368.Location: PAppStdPlugin
-~~~~
- 
-
-
 @subsection occt_ocaf_11_1 Implementation of Attribute Transformation in a HXX file
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-\#include <TDF_Attribute.hxx>
+#include <TDF_Attribute.hxx>
 
-\#include <gp_Ax3.hxx>
-\#include <gp_Pnt.hxx>
-\#include <gp_Vec.hxx>
-\#include <gp_Trsf.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Trsf.hxx>
 
-//! This attribute implements a transformation data container
+// This attribute implements a transformation data container
 class MyPackage_Transformation : public TDF_Attribute
 {
 public:
-  //!@name Static methods 
+  //!@ name Static methods 
 
   //! The method returns a unique GUID of this attribute. 
   //! By means of this GUID this attribute may be identified   
@@ -1935,12 +1870,12 @@ public:
   //! The found or created attribute is returned. 
   Standard_EXPORT static Handle(MyPackage_Transformation) Set (const TDF_Label theLabel);
 
-  //!@name Methods for access to the attribute data 
+  //!@ name Methods for access to the attribute data 
       
   //! The method returns the transformation. 
   Standard_EXPORT gp_Trsf Get () const; 
 
-  //!@name Methods for setting the data of transformation 
+  //!@ name Methods for setting the data of transformation 
 
   //! The method defines a rotation type of transformation. 
   Standard_EXPORT void SetRotation (const gp_Ax1& theAxis, Standard_Real theAngle); 
@@ -1963,7 +1898,7 @@ public:
   //! The method defines a complex type of transformation from one co-ordinate system to another. 
   Standard_EXPORT void SetTransformation (const gp_Ax3& theCoordinateSystem1, const gp_Ax3& theCoordinateSystem2); 
 
-  //!@name Overridden methods from TDF_Attribute 
+  //!@ name Overridden methods from TDF_Attribute 
       
   //! The method returns a unique GUID of the attribute. 
   //! By means of this GUID this attribute may be identified among other attributes attached to the same label. 
@@ -1984,7 +1919,7 @@ public:
   //! Prints the content of this attribute into the stream. 
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS);
 
-  //!@name Constructor 
+  //!@ name Constructor 
 
   //! The C++ constructor of this atribute class. 
   //! Usually it is never called outside this class. 
@@ -2012,7 +1947,7 @@ private:
 @subsection occt_ocaf_11_2 Implementation of Attribute Transformation in a CPP file
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-\#include <MyPackage_Transformation.hxx> 
+#include <MyPackage_Transformation.hxx> 
 
 //======================================================================= 
 //function : GetID 

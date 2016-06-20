@@ -82,7 +82,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVCAF.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
 				OutputFile="../../../..\win32\vc9\bin/Convert.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -180,7 +180,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVCAF.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
 				OutputFile="../../../..\win64\vc9\bin/Convert.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -277,7 +277,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVCAF.lib FWOSPlugin.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
 				OutputFile="../../../..\win32\vc9\bind/Convert.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -374,7 +374,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVCAF.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
+				AdditionalDependencies="TKVCAF.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib mfcsample.lib"
 				OutputFile="../../../..\win64\vc9\bind/Convert.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

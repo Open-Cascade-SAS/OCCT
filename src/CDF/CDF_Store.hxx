@@ -44,28 +44,6 @@ public:
   //! creates a store list  from the document of the current selection.
   Standard_EXPORT CDF_Store(const Handle(CDM_Document)& aDocument);
   
-  //! Checks will make the following control. Check must be used before
-  //! using Create method. Check will not be done twice by Create.
-  //!
-  //! 1) controls whether there is one document in the current selection.
-  //! 2) controls whether there is a storage driver for the document.
-  //! 3) controls whether the applicationdatatype associated with the driver
-  //! exists as metadata in the metadata manager (Design Manager for example).
-  //! 4) controls whether there is a storage driver for each subcomponents
-  //! of the document if there are.  If the control fails for a subcomponent,
-  //! the control stops and name and type of this subcomponent can be get
-  //! with LastName method
-  //! 5) controls whether the applicationdatatype associated with the driver of
-  //! each subcomponent exists as metadata in the metadata manager
-  //! (Design Manager for example). If the control fails for a subcomponent,
-  //! the control stops and name and type of this subcomponent can be get
-  //! with LastName method
-  Standard_EXPORT CDF_TryStoreStatus Check();
-  
-  //! in the case of a subcomponent for which no storage driver exists,
-  //! returns the name of the subcomponent if there is one.
-  Standard_EXPORT Standard_ExtString LastName() const;
-  
   //! returns the folder in which the current document will be stored.
   Standard_EXPORT Standard_ExtString Folder() const;
   
@@ -181,7 +159,6 @@ private:
   Handle(CDM_Document) myCurrentDocument;
   Standard_Boolean myHasSubComponents;
   Standard_Boolean myIsMainDocument;
-  TCollection_ExtendedString myLastName;
   TCollection_ExtendedString myPath;
   TCollection_ExtendedString myText;
   PCDM_StoreStatus myStatus;

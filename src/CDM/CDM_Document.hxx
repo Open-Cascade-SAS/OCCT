@@ -20,17 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
+#include <CDM_ListOfReferences.hxx>
+#include <CDM_CanCloseStatus.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <Standard_Boolean.hxx>
-#include <CDM_ListOfReferences.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_GUID.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_ExtString.hxx>
 #include <Standard_OStream.hxx>
-#include <CDM_CanCloseStatus.hxx>
+
 class CDM_MetaData;
 class CDM_Application;
 class Standard_NoSuchObject;
@@ -40,8 +35,6 @@ class CDM_Reference;
 class CDM_ReferenceIterator;
 class TCollection_ExtendedString;
 class Resource_Manager;
-class Standard_GUID;
-
 
 class CDM_Document;
 DEFINE_STANDARD_HANDLE(CDM_Document, Standard_Transient)
@@ -292,32 +285,10 @@ public:
   //! gets the Desktop.Domain.Application.`FileFormat`.FileExtension resource.
   Standard_EXPORT TCollection_ExtendedString FileExtension();
   
-  Standard_EXPORT Standard_Boolean FindDataType();
-  
-  //! this datatype will be used if the DBMS deals with this concept
-  //! gets the `FileFormat`.DataType resource.
-  //! concept.
-  Standard_EXPORT TCollection_ExtendedString DataType();
-  
-  Standard_EXPORT Standard_Boolean FindVersionDataType();
-  
-  //! this datatype will be used if the DBMS deals with this concept
-  //! gets the `FileFormat`.VersionDataType resource.
-  Standard_EXPORT TCollection_ExtendedString VersionDataType();
-  
   Standard_EXPORT Standard_Boolean FindDescription();
   
   //! gets the `FileFormat`.Description resource.
   Standard_EXPORT TCollection_ExtendedString Description();
-  
-  Standard_EXPORT Standard_Boolean FindDomain();
-  
-  //! gets the `FileFormat`.Domain resource.
-  Standard_EXPORT TCollection_ExtendedString Domain();
-  
-  Standard_EXPORT Standard_Boolean FindStoragePlugin();
-  
-  Standard_EXPORT Standard_GUID StoragePlugin();
   
   //! returns  true  if the   version is greater  than   the
   //! storage version
@@ -423,19 +394,9 @@ private:
   Standard_Boolean myRequestedPreviousVersionIsDefined;
   TCollection_ExtendedString myRequestedPreviousVersion;
   TCollection_ExtendedString myFileExtension;
-  TCollection_ExtendedString myDataType;
-  TCollection_ExtendedString myVersionDataType;
   TCollection_ExtendedString myDescription;
-  TCollection_ExtendedString myDomain;
-  TCollection_ExtendedString myDefaultPresentation;
   Standard_Boolean myFileExtensionWasFound;
-  Standard_Boolean myDataTypeWasFound;
-  Standard_Boolean myVersionDataTypeWasFound;
   Standard_Boolean myDescriptionWasFound;
-  Standard_Boolean myDomainWasFound;
-  Standard_Boolean myStoragePluginWasFound;
-  Standard_Boolean myDefaultPresentationWasFound;
-  Standard_GUID myStoragePlugin;
   Handle(CDM_Application) myApplication;
 
 

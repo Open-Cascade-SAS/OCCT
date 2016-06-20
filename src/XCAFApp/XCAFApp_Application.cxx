@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
+#include <Resource_Manager.hxx>
 #include <TDF_Label.hxx>
 #include <TDocStd_Document.hxx>
 #include <TPrsStd_DriverTable.hxx>
@@ -45,17 +45,6 @@ XCAFApp_Application::XCAFApp_Application()
   // register driver for presentation
   Handle(TPrsStd_DriverTable) table  = TPrsStd_DriverTable::Get();
   table->AddDriver (XCAFPrs_Driver::GetID(), new XCAFPrs_Driver);
-}
-
-//=======================================================================
-//function : Formats
-//purpose  : 
-//=======================================================================
-
-void XCAFApp_Application::Formats(TColStd_SequenceOfExtendedString& Formats) 
-{
-  Formats.Append(TCollection_ExtendedString ("XmlXCAF"));
-  Formats.Append(TCollection_ExtendedString ("BinXCAF"));
 }
 
 //=======================================================================

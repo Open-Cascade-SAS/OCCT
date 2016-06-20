@@ -45,8 +45,6 @@ public:
   
   Standard_EXPORT XmlLDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
   
-  Standard_EXPORT virtual TCollection_ExtendedString SchemaName() const Standard_OVERRIDE;
-  
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, const TCollection_ExtendedString& theFileName) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, Standard_OStream& theOStream) Standard_OVERRIDE;

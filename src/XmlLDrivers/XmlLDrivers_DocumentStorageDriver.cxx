@@ -74,16 +74,6 @@ XmlLDrivers_DocumentStorageDriver::XmlLDrivers_DocumentStorageDriver
 }
 
 //=======================================================================
-//function : SchemaName
-//purpose  : 
-//=======================================================================
-TCollection_ExtendedString XmlLDrivers_DocumentStorageDriver::SchemaName() const
-{
-  TCollection_ExtendedString schemaname;
-  return schemaname; 
-}
-
-//=======================================================================
 //function : AddNamespace
 //purpose  : 
 //=======================================================================

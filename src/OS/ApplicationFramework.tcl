@@ -24,7 +24,6 @@ proc ApplicationFramework:toolkits { } {
                 TKXmlL \
                 TKBin \
                 TKXml \
-                FWOSPlugin \
                 TKStdL \
                 TKStd \
                 TKTObj \

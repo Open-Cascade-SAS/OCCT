@@ -17,19 +17,14 @@
 #ifndef _CDF_Application_HeaderFile
 #define _CDF_Application_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <TCollection_ExtendedString.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <CDM_Application.hxx>
 #include <CDM_CanCloseStatus.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <CDF_TypeOfActivation.hxx>
-#include <Standard_ExtString.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_IStream.hxx>
+#include <NCollection_DataMap.hxx>
 
 class Standard_NoSuchObject;
 class CDF_Session;
@@ -38,7 +33,8 @@ class CDM_Document;
 class TCollection_ExtendedString;
 class PCDM_Reader;
 class CDM_MetaData;
-
+class PCDM_RetrievalDriver;
+class PCDM_StorageDriver;
 
 class CDF_Application;
 DEFINE_STANDARD_HANDLE(CDF_Application, CDM_Application)
@@ -113,22 +109,40 @@ public:
   
   Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion);
   
-  Standard_EXPORT virtual void Formats (TColStd_SequenceOfExtendedString& Formats) = 0;
-  
   //! Checks  status  after  Retrieve
-    PCDM_ReaderStatus GetRetrieveStatus() const;
+  PCDM_ReaderStatus GetRetrieveStatus() const { return myRetrievableStatus; }
   
-  Standard_EXPORT Standard_Boolean FindReader (const TCollection_ExtendedString& aFileName);
-  
-  Standard_EXPORT Handle(PCDM_Reader) Reader (const TCollection_ExtendedString& aFileName);
-
   //! Reads aDoc from standard SEEKABLE stream theIStream,
   //! the stream should support SEEK fuctionality
   Standard_EXPORT Handle(CDM_Document) Read (Standard_IStream& theIStream);
  
-  Standard_EXPORT Standard_Boolean FindReaderFromFormat (const TCollection_ExtendedString& aFormat);
+  //! Returns instance of read driver for specified format.
+  //!
+  //! Default implementation uses plugin mechanism to load reader dynamically.
+  //! For this to work, application resources should define GUID of
+  //! the plugin as value of [Format].RetrievalPlugin, and "Plugin"
+  //! resource should define name of plugin library to be loaded as
+  //! value of [GUID].Location. Plugin library should provide
+  //! method PLUGINFACTORY returning instance of the reader for the
+  //! same GUID (see Plugin_Macro.hxx).
+  //!
+  //! In case if reader is not available, will raise Standard_NoSuchObject
+  //! or other exception if raised by plugin loader.
+  Standard_EXPORT virtual Handle(PCDM_Reader) ReaderFromFormat (const TCollection_ExtendedString& aFormat);
   
-  Standard_EXPORT Handle(PCDM_Reader) ReaderFromFormat (const TCollection_ExtendedString& aFormat);
+  //! Returns instance of storage driver for specified format.
+  //!
+  //! Default implementation uses plugin mechanism to load driver dynamically.
+  //! For this to work, application resources should define GUID of
+  //! the plugin as value of [Format].StoragePlugin, and "Plugin"
+  //! resource should define name of plugin library to be loaded as
+  //! value of [GUID].Location. Plugin library should provide
+  //! method PLUGINFACTORY returning instance of the reader for the
+  //! same GUID (see Plugin_Macro.hxx).
+  //!
+  //! In case if driver is not available, will raise Standard_NoSuchObject
+  //! or other exception if raised by plugin loader.
+  Standard_EXPORT virtual Handle(PCDM_StorageDriver) WriterFromFormat (const TCollection_ExtendedString& aFormat);
   
   //! try to  retrieve a Format  directly in the  file or in
   //! application   resource  by using   extension. returns
@@ -139,9 +153,6 @@ public:
   
   Standard_EXPORT Standard_Boolean SetDefaultFolder (const Standard_ExtString aFolder);
   
-  Standard_EXPORT Standard_ExtString DefaultExtension();
-
-
 friend class CDF_Session;
 
 
@@ -153,7 +164,8 @@ protected:
   Standard_EXPORT CDF_Application();
 
   PCDM_ReaderStatus myRetrievableStatus;
-
+  NCollection_DataMap<TCollection_ExtendedString, Handle(PCDM_RetrievalDriver)> myReaders;
+  NCollection_DataMap<TCollection_ExtendedString, Handle(PCDM_StorageDriver)> myWriters;
 
 private:
 
@@ -179,24 +191,12 @@ private:
   
   Standard_EXPORT Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& theMetaData) Standard_OVERRIDE;
   
-  Standard_EXPORT Standard_Boolean FindReader (const TCollection_ExtendedString& aFileName, Standard_GUID& PluginIn, TCollection_ExtendedString& ResourceName);
-  
-  Standard_EXPORT Standard_Boolean FindReaderFromFormat (const TCollection_ExtendedString& aFormat, Standard_GUID& PluginIn, TCollection_ExtendedString& ResourceName);
-  
   Standard_EXPORT CDF_TypeOfActivation TypeOfActivation (const Handle(CDM_MetaData)& aMetaData);
   
   Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const Handle(CDM_MetaData)& aMetaData);
 
+private:
   TCollection_ExtendedString myDefaultFolder;
-
-
 };
-
-
-#include <CDF_Application.lxx>
-
-
-
-
 
 #endif // _CDF_Application_HeaderFile

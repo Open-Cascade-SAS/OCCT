@@ -18,7 +18,7 @@
 #include <TDF_Tool.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDocStd_Document.hxx>
-
+#include <Standard_GUID.hxx>
 
 //=======================================================================
 //function : ShapeRefGUID

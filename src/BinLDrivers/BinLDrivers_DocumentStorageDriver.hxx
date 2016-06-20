@@ -50,10 +50,7 @@ public:
   
   //! Constructor
   Standard_EXPORT BinLDrivers_DocumentStorageDriver();
-  
-  //! pure virtual method definition
-  Standard_EXPORT virtual TCollection_ExtendedString SchemaName() const Standard_OVERRIDE;
-  
+    
   //! Write <theDocument> to the binary file <theFileName>
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, const TCollection_ExtendedString& theFileName) Standard_OVERRIDE;
 

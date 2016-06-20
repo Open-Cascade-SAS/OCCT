@@ -42,7 +42,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKSHHealing.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib TKBO.lib"
+				AdditionalDependencies="TKSHHealing.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib TKBO.lib"
 				OutputFile=".\../Release/Simplify.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -109,7 +109,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKSHHealing.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib TKBO.lib"
+				AdditionalDependencies="TKSHHealing.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib TKBO.lib"
 				OutputFile=".\../Debug/Simplify.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

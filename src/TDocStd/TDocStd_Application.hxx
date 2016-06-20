@@ -22,17 +22,18 @@
 
 #include <Standard_Boolean.hxx>
 #include <CDF_Application.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_IStream.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
+
 class Resource_Manager;
 class Standard_NoSuchObject;
 class TDocStd_Document;
 class TCollection_ExtendedString;
-
 
 class TDocStd_Application;
 DEFINE_STANDARD_HANDLE(TDocStd_Application, CDF_Application)
@@ -71,19 +72,45 @@ class TDocStd_Application : public CDF_Application
 
 public:
 
+  //! Constructs the new instance and registers it in CDM_Session
+  Standard_EXPORT TDocStd_Application();
   
   //! Check if meta data driver was successfully loaded
   //! by the application constructor
   Standard_EXPORT Standard_Boolean IsDriverLoaded() const;
+
+  //! Redefines message driver, by default outputs to cout.
+  Standard_EXPORT virtual Handle(CDM_MessageDriver) MessageDriver() Standard_OVERRIDE;
   
-  //! create  (if  not done)  a Manager  using ResourcesName
-  //! method.
+  //! Returns resource manager defining supported persistent formats.
+  //!
+  //! Default implementation loads resource file with name ResourcesName(),
+  //! unless field myResources is already initialized (either by
+  //! previous call or in any other way).
+  //!
+  //! The resource manager should define:
+  //!
+  //! * Format name for each file extension supported:
+  //!   - [Extension].FileFormat: [Format]
+  //!
+  //! * For each format supported (as returned by Formats()),
+  //!   its extension, description string, and (when applicable)
+  //!   GUIDs of storage and retrieval plugins:
+  //!   - [Format].Description: [Description]
+  //!   - [Format].FileExtension: [Extension]
+  //!   - [Format].RetrievalPlugin: [GUID] (optional)
+  //!   - [Format].StoragePlugin: [GUID] (optional)
   Standard_EXPORT virtual Handle(Resource_Manager) Resources() Standard_OVERRIDE;
   
   //! Returns the name of the file containing the
-  //! resources of this application.
-  //! In a resource file, the application associates the schema name
-  //! of the document with the storage and
+  //! resources of this application, for support of legacy
+  //! method of loading formats data from resource files.
+  //!
+  //! Method DefineFormat() can be used to define all necessary
+  //! parameters explicitly without actually using resource files.
+  //!
+  //! In a resource file, the application associates the 
+  //! schema name of the document with the storage and
   //! retrieval plug-ins that are to be loaded for each
   //! document. On retrieval, the application reads the
   //! schema name in the heading of the CSF file and
@@ -102,7 +129,26 @@ public:
   //! functions should be redefined. In particular, you
   //! must redefine the abstract function Resources
   //! inherited from the superclass CDM_Application.
-  Standard_EXPORT virtual Standard_CString ResourcesName() = 0;
+  //!
+  //! Default implementation returns empty string.
+  Standard_EXPORT virtual Standard_CString ResourcesName();
+  
+  //! Sets up resources and registers read and storage drivers for
+  //! the specified format.
+  //! 
+  //! @param theFormat - unique name for the format, used to identify it.
+  //! @param theDescription - textual description of the format.
+  //! @param theExtension - extension of the files in that format. 
+  //!                       The same extension can be used by several formats.
+  //! @param theReader - instance of the read driver for the format.
+  //!                    Null value is allowed (no possibility to read).
+  //! @param theWriter - instance of the write driver for the format.
+  //!                    Null value is allowed (no possibility to write).
+  Standard_EXPORT void DefineFormat (const TCollection_AsciiString& theFormat,
+                                     const TCollection_AsciiString& theDescription,
+                                     const TCollection_AsciiString& theExtension,
+                                     const Handle(PCDM_RetrievalDriver)& theReader,
+                                     const Handle(PCDM_StorageDriver)& theWriter);
   
   //! returns the number of documents handled by the current applicative session.
   Standard_EXPORT Standard_Integer NbDocuments() const;
@@ -120,14 +166,6 @@ public:
   //! for (Standard_Integer i = 1; i <= nbdoc; i++) {
   //! aApp->GetDocument(i,aDoc);
   Standard_EXPORT void GetDocument (const Standard_Integer index, Handle(TDocStd_Document)& aDoc) const;
-  
-
-  //! Returns the format name Formats
-  //! representing the format supported for
-  //! application documents.
-  //! This virtual function is to be redefined for each
-  //! specific application.
-  Standard_EXPORT virtual void Formats (TColStd_SequenceOfExtendedString& Formats) Standard_OVERRIDE = 0;
   
   //! Constructs the empty new document aDoc.
   //! This document will have the format format.
@@ -209,17 +247,6 @@ public:
   //! Save the document overwriting the previous file
   Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc, TCollection_ExtendedString& theStatusMessage);
 
-
-friend class TDocStd_Document;
-
-
-  DEFINE_STANDARD_RTTIEXT(TDocStd_Application,CDF_Application)
-
-protected:
-
-  
-  Standard_EXPORT TDocStd_Application();
-  
   //! Notification that is fired at each OpenTransaction event.
   Standard_EXPORT virtual void OnOpenTransaction (const Handle(TDocStd_Document)& theDoc);
   
@@ -229,21 +256,12 @@ protected:
   //! Notification that is fired at each AbortTransaction event.
   Standard_EXPORT virtual void OnAbortTransaction (const Handle(TDocStd_Document)& theDoc);
 
+  DEFINE_STANDARD_RTTIEXT(TDocStd_Application,CDF_Application)
+
+protected:
+  Handle(CDM_MessageDriver) myMessageDriver;
   Handle(Resource_Manager) myResources;
   Standard_Boolean myIsDriverLoaded;
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDocStd_Application_HeaderFile

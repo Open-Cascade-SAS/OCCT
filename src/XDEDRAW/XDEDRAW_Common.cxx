@@ -225,8 +225,7 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
 
   Handle(TDocStd_Document) doc;
   if (!DDocStd::GetDocument(argv[1],doc,Standard_False)) {  
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) {di<<"No application found\n";return 1;}
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     A->NewDocument("BinXCAF",doc);  
     TDataStd_Name::Set(doc->GetData()->Root(),argv[1]);  
     Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);  
@@ -336,8 +335,7 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
 
   Handle(TDocStd_Document) doc;
   if (!DDocStd::GetDocument(argv[1],doc,Standard_False)) {  
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) {di<<"No application found\n";return 1;}
+    Handle(TDocStd_Application) A = DDocStd::GetApplication();
     A->NewDocument("BinXCAF",doc);  
     TDataStd_Name::Set(doc->GetData()->Root(),argv[1]);  
     Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(doc);  

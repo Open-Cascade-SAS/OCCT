@@ -19,7 +19,8 @@
 #include <CDF_DirectoryIterator.hxx>
 #include <CDF_Session.hxx>
 #include <CDF_Store.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <CDM_COutMessageDriver.hxx>
+#include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <Plugin.hxx>
 #include <Plugin_Failure.hxx>
@@ -46,6 +47,8 @@ IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Application,CDF_Application)
 TDocStd_Application::TDocStd_Application()
      : myIsDriverLoaded (Standard_True)
 {
+  myMessageDriver = new CDM_COutMessageDriver;
+
   Handle(CDF_Session) S;
   if (!CDF_Session::Exists()) S = new CDF_Session();
   else S = CDF_Session::CurrentSession();
@@ -72,6 +75,15 @@ Standard_Boolean TDocStd_Application::IsDriverLoaded() const
 }
 
 //=======================================================================
+//function : MessageDriver
+//purpose  :
+//=======================================================================
+Handle(CDM_MessageDriver) TDocStd_Application::MessageDriver()
+{
+  return myMessageDriver;
+}
+
+//=======================================================================
 //function : Resources
 //purpose  :
 //=======================================================================
@@ -83,6 +95,43 @@ Handle(Resource_Manager)  TDocStd_Application::Resources()  {
   return myResources;
 }
 
+//=======================================================================
+//function : ResourcesName
+//purpose  :
+//=======================================================================
+
+Standard_CString TDocStd_Application::ResourcesName()
+{
+  return "";
+}
+
+//=======================================================================
+//function : DefineFormat
+//purpose  : 
+//=======================================================================
+void TDocStd_Application::DefineFormat (const TCollection_AsciiString& theFormat,
+                                        const TCollection_AsciiString& theDescription,
+                                        const TCollection_AsciiString& theExtension,
+                                        const Handle(PCDM_RetrievalDriver)& theReader,
+                                        const Handle(PCDM_StorageDriver)& theWriter)
+{
+  // register resources for CDM mechanics to work
+  Handle(Resource_Manager) aResources = Resources();
+  aResources->SetResource ((theFormat + ".Description"  ).ToCString(), theDescription.ToCString());
+  aResources->SetResource ((theFormat + ".FileExtension").ToCString(), theExtension.ToCString());
+  aResources->SetResource ((theExtension + ".FileFormat").ToCString(), theFormat.ToCString());
+
+  // set format ID in the drivers to allow them putting it in
+  // the OCAF documents opened by these drivers
+  if (!theReader.IsNull())
+    theReader->SetFormat(theFormat);
+  if (!theWriter.IsNull())
+    theWriter->SetFormat(theFormat);
+
+  // register drivers
+  myReaders.Bind (theFormat, theReader);
+  myWriters.Bind (theFormat, theWriter);
+}
 
 //=======================================================================
 //function : NbDocuments
@@ -309,44 +358,35 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,c
 //=======================================================================
 PCDM_StoreStatus TDocStd_Application::SaveAs (const Handle(TDocStd_Document)& theDoc, Standard_OStream& theOStream)
 {
-  PCDM_StoreStatus aStatus = PCDM_SS_Failure;
-
-  if (theDoc->FindStoragePlugin())
+  try
   {
-    try
+    Handle(PCDM_StorageDriver) aDocStorageDriver = WriterFromFormat(theDoc->StorageFormat());
+
+    if (aDocStorageDriver.IsNull())
     {
-      Handle(PCDM_StorageDriver) aDocStorageDriver = 
-        Handle(PCDM_StorageDriver)::DownCast (Plugin::Load(theDoc->StoragePlugin()));
-
-      if (!aDocStorageDriver.IsNull())
-      {
-        aDocStorageDriver->SetFormat (theDoc->StorageFormat());
-        aDocStorageDriver->Write (theDoc,theOStream);
-
-        if (aDocStorageDriver->GetStoreStatus() == PCDM_SS_OK)
-        {
-          theDoc->SetSaved();
-        }
-
-        aStatus = aDocStorageDriver->GetStoreStatus();
-      }
+      return PCDM_SS_DriverFailure;
     }
-    catch (Standard_Failure)
+
+    aDocStorageDriver->SetFormat(theDoc->StorageFormat());
+    aDocStorageDriver->Write(theDoc, theOStream);
+
+    if (aDocStorageDriver->GetStoreStatus() == PCDM_SS_OK)
     {
-      Handle(Standard_Failure) aFailure = Standard_Failure::Caught();
-      if (!aFailure.IsNull() && !MessageDriver().IsNull())
-      {
-        TCollection_ExtendedString aString (aFailure->GetMessageString());
-        MessageDriver()->Write(aString.ToExtString());
-      }
+      theDoc->SetSaved();
+    }
+
+    return aDocStorageDriver->GetStoreStatus();
+  }
+  catch (Standard_Failure)
+  {
+    Handle(Standard_Failure) aFailure = Standard_Failure::Caught();
+    if (!aFailure.IsNull() && !MessageDriver().IsNull())
+    {
+      TCollection_ExtendedString aString(aFailure->GetMessageString());
+      MessageDriver()->Write(aString.ToExtString());
     }
   }
-  else
-  {
-    aStatus = PCDM_SS_DriverFailure;
-  }
-
-  return aStatus;
+  return PCDM_SS_Failure;
 }
 
 //=======================================================================
@@ -384,32 +424,6 @@ PCDM_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
 #endif
   return status;
 }
-
-//=======================================================================
-//function : SetViewer
-//purpose  :
-//=======================================================================
-
-// void TDocStd_Application::SetViewer(const Handle(TDocStd_Document)& D,
-//                                  const Handle(V3d_Viewer)& viewer)
-// {
-//   TPrsStd_AISViewer::New (D->Main(),viewer);
-//   InitViewer(D);
-// }
-
-
-//=======================================================================
-//function : SetViewer
-//purpose  :
-//=======================================================================
-
-// void TDocStd_Application::SetViewer(const Handle(TDocStd_Document)& D,
-//                                  const Handle(AIS_InteractiveContext)& IC)
-// {
-//   TPrsStd_AISViewer::New (D->Main(),IC);
-//   InitViewer(D);
-// }
-
 
 //=======================================================================
 //function : SaveAs
@@ -463,45 +477,35 @@ PCDM_StoreStatus TDocStd_Application::SaveAs (const Handle(TDocStd_Document)& th
                                               Standard_OStream&               theOStream,
                                               TCollection_ExtendedString&     theStatusMessage) 
 { 
-  PCDM_StoreStatus aStatus = PCDM_SS_Failure;
-
-  if (theDoc->FindStoragePlugin())
+  try
   {
-    try
+    Handle(PCDM_StorageDriver) aDocStorageDriver = WriterFromFormat (theDoc->StorageFormat());
+    if (aDocStorageDriver.IsNull())
     {
-      Handle(PCDM_StorageDriver) aDocStorageDriver = 
-        Handle(PCDM_StorageDriver)::DownCast (Plugin::Load(theDoc->StoragePlugin()));
+      theStatusMessage = TCollection_ExtendedString("TDocStd_Application::SaveAs: no storage driver");
+      return PCDM_SS_DriverFailure;
+    }
 
-      if (!aDocStorageDriver.IsNull())
-      {
-        aDocStorageDriver->SetFormat (theDoc->StorageFormat());
-        aDocStorageDriver->Write (theDoc,theOStream);
+    aDocStorageDriver->SetFormat(theDoc->StorageFormat());
+    aDocStorageDriver->Write(theDoc, theOStream);
         
-        if (aDocStorageDriver->GetStoreStatus() == PCDM_SS_OK)
-        {
-          theDoc->SetSaved();
-        }
-
-        aStatus = aDocStorageDriver->GetStoreStatus();
-      }     
-    }
-    catch (Standard_Failure)
+    if (aDocStorageDriver->GetStoreStatus() == PCDM_SS_OK)
     {
-      Handle(Standard_Failure) aFailure = Standard_Failure::Caught();
-      if (!aFailure.IsNull() && !MessageDriver().IsNull())
-      {
-        TCollection_ExtendedString aString (aFailure->GetMessageString());
-        MessageDriver()->Write(aString.ToExtString());
-      }
+      theDoc->SetSaved();
+    }
+
+    return aDocStorageDriver->GetStoreStatus();
+  }
+  catch (Standard_Failure)
+  {
+    Handle(Standard_Failure) aFailure = Standard_Failure::Caught();
+    if (!aFailure.IsNull() && !MessageDriver().IsNull())
+    {
+      TCollection_ExtendedString aString(aFailure->GetMessageString());
+      MessageDriver()->Write(aString.ToExtString());
     }
   }
-  else
-  {
-    theStatusMessage = TCollection_ExtendedString("TDocStd_Application::sSaveAs: a storage plugin has not been found");
-    aStatus = PCDM_SS_DriverFailure;
-  }
-
-  return aStatus;
+  return PCDM_SS_Failure;
 }
 
 //=======================================================================

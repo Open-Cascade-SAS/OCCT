@@ -36,8 +36,6 @@ source_group ( "Common\\Resource Files" FILES
 
 # lib to include:
 set ( LINK_LIBRARIES         
-         FWOSPlugin.lib
-         PTKernel.lib
          TKBool.lib
          TKCAF.lib
          TKCDF.lib

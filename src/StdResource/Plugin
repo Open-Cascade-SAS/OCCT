@@ -1,8 +1,6 @@
 ! Description of available plugins
 ! ********************************
 !
-a148e300-5740-11d1-a904-080036aaa103.Location: FWOSPlugin
-!
 ! standard attribute drivers plugin
 !
 ad696001-5b34-11d1-b5ba-00a0c9064368.Location: TKStd

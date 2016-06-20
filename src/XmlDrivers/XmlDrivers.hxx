@@ -16,8 +16,6 @@
 #ifndef _XmlDrivers_HeaderFile
 #define _XmlDrivers_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 class Standard_Transient;
@@ -26,43 +24,18 @@ class XmlMDF_ADriverTable;
 class CDM_MessageDriver;
 class XmlDrivers_DocumentStorageDriver;
 class XmlDrivers_DocumentRetrievalDriver;
-
-
+class TDocStd_Application;
 
 class XmlDrivers 
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT static const Handle(Standard_Transient)& Factory (const Standard_GUID& theGUID);
   
+  //! Defines format "XmlOcaf" and registers its read and write drivers
+  //! in the specified application
+  Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
+
   Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XmlDrivers_DocumentStorageDriver;
-friend class XmlDrivers_DocumentRetrievalDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _XmlDrivers_HeaderFile

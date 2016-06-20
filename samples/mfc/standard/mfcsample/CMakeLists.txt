@@ -171,7 +171,6 @@ set (mfcsample_USED_LIBS  TKVRML
                           TKShHealing
                           TKSTEP
                           TKXSBase
-                          FWOSPlugin
                           TKBool
                           TKCAF
                           TKCDF

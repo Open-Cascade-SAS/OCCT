@@ -17,7 +17,7 @@
 #include <CDM_MessageDriver.hxx>
 #include <Plugin_Macro.hxx>
 #include <Standard_GUID.hxx>
-#include <Standard_Transient.hxx>
+#include <TDocStd_Application.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <XmlLDrivers.hxx>
 #include <XmlLDrivers_DocumentRetrievalDriver.hxx>
@@ -94,6 +94,17 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
   }
 
   return nowstr;
+}
+
+//=======================================================================
+//function : DefineFormat
+//purpose  : 
+//=======================================================================
+void XmlLDrivers::DefineFormat (const Handle(TDocStd_Application)& theApp)
+{
+  theApp->DefineFormat ("XmlLOcaf", "Xml Lite OCAF Document", "xmll",
+                        new XmlLDrivers_DocumentRetrievalDriver, 
+                        new XmlLDrivers_DocumentStorageDriver ("Copyright: Open Cascade, 2001-2002"));
 }
 
 //=======================================================================

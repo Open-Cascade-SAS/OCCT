@@ -40,7 +40,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBO.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib"
+				AdditionalDependencies="TKBO.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib"
 				OutputFile=".\../Debug/Approx.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -107,7 +107,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBO.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib"
+				AdditionalDependencies="TKBO.lib TKBool.lib TKCAF.lib TKCDF.lib TKDraw.lib TKernel.lib TKFeat.lib TKFillet.lib TKGeomAlgo.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV2d.lib TKV3d.lib TKBRep.lib TKG2d.lib TKG3d.lib TKGeomBase.lib"
 				OutputFile=".\../Release/Approx.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

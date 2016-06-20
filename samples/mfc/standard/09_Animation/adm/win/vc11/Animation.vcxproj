@@ -115,7 +115,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc11\bind/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc11\libd;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -157,7 +157,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc11\bind/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc11\libd;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -200,7 +200,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc11\bin/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc11\lib;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -243,7 +243,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;FWOSPlugin.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKBRep.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc11\bin/Animation.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc11\lib;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

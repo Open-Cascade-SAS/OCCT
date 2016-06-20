@@ -16,8 +16,6 @@
 #ifndef _XmlLDrivers_HeaderFile
 #define _XmlLDrivers_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 class Standard_Transient;
@@ -28,48 +26,23 @@ class CDM_MessageDriver;
 class XmlLDrivers_DocumentStorageDriver;
 class XmlLDrivers_DocumentRetrievalDriver;
 class XmlLDrivers_NamespaceDef;
-
-
+class TDocStd_Application;
 
 class XmlLDrivers 
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
   
   Standard_EXPORT static const Handle(Standard_Transient)& Factory (const Standard_GUID& theGUID);
   
   Standard_EXPORT static TCollection_AsciiString CreationDate();
   
+  //! Defines format "XmlLOcaf" and registers its read and write drivers
+  //! in the specified application
+  Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
+
   Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& theMsgDriver);
   
   Standard_EXPORT static TCollection_AsciiString StorageVersion();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XmlLDrivers_DocumentStorageDriver;
-friend class XmlLDrivers_DocumentRetrievalDriver;
-friend class XmlLDrivers_NamespaceDef;
-
 };
-
-
-
-
-
-
 
 #endif // _XmlLDrivers_HeaderFile

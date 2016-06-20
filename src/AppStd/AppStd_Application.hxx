@@ -28,46 +28,15 @@ class CDM_MessageDriver;
 class AppStd_Application;
 DEFINE_STANDARD_HANDLE(AppStd_Application, TDocStd_Application)
 
-
+//! Legacy class defining resources name for standard OCAF documents
 class AppStd_Application : public TDocStd_Application
 {
-
-public:
-
-  
-  Standard_EXPORT AppStd_Application();
-  
-  Standard_EXPORT virtual Handle(CDM_MessageDriver) MessageDriver() Standard_OVERRIDE;
-  
-  //! returns supported format for application documents.
-  Standard_EXPORT virtual void Formats (TColStd_SequenceOfExtendedString& theFormats) Standard_OVERRIDE;
-  
+public:  
   //! returns   the file  name  which  contains  application
   //! resources
   Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(AppStd_Application,TDocStd_Application)
-
-protected:
-
-
-
-
-private:
-
-
-  Handle(CDM_MessageDriver) myMessageDriver;
-
-
 };
-
-
-
-
-
-
 
 #endif // _AppStd_Application_HeaderFile

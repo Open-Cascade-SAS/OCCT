@@ -50,17 +50,18 @@
 #include <TDF_LabelSequence.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_Tool.hxx>
+#include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
+#include <TPrsStd_DriverTable.hxx>
 #include <TPrsStd_NamedShapeDriver.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <ViewerTest.hxx>
-#include <XCAFApp_Application.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Area.hxx>
 #include <XCAFDoc_Centroid.hxx>
@@ -89,6 +90,9 @@
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
 
+#include <BinXCAFDrivers.hxx>
+#include <XmlXCAFDrivers.hxx>
+
 #include <stdio.h>
 #define ZVIEW_SIZE 1000000.0
 // avoid warnings on 'extern "C"' functions returning C++ classes
@@ -110,9 +114,7 @@ static Standard_Integer newDoc (Draw_Interpretor& di, Standard_Integer argc, con
 
   Handle(TDocStd_Document) D;
   Handle(DDocStd_DrawDocument) DD;
-  Handle(TDocStd_Application) A;
-
-  if (!DDocStd::Find(A)) return 1;
+  Handle(TDocStd_Application) A = DDocStd::GetApplication();
 
   if (!DDocStd::GetDocument(argv[1],D,Standard_False)) {
     A->NewDocument(  "BinXCAF"  ,D);
@@ -135,8 +137,7 @@ static Standard_Integer newDoc (Draw_Interpretor& di, Standard_Integer argc, con
 static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   Handle(TDocStd_Document) D;
-  Handle(TDocStd_Application) A;
-  if (!DDocStd::Find(A)) return 1;
+  Handle(TDocStd_Application) A = DDocStd::GetApplication();
 
   if (argc == 1) {
     if (A->NbDocuments() < 1) return 1;
@@ -167,10 +168,7 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
 {
   Handle(TDocStd_Document) D;
   Handle(DDocStd_DrawDocument) DD;
-  Handle(TDocStd_Application) A;
-
-  if ( !DDocStd::Find(A) )
-    return 1;
+  Handle(TDocStd_Application) A = DDocStd::GetApplication();
 
   if ( argc != 3 )
   {
@@ -1026,10 +1024,10 @@ static Standard_Integer testDoc (Draw_Interpretor&,
   if( shape.IsNull())
     return 1;
  
-  Handle(XCAFApp_Application) A = XCAFApp_Application::GetApplication();
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
  
   Handle(TDocStd_Document) aD1 = new TDocStd_Document("BinXCAF");
-  aD1->Open(A);
+  aD1->Open(anApp);
   
   TCollection_AsciiString  aViewName ("Driver1/DummyDocument/View1");
   ViewerTest::ViewerInit (0, 0, 0, 0, aViewName.ToCString(), "");
@@ -1076,19 +1074,14 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   // Load static variables for STEPCAF (ssv; 16.08.2012)
   STEPCAFControl_Controller::Init();
 
-  // OCAF *** szy: use <pload> command
+  // Initialize XCAF formats
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  BinXCAFDrivers::DefineFormat(anApp);
+  XmlXCAFDrivers::DefineFormat(anApp);
 
-//  DDF::AllCommands(di);
-//  DNaming::AllCommands(di);
-//  DDataStd::AllCommands(di);
-//  DPrsStd::AllCommands(di);
-  //DFunction::AllCommands(di);
-//  DDocStd::AllCommands(di);
-
-//  ViewerTest::Commands (di); *** szy: use <pload> command
-
-  // init XCAF application (if not yet done)
-  XCAFApp_Application::GetApplication();
+  // Register driver in global table for displaying XDE documents 
+  // in 3d viewer using OCAF mechanics
+  TPrsStd_DriverTable::Get()->AddDriver (XCAFPrs_Driver::GetID(), new XCAFPrs_Driver);
 
   //=====================================
   // General commands

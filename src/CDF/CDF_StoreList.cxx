@@ -91,7 +91,15 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, TCollect
         Handle(CDM_Document) theDocument = myStack.First();
         if( theDocument == myMainDocument || theDocument->IsModified()) {
 
-          if(!PCDM::FindStorageDriver(theDocument)){
+          Handle(CDF_Application) anApp = Handle(CDF_Application)::DownCast (theDocument->Application());
+          if (anApp.IsNull())
+          {
+            Standard_Failure::Raise("Document has no application, cannot save!");
+          }
+          Handle(PCDM_StorageDriver) aDocumentStorageDriver = 
+            anApp->WriterFromFormat(theDocument->StorageFormat());
+          if (aDocumentStorageDriver.IsNull())
+          {
             Standard_SStream aMsg;
             aMsg <<"No storage driver does exist for this format: " << theDocument->StorageFormat() << (char)0;
             Standard_Failure::Raise(aMsg);
@@ -105,8 +113,6 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, TCollect
           TCollection_ExtendedString theName=theMetaDataDriver->BuildFileName(theDocument);
 
           CDF_Timer theTimer;
-          Handle(PCDM_StorageDriver) aDocumentStorageDriver = PCDM::StorageDriver(theDocument);
-
           aDocumentStorageDriver->Write(theDocument,theName);
           status = aDocumentStorageDriver->GetStoreStatus();
 

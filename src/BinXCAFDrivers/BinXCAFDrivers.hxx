@@ -16,8 +16,6 @@
 #ifndef _BinXCAFDrivers_HeaderFile
 #define _BinXCAFDrivers_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 class Standard_Transient;
@@ -26,44 +24,20 @@ class BinMDF_ADriverTable;
 class CDM_MessageDriver;
 class BinXCAFDrivers_DocumentStorageDriver;
 class BinXCAFDrivers_DocumentRetrievalDriver;
-
-
+class TDocStd_Application;
 
 class BinXCAFDrivers 
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
   
   Standard_EXPORT static const Handle(Standard_Transient)& Factory (const Standard_GUID& theGUID);
   
+  //! Defines format "BinXCAF" and registers its read and write drivers
+  //! in the specified application
+  Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
+
   //! Creates the table of drivers of types supported
   Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(CDM_MessageDriver)& MsgDrv);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BinXCAFDrivers_DocumentStorageDriver;
-friend class BinXCAFDrivers_DocumentRetrievalDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _BinXCAFDrivers_HeaderFile
