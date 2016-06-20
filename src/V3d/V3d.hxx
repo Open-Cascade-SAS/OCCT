@@ -72,29 +72,6 @@ public:
   Standard_EXPORT static void CircleInPlane (const Handle(Graphic3d_Group)& gcircle, const V3d_Coordinate X0, const V3d_Coordinate Y0, const V3d_Coordinate Z0, const V3d_Parameter VX, const V3d_Parameter VY, const V3d_Parameter VZ, const V3d_Parameter Radius);
   
   Standard_EXPORT static void SwitchViewsinWindow (const Handle(V3d_View)& aPreviousView, const Handle(V3d_View)& aNextView);
-  
-  //! test.
-  Standard_EXPORT static void DrawSphere (const Handle(V3d_Viewer)& aViewer, const Quantity_Length aRadius = 1000);
-  
-  //! test.
-  Standard_EXPORT static void PickGrid (const Handle(V3d_Viewer)& aViewer, const Quantity_Length aRadius = 1000);
-  
-  //! test.
-  Standard_EXPORT static void SetPlane (const Handle(V3d_Viewer)& aViewer, const Quantity_Length x1, const Quantity_Length y1, const Quantity_Length z1, const Quantity_Length x2, const Quantity_Length y2, const Quantity_Length z2);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
 
 friend class V3d_Viewer;
 friend class V3d_View;

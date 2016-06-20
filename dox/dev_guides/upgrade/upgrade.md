@@ -990,4 +990,19 @@ Draw command *VSetTextureMode* has been deleted.
 
 2. Objects created with some constructors of *gp_Parab2d* class may differ from the previous version. Please see the updated documentation for *gp_Parab2d* class (file *gp_Parab2d.hxx*).
 
-3. The result returned by *gp_Parab2d::Directrix()* method has a different direction compared to the previous OCCT-version.
+3. Result returned by gp_Parab2d::Directrix() method has another direction in compare with previous OCCT-version.
+
+@subsection upgrade_710_aspects Presentation attributes
+
+This section should be considered if application defines custom presentations (inherited from AIS_InteractiveObject).
+Previous versions of OCCT have three levels for defining presentation properties (e.g. colors, materials):
+
+1. For entire structure (Graphic3d_Structure / Prs3d_Presentation).
+2. For specific group of primitives (Graphic3d_Group::SetGroupPrimitivesAspect()) overriding structure aspects.
+3. For specific primitive array within graphic group (Graphic3d_Group::SetPrimitivesAspect()).
+
+The first one is de facto not used for a long time since OCCT presentations always define aspects at graphic group level (overriding any structure aspects).
+Within this OCCT release, this first level of aspects has been completely removed. In most cases application code should just remove missing methods; in rare cases where this functionality was intentionally used - application should explicitly define aspects to appropriate graphic groups.
+
+Note that the 3rd level (defining several different aspects within the same graphic group) is also should be avoided in application code since it is deprecated functionality which can be removed in further releases.
+Graphic3d_Group::SetGroupPrimitivesAspect() should be the main method defining presentation attributes.

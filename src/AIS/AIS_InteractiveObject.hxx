@@ -410,13 +410,9 @@ public:
   //! Returns the current presentation of this object
   //! according to the current DisplayMode()
   Standard_EXPORT Handle(Prs3d_Presentation) Presentation() const;
-  
+
   //! Sets the graphic basic aspect to the current presentation.
-  //! When <globalChange> is TRUE , the full object presentation
-  //! is changed.
-  //! When <globalChange> is FALSE , only the current group
-  //! of the object presentation is changed.
-  Standard_EXPORT void SetAspect (const Handle(Prs3d_BasicAspect)& anAspect, const Standard_Boolean globalChange = Standard_True);
+  Standard_EXPORT void SetAspect (const Handle(Prs3d_BasicAspect)& anAspect);
   
   //! Sets up polygon offsets for this object.
   //! It modifies all existing presentations of <anObj> (if any),

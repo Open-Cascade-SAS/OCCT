@@ -483,15 +483,14 @@ Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const
 //function : SetAspect 
 //purpose  : 
 //=======================================================================
-void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& anAspect,
-				      const Standard_Boolean globalChange) {
+void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& anAspect)
+{
 
   if( HasPresentation() ) {
     Handle(Prs3d_Presentation) prs = Presentation();
     { Handle(Prs3d_ShadingAspect) aspect =
 			Handle(Prs3d_ShadingAspect)::DownCast(anAspect);
       if( !aspect.IsNull() ) {
-        if( globalChange ) prs->SetPrimitivesAspect(aspect->Aspect());
         Prs3d_Root::CurrentGroup(prs)->SetGroupPrimitivesAspect(aspect->Aspect());
         return;
       }
@@ -499,7 +498,6 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& anAspect,
     { Handle(Prs3d_LineAspect) aspect =
 			Handle(Prs3d_LineAspect)::DownCast(anAspect);
       if( !aspect.IsNull() ) {
-        if( globalChange ) prs->SetPrimitivesAspect(aspect->Aspect());
         Prs3d_Root::CurrentGroup(prs)->SetGroupPrimitivesAspect(aspect->Aspect());
         return;
       }
@@ -507,7 +505,6 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& anAspect,
     { Handle(Prs3d_PointAspect) aspect =
 			Handle(Prs3d_PointAspect)::DownCast(anAspect);
       if( !aspect.IsNull() ) {
-        if( globalChange ) prs->SetPrimitivesAspect(aspect->Aspect());
         Prs3d_Root::CurrentGroup(prs)->SetGroupPrimitivesAspect(aspect->Aspect());
         return;
       }
@@ -515,7 +512,6 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& anAspect,
     { Handle(Prs3d_TextAspect) aspect =
 			Handle(Prs3d_TextAspect)::DownCast(anAspect);
       if( !aspect.IsNull() ) {
-        if( globalChange ) prs->SetPrimitivesAspect(aspect->Aspect());
         Prs3d_Root::CurrentGroup(prs)->SetGroupPrimitivesAspect(aspect->Aspect());
         return;
       }
@@ -543,7 +539,6 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer    aMode,
     if ( !aPrs3d.IsNull() ) {
       const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
       if( !aStruct.IsNull() ) {
-        aStruct->SetPrimitivesAspect( myDrawer->ShadingAspect()->Aspect() );
         // Workaround for issue 23115: Need to update also groups, because their
         // face aspect ALWAYS overrides the structure's.
         const Graphic3d_SequenceOfGroup& aGroups = aStruct->Groups();

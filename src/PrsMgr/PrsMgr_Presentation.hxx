@@ -31,7 +31,6 @@ class PrsMgr_Prs;
 class PrsMgr_PresentableObject;
 class Quantity_Color;
 class Geom_Transformation;
-class Prs3d_ShadingAspect;
 class Prs3d_Presentation;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
@@ -117,9 +116,7 @@ private:
   Standard_EXPORT void Multiply (const Handle(Geom_Transformation)& theTrsf) const;
   
   Standard_EXPORT void Move (const Quantity_Length theX, const Quantity_Length theY, const Quantity_Length theZ) const;
-  
-  Standard_EXPORT void SetShadingAspect (const Handle(Prs3d_ShadingAspect)& theShadingAspect) const;
-  
+
   Standard_EXPORT void Compute (const Handle(Graphic3d_Structure)& theStructure);
   
   Standard_EXPORT Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector);
@@ -131,6 +128,8 @@ private:
   Standard_EXPORT void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector, const Handle(Geom_Transformation)& theTrsf, const Handle(Graphic3d_Structure)& theGivenStruct);
   
   Standard_EXPORT static Handle(Prs3d_Projector) Projector (const Handle(Graphic3d_DataStructureManager)& theProjector);
+
+protected:
 
   Handle(PrsMgr_PresentationManager) myPresentationManager;
   Handle(Prs3d_Presentation) myStructure;

@@ -12,27 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified:     22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
+#include <Prs3d_Presentation.hxx>
 
-#include <Aspect_InteriorStyle.hxx>
-#include <Aspect_PolygonOffsetMode.hxx>
-#include <Aspect_TypeOfHighlightMethod.hxx>
-#include <Aspect_TypeOfLine.hxx>
 #include <Geom_Transformation.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
-#include <Prs3d_ShadingAspect.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -66,20 +59,6 @@ Prs3d_Presentation::Prs3d_Presentation (const Handle(Graphic3d_StructureManager)
   {
     return;
   }
-
-  Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
-  Quantity_Color aColor = aMat.AmbientColor();
-  // It is necessary to set default polygon offsets for a new presentation
-  Handle(Graphic3d_AspectFillArea3d) aDefAspect =
-    new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
-                                    aColor,
-                                    aColor,
-                                    Aspect_TOL_SOLID,
-                                    1.0,
-                                    Graphic3d_NOM_BRASS,
-                                    Graphic3d_NOM_BRASS);
-  aDefAspect->SetPolygonOffsets (Aspect_POM_Fill, 1.0f, 0.0f);
-  SetPrimitivesAspect (aDefAspect);
 }
 
 //=======================================================================
@@ -90,28 +69,7 @@ Prs3d_Presentation::Prs3d_Presentation (const Handle(Graphic3d_StructureManager)
                                         const Handle(Prs3d_Presentation)&         thePrs)
 : Graphic3d_Structure (theViewer, thePrs)
 {
-  Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
-  Quantity_Color aColor = aMat.AmbientColor();
-  // It is necessary to set default polygon offsets for a new presentation
-  Handle(Graphic3d_AspectFillArea3d) aDefAspect =
-    new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
-                                    aColor,
-                                    aColor,
-                                    Aspect_TOL_SOLID,
-                                    1.0,
-                                    Graphic3d_NOM_BRASS,
-                                    Graphic3d_NOM_BRASS);
-  aDefAspect->SetPolygonOffsets (Aspect_POM_Fill, 1.0f, 0.0f);
-  SetPrimitivesAspect (aDefAspect);
-}
-
-//=======================================================================
-//function : SetShadingAspect
-//purpose  : 
-//=======================================================================
-void Prs3d_Presentation::SetShadingAspect(const Handle(Prs3d_ShadingAspect)& aShadingAspect) 
-{ 
-  SetPrimitivesAspect(aShadingAspect->Aspect());
+  //
 }
 
 //=======================================================================

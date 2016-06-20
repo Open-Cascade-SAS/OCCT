@@ -36,6 +36,7 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
+#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -129,6 +130,7 @@ void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& thePrsMgr
   Handle(OpenGl_Group) aGroup = Handle(OpenGl_Group)::DownCast (thePrs->NewGroup());
   aGroup->SetMinMaxValues (aBndMin.x(), aBndMin.y(), aBndMin.z(),
                            aBndMax.x(), aBndMax.y(), aBndMax.z());
+  aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
   VUserDrawObj::Element* anElem = new VUserDrawObj::Element (this);
   aGroup->AddElement(anElem);
 

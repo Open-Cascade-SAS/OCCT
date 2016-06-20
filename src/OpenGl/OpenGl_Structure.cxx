@@ -120,10 +120,6 @@ public:
 // =======================================================================
 OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager)
 : Graphic3d_CStructure (theManager),
-  myAspectLine         (NULL),
-  myAspectFace         (NULL),
-  myAspectMarker       (NULL),
-  myAspectText         (NULL),
   myHighlightColor     (NULL),
   myInstancedStructure (NULL),
   myIsRaytracable      (Standard_False),
@@ -141,25 +137,6 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
 OpenGl_Structure::~OpenGl_Structure()
 {
   Release (Handle(OpenGl_Context)());
-}
-
-// =======================================================================
-// function : UpdateAspects
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::UpdateAspects()
-{
-  if (ContextLine.IsDef)
-    SetAspectLine (ContextLine);
-
-  if (ContextFillArea.IsDef)
-    SetAspectFace (ContextFillArea);
-
-  if (ContextMarker.IsDef)
-    SetAspectMarker (ContextMarker);
-
-  if (ContextText.IsDef)
-    SetAspectText (ContextText);
 }
 
 // =======================================================================
@@ -181,63 +158,6 @@ void OpenGl_Structure::UpdateTransformation()
   {
     ++myModificationState;
   }
-}
-
-// =======================================================================
-// function : SetAspectLine
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::SetAspectLine (const CALL_DEF_CONTEXTLINE &theAspect)
-{
-  if (!myAspectLine)
-  {
-    myAspectLine = new OpenGl_AspectLine();
-  }
-  myAspectLine->SetAspect (theAspect);
-}
-
-// =======================================================================
-// function : SetAspectFace
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect)
-{
-  if (!myAspectFace)
-  {
-    myAspectFace = new OpenGl_AspectFace();
-  }
-  myAspectFace->SetAspect (theAspect);
-
-  if (IsRaytracable())
-  {
-    ++myModificationState;
-  }
-}
-
-// =======================================================================
-// function : SetAspectMarker
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect)
-{
-  if (!myAspectMarker)
-  {
-    myAspectMarker = new OpenGl_AspectMarker();
-  }
-  myAspectMarker->SetAspect (theAspect);
-}
-
-// =======================================================================
-// function : SetAspectText
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::SetAspectText (const CALL_DEF_CONTEXTTEXT &theAspect)
-{
-  if (!myAspectText)
-  {
-    myAspectText = new OpenGl_AspectText();
-  }
-  myAspectText->SetAspect (theAspect);
 }
 
 // =======================================================================
@@ -585,22 +505,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const OpenGl_AspectFace *anAspectFace = theWorkspace->AspectFace (Standard_False);
   const OpenGl_AspectMarker *anAspectMarker = theWorkspace->AspectMarker (Standard_False);
   const OpenGl_AspectText *anAspectText = theWorkspace->AspectText (Standard_False);
-  if (myAspectLine)
-  {
-    theWorkspace->SetAspectLine (myAspectLine);
-  }
-  if (myAspectFace)
-  {
-    theWorkspace->SetAspectFace (myAspectFace);
-  }
-  if (myAspectMarker)
-  {
-    theWorkspace->SetAspectMarker (myAspectMarker);
-  }
-  if (myAspectText)
-  {
-    theWorkspace->SetAspectText (myAspectText);
-  }
 
   // Apply correction for mirror transform
   if (myIsMirrored)
@@ -716,10 +620,6 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Release groups
   Clear (theGlCtx);
-  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectLine);
-  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectFace);
-  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectMarker);
-  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectText);
   clearHighlightColor (theGlCtx);
 }
 
@@ -732,22 +632,6 @@ void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCt
   for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
   {
     aGroupIter.ChangeValue()->Release (theGlCtx);
-  }
-  if (myAspectLine != NULL)
-  {
-    myAspectLine->Release (theGlCtx.operator->());
-  }
-  if (myAspectFace != NULL)
-  {
-    myAspectFace->Release (theGlCtx.operator->());
-  }
-  if (myAspectMarker != NULL)
-  {
-    myAspectMarker->Release (theGlCtx.operator->());
-  }
-  if (myAspectText != NULL)
-  {
-    myAspectText->Release (theGlCtx.operator->());
   }
   if (!myHighlightBox.IsNull())
   {

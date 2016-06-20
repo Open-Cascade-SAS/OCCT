@@ -3562,6 +3562,8 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
   {
     Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myMarkerAspect);
   }
+  Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+  Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
   Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (anArray);
 }
 

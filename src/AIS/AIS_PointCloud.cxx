@@ -41,6 +41,9 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloud,AIS_InteractiveObject)
 //==================================================
 AIS_PointCloud::AIS_PointCloud()
 {
+  // override default point style to Aspect_TOM_POINT
+  myDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_YELLOW, 1.0));
+
   SetDisplayMode (AIS_PointCloud::DM_Points);
   SetHilightMode (AIS_PointCloud::DM_BndBox);
 }
@@ -187,12 +190,6 @@ void AIS_PointCloud::SetColor (const Quantity_Color& theColor)
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-
-    // Set aspects for presentation
-    aPrs->SetPrimitivesAspect (aPointAspect);
-    aPrs->SetPrimitivesAspect (anAreaAspect);
-
-    // Go through all groups to change color for all primitives
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -281,8 +278,6 @@ void AIS_PointCloud::UnsetColor()
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetPrimitivesAspect (anAreaAsp);
-    aPrs->SetPrimitivesAspect (aMarkerAsp);
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -346,7 +341,6 @@ void AIS_PointCloud::SetMaterial (const Graphic3d_MaterialAspect& theMat)
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetPrimitivesAspect (anAreaAsp);
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -401,7 +395,6 @@ void AIS_PointCloud::UnsetMaterial()
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetPrimitivesAspect (anAreaAsp);
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -432,14 +425,9 @@ void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
         return;
       }
 
-      Handle(Graphic3d_AspectMarker3d) aMarkerAspect = myDrawer->PointAspect()->Aspect();
-      if (!myDrawer->HasOwnPointAspect())
-      {
-        aMarkerAspect->SetType (Aspect_TOM_POINT);
-      }
-
       Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
-      aGroup->SetGroupPrimitivesAspect (aMarkerAspect);
+      aGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
+      aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
       aGroup->AddPrimitiveArray (aPoints);
       break;
     }

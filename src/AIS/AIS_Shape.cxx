@@ -544,13 +544,6 @@ void AIS_Shape::SetColor (const Quantity_Color& theColor)
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-
-    // Set aspects for presentation
-    aPrs->SetPrimitivesAspect (anAreaAspect);
-    aPrs->SetPrimitivesAspect (aLineAspect);
-    aPrs->SetPrimitivesAspect (aPointAspect);
-
-    // Go through all groups to change color for all primitives
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -677,10 +670,6 @@ void AIS_Shape::UnsetColor()
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-
-    aPrs->SetPrimitivesAspect (anAreaAsp);
-    aPrs->SetPrimitivesAspect (aLineAsp);
-
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -878,7 +867,6 @@ void AIS_Shape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetPrimitivesAspect (anAreaAsp);
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -941,7 +929,6 @@ void AIS_Shape::UnsetMaterial()
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetPrimitivesAspect (anAreaAsp);
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
@@ -999,7 +986,6 @@ void AIS_Shape::SetTransparency (const Standard_Real theValue)
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetPrimitivesAspect (anAreaAsp);
     aPrs->SetDisplayPriority (10); // force highest priority for translucent objects
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
@@ -1048,7 +1034,6 @@ void AIS_Shape::UnsetTransparency()
     }
 
     const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
-    aPrs->SetPrimitivesAspect (anAreaAsp);
     for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
     {
       const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();

@@ -31,7 +31,6 @@
 
 class Geom_Transformation;
 class Prs3d_Presentation;
-class Prs3d_ShadingAspect;
 class PrsMgr_PresentableObject;
 class PrsMgr_Presentation;
 class Standard_NoSuchObject;
@@ -145,14 +144,8 @@ public:
   Standard_EXPORT void Transform (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Handle(Geom_Transformation)& theTransformation, const Standard_Integer theMode = 0);
   
   //! Returns the structure manager.
-    const Handle(Graphic3d_StructureManager)& StructureManager() const;
-  
-  //! this method will change the color and the aspect of the presentations containing shaded structures.
-  Standard_EXPORT void SetShadingAspect (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Quantity_NameOfColor theColor, const Graphic3d_NameOfMaterial theMaterial, const Standard_Integer theMode = 0);
-  
-  //! this method will change the color and the aspect of the presentations containing shaded structures.
-  Standard_EXPORT void SetShadingAspect (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Handle(Prs3d_ShadingAspect)& theShadingAspect, const Standard_Integer theMode = 0);
-  
+  const Handle(Graphic3d_StructureManager)& StructureManager() const;
+
   //! Returns true if there is a presentation of the
   //! presentable object thePrsObject in this framework, thePrsObject having the display mode theMode.
   Standard_EXPORT Standard_Boolean HasPresentation (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0) const;

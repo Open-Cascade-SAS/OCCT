@@ -850,10 +850,7 @@ public:
 
   //! Sets the graphic basic aspect to the current presentation of
   //! ALL selected objects.
-  //! When <globalChange> is TRUE , the full object presentation
-  //! is changed.
-  //! When <globalChange> is FALSE , only the current group
-  //! of the object presentation is changed.
+  //! Flag globalChange has no effect (left to simplify porting).
   //! Updates the viewer when <updateViewer> is TRUE
   Standard_EXPORT void SetSelectedAspect (const Handle(Prs3d_BasicAspect)& anAspect, const Standard_Boolean globalChange = Standard_True, const Standard_Boolean updateViewer = Standard_True);
   

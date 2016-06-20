@@ -92,9 +92,6 @@ public:
   //! Disconnect other structure to this one
   virtual void Disconnect (Graphic3d_CStructure& theStructure) = 0;
 
-  //! Synchronize structure aspects
-  virtual void UpdateAspects() = 0;
-
   //! Synchronize structure transformation
   virtual void UpdateTransformation() = 0;
 
@@ -121,11 +118,6 @@ public:
   Graphic3d_ZLayerId       myZLayer;
   int                      Priority;
   int                      PreviousPriority;
-
-  CALL_DEF_CONTEXTLINE     ContextLine;
-  CALL_DEF_CONTEXTFILLAREA ContextFillArea;
-  CALL_DEF_CONTEXTMARKER   ContextMarker;
-  CALL_DEF_CONTEXTTEXT     ContextText;
 
   CALL_DEF_COLOR HighlightColor;
 

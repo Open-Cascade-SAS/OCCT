@@ -17,7 +17,6 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_PresentationShadow.hxx>
-#include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_Presentation.hxx>
@@ -639,36 +638,6 @@ void PrsMgr_PresentationManager::BoundBox (const Handle(PrsMgr_PresentableObject
     Update (thePrsObj, theMode);
   }
   aPrs->Highlight (Aspect_TOHM_BOUNDBOX, mySelectionColor);
-}
-
-// =======================================================================
-// function : SetShadingAspect
-// purpose  :
-// =======================================================================
-void PrsMgr_PresentationManager::SetShadingAspect (const Handle(PrsMgr_PresentableObject)& thePrsObject,
-                                                   const Quantity_NameOfColor              theColor,
-                                                   const Graphic3d_NameOfMaterial          theMaterial,
-                                                   const Standard_Integer                  theMode)
-{
-  Handle(Prs3d_ShadingAspect) anAspect = new Prs3d_ShadingAspect();
-  anAspect->SetColor    (theColor);
-  anAspect->SetMaterial (theMaterial);
-  SetShadingAspect (thePrsObject, anAspect, theMode);
-}
-
-// =======================================================================
-// function : SetShadingAspect
-// purpose  :
-// =======================================================================
-void PrsMgr_PresentationManager::SetShadingAspect (const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                                   const Handle(Prs3d_ShadingAspect)&      theShadingAspect,
-                                                   const Standard_Integer                  theMode)
-{
-  const Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode);
-  if (!aPrs.IsNull())
-  {
-    aPrs->SetShadingAspect (theShadingAspect);
-  }
 }
 
 namespace

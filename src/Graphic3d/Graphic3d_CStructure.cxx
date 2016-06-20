@@ -42,14 +42,4 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   myGraphicDriver  (theManager->GraphicDriver())
 {
   Id = myGraphicDriver->NewIdentification();
-
-  ContextLine.IsDef     = 1,
-  ContextFillArea.IsDef = 1,
-  ContextMarker.IsDef   = 1,
-  ContextText.IsDef     = 1;
-
-  ContextLine.IsSet     = 0,
-  ContextFillArea.IsSet = 0,
-  ContextMarker.IsSet   = 0,
-  ContextText.IsSet     = 0;
 }

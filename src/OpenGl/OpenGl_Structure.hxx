@@ -78,9 +78,6 @@ public:
   //! Disconnect other structure to this one
   Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& theStructure) Standard_OVERRIDE;
 
-  //! Synchronize structure aspects
-  Standard_EXPORT virtual void UpdateAspects() Standard_OVERRIDE;
-
   //! Synchronize structure transformation
   Standard_EXPORT virtual void UpdateTransformation() Standard_OVERRIDE;
 
@@ -114,11 +111,6 @@ public:
   {
     return (OpenGl_GraphicDriver* )myGraphicDriver.operator->();
   }
-
-  void SetAspectLine   (const CALL_DEF_CONTEXTLINE &theAspect);
-  void SetAspectFace   (const CALL_DEF_CONTEXTFILLAREA& theAspect);
-  void SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect);
-  void SetAspectText   (const CALL_DEF_CONTEXTTEXT &theAspect);
 
   void clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
 
@@ -185,9 +177,6 @@ public:
   //! Returns instanced OpenGL structure.
   const OpenGl_Structure* InstancedStructure() const { return myInstancedStructure; }
 
-  //! Returns OpenGL face aspect.
-  const OpenGl_AspectFace* AspectFace() const { return myAspectFace; }
-
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }
 
@@ -205,11 +194,6 @@ protected:
   void UpdateStateIfRaytracable (const Standard_Boolean toCheck = Standard_True) const;
 
 protected:
-
-  OpenGl_AspectLine*         myAspectLine;
-  OpenGl_AspectFace*         myAspectFace;
-  OpenGl_AspectMarker*       myAspectMarker;
-  OpenGl_AspectText*         myAspectText;
 
   Handle(OpenGl_Group)       myHighlightBox;
   TEL_COLOUR*                myHighlightColor;

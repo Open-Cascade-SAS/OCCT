@@ -49,10 +49,6 @@ class Graphic3d_TransformError;
 class Graphic3d_Group;
 class Graphic3d_StructureManager;
 class Quantity_Color;
-class Graphic3d_AspectLine3d;
-class Graphic3d_AspectFillArea3d;
-class Graphic3d_AspectText3d;
-class Graphic3d_AspectMarker3d;
 class Graphic3d_DataStructureManager;
 class Bnd_Box;
 class gp_Pnt;
@@ -78,7 +74,6 @@ public:
   
   //! Creates a graphic object in the manager theManager.
   //! It will appear in all the views of the visualiser.
-  //! Warning: The default values AspectLine, AspectFillArea, AspectText and AspectMarker are NOT applied to the structure.
   //! The structure is not displayed when it is created.
   Standard_EXPORT Graphic3d_Structure(const Handle(Graphic3d_StructureManager)& theManager);
   
@@ -172,23 +167,7 @@ public:
   //! Get clip planes slicing the structure on rendering.
   //! @return set of clip planes.
   Standard_EXPORT const Graphic3d_SequenceOfHClipPlane& GetClipPlanes() const;
-  
-  //! Modifies the default attributes for lines
-  //! in the structure <me>.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX);
-  
-  //! Modifies the default attributes for faces
-  //! in the structure <me>.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX);
-  
-  //! Modifies the default attributes for text
-  //! in the structure <me>.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX);
-  
-  //! Modifies the default attributes for markers
-  //! in the structure <me>.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX);
-  
+
   //! Modifies the visibility indicator to Standard_True or
   //! Standard_False for the structure <me>.
   //! The default value at the definition of <me> is
@@ -241,10 +220,7 @@ public:
   //! Returns Standard_True if the structure <me> contains
   //! Polygons, Triangles or Quadrangles.
   Standard_EXPORT Standard_Boolean ContainsFacet() const;
-  
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectFillArea3d) FillArea3dAspect() const;
-  
+
   //! Returns the groups sequence included in the structure <me> (internal storage).
   Standard_EXPORT const Graphic3d_SequenceOfGroup& Groups() const;
   
@@ -285,14 +261,7 @@ public:
   
   //! Returns the visibility indicator for the structure <me>.
   Standard_EXPORT Standard_Boolean IsVisible() const;
-  
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectLine3d) Line3dAspect() const;
-  
-  //! Returns the current group of graphic attributes used
-  //! for 3d marker primitives.
-  Standard_EXPORT Handle(Graphic3d_AspectMarker3d) Marker3dAspect() const;
-  
+
   //! Returns the coordinates of the boundary box of the structure <me>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, the method returns actual graphical
   //! boundaries of the Graphic3d_Group components. Otherwise, the
@@ -303,13 +272,7 @@ public:
   //! Warning: If the structure <me> is empty then the empty box is returned,
   //! If the structure <me> is infinite then the whole box is returned.
   Standard_EXPORT Bnd_Box MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;
-  
-  //! Returns the current values of the default attributes.
-  Standard_EXPORT void PrimitivesAspect (Handle(Graphic3d_AspectLine3d)& CTXL, Handle(Graphic3d_AspectText3d)& CTXT, Handle(Graphic3d_AspectMarker3d)& CTXM, Handle(Graphic3d_AspectFillArea3d)& CTXF) const;
-  
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectText3d) Text3dAspect() const;
-  
+
   //! Returns the visualisation mode for the structure <me>.
   Standard_EXPORT Graphic3d_TypeOfStructure Visual() const;
   
@@ -535,9 +498,8 @@ private:
   //! Calls the Update method of the StructureManager which contains the Structure <me>.
   //! If theUpdateLayer is true then invalidates bounding box of ZLayer.
   Standard_EXPORT void Update (const bool theUpdateLayer = false) const;
-  
-  //! Updates the c structure associated to <me>.
-  Standard_EXPORT void UpdateStructure (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF);
+
+protected:
 
   Handle(Graphic3d_CStructure) myCStructure;
   Graphic3d_IndexedMapOfAddress myAncestors;

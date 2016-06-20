@@ -878,7 +878,16 @@ void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationMan
     return;
   }
   aPresentation->Highlight (Aspect_TOHM_COLOR, theColor);
-  aPresentation->SetShadingAspect (myHighlightAspect);
+  for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPresentation->Groups());
+       aGroupIter.More(); aGroupIter.Next())
+  {
+    Handle(Graphic3d_Group)& aGrp = aGroupIter.ChangeValue();
+    if (!aGrp.IsNull()
+     && aGrp->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
+    {
+      aGrp->SetGroupPrimitivesAspect (myHighlightAspect->Aspect());
+    }
+  }
   aPresentation->SetZLayer (Graphic3d_ZLayerId_Topmost);
   thePM->AddToImmediateList (aPresentation);
 

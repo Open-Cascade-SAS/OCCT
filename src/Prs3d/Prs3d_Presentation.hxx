@@ -28,7 +28,6 @@ class Prs3d_Root;
 class Graphic3d_StructureManager;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
-class Prs3d_ShadingAspect;
 class Geom_Transformation;
 class Graphic3d_Group;
 
@@ -68,9 +67,7 @@ public:
   
   //! Returns the new Structure defined for the new visualization
   Standard_EXPORT virtual void Compute (const Handle(Graphic3d_DataStructureManager)& aProjector, const TColStd_Array2OfReal& AMatrix, Handle(Graphic3d_Structure)& aStructure) Standard_OVERRIDE;
-  
-  Standard_EXPORT void SetShadingAspect (const Handle(Prs3d_ShadingAspect)& aShadingAspect);
-  
+
   Standard_EXPORT void Transform (const Handle(Geom_Transformation)& aTransformation);
   
   Standard_EXPORT void Place (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z);

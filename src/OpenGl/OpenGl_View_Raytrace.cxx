@@ -404,21 +404,15 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
   }
 
   // Get structure material
-  OpenGl_RaytraceMaterial aStructMaterial;
-
-  if (theStructure->AspectFace() != NULL)
-  {
-    aStructMaterial = convertMaterial (theStructure->AspectFace(), theGlContext);
-  }
-
-  Standard_Boolean aResult = addRaytraceGroups (theStructure, aStructMaterial, &theStructure->Transformation, theGlContext);
+  OpenGl_RaytraceMaterial aDefaultMaterial;
+  Standard_Boolean aResult = addRaytraceGroups (theStructure, aDefaultMaterial, &theStructure->Transformation, theGlContext);
 
   // Process all connected OpenGL structures
   const OpenGl_Structure* anInstanced = theStructure->InstancedStructure();
 
   if (anInstanced != NULL && anInstanced->IsRaytracable())
   {
-    aResult &= addRaytraceGroups (anInstanced, aStructMaterial, &theStructure->Transformation, theGlContext);
+    aResult &= addRaytraceGroups (anInstanced, aDefaultMaterial, &theStructure->Transformation, theGlContext);
   }
 
   myStructureStates[theStructure] = StructState (theStructure);

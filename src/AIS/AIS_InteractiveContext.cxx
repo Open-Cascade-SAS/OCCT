@@ -2232,7 +2232,7 @@ void AIS_InteractiveContext::UnsetTransparency (const Handle(AIS_InteractiveObje
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)& theAspect,
-                                                const Standard_Boolean           theIsGlobalChange,
+                                                const Standard_Boolean ,
                                                 const Standard_Boolean           theToUpdateViewer)
 {
   if (HasOpenedContext())
@@ -2245,7 +2245,7 @@ void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)&
   {
     isFound = Standard_True;
     Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (mySelection->Value());
-    anObj->SetAspect (theAspect, theIsGlobalChange);
+    anObj->SetAspect (theAspect);
   }
 
   if (isFound && theToUpdateViewer)

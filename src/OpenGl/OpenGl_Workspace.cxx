@@ -56,6 +56,7 @@ namespace
   static const OpenGl_AspectLine myDefaultAspectLine;
   static const OpenGl_AspectFace myDefaultAspectFace;
   static const OpenGl_AspectMarker myDefaultAspectMarker;
+  static const OpenGl_AspectText myDefaultAspectText;
 
   static const OpenGl_Matrix myDefaultMatrix =
   {
@@ -153,6 +154,8 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   AspectFace_applied (NULL),
   AspectMarker_set (&myDefaultAspectMarker),
   AspectMarker_applied (NULL),
+  AspectText_set   (&myDefaultAspectText),
+  AspectText_applied (NULL),
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
   myCullingMode (TelCullUndefined),
@@ -245,6 +248,9 @@ void OpenGl_Workspace::ResetAppliedAspect()
   AspectFace_applied    = NULL;
   AspectMarker_set      = &myDefaultAspectMarker;
   AspectMarker_applied  = NULL;
+  AspectText_set        = &myDefaultAspectText;
+  AspectText_applied    = NULL;
+
   PolygonOffset_applied = THE_DEFAULT_POFFSET;
   myCullingMode         = TelCullUndefined;
 

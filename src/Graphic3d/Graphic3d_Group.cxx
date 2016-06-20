@@ -822,7 +822,7 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
   Quantity_Color aColor;
   Graphic3d_MaterialAspect aFront, aBack;
 
-  const CALL_DEF_CONTEXTLINE& anAspLine = ContextLine.IsSet ? ContextLine : myStructure->CStructure()->ContextLine;
+  const CALL_DEF_CONTEXTLINE& anAspLine = ContextLine;
   aColor.SetValues (Standard_Real (anAspLine.Color.r),
                     Standard_Real (anAspLine.Color.g),
                     Standard_Real (anAspLine.Color.b), Quantity_TOC_RGB);
@@ -831,7 +831,7 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
   theAspLine->SetWidth         (Standard_Real     (anAspLine.Width));
   theAspLine->SetShaderProgram (anAspLine.ShaderProgram);
 
-  const CALL_DEF_CONTEXTTEXT& anAspText = ContextText.IsSet ? ContextText : myStructure->CStructure()->ContextText;
+  const CALL_DEF_CONTEXTTEXT& anAspText = ContextText;
   aColor.SetValues (Standard_Real (anAspText.Color.r),
                     Standard_Real (anAspText.Color.g),
                     Standard_Real (anAspText.Color.b), Quantity_TOC_RGB);
@@ -847,7 +847,7 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
   theAspText->SetDisplayType     (Aspect_TypeOfDisplayText (anAspText.DisplayType));
   theAspText->SetShaderProgram   (anAspText.ShaderProgram);
 
-  const CALL_DEF_CONTEXTMARKER& anAspMarker = ContextMarker.IsSet ? ContextMarker : myStructure->CStructure()->ContextMarker;
+  const CALL_DEF_CONTEXTMARKER& anAspMarker = ContextMarker;
   aColor.SetValues (Standard_Real (anAspMarker.Color.r),
                     Standard_Real (anAspMarker.Color.g),
                     Standard_Real (anAspMarker.Color.b), Quantity_TOC_RGB);
@@ -860,7 +860,7 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
     theAspMarker->SetMarkerImage (ContextMarker.MarkerImage);
   }
 
-  const CALL_DEF_CONTEXTFILLAREA& anAspFill = ContextFillArea.IsSet ? ContextFillArea : myStructure->CStructure()->ContextFillArea;
+  const CALL_DEF_CONTEXTFILLAREA& anAspFill = ContextFillArea;
   // Interior
   theAspFill->SetInteriorStyle (Aspect_InteriorStyle (anAspFill.Style));
   aColor.SetValues (Standard_Real (anAspFill.IntColor.r),

@@ -237,8 +237,6 @@ void AIS_TexturedShape::UnsetColor()
     Quantity_Color aColor;
     AIS_GraphicTool::GetInteriorColor (myDrawer->Link(), aColor);
     anAreaAsp->SetInteriorColor (aColor);
-    aPrs->SetPrimitivesAspect (anAreaAsp);
-    aPrs->SetPrimitivesAspect (aLineAsp);
     // Check if aspect of given type is set for the group, 
     // because setting aspect for group with no already set aspect
     // can lead to loss of presentation data
