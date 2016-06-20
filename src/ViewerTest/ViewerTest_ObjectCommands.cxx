@@ -2842,10 +2842,11 @@ static int VDrawText (Draw_Interpretor& theDI,
     aTextPrs->SetOrientation3D (gp_Ax2 (aPos, aNormal, aDirection));
   }
 
+  aTextPrs->SetDisplayType (aDisplayType);
+
   if (aTrsfPersFlags != Graphic3d_TMF_None)
   {
     aTextPrs->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
-    aTextPrs->SetDisplayType (aDisplayType);
     aTextPrs->SetZLayer(Graphic3d_ZLayerId_TopOSD);
     if (aTextPrs->Position().Z() != 0)
     {
@@ -2855,7 +2856,6 @@ static int VDrawText (Draw_Interpretor& theDI,
   else if (aTrsfPersFlags != aTextPrs->TransformPersistence().Flags)
   {
     aTextPrs->SetTransformPersistence (aTrsfPersFlags);
-    aTextPrs->SetDisplayType (Aspect_TODT_NORMAL);
   }
   ViewerTest::Display (aName, aTextPrs, Standard_False);
   return 0;
