@@ -90,9 +90,31 @@
 #include <TShort_HArray1OfShortReal.hxx>
 #include <TColgp_Array1OfXY.hxx>
 
+#include <algorithm>
+
 // TODO - not thread-safe static variables
 static Standard_Real thePrecision = Precision::Confusion();     
 static Handle(Geom_Plane) thePlane;
+
+//=======================================================================
+// function: BRepLib_ComparePoints
+// purpose:  implementation of IsLess() function for two points
+//=======================================================================
+struct BRepLib_ComparePoints {
+  bool operator()(const gp_Pnt& theP1, const gp_Pnt& theP2)
+  {
+    for (Standard_Integer i = 1; i <= 3; ++i) {
+      if (theP1.Coord(i) < theP2.Coord(i)) {
+        return Standard_True;
+      }
+      else if (theP1.Coord(i) > theP2.Coord(i)) {
+        return Standard_False;
+      }
+    }
+    return Standard_False;
+  }
+};
+
 
 //=======================================================================
 //function : Precision
@@ -2059,3 +2081,108 @@ void  BRepLib::ReverseSortFaces (const TopoDS_Shape& Sh,
 
 }
 
+//=======================================================================
+// function: BoundingVertex
+// purpose : 
+//=======================================================================
+void BRepLib::BoundingVertex(const NCollection_List<TopoDS_Shape>& theLV,
+                             gp_Pnt& theNewCenter, Standard_Real& theNewTol)
+{
+  Standard_Integer aNb;
+  //
+  aNb=theLV.Extent();
+  if (aNb < 2) {
+    return;
+  }
+  //
+  else if (aNb==2) {
+    Standard_Integer m, n;
+    Standard_Real aR[2], dR, aD, aEps;
+    TopoDS_Vertex aV[2];
+    gp_Pnt aP[2];
+    //
+    aEps=RealEpsilon();
+    for (m=0; m<aNb; ++m) {
+      aV[m]=(!m)? 
+        *((TopoDS_Vertex*)(&theLV.First())):
+        *((TopoDS_Vertex*)(&theLV.Last()));
+      aP[m]=BRep_Tool::Pnt(aV[m]);
+      aR[m]=BRep_Tool::Tolerance(aV[m]);
+    }  
+    //
+    m=0; // max R
+    n=1; // min R
+    if (aR[0]<aR[1]) {
+      m=1;
+      n=0;
+    }
+    //
+    dR=aR[m]-aR[n]; // dR >= 0.
+    gp_Vec aVD(aP[m], aP[n]);
+    aD=aVD.Magnitude();
+    //
+    if (aD<=dR || aD<aEps) { 
+      theNewCenter = aP[m];
+      theNewTol = aR[m];
+    }
+    else {
+      Standard_Real aRr;
+      gp_XYZ aXYZr;
+      gp_Pnt aPr;
+      //
+      aRr=0.5*(aR[m]+aR[n]+aD);
+      aXYZr=0.5*(aP[m].XYZ()+aP[n].XYZ()-aVD.XYZ()*(dR/aD));
+      aPr.SetXYZ(aXYZr);
+      //
+      theNewCenter = aPr;
+      theNewTol = aRr;
+      //aBB.MakeVertex (aVnew, aPr, aRr);
+    }
+    return;
+  }// else if (aNb==2) {
+  //
+  else { // if (aNb>2)
+    // compute the point
+    //
+    // issue 0027540 - sum of doubles may depend on the order
+    // of addition, thus sort the coordinates for stable result
+    Standard_Integer i;
+    NCollection_Array1<gp_Pnt> aPoints(0, aNb-1);
+    NCollection_List<TopoDS_Edge>::Iterator aIt(theLV);
+    for (i = 0; aIt.More(); aIt.Next(), ++i) {
+      const TopoDS_Vertex& aVi = *((TopoDS_Vertex*)(&aIt.Value()));
+      gp_Pnt aPi = BRep_Tool::Pnt(aVi);
+      aPoints(i) = aPi;
+    }
+    //
+    std::sort(aPoints.begin(), aPoints.end(), BRepLib_ComparePoints());
+    //
+    gp_XYZ aXYZ(0., 0., 0.);
+    for (i = 0; i < aNb; ++i) {
+      aXYZ += aPoints(i).XYZ();
+    }
+    aXYZ.Divide((Standard_Real)aNb);
+    //
+    gp_Pnt aP(aXYZ);
+    //
+    // compute the tolerance for the new vertex
+    Standard_Real aTi, aDi, aDmax;
+    //
+    aDmax=-1.;
+    aIt.Initialize(theLV);
+    for (; aIt.More(); aIt.Next()) {
+      TopoDS_Vertex& aVi=*((TopoDS_Vertex*)(&aIt.Value()));
+      gp_Pnt aPi=BRep_Tool::Pnt(aVi);
+      aTi=BRep_Tool::Tolerance(aVi);
+      aDi=aP.SquareDistance(aPi);
+      aDi=sqrt(aDi);
+      aDi=aDi+aTi;
+      if (aDi > aDmax) {
+        aDmax=aDi;
+      }
+    }
+    //
+    theNewCenter = aP;
+    theNewTol = aDmax;
+  }
+}

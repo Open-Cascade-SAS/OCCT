@@ -1,0 +1,43 @@
+puts "=========="
+puts "OCC27552"
+puts "=========="
+puts ""
+#######################################
+# Wire creation fails depending on the order of edges
+#######################################
+
+
+#4 vertices in row
+point p1 0 0 0
+point p2 5 0 0
+point p4 10 0 0
+point p3 12.5 0 0
+point p5 20 0 0 
+
+vertex v1 p1
+vertex v2 p2
+vertex v3 p3
+vertex v4 p4
+vertex v5 p5
+
+settolerance v1 3
+settolerance v2 6
+settolerance v3 3
+settolerance v4 1
+
+point d 0 10 0
+vertex dv d
+edge e1 v1 dv
+edge e2 v2 dv
+edge e3 v3 dv
+edge e4 v4 dv
+edge e5 dv v5
+
+wire w2 -unsorted e1 e2 e3 e4 e5
+
+checkshape w2
+checknbshapes w2 -vertex 3 -edge 5
+nexplode w2 v
+checkmaxtol w2_2 -ref 9.875
+
+

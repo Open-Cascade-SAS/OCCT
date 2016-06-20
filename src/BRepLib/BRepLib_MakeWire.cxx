@@ -141,12 +141,21 @@ void  BRepLib_MakeWire::Add(const TopoDS_Wire& W)
 //=======================================================================
 //function : Add
 //purpose  : 
+//=======================================================================
+void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
+{
+  Add(E, Standard_True);
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
 // PMN  19/03/1998  For the Problem of performance TopExp::Vertices are not used on wire
 // PMN  10/09/1998  In case if the wire is previously closed (or degenerated) 
 //                  TopExp::Vertices is used to reduce the ambiguity.
+// IsCheckGeometryProximity flag : If true => check for the geometry proximity of vertices
 //=======================================================================
-
-void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
+void  BRepLib_MakeWire::Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometryProximity)
 {
 
   Standard_Boolean forward = Standard_False; 
@@ -219,15 +228,13 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	  }
 	}
       }
-      else {
+      else if (IsCheckGeometryProximity)
+      {
 	  // search if there is a similar vertex in the edge	
 	gp_Pnt PE = BRep_Tool::Pnt(VE);
 	
-//	Standard_Boolean newvertex = Standard_False;
-	TopTools_MapIteratorOfMapOfShape itm(myVertices);
-	while (itm.More()) {
-	  
-	  const TopoDS_Vertex& VW = TopoDS::Vertex(itm.Key());
+	for (Standard_Integer i = 1; i <= myVertices.Extent(); i++) {
+	  const TopoDS_Vertex& VW = TopoDS::Vertex(myVertices.FindKey(i));
 	  gp_Pnt PW = BRep_Tool::Pnt(VW);
 	  Standard_Real l = PE.Distance(PW);
 	  
@@ -259,7 +266,6 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	    }      
 	    break;
 	  }
-	  itm.Next();
 	}
 	if (copyedge) {
 	  connected = Standard_True;
@@ -289,10 +295,8 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	  gp_Pnt PE = BRep_Tool::Pnt(VE);
 	  
 	  Standard_Boolean newvertex = Standard_False;
-	  TopTools_MapIteratorOfMapOfShape itm(myVertices);
-	  while (itm.More()) {
-	  
-	    const TopoDS_Vertex& VW = TopoDS::Vertex(itm.Key());
+          for (Standard_Integer i = 1; i <= myVertices.Extent(); i++) {
+            const TopoDS_Vertex& VW = TopoDS::Vertex(myVertices.FindKey(i));
 	    gp_Pnt PW = BRep_Tool::Pnt(VW);
 	    Standard_Real l = PE.Distance(PW), tolE, tolW;
 	    tolW = BRep_Tool::Tolerance(VW);
@@ -320,7 +324,6 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	      break;
 	    }
 	    
-	    itm.Next();
 	  }
 	  if (!newvertex) {
 	    myVertices.Add(VE);

@@ -24,14 +24,17 @@
 #include <BRepLib_WireError.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <BRepLib_MakeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <NCollection_Map.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_UBTree.hxx>
+
 class StdFail_NotDone;
 class TopoDS_Edge;
 class TopoDS_Wire;
 class TopoDS_Vertex;
-
 
 //! Provides methods to build wires.
 //!
@@ -75,6 +78,7 @@ class TopoDS_Vertex;
 //! MW.Add(anEdge);
 //!
 //! TopoDS_Wire W = MW;
+
 class BRepLib_MakeWire  : public BRepLib_MakeShape
 {
 public:
@@ -126,6 +130,58 @@ public:
   //! Returns the last connecting vertex.
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
 
+private:
+  class BRepLib_BndBoxVertexSelector : public NCollection_UBTree <Standard_Integer,Bnd_Box>::Selector
+  {
+  public:
+    BRepLib_BndBoxVertexSelector(const TopTools_IndexedMapOfShape& theMapOfShape)
+      : BRepLib_BndBoxVertexSelector::Selector(), myMapOfShape (theMapOfShape)
+    {}
+
+    Standard_Boolean Reject (const Bnd_Box& theBox) const
+    {
+      return theBox.IsOut(myVBox);
+    }
+
+    Standard_Boolean Accept (const Standard_Integer& theObj);
+
+    void SetCurrentVertex (const gp_Pnt& theP, Standard_Real theTol, 
+                           Standard_Integer theVInd);
+
+    const NCollection_List<Standard_Integer>& GetResultInds () const
+    { 
+      return myResultInd;
+    }
+
+    void ClearResInds()
+    { 
+      myResultInd.Clear();
+    }
+
+  private:
+
+    BRepLib_BndBoxVertexSelector(const BRepLib_BndBoxVertexSelector& );
+    BRepLib_BndBoxVertexSelector& operator=(const BRepLib_BndBoxVertexSelector& );
+
+    const TopTools_IndexedMapOfShape& myMapOfShape; //vertices
+    gp_Pnt myP;
+    Standard_Real mySTol;
+    Standard_Integer myVInd;
+    Bnd_Box myVBox;
+    NCollection_List<Standard_Integer> myResultInd; 
+  };
+
+  void CollectCoincidentVertices(const TopTools_ListOfShape& theL,
+    NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL);
+
+  void CreateNewVertices(const NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL, 
+    NCollection_DataMap<TopoDS_Vertex, TopoDS_Vertex>& theO2NV);
+
+  void CreateNewListOfEdges(const TopTools_ListOfShape& theL,
+    const NCollection_DataMap<TopoDS_Vertex, TopoDS_Vertex>& theO2NV,
+    TopTools_ListOfShape& theNewEList);
+
+  void Add(const TopoDS_Edge& E, Standard_Boolean IsCheckGeometryProximity);
 
 
 
@@ -133,20 +189,15 @@ protected:
 
 
 
-
-
 private:
-
-
 
   BRepLib_WireError myError;
   TopoDS_Edge myEdge;
   TopoDS_Vertex myVertex;
-  TopTools_MapOfShape myVertices;
+  TopTools_IndexedMapOfShape myVertices;
   TopoDS_Vertex FirstVertex;
   TopoDS_Vertex VF;
   TopoDS_Vertex VL;
-
 
 };
 

@@ -33,6 +33,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #include <ChFi2d_FilletAPI.hxx>
 #include <ChFi2d_ChamferAPI.hxx>

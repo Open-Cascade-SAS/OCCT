@@ -107,24 +107,7 @@ static
                           const BOPTools_ListOfCoupleOfShape& theLCS,
                           const gp_Pnt& aP);
 
-//=======================================================================
-// function: BOPTools_AlgoTools_ComparePoints
-// purpose:  implementation of IsLess() function for two points
-//=======================================================================
-struct BOPTools_AlgoTools_ComparePoints {
-  bool operator()(const gp_Pnt& theP1, const gp_Pnt& theP2)
-  {
-    for (Standard_Integer i = 1; i <= 3; ++i) {
-      if (theP1.Coord(i) < theP2.Coord(i)) {
-        return Standard_True;
-      }
-      else if (theP1.Coord(i) > theP2.Coord(i)) {
-        return Standard_False;
-      }
-    }
-    return Standard_False;
-  }
-};
+
 
 //=======================================================================
 // function: MakeConnexityBlocks
@@ -1514,105 +1497,16 @@ Standard_Integer BOPTools_AlgoTools::ComputeVV(const TopoDS_Vertex& aV1,
 void BOPTools_AlgoTools::MakeVertex(const BOPCol_ListOfShape& aLV,
                                     TopoDS_Vertex& aVnew)
 {
-  Standard_Integer aNb;
-  //
-  aNb=aLV.Extent();
-  if (!aNb) {
-    return;
-  }
-  //
-  else if (aNb==1) {
+  Standard_Integer aNb = aLV.Extent();
+  if (aNb == 1)
     aVnew=*((TopoDS_Vertex*)(&aLV.First()));
-    return;
-  }
-  //
-  else if (aNb==2) {
-    Standard_Integer m, n;
-    Standard_Real aR[2], dR, aD, aEps;
-    TopoDS_Vertex aV[2];
-    gp_Pnt aP[2];
+  else if (aNb > 1)
+  {
+    Standard_Real aNTol;
+    gp_Pnt aNC;
+    BRepLib::BoundingVertex(aLV, aNC, aNTol);
     BRep_Builder aBB;
-    //
-    aEps=RealEpsilon();
-    for (m=0; m<aNb; ++m) {
-      aV[m]=(!m)? 
-        *((TopoDS_Vertex*)(&aLV.First())):
-        *((TopoDS_Vertex*)(&aLV.Last()));
-      aP[m]=BRep_Tool::Pnt(aV[m]);
-      aR[m]=BRep_Tool::Tolerance(aV[m]);
-    }  
-    //
-    m=0; // max R
-    n=1; // min R
-    if (aR[0]<aR[1]) {
-      m=1;
-      n=0;
-    }
-    //
-    dR=aR[m]-aR[n]; // dR >= 0.
-    gp_Vec aVD(aP[m], aP[n]);
-    aD=aVD.Magnitude();
-    //
-    if (aD<=dR || aD<aEps) { 
-      aBB.MakeVertex (aVnew, aP[m], aR[m]);
-    }
-    else {
-      Standard_Real aRr;
-      gp_XYZ aXYZr;
-      gp_Pnt aPr;
-      //
-      aRr=0.5*(aR[m]+aR[n]+aD);
-      aXYZr=0.5*(aP[m].XYZ()+aP[n].XYZ()-aVD.XYZ()*(dR/aD));
-      aPr.SetXYZ(aXYZr);
-      //
-      aBB.MakeVertex (aVnew, aPr, aRr);
-    }
-    return;
-  }// else if (aNb==2) {
-  //
-  else { // if (aNb>2)
-    // compute the point
-    //
-    // issue 0027540 - sum of doubles may depend on the order
-    // of addition, thus sort the coordinates for stable result
-    Standard_Integer i;
-    NCollection_Array1<gp_Pnt> aPoints(0, aNb-1);
-    BOPCol_ListIteratorOfListOfShape aIt(aLV);
-    for (i = 0; aIt.More(); aIt.Next(), ++i) {
-      const TopoDS_Vertex& aVi = *((TopoDS_Vertex*)(&aIt.Value()));
-      gp_Pnt aPi = BRep_Tool::Pnt(aVi);
-      aPoints(i) = aPi;
-    }
-    //
-    std::sort(aPoints.begin(), aPoints.end(), BOPTools_AlgoTools_ComparePoints());
-    //
-    gp_XYZ aXYZ(0., 0., 0.);
-    for (i = 0; i < aNb; ++i) {
-      aXYZ += aPoints(i).XYZ();
-    }
-    aXYZ.Divide((Standard_Real)aNb);
-    //
-    gp_Pnt aP(aXYZ);
-    //
-    // compute the tolerance for the new vertex
-    Standard_Real aTi, aDi, aDmax;
-    //
-    aDmax=-1.;
-    aIt.Initialize(aLV);
-    for (; aIt.More(); aIt.Next()) {
-      TopoDS_Vertex& aVi=*((TopoDS_Vertex*)(&aIt.Value()));
-      gp_Pnt aPi=BRep_Tool::Pnt(aVi);
-      aTi=BRep_Tool::Tolerance(aVi);
-      aDi=aP.SquareDistance(aPi);
-      aDi=sqrt(aDi);
-      aDi=aDi+aTi;
-      if (aDi > aDmax) {
-        aDmax=aDi;
-      }
-    }
-    //
-    BRep_Builder aBB;
-    aBB.MakeVertex (aVnew, aP, aDmax);
+    aBB.MakeVertex(aVnew, aNC, aNTol);
   }
 }
 //=======================================================================

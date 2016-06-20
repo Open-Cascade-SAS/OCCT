@@ -224,22 +224,56 @@ static Standard_Integer wire(Draw_Interpretor& di, Standard_Integer n, const cha
   if (n < 3) return 1;
   Standard_Integer i;
   BRepBuilderAPI_MakeWire MW;
-  for (i = 2; i < n; i ++) {
-    TopoDS_Shape S = DBRep::Get(a[i]);
-    if (S.IsNull()) continue;
-    if (S.ShapeType() == TopAbs_EDGE)
-      MW.Add(TopoDS::Edge(S));
-    else if (S.ShapeType() == TopAbs_WIRE)
-      MW.Add(TopoDS::Wire(S));
-    else
-      continue;
+  Standard_Boolean IsUnsorted = !strcmp(a[2], "-unsorted");
+
+  if (!IsUnsorted)
+    for (i = 2; i < n; i ++) {
+      TopoDS_Shape S = DBRep::Get(a[i]);
+      if (S.IsNull()) continue;
+      if (S.ShapeType() == TopAbs_EDGE)
+        MW.Add(TopoDS::Edge(S));
+      else if (S.ShapeType() == TopAbs_WIRE)
+        MW.Add(TopoDS::Wire(S));
+      else
+        continue;
+    }
+  else
+  {
+    TopTools_ListOfShape aLE;
+    for (i = 3; i < n; i ++) 
+    {
+      TopoDS_Shape S = DBRep::Get(a[i]);
+      TopExp_Explorer Exp(S, TopAbs_EDGE);
+      for (;Exp.More();Exp.Next())
+      {
+        const TopoDS_Edge& anE = TopoDS::Edge(Exp.Current()); 
+        if (!anE.IsNull())
+          aLE.Append(anE);
+      }
+    }
+    MW.Add(aLE);
   }
+
   if (!MW.IsDone()) {
     //cout << "Wire not done" << endl;
-    di << "Wire not done\n";
-    return 0;
+    di << "Wire not done with an error:\n";
+    switch (MW.Error()) 
+    {
+    case BRepBuilderAPI_EmptyWire:
+      di << "BRepBuilderAPI_EmptyWire\n";
+      break;
+    case BRepBuilderAPI_DisconnectedWire:
+      di << "BRepBuilderAPI_DisconnectedWire\n";
+      break;
+    case BRepBuilderAPI_NonManifoldWire:
+      di << "BRepBuilderAPI_NonManifoldWire\n";
+      break;
+    default:
+      break;
+    }
   }
-  DBRep::Set(a[1],MW);
+  else   
+    DBRep::Set(a[1],MW);
   return 0;
 }
 
@@ -1864,7 +1898,7 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
     polyvertex,g);
 
   theCommands.Add("wire",
-    "wire wirename e1/w1 [e2/w2 ...]",__FILE__,
+    "wire wirename [-unsorted] e1/w1 [e2/w2 ...]",__FILE__,
     wire,g);
 
   theCommands.Add("profile",

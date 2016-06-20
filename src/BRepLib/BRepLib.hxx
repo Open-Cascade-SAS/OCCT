@@ -26,6 +26,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 class Geom_Plane;
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -184,8 +185,12 @@ public:
   //! Returns TRUE if any correction is done.
   Standard_EXPORT static Standard_Boolean EnsureNormalConsistency (const TopoDS_Shape& S, const Standard_Real theAngTol = 0.001, const Standard_Boolean ForceComputeNormals = Standard_False);
 
-
-
+  //! Calculates the bounding sphere around the set of vertexes from the theLV list.
+  //! Returns the center (theNewCenter) and the radius (theNewTol) of this sphere.
+  //! This can be used to construct the new vertex which covers the given set of
+  //! other vertices.
+  Standard_EXPORT static  void BoundingVertex(const NCollection_List<TopoDS_Shape>& theLV,
+                                              gp_Pnt& theNewCenter, Standard_Real& theNewTol);
 
 protected:
 

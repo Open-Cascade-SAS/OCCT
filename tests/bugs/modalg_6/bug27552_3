@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC27552"
+puts "=========="
+puts ""
+#######################################
+# Wire creation fails depending on the order of edges
+#######################################
+
+pload QAcommands
+OCC27552
+
+#outw is output wire
+checkshape outw
+checknbshapes outw -vertex 5 -edge 4
+nexplode outw v
+checkmaxtol outw_4 -ref 0.12

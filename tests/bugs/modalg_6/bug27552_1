@@ -1,0 +1,43 @@
+puts "=========="
+puts "OCC27552"
+puts "=========="
+puts ""
+#######################################
+# Wire creation fails depending on the order of edges
+#######################################
+
+
+vertex v1 0 0 0
+vertex v2 -100 0 100
+vertex v3 100 0 100
+vertex v4 0 0 -100
+vertex v5 -100 0 -200
+
+edge e1 v2 v1
+edge e2 v3 v1
+edge e3 v1 v4
+edge e4 v4 v5
+
+wire w1 -unsorted e1 e2 e3 e4
+checkshape w1 
+checknbshapes w1 -vertex 5 -edge 4
+
+wire w2 -unsorted e1 e4 e3 e2
+checkshape w2 
+checknbshapes w2 -vertex 5 -edge 4
+
+wire w3 -unsorted e2 e1 e3 e4
+checkshape w3 
+checknbshapes w3 -vertex 5 -edge 4
+
+wire w4 -unsorted e4 e3 e2 e1
+checkshape w4 
+checknbshapes w4 -vertex 5 -edge 4
+
+wire w5 -unsorted e4 e3 e1 e2
+checkshape w5 
+checknbshapes w5 -vertex 5 -edge 4
+
+wire w6 -unsorted e3 e1 e2 e4
+checkshape w6 
+checknbshapes w6 -vertex 5 -edge 4
