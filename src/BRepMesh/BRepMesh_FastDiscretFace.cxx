@@ -969,7 +969,9 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
             if (aDist < aDefFace)
             {
               // Lets check parameters for angular deflection.
-              if (aPrevVec2.Angle (aTmpVec) < myAngle)
+              if (aPrevVec2.SquareMagnitude() < gp::Resolution() ||
+                  aTmpVec.SquareMagnitude()   < gp::Resolution() ||
+                  aPrevVec2.Angle (aTmpVec)   < myAngle)
               {
                 // For current Iso line we can remove this parameter.
                 aToRemove2.Add (aParam2);
