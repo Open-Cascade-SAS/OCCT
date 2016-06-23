@@ -474,14 +474,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   aCtx->ModelWorldState.Push();
   aCtx->ModelWorldState.SetCurrent (Transformation);
 
-  // detect scale transform
-  const Standard_Boolean   anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
-  const Standard_ShortReal aScaleX          = Transformation.GetRow (0).xyz().SquareModulus();
-  if (Abs (aScaleX - 1.f) > Precision::Confusion())
-  {
-    aCtx->SetGlNormalizeEnabled (Standard_True);
-  }
-
   if (TransformPersistence.Flags)
   {
     OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
@@ -493,6 +485,14 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     aCtx->ProjectionState.SetCurrent (aProjection);
     aCtx->WorldViewState.SetCurrent (aWorldView);
     aCtx->ApplyProjectionMatrix();
+  }
+
+  // detect scale transform
+  const Standard_Boolean   anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
+  const Standard_ShortReal aScaleX          = aCtx->ModelWorldState.Current().GetRow (0).xyz().SquareModulus();
+  if (Abs (aScaleX - 1.f) > Precision::Confusion())
+  {
+    aCtx->SetGlNormalizeEnabled (Standard_True);
   }
 
   // Take into account transform persistence

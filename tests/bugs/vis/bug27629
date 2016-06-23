@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC27629"
+puts "========"
+puts ""
+##############################################################################################################################
+puts "Visualization - apply a correct model-world matrix to normals in fixed function pipeline with enabled zoom persistence."
+##############################################################################################################################
+
+vinit
+box b0 25 25 25
+vsetdispmode 1
+vdisplay b0 -trsfPers zoom
+vzoom 10
+
+if { [vreadpixel 220 200 name] != "DARKGOLDENROD3 1"} {
+  puts "Error: normals aren't normalized!"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
