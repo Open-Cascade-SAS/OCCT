@@ -53,6 +53,9 @@ const char THE_VARY_TexCoord_Trsf[] =
   EOL"  aTex2.y = aCopy.x * aRotSin + aCopy.y * aRotCos;"
   EOL"  TexCoord = vec4(aTex2, occTexCoord.zw);";
 
+//! Auxiliary function to flip gl_PointCoord vertically
+#define THE_VEC2_glPointCoord "vec2 (gl_PointCoord.x, 1.0 - gl_PointCoord.y)"
+
 //! Auxiliary function to transform normal
 const char THE_FUNC_transformNormal[] =
   EOL"vec3 transformNormal (in vec3 theNormal)"
@@ -944,16 +947,18 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
 // function : pointSpriteAlphaSrc
 // purpose  :
 // =======================================================================
-TCollection_AsciiString OpenGl_ShaderManager::pointSpriteAlphaSrc()
+TCollection_AsciiString OpenGl_ShaderManager::pointSpriteAlphaSrc (const Standard_Integer theBits)
 {
-  TCollection_AsciiString aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, gl_PointCoord).a; }";
+  TCollection_AsciiString aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, " THE_VEC2_glPointCoord ").a; }";
 #if !defined(GL_ES_VERSION_2_0)
-  if (myContext->core11 == NULL)
+  if (myContext->core11 == NULL
+   && (theBits & OpenGl_PO_TextureA) != 0)
   {
-    aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, gl_PointCoord).r; }";
+    aSrcGetAlpha = EOL"float getAlpha(void) { return occTexture2D(occActiveSampler, " THE_VEC2_glPointCoord ").r; }";
   }
+#else
+  (void )theBits;
 #endif
-
   return aSrcGetAlpha;
 }
 
@@ -988,30 +993,37 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
 
-    if (textureUsed (theBits))
-    {
-      aSrcGetAlpha = pointSpriteAlphaSrc();
-
-      #if !defined(GL_ES_VERSION_2_0)
-        if (myContext->core11 != NULL
-         && myContext->IsGlGreaterEqual (2, 1))
-        {
-          aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
-        }
-      #endif
-    }
-
     if ((theBits & OpenGl_PO_TextureRGB) != 0)
     {
       aSrcFragGetColor =
-        EOL"vec4 getColor(void) { return occTexture2D(occActiveSampler, gl_PointCoord); }";
+        EOL"vec4 getColor(void) { return occTexture2D(occActiveSampler, " THE_VEC2_glPointCoord "); }";
     }
 
-    aSrcFragMainGetColor =
-      EOL"  vec4 aColor = getColor();"
-      EOL"  aColor.a = getAlpha();"
-      EOL"  if (aColor.a <= 0.1) discard;"
-      EOL"  occFragColor = aColor;";
+    if (textureUsed (theBits))
+    {
+      aSrcGetAlpha = pointSpriteAlphaSrc (theBits);
+
+    #if !defined(GL_ES_VERSION_2_0)
+      if (myContext->core11 != NULL
+        && myContext->IsGlGreaterEqual (2, 1))
+      {
+        aProgramSrc->SetHeader ("#version 120"); // gl_PointCoord has been added since GLSL 1.2
+      }
+    #endif
+
+      aSrcFragMainGetColor =
+        EOL"  vec4 aColor = getColor();"
+        EOL"  aColor.a = getAlpha();"
+        EOL"  if (aColor.a <= 0.1) discard;"
+        EOL"  occFragColor = aColor;";
+    }
+    else
+    {
+      aSrcFragMainGetColor =
+        EOL"  vec4 aColor = getColor();"
+        EOL"  if (aColor.a <= 0.1) discard;"
+        EOL"  occFragColor = aColor;";
+    }
   }
   else
   {
@@ -1162,7 +1174,7 @@ TCollection_AsciiString OpenGl_ShaderManager::pointSpriteShadingSrc (const TColl
   TCollection_AsciiString aSrcFragGetColor;
   if ((theBits & OpenGl_PO_TextureA) != 0)
   {
-    aSrcFragGetColor = pointSpriteAlphaSrc() +
+    aSrcFragGetColor = pointSpriteAlphaSrc (theBits) +
       EOL"vec4 getColor(void)"
       EOL"{"
       EOL"  vec4 aColor = " + theBaseColorSrc + ";"
@@ -1177,7 +1189,7 @@ TCollection_AsciiString OpenGl_ShaderManager::pointSpriteShadingSrc (const TColl
       EOL"vec4 getColor(void)"
       EOL"{"
       EOL"  vec4 aColor = " + theBaseColorSrc + ";"
-      EOL"  aColor = occTexture2D(occActiveSampler, gl_PointCoord) * aColor;"
+      EOL"  aColor = occTexture2D(occActiveSampler, " THE_VEC2_glPointCoord ") * aColor;"
       EOL"  if (aColor.a <= 0.1) discard;"
       EOL"  return aColor;"
       EOL"}";

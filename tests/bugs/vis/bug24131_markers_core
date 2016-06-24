@@ -1,0 +1,8 @@
+puts "========"
+puts "OCC24131 Markers using GLSL programs in Core Profile"
+puts "========"
+
+pload VISUALIZATION
+vcaps -core
+source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
+vdump $imagedir/${casename}.png

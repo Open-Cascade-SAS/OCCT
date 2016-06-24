@@ -138,8 +138,10 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myIsStereoBuffers (Standard_False),
   myIsGlNormalizeEnabled (Standard_False),
 #if !defined(GL_ES_VERSION_2_0)
+  myPointSpriteOrig (GL_UPPER_LEFT),
   myRenderMode (GL_RENDER),
 #else
+  myPointSpriteOrig (0),
   myRenderMode (0),
 #endif
   myReadBuffer (0),
@@ -2738,6 +2740,27 @@ void OpenGl_Context::SetPointSize (const Standard_ShortReal theSize)
     {
       //myContext->core11fwd->glDisable (GL_VERTEX_PROGRAM_POINT_SIZE);
     }
+  }
+#endif
+}
+
+// =======================================================================
+// function : SetPointSpriteOrigin
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetPointSpriteOrigin()
+{
+#if !defined(GL_ES_VERSION_2_0)
+  if (core15fwd == NULL)
+  {
+    return;
+  }
+
+  const int aNewState = !myActiveProgram.IsNull() ? GL_UPPER_LEFT : GL_LOWER_LEFT;
+  if (myPointSpriteOrig != aNewState)
+  {
+    myPointSpriteOrig = aNewState;
+    core15fwd->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, aNewState);
   }
 #endif
 }

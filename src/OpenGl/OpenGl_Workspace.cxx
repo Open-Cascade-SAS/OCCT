@@ -411,7 +411,6 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
           glEnable  (GL_POINT_SPRITE);
           glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
           anEnvMode = GL_REPLACE;
-          myGlContext->core15->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
         }
         break;
       }

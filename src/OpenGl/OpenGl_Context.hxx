@@ -567,6 +567,12 @@ public: //! @name methods to alter or retrieve current state
   //! Setup point size.
   Standard_EXPORT void SetPointSize (const Standard_ShortReal theSize);
 
+  //! Setup point sprite origin using GL_POINT_SPRITE_COORD_ORIGIN state:
+  //! - GL_UPPER_LEFT when GLSL program is active;
+  //!   flipping should be handled in GLSL program for compatibility with OpenGL ES
+  //! - GL_LOWER_LEFT for FFP
+  Standard_EXPORT void SetPointSpriteOrigin();
+
   //! Setup texture matrix to active GLSL program or to FFP global state using glMatrixMode (GL_TEXTURE).
   Standard_EXPORT void SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams);
 
@@ -716,6 +722,7 @@ private: //! @name fields tracking current state
   Handle(OpenGl_ShaderProgram) myActiveProgram;   //!< currently active GLSL program
   Handle(OpenGl_Sampler)       myTexSampler;      //!< currently active sampler object
   Handle(OpenGl_FrameBuffer)   myDefaultFbo;      //!< default Frame Buffer Object
+  Standard_Integer             myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
   Standard_Integer             myRenderMode;      //!< value for active rendering mode
   Standard_Integer             myReadBuffer;      //!< current read buffer
   Standard_Integer             myDrawBuffer;      //!< current draw buffer

@@ -1,0 +1,8 @@
+puts "========"
+puts "OCC24131 Markers using GLSL programs in Compatible Profile"
+puts "========"
+
+pload VISUALIZATION
+vcaps -compatibleProfile -sprites 1 -ffp 0
+source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
+vdump $imagedir/${casename}.png

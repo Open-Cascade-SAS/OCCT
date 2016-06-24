@@ -537,6 +537,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
   {
     // Textured markers will be drawn with the point sprites
     aCtx->SetPointSize (anAspectMarker->MarkerSize());
+    aCtx->SetPointSpriteOrigin();
   #if !defined(GL_ES_VERSION_2_0)
     if (aCtx->core11 != NULL)
     {

@@ -322,7 +322,7 @@ protected:
   }
 
   //! Prepare standard GLSL program for accessing point sprite alpha.
-  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc();
+  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc (const Standard_Integer theBits);
 
   //! Prepare standard GLSL program for computing point sprite shading.
   Standard_EXPORT TCollection_AsciiString pointSpriteShadingSrc (const TCollection_AsciiString theBaseColorSrc, const Standard_Integer theBits);
