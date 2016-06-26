@@ -167,7 +167,7 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
 		    Standard_Real& Ui,
 		    const Standard_Real EPSILON) 
 {
-  Standard_Real Ratio;
+  Standard_Real Ratio = 1.0;
   GCPnts_AbscissaType Type = computeType(C,Ratio);
 
   switch (Type) {
@@ -312,7 +312,7 @@ Standard_Real GCPnts_AbscissaPoint::Length(const TheCurve& C,
 					   const Standard_Real U1,
 					   const Standard_Real U2)
 {
-  Standard_Real Ratio;
+  Standard_Real Ratio = 1.0;
   GCPnts_AbscissaType Type = computeType(C,Ratio);
   switch (Type) {
 
@@ -353,7 +353,7 @@ Standard_Real GCPnts_AbscissaPoint::Length(const TheCurve& C,
 					   const Standard_Real U2,
 					   const Standard_Real Tol)
 {
-  Standard_Real Ratio;
+  Standard_Real Ratio = 1.0;
   GCPnts_AbscissaType Type = computeType(C,Ratio);
   switch (Type) {
 
