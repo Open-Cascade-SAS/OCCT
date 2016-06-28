@@ -635,9 +635,92 @@ static Standard_Integer setDatum (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
+  // check datum position number
+  Handle(XCAFDoc_Datum) aDatumAttr;
+  if (!aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr))
+  {
+    di<<"Invalid datum object\n";
+    return 1;
+  }
+  Handle(XCAFDimTolObjects_DatumObject) aDatumObj = aDatumAttr->GetObject();
+  if (aDatumObj.IsNull())
+  {
+    di<<"Invalid datum object\n";
+    return 1;
+  }
+
+  if (aDatumObj->GetPosition() < 1 || aDatumObj->GetPosition() > 3)
+  {
+    di<<"Invalid datum position number: use XSetDatumPosition\n";
+    return 1;
+  }
+
   aDimTolTool->SetDatumToGeomTol(aLabel, aTol);
   return 0;
 }
+
+static Standard_Integer setDatumPosition (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 4) {
+    di<<"Use: XSetDatumPosition Doc Datum_Label position[1-3]\n";
+    return 1;
+  }
+
+  if (Draw::Atoi(argv[3]) < 1 || Draw::Atoi(argv[3]) > 3) {
+    di<<"Datum position should be 1, 2 or 3\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
+  Handle(XCAFDoc_DimTolTool) aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(Doc->Main());
+  Handle(XCAFDoc_ShapeTool) aShapeTool= XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if ( aLabel.IsNull() ) 
+  {
+    di<<"Datum "<<argv[2]<<" is absent in "<<argv[1]<<"\n";
+    return 1;
+  }
+  Handle(XCAFDoc_Datum) aDatum;
+  if(aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
+  {
+    Handle(XCAFDimTolObjects_DatumObject) anObj = aDatum->GetObject();
+    anObj->SetPosition(Draw::Atoi(argv[3]));
+    aDatum->SetObject(anObj);
+  }
+  return 0;
+}
+
+static Standard_Integer getDatumPosition (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di<<"Use: XGetDatumPosition Doc Datum_Label\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
+  Handle(XCAFDoc_DimTolTool) aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(Doc->Main());
+  Handle(XCAFDoc_ShapeTool) aShapeTool= XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if ( aLabel.IsNull() ) 
+  {
+    di<<"Datum "<<argv[2]<<" is absent in "<<argv[1]<<"\n";
+    return 1;
+  }
+  Handle(XCAFDoc_Datum) aDatum;
+  if(aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
+  {
+    di << aDatum->GetObject()->GetPosition();
+  }
+  return 0;
+}
+
 
 static Standard_Integer getDatum (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -2479,6 +2562,13 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
 
   di.Add ("XGetDatumName","XGetDatumName Doc Datum_Label",
     __FILE__, getDatumName, g);
+
+  di.Add ("XSetDatumPosition","XSetDatumPosition Doc Datum_Label position[1-3]"
+      "Set datum position number in geometric tolerance datum system",
+    __FILE__, setDatumPosition, g);
+
+  di.Add ("XGetDatumPosition","XGetDatumPosition Doc Datum_Label",
+    __FILE__, getDatumPosition, g);
 
   di.Add ("XSetTypeOfTolerance","XSetTypeOfTolerance Doc GTol_Label type"
         "Values:\n"

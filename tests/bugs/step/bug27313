@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC27313"
+puts "========"
+puts ""
+##########################################################################
+# Exception during WriteStep with PMI
+##########################################################################
+
+pload DCAF
+
+box b 10 10 10
+explode b
+explode b_1
+NewDocument D
+XAddShape D b
+XAddGeomTolerance D b_1_1
+XAddDatum D b_1_2
+#0:1:4:1
+#0:1:4:2
+XSetDatumName D 0:1:4:2 A
+XAddDatumModifier D 0:1:4:2 10
+XSetDatumPosition D 0:1:4:2 1
+XSetDatum D 0:1:4:2 0:1:4:1
+XSetToleranceValue D 0:1:4:1 0.5
+XSetTypeOfTolerance D 0:1:4:1 1
+XSetTypeOfToleranceValue D 0:1:4:1 1
+param write.step.schema 5
+newmodel
+WriteStep D $imagedir/${casename}_D.stp
+param write.step.schema 4
+newmodel

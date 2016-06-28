@@ -11,6 +11,7 @@ XAddDatum D b_1_2
 #0:1:4:2
 XSetDatumName D 0:1:4:2 A
 XAddDatumModifier D 0:1:4:2 10
+XSetDatumPosition D 0:1:4:2 1
 XSetDatum D 0:1:4:2 0:1:4:1
 XSetToleranceValue D 0:1:4:1 0.5
 XSetTypeOfTolerance D 0:1:4:1 1

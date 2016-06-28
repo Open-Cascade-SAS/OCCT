@@ -2881,6 +2881,8 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
     aDatums.Append(aDatumObj);
     aMaxDatumNum = Max(aMaxDatumNum, aDatumObj->GetPosition());
   }
+  if (aMaxDatumNum == 0)
+    return NULL;
 
   Handle(StepDimTol_HArray1OfDatumReferenceCompartment) aConstituents =
     new StepDimTol_HArray1OfDatumReferenceCompartment(1, aMaxDatumNum);
