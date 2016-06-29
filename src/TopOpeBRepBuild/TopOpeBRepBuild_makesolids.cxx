@@ -52,7 +52,6 @@
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 Standard_EXPORT void debgsobu(const Standard_Integer /*iSO*/) {}
 #endif
 
@@ -83,7 +82,6 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids
 (const TopoDS_Shape& SOF,TopOpeBRepBuild_SolidBuilder& SOBU,TopTools_ListOfShape& LOSO)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trcso = TopOpeBRepDS_GettraceSTRANGE();
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SOF,iSO);
   if(tSPS){GdumpSHA(SOF, (char *) "#--- GSOBUMakeSolids ");cout<<endl;}
   if(tSPS){GdumpSOBU(SOBU);debgsobu(iSO);}
@@ -141,9 +139,6 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids
     TopExp_Explorer ex(newSolid,TopAbs_VERTEX);
     Standard_Boolean isempty = ex.More();    
     if (!isempty) {
-#ifdef OCCT_DEBUG
-      if (trcso) cout <<"TopOpeBRepBuild_Builder::GSOBUMakeSolids ->EMPTY SOLID\n";
-#endif
       continue;
     }
 

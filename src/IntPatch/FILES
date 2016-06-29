@@ -55,7 +55,6 @@ IntPatch_Polygo.hxx
 IntPatch_Polygo.lxx
 IntPatch_Polyhedron.cxx
 IntPatch_Polyhedron.hxx
-IntPatch_PolyhedronTool.cxx
 IntPatch_PolyhedronTool.hxx
 IntPatch_PolyhedronTool.lxx
 IntPatch_PolyLine.cxx

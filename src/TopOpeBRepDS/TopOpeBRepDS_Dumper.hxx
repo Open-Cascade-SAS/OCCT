@@ -50,57 +50,11 @@ public:
 
   
   Standard_EXPORT TopOpeBRepDS_Dumper(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-  
-  Standard_EXPORT static Standard_OStream& PrintType (const Handle(Geom_Curve)& C, Standard_OStream& S);
-  
-  Standard_EXPORT static Standard_OStream& PrintType (const Handle(Geom2d_Curve)& C, Standard_OStream& S);
-  
-  Standard_EXPORT static Standard_OStream& Print (const gp_Pnt& P, Standard_OStream& S);
-  
-  Standard_EXPORT static Standard_OStream& Print (const gp_Pnt2d& P, Standard_OStream& S);
-  
-  Standard_EXPORT static Standard_OStream& Print (const Handle(Geom_BSplineCurve)& C, Standard_OStream& S, const Standard_Boolean c = Standard_True);
-  
-  Standard_EXPORT static Standard_OStream& Print (const Handle(Geom2d_BSplineCurve)& C, Standard_OStream& S, const Standard_Boolean c = Standard_True);
-  
-  Standard_EXPORT static Standard_OStream& Print (const Handle(Geom_Curve)& C, Standard_OStream& S, const Standard_Boolean c = Standard_True);
-  
-  Standard_EXPORT static Standard_OStream& Print (const Handle(Geom2d_Curve)& C, Standard_OStream& S, const Standard_Boolean c = Standard_True);
-  
-  Standard_EXPORT Standard_OStream& Dump (Standard_OStream& OS, const Standard_Boolean fk = Standard_False, const Standard_Boolean ct = Standard_True) const;
-  
-  Standard_EXPORT Standard_OStream& DumpGeometry (Standard_OStream& OS, const Standard_Boolean fk = Standard_False, const Standard_Boolean ct = Standard_True) const;
-  
-  Standard_EXPORT Standard_OStream& DumpGeometry (const TopOpeBRepDS_Kind K, Standard_OStream& OS, const Standard_Boolean fk = Standard_False, const Standard_Boolean ct = Standard_True) const;
-  
-  Standard_EXPORT Standard_OStream& DumpGeometry (const TopOpeBRepDS_Kind K, const Standard_Integer I, Standard_OStream& OS, const Standard_Boolean fk = Standard_False, const Standard_Boolean ct = Standard_True) const;
-  
-  Standard_EXPORT Standard_OStream& DumpTopology (Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpTopology (const TopOpeBRepDS_Kind K, Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpTopology (const TopAbs_ShapeEnum T, Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpTopology (const TopOpeBRepDS_Kind K, const Standard_Integer I, Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpTopology (const TopAbs_ShapeEnum T, const Standard_Integer I, Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpSectionEdge (const TopOpeBRepDS_Kind K, Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpSectionEdge (const TopOpeBRepDS_Kind K, const Standard_Integer I, Standard_OStream& OS) const;
-  
+
   Standard_EXPORT TCollection_AsciiString SDumpRefOri (const TopOpeBRepDS_Kind K, const Standard_Integer I) const;
   
   Standard_EXPORT TCollection_AsciiString SDumpRefOri (const TopoDS_Shape& S) const;
-  
-  Standard_EXPORT Standard_OStream& DumpRefOri (const TopOpeBRepDS_Kind K, const Standard_Integer I, Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpRefOri (const TopoDS_Shape& S, Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpLOI (const TopOpeBRepDS_ListOfInterference& L, Standard_OStream& O, const TCollection_AsciiString& s) const;
-  
-  Standard_EXPORT Standard_OStream& DumpI (const Handle(TopOpeBRepDS_Interference)& I, Standard_OStream& O, const TCollection_AsciiString& s1, const TCollection_AsciiString& s2) const;
-  
+
   Standard_EXPORT TCollection_AsciiString SPrintShape (const Standard_Integer I) const;
   
   Standard_EXPORT TCollection_AsciiString SPrintShape (const TopoDS_Shape& S) const;

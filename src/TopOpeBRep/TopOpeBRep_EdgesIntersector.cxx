@@ -59,8 +59,6 @@
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceNYI();
 extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
-extern Standard_Boolean TopOpeBRepDS_GettraceEDSF();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 extern Standard_Boolean TopOpeBRep_GettracePROEDG();
 extern Standard_Boolean TopOpeBRep_GetcontextTOL0();
 extern Standard_Boolean TopOpeBRep_GetcontextNOFEI();
@@ -547,9 +545,6 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
       TopOpeBRepDS_Transition& T1 = P2D.ChangeTransition(1);
       TopOpeBRepDS_Transition& T2 = P2D.ChangeTransition(2);
       
-#ifdef OCCT_DEBUG
-      Standard_Boolean newT1=Standard_False, newT2=Standard_False;
-#endif
       Standard_Boolean isvertex12 = isvertex1 && isvertex2;
       Standard_Boolean isvertex22 = isvertex2 && !isvertex12;
       Standard_Boolean isvertex11 = isvertex1 && !isvertex12;
@@ -560,9 +555,6 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
 	const TopoDS_Vertex& V2 = P2D.Vertex(2);	
 	TopOpeBRepDS_Transition newT; Standard_Boolean computed = ::EdgesIntersector_checkT1D(myEdge1,myEdge2,V2,newT);
 	if (computed) T1.Set(newT.Orientation(TopAbs_IN));
-#ifdef OCCT_DEBUG
-	else          newT1 = Standard_False;
-#endif
       }
 
       Standard_Boolean T2INT = (T2.Orientation(TopAbs_IN) == TopAbs_INTERNAL);
@@ -572,9 +564,6 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
 	const TopoDS_Vertex& V1 = P2D.Vertex(1);
 	TopOpeBRepDS_Transition newT; Standard_Boolean computed = ::EdgesIntersector_checkT1D(myEdge2,myEdge1,V1,newT);
 	if (computed) T2.Set(newT.Orientation(TopAbs_IN));
-#ifdef OCCT_DEBUG
-	else          newT2 = Standard_False;
-#endif
       }      
       
       // xpu121098 : cto900I7 (e12on,vG14)
@@ -585,10 +574,6 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
       Standard_Boolean nT2 = ( !T2INT && clE1 && isvertex11 && vcl1.IsSame(P2D.Vertex(1)) );
       if (nT2) T2.Set(TopAbs_INTERNAL);
       
-#ifdef OCCT_DEBUG
-      if (trc&&(newT1||nT1)) {cout<<"-> ** newT on e(1) = ";T1.Dump(cout);cout<<endl;}
-      if (trc&&(newT2||nT2)) {cout<<"-> ** newT on e(2) = ";T2.Dump(cout);cout<<endl;}
-#endif
     } // (isvertex && esd) 
   } // MorePoint
 
@@ -804,11 +789,6 @@ void TopOpeBRep_EdgesIntersector::ReduceSegments()
   Standard_Boolean condredu = (myHasSegment && !mySameDomain);
   if (!condredu) return;
 
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = TopOpeBRepDS_GettraceDSF(); trc = trc || TopOpeBRepDS_GettraceEDSF();
-  if (trc) Dump("AVANT ReduceSegments");
-#endif
-  
   Standard_Integer ip = 1;Standard_Integer np = mynp2d;
   while (ip < np) {
     TopOpeBRep_Point2d& psa = mysp2d(ip);

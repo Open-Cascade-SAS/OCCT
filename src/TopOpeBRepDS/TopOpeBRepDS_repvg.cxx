@@ -37,29 +37,15 @@
 #define MDSdmoiloi TopOpeBRepDS_DataMapOfIntegerListOfInterference
 #define MDSdmiodmoiloi TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference
 
-#ifdef OCCT_DEBUG
-#include <TopOpeBRepDS_reDEB.hxx>
-extern Standard_Boolean TopOpeBRepDS_GetcontextMKTONREG();
-#endif
-  
 //------------------------------------------------------
 Standard_EXPORT void FDS_repvg2
 (const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer EIX,const TopOpeBRepDS_Kind GT,TopOpeBRepDS_ListOfInterference& LI,TopOpeBRepDS_ListOfInterference& RLI)
 //------------------------------------------------------
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
-  TRC = Standard_False; //xpu170898
-#endif
   const TopoDS_Edge& E = TopoDS::Edge(BDS.Shape(EIX));
   Standard_Boolean isEd = BRep_Tool::Degenerated(E);
   if (isEd) return;
   
-#ifdef OCCT_DEBUG
-  if (TRC) cout<<endl<<"repvg1 E"<<EIX<<" <- "<<LI.Extent()<<endl;
-  if (TRC) debredpvg(EIX);
-#endif
-
   Standard_Boolean ispoint  = (GT == TopOpeBRepDS_POINT);
   Standard_Boolean isvertex = (GT == TopOpeBRepDS_VERTEX);
 
@@ -106,10 +92,6 @@ Standard_EXPORT void FDS_repvg2
 
       Standard_Boolean cond = (G1 == G2); if (!cond) { it2.Next(); continue; }
   
-#ifdef OCCT_DEBUG
-      if (TRC && isvertex && DSREDUEDGETRCE(BDS.Shape(VDS))) debreducerEV(EIX,BDS.Shape(VDS));
-#endif
-      
       const TopoDS_Edge& E2 = TopoDS::Edge(BDS.Shape(S2));
       Standard_Boolean isEd2 = BRep_Tool::Degenerated(E2);
       if (isEd2) {it2.Next(); continue;}
@@ -118,38 +100,9 @@ Standard_EXPORT void FDS_repvg2
       memeS = memeS && (nLI == 2);
 
       if (!isComplex && memeS) {
-	Standard_Boolean mktone = Standard_False;
-#ifdef OCCT_DEBUG
-	// NYI XPU : corriger la sequence suivante (avec mkTonE) qui produit une
-	// NYI transition (ON,ON) dans le cas cto 009 B4 pour l'arete 6* / face *21
-	// NYI aux PDS 1 et 5, au lieu de (IN,IN).
-	mktone = TopOpeBRepDS_GetcontextMKTONREG();
-	if (mktone) {
-	  const TopOpeBRepDS_ListOfInterference& LOI = BDS.ShapeInterferences(E);
-	  Standard_Real pbef,paft; Standard_Boolean isonper; 
-	  Standard_Real pE = FDS_Parameter(I1);
-	  Standard_Boolean ok = FDS_LOIinfsup(BDS,E,pE,GT1,G1,LOI,pbef,paft,isonper); 
-	  if (!ok) {it2.Next();continue;}
-	  Standard_Real pE1;     ok = FUN_tool_parE(E,pE,E1,pE1);   if (!ok) {it2.Next();continue;}
-	  gp_Pnt2d uv; ok = FUN_tool_paronEF(E,pE,F1,uv); if (!ok) {it2.Next();continue;}
-	  Standard_Real factor = 0.789;
-	  TopOpeBRepTool_makeTransition MKT; 
-	  TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN; 
-	  ok = MKT.Initialize(E,pbef,paft,pE, F1,uv, factor);
-	  if (ok) ok = MKT.SetRest(E1,pE1);
-	  if (ok) ok = MKT.MkTonE(stb,sta);
-	  if (!ok) {it2.Next();continue;}  
-	  TrmemeS.Before(stb); TrmemeS.After(sta);
-	}
-#endif
-	if (!mktone) {
-	  Standard_Real pE = FDS_Parameter(I1);
-	  Standard_Boolean ok = FDS_stateEwithF2d(BDS,E,pE,GT1,G1,F1,TrmemeS); if (!ok) {it2.Next();continue;}
-	}
+	Standard_Real pE = FDS_Parameter(I1);
+	Standard_Boolean ok = FDS_stateEwithF2d(BDS,E,pE,GT1,G1,F1,TrmemeS); if (!ok) {it2.Next();continue;}
 
-#ifdef OCCT_DEBUG
-	if(TRC){cout<<"memeS result ";TrmemeS.Dump(cout);cout<<endl;}
-#endif
 	LI.Remove(it2);
       } // !isComplex && memeS
 
@@ -158,30 +111,16 @@ Standard_EXPORT void FDS_repvg2
 	EITool.Init(E,I1);
 	if      (ispoint)  EITool.Add(E,PDS,I1);
 	else if (isvertex) EITool.Add(E1,VDS,I1);
-#ifdef OCCT_DEBUG
-	if (TRC){cout<<endl<<"complex T2d E"<<EIX<<endl;I1->Dump(cout);cout<<endl;}
-	if (TRC){cout<<"init ";Handle(TopOpeBRepDS_Interference) IBID = new TopOpeBRepDS_Interference();
-		 EITool.Transition(IBID);IBID->Transition().Dump(cout);cout<<endl;}
-#endif
       } // !isComplex && !memeS
       
       if (isComplex && !memeS) {
-#ifdef OCCT_DEBUG
-	if(TRC) I2->Dump(cout,"add ","\n");
-#endif      
 	if      (ispoint)  EITool.Add(E,PDS,I2);      
 	else if (isvertex) EITool.Add(E2,VDS,I2); 
 	LI.Remove(it2);
-#ifdef OCCT_DEBUG
-	if(TRC){cout<<"result ";Handle(TopOpeBRepDS_Interference) IBID = new TopOpeBRepDS_Interference();
-		EITool.Transition(IBID);IBID->Transition().Dump(cout);cout<<endl;}
-#endif
       } // (isComplex && !memeS)
 
       if (isComplex && memeS) {
 	it2.Next();
-#ifdef OCCT_DEBUG
-#endif      
       } // (isComplex && memeS)
 
     } // it2
@@ -201,9 +140,6 @@ Standard_EXPORT void FDS_repvg2
 
   } // it1
   
-#ifdef OCCT_DEBUG
-  if (TRC) cout<<"repvg2 E"<<EIX<<" -> reste "<<LI.Extent()<<" + reduit "<<RLI.Extent()<<endl<<endl;
-#endif
 }  // FDS_repvg2
 
 //------------------------------------------------------
@@ -212,13 +148,6 @@ Standard_EXPORT void FDS_repvg
 //------------------------------------------------------
 {
   TopOpeBRepDS_TKI tki; tki.FillOnGeometry(LOI);
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
-  TRC = Standard_False; //xpu170898
-  if (TRC) cout<<endl<<"repvg E"<<EIX<<" <- "<<LOI.Extent()<<endl;
-  if (TRC) tki.DumpTKIIterator("","\n");
-  if (TRC) debredpvg(EIX);
-#endif
 
   // xpu211098 : cto904F6 (e10,FTRA1=f14,FTRA2=f17)
   MDSdmoiloi mapITRASHA;
@@ -249,9 +178,6 @@ Standard_EXPORT void FDS_repvg
   /*LOI.Clear();
   for (tki.Init(); tki.More(); tki.Next()) {
     TopOpeBRepDS_Kind K; Standard_Integer G; tki.Value(K,G);
-#ifdef OCCT_DEBUG
-    if (TRC) {tki.DumpTKI(K,G,"","\n");debredpvg(EIX);}
-#endif
     TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G); TopOpeBRepDS_ListOfInterference Rloi;
     Standard_Integer nloi = loi.Extent();
     if      (nloi == 0) continue;
@@ -261,9 +187,5 @@ Standard_EXPORT void FDS_repvg
       LOI.Append(loi); RLOI.Append(Rloi);
     }
   }*/
-
-#ifdef OCCT_DEBUG
-  if (TRC) cout<<"repvg E"<<EIX<<" -> reste "<<LOI.Extent()<<" + reduit "<<RLOI.Extent()<<endl<<endl;
-#endif
 }
 

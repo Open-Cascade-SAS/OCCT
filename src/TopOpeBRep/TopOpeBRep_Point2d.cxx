@@ -104,9 +104,6 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Inte
   Standard_Integer sts = Status();
   Standard_Boolean pos = IsPointOfSegment();
 
-  const TopOpeBRepDS_Transition& T1 = Transition(1);
-  const TopOpeBRepDS_Transition& T2 = Transition(2);
-  
   Standard_Boolean isvertex1 = IsVertex(1); TopoDS_Vertex V1; if (isvertex1) V1 = Vertex(1);
   Standard_Boolean isvertex2 = IsVertex(2); TopoDS_Vertex V2; if (isvertex2) V2 = Vertex(2);
 
@@ -132,8 +129,7 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Inte
   cout<<"     on (1) :";
   cout<<" vertex(1) : ";
   cout<<(isvertex1?1:0);
-  cout<<"  T "<<E1index<<"(1) : ";
-  T1.Dump(cout);
+  cout<<"  T "<<E1index<<"(1)";
   cout<<" par(1) = "<<par1;
   if (isvertex1) {
     P3D = BRep_Tool::Pnt(V1);
@@ -144,8 +140,7 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Inte
   cout<<"     on (2) :";
   cout<<" vertex(2) : ";
   cout<<(isvertex2?1:0);
-  cout<<"  T "<<E2index<<"(2) : ";
-  T2.Dump(cout);
+  cout<<"  T "<<E2index<<"(2)";
   cout<<" par(2) = "<<par2;
   if (isvertex2) {
     P3D = BRep_Tool::Pnt(V2);

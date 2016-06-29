@@ -53,7 +53,6 @@ math_FunctionSet.hxx
 math_FunctionSetRoot.cxx
 math_FunctionSetRoot.hxx
 math_FunctionSetRoot.lxx
-math_FunctionSetWithDerivatives.cxx
 math_FunctionSetWithDerivatives.hxx
 math_FunctionWithDerivative.cxx
 math_FunctionWithDerivative.hxx
@@ -92,9 +91,7 @@ math_Matrix.hxx
 math_Matrix.lxx
 math_MultipleVarFunction.cxx
 math_MultipleVarFunction.hxx
-math_MultipleVarFunctionWithGradient.cxx
 math_MultipleVarFunctionWithGradient.hxx
-math_MultipleVarFunctionWithHessian.cxx
 math_MultipleVarFunctionWithHessian.hxx
 math_NewtonFunctionRoot.cxx
 math_NewtonFunctionRoot.hxx

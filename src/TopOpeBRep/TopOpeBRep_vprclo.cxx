@@ -51,8 +51,6 @@
 #define M_REVERSED(st) (st == TopAbs_REVERSED) 
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer i1);
 Standard_EXPORT void debarc(const Standard_Integer i);
 Standard_EXPORT void debooarc(const Standard_Integer i);
 #endif
@@ -183,14 +181,8 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(const TopOpeBRep_VPointInter& V
   if (iOOFace == 0) iOOFace = myDS->AddShape(OOFace,OOShapeIndex);
 
   // current VPoint is on <edge>
-#ifdef OCCT_DEBUG
-  Standard_Integer SIedgeIndex = 0;
-#endif
   const TopoDS_Edge& edge = TopoDS::Edge(VP.Edge(ShapeIndex));
   if (!myDS->HasShape(edge)) myDS->AddShape(edge,ShapeIndex);
-#ifdef OCCT_DEBUG
-  else                       SIedgeIndex = myDS->Shape(edge);
-#endif
 
   Standard_Real paredge = VP.EdgeParameter(ShapeIndex);
   
@@ -206,12 +198,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(const TopOpeBRep_VPointInter& V
     else                        OOedgeIndex = myDS->AddShape(OOedge,OOShapeIndex);
   }
   
-#ifdef OCCT_DEBUG
-  Standard_Boolean traceDSF = TopOpeBRepDS_GettraceDSF();
-  Standard_Boolean trce = TopOpeBRepDS_GettraceSPSX(SIedgeIndex);   if(trce) debarc(SIedgeIndex);
-  Standard_Boolean trcooe = TopOpeBRepDS_GettraceSPSX(OOedgeIndex); if(trcooe) debooarc(OOedgeIndex);
-#endif
-
   // ===================================================================
   //             --- Edge/(POINT,VERTEX) Interference (EPI) creation ---
   // ===================================================================
@@ -222,9 +208,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(const TopOpeBRep_VPointInter& V
   //  transEdge should be INTERNAL/EXTERNAL.
   
   Standard_Boolean Tunk = transEdge.IsUnknown();
-#ifdef OCCT_DEBUG
-  if (!Tunk && traceDSF) cout<<"-> on closing : transAdd = "<<endl;
-#endif
   TopOpeBRepDS_Transition transAdd;
   Standard_Boolean newtransEdge = Tunk;
   if (newtransEdge) transAdd = GetEdgeTrans(VP,PVKind,PVIndex,ShapeIndex,OOFace);

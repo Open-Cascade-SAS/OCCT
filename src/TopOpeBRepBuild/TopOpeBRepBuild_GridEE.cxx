@@ -429,13 +429,6 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     const TopOpeBRepDS_ListOfInterference& LICur = tki.Value(Kcur,Gcur);
     Standard_Boolean point  = (Kcur == TopOpeBRepDS_POINT); //xpu170498
     Standard_Boolean vertex = (Kcur == TopOpeBRepDS_VERTEX);//xpu170498
-#ifdef OCCT_DEBUG
-//    Standard_Integer nLICur = LICur.Extent();
-    Standard_Boolean trcI = Standard_False;
-    if(trcI) {TopOpeBRepDS_Dumper DSD(myDataStructure); TCollection_AsciiString aa("lI");
-	      aa += TCollection_AsciiString(Gcur); DSD.DumpLOI(LICur,cout,aa);}
-#endif
-
     TopoDS_Shape vGsd; 
     if (vertex) FUN_ds_getoov(BDS.Shape(Gcur), myDataStructure, vGsd); //xpu221098
 
@@ -521,9 +514,6 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
       
       TopOpeBRepDS_ListOfInterference li; li.Append(newI); TopOpeBRepDS_PointIterator itCur(li);
       GFillPointTopologyPVS(E,itCur,G,PVS);
-#ifdef OCCT_DEBUG
-      if(tSPS) {newI->Dump(cout,"\nnewinterf ","\n\n"); debfillp2(iEDS);}
-#endif
       {tki.Next(); continue;}
     } // isSE    
 
@@ -541,10 +531,6 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
       T1.Orientation(TopAbs_IN);
       TopAbs_ShapeEnum SB1,SA1;Standard_Integer IB1,IA1;TopOpeBRepDS_Kind GT1,ST1;Standard_Integer G1,S1;
       FDS_Idata(I1,SB1,IB1,SA1,IA1,GT1,G1,ST1,S1);
-
-#ifdef OCCT_DEBUG
-      if(tSPS) {I1->Dump(cout,"\n? keepinterf ","\n\n"); debfillp2(iEDS);}
-#endif
 
       Standard_Boolean keepinterf1 = Standard_False;
       if      (isEd) {
@@ -569,9 +555,6 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
 	    Standard_Boolean id2d = (I1 == i2d);
 	    if (tSPS) {
 	      cout<<"DEB : GFillPointTopologyPVS E"<<iEDS<<" has2d3d"<<endl;
-	      i2d->Dump(cout,"2d : ","\n");
-	      i3d->Dump(cout,"3d : ","\n");
-	      I1->Dump (cout,"I1 : ","\n");
 	      if (id3d) cout<<"--> Interference 3d ";
 	      if (id2d) cout<<"--> Interference 2d ";
 	      if (keepinterf1) cout<<" traitee"<<endl;

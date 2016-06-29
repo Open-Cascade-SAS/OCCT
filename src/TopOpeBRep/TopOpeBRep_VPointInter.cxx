@@ -37,7 +37,6 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
 static TCollection_AsciiString PRODINP("dinp ");
 #endif
 
@@ -320,10 +319,10 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const Standard_Integer I,const To
 #ifdef OCCT_DEBUG
   if (closingedge) OS<<"on closing edge "; else OS<<"on edge "; TopAbs::Print(O,cout);
   cout<<" of "<<I<<" : par : "<<Epar<<endl;
-  TopOpeBRepDS_Transition T = TopOpeBRep_FFTransitionTool::ProcessLineTransition(*this,I,O);
+  TopOpeBRep_FFTransitionTool::ProcessLineTransition(*this,I,O);
   OS<<"line transition ";
   if (closingedge) OS<<"on closing edge "; else OS<<"on edge "; TopAbs::Print(O,cout);
-  OS<<" of "<<I<<" : "; T.Dump(OS);OS<<endl;
+  OS<<" of "<<I<<endl;
 #endif
   
   return OS;
@@ -346,11 +345,6 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face& FF1,const Topo
   OS<<PRODINP<<"P"<<myIndex<<" "; OS<<P.X()<<" "<<P.Y()<<" "<<P.Z();
   OS<<"; #draw"<<endl;
    
-  if (TopOpeBRepDS_GettraceDSFK()) { Standard_Real u,v;
-    ParametersOnS1(u,v); OS<<"u1,v1 : "<<u<<" "<<v; OS<<"   ";
-    ParametersOnS2(u,v); OS<<"u2,v2 : "<<u<<" "<<v; OS<<endl;
-  }
-  
   if (IsVertexOnS1()) { OS<<"is vertex of 1"<<endl; }
   if (IsVertexOnS2()) { OS<<"is vertex of 2"<<endl; }
   if (IsMultiple())   { OS<<"is multiple"<<endl; }

@@ -1,6 +1,5 @@
 TNaming.cxx
 TNaming.hxx
-TNaming_Builder.cxx
 TNaming_Builder.hxx
 TNaming_CopyShape.cxx
 TNaming_CopyShape.hxx
@@ -15,10 +14,8 @@ TNaming_DeltaOnRemoval.hxx
 TNaming_Evolution.hxx
 TNaming_Identifier.cxx
 TNaming_Identifier.hxx
-TNaming_Iterator.cxx
 TNaming_Iterator.hxx
 TNaming_Iterator.lxx
-TNaming_IteratorOnShapesSet.cxx
 TNaming_IteratorOnShapesSet.hxx
 TNaming_IteratorOnShapesSet.lxx
 TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape.hxx
@@ -43,16 +40,13 @@ TNaming_Naming.hxx
 TNaming_NamingTool.cxx
 TNaming_NamingTool.hxx
 TNaming_NCollections.hxx
-TNaming_NewShapeIterator.cxx
 TNaming_NewShapeIterator.hxx
 TNaming_NewShapeIterator.lxx
-TNaming_OldShapeIterator.cxx
 TNaming_OldShapeIterator.hxx
 TNaming_OldShapeIterator.lxx
 TNaming_PtrAttribute.hxx
 TNaming_PtrNode.hxx
 TNaming_PtrRefShape.hxx
-TNaming_RefShape.cxx
 TNaming_RefShape.hxx
 TNaming_RefShape.lxx
 TNaming_SameShapeIterator.cxx

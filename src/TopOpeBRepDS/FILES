@@ -47,7 +47,6 @@ TopOpeBRepDS_DRAW.cxx
 TopOpeBRepDS_DRAW.hxx
 TopOpeBRepDS_DSS.cxx
 TopOpeBRepDS_DSS.hxx
-TopOpeBRepDS_DSX.hxx
 TopOpeBRepDS_Dumper.cxx
 TopOpeBRepDS_Dumper.hxx
 TopOpeBRepDS_Edge3dInterferenceTool.cxx
@@ -116,8 +115,6 @@ TopOpeBRepDS_ProcessEdgeInterferences.cxx
 TopOpeBRepDS_ProcessFaceInterferences.cxx
 TopOpeBRepDS_ProcessInterferencesTool.cxx
 TopOpeBRepDS_ProcessInterferencesTool.hxx
-TopOpeBRepDS_reDEB.cxx
-TopOpeBRepDS_reDEB.hxx
 TopOpeBRepDS_redu.cxx
 TopOpeBRepDS_Reducer.cxx
 TopOpeBRepDS_Reducer.hxx
@@ -148,8 +145,5 @@ TopOpeBRepDS_TKI.cxx
 TopOpeBRepDS_TKI.hxx
 TopOpeBRepDS_TOOL.cxx
 TopOpeBRepDS_TOOL.hxx
-TopOpeBRepDS_trace.cxx
-TopOpeBRepDS_traceDSX.cxx
-TopOpeBRepDS_traceDSX.hxx
 TopOpeBRepDS_Transition.cxx
 TopOpeBRepDS_Transition.hxx

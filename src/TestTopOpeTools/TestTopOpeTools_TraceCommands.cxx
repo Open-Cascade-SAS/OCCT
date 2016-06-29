@@ -28,22 +28,6 @@ Standard_IMPORT void TopClass_SettraceFC(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepTool_SettraceEND(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepTool_SettraceKRO(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepTool_SetcontextNOSEW(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SetcontextNOPNC(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceEDSF(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceDSP(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceDSF(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceDSFK(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceDSNC(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceDSLT(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceDEGEN(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceDSFD(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettracePCI(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettracePEI(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettracePFI(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettracePI(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceSTRANGE(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceGAP(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SetcontextNOGAP(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRep_SettraceFITOL(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRep_SettraceBIPS(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRep_SettraceSI(const Standard_Boolean);
@@ -63,9 +47,6 @@ Standard_IMPORT void TopOpeBRepBuild_SettraceCHKOK(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepBuild_SettraceCHKNOK(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepBuild_SettraceCU(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepBuild_SettraceCUV(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceSPSX(const Standard_Boolean, Standard_Integer, char**);
-Standard_IMPORT void TopOpeBRepDS_SettraceCX(const Standard_Boolean, Standard_Integer, char**);
-Standard_IMPORT void TopOpeBRepDS_SettraceSPSXX(const Standard_Boolean, Standard_Integer, char**);
 Standard_IMPORT void TopOpeBRepBuild_SettraceSPF(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepBuild_SettraceSPS(const Standard_Boolean);
 Standard_IMPORT void TopOpeBRepBuild_SettraceSHEX(const Standard_Boolean);
@@ -110,13 +91,6 @@ Standard_IMPORT void TopOpeBRepTool_SettraceCL2DDR(const Standard_Boolean, Stand
 Standard_IMPORT void TopOpeBRepTool_SettraceCL2DPR(const Standard_Boolean, Standard_Integer, char**);
 Standard_IMPORT void TopOpeBRepTool_SettraceCL3DDR(const Standard_Boolean, Standard_Integer, char**);
 Standard_IMPORT void TopOpeBRepTool_SettraceCL3DPR(const Standard_Boolean, Standard_Integer, char**);
-Standard_IMPORT void TopOpeBRepDS_SettraceBUTO(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceTRPE(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceEDPR(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceISTO(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SettraceSANTRAN(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SetcontextNOPFI(const Standard_Boolean);
-Standard_IMPORT void TopOpeBRepDS_SetcontextMKTONREG(const Standard_Boolean);
 #endif
 
 #ifdef OCCT_DEBUG
@@ -127,20 +101,6 @@ static Standard_Integer InitTraceTopOpeKernel (TestTopOpeTools_Trace& T)
   if (T.Add("tfc",(tf_value)TopClass_SettraceFC)) return 1;
   if (T.Add("tend",(tf_value)TopOpeBRepTool_SettraceEND)) return 1;
   if (T.Add("tkro",(tf_value)TopOpeBRepTool_SettraceKRO)) return 1;
-  if (T.Add("tdsfk",(tf_value)TopOpeBRepDS_SettraceDSFK)) return 1;
-  if (T.Add("tedsf",(tf_value)TopOpeBRepDS_SettraceEDSF)) return 1;
-  if (T.Add("tdsp",(tf_value)TopOpeBRepDS_SettraceDSP)) return 1;
-  if (T.Add("tdsf",(tf_value)TopOpeBRepDS_SettraceDSF)) return 1;
-  if (T.Add("tdsnc",(tf_value)TopOpeBRepDS_SettraceDSNC)) return 1;
-  if (T.Add("tdegen",(tf_value)TopOpeBRepDS_SettraceDEGEN)) return 1;
-  if (T.Add("tdslt",(tf_value)TopOpeBRepDS_SettraceDSLT)) return 1;
-  if (T.Add("tdsfd",(tf_value)TopOpeBRepDS_SettraceDSFD)) return 1;
-  if (T.Add("tpci",(tf_value)TopOpeBRepDS_SettracePCI)) return 1;
-  if (T.Add("tpei",(tf_value)TopOpeBRepDS_SettracePEI)) return 1;
-  if (T.Add("tpfi",(tf_value)TopOpeBRepDS_SettracePFI)) return 1;
-  if (T.Add("tpi",(tf_value)TopOpeBRepDS_SettracePI)) return 1;
-  if (T.Add("tstrange",(tf_value)TopOpeBRepDS_SettraceSTRANGE)) return 1;
-  if (T.Add("tgap",(tf_value)TopOpeBRepDS_SettraceGAP)) return 1;
   if (T.Add("tfitol",(tf_value)TopOpeBRep_SettraceFITOL)) return 1;
   if (T.Add("tbips",(tf_value)TopOpeBRep_SettraceBIPS)) return 1;
   if (T.Add("tsi",(tf_value)TopOpeBRep_SettraceSI)) return 1;
@@ -154,9 +114,6 @@ static Standard_Integer InitTraceTopOpeKernel (TestTopOpeTools_Trace& T)
   if (T.Add("tnok",(tf_value)TopOpeBRepBuild_SettraceCHKNOK)) return 1;
   if (T.Add("tcu",(tf_value)TopOpeBRepBuild_SettraceCU)) return 1;
   if (T.Add("tcuv",(tf_value)TopOpeBRepBuild_SettraceCUV)) return 1;
-  if (T.Add("tcx",(tf_intarg)TopOpeBRepDS_SettraceCX)) return 1; // tcx 0|1 [i1 ...]
-  if (T.Add("tspsx",(tf_intarg)TopOpeBRepDS_SettraceSPSX)) return 1; // tspsx 0|1 [i1 ...]
-  if (T.Add("tspsxx",(tf_intarg)TopOpeBRepDS_SettraceSPSXX)) return 1; // tspsxx 0|1 [i1 i2]
   if (T.Add("tspf",(tf_value)TopOpeBRepBuild_SettraceSPF)) return 1; // splitface
   if (T.Add("tsps",(tf_value)TopOpeBRepBuild_SettraceSPS)) return 1; // splitsolid
   if (T.Add("tshex",(tf_value)TopOpeBRepBuild_SettraceSHEX)) return 1;
@@ -182,10 +139,6 @@ static Standard_Integer InitTraceTopOpeKernel (TestTopOpeTools_Trace& T)
   if (T.Add("tcl2dpr",(tf_intarg)TopOpeBRepTool_SettraceCL2DPR)) return 1;
   if (T.Add("tcl3ddr",(tf_intarg)TopOpeBRepTool_SettraceCL3DDR)) return 1;
   if (T.Add("tcl3dpr",(tf_intarg)TopOpeBRepTool_SettraceCL3DPR)) return 1;
-  if (T.Add("tbuto",(tf_value)TopOpeBRepDS_SettraceBUTO)) return 1;
-  if (T.Add("ttrpe",(tf_value)TopOpeBRepDS_SettraceTRPE)) return 1;
-  if (T.Add("tedpr",(tf_value)TopOpeBRepDS_SettraceEDPR)) return 1;
-  if (T.Add("tisto",(tf_value)TopOpeBRepDS_SettraceISTO)) return 1;
   if (T.Add("tproedg",(tf_value)TopOpeBRep_SettracePROEDG)) return 1;
   if (T.Add("tconic",(tf_value)TopOpeBRep_SettraceCONIC)) return 1;
   return 0;
@@ -197,7 +150,6 @@ Standard_Integer InitContextTopOpeKernel (TestTopOpeTools_Trace& T)
 //----------------------------------------------------------------------------
 {
   if (T.Add("nosew",(tf_value)TopOpeBRepTool_SetcontextNOSEW)) return 1;
-  if (T.Add("nopnc",(tf_value)TopOpeBRepDS_SetcontextNOPNC)) return 1;
   if (T.Add("nosg",(tf_value)TopOpeBRepBuild_SetcontextNOSG)) return 1;
   if (T.Add("ssconnex",(tf_value)TopOpeBRepBuild_SetcontextSSCONNEX)) return 1;
   if (T.Add("sf2",(tf_value)TopOpeBRepBuild_SetcontextSF2)) return 1;
@@ -211,7 +163,6 @@ Standard_Integer InitContextTopOpeKernel (TestTopOpeTools_Trace& T)
   if (T.Add("nofufa",(tf_value)TopOpeBRepBuild_SetcontextNOFUFA)) return 1;
   if (T.Add("einternal",(tf_value)TopOpeBRepBuild_SetcontextEINTERNAL)) return 1;
   if (T.Add("eexternal",(tf_value)TopOpeBRepBuild_SetcontextEEXTERNAL)) return 1;
-  if (T.Add("santran",(tf_value)TopOpeBRepDS_SettraceSANTRAN)) return 1;
   if (T.Add("noproedg",(tf_value)TopOpeBRep_SetcontextNOPROEDG)) return 1;
   if (T.Add("rest1",(tf_value)TopOpeBRep_SetcontextREST1)) return 1;
   if (T.Add("rest2",(tf_value)TopOpeBRep_SetcontextREST2)) return 1;
@@ -222,9 +173,6 @@ Standard_Integer InitContextTopOpeKernel (TestTopOpeTools_Trace& T)
   if (T.Add("ffor",(tf_value)TopOpeBRep_SetcontextFFOR)) return 1;
   if (T.Add("nopunk",(tf_value)TopOpeBRep_SetcontextNOPUNK)) return 1;
   if (T.Add("nofei",(tf_value)TopOpeBRep_SetcontextNOFEI)) return 1;
-  if (T.Add("nopfi",(tf_value)TopOpeBRepDS_SetcontextNOPFI)) return 1;
-  if (T.Add("mktonreg",(tf_value)TopOpeBRepDS_SetcontextMKTONREG)) return 1;
-  if (T.Add("nogap",(tf_value)TopOpeBRepDS_SetcontextNOGAP)) return 1;
 
   return 0;
 }

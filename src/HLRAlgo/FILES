@@ -38,7 +38,6 @@ HLRAlgo_PolyAlgo.lxx
 HLRAlgo_PolyData.cxx
 HLRAlgo_PolyData.hxx
 HLRAlgo_PolyData.lxx
-HLRAlgo_PolyHidingData.cxx
 HLRAlgo_PolyHidingData.hxx
 HLRAlgo_PolyHidingData.lxx
 HLRAlgo_PolyInternalData.cxx
@@ -47,7 +46,6 @@ HLRAlgo_PolyInternalData.lxx
 HLRAlgo_PolyInternalNode.cxx
 HLRAlgo_PolyInternalNode.hxx
 HLRAlgo_PolyInternalNode.lxx
-HLRAlgo_PolyInternalSegment.cxx
 HLRAlgo_PolyInternalSegment.hxx
 HLRAlgo_PolyInternalSegment.lxx
 HLRAlgo_PolyShellData.cxx
@@ -56,7 +54,6 @@ HLRAlgo_PolyShellData.lxx
 HLRAlgo_Projector.cxx
 HLRAlgo_Projector.hxx
 HLRAlgo_Projector.lxx
-HLRAlgo_TriangleData.cxx
 HLRAlgo_TriangleData.hxx
 HLRAlgo_TriangleData.lxx
 HLRAlgo_WiresBlock.cxx

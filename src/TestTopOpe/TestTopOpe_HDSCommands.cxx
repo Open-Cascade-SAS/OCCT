@@ -105,8 +105,6 @@ public:
 
 TestTopOpe_HDSDisplayer* PHDSD = NULL;
 static TestTopOpeDraw_Displayer* POCD = NULL;
-//Standard_IMPORT extern Standard_Integer TopOpeBRepDS_GLOBALHDSinterfselector;
-Standard_IMPORT Standard_Integer TopOpeBRepDS_GLOBALHDSinterfselector;
 
 static Standard_Boolean SFindKeep = Standard_False;
 static Standard_Boolean GFindKeep = Standard_False;
@@ -144,7 +142,6 @@ public:
   Standard_Integer Set(Standard_Integer na,const char** a,Standard_Integer iargK,Standard_Integer iargI);
 
   virtual ~tsee_entity() {}
-  void virtual Dump() const;
   void virtual See() = 0;
 };
 
@@ -178,12 +175,6 @@ Standard_Integer tsee_entity::Set(Standard_Integer na,const char** a,Standard_In
   myEnamecolor = TestTopOpeDraw_TTOT::GeometryColor(myETK);
   myEOK = Standard_True;
   return 0;
-}
-
-void tsee_entity::Dump() const { 
-  TopOpeBRepDS_Dumper Dumper(myEHDS);
-  if (myEisgeome) Dumper.DumpGeometry(myETK,myEindex,cout);
-  if (myEisshape) Dumper.DumpTopology(myETK,myEindex,cout);
 }
 
 class tsee_entity0 : public tsee_entity {
@@ -682,7 +673,6 @@ Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,c
     if (!E1.myEOK || !E2.myEOK) return 1;
     
     E1.See();E2.See();
-    E1.Dump();E2.Dump();
     di<<"Distance "<<E1.myEnamedbrep.ToCString()<<" "<<E2.myEnamedbrep.ToCString()<<" : "<<E1.Pnt().Distance(E2.Pnt())<<"\n";
     
   } // PrintDistancePP
@@ -1009,13 +999,9 @@ Standard_Integer tki(Draw_Interpretor& di,Standard_Integer na_in,const char** a)
 //-----------------------------------------------------------------------
 Standard_Integer tds(Draw_Interpretor& di,Standard_Integer na,const char** a)
 {
-  Standard_Boolean TDSkeep,TDScompact; TDSkeep = TDScompact = Standard_False;
-  TopOpeBRepDS_GLOBALHDSinterfselector = 0;
-
   Standard_Integer ia ;
   for ( ia = 0; ia < na; ia++) {
     if (!strcasecmp(a[ia],"-ssi")) {
-      TopOpeBRepDS_GLOBALHDSinterfselector = 1;
       suppressarg(na,a,ia);
       continue;
     }
@@ -1023,10 +1009,7 @@ Standard_Integer tds(Draw_Interpretor& di,Standard_Integer na,const char** a)
       TCollection_AsciiString as = a[ia];
       as.Remove(1,1);
       for(Standard_Integer i = 1;i <= as.Length(); i++) {
-	if     (as.Value(i) == 'k') TDSkeep = Standard_True;
-	else if(as.Value(i) == 'l') TDScompact = Standard_False;
-	else if(as.Value(i) == 's') TDScompact = Standard_True;
-	else if(as.Value(i) == 'h') { tds_help(di); return 0; }
+        if (as.Value(i) == 'h') { tds_help(di); return 0; }
       }
       suppressarg(na,a,ia);
     }
@@ -1036,68 +1019,7 @@ Standard_Integer tds(Draw_Interpretor& di,Standard_Integer na,const char** a)
   const Handle(TopOpeBRepDS_HDataStructure)& HDS = PHDSD->CurrentHDS();
   if (HDS.IsNull()) {COUTNOHDS(di);return 0;}
   PHDSD->CurrentBDS();
-  
-  TopOpeBRepDS_Dumper Dumper(HDS);
-  if ( na == 1 ) { Dumper.Dump(cout,TDSkeep,TDScompact); return 0; }
-  
-  TDSpar Tpar(a[1]);  
-  Standard_Integer ids;
-  
-  if (na == 2) {
-    if      (Tpar.isshap()) {
-      if (Tpar.TS() != TopAbs_SHAPE) Dumper.DumpTopology(Tpar.TK(),cout);
-      else                           Dumper.DumpTopology(cout);
-    }
-    else if (Tpar.isgeom()) {
-      Dumper.DumpGeometry(Tpar.TK(),cout,TDSkeep,TDScompact);
-    }
-    else if (Tpar.issect()) {
-      Dumper.DumpSectionEdge(Tpar.TK(),cout);
-    }
-    else if (Tpar.isafev()) {
-      TopOpeBRepDS_Explorer x;
-      for (x.Init(HDS,TopAbs_FACE,TDSkeep);x.More();x.Next()) Dumper.DumpTopology(x.Type(),x.Index(),cout);
-      for (x.Init(HDS,TopAbs_EDGE,TDSkeep);x.More();x.Next()) Dumper.DumpTopology(x.Type(),x.Index(),cout);
-      for (x.Init(HDS,TopAbs_VERTEX,TDSkeep);x.More();x.Next()) Dumper.DumpTopology(x.Type(),x.Index(),cout);
-    }
-    
-    else if (Tpar.isdege()) {      
-      TopOpeBRepDS_Explorer x;
-      for (x.Init(HDS,TopAbs_EDGE,TDSkeep);x.More();x.Next()) {
-	if (BRep_Tool::Degenerated(x.Edge())) Dumper.DumpTopology(x.Type(),x.Index(),cout);
-      }
-    }
-    return 0;
-  } // (na == 2)
-  
-  // nna  > 2 : dump DS entities of type TK index Draw::Atoi(a[2])..a[narg-1])  
-  for (ia = 2; ia < na; ia++) {
-    
-    if ( !strcmp(a[ia],"sd") ) { // dump all shapes HasSameDomain of type TS
-      for (TopOpeBRepDS_Explorer x(HDS,Tpar.TS(),Standard_False);x.More();x.Next()) {
-	Standard_Boolean isSsd = HDS->HasSameDomain(x.Current());
-	if (isSsd ) Dumper.DumpTopology(Tpar.TK(),x.Index(),cout);
-      }
-    }
-    else {
-      ids = Draw::Atoi(a[ia]); 
-      if ( Tpar.isshap() ) {
-	if (Tpar.TS() != TopAbs_SHAPE) Dumper.DumpTopology(Tpar.TK(),ids,cout);
-	else {
-	  TopAbs_ShapeEnum t = HDS->Shape(ids,SFindKeep).ShapeType();
-	  TopOpeBRepDS_Kind k = TopOpeBRepDS::ShapeToKind(t);
-	  Dumper.DumpTopology(k,ids,cout);
-	}
-      }
-      else if ( Tpar.isgeom() ) {
-	Dumper.DumpGeometry(Tpar.TK(),ids,cout,TDSkeep,TDScompact);
-      }
-      else if ( Tpar.issect() ) {
-	Dumper.DumpSectionEdge(TopOpeBRepDS_EDGE,ids,cout);
-      }
-    }
-  } // ia < na 
-  
+
   return 0;
 }
 
@@ -1303,7 +1225,6 @@ Standard_Integer tdsri(Draw_Interpretor& di,Standard_Integer na_in,const char** 
     Standard_Integer i=0; TopOpeBRepDS_ListIteratorOfListOfInterference it(li);
     while (it.More()) {
       if(++i == ii) {
-	it.Value()->Dump(cout,"\n--> remove ","\n");
 	li.Remove(it);
       }
       else it.Next();

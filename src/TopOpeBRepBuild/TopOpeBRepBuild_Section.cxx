@@ -64,7 +64,6 @@
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
 Standard_EXPORT void debsplitse(const Standard_Integer) {}
 Standard_EXPORT void debsplitsemess(const Standard_Integer i,const TCollection_AsciiString& s = "");
 Standard_EXPORT void debsplitsemess(const Standard_Integer i,const TCollection_AsciiString& s){cout<<"+++ debsplitse "<<s<<" E"<<i<<endl;debsplitse(i);}
@@ -257,12 +256,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
   Standard_Integer i,n = BDS.NbSectionEdges();
-  
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceDSNC() && !mySplitSectionEdgesDone) 
-    cout<<"TopOpeBRepBuild_Builder::SSE : compute "<<n<<" section edges"<<endl;
-#endif
-  
+
   for (i = 1; i <= n; i++) { // 1
     const TopoDS_Edge& E = TopoDS::Edge(BDS.SectionEdge(i));
     if(E.IsNull()) continue;

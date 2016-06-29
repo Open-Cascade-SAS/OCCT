@@ -489,16 +489,8 @@ void DsgPrs::ComputeFilletRadiusPresentation( const Standard_Real /*ArrowLength*
       FilletCirc.SetRadius( Center.Distance( FirstPoint ) ); //***
       gp_Vec vec1( dir1 );
       vec1 *= FilletCirc.Radius();
-#ifdef OCCT_DEBUG
-      gp_Pnt p1 =
-#endif
-                  Center.Translated( vec1 );
       gp_Vec vec2( dir2 );
       vec2 *= FilletCirc.Radius();
-#ifdef OCCT_DEBUG
-      gp_Pnt p2 =
-#endif
-                  Center.Translated( vec2 );
       gp_Vec PosVec;
       if(! Center.IsEqual( Position, Precision::Confusion() ))
 	PosVec.SetXYZ( gp_Vec(Center, Position).XYZ() );
@@ -542,16 +534,12 @@ void DsgPrs::ComputeFilletRadiusPresentation( const Standard_Real /*ArrowLength*
 	}
       FirstParCirc = ElCLib::Parameter( FilletCirc, FirstPoint );
       LastParCirc  = ElCLib::Parameter( FilletCirc, SecondPoint );
-
-#ifdef OCCT_DEBUG
-#endif
     }
   else //Angle equal 0 or PI or R = 0
     {
       DrawPosition = Position;
       EndOfArrow   = BasePnt;
     }
-
 
   if(drawRevers)
     {

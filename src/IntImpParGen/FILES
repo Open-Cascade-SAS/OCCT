@@ -1,7 +1,6 @@
 IntImpParGen.cxx
 IntImpParGen.hxx
 IntImpParGen_ImpParTool.gxx
-IntImpParGen_ImpTool.cxx
 IntImpParGen_ImpTool.hxx
 IntImpParGen_Intersector.gxx
 IntImpParGen_Tool.cxx

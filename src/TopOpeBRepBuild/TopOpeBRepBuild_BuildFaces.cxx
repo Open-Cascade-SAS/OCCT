@@ -75,8 +75,6 @@ void TopOpeBRepBuild_Builder::BuildFaces(const Standard_Integer iS,
   //
 #ifdef OCCT_DEBUG
   Standard_Boolean tSE = TopOpeBRepBuild_GettraceSPF();
-  Standard_Boolean tCU = TopOpeBRepBuild_GettraceCU();
-  Standard_Boolean NtCUV = !TopOpeBRepBuild_GettraceCUV();
 #endif
   //
   TopOpeBRepDS_CurveIterator SCurves(HDS->SurfaceCurves(iS)); 
@@ -85,7 +83,6 @@ void TopOpeBRepBuild_Builder::BuildFaces(const Standard_Integer iS,
     const TopOpeBRepDS_Curve& CDS = HDS->Curve(iC);
 #ifdef OCCT_DEBUG
     if (tSE) cout<<endl<<"BuildFaces : C "<<iC<<" on S "<<iS<<endl;
-    if (tCU) { CDS.Dump(cout,iC,NtCUV); cout<<endl; }
 #endif
     TopoDS_Shape anEdge;
     TopTools_ListIteratorOfListOfShape Iti(NewEdges(iC)); 

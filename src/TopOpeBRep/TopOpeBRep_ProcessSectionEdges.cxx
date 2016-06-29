@@ -43,12 +43,6 @@
 #include <TopOpeBRepTool_TOOL.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSFK();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
-#endif
-
 Standard_EXPORT Standard_Boolean FUN_EqualponR(const TopOpeBRep_LineInter& Lrest,
 				  const TopOpeBRep_VPointInter& VP1,
 				  const TopOpeBRep_VPointInter& VP2);
@@ -65,7 +59,6 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
 {
 
 #ifdef OCCT_DEBUG
-  Standard_Boolean b22 = TopOpeBRepDS_GettraceDSNC();
   Standard_Boolean trRL=Standard_False;
 #endif
 
@@ -100,16 +93,7 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
         mapES.Add(E);
         LES.Append(E);
       }
-
-#ifdef OCCT_DEBUG
-      if (b22) {
-	if (add) cout<<" : add restriction edge of line ";
-	else cout<<" rejection of restriction edge of line ";
-	cout<<L.Index()<<endl;
-      }
-#endif
     }
-
   } // loop on lines
 }
 
@@ -120,10 +104,6 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
 Standard_Boolean TopOpeBRep_FacesFiller::KeepRLine
 (const TopOpeBRep_LineInter& L,const Standard_Boolean checkkeep) const
 { 
-#ifdef OCCT_DEBUG
-  //Standard_Boolean trc = (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC());
-#endif
-
   TopOpeBRep_TypeLineCurve t = L.TypeLineCurve();
   Standard_Boolean isrest = (t == TopOpeBRep_RESTRICTION);
   if (!isrest) return Standard_False;
@@ -293,11 +273,6 @@ Standard_EXPORT Standard_Boolean FUN_brep_sdmRE(const TopoDS_Edge& E1, const Top
 //=======================================================================
 void TopOpeBRep_FacesFiller::ProcessSectionEdges()
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean DSNC = TopOpeBRepDS_GettraceDSNC();
-  if (DSNC) cout<<endl<<"--- Section Edges Processing : ---"<<endl;
-#endif
-  
   // recuperation des aretes d'intersection mapES
   // MSV: replace map with list to achieve predictable order of edges
   TopTools_ListOfShape LES;
@@ -311,21 +286,9 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     Standard_Boolean isdg = BRep_Tool::Degenerated(E); //xpu290698
     if (isdg) continue;                   //xpu290698
 
-#ifdef OCCT_DEBUG
-    Standard_Integer iSE =
-#endif
-              myDS->AddSectionEdge(E);
-#ifdef OCCT_DEBUG
-    Standard_Integer iE =
-#endif
-              myDS->Shape(E);
-#ifdef OCCT_DEBUG
-    Standard_Integer rE =
-#endif
-              myDS->AncestorRank(E);
-#ifdef OCCT_DEBUG
-    if (DSNC) cout<<"add section edge "<<iSE<<" : "<<iE<<"("<<rE<<")"<<endl;
-#endif
+    myDS->AddSectionEdge(E);
+    myDS->Shape(E);
+    myDS->AncestorRank(E);
   }
 
   TColStd_ListOfInteger LOI; TColStd_ListIteratorOfListOfInteger itLOI;
@@ -390,25 +353,6 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
   }
 
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itmapELE;
-
-#ifdef OCCT_DEBUG
-  if (DSNC) {
-    for (itmapELE.Initialize(mapELE); itmapELE.More(); itmapELE.Next()) {
-      const TopoDS_Edge& E1 = TopoDS::Edge(itmapELE.Key());
-      Standard_Integer iE1 = myDS->Shape(E1);
-      Standard_Integer rE1 = myDS->AncestorRank(iE1);
-      cout<<"sd3d edge "<<iE1<<"("<<rE1<<") : ";
-      TopTools_ListIteratorOfListOfShape itL(itmapELE.Value());
-      for (; itL.More(); itL.Next()) {
-	const TopoDS_Edge& E2 = TopoDS::Edge(itL.Value());
-	Standard_Integer iE2 = myDS->Shape(E2);
-	Standard_Integer rE2 = myDS->AncestorRank(iE2);
-	cout<<iE2<<"("<<rE2<<") ";
-      }
-      cout<<endl;
-    }
-  }
-#endif
 
   for (itmapELE.Initialize(mapELE); itmapELE.More(); itmapELE.Next()) {
     const TopoDS_Edge& E1 = TopoDS::Edge(itmapELE.Key());

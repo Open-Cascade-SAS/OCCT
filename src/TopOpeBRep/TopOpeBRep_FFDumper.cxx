@@ -40,9 +40,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,MMgt_TShared)
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
 static TCollection_AsciiString PRODINP("dinp ");
 #endif
 
@@ -170,7 +167,7 @@ void TopOpeBRep_FFDumper::DumpLine(const TopOpeBRep_LineInter& LI)
   if (VPI.More()) cout<<endl;
   for (;VPI.More();VPI.Next()) {
     const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();
-    Standard_Boolean dump = VP.Keep() || TopOpeBRepDS_GettraceDSFK();
+    Standard_Boolean dump = VP.Keep();
     if (dump) { DumpVP(VP); cout<<endl; }
   }
   
@@ -206,12 +203,6 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP)
   cout<<PRODINP<<"L"<<il<<"P"<<VP.Index();if (k) cout<<"K";cout<<" "<<P.X()<<" "<<P.Y()<<" "<<P.Z();
   cout<<"; #draw"<<endl;
   
-  if (TopOpeBRepDS_GettraceDSFK()) { 
-    Standard_Real u,v;
-    VP.ParametersOnS1(u,v); cout<<"u1,v1 : "<<u<<" "<<v; cout<<"   ";
-    VP.ParametersOnS2(u,v); cout<<"u2,v2 : "<<u<<" "<<v; cout<<endl;
-  }
-  
   if      (VP.ShapeIndex() == 1) 
     DumpVP(VP,1);
   else if (VP.ShapeIndex() == 2)
@@ -237,7 +228,7 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP,const Standard
   const TopoDS_Edge& E = TopoDS::Edge(VP.Edge(ISI)); 
   Standard_Real Epar = VP.EdgeParameter(ISI);
   TopAbs_Orientation O = E.Orientation(); 
-  TopOpeBRepDS_Transition T = TopOpeBRep_FFTransitionTool::ProcessLineTransition(VP,ISI,O);
+  TopOpeBRep_FFTransitionTool::ProcessLineTransition(VP,ISI,O);
   const TopoDS_Face F = myPFF->Face(ISI);
   Standard_Boolean Closed = TopOpeBRepTool_ShapeTool::Closed(E,F);
   Standard_Boolean Degen = BRep_Tool::Degenerated(E);
@@ -252,7 +243,6 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP,const Standard
   if (Closed) cout<<"on closing edge "; else cout<<"on edge "; 
   if (Degen) cout<<" on degenerated edge ";
   TopAbs::Print(O,cout); cout<<" (ds"<<dsi<<") (ex"<<exi<<") of face of "<<ISI;
-  cout<<" : line transition : ";T.Dump(cout);cout<<endl;
 #endif
 }
 

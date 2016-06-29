@@ -31,7 +31,6 @@ TObj_ReferenceIterator.hxx
 TObj_SequenceIterator.cxx
 TObj_SequenceIterator.hxx
 TObj_SequenceOfIterator.hxx
-TObj_SequenceOfObject.cxx
 TObj_SequenceOfObject.hxx
 TObj_TIntSparseArray.cxx
 TObj_TIntSparseArray.hxx

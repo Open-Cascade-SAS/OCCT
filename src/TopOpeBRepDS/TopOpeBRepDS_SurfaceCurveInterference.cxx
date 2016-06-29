@@ -23,10 +23,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_SurfaceCurveInterference,TopOpeBRepDS_Interference)
 
-#ifdef OCCT_DEBUG
-#include <TopOpeBRepDS_Dumper.hxx>
-#endif
-
 //=======================================================================
 //function : TopOpeBRepDS_SurfaceCurveInterference
 //purpose  : 
@@ -85,48 +81,4 @@ void  TopOpeBRepDS_SurfaceCurveInterference::PCurve
   (const Handle(Geom2d_Curve)& PC)
 {
   myPCurve = PC;
-}
-
-
-//=======================================================================
-//function : DumpPCurve
-//purpose  : 
-//=======================================================================
-
-Standard_OStream& TopOpeBRepDS_SurfaceCurveInterference::DumpPCurve
-  (Standard_OStream& OS,
-#ifdef OCCT_DEBUG
-   const Standard_Boolean compact
-#else
-   const Standard_Boolean
-#endif
-   )const
-{
-#ifdef OCCT_DEBUG
-  Dump(OS); OS<<endl;
-
-  OS<<"PCurve ";
-  if (!PCurve().IsNull()) TopOpeBRepDS_Dumper::Print(PCurve(),OS,compact);
-  else OS<<" is null";
-  OS<<endl;
-#endif
-
-  return OS;
-}
-
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-
-Standard_OStream& TopOpeBRepDS_SurfaceCurveInterference::Dump
-  (Standard_OStream& OS) const
-{
-#ifdef OCCT_DEBUG
-  OS<<"SCI ";TopOpeBRepDS_Dumper::PrintType(myPCurve,OS);OS<<" ";
-  TopOpeBRepDS_Interference::Dump(OS);
-#endif
-
-  return OS;
 }

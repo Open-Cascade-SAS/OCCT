@@ -105,8 +105,6 @@ public:
   Standard_EXPORT Standard_Integer DSIndex() const;
   
   Standard_EXPORT void ChangeDSIndex (const Standard_Integer I);
-  
-  Standard_EXPORT Standard_OStream& Dump (Standard_OStream& OS, const Standard_Integer index, const Standard_Boolean compact = Standard_True) const;
 
 
 

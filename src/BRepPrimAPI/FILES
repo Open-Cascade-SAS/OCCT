@@ -16,7 +16,6 @@ BRepPrimAPI_MakeRevolution.cxx
 BRepPrimAPI_MakeRevolution.hxx
 BRepPrimAPI_MakeSphere.cxx
 BRepPrimAPI_MakeSphere.hxx
-BRepPrimAPI_MakeSweep.cxx
 BRepPrimAPI_MakeSweep.hxx
 BRepPrimAPI_MakeTorus.cxx
 BRepPrimAPI_MakeTorus.hxx

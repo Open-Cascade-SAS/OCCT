@@ -34,6 +34,5 @@ GC_MakeTrimmedCone.cxx
 GC_MakeTrimmedCone.hxx
 GC_MakeTrimmedCylinder.cxx
 GC_MakeTrimmedCylinder.hxx
-GC_Root.cxx
 GC_Root.hxx
 GC_Root.lxx

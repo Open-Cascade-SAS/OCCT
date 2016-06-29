@@ -183,70 +183,6 @@ void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K,const Standard_Integer G,co
 }
 
 //=======================================================================
-//function : DumpTKI
-//purpose  : 
-//=======================================================================
-void TopOpeBRepDS_TKI::DumpTKI
-(const TCollection_AsciiString& s1,const TCollection_AsciiString& s2) const
-{
-  if (myT.IsNull()) return;
-  cout<<s1;
-  for (Standard_Integer i=myT->Lower();i<=myT->Upper();i++) {
-    TopOpeBRepDS_Kind k = TableIndexToKind(i);
-    DumpTKI(k);
-  }
-  cout<<s2;
-  cout.flush();
-}
-
-//=======================================================================
-//function : DumpTKI
-//purpose  : 
-//=======================================================================
-void TopOpeBRepDS_TKI::DumpTKI
-(const TopOpeBRepDS_Kind K,const TCollection_AsciiString&,const TCollection_AsciiString&) const
-{
-  if (myT.IsNull()) return;
-  Standard_Integer TI = KindToTableIndex(K);
-  const MDSdmoiloi& M = myT->Value(TI);
-  for (MDSdmiodmoiloi it(M);it.More();it.Next()) {
-    Standard_Integer G = it.Key();
-    DumpTKI(K,G,"","\n");
-  }
-}
-
-//=======================================================================
-//function : DumpTKI
-//purpose  : 
-//=======================================================================
-void TopOpeBRepDS_TKI::DumpTKI
-(const TopOpeBRepDS_Kind K,const Standard_Integer G,const TCollection_AsciiString& s1,const TCollection_AsciiString& s2) const
-{
-  if (!HasInterferences(K,G)) return;
-  const TopOpeBRepDS_ListOfInterference& loi = Interferences(K,G);
-  DumpTKI(K,G,loi,s1,s2);
-}
-
-//=======================================================================
-//function : DumpTKI
-//purpose  : 
-//=======================================================================
-void TopOpeBRepDS_TKI::DumpTKI
-(const TopOpeBRepDS_Kind K,const Standard_Integer G,const TopOpeBRepDS_ListOfInterference& L,const TCollection_AsciiString& s1,const TCollection_AsciiString& s2) const
-{
-  if (!HasInterferences(K,G)) return;
-  TCollection_AsciiString s; 
-  if (s1.Length()) s = s1;
-  else s = TopOpeBRepDS::SPrint(K,G,"at "," : ");
-  TCollection_AsciiString sb(s.Length(),' ');
-  Standard_Integer i=0;
-  for (TopOpeBRepDS_ListIteratorOfListOfInterference it(L);it.More();it.Next(),i++) {
-    if (i) it.Value()->Dump(cout,sb,s2);
-    else   it.Value()->Dump(cout,s,s2);
-  }
-}
-
-//=======================================================================
 //function : DumpTKIIterator
 //purpose  : 
 //=======================================================================
@@ -255,8 +191,8 @@ void TopOpeBRepDS_TKI::DumpTKIIterator(const TCollection_AsciiString& s1,const T
   cout<<s1;
   Init();
   while (More()) {
-    TopOpeBRepDS_Kind K;Standard_Integer G; const TopOpeBRepDS_ListOfInterference& L = Value(K,G);
-    DumpTKI(K,G,L,"","\n");
+    TopOpeBRepDS_Kind K;Standard_Integer G;
+    Value(K,G);
     Next();
   }
   cout<<s2;

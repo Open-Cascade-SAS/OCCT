@@ -36,7 +36,6 @@
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepBuild_Tools.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopOpeBRepDS_DSX.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepTool_GeomTool.hxx>
 #include <TopOpeBRepTool_OutCurveType.hxx>
@@ -115,10 +114,6 @@ BRepAlgo_BooleanOperation::~BRepAlgo_BooleanOperation()
     HDS = myHBuilder->DataStructure();
     HDS->ChangeDS().Init();
   }
-
-#ifdef OCCT_DEBUG
-  TopOpeBRepDS_SettraceSPSX_HDS(HDS);
-#endif
 
   // fill the data Structure
   TopOpeBRep_DSFiller DSFiller;

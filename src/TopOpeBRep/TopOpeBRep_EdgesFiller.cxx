@@ -36,12 +36,8 @@
 #include <TopOpeBRepTool_EXPORT.hxx>
 
 #ifdef OCCT_DEBUG
-#include <TopOpeBRepDS_reDEB.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
-extern Standard_Boolean TopOpeBRepDS_GettraceEDSF();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 extern Standard_Boolean TopOpeBRep_GettraceEEFF();
-Standard_EXPORT void debefre(const Standard_Integer IE) {cout<<"+++ debefre E"<<IE<<endl;}
 Standard_EXPORT void debposesd(void) {/*cout<<"+++ debposesd"<<endl;*/}
 Standard_EXPORT void debposnesd(void) {cout<<"+++ debposnesd"<<endl;}
 Standard_EXPORT void debeeff() {}
@@ -73,17 +69,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
   myLI1.Clear();
   myLI2.Clear();
   myHDS = HDS;
- 
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
-  trc = trc || TopOpeBRepDS_GettraceEDSF();
-  trc = trc || TopOpeBRep_GettraceEEFF();
-  if (trc) {
-    if (TopOpeBRep_GettraceEEFF()) debeeff();
-    TCollection_AsciiString str="EdgesFiller dim";str=str+myPEI->Dimension();
-    myPEI->Dump(str,myPDS->Shape(myE1),myPDS->Shape(myE2));
-  }
-#endif
+
   Standard_Boolean esd = myPEI->SameDomain();
   if (esd) myPDS->FillShapesSameDomain(E1,E2);
   
@@ -108,17 +94,6 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     Standard_Real par2 = P2D.Parameter(2);
     if ( ! myF1.IsNull() ) myPDS->AddShape(myF1,1);
     if ( ! myF2.IsNull() ) myPDS->AddShape(myF2,2);
-
-#ifdef OCCT_DEBUG
-    Standard_Boolean pointofsegment = P2D.IsPointOfSegment();
-#endif
-
-#ifdef OCCT_DEBUG
-    if (trc) {
-      if      (pointofsegment &&  esd) debposesd();
-      else if (pointofsegment && !esd) debposnesd();
-    }
-#endif
 
     TopOpeBRepDS_Transition T1 = P2D.Transition(1);
     TopOpeBRepDS_Transition T2 = P2D.Transition(2);
@@ -467,55 +442,22 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
 
   TopOpeBRepDS_TKI tki; tki.FillOnGeometry(LI);
 
-#ifdef OCCT_DEBUG
-  Standard_Integer EIX = myPDS->Shape(E); Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
-  if (TRC) cout<<endl<<"RecomputeInterferences E"<<EIX<<" <- "<<LI.Extent()<<endl;
-  if (TRC) tki.DumpTKIIterator("","\n");
-  if (TRC) debefre(EIX);
-#endif
-
   for (tki.Init(); tki.More(); tki.Next()) {
     TopOpeBRepDS_Kind K; Standard_Integer G; tki.Value(K,G);
     TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G); TopOpeBRepDS_ListOfInterference Rloi;
     Standard_Integer nloi = loi.Extent();
     if (nloi == 0) continue;
 
-#ifdef OCCT_DEBUG
-    if (nloi > 1) {cout<<"TopOpeBRep_EdgesFiller : > 1 I on UNUN/F on E"<<EIX<<" A FAIRE"<<endl;}
-#endif
-
     Handle(TopOpeBRepDS_Interference)& iloi = loi.First(); 
     TopOpeBRepDS_Transition& TU = iloi->ChangeTransition();
     Standard_Integer ifb = TU.IndexBefore();
     const TopoDS_Face& fb = TopoDS::Face(myPDS->Shape(ifb));
 
-#ifdef OCCT_DEBUG
-    Standard_Integer ifa = TU.IndexAfter();
-    if (ifb != ifa) {cout<<"TopOpeBRep_EdgesFiller : ifb != ifa on E"<<EIX<<" NYI"<<endl;}
-#endif
-
     Standard_Real pE = FDS_Parameter(iloi); TopOpeBRepDS_Transition TN;
     TN.ShapeBefore(TU.ShapeBefore());TN.IndexBefore(TU.IndexBefore());
     TN.ShapeAfter(TU.ShapeAfter());TN.IndexAfter(TU.IndexAfter());
 
-#ifdef OCCT_DEBUG
-    Standard_Boolean ok =
-#endif
     FDS_stateEwithF2d(*myPDS,E,pE,K,G,fb,TN);
-
-#ifdef OCCT_DEBUG
-    if (TRC) {
-      TopOpeBRepDS_ListOfInterference l1;l1.Append(iloi);
-      TopOpeBRepDS_TKI dt;dt.FillOnGeometry(l1);dt.DumpTKIIterator("","");
-      if (ok) { 
-	cout<<"    ";TU.Dump(cout);cout<<endl;
-	cout<<"--> ";TN.Dump(cout);cout<<endl;
-      }
-      else {
-	cout<<"--> TN ko"<<endl;
-      }
-    }
-#endif
 
   } // tki.More
 } // RecomputeInterferences

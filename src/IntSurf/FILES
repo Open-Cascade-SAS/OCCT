@@ -1,13 +1,11 @@
 IntSurf.cxx
 IntSurf.hxx
 IntSurf_Allocator.hxx
-IntSurf_Couple.cxx
 IntSurf_Couple.hxx
 IntSurf_Couple.lxx
 IntSurf_InteriorPoint.cxx
 IntSurf_InteriorPoint.hxx
 IntSurf_InteriorPoint.lxx
-IntSurf_InteriorPointTool.cxx
 IntSurf_InteriorPointTool.hxx
 IntSurf_InteriorPointTool.lxx
 IntSurf_LineOn2S.cxx
@@ -18,7 +16,6 @@ IntSurf_ListOfPntOn2S.hxx
 IntSurf_PathPoint.cxx
 IntSurf_PathPoint.hxx
 IntSurf_PathPoint.lxx
-IntSurf_PathPointTool.cxx
 IntSurf_PathPointTool.hxx
 IntSurf_PathPointTool.lxx
 IntSurf_PntOn2S.cxx

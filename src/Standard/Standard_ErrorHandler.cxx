@@ -18,7 +18,6 @@
 //============================================================================
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_ErrorHandlerCallback.hxx>
 #include <Standard_Mutex.hxx>
 #include <Standard.hxx>
 
@@ -125,7 +124,7 @@ void Standard_ErrorHandler::Unlink()
   Standard_Address aPtr = aCurrent->myCallbackPtr;
   myCallbackPtr = 0;
   while ( aPtr ) {
-    Standard_ErrorHandlerCallback* aCallback = (Standard_ErrorHandlerCallback*)aPtr;
+    Standard_ErrorHandler::Callback* aCallback = (Standard_ErrorHandler::Callback*)aPtr;
     aPtr = aCallback->myNext;
     // Call destructor explicitly, as we know that it will not be called automatically
     aCallback->DestroyCallback();
@@ -267,3 +266,45 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
   
   return anActive;
 }
+
+#if defined(NO_CXX_EXCEPTION) || defined(OCC_CONVERT_SIGNALS)
+
+Standard_ErrorHandler::Callback::Callback ()
+  : myHandler(0), myPrev(0), myNext(0)
+{
+}
+
+Standard_ErrorHandler::Callback::~Callback ()
+{
+  UnregisterCallback();
+}
+
+void Standard_ErrorHandler::Callback::RegisterCallback ()
+{
+  if ( myHandler ) return; // already registered
+
+  // find current active exception handler
+  Standard_ErrorHandler *aHandler =
+    Standard_ErrorHandler::FindHandler(Standard_HandlerVoid, Standard_False);
+
+  // if found, add this callback object first to the list
+  if ( aHandler ) {
+    myHandler = aHandler;
+    myNext = aHandler->myCallbackPtr;
+    if ( myNext ) ((Standard_ErrorHandler::Callback*)myNext)->myPrev = this;
+    aHandler->myCallbackPtr = this;
+  }
+}
+
+void Standard_ErrorHandler::Callback::UnregisterCallback ()
+{
+  if ( ! myHandler ) return;
+  if ( myNext )
+    ((Standard_ErrorHandler::Callback*)myNext)->myPrev = myPrev;
+  if ( myPrev )
+    ((Standard_ErrorHandler::Callback*)myPrev)->myNext = myNext;
+  else if ( ((Standard_ErrorHandler*)myHandler)->myCallbackPtr == this)
+    ((Standard_ErrorHandler*)myHandler)->myCallbackPtr = (Standard_ErrorHandler::Callback*)myNext;
+  myHandler = myNext = myPrev = 0;
+}
+#endif

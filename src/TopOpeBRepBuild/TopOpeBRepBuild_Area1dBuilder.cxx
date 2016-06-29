@@ -30,7 +30,6 @@
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceAREA();
-extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #endif
 
 //=======================================================================

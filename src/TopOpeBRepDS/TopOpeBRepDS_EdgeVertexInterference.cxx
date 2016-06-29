@@ -79,21 +79,3 @@ void  TopOpeBRepDS_EdgeVertexInterference::Parameter(const Standard_Real P)
 {
   myParam = P;
 }
-
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-
-Standard_OStream& TopOpeBRepDS_EdgeVertexInterference::Dump
-  (Standard_OStream& OS) const
-{
-#ifdef OCCT_DEBUG
-  OS<<"EVI ";
-  TopOpeBRepDS_ShapeShapeInterference::Dump(OS);
-  OS<<" "<<myParam<<" ";
-#endif
-
-  return OS;
-}

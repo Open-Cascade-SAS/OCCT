@@ -78,7 +78,6 @@ OSD_SIGINT.hxx
 OSD_SIGKILL.hxx
 OSD_signal.cxx
 OSD_Signal.hxx
-OSD_signal_WNT.cxx
 OSD_SIGQUIT.hxx
 OSD_SIGSEGV.hxx
 OSD_SIGSYS.hxx

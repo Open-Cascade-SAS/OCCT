@@ -29,10 +29,6 @@
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
-#ifdef OCCT_DEBUG
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePEI();
-#endif
-
 //=======================================================================
 //function : TopOpeBRepDS_EdgeInterferenceTool
 //purpose  : 
@@ -50,9 +46,6 @@ static Standard_Real Parameter(const Handle(TopOpeBRepDS_Interference)& I)
   else if ( I->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference)) )
     p = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I)->Parameter();
   else {
-#ifdef OCCT_DEBUG
-    cout<<"EdgeInterference : mauvais type d'interference"<<endl;
-#endif
     Standard_ProgramError::Raise("TopOpeBRepDS_EdgeInterferenceTool1");
   }
   return p;
@@ -120,11 +113,6 @@ void TopOpeBRepDS_EdgeInterferenceTool::Add
     }
   }
  
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettracePEI() && !VofE) {
-    cout<<"===================== VofE = False"<<endl;
-  }
-#endif 
   if(!VofE)
   {
     return;

@@ -343,54 +343,6 @@ void TopOpeBRepDS_Curve::ChangeIsWalk(const Standard_Boolean B)
   myIsWalk = B;
 }
 
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-
-#ifdef OCCT_DEBUG
-Standard_OStream& TopOpeBRepDS_Curve::Dump (Standard_OStream& OS,
-                                            const Standard_Integer index,
-                                            const Standard_Boolean compact)const
-{
-  OS<<"Curve : "; if (index != 0) OS<<index<<" ";
-  if (!Curve().IsNull()) {
-    TopOpeBRepDS_Dumper::Print(Curve(),OS,compact);
-    Standard_Real f,l;
-    if (Range(f,l)) OS<<"has range of "<<f<<","<<l<<endl;
-    else            OS<<"has no range defined"<<endl;
-  }
-  else OS<<" is null";
-  OS<<endl;
-  
-#define DSCI(tut) (*((Handle(TopOpeBRepDS_SurfaceCurveInterference)*)&(tut)))
-
-  Handle(TopOpeBRepDS_Interference) I1,I2; 
-  GetSCI(I1,I2);
-
-  OS<<"SCI1 : ";
-  if (!I1.IsNull()) DSCI(I1)->DumpPCurve(OS,compact);
-  else OS<<" is null";
-  OS<<endl;
-  
-  OS<<"SCI2 : ";
-  if (!I2.IsNull()) DSCI(I2)->DumpPCurve(OS,compact);
-  else OS<<" is null";
-  OS<<endl;
-
-  return OS;
-}
-#else
-Standard_OStream& TopOpeBRepDS_Curve::Dump (Standard_OStream& OS,
-                                            const Standard_Integer,
-                                            const Standard_Boolean)const
-{
-  return OS;
-}
-#endif
-
-
 //=======================================================================
 //function : Keep
 //purpose  : 

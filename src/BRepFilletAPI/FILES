@@ -1,4 +1,3 @@
-BRepFilletAPI_LocalOperation.cxx
 BRepFilletAPI_LocalOperation.hxx
 BRepFilletAPI_MakeChamfer.cxx
 BRepFilletAPI_MakeChamfer.hxx

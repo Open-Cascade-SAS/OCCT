@@ -127,7 +127,6 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 	  cout<<TopOpeBRepDS::SPrint(k2,iv2,str);
 	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(f2.ShapeType()),if2," de ")<<endl;
 	}
-	ITF->Dump(cout,"# BREP_mergePDS resu ","\n");
       }
 #endif
       

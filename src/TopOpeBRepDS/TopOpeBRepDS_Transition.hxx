@@ -107,12 +107,7 @@ public:
   
   //! returns True if both states are UNKNOWN
   Standard_EXPORT Standard_Boolean IsUnknown() const;
-  
-  Standard_EXPORT Standard_OStream& DumpA (Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& DumpB (Standard_OStream& OS) const;
-  
-  Standard_EXPORT Standard_OStream& Dump (Standard_OStream& OS) const;
+
 
 
 

@@ -77,8 +77,6 @@ static Standard_Boolean local_FindVertex(const TopOpeBRep_VPointInter& theVP,
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:27 2000.END
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDEGEN();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 Standard_EXPORT Standard_Boolean FUN_debnull(const TopoDS_Shape& s);
 #endif
 
@@ -454,11 +452,6 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE
  Standard_Boolean& EPIfound, Handle(TopOpeBRepDS_Interference)& IEPI, // out 
  Standard_Boolean& CPIfound, Handle(TopOpeBRepDS_Interference)& ICPI) // out
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean traceDSF = TopOpeBRepDS_GettraceDSF();
-  Standard_Boolean traceDEGEN = TopOpeBRepDS_GettraceDEGEN();
-#endif
-
   if (PVIndex == 0) FUN_VPIndex ((*this),(*myLine),VP,ShapeIndex,myHDS,myDSCIL, //in
 				 PVKind,PVIndex, // out
 				 EPIfound,IEPI,  // out
@@ -515,17 +508,10 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE
   if (rankFi == 1) Fi = myF1;
   else             Fi = myF2;
   Standard_Integer iFi = myDS->AddShape(Fi,rankFi);
-#ifdef OCCT_DEBUG
-  Standard_Integer iEd =
-#endif
-            myDS->AddShape(dgEd,rankdg);
+  myDS->AddShape(dgEd,rankdg);
 //  Standard_Integer iOOEi = 0;
 //  if (hasOOEi) iOOEi = myDS->AddShape(OOEi,rankFi);
 
-#ifdef OCCT_DEBUG
-  Standard_Boolean trace = traceDSF || traceDEGEN;
-  if (trace) cout<<" VP is on degenerated edge "<<iEd<<" :"<<endl;
-#endif
   Standard_Integer rkv = myDS->AncestorRank(myDS->Shape(PVIndex));
 
   if ((makeI == MKI1)||(makeI == MKI12)) {

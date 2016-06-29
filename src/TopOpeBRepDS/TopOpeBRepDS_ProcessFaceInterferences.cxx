@@ -57,20 +57,6 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face& FF,const TopoDS_Face& FS,
 #define MDShfei Handle(TopOpeBRepDS_FaceEdgeInterference)
 #define MAKEFEI(IJKLM) (Handle(TopOpeBRepDS_FaceEdgeInterference)::DownCast(IJKLM))
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GetcontextNOPFI();
-extern Standard_Boolean TopOpeBRepDS_GettracePFI();
-extern Standard_Boolean TopOpeBRepDS_GettracePI();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-static Standard_Boolean TRCF(const Standard_Integer F) {
-  Standard_Boolean b1 = TopOpeBRepDS_GettracePFI();
-  Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
-  Standard_Boolean b3 = TopOpeBRepDS_GettraceSPSX(F);
-  return (b1 || b2 || b3);
-}
-static void debredunkf(const Standard_Integer /*i*/){};
-#endif
-
 Standard_EXPORT Standard_Boolean FUN_Parameters(const gp_Pnt& Pnt,const TopoDS_Shape& F,Standard_Real& u,Standard_Real& v);
 Standard_EXPORT Standard_Boolean FUN_Parameters(const Standard_Real& Param,const TopoDS_Shape& E,const TopoDS_Shape& F,Standard_Real& u,Standard_Real& v);
 
@@ -172,16 +158,8 @@ Standard_EXPORT Standard_Boolean FUN_keepFinterference
 //------------------------------------------------------
 Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
 //------------------------------------------------------
-(TopOpeBRepDS_ListOfInterference& LI,const TopOpeBRepDS_DataStructure& /*BDS*/,
-#ifdef OCCT_DEBUG
- const Standard_Integer SIX)    
-#else
- const Standard_Integer )    
-#endif
+(TopOpeBRepDS_ListOfInterference& LI,const TopOpeBRepDS_DataStructure& /*BDS*/, const Standard_Integer )    
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRC=TRCF(SIX);
-#endif
 //                 BDS.Shape(SIX);
   TopOpeBRepDS_ListIteratorOfListOfInterference it1;
   
@@ -223,9 +201,6 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
 	       isB1 && isB2);
       
       if (cond2) {
-#ifdef OCCT_DEBUG
-	if(TRC){cout<<"face "<<SIX<<" : G2 "<< G2 <<" GBound ";I2->Dump(cout);cout<<endl;}
-#endif
 	cond1 = Standard_True;
 	LI.Remove(it2);
       }
@@ -233,9 +208,6 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
     } // it2.More()
 
     if (cond1) {
-#ifdef OCCT_DEBUG
-      if(TRC){cout<<"face "<<SIX<<" : G1 "<< G1 <<" GBound ";I1->Dump(cout);cout<<endl;}
-#endif
       LI.Remove(it1);
     }
     else it1.Next();
@@ -251,11 +223,6 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp,
  TopOpeBRepTool_PShapeClassifier pClassif)
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRC=TRCF(SIX); if (TRC) debredunkf(SIX);
-  Standard_Boolean modif = Standard_False;
-#endif
-
   const TopoDS_Shape& F = BDS.Shape(SIX);
   TopOpeBRepDS_ListIteratorOfListOfInterference it1;
   
@@ -269,11 +236,6 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
     const TopOpeBRepDS_Transition& T1 = I1->Transition();
     Standard_Boolean isunk = T1.IsUnknown();
     if (!isunk) continue;
-
-#ifdef OCCT_DEBUG
-    modif = Standard_True;
-    if(TRC){debredunkf(SIX);TCollection_AsciiString s="F";s=s+SIX+" T UNKNOWN ";I1->Dump(cout,s,"\n");}
-#endif
     
     TopOpeBRepDS_Kind GT1,ST1; Standard_Integer G1,S1; TopAbs_ShapeEnum tsb1,tsa1; Standard_Integer isb1,isa1; 
     FDS_Idata(I1,tsb1,isb1,tsa1,isa1,GT1,G1,ST1,S1);
@@ -285,10 +247,6 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
 
     const TopoDS_Edge& EE = TopoDS::Edge(BDS.Shape(G1));
     Standard_Real fE,lE; BRep_Tool::Range(EE,fE,lE);
-    
-#ifdef OCCT_DEBUG
-    if(TRC){debredunkf(SIX);TCollection_AsciiString s="F";s=s+SIX+" etgf ";I1->Dump(cout,s,"\n");}
-#endif
 
     Handle(TopOpeBRepDS_FaceEdgeInterference) fei = MAKEFEI(I1);
     if (fei.IsNull()) continue;
@@ -364,95 +322,6 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
       TopAbs_State stmp = stateb; stateb = statea; statea = stmp;
     }
     newT1.Set(stateb,statea,tsb1,tsa1);
-
-#ifdef OCCT_DEBUG
-    if(TRC){debredunkf(SIX);TCollection_AsciiString s="F";s=s+SIX+" T corrected ";I1->Dump(cout,s,"\n");}
-#endif
-
   }
-
-#ifdef OCCT_DEBUG
-  if(TRC && modif){ FDS_dumpLI(LI,"apres correction UNKNOWN : "); }
-#endif  
-
   FUN_unkeepUNKNOWN(LI,BDS,SIX);
-  
-#ifdef OCCT_DEBUG
-  if(TRC && modif){ FDS_dumpLI(LI,"sans suppression UNKNOWN residuels : "); }
-#endif  
 }
-
-//========================== DEB start
-#ifdef OCCT_DEBUG
-//Standard_IMPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,const Standard_Real& u,const Standard_Real& v,gp_Dir& Norm);
-//------------------------------------------------------
-// Automatic testing for complex faces interference on line with cylinders and planes xpu NYI: general case
-//------------------------------------------------------
-Standard_Boolean TestTransition(const TopOpeBRepDS_Transition& T,const TopoDS_Face& F,const TopoDS_Edge& E,const TopoDS_Solid& So) // DEB only
-{
-  TopAbs_State b, a;
-  b = T.Before(); a = T.After();
-  
-  BRepAdaptor_Curve ac(E);
-  GeomAbs_CurveType ctyp = ac.GetType();
-  //  TCollection_AsciiString nt; TestTopOpeDraw_TTOT::CurveToString(ctyp,nt);
-  if (ctyp != GeomAbs_Line) {
-    //    cout << " Case "<<nt;
-    cout <<" not treated"<<endl;
-    return Standard_True;
-  }
-  BRepAdaptor_Surface as(F);
-  GeomAbs_SurfaceType styp = as.GetType();
-  //  TestTopOpeDraw_TTOT::CurveToString(styp,nt);
-  if (!((styp == GeomAbs_Plane)||(styp == GeomAbs_Cylinder))) {
-    //    cout << " Case "<<nt;
-    cout<<" not treated"<<endl;
-    return Standard_True;
-  }
-  Standard_Real du = TopOpeBRepTool_ShapeTool::Tolerance(E); du *= 5.; // edge tolerance
-  Standard_Real u, v, up, vp, p = (ac.FirstParameter() + ac.LastParameter())*.5;
-  gp_Pnt pnt, pntnorm; // middle point on edge
-  gp_Vec tgt, beafter; // curve tangent vector at pnt
-  gp_Dir normS; // normal and direction (Before, After) on reference surface.
-  
-  ac.D1(p, pnt, tgt);
-  Standard_Boolean prodone = FUN_Parameters(pnt, F, u, v); // DEB u, v pntnorm coordinates on F
-  if (!prodone){
-    cout<<" not treated : prendre un point sur le common des aretes de section SDM"<<endl;
-    return Standard_True;
-  }
-#ifdef OCCT_DEBUG
-//  FUN_ComputeGeomData (F, u, v, normS);
-#endif
-  normS = FUN_tool_nggeomF(gp_Pnt2d(u,v), F); 
-  beafter  = normS^gp_Vec(tgt); beafter.Scale(du); // beafter of length du
-  pntnorm = gp_Pnt(pnt.XYZ()).Translated(beafter); // (pnt, pntnorm) = du*beafter
-  FUN_Parameters(pntnorm, F, up, vp); // DEB up, vp pntnorm coordinates on F
-  
-  gp_Pnt pAfter, pBefore;
-  as.D0(up, vp, pAfter);
-  as.D0(up-2*(up-u), vp -2*(vp-v), pBefore);
-  
-  Standard_Boolean transok;
-  TopAbs_State stb, sta;
-  BRepClass3d_SolidClassifier classif(So);
-  
-  classif.Perform(pBefore, Precision::Confusion()); stb = classif.State();  
-  classif.Perform(pAfter, Precision::Confusion()); sta = classif.State();
-  transok = (stb == b)&&(sta == a);
-  
-  if(!transok) {
-    cout<<"States found by classifier :"<<endl;
-	cout << "Before  :";
-	TopAbs::Print(stb, cout);
-	cout << "After  :";
-	TopAbs::Print(sta, cout);
-	cout << endl;
-  }
-  
-  return transok;
-}
-
-#endif
-//========================== DEB end 
-

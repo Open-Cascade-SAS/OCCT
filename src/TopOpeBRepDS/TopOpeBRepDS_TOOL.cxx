@@ -31,13 +31,6 @@
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-static void FUN_Raise()
-{
-#ifdef OCCT_DEBUG
-  cout<<"****************************** TopOpeBRepDS_TOOL"<<endl;
-#endif
-}
-
 #define M_REVERSED(O) (O == TopAbs_REVERSED) 
 
 static void FDS_sortGb(const Handle(TopOpeBRepDS_HDataStructure)& HDS,const TopOpeBRepDS_ListOfInterference& LI, TopOpeBRepDS_ListOfInterference& LIGb0,TopOpeBRepDS_ListOfInterference& LIGb1,TopOpeBRepDS_ListOfInterference& LIGbsd)
@@ -90,12 +83,6 @@ Standard_Integer TopOpeBRepDS_TOOL::EShareG(const Handle(TopOpeBRepDS_HDataStruc
   
   TopTools_MapOfShape mapesd;
   TopOpeBRepDS_ListOfInterference l1gb0,l1gb1,l1gbsd; FDS_sortGb(HDS,L1d,l1gb0,l1gb1,l1gbsd);
-#ifdef OCCT_DEBUG
-//  Standard_Integer ngb0 = l1gb0.Extent();
-//  Standard_Integer ngb1 = l1gb1.Extent();
-//  Standard_Integer ngbsd = l1gbsd.Extent();
-#endif
-
   TopOpeBRepDS_ListIteratorOfListOfInterference it0(l1gb0);
   for (; it0.More(); it0.Next()) mapesd.Add(BDS.Shape(it0.Value()->Support()));        
 
@@ -112,7 +99,7 @@ Standard_Integer TopOpeBRepDS_TOOL::EShareG(const Handle(TopOpeBRepDS_HDataStruc
     Standard_Integer G = I->Geometry();
     const TopoDS_Vertex& vG = TopoDS::Vertex(BDS.Shape(G));
     TopoDS_Vertex vsd; Standard_Boolean ok = FUN_ds_getoov(vG,BDS,vsd);
-    if (!ok) {FUN_Raise(); continue;}
+    if (!ok) continue;
     Standard_Boolean Gb1 = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(I)->GBound();
     TopoDS_Vertex vE   = Gb1 ? vG : vsd;
     TopoDS_Vertex vEsd = Gb1 ? vsd : vG;

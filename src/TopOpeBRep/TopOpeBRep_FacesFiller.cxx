@@ -71,9 +71,6 @@ Standard_EXPORT Standard_Boolean FUN_projPonL(const gp_Pnt& P,const TopOpeBRep_L
 }
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
 void debffsamdom(void){}
 #endif
 
@@ -221,11 +218,6 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
   TopOpeBRep_TypeLineCurve t = L.TypeLineCurve();
   Standard_Integer nbvp = L.NbVPoint();
   
-#ifdef OCCT_DEBUG
-  Standard_Boolean TDSF = TopOpeBRepDS_GettraceDSF();
-  if (TDSF) { cout<<"CheckLine ";TopOpeBRep::Print(t,cout);cout<<" "<<nbvp<<" points"<<endl; }
-#endif
-  
   if ( t == TopOpeBRep_WALKING ) {
     if ( nbvp < 2 ) {
 #ifdef OCCT_DEBUG
@@ -267,22 +259,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
     if (isBV1) V2 = B.VertexOnS1();
     if (isBV2) V2 = B.VertexOnS2();
     
-#ifdef OCCT_DEBUG
-    if (TDSF) {
-      cout<<"CheckLine : isAV1 isAV2 isBV1 isBV2 ";
-      cout<<isAV1<<" "<<isAV2<<" "<<isBV1<<" "<<isBV2<<endl;
-    }
-#endif
-    
     if ( !V1.IsNull() && ( V1.IsSame(V2) ) ) {
-#ifdef OCCT_DEBUG
-      Standard_Real parA = A.ParameterOnLine();    
-      Standard_Real parB = B.ParameterOnLine();    
-      if (TDSF) {
-	cout<<"kpart : parA parB delta "<<parA<<" "<<parB<<" "<<parA-parB<<endl;
-	cout<<"kpart : rejet de ligne"<<endl;
-      }
-#endif
       return Standard_False;      
     }
   } // LINE
@@ -400,26 +377,12 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector& )
 void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
 {
   myLine = &L;
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceDSFK()) {
-    cout<<endl<<"VP_Position on line "<<L.Index()<<" ";L.DumpType();cout<<endl;
-  }
-#endif
   Standard_Boolean isrest = (L.TypeLineCurve() == TopOpeBRep_RESTRICTION) ;
   
   if (!isrest) VP_PositionOnL(L);
   else         VP_PositionOnR(L);
   
   L.SetVPBounds();
-  
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceDSFK()) {
-    Standard_Integer VPF,VPL,VPN; L.VPBounds(VPF,VPL,VPN);
-    cout<<"SetVPBounds : VPF,VPL,VPN = "<<VPF<<","<<VPL<<","<<VPN;
-    if (VPN != 0) cout<<" : VP(s) kept"<<endl;
-    else          cout<<" : NO VP kept"<<endl;
-  }
-#endif
 }
 
 //=======================================================================
@@ -520,16 +483,6 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
 	VP.ChangeKeep(Standard_False); // xpu051198
       }
     }
-    
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepDS_GettraceDSFK()) {
-      cout<<"VP "<<VP.Index()<<" on "<<Esi<<" : ";
-      TopAbs::Print(VP.State(Esi),cout);
-      cout<<"/"<<Esi<<" ";
-      if (VP.Keep()) { cout<<"kept"<<endl; }
-      else           { cout<<"NOT kept"<<endl; }
-    }
-#endif
   }
 }
 
@@ -560,16 +513,6 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter& VP,TopOpeBRep_V
 
   if (c1) VPC.VPointPosition(myF1,VP,1,myPointClassifier,AssumeINON,tol);
   if (c2) VPC.VPointPosition(myF2,VP,2,myPointClassifier,AssumeINON,tol);
-  
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceDSFK()) {
-    cout<<"VP "<<VP.Index()<<" on "<<si<<" : ";
-    if (c1) { TopAbs::Print(VP.State(1),cout);cout<<"/1 "; }
-    if (c2) { TopAbs::Print(VP.State(2),cout);cout<<"/2 "; }
-    if (VP.Keep()) { cout<<"kept"<<endl; }
-    else           { cout<<"NOT kept"<<endl; }
-  }
-#endif
 }
 
 //=======================================================================

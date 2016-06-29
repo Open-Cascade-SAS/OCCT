@@ -43,11 +43,6 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceGAP();
-extern Standard_Boolean TopOpeBRepDS_GetcontextNOGAP();
-#endif
-
 //=======================================================================
 //function : TopOpeBRepDS_GapFiller
 //purpose  : 
@@ -68,11 +63,6 @@ TopOpeBRepDS_GapFiller::TopOpeBRepDS_GapFiller(const Handle(TopOpeBRepDS_HDataSt
 
 void TopOpeBRepDS_GapFiller::Perform() 
 {
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GetcontextNOGAP () != 0) return;
-#endif
-
   myGapTool->Init(myHDS);
   TColStd_MapOfInteger View;
   //------------------------------------------------------------
@@ -126,14 +116,6 @@ void TopOpeBRepDS_GapFiller::FindAssociatedPoints(const Handle(TopOpeBRepDS_Inte
   for (; itSI.More();itSI.Next()){ 
     if (myAsso->HasAssociation(itSI.Value())) return;
   }
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceGAP() == 1) {
-    cout<<endl;
-    cout<<"-----------------------------------------------------"<<endl;
-    cout<<" Association Point "<<I->Geometry()<<endl;
-  }
-#endif
 
   //------------------------------------------------------------------------
   // PREMIERE PASSE : Recherche de l association parmi les points qui sont:
@@ -197,17 +179,7 @@ void TopOpeBRepDS_GapFiller::FindAssociatedPoints(const Handle(TopOpeBRepDS_Inte
   if (!LI.IsEmpty()) {
     LI.Append(I);
   }
-   
-#ifdef OCCT_DEBUG
-   if (TopOpeBRepDS_GettraceGAP() != 0) {  
-     TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
-     for  (it.Initialize(LI); it.More(); it.Next()) {
-       cout<<" "<<it.Value()->Geometry();
-     }
-     cout<<endl;
-   }
-#endif
- }
+}
 
 
 //=======================================================================
@@ -448,46 +420,9 @@ void TopOpeBRepDS_GapFiller::FilterByIncidentDistance(const TopoDS_Face& F,
   LI.Clear();
   if (!ISol.IsNull()) {
     LI.Append(ISol);
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepDS_GettraceGAP() == 1){
-      cout << " Distance Minimum :"<<DistMin<<endl; 
-    }
-#endif
   }
 }
 
-//=======================================================================
-//function : BuildNewPoint
-//purpose  : 
-//=======================================================================
-//unreferenced function, commented    
-/*
-#ifdef OCCT_DEBUG
-static void BuildNewPoint (const TColgp_SequenceOfPnt& LP,
-			   const Standard_Real&    TolMax,
-			   TopOpeBRepDS_Point& Point) 
-{
-  if (LP.IsEmpty()) return;
-  Standard_Real xp = 0.,yp = 0.,zp = 0.;
-
-  Standard_Integer i,Nb = LP.Length();
-  for (i = 1; i <= Nb; i++) {
-    const gp_Pnt& CP = LP(i);
-    xp+= CP.X();yp+=CP.Y();zp+=CP.Z();
-  }
-  xp/=Nb;yp/=Nb;zp/=Nb;
-  gp_Pnt NP(xp,yp,zp);  
-
-  Standard_Real DistMax = 0;
-  for (i = 1; i <= Nb; i++) {
-    const gp_Pnt& CP = LP(i);
-    DistMax = Max(CP.Distance(NP),DistMax);
-  }
-  Point.ChangePoint() = NP;
-  Point.Tolerance(DistMax+TolMax);
-}
-#endif
-*/
 //=======================================================================
 //function : ReBuildGeom
 //purpose  : 
@@ -500,16 +435,6 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const Handle(TopOpeBRepDS_Interference)
 
   TopOpeBRepDS_ListOfInterference& LI = myAsso->Associated(I);
   TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceGAP() == 1) {
-    cout <<"Points ";
-    for  (it.Initialize(LI); it.More(); it.Next()) {
-      cout <<" "<<it.Value()->Geometry();
-    }
-    cout <<endl<<" ---->";
-  }
-#endif
 
   Standard_Real TolMax = 0,UMin = Precision::Infinite();
   Standard_Real UMax = -UMin, U;
@@ -526,11 +451,6 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const Handle(TopOpeBRepDS_Interference)
     }
     myGapTool->EdgeSupport(it.Value(),CE);
     if (!CE.IsSame(E)) {
-#ifdef OCCT_DEBUG
-      if (TopOpeBRepDS_GettraceGAP() == 1){
-	cout <<"GapFiller : points pas sur la meme edge -> cas non traite"<<endl;
-      }
-#endif
       return;
     }
   }
@@ -540,11 +460,6 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const Handle(TopOpeBRepDS_Interference)
 
   // Mise a jour.
   Standard_Integer IP = myHDS->ChangeDS().AddPoint(P);
-#ifdef OCCT_DEBUG
- if (TopOpeBRepDS_GettraceGAP() == 1) {
-   cout <<" New Point : "<<IP<<endl;
- }
-#endif
   for (it.Initialize(LI); it.More(); it.Next()) {
     View.Add(it.Value()->Geometry());
     myGapTool->SetParameterOnEdge(it.Value(),E,U); 

@@ -37,14 +37,6 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-//modified by NIZNHY-PKV Tue Oct 30 09:21:39 2001 f
-//modified by NIZNHY-PKV Tue Oct 30 09:21:44 2001 t
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-#include <TCollection_AsciiString.hxx>
-#include <TopOpeBRepDS.hxx>
-#endif
-
 //=======================================================================
 //function : TopOpeBRepDS_DataStructure
 //purpose  : 
@@ -103,10 +95,7 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddSurface(const TopOpeBRepDS_Surfa
 //=======================================================================
 void TopOpeBRepDS_DataStructure::RemoveSurface(const Standard_Integer I)
 {
-#ifdef OCCT_DEBUG
-//  Standard_Boolean in =
-#endif
-           mySurfaces.UnBind(I);
+  mySurfaces.UnBind(I);
 }
 
 //=======================================================================
@@ -163,10 +152,6 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddCurve(const TopOpeBRepDS_Curve& 
 
   TopOpeBRepDS_CurveData CD(C);
   myCurves.Bind(myNbCurves,CD);
-
-#ifdef OCCT_DEBUG
- // const TopOpeBRepDS_Curve& CCC = Curve(myNbCurves);
-#endif
 
   return myNbCurves;
 }
@@ -317,10 +302,6 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape& S)
     TopOpeBRepDS_ShapeData SD;
     iS = myShapes.Add(S,SD);
     // a shape is its own reference, oriented as itself
-#ifdef OCCT_DEBUG
-    Standard_Boolean b = TopOpeBRepDS_GettraceSPSX(iS);
-    if (b) {cout<<"DS : add ";TopOpeBRepDS::Print(S.ShapeType(),iS,cout);cout<<endl;}
-#endif
     SameDomainRef(iS,iS);
     SameDomainOri(iS,TopOpeBRepDS_SAMEORIENTED);
   }
@@ -338,14 +319,6 @@ Standard_Integer TopOpeBRepDS_DataStructure::AddShape(const TopoDS_Shape& S,cons
     TopOpeBRepDS_ShapeData SD;
     iS = myShapes.Add(S,SD);
     // a shape is its own reference, oriented as itself
-#ifdef OCCT_DEBUG
-    Standard_Boolean b = TopOpeBRepDS_GettraceSPSX(iS);
-    if (b) {
-      cout<<"DS : add ";TopOpeBRepDS::Print(S.ShapeType(),iS,cout);
-      cout<<"("<<Ianc<<")";
-      cout<<endl;
-    }
-#endif
     SameDomainRef(iS,iS);
     SameDomainOri(iS,TopOpeBRepDS_SAMEORIENTED);
     AncestorRank(iS,Ianc);
@@ -644,9 +617,6 @@ TopTools_ListOfShape& TopOpeBRepDS_DataStructure::ChangeShapeSameDomain(const St
 //=======================================================================
 void TopOpeBRepDS_DataStructure::AddShapeSameDomain(const TopoDS_Shape& S, const TopoDS_Shape& SSD)
 {
-#ifdef OCCT_DEBUG
-//  TopAbs_ShapeEnum t = SSD.ShapeType();
-#endif
   Standard_Boolean append = Standard_True;
   {
     TopTools_ListIteratorOfListOfShape it(ShapeSameDomain(S));
@@ -669,9 +639,6 @@ void TopOpeBRepDS_DataStructure::AddShapeSameDomain(const TopoDS_Shape& S, const
 //=======================================================================
 void TopOpeBRepDS_DataStructure::RemoveShapeSameDomain(const TopoDS_Shape& S, const TopoDS_Shape& SSD)
 {
-#ifdef OCCT_DEBUG
-//  TopAbs_ShapeEnum t = SSD.ShapeType();
-#endif
   TopTools_ListOfShape& L = ChangeShapeSameDomain(S);
   TopTools_ListIteratorOfListOfShape it(L);
   while (it.More()) {
@@ -968,9 +935,6 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape& S1,
   else if ( r1 != iS1 && r2 != iS2 ) { 
     if (r1 != r2) {
       //      Standard_ProgramError::Raise("FacesFiller::Insert SD 1");
-#ifdef OCCT_DEBUG
-      cout<<"FacesFiller::Insert SD 1"<<endl;
-#endif
     }
     r = (refFirst? r1 : r2);
   }
@@ -1047,20 +1011,8 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape& S1,
 //=======================================================================
 void TopOpeBRepDS_DataStructure::UnfillShapesSameDomain(const TopoDS_Shape& S1,const TopoDS_Shape& S2)
 {
-#ifdef OCCT_DEBUG
-//  Standard_Integer iS1 = Shape(S1);
-//  Standard_Integer iS2 = Shape(S2);
-//  Standard_Integer n1 = ShapeSameDomain(S1).Extent();
-//  Standard_Integer n2 = ShapeSameDomain(S2).Extent();
-#endif
-
   RemoveShapeSameDomain(S1,S2);
   RemoveShapeSameDomain(S2,S1);
-
-#ifdef OCCT_DEBUG
-//  Standard_Integer n11 = ShapeSameDomain(S1).Extent();
-//  Standard_Integer n22 = ShapeSameDomain(S2).Extent();
-#endif
 }
 
 //=======================================================================
@@ -1190,9 +1142,6 @@ TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const Standard_Integ
 const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integer I)const 
 {
   if ( I < 1 || I > myNbPoints ) {
-#ifdef OCCT_DEBUG
-    cout<<"acces au POINT "<<I<<" incorrect "<<myNbPoints<<" max"<<endl;
-#endif
     Standard_ProgramError::Raise("TopOpeBRepDS_DataStructure::Point");
   }
 
@@ -1209,9 +1158,6 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integ
 TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::ChangePoint(const Standard_Integer I)
 {
   if ( I < 1 || I > myNbPoints ) {
-#ifdef OCCT_DEBUG
-    cout<<"acces au POINT "<<I<<" incorrect "<<myNbPoints<<" max"<<endl;
-#endif
     Standard_ProgramError::Raise("TopOpeBRepDS_DataStructure::Point");
   }
 

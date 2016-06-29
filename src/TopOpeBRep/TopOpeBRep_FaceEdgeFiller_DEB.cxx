@@ -73,12 +73,10 @@ void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,
     cout<<"\t"<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z()<<endl;
     
     cout<<"\t"; if (isvertexF) cout<<"IS VERTEX, ";
-    cout<<"T on "<<FFindex<<" : "; T1.Dump(cout);
     cout<<" pUV = "<<pUV.X()<<" "<<pUV.Y()<<endl;
     cout<<" sta = "; TopAbs::Print(sta,cout);cout<<endl;
     
     cout<<"\t"; if (isvertexE) cout<<"IS VERTEX, ";
-    cout<<"T on "<<EEindex<<" : "; T2.Dump(cout); 
     cout<<" parE = "<<parE<<endl;
   }
 }

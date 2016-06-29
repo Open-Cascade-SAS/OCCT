@@ -21,7 +21,6 @@ MAT2d_DataMapOfIntegerConnexion.hxx
 MAT2d_DataMapOfIntegerPnt2d.hxx
 MAT2d_DataMapOfIntegerSequenceOfConnexion.hxx
 MAT2d_DataMapOfIntegerVec2d.hxx
-MAT2d_MapBiIntHasher.cxx
 MAT2d_MapBiIntHasher.hxx
 MAT2d_MapBiIntHasher.lxx
 MAT2d_Mat2d.cxx

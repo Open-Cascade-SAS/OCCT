@@ -70,10 +70,6 @@
 #define M_REVERSED(st) (st == TopAbs_REVERSED) 
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceISTO();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSP();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer i);
 extern Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer a,Standard_Integer b,Standard_Integer c,Standard_Integer d,Standard_Integer e);
 
 Standard_Boolean GLOBAL_bvpr = Standard_False;
@@ -224,11 +220,6 @@ static void FUN_VPgeometryfound
   }
 
   TopOpeBRepDS_ListIteratorOfListOfInterference itCPIL(DSCIL);
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = Standard_False;
-  if (trc) {TopOpeBRepDS_Dumper DSD(HDS); TCollection_AsciiString aa("DSCIL :");
-	    DSD.DumpLOI(DSCIL,cout,aa);}
-#endif
   CPIfound = FF.GetGeometry(itCPIL,VP,PVIndex,PVKind);
   if (CPIfound) ICPI = itCPIL.Value();
     
@@ -581,11 +572,6 @@ static void FUN_processCPI
   // NYI : compute uvtol with the original faces. By default, we set toluv = TolClass
   Standard_Real toluv = 1.e-8;
   Standard_Boolean keep = FUNBREP_topokpart(Ifound,DSCIL,L,VP,(*pDS),E,F,toluv,parline,ttransLine);
-    
-#ifdef OCCT_DEBUG
-  Standard_Integer trc=TopOpeBRepDS_GettraceDSF();
-  if (trc){if(keep)cout<<"\t-> on garde";else cout<<"\t-> on jette";cout<<endl;}
-#endif  
   
   if (keep) {
     keptVPnbr++;
@@ -672,27 +658,9 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
   }
 
 #ifdef OCCT_DEBUG
-  Standard_Boolean traceDSF = TopOpeBRepDS_GettraceDSF();
-  Standard_Boolean traceDSP = TopOpeBRepDS_GettraceDSP();
   Standard_Integer ili=myLine->Index(),ivp=iVP,isi=ShapeIndex;
-  if(traceDSF || traceDSP){
-    cout<<endl;
-    cout<<"trc tnvp 1 "<<myexF1<<" "<<myexF2<<" "<<ili<<" "<<ivp<<" "<<isi;
-    cout<<"; # VPonR "<<iVP<<" on "<<ShapeIndex<<" from "<<absindex<<endl;
-  }
   GLOBAL_bvpr = TopOpeBRep_GettraceNVP(myexF1,myexF2,ili,ivp,isi);
-  if (TopOpeBRepDS_GettraceISTO()) {
-    cout<<"f1,f2,l,vp,si : ";
-    cout<<myexF1<<","<<myexF2<<","<<ili<<","<<ivp<<","<<isi<<endl;
-  }
   if (GLOBAL_bvpr) debvprmess(myexF1,myexF2,ili,ivp,isi);
-  if (traceDSF){
-    cout<<"VP is on";if (closing) cout<<" CLOSING";
-    cout<<" edge "<<SIedgeIndex; 
-    if(isrest) cout<<" RESTRICTION"; cout<<endl;
-    if (OOclosing) cout<<"      on CLOSING OOedge "<<OOedgeIndex; 
-    if(OOisrest) cout<<" RESTRICTION"; cout<<endl;
-  }
 #endif
 
   // degenerated edge processing 
@@ -780,9 +748,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
 	  keepvpfirst = keepvpfirst && myLastVPison0;
 	//modified by NIZHNY-MKK  Mon Jul  3 11:30:21 2000.END
 	if (keepvpfirst) transLine.Set(TopAbs_FORWARD);
-#ifdef OCCT_DEBUG
-	if (traceDSF) cout<<"myLastVPison0 ->"<<endl;
-#endif
 	ret1 = Standard_False;
       }
     }
@@ -834,11 +799,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
   // -------------------
   TopAbs_Orientation Transori = Trans.Orientation(TopAbs_IN);
   TopOpeBRepDS_Transition transEdge = TopOpeBRep_FFTransitionTool::ProcessEdgeTransition(VP,ShapeIndex,Transori);  
-#ifdef OCCT_DEBUG
-  if(traceDSF){cout<<"trans edge on f"<<ShapeIndex<<" / f"<<OOShapeIndex<<" : ";
-	       transEdge.Dump(cout);cout<<endl;}
-#endif
-
   Standard_Boolean Tunknown = FDS_hasUNK(transEdge);
   TopOpeBRepDS_Point PDS = TopOpeBRep_PointGeomTool::MakePoint(VP);// <VP>'s geometry  
   TopOpeBRepDS_ListOfInterference lITOOFonVP; // {I on <edge> = (T on <OOface>, G on <VP>, S)}
@@ -869,10 +829,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
   newtransEdge = newtransEdge || closing || OOclosing;
   newtransEdge = newtransEdge && (!myLineINL); 
   if (newtransEdge){
-#ifdef OCCT_DEBUG
-    Standard_Integer iedge =
-#endif
-                myDS->Shape(edge);
+    myDS->Shape(edge);
     newtransEdge = !found;
     if (found) { 
       // Getting first transition found
@@ -891,12 +848,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
       if (ok) {transEdge.Before(Tr.Before()); transEdge.After(Tr.After());}
       newtransEdge = ok;
     }
-#ifdef OCCT_DEBUG
-    if (traceDSF && (found || newtransEdge)) 
-      {if (found) cout<<"*-> found "; if (newtransEdge) cout<<"*-> new ";
-       cout<<"transEdge (edge "<<iedge<<",face"<<iOOFace<<") = "; TopAbs::Print(transEdge.Before(),cout);
-       cout<<" ";TopAbs::Print(transEdge.After(),cout);cout<<endl;}
-#endif
   } // newtransEdge
 
   Standard_Boolean tredunk = transEdge.IsUnknown();
@@ -915,9 +866,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
   // OO*** : data issued from other shape
     
   if (SIedgeIndex == 0) SIedgeIndex = myDS->AddShape(edge,ShapeIndex);
-#ifdef OCCT_DEBUG
-  Standard_Boolean trce = TopOpeBRepDS_GettraceSPSX(SIedgeIndex); if(trce) debarc(SIedgeIndex);
-#endif
 
   Standard_Boolean SIisvertex = VP.IsVertex(ShapeIndex);
   Standard_Boolean OOisvertex = VP.IsVertex(OOShapeIndex);
@@ -1004,10 +952,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
   // Gfound = VP corresponds with an existing geometry of ShapeIndex
   Standard_Boolean Gfound = ( EPIfound || CPIfound );  
 #ifdef OCCT_DEBUG
-  Standard_Boolean trcpv = TopOpeBRepDS_GettraceSPSX(PVIndex);
-  Standard_Boolean ispoint = (PVKind == TopOpeBRepDS_POINT);
-  if(trcpv && ispoint)  debpoint(PVIndex);
-  if(trcpv && !ispoint) debvertex(PVIndex);
   if (GLOBAL_bvpr) debvprmess(myexF1,myexF2,ili,ivp,isi);
 #endif
 
@@ -1076,9 +1020,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
     }
   }   
   if ( correctON ) {  
-#ifdef OCCT_DEBUG
-    Standard_Boolean trcooe=TopOpeBRepDS_GettraceSPSX(OOedgeIndex);if (trcooe) debooarc(OOedgeIndex);
-#endif
     if (OOedgeIndex == 0) OOedgeIndex = myDS->AddShape(OOedge,OOShapeIndex);
     
     // VP a ete classifie ON sur l'edge <OOedge>.
@@ -1123,13 +1064,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
       TopAbs_State stb,sta; ok = MKT.MkTonE(stb,sta); 
       if (ok) {
         tOOedge.Before(stb); tOOedge.After(sta);
-#ifdef OCCT_DEBUG
-        if(traceDSF){
-          cout<<"* !on2edges && TopAbs_ON *\n";
-          if(OOisrest) cout<<"* edge "<<OOedgeIndex<<" RESTRICTION *\n";
-          cout<<"Transition sur <OOedge> "<<OOedgeIndex<<" croisant <edge> "<<SIedgeIndex<<" ";
-          TopAbs::Print(edgeori,cout);cout<<" ";tOOedge.Dump(cout);cout<<endl;}
-#endif      
         Handle(TopOpeBRepDS_Interference) OOEPIe;
         {
           if (iSIFace == 0) iSIFace = myDS->AddShape(Face,ShapeIndex); 

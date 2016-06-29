@@ -69,8 +69,6 @@ public:
   
   Standard_EXPORT void SetGBound (const Standard_Boolean b);
   
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& OS) const Standard_OVERRIDE;
-
 
 
 

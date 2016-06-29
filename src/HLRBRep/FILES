@@ -22,7 +22,6 @@ HLRBRep_CInter.hxx
 HLRBRep_CInter_0.cxx
 HLRBRep_CLProps.hxx
 HLRBRep_CLProps_0.cxx
-HLRBRep_CLPropsATool.cxx
 HLRBRep_CLPropsATool.hxx
 HLRBRep_CLPropsATool.lxx
 HLRBRep_Curve.cxx
@@ -67,7 +66,6 @@ HLRBRep_InternalAlgo.cxx
 HLRBRep_InternalAlgo.hxx
 HLRBRep_Intersector.cxx
 HLRBRep_Intersector.hxx
-HLRBRep_LineTool.cxx
 HLRBRep_LineTool.hxx
 HLRBRep_LineTool.lxx
 HLRBRep_ListIteratorOfListOfBPnt2D.hxx

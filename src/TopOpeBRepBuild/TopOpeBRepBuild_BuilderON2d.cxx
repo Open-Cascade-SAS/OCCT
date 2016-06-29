@@ -75,9 +75,7 @@ void TopOpeBRepBuild_BuilderON::Perform2d
 #ifdef OCCT_DEBUG
   Standard_Integer iFOR;Standard_Boolean tFOR=myPB->GtraceSPS(FOR,iFOR);
   if (tFOR) debfillonf(iFOR);
-  if (tFOR) {cout<<endl<<"LI on F"<<iFOR<<":"<<endl;
-	     for (TopOpeBRepDS_ListIteratorOfListOfInterference iit(lFEI); iit.More(); iit.Next())
-	       {iit.Value()->Dump(cout);cout<<endl;}}
+  if (tFOR) cout<<endl<<"LI on F"<<iFOR<<endl;
 #endif
 
   for (TopOpeBRepDS_ListIteratorOfListOfInterference itI(lFEI); itI.More(); itI.Next()){
@@ -147,7 +145,6 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const Handle(TopOpeBRepDS_Int
 //  Standard_Boolean tE=myPB->GtraceSPS(GI);
 //  Standard_Boolean tEFOR = (tE && tFOR);
   if (tFOR) {debON2d(iFOR);}
-  if (tFOR) {I->Dump(cout);cout<<endl;}
 #endif    
   
   Standard_Integer iFCX=SI;

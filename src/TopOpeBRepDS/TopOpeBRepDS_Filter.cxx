@@ -23,19 +23,6 @@
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettracePEI();
-extern Standard_Boolean TopOpeBRepDS_GettracePI();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-//unreferenced function, commented
-/*static Standard_Boolean TRCE(const Standard_Integer EIX) {
-  Standard_Boolean b1 = TopOpeBRepDS_GettracePEI();
-  Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
-  Standard_Boolean b3 = TopOpeBRepDS_GettraceSPSX(EIX);
-  return (b1 || b2 || b3);
-}*/
-#endif
-
 //=======================================================================
 //function : TopOpeBRepDS_Filter
 //purpose  : 

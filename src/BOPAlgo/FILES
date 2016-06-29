@@ -57,7 +57,6 @@ BOPAlgo_ShellSplitter.cxx
 BOPAlgo_ShellSplitter.hxx
 BOPAlgo_Tools.cxx
 BOPAlgo_Tools.hxx
-BOPAlgo_WireEdgeSet.cxx
 BOPAlgo_WireEdgeSet.hxx
 BOPAlgo_WireEdgeSet.lxx
 BOPAlgo_WireSplitter.cxx

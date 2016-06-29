@@ -18,7 +18,7 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_ErrorHandlerCallback.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 #if defined(_WIN32)
   #include <windows.h>
@@ -62,7 +62,7 @@
   * TryLock(), and UnregisterCallback() before Unlock() (or use Sentry classes). 
   */
 
-class Standard_Mutex : public Standard_ErrorHandlerCallback
+class Standard_Mutex : public Standard_ErrorHandler::Callback
 {
 public:
   /**

@@ -22,7 +22,6 @@ BOPTools_ListOfShapeSet.hxx
 BOPTools_MapOfSet.hxx
 BOPTools_Set.cxx
 BOPTools_Set.hxx
-BOPTools_SetMapHasher.cxx
 BOPTools_SetMapHasher.hxx
 BOPTools_SetMapHasher.lxx
 BOPTools_ShapeSet.cxx

@@ -39,7 +39,6 @@ Standard_EXPORT void FDS_assign(const TopOpeBRepDS_ListOfInterference& LI, TopOp
 Standard_EXPORT void FDS_assign(const TopTools_ListOfShape& LI, TopTools_ListOfShape& LII);
 Standard_EXPORT void FUN_ds_samRk(const TopOpeBRepDS_DataStructure& BDS, const Standard_Integer Rk,
 				  TopTools_ListOfShape& LI, TopTools_ListOfShape & LIsrk);
-Standard_EXPORT void FDS_dumpLI(const TopOpeBRepDS_ListOfInterference& LI,const char* str=NULL);
 Standard_EXPORT void FDS_data(const Handle(TopOpeBRepDS_Interference)& I,TopOpeBRepDS_Kind& GT1,Standard_Integer& G1,TopOpeBRepDS_Kind& ST1,Standard_Integer& S1);
 Standard_EXPORT Standard_Boolean FDS_data(const TopOpeBRepDS_ListIteratorOfListOfInterference& it,Handle(TopOpeBRepDS_Interference)& I,TopOpeBRepDS_Kind& GT1,Standard_Integer& G1,TopOpeBRepDS_Kind& ST1,Standard_Integer& S1);
 Standard_EXPORT void FDS_Tdata(const Handle(TopOpeBRepDS_Interference)& I,TopAbs_ShapeEnum& SB,Standard_Integer& IB,TopAbs_ShapeEnum& SA,Standard_Integer& IA);

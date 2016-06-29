@@ -95,7 +95,6 @@
 #endif
 
 class Standard_Failure;
-class Standard_ErrorHandlerCallback;
 
 //! Class implementing mechanics of conversion of signals to exceptions.
 //!
@@ -159,6 +158,56 @@ private:
   //! Returns the current handler (closest in the stack in the current execution thread)
   Standard_EXPORT static Standard_PErrorHandler FindHandler (const Standard_HandlerStatus theStatus, const Standard_Boolean theUnlink);
 
+public:
+  //! Defines a base class for callback objects that can be registered
+  //! in the OCC error handler (the class simulating C++ exceptions)
+  //! so as to be correctly destroyed when error handler is activated.
+  //!
+  //! Note that this is needed only when Open CASCADE is compiled with
+  //! NO_CXX_EXCEPTION or OCC_CONVERT_SIGNALS options (i.e. on UNIX/Linux).
+  //! In that case, raising OCC exception and/or signal will not cause
+  //! C++ stack unwinding and destruction of objects created in the stack.
+  //!
+  //! This class is intended to protect critical objects and operations in
+  //! the try {} catch {} block from being bypassed by OCC signal or exception.
+  //!
+  //! Inherit your object from that class, implement DestroyCallback() function,
+  //! and call Register/Unregister in critical points.
+  //!
+  //! Note that you must ensure that your object has life span longer than
+  //! that of the try {} block in which it calls Register().
+  class Callback
+  {
+  public:
+    DEFINE_STANDARD_ALLOC
+
+    //! Registers this callback object in the current error handler (if found).
+    void RegisterCallback();
+
+    //! Unregisters this callback object from the error handler.
+    void UnregisterCallback();
+
+    //! Destructor
+    virtual ~Callback();
+
+    //! The callback function to perform necessary callback action.
+    //! Called by the exception handler when it is being destroyed but
+    //! still has this callback registered.
+    Standard_EXPORT virtual void DestroyCallback() = 0;
+
+  protected:
+
+    //! Empty constructor
+    Callback();
+
+  private:
+    Standard_Address myHandler;
+    Standard_Address myPrev;
+    Standard_Address myNext;
+
+  friend class Standard_ErrorHandler;
+  };
+
 private:
 
   Standard_PErrorHandler myPrevious;
@@ -166,10 +215,30 @@ private:
   Standard_JmpBuf myLabel;
   Standard_HandlerStatus myStatus;
   Standard_ThreadId myThread;
-  Standard_Address myCallbackPtr;
+  Callback* myCallbackPtr;
 
   friend class Standard_Failure;
-  friend class Standard_ErrorHandlerCallback;
 };
+
+// If neither NO_CXX_EXCEPTION nor OCC_CONVERT_SIGNALS is defined,
+// provide empty inline implementation
+#if ! defined(NO_CXX_EXCEPTION) && ! defined(OCC_CONVERT_SIGNALS)
+inline Standard_ErrorHandler::Callback::Callback ()
+       : myHandler(0), myPrev(0), myNext(0)
+{
+}
+inline Standard_ErrorHandler::Callback::~Callback ()
+{
+}
+inline void Standard_ErrorHandler::Callback::RegisterCallback ()
+{
+}
+inline void Standard_ErrorHandler::Callback::UnregisterCallback ()
+{
+}
+#endif
+
+// Definition of the old name "Standard_ErrorHandlerCallback" was kept for compatibility
+typedef Standard_ErrorHandler::Callback Standard_ErrorHandlerCallback;
 
 #endif // _Standard_ErrorHandler_HeaderFile

@@ -83,8 +83,6 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSXX(const Standard_Integer,const Standard_Integer);
 static TCollection_AsciiString PRODINS("dins ");
 #endif
 
@@ -643,19 +641,10 @@ Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const Standard_Integer ) con
 //function : GtraceSPS
 //purpose  : 
 //=======================================================================
-#ifdef OCCT_DEBUG
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const Standard_Integer i,
-                                                    const Standard_Integer j) const 
-#else
 Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const Standard_Integer ,
                                                     const Standard_Integer ) const 
-#endif       
 {
-  Standard_Boolean b = Standard_False;
-#ifdef OCCT_DEBUG
-  b = TopOpeBRepDS_GettraceSPSXX(i,j);
-#endif
-  return b;
+  return Standard_False;
 }
 
 //=======================================================================
@@ -680,24 +669,11 @@ Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape& ) const
 //function : GtraceSPS
 //purpose  : 
 //=======================================================================
-#ifdef OCCT_DEBUG
-Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape& S,
-                                                    Standard_Integer& IS) const 
-#else       
 Standard_Boolean TopOpeBRepBuild_Builder::GtraceSPS(const TopoDS_Shape&,
                                                     Standard_Integer& IS) const 
-#endif       
 {
-  IS = 0; Standard_Boolean b = Standard_False;
-#ifdef OCCT_DEBUG
-  if ( ! myDataStructure.IsNull() ) {
-    if ( ! S.IsNull() ) {
-      IS = myDataStructure->Shape(S);
-      b = TopOpeBRepDS_GettraceSPSX(IS);
-    }
-  }
-#endif
-  return b;
+  IS = 0;
+  return Standard_False;
 }
 
 

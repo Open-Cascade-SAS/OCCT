@@ -53,9 +53,7 @@
 #include <TopOpeBRepBuild_define.hxx>
 
 #ifdef OCCT_DEBUG
-#define TSTRA TopOpeBRepDS_GettraceSTRANGE()
 static TCollection_AsciiString PRODINS("dins ");
-extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #endif
 
 //Standard_IMPORT extern TopOpeBRepBuild_Builder* GLOBAL_PBUILDER;
@@ -148,12 +146,6 @@ TopAbs_State TopOpeBRepBuild_WireEdgeClassifier::Compare
 	}
       }
     } //UNKNOWN
-
-    if (state == TopAbs_UNKNOWN) {
-#ifdef OCCT_DEBUG
-      if (TSTRA) cout<<"TopOpeBRepBuild_Builder::WES::Compare UNKNOWN -> ShapeClassifier "<<endl;
-#endif
-    }
 
     if (state == TopAbs_UNKNOWN) {
       TopoDS_Shape s1 = LoopToShape(L1); if (s1.IsNull()) return state;

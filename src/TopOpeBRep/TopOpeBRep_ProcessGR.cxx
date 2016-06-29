@@ -76,9 +76,6 @@
 #include <TopOpeBRep_FFDumper.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Line.hxx>
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDEGEN();
 extern Standard_Boolean TopOpeBRep_GettraceBIPS(); 
 extern Standard_Boolean TopOpeBRep_GettraceDEGEN();
 extern Standard_Boolean FUN_debnull(const TopoDS_Shape& s){Standard_Boolean isnull = s.IsNull(); if (isnull) cout <<"***"; return isnull;}

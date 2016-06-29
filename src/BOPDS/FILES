@@ -1,7 +1,6 @@
 BOPDS_CommonBlock.cxx
 BOPDS_CommonBlock.hxx
 BOPDS_CoupleOfPaveBlocks.hxx
-BOPDS_Curve.cxx
 BOPDS_Curve.hxx
 BOPDS_Curve.lxx
 BOPDS_DataMapOfIntegerListOfPaveBlock.hxx
@@ -13,7 +12,6 @@ BOPDS_DataMapOfShapeCoupleOfPaveBlocks.hxx
 BOPDS_DS.cxx
 BOPDS_DS.hxx
 BOPDS_DS.lxx
-BOPDS_FaceInfo.cxx
 BOPDS_FaceInfo.hxx
 BOPDS_FaceInfo.lxx
 BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx
@@ -40,10 +38,8 @@ BOPDS_MapOfPaveBlock.hxx
 BOPDS_PassKey.cxx
 BOPDS_PassKey.hxx
 BOPDS_PassKey.lxx
-BOPDS_PassKeyBoolean.cxx
 BOPDS_PassKeyBoolean.hxx
 BOPDS_PassKeyBoolean.lxx
-BOPDS_PassKeyMapHasher.cxx
 BOPDS_PassKeyMapHasher.hxx
 BOPDS_PassKeyMapHasher.lxx
 BOPDS_Pave.cxx
@@ -51,13 +47,11 @@ BOPDS_Pave.hxx
 BOPDS_Pave.lxx
 BOPDS_PaveBlock.cxx
 BOPDS_PaveBlock.hxx
-BOPDS_PaveMapHasher.cxx
 BOPDS_PaveMapHasher.hxx
 BOPDS_PaveMapHasher.lxx
 BOPDS_PDS.hxx
 BOPDS_PIterator.hxx
 BOPDS_PIteratorSI.hxx
-BOPDS_Point.cxx
 BOPDS_Point.hxx
 BOPDS_Point.lxx
 BOPDS_ShapeInfo.cxx
@@ -65,7 +59,6 @@ BOPDS_ShapeInfo.hxx
 BOPDS_ShapeInfo.lxx
 BOPDS_SubIterator.cxx
 BOPDS_SubIterator.hxx
-BOPDS_Tools.cxx
 BOPDS_Tools.hxx
 BOPDS_Tools.lxx
 BOPDS_VectorOfCurve.hxx

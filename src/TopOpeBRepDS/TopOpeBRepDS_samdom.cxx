@@ -149,10 +149,7 @@ Standard_EXPORT void FDSSDM_s1s2makesordor(const TopTools_ListOfShape& LS1,
   //modified by NIZNHY-PKV Sun Dec 15 17:59:43 2002 t
   TopTools_ListIteratorOfListOfShape it(LS1); if (!it.More()) return;
   const TopoDS_Shape& sref = it.Value();
-#ifdef OCCT_DEBUG
-//  Standard_Integer  iref =
-#endif
-              HDS->SameDomainReference(sref);
+  HDS->SameDomainReference(sref);
   TopOpeBRepDS_Config oref = HDS->SameDomainOrientation(sref);
   
   for (it.Initialize(LS1); it.More(); it.Next() ) {

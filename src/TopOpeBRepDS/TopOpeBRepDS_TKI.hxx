@@ -59,14 +59,6 @@ public:
   
   Standard_EXPORT void Add (const TopOpeBRepDS_Kind K, const Standard_Integer G, const Handle(TopOpeBRepDS_Interference)& HI);
   
-  Standard_EXPORT void DumpTKI (const TCollection_AsciiString& s1 = "", const TCollection_AsciiString& s2 = "") const;
-  
-  Standard_EXPORT void DumpTKI (const TopOpeBRepDS_Kind K, const TCollection_AsciiString& s1 = "", const TCollection_AsciiString& s2 = "") const;
-  
-  Standard_EXPORT void DumpTKI (const TopOpeBRepDS_Kind K, const Standard_Integer G, const TCollection_AsciiString& s1 = "", const TCollection_AsciiString& s2 = "") const;
-  
-  Standard_EXPORT void DumpTKI (const TopOpeBRepDS_Kind K, const Standard_Integer G, const TopOpeBRepDS_ListOfInterference& L, const TCollection_AsciiString& s1 = "", const TCollection_AsciiString& s2 = "") const;
-  
   Standard_EXPORT void DumpTKIIterator (const TCollection_AsciiString& s1 = "", const TCollection_AsciiString& s2 = "");
   
   Standard_EXPORT void Init();

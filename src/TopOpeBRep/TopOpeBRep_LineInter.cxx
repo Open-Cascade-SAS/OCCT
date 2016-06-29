@@ -53,8 +53,6 @@
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRep_GetcontextALWLNBP(Standard_Integer&);
 extern Standard_Boolean TopOpeBRep_GettraceCONIC();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
-extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
 #endif
 
 //-----------------------------------------------------------------------
@@ -647,16 +645,6 @@ void TopOpeBRep_LineInter::DumpBipoint
 
 void TopOpeBRep_LineInter::SetOK(const Standard_Boolean B)
 {
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC()) {
-    if (myOK != B) {
-      cout<<"line "<<myIndex<<" (";
-      TopOpeBRep::Print(myTypeLineCurve,cout);cout<<") ";
-      if (!B) cout<<"OK->NOK"; else cout<<"NOK->OK";
-      cout<<endl;
-    }
-  }
-#endif
   myOK = B;
 }
 
@@ -692,9 +680,7 @@ Standard_OStream& TopOpeBRep_LineInter::DumpLineTransitions(Standard_OStream& OS
 {
 #ifdef OCCT_DEBUG
   OS<<"transition from f1 / f2 "; TopAbs::Print(myF2.Orientation(),OS);
-  OS<<" : "; myLineTonF1.Dump(OS); OS<<endl;
   OS<<"transition from f2 / f1 "; TopAbs::Print(myF1.Orientation(),OS);
-  OS<<" : "; myLineTonF2.Dump(OS); OS<<endl;
 #endif
   return OS;
 }

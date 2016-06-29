@@ -78,11 +78,6 @@ TopAbs_Orientation  TopOpeBRepDS_PointIterator::Orientation
 
 Standard_Real  TopOpeBRepDS_PointIterator::Parameter()const 
 {
-
-#ifdef OCCT_DEBUG
-//  cout<<"PointIterator : I = "; Value()->Dump(cout); cout<<endl;
-#endif
-
   const Handle(TopOpeBRepDS_Interference)& I = Value();
   Handle(Standard_Type) T = I->DynamicType(); 
   if      ( T == STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference) ) { 

@@ -57,7 +57,6 @@ Standard_IMPORT void FUN_draw2de (const TopoDS_Shape& ed,const TopoDS_Shape& fa)
 #endif
 
 #ifdef OCCT_DEBUG
-#include <TopOpeBRepDS_DSX.hxx>
 extern void* GFABUMAKEFACEPWES_DEB;
 #define DEBSHASET(sarg,meth,shaset,str) TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
 Standard_Integer GLOBAL_iexE = 0;
@@ -153,10 +152,6 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
 //  {I = (T(F),ES,FTRA)} / Fsdm F and ES interfers with E which has splits ON
 //  E is edge of F
 { 
-#ifdef OCCT_DEBUG
-  Standard_Integer iF;Standard_Boolean tF=BU.GtraceSPS(F,iF);
-#endif
-  
   const TopOpeBRepDS_DataStructure& BDS = BU.DataStructure()->DS(); 
   const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(E);
   Standard_Integer IE = BDS.Shape(E);
@@ -215,9 +210,6 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
       if (ok) {
 	newT.Index(ITRA); TopOpeBRepDS_Config C = TopOpeBRepDS_SAMEORIENTED;
 	Handle(TopOpeBRepDS_Interference) newI = TopOpeBRepDS_InterferenceTool::MakeFaceEdgeInterference(newT,ITRA,IE,Standard_True,C);
-#ifdef OCCT_DEBUG
-	if (tF) {cout<<"f"<<IF<<" + ";newI->Dump(cout);cout<<endl;}
-#endif
 	pDS2d->AddShapeInterference(F,newI);
       }
     }
@@ -233,9 +225,6 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
       if (ok) {
 	newT.Index(IF); TopOpeBRepDS_Config C = TopOpeBRepDS_SAMEORIENTED;
 	Handle(TopOpeBRepDS_Interference) newI = TopOpeBRepDS_InterferenceTool::MakeFaceEdgeInterference(newT,IF,IE,Standard_False,C);
-#ifdef OCCT_DEBUG
-	if (tF) {cout<<"f"<<ITRA<<" + ";newI->Dump(cout);cout<<endl;}
-#endif
 	pDS2d->AddShapeInterference(FTRA,newI);
       }
 
@@ -243,9 +232,6 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
       if (ok) {
 	newT.Index(IF); TopOpeBRepDS_Config C = TopOpeBRepDS_SAMEORIENTED;
 	Handle(TopOpeBRepDS_Interference) newI = TopOpeBRepDS_InterferenceTool::MakeFaceEdgeInterference(newT,IF,S,Standard_True,C);
-#ifdef OCCT_DEBUG
-	if (tF) {cout<<endl<<"f"<<ITRA<<" + ";newI->Dump(cout);cout<<endl;}
-#endif
 	pDS2d->AddShapeInterference(FTRA,newI);
       }
       
@@ -264,9 +250,6 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
       if (ok) {
 	newT.Index(ITRA); TopOpeBRepDS_Config C = TopOpeBRepDS_SAMEORIENTED;
 	Handle(TopOpeBRepDS_Interference) newI = TopOpeBRepDS_InterferenceTool::MakeFaceEdgeInterference(newT,ITRA,S,Standard_False,C);
-#ifdef OCCT_DEBUG
-	if (tF) {cout<<"f"<<iF<<" + ";newI->Dump(cout);cout<<endl;}
-#endif
 	pDS2d->AddShapeInterference(F,newI);
       }
     }
@@ -869,11 +852,8 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
 #ifdef OCCT_DEBUG
       cout<<"o-o GridFF ffil F"<<ifil<<" se E"<<iEOR<<" / "<<iWESF<<" ";
       TopAbs::Print(TB1,cout);cout.flush();
-      Standard_Boolean tse = TopOpeBRepDS_GettraceSPSX(iEOR);
-      TopOpeBRepDS_SettraceSPSX(iEOR,Standard_True);
       if (!ftg) {cout<<" : !ftg --> "; GKeepShape(EOR,LSclass,TB1);cout.flush();}
       else      {cout<<" : ftg --> non gardee"<<endl;cout.flush();}
-      TopOpeBRepDS_SettraceSPSX(iEOR,tse);
 #endif
 
     }

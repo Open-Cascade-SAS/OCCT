@@ -36,19 +36,3 @@ TopOpeBRepDS_FaceEdgeInterference::TopOpeBRepDS_FaceEdgeInterference
   (T,TopOpeBRepDS_FACE,S,TopOpeBRepDS_EDGE,G,GIsBound,C)
 {
 }
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-
-Standard_OStream& TopOpeBRepDS_FaceEdgeInterference::Dump
-(Standard_OStream& OS) const
-{
-#ifdef OCCT_DEBUG
-  OS<<"FEI ";
-  TopOpeBRepDS_ShapeShapeInterference::Dump(OS);
-#endif
-
-  return OS;
-}

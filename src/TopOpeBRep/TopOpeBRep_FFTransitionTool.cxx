@@ -36,10 +36,6 @@
 #include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
-#endif
-
 //-----------------------------------------------------------------------
 //function : TransitionToOrientation
 //purpose  : static
@@ -68,22 +64,12 @@ static Standard_Boolean TransitionToOrientation
     case IntSurf_Outside : result = TopAbs_EXTERNAL; break;
     case IntSurf_Unknown :
     Odefined = Standard_False;
-#ifdef OCCT_DEBUG
-//    if ( TopOpeBRepDS_GettraceDSF() ) { 
-//      cout<<"TopOpeBRepDS:TransitionToOrientation : unknown situation"<<endl;
-//    }
-#endif
     break;
     }
     break;
 
   case IntSurf_Undecided :
   Odefined = Standard_False;
-#ifdef OCCT_DEBUG
-//  if ( TopOpeBRepDS_GettraceDSF() ) { 
-//    cout<<"TopOpeBRepDS:TransitionToOrientation : undecided transition"<<endl;
-//  }
-#endif
   break;
   }
 
@@ -244,25 +230,14 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition
       case IntSurf_Unknown :
 
 	Odefined = Standard_False;
-#ifdef OCCT_DEBUG
-	if ( TopOpeBRepDS_GettraceDSF() ) { 
-	  cout<<"ProcessFaceTransition : unknown situation"<<endl;
-	}
-#endif
 	break;
       }
       break;
       } // case Touch
 
     case IntSurf_Undecided :
-
-    Odefined = Standard_False;
-#ifdef OCCT_DEBUG
-    if ( TopOpeBRepDS_GettraceDSF() ) { 
-      cout<<"ProcessFaceTransition : undecided transition"<<endl;
-    }
-#endif
-    break;
+      Odefined = Standard_False;
+      break;
 
     } // trans
   

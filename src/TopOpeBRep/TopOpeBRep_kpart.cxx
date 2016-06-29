@@ -49,7 +49,6 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
 extern Standard_Boolean TopOpeBRep_GetcontextNEWKP();
 #endif
 
@@ -136,86 +135,6 @@ static Standard_Boolean FUNBREP_SameUV(const TopOpeBRep_VPointInter& VP1,
   return sameuv;
 }
 
-#ifdef OCCT_DEBUG
-//-------------------------------------------------------------------
-void FUNBREP_topokpartDEB 
-(const Handle(TopOpeBRepDS_Interference)& /*Ifound*/,
- const TopOpeBRepDS_ListOfInterference& DSCIL,
- const TopOpeBRep_LineInter& L,
- const TopOpeBRep_VPointInter& VP,
- const TopOpeBRepDS_Transition& lasttransLine,
- const TopOpeBRepDS_DataStructure& /*BDS*/,
- const TopoDS_Shape& /*E*/,
- const TopoDS_Shape& /*F*/,
- const Standard_Real /*toluv*/,
- const Standard_Boolean CPIfound,
- const Standard_Boolean samepar, 
- const Standard_Boolean couture,
- const Standard_Real& parline,
- const TopOpeBRepDS_Transition& transLine)
-//-------------------------------------------------------------------
-{
-  Standard_Integer iVP = VP.Index();
-  Standard_Boolean fermee  = L.IsVClosed();
-  Standard_Boolean onsort = (transLine.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
-  Standard_Boolean lastdefinie = ! lasttransLine.IsUnknown();
-  Standard_Boolean lastonsort = Standard_False;
-  if (lastdefinie) lastonsort = (lasttransLine.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
-
-  Standard_Boolean LITdefinie = Standard_False;
-  Standard_Boolean LITonsort = Standard_False;
-  TopOpeBRepDS_Transition LIT;
-  Standard_Boolean nointerf = DSCIL.IsEmpty();
-
-  if (nointerf) STATIC_lastVPind = 0;
-  if (!nointerf) {
-    const Handle(TopOpeBRepDS_Interference)& I = DSCIL.Last();
-    LIT = I->Transition();
-    LITdefinie = ! LIT.IsUnknown();
-    if (LITdefinie) LITonsort = (LIT.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
-  }
-  
-  Standard_Boolean iswalki = (L.TypeLineCurve() == TopOpeBRep_WALKING);
-  if   (iswalki) cout<<"kpwalk ";
-  else           cout<<"kpglin ";
-
-  cout<<"\tVP "<<iVP<<" : ";                     
-  
-  if      (CPIfound && samepar)  cout<<"trouve ("<<parline<<")";
-  else if (CPIfound && !samepar) cout<<"trouve";
-  else    	                 cout<<"non trouve";
-  
-  if (fermee) cout<<", fermee"; 
-  else        cout<<", ouverte";
-  
-  if (couture) cout<<", couture";
-  
-  if (onsort) cout<<", sortant"; 
-  else        cout<<", entrant";
-  
-  if      (lastdefinie &&  lastonsort) cout<<", prec = sortant";
-  else if (lastdefinie && !lastonsort) cout<<", prec = entrant";
-  else                                 cout<<", prec = ?";
-  
-  if      (LITdefinie &&  LITonsort) cout<<", Lprec = sortant";
-  else if (LITdefinie && !LITonsort) cout<<", Lprec = entrant";
-  else                               cout<<", Lprec = ?";
-  cout<<endl;
-
-  if (!iswalki) {
-    cout<<"kpglin ";
-    Standard_Boolean hasfp = L.HasFirstPoint();
-    Standard_Boolean haslp = L.HasLastPoint();
-    Standard_Real f,l; L.Bounds(f,l);
-    if (hasfp) cout<<"\thas fp "<<f; 
-    else       cout<<"\thas NO fp";
-    if (haslp) cout<<", has lp "<<l;
-    else       cout<<", has NO lp";
-    cout<<endl;
-  }  
-}
-#endif
-
 //----------------------------------------------------------------------
 Standard_Boolean FUNBREP_topowalki_new
 (const Handle(TopOpeBRepDS_Interference)& Ifound,const TopOpeBRepDS_ListOfInterference& DSCIL,const TopOpeBRep_LineInter& L,
@@ -223,10 +142,6 @@ Standard_Boolean FUNBREP_topowalki_new
  TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
-#endif
-  
   if (L.TypeLineCurve() != TopOpeBRep_WALKING) {
     Standard_ProgramError::Raise("FUNBREP_topowalki_new : line is not a walking");
     return Standard_False;
@@ -278,9 +193,6 @@ Standard_Boolean FUNBREP_topowalki_new
       Standard_Boolean samevponcouture = samepar && keep;    
       if (samevponcouture) {
 	keep = Standard_False;      
-#ifdef OCCT_DEBUG
-	if (trc) cout<<"is same vp on couture";
-#endif
       }
     }
 
@@ -334,10 +246,6 @@ Standard_Boolean FUNBREP_topowalki
  TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
-#endif
-  
   if (L.TypeLineCurve() != TopOpeBRep_WALKING) {
     Standard_ProgramError::Raise("FUNBREP_topowalki : line is not a walking");
     return Standard_False;
@@ -439,10 +347,6 @@ Standard_Boolean FUNBREP_topowalki
     Standard_Boolean samevponcouture = samepar && couture;    
     if (keep && samevponcouture) {
       keep = Standard_False;
-  
-#ifdef OCCT_DEBUG
-      if (trc) cout<<"is same vp on couture";
-#endif
     }
 
     if (keep) {
@@ -775,12 +679,6 @@ Standard_EXPORT Standard_Boolean FUNBREP_topokpart
 
   TopOpeBRepDS_Transition lasttransLine;
   if (!DSCIL.IsEmpty()) lasttransLine = DSCIL.Last()->Transition(); // xpu12-12-97
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceDSF()) {
-    FUNBREP_topokpartDEB(Ifound,DSCIL,L,VP,lasttransLine,BDS,E,F,toluv,
-			 CPIfound,samepar,couture,parline,transLine);
-  }
-#endif
   
   // A line is valid if at least it has VPi1 and VPi2 with i1 < i2 and :
   // transition on line for VPi1 : OUT/IN and for VPi2 : IN/OUT.

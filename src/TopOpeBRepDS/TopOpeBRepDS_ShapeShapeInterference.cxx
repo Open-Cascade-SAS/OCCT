@@ -66,21 +66,3 @@ Standard_Boolean TopOpeBRepDS_ShapeShapeInterference::GBound()const
 
 void TopOpeBRepDS_ShapeShapeInterference::SetGBound(const Standard_Boolean b)
 { myGBound = b; }
-
-//=======================================================================
-//function : Dump
-//purpose  : 
-//=======================================================================
-
-Standard_OStream& TopOpeBRepDS_ShapeShapeInterference::Dump
-  (Standard_OStream& OS) const
-{
-#ifdef OCCT_DEBUG
-  OS<<"("; TopOpeBRepDS::Print(myC,OS); OS<<") ";
-  if (myGBound) OS<<"(Gb 1) ";
-  else          OS<<"(Gb 0) ";
-  TopOpeBRepDS_Interference::Dump(OS);
-#endif
-
-  return OS;
-}

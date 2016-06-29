@@ -78,125 +78,12 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
 // includes especially needed by the static Project function
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
-extern Standard_Boolean TopOpeBRepDS_GettraceBUTO();
-extern Standard_Boolean TopOpeBRepDS_GettraceTRPE();
-extern Standard_Boolean TopOpeBRepDS_GettraceSANTRAN();
-static void DUMPCURVES(const Handle(Geom_Curve)& C3D,const TopOpeBRepDS_Curve& C)
-{
-  if ( !C3D.IsNull() ) {
-    Standard_Real dp1 = C3D->FirstParameter();
-    Standard_Real dp2 = C3D->LastParameter();
-    cout<<"TopOpeBRepDS_BuildTool : C3D = "<<dp1<<","<<dp2<<endl;
-  }
-  if ( !C.Curve1().IsNull() ) {
-    Standard_Real dp1 = C.Curve1()->FirstParameter();
-    Standard_Real dp2 = C.Curve1()->LastParameter();
-    cout<<"TopOpeBRepDS_BuildTool : PC1 = "<<dp1<<","<<dp2<<endl;
-  }
-  if ( !C.Curve2().IsNull() ) {
-    Standard_Real dp1 = C.Curve2()->FirstParameter();
-    Standard_Real dp2 = C.Curve2()->LastParameter();
-    cout<<"TopOpeBRepDS_BuildTool : PC2 = "<<dp1<<","<<dp2<<endl;
-  }
-}
-#endif
-
 #ifdef DRAW
 #include <TopOpeBRepDS_DRAW.hxx>
 #include <Geom2d_Curve.hxx>
 #endif
 
-//-----------------------------------------------------------------------
-//function : PrintSurface
-//purpose  : print the name of a surface on a stream
-// a mettre dans TopOpeBRepDS_Dumper.cxx NYI
-//-----------------------------------------------------------------------
-
-#ifdef OCCT_DEBUG
-static Standard_OStream& PrintSurface(const TopoDS_Face& F, Standard_OStream& s)
-{
-  BRepAdaptor_Surface STA_Surface(F);
-  GeomAbs_SurfaceType t =  STA_Surface.GetType();
-  switch(t) {
-  case GeomAbs_Plane               : s<<"PLANE";               break;
-  case GeomAbs_Cylinder            : s<<"CYLINDER";            break;
-  case GeomAbs_Cone                : s<<"CONE";                break;
-  case GeomAbs_Sphere              : s<<"SPHERE";              break;
-  case GeomAbs_Torus               : s<<"TORUS";               break;
-  case GeomAbs_BezierSurface       : s<<"BEZIERSURFACE";       break;
-  case GeomAbs_BSplineSurface      : s<<"BSPLINESURFACE";      break;
-  case GeomAbs_SurfaceOfRevolution : s<<"SURFACEOFREVOLUTION"; break;
-  case GeomAbs_SurfaceOfExtrusion  : s<<"SURFACEOFEXTRUSION";  break;
-  case GeomAbs_OtherSurface : default :  s<<"OTHERSURFACE";        break;
-  }
-  return s;                                                    
-}
-#endif
-
 Standard_EXPORT Handle(Geom2d_Curve) BASISCURVE2D(const Handle(Geom2d_Curve)& C);
-
-//-----------------------------------------------------------------------
-//function : GetOrigin
-//purpose  : a mettre dans TopOpeBRepDS_Dumper.cxx NYI
-//-----------------------------------------------------------------------
-
-#ifdef OCCT_DEBUG
-static Standard_Boolean GetOrigin(const Handle(Geom2d_Curve)& PCIN, gp_Pnt2d& o)
-{
-  if (PCIN.IsNull()) return Standard_False;
-  Handle(Geom2d_Curve) PC = ::BASISCURVE2D(PCIN);
-  if (PC.IsNull()) return Standard_False;
-
-  Handle(Standard_Type) T = PC->DynamicType();
-  if      ((T==STANDARD_TYPE(Geom2d_Circle)) ||
-	   (T==STANDARD_TYPE(Geom2d_Ellipse))  ||
-	   (T==STANDARD_TYPE(Geom2d_Parabola)) ||
-	   (T==STANDARD_TYPE(Geom2d_Hyperbola))) {
-    o = Handle(Geom2d_Conic)::DownCast(PC)->Location();
-    return Standard_True;
-  }
-  else if (T==STANDARD_TYPE(Geom2d_Line)) {
-    o = Handle(Geom2d_Line)::DownCast(PC)->Location();
-    return Standard_True;
-  }
-  else  {
-    return Standard_False;
-  }
-//  return Standard_False;
-}
-#endif
-
-//-----------------------------------------------------------------------
-//function : GetOrigin
-//purpose  : a mettre dans TopOpeBRepDS_Dumper.cxx NYI
-//-----------------------------------------------------------------------
-
-#ifdef OCCT_DEBUG
-static Standard_Boolean GetOrigin(const Handle(Geom_Curve)& CIN, gp_Pnt& o)
-{
-  if (CIN.IsNull()) return Standard_False;
-  Handle(Geom_Curve) C = TopOpeBRepTool_ShapeTool::BASISCURVE(CIN);
-  if (C.IsNull()) return Standard_False;
-
-  Handle(Standard_Type) T = C->DynamicType();
-  if      ((T==STANDARD_TYPE(Geom_Circle)) ||
-	   (T==STANDARD_TYPE(Geom_Ellipse))  ||
-	   (T==STANDARD_TYPE(Geom_Parabola)) ||
-	   (T==STANDARD_TYPE(Geom_Hyperbola))) {
-    o = Handle(Geom_Conic)::DownCast(C)->Location();
-    return Standard_True;
-  }
-  else if (T==STANDARD_TYPE(Geom_Line)) {
-    o = Handle(Geom_Line)::DownCast(C)->Position().Location();
-    return Standard_True;
-  }
-  else  {
-    return Standard_False;
-  }
-}
-#endif
 
 Standard_Boolean FUN_UisoLineOnSphe
 (const TopoDS_Shape& F,
@@ -310,13 +197,6 @@ void  TopOpeBRepDS_BuildTool::MakeVertex(TopoDS_Shape& V,
   myBuilder.MakeVertex(TopoDS::Vertex(V),P.Point(),P.Tolerance());
 }
 
-#ifdef OCCT_DEBUG
-//-----------------------------------------------------------------------
-static Standard_OStream& DUMPPNT(const gp_Pnt& P, Standard_OStream& OS)
-//-----------------------------------------------------------------------
-{ OS<<P.X()<<" "<<P.Y()<<" "<<P.Z(); return OS; }
-#endif
-
 //=======================================================================
 //function : MakeEdge
 //purpose  : 
@@ -357,22 +237,8 @@ void  TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape& E,
       if (!BSC.IsNull()) {
 	if (BSC->Degree() == 1) {
 	  myBuilder.Range(TopoDS::Edge(E),1,BSC->NbPoles());
-#ifdef OCCT_DEBUG
-	  if (TopOpeBRepDS_GettraceBUTO()) {
-	    cout<<endl<<"TopOpeBRepDS_BuildTool : ";
-	    cout<<"new range of "<< 1 <<" "<<BSC->NbPoles()<<endl;
-	  }
-#endif
 	}
       }
-      
-#ifdef OCCT_DEBUG
-      if (TopOpeBRepDS_GettraceBUTO()) {
-	cout<<"TopOpeBRepDS_BuildTool : ";
-	cout<<"vertices on parameter "<<first<<endl;
-	cout<<" point is "; DUMPPNT(P,cout); cout<<endl;
-      }
-#endif
     }
   }
 
@@ -381,12 +247,6 @@ void  TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape& E,
     Standard_Boolean rangedef = C.Range(first,last);
     if (rangedef) {
       Range(E,first,last);
-#ifdef OCCT_DEBUG
-      if (TopOpeBRepDS_GettraceBUTO()) {
-	cout<<"TopOpeBRepDS_BuildTool : ";
-	cout<<"set edge range : "<<first<<" "<<last<<endl;
-      }
-#endif
     }
   }
 }
@@ -596,9 +456,6 @@ void TopOpeBRepDS_BuildTool::UpdateEdgeCurveTol
 //  newtol=tol3d;
 //  if (r1>newtol) newtol=r1;
 //  if (r2>newtol) newtol=r2;
-//#ifdef OCCT_DEBUG
-//  if (TopOpeBRepDS_GettraceDSNC()) cout<<"newtol = "<<newtol<<endl;
-//#endif
 
 //  newtol *= 1.5;
 
@@ -676,11 +533,6 @@ void  TopOpeBRepDS_BuildTool::ApproxCurves
   inewC = HDS->MakeCurve(C,newC1);
   TopOpeBRepDS_Curve& newC = HDS->ChangeCurve(inewC);
 
-#ifdef OCCT_DEBUG
-//  Standard_Boolean tDSNC = TopOpeBRepDS_GettraceDSNC();
-  Standard_Boolean tBUTO = TopOpeBRepDS_GettraceBUTO();
-#endif
-  
   // C1 curves have been approximated by BSplines of degree 1 :
   // compute new geometry on curves.
 
@@ -697,11 +549,6 @@ void  TopOpeBRepDS_BuildTool::ApproxCurves
   TopoDS_Vertex Vmin,Vmax;Standard_Real parmin,parmax;
   GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
 
-#ifdef OCCT_DEBUG
-  if (tBUTO) cout<<"Recompute1 min,max = "<<parmin<<","<<parmax<<endl;
-  if (tBUTO) DUMPCURVES(C3D,C);
-#endif
-  
   Handle(Geom_Curve)   C3Dnew;
   Handle(Geom2d_Curve) PC1new;
   Handle(Geom2d_Curve) PC2new;
@@ -715,10 +562,6 @@ void  TopOpeBRepDS_BuildTool::ApproxCurves
   Standard_Real newtol,newparmin,newparmax;
   // MSV Nov 12, 2001: if approx failed than leave old curves of degree 1
   if (!approxMade) {
-#ifdef OCCT_DEBUG
-    cout<<"TopOpeBRepDS_BuildTool::ApproxCurves : approx failed, leave curves of degree 1"
-      <<endl;
-#endif
     newtol = BRep_Tool::Tolerance(E);
     newparmin = parmin;
     newparmax = parmax;
@@ -774,13 +617,6 @@ Standard_Boolean FUN_reversePC
   Standard_Boolean sam = P3D.IsEqual(P3DC3D,tol);
   PCreversed = !sam;
 
-#ifdef OCCT_DEBUG
-#ifdef DRAW
-  Standard_Boolean tBUTO = TopOpeBRepDS_GettraceBUTO();
-  if (tBUTO) {FUN_draw(P3DC3D); FUN_draw(P3D);}
-#endif
-#endif
-
   if ( PCreversed ) {
     Handle(Geom2d_Curve) PC = ::BASISCURVE2D(PCnew);
     if (!PC.IsNull()) {
@@ -812,9 +648,6 @@ Standard_Boolean FUN_makeUisoLineOnSphe
   if (!FUN_getUV(surf,C3D,par3dsup,usup,vsup)) return Standard_False;
   Standard_Real tol = Precision::Parametric(tol3d);
   if (Abs(uinf-usup) > tol) return Standard_False;
-#ifdef OCCT_DEBUG
-//  Standard_Real deltav = vsup-vinf;
-#endif
 
   Standard_Boolean isvgrowing = (vsup - vinf > -tol);
   gp_Dir2d vdir;
@@ -827,16 +660,6 @@ Standard_Boolean FUN_makeUisoLineOnSphe
   if (!PC.IsNull()) {  
     Handle(Geom2d_Line) L = Handle(Geom2d_Line)::DownCast(PC); 
     L->SetLin2d(gp_Lin2d(origin,vdir));
-#ifdef OCCT_DEBUG
-#ifdef DRAW
-  Standard_Boolean trc = TopOpeBRepDS_GettraceBUTO();
-    if (trc) {
-      FUN_draw(gp_Pnt2d(uinf,vinf));
-      FUN_draw(gp_Pnt2d(usup,vsup));
-      FUN_draw(L,p3dl-p3df);
-    }
-#endif
-#endif
   } // (!PC.IsNull())
   
   return Standard_True;
@@ -850,31 +673,16 @@ void TopOpeBRepDS_BuildTool::ComputePCurves
  const Standard_Boolean comppc2,
  const Standard_Boolean compc3d) const
 {
-#ifdef OCCT_DEBUG
-//  Standard_Boolean tDSNC = TopOpeBRepDS_GettraceDSNC();
-  Standard_Boolean tBUTO = TopOpeBRepDS_GettraceBUTO();
-  Standard_Boolean tTRPE = TopOpeBRepDS_GettraceTRPE();
-#endif
-  
   const TopoDS_Face& F1 = TopoDS::Face(newC.Shape1());
   const TopoDS_Face& F2 = TopoDS::Face(newC.Shape2());
   
   const Handle(Geom_Curve)& C3D = C.Curve();
-#ifdef OCCT_DEBUG
-//  const Handle(Geom2d_Curve)& PC1 = C.Curve1();
-//  const Handle(Geom2d_Curve)& PC2 = C.Curve2();
-#endif
 
   // get bounding vertices Vmin,Vmax supported by the new edge <E>
   // and their corresponding parameters parmin,parmax .
 
   TopoDS_Vertex Vmin,Vmax;Standard_Real parmin,parmax;
   GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
-
-#ifdef OCCT_DEBUG
-  if (tBUTO) cout<<"Recompute2 min,max = "<<parmin<<","<<parmax<<endl;
-  if (tBUTO) DUMPCURVES(C3D,C);
-#endif
 
   Handle(Geom2d_Curve) PC1new;
   Handle(Geom2d_Curve) PC2new;
@@ -908,10 +716,6 @@ void TopOpeBRepDS_BuildTool::ComputePCurves
     ElCLib::AdjustPeriodic(f,f+period,Precision::PConfusion(),parmin,parmax);
     if (compc3d) C3Dnew = new Geom_TrimmedCurve(C3D,parmin,parmax);
     
-#ifdef OCCT_DEBUG
-    if (tBUTO||tTRPE) cout<<"Recompute2 : parmin,parmax "<<f<<","<<l<<endl;
-    if (tBUTO||tTRPE) cout<<"                   --> parmin,parmax "<<parmin<<","<<parmax<<endl;
-#endif
   }
   
   Standard_Real tolreached3d = C.Tolerance();
@@ -946,10 +750,6 @@ void TopOpeBRepDS_BuildTool::ComputePCurves
   }
   if (!PC1new.IsNull()) newC.Curve1(PC1new);
   if (!PC2new.IsNull()) newC.Curve2(PC2new);
-  
-#ifdef OCCT_DEBUG
-  if (tBUTO) DUMPCURVES(C3Dnew,newC);
-#endif
 }
 
 //=======================================================================
@@ -1163,11 +963,6 @@ void  TopOpeBRepDS_BuildTool::Parameter(const TopoDS_Shape& E,
       if ( oV == TopAbs_REVERSED ) {
 	if ( p < f ) {
 	  Standard_Real pp = ElCLib::InPeriod(p,f,f+per);
-#ifdef OCCT_DEBUG
-	  if (TopOpeBRepDS_GettraceBUTO() ) {
-	    cout<<"BuildTool Parameter : "<<p<<" --> "<<pp<<endl;
-	  }
-#endif
 	  p = pp;
 	}
       }
@@ -1211,21 +1006,6 @@ void  TopOpeBRepDS_BuildTool::UpdateEdge(const TopoDS_Shape& Ein,
     if ( l2n <= f2n ) {
       ElCLib::AdjustPeriodic(f1,l1,Precision::PConfusion(),f2n,l2n);
       Range(Eou,f2n,l2n);
-#ifdef OCCT_DEBUG
-      if (TopOpeBRepDS_GettraceBUTO() || TopOpeBRepDS_GettraceTRPE()) {
-	cout<<endl;
-	cout<<"UpdateEdge f1,l1   "<<f1<<" "<<l1<<endl;
-	cout<<"UpdateEdge f2,l2   "<<f2<<" "<<l2<<" "<<endl;
-	cout<<"UpdateEdge f2n,l2n "<<f2n<<" "<<l2n<<endl;
-	TopExp_Explorer ex;
-	for (ex.Init(Eou,TopAbs_VERTEX); ex.More(); ex.Next()) {
-	  TopoDS_Vertex v = TopoDS::Vertex(ex.Current());
-	  Standard_Real par = BRep_Tool::Parameter(v,TopoDS::Edge(Eou));
-	  TopAbs_Orientation o = v.Orientation();
-	  cout<<"BuildTool vertex ";TopAbs::Print(o,cout); cout<<" "<<par<<endl;
-	}
-      }
-#endif
     }
   }
 }
@@ -1340,16 +1120,6 @@ void TopOpeBRepDS_BuildTool::TranslateOnPeriodic
   du = u2 - u1, dv = v2 - v1;    
 
   if ( du != 0. || dv != 0.) {
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepDS_GettraceBUTO() || TopOpeBRepDS_GettraceTRPE()) {
-      cout<<endl;
-      cout<<"TranslateOnPeriodic :  Curve range "<<C3Df<<" "<<C3Dl<<endl;
-      Standard_Real PCf,PCl;
-      BRep_Tool::Range(TopoDS::Edge(E),TopoDS::Face(F),PCf,PCl);
-      cout<<"TranslateOnPeriodic : PCurve range "<<PCf<<" "<<PCl<<endl;
-      cout<<"TranslateOnPeriodic :  translation "<<du<<" "<<dv<<endl;
-    }
-#endif
     // translate curve PC of du,dv
     Handle(Geom2d_Curve) PCT = Handle(Geom2d_Curve)::DownCast(PC->Copy());
     PCT->Translate(gp_Vec2d(du,dv));
@@ -1388,34 +1158,6 @@ Standard_EXPORT void TopOpeBRepDS_SetThePCurve(const BRep_Builder& B,
   }
 }
 
-#ifdef OCCT_DEBUG
-//------------------------------------------------------------------------
-static void DUMPPCURVE(const TopoDS_Edge& EE, 
-		       const TopoDS_Face& FF,
-		       const Handle(Geom2d_Curve)& PC)
-//------------------------------------------------------------------------
-{
-  TopLoc_Location L; Standard_Real Cf,Cl;
-  Handle(Geom_Curve) C = BRep_Tool::Curve(EE,L,Cf,Cl);
-  if (C->IsPeriodic()) {
-    cout<<endl;
-      cout<<"DUMPPCURVE  : ";cout<<" face "; ::PrintSurface(FF,cout); cout<<endl;
-      cout<<"PCurve type : ";TopOpeBRepDS_Dumper::PrintType(PC,cout); cout<<endl;
-    gp_Pnt oC; 
-    if (::GetOrigin(C,oC)) 
-      cout<<"(E)Curve origin : "<<oC.X()<<" "<<oC.Y()<<" "<<oC.Z()<<endl;
-      cout<<"(E)Curve range  : Cf,Cl = "<<Cf<<" "<<Cl<<endl;
-    
-    Standard_Real PCf,PCl;
-    PCf = PC->FirstParameter(); PCl = PC->LastParameter();
-    gp_Pnt2d oPC; 
-    if (::GetOrigin(PC,oPC))
-      cout<<"(PC)PCurve origin : "<<oPC.X()<<" "<<oPC.Y()<<endl;
-      cout<<"(PC)PCurve range  : PCf,PCl = "<<PCf<<" "<<PCl<<endl;
-  }
-}
-#endif
-
 //=======================================================================
 //function : PCurve
 //purpose  : 
@@ -1430,24 +1172,8 @@ void  TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape& F,
     TopoDS_Edge EE = TopoDS::Edge(E);
     Handle(Geom2d_Curve) PCT = PC;
 
-#ifdef OCCT_DEBUG
-#ifdef DRAW
-    Standard_Boolean trc = Standard_False;
-    if (trc) FUN_draw(FF);
-    if (trc) FUN_draw(EE);
-    if (trc) FUN_draw(PC,0.);
-#endif
-    if (TopOpeBRepDS_GettraceTRPE()) DUMPPCURVE(EE,FF,PCT);
-#endif
-    
     // pour iab, ajout de Translate
     Standard_Boolean tran = myTranslate;
-#ifdef OCCT_DEBUG
-    if ( TopOpeBRepDS_GettraceSANTRAN()) {
-      tran = Standard_False; 
-      cout<<"SANS translation de pcurve"<<endl; 
-    }
-#endif
 
     // xpu : 13-06-97 : 
     // recompute twice the pcurve boundaries if OverWrite
@@ -1476,10 +1202,6 @@ void  TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape& F,
       Standard_Real newpar = BRep_Tool::Parameter(vi,EE);
       myBuilder.UpdateVertex(vi,newpar,EE,FF,tolvi);
     } // INTERNAL vertex
-    
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepDS_GettraceTRPE()) DUMPPCURVE(EE,FF,PCT);
-#endif
   }
 }
 
@@ -1504,10 +1226,6 @@ void  TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape& F,
     
     TopLoc_Location L; Standard_Real Cf,Cl;
     Handle(Geom_Curve) C = BRep_Tool::Curve(EE,L,Cf,Cl);
-
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepDS_GettraceTRPE()) DUMPPCURVE(EE,FF,PCT);
-#endif
       
     if (!C.IsNull()){
       Standard_Boolean deca = (Abs(Cf - CDSmin) > Precision::PConfusion());
@@ -1533,10 +1251,6 @@ void  TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape& F,
     }
     
     TopOpeBRepDS_SetThePCurve(myBuilder,EE,FF,E.Orientation(),PCT);
-    
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepDS_GettraceTRPE()) DUMPPCURVE(EE,FF,PCT);
-#endif
   }
 }
 
@@ -1656,11 +1370,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeBSpline1Curve
  TopoDS_Shape& EE,
  TopOpeBRepDS_Curve& C2) const
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean tDSNC = TopOpeBRepDS_GettraceDSNC();
-  Standard_Boolean tBUTO = TopOpeBRepDS_GettraceBUTO();
-#endif
-  
   // C1 curves have been approximated by BSplines of degree 1 :
   // compute new geometry on curves.
 
@@ -1685,11 +1394,7 @@ void  TopOpeBRepDS_BuildTool::RecomputeBSpline1Curve
   TopoDS_Vertex Vmin,Vmax; Standard_Real parmin,parmax;
   ::GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
 
-#ifdef OCCT_DEBUG
-  if (tBUTO) cout<<"Recompute1 min,max = "<<parmin<<","<<parmax<<endl;
-  if (tBUTO) DUMPCURVES(C3D,C1);
-#endif
-  
+ 
   Handle(Geom_Curve)   C3Dnew;
   Handle(Geom2d_Curve) PC1new;
   Handle(Geom2d_Curve) PC2new;
@@ -1746,12 +1451,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
    TopoDS_Shape&             EE,
    TopOpeBRepDS_Curve&       C2 ) const
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean tDSNC = TopOpeBRepDS_GettraceDSNC();
-  Standard_Boolean tBUTO = TopOpeBRepDS_GettraceBUTO();
-  Standard_Boolean tTRPE = TopOpeBRepDS_GettraceTRPE();
-#endif
-  
   // C1 Pcurves have not been computed because C1 Curve is not projectable
   // on one at least of the intersecting faces giving C1 Curve.
   // (see TopOpeBRepTool_CurveTool::IsProjectable())
@@ -1777,11 +1476,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
   TopoDS_Vertex Vmin,Vmax; Standard_Real parmin,parmax;
   ::GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
 
-#ifdef OCCT_DEBUG
-  if (tBUTO) {cout<<"Recompute2 min,max = "<<parmin<<","<<parmax<<endl;
-	      DUMPCURVES(C3D,C1);}
-#endif
-
   if ( C3D->IsPeriodic() ) {
     // ellipse on cone : periodize parmin,parmax
     Standard_Real period = C3D->LastParameter() - C3D->FirstParameter();
@@ -1790,10 +1484,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
     else {                                      f = parmax; l = parmin; }
     parmin = f; parmax = l;
     ElCLib::AdjustPeriodic(f,f+period,Precision::PConfusion(),parmin,parmax);
-#ifdef OCCT_DEBUG
-    if (tBUTO||tTRPE) cout<<"Recompute2 : parmin,parmax "<<f<<","<<l<<endl;
-    if (tBUTO||tTRPE) cout<<"                   --> parmin,parmax "<<parmin<<","<<parmax<<endl;
-#endif
   }
   
   Handle(Geom_TrimmedCurve) C3Dnew;
@@ -1829,9 +1519,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
 //    Standard_Real isrev1 = 
 //      ::FUN_reversePC(PC1new,F1,P3DC3D,par2d,tol);
 //    
-//#ifdef OCCT_DEBUG
-//    if (tBUTO && isrev1) cout<<"on retourne PC1"<<endl;
-//#endif
 //
 //  }
 //
@@ -1841,9 +1528,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
 //    Standard_Real isrev2 = 
 //     ::FUN_reversePC(PC2new,F2,P3DC3D,par2d,tol);
 //
-//#ifdef OCCT_DEBUG
-//    if (tBUTO && isrev2) cout<<"on retourne PC2"<<endl;
-//#endif
 //  }
 
   // xpu : 17-06-97
@@ -1864,10 +1548,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
   if (!C3Dnew.IsNull()) C2.Curve(C3Dnew,newtol);
   if (!PC1new.IsNull()) C2.Curve1(PC1new);
   if (!PC2new.IsNull()) C2.Curve2(PC2new);
-  
-#ifdef OCCT_DEBUG
-  if (tBUTO) DUMPCURVES(C3Dnew,C2);
-#endif
 }*/ // - merge 04-07-97
 
 

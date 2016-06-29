@@ -27,10 +27,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool,MMgt_TShared)
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceGAP();
-#endif
-
 //=======================================================================
 //function : TopOpeBRepDS_GapTool
 //purpose  : 
@@ -120,11 +116,6 @@ Standard_Boolean TopOpeBRepDS_GapTool::Curve(const Handle(TopOpeBRepDS_Interfere
       }
     }
   }
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepDS_GettraceGAP()) {
-    cout <<"TopOpeBRepDS_GapTool::Curve Point "<<I->Geometry()<<" -> Pas sur Courbe "<<endl;
-  }
-#endif 
   return 0;
 }
 

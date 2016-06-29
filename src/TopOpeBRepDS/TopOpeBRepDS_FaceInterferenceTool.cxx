@@ -37,29 +37,6 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
-extern Standard_Boolean TopOpeBRepDS_GettracePEI();
-extern Standard_Boolean TopOpeBRepDS_GettracePFI();
-extern Standard_Boolean TopOpeBRepDS_GettracePI();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-static Standard_Boolean FTRCF(const Standard_Integer F) {
-  Standard_Boolean b1 = TopOpeBRepDS_GettracePFI();
-  Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
-  Standard_Boolean b3 = TopOpeBRepDS_GettraceSPSX(F);
-  return (b1 || b2 || b3);
-}
-//unreferenced function, commented 
-/*
-static Standard_Boolean FTRCE(const Standard_Integer E) {
-  Standard_Boolean b1 = TopOpeBRepDS_GettracePEI();
-  Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
-  Standard_Boolean b3 = TopOpeBRepDS_GettraceSPSX(E);
-  return (b1 || b2 || b3);
-}*/
-extern void debredfac(const Standard_Integer I);
-#endif
-
 static Standard_Boolean STATIC_TOREVERSE = Standard_False; // xpu150498
 #define M_FORWARD(ori) (ori == TopAbs_FORWARD)
 #define M_REVERSED(ori) (ori == TopAbs_REVERSED)
@@ -93,22 +70,6 @@ Standard_EXPORT Standard_Boolean FUN_Parameters
 }
 
 //------------------------------------------------------
-// Unused :
-/*#ifdef OCCT_DEBUG
-static Standard_Boolean FUN_Parameters
-(const Standard_Real& Param,const TopoDS_Shape& E,const TopoDS_Shape& F,Standard_Real& u,Standard_Real& v)
-{
-  // Get 2d coordinates of point of param <Param> on <E> of <F>.
-  BRepAdaptor_Curve2d curv2d(TopoDS::Edge(E),TopoDS::Face(F));
-  gp_Pnt2d p2d;
-  curv2d.D0(Param,p2d);
-  p2d.Coord(u,v);
-  return Standard_True;
-}
-#endif
-*/
-
-//------------------------------------------------------
 Standard_EXPORT void FUN_ComputeGeomData
 (const TopoDS_Shape& F,const gp_Pnt2d& uv,gp_Dir& Norm)
 { 
@@ -123,18 +84,6 @@ static Standard_Boolean FUN_sphere(const TopoDS_Shape& F)
   GeomAdaptor_Surface GAS(su);  
   return (GAS.GetType() == GeomAbs_Sphere);
 }
-
-//------------------------------------------------------
-//unreferenced function, commented 
-/*#ifdef OCCT_DEBUG
-static void FUN_middleUV(const TopoDS_Shape& F,Standard_Real& u,Standard_Real& v)
-{
-  Handle(Geom_Surface) su = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
-  GeomAdaptor_Surface GAS(su);
-  u = (GAS.LastUParameter() + GAS.FirstUParameter())*.5;
-  v = (GAS.LastVParameter() + GAS.FirstVParameter())*.5;
-}
-#endif*/
 
 //------------------------------------------------------
 Standard_EXPORT void FUN_ComputeGeomData
@@ -206,11 +155,7 @@ void TopOpeBRepDS_FaceInterferenceTool::Init
   Handle(TopOpeBRepDS_ShapeShapeInterference) I (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(Iin)); if (I.IsNull()) return;  
   const TopoDS_Face& FI = TopoDS::Face(FFI);
   const TopoDS_Edge& E = TopoDS::Edge(EE);
-#ifdef OCCT_DEBUG
-//  Standard_Integer iFI = myPBDS->Shape(FI);
-  //  Standard_Boolean TRCFI = FTRCF(iFI);if (TRCFI) debredfac(iFI);
-#endif
-  
+
   //   xpu150498
   STATIC_TOREVERSE = Standard_False;
   if (EEisnew) {
@@ -271,40 +216,17 @@ void TopOpeBRepDS_FaceInterferenceTool::Add
   const TopoDS_Face& FI = TopoDS::Face(FFI);
   const TopoDS_Face& FT = TopoDS::Face(FFT);
   const TopoDS_Edge& E = TopoDS::Edge(EE);
-#ifdef OCCT_DEBUG
-  Standard_Integer iFI =
-#endif
-            myPBDS->Shape(FI);
+  myPBDS->Shape(FI);
 //    myPBDS->Shape(FT);
-
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRCFI = FTRCF(iFI);if (TRCFI) debredfac(iFI);
-#endif
-
   if (!E.IsSame(myEdge)) {FUN_RaiseError();return;}
 
   if (!myrefdef) { 
     Init(FI,E,EEisnew,I); // premiere interference sur face orientee : Init
     return;
   }
-
-#ifdef OCCT_DEBUG
-//  TopAbs_Orientation FTori = FT.Orientation();
-#endif
   TopOpeBRepDS_Kind GT,ST; Standard_Integer G,S; FDS_data(I,GT,G,ST,S);
-#ifdef OCCT_DEBUG
-//  Standard_Boolean gisb = I->GBound(); 
-#endif
   const TopoDS_Edge& EG = TopoDS::Edge(myPBDS->Shape(G));
-#ifdef OCCT_DEBUG
-//  Standard_Boolean ghassd3d =
-#endif
-                 FDS_HasSameDomain3d(*myPBDS,EG);
-#ifdef OCCT_DEBUG
-//  Standard_Integer gr = myPBDS->SameDomainRef(G);
-//  const TopoDS_Edge& ER = TopoDS::Edge(myPBDS->Shape(gr));
-//  Standard_Integer gisr = (G == gr);
-#endif
+  FDS_HasSameDomain3d(*myPBDS,EG);
   Standard_Boolean same = !STATIC_TOREVERSE; // xpu150498
   
   TopAbs_Orientation oriloc = I->Transition().Orientation(TopAbs_IN);

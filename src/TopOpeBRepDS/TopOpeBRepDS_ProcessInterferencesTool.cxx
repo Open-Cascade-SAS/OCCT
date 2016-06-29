@@ -35,22 +35,6 @@
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettracePEI();
-extern Standard_Boolean TopOpeBRepDS_GettracePI();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-static Standard_Boolean TRCE(const Standard_Integer EIX) {
-  Standard_Boolean b1 = TopOpeBRepDS_GettracePEI();
-  Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
-  Standard_Boolean b3 = TopOpeBRepDS_GettraceSPSX(EIX);
-  return (b1 || b2 || b3);
-}
-Standard_EXPORT void debredudoub(const Standard_Integer /*i*/) {}
-Standard_EXPORT void debredudoub1(const Standard_Integer /*i*/) {}
-Standard_EXPORT void debredudoub2(const Standard_Integer /*i*/) {} 
-Standard_EXPORT void debredunk(const Standard_Integer /*i*/) {}
-#endif
-
 //-----------------------------------------------------------------------
 Standard_EXPORT Handle(TopOpeBRepDS_Interference) MakeCPVInterference
 (const TopOpeBRepDS_Transition& T, // transition
@@ -343,15 +327,11 @@ Standard_EXPORT void FUN_reducedoublons
 //------------------------------------------------------
 (TopOpeBRepDS_ListOfInterference& LI,const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SIX)    
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRC=TRCE(SIX); if (TRC) debredudoub(SIX);
-  Standard_Boolean modif = Standard_False;
-#endif
+
   const TopoDS_Shape& E = BDS.Shape(SIX);
   TopOpeBRepDS_ListIteratorOfListOfInterference it1;
   
   // process interferences of LI with VERTEX geometry
-  
   it1.Initialize(LI);
   while (it1.More() ) {
     Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
@@ -359,10 +339,6 @@ Standard_EXPORT void FUN_reducedoublons
     TopOpeBRepDS_Kind GT1,ST1; Standard_Integer G1,S1; FDS_data(I1,GT1,G1,ST1,S1);
     TopAbs_ShapeEnum tsb1,tsa1; Standard_Integer isb1,isa1;
     FDS_Tdata(I1,tsb1,isb1,tsa1,isa1);
-    
-#ifdef OCCT_DEBUG
-    if (TRC) debredudoub1(SIX);
-#endif
     
     TopOpeBRepDS_ListIteratorOfListOfInterference it2(it1); it2.Next();
     while ( it2.More() ) {
@@ -372,10 +348,6 @@ Standard_EXPORT void FUN_reducedoublons
       TopOpeBRepDS_Kind GT2,ST2; Standard_Integer G2,S2; FDS_data(I2,GT2,G2,ST2,S2);
       TopAbs_ShapeEnum tsb2,tsa2; Standard_Integer isb2,isa2;
       FDS_Tdata(I2,tsb2,isb2,tsa2,isa2);
-      
-#ifdef OCCT_DEBUG
-      if (TRC) debredudoub2(SIX);
-#endif
       
       Standard_Boolean idGS = (GT2 == GT1 && G2 == G1 && ST2 == ST1 && S2 == S1);
       if (idGS) {
@@ -412,10 +384,6 @@ Standard_EXPORT void FUN_reducedoublons
 	}	
 	if (idT) {
 	  // les 2 interferences I1 et I2 sont identiques : on supprime I2
-#ifdef OCCT_DEBUG
-	  if(TRC){cout<<"shape "<<SIX<<" : doublon ";I1->Dump(cout);cout<<endl;}
-	  modif = Standard_True;
-#endif
 	  LI.Remove(it2);
 	}
 	else it2.Next();
@@ -424,10 +392,6 @@ Standard_EXPORT void FUN_reducedoublons
     }
     it1.Next();
   } // it1.More()
-  
-#ifdef OCCT_DEBUG
-  if(TRC && !modif){ FDS_dumpLI(LI,"sans doublon : "); }
-#endif  
 } // reducedoublons
 
 //------------------------------------------------------
@@ -435,16 +399,8 @@ Standard_EXPORT void FUN_unkeepUNKNOWN
 //------------------------------------------------------
   (TopOpeBRepDS_ListOfInterference& LI,
    TopOpeBRepDS_DataStructure& /*BDS*/,
-#ifdef OCCT_DEBUG
-   const Standard_Integer SIX)    
-#else
    const Standard_Integer)    
-#endif
 {
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRC=TRCE(SIX); if (TRC) debredunk(SIX);
-  Standard_Boolean modif = Standard_False;
-#endif
 //                 BDS.Shape(SIX);
   TopOpeBRepDS_ListIteratorOfListOfInterference it1;
   
@@ -457,20 +413,10 @@ Standard_EXPORT void FUN_unkeepUNKNOWN
     Standard_Boolean isunk = T1.IsUnknown();
 
     if (isunk) {
-#ifdef OCCT_DEBUG
-      if(TRC) {
-	if (isunk) debredunk(SIX);
-	cout<<"shape "<<SIX<<" : UNKNOWN transition ";I1->Dump(cout);cout<<endl;
-      }
-#endif
       LI.Remove(it1);
     }
     else it1.Next();
   } // it1.More()
-  
-#ifdef OCCT_DEBUG
-  if(TRC && !modif){ FDS_dumpLI(LI,"sans UNKNOWN : "); }
-#endif  
 } // unkeepUNKNOWN
 
 // -----------------------------------------------------------
@@ -481,10 +427,6 @@ static Standard_Integer FUN_select3dI(const Standard_Integer SIX, TopOpeBRepDS_D
   l3dFE.Clear();
   lFEresi.Clear();
   Standard_Integer n3d = 0;
-#ifdef OCCT_DEBUG
-  Standard_Boolean TRC=TRCE(SIX); 
-#endif
-
   Standard_Integer nFE = lFE.Extent();
   if (nFE <= 1) return n3d;
 
@@ -556,18 +498,11 @@ static Standard_Integer FUN_select3dI(const Standard_Integer SIX, TopOpeBRepDS_D
 	if (!BDS.HasShape(Eshared)) 
 	  {Standard_Integer OOrank = BDS.AncestorRank(OOv); BDS.AddShape(Eshared,OOrank);}
 	S1 = BDS.Shape(Eshared); S2 = S1;
-#ifdef OCCT_DEBUG
-	if (TRC) {cout<<"    finding out E shared by F"<<IB1<<" and F"<<IB2;
-		  cout<<" new support is E"<<S1<<endl;}
-#endif
       } 	
 
       if (sameSorsharedEbyTRASHA) { // xpu : 09-03-98
 	Standard_Boolean sdm = FUN_ds_sdm(BDS,BDS.Shape(SIX),BDS.Shape(S1));
 	if (sdm) {
-#ifdef OCCT_DEBUG
-	  if (TRC) cout<<"  NO I3d : e"<<SIX<<" same domain with e"<<S1<<endl;
-#endif
 	  it2.Next(); continue;
 	}
       } // xpu : 09-03-98
@@ -705,10 +640,7 @@ Standard_EXPORT Standard_Integer FUN_select2dI
   TColStd_MapOfInteger mapftra;
   TopOpeBRepDS_ListOfInterference lIE; FDS_copy(BDS.ShapeInterferences(SIX),lIE);
   TopOpeBRepDS_ListOfInterference l3dF;
-#ifdef OCCT_DEBUG
-//  Standard_Integer n3d =
-#endif
-            FUN_selectSKinterference(lIE,TopOpeBRepDS_FACE,l3dF);
+  FUN_selectSKinterference(lIE,TopOpeBRepDS_FACE,l3dF);
   for (TopOpeBRepDS_ListIteratorOfListOfInterference itt(l3dF); itt.More(); itt.Next()) mapftra.Add(itt.Value()->Support());
   TopOpeBRepDS_ListOfInterference lII; TopOpeBRepDS_ListIteratorOfListOfInterference it1(lI);
   while (it1.More()) {
@@ -874,16 +806,7 @@ Standard_EXPORT void FUN_select3dinterference
   //     I  = (T(face),G=POINT/VERTEX,S=EDGE) in <l3dFE>
   // <-> I' = (T(face),G=POINT/VERTEX,S=FACE) in <l3dF>
 
-#ifdef OCCT_DEBUG
-//  Standard_Integer n3dFE =
-#endif
-              ::FUN_select3dI(SIX,BDS,lFE,lFEresi,l3dFE);
-#ifdef OCCT_DEBUG
-//  Standard_Integer n3dFF =
-#endif
-              ::FUN_select3dISEsameISF(lFE,l3dFE,l3dFEresi,lF,l3dF);
-#ifdef OCCT_DEBUG
-//  Standard_Integer n2dFE =
-#endif
-              FUN_select2dI(SIX,BDS,TopAbs_FACE,lFE,l2dFE); 
+  ::FUN_select3dI(SIX,BDS,lFE,lFEresi,l3dFE);
+  ::FUN_select3dISEsameISF(lFE,l3dFE,l3dFEresi,lF,l3dF);
+  FUN_select2dI(SIX,BDS,TopAbs_FACE,lFE,l2dFE); 
 }

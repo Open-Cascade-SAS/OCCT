@@ -44,10 +44,6 @@ public:
   
   Standard_EXPORT void Parameter (const Standard_Real P);
   
-  Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& OS) const Standard_OVERRIDE;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_CurvePointInterference,TopOpeBRepDS_Interference)
 

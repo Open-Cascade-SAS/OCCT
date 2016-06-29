@@ -48,29 +48,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_HDataStructure,MMgt_TShared)
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceISTO();
-extern Standard_Boolean TopOpeBRepDS_GettraceEDSF(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDSFD(); 
-extern Standard_Boolean TopOpeBRepDS_GettraceDEGEN(); 
-extern Standard_Boolean TopOpeBRepDS_GettracePCI();
-extern Standard_Boolean TopOpeBRepDS_GettracePI();
-extern Standard_Boolean TopOpeBRepDS_GettracePEI();
-extern Standard_Boolean TopOpeBRepDS_GettracePI();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-
-static Standard_Boolean traceSTORE()
-{
-  Standard_Boolean trc = Standard_False;
-  trc = trc || TopOpeBRepDS_GettraceEDSF();
-  trc = trc || TopOpeBRepDS_GettraceDSF();
-  trc = trc || TopOpeBRepDS_GettraceDEGEN();
-  trc = trc || TopOpeBRepDS_GettraceISTO();
-  return trc;
-}
-#endif
-
 static void FUN_HDS_data(const Handle(TopOpeBRepDS_Interference)& I,
 			 TopOpeBRepDS_Kind& GT1,Standard_Integer& G1,
 			 TopOpeBRepDS_Kind& ST1,Standard_Integer& S1)
@@ -705,78 +682,16 @@ Standard_Boolean TopOpeBRepDS_HDataStructure::GetGeometry
   return found;
 }
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
-extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-static Standard_Boolean TRC(const Standard_Integer SIX) {
-  Standard_Boolean b1 = TopOpeBRepDS_GettraceSTRANGE();
-  Standard_Boolean b2 = TopOpeBRepDS_GettraceSPSX(SIX);
-  return (b1 || b2);
-}
-void debstore(const Standard_Integer /*i*/) {}
-#endif
-
 //=======================================================================
 //function : StoreInterference
 //purpose  : Append an interference I to a list of interference LI
 //           Append I to the interf. list connected to I Geometry()
 //=======================================================================
 void TopOpeBRepDS_HDataStructure::StoreInterference
-(const Handle(TopOpeBRepDS_Interference)& I,TopOpeBRepDS_ListOfInterference& LI,
-#ifdef OCCT_DEBUG
- const TCollection_AsciiString& str)
-#else
- const TCollection_AsciiString& )
-#endif
+(const Handle(TopOpeBRepDS_Interference)& I,TopOpeBRepDS_ListOfInterference& LI, const TCollection_AsciiString&)
 {
-#ifdef OCCT_DEBUG
-  const TopOpeBRepDS_Transition& T = I->Transition();
-
-  TopAbs_ShapeEnum sb = T.ShapeBefore();
-  Standard_Integer ib = T.IndexBefore();
-  Standard_Boolean bok = Standard_True;
-  if (ib != 0) {
-    TopAbs_ShapeEnum sbds = myDS.Shape(ib).ShapeType();
-    bok = (sbds == sb);
-  }
-
-  TopAbs_ShapeEnum sa = T.ShapeAfter();
-  Standard_Integer ia = T.IndexAfter();
-  Standard_Boolean aok = Standard_True;
-  if (ia != 0) {
-    TopAbs_ShapeEnum sads = myDS.Shape(ia).ShapeType();
-    aok = (sads == sa);
-  }
-
-  TopOpeBRepDS_Kind ks = I->SupportType();
-  TopAbs_ShapeEnum ss = TopOpeBRepDS::KindToShape(ks);
-  Standard_Integer is = I->Support();
-  Standard_Boolean sok = Standard_True;
-  if ((is != 0) && (ks >= TopOpeBRepDS_EDGE)) {
-    TopAbs_ShapeEnum ssds = myDS.Shape(is).ShapeType();
-    sok = (ssds == ss);
-  }
-  
-  if (!aok) { 
-    if (TRC(ia)) cout<<"HDSstore ia,ib  is "<<ia<<","<<ib<<"  "<<is<<endl;
-    debstore(ia);
-  }
-  if (!bok ) {
-    if (TRC(ib)) cout<<"HDSstore ia,ib  is "<<ia<<","<<ib<<"  "<<is<<endl;
-    debstore(ib);
-  }
-  if (!sok ) {
-    if (TRC(is)) cout<<"HDSstore ia,ib  is "<<ia<<","<<ib<<"  "<<is<<endl;
-    debstore(is);
-  }
-#endif
-
   // append I to list LI
   LI.Append(I);
-
-#ifdef OCCT_DEBUG
-  Standard_Boolean appendtoG = Standard_False;
-#endif
   Standard_Integer G = I->Geometry();
 
   // append I to list of interference connected to G = I->Geometry()
@@ -789,16 +704,10 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
     break;
     
   case TopOpeBRepDS_SURFACE :
-#ifdef OCCT_DEBUG
-    appendtoG = Standard_True;
-#endif
     myDS.ChangeSurfaceInterferences(G).Append(I);
     break;
     
   case TopOpeBRepDS_CURVE :
-#ifdef OCCT_DEBUG
-    appendtoG = Standard_True;
-#endif
     myDS.ChangeCurveInterferences(G).Append(I);
     break;
     
@@ -809,15 +718,6 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
   default:
     break;
   }
-
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = ::traceSTORE();
-  if (trc) {
-    cout<<str<<"append "; I->Dump(cout);
-    if (appendtoG) cout<<" and to G"<<G<<" list";
-    cout<<endl;
-  }
-#endif
 }
 
 //=======================================================================
@@ -825,26 +725,13 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
 //purpose  : 
 //=======================================================================
 void TopOpeBRepDS_HDataStructure::StoreInterference
-(const Handle(TopOpeBRepDS_Interference)& I,const TopoDS_Shape& S,
-#ifdef OCCT_DEBUG
- const TCollection_AsciiString& str)
-#else
- const TCollection_AsciiString& )
-#endif
+(const Handle(TopOpeBRepDS_Interference)& I,const TopoDS_Shape& S, const TCollection_AsciiString&)
 {
   Standard_Boolean h = myDS.HasShape(S);
   if ( !h ) {
     Standard_ProgramError::Raise("StoreInterference on shape out of DS");
     return;
   }
-
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = ::traceSTORE();
-  TopOpeBRepDS_Kind ks = TopOpeBRepDS::ShapeToKind(S.ShapeType());
-  Standard_Integer is = myDS.Shape(S);
-  if (trc) TopOpeBRepDS::Print(ks,is,cout,str," : ");
-#endif
-
   StoreInterference(I,myDS.ChangeShapeInterferences(S));
 }
 
@@ -855,12 +742,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
 
 void TopOpeBRepDS_HDataStructure::StoreInterference
 (const Handle(TopOpeBRepDS_Interference)& I,
- const Standard_Integer IS,
-#ifdef OCCT_DEBUG
- const TCollection_AsciiString& str)
-#else
- const TCollection_AsciiString& )
-#endif
+ const Standard_Integer IS, const TCollection_AsciiString&)
 {
   Standard_Integer n = myDS.NbShapes();
   if ( IS < 1 || IS > n ) {
@@ -868,13 +750,6 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
     return;
   }
 
-#ifdef OCCT_DEBUG
-  Standard_Boolean trc = ::traceSTORE();
-  const TopoDS_Shape& S = Shape(IS);
-  TopOpeBRepDS_Kind ks = TopOpeBRepDS::ShapeToKind(S.ShapeType());
-  if (trc) TopOpeBRepDS::Print(ks,IS,cout,str," : ");
-#endif
-  
   StoreInterference(I,myDS.ChangeShapeInterferences(IS));
 }
 
