@@ -1,0 +1,19 @@
+puts "========"
+puts "CR27655"
+puts "========"
+puts ""
+############################################################################################
+puts "Visualization - AIS_Triangulation don't disappears after setting non-zero transparency"
+############################################################################################
+
+vclear
+vinit View1
+
+box b 10 10 10
+vdisplay b -dispMode 1
+vdrawsphere s 100
+vsettransparency s 0.7
+
+vfit
+
+vdump $imagedir/${casename}_0.png

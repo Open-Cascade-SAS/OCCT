@@ -97,6 +97,13 @@ Standard_Integer AddVertex (const Graphic3d_Vec3& theVertex);
   //! On all architecture proccers type (x86 or SPARC) you can
   //! use this byte order.
   Standard_EXPORT Standard_Integer AddVertex (const gp_Pnt& aVertice, const Standard_Integer aColor);
+
+  //! Adds a vertice and vertex color in the vertex array.
+  //! returns the actual vertex number.
+  //! Warning: <theColor> is ignored when the <hasVColors>
+  //! constructor parameter is FALSE
+  Standard_Integer AddVertex (const gp_Pnt&           theVertex,
+                              const Graphic3d_Vec4ub& theColor);
   
   //! Adds a vertice and vertex normal in the vertex array.
   //! returns the actual vertex number.
@@ -210,6 +217,10 @@ Standard_Integer AddVertex (const Graphic3d_Vec3& theVertex);
   
   //! Change the vertex color of rank <anIndex> in the array.
     void SetVertexColor (const Standard_Integer anIndex, const Standard_Real R, const Standard_Real G, const Standard_Real B);
+
+  //! Change the vertex color of rank <theIndex> in the array.
+  void SetVertexColor (const Standard_Integer  theIndex,
+                       const Graphic3d_Vec4ub& theColor);
   
   //! Change the vertex color of rank <anIndex> in the array.
   //! aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red

@@ -68,6 +68,14 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Graphic3d_
   return AddVertex (theVertex.x(), theVertex.y(), theVertex.z());
 }
 
+inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const gp_Pnt&           theVertex,
+                                                                const Graphic3d_Vec4ub& theColor)
+{
+  const Standard_Integer anIndex = AddVertex (theVertex);
+  SetVertexColor (anIndex, theColor);
+  return anIndex;
+}
+
 inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Standard_Real theX,
                                                                 const Standard_Real theY,
                                                                 const Standard_Real theZ)
@@ -171,6 +179,12 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertexColor (const Standard_Integer 
     SetVertexColor (theIndex, *reinterpret_cast<Standard_Integer*>(&aColor));
   }
   myAttribs->NbElements = Max (theIndex, myAttribs->NbElements);
+}
+
+inline void Graphic3d_ArrayOfPrimitives::SetVertexColor (const Standard_Integer  theIndex,
+                                                         const Graphic3d_Vec4ub& theColor)
+{
+  SetVertexColor (theIndex, *reinterpret_cast<const Standard_Integer*> (&theColor));
 }
 
 inline void Graphic3d_ArrayOfPrimitives::SetVertexNormal (const Standard_Integer theIndex,

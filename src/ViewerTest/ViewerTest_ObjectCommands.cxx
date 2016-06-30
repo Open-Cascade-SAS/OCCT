@@ -3167,20 +3167,13 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
 
   // stupid initialization of Green color in RGBA space as integer
   // probably wrong for big-endian CPUs
-  Standard_Integer aRed    = 0;
-  Standard_Integer aGreen  = 255;
-  Standard_Integer aBlue   = 0;
-  Standard_Integer anAlpha = 0; // not used
-  Standard_Integer aColorInt = aRed;
-  aColorInt += aGreen  << 8;
-  aColorInt += aBlue   << 16;
-  aColorInt += anAlpha << 24;
+  const Graphic3d_Vec4ub aColor (0, 255, 0, 0);
 
   // setup colors array per vertex
   Handle(TColStd_HArray1OfInteger) aColorArray = new TColStd_HArray1OfInteger (1, aNumberPoints);
   for (Standard_Integer aNodeId = 1; aNodeId <= aNumberPoints; ++aNodeId)
   {
-    aColorArray->SetValue (aNodeId, aColorInt);
+    aColorArray->SetValue (aNodeId, *reinterpret_cast<const Standard_Integer*> (&aColor));
   }
   aShape->SetColors (aColorArray);
 
