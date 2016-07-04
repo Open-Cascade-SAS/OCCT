@@ -1,0 +1,21 @@
+puts "========"
+puts "CR27621_1"
+puts "========"
+puts ""
+###################################################################
+puts "Highlighting with color remains visible when shape is erased"
+###################################################################
+
+vclear
+vinit View1
+
+box b 1 2 3
+vdisplay b -dispmode 1
+vfit
+vmoveto 250 250
+
+vdump $imagedir/${casename}_highlighted.png
+
+verase b
+
+vdump $imagedir/${casename}_erased.png

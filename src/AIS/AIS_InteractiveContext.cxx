@@ -2410,6 +2410,18 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
     myMainPM->SetVisibility (theIObj, aDispModeIter.Value(), Standard_False);
   }
 
+  if (aStatus->IsHilighted()
+   && theIObj->HasHilightMode())
+  {
+    myMainPM->Unhighlight (theIObj, aDispMode);
+  }
+
+  if (!myLastPicked.IsNull()
+    && myLastPicked->Selectable() == theIObj)
+  {
+    myMainPM->ClearImmediateDraw();
+  }
+
   if (IsSelected (theIObj)
   && !aStatus->IsDModeIn (aDispMode))
   {
@@ -2476,6 +2488,12 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   {
     myMainPM->Erase (theIObj, aDispModeIter.Value());
     myMainPM->Clear (theIObj, aDispModeIter.Value());
+  }
+
+  if (aStatus->IsHilighted()
+   && theIObj->HasHilightMode())
+  {
+    myMainPM->Unhighlight (theIObj, theIObj->HilightMode());
   }
 
   // Object removes from Detected sequence
