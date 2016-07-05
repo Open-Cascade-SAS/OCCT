@@ -2989,3 +2989,29 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
 
   theView->FitAll (aBndSelected, theMargin, theToUpdate);
 }
+
+//=======================================================================
+//function : SetTransformPersistence
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObject,
+                                                      const Graphic3d_TransModeFlags&      theFlag,
+                                                      const gp_Pnt&                        thePoint)
+{
+  theObject->SetTransformPersistence (theFlag, thePoint);
+
+  if (!myObjects.IsBound (theObject))
+  {
+    return;
+  }
+
+  mgrSelector->UpdateSelection (theObject);
+
+  const Standard_Integer    aLayerId   = myObjects.Find (theObject)->GetLayerIndex();
+  const Handle(V3d_Viewer)& aCurViewer = CurrentViewer();
+  for (aCurViewer->InitActiveViews(); aCurViewer->MoreActiveViews(); aCurViewer->NextActiveViews())
+  {
+    aCurViewer->ActiveView()->View()->InvalidateBVHData (aLayerId);
+    aCurViewer->ActiveView()->View()->InvalidateZLayerBoundingBox (aLayerId);
+  }
+}

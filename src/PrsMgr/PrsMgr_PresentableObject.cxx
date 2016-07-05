@@ -326,16 +326,6 @@ void PrsMgr_PresentableObject::SetTransformPersistence (const Graphic3d_TransMod
 }
 
 //=======================================================================
-//function : SetTransformPersistence
-//purpose  : 
-//=======================================================================
-void  PrsMgr_PresentableObject::SetTransformPersistence( 
-				       const Graphic3d_TransModeFlags& TheFlag )
-{
-  SetTransformPersistence( TheFlag, gp_Pnt(0,0,0) );
-}
-
-//=======================================================================
 //function : GetTransformPersistence
 //purpose  : 
 //=======================================================================

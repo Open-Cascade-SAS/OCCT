@@ -595,7 +595,7 @@ Standard_Real OpenGl_View::considerZoomPersistenceObjects (const Graphic3d_ZLaye
                                                            const Standard_Integer          theWindowHeight,
                                                            const Standard_Boolean          theToIgnoreInfiniteFlag) const
 {
-  if (myZLayers.LayerIDs().IsBound (theLayerId) && theCamera->IsOrthographic())
+  if (myZLayers.LayerIDs().IsBound (theLayerId))
   {
     return myZLayers.Layer (theLayerId).considerZoomPersistenceObjects (Identification(),
                                                                         theCamera,

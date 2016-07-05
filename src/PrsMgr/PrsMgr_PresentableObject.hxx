@@ -98,11 +98,8 @@ public:
   //! -   X < 0.0, Y > 0.0 - left  upper corner of view window;
   //! -   X < 0.0, Y < 0.0 - left  lower corner of view window.
   //! And Z coordinate defines the gap from border of view window (except center position).
-  Standard_EXPORT virtual void SetTransformPersistence (const Graphic3d_TransModeFlags& aFlag, const gp_Pnt& APoint);
-  
-  //! Calls previous method  with  point  (0,0,0)
-  Standard_EXPORT void SetTransformPersistence (const Graphic3d_TransModeFlags& aFlag);
-  
+  Standard_EXPORT virtual void SetTransformPersistence (const Graphic3d_TransModeFlags& aFlag, const gp_Pnt& APoint = gp_Pnt (0.0, 0.0, 0.0));
+
   //! Gets  Transform  Persistence Mode  for  this  object
   Standard_EXPORT Graphic3d_TransModeFlags GetTransformPersistenceMode() const;
   

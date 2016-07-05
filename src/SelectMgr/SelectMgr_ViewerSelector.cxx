@@ -322,6 +322,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     {
       const Graphic3d_Mat4d& aProjection = mySelectingVolumeMgr.ProjectionMatrix();
       const Graphic3d_Mat4d& aWorldView  = mySelectingVolumeMgr.WorldViewMatrix();
+
       Standard_Integer aViewportWidth;
       Standard_Integer aViewportHeight;
       mySelectingVolumeMgr.WindowSize (aViewportWidth, aViewportHeight);
@@ -807,6 +808,27 @@ void SelectMgr_ViewerSelector::AddSelectionToObject (const Handle(SelectMgr_Sele
   {
     AddSelectableObject (theObject);
     AddSelectionToObject (theObject, theSelection);
+  }
+}
+
+//=======================================================================
+// function : MoveSelectableObject
+// purpose  :
+//=======================================================================
+void SelectMgr_ViewerSelector::MoveSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject)
+{
+  if (!mySelectableObjects.Remove (theObject))
+  {
+    mySelectableObjectsTrsfPers.Remove (theObject);
+  }
+
+  if (!theObject->TransformPersistence().Flags)
+  {
+    mySelectableObjects.Append (theObject);
+  }
+  else
+  {
+    mySelectableObjectsTrsfPers.Append (theObject);
   }
 }
 

@@ -974,3 +974,35 @@ void SelectMgr_SelectionManager::SetSelectionSensitivity (const Handle(SelectMgr
     }
   }
 }
+
+//=======================================================================
+//function : UpdateSelection
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectionManager::UpdateSelection (const Handle(SelectMgr_SelectableObject)& theObject)
+{
+  if (myGlobal.Contains (theObject))
+  {
+    for (TColStd_MapIteratorOfMapOfTransient aSelectorsIter (mySelectors); aSelectorsIter.More(); aSelectorsIter.Next())
+    {
+      Handle(SelectMgr_ViewerSelector) aSelector = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorsIter.Key());
+      if (aSelector->Contains (theObject))
+      {
+        aSelector->MoveSelectableObject (theObject);
+      }
+    }
+  }
+
+  if (myLocal.IsBound (theObject))
+  {
+    const SelectMgr_SequenceOfSelector& aSelectors = myLocal (theObject);
+    for (SelectMgr_SequenceOfSelector::Iterator aSelectorsIter (aSelectors); aSelectorsIter.More(); aSelectorsIter.Next())
+    {
+      Handle(SelectMgr_ViewerSelector)& aSelector = aSelectorsIter.ChangeValue();
+      if (aSelector->Contains (theObject))
+      {
+        aSelector->MoveSelectableObject (theObject);
+      }
+    }
+  }
+}

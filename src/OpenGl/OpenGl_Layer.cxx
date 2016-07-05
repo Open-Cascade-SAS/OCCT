@@ -168,11 +168,6 @@ const Graphic3d_BndBox4f& OpenGl_Layer::BoundingBox (const Standard_Integer     
         {
           if (!theToIgnoreInfiniteFlag && (aStructure->TransformPersistence.Flags & Graphic3d_TMF_ZoomPers))
           {
-            if (!theCamera->IsOrthographic())
-            {
-              continue;
-            }
-
             BVH_Vec4f aTPPoint (static_cast<float> (aStructure->TransformPersistence.Point.x()),
                                 static_cast<float> (aStructure->TransformPersistence.Point.y()),
                                 static_cast<float> (aStructure->TransformPersistence.Point.z()),

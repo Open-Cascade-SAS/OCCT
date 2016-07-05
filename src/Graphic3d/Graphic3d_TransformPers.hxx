@@ -158,25 +158,34 @@ void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
     }
 
     // Prevent zooming.
-    if (Flags & Graphic3d_TMF_ZoomPers)
+    if ((Flags == Graphic3d_TMF_TriedronPers)
+     || (Flags & Graphic3d_TMF_ZoomPers))
     {
-      const T aDet00 = (2.0f / theViewportWidth) / theProjection.GetValue(0, 0);
-      const T aDet11 = (2.0f / theViewportHeight) / theProjection.GetValue(1, 1);
-      const T aDet2 = Max (aDet00, aDet11);
+      const T aSize = static_cast<T> (1.0);
+      const Standard_Integer aViewport[4] = { 0, 0, theViewportHeight, theViewportHeight };
+      NCollection_Mat4<T> aWorldView;
+      aWorldView.InitIdentity();
 
-      theProjection.ChangeValue(0, 0) *= aDet00;
-      theProjection.ChangeValue(1, 1) *= aDet11;
-      theProjection.ChangeValue(2, 2) *= aDet2;
-    }
+      NCollection_Vec3<T> aWinCoordsRefPoint;
+      Graphic3d_TransformUtils::Project (static_cast<T> (Point.x()),
+                                         static_cast<T> (Point.y()),
+                                         static_cast<T> (Point.z()),
+                                         theWorldView, theProjection, aViewport,
+                                         aWinCoordsRefPoint.x(), aWinCoordsRefPoint.y(), aWinCoordsRefPoint.z());
 
-    if (Flags == Graphic3d_TMF_TriedronPers)
-    {
-      // Compute fixed-zoom multiplier. Actually function works ugly with TelPerspective!
-      const T aDet2 = static_cast<T> (0.002) / Max (theProjection.GetValue (1, 1), theProjection.GetValue (0, 0));
+      NCollection_Vec3<T> anUnProj1;
+      Graphic3d_TransformUtils::UnProject (aWinCoordsRefPoint.x(), aWinCoordsRefPoint.y(), aWinCoordsRefPoint.z(),
+                                           aWorldView, theProjection, aViewport,
+                                           anUnProj1.x(), anUnProj1.y(), anUnProj1.z());
 
-      theProjection.ChangeValue (0, 0) *= aDet2;
-      theProjection.ChangeValue (1, 1) *= aDet2;
-      theProjection.ChangeValue (2, 2) *= aDet2;
+      NCollection_Vec3<T> anUnProj2;
+      Graphic3d_TransformUtils::UnProject (aWinCoordsRefPoint.x(), aWinCoordsRefPoint.y() + aSize, aWinCoordsRefPoint.z(),
+                                           aWorldView, theProjection, aViewport,
+                                           anUnProj2.x(), anUnProj2.y(), anUnProj2.z());
+
+      const T aScale = (anUnProj2.y() - anUnProj1.y()) / aSize;
+
+      Graphic3d_TransformUtils::Scale (theWorldView, aScale, aScale, aScale);
     }
 
     // Prevent translation by nullifying translation component.
@@ -188,23 +197,6 @@ void Graphic3d_TransformPers::Apply (NCollection_Mat4<T>& theProjection,
       theProjection.SetValue (0, 3, static_cast<T> (0.0));
       theProjection.SetValue (1, 3, static_cast<T> (0.0));
       theProjection.SetValue (2, 3, static_cast<T> (0.0));
-    }
-
-    // Prevent scaling-on-axis.
-    if (Flags & Graphic3d_TMF_ZoomPers)
-    {
-      NCollection_Vec3<T> aVecX = theWorldView.GetColumn (0).xyz();
-      NCollection_Vec3<T> aVecY = theWorldView.GetColumn (1).xyz();
-      NCollection_Vec3<T> aVecZ = theWorldView.GetColumn (2).xyz();
-      T aScaleX = aVecX.Modulus();
-      T aScaleY = aVecY.Modulus();
-      T aScaleZ = aVecZ.Modulus();
-      for (Standard_Integer anI = 0; anI < 3; ++anI)
-      {
-        theWorldView.ChangeValue (0, anI) /= aScaleX;
-        theWorldView.ChangeValue (1, anI) /= aScaleY;
-        theWorldView.ChangeValue (2, anI) /= aScaleZ;
-      }
     }
 
     // Prevent rotation by nullifying rotation component.

@@ -4557,7 +4557,7 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
   }
   if (aCS->GetTransformPersistenceMode() != Graphic3d_TMF_2d)
   {
-    aCS->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
+    aContext->SetTransformPersistence (aCS, Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
   }
   Standard_Integer aWinWidth, aWinHeight;
   V->Window()->Size (aWinWidth, aWinHeight);

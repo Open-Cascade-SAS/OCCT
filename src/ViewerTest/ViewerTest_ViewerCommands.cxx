@@ -3570,7 +3570,7 @@ static int VColorScale (Draw_Interpretor& theDI,
   }
   if (aCS->GetTransformPersistenceMode() != Graphic3d_TMF_2d)
   {
-    aCS->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
+    aContext->SetTransformPersistence (aCS, Graphic3d_TMF_2d, gp_Pnt (-1.0, -1.0, 0.0));
   }
 
   Standard_Real                   aMinRange    = aCS->GetMin();
@@ -4879,7 +4879,7 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
                             aLineType, aWidth,
                             aTransparency);
 
-  aLine->SetTransformPersistence (Graphic3d_TMF_2d,gp_Pnt(-1,-1,0));
+  aContext->SetTransformPersistence (aLine, Graphic3d_TMF_2d, gp_Pnt (-1.0, -1.0, 0.0));
   aLine->SetZLayer (Graphic3d_ZLayerId_TopOSD);
   aLine->SetToUpdate();
   aContext->Display (aLine, Standard_True);

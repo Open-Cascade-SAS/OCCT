@@ -2846,7 +2846,7 @@ static int VDrawText (Draw_Interpretor& theDI,
 
   if (aTrsfPersFlags != Graphic3d_TMF_None)
   {
-    aTextPrs->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
+    aContext->SetTransformPersistence (aTextPrs, aTrsfPersFlags, aTPPosition);
     aTextPrs->SetZLayer(Graphic3d_ZLayerId_TopOSD);
     if (aTextPrs->Position().Z() != 0)
     {
@@ -2855,7 +2855,7 @@ static int VDrawText (Draw_Interpretor& theDI,
   }
   else if (aTrsfPersFlags != aTextPrs->TransformPersistence().Flags)
   {
-    aTextPrs->SetTransformPersistence (aTrsfPersFlags);
+    aContext->SetTransformPersistence (aTextPrs, aTrsfPersFlags);
   }
   ViewerTest::Display (aName, aTextPrs, Standard_False);
   return 0;

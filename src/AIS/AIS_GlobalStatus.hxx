@@ -90,6 +90,11 @@ public:
   
   Standard_EXPORT Standard_Boolean IsSModeIn (const Standard_Integer aMode) const;
 
+  //! Returns layer index.
+  Standard_Integer GetLayerIndex() const
+  {
+    return myLayerIndex;
+  }
 
 
 

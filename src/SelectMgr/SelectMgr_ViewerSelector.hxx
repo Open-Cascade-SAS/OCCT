@@ -217,6 +217,10 @@ public:
   Standard_EXPORT void AddSelectionToObject (const Handle(SelectMgr_SelectableObject)& theObject,
                                              const Handle(SelectMgr_Selection)& theSelection);
 
+  //! Moves existing object from set of not transform persistence objects
+  //! to set of transform persistence objects (or vice versa).
+  Standard_EXPORT void MoveSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject);
+
   //! Removes selectable object from map of selectable ones
   Standard_EXPORT void RemoveSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject);
 

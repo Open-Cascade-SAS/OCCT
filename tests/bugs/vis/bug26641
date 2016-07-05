@@ -1,0 +1,35 @@
+puts "============"
+puts "CR26641"
+puts "============"
+puts ""
+
+##############################################################################################################
+# 0026641: Visualization, TKOpenGl - handle correctly transformation persistence within perspective projection
+##############################################################################################################
+
+vinit
+vclear
+
+box b0 30 0 0 10 10 10
+box b1 -30 -30 30 10 30 20
+vdisplay b0
+vdisplay b1
+vfit
+
+vdump ${imagedir}/${casename}_none_pers_ortho.png
+
+vdisplay b1 -trsfPers zoom -trsfPersPos -30 -30 30
+vfit
+
+vdump ${imagedir}/${casename}_zoom_pers_ortho.png
+
+vcamera -persp
+vfit
+
+vdump ${imagedir}/${casename}_zoom_pers_persp.png
+
+vselect 30 70
+
+if {[vnbselected] != 1} {
+  puts "ERROR: Transform persistence object is not selected!"
+}

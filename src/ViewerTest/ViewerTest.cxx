@@ -3656,7 +3656,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         }
         if (toSetTrsfPers)
         {
-          aShape->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
+          aCtx->SetTransformPersistence (aShape, aTrsfPersFlags, aTPPosition);
         }
         if (anObjDispMode != -2)
         {
@@ -3710,7 +3710,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     }
     if (toSetTrsfPers)
     {
-      aShape->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
+      aCtx->SetTransformPersistence (aShape, aTrsfPersFlags, aTPPosition);
     }
     if (anObjDispMode != -2)
     {
@@ -4454,6 +4454,7 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
       {
         const Graphic3d_Mat4d& aProjection = aMgr.ProjectionMatrix();
         const Graphic3d_Mat4d& aWorldView  = aMgr.WorldViewMatrix();
+
         Standard_Integer aViewportWidth = 0;
         Standard_Integer aViewportHeight = 0;
         aMgr.WindowSize (aViewportWidth, aViewportHeight);

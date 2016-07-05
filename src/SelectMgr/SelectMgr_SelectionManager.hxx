@@ -125,6 +125,9 @@ public:
                                                 const Standard_Integer theMode,
                                                 const Standard_Integer theNewSens);
 
+  //! Re-adds selectable object in BVHs in all viewer selectors.
+  Standard_EXPORT void UpdateSelection (const Handle(SelectMgr_SelectableObject)& theObj);
+
   DEFINE_STANDARD_RTTIEXT(SelectMgr_SelectionManager,MMgt_TShared)
 
 protected:

@@ -41,6 +41,11 @@ namespace Graphic3d_TransformUtils
     typedef Graphic3d_Vec4 Vec4;
   };
 
+  //! Converts gp_Trsf to Graphic3d_Mat4.
+  template<class T>
+  static void Convert (const gp_Trsf&                theTransformation,
+                       typename MatrixType<T>::Mat4& theOut);
+
   //! Constructs a 3D orthographic projection matrix.
   template<class T>
   static void Ortho (typename MatrixType<T>::Mat4& theOut,
@@ -112,6 +117,37 @@ namespace Graphic3d_TransformUtils
                          T                             theX,
                          T                             theY,
                          T                             theZ);
+
+  //! Returns scaling factor from 3x3 affine matrix.
+  template<class T>
+  static Standard_Real ScaleFactor (const typename MatrixType<T>::Mat4& theMatrix);
+}
+
+// =======================================================================
+// function : Convert
+// purpose  :
+// =======================================================================
+template<class T>
+void Graphic3d_TransformUtils::Convert (const gp_Trsf&                theTransformation,
+                                        typename MatrixType<T>::Mat4& theOut)
+{
+  theOut.InitIdentity();
+
+  // Copy a 3x3 submatrix.
+  theOut.ChangeValue (0, 0) = theTransformation.Value (1, 1);
+  theOut.ChangeValue (0, 1) = theTransformation.Value (1, 2);
+  theOut.ChangeValue (0, 2) = theTransformation.Value (1, 3);
+  theOut.ChangeValue (1, 0) = theTransformation.Value (2, 1);
+  theOut.ChangeValue (1, 1) = theTransformation.Value (2, 2);
+  theOut.ChangeValue (1, 2) = theTransformation.Value (2, 3);
+  theOut.ChangeValue (2, 0) = theTransformation.Value (3, 1);
+  theOut.ChangeValue (2, 1) = theTransformation.Value (3, 2);
+  theOut.ChangeValue (2, 2) = theTransformation.Value (3, 3);
+
+  // Add a translate component.
+  theOut.ChangeValue (0, 3) = theTransformation.TranslationPart().X();
+  theOut.ChangeValue (1, 3) = theTransformation.TranslationPart().Y();
+  theOut.ChangeValue (2, 3) = theTransformation.TranslationPart().Z();
 }
 
 // =======================================================================
@@ -447,6 +483,24 @@ static Standard_Boolean Graphic3d_TransformUtils::UnProject (const T            
   theObjZ = anOut.z();
 
   return Standard_True;
+}
+
+// =======================================================================
+// function : ScaleFactor
+// purpose  :
+// =======================================================================
+template<class T>
+static Standard_Real Graphic3d_TransformUtils::ScaleFactor (const typename MatrixType<T>::Mat4& theMatrix)
+{
+  // The determinant of the matrix should give the scale factor (cubed).
+  const T aDeterminant = (theMatrix.GetValue (0, 0) * theMatrix.GetValue (1, 1) * theMatrix.GetValue (2, 2) +
+                          theMatrix.GetValue (0, 1) * theMatrix.GetValue (1, 2) * theMatrix.GetValue (2, 0) +
+                          theMatrix.GetValue (0, 2) * theMatrix.GetValue (1, 0) * theMatrix.GetValue (2, 1))
+                       - (theMatrix.GetValue (0, 2) * theMatrix.GetValue (1, 1) * theMatrix.GetValue (2, 0) +
+                          theMatrix.GetValue (0, 0) * theMatrix.GetValue (1, 2) * theMatrix.GetValue (2, 1) +
+                          theMatrix.GetValue (0, 1) * theMatrix.GetValue (1, 0) * theMatrix.GetValue (2, 2));
+
+  return Pow (static_cast<Standard_Real> (aDeterminant), 1.0 / 3.0);
 }
 
 #endif // _Graphic3d_TransformUtils_HeaderFile

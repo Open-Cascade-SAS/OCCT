@@ -601,6 +601,10 @@ public:
   //! for the view of the Interactive Object anObj.
   Standard_EXPORT void Status (const Handle(AIS_InteractiveObject)& anObj, TCollection_ExtendedString& astatus) const;
   
+  //! Sets transform persistence.
+  Standard_EXPORT void SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObj,
+                                                const Graphic3d_TransModeFlags&      theFlag,
+                                                const gp_Pnt&                        thePoint = gp_Pnt (0.0, 0.0, 0.0));
 
   //! Updates the current viewer, the viewer in Neutral Point.
   //! Objects selected when there is no open local context
