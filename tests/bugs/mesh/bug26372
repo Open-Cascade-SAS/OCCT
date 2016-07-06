@@ -1,0 +1,19 @@
+puts "========="
+puts "OCC26372"
+puts "========="
+puts ""
+#########################################################
+# Meshing of surface of revolution fails in debug mode
+#########################################################
+
+restore [locate_data_file bug26372_RP.brep] result
+
+incmesh result 0.1
+
+checktrinfo result -tri 1055 -nod 537
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
