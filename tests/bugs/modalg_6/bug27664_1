@@ -1,0 +1,56 @@
+puts "========"
+puts "OCC27664"
+puts "========"
+puts ""
+#################################################
+# Incomplete intersection curve from the attached shapes
+#################################################
+
+set ExpTol 1.0e-7
+set GoodNbCurv 3
+set GoodLength 0.6288896355727489
+
+restore [locate_data_file bug27664_pl0.brep] pl0
+restore [locate_data_file bug27664_nsh_8.brep] nsh_8
+explode nsh_8 f
+explode pl0 f
+
+set log [bopcurves pl0_1 nsh_8_4 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Number of curves is bad!"
+}
+
+checkreal TolReached $Toler $ExpTol 0.0 0.1
+
+set clen 0.0
+
+for {set ic 1} { $ic <= ${NbCurv} } { incr ic} {
+  
+  set le [length c_$ic]
+  regexp "The length c_$ic is +(\[-0-9.+eE\]+)" ${le} full ll
+  
+  puts "ll = $ll"
+  
+  set clen [expr $clen+$ll]
+}
+
+puts "Summary length = $clen"
+
+checkreal Length $clen $GoodLength 0.0 1.0e-5
+
+smallview
+don c_*
+fit
+display pl0_1 nsh_8_4
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
+
+top
+don c_*
+fit
+display pl0_1 nsh_8_4
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}_2.png

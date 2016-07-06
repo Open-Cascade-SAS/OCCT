@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC27664"
+puts "========"
+puts ""
+#################################################
+# Incomplete intersection curve from the attached shapes
+#################################################
+
+restore [locate_data_file bug27664_pl0.brep] pl0
+restore [locate_data_file bug27664_nsh_8.brep] nsh_8
+
+bclearobjects
+bcleartools
+
+baddobjects pl0
+baddtools nsh_8
+
+bfillds
+
+# section
+bbop rs 4
+
+if { [string compare -nocase [checksection rs] " nb alone Vertices : 0\n\n"] } {
+  puts "ERROR: the section is not closed"
+} else {
+  puts "The section is OK"
+}
+
+# cut
+bbop result 2
+
+smallview
+donly result
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+checkprops result -s 33.8629

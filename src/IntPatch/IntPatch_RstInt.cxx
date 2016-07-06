@@ -47,6 +47,8 @@
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 
+#include <ElCLib.hxx>
+
 #define myInfinite 1.e15 // the same as was in Adaptor3d_TopolTool
 
 static void Recadre(GeomAbs_SurfaceType typeS1,
@@ -589,29 +591,40 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
     }
 
     Bnd_Box2d BPLin = PLin.Bounding();
-
-    if(SurfaceIsPeriodic) { 
-      Standard_Real xmin,ymin,xmax,ymax,g;
-      BPLin.Get(xmin,ymin,xmax,ymax);
-      g = BPLin.GetGap();
-      BPLin.SetVoid();
-      BPLin.Update(xmin-M_PI-M_PI,ymin,
-		   xmax+M_PI+M_PI,ymax);
-      BPLin.SetGap(g);
-    }
-    if(SurfaceIsBiPeriodic) { 
-      Standard_Real xmin,ymin,xmax,ymax,g;
-      BPLin.Get(xmin,ymin,xmax,ymax);
-      g = BPLin.GetGap();
-      BPLin.SetVoid();
-      BPLin.Update(xmin,ymin-M_PI-M_PI,
-		   xmax,ymax+M_PI+M_PI);
-      BPLin.SetGap(g);
-    }
+    Standard_Real OffsetV = 0.0;
+    Standard_Real OffsetU = 0.0;
 
     switch(arc->GetType())
     { 
-      case GeomAbs_Line: NbEchant=10; break;
+      case GeomAbs_Line:
+        {
+          NbEchant=10;
+          
+          Standard_Real aXmin, aYmin, aXmax, aYmax;
+          BPLin.Get(aXmin, aYmin, aXmax, aYmax);
+          gp_Lin2d aLin = arc->Curve2d().Line();
+          const gp_Pnt2d& aLoc = aLin.Location();
+          const gp_Dir2d& aDir = aLin.Direction();
+
+          //Here, we consider rectangular axis-aligned domain only.
+          const Standard_Boolean isAlongU = (Abs(aDir.X()) > Abs(aDir.Y()));
+
+          if(SurfaceIsPeriodic && !isAlongU)
+          {
+            //Shift along U-direction
+            const Standard_Real aNewLocation = 
+                      ElCLib::InPeriod(aLoc.X(), aXmin, aXmin + M_PI + M_PI);
+            OffsetU = aNewLocation - aLoc.X();
+          }
+          else if(SurfaceIsBiPeriodic && isAlongU)
+          {
+            //Shift along V-direction
+            const Standard_Real aNewLocation = 
+                      ElCLib::InPeriod(aLoc.Y(), aYmin, aYmin + M_PI + M_PI);
+            OffsetV = aNewLocation - aLoc.Y();
+          }
+        }
+        break;
       case GeomAbs_BezierCurve:
       {
         NbEchant = (3 + arc->NbPoles());
@@ -634,26 +647,45 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
       }
     }
 
+    if(SurfaceIsPeriodic) { 
+      Standard_Real xmin,ymin,xmax,ymax,g;
+      BPLin.Get(xmin,ymin,xmax,ymax);
+      g = BPLin.GetGap();
+      BPLin.SetVoid();
+      BPLin.Update(xmin-M_PI-M_PI,ymin,
+		   xmax+M_PI+M_PI,ymax);
+      BPLin.SetGap(g);
+    }
+    if(SurfaceIsBiPeriodic) { 
+      Standard_Real xmin,ymin,xmax,ymax,g;
+      BPLin.Get(xmin,ymin,xmax,ymax);
+      g = BPLin.GetGap();
+      BPLin.SetVoid();
+      BPLin.Update(xmin,ymin-M_PI-M_PI,
+		   xmax,ymax+M_PI+M_PI);
+      BPLin.SetGap(g);
+    }
+
     IntPatch_PolyArc Brise(arc,NbEchant,PFirst,PLast,BPLin);
 
     Standard_Integer IndiceOffsetBiPeriodic = 0;    
-    Standard_Integer IndiceOffsetPeriodic   = 0;    
-    Standard_Real OffsetV = 0.0;
-    Standard_Real OffsetU = 0.0;
-    
+    Standard_Integer IndiceOffsetPeriodic   = 0;
+    const Standard_Real aRefOU = OffsetU,
+                        aRefOV = OffsetV;
+
     do { 
       if(IndiceOffsetBiPeriodic == 1) 
-	OffsetV = -M_PI-M_PI;
+        OffsetV = aRefOV - M_PI - M_PI;
       else if(IndiceOffsetBiPeriodic == 2) 
-	OffsetV = M_PI+M_PI;
-      
+        OffsetV = aRefOV + M_PI + M_PI;
+
       do { 
-	if(IndiceOffsetPeriodic == 1) 
-	  OffsetU = -M_PI-M_PI;
-	else if(IndiceOffsetPeriodic == 2) 
-	  OffsetU = M_PI+M_PI;
-	
-	Brise.SetOffset(OffsetU,OffsetV);
+        if(IndiceOffsetPeriodic == 1) 
+          OffsetU = aRefOU - M_PI - M_PI;
+        else if(IndiceOffsetPeriodic == 2) 
+          OffsetU = aRefOU + M_PI + M_PI;
+
+        Brise.SetOffset(OffsetU,OffsetV);
 	
 	static int debug_polygon2d =0;
 	if(debug_polygon2d) { 
