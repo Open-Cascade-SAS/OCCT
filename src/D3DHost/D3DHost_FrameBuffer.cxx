@@ -56,7 +56,7 @@ void D3DHost_FrameBuffer::Release (OpenGl_Context* theCtx)
   if (myGlD3dDevice != NULL)
   {
     const OpenGl_GlFunctions* aFuncs = (theCtx != NULL && theCtx->IsValid())
-                                     ? (const OpenGl_GlFunctions* )theCtx->core11
+                                     ? theCtx->Functions()
                                      : NULL;
     if (myGlD3dSurf != NULL)
     {
@@ -117,7 +117,7 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
     return Standard_False;
   }
 
-  const OpenGl_GlFunctions* aFuncs = (const OpenGl_GlFunctions* )theCtx->core11;
+  const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (aFuncs->wglDXOpenDeviceNV == NULL)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
@@ -169,7 +169,7 @@ Standard_Boolean D3DHost_FrameBuffer::Init (const Handle(OpenGl_Context)& theCtx
 // =======================================================================
 Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Context)& theCtx)
 {
-  const OpenGl_GlFunctions* aFuncs = (const OpenGl_GlFunctions* )theCtx->core11;
+  const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (myGlD3dSurf != NULL)
   {
     if (!aFuncs->wglDXUnregisterObjectNV (myGlD3dDevice, myGlD3dSurf))
@@ -256,7 +256,7 @@ void D3DHost_FrameBuffer::LockSurface (const Handle(OpenGl_Context)& theCtx)
     return;
   }
 
-  const OpenGl_GlFunctions* aFuncs = (const OpenGl_GlFunctions* )theCtx->core11;
+  const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (!aFuncs->wglDXLockObjectsNV (myGlD3dDevice, 1, &myGlD3dSurf))
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
@@ -283,6 +283,6 @@ void D3DHost_FrameBuffer::UnlockSurface (const Handle(OpenGl_Context)& theCtx)
     return;
   }
 
-  const OpenGl_GlFunctions* aFuncs = (const OpenGl_GlFunctions* )theCtx->core11;
+  const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   aFuncs->wglDXUnlockObjectsNV (myGlD3dDevice, 1, &myGlD3dSurf);
 }
