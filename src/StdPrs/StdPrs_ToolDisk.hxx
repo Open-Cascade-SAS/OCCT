@@ -24,14 +24,21 @@ class StdPrs_ToolDisk : public StdPrs_ToolQuadric
 {
 public:
 
+  //! Generate primitives for 3D quadric surface and return a filled array.
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theInnerRadius,
+                                                                    const Standard_Real    theOuterRadius,
+                                                                    const Standard_Integer theNbSlices,
+                                                                    const Standard_Integer theNbStacks,
+                                                                    const gp_Trsf&         theTrsf);
+public:
+
   DEFINE_STANDARD_ALLOC
 
   //! Initializes the algorithm.
-  Standard_EXPORT StdPrs_ToolDisk (const Standard_ShortReal theInnerRadius,
-                                   const Standard_ShortReal theOuterRadius,
-                                   const Standard_Integer theSlicesNb,
-                                   const Standard_Integer theStacksNb);
-
+  Standard_EXPORT StdPrs_ToolDisk (const Standard_Real    theInnerRadius,
+                                   const Standard_Real    theOuterRadius,
+                                   const Standard_Integer theNbSlices,
+                                   const Standard_Integer theNbStacks);
 protected:
 
   //! Computes vertex at given parameter location of the surface.
@@ -42,9 +49,9 @@ protected:
 
 protected:
 
-  Standard_ShortReal myInnerRadius;
-  Standard_ShortReal myOuterRadius;
-};
+  Standard_Real myInnerRadius;
+  Standard_Real myOuterRadius;
 
+};
 
 #endif

@@ -24,7 +24,6 @@
 #include <Aspect_Handle.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
-#include <Aspect_TypeOfTriedronEcho.hxx>
 
 #include <Bnd_Box.hxx>
 
@@ -68,6 +67,7 @@
 
 #include <V3d_Coordinate.hxx>
 #include <V3d_ImageDumpOptions.hxx>
+#include <V3d_Trihedron.hxx>
 #include <V3d_TypeOfAxe.hxx>
 
 #include <V3d_TypeOfBackfacingModel.hxx>
@@ -301,9 +301,6 @@ public:
 
   //! Erases the Triedron.
   Standard_EXPORT void TriedronErase();
-
-  //! Highlights the echo zone of the Triedron.
-  Standard_EXPORT void TriedronEcho (const Aspect_TypeOfTriedronEcho theType = Aspect_TOTE_NONE);
 
   //! Returns data of a graduated trihedron.
   Standard_EXPORT const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() const;
@@ -1050,6 +1047,7 @@ private:
   Standard_Boolean myZRotation;
   Standard_Integer MyZoomAtPointX;
   Standard_Integer MyZoomAtPointY;
+  Handle(V3d_Trihedron) myTrihedron;
   Handle(Aspect_Grid) MyGrid;
   gp_Ax3 MyPlane;
   TColStd_Array2OfReal MyTrsf;
@@ -1062,6 +1060,7 @@ private:
   Graphic3d_Vertex myGravityReferencePoint;
   Standard_Boolean myAutoZFitIsOn;
   Standard_Real myAutoZFitScaleFactor;
+
 };
 
 #endif // _V3d_View_HeaderFile

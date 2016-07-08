@@ -23,13 +23,13 @@
 //function : Constructor
 //purpose  :
 //=======================================================================
-StdPrs_ToolSphere::StdPrs_ToolSphere (const Standard_ShortReal theRadius,
-                                      const Standard_Integer theSlicesNb,
-                                      const Standard_Integer theStacksNb)
+StdPrs_ToolSphere::StdPrs_ToolSphere (const Standard_Real    theRadius,
+                                      const Standard_Integer theNbSlices,
+                                      const Standard_Integer theNbStacks)
 : myRadius (theRadius)
 {
-  mySlicesNb = theSlicesNb;
-  myStacksNb = theStacksNb;
+  mySlicesNb = theNbSlices;
+  myStacksNb = theNbStacks;
 }
 
 //=======================================================================
@@ -38,11 +38,11 @@ StdPrs_ToolSphere::StdPrs_ToolSphere (const Standard_ShortReal theRadius,
 //=======================================================================
 gp_Pnt StdPrs_ToolSphere::Vertex (const Standard_Real theU, const Standard_Real theV)
 {
-  const Standard_ShortReal aU = static_cast<Standard_ShortReal> (theU * M_PI * 2.0);
-  const Standard_ShortReal aV = static_cast<Standard_ShortReal> (theV * M_PI);
-  return gp_Pnt (myRadius * cosf(aU) * sinf(aV),
-                -myRadius * sinf(aU) * sinf(aV),
-                 myRadius * cosf(aV));
+  const Standard_Real aU = theU * M_PI * 2.0;
+  const Standard_Real aV = theV * M_PI;
+  return gp_Pnt (myRadius * Cos (aU) * Sin (aV),
+                -myRadius * Sin (aU) * Sin (aV),
+                 myRadius * Cos (aV));
 }
 
 //=======================================================================
@@ -51,9 +51,24 @@ gp_Pnt StdPrs_ToolSphere::Vertex (const Standard_Real theU, const Standard_Real 
 //=======================================================================
 gp_Dir StdPrs_ToolSphere::Normal (const Standard_Real theU, const Standard_Real theV)
 {
-  const Standard_ShortReal aU = static_cast<Standard_ShortReal> (theU * M_PI * 2.0);
-  const Standard_ShortReal aV = static_cast<Standard_ShortReal> (theV * M_PI);
-  return gp_Dir (cosf(aU) * sinf(aV),
-                -sinf(aU) * sinf(aV),
-                 cosf(aV));
+  const Standard_Real aU = theU * M_PI * 2.0;
+  const Standard_Real aV = theV * M_PI;
+  return gp_Dir (Cos (aU) * Sin (aV),
+                -Sin (aU) * Sin (aV),
+                 Cos (aV));
+}
+
+//=======================================================================
+//function : Perform
+//purpose  :
+//=======================================================================
+Handle(Graphic3d_ArrayOfTriangles) StdPrs_ToolSphere::Create (const Standard_Real    theRadius,
+                                                              const Standard_Integer theNbSlices,
+                                                              const Standard_Integer theNbStacks,
+                                                              const gp_Trsf&         theTrsf)
+{
+  Handle(Graphic3d_ArrayOfTriangles) anArray;
+  StdPrs_ToolSphere aTool (theRadius, theNbSlices, theNbStacks);
+  aTool.FillArray (anArray, theTrsf);
+  return anArray;
 }

@@ -25,6 +25,8 @@ V3d_RectangularGrid.hxx
 V3d_SpotLight.cxx
 V3d_SpotLight.hxx
 V3d_StereoDumpOptions.hxx
+V3d_Trihedron.cxx
+V3d_Trihedron.hxx
 V3d_TypeOfAxe.hxx
 V3d_TypeOfBackfacingModel.hxx
 V3d_TypeOfLight.hxx

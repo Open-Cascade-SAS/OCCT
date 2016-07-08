@@ -29,7 +29,6 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Texture.hxx>
-#include <OpenGl_Trihedron.hxx>
 #include <OpenGl_Window.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <Standard_CLocaleSentry.hxx>
@@ -60,7 +59,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myBgColor        (Quantity_NOC_BLACK),
   myCamera         (new Graphic3d_Camera()),
   myUseGLLight     (Standard_True),
-  myToShowTrihedron      (false),
   myToShowGradTrihedron  (false),
   myStateCounter         (theCounter),
   myLastLightSourceState (0, 0),
@@ -124,7 +122,6 @@ OpenGl_View::~OpenGl_View()
 // =======================================================================
 void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
-  myTrihedron         .Release (theCtx.operator->());
   myGraduatedTrihedron.Release (theCtx.operator->());
 
   if (!myTextureEnv.IsNull())
@@ -257,58 +254,6 @@ void OpenGl_View::Resized()
     return;
 
   myWindow->Resize();
-}
-
-// =======================================================================
-// function : TriedronDisplay
-// purpose  :
-// =======================================================================
-void OpenGl_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
-                                   const Quantity_NameOfColor          theColor,
-                                   const Standard_Real                 theScale,
-                                   const Standard_Boolean              theAsWireframe)
-{
-  myToShowTrihedron = true;
-  myTrihedron.SetWireframe   (theAsWireframe);
-  myTrihedron.SetPosition    (thePosition);
-  myTrihedron.SetScale       (theScale);
-  myTrihedron.SetLabelsColor (theColor);
-}
-
-// =======================================================================
-// function : TriedronErase
-// purpose  :
-// =======================================================================
-void OpenGl_View::TriedronErase()
-{
-  myToShowTrihedron = false;
-  myTrihedron.Release (myWorkspace->GetGlContext().operator->());
-}
-
-// =======================================================================
-// function : ZBufferTriedronSetup
-// purpose  :
-// =======================================================================
-void OpenGl_View::ZBufferTriedronSetup (const Quantity_NameOfColor theXColor,
-                                        const Quantity_NameOfColor theYColor,
-                                        const Quantity_NameOfColor theZColor,
-                                        const Standard_Real theSizeRatio,
-                                        const Standard_Real theAxisDiametr,
-                                        const Standard_Integer theNbFacettes)
-{
-  myTrihedron.SetArrowsColors  (theXColor, theYColor, theZColor);
-  myTrihedron.SetSizeRatio     (theSizeRatio);
-  myTrihedron.SetNbFacets      (theNbFacettes);
-  myTrihedron.SetArrowDiameter (theAxisDiametr);
-}
-
-// =======================================================================
-// function : TriedronEcho
-// purpose  :
-// =======================================================================
-void OpenGl_View::TriedronEcho (const Aspect_TypeOfTriedronEcho /*theType*/)
-{
-  // do nothing
 }
 
 // =======================================================================

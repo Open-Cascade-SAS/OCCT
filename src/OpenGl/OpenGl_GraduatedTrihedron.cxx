@@ -26,7 +26,6 @@
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_Cylinder.hxx>
 #include <Precision.hxx>
 
 #ifndef _WIN32

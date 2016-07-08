@@ -24,14 +24,23 @@ class StdPrs_ToolCylinder : public StdPrs_ToolQuadric
 {
 public:
 
+  //! Generate primitives for 3D quadric surface and return a filled array.
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theBottomRad,
+                                                                    const Standard_Real    theTopRad,
+                                                                    const Standard_Real    theHeight,
+                                                                    const Standard_Integer theNbSlices,
+                                                                    const Standard_Integer theNbStacks,
+                                                                    const gp_Trsf&         theTrsf);
+public:
+
   DEFINE_STANDARD_ALLOC
 
   //! Initializes the algorithm.
-  Standard_EXPORT StdPrs_ToolCylinder (const Standard_ShortReal theBottomRad,
-                                       const Standard_ShortReal theTopRad,
-                                       const Standard_ShortReal theHeight,
-                                       const Standard_Integer theSlicesNb,
-                                       const Standard_Integer theStacksNb);
+  Standard_EXPORT StdPrs_ToolCylinder (const Standard_Real    theBottomRad,
+                                       const Standard_Real    theTopRad,
+                                       const Standard_Real    theHeight,
+                                       const Standard_Integer theNbSlices,
+                                       const Standard_Integer theNbStacks);
 
 protected:
 
@@ -43,9 +52,10 @@ protected:
 
 protected:
 
-  Standard_ShortReal myBottomRadius;
-  Standard_ShortReal myTopRadius;
-  Standard_ShortReal myHeight;
+  Standard_Real myBottomRadius;
+  Standard_Real myTopRadius;
+  Standard_Real myHeight;
+
 };
 
 #endif // _StdPrs_ToolCylinder_HeaderFile

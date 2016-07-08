@@ -26,7 +26,6 @@
 #include <Quantity_NameOfColor.hxx>
 #include <Aspect_FillMethod.hxx>
 #include <Aspect_GradientFillMethod.hxx>
-#include <Aspect_TypeOfTriedronPosition.hxx>
 
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
@@ -46,7 +45,6 @@
 #include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
-#include <OpenGl_Trihedron.hxx>
 #include <OpenGl_Window.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_TileSampler.hxx>
@@ -128,26 +126,6 @@ public:
 
   //! Return true if view content cache has been invalidated.
   virtual Standard_Boolean IsInvalidated() Standard_OVERRIDE { return !myBackBufferRestored; }
-
-  //! Displays z-buffer trihedron.
-  Standard_EXPORT virtual void TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition = Aspect_TOTP_CENTER,
-                                                const Quantity_NameOfColor theColor = Quantity_NOC_WHITE,
-                                                const Standard_Real theScale = 0.02,
-                                                const Standard_Boolean theAsWireframe = Standard_True) Standard_OVERRIDE;
-
-  //! Erases z-buffer trihedron.
-  Standard_EXPORT virtual void TriedronErase() Standard_OVERRIDE;
-
-  //! Setup parameters of z-buffer trihedron.
-  Standard_EXPORT virtual void ZBufferTriedronSetup (const Quantity_NameOfColor theXColor = Quantity_NOC_RED,
-                                                     const Quantity_NameOfColor theYColor = Quantity_NOC_GREEN,
-                                                     const Quantity_NameOfColor theZColor = Quantity_NOC_BLUE1,
-                                                     const Standard_Real theSizeRatio = 0.8,
-                                                     const Standard_Real theAxisDiametr = 0.05,
-                                                     const Standard_Integer theNbFacettes = 12) Standard_OVERRIDE;
-
-  //! Displays trihedron echo.
-  Standard_EXPORT virtual void TriedronEcho (const Aspect_TypeOfTriedronEcho theType = Aspect_TOTE_NONE) Standard_OVERRIDE;
 
   //! Returns data of a graduated trihedron
   const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() Standard_OVERRIDE
@@ -330,9 +308,6 @@ public:
   //! Returns background color.
   const Quantity_ColorRGBA& BackgroundColor() const { return myBgColor; }
 
-  //! Change trihedron.
-  OpenGl_Trihedron& ChangeTrihedron() { return myTrihedron; }
-
   //! Change graduated trihedron.
   OpenGl_GraduatedTrihedron& ChangeGraduatedTrihedron() { return myGraduatedTrihedron; }
 
@@ -486,7 +461,6 @@ protected:
   Handle(Graphic3d_Camera)        myCamera;
   Handle(OpenGl_FrameBuffer)      myFBO;
   Standard_Boolean                myUseGLLight;
-  Standard_Boolean                myToShowTrihedron;
   Standard_Boolean                myToShowGradTrihedron;
   TCollection_AsciiString         myBackgroundImagePath;
   Handle(Graphic3d_TextureEnv)    myTextureEnvData;
@@ -509,7 +483,6 @@ protected:
   //! Is needed for selection of overlapping objects and storage of the current view volume
   OpenGl_BVHTreeSelector myBVHSelector;
 
-  OpenGl_Trihedron          myTrihedron;
   OpenGl_GraduatedTrihedron myGraduatedTrihedron;
 
   Handle(OpenGl_Texture) myTextureEnv;

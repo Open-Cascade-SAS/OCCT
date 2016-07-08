@@ -32,7 +32,6 @@
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Real.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
-#include <Aspect_TypeOfTriedronEcho.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Standard_ShortReal.hxx>

@@ -31,12 +31,19 @@ class StdPrs_ToolSphere : public StdPrs_ToolQuadric
 {
 public:
 
+  //! Generate primitives for 3D quadric surface and return a filled array.
+  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theRadius,
+                                                                    const Standard_Integer theNbSlices,
+                                                                    const Standard_Integer theNbStacks,
+                                                                    const gp_Trsf&         theTrsf);
+public:
+
   DEFINE_STANDARD_ALLOC
 
   //! Initializes the algorithm.
-  Standard_EXPORT StdPrs_ToolSphere (const Standard_ShortReal theRadius,
-                                     const Standard_Integer theSlicesNb,
-                                     const Standard_Integer theStacksNb);
+  Standard_EXPORT StdPrs_ToolSphere (const Standard_Real    theRadius,
+                                     const Standard_Integer theNbSlices,
+                                     const Standard_Integer theNbStacks);
 
 protected:
 
@@ -48,8 +55,8 @@ protected:
 
 protected:
 
-  Standard_ShortReal myRadius;
-};
+  Standard_Real myRadius;
 
+};
 
 #endif

@@ -274,12 +274,10 @@ void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor theXColor,
                                     const Standard_Real        theAxisDiametr,
                                     const Standard_Integer     theNbFacettes)
 {
-  myView->ZBufferTriedronSetup (theXColor,
-                                theYColor,
-                                theZColor,
-                                theSizeRatio,
-                                theAxisDiametr,
-                                theNbFacettes);
+  myTrihedron->SetArrowsColor   (theXColor, theYColor, theZColor);
+  myTrihedron->SetSizeRatio     (theSizeRatio);
+  myTrihedron->SetNbFacets      (theNbFacettes);
+  myTrihedron->SetArrowDiameter (theAxisDiametr);
 }
 
 //=============================================================================
@@ -291,7 +289,12 @@ void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
                                 const Standard_Real theScale,
                                 const V3d_TypeOfVisualization theMode)
 {
-  myView->TriedronDisplay (thePosition, theColor, theScale, (theMode == V3d_WIREFRAME));
+  myTrihedron->SetLabelsColor (theColor);
+  myTrihedron->SetScale       (theScale);
+  myTrihedron->SetPosition    (thePosition);
+  myTrihedron->SetWireframe   (theMode == V3d_WIREFRAME);
+
+  myTrihedron->Display (*this);
 }
 
 //=============================================================================
@@ -300,16 +303,7 @@ void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
 //=============================================================================
 void V3d_View::TriedronErase()
 {
-  myView->TriedronErase();
-}
-
-//=============================================================================
-//function : TriedronEcho
-//purpose  :
-//=============================================================================
-void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho theType)
-{
-  myView->TriedronEcho (theType);
+  myTrihedron->Erase();
 }
 
 //=============================================================================

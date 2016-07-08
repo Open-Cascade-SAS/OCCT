@@ -31,7 +31,6 @@
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_ShaderManager.hxx>
@@ -1024,18 +1023,6 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
 //=======================================================================
 void OpenGl_View::renderTrihedron (const Handle(OpenGl_Workspace) &theWorkspace)
 {
-  // display global trihedron
-  if (myToShowTrihedron)
-  {
-    // disable environment texture
-    Handle(OpenGl_Texture) anEnvironmentTexture = theWorkspace->EnvironmentTexture();
-    theWorkspace->SetEnvironmentTexture (Handle(OpenGl_Texture)());
-
-    myTrihedron.Render (theWorkspace);
-
-    // restore environment texture
-    theWorkspace->SetEnvironmentTexture (anEnvironmentTexture);
-  }
   if (myToShowGradTrihedron)
   {
     myGraduatedTrihedron.Render (theWorkspace);

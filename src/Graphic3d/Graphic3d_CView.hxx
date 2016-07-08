@@ -16,8 +16,6 @@
 
 #include <Aspect_Handle.hxx>
 #include <Aspect_RenderingContext.hxx>
-#include <Aspect_TypeOfTriedronEcho.hxx>
-#include <Aspect_TypeOfTriedronPosition.hxx>
 #include <Aspect_TypeOfUpdate.hxx>
 #include <Aspect_Window.hxx>
 #include <Graphic3d_BufferType.hxx>
@@ -260,26 +258,6 @@ public:
 
   //! Returns True if the window associated to the view is defined.
   virtual Standard_Boolean IsDefined() const = 0;
-
-  //! Displays z-buffer trihedron.
-  virtual void TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition = Aspect_TOTP_CENTER,
-                                const Quantity_NameOfColor theColor = Quantity_NOC_WHITE,
-                                const Standard_Real theScale = 0.02,
-                                const Standard_Boolean theAsWireframe = Standard_True) = 0;
-
-  //! Erases z-buffer trihedron.
-  virtual void TriedronErase() = 0;
-
-  //! Setup parameters of z-buffer trihedron.
-  virtual void ZBufferTriedronSetup (const Quantity_NameOfColor theXColor = Quantity_NOC_RED,
-                                     const Quantity_NameOfColor theYColor = Quantity_NOC_GREEN,
-                                     const Quantity_NameOfColor theZColor = Quantity_NOC_BLUE1,
-                                     const Standard_Real theSizeRatio = 0.8,
-                                     const Standard_Real theAxisDiametr = 0.05,
-                                     const Standard_Integer theNbFacettes = 12) = 0;
-
-  //! Displays trihedron echo.
-  virtual void TriedronEcho (const Aspect_TypeOfTriedronEcho theType = Aspect_TOTE_NONE) = 0;
 
   //! Returns data of a graduated trihedron
   virtual const Graphic3d_GraduatedTrihedron& GetGraduatedTrihedron() = 0;

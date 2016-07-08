@@ -68,6 +68,7 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
 : MyViewer (theViewer.operator->()),
   SwitchSetFront (Standard_False),
   myZRotation (Standard_False),
+  myTrihedron (new V3d_Trihedron()),
   MyTrsf (1, 4, 1, 4)
 {
   myView = theViewer->Driver()->CreateView (theViewer->StructureManager());

@@ -52,7 +52,6 @@ Aspect_TypeOfMarker.hxx
 Aspect_TypeOfPrimitive.hxx
 Aspect_TypeOfResize.hxx
 Aspect_TypeOfStyleText.hxx
-Aspect_TypeOfTriedronEcho.hxx
 Aspect_TypeOfTriedronPosition.hxx
 Aspect_TypeOfUpdate.hxx
 Aspect_Units.hxx

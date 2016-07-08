@@ -215,28 +215,12 @@ static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-static Standard_Integer OCC71bug (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) { 
-    di << argv[0] << "ERROR : use 'vinit' command before \n";
-    return 1;
-  }
-
-  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-  V3dView->EnableGLLight( Standard_False );  
-  V3dView->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.07);
-  aContext->UpdateCurrentViewer();
-  return 0;
-}
-
 void QABugs::Commands_18(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
   theCommands.Add("OCC267", "OCC267 DOC path", __FILE__, OCC267, group);
   theCommands.Add("OCC181", "OCC181 FileName path1 path2 verbose=0/1", __FILE__, OCC181, group);
   theCommands.Add("OCC367", "OCC367 shape step goodX goodY goodZ percent_tolerance", __FILE__, OCC367, group);
-  theCommands.Add("OCC71", "OCC71", __FILE__, OCC71bug, group);
 
   return;
 }

@@ -33,8 +33,6 @@ OpenGl_View.cxx
 OpenGl_View_Raytrace.cxx
 OpenGl_View_Redraw.cxx
 OpenGl_Light.hxx
-OpenGl_Trihedron.hxx
-OpenGl_Trihedron.cxx
 OpenGl_GraduatedTrihedron.hxx
 OpenGl_GraduatedTrihedron.cxx
 OpenGl_MapOfZLayerSettings.hxx
@@ -74,10 +72,6 @@ OpenGl_Clipping.hxx
 OpenGl_Context.cxx
 OpenGl_Context.hxx
 OpenGl_Context_1.mm
-OpenGl_Cylinder.cxx
-OpenGl_Cylinder.hxx
-OpenGl_Disk.cxx
-OpenGl_Disk.hxx
 OpenGl_ExtGS.hxx
 OpenGl_GlFunctions.hxx
 OpenGl_Flipper.cxx
@@ -108,8 +102,6 @@ OpenGl_IndexBuffer.cxx
 OpenGl_IndexBuffer.hxx
 OpenGl_Layer.cxx
 OpenGl_Layer.hxx
-OpenGl_Quadric.cxx
-OpenGl_Quadric.hxx
 OpenGl_RenderFilter.cxx
 OpenGl_RenderFilter.hxx
 OpenGl_Sampler.cxx
@@ -125,8 +117,6 @@ OpenGl_ShaderProgram.cxx
 OpenGl_ShaderProgram.hxx
 OpenGl_ShaderStates.cxx
 OpenGl_ShaderStates.hxx
-OpenGl_Sphere.cxx
-OpenGl_Sphere.hxx
 OpenGl_StencilTest.cxx
 OpenGl_StencilTest.hxx
 OpenGl_TileSampler.hxx
