@@ -2025,6 +2025,60 @@ static Standard_Integer OCC27357(Draw_Interpretor& theDI,
   }
   return 0;
 }
+#include <Standard_ErrorHandler.hxx>
+#include <TColGeom_SequenceOfCurve.hxx>
+#include <GeomFill_NSections.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <TopExp_Explorer.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+//=======================================================================
+//function : OCC26270
+//purpose :
+//=======================================================================
+static Standard_Integer OCC26270(Draw_Interpretor& theDI,
+                                 Standard_Integer theNArg,
+                                 const char **theArgVal)
+{
+  if (theNArg != 3)
+  {
+    theDI << "Usage :" << theArgVal[0] << " shape result\n";
+    return 0;
+  }
+  TopoDS_Shape aShape = DBRep::Get(theArgVal[1]);
+  TopExp_Explorer anExp(aShape, TopAbs_EDGE);
+  TColGeom_SequenceOfCurve aCurveSeq;
+  for (; anExp.More(); anExp.Next())
+  {
+    Standard_Real f, l;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(TopoDS::Edge(anExp.Current()), f, l);
+    if (!aCurve.IsNull())
+    {
+      aCurve = new Geom_TrimmedCurve(aCurve, f, l);
+      aCurveSeq.Append(aCurve);
+    }
+  }
+  if (aCurveSeq.Length() > 1)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+        GeomFill_NSections aBSurface(aCurveSeq);
+      Handle(Geom_BSplineSurface) aRes = aBSurface.BSplineSurface();
+      if (!aRes.IsNull())
+      {
+        BRepBuilderAPI_MakeFace b_face1(aRes, Precision::Confusion());
+        TopoDS_Face bsp_face1 = b_face1.Face();
+        DBRep::Set(theArgVal[2], bsp_face1);
+      }
+    }
+    catch (Standard_Failure)
+    {
+      theDI << "ERROR: Exception in GeomFill_NSections\n";
+    }
+  }
+  return 0;
+}
+
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -2042,5 +2096,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26747_2", "OCC26747_2 result", __FILE__, OCC26747_2, group);
   theCommands.Add ("OCC26747_3", "OCC26747_3 result", __FILE__, OCC26747_3, group);
   theCommands.Add ("OCC27357", "OCC27357", __FILE__, OCC27357, group);
+  theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
   return;
 }

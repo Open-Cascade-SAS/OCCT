@@ -208,6 +208,10 @@ static void ResultEval(const Handle(Geom_BSplineSurface)& surf,
 GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC)
 {
   mySections = NC;
+  UFirst = 0.;
+  ULast = 1.;
+  VFirst = 0.;
+  VLast = 1.;
   myRefSurf.Nullify();
   ComputeSurface();
 }
@@ -565,16 +569,20 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 
     Standard_Integer Nbcurves = mySections.Length();
     Standard_Integer Nbpar = myParams.Length();
-    Handle(TColStd_HArray1OfReal) HPar
-      = new TColStd_HArray1OfReal(1,Nbpar);
-    for (i=1;i<=Nbpar;i++) {
-      HPar->SetValue(i,myParams(i));
+    if (Nbpar > 0)
+    {
+      Handle(TColStd_HArray1OfReal) HPar
+        = new TColStd_HArray1OfReal(1, Nbpar);
+      for (i = 1; i <= Nbpar; i++) {
+        HPar->SetValue(i, myParams(i));
+      }
+      section.SetParam(HPar);
     }
-    section.SetParam(HPar);
     section.Perform(Precision::PConfusion());
+    
     Handle(GeomFill_Line) line = new GeomFill_Line(Nbcurves);
     Standard_Integer nbIt = 0, degmin = 2, degmax = 6;
-    Standard_Boolean knownP = Standard_True;
+    Standard_Boolean knownP = Nbpar > 0;
     GeomFill_AppSurf anApprox(degmin, degmax, myPres3d, myPres3d, nbIt, knownP);
     Standard_Boolean SpApprox = Standard_True;
     anApprox.Perform(line, section, SpApprox);

@@ -1,0 +1,10 @@
+pload QAcommands
+puts "================"
+puts "OCC26270"
+puts "================"
+puts ""
+###############################
+## GeomFill_NSections constructor crash
+###############################
+restore [locate_data_file OCC606_2.brep] w2 
+OCC26270 w2 result
