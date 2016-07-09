@@ -134,7 +134,7 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
         continue;
 
       Standard_Real aF, aL;
-      Handle(Geom2d_Curve) aCurve2d = BRep_Tool::CurveOnSurface(theEdge, aFace, aF, aL);
+      aCurve2d = BRep_Tool::CurveOnSurface(theEdge, aFace, aF, aL);
       if ( Abs(aF - aFirstParam) > Precision::PConfusion() ||
            Abs(aL - aLastParam ) > Precision::PConfusion() )
       {
