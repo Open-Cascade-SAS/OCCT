@@ -29,7 +29,14 @@ public:
   Standard_EXPORT XCAFPrs_AISObject (const TDF_Label& theLabel);
 
   //! Returns the label which was visualised by this presentation
-  Standard_EXPORT inline TDF_Label GetLabel() const { return myLabel; }
+  const TDF_Label& GetLabel() const { return myLabel; }
+
+  //! Assign the label to this presentation
+  //! (but does not mark it outdated with SetToUpdate()).
+  void SetLabel (const TDF_Label& theLabel)
+  {
+    myLabel = theLabel;
+  }
 
 protected:
 
@@ -48,7 +55,7 @@ protected:
   //! By default, the style uses white color for curves and surfaces.
   Standard_EXPORT virtual  void DefaultStyle (XCAFPrs_Style& theStyle) const;
 
-private:
+protected:
 
   TDF_Label myLabel;
 
