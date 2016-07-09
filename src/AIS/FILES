@@ -30,7 +30,6 @@ AIS_ConcentricRelation.cxx
 AIS_ConcentricRelation.hxx
 AIS_ConnectedInteractive.cxx
 AIS_ConnectedInteractive.hxx
-AIS_ConnectedInteractive.lxx
 AIS_ConnectStatus.hxx
 AIS_DataMapIteratorOfDataMapOfILC.hxx
 AIS_DataMapIteratorOfDataMapofIntegerListOfinteractive.hxx

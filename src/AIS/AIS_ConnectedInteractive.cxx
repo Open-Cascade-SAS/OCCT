@@ -57,21 +57,6 @@ AIS_InteractiveObject(aTypeOfPresentation3d)
 }
 
 //=======================================================================
-//function : Type
-//purpose  : 
-//=======================================================================
-AIS_KindOfInteractive AIS_ConnectedInteractive::Type() const
-{
-  return AIS_KOI_Object;
-}
-
-Standard_Integer AIS_ConnectedInteractive::Signature() const
-{
-  return 0;
-}
-
-
-//=======================================================================
 //function : Connect
 //purpose  : 
 //=======================================================================
