@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC27264"
+puts "============"
+puts ""
+###############################
+## Weird difference between two BRepTools::Write() overloads
+###############################
+
+restore [locate_data_file bug27264_5.brep] a
+
+set info [nbshapes a]
+
+if {[string compare $info ""] != 0} {
+  puts "ERROR: null shape is expected here"
+}

@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC27264"
+puts "============"
+puts ""
+###############################
+## Weird difference between two BRepTools::Write() overloads
+###############################
+
+restore [locate_data_file bug27264_2.brep] a
+
+checknbshapes a -vertex 2 -edge 3 -face 1
+checkprops a -s 1256.64 
+checkshape a
+

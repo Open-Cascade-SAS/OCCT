@@ -227,15 +227,29 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
     progress->Show();
 
     Draw_SaveAndRestore* tool = Draw_First;
+    Draw_SaveAndRestore* aDBRepTool = NULL;
     while (tool) {
-      if (!strcmp(typ,tool->Name())) break;
+      const char* toolName = tool->Name();
+      if (!strcmp(typ,toolName)) break;
+      if (!strcmp("DBRep_DrawableShape",toolName))
+        aDBRepTool = tool;
       Draw::SetProgressBar(progress);
       tool = tool->Next();
     }
-    if (tool) {
+
+    if (!tool)
+    {
+      //assume that this file stores a DBRep_DrawableShape variable
+      tool = aDBRepTool;
+      in.seekg(0, ios::beg);
+    }
+
+    if (tool)
+    {
       Handle(Draw_Drawable3D) D = tool->Restore(in);
       Draw::Set(name,D,tool->Disp() && autodisp);
     }
+
     else {
       di << "Cannot restore a  " << typ;
       return 1;
