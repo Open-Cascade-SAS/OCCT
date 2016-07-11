@@ -38,7 +38,7 @@ public:
   //! Destructor
   Standard_EXPORT virtual ~IVtkOCC_Shape();
 
-  IVtk_IdType GetSubShapeId (const IVtk_IShape::Handle&) const;
+  Standard_EXPORT IVtk_IdType GetSubShapeId (const IVtk_IShape::Handle&) const;
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_Shape,IVtk_IShape)
 
@@ -56,7 +56,7 @@ public:
   //! modified by some operation.
   //! @param [in] subShape sub-shape whose ID is returned
   //! @return local ID of the sub-shape.
-  IVtk_IdType GetSubShapeId (const TopoDS_Shape& theSubShape) const;
+  Standard_EXPORT IVtk_IdType GetSubShapeId (const TopoDS_Shape& theSubShape) const;
 
   //! Get ids of sub-shapes composing a sub-shape with the given id
   Standard_EXPORT IVtk_ShapeIdList GetSubIds (const IVtk_IdType) const Standard_OVERRIDE;

@@ -98,7 +98,7 @@ private:
   IVtkTools_ShapeDataSource (const IVtkTools_ShapeDataSource&);
   IVtkTools_ShapeDataSource& operator= (const IVtkTools_ShapeDataSource&);
 
-private:
+protected:
 
   IVtkOCC_Shape::Handle myOccShape; //!< Shape wrapper used as an input.
   IVtkVTK_ShapeData::Handle myPolyData; //!< Polygonal representation of shape.
