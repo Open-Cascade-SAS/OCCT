@@ -46,5 +46,5 @@ if exist "%DevEnvDir%\devenv.exe"  (
   start "%DevEnvDir%\%VisualStudioExpressName%.exe" "%PRJFILE%"
 ) else (
   echo Error: Could not find MS Visual Studio ^(%VCVER%^)
-  echo Check relevant environment variable ^(e.g. VS80COMNTOOLS for vc8^)
+  echo Check relevant environment variable ^(e.g. VS100COMNTOOLS for vc10^)
 )

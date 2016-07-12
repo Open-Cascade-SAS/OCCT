@@ -21,13 +21,13 @@ projects. When such project is rebuilt, all samples and *mfcsample* library are 
 To run the Open CASCADE Technology samples, use command:
 
 ~~~~
-execute run.bat [vc8|vc9|vc10|vc11|vc12] [win32|win64] [Release|Debug] [SampleName]
+execute run.bat [vc10|vc11|vc12|vc14] [win32|win64] [Release|Debug] [SampleName]
 ~~~~
 
 To run the **Animation** sample, use command:
 
 ~~~~
-execute run.bat vc8 win32 Debug Animation
+execute run.bat vc10 win64 Debug Animation
 ~~~~
 
 
@@ -37,13 +37,13 @@ execute run.bat vc8 win32 Debug Animation
 You can modify, compile and launch all sample projects in MS Visual C++ at once with command:
 
 ~~~~  
-execute msvc.bat [vc8|vc9|vc10|vc11|vc12] [win32|win64] [Release|Debug]
+execute msvc.bat [vc10|vc11|vc12|vc14] [win32|win64] [Release|Debug]
 ~~~~
 
 To run all sample projects in MS Visual C++ at once, use command: 
 
 ~~~~
-execute msvc.bat vc8 win32 Debug
+execute msvc.bat vc10 win64 Debug
 ~~~~
 
 Note: make sure that your *PATH* environment variable contains a directory, where *msdev.exe* is located.

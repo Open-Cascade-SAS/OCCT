@@ -10,11 +10,7 @@ set "PRJFILE=%~dp0IESample.sln"
 
 set "VisualStudioExpressName=VCExpress"
 
-if /I "%VCVER%" == "vc8" (
-  set "DevEnvDir=%VS80COMNTOOLS%..\IDE"
-) else if /I "%VCVER%" == "vc9" (
-  set "DevEnvDir=%VS90COMNTOOLS%..\IDE"
-) else if /I "%VCVER%" == "vc10" (
+if /I "%VCVER%" == "vc10" (
   set "DevEnvDir=%VS100COMNTOOLS%..\IDE"
 ) else if /I "%VCVER%" == "vc11" (
   set "DevEnvDir=%VS110COMNTOOLS%..\IDE"
@@ -23,6 +19,9 @@ if /I "%VCVER%" == "vc8" (
   set "VisualStudioExpressName=WDExpress"
 ) else if /I "%VCVER%" == "vc12" (
   set "DevEnvDir=%VS120COMNTOOLS%..\IDE"
+  set "VisualStudioExpressName=WDExpress"
+) else if /I "%VCVER%" == "vc14" (
+  set "DevEnvDir=%VS140COMNTOOLS%..\IDE"
   set "VisualStudioExpressName=WDExpress"
 ) else (
   echo Error: wrong VS identifier
@@ -36,5 +35,5 @@ if exist "%DevEnvDir%\devenv.exe"  (
   start "%DevEnvDir%\%VisualStudioExpressName%.exe" "%PRJFILE%"
 ) else (
   echo Error: Could not find MS Visual Studio ^(%VCVER%^)
-  echo Check relevant environment variable ^(e.g. VS80COMNTOOLS for vc8^)
+  echo Check relevant environment variable ^(e.g. VS100COMNTOOLS for vc10^)
 )

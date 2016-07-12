@@ -24,7 +24,7 @@ goto eof
 
 :err_bat
 echo Launch selected sample as follows:
-echo   %~n0.bat [^vc8^|^vc9^|^vc10^|^vc11^|vc12] [^win32^|^win64^] [^Release^|^Debug^] [^SampleName^]
+echo   %~n0.bat [^vc10^|^vc11^|^vc12^|^vc14^] [^win32^|^win64^] [^Release^|^Debug^] [^SampleName^]
 echo or
 echo   %~n0.bat [^SampleName^]
 echo Run %~n0.bat -h to get this help

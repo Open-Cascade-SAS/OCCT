@@ -2,7 +2,7 @@
 REM Generation of vcproj files with qmake utilite
 REM Variable QTDIR and PATH to qmake executable must be defined without fail
 
-REM Use first argument to specify version of Visual Studio (vc8, vc9, or vc10),
+REM Use first argument to specify version of Visual Studio (vc10, vc11, vc12 or vc14),
 REM second argument specifies architecture) (win32 or win64)
 REM third argument specifies Debug or Release mode
 
@@ -23,7 +23,7 @@ if not "%VCVER%" == "" (
         set "VCVARS=%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"
     ) else (
         echo Error: first argument ^(%VCVER%^) should specify supported version of Visual C++,
-        echo one of: vc8 ^(VS 2005 SP1^), vc9 ^(VS 2008 SP1^), vc10 ^(VS 2010^) or vc11 ^(VS 2012^)
+        echo one of: vc10 ^(VS 2010 SP3^), vc11 ^(VS 2012 SP3^), vc12 ^(VS 2013^) or vc14 ^(VS 2015^)
         exit
     )
 )
