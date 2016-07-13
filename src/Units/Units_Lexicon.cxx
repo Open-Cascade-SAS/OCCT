@@ -14,16 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Units_Lexicon.hxx>
 
 #include <OSD.hxx>
+#include <OSD_OpenFile.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <Units_Lexicon.hxx>
 #include <Units_Token.hxx>
 
-#include <sys/stat.h>
-#include <sys/types.h>
 IMPLEMENT_STANDARD_RTTIEXT(Units_Lexicon,MMgt_TShared)
 
 #ifdef _MSC_VER
@@ -56,7 +55,8 @@ static inline bool strrightadjust (char *str)
 
 void Units_Lexicon::Creates(const Standard_CString afilename)
 {
-  ifstream file(afilename, ios::in);
+  std::ifstream file;
+  OSD_OpenStream (file, afilename, std::ios::in);
   if(!file) {
 #ifdef OCCT_DEBUG
     cout<<"unable to open "<<afilename<<" for input"<<endl;
@@ -66,9 +66,7 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
 
   thefilename = new TCollection_HAsciiString(afilename);
   thesequenceoftokens = new Units_TokensSequence();
-
-  struct stat buf;
-  if(!stat(afilename,&buf)) thetime = buf.st_ctime;
+  thetime = OSD_FileStatCTime (afilename);
 
   // read file line-by-line; each line has fixed format:
   // first 30 symbols for prefix or symbol (e.g. "k" for kilo)
@@ -122,15 +120,10 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
 
 Standard_Boolean Units_Lexicon::UpToDate() const
 {
-  struct stat buf;
-  TCollection_AsciiString string = FileName();
-
-  if(!stat(string.ToCString(),&buf)) {
-    if(thetime >= (Standard_Time)buf.st_ctime)
-      return Standard_True;
-  }
-
-  return Standard_False;
+  TCollection_AsciiString aPath = FileName();
+  Standard_Time aTime = OSD_FileStatCTime (aPath.ToCString());
+  return aTime != 0
+      && aTime <= thetime;
 }
 
 

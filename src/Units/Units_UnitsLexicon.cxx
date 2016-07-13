@@ -14,17 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Units_UnitsLexicon.hxx>
 
+#include <OSD_OpenFile.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Units.hxx>
 #include <Units_Token.hxx>
 #include <Units_UnitsDictionary.hxx>
-#include <Units_UnitsLexicon.hxx>
 
-#include <sys/stat.h>
-#include <sys/types.h>
 IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsLexicon,Units_Lexicon)
 
 //=======================================================================
@@ -44,11 +43,13 @@ void Units_UnitsLexicon::Creates(const Standard_CString afilename1,
 				 const Standard_Boolean amode)
 {
   Handle(Units_UnitsDictionary) unitsdictionary;
-  struct stat buf;
 
   thefilename = new TCollection_HAsciiString(afilename2);
-
-  if(!stat(afilename2,&buf)) thetime = buf.st_ctime;
+  Standard_Time aTime2 = OSD_FileStatCTime (afilename2);
+  if (aTime2 != 0)
+  {
+    thetime = aTime2;
+  }
 
   Units_Lexicon::Creates(afilename1);
 
@@ -63,18 +64,15 @@ void Units_UnitsLexicon::Creates(const Standard_CString afilename1,
 
 Standard_Boolean Units_UnitsLexicon::UpToDate() const
 {
-  struct stat buf;
-  TCollection_AsciiString string = FileName2();
+  TCollection_AsciiString aPath = FileName2();
+  if (!Units_Lexicon::UpToDate())
+  {
+    return Standard_False;
+  }
 
-  if(Units_Lexicon::UpToDate())
-    {
-      if(!stat(string.ToCString(),&buf))
-	{
-	  if(thetime >= (Standard_Time)buf.st_ctime) return Standard_True;
-	}
-    }
-
-  return Standard_False;
+  Standard_Time aTime = OSD_FileStatCTime (aPath.ToCString());
+  return aTime != 0
+      && aTime <= thetime;
 }
 
 //=======================================================================

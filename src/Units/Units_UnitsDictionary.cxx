@@ -14,8 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Units_UnitsDictionary.hxx>
 
 #include <OSD.hxx>
+#include <OSD_OpenFile.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -31,13 +33,12 @@
 #include <Units_Token.hxx>
 #include <Units_TokensSequence.hxx>
 #include <Units_Unit.hxx>
-#include <Units_UnitsDictionary.hxx>
 #include <Units_UnitSentence.hxx>
 #include <Units_UnitsLexicon.hxx>
 #include <Units_UnitsSequence.hxx>
 
 #include <stdio.h>
-#include <sys/stat.h>
+
 IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsDictionary,MMgt_TShared)
 
 //=======================================================================
@@ -69,8 +70,9 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
   Handle(Units_Unit) unit;
   Handle(Units_ShiftedUnit) shiftedunit;
   Handle(Units_Quantity) quantity;
-  
-  ifstream file(afilename, ios::in);
+
+  std::ifstream file;
+  OSD_OpenStream (file, afilename, std::ios::in);
   if(!file) {
 #ifdef OCCT_DEBUG
     cout<<"unable to open "<<afilename<<" for input"<<endl;
@@ -79,9 +81,7 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
   }
   
   thefilename = new TCollection_HAsciiString(afilename);
-
-  struct stat buf;
-  if(!stat(afilename,&buf)) thetime = buf.st_ctime;
+  thetime = OSD_FileStatCTime (afilename);
 
   thequantitiessequence = new Units_QuantitiesSequence();
   
@@ -314,15 +314,10 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
 
 Standard_Boolean Units_UnitsDictionary::UpToDate() const
 {
-  struct stat buf;
-  TCollection_AsciiString string = thefilename->String();
-  if(!stat(string.ToCString(),&buf)) {
-    if(thetime == (Standard_Time)buf.st_ctime) return Standard_True;
-  }
-
-  return Standard_False;
+  Standard_Time aTime = OSD_FileStatCTime (thefilename->String().ToCString());
+  return aTime != 0
+      && aTime == thetime;
 }
-
 
 //=======================================================================
 //function : ActiveUnit

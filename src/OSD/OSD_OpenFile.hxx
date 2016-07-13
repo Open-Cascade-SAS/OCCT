@@ -80,6 +80,11 @@ __Standard_API void OSD_OpenFileBuf (std::filebuf& theBuff,
 __Standard_API FILE* OSD_OpenFile (const TCollection_ExtendedString& theName,
                                    const char* theMode);
 
+//! Function retrieves file timestamp.
+//! @param theName name of file encoded in UTF-8
+//! @return stat.st_ctime value
+__Standard_API Standard_Time OSD_FileStatCTime (const char* theName);
+
 extern "C" {
 #endif // __cplusplus
 

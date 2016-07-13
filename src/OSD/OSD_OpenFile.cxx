@@ -19,6 +19,9 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_UtfString.hxx>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 // ==============================================
 // function : OSD_OpenFile
 // purpose : Opens file
@@ -159,4 +162,29 @@ void OSD_OpenStream (std::ifstream&                    theStream,
   NCollection_Utf8String aString ((const Standard_Utf16Char*)theName.ToExtString());
   theStream.open (aString.ToCString(), theMode);
 #endif
+}
+
+// ==============================================
+// function : OSD_FileStatCTime
+// purpose :
+// ==============================================
+Standard_Time OSD_FileStatCTime (const char* theName)
+{
+  Standard_Time aTime = 0;
+#if defined(_WIN32)
+  // file name is treated as UTF-8 string and converted to UTF-16 one
+  const TCollection_ExtendedString aFileNameW (theName, Standard_True);
+  struct __stat64 aStat;
+  if (_wstat64 ((const wchar_t* )aFileNameW.ToExtString(), &aStat) == 0)
+  {
+    aTime = (Standard_Time )aStat.st_ctime;
+  }
+#else
+  struct stat aStat;
+  if (stat (theName, &aStat) == 0)
+  {
+    aTime = (Standard_Time )aStat.st_ctime;
+  }
+#endif
+  return aTime;
 }

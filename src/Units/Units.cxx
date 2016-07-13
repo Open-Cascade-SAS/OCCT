@@ -22,8 +22,6 @@
 //		Convertir correctement les unites translatees
 
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include <Units.hxx>
 #include <Units_Measurement.hxx>
