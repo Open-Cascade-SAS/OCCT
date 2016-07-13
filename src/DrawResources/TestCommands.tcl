@@ -631,6 +631,12 @@ help testdiff {
   Use: testdiff dir1 dir2 [groupname [gridname]] [options...]
   Where dir1 and dir2 are directories containing logs of two test runs.
   Allowed options are:
+  -image [filename]: compare only images and save its in specified file (default 
+                   name is <dir1>/diffimage-<dir2>.log)
+  -cpu [filename]: compare only CPU and save it in specified file (default 
+                   name is <dir1>/diffcpu-<dir2>.log)
+  -memory [filename]: compare only memory and save it in specified file (default 
+                   name is <dir1>/diffmemory-<dir2>.log)
   -save filename: save resulting log in specified file (default name is
                   <dir1>/diff-<dir2>.log); HTML log is saved with same name
                   and extension .html
@@ -656,13 +662,19 @@ proc testdiff {dir1 dir2 args} {
 
     # treat options
     set logfile [file join $dir1 "diff-[file tail $dir2].log"]
+    set logfile_image ""
+    set logfile_cpu ""
+    set logfile_memory ""
+    set image false
+    set cpu false
+    set memory false
     set basename ""
+    set save false
     set status "same"
     set verbose 3
     set highlight_percent 5
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
         set arg [lindex $args $narg]
-
         # log file name
         if { $arg == "-save" } {
             incr narg
@@ -671,9 +683,49 @@ proc testdiff {dir1 dir2 args} {
             } else {
                 error "Error: Option -save must be followed by log file name"
             } 
+            set save true
             continue
         }
-
+        
+        # image compared log
+        if { $arg == "-image" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set logfile_image [lindex $args $narg]
+            } else {
+                set logfile_image [file join $dir1 "diffimage-[file tail $dir2].log"]
+                incr narg -1
+            }
+            set image true
+            continue
+        }
+        
+        # CPU compared log
+        if { $arg == "-cpu" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set logfile_cpu [lindex $args $narg]
+            } else {
+                set logfile_cpu [file join $dir1 "diffcpu-[file tail $dir2].log"]
+                incr narg -1
+            }
+            set cpu true
+            continue
+        }
+        
+        # memory compared log
+        if { $arg == "-memory" } {
+            incr narg
+            if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+                set logfile_memory [lindex $args $narg]
+            } else {
+                set logfile_memory [file join $dir1 "diffmemory-[file tail $dir2].log"]
+                incr narg -1
+            }
+            set memory true
+            continue
+        }
+        
         # status filter
         if { $arg == "-status" } {
             incr narg
@@ -717,17 +769,32 @@ proc testdiff {dir1 dir2 args} {
         # non-option arguments form a subdirectory path
         set basename [file join $basename $arg]
     }
-
-    # run diff procedure (recursive)
-    _test_diff $dir1 $dir2 $basename $status $verbose log
-
-    # save result to log file
-    if { "$logfile" != "" } {
-        _log_save $logfile [join $log "\n"]
-        _log_html_diff "[file rootname $logfile].html" $log $dir1 $dir2 ${highlight_percent}
-        puts "Log is saved to $logfile (and .html)"
+    
+    if {$image != false || $cpu != false || $memory != false} {
+        if {$save != false} {
+            error "Error: Option -save can not be used with image/cpu/memory options"
+        }
     }
 
+    # run diff procedure (recursive)
+    _test_diff $dir1 $dir2 $basename $image $cpu $memory $status $verbose log log_image log_cpu log_memory
+    
+    # save result to log file
+    if {$image == false && $cpu == false && $memory == false} {
+        if { "$logfile" != "" } {
+            _log_save $logfile [join $log "\n"]
+            _log_html_diff "[file rootname $logfile].html" $log $dir1 $dir2 ${highlight_percent}
+            puts "Log is saved to $logfile (and .html)"
+        }
+    } else {
+        foreach mode {image cpu memory} {
+            if {"[set logfile_${mode}]" != ""} {
+                _log_save "[set logfile_${mode}]" [join "[set log_${mode}]" "\n"]
+                _log_html_diff "[file rootname [set logfile_${mode}]].html" "[set log_${mode}]" $dir1 $dir2 ${highlight_percent}
+                puts "Log (${mode}) is saved to [set logfile_${mode}] (and .html)"
+            }
+        }
+    }
     return
 }
 
@@ -1810,8 +1877,11 @@ proc _diff_show_ratio {value1 value2} {
 }
 
 # Procedure to compare results of two runs of test cases
-proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
+proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _logimage _logcpu _logmemory {_statvar ""}} {
     upvar $_logvar log
+    upvar $_logimage log_image
+    upvar $_logcpu log_cpu
+    upvar $_logmemory log_memory
 
     # make sure to load diffimage command
     uplevel pload VISUALIZATION
@@ -1825,6 +1895,9 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
         set stat(mem1) 0
         set stat(mem2) 0
         set log {}
+        set log_image {}
+        set log_cpu {}
+        set log_memory {}
     }
 
     # first check subdirectories
@@ -1842,7 +1915,7 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
             if { "$verbose" > 2 } {
                 _log_and_puts log "Checking [file join $basename $subdir]"
             }
-            _test_diff $dir1 $dir2 [file join $basename $subdir] $status $verbose log stat
+            _test_diff $dir1 $dir2 [file join $basename $subdir] $image $cpu $memory $status $verbose log log_image log_cpu log_memory stat
         }
     } else {
         # check log files (only if directory has no subdirs)
@@ -1862,93 +1935,152 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
             set log1 [_read_file [file join $dir1 $basename $logfile]]
             set log2 [_read_file [file join $dir2 $basename $logfile]]
             set casename [file rootname $logfile]
-
+            
             # check execution statuses
-            set status1 UNDEFINED
-            set status2 UNDEFINED
-            if { ! [regexp {CASE [^:]*:\s*([\w]+)} $log1 res1 status1] ||
-                 ! [regexp {CASE [^:]*:\s*([\w]+)} $log2 res2 status2] ||
-                 "$status1" != "$status2" } {
-                _log_and_puts log "STATUS [split $basename /] $casename: $status1 / $status2"
-
-                # if test statuses are different, further comparison makes 
-                # no sense unless explicitly requested
-                if { "$status" != "all" } {
+            if {$image == false && $cpu == false && $memory == false} {
+                set status1 UNDEFINED
+                set status2 UNDEFINED
+                if { ! [regexp {CASE [^:]*:\s*([\w]+)} $log1 res1 status1] ||
+                    ! [regexp {CASE [^:]*:\s*([\w]+)} $log2 res2 status2] ||
+                    "$status1" != "$status2" } {
+                    _log_and_puts log "STATUS [split $basename /] $casename: $status1 / $status2"
+                    # if test statuses are different, further comparison makes 
+                    # no sense unless explicitly requested
+                    if { "$status" != "all" } {
+                        continue
+                    }
+                }
+                if { "$status" == "ok" && "$status1" != "OK" } { 
                     continue
                 }
             }
-            if { "$status" == "ok" && "$status1" != "OK" } { 
-                continue
-            }
-
+            
             # check CPU times
-            set cpu1 UNDEFINED
-            set cpu2 UNDEFINED
-            if { [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log1 res1 cpu1] &&
-                 [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log2 res1 cpu2] } {
-                set stat(cpu1) [expr $stat(cpu1) + $cpu1]
-                set stat(cpu2) [expr $stat(cpu2) + $cpu2]
-                set gcpu1 [expr $gcpu1 + $cpu1]
-                set gcpu2 [expr $gcpu2 + $cpu2]
+            if {$cpu != false || ($image == false && $cpu == false && $memory == false)} {
+                set cpu1 UNDEFINED
+                set cpu2 UNDEFINED
+                if { [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log1 res1 cpu1] &&
+                     [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log2 res1 cpu2] } {
+                    set stat(cpu1) [expr $stat(cpu1) + $cpu1]
+                    set stat(cpu2) [expr $stat(cpu2) + $cpu2]
+                    set gcpu1 [expr $gcpu1 + $cpu1]
+                    set gcpu2 [expr $gcpu2 + $cpu2]
 
-                # compare CPU times with 10% precision (but not less 0.5 sec)
-                if { [expr abs ($cpu1 - $cpu2) > 0.5 + 0.05 * abs ($cpu1 + $cpu2)] } {
-                    _log_and_puts log "CPU [split $basename /] $casename: [_diff_show_ratio $cpu1 $cpu2]"
+                    # compare CPU times with 10% precision (but not less 0.5 sec)
+                    if { [expr abs ($cpu1 - $cpu2) > 0.5 + 0.05 * abs ($cpu1 + $cpu2)] } {
+                        if {$cpu != false} {
+                            _log_and_puts log_cpu "CPU [split $basename /] $casename: [_diff_show_ratio $cpu1 $cpu2]"
+                        } else {
+                            _log_and_puts log "CPU [split $basename /] $casename: [_diff_show_ratio $cpu1 $cpu2]"
+                        }
+                    }
                 }
             }
 
             # check memory delta
-            set mem1 UNDEFINED
-            set mem2 UNDEFINED
-            if { [regexp {MEMORY DELTA:\s*([\d.]+)} $log1 res1 mem1] &&
-                 [regexp {MEMORY DELTA:\s*([\d.]+)} $log2 res1 mem2] } {
-                set stat(mem1) [expr $stat(mem1) + $mem1]
-                set stat(mem2) [expr $stat(mem2) + $mem2]
-                set gmem1 [expr $gmem1 + $mem1]
-                set gmem2 [expr $gmem2 + $mem2]
+            if {$memory != false || ($image == false && $cpu == false && $memory == false)} {
+                set mem1 UNDEFINED
+                set mem2 UNDEFINED
+                if { [regexp {MEMORY DELTA:\s*([\d.]+)} $log1 res1 mem1] &&
+                     [regexp {MEMORY DELTA:\s*([\d.]+)} $log2 res1 mem2] } {
+                    set stat(mem1) [expr $stat(mem1) + $mem1]
+                    set stat(mem2) [expr $stat(mem2) + $mem2]
+                    set gmem1 [expr $gmem1 + $mem1]
+                    set gmem2 [expr $gmem2 + $mem2]
 
-                # compare memory usage with 10% precision (but not less 16 KiB)
-                if { [expr abs ($mem1 - $mem2) > 16 + 0.05 * abs ($mem1 + $mem2)] } {
-                    _log_and_puts log "MEMORY [split $basename /] $casename: [_diff_show_ratio $mem1 $mem2]"
+                    # compare memory usage with 10% precision (but not less 16 KiB)
+                    if { [expr abs ($mem1 - $mem2) > 16 + 0.05 * abs ($mem1 + $mem2)] } {
+                        if {$memory != false} {
+                            _log_and_puts log_memory "MEMORY [split $basename /] $casename: [_diff_show_ratio $mem1 $mem2]"
+                        } else {
+                            _log_and_puts log "MEMORY [split $basename /] $casename: [_diff_show_ratio $mem1 $mem2]"
+                        }
+                    }
                 }
             }
 
             # check images
-            set imglist1 [glob -directory $path1 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
-            set imglist2 [glob -directory $path2 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
-            _list_diff $imglist1 $imglist2 imgin1 imgin2 imgcommon
-            if { "$verbose" > 1 } {
-                if { [llength $imgin1] > 0 } { _log_and_puts log "Only in $path1: $imgin1" }
-                if { [llength $imgin2] > 0 } { _log_and_puts log "Only in $path2: $imgin2" }
-            }
-            foreach imgfile $imgcommon {
-                # if { $verbose > 1 } { _log_and_puts log "Checking [split basename /] $casename: $imgfile" }
-                set diffile [_diff_img_name $dir1 $dir2 $basename $imgfile]
-                if { [catch {diffimage [file join $dir1 $basename $imgfile] \
-                                       [file join $dir2 $basename $imgfile] \
-                                       0 0 0 $diffile} diff] } {
-                    _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
-                    file delete -force $diffile ;# clean possible previous result of diffimage
-                } elseif { $diff != 0 } {
-                    _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile differs"
-                } else {
-                    file delete -force $diffile ;# clean useless artifact of diffimage
+            if {$image != false || ($image == false && $cpu == false && $memory == false)} {
+                set imglist1 [glob -directory $path1 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
+                set imglist2 [glob -directory $path2 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
+                _list_diff $imglist1 $imglist2 imgin1 imgin2 imgcommon
+                if { "$verbose" > 1 } {
+                    if { [llength $imgin1] > 0 } {
+                        if {$image != false} {
+                            _log_and_puts log_image "Only in $path1: $imgin1"
+                        } else {
+                            _log_and_puts log "Only in $path1: $imgin1"
+                        }
+                    }
+                    if { [llength $imgin2] > 0 } {
+                        if {$image != false} {
+                            _log_and_puts log_image "Only in $path2: $imgin2"
+                        } else {
+                            _log_and_puts log "Only in $path2: $imgin2"
+                        }
+                    }
+                }
+                foreach imgfile $imgcommon {
+                    # if { $verbose > 1 } { _log_and_puts log "Checking [split basename /] $casename: $imgfile" }
+                    set diffile [_diff_img_name $dir1 $dir2 $basename $imgfile]
+                    if { [catch {diffimage [file join $dir1 $basename $imgfile] \
+                                           [file join $dir2 $basename $imgfile] \
+                                           0 0 0 $diffile} diff] } {
+                        if {$image != false} {
+                            _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
+                        } else {
+                            _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
+                        }
+                        file delete -force $diffile ;# clean possible previous result of diffimage
+                    } elseif { $diff != 0 } {
+                        if {$image != false} {
+                            _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile differs"
+                        } else {
+                            _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile differs"
+                        }
+                    } else {
+                        file delete -force $diffile ;# clean useless artifact of diffimage
+                    }
                 }
             }
         }
         
         # report CPU and memory difference in group if it is greater than 10%
-        if { [expr abs ($gcpu1 - $gcpu2) > 0.5 + 0.005 * abs ($gcpu1 + $gcpu2)] } {
-            _log_and_puts log "CPU [split $basename /]: [_diff_show_ratio $gcpu1 $gcpu2]"
+        if {$cpu != false || ($image == false && $cpu == false && $memory == false)} {
+            if { [expr abs ($gcpu1 - $gcpu2) > 0.5 + 0.005 * abs ($gcpu1 + $gcpu2)] } {
+                if {$cpu != false} {
+                    _log_and_puts log_cpu "CPU [split $basename /]: [_diff_show_ratio $gcpu1 $gcpu2]"
+                } else {
+                    _log_and_puts log "CPU [split $basename /]: [_diff_show_ratio $gcpu1 $gcpu2]"
+                }
+            }
         }
-        if { [expr abs ($gmem1 - $gmem2) > 16 + 0.005 * abs ($gmem1 + $gmem2)] } {
-            _log_and_puts log "MEMORY [split $basename /]: [_diff_show_ratio $gmem1 $gmem2]"
+        if {$memory != false || ($image == false && $cpu == false && $memory == false)} {
+            if { [expr abs ($gmem1 - $gmem2) > 16 + 0.005 * abs ($gmem1 + $gmem2)] } {
+                if {$memory != false} {
+                    _log_and_puts log_memory "MEMORY [split $basename /]: [_diff_show_ratio $gmem1 $gmem2]"
+                } else {
+                    _log_and_puts log "MEMORY [split $basename /]: [_diff_show_ratio $gmem1 $gmem2]"
+                }
+            }
         }
     }
 
     if { "$_statvar" == "" } {
-        _log_and_puts log "Total MEMORY difference: [_diff_show_ratio $stat(mem1) $stat(mem2)]"
-        _log_and_puts log "Total CPU difference: [_diff_show_ratio $stat(cpu1) $stat(cpu2)]"
+        if {$memory != false || ($image == false && $cpu == false && $memory == false)} {
+            if {$memory != false} {
+                _log_and_puts log_memory "Total MEMORY difference: [_diff_show_ratio $stat(mem1) $stat(mem2)]"
+            } else {
+                _log_and_puts log "Total MEMORY difference: [_diff_show_ratio $stat(mem1) $stat(mem2)]"
+            }
+        }
+        if {$cpu != false || ($image == false && $cpu == false && $memory == false)} {
+            if {$cpu != false} {
+                _log_and_puts log_cpu "Total CPU difference: [_diff_show_ratio $stat(cpu1) $stat(cpu2)]"
+            } else {
+                _log_and_puts log "Total CPU difference: [_diff_show_ratio $stat(cpu1) $stat(cpu2)]"
+            }
+        }
     }
 }
 
