@@ -45,15 +45,8 @@ void StdPrs_ShadedSurface::Add (const Handle(Prs3d_Presentation)& thePrs,
   {
     // If the surface is closed, the faces from back-side are not traced:
     Handle(Graphic3d_AspectFillArea3d) anAsp = theDrawer->ShadingAspect()->Aspect();
-    if (theSurface.IsUClosed() && theSurface.IsVClosed())
-    {
-      anAsp->SuppressBackFace();
-    }
-    else
-    {
-      anAsp->AllowBackFace();
-    }
     Prs3d_Root::CurrentGroup (thePrs)->SetGroupPrimitivesAspect (anAsp);
+    Prs3d_Root::CurrentGroup (thePrs)->SetClosed (theSurface.IsUClosed() && theSurface.IsVClosed());
   }
 
   Standard_Integer aNBUintv = theSurface.NbUIntervals (GeomAbs_C1);

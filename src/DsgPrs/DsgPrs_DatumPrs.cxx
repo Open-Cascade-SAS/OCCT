@@ -31,11 +31,6 @@ void DsgPrs_DatumPrs::Add (const Handle(Prs3d_Presentation)& thePresentation,
   Handle(Prs3d_DatumAspect) aDatumAspect = theDrawer->DatumAspect();
   Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(thePresentation);
 
-  Quantity_Color aColor;
-  Aspect_TypeOfLine aTypeOfLine;
-  Standard_Real aWidth;
-  aDatumAspect->FirstAxisAspect()->Aspect()->Values(aColor, aTypeOfLine, aWidth);
-
   gp_Ax2 anAxis(theDatum);
   gp_Pnt anOrigin = anAxis.Location();
   gp_Dir aXDir = anAxis.XDirection();

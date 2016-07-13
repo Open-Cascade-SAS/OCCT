@@ -572,11 +572,9 @@ static Handle(Prs3d_IsoAspect) CopyIsoAspect
       (const Handle(Prs3d_IsoAspect) &theIsoAspect,
        const Standard_Integer theNbIsos)
 {
-  Quantity_Color    aColor;
-  Aspect_TypeOfLine aType;
-  Standard_Real     aWidth;
-
-  theIsoAspect->Aspect()->Values(aColor, aType, aWidth);
+  Quantity_Color    aColor = theIsoAspect->Aspect()->Color();
+  Aspect_TypeOfLine aType  = theIsoAspect->Aspect()->Type();
+  Standard_Real     aWidth = theIsoAspect->Aspect()->Width();
 
   Handle(Prs3d_IsoAspect) aResult =
     new Prs3d_IsoAspect(aColor, aType, aWidth, theNbIsos);
@@ -2946,9 +2944,7 @@ inline void bndPresentation (Draw_Interpretor&                  theDI,
     case BndAction_Show:
     {
       Handle(Graphic3d_Structure) aPrs (thePrs->Presentation());
-      aPrs->CStructure()->HighlightColor.r = 0.988235f;
-      aPrs->CStructure()->HighlightColor.g = 0.988235f;
-      aPrs->CStructure()->HighlightColor.b = 0.988235f;
+      aPrs->CStructure()->HighlightColor = Quantity_NOC_GRAY99;
       aPrs->CStructure()->HighlightWithBndBox (aPrs, Standard_True);
       break;
     }

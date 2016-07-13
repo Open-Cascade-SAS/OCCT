@@ -69,7 +69,6 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
-#include <QABugs_MyText.hxx>
 #include <Prs3d_Projector.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -417,34 +416,6 @@ static Standard_Integer  OCC138 (Draw_Interpretor& di, Standard_Integer /*argc*/
   }
 
   return 0; 
-}
-
-static Standard_Integer BUC60821(Draw_Interpretor& di, Standard_Integer argc,const char ** argv )   
-{
-
-  if(argc < 3){
-    di << "Usage: " << argv[0] << " TextHight1 TextHight2 TextHight2";
-    return(-1);
-  }
-
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-
-  if(aContext.IsNull()) 
-  { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  Handle(QABugs_MyText) txt1 = new QABugs_MyText("Gosha1",gp_Pnt(0,0,0),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_RED,Draw::Atoi(argv[1]));
-  aContext->Display(txt1);
-
-  Handle(QABugs_MyText) txt2 = new QABugs_MyText("Gosha2",gp_Pnt(0,0,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_YELLOW,Draw::Atoi(argv[2]));
-  aContext->Display(txt2);
-
-  Handle(QABugs_MyText) txt3 = new QABugs_MyText("Gosha3",gp_Pnt(0,100,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_SKYBLUE,Draw::Atoi(argv[3]));
-  aContext->Display(txt3);
-
-  return 0;
 }
 
 static int geom_get_2Dpt_from_3Dpt(const gp_Pnt& pnt3d, const gp_Pln& pln, gp_Pnt2d& pnt2d)
@@ -1780,7 +1751,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands) {
   theCommands.Add ("BUC60818", "BUC60818", __FILE__, BUC60818, group);
   theCommands.Add ("BUC60915", "BUC60915", __FILE__, BUC60915_1, group);
   theCommands.Add ("OCC138", "OCC138", __FILE__, OCC138, group);
-  theCommands.Add ("BUC60821","BUC60821",__FILE__,BUC60821,group);
   theCommands.Add ("OCC353","OCC353",__FILE__,OCC353,group);
   theCommands.Add ("OCC280","OCC280 hlr=0/1 setsurfecedetail=0/1; set perspecrive view",__FILE__,OCC280,group);
   theCommands.Add ("OCC232", "OCC232", __FILE__, OCC232 , group);

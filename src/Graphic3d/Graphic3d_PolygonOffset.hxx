@@ -1,5 +1,4 @@
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2016 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,26 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Graphic3d_CAspectLine_HeaderFile
-#define _Graphic3d_CAspectLine_HeaderFile
+#ifndef _Graphic3d_PolygonOffset_HeaderFile
+#define _Graphic3d_PolygonOffset_HeaderFile
 
-#include <Graphic3d_CTexture.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
-#include <InterfaceGraphic_Graphic3d.hxx>
+#include <Aspect_PolygonOffsetMode.hxx>
 
-class Graphic3d_CAspectLine
+//! Polygon offset parameters.
+struct Graphic3d_PolygonOffset
 {
-public:
+  Aspect_PolygonOffsetMode Mode;
+  Standard_ShortReal       Factor;
+  Standard_ShortReal       Units;
 
-  int            IsDef;
-  int            IsSet;
-  CALL_DEF_COLOR Color;
-  int            LineType;
-  float          Width;
-  Handle(Graphic3d_ShaderProgram) ShaderProgram;
-
+  //! Empty constructor.
+  Graphic3d_PolygonOffset() : Mode(Aspect_POM_Fill), Factor (1.0f), Units  (0.0f) {}
 };
 
-typedef Graphic3d_CAspectLine CALL_DEF_CONTEXTLINE;
-
-#endif // _Graphic3d_CAspectLine_HeaderFile
+#endif // _Graphic3d_PolygonOffset_HeaderFile

@@ -18,27 +18,27 @@
 
 #include <TCollection_AsciiString.hxx>
 
-#include <InterfaceGraphic_Graphic3d.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Graphic3d_CAspectLine.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <OpenGl_Element.hxx>
 
 class OpenGl_ShaderProgram;
 
+//! The element holding Graphic3d_AspectLine3d.
 class OpenGl_AspectLine : public OpenGl_Element
 {
 public:
 
+  //! Empty constructor.
   Standard_EXPORT OpenGl_AspectLine();
 
-  Standard_EXPORT OpenGl_AspectLine (const OpenGl_AspectLine &AnOther);
+  //! Create and assign line aspect.
+  Standard_EXPORT OpenGl_AspectLine (const Handle(Graphic3d_AspectLine3d)& theAspect);
 
-  Standard_EXPORT void SetAspect (const CALL_DEF_CONTEXTLINE& theAspect);
+  //! Return line aspect.
+  const Handle(Graphic3d_AspectLine3d)& Aspect() const { return myAspect; }
 
-  const TEL_COLOUR&  Color() const { return myColor; }
-  TEL_COLOUR&        ChangeColor() { return myColor; }
-  Aspect_TypeOfLine  Type()  const { return myType; }
-  float              Width() const { return myWidth; }
+  //! Assign line aspect.
+  Standard_EXPORT void SetAspect (const Handle(Graphic3d_AspectLine3d)& theAspect);
 
   //! Init and return OpenGl shader program resource.
   //! @return shader program resource.
@@ -46,7 +46,7 @@ public:
   {
     if (!myResources.IsShaderReady())
     {
-      myResources.BuildShader (theCtx, myShaderProgram);
+      myResources.BuildShader (theCtx, myAspect->ShaderProgram());
       myResources.SetShaderReady();
     }
 
@@ -55,13 +55,6 @@ public:
 
   Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
-
-protected:
-
-  TEL_COLOUR                      myColor;
-  Aspect_TypeOfLine               myType;
-  float                           myWidth;
-  Handle(Graphic3d_ShaderProgram) myShaderProgram;
 
 protected:
 
@@ -86,6 +79,7 @@ protected:
     Standard_Boolean myIsShaderReady;
 
   } myResources;
+  Handle(Graphic3d_AspectLine3d) myAspect;
 
  public:
   DEFINE_STANDARD_ALLOC

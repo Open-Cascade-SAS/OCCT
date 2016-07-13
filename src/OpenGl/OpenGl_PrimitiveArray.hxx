@@ -18,7 +18,6 @@
 
 #include <OpenGl_IndexBuffer.hxx>
 
-#include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Graphic3d_TypeOfPrimitiveArray.hxx>
@@ -111,7 +110,7 @@ private:
                   const Standard_Boolean          theHasVertColor) const;
 
   //! Auxiliary procedures
-  void drawEdges (const TEL_COLOUR*               theEdgeColour,
+  void drawEdges (const OpenGl_Vec4&              theEdgeColour,
                   const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   void drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const;

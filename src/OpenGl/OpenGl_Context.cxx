@@ -144,6 +144,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myPointSpriteOrig (0),
   myRenderMode (0),
 #endif
+  myToCullBackFaces (false),
   myReadBuffer (0),
   myDrawBuffer (0),
   myDefaultVao (0),
@@ -337,6 +338,29 @@ void OpenGl_Context::SetDrawBuffer (const Standard_Integer theDrawBuffer)
 #else
   (void )theDrawBuffer;
 #endif
+}
+
+// =======================================================================
+// function : SetCullBackFaces
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetCullBackFaces (bool theToEnable)
+{
+  if (myToCullBackFaces == theToEnable)
+  {
+    return;
+  }
+
+  myToCullBackFaces = theToEnable;
+  if (theToEnable)
+  {
+    //glCullFace (GL_BACK); GL_BACK by default
+    core11fwd->glEnable (GL_CULL_FACE);
+  }
+  else
+  {
+    core11fwd->glDisable (GL_CULL_FACE);
+  }
 }
 
 // =======================================================================
@@ -2523,10 +2547,10 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
   {
     myActiveProgram->SetUniform (this,
                                  myActiveProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
-                                 theAspect->DoTextureMap());
+                                 theAspect->Aspect()->ToMapTexture() ? 1 : 0);
     myActiveProgram->SetUniform (this,
                                  myActiveProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
-                                 theAspect->DistinguishingMode());
+                                 theAspect->Aspect()->Distinguish() ? 1 : 0);
 
     OpenGl_Material aParams;
     for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
@@ -2539,12 +2563,20 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_AspectFace* theAspect,
         continue;
       }
 
-      const OPENGL_SURF_PROP& aProp = anIndex == 0 || theAspect->DistinguishingMode() != TOn
-                                    ? theAspect->IntFront()
-                                    : theAspect->IntBack();
-      aParams.Init (aProp);
-      aParams.Diffuse.a() = aProp.trans;
-
+      if (anIndex == 0 || !theAspect->Aspect()->Distinguish())
+      {
+        const Graphic3d_MaterialAspect& aSrcMat      = theAspect->Aspect()->FrontMaterial();
+        const Quantity_Color&           aSrcIntColor = theAspect->Aspect()->InteriorColor();
+        aParams.Init (aSrcMat, aSrcIntColor);
+        aParams.Diffuse.a() = 1.0f - (float )aSrcMat.Transparency();
+      }
+      else
+      {
+        const Graphic3d_MaterialAspect& aSrcMat      = theAspect->Aspect()->BackMaterial();
+        const Quantity_Color&           aSrcIntColor = theAspect->Aspect()->BackInteriorColor();
+        aParams.Init (aSrcMat, aSrcIntColor);
+        aParams.Diffuse.a() = 1.0f - (float )aSrcMat.Transparency();
+      }
       if (theHighlightColor != NULL)
       {
         aParams.SetColor (*theHighlightColor);

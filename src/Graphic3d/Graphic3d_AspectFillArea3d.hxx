@@ -17,110 +17,165 @@
 #ifndef _Graphic3d_AspectFillArea3d_HeaderFile
 #define _Graphic3d_AspectFillArea3d_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_ShortReal.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
-#include <Aspect_AspectFillArea.hxx>
+#include <Aspect_AspectFillAreaDefinitionError.hxx>
+#include <Aspect_PolygonOffsetMode.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Aspect_TypeOfLine.hxx>
+#include <Aspect_HatchStyle.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_PolygonOffset.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
+#include <Graphic3d_TextureMap.hxx>
+#include <Standard.hxx>
+#include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_ShortReal.hxx>
 #include <Standard_Real.hxx>
-class Graphic3d_TextureMap;
-class Quantity_Color;
-class Graphic3d_MaterialAspect;
+#include <Standard_Type.hxx>
+#include <Quantity_ColorRGBA.hxx>
 
-
-class Graphic3d_AspectFillArea3d;
-DEFINE_STANDARD_HANDLE(Graphic3d_AspectFillArea3d, Aspect_AspectFillArea)
-
-//! This class permits the creation and updating of
-//! a graphic attribute context for opaque 3d
-//! primitives (polygons, triangles, quadrilaterals)
-//! Keywords: Face, FillArea, Triangle, Quadrangle, Polygon,
-//! TriangleMesh, QuadrangleMesh, Edge, Border, Interior,
-//! Color, Type, Width, Style, Hatch, Material,
-//! BackFaceRemoval, DistinguishMode
-class Graphic3d_AspectFillArea3d : public Aspect_AspectFillArea
+//! This class defines graphic attributes for opaque 3d primitives (polygons, triangles, quadrilaterals).
+class Graphic3d_AspectFillArea3d : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d, Standard_Transient)
 public:
 
-  
-  //! Creates a context table for fill area primitives
-  //! defined with the following default values:
+  //! Creates a context table for fill area primitives defined with the following default values:
   //!
-  //! InteriorStyle       : IS_EMPTY
-  //! InteriorColor       : NOC_CYAN1
-  //! EdgeColor           : NOC_WHITE
-  //! EdgeLineType        : TOL_SOLID
-  //! EdgeWidth           : 1.0
-  //! FrontMaterial       : NOM_BRASS
-  //! BackMaterial        : NOM_BRASS
+  //! InteriorStyle : Aspect_IS_EMPTY
+  //! InteriorColor : Quantity_NOC_CYAN1
+  //! EdgeColor     : Quantity_NOC_WHITE
+  //! EdgeLineType  : Aspect_TOL_SOLID
+  //! EdgeWidth     : 1.0
+  //! FrontMaterial : NOM_BRASS
+  //! BackMaterial  : NOM_BRASS
+  //! HatchStyle    : Aspect_HS_VERTICAL
   //!
   //! Display of back-facing filled polygons.
-  //! No distinction between external and internal
-  //! faces of FillAreas.
+  //! No distinction between external and internal faces of FillAreas.
   //! The edges are not drawn.
   //! Polygon offset parameters: mode = Aspect_POM_None, factor = 1., units = 0.
   Standard_EXPORT Graphic3d_AspectFillArea3d();
   
-  //! Creates a context table for fill area primitives
-  //! defined with the specified values.
-  //!
+  //! Creates a context table for fill area primitives defined with the specified values.
   //! Display of back-facing filled polygons.
-  //! No distinction between external and internal
-  //! faces of FillAreas.
+  //! No distinction between external and internal faces of FillAreas.
   //! The edges are not drawn.
   //! Polygon offset parameters: mode = Aspect_POM_None, factor = 1., units = 0.
-  //! Warning
-  //! EdgeWidth is the "line width scale factor".   The
-  //! nominal line width is 1 pixel.   The width of the line is
-  //! determined by applying the line width scale factor to
-  //! this nominal line width.   The supported line widths
-  //! vary by 1-pixel units.
-  Standard_EXPORT Graphic3d_AspectFillArea3d(const Aspect_InteriorStyle Interior, const Quantity_Color& InteriorColor, const Quantity_Color& EdgeColor, const Aspect_TypeOfLine EdgeLineType, const Standard_Real EdgeWidth, const Graphic3d_MaterialAspect& FrontMaterial, const Graphic3d_MaterialAspect& BackMaterial);
-  
-  //! Allows the display of back-facing filled
-  //! polygons.
-  Standard_EXPORT void AllowBackFace();
-  
-  //! Modifies the surface material of internal faces
-  Standard_EXPORT void SetBackMaterial (const Graphic3d_MaterialAspect& AMaterial);
-  
-  //! Allows distinction between external and internal
-  //! faces of FillAreas.
-  Standard_EXPORT void SetDistinguishOn();
-  
-  //! Forbids distinction between external and internal
-  //! faces of FillAreas.
-  Standard_EXPORT void SetDistinguishOff();
-  
-  //! The edges of FillAreas are drawn.
-  Standard_EXPORT void SetEdgeOn();
-  
-  //! The edges of FillAreas are not drawn.
-  Standard_EXPORT void SetEdgeOff();
-  
+  Standard_EXPORT Graphic3d_AspectFillArea3d (const Aspect_InteriorStyle theInterior,
+                                              const Quantity_Color&      theInteriorColor,
+                                              const Quantity_Color&      theEdgeColor,
+                                              const Aspect_TypeOfLine    theEdgeLineType,
+                                              const Standard_Real        theEdgeWidth,
+                                              const Graphic3d_MaterialAspect& theFrontMaterial,
+                                              const Graphic3d_MaterialAspect& theBackMaterial);
+
+  //! Return interior rendering style (Aspect_IS_EMPTY by default, which means nothing will be rendered!).
+  Aspect_InteriorStyle InteriorStyle() const { return myInteriorStyle; }
+
+  //! Modifies the interior type used for rendering
+  void SetInteriorStyle (const Aspect_InteriorStyle theStyle) { myInteriorStyle = theStyle; }
+
+  //! Return interior color.
+  const Quantity_Color& InteriorColor() const { return myInteriorColor.GetRGB(); }
+
+  //! Return interior color.
+  const Quantity_ColorRGBA& InteriorColorRGBA() const { return myInteriorColor; }
+
+  //! Modifies the color of the interior of the face
+  void SetInteriorColor (const Quantity_Color& theColor) { myInteriorColor.SetRGB (theColor); }
+
+  //! Return back interior color.
+  const Quantity_Color& BackInteriorColor() const { return myBackInteriorColor.GetRGB(); }
+
+  //! Return back interior color.
+  const Quantity_ColorRGBA& BackInteriorColorRGBA() const { return myBackInteriorColor; }
+
+  //! Modifies the color of the interior of the back face
+  void SetBackInteriorColor (const Quantity_Color& theColor) { myBackInteriorColor.SetRGB (theColor); }
+
+  //! Returns the surface material of external faces
+  const Graphic3d_MaterialAspect& FrontMaterial() const { return myFrontMaterial; }
+
   //! Modifies the surface material of external faces
-  Standard_EXPORT void SetFrontMaterial (const Graphic3d_MaterialAspect& AMaterial);
-  
-  //! Suppress the display of back-facing filled
-  //! polygons.
+  void SetFrontMaterial (const Graphic3d_MaterialAspect& theMaterial) { myFrontMaterial = theMaterial; }
+
+  //! Returns the surface material of internal faces
+  const Graphic3d_MaterialAspect& BackMaterial() const { return myBackMaterial; }
+
+  //! Modifies the surface material of internal faces
+  void SetBackMaterial (const Graphic3d_MaterialAspect& theMaterial) { myBackMaterial = theMaterial; }
+
+  //! Returns true if back faces should be suppressed (true by default).
+  bool ToSuppressBackFaces() const { return myToSuppressBackFaces; }
+
+  //! Assign back faces culling flag.
+  void SetSuppressBackFaces (bool theToSuppress) { myToSuppressBackFaces = theToSuppress; }
+
+  //! Returns true if back faces should be suppressed (true by default).
+  bool BackFace() const { return myToSuppressBackFaces; }
+
+  //! Allows the display of back-facing filled polygons.
+  void AllowBackFace() { myToSuppressBackFaces = false; }
+
+  //! Suppress the display of back-facing filled polygons.
   //! A back-facing polygon is defined as a polygon whose
-  //! vertices are in a clockwise order with respect
-  //! to screen coordinates.
-  Standard_EXPORT void SuppressBackFace();
-  
-  Standard_EXPORT void SetTextureMap (const Handle(Graphic3d_TextureMap)& ATexture);
-  
-  Standard_EXPORT void SetTextureMapOn();
-  
-  Standard_EXPORT void SetTextureMapOff();
-  
+  //! vertices are in a clockwise order with respect to screen coordinates.
+  void SuppressBackFace() { myToSuppressBackFaces = true; }
+
+  //! Returns true if material properties should be distinguished for back and front faces (false by default).
+  bool Distinguish() const { return myToDistinguishMaterials; }
+
+  //! Set material distinction between front and back faces.
+  void SetDistinguish (bool toDistinguish) { myToDistinguishMaterials = toDistinguish; }
+
+  //! Allows material distinction between front and back faces.
+  void SetDistinguishOn() { myToDistinguishMaterials = true; }
+
+  //! Forbids material distinction between front and back faces.
+  void SetDistinguishOff() { myToDistinguishMaterials = false; }
+
+  //! Return shader program.
+  const Handle(Graphic3d_ShaderProgram)& ShaderProgram() const { return myProgram; }
+
+  //! Sets up OpenGL/GLSL shader program.
+  void SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram) { myProgram = theProgram; }
+
+  //! Return texture to be mapped.
+  const Handle(Graphic3d_TextureMap)& TextureMap() const { return myTextureMap; }
+
+  //! Assign texture to be mapped.
+  //! See also SetTextureMap() to actually activate texture mapping.
+  void SetTextureMap (const Handle(Graphic3d_TextureMap)& theTexture) { myTextureMap = theTexture; }
+
+  //! Return true if texture mapping is enabled (false by default).
+  bool ToMapTexture() const { return myToMapTexture; }
+
+  //! Return true if texture mapping is enabled (false by default).
+  bool TextureMapState() const { return myToMapTexture; }
+
+  //! Set texture mapping flag.
+  void SetTextureMap (bool theToEnable) { myToMapTexture = theToEnable; }
+
+  //! Enable texture mapping (has no effect if texture is not set).
+  void SetTextureMapOn() { myToMapTexture = true; }
+
+  //! Disable texture mapping.
+  void SetTextureMapOff() { myToMapTexture = false; }
+
+  //! Returns current polygon offsets settings.
+  const Graphic3d_PolygonOffset& PolygonOffset() const { return myPolygonOffset; }
+
+  //! Returns current polygon offsets settings.
+  void PolygonOffsets (Standard_Integer&   theMode,
+                       Standard_ShortReal& theFactor,
+                       Standard_ShortReal& theUnits) const
+  {
+    theMode   = myPolygonOffset.Mode;
+    theFactor = myPolygonOffset.Factor;
+    theUnits  = myPolygonOffset.Units;
+  }
+
   //! Sets up OpenGL polygon offsets mechanism.
   //! <aMode> parameter can contain various combinations of
   //! Aspect_PolygonOffsetMode enumeration elements (Aspect_POM_None means
@@ -132,74 +187,129 @@ public:
   //! m - maximum depth slope for the polygon currently being displayed,
   //! r - minimum window coordinates depth resolution (implementation-specific)
   //!
-  //! Deafult settings for OCC 3D viewer: mode = Aspect_POM_Fill, factor = 1., units = 0.
+  //! Default settings for OCC 3D viewer: mode = Aspect_POM_Fill, factor = 1., units = 0.
   //!
   //! Negative offset values move polygons closer to the viewport,
   //! while positive values shift polygons away.
   //! Consult OpenGL reference for details (glPolygonOffset function description).
-  Standard_EXPORT void SetPolygonOffsets (const Standard_Integer aMode, const Standard_ShortReal aFactor = 1.0, const Standard_ShortReal aUnits = 0.0);
-  
-  //! Sets up OpenGL/GLSL shader program.
-  Standard_EXPORT void SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram);
-  
-  //! Returns the Back Face Removal status.
-  //! Standard_True if SuppressBackFace is activated.
-  Standard_EXPORT Standard_Boolean BackFace() const;
-  
-  //! Returns the Distinguish Mode status.
-  Standard_EXPORT Standard_Boolean Distinguish() const;
-  
-  //! Returns Standard_True if the edges are drawn and
-  //! Standard_False if the edges are not drawn.
-  Standard_EXPORT Standard_Boolean Edge() const;
-  
-  //! Returns the surface material of internal faces
-  Standard_EXPORT const Graphic3d_MaterialAspect& BackMaterial() const;
-  
-  //! Returns the surface material of external faces
-  Standard_EXPORT const Graphic3d_MaterialAspect& FrontMaterial() const;
-  
-  Standard_EXPORT Handle(Graphic3d_TextureMap) TextureMap() const;
-  
-  Standard_EXPORT Standard_Boolean TextureMapState() const;
-  
-  //! Returns current polygon offsets settings.
-  Standard_EXPORT void PolygonOffsets (Standard_Integer& aMode, Standard_ShortReal& aFactor, Standard_ShortReal& aUnits) const;
-  
-  Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& ShaderProgram() const;
+  void SetPolygonOffsets (const Standard_Integer   theMode,
+                          const Standard_ShortReal theFactor = 1.0f,
+                          const Standard_ShortReal theUnits  = 0.0f)
+  {
+    myPolygonOffset.Mode   = (Aspect_PolygonOffsetMode )(theMode & Aspect_POM_Mask);
+    myPolygonOffset.Factor = theFactor;
+    myPolygonOffset.Units  = theUnits;
+  }
 
+public:
 
+  //! Returns true if edges should be drawn (false by default).
+  bool ToDrawEdges() const { return myToDrawEdges; }
 
+  //! Set if edges should be drawn or not.
+  void SetDrawEdges (bool theToDraw) { myToDrawEdges = theToDraw; }
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_AspectFillArea3d,Aspect_AspectFillArea)
+  //! Returns true if edges should be drawn.
+  bool Edge() const { return myToDrawEdges; }
+
+  //! The edges of FillAreas are drawn.
+  void SetEdgeOn() { myToDrawEdges = true; }
+
+  //! The edges of FillAreas are not drawn.
+  void SetEdgeOff() { myToDrawEdges = false; }
+
+  //! Return color of edges.
+  const Quantity_Color& EdgeColor() const { return myEdgeColor.GetRGB(); }
+
+  //! Return color of edges.
+  const Quantity_ColorRGBA& EdgeColorRGBA() const { return myEdgeColor; }
+
+  //! Modifies the color of the edge of the face
+  void SetEdgeColor (const Quantity_Color& theColor) { myEdgeColor.SetRGB (theColor); }
+
+  //! Return edges line type.
+  Aspect_TypeOfLine EdgeLineType() const { return myEdgeType; }
+
+  //! Modifies the edge line type
+  void SetEdgeLineType (const Aspect_TypeOfLine theType) { myEdgeType = theType; }
+
+  //! Return width for edges in pixels.
+  Standard_ShortReal EdgeWidth() const { return myEdgeWidth; }
+
+  //! Modifies the edge thickness
+  //! Warning: Raises AspectFillAreaDefinitionError if the width is a negative value.
+  void SetEdgeWidth (const Standard_Real theWidth)
+  {
+    if (theWidth <= 0.0)
+    {
+      Aspect_AspectFillAreaDefinitionError::Raise ("Bad value for EdgeLineWidth");
+    }
+    myEdgeWidth = (float )theWidth;
+  }
+
+public:
+
+  //! Returns the hatch type used when InteriorStyle is IS_HATCH
+  Aspect_HatchStyle HatchStyle() const { return myHatchStyle; }
+
+  //! Modifies the hatch type used when InteriorStyle is IS_HATCH
+  void SetHatchStyle (const Aspect_HatchStyle theStyle) { myHatchStyle = theStyle; }
+
+  //! Returns the current values.
+  Standard_DEPRECATED("Deprecated method Values() should be replaced by individual property getters")
+  void Values (Aspect_InteriorStyle& theStyle,
+               Quantity_Color&       theIntColor,
+               Quantity_Color&       theEdgeColor,
+               Aspect_TypeOfLine&    theType,
+               Standard_Real&        theWidth) const
+  {
+    theStyle    = myInteriorStyle;
+    theIntColor = myInteriorColor.GetRGB();
+    theEdgeColor= myEdgeColor.GetRGB();
+    theType     = myEdgeType;
+    theWidth    = myEdgeWidth;
+  }
+
+  //! Returns the current values.
+  Standard_DEPRECATED("Deprecated method Values() should be replaced by individual property getters")
+  void Values (Aspect_InteriorStyle& theStyle,
+               Quantity_Color&       theIntColor,
+               Quantity_Color&       theBackIntColor,
+               Quantity_Color&       theEdgeColor,
+               Aspect_TypeOfLine&    theType,
+               Standard_Real&        theWidth) const
+  {
+    theStyle       = myInteriorStyle;
+    theIntColor    = myInteriorColor.GetRGB();
+    theBackIntColor= myBackInteriorColor.GetRGB();
+    theEdgeColor   = myEdgeColor.GetRGB();
+    theType        = myEdgeType;
+    theWidth       = myEdgeWidth;
+  }
 
 protected:
 
+  Handle(Graphic3d_ShaderProgram) myProgram;
+  Handle(Graphic3d_TextureMap)    myTextureMap;
+  Graphic3d_MaterialAspect        myFrontMaterial;
+  Graphic3d_MaterialAspect        myBackMaterial;
 
+  Quantity_ColorRGBA      myInteriorColor;
+  Quantity_ColorRGBA      myBackInteriorColor;
+  Quantity_ColorRGBA      myEdgeColor;
+  Aspect_InteriorStyle    myInteriorStyle;
+  Aspect_TypeOfLine       myEdgeType;
+  Standard_ShortReal      myEdgeWidth;
+  Aspect_HatchStyle       myHatchStyle;
 
-
-private:
-
-
-  Standard_Boolean DistinguishModeActive;
-  Standard_Boolean EdgeModeActive;
-  Standard_Boolean BackFaceRemovalActive;
-  Handle(Graphic3d_TextureMap) MyTextureMap;
-  Standard_Boolean MyTextureMapState;
-  Graphic3d_MaterialAspect MyFrontMaterial;
-  Graphic3d_MaterialAspect MyBackMaterial;
-  Standard_Integer MyPolygonOffsetMode;
-  Standard_ShortReal MyPolygonOffsetFactor;
-  Standard_ShortReal MyPolygonOffsetUnits;
-  Handle(Graphic3d_ShaderProgram) MyShaderProgram;
-
+  Graphic3d_PolygonOffset myPolygonOffset;
+  bool                    myToDistinguishMaterials;
+  bool                    myToDrawEdges;
+  bool                    myToSuppressBackFaces;
+  bool                    myToMapTexture;
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Graphic3d_AspectFillArea3d, Standard_Transient)
 
 #endif // _Graphic3d_AspectFillArea3d_HeaderFile

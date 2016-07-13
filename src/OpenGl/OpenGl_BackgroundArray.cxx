@@ -203,9 +203,9 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
     OpenGl_Vec2(-1.0f,  1.0f)
   };
 
-  Tfloat* aCorners[4]     = {};
-  Tfloat  aDiagCorner1[3] = {};
-  Tfloat  aDiagCorner2[3] = {};
+  float* aCorners[4]     = {};
+  float  aDiagCorner1[3] = {};
+  float  aDiagCorner2[3] = {};
 
   switch (myGradientParams.type)
   {

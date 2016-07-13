@@ -219,20 +219,16 @@ void AIS_Point::UpdatePointValues()
     myDrawer->SetPointAspect (Handle(Prs3d_PointAspect)());
     return;
   }
-  Quantity_Color aCol;
-  Quantity_Color QCO;
-  Aspect_TypeOfMarker  aTOM;
-  Standard_Real        aScale;
-  
-  if(myDrawer->HasLink()){
-    myDrawer->Link()->PointAspect()->Aspect()->Values(QCO,aTOM,aScale);
-    aCol = QCO.Name();
+  Quantity_Color      aCol (Quantity_NOC_YELLOW);
+  Aspect_TypeOfMarker aTOM = Aspect_TOM_PLUS;
+  Standard_Real       aScale = 1.0;
+  if (myDrawer->HasLink())
+  {
+    aCol   = myDrawer->Link()->PointAspect()->Aspect()->Color();
+    aTOM   = myDrawer->Link()->PointAspect()->Aspect()->Type();
+    aScale = myDrawer->Link()->PointAspect()->Aspect()->Scale();
   }
-  else{
-    aCol = Quantity_NOC_YELLOW;
-    aTOM = Aspect_TOM_PLUS;
-    aScale = 1;
-  }
+
   if(hasOwnColor) aCol = myOwnColor;
   if(myOwnWidth!=0.0) aScale = myOwnWidth;
   if(myHasTOM) aTOM = myTOM;

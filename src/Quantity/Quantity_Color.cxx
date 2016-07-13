@@ -114,6 +114,19 @@ Quantity_Color::Quantity_Color (const Quantity_Parameter R1, const Quantity_Para
 
 }
 
+Quantity_Color::Quantity_Color (const NCollection_Vec3<float>& theRgb)
+: MyRed  (theRgb.r()),
+  MyGreen(theRgb.g()),
+  MyBlue (theRgb.b())
+{
+  if (theRgb.r() < 0.0f || theRgb.r() > 1.0f
+   || theRgb.g() < 0.0f || theRgb.g() > 1.0f
+   || theRgb.b() < 0.0f || theRgb.b() > 1.0f)
+  {
+    Standard_OutOfRange::Raise ("Color out");
+  }
+}
+
 void Quantity_Color::ChangeContrast (const Quantity_Rate ADelta) {
 
 Standard_ShortReal MyHue, MyLight, MySaturation;

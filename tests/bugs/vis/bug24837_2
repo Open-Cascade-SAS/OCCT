@@ -28,7 +28,7 @@ vsetdispmode 1
 set anImage ${imagedir}/${casename}_2_1.png
 vdump ${anImage}
 
-vsetmaterial b1 b2 tb1 tb2 plastic
+vsetmaterial b1 b2 plastic
 vsetcolor b1 tb1 RED
 vsetcolor b2 tb2 GREEN
 set anImage ${imagedir}/${casename}_2_2.png

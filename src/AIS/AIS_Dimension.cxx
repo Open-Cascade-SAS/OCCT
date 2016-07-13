@@ -293,14 +293,7 @@ TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidt
   }
 
   // Get text style parameters
-  Quantity_Color aColor; 
-  Standard_CString aFontName;
-  Standard_Real aFactor;
-  Standard_Real aSpace;
-  myDrawer->DimensionAspect()->TextAspect()->Aspect()->Values (aColor, aFontName, aFactor, aSpace);
-  Font_FontAspect aFontAspect = myDrawer->DimensionAspect()->TextAspect()->Aspect()->GetTextFontAspect();
-  Standard_Real   aFontHeight = myDrawer->DimensionAspect()->TextAspect()->Height();
-
+  Handle(Prs3d_TextAspect) aTextAspect = myDrawer->DimensionAspect()->TextAspect();
   NCollection_Utf8String anUTFString = (Standard_Utf16Char* )aValueStr.ToExtString();
 
   theWidth = 0.0;
@@ -308,7 +301,9 @@ TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidt
   if (myDrawer->DimensionAspect()->IsText3d())
   {
     // text width produced by BRepFont
-    Font_BRepFont aFont (aFontName, aFontAspect, aFontHeight);
+    Font_BRepFont aFont (aTextAspect->Aspect()->Font().ToCString(),
+                         aTextAspect->Aspect()->GetTextFontAspect(),
+                         aTextAspect->Height());
 
     for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
     {
@@ -321,7 +316,10 @@ TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidt
   {
     // Text width for 1:1 scale 2D case
     Handle(Font_FTFont) aFont = new Font_FTFont();
-    aFont->Init (aFontName, aFontAspect, (const unsigned int)aFontHeight, THE_2D_TEXT_RESOLUTION);
+    aFont->Init (aTextAspect->Aspect()->Font().ToCString(),
+                 aTextAspect->Aspect()->GetTextFontAspect(),
+                 (const unsigned int)aTextAspect->Height(),
+                 THE_2D_TEXT_RESOLUTION);
 
     for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
     {
@@ -354,6 +352,8 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
                        theDirection,
                        anAngle,
                        aLength);
+
+    Prs3d_Root::CurrentGroup (thePresentation)->SetGroupPrimitivesAspect (myDrawer->DimensionAspect()->ArrowAspect()->Aspect());
   }
   else
   {
@@ -370,17 +370,13 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
     anArrow->AddVertex (aRightPoint);
 
     // Set aspect for arrow triangles
-    Quantity_Color aColor;
-    Aspect_TypeOfLine aTOL;
-    Standard_Real aWidth;
-    myDrawer->DimensionAspect()->ArrowAspect()->Aspect()->Values (aColor, aTOL, aWidth);
     Graphic3d_MaterialAspect aShadeMat (Graphic3d_NOM_DEFAULT);
     aShadeMat.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
     aShadeMat.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
     aShadeMat.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
 
     Handle(Prs3d_ShadingAspect) aShadingStyle = new Prs3d_ShadingAspect();
-    aShadingStyle->SetColor (aColor);
+    aShadingStyle->SetColor (myDrawer->DimensionAspect()->ArrowAspect()->Aspect()->Color());
     aShadingStyle->SetMaterial (aShadeMat);
 
     Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aShadingStyle->Aspect());
@@ -405,16 +401,14 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
   if (myDrawer->DimensionAspect()->IsText3d())
   {
     // getting font parameters
-    Quantity_Color aColor;
-    Standard_CString aFontName;
-    Standard_Real anExpansionFactor;
-    Standard_Real aSpace;
-    myDrawer->DimensionAspect()->TextAspect()->Aspect()->Values (aColor, aFontName, anExpansionFactor, aSpace);
-    Font_FontAspect aFontAspect = myDrawer->DimensionAspect()->TextAspect()->Aspect()->GetTextFontAspect();
-    Standard_Real aFontHeight = myDrawer->DimensionAspect()->TextAspect()->Height();
+    Handle(Prs3d_TextAspect) aTextAspect = myDrawer->DimensionAspect()->TextAspect();
+    Quantity_Color  aColor      = aTextAspect->Aspect()->Color();
+    Font_FontAspect aFontAspect = aTextAspect->Aspect()->GetTextFontAspect();
+    Standard_Real   aFontHeight = aTextAspect->Height();
 
     // creating TopoDS_Shape for text
-    Font_BRepFont aFont (aFontName, aFontAspect, aFontHeight);
+    Font_BRepFont aFont (aTextAspect->Aspect()->Font().ToCString(),
+                         aFontAspect, aFontHeight);
     NCollection_Utf8String anUTFString = (Standard_Utf16Char* )theText.ToExtString();
 
     Font_BRepTextBuilder aBuilder;

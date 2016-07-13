@@ -1,11 +1,5 @@
-Aspect_AspectFillArea.cxx
-Aspect_AspectFillArea.hxx
 Aspect_AspectFillAreaDefinitionError.hxx
-Aspect_AspectLine.cxx
-Aspect_AspectLine.hxx
 Aspect_AspectLineDefinitionError.hxx
-Aspect_AspectMarker.cxx
-Aspect_AspectMarker.hxx
 Aspect_AspectMarkerDefinitionError.hxx
 Aspect_Background.cxx
 Aspect_Background.hxx

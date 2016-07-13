@@ -182,8 +182,6 @@
 #endif
 
 #include <InterfaceGraphic.hxx>
-#include <InterfaceGraphic_tgl_all.hxx>
-#include <InterfaceGraphic_telem.hxx>
 
 // GL version can be defined by system gl.h header
 #if !defined(GL_ES_VERSION_2_0)

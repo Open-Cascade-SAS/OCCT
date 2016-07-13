@@ -485,12 +485,11 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     Prs3d_Root::NewGroup ( Prs );
     Handle(Graphic3d_Group) aGroup2 = Prs3d_Root::CurrentGroup ( Prs );
 
-    anAsp->SetEdgeOff();
-    anAsp->SetTextureMapOff();
-    aGroup2->SetPrimitivesAspect( anAsp );
+    Handle(Graphic3d_AspectFillArea3d) anAspCopy = new Graphic3d_AspectFillArea3d (*anAsp);
+    anAspCopy->SetTextureMapOff();
+    aGroup2->SetPrimitivesAspect( anAspCopy );
     aGroup2->SetPrimitivesAspect( anLAsp );
     aGroup2->AddPrimitiveArray( anEdgeSegments );
-    anAsp->SetEdgeOn();
   }
 }
 

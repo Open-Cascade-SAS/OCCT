@@ -1006,3 +1006,7 @@ Within this OCCT release, this first level of aspects has been completely remove
 
 Note that the 3rd level (defining several different aspects within the same graphic group) is also should be avoided in application code since it is deprecated functionality which can be removed in further releases.
 Graphic3d_Group::SetGroupPrimitivesAspect() should be the main method defining presentation attributes.
+
+The implementation of Graphic3d_Group::SetGroupPrimitivesAspect() has been changed from copying aspect values to keeping passed object.
+Although it was not documented, previosly it was possible to modify single aspects instance (like Graphic3d_AspectFillArea3d) and set it to multiple groups.
+Now such code would produce unexpected result and therefore should be updated to create dedicated aspect instance.

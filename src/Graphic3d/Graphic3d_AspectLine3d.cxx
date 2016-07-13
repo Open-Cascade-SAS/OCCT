@@ -13,45 +13,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//-Version	
-//-Design	Declaration of variables specific to the context
-//		of tracing of lines 3d
-//-Warning	Context of tracing of lines 3d inherits the context
-//		defined by :
-//		- the color
-//		- the type of trait
-//		- the thickness
-//-References	
-//-Language	C++ 2.0
-//-Declarations
-// for the class
-
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectLine3d,Aspect_AspectLine)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectLine3d, Standard_Transient)
 
-//-Aliases
-//-Global data definitions
-//-Constructors
-//-Destructors
-//-Methods, in order
-Graphic3d_AspectLine3d::Graphic3d_AspectLine3d () {
+// =======================================================================
+// function : Graphic3d_AspectLine3d
+// purpose  :
+// =======================================================================
+Graphic3d_AspectLine3d::Graphic3d_AspectLine3d()
+: myColor (Quantity_NOC_YELLOW),
+  myType  (Aspect_TOL_SOLID),
+  myWidth (1.0f)
+{
+  //
 }
 
-// (AColor, AType, AWidth)
-// because  AspectLine3d inherits AspectLine and it is necessary to call
-// initialisation of AspectLine with AColor, AType, AWidth.
-
-Graphic3d_AspectLine3d::Graphic3d_AspectLine3d (const Quantity_Color& AColor, const Aspect_TypeOfLine AType, const Standard_Real AWidth):Aspect_AspectLine (AColor, AType, AWidth) {}
-
-void Graphic3d_AspectLine3d::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram)
+// =======================================================================
+// function : Graphic3d_AspectLine3d
+// purpose  :
+// =======================================================================
+Graphic3d_AspectLine3d::Graphic3d_AspectLine3d (const Quantity_Color&   theColor,
+                                                const Aspect_TypeOfLine theType,
+                                                const Standard_Real     theWidth)
+: myColor (theColor),
+  myType  (theType),
+  myWidth ((float )theWidth)
 {
-  MyShaderProgram = theProgram;
-}
-
-const Handle(Graphic3d_ShaderProgram)& Graphic3d_AspectLine3d::ShaderProgram() const
-{
-  return MyShaderProgram;
+  if (myWidth <= 0.0f)
+  {
+    Aspect_AspectLineDefinitionError::Raise ("Graphic3d_AspectLine3d, Bad value for LineWidth");
+  }
 }

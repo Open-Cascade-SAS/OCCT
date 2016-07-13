@@ -14,14 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//modified      20-feb-98 by <SZY>
-//              Sergei Zaritchny
-
-#include <Aspect_AspectMarker.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <DsgPrs.hxx>
 #include <DsgPrs_RadiusPresentation.hxx>
+
+#include <DsgPrs.hxx>
 #include <ElCLib.hxx>
 #include <gce_MakeDir.hxx>
 #include <gce_MakeLin.hxx>
@@ -33,7 +28,6 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
@@ -41,7 +35,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Text.hxx>
-#include <Quantity_Color.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,

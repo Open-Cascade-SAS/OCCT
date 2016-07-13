@@ -689,10 +689,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     //  SYMMETRY WHEN THE REFERENCE POINT IS ON THE AXIS OF SYM.:
     //==============================================================
     //Marker of localisation of the face
-    Quantity_Color aColor;
-    Aspect_TypeOfLine aType;
-    Standard_Real aWidth;
-    LA->LineAspect()->Aspect()->Values(aColor, aType, aWidth);
+    Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
     Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
@@ -810,10 +807,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-    Quantity_Color aColor;
-    Aspect_TypeOfLine aType;
-    Standard_Real aWidth;
-    LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+    Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
     Handle(Graphic3d_AspectMarker3d) aMarkerAspAtt = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAspAtt);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints1 = new Graphic3d_ArrayOfPoints (1);

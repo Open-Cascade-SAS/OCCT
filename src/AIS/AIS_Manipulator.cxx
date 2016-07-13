@@ -809,9 +809,11 @@ void AIS_Manipulator::Compute (const Handle(PrsMgr_PresentationManager3d)& thePr
   {
     // Display axes
     aGroup = Prs3d_Root::NewGroup (thePrs);
-    anAspect->SetColor (myAxes[anIt].Color());
-    aGroup->SetGroupPrimitivesAspect (anAspect->Aspect());
-    myAxes[anIt].Compute (thePrsMgr, thePrs, anAspect);
+
+    Handle(Prs3d_ShadingAspect) anAspectAx = new Prs3d_ShadingAspect (new Graphic3d_AspectFillArea3d(*anAspect->Aspect()));
+    anAspectAx->SetColor (myAxes[anIt].Color());
+    aGroup->SetGroupPrimitivesAspect (anAspectAx->Aspect());
+    myAxes[anIt].Compute (thePrsMgr, thePrs, anAspectAx);
     myAxes[anIt].SetTransformPersistence (GetTransformPersistenceMode(),
                                           GetTransformPersistencePoint());
   }

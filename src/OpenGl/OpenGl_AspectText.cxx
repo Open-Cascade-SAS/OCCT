@@ -23,7 +23,6 @@
 
 namespace
 {
-  static const TEL_COLOUR TheDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
   static const TCollection_AsciiString THE_EMPTY_KEY;
 }
 
@@ -32,17 +31,18 @@ namespace
 // purpose  :
 // =======================================================================
 OpenGl_AspectText::OpenGl_AspectText()
-: myFont ("Courier") ,
-  myColor (TheDefaultColor),
-  mySubtitleColor (TheDefaultColor),
-  myAngle (0.0f),
-  myStyleType   (Aspect_TOST_NORMAL),
-  myDisplayType (Aspect_TODT_NORMAL),
-  myFontAspect  (Font_FA_Regular),
-  myZoomable (false),
-  myShaderProgram()
+: myAspect (new Graphic3d_AspectText3d (Quantity_Color (Quantity_NOC_WHITE), "Courier", 1.0, 0.0))
 {
   //
+}
+
+// =======================================================================
+// function : OpenGl_AspectText
+// purpose  :
+// =======================================================================
+OpenGl_AspectText::OpenGl_AspectText (const Handle(Graphic3d_AspectText3d)& theAspect)
+{
+  SetAspect (theAspect);
 }
 
 // =======================================================================
@@ -58,30 +58,10 @@ OpenGl_AspectText::~OpenGl_AspectText()
 // function : SetAspect
 // purpose  :
 // =======================================================================
-void OpenGl_AspectText::SetAspect (const CALL_DEF_CONTEXTTEXT& theAspect)
+void OpenGl_AspectText::SetAspect (const Handle(Graphic3d_AspectText3d)& theAspect)
 {
-  myFont = theAspect.Font;
-
-  myColor.rgb[0] = (float )theAspect.Color.r;
-  myColor.rgb[1] = (float )theAspect.Color.g;
-  myColor.rgb[2] = (float )theAspect.Color.b;
-  myColor.rgb[3] = 1.0f;
-  mySubtitleColor.rgb[0] = (float )theAspect.ColorSubTitle.r;
-  mySubtitleColor.rgb[1] = (float )theAspect.ColorSubTitle.g;
-  mySubtitleColor.rgb[2] = (float )theAspect.ColorSubTitle.b;
-  mySubtitleColor.rgb[3] = 1.0f;
-
-  myAngle       = (float )theAspect.TextAngle;
-  myStyleType   = (Aspect_TypeOfStyleText   )theAspect.Style;
-  myDisplayType = (Aspect_TypeOfDisplayText )theAspect.DisplayType;
-  myFontAspect  = (Font_FontAspect )theAspect.TextFontAspect;
-  myZoomable    = (theAspect.TextZoomable != 0);
-
-  // update resource bindings
-  myShaderProgram = theAspect.ShaderProgram;
-
-  const TCollection_AsciiString& aShaderKey = myShaderProgram.IsNull() ? THE_EMPTY_KEY : myShaderProgram->GetId();
-
+  myAspect = theAspect;
+  const TCollection_AsciiString& aShaderKey = myAspect->ShaderProgram().IsNull() ? THE_EMPTY_KEY : myAspect->ShaderProgram()->GetId();
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
     myResources.ResetShaderReadiness();

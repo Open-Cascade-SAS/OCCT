@@ -19,8 +19,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <InterfaceGraphic_telem.hxx>
-
 #include <OpenGl_BVHClipPrimitiveSet.hxx>
 #include <OpenGl_BVHClipPrimitiveTrsfPersSet.hxx>
 #include <OpenGl_BVHTreeSelector.hxx>

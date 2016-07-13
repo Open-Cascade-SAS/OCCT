@@ -280,7 +280,7 @@ namespace
                                           const gp_Pnt2d&                   theUVOrigin,
                                           const gp_Pnt2d&                   theUVRepeat,
                                           const gp_Pnt2d&                   theUVScale,
-                                          const Standard_Boolean            theIsClosed)
+                                          const bool                        theIsClosed)
   {
     Handle(Graphic3d_ArrayOfTriangles) aPArray = fillTriangles (theShape, theHasTexels, theUVOrigin, theUVRepeat, theUVScale);
     if (aPArray.IsNull())
@@ -293,7 +293,6 @@ namespace
     if (!theDrawer->ShadingAspectGlobal())
     {
       Handle(Graphic3d_AspectFillArea3d) anAsp = theDrawer->ShadingAspect()->Aspect();
-      theIsClosed ? anAsp->SuppressBackFace() : anAsp->AllowBackFace();
       aGroup->SetGroupPrimitivesAspect (anAsp);
     }
     aGroup->AddPrimitiveArray (aPArray);
@@ -531,14 +530,14 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
     if (aShapeIter.More())
     {
       shadeFromShape (aClosed, thePrs, theDrawer,
-                      theHasTexels, theUVOrigin, theUVRepeat, theUVScale, Standard_True);
+                      theHasTexels, theUVOrigin, theUVRepeat, theUVScale, true);
     }
 
     aShapeIter.Initialize (anOpened);
     if (aShapeIter.More())
     {
       shadeFromShape (anOpened, thePrs, theDrawer,
-                      theHasTexels, theUVOrigin, theUVRepeat, theUVScale, Standard_False);
+                      theHasTexels, theUVOrigin, theUVRepeat, theUVScale, false);
     }
   }
   else
@@ -546,7 +545,7 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
     // if the shape type is not compound, composolid or solid, use autodetection back-facing filled
     shadeFromShape (theShape, thePrs, theDrawer,
                     theHasTexels, theUVOrigin, theUVRepeat, theUVScale,
-                    (theVolume == StdPrs_Volume_Closed ? Standard_True : Standard_False));
+                    theVolume == StdPrs_Volume_Closed);
   }
 
   if (theDrawer->FaceBoundaryDraw())

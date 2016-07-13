@@ -16,7 +16,6 @@
 
 
 #include <AIS_GraphicTool.hxx>
-#include <Aspect_AspectLine.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
@@ -89,36 +88,20 @@ Quantity_NameOfColor AIS_GraphicTool::GetLineColor (const Handle(Prs3d_Drawer)& 
 
 void AIS_GraphicTool::GetLineColor (const Handle(Prs3d_Drawer)& Dr, const AIS_TypeOfAttribute Att, Quantity_Color &aColor)
 {
-  Standard_Real W;
-  Aspect_TypeOfLine TYP;
-  GetLineAspect(Dr,Att)->Aspect()->Values(aColor,TYP,W);
+  aColor = GetLineAspect(Dr,Att)->Aspect()->Color();
 }
 
 Standard_Real AIS_GraphicTool::GetLineWidth (const Handle(Prs3d_Drawer)& Dr,
 				  const AIS_TypeOfAttribute Att)
 {
-//  Quantity_NameOfColor Col;
-  Standard_Real W;
-  Aspect_TypeOfLine TYP;
-  
   Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr,Att);
-  
-  Quantity_Color QCol;
-  LA->Aspect()->Values(QCol,TYP,W);
-  return W;
+  return LA->Aspect()->Width();
 }
 Aspect_TypeOfLine AIS_GraphicTool::GetLineType (const Handle(Prs3d_Drawer)& Dr,
 				 const AIS_TypeOfAttribute Att)
 {
-//  Quantity_NameOfColor Col;
-  Standard_Real W;
-  Aspect_TypeOfLine TYP;
-  
   Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr,Att);
-  
-  Quantity_Color QCol;
-  LA->Aspect()->Values(QCol,TYP,W);
-  return TYP;
+  return LA->Aspect()->Type();;
 }
 
 
@@ -128,12 +111,10 @@ void AIS_GraphicTool::GetLineAtt(const Handle(Prs3d_Drawer)& Dr,
 			       Standard_Real& W,
 			       Aspect_TypeOfLine& TYP)
 {
-  
   Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr,Att);
-  
-  Quantity_Color QCol;
-  LA->Aspect()->Values(QCol,TYP,W);
-  Col = QCol.Name();
+  Col = LA->Aspect()->Color().Name();
+  W   = LA->Aspect()->Width();
+  TYP = LA->Aspect()->Type();
 }
 
 Quantity_NameOfColor AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer)& Dr)
@@ -146,11 +127,7 @@ Quantity_NameOfColor AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer
 void AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer)& Dr, Quantity_Color &aColor)
 {
   Handle(Graphic3d_AspectFillArea3d) AFA = Dr->ShadingAspect()->Aspect();
-  Aspect_InteriorStyle IS;
-  Aspect_TypeOfLine T;
-  Standard_Real W;
-  Quantity_Color EC;
-  AFA->Values(IS,aColor,EC,T,W);
+  aColor = AFA->InteriorColor();
 }
 
 Graphic3d_MaterialAspect AIS_GraphicTool::GetMaterial(const Handle(Prs3d_Drawer)& Dr)

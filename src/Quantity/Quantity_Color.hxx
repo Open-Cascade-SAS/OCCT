@@ -29,6 +29,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Vec4.hxx>
 class Quantity_ColorDefinitionError;
 
 
@@ -69,7 +70,10 @@ public:
   //! <R2> is the lightness between 0. and 1.
   //! <R3> is the saturation between 0. and 1.
   Standard_EXPORT Quantity_Color(const Quantity_Parameter R1, const Quantity_Parameter R2, const Quantity_Parameter R3, const Quantity_TypeOfColor AType);
-  
+
+  //! Define color from RGB values.
+  Standard_EXPORT explicit Quantity_Color (const NCollection_Vec3<float>& theRgb);
+
   //! Increases or decreases the contrast by <ADelta>.
   //! <ADelta> is a percentage. Any value greater than zero
   //! will increase the contrast.
@@ -168,7 +172,10 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   //! Returns the Saturation component (value of the saturation)
   //! of the color <me>.
   Standard_EXPORT Quantity_Parameter Saturation() const;
-  
+
+  //! Return the color as vector of 3 float elements.
+  operator const NCollection_Vec3<float>&() const { return *(const NCollection_Vec3<float>* )this; }
+
   //! Returns in R1, R2 and R3 the components of
   //! this color according to the color system definition AType.
   //! -   if AType is Quantity_TOC_RGB R1 is the

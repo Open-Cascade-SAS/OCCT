@@ -16,7 +16,6 @@
 #ifndef _OpenGl_TextParam_Header
 #define _OpenGl_TextParam_Header
 
-#include <InterfaceGraphic_telem.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 

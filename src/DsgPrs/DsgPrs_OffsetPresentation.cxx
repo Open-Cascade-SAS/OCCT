@@ -14,11 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Aspect_AspectMarker.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfMarker.hxx>
 #include <DsgPrs_OffsetPresentation.hxx>
+
 #include <ElCLib.hxx>
 #include <gce_MakeLin.hxx>
 #include <gp_Dir.hxx>
@@ -29,7 +26,6 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
@@ -37,7 +33,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Text.hxx>
-#include <Quantity_Color.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -121,10 +116,7 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     
     // ball 1 : 3eme groupe
-    Quantity_Color aColor;
-    Aspect_TypeOfLine aType;
-    Standard_Real aWidth;
-    LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+    Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
     Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
@@ -167,10 +159,9 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
   gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2,OffsetPoint),L2);
 
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Quantity_Color acolor;
-  Aspect_TypeOfLine atype;
-  Standard_Real awidth;
-  LA->LineAspect()->Aspect()->Values(acolor, atype, awidth);
+  Quantity_Color    acolor = LA->LineAspect()->Aspect()->Color();
+  Aspect_TypeOfLine atype  = LA->LineAspect()->Aspect()->Type();
+  Standard_Real     awidth = LA->LineAspect()->Aspect()->Width();
 
   Handle(Graphic3d_AspectLine3d) AxeAsp = new Graphic3d_AspectLine3d (acolor, atype, awidth);
   AxeAsp->SetType( Aspect_TOL_DOTDASH);

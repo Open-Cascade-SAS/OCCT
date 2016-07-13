@@ -113,7 +113,7 @@ namespace
   {
 
     char aPsFont[64];
-    getGL2PSFontName (theAspect.FontName().ToCString(), aPsFont);
+    getGL2PSFontName (theAspect.Aspect()->Font().ToCString(), aPsFont);
 
   #if !defined(GL_ES_VERSION_2_0)
     if (theIs2d)
@@ -132,7 +132,7 @@ namespace
     // Standard GL2PS's alignment isn't used, because it doesn't work correctly
     // for all formats, therefore alignment is calculated manually relative
     // to the bottom-left corner, which corresponds to the GL2PS_TEXT_BL value
-    gl2psTextOpt (theText.ToCString(), aPsFont, (GLshort)theHeight, GL2PS_TEXT_BL, theAspect.Angle());
+    gl2psTextOpt (theText.ToCString(), aPsFont, (GLshort)theHeight, GL2PS_TEXT_BL, (float )theAspect.Aspect()->GetTextAngle());
   }
 #endif
 
@@ -456,7 +456,10 @@ void OpenGl_Text::Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                           const OpenGl_AspectText&             theTextAspect,
                           const unsigned int                   theResolution) const
 {
-  render (thePrintCtx, theCtx, theTextAspect, theTextAspect.Color(), theTextAspect.SubtitleColor(), theResolution);
+  render (thePrintCtx, theCtx, theTextAspect,
+          theTextAspect.Aspect()->ColorRGBA(),
+          theTextAspect.Aspect()->ColorSubTitleRGBA(),
+          theResolution);
 }
 
 // =======================================================================
@@ -483,7 +486,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   {
     Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, myPoint.x() + theDVec.x(), myPoint.y() + theDVec.y(), 0.f);
     Graphic3d_TransformUtils::Scale<GLdouble> (aModViewMat, 1.f, -1.f, 1.f);
-    Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Angle(), 0.f, 0.f, 1.f);
+    Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Aspect()->GetTextAngle(), 0.f, 0.f, 1.f);
   }
   else
   {
@@ -525,10 +528,10 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     else
     {
       Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, anObjX, anObjY, anObjZ);
-      Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Angle(), 0.0, 0.0, 1.0);
+      Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Aspect()->GetTextAngle(), 0.0, 0.0, 1.0);
     }
 
-    if (!theTextAspect.IsZoomable())
+    if (!theTextAspect.Aspect()->GetTextZoomable())
     {
     #ifdef _WIN32
       // if the context has assigned printer context, use it's parameters
@@ -629,8 +632,10 @@ TCollection_AsciiString OpenGl_Text::FontKey (const OpenGl_AspectText& theAspect
                                               const Standard_Integer   theHeight,
                                               const unsigned int       theResolution)
 {
-  const Font_FontAspect anAspect = (theAspect.FontAspect() != Font_FA_Undefined) ? theAspect.FontAspect() : Font_FA_Regular;
-  return theAspect.FontName()
+  const Font_FontAspect anAspect = theAspect.Aspect()->GetTextFontAspect() != Font_FA_Undefined
+                                 ? theAspect.Aspect()->GetTextFontAspect()
+                                 : Font_FA_Regular;
+  return theAspect.Aspect()->Font()
        + TCollection_AsciiString(":") + Standard_Integer(anAspect)
        + TCollection_AsciiString(":") + Standard_Integer(theResolution)
        + TCollection_AsciiString(":") + theHeight;
@@ -655,8 +660,10 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
   if (!theCtx->GetResource (theKey, aFont))
   {
     Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
-    const Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theAspect.FontName());
-    const Font_FontAspect anAspect = (theAspect.FontAspect() != Font_FA_Undefined) ? theAspect.FontAspect() : Font_FA_Regular;
+    const Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theAspect.Aspect()->Font());
+    const Font_FontAspect anAspect = theAspect.Aspect()->GetTextFontAspect() != Font_FA_Undefined
+                                   ? theAspect.Aspect()->GetTextFontAspect()
+                                   : Font_FA_Regular;
     Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, anAspect, theHeight);
     Handle(Font_FTFont) aFontFt;
     if (!aRequestedFont.IsNull())
@@ -670,7 +677,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
         {
           TCollection_ExtendedString aMsg;
           aMsg += "Font '";
-          aMsg += theAspect.FontName();
+          aMsg += theAspect.Aspect()->Font();
           aMsg += "' - initialization of GL resources has failed!";
           theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
           aFontFt.Nullify();
@@ -682,7 +689,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
       {
         TCollection_ExtendedString aMsg;
         aMsg += "Font '";
-        aMsg += theAspect.FontName();
+        aMsg += theAspect.Aspect()->Font();
         aMsg += "' is broken or has incompatible format! File path: ";
         aMsg += aRequestedFont->FontPath()->ToCString();
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
@@ -694,7 +701,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
     {
       TCollection_ExtendedString aMsg;
       aMsg += "Font '";
-      aMsg += theAspect.FontName();
+      aMsg += theAspect.Aspect()->Font();
       aMsg += "' is not found in the system!";
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
       aFont = new OpenGl_Font (aFontFt, theKey);
@@ -712,8 +719,8 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
 void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                           const Handle(OpenGl_Context)&        theCtx,
                           const OpenGl_AspectText&             theTextAspect,
-                          const TEL_COLOUR&                    theColorText,
-                          const TEL_COLOUR&                    theColorSubs,
+                          const OpenGl_Vec4&                   theColorText,
+                          const OpenGl_Vec4&                   theColorSubs,
                           const unsigned int                   theResolution) const
 {
   if (myString.IsEmpty())
@@ -822,7 +829,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                                                         z2);
 
     myScaleHeight = (y2 - y1) / h;
-    if (theTextAspect.IsZoomable())
+    if (theTextAspect.Aspect()->GetTextZoomable())
     {
       myExportHeight = (float )h;
     }
@@ -838,7 +845,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   // setup depth test
   if (myIs2d
-   || theTextAspect.StyleType() == Aspect_TOST_ANNOTATION)
+   || theTextAspect.Aspect()->Style() == Aspect_TOST_ANNOTATION)
   {
     glDisable (GL_DEPTH_TEST);
   }
@@ -871,7 +878,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // extra drawings
-  switch (theTextAspect.DisplayType())
+  switch (theTextAspect.Aspect()->DisplayType())
   {
     case Aspect_TODT_BLEND:
     {
@@ -886,7 +893,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     #if !defined(GL_ES_VERSION_2_0)
       if (theCtx->core11 != NULL)
       {
-        theCtx->SetColor4fv (*(const OpenGl_Vec4* )theColorSubs.rgb);
+        theCtx->SetColor4fv (theColorSubs);
         setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
 
         glBindTexture (GL_TEXTURE_2D, 0);
@@ -902,7 +909,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     }
     case Aspect_TODT_DEKALE:
     {
-      theCtx->SetColor4fv (*(const OpenGl_Vec4* )theColorSubs.rgb);
+      theCtx->SetColor4fv (theColorSubs);
       setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, +1.0f, 0.00001f));
       drawText    (thePrintCtx, theCtx, theTextAspect);
       setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (-1.0f, -1.0f, 0.00001f));
@@ -921,7 +928,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   }
 
   // main draw call
-  theCtx->SetColor4fv (*(const OpenGl_Vec4* )theColorText.rgb);
+  theCtx->SetColor4fv (theColorText);
   setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
   drawText    (thePrintCtx, theCtx, theTextAspect);
 
@@ -938,7 +945,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   }
 #endif
 
-  if (theTextAspect.DisplayType() == Aspect_TODT_DIMENSION)
+  if (theTextAspect.Aspect()->DisplayType() == Aspect_TODT_DIMENSION)
   {
     setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
 

@@ -149,11 +149,7 @@ const NCollection_Sequence<Graphic3d_Vec2i>& AIS_RubberBand::Points() const
 //=======================================================================
 Quantity_Color AIS_RubberBand::LineColor() const
 {
-  Quantity_Color aColor;
-  Standard_Real aWidth;
-  Aspect_TypeOfLine aTOL;
-  myDrawer->LineAspect()->Aspect()->Values (aColor, aTOL, aWidth);
-  return aColor;
+  return myDrawer->LineAspect()->Aspect()->Color();
 }
 
 //=======================================================================
@@ -198,11 +194,7 @@ void AIS_RubberBand::SetLineWidth (const Standard_Real theWidth) const
 //=======================================================================
 Standard_Real AIS_RubberBand::LineWidth() const
 {
-  Quantity_Color aColor;
-  Standard_Real aWidth;
-  Aspect_TypeOfLine aTOL;
-  myDrawer->LineAspect()->Aspect()->Values (aColor, aTOL, aWidth);
-  return aWidth;
+  return myDrawer->LineAspect()->Aspect()->Width();
 }
 
 //=======================================================================
@@ -220,11 +212,7 @@ void AIS_RubberBand::SetLineType (const Aspect_TypeOfLine theType)
 //=======================================================================
 Aspect_TypeOfLine AIS_RubberBand::LineType() const
 {
-  Quantity_Color aColor;
-  Standard_Real aWidth;
-  Aspect_TypeOfLine aTOL;
-  myDrawer->LineAspect()->Aspect()->Values (aColor, aTOL, aWidth);
-  return aTOL;
+  return myDrawer->LineAspect()->Aspect()->Type();
 }
 
 //=======================================================================
@@ -271,11 +259,7 @@ void AIS_RubberBand::SetFilling (const Quantity_Color theColor, const Standard_R
 //=======================================================================
 Standard_Boolean AIS_RubberBand::IsFilling() const
 {
-  Aspect_InteriorStyle aStyle;
-  Quantity_Color anIntColor, anEdgeColor;
-  Aspect_TypeOfLine aTOL;
-  Standard_Real aWidth;
-  myDrawer->ShadingAspect()->Aspect()->Values (aStyle, anIntColor, anEdgeColor, aTOL, aWidth);
+  Aspect_InteriorStyle aStyle = myDrawer->ShadingAspect()->Aspect()->InteriorStyle();
   return aStyle != Aspect_IS_EMPTY;
 }
 

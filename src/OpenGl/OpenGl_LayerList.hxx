@@ -19,8 +19,6 @@
 #include <OpenGl_Layer.hxx>
 #include <OpenGl_LayerFilter.hxx>
 
-#include <InterfaceGraphic_telem.hxx>
-
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 

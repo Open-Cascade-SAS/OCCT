@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes,OpenGl_Resource)
 
 static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
 {
-  //TEL_HS_SOLID
+  // Aspect_HS_SOLID
   {
     0xFFFFFFFF,
     0xFFFFFFFF,
@@ -57,7 +57,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0xFFFFFFFF,
     0xFFFFFFFF
   },
-  //TEL_HS_CROSS
+  // Aspect_HS_GRID_DIAGONAL
   {
     0xFFFFFFFF,
     0xBBBBBBBB,
@@ -92,7 +92,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0xEEEEEEEE,
     0xBBBBBBBB
   },
-  //TEL_HS_CROSS_SPARSE
+  // Aspect_HS_GRID_DIAGONAL_WIDE
   {
     0x81818181,
     0x24242424,
@@ -127,7 +127,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x18181818,
     0x42424242
   },
-  //TEL_HS_GRID
+  // Aspect_HS_GRID
   {
     0xFFFFFFFF,
     0x88888888,
@@ -162,7 +162,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0xFFFFFFFF,
     0x88888888
   },
-  //TEL_HS_GRID_SPARSE
+  // Aspect_HS_GRID_WIDE
   {
     0xFFFFFFFF,
     0x80808080,
@@ -197,7 +197,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x80808080,
     0x80808080
   },
-  //TEL_HS_DIAG_45
+  // Aspect_HS_DIAGONAL_45
   {
     0x88888888,
     0x22222222,
@@ -232,7 +232,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x88888888,
     0x22222222
   },
-  //TEL_HS_DIAG_135
+  // Aspect_HS_DIAGONAL_135
   {
     0x11111111,
     0x44444444,
@@ -267,7 +267,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x11111111,
     0x44444444
   },
-  //TEL_HS_HORIZONTAL
+  // Aspect_HS_HORIZONTAL
   {
     0xFFFFFFFF,
     0x00000000,
@@ -302,7 +302,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0xFFFFFFFF,
     0x00000000
   },
-  //TEL_HS_VERTICAL
+  // Aspect_HS_VERTICAL
   {
     0x11111111,
     0x11111111,
@@ -337,7 +337,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x11111111,
     0x11111111
   },
-  //TEL_HS_DIAG_45_SPARSE
+  // Aspect_HS_DIAGONAL_45_WIDE
   {
     0x80808080,
     0x20202020,
@@ -372,7 +372,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x08080808,
     0x02020202
   },
-  //TEL_HS_DIAG_135_SPARSE
+  // Aspect_HS_DIAGONAL_135_WIDE
   {
     0x01010101,
     0x04040404,
@@ -407,7 +407,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x10101010,
     0x40404040
   },
-  //TEL_HS_HORIZONTAL_SPARSE
+  // Aspect_HS_HORIZONTAL_WIDE
   {
     0xFFFFFFFF,
     0x00000000,
@@ -442,7 +442,7 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
     0x00000000,
     0x00000000
   },
-  //TEL_HS_VERTICAL_SPARSE
+  // Aspect_HS_VERTICAL_WIDE
   {
     0x10101010,
     0x10101010,

@@ -384,16 +384,6 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
     {
       continue;
     }
-
-    if (aGroup->IsClosed())
-    {
-      myAspect->SuppressBackFace();
-    }
-    else
-    {
-      myAspect->AllowBackFace();
-    }
-
     aGroup->SetGroupPrimitivesAspect (myAspect);
   }
 }

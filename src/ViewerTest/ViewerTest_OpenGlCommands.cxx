@@ -160,15 +160,15 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 
   // To test linking against OpenGl_Workspace and all aspect classes
   const OpenGl_AspectMarker* aMA = theWorkspace->AspectMarker();
-  aMA->Type();
+  aMA->Aspect()->Type();
   const OpenGl_AspectText* aTA = theWorkspace->AspectText();
-  aTA->FontName();
-  TEL_COLOUR aColor = theWorkspace->LineColor();
+  aTA->Aspect()->Font();
+  OpenGl_Vec4 aColor = theWorkspace->LineColor();
 
   // Finally draw something to make sure UserDraw really works
   glPushAttrib(GL_ENABLE_BIT);
   glDisable(GL_LIGHTING);
-  glColor4fv(aColor.rgb);
+  glColor4fv(aColor.GetData());
   glBegin(GL_LINE_LOOP);
   glVertex3f(myCoords[0], myCoords[1], myCoords[2]);
   glVertex3f(myCoords[3], myCoords[4], myCoords[2]);

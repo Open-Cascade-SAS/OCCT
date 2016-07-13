@@ -30,6 +30,12 @@ using namespace OpenGl_Raytrace;
   #include <OSD_Timer.hxx>
 #endif
 
+namespace
+{
+  static const OpenGl_Vec4 THE_WHITE_COLOR (1.0f, 1.0f, 1.0f, 1.0f);
+  static const OpenGl_Vec4 THE_BLACK_COLOR (0.0f, 0.0f, 0.0f, 1.0f);
+}
+
 // =======================================================================
 // function : updateRaytraceGeometry
 // purpose  : Updates 3D scene geometry for ray-tracing
@@ -305,51 +311,73 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*  
 {
   OpenGl_RaytraceMaterial theMaterial;
 
-  const OPENGL_SURF_PROP& aProperties = theAspect->IntFront();
+  const Graphic3d_MaterialAspect& aSrcMat = theAspect->Aspect()->FrontMaterial();
+  const OpenGl_Vec3& aMatCol  = theAspect->Aspect()->InteriorColor();
+  const float        aShine   = 128.0f * float(aSrcMat.Shininess());
+  const bool         isPhysic = aSrcMat.MaterialType (Graphic3d_MATERIAL_PHYSIC) == Standard_True;
 
-  theMaterial.Ambient = BVH_Vec4f (
-    (aProperties.isphysic ? aProperties.ambcol.rgb[0] : aProperties.matcol.rgb[0]) * aProperties.amb,
-    (aProperties.isphysic ? aProperties.ambcol.rgb[1] : aProperties.matcol.rgb[1]) * aProperties.amb,
-    (aProperties.isphysic ? aProperties.ambcol.rgb[2] : aProperties.matcol.rgb[2]) * aProperties.amb,
-    1.f);
+  // ambient component
+  if (aSrcMat.ReflectionMode (Graphic3d_TOR_AMBIENT))
+  {
+    const OpenGl_Vec3& aSrcAmb = isPhysic ? aSrcMat.AmbientColor() : aMatCol;
+    theMaterial.Ambient = BVH_Vec4f (aSrcAmb * (float )aSrcMat.Ambient(),  1.0f);
+  }
+  else
+  {
+    theMaterial.Ambient = THE_BLACK_COLOR;
+  }
 
-  theMaterial.Diffuse = BVH_Vec4f (
-    (aProperties.isphysic ? aProperties.difcol.rgb[0] : aProperties.matcol.rgb[0]) * aProperties.diff,
-    (aProperties.isphysic ? aProperties.difcol.rgb[1] : aProperties.matcol.rgb[1]) * aProperties.diff,
-    (aProperties.isphysic ? aProperties.difcol.rgb[2] : aProperties.matcol.rgb[2]) * aProperties.diff,
-    -1.f /* no texture */);
+  // diffusion component
+  if (aSrcMat.ReflectionMode (Graphic3d_TOR_DIFFUSE))
+  {
+    const OpenGl_Vec3& aSrcDif = isPhysic ? aSrcMat.DiffuseColor() : aMatCol;
+    theMaterial.Diffuse = BVH_Vec4f (aSrcDif * (float )aSrcMat.Diffuse(), -1.0f); // -1 is no texture
+  }
+  else
+  {
+    theMaterial.Diffuse = BVH_Vec4f (THE_BLACK_COLOR.rgb(), -1.0f);
+  }
 
-  theMaterial.Specular = BVH_Vec4f (
-    (aProperties.isphysic ? aProperties.speccol.rgb[0] : 1.f) * aProperties.spec,
-    (aProperties.isphysic ? aProperties.speccol.rgb[1] : 1.f) * aProperties.spec,
-    (aProperties.isphysic ? aProperties.speccol.rgb[2] : 1.f) * aProperties.spec,
-    aProperties.shine);
+  // specular component
+  if (aSrcMat.ReflectionMode (Graphic3d_TOR_SPECULAR))
+  {
+    const OpenGl_Vec3& aSrcSpe  = aSrcMat.SpecularColor();
+    const OpenGl_Vec3& aSrcSpe2 = isPhysic ? aSrcSpe : THE_WHITE_COLOR.rgb();
+    theMaterial.Specular = BVH_Vec4f (aSrcSpe2 * (float )aSrcMat.Specular(), aShine);
 
-  theMaterial.Emission = BVH_Vec4f (
-    (aProperties.isphysic ? aProperties.emscol.rgb[0] : aProperties.matcol.rgb[0]) * aProperties.emsv,
-    (aProperties.isphysic ? aProperties.emscol.rgb[1] : aProperties.matcol.rgb[1]) * aProperties.emsv,
-    (aProperties.isphysic ? aProperties.emscol.rgb[2] : aProperties.matcol.rgb[2]) * aProperties.emsv,
-    1.f);
+    const Standard_ShortReal aMaxRefl = Max (theMaterial.Diffuse.x() + theMaterial.Specular.x(),
+                                        Max (theMaterial.Diffuse.y() + theMaterial.Specular.y(),
+                                             theMaterial.Diffuse.z() + theMaterial.Specular.z()));
 
-  theMaterial.Transparency = BVH_Vec4f (aProperties.trans,
-                                        1.f - aProperties.trans,
-                                        aProperties.index == 0 ? 1.f : aProperties.index,
-                                        aProperties.index == 0 ? 1.f : 1.f / aProperties.index);
+    const Standard_ShortReal aReflectionScale = 0.75f / aMaxRefl;
 
-  const Standard_ShortReal aMaxRefl = Max (theMaterial.Diffuse.x() + theMaterial.Specular.x(),
-                                      Max (theMaterial.Diffuse.y() + theMaterial.Specular.y(),
-                                           theMaterial.Diffuse.z() + theMaterial.Specular.z()));
+    // ignore isPhysic here
+    theMaterial.Reflection = BVH_Vec4f (aSrcSpe * (float )aSrcMat.Specular() * aReflectionScale, 0.0f);
+  }
+  else
+  {
+    theMaterial.Specular = BVH_Vec4f (THE_BLACK_COLOR.rgb(), aShine);
+  }
 
-  const Standard_ShortReal aReflectionScale = 0.75f / aMaxRefl;
+  // emission component
+  if (aSrcMat.ReflectionMode (Graphic3d_TOR_EMISSION))
+  {
+    const OpenGl_Vec3& aSrcEms = isPhysic ? aSrcMat.EmissiveColor() : aMatCol;
+    theMaterial.Emission = BVH_Vec4f (aSrcEms * (float )aSrcMat.Emissive(), 1.0f);
+  }
+  else
+  {
+    theMaterial.Emission = THE_BLACK_COLOR;
+  }
 
-  theMaterial.Reflection = BVH_Vec4f (
-    aProperties.speccol.rgb[0] * aProperties.spec * aReflectionScale,
-    aProperties.speccol.rgb[1] * aProperties.spec * aReflectionScale,
-    aProperties.speccol.rgb[2] * aProperties.spec * aReflectionScale,
-    0.f);
+  const float anIndex = (float )aSrcMat.RefractionIndex();
+  theMaterial.Transparency = BVH_Vec4f (1.0f - (float )aSrcMat.Transparency(),
+                                        (float )aSrcMat.Transparency(),
+                                        anIndex == 0 ? 1.0f : anIndex,
+                                        anIndex == 0 ? 1.0f : 1.0f / anIndex);
 
   // Serialize physically-based material properties
-  const Graphic3d_BSDF& aBSDF = aProperties.BSDF;
+  const Graphic3d_BSDF& aBSDF = aSrcMat.BSDF();
 
   theMaterial.BSDF.Le = BVH_Vec4f (aBSDF.Le,               0.f);
   theMaterial.BSDF.Kd = BVH_Vec4f (aBSDF.Kd, -1.f /* no tex */);
@@ -363,7 +391,7 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_AspectFace*  
                                            aBSDF.AbsorptionCoeff);
 
   // Handle material textures
-  if (theAspect->DoTextureMap())
+  if (theAspect->Aspect()->ToMapTexture())
   {
     if (theGlContext->arbTexBindless != NULL)
     {
@@ -2271,10 +2299,7 @@ Standard_Boolean OpenGl_View::setUniformState (const OpenGl_Vec3*            the
   }
   else
   {
-    const OpenGl_Vec4 aBackColor (myBgColor.rgb[0],
-                                  myBgColor.rgb[1],
-                                  myBgColor.rgb[2],
-                                  1.0f);
+    const OpenGl_Vec4& aBackColor = myBgColor;
     theProgram->SetUniform (theGlContext,
       myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], aBackColor);
     theProgram->SetUniform (theGlContext,

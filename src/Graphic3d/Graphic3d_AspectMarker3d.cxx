@@ -13,23 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_MarkerImage.hxx>
-#include <Image_PixMap.hxx>
-#include <Quantity_Color.hxx>
-#include <Standard_Type.hxx>
-#include <TColStd_Array1OfByte.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectMarker3d,Aspect_AspectMarker)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectMarker3d, Standard_Transient)
 
 // =======================================================================
 // function : Graphic3d_AspectMarker3d
 // purpose  :
 // =======================================================================
 Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d()
-: Aspect_AspectMarker()
-{}
+: myColor (Quantity_NOC_YELLOW),
+  myType  (Aspect_TOM_X),
+  myScale (1.0f)
+{
+  //
+}
 
 // =======================================================================
 // function : Graphic3d_AspectMarker3d
@@ -38,8 +36,15 @@ Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d()
 Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Aspect_TypeOfMarker theType,
                                                     const Quantity_Color&     theColor,
                                                     const Standard_Real       theScale)
-: Aspect_AspectMarker (theColor, theType, theScale)
-{}
+: myColor (theColor),
+  myType  (theType),
+  myScale ((float )theScale)
+{
+  if (theScale <= 0.0)
+  {
+    Aspect_AspectMarkerDefinitionError::Raise ("Bad value for MarkerScale");
+  }
+}
 
 // =======================================================================
 // function : Graphic3d_AspectMarker3d
@@ -49,18 +54,26 @@ Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Quantity_Color&  theCo
                                                     const Standard_Integer theWidth,
                                                     const Standard_Integer theHeight,
                                                     const Handle(TColStd_HArray1OfByte)& theTextureBitMap)
-: Aspect_AspectMarker (theColor, Aspect_TOM_USERDEFINED, 1.0),
-  myMarkerImage (new Graphic3d_MarkerImage (theTextureBitMap, theWidth, theHeight))
-{}
+: myMarkerImage (new Graphic3d_MarkerImage (theTextureBitMap, theWidth, theHeight)),
+  myColor (theColor),
+  myType  (Aspect_TOM_USERDEFINED),
+  myScale (1.0f)
+{
+  //
+}
 
 // =======================================================================
 // function : Graphic3d_AspectMarker3d
 // purpose  :
 // =======================================================================
 Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d (const Handle(Image_PixMap)& theTextureImage)
-: Aspect_AspectMarker (Quantity_NOC_YELLOW, Aspect_TOM_USERDEFINED, 1.0),
-  myMarkerImage (new Graphic3d_MarkerImage (theTextureImage))
-{}
+: myMarkerImage (new Graphic3d_MarkerImage (theTextureImage)),
+  myColor (Quantity_NOC_YELLOW),
+  myType  (Aspect_TOM_USERDEFINED),
+  myScale (1.0f)
+{
+  //
+}
 
 // =======================================================================
 // function : GetTextureSize
@@ -81,24 +94,6 @@ void Graphic3d_AspectMarker3d::GetTextureSize (Standard_Integer& theWidth,
 }
 
 // =======================================================================
-// function : GetMarkerImage
-// purpose  :
-// =======================================================================
-const Handle(Graphic3d_MarkerImage)& Graphic3d_AspectMarker3d::GetMarkerImage() const
-{
-  return myMarkerImage;
-}
-
-// =======================================================================
-// function : SetMarkerImage
-// purpose  :
-// =======================================================================
-void Graphic3d_AspectMarker3d::SetMarkerImage (const Handle(Graphic3d_MarkerImage)& theImage)
-{
-  myMarkerImage = theImage;
-}
-
-// =======================================================================
 // function : SetBitMap
 // purpose  :
 // =======================================================================
@@ -108,22 +103,4 @@ void Graphic3d_AspectMarker3d::SetBitMap (const Standard_Integer theWidth,
 {
   myMarkerImage.Nullify();
   myMarkerImage = new Graphic3d_MarkerImage (theTextureBitMap, theWidth, theHeight);
-}
-
-// =======================================================================
-// function : SetShaderProgram
-// purpose  :
-// =======================================================================
-void Graphic3d_AspectMarker3d::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram)
-{
-  MyShaderProgram = theProgram;
-}
-
-// =======================================================================
-// function : ShaderProgram
-// purpose  :
-// =======================================================================
-const Handle(Graphic3d_ShaderProgram)& Graphic3d_AspectMarker3d::ShaderProgram() const
-{
-  return MyShaderProgram;
 }

@@ -16,7 +16,6 @@
 
 #include <Graphic3d_TypeOfLightSource.hxx>
 #include <Graphic3d_Vec.hxx>
-#include <InterfaceGraphic_Graphic3d.hxx>
 #include <NCollection_List.hxx>
 
 //! Light definition

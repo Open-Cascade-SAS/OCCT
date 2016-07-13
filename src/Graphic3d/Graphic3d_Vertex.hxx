@@ -16,15 +16,18 @@
 #ifndef _Graphic3d_Vertex_HeaderFile
 #define _Graphic3d_Vertex_HeaderFile
 
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
-#include <InterfaceGraphic_telem.hxx>
 #include <Standard_ShortReal.hxx>
 #include <Standard_Real.hxx>
 
 //! This class represents a graphical 3D point.
-class Graphic3d_Vertex : public TEL_POINT
+class Graphic3d_Vertex
 {
 public:
+
+  DEFINE_STANDARD_ALLOC
 
   //! Creates a point with 0.0, 0.0, 0.0 coordinates.
   Graphic3d_Vertex()
@@ -105,6 +108,8 @@ public:
 
   //! Returns the distance between two points.
   Standard_EXPORT Standard_ShortReal Distance (const Graphic3d_Vertex& theOther) const;
+
+  float xyz[3];
 
 };
 

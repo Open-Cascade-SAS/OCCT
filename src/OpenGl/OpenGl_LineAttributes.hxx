@@ -24,6 +24,8 @@
 
 class OpenGl_Context;
 
+#define TEL_HS_USER_DEF_START 15
+
 class OpenGl_LineAttributes : public OpenGl_Resource
 {
 public:

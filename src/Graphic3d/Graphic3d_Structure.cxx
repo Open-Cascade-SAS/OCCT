@@ -1471,23 +1471,18 @@ void Graphic3d_Structure::Update (const bool theUpdateLayer) const
 //=============================================================================
 void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod theMethod)
 {
-  Standard_Real anRGB[3];
   myCStructure->highlight = 1;
   myHighlightMethod = theMethod;
   switch (theMethod)
   {
     case Aspect_TOHM_COLOR:
     {
-      myHighlightColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
-      myCStructure->HighlightWithColor (Graphic3d_Vec3 (float (anRGB[0]), float (anRGB[1]), float (anRGB[2])), Standard_True);
+      myCStructure->HighlightWithColor (myHighlightColor, Standard_True);
       break;
     }
     case Aspect_TOHM_BOUNDBOX:
     {
-      myHighlightColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
-      myCStructure->HighlightColor.r = float (anRGB[0]);
-      myCStructure->HighlightColor.g = float (anRGB[1]);
-      myCStructure->HighlightColor.b = float (anRGB[2]);
+      myCStructure->HighlightColor = myHighlightColor;
       myCStructure->HighlightWithBndBox (this, Standard_True);
       break;
     }

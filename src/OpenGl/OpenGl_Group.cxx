@@ -61,56 +61,66 @@ OpenGl_Group::~OpenGl_Group()
 }
 
 // =======================================================================
-// function : UpdateAspectLine
+// function : SetGroupPrimitivesAspect
 // purpose  :
 // =======================================================================
-void OpenGl_Group::UpdateAspectLine (const Standard_Boolean theIsGlobal)
+void OpenGl_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& theAspect)
 {
-  if (!ContextLine.IsDef)
+  if (IsDeleted())
   {
     return;
   }
 
-  if (theIsGlobal || myFirst == NULL)
+  if (myAspectLine == NULL)
   {
-    if (myAspectLine == NULL)
-    {
-      myAspectLine = new OpenGl_AspectLine();
-    }
-    myAspectLine->SetAspect (ContextLine);
+    myAspectLine = new OpenGl_AspectLine (theAspect);
   }
   else
   {
-    OpenGl_AspectLine* anAspectLine = new OpenGl_AspectLine();
-    anAspectLine->SetAspect (ContextLine);
-    AddElement (anAspectLine);
+    myAspectLine->SetAspect (theAspect);
   }
+  Update();
 }
 
 // =======================================================================
-// function : UpdateAspectFace
+// function : SetPrimitivesAspect
 // purpose  :
 // =======================================================================
-void OpenGl_Group::UpdateAspectFace (const Standard_Boolean theIsGlobal)
+void OpenGl_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& theAspect)
 {
-  if (!ContextFillArea.IsDef)
+  if (myAspectLine == NULL)
+  {
+    SetGroupPrimitivesAspect (theAspect);
+    return;
+  }
+  else if (IsDeleted())
   {
     return;
   }
 
-  if (theIsGlobal || myFirst == NULL)
+  OpenGl_AspectLine* anAspectLine = new OpenGl_AspectLine (theAspect);
+  AddElement (anAspectLine);
+  Update();
+}
+
+// =======================================================================
+// function : SetGroupPrimitivesAspect
+// purpose  :
+// =======================================================================
+void OpenGl_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect)
+{
+  if (IsDeleted())
   {
-    if (myAspectFace == NULL)
-    {
-      myAspectFace = new OpenGl_AspectFace();
-    }
-    myAspectFace->SetAspect (ContextFillArea);
+    return;
+  }
+
+  if (myAspectFace == NULL)
+  {
+    myAspectFace = new OpenGl_AspectFace (theAspect);
   }
   else
   {
-    OpenGl_AspectFace* anAspectFace = new OpenGl_AspectFace();
-    anAspectFace->SetAspect (ContextFillArea);
-    AddElement (anAspectFace);
+    myAspectFace->SetAspect (theAspect);
   }
 
   if (myIsRaytracable)
@@ -121,60 +131,115 @@ void OpenGl_Group::UpdateAspectFace (const Standard_Boolean theIsGlobal)
       aStruct->UpdateStateIfRaytracable (Standard_False);
     }
   }
+
+  Update();
 }
 
 // =======================================================================
-// function : UpdateAspectMarker
+// function : SetPrimitivesAspect
 // purpose  :
 // =======================================================================
-void OpenGl_Group::UpdateAspectMarker (const Standard_Boolean theIsGlobal)
+void OpenGl_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect)
 {
-  if (!ContextMarker.IsDef)
+  if (myAspectFace == NULL)
+  {
+    SetGroupPrimitivesAspect (theAspect);
+    return;
+  }
+  else if (IsDeleted())
   {
     return;
   }
 
-  if (theIsGlobal || myFirst == NULL)
-  {
-    if (myAspectMarker == NULL)
-    {
-      myAspectMarker = new OpenGl_AspectMarker();
-    }
-    myAspectMarker->SetAspect (ContextMarker);
-  }
-  else
-  {
-    OpenGl_AspectMarker* anAspectMarker = new OpenGl_AspectMarker();
-    anAspectMarker->SetAspect (ContextMarker);
-    AddElement (anAspectMarker);
-  }
+  OpenGl_AspectFace* anAspectFace = new OpenGl_AspectFace (theAspect);
+  AddElement (anAspectFace);
+  Update();
 }
 
 // =======================================================================
-// function : UpdateAspectText
+// function : SetGroupPrimitivesAspect
 // purpose  :
 // =======================================================================
-void OpenGl_Group::UpdateAspectText (const Standard_Boolean theIsGlobal)
+void OpenGl_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspMarker)
 {
-  if (!ContextText.IsDef)
+  if (IsDeleted())
   {
     return;
   }
 
-  if (theIsGlobal || myFirst == NULL)
+  if (myAspectMarker == NULL)
   {
-    if (myAspectText == NULL)
-    {
-      myAspectText = new OpenGl_AspectText();
-    }
-    myAspectText->SetAspect (ContextText);
+    myAspectMarker = new OpenGl_AspectMarker (theAspMarker);
   }
   else
   {
-    OpenGl_AspectText* anAspectText = new OpenGl_AspectText();
-    anAspectText->SetAspect (ContextText);
-    AddElement (anAspectText);
+    myAspectMarker->SetAspect (theAspMarker);
   }
+  Update();
+}
+
+// =======================================================================
+// function : SetPrimitivesAspect
+// purpose  :
+// =======================================================================
+void OpenGl_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspMarker)
+{
+  if (myAspectMarker == NULL)
+  {
+    SetGroupPrimitivesAspect (theAspMarker);
+    return;
+  }
+  else if (IsDeleted())
+  {
+    return;
+  }
+
+  OpenGl_AspectMarker* anAspectMarker = new OpenGl_AspectMarker (theAspMarker);
+  AddElement (anAspectMarker);
+  Update();
+}
+
+// =======================================================================
+// function : SetGroupPrimitivesAspect
+// purpose  :
+// =======================================================================
+void OpenGl_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspText)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
+
+  if (myAspectText == NULL)
+  {
+    myAspectText = new OpenGl_AspectText (theAspText);
+  }
+  else
+  {
+    myAspectText->SetAspect (theAspText);
+  }
+  Update();
+}
+
+// =======================================================================
+// function : SetPrimitivesAspect
+// purpose  :
+// =======================================================================
+void OpenGl_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspText)
+{
+  if (myAspectText == NULL)
+  {
+    SetGroupPrimitivesAspect (theAspText);
+    return;
+  }
+  else if (IsDeleted())
+  {
+    return;
+  }
+
+  OpenGl_AspectText* anAspectText = new OpenGl_AspectText (theAspText);
+  AddElement (anAspectText);
+  Update();
 }
 
 // =======================================================================
@@ -328,10 +393,10 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
 // =======================================================================
 void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  // Is rendering in ADD or IMMEDIATE mode?
   const Handle(OpenGl_RenderFilter)& aFilter = theWorkspace->GetRenderFilter();
 
   // Setup aspects
+  theWorkspace->SetAllowFaceCulling (myIsClosed);
   const OpenGl_AspectLine*   aBackAspectLine   = theWorkspace->AspectLine();
   const OpenGl_AspectFace*   aBackAspectFace   = theWorkspace->AspectFace();
   const OpenGl_AspectMarker* aBackAspectMarker = theWorkspace->AspectMarker();

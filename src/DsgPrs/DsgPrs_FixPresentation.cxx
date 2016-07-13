@@ -14,11 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Aspect_AspectMarker.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfMarker.hxx>
 #include <DsgPrs_FixPresentation.hxx>
+
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -28,12 +25,10 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
-#include <Quantity_Color.hxx>
 
 //=======================================================================
 //function : Add
@@ -97,13 +92,9 @@ void DsgPrs_FixPresentation::Add(
 
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
-  // On ajoute un rond au point d'attache
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Quantity_Color aColor;
-  Aspect_TypeOfLine aType;
-  Standard_Real aWidth;
-  LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+  Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
   Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
   Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);

@@ -483,23 +483,7 @@ void OpenGl_GraphicDriver::TextSize (const Handle(Graphic3d_CView)& theView,
   OpenGl_TextParam aTextParam;
   aTextParam.Height = (int )aHeight;
   OpenGl_AspectText aTextAspect;
-  CALL_DEF_CONTEXTTEXT aDefaultContextText =
-  {
-    1, //IsDef
-    1, //IsSet
-    "Courier", //Font
-    0.3F, //Space
-    1.F, //Expan
-    { 1.F, 1.F, 1.F }, //Color
-    (int)Aspect_TOST_NORMAL, //Style
-    (int)Aspect_TODT_NORMAL, //DisplayType
-    { 1.F, 1.F, 1.F }, //ColorSubTitle
-    0, //TextZoomable
-    0.F, //TextAngle
-    (int)Font_FA_Regular, //TextFontAspect
-    0 //ShaderProgram
-  };
-  aTextAspect.SetAspect(aDefaultContextText);
+  aTextAspect.Aspect()->SetSpace (0.3);
   TCollection_ExtendedString anExtText = theText;
   NCollection_String aText = (Standard_Utf16Char* )anExtText.ToExtString();
   OpenGl_Text::StringSize(aCtx, aText, aTextAspect, aTextParam, theView->RenderingParams().Resolution, theWidth, theAscent, theDescent);

@@ -16,11 +16,8 @@
 #ifndef OpenGl_AspectText_Header
 #define OpenGl_AspectText_Header
 
-#include <InterfaceGraphic_Graphic3d.hxx>
 #include <Font_FontAspect.hxx>
-#include <Aspect_TypeOfStyleText.hxx>
-#include <Aspect_TypeOfDisplayText.hxx>
-#include <Graphic3d_CAspectText.hxx>
+#include <Graphic3d_AspectText3d.hxx>
 
 #include <TCollection_AsciiString.hxx>
 
@@ -34,88 +31,20 @@ class OpenGl_AspectText : public OpenGl_Element
 
 public:
 
+  //! Empty constructor.
   Standard_EXPORT OpenGl_AspectText();
+
+  //! Create and assign parameters.
+  Standard_EXPORT OpenGl_AspectText (const Handle(Graphic3d_AspectText3d)& theAspect);
+
+  //! Destructor.
   Standard_EXPORT virtual ~OpenGl_AspectText();
 
-  //! Copy parameters
-  Standard_EXPORT void SetAspect (const CALL_DEF_CONTEXTTEXT& theAspect);
+  //! Return text aspect.
+  const Handle(Graphic3d_AspectText3d)& Aspect() const { return myAspect; }
 
-  //! @return font family name
-  const TCollection_AsciiString& FontName() const
-  {
-    return myFont;
-  }
-
-  //! @return font family name
-  TCollection_AsciiString& ChangeFontName()
-  {
-    return myFont;
-  }
-
-  //! @return is zoomable flag
-  bool IsZoomable() const
-  {
-    return myZoomable;
-  }
-
-  //! @return rotation angle
-  float Angle() const
-  {
-    return myAngle;
-  }
-
-  //! @return font aspect (regular/bold/italic)
-  Font_FontAspect FontAspect() const
-  {
-    return myFontAspect;
-  }
-
-  //! @param theValue font aspect (regular/bold/italic)
-  void SetFontAspect (const Font_FontAspect theValue)
-  {
-    myFontAspect = theValue;
-  }
-
-  //! @return text color
-  const TEL_COLOUR& Color() const
-  {
-    return myColor;
-  }
-
-  //! @return text color
-  TEL_COLOUR& ChangeColor()
-  {
-    return myColor;
-  }
-
-  //! @return annotation style
-  Aspect_TypeOfStyleText StyleType() const
-  {
-    return myStyleType;
-  }
-
-  //! @return subtitle style (none/blend/decale/subtitle)
-  Aspect_TypeOfDisplayText DisplayType() const
-  {
-    return myDisplayType;
-  }
-
-  void SetDisplayType (const Aspect_TypeOfDisplayText theType)
-  {
-    myDisplayType = theType;
-  }
-
-  //! @return subtitle color
-  const TEL_COLOUR& SubtitleColor() const
-  {
-    return mySubtitleColor;
-  }
-
-  //! @return subtitle color
-  TEL_COLOUR& ChangeSubtitleColor()
-  {
-    return mySubtitleColor;
-  }
+  //! Assign new parameters.
+  Standard_EXPORT void SetAspect (const Handle(Graphic3d_AspectText3d)& theAspect);
 
   //! Init and return OpenGl shader program resource.
   //! @return shader program resource.
@@ -123,7 +52,7 @@ public:
   {
     if (!myResources.IsShaderReady())
     {
-      myResources.BuildShader (theCtx, myShaderProgram);
+      myResources.BuildShader (theCtx, myAspect->ShaderProgram());
       myResources.SetShaderReady();
     }
 
@@ -132,18 +61,6 @@ public:
 
   Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
-
-protected:
-
-  TCollection_AsciiString         myFont;
-  TEL_COLOUR                      myColor;
-  TEL_COLOUR                      mySubtitleColor;
-  float                           myAngle;
-  Aspect_TypeOfStyleText          myStyleType;
-  Aspect_TypeOfDisplayText        myDisplayType;
-  Font_FontAspect                 myFontAspect;
-  bool                            myZoomable;
-  Handle(Graphic3d_ShaderProgram) myShaderProgram;
 
 protected:
 
@@ -168,6 +85,8 @@ protected:
     Standard_Boolean myIsShaderReady;
 
   } myResources;
+
+  Handle(Graphic3d_AspectText3d) myAspect;
 
 public:
 

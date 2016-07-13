@@ -211,11 +211,6 @@ void V3d_RectangularGrid::DefineLines ()
 
   myGroup->Clear();
 
-  Handle(Graphic3d_AspectLine3d) LineAttrib = new Graphic3d_AspectLine3d ();
-  LineAttrib->SetColor (myColor);
-  LineAttrib->SetType (Aspect_TOL_SOLID);
-  LineAttrib->SetWidth (1.0);
-
   Standard_Integer nblines;
   Standard_Real xl, yl, zl = myOffSet;
 
@@ -247,8 +242,8 @@ void V3d_RectangularGrid::DefineLines ()
 
   if (aSeqLines.Length())
   {
-    LineAttrib->SetColor (myColor);
-    myGroup->SetPrimitivesAspect (LineAttrib);
+    Handle(Graphic3d_AspectLine3d) aLineAspect = new Graphic3d_AspectLine3d (myColor, Aspect_TOL_SOLID, 1.0);
+    myGroup->SetPrimitivesAspect (aLineAspect);
     const Standard_Integer nbv = aSeqLines.Length();
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(nbv);
     Standard_Integer n = 1;
@@ -258,8 +253,8 @@ void V3d_RectangularGrid::DefineLines ()
   }
   if (aSeqTenth.Length())
   {
-    LineAttrib->SetColor (myTenthColor);
-    myGroup->SetPrimitivesAspect (LineAttrib);
+    Handle(Graphic3d_AspectLine3d) aLineAspect = new Graphic3d_AspectLine3d (myTenthColor, Aspect_TOL_SOLID, 1.0);
+    myGroup->SetPrimitivesAspect (aLineAspect);
     const Standard_Integer nbv = aSeqTenth.Length();
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(nbv);
     Standard_Integer n = 1;
@@ -285,12 +280,7 @@ void V3d_RectangularGrid::DefinePoints ()
     return;
   }
 
-  myGroup->Clear ();
-
-  Handle(Graphic3d_AspectMarker3d) MarkerAttrib = new Graphic3d_AspectMarker3d ();
-  MarkerAttrib->SetColor (myColor);
-  MarkerAttrib->SetType (Aspect_TOM_POINT);
-  MarkerAttrib->SetScale (3.);
+  myGroup->Clear();
 
   // horizontals
   Standard_Real xl, yl;
@@ -316,7 +306,9 @@ void V3d_RectangularGrid::DefinePoints ()
       aSeqPnts(i).Coord(X,Y,Z);
       Vertical->AddVertex (X,Y,Z);
     }
-    myGroup->SetGroupPrimitivesAspect (MarkerAttrib);
+
+    Handle(Graphic3d_AspectMarker3d) aMarkerAspect = new Graphic3d_AspectMarker3d (Aspect_TOM_POINT, myColor, 3.0);
+    myGroup->SetGroupPrimitivesAspect (aMarkerAspect);
     myGroup->AddPrimitiveArray (Vertical, Standard_False);
   }
 

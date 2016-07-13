@@ -527,6 +527,12 @@ public: //! @name methods to alter or retrieve current state
     SetDrawBuffer (theBuffer);
   }
 
+  //! Return back face culling state.
+  bool ToCullBackFaces() const { return myToCullBackFaces; }
+
+  //! Enable or disable back face culling (glEnable (GL_CULL_FACE)).
+  Standard_EXPORT void SetCullBackFaces (bool theToEnable);
+
   //! Fetch OpenGl context state. This class tracks value of several OpenGl
   //! state variables. Consulting the cached values is quicker than
   //! doing the same via OpenGl API. Call this method if any of the controlled
@@ -724,6 +730,7 @@ private: //! @name fields tracking current state
   Handle(OpenGl_FrameBuffer)   myDefaultFbo;      //!< default Frame Buffer Object
   Standard_Integer             myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
   Standard_Integer             myRenderMode;      //!< value for active rendering mode
+  bool                         myToCullBackFaces; //!< back face culling mode enabled state (glIsEnabled (GL_CULL_FACE))
   Standard_Integer             myReadBuffer;      //!< current read buffer
   Standard_Integer             myDrawBuffer;      //!< current draw buffer
   unsigned int                 myDefaultVao;      //!< default Vertex Array Object

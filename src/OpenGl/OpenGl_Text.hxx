@@ -137,8 +137,8 @@ private:
   void render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                const Handle(OpenGl_Context)&        theCtx,
                const OpenGl_AspectText&             theTextAspect,
-               const TEL_COLOUR&                    theColorText,
-               const TEL_COLOUR&                    theColorSubs,
+               const OpenGl_Vec4&                   theColorText,
+               const OpenGl_Vec4&                   theColorSubs,
                const unsigned int                   theResolution) const;
 
 protected:

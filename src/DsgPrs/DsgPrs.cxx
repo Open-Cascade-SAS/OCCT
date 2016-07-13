@@ -12,8 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Aspect_AspectMarker.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <DsgPrs.hxx>
@@ -60,10 +58,7 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
 {
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Quantity_Color aColor;
-  Aspect_TypeOfLine aType;
-  Standard_Real aWidth;
-  LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+  Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
   Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());

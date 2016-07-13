@@ -31,7 +31,6 @@
 #include <Aspect_Grid.hxx>
 #include <Aspect_PolygonOffsetMode.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Aspect_AspectMarker.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>

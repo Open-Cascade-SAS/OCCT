@@ -332,15 +332,8 @@ void MeshVS_MeshPrsBuilder::BuildElements( const Handle(Prs3d_Presentation)& Prs
 
   TColStd_PackedMapOfInteger aCustomElements;
 
-  Quantity_Color       anOldEdgeColor;
-  Quantity_Color       anEdgeColor;
-  Quantity_Color       anIntColor;
-  Aspect_InteriorStyle anIntType;
-  Aspect_TypeOfLine    aLine;
-  Standard_Real        aWidth;
-
-  aFill->Values (anIntType, anIntColor, anEdgeColor, aLine, aWidth);
-  
+  Quantity_Color anOldEdgeColor;
+  Quantity_Color anEdgeColor = aFill->EdgeColor();
   MeshVS_MapOfTwoNodes aLinkNodes;
   
   // Forbid drawings of edges which overlap with some links
@@ -1057,12 +1050,10 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
                    IsPolylines      = ( !theLines.IsNull() && theLines->ItemNumber() > 0 ),
                    IsLinkPolylines  = ( !theLinkLines.IsNull() && theLinkLines->ItemNumber() > 0 );
 
-  Aspect_InteriorStyle aStyle;
-  Quantity_Color anIntColor, aBackColor, anEdgeColor; 
-  Aspect_TypeOfLine aType;
-  Standard_Real aWidth;
-
-  theFillAsp->Values( aStyle, anIntColor, aBackColor, anEdgeColor, aType, aWidth );
+  Quantity_Color anIntColor  = theFillAsp->InteriorColor();
+  Quantity_Color aBackColor  = theFillAsp->BackInteriorColor();
+  Quantity_Color anEdgeColor = theFillAsp->EdgeColor();
+  Standard_Real  aWidth      = theFillAsp->EdgeWidth();
 
   Standard_Boolean isSupressBackFaces = Standard_False;
   Handle(MeshVS_Drawer) aDrawer = GetDrawer();
@@ -1075,23 +1066,18 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
   {
     Prs3d_Root::NewGroup ( Prs );
     Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup ( Prs );
-
+    aGroup->SetClosed (isSupressBackFaces == Standard_True);
+    Handle(Graphic3d_AspectFillArea3d) aFillAsp = new Graphic3d_AspectFillArea3d (*theFillAsp);
     //if ( IsPolygonsEdgesOff )
-      theFillAsp->SetEdgeOff ();
+      aFillAsp->SetEdgeOff ();
     //else
-    //  theFillAsp->SetEdgeOn ();
+    //  aFillAsp->SetEdgeOn ();
 
     if( anIntColor!=aBackColor )
-      theFillAsp->SetDistinguishOn();
+      aFillAsp->SetDistinguishOn();
     else
-      theFillAsp->SetDistinguishOff();
+      aFillAsp->SetDistinguishOff();
 
-    aGroup->SetClosed (isSupressBackFaces);
-    Handle(Graphic3d_AspectFillArea3d) aFillAsp = new Graphic3d_AspectFillArea3d (*(theFillAsp.operator->()));
-    if (isSupressBackFaces)
-    {
-      aFillAsp->SuppressBackFace();
-    }
     aGroup->SetPrimitivesAspect (aFillAsp);
 
     if( IsFacePolygons )
@@ -1110,7 +1096,6 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
     Prs3d_Root::NewGroup ( Prs );
     Handle (Graphic3d_Group) aLGroup = Prs3d_Root::CurrentGroup ( Prs );
 
-    theFillAsp->SetEdgeOff();
     if ( IsSelected )
       aLGroup->SetPrimitivesAspect ( theLineAsp );
     else
@@ -1120,43 +1105,34 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
         ( anEdgeColor, Aspect_TOL_SOLID, aWidth ) );
     }
     aLGroup->AddPrimitiveArray ( theLines );
-    theFillAsp->SetEdgeOn();
   }
 
   if ( IsLinkPolylines )
   {
     Prs3d_Root::NewGroup ( Prs );
     Handle (Graphic3d_Group) aBeamGroup = Prs3d_Root::CurrentGroup ( Prs );
-
-    theFillAsp->SetEdgeOff();
     if ( !IsSelected )
       aBeamGroup->SetPrimitivesAspect ( theFillAsp );
     aBeamGroup->SetPrimitivesAspect ( theLineAsp );
     aBeamGroup->AddPrimitiveArray ( theLinkLines );
-    theFillAsp->SetEdgeOn();
   }
 
   if ( IsPolygons && theFillAsp->FrontMaterial().Transparency()>=0.01 )
   {
     Prs3d_Root::NewGroup ( Prs );
     Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup ( Prs );
-
+    aGroup->SetClosed (isSupressBackFaces == Standard_True);
+    Handle(Graphic3d_AspectFillArea3d) aFillAsp = new Graphic3d_AspectFillArea3d (*theFillAsp);
     //if ( IsPolygonsEdgesOff )
-      theFillAsp->SetEdgeOff ();
+      aFillAsp->SetEdgeOff ();
     //else
-    //  theFillAsp->SetEdgeOn ();
+    //  aFillAsp->SetEdgeOn ();
 
     if( anIntColor!=aBackColor )
-      theFillAsp->SetDistinguishOn();
+      aFillAsp->SetDistinguishOn();
     else
-      theFillAsp->SetDistinguishOff();
+      aFillAsp->SetDistinguishOff();
 
-    aGroup->SetClosed (isSupressBackFaces);
-    Handle(Graphic3d_AspectFillArea3d) aFillAsp = new Graphic3d_AspectFillArea3d (*(theFillAsp.operator->()));
-    if (isSupressBackFaces)
-    {
-      aFillAsp->SuppressBackFace();
-    }
     aGroup->SetPrimitivesAspect (aFillAsp);
 
     if( IsFacePolygons )

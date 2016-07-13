@@ -45,8 +45,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,Graphic3d_CView)
 namespace
 {
   static const OPENGL_ZCLIP myDefaultZClip = { { Standard_False, 0.F }, { Standard_False, 1.F } };
-  static const OPENGL_FOG   myDefaultFog   = { Standard_False, 0.F, 1.F, { { 0.F, 0.F, 0.F, 1.F } } };
-  static const TEL_COLOUR   myDefaultBg    = { { 0.F, 0.F, 0.F, 1.F } };
+  static const OPENGL_FOG   myDefaultFog   = { Standard_False, 0.F, 1.F, OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f) };
 }
 
 // =======================================================================
@@ -67,7 +66,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myCulling        (Standard_True),
   myShadingModel   (Graphic3d_TOSM_FACET),
   myBackfacing     (Graphic3d_TOBM_AUTOMATIC),
-  myBgColor        (myDefaultBg),
+  myBgColor        (Quantity_NOC_BLACK),
   myFog            (myDefaultFog),
   myZClip          (myDefaultZClip),
   myCamera         (new Graphic3d_Camera()),
@@ -401,7 +400,7 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
 // =======================================================================
 Aspect_Background OpenGl_View::Background() const
 {
-  return Aspect_Background (Quantity_Color (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], Quantity_TOC_RGB));
+  return Aspect_Background (myBgColor.GetRGB());
 }
 
 // =======================================================================
@@ -410,11 +409,8 @@ Aspect_Background OpenGl_View::Background() const
 // =======================================================================
 void OpenGl_View::SetBackground (const Aspect_Background& theBackground)
 {
-  Quantity_Color aBgColor = theBackground.Color();
-  myBgColor.rgb[0] = static_cast<float> (aBgColor.Red());
-  myBgColor.rgb[1] = static_cast<float> (aBgColor.Green());
-  myBgColor.rgb[2] = static_cast<float> (aBgColor.Blue());
-  myFog.Color      = myBgColor;
+  myBgColor.SetRGB (theBackground.Color());
+  myFog.Color = myBgColor;
 }
 
 // =======================================================================
@@ -461,6 +457,7 @@ void OpenGl_View::SetBackgroundImage (const TCollection_AsciiString& theFilePath
                                         Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
   anAspect->SetTextureMap (aTextureMap);
   anAspect->SetInteriorStyle (Aspect_IS_SOLID);
+  anAspect->SetSuppressBackFaces (false);
   // Enable texture mapping
   if (aTextureMap->IsDone())
   {

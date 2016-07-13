@@ -29,7 +29,6 @@
 
 namespace
 {
-  static const TEL_COLOUR myDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
   static const TCollection_AsciiString THE_EMPTY_KEY;
 
   //! Draw inner point as filled rectangle
@@ -54,8 +53,8 @@ namespace
 
 struct PM_FONT_INFO
 {
-  Tfloat width, height;
-  Tint offset;
+  float width, height;
+  int   offset;
 };
 typedef PM_FONT_INFO* pm_font_info;
 
@@ -1461,43 +1460,44 @@ Handle(Image_PixMap) MergeImages (const Handle(Image_PixMap)& theImage1,
 // purpose  :
 // =======================================================================
 OpenGl_AspectMarker::OpenGl_AspectMarker()
- : myColor (myDefaultColor),
-   myType  (Aspect_TOM_PLUS),
-   myScale (1.0f),
-   myMarkerSize (1.0f),
-   myMarkerImage(),
-   myShaderProgram()
-{}
+: myAspect (new Graphic3d_AspectMarker3d (Aspect_TOM_PLUS, Quantity_Color (Quantity_NOC_WHITE), 1.0f)),
+  myMarkerSize (1.0f)
+{
+  //
+}
+
+// =======================================================================
+// function : OpenGl_AspectMarker
+// purpose  :
+// =======================================================================
+OpenGl_AspectMarker::OpenGl_AspectMarker (const Handle(Graphic3d_AspectMarker3d)& theAspect)
+: myMarkerSize (1.0f)
+{
+  SetAspect (theAspect);
+}
 
 // =======================================================================
 // function : SetAspect
 // purpose  :
 // =======================================================================
-void OpenGl_AspectMarker::SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect)
+void OpenGl_AspectMarker::SetAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect)
 {
-  myColor.rgb[0]  = (float )theAspect.Color.r;
-  myColor.rgb[1]  = (float )theAspect.Color.g;
-  myColor.rgb[2]  = (float )theAspect.Color.b;
-  myColor.rgb[3]  = 1.0f;
-  myMarkerImage   = theAspect.MarkerImage;
-  myType          = theAspect.MarkerType;
-  myScale         = theAspect.Scale;
-  myShaderProgram = theAspect.ShaderProgram;
+  myAspect = theAspect;
 
   // update sprite resource bindings
   TCollection_AsciiString aSpriteKey  = THE_EMPTY_KEY;
   TCollection_AsciiString aSpriteAKey = THE_EMPTY_KEY;
-  myResources.SpriteKeys (myMarkerImage, myType, myScale, myColor, aSpriteKey, aSpriteAKey);
+  myResources.SpriteKeys (theAspect->GetMarkerImage(), theAspect->Type(), theAspect->Scale(), theAspect->ColorRGBA(), aSpriteKey, aSpriteAKey);
 
   if (aSpriteKey.IsEmpty()  || myResources.SpriteKey  != aSpriteKey
    || aSpriteAKey.IsEmpty() || myResources.SpriteAKey != aSpriteAKey)
   {
     myResources.ResetSpriteReadiness();
-    myMarkerSize = theAspect.Scale;
+    myMarkerSize = theAspect->Scale();
   }
 
   // update shader program resource bindings
-  const TCollection_AsciiString& aShaderKey = myShaderProgram.IsNull() ? THE_EMPTY_KEY : myShaderProgram->GetId();
+  const TCollection_AsciiString& aShaderKey = myAspect->ShaderProgram().IsNull() ? THE_EMPTY_KEY : myAspect->ShaderProgram()->GetId();
 
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
@@ -1561,7 +1561,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
                                                    const Handle(Graphic3d_MarkerImage)& theMarkerImage,
                                                    const Aspect_TypeOfMarker theType,
                                                    const Standard_ShortReal theScale,
-                                                   const TEL_COLOUR& theColor,
+                                                   const Graphic3d_Vec4& theColor,
                                                    Standard_ShortReal& theMarkerSize)
 {
   // generate key for shared resource
@@ -1705,10 +1705,10 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
           Standard_Integer aWidth, aHeight, anOffset, aNumOfBytes;
           GetMarkerBitMapParam (Aspect_TOM_O, aScale, aWidth, aHeight, anOffset, aNumOfBytes);
 
-          NCollection_Vec4<Standard_Real> aColor (Standard_Real (theColor.rgb[0]),
-                                                  Standard_Real (theColor.rgb[1]),
-                                                  Standard_Real (theColor.rgb[2]),
-                                                  Standard_Real (theColor.rgb[3]));
+          NCollection_Vec4<Standard_Real> aColor (Standard_Real (theColor.r()),
+                                                  Standard_Real (theColor.g()),
+                                                  Standard_Real (theColor.b()),
+                                                  Standard_Real (theColor.a()));
 
           const Standard_Integer aSize = Max (aWidth + 2, aHeight + 2); // includes extra margin
           anImage  = new Image_PixMap();
@@ -1849,10 +1849,10 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
         }
         case Aspect_TOM_BALL:
         {
-          NCollection_Vec4<Standard_Real> aColor (Standard_Real (theColor.rgb[0]),
-                                                  Standard_Real (theColor.rgb[1]),
-                                                  Standard_Real (theColor.rgb[2]),
-                                                  Standard_Real (theColor.rgb[3]));
+          NCollection_Vec4<Standard_Real> aColor (Standard_Real (theColor.r()),
+                                                  Standard_Real (theColor.g()),
+                                                  Standard_Real (theColor.b()),
+                                                  Standard_Real (theColor.a()));
 
           // we draw a set of circles
           while (aScale >= 1.0f)
@@ -1935,7 +1935,7 @@ void OpenGl_AspectMarker::Resources::BuildShader (const Handle(OpenGl_Context)& 
 void OpenGl_AspectMarker::Resources::SpriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
                                                  const Aspect_TypeOfMarker theType,
                                                  const Standard_ShortReal theScale,
-                                                 const TEL_COLOUR& theColor,
+                                                 const Graphic3d_Vec4& theColor,
                                                  TCollection_AsciiString& theKey,
                                                  TCollection_AsciiString& theKeyA)
 {
@@ -1958,9 +1958,9 @@ void OpenGl_AspectMarker::Resources::SpriteKeys (const Handle(Graphic3d_MarkerIm
     {
       unsigned int aColor[3] =
       {
-        (unsigned int )(255.0f * theColor.rgb[0]),
-        (unsigned int )(255.0f * theColor.rgb[1]),
-        (unsigned int )(255.0f * theColor.rgb[2])
+        (unsigned int )(255.0f * theColor.r()),
+        (unsigned int )(255.0f * theColor.g()),
+        (unsigned int )(255.0f * theColor.b())
       };
       char aBytes[8];
       sprintf (aBytes, "%02X%02X%02X", aColor[0], aColor[1], aColor[2]);

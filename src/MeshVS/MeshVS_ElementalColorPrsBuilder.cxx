@@ -340,10 +340,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
 
     aFillAspect->SetDistinguishOff ();
     aFillAspect->SetInteriorColor ( aColIter.Key() );
-    if (anEdgeOn)
-      aFillAspect->SetEdgeOn();
-    else
-      aFillAspect->SetEdgeOff();
+    aFillAspect->SetEdgeOff();
 
     for (it.Reset(); it.More(); it.Next())
     {
@@ -449,27 +446,20 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
 
     if (IsPolyG)
     {
-      aFillAspect->SetEdgeOff();
       aGGroup->SetPrimitivesAspect (aFillAspect);
       aGGroup->AddPrimitiveArray (aFaceTriangles);
       
       if (anEdgeOn)
       {
-        aFillAspect->SetEdgeOff();
         aSGroup->AddPrimitiveArray (anEdgeSegments);
         aSGroup->SetGroupPrimitivesAspect (anEdgeAspect);
       }
     }
     if (IsPolyL)
     {
-      aFillAspect->SetEdgeOff();
       aLGroup->SetPrimitivesAspect (aFillAspect);
       aLGroup->SetPrimitivesAspect (aLinkAspect);
       aLGroup->AddPrimitiveArray (aLinkSegments);
-      if (anEdgeOn)
-        aFillAspect->SetEdgeOn();
-      else
-        aFillAspect->SetEdgeOff();
     }
 
     if (!aCustomElements.IsEmpty())

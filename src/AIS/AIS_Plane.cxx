@@ -502,9 +502,7 @@ void AIS_Plane::UnsetColor()
     const Handle(Prs3d_PlaneAspect) PA = myDrawer->HasLink() ? myDrawer->Link()->PlaneAspect() :
                                                                new Prs3d_PlaneAspect();
 //    const Handle(Prs3d_DatumAspect)& DA = myDrawer->Link()->DatumAspect();
-    Quantity_Color C;Aspect_TypeOfLine T;Standard_Real W;
-    PA->EdgesAspect()->Aspect()->Values(C,T,W);
-    Quantity_NameOfColor Col = C.Name();
+    Quantity_NameOfColor Col = PA->EdgesAspect()->Aspect()->Color().Name();
     myDrawer->PlaneAspect()->EdgesAspect()->SetColor(Col);
     
     myDrawer->DatumAspect()->FirstAxisAspect()->SetColor(Col);

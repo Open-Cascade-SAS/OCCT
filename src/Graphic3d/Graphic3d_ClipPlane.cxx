@@ -236,10 +236,7 @@ Handle(Graphic3d_AspectFillArea3d) Graphic3d_ClipPlane::CappingAspect() const
   anAspect->SetHatchStyle (myHatch);
   anAspect->SetInteriorStyle (myHatchOn ? Aspect_IS_HATCH : Aspect_IS_SOLID);
   anAspect->SetInteriorColor (myMaterial.Color());
-  if (!myTexture.IsNull())
-    anAspect->SetTextureMapOn();
-  else
-    anAspect->SetTextureMapOff();
-
+  anAspect->SetSuppressBackFaces (false);
+  anAspect->SetTextureMap (!myTexture.IsNull());
   return anAspect;
 }

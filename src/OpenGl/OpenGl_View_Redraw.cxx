@@ -181,7 +181,7 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   // - gradient fill type is not Aspect_GFM_NONE and
   // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
   if (myBgGradientArray->IsDefined()
-    && (!myTextureParams->DoTextureMap()
+    && (!myTextureParams->Aspect()->ToMapTexture()
       || myBgTextureArray->TextureFillMethod() == Aspect_FM_CENTERED
       || myBgTextureArray->TextureFillMethod() == Aspect_FM_NONE))
   {
@@ -213,7 +213,7 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   // Drawing background image if it is defined
   // (texture is defined and fill type is not Aspect_FM_NONE)
   if (myBgTextureArray->IsDefined()
-   && myTextureParams->DoTextureMap())
+   && myTextureParams->Aspect()->ToMapTexture())
   {
     aCtx->core11fwd->glDisable (GL_BLEND);
 
@@ -688,7 +688,8 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection, Open
   }
   else
   {
-    glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.0f);
+    const OpenGl_Vec4& aBgColor = myBgColor;
+    glClearColor (aBgColor.r(), aBgColor.g(), aBgColor.b(), 0.0f);
   }
 
   glClear (toClear);
@@ -904,7 +905,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
     glFogi(GL_FOG_MODE, GL_LINEAR);
     glFogf(GL_FOG_START, (Standard_ShortReal )aFogFrontConverted);
     glFogf(GL_FOG_END, (Standard_ShortReal )aFogBackConverted);
-    glFogfv(GL_FOG_COLOR, myFog.Color.rgb);
+    glFogfv(GL_FOG_COLOR, myFog.Color.GetData());
     glEnable(GL_FOG);
   }
   else if (aContext->core11 != NULL)

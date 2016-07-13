@@ -38,6 +38,12 @@ public:
   //! Setup color of entire text.
   Standard_EXPORT virtual void SetColor (const Quantity_NameOfColor theColor) Standard_OVERRIDE;
 
+  //! Material has no effect for text label.
+  virtual void SetMaterial (const Graphic3d_NameOfMaterial ) Standard_OVERRIDE {}
+
+  //! Material has no effect for text label.
+  virtual void SetMaterial (const Graphic3d_MaterialAspect& ) Standard_OVERRIDE {}
+
   //! Setup text.
   Standard_EXPORT void SetText (const TCollection_ExtendedString& theText);
 

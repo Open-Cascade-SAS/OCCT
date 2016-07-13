@@ -120,7 +120,7 @@ void AIS_TextLabel::SetAngle (const Standard_Real theAngle)
 //=======================================================================
 void AIS_TextLabel::SetZoomable (const Standard_Boolean theIsZoomable)
 {
-  myDrawer->TextAspect()->Aspect()->SetTextZoomable (theIsZoomable);
+  myDrawer->TextAspect()->Aspect()->SetTextZoomable (theIsZoomable == Standard_True);
 }
 
 //=======================================================================
@@ -256,14 +256,9 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
         {
           // Get width and height of text
           Font_FTFont aFont;
-          Quantity_Color aColor;
-          Standard_CString aName;
-          Standard_Real anExpFactor;
-          Standard_Real aSpace;
-        
-          anAsp->Aspect()->Values (aColor, aName, anExpFactor, aSpace);
           unsigned int aResolution = GetContext()->CurrentViewer()->DefaultRenderingParams().Resolution;
-          if (aFont.Init (aName, anAsp->Aspect()->GetTextFontAspect(), (unsigned int)anAsp->Height(), aResolution))
+          if (aFont.Init (anAsp->Aspect()->Font().ToCString(),
+                          anAsp->Aspect()->GetTextFontAspect(), (unsigned int)anAsp->Height(), aResolution))
           {
             isInit = Standard_True;
             const NCollection_String aText ((Standard_Utf16Char* )myText.ToExtString());

@@ -224,14 +224,9 @@ void AIS_PointCloud::UnsetColor()
   }
   else
   {
-    Quantity_Color      aColor = Quantity_NOC_YELLOW;
-    Aspect_TypeOfMarker aType  = Aspect_TOM_POINT;
-    Standard_Real       aScale = 1.0;
-    if (myDrawer->HasLink())
-    {
-      myDrawer->Link()->PointAspect()->Aspect()->Values (aColor, aType, aScale);
-    }
-    myDrawer->PointAspect()->SetColor (aColor);
+    myDrawer->PointAspect()->SetColor (myDrawer->HasLink()
+                                     ? myDrawer->Link()->PointAspect()->Aspect()->Color()
+                                     : Quantity_Color (Quantity_NOC_YELLOW));
   }
 
   if (HasMaterial()

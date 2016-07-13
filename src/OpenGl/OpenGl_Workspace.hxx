@@ -18,8 +18,6 @@
 
 #include <Graphic3d_BufferType.hxx>
 
-#include <InterfaceGraphic_Graphic3d.hxx>
-
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_FrameBuffer.hxx>
@@ -63,7 +61,8 @@ struct OpenGl_Material
   }
 
   //! Initialize material
-  void Init (const OPENGL_SURF_PROP& theProps);
+  void Init (const Graphic3d_MaterialAspect& theProp,
+             const Quantity_Color&           theInteriorColor);
 
   //! Returns packed (serialized) representation of material properties
   const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
@@ -173,7 +172,15 @@ public:
 
   //// RELATED TO STATUS ////
 
-  const TEL_COLOUR* HighlightColor;
+  const OpenGl_Vec4* HighlightColor;
+
+  //! Return true if active group might activate face culling (e.g. primitives are closed).
+  bool ToAllowFaceCulling() const { return myToAllowFaceCulling; }
+
+  //! Allow or disallow face culling.
+  //! This call does NOT affect current state of back face culling;
+  //! ApplyAspectFace() should be called to update state.
+  void SetAllowFaceCulling (bool theToAllow) { myToAllowFaceCulling = theToAllow; }
 
   //! Return true if following structures should apply highlight color.
   bool ToHighlight() const { return myToHighlight; }
@@ -182,51 +189,51 @@ public:
   void SetHighlight (bool theToHighlight) { myToHighlight = theToHighlight; }
 
   //! Return line color taking into account highlight flag.
-  const TEL_COLOUR& LineColor() const
+  const OpenGl_Vec4& LineColor() const
   {
     return myToHighlight
          ? *HighlightColor
-         : myAspectLineSet->Color();
+         : myAspectLineSet->Aspect()->ColorRGBA();
   }
 
   //! Return edge color taking into account highlight flag.
-  const TEL_COLOUR& EdgeColor() const
+  const OpenGl_Vec4& EdgeColor() const
   {
     return myToHighlight
          ? *HighlightColor
-         : myAspectFaceSet->AspectEdge()->Color();
+         : myAspectFaceSet->AspectEdge()->Aspect()->ColorRGBA();
   }
 
   //! Return marker color taking into account highlight flag.
-  const TEL_COLOUR& MarkerColor() const
+  const OpenGl_Vec4& MarkerColor() const
   {
     return myToHighlight
          ? *HighlightColor
-         : myAspectMarkerSet->Color();
+         : myAspectMarkerSet->Aspect()->ColorRGBA();
   }
 
   //! Return Interior color taking into account highlight flag.
-  const TEL_COLOUR& InteriorColor() const
+  const OpenGl_Vec4& InteriorColor() const
   {
     return myToHighlight
          ? *HighlightColor
-         : myAspectFaceSet->IntFront().matcol;
+         : myAspectFaceSet->Aspect()->InteriorColorRGBA();
   }
 
   //! Return text color taking into account highlight flag.
-  const TEL_COLOUR& TextColor() const
+  const OpenGl_Vec4& TextColor() const
   {
     return myToHighlight
          ? *HighlightColor
-         : myAspectTextSet->Color();
+         : myAspectTextSet->Aspect()->ColorRGBA();
   }
 
   //! Return text Subtitle color taking into account highlight flag.
-  const TEL_COLOUR& TextSubtitleColor() const
+  const OpenGl_Vec4& TextSubtitleColor() const
   {
     return myToHighlight
          ? *HighlightColor
-         : myAspectTextSet->SubtitleColor();
+         : myAspectTextSet->Aspect()->ColorSubTitleRGBA();
   }
 
   //! Currently set line aspect (can differ from applied).
@@ -300,10 +307,10 @@ public:
   inline const OpenGl_Matrix* ModelMatrix() const { return StructureMatrix_applied; }
 
   //! Sets and applies current polygon offset.
-  void SetPolygonOffset (int theMode, Standard_ShortReal theFactor, Standard_ShortReal theUnits);
+  void SetPolygonOffset (const Graphic3d_PolygonOffset& theParams);
 
   //! Returns currently applied polygon offset params.
-  const TEL_POFFSET_PARAM& AppliedPolygonOffset() { return PolygonOffset_applied; }
+  const Graphic3d_PolygonOffset& AppliedPolygonOffset() { return myPolygonOffsetApplied; }
 
   //! Returns capping algorithm rendering filter.
   const Handle(OpenGl_CappingAlgoFilter)& DefaultCappingAlgoFilter() const
@@ -337,6 +344,12 @@ public:
 
 protected:
 
+  enum
+  {
+    TEL_FRONT_MATERIAL = 1,
+    TEL_BACK_MATERIAL  = 2
+  };
+
   void updateMaterial (const int theFlag);
 
   void setTextureParams (Handle(OpenGl_Texture)&                theTexture,
@@ -363,9 +376,9 @@ protected: //! @name fields related to status
   Handle(OpenGl_Texture) myTextureBound;    //!< currently bound texture (managed by OpenGl_AspectFace and OpenGl_View environment texture)
   const OpenGl_AspectLine*   myAspectLineSet;
   const OpenGl_AspectFace*   myAspectFaceSet;
-  const OpenGl_AspectFace*   myAspectFaceApplied;
+  Handle(Graphic3d_AspectFillArea3d) myAspectFaceApplied;
   const OpenGl_AspectMarker* myAspectMarkerSet;
-  const OpenGl_AspectMarker* myAspectMarkerApplied;
+  Handle(Graphic3d_AspectMarker3d) myAspectMarkerApplied;
   const OpenGl_AspectText*   myAspectTextSet;
   bool                       myAspectFaceAppliedWithHL;
 
@@ -375,12 +388,12 @@ protected: //! @name fields related to status
   OpenGl_Material myMatFront;    //!< current front material state (cached to reduce GL context updates)
   OpenGl_Material myMatBack;     //!< current back  material state
   OpenGl_Material myMatTmp;      //!< temporary variable
-  TelCullMode     myCullingMode; //!< back face culling mode, applied from face aspect
+  bool            myToAllowFaceCulling; //!< allow back face culling
   bool            myToHighlight; //!< flag indicating highlighting mode
 
   OpenGl_Matrix myModelViewMatrix; //!< Model matrix with applied structure transformations
 
-  TEL_POFFSET_PARAM PolygonOffset_applied; //!< Currently applied polygon offset.
+  Graphic3d_PolygonOffset myPolygonOffsetApplied; //!< currently applied polygon offset
 
   OpenGl_AspectFace myAspectFaceHl; //!< Hiddenline aspect
 

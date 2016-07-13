@@ -31,7 +31,6 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <NCollection_List.hxx>
-#include <InterfaceGraphic_Graphic3d.hxx>
 
 class OpenGl_Structure;
 class OpenGl_GraphicDriver;
@@ -196,7 +195,7 @@ protected:
 protected:
 
   Handle(OpenGl_Group)       myHighlightBox;
-  TEL_COLOUR*                myHighlightColor;
+  OpenGl_Vec4*               myHighlightColor;
 
   OpenGl_Structure*          myInstancedStructure;
 

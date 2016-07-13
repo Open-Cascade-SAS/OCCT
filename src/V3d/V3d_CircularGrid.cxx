@@ -209,18 +209,13 @@ void V3d_CircularGrid::DefineLines ()
 
   myGroup->Clear ();
 
-  Handle(Graphic3d_AspectLine3d) LineAttrib = new Graphic3d_AspectLine3d ();
-  LineAttrib->SetColor (myColor);
-  LineAttrib->SetType (Aspect_TOL_SOLID);
-  LineAttrib->SetWidth (1.0);
-
   const Standard_Integer Division = (Standard_Integer )( (aDivision >= DIVISION ? aDivision : DIVISION));
 
   Standard_Integer nbpnts = 2 * Division;
   // diametres
   Standard_Real alpha = M_PI / aDivision;
-  LineAttrib->SetColor (myTenthColor);
-  myGroup->SetGroupPrimitivesAspect (LineAttrib);
+
+  myGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (myTenthColor, Aspect_TOL_SOLID, 1.0));
   Handle(Graphic3d_ArrayOfSegments) aPrims1 = new Graphic3d_ArrayOfSegments(2*nbpnts);
   const gp_Pnt p0(0., 0., -myOffSet);
   for (Standard_Integer i=1; i<=nbpnts; i++) {
@@ -243,8 +238,7 @@ void V3d_CircularGrid::DefineLines ()
   }
   if (aSeqTenth.Length())
   {
-    LineAttrib->SetColor (myTenthColor);
-    myGroup->SetGroupPrimitivesAspect (LineAttrib);
+    myGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (myTenthColor, Aspect_TOL_SOLID, 1.0));
     Standard_Integer n, np;
     const Standard_Integer nbl = aSeqTenth.Length() / nbpnts;
     Handle(Graphic3d_ArrayOfPolylines) aPrims2 = new Graphic3d_ArrayOfPolylines(aSeqTenth.Length(),nbl);
@@ -257,8 +251,7 @@ void V3d_CircularGrid::DefineLines ()
   }
   if (aSeqLines.Length())
   {
-    LineAttrib->SetColor (myColor);
-    myGroup->SetPrimitivesAspect (LineAttrib);
+    myGroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (myColor, Aspect_TOL_SOLID, 1.0));
     Standard_Integer n, np;
     const Standard_Integer nbl = aSeqLines.Length() / nbpnts;
     Handle(Graphic3d_ArrayOfPolylines) aPrims3 = new Graphic3d_ArrayOfPolylines(aSeqLines.Length(),nbl);

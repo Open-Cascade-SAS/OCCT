@@ -16,7 +16,6 @@
 #ifndef _OpenGl_State_HeaderFile
 #define _OpenGl_State_HeaderFile
 
-#include <InterfaceGraphic_tgl_all.hxx>
 #include <NCollection_List.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Light.hxx>

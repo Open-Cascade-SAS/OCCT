@@ -28,8 +28,6 @@
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
 
-#include <InterfaceGraphic_Graphic3d.hxx>
-
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
@@ -72,7 +70,7 @@ struct OPENGL_FOG
   Standard_Boolean   IsOn;
   Standard_ShortReal Front; /* in the range [0., 1.] */
   Standard_ShortReal Back; /* in the range [0., 1.] */
-  TEL_COLOUR         Color;
+  OpenGl_Vec4        Color;
 };
 
 struct OpenGl_Matrix;
@@ -414,7 +412,7 @@ public:
 public:
 
   //! Returns background color.
-  const TEL_COLOUR& BackgroundColor() const { return myBgColor; }
+  const Quantity_ColorRGBA& BackgroundColor() const { return myBgColor; }
 
   //! Change trihedron.
   OpenGl_Trihedron& ChangeTrihedron() { return myTrihedron; }
@@ -569,7 +567,7 @@ protected:
   Standard_Boolean                myCulling;
   Graphic3d_TypeOfShadingModel    myShadingModel;
   Graphic3d_TypeOfBackfacingModel myBackfacing;
-  TEL_COLOUR                      myBgColor;
+  Quantity_ColorRGBA              myBgColor;
   OPENGL_FOG                      myFog;
   OPENGL_ZCLIP                    myZClip;
   Graphic3d_SequenceOfHClipPlane  myClipPlanes;

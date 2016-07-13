@@ -73,7 +73,7 @@ public:
     glDisable (GL_LIGHTING);
 
     // Use highlight colors
-    theWorkspace->GetGlContext()->core11->glColor3fv (theWorkspace->LineColor().rgb);
+    theWorkspace->GetGlContext()->core11->glColor3fv (theWorkspace->LineColor().GetData());
 
     glEnableClientState (GL_VERTEX_ARRAY);
     glVertexPointer (3, GL_FLOAT, 0, (GLfloat* )&myVerts);
@@ -209,12 +209,7 @@ void OpenGl_Structure::HighlightWithBndBox (const Handle(Graphic3d_Structure)& t
     myHighlightBox = new OpenGl_Group (theStruct);
   }
 
-  CALL_DEF_CONTEXTLINE& aContextLine = myHighlightBox->ChangeContextLine();
-  aContextLine.IsDef    = 1;
-  aContextLine.Color    = HighlightColor;
-  aContextLine.LineType = Aspect_TOL_SOLID;
-  aContextLine.Width    = 1.0f;
-  myHighlightBox->UpdateAspectLine (Standard_True);
+  myHighlightBox->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (HighlightColor, Aspect_TOL_SOLID, 1.0));
 
   OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (myBndBox);
   myHighlightBox->AddElement (aBndBoxPrs);
@@ -230,13 +225,12 @@ void OpenGl_Structure::setHighlightColor (const Handle(OpenGl_Context)& theGlCtx
   clearHighlightBox (theGlCtx);
   if (myHighlightColor == NULL)
   {
-    myHighlightColor = new TEL_COLOUR();
+    myHighlightColor = new OpenGl_Vec4 (theColor, 1.0f);
   }
-
-  myHighlightColor->rgb[0] = theColor.r();
-  myHighlightColor->rgb[1] = theColor.g();
-  myHighlightColor->rgb[2] = theColor.b();
-  myHighlightColor->rgb[3] = 1.F;
+  else
+  {
+    myHighlightColor->xyz() = theColor;
+  }
 }
 
 // =======================================================================
@@ -529,7 +523,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 
   // Apply highlight color
-  const TEL_COLOUR *aHighlightColor = theWorkspace->HighlightColor;
+  const OpenGl_Vec4* aHighlightColor = theWorkspace->HighlightColor;
   if (myHighlightColor)
     theWorkspace->HighlightColor = myHighlightColor;
 

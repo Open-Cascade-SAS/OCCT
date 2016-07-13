@@ -40,10 +40,6 @@ Graphic3d_Buffer.hxx
 Graphic3d_BufferType.hxx
 Graphic3d_Camera.cxx
 Graphic3d_Camera.hxx
-Graphic3d_CAspectFillArea.hxx
-Graphic3d_CAspectLine.hxx
-Graphic3d_CAspectMarker.hxx
-Graphic3d_CAspectText.hxx
 Graphic3d_CBitFields4.hxx
 Graphic3d_CBitFields8.hxx
 Graphic3d_CBitFields16.hxx
@@ -94,6 +90,7 @@ Graphic3d_NameOfTextureEnv.hxx
 Graphic3d_NameOfTexturePlane.hxx
 Graphic3d_NListOfHAsciiString.hxx
 Graphic3d_NMapOfTransient.hxx
+Graphic3d_PolygonOffset.hxx
 Graphic3d_PriorityDefinitionError.hxx
 Graphic3d_RenderingMode.hxx
 Graphic3d_RenderingParams.hxx

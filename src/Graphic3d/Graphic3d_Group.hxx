@@ -24,10 +24,6 @@
 #include <Graphic3d_StructurePtr.hxx>
 #include <Graphic3d_BndBox4f.hxx>
 #include <Standard_Boolean.hxx>
-#include <Graphic3d_CAspectLine.hxx>
-#include <Graphic3d_CAspectFillArea.hxx>
-#include <Graphic3d_CAspectMarker.hxx>
-#include <Graphic3d_CAspectText.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
@@ -103,14 +99,6 @@ public:
   //! cross-reference);
   Standard_EXPORT virtual void Clear (const Standard_Boolean theUpdateStructureMgr = Standard_True);
 
-  Standard_EXPORT virtual void UpdateAspectLine (const Standard_Boolean theIsGlobal) = 0;
-
-  Standard_EXPORT virtual void UpdateAspectFace (const Standard_Boolean theIsGlobal) = 0;
-
-  Standard_EXPORT virtual void UpdateAspectMarker (const Standard_Boolean theIsGlobal) = 0;
-
-  Standard_EXPORT virtual void UpdateAspectText (const Standard_Boolean theIsGlobal) = 0;
-
   //! Supress the group <me> in the structure.
   Standard_EXPORT void Destroy();
 ~Graphic3d_Group()
@@ -124,41 +112,49 @@ public:
   //! Get the current modelling transform persistence (pan, zoom or rotate)
   Standard_EXPORT void Remove();
 
-  //! Modifies the context for all the line primitives
-  //! of the group.
-  Standard_EXPORT void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX);
+  //! Return line aspect.
+  virtual Handle(Graphic3d_AspectLine3d) LineAspect() const = 0;
 
-  //! Modifies the context for all the face primitives
-  //! of the group.
-  Standard_EXPORT void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX);
+  //! Assign line aspect to the group.
+  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& theAspect) = 0;
 
-  //! Modifies the context for all the text primitives
-  //! of the group.
-  Standard_EXPORT void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX);
+  //! Return fill area aspect.
+  virtual Handle(Graphic3d_AspectFillArea3d) FillAreaAspect() const = 0;
 
-  //! Modifies the context for all the marker primitives
-  //! of the group.
-  Standard_EXPORT void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX);
+  //! Modifies the context for all the face primitives of the group.
+  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect) = 0;
+
+  //! Return text aspect.
+  virtual Handle(Graphic3d_AspectText3d) TextAspect() const = 0;
+
+  //! Modifies the context for all the text primitives of the group.
+  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspect) = 0;
+
+  //! Return marker aspect.
+  virtual Handle(Graphic3d_AspectMarker3d) MarkerAspect() const = 0;
+
+  //! Modifies the context for all the marker primitives of the group.
+  virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) = 0;
 
   //! Modifies the current context of the group to give
   //! another aspect for all the line primitives created
   //! after this call in the group.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX);
+  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& theAspect) = 0;
 
   //! Modifies the current context of the group to give
   //! another aspect for all the face primitives created
   //! after this call in the group.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX);
+  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect) = 0;
 
   //! Modifies the current context of the group to give
   //! another aspect for all the text primitives created
   //! after this call in the group.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX);
+  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspect) = 0;
 
   //! Modifies the current context of the group to give
   //! another aspect for all the marker primitives created
   //! after this call in the group.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX);
+  virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) = 0;
 
   //! Sets the coordinates of the boundary box of the
   //! group <me>.
@@ -283,19 +279,19 @@ public:
   Standard_EXPORT void MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const;
 
   //! Returns boundary box of the group <me> without transformation applied,
-  Standard_EXPORT const Graphic3d_BndBox4f& BoundingBox() const;
+  const Graphic3d_BndBox4f& BoundingBox() const { return myBounds; }
 
   //! Returns non-const boundary box of the group <me> without transformation applied,
-  Standard_EXPORT Graphic3d_BndBox4f& ChangeBoundingBox();
+  Graphic3d_BndBox4f& ChangeBoundingBox() { return myBounds; }
 
   //! Returns the structure containing the group <me>.
   Standard_EXPORT Handle(Graphic3d_Structure) Structure() const;
 
   //! Changes property shown that primitive arrays within this group form closed volume (do no contain open shells).
-  Standard_EXPORT void SetClosed (const Standard_Boolean theIsClosed);
+  void SetClosed (const bool theIsClosed) { myIsClosed = theIsClosed; }
 
   //! Return true if primitive arrays within this graphic group form closed volume (do no contain open shells).
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  bool IsClosed() const { return myIsClosed; }
 
 friend class Graphic3d_Structure;
 
@@ -311,14 +307,9 @@ protected:
   Graphic3d_CBitFields4 myCBitFields;
   Graphic3d_StructurePtr myStructure;
   Graphic3d_BndBox4f myBounds;
-  Standard_Boolean myIsClosed;
-  Graphic3d_CAspectLine ContextLine;
-  Graphic3d_CAspectFillArea ContextFillArea;
-  Graphic3d_CAspectMarker ContextMarker;
-  Graphic3d_CAspectText ContextText;
+  bool myIsClosed;
 
-
-private:
+protected:
 
 
   //! Returns the extreme coordinates found in the group.

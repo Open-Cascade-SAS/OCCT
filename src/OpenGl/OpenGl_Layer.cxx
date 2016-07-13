@@ -590,7 +590,7 @@ Standard_Boolean OpenGl_Layer::Append (const OpenGl_Layer& theOther)
 void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
                            const OpenGl_GlobalLayerSettings& theDefaultSettings) const
 {
-  TEL_POFFSET_PARAM anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
+  Graphic3d_PolygonOffset anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
 
   // separate depth buffers
   if (IsSettingEnabled (Graphic3d_ZLayerDepthClear))
@@ -619,15 +619,15 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   // handle depth offset
   if (IsSettingEnabled (Graphic3d_ZLayerDepthOffset))
   {
-    theWorkspace->SetPolygonOffset (Aspect_POM_Fill,
-                                    myLayerSettings.DepthOffsetFactor,
-                                    myLayerSettings.DepthOffsetUnits);
+    Graphic3d_PolygonOffset aLayerPolygonOffset;
+    aLayerPolygonOffset.Mode   = Aspect_POM_Fill;
+    aLayerPolygonOffset.Factor = myLayerSettings.DepthOffsetFactor;
+    aLayerPolygonOffset.Units  = myLayerSettings.DepthOffsetUnits;
+    theWorkspace->SetPolygonOffset (aLayerPolygonOffset);
   }
   else
   {
-    theWorkspace->SetPolygonOffset (anAppliedOffsetParams.mode,
-                                    anAppliedOffsetParams.factor,
-                                    anAppliedOffsetParams.units);
+    theWorkspace->SetPolygonOffset (anAppliedOffsetParams);
   }
 
   // handle depth write
@@ -638,9 +638,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   theWorkspace->IsCullingEnabled() ? renderTraverse (theWorkspace) : renderAll (theWorkspace);
 
   // always restore polygon offset between layers rendering
-  theWorkspace->SetPolygonOffset (anAppliedOffsetParams.mode,
-                                  anAppliedOffsetParams.factor,
-                                  anAppliedOffsetParams.units);
+  theWorkspace->SetPolygonOffset (anAppliedOffsetParams);
 
   // restore environment texture
   if (!myLayerSettings.UseEnvironmentTexture)

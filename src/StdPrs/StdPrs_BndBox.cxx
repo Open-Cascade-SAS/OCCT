@@ -47,11 +47,8 @@ void StdPrs_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
   theBndBox.Get (X[0], Y[0], Z[0], X[1], Y[1], Z[1]);
 
   Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
-  Quantity_Color    aColor;
-  Aspect_TypeOfLine aDummyLineType;
-  Standard_Real     aWidth = 1.0;
-  theDrawer->LineAspect()->Aspect()->Values (aColor, aDummyLineType, aWidth);
-
+  Quantity_Color aColor = theDrawer->LineAspect()->Aspect()->Color();
+  Standard_Real  aWidth = theDrawer->LineAspect()->Aspect()->Width();
   aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (aColor, Aspect_TOL_DOTDASH, aWidth));
 
   Handle(Graphic3d_ArrayOfPolylines) aPolyline = new Graphic3d_ArrayOfPolylines(16);

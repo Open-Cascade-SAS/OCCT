@@ -23,7 +23,6 @@
 
 namespace
 {
-  static const TEL_COLOUR myDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
   static const TCollection_AsciiString THE_EMPTY_KEY;
 }
 
@@ -31,39 +30,29 @@ namespace
 // function : OpenGl_AspectLine
 // purpose  :
 // =======================================================================
-OpenGl_AspectLine::OpenGl_AspectLine ()
- : myColor(myDefaultColor),
-   myType(Aspect_TOL_SOLID),
-   myWidth(1.0F)
-{}
+OpenGl_AspectLine::OpenGl_AspectLine()
+: myAspect (new Graphic3d_AspectLine3d (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0))
+{
+  //
+}
 
 // =======================================================================
 // function : OpenGl_AspectLine
 // purpose  :
 // =======================================================================
-OpenGl_AspectLine::OpenGl_AspectLine (const OpenGl_AspectLine &AnOther)
- : myColor(AnOther.myColor),
-   myType(AnOther.myType),
-   myWidth(AnOther.myWidth)
-{}
+OpenGl_AspectLine::OpenGl_AspectLine (const Handle(Graphic3d_AspectLine3d)& theAspect)
+{
+  SetAspect (theAspect);
+}
 
 // =======================================================================
 // function : SetAspect
 // purpose  :
 // =======================================================================
-void OpenGl_AspectLine::SetAspect (const CALL_DEF_CONTEXTLINE &theAspect)
+void OpenGl_AspectLine::SetAspect (const Handle(Graphic3d_AspectLine3d)& theAspect)
 {
-  myColor.rgb[0] = (float) theAspect.Color.r;
-  myColor.rgb[1] = (float) theAspect.Color.g;
-  myColor.rgb[2] = (float) theAspect.Color.b;
-  myColor.rgb[3] = 1.0f;
-  myType = (Aspect_TypeOfLine) theAspect.LineType;
-  myWidth = (float) theAspect.Width;
-
-  // update resource bindings
-  myShaderProgram = theAspect.ShaderProgram;
-
-  const TCollection_AsciiString& aShaderKey = myShaderProgram.IsNull() ? THE_EMPTY_KEY : myShaderProgram->GetId();
+  myAspect = theAspect;
+  const TCollection_AsciiString& aShaderKey = myAspect->ShaderProgram().IsNull() ? THE_EMPTY_KEY : myAspect->ShaderProgram()->GetId();
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
     myResources.ResetShaderReadiness();

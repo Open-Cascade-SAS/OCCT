@@ -14,15 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//              modified 12-january-98
-//              Sergey ZARITCHNY
-//              szy
-
-#include <Aspect_AspectMarker.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <DsgPrs.hxx>
 #include <DsgPrs_DiameterPresentation.hxx>
+
+#include <DsgPrs.hxx>
 #include <ElCLib.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
@@ -32,7 +26,6 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
@@ -40,7 +33,6 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <Quantity_Color.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 //==========================================================================

@@ -24,7 +24,6 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <InterfaceGraphic_Graphic3d.hxx>
 
 class Graphic3d_GraphicDriver;
 class Graphic3d_StructureManager;
@@ -119,7 +118,7 @@ public:
   int                      Priority;
   int                      PreviousPriority;
 
-  CALL_DEF_COLOR HighlightColor;
+  Quantity_Color           HighlightColor;
 
   Graphic3d_Mat4           Transformation;
 
