@@ -458,6 +458,15 @@ public:
   //! @return value for GL_MAX_CLIP_PLANES
   Standard_Integer MaxClipPlanes() const { return myMaxClipPlanes; }
 
+  //! @return TRUE if ray tracing mode is supported
+  Standard_Boolean HasRayTracing() const { return myHasRayTracing; }
+
+  //! @return TRUE if textures in ray tracing mode are supported
+  Standard_Boolean HasRayTracingTextures() const { return myHasRayTracingTextures; }
+
+  //! @return TRUE if adaptive screen sampling in ray tracing mode is supported
+  Standard_Boolean HasRayTracingAdaptiveSampling() const { return myHasRayTracingAdaptiveSampling; }
+
   //! Returns true if VBO is supported and permitted.
   inline bool ToUseVbo() const
   {
@@ -777,6 +786,10 @@ private: // context info
   Standard_Boolean myIsStereoBuffers;      //!< context supports stereo buffering
   Standard_Boolean myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
                                            //!< Used to tell OpenGl that normals should be normalized
+
+  Standard_Boolean myHasRayTracing;                 //! indicates whether ray tracing mode is supported 
+  Standard_Boolean myHasRayTracingTextures;         //! indicates whether textures in ray tracing mode are supported 
+  Standard_Boolean myHasRayTracingAdaptiveSampling; //! indicates whether adaptive screen sampling in ray tracing mode is supported 
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 

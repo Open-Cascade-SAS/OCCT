@@ -991,19 +991,12 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
         {
           if (theReadDrawFbo != NULL)
           {
-            theReadDrawFbo->BindReadBuffer (aCtx);
+            theReadDrawFbo->BindDrawBuffer (aCtx);
           }
           else
           {
-            aCtx->arbFBO->glBindFramebuffer (GL_READ_FRAMEBUFFER, 0);
+            aCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, 0);
           }
-
-          myOpenGlFBO->BindDrawBuffer (aCtx);
-
-          aCtx->arbFBOBlit->glBlitFramebuffer (0, 0, aSizeX, aSizeY,
-                                               0, 0, aSizeX, aSizeY,
-                                               GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
-                                               GL_NEAREST);
 
           // Render non-polygonal elements in default layer
           myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Default);

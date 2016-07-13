@@ -108,11 +108,13 @@
   #define GL_ALPHA8   0x803C
   #define GL_ALPHA16  0x803E
 
-  #define GL_RG       0x8227
-  #define GL_RG8      0x822B
-  #define GL_RG16     0x822C
-  #define GL_RG16F    0x822F
-  #define GL_RG32F    0x8230
+  #define GL_RG          0x8227
+  #define GL_RG8         0x822B
+  #define GL_RG16        0x822C
+  #define GL_RG16F       0x822F
+  #define GL_RG32F       0x8230
+  #define GL_RG_INTEGER  0x8228
+  #define GL_RED_INTEGER 0x8D94
 
   #define GL_R8I      0x8231
   #define GL_R8UI     0x8232

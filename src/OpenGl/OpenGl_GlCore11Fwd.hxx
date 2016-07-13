@@ -352,6 +352,13 @@ public: //! @name Texture mapping
   {
     ::glCopyTexSubImage1D(target, level, xoffset, x, y, width);
   }
+
+  inline void glGetTexImage (GLenum target, GLint level,
+                             GLenum format, GLenum type,
+                             GLvoid* pixels)
+  {
+    ::glGetTexImage (target, level, format, type, pixels);
+  }
 #endif
 
 #if !defined(GL_ES_VERSION_2_0)
@@ -398,13 +405,6 @@ public: //! @name Texture mapping
   inline void glGetTexEnviv (GLenum target, GLenum pname, GLint* params)
   {
     ::glGetTexEnviv (target, pname, params);
-  }
-
-  inline void glGetTexImage (GLenum target, GLint level,
-                             GLenum format, GLenum type,
-                             GLvoid* pixels)
-  {
-    ::glGetTexImage(target, level, format, type, pixels);
   }
 
   inline void glGetTexLevelParameterfv (GLenum target, GLint level, GLenum pname, GLfloat* params)

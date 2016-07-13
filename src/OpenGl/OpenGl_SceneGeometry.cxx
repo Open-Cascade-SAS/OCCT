@@ -502,6 +502,11 @@ Standard_Boolean OpenGl_RaytraceGeometry::ReleaseTextures (const Handle(OpenGl_C
 // =======================================================================
 Standard_Integer OpenGl_RaytraceGeometry::AddTexture (const Handle(OpenGl_Texture)& theTexture)
 {
+  if (theTexture->TextureId() == OpenGl_Texture::NO_TEXTURE)
+  {
+    return -1;
+  }
+
   NCollection_Vector<Handle (OpenGl_Texture)>::iterator anIter =
     std::find (myTextures.begin(), myTextures.end(), theTexture);
 

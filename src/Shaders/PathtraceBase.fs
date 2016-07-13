@@ -512,15 +512,15 @@ float handleDirectLight (in vec3 theInput, in vec3 theToLight, in float theCosMa
 
 //=======================================================================
 // function : sampleLight
-// purpose  : general sampling function for directional and point lights
+// purpose  : General sampling function for directional and point lights
 //=======================================================================
-vec3 sampleLight (in vec3 theToLight, in bool isDirectional, in float theSmoothness, inout float thePDF)
+vec3 sampleLight (in vec3 theToLight, inout float theDistance, in bool isInfinite, in float theSmoothness, inout float thePDF)
 {
-  SLocalSpace aSpace = LocalSpace (theToLight);
+  SLocalSpace aSpace = LocalSpace (theToLight * (1.f / theDistance));
 
   // for point lights smoothness defines radius
-  float aCosMax = isDirectional ? theSmoothness :
-    inversesqrt (1.f + theSmoothness * theSmoothness / dot (theToLight, theToLight));
+  float aCosMax = isInfinite ? theSmoothness :
+    inversesqrt (1.f + theSmoothness * theSmoothness / (theDistance * theDistance));
 
   float aKsi1 = RandFloat();
   float aKsi2 = RandFloat();
@@ -613,7 +613,6 @@ vec3 intersectLight (in SRay theRay, in bool isViewRay, in int theBounce, in flo
 //=======================================================================
 vec4 PathTrace (in SRay theRay, in vec3 theInverse)
 {
-  float anOpenGlDepth = ComputeOpenGlDepth (theRay);
   float aRaytraceDepth = MAXFLOAT;
 
   vec3 aRadiance   = ZERO;
@@ -648,32 +647,22 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
                                    dot (aInvTransf1, aHit.Normal),
                                    dot (aInvTransf2, aHit.Normal)));
 
-    // For polygons that are parallel to the screen plane, the depth slope
-    // is equal to 1, resulting in small polygon offset. For polygons that
-    // that are at a large angle to the screen, the depth slope tends to 1,
-    // resulting in a larger polygon offset
-    float aPolygonOffset = uSceneEpsilon * EPS_SCALE /
-      max (abs (dot (theRay.Direct, aHit.Normal)), MIN_SLOPE);
-
-    if (anOpenGlDepth < aHit.Time + aPolygonOffset)
-    {
-      vec4 aSrcColorRGBA = ComputeOpenGlColor();
-
-      aRadiance   += aThroughput.xyz * aSrcColorRGBA.xyz;
-
-      aDepth = INVALID_BOUNCES; // terminate path
-    }
-
     theRay.Origin += theRay.Direct * aHit.Time; // get new intersection point
 
-    // Evaluate depth
+    // Evaluate depth on first hit
     if (aDepth == 0)
     {
+      // For polygons that are parallel to the screen plane, the depth slope
+      // is equal to 1, resulting in small polygon offset. For polygons that
+      // that are at a large angle to the screen, the depth slope tends to 1,
+      // resulting in a larger polygon offset
+      float aPolygonOffset = uSceneEpsilon * EPS_SCALE /
+        max (abs (dot (theRay.Direct, aHit.Normal)), MIN_SLOPE);
+
       // Hit point in NDC-space [-1,1] (the polygon offset is applied in the world space)
       vec4 aNDCPoint = uViewMat * vec4 (theRay.Origin + theRay.Direct * aPolygonOffset, 1.f);
-      aNDCPoint.xyz *= 1.f / aNDCPoint.w;
 
-      aRaytraceDepth = aNDCPoint.z * 0.5f + 0.5f;
+      aRaytraceDepth = (aNDCPoint.z / aNDCPoint.w) * 0.5f + 0.5f;
     }
 
     // fetch material (BSDF)
@@ -701,7 +690,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       vec3 aTexColor = textureLod (
         sampler2D (uTextureSamplers[int (aMaterial.Kd.w)]), aTexCoord.st, 0.f).rgb;
 
-      aMaterial.Kd.rgb *= aTexColor;
+      aMaterial.Kd.rgb *= aTexColor * aTexColor; // de-gamma correction (for gamma = 2)
     }
 #endif
 
@@ -732,8 +721,8 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
 
       float aPDF = 1.f / uLightCount, aDistance = length (aLight.xyz);
 
-      aLight.xyz = sampleLight (aLight.xyz * (1.f / aDistance),
-        aLight.w == 0.f /* is infinite */, aParam.w /* angle cosine */, aPDF);
+      aLight.xyz = sampleLight (aLight.xyz, aDistance,
+        aLight.w == 0.f /* is infinite */, aParam.w /* max cos or radius */, aPDF);
 
       vec3 aContrib = (1.f / aPDF) * aParam.rgb /* Le */ * handleMaterial (
           aMaterial, toLocalSpace (aLight.xyz, aSpace), toLocalSpace (-theRay.Direct, aSpace));
@@ -787,13 +776,11 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       aHit.Normal * mix (-uSceneEpsilon, uSceneEpsilon, step (0.f, dot (aHit.Normal, anInput))), anInput);
 
     theInverse = InverseDirection (anInput);
-
-    anOpenGlDepth = MAXFLOAT; // disable combining image with OpenGL output
   }
 
   gl_FragDepth = aRaytraceDepth;
 
-  return vec4 (aRadiance, 0.f);
+  return vec4 (aRadiance, aRaytraceDepth);
 }
 
 #endif

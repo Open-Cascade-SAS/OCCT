@@ -8168,7 +8168,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_RM_RAYTRACING:    theDI << "raytrace ";      break;
     }
     theDI << "\n";
-    theDI << "msaa:         " <<  aParams.NbMsaaSamples << "\n";
+    theDI << "msaa:         " <<  aParams.NbMsaaSamples                               << "\n";
     theDI << "rayDepth:     " <<  aParams.RaytracingDepth                             << "\n";
     theDI << "fsaa:         " << (aParams.IsAntialiasingEnabled       ? "on" : "off") << "\n";
     theDI << "shadows:      " << (aParams.IsShadowEnabled             ? "on" : "off") << "\n";
@@ -8176,6 +8176,8 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "gleam:        " << (aParams.IsTransparentShadowEnabled  ? "on" : "off") << "\n";
     theDI << "GI:           " << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << "\n";
     theDI << "blocked RNG:  " << (aParams.CoherentPathTracingMode     ? "on" : "off") << "\n";
+    theDI << "iss:          " << (aParams.AdaptiveScreenSampling      ? "on" : "off") << "\n";
+    theDI << "iss debug:    " << (aParams.ShowSamplingTiles           ? "on" : "off") << "\n";
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
@@ -8400,6 +8402,38 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aParams.CoherentPathTracingMode = toEnable;
+    }
+    else if (aFlag == "-iss")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.AdaptiveScreenSampling ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.AdaptiveScreenSampling = toEnable;
+    }
+    else if (aFlag == "-issd")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.ShowSamplingTiles ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.ShowSamplingTiles = toEnable;
     }
     else if (aFlag == "-env")
     {
@@ -9500,6 +9534,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-gi           on|off'  Enables/disables global illumination effects"
     "\n      '-brng         on|off'  Enables/disables blocked RNG (fast coherent PT)"
     "\n      '-env          on|off'  Enables/disables environment map background"
+    "\n      '-iss          on|off'  Enables/disables adaptive screen sampling (PT mode)"
+    "\n      '-issd         on|off'  Shows screen sampling distribution in ISS mode"
     "\n      '-shadingModel model'   Controls shading model from enumeration"
     "\n                              color, flat, gouraud, phong"
     "\n      '-resolution   value'   Sets a new pixels density (PPI), defines scaling factor for parameters like text size"

@@ -49,6 +49,7 @@
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_Window.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <OpenGl_TileSampler.hxx>
 
 #include <map>
 #include <set>
@@ -513,6 +514,10 @@ protected:
 
   Handle(OpenGl_Texture) myTextureEnv;
 
+  //! Framebuffers for OpenGL output.
+  Handle(OpenGl_FrameBuffer) myOpenGlFBO;
+  Handle(OpenGl_FrameBuffer) myOpenGlFBO2;
+
 protected: //! @name Rendering properties
 
   //! Two framebuffers (left and right views) store cached main presentation
@@ -569,7 +574,7 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uDirectLB,
     OpenGl_RT_uDirectRT,
     OpenGl_RT_uDirectRB,
-    OpenGl_RT_uViewMat,
+    OpenGl_RT_uViewPrMat,
     OpenGl_RT_uUnviewMat,
 
     // 3D scene params
@@ -590,6 +595,10 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uTexSamplersArray,
     OpenGl_RT_uBlockedRngEnabled,
 
+    // size of render window
+    OpenGl_RT_uWinSizeX,
+    OpenGl_RT_uWinSizeY,
+
     // sampled frame params
     OpenGl_RT_uSampleWeight,
     OpenGl_RT_uFrameRndSeed,
@@ -599,10 +608,14 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uOffsetY,
     OpenGl_RT_uSamples,
 
+    // adaptive path tracing images
+    OpenGl_RT_uRenderImage,
+    OpenGl_RT_uOffsetImage,
+
     OpenGl_RT_NbVariables // special field
   };
 
-  //! Defines texture samplers.
+  //! Defines OpenGL texture samplers.
   enum ShaderSamplerNames
   {
     OpenGl_RT_SceneNodeInfoTexture  = 0,
@@ -622,10 +635,17 @@ protected: //! @name data types related to ray-tracing
 
     OpenGl_RT_FsaaInputTexture = 11,
     OpenGl_RT_PrevAccumTexture = 12,
-    OpenGl_RT_DepthTexture = 13,
 
-    OpenGl_RT_OpenGlColorTexture = 14,
-    OpenGl_RT_OpenGlDepthTexture = 15
+    OpenGl_RT_RaytraceDepthTexture = 13
+  };
+
+  //! Defines OpenGL image samplers.
+  enum ShaderImageNames
+  {
+    OpenGl_RT_OutputImageLft = 0,
+    OpenGl_RT_OutputImageRgh = 1,
+    OpenGl_RT_VisualErrorImage = 2,
+    OpenGl_RT_TileOffsetsImage = 3
   };
 
   //! Tool class for management of shader sources.
@@ -700,13 +720,17 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables the use of OpenGL bindless textures.
     Standard_Boolean UseBindlessTextures;
 
+    //! Enables/disables adaptive screen sampling for path tracing.
+    Standard_Boolean AdaptiveScreenSampling;
+
     //! Creates default compile-time ray-tracing parameters.
     RaytracingParams()
     : StackSize (THE_DEFAULT_STACK_SIZE),
       NbBounces (THE_DEFAULT_NB_BOUNCES),
       TransparentShadows (Standard_False),
       GlobalIllumination  (Standard_False),
-      UseBindlessTextures (Standard_False)
+      UseBindlessTextures (Standard_False),
+      AdaptiveScreenSampling (Standard_False)
     {
       //
     }
@@ -867,25 +891,31 @@ protected: //! @name methods related to ray-tracing
   void unbindRaytraceTextures (const Handle(OpenGl_Context)& theGlContext);
 
   //! Sets uniform state for the given ray-tracing shader program.
-  Standard_Boolean setUniformState (const OpenGl_Vec3*            theOrigins,
-                                    const OpenGl_Vec3*            theDirects,
-                                    const OpenGl_Mat4&            theViewMat,
-                                    const OpenGl_Mat4&            theUnviewMat,
-                                    const Standard_Integer        theProgramId,
+  Standard_Boolean setUniformState (const Standard_Integer        theProgramId,
+                                    const Standard_Integer        theSizeX,
+                                    const Standard_Integer        theSizeY,
                                     const Handle(OpenGl_Context)& theGlContext);
 
   //! Runs ray-tracing shader programs.
   Standard_Boolean runRaytraceShaders (const Standard_Integer        theSizeX,
                                        const Standard_Integer        theSizeY,
-                                       const OpenGl_Vec3*            theOrigins,
-                                       const OpenGl_Vec3*            theDirects,
-                                       const OpenGl_Mat4&            theViewMat,
-                                       const OpenGl_Mat4&            theUnviewMat,
                                        Graphic3d_Camera::Projection  theProjection,
                                        OpenGl_FrameBuffer*           theReadDrawFbo,
                                        const Handle(OpenGl_Context)& theGlContext);
 
-  //! Redraws the window using OpenGL/GLSL ray-tracing.
+  //! Runs classical (Whitted-style) ray-tracing kernel.
+  Standard_Boolean runRaytrace (const Standard_Integer        theSizeX,
+                                const Standard_Integer        theSizeY,
+                                Graphic3d_Camera::Projection  theProjection,
+                                OpenGl_FrameBuffer*           theReadDrawFbo,
+                                const Handle(OpenGl_Context)& theGlContext);
+
+  //! Runs path tracing (global illumination) kernel.
+  Standard_Boolean runPathtrace (const Graphic3d_Camera::Projection theProjection,
+                                 OpenGl_FrameBuffer*                theReadDrawFbo,
+                                 const Handle(OpenGl_Context)&      theGlContext);
+
+  //! Redraws the window using OpenGL/GLSL ray-tracing or path tracing.
   Standard_Boolean raytrace (const Standard_Integer        theSizeX,
                              const Standard_Integer        theSizeY,
                              Graphic3d_Camera::Projection  theProjection,
@@ -894,13 +924,13 @@ protected: //! @name methods related to ray-tracing
 
 protected: //! @name fields related to ray-tracing
 
-  //! Result of shaders initialization.
+  //! Result of RT/PT shaders initialization.
   RaytraceInitStatus myRaytraceInitStatus;
 
-  //! Is geometry data valid?
+  //! Is ray-tracing geometry data valid?
   Standard_Boolean myIsRaytraceDataValid;
 
-  //! Warning about missing extension GL_ARB_bindless_texture has been displayed?
+  //! True if warning about missing extension GL_ARB_bindless_texture has been displayed.
   Standard_Boolean myIsRaytraceWarnTextures;
 
   //! 3D scene geometry data for ray-tracing.
@@ -918,11 +948,15 @@ protected: //! @name fields related to ray-tracing
   ShaderSource myRaytraceShaderSource;
   //! OpenGL/GLSL source of adaptive-AA fragment shader.
   ShaderSource myPostFSAAShaderSource;
+  //! OpenGL/GLSL source of RT/PT display fragment shader.
+  ShaderSource myOutImageShaderSource;
 
   //! OpenGL/GLSL ray-tracing fragment shader.
   Handle(OpenGl_ShaderObject) myRaytraceShader;
   //! OpenGL/GLSL adaptive-AA fragment shader.
   Handle(OpenGl_ShaderObject) myPostFSAAShader;
+  //! OpenGL/GLSL ray-tracing display fragment shader.
+  Handle(OpenGl_ShaderObject) myOutImageShader;
 
   //! OpenGL/GLSL ray-tracing shader program.
   Handle(OpenGl_ShaderProgram) myRaytraceProgram;
@@ -955,12 +989,22 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_TextureBufferArb) myRaytraceLightSrcTexture;
 
   //! 1st framebuffer (FBO) to perform adaptive FSAA.
+  //! Used in compatibility mode (no adaptive sampling).
   Handle(OpenGl_FrameBuffer) myRaytraceFBO1[2];
   //! 2nd framebuffer (FBO) to perform adaptive FSAA.
+  //! Used in compatibility mode (no adaptive sampling).
   Handle(OpenGl_FrameBuffer) myRaytraceFBO2[2];
-  //! Framebuffer (FBO) for preliminary OpenGL output.
-  Handle(OpenGl_FrameBuffer) myOpenGlFBO;
-  Handle(OpenGl_FrameBuffer) myOpenGlFBO2;
+
+  //! Output textures (2 textures are used in stereo mode).
+  //! Used if adaptive screen sampling is activated.
+  Handle(OpenGl_Texture) myRaytraceOutputTexture[2];
+
+  //! Texture containing per-tile visual error estimation.
+  //! Used if adaptive screen sampling is activated.
+  Handle(OpenGl_Texture) myRaytraceVisualErrorTexture;
+  //! Texture containing offsets of sampled screen tiles.
+  //! Used if adaptive screen sampling is activated.
+  Handle(OpenGl_Texture) myRaytraceTileOffsetsTexture;
 
   //! Vertex buffer (VBO) for drawing dummy quad.
   OpenGl_VertexBuffer myRaytraceScreenQuad;
@@ -994,6 +1038,9 @@ protected: //! @name fields related to ray-tracing
 
   //! Bullard RNG to produce random sequence.
   math_BullardGenerator myRNG;
+
+  //! Tool object for sampling screen tiles in PT mode.
+  OpenGl_TileSampler myTileSampler;
 
 public:
 

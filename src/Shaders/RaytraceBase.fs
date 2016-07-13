@@ -1,3 +1,8 @@
+#ifdef ADAPTIVE_SAMPLING
+  #extension GL_ARB_shader_image_load_store : require
+  #extension GL_NV_shader_atomic_float : require
+#endif
+
 #ifdef USE_TEXTURES
   #extension GL_ARB_bindless_texture : require
 #endif
@@ -66,11 +71,6 @@ uniform samplerBuffer uRaytraceLightSrcTexture;
 //! Environment map texture.
 uniform sampler2D uEnvironmentMapTexture;
 
-//! Input pre-raytracing image rendered by OpenGL.
-uniform sampler2D uOpenGlColorTexture;
-//! Input pre-raytracing depth image rendered by OpenGL.
-uniform sampler2D uOpenGlDepthTexture;
-
 //! Total number of light sources.
 uniform int uLightCount;
 //! Intensity of global ambient light.
@@ -93,6 +93,14 @@ uniform float uSceneEpsilon;
 #ifdef USE_TEXTURES
   //! Unique 64-bit handles of OpenGL textures.
   uniform uvec2 uTextureSamplers[MAX_TEX_NUMBER];
+#endif
+
+#ifdef ADAPTIVE_SAMPLING
+  //! OpenGL image used for accumulating rendering result.
+  volatile restrict layout(size1x32) uniform image2D  uRenderImage;
+
+  //! OpenGL image storing offsets of sampled pixels blocks.
+  coherent restrict layout(size2x32) uniform iimage2D uOffsetImage;
 #endif
 
 //! Top color of gradient background.
@@ -240,7 +248,22 @@ vec3 InverseDirection (in vec3 theInput)
 //=======================================================================
 vec4 BackgroundColor()
 {
+#ifdef ADAPTIVE_SAMPLING
+
+  ivec2 aFragCoord = ivec2 (gl_FragCoord.xy);
+
+  ivec2 aTileXY = imageLoad (uOffsetImage, ivec2 (aFragCoord.x / BLOCK_SIZE,
+                                                  aFragCoord.y / BLOCK_SIZE)).xy;
+
+  aTileXY.y += aFragCoord.y % min (uWinSizeY - aTileXY.y, BLOCK_SIZE);
+
+  return mix (uBackColorBot, uBackColorTop, float (aTileXY.y) / uWinSizeY);
+
+#else
+
   return mix (uBackColorBot, uBackColorTop, vPixel.y);
+
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -261,39 +284,6 @@ SRay GenerateRay (in vec2 thePixel)
   vec3 aDirection = normalize (mix (aD0, aD1, thePixel.y));
 
   return SRay (mix (aP0, aP1, thePixel.y), aDirection);
-}
-
-// =======================================================================
-// function : ComputeOpenGlDepth
-// purpose  :
-// =======================================================================
-float ComputeOpenGlDepth (in SRay theRay)
-{
-  // a depth in range [0,1]
-  float anOpenGlDepth = texelFetch (uOpenGlDepthTexture, ivec2 (gl_FragCoord.xy), 0).r;
-  // pixel point in NDC-space [-1,1]
-  vec4 aPoint = vec4 (2.0f * vPixel.x - 1.0f,
-                      2.0f * vPixel.y - 1.0f,
-                      2.0f * anOpenGlDepth - 1.0f,
-                      1.0f);
-  vec4 aFinal = uUnviewMat * aPoint;
-  aFinal.xyz *= 1.f / aFinal.w;
-
-  return (anOpenGlDepth < 1.f) ? length (aFinal.xyz - theRay.Origin) : MAXFLOAT;
-}
-
-// =======================================================================
-// function : ComputeOpenGlColor
-// purpose  :
-// =======================================================================
-vec4 ComputeOpenGlColor()
-{
-  vec4 anOpenGlColor = texelFetch (uOpenGlColorTexture, ivec2 (gl_FragCoord.xy), 0);
-  // During blending with factors GL_SRC_ALPHA and GL_ONE_MINUS_SRC_ALPHA (for text and markers)
-  // the alpha channel (written in the color buffer) was squared.
-  anOpenGlColor.a = 1.f - sqrt (anOpenGlColor.a);
-
-  return anOpenGlColor;
 }
 
 // =======================================================================
@@ -725,7 +715,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 #endif
       }
 
-      toContinue = (aHead >= 0);
+      toContinue = (aHead >= 0) && (aFactor > 0.1f);
 
       if (aHead == aStop) // go to top-level BVH
       {
@@ -876,7 +866,6 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
   int aTrsfId;
 
-  float anOpenGlDepth = ComputeOpenGlDepth (theRay);
   float aRaytraceDepth = MAXFLOAT;
 
   for (int aDepth = 0; aDepth < NB_BOUNCES; ++aDepth)
@@ -898,8 +887,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       }
       else
       {
-        vec4 aGlColor = ComputeOpenGlColor();
-        aColor = vec4 (mix (aGlColor.rgb, BackgroundColor().rgb, aGlColor.w), aGlColor.w);
+        aColor = BackgroundColor();
       }
 
       aResult += aWeight.xyz * aColor.xyz; aWeight.w *= aColor.w;
@@ -915,31 +903,22 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
                                    dot (aInvTransf1, aHit.Normal),
                                    dot (aInvTransf2, aHit.Normal)));
 
-    // For polygons that are parallel to the screen plane, the depth slope
-    // is equal to 1, resulting in small polygon offset. For polygons that
-    // that are at a large angle to the screen, the depth slope tends to 1,
-    // resulting in a larger polygon offset
-    float aPolygonOffset = uSceneEpsilon * EPS_SCALE /
-      max (abs (dot (theRay.Direct, aHit.Normal)), MIN_SLOPE);
-
-    if (anOpenGlDepth < aHit.Time + aPolygonOffset)
-    {
-      vec4 aGlColor = ComputeOpenGlColor();
-
-      aResult += aWeight.xyz * aGlColor.xyz;
-      aWeight *= aGlColor.w;
-    }
-
     theRay.Origin += theRay.Direct * aHit.Time; // intersection point
 
-    // Evaluate depth
+    // Evaluate depth on first hit
     if (aDepth == 0)
     {
+      // For polygons that are parallel to the screen plane, the depth slope
+      // is equal to 1, resulting in small polygon offset. For polygons that
+      // that are at a large angle to the screen, the depth slope tends to 1,
+      // resulting in a larger polygon offset
+      float aPolygonOffset = uSceneEpsilon * EPS_SCALE /
+        max (abs (dot (theRay.Direct, aHit.Normal)), MIN_SLOPE);
+
       // Hit point in NDC-space [-1,1] (the polygon offset is applied in the world space)
       vec4 aNDCPoint = uViewMat * vec4 (theRay.Origin + theRay.Direct * aPolygonOffset, 1.f);
-      aNDCPoint.xyz *= 1.f / aNDCPoint.w;
 
-      aRaytraceDepth = aNDCPoint.z * 0.5f + 0.5f;
+      aRaytraceDepth = (aNDCPoint.z / aNDCPoint.w) * 0.5f + 0.5f;
     }
 
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
@@ -1042,10 +1021,6 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       {
         theRay.Direct = Refract (theRay.Direct, aNormal, aOpacity.z, aOpacity.w);
       }
-      else
-      {
-        anOpenGlDepth -= aHit.Time + uSceneEpsilon;
-      }
     }
     else
     {
@@ -1074,8 +1049,6 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       theInverse = 1.0f / max (abs (theRay.Direct), SMALL);
 
       theInverse = mix (-theInverse, theInverse, step (ZERO, theRay.Direct));
-
-      anOpenGlDepth = MAXFLOAT; // disable combining image with OpenGL output
     }
 
     theRay.Origin += theRay.Direct * uSceneEpsilon;

@@ -386,6 +386,12 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
       return !aCtx.IsNull() ? aCtx->MaxTextureSize() : 1024;
     case Graphic3d_TypeOfLimit_MaxMsaa:
       return !aCtx.IsNull() ? aCtx->MaxMsaaSamples() : 0;
+    case Graphic3d_TypeOfLimit_HasRayTracing:
+      return (!aCtx.IsNull() && aCtx->HasRayTracing()) ? 1 : 0;
+    case Graphic3d_TypeOfLimit_HasRayTracingTextures:
+      return (!aCtx.IsNull() && aCtx->HasRayTracingTextures()) ? 1 : 0;
+    case Graphic3d_TypeOfLimit_HasRayTracingAdaptiveSampling:
+      return (!aCtx.IsNull() && aCtx->HasRayTracingAdaptiveSampling()) ? 1 : 0;
     case Graphic3d_TypeOfLimit_NB:
       return 0;
   }

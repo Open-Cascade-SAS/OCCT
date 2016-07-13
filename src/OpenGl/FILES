@@ -131,6 +131,8 @@ OpenGl_Sphere.cxx
 OpenGl_Sphere.hxx
 OpenGl_StencilTest.cxx
 OpenGl_StencilTest.hxx
+OpenGl_TileSampler.hxx
+OpenGl_TileSampler.cxx
 OpenGl_TextureBufferArb.cxx
 OpenGl_TextureBufferArb.hxx
 OpenGl_Vec.hxx
@@ -142,3 +144,4 @@ OpenGl_VertexBufferCompat.hxx
 OpenGl_VertexBufferEditor.hxx
 OpenGl_TextBuilder.hxx
 OpenGl_TextBuilder.cxx
+OpenGl_HaltonSampler.hxx

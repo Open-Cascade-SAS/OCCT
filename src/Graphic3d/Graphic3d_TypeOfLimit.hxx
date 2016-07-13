@@ -17,12 +17,15 @@
 //! Type of graphic resource limit.
 enum Graphic3d_TypeOfLimit
 {
-  Graphic3d_TypeOfLimit_MaxNbLights,     //!< maximum number of active light sources
-  Graphic3d_TypeOfLimit_MaxNbClipPlanes, //!< maximum number of active clipping planes
-  Graphic3d_TypeOfLimit_MaxNbViews,      //!< maximum number of views
-  Graphic3d_TypeOfLimit_MaxTextureSize,  //!< maximum size of texture
-  Graphic3d_TypeOfLimit_MaxMsaa,         //!< maximum number of MSAA samples
-  Graphic3d_TypeOfLimit_NB               //!< number of elements in this enumeration
+  Graphic3d_TypeOfLimit_MaxNbLights,                    //!< maximum number of active light sources
+  Graphic3d_TypeOfLimit_MaxNbClipPlanes,                //!< maximum number of active clipping planes
+  Graphic3d_TypeOfLimit_MaxNbViews,                     //!< maximum number of views
+  Graphic3d_TypeOfLimit_MaxTextureSize,                 //!< maximum size of texture
+  Graphic3d_TypeOfLimit_MaxMsaa,                        //!< maximum number of MSAA samples
+  Graphic3d_TypeOfLimit_HasRayTracing,                  //!< indicates whether ray tracing is supported
+  Graphic3d_TypeOfLimit_HasRayTracingTextures,          //!< indicates whether ray tracing textures are supported
+  Graphic3d_TypeOfLimit_HasRayTracingAdaptiveSampling,  //!< indicates whether adaptive screen sampling is supported
+  Graphic3d_TypeOfLimit_NB                              //!< number of elements in this enumeration
 };
 
 #endif // _Graphic3d_TypeOfLimit_HeaderFile

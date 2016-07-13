@@ -157,6 +157,9 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myIsInitialized (Standard_False),
   myIsStereoBuffers (Standard_False),
   myIsGlNormalizeEnabled (Standard_False),
+  myHasRayTracing (Standard_False),
+  myHasRayTracingTextures (Standard_False),
+  myHasRayTracingAdaptiveSampling (Standard_False),
 #if !defined(GL_ES_VERSION_2_0)
   myPointSpriteOrig (GL_UPPER_LEFT),
   myRenderMode (GL_RENDER),
@@ -2301,6 +2304,20 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   }
   arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
   arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
+
+  // check whether ray tracing mode is supported
+  myHasRayTracing = has31
+                 && arbTboRGB32
+                 && arbFBOBlit  != NULL;
+
+  // check whether textures in ray tracing mode are supported
+  myHasRayTracingTextures = myHasRayTracing
+                         && arbTexBindless != NULL;
+
+  // check whether adaptive screen sampling in ray tracing mode is supported
+  myHasRayTracingAdaptiveSampling = myHasRayTracing
+                                 && has44
+                                 && CheckExtension ("GL_NV_shader_atomic_float");
 
   if (!has32)
   {
