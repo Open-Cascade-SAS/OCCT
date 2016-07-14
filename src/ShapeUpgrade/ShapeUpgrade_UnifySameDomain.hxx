@@ -24,6 +24,7 @@
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;
 
@@ -94,6 +95,9 @@ protected:
 
 private:
 
+  void IntUnifyFaces(const TopoDS_Shape& theInpShape,
+                     const TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
+                     Standard_Boolean IsCheckSharedEdgeOri);
 
   TopoDS_Shape myInitShape;
   Standard_Boolean myUnifyFaces;
