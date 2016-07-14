@@ -154,9 +154,6 @@ public:
   //! Return true if texture mapping is enabled (false by default).
   bool TextureMapState() const { return myToMapTexture; }
 
-  //! Set texture mapping flag.
-  void SetTextureMap (bool theToEnable) { myToMapTexture = theToEnable; }
-
   //! Enable texture mapping (has no effect if texture is not set).
   void SetTextureMapOn() { myToMapTexture = true; }
 
