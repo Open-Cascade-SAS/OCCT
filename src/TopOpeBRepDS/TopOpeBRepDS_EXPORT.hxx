@@ -87,7 +87,6 @@ Standard_EXPORT Standard_Integer FUN_ds_hasI2d(const Standard_Integer EIX, const
 Standard_EXPORT void FUN_ds_PointToVertex(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
 Standard_EXPORT Standard_Boolean FUN_ds_hasFEI(const TopOpeBRepDS_PDataStructure& pDS2d, const TopoDS_Shape& F, const Standard_Integer GI, const Standard_Integer ITRA);
 Standard_EXPORT Standard_Boolean FUN_ds_ONesd(const TopOpeBRepDS_DataStructure& BDS, const Standard_Integer IE, const TopoDS_Shape& EspON, Standard_Integer& IEsd);
-Standard_EXPORT void FUN_ds_unkeepEVIonGb1(const Handle(TopOpeBRepDS_HDataStructure)& HDS, const TopAbs_State sta);
 
 Standard_EXPORT Standard_Boolean FDS_stateEwithF2d(const TopOpeBRepDS_DataStructure& BDS,const TopoDS_Edge& E,const Standard_Real pE,
 					const TopOpeBRepDS_Kind KDS,const Standard_Integer GDS,const TopoDS_Face& F1,

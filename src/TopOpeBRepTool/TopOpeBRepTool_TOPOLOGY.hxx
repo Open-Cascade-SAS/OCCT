@@ -103,7 +103,6 @@ Standard_EXPORT void FUN_tool_mkBnd2d(const TopoDS_Shape& W,const TopoDS_Shape& 
 // ----------------------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_tool_IsClosingE(const TopoDS_Edge& E,const TopoDS_Shape& S,const TopoDS_Face& F);
 Standard_EXPORT Standard_Boolean FUN_tool_ClosingE(const TopoDS_Edge& E,const TopoDS_Wire& W,const TopoDS_Face& F);
-Standard_EXPORT Standard_Boolean FUN_tool_ClosedE(const TopoDS_Edge& E,TopoDS_Shape& vclosing);
 
 // ----------------------------------------------------------------------
 //  shared topologies :

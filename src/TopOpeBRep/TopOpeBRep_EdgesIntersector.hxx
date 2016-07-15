@@ -99,8 +99,6 @@ public:
   
   Standard_EXPORT void Tolerances (Standard_Real& tol1, Standard_Real& tol2) const;
   
-  Standard_EXPORT Standard_Real Tolerance2() const;
-  
   Standard_EXPORT Standard_Integer NbPoints() const;
   
   Standard_EXPORT Standard_Integer NbSegments() const;

@@ -25,7 +25,6 @@ TopOpeBRep_FaceEdgeIntersector.hxx
 TopOpeBRep_FacesFiller.cxx
 TopOpeBRep_FacesFiller.hxx
 TopOpeBRep_FacesFiller_1.cxx
-TopOpeBRep_FacesFiller_VPonR.cxx
 TopOpeBRep_FacesIntersector.cxx
 TopOpeBRep_FacesIntersector.hxx
 TopOpeBRep_FFDumper.cxx

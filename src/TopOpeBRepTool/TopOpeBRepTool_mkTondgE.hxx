@@ -55,10 +55,6 @@ public:
   
   Standard_EXPORT Standard_Integer GetAllRest (TopTools_ListOfShape& lEi);
   
-  Standard_EXPORT Standard_Boolean Par (const Standard_Integer index, Standard_Real& pari) const;
-  
-  Standard_EXPORT Standard_Boolean Ei (const Standard_Integer index, TopoDS_Edge& ei) const;
-  
   Standard_EXPORT Standard_Boolean MkTonE (Standard_Integer& mkT, Standard_Real& par1, Standard_Real& par2);
   
   Standard_EXPORT Standard_Boolean MkTonE (const TopoDS_Edge& Ei, Standard_Integer& mkT, Standard_Real& par1, Standard_Real& par2);

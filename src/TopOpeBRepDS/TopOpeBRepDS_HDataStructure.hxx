@@ -63,9 +63,7 @@ public:
   //! Used by the previous one.
   Standard_EXPORT void AddAncestors (const TopoDS_Shape& S, const TopAbs_ShapeEnum T1, const TopAbs_ShapeEnum T2);
   
-  //! perform post processing of the DS.
-  Standard_EXPORT void Complete();
-  
+
   //! Check the integrity of the DS
   Standard_EXPORT void ChkIntg();
   
@@ -156,8 +154,6 @@ public:
   
   Standard_EXPORT void RemoveCurve (const Standard_Integer iC);
   
-  Standard_EXPORT void RemoveShape (const Standard_Integer iS);
-  
   Standard_EXPORT Standard_Integer NbGeometry (const TopOpeBRepDS_Kind K) const;
   
   Standard_EXPORT Standard_Integer NbTopology (const TopOpeBRepDS_Kind K) const;
@@ -224,8 +220,6 @@ private:
 
 
   TopOpeBRepDS_DataStructure myDS;
-  Standard_Boolean myEdgesSameParameter;
-  TCollection_AsciiString myAscii;
 
 
 };

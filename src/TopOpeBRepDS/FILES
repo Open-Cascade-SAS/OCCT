@@ -45,8 +45,6 @@ TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape.hxx
 TopOpeBRepDS_DoubleMapOfIntegerShape.hxx
 TopOpeBRepDS_DRAW.cxx
 TopOpeBRepDS_DRAW.hxx
-TopOpeBRepDS_DSS.cxx
-TopOpeBRepDS_DSS.hxx
 TopOpeBRepDS_Dumper.cxx
 TopOpeBRepDS_Dumper.hxx
 TopOpeBRepDS_Edge3dInterferenceTool.cxx

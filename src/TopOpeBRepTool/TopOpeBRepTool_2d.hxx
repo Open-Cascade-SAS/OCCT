@@ -32,5 +32,4 @@ Standard_EXPORT Handle(Geom2d_Curve) FC2D_CurveOnSurface(const TopoDS_Edge& E,co
 Standard_EXPORT Handle(Geom2d_Curve) FC2D_MakeCurveOnSurface(const TopoDS_Edge& E,const TopoDS_Face& F,Standard_Real& f,Standard_Real& l,Standard_Real& tol,const Standard_Boolean trim3d = Standard_False);
 Standard_EXPORT Handle(Geom2d_Curve) FC2D_EditableCurveOnSurface(const TopoDS_Edge& E,const TopoDS_Face& F,Standard_Real& f,Standard_Real& l,Standard_Real& tol,const Standard_Boolean trim3d = Standard_False);
 Standard_EXPORT Standard_Integer FC2D_AddNewCurveOnSurface(Handle(Geom2d_Curve) PC,const TopoDS_Edge& E,const TopoDS_Face& F,const Standard_Real& f,const Standard_Real& l,const Standard_Real& tol);
-Standard_EXPORT Standard_Integer FC2D_RemNewCurveOnSurface(Handle(Geom2d_Curve) PC,const TopoDS_Edge& E,const TopoDS_Face& F);
 #endif

@@ -45,8 +45,7 @@ public:
   
   Standard_EXPORT static void MakeCurve (const Standard_Real min, const Standard_Real max, const TopOpeBRep_LineInter& L, Handle(Geom_Curve)& C);
   
-  Standard_EXPORT static void MakePrivateCurves (const Standard_Real min, const Standard_Real max, const TopOpeBRep_LineInter& L, const TopoDS_Shape& S1, const TopoDS_Shape& S2, Handle(Geom_Curve)& C, Handle(Geom2d_Curve)& PC1, Handle(Geom2d_Curve)& PC2, Standard_Boolean& New, Standard_Real& tolreached2d1, Standard_Real& tolreached2d2);
-  
+
   Standard_EXPORT static Handle(Geom_Curve) MakeBSpline1fromWALKING3d (const TopOpeBRep_LineInter& L);
   
   Standard_EXPORT static Handle(Geom2d_Curve) MakeBSpline1fromWALKING2d (const TopOpeBRep_LineInter& L, const Standard_Integer SI);
