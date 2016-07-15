@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC27679"
+puts "========"
+puts ""
+###################################
+# Wrong offset: overlapping edges
+###################################
+
+restore [locate_data_file bug27679_w.brep] w
+
+mkoffset r w 1 20
+renamevar r_1 result
+
+checknbshapes result -edge 23
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

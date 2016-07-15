@@ -1310,7 +1310,15 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
     TopoDS_Vertex    V1,V2;
     
     const Handle(Geom2d_Curve)& Bis = Bisec.Value();
-    
+    Standard_Boolean ForceAdd = Standard_False;
+    Handle(Geom2d_TrimmedCurve) aTC = Handle(Geom2d_TrimmedCurve)::DownCast(Bis);
+    if(!aTC.IsNull() && aTC->BasisCurve()->IsPeriodic())
+    {
+      gp_Pnt2d Pf = Bis->Value(Bis->FirstParameter());
+      gp_Pnt2d Pl = Bis->Value(Bis->LastParameter());
+      ForceAdd = Pf.Distance(Pl) <= Precision::Confusion();
+    }
+
     U1 = Bis->FirstParameter();
     
     if (SOnE) { 
@@ -1324,7 +1332,7 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
       V2 = TopoDS::Vertex(Vertices.Value(ii));
       
       gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);
-      if (!Trim.IsInside(P)) {
+      if (!Trim.IsInside(P) || ForceAdd) {
         if (!V1.IsNull()) {
           Detromp(Shape1).Append(V1);
           Detromp(Shape2).Append(V1);
@@ -1342,7 +1350,7 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
     if (!EOnE) {
       if (!Precision::IsInfinite(U2)) {
         gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);
-        if (!Trim.IsInside(P)) {
+        if (!Trim.IsInside(P) || ForceAdd) {
           if (!V1.IsNull()) {
             Detromp(Shape1).Append(V1);
             Detromp(Shape2).Append(V1);
