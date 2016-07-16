@@ -13,70 +13,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//-Version      
-//-Design       Declaration of variables specific to managers
-//-Warning      Manager manages a set of structures
-//-References   
-//-Language     C++ 2.0
-//-Declarations
-// for the class
+#include <Graphic3d_StructureManager.hxx>
 
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
-#include <Graphic3d_InitialisationError.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_StructureManager.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager,MMgt_TShared)
 
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_CView.hxx>
 
+// ========================================================================
+// function : Graphic3d_StructureManager
+// purpose  :
+// ========================================================================
 Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver)
-: myViewGenId (0, 31)
+: myViewGenId (0, 31),
+  myUpdateMode (Aspect_TOU_WAIT),
+  myGraphicDriver (theDriver)
 {
-  myAspectLine3d          = new Graphic3d_AspectLine3d ();
-  myAspectText3d          = new Graphic3d_AspectText3d ();
-  myAspectMarker3d        = new Graphic3d_AspectMarker3d ();
-  myAspectFillArea3d      = new Graphic3d_AspectFillArea3d ();
-
-  myUpdateMode            = Aspect_TOU_WAIT;
-  myGraphicDriver         = theDriver;
-
+  //
 }
 
-//-Destructors
-
-Graphic3d_StructureManager::~Graphic3d_StructureManager ()
+// ========================================================================
+// function : ~Graphic3d_StructureManager
+// purpose  :
+// ========================================================================
+Graphic3d_StructureManager::~Graphic3d_StructureManager()
 {
-  myDisplayedStructure.Clear ();
-  myHighlightedStructure.Clear ();
+  myDisplayedStructure.Clear();
+  myHighlightedStructure.Clear();
   myDefinedViews.Clear();
-
-}
-
-// ========================================================================
-// function : SetUpdateMode
-// purpose  :
-// ========================================================================
-void Graphic3d_StructureManager::SetUpdateMode (const Aspect_TypeOfUpdate theType)
-{
-  myUpdateMode = theType;
-}
-
-// ========================================================================
-// function : UpdateMode
-// purpose  :
-// ========================================================================
-Aspect_TypeOfUpdate Graphic3d_StructureManager::UpdateMode() const
-{
-  return myUpdateMode;
 }
 
 // ========================================================================
@@ -116,67 +84,6 @@ void Graphic3d_StructureManager::Erase()
   {
     anIt.Key()->Erase();
   }
-}
-
-
-
-
-
-void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX) {
-
-        myAspectLine3d          = CTX;
-
-}
-
-void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX) {
-
-        myAspectFillArea3d      = CTX;
-
-}
-
-void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX) {
-
-        myAspectText3d          = CTX;
-
-}
-
-void Graphic3d_StructureManager::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX) {
-
-        myAspectMarker3d        = CTX;
-
-}
-
-void Graphic3d_StructureManager::PrimitivesAspect (Handle(Graphic3d_AspectLine3d)& CTXL, Handle(Graphic3d_AspectText3d)& CTXT, Handle(Graphic3d_AspectMarker3d)& CTXM, Handle(Graphic3d_AspectFillArea3d)& CTXF) const {
-
-        CTXL    = myAspectLine3d;
-        CTXT    = myAspectText3d;
-        CTXM    = myAspectMarker3d;
-        CTXF    = myAspectFillArea3d;
-
-}
-
-Handle(Graphic3d_AspectLine3d) Graphic3d_StructureManager::Line3dAspect () const {
-
-        return (myAspectLine3d);
-
-}
-
-Handle(Graphic3d_AspectText3d) Graphic3d_StructureManager::Text3dAspect () const {
-
-        return (myAspectText3d);
-
-}
-
-Handle(Graphic3d_AspectMarker3d) Graphic3d_StructureManager::Marker3dAspect () const {
-
-        return (myAspectMarker3d);
-
-}
-
-Handle(Graphic3d_AspectFillArea3d) Graphic3d_StructureManager::FillArea3dAspect () const {
-
-        return (myAspectFillArea3d);
-
 }
 
 void Graphic3d_StructureManager::DisplayedStructures (Graphic3d_MapOfStructure& SG) const {

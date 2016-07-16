@@ -55,7 +55,6 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>

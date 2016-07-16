@@ -14,8 +14,6 @@
 
 #include <windows.h>
 
-
-#include <InterfaceGraphic.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
 #include <WNT_ClassDefinitionError.hxx>

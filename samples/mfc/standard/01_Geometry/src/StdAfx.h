@@ -186,7 +186,6 @@
 #include <GeomTools.hxx>
 #include <GeomTools_Curve2dSet.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <GProp_PEquation.hxx>

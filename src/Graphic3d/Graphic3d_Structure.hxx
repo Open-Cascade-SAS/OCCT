@@ -24,7 +24,6 @@
 #include <Graphic3d_IndexedMapOfAddress.hxx>
 #include <Quantity_Color.hxx>
 #include <Aspect_TypeOfHighlightMethod.hxx>
-#include <Graphic3d_StructureManagerPtr.hxx>
 #include <Standard_Address.hxx>
 #include <Graphic3d_TypeOfStructure.hxx>
 #include <MMgt_TShared.hxx>
@@ -449,7 +448,6 @@ friend class Graphic3d_Group;
 
 protected:
 
-  
   //! Transforms boundaries with <theTrsf> transformation.
   Standard_EXPORT static void TransformBoundaries (const TColStd_Array2OfReal& theTrsf, Standard_Real& theXMin, Standard_Real& theYMin, Standard_Real& theZMin, Standard_Real& theXMax, Standard_Real& theYMax, Standard_Real& theZMax);
   
@@ -465,14 +463,8 @@ protected:
   //! Removes the given ancestor structure.
   Standard_EXPORT Standard_Boolean RemoveAncestor (const Standard_Address theAncestor);
 
-  Graphic3d_StructureManagerPtr myStructureManager;
-  Graphic3d_StructureManagerPtr myFirstStructureManager;
-  Graphic3d_TypeOfStructure myComputeVisual;
-
-
 private:
 
-  
   //! Suppress in the structure <me>, the group theGroup.
   //! It will be erased at the next screen update.
   Standard_EXPORT void Remove (const Handle(Graphic3d_Group)& theGroup);
@@ -500,6 +492,10 @@ private:
   Standard_EXPORT void Update (const bool theUpdateLayer = false) const;
 
 protected:
+
+  Graphic3d_StructureManager* myStructureManager;
+  Graphic3d_StructureManager* myFirstStructureManager;
+  Graphic3d_TypeOfStructure   myComputeVisual;
 
   Handle(Graphic3d_CStructure) myCStructure;
   Graphic3d_IndexedMapOfAddress myAncestors;

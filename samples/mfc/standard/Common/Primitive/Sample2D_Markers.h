@@ -3,7 +3,6 @@
 
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 class Sample2D_Markers;
 DEFINE_STANDARD_HANDLE(Sample2D_Markers,AIS_InteractiveObject)

@@ -20,8 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Graphic3d_CBitFields4.hxx>
-#include <Graphic3d_StructurePtr.hxx>
 #include <Graphic3d_BndBox4f.hxx>
 #include <Standard_Boolean.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
@@ -46,13 +44,7 @@
 #include <TCollection_ExtendedString.hxx>
 
 class Graphic3d_Structure;
-class Graphic3d_GroupDefinitionError;
-class Standard_OutOfRange;
 class Graphic3d_ArrayOfPrimitives;
-
-
-class Graphic3d_Group;
-DEFINE_STANDARD_HANDLE(Graphic3d_Group, MMgt_TShared)
 
 //! This class allows the definition of groups
 //! of primitives inside of graphic objects (presentations).
@@ -86,9 +78,10 @@ DEFINE_STANDARD_HANDLE(Graphic3d_Group, MMgt_TShared)
 //! that is extended by the descendant class in OpenGl package.
 class Graphic3d_Group : public MMgt_TShared
 {
+  friend class Graphic3d_Structure;
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Group,MMgt_TShared)
 
 public:
-
 
   //! Supress all primitives and attributes of <me>.
   //! To clear group without update in Graphic3d_StructureManager
@@ -100,17 +93,15 @@ public:
   Standard_EXPORT virtual void Clear (const Standard_Boolean theUpdateStructureMgr = Standard_True);
 
   //! Supress the group <me> in the structure.
-  Standard_EXPORT void Destroy();
-~Graphic3d_Group()
-{
-  Destroy();
-}
+  Standard_EXPORT virtual ~Graphic3d_Group();
 
   //! Supress the group <me> in the structure.
   //! Warning: No more graphic operations in <me> after this call.
   //! Modifies the current modelling transform persistence (pan, zoom or rotate)
   //! Get the current modelling transform persistence (pan, zoom or rotate)
   Standard_EXPORT void Remove();
+
+public:
 
   //! Return line aspect.
   virtual Handle(Graphic3d_AspectLine3d) LineAspect() const = 0;
@@ -156,9 +147,25 @@ public:
   //! after this call in the group.
   virtual void SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspect) = 0;
 
-  //! Sets the coordinates of the boundary box of the
-  //! group <me>.
-  Standard_EXPORT void SetMinMaxValues (const Standard_Real XMin, const Standard_Real YMin, const Standard_Real ZMin, const Standard_Real XMax, const Standard_Real YMax, const Standard_Real ZMax);
+  //! Returns TRUE if aspect is set for the group.
+  Standard_EXPORT Standard_Boolean IsGroupPrimitivesAspectSet (const Graphic3d_GroupAspect theAspect) const;
+
+  //! Returns the context of all the primitives of the group.
+  Standard_EXPORT void GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)&     theAspLine,
+                                              const Handle(Graphic3d_AspectText3d)&     theAspText,
+                                              const Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
+                                              const Handle(Graphic3d_AspectFillArea3d)& theAspFill) const;
+
+  //! Returns the last inserted context in the group for each kind of primitives.
+  void PrimitivesAspect (const Handle(Graphic3d_AspectLine3d)&     theAspLine,
+                         const Handle(Graphic3d_AspectText3d)&     theAspText,
+                         const Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
+                         const Handle(Graphic3d_AspectFillArea3d)& theAspFill) const
+  {
+    GroupPrimitivesAspect (theAspLine, theAspText, theAspMarker, theAspFill);
+  }
+
+public:
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is
@@ -246,25 +253,16 @@ public:
   //! Creates a primitive array with single marker using AddPrimitiveArray().
   Standard_EXPORT void Marker (const Graphic3d_Vertex& thePoint, const Standard_Boolean theToEvalMinMax = Standard_True);
 
+public:
+
   //! sets the stencil test to theIsEnabled state;
   Standard_EXPORT virtual void SetStencilTestOptions (const Standard_Boolean theIsEnabled) = 0;
 
   //! sets the flipping to theIsEnabled state.
   Standard_EXPORT virtual void SetFlippingOptions (const Standard_Boolean theIsEnabled, const gp_Ax2& theRefPlane) = 0;
 
-  //! Returns TRUE if aspect is set for the group.
-  Standard_EXPORT Standard_Boolean IsGroupPrimitivesAspectSet (const Graphic3d_GroupAspect theAspect) const;
-
-  //! Returns the context of all the primitives of the group.
-  Standard_EXPORT void GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF) const;
-
-  //! Returns the last inserted context in the group <me>
-  //! foreach kind of primitives.
-  Standard_EXPORT void PrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF) const;
-
-  //! Returns Standard_True if the group <me> contains
-  //! Polygons, Triangles or Quadrangles.
-  Standard_EXPORT Standard_Boolean ContainsFacet() const;
+  //! Returns true if the group contains Polygons, Triangles or Quadrangles.
+  bool ContainsFacet() const { return myContainsFacet; }
 
   //! Returns Standard_True if the group <me> is deleted.
   //! <me> is deleted after the call Remove (me) or the
@@ -274,9 +272,13 @@ public:
   //! Returns Standard_True if the group <me> is empty.
   Standard_EXPORT Standard_Boolean IsEmpty() const;
 
-  //! Returns the coordinates of the boundary box of the
-  //! group <me>.
-  Standard_EXPORT void MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const;
+  //! Returns the coordinates of the boundary box of the group.
+  Standard_EXPORT void MinMaxValues (Standard_Real& theXMin, Standard_Real& theYMin, Standard_Real& theZMin,
+                                     Standard_Real& theXMax, Standard_Real& theYMax, Standard_Real& theZMax) const;
+
+  //! Sets the coordinates of the boundary box of the group.
+  Standard_EXPORT void SetMinMaxValues (const Standard_Real theXMin, const Standard_Real theYMin, const Standard_Real theZMin,
+                                        const Standard_Real theXMax, const Standard_Real theYMax, const Standard_Real theZMax);
 
   //! Returns boundary box of the group <me> without transformation applied,
   const Graphic3d_BndBox4f& BoundingBox() const { return myBounds; }
@@ -293,40 +295,24 @@ public:
   //! Return true if primitive arrays within this graphic group form closed volume (do no contain open shells).
   bool IsClosed() const { return myIsClosed; }
 
-friend class Graphic3d_Structure;
-
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_Group,MMgt_TShared)
-
 protected:
-
 
   //! Creates a group in the structure <AStructure>.
   Standard_EXPORT Graphic3d_Group(const Handle(Graphic3d_Structure)& theStructure);
-
-  Graphic3d_CBitFields4 myCBitFields;
-  Graphic3d_StructurePtr myStructure;
-  Graphic3d_BndBox4f myBounds;
-  bool myIsClosed;
-
-protected:
-
-
-  //! Returns the extreme coordinates found in the group.
-  Standard_EXPORT void MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const;
 
   //! Calls the Update method of the StructureManager which
   //! contains the associated Structure of the Group <me>.
   Standard_EXPORT void Update() const;
 
+protected:
 
+  Graphic3d_Structure* myStructure;     //!< pointer to the parent structure
+  Graphic3d_BndBox4f   myBounds;        //!< bounding box
+  bool                 myIsClosed;      //!< flag indicating closed volume
+  bool                 myContainsFacet; //!< flag indicating that this group contains face primitives
 
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Graphic3d_Group, MMgt_TShared)
 
 #endif // _Graphic3d_Group_HeaderFile

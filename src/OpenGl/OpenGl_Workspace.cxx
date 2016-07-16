@@ -15,8 +15,6 @@
 
 #include <OpenGl_Workspace.hxx>
 
-#include <InterfaceGraphic.hxx>
-
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectFace.hxx>

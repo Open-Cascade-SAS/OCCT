@@ -17,9 +17,10 @@
 #define __OPENGL_AVIWRITER_H
 
 #ifdef _MSC_VER
-#define THIS void 
 
-#include <InterfaceGraphic.hxx>
+#define THIS void
+#include <windows.h>
+
 #include <stdlib.h>
 #include <vfw.h>
 #include <TCollection_AsciiString.hxx>

@@ -11,19 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
-     FONCTION :
-     ----------
-        Classe V3d_CircularGrid :
-     VERSION HISTORY  :
-     --------------------------------
-************************************************************************/
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
+#include <V3d_CircularGrid.hxx>
 
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
@@ -36,7 +25,6 @@
 #include <Standard_Type.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <V3d_CircularGrid.hxx>
 #include <V3d_Viewer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_CircularGrid,Aspect_CircularGrid)

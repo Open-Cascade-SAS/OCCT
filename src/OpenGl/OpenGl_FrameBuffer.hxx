@@ -19,9 +19,6 @@
 #include <OpenGl_Resource.hxx>
 #include <OpenGl_Texture.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <InterfaceGraphic.hxx>
-
 class OpenGl_FrameBuffer;
 DEFINE_STANDARD_HANDLE(OpenGl_FrameBuffer, OpenGl_Resource)
 

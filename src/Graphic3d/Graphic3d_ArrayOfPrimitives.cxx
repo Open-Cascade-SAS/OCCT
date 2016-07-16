@@ -12,13 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Graphic3d_ArrayOfPrimitives.hxx>
 
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_InitialisationError.hxx>
 #include <NCollection_AlignedAllocator.hxx>
 #include <OSD_Environment.hxx>
 #include <Quantity_Color.hxx>

@@ -30,7 +30,6 @@
 #include <Standard_ShortReal.hxx>
 #include <Standard_CString.hxx>
 class Standard_OutOfRange;
-class Graphic3d_InitialisationError;
 class Graphic3d_Group;
 class gp_Pnt;
 class Quantity_Color;

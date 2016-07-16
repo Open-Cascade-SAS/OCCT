@@ -35,7 +35,6 @@
 #include <Graphic3d_SequenceOfStructure.hxx>
 #include <Graphic3d_SortType.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_StructureManagerPtr.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TypeOfAnswer.hxx>
 #include <Graphic3d_TypeOfBackfacingModel.hxx>

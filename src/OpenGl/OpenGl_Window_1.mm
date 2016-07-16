@@ -32,8 +32,6 @@
 
 #endif
 
-#include <InterfaceGraphic.hxx>
-
 #include <OpenGl_Window.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 

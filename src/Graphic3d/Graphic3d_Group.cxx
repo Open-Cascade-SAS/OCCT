@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Graphic3d_Group.hxx>
 
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
@@ -23,7 +24,6 @@
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_Group.hxx>
 #include <Graphic3d_GroupDefinitionError.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_Structure.hxx>
@@ -41,29 +41,26 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Group,MMgt_TShared)
 
-#define MyContainsFacet myCBitFields.bool2
-
 // =======================================================================
 // function : Graphic3d_Group
 // purpose  :
 // =======================================================================
 Graphic3d_Group::Graphic3d_Group (const Handle(Graphic3d_Structure)& theStruct)
-: myIsClosed (Standard_False)
+: myStructure     (theStruct.operator->()),
+  myIsClosed      (false),
+  myContainsFacet (false)
 {
-  // A small commentary on the usage of This!
   //
-  // Graphic3d_Group is created in a structure. Graphic3d_Structure is a
-  // manager of Graphic3d_Group. In the constructor of Graphic3d_Group
-  // a method Add of Graphic3d_Structure is called. It allows adding
-  // the instance of Graphic3d_Group in its manager. So there are 2 references
-  // to <me> and everything works well.
-  //
-  // This () is the instance of the class, the current group
-  //Handle(Graphic3d_Group) me  = Handle(Graphic3d_Group)::DownCast (This());
+}
 
-  myStructure = theStruct.operator->();
-
-  MyContainsFacet = Standard_False;
+// =======================================================================
+// function : ~Graphic3d_Group
+// purpose  :
+// =======================================================================
+Graphic3d_Group::~Graphic3d_Group()
+{
+  // tell graphics driver to clear internal resources of the group
+  Clear (Standard_False);
 }
 
 // =======================================================================
@@ -79,10 +76,10 @@ void Graphic3d_Group::Clear (Standard_Boolean theUpdateStructureMgr)
 
   myBounds.Clear();
 
-  if (MyContainsFacet)
+  if (myContainsFacet)
   {
     myStructure->GroupsWithFacet (-1);
-    MyContainsFacet = Standard_False;
+    myContainsFacet = false;
   }
 
   // clear method could be used on Graphic3d_Structure destruction,
@@ -92,16 +89,6 @@ void Graphic3d_Group::Clear (Standard_Boolean theUpdateStructureMgr)
   {
     Update();
   }
-}
-
-// =======================================================================
-// function : Destroy
-// purpose  :
-// =======================================================================
-void Graphic3d_Group::Destroy()
-{
-  // tell graphics driver to clear internal resources of the group
-  Clear (Standard_False);
 }
 
 // =======================================================================
@@ -115,10 +102,10 @@ void Graphic3d_Group::Remove()
     return;
   }
 
-  if (MyContainsFacet)
+  if (myContainsFacet)
   {
     myStructure->GroupsWithFacet (-1);
-    MyContainsFacet = Standard_False;
+    myContainsFacet = false;
   }
   myStructure->Remove (this);
 
@@ -135,15 +122,6 @@ Standard_Boolean Graphic3d_Group::IsDeleted() const
 {
   return myStructure == NULL
       || myStructure->IsDeleted();
-}
-
-// =======================================================================
-// function : ContainsFacet
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_Group::ContainsFacet() const
-{
-  return MyContainsFacet;
 }
 
 // =======================================================================
@@ -179,17 +157,6 @@ void Graphic3d_Group::SetMinMaxValues (const Standard_Real theXMin, const Standa
 }
 
 // =======================================================================
-// function : MinMaxValues
-// purpose  :
-// =======================================================================
-void Graphic3d_Group::MinMaxValues (Standard_Real& theXMin, Standard_Real& theYMin, Standard_Real& theZMin,
-                                    Standard_Real& theXMax, Standard_Real& theYMax, Standard_Real& theZMax) const
-{
-  MinMaxCoord (theXMin, theYMin, theZMin,
-               theXMax, theYMax, theZMax);
-}
-
-// =======================================================================
 // function : Structure
 // purpose  :
 // =======================================================================
@@ -199,11 +166,11 @@ Handle(Graphic3d_Structure) Graphic3d_Group::Structure() const
 }
 
 // =======================================================================
-// function : MinMaxCoord
+// function : MinMaxValues
 // purpose  :
 // =======================================================================
-void Graphic3d_Group::MinMaxCoord (Standard_Real& theXMin, Standard_Real& theYMin, Standard_Real& theZMin,
-                                   Standard_Real& theXMax, Standard_Real& theYMax, Standard_Real& theZMax) const
+void Graphic3d_Group::MinMaxValues (Standard_Real& theXMin, Standard_Real& theYMin, Standard_Real& theZMin,
+                                    Standard_Real& theXMax, Standard_Real& theYMax, Standard_Real& theZMax) const
 {
   if (IsEmpty())
   {
@@ -307,18 +274,6 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
 }
 
 // =======================================================================
-// function : PrimitivesAspect
-// purpose  :
-// =======================================================================
-void Graphic3d_Group::PrimitivesAspect (const Handle(Graphic3d_AspectLine3d)&     theAspLine,
-                                        const Handle(Graphic3d_AspectText3d)&     theAspText,
-                                        const Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
-                                        const Handle(Graphic3d_AspectFillArea3d)& theAspFill) const
-{
-  GroupPrimitivesAspect (theAspLine, theAspText, theAspMarker, theAspFill);
-}
-
-// =======================================================================
 // function : AddPrimitiveArray
 // purpose  :
 // =======================================================================
@@ -350,13 +305,13 @@ void Graphic3d_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray th
     return;
   }
 
-  if (!MyContainsFacet
+  if (!myContainsFacet
     && theType != Graphic3d_TOPA_POLYLINES
     && theType != Graphic3d_TOPA_SEGMENTS
     && theType != Graphic3d_TOPA_POINTS)
   {
     myStructure->GroupsWithFacet (1);
-    MyContainsFacet = Standard_True;
+    myContainsFacet = true;
   }
 
   if (theToEvalMinMax)

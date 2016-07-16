@@ -33,16 +33,10 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
 
 typedef NCollection_IndexedMap<Graphic3d_CView*> Graphic3d_IndexedMapOfView;
 
-class Graphic3d_AspectLine3d;
-class Graphic3d_AspectText3d;
-class Graphic3d_AspectMarker3d;
-class Graphic3d_AspectFillArea3d;
 class Graphic3d_GraphicDriver;
-class Graphic3d_InitialisationError;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;
 class Standard_Transient;
@@ -72,22 +66,6 @@ public:
   //! Deletes the manager <me>.
   Standard_EXPORT ~Graphic3d_StructureManager();
 
-  //! Modifies the default attributes for lines
-  //! in the visualiser.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX);
-
-  //! Modifies the default attributes for faces
-  //! in the visualiser.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX);
-
-  //! Modifies the default attributes for text
-  //! in the visualiser.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX);
-
-  //! Modifies the default attributes for markers
-  //! in the visualiser.
-  Standard_EXPORT void SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX);
-
   //! Modifies the screen update mode.
   //!
   //! TOU_ASAP - as soon as possible
@@ -101,13 +79,13 @@ public:
   //! Use one of the following functions to update the entire display:
   //! - Redraw all structures in all views: Graphic3d_StructureManager::Redraw()
   //! - Redraw all structures in one view:  Graphic3d_View::Redraw()
-  Standard_EXPORT void SetUpdateMode (const Aspect_TypeOfUpdate theType);
+  void SetUpdateMode (const Aspect_TypeOfUpdate theType) { myUpdateMode = theType; }
 
   //! Returns the screen update mode.
   //!
   //! TOU_ASAP	as soon as possible
   //! TOU_WAIT	on demand (Update)
-  Standard_EXPORT Aspect_TypeOfUpdate UpdateMode() const;
+  Aspect_TypeOfUpdate UpdateMode() const { return myUpdateMode; }
 
   //! Updates screen in function of modifications of the structures
   //! and invalidates bounding box of specified ZLayerId.
@@ -127,21 +105,6 @@ public:
   //! Returns the set of highlighted structures
   //! in a visualiser <me>.
   Standard_EXPORT void HighlightedStructures (Graphic3d_MapOfStructure& SG) const;
-
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectFillArea3d) FillArea3dAspect() const;
-
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectLine3d) Line3dAspect() const;
-
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectMarker3d) Marker3dAspect() const;
-
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT void PrimitivesAspect (Handle(Graphic3d_AspectLine3d)& CTXL, Handle(Graphic3d_AspectText3d)& CTXT, Handle(Graphic3d_AspectMarker3d)& CTXM, Handle(Graphic3d_AspectFillArea3d)& CTXF) const;
-
-  //! Returns the values of the current default attributes.
-  Standard_EXPORT Handle(Graphic3d_AspectText3d) Text3dAspect() const;
 
   //! Forces a new construction of the structure.
   //! if <theStructure> is displayed and TOS_COMPUTED.
@@ -227,13 +190,10 @@ protected:
   //! Returns the structure displayed in visualizer <me>.
   Standard_EXPORT Standard_Integer NumberOfDisplayedStructures() const;
 
-  Standard_Integer myId;
+protected:
+
   Aspect_GenId myViewGenId;
   Aspect_TypeOfUpdate myUpdateMode;
-  Handle(Graphic3d_AspectLine3d) myAspectLine3d;
-  Handle(Graphic3d_AspectText3d) myAspectText3d;
-  Handle(Graphic3d_AspectMarker3d) myAspectMarker3d;
-  Handle(Graphic3d_AspectFillArea3d) myAspectFillArea3d;
   Graphic3d_MapOfStructure myDisplayedStructure;
   Graphic3d_MapOfStructure myHighlightedStructure;
   Graphic3d_MapOfObject myRegisteredObjects;
