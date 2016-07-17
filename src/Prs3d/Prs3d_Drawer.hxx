@@ -22,6 +22,8 @@
 #include <Standard_Boolean.hxx>
 #include <Quantity_Length.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
+#include <Graphic3d_GroupAspect.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 #include <Standard_Real.hxx>
 #include <Prs3d_VertexDrawMode.hxx>
 #include <Prs3d_DimensionUnits.hxx>
@@ -853,6 +855,15 @@ public:
 
   //! Removes local attributes. 
   Standard_EXPORT void ClearLocalAttributes();
+
+  //! Assign shader program for specified type of primitives.
+  //! @param theProgram new program to set (might be NULL)
+  //! @param theAspect  the type of primitives
+  //! @param theToOverrideDefaults if true then non-overridden attributes using defaults will be allocated and copied from the Link;
+  //!                              otherwise, only already customized attributes will be changed
+  Standard_EXPORT void SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
+                                         const Graphic3d_GroupAspect            theAspect,
+                                         const bool                             theToOverrideDefaults = false);
 
 protected:
 

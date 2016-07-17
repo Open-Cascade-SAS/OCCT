@@ -453,6 +453,12 @@ public:
   //! Enables or disables on-triangulation build of isolines according to the flag given.
   Standard_EXPORT void SetIsoOnTriangulation (const Standard_Boolean theIsEnabled);
 
+  //! Synchronize presentation aspects after their modification.
+  //!
+  //! This method should be called after modifying primitive aspect properties (material, texture, shader)
+  //! so that modifications will take effect on already computed presentation groups (thus avoiding re-displaying the object).
+  Standard_EXPORT void SynchronizeAspects();
+
 friend class AIS_InteractiveContext;
 
 

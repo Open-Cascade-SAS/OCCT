@@ -195,7 +195,7 @@ void AIS_ColoredShape::SetColor (const Quantity_Color&  theColor)
   hasOwnColor = Standard_True;
   LoadRecomputable (AIS_WireFrame);
   LoadRecomputable (AIS_Shaded);
-  for (DataMapOfShapeColor::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
+  for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
     if (aDrawer->HasOwnColor())
@@ -229,7 +229,7 @@ void AIS_ColoredShape::SetWidth (const Standard_Real    theLineWidth)
   myOwnWidth = theLineWidth;
   LoadRecomputable (AIS_WireFrame);
   LoadRecomputable (AIS_Shaded);
-  for (DataMapOfShapeColor::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
+  for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
     if (aDrawer->HasOwnWidth())
@@ -259,7 +259,7 @@ void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
   myTransparency = theValue;
   LoadRecomputable (AIS_WireFrame);
   LoadRecomputable (AIS_Shaded);
-  for (DataMapOfShapeColor::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
+  for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(Prs3d_Drawer)& aDrawer = anIter.Value();
     if (aDrawer->HasOwnShadingAspect())
@@ -280,7 +280,7 @@ void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
   //myOwnMaterial = theMaterial;
   hasOwnMaterial = Standard_True;
   LoadRecomputable (AIS_Shaded);
-  for (DataMapOfShapeColor::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
+  for (AIS_DataMapOfShapeDrawer::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
     //if (aDrawer->HasOwnMaterial()) continue;
@@ -524,16 +524,16 @@ inline Standard_Boolean isFirstCmpContainSecondOne (const TopoDS_Shape& theFirst
 //function : dispatchColors
 //purpose  :
 //=======================================================================
-void AIS_ColoredShape::dispatchColors (const TopoDS_Shape&        theBaseShape,
-                                       const DataMapOfShapeColor& theKeyshapeColorMap,
-                                       DataMapOfShapeCompd*       theTypeKeyshapeDrawshapeArray)
+void AIS_ColoredShape::dispatchColors (const TopoDS_Shape&  theBaseShape,
+                                       const AIS_DataMapOfShapeDrawer& theKeyshapeColorMap,
+                                       DataMapOfShapeCompd* theTypeKeyshapeDrawshapeArray)
 {
   // Extract <theShapeColors> map (KeyshapeColored -> Color)
   // to subshapes map (Subshape -> KeyshapeColored).
   // This needed when colored shape is not part of <theBaseShape>
   // (but subshapes are) and actually container for subshapes.
   DataMapOfShapeShape aSubshapeKeyshapeMap;
-  for (DataMapOfShapeColor::Iterator aKeyShapeIter (theKeyshapeColorMap);
+  for (AIS_DataMapOfShapeDrawer::Iterator aKeyShapeIter (theKeyshapeColorMap);
        aKeyShapeIter.More(); aKeyShapeIter.Next())
   {
     const TopoDS_Shape& aKeyShape = aKeyShapeIter.Key();
@@ -575,7 +575,7 @@ Standard_Boolean AIS_ColoredShape::isShapeEntirelyVisible (DataMapOfShapeCompd* 
 //=======================================================================
 Standard_Boolean AIS_ColoredShape::isShapeEntirelyVisible() const
 {
-  for (DataMapOfShapeColor::Iterator aMapIter (myShapeColors); aMapIter.More(); aMapIter.Next())
+  for (AIS_DataMapOfShapeDrawer::Iterator aMapIter (myShapeColors); aMapIter.More(); aMapIter.Next())
   {
     if (aMapIter.Value()->IsHidden())
     {

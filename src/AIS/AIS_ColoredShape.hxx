@@ -16,49 +16,11 @@
 #ifndef _AIS_ColoredShape_HeaderFile
 #define _AIS_ColoredShape_HeaderFile
 
-#include <Prs3d_Drawer.hxx>
+#include <AIS_DataMapOfShapeDrawer.hxx>
 #include <AIS_Shape.hxx>
-
-#include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <TopoDS_Compound.hxx>
 #include <StdPrs_Volume.hxx>
-
-//! Customizable properties.
-class AIS_ColoredDrawer : public Prs3d_Drawer
-{
-public:
-
-  AIS_ColoredDrawer (const Handle(Prs3d_Drawer)& theLink)
-  : myIsHidden    (Standard_False),
-    myHasOwnColor (Standard_False),
-    myHasOwnWidth (Standard_False)
-  {
-    Link (theLink);
-  }
-
-  Standard_Boolean IsHidden()    const                              { return myIsHidden; }
-  void             SetHidden (const Standard_Boolean theToHide)     { myIsHidden = theToHide;  }
-  Standard_Boolean HasOwnColor() const                              { return myHasOwnColor; }
-  void             UnsetOwnColor()                                  { myHasOwnColor = Standard_False; }
-  void             SetOwnColor (const Quantity_Color& /*theColor*/) { myHasOwnColor = Standard_True;  }
-  Standard_Boolean HasOwnWidth() const                              { return myHasOwnWidth; }
-  void             UnsetOwnWidth()                                  { myHasOwnWidth = Standard_False; }
-  void             SetOwnWidth (const Standard_Real /*theWidth*/)   { myHasOwnWidth = Standard_True;  }
-
-public:  //! @name list of overridden properties
-
-  Standard_Boolean myIsHidden;
-  Standard_Boolean myHasOwnColor;
-  Standard_Boolean myHasOwnWidth;
-
-public:
-  DEFINE_STANDARD_RTTIEXT(AIS_ColoredDrawer,Prs3d_Drawer)
-
-};
-
-DEFINE_STANDARD_HANDLE(AIS_ColoredDrawer, Prs3d_Drawer)
+#include <TopoDS_Compound.hxx>
 
 //! Presentation of the shape with customizable sub-shapes properties.
 class AIS_ColoredShape : public AIS_Shape
@@ -94,6 +56,12 @@ public: //! @name sub-shape aspects
   Standard_EXPORT void SetCustomWidth (const TopoDS_Shape& theShape,
                                        const Standard_Real theLineWidth);
 
+  //! Return the map of custom aspects.
+  const AIS_DataMapOfShapeDrawer& CustomAspectsMap() const { return myShapeColors; }
+
+  //! Return the map of custom aspects.
+  AIS_DataMapOfShapeDrawer& ChangeCustomAspectsMap() { return myShapeColors; }
+
 public: //! @name global aspects
 
   //! Setup color of entire shape.
@@ -116,9 +84,8 @@ protected: //! @name override presentation computation
 
 protected:
 
-  typedef NCollection_DataMap<TopoDS_Shape, Handle(AIS_ColoredDrawer), TopTools_ShapeMapHasher> DataMapOfShapeColor;
-  typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape,              TopTools_ShapeMapHasher> DataMapOfShapeShape;
-  typedef NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Compound,    TopTools_ShapeMapHasher> DataMapOfShapeCompd;
+  typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape,           TopTools_ShapeMapHasher> DataMapOfShapeShape;
+  typedef NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Compound, TopTools_ShapeMapHasher> DataMapOfShapeCompd;
 
 protected:
 
@@ -134,9 +101,9 @@ protected:
                                                           const TopAbs_ShapeEnum     theParentType,
                                                           DataMapOfShapeCompd*       theTypeKeyshapeDrawshapeArray);
 
-  Standard_EXPORT static void dispatchColors (const TopoDS_Shape&        theBaseShape,
-                                              const DataMapOfShapeColor& theKeyshapeColorMap,
-                                              DataMapOfShapeCompd*       theTypeKeyshapeDrawshapeArray);
+  Standard_EXPORT static void dispatchColors (const TopoDS_Shape&             theBaseShape,
+                                              const AIS_DataMapOfShapeDrawer& theKeyshapeColorMap,
+                                              DataMapOfShapeCompd*            theTypeKeyshapeDrawshapeArray);
 
 protected:
 
@@ -171,7 +138,7 @@ protected:
 
 protected:
 
-  DataMapOfShapeColor myShapeColors;
+  AIS_DataMapOfShapeDrawer myShapeColors;
 
 public:
 

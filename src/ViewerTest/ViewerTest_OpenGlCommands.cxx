@@ -554,10 +554,23 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
           anIter.More(); anIter.Next())
     {
       anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      if (!anIO.IsNull())
+      if (anIO.IsNull())
       {
-        anIO->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (aProgram);
+        continue;
+      }
+
+      if (!anIO->Attributes()->HasOwnShadingAspect())
+      {
+        Handle(Prs3d_ShadingAspect) aNewAspect = new Prs3d_ShadingAspect();
+        *aNewAspect->Aspect() = *anIO->Attributes()->ShadingAspect()->Aspect();
+        aNewAspect->Aspect()->SetShaderProgram (aProgram);
+        anIO->Attributes()->SetShadingAspect (aNewAspect);
         aCtx->Redisplay (anIO, Standard_False);
+      }
+      else
+      {
+        anIO->Attributes()->SetShaderProgram (aProgram, Graphic3d_ASPECT_FILL_AREA);
+        anIO->SynchronizeAspects();
       }
     }
     aCtx->UpdateCurrentViewer();
@@ -578,8 +591,20 @@ static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
       std::cerr << "Warning: " << aName.ToCString() << " is not an AIS object\n";
       continue;
     }
-    anIO->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (aProgram);
-    aCtx->Redisplay (anIO, Standard_False);
+
+    if (!anIO->Attributes()->HasOwnShadingAspect())
+    {
+      Handle(Prs3d_ShadingAspect) aNewAspect = new Prs3d_ShadingAspect();
+      *aNewAspect->Aspect() = *anIO->Attributes()->ShadingAspect()->Aspect();
+      aNewAspect->Aspect()->SetShaderProgram (aProgram);
+      anIO->Attributes()->SetShadingAspect (aNewAspect);
+      aCtx->Redisplay (anIO, Standard_False);
+    }
+    else
+    {
+      anIO->Attributes()->SetShaderProgram (aProgram, Graphic3d_ASPECT_FILL_AREA);
+      anIO->SynchronizeAspects();
+    }
   }
 
   aCtx->UpdateCurrentViewer();

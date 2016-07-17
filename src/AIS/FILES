@@ -22,8 +22,10 @@ AIS_Circle.cxx
 AIS_Circle.hxx
 AIS_Circle.lxx
 AIS_ClearMode.hxx
+AIS_ColoredDrawer.hxx
 AIS_ColoredShape.cxx
 AIS_ColoredShape.hxx
+AIS_DataMapOfShapeDrawer.hxx
 AIS_ColorScale.cxx
 AIS_ColorScale.hxx
 AIS_ConcentricRelation.cxx
