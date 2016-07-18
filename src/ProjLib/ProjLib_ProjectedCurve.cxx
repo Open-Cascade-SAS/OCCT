@@ -607,6 +607,8 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
   {
     // Use advanced analytical projector if base analytical projection failed.
     ProjLib_ComputeApprox Comp( myCurve, mySurface, myTolerance);
+    if (Comp.Bezier().IsNull() && Comp.BSpline().IsNull())
+      return; // advanced projector has been failed too
     myResult.Done();
 
     // set the type

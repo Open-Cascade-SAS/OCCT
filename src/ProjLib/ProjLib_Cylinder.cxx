@@ -134,6 +134,12 @@ static gp_Pnt2d EvalPnt2d( const gp_Pnt& P, const gp_Cylinder& Cy )
 
 void  ProjLib_Cylinder::Project(const gp_Lin& L)
 {
+  // Check the line is parallel to the axis of cylinder.
+  // In other cases, the projection is wrong.
+  if (L.Direction().XYZ().CrossSquareMagnitude(myCylinder.Position().Direction().XYZ()) >
+      Precision::Angular() * Precision::Angular())
+    return;
+
   myType = GeomAbs_Line;
 
   gp_Pnt2d P2d = EvalPnt2d(L.Location(),myCylinder);
@@ -157,23 +163,26 @@ void  ProjLib_Cylinder::Project(const gp_Lin& L)
 
 void  ProjLib_Cylinder::Project(const gp_Circ& C)
 {
+  // Check the circle's normal is parallel to the axis of cylinder.
+  // In other cases, the projection is wrong.
+  const gp_Ax3& aCylPos = myCylinder.Position();
+  const gp_Ax2& aCircPos = C.Position();
+  if (aCylPos.Direction().XYZ().CrossSquareMagnitude(aCircPos.Direction().XYZ()) >
+      Precision::Angular() * Precision::Angular())
+    return;
+
   myType = GeomAbs_Line;
 
-  gp_Dir ZCyl = myCylinder.Position().XDirection().Crossed
-    (myCylinder.Position().YDirection());
-  gp_Dir ZCir = C.Position().XDirection().Crossed
-    (C.Position().YDirection());
+  gp_Dir ZCyl = aCylPos.XDirection().Crossed(aCylPos.YDirection());
 
-  Standard_Real U = myCylinder.Position().XDirection()
-    .AngleWithRef(C.Position().XDirection(), ZCyl);
+  Standard_Real U = aCylPos.XDirection().AngleWithRef(aCircPos.XDirection(), ZCyl);
 
   gp_Vec OP( myCylinder.Location(),C.Location());
-  Standard_Real V = OP.Dot(gp_Vec(myCylinder.Position().Direction()));
-
+  Standard_Real V = OP.Dot(gp_Vec(aCylPos.Direction()));
 
   gp_Pnt2d P2d1 (U, V);
   gp_Dir2d D2d;
-  if ( ZCyl.Dot(ZCir) > 0.) 
+  if ( ZCyl.Dot(aCircPos.Direction()) > 0.) 
     D2d.SetCoord(1., 0.);
   else
     D2d.SetCoord(-1., 0.);
