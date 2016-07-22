@@ -3211,7 +3211,16 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
   Standard_Boolean      isVV1degen = Standard_False, isVV2degen = Standard_False;
   Standard_Real         US1,VS1,US2,VS2;
   Standard_Real         UF1,VF1,UF2,VF2;
-  Standard_Real         infini = 1.e8;
+  // The maximal value to enlarge surfaces is decreased to 1.e+7.
+  // It is justified by the floating point format. As we can have only 15
+  // valuable decimal numbers, then during intersection of surfaces with
+  // bounds of 1.e+8 the possible inaccuracy might appear already in seventh
+  // decimal place which will be more than Precision::Confusion value -
+  // 1.e-7, default tolerance value for the section curves.
+  // By decreasing the max enlarge value to 1.e+7 the inaccuracy will be
+  // shifted to eighth decimal place, i.e. the inaccuracy will be
+  // decreased to values less than 1.e-7.
+  Standard_Real         infini = 1.e7;//1.e8;
   Standard_Boolean      SurfaceChange = Standard_False;
 
   if (S->IsUPeriodic() || S->IsVPeriodic()) {

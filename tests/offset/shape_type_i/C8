@@ -1,5 +1,4 @@
 puts "TODO OCC23068 ALL: Error : The volume of result shape is"
-puts "TODO OCC23068 Windows: Faulty shapes in variables faulty_1 to"
 puts "TODO OCC23068 Linux: Error: bsection of the result and s is not equal to zero"
 
 ellipse w1 0 0 0 15 10
