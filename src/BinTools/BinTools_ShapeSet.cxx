@@ -395,8 +395,11 @@ void  BinTools_ShapeSet::Read(Standard_IStream& IS)
     IS.getline(vers,100,'\n');
     // BUC60769 PTV 18.10.2000: remove possible '\r' at the end of the line
     
-    for (Standard_Size lv = (strlen(vers)- 1); lv > 1 && (vers[lv] == '\r' || vers[lv] == '\n') ;lv--) 
-      vers[lv] = '\0';
+    Standard_Size lv = strlen(vers);
+    if (lv > 0) {
+      for (lv--; lv > 0 && (vers[lv] == '\r' || vers[lv] == '\n'); lv--)
+        vers[lv] = '\0';
+    }
     
   } while ( ! IS.fail() && strcmp(vers,Version_1) && strcmp(vers,Version_2) &&
 	   strcmp(vers,Version_3));
