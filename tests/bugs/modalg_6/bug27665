@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC27665"
+puts "========"
+puts ""
+#################################################
+# BrepExrtrema_DistShapeShape bad performance on OCCT 6.7.0
+#################################################
+cpulimit 100
+restore [locate_data_file bug27665_wircmpd.brep] w
+explode w
+
+dset d1_val 1000
+dset d2_val 1000
+
+distmini d1 w_1 w_2
+distmini d2 w_2 w_1
+
+if {[dval d1_val] > 1.0e-7} {
+  puts "1st case: Wrong result of distmini command - Error"
+} else {
+  puts "1st case: distmini command works properly - OK"
+}
+
+if {[dval d2_val] > 1.0e-7} {
+  puts "2nd case: Wrong result of distmini command - Error"
+} else {
+  puts "2nd case: distmini command works properly - OK"
+}
