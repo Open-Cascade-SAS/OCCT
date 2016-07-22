@@ -1085,7 +1085,7 @@ void OSD_Path :: DownTrek ( const TCollection_AsciiString& aName ) {
 
  Standard_Integer pos = myTrek.Length ();
 
- if (  aName.Value ( 1 ) != '|'    &&
+ if ( !aName.IsEmpty() && aName.Value ( 1 ) != '|'    &&
        pos                                 &&
        myTrek.Value ( pos ) != '|'
  )
