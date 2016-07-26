@@ -12,6 +12,9 @@ set anImage2 $imagedir/${casename}_2.png
 set anImage3 $imagedir/${casename}_3.png
 set anImage4 $imagedir/${casename}_4.png
 
+# enable FFP until bug-fix for GLSL
+vcaps -ffp 1
+
 vinit View1
 psphere s 10
 vdisplay s

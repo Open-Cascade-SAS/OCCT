@@ -18,16 +18,14 @@ OCC24622 1D
 vtop
 vfit
 
-checkcolor 100 200 0 0.5804 0.949
-
-if { $stat != 1 } {
-  puts "Error : the 1D texture color does not match at px (100, 200)!"
+set aColor [vreadpixel 100 200 rgb name]
+if { "$aColor" != "CYAN1" } {
+  puts "Error: the 1D texture color does not match at px (100, 200)!"
 }
 
-checkcolor 300 200 0.298 1.0 0.0
-
-if { $stat != 1 } {
-  puts "Error : the 1D texture color does not match at px (300, 200)!"
+set aColor [vreadpixel 300 200 rgb name]
+if { "$aColor" != "CHARTREUSE" } {
+  puts "Error: the 1D texture color does not match at px (300, 200)!"
 }
 
 vactivate $aV2
@@ -37,16 +35,14 @@ OCC24622 2D
 vtop
 vfit
 
-checkcolor 200 100 0 0.5804 0.949
-
-if { $stat != 1 } {
-  puts "Error : the 2D texture color does not match at px (200, 100)!"
+set aColor [vreadpixel 100 200 rgb name]
+if { "$aColor" != "DARKGOLDENROD1" } {
+  puts "Error: the 2D texture color does not match at px (200, 100)!"
 }
 
-checkcolor 200 300 0.298 1.0 0.0
-
-if { $stat != 1 } {
-  puts "Error : the 2D texture color does not match at px (200, 300)!"
+set aColor [vreadpixel 200 300 rgb name]
+if { "$aColor" != "CHARTREUSE" } {
+  puts "Error: the 2D texture color does not match at px (200, 300)!"
 }
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -3,10 +3,6 @@ puts "OCC21091"
 puts "OCC21450"
 puts "============"
 puts ""
-#vinit
-#vexport
-#vexport full_file_path {PS | EPS | TEX | PDF | SVG | PGF } : exports the view to a vector file of a given format
-#
 
 pload XSDRAW
 vinit
@@ -20,6 +16,7 @@ vsetdispmode m 34
 file delete -force ${imagedir}/${test_image}.pdf
 set aFile ${imagedir}/${test_image}.pdf
 
+vcaps -ffp 1
 vexport ${aFile} PDF
 
 if { [checkplatform -windows] } {

@@ -1,4 +1,5 @@
 source $env(CSF_OCCTSamplesPath)/tcl/dimensions.tcl
+vcaps -ffp 1
 vdump $imagedir/${test_image}.png
 
 puts "TEST COMPLETED"

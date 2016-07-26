@@ -18,6 +18,9 @@ set y2_coord 320
 set x3_coord 73
 set y3_coord 150
 
+# enable FFP until bug-fix for GLSL
+vcaps -ffp 1
+
 vinit
 box b1 0 0 0 10 10 10
 box b2 30 0 0 10 40 10

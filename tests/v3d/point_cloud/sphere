@@ -8,6 +8,7 @@ mkface s ss
 incmesh s 0.01
 
 # draw sphere
+vcaps -ffp 1
 vinit View1
 vclear
 vsetdispmode 1

@@ -4,6 +4,9 @@ puts "Checking environment mapping in general"
 puts "============"
 puts ""
 
+# enable FFP until bug-fix for GLSL
+vcaps -ffp 1
+
 vinit
 vclear
 vaxo

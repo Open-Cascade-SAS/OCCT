@@ -3,9 +3,6 @@ puts "OCC21091"
 puts "OCC21450"
 puts "============"
 puts ""
-#vexport
-#vexport full_file_path {PS | EPS | TEX | PDF | SVG | PGF } : exports the view to a vector file of a given format
-#Testing export to TEX format
 
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 
@@ -46,6 +43,7 @@ vdisplay a
 
 set aFile $imagedir/${test_image}.tex
 
+vcaps -ffp 1
 vexport ${aFile} TEX
 
 if { [file exists ${aFile}] } {

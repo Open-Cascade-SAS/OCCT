@@ -29,7 +29,7 @@ OpenGl_Caps::OpenGl_Caps()
   pntSpritesDisable (Standard_False),
   keepArrayData     (Standard_False),
 #if !defined(GL_ES_VERSION_2_0)
-  ffpEnable         (Standard_True),
+  ffpEnable         (Standard_False),
   useSystemBuffer   (Standard_False),
 #else
   ffpEnable         (Standard_False),

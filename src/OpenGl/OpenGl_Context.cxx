@@ -1055,6 +1055,20 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myMaxMsaaSamples = 0;
   ReadGlVersion (myGlVerMajor, myGlVerMinor);
   myVendor = (const char* )::glGetString (GL_VENDOR);
+  if (!caps->ffpEnable
+   && !IsGlGreaterEqual (2, 0))
+  {
+    caps->ffpEnable = true;
+    TCollection_ExtendedString aMsg =
+      TCollection_ExtendedString("OpenGL driver is too old! Context info:\n")
+                               + "    Vendor:   " + (const char* )::glGetString (GL_VENDOR)   + "\n"
+                               + "    Renderer: " + (const char* )::glGetString (GL_RENDERER) + "\n"
+                               + "    Version:  " + (const char* )::glGetString (GL_VERSION)  + "\n"
+                               + "  Fallback using deprecated fixed-function pipeline.\n"
+                               + "  Visualization might work incorrectly.\n"
+                                 "  Consider upgrading the graphics driver.";
+    PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+  }
 
 #if defined(GL_ES_VERSION_2_0)
   (void )theIsCoreProfile;

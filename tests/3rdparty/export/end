@@ -1,3 +1,4 @@
+vcaps -ffp 1
 vexport ${aFile} ${format}
 vglinfo
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

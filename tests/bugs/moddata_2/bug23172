@@ -19,6 +19,7 @@ if { [file exists ${aFile}] } {
   file delete ${aFile}
 }
 
+vcaps -ffp 1
 vexport $aFile SVG
 
 if { [file exists ${aFile}] } {
