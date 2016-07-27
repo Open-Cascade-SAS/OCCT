@@ -60,16 +60,7 @@ public:
   //! TolCurv is the maximum error to satisfy for G2 constraints
   //! These errors can be replaced by laws of criterion.
   //! Raises    ConstructionError if Order is not -1 , 0,  1,  2
-  Standard_EXPORT GeomPlate_CurveConstraint(const Handle(Adaptor3d_HCurveOnSurface)& Boundary, const Standard_Integer Order, const Standard_Integer NPt = 10, const Standard_Real TolDist = 0.0001, const Standard_Real TolAng = 0.01, const Standard_Real TolCurv = 0.1);
-  
-  //! Create a constraint
-  //! Order is the order of the constraint. The possible values for order are -1,0.
-  //! Order i means constraints Gi
-  //! Npt is the number of points associated with the constraint.
-  //! TolDist is the maximum error to satisfy for G0 constraints
-  //! These errors can be replaced by laws of criterion.
-  //! Raises    ConstructionError if Order  is  not  0  or  -1
-  Standard_EXPORT GeomPlate_CurveConstraint(const Handle(Adaptor3d_HCurve)& Boundary, const Standard_Integer Tang, const Standard_Integer NPt = 10, const Standard_Real TolDist = 0.0001);
+  Standard_EXPORT GeomPlate_CurveConstraint(const Handle(Adaptor3d_HCurve)& Boundary, const Standard_Integer Order, const Standard_Integer NPt = 10, const Standard_Real TolDist = 0.0001, const Standard_Real TolAng = 0.01, const Standard_Real TolCurv = 0.1);
   
   //! Allows you to set the order of continuity required for
   //! the constraints: G0, G1, and G2, controlled

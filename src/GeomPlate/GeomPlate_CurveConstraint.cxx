@@ -54,67 +54,53 @@ myLProp(2,1.e-4)
 //---------------------------------------------------------
 //         Constructeurs avec courbe sur surface
 //---------------------------------------------------------
-GeomPlate_CurveConstraint :: GeomPlate_CurveConstraint (const Handle(Adaptor3d_HCurveOnSurface)& Boundary,
+GeomPlate_CurveConstraint :: GeomPlate_CurveConstraint (const Handle(Adaptor3d_HCurve)& Boundary,
 						const Standard_Integer Tang,
 						const Standard_Integer NPt,
 						const Standard_Real TolDist,
 						const Standard_Real TolAng,
 						const Standard_Real TolCurv
 ) :
-myFrontiere(Boundary),
 myLProp(2,TolDist),
 myTolDist(TolDist),
 myTolAng(TolAng),
 myTolCurv(TolCurv)
-{ myOrder=Tang;
+{
+  myOrder=Tang;
   if ((Tang<-1)||(Tang>2))
     Standard_Failure::Raise("GeomPlate : The continuity is not G0 G1 or G2"); 
   myNbPoints=NPt;
   myConstG0=Standard_True;
   myConstG1=Standard_True;
   myConstG2=Standard_True;
- if (myFrontiere.IsNull())
-    Standard_Failure::Raise("GeomPlate_CurveConstraint : Curve must be on a Surface"); 
-  Handle(Geom_Surface) Surf;
-  Handle(GeomAdaptor_HSurface) GS1;
-  GS1 = Handle(GeomAdaptor_HSurface)::DownCast(myFrontiere->ChangeCurve().GetSurface());
-  if (!GS1.IsNull()) {
-    Surf=GS1->ChangeSurface().Surface();
-  }
-  else {
-//      Handle(BRepAdaptor_HSurface) BS1;
-//      BS1=Handle(BRepAdaptor_HSurface)::DownCast(myFrontiere->ChangeCurve().GetSurface());
-//      Surf = BRep_Tool::Surface(BS1->ChangeSurface().Face());
-    Standard_Failure::Raise("GeomPlate_CurveConstraint : Surface must be GeomAdaptor_Surface");     
-  }
-  myLProp.SetSurface(Surf);
-  my2dCurve.Nullify();
-  myHCurve2d.Nullify();
-  myTolU=0.;
-  myTolV=0.;
-  myG0Crit.Nullify();
-  myG1Crit.Nullify();
-  myG2Crit.Nullify();
 
-}
+  myFrontiere = Handle(Adaptor3d_HCurveOnSurface)::DownCast(Boundary);
 
-//---------------------------------------------------------
-//    Constructeurs avec courbe 3d (pour continuite G0 G-1)
-//---------------------------------------------------------
-GeomPlate_CurveConstraint :: GeomPlate_CurveConstraint (const Handle(Adaptor3d_HCurve)& Boundary,
-						const Standard_Integer Tang, 
-						const Standard_Integer NPt,
-						const Standard_Real TolDist) :
-my3dCurve(Boundary),
-myLProp(2,TolDist),
-myTolDist(TolDist)
-{ myOrder=Tang;
-  if ((Tang!=-1)&&(Tang!=0))
-    Standard_Failure::Raise("GeomPlate : The continuity is not G0 or G-1"); 
-  myNbPoints=NPt;
-  myConstG0=Standard_True;
-  myConstG1=Standard_True;
-  myConstG2=Standard_True;
+  if (myFrontiere.IsNull())
+  {
+    my3dCurve = Boundary;
+  }
+  else
+  {
+    Handle(Geom_Surface) Surf;
+    Handle(GeomAdaptor_HSurface) GS1 = Handle(GeomAdaptor_HSurface)::
+                            DownCast(myFrontiere->ChangeCurve().GetSurface());
+
+    if (!GS1.IsNull()) {
+      Surf=GS1->ChangeSurface().Surface();
+    }
+    else {
+      //      Handle(BRepAdaptor_HSurface) BS1;
+      //      BS1=Handle(BRepAdaptor_HSurface)::DownCast(myFrontiere->
+      //                                            ChangeCurve().GetSurface());
+      //      Surf = BRep_Tool::Surface(BS1->ChangeSurface().Face());
+      Standard_Failure::Raise(
+                    "GeomPlate_CurveConstraint : Surface must be GeomAdaptor_Surface");
+    }
+
+    myLProp.SetSurface(Surf);
+  }
+
   my2dCurve.Nullify();
   myHCurve2d.Nullify();
   myTolU=0.;
@@ -123,6 +109,7 @@ myTolDist(TolDist)
   myG1Crit.Nullify();
   myG2Crit.Nullify();
 }
+
 //---------------------------------------------------------
 // Fonction : FirstParameter
 //---------------------------------------------------------
