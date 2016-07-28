@@ -191,6 +191,14 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init ("XSTEP","write.step.sequence",'t',"ToSTEP");
     Interface_Static::Init ("XSTEP","read.step.sequence",'t',"FromSTEP");
 
+    // ika 28.07.16: Paremeter to read all top level solids and shells,
+    // should be used only in case of invalid shape_representation without links to shapes.
+    Interface_Static::Init("step", "read.step.all.shapes", 'e', "");
+    Interface_Static::Init("step", "read.step.all.shapes", '&', "enum 0");
+    Interface_Static::Init("step", "read.step.all.shapes", '&', "eval Off");
+    Interface_Static::Init("step", "read.step.all.shapes", '&', "eval On");
+    Interface_Static::SetIVal("read.step.all.shapes", 0);
+
     init = Standard_True;
   }
 

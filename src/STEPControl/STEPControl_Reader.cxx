@@ -53,8 +53,10 @@
 #include <StepRepr_RepresentationMap.hxx>
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
+#include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -123,6 +125,23 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
   Standard_Integer nb = Model()->NbEntities();
   for (Standard_Integer i = 1; i <= nb; i ++) {
     Handle(Standard_Transient) ent = Model()->Value(i);
+    if (Interface_Static::IVal("read.step.all.shapes") == 1) {
+      // Special case to read invalid shape_representation without links to shapes.
+      if (ent->IsKind(STANDARD_TYPE(StepShape_ManifoldSolidBrep))) {
+        Interface_EntityIterator aShareds = WS()->Graph().Sharings(ent);
+        if (!aShareds.More()) {
+          theroots.Append(ent);
+          WS()->TransferReader()->TransientProcess()->RootsForTransfer()->Append(ent);
+        }
+      }
+      if (ent->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel))) {
+        Interface_EntityIterator aShareds = WS()->Graph().Sharings(ent);
+        if (!aShareds.More()) {
+          theroots.Append(ent);
+          WS()->TransferReader()->TransientProcess()->RootsForTransfer()->Append(ent);
+        }
+      }
+    }
     if(ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition))) {
       // PTV 31.01.2003 TRJ11 exclude Product Definition With Associated Document from roots
       if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments))) {
