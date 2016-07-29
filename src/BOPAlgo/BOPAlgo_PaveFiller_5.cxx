@@ -272,7 +272,6 @@ void BOPAlgo_PaveFiller::PerformEF()
     aPB->Indices(nV[0], nV[1]);
     bIsPBSplittable = aPB->IsSplittable();
     //
-    Standard_Real aTS1, aTS2;
     anewSR.Range(aTS1, aTS2);
     //
     // extend vertices ranges using Edge/Edge intersections

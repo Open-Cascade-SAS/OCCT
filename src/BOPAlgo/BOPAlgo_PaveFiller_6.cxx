@@ -729,10 +729,10 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
   //
   BRep_Builder aBB;
   for (k = 1; k <= aNbME; ++k) {
-    const TopoDS_Edge& aE = TopoDS::Edge(theMicroEdges(k));
+    const TopoDS_Edge& aEM = TopoDS::Edge(theMicroEdges(k));
     //
     TopoDS_Vertex aV1, aV2;
-    TopExp::Vertices(aE, aV1, aV2);
+    TopExp::Vertices(aEM, aV1, aV2);
     //
     aLS.Append(aV1);
     aLS.Append(aV2);
