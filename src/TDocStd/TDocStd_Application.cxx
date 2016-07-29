@@ -129,8 +129,46 @@ void TDocStd_Application::DefineFormat (const TCollection_AsciiString& theFormat
     theWriter->SetFormat(theFormat);
 
   // register drivers
-  myReaders.Bind (theFormat, theReader);
-  myWriters.Bind (theFormat, theWriter);
+  myReaders.Add(theFormat, theReader);
+  myWriters.Add(theFormat, theWriter);
+}
+
+//=======================================================================
+//function : ReadingFormats
+//purpose  :
+//=======================================================================
+
+void TDocStd_Application::ReadingFormats(TColStd_SequenceOfAsciiString &theFormats)
+{
+	theFormats.Clear();
+
+  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_RetrievalDriver)>::Iterator
+    anIter(myReaders);
+  for (; anIter.More(); anIter.Next()) {
+    Handle(PCDM_RetrievalDriver) aDriver = anIter.Value();
+    if (aDriver.IsNull() == Standard_False) {
+      theFormats.Append(anIter.Key());
+    }
+  }
+}
+
+//=======================================================================
+//function : WritingFormats
+//purpose  :
+//=======================================================================
+
+void TDocStd_Application::WritingFormats(TColStd_SequenceOfAsciiString &theFormats)
+{
+  theFormats.Clear();
+
+  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_StorageDriver)>::Iterator
+    anIter(myWriters);
+  for (; anIter.More(); anIter.Next()) {
+    Handle(PCDM_StorageDriver) aDriver = anIter.Value();
+    if (aDriver.IsNull() == Standard_False) {
+      theFormats.Append(anIter.Key());
+    }
+  }
 }
 
 //=======================================================================

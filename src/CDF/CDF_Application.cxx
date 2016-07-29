@@ -418,7 +418,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
 {
   // check map of readers
   Handle(PCDM_RetrievalDriver) aReader;
-  if (myReaders.Find (theFormat, aReader))
+  if (myReaders.FindFromKey (theFormat, aReader))
     return aReader;
 
   // support of legacy method of loading reader as plugin
@@ -426,7 +426,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
   aResourceName += ".RetrievalPlugin";
   if (!UTL::Find(Resources(), aResourceName))
   {
-    myReaders.Bind(theFormat, aReader);
+    myReaders.Add(theFormat, aReader);
     Standard_SStream aMsg; 
     aMsg << "Could not found the item:" << aResourceName <<(char)0;
     myRetrievableStatus = PCDM_RS_WrongResource;
@@ -449,7 +449,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
   } 
   catch (Standard_Failure)
   {
-    myReaders.Bind(theFormat, aReader);
+    myReaders.Add(theFormat, aReader);
     myRetrievableStatus = PCDM_RS_WrongResource;
     Standard_Failure::Caught()->Reraise();
   }	
@@ -462,7 +462,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
   }
 
   // record in map
-  myReaders.Bind (theFormat, aReader);
+  myReaders.Add(theFormat, aReader);
   return aReader;
 }
 
@@ -474,7 +474,7 @@ Handle(PCDM_StorageDriver) CDF_Application::WriterFromFormat(const TCollection_E
 {  
   // check map of writers
   Handle(PCDM_StorageDriver) aDriver;
-  if (myWriters.Find (theFormat, aDriver))
+  if (myWriters.FindFromKey(theFormat, aDriver))
     return aDriver;
 
   // support of legacy method of loading reader as plugin
@@ -482,7 +482,7 @@ Handle(PCDM_StorageDriver) CDF_Application::WriterFromFormat(const TCollection_E
   aResourceName += ".StoragePlugin";  
   if(!UTL::Find(Resources(), aResourceName))
   {
-    myWriters.Bind (theFormat, aDriver);
+    myWriters.Add(theFormat, aDriver);
     Standard_SStream aMsg; 
     aMsg << "Could not found the resource definition:" << aResourceName <<(char)0;
     Standard_NoSuchObject::Raise(aMsg);
@@ -504,7 +504,7 @@ Handle(PCDM_StorageDriver) CDF_Application::WriterFromFormat(const TCollection_E
   } 
   catch (Standard_Failure)
   {
-    myWriters.Bind (theFormat, aDriver);
+    myWriters.Add(theFormat, aDriver);
     myRetrievableStatus = PCDM_RS_WrongResource;
     Standard_Failure::Caught()->Reraise();
   }	
@@ -518,7 +518,7 @@ Handle(PCDM_StorageDriver) CDF_Application::WriterFromFormat(const TCollection_E
   }
 
   // record in map
-  myWriters.Bind(theFormat, aDriver);
+  myWriters.Add(theFormat, aDriver);
   return aDriver;
 }
 

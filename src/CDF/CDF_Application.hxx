@@ -24,7 +24,7 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <CDF_TypeOfActivation.hxx>
 #include <Standard_IStream.hxx>
-#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 class Standard_NoSuchObject;
 class CDF_Session;
@@ -164,8 +164,8 @@ protected:
   Standard_EXPORT CDF_Application();
 
   PCDM_ReaderStatus myRetrievableStatus;
-  NCollection_DataMap<TCollection_ExtendedString, Handle(PCDM_RetrievalDriver)> myReaders;
-  NCollection_DataMap<TCollection_ExtendedString, Handle(PCDM_StorageDriver)> myWriters;
+  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_RetrievalDriver)> myReaders;
+  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_StorageDriver)> myWriters;
 
 private:
 

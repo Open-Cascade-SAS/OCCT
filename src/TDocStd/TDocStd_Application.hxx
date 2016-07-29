@@ -26,7 +26,7 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_IStream.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
 
@@ -149,7 +149,17 @@ public:
                                      const TCollection_AsciiString& theExtension,
                                      const Handle(PCDM_RetrievalDriver)& theReader,
                                      const Handle(PCDM_StorageDriver)& theWriter);
-  
+
+  //! Returns the sequence of reading formats supported by the application.
+  //!
+  //! @param theFormats - sequence of reading formats. Output parameter.
+  Standard_EXPORT void ReadingFormats(TColStd_SequenceOfAsciiString &theFormats);
+
+  //! Returns the sequence of writing formats supported by the application.
+  //!
+  //! @param theFormats - sequence of writing formats. Output parameter.
+  Standard_EXPORT void WritingFormats(TColStd_SequenceOfAsciiString &theFormats);
+
   //! returns the number of documents handled by the current applicative session.
   Standard_EXPORT Standard_Integer NbDocuments() const;
   
