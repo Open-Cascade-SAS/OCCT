@@ -175,7 +175,7 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertexColor (const Standard_Integer 
   {
     Graphic3d_Vec4ub aColor (Standard_Byte(theR * 255.0),
                              Standard_Byte(theG * 255.0),
-                             Standard_Byte(theB * 255.0), 0);
+                             Standard_Byte(theB * 255.0), 255);
     SetVertexColor (theIndex, *reinterpret_cast<Standard_Integer*>(&aColor));
   }
   myAttribs->NbElements = Max (theIndex, myAttribs->NbElements);
