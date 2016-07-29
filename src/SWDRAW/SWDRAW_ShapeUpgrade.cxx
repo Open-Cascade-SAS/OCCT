@@ -1284,14 +1284,16 @@ static ShapeUpgrade_UnifySameDomain& Unifier() {
 //=======================================================================
 static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 3 || n > 6)
+  if (n < 3)
   {
-    di << "Use unifysamedom result shape [-f] [-e] [+b] [-i]\n";
+    di << "Use unifysamedom result shape [-f] [-e] [+b] [-i] [-t val] [-a val]\n";
     di << "options:\n";
-    di << "[-f] to switch off 'unify-faces' mode \n";
-    di << "[-e] to switch off 'unify-edges' mode\n";
-    di << "[+b] to switch on 'concat bspline' mode\n";
-    di << "[+i] to switch on 'allow internal edges' mode\n";
+    di << "-f to switch off 'unify-faces' mode \n";
+    di << "-e to switch off 'unify-edges' mode\n";
+    di << "+b to switch on 'concat bspline' mode\n";
+    di << "+i to switch on 'allow internal edges' mode\n";
+    di << "-t val to set linear tolerance\n";
+    di << "-a val to set angular tolerance\n";
     di << "'unify-faces' and 'unify-edges' modes are switched on by default";
     return 1;
   }
@@ -1305,6 +1307,8 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
   Standard_Boolean anUEdges = Standard_True;
   Standard_Boolean anConBS = Standard_False;
   Standard_Boolean isAllowInternal = Standard_False;
+  Standard_Real aLinTol = Precision::Confusion();
+  Standard_Real aAngTol = Precision::Angular();
 
   if (n > 3)
     for ( int i = 3; i < n; i++ ) 
@@ -1317,10 +1321,24 @@ static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, c
         anConBS = Standard_True;
       else if (!strcmp(a[i], "+i"))
         isAllowInternal = Standard_True;
+      else if (!strcmp(a[i], "-t") || !strcmp(a[i], "-a"))
+      {
+        if (++i < n)
+        {
+          (a[i-1][1] == 't' ? aLinTol : aAngTol) = Draw::Atof(a[i]);
+        }
+        else
+        {
+          di << "value expected after " << a[i-1];
+          return 1;
+        }
+      }
     }
 
   Unifier().Initialize(aShape, anUEdges, anUFaces, anConBS);
   Unifier().AllowInternalEdges(isAllowInternal);
+  Unifier().SetLinearTolerance(aLinTol);
+  Unifier().SetAngularTolerance(aAngTol);
   Unifier().Build();
   TopoDS_Shape Result = Unifier().Shape();
 
@@ -1556,7 +1574,7 @@ Standard_Integer reshape(Draw_Interpretor& di,
   theCommands.Add ("removeloc","result shape",__FILE__,removeloc,g);
   
   theCommands.Add ("unifysamedom",
-                   "unifysamedom result shape [-f] [-e] [+b]", __FILE__,unifysamedom,g);
+                   "unifysamedom result shape [-f] [-e] [+b] [-i] [-t val] [-a val]", __FILE__,unifysamedom,g);
   
   theCommands.Add ("unifysamedomgen",
                    "unifysamedomgen newshape oldshape : get new shape generated "

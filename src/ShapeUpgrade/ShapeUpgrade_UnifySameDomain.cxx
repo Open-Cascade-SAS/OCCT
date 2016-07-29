@@ -306,7 +306,9 @@ static Handle(Geom_Surface) ClearRts(const Handle(Geom_Surface)& aSurface)
 //purpose  : 
 //=======================================================================
 static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
-                                     const TopoDS_Face& aCheckedFace)
+                                     const TopoDS_Face& aCheckedFace,
+                                     const Standard_Real theLinTol,
+                                     const Standard_Real theAngTol)
 {
   //checking the same handles
   TopLoc_Location L1, L2;
@@ -317,9 +319,6 @@ static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
 
   if (S1 == S2 && L1 == L2)
     return Standard_True;
-
-  // planar and cylindrical cases (IMP 20052)
-  Standard_Real aPrec = Precision::Confusion();
 
   S1 = BRep_Tool::Surface(aFace);
   S2 = BRep_Tool::Surface(aCheckedFace);
@@ -332,6 +331,22 @@ static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
   //aGOFS2 = Handle(Geom_OffsetSurface)::DownCast(S2);
   //if (!aGOFS1.IsNull()) S1 = aGOFS1->BasisSurface();
   //if (!aGOFS2.IsNull()) S2 = aGOFS2->BasisSurface();
+
+  // case of two planar surfaces:
+  // all kinds of surfaces checked, including b-spline and bezier
+  GeomLib_IsPlanarSurface aPlanarityChecker1(S1, theLinTol);
+  if (aPlanarityChecker1.IsPlanar()) {
+    GeomLib_IsPlanarSurface aPlanarityChecker2(S2, theLinTol);
+    if (aPlanarityChecker2.IsPlanar()) {
+      gp_Pln aPln1 = aPlanarityChecker1.Plan();
+      gp_Pln aPln2 = aPlanarityChecker2.Plan();
+
+      if (aPln1.Position().Direction().IsParallel(aPln2.Position().Direction(), theAngTol) &&
+        aPln1.Distance(aPln2) < theLinTol) {
+        return Standard_True;
+      }
+    }
+  }
 
   // case of two elementary surfaces: use OCCT tool
   // elementary surfaces: ConicalSurface, CylindricalSurface,
@@ -346,7 +361,7 @@ static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
     Handle(BRepTopAdaptor_TopolTool) aTT2 = new BRepTopAdaptor_TopolTool();
 
     try {
-      IntPatch_ImpImpIntersection anIIInt (aGA1, aTT1, aGA2, aTT2, aPrec, aPrec);
+      IntPatch_ImpImpIntersection anIIInt(aGA1, aTT1, aGA2, aTT2, theLinTol, theLinTol);
       if (!anIIInt.IsDone() || anIIInt.IsEmpty())
         return Standard_False;
 
@@ -354,22 +369,6 @@ static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
     }
     catch (Standard_Failure) {
       return Standard_False;
-    }
-  }
-
-  // case of two planar surfaces:
-  // all kinds of surfaces checked, including b-spline and bezier
-  GeomLib_IsPlanarSurface aPlanarityChecker1 (S1, aPrec);
-  if (aPlanarityChecker1.IsPlanar()) {
-    GeomLib_IsPlanarSurface aPlanarityChecker2 (S2, aPrec);
-    if (aPlanarityChecker2.IsPlanar()) {
-      gp_Pln aPln1 = aPlanarityChecker1.Plan();
-      gp_Pln aPln2 = aPlanarityChecker2.Plan();
-
-      if (aPln1.Position().Direction().IsParallel(aPln2.Position().Direction(),Precision::Angular()) &&
-          aPln1.Distance(aPln2) < aPrec) {
-        return Standard_True;
-      }
     }
   }
 
@@ -382,14 +381,14 @@ static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
   {
     gp_Cylinder aCyl1, aCyl2;
     if (getCylinder(S1, aCyl1) && getCylinder(S2, aCyl2)) {
-      if (fabs(aCyl1.Radius() - aCyl2.Radius()) < aPrec) {
+      if (fabs(aCyl1.Radius() - aCyl2.Radius()) < theLinTol) {
         gp_Dir aDir1 = aCyl1.Position().Direction();
         gp_Dir aDir2 = aCyl2.Position().Direction();
         if (aDir1.IsParallel(aDir2, Precision::Angular())) {
           gp_Pnt aLoc1 = aCyl1.Location();
           gp_Pnt aLoc2 = aCyl2.Location();
           gp_Vec aVec12 (aLoc1, aLoc2);
-          if (aVec12.SquareMagnitude() < aPrec*aPrec ||
+          if (aVec12.SquareMagnitude() < theLinTol*theLinTol ||
               aVec12.IsParallel(aDir1, Precision::Angular())) {
             return Standard_True;
           }
@@ -1055,8 +1054,11 @@ static Standard_Boolean MergeSeq (TopTools_SequenceOfShape& SeqEdges,
       k++;
       for (Standard_Integer j = 2; j <= SeqOfSubsSeqOfEdges(i).SeqsEdges.Length(); j++)
       {
-        TopoDS_Shape OldEdge = NewEdges2OldEdges(SeqOfSubsSeqOfEdges(i).SeqsEdges(j));
-        theOldShapes.Bind(OldEdge, SeqOfSubsSeqOfEdges(i).UnionEdges);
+        const TopoDS_Shape& anOldEdge = SeqOfSubsSeqOfEdges(i).SeqsEdges(j);
+        const TopoDS_Shape* pOrigEdge = NewEdges2OldEdges.Seek(anOldEdge);
+        if (!pOrigEdge)
+          pOrigEdge = &anOldEdge;
+        theOldShapes.Bind(*pOrigEdge, SeqOfSubsSeqOfEdges(i).UnionEdges);
         theContext->Remove(SeqOfSubsSeqOfEdges(i).SeqsEdges(j));
       }
     }
@@ -1107,7 +1109,9 @@ static void CheckSharedVertices(const TopTools_SequenceOfShape& theSeqEdges,
 //=======================================================================
 
 ShapeUpgrade_UnifySameDomain::ShapeUpgrade_UnifySameDomain()
-  : myUnifyFaces (Standard_True),
+  : myLinTol(Precision::Confusion()),
+    myAngTol(Precision::Angular()),
+    myUnifyFaces(Standard_True),
     myUnifyEdges (Standard_True),
     myConcatBSplines (Standard_False),
     myAllowInternal (Standard_False)
@@ -1125,7 +1129,9 @@ ShapeUpgrade_UnifySameDomain::ShapeUpgrade_UnifySameDomain(const TopoDS_Shape& a
                                                            const Standard_Boolean UnifyFaces,
                                                            const Standard_Boolean ConcatBSplines)
   : myInitShape (aShape),
-    myUnifyFaces (UnifyFaces),
+    myLinTol(Precision::Confusion()),
+    myAngTol(Precision::Angular()),
+    myUnifyFaces(UnifyFaces),
     myUnifyEdges (UnifyEdges),
     myConcatBSplines (ConcatBSplines),
     myAllowInternal (Standard_False),
@@ -1297,7 +1303,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
         if (IsCheckSharedEdgeOri && !CheckSharedEdgeOri(aFace, anCheckedFace, edge) )
           continue;
 
-        if (IsSameDomain(aFace,anCheckedFace)) {
+        if (IsSameDomain(aFace,anCheckedFace, myLinTol, myAngTol)) {
 
           // hotfix for 27271: prevent merging along periodic direction.
           if (IsLikeSeam(edge, aFace, aBaseSurface))

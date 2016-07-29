@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC27729"
+puts "========"
+puts ""
+#######################################################################
+# UnifySameDomain: allow the user to specify linear and angular tolerances
+#######################################################################
+
+restore [locate_data_file bug27729_a_1275.brep] a
+
+unifysamedom r a -t 0.1 -a 0.08
+
+regexp {FACE *: *(\d*)} [nbshapes r] full nbfaces
+if {$nbfaces > 1000} {
+  puts "Error: number of faces in the result is too large"
+}
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png

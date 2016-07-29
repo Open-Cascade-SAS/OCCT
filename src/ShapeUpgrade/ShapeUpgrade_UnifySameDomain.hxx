@@ -62,7 +62,19 @@ public:
   //! topology. Without this flag merging through multi connected edge
   //! is forbidden. Default value is false.
   Standard_EXPORT void AllowInternalEdges (const Standard_Boolean theValue);
-  
+
+  //! Sets the linear tolerance. Default value is Precision::Confusion().
+  void SetLinearTolerance(const Standard_Real theValue)
+  {
+    myLinTol = theValue;
+  }
+
+  //! Sets the angular tolerance. Default value is Precision::Angular().
+  void SetAngularTolerance(const Standard_Real theValue)
+  {
+    myAngTol = theValue;
+  }
+
   //! Builds the resulting shape
   Standard_EXPORT void Build();
   
@@ -100,6 +112,8 @@ private:
                      Standard_Boolean IsCheckSharedEdgeOri);
 
   TopoDS_Shape myInitShape;
+  Standard_Real myLinTol;
+  Standard_Real myAngTol;
   Standard_Boolean myUnifyFaces;
   Standard_Boolean myUnifyEdges;
   Standard_Boolean myConcatBSplines;
