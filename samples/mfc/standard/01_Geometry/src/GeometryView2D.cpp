@@ -276,8 +276,9 @@ void CGeometryView2D::OnMouseMove(UINT nFlags, CPoint point)
       }
 }
 
-void CGeometryView2D::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
+void CGeometryView2D::OnSize(UINT nType, int cx, int cy)
 {
+  OCC_2dView::OnSize (nType, cx, cy);
   if (!myV2dView.IsNull())
   {
     myV2dView->MustBeResized(); // added sro

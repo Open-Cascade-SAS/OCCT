@@ -43,7 +43,7 @@ void Sample2D_Text::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPres
 
   asp->SetHorizontalJustification(myHAlign);
   asp->SetVerticalJustification(myVAlign);
-  asp->Aspect()->SetTextZoomable(myIsZoomable);
+  asp->Aspect()->SetTextZoomable(myIsZoomable == Standard_True);
   asp->Aspect()->SetTextAngle(myAngle);
   asp->Aspect()->SetTextFontAspect(myFontAspect);
   asp->SetHeight(myHeight);

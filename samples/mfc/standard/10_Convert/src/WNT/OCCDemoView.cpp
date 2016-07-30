@@ -83,10 +83,10 @@ COCCDemoView::~COCCDemoView()
 
 BOOL COCCDemoView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
-	return CView::PreCreateWindow(cs);
+  // TODO: Modify the Window class or styles here by modifying
+  //  the CREATESTRUCT cs
+  cs.lpszClass = ::AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_OWNDC, ::LoadCursor(NULL, IDC_ARROW), NULL, NULL);
+  return CView::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -141,8 +141,9 @@ COCCDemoDoc* COCCDemoView::GetDocument() // non-debug version is inline
 /////////////////////////////////////////////////////////////////////////////
 // COCCDemoView message handlers
 
-void COCCDemoView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
+void COCCDemoView::OnSize(UINT nType, int cx, int cy)
 {
+  CView::OnSize (nType, cx, cy);
   if (!myView.IsNull())
     myView->MustBeResized();
 }

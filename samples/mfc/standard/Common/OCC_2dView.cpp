@@ -80,6 +80,7 @@ BOOL OCC_2dView::PreCreateWindow(CREATESTRUCT& cs)
 {
   // TODO: Modify the Window class or styles here by modifying
   //  the CREATESTRUCT cs
+  cs.lpszClass = ::AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_OWNDC, ::LoadCursor(NULL, IDC_ARROW), NULL, NULL);
   return CView::PreCreateWindow(cs);
 }
 
@@ -471,12 +472,12 @@ void OCC_2dView::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 
-void OCC_2dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
+void OCC_2dView::OnSize(UINT nType, int cx, int cy)
 {
+  OCC_BaseView::OnSize (nType, cx, cy);
   // Take care : This fonction is call before OnInitialUpdate
   if (!myV2dView.IsNull())
     myV2dView->MustBeResized(); 
-
 }
 
 void OCC_2dView::OnBUTTONFitAll() 

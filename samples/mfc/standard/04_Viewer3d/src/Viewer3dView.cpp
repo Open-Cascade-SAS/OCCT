@@ -111,8 +111,6 @@ CViewer3dView::CViewer3dView()
   myXmax (0),
   myYmax (0),
   myCurZoom (0.0),
-  myWidth  (0),
-  myHeight (0),
   NbActiveLights (2), // There are 2 default active lights
   myHlrModeIsOn (Standard_False),
   m_Pen (NULL),
@@ -131,10 +129,10 @@ CViewer3dView::~CViewer3dView()
 
 BOOL CViewer3dView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
-	return CView::PreCreateWindow(cs);
+  // TODO: Modify the Window class or styles here by modifying
+  //  the CREATESTRUCT cs
+  cs.lpszClass = ::AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_OWNDC, ::LoadCursor(NULL, IDC_ARROW), NULL, NULL);
+  return CView::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -170,15 +168,7 @@ void CViewer3dView::OnDraw(CDC* /*pDC*/)
 {
 	CViewer3dDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	CRect aRect;
-	GetWindowRect(aRect);
-	if(myWidth != aRect.Width() || myHeight != aRect.Height()) {
-		myWidth = aRect.Width();
-		myHeight = aRect.Height();
-		::PostMessage ( GetSafeHwnd () , WM_SIZE , SW_SHOW , myWidth + myHeight*65536 );
-	}
 	myView->Redraw();
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -228,8 +218,9 @@ gp_Pnt ConvertClickToPoint(Standard_Real x, Standard_Real y, Handle(V3d_View) aV
 	return ResultPoint;
 }
 
-void CViewer3dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
+void CViewer3dView::OnSize(UINT nType, int cx, int cy)
 {
+  CView::OnSize (nType, cx, cy);
   if (!myView.IsNull())
    myView->MustBeResized();
 }

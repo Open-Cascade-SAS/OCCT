@@ -137,8 +137,6 @@ private:
   Standard_Integer               myYmin;
   Standard_Integer               myXmax;
   Standard_Integer               myYmax;
-  Standard_Integer               myWidth;
-  Standard_Integer               myHeight;
 
   Standard_Integer               NbActiveLights;
   Standard_Boolean               myHlrModeIsOn;

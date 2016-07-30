@@ -105,10 +105,10 @@ CAnimationView3D::~CAnimationView3D()
 
 BOOL CAnimationView3D::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
-	return CView::PreCreateWindow(cs);
+  // TODO: Modify the Window class or styles here by modifying
+  //  the CREATESTRUCT cs
+  cs.lpszClass = ::AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_OWNDC, ::LoadCursor(NULL, IDC_ARROW), NULL, NULL);
+  return CView::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -227,12 +227,13 @@ void CAnimationView3D::OnFileExportImage()
   GetDocument()->ExportView (myView);
 }
 
-void CAnimationView3D::OnSize(UINT /*nType*/, int cx, int cy) 
+void CAnimationView3D::OnSize(UINT nType, int cx, int cy)
 {
-	m_cx = cx ;
-	m_cy = cy ;
-	if (!myView.IsNull())
-		myView->MustBeResized();
+  CView::OnSize (nType, cx, cy);
+  m_cx = cx ;
+  m_cy = cy ;
+  if (!myView.IsNull())
+    myView->MustBeResized();
 }
 
 void CAnimationView3D::OnBUTTONBack() 

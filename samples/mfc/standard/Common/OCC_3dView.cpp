@@ -81,9 +81,10 @@ OCC_3dView::~OCC_3dView()
 
 BOOL OCC_3dView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-	return CView::PreCreateWindow(cs);
+  // TODO: Modify the Window class or styles here by modifying
+  //  the CREATESTRUCT cs
+  cs.lpszClass = ::AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_OWNDC, ::LoadCursor(NULL, IDC_ARROW), NULL, NULL);
+  return CView::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -162,8 +163,9 @@ void OCC_3dView::OnFileExportImage()
   GetDocument()->ExportView (myView);
 }
 
-void OCC_3dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
+void OCC_3dView::OnSize(UINT nType, int cx, int cy)
 {
+  OCC_BaseView::OnSize (nType, cx, cy);
   if (!myView.IsNull())
    myView->MustBeResized();
 }
