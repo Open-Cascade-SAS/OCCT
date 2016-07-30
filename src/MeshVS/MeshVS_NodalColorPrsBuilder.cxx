@@ -473,8 +473,11 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Handle(Graphic3d_AspectLine3d) anLAsp =
     new Graphic3d_AspectLine3d( anEdgeColor, anEdgeType, anEdgeWidth );
 
-  Prs3d_Root::NewGroup ( Prs );
-  Handle(Graphic3d_Group) aGroup1 = Prs3d_Root::CurrentGroup ( Prs );
+  Handle(Graphic3d_Group) aGroup1 = Prs3d_Root::NewGroup (Prs);
+
+  Standard_Boolean toSupressBackFaces = Standard_False;
+  aDrawer->GetBoolean (MeshVS_DA_SupressBackFaces, toSupressBackFaces);
+  aGroup1->SetClosed (toSupressBackFaces == Standard_True);
 
   aGroup1->SetPrimitivesAspect( anAsp );
   aGroup1->AddPrimitiveArray( aFaceTriangles /*aCPolyArr*/ );
