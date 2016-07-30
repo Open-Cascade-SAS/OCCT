@@ -1036,18 +1036,13 @@ GetDocument()->UpdateResultMessageDlg("SetShadingModel",Message);
 
 void CViewer3dView::OnAntialiasingonoff() 
 {
-	if(!myView->Antialiasing())
-		myView->SetAntialiasingOn();
-	else
-		myView->SetAntialiasingOff();
-
+  Graphic3d_RenderingParams& aParams = myView->ChangeRenderingParams();
+  aParams.NbMsaaSamples = aParams.NbMsaaSamples == 0 ? 8 : 0;
 	myView->Update();
 
 TCollection_AsciiString Message("\
-if(!myView->Antialiasing())\n\
-	myView->SetAntialiasingOn();\n\
-else\n\
-	myView->SetAntialiasingOff();\n\
+Graphic3d_RenderingParams& aParams = myView->ChangeRenderingParams();\n\
+aParams.NbMsaaSamples = aParams.NbMsaaSamples == 0 ? 8 : 0;\n\
   ");
 
   // Update The Result Message Dialog

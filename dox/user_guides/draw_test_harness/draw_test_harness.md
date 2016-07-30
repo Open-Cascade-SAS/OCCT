@@ -1461,14 +1461,6 @@ vnbselected
 ~~~~~
 Returns the number of selected objects in the interactive context.
 
-@subsubsection occt_draw_4_2_17  vantialiasing
-
-Syntax:     
-~~~~~
-vantialiasing 1|0
-~~~~~
-Sets antialiasing if the command is called with 1 or unsets otherwise.
-
 @subsubsection occt_draw_4_2_18  vpurgedisplay
 
 Syntax:     

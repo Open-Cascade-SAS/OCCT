@@ -6319,37 +6319,6 @@ static Standard_Integer VNbSelected (Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : VAntialiasing
-//purpose  : Switches altialiasing on or off
-//=======================================================================
-static Standard_Integer VAntialiasing (Draw_Interpretor& di,
-                                Standard_Integer argc,
-                                const char ** argv)
-{
-  if(argc > 2)
-  {
-    di << "Usage : " << argv[0] << " [1|0]\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull())
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-
-  if((argc == 2) && (atof(argv[1]) == 0))
-    aView->SetAntialiasingOff();
-  else
-    aView->SetAntialiasingOn();
-  aView->Update();
-  return 0;
-}
-
-//=======================================================================
 //function : VPurgeDisplay
 //purpose  : Switches altialiasing on or off
 //=======================================================================
@@ -9524,10 +9493,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "   vzrange                - without parameters shows current values\n"
     "   vzrange [znear] [zfar] - applies provided values to view",
     __FILE__,VZRange, group);
-  theCommands.Add("vantialiasing",
-    "vantialiasing 1|0"
-    "\n\t\t: Switches altialiasing on or off",
-    __FILE__,VAntialiasing,group);
   theCommands.Add ("vpurgedisplay",
     "vpurgedisplay"
     "- removes structures which don't belong to objects displayed in neutral point",

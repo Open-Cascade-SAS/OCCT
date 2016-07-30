@@ -102,8 +102,6 @@ DEFINE_STANDARD_HANDLE(V3d_View, MMgt_TShared)
 //! VIEWER application.
 //! The methods of this class allow the editing
 //! and inquiring the parameters linked to the view.
-//! (Projection,Mapping,Zclipping,DepthCueing,AntiAliasing
-//! et Conversions) .
 //! Provides a set of services common to all types of view.
 //! Warning: The default parameters are defined by the class
 //! Viewer (Example : SetDefaultViewSize()).
@@ -264,12 +262,6 @@ public:
 
   //! Defines the visualization type in the view.
   Standard_EXPORT void SetVisualization (const V3d_TypeOfVisualization theType);
-
-  //! Activates antialiasing in the view.
-  Standard_EXPORT void SetAntialiasingOn();
-
-  //! Deactivates antialiasing in the view.
-  Standard_EXPORT void SetAntialiasingOff();
 
   //! Defines the depth of the medium clipping plane.
   Standard_EXPORT void SetZClippingDepth (const Quantity_Length theDepth);
@@ -721,10 +713,6 @@ public:
 
   //! Returns the current visualisation mode.
   Standard_EXPORT V3d_TypeOfVisualization Visualization() const;
-
-  //! Indicates if the antialiasing is active (True) or
-  //! inactive (False).
-  Standard_EXPORT Standard_Boolean Antialiasing() const;
 
   //! Returns activity and information on the Zcueing.
   //! <Depth> : Depth of plane.

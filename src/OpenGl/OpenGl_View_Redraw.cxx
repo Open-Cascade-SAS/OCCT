@@ -922,13 +922,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 #endif
 
   aManager->SetShadingModel (myShadingModel);
-
-  // Apply AntiAliasing
-  if (myAntiAliasing)
-    myWorkspace->NamedStatus |= OPENGL_NS_ANTIALIASING;
-  else
-    myWorkspace->NamedStatus &= ~OPENGL_NS_ANTIALIASING;
-
   if (!aManager->IsEmpty())
   {
     aManager->UpdateClippingState();
@@ -1022,40 +1015,6 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
     return;
 
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
-  if ( (myWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED) == 0 )
-  {
-  #if !defined(GL_ES_VERSION_2_0)
-    const int anAntiAliasingMode = myWorkspace->AntiAliasingMode();
-  #endif
-
-    if ( !myAntiAliasing )
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      if (aCtx->core11 != NULL)
-      {
-        glDisable (GL_POINT_SMOOTH);
-      }
-      glDisable(GL_LINE_SMOOTH);
-      if( anAntiAliasingMode & 2 ) glDisable(GL_POLYGON_SMOOTH);
-    #endif
-      glBlendFunc (GL_ONE, GL_ZERO);
-      glDisable (GL_BLEND);
-    }
-    else
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      if (aCtx->core11 != NULL)
-      {
-        glEnable(GL_POINT_SMOOTH);
-      }
-      glEnable(GL_LINE_SMOOTH);
-      if( anAntiAliasingMode & 2 ) glEnable(GL_POLYGON_SMOOTH);
-    #endif
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable (GL_BLEND);
-    }
-  }
-
   Standard_Boolean toRenderGL = theToDrawImmediate ||
     myRenderParams.Method != Graphic3d_RM_RAYTRACING ||
     myRaytraceInitStatus == OpenGl_RT_FAIL ||

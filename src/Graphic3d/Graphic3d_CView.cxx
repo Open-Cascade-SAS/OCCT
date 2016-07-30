@@ -1140,7 +1140,6 @@ Standard_Integer Graphic3d_CView::HaveTheSameOwner (const Handle(Graphic3d_Struc
 void Graphic3d_CView::CopySettings (const Handle(Graphic3d_CView)& theOther)
 {
   ChangeRenderingParams() = theOther->RenderingParams();
-  SetAntialiasingEnabled   (theOther->IsAntialiasingEnabled());
   SetBackground            (theOther->Background());
   SetGradientBackground    (theOther->GradientBackground());
   SetBackgroundImage       (theOther->BackgroundImage());

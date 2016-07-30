@@ -39,24 +39,6 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
-// =======================================================================
-// function : SetAntialiasingOn
-// purpose  :
-// =======================================================================
-void V3d_View::SetAntialiasingOn()
-{
-  myView->SetAntialiasingEnabled (Standard_True);
-}
-
-// =======================================================================
-// function : SetAntialiasingOff
-// purpose  :
-// =======================================================================
-void V3d_View::SetAntialiasingOff()
-{
-  myView->SetAntialiasingEnabled (Standard_False);
-}
-
 //=============================================================================
 //function : SetZClippingDepth
 //purpose  :

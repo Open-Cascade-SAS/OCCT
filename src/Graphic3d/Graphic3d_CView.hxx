@@ -402,12 +402,6 @@ public:
   //! Returns reference to current rendering parameters and effect settings.
   Graphic3d_RenderingParams& ChangeRenderingParams() { return myRenderParams; }
 
-  //! Returns true if anti-aliasing is enabled for the view.
-  virtual Standard_Boolean IsAntialiasingEnabled() const = 0;
-
-  //! Enable or disable anti-aliasing in the view.
-  virtual void SetAntialiasingEnabled (const Standard_Boolean theIsEnabled) = 0;
-
   //! Returns background  fill color.
   virtual Aspect_Background Background() const = 0;
 

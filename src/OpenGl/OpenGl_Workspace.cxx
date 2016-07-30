@@ -655,11 +655,8 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
     else
     {
       // render opaque
-      if ((NamedStatus & OPENGL_NS_ANTIALIASING) == 0)
-      {
-        glBlendFunc (GL_ONE, GL_ZERO);
-        glDisable   (GL_BLEND);
-      }
+      glBlendFunc (GL_ONE, GL_ZERO);
+      glDisable   (GL_BLEND);
       if (myUseDepthWrite)
       {
         glDepthMask (GL_TRUE);
@@ -1003,15 +1000,6 @@ Standard_Integer OpenGl_Workspace::Height() const
 Standard_Boolean OpenGl_Workspace::UseGLLight() const
 {
   return myView->IsGLLightEnabled();
-}
-
-// =======================================================================
-// function : AntiAliasingMode
-// purpose  :
-// =======================================================================
-Standard_Integer OpenGl_Workspace::AntiAliasingMode() const
-{
-  return myView->IsAntialiasingEnabled();
 }
 
 // =======================================================================

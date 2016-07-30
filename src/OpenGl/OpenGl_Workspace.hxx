@@ -162,9 +162,6 @@ public:
   //! @return true if usage of GL light is enabled.
   Standard_EXPORT Standard_Boolean  UseGLLight() const;
 
-  //! @return true if antialiasing is enabled.
-  Standard_EXPORT Standard_Integer AntiAliasingMode() const;
-
   //! @return true if clipping algorithm enabled
   Standard_EXPORT Standard_Boolean IsCullingEnabled() const;
 
@@ -362,7 +359,6 @@ protected: //! @name protected fields
   Handle(OpenGl_Context)           myGlContext;
   Handle(OpenGl_PrinterContext)    myPrintContext;
   Handle(OpenGl_LineAttributes)    myLineAttribs;
-  Standard_Integer                 myAntiAliasingMode;
   Standard_Boolean                 myUseZBuffer;
   Standard_Boolean                 myUseDepthWrite;
   Standard_Boolean                 myUseGLLight;

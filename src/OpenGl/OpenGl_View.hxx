@@ -273,12 +273,6 @@ public:
 
 public:
 
-  //! Returns true if anti-aliasing is enabled for the view.
-  Standard_Boolean virtual IsAntialiasingEnabled() const Standard_OVERRIDE { return myAntiAliasing; }
-
-  //! Enable or disable anti-aliasing in the view.
-  virtual void SetAntialiasingEnabled (const Standard_Boolean theIsEnabled) Standard_OVERRIDE { myAntiAliasing = theIsEnabled; }
-
   //! Returns background  fill color.
   Standard_EXPORT virtual Aspect_Background Background() const Standard_OVERRIDE;
 
@@ -563,7 +557,6 @@ protected:
   Standard_Boolean&        myDeviceLostFlag;
   Standard_Boolean         myWasRedrawnGL;
 
-  Standard_Boolean                myAntiAliasing;
   Standard_Boolean                myCulling;
   Graphic3d_TypeOfShadingModel    myShadingModel;
   Graphic3d_TypeOfBackfacingModel myBackfacing;

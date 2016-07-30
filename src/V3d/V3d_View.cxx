@@ -153,7 +153,6 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
   myDefaultCamera = new Graphic3d_Camera();
 
   myImmediateUpdate = Standard_False;
-  SetAntialiasingOff();
   SetAutoZFitMode (Standard_True, 1.0);
   SetBackFacingModel (V3d_TOBM_AUTOMATIC);
   SetCamera (aCamera);
@@ -2429,15 +2428,6 @@ Handle(Graphic3d_TextureEnv) V3d_View::TextureEnv() const
 V3d_TypeOfVisualization V3d_View::Visualization() const
 {
   return static_cast<V3d_TypeOfVisualization> (myView->VisualizationType());
-}
-
-//=============================================================================
-//function : Antialiasing
-//purpose  :
-//=============================================================================
-Standard_Boolean V3d_View::Antialiasing() const
-{
-  return myView->IsAntialiasingEnabled();
 }
 
 //=============================================================================

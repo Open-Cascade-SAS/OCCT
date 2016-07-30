@@ -390,29 +390,6 @@ static Standard_Integer BUC60699(Draw_Interpretor& di, Standard_Integer /*n*/, c
   return 0;
 }
 
-static Standard_Integer GER61394(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc > 2) {
-    di << "Usage : " << argv[0] << " [1/0]\n";
-    return -1;
-  }
-  
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-  
-  if((argc == 2) && (Draw::Atof(argv[1]) == 0))
-    myV3dView->SetAntialiasingOff();
-  else
-    myV3dView->SetAntialiasingOn();
-  myV3dView->Update();
-  return 0;
-}
-
-
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
 
 //=======================================================================
@@ -1817,7 +1794,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("BUC60574","BUC60574 ",__FILE__,BUC60574,group);
 
   theCommands.Add("BUC60699","BUC60699 ",__FILE__,BUC60699,group);
-  theCommands.Add("GER61394","GER61394 [1/0]",__FILE__,GER61394,group);
   theCommands.Add("GER61351","GER61351 name/object name/r g b/object r g b",__FILE__,setcolor,group);
   theCommands.Add("setcolor","setcolor name/object name/r g b/object r g b",__FILE__,setcolor,group);
 

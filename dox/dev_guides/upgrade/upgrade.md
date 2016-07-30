@@ -1010,3 +1010,10 @@ Graphic3d_Group::SetGroupPrimitivesAspect() should be the main method defining p
 The implementation of Graphic3d_Group::SetGroupPrimitivesAspect() has been changed from copying aspect values to keeping passed object.
 Although it was not documented, previosly it was possible to modify single aspects instance (like Graphic3d_AspectFillArea3d) and set it to multiple groups.
 Now such code would produce unexpected result and therefore should be updated to create dedicated aspect instance.
+
+@subsection upgrade_710_removed Removed features
+
+The following obsolete features have been removed:
+
+* Obsolete Antialiasing API V3d_View::SetAntialiasingOn(). This method was intended to activate deprecated OpenGL functionality (GL_POLYGON_SMOOTH, GL_LINE_SMOOTH, GL_POINT_SMOOTH).
+  Instead of old API, application should request MSAA buffers for antialiasing by assigning Graphic3d_RenderingParams::NbMsaaSamples property of structure returned by V3d_View::ChangeRenderingParams().

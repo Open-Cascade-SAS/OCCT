@@ -62,7 +62,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myCaps           (theCaps),
   myDeviceLostFlag (theDeviceLostFlag),
   myWasRedrawnGL   (Standard_False),
-  myAntiAliasing   (Standard_False),
   myCulling        (Standard_True),
   myShadingModel   (Graphic3d_TOSM_FACET),
   myBackfacing     (Graphic3d_TOBM_AUTOMATIC),
@@ -95,14 +94,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myLayerListState (0)
 {
   myWorkspace = new OpenGl_Workspace (this, NULL);
-
-  // AA mode
-  const char* anAaEnv = ::getenv ("CALL_OPENGL_ANTIALIASING_MODE");
-  if (anAaEnv != NULL)
-  {
-    int v;
-    if (sscanf (anAaEnv, "%d", &v) > 0) myAntiAliasing = v;
-  }
 
   OpenGl_Light       aLight;
   aLight.Type        = Graphic3d_TOLS_AMBIENT;
