@@ -21,6 +21,7 @@
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <DBRep.hxx>
+#include <DBRep_DrawableShape.hxx>
 
 #include <Font_BRepFont.hxx>
 #include <Font_BRepTextBuilder.hxx>
@@ -129,6 +130,8 @@
 #include <BRepExtrema_ExtPC.hxx>
 #include <BRepExtrema_ExtPF.hxx>
 
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_VertexDrawMode.hxx>
@@ -5934,6 +5937,217 @@ static int VPriority (Draw_Interpretor& theDI,
   return 0;
 }
 
+//! Auxiliary class for command vnormals.
+class MyShapeWithNormals : public AIS_Shape
+{
+  DEFINE_STANDARD_RTTI_INLINE(MyShapeWithNormals, AIS_Shape);
+public:
+
+  Standard_Real    NormalLength;
+  Standard_Integer NbAlongU;
+  Standard_Integer NbAlongV;
+  Standard_Boolean ToUseMesh;
+  Standard_Boolean ToOrient;
+
+public:
+
+  //! Main constructor.
+  MyShapeWithNormals (const TopoDS_Shape& theShape)
+  : AIS_Shape   (theShape),
+    NormalLength(10),
+    NbAlongU  (1),
+    NbAlongV  (1),
+    ToUseMesh (Standard_False),
+    ToOrient  (Standard_False) {}
+
+protected:
+
+  //! Comnpute presentation.
+  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                        const Handle(Prs3d_Presentation)&           thePrs,
+                        const Standard_Integer                      theMode) Standard_OVERRIDE
+  {
+    AIS_Shape::Compute (thePrsMgr, thePrs, theMode);
+
+    NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > > aNormalMap;
+    if (ToUseMesh)
+    {
+      DBRep_DrawableShape::addMeshNormals (aNormalMap, myshape, NormalLength);
+    }
+    else
+    {
+      DBRep_DrawableShape::addSurfaceNormals (aNormalMap, myshape, NormalLength, NbAlongU, NbAlongV);
+    }
+
+    Handle(Graphic3d_Group) aPrsGroup = Prs3d_Root::NewGroup (thePrs);
+    aPrsGroup->SetGroupPrimitivesAspect (myDrawer->ArrowAspect()->Aspect());
+
+    const Standard_Real aArrowAngle  = myDrawer->ArrowAspect()->Angle();
+    const Standard_Real aArrowLength = myDrawer->ArrowAspect()->Length();
+    for (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > >::Iterator aFaceIt (aNormalMap);
+         aFaceIt.More(); aFaceIt.Next())
+    {
+      const Standard_Boolean toReverse = ToOrient && aFaceIt.Key().Orientation() == TopAbs_REVERSED;
+      Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (2 * aFaceIt.Value().Size());
+      for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> >::Iterator aPntIt (aFaceIt.Value()); aPntIt.More(); aPntIt.Next())
+      {
+        std::pair<gp_Pnt, gp_Pnt> aPair = aPntIt.Value();
+        if (toReverse)
+        {
+          const gp_Vec aDir = aPair.first.XYZ() - aPair.second.XYZ();
+          aPair.second = aPair.first.XYZ() + aDir.XYZ();
+        }
+
+        aSegments->AddVertex (aPair.first);
+        aSegments->AddVertex (aPair.second);
+        Prs3d_Arrow::Draw (aPrsGroup, aPair.second, gp_Vec(aPair.first, aPair.second), aArrowAngle, aArrowLength);
+      }
+
+      aPrsGroup->AddPrimitiveArray (aSegments);
+    }
+  }
+
+};
+
+//=======================================================================
+//function : VNormals
+//purpose  : Displays/Hides normals calculated on shape geometry or retrieved from triangulation
+//=======================================================================
+static int VNormals (Draw_Interpretor& theDI,
+                     Standard_Integer  theArgNum,
+                     const char**      theArgs)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: no view available, call 'vinit' before!\n";
+    return 1;
+  }
+  else if (theArgNum < 2)
+  {
+    std::cout << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgs[0]);
+    return 1;
+  }
+
+  Standard_Integer anArgIter = 1;
+  Standard_CString aShapeName = theArgs[anArgIter++];
+  TopoDS_Shape     aShape     = DBRep::Get (aShapeName);
+  Standard_Boolean isOn = Standard_True;
+  if (aShape.IsNull())
+  {
+    std::cout << "Error: shape with name '" << aShapeName << "' is not found\n";
+    return 1;
+  }
+
+  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+  Handle(MyShapeWithNormals) aShapePrs;
+  if (aMap.IsBound2 (aShapeName))
+  {
+    aShapePrs = Handle(MyShapeWithNormals)::DownCast (aMap.Find2 (aShapeName));
+  }
+
+  Standard_Boolean isUseMesh = Standard_False;
+  Standard_Real    aLength = 10.0;
+  Standard_Integer aNbAlongU = 1, aNbAlongV = 1;
+  Standard_Boolean isOriented = Standard_False;
+  for (; anArgIter < theArgNum; ++anArgIter)
+  {
+    TCollection_AsciiString aParam (theArgs[anArgIter]);
+    aParam.LowerCase();
+    if (anArgIter == 2
+     && ViewerTest::ParseOnOff (aParam.ToCString(), isOn))
+    {
+      continue;
+    }
+    else if (aParam == "-usemesh"
+          || aParam == "-mesh")
+    {
+      isUseMesh = Standard_True;
+    }
+    else if (aParam == "-length"
+          || aParam == "-len")
+    {
+      ++anArgIter;
+      aLength = anArgIter < theArgNum ? Draw::Atof (theArgs[anArgIter]) : 0.0;
+      if (Abs (aLength) <= gp::Resolution())
+      {
+        std::cout << "Syntax error: length should not be zero\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-orient"
+          || aParam == "-oriented")
+    {
+      isOriented = Standard_True;
+      if (anArgIter + 1 < theArgNum
+        && ViewerTest::ParseOnOff (theArgs[anArgIter + 1], isOriented))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (aParam == "-nbalongu"
+          || aParam == "-nbu")
+    {
+      ++anArgIter;
+      aNbAlongU = anArgIter < theArgNum ? Draw::Atoi (theArgs[anArgIter]) : 0;
+      if (aNbAlongU < 1)
+      {
+        std::cout << "Syntax error: NbAlongU should be >=1\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-nbalongv"
+          || aParam == "-nbv")
+    {
+      ++anArgIter;
+      aNbAlongV = anArgIter < theArgNum ? Draw::Atoi (theArgs[anArgIter]) : 0;
+      if (aNbAlongV < 1)
+      {
+        std::cout << "Syntax error: NbAlongV should be >=1\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-nbalong"
+          || aParam == "-nbuv")
+    {
+      ++anArgIter;
+      aNbAlongU = anArgIter < theArgNum ? Draw::Atoi (theArgs[anArgIter]) : 0;
+      aNbAlongV = aNbAlongU;
+      if (aNbAlongU < 1)
+      {
+        std::cout << "Syntax error: NbAlong should be >=1\n";
+        return 1;
+      }
+    }
+    else
+    {
+      std::cout << "Syntax error: unknwon argument '" << aParam << "'\n";
+      return 1;
+    }
+  }
+
+  if (isOn)
+  {
+    if (aShapePrs.IsNull())
+    {
+      aShapePrs = new MyShapeWithNormals (aShape);
+    }
+    aShapePrs->ToUseMesh    = isUseMesh;
+    aShapePrs->ToOrient     = isOriented;
+    aShapePrs->NormalLength = aLength;
+    aShapePrs->NbAlongU     = aNbAlongU;
+    aShapePrs->NbAlongV     = aNbAlongV;
+    VDisplayAISObject (aShapeName, aShapePrs);
+  }
+  else if (!aShapePrs.IsNull())
+  {
+    VDisplayAISObject (aShapeName, new AIS_Shape (aShape));
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : ObjectsCommands
 //purpose  :
@@ -6232,4 +6446,11 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vpriority [-noupdate|-update] name [value]\n\t\t  prints or sets the display priority for an object",
     __FILE__,
     VPriority, group);
+
+  theCommands.Add ("vnormals",
+                   "vnormals usage:\n"
+                   "vnormals Shape [{on|off}=on] [-length {10}] [-nbAlongU {1}] [-nbAlongV {1}] [-nbAlong {1}]"
+                   "\n\t\t:        [-useMesh] [-oriented {0}1}=0]"
+                   "\n\t\t:  Displays/Hides normals calculated on shape geometry or retrieved from triangulation",
+                   __FILE__, VNormals, group);
 }

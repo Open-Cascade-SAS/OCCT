@@ -31,6 +31,7 @@
 #include <gp_Ax2.hxx>
 #include <GProp.hxx>
 #include <GProp_GProps.hxx>
+#include <NCollection_Vector.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <Standard.hxx>
@@ -1118,72 +1119,123 @@ static Standard_Integer check(Draw_Interpretor& ,
 //=======================================================================
 // normals
 //=======================================================================
-
-static Standard_Integer normals(Draw_Interpretor& di,
-				Standard_Integer n, const char** a)
+static Standard_Integer normals (Draw_Interpretor& theDI,
+                                 Standard_Integer  theArgNum,
+                                 const char**      theArgs)
 {
-  if (n <= 1) return 1;
-  Standard_Real l = 1.;
-  if (n > 2) 
-    l = Draw::Atof(a[2]);
+  if (theArgNum < 2)
+  {
+    std::cout << "Syntax error: wrong number of arguments!\n";
+    theDI.PrintHelp (theArgs[0]);
+    return 1;
+  }
 
-  TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) return 1;
+  TopoDS_Shape aShape = DBRep::Get (theArgs[1]);
+  if (aShape.IsNull())
+  {
+    std::cout << "Error: shape with name " << theArgs[1] << " is not found\n";
+    return 1;
+  }
+
+  Standard_Boolean toUseMesh = Standard_False;
+  Standard_Real    aLength   = 10.0;
+  Standard_Integer aNbAlongU = 1, aNbAlongV = 1;
+  for (Standard_Integer anArgIter = 2; anArgIter< theArgNum; ++anArgIter)
+  {
+    TCollection_AsciiString aParam (theArgs[anArgIter]);
+    aParam.LowerCase();
+    if (anArgIter == 2
+     && aParam.IsRealValue())
+    {
+      aLength = aParam.RealValue();
+      if (Abs (aLength) <= gp::Resolution())
+      {
+        std::cout << "Syntax error: length should not be zero\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-usemesh"
+          || aParam == "-mesh")
+    {
+      toUseMesh = Standard_True;
+    }
+    else if (aParam == "-length"
+          || aParam == "-len")
+    {
+      ++anArgIter;
+      aLength = anArgIter < theArgNum ? Draw::Atof(theArgs[anArgIter]) : 0.0;
+      if (Abs(aLength) <= gp::Resolution())
+      {
+        std::cout << "Syntax error: length should not be zero\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-nbalongu"
+          || aParam == "-nbu")
+    {
+      ++anArgIter;
+      aNbAlongU = anArgIter< theArgNum ? Draw::Atoi (theArgs[anArgIter]) : 0;
+      if (aNbAlongU < 1)
+      {
+        std::cout << "Syntax error: NbAlongU should be >=1\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-nbalongv"
+          || aParam == "-nbv")
+    {
+      ++anArgIter;
+      aNbAlongV = anArgIter< theArgNum ? Draw::Atoi (theArgs[anArgIter]) : 0;
+      if (aNbAlongV < 1)
+      {
+        std::cout << "Syntax error: NbAlongV should be >=1\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-nbalong"
+          || aParam == "-nbuv")
+    {
+      ++anArgIter;
+      aNbAlongU = anArgIter< theArgNum ? Draw::Atoi (theArgs[anArgIter]) : 0;
+      aNbAlongV = aNbAlongU;
+      if (aNbAlongU < 1)
+      {
+        std::cout << "Syntax error: NbAlong should be >=1\n";
+        return 1;
+      }
+    }
+    else
+    {
+      std::cout << "Syntax error: unknwon argument '" << aParam << "'\n";
+      return 1;
+    }
+  }
 
   DBRep_WriteColorOrientation();
 
-  gp_Pnt P1,P2;
-  gp_Vec V,V1,V2;
-  Draw_Color col;
-
-  TopExp_Explorer ex(S,TopAbs_FACE);
-  while (ex.More()) {
-
-    const TopoDS_Face& F = TopoDS::Face(ex.Current());
-    
-    // find the center of the minmax
-    BRepAdaptor_Surface SF(F);
-
-    Standard_Real u, v, x;
-
-    u = SF.FirstUParameter();
-    x = SF.LastUParameter();
-    if (Precision::IsInfinite(u))
-      u =  (Precision::IsInfinite(x)) ? 0. : x;
-    else if (!Precision::IsInfinite(x))
-      u = (u+x) / 2.;
-
-    v = SF.FirstVParameter();
-    x = SF.LastVParameter();
-    if (Precision::IsInfinite(v))
-      v =  (Precision::IsInfinite(x)) ? 0. : x;
-    else if (!Precision::IsInfinite(x))
-      v = (v+x) / 2.;
-
-    SF.D1(u,v,P1,V1,V2);
-    V = V1.Crossed(V2);
-    x = V.Magnitude();
-    if (x > 1.e-10) 
-      V.Multiply(l/x);
-    else {
-      V.SetCoord(l/2.,0,0);
-      di << "Null normal\n";
-    }
-
-    P2 = P1;
-    P2.Translate(V);
-
-    col = DBRep_ColorOrientation(F.Orientation());
-
-    Handle(Draw_Segment3D) seg = new Draw_Segment3D(P1,P2,col);
-    dout << seg;
-    
-    
-    ex.Next();
+  NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > > aNormals;
+  if (toUseMesh)
+  {
+    DBRep_DrawableShape::addMeshNormals (aNormals, aShape, aLength);
   }
+  else
+  {
+    DBRep_DrawableShape::addSurfaceNormals (aNormals, aShape, aLength, aNbAlongU, aNbAlongV);
+  }
+
+  for (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > >::Iterator aFaceIt (aNormals); aFaceIt.More(); aFaceIt.Next())
+  {
+    const Draw_Color aColor = DBRep_ColorOrientation (aFaceIt.Key().Orientation());
+    for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> >::Iterator aNormalsIt (aFaceIt.Value()); aNormalsIt.More(); aNormalsIt.Next())
+    {
+      const std::pair<gp_Pnt, gp_Pnt>& aVec = aNormalsIt.Value();
+      Handle(Draw_Segment3D) aSeg = new Draw_Segment3D(aVec.first, aVec.second, aColor);
+      dout << aSeg;
+    }
+  }
+
   return 0;
 }
-
 
 //=======================================================================
 //function : Set
@@ -1354,7 +1406,7 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("treverse","treverse name1 name2 ...",__FILE__,orientation,g);
   theCommands.Add("complement","complement name1 name2 ...",__FILE__,orientation,g);
   theCommands.Add("invert","invert name, reverse subshapes",__FILE__,invert,g);
-  theCommands.Add("normals","normals s (length = 10), disp normals",__FILE__,normals,g);
+  theCommands.Add("normals","normals shape [Length {10}] [-NbAlongU {1}] [-NbAlongV {1}] [-UseMesh], display normals",__FILE__,normals,g);
   theCommands.Add("nbshapes",
                   "\n nbshapes s - shows the number of sub-shapes in <s>;\n nbshapes s -t - shows the number of sub-shapes in <s> counting the same sub-shapes with different location as different sub-shapes.",
                   __FILE__,nbshapes,g);

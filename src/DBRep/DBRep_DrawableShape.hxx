@@ -17,39 +17,27 @@
 #ifndef _DBRep_DrawableShape_HeaderFile
 #define _DBRep_DrawableShape_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TopoDS_Shape.hxx>
 #include <DBRep_ListOfEdge.hxx>
 #include <DBRep_ListOfFace.hxx>
 #include <DBRep_ListOfHideData.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Draw_Color.hxx>
-#include <Standard_Boolean.hxx>
 #include <Draw_Drawable3D.hxx>
-#include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
-class Standard_DomainError;
-class TopoDS_Shape;
-class Draw_Color;
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Vector.hxx>
+#include <Standard_OStream.hxx>
+#include <TopoDS_Shape.hxx>
+
 class Draw_Display;
 class Poly_Triangulation;
 class gp_Trsf;
-class Draw_Drawable3D;
-
-
-class DBRep_DrawableShape;
-DEFINE_STANDARD_HANDLE(DBRep_DrawableShape, Draw_Drawable3D)
 
 //! Drawable structure to display a  shape. Contains a
 //! list of edges and a list of faces.
 class DBRep_DrawableShape : public Draw_Drawable3D
 {
-
+  DEFINE_STANDARD_RTTIEXT(DBRep_DrawableShape, Draw_Drawable3D)
 public:
-
   
   Standard_EXPORT DBRep_DrawableShape(const TopoDS_Shape& C, const Draw_Color& FreeCol, const Draw_Color& ConnCol, const Draw_Color& EdgeCol, const Draw_Color& IsosCol, const Standard_Real size, const Standard_Integer nbisos, const Standard_Integer discret);
   
@@ -106,10 +94,50 @@ public:
   //! u,v are the parameters of the closest point.
   Standard_EXPORT static void LastPick (TopoDS_Shape& S, Standard_Real& u, Standard_Real& v);
 
+public:
 
+  //! Auxiliary method computing nodal normals for presentation purposes.
+  //! @param theNormals [out] vector of computed normals (pair of points [from, to])
+  //! @param theFace    [in]  input face
+  //! @param theLength  [in]  normal length
+  //! @return FALSE if normals can not be computed
+  Standard_EXPORT static Standard_Boolean addMeshNormals (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> >& theNormals,
+                                                          const TopoDS_Face&  theFace,
+                                                          const Standard_Real theLength);
 
+  //! Auxiliary method computing nodal normals for presentation purposes.
+  //! @param theNormals [out] map of computed normals (grouped per Face)
+  //! @param theShape   [in]  input shape which will be exploded into Faces
+  //! @param theLength  [in]  normal length
+  Standard_EXPORT static void addMeshNormals (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > > & theNormals,
+                                              const TopoDS_Shape& theShape,
+                                              const Standard_Real theLength);
 
-  DEFINE_STANDARD_RTTIEXT(DBRep_DrawableShape,Draw_Drawable3D)
+  //! Auxiliary method computing surface normals distributed within the Face for presentation purposes.
+  //! @param theNormals  [out] vector of computed normals (pair of points [from, to])
+  //! @param theFace     [in]  input face
+  //! @param theLength   [in]  normal length
+  //! @param theNbAlongU [in]  number along U
+  //! @param theNbAlongV [in]  number along V
+  //! @return FALSE if normals can not be computed
+  Standard_EXPORT static Standard_Boolean addSurfaceNormals (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> >& theNormals,
+                                                             const TopoDS_Face&     theFace,
+                                                             const Standard_Real    theLength,
+                                                             const Standard_Integer theNbAlongU,
+                                                             const Standard_Integer theNbAlongV);
+
+  //! Auxiliary method computing surface normals distributed within the Face for presentation purposes.
+  //! @param theNormals  [out] map of computed normals (grouped per Face)
+  //! @param theShape    [in]  input shape which will be exploded into Faces
+  //! @param theLength   [in]  normal length
+  //! @param theNbAlongU [in]  number along U
+  //! @param theNbAlongV [in]  number along V
+  //! @return FALSE if normals can not be computed
+  Standard_EXPORT static void addSurfaceNormals (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > >& theNormals,
+                                                 const TopoDS_Shape&    theShape,
+                                                 const Standard_Real    theLength,
+                                                 const Standard_Integer theNbAlongU,
+                                                 const Standard_Integer theNbAlongV);
 
 private:
 
@@ -142,13 +170,8 @@ private:
   Standard_Boolean myHid;
   Standard_Real myAng;
 
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(DBRep_DrawableShape, Draw_Drawable3D)
 
 #endif // _DBRep_DrawableShape_HeaderFile
