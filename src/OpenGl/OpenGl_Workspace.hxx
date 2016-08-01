@@ -21,7 +21,6 @@
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_FrameBuffer.hxx>
-#include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_PrinterContext.hxx>
@@ -121,7 +120,7 @@ public:
   Standard_EXPORT OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Window)& theWindow);
 
   //! Destructor
-  Standard_EXPORT virtual ~OpenGl_Workspace();
+  virtual ~OpenGl_Workspace() {}
 
   //! Activate rendering context.
   Standard_EXPORT Standard_Boolean Activate();
@@ -306,7 +305,7 @@ public:
   //! Sets and applies current polygon offset.
   void SetPolygonOffset (const Graphic3d_PolygonOffset& theParams);
 
-  //! Returns currently applied polygon offset params.
+  //! Returns currently applied polygon offset parameters.
   const Graphic3d_PolygonOffset& AppliedPolygonOffset() { return myPolygonOffsetApplied; }
 
   //! Returns capping algorithm rendering filter.
@@ -358,7 +357,6 @@ protected: //! @name protected fields
   Handle(OpenGl_Window)            myWindow;
   Handle(OpenGl_Context)           myGlContext;
   Handle(OpenGl_PrinterContext)    myPrintContext;
-  Handle(OpenGl_LineAttributes)    myLineAttribs;
   Standard_Boolean                 myUseZBuffer;
   Standard_Boolean                 myUseDepthWrite;
   Standard_Boolean                 myUseGLLight;

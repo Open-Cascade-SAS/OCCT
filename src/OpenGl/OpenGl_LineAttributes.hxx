@@ -26,26 +26,59 @@ class OpenGl_Context;
 
 #define TEL_HS_USER_DEF_START 15
 
+//! Utility class to manage OpenGL state of polygon hatching rasterization
+//! and keeping its cached state. The hatching rasterization is implemented
+//! using glPolygonStipple function of OpenGL. State of hatching is controlled
+//! by two parameters - type of hatching and IsEnabled parameter.
+//! The hatching rasterization is enabled only if non-zero index pattern type
+//! is selected (zero by default is reserved for solid filling) and if
+//! IsEnabled flag is set to true. The IsEnabled parameter is useful for temporarily
+//! turning on/off the hatching rasterization without making any costly GL calls
+//! for changing the hatch pattern. This is a sharable resource class - it creates
+//! OpenGL context objects for each hatch pattern to achieve quicker switching between
+//! them, thesse GL objects are freed when the resource is released by owner context.
+//! @note The implementation is not supported by Core Profile and by ES version.
 class OpenGl_LineAttributes : public OpenGl_Resource
 {
 public:
 
+  //! Default constructor.
+  //! By default the parameters are:
+  //! - IsEnabled (true),
+  //! - TypeOfHatch (0).
   OpenGl_LineAttributes();
+
+  //! Default destructor.
   virtual ~OpenGl_LineAttributes();
 
-  void Init (const Handle(OpenGl_Context)& theGlCtx);
+  //! Initialize hatch patterns as GL resources.
+  //! Call this method before using hatching.
+  void Init (const OpenGl_Context* theGlCtx);
+
+  //! Release GL resources.
   virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
-  void SetTypeOfHatch (const int theType) const;
+  //! Index of currently selected type of hatch.
+  int TypeOfHatch() const { return myTypeOfHatch; }
+
+  //! Sets type of the hatch.
+  int SetTypeOfHatch (const OpenGl_Context* theGlCtx, const int theType);
+
+  //! Current enabled state of the hatching rasterization.
+  bool IsEnabled() const { return myIsEnabled; }
+
+  //! Turns on/off the hatching rasterization rasterization.
+  bool SetEnabled (const OpenGl_Context* theGlCtx, const bool theToEnable);
 
 protected:
 
-  unsigned int myPatternBase;
+  unsigned int myPatternBase; //!< Base index for predefined hatch patterns
+  int myTypeOfHatch; //!< Currently activated type of hatch
+  bool myIsEnabled; //!< Current enabled state of hatching rasterization.
 
 public:
 
   DEFINE_STANDARD_RTTIEXT(OpenGl_LineAttributes,OpenGl_Resource)
-
 };
 
 DEFINE_STANDARD_HANDLE(OpenGl_LineAttributes, OpenGl_Resource)

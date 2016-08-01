@@ -479,13 +479,14 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
   }
 };
 
-
 // =======================================================================
 // function : OpenGl_LineAttributes
 // purpose  :
 // =======================================================================
 OpenGl_LineAttributes::OpenGl_LineAttributes()
-: myPatternBase(0)
+: myPatternBase (0),
+  myTypeOfHatch (0),
+  myIsEnabled (true)
 {
   //
 }
@@ -508,12 +509,14 @@ void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
   // Delete surface patterns
   if (myPatternBase != 0)
   {
+#if !defined(GL_ES_VERSION_2_0)
     if (theGlCtx->IsValid())
     {
-    #if !defined(GL_ES_VERSION_2_0)
-      glDeleteLists ((GLuint )myPatternBase, TEL_HS_USER_DEF_START);
-    #endif
+      theGlCtx->core11->glDeleteLists ((GLuint )myPatternBase, TEL_HS_USER_DEF_START);
     }
+#else
+    (void )theGlCtx;
+#endif
     myPatternBase = 0;
   }
 }
@@ -522,7 +525,7 @@ void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
 // function : Init
 // purpose  :
 // =======================================================================
-void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
+void OpenGl_LineAttributes::Init (const OpenGl_Context* theGlCtx)
 {
   // Return if already initialized
   if (myPatternBase != 0)
@@ -541,9 +544,9 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
   myPatternBase = glGenLists(TEL_HS_USER_DEF_START);
   for (int i = 1; i < TEL_HS_USER_DEF_START; i++)
   {
-    glNewList ((GLuint )myPatternBase + i, GL_COMPILE);
-    glPolygonStipple ((const GLubyte* )myInteriors[i < nbi ? i : 0]);
-    glEndList();
+    theGlCtx->core11->glNewList ((GLuint )myPatternBase + i, GL_COMPILE);
+    theGlCtx->core11->glPolygonStipple ((const GLubyte* )myInteriors[i < nbi ? i : 0]);
+    theGlCtx->core11->glEndList();
   }
 #else
   (void )theGlCtx;
@@ -554,22 +557,69 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
 // function : SetTypeOfHatch
 // purpose  :
 // =======================================================================
-void OpenGl_LineAttributes::SetTypeOfHatch (const int theType) const
+int OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context* theGlCtx, const int theType)
 {
-#if !defined(GL_ES_VERSION_2_0)
+  // Return if not initialized
   if (myPatternBase == 0)
   {
-    return;
+    return 0;
   }
 
+  const int anOldType = myTypeOfHatch;
+
+#if !defined(GL_ES_VERSION_2_0)
   if (theType != 0)
   {
-    glCallList ((GLuint )myPatternBase + (GLuint )theType);
-    glEnable (GL_POLYGON_STIPPLE);
+    theGlCtx->core11->glCallList ((GLuint )myPatternBase + (GLuint )theType);
+
+    if (myIsEnabled)
+    {
+      theGlCtx->core11fwd->glEnable (GL_POLYGON_STIPPLE);
+    }
   }
   else
-    glDisable (GL_POLYGON_STIPPLE);
+  {
+    theGlCtx->core11fwd->glDisable (GL_POLYGON_STIPPLE);
+  }
 #else
-  (void )theType;
+  (void )theGlCtx;
 #endif
+  myTypeOfHatch = theType;
+
+  return anOldType;
+}
+
+// =======================================================================
+// function : SetEnabled
+// purpose  :
+// =======================================================================
+bool OpenGl_LineAttributes::SetEnabled (const OpenGl_Context* theGlCtx,
+                                        const bool theToEnable)
+{
+  // Return if not initialized
+  if (myPatternBase == 0)
+  {
+    return false;
+  }
+
+  const bool anOldIsEnabled = myIsEnabled;
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (theToEnable)
+  {
+    if (myTypeOfHatch != 0)
+    {
+      theGlCtx->core11fwd->glEnable (GL_POLYGON_STIPPLE);
+    }
+  }
+  else
+  {
+    theGlCtx->core11fwd->glDisable (GL_POLYGON_STIPPLE);
+  }
+#else
+  (void )theGlCtx;
+#endif
+  myIsEnabled = theToEnable;
+
+  return anOldIsEnabled;
 }

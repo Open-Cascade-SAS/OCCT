@@ -153,16 +153,7 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   {
     myGlContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
-    if (!myGlContext->GetResource ("OpenGl_LineAttributes", myLineAttribs))
-    {
-      // share and register for release once the resource is no longer used
-      myLineAttribs = new OpenGl_LineAttributes();
-      myGlContext->ShareResource ("OpenGl_LineAttributes", myLineAttribs);
-      myLineAttribs->Init (myGlContext);
-    }
-
     // General initialization of the context
-
   #if !defined(GL_ES_VERSION_2_0)
     if (myGlContext->core11 != NULL)
     {
@@ -186,19 +177,6 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   myNoneCulling .Aspect()->SetDrawEdges (false);
   myFrontCulling.Aspect()->SetSuppressBackFaces (true);
   myFrontCulling.Aspect()->SetDrawEdges (false);
-}
-
-// =======================================================================
-// function : ~OpenGl_Workspace
-// purpose  :
-// =======================================================================
-OpenGl_Workspace::~OpenGl_Workspace()
-{
-  if (!myLineAttribs.IsNull())
-  {
-    myLineAttribs.Nullify();
-    myGlContext->ReleaseResource ("OpenGl_LineAttributes", Standard_True);
-  }
 }
 
 // =======================================================================
@@ -836,28 +814,25 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
       case Aspect_IS_EMPTY:
       case Aspect_IS_HOLLOW:
       {
-        glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+        myGlContext->SetPolygonMode (GL_LINE);
         break;
       }
       case Aspect_IS_HATCH:
       {
-        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-        myLineAttribs->SetTypeOfHatch (!myAspectFaceApplied.IsNull() ? myAspectFaceApplied->HatchStyle() : Aspect_HS_SOLID);
+        myGlContext->SetPolygonMode (GL_FILL);
+        myGlContext->SetPolygonHatchEnabled (true);
         break;
       }
       case Aspect_IS_SOLID:
       case Aspect_IS_HIDDENLINE:
       {
-        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-        if (myGlContext->core11 != NULL)
-        {
-          glDisable (GL_POLYGON_STIPPLE);
-        }
+        myGlContext->SetPolygonMode (GL_FILL);
+        myGlContext->SetPolygonHatchEnabled (false);
         break;
       }
       case Aspect_IS_POINT:
       {
-        glPolygonMode (GL_FRONT_AND_BACK, GL_POINT);
+        myGlContext->SetPolygonMode (GL_POINT);
         break;
       }
     }
@@ -865,12 +840,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::ApplyAspectFace()
 
   if (anIntstyle == Aspect_IS_HATCH)
   {
-    const Aspect_HatchStyle hatchstyle = myAspectFaceSet->Aspect()->HatchStyle();
-    if (myAspectFaceApplied.IsNull()
-     || myAspectFaceApplied->HatchStyle() != hatchstyle)
-    {
-      myLineAttribs->SetTypeOfHatch (hatchstyle);
-    }
+    myGlContext->SetPolygonHatchStyle (myAspectFaceSet->Aspect()->HatchStyle());
   }
 #endif
 

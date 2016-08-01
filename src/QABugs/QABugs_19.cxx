@@ -15,49 +15,48 @@
 
 #include <QABugs.hxx>
 
-#include <Draw_Interpretor.hxx>
-#include <DBRep.hxx>
-#include <DrawTrSurf.hxx>
-#include <ViewerTest.hxx>
-#include <V3d_View.hxx>
-#include <TopoDS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_LocalContext.hxx>
 #include <AIS_TexturedShape.hxx>
-#include <Image_PixMap.hxx>
-#include <Image_Color.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Quaternion.hxx>
+#include <BRepAlgo_Cut.hxx>
+#include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <DBRep.hxx>
+#include <Draw_Interpretor.hxx>
+#include <DrawTrSurf.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <DrawTrSurf.hxx>
-
+#include <GeomFill_Trihedron.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Quaternion.hxx>
+#include <Image_Color.hxx>
+#include <Image_PixMap.hxx>
+#include <NCollection_Handle.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_Map.hxx>
+#include <OSD_Parallel.hxx>
+#include <OSD_PerfMeter.hxx>
+#include <OSD_Timer.hxx>
 #include <Precision.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Prs3d_Text.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <Standard_Version.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <V3d_View.hxx>
+#include <ViewerTest.hxx>
+#include <XmlDrivers_DocumentRetrievalDriver.hxx>
+#include <XmlDrivers_DocumentStorageDriver.hxx>
 
 #include <cstdio>
 #include <cmath>
 #include <iostream>
-#include <OSD_Timer.hxx>
-#include <OSD_Parallel.hxx>
-#include <OSD_PerfMeter.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepPrimAPI_MakeSphere.hxx>
-#include <BRepAlgo_Cut.hxx>
-#include <NCollection_Map.hxx>
-#include <NCollection_Handle.hxx>
-#include <NCollection_IncAllocator.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <GeomFill_Trihedron.hxx>
-#include <BRepOffsetAPI_MakePipe.hxx>
-#include <TopExp_Explorer.hxx>
-#include <SelectMgr_Filter.hxx>
-#include <StdSelect_BRepOwner.hxx>
-
-#include <Standard_Version.hxx>
-#include <XmlDrivers_DocumentRetrievalDriver.hxx>
-#include <XmlDrivers_DocumentStorageDriver.hxx>
 
 #define QCOMPARE(val1, val2) \
   di << "Checking " #val1 " == " #val2 << \
@@ -5182,6 +5181,72 @@ static Standard_Integer OCC27523 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+//========================================================================
+//function : OCC27700
+//purpose  : glPolygonMode() used for frame drawing affects label text shading
+//========================================================================
+
+class OCC27700_Text : public AIS_InteractiveObject
+{
+public:
+
+  DEFINE_STANDARD_RTTI_INLINE (OCC27700_Text, AIS_InteractiveObject)
+
+  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
+                        const Handle(Prs3d_Presentation)& thePresentation,
+                        const Standard_Integer /*theMode*/) Standard_OVERRIDE
+  {
+    Handle(Graphic3d_ArrayOfTriangles) aFrame = new Graphic3d_ArrayOfTriangles (6, 6);
+    aFrame->AddVertex (gp_Pnt (-1, 0, 0));
+    aFrame->AddVertex (gp_Pnt (-1, 1, 0));
+    aFrame->AddVertex (gp_Pnt ( 3, 1, 0));
+    aFrame->AddVertex (gp_Pnt ( 3, 0, 0));
+
+    aFrame->AddEdge (1);
+    aFrame->AddEdge (2);
+    aFrame->AddEdge (3);
+
+    aFrame->AddEdge (2);
+    aFrame->AddEdge (3);
+    aFrame->AddEdge (4);
+
+    Handle(Graphic3d_AspectFillArea3d) aFillAspect =
+      new Graphic3d_AspectFillArea3d (*myDrawer->ShadingAspect()->Aspect().get());
+    aFillAspect->SetInteriorStyle (Aspect_IS_POINT);
+
+    // create separate group for frame elements
+    Handle(Graphic3d_Group) aFrameGroup = Prs3d_Root::NewGroup (thePresentation);
+    aFrameGroup->AddPrimitiveArray (aFrame);
+    aFrameGroup->SetGroupPrimitivesAspect (aFillAspect);
+
+    // create separate group for text elements
+    Handle(Graphic3d_Group) aTextGroup = Prs3d_Root::NewGroup (thePresentation);
+    TCollection_ExtendedString aString ("YOU SHOULD SEE THIS TEXT", Standard_True);
+    Prs3d_Text::Draw (thePresentation, myDrawer->TextAspect(), aString, gp_Ax2 (gp::Origin(), gp::DZ()));
+  }
+
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& /*theSelection*/,
+                                 const Standard_Integer /*theMode*/) Standard_OVERRIDE {}
+};
+
+static Standard_Integer OCC27700 (Draw_Interpretor& /*theDI*/, Standard_Integer /*theArgNb*/, const char** /*theArgVec*/)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: no view available, call 'vinit' before!" << std::endl;
+    return 1;
+  }
+  Handle(OCC27700_Text) aPresentation = new OCC27700_Text();
+  aContext->Display (aPresentation);
+  return 0;
+}
+
+//========================================================================
+//function : Commands_19
+//purpose  :
+//========================================================================
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -5301,6 +5366,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27523",
                    "OCC27523: Checks recomputation of deactivated selection mode after object's redisplaying",
                    __FILE__, OCC27523, group);
-
+  theCommands.Add ("OCC27700",
+                   "OCC27700: Checks drawing text after setting interior style",
+                   __FILE__, OCC27700, group);
   return;
 }

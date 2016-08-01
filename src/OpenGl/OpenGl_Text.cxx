@@ -414,6 +414,10 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   const OpenGl_AspectText*      aTextAspect  = theWorkspace->ApplyAspectText();
   const Handle(OpenGl_Texture)  aPrevTexture = theWorkspace->DisableTexture();
   const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
+#if !defined(GL_ES_VERSION_2_0)
+  const Standard_Integer aPrevPolygonMode  = aCtx->SetPolygonMode (GL_FILL);
+  const bool             aPrevHatchingMode = aCtx->SetPolygonHatchEnabled (false);
+#endif
 
   // Bind custom shader program or generate default version
   if (aCtx->core20fwd != NULL)
@@ -439,6 +443,10 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   {
     theWorkspace->EnableTexture (aPrevTexture);
   }
+#if !defined(GL_ES_VERSION_2_0)
+  aCtx->SetPolygonMode         (aPrevPolygonMode);
+  aCtx->SetPolygonHatchEnabled (aPrevHatchingMode);
+#endif
 
   // restore Z buffer settings
   if (theWorkspace->UseZBuffer())

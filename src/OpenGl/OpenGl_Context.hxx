@@ -17,6 +17,7 @@
 #define _OpenGl_Context_H__
 
 #include <Aspect_Handle.hxx>
+#include <Aspect_HatchStyle.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_Display.hxx>
 #include <Aspect_RenderingContext.hxx>
@@ -27,6 +28,7 @@
 #include <NCollection_List.hxx>
 #include <Message.hxx>
 #include <OpenGl_Caps.hxx>
+#include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_MatrixState.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Resource.hxx>
@@ -455,6 +457,38 @@ public:
   //! @return old value of the flag
   Standard_EXPORT Standard_Boolean SetGlNormalizeEnabled (Standard_Boolean isEnabled);
 
+  //! @return cached state of polygon rasterization mode (glPolygonMode()).
+  Standard_Integer PolygonMode() const { return myPolygonMode; }
+
+  //! Sets polygon rasterization mode (glPolygonMode() function).
+  //! @return old value of the rasterization mode.
+  Standard_EXPORT Standard_Integer SetPolygonMode (const Standard_Integer theMode);
+
+  //! @return cached enabled state of polygon hatching rasterization.
+  bool IsPolygonHatchEnabled() const
+  {
+    return !myHatchStyles.IsNull() && myHatchStyles->TypeOfHatch() != 0;
+  }
+
+  //! Sets enabled state of polygon hatching rasterization
+  //! without affecting currently selected hatching pattern.
+  //! @return previous state of polygon hatching mode.
+  Standard_EXPORT bool SetPolygonHatchEnabled (const bool theIsEnabled);
+
+  //! @return cached state of polygon hatch type.
+  Standard_Integer PolygonHatchStyle() const
+  {
+    return myHatchStyles.IsNull() ? Aspect_HS_SOLID : myHatchStyles->TypeOfHatch();
+  }
+
+  //! Sets polygon hatch pattern.
+  //! Zero-index value is a default alias for solid filling.
+  //! @param the type of hatch supported by base implementation of
+  //! OpenGl_LineAttributes (Aspect_HatchStyle) or the type supported by custom
+  //! implementation derived from OpenGl_LineAttributes class.
+  //! @return old type of hatch.
+  Standard_EXPORT Standard_Integer SetPolygonHatchStyle (const Standard_Integer theStyle);
+
   //! Applies matrix stored in ModelWorldState to OpenGl.
   Standard_EXPORT void ApplyModelWorldMatrix();
 
@@ -725,19 +759,21 @@ private: // context info
 
 private: //! @name fields tracking current state
 
-  Handle(OpenGl_ShaderProgram) myActiveProgram;   //!< currently active GLSL program
-  Handle(OpenGl_Sampler)       myTexSampler;      //!< currently active sampler object
-  Handle(OpenGl_FrameBuffer)   myDefaultFbo;      //!< default Frame Buffer Object
-  Standard_Integer             myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
-  Standard_Integer             myRenderMode;      //!< value for active rendering mode
-  bool                         myToCullBackFaces; //!< back face culling mode enabled state (glIsEnabled (GL_CULL_FACE))
-  Standard_Integer             myReadBuffer;      //!< current read buffer
-  Standard_Integer             myDrawBuffer;      //!< current draw buffer
-  unsigned int                 myDefaultVao;      //!< default Vertex Array Object
-  Standard_Boolean             myIsGlDebugCtx;    //!< debug context initialization state
-  TCollection_AsciiString      myVendor;          //!< Graphics Driver's vendor
-  TColStd_PackedMapOfInteger   myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
-  Standard_ShortReal           myResolutionRatio; //!< scaling factor for parameters like text size
+  Handle(OpenGl_ShaderProgram)  myActiveProgram;   //!< currently active GLSL program
+  Handle(OpenGl_Sampler)        myTexSampler;      //!< currently active sampler object
+  Handle(OpenGl_FrameBuffer)    myDefaultFbo;      //!< default Frame Buffer Object
+  Handle(OpenGl_LineAttributes) myHatchStyles;     //!< resource holding predefined hatch styles patterns
+  Standard_Integer              myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
+  Standard_Integer              myRenderMode;      //!< value for active rendering mode
+  Standard_Integer              myPolygonMode;     //!< currently used polygon rasterization mode (glPolygonMode)
+  bool                          myToCullBackFaces; //!< back face culling mode enabled state (glIsEnabled (GL_CULL_FACE))
+  Standard_Integer              myReadBuffer;      //!< current read buffer
+  Standard_Integer              myDrawBuffer;      //!< current draw buffer
+  unsigned int                  myDefaultVao;      //!< default Vertex Array Object
+  Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
+  TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor
+  TColStd_PackedMapOfInteger    myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
+  Standard_ShortReal            myResolutionRatio; //!< scaling factor for parameters like text size
                                                   //!< to be properly displayed on device (screen / printer)
 
 public:

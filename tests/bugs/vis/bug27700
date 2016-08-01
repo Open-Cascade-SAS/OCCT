@@ -1,0 +1,16 @@
+puts "========"
+puts "CR27700"
+puts "========"
+puts ""
+############################################################################################
+puts "Visualization - glPolygonMode() used for frame drawing affects label text shading"
+############################################################################################
+
+vclear
+vinit View1
+
+OCC27700
+vtop
+vfit
+
+vdump $imagedir/${casename}.png

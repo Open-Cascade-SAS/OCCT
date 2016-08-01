@@ -141,9 +141,11 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #if !defined(GL_ES_VERSION_2_0)
   myPointSpriteOrig (GL_UPPER_LEFT),
   myRenderMode (GL_RENDER),
+  myPolygonMode (GL_FILL),
 #else
   myPointSpriteOrig (0),
   myRenderMode (0),
+  myPolygonMode (0),
 #endif
   myToCullBackFaces (false),
   myReadBuffer (0),
@@ -2842,6 +2844,70 @@ Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled (Standard_Boolean isEnabl
 #endif
 
   return anOldGlNormalize;
+}
+
+// =======================================================================
+// function : SetPolygonMode
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Context::SetPolygonMode (const Standard_Integer theMode)
+{
+  if (myPolygonMode == theMode)
+  {
+    return myPolygonMode;
+  }
+
+  const Standard_Integer anOldPolygonMode = myPolygonMode;
+
+  myPolygonMode = theMode;
+
+#if !defined(GL_ES_VERSION_2_0)
+  ::glPolygonMode (GL_FRONT_AND_BACK, (GLenum)theMode);
+#endif
+
+  return anOldPolygonMode;
+}
+
+// =======================================================================
+// function : SetPolygonHatchEnabled
+// purpose  :
+// =======================================================================
+bool OpenGl_Context::SetPolygonHatchEnabled (const bool theIsEnabled)
+{
+  if (myHatchStyles.IsNull())
+  {
+    return false;
+  }
+  else if (myHatchStyles->IsEnabled() == theIsEnabled)
+  {
+    return theIsEnabled;
+  }
+
+  return myHatchStyles->SetEnabled (this, theIsEnabled);
+}
+
+// =======================================================================
+// function : SetPolygonHatchStyle
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Standard_Integer theType)
+{
+  if (myHatchStyles.IsNull())
+  {
+    if (!GetResource ("OpenGl_LineAttributes", myHatchStyles))
+    {
+      // share and register for release once the resource is no longer used
+      myHatchStyles = new OpenGl_LineAttributes();
+      ShareResource ("OpenGl_LineAttributes", myHatchStyles);
+      myHatchStyles->Init (this);
+    }
+  }
+  if (myHatchStyles->TypeOfHatch() == theType)
+  {
+    return theType;
+  }
+
+  return myHatchStyles->SetTypeOfHatch (this, theType);
 }
 
 // =======================================================================
