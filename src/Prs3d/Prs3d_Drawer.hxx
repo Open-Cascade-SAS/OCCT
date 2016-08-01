@@ -488,24 +488,6 @@ public:
   //! shading aspect that overrides the one in the link.
   Standard_Boolean HasOwnShadingAspect() const { return myHasOwnShadingAspect; }
 
-  //! Returns True if the ShadingAspect is applied
-  //! to the whole presentation.
-  Standard_Boolean ShadingAspectGlobal() const
-  {
-    return HasOwnShadingAspectGlobal() || myLink.IsNull()
-         ? myShadingAspectGlobal
-         : myLink->ShadingAspectGlobal();
-  }
-
-  //! Indicates that the ShadingAspect will be apply
-  //! to the whole presentation. This allows to modify
-  //! the aspect without recomputing the content of the presentation.
-  Standard_EXPORT void SetShadingAspectGlobal (const Standard_Boolean theValue);
-
-  //! Returns true if the drawer has its own attribute for
-  //! ShadingAspectGlobal flag that overrides the one in the link.
-  Standard_Boolean HasOwnShadingAspectGlobal() const { return myHasOwnShadingAspectGlobal; }
-
   //! Returns settings for seen line aspects.
   //! These settings can be edited. The default values are:
   //!   Color: Quantity_NOC_YELLOW
@@ -913,8 +895,6 @@ protected:
   Standard_Boolean              myHasOwnTextAspect;
   Handle(Prs3d_ShadingAspect)   myShadingAspect;
   Standard_Boolean              myHasOwnShadingAspect;
-  Standard_Boolean              myShadingAspectGlobal;
-  Standard_Boolean              myHasOwnShadingAspectGlobal;
   Handle(Prs3d_PlaneAspect)     myPlaneAspect;
   Standard_Boolean              myHasOwnPlaneAspect;
   Handle(Prs3d_LineAspect)      mySeenLineAspect;

@@ -290,11 +290,7 @@ namespace
 
     Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePrs);
     aGroup->SetClosed (theIsClosed);
-    if (!theDrawer->ShadingAspectGlobal())
-    {
-      Handle(Graphic3d_AspectFillArea3d) anAsp = theDrawer->ShadingAspect()->Aspect();
-      aGroup->SetGroupPrimitivesAspect (anAsp);
-    }
+    aGroup->SetGroupPrimitivesAspect (theDrawer->ShadingAspect()->Aspect());
     aGroup->AddPrimitiveArray (aPArray);
     return Standard_True;
   }

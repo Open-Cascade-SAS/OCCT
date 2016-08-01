@@ -1017,3 +1017,4 @@ The following obsolete features have been removed:
 
 * Obsolete Antialiasing API V3d_View::SetAntialiasingOn(). This method was intended to activate deprecated OpenGL functionality (GL_POLYGON_SMOOTH, GL_LINE_SMOOTH, GL_POINT_SMOOTH).
   Instead of old API, application should request MSAA buffers for antialiasing by assigning Graphic3d_RenderingParams::NbMsaaSamples property of structure returned by V3d_View::ChangeRenderingParams().
+* Prs3d_Drawer::ShadingAspectGlobal() flag has been removed as not used. Corresponding calls can be removed safely from the application code.

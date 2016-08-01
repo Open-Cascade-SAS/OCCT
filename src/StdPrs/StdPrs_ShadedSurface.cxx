@@ -41,13 +41,10 @@ void StdPrs_ShadedSurface::Add (const Handle(Prs3d_Presentation)& thePrs,
   N1 = N1 < 3 ? 3 : N1;
   N2 = N2 < 3 ? 3 : N2;
 
-  if (!theDrawer->ShadingAspectGlobal())
-  {
-    // If the surface is closed, the faces from back-side are not traced:
-    Handle(Graphic3d_AspectFillArea3d) anAsp = theDrawer->ShadingAspect()->Aspect();
-    Prs3d_Root::CurrentGroup (thePrs)->SetGroupPrimitivesAspect (anAsp);
-    Prs3d_Root::CurrentGroup (thePrs)->SetClosed (theSurface.IsUClosed() && theSurface.IsVClosed());
-  }
+  // If the surface is closed, the faces from back-side are not traced:
+  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
+  aGroup->SetGroupPrimitivesAspect (theDrawer->ShadingAspect()->Aspect());
+  aGroup->SetClosed (theSurface.IsUClosed() && theSurface.IsVClosed());
 
   Standard_Integer aNBUintv = theSurface.NbUIntervals (GeomAbs_C1);
   Standard_Integer aNBVintv = theSurface.NbVIntervals (GeomAbs_C1);
@@ -96,7 +93,7 @@ void StdPrs_ShadedSurface::Add (const Handle(Prs3d_Presentation)& thePrs,
           aPArray->AddVertex (P2, D2);
         }
       }
-      Prs3d_Root::CurrentGroup (thePrs)->AddPrimitiveArray (aPArray);
+      aGroup->AddPrimitiveArray (aPArray);
     }
   }
 }

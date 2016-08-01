@@ -67,8 +67,6 @@ Prs3d_Drawer::Prs3d_Drawer()
   myHasOwnLineAspect          (Standard_False),
   myHasOwnTextAspect          (Standard_False),
   myHasOwnShadingAspect       (Standard_False),
-  myShadingAspectGlobal       (Standard_True),
-  myHasOwnShadingAspectGlobal (Standard_False),
   myHasOwnPlaneAspect         (Standard_False),
   myHasOwnSeenLineAspect      (Standard_False),
   myHasOwnArrowAspect         (Standard_False),
@@ -698,17 +696,6 @@ void Prs3d_Drawer::SetShadingAspect (const Handle(Prs3d_ShadingAspect)& theAspec
 }
 
 // =======================================================================
-// function : SetShadingAspectGlobal
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetShadingAspectGlobal (const Standard_Boolean theValue)
-{
-  myHasOwnShadingAspectGlobal = Standard_True;
-  myShadingAspectGlobal       = theValue;
-}
-
-// =======================================================================
 // function : PlaneAspect
 // purpose  :
 // =======================================================================
@@ -1058,7 +1045,6 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myHasOwnIsoOnTriangulation      = Standard_False;
   myHasOwnIsAutoTriangulated      = Standard_False;
   myHasOwnWireDraw                = Standard_False;
-  myHasOwnShadingAspectGlobal     = Standard_False;
   myHasOwnLineArrowDraw           = Standard_False;
   myHasOwnDrawHiddenLine          = Standard_False;
   myHasOwnFreeBoundaryDraw        = Standard_False;

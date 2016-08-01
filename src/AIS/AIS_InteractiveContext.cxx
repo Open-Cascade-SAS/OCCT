@@ -2773,7 +2773,6 @@ void AIS_InteractiveContext::InitAttributes()
 {
   mgrSelector->Add (myMainSel);
 
-  myDefaultDrawer->SetShadingAspectGlobal (Standard_False);
   Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
   myDefaultDrawer->ShadingAspect()->SetMaterial (aMat);
 

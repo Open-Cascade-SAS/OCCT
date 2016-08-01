@@ -442,7 +442,6 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
         break;
       }
 
-      myDrawer->SetShadingAspectGlobal (Standard_False);
       if (IsInfinite())
       {
         StdPrs_WFShape::Add (thePrs, myshape, myDrawer);

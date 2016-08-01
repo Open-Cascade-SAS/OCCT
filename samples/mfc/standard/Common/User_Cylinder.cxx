@@ -64,7 +64,6 @@ case 1:
 
     Standard_Real aTransparency = Transparency();
     Graphic3d_NameOfMaterial aMaterial = Material();
-    myDrawer->SetShadingAspectGlobal(Standard_False);
     TopExp_Explorer Ex;
     Handle(Geom_Surface) Surface;
 

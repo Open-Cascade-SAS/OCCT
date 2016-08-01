@@ -91,7 +91,6 @@ myInitAng(0.)
 {
   Set (shap);
   SetHilightMode(0);
-  myDrawer->SetShadingAspectGlobal(Standard_False);
 }
 
 //=======================================================================
@@ -177,7 +176,6 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       }
       else
       {
-        myDrawer->SetShadingAspectGlobal (Standard_False);
         if (IsInfinite())
         {
           StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
@@ -510,7 +508,6 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
 
   // override color
   theDrawer->ShadingAspect()->SetColor (theColor, myCurrentFacingModel);
-  theDrawer->SetShadingAspectGlobal (Standard_False);
   theDrawer->LineAspect()->SetColor (theColor);
   theDrawer->WireAspect()->SetColor (theColor);
   theDrawer->PointAspect()->SetColor (theColor);
