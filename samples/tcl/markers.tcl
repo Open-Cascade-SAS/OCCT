@@ -31,7 +31,8 @@ set aCustom2 [locate_data_file images/marker_box2.png]
 set aCustom3 [locate_data_file images/marker_kr.png]
 set aCustom4 [locate_data_file images/marker_dot.png]
 
-set aFontFile [locate_data_file DejaVuSans.ttf]
+set aFontFile ""
+catch { set aFontFile [locate_data_file DejaVuSans.ttf] }
 set aLabelFont "Arial"
 if { "$aFontFile" != "" } {
   vfont add "$aFontFile" SansFont
@@ -55,7 +56,8 @@ for { set aMarkerType 0 } { $aMarkerType <= 13 } { incr aMarkerType } {
   set aRow [expr $aMarkerType - 7]
   set aCol 5
   set aName [lindex $aMarkerTypeNames $aMarkerType]
-  vdrawtext "$aName" "$aName" -pos 0 [expr $aRow + 0.5] 0 -color 0.5 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 12 -aspect bold -font $aLabelFont
+  vdrawtext "$aName" "$aName" -pos 0 [expr $aRow + 0.5] 0 -color 0.5 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 12 -aspect bold -font $aLabelFont -noupdate
+  vdisplay -top -noupdate "$aName"
   if { $aMarkerType == 13 } {
     vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom1
     set aCol [expr $aCol - 1]

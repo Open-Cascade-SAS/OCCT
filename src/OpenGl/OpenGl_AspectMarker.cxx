@@ -1950,8 +1950,8 @@ void OpenGl_AspectMarker::Resources::SpriteKeys (const Handle(Graphic3d_MarkerIm
   }
   else if (theType != Aspect_TOM_POINT)
   {
-    // predefined markers
-    const Standard_Integer aScale = Standard_Integer(theScale + 0.5f);
+    // predefined markers are defined with 0.5 step
+    const Standard_Integer aScale = Standard_Integer(theScale * 10.0f + 0.5f);
     theKey  = TCollection_AsciiString ("OpenGl_AspectMarker") + theType + "_" + aScale;
     theKeyA = theKey + "A";
     if (theType == Aspect_TOM_BALL)
