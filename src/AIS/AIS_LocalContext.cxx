@@ -453,7 +453,6 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
     }
 
     myMainPM->Erase (aSelectable, Att->DisplayMode());
-    myMainPM->Clear (aSelectable, Att->DisplayMode());
     if (myMainPM->IsDisplayed (aSelectable, Att->HilightMode()))
     {
       myMainPM->Erase (aSelectable, Att->HilightMode());

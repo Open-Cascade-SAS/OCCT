@@ -59,6 +59,7 @@ public:
   
   //! erases the presentation of the object in the given
   //! Presentation manager with the given mode.
+  //! If @theMode is -1, then erases all presentations of the object.
   Standard_EXPORT void Erase (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
   
 

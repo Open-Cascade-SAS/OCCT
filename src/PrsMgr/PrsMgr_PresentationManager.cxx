@@ -89,19 +89,31 @@ void PrsMgr_PresentationManager::Erase (const Handle(PrsMgr_PresentableObject)& 
   }
 
   PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
+  for (PrsMgr_Presentations::Iterator anIt (aPrsList); anIt.More();)
   {
-    const PrsMgr_ModedPresentation&           aModedPrs = aPrsList.Value (aPrsIter);
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr   = aModedPrs.Presentation()->PresentationManager();
-    if (theMode == aPrsList (aPrsIter).Mode()
-     && this    == aPrsMgr)
+    const PrsMgr_ModedPresentation& aModedPrs = anIt.Value();
+    if (aModedPrs.Presentation().IsNull())
     {
-      if (!aModedPrs.Presentation().IsNull())
+      anIt.Next();
+      continue;
+    }
+
+    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aModedPrs.Presentation()->PresentationManager();
+    if ((theMode == aModedPrs.Mode() || theMode == -1)
+     && (this == aPrsMgr))
+    {
+      aModedPrs.Presentation()->Erase();
+
+      aPrsList.Remove (anIt);
+
+      if (theMode != -1)
       {
-        aModedPrs.Presentation()->Erase();
+        return;
       }
-      aPrsList.Remove (aPrsIter);
-      return;
+    }
+    else
+    {
+      anIt.Next();
     }
   }
 }

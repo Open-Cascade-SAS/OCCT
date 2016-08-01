@@ -2484,17 +2484,8 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
 
   Handle(AIS_GlobalStatus) aStatus = myObjects (theIObj);
   unhighlightOwners (theIObj);
-  for (TColStd_ListIteratorOfListOfInteger aDispModeIter (aStatus->DisplayedModes()); aDispModeIter.More(); aDispModeIter.Next())
-  {
-    myMainPM->Erase (theIObj, aDispModeIter.Value());
-    myMainPM->Clear (theIObj, aDispModeIter.Value());
-  }
 
-  if (aStatus->IsHilighted()
-   && theIObj->HasHilightMode())
-  {
-    myMainPM->Unhighlight (theIObj, theIObj->HilightMode());
-  }
+  myMainPM->Erase (theIObj, -1);
 
   // Object removes from Detected sequence
   for(Standard_Integer aDetIter = 1; aDetIter < myAISDetectedSeq.Length(); ++aDetIter)
@@ -2555,7 +2546,6 @@ void AIS_InteractiveContext::ClearGlobalPrs (const Handle(AIS_InteractiveObject)
     }
 
     myMainPM->Erase (theIObj, theMode);
-    myMainPM->Clear (theIObj, theMode);
   }
 
   if (aStatus->GraphicStatus() == AIS_DS_Displayed
