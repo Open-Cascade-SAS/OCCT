@@ -1239,7 +1239,7 @@ TopoDS_Shape AIS_InteractiveContext::SelectedShape() const
 
   const Handle(StdSelect_BRepOwner) anOwner =
     Handle(StdSelect_BRepOwner)::DownCast (mySelection->Value());
-  if (!anOwner->HasSelectable())
+  if (anOwner.IsNull() || !anOwner->HasSelectable())
     return TopoDS_Shape();
 
   return anOwner->Shape().Located (anOwner->Location() * anOwner->Shape().Location());
