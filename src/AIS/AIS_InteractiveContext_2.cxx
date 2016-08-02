@@ -365,12 +365,10 @@ SubIntensityOn(const Handle(AIS_InteractiveObject)& anIObj,
     GB->SubIntensityOn();
     Standard_Boolean UpdMain(Standard_False);
     
-    for(TColStd_ListIteratorOfListOfInteger It(GB->DisplayedModes());It.More();It.Next()){
-      if (GB->GraphicStatus()==AIS_DS_Displayed)
-      {
-        myMainPM->Color(anIObj,mySubIntensity,It.Value());
-        UpdMain = Standard_True;
-      }
+    if (GB->GraphicStatus() == AIS_DS_Displayed)
+    {
+      myMainPM->Color (anIObj, mySubIntensity, GB->DisplayMode());
+      UpdMain = Standard_True;
     }
     if(updateviewer){
       if(UpdMain)
@@ -381,9 +379,7 @@ SubIntensityOn(const Handle(AIS_InteractiveObject)& anIObj,
     if(myObjects.IsBound(anIObj)){
       const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
       STAT->SubIntensityOn();
-      TColStd_ListIteratorOfListOfInteger ItL;
-      for (ItL.Initialize(STAT->DisplayedModes());ItL.More();ItL.Next())
-        myMainPM->Color(anIObj,mySubIntensity,ItL.Value());
+      myMainPM->Color (anIObj, mySubIntensity, STAT->DisplayMode());
     }
     else
       myLocalContexts(myCurLocalIndex)->SubIntensityOn(anIObj);
@@ -409,12 +405,10 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     GB->SubIntensityOff();
     Standard_Boolean UpdMain(Standard_False);
     
-    for(TColStd_ListIteratorOfListOfInteger It(GB->DisplayedModes());It.More();It.Next()){
-      if(GB->GraphicStatus()==AIS_DS_Displayed)
-      {
-        myMainPM->Unhighlight(anIObj,It.Value());
-        UpdMain = Standard_True;
-      }
+    if(GB->GraphicStatus() == AIS_DS_Displayed)
+    {
+      myMainPM->Unhighlight (anIObj, GB->DisplayMode());
+      UpdMain = Standard_True;
     }
     
     Standard_Integer DM,HM,SM;
@@ -431,9 +425,7 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     if(myObjects.IsBound(anIObj)){
       const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
       STAT->SubIntensityOff();
-      TColStd_ListIteratorOfListOfInteger ItL;
-      for (ItL.Initialize(STAT->DisplayedModes());ItL.More();ItL.Next())
-        myMainPM->Unhighlight(anIObj,ItL.Value());
+      myMainPM->Unhighlight (anIObj, STAT->DisplayMode());
       if(STAT->IsHilighted())
         Hilight(anIObj);
     }
@@ -456,14 +448,12 @@ void AIS_InteractiveContext::SubIntensityOn(const Standard_Boolean updateviewer)
   if(!HasOpenedContext()) return;
   
   AIS_DataMapIteratorOfDataMapOfIOStatus It (myObjects);
-  TColStd_ListIteratorOfListOfInteger ItM;
   for(;It.More();It.Next()){
     const Handle(AIS_GlobalStatus)& STAT = It.Value();
     if(STAT->GraphicStatus()==AIS_DS_Displayed)
       {
         STAT->SubIntensityOn();
-        for(ItM.Initialize(STAT->DisplayedModes());ItM.More();ItM.Next())
-          {myMainPM->Color(It.Key(),mySubIntensity,ItM.Value());}
+        myMainPM->Color (It.Key(), mySubIntensity, STAT->DisplayMode());
       }
   }
   if(updateviewer) myMainVwr->Update();
@@ -478,13 +468,11 @@ void AIS_InteractiveContext::SubIntensityOff(const Standard_Boolean updateviewer
   if(!HasOpenedContext()) return;
 
   AIS_DataMapIteratorOfDataMapOfIOStatus It (myObjects);
-  TColStd_ListIteratorOfListOfInteger ItL;
   for(;It.More();It.Next()){
     const Handle(AIS_GlobalStatus)& STAT = It.Value();
     if(STAT->IsSubIntensityOn())
       STAT->SubIntensityOff();
-    for(ItL.Initialize(STAT->DisplayedModes());ItL.More();ItL.Next())
-      myMainPM->Unhighlight(It.Key());
+    myMainPM->Unhighlight (It.Key());
   }
 
   if(updateviewer) myMainVwr->Update();
@@ -800,8 +788,7 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
       upd_main = Standard_True;
       
       // part display...
-      for(itl.Initialize(STAT->DisplayedModes());itl.More();itl.Next())
-        myMainPM->Display(iobj,itl.Value());
+      myMainPM->Display (iobj, STAT->DisplayMode());
       if(STAT->IsHilighted()){
         if(STAT->HilightColor()!=Quantity_NOC_WHITE)
           HilightWithColor(iobj,STAT->HilightColor(),Standard_False);

@@ -50,9 +50,13 @@ public:
   
     void SetGraphicStatus (const AIS_DisplayStatus aStat);
   
-    void AddDisplayMode (const Standard_Integer aMode);
-  
     void AddSelectionMode (const Standard_Integer aMode);
+
+    //! Sets display mode.
+    void SetDisplayMode (const Standard_Integer theMode);
+
+    //! Returns the display mode.
+    Standard_Integer DisplayMode() const;
   
     void SetLayerIndex (const Standard_Integer AnIndex);
   
@@ -66,17 +70,11 @@ public:
   
     void SubIntensityOff();
   
-  Standard_EXPORT void RemoveDisplayMode (const Standard_Integer aMode);
-  
   Standard_EXPORT void RemoveSelectionMode (const Standard_Integer aMode);
   
   Standard_EXPORT void ClearSelectionModes();
   
     AIS_DisplayStatus GraphicStatus() const;
-  
-  //! keeps the information of displayed modes in the
-  //! main viewer.
-    const TColStd_ListOfInteger& DisplayedModes() const;
   
   //! keeps the active selection modes of the object
   //! in the main viewer.
@@ -85,8 +83,6 @@ public:
     Standard_Boolean IsHilighted() const;
   
     Quantity_NameOfColor HilightColor() const;
-  
-  Standard_EXPORT Standard_Boolean IsDModeIn (const Standard_Integer aMode) const;
   
   Standard_EXPORT Standard_Boolean IsSModeIn (const Standard_Integer aMode) const;
 
@@ -109,7 +105,7 @@ private:
 
 
   AIS_DisplayStatus myStatus;
-  TColStd_ListOfInteger myDispModes;
+  Standard_Integer myDispMode;
   TColStd_ListOfInteger mySelModes;
   Standard_Integer myLayerIndex;
   Standard_Boolean myIsHilit;

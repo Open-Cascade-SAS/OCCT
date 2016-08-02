@@ -555,9 +555,6 @@ public:
   Standard_EXPORT AIS_DisplayStatus DisplayStatus (const Handle(AIS_InteractiveObject)& anIobj) const;
   
 
-  //! Returns the list of active display modes for the entity aniobj.
-  Standard_EXPORT const TColStd_ListOfInteger& DisplayedModes (const Handle(AIS_InteractiveObject)& aniobj) const;
-  
   //! Returns true if anIobj is displayed in the interactive context.
   Standard_EXPORT Standard_Boolean IsDisplayed (const Handle(AIS_InteractiveObject)& anIobj) const;
   

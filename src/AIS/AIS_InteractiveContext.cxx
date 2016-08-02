@@ -452,30 +452,17 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
     // Mark the presentation modes hidden of interactive object different from aDispMode.
     // Then make sure aDispMode is displayed and maybe highlighted.
     // Finally, activate selection mode <SelMode> if not yet activated.
-    TColStd_ListOfInteger aModesToRemove;
-    for (TColStd_ListIteratorOfListOfInteger aDispModeIter (aStatus->DisplayedModes()); aDispModeIter.More(); aDispModeIter.Next())
+    const Standard_Integer anOldMode = aStatus->DisplayMode();
+    if (anOldMode != theDispMode)
     {
-      const Standard_Integer anOldMode = aDispModeIter.Value();
-      if (anOldMode != theDispMode)
+      if(myMainPM->IsHighlighted (theIObj, anOldMode))
       {
-        aModesToRemove.Append (anOldMode);
-        if(myMainPM->IsHighlighted (theIObj, anOldMode))
-        {
-          myMainPM->Unhighlight (theIObj, anOldMode);
-        }
-        myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
+        myMainPM->Unhighlight (theIObj, anOldMode);
       }
+      myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
     }
 
-    for (TColStd_ListIteratorOfListOfInteger aRemModeIter (aModesToRemove); aRemModeIter.More(); aRemModeIter.Next())
-    {
-      aStatus->RemoveDisplayMode (aRemModeIter.Value());
-    }
-
-    if (!aStatus->IsDModeIn (theDispMode))
-    {
-      aStatus->AddDisplayMode (theDispMode);
-    }
+    aStatus->SetDisplayMode (theDispMode);
 
     myMainPM->Display (theIObj, theDispMode);
     aStatus->SetGraphicStatus (AIS_DS_Displayed);
@@ -786,15 +773,6 @@ AIS_DisplayStatus AIS_InteractiveContext::DisplayStatus (const Handle(AIS_Intera
     }
   }
   return AIS_DS_None;
-}
-
-//=======================================================================
-//function : DisplayedModes
-//purpose  :
-//=======================================================================
-const TColStd_ListOfInteger& AIS_InteractiveContext::DisplayedModes (const Handle(AIS_InteractiveObject)& theIObj) const
-{
-  return myObjects (theIObj)->DisplayedModes();
 }
 
 //=======================================================================
@@ -1115,7 +1093,7 @@ Standard_Boolean AIS_InteractiveContext::IsDisplayed (const Handle(AIS_Interacti
   {
     Handle(AIS_GlobalStatus) aStatus = myObjects (theIObj);
     if (aStatus->GraphicStatus() == AIS_DS_Displayed
-     && aStatus->IsDModeIn (theMode))
+     && theIObj->DisplayMode() == theMode)
     {
       return Standard_True;
     }
@@ -1546,12 +1524,8 @@ void AIS_InteractiveContext::SetDisplayMode (const AIS_DisplayMode  theMode,
     }
 
     Handle(AIS_GlobalStatus) aStatus = anObjIter.Value();
-    if (aStatus->IsDModeIn (myDisplayMode))
-    {
-      aStatus->RemoveDisplayMode (myDisplayMode);
-    }
+    aStatus->SetDisplayMode (theMode);
 
-    aStatus->AddDisplayMode (theMode);
     if (aStatus->GraphicStatus() == AIS_DS_Displayed)
     {
       myMainPM->Display (anObj, theMode);
@@ -1607,30 +1581,17 @@ void AIS_InteractiveContext::SetDisplayMode (const Handle(AIS_InteractiveObject)
   }
 
   // erase presentations for all display modes different from <aMode>
-  TColStd_ListOfInteger aModesToRemove;
-  for (TColStd_ListIteratorOfListOfInteger aDispModeIter (aStatus->DisplayedModes()); aDispModeIter.More(); aDispModeIter.Next())
+  const Standard_Integer anOldMode = aStatus->DisplayMode();
+  if (anOldMode != theMode)
   {
-    const Standard_Integer anOldMode = aDispModeIter.Value();
-    if (anOldMode != theMode)
+    if (myMainPM->IsHighlighted (theIObj, anOldMode))
     {
-      aModesToRemove.Append (anOldMode);
-      if (myMainPM->IsHighlighted (theIObj, anOldMode))
-      {
-        myMainPM->Unhighlight (theIObj, anOldMode);
-      }
-      myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
+      myMainPM->Unhighlight (theIObj, anOldMode);
     }
+    myMainPM->SetVisibility (theIObj, anOldMode, Standard_False);
   }
 
-  for (TColStd_ListIteratorOfListOfInteger aRemModeIter (aModesToRemove); aRemModeIter.More(); aRemModeIter.Next())
-  {
-    aStatus->RemoveDisplayMode (aRemModeIter.Value());
-  }
-
-  if (!aStatus->IsDModeIn (theMode))
-  {
-    aStatus->AddDisplayMode (theMode);
-  }
+  aStatus->SetDisplayMode (theMode);
 
   myMainPM->Display (theIObj, theMode);
   Standard_Integer aDispMode, aHiMode, aSelMode;
@@ -1677,11 +1638,7 @@ void AIS_InteractiveContext::UnsetDisplayMode (const Handle(AIS_InteractiveObjec
   }
 
   const Handle(AIS_GlobalStatus)& aStatus = myObjects (theIObj);
-  aStatus->RemoveDisplayMode (anOldMode);
-  if (!aStatus->IsDModeIn(myDisplayMode))
-  {
-    aStatus->AddDisplayMode (myDisplayMode);
-  }
+  aStatus->SetDisplayMode (myDisplayMode);
 
   if (aStatus->GraphicStatus() == AIS_DS_Displayed)
   {
@@ -2330,12 +2287,10 @@ void AIS_InteractiveContext::Status (const Handle(AIS_InteractiveObject)& theIOb
   }
 
   theStatus += "\t| Active Display Modes in the MainViewer :\n";
-  for (TColStd_ListIteratorOfListOfInteger aDispModeIter (aStatus->DisplayedModes()); aDispModeIter.More(); aDispModeIter.Next())
-  {
-    theStatus += "\t|\t Mode ";
-    theStatus += TCollection_AsciiString (aDispModeIter.Value());
-    theStatus += "\n";
-  }
+  theStatus += "\t|\t Mode ";
+  theStatus += TCollection_AsciiString (aStatus->DisplayMode());
+  theStatus += "\n";
+
   if (IsSelected(theIObj)) theStatus +="\t| Selected\n";
 
   theStatus += "\t| Active Selection Modes in the MainViewer :\n";
@@ -2393,22 +2348,19 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
     return;
   }
 
-  for (TColStd_ListIteratorOfListOfInteger aDispModeIter (aStatus->DisplayedModes()); aDispModeIter.More(); aDispModeIter.Next())
+  if (aStatus->IsHilighted())
   {
-    if (aStatus->IsHilighted())
+    if (IsCurrent (theIObj))
     {
-      if (IsCurrent (theIObj))
-      {
-        AddOrRemoveCurrentObject (theIObj, Standard_False);
-      }
-      else if (myMainPM->IsHighlighted (theIObj, aDispModeIter.Value()))
-      {
-        myMainPM->Unhighlight (theIObj, aDispModeIter.Value());
-      }
+      AddOrRemoveCurrentObject (theIObj, Standard_False);
     }
-
-    myMainPM->SetVisibility (theIObj, aDispModeIter.Value(), Standard_False);
+    else if (myMainPM->IsHighlighted (theIObj, aStatus->DisplayMode()))
+    {
+      myMainPM->Unhighlight (theIObj, aStatus->DisplayMode());
+    }
   }
+
+  myMainPM->SetVisibility (theIObj, aStatus->DisplayMode(), Standard_False);
 
   if (aStatus->IsHilighted()
    && theIObj->HasHilightMode())
@@ -2423,7 +2375,7 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
   }
 
   if (IsSelected (theIObj)
-  && !aStatus->IsDModeIn (aDispMode))
+   && aStatus->DisplayMode() != aDispMode)
   {
     myMainPM->SetVisibility (theIObj, aDispMode, Standard_False);
   }
@@ -2536,7 +2488,7 @@ void AIS_InteractiveContext::ClearGlobalPrs (const Handle(AIS_InteractiveObject)
   }
 
   const Handle(AIS_GlobalStatus)& aStatus = myObjects (theIObj);
-  if (aStatus->IsDModeIn (theMode))
+  if (aStatus->DisplayMode() == theMode)
   {
     const Standard_Integer aDispMode = theIObj->HasHilightMode() ? theIObj->HilightMode() : 0;
     if (aDispMode == theMode

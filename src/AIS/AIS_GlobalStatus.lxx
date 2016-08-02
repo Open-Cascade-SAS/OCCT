@@ -19,11 +19,10 @@ inline void AIS_GlobalStatus::SetGraphicStatus(const AIS_DisplayStatus aStat)
  myStatus = aStat;
 }
 
-inline void AIS_GlobalStatus::AddDisplayMode(const Standard_Integer aMode)
+inline void AIS_GlobalStatus::SetDisplayMode (const Standard_Integer theMode)
 {
-  if(!IsDModeIn(aMode)) myDispModes.Append(aMode);
+  myDispMode = theMode;
 }
-
 inline void AIS_GlobalStatus::AddSelectionMode(const Standard_Integer aMode)
 {
   if(!IsSModeIn(aMode)) mySelModes.Append(aMode);
@@ -61,9 +60,9 @@ inline AIS_DisplayStatus AIS_GlobalStatus::GraphicStatus() const
   return myStatus;
 }
 
-inline const TColStd_ListOfInteger& AIS_GlobalStatus::DisplayedModes() const 
+inline Standard_Integer AIS_GlobalStatus::DisplayMode() const
 {
-  return myDispModes;
+  return myDispMode;
 }
 
 inline const TColStd_ListOfInteger& AIS_GlobalStatus::SelectionModes() const 
