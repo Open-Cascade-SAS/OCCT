@@ -44,6 +44,7 @@ public:
   //! Calculate color according passed value; returns true if value is in range or false, if isn't
   Standard_EXPORT Standard_Boolean FindColor (const Standard_Real theValue, Quantity_Color& theColor) const;
 
+  //! Calculate color according passed value; returns true if value is in range or false, if isn't
   Standard_EXPORT static Standard_Boolean FindColor (const Standard_Real theValue, const Standard_Real theMin, const Standard_Real theMax, const Standard_Integer theColorsCount, Quantity_Color& theColor);
 
   //! Returns minimal value of color scale;
@@ -280,13 +281,13 @@ private:
   Standard_Real myMax;
   TCollection_ExtendedString myTitle;
   TCollection_AsciiString myFormat;
-  Standard_Integer myInterval;
+  Standard_Integer myInterval;                //! Number of intervals
   Aspect_TypeOfColorScaleData myColorType;
   Aspect_TypeOfColorScaleData myLabelType;
   Standard_Boolean myAtBorder;
   Standard_Boolean myReversed;
   Standard_Boolean myIsLogarithmic;
-  Aspect_SequenceOfColor myColors;
+  Aspect_SequenceOfColor myColors;            //! Sequence of custom colors
   TColStd_SequenceOfExtendedString myLabels;
   Aspect_TypeOfColorScalePosition myLabelPos;
   Aspect_TypeOfColorScalePosition myTitlePos;

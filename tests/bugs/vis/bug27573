@@ -1,0 +1,59 @@
+puts "============"
+puts "0027573"
+puts "AIS_ColorScale::FindColor does not take into account custom colors."
+puts "============"
+puts ""
+
+vclose all
+vinit
+vclear
+vaxo
+
+vcolorscale cs -demo
+vcolorscale cs -range 0 20 5
+
+# Set user-defined colors and labels for color scale
+vcolorscale cs -colors white red green blue1 gray
+
+# Check the first interval border color
+if {[vcolorscale cs -findcolor 0] != "WHITE"} {
+  puts "ERROR: Find color result for the first segment is wrong!"
+}
+
+# Check first-second intervals border
+if {[vcolorscale cs -findcolor 4] != "WHITE"} {
+  puts "ERROR: Find color result for the first segment border is wrong!"
+}
+
+# Check the second interval color
+if {[vcolorscale cs -findcolor 5] != "RED"} {
+  puts "ERROR: Find color result for the second segment is wrong!"
+}
+
+# Check the second interval color
+if {[vcolorscale cs -findcolor 9] != "GREEN"} {
+  puts "ERROR: Find color result for the third segment is wrong!"
+}
+
+# Check the last interval border color
+if {[vcolorscale cs -findcolor 20] != "GRAY"} {
+  puts "ERROR: Find color result for the last segment is wrong!"
+}
+
+# Check negative value limits
+vcolorscale cs -range -5 5 5
+
+if {[vcolorscale cs -findcolor -5] != "WHITE"} {
+  puts "ERROR: Find color result for the first segment is wrong!"
+}
+
+if {[vcolorscale cs -findcolor 0] != "GREEN"} {
+  puts "ERROR: Find color result for the middle segment is wrong!"
+}
+
+if {[vcolorscale cs -findcolor 5] != "GRAY"} {
+  puts "ERROR: Find color result for the last segment is wrong!"
+}
+
+# Dump result
+set only_screen 1

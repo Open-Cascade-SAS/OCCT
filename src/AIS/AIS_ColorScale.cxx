@@ -501,6 +501,32 @@ Standard_Integer AIS_ColorScale::HueFromValue (const Standard_Integer theValue,
 Standard_Boolean AIS_ColorScale::FindColor (const Standard_Real theValue,
                                             Quantity_Color& theColor) const
 {
+  if (theValue < myMin || theValue > myMax || myMax < myMin)
+  {
+    theColor = Quantity_Color();
+    return Standard_False;
+  }
+
+  if (GetColorType() == Aspect_TOCSD_USER)
+  {
+    Standard_Integer anIndex = 0;
+    if (Abs (myMax - myMin) > Precision::Approximation())
+    {
+      anIndex = (theValue - myMin < Precision::Confusion()) 
+        ? 1
+        : Standard_Integer (Ceiling (( theValue - myMin ) / ( (myMax - myMin) / myInterval)));
+    }
+
+    if (anIndex <= 0 || anIndex > myColors.Length())
+    {
+      theColor = Quantity_Color();
+      return Standard_False;
+    }
+
+    theColor = myColors.Value (anIndex);
+    return Standard_True;
+  }
+
   return FindColor (theValue, myMin, myMax, myInterval, theColor);
 }
 

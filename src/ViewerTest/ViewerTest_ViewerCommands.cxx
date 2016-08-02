@@ -3986,6 +3986,27 @@ static int VColorScale (Draw_Interpretor& theDI,
       aCS->SetColorType (Aspect_TOCSD_AUTO);
       aCS->SetLabelType (Aspect_TOCSD_AUTO);
     }
+    else if (aFlag == "-findcolor")
+    {
+      if (anArgIter + 1 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      TCollection_AsciiString anArg1 (theArgVec[++anArgIter]);
+
+      if (!anArg1.IsRealValue())
+      {
+        std::cout << "Error: the value should be real!\n";
+        return 1;
+      }
+
+      Quantity_Color aColor;
+      aCS->FindColor (anArg1.RealValue(), aColor);
+      theDI << Quantity_Color::StringName (aColor.Name());
+      return 0;
+    }
     else
     {
       std::cout << "Error: wrong syntax at " << anArg << " - unknown argument!\n";
