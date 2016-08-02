@@ -14,7 +14,6 @@ Quantity_Coefficient.hxx
 Quantity_CoefficientOfExpansion.hxx
 Quantity_Color.cxx
 Quantity_Color.hxx
-Quantity_Color_1.hxx
 Quantity_ColorRGBA.hxx
 Quantity_ColorDefinitionError.hxx
 Quantity_Concentration.hxx

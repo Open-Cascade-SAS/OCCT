@@ -60,16 +60,21 @@ public:
   //! Creates the colour <AName>.
   Standard_EXPORT Quantity_Color(const Quantity_NameOfColor AName);
   
-  //! Creates a colour according to the definition system
-  //! TypeOfColor.
-  //! TOC_RGB : <R1> the value of red between 0. and 1.
-  //! <R2> the value of green between 0. and 1.
-  //! <R3> the value of blue between 0. and 1.
+  //! Creates a color according to the definition system theType.
+  //! Quantity_TOC_RGB:
+  //!  - theR1 the value of Red   within range [0.0; 1.0]
+  //!  - theR2 the value of Green within range [0.0; 1.0]
+  //!  - theR3 the value of Blue  within range [0.0; 1.0]
   //!
-  //! TOC_HLS : <R1> is the hue angle in degrees, 0. being red
-  //! <R2> is the lightness between 0. and 1.
-  //! <R3> is the saturation between 0. and 1.
-  Standard_EXPORT Quantity_Color(const Quantity_Parameter R1, const Quantity_Parameter R2, const Quantity_Parameter R3, const Quantity_TypeOfColor AType);
+  //! Quantity_TOC_HLS:
+  //!  - theR1 is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red.
+  //!    Value -1.0 is a special value reserved for grayscale color (S should be 0.0).
+  //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
+  //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
+  Standard_EXPORT Quantity_Color (const Quantity_Parameter   theR1,
+                                  const Quantity_Parameter   theR2,
+                                  const Quantity_Parameter   theR3,
+                                  const Quantity_TypeOfColor theType);
 
   //! Define color from RGB values.
   Standard_EXPORT explicit Quantity_Color (const NCollection_Vec3<float>& theRgb);
@@ -94,16 +99,21 @@ public:
   //! colour <AName>.
   Standard_EXPORT void SetValues (const Quantity_NameOfColor AName);
   
-  //! Updates a colour according to the mode specified by
-  //! TypeOfColor
-  //! TOC_RGB : <R1> the value of red between 0. and 1.
-  //! <R2> the value of green between 0. and 1.
-  //! <R3> the value of blue between 0. and 1.
+  //! Updates a color according to the mode specified by theType.
+  //! TOC_RGB:
+  //!  - theR1 the value of Red   within range [0.0; 1.0]
+  //!  - theR2 the value of Green within range [0.0; 1.0]
+  //!  - theR3 the value of Blue  within range [0.0; 1.0]
   //!
-  //! TOC_HLS : <R1> is the hue angle in degrees, 0. being red
-  //! <R2> is the lightness between 0. and 1.
-  //! <R3> is the saturation between 0. and 1.
-  Standard_EXPORT void SetValues (const Quantity_Parameter R1, const Quantity_Parameter R2, const Quantity_Parameter R3, const Quantity_TypeOfColor AType);
+  //! TOC_HLS:
+  //!  - theR1 is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red.
+  //!    -1.0 is a special value reserved for grayscale color (S should be 0.0).
+  //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
+  //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
+  Standard_EXPORT void SetValues (const Quantity_Parameter   theR1,
+                                  const Quantity_Parameter   theR2,
+                                  const Quantity_Parameter   theR3,
+                                  const Quantity_TypeOfColor theType);
   
   //! Returns the percentage change of contrast and intensity
   //! between <me> and <AColor>.
@@ -121,16 +131,15 @@ public:
   //! Returns the square of distance between two colours.
   Standard_EXPORT Standard_Real SquareDistance (const Quantity_Color& AColor) const;
   
-  //! Returns the Blue component (quantity of blue) of the
-  //! color <me>.
+  //! Returns the Blue component (quantity of blue) of the color within range [0.0; 1.0].
   Standard_EXPORT Quantity_Parameter Blue() const;
   
-  //! Returns the Green component (quantity of green) of the
-  //! color <me>.
+  //! Returns the Green component (quantity of green) of the color within range [0.0; 1.0].
   Standard_EXPORT Quantity_Parameter Green() const;
   
-  //! Returns the Hue component (hue angle) of the
-  //! color <me>.
+  //! Returns the Hue component (hue angle) of the color
+  //! in degrees within range [0.0; 360.0], 0.0 being Red.
+  //! -1.0 is a special value reserved for grayscale color (S should be 0.0)
   Standard_EXPORT Quantity_Parameter Hue() const;
   
   //! Returns Standard_True if the distance between <me> and
@@ -153,8 +162,7 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   return IsEqual(Other);
 }
   
-  //! Returns the Light component (value of the lightness) of the
-  //! color <me>.
+  //! Returns the Light component (value of the lightness) of the color within range [0.0; 1.0].
   Standard_EXPORT Quantity_Parameter Light() const;
   
   //! Returns the name of the color defined by its
@@ -165,26 +173,29 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   //! Standard_OutOfRange if R, G or B is less than 0. or greater than 1.
   Standard_EXPORT Quantity_NameOfColor Name() const;
   
-  //! Returns the Red component (quantity of red) of the
-  //! color <me>.
+  //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
   Standard_EXPORT Quantity_Parameter Red() const;
   
-  //! Returns the Saturation component (value of the saturation)
-  //! of the color <me>.
+  //! Returns the Saturation component (value of the saturation) of the color within range [0.0; 1.0].
   Standard_EXPORT Quantity_Parameter Saturation() const;
 
   //! Return the color as vector of 3 float elements.
   operator const NCollection_Vec3<float>&() const { return *(const NCollection_Vec3<float>* )this; }
 
-  //! Returns in R1, R2 and R3 the components of
-  //! this color according to the color system definition AType.
-  //! -   if AType is Quantity_TOC_RGB R1 is the
-  //! quantity of red, R2 is the quantity of green and
-  //! R3 is the quantity of blue in this color.
-  //! -   if AType is Quantity_TOC_HLS R1 is the
-  //! hue angle in degrees (0 being red), R2 is the
-  //! lightness and R3 is the saturation of this color.
-  Standard_EXPORT void Values (Quantity_Parameter& R1, Quantity_Parameter& R2, Quantity_Parameter& R3, const Quantity_TypeOfColor AType) const;
+  //! Returns in theR1, theR2 and theR3 the components of this color according to the color system definition theType.
+  //! If theType is Quantity_TOC_RGB:
+  //!  - theR1 the value of Red   between 0.0 and 1.0
+  //!  - theR2 the value of Green between 0.0 and 1.0
+  //!  - theR3 the value of Blue  between 0.0 and 1.0
+  //! If theType is Quantity_TOC_HLS:
+  //!  - theR1 is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red.
+  //!    -1.0 is a special value reserved for grayscale color (S should be 0.0).
+  //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
+  //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
+  Standard_EXPORT void Values (Quantity_Parameter& theR1,
+                               Quantity_Parameter& theR2,
+                               Quantity_Parameter& theR3,
+                               const Quantity_TypeOfColor theType) const;
   
   //! Sets the specified value used to compare <me> and
   //! an other color in IsDifferent and in IsEqual methods.
