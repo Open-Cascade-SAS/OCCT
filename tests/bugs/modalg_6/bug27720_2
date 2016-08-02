@@ -1,19 +1,17 @@
 puts "============"
-puts "OCC27341"
+puts "OCC27720"
 puts "============"
 puts ""
 ######################################################
-# Incorrect exact HLR results
+# HLRBrep_Algo BSpline missing edges
 ######################################################
 
-pload XDE
 pload QAcommands
 
-testreadstep [locate_data_file bug27341_Drehkopf_HSK_Gewinde_R_CAD.stp] a
+restore [locate_data_file bug27720_BSpline.brep] a
 
-set viewname "right"
+set viewname "top"
 
-smallview
 top
 clear
 
@@ -22,7 +20,7 @@ build3d result
 
 fit
 
-checkprops result -l 1726.77
-checknbshapes result -vertex 811 -edge 406
+checkprops result -l 0.980942
+checknbshapes result -vertex 54 -edge 27
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -468,7 +468,6 @@ static void KeepInsidePoints(const Contap_TheSearchInside& solins,
 
 {
   Standard_Integer Nba = solrst.NbSegments();
-  if (Nba <= 0) return;
   Standard_Integer Nbp,indp,inda;
   Standard_Real U,V,paramproj;
   gp_Pnt2d toproj,Ptproj;

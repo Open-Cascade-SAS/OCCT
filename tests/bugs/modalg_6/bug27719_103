@@ -1,19 +1,17 @@
 puts "============"
-puts "OCC27341"
+puts "OCC27719"
 puts "============"
 puts ""
 ######################################################
 # Incorrect exact HLR results
 ######################################################
 
-pload XDE
 pload QAcommands
 
-testreadstep [locate_data_file bug27341_Drehkopf_HSK_Gewinde_R_CAD.stp] a
+restore [locate_data_file bug27719_Extruded.brep] a
 
-set viewname "right"
+set viewname "bottom"
 
-smallview
 top
 clear
 
@@ -22,7 +20,7 @@ build3d result
 
 fit
 
-checkprops result -l 1726.77
-checknbshapes result -vertex 811 -edge 406
+checkprops result -l 6.15279
+checknbshapes result -vertex 22 -edge 11
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

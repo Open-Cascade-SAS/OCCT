@@ -49,7 +49,8 @@ HLRBRep_Surface::HLRBRep_Surface ()
 
 void HLRBRep_Surface::Surface (const TopoDS_Face& F)
 {
-  mySurf.Initialize(F,Standard_False);
+  //mySurf.Initialize(F,Standard_False);
+  mySurf.Initialize(F,Standard_True);
   GeomAbs_SurfaceType typ = HLRBRep_BSurfaceTool::GetType(mySurf);
   switch (typ) {
 
