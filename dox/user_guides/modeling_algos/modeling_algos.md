@@ -2724,7 +2724,6 @@ No smoothing algorithm  is provided. Consequently, a polyhedron will be treated 
 
 However, there some restrictions in HLR use:
   * Points are not processed;
-  * Z-clipping planes are not used;
   * Infinite faces or lines are not processed.
 
   

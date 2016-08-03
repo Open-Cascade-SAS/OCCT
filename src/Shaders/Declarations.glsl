@@ -110,11 +110,6 @@ uniform               sampler2D occActiveSampler;      //!< Current active sampl
 uniform               vec4      occTexTrsf2d[2];       //!< 2D texture transformation parameters
 uniform               float     occPointSize;          //!< point size
 
-// clipping planes state
-const int OccEquationCoords_View  = 0; //!< view-space  clipping plane
-const int OccEquationCoords_World = 1; //!< world-space clipping plane
-
 //! Parameters of clipping planes
 uniform               vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];
-uniform THE_PREC_ENUM int  occClipPlaneSpaces   [THE_MAX_CLIP_PLANES];
 uniform THE_PREC_ENUM int  occClipPlaneCount;   //!< Total number of clip planes

@@ -8,8 +8,6 @@
 #include "OCC_MainFrame.h"
 #include "Viewer3dApp.h"
 #include "Viewer3dDoc.h"
-#include "ZClippingDlg.h"
-#include "ZCueingDlg.h"
 #include "ScaleDlg.h"
 #include "ShadingModelDlg.h"
 #include "ModelClippingDlg.h"
@@ -86,9 +84,7 @@ BEGIN_MESSAGE_MAP(CViewer3dView, CView)
 	ON_COMMAND(ID_SPOT_LIGHT, OnSpotLight)
 	ON_COMMAND(ID_POSITIONAL_LIGHT, OnPositionalLight)
 	ON_COMMAND(ID_AMBIENT_LIGHT, OnAmbientLight)
-	ON_COMMAND(ID_ZCUEING, OnZcueing)
 	ON_COMMAND(ID_SCALE, OnScale)
-	ON_COMMAND(ID_ZCLIPPING, OnZclipping)
 	ON_COMMAND(ID_SHADINGMODEL, OnShadingmodel)
 	ON_COMMAND(ID_ANTIALIASINGONOFF, OnAntialiasingonoff)
 	ON_COMMAND(ID_CLEAR_LIGHTS, OnClearLights)
@@ -997,20 +993,6 @@ GetDocument()->UpdateResultMessageDlg("V3d_AmbientLight",Message);
 void CViewer3dView::OnScale() 
 {
 	ScaleDlg Dlg(myView, this);
-	Dlg.DoModal();
-	myView->Redraw();
-}
-
-void CViewer3dView::OnZcueing() 
-{
-	ZCueingDlg Dlg(myView, GetDocument());
-	Dlg.DoModal();
-	myView->Redraw();
-}
-
-void CViewer3dView::OnZclipping() 
-{
-	ZClippingDlg Dlg(myView, GetDocument());
 	Dlg.DoModal();
 	myView->Redraw();
 }

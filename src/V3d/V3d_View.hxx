@@ -77,7 +77,6 @@
 #include <V3d_TypeOfShadingModel.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
-#include <V3d_TypeOfZclipping.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_ViewerPointer.hxx>
 
@@ -262,27 +261,6 @@ public:
 
   //! Defines the visualization type in the view.
   Standard_EXPORT void SetVisualization (const V3d_TypeOfVisualization theType);
-
-  //! Defines the depth of the medium clipping plane.
-  Standard_EXPORT void SetZClippingDepth (const Quantity_Length theDepth);
-
-  //! Defines the thickness around the medium clipping plane.
-  Standard_EXPORT void SetZClippingWidth (const Quantity_Length theWidth);
-
-  //! Defines the type of ZClipping.
-  Standard_EXPORT void SetZClippingType (const V3d_TypeOfZclipping theType);
-
-  //! Defines the depth of the medium plane.
-  Standard_EXPORT void SetZCueingDepth (const Quantity_Length theDepth);
-
-  //! Defines the thickness around the medium plane.
-  Standard_EXPORT void SetZCueingWidth (const Quantity_Length theWidth);
-
-  //! Activates ZCueing in the view.
-  Standard_EXPORT void SetZCueingOn();
-
-  //! Deactivates ZCueing in the view.
-  Standard_EXPORT void SetZCueingOff();
 
   //! Activates theLight in the view.
   Standard_EXPORT void SetLightOn (const Handle(V3d_Light)& theLight);
@@ -713,20 +691,6 @@ public:
 
   //! Returns the current visualisation mode.
   Standard_EXPORT V3d_TypeOfVisualization Visualization() const;
-
-  //! Returns activity and information on the Zcueing.
-  //! <Depth> : Depth of plane.
-  //! <Width> : Thickness around the plane.
-  Standard_EXPORT Standard_Boolean ZCueing (Quantity_Length& theDepth, Quantity_Length& theWidth) const;
-
-  //! Returns current information on the ZClipping.
-  //! <Depth> : Depth of plane.
-  //! <Width> : Thickness around the plane.
-  //! <TypeOfZclipping>  :        "BACK"
-  //! "FRONT"
-  //! "SLICE"
-  //! "OFF"
-  Standard_EXPORT V3d_TypeOfZclipping ZClipping (Quantity_Length& theDepth, Quantity_Length& theWidth) const;
 
   //! Returns True if One light more can be
   //! activated in this View.

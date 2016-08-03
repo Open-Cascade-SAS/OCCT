@@ -1149,13 +1149,6 @@ void Graphic3d_CView::CopySettings (const Handle(Graphic3d_CView)& theOther)
   SetShadingModel          (theOther->ShadingModel());
   SetBackfacingModel       (theOther->BackfacingModel());
   SetCamera                (new Graphic3d_Camera (theOther->Camera()));
-  SetBackZClippingOn       (theOther->BackZClippingIsOn());
-  SetFrontZClippingOn      (theOther->FrontZClippingIsOn());
-  SetZClippingBackPlane    (theOther->ZClippingBackPlane());
-  SetZClippingFrontPlane   (theOther->ZClippingFrontPlane());
-  SetDepthCueingOn         (theOther->DepthCueingIsOn());
-  SetDepthCueingBackPlane  (theOther->DepthCueingBackPlane());
-  SetDepthCueingFrontPlane (theOther->DepthCueingFrontPlane());
   SetGLLightEnabled        (theOther->IsGLLightEnabled());
   SetLights                (theOther->Lights());
   SetClipPlanes            (theOther->ClipPlanes());

@@ -893,41 +893,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
     aContext->SetGlNormalizeEnabled (Standard_False);
   }
 
-  // Apply Fog
-  if (myFog.IsOn
-   && aContext->core11 != NULL)
-  {
-    Standard_Real aFogFrontConverted = (Standard_Real )myFog.Front + myCamera->Distance();
-    if (myCamera->ZFar() < aFogFrontConverted)
-    {
-      aFogFrontConverted = myCamera->ZFar();
-      myFog.Front = (Standard_ShortReal )(aFogFrontConverted - myCamera->Distance());
-    }
-
-    Standard_Real aFogBackConverted = (Standard_Real )myFog.Back + myCamera->Distance();
-    if (myCamera->ZFar() < aFogFrontConverted)
-    {
-      aFogBackConverted = myCamera->ZFar();
-      myFog.Back = (Standard_ShortReal )(aFogBackConverted - myCamera->Distance());
-    }
-
-    if (aFogFrontConverted > aFogBackConverted)
-    {
-      myFog.Front = (Standard_ShortReal )(aFogFrontConverted - myCamera->Distance());
-      myFog.Back = (Standard_ShortReal )(aFogBackConverted - myCamera->Distance());
-    }
-
-    glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogf(GL_FOG_START, (Standard_ShortReal )aFogFrontConverted);
-    glFogf(GL_FOG_END, (Standard_ShortReal )aFogBackConverted);
-    glFogfv(GL_FOG_COLOR, myFog.Color.GetData());
-    glEnable(GL_FOG);
-  }
-  else if (aContext->core11 != NULL)
-  {
-    glDisable (GL_FOG);
-  }
-
   // Apply InteriorShadingMethod
   if (aContext->core11 != NULL)
   {
@@ -1151,56 +1116,6 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
 {
   const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
 
-  if (myZClip.Back.IsOn || myZClip.Front.IsOn)
-  {
-    Handle(Graphic3d_ClipPlane) aPlaneBack;
-    Handle(Graphic3d_ClipPlane) aPlaneFront;
-
-    if (myZClip.Back.IsOn)
-    {
-      Standard_Real aClipBackConverted = (Standard_Real )myZClip.Front.Limit + myCamera->Distance();
-      if (myCamera->ZFar() < aClipBackConverted)
-      {
-        aClipBackConverted = myCamera->ZFar();
-        myZClip.Back.Limit = (Standard_ShortReal )(aClipBackConverted - myCamera->Distance());
-      }
-      const Graphic3d_ClipPlane::Equation aBackEquation (0.0, 0.0, 1.0, (Standard_ShortReal )aClipBackConverted);
-      aPlaneBack = new Graphic3d_ClipPlane (aBackEquation);
-    }
-
-    if (myZClip.Front.IsOn)
-    {
-      Standard_Real aClipFrontConverted = (Standard_Real )myZClip.Front.Limit + myCamera->Distance();
-      if (myCamera->ZNear() > aClipFrontConverted)
-      {
-        aClipFrontConverted = myCamera->ZNear();
-        myZClip.Front.Limit = (Standard_ShortReal )(aClipFrontConverted - myCamera->Distance());
-      }
-      const Graphic3d_ClipPlane::Equation aFrontEquation (0.0, 0.0, -1.0, (Standard_ShortReal )-aClipFrontConverted);
-      aPlaneFront = new Graphic3d_ClipPlane (aFrontEquation);
-    }
-
-    // Specify slicing planes with identity transformation
-    if (!aPlaneBack.IsNull() || !aPlaneFront.IsNull())
-    {
-      Graphic3d_SequenceOfHClipPlane aSlicingPlanes;
-      if (!aPlaneBack.IsNull())
-      {
-        aSlicingPlanes.Append (aPlaneBack);
-      }
-
-      if (!aPlaneFront.IsNull())
-      {
-        aSlicingPlanes.Append (aPlaneFront);
-      }
-
-      // add planes at loaded view matrix state
-      aContext->ChangeClipping().AddView (aContext, aSlicingPlanes);
-    }
-
-    aContext->ShaderManager()->UpdateClippingState();
-  }
-
 #ifdef _WIN32
   // set printing scale/tiling transformation
   Handle(OpenGl_PrinterContext) aPrintContext = myWorkspace->PrinterContext();
@@ -1213,6 +1128,7 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
 #endif
 
   // Specify clipping planes in view transformation space
+  aContext->ChangeClipping().RemoveAll (aContext);
   if (!myClipPlanes.IsEmpty())
   {
     Graphic3d_SequenceOfHClipPlane aUserPlanes;
@@ -1320,10 +1236,6 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
 
   aContext->ChangeClipping().RemoveAll (aContext);
   if (!myClipPlanes.IsEmpty())
-  {
-    aContext->ShaderManager()->RevertClippingState();
-  }
-  if (myZClip.Back.IsOn || myZClip.Front.IsOn)
   {
     aContext->ShaderManager()->RevertClippingState();
   }

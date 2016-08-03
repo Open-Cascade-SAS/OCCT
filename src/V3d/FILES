@@ -34,11 +34,9 @@ V3d_TypeOfShadingModel.hxx
 V3d_TypeOfUpdate.hxx
 V3d_TypeOfView.hxx
 V3d_TypeOfVisualization.hxx
-V3d_TypeOfZclipping.hxx
 V3d_UnMapped.hxx
 V3d_View.cxx
 V3d_View.hxx
-V3d_View_1.cxx
 V3d_View_2.cxx
 V3d_View_3.cxx
 V3d_View_4.cxx

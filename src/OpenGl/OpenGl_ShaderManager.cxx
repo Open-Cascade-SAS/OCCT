@@ -28,13 +28,13 @@
 
 #include <TCollection_ExtendedString.hxx>
 
-
-
-
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager,Standard_Transient)
 
 namespace
 {
+
+  //! Clipping planes limit (see the same definition in Declarations.glsl).
+  static const Standard_Size THE_MAX_CLIP_PLANES = 8;
 
 #define EOL "\n"
 
@@ -225,20 +225,9 @@ const char THE_FRAG_CLIP_PLANES[] =
   EOL"  for (int aPlaneIter = 0; aPlaneIter < occClipPlaneCount; ++aPlaneIter)"
   EOL"  {"
   EOL"    vec4 aClipEquation = occClipPlaneEquations[aPlaneIter];"
-  EOL"    int  aClipSpace    = occClipPlaneSpaces[aPlaneIter];"
-  EOL"    if (aClipSpace == OccEquationCoords_World)"
+  EOL"    if (dot (aClipEquation.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation.w < 0.0)"
   EOL"    {"
-  EOL"      if (dot (aClipEquation.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation.w < 0.0)"
-  EOL"      {"
-  EOL"        discard;"
-  EOL"      }"
-  EOL"    }"
-  EOL"    else if (aClipSpace == OccEquationCoords_View)"
-  EOL"    {"
-  EOL"      if (dot (aClipEquation.xyz, Position.xyz) + aClipEquation.w < 0.0)"
-  EOL"      {"
-  EOL"        discard;"
-  EOL"      }"
+  EOL"      discard;"
   EOL"    }"
   EOL"  }";
 
@@ -755,9 +744,7 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
 
   theProgram->UpdateState (OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
   const GLint aLocEquations = theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_EQUATIONS);
-  const GLint aLocSpaces    = theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_SPACES);
-  if (aLocEquations == OpenGl_ShaderProgram::INVALID_LOCATION
-   && aLocSpaces    == OpenGl_ShaderProgram::INVALID_LOCATION)
+  if (aLocEquations == OpenGl_ShaderProgram::INVALID_LOCATION)
   {
     return;
   }
@@ -779,9 +766,7 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  const Standard_Size MAX_CLIP_PLANES = 8;
-  OpenGl_Vec4* anEquations = new OpenGl_Vec4[MAX_CLIP_PLANES];
-  GLint*       aSpaces     = new GLint      [MAX_CLIP_PLANES];
+  OpenGl_Vec4 anEquations[THE_MAX_CLIP_PLANES];
   GLuint aPlaneId = 0;
   for (Graphic3d_SequenceOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
        anIter.More(); anIter.Next())
@@ -791,24 +776,26 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     {
       continue;
     }
+    else if (aPlaneId >= THE_MAX_CLIP_PLANES)
+    {
+      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
+        GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+        "Warning: clipping planes limit (8) has been exceeded.");
+      break;
+    }
 
     const Graphic3d_ClipPlane::Equation& anEquation = aPlane->GetEquation();
     anEquations[aPlaneId] = OpenGl_Vec4 ((float) anEquation.x(),
                                          (float) anEquation.y(),
                                          (float) anEquation.z(),
                                          (float) anEquation.w());
-    aSpaces[aPlaneId] = myContext->Clipping().GetEquationSpace (aPlane);
     ++aPlaneId;
   }
 
   theProgram->SetUniform (myContext,
                           theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT),
                           aPlanesNb);
-  theProgram->SetUniform (myContext, aLocEquations, MAX_CLIP_PLANES, anEquations);
-  theProgram->SetUniform (myContext, aLocSpaces,    MAX_CLIP_PLANES, aSpaces);
-
-  delete[] anEquations;
-  delete[] aSpaces;
+  theProgram->SetUniform (myContext, aLocEquations, THE_MAX_CLIP_PLANES, anEquations);
 }
 
 // =======================================================================

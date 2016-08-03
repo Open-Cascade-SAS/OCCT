@@ -21,8 +21,6 @@ set (Viewer3d_HEADER_FILES ${Viewer3d_SRC_DIR}/BoxRadius.h
                            ${Viewer3d_SRC_DIR}/Viewer3dApp.h
                            ${Viewer3d_SRC_DIR}/Viewer3dDoc.h
                            ${Viewer3d_SRC_DIR}/Viewer3dView.h
-                           ${Viewer3d_SRC_DIR}/ZClippingDlg.h
-                           ${Viewer3d_SRC_DIR}/ZCueingDlg.h
                            ${Viewer3d_SRC_DIR}/State.h
                            ${Viewer3d_RESOURCE_DIR}/resource.h
                            ${Viewer3d_RESOURCE_DIR}/resource.hm)
@@ -39,9 +37,7 @@ set (Viewer3d_SOURCE_FILES ${Viewer3d_SRC_DIR}/BoxRadius.cpp
                            ${Viewer3d_SRC_DIR}/TrihedronDlg.cpp
                            ${Viewer3d_SRC_DIR}/Viewer3dApp.cpp
                            ${Viewer3d_SRC_DIR}/Viewer3dDoc.cpp
-                           ${Viewer3d_SRC_DIR}/Viewer3dView.cpp
-                           ${Viewer3d_SRC_DIR}/ZClippingDlg.cpp
-                           ${Viewer3d_SRC_DIR}/ZCueingDlg.cpp)
+                           ${Viewer3d_SRC_DIR}/Viewer3dView.cpp)
 
 set (Viewer3d_RESOURCE_FILES ${Viewer3d_RESOURCE_DIR}/Viewer3d.rc
                              ${Viewer3d_RESOURCE_DIR}/AISToolbar.bmp

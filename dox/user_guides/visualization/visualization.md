@@ -1484,7 +1484,6 @@ For more details on the algorithm and examples of usage, please, refer to @ref o
 @subsection occt_visu_4_1 Glossary of 3D terms 
 
 * **Anti-aliasing**	This mode attempts to improve the screen resolution by drawing lines and curves in a mixture of colors so that to the human eye the line or curve is smooth. The quality of the result is linked to the quality of the algorithm used by the workstation hardware.
-* **Depth-cueing**	Reduces the color intensity for the portion of an object further away from the eye to give the impression of depth. This is used for wireframe objects. Shaded objects do not require this.
 * **Group**	-- a set of primitives and attributes on those primitives. Primitives and attributes may be added to a group but cannot be removed from it, unless erased globally. A group can have a pick identity.
 * **Light** There are five kinds of light source -- ambient, headlight, directional, positional and spot. The light is only activated in a shading context in a view.
 * **Primitive**  -- a drawable element. It has a definition in 3D space. Primitives can either be lines, faces, text, or markers. Once displayed markers and text remain the same size. Lines and faces can be modified e.g. zoomed. Primitives must be stored in a group.
@@ -1847,13 +1846,13 @@ The *Aspect* package provides classes for the graphic elements in the viewer:
 
 The *V3d* package provides the resources to define a 3D  viewer and the views attached to this viewer (orthographic, perspective). This  package provides the commands to manipulate the graphic scene of any 3D object  visualized in a view on screen.  
 
-A set of high-level commands allows the separate  manipulation of parameters and the result of a projection (Rotations, Zoom,  Panning, etc.) as well as the visualization attributes (Mode, Lighting,  Clipping, Depth-cueing, etc.) in any particular view.  
+A set of high-level commands allows the separate  manipulation of parameters and the result of a projection (Rotations, Zoom,  Panning, etc.) as well as the visualization attributes (Mode, Lighting, Clipping, etc.) in any particular view.  
 
 The *V3d* package is basically a set of tools directed by  commands from the viewer front-end. This tool set contains methods for creating  and editing classes of the viewer such as:  
   * Default parameters of the viewer, 
   * Views (orthographic, perspective), 
   * Lighting (positional, directional, ambient, spot, headlight), 
-  * Clipping planes (note that only Z-clipping planes can work with  the Phigs interface), 
+  * Clipping planes,
   * Instantiated sequences of views, planes, light sources, graphic  structures, and picks, 
   * Various package methods. 
 

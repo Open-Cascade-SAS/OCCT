@@ -6,8 +6,6 @@
 #define IDD_SETOFFSETS                  134
 #define IDD_SCALE                       139
 #define IDD_RADIUS                      144
-#define IDD_ZCLIPPING                   152
-#define IDD_ZCUEING                     153
 #define IDD_TRIHEDRON                   542
 #define ID_BOX                          802
 #define ID_Cylinder                     803
@@ -19,8 +17,6 @@
 #define ID_SPOT_LIGHT                   809
 #define ID_LIGHTOFF                     810
 #define ID_USERCYLINDER_CHANGEFACECOLOR 810
-#define ID_ZCLIPPING                    812
-#define ID_ZCUEING                      813
 #define ID_SHADINGMODEL                 814
 #define ID_ANTIALIASINGONOFF            815
 #define ID_CLEAR_LIGHTS                 816
@@ -80,20 +76,10 @@
 #define IDD_RESULTMESSAGEDLG            1500
 #define IDD_MODELCLIPPING               1501
 #define IDD_ISOS                        1502
-#define IDC_COMBO_ZCLIPPINGTYPE         1650
-#define IDC_CHECK_CUEINGONOFF           1651
 #define IDC_EDITTRIHEDRSCALE            1686
 #define IDC_SPINTRIHEDRSCALE            1737
 #define IDC_COMBOTRIHEDRPOS             1739
 #define IDC_COMBOTRIHEDRCOLOR           1740
-#define IDC_SLIDER_ZCLIPPINGDEPTH       2004
-#define IDC_SLIDER_ZCLIPPINGWIDTH       2005
-#define IDC_EDIT_ZCLIPPINGDEPTH         2006
-#define IDC_EDIT_ZCLIPPINGWIDTH         2007
-#define IDC_SLIDER_ZCUEINGDEPTH         2009
-#define IDC_SLIDER_ZCUEINGWIDTH         2010
-#define IDC_EDIT_ZCUEINGDEPTH           2011
-#define IDC_EDIT_ZCUEINGWIDTH           2012
 
 // Next default values for new objects
 // 

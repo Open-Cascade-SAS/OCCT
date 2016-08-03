@@ -49,7 +49,6 @@ enum OpenGl_StateVariable
 
   // OpenGL clip planes state
   OpenGl_OCC_CLIP_PLANE_EQUATIONS,
-  OpenGl_OCC_CLIP_PLANE_SPACES,
   OpenGl_OCC_CLIP_PLANE_COUNT,
 
   // OpenGL light state

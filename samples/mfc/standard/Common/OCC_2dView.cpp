@@ -100,7 +100,6 @@ void OCC_2dView::OnInitialUpdate()
   Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd(),Quantity_NOC_MATRAGRAY);	  
   myV2dView =((OCC_2dDoc*)GetDocument())->GetViewer2D()->CreateView();
   myV2dView->SetWindow(aWNTWindow);
-  myV2dView->SetZClippingType(V3d_OFF);
   // initialize the grids dialogs
   TheRectangularGridDialog.Create(CRectangularGrid::IDD, NULL);
   TheCircularGridDialog.Create(CCircularGrid::IDD, NULL);

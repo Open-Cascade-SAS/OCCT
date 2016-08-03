@@ -40,14 +40,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,Graphic3d_CView)
 #include <gl2ps.h>
 #endif
 
-/*----------------------------------------------------------------------*/
-
-namespace
-{
-  static const OPENGL_ZCLIP myDefaultZClip = { { Standard_False, 0.F }, { Standard_False, 1.F } };
-  static const OPENGL_FOG   myDefaultFog   = { Standard_False, 0.F, 1.F, OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f) };
-}
-
 // =======================================================================
 // function : Constructor
 // purpose  :
@@ -66,8 +58,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myShadingModel   (Graphic3d_TOSM_FACET),
   myBackfacing     (Graphic3d_TOBM_AUTOMATIC),
   myBgColor        (Quantity_NOC_BLACK),
-  myFog            (myDefaultFog),
-  myZClip          (myDefaultZClip),
   myCamera         (new Graphic3d_Camera()),
   myUseGLLight     (Standard_True),
   myToShowTrihedron      (false),
@@ -401,7 +391,6 @@ Aspect_Background OpenGl_View::Background() const
 void OpenGl_View::SetBackground (const Aspect_Background& theBackground)
 {
   myBgColor.SetRGB (theBackground.Color());
-  myFog.Color = myBgColor;
 }
 
 // =======================================================================

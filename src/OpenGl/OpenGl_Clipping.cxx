@@ -54,32 +54,20 @@ void OpenGl_Clipping::Init (const Standard_Integer theMaxPlanes)
 // purpose  :
 // =======================================================================
 void OpenGl_Clipping::add (const Handle(OpenGl_Context)&   theGlCtx,
-                           const EquationCoords&           theCoordSpace,
                            Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
   const bool toUseFfp = theGlCtx->core11 != NULL
                      && theGlCtx->caps->ffpEnable;
   if (!toUseFfp)
   {
-    addLazy (theGlCtx, theCoordSpace, thePlanes);
+    addLazy (theGlCtx, thePlanes);
     return;
-  }
-
-  if (EquationCoords_View == theCoordSpace)
-  {
-    theGlCtx->WorldViewState.Push();
-    theGlCtx->WorldViewState.SetIdentity();
   }
 
   // Set either identity or pure view matrix.
   theGlCtx->ApplyWorldViewMatrix();
 
-  addLazy (theGlCtx, theCoordSpace, thePlanes);
-
-  if (EquationCoords_View == theCoordSpace)
-  {
-    theGlCtx->WorldViewState.Pop();
-  }
+  addLazy (theGlCtx, thePlanes);
 
   // Restore combined model-view matrix.
   theGlCtx->ApplyModelViewMatrix();
@@ -90,7 +78,6 @@ void OpenGl_Clipping::add (const Handle(OpenGl_Context)&   theGlCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Clipping::addLazy (const Handle(OpenGl_Context)&   theGlCtx,
-                               const EquationCoords&           theCoordSpace,
                                Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
 #if !defined(GL_ES_VERSION_2_0)
@@ -112,7 +99,7 @@ void OpenGl_Clipping::addLazy (const Handle(OpenGl_Context)&   theGlCtx,
 
     Standard_Integer anID = myEmptyPlaneIds->Next();
     myPlanes.Append (aPlane);
-    myPlaneStates.Bind (aPlane, PlaneProps (theCoordSpace, anID, Standard_True));
+    myPlaneStates.Bind (aPlane, PlaneProps (anID, Standard_True));
 
   #if !defined(GL_ES_VERSION_2_0)
     if (toUseFfp)

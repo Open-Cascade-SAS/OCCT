@@ -53,26 +53,6 @@
 #include <map>
 #include <set>
 
-struct OPENGL_ZCLIP
-{
-  struct {
-    Standard_Boolean   IsOn;
-    Standard_ShortReal Limit; /* in the range [0., 1.] */
-  } Back;
-  struct {
-    Standard_Boolean   IsOn;
-    Standard_ShortReal Limit; /* in the range [0., 1.] */
-  } Front;
-};
-
-struct OPENGL_FOG
-{
-  Standard_Boolean   IsOn;
-  Standard_ShortReal Front; /* in the range [0., 1.] */
-  Standard_ShortReal Back; /* in the range [0., 1.] */
-  OpenGl_Vec4        Color;
-};
-
 struct OpenGl_Matrix;
 
 class Graphic3d_StructureManager;
@@ -327,60 +307,6 @@ public:
   //! Sets camera used by the view.
   virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE { myCamera = theCamera; }
 
-  //! Returns the activity of back z-clipping plane.
-  virtual Standard_Boolean BackZClippingIsOn() const Standard_OVERRIDE { return myZClip.Back.IsOn; }
-
-  //! Activates the back Z-clipping plane.
-  virtual void SetBackZClippingOn (const Standard_Boolean theIsOn) Standard_OVERRIDE { myZClip.Back.IsOn = theIsOn; }
-
-  //! Returns the definition of the back Z-clipping plane.
-  virtual Standard_Real ZClippingBackPlane() const Standard_OVERRIDE { return myZClip.Back.Limit; }
-
-  //! Sets the definition of the back Z-clipping plane.
-  virtual void SetZClippingBackPlane (const Standard_Real theValue) Standard_OVERRIDE
-  {
-    myZClip.Back.Limit = static_cast<Standard_ShortReal> (theValue);
-  }
-
-  //! Returns the activity of front z-clipping plane.
-  virtual Standard_Boolean FrontZClippingIsOn() const Standard_OVERRIDE { return myZClip.Front.IsOn; }
-
-  //! Activates the front Z-clipping plane.
-  virtual void SetFrontZClippingOn (const Standard_Boolean theIsOn) Standard_OVERRIDE{ myZClip.Front.IsOn = theIsOn; }
-
-  //! Returns the definition of the front Z-clipping plane.
-  virtual Standard_Real ZClippingFrontPlane() const Standard_OVERRIDE { return myZClip.Front.Limit; }
-
-  //! Sets the definition of the front Z-clipping plane.
-  virtual void SetZClippingFrontPlane (const Standard_Real theValue) Standard_OVERRIDE
-  {
-    myZClip.Front.Limit = static_cast<Standard_ShortReal> (theValue);
-  }
-
-  //! Returns the activity of depth cueing.
-  virtual Standard_Boolean DepthCueingIsOn() const Standard_OVERRIDE { return myFog.IsOn; }
-
-  //! Sets the activity of depth cueing.
-  virtual void SetDepthCueingOn (const Standard_Boolean theIsOn) Standard_OVERRIDE { myFog.IsOn = theIsOn; }
-
-  //! Returns the back depth cueing plane.
-  virtual Standard_Real DepthCueingBackPlane() const Standard_OVERRIDE { return myFog.Back; }
-
-  //! Set the back depth cueing plane.
-  virtual void SetDepthCueingBackPlane (const Standard_Real theValue) Standard_OVERRIDE
-  {
-    myFog.Back = static_cast<Standard_ShortReal> (theValue);
-  }
-
-  //! Returns the front depth cueing plane.
-  virtual Standard_Real DepthCueingFrontPlane() const Standard_OVERRIDE { return myFog.Front; }
-
-  //! Set the front depth cueing plane.
-  virtual void SetDepthCueingFrontPlane (const Standard_Real theValue) Standard_OVERRIDE
-  {
-    myFog.Front = static_cast<Standard_ShortReal> (theValue);
-  }
-
   //! Returns true if GL lighting is enabled.
   virtual Standard_Boolean IsGLLightEnabled() const Standard_OVERRIDE { return myUseGLLight; }
 
@@ -561,8 +487,6 @@ protected:
   Graphic3d_TypeOfShadingModel    myShadingModel;
   Graphic3d_TypeOfBackfacingModel myBackfacing;
   Quantity_ColorRGBA              myBgColor;
-  OPENGL_FOG                      myFog;
-  OPENGL_ZCLIP                    myZClip;
   Graphic3d_SequenceOfHClipPlane  myClipPlanes;
   Handle(Graphic3d_Camera)        myCamera;
   Handle(OpenGl_FrameBuffer)      myFBO;

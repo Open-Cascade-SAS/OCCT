@@ -172,8 +172,6 @@ static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveCon
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)> ViewerTest_myDrivers;
 static OpenGl_Caps ViewerTest_myDefaultCaps;
 
-#define ZCLIPWIDTH 1.
-
 static void OSWindowSetup();
 
 static struct
@@ -189,7 +187,6 @@ static struct
 //==============================================================================
 
 static int Start_Rot = 0;
-static int ZClipIsOn = 0;
 int X_Motion = 0; // Current cursor position
 int Y_Motion = 0;
 int X_ButtonPress = 0; // Last ButtonPress position
@@ -713,8 +710,6 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   const Handle (V3d_View) aV3dView = ViewerTest::CurrentView();
   aV3dView->SetComputedMode(Standard_False);
   MyHLRIsOn = aV3dView->ComputedMode();
-  aV3dView->SetZClippingDepth(0.5);
-  aV3dView->SetZClippingWidth(ZCLIPWIDTH/2.);
 
   a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
   if (toCreateViewer)
@@ -1487,24 +1482,6 @@ void VT_ProcessKeyPress (const char* buf_ret)
       Ctx->UpdateCurrentViewer();
     }
   }
-  else if (!strcasecmp (buf_ret, "Z"))
-  {
-    // ZCLIP
-    if ( ZClipIsOn ) {
-      cout << "ZClipping OFF" << endl;
-      ZClipIsOn = 0;
-
-      aView->SetZClippingType(V3d_OFF);
-      aView->Redraw();
-    }
-    else {
-      cout << "ZClipping ON" << endl;
-      ZClipIsOn = 1;
-
-      aView->SetZClippingType(V3d_FRONT);
-      aView->Redraw();
-    }
-  }
   else if (!strcasecmp (buf_ret, ","))
   {
     ViewerTest::GetAISContext()->HilightNextDetected(ViewerTest::CurrentView());
@@ -1660,41 +1637,6 @@ void VT_ProcessButton3Release()
     {
       ViewerTest::CurrentView()->SetComputedMode (Standard_True);
     }
-  }
-}
-
-//==============================================================================
-//function : ProcessZClipMotion
-//purpose  : Zoom
-//==============================================================================
-
-void ProcessZClipMotion()
-{
-  Handle(V3d_View)  a3DView = ViewerTest::CurrentView();
-  if ( Abs(X_Motion - X_ButtonPress) > 2 ) {
-
-    //Quantity_Length VDX, VDY;
-    //a3DView->Size(VDX,VDY);
-    //Standard_Real VDZ = a3DView->ZSize();
-    //printf("View size (%lf,%lf,%lf)\n", VDX, VDY, VDZ);
-
-    Quantity_Length aDx = a3DView->Convert(X_Motion - X_ButtonPress);
-
-    // Front = Depth + width/2.
-    Standard_Real aDepth = 0.5;
-    Standard_Real aWidth = 0.1;
-    a3DView->ZClipping(aDepth,aWidth);
-
-    aDepth += aDx;
-
-    //printf("dx %lf Depth %lf Width %lf\n", dx, D, W);
-
-    a3DView->SetZClippingDepth(aDepth);
-
-    a3DView->Redraw();
-
-    X_ButtonPress = X_Motion;
-    Y_ButtonPress = Y_Motion;
   }
 }
 
@@ -2205,27 +2147,9 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
               VT_ProcessControlButton3Motion();
             }
           }
-#ifdef BUG
-          else if ( fwKeys & MK_SHIFT ) {
-            if ( fwKeys & MK_MBUTTON ||
-              ((fwKeys&MK_LBUTTON) &&
-              (fwKeys&MK_RBUTTON) ) ) {
-                cout << "ProcessZClipMotion()" << endl;
-                ProcessZClipMotion();
-              }
-          }
-#endif
           else if (GetWindowHandle (VT_GetWindow()) == hwnd)
           {
-            if ((fwKeys & MK_MBUTTON
-            || ((fwKeys & MK_LBUTTON) && (fwKeys & MK_RBUTTON))))
-            {
-              ProcessZClipMotion();
-            }
-            else
-            {
-              VT_ProcessMotion();
-            }
+            VT_ProcessMotion();
           }
       }
       break;
@@ -2462,30 +2386,6 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
 
             // remove all the ButtonMotionMaskr
             while( XCheckMaskEvent( aDisplay, ButtonMotionMask, &aReport) ) ;
-
-            if ( ZClipIsOn && aReport.xmotion.state & ShiftMask ) {
-              if ( Abs(X_Motion - X_ButtonPress) > 2 ) {
-
-                Quantity_Length VDX, VDY;
-
-                ViewerTest::CurrentView()->Size(VDX,VDY);
-                Standard_Real VDZ =0 ;
-                VDZ = ViewerTest::CurrentView()->ZSize();
-
-                printf("%f,%f,%f\n", VDX, VDY, VDZ);
-
-                Quantity_Length dx = 0 ;
-                dx = ViewerTest::CurrentView()->Convert(X_Motion - X_ButtonPress);
-
-                cout << dx << endl;
-
-                dx = dx / VDX * VDZ;
-
-                cout << dx << endl;
-
-                ViewerTest::CurrentView()->Redraw();
-              }
-            }
 
             if ( aReport.xmotion.state & ControlMask ) {
               if ( aReport.xmotion.state & Button1Mask ) {
@@ -6204,119 +6104,6 @@ static Standard_Integer VChangeSelected (Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : VZClipping
-//purpose  : Gets or sets ZClipping mode, width and depth
-//=======================================================================
-static Standard_Integer VZClipping (Draw_Interpretor& di,
-                                Standard_Integer argc,
-                                const char ** argv)
-{
-  if(argc>4)
-  {
-    di << "Usage : " << argv[0] << " [mode] [depth  width]\n"
-      <<"mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
-    return -1;
-  }
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull())
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  V3d_TypeOfZclipping aZClippingMode = V3d_OFF;
-  if(argc==1)
-  {
-    TCollection_AsciiString aZClippingModeString;
-    Quantity_Length aDepth, aWidth;
-    aZClippingMode = aView->ZClipping(aDepth, aWidth);
-    switch (aZClippingMode)
-    {
-    case V3d_OFF:
-      aZClippingModeString.Copy("OFF");
-      break;
-    case V3d_BACK:
-      aZClippingModeString.Copy("BACK");
-      break;
-    case V3d_FRONT:
-      aZClippingModeString.Copy("FRONT");
-      break;
-    case V3d_SLICE:
-      aZClippingModeString.Copy("SLICE");
-      break;
-    default:
-      aZClippingModeString.Copy(TCollection_AsciiString(aZClippingMode));
-      break;
-    }
-    di << "ZClippingMode = " << aZClippingModeString.ToCString() << "\n"
-      << "ZClipping depth = " << aDepth << "\n"
-      << "ZClipping width = " << aWidth << "\n";
-  }
-  else
-  {
-    if(argc !=3)
-    {
-      Standard_Integer aStatus = 0;
-      if ( strcmp (argv [1], "OFF") == 0 ) {
-        aStatus = 1;
-        aZClippingMode = V3d_OFF;
-      }
-      if ( strcmp (argv [1], "BACK") == 0 ) {
-        aStatus = 1;
-        aZClippingMode = V3d_BACK;
-      }
-      if ( strcmp (argv [1], "FRONT") == 0 ) {
-        aStatus = 1;
-        aZClippingMode = V3d_FRONT;
-      }
-      if ( strcmp (argv [1], "SLICE") == 0 ) {
-        aStatus = 1;
-        aZClippingMode = V3d_SLICE;
-      }
-      if (aStatus != 1)
-      {
-        di << "Bad mode; Usage : " << argv[0] << " [mode] [depth width]\n"
-          << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
-        return 1;
-      }
-      aView->SetZClippingType(aZClippingMode);
-    }
-    if(argc >2)
-    {
-      Quantity_Length aDepth = 0., aWidth = 1.;
-      if(argc == 3)
-      {
-        aDepth = Draw::Atof (argv[1]);
-        aWidth = Draw::Atof (argv[2]);
-      }
-      else if(argc == 4)
-      {
-        aDepth = Draw::Atof (argv[2]);
-        aWidth = Draw::Atof (argv[3]);
-      }
-
-      if(aDepth<0. || aDepth>1.)
-      {
-        di << "Bad depth; Usage : " << argv[0] << " [mode] [depth width]\n"
-        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
-        return 1;
-      }
-      if(aWidth<0. || aWidth>1.)
-      {
-        di << "Bad width; Usage : " << argv[0] << " [mode] [depth width]\n"
-        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n";
-        return 1;
-      }
-
-      aView->SetZClippingDepth(aDepth);
-      aView->SetZClippingWidth(aWidth);
-    }
-    aView->Redraw();
-  }
-  return 0;
-}
-
-//=======================================================================
 //function : VNbSelected
 //purpose  : Returns number of selected objects
 //=======================================================================
@@ -9472,11 +9259,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vchangeselected shape"
     "- adds to shape to selection or remove one from it",
 		__FILE__, VChangeSelected, group);
-  theCommands.Add("vzclipping",
-    "vzclipping [mode] [depth width]\n"
-    "- mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n"
-    "- gets or sets ZClipping mode, width and depth",
-    __FILE__,VZClipping,group);
   theCommands.Add ("vnbselected",
     "vnbselected"
     "\n\t\t: Returns number of selected objects", __FILE__, VNbSelected, group);

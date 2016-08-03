@@ -179,20 +179,9 @@ void main()
   for (int anIndex = 0; anIndex < occClipPlaneCount; ++anIndex)
   {
     vec4 aClipEquation = occClipPlaneEquations[anIndex];
-    int  aClipSpace    = occClipPlaneSpaces[anIndex];
-    if (aClipSpace == OccEquationCoords_World)
+    if (dot (aClipEquation.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation.w < 0.0)
     {
-      if (dot (aClipEquation.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation.w < 0.0)
-      {
-        discard;
-      }
-    }
-    else if (aClipSpace == OccEquationCoords_View)
-    {
-      if (dot (aClipEquation.xyz, Position.xyz) + aClipEquation.w < 0.0)
-      {
-        discard;
-      }
+      discard;
     }
   }
 

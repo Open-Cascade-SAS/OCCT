@@ -456,48 +456,6 @@ public:
   //! Sets camera used by the view.
   virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) = 0;
 
-  //! Returns the activity of back z-clipping plane.
-  virtual Standard_Boolean BackZClippingIsOn() const = 0;
-
-  //! Activates the back Z-clipping plane.
-  virtual void SetBackZClippingOn (const Standard_Boolean theIsOn) = 0;
-
-  //! Returns the definition of the back Z-clipping plane.
-  virtual Standard_Real ZClippingBackPlane() const = 0;
-
-  //! Sets the definition of the back Z-clipping plane.
-  virtual void SetZClippingBackPlane (const Standard_Real theValue) = 0;
-
-  //! Returns the activity of front z-clipping plane.
-  virtual Standard_Boolean FrontZClippingIsOn() const = 0;
-
-  //! Activates the front Z-clipping plane.
-  virtual void SetFrontZClippingOn (const Standard_Boolean theIsOn) = 0;
-
-  //! Returns the definition of the front Z-clipping plane.
-  virtual Standard_Real ZClippingFrontPlane() const = 0;
-
-  //! Sets the definition of the front Z-clipping plane.
-  virtual void SetZClippingFrontPlane (const Standard_Real theValue) = 0;
-
-  //! Returns the activity of depth cueing.
-  virtual Standard_Boolean DepthCueingIsOn() const = 0;
-
-  //! Sets the activity of depth cueing.
-  virtual void SetDepthCueingOn (const Standard_Boolean theIsOn) = 0;
-
-  //! Returns the back depth cueing plane.
-  virtual Standard_Real DepthCueingBackPlane() const = 0;
-
-  //! Set the back depth cueing plane.
-  virtual void SetDepthCueingBackPlane (const Standard_Real theValue) = 0;
-
-  //! Returns the front depth cueing plane.
-  virtual Standard_Real DepthCueingFrontPlane() const = 0;
-
-  //! Set the front depth cueing plane.
-  virtual void SetDepthCueingFrontPlane (const Standard_Real theValue) = 0;
-
   //! Returns true if GL lighting is enabled.
   virtual Standard_Boolean IsGLLightEnabled() const = 0;
 

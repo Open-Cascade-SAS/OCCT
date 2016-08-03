@@ -165,12 +165,6 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
   SetSize (theViewer->DefaultViewSize());
   Standard_Real zsize = theViewer->DefaultViewSize();
   SetZSize (2.*zsize);
-  SetZClippingType (V3d_OFF);
-  SetZClippingDepth (0.);
-  SetZClippingWidth (zsize);
-  SetZCueingOff();
-  SetZCueingDepth (0.);
-  SetZCueingWidth (zsize);
   SetDepth (theViewer->DefaultViewSize() / 2.0);
   SetViewMappingDefault();
   SetViewOrientationDefault();

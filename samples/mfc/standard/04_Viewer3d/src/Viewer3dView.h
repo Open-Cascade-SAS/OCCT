@@ -116,9 +116,7 @@ protected:
 	afx_msg void OnSpotLight();
 	afx_msg void OnPositionalLight();
 	afx_msg void OnAmbientLight();
-	afx_msg void OnZcueing();
 	afx_msg void OnScale();
-	afx_msg void OnZclipping();
 	afx_msg void OnShadingmodel();
 	afx_msg void OnAntialiasingonoff();
 	afx_msg void OnClearLights();

@@ -386,9 +386,8 @@ Standard_Integer OpenGl_GraphicDriver::InquireViewLimit()
 // =======================================================================
 Standard_Integer OpenGl_GraphicDriver::InquirePlaneLimit()
 {
-  // NOTE the 2 first planes are reserved for ZClipping
   const Handle(OpenGl_Context)& aCtx = GetSharedContext();
-  return aCtx.IsNull() ? 0 : Max (aCtx->MaxClipPlanes() - 2, 0);
+  return aCtx.IsNull() ? aCtx->MaxClipPlanes() : 0;
 }
 
 // =======================================================================
