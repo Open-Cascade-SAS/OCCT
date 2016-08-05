@@ -922,10 +922,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 #endif
 
   aManager->SetShadingModel (myShadingModel);
-  if (!aManager->IsEmpty())
-  {
-    aManager->UpdateClippingState();
-  }
 
   // Redraw 3d scene
   if (theProjection == Graphic3d_Camera::Projection_MonoLeftEye)
@@ -954,17 +950,11 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // before drawing auxiliary stuff (trihedrons, overlayer)
   myWorkspace->ResetAppliedAspect();
 
-  aContext->ChangeClipping().RemoveAll (aContext);
 
-  if (!aManager->IsEmpty())
-  {
-    aManager->RevertClippingState();
-
-    // We need to disable (unbind) all shaders programs to ensure
-    // that all objects without specified aspect will be drawn
-    // correctly (such as background)
-    aContext->BindProgram (NULL);
-  }
+  // We need to disable (unbind) all shaders programs to ensure
+  // that all objects without specified aspect will be drawn
+  // correctly (such as background)
+  aContext->BindProgram (NULL);
 
   // Render trihedron
   if (!theToDrawImmediate)
@@ -1192,6 +1182,8 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
       // add planes at loaded view matrix state
       aContext->ChangeClipping().AddView (aContext, aSlicingPlanes);
     }
+
+    aContext->ShaderManager()->UpdateClippingState();
   }
 
 #ifdef _WIN32
@@ -1221,13 +1213,10 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
 
     if (!aUserPlanes.IsEmpty())
     {
-      aContext->ChangeClipping().AddWorldLazy (aContext, aUserPlanes);
+      aContext->ChangeClipping().AddWorld (aContext, aUserPlanes);
     }
 
-    if (!aContext->ShaderManager()->IsEmpty())
-    {
-      aContext->ShaderManager()->UpdateClippingState();
-    }
+    aContext->ShaderManager()->UpdateClippingState();
   }
 
 #if !defined(GL_ES_VERSION_2_0)
@@ -1313,6 +1302,16 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
 
   // Apply restored view matrix.
   aContext->ApplyWorldViewMatrix();
+
+  aContext->ChangeClipping().RemoveAll (aContext);
+  if (!myClipPlanes.IsEmpty())
+  {
+    aContext->ShaderManager()->RevertClippingState();
+  }
+  if (myZClip.Back.IsOn || myZClip.Front.IsOn)
+  {
+    aContext->ShaderManager()->RevertClippingState();
+  }
 
 #ifdef _WIN32
   // set printing scale/tiling transformation

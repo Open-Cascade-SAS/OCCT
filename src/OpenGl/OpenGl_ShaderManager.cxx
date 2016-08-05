@@ -228,7 +228,7 @@ const char THE_FRAG_CLIP_PLANES[] =
   EOL"    int  aClipSpace    = occClipPlaneSpaces[aPlaneIter];"
   EOL"    if (aClipSpace == OccEquationCoords_World)"
   EOL"    {"
-  EOL"      if (dot (aClipEquation.xyz, PositionWorld.xyz) + aClipEquation.w < 0.0)"
+  EOL"      if (dot (aClipEquation.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation.w < 0.0)"
   EOL"      {"
   EOL"        discard;"
   EOL"      }"

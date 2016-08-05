@@ -558,10 +558,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     aCtx->ChangeClipping().AddWorld (aCtx, *aUserPlanes);
 
     // Set OCCT state uniform variables
-    if (!aCtx->ShaderManager()->IsEmpty())
-    {
-      aCtx->ShaderManager()->UpdateClippingState();
-    }
+    aCtx->ShaderManager()->UpdateClippingState();
   }
 
   // Render groups
@@ -587,10 +584,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     aCtx->ChangeClipping().Remove (aCtx, *aUserPlanes);
 
     // Set OCCT state uniform variables
-    if (!aCtx->ShaderManager()->IsEmpty())
-    {
-      aCtx->ShaderManager()->RevertClippingState();
-    }
+    aCtx->ShaderManager()->RevertClippingState();
   }
 
   // Restore local transformation

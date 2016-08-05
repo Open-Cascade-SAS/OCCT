@@ -173,18 +173,6 @@ public: //! @name Short-cuts
     add (theGlCtx, EquationCoords_World, thePlanes);
   }
 
-  //! Add planes to the context clipping at the world system of coordinates.
-  //! If the number of the passed planes exceeds capabilities of OpenGl, the last planes
-  //! are simply ignored.
-  //! @param thePlanes [in/out] the list of planes to be added
-  //! The list then provides information on which planes were really added to clipping state.
-  //! This list then can be used to fall back to previous state.
-  inline void AddWorldLazy (const Handle(OpenGl_Context)&   theGlCtx,
-                            Graphic3d_SequenceOfHClipPlane& thePlanes)
-  {
-    addLazy (theGlCtx, EquationCoords_World, thePlanes);
-  }
-
   //! Remove all of the planes from context state.
   inline void RemoveAll (const Handle(OpenGl_Context)& theGlCtx)
   {

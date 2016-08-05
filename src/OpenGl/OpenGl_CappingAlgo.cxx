@@ -14,13 +14,14 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_CappingAlgo.hxx>
+
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_CappingPlaneResource.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Structure.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
+#include <OpenGl_ShaderManager.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingAlgoFilter,OpenGl_RenderFilter)
 
@@ -98,6 +99,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
       const Standard_Boolean isOn = (aPlane == aRenderPlane);
       aContext->ChangeClipping().SetEnabled (aContext, aPlane, isOn);
     }
+    aContext->ShaderManager()->UpdateClippingState();
 
     glClear (GL_STENCIL_BUFFER_BIT);
     glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -126,6 +128,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
       const Standard_Boolean isOn = (aPlane != aRenderPlane);
       aContext->ChangeClipping().SetEnabled (aContext, aPlane, isOn);
     }
+    aContext->ShaderManager()->UpdateClippingState();
 
     // render capping plane using the generated stencil mask
     glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -135,6 +138,9 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
     glEnable (GL_DEPTH_TEST);
 
     RenderPlane (theWorkspace, aRenderPlane);
+
+    aContext->ShaderManager()->RevertClippingState();
+    aContext->ShaderManager()->RevertClippingState();
   }
 
   // restore previous application state

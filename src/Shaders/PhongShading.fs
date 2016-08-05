@@ -182,7 +182,7 @@ void main()
     int  aClipSpace    = occClipPlaneSpaces[anIndex];
     if (aClipSpace == OccEquationCoords_World)
     {
-      if (dot (aClipEquation.xyz, PositionWorld.xyz) + aClipEquation.w < 0.0)
+      if (dot (aClipEquation.xyz, PositionWorld.xyz / PositionWorld.w) + aClipEquation.w < 0.0)
       {
         discard;
       }
