@@ -203,6 +203,10 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
           break;
       }
     }
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "collide")) {
+      TCollection_AsciiString aDummy;
+      aStatus = Scene().ReadWord (theBuffer, aDummy);
+    }
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "Separator") ||
              VRMLDATA_LCOMPARE (theBuffer.LinePtr, "Switch")) {
       Standard_Boolean isBracketed (Standard_False);

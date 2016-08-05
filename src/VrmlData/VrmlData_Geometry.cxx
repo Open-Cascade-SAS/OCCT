@@ -631,7 +631,16 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray
     // Read the body of the data node (list of triplets)
     if (OK(aStatus) && OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
       if (theBuffer.LinePtr[0] != '[')  // opening bracket
-        aStatus = VrmlData_VrmlFormatError;
+      {
+        // Handle case when brackets are ommited for single element of array
+        gp_XYZ anXYZ;
+        // Read three numbers (XYZ value)
+        if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ,
+                                          isScale, Standard_False)))
+          aStatus = VrmlData_VrmlFormatError;
+        else
+          vecValues.Append(anXYZ);
+      }
       else {
         theBuffer.LinePtr++;
         for(;;) {

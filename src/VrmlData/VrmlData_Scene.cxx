@@ -497,6 +497,9 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Separator"))
       aNode = new VrmlData_Group          (* this, strName,
                                            Standard_False);
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Collision"))
+      aNode = new VrmlData_Group          (* this, strName,
+                                           Standard_False);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Switch"))
       aNode = new VrmlData_Group          (* this, strName,
                                            Standard_False);
