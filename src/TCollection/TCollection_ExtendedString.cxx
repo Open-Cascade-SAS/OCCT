@@ -24,14 +24,21 @@
 
 #include <cctype>
 #include <cstdio>
-static
-  Standard_PExtCharacter Allocate(const Standard_Size aLength);
 
-static
-  Standard_PExtCharacter Reallocate(Standard_Address aAddr,
-                                    const Standard_Size aLength);
+namespace
+{
+  static Standard_PExtCharacter Allocate (const Standard_Size theLength)
+  {
+    return (Standard_PExtCharacter )Standard::Allocate (theLength);
+  }
 
-Standard_EXPORT short NULL_EXTSTRING[1] = {0};
+  static Standard_PExtCharacter Reallocate (Standard_Address theAddr, const Standard_Size theLength)
+  {
+    return (Standard_PExtCharacter )Standard::Reallocate (theAddr, theLength);
+  }
+
+  static const Standard_ExtCharacter NULL_EXTSTRING[1] = {0};
+}
 
 //============================== input value have len = 2 bytes ====
 inline Standard_ExtCharacter ConvertToUnicode2B (unsigned char *p)
@@ -817,7 +824,7 @@ Standard_Boolean TCollection_ExtendedString::ConvertToUnicode
                                                 (const Standard_CString aStr)
 {
   Standard_Boolean aRes = Standard_True;
-  short * p = mystring;
+  Standard_ExtCharacter* p = mystring;
   int i = 0;
   while (aStr[i] != '\0') { 
     if((aStr[i] & 0x80) == 0x00) //1byte => 1 symb - Lat1
@@ -903,25 +910,4 @@ Standard_Integer TCollection_ExtendedString::ToUTF8CString(Standard_PCharacter& 
   }
   theCString[j] = 0x00;
   return j;
-}
-//=======================================================================
-//function : Allocate
-//purpose  : 
-//=======================================================================
-Standard_PExtCharacter Allocate(const Standard_Size aLength)
-{
-  Standard_PExtCharacter pChar;
-  //
-  pChar=(Standard_PExtCharacter)Standard::Allocate(aLength);
-  //
-  return pChar;
-}
-//=======================================================================
-//function : Reallocate
-//purpose  : 
-//=======================================================================
-Standard_PExtCharacter Reallocate(Standard_Address aAddr,
-                                  const Standard_Size aLength)
-{
-  return (Standard_PExtCharacter)Standard::Reallocate(aAddr, aLength);
 }

@@ -1011,6 +1011,16 @@ The implementation of Graphic3d_Group::SetGroupPrimitivesAspect() has been chang
 Although it was not documented, previosly it was possible to modify single aspects instance (like Graphic3d_AspectFillArea3d) and set it to multiple groups.
 Now such code would produce unexpected result and therefore should be updated to create dedicated aspect instance.
 
+@subsection upgrade_710_types Typedefs
+
+The following type definitions in OCCT has been modified to use C++11 types:
+- *Standard_ExtCharacter* is now *char16_t* (previously *short*).
+- *Standard_ExtString;* is now *const char16_t* (previously *const short*).
+- *Standard_Utf16Char* is now *char16_t* (previously *uint16_t* for compatibility with old compilers).
+- *Standard_Utf32Char* is now *char32_t* (previously *uint32_t* for compatibility with old compilers).
+
+For most applications this change should be transparent, since the size of types have not been changed.
+
 @subsection upgrade_710_removed Removed features
 
 The following obsolete features have been removed:

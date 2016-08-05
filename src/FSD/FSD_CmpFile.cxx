@@ -447,7 +447,7 @@ Storage_BaseDriver& FSD_CmpFile::PutCharacter(const Standard_Character aValue)
 
 Storage_BaseDriver& FSD_CmpFile::PutExtCharacter(const Standard_ExtCharacter aValue)
 {
-  myStream << aValue << " ";
+  myStream << (short )aValue << " ";
   if (myStream.bad()) Storage_StreamWriteError::Raise();
   return *this;
 }
@@ -539,8 +539,9 @@ Storage_BaseDriver& FSD_CmpFile::GetCharacter(Standard_Character& aValue)
 
 Storage_BaseDriver& FSD_CmpFile::GetExtCharacter(Standard_ExtCharacter& aValue)
 {
-  if (!(myStream >> aValue)) Storage_StreamTypeMismatchError::Raise();
-  
+  short aChar = 0;
+  if (!(myStream >> aChar)) Storage_StreamTypeMismatchError::Raise();
+  aValue = aChar;
   return *this;
 }
 

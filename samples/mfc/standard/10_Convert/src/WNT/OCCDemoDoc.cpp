@@ -46,7 +46,7 @@ COCCDemoDoc::COCCDemoDoc()
 	Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
 		((COCCDemoApp*)AfxGetApp())->GetGraphicDriver();
 
-	myViewer = new V3d_Viewer(aGraphicDriver,(short *) "Visu3D");
+	myViewer = new V3d_Viewer(aGraphicDriver, (Standard_ExtString )"Visu3D");
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
   myViewer->SetDefaultBackgroundColor(Quantity_TOC_RGB, 0.,0.,0.);

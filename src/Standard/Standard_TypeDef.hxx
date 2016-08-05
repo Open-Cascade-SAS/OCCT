@@ -17,16 +17,7 @@
 
 #include <cstddef>
 #include <ctime>
-
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-  // old MSVC - hasn't stdint header
-  typedef unsigned __int8   uint8_t;
-  typedef unsigned __int16  uint16_t;
-  typedef unsigned __int32  uint32_t;
-  typedef unsigned __int64  uint64_t;
-#else
-  #include <stdint.h>
-#endif
+#include <stdint.h>
 
 #if(defined(_MSC_VER) && (_MSC_VER < 1800))
   // only Visual Studio 2013 (vc12) provides <cinttypes> header
@@ -61,21 +52,28 @@ typedef double        Standard_Real;
 typedef unsigned int  Standard_Boolean;
 typedef float         Standard_ShortReal;
 typedef char          Standard_Character;
-typedef short         Standard_ExtCharacter;
 typedef unsigned char Standard_Byte;
 typedef void*         Standard_Address;
 typedef size_t        Standard_Size;
 typedef std::time_t   Standard_Time;
 
-//
-typedef const char*   Standard_CString;
-typedef const short*  Standard_ExtString;
-
 // Unicode primitives, char16_t, char32_t
 typedef char          Standard_Utf8Char;     //!< signed   UTF-8 char
 typedef unsigned char Standard_Utf8UChar;    //!< unsigned UTF-8 char
-typedef uint16_t      Standard_Utf16Char;    //!< UTF-16 char (always unsigned)
-typedef uint32_t      Standard_Utf32Char;    //!< UTF-32 char (always unsigned)
+#if (defined(__GNUC__) && !defined(__clang__) && ((__GNUC__ == 4 && __GNUC_MINOR__ <= 3) || __GNUC__ < 4))
+// compatibility with old GCC compilers
+typedef uint16_t      Standard_ExtCharacter;
+typedef uint16_t      Standard_Utf16Char;
+typedef uint32_t      Standard_Utf32Char;
+#else
+typedef char16_t      Standard_ExtCharacter;
+typedef char16_t      Standard_Utf16Char;    //!< UTF-16 char (always unsigned)
+typedef char32_t      Standard_Utf32Char;    //!< UTF-32 char (always unsigned)
+#endif
 typedef wchar_t       Standard_WideChar;     //!< wide char (unsigned UTF-16 on Windows platform and signed UTF-32 on Linux)
+
+//
+typedef const Standard_Character*    Standard_CString;
+typedef const Standard_ExtCharacter* Standard_ExtString;
 
 #endif // _Standard_TypeDef_HeaderFile

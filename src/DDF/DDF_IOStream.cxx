@@ -413,7 +413,7 @@ Storage_BaseDriver& DDF_IOStream::PutCharacter(const Standard_Character aValue)
 
 Storage_BaseDriver& DDF_IOStream::PutExtCharacter(const Standard_ExtCharacter aValue)
 {
-  *myOStream << aValue << " ";
+  *myOStream << (short )aValue << " ";
   if (myOStream->bad()) Storage_StreamWriteError::Raise("PutExtCharacter");
   return *this;
 }
@@ -499,7 +499,9 @@ Storage_BaseDriver& DDF_IOStream::GetCharacter(Standard_Character& aValue)
 
 Storage_BaseDriver& DDF_IOStream::GetExtCharacter(Standard_ExtCharacter& aValue)
 {
-  if (!(*myIStream >> aValue)) Storage_StreamTypeMismatchError::Raise("GetExtCharacter");
+  short aChar = 0;
+  if (!(*myIStream >> aChar)) Storage_StreamTypeMismatchError::Raise("GetExtCharacter");
+  aValue = aChar;
   return *this;
 }
 

@@ -19,6 +19,7 @@
 #include <Standard_MMgrOpt.hxx>
 #include <Standard_MMgrRaw.hxx>
 #include <Standard_MMgrTBBalloc.hxx>
+#include <Standard_Assert.hxx>
 
 #include <stdlib.h>
 #if(defined(_WIN32) || defined(__WIN32__))
@@ -79,6 +80,13 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   // although there NO way to turn it off again and following calls will have no effect (locale will be changed only for current thread).
   _configthreadlocale (-1);
 #endif*/
+
+  // Check basic assumption.
+  // If assertion happens, then OCCT should be corrected for compatibility with such CPU architecture.
+  Standard_STATIC_ASSERT(sizeof(Standard_Utf8Char)  == 1);
+  Standard_STATIC_ASSERT(sizeof(short) == 2);
+  Standard_STATIC_ASSERT(sizeof(Standard_Utf16Char) == 2);
+  Standard_STATIC_ASSERT(sizeof(Standard_Utf32Char) == 4);
 
   char* aVar;
   aVar = getenv ("MMGT_OPT");
