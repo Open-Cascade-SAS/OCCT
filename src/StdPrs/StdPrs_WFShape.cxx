@@ -304,6 +304,11 @@ void StdPrs_WFShape::addEdgesOnTriangulation (const Handle(Prs3d_Presentation)& 
       }
     }
 
+    if (aNbFree == 0)
+    {
+      continue;
+    }
+
     // Allocate the arrays.
     TColStd_Array1OfInteger aFree (1, 2 * aNbFree);
     Standard_Integer aNbInternal = (3 * aNbTriangles - aNbFree) / 2;

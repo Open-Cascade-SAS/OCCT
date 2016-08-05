@@ -72,13 +72,17 @@ void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F,
 {
   myFace = F;
   TopLoc_Location L;
+  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(F, L);
+  if (aSurface.IsNull())
+    return;
+
   if (Restriction) {
     Standard_Real umin,umax,vmin,vmax;
     BRepTools::UVBounds(F,umin,umax,vmin,vmax);
-    mySurf.Load(BRep_Tool::Surface(F,L),umin,umax,vmin,vmax);
+    mySurf.Load(aSurface,umin,umax,vmin,vmax);
   }
   else 
-    mySurf.Load(BRep_Tool::Surface(F,L));
+    mySurf.Load(aSurface);
   myTrsf = L.Transformation();
 }
 

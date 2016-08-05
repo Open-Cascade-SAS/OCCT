@@ -147,6 +147,11 @@ Standard_Boolean Prs3d_ShapeTool::IsPlanarFace() const
   TopLoc_Location l;
   const TopoDS_Face& F = TopoDS::Face(myFaceExplorer.Current());
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(F, l);
+  if (S.IsNull())
+  {
+    return Standard_False;
+  }
+
   Handle(Standard_Type) TheType = S->DynamicType();
 
   if (TheType == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {

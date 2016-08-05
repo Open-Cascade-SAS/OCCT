@@ -74,7 +74,14 @@ void  BRepTools::UVBounds(const TopoDS_Face& F,
 {
   Bnd_Box2d B;
   AddUVBounds(F,B);
-  B.Get(UMin,VMin,UMax,VMax);
+  if (!B.IsVoid())
+  {
+    B.Get(UMin,VMin,UMax,VMax);
+  }
+  else
+  {
+    UMin = UMax = VMin = VMax = 0.0;
+  }
 }
 
 //=======================================================================
@@ -89,7 +96,14 @@ void  BRepTools::UVBounds(const TopoDS_Face& F,
 {
   Bnd_Box2d B;
   AddUVBounds(F,W,B);
-  B.Get(UMin,VMin,UMax,VMax);
+  if (!B.IsVoid())
+  {
+    B.Get(UMin,VMin,UMax,VMax);
+  }
+  else
+  {
+    UMin = UMax = VMin = VMax = 0.0;
+  }
 }
 
 
@@ -105,7 +119,14 @@ void  BRepTools::UVBounds(const TopoDS_Face& F,
 {
   Bnd_Box2d B;
   AddUVBounds(F,E,B);
-  B.Get(UMin,VMin,UMax,VMax);
+  if (!B.IsVoid())
+  {
+    B.Get(UMin,VMin,UMax,VMax);
+  }
+  else
+  {
+    UMin = UMax = VMin = VMax = 0.0;
+  }
 }
 
 //=======================================================================
@@ -130,7 +151,13 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& FF, Bnd_Box2d& B)
   if (aBox.IsVoid()) {
     Standard_Real UMin,UMax,VMin,VMax;
     TopLoc_Location L;
-    BRep_Tool::Surface(F,L)->Bounds(UMin,UMax,VMin,VMax);
+    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(F, L);
+    if (aSurf.IsNull())
+    {
+      return;
+    }
+
+    aSurf->Bounds(UMin,UMax,VMin,VMax);
     aBox.Update(UMin,VMin,UMax,VMax);
   }
   
@@ -162,7 +189,7 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF,
                             const TopoDS_Edge& aE,
                             Bnd_Box2d& aB)
 {
-  Standard_Real aT1, aT2, aXmin, aYmin, aXmax, aYmax;
+  Standard_Real aT1, aT2, aXmin = 0.0, aYmin = 0.0, aXmax = 0.0, aYmax = 0.0;
   Standard_Real aUmin, aUmax, aVmin, aVmax;
   Bnd_Box2d aBoxC, aBoxS; 
   TopLoc_Location aLoc;
@@ -173,7 +200,10 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF,
   }
   //
   BndLib_Add2dCurve::Add(aC2D, aT1, aT2, 0., aBoxC);
-  aBoxC.Get(aXmin, aYmin, aXmax, aYmax);
+  if (!aBoxC.IsVoid())
+  {
+    aBoxC.Get(aXmin, aYmin, aXmax, aYmax);
+  }
   //
   Handle(Geom_Surface) aS = BRep_Tool::Surface(aF, aLoc);
   aS->Bounds(aUmin, aUmax, aVmin, aVmax);

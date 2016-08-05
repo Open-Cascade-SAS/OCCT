@@ -178,6 +178,10 @@ void StdPrs_Isolines::AddOnTriangulation (const TopoDS_Face&          theFace,
   // Access surface definition.
   TopLoc_Location aLocSurface;
   Handle(Geom_Surface) aSurface = BRep_Tool::Surface (theFace, aLocSurface);
+  if (aSurface.IsNull())
+  {
+    return;
+  }
 
   // Access triangulation.
   TopLoc_Location aLocTriangulation;
@@ -611,7 +615,11 @@ void StdPrs_Isolines::UVIsoParameters (const TopoDS_Face&      theFace,
   aVmax = Min (aVmax,  theUVLimit);
 
   TopLoc_Location aLocation;
-  Handle(Geom_Surface) aSurface = BRep_Tool::Surface (theFace, aLocation);
+  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface (theFace, aLocation);
+  if (aSurface.IsNull())
+  {
+    return;
+  }
 
   const Standard_Boolean isUClosed = aSurface->IsUClosed();
   const Standard_Boolean isVClosed = aSurface->IsVClosed();
