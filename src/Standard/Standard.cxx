@@ -29,7 +29,7 @@
 
 #if defined(_MSC_VER) || defined(__ANDROID__) || defined(__QNX__)
   #include <malloc.h>
-#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
+#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1 && defined(__i386))
   #include <mm_malloc.h>
 #else
   extern "C" int posix_memalign (void** thePtr, size_t theAlign, size_t theSize);
@@ -266,7 +266,7 @@ Standard_Address Standard::AllocateAligned (const Standard_Size theSize,
   return _aligned_malloc (theSize, theAlign);
 #elif defined(__ANDROID__) || defined(__QNX__)
   return memalign (theAlign, theSize);
-#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
+#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1 && defined(__i386))
   return _mm_malloc (theSize, theAlign);
 #else
   void* aPtr;
@@ -289,7 +289,7 @@ void Standard::FreeAligned (Standard_Address thePtrAligned)
   _aligned_free (thePtrAligned);
 #elif defined(__ANDROID__) || defined(__QNX__)
   free (thePtrAligned);
-#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
+#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1 && defined(__i386))
   _mm_free (thePtrAligned);
 #else
   free (thePtrAligned);
