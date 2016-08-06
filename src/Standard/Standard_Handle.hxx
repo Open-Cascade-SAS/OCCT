@@ -117,20 +117,15 @@ namespace opencascade {
       return *this;
     }
 
-    //! STL-like cast to pointer to referred object
-    const T* get () const { return static_cast<const T*>(this->entity); }
-
-    //! STL-like cast to pointer to referred object
-    T* get () { return static_cast<T*>(this->entity); }
+    //! STL-like cast to pointer to referred object (note non-const).
+    //! @sa std::shared_ptr::get()
+    T* get() const { return static_cast<T*>(this->entity); }
 
     //! Member access operator (note non-const)
     T* operator-> () const { return static_cast<T*>(this->entity); }
 
-    //! Dereferencing operator
-    T& operator* () { return *get(); }
-
-    //! Const dereferencing operator
-    const T& operator*() const { return *get(); }
+    //! Dereferencing operator (note non-const)
+    T& operator* () const { return *get(); }
 
     //! Check for equality
     template <class T2>
