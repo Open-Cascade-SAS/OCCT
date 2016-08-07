@@ -318,13 +318,23 @@ void OpenGl_View::Redraw()
      || myMainSceneFbos[0]->GetVPSizeY() != aSizeY
      || myMainSceneFbos[0]->NbSamples()  != aNbSamples)
     {
+      if (!myTransientDrawToFront)
+      {
+        myImmediateSceneFbos[0]->Release (aCtx.operator->());
+        myImmediateSceneFbos[1]->Release (aCtx.operator->());
+        myImmediateSceneFbos[0]->ChangeViewport (0, 0);
+        myImmediateSceneFbos[1]->ChangeViewport (0, 0);
+      }
+
       // prepare FBOs containing main scene
       // for further blitting and rendering immediate presentations on top
       if (aCtx->core20fwd != NULL)
       {
         myMainSceneFbos[0]->Init (aCtx, aSizeX, aSizeY, myFboColorFormat, myFboDepthFormat, aNbSamples);
       }
-      if (!aCtx->caps->useSystemBuffer && myMainSceneFbos[0]->IsValid())
+      if (myTransientDrawToFront
+       && !aCtx->caps->useSystemBuffer
+       && myMainSceneFbos[0]->IsValid())
       {
         myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0]);
       }
@@ -433,6 +443,10 @@ void OpenGl_View::Redraw()
     if (!aCtx->caps->useSystemBuffer && myImmediateSceneFbos[0]->IsValid())
     {
       anImmFbo = myImmediateSceneFbos[0].operator->();
+    }
+    if (!myTransientDrawToFront)
+    {
+      anImmFbo = aMainFbo;
     }
 
   #if !defined(GL_ES_VERSION_2_0)
@@ -708,7 +722,8 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
 {
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   GLboolean toCopyBackToFront = GL_FALSE;
-  if (!myTransientDrawToFront)
+  if (theDrawFbo == theReadFbo
+   && theDrawFbo != NULL)
   {
     myBackBufferRestored = Standard_False;
   }
@@ -1339,6 +1354,7 @@ void OpenGl_View::bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo)
   if (anFbo != NULL)
   {
     anFbo->BindBuffer (aCtx);
+    anFbo->SetupViewport (aCtx);
   }
   else
   {
@@ -1350,8 +1366,8 @@ void OpenGl_View::bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo)
       aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
   #endif
+    aCtx->core11fwd->glViewport (0, 0, myWindow->Width(), myWindow->Height());
   }
-  aCtx->core11fwd->glViewport (0, 0, myWindow->Width(), myWindow->Height());
 }
 
 // =======================================================================

@@ -15,10 +15,28 @@ vrotate 0.5 0 0
 vzbufftrihedron
 
 vrenderparams -msaa 0
-vdump $::imagedir/${::casename}_0.png
+vdump $::imagedir/${::casename}_512x512@msaa0.png
 vrenderparams -msaa 2
-vdump $::imagedir/${::casename}_2.png
+vdump $::imagedir/${::casename}_512x512@msaa2.png
 vrenderparams -msaa 4
-vdump $::imagedir/${::casename}_4.png
+vdump $::imagedir/${::casename}_512x512@msaa4.png
 vrenderparams -msaa 8
-vdump $::imagedir/${::casename}_8.png
+vdump $::imagedir/${::casename}_512x512@msaa8.png
+
+# check dump with resolutions not equal to window size
+vdump $::imagedir/${::casename}_1920x1080@msaa8.png -width 1920 -height 1080
+vdump $::imagedir/${::casename}_2560x1440@msaa8.png -width 2560 -height 1440
+
+# check dump with stereo
+vstereo anaglyph
+vdump $::imagedir/${::casename}_512x512@msaa8stereo.png -stereo blend
+vdump $::imagedir/${::casename}_1920x1080@msaa8stereo.png -width 1920 -height 1080 -stereo blend
+vdump $::imagedir/${::casename}_2560x1440@msaa8stereo.png -width 2560 -height 1440 -stereo blend
+
+vraytrace 1
+vsetdispmode b 1
+vdump $::imagedir/${::casename}_512x512@msaa8stereort.png -stereo blend
+vdump $::imagedir/${::casename}_1920x1080@msaa8stereort.png -width 1920 -height 1080 -stereo blend
+vdump $::imagedir/${::casename}_2560x1440@msaa8stereort.png -width 2560 -height 1440 -stereo blend
+vsetdispmode b 0
+vraytrace 0
