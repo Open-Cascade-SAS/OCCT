@@ -165,19 +165,16 @@ void SelectMgr_SelectionManager::Load (const Handle(SelectMgr_SelectableObject)&
   {
     if (!myGlobal.Contains (theObject))
     {
-      if (theObject->HasOwnPresentations())
+      for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
       {
-        SelectMgr_SequenceOfSelector aSelectors;
-        aSelectors.Append (theSelector);
-        myLocal.Bind (theObject, aSelectors);
+        Load (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theSelector, theMode);
       }
-      else
-      {
-        for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
-        {
-          Load (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theSelector, theMode);
-        }
-      }
+      if (!theObject->HasOwnPresentations())
+        return;
+
+      SelectMgr_SequenceOfSelector aSelectors;
+      aSelectors.Append (theSelector);
+      myLocal.Bind (theObject, aSelectors);
     }
   }
 }
@@ -189,6 +186,14 @@ void SelectMgr_SelectionManager::Load (const Handle(SelectMgr_SelectableObject)&
 //==================================================
 void SelectMgr_SelectionManager::Remove (const Handle(SelectMgr_SelectableObject)& theObject)
 {
+  for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
+  {
+    Remove (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()));
+  }
+
+  if (!theObject->HasOwnPresentations())
+    return;
+
   if (myGlobal.Contains (theObject))
   {
     for (TColStd_MapIteratorOfMapOfTransient aSelectorsIter (mySelectors); aSelectorsIter.More(); aSelectorsIter.Next())
@@ -227,13 +232,6 @@ void SelectMgr_SelectionManager::Remove (const Handle(SelectMgr_SelectableObject
     }
 
     myLocal.UnBind (theObject);
-  }
-  else if (!theObject->HasOwnPresentations())
-  {
-    for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
-    {
-      Remove (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()));
-    }
   }
 
   theObject->ClearSelections();
@@ -298,15 +296,13 @@ void SelectMgr_SelectionManager::Activate (const Handle(SelectMgr_SelectableObje
   if (!theSelector.IsNull() && !mySelectors.Contains (theSelector))
     return;
 
-  if (!theObject->HasOwnPresentations())
+  for (PrsMgr_ListOfPresentableObjectsIter anChildIter (theObject->Children()); anChildIter.More(); anChildIter.Next())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anChildIter (theObject->Children()); anChildIter.More(); anChildIter.Next())
-    {
-      Activate (Handle(SelectMgr_SelectableObject)::DownCast (anChildIter.Value()), theMode, theSelector);
-    }
-
-    return;
+    Activate (Handle(SelectMgr_SelectableObject)::DownCast (anChildIter.Value()), theMode, theSelector);
   }
+
+  if (!theObject->HasOwnPresentations())
+    return;
 
   Standard_Boolean isComputed = Standard_False;
   if (theObject->HasSelection (theMode))
@@ -399,16 +395,13 @@ void SelectMgr_SelectionManager::Deactivate (const Handle(SelectMgr_SelectableOb
                                              const Standard_Integer theMode,
                                              const Handle(SelectMgr_ViewerSelector)& theSelector)
 {
+  for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
+  {
+    Deactivate (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theMode, theSelector);
+  }
 
   if (!theObject->HasOwnPresentations())
-  {
-    for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
-    {
-      Deactivate (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theMode, theSelector);
-    }
-
     return;
-  }
 
   Standard_Boolean isInGlobal = myGlobal.Contains (theObject);
   Standard_Boolean hasSelection = theMode == -1 ? Standard_True : theObject->HasSelection (theMode);
@@ -459,16 +452,14 @@ Standard_Boolean SelectMgr_SelectionManager::IsActivated (const Handle(SelectMgr
                                                           const Standard_Integer theMode,
                                                           const Handle(SelectMgr_ViewerSelector)& theSelector) const
 {
-  if (!theObject->HasOwnPresentations())
+  for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObject->Children()); anChildrenIter.More(); anChildrenIter.Next())
-    {
-      if (IsActivated (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theMode, theSelector))
-        return Standard_True;
-    }
-
-    return Standard_False;
+    if (IsActivated (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theMode, theSelector))
+      return Standard_True;
   }
+
+  if (!theObject->HasOwnPresentations())
+    return Standard_False;
 
   if (!(myGlobal.Contains (theObject) || myLocal.IsBound (theObject)))
     return Standard_False;

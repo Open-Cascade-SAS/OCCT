@@ -1,0 +1,26 @@
+puts "============"
+puts "CR27757"
+puts "Visualization - handle child objects in selection manager regardless of HasOwnPresentations() flag"
+puts "============"
+puts ""
+
+pload VISUALIZATION QAcommands
+
+vinit
+
+# create box object that has sphere as a child object
+OCC27757
+vfit
+
+# check if the sphere was activated in selection manager
+# and is selectable
+vselect 120 245
+
+if {[vnbselected] != "1"} {
+  puts "Error: no object was selected; the sphere must be selected!"
+}
+if {[vreadpixel 145 285 name] != "GRAY80 1"} {
+  puts "Error: the sphere is not highlighted with selection color!"
+}
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

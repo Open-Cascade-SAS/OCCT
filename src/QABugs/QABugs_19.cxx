@@ -5243,6 +5243,35 @@ static Standard_Integer OCC27700 (Draw_Interpretor& /*theDI*/, Standard_Integer 
 }
 
 //========================================================================
+//function : OCC27757
+//purpose  : Creates a box that has a sphere as child object and displays it
+//========================================================================
+static Standard_Integer OCC27757 (Draw_Interpretor& /*theDI*/, Standard_Integer /*theArgc*/, const char** theArgv)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "No interactive context. Use 'vinit' command before " << theArgv[0] << "\n";
+    return 1;
+  }
+
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox (20.0, 20.0, 20.0).Shape();
+  TopoDS_Shape aSphere = BRepPrimAPI_MakeSphere (10.0).Shape();
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslationPart (gp_Vec (20.0, 20.0, 0.0));
+  aSphere.Located (TopLoc_Location (aTrsf));
+
+
+  Handle(AIS_Shape) aBoxObj = new AIS_Shape (aBox);
+  Handle(AIS_Shape) aSphereObj = new AIS_Shape (aSphere);
+  aBoxObj->AddChild (aSphereObj);
+  aCtx->Display (aBoxObj, 1, 0, Standard_False);
+  aCtx->UpdateCurrentViewer();
+
+  return 0;
+}
+
+//========================================================================
 //function : Commands_19
 //purpose  :
 //========================================================================
@@ -5369,5 +5398,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC27700",
                    "OCC27700: Checks drawing text after setting interior style",
                    __FILE__, OCC27700, group);
+  theCommands.Add ("OCC27757",
+                   "OCC27757: Creates a box that has a sphere as child object and displays it",
+                   __FILE__, OCC27757, group);
   return;
 }
