@@ -28,22 +28,13 @@ public:
   Standard_EXPORT OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
                                           const Handle(OpenGl_Structure)&           theStructure);
 
-  //! Return groups of parent structure.
-  virtual const Graphic3d_SequenceOfGroup& DrawGroups() const Standard_OVERRIDE
-  { return myParent->DrawGroups(); }
+public:
 
-  //! Renders groups of parent structure.
-  virtual void renderGeometry (const Handle(OpenGl_Workspace)& theWorkspace,
-                               bool&                           theHasClosed) const Standard_OVERRIDE
-  {
-    myParent->renderGeometry (theWorkspace, theHasClosed);
-  }
+  //! Raise exception on API misuse.
+  virtual void Connect (Graphic3d_CStructure& ) Standard_OVERRIDE;
 
-  //! Renders closed groups of parent structure.
-  virtual void renderClosedGeometry (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE
-  {
-    myParent->renderClosedGeometry (theWorkspace);
-  }
+  //! Raise exception on API misuse.
+  virtual void Disconnect (Graphic3d_CStructure& ) Standard_OVERRIDE;
 
 private:
 

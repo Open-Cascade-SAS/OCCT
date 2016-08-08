@@ -14,16 +14,29 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_ClipPlane.hxx>
+
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <gp_Pln.hxx>
 #include <Standard_Atomic.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ClipPlane,Standard_Transient)
 
 namespace
 {
   static volatile Standard_Integer THE_CLIP_PLANE_COUNTER = 0;
+
+  static Handle(Graphic3d_AspectFillArea3d) defaultAspect()
+  {
+    const Graphic3d_MaterialAspect aMaterial (Graphic3d_NOM_DEFAULT);
+    Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
+    anAspect->SetDistinguishOff();
+    anAspect->SetFrontMaterial (aMaterial);
+    anAspect->SetHatchStyle (Aspect_HS_HORIZONTAL);
+    anAspect->SetInteriorStyle (Aspect_IS_SOLID);
+    anAspect->SetInteriorColor (aMaterial.Color());
+    anAspect->SetSuppressBackFaces (false);
+    return anAspect;
+  }
 }
 
 // =======================================================================
@@ -31,17 +44,15 @@ namespace
 // purpose  :
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane()
-: myEquation (0.0, 0.0, 1.0, 0.0),
+: myAspect (defaultAspect()),
+  myEquation (0.0, 0.0, 1.0, 0.0),
+  myFlags (Graphic3d_CappingFlags_None),
   myIsOn (Standard_True),
   myIsCapping (Standard_False),
-  myMaterial (Graphic3d_NOM_DEFAULT),
-  myHatch (Aspect_HS_HORIZONTAL),
-  myHatchOn (Standard_False),
-  myId(),
   myEquationMod(0),
   myAspectMod(0)
 {
-  MakeId();
+  makeId();
 }
 
 // =======================================================================
@@ -49,17 +60,15 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane()
 // purpose  :
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Equation& theEquation)
-: myEquation (theEquation),
+: myAspect (defaultAspect()),
+  myEquation (theEquation),
+  myFlags (Graphic3d_CappingFlags_None),
   myIsOn (Standard_True),
   myIsCapping (Standard_False),
-  myMaterial (Graphic3d_NOM_DEFAULT),
-  myHatch (Aspect_HS_HORIZONTAL),
-  myHatchOn (Standard_False),
-  myId(),
   myEquationMod(0),
   myAspectMod(0)
 {
-  MakeId();
+  makeId();
 }
 
 // =======================================================================
@@ -68,18 +77,16 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Equation& theEquation)
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
 : Standard_Transient(theOther),
+  myAspect (defaultAspect()),
   myEquation (theOther.myEquation),
+  myFlags (theOther.myFlags),
   myIsOn (theOther.myIsOn),
   myIsCapping (theOther.myIsCapping),
-  myMaterial (theOther.myMaterial),
-  myTexture (theOther.myTexture),
-  myHatch (theOther.myHatch),
-  myHatchOn (theOther.myHatchOn),
-  myId(),
   myEquationMod (0),
   myAspectMod (0)
 {
-  MakeId();
+  makeId();
+  *myAspect = *theOther.CappingAspect();
 }
 
 // =======================================================================
@@ -87,17 +94,15 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
 // purpose  :
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const gp_Pln& thePlane)
-: myEquation (),
+: myAspect (defaultAspect()),
+  myEquation (),
+  myFlags (Graphic3d_CappingFlags_None),
   myIsOn (Standard_True),
   myIsCapping (Standard_False),
-  myMaterial (Graphic3d_NOM_DEFAULT),
-  myHatch (Aspect_HS_HORIZONTAL),
-  myHatchOn (Standard_False),
-  myId(),
   myEquationMod(0),
   myAspectMod(0)
 {
-  MakeId();
+  makeId();
   SetEquation (thePlane);
 }
 
@@ -169,8 +174,9 @@ Handle(Graphic3d_ClipPlane) Graphic3d_ClipPlane::Clone() const
 // =======================================================================
 void Graphic3d_ClipPlane::SetCappingMaterial (const Graphic3d_MaterialAspect& theMat)
 {
-  myMaterial = theMat;
-  myAspectMod++;
+  myAspect->SetFrontMaterial (theMat);
+  myAspect->SetInteriorColor (theMat.Color());
+  ++myAspectMod;
 }
 
 // =======================================================================
@@ -179,8 +185,16 @@ void Graphic3d_ClipPlane::SetCappingMaterial (const Graphic3d_MaterialAspect& th
 // =======================================================================
 void Graphic3d_ClipPlane::SetCappingTexture (const Handle(Graphic3d_TextureMap)& theTexture)
 {
-  myTexture = theTexture;
-  myAspectMod++;
+  myAspect->SetTextureMap (theTexture);
+  if (!theTexture.IsNull())
+  {
+    myAspect->SetTextureMapOn();
+  }
+  else
+  {
+    myAspect->SetTextureMapOff();
+  }
+  ++myAspectMod;
 }
 
 // =======================================================================
@@ -189,8 +203,8 @@ void Graphic3d_ClipPlane::SetCappingTexture (const Handle(Graphic3d_TextureMap)&
 // =======================================================================
 void Graphic3d_ClipPlane::SetCappingHatch (const Aspect_HatchStyle theStyle)
 {
-  myHatch = theStyle;
-  myAspectMod++;
+  myAspect->SetHatchStyle (theStyle);
+  ++myAspectMod;
 }
 
 // =======================================================================
@@ -199,8 +213,8 @@ void Graphic3d_ClipPlane::SetCappingHatch (const Aspect_HatchStyle theStyle)
 // =======================================================================
 void Graphic3d_ClipPlane::SetCappingHatchOn()
 {
-  myHatchOn = Standard_True;
-  myAspectMod++;
+  myAspect->SetInteriorStyle (Aspect_IS_HATCH);
+  ++myAspectMod;
 }
 
 // =======================================================================
@@ -209,41 +223,43 @@ void Graphic3d_ClipPlane::SetCappingHatchOn()
 // =======================================================================
 void Graphic3d_ClipPlane::SetCappingHatchOff()
 {
-  myHatchOn = Standard_False;
-  myAspectMod++;
+  myAspect->SetInteriorStyle (Aspect_IS_SOLID);
+  ++myAspectMod;
 }
 
 // =======================================================================
-// function : MakeId
+// function : SetCappingAspect
 // purpose  :
 // =======================================================================
-void Graphic3d_ClipPlane::MakeId()
+void Graphic3d_ClipPlane::SetCappingAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect)
 {
-  myId = TCollection_AsciiString ("Graphic3d_ClipPlane_") //DynamicType()->Name()
-       + TCollection_AsciiString (Standard_Atomic_Increment (&THE_CLIP_PLANE_COUNTER));
+  myAspect = theAspect;
+  ++myAspectMod;
 }
 
 // =======================================================================
-// function : CappingAspect
+// function : setCappingFlag
 // purpose  :
 // =======================================================================
-Handle(Graphic3d_AspectFillArea3d) Graphic3d_ClipPlane::CappingAspect() const
+void Graphic3d_ClipPlane::setCappingFlag (bool theToUse, int theFlag)
 {
-  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
-  anAspect->SetDistinguishOff();
-  anAspect->SetFrontMaterial (myMaterial);
-  anAspect->SetTextureMap (myTexture);
-  anAspect->SetHatchStyle (myHatch);
-  anAspect->SetInteriorStyle (myHatchOn ? Aspect_IS_HATCH : Aspect_IS_SOLID);
-  anAspect->SetInteriorColor (myMaterial.Color());
-  anAspect->SetSuppressBackFaces (false);
-  if (!myTexture.IsNull())
+  if (theToUse)
   {
-    anAspect->SetTextureMapOn();
+    myFlags |= theFlag;
   }
   else
   {
-    anAspect->SetTextureMapOff();
+    myFlags &= ~(theFlag);
   }
-  return anAspect;
+  ++myAspectMod;
+}
+
+// =======================================================================
+// function : makeId
+// purpose  :
+// =======================================================================
+void Graphic3d_ClipPlane::makeId()
+{
+  myId = TCollection_AsciiString ("Graphic3d_ClipPlane_") //DynamicType()->Name()
+       + TCollection_AsciiString (Standard_Atomic_Increment (&THE_CLIP_PLANE_COUNTER));
 }

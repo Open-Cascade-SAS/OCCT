@@ -45,12 +45,17 @@ public:
   Standard_EXPORT virtual ~OpenGl_CappingPlaneResource();
 
   //! Update resource data in the passed context.
-  //! @param theContext [in] the context.
-  Standard_EXPORT void Update (const Handle(OpenGl_Context)& theContext);
+  //! @param theContext   [in] the context
+  //! @param theObjAspect [in] object aspect
+  Standard_EXPORT void Update (const Handle(OpenGl_Context)& theContext,
+                               const Handle(Graphic3d_AspectFillArea3d)& theObjAspect);
 
   //! Release associated OpenGl resources.
   //! @param theContext [in] the resource context.
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
+
+  //! Return parent clipping plane structure.
+  const Handle(Graphic3d_ClipPlane)& Plane() const { return myPlaneRoot; }
 
   //! @return aspect face for rendering capping surface.
   inline const OpenGl_AspectFace* AspectFace() const { return myAspect; }
@@ -64,11 +69,10 @@ public:
 private:
 
   //! Update precomputed plane orientation matrix.
-  void UpdateTransform();
+  void updateTransform();
 
   //! Update resources.
-  //! @param theContext [in] the context.
-  void UpdateAspect (const Handle(OpenGl_Context)& theContext);
+  void updateAspect (const Handle(Graphic3d_AspectFillArea3d)& theObjAspect);
 
 private:
 
@@ -76,6 +80,7 @@ private:
   OpenGl_Matrix               myOrientation;   //!< plane transformation matrix.
   OpenGl_AspectFace*          myAspect;        //!< capping face aspect.
   Handle(Graphic3d_ClipPlane) myPlaneRoot;     //!< parent clipping plane structure.
+  Handle(Graphic3d_AspectFillArea3d) myFillAreaAspect; //!< own capping aspect
   unsigned int                myEquationMod;   //!< modification counter for plane equation.
   unsigned int                myAspectMod;     //!< modification counter for aspect.
 

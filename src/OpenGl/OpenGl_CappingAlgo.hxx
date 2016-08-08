@@ -21,7 +21,9 @@
 
 // Forward declaration
 class OpenGl_CappingAlgoFilter;
+class OpenGl_CappingPlaneResource;
 class OpenGl_Structure;
+
 DEFINE_STANDARD_HANDLE (OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 
 //! Capping surface rendering algorithm.
@@ -36,11 +38,6 @@ public:
   Standard_EXPORT static void RenderCapping (const Handle(OpenGl_Workspace)& theWorkspace,
                                              const OpenGl_Structure&         theStructure);
 
-  //! Render infinite capping plane.
-  //! @param theWorkspace [in] the GL workspace, context state.
-  //! @param thePlane [in] the graphical plane, for which the capping surface is rendered.
-  Standard_EXPORT static void RenderPlane (const Handle(OpenGl_Workspace)& theWorkspace,
-                                           const Handle(Graphic3d_ClipPlane)& thePlane);
 };
 
 //! Graphical capping rendering algorithm filter.

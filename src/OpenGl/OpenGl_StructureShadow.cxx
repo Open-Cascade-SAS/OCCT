@@ -16,6 +16,7 @@
 #include <OpenGl_StructureShadow.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Standard_ProgramError.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow,OpenGl_Structure)
 
@@ -38,4 +39,25 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
   UpdateTransformation();
   myInstancedStructure = const_cast<OpenGl_Structure*> (myParent->InstancedStructure());
   TransformPersistence = myParent->TransformPersistence;
+
+  // reuse instanced structure API
+  myInstancedStructure = myParent.operator->();
+}
+
+// =======================================================================
+// function : Connect
+// purpose  :
+// =======================================================================
+void OpenGl_StructureShadow::Connect (Graphic3d_CStructure& )
+{
+  Standard_ProgramError::Raise ("Error! OpenGl_StructureShadow::Connect() should not be called!");
+}
+
+// =======================================================================
+// function : Disconnect
+// purpose  :
+// =======================================================================
+void OpenGl_StructureShadow::Disconnect (Graphic3d_CStructure& )
+{
+  Standard_ProgramError::Raise ("Error! OpenGl_StructureShadow::Disconnect() should not be called!");
 }

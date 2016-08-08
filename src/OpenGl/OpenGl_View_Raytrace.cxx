@@ -109,7 +109,7 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
             continue;
           }
 
-          for (OpenGl_Structure::GroupIterator aGroupIter (aStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
+          for (OpenGl_Structure::GroupIterator aGroupIter (aStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
           {
             // Extract OpenGL elements from the group (primitives arrays)
             for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != NULL; aNode = aNode->next)
@@ -457,7 +457,7 @@ Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        
                                                  const Graphic3d_Mat4*          theTransform,
                                                  const Handle(OpenGl_Context)&  theGlContext)
 {
-  for (OpenGl_Structure::GroupIterator aGroupIter (theStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
+  for (OpenGl_Structure::GroupIterator aGroupIter (theStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
   {
     // Get group material
     OpenGl_RaytraceMaterial aGroupMaterial;

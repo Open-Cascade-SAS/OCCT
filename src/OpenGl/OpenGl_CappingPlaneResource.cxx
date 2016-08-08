@@ -99,10 +99,11 @@ OpenGl_CappingPlaneResource::~OpenGl_CappingPlaneResource()
 // function : Update
 // purpose  :
 // =======================================================================
-void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& theContext)
+void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& ,
+                                          const Handle(Graphic3d_AspectFillArea3d)& theObjAspect)
 {
-  UpdateTransform();
-  UpdateAspect (theContext);
+  updateTransform();
+  updateAspect (theObjAspect);
 }
 
 // =======================================================================
@@ -118,44 +119,67 @@ void OpenGl_CappingPlaneResource::Release (OpenGl_Context* theContext)
 }
 
 // =======================================================================
-// function : UpdateAspect
+// function : updateAspect
 // purpose  :
 // =======================================================================
-void OpenGl_CappingPlaneResource::UpdateAspect (const Handle(OpenGl_Context)& theContext)
+void OpenGl_CappingPlaneResource::updateAspect (const Handle(Graphic3d_AspectFillArea3d)& theObjAspect)
 {
-  Handle(Graphic3d_AspectFillArea3d) aCappingAsp = myPlaneRoot->CappingAspect();
-  if (myAspect != NULL && !aCappingAsp.IsNull())
-  {
-    if (myAspectMod == myPlaneRoot->MCountAspect())
-      return; // noting to update
-    
-    myAspect->SetAspect (aCappingAsp);
-    myAspectMod = myPlaneRoot->MCountAspect();
-    return;
-  }
-
-  // no more used
-  if (myAspect != NULL && aCappingAsp.IsNull())
-  {
-    OpenGl_Element::Destroy (theContext.operator->(), myAspect);
-    myAspectMod = myPlaneRoot->MCountAspect();
-    return;
-  }
-
-  // first created
-  if (myAspect == NULL && !aCappingAsp.IsNull())
+  if (myAspect == NULL)
   {
     myAspect = new OpenGl_AspectFace();
-    myAspect->SetAspect (aCappingAsp);
-    myAspectMod = myPlaneRoot->MCountAspect();
+    myAspectMod = myPlaneRoot->MCountAspect() - 1; // mark out of sync
   }
+
+  if (theObjAspect.IsNull())
+  {
+    if (myAspectMod != myPlaneRoot->MCountAspect())
+    {
+      myAspect->SetAspect (myPlaneRoot->CappingAspect());
+      myAspectMod = myPlaneRoot->MCountAspect();
+    }
+    return;
+  }
+
+  if (myFillAreaAspect.IsNull())
+  {
+    myFillAreaAspect = new Graphic3d_AspectFillArea3d();
+  }
+  if (myAspectMod != myPlaneRoot->MCountAspect())
+  {
+    *myFillAreaAspect = *myPlaneRoot->CappingAspect();
+  }
+
+  if (myPlaneRoot->ToUseObjectMaterial())
+  {
+    // only front material currently supported by capping rendering
+    myFillAreaAspect->SetFrontMaterial (theObjAspect->FrontMaterial());
+    myFillAreaAspect->SetInteriorColor (theObjAspect->InteriorColor());
+  }
+  if (myPlaneRoot->ToUseObjectTexture())
+  {
+    if (theObjAspect->ToMapTexture())
+    {
+      myFillAreaAspect->SetTextureMap (theObjAspect->TextureMap());
+      myFillAreaAspect->SetTextureMapOn();
+    }
+    else
+    {
+      myFillAreaAspect->SetTextureMapOff();
+    }
+  }
+  if (myPlaneRoot->ToUseObjectShader())
+  {
+    myFillAreaAspect->SetShaderProgram (theObjAspect->ShaderProgram());
+  }
+
+  myAspect->SetAspect (myFillAreaAspect);
 }
 
 // =======================================================================
-// function : UpdateTransform
+// function : updateTransform
 // purpose  :
 // =======================================================================
-void OpenGl_CappingPlaneResource::UpdateTransform()
+void OpenGl_CappingPlaneResource::updateTransform()
 {
   const Graphic3d_ClipPlane::Equation& anEquation = myPlaneRoot->GetEquation();
   if (myEquationMod == myPlaneRoot->MCountEquation())

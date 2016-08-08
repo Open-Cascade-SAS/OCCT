@@ -20,12 +20,12 @@
 #include <Standard_TypeDef.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Vec4.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_CappingFlags.hxx>
 #include <Graphic3d_TextureMap.hxx>
 #include <Aspect_HatchStyle.hxx>
 
 class gp_Pln;
-class Graphic3d_AspectFillArea3d;
 
 //! Container for properties describing graphic driver clipping planes.
 //! It is up to application to create instances of this class and specify its
@@ -132,30 +132,21 @@ public: // @name user-defined graphical attributes
   Standard_EXPORT void SetCappingMaterial (const Graphic3d_MaterialAspect& theMat);
 
   //! @return capping material.
-  const Graphic3d_MaterialAspect& CappingMaterial() const
-  {
-    return myMaterial;
-  }
+  const Graphic3d_MaterialAspect& CappingMaterial() const { return myAspect->FrontMaterial(); }
 
   //! Set texture to be applied on capping surface.
   //! @param theTexture [in] the texture.
   Standard_EXPORT void SetCappingTexture (const Handle(Graphic3d_TextureMap)& theTexture);
 
   //! @return capping texture map.
-  const Handle(Graphic3d_TextureMap)& CappingTexture() const
-  {
-    return myTexture;
-  }
+  const Handle(Graphic3d_TextureMap)& CappingTexture() const { return myAspect->TextureMap(); }
 
   //! Set hatch style (stipple) and turn hatching on.
   //! @param theStyle [in] the hatch style.
   Standard_EXPORT void SetCappingHatch (const Aspect_HatchStyle theStyle);
 
   //! @return hatching style.
-  Aspect_HatchStyle CappingHatch() const
-  {
-    return myHatch;
-  }
+  Aspect_HatchStyle CappingHatch() const { return myAspect->HatchStyle(); }
 
   //! Turn on hatching.
   Standard_EXPORT void SetCappingHatchOn();
@@ -164,10 +155,7 @@ public: // @name user-defined graphical attributes
   Standard_EXPORT void SetCappingHatchOff();
 
   //! @return True if hatching mask is turned on.
-  Standard_Boolean IsHatchOn() const
-  {
-    return myHatchOn;
-  }
+  Standard_Boolean IsHatchOn() const { return myAspect->InteriorStyle() == Aspect_IS_HATCH; }
 
   //! This ID is used for managing associated resources in graphical driver.
   //! The clip plane can be assigned within a range of IO which can be
@@ -181,9 +169,38 @@ public: // @name user-defined graphical attributes
     return myId;
   }
 
-  //! Compute and return capping aspect from the graphical attributes.
+public:
+
+  //! Return capping aspect.
   //! @return capping surface rendering aspect.
-  Standard_EXPORT Handle(Graphic3d_AspectFillArea3d) CappingAspect() const;
+  const Handle(Graphic3d_AspectFillArea3d)& CappingAspect() const { return myAspect; }
+
+  //! Assign capping aspect.
+  Standard_EXPORT void SetCappingAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect);
+
+  //! Flag indicating whether material for capping plane should be taken from object.
+  //! Default value: FALSE (use dedicated capping plane material).
+  bool ToUseObjectMaterial() const { return (myFlags & Graphic3d_CappingFlags_ObjectMaterial) != 0; }
+
+  //! Set flag for controlling the source of capping plane material.
+  void SetUseObjectMaterial (bool theToUse) { setCappingFlag (theToUse, Graphic3d_CappingFlags_ObjectMaterial); }
+
+  //! Flag indicating whether texture for capping plane should be taken from object.
+  //! Default value: FALSE.
+  bool ToUseObjectTexture() const { return (myFlags & Graphic3d_CappingFlags_ObjectTexture) != 0; }
+
+  //! Set flag for controlling the source of capping plane texture.
+  void SetUseObjectTexture (bool theToUse) { setCappingFlag (theToUse, Graphic3d_CappingFlags_ObjectTexture); }
+
+  //! Flag indicating whether shader program for capping plane should be taken from object.
+  //! Default value: FALSE.
+  bool ToUseObjectShader() const { return (myFlags & Graphic3d_CappingFlags_ObjectShader) != 0; }
+
+  //! Set flag for controlling the source of capping plane shader program.
+  void SetUseObjectShader(bool theToUse) { setCappingFlag (theToUse, Graphic3d_CappingFlags_ObjectShader); }
+
+  //! Return true if some fill area aspect properties should be taken from object.
+  bool ToUseObjectProperties() const { return myFlags != Graphic3d_CappingFlags_None; }
 
 public: // @name modification counters
 
@@ -201,20 +218,22 @@ public: // @name modification counters
 
 private:
 
-  void MakeId();
+  //! Generate unique object id for OpenGL graphic resource manager.
+  void makeId();
+
+  //! Set capping flag.
+  Standard_EXPORT void setCappingFlag (bool theToUse, int theFlag);
 
 private:
 
-  Equation                     myEquation;    //!< Plane equation vector.
-  Standard_Boolean             myIsOn;        //!< State of the clipping plane.
-  Standard_Boolean             myIsCapping;   //!< State of graphic driver capping.
-  Graphic3d_MaterialAspect     myMaterial;    //!< Capping surface material.
-  Handle(Graphic3d_TextureMap) myTexture;     //!< Capping surface texture.
-  Aspect_HatchStyle            myHatch;       //!< Capping surface hatch mask.
-  Standard_Boolean             myHatchOn;     //!< Capping surface hatching flag.
-  TCollection_AsciiString      myId;          //!< Resource id.
-  unsigned int                 myEquationMod; //!< Modification counter for equation.
-  unsigned int                 myAspectMod;   //!< Modification counter of aspect.
+  Handle(Graphic3d_AspectFillArea3d) myAspect;    //!< fill area aspect
+  TCollection_AsciiString myId;                   //!< resource id
+  Equation                myEquation;             //!< plane equation vector
+  unsigned int            myFlags;                //!< capping flags
+  Standard_Boolean        myIsOn;                 //!< state of the clipping plane
+  Standard_Boolean        myIsCapping;            //!< state of graphic driver capping
+  unsigned int            myEquationMod;          //!< modification counter for equation
+  unsigned int            myAspectMod;            //!< modification counter of aspect
 
 public:
 

@@ -262,16 +262,14 @@ void OpenGl_Structure::OnVisibilityChanged()
 // =======================================================================
 Standard_Boolean OpenGl_Structure::IsRaytracable() const
 {
-  if (!myGroups.IsEmpty())
+  if (!myGroups.IsEmpty()
+    && myIsRaytracable)
   {
-    return myIsRaytracable; // geometry structure
-  }
-  else if (myInstancedStructure != NULL)
-  {
-    return myInstancedStructure->IsRaytracable(); // instance structure
+    return Standard_True;
   }
 
-  return Standard_False; // has no any groups or structures
+  return myInstancedStructure != NULL
+     &&  myInstancedStructure->IsRaytracable();
 }
 
 // =======================================================================
@@ -280,7 +278,18 @@ Standard_Boolean OpenGl_Structure::IsRaytracable() const
 // =======================================================================
 void OpenGl_Structure::UpdateStateIfRaytracable (const Standard_Boolean toCheck) const
 {
-  myIsRaytracable = !toCheck || OpenGl_Raytrace::IsRaytracedStructure (this);
+  myIsRaytracable = !toCheck;
+  if (!myIsRaytracable)
+  {
+    for (OpenGl_Structure::GroupIterator anIter (myGroups); anIter.More(); anIter.Next())
+    {
+      if (anIter.Value()->IsRaytracable())
+      {
+        myIsRaytracable = Standard_True;
+        break;
+      }
+    }
+  }
 
   if (IsRaytracable())
   {
@@ -421,26 +430,6 @@ void OpenGl_Structure::renderGeometry (const Handle(OpenGl_Workspace)& theWorksp
   {
     theHasClosed = theHasClosed || aGroupIter.Value()->IsClosed();
     aGroupIter.Value()->Render (theWorkspace);
-  }
-}
-
-// =======================================================================
-// function : renderClosedGeometry
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::renderClosedGeometry (const Handle(OpenGl_Workspace)& theWorkspace) const
-{
-  if (myInstancedStructure != NULL)
-  {
-    myInstancedStructure->renderClosedGeometry (theWorkspace);
-  }
-
-  for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
-  {
-    if (aGroupIter.Value()->IsClosed())
-    {
-      aGroupIter.Value()->Render (theWorkspace);
-    }
   }
 }
 

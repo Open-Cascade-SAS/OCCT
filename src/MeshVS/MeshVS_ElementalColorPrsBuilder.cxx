@@ -249,18 +249,37 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   }
 
   // Draw elements with one color
-  for ( MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger aColIter ( aColorsOfElements ); aColIter.More();
-        aColIter.Next() )
+  Handle(Graphic3d_Group) aGGroup, aGroup2, aLGroup, aSGroup;
+  if (!aTwoColorsOfElements.IsEmpty())
   {
-    Standard_Integer aSize = aColIter.Value().Extent();
-    if ( aSize<=0 )
+    aGroup2 = Prs3d_Root::NewGroup (Prs);
+  }
+  if (!aColorsOfElements.IsEmpty())
+  {
+    Handle(Graphic3d_AspectFillArea3d) aGroupFillAspect = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID, anInteriorColor, anEdgeColor,
+                                                                                          anEdgeType, anEdgeWidth, aMaterial[0], aMaterial[1]);
+    aGGroup = Prs3d_Root::NewGroup (Prs);
+    aLGroup = Prs3d_Root::NewGroup (Prs);
+    aGGroup->SetClosed (toSupressBackFaces == Standard_True);
+    aGGroup->SetGroupPrimitivesAspect (aGroupFillAspect);
+  }
+
+  if (anEdgeOn)
+  {
+    Handle(Graphic3d_AspectLine3d) anEdgeAspect = new Graphic3d_AspectLine3d (anEdgeColor, anEdgeType, anEdgeWidth);
+    aSGroup = Prs3d_Root::NewGroup (Prs);
+    aSGroup->SetGroupPrimitivesAspect (anEdgeAspect);
+  }
+
+  for (MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger aColIter (aColorsOfElements);
+       aColIter.More(); aColIter.Next())
+  {
+    if (aColIter.Value().IsEmpty())
+    {
       continue;
+    }
 
     TColStd_PackedMapOfInteger aCustomElements;
-
-    Handle(Graphic3d_Group) aGGroup = Prs3d_Root::NewGroup (Prs);
-    Handle(Graphic3d_Group) aLGroup = Prs3d_Root::NewGroup (Prs);
-    Handle(Graphic3d_Group) aSGroup = Prs3d_Root::NewGroup (Prs);
 
     Standard_Integer aNbFacePrimitives = 0;
     Standard_Integer aNbVolmPrimitives = 0;
@@ -333,9 +352,6 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
 
     Handle(Graphic3d_AspectLine3d) aLinkAspect =
       new Graphic3d_AspectLine3d ( aColIter.Key(), aLineType, aLineWidth );
-
-    Handle(Graphic3d_AspectLine3d) anEdgeAspect =
-      new Graphic3d_AspectLine3d ( anEdgeColor, anEdgeType, anEdgeWidth );
 
     aFillAspect->SetDistinguishOff ();
     aFillAspect->SetInteriorColor ( aColIter.Key() );
@@ -452,7 +468,6 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       if (anEdgeOn)
       {
         aSGroup->AddPrimitiveArray (anEdgeSegments);
-        aSGroup->SetGroupPrimitivesAspect (anEdgeAspect);
       }
     }
     if (IsPolyL)
@@ -505,15 +520,20 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   }
 
   // Draw faces with two color
+  if (!aTwoColorsOfElements.IsEmpty())
+  {
+    Handle(Graphic3d_AspectFillArea3d) aGroupFillAspect2 = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID, anInteriorColor, anEdgeColor,
+                                                                                          anEdgeType, anEdgeWidth, aMaterial2[0], aMaterial2[1]);
+    aGroup2->SetClosed (Standard_False); // ignore toSupressBackFaces
+    aGroup2->SetGroupPrimitivesAspect (aGroupFillAspect2);
+  }
   for ( MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger aColIter2 ( aTwoColorsOfElements );
         aColIter2.More(); aColIter2.Next() )
   {
-    Handle(Graphic3d_Group) aGroup2 = Prs3d_Root::NewGroup (Prs);
-    Handle(Graphic3d_Group) aGroup3 = Prs3d_Root::NewGroup (Prs);
-
-    Standard_Integer aSize = aColIter2.Value().Extent();
-    if ( aSize<=0 )
+    if (aColIter2.Value().IsEmpty())
+    {
       continue;
+    }
 
     Standard_Integer aNbFacePrimitives = 0;
     Standard_Integer aNbEdgePrimitives = 0;
@@ -561,9 +581,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       anAsp->SetEdgeOn();
     else
       anAsp->SetEdgeOff();*/
-
-    Handle(Graphic3d_AspectLine3d) anEdgeAspect =
-      new Graphic3d_AspectLine3d (anEdgeColor, anEdgeType, anEdgeWidth);
+    aGroup2->SetPrimitivesAspect (anAsp);
 
     for( it.Reset(); it.More(); it.Next() )
     {
@@ -626,11 +644,8 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       }
     }
 
-    aGroup2->SetClosed (toSupressBackFaces == Standard_True);
     aGroup2->AddPrimitiveArray (aFaceTriangles);
-    aGroup2->SetGroupPrimitivesAspect (anAsp);
-    aGroup3->AddPrimitiveArray (anEdgeSegments);
-    aGroup3->SetGroupPrimitivesAspect (anEdgeAspect);
+    aSGroup->AddPrimitiveArray (anEdgeSegments);
   }
 }
 

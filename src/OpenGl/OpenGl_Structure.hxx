@@ -99,12 +99,6 @@ public:
 
 public:
 
-  //! @return graphic groups
-  virtual const Graphic3d_SequenceOfGroup& DrawGroups() const
-  {
-    return myGroups;
-  }
-
   //! Access graphic driver
   OpenGl_GraphicDriver* GlDriver() const
   {
@@ -119,15 +113,6 @@ public:
   void clearHighlightColor (const Handle(OpenGl_Context)& theGlCtx);
 
   Standard_EXPORT void Clear (const Handle(OpenGl_Context)& theGlCtx);
-
-  //! Renders groups of structure without applying any attributes (i.e. transform, material etc).
-  //! @param theWorkspace current workspace
-  //! @param theHasClosed flag will be set to TRUE if structure contains at least one group of closed primitives
-  virtual void renderGeometry (const Handle(OpenGl_Workspace)& theWorkspace,
-                               bool&                           theHasClosed) const;
-
-  //! Renders groups of closed primitives without applying any attributes (i.e. transform, material etc).
-  virtual void renderClosedGeometry (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Renders the structure.
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
@@ -191,6 +176,12 @@ protected:
 
   //! Updates ray-tracable status for structure and its parents.
   void UpdateStateIfRaytracable (const Standard_Boolean toCheck = Standard_True) const;
+
+  //! Renders groups of structure without applying any attributes (i.e. transform, material etc).
+  //! @param theWorkspace current workspace
+  //! @param theHasClosed flag will be set to TRUE if structure contains at least one group of closed primitives
+  Standard_EXPORT void renderGeometry (const Handle(OpenGl_Workspace)& theWorkspace,
+                                       bool&                           theHasClosed) const;
 
 protected:
 

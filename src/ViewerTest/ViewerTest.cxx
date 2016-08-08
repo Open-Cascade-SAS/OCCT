@@ -2297,6 +2297,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       if (aColoredPrs.IsNull())
       {
         aColoredPrs = new AIS_ColoredShape (aShapePrs);
+        if (aShapePrs->HasDisplayMode())
+        {
+          aColoredPrs->SetDisplayMode (aShapePrs->DisplayMode());
+        }
+        aColoredPrs->SetLocalTransformation (aShapePrs->LocalTransformation());
         aCtx->Remove (aShapePrs, Standard_False);
         GetMapOfAIS().UnBind2 (aName);
         GetMapOfAIS().Bind (aColoredPrs, aName);
