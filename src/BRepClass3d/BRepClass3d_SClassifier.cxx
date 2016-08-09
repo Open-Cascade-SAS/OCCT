@@ -579,7 +579,7 @@ static Standard_Integer GetTransi(const TopoDS_Face& f1,
     return -1;
   }
 
-  if (nf1.IsEqual(nf2, Precision::Angular()))
+  if (nf1.IsParallel(nf2, Precision::Angular()))
   {
     Standard_Real angD = nf1.Dot(LDir);
     if (Abs(angD) < Precision::Angular())

@@ -266,6 +266,34 @@ Standard_Real     ACosh (const Standard_Real Value)
 }
 
 //-------------------------------------------------------------------
+// Cosh : Returns the hyperbolic cosine of a real
+//-------------------------------------------------------------------
+Standard_Real     Cosh (const Standard_Real Value) 
+{ 
+  if ( Abs(Value) > 0.71047586007394394e+03 ){
+    Standard_NumericError::Raise("Result of Cosh exceeds the maximum value Standard_Real");
+#ifdef OCCT_DEBUG
+    cout << "Result of Cosh exceeds the maximum value Standard_Real" << endl ;
+#endif
+  } 
+  return cosh(Value); 
+}
+
+//-------------------------------------------------------------------
+// Sinh : Returns the hyperbolicsine of a real
+//-------------------------------------------------------------------
+Standard_Real     Sinh (const Standard_Real Value) 
+{ 
+  if ( Abs(Value) > 0.71047586007394394e+03 ){
+    Standard_NumericError::Raise("Result of Sinh exceeds the maximum value Standard_Real");
+#ifdef OCCT_DEBUG
+    cout << "Result of Sinh exceeds the maximum value Standard_Real" << endl ;
+#endif
+  } 
+  return sinh(Value); 
+}
+
+//-------------------------------------------------------------------
 // Log : Returns the naturaOPl logarithm of a real
 //-------------------------------------------------------------------
 Standard_Real     Log (const Standard_Real Value) 

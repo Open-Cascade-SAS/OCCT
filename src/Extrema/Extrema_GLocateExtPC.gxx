@@ -187,6 +187,10 @@ void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
             {
               TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
               s2sup = (TheVector(P, P1)*V1);
+              if(Precision::IsInfinite(s2sup) || Precision::IsInfinite(s1sup))
+              {
+                break;
+              }
               if (s1sup*s2sup <= RealEpsilon())
               {
                 // extremum:
@@ -220,6 +224,10 @@ void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
             {
               TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
               s1inf = (TheVector(P, P1)*V1);
+              if(Precision::IsInfinite(s2inf) || Precision::IsInfinite(s1inf))
+              {
+                break;
+              }
               if (s1inf*s2inf <= RealEpsilon())
               {
                 // extremum:

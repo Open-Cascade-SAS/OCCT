@@ -1762,6 +1762,10 @@ Standard_Boolean ShapeAnalysis_Wire::CheckSmallArea(const TopoDS_Wire& theWire)
       myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
       return Standard_False;
     }
+    if (Precision::IsInfinite(aF) || Precision::IsInfinite(aL))
+    {
+      continue;
+    }
 
     Standard_Integer aBegin = 0;
     if (j == 1)

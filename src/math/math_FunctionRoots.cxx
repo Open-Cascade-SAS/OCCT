@@ -934,7 +934,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 	    else { AA = Fyu-Fxu;}
 	    if (!Sol.IsEmpty()) {
 	      if (Abs(Sol.Last() - U) > 5.*EpsX 
-		  || OldDF*AA < 0. ) {
+		  || (OldDF != RealLast() && OldDF*AA < 0.) ) {
 		Sol.Append(U);
 		NbStateSol.Append(F.GetStateNumber());
 	      }

@@ -2408,7 +2408,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Integer res, a =4, b = 0 ;
       res = a / b;
-      di << " 4 / 0 = " << res << "  Does not Caught... KO\n";
+      di << "Error: 4 / 0 = " << res << " - no exception is raised!\n";
       Succes = Standard_False;
     }
 #if defined(SOLARIS) || defined(_WIN32)
@@ -2417,10 +2417,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     catch(Standard_NumericError)
 #endif
     {
-      di << " Ok\n";
+      di << "Caught, OK\n";
     }
     catch(Standard_Failure) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
       di << Standard_Failure::Caught()->GetMessageString();
       di << ")... KO\n";
@@ -2444,17 +2443,16 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Real res, a= 4.0, b=0.0;
       res = a / b;
-      di << " 4.0 / 0.0 = " << res << "  Does not Caught... OK\n";
+      di << "Error: 4.0 / 0.0 = " << res << " - no exception is raised!\n";
+      Succes = Standard_False;
     }
     catch(Standard_DivideByZero) // Solaris, Windows w/o SSE2
     {
-      di << " KO\n";
-      Succes = Standard_False;
+      di << "Caught, OK\n";
     }
     catch(Standard_NumericError) // Linux, Windows with SSE2
     {
-      di << " KO\n";
-      Succes = Standard_False;
+      di << "Exception is caught, OK\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2476,10 +2474,10 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       res = i + 1;
       //++++ cout << " -- "<<res<<"="<<i<<"+1   Does not Caught... KO"<< endl;
       //++++ Succes = Standard_False;
-      di << " "<<res<<"="<<i<<"+1  Does not Caught... (But) Ok\n";
+      di << "Not caught: " << i << " + 1 = " << res << ", still OK\n";
     }
     catch(Standard_Overflow) {
-      di << " Ok\n";
+      di << "Caught, OK\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2502,17 +2500,16 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       
       (void)sin(1.); //this function tests FPU flags and raises signal (tested on LINUX).
 
-      di << "-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... OK\n";
+      di << "Error: " << r << "*" << r << " = " << res << " - no exception is raised!\n";
+      Succes = Standard_False;
     }
     catch(Standard_Overflow) // Solaris, Windows w/o SSE2
     {
-      di << " KO\n";
-      Succes = Standard_False;
+      di << "Caught, OK\n";
     }
     catch(Standard_NumericError) // Linux, Windows with SSE2
     {
-      di << " KO\n";
-      Succes = Standard_False;
+      di << "Caught, OK\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2535,16 +2532,16 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       //res = res + 1.;
       //++++ cout<<"-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<<endl;
       //++++ Succes = Standard_False;
-      di<<" -- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... (But) Ok\n";
+      di << "Not caught: " << r << "*" << r << " = " << res << ", still OK\n";
     }
     catch(Standard_Underflow) // could be on Solaris, Windows w/o SSE2
     {
-      di << " KO\n";
+      di << "Exception caught, KO\n";
       Succes = Standard_False;
     }
     catch(Standard_NumericError) // could be on Linux, Windows with SSE2
     {
-      di << " KO\n";
+      di << "Exception caught, KO\n";
       Succes = Standard_False;
     }
     catch(Standard_Failure) {
@@ -2565,11 +2562,11 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Real res, r=-1;
       res = sqrt(r);
-      di<<" "<<res<<"=sqrt("<<r<<")  Does not Caught... OK\n";
+      di << "Error: swrt(-1) = " << res << " - no exception is raised!\n";
+      Succes = Standard_False;
     }
     catch(Standard_NumericError) {
-      di << " KO\n";
-      Succes = Standard_False;
+      di << "Caught, OK\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2589,7 +2586,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       int* pint=NULL;
       *pint = 4;
-      di << "  Does not Caught... KO\n";
+      di << "Error: writing by NULL address - no exception is raised!\n";
       Succes = Standard_False;
     }
 #ifdef _WIN32
@@ -2598,7 +2595,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     catch(OSD_SIGSEGV)
 #endif
     {
-      di << " Ok\n";
+      di << "Caught, OK\n";
     } catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
       di << " Caught (";
@@ -2617,11 +2614,11 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       //cout.flush();
       di << "\n";
       StackOverflow();
-      di << "  Does not Caught... KO\n";
+      di << "Error - no exception is raised!\n";
       Succes = Standard_False;
     }
     catch(OSD_Exception_STACK_OVERFLOW) {
-      di << " Ok\n";
+      di << "Caught, OK\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;

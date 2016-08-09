@@ -77,11 +77,10 @@ private:
   gp_Pnt2d myP1;
   gp_Pnt2d myP2;
   TopoDS_Shape myShape;
-  bool myRg1Line;
-  bool myRgNLine;
-  bool myOutLine;
-  bool myIntLine;
-
+  Standard_Boolean myRg1Line;
+  Standard_Boolean myRgNLine;
+  Standard_Boolean myOutLine;
+  Standard_Boolean myIntLine;
 };
 
 #endif // _HLRBRep_BiPnt2D_HeaderFile

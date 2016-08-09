@@ -40,6 +40,7 @@ class gp_Hypr;
 class gp_Parab;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
+class Geom_OffsetCurve;
 
 
 //! Root class for 3D curves on which geometric
@@ -155,6 +156,9 @@ public:
   Standard_EXPORT virtual Handle(Geom_BezierCurve) Bezier() const;
   
   Standard_EXPORT virtual Handle(Geom_BSplineCurve) BSpline() const;
+
+  Standard_EXPORT virtual Handle(Geom_OffsetCurve) OffsetCurve() const;
+
   Standard_EXPORT virtual ~Adaptor3d_Curve();
 
 

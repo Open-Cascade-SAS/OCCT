@@ -1258,7 +1258,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
     iFlag2 = (nV12 == nV21 || nV12 == nV22) ? 2 : 
       (!aBoxSp.IsOut(aBoxP2) ? 1 : 0);
     if (iFlag1 && iFlag2) {
-      Standard_Real aDist;
+      Standard_Real aDist = 0.;
 
       const Standard_Real aRealTol = myDS->IsCommonBlock(aPB) ?
                                      Max(aTolV1, aTolV2) : theTolR3D;
@@ -1275,13 +1275,13 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
       //
       if (iFlag1 == 1) {
         iFlag1 = !myContext->ComputePE(aP1, aRealTol, aSp, aTx, aDist);
-        if (theTolNew < aDist)
+        if (iFlag1 && theTolNew < aDist)
           theTolNew = aDist;
       }
       //
       if (iFlag2 == 1) {
         iFlag2 = !myContext->ComputePE(aP2, aRealTol, aSp, aTx, aDist);
-        if (theTolNew < aDist)
+        if (iFlag2 && theTolNew < aDist)
           theTolNew = aDist;
       }
       //

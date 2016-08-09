@@ -39,6 +39,11 @@ Standard_Boolean CSLib_NormalPolyDef::Value(const Standard_Real X,
   co=cos(X);
   si=sin(X);
 
+  if(Abs(co) <= RealSmall() || Abs(si) <= RealSmall())
+  {
+    F = 0.;
+    return Standard_True;
+  }
   for(Standard_Integer i=0;i<=myK0;i++){
     F=F+PLib::Bin(myK0,i)*pow(co,i)*pow(si,(myK0-i))*myTABli(i);
   }
@@ -54,6 +59,11 @@ Standard_Boolean CSLib_NormalPolyDef::Derivative(const Standard_Real X,
   Standard_Real co,si;
   co=cos(X);
   si=sin(X);
+  if(Abs(co) <= RealSmall() || Abs(si) <= RealSmall())
+  {
+    D = 0.;
+    return Standard_True;
+  }
   for(Standard_Integer i=0;i<=myK0;i++){
     D=D+PLib::Bin(myK0,i)*pow(co,(i-1))*pow(si,(myK0-i-1))*(myK0*co*co-i);
   }
@@ -71,6 +81,12 @@ Standard_Boolean CSLib_NormalPolyDef::Values(const Standard_Real X,
   Standard_Real co,si;
   co=cos(X);
   si=sin(X);
+  if(Abs(co) <= RealSmall() || Abs(si) <= RealSmall())
+  {
+    F = 0.;
+    D = 0.;
+    return Standard_True;
+  }
   for(Standard_Integer i=0;i<=myK0;i++){
     F=F+PLib::Bin(myK0,i)*pow(co,i)*pow(si,(myK0-i))*myTABli(i);
     D=D+PLib::Bin(myK0,i)*pow(co,(i-1))*

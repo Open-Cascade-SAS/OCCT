@@ -319,6 +319,7 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	#
 	# 4: vertices, bounds and edges
 	#
+
 	generate_points -140 0 0   $colorG_R $colorG_G $colorG_B
 	eval vdrawparray poly04 polygons $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 ( b 5 ( e 4 e 2 e 1 e 3 e 6 )), ( b 3 ( e 6 e 3 e 5 ))
 	
@@ -326,8 +327,9 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	vfit
 	
 	# dump resulted image
-	if { $vbo_enable == 0 } { vfeedback; vdump ${imagedir}/$ImageName1 }
-	if { $vbo_enable == 1 } { vfeedback; vdump ${imagedir}/$ImageName2 }
+#        vfeedback ;# fails on Intel HD 4600 with FPE signals armed
+	if { $vbo_enable == 0 } { vdump ${imagedir}/$ImageName1 }
+	if { $vbo_enable == 1 } { vdump ${imagedir}/$ImageName2 }
 
 }
 

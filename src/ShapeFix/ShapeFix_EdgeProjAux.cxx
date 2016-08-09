@@ -43,6 +43,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <BSplCLib.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux,MMgt_TShared)
 
@@ -281,8 +283,26 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
     if(theCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line))) {
       Standard_Real uf,ul,vf,vl;
       theSurface->Bounds(uf,ul,vf,vl);
+      //Correct surface limits for extrusion/revolution surfaces based on hyperbola
+      //23 is ln(1.0e+10)
+      if(SA.GetType() == GeomAbs_SurfaceOfExtrusion)
+      {
+        if(SA.BasisCurve()->GetType() == GeomAbs_Hyperbola)
+        {
+          uf = Max(uf, -23.);
+          ul = Min(ul,  23.);
+        }
+      }
+      if(SA.GetType() == GeomAbs_SurfaceOfRevolution)
+      {
+        if(SA.BasisCurve()->GetType() == GeomAbs_Hyperbola)
+        {
+          vf = Max(vf, -23.);
+          vl = Min(vl,  23.);
+        }
+      }
       if(!Precision::IsInfinite(uf)&&!Precision::IsInfinite(ul)&&
-        !Precision::IsInfinite(vf)&&!Precision::IsInfinite(vl)) {
+         !Precision::IsInfinite(vf)&&!Precision::IsInfinite(vl)) {
           Standard_Real cfi,cli;
           Handle(Geom2d_Line) lin = Handle(Geom2d_Line)::DownCast(theCurve2d);
           gp_Pnt2d pnt = lin->Location();
@@ -343,6 +363,17 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
       //pdn not linear case not managed
       cf=-10000;
       cl= 10000;
+      if(theCurve2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
+      {
+        //Try to reparametrize (CASE dxf read bug25899)
+        Handle(Geom2d_BSplineCurve) aBspl = Handle(Geom2d_BSplineCurve)::DownCast(theCurve2d->Copy());
+        TColStd_Array1OfReal aNewKnots(1, aBspl->NbKnots());  
+        aBspl->Knots(aNewKnots);
+        BSplCLib::Reparametrize(cf, cl, aNewKnots);
+        aBspl->SetKnots(aNewKnots);
+        theCurve2d = aBspl;
+      }
+
 #ifdef OCCT_DEBUG
       cout<<"Some infinite curve"<<endl;
 #endif 

@@ -25,6 +25,7 @@
 #include <Message_Messenger.hxx>
 #include <OSD.hxx>
 #include <OSD_Chronometer.hxx>
+#include <OSD_Environment.hxx>
 #include <OSD_Exception_CTRL_BREAK.hxx>
 #include <OSD_MAllocHook.hxx>
 #include <OSD_MemInfo.hxx>
@@ -741,6 +742,31 @@ static int dperf (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char
 }
 
 //==============================================================================
+//function : dsetsignal
+//purpose  :
+//==============================================================================
+
+static int dsetsignal (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  // arm FPE handler if argument is provided and its first symbol is not '0'
+  // or if environment variable CSF_FPE is set and its first symbol is not '0'
+  bool setFPE = false;
+  if (theArgNb > 1)
+  {
+    setFPE = (theArgVec[1][0] == '1' || theArgVec[1][0] == 't');
+  }
+  else
+  {
+    OSD_Environment aEnv ("CSF_FPE");
+    TCollection_AsciiString aEnvStr = aEnv.Value();
+    setFPE = (! aEnvStr.IsEmpty() && aEnvStr.Value(1) != '0');
+  }
+  OSD::SetSignal (setFPE);
+  theDI << "Signal handlers are set, with FPE " << (setFPE ? "armed" : "disarmed"); 
+  return 0;
+}
+
+//==============================================================================
 //function : dtracelevel
 //purpose  :
 //==============================================================================
@@ -864,6 +890,8 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 	  __FILE__, dmeminfo, g);
   theCommands.Add("dperf","dperf [reset] -- show performance counters, reset if argument is provided",
 		  __FILE__,dperf,g);
+  theCommands.Add("dsetsignal","dsetsignal [fpe=0] -- set OSD signal handler, with FPE option if argument is given",
+		  __FILE__,dsetsignal,g);
 
   // Logging commands; note that their names are hard-coded in the code
   // of Draw_Interpretor, thus should not be changed without update of that code!

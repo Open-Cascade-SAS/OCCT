@@ -905,19 +905,53 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
   TColStd_Array1OfReal dist(1,nbp+10);
   dist.Init(-1.);
 
-  Adaptor3d_CurveOnSurface  cons(c2d,surf);
+  //Adaptor3d_CurveOnSurface  cons(c2d,surf);
+  Standard_Real uf = surf->FirstUParameter(), ul = surf->LastUParameter(),
+                vf = surf->FirstVParameter(), vl = surf->LastVParameter();
+  Standard_Real du = 0.01 * (ul - uf), dv = 0.01 * (vl - vf);
+  Standard_Boolean isUPeriodic = surf->IsUPeriodic(), isVPeriodic = surf->IsVPeriodic();
+  Standard_Real DSdu = 1./surf->UResolution(1.), DSdv = 1./surf->VResolution(1.);
   Standard_Real d2 = 0.;
   Standard_Real first = c3d->FirstParameter();
   Standard_Real last  = c3d->LastParameter();
+  Standard_Real dapp = -1.;
   Standard_Integer i = 0;
   for(i = 0; i <= nbp; i++){
     const Standard_Real t = IntToReal(i)/IntToReal(nbp);
     const Standard_Real u = first*(1.-t) + last*t;
     gp_Pnt Pc3d = c3d->Value(u);
-    gp_Pnt Pcons = cons.Value(u);
+    gp_Pnt2d Puv = c2d->Value(u);
+    if(!isUPeriodic)
+    {
+      if(Puv.X() < uf - du)
+      {
+        dapp = Max(dapp, DSdu * (uf - Puv.X()));
+        continue;
+      }
+      else if(Puv.X() > ul + du)
+      {
+        dapp = Max(dapp, DSdu * (Puv.X() - ul));
+        continue;
+      }
+    }
+    if(!isVPeriodic)
+    {
+      if(Puv.Y() < vf - dv)
+      {
+        dapp = Max(dapp, DSdv * (vf - Puv.Y()));
+        continue;
+      }
+      else if(Puv.Y() > vl + dv)
+      {
+        dapp = Max(dapp, DSdv * (Puv.Y() - vl));
+        continue;
+      }
+    }
+    gp_Pnt Pcons = surf->Value(Puv.X(), Puv.Y());
     if (Precision::IsInfinite(Pcons.X()) ||
-      Precision::IsInfinite(Pcons.Y()) ||
-      Precision::IsInfinite(Pcons.Z())) {
+        Precision::IsInfinite(Pcons.Y()) ||
+        Precision::IsInfinite(Pcons.Z()))
+    {
         d2=Precision::Infinite();
         break;
     }
@@ -930,6 +964,16 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
     if(temp > d2) d2 = temp;
   }
 
+  if(Precision::IsInfinite(d2))
+  {
+    return d2;
+  }
+
+  d2 = Sqrt(d2);
+  if(dapp > d2)
+  {
+    return dapp;
+  }
 
   Standard_Boolean ana = Standard_False;
   Standard_Real D2 = 0;
@@ -952,7 +996,7 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
     }
 
     //d2 = 1.5*sqrt(d2);
-    d2 = (!ana) ? 1.5*sqrt(d2) : 1.5*sqrt(D2);
+    d2 = (!ana) ? 1.5 * d2 : 1.5*sqrt(D2);
     if(d2<1.e-7) d2 = 1.e-7;
 
     return d2;
@@ -1032,6 +1076,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   //  Modified by skv - Thu Jun  3 12:39:20 2004 OCC5898 End
   Standard_Boolean SameRange = BRep_Tool::SameRange(AnEdge);
   Standard_Boolean YaPCu = Standard_False;
+  const Standard_Real BigError = 1.e10;
   It.Initialize(CList);
 
   while (It.More()) {
@@ -1074,6 +1119,12 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
         GAC2d.Load(curPC,f3d,l3d);
 
         Standard_Real error = ComputeTol(HC, HC2d, HS, NCONTROL);
+
+        if(error > BigError)
+        {
+          maxdist = error;
+          break;
+        }
 
         if(GAC2d.GetType() == GeomAbs_BSplineCurve && 
           GAC2d.Continuity() == GeomAbs_C0) {
@@ -1416,6 +1467,7 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
   }
 
   //Vertices are processed
+  const Standard_Real BigTol = 1.e10;
   parents.Clear();
   TopExp::MapShapesAndAncestors(aShape, TopAbs_VERTEX, TopAbs_EDGE, parents);
   TColStd_MapOfTransient Initialized;
@@ -1432,6 +1484,7 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
       const TopoDS_Edge& E = TopoDS::Edge(lConx.Value());
       if(!Done.Add(E)) continue;
       tol=Max(tol, BRep_Tool::Tolerance(E));
+      if(tol > BigTol) continue;
       if(!BRep_Tool::SameRange(E)) continue;
       Standard_Real par = BRep_Tool::Parameter(V,E);
       Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());

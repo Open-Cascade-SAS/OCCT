@@ -47,6 +47,7 @@ class gp_Hypr;
 class gp_Parab;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
+class Geom_OffsetCurve;
 
 
 //! This class provides an interface between the services provided by any
@@ -207,6 +208,7 @@ public:
   //! myFirst/Last.
   Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
+  Standard_EXPORT Handle(Geom_OffsetCurve) OffsetCurve() const Standard_OVERRIDE;
 
 friend class GeomAdaptor_Surface;
 

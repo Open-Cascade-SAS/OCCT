@@ -810,7 +810,7 @@ Standard_Integer ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
     Standard_Real ru2 = ru * ru, rv2 = rv * rv;
     gp_Vec n = ru ^ rv;
     Standard_Real nrm2 = n.SquareMagnitude();
-    if ( nrm2 < 1e-10 ) break; // n == 0, use standard
+    if ( nrm2 < 1e-10 || Precision::IsPositiveInfinite(nrm2)) break; // n == 0, use standard
 
     // descriminant
     gp_Vec rs = P3D.XYZ() - Value ( U, V ).XYZ();

@@ -25,12 +25,12 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
 #define Tri1Node1 ((Standard_Integer*)Tri1Indices)[0]
 #define Tri1Node2 ((Standard_Integer*)Tri1Indices)[1]
 #define Tri1Node3 ((Standard_Integer*)Tri1Indices)[2]
-#define Tri1Flags ((Standard_Boolean*)Tri1Indices)[3]
+#define Tri1Flags ((Standard_Integer*)Tri1Indices)[3]
 
 #define Tri2Node1 ((Standard_Integer*)Tri2Indices)[0]
 #define Tri2Node2 ((Standard_Integer*)Tri2Indices)[1]
 #define Tri2Node3 ((Standard_Integer*)Tri2Indices)[2]
-#define Tri2Flags ((Standard_Boolean*)Tri2Indices)[3]
+#define Tri2Flags ((Standard_Integer*)Tri2Indices)[3]
 
 #define Seg1LstSg1 ((Standard_Integer*)Seg1Indices)[0]
 #define Seg1LstSg2 ((Standard_Integer*)Seg1Indices)[1]
@@ -47,9 +47,9 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
 #define Seg2Conex2 ((Standard_Integer*)Seg2Indices)[5]
 
 #define Nod1NdSg ((Standard_Integer*)Nod1Indices)[0]
-#define Nod1Flag ((Standard_Boolean*)Nod1Indices)[1]
-#define Nod1Edg1 ((Standard_Boolean*)Nod1Indices)[2]
-#define Nod1Edg2 ((Standard_Boolean*)Nod1Indices)[3]
+#define Nod1Flag ((Standard_Integer*)Nod1Indices)[1]
+#define Nod1Edg1 ((Standard_Integer*)Nod1Indices)[2]
+#define Nod1Edg2 ((Standard_Integer*)Nod1Indices)[3]
 
 #define Nod1PntX ((Standard_Real*)Nod1RValues)[ 0]
 #define Nod1PntY ((Standard_Real*)Nod1RValues)[ 1]
@@ -64,9 +64,9 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
 #define Nod1Scal ((Standard_Real*)Nod1RValues)[10]
 
 #define Nod2NdSg ((Standard_Integer*)Nod2Indices)[0]
-#define Nod2Flag ((Standard_Boolean*)Nod2Indices)[1]
-#define Nod2Edg1 ((Standard_Boolean*)Nod2Indices)[2]
-#define Nod2Edg2 ((Standard_Boolean*)Nod2Indices)[3]
+#define Nod2Flag ((Standard_Integer*)Nod2Indices)[1]
+#define Nod2Edg1 ((Standard_Integer*)Nod2Indices)[2]
+#define Nod2Edg2 ((Standard_Integer*)Nod2Indices)[3]
 
 #define Nod2PntX ((Standard_Real*)Nod2RValues)[ 0]
 #define Nod2PntY ((Standard_Real*)Nod2RValues)[ 1]
@@ -81,9 +81,9 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
 #define Nod2Scal ((Standard_Real*)Nod2RValues)[10]
 
 #define Nod3NdSg ((Standard_Integer*)Nod3Indices)[0]
-#define Nod3Flag ((Standard_Boolean*)Nod3Indices)[1]
-#define Nod3Edg1 ((Standard_Boolean*)Nod3Indices)[2]
-#define Nod3Edg2 ((Standard_Boolean*)Nod3Indices)[3]
+#define Nod3Flag ((Standard_Integer*)Nod3Indices)[1]
+#define Nod3Edg1 ((Standard_Integer*)Nod3Indices)[2]
+#define Nod3Edg2 ((Standard_Integer*)Nod3Indices)[3]
 
 #define Nod3PntX ((Standard_Real*)Nod3RValues)[ 0]
 #define Nod3PntY ((Standard_Real*)Nod3RValues)[ 1]
@@ -98,9 +98,9 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,MMgt_TShared)
 #define Nod3Scal ((Standard_Real*)Nod3RValues)[10]
 
 #define Nod4NdSg ((Standard_Integer*)Nod4Indices)[0]
-#define Nod4Flag ((Standard_Boolean*)Nod4Indices)[1]
-#define Nod4Edg1 ((Standard_Boolean*)Nod4Indices)[2]
-#define Nod4Edg2 ((Standard_Boolean*)Nod4Indices)[3]
+#define Nod4Flag ((Standard_Integer*)Nod4Indices)[1]
+#define Nod4Edg1 ((Standard_Integer*)Nod4Indices)[2]
+#define Nod4Edg2 ((Standard_Integer*)Nod4Indices)[3]
 
 #define Nod4PntX ((Standard_Real*)Nod4RValues)[ 0]
 #define Nod4PntY ((Standard_Real*)Nod4RValues)[ 1]

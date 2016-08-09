@@ -1039,7 +1039,10 @@ static void ReconstructPCurves(const TopoDS_Edge& anEdge)
 	    (theSurf->Transformed(theLoc.Transformation()));
 	  Handle(Geom2d_Curve) ProjPCurve =
 	    GeomProjLib::Curve2d( C3d, f, l, theSurf );
-	  CurveRep->PCurve( ProjPCurve );
+          if(!ProjPCurve.IsNull())
+          {
+	    CurveRep->PCurve( ProjPCurve );
+          }
 	}
     }
 }

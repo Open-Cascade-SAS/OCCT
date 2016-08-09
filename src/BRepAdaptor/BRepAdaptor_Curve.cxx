@@ -25,6 +25,7 @@
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
@@ -42,6 +43,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
 
 //=======================================================================
 //function : BRepAdaptor_Curve
@@ -648,4 +651,19 @@ Handle(Geom_BSplineCurve) BRepAdaptor_Curve::BSpline() const
   }
   return myTrsf.Form() == gp_Identity
     ? BS : Handle(Geom_BSplineCurve)::DownCast(BS->Transformed(myTrsf));
+}
+
+//=======================================================================
+//function : BasisCurve
+//purpose  : 
+//=======================================================================
+
+Handle(Geom_OffsetCurve) BRepAdaptor_Curve::OffsetCurve() const
+{
+  if ( !Is3DCurve() || myCurve.GetType() != GeomAbs_OffsetCurve)
+    Standard_NoSuchObject::Raise("BRepAdaptor_Curve::OffsetCurve");
+
+  Handle(Geom_OffsetCurve) anOffC = myCurve.OffsetCurve();
+  return myTrsf.Form() == gp_Identity
+    ? anOffC : Handle(Geom_OffsetCurve)::DownCast(anOffC->Transformed(myTrsf));
 }

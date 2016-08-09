@@ -125,5 +125,8 @@ if { $tcl_platform(platform) == "windows" && ! [catch {dgetenv PATH}] } {
     _update_c_env env "" "unset"
 }
 
+# arm signal handler with default FPE setting
+dsetsignal
+
 # silent return from the script
 return

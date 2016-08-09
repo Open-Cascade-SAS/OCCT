@@ -55,6 +55,12 @@ Standard_Real Extrema_FuncExtPC::SearchOfTolerance()
     Pnt Ptemp;  //empty point (is not used below)
     Vec VDer;   // 1st derivative vector
     Tool::D1(*((Curve*)myC), u, Ptemp, VDer);
+
+    if(Precision::IsInfinite(VDer.X()) || Precision::IsInfinite(VDer.Y()))
+    {
+      continue;
+    }
+
     Standard_Real vm = VDer.Magnitude();
     if(vm > aMax)
       aMax = vm;
@@ -160,6 +166,13 @@ Standard_Boolean Extrema_FuncExtPC::Value (const Standard_Real U, Standard_Real&
   myU = U;
   Vec D1c;
   Tool::D1(*((Curve*)myC),myU,myPc,D1c);
+
+  if(Precision::IsInfinite(D1c.X()) || Precision::IsInfinite(D1c.Y()))
+  {
+    F = Precision::Infinite();
+    return Standard_False;
+  }
+
   Standard_Real Ndu = D1c.Magnitude();
 
   if(myMaxDerivOrder != 0)

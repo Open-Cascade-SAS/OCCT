@@ -24,7 +24,9 @@
 #include <Extrema_GlobOptFuncCS.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_PSO.hxx>
@@ -35,9 +37,53 @@
 #include <Standard_TypeMismatch.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 
-const Standard_Real aMaxParamVal = 1.0e+10;
+const Standard_Real MaxParamVal = 1.0e+10;
 const Standard_Real aBorderDivisor = 1.0e+4;
+const Standard_Real HyperbolaLimit = 23.; //ln(MaxParamVal)
+
+// restrict maximal parameter on hyperbola to avoid FPE
+static Standard_Real GetCurvMaxParamVal (const Adaptor3d_Curve& theC)
+{
+  if (theC.GetType() == GeomAbs_Hyperbola)
+  {
+    return HyperbolaLimit;
+  }
+  if (theC.GetType() == GeomAbs_OffsetCurve)
+  {
+    Handle(Geom_Curve) aBC (theC.OffsetCurve()->BasisCurve());
+    Handle(Geom_TrimmedCurve) aTC = Handle(Geom_TrimmedCurve)::DownCast (aBC);
+    if (! aTC.IsNull())
+    {
+      aBC = aTC->BasisCurve();
+    }
+    if (aBC->IsKind (STANDARD_TYPE(Geom_Hyperbola)))
+      return HyperbolaLimit;
+  }
+  return MaxParamVal;
+}
+
+// restrict maximal parameter on surfaces based on hyperbola to avoid FPE
+static void GetSurfMaxParamVals (const Adaptor3d_Surface& theS,
+                                 Standard_Real& theUmax, Standard_Real& theVmax)
+{
+  theUmax = theVmax = MaxParamVal;
+
+  if (theS.GetType() == GeomAbs_SurfaceOfExtrusion)
+  {
+    theUmax = GetCurvMaxParamVal (theS.BasisCurve()->Curve());
+  }
+  else if (theS.GetType() == GeomAbs_SurfaceOfRevolution)
+  {
+    theVmax = GetCurvMaxParamVal (theS.BasisCurve()->Curve());
+  }
+  else if (theS.GetType() == GeomAbs_OffsetSurface)
+  {
+    GetSurfMaxParamVals (theS.BasisSurface()->Surface(), theUmax, theVmax);
+  }
+}
 
 //=======================================================================
 //function : Extrema_GenExtCS
@@ -126,15 +172,32 @@ void Extrema_GenExtCS::Initialize (const Adaptor3d_Surface& S,
   myvsup = Vsup;
   mytol2 = Tol2;
 
-  const Standard_Real aTrimMaxU = Precision::IsInfinite (myusup) ?  aMaxParamVal : myusup;
-  const Standard_Real aTrimMinU = Precision::IsInfinite (myumin) ? -aMaxParamVal : myumin;
-  const Standard_Real aTrimMaxV = Precision::IsInfinite (myvsup) ?  aMaxParamVal : myvsup;
-  const Standard_Real aTrimMinV = Precision::IsInfinite (myvmin) ? -aMaxParamVal : myvmin;
+  Standard_Real umaxpar, vmaxpar;
+  GetSurfMaxParamVals(*myS, umaxpar, vmaxpar);
 
-  const Standard_Real aMinU = aTrimMinU + (aTrimMaxU - aTrimMinU) / aBorderDivisor;
-  const Standard_Real aMinV = aTrimMinV + (aTrimMaxV - aTrimMinV) / aBorderDivisor;
-  const Standard_Real aMaxU = aTrimMaxU - (aTrimMaxU - aTrimMinU) / aBorderDivisor;
-  const Standard_Real aMaxV = aTrimMaxV - (aTrimMaxV - aTrimMinV) / aBorderDivisor;
+  if(Precision::IsInfinite (myusup))
+  {
+    myusup = umaxpar;
+  }
+  if(Precision::IsInfinite (myumin))
+  {
+    myumin = -umaxpar;
+  }
+  if(Precision::IsInfinite (myvsup))
+  {
+    myvsup =  vmaxpar;
+  }
+  if(Precision::IsInfinite (myvmin))
+  {
+    myvmin = -vmaxpar;
+  }
+
+  Standard_Real du = (myusup - myumin) / aBorderDivisor;
+  Standard_Real dv = (myvsup - myvmin) / aBorderDivisor;
+  const Standard_Real aMinU = myumin + du;
+  const Standard_Real aMinV = myvmin + dv;
+  const Standard_Real aMaxU = myusup - du;
+  const Standard_Real aMaxV = myvsup - dv;
   
   const Standard_Real aStepSU = (aMaxU - aMinU) / myusample;
   const Standard_Real aStepSV = (aMaxV - aMinV) / myvsample;
@@ -184,17 +247,12 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
   // Modif de lvt pour trimer la surface non pas aux infinis mais  a +/- 10000
 
   Standard_Real trimusup = myusup, trimumin = myumin,trimvsup = myvsup,trimvmin = myvmin;
-  if (Precision::IsInfinite(trimusup)){
-    trimusup = aMaxParamVal;
+  Standard_Real aCMaxVal = GetCurvMaxParamVal (C);
+  if (Precision::IsInfinite(mytsup)){
+    mytsup = aCMaxVal;
   }
-  if (Precision::IsInfinite(trimvsup)){
-    trimvsup = aMaxParamVal;
-  }
-  if (Precision::IsInfinite(trimumin)){
-    trimumin = -aMaxParamVal;
-  }
-  if (Precision::IsInfinite(trimvmin)){
-    trimvmin = -aMaxParamVal;
+  if (Precision::IsInfinite(mytmin)){
+    mytmin = -aCMaxVal;
   }
   //
   math_Vector Tol(1, 3);

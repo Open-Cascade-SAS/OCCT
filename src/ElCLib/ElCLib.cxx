@@ -154,8 +154,8 @@ gp_Pnt ElCLib::HyperbolaValue (const Standard_Real U,
   const gp_XYZ& XDir = Pos.XDirection().XYZ();
   const gp_XYZ& YDir = Pos.YDirection().XYZ();
   const gp_XYZ& PLoc = Pos.Location  ().XYZ();
-  Standard_Real A1 = MajorRadius * cosh(U);
-  Standard_Real A2 = MinorRadius * sinh(U);
+  Standard_Real A1 = MajorRadius * Cosh(U);
+  Standard_Real A2 = MinorRadius * Sinh(U);
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
 		A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y(),
 		A1 * XDir.Z() + A2 * YDir.Z() + PLoc.Z());
@@ -382,8 +382,8 @@ void ElCLib::HyperbolaD2 (const Standard_Real U,
 			  gp_Vec& V1,
 			  gp_Vec& V2)
 {
-  Standard_Real Xc = cosh(U);
-  Standard_Real Yc = sinh(U);
+  Standard_Real Xc = Cosh(U);
+  Standard_Real Yc = Sinh(U);
   gp_XYZ Coord0; 
   gp_XYZ Coord1 (Pos.XDirection().XYZ());
   gp_XYZ Coord2 (Pos.YDirection().XYZ());
@@ -514,8 +514,8 @@ void ElCLib::HyperbolaD3 (const Standard_Real U,
 			  gp_Vec& V2,
 			  gp_Vec& V3)
 {
-  Standard_Real Xc = cosh(U);
-  Standard_Real Yc = sinh(U);
+  Standard_Real Xc = Cosh(U);
+  Standard_Real Yc = Sinh(U);
   gp_XYZ Coord0;
   gp_XYZ Coord1 (Pos.XDirection().XYZ());
   gp_XYZ Coord2 (Pos.YDirection().XYZ());
@@ -594,8 +594,8 @@ gp_Pnt2d ElCLib::HyperbolaValue (const Standard_Real U,
   const gp_XY& XDir = Pos.XDirection().XY();
   const gp_XY& YDir = Pos.YDirection().XY();
   const gp_XY& PLoc = Pos.Location  ().XY();
-  Standard_Real A1 = MajorRadius * cosh(U);
-  Standard_Real A2 = MinorRadius * sinh(U);
+  Standard_Real A1 = MajorRadius * Cosh(U);
+  Standard_Real A2 = MinorRadius * Sinh(U);
   return gp_Pnt2d(A1 * XDir.X() + A2 * YDir.X() + PLoc.X(),
 		  A1 * XDir.Y() + A2 * YDir.Y() + PLoc.Y());
 }
@@ -706,8 +706,8 @@ void ElCLib::HyperbolaD1 (const Standard_Real U,
   gp_XY Vxy;
   gp_XY Xdir ((Pos.XDirection()).XY());
   gp_XY Ydir ((Pos.YDirection()).XY());
-  Standard_Real Xc = cosh(U);
-  Standard_Real Yc = sinh(U);
+  Standard_Real Xc = Cosh(U);
+  Standard_Real Yc = Sinh(U);
   //Point courant :
   Vxy.SetLinearForm (Xc*MajorRadius, Xdir, 
 		     Yc*MinorRadius, Ydir,
@@ -825,8 +825,8 @@ void ElCLib::HyperbolaD2 (const Standard_Real U,
   gp_XY Vxy;
   gp_XY Xdir (Pos.XDirection().XY()); 
   gp_XY Ydir (Pos.YDirection().XY()); 
-  Standard_Real Xc = cosh(U);
-  Standard_Real Yc = sinh(U);
+  Standard_Real Xc = Cosh(U);
+  Standard_Real Yc = Sinh(U);
 
   //V2 :
   Vxy.SetLinearForm (Xc*MajorRadius, Xdir, Yc*MinorRadius, Ydir);
@@ -964,8 +964,8 @@ void ElCLib::HyperbolaD3 (const Standard_Real U,
   gp_XY Vxy;
   gp_XY Xdir (Pos.XDirection().XY());
   gp_XY Ydir (Pos.YDirection().XY());
-  Standard_Real Xc = cosh(U);
-  Standard_Real Yc = sinh(U);
+  Standard_Real Xc = Cosh(U);
+  Standard_Real Yc = Sinh(U);
 
   //V2 :
   Vxy.SetLinearForm (Xc*MajorRadius, Xdir, Yc*MinorRadius, Ydir);
@@ -1082,12 +1082,12 @@ gp_Vec ElCLib::HyperbolaDN (const Standard_Real U,
 {
   Standard_Real Xc=0, Yc=0;
   if (IsOdd (N)) {       
-    Xc = MajorRadius * sinh(U);
-    Yc = MinorRadius * cosh(U);
+    Xc = MajorRadius * Sinh(U);
+    Yc = MinorRadius * Cosh(U);
   }
   else if (IsEven (N)) {
-    Xc = MajorRadius * cosh(U);
-    Yc = MinorRadius * sinh(U);
+    Xc = MajorRadius * Cosh(U);
+    Yc = MinorRadius * Sinh(U);
   }
   gp_XYZ Coord1 (Pos.XDirection().XYZ());
   Coord1.SetLinearForm (Xc, Coord1, Yc, Pos.YDirection().XYZ());
@@ -1230,12 +1230,12 @@ gp_Vec2d ElCLib::HyperbolaDN (const Standard_Real U,
 {
   Standard_Real Xc=0, Yc=0;
   if (IsOdd (N)) {       
-    Xc = MajorRadius * sinh(U);
-    Yc = MinorRadius * cosh(U);
+    Xc = MajorRadius * Sinh(U);
+    Yc = MinorRadius * Cosh(U);
   }
   else if (IsEven (N)) {
-    Xc = MajorRadius * cosh(U);
-    Yc = MinorRadius * sinh(U);
+    Xc = MajorRadius * Cosh(U);
+    Yc = MinorRadius * Sinh(U);
   }
   gp_XY Xdir (Pos.XDirection().XY());
   gp_XY Ydir (Pos.YDirection().XY());

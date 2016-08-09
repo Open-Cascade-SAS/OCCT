@@ -1009,7 +1009,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
                                  Standard_Integer n, const char** a)
 {
   if ( n == 1 ) { 
-    di << " OffsetParameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]\n";
+    di << " offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]\n";
     di << " Current Values\n";
     di << "   --> Tolerance : " << TheTolerance << "\n";
     di << "   --> TheInter  : ";
@@ -2327,7 +2327,7 @@ void BRepTest::FeatureCommands (Draw_Interpretor& theCommands)
 		  __FILE__,offsetshape,g);
 
   theCommands.Add("offsetparameter",
-		  "offsetparameter tol inter(a/i) join(a/i)",
+		  "offsetparameter Tol Inter(c/p) JoinType(a/i/t) [RemoveInternalEdges(r/k) RemoveInvalidFaces(r/k)]",
 		  __FILE__,offsetparameter);
 
   theCommands.Add("offsetload",

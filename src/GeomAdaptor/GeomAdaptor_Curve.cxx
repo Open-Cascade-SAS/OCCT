@@ -142,7 +142,7 @@ void GeomAdaptor_Curve::load(const Handle(Geom_Curve)& C,
     myCurve = C;
     myNestedEvaluator.Nullify();
     myBSplineCurve.Nullify();
-
+    
     const Handle(Standard_Type)& TheType = C->DynamicType();
     if ( TheType == STANDARD_TYPE(Geom_TrimmedCurve)) {
       Load(Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve(),UFirst,ULast);
@@ -540,10 +540,10 @@ void GeomAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
       myCurveCache = new BSplCLib_Cache(aDeg, aBezier->IsPeriodic(), aFlatKnots,
         aBezier->Poles(), aBezier->Weights());
     myCurveCache->BuildCache(theParameter, aDeg, aBezier->IsPeriodic(), aFlatKnots,
-      aBezier->Poles(), aBezier->Weights());
-  }
+        aBezier->Poles(), aBezier->Weights());
+}
   else if (myTypeCurve == GeomAbs_BSplineCurve)
-  {
+{
     // Create cache for B-spline
     if (myCurveCache.IsNull())
       myCurveCache = new BSplCLib_Cache(myBSplineCurve->Degree(), myBSplineCurve->IsPeriodic(),
@@ -551,7 +551,7 @@ void GeomAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
     myCurveCache->BuildCache(theParameter, myBSplineCurve->Degree(),
         myBSplineCurve->IsPeriodic(), myBSplineCurve->KnotSequence(),
         myBSplineCurve->Poles(), myBSplineCurve->Weights());
-  }
+}
 }
 
 //=======================================================================
@@ -583,7 +583,7 @@ Standard_Boolean GeomAdaptor_Curve::IsBoundary(const Standard_Real theU,
     return Standard_True;
   }
   return Standard_False;
-}
+  }
 
 //=======================================================================
 //function : Value
@@ -605,7 +605,7 @@ gp_Pnt GeomAdaptor_Curve::Value(const Standard_Real U) const
 void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
 {
   switch (myTypeCurve)
-  {
+{
   case GeomAbs_BezierCurve:
   case GeomAbs_BSplineCurve:
   {
@@ -615,14 +615,14 @@ void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
       myBSplineCurve->LocalD0(U, aStart, aFinish, P);
     }
     else
-    {
+  {
       // use cached data
       if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D0(U, P);
-    }
-    break;
   }
+    break;
+}
 
   case GeomAbs_OffsetCurve:
     myNestedEvaluator->D0(U, P);
@@ -630,7 +630,7 @@ void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
 
   default:
     myCurve->D0(U, P);
-  }
+}
 }
 
 //=======================================================================
@@ -641,7 +641,7 @@ void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
 void GeomAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const 
 {
   switch (myTypeCurve)
-  {
+{
   case GeomAbs_BezierCurve:
   case GeomAbs_BSplineCurve:
   {
@@ -651,14 +651,14 @@ void GeomAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
       myBSplineCurve->LocalD1(U, aStart, aFinish, P, V);
     }
     else
-    {
+  {
       // use cached data
       if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D1(U, P, V);
-    }
-    break;
   }
+    break;
+}
 
   case GeomAbs_OffsetCurve:
     myNestedEvaluator->D1(U, P, V);
@@ -666,7 +666,7 @@ void GeomAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
 
   default:
     myCurve->D1(U, P, V);
-  }
+}
 }
 
 //=======================================================================
@@ -678,7 +678,7 @@ void GeomAdaptor_Curve::D2(const Standard_Real U,
                            gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const 
 {
   switch (myTypeCurve)
-  {
+{
   case GeomAbs_BezierCurve:
   case GeomAbs_BSplineCurve:
   {
@@ -688,14 +688,14 @@ void GeomAdaptor_Curve::D2(const Standard_Real U,
       myBSplineCurve->LocalD2(U, aStart, aFinish, P, V1, V2);
     }
     else
-    {
+  {
       // use cached data
       if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D2(U, P, V1, V2);
-    }
-    break;
   }
+    break;
+}
 
   case GeomAbs_OffsetCurve:
     myNestedEvaluator->D2(U, P, V1, V2);
@@ -703,7 +703,7 @@ void GeomAdaptor_Curve::D2(const Standard_Real U,
 
   default:
     myCurve->D2(U, P, V1, V2);
-  }
+}
 }
 
 //=======================================================================
@@ -716,7 +716,7 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
                            gp_Vec& V2, gp_Vec& V3) const 
 {
   switch (myTypeCurve)
-  {
+{
   case GeomAbs_BezierCurve:
   case GeomAbs_BSplineCurve:
   {
@@ -726,14 +726,14 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
       myBSplineCurve->LocalD3(U, aStart, aFinish, P, V1, V2, V3);
     }
     else
-    {
+  {
       // use cached data
       if (myCurveCache.IsNull() || !myCurveCache->IsCacheValid(U))
         RebuildCache(U);
       myCurveCache->D3(U, P, V1, V2, V3);
-    }
-    break;
   }
+    break;
+}
 
   case GeomAbs_OffsetCurve:
     myNestedEvaluator->D3(U, P, V1, V2, V3);
@@ -741,7 +741,7 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
 
   default:
     myCurve->D3(U, P, V1, V2, V3);
-  }
+}
 }
 
 //=======================================================================
@@ -753,7 +753,7 @@ gp_Vec GeomAdaptor_Curve::DN(const Standard_Real    U,
                              const Standard_Integer N) const 
 {
   switch (myTypeCurve)
-  {
+{
   case GeomAbs_BezierCurve:
   case GeomAbs_BSplineCurve:
   {
@@ -763,9 +763,9 @@ gp_Vec GeomAdaptor_Curve::DN(const Standard_Real    U,
       return myBSplineCurve->LocalDN(U, aStart, aFinish, N);
     }
     else
-      return myCurve->DN(U, N);
+  return myCurve->DN( U, N);
     break;
-  }
+}
 
   case GeomAbs_OffsetCurve:
     return myNestedEvaluator->DN(U, N);
@@ -958,4 +958,16 @@ Handle(Geom_BSplineCurve) GeomAdaptor_Curve::BSpline() const
     Standard_NoSuchObject::Raise("GeomAdaptor_Curve::BSpline");
 
   return myBSplineCurve;
+}
+
+//=======================================================================
+//function : BasisCurve
+//purpose  : 
+//=======================================================================
+
+Handle(Geom_OffsetCurve) GeomAdaptor_Curve::OffsetCurve() const
+{
+  if ( myTypeCurve != GeomAbs_OffsetCurve)
+    Standard_NoSuchObject::Raise("GeomAdaptor_Curve::OffsetCurve");
+  return Handle(Geom_OffsetCurve)::DownCast(myCurve);
 }
