@@ -45,7 +45,7 @@ void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& /*a
   Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
   Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (aPrims);
   // Draw arrow
-  Prs3d_Arrow::Draw (aPresentation,
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
                      myEndPnt,
                      gp_Dir (gp_Vec(myStartPnt, myEndPnt)),
                      anArrowAspect->Angle(),

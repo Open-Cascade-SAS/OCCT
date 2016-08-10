@@ -47,5 +47,5 @@ void Sample2D_Text::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPres
   asp->Aspect()->SetTextAngle(myAngle);
   asp->Aspect()->SetTextFontAspect(myFontAspect);
   asp->SetHeight(myHeight);
-  Prs3d_Text::Draw(aPresentation, asp, myText, myPosition);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), asp, myText, myPosition);
 }

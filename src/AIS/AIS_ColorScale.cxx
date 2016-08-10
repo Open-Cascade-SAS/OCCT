@@ -762,7 +762,7 @@ void AIS_ColorScale::drawText (const Handle(Prs3d_Presentation)& thePresentation
   anAspect->Aspect()->SetTextZoomable (Standard_True);
   anAspect->Aspect()->SetTextAngle (0.0);
   anAspect->Aspect()->SetTextFontAspect (Font_FA_Regular);
-  Prs3d_Text::Draw (thePresentation, anAspect, theText,gp_Pnt (theX,theY,0.0));
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePresentation), anAspect, theText,gp_Pnt (theX,theY,0.0));
 }
 
 //=======================================================================

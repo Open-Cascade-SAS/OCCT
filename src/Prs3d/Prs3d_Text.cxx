@@ -14,69 +14,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Prs3d_Text.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-
-void Prs3d_Text::Draw (
-		       const Handle(Prs3d_Presentation)& aPresentation,
-		       const Handle(Prs3d_TextAspect)& anAspect,
-		       const TCollection_ExtendedString& aText,
-		       const gp_Pnt& AttachmentPoint) {
-
-
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(anAspect->Aspect());
-  Standard_Real x,y,z;
-  AttachmentPoint.Coord(x,y,z);
-
-  
-// POP Graphic3d_Grup accepte de l'extended
-  Prs3d_Root::CurrentGroup(aPresentation)->Text(
-//                     TCollection_AsciiString(aText).ToCString(),
-		      aText,
-	             Graphic3d_Vertex(x,y,z),
-                     anAspect->Height(),
-                     anAspect->Angle(),
-                     anAspect->Orientation(),
-                     anAspect->HorizontalJustification(),
-                     anAspect->VerticalJustification());
-}
-
-
-void Prs3d_Text::Draw (
-		       const Handle(Prs3d_Presentation)& aPresentation,
-		       const Handle(Prs3d_Drawer)& aDrawer,
-		       const TCollection_ExtendedString& aText,
-		       const gp_Pnt& AttachmentPoint) {
-
-  
-  Prs3d_Text::Draw(aPresentation,aDrawer->TextAspect(),aText,AttachmentPoint);
-  }
 
 // =======================================================================
 // function : Draw
 // purpose  :
 // =======================================================================
-void Prs3d_Text::Draw (const Handle(Prs3d_Presentation)& thePresentation,
+void Prs3d_Text::Draw (const Handle(Graphic3d_Group)& theGroup,
+                       const Handle(Prs3d_TextAspect)& theAspect,
+                       const TCollection_ExtendedString& theText,
+                       const gp_Pnt& theAttachmentPoint)
+{
+  Standard_Real x, y, z;
+  theAttachmentPoint.Coord(x,y,z);
+
+  theGroup->SetPrimitivesAspect (theAspect->Aspect());
+  theGroup->Text (theText,
+                  Graphic3d_Vertex(x,y,z),
+                  theAspect->Height(),
+                  theAspect->Angle(),
+                  theAspect->Orientation(),
+                  theAspect->HorizontalJustification(),
+                  theAspect->VerticalJustification());
+}
+
+// =======================================================================
+// function : Draw
+// purpose  :
+// =======================================================================
+void Prs3d_Text::Draw (const Handle(Graphic3d_Group)&    theGroup,
                        const Handle(Prs3d_TextAspect)&   theAspect,
                        const TCollection_ExtendedString& theText,
                        const gp_Ax2&                     theOrientation,
                        const Standard_Boolean            theHasOwnAnchor)
 {
-  Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (theAspect->Aspect());
-  Prs3d_Root::CurrentGroup (thePresentation)->Text (theText,
-                                                    theOrientation,
-                                                    theAspect->Height(),
-                                                    theAspect->Angle(),
-                                                    theAspect->Orientation(),
-                                                    theAspect->HorizontalJustification(),
-                                                    theAspect->VerticalJustification(),
-                                                    Standard_True,
-                                                    theHasOwnAnchor);
+  theGroup->SetPrimitivesAspect (theAspect->Aspect());
+  theGroup->Text (theText,
+                  theOrientation,
+                  theAspect->Height(),
+                  theAspect->Angle(),
+                  theAspect->Orientation(),
+                  theAspect->HorizontalJustification(),
+                  theAspect->VerticalJustification(),
+                  Standard_True,
+                  theHasOwnAnchor);
 }

@@ -64,7 +64,7 @@ void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPrese
                             const Handle(Prs3d_Presentation)& aPresentation,
                             const Standard_Integer /*aMode*/)
 {
-    Prs3d_Text::Draw(aPresentation,myDrawer,MyText,gp_Pnt(  MyX ,MyY,MyZ ));
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), myDrawer->TextAspect(), MyText, gp_Pnt(MyX, MyY, MyZ));
 }
 
 void ISession_Text::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,

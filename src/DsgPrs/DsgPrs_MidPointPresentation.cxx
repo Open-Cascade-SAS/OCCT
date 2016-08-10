@@ -80,7 +80,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 
     // texte 
     TCollection_ExtendedString aText(" (+)");
-    Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,Position);
+    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, Position);
   }
 
   if ( !AttachPoint.IsEqual(MidPoint, Precision::Confusion()) )
@@ -152,7 +152,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 
     // texte
     TCollection_ExtendedString aText (" (+)");
-    Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,Position);
+    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, Position);
   }
 
   if ( !AttachPoint.IsEqual(MidPoint, Precision::Confusion()) )
@@ -226,7 +226,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 
     // texte 
     TCollection_ExtendedString aText (" (+)");
-    Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,Position);
+    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, Position);
   }
 
   if ( !AttachPoint.IsEqual(MidPoint, Precision::Confusion()) )
@@ -302,7 +302,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 
     // texte 
     TCollection_ExtendedString aText (" (+)");
-    Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,Position);
+    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, Position);
   }
 
   if ( !AttachPoint.IsEqual(MidPoint, Precision::Confusion()) )

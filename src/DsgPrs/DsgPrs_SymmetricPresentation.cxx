@@ -334,10 +334,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
   // arrow 1 ----
-  Prs3d_Arrow::Draw(aPresentation,P1,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   
   // arrow 2 ----
-  Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   //-------------------------------------------------------------------------------------
   //|                                SYMBOL OF SYMMETRY                                 |
@@ -581,10 +581,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
   // arrow 1 ----
-  Prs3d_Arrow::Draw(aPresentation,P1,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   
   // arrow 2 ----
-  Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   //-------------------------------------------------------------------------------------
   //|                                SYMBOL OF SYMMETRY                                 |
@@ -797,10 +797,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     gp_Dir arrdir = L3.Direction().Reversed();
     if (outside) arrdir.Reverse();
     // arrow 1 ----
-    Prs3d_Arrow::Draw(aPresentation,P1,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   
     // arrow 2 ----
-    Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
     
     //==== POINTS ================
     //Marker of localization of attachment points:

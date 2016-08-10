@@ -112,7 +112,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   TCollection_ExtendedString aText("==");
 
   //Draw the text
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(), aText, aTextPos);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation),LA->TextAspect(), aText, aTextPos);
 }
 
 

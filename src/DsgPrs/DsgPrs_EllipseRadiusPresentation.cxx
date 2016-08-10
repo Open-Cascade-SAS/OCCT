@@ -71,7 +71,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
   // value
   TCollection_ExtendedString Text(IsMaxRadius? "a = " : "b = ");
   Text += aText;
-  Prs3d_Text::Draw(aPresentation, LA->TextAspect(), Text, aPosition );
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), Text, aPosition);
 
   // arrows
   gp_Dir arrdir( gp_Vec( aCenter, anEndOfArrow));

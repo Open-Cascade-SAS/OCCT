@@ -60,7 +60,7 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
 
   // texte 
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntOffset);
 }
 
 
@@ -96,7 +96,7 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntOffset);
 }
 
 
@@ -144,7 +144,7 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntOffset);
 }
 
 // jfa 16/10/2000
@@ -193,7 +193,7 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntOffset);
 }
 // jfa 16/10/2000 end
 
@@ -238,6 +238,6 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntOffset);
 }
 // jfa 10/10/2000 end

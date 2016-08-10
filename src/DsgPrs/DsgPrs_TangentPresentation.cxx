@@ -62,10 +62,10 @@ void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresent
   // fleche 1 : 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw(aPresentation,p1,aDirection,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p1, aDirection, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   // fleche 2
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw(aPresentation,p2,aDirection.Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p2, aDirection.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 }

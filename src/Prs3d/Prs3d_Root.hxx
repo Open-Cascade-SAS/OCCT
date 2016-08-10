@@ -17,55 +17,33 @@
 #ifndef _Prs3d_Root_HeaderFile
 #define _Prs3d_Root_HeaderFile
 
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-class Graphic3d_Group;
-class Prs3d_Presentation;
-
-
-//! A root class for the standard presentation algorithms
-//! of the StdPrs package.
+//! A root class for the standard presentation algorithms of the StdPrs package.
 class Prs3d_Root 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Returns the current group of primititves inside graphic
-  //! objects in the display.
-  //! A group also contains the attributes whose ranges are
-  //! limited to the primitives in it.
-  Standard_EXPORT static Handle(Graphic3d_Group) CurrentGroup (const Handle(Prs3d_Presentation)& Prs3d);
-  
-  //! Returns the new group of primitives inside graphic
-  //! objects in the display.
+  //! Returns the current (last created) group of primititves inside graphic objects in the display.
   //! A group also contains the attributes whose ranges are limited to the primitives in it.
-  Standard_EXPORT static Handle(Graphic3d_Group) NewGroup (const Handle(Prs3d_Presentation)& Prs3d);
+  static Handle(Graphic3d_Group) CurrentGroup (const Handle(Prs3d_Presentation)& thePrs3d)
+  {
+    return thePrs3d->CurrentGroup();
+  }
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  //! Returns the new group of primitives inside graphic objects in the display.
+  //! A group also contains the attributes whose ranges are limited to the primitives in it.
+  static Handle(Graphic3d_Group) NewGroup (const Handle(Prs3d_Presentation)& thePrs3d)
+  {
+    return thePrs3d->NewGroup();
+  }
 
 };
-
-
-
-
-
-
 
 #endif // _Prs3d_Root_HeaderFile

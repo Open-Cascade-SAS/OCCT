@@ -232,7 +232,7 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
     gp_Pnt Location;
     gp_Vec Direction;
     aCurve.D1(aCurve.LastParameter(),Location,Direction);
-    Prs3d_Arrow::Draw (aPresentation,Location,gp_Dir(Direction),
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Location, gp_Dir(Direction),
                        aDrawer->ArrowAspect()->Angle(),
                        aDrawer->ArrowAspect()->Length());
   }
@@ -298,7 +298,7 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
     gp_Pnt Location;
     gp_Vec Direction;
     aCurve.D1(aCurve.LastParameter(),Location,Direction);
-    Prs3d_Arrow::Draw (aPresentation,Location,gp_Dir(Direction),
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Location, gp_Dir(Direction),
                        aDrawer->ArrowAspect()->Angle(),
                        aDrawer->ArrowAspect()->Length());
   }

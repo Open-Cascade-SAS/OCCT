@@ -119,7 +119,7 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // Drawing the text
-  Prs3d_Text::Draw(aPresentation, LA->TextAspect(), aText, DrawPosition);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, DrawPosition);
    
   // Add presentation of arrows
   DsgPrs::ComputeSymbol( aPresentation, LA, EndOfArrow, EndOfArrow, DirOfArrow, DirOfArrow, ArrowPrs );

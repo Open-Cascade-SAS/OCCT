@@ -98,8 +98,8 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 
   if (DimNulle)
   {
-    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
-    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction().Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), offp, L4.Direction(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), offp, L4.Direction().Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   }
   else
   {
@@ -110,7 +110,7 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
       arrdir.Reverse();
 
     // fleche 1 : 2eme groupe
-    Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -126,7 +126,7 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     Prs3d_Root::NewGroup(aPresentation);
 
     // texte : 4eme groupe
-    Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
+    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
   }
 
   Prs3d_Root::NewGroup(aPresentation);

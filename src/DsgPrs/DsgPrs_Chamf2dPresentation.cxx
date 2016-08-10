@@ -46,9 +46,9 @@ void DsgPrs_Chamf2dPresentation::Add(
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   gp_Dir ArrowDir(aPntAttach.XYZ()-aPntEnd.XYZ());
-  Prs3d_Arrow::Draw(aPresentation,aPntAttach,ArrowDir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPntAttach, ArrowDir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 		     
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntEnd);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntEnd);
 }
 
 
@@ -74,7 +74,7 @@ void DsgPrs_Chamf2dPresentation::Add(
   aPrims->AddVertex(aPntEnd);
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntEnd);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntEnd);
 
   gp_Dir ArrowDir(aPntAttach.XYZ()-aPntEnd.XYZ());
   gp_Dir ArrowDir1 = ArrowDir;

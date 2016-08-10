@@ -70,8 +70,7 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
     }
   case DsgPrs_AS_FIRSTAR:
     {
-
-      Prs3d_Arrow::Draw(aPresentation,
+      Prs3d_Arrow::Draw(Prs3d_Root::CurrentGroup (aPresentation),
 		    pt1,
 		    dir1,
 		    LA->ArrowAspect()->Angle(),
@@ -81,7 +80,7 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
   case DsgPrs_AS_LASTAR:
     {
 
-      Prs3d_Arrow::Draw(aPresentation,
+      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
 		    pt2,
 		    dir2,
 		    LA->ArrowAspect()->Angle(),
@@ -91,12 +90,12 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
 
   case DsgPrs_AS_BOTHAR:
     {
-      Prs3d_Arrow::Draw(aPresentation,
+      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
 		    pt1,
 		    dir1,
 		    LA->ArrowAspect()->Angle(),
 		    LA->ArrowAspect()->Length());  
-      Prs3d_Arrow::Draw(aPresentation,
+      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
 		    pt2,
 		    dir2,
 		    LA->ArrowAspect()->Angle(),
@@ -145,7 +144,7 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
   case DsgPrs_AS_FIRSTAR_LASTPT:
     {
       // an Arrow
-      Prs3d_Arrow::Draw(aPresentation,
+      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
                         pt1,
                         dir1,
                         LA->ArrowAspect()->Angle(),
@@ -167,7 +166,7 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
         Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
       }
       // an Arrow
-      Prs3d_Arrow::Draw(aPresentation,
+      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
                         pt2,
                         dir2,
                         LA->ArrowAspect()->Angle(),

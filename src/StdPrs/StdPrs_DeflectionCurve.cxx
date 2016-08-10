@@ -308,7 +308,7 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
       gp_Pnt Location;
       gp_Vec Direction;
       aCurve.D1(V2, Location,Direction);
-      Prs3d_Arrow::Draw (aPresentation,
+      Prs3d_Arrow::Draw (aGroup,
                          Location,
                          gp_Dir(Direction),
                          aDrawer->ArrowAspect()->Angle(),
@@ -355,7 +355,7 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
     gp_Pnt Location;
     gp_Vec Direction;
     aCurve.D1(V2, Location,Direction);
-    Prs3d_Arrow::Draw (aPresentation,
+    Prs3d_Arrow::Draw (aGroup,
                        Location,
                        gp_Dir(Direction),
                        aDrawer->ArrowAspect()->Angle(),

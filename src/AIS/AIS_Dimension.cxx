@@ -340,20 +340,19 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
                                const gp_Pnt& theLocation,
                                const gp_Dir& theDirection)
 {
-  Prs3d_Root::NewGroup (thePresentation);
+  Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePresentation);
 
   Quantity_Length aLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
   Standard_Real   anAngle = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
 
   if (myDrawer->DimensionAspect()->IsArrows3d())
   {
-    Prs3d_Arrow::Draw (thePresentation,
+    Prs3d_Arrow::Draw (aGroup,
                        theLocation,
                        theDirection,
                        anAngle,
                        aLength);
-
-    Prs3d_Root::CurrentGroup (thePresentation)->SetGroupPrimitivesAspect (myDrawer->DimensionAspect()->ArrowAspect()->Aspect());
+    aGroup->SetGroupPrimitivesAspect (myDrawer->DimensionAspect()->ArrowAspect()->Aspect());
   }
   else
   {
@@ -379,8 +378,8 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
     aShadingStyle->SetColor (myDrawer->DimensionAspect()->ArrowAspect()->Aspect()->Color());
     aShadingStyle->SetMaterial (aShadeMat);
 
-    Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aShadingStyle->Aspect());
-    Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (anArrow);
+    aGroup->SetPrimitivesAspect (aShadingStyle->Aspect());
+    aGroup->AddPrimitiveArray (anArrow);
   }
 
   SelectionGeometry::Arrow& aSensitiveArrow = mySelectionGeom.NewArrow();
@@ -532,7 +531,7 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
   // generate primitives for 2D text
   myDrawer->DimensionAspect()->TextAspect()->Aspect()->SetDisplayType (Aspect_TODT_DIMENSION);
 
-  Prs3d_Text::Draw (thePresentation,
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePresentation),
                     myDrawer->DimensionAspect()->TextAspect(),
                     theText,
                     theTextPos);

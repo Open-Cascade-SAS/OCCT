@@ -12,20 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Prs3d_Arrow.hxx>
 
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Prs3d_Arrow.hxx>
 #include <Prs3d_Presentation.hxx>
 
 //=======================================================================
 //function : Draw
 //purpose  : 
 //=======================================================================
-void Prs3d_Arrow::Draw(const Handle(Prs3d_Presentation)& aPresentation,
+void Prs3d_Arrow::Draw(const Handle(Graphic3d_Group)& theGroup,
                        const gp_Pnt& aLocation,
                        const gp_Dir& aDirection,
                        const Quantity_PlaneAngle anAngle,
@@ -82,19 +82,6 @@ void Prs3d_Arrow::Draw(const Handle(Prs3d_Presentation)& aPresentation,
   }
   aPrims2->AddVertex(p1);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims1);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims2);
-}
-
-//=======================================================================
-//function : Fill
-//purpose  : 
-//=======================================================================
-
-void Prs3d_Arrow::Fill(const Handle(Prs3d_Presentation)& /*aPresentation*/,
-                       const gp_Pnt& /*aLocation*/,
-                       const gp_Dir& /*aDirection*/,
-                       const Quantity_PlaneAngle /*anAngle*/,
-                       const Quantity_Length /*aLength*/)
-{
+  theGroup->AddPrimitiveArray (aPrims1);
+  theGroup->AddPrimitiveArray (aPrims2);
 }

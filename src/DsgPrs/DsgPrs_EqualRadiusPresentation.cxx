@@ -91,6 +91,6 @@ void DsgPrs_EqualRadiusPresentation::Add( const Handle( Prs3d_Presentation )& aP
   }
   
   //Draw the text
-  Prs3d_Text::Draw(aPresentation, LA->TextAspect(),aText, aTextPos);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aTextPos);
 //ota === end ===     
 }

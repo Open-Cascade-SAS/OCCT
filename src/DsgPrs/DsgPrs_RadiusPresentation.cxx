@@ -121,10 +121,10 @@ void DsgPrs_RadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     arrdir.Reverse();
 
   // fleche
-  Prs3d_Arrow::Draw(aPresentation,ptoncirc,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptoncirc, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   // texte
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,attpoint);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, attpoint);
 }
 
 //=======================================================================
@@ -155,7 +155,7 @@ void DsgPrs_RadiusPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // text
-  Prs3d_Text::Draw( aPresentation, LA->TextAspect(), aText, AttachmentPoint );
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, AttachmentPoint);
 
   gp_Dir ArrowDir = gce_MakeDir( LineOrigin , LineEnd );
   if (reverseArrow)

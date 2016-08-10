@@ -79,7 +79,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   TCollection_ExtendedString Text = aText;
   if(IsDiamSymbol) 
     Text = TCollection_ExtendedString("\330  ") +  aText; // VRO (2007-05-17) inserted a blank.
-  Prs3d_Text::Draw(aPresentation, LA->TextAspect(), Text, AttachmentPoint);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), Text, AttachmentPoint);
 
   // arrows
   gp_Dir arrdir (vecrap);
@@ -191,7 +191,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   TCollection_ExtendedString Text = aText;
   if(IsDiamSymbol)
     Text = TCollection_ExtendedString("\330 ") +  Text;//  => \330 | \370?
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),Text,DrawPosition);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), Text, DrawPosition);
 
   // Add presentation of arrow 
   gp_Dir DirOfArrow(gp_Vec(DrawPosition, EndOfArrow).XYZ()); 

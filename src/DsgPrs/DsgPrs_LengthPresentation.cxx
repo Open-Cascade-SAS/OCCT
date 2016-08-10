@@ -91,18 +91,18 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     arrdir.Reverse();
 
   // arrow 1 : 2nd group
-  Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   // arrow 2 : 3rd group
-  Prs3d_Arrow::Draw(aPresentation,Proj2,arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   Prs3d_Root::NewGroup(aPresentation);
   
   // text : 4th group
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
   
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
@@ -175,7 +175,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   DsgPrs::ComputeSymbol( aPresentation, LA, EndOfArrow1, EndOfArrow2, DirOfArrow1, DirOfArrow1.Reversed(), ArrowPrs );
  
   // Drawing the text
-  Prs3d_Text::Draw( aPresentation, LA->TextAspect(), aText, OffsetPoint );
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, OffsetPoint);
 
   // Line from AttachmentPoint1 to end of Arrow1
   aPrims->AddVertex(AttachmentPoint1);
@@ -258,7 +258,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // text 
-  Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
 
   // symbols at the extremities of the face
   DsgPrs::ComputeSymbol(aPresentation,LA,Proj1,Proj2,arrdir,arrdir.Reversed(),ArrowPrs);
@@ -326,7 +326,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   DsgPrs::ComputeSymbol( aPresentation, LA, AttachmentPoint1, EndOfArrow2, DirOfArrow1, DirOfArrow1.Reversed(), ArrowPrs );
  
   // Drawing the text
-  Prs3d_Text::Draw( aPresentation, LA->TextAspect(), aText, OffsetPoint );
+  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, OffsetPoint);
  
   // Two curves from end of Arrow2 to AttachmentPoint2
   Standard_Real Alpha, delta;
@@ -375,21 +375,21 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPrs,
   switch(ArrowPrs)
   {
     case DsgPrs_AS_LASTAR:
-    Prs3d_Arrow::Draw(aPrs,Pt2,gp_Dir(gp_Vec(Pt1,Pt2)), 
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt2, gp_Dir(gp_Vec(Pt1,Pt2)), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
     break;
     case DsgPrs_AS_FIRSTAR:
-    Prs3d_Arrow::Draw(aPrs,Pt1,gp_Dir(gp_Vec(Pt2,Pt1)), 
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt1, gp_Dir(gp_Vec(Pt2,Pt1)), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
     break;
     case DsgPrs_AS_BOTHAR:
     V = gp_Vec(Pt1,Pt2);
-    Prs3d_Arrow::Draw(aPrs,Pt2,gp_Dir(V), 
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt2, gp_Dir(V), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
-    Prs3d_Arrow::Draw(aPrs,Pt1,gp_Dir(V.Reversed()), 
+    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt1, gp_Dir(V.Reversed()), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
     break;

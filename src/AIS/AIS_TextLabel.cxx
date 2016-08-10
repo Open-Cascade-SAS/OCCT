@@ -298,7 +298,7 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
 
         gp_Ax2 anOrientation = myOrientation3D;
         anOrientation.SetLocation (aPosition);
-        Prs3d_Text::Draw (thePrs, anAsp, myText, myOrientation3D, !myHasFlipping);
+        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, myOrientation3D, !myHasFlipping);
         if (myHasFlipping && isInit)
         {
           Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_False, gp_Ax2());
@@ -306,7 +306,7 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
       }
       else
       {
-        Prs3d_Text::Draw (thePrs, anAsp, myText, Position());
+        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, Position());
       }
 
       break;

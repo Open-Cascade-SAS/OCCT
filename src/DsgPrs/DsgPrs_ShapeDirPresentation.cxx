@@ -257,5 +257,5 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
   aPrims->AddVertex(pt2);
   Prs3d_Root::CurrentGroup(prs)->AddPrimitiveArray(aPrims);
 
-  Prs3d_Arrow::Draw(prs, pt2, dir, M_PI/180.*10., leng*0.3);
+  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (prs), pt2, dir, M_PI/180.*10., leng*0.3);
 }
